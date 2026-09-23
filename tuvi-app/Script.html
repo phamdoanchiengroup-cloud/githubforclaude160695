@@ -189,6 +189,7 @@
     renderChart(res);
     renderLuan(res);
     renderVan(res);
+    renderDuDoan(res);
     renderBatTu(res);
     renderTong(res);
     showTab('chart');
@@ -402,6 +403,62 @@
         '<b>' + esc(labelFn(x)) + '</b><small>' + esc(subFn(x)) + '</small><i style="height:' + scorePct(x.diem) + '%"></i>' +
         '<em>' + esc(x.danhGia) + '</em></button>';
     }).join('') + '</div>';
+  }
+
+  /* ---------- Tab Dự đoán ---------- */
+  function renderDuDoan(res) {
+    var D = res.duDoan;
+    if (!D) return;
+    var V = D.vanLon;
+    function dvCard(d, good) {
+      return '<details class="lg-block dv-card ' + (good ? 'good' : 'bad') + '"><summary><span class="lg-t">' + esc(d.khoang) + '</span>' +
+        '<span class="lg-meta">năm ' + esc(d.nam) + ' · cung ' + esc(d.cung) + ' (' + esc(d.canChi) + ') · ' + esc(d.sao) + '</span>' +
+        '<span class="rate ' + rateClass(d.diem) + '">' + esc(d.danhGia) + '</span></summary><div class="lg-body">' +
+        '<div class="lg-sec"><h5>Tứ Hóa đại vận</h5><ul>' + d.hoa.map(itemHtml).join('') + '</ul></div>' +
+        '<div class="lg-sec"><h5>Các lĩnh vực</h5><ul>' + d.linhVuc.map(itemHtml).join('') + '</ul></div></div></details>';
+    }
+    var html = '<div class="panel section"><h2 class="panel-title"><span class="han">大運</span> Vận hạn lớn</h2>' +
+      '<details class="coso"><summary>📖 Cơ sở lý luận</summary><ol><li>' + esc(V.coSo) + '</li></ol></details>' +
+      '<div class="bt-grid" style="margin-top:0"><div><h4 class="dd-h good">☀ Đại vận thuận lợi nhất</h4><div class="lg-list">' + V.tot.map(function (d) { return dvCard(d, true); }).join('') + '</div></div>' +
+      '<div><h4 class="dd-h bad">☾ Đại vận cần thận trọng</h4><div class="lg-list">' + V.xau.map(function (d) { return dvCard(d, false); }).join('') + '</div></div></div>' +
+      '<h4 class="dd-h">⟳ Mốc giao vận</h4><div class="giao-van">' +
+      V.giaoVan.map(function (g) { return '<span class="gv ' + rateClass(g.diem) + (g.nam <= D.namNay && D.namNay < g.nam + 10 ? ' now' : '') + '"><b>' + g.nam + '</b> · ' + g.tuoi + ' tuổi<br><small>Tử Vi: vào hạn ' + esc(g.cung) + ' – ' + esc(g.danhGia) + '</small></span>'; }).join('') +
+      V.giaoVanBT.map(function (g) { return '<span class="gv bz"><b>' + g.nam + '</b> · Bát Tự<br><small>Đại vận ' + esc(g.canChi) + ' – ' + esc(g.danhGia) + '</small></span>'; }).join('') +
+      '</div></div>';
+
+    // Bản đồ nhiệt
+    var keys = Object.keys(D.chuDe);
+    var head = '<div class="hm-row hm-head"><span class="hm-lbl">Tuổi</span>';
+    for (var t = 1; t <= 90; t++) head += '<i class="' + (t % 10 === 1 ? 'tick' : '') + '">' + (t % 10 === 1 ? t : '') + '</i>';
+    head += '</div>';
+    var rows = keys.map(function (k) {
+      var c = D.chuDe[k];
+      var cells = c.heat.map(function (v, i) {
+        var nam = D.namBatDau + i;
+        return '<i class="hm-c ' + c.loai + (nam === D.namNay ? ' hm-now' : '') + '" style="--a:' + (v / 100) + '" title="' + nam + ' · ' + (i + 1) + ' tuổi · mức ' + v + '%"></i>';
+      }).join('');
+      return '<div class="hm-row"><span class="hm-lbl">' + c.icon + ' ' + esc(c.ten) + '</span>' + cells + '</div>';
+    }).join('');
+    html += '<div class="panel section"><h2 class="panel-title"><span class="han">命圖</span> Bản đồ vận trình (tuổi 1 – 90)</h2>' +
+      '<p class="muted" style="margin-top:0;font-size:13px">Màu càng đậm, mức độ càng cao. Đỏ: rủi ro · Xanh: cơ hội · Vàng: biến động công danh. Cột viền là năm xem hiện tại. Rê chuột lên ô để xem năm.</p>' +
+      '<div class="heatmap">' + head + rows + '</div></div>';
+
+    // Các chủ đề
+    html += '<div class="dd-grid">' + keys.map(function (k) {
+      var c = D.chuDe[k];
+      return '<div class="panel section dd-card ' + c.loai + '"><h3 class="dd-title"><span>' + c.icon + '</span> ' + esc(c.ten) + '</h3>' +
+        '<details class="coso"><summary>📖 Cơ sở suy luận</summary><ol><li>' + esc(c.coSo) + '</li></ol></details>' +
+        '<div class="dd-soon"><b>Sắp tới:</b> ' + (c.sapToi.length ? c.sapToi.map(function (x) { return '<span class="yr-chip ' + c.loai + '">' + x.nam + '</span>'; }).join('') : '<span class="muted">không có năm nổi bật trong 15 năm tới</span>') + '</div>' +
+        (c.top.length ? c.top.map(function (x) {
+          return '<details class="yr"><summary><b>' + x.nam + '</b> <span class="muted">' + esc(x.canChi) + ' · ' + x.tuoi + ' tuổi</span>' +
+            (x.huong ? '<span class="hg">' + esc(x.huong) + '</span>' : '') + (x.qua ? '<span class="past">đã qua</span>' : '') +
+            '<span class="yr-bar"><i class="' + c.loai + '" style="width:' + Math.min(100, x.diem * 11) + '%"></i></span><em>' + x.diem + '</em></summary>' +
+            '<div class="yr-meta">Tiểu hạn tại ' + esc(x.cungTH) + ' · đại hạn ' + esc(x.daiHan) + '</div><ul class="yr-ly">' +
+            x.ly.map(function (l) { return '<li class="' + (l.charAt(0) === '-' ? 'neg' : 'pos') + '">' + esc(l) + '</li>'; }).join('') + '</ul></details>';
+        }).join('') : '<p class="muted">Không có năm nào vượt ngưỡng.</p>') + '</div>';
+    }).join('') + '</div>';
+    html += '<div class="panel section muted" style="font-size:13px">ⓘ ' + esc(D.ghiChu) + '</div>';
+    $('page-dudoan').innerHTML = html;
   }
 
   /* ---------- Tab Vận hạn ---------- */

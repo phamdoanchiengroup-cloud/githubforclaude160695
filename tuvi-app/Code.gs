@@ -9,6 +9,7 @@
  *    TuVi.gs      – an sao Tử Vi 12 cung + luận giải
  *    BatTu.gs     – Bát Tự (Tứ Trụ), ngũ hành, đại vận
  *    LuanGiai.gs  – luận 12 cung chuyên sâu, đại vận, tiểu vận, nguyệt vận, nhật vận
+ *    DuDoan.gs    – suy luận các năm biến cố sức khỏe/tài chính/gia đạo, kết hôn, sinh con, tài lộc, quan lộc
  *    Index.html   – khung giao diện
  *    Styles.html  – CSS (phong cách tiên hiệp sáng)
  *    Script.html  – JavaScript phía trình duyệt (vẽ lá số)
@@ -47,10 +48,12 @@ function lapLaSo(input) {
     tuvi: tv,
     battu: bt,
     ketHop: ketHopLuan(tv, bt),
-    chiTiet: luanChiTiet(tv, bt, input),
+    chiTiet: null,
     saoInfo: SAO,
     createdAt: new Date().toISOString()
   };
+  result.chiTiet = luanChiTiet(tv, bt, input);
+  result.duDoan = duDoanCuocDoi(tv, bt, input, result.chiTiet.daiVan);
   if (input.save) {
     try { luuLichSu_(input, result); result.saved = true; } catch (err) { result.saveError = String(err && err.message || err); }
   }
