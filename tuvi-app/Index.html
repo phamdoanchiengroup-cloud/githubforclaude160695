@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <base target="_top">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Thiên Cơ Các · Lá Số Tử Vi & Bát Tự</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&family=Cormorant+Garamond:wght@600;700&family=Ma+Shan+Zheng&family=Noto+Serif:ital,wght@0,400;0,700;1,400&display=swap&subset=vietnamese" rel="stylesheet">
+  <?!= include('Styles'); ?>
+</head>
+<body>
+  <!-- Bầu trời tiên cảnh -->
+  <div class="sky" aria-hidden="true">
+    <div class="sun"></div>
+    <div class="cloud c1"><svg width="340" height="90" viewBox="0 0 340 90"><path d="M20 70c-12 0-20-8-20-18s9-18 21-18c3-14 16-24 31-24 12 0 22 6 27 15 5-4 12-7 20-7 15 0 27 10 29 24h2c9 0 17 6 19 14h150c9 0 16 6 16 14H20z" fill="#fff" opacity=".9"/><path d="M60 78h210" stroke="#e7d7ae" stroke-width="2" stroke-linecap="round"/></svg></div>
+    <div class="cloud c2"><svg width="260" height="70" viewBox="0 0 260 70"><path d="M14 56c-8 0-14-6-14-13s6-13 14-13c2-11 12-19 24-19 10 0 18 5 22 13 4-3 9-5 15-5 12 0 21 8 23 19h140c8 0 14 6 14 12H14z" fill="#fff"/></svg></div>
+    <div class="cloud c3"><svg width="300" height="80" viewBox="0 0 300 80"><path d="M18 64c-10 0-18-7-18-16s8-16 18-16c3-13 14-22 28-22 11 0 20 6 25 14 4-4 11-6 18-6 13 0 24 9 26 21h160c9 0 16 7 16 14H18z" fill="#fff"/></svg></div>
+  </div>
+  <div class="mountains" aria-hidden="true">
+    <svg viewBox="0 0 1440 260" preserveAspectRatio="none">
+      <defs>
+        <linearGradient id="m1" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#9cc8bd"/><stop offset="1" stop-color="#eef4f1" stop-opacity="0"/></linearGradient>
+        <linearGradient id="m2" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#6fa89b"/><stop offset="1" stop-color="#eef4f1" stop-opacity="0"/></linearGradient>
+      </defs>
+      <path d="M0 180 L90 120 L150 150 L240 70 L330 140 L420 100 L520 160 L610 60 L700 130 L790 90 L880 150 L980 80 L1080 140 L1170 100 L1260 150 L1350 90 L1440 130 L1440 260 L0 260Z" fill="url(#m1)" opacity=".7"/>
+      <path d="M0 220 L120 160 L210 200 L330 130 L450 210 L560 150 L690 210 L820 140 L940 205 L1060 150 L1190 215 L1310 160 L1440 200 L1440 260 L0 260Z" fill="url(#m2)" opacity=".6"/>
+    </svg>
+  </div>
+
+  <header class="app-header">
+    <div class="seal" title="Thiên Cơ">天機</div>
+    <div class="brand">
+      <h1>Thiên Cơ Các</h1>
+      <p><span class="han">紫微斗數 · 八字</span> Lập lá số Tử Vi 12 cung & luận Bát Tự – Tứ Trụ</p>
+    </div>
+    <div class="header-actions">
+      <button class="btn btn-ghost btn-sm" id="btnHistoryTop" type="button">☰ Lịch sử</button>
+    </div>
+  </header>
+
+  <main class="container">
+    <div class="layout">
+      <!-- ============ FORM ============ -->
+      <aside class="panel form-panel">
+        <h2 class="panel-title"><span class="han">命</span> Nhập thông tin</h2>
+        <form id="form" autocomplete="off" novalidate>
+          <div class="field">
+            <label for="name">Họ và tên</label>
+            <input type="text" id="name" placeholder="Ví dụ: Lý Tiêu Dao" maxlength="80">
+          </div>
+
+          <div class="field">
+            <span class="lbl">Giới tính</span>
+            <div class="seg">
+              <input type="radio" name="gender" id="gNam" value="nam" checked><label for="gNam">☯ Nam</label>
+              <input type="radio" name="gender" id="gNu" value="nu"><label for="gNu">☯ Nữ</label>
+            </div>
+          </div>
+
+          <div class="field">
+            <span class="lbl">Loại lịch</span>
+            <div class="seg">
+              <input type="radio" name="calendar" id="calDuong" value="duong" checked><label for="calDuong">☀ Dương lịch</label>
+              <input type="radio" name="calendar" id="calAm" value="am"><label for="calAm">☾ Âm lịch</label>
+            </div>
+          </div>
+
+          <div class="field">
+            <span class="lbl">Ngày sinh</span>
+            <div class="row c3">
+              <select id="day" aria-label="Ngày"></select>
+              <select id="month" aria-label="Tháng"></select>
+              <input type="number" id="year" min="1800" max="2200" aria-label="Năm" placeholder="Năm">
+            </div>
+            <label class="check" id="leapWrap" style="display:none"><input type="checkbox" id="leap"> Tháng nhuận</label>
+          </div>
+
+          <div class="field">
+            <span class="lbl">Giờ sinh</span>
+            <div class="row c2">
+              <select id="hour" aria-label="Giờ"></select>
+              <select id="minute" aria-label="Phút"></select>
+            </div>
+          </div>
+
+          <div class="preview-date" id="preview">Chọn ngày sinh để xem đổi lịch…</div>
+
+          <details class="adv">
+            <summary>Tùy chọn nâng cao</summary>
+            <div class="field">
+              <label for="viewYear">Năm xem hạn</label>
+              <input type="number" id="viewYear" min="1800" max="2300">
+            </div>
+            <label class="check"><input type="checkbox" id="lateRat" checked> Giờ Tý muộn (23h–24h) tính sang ngày hôm sau</label>
+            <div class="field">
+              <label for="leapMode">Sinh tháng nhuận</label>
+              <select id="leapMode">
+                <option value="same">An sao như tháng thường</option>
+                <option value="split">Ngày 1–15 tháng trước, 16–30 tháng sau</option>
+              </select>
+            </div>
+            <label class="check"><input type="checkbox" id="trueSolar"> Hiệu chỉnh giờ mặt trời thực</label>
+            <div class="field" id="lonWrap" style="display:none">
+              <label for="longitude">Kinh độ nơi sinh (°E)</label>
+              <select id="longitude">
+                <option value="105.85">Hà Nội (105.85)</option>
+                <option value="106.70">TP. Hồ Chí Minh (106.70)</option>
+                <option value="108.22">Đà Nẵng (108.22)</option>
+                <option value="107.59">Huế (107.59)</option>
+                <option value="106.68">Hải Phòng (106.68)</option>
+                <option value="105.78">Cần Thơ (105.78)</option>
+                <option value="109.19">Nha Trang (109.19)</option>
+                <option value="108.44">Đà Lạt (108.44)</option>
+                <option value="105.00">Kinh tuyến chuẩn 105°</option>
+              </select>
+            </div>
+            <label class="check"><input type="checkbox" id="save" checked> Lưu lá số vào Google Sheet</label>
+          </details>
+
+          <button type="submit" class="btn btn-primary">✦ Lập Lá Số ✦</button>
+        </form>
+      </aside>
+
+      <!-- ============ KẾT QUẢ ============ -->
+      <section class="result-wrap">
+        <div class="tabs" id="tabs">
+          <div class="tab active" data-tab="chart">☯ Lá Số Tử Vi</div>
+          <div class="tab" data-tab="luan">📜 Luận Giải</div>
+          <div class="tab" data-tab="battu">⚖ Bát Tự</div>
+          <div class="tab" data-tab="tong">✧ Tổng Luận</div>
+          <div class="tab" data-tab="hist">☰ Lịch Sử</div>
+        </div>
+
+        <div class="tab-page active" id="page-chart">
+          <div class="panel welcome" id="welcome">
+            <svg class="taiji" viewBox="0 0 100 100" aria-hidden="true">
+              <circle cx="50" cy="50" r="48" fill="#fff" stroke="#c89b3c" stroke-width="2"/>
+              <path d="M50 2a48 48 0 0 1 0 96a24 24 0 0 1 0-48a24 24 0 0 0 0-48z" fill="#1f7a70"/>
+              <circle cx="50" cy="26" r="7" fill="#1f7a70"/><circle cx="50" cy="74" r="7" fill="#fff"/>
+            </svg>
+            <h2>Đạo pháp tự nhiên · Thiên cơ khả kiến</h2>
+            <p>Nhập ngày giờ sinh theo Dương lịch hoặc Âm lịch để lập lá số Tử Vi Đẩu Số đầy đủ 12 cung, an trọn chính tinh, phụ tinh, vòng Tràng Sinh, Bác Sĩ, Thái Tuế, Tuần – Triệt, kết hợp luận giải Bát Tự Tứ Trụ.</p>
+            <div class="features">
+              <div class="feature"><span class="han">紫</span><b>14 Chính tinh</b><small>An theo Cục & ngày sinh, xét Miếu – Vượng – Đắc – Hãm.</small></div>
+              <div class="feature"><span class="han">星</span><b>~100 Phụ tinh</b><small>Lục cát, lục sát, Tứ Hóa, Lộc Mã, Đào Hồng Hỷ…</small></div>
+              <div class="feature"><span class="han">運</span><b>Hạn & Lưu niên</b><small>Đại hạn, Tiểu hạn, lưu tinh theo năm xem.</small></div>
+              <div class="feature"><span class="han">柱</span><b>Bát Tự</b><small>Tứ trụ theo Tiết khí, thập thần, dụng thần, đại vận.</small></div>
+            </div>
+          </div>
+          <div id="chartArea" style="display:none">
+            <div class="toolbar">
+              <label class="check"><input type="checkbox" id="optLuu" checked> Lưu tinh</label>
+              <label class="check"><input type="checkbox" id="optMinor" checked> Tiểu tinh</label>
+              <label class="check"><input type="checkbox" id="optLines" checked> Tam hợp – xung chiếu</label>
+              <span class="sp"></span>
+              <div class="legend"><span class="h-Kim">Kim</span><span class="h-Mộc">Mộc</span><span class="h-Thủy">Thủy</span><span class="h-Hỏa">Hỏa</span><span class="h-Thổ">Thổ</span></div>
+              <button class="btn btn-ghost btn-sm" id="btnPng" type="button">⤓ Tải ảnh</button>
+              <button class="btn btn-ghost btn-sm" id="btnPrint" type="button">⎙ In</button>
+            </div>
+            <div class="chart-scroll">
+              <div class="chart-frame" id="chartFrame">
+                <div class="chart" id="chart"></div>
+              </div>
+            </div>
+            <div class="panel palace-detail" id="palaceDetail"></div>
+          </div>
+        </div>
+
+        <div class="tab-page" id="page-luan"><div class="panel section muted">Hãy lập lá số trước.</div></div>
+        <div class="tab-page" id="page-battu"><div class="panel section muted">Hãy lập lá số trước.</div></div>
+        <div class="tab-page" id="page-tong"><div class="panel section muted">Hãy lập lá số trước.</div></div>
+        <div class="tab-page" id="page-hist"><div class="panel section" id="histBox"><span class="muted">Đang tải lịch sử…</span></div></div>
+      </section>
+    </div>
+  </main>
+
+  <footer class="footer">
+    Thiên Cơ Các · Tử Vi Đẩu Số (phái Việt Nam) & Bát Tự · Kết quả mang tính tham khảo, "đức năng thắng số".
+  </footer>
+
+  <div class="loading" id="loading">
+    <div class="box">
+      <svg viewBox="0 0 100 100" aria-hidden="true">
+        <circle cx="50" cy="50" r="46" fill="#fff" stroke="#c89b3c" stroke-width="3"/>
+        <path d="M50 4a46 46 0 0 1 0 92a23 23 0 0 1 0-46a23 23 0 0 0 0-46z" fill="#1f7a70"/>
+        <circle cx="50" cy="27" r="6" fill="#1f7a70"/><circle cx="50" cy="73" r="6" fill="#fff"/>
+      </svg>
+      <p>Đang khởi quẻ, an sao…</p>
+    </div>
+  </div>
+  <div class="toast" id="toast"></div>
+
+  <script>var INITIAL_PARAMS = <?!= initialParams ?>;</script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <?!= include('Script'); ?>
+</body>
+</html>

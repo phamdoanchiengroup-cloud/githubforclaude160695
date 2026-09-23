@@ -1,0 +1,36 @@
+# Thiên Cơ Các – Web App Lá Số Tử Vi & Bát Tự (Google Apps Script)
+
+Web app lập lá số **Tử Vi Đẩu Số 12 cung** (phái Việt Nam) kết hợp **Bát Tự – Tứ Trụ**, nhập ngày sinh theo **Dương lịch hoặc Âm lịch** (có tháng nhuận), lưu lịch sử vào **Google Sheet**. Giao diện sáng, phong cách tiên hiệp.
+
+## Các file
+
+| File | Vai trò |
+|---|---|
+| `Code.gs` | `doGet`, API `lapLaSo`, `doiLich`, lưu/đọc/xóa lịch sử trên Sheet |
+| `Lunar.gs` | Âm lịch Việt Nam (thuật toán Hồ Ngọc Đức, GMT+7), kinh độ mặt trời, tiết khí |
+| `TuVi.gs` | An Mệnh/Thân, Cục, 14 chính tinh + miếu hãm, ~90 phụ tinh, Tứ Hóa, vòng Tràng Sinh / Bác Sĩ / Thái Tuế, Tuần, Triệt, Đại hạn, Tiểu hạn, lưu niên, luận giải & cách cục |
+| `BatTu.gs` | Tứ trụ theo tiết khí, tàng can, thập thần, nạp âm, trường sinh, vượng suy, dụng thần, thần sát, hợp–xung–hình–hại, đại vận, tổng luận kết hợp |
+| `Index.html` | Khung trang |
+| `Styles.html` | CSS |
+| `Script.html` | JS trình duyệt: form, vẽ lá số 4×4, tam hợp–xung chiếu, tab luận giải, xuất PNG / in |
+| `appsscript.json` | Manifest (V8, múi giờ Asia/Ho_Chi_Minh, cấu hình web app) |
+
+## Cài đặt
+
+1. Tạo Google Sheet mới → **Tiện ích mở rộng → Apps Script** (hoặc tạo dự án Apps Script độc lập – app sẽ tự tạo Sheet “Thiên Cơ Các – Lịch sử lá số”).
+2. Tạo các file đúng tên như bảng trên (file `.gs` là *Script*, file `.html` là *HTML*, không gõ đuôi) và dán nội dung vào.
+3. (Tùy chọn) **Cài đặt dự án → Hiển thị tệp kê khai appsscript.json** rồi dán nội dung `appsscript.json`.
+4. Chạy thử hàm `testLapLaSo` một lần để cấp quyền.
+5. **Triển khai → Bản triển khai mới → Ứng dụng web** → *Thực thi với tư cách: Tôi*, *Người có quyền truy cập: Bất kỳ ai* → Triển khai, mở URL.
+
+Có thể mở sẵn lá số qua tham số URL, ví dụ:
+`.../exec?name=An&gender=nu&calendar=am&day=12&month=3&year=1992&hour=8&minute=0`
+
+## Ghi chú chuyên môn
+
+- Giờ Tý muộn (23h–24h) mặc định tính sang ngày hôm sau (có thể tắt).
+- Sinh tháng nhuận: chọn an như tháng thường hoặc chia đôi (1–15 tháng trước, 16 trở đi tháng sau).
+- Tùy chọn hiệu chỉnh giờ mặt trời thực theo kinh độ nơi sinh.
+- Tứ Hóa theo phái Việt Nam (Nhâm: Lương – Tử – Phủ – Vũ).
+- Bát Tự đổi năm tại Lập Xuân, đổi tháng tại 12 Tiết (sai số thời điểm tiết khí vài phút).
+- Kết quả luận giải mang tính tham khảo.
