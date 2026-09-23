@@ -454,6 +454,19 @@ details.yr summary em { font-style: normal; font-weight: 700; font-size: 12.5px;
 .yr-ly { margin: 4px 0 2px; padding-left: 18px; font-size: 13.5px; }
 .yr-ly li.neg { color: var(--jade-deep); }
 
+/* ---------- Sự kiện & dò giờ ---------- */
+.ev-row { display: grid; grid-template-columns: 82px 1fr auto; gap: 6px; margin-bottom: 6px; }
+.ev-row input, .ev-row select { padding: 7px 9px; font-size: 13px; }
+.flag.ldh { background: #ece8f7; color: var(--lavender); }
+.match-sum { display: flex; align-items: center; gap: 14px; margin: 6px 0 10px; }
+.match-big { font-family: var(--font-title); font-size: 40px; font-weight: 700; line-height: 1; padding: 6px 14px; border-radius: 14px; }
+.match-big.ok { background: #e3f4ea; color: #1e6b3b; } .match-big.mid { background: #fbf3dc; color: #8a6414; } .match-big.bad { background: #fbe9e6; color: #9e2b22; }
+.gio-tbl { width: 100%; border-collapse: collapse; margin-top: 12px; font-size: 13.5px; background: #fff; border-radius: 12px; overflow: hidden; }
+.gio-tbl th { background: var(--jade-deep); color: #fff; text-align: left; padding: 7px 8px; font-weight: 600; }
+.gio-tbl td { padding: 6px 8px; border-bottom: 1px solid rgba(154, 115, 36, .15); }
+.gio-tbl tr.best td { background: #eef8f2; } .gio-tbl tr.cur td:first-child { box-shadow: inset 3px 0 0 var(--gold); }
+@media (max-width: 640px) { .gio-tbl th:nth-child(3), .gio-tbl td:nth-child(3), .gio-tbl th:nth-child(5), .gio-tbl td:nth-child(5) { display: none; } }
+
 /* ---------- Bát tự ---------- */
 .phu-tru { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 10px; margin-top: 12px; }
 .pt-item { background: #fffaf0; border: 1px solid var(--line); border-radius: 14px; padding: 10px 12px; display: flex; flex-direction: column; gap: 2px; font-size: 13px; }

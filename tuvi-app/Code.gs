@@ -60,6 +60,35 @@ function lapLaSo(input) {
   return result;
 }
 
+/**
+ * Dò giờ sinh: thử 12 giờ (Tý → Hợi) với cùng ngày sinh, đo mức khớp của các sự kiện đã biết.
+ * @param {Object} input dữ liệu form, cần input.events = [{nam, loai}]
+ */
+function doGioSinh(input) {
+  input = input || {};
+  var ev = (input.events || []).filter(function (e) { return e && e.nam && e.loai; });
+  if (!ev.length) throw new Error('Hãy nhập ít nhất một sự kiện đã biết (năm + loại sự kiện).');
+  var gocChi = Math.floor(((parseInt(input.hour, 10) || 0) + 1) / 2) % 12;
+  var out = [];
+  for (var h = 0; h < 12; h++) {
+    var inp = JSON.parse(JSON.stringify(input));
+    inp.hour = h === 0 ? 0 : h * 2; inp.minute = h === 0 ? 30 : 0; inp.trueSolar = false; inp.events = ev;
+    var tv = tuviLapLaSo(inp), bt = batTuLap(inp);
+    var D = duDoanCuocDoi(tv, bt, inp, false);
+    var dc = D.doiChieu;
+    out.push({
+      gio: h, gioTen: CHI[h] + ' (' + GIO_CHI[h] + ')', hienTai: h === gocChi,
+      menh: CHI[tv.info.menh], cuc: tv.info.cuc,
+      chinhTinh: tv.palaces[tv.info.menh].chinh.map(function (s) { return s.n; }).join(', ') || 'VCD',
+      truGio: bt.pillars[3].canTen + ' ' + bt.pillars[3].chiTen,
+      diem: dc.trungBinh, trungTop: dc.trungTop, pct: dc.suKien.map(function (x) { return x.pct; })
+    });
+  }
+  var sorted = out.slice().sort(function (a, b) { return (b.trungTop - a.trungTop) || (b.diem - a.diem); });
+  return { gio: out, tot: sorted[0], suKien: ev.map(function (e) { return e.nam + ' – ' + DD_CHU_DE[e.loai].ten; }),
+    ghiChu: 'Giờ có điểm khớp cao nhất là ứng viên tốt nhất cho giờ sinh thật. Cần ≥ 3–4 sự kiện ở các chủ đề khác nhau thì kết quả mới đáng tin; đây là phương pháp "định giờ sinh bằng sự kiện" tham khảo.' };
+}
+
 /** Đổi lịch nhanh cho ô xem trước ở form */
 function doiLich(input) {
   var d = parseInt(input.day, 10), m = parseInt(input.month, 10), y = parseInt(input.year, 10);

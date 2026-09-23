@@ -479,6 +479,11 @@ function tuviLapLaSo(input) {
     if (tuoi >= P.daiHan && tuoi <= P.daiHan + 9) { P.isDaiHan = true; daiHanNow = i; }
     if (P.tieuHanChi === vChi) { P.isTieuHan = true; tieuHanNow = i; }
   }
+  if (daiHanNow >= 0) {
+    var kk = tuoi - palaces[daiHanNow].daiHan, XX = mod12(daiHanNow + 6), dd2 = thuan ? 1 : -1;
+    var ldh = kk === 0 ? daiHanNow : kk === 1 ? XX : kk === 2 ? mod12(XX - dd2) : mod12(XX + dd2 * (kk - 3));
+    palaces[ldh].isLuuDaiHan = true;
+  }
   function luu(name, at) { palaces[mod12(at)].luu.push(name); }
   luu('L.Thái Tuế', vChi);
   luu('L.Tang Môn', vChi + 2);

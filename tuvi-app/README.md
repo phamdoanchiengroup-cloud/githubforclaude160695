@@ -56,3 +56,17 @@ cd tests && npm install && npm test
 Kết quả hiện tại: 100% khớp vị trí sao Tử Vi (~107.000 sao/2.000 lá số), 100% tứ trụ và Thai nguyên/Mệnh/Thân cung, 100% Nhị thập bát tú; Thập nhị trực và Hoàng đạo khớp 99,9% (khác biệt còn lại do lịch Trung Hoa dùng múi giờ +8 ở ngày giao tiết).
 
 Các điểm khác biệt có chủ đích giữa phái Việt Nam và Trung Hoa được giữ theo phái Việt Nam: Hỏa Tinh/Linh Tinh đi ngược chiều theo âm dương nam nữ, Thiên Quý theo Văn Khúc, Giải Thần theo năm, bảng miếu hãm Việt Nam.
+
+## Quy tắc suy luận vận hạn (DuDoan.gs)
+
+Ngoài tiểu hạn, lưu tinh và Tứ Hóa đại vận, bộ suy luận dùng thêm:
+
+- **Lưu niên đại hạn** (phái Thái Thứ Lang): năm 1 tại cung đại hạn, năm 2 sang cung xung chiếu, năm 3 Dương Nam/Âm Nữ lùi 1 cung (ngược lại thì tiến), năm 4 trở về cung xung chiếu, từ năm 5 đi tiếp mỗi năm một cung – xét như "điểm rơi" thứ hai của năm (trọng số 0,6).
+- **Lưu tinh bổ sung** theo can/chi năm (đối chiếu iztro): lưu Văn Xương – Văn Khúc, Thiên Khôi – Thiên Việt, Đào Hoa.
+- **Hóa Kỵ xung chiếu** (nặng hơn Kỵ tọa thủ), **Song/Tam Kỵ** (Kỵ lưu niên + đại vận + gốc hội tam phương tiểu hạn), **Lộc – Kỵ giao xung**.
+- **Nền đại vận**: đại hạn kém khuếch đại rủi ro, đại hạn tốt giảm nhẹ ("đại hạn là gốc, tiểu hạn là ngọn").
+- **Bát Tự**: thiên khắc địa xung với từng trụ, phục ngâm trụ ngày, tuế vận tịnh lâm/tương xung, thiên địa uyên ương hợp, can năm ngũ hợp Nhật chủ, "hợp gặp xung" ở cung phu thê, Hồng Loan/Thiên Hỷ theo chi tuổi, xung khai tài khố, thương quan kiến quan, dịch mã động, kiêu thần đoạt thực, năm khắc Dụng thần.
+
+**Đối chiếu sự kiện & dò giờ sinh**: nhập các năm đã xảy ra sự kiện thật (kết hôn, sinh con, ốm nặng, đổi việc…). App tính bách phân vị của năm đó trong cửa sổ tuổi hợp lý, và có thể thử cả 12 giờ sinh để tìm giờ giải thích các sự kiện tốt nhất (cần ≥ 3–4 sự kiện ở các chủ đề khác nhau).
+
+Nguồn tham khảo quy tắc: [Học viện lý số – Tiểu vận](https://hocvienlyso.org/chuong-17-tieu-van.html), [Kabala – Lưu đại hạn](https://hoc.kabala.vn/chuong-7-luu-dai-han/), [lyso.vn – Phân biệt lưu đại vận và lưu tiểu hạn](https://lyso.vn/xem-tu-vi/phan-biet-luu-dai-van-va-luu-tieu-han-t35275/), [tuvilyso.org – Hạn tình cảm](https://tuvilyso.org/forum/topic/20132-han-tinh-cam-va-mot-so-phuong-phap-xem-han-noi-chung/), [tutru.khosachquy.com – Thiên khắc địa xung](http://tutru.khosachquy.com/bat-tu-dai-van-luu-nien-thien-khac-dia-xung-nid-115753.html), mã nguồn [iztro](https://github.com/SylarLong/iztro) (lưu diệu).

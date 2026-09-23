@@ -76,6 +76,7 @@
     });
     $('trueSolar').addEventListener('change', function () { $('lonWrap').style.display = this.checked ? '' : 'none'; });
     $('form').addEventListener('submit', function (e) { e.preventDefault(); submit(); });
+    $('addEvent').addEventListener('click', function () { addEventRow(); });
     onCalendarChange();
     if (p.year && p.auto !== '0') submit();
   }
@@ -106,7 +107,8 @@
       hoangDao: $('hoangDao').value,
       trueSolar: $('trueSolar').checked,
       longitude: $('longitude').value,
-      save: $('save').checked
+      save: $('save').checked,
+      events: getEvents()
     };
   }
   function setForm(v) {
@@ -128,7 +130,34 @@
     if (v.hoangDao) $('hoangDao').value = v.hoangDao;
     if (v.trueSolar != null) { $('trueSolar').checked = v.trueSolar === true || v.trueSolar === 'true'; $('lonWrap').style.display = $('trueSolar').checked ? '' : 'none'; }
     if (v.longitude) $('longitude').value = v.longitude;
+    if (v.events) setEvents(v.events);
   }
+  /* ---------- Sự kiện đã biết ---------- */
+  var EV_LOAI = [['ketHon', 'Kết hôn'], ['sinhCon', 'Sinh con'], ['sucKhoe', 'Ốm nặng / tai nạn / phẫu thuật'], ['taiChinh', 'Mất tiền / thua lỗ / nợ'],
+    ['giaDao', 'Biến cố gia đình / ly hôn / tang'], ['taiLoc', 'Phát tài / thu nhập tăng mạnh'], ['quanLoc', 'Thăng chức / đổi việc / mất việc']];
+  function addEventRow(ev) {
+    var row = document.createElement('div');
+    row.className = 'ev-row';
+    row.innerHTML = '<input type="number" class="ev-nam" min="1800" max="2300" placeholder="Năm" value="' + (ev && ev.nam ? esc(ev.nam) : '') + '">' +
+      '<select class="ev-loai">' + EV_LOAI.map(function (x) { return '<option value="' + x[0] + '"' + (ev && ev.loai === x[0] ? ' selected' : '') + '>' + x[1] + '</option>'; }).join('') + '</select>' +
+      '<button type="button" class="btn btn-ghost btn-sm ev-del" title="Xóa">✕</button>';
+    row.querySelector('.ev-del').addEventListener('click', function () { row.remove(); });
+    $('events').appendChild(row);
+  }
+  function getEvents() {
+    var out = [];
+    document.querySelectorAll('#events .ev-row').forEach(function (r) {
+      var n = parseInt(r.querySelector('.ev-nam').value, 10);
+      if (n) out.push({ nam: n, loai: r.querySelector('.ev-loai').value });
+    });
+    return out;
+  }
+  function setEvents(list) {
+    $('events').innerHTML = '';
+    (list || []).forEach(addEventRow);
+    if (list && list.length) $('evWrap').open = true;
+  }
+
   function onCalendarChangeSilent() {
     var am = getCal() === 'am';
     $('leapWrap').style.display = am ? '' : 'none';
@@ -224,7 +253,7 @@
     P.forEach(function (p) {
       var g = GRID[p.chi];
       var cls = 'cung' + (p.chi === I.menh ? ' is-menh' : '') + (p.isDaiHan ? ' dh-now' : '');
-      var flags = (p.isDaiHan ? '<span class="flag dh">ĐH</span>' : '') + (p.isTieuHan ? '<span class="flag th">TH</span>' : '');
+      var flags = (p.isDaiHan ? '<span class="flag dh">ĐH</span>' : '') + (p.isLuuDaiHan ? '<span class="flag ldh" title="Lưu niên đại hạn">LĐH</span>' : '') + (p.isTieuHan ? '<span class="flag th">TH</span>' : '');
       var chinh = p.chinh.length ? p.chinh.map(function (s) { return starHtml(s); }).join('')
         : '<span class="vcd">Vô chính diệu</span>';
       html += '<div class="' + cls + '" data-chi="' + p.chi + '" style="grid-row:' + g[0] + ';grid-column:' + g[1] + '">' +
@@ -453,12 +482,48 @@
           return '<details class="yr"><summary><b>' + x.nam + '</b> <span class="muted">' + esc(x.canChi) + ' · ' + x.tuoi + ' tuổi</span>' +
             (x.huong ? '<span class="hg">' + esc(x.huong) + '</span>' : '') + (x.qua ? '<span class="past">đã qua</span>' : '') +
             '<span class="yr-bar"><i class="' + c.loai + '" style="width:' + Math.min(100, x.diem * 11) + '%"></i></span><em>' + x.diem + '</em></summary>' +
-            '<div class="yr-meta">Tiểu hạn tại ' + esc(x.cungTH) + ' · đại hạn ' + esc(x.daiHan) + '</div><ul class="yr-ly">' +
+            '<div class="yr-meta">Tiểu hạn tại ' + esc(x.cungTH) + ' · lưu đại hạn tại ' + esc(x.ldh) + ' · đại hạn ' + esc(x.daiHan) + '</div><ul class="yr-ly">' +
             x.ly.map(function (l) { return '<li class="' + (l.charAt(0) === '-' ? 'neg' : 'pos') + '">' + esc(l) + '</li>'; }).join('') + '</ul></details>';
         }).join('') : '<p class="muted">Không có năm nào vượt ngưỡng.</p>') + '</div>';
     }).join('') + '</div>';
+    html += doiChieuHtml(D);
     html += '<div class="panel section muted" style="font-size:13px">ⓘ ' + esc(D.ghiChu) + '</div>';
     $('page-dudoan').innerHTML = html;
+    var bt = $('btnDoGio');
+    if (bt) bt.addEventListener('click', function () {
+      var f = getForm();
+      if (!f.events.length) { toast('Hãy nhập sự kiện đã biết trong form (mục "Sự kiện đã biết").', true); return; }
+      loading(true);
+      call('doGioSinh', [f], function (r) { loading(false); $('gioScan').innerHTML = gioScanHtml(r); });
+    });
+  }
+
+  function doiChieuHtml(D) {
+    var dc = D.doiChieu;
+    var html = '<div class="panel section"><h2 class="panel-title"><span class="han">驗</span> Đối chiếu sự kiện & dò giờ sinh</h2>';
+    if (!dc || !dc.suKien.length) {
+      html += '<p class="muted">Chưa có sự kiện. Mở mục <b>"Sự kiện đã biết"</b> ở form, nhập vài năm đã xảy ra việc lớn (kết hôn, sinh con, ốm nặng, đổi việc…), rồi lập lại lá số để đo độ khớp. Có thể bấm nút bên dưới để thử 12 giờ sinh.</p>';
+    } else {
+      html += '<details class="coso"><summary>📖 Cách đọc</summary><ol><li>' + esc(dc.coSo) + '</li></ol></details>' +
+        '<div class="match-sum"><div class="match-big ' + (dc.trungBinh >= 70 ? 'ok' : dc.trungBinh >= 50 ? 'mid' : 'bad') + '">' + dc.trungBinh + '%</div><div>Độ khớp trung bình của lá số hiện tại với ' + dc.suKien.length + ' sự kiện<br><small class="muted">' + dc.trungTop + ' sự kiện rơi vào nhóm 20% năm nổi bật nhất</small></div></div>' +
+        dc.suKien.map(function (x) {
+          return '<details class="yr"><summary><b>' + x.nam + '</b> <span class="muted">' + esc(x.ten) + ' · ' + x.tuoi + ' tuổi</span>' +
+            (x.ngoaiCuaSo ? '<span class="past">ngoài cửa sổ ' + esc(x.cuaSo) + '</span>' : '') +
+            '<span class="yr-bar"><i class="' + (x.pct >= 70 ? 'tot' : x.pct >= 50 ? 'dong' : 'xau') + '" style="width:' + x.pct + '%"></i></span><em>' + x.pct + '%</em></summary>' +
+            '<div class="yr-meta">Hạng ' + x.hang + '/' + x.tong + ' năm (' + esc(x.cuaSo) + ') · năm lân cận: ' + x.lanCan.map(function (n) { return n.nam + ' (' + n.diem + ')'; }).join(', ') + '</div>' +
+            '<ul class="yr-ly">' + (x.ly.length ? x.ly.map(function (l) { return '<li class="' + (l.charAt(0) === '-' ? 'neg' : 'pos') + '">' + esc(l) + '</li>'; }).join('') : '<li>Không có tín hiệu nào của chủ đề này trong năm.</li>') + '</ul></details>';
+        }).join('');
+    }
+    html += '<div style="margin-top:12px"><button type="button" class="btn btn-ghost" id="btnDoGio">🔍 Dò giờ sinh (thử 12 giờ)</button></div><div id="gioScan"></div></div>';
+    return html;
+  }
+  function gioScanHtml(r) {
+    return '<table class="gio-tbl"><thead><tr><th>Giờ</th><th>Mệnh</th><th>Chính tinh Mệnh</th><th>Cục</th><th>Trụ giờ</th><th>Top 20%</th><th>Độ khớp</th></tr></thead><tbody>' +
+      r.gio.map(function (g) {
+        return '<tr class="' + (g.gio === r.tot.gio ? 'best' : '') + (g.hienTai ? ' cur' : '') + '"><td><b>' + esc(g.gioTen) + '</b>' + (g.hienTai ? ' <small>(đang dùng)</small>' : '') + (g.gio === r.tot.gio ? ' <small>★ khớp nhất</small>' : '') + '</td>' +
+          '<td>' + esc(g.menh) + '</td><td>' + esc(g.chinhTinh) + '</td><td>' + esc(g.cuc) + '</td><td>' + esc(g.truGio) + '</td><td>' + g.trungTop + '/' + g.pct.length + '</td>' +
+          '<td><span class="yr-bar" style="display:inline-block;width:90px;vertical-align:middle"><i class="' + (g.diem >= 70 ? 'tot' : g.diem >= 50 ? 'dong' : 'xau') + '" style="width:' + g.diem + '%"></i></span> ' + g.diem + '%</td></tr>';
+      }).join('') + '</tbody></table><p class="muted" style="font-size:12.5px">Sự kiện: ' + r.suKien.map(esc).join(' · ') + '. ' + esc(r.ghiChu) + '</p>';
   }
 
   /* ---------- Tab Vận hạn ---------- */

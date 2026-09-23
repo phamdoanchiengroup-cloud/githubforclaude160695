@@ -28,6 +28,7 @@ var CO_SO_LY_LUAN = {
     'Luận đại hạn: xét sao tại cung hạn và tam phương tứ chính, đối chiếu với lá số gốc (cung hạn là cung chức gì ở lá số gốc), sau cùng so ngũ hành cung hạn với bản mệnh. "Mệnh tốt không bằng Vận tốt".'
   ],
   tieuVan: [
+    'Lưu niên đại hạn (Thái Thứ Lang): năm đầu của đại hạn ở chính cung đại hạn, năm thứ hai sang cung xung chiếu; năm thứ ba Dương Nam – Âm Nữ lùi một cung (Âm Nam – Dương Nữ tiến một cung), năm thứ tư trở về cung xung chiếu, từ năm thứ năm đi tiếp mỗi năm một cung. Tiểu hạn, lưu niên đại hạn và Lưu Thái Tuế là ba "điểm rơi" của năm.',
     'Tiểu hạn khởi theo tam hợp tuổi: Dần Ngọ Tuất khởi Thìn, Thân Tý Thìn khởi Tuất, Tỵ Dậu Sửu khởi Mùi, Hợi Mão Mùi khởi Sửu; Nam đi thuận, Nữ đi nghịch, mỗi năm một cung.',
     'Lưu Thái Tuế an tại chi của năm xem; lưu tinh an theo can chi năm: Lưu Lộc Tồn – Kình – Đà (theo can), Lưu Thiên Mã, Tang Môn, Bạch Hổ, Khốc – Hư, Hồng Loan – Thiên Hỷ (theo chi), Lưu Tứ Hóa (theo can năm).',
     '"Đại hạn là gốc, tiểu hạn là ngọn, lưu niên là thời": đại hạn tốt thì tiểu hạn xấu cũng nhẹ; đại hạn xấu mà tiểu hạn gặp lưu sát trùng phùng thì cần đặc biệt đề phòng.',
@@ -595,12 +596,34 @@ function lgLuuTinh_(chart, year) {
   add(lt, 'L.Lộc Tồn'); add(lt + 1, 'L.Kình Dương'); add(lt - 1, 'L.Đà La');
   add([2, 11, 8, 5][vChi % 4], 'L.Thiên Mã');
   for (var i = 0; i < 4; i++) add(chart.pos[chart.tuHoa[vCan][i]], 'L.' + HOA_TEN[i]);
+  // Lưu Xương – Khúc, Khôi – Việt theo can năm; lưu Đào Hoa theo chi năm (đối chiếu iztro: 流昌/流曲/流魁/流钺)
+  add(LG_LUU_XUONG[vCan], 'L.Văn Xương'); add(LG_LUU_KHUC[vCan], 'L.Văn Khúc');
+  add(KHOI_POS[vCan], 'L.Thiên Khôi'); add(VIET_POS[vCan], 'L.Thiên Việt');
+  add([9, 6, 3, 0][vChi % 4], 'L.Đào Hoa');
   return { can: vCan, chi: vChi, ex: ex };
 }
+var LG_LUU_XUONG = [5, 6, 8, 9, 8, 9, 11, 0, 2, 3];
+var LG_LUU_KHUC = [9, 8, 6, 5, 6, 5, 3, 2, 0, 11];
+
+/** Lưu niên đại hạn (phái Thái Thứ Lang): năm 1 tại cung đại hạn, năm 2 sang cung xung chiếu,
+ *  năm 3 Dương Nam/Âm Nữ lùi 1 cung (Âm Nam/Dương Nữ tiến 1 cung), năm 4 trở về cung xung chiếu,
+ *  từ năm 5 đi tiếp theo chiều ngược lại mỗi năm một cung. */
+function lgLuuDaiHan_(chart, tuoi) {
+  var dh = lgDaiHanCung_(chart, tuoi);
+  if (dh < 0) return -1;
+  var k = tuoi - chart.palaces[dh].daiHan;
+  var X = mod12(dh + 6), dir = chart.info.thuan ? 1 : -1;
+  if (k === 0) return dh;
+  if (k === 1) return X;
+  if (k === 2) return mod12(X - dir);
+  return mod12(X + dir * (k - 3));
+}
+
 var LG_LUU_DIEM = {
   'L.Hóa Lộc': 2, 'L.Hóa Quyền': 1.5, 'L.Hóa Khoa': 1.5, 'L.Hóa Kỵ': -2.5, 'L.Lộc Tồn': 1.5, 'L.Thiên Mã': 0.6,
   'L.Kình Dương': -1.5, 'L.Đà La': -1.2, 'L.Tang Môn': -1, 'L.Bạch Hổ': -1, 'L.Thiên Khốc': -0.6, 'L.Thiên Hư': -0.6,
-  'L.Hồng Loan': 0.6, 'L.Thiên Hỷ': 0.6, 'L.Thái Tuế': -0.3
+  'L.Hồng Loan': 0.6, 'L.Thiên Hỷ': 0.6, 'L.Thái Tuế': -0.3,
+  'L.Văn Xương': 0.5, 'L.Văn Khúc': 0.5, 'L.Thiên Khôi': 0.7, 'L.Thiên Việt': 0.7, 'L.Đào Hoa': 0.2
 };
 function lgDiemVung_(chart, pi, ex) {
   var P = chart.palaces, t = lgTPTC_(pi), w = [0.5, 0.125, 0.125, 0.25];
@@ -641,6 +664,9 @@ function lgTieuVan_(chart, bt, year) {
     'Lưu Thái Tuế tại ' + CHI[L.chi] + ' – cung gốc ' + P[L.chi].cung + ': lĩnh vực ' + LG_LINH_VUC[P[L.chi].cung] + ' là "tâm điểm" sự kiện của năm.',
     dh >= 0 ? 'Nằm trong đại hạn ' + P[dh].daiHan + '–' + (P[dh].daiHan + 9) + ' tại ' + P[dh].cung + ' (' + lgXepHang_(P[dh].diem).toLowerCase() + ') – đại hạn là nền, tiểu hạn là ngọn.' : 'Tuổi nằm ngoài các đại hạn.'
   ];
+  var ldh = lgLuuDaiHan_(chart, tuoi);
+  if (ldh >= 0) coSo.push('Lưu niên đại hạn năm nay tại cung ' + P[ldh].cung + ' (' + P[ldh].chiTen + '): ' + (P[ldh].chinh.length ? lgSaoMoTa_(P[ldh]) : 'vô chính diệu') +
+    (L.ex[ldh] ? '; lưu tinh: ' + L.ex[ldh].join(', ') : '') + ' – là "điểm rơi" của đại hạn trong năm, cần xét song song với tiểu hạn.');
   var qh = lgQuanHeChi_(L.chi, I.yChi);
   if (qh.length) coSo.push('Chi năm ' + CHI[L.chi] + ' với chi tuổi ' + I.chiNam + ': ' + qh.join(', ') + ' – ' +
     (qh.indexOf('lục xung') >= 0 ? 'năm xung Thái Tuế, dễ biến động, thay đổi.' : qh.indexOf('trùng (đồng chi)') >= 0 ? 'năm tuổi, nên thận trọng.' :
