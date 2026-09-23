@@ -38,6 +38,8 @@
     <div class="header-actions">
       <button class="btn btn-ghost btn-sm" id="btnPdfTop" type="button" style="display:none">⤓ Tải PDF</button>
       <button class="btn btn-ghost btn-sm" id="btnHistoryTop" type="button">☰ Lịch sử</button>
+      <button class="btn btn-ghost btn-sm btn-login" id="btnLogin" type="button">🔑 Đăng nhập</button>
+      <button class="btn btn-ghost btn-sm user-chip" id="btnUser" type="button" style="display:none"></button>
     </div>
   </header>
 
@@ -243,6 +245,48 @@
     </div>
   </div>
   <div class="toast" id="toast"></div>
+
+  <div class="modal" id="loginModal" role="dialog" aria-modal="true" aria-labelledby="loginTitle">
+    <form class="modal-box panel" id="loginForm" autocomplete="on">
+      <h2 class="panel-title" id="loginTitle"><span class="han">鑰</span> Đăng nhập</h2>
+      <p class="muted" style="margin-top:0">Chưa đăng nhập bạn vẫn lập được lá số và xem phần hé lộ. Đăng nhập để mở toàn bộ luận giải, lưu lịch sử và tải PDF bản đầy đủ.</p>
+      <div class="field"><label for="lgUser">Tên đăng nhập</label><input type="text" id="lgUser" autocomplete="username" autocapitalize="none" spellcheck="false" required></div>
+      <div class="field"><label for="lgPass">Mật khẩu</label><input type="password" id="lgPass" autocomplete="current-password" required></div>
+      <p class="form-err" id="lgErr"></p>
+      <div class="modal-actions"><span style="flex:1"></span>
+        <button type="button" class="btn btn-ghost" id="lgCancel">Để sau</button>
+        <button type="submit" class="btn btn-primary" id="lgGo">Đăng nhập</button></div>
+    </form>
+  </div>
+
+  <div class="modal" id="accModal" role="dialog" aria-modal="true" aria-labelledby="accTitle">
+    <div class="modal-box panel">
+      <h2 class="panel-title" id="accTitle"><span class="han">戶</span> Tài khoản</h2>
+      <p id="accWho" class="muted" style="margin-top:0"></p>
+      <details class="coso" open><summary>🔒 Đổi mật khẩu</summary>
+        <div class="field"><label for="pwOld">Mật khẩu hiện tại</label><input type="password" id="pwOld" autocomplete="current-password"></div>
+        <div class="row c2">
+          <div class="field"><label for="pwNew">Mật khẩu mới</label><input type="password" id="pwNew" autocomplete="new-password"></div>
+          <div class="field"><label for="pwNew2">Nhập lại</label><input type="password" id="pwNew2" autocomplete="new-password"></div>
+        </div>
+        <button type="button" class="btn btn-ghost btn-sm" id="pwGo">Lưu mật khẩu mới</button>
+      </details>
+      <div id="accOwner" style="display:none">
+        <h3 class="dd-h">Quản lý tài khoản (chủ sở hữu)</h3>
+        <div id="accList" class="acc-list"></div>
+        <details class="coso"><summary>➕ Tạo tài khoản thành viên</summary>
+          <div class="row c2">
+            <div class="field"><label for="nuUser">Tên đăng nhập</label><input type="text" id="nuUser" autocapitalize="none" spellcheck="false" placeholder="vd: khach01"></div>
+            <div class="field"><label for="nuName">Tên hiển thị</label><input type="text" id="nuName" maxlength="60"></div>
+          </div>
+          <div class="field"><label for="nuPass">Mật khẩu (≥ 8 ký tự, có chữ và số)</label><input type="text" id="nuPass" autocomplete="off"></div>
+          <button type="button" class="btn btn-ghost btn-sm" id="nuGo">Tạo tài khoản</button>
+        </details>
+      </div>
+      <div class="modal-actions"><button type="button" class="btn btn-ghost" id="accLogout">⎋ Đăng xuất</button><span style="flex:1"></span>
+        <button type="button" class="btn btn-primary" id="accClose">Đóng</button></div>
+    </div>
+  </div>
 
   <div class="modal" id="pdfModal" role="dialog" aria-modal="true" aria-labelledby="pdfTitle">
     <div class="modal-box panel">

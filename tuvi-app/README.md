@@ -18,6 +18,7 @@ Web app lập lá số **Tử Vi Đẩu Số 12 cung** (phái Việt Nam) kết 
 | `HumanDesign.gs` | Human Design: 26 kích hoạt (Tính cách + Thiết kế 88°), 9 trung tâm, 36 kênh, Loại, Chiến lược, Thẩm quyền, Hồ sơ, Định nghĩa, Giao điểm hóa thân, sinh học trung tâm |
 | `ThanSoHoc.gs` | Thần số học: số chủ đạo (2–11, 22, 33), ngày sinh, thái độ, biểu đồ ngày sinh & 15 mũi tên, biểu đồ tên tiếng Việt (linh hồn, nhân cách, sứ mệnh, trưởng thành, cân bằng, bài học nghiệp, đam mê ẩn), 4 đỉnh cao – thử thách, năm/tháng cá nhân |
 | `TongHop.gs` | Luận tổng hợp 5 hệ bằng "bỏ phiếu" độc lập & độ đồng thuận: xuất thân – gia cảnh, vóc dáng – diện mạo, vùng cơ thể có dấu vết/cần giữ gìn, tính cách 5 trục, phối ngẫu tương lai, chủ đề đời – nghề nghiệp – các chặng đời, năm đang xem theo 5 hệ, bảng may mắn |
+| `TaiKhoan.gs` | **Đăng nhập & phân quyền**: tài khoản lưu trong Script Properties, mật khẩu chỉ lưu dạng băm SHA-256 lặp 400 vòng + salt; phiên 6 giờ (CacheService); sai 5 lần khóa 15 phút; chủ sở hữu tạo/xóa/đặt lại mật khẩu thành viên; **chế độ khách**: chưa đăng nhập vẫn lập lá số nhưng máy chủ chỉ trả lá số + phần "hé lộ" (giống PDF xem thử), PDF chỉ xuất bản xem thử |
 | `BatTuLuan.gs` | **Luận Tứ Trụ theo 12 lĩnh vực** (tương ứng 12 cung Tử Vi: bản mệnh, cha mẹ, anh em, phu thê, con cái, tài bạch, tật ách, thiên di, quý nhân, quan lộc, điền trạch, phúc đức) theo nguyên tắc "cung vị làm thể, thập thần làm dụng" + hỷ/kỵ, hợp – xung – hình – hại – phá, Không Vong, thần sát và các cách kinh điển; **lưu niên Tứ Trụ** 14 năm (dẫn động tứ trụ, phục ngâm, phản ngâm, tuế vận tịnh lâm, thần sát năm, sự việc theo lĩnh vực) |
 | `HaLac.gs` | Bát Tự Hà Lạc: đổi tứ trụ ra số Hà Đồ – Lạc Thư, Thiên số/Địa số, quẻ Tiên thiên – Hậu thiên – Hỗ, hào nguyên đường theo giờ, đại vận theo 12 hào (dương 9 năm, âm 6 năm), quẻ lưu niên từng năm, chấm điểm theo cát/hung quẻ, vị hào và dụng thần |
 | `HoiTu.gs` | **Biến cố hội tụ 6 hệ**: mỗi năm (30 năm tới) cho 8 chủ đề (tài lộc, thăng tiến, kết hôn, con cái, bước ngoặt, sức khỏe, hao tài, gia đạo) được Tử Vi, Bát Tự, Hà Lạc, Chiêm tinh, Thần số bỏ phiếu – từ 3 hệ trở lên là xác suất cao; vận 12 tháng & 7 ngày đa hệ; "mật mã cá nhân" (nguyên tố linh hồn, con số định mệnh, giờ vàng, mùa, quý nhân, cán cân âm dương, năm vàng…) |
@@ -87,6 +88,12 @@ Ngoài tiểu hạn, lưu tinh và Tứ Hóa đại vận, bộ suy luận dùng
 Nguồn tham khảo quy tắc: [Học viện lý số – Tiểu vận](https://hocvienlyso.org/chuong-17-tieu-van.html), [Kabala – Lưu đại hạn](https://hoc.kabala.vn/chuong-7-luu-dai-han/), [lyso.vn – Phân biệt lưu đại vận và lưu tiểu hạn](https://lyso.vn/xem-tu-vi/phan-biet-luu-dai-van-va-luu-tieu-han-t35275/), [tuvilyso.org – Hạn tình cảm](https://tuvilyso.org/forum/topic/20132-han-tinh-cam-va-mot-so-phuong-phap-xem-han-noi-chung/), [tutru.khosachquy.com – Thiên khắc địa xung](http://tutru.khosachquy.com/bat-tu-dai-van-luu-nien-thien-khac-dia-xung-nid-115753.html), mã nguồn [iztro](https://github.com/SylarLong/iztro) (lưu diệu).
 
 Tham khảo Bát Tự chi tiết: [douban – 四柱宫位定义](https://www.douban.com/note/829239302/), [知乎 – 四柱分限断法](https://zhuanlan.zhihu.com/p/710636347), [简书 – 格局的概念及取法](https://www.jianshu.com/p/7ef430db0c26), [阐微堂 – 八字正格格局的取法](https://chanweitang.com/post/82.html), [三命通会 – 论天月德](https://m.gushiwen.cn/guwen/bookv_b0d70c0b58dc.aspx).
+
+## Tài khoản
+
+- Tài khoản **chủ sở hữu** `chienpham` được tạo sẵn (trong mã chỉ có salt + mã băm, không có mật khẩu gốc). Nên **đổi mật khẩu ngay sau lần đăng nhập đầu** (nút 👑 trên thanh tiêu đề → Đổi mật khẩu) – mật khẩu mới được băm với salt mới và lưu trong Script Properties, ghi đè bản mặc định.
+- Chủ sở hữu tạo tài khoản thành viên trong cùng hộp thoại. Thành viên xem đầy đủ luận giải, lưu và xem lịch sử lá số của mình; chủ sở hữu xem được toàn bộ lịch sử.
+- Khách chưa đăng nhập: lập lá số, xem lá số và phần hé lộ; lời luận chi tiết không được gửi xuống trình duyệt.
 
 ## Thang điểm
 

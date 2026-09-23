@@ -10,6 +10,7 @@
  *    BatTu.gs     – Bát Tự (Tứ Trụ), ngũ hành, đại vận
  *    LuanGiai.gs  – luận 12 cung chuyên sâu, đại vận, tiểu vận, nguyệt vận, nhật vận
  *    BatTuChiTiet.gs – luận Bát Tự chi tiết: cung vị tứ trụ, lục thân, cách cục, thần sát mở rộng
+ *    TaiKhoan.gs  – đăng nhập, phân quyền, chế độ khách (bản rút gọn)
  *    DuDoan.gs    – suy luận các năm biến cố sức khỏe/tài chính/gia đạo, kết hôn, sinh con, tài lộc, quan lộc
  *    Index.html   – khung giao diện
  *    Styles.html  – CSS (phong cách tiên hiệp sáng)
@@ -20,7 +21,8 @@
 var APP_TITLE = 'Thiên Cơ Các · Lá Số Tử Vi & Bát Tự';
 var SHEET_NAME = 'LaSo';
 var SHEET_HEADERS = ['Thời gian lập', 'Họ tên', 'Giới tính', 'Loại lịch', 'Ngày', 'Tháng', 'Năm', 'Nhuận',
-  'Giờ', 'Phút', 'Dương lịch', 'Âm lịch', 'Năm can chi', 'Mệnh', 'Cục', 'Bát tự', 'Nhật chủ', 'Dụng thần', 'Input JSON'];
+  'Giờ', 'Phút', 'Dương lịch', 'Âm lịch', 'Năm can chi', 'Mệnh', 'Cục', 'Bát tự', 'Nhật chủ', 'Dụng thần', 'Input JSON', 'Tài khoản'];
+var COT_JSON = 18; // cột Input JSON (0-based) – giữ cố định cho sheet cũ
 
 /** Trang web */
 function doGet(e) {
@@ -47,7 +49,7 @@ var FILE_HTML_CAN_CO = { 'Index': '<!DOCTYPE html>', 'Styles': '<style>', 'Scrip
 var HAM_CAN_CO = {
   'Lunar.gs': 'solarToLunar', 'TuVi.gs': 'tuviLapLaSo', 'BatTu.gs': 'batTuLap',
   'LuanGiai.gs': 'luanChiTiet', 'DuDoan.gs': 'duDoanCuocDoi', 'BatTuChiTiet.gs': 'batTuChiTiet',
-  'Astro.gs': 'astToanBo', 'ChiemTinh.gs': 'chiemTinhLap', 'HumanDesign.gs': 'hdLap', 'ThanSoHoc.gs': 'thanSoHocLap', 'TongHop.gs': 'tongHopLuan', 'PhoiNgau.gs': 'phoiNgauLuan', 'HaLac.gs': 'haLacLap', 'HoiTu.gs': 'htHoiTu_', 'BatTuLuan.gs': 'btlLinhVuc_'
+  'Astro.gs': 'astToanBo', 'ChiemTinh.gs': 'chiemTinhLap', 'HumanDesign.gs': 'hdLap', 'ThanSoHoc.gs': 'thanSoHocLap', 'TongHop.gs': 'tongHopLuan', 'PhoiNgau.gs': 'phoiNgauLuan', 'HaLac.gs': 'haLacLap', 'HoiTu.gs': 'htHoiTu_', 'BatTuLuan.gs': 'btlLinhVuc_', 'TaiKhoan.gs': 'dangNhap'
 };
 
 /** Trả về danh sách lỗi cài đặt (rỗng nếu mọi thứ đúng) */
@@ -87,7 +89,7 @@ function trangLoiCaiDat_(loi) {
 /** Chạy hàm này trong trình soạn thảo (chọn kiemTraCaiDat → Chạy) để xem lỗi trong Nhật ký thực thi */
 function kiemTraCaiDat() {
   var loi = kiemTraCaiDat_();
-  if (!loi.length) { Logger.log('✔ Cài đặt đúng: đủ 16 file .gs và 3 file HTML.'); return; }
+  if (!loi.length) { Logger.log('✔ Cài đặt đúng: đủ 17 file .gs và 3 file HTML.'); return; }
   loi.forEach(function (x) { Logger.log('✘ ' + x.replace(/<[^>]+>/g, '').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&amp;/g, '&')); });
 }
 
@@ -95,7 +97,7 @@ function kiemTraCaiDat() {
  * API chính: lập lá số Tử Vi + Bát Tự + tổng luận
  * @param {Object} input dữ liệu từ form
  */
-function lapLaSo(input) {
+function lapLaSoDayDu_(input) {
   input = input || {};
   var tv = tuviLapLaSo(input);
   var bt = batTuLap(input);
@@ -125,7 +127,8 @@ function lapLaSo(input) {
  * Dò giờ sinh: thử 12 giờ (Tý → Hợi) với cùng ngày sinh, đo mức khớp của các sự kiện đã biết.
  * @param {Object} input dữ liệu form, cần input.events = [{nam, loai}]
  */
-function doGioSinh(input) {
+function doGioSinh(input, token) {
+  tkCan_(token);
   input = input || {};
   var ev = (input.events || []).filter(function (e) { return e && e.nam && e.loai; });
   if (!ev.length) throw new Error('Hãy nhập ít nhất một sự kiện đã biết (năm + loại sự kiện).');
@@ -206,6 +209,7 @@ function getSheet_() {
     sh.setFrozenRows(1);
     sh.setColumnWidth(SHEET_HEADERS.length, 80);
   }
+  if (!sh.getRange(1, COT_JSON + 2).getValue()) sh.getRange(1, COT_JSON + 2).setValue('Tài khoản').setFontWeight('bold');
   return sh;
 }
 
@@ -221,42 +225,46 @@ function luuLichSu_(input, r) {
     I.namCanChi, I.banMenh.ten, I.cuc,
     B.pillars.map(function (p) { return p.canTen + ' ' + p.chiTen; }).join(' | '),
     B.nhatChu, B.goiY.dung,
-    JSON.stringify(input)
+    JSON.stringify(input), input.taiKhoan || ''
   ]);
 }
 
-/** Lấy 50 lá số gần nhất */
-function getLichSu() {
-  var sh = getSheet_();
+/** Lấy 50 lá số gần nhất (chủ sở hữu xem tất cả, thành viên xem lá số của mình) */
+function getLichSu(token) {
+  var u = tkCan_(token), sh = getSheet_();
   var last = sh.getLastRow();
   if (last < 2) return [];
-  var n = Math.min(50, last - 1);
-  var values = sh.getRange(last - n + 1, 1, n, SHEET_HEADERS.length).getValues();
+  var n = Math.min(400, last - 1), ncol = Math.max(sh.getLastColumn(), COT_JSON + 1);
+  var values = sh.getRange(last - n + 1, 1, n, ncol).getValues();
   var out = [];
-  for (var i = values.length - 1; i >= 0; i--) {
-    var v = values[i];
+  for (var i = values.length - 1; i >= 0 && out.length < 50; i--) {
+    var v = values[i], chu = String(v[COT_JSON + 1] || '');
+    if (u.vaiTro !== 'chu' && chu !== u.ten) continue;
     var inp = {};
-    try { inp = JSON.parse(v[SHEET_HEADERS.length - 1]); } catch (e) { inp = {}; }
+    try { inp = JSON.parse(v[COT_JSON]); } catch (e) { inp = {}; }
+    delete inp.taiKhoan;
     out.push({
       row: last - n + 1 + i,
       time: v[0] instanceof Date ? Utilities.formatDate(v[0], 'Asia/Ho_Chi_Minh', 'dd/MM/yyyy HH:mm') : String(v[0]),
-      name: v[1], gender: v[2], duong: v[10], am: v[11], canChi: v[12], cuc: v[14], input: inp
+      name: v[1], gender: v[2], duong: v[10], am: v[11], canChi: v[12], cuc: v[14], input: inp, taiKhoan: chu
     });
   }
   return out;
 }
 
-/** Xóa một dòng lịch sử */
-function xoaLichSu(row) {
-  var sh = getSheet_();
+/** Xóa một dòng lịch sử (thành viên chỉ xóa được lá số của mình) */
+function xoaLichSu(row, token) {
+  var u = tkCan_(token), sh = getSheet_();
   row = parseInt(row, 10);
-  if (row >= 2 && row <= sh.getLastRow()) sh.deleteRow(row);
+  if (!(row >= 2 && row <= sh.getLastRow())) return false;
+  if (u.vaiTro !== 'chu' && String(sh.getRange(row, COT_JSON + 2).getValue()) !== u.ten) throw new Error('Bạn chỉ xóa được lá số do mình lập.');
+  sh.deleteRow(row);
   return true;
 }
 
 /** Hàm chạy thử trong trình soạn thảo Apps Script */
 function testLapLaSo() {
-  var r = lapLaSo({ name: 'Thử nghiệm', gender: 'nam', calendar: 'duong', day: 15, month: 8, year: 1990, hour: 10, minute: 30, viewYear: 2026 });
+  var r = lapLaSoDayDu_({ name: 'Thử nghiệm', gender: 'nam', calendar: 'duong', day: 15, month: 8, year: 1990, hour: 10, minute: 30, viewYear: 2026 });
   Logger.log(JSON.stringify(r.tuvi.info, null, 2));
   Logger.log(r.battu.pillars.map(function (p) { return p.canTen + ' ' + p.chiTen; }).join(' | '));
 }

@@ -13,7 +13,7 @@ const D = path.join(path.dirname(fileURLToPath(import.meta.url)), '..');
 const ctx = { console, Math, Date, JSON }; vm.createContext(ctx);
 fs.readdirSync(D).filter(f => f.endsWith('.gs') && f !== 'Code.gs').forEach(f => vm.runInContext(fs.readFileSync(path.join(D, f), 'utf8'), ctx, { filename: f }));
 const code = fs.readFileSync(path.join(D, 'Code.gs'), 'utf8');
-vm.runInContext(code.slice(code.indexOf('function lapLaSo'), code.indexOf('/* ---------------------- Lưu trữ')), ctx);
+vm.runInContext(code.slice(code.indexOf('function lapLaSoDayDu_'), code.indexOf('/* ---------------------- Lưu trữ')), ctx);
 let seed = 7; const rnd = () => (seed = (seed * 1103515245 + 12345) % 2147483648) / 2147483648;
 const R = Math.PI / 180, dA = (a, b) => Math.abs(((a - b) % 360 + 540) % 360 - 180) * 60;
 let loi = 0; const ok = (dk, msg) => { if (!dk) { loi++; console.log('✘', msg); } };
@@ -62,7 +62,7 @@ let t0 = Date.now(), n = 0;
 for (let k = 0; k < 40; k++) {
   const inp = { name: ['Nguyễn Văn An', 'Trần Thị Thùy Vy', 'Lê Đức Huy', ''][k % 4], gender: k % 2 ? 'nu' : 'nam', calendar: k % 3 ? 'duong' : 'am', day: 1 + Math.floor(rnd() * 28), month: 1 + Math.floor(rnd() * 12),
     year: 1940 + Math.floor(rnd() * 80), hour: Math.floor(rnd() * 24), minute: 0, viewYear: 2026, place: '10.78|106.70|TP. Hồ Chí Minh', tz: '7' };
-  const r = ctx.lapLaSo(inp); n++;
+  const r = ctx.lapLaSoDayDu_(inp); n++;
   ok(!r.moRongLoi && r.moRong && r.moRong.tongHop.tinhCach.truc.length === 5 && r.moRong.tongHop.phoiNgau.tuoiHop.nam.length === 19 && r.moRong.tongHop.namNay && r.moRong.tongHop.mayMan && r.moRong.tongHop.tomLuoc.chiSo.length === 4 && r.moRong.haLac.luan.daiVan.length === 12 && r.moRong.haLac.luan.nam.length >= 72, 'lapLaSo mở rộng lỗi: ' + r.moRongLoi + ' ' + JSON.stringify(inp));
   ok(r.battuChiTiet.linhVuc.length === 12 && r.battuChiTiet.linhVuc.every(function (x) { return isFinite(x.diem) && x.secs.length >= 2; }) && r.battuChiTiet.luuNien.length >= 10, 'Tứ Trụ 12 lĩnh vực / lưu niên lỗi: ' + JSON.stringify(inp));
 }

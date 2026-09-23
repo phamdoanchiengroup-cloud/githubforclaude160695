@@ -184,7 +184,7 @@ body {
 .row { display: grid; gap: 8px; }
 .row.c3 { grid-template-columns: 0.8fr 1.3fr 1.1fr; }
 .row.c2 { grid-template-columns: 1fr 1fr; }
-input[type=text], input[type=number], input[type=date], select {
+input[type=text], input[type=password], input[type=number], input[type=date], select {
   width: 100%; padding: 10px 12px; font: inherit; color: var(--ink);
   background: var(--card-solid); border: 1px solid rgba(127, 233, 247, 0.22); border-radius: 12px;
   outline: none; transition: border .2s, box-shadow .2s;
@@ -897,4 +897,18 @@ b.lead { color: var(--head); font-weight: 700; }
 .pdf-toc li.toc-grp { display: block; padding: 16px 0 6px; border-bottom: 2px solid var(--gold); font-size: 12.5px; letter-spacing: 3px; text-transform: uppercase; color: var(--gold); font-weight: 800; }
 @media (max-width: 640px) { .ht-grid { grid-template-columns: 1fr; } .tg-head b { font-size: 24px; } .mm-grid { grid-template-columns: 1fr 1fr; } }
 @media (max-width: 400px) { .mm-grid { grid-template-columns: 1fr; } }
+/* ---------- Tài khoản & chế độ khách ---------- */
+.modal-box { padding: 22px 24px; }
+.modal-actions .btn-primary, .lock-cta .btn-primary, .khach-bar .btn-primary { width: auto; margin-top: 0; padding: 10px 20px; font-size: 17px; }
+.btn-login { border-color: var(--gold); color: var(--gold-hi); font-weight: 700; }
+.user-chip { max-width: 180px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.form-err { color: var(--bad-ink); min-height: 18px; font-size: 13px; margin: 4px 0 0; }
+.acc-list { display: grid; gap: 8px; margin-bottom: 10px; }
+.acc-item { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; border: 1px solid var(--line); border-radius: 12px; padding: 8px 10px; background: var(--surface); }
+.acc-item b { flex: 1; min-width: 140px; } .acc-item small { color: var(--ink-soft); }
+.lock-cta { margin-top: 14px; padding: 16px 18px; border-radius: 14px; border: 1px dashed var(--gold); background: var(--gold-soft); display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
+.lock-cta p { margin: 0; flex: 1; min-width: 220px; }
+.khach-bar { margin: 0 0 14px; padding: 10px 14px; border-radius: 12px; background: var(--gold-soft); border: 1px solid var(--gold); font-size: 14px; display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+.khach-bar span { flex: 1; min-width: 200px; }
+.khach-page .demo-card { margin-bottom: 12px; }
 </style>
