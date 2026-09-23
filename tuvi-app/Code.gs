@@ -23,6 +23,11 @@ var SHEET_HEADERS = ['Thời gian lập', 'Họ tên', 'Giới tính', 'Loại l
 
 /** Trang web */
 function doGet(e) {
+  var loi = kiemTraCaiDat_();
+  if (loi.length) {
+    return HtmlService.createHtmlOutput(trangLoiCaiDat_(loi)).setTitle('Thiên Cơ Các – lỗi cài đặt')
+      .addMetaTag('viewport', 'width=device-width, initial-scale=1');
+  }
   var tpl = HtmlService.createTemplateFromFile('Index');
   tpl.initialParams = JSON.stringify((e && e.parameter) || {});
   return tpl.evaluate()
@@ -34,6 +39,54 @@ function doGet(e) {
 /** Nhúng file HTML con (Styles, Script) */
 function include(filename) {
   return HtmlService.createHtmlOutputFromFile(filename).getContent();
+}
+
+/* ---------------------- Tự kiểm tra cài đặt ---------------------- */
+var FILE_HTML_CAN_CO = { 'Index': '<!DOCTYPE html>', 'Styles': '<style>', 'Script': '<script>' };
+var HAM_CAN_CO = {
+  'Lunar.gs': 'solarToLunar', 'TuVi.gs': 'tuviLapLaSo', 'BatTu.gs': 'batTuLap',
+  'LuanGiai.gs': 'luanChiTiet', 'DuDoan.gs': 'duDoanCuocDoi'
+};
+
+/** Trả về danh sách lỗi cài đặt (rỗng nếu mọi thứ đúng) */
+function kiemTraCaiDat_() {
+  var loi = [];
+  var g = typeof globalThis !== 'undefined' ? globalThis : this;
+  Object.keys(HAM_CAN_CO).forEach(function (f) {
+    if (typeof g[HAM_CAN_CO[f]] !== 'function') {
+      loi.push('Thiếu hoặc sai file <b>' + f + '</b>: không tìm thấy hàm <code>' + HAM_CAN_CO[f] + '</code>. ' +
+        'Hãy tạo file loại <b>Tập lệnh</b> tên <b>' + f.replace('.gs', '') + '</b> và dán đúng nội dung ' + f + '.');
+    }
+  });
+  Object.keys(FILE_HTML_CAN_CO).forEach(function (f) {
+    var c;
+    try { c = HtmlService.createHtmlOutputFromFile(f).getContent(); } catch (err) {
+      loi.push('Thiếu file <b>' + f + '.html</b>: hãy tạo file loại <b>HTML</b> tên <b>' + f + '</b>.');
+      return;
+    }
+    var dau = String(c).replace(/^\s+/, '');
+    if (dau.toLowerCase().indexOf(FILE_HTML_CAN_CO[f].toLowerCase()) !== 0) {
+      var mau = dau.slice(0, 90).replace(/[<>&]/g, function (x) { return { '<': '&lt;', '>': '&gt;', '&': '&amp;' }[x]; });
+      loi.push('File <b>' + f + '.html</b> có nội dung sai: dòng đầu phải là <code>' +
+        FILE_HTML_CAN_CO[f].replace('<', '&lt;').replace('>', '&gt;') + '</code> nhưng đang là: <code>' + mau + '…</code>' +
+        ' → có thể đã dán nhầm nội dung file khác. Hãy xóa hết và dán lại đúng file <b>' + f + '.html</b>.');
+    }
+  });
+  return loi;
+}
+
+function trangLoiCaiDat_(loi) {
+  return '<meta charset="utf-8"><div style="font-family:system-ui,sans-serif;max-width:760px;margin:30px auto;padding:22px;border:2px solid #c8372d;border-radius:14px;background:#fff8f6;line-height:1.6">' +
+    '<h2 style="color:#9e2b22;margin-top:0">⚠ Cài đặt chưa đúng</h2><p>Web app phát hiện ' + loi.length + ' lỗi trong các file của dự án Apps Script:</p><ol>' +
+    loi.map(function (x) { return '<li style="margin:8px 0">' + x + '</li>'; }).join('') + '</ol>' +
+    '<p>Sau khi sửa: lưu (Ctrl+S) → <b>Triển khai → Quản lý các lần triển khai → ✎ → Phiên bản mới → Triển khai</b>, rồi tải lại trang này.</p></div>';
+}
+
+/** Chạy hàm này trong trình soạn thảo (chọn kiemTraCaiDat → Chạy) để xem lỗi trong Nhật ký thực thi */
+function kiemTraCaiDat() {
+  var loi = kiemTraCaiDat_();
+  if (!loi.length) { Logger.log('✔ Cài đặt đúng: đủ 6 file .gs và 3 file HTML.'); return; }
+  loi.forEach(function (x) { Logger.log('✘ ' + x.replace(/<[^>]+>/g, '').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&amp;/g, '&')); });
 }
 
 /**
