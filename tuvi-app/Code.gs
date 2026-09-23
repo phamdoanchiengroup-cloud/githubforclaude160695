@@ -46,7 +46,8 @@ function include(filename) {
 var FILE_HTML_CAN_CO = { 'Index': '<!DOCTYPE html>', 'Styles': '<style>', 'Script': '<script>' };
 var HAM_CAN_CO = {
   'Lunar.gs': 'solarToLunar', 'TuVi.gs': 'tuviLapLaSo', 'BatTu.gs': 'batTuLap',
-  'LuanGiai.gs': 'luanChiTiet', 'DuDoan.gs': 'duDoanCuocDoi', 'BatTuChiTiet.gs': 'batTuChiTiet'
+  'LuanGiai.gs': 'luanChiTiet', 'DuDoan.gs': 'duDoanCuocDoi', 'BatTuChiTiet.gs': 'batTuChiTiet',
+  'Astro.gs': 'astToanBo', 'ChiemTinh.gs': 'chiemTinhLap', 'HumanDesign.gs': 'hdLap', 'ThanSoHoc.gs': 'thanSoHocLap', 'TongHop.gs': 'tongHopLuan'
 };
 
 /** Trả về danh sách lỗi cài đặt (rỗng nếu mọi thứ đúng) */
@@ -86,7 +87,7 @@ function trangLoiCaiDat_(loi) {
 /** Chạy hàm này trong trình soạn thảo (chọn kiemTraCaiDat → Chạy) để xem lỗi trong Nhật ký thực thi */
 function kiemTraCaiDat() {
   var loi = kiemTraCaiDat_();
-  if (!loi.length) { Logger.log('✔ Cài đặt đúng: đủ 7 file .gs và 3 file HTML.'); return; }
+  if (!loi.length) { Logger.log('✔ Cài đặt đúng: đủ 12 file .gs và 3 file HTML.'); return; }
   loi.forEach(function (x) { Logger.log('✘ ' + x.replace(/<[^>]+>/g, '').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&amp;/g, '&')); });
 }
 
@@ -109,6 +110,11 @@ function lapLaSo(input) {
   result.chiTiet = luanChiTiet(tv, bt, input);
   result.duDoan = duDoanCuocDoi(tv, bt, input, result.chiTiet.daiVan);
   result.battuChiTiet = batTuChiTiet(bt, input, tv);
+  try {
+    result.moRong = lapMoRong_(input, result);
+  } catch (err) {
+    result.moRongLoi = String(err && err.message || err);
+  }
   if (input.save) {
     try { luuLichSu_(input, result); result.saved = true; } catch (err) { result.saveError = String(err && err.message || err); }
   }
@@ -154,6 +160,23 @@ function doiLich(input) {
   }
   var l = solarToLunar(d, m, y, LUNAR_TZ);
   return { ok: true, lunar: l };
+}
+
+/** Chiêm tinh + Thần số học + Human Design + Tổng hợp đa hệ */
+function lapMoRong_(input, result) {
+  var tv = result.tuvi, vy = tv.info.viewYear;
+  var ct = chiemTinhLap(input);
+  var ctL = chiemTinhLuan(ct, vy);
+  var ts = thanSoHocLap(input, tv.info.solar, vy);
+  var hd = hdLap(ct.thoiDiem.jd);
+  var th = tongHopLuan({ tv: tv, bt: result.battu, btct: result.battuChiTiet, ct: ct, ctL: ctL, ts: ts, hd: hd,
+    duDoan: result.duDoan, daiVanTV: result.chiTiet.daiVan, input: input });
+  // Gọn dữ liệu trả về trình duyệt
+  var ctOut = { thoiDiem: ct.thoiDiem, heNha: ct.heNha, cusp: ct.cusp, hanhTinh: ct.hanhTinh, asc: ct.asc, mc: ct.mc, goc: ct.goc,
+    nguyenTo: ct.nguyenTo, tinhChat: ct.tinhChat, phaTrang: ct.phaTrang, chuTinh: ct.chuTinh };
+  var hdOut = { act: hd.act, gates: hd.gates, kenh: hd.kenh, dinh: hd.dinh, loai: hd.loai, loaiTen: HD_TYPES[hd.loai].ten, thamQuyen: HD_AUTH[hd.thamQuyen].ten,
+    chienLuoc: HD_TYPES[hd.loai].chienLuoc, profile: hd.profile, dinhNghia: hd.dinhNghia, cross: hd.cross, goc: hd.goc, luan: hdLuan(hd) };
+  return { chiemTinh: ctOut, chiemTinhLuan: ctL, thanSo: ts, thanSoLuan: thanSoHocLuan(ts), hd: hdOut, tongHop: th };
 }
 
 /* ---------------------- Lưu trữ Google Sheet ---------------------- */

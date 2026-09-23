@@ -53,7 +53,51 @@
   }
   function pad(n) { return (n < 10 ? '0' : '') + n; }
 
+  var NOI_SINH = [
+    ['Việt Nam', [['Hà Nội', 21.03, 105.85], ['TP. Hồ Chí Minh', 10.78, 106.70], ['Hải Phòng', 20.86, 106.68], ['Đà Nẵng', 16.05, 108.20], ['Cần Thơ', 10.03, 105.78],
+      ['Huế', 16.46, 107.59], ['Nha Trang', 12.24, 109.19], ['Đà Lạt', 11.94, 108.44], ['Vinh (Nghệ An)', 18.68, 105.68], ['Thanh Hóa', 19.81, 105.78],
+      ['Nam Định', 20.42, 106.17], ['Thái Bình', 20.45, 106.34], ['Ninh Bình', 20.25, 105.97], ['Phủ Lý (Hà Nam)', 20.54, 105.91], ['Hải Dương', 20.94, 106.33],
+      ['Hưng Yên', 20.65, 106.05], ['Bắc Ninh', 21.19, 106.08], ['Bắc Giang', 21.27, 106.19], ['Vĩnh Yên (Vĩnh Phúc)', 21.31, 105.60], ['Việt Trì (Phú Thọ)', 21.32, 105.40],
+      ['Thái Nguyên', 21.59, 105.85], ['Hạ Long (Quảng Ninh)', 20.95, 107.08], ['Lạng Sơn', 21.85, 106.76], ['Cao Bằng', 22.67, 106.26], ['Bắc Kạn', 22.15, 105.83],
+      ['Hà Giang', 22.82, 104.98], ['Tuyên Quang', 21.82, 105.21], ['Lào Cai', 22.49, 103.97], ['Yên Bái', 21.72, 104.91], ['Lai Châu', 22.40, 103.46],
+      ['Điện Biên Phủ', 21.39, 103.02], ['Sơn La', 21.33, 103.91], ['Hòa Bình', 20.82, 105.34], ['Hà Tĩnh', 18.34, 105.91], ['Đồng Hới (Quảng Bình)', 17.47, 106.62],
+      ['Đông Hà (Quảng Trị)', 16.82, 107.10], ['Tam Kỳ (Quảng Nam)', 15.57, 108.47], ['Hội An', 15.88, 108.33], ['Quảng Ngãi', 15.12, 108.80], ['Quy Nhơn (Bình Định)', 13.78, 109.22],
+      ['Tuy Hòa (Phú Yên)', 13.09, 109.30], ['Phan Rang (Ninh Thuận)', 11.56, 108.99], ['Phan Thiết (Bình Thuận)', 10.93, 108.10], ['Kon Tum', 14.35, 108.00], ['Pleiku (Gia Lai)', 13.98, 108.00],
+      ['Buôn Ma Thuột (Đắk Lắk)', 12.67, 108.04], ['Gia Nghĩa (Đắk Nông)', 12.00, 107.69], ['Đồng Xoài (Bình Phước)', 11.54, 106.89], ['Tây Ninh', 11.31, 106.10], ['Thủ Dầu Một (Bình Dương)', 10.98, 106.65],
+      ['Biên Hòa (Đồng Nai)', 10.95, 106.82], ['Vũng Tàu', 10.35, 107.08], ['Bà Rịa', 10.50, 107.17], ['Tân An (Long An)', 10.54, 106.41], ['Mỹ Tho (Tiền Giang)', 10.36, 106.36],
+      ['Bến Tre', 10.24, 106.38], ['Vĩnh Long', 10.25, 105.97], ['Trà Vinh', 9.93, 106.35], ['Cao Lãnh (Đồng Tháp)', 10.46, 105.63], ['Long Xuyên (An Giang)', 10.39, 105.44],
+      ['Châu Đốc', 10.70, 105.12], ['Rạch Giá (Kiên Giang)', 10.01, 105.08], ['Phú Quốc', 10.23, 103.96], ['Vị Thanh (Hậu Giang)', 9.78, 105.47], ['Sóc Trăng', 9.60, 105.97],
+      ['Bạc Liêu', 9.29, 105.72], ['Cà Mau', 9.18, 105.15]], 7],
+    ['Quốc tế (tự đặt múi giờ chuẩn)', [['Bangkok', 13.75, 100.50, 7], ['Viêng Chăn', 17.97, 102.63, 7], ['Phnôm Pênh', 11.56, 104.92, 7], ['Singapore', 1.35, 103.82, 8], ['Kuala Lumpur', 3.14, 101.69, 8],
+      ['Bắc Kinh', 39.90, 116.40, 8], ['Đài Bắc', 25.03, 121.57, 8], ['Hồng Kông', 22.32, 114.17, 8], ['Seoul', 37.57, 126.98, 9], ['Tokyo', 35.68, 139.69, 9],
+      ['Sydney', -33.87, 151.21, 10], ['Melbourne', -37.81, 144.96, 10], ['Moskva', 55.76, 37.62, 3], ['Praha', 50.08, 14.44, 1], ['Warszawa', 52.23, 21.01, 1],
+      ['Berlin', 52.52, 13.40, 1], ['Paris', 48.86, 2.35, 1], ['London', 51.51, -0.13, 0], ['Toronto', 43.65, -79.38, -5], ['New York', 40.71, -74.01, -5],
+      ['Houston', 29.76, -95.37, -6], ['Los Angeles', 34.05, -118.24, -8], ['San Jose', 37.34, -121.89, -8]], null]
+  ];
+  function fillPlaces() {
+    var html = '';
+    NOI_SINH.forEach(function (g) {
+      html += '<optgroup label="' + esc(g[0]) + '">' + g[1].map(function (c) {
+        var tz = c[3] != null ? c[3] : g[2];
+        return '<option value="' + c[1] + '|' + c[2] + '|' + esc(c[0]) + '" data-tz="' + tz + '">' + esc(c[0]) + '</option>';
+      }).join('') + '</optgroup>';
+    });
+    html += '<option value="custom">Nơi khác – tự nhập tọa độ…</option>';
+    $('place').innerHTML = html;
+  }
+  function onPlaceChange() {
+    var o = $('place').selectedOptions[0];
+    $('placeCustom').style.display = $('place').value === 'custom' ? '' : 'none';
+    if (o && o.getAttribute('data-tz') != null) $('tz').value = o.getAttribute('data-tz');
+  }
+  function placeValue() {
+    if ($('place').value !== 'custom') return $('place').value;
+    var la = parseFloat($('lat').value), lo = parseFloat($('lon').value);
+    return (isNaN(la) || isNaN(lo)) ? '21.03|105.85|Hà Nội' : la + '|' + lo + '|' + la.toFixed(2) + '°, ' + lo.toFixed(2) + '°';
+  }
+
   function initForm() {
+    fillPlaces();
     fillSelect($('day'), 1, 31, function (i) { return String(i); }, 1);
     fillSelect($('month'), 1, 12, function (i) { return 'Tháng ' + i; }, 1);
     fillSelect($('hour'), 0, 23, function (i) { return pad(i) + ' giờ · ' + CHI[Math.floor((i + 1) / 2) % 12]; }, 12);
@@ -74,7 +118,7 @@
       $(id).addEventListener('change', schedulePreview);
       $(id).addEventListener('input', schedulePreview);
     });
-    $('trueSolar').addEventListener('change', function () { $('lonWrap').style.display = this.checked ? '' : 'none'; });
+    $('place').addEventListener('change', onPlaceChange);
     $('form').addEventListener('submit', function (e) { e.preventDefault(); submit(); });
     $('addEvent').addEventListener('click', function () { addEventRow(); });
     onCalendarChange();
@@ -106,7 +150,9 @@
       tuHoaCanh: $('tuHoaCanh').value,
       hoangDao: $('hoangDao').value,
       trueSolar: $('trueSolar').checked,
-      longitude: $('longitude').value,
+      longitude: placeValue().split('|')[1],
+      place: placeValue(),
+      tz: $('tz').value,
       save: $('save').checked,
       events: getEvents()
     };
@@ -128,8 +174,14 @@
     if (v.leapMode) $('leapMode').value = v.leapMode;
     if (v.tuHoaCanh) $('tuHoaCanh').value = v.tuHoaCanh;
     if (v.hoangDao) $('hoangDao').value = v.hoangDao;
-    if (v.trueSolar != null) { $('trueSolar').checked = v.trueSolar === true || v.trueSolar === 'true'; $('lonWrap').style.display = $('trueSolar').checked ? '' : 'none'; }
-    if (v.longitude) $('longitude').value = v.longitude;
+    if (v.trueSolar != null) $('trueSolar').checked = v.trueSolar === true || v.trueSolar === 'true';
+    if (v.place) {
+      var has = Array.prototype.some.call($('place').options, function (o) { return o.value === v.place; });
+      if (has) $('place').value = v.place;
+      else { var pp = String(v.place).split('|'); $('place').value = 'custom'; $('lat').value = pp[0]; $('lon').value = pp[1]; }
+    }
+    $('placeCustom').style.display = $('place').value === 'custom' ? '' : 'none';
+    if (v.tz != null && v.tz !== '') $('tz').value = v.tz;
     if (v.events) setEvents(v.events);
   }
   /* ---------- Sự kiện đã biết ---------- */
@@ -220,6 +272,9 @@
     renderVan(res);
     renderDuDoan(res);
     renderBatTu(res);
+    renderAstro(res);
+    renderThanSo(res);
+    renderHD(res);
     renderTong(res);
     showTab('chart');
     selectPalace(res.tuvi.info.menh);
@@ -716,8 +771,208 @@
       tops.slice(0, 4).map(function (c) { return '<li><b>' + esc(c.cung) + '</b> (' + esc(c.danhGia) + ') – ' + esc(c.yNghia) + '</li>'; }).join('') + '</ul></div>' +
       '<div class="panel section"><h2 class="panel-title"><span class="han">慎</span> Cung cần lưu ý</h2><ul>' +
       tops.slice(-4).reverse().map(function (c) { return '<li><b>' + esc(c.cung) + '</b> (' + esc(c.danhGia) + ') – ' + esc(c.yNghia) + '</li>'; }).join('') + '</ul></div></div>';
-    html += '<div class="panel section muted" style="font-size:13px">Lời bàn: Tử Vi và Bát Tự là hệ thống tham khảo dựa trên thời điểm sinh. Tâm tính, tu dưỡng và nỗ lực mới là điều quyết định – "Đức năng thắng số".</div>';
+    html += tongHopHtml(res);
+    html += '<div class="panel section muted" style="font-size:13px">Lời bàn: Tử Vi, Bát Tự, Chiêm tinh, Thần số học và Human Design đều là hệ thống tham khảo dựa trên thời điểm sinh. Tâm tính, tu dưỡng và nỗ lực mới là điều quyết định – "Đức năng thắng số".</div>';
     $('page-tong').innerHTML = html;
+    $('page-tong').querySelectorAll('.strip-item').forEach(function (b) {
+      b.addEventListener('click', function () {
+        var el = document.getElementById(b.getAttribute('data-target'));
+        if (el) { el.open = true; el.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
+      });
+    });
+  }
+
+  /* ======================== ĐA HỆ: CHIÊM TINH · THẦN SỐ · HUMAN DESIGN ======================== */
+  var SIGN_KY = ['♈', '♉', '♊', '♋', '♌', '♍', '♎', '♏', '♐', '♑', '♒', '♓'];
+  var SIGN_TEN = ['Bạch Dương', 'Kim Ngưu', 'Song Tử', 'Cự Giải', 'Sư Tử', 'Xử Nữ', 'Thiên Bình', 'Bọ Cạp', 'Nhân Mã', 'Ma Kết', 'Bảo Bình', 'Song Ngư'];
+  var SIGN_NT = ['fire', 'earth', 'air', 'water'];
+  function moRongLoi(res, id) {
+    if (res.moRong) return false;
+    $(id).innerHTML = '<div class="panel section muted">Chưa tính được phần này' + (res.moRongLoi ? ': ' + esc(res.moRongLoi) : '') +
+      '. Hãy kiểm tra đã thêm đủ các file Astro, ChiemTinh, HumanDesign, ThanSoHoc, TongHop.</div>';
+    return true;
+  }
+  function secsHtml(secs) {
+    return secs.map(function (sec) { return '<div class="lg-sec"><h5>' + esc(sec.tieuDe) + '</h5><ul class="yr-ly">' + sec.items.map(itemHtml).join('') + '</ul></div>'; }).join('');
+  }
+  function secBlock(sec, open) {
+    return '<details class="lg-block"' + (open ? ' open' : '') + '><summary><span class="lg-t">' + esc(sec.tieuDe) + '</span></summary><div class="lg-body"><ul class="yr-ly">' +
+      sec.items.map(itemHtml).join('') + '</ul></div></details>';
+  }
+
+  /* ---------- Bánh xe bản đồ sao (SVG) ---------- */
+  function wheelSvg(A) {
+    var S = 440, c = S / 2, R1 = 208, R2 = 176, R3 = 132, asc = A.asc.lon;
+    function pt(lon, r) { var a = (180 + lon - asc) * Math.PI / 180; return [c + r * Math.cos(a), c - r * Math.sin(a)]; }
+    var o = '<svg viewBox="0 0 ' + S + ' ' + S + '" class="wheel" role="img" aria-label="Bản đồ sao">';
+    o += '<circle cx="' + c + '" cy="' + c + '" r="' + R1 + '" class="w-out"/><circle cx="' + c + '" cy="' + c + '" r="' + R2 + '" class="w-mid"/><circle cx="' + c + '" cy="' + c + '" r="' + R3 + '" class="w-in"/>';
+    for (var i = 0; i < 12; i++) {
+      var a = pt(i * 30, R1), b = pt(i * 30, R2), m = pt(i * 30 + 15, (R1 + R2) / 2);
+      o += '<line x1="' + a[0] + '" y1="' + a[1] + '" x2="' + b[0] + '" y2="' + b[1] + '" class="w-tick"/>';
+      o += '<text x="' + m[0] + '" y="' + m[1] + '" class="w-sign ' + SIGN_NT[i % 4] + '" text-anchor="middle" dominant-baseline="central">' + SIGN_KY[i] + '</text>';
+    }
+    A.cusp.forEach(function (h, i) {
+      var a = pt(h.lon, R2), b = pt(h.lon, i % 3 === 0 ? 0 : R3), n = pt(h.lon + (((A.cusp[(i + 1) % 12].lon - h.lon) + 360) % 360) / 2, R3 - 12);
+      o += '<line x1="' + a[0] + '" y1="' + a[1] + '" x2="' + b[0] + '" y2="' + b[1] + '" class="' + (i % 3 === 0 ? 'w-axis' : 'w-house') + '"/>';
+      o += '<text x="' + n[0] + '" y="' + n[1] + '" class="w-hn" text-anchor="middle" dominant-baseline="central">' + (i + 1) + '</text>';
+    });
+    // góc chiếu
+    var by = {}; A.hanhTinh.forEach(function (p) { by[p.key] = p; }); by.asc = A.asc; by.mc = A.mc;
+    A.goc.forEach(function (g) {
+      if (g.deg === 0 || !by[g.a] || !by[g.b] || g.a === 'northNode' || g.b === 'northNode') return;
+      var a = pt(by[g.a].lon, R3 - 2), b = pt(by[g.b].lon, R3 - 2);
+      o += '<line x1="' + a[0] + '" y1="' + a[1] + '" x2="' + b[0] + '" y2="' + b[1] + '" class="w-asp ' + g.loai + '"/>';
+    });
+    // hành tinh (giãn cách khi chồng nhau)
+    var ds = A.hanhTinh.map(function (p) { return { p: p, v: p.lon }; }).sort(function (x, y) { return x.v - y.v; });
+    for (var k = 0; k < 3; k++) for (var j = 1; j < ds.length; j++) if (ds[j].v - ds[j - 1].v < 8) ds[j].v = ds[j - 1].v + 8;
+    ds.forEach(function (d) {
+      var q = pt(d.v, (R2 + R3) / 2), t = pt(d.p.lon, R2), t2 = pt(d.p.lon, R2 - 6);
+      o += '<line x1="' + t[0] + '" y1="' + t[1] + '" x2="' + t2[0] + '" y2="' + t2[1] + '" class="w-tick"/>';
+      o += '<text x="' + q[0] + '" y="' + q[1] + '" class="w-pl" text-anchor="middle" dominant-baseline="central"><title>' + esc(d.p.ten + ' ' + d.p.do + ' ' + d.p.cungTen + ' – nhà ' + d.p.nha) + '</title>' + d.p.ky + (d.p.nghich ? '<tspan class="w-r" dy="-6">R</tspan>' : '') + '</text>';
+    });
+    var ac = pt(asc, R1 + 2), mc = pt(A.mc.lon, R1 + 2);
+    o += '<text x="' + (ac[0] - 4) + '" y="' + ac[1] + '" class="w-ang" text-anchor="end" dominant-baseline="central">AC</text>';
+    o += '<text x="' + mc[0] + '" y="' + (mc[1] - 6) + '" class="w-ang" text-anchor="middle">MC</text>';
+    return o + '</svg>';
+  }
+
+  function renderAstro(res) {
+    if (moRongLoi(res, 'page-astro')) return;
+    var A = res.moRong.chiemTinh, L = res.moRong.chiemTinhLuan, T = A.thoiDiem;
+    var html = '<div class="panel section"><h2 class="panel-title"><span class="han">星盤</span> Bản đồ sao</h2>' +
+      '<p class="muted" style="margin-top:0">' + T.d + '/' + T.m + '/' + T.y + ' ' + pad(T.h) + ':' + pad(T.mi) + ' (UTC' + (T.tz >= 0 ? '+' : '') + T.tz + ') · ' + esc(T.noiSinh) +
+      ' (' + T.lat.toFixed(2) + '°, ' + T.lon.toFixed(2) + '°) · hoàng đạo nhiệt đới · nhà ' + esc(A.heNha) + '</p>' +
+      '<div class="astro-top"><div class="wheel-wrap">' + wheelSvg(A) + '</div><div class="big3">' +
+      L.boBa.map(function (b) { return '<div class="b3"><h4>' + esc(b.tieuDe) + '</h4><ul class="yr-ly">' + b.items.map(itemHtml).join('') + '</ul></div>'; }).join('') + '</div></div>' +
+      coSoHtml('Cơ sở tính toán & lý luận', L.coSo) + '</div>';
+    html += '<div class="panel section"><h2 class="panel-title"><span class="han">行星</span> Vị trí hành tinh</h2><div class="tbl-wrap"><table class="gio-tbl ast-tbl"><thead><tr><th>Thiên thể</th><th>Cung</th><th>Độ</th><th>Nhà</th><th>Phẩm chất</th></tr></thead><tbody>' +
+      A.hanhTinh.concat([A.asc, A.mc]).map(function (p) {
+        return '<tr><td><b class="pl-ky">' + p.ky + '</b> ' + esc(p.ten) + (p.nghich ? ' <small class="muted">℞</small>' : '') + '</td><td>' + SIGN_KY[p.cung] + ' ' + esc(p.cungTen) + '</td><td>' + esc(p.do) + '</td><td>' + (p.nha || '') + '</td><td>' +
+          (p.pham ? '<span class="chip ' + (/Miếu|Vượng/.test(p.pham) ? 'good' : 'bad') + '">' + esc(p.pham) + '</span>' : '') + '</td></tr>';
+      }).join('') + '</tbody></table></div>' +
+      '<p class="muted" style="font-size:12.5px">Đỉnh các nhà: ' + A.cusp.map(function (h, i) { return (i + 1) + ' ' + SIGN_KY[h.cung] + h.do; }).join(' · ') + '</p></div>';
+    html += '<div class="panel section"><h2 class="panel-title"><span class="han">論</span> Luận giải</h2><div class="lg-list">' + L.secs.map(function (s, i) { return secBlock(s, i === 0); }).join('') + '</div></div>';
+    html += '<div class="bt-grid">' +
+      '<div class="panel section"><h2 class="panel-title"><span class="han">相</span> Ngoại hình (cung Mọc)</h2>' + listHtml(L.ngoaiHinh) + '</div>' +
+      '<div class="panel section"><h2 class="panel-title"><span class="han">體</span> Dấu hiệu cơ thể</h2>' + listHtml(L.coThe) + '</div></div>';
+    html += '<div class="bt-grid">' +
+      '<div class="panel section"><h2 class="panel-title"><span class="han">根</span> Gốc gác – gia đình</h2>' + listHtml(L.gocGac) + '</div>' +
+      '<div class="panel section"><h2 class="panel-title"><span class="han">業</span> Nghề nghiệp</h2>' + listHtml(L.nghe.items) + '</div></div>';
+    var vy = res.tuvi.info.viewYear, y0 = res.tuvi.info.solar.year;
+    html += '<div class="panel section"><h2 class="panel-title"><span class="han">周期</span> Chu kỳ hành tinh trong đời</h2><div class="giao-van">' +
+      L.chuKy.map(function (c) {
+        var cls = /Mộc/.test(c.ten) ? 'r4' : /Thổ hồi quy|Thiên Vương đối/.test(c.ten) ? 'r1' : /Thổ/.test(c.ten) ? 'r2' : 'r3';
+        return '<span class="gv ' + cls + (Math.abs(c.nam - vy) <= 0 ? ' now' : '') + '" title="' + esc(c.moTa) + '"><b>' + c.nam + '</b> · ' + Math.round(c.tuoi) + ' tuổi<br><small>' + esc(c.ten) + '</small></span>';
+      }).join('') + '</div><p class="muted" style="font-size:12.5px">Rê chuột (hoặc chạm) vào từng mốc để xem ý nghĩa. Năm tính theo ngày quá cảnh thực của hành tinh; sinh năm ' + y0 + '.</p></div>';
+    html += '<div class="panel section"><h2 class="panel-title"><span class="han">年</span> Năm ' + vy + ' theo chiêm tinh</h2>' + listHtml(L.namXem.items) + '</div>';
+    $('page-astro').innerHTML = html;
+  }
+
+  /* ---------- Thần số học ---------- */
+  function renderThanSo(res) {
+    if (moRongLoi(res, 'page-so')) return;
+    var T = res.moRong.thanSo, secs = res.moRong.thanSoLuan;
+    function o(n) { var c = T.bieuDo[n]; return '<div class="lo ' + (c ? '' : 'empty') + '"><b>' + (c ? new Array(c + 1).join(String(n)) : '·') + '</b><small>' + n + '</small></div>'; }
+    var nums = [['Chủ đạo', T.duongDoi + (T.duongDoi >= 10 ? '/' + T.duongDoiGoc : '')], ['Ngày sinh', T.ngaySinh], ['Thái độ', T.thaiDo]];
+    if (T.coTen) nums = nums.concat([['Linh hồn', T.linhHon], ['Nhân cách', T.nhanCach], ['Sứ mệnh', T.suMenh], ['Trưởng thành', T.truongThanh], ['Cân bằng', T.canBang]]);
+    nums.push(['Năm cá nhân ' + res.tuvi.info.viewYear, T.namNay]);
+    var html = '<div class="panel section"><h2 class="panel-title"><span class="han">數</span> Thần số học Pythagoras</h2>' +
+      '<div class="so-top"><div class="so-nums">' + nums.map(function (x, i) { return '<div class="so-n' + (i === 0 ? ' main' : '') + '"><b>' + esc(String(x[1])) + '</b><small>' + esc(x[0]) + '</small></div>'; }).join('') + '</div>' +
+      '<div><div class="lo-grid">' + o(3) + o(6) + o(9) + o(2) + o(5) + o(8) + o(1) + o(4) + o(7) + '</div><p class="muted" style="font-size:12px;text-align:center;margin:6px 0 0">Biểu đồ ngày sinh (lưới 3-6-9 / 2-5-8 / 1-4-7)</p></div></div>' +
+      (T.coTen ? '' : '<p class="muted">Nhập họ tên khai sinh để có thêm số Linh hồn, Nhân cách, Sứ mệnh…</p>') +
+      coSoHtml('Cơ sở lý luận', ['Số chủ đạo = tổng mọi chữ số của ngày/tháng/năm sinh, rút gọn tới 2–11; giữ 22 và 33 (trường phái Pythagoras – David A. Phillips phổ biến tại Việt Nam).',
+        'Biểu đồ ngày sinh: đặt các chữ số (bỏ số 0) vào lưới 3×3; hàng/cột/chéo đầy là "mũi tên sức mạnh", trống là "mũi tên điểm yếu".',
+        'Chữ cái → số theo bảng Pythagoras (A=1…I=9, J=1…); bỏ dấu tiếng Việt, Đ → D; Y là nguyên âm khi đứng giữa hai phụ âm. Linh hồn = nguyên âm, Nhân cách = phụ âm, Sứ mệnh = toàn tên.',
+        'Đỉnh cao 1 kết thúc ở tuổi 36 − số chủ đạo (rút về 1 chữ số), mỗi đỉnh sau 9 năm. Năm cá nhân = ngày + tháng sinh + năm xem.']) + '</div>';
+    html += '<div class="panel section"><h2 class="panel-title"><span class="han">論</span> Luận giải</h2><div class="lg-list">' + secs.map(function (s, i) { return secBlock(s, i < 2); }).join('') + '</div></div>';
+    html += '<div class="panel section"><h2 class="panel-title"><span class="han">月</span> Tháng cá nhân năm ' + res.tuvi.info.viewYear + '</h2><div class="giao-van">' +
+      T.thangNay.map(function (m) { return '<span class="gv r3"><b>Tháng ' + m.thang + '</b> · số ' + m.so + '</span>'; }).join('') + '</div></div>';
+    $('page-so').innerHTML = html;
+  }
+
+  /* ---------- Human Design ---------- */
+  var HD_POS = { head: [150, 38], ajna: [150, 104], throat: [150, 178], g: [150, 258], heart: [212, 282], spleen: [52, 338], sacral: [150, 350], solar: [248, 338], root: [150, 424] };
+  var HD_CEN_OF = {};
+  var HD_CEN_GATES = { head: [64, 61, 63], ajna: [47, 24, 4, 17, 43, 11], throat: [62, 23, 56, 35, 12, 45, 33, 8, 31, 20, 16], g: [7, 1, 13, 10, 25, 15, 46, 2], heart: [21, 40, 26, 51],
+    spleen: [48, 57, 44, 50, 32, 28, 18], sacral: [5, 14, 29, 59, 9, 3, 42, 27, 34], solar: [6, 37, 22, 36, 49, 55, 30], root: [53, 60, 52, 19, 39, 41, 58, 38, 54] };
+  Object.keys(HD_CEN_GATES).forEach(function (c) { HD_CEN_GATES[c].forEach(function (g) { HD_CEN_OF[g] = c; }); });
+  var HD_ALL_CH = [[1, 8], [2, 14], [3, 60], [4, 63], [5, 15], [6, 59], [7, 31], [9, 52], [10, 20], [10, 34], [10, 57], [11, 56], [12, 22], [13, 33], [16, 48], [17, 62], [18, 58], [19, 49],
+    [20, 34], [20, 57], [21, 45], [23, 43], [24, 61], [25, 51], [26, 44], [27, 50], [28, 38], [29, 46], [30, 41], [32, 54], [34, 57], [35, 36], [37, 40], [39, 55], [42, 53], [47, 64]];
+  function bodygraphSvg(H) {
+    var o = '<svg viewBox="0 0 300 460" class="bodygraph" role="img" aria-label="Biểu đồ Human Design">';
+    HD_ALL_CH.forEach(function (ch) {
+      var a = HD_POS[HD_CEN_OF[ch[0]]], b = HD_POS[HD_CEN_OF[ch[1]]];
+      var def = H.kenh.some(function (k) { return (k.a === ch[0] && k.b === ch[1]) || (k.a === ch[1] && k.b === ch[0]); });
+      var half = !def && (H.gates[ch[0]] || H.gates[ch[1]]);
+      o += '<line x1="' + a[0] + '" y1="' + a[1] + '" x2="' + b[0] + '" y2="' + b[1] + '" class="bg-ch' + (def ? ' on' : half ? ' half' : '') + '"/>';
+    });
+    function shape(c) {
+      var p = HD_POS[c], x = p[0], y = p[1], on = H.dinh[c] ? ' on ' + c : '';
+      if (c === 'head') return '<polygon points="' + x + ',' + (y - 26) + ' ' + (x - 28) + ',' + (y + 20) + ' ' + (x + 28) + ',' + (y + 20) + '" class="bg-c' + on + '"/>';
+      if (c === 'ajna') return '<polygon points="' + (x - 28) + ',' + (y - 20) + ' ' + (x + 28) + ',' + (y - 20) + ' ' + x + ',' + (y + 26) + '" class="bg-c' + on + '"/>';
+      if (c === 'g') return '<polygon points="' + x + ',' + (y - 32) + ' ' + (x + 32) + ',' + y + ' ' + x + ',' + (y + 32) + ' ' + (x - 32) + ',' + y + '" class="bg-c' + on + '"/>';
+      if (c === 'heart') return '<polygon points="' + (x - 18) + ',' + (y + 14) + ' ' + (x + 18) + ',' + (y + 14) + ' ' + x + ',' + (y - 18) + '" class="bg-c' + on + '"/>';
+      if (c === 'spleen') return '<polygon points="' + (x - 26) + ',' + (y - 30) + ' ' + (x - 26) + ',' + (y + 30) + ' ' + (x + 26) + ',' + y + '" class="bg-c' + on + '"/>';
+      if (c === 'solar') return '<polygon points="' + (x + 26) + ',' + (y - 30) + ' ' + (x + 26) + ',' + (y + 30) + ' ' + (x - 26) + ',' + y + '" class="bg-c' + on + '"/>';
+      return '<rect x="' + (x - 26) + '" y="' + (y - 26) + '" width="52" height="52" rx="6" class="bg-c' + on + '"/>';
+    }
+    Object.keys(HD_POS).forEach(function (c) { o += shape(c); });
+    return o + '</svg>';
+  }
+  function renderHD(res) {
+    if (moRongLoi(res, 'page-hd')) return;
+    var H = res.moRong.hd;
+    var html = '<div class="panel section"><h2 class="panel-title"><span class="han">人類圖</span> Human Design</h2><div class="hd-top"><div class="hd-graph">' + bodygraphSvg(H) + '</div><div class="hd-sum">' +
+      [['Loại', H.loaiTen], ['Chiến lược', H.chienLuoc], ['Thẩm quyền', H.thamQuyen], ['Hồ sơ', H.profile], ['Định nghĩa', H.dinhNghia], ['Giao điểm hóa thân', H.cross + ' · ' + H.goc.split(' – ')[0]]]
+        .map(function (x) { return '<div class="hd-kv"><small>' + esc(x[0]) + '</small><b>' + esc(x[1]) + '</b></div>'; }).join('') +
+      '<p class="muted" style="font-size:12.5px">Trung tâm tô màu = xác định; kênh vàng = kênh xác định; nét đứt = cổng treo (chỉ một đầu kênh được kích hoạt).</p></div></div>' +
+      coSoHtml('Cơ sở tính toán', ['Tính cách (Personality) = vị trí 13 thiên thể lúc sinh; Thiết kế (Design) = lúc Mặt Trời lùi đúng 88° hoàng đạo (~88 ngày trước sinh).',
+        'Vòng 64 cổng bắt đầu cổng 41 tại 302° hoàng đạo nhiệt đới; mỗi cổng 5,625°, mỗi hào 0,9375°.',
+        'Loại xác định bởi Xương cùng và việc động cơ (Sacral, Solar Plexus, Heart, Root) nối tới Cổ họng; Thẩm quyền theo thứ tự Cảm xúc → Xương cùng → Lá lách → Ý chí → Bản thể → Môi trường.',
+        'Đã đối chiếu 300 lá số ngẫu nhiên với thư viện mã nguồn mở hd-chart-engine: sai số vị trí < 4′, khác biệt chỉ ở ranh giới cổng/hào.']) + '</div>';
+    html += '<div class="panel section"><h2 class="panel-title"><span class="han">論</span> Luận giải</h2><div class="lg-list">' + H.luan.map(function (s, i) { return secBlock(s, i < 3); }).join('') + '</div></div>';
+    $('page-hd').innerHTML = html;
+  }
+
+  /* ---------- Tổng hợp đa hệ ---------- */
+  function heChip(h) { return '<span class="sys s-' + ({ 'Tử Vi': 'tv', 'Bát Tự': 'bt', 'Chiêm tinh': 'ct', 'Thần số học': 'ts', 'Human Design': 'hd' }[h] || 'x') + '">' + esc(h) + '</span>'; }
+  function nguonHtml(nguon) {
+    return '<details class="coso"><summary>🔎 Căn cứ từ từng hệ</summary>' + nguon.map(function (n) {
+      return '<div class="lg-sec"><h5>' + heChip(n.he) + '</h5><ul class="yr-ly">' + n.items.map(itemHtml).join('') + '</ul></div>';
+    }).join('') + '</details>';
+  }
+  function tongHopHtml(res) {
+    if (!res.moRong) return '<div class="panel section muted">Chưa tính được phần tổng hợp 5 hệ' + (res.moRongLoi ? ': ' + esc(res.moRongLoi) : '') + '.</div>';
+    var T = res.moRong.tongHop, html = '';
+    html += '<div class="panel section th-intro"><h2 class="panel-title"><span class="han">五術合參</span> Luận tổng hợp 5 hệ</h2>' +
+      '<p>Kết hợp ' + ['Tử Vi', 'Bát Tự', 'Chiêm tinh', 'Thần số học', 'Human Design'].map(heChip).join(' ') + ' – mỗi hệ "bỏ phiếu" độc lập, kết luận nào nhiều hệ cùng chỉ ra thì đáng tin cậy hơn.</p>' +
+      coSoHtml('Phương pháp tổng hợp', T.coSo) + '</div>';
+    function khoi(S, han) {
+      return '<div class="panel section"><h2 class="panel-title"><span class="han">' + han + '</span> ' + esc(S.tieuDe) + '</h2><ul class="th-kl">' + S.ketLuan.map(itemHtml).join('') + '</ul>' + nguonHtml(S.nguon) + '</div>';
+    }
+    html += khoi(T.xuatThan, '出身');
+    html += '<div class="bt-grid">' + khoi(T.vocDang, '形貌') + khoi(T.coThe, '身記') + '</div>';
+    var TC = T.tinhCach;
+    html += '<div class="panel section"><h2 class="panel-title"><span class="han">性格</span> Tính cách</h2><p class="quote">' + esc(TC.ketLuan[0]) + '</p>' +
+      '<div class="axes">' + TC.truc.map(function (t) {
+        var pos = Math.max(3, Math.min(97, 50 + t.gt * 25)), l = t.ten.split(' ↔ ');
+        return '<div class="axis"><div class="ax-lbl"><span>' + esc(l[1]) + '</span><b>' + esc(t.ten) + '</b><span>' + esc(l[0]) + '</span></div>' +
+          '<div class="ax-bar"><i style="left:' + pos + '%"></i></div><small class="muted">Đồng thuận ' + t.tyLe + '% · ' + esc(t.chiTiet) + '</small></div>';
+      }).join('') + '</div><ul class="th-kl">' + TC.ketLuan.slice(1).map(itemHtml).join('') + '</ul>' +
+      '<div class="bt-grid" style="margin-top:6px"><div><h4 class="dd-h good">Điểm mạnh</h4>' + listHtml(TC.manh) + '</div><div><h4 class="dd-h bad">Điểm cần rèn</h4>' + listHtml(TC.yeu) + '</div></div>' + nguonHtml(TC.nguon) + '</div>';
+    var D = T.duongDoi;
+    html += '<div class="panel section"><h2 class="panel-title"><span class="han">命途</span> Đường đời</h2><h4 class="dd-h">Chủ đề cuộc đời theo từng hệ</h4>' + listHtml(D.chuDe) +
+      '<ul class="th-kl">' + D.ketLuan.map(itemHtml).join('') + '</ul>' +
+      '<h4 class="dd-h">Nghề nghiệp được nhiều hệ cùng gợi ý</h4><div class="nghe-list">' + T.nghe.map(function (n) {
+        return '<div class="nghe"><b>' + esc(n.ten) + '</b><span>' + n.he.map(heChip).join(' ') + '</span></div>';
+      }).join('') + '</div>' +
+      '<h4 class="dd-h">Các chặng đời</h4>' + stripHtml(D.chang, function (c) { return c.khoang; }, function (c) { return c.nam; }, function (c) { return c.isNow; }, 'th-c') +
+      '<div class="lg-list">' + D.chang.map(function (c, i) {
+        return '<details class="lg-block" id="th-c' + i + '"' + (c.isNow ? ' open' : '') + '><summary><span class="lg-t">' + esc(c.khoang) + '</span><span class="lg-meta">' + esc(c.nam) + (c.dongThuan ? ' · Tử Vi & Bát Tự đồng chiều' : ' · Tử Vi & Bát Tự khác chiều') + '</span>' +
+          '<span class="rate ' + rateClass(c.diem) + '">' + esc(c.danhGia) + '</span></summary><div class="meter"><i style="width:' + scorePct(c.diem) + '%"></i></div><div class="lg-body">' + listHtml(c.lines) + '</div></details>';
+      }).join('') + '</div></div>';
+    return html;
   }
 
   /* ------------------------ LỊCH SỬ ------------------------ */

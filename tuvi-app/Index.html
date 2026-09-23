@@ -47,8 +47,9 @@
         <h2 class="panel-title"><span class="han">命</span> Nhập thông tin</h2>
         <form id="form" autocomplete="off" novalidate>
           <div class="field">
-            <label for="name">Họ và tên</label>
+            <label for="name">Họ và tên khai sinh</label>
             <input type="text" id="name" placeholder="Ví dụ: Lý Tiêu Dao" maxlength="80">
+            <small class="hint">Tên đầy đủ có dấu – dùng cho biểu đồ tên trong Thần số học.</small>
           </div>
 
           <div class="field">
@@ -83,6 +84,16 @@
               <select id="hour" aria-label="Giờ"></select>
               <select id="minute" aria-label="Phút"></select>
             </div>
+          </div>
+
+          <div class="field">
+            <label for="place">Nơi sinh</label>
+            <select id="place"></select>
+            <div class="row c2" id="placeCustom" style="display:none;margin-top:6px">
+              <input type="number" id="lat" step="0.01" placeholder="Vĩ độ (Bắc +)" aria-label="Vĩ độ">
+              <input type="number" id="lon" step="0.01" placeholder="Kinh độ (Đông +)" aria-label="Kinh độ">
+            </div>
+            <small class="hint">Cần cho cung Mọc, nhà chiêm tinh và giờ mặt trời thực.</small>
           </div>
 
           <div class="preview-date" id="preview">Chọn ngày sinh để xem đổi lịch…</div>
@@ -120,19 +131,24 @@
               </select>
             </div>
             <label class="check"><input type="checkbox" id="trueSolar"> Hiệu chỉnh giờ mặt trời thực</label>
-            <div class="field" id="lonWrap" style="display:none">
-              <label for="longitude">Kinh độ nơi sinh (°E)</label>
-              <select id="longitude">
-                <option value="105.85">Hà Nội (105.85)</option>
-                <option value="106.70">TP. Hồ Chí Minh (106.70)</option>
-                <option value="108.22">Đà Nẵng (108.22)</option>
-                <option value="107.59">Huế (107.59)</option>
-                <option value="106.68">Hải Phòng (106.68)</option>
-                <option value="105.78">Cần Thơ (105.78)</option>
-                <option value="109.19">Nha Trang (109.19)</option>
-                <option value="108.44">Đà Lạt (108.44)</option>
-                <option value="105.00">Kinh tuyến chuẩn 105°</option>
+            <div class="field">
+              <label for="tz">Múi giờ lúc sinh (cho chiêm tinh, Human Design)</label>
+              <select id="tz">
+                <option value="7">UTC+7 – giờ Việt Nam hiện hành</option>
+                <option value="8">UTC+8 – miền Nam 1959–1975, Hà Nội 1943–1945…</option>
+                <option value="9">UTC+9 – Nhật, Hàn; VN thời 1942–1945</option>
+                <option value="6.5">UTC+6.5 – Myanmar</option>
+                <option value="5.5">UTC+5.5 – Ấn Độ</option>
+                <option value="3">UTC+3 – Nga (Moskva)</option>
+                <option value="2">UTC+2 – Đông Âu / giờ hè Trung Âu</option>
+                <option value="1">UTC+1 – Trung Âu (Pháp, Đức, Séc…)</option>
+                <option value="0">UTC+0 – Anh (mùa đông)</option>
+                <option value="-5">UTC−5 – bờ Đông Hoa Kỳ</option>
+                <option value="-6">UTC−6 – miền Trung Hoa Kỳ</option>
+                <option value="-8">UTC−8 – bờ Tây Hoa Kỳ</option>
+                <option value="10">UTC+10 – Đông Úc</option>
               </select>
+              <small class="hint">Tử Vi – Bát Tự luôn tính theo giờ Việt Nam; chỉ chiêm tinh/Human Design dùng múi giờ này (nếu sinh vào giờ mùa hè, chọn múi +1 giờ).</small>
             </div>
             <label class="check"><input type="checkbox" id="save" checked> Lưu lá số vào Google Sheet</label>
           </details>
@@ -156,6 +172,9 @@
           <div class="tab" data-tab="van">☸ Vận Hạn</div>
           <div class="tab" data-tab="dudoan">✺ Dự Đoán</div>
           <div class="tab" data-tab="battu">⚖ Bát Tự</div>
+          <div class="tab" data-tab="astro">✶ Chiêm Tinh</div>
+          <div class="tab" data-tab="so">❖ Thần Số</div>
+          <div class="tab" data-tab="hd">◈ Human Design</div>
           <div class="tab" data-tab="tong">✧ Tổng Luận</div>
           <div class="tab" data-tab="hist">☰ Lịch Sử</div>
         </div>
@@ -199,6 +218,9 @@
         <div class="tab-page" id="page-van"><div class="panel section muted">Hãy lập lá số trước.</div></div>
         <div class="tab-page" id="page-dudoan"><div class="panel section muted">Hãy lập lá số trước.</div></div>
         <div class="tab-page" id="page-battu"><div class="panel section muted">Hãy lập lá số trước.</div></div>
+        <div class="tab-page" id="page-astro"><div class="panel section muted">Hãy lập lá số trước.</div></div>
+        <div class="tab-page" id="page-so"><div class="panel section muted">Hãy lập lá số trước.</div></div>
+        <div class="tab-page" id="page-hd"><div class="panel section muted">Hãy lập lá số trước.</div></div>
         <div class="tab-page" id="page-tong"><div class="panel section muted">Hãy lập lá số trước.</div></div>
         <div class="tab-page" id="page-hist"><div class="panel section" id="histBox"><span class="muted">Đang tải lịch sử…</span></div></div>
       </section>

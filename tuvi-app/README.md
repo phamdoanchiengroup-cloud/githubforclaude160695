@@ -1,6 +1,6 @@
 # Thiên Cơ Các – Web App Lá Số Tử Vi & Bát Tự (Google Apps Script)
 
-Web app lập lá số **Tử Vi Đẩu Số 12 cung** (phái Việt Nam) kết hợp **Bát Tự – Tứ Trụ**, nhập ngày sinh theo **Dương lịch hoặc Âm lịch** (có tháng nhuận), lưu lịch sử vào **Google Sheet**. Giao diện sáng, phong cách tiên hiệp.
+Web app lập lá số **Tử Vi Đẩu Số 12 cung** (phái Việt Nam) kết hợp **Bát Tự – Tứ Trụ**, **Chiêm tinh phương Tây (cung hoàng đạo)**, **Thần số học Pythagoras** và **Human Design**, cùng phần **Luận tổng hợp 5 hệ** (xuất thân, vóc dáng, đặc điểm cơ thể, tính cách, đường đời), nhập ngày sinh theo **Dương lịch hoặc Âm lịch** (có tháng nhuận), lưu lịch sử vào **Google Sheet**. Giao diện sáng, phong cách tiên hiệp.
 
 ## Các file
 
@@ -13,6 +13,11 @@ Web app lập lá số **Tử Vi Đẩu Số 12 cung** (phái Việt Nam) kết 
 | `LuanGiai.gs` | Luận chuyên sâu: 12 cung (cơ sở lý luận, bộ chính tinh, tam phương tứ chính, nhị hợp, giáp cung, bộ phụ tinh, sao đặc thù), Đại vận (Tứ Hóa & Lộc Kình Đà đại vận, cung chức hạn, đối chiếu Bát Tự), Tiểu vận (lưu tinh, trùng phùng), Nguyệt vận 12 tháng, Nhật vận 7 ngày (Hoàng/Hắc đạo, Thập nhị trực, giờ tốt) |
 | `BatTuChiTiet.gs` | Luận Bát Tự chi tiết: cung vị tứ trụ (Niên – Nguyệt – Nhật – Thời theo độ tuổi), lục thân theo thập thần, cách cục (chính cách theo nguyệt lệnh thấu can, ngoại cách Tòng/Chuyên vượng/Hóa khí, điều kiện thành – phá), thập thần & tính cách, ngũ hành – tạng phủ, thần sát mở rộng (Thiên/Nguyệt Đức, Thái Cực, Học Đường, Kim Dư, Tướng tinh, Kiếp – Tai sát, Khôi Cương, Âm Dương sai thác, Cô Loan…), đại vận tác động cung vị |
 | `DuDoan.gs` | Suy luận cả đời (tuổi 1–90): vận hạn lớn (đại vận tốt/xấu nhất, mốc giao vận), các năm dễ biến cố sức khỏe – tài chính – gia đạo, năm dễ kết hôn, sinh con, tài lộc sáng, quan lộc động mạnh; mỗi năm kèm lý do chấm điểm |
+| `Astro.gs` | Thiên văn không cần thư viện: Mặt Trời → Diêm Vương (Kepler + nhiễu động, thời gian ánh sáng, quang sai), Mặt Trăng (chuỗi Meeus + ΔT), Nút Bắc thật, Mọc/Thiên đỉnh |
+| `ChiemTinh.gs` | Chiêm tinh: 12 cung, nhà Placidus, phẩm chất miếu/vượng/hãm/tù, góc chiếu có orb, nguyên tố – tính chất, pha Mặt Trăng, chủ tinh lá số, ngoại hình theo cung Mọc, dấu hiệu cơ thể (Sao Hỏa/Sao Thổ/nhà 6), gốc gác (nhà 4), nghề (MC), chu kỳ Sao Thổ/Sao Mộc/Thiên Vương/Nút theo ngày quá cảnh thực, hồ sơ năm (profection) |
+| `HumanDesign.gs` | Human Design: 26 kích hoạt (Tính cách + Thiết kế 88°), 9 trung tâm, 36 kênh, Loại, Chiến lược, Thẩm quyền, Hồ sơ, Định nghĩa, Giao điểm hóa thân, sinh học trung tâm |
+| `ThanSoHoc.gs` | Thần số học: số chủ đạo (2–11, 22, 33), ngày sinh, thái độ, biểu đồ ngày sinh & 15 mũi tên, biểu đồ tên tiếng Việt (linh hồn, nhân cách, sứ mệnh, trưởng thành, cân bằng, bài học nghiệp, đam mê ẩn), 4 đỉnh cao – thử thách, năm/tháng cá nhân |
+| `TongHop.gs` | Luận tổng hợp 5 hệ bằng "bỏ phiếu" độc lập & độ đồng thuận: xuất thân – gia cảnh, vóc dáng – diện mạo, vùng cơ thể có dấu vết/cần giữ gìn, tính cách 5 trục, chủ đề đời – nghề nghiệp – các chặng đời |
 | `Index.html` | Khung trang |
 | `Styles.html` | CSS |
 | `Script.html` | JS trình duyệt: form, vẽ lá số 4×4, tam hợp–xung chiếu, tab luận giải, xuất PNG / in |
@@ -36,6 +41,8 @@ Có thể mở sẵn lá số qua tham số URL, ví dụ:
 - Tùy chọn hiệu chỉnh giờ mặt trời thực theo kinh độ nơi sinh.
 - Tứ Hóa theo phái Việt Nam (Nhâm: Lương – Tử – Phủ – Vũ).
 - Bát Tự đổi năm tại Lập Xuân, đổi tháng tại 12 Tiết (sai số thời điểm tiết khí vài phút).
+- Chiêm tinh & Human Design dùng **giờ đồng hồ + múi giờ lúc sinh + nơi sinh** (chọn trong form; miền Nam 1959–1975 dùng UTC+8). Tử Vi – Bát Tự vẫn tính theo giờ Việt Nam.
+- Thần số học dùng **họ tên khai sinh** (bỏ dấu, Đ → D); nếu để trống chỉ tính phần ngày sinh.
 - Kết quả luận giải mang tính tham khảo.
 
 ## Đối chiếu với mã nguồn mở & kiểm thử
@@ -53,6 +60,8 @@ Chạy lại bộ đối chiếu (cần Node.js):
 ```bash
 cd tests && npm install && npm test
 ```
+
+Thêm `tests/thien-van.mjs` đối chiếu vị trí hành tinh và cung Mọc với [cosinekitty/astronomy](https://github.com/cosinekitty/astronomy) (astronomy-engine – sai số < 4′, Mặt Trăng < 0,2′, Mọc < 0,3′), kiểm tra nhà Placidus theo đúng định nghĩa chia ba bán cung, và Human Design với hd-chart-engine (lệch cổng 2/3.300 kích hoạt – chỉ ở ranh giới cổng).
 
 Kết quả hiện tại: 100% khớp vị trí sao Tử Vi (~107.000 sao/2.000 lá số), 100% tứ trụ và Thai nguyên/Mệnh/Thân cung, 100% Nhị thập bát tú; Thập nhị trực và Hoàng đạo khớp 99,9% (khác biệt còn lại do lịch Trung Hoa dùng múi giờ +8 ở ngày giao tiết).
 
