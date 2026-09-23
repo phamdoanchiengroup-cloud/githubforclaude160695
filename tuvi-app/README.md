@@ -35,3 +35,23 @@ Có thể mở sẵn lá số qua tham số URL, ví dụ:
 - Tứ Hóa theo phái Việt Nam (Nhâm: Lương – Tử – Phủ – Vũ).
 - Bát Tự đổi năm tại Lập Xuân, đổi tháng tại 12 Tiết (sai số thời điểm tiết khí vài phút).
 - Kết quả luận giải mang tính tham khảo.
+
+## Đối chiếu với mã nguồn mở & kiểm thử
+
+Bộ máy đã được đối chiếu tự động với các thư viện mã nguồn mở (giấy phép MIT):
+
+| Thư viện | Dùng để kiểm chứng |
+|---|---|
+| [SylarLong/iztro](https://github.com/SylarLong/iztro) – thư viện Tử Vi Đẩu Số phổ biến nhất | Mệnh, Thân, Cục, đại hạn và vị trí ~50 sao trên 2.000 lá số ngẫu nhiên |
+| [6tail/lunar-javascript](https://github.com/6tail/lunar-javascript) – lịch pháp & Bát Tự | Tứ trụ, Thai nguyên, Mệnh/Thân cung Bát Tự, Thập nhị trực, 12 thần Hoàng/Hắc đạo, Nhị thập bát tú; bảng hướng Hỷ/Tài/Phúc thần, sát phương, Bành Tổ bách kỵ |
+| [doanguyen/lasotuvi](https://github.com/doanguyen/lasotuvi) – an sao Tử Vi phái Việt Nam (Python) | Bảng miếu – hãm (chính tinh, Xương Khúc, các sao đắc địa), Văn Tinh, thuyết Tứ Hóa năm Canh của cụ Thiên Lương |
+
+Chạy lại bộ đối chiếu (cần Node.js):
+
+```bash
+cd tests && npm install && npm test
+```
+
+Kết quả hiện tại: 100% khớp vị trí sao Tử Vi (~107.000 sao/2.000 lá số), 100% tứ trụ và Thai nguyên/Mệnh/Thân cung, 100% Nhị thập bát tú; Thập nhị trực và Hoàng đạo khớp 99,9% (khác biệt còn lại do lịch Trung Hoa dùng múi giờ +8 ở ngày giao tiết).
+
+Các điểm khác biệt có chủ đích giữa phái Việt Nam và Trung Hoa được giữ theo phái Việt Nam: Hỏa Tinh/Linh Tinh đi ngược chiều theo âm dương nam nữ, Thiên Quý theo Văn Khúc, Giải Thần theo năm, bảng miếu hãm Việt Nam.

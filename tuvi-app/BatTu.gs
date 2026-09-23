@@ -274,6 +274,25 @@ function batTuLap(input) {
   if (lnChi === yChi) luuNien.ghiChu.push('Năm bản mệnh (trùng tuổi) – nên cẩn trọng, giữ sức khỏe.');
   if (lnCan + 5 === dCan || dCan + 5 === lnCan) luuNien.ghiChu.push('Can năm hợp Nhật chủ – có quý nhân, duyên phận, hợp tác thuận.');
 
+  // --- Thai nguyên, Mệnh cung, Thân cung (đối chiếu lunar-javascript) ---
+  var thaiNguyen = { can: mod10(mCan + 1), chi: mod12(mChi + 3) };
+  var soThang = mIdx + 1, soGio = mod12(hChi - 2) + 1;       // đánh số Dần = 1
+  var tongMG = soThang + soGio;
+  var mgSo = tongMG < 14 ? 14 - tongMG : 26 - tongMG;
+  var tgSo = mod12(tongMG - 10); if (tgSo === 0) tgSo = 12;
+  var canDanBT = mod10((yCan % 5) * 2 + 2);
+  function cungBT(so) { var c = mod12(so + 1); return { can: mod10(canDanBT + mod12(c - 2)), chi: c }; }
+  var menhCungBT = cungBT(mgSo), thanCungBT = cungBT(tgSo);
+  var phuTru = [
+    { ten: 'Thai nguyên', cc: thaiNguyen, moTa: 'Trụ thụ thai (tháng + 1 can, + 3 chi) – bổ sung căn khí tiên thiên.' },
+    { ten: 'Mệnh cung', cc: menhCungBT, moTa: 'Cung Mệnh Bát Tự (theo tháng & giờ sinh) – phản ánh khí chất bẩm sinh.' },
+    { ten: 'Thân cung', cc: thanCungBT, moTa: 'Cung Thân Bát Tự – thiên về hậu vận, sự nghiệp thực tế.' }
+  ].map(function (x) {
+    var na = napAm(x.cc.can, x.cc.chi);
+    return { ten: x.ten, can: x.cc.can, chi: x.cc.chi, canChi: canChiText(x.cc.can, x.cc.chi), napAm: na.ten, napAmHanh: na.hanh,
+      thapThan: thapThanTen_(dCan, x.cc.can), moTa: x.moTa };
+  });
+
   // --- Tiết khí lúc sinh ---
   var tietKhi = getTietKhiName(L);
 
@@ -313,7 +332,7 @@ function batTuLap(input) {
     daiVan: daiVan, khoiVan: { nam: tuoiNam, thang: tuoiThang, thuan: forward, soNgay: Math.round(soNgay * 10) / 10,
       tiet: termLocal.d + '/' + termLocal.m + '/' + termLocal.y + ' ' + pad2_(termLocal.h) + ':' + pad2_(termLocal.mi) },
     luuNien: luuNien, tietKhi: tietKhi, kinhDoMatTroi: Math.round(L * 100) / 100,
-    luan: luan, goiY: goiY
+    luan: luan, goiY: goiY, phuTru: phuTru
   };
 }
 

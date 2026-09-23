@@ -58,15 +58,25 @@ var DO_SANG = {
   'Thất Sát':   ['M', 'Đ', 'M', 'H', 'H', 'V', 'M', 'Đ', 'M', 'H', 'H', 'V'],
   'Phá Quân':   ['M', 'V', 'H', 'H', 'Đ', 'H', 'M', 'V', 'H', 'H', 'Đ', 'H'],
   // một số phụ tinh có xét miếu hãm
-  'Văn Xương':  ['H', 'Đ', 'H', 'Đ', 'Đ', 'Đ', 'H', 'Đ', 'H', 'Đ', 'Đ', 'Đ'],
-  'Văn Khúc':   ['H', 'Đ', 'H', 'Đ', 'Đ', 'Đ', 'H', 'Đ', 'H', 'Đ', 'Đ', 'Đ'],
+  'Văn Xương':  ['H', 'Đ', 'H', 'Đ', 'H', 'Đ', 'H', 'Đ', 'H', 'H', 'Đ', 'Đ'],
+  'Văn Khúc':   ['H', 'Đ', 'H', 'Đ', 'H', 'Đ', 'H', 'Đ', 'H', 'H', 'Đ', 'Đ'],
   'Kình Dương': ['H', 'Đ', 'H', 'H', 'Đ', 'H', 'H', 'Đ', 'H', 'H', 'Đ', 'H'],
   'Đà La':      ['H', 'Đ', 'H', 'H', 'Đ', 'H', 'H', 'Đ', 'H', 'H', 'Đ', 'H'],
   'Hỏa Tinh':   ['H', 'H', 'Đ', 'Đ', 'Đ', 'Đ', 'Đ', 'H', 'H', 'H', 'H', 'H'],
   'Linh Tinh':  ['H', 'H', 'Đ', 'Đ', 'Đ', 'Đ', 'Đ', 'H', 'H', 'H', 'H', 'H'],
   'Địa Không':  ['H', 'H', 'Đ', 'H', 'H', 'Đ', 'H', 'H', 'Đ', 'H', 'H', 'Đ'],
-  'Địa Kiếp':   ['H', 'H', 'Đ', 'H', 'H', 'Đ', 'H', 'H', 'Đ', 'H', 'H', 'Đ']
+  'Địa Kiếp':   ['H', 'H', 'Đ', 'H', 'H', 'Đ', 'H', 'H', 'Đ', 'H', 'H', 'Đ'],
+  // các sao chỉ xét đắc địa ('' = không xét)
+  'Hóa Kỵ':     ['', 'Đ', '', '', 'Đ', '', '', 'Đ', '', '', 'Đ', ''],
+  'Đại Hao':    ['', '', 'Đ', 'Đ', '', '', '', '', 'Đ', 'Đ', '', ''],
+  'Tiểu Hao':   ['', '', 'Đ', 'Đ', '', '', '', '', 'Đ', 'Đ', '', ''],
+  'Thiên Khốc': ['Đ', 'Đ', '', 'Đ', '', '', 'Đ', 'Đ', '', 'Đ', '', ''],
+  'Thiên Hư':   ['Đ', 'Đ', '', 'Đ', '', '', 'Đ', 'Đ', '', 'Đ', '', ''],
+  'Thiên Mã':   ['', '', 'Đ', '', '', 'Đ', '', '', '', '', '', ''],
+  'Thiên Hình': ['', '', 'Đ', 'Đ', '', '', '', '', '', 'Đ', 'Đ', ''],
+  'Thiên Riêu': ['', '', 'Đ', 'Đ', '', '', '', '', '', 'Đ', 'Đ', '']
 };
+// Nguồn đối chiếu bảng miếu hãm: lasotuvi (doanguyen, MIT) – phái Thiên Lương / Thái Thứ Lang
 var DO_SANG_TEN = { 'M': 'Miếu', 'V': 'Vượng', 'Đ': 'Đắc', 'B': 'Bình', 'H': 'Hãm' };
 var DO_SANG_DIEM = { 'M': 3, 'V': 2, 'Đ': 1, 'B': 0, 'H': -2 };
 
@@ -129,6 +139,7 @@ var SAO = {
   'Thiên Trù': ['Thổ', 'cat', 'Ăn uống, bếp núc, lộc ăn'],
   'Quốc Ấn': ['Thổ', 'cat', 'Ấn tín, chức vụ'],
   'Đường Phù': ['Mộc', 'cat', 'Danh vọng, nhà cửa'],
+  'Văn Tinh': ['Hỏa', 'cat', 'Văn chương, khoa cử, học vấn'],
   'Thai Phụ': ['Kim', 'cat', 'Danh giá, văn tài'],
   'Phong Cáo': ['Thổ', 'cat', 'Bằng sắc, khen thưởng'],
   'Thiên Tài': ['Thổ', 'cat', 'Tài năng, trí tuệ'],
@@ -210,9 +221,19 @@ var TU_HOA = [
 ];
 var HOA_TEN = ['Hóa Lộc', 'Hóa Quyền', 'Hóa Khoa', 'Hóa Kỵ'];
 
+/** Bảng Tứ Hóa theo tùy chọn: năm Canh có 2 thuyết
+ *  'am-khoa'   : Nhật Lộc – Vũ Quyền – Âm Khoa – Đồng Kỵ (Trung Hoa, Thái Thứ Lang)
+ *  'thienluong': Nhật Lộc – Vũ Quyền – Đồng Khoa – Âm Kỵ (cụ Thiên Lương, lasotuvi) */
+function layTuHoa(tuHoaCanh) {
+  var t = TU_HOA.map(function (r) { return r.slice(); });
+  if (tuHoaCanh === 'thienluong') t[6] = ['Thái Dương', 'Vũ Khúc', 'Thiên Đồng', 'Thái Âm'];
+  return t;
+}
+
 var LOC_TON_POS = [2, 3, 5, 6, 5, 6, 8, 9, 11, 0];
-var KHOI_POS = [1, 0, 11, 11, 1, 0, 6, 6, 3, 3];
-var VIET_POS = [7, 8, 9, 9, 7, 8, 2, 2, 5, 5];
+// Giáp Mậu Canh ngưu dương, Ất Kỷ thử hầu hương, Bính Đinh trư kê vị, Nhâm Quý thố xà tàng, Lục Tân phùng mã hổ
+var KHOI_POS = [1, 0, 11, 11, 1, 0, 1, 6, 3, 3];
+var VIET_POS = [7, 8, 9, 9, 7, 8, 7, 2, 5, 5];
 var LUU_HA_POS = [9, 10, 7, 8, 5, 6, 4, 3, 11, 2];
 var THIEN_TRU_POS = [5, 6, 0, 5, 6, 8, 2, 6, 9, 10];
 var THIEN_QUAN_POS = [7, 4, 5, 2, 3, 9, 11, 9, 10, 6];
@@ -250,6 +271,7 @@ function tuviLapLaSo(input) {
 
   var yCan = mod10(ld.year + 6), yChi = mod12(ld.year + 8);
   var male = input.gender !== 'nu';
+  var TH = layTuHoa(input.tuHoaCanh);
   var duong = yCan % 2 === 0;
   var thuan = (duong && male) || (!duong && !male); // Dương Nam, Âm Nữ -> thuận
   var amDuongTen = (duong ? 'Dương ' : 'Âm ') + (male ? 'Nam' : 'Nữ');
@@ -292,7 +314,7 @@ function tuviLapLaSo(input) {
     pos[name] = at;
     var info = SAO[name] || ['Thổ', 'trung', ''];
     var star = { n: name, h: info[0], t: info[1] };
-    if (DO_SANG[name]) star.b = DO_SANG[name][at];
+    if (DO_SANG[name] && DO_SANG[name][at]) star.b = DO_SANG[name][at];
     if (extra) for (var key in extra) star[key] = extra[key];
     var P = palaces[at];
     if (info[1] === 'chinh') P.chinh.push(star);
@@ -361,6 +383,7 @@ function tuviLapLaSo(input) {
   an('Thiên Phúc', THIEN_PHUC_POS[yCan]);
   an('Quốc Ấn', locTon + 8);
   an('Đường Phù', locTon + 5);
+  an('Văn Tinh', locTon + 3);
 
   // Vòng Bác Sĩ (bắt đầu tại Lộc Tồn)
   for (var i = 0; i < 12; i++) {
@@ -411,7 +434,7 @@ function tuviLapLaSo(input) {
 
   // --- Tứ Hóa (gắn cạnh sao được hóa) ---
   for (i = 0; i < 4; i++) {
-    var sName = TU_HOA[yCan][i];
+    var sName = TH[yCan][i];
     var sp = pos[sName];
     an(HOA_TEN[i], sp, { hoaOf: sName });
     markHoa_(palaces[sp], sName, HOA_TEN[i]);
@@ -466,12 +489,12 @@ function tuviLapLaSo(input) {
   luu('L.Kình Dương', LOC_TON_POS[vCan] + 1);
   luu('L.Đà La', LOC_TON_POS[vCan] - 1);
   luu('L.Thiên Mã', MA[vChi % 4]);
-  for (i = 0; i < 4; i++) luu('L.' + HOA_TEN[i], pos[TU_HOA[vCan][i]]);
+  for (i = 0; i < 4; i++) luu('L.' + HOA_TEN[i], pos[TH[vCan][i]]);
 
   // Đại hạn năm xem: tứ hóa theo can cung đại hạn
   if (daiHanNow >= 0) {
     var dhCan = palaces[daiHanNow].can;
-    for (i = 0; i < 4; i++) palaces[pos[TU_HOA[dhCan][i]]].luu.push('ĐV.' + HOA_TEN[i]);
+    for (i = 0; i < 4; i++) palaces[pos[TH[dhCan][i]]].luu.push('ĐV.' + HOA_TEN[i]);
   }
 
   // Tính điểm từng cung
@@ -497,7 +520,7 @@ function tuviLapLaSo(input) {
     notes: t.notes
   };
 
-  var chart = { info: info, palaces: palaces, pos: pos };
+  var chart = { info: info, palaces: palaces, pos: pos, tuHoa: TH };
   chart.luanGiai = tuviLuanGiai_(chart);
   return chart;
 }

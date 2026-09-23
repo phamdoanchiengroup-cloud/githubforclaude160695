@@ -40,7 +40,8 @@ var CO_SO_LY_LUAN = {
   nhatVan: [
     'Nhật hạn: từ cung nguyệt hạn của tháng âm lịch đó gọi là mùng 1, đếm thuận đến ngày xem.',
     'Can chi ngày tính theo số ngày Julius; thập thần của can ngày với Nhật chủ cho biết tính chất sự việc trong ngày; chi ngày xung chi tuổi/chi ngày sinh là ngày cần thận trọng.',
-    'Hoàng đạo – Hắc đạo theo 12 thần (Thanh Long, Minh Đường, Kim Quỹ, Bảo Quang, Ngọc Đường, Tư Mệnh là Hoàng đạo) khởi theo tháng âm lịch; Thập nhị trực (Kiến, Trừ, Mãn…) theo tiết khí. Giờ Hoàng đạo khởi theo chi ngày.'
+    'Hoàng đạo – Hắc đạo theo 12 thần (Thanh Long, Minh Đường, Kim Quỹ, Bảo Quang, Ngọc Đường, Tư Mệnh là Hoàng đạo), mặc định khởi theo tháng âm lịch như lịch Việt; có thể chọn khởi theo tháng tiết khí (nguyệt kiến) như lịch Trung Hoa. Giờ Hoàng đạo khởi theo chi ngày.',
+    'Thập nhị trực (Kiến, Trừ, Mãn…): ngày có chi trùng chi tháng tiết khí là trực Kiến; ngày giao tiết lặp lại trực hôm trước. Nhị thập bát tú xoay vòng 28 ngày. Hướng Hỷ – Tài – Phúc thần theo can ngày, sát phương theo chi ngày, Bành Tổ bách kỵ theo can và chi ngày (đối chiếu thư viện lunar-javascript).'
   ]
 };
 
@@ -504,7 +505,7 @@ function lgDaiVan_(chart, bt) {
     function addEx(p, n) { p = mod12(p); (extra[p] = extra[p] || []).push(n); }
     var hoaItems = [];
     for (var h = 0; h < 4; h++) {
-      var sName = TU_HOA[dhCan][h];
+      var sName = chart.tuHoa[dhCan][h];
       var sp = chart.pos[sName];
       addEx(sp, HOA_TEN[h]);
       var tenGoc = P[sp].cung, tenHan = CUNG_NAMES[mod12(pi - sp)];
@@ -526,7 +527,7 @@ function lgDaiVan_(chart, bt) {
     // điểm hạn
     var d = a.tongLuc * 1.4;
     for (var hh = 0; hh < 4; hh++) {
-      var p2 = chart.pos[TU_HOA[dhCan][hh]];
+      var p2 = chart.pos[chart.tuHoa[dhCan][hh]];
       var w = tptc.indexOf(p2) === 0 ? 1 : tptc.indexOf(p2) > 0 ? 0.5 : 0;
       d += w * [2, 1.5, 1.5, -2.5][hh];
     }
@@ -537,7 +538,7 @@ function lgDaiVan_(chart, bt) {
     var coSo = [
       'Đại hạn thứ ' + (idx + 1) + ': ' + from + '–' + to + ' tuổi (âm), năm ' + (I.lunar.year + from - 1) + '–' + (I.lunar.year + to - 1) + ', đi ' + (I.thuan ? 'thuận' : 'nghịch') + ' – cung gốc ' + C.cung + ' (' + C.canTen + ' ' + C.chiTen + ').',
       'Cung gốc là ' + C.cung + ' nên 10 năm này lĩnh vực "' + LG_LINH_VUC[C.cung] + '" được đặt lên hàng đầu, ảnh hưởng tới bản thân.',
-      'Can cung hạn ' + C.canTen + ' khởi Tứ Hóa đại vận: Lộc ' + TU_HOA[dhCan][0] + ', Quyền ' + TU_HOA[dhCan][1] + ', Khoa ' + TU_HOA[dhCan][2] + ', Kỵ ' + TU_HOA[dhCan][3] + '.'
+      'Can cung hạn ' + C.canTen + ' khởi Tứ Hóa đại vận: Lộc ' + chart.tuHoa[dhCan][0] + ', Quyền ' + chart.tuHoa[dhCan][1] + ', Khoa ' + chart.tuHoa[dhCan][2] + ', Kỵ ' + chart.tuHoa[dhCan][3] + '.'
     ];
     var secs = [{ tieuDe: 'Cơ sở đại vận', items: coSo }];
     secs = secs.concat(a.secs.slice(1));
@@ -593,7 +594,7 @@ function lgLuuTinh_(chart, year) {
   var lt = LOC_TON_POS[vCan];
   add(lt, 'L.Lộc Tồn'); add(lt + 1, 'L.Kình Dương'); add(lt - 1, 'L.Đà La');
   add([2, 11, 8, 5][vChi % 4], 'L.Thiên Mã');
-  for (var i = 0; i < 4; i++) add(chart.pos[TU_HOA[vCan][i]], 'L.' + HOA_TEN[i]);
+  for (var i = 0; i < 4; i++) add(chart.pos[chart.tuHoa[vCan][i]], 'L.' + HOA_TEN[i]);
   return { can: vCan, chi: vChi, ex: ex };
 }
 var LG_LUU_DIEM = {
@@ -656,7 +657,7 @@ function lgTieuVan_(chart, bt, year) {
   var tp = [];
   if (lgTPTC_(th).indexOf(mod12(LOC_TON_POS[L.can] + 1)) >= 0 && lgTPTC_(th).indexOf(chart.pos['Kình Dương']) >= 0) tp.push('Lưu Kình gặp Kình gốc');
   if (lgTPTC_(th).indexOf(mod12(LOC_TON_POS[L.can] - 1)) >= 0 && lgTPTC_(th).indexOf(chart.pos['Đà La']) >= 0) tp.push('Lưu Đà gặp Đà gốc');
-  if (lgTPTC_(th).indexOf(chart.pos[TU_HOA[L.can][3]]) >= 0 && lgTPTC_(th).indexOf(chart.pos['Hóa Kỵ']) >= 0) tp.push('Lưu Kỵ gặp Kỵ gốc (song Kỵ)');
+  if (lgTPTC_(th).indexOf(chart.pos[chart.tuHoa[L.can][3]]) >= 0 && lgTPTC_(th).indexOf(chart.pos['Hóa Kỵ']) >= 0) tp.push('Lưu Kỵ gặp Kỵ gốc (song Kỵ)');
   if (tp.length) luu.push('Trùng phùng: ' + tp.join('; ') + ' → sát khí tăng gấp đôi, cần đề phòng.');
   var lb = lgBoPhuTinh_(chart, th, L.ex).filter(function (b) { return true; }).map(function (b) { return (b.tot > 0 ? '✓ ' : b.tot < 0 ? '✗ ' : '◇ ') + b.ten + ' (' + b.where + '): ' + b.moTa + '.'; });
   secs.push({ tieuDe: 'Lưu tinh & trùng phùng', items: luu.concat(lb).length ? luu.concat(lb) : ['Không có lưu tinh đáng kể tại tam phương tiểu hạn.'] });
@@ -749,12 +750,33 @@ var LG_TRUC_Y = {
   'Thành': ['khai trương, cưới hỏi, nhập trạch, ký kết', 'kiện tụng'], 'Thu': ['thu hoạch, thu nợ, nhập kho', 'an táng, khởi công'],
   'Khai': ['khai trương, nhập học, xuất hành, cầu tài', 'an táng'], 'Bế': ['đắp đập, lấp hố, tĩnh dưỡng', 'khai trương, xuất hành, chữa mắt']
 };
+// Bảng tra lịch pháp (đối chiếu lunar-javascript của 6tail, MIT)
+var LG_HY_THAN = ['Đông Bắc', 'Tây Bắc', 'Tây Nam', 'Chính Nam', 'Đông Nam', 'Đông Bắc', 'Tây Bắc', 'Tây Nam', 'Chính Nam', 'Đông Nam'];
+var LG_TAI_THAN = ['Đông Bắc', 'Đông Bắc', 'Tây Nam', 'Tây Nam', 'Chính Bắc', 'Chính Bắc', 'Chính Đông', 'Chính Đông', 'Chính Nam', 'Chính Nam'];
+var LG_PHUC_THAN = ['Chính Bắc', 'Tây Nam', 'Tây Bắc', 'Đông Nam', 'Đông Bắc', 'Chính Bắc', 'Tây Nam', 'Tây Bắc', 'Đông Nam', 'Đông Bắc'];
+var LG_SAT_PHUONG = ['Nam', 'Đông', 'Bắc', 'Tây'];
+var LG_BANH_TO_CAN = ['Giáp bất khai thương – không mở kho, tiền của hao tán', 'Ất bất tài thực – không trồng cây, nghìn gốc chẳng lên',
+  'Bính bất tu táo – không sửa bếp, ắt gặp tai ương', 'Đinh bất thế đầu – không cắt tóc, đầu sinh mụn nhọt',
+  'Mậu bất thụ điền – không nhận ruộng đất, chủ chẳng lành', 'Kỷ bất phá khoán – không hủy khế ước, hai bên cùng tổn',
+  'Canh bất kinh lạc – không lên khung cửi, khung dệt bỏ không', 'Tân bất hợp tương – không làm tương, chủ chẳng được nếm',
+  'Nhâm bất ương thủy – không tháo nước, khó bề đề phòng', 'Quý bất từ tụng – không kiện tụng, lý yếu địch mạnh'];
+var LG_BANH_TO_CHI = ['Tý bất vấn bốc – không gieo quẻ, tự rước họa', 'Sửu bất quan đới – không nhận chức/đội mũ, chủ chẳng về quê',
+  'Dần bất tế tự – không cúng tế, thần linh chẳng hưởng', 'Mão bất xuyên tỉnh – không đào giếng, nước chẳng trong',
+  'Thìn bất khốc khấp – không khóc lóc, dễ có trùng tang', 'Tỵ bất viễn hành – không đi xa, tiền của hao mất',
+  'Ngọ bất thiêm cái – không lợp nhà, chủ nhà phải đổi', 'Mùi bất phục dược – không uống thuốc, độc khí vào ruột',
+  'Thân bất an sàng – không kê giường, ma quỷ vào phòng', 'Dậu bất hội khách – không đãi khách, say sưa nghiêng ngả',
+  'Tuất bất ngật khuyển – không ăn thịt chó, quái lạ lên giường', 'Hợi bất giá thú – không cưới gả, bất lợi tân lang'];
+// Nhị thập bát tú: chỉ số = JD mod 28 (0 = Nguy)
+var LG_TU = [['Nguy', 0], ['Thất', 1], ['Bích', 1], ['Khuê', 0], ['Lâu', 1], ['Vị', 1], ['Mão', 0], ['Tất', 1], ['Chủy', 0], ['Sâm', 1],
+  ['Tỉnh', 1], ['Quỷ', 0], ['Liễu', 0], ['Tinh', 0], ['Trương', 1], ['Dực', 0], ['Chẩn', 1], ['Giác', 1], ['Cang', 0], ['Đê', 0],
+  ['Phòng', 1], ['Tâm', 0], ['Vĩ', 1], ['Cơ', 1], ['Đẩu', 1], ['Ngưu', 0], ['Nữ', 0], ['Hư', 0]];
+
 function lgThanNgay_(chiThang, chiNgay) {
   var start = mod12(((chiThang - 2) % 6 + 6) % 6 * 2);
   return mod12(chiNgay - start);
 }
 
-function lgNhatVan_(chart, bt, dateStr, soNgay) {
+function lgNhatVan_(chart, bt, dateStr, soNgay, hdTheoTiet) {
   var I = chart.info, P = chart.palaces;
   var m = /^(\d{4})-(\d{1,2})-(\d{1,2})$/.exec(String(dateStr || ''));
   var jd0;
@@ -770,16 +792,17 @@ function lgNhatVan_(chart, bt, dateStr, soNgay) {
     var mp = lgNguyetCung_(chart, lu.year, lu.month);
     var pi = mod12(mp + lu.day - 1);
     var C = P[pi];
-    var chiThangAm = mod12(lu.month + 1);
-    var than = LG_12_THAN[lgThanNgay_(chiThangAm, dz)];
-    var hoangDao = LG_HOANG_DAO.indexOf(lgThanNgay_(chiThangAm, dz)) >= 0;
-    var L2 = sunLongitudeDeg(jd - 7 / 24);
+    var L2 = sunLongitudeDeg(jd + 0.5 - 7 / 24 - 1e-4); // cuối ngày: ngày giao tiết đã thuộc tháng mới
     var chiThangTiet = mod12(Math.floor((((L2 - 315) % 360) + 360) % 360 / 30) + 2);
     var truc = LG_TRUC[mod12(dz - chiThangTiet)];
+    var chiThangHD = hdTheoTiet ? chiThangTiet : mod12(lu.month + 1);
+    var than = LG_12_THAN[lgThanNgay_(chiThangHD, dz)];
+    var hoangDao = LG_HOANG_DAO.indexOf(lgThanNgay_(chiThangHD, dz)) >= 0;
+    var tu = LG_TU[((jd % 28) + 28) % 28];
     var gioTot = [];
     for (var h = 0; h < 12; h++) if (LG_HOANG_DAO.indexOf(lgThanNgay_(dz, h)) >= 0) gioTot.push(CHI[h] + ' (' + GIO_CHI[h] + ')');
 
-    var d = lgDiemVung_(chart, pi, L.ex) * 0.6 + (hoangDao ? 1 : -0.8);
+    var d = lgDiemVung_(chart, pi, L.ex) * 0.6 + (hoangDao ? 1 : -0.8) + (tu[1] ? 0.3 : -0.3);
     var items = [];
     items.push('Âm lịch ' + lu.day + '/' + lu.month + (lu.leap ? ' nhuận' : '') + '/' + lu.year + ' – ngày ' + CAN[dc] + ' ' + CHI[dz] + ', ' + (hoangDao ? 'Hoàng đạo' : 'Hắc đạo') + ' (' + than + '), trực ' + truc + '.');
     items.push('Nhật hạn tại cung gốc ' + C.cung + ' (' + C.chiTen + '): ' + (C.chinh.length ? lgSaoMoTa_(C) : 'vô chính diệu') + (L.ex[pi] ? '; lưu tinh: ' + L.ex[pi].join(', ') : '') + ' → sự việc trong ngày xoay quanh "' + LG_LINH_VUC[C.cung] + '".');
@@ -796,12 +819,16 @@ function lgNhatVan_(chart, bt, dateStr, soNgay) {
       if (q2.indexOf('lục xung') >= 0) items.push('Chi ngày xung chi ngày sinh – dễ bất đồng trong gia đình.');
     }
     var ty = LG_TRUC_Y[truc];
-    items.push('Nên: ' + ty[0] + '. Tránh: ' + ty[1] + '.');
+    items.push('Trực ' + truc + ' – nên: ' + ty[0] + '; tránh: ' + ty[1] + '.');
+    items.push('Sao ' + tu[0] + ' (Nhị thập bát tú) – ' + (tu[1] ? 'cát tú, thuận cho việc lớn.' : 'hung tú, việc lớn nên cân nhắc.'));
+    items.push('Xung tuổi ' + CHI[mod12(dz + 6)] + ' (' + CON_GIAP[mod12(dz + 6)] + '); sát phương ' + LG_SAT_PHUONG[dz % 4] + ' – tránh động thổ, xuất hành về hướng này.');
+    items.push('Hướng tốt xuất hành: Hỷ thần ' + LG_HY_THAN[dc] + ', Tài thần ' + LG_TAI_THAN[dc] + ', Phúc thần ' + LG_PHUC_THAN[dc] + '.');
+    items.push('Bành Tổ bách kỵ: ' + LG_BANH_TO_CAN[dc] + '; ' + LG_BANH_TO_CHI[dz] + '.');
     items.push('Giờ Hoàng đạo: ' + gioTot.join(', ') + '.');
     d = lgR_(d);
     out.push({
       ngay: dmy[0] + '/' + dmy[1] + '/' + dmy[2], thu: ['Chủ nhật', 'Thứ hai', 'Thứ ba', 'Thứ tư', 'Thứ năm', 'Thứ sáu', 'Thứ bảy'][(jd + 1) % 7],
-      am: lu.day + '/' + lu.month + (lu.leap ? 'N' : ''), canChi: CAN[dc] + ' ' + CHI[dz], hoangDao: hoangDao, than: than, truc: truc,
+      am: lu.day + '/' + lu.month + (lu.leap ? 'N' : ''), canChi: CAN[dc] + ' ' + CHI[dz], hoangDao: hoangDao, than: than, truc: truc, tu: tu[0],
       cung: C.cung, diem: d, danhGia: lgXepHang_(d), secs: [{ tieuDe: 'Luận ngày', items: items }]
     });
   }
@@ -827,6 +854,6 @@ function luanChiTiet(chart, bt, input) {
     tieuVan: tieu,
     tieuVanNhieuNam: nhieuNam,
     nguyetVan: lgNguyetVan_(chart, bt, vy),
-    nhatVan: lgNhatVan_(chart, bt, input && input.viewDate, 7)
+    nhatVan: lgNhatVan_(chart, bt, input && input.viewDate, 7, input && input.hoangDao === 'tiet')
   };
 }

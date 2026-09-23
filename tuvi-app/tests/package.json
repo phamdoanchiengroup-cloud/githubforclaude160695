@@ -1,0 +1,7 @@
+{
+  "name": "thien-co-cac-tests",
+  "private": true,
+  "description": "Đối chiếu bộ máy an sao / Bát Tự của Thiên Cơ Các với các thư viện mã nguồn mở",
+  "scripts": { "test": "node doi-chieu.js" },
+  "devDependencies": { "iztro": "^2.6.1", "lunar-javascript": "^1.7.7" }
+}

@@ -102,6 +102,8 @@
       viewDate: $('viewDate').value,
       lateRat: $('lateRat').checked,
       leapMode: $('leapMode').value,
+      tuHoaCanh: $('tuHoaCanh').value,
+      hoangDao: $('hoangDao').value,
       trueSolar: $('trueSolar').checked,
       longitude: $('longitude').value,
       save: $('save').checked
@@ -122,6 +124,8 @@
     if (v.viewDate) $('viewDate').value = v.viewDate;
     if (v.lateRat != null) $('lateRat').checked = v.lateRat !== false && v.lateRat !== 'false';
     if (v.leapMode) $('leapMode').value = v.leapMode;
+    if (v.tuHoaCanh) $('tuHoaCanh').value = v.tuHoaCanh;
+    if (v.hoangDao) $('hoangDao').value = v.hoangDao;
     if (v.trueSolar != null) { $('trueSolar').checked = v.trueSolar === true || v.trueSolar === 'true'; $('lonWrap').style.display = $('trueSolar').checked ? '' : 'none'; }
     if (v.longitude) $('longitude').value = v.longitude;
   }
@@ -495,6 +499,10 @@
       row('Nạp âm', function (p) { return '<span class="h-' + p.napAmHanh + '" style="font-size:13px">' + esc(p.napAm) + '</span>'; }) +
       row('Trường sinh', function (p) { return '<span style="font-size:13px">' + esc(p.truongSinh) + '</span>'; }) +
       '</div>' +
+      '<div class="phu-tru">' + (B.phuTru || []).map(function (x) {
+        return '<div class="pt-item"><small>' + esc(x.ten) + '</small><b><span class="h-' + CAN_HANH[x.can] + '">' + CAN_HAN[x.can] + '</span><span class="h-' + CHI_HANH[x.chi] + '">' + CHI_HAN[x.chi] + '</span></b>' +
+          '<span>' + esc(x.canChi) + ' · ' + esc(x.thapThan) + '</span><span class="muted">' + esc(x.napAm) + '</span><em>' + esc(x.moTa) + '</em></div>';
+      }).join('') + '</div>' +
       '<p class="muted" style="font-size:12.5px;margin-top:10px">Sinh trong tiết <b>' + esc(B.tietKhi) + '</b> (kinh độ mặt trời ' + B.kinhDoMatTroi + '°). Trụ năm & tháng tính theo Lập Xuân và 12 Tiết; trụ giờ theo Ngũ Thử Độn.</p></div>';
 
     var maxPct = Math.max.apply(null, Object.keys(B.phanTram).map(function (k) { return B.phanTram[k]; }));
