@@ -175,6 +175,7 @@ function batTuChiTiet(bt, input, tv) {
       else if (q.indexOf('lục xung') >= 0) items.push('✗ Chi vận xung ' + tenCung + '.');
       if (q.indexOf('tương hình') >= 0 || q.indexOf('tự hình') >= 0) items.push('✗ Chi vận hình ' + tenCung + ' – thị phi, tổn thương.');
       if (q.indexOf('lục hợp') >= 0 || q.indexOf('tam hợp') >= 0) items.push('✓ Chi vận ' + q.join('/') + ' với ' + tenCung + ' – gắn kết, hỗ trợ.');
+      if (v.can === p.can && v.chi === p.chi) items.push('✗ Đại vận phục ngâm ' + tenCung + ' – giai đoạn lặp lại chuyện cũ, dễ buồn phiền ở lĩnh vực này.');
       if (hopCan) items.push('✓ Can vận hợp can ' + truTen[i] + (i === 2 ? ' (hợp Nhật chủ – duyên phận, hợp tác)' : '') + '.');
     });
     var tt = v.thapThan, nh = BTCT_TT_NHOM[tt];
@@ -189,6 +190,11 @@ function batTuChiTiet(bt, input, tv) {
     return { canChi: v.canChi, tuoi: v.tuoi, nam: v.nam, danhGia: v.danhGia, items: items };
   });
 
+  /* ---------- 8. LUẬN 12 LĨNH VỰC & LƯU NIÊN TỪNG NĂM (BatTuLuan.gs) ---------- */
+  var vyBT = (tv && tv.info && tv.info.viewYear) || parseInt(input.viewYear, 10) || new Date().getFullYear();
+  var namAm = (tv && tv.info && tv.info.lunar && tv.info.lunar.year) || parseInt(input.year, 10);
+  out.linhVuc = btlLinhVuc_(bt, input, thanSatMoRong, out.cachCuc);
+  out.luuNien = btlLuuNien_(bt, input, thanSatMoRong, vyBT, namAm);
   return out;
 }
 

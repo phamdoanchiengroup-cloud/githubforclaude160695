@@ -64,6 +64,7 @@ for (let k = 0; k < 40; k++) {
     year: 1940 + Math.floor(rnd() * 80), hour: Math.floor(rnd() * 24), minute: 0, viewYear: 2026, place: '10.78|106.70|TP. Hồ Chí Minh', tz: '7' };
   const r = ctx.lapLaSo(inp); n++;
   ok(!r.moRongLoi && r.moRong && r.moRong.tongHop.tinhCach.truc.length === 5 && r.moRong.tongHop.phoiNgau.tuoiHop.nam.length === 19 && r.moRong.tongHop.namNay && r.moRong.tongHop.mayMan && r.moRong.tongHop.tomLuoc.chiSo.length === 4 && r.moRong.haLac.luan.daiVan.length === 12 && r.moRong.haLac.luan.nam.length >= 72, 'lapLaSo mở rộng lỗi: ' + r.moRongLoi + ' ' + JSON.stringify(inp));
+  ok(r.battuChiTiet.linhVuc.length === 12 && r.battuChiTiet.linhVuc.every(function (x) { return isFinite(x.diem) && x.secs.length >= 2; }) && r.battuChiTiet.luuNien.length >= 10, 'Tứ Trụ 12 lĩnh vực / lưu niên lỗi: ' + JSON.stringify(inp));
 }
 console.log('lapLaSo đầy đủ:', n, 'lá số,', Math.round((Date.now() - t0) / n), 'ms/lá');
 console.log(loi ? '✘ ' + loi + ' lỗi' : '✔ Tất cả kiểm tra đạt');

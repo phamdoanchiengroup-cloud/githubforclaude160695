@@ -303,6 +303,9 @@ function lgXepHang_(d) {
   return 'Cần thận trọng';
 }
 function lgR_(x) { return Math.round(x * 10) / 10; }
+/** Quy điểm thô (cộng dồn trọng số sao, không có trần) về thang 10 bằng hàm logistic:
+ *  0 điểm thô = 5/10; +5 (Rất tốt) ≈ 8,4; +2,5 (Tốt) ≈ 7; +0,5 (Khá) ≈ 5,4; −1,5 ≈ 3,8; −4 (Kém) ≈ 2,1. */
+function diem10_(d) { return Math.round(100 / (1 + Math.exp(-d / 3))) / 10; }
 
 /** Quan hệ giữa hai địa chi */
 function lgQuanHeChi_(a, b) {
@@ -477,7 +480,7 @@ function lgLuan12Cung_(chart) {
     var a = lgPhanTichCung_(chart, pi);
     var d = lgR_(a.tongLuc * 1.4);
     var ket = [];
-    ket.push('Đánh giá tổng hợp: ' + lgXepHang_(d) + ' (điểm ' + d + ').');
+    ket.push('Đánh giá tổng hợp: ' + lgXepHang_(d) + ' (' + diem10_(d) + '/10).');
     if (C.isThan) ket.push('Cung này có Thân cư – là trọng tâm của hậu vận (sau khoảng 30 tuổi).');
     if (C.isDaiHan) ket.push('Đại hạn hiện tại đang đi qua cung này – lĩnh vực ' + LG_LINH_VUC[C.cung] + ' nổi bật trong 10 năm.');
     if (C.isTieuHan) ket.push('Tiểu hạn năm ' + I.viewYear + ' đóng tại đây.');
@@ -567,7 +570,7 @@ function lgDaiVan_(chart, bt) {
       bz.push('Nạp âm cung hạn hành ' + hanhCung + (bt.goiY.hy.indexOf(hanhCung) >= 0 ? ' trùng hành Hỷ/Dụng thần Bát Tự → cộng hưởng tốt.' : bt.goiY.ky.indexOf(hanhCung) >= 0 ? ' là hành Kỵ thần Bát Tự → cần tiết chế.' : ' trung tính với Dụng thần.'));
       if (bz.length) secs.push({ tieuDe: 'Đối chiếu Bát Tự', items: bz });
     }
-    var ket = ['Đánh giá đại vận: ' + lgXepHang_(d) + ' (điểm ' + d + ').'];
+    var ket = ['Đánh giá đại vận: ' + lgXepHang_(d) + ' (' + diem10_(d) + '/10).'];
     if (C.tuan || C.triet) ket.push('Cung hạn gặp ' + (C.triet ? 'Triệt' : 'Tuần') + ': nửa đầu hạn trắc trở, nửa sau mới hanh thông.');
     ket.push(d >= 2.5 ? 'Nên chủ động mở rộng, nắm bắt cơ hội; đây là giai đoạn "được thời".' :
       d >= 0 ? 'Giữ nhịp ổn định, tích lũy; tận dụng các lĩnh vực có Hóa Lộc/Quyền/Khoa.' :
@@ -774,7 +777,7 @@ function lgTieuVan_(chart, bt, year) {
     d = lgR_(d + ({ 'Đại cát': 1.5, 'Cát': 0.8, 'Bình': 0, 'Hơi kém': -0.6, 'Cẩn trọng': -1.2 })[s]);
     secs.push({ tieuDe: 'Đối chiếu Bát Tự', items: bz });
   }
-  var ket = ['Đánh giá năm ' + year + ': ' + lgXepHang_(d) + ' (điểm ' + d + ').'];
+  var ket = ['Đánh giá năm ' + year + ': ' + lgXepHang_(d) + ' (' + diem10_(d) + '/10).'];
   ket.push(d >= 2.5 ? 'Năm thuận lợi – nên triển khai kế hoạch lớn, mở rộng quan hệ.' : d >= 0 ? 'Năm bình ổn – làm chắc từng bước, tránh dàn trải.' : 'Năm cần phòng thủ – giữ sức khỏe, tránh tranh chấp, cẩn trọng tài chính.');
   secs.push({ tieuDe: 'Kết luận', items: ket });
   return { nam: year, canChi: CAN[L.can] + ' ' + CHI[L.chi], tuoi: tuoi, cung: C.cung, chi: C.chiTen, th: th, diem: d, danhGia: lgXepHang_(d), secs: secs, luu: L };

@@ -141,8 +141,8 @@ function thXuatThan_(C) {
   // Tử Vi
   var tvi = [], pm = thCungTheoTen_(tv, 'Phụ Mẫu'), pd = thCungTheoTen_(tv, 'Phúc Đức'), dt = thCungTheoTen_(tv, 'Điền Trạch'), menh = tv.palaces[tv.info.menh];
   var dPM = thDiemCung_(tv, 'Phụ Mẫu'), dPD = thDiemCung_(tv, 'Phúc Đức'), dDT = thDiemCung_(tv, 'Điền Trạch');
-  tvi.push('Cung Phụ Mẫu (cha mẹ) ' + pm.canTen + ' ' + pm.chiTen + ' – điểm ' + dPM + ': ' + (pm.chinh.map(function (s) { return s.n + (s.b ? '(' + s.b + ')' : ''); }).join(', ') || 'vô chính diệu') + '.');
-  tvi.push('Cung Phúc Đức (dòng họ, phúc ấm) – điểm ' + dPD + '; cung Điền Trạch (nhà cửa, tài sản gia đình) – điểm ' + dDT + '.');
+  tvi.push('Cung Phụ Mẫu (cha mẹ) ' + pm.canTen + ' ' + pm.chiTen + ' – ' + diem10_(dPM) + '/10: ' + (pm.chinh.map(function (s) { return s.n + (s.b ? '(' + s.b + ')' : ''); }).join(', ') || 'vô chính diệu') + '.');
+  tvi.push('Cung Phúc Đức (dòng họ, phúc ấm) – ' + diem10_(dPD) + '/10; cung Điền Trạch (nhà cửa, tài sản gia đình) – ' + diem10_(dDT) + '/10.');
   var dGiau = (dDT * 0.5 + dPD * 0.3 + dPM * 0.2) / 3;
   if (thCoSao_(dt, 'Lộc Tồn') || thCoSao_(dt, 'Hóa Lộc')) { dGiau += 0.8; tvi.push('✓ Lộc tinh ở Điền Trạch: gia đình có của để, nhà cửa ổn định từ nhỏ.'); }
   if (thCoSao_(dt, 'Địa Không') || thCoSao_(dt, 'Địa Kiếp')) { dGiau -= 0.8; tvi.push('✗ Không/Kiếp ở Điền Trạch: tài sản gia đình hao hụt, nhiều khả năng tự tay gây dựng nhà cửa.'); }
@@ -162,8 +162,8 @@ function thXuatThan_(C) {
 
   // Bát Tự
   var bti = [], cv = C.btct.cungVi, nien = cv[0], nguyet = cv[1];
-  bti.push('Niên trụ ' + nien.canChi + ' (tổ nghiệp, ông bà, 1–16 tuổi) – ' + nien.danhGia + ' (điểm ' + nien.diem + ').');
-  bti.push('Nguyệt trụ ' + nguyet.canChi + ' (cha mẹ, anh chị em, 17–32 tuổi) – ' + nguyet.danhGia + ' (điểm ' + nguyet.diem + ').');
+  bti.push('Niên trụ ' + nien.canChi + ' (tổ nghiệp, ông bà, 1–16 tuổi) – ' + nien.danhGia + ' (' + diem10_(nien.diem * 1.6) + '/10).');
+  bti.push('Nguyệt trụ ' + nguyet.canChi + ' (cha mẹ, anh chị em, 17–32 tuổi) – ' + nguyet.danhGia + ' (' + diem10_(nguyet.diem * 1.6) + '/10).');
   var hy = bt.goiY.hy, gB = (nien.diem * 0.6 + nguyet.diem * 0.4) / 2.5;
   var ttNam = bt.pillars[0].thapThan, ttThang = bt.pillars[1].thapThan;
   if (/Ấn/.test(ttNam) || /Ấn/.test(ttThang)) bti.push('Ấn tinh ở trụ năm/tháng: gia đình coi trọng học hành, được cha mẹ (nhất là mẹ) bao bọc' + (hy.indexOf(bt.pillars[/Ấn/.test(ttNam) ? 0 : 1].canHanh) >= 0 ? ' – là hỷ dụng nên được hưởng nhiều.' : ' – nhưng là kỵ thần nên sự bao bọc có khi thành ràng buộc.'));
@@ -521,7 +521,7 @@ function thDuongDoi_(C) {
     var hlD = hlv.length ? hlv.reduce(function (s0, x) { return s0 + x.diem; }, 0) / hlv.length : 0;
     var diem = dv.diem * 0.5 + btD * 1.4 + hlD * 0.8;
     var lines = [];
-    lines.push('Tử Vi: đại hạn cung ' + dv.cung + ' (' + dv.canChi + ', ' + (dv.sao || 'VCD') + ') – ' + dv.danhGia + ' (điểm ' + dv.diem + ').');
+    lines.push('Tử Vi: đại hạn cung ' + dv.cung + ' (' + dv.canChi + ', ' + (dv.sao || 'VCD') + ') – ' + dv.danhGia + ' (' + diem10_(dv.diem) + '/10).');
     if (btv.length) lines.push('Bát Tự: ' + btv.map(function (x) { return 'đại vận ' + x.canChi + ' từ ' + x.tuoi + ' tuổi (' + x.thapThan + ') – ' + x.danhGia; }).join('; ') + '.');
     if (pin.length) lines.push('Thần số học: ' + pin.map(function (p) { return 'đỉnh cao số ' + p.so + ' (' + TS_SO[p.so].tk.split(',').slice(0, 2).join(',') + ')' + ', thử thách ' + p.thuThach; }).join('; ') + '.');
     if (hlv.length) lines.push('Hà Lạc: ' + hlv.map(function (x) { return x.ten + ' ' + x.khoang + ' – ' + x.danhGia + ' (quẻ biến ' + x.items[1].split(' – ')[0].replace('Quẻ biến của vận: ', '') + ')'; }).join('; ') + '.');
@@ -567,7 +567,7 @@ function thNamNay_(C, ctL) {
     if (tot.indexOf(k) >= 0) sT += v / tot.length; else sX += v / xau.length;
   });
   var tvD = Math.max(-2, Math.min(2, (sT - sX) / 2));
-  he.push({ he: 'Tử Vi', items: (tv.luanGiai.han || []).concat(linhVuc.map(function (l) { return (l.loai === 'xau' ? (l.diem > 1.5 ? '✗ ' : '') : (l.diem > 1.5 ? '✓ ' : '')) + l.ten + ': ' + l.diem; })) });
+  he.push({ he: 'Tử Vi', items: (tv.luanGiai.han || []).concat(linhVuc.map(function (l) { return (l.loai === 'xau' ? (l.diem > 1.5 ? '✗ ' : '') : (l.diem > 1.5 ? '✓ ' : '')) + l.ten + ': cường độ ' + Math.min(10, l.diem) + '/10'; })) });
   diem.push({ he: 'Tử Vi', v: tvD });
   var ln = bt.luuNien; he.push({ he: 'Bát Tự', items: ['Lưu niên ' + ln.canChi + ': can ' + ln.thapThan + ', chi ' + ln.chiThapThan + ' – ' + ln.danhGia + '.'].concat(ln.ghiChu || []) });
   diem.push({ he: 'Bát Tự', v: thDGVan_(ln.danhGia) });
@@ -586,9 +586,9 @@ function thNamNay_(C, ctL) {
   var dg = t > 0.8 ? 'Năm thuận lợi' : t > 0.2 ? 'Năm khá' : t > -0.3 ? 'Năm bình ổn, có cơ hội lẫn thử thách' : 'Năm nhiều thử thách – nên thủ hơn công';
   var manh = linhVuc.filter(function (l) { return l.loai !== 'xau'; }).sort(function (a, b) { return b.diem - a.diem; })[0];
   var yeu = linhVuc.filter(function (l) { return l.loai === 'xau'; }).sort(function (a, b) { return b.diem - a.diem; })[0];
-  var kl = [dg + ' (điểm ' + (Math.round(t * 10) / 10) + '; ' + cung.length + '/' + diem.length + ' hệ cùng chiều: ' + cung.join(', ') + ').'];
-  if (manh) kl.push('Lĩnh vực sáng nhất: ' + manh.ten.toLowerCase() + ' (' + manh.diem + ').');
-  if (yeu && yeu.diem > 1) kl.push('✗ Cần phòng: ' + yeu.ten.toLowerCase() + ' (' + yeu.diem + ').');
+  var kl = [dg + ' (' + (Math.round((5 + t * 2.5) * 10) / 10) + '/10; ' + cung.length + '/' + diem.length + ' hệ cùng chiều: ' + cung.join(', ') + ').'];
+  if (manh) kl.push('Lĩnh vực sáng nhất: ' + manh.ten.toLowerCase() + ' (cường độ ' + Math.min(10, manh.diem) + '/10).');
+  if (yeu && yeu.diem > 1) kl.push('✗ Cần phòng: ' + yeu.ten.toLowerCase() + ' (cường độ ' + Math.min(10, yeu.diem) + '/10).');
   kl.push('Chủ đề thần số: ' + TS_NAM[ts.namNay].split(':')[0] + '; chiêm tinh kích hoạt nhà ' + ctL.namXem.nha + ' (' + CT_NHA[ctL.namXem.nha - 1].y.split(',')[0] + ').');
   return { tieuDe: 'Năm ' + vy + ' theo 6 hệ', diem: t, ketLuan: kl, nguon: he, linhVuc: linhVuc };
 }

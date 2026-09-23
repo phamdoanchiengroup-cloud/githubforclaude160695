@@ -353,9 +353,9 @@ function ddPhanTichNam_(chart, bt, Y, dvCache) {
   // Nền đại vận: "đại hạn là gốc"
   if (dh >= 0) {
     var nen = P[dh].diem;
-    if (nen <= -1.5) ['sucKhoe', 'taiChinh', 'giaDao'].forEach(function (k) { if (R[k].d > 0) R[k].add(R[k].d * 0.15, 'Nền đại hạn ' + P[dh].cung + ' kém (điểm ' + nen + ') khuếch đại rủi ro'); });
+    if (nen <= -1.5) ['sucKhoe', 'taiChinh', 'giaDao'].forEach(function (k) { if (R[k].d > 0) R[k].add(R[k].d * 0.15, 'Nền đại hạn ' + P[dh].cung + ' kém (' + diem10_(nen) + '/10) khuếch đại rủi ro'); });
     if (nen >= 2.5) {
-      ['taiLoc', 'quanLoc', 'ketHon'].forEach(function (k) { if (R[k].d > 0) R[k].add(R[k].d * 0.1, 'Nền đại hạn ' + P[dh].cung + ' tốt (điểm ' + nen + ') nâng đỡ'); });
+      ['taiLoc', 'quanLoc', 'ketHon'].forEach(function (k) { if (R[k].d > 0) R[k].add(R[k].d * 0.1, 'Nền đại hạn ' + P[dh].cung + ' tốt (' + diem10_(nen) + '/10) nâng đỡ'); });
       ['sucKhoe', 'taiChinh', 'giaDao'].forEach(function (k) { if (R[k].d > 0) R[k].add(-R[k].d * 0.1, 'Nền đại hạn ' + P[dh].cung + ' tốt giảm nhẹ rủi ro'); });
     }
   }

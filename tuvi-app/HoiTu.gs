@@ -49,8 +49,8 @@ function htTinHieu_(C, y, ctx) {
   HT_CHU_DE.forEach(function (T) {
     var cd = dd.chuDe[T.k]; if (!cd) return;
     var v = (cd.diemGoc || cd.diem || [])[idx]; if (v == null) return;
-    if (v >= ctx.tv[T.k][1]) add(T.k, 'Tử Vi', 1.4, 'Tử Vi: tín hiệu rất mạnh (top 7% cả đời, điểm ' + v + ')');
-    else if (v >= ctx.tv[T.k][0]) add(T.k, 'Tử Vi', 1, 'Tử Vi: tín hiệu mạnh (top 20% cả đời, điểm ' + v + ')');
+    if (v >= ctx.tv[T.k][1]) add(T.k, 'Tử Vi', 1.4, 'Tử Vi: tín hiệu rất mạnh (top 7% cả đời, cường độ ' + Math.min(10, v) + '/10)');
+    else if (v >= ctx.tv[T.k][0]) add(T.k, 'Tử Vi', 1, 'Tử Vi: tín hiệu mạnh (top 20% cả đời, cường độ ' + Math.min(10, v) + '/10)');
   });
   if ((C.daiVanTV || []).some(function (d) { return +String(d.nam).slice(0, 4) === y; })) add('buocNgoat', 'Tử Vi', 1.2, 'Tử Vi: năm chuyển đại hạn');
   // Bát Tự

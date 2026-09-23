@@ -79,7 +79,7 @@ function phoiNgauLuan(C) {
   /* ---------- Tử Vi ---------- */
   var pt = thCungTheoTen_(tv, 'Phu Thê'), tvi = [], tinhCach = [];
   var sao = thChinhTinh_(tv, pt);
-  tvi.push('Cung Phu Thê tại ' + pt.canTen + ' ' + pt.chiTen + ' (hướng ' + PN_HUONG_CHI[pt.chi] + '), điểm ' + thDiemCung_(tv, 'Phu Thê') + (pt.chinh.length ? '' : ' – vô chính diệu, mượn sao cung đối (Quan Lộc)') + '.');
+  tvi.push('Cung Phu Thê tại ' + pt.canTen + ' ' + pt.chiTen + ' (hướng ' + PN_HUONG_CHI[pt.chi] + '), ' + diem10_(thDiemCung_(tv, 'Phu Thê')) + '/10' + (pt.chinh.length ? '' : ' – vô chính diệu, mượn sao cung đối (Quan Lộc)') + '.');
   sao.forEach(function (s) {
     var P = PN_SAO[s.n], S = TH_SAO[s.n]; if (!P) return;
     var ham = s.b === 'H';
