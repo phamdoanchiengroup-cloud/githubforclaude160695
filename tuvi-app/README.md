@@ -1,6 +1,6 @@
 # Thiên Cơ Các – Web App Lá Số Tử Vi & Bát Tự (Google Apps Script)
 
-Web app lập lá số **Tử Vi Đẩu Số 12 cung** (phái Việt Nam) kết hợp **Bát Tự – Tứ Trụ**, **Chiêm tinh phương Tây (cung hoàng đạo)**, **Thần số học Pythagoras** và **Human Design**, cùng phần **Luận tổng hợp 5 hệ** (xuất thân, vóc dáng, đặc điểm cơ thể, tính cách, đường đời), nhập ngày sinh theo **Dương lịch hoặc Âm lịch** (có tháng nhuận), lưu lịch sử vào **Google Sheet**. Giao diện sáng, phong cách tiên hiệp.
+Web app lập lá số **Tử Vi Đẩu Số 12 cung** (phái Việt Nam) kết hợp **Bát Tự – Tứ Trụ**, **Chiêm tinh phương Tây (cung hoàng đạo)**, **Thần số học Pythagoras** và **Human Design**, cùng phần **Luận tổng hợp 5 hệ** (xuất thân, vóc dáng, đặc điểm cơ thể, tính cách, đường đời), nhập ngày sinh theo **Dương lịch hoặc Âm lịch** (có tháng nhuận), lưu lịch sử vào **Google Sheet**. Giao diện tối phong cách **huyền bí (mystery)** – đêm sâu, ánh kim, tinh vân; từ khóa/tên sao được tô màu, có biểu đồ trực quan và báo cáo **PDF thương mại** (bìa, tóm lược, mục lục, thương hiệu người luận).
 
 ## Các file
 
@@ -83,3 +83,11 @@ Ngoài tiểu hạn, lưu tinh và Tứ Hóa đại vận, bộ suy luận dùng
 Nguồn tham khảo quy tắc: [Học viện lý số – Tiểu vận](https://hocvienlyso.org/chuong-17-tieu-van.html), [Kabala – Lưu đại hạn](https://hoc.kabala.vn/chuong-7-luu-dai-han/), [lyso.vn – Phân biệt lưu đại vận và lưu tiểu hạn](https://lyso.vn/xem-tu-vi/phan-biet-luu-dai-van-va-luu-tieu-han-t35275/), [tuvilyso.org – Hạn tình cảm](https://tuvilyso.org/forum/topic/20132-han-tinh-cam-va-mot-so-phuong-phap-xem-han-noi-chung/), [tutru.khosachquy.com – Thiên khắc địa xung](http://tutru.khosachquy.com/bat-tu-dai-van-luu-nien-thien-khac-dia-xung-nid-115753.html), mã nguồn [iztro](https://github.com/SylarLong/iztro) (lưu diệu).
 
 Tham khảo Bát Tự chi tiết: [douban – 四柱宫位定义](https://www.douban.com/note/829239302/), [知乎 – 四柱分限断法](https://zhuanlan.zhihu.com/p/710636347), [简书 – 格局的概念及取法](https://www.jianshu.com/p/7ef430db0c26), [阐微堂 – 八字正格格局的取法](https://chanweitang.com/post/82.html), [三命通会 – 论天月德](https://m.gushiwen.cn/guwen/bookv_b0d70c0b58dc.aspx).
+
+## Thiết kế & nội dung báo cáo
+
+- **Giao diện**: toàn bộ màu đi qua token CSS (`:root` = nền tối, `.theme-light` = nền sáng cho bản in). Bảng màu biểu đồ (vàng kim `#b08a2c`, ngọc `#1fa688`, tím `#8a74e0`, san hô `#d9503f`) đã chạy bộ kiểm tra tương phản & mù màu cho cả nền tối và nền sáng.
+- **Tô đậm tự động**: tên sao (tím nhạt), khái niệm then chốt (vàng), tín hiệu tốt (xanh), điều cần lưu ý (đỏ); phần mở đầu trước dấu ":" của mỗi ý được in đậm.
+- **Biểu đồ**: đường vận trình cả đời, điểm hợp tuổi theo năm sinh, cường độ từng lĩnh vực trong năm, cân bằng 4 nguyên tố – đều có tooltip khi rê chuột.
+- **Lời văn**: phần "Chân dung hé lộ" và các câu dẫn viết theo nguyên tắc copywriting – rõ ràng hơn bay bổng, cụ thể (số liệu, năm, x/5 hệ đồng thuận), nói trực tiếp với "bạn", mỗi mục một ý, kết bằng hành động; không phóng đại (tham khảo [coreyhaines31/marketingskills – copywriting](https://github.com/coreyhaines31/marketingskills/blob/main/skills/copywriting/SKILL.md), [robpalmer99/claude-code-copywriting-skills](https://github.com/robpalmer99/claude-code-copywriting-skills)).
+- **PDF**: bìa tràn trang, trang "Chân dung hé lộ", mục lục có số trang + bookmark, trang mở đầu mỗi phần có câu dẫn, trang lời kết, chân trang tiếng Việt kèm thương hiệu/liên hệ người luận; chọn nền tối (đọc trên máy) hoặc sáng (để in).

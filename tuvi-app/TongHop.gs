@@ -580,7 +580,7 @@ function thMayMan_(C) {
 function tongHopLuan(C) {
   var nghe = thNghe_(C);
   var dd = thDuongDoi_(C);
-  return {
+  var T = {
     xuatThan: thXuatThan_(C),
     phoiNgau: phoiNgauLuan(C),
     namNay: thNamNay_(C, C.ctL),
@@ -599,5 +599,66 @@ function tongHopLuan(C) {
       'Đường đời: chồng lớp đại hạn Tử Vi, đại vận Bát Tự, 4 đỉnh cao Thần số, chu kỳ Sao Thổ/Thiên Vương/Nút (chiêm tinh) và ba giai đoạn của Human Design; năm nổi bật lấy từ tab Dự Đoán.',
       'Kết luận chỉ mang tính tham khảo – xu hướng, không phải định mệnh; điểm càng nhiều hệ đồng thuận thì càng đáng lưu tâm.'
     ]
+  };
+  T.tomLuoc = thTomLuoc_(C, T);
+  return T;
+}
+
+/* =========================================================
+ * 8. BẢN TÓM LƯỢC CHÂN DUNG (viết theo lối copywriting: rõ, cụ thể,
+ *    nói trực tiếp với "bạn", mỗi ý một lợi ích/hành động)
+ * ========================================================= */
+var TH_NGUYEN_MAU = {
+  'Tử Vi': ['Đế Vương', 'sinh ra để dẫn dắt – người khác tự nhiên tìm đến bạn khi cần một quyết định'],
+  'Thiên Cơ': ['Quân Sư', 'bộ óc chiến lược – bạn nhìn thấy nước đi tiếp theo trước người khác'],
+  'Thái Dương': ['Mặt Trời', 'nguồn năng lượng tỏa ra – bạn làm ấm và kéo mọi người lại gần'],
+  'Vũ Khúc': ['Tài Thần', 'bản năng tiền bạc và kỷ luật thép – bạn biến nỗ lực thành tài sản'],
+  'Thiên Đồng': ['Phúc Tinh', 'người mang niềm vui – bạn khiến mọi thứ nhẹ nhàng hơn'],
+  'Liêm Trinh': ['Chiến Binh Nguyên Tắc', 'bạn sống theo luật của riêng mình và không chấp nhận sự dễ dãi'],
+  'Thiên Phủ': ['Người Giữ Kho', 'bạn tích lũy, bảo toàn và làm mọi thứ vững chãi lâu dài'],
+  'Thái Âm': ['Nguyệt Quang', 'trực giác tinh tế và chiều sâu cảm xúc – bạn cảm nhận điều người khác bỏ lỡ'],
+  'Tham Lang': ['Kẻ Chinh Phục', 'khát khao trải nghiệm và sức hút tự nhiên – bạn mở ra mọi cánh cửa'],
+  'Cự Môn': ['Nhà Hùng Biện', 'lời nói là vũ khí – bạn thuyết phục, phân tích và vạch trần sự thật'],
+  'Thiên Tướng': ['Người Bảo Hộ', 'công bằng và che chở – bạn là chỗ dựa mà người khác tin cậy'],
+  'Thiên Lương': ['Bậc Hiền Triết', 'bạn mang tâm thế người thầy – cho lời khuyên và chữa lành'],
+  'Thất Sát': ['Tướng Quân', 'dũng mãnh, quyết đoán – bạn mạnh nhất khi phải vượt nghịch cảnh'],
+  'Phá Quân': ['Người Phá Cách', 'bạn phá bỏ cái cũ để dựng cái mới – sinh ra cho những cuộc đổi thay']
+};
+var TH_NT_TINH = { 'Lửa': 'Rực Lửa', 'Đất': 'Vững Chãi', 'Khí': 'Phóng Khoáng', 'Nước': 'Sâu Thẳm' };
+
+function thTomLuoc_(C, T) {
+  var tv = C.tv, bt = C.bt, ct = C.ct, ts = C.ts, hd = C.hd;
+  var menh = thChinhTinh_(tv, tv.palaces[tv.info.menh]), s0 = menh[0] ? menh[0].n : null;
+  var NM = TH_NGUYEN_MAU[s0] || ['Kẻ Lữ Hành', 'bạn linh hoạt, học từ mọi hoàn cảnh và tự định hình con đường của mình'];
+  var nt = CT_CUNG[ct.by.sun.cung].nt, ten = NM[0] + ' ' + TH_NT_TINH[nt];
+  var truc = T.tinhCach.truc.filter(function (x) { return Math.abs(x.gt) > 0.35; }).sort(function (a, b) { return b.tyLe - a.tyLe; });
+  var nghe = T.nghe[0], dd = T.duongDoi, vang = dd.chang.slice().sort(function (a, b) { return b.diem - a.diem; })[0];
+  var nay = dd.chang.filter(function (c) { return c.isNow; })[0];
+  var sang = [], canh = [], khuyen = [];
+  sang.push(NM[1].charAt(0).toUpperCase() + NM[1].slice(1) + '.');
+  if (truc[0]) sang.push(truc[0].moTa.split(':')[0] + ' là nét rõ nhất ở bạn – ' + truc[0].dong.length + ' trên 5 hệ cùng xác nhận.');
+  if (nghe) sang.push('Đất dụng võ: ' + nghe.ten.toLowerCase() + ' (' + nghe.he.length + ' hệ cùng gợi ý).');
+  if (sang.length < 3) sang.push('Tài sản bẩm sinh (số chủ đạo ' + ts.duongDoi + '): ' + TS_SO[ts.duongDoi].manh + '.');
+  var x = T.coThe.vung && T.coThe.vung[0];
+  if (x && x.n >= 2) canh.push('Giữ gìn vùng ' + x.ten.toLowerCase() + ' – ' + x.n + ' hệ cùng cảnh báo.');
+  canh.push('Mặt tối cần canh chừng: ' + CT_CUNG[ct.by.sun.cung].bong + '.');
+  canh.push('Tín hiệu bạn đang đi lệch hướng (Human Design): cảm giác ' + HD_TYPES[hd.loai].saiLech.toLowerCase() + ' kéo dài.');
+  khuyen.push('Ra quyết định lớn theo cách của bạn: ' + HD_TYPES[hd.loai].chienLuoc.toLowerCase() + '.');
+  khuyen.push('Tận dụng dụng thần ' + bt.goiY.dung + ': màu ' + bt.goiY.mau.toLowerCase() + ', hướng ' + bt.goiY.huong + '.');
+  khuyen.push('Bài học đường đời (số ' + ts.duongDoi + '): ' + TS_SO[ts.duongDoi].bh + '.');
+  var pn = T.phoiNgau;
+  return {
+    nguyenMau: ten,
+    tieuDe: 'Bạn là ' + ten,
+    phuDe: NM[1].charAt(0).toUpperCase() + NM[1].slice(1) + '. Mệnh ' + (menh.map(function (s) { return s.n; }).join(' – ') || 'vô chính diệu') + ', nhật chủ ' + bt.nhatChu +
+      ', Mặt Trời ' + ct.by.sun.cungTen + ', số chủ đạo ' + ts.duongDoi + ', ' + HD_TYPES[hd.loai].ten.split(' (')[0] + ' ' + hd.profile + '.',
+    chiSo: [
+      { nhan: 'Giai đoạn vàng', gt: vang ? vang.khoang.replace(' tuổi', '') : '—', phu: vang ? vang.nam : '' },
+      { nhan: 'Năm ' + tv.info.viewYear, gt: T.namNay ? (T.namNay.diem > 0.8 ? 'Thuận lợi' : T.namNay.diem > 0.2 ? 'Khá' : T.namNay.diem > -0.3 ? 'Bình ổn' : 'Thử thách') : '—', phu: nay ? 'chặng ' + nay.khoang : '' },
+      { nhan: 'Tuổi hợp nhất', gt: pn && pn.tuoiHop.tot[0] ? String(pn.tuoiHop.tot[0].nam) : '—', phu: pn && pn.tuoiHop.tot[0] ? pn.tuoiHop.tot[0].canChi + ' · ' + pn.tuoiHop.tot[0].diem + '/10' : '' },
+      { nhan: 'Nghề nổi bật', gt: nghe ? nghe.ten.split(' – ')[0] : '—', phu: nghe ? nghe.he.length + '/5 hệ đồng thuận' : '' }
+    ],
+    diemSang: sang, canhBao: canh, loiKhuyen: khuyen,
+    thoiDiem: 'Thời điểm vàng của bạn: ' + (vang ? vang.khoang + ' (' + vang.nam + ')' : '—') + '. ' + dd.ketLuan[2]
   };
 }

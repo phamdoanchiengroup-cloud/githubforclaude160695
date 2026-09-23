@@ -21,8 +21,8 @@
   <div class="mountains" aria-hidden="true">
     <svg viewBox="0 0 1440 260" preserveAspectRatio="none">
       <defs>
-        <linearGradient id="m1" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#9cc8bd"/><stop offset="1" stop-color="#eef4f1" stop-opacity="0"/></linearGradient>
-        <linearGradient id="m2" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#6fa89b"/><stop offset="1" stop-color="#eef4f1" stop-opacity="0"/></linearGradient>
+        <linearGradient id="m1" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#1e2350"/><stop offset="1" stop-color="#0a0c19" stop-opacity="0"/></linearGradient>
+        <linearGradient id="m2" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#161a3c"/><stop offset="1" stop-color="#0a0c19" stop-opacity="0"/></linearGradient>
       </defs>
       <path d="M0 180 L90 120 L150 150 L240 70 L330 140 L420 100 L520 160 L610 60 L700 130 L790 90 L880 150 L980 80 L1080 140 L1170 100 L1260 150 L1350 90 L1440 130 L1440 260 L0 260Z" fill="url(#m1)" opacity=".7"/>
       <path d="M0 220 L120 160 L210 200 L330 130 L450 210 L560 150 L690 210 L820 140 L940 205 L1060 150 L1190 215 L1310 160 L1440 200 L1440 260 L0 260Z" fill="url(#m2)" opacity=".6"/>
@@ -248,7 +248,7 @@
   <div class="modal" id="pdfModal" role="dialog" aria-modal="true" aria-labelledby="pdfTitle">
     <div class="modal-box panel">
       <h2 class="panel-title" id="pdfTitle"><span class="han">書</span> Tải báo cáo PDF</h2>
-      <p class="muted" style="margin-top:0">Chọn các phần đưa vào PDF (khổ A4). Báo cáo đầy đủ dài khoảng 90–110 trang, mất 30–90 giây để tạo (tùy máy) – giữ nguyên trang trong lúc chờ.</p>
+      <p class="muted" style="margin-top:0">Báo cáo A4 gồm bìa, trang tóm lược, mục lục có số trang, các phần bạn chọn và lời kết. Bản đầy đủ khoảng 100 trang, mất 30–90 giây – giữ nguyên trang trong lúc chờ.</p>
       <div class="pdf-opts" id="pdfOpts">
         <label class="check"><input type="checkbox" value="chart" checked> Lá số Tử Vi (hình) + chi tiết cung Mệnh</label>
         <label class="check"><input type="checkbox" value="luan" checked> Luận giải Tử Vi 12 cung</label>
@@ -260,7 +260,12 @@
         <label class="check"><input type="checkbox" value="hd" checked> Human Design</label>
         <label class="check"><input type="checkbox" value="tong" checked> Tổng luận 5 hệ (xuất thân, vóc dáng, cơ thể, tính cách, phối ngẫu, đường đời)</label>
       </div>
-      <div class="field" style="margin-top:10px">
+      <div class="row c2" style="margin-top:10px">
+        <div class="field"><label for="pdfTheme">Giao diện</label><select id="pdfTheme"><option value="dark">Nền tối huyền bí – đọc trên máy</option><option value="light">Nền sáng – để in</option></select></div>
+        <div class="field"><label for="pdfBrand">Thương hiệu / người luận</label><input type="text" id="pdfBrand" maxlength="60" placeholder="VD: Phòng luận giải An Nhiên"></div>
+      </div>
+      <div class="field"><label for="pdfContact">Liên hệ (hiện ở bìa & chân trang)</label><input type="text" id="pdfContact" maxlength="80" placeholder="VD: Zalo 09xx · fb.com/…"></div>
+      <div class="field" style="margin-top:4px">
         <label for="pdfQuality">Chất lượng</label>
         <select id="pdfQuality"><option value="1.15">Nhẹ – gửi Zalo/email (file nhỏ nhất)</option><option value="1.5" selected>Tiêu chuẩn</option><option value="2.2">Nét – để in (file lớn)</option></select>
       </div>

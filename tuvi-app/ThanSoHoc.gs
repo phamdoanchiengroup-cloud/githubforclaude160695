@@ -108,6 +108,7 @@ function thanSoHocLap(input, solar, viewYear) {
     linhHon += tsRutGon_(nh, true); nhanCach += tsRutGon_(pa, true); suMenh += tsRutGon_(nh + pa, true);
     cb += TS_CHU[w.charAt(0)] || 0;
   });
+  if (!linhHon || !nhanCach) coTen = false; // tên quá ngắn (thiếu nguyên âm hoặc phụ âm)
   var R = { duongDoi: ld, duongDoiGoc: tsGoc_(ld), ngaySinh: ngay, thaiDo: thaiDo, bieuDo: dem, muiTen: muiTen, coTen: coTen, tenChuan: ten };
   if (coTen) {
     R.linhHon = tsRutGon_(linhHon, true); R.nhanCach = tsRutGon_(nhanCach, true); R.suMenh = tsRutGon_(suMenh, true);
