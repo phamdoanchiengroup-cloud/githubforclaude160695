@@ -511,6 +511,69 @@ function thDuongDoi_(C) {
   return { tieuDe: 'Đường đời', chuDe: chuDe, chang: chang, ketLuan: kl };
 }
 
+
+/* =========================================================
+ * 6. NĂM ĐANG XEM THEO 5 HỆ
+ * ========================================================= */
+var TH_NAM_CN = { 1: 1, 2: 0, 3: 0.8, 4: -0.4, 5: 0.4, 6: 0.5, 7: -0.5, 8: 1.4, 9: -0.4 };
+function thNamNay_(C, ctL) {
+  var tv = C.tv, bt = C.bt, ts = C.ts, dd = C.duDoan, vy = tv.info.viewYear, idx = vy - dd.namBatDau, he = [], diem = [];
+  var tot = ['taiLoc', 'quanLoc', 'ketHon', 'sinhCon'], xau = ['sucKhoe', 'taiChinh', 'giaDao'], linhVuc = [];
+  var sT = 0, sX = 0;
+  Object.keys(dd.chuDe).forEach(function (k) {
+    var cd = dd.chuDe[k], v = (cd.diem || [])[idx]; if (v == null) return;
+    linhVuc.push({ ten: cd.ten, loai: cd.loai, diem: v });
+    if (tot.indexOf(k) >= 0) sT += v / tot.length; else sX += v / xau.length;
+  });
+  var tvD = Math.max(-2, Math.min(2, (sT - sX) / 2));
+  he.push({ he: 'Tử Vi', items: (tv.luanGiai.han || []).concat(linhVuc.map(function (l) { return (l.loai === 'xau' ? (l.diem > 1.5 ? '✗ ' : '') : (l.diem > 1.5 ? '✓ ' : '')) + l.ten + ': ' + l.diem; })) });
+  diem.push({ he: 'Tử Vi', v: tvD });
+  var ln = bt.luuNien; he.push({ he: 'Bát Tự', items: ['Lưu niên ' + ln.canChi + ': can ' + ln.thapThan + ', chi ' + ln.chiThapThan + ' – ' + ln.danhGia + '.'].concat(ln.ghiChu || []) });
+  diem.push({ he: 'Bát Tự', v: thDGVan_(ln.danhGia) });
+  he.push({ he: 'Thần số học', items: ['Năm cá nhân ' + ts.namNay + ': ' + TS_NAM[ts.namNay]] });
+  diem.push({ he: 'Thần số học', v: TH_NAM_CN[ts.namNay] });
+  var ai = ctL.namXem.items, aS = 0; ai.forEach(function (x) { if (x.charAt(0) === '✓') aS += 0.5; if (x.charAt(0) === '✗') aS -= 0.6; });
+  he.push({ he: 'Chiêm tinh', items: ai }); diem.push({ he: 'Chiêm tinh', v: Math.max(-2, Math.min(2, aS)) });
+  he.push({ he: 'Human Design', items: ['Chiến lược vẫn là kim chỉ nam mỗi năm: ' + HD_TYPES[C.hd.loai].chienLuoc + '. Khi thấy ' + HD_TYPES[C.hd.loai].saiLech.toLowerCase() + ' kéo dài – đó là tín hiệu đang đi lệch.'] });
+  var t = 0; diem.forEach(function (x) { t += x.v; }); t /= diem.length;
+  var cung = diem.filter(function (x) { return x.v * t > 0; }).map(function (x) { return x.he; });
+  var dg = t > 0.8 ? 'Năm thuận lợi' : t > 0.2 ? 'Năm khá' : t > -0.3 ? 'Năm bình ổn, có cơ hội lẫn thử thách' : 'Năm nhiều thử thách – nên thủ hơn công';
+  var manh = linhVuc.filter(function (l) { return l.loai !== 'xau'; }).sort(function (a, b) { return b.diem - a.diem; })[0];
+  var yeu = linhVuc.filter(function (l) { return l.loai === 'xau'; }).sort(function (a, b) { return b.diem - a.diem; })[0];
+  var kl = [dg + ' (điểm ' + (Math.round(t * 10) / 10) + '; ' + cung.length + '/' + diem.length + ' hệ cùng chiều: ' + cung.join(', ') + ').'];
+  if (manh) kl.push('Lĩnh vực sáng nhất: ' + manh.ten.toLowerCase() + ' (' + manh.diem + ').');
+  if (yeu && yeu.diem > 1) kl.push('✗ Cần phòng: ' + yeu.ten.toLowerCase() + ' (' + yeu.diem + ').');
+  kl.push('Chủ đề thần số: ' + TS_NAM[ts.namNay].split(':')[0] + '; chiêm tinh kích hoạt nhà ' + ctL.namXem.nha + ' (' + CT_NHA[ctL.namXem.nha - 1].y.split(',')[0] + ').');
+  return { tieuDe: 'Năm ' + vy + ' theo 5 hệ', diem: t, ketLuan: kl, nguon: he, linhVuc: linhVuc };
+}
+
+/* =========================================================
+ * 7. BẢNG MAY MẮN
+ * ========================================================= */
+var TH_DA_QUY = ['Kim cương, hồng ngọc', 'Ngọc lục bảo, thạch anh hồng', 'Mã não, ngọc trai', 'Ngọc trai, đá mặt trăng', 'Hồng ngọc, peridot', 'Sapphire xanh, ngọc bích',
+  'Opal, tourmaline', 'Topaz, thạch anh tím', 'Topaz xanh, ngọc lam', 'Garnet, onyx đen', 'Thạch anh tím, aquamarine', 'Aquamarine, đá mặt trăng'];
+var TH_THU = { sun: 'Chủ nhật', moon: 'Thứ Hai', mars: 'Thứ Ba', mercury: 'Thứ Tư', jupiter: 'Thứ Năm', venus: 'Thứ Sáu', saturn: 'Thứ Bảy' };
+var TH_HUONG_QUAI = { 'Khảm': 'Bắc', 'Ly': 'Nam', 'Chấn': 'Đông', 'Tốn': 'Đông Nam', 'Càn': 'Tây Bắc', 'Đoài': 'Tây', 'Cấn': 'Đông Bắc', 'Khôn': 'Tây Nam' };
+function thMayMan_(C) {
+  var bt = C.bt, ct = C.ct, ts = C.ts, tv = C.tv, male = tv.info.male;
+  var quai = pnCungPhi_(tv.info.lunar.year, male), du = PN_DU_NIEN[quai];
+  var huongTot = du.slice(0, 4).map(function (q, i) { return PN_DU_TEN[i] + ': ' + TH_HUONG_QUAI[q]; });
+  var huongXau = du.slice(4).map(function (q, i) { return PN_DU_TEN[i + 4] + ': ' + TH_HUONG_QUAI[q]; });
+  var so = [String(bt.goiY.so), String(tsGoc_(ts.duongDoi)), String(tsGoc_(ts.ngaySinh))].join(', ');
+  return { tieuDe: 'Bảng may mắn', dong: [
+    ['Ngũ hành dụng thần', bt.goiY.dung + ' (hỷ: ' + bt.goiY.hy.join(', ') + '; kỵ: ' + bt.goiY.ky.join(', ') + ')'],
+    ['Màu hợp', bt.goiY.mauHy.join(' · ')],
+    ['Hướng tốt (Bát Tự)', bt.goiY.huong],
+    ['Cung phi – hướng nhà, bàn làm việc', quai + ' (' + (['Khảm', 'Ly', 'Chấn', 'Tốn'].indexOf(quai) >= 0 ? 'Đông tứ mệnh' : 'Tây tứ mệnh') + ') · Tốt: ' + huongTot.join('; ')],
+    ['Hướng nên tránh', huongXau.join('; ')],
+    ['Con số', so + ' (Bát Tự · số chủ đạo · số ngày sinh)'],
+    ['Ngày trong tuần', TH_THU[ct.chuTinh] + ' (ngày của ' + CT_HT[ct.chuTinh].ten + ' – chủ tinh lá số)' + (CT_CUNG[ct.by.sun.cung].chuCo !== ct.chuTinh ? ', ' + TH_THU[CT_CUNG[ct.by.sun.cung].chuCo] + ' (chủ tinh cung Mặt Trời)' : '')],
+    ['Đá quý hợp', TH_DA_QUY[ct.by.sun.cung] + ' (theo Mặt Trời ' + ct.by.sun.cungTen + ')'],
+    ['Nghề hợp dụng thần', bt.goiY.nghe],
+    ['Năm cá nhân tốt để khởi sự', 'các năm cá nhân 1, 3, 8 – gần nhất: ' + ts.chuKy.filter(function (c) { return [1, 3, 8].indexOf(c.so) >= 0 && c.nam >= tv.info.viewYear; }).slice(0, 3).map(function (c) { return c.nam + ' (số ' + c.so + ')'; }).join(', ')]
+  ] };
+}
+
 /* =========================================================
  * HÀM CHÍNH
  * ========================================================= */
@@ -519,6 +582,9 @@ function tongHopLuan(C) {
   var dd = thDuongDoi_(C);
   return {
     xuatThan: thXuatThan_(C),
+    phoiNgau: phoiNgauLuan(C),
+    namNay: thNamNay_(C, C.ctL),
+    mayMan: thMayMan_(C),
     vocDang: thVocDang_(C),
     coThe: thCoThe_(C),
     tinhCach: thTinhCach_(C),
@@ -529,6 +595,7 @@ function tongHopLuan(C) {
       'Xuất thân: Tử Vi (Phụ Mẫu – Phúc Đức – Điền Trạch, Tuần/Triệt ở Mệnh, Thiên Mã), Bát Tự (niên trụ = tổ nghiệp, nguyệt trụ = cha mẹ; Ấn/Tài/Kiếp ở trụ năm – tháng, Dịch Mã), Chiêm tinh (nhà 4/IC, Mặt Trăng, Sao Thổ, Sao Mộc), Thần số học (số 4, 6, đỉnh cao thứ nhất).',
       'Vóc dáng: hình tướng chính tinh Mệnh – Thân (cổ thư Tử Vi), hình tướng ngũ hành của nhật chủ và hành vượng (Bát Tự – "Ngũ hành hình tướng"), cung Mọc – chủ tinh lá số – hành tinh nhà 1 (chiêm tinh cổ điển, Ptolemy/Alan Leo).',
       'Đặc điểm cơ thể: sát tinh/Hóa Kỵ/Xương Khúc ở Mệnh – Thân – Tật (Tử Vi), ngũ hành thái quá/bất cập ↔ tạng phủ (Hoàng Đế Nội Kinh), Sao Hỏa – Sao Thổ – cung Mọc – nhà 6 ↔ bộ phận theo cung (Melothesia), trung tâm mở ↔ tuyến nội tiết (Human Design).',
+      'Phối ngẫu: cung Phu Thê (Tử Vi), nhật chi & sao phối ngẫu – Tài tinh với nam, Quan tinh với nữ (Bát Tự), cung Lặn/nhà 7, Sao Kim – Sao Hỏa (chiêm tinh), nhóm số chủ đạo (Thần số), trung tâm mở – cổng treo (Human Design); năm sinh phù hợp chấm thang 10 theo 5 tiêu chí xem tuổi truyền thống.',
       'Đường đời: chồng lớp đại hạn Tử Vi, đại vận Bát Tự, 4 đỉnh cao Thần số, chu kỳ Sao Thổ/Thiên Vương/Nút (chiêm tinh) và ba giai đoạn của Human Design; năm nổi bật lấy từ tab Dự Đoán.',
       'Kết luận chỉ mang tính tham khảo – xu hướng, không phải định mệnh; điểm càng nhiều hệ đồng thuận thì càng đáng lưu tâm.'
     ]

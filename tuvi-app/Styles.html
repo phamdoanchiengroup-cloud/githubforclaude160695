@@ -632,6 +632,49 @@ details.yr summary em { font-style: normal; font-weight: 700; font-size: 12.5px;
 .nghe { border: 1px solid var(--line); border-radius: 10px; padding: 8px 10px; background: #fffdf7; display: flex; flex-direction: column; gap: 4px; }
 .nghe b { color: var(--jade-deep); font-size: 14px; }
 
+.tuoi-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(118px, 1fr)); gap: 8px; margin: 8px 0; }
+.tuoi { border: 1px solid var(--line); border-radius: 10px; padding: 7px 8px; background: #fffdf7; display: flex; flex-direction: column; gap: 2px; font-size: 12.5px; position: relative; }
+.tuoi b { font-size: 15px; color: var(--jade-deep); } .tuoi span { color: var(--ink-soft); }
+.tuoi em { font-style: normal; font-weight: 600; } .tuoi small { color: var(--ink-soft); font-size: 11px; }
+.tuoi.top { border: 2px solid var(--gold); box-shadow: 0 2px 8px rgba(200,155,60,.25); }
+.tuoi.top::after { content: '★'; position: absolute; right: 7px; top: 5px; color: var(--gold-deep); }
+.tb { display: block; height: 5px; background: #eee6d3; border-radius: 3px; overflow: hidden; } .tb u { display: block; height: 100%; background: var(--jade); }
+.tuoi.r0 .tb u { background: var(--hoa); } .tuoi.r2 .tb u { background: var(--tho); }
+.tuoi.r5 em, .thg.r5 em { color: var(--moc); } .tuoi.r0 em, .thg.r0 em { color: var(--hoa); }
+.thang-grid { display: grid; grid-template-columns: repeat(12, 1fr); gap: 5px; margin: 6px 0; }
+@media (max-width: 760px) { .thang-grid { grid-template-columns: repeat(6, 1fr); } }
+.thg { border: 1px solid var(--line); border-radius: 8px; padding: 5px 2px; text-align: center; background: #fffdf7; display: flex; flex-direction: column; font-size: 12px; }
+.thg b { color: var(--jade-deep); } .thg small { font-size: 10.5px; color: var(--ink-soft); } .thg em { font-style: normal; font-weight: 700; }
+.thg.r5, .thg.r4 { background: #eef8f2; } .thg.r0, .thg.r1 { background: #fbeeec; }
+.mm-tbl th { text-align: left; width: 34%; color: var(--jade-deep); font-weight: 600; vertical-align: top; }
+
+/* ---------- Hộp thoại & báo cáo PDF ---------- */
+.modal { position: fixed; inset: 0; background: rgba(20, 30, 28, .45); display: none; align-items: center; justify-content: center; z-index: 60; padding: 16px; }
+.modal.show { display: flex; }
+.modal-box { max-width: 560px; width: 100%; max-height: 90vh; overflow: auto; }
+.pdf-opts { display: grid; gap: 6px; }
+.modal-actions { display: flex; gap: 8px; align-items: center; margin-top: 14px; flex-wrap: wrap; }
+.pdf-root { position: absolute; left: -12000px; top: 0; width: 820px; background: #fffdf8; font-size: 14px; }
+.pdf-root .panel { box-shadow: none; margin: 0 0 8px; }
+.pdf-root, .pdf-root * { animation: none !important; transition: none !important; }
+.pdf-root .lg-grid, .pdf-root .nghe-list { grid-template-columns: 1fr 1fr; }
+.pdf-root .astro-top { grid-template-columns: 380px 1fr; }
+.pdf-root .tuoi-grid { grid-template-columns: repeat(6, 1fr); }
+.pdf-root .tbl-wrap { overflow: visible; }
+.pdf-h { font-family: var(--font-title); font-size: 26px; color: #fff; background: linear-gradient(90deg, var(--jade-deep), var(--jade)); padding: 14px 18px; border-radius: 12px; margin: 0 0 10px; }
+.pdf-h span { display: block; font-size: 12px; letter-spacing: 2px; text-transform: uppercase; opacity: .8; }
+.pdf-chart { width: 100%; display: block; }
+.pdf-cover { padding: 50px 46px; min-height: 1150px; background: linear-gradient(180deg, #eef6f3, #fffdf8 40%); border: 2px solid var(--gold); border-radius: 18px; }
+.pdf-cover h1 { font-family: var(--font-title); font-size: 46px; color: var(--jade-deep); margin: 16px 0 0; }
+.pdf-cover .pc-sub { color: var(--gold-deep); letter-spacing: 1px; margin: 4px 0 30px; }
+.pdf-cover h2 { font-family: var(--font-title); font-size: 34px; margin: 0 0 14px; color: var(--ink); }
+.pdf-cover h3 { color: var(--jade-deep); margin: 26px 0 6px; }
+.pc-seal { width: 78px; height: 78px; border-radius: 16px; background: #b8322a; color: #fff; font-family: var(--font-han); font-size: 46px; display: flex; align-items: center; justify-content: center; }
+.pc-tbl { width: 100%; border-collapse: collapse; font-size: 15px; }
+.pc-tbl th { text-align: left; width: 150px; color: var(--jade-deep); padding: 7px 8px; border-bottom: 1px dashed var(--line); vertical-align: top; }
+.pc-tbl td { padding: 7px 8px; border-bottom: 1px dashed var(--line); }
+.pc-toc { columns: 2; font-size: 15px; } .pc-foot { margin-top: 40px; color: var(--ink-soft); font-size: 13px; }
+
 @media print {
   .sky, .mountains, .form-panel, .tabs, .toolbar, .app-header .header-actions, .footer, .palace-detail { display: none !important; }
   .layout { grid-template-columns: 1fr; }

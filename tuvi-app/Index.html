@@ -33,9 +33,10 @@
     <div class="seal" title="Thiên Cơ">天機</div>
     <div class="brand">
       <h1>Thiên Cơ Các</h1>
-      <p><span class="han">紫微斗數 · 八字</span> Lập lá số Tử Vi 12 cung & luận Bát Tự – Tứ Trụ</p>
+      <p><span class="han">紫微斗數 · 八字 · 星盤</span> Tử Vi · Bát Tự · Chiêm tinh · Thần số học · Human Design</p>
     </div>
     <div class="header-actions">
+      <button class="btn btn-ghost btn-sm" id="btnPdfTop" type="button" style="display:none">⤓ Tải PDF</button>
       <button class="btn btn-ghost btn-sm" id="btnHistoryTop" type="button">☰ Lịch sử</button>
     </div>
   </header>
@@ -203,6 +204,7 @@
               <span class="sp"></span>
               <div class="legend"><span class="h-Kim">Kim</span><span class="h-Mộc">Mộc</span><span class="h-Thủy">Thủy</span><span class="h-Hỏa">Hỏa</span><span class="h-Thổ">Thổ</span></div>
               <button class="btn btn-ghost btn-sm" id="btnPng" type="button">⤓ Tải ảnh</button>
+              <button class="btn btn-ghost btn-sm" id="btnPdf" type="button">⤓ Tải PDF</button>
               <button class="btn btn-ghost btn-sm" id="btnPrint" type="button">⎙ In</button>
             </div>
             <div class="chart-scroll">
@@ -238,13 +240,42 @@
         <path d="M50 4a46 46 0 0 1 0 92a23 23 0 0 1 0-46a23 23 0 0 0 0-46z" fill="#1f7a70"/>
         <circle cx="50" cy="27" r="6" fill="#1f7a70"/><circle cx="50" cy="73" r="6" fill="#fff"/>
       </svg>
-      <p>Đang khởi quẻ, an sao…</p>
+      <p id="loadingText">Đang khởi quẻ, an sao…</p>
     </div>
   </div>
   <div class="toast" id="toast"></div>
 
+  <div class="modal" id="pdfModal" role="dialog" aria-modal="true" aria-labelledby="pdfTitle">
+    <div class="modal-box panel">
+      <h2 class="panel-title" id="pdfTitle"><span class="han">書</span> Tải báo cáo PDF</h2>
+      <p class="muted" style="margin-top:0">Chọn các phần đưa vào PDF (khổ A4). Báo cáo đầy đủ dài khoảng 90–110 trang, mất 30–90 giây để tạo (tùy máy) – giữ nguyên trang trong lúc chờ.</p>
+      <div class="pdf-opts" id="pdfOpts">
+        <label class="check"><input type="checkbox" value="chart" checked> Lá số Tử Vi (hình) + chi tiết cung Mệnh</label>
+        <label class="check"><input type="checkbox" value="luan" checked> Luận giải Tử Vi 12 cung</label>
+        <label class="check"><input type="checkbox" value="van" checked> Vận hạn (đại – tiểu – nguyệt – nhật vận)</label>
+        <label class="check"><input type="checkbox" value="dudoan" checked> Dự đoán cả đời</label>
+        <label class="check"><input type="checkbox" value="battu" checked> Bát Tự</label>
+        <label class="check"><input type="checkbox" value="astro" checked> Chiêm tinh (bản đồ sao)</label>
+        <label class="check"><input type="checkbox" value="so" checked> Thần số học</label>
+        <label class="check"><input type="checkbox" value="hd" checked> Human Design</label>
+        <label class="check"><input type="checkbox" value="tong" checked> Tổng luận 5 hệ (xuất thân, vóc dáng, cơ thể, tính cách, phối ngẫu, đường đời)</label>
+      </div>
+      <div class="field" style="margin-top:10px">
+        <label for="pdfQuality">Chất lượng</label>
+        <select id="pdfQuality"><option value="1.15">Nhẹ – gửi Zalo/email (file nhỏ nhất)</option><option value="1.5" selected>Tiêu chuẩn</option><option value="2.2">Nét – để in (file lớn)</option></select>
+      </div>
+      <div class="modal-actions">
+        <button type="button" class="btn btn-ghost btn-sm" id="pdfAll">Chọn/bỏ tất cả</button>
+        <span style="flex:1"></span>
+        <button type="button" class="btn btn-ghost" id="pdfCancel">Hủy</button>
+        <button type="button" class="btn btn-primary" id="pdfGo">⤓ Tạo PDF</button>
+      </div>
+    </div>
+  </div>
+
   <script>var INITIAL_PARAMS = <?!= initialParams ?>;</script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <?!= include('Script'); ?>
 </body>
 </html>

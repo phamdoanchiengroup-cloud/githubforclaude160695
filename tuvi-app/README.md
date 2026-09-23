@@ -17,10 +17,11 @@ Web app lập lá số **Tử Vi Đẩu Số 12 cung** (phái Việt Nam) kết 
 | `ChiemTinh.gs` | Chiêm tinh: 12 cung, nhà Placidus, phẩm chất miếu/vượng/hãm/tù, góc chiếu có orb, nguyên tố – tính chất, pha Mặt Trăng, chủ tinh lá số, ngoại hình theo cung Mọc, dấu hiệu cơ thể (Sao Hỏa/Sao Thổ/nhà 6), gốc gác (nhà 4), nghề (MC), chu kỳ Sao Thổ/Sao Mộc/Thiên Vương/Nút theo ngày quá cảnh thực, hồ sơ năm (profection) |
 | `HumanDesign.gs` | Human Design: 26 kích hoạt (Tính cách + Thiết kế 88°), 9 trung tâm, 36 kênh, Loại, Chiến lược, Thẩm quyền, Hồ sơ, Định nghĩa, Giao điểm hóa thân, sinh học trung tâm |
 | `ThanSoHoc.gs` | Thần số học: số chủ đạo (2–11, 22, 33), ngày sinh, thái độ, biểu đồ ngày sinh & 15 mũi tên, biểu đồ tên tiếng Việt (linh hồn, nhân cách, sứ mệnh, trưởng thành, cân bằng, bài học nghiệp, đam mê ẩn), 4 đỉnh cao – thử thách, năm/tháng cá nhân |
-| `TongHop.gs` | Luận tổng hợp 5 hệ bằng "bỏ phiếu" độc lập & độ đồng thuận: xuất thân – gia cảnh, vóc dáng – diện mạo, vùng cơ thể có dấu vết/cần giữ gìn, tính cách 5 trục, chủ đề đời – nghề nghiệp – các chặng đời |
+| `TongHop.gs` | Luận tổng hợp 5 hệ bằng "bỏ phiếu" độc lập & độ đồng thuận: xuất thân – gia cảnh, vóc dáng – diện mạo, vùng cơ thể có dấu vết/cần giữ gìn, tính cách 5 trục, phối ngẫu tương lai, chủ đề đời – nghề nghiệp – các chặng đời, năm đang xem theo 5 hệ, bảng may mắn |
+| `PhoiNgau.gs` | Chân dung vợ/chồng tương lai từ 5 hệ (ngoại hình, tính cách, chênh tuổi, nơi gặp, chất lượng hôn nhân, năm dễ cưới) + chấm điểm năm sinh (thang 10: nạp âm, thiên can, địa chi, cung phi Bát trạch, thiên mệnh + dụng thần) và tháng sinh âm/dương lịch phù hợp |
 | `Index.html` | Khung trang |
 | `Styles.html` | CSS |
-| `Script.html` | JS trình duyệt: form, vẽ lá số 4×4, tam hợp–xung chiếu, tab luận giải, xuất PNG / in |
+| `Script.html` | JS trình duyệt: form, vẽ lá số 4×4, tam hợp–xung chiếu, bánh xe bản đồ sao, bodygraph, tab luận giải, xuất PNG / **PDF (A4, có bìa, chọn phần)** / in |
 | `appsscript.json` | Manifest (V8, múi giờ Asia/Ho_Chi_Minh, cấu hình web app) |
 
 ## Cài đặt
