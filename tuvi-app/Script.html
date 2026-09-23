@@ -60,6 +60,8 @@
     fillSelect($('minute'), 0, 59, function (i) { return pad(i) + ' phút'; }, 0);
     $('year').value = 1995;
     $('viewYear').value = new Date().getFullYear();
+    var td = new Date();
+    $('viewDate').value = td.getFullYear() + '-' + pad(td.getMonth() + 1) + '-' + pad(td.getDate());
 
     var saved = null;
     try { saved = JSON.parse(storeGet('tcc_last_input') || 'null'); } catch (e) { saved = null; }
@@ -97,6 +99,7 @@
       leap: $('leap').checked,
       hour: parseInt($('hour').value, 10), minute: parseInt($('minute').value, 10),
       viewYear: parseInt($('viewYear').value, 10) || new Date().getFullYear(),
+      viewDate: $('viewDate').value,
       lateRat: $('lateRat').checked,
       leapMode: $('leapMode').value,
       trueSolar: $('trueSolar').checked,
@@ -116,6 +119,7 @@
     if (v.hour != null && v.hour !== '') $('hour').value = v.hour;
     if (v.minute != null && v.minute !== '') $('minute').value = v.minute;
     if (v.viewYear) $('viewYear').value = v.viewYear;
+    if (v.viewDate) $('viewDate').value = v.viewDate;
     if (v.lateRat != null) $('lateRat').checked = v.lateRat !== false && v.lateRat !== 'false';
     if (v.leapMode) $('leapMode').value = v.leapMode;
     if (v.trueSolar != null) { $('trueSolar').checked = v.trueSolar === true || v.trueSolar === 'true'; $('lonWrap').style.display = $('trueSolar').checked ? '' : 'none'; }
@@ -180,6 +184,7 @@
     $('chartArea').style.display = '';
     renderChart(res);
     renderLuan(res);
+    renderVan(res);
     renderBatTu(res);
     renderTong(res);
     showTab('chart');
@@ -367,7 +372,91 @@
   }
 
   function scorePct(d) { return Math.max(4, Math.min(100, Math.round((d + 6) / 16 * 100))); }
-  function rateClass(d) { return d >= 5 ? 'r5' : d >= 2.5 ? 'r4' : d >= 0.5 ? 'r3' : d > -1.5 ? 'r2' : 'r1'; }
+  function rateClass(d) { return d >= 5 ? 'r5' : d >= 2.5 ? 'r4' : d >= 0.5 ? 'r3' : d > -1.5 ? 'r2' : d > -4 ? 'r1' : 'r0'; }
+
+  /* ---------- Khối luận giải dùng chung ---------- */
+  function itemHtml(x) {
+    var t = String(x), cls = '';
+    if (t.charAt(0) === '✓') cls = 'good'; else if (t.charAt(0) === '✗') cls = 'bad'; else if (t.charAt(0) === '◇') cls = 'mid';
+    return '<li class="' + cls + '">' + esc(t.replace(/^[✓✗◇]\s*/, '')) + '</li>';
+  }
+  function blockHtml(item, title, meta, open, id) {
+    return '<details class="lg-block"' + (open ? ' open' : '') + (id ? ' id="' + id + '"' : '') + '><summary>' +
+      '<span class="lg-t">' + esc(title) + '</span>' + (meta ? '<span class="lg-meta">' + esc(meta) + '</span>' : '') +
+      '<span class="rate ' + rateClass(item.diem) + '">' + esc(item.danhGia) + '</span></summary>' +
+      '<div class="meter"><i style="width:' + scorePct(item.diem) + '%"></i></div>' +
+      '<div class="lg-body">' + item.secs.map(function (sec) {
+        return '<div class="lg-sec"><h5>' + esc(sec.tieuDe) + '</h5><ul>' + sec.items.map(itemHtml).join('') + '</ul></div>';
+      }).join('') + '</div></details>';
+  }
+  function coSoHtml(title, arr) {
+    return '<details class="coso"><summary>📖 ' + esc(title) + '</summary><ol>' + arr.map(function (x) { return '<li>' + esc(x) + '</li>'; }).join('') + '</ol></details>';
+  }
+  function stripHtml(list, labelFn, subFn, activeFn, target) {
+    return '<div class="strip">' + list.map(function (x, i) {
+      return '<button type="button" class="strip-item ' + rateClass(x.diem) + (activeFn(x) ? ' now' : '') + '" data-target="' + target + i + '">' +
+        '<b>' + esc(labelFn(x)) + '</b><small>' + esc(subFn(x)) + '</small><i style="height:' + scorePct(x.diem) + '%"></i>' +
+        '<em>' + esc(x.danhGia) + '</em></button>';
+    }).join('') + '</div>';
+  }
+
+  /* ---------- Tab Vận hạn ---------- */
+  function renderVan(res) {
+    var CT = res.chiTiet, I = res.tuvi.info;
+    var html = '<div class="subtabs" id="vanTabs">' +
+      '<button type="button" class="subtab active" data-v="dai">Đại vận</button>' +
+      '<button type="button" class="subtab" data-v="tieu">Tiểu vận ' + I.viewYear + '</button>' +
+      '<button type="button" class="subtab" data-v="nguyet">Nguyệt vận</button>' +
+      '<button type="button" class="subtab" data-v="nhat">Nhật vận</button></div>';
+
+    // Đại vận
+    html += '<div class="van-page active" id="van-dai"><div class="panel section"><h2 class="panel-title"><span class="han">大限</span> Đại vận 10 năm</h2>' +
+      coSoHtml('Cơ sở lý luận đại vận', CT.coSo.daiVan) +
+      stripHtml(CT.daiVan, function (d) { return d.khoang; }, function (d) { return d.cung + ' · ' + d.nam; }, function (d) { return d.isNow; }, 'dv-') +
+      '<div class="lg-list">' + CT.daiVan.map(function (d, i) {
+        return blockHtml(d, 'Đại vận ' + d.khoang + (d.isNow ? ' ★ hiện tại' : ''), 'Cung ' + d.cung + ' (' + d.canChi + ') · ' + d.sao + ' · năm ' + d.nam, d.isNow, 'dv-' + i);
+      }).join('') + '</div></div></div>';
+
+    // Tiểu vận
+    var T = CT.tieuVan;
+    html += '<div class="van-page" id="van-tieu"><div class="panel section"><h2 class="panel-title"><span class="han">流年</span> Tiểu vận – Lưu niên</h2>' +
+      coSoHtml('Cơ sở lý luận tiểu vận', CT.coSo.tieuVan) +
+      stripHtml(CT.tieuVanNhieuNam, function (y) { return y.nam + ''; }, function (y) { return y.canChi + ' · ' + y.cung; }, function (y) { return y.nam === I.viewYear; }, 'tv-') +
+      '<p class="muted" style="font-size:12.5px">Đổi "Năm xem hạn" trong Tùy chọn nâng cao để luận chi tiết năm khác.</p>' +
+      blockHtml(T, 'Năm ' + T.nam + ' ' + T.canChi + ' · ' + T.tuoi + ' tuổi', 'Tiểu hạn tại ' + T.cung + ' (' + T.chi + ')', true) + '</div></div>';
+
+    // Nguyệt vận
+    html += '<div class="van-page" id="van-nguyet"><div class="panel section"><h2 class="panel-title"><span class="han">流月</span> Nguyệt vận năm ' + I.viewYear + '</h2>' +
+      coSoHtml('Cơ sở lý luận nguyệt vận', CT.coSo.nguyetVan) +
+      stripHtml(CT.nguyetVan, function (m) { return 'Th.' + m.thang; }, function (m) { return m.canChi + ' · ' + m.cung; }, function () { return false; }, 'nv-') +
+      '<div class="lg-grid">' + CT.nguyetVan.map(function (m, i) {
+        return blockHtml(m, m.ten + ' · ' + m.canChi, 'từ ' + m.batDau + ' · cung ' + m.cung, false, 'nv-' + i);
+      }).join('') + '</div></div></div>';
+
+    // Nhật vận
+    html += '<div class="van-page" id="van-nhat"><div class="panel section"><h2 class="panel-title"><span class="han">流日</span> Nhật vận 7 ngày</h2>' +
+      coSoHtml('Cơ sở lý luận nhật vận', CT.coSo.nhatVan) +
+      stripHtml(CT.nhatVan, function (d) { return d.thu; }, function (d) { return d.ngay + ' · ' + d.canChi; }, function (d, i) { return false; }, 'nd-') +
+      '<p class="muted" style="font-size:12.5px">Chọn "Ngày xem nhật vận" trong Tùy chọn nâng cao để xem tuần khác.</p>' +
+      '<div class="lg-list">' + CT.nhatVan.map(function (d, i) {
+        return blockHtml(d, d.thu + ' ' + d.ngay + ' (ÂL ' + d.am + ')', d.canChi + ' · ' + (d.hoangDao ? '☀ Hoàng đạo ' : '☾ Hắc đạo ') + d.than + ' · trực ' + d.truc, i === 0, 'nd-' + i);
+      }).join('') + '</div></div></div>';
+
+    var page = $('page-van');
+    page.innerHTML = html;
+    page.querySelectorAll('.subtab').forEach(function (b) {
+      b.addEventListener('click', function () {
+        page.querySelectorAll('.subtab').forEach(function (x) { x.classList.toggle('active', x === b); });
+        page.querySelectorAll('.van-page').forEach(function (x) { x.classList.toggle('active', x.id === 'van-' + b.getAttribute('data-v')); });
+      });
+    });
+    page.querySelectorAll('.strip-item').forEach(function (b) {
+      b.addEventListener('click', function () {
+        var el = document.getElementById(b.getAttribute('data-target'));
+        if (el) { el.open = true; el.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
+      });
+    });
+  }
 
   function renderLuan(res) {
     var L = res.tuvi.luanGiai;
@@ -379,12 +468,11 @@
       L.cachCuc.map(function (c) {
         return '<div class="cc-item ' + (c.tot === true ? 'good' : c.tot === false ? 'bad' : 'mid') + '"><b>' + esc(c.ten) + '</b><small>' + esc(c.moTa) + '</small></div>';
       }).join('') + '</div></div>';
-    html += '<div class="panel section"><h2 class="panel-title"><span class="han">宮</span> Luận 12 cung</h2><div class="cung-cards">' +
-      L.cung.map(function (c) {
-        return '<div class="cung-card"><h4>' + esc(c.cung) + ' <small class="muted" style="font-weight:400">· ' + esc(c.chi) + (c.isThan ? ' · Thân' : '') + '</small>' +
-          '<span class="rate ' + rateClass(c.diem) + '">' + esc(c.danhGia) + '</span></h4>' +
-          '<div class="yn">' + esc(c.yNghia) + '</div><div class="meter"><i style="width:' + scorePct(c.diem) + '%"></i></div><ul>' +
-          c.lines.map(function (x) { return '<li>' + esc(x) + '</li>'; }).join('') + '</ul></div>';
+    var CT = res.chiTiet;
+    html += '<div class="panel section"><h2 class="panel-title"><span class="han">宮</span> Luận 12 cung chuyên sâu</h2>' +
+      coSoHtml('Cơ sở lý luận luận cung', CT.coSo.cung) +
+      '<div class="lg-list">' + CT.cung.map(function (c, i) {
+        return blockHtml(c, 'Cung ' + c.cung + (c.isThan ? ' · Thân cư' : ''), c.canChi, i === 0);
       }).join('') + '</div></div>';
     html += '<div class="panel section"><h2 class="panel-title"><span class="han">運</span> Vận hạn năm ' + res.tuvi.info.viewYear + '</h2><ul>' +
       L.han.map(function (x) { return '<li>' + esc(x) + '</li>'; }).join('') + '</ul></div>';

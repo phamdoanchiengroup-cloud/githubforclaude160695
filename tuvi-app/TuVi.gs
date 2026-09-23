@@ -479,7 +479,8 @@ function tuviLapLaSo(input) {
 
   var info = {
     name: input.name || 'Vô Danh',
-    gender: male ? 'Nam' : 'Nữ',
+    gender: male ? 'Nam' : 'Nữ', male: male,
+    yCan: yCan, yChi: yChi, thangAn: m, ngayAn: d,
     solar: t.solar, lunar: ld, hour: t.hour, minute: t.minute,
     hourChi: hourChi, gioTen: CHI[hourChi] + ' (' + GIO_CHI[hourChi] + ')',
     canNam: CAN[yCan], chiNam: CHI[yChi], namCanChi: canChiText(yCan, yChi), conGiap: CON_GIAP[yChi],

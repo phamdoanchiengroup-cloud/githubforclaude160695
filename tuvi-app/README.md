@@ -10,6 +10,7 @@ Web app lập lá số **Tử Vi Đẩu Số 12 cung** (phái Việt Nam) kết 
 | `Lunar.gs` | Âm lịch Việt Nam (thuật toán Hồ Ngọc Đức, GMT+7), kinh độ mặt trời, tiết khí |
 | `TuVi.gs` | An Mệnh/Thân, Cục, 14 chính tinh + miếu hãm, ~90 phụ tinh, Tứ Hóa, vòng Tràng Sinh / Bác Sĩ / Thái Tuế, Tuần, Triệt, Đại hạn, Tiểu hạn, lưu niên, luận giải & cách cục |
 | `BatTu.gs` | Tứ trụ theo tiết khí, tàng can, thập thần, nạp âm, trường sinh, vượng suy, dụng thần, thần sát, hợp–xung–hình–hại, đại vận, tổng luận kết hợp |
+| `LuanGiai.gs` | Luận chuyên sâu: 12 cung (cơ sở lý luận, bộ chính tinh, tam phương tứ chính, nhị hợp, giáp cung, bộ phụ tinh, sao đặc thù), Đại vận (Tứ Hóa & Lộc Kình Đà đại vận, cung chức hạn, đối chiếu Bát Tự), Tiểu vận (lưu tinh, trùng phùng), Nguyệt vận 12 tháng, Nhật vận 7 ngày (Hoàng/Hắc đạo, Thập nhị trực, giờ tốt) |
 | `Index.html` | Khung trang |
 | `Styles.html` | CSS |
 | `Script.html` | JS trình duyệt: form, vẽ lá số 4×4, tam hợp–xung chiếu, tab luận giải, xuất PNG / in |

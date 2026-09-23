@@ -8,6 +8,7 @@
  *    Lunar.gs     – âm lịch, tiết khí
  *    TuVi.gs      – an sao Tử Vi 12 cung + luận giải
  *    BatTu.gs     – Bát Tự (Tứ Trụ), ngũ hành, đại vận
+ *    LuanGiai.gs  – luận 12 cung chuyên sâu, đại vận, tiểu vận, nguyệt vận, nhật vận
  *    Index.html   – khung giao diện
  *    Styles.html  – CSS (phong cách tiên hiệp sáng)
  *    Script.html  – JavaScript phía trình duyệt (vẽ lá số)
@@ -46,6 +47,7 @@ function lapLaSo(input) {
     tuvi: tv,
     battu: bt,
     ketHop: ketHopLuan(tv, bt),
+    chiTiet: luanChiTiet(tv, bt, input),
     saoInfo: SAO,
     createdAt: new Date().toISOString()
   };
