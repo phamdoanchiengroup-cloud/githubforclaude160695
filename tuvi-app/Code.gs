@@ -9,6 +9,7 @@
  *    TuVi.gs      – an sao Tử Vi 12 cung + luận giải
  *    BatTu.gs     – Bát Tự (Tứ Trụ), ngũ hành, đại vận
  *    LuanGiai.gs  – luận 12 cung chuyên sâu, đại vận, tiểu vận, nguyệt vận, nhật vận
+ *    BatTuChiTiet.gs – luận Bát Tự chi tiết: cung vị tứ trụ, lục thân, cách cục, thần sát mở rộng
  *    DuDoan.gs    – suy luận các năm biến cố sức khỏe/tài chính/gia đạo, kết hôn, sinh con, tài lộc, quan lộc
  *    Index.html   – khung giao diện
  *    Styles.html  – CSS (phong cách tiên hiệp sáng)
@@ -45,7 +46,7 @@ function include(filename) {
 var FILE_HTML_CAN_CO = { 'Index': '<!DOCTYPE html>', 'Styles': '<style>', 'Script': '<script>' };
 var HAM_CAN_CO = {
   'Lunar.gs': 'solarToLunar', 'TuVi.gs': 'tuviLapLaSo', 'BatTu.gs': 'batTuLap',
-  'LuanGiai.gs': 'luanChiTiet', 'DuDoan.gs': 'duDoanCuocDoi'
+  'LuanGiai.gs': 'luanChiTiet', 'DuDoan.gs': 'duDoanCuocDoi', 'BatTuChiTiet.gs': 'batTuChiTiet'
 };
 
 /** Trả về danh sách lỗi cài đặt (rỗng nếu mọi thứ đúng) */
@@ -85,7 +86,7 @@ function trangLoiCaiDat_(loi) {
 /** Chạy hàm này trong trình soạn thảo (chọn kiemTraCaiDat → Chạy) để xem lỗi trong Nhật ký thực thi */
 function kiemTraCaiDat() {
   var loi = kiemTraCaiDat_();
-  if (!loi.length) { Logger.log('✔ Cài đặt đúng: đủ 6 file .gs và 3 file HTML.'); return; }
+  if (!loi.length) { Logger.log('✔ Cài đặt đúng: đủ 7 file .gs và 3 file HTML.'); return; }
   loi.forEach(function (x) { Logger.log('✘ ' + x.replace(/<[^>]+>/g, '').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&amp;/g, '&')); });
 }
 
@@ -107,6 +108,7 @@ function lapLaSo(input) {
   };
   result.chiTiet = luanChiTiet(tv, bt, input);
   result.duDoan = duDoanCuocDoi(tv, bt, input, result.chiTiet.daiVan);
+  result.battuChiTiet = batTuChiTiet(bt, input, tv);
   if (input.save) {
     try { luuLichSu_(input, result); result.saved = true; } catch (err) { result.saveError = String(err && err.message || err); }
   }

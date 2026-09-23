@@ -467,6 +467,17 @@ details.yr summary em { font-style: normal; font-weight: 700; font-size: 12.5px;
 .gio-tbl tr.best td { background: #eef8f2; } .gio-tbl tr.cur td:first-child { box-shadow: inset 3px 0 0 var(--gold); }
 @media (max-width: 640px) { .gio-tbl th:nth-child(3), .gio-tbl td:nth-child(3), .gio-tbl th:nth-child(5), .gio-tbl td:nth-child(5) { display: none; } }
 
+/* ---------- Bát tự chi tiết ---------- */
+.cach-head { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin: 4px 0 6px; }
+.cach-head b { font-family: var(--font-title); font-size: 26px; color: var(--cinnabar); }
+.cach-head .rate { font-size: 12px; padding: 3px 10px; border-radius: 999px; }
+.yr-ly li.good { list-style: none; margin-left: -18px; padding-left: 18px; position: relative; }
+.yr-ly li.good::before { content: '✓'; position: absolute; left: 0; color: var(--moc); font-weight: 700; }
+.yr-ly li.bad { list-style: none; margin-left: -18px; padding-left: 18px; position: relative; }
+.yr-ly li.bad::before { content: '✗'; position: absolute; left: 0; color: var(--hoa); font-weight: 700; }
+.yr-ly li.mid { list-style: none; margin-left: -18px; padding-left: 18px; position: relative; }
+.yr-ly li.mid::before { content: '◇'; position: absolute; left: 0; color: var(--gold-deep); }
+
 /* ---------- Bát tự ---------- */
 .phu-tru { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 10px; margin-top: 12px; }
 .pt-item { background: #fffaf0; border: 1px solid var(--line); border-radius: 14px; padding: 10px 12px; display: flex; flex-direction: column; gap: 2px; font-size: 13px; }
