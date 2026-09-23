@@ -92,6 +92,16 @@ var TH_HD_AUTH_TC = { emotional: [0, -1.5, 0, 0, 0], sacral: [0, -0.5, 0, 0, 0.5
 var TH_QUAI_TC = { 'Càn': [0.5, 0.5, 0.5, 2, 0.5], 'Khôn': [-0.5, -0.5, 1, -1.5, 1], 'Chấn': [1, -0.5, -1.5, 1, 0.5], 'Tốn': [0.5, 0.5, -0.5, -0.5, 0.5],
   'Khảm': [-1, 1, 0, 0, -0.5], 'Ly': [1.5, -0.5, -0.5, 0.5, -0.5], 'Cấn': [-1, 0.5, 2, 0, 1], 'Đoài': [1.5, -0.5, 0, 0, 0] };
 var TH_QUAI_NGHE = { 'Càn': ['qly', 'pl'], 'Khôn': ['kd', 'yt'], 'Chấn': ['kt', 'tt'], 'Tốn': ['kd', 'tt'], 'Khảm': ['kt', 'dl'], 'Ly': ['nt', 'gd'], 'Cấn': ['kd', 'tl'], 'Đoài': ['tt', 'gd'] };
+var TH_QUAI_HINH = {
+  'Càn': { hinh: 'đầu tròn, xương to, dáng cao lớn, uy nghi', v: { cao: 1, beo: 0.5, mat: 'tròn', da: 'sáng' }, bp: 'đầu – mặt, xương', vung: ['dau', 'xuong'] },
+  'Khôn': { hinh: 'thân đầy đặn, bụng lớn, dáng thấp đậm, hiền hậu', v: { cao: -0.5, beo: 1, mat: 'vuông', da: 'ngăm' }, bp: 'bụng, dạ dày – tỳ vị', vung: ['daDay'] },
+  'Chấn': { hinh: 'chân dài, nhanh nhẹn, giọng to, dáng động', v: { cao: 0.5, beo: -0.5, mat: 'dài', da: 'hồng' }, bp: 'chân, gan – gân', vung: ['chan', 'gan'] },
+  'Tốn': { hinh: 'cao gầy, trán rộng, tóc thưa mềm, dáng mềm mại', v: { cao: 1, beo: -1, mat: 'dài', da: 'sáng' }, bp: 'đùi – hông, hô hấp', vung: ['chan', 'phoi'] },
+  'Khảm': { hinh: 'mảnh khảnh, tai to, da sẫm, ánh mắt sâu', v: { cao: 0, beo: -0.5, mat: 'dài', da: 'ngăm' }, bp: 'tai, thận – tiết niệu, máu', vung: ['tai', 'than', 'mau'] },
+  'Ly': { hinh: 'mắt to sáng, ngực nở, ngoài cứng trong mềm', v: { cao: 0, beo: 0.5, mat: 'trái xoan', da: 'hồng' }, bp: 'mắt, tim – huyết áp', vung: ['mat', 'tim'] },
+  'Cấn': { hinh: 'thấp chắc, mũi cao, bàn tay to dày', v: { cao: -1, beo: 0.5, mat: 'vuông', da: 'ngăm' }, bp: 'tay – ngón tay, mũi, lưng', vung: ['tay', 'lung'] },
+  'Đoài': { hinh: 'miệng rộng, má bầu, nụ cười tươi, dễ mến', v: { cao: -0.5, beo: 0.5, mat: 'tròn', da: 'sáng' }, bp: 'miệng – răng, phổi – họng', vung: ['daDay', 'phoi'] }
+};
 var TH_NGHE = {
   qly: 'Lãnh đạo – quản lý – hành chính', kd: 'Kinh doanh – tài chính – đầu tư', nt: 'Nghệ thuật – sáng tạo – thiết kế', gd: 'Giáo dục – đào tạo – tư vấn',
   kt: 'Kỹ thuật – công nghệ – nghiên cứu', yt: 'Y tế – chăm sóc – chữa lành', tt: 'Truyền thông – ngoại giao – bán hàng', pl: 'Pháp luật – quân sự – an ninh',
@@ -256,6 +266,11 @@ function thVocDang_(C) {
     if (p.key === 'venus') add('Chiêm tinh', { da: 'sáng' }, 0.5);
   });
   he.push({ he: 'Chiêm tinh', items: C.ctL.ngoaiHinh });
+  if (C.hl) {
+    var QH = TH_QUAI_HINH[C.hl.tien.duoi], QN = TH_QUAI_HINH[C.hl.tien.tren];
+    add('Hà Lạc', QH.v, 1.2); add('Hà Lạc', QN.v, 0.5);
+    he.push({ he: 'Hà Lạc', items: ['Nội quái ' + C.hl.tien.duoi + ' (bản thân): ' + QH.hinh + '.', 'Ngoại quái ' + C.hl.tien.tren + ' (dáng vẻ bên ngoài): ' + QN.hinh + '.'] });
+  }
   he.push({ he: 'Thần số học & Human Design', items: ['Hai hệ này không mô tả hình thể. Số thái độ ' + C.ts.thaiDo + ' (' + TS_SO[C.ts.thaiDo].tk + ') cho biết "thần thái" người khác cảm nhận lần đầu; Human Design loại ' + HD_TYPES[C.hd.loai].ten + ' có hào quang ' +
     ({ 'Generator': 'cởi mở, ấm, cuốn hút', 'Manifesting Generator': 'cởi mở, năng động, nhanh', 'Manifestor': 'khép kín, mạnh, gây ấn tượng', 'Projector': 'tập trung, "nhìn thấu" người đối diện', 'Reflector': 'nhẹ, phản chiếu, khó nắm bắt' }[C.hd.loai]) + '.'] });
 
@@ -336,6 +351,14 @@ function thCoThe_(C) {
   if (!hi.length) hi.push('Các trung tâm động cơ và lá lách đều xác định – thể chất vận hành ổn định theo HD.');
   he.push({ he: 'Human Design', items: hi });
 
+  // Hà Lạc – Thuyết quái: Càn đầu, Khôn bụng, Chấn chân, Tốn đùi, Khảm tai, Ly mắt, Cấn tay, Đoài miệng
+  if (C.hl) {
+    var hq = C.hl.tien.nguyenDuong <= 3 ? C.hl.tien.duoi : C.hl.tien.tren, bq = C.hl.hau.nguyenDuong <= 3 ? C.hl.hau.duoi : C.hl.hau.tren;
+    var hli = ['Quái chứa hào nguyên đường Tiên thiên là ' + hq + ' → vùng ' + TH_QUAI_HINH[hq].bp + ' là nơi dễ có dấu vết/nhạy cảm (Thuyết quái).',
+      'Quái chứa hào nguyên đường Hậu thiên là ' + bq + ' → nửa sau đời chú ý ' + TH_QUAI_HINH[bq].bp + '.'];
+    TH_QUAI_HINH[hq].vung.forEach(function (x) { tag(x, 'Hà Lạc'); }); TH_QUAI_HINH[bq].vung.forEach(function (x) { tag(x, 'Hà Lạc'); });
+    he.push({ he: 'Hà Lạc', items: hli });
+  }
   // Thần số học
   var ti = [];
   if (C.ts.bieuDo[5] === 0) ti.push('Thiếu số 5 (trung tâm biểu đồ): dễ mất cân bằng năng lượng, cần vận động đều.');
@@ -623,6 +646,9 @@ function tongHopLuan(C) {
       'Kết luận chỉ mang tính tham khảo – xu hướng, không phải định mệnh; điểm càng nhiều hệ đồng thuận thì càng đáng lưu tâm.'
     ]
   };
+  T.hoiTu = htHoiTu_(C); delete T.hoiTu.namTin;
+  T.thang = htThang_(C); T.ngay = htNgay_(C);
+  T.matMa = htMatMa_(C, T.hoiTu, T.thang);
   T.tomLuoc = thTomLuoc_(C, T);
   return T;
 }

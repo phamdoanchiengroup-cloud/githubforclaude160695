@@ -648,6 +648,70 @@ function lgDaiHanCung_(chart, tuoi) {
   return -1;
 }
 
+/** Luận riêng các sao lưu niên: mỗi sao lưu rơi vào cung gốc nào (lĩnh vực nào của năm),
+ *  và các cách lưu – gốc gặp nhau (song Lộc, Lộc Mã giao trì, song Kỵ, Kình Đà trùng phùng, Tang Hổ…).
+ *  Trả về { items, adj } – adj là điểm cộng/trừ vào đánh giá năm. */
+var LG_LUU_Y = {
+  'L.Thái Tuế': ['◇', 'tâm điểm sự kiện của năm, mọi chuyện ở đây dễ "lên tiếng", va chạm lời nói'],
+  'L.Lộc Tồn': ['✓', 'có lộc, tiền vào đều đặn, được giữ của'],
+  'L.Hóa Lộc': ['✓', 'nguồn lợi mới mở ra, thuận lợi, hanh thông'],
+  'L.Hóa Quyền': ['✓', 'tăng quyền hạn, chủ động, được giao trọng trách'],
+  'L.Hóa Khoa': ['✓', 'danh tiếng, giấy tờ – thi cử thuận, có quý nhân giải nguy'],
+  'L.Hóa Kỵ': ['✗', 'vướng mắc, thị phi, tiền – tình dễ bế tắc; lĩnh vực cần giữ kín và kiên nhẫn'],
+  'L.Kình Dương': ['✗', 'cạnh tranh, va chạm, dễ tổn thương do vội vàng'],
+  'L.Đà La': ['✗', 'trì trệ, dây dưa, việc đi chậm hơn dự tính'],
+  'L.Thiên Mã': ['◇', 'di chuyển, thay đổi, đi xa hoặc đổi chỗ'],
+  'L.Tang Môn': ['✗', 'buồn phiền, tin không vui, chuyện hiếu sự trong họ'],
+  'L.Bạch Hổ': ['✗', 'tai nạn nhỏ, kiện tụng, va chạm – cẩn thận máu huyết'],
+  'L.Thiên Khốc': ['✗', 'nước mắt, lo âu'],
+  'L.Thiên Hư': ['✗', 'hao hụt, hư hao, hứa suông'],
+  'L.Hồng Loan': ['✓', 'tình duyên, hỷ sự, được yêu mến'],
+  'L.Thiên Hỷ': ['✓', 'tin vui, cưới hỏi, sinh nở'],
+  'L.Đào Hoa': ['◇', 'duyên dáng, được chú ý – dễ có mối tình mới'],
+  'L.Văn Xương': ['✓', 'học hành, văn bản, thi cử thuận'],
+  'L.Văn Khúc': ['✓', 'ăn nói, nghệ thuật, giao tiếp thuận'],
+  'L.Thiên Khôi': ['✓', 'quý nhân (nam, bề trên) nâng đỡ'],
+  'L.Thiên Việt': ['✓', 'quý nhân (nữ, người ngoài) giúp đỡ']
+};
+function lgLuanLuuTinh_(chart, L, th, ldh, year) {
+  var P = chart.palaces, pos = chart.pos, menh = chart.info.menh, items = [], adj = 0;
+  var tp = lgTPTC_(th);
+  function o(n) { for (var k in L.ex) if (L.ex[k].indexOf(n) >= 0) return +k; return -1; }
+  function ten(p) { return P[p].cung + ' (' + P[p].chiTen + ')'; }
+  function vung(p) { return p === th ? 'ngay cung tiểu hạn' : tp.indexOf(p) >= 0 ? 'chiếu vào tiểu hạn' : p === ldh ? 'tại cung lưu niên đại hạn' : p === menh ? 'tại cung Mệnh gốc' : ''; }
+  // 1. Từng sao lưu quan trọng: rơi vào cung nào → lĩnh vực nào
+  ['L.Thái Tuế', 'L.Hóa Lộc', 'L.Lộc Tồn', 'L.Hóa Quyền', 'L.Hóa Khoa', 'L.Hóa Kỵ', 'L.Kình Dương', 'L.Đà La', 'L.Thiên Mã', 'L.Tang Môn', 'L.Bạch Hổ', 'L.Hồng Loan', 'L.Thiên Hỷ', 'L.Đào Hoa'].forEach(function (n) {
+    var p = o(n); if (p < 0) return;
+    var y = LG_LUU_Y[n], v = vung(p);
+    items.push(y[0] + ' ' + n.replace('L.', 'Lưu ') + ' nhập ' + ten(p) + (v ? ', ' + v : '') + ' → ' + LG_LINH_VUC[P[p].cung] + ': ' + y[1] + '.');
+  });
+  // 2. Cách lưu – gốc
+  var lLoc = o('L.Lộc Tồn'), lHL = o('L.Hóa Lộc'), lKy = o('L.Hóa Kỵ'), lMa = o('L.Thiên Mã'), lKinh = o('L.Kình Dương'), lDa = o('L.Đà La');
+  var gLoc = [pos['Lộc Tồn'], pos['Hóa Lộc']], gKy = pos['Hóa Kỵ'];
+  [lLoc, lHL].forEach(function (p, i) {
+    if (p >= 0 && gLoc.indexOf(p) >= 0) { items.push('✓ Song Lộc: lưu ' + (i ? 'Hóa Lộc' : 'Lộc Tồn') + ' gặp Lộc gốc tại ' + ten(p) + ' – năm tài lộc nổi bật qua ' + LG_LINH_VUC[P[p].cung] + '.'); adj += 0.8; }
+  });
+  if (lLoc >= 0 && lLoc === lHL) { items.push('✓ Lưu Lộc Tồn và lưu Hóa Lộc cùng cung ' + ten(lLoc) + ' – "Lộc trùng", nguồn thu dồi dào.'); adj += 0.5; }
+  if (lMa >= 0 && (lMa === lLoc || lMa === lHL || lMa === pos['Lộc Tồn'] || lMa === pos['Hóa Lộc'])) { items.push('✓ Lộc Mã giao trì tại ' + ten(lMa) + ': tiền đến nhờ di chuyển, kinh doanh xa, đổi môi trường.'); adj += 0.6; }
+  if (lMa >= 0 && (lMa === lDa || P[lMa].triet)) { items.push('✗ Chiết túc mã: lưu Thiên Mã ' + (lMa === lDa ? 'gặp lưu Đà La' : 'gặp Triệt') + ' tại ' + ten(lMa) + ' – đi lại trắc trở, kế hoạch dời đổi dễ lỡ.'); adj -= 0.4; }
+  if (lKy >= 0 && lKy === gKy) { items.push('✗ Song Kỵ: lưu Hóa Kỵ chồng lên Hóa Kỵ gốc tại ' + ten(lKy) + ' – ' + LG_LINH_VUC[P[lKy].cung] + ' là điểm nghẽn lớn nhất năm, tránh quyết định vội.'); adj -= 1; }
+  else if (lKy >= 0 && mod12(lKy + 6) === gKy) { items.push('✗ Lưu Kỵ xung Kỵ gốc (' + ten(lKy) + ' ↔ ' + ten(gKy) + ') – chuyện cũ dễ tái phát.'); adj -= 0.5; }
+  if (lKy >= 0 && (lKy === th || lKy === menh)) { items.push('✗ Lưu Hóa Kỵ ' + (lKy === th ? 'đóng ngay tiểu hạn' : 'nhập Mệnh') + ' – năm nhiều phiền muộn, nên giữ mình, ít hứa hẹn.'); adj -= 0.5; }
+  if (lKy >= 0 && mod12(lKy + 6) === menh) items.push('✗ Lưu Hóa Kỵ xung chiếu Mệnh từ ' + ten(lKy) + ' – dễ bị hiểu lầm, thị phi từ bên ngoài.');
+  [['L.Kình Dương', 'Kình Dương', lKinh], ['L.Đà La', 'Đà La', lDa]].forEach(function (x) {
+    if (x[2] >= 0 && x[2] === pos[x[1]]) { items.push('✗ ' + x[1] + ' trùng phùng tại ' + ten(x[2]) + ' (lưu gặp gốc) – sát khí nhân đôi ở ' + LG_LINH_VUC[P[x[2]].cung] + '.'); adj -= 0.6; }
+  });
+  var lHo = o('L.Bạch Hổ'), lTang = o('L.Tang Môn');
+  if (lHo >= 0 && (lHo === lKinh || lHo === pos['Kình Dương'])) { items.push('✗ Bạch Hổ gặp Kình Dương tại ' + ten(lHo) + ' – đề phòng tai nạn, phẫu thuật, va quệt xe cộ.'); adj -= 0.6; }
+  if (lTang >= 0 && (lTang === (pos['TT.Tang Môn'] != null ? pos['TT.Tang Môn'] : pos['Tang Môn']) || lTang === (pos['TT.Bạch Hổ'] != null ? pos['TT.Bạch Hổ'] : pos['Bạch Hổ']))) { items.push('✗ Tang – Hổ trùng phùng tại ' + ten(lTang) + ' – năm dễ có tin buồn trong gia đình.'); adj -= 0.4; }
+  var hy = ['L.Hồng Loan', 'L.Thiên Hỷ', 'L.Đào Hoa'].map(o).filter(function (p) { return p >= 0 && (tp.indexOf(p) >= 0 || p === menh || P[p].cung === 'Phu Thê'); });
+  if (hy.length >= 2) { items.push('✓ Hồng – Hỷ – Đào lưu hội về hạn/Mệnh/Phu Thê – năm động tình duyên: hợp cưới hỏi, ra mắt, sinh con.'); adj += 0.4; }
+  if (L.chi === mod12(menh + 6)) items.push('✗ Lưu Thái Tuế xung cung Mệnh gốc – năm "động": dễ thay đổi chỗ ở, công việc, tâm lý bất an.');
+  if (L.chi === th) items.push('◇ Thái Tuế nhập hạn: lưu Thái Tuế đóng ngay cung tiểu hạn – năm của những quyết định phải tự đứng ra gánh vác.');
+  if (ldh >= 0 && L.ex[ldh]) items.push('◇ Tại cung lưu niên đại hạn ' + ten(ldh) + ' có ' + L.ex[ldh].map(function (n) { return n.replace('L.', 'lưu '); }).join(', ') + ' – điểm rơi của vận 10 năm trong năm ' + year + '.');
+  return { items: items.length ? items : ['Các sao lưu năm nay phân tán, không tạo cách đặc biệt.'], adj: lgR_(adj) };
+}
+
 function lgTieuVan_(chart, bt, year) {
   var P = chart.palaces, I = chart.info;
   var th = lgTieuHanCung_(chart, year);
@@ -672,6 +736,9 @@ function lgTieuVan_(chart, bt, year) {
     (qh.indexOf('lục xung') >= 0 ? 'năm xung Thái Tuế, dễ biến động, thay đổi.' : qh.indexOf('trùng (đồng chi)') >= 0 ? 'năm tuổi, nên thận trọng.' :
       qh.indexOf('tam hợp') >= 0 || qh.indexOf('lục hợp') >= 0 ? 'năm hợp tuổi, thuận hòa.' : 'có va chạm nhỏ.'));
   secs.push({ tieuDe: 'Cơ sở tiểu vận', items: coSo });
+  var LL = lgLuanLuuTinh_(chart, L, th, ldh, year);
+  secs.push({ tieuDe: 'Luận sao lưu niên ' + year, items: LL.items });
+  d = lgR_(d + LL.adj);
 
   var a = lgPhanTichCung_(chart, th, { cungTen: C.cung, laHan: true, extra: L.ex, linhVuc: 'năm ' + year + ' (qua ' + LG_LINH_VUC[C.cung] + ')' });
   secs = secs.concat(a.secs.slice(1, 3));

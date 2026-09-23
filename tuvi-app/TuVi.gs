@@ -385,16 +385,23 @@ function tuviLapLaSo(input) {
   an('Đường Phù', locTon + 5);
   an('Văn Tinh', locTon + 3);
 
+  // Sao vòng Bác Sĩ / Thái Tuế: hiển thị cùng phụ tinh (không trộn vào cat/hung để giữ nguyên cách chấm điểm)
+  function vongSao(at, name) {
+    var info = SAO[name] || ['Thổ', 'trung', ''], P = palaces[at];
+    (P.vong = P.vong || []).push({ n: name, h: info[0], t: info[1] });
+  }
   // Vòng Bác Sĩ (bắt đầu tại Lộc Tồn)
   for (var i = 0; i < 12; i++) {
     pos[VONG_BAC_SI[i]] = mod12(locTon + (thuan ? i : -i));
     palaces[pos[VONG_BAC_SI[i]]].bacSi = VONG_BAC_SI[i];
+    vongSao(pos[VONG_BAC_SI[i]], VONG_BAC_SI[i]);
   }
 
   // --- Sao theo chi năm ---
   for (i = 0; i < 12; i++) {
     pos['TT.' + VONG_THAI_TUE[i]] = mod12(yChi + i);
     palaces[mod12(yChi + i)].thaiTue = VONG_THAI_TUE[i];
+    vongSao(mod12(yChi + i), VONG_THAI_TUE[i]);
   }
   an('Thiên Không', yChi + 1);
   an('Long Trì', 4 + yChi);

@@ -21,8 +21,8 @@
   <div class="mountains" aria-hidden="true">
     <svg viewBox="0 0 1440 260" preserveAspectRatio="none">
       <defs>
-        <linearGradient id="m1" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#5a5896"/><stop offset="1" stop-color="#5d5089" stop-opacity="0"/></linearGradient>
-        <linearGradient id="m2" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#474583"/><stop offset="1" stop-color="#5d5089" stop-opacity="0"/></linearGradient>
+        <linearGradient id="m1" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#0d6b7a"/><stop offset="1" stop-color="#11878f" stop-opacity="0"/></linearGradient>
+        <linearGradient id="m2" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#0a5563"/><stop offset="1" stop-color="#11878f" stop-opacity="0"/></linearGradient>
       </defs>
       <path d="M0 180 L90 120 L150 150 L240 70 L330 140 L420 100 L520 160 L610 60 L700 130 L790 90 L880 150 L980 80 L1080 140 L1170 100 L1260 150 L1350 90 L1440 130 L1440 260 L0 260Z" fill="url(#m1)" opacity=".7"/>
       <path d="M0 220 L120 160 L210 200 L330 130 L450 210 L560 150 L690 210 L820 140 L940 205 L1060 150 L1190 215 L1310 160 L1440 200 L1440 260 L0 260Z" fill="url(#m2)" opacity=".6"/>
@@ -168,16 +168,13 @@
       <!-- ============ KẾT QUẢ ============ -->
       <section class="result-wrap">
         <div class="tabs" id="tabs">
-          <div class="tab active" data-tab="chart">☯ Lá Số Tử Vi</div>
-          <div class="tab" data-tab="luan">📜 Luận Giải</div>
-          <div class="tab" data-tab="van">☸ Vận Hạn</div>
-          <div class="tab" data-tab="dudoan">✺ Dự Đoán</div>
+          <div class="tab active" data-tab="chart">☯ Lá Số &amp; Luận Giải</div>
           <div class="tab" data-tab="battu">⚖ Bát Tự</div>
           <div class="tab" data-tab="halac">☯ Hà Lạc</div>
           <div class="tab" data-tab="astro">✶ Chiêm Tinh</div>
           <div class="tab" data-tab="so">❖ Thần Số</div>
           <div class="tab" data-tab="hd">◈ Human Design</div>
-          <div class="tab" data-tab="tong">✧ Tổng Luận</div>
+          <div class="tab" data-tab="tong">✧ Tổng Hợp 6 Hệ</div>
           <div class="tab" data-tab="hist">☰ Lịch Sử</div>
         </div>
 
@@ -214,12 +211,12 @@
               </div>
             </div>
             <div class="panel palace-detail" id="palaceDetail"></div>
+            <div class="luan-embed" id="page-luan"></div>
           </div>
         </div>
 
-        <div class="tab-page" id="page-luan"><div class="panel section muted">Hãy lập lá số trước.</div></div>
-        <div class="tab-page" id="page-van"><div class="panel section muted">Hãy lập lá số trước.</div></div>
-        <div class="tab-page" id="page-dudoan"><div class="panel section muted">Hãy lập lá số trước.</div></div>
+        <div class="tab-hold" id="page-van" hidden></div>
+        <div class="tab-hold" id="page-dudoan" hidden></div>
         <div class="tab-page" id="page-battu"><div class="panel section muted">Hãy lập lá số trước.</div></div>
         <div class="tab-page" id="page-halac"><div class="panel section muted">Hãy lập lá số trước.</div></div>
         <div class="tab-page" id="page-astro"><div class="panel section muted">Hãy lập lá số trước.</div></div>
@@ -250,21 +247,25 @@
   <div class="modal" id="pdfModal" role="dialog" aria-modal="true" aria-labelledby="pdfTitle">
     <div class="modal-box panel">
       <h2 class="panel-title" id="pdfTitle"><span class="han">書</span> Tải báo cáo PDF</h2>
-      <p class="muted" style="margin-top:0">Báo cáo A4 gồm bìa, trang tóm lược, mục lục có số trang, các phần bạn chọn và lời kết. Bản đầy đủ khoảng 50–60 trang, mất 30–60 giây – giữ nguyên trang trong lúc chờ.</p>
+      <p class="muted" style="margin-top:0">Báo cáo A4 gồm bìa, trang tóm lược, mục lục có số trang, các phần bạn chọn và lời kết. Bản đầy đủ khoảng 85 trang, mất 40–90 giây – giữ nguyên trang trong lúc chờ.</p>
       <div class="pdf-opts" id="pdfOpts">
-        <label class="check"><input type="checkbox" value="chart" checked> Lá số Tử Vi (hình) + chi tiết cung Mệnh</label>
-        <label class="check"><input type="checkbox" value="luan" checked> Luận giải Tử Vi 12 cung</label>
-        <label class="check"><input type="checkbox" value="van" checked> Vận hạn (đại – tiểu – nguyệt – nhật vận)</label>
-        <label class="check"><input type="checkbox" value="dudoan" checked> Dự đoán cả đời</label>
+        <div class="pdf-grp">Tổng hợp 6 hệ</div>
+        <label class="check"><input type="checkbox" value="nguoi" checked> Con người bạn (xuất thân, vóc dáng, cơ thể, tính cách)</label>
+        <label class="check"><input type="checkbox" value="duyen" checked> Tình duyên &amp; người bạn đời (tuổi, tháng sinh hợp)</label>
+        <label class="check"><input type="checkbox" value="doi" checked> Đường đời, nghề nghiệp &amp; 12 đại vận</label>
+        <label class="check"><input type="checkbox" value="bien" checked> Biến cố hội tụ 6 hệ (năm có xác suất cao)</label>
+        <label class="check"><input type="checkbox" value="van" checked> Vận năm – tháng – ngày</label>
+        <div class="pdf-grp">Chi tiết từng hệ</div>
+        <label class="check"><input type="checkbox" value="chart" checked> Lá số Tử Vi + luận giải 12 cung</label>
         <label class="check"><input type="checkbox" value="battu" checked> Bát Tự</label>
         <label class="check"><input type="checkbox" value="halac" checked> Bát Tự Hà Lạc (quẻ, đại vận theo hào, quẻ từng năm)</label>
         <label class="check"><input type="checkbox" value="astro" checked> Chiêm tinh (bản đồ sao)</label>
         <label class="check"><input type="checkbox" value="so" checked> Thần số học</label>
         <label class="check"><input type="checkbox" value="hd" checked> Human Design</label>
-        <label class="check"><input type="checkbox" value="tong" checked> Tổng luận 6 hệ (xuất thân, vóc dáng, cơ thể, tính cách, phối ngẫu, đường đời)</label>
+        <label class="check"><input type="checkbox" value="them" checked> Kiểm chứng sự kiện &amp; bảng may mắn</label>
       </div>
       <div class="field" style="margin-top:10px"><label for="pdfType">Loại báo cáo</label>
-        <select id="pdfType"><option value="full">Bản đầy đủ – phân tích chi tiết (~50–60 trang)</option><option value="demo">Bản xem thử – ngắn, hé lộ ý chính để khách đặt mua (~14 trang)</option></select></div>
+        <select id="pdfType"><option value="full">Bản đầy đủ – phân tích chi tiết (~85 trang)</option><option value="demo">Bản xem thử – ngắn, hé lộ ý chính để khách đặt mua (~14 trang)</option></select></div>
       <div class="row c2">
         <div class="field"><label for="pdfTheme">Giao diện</label><select id="pdfTheme"><option value="dark">Nền huyền bí – đọc trên máy</option><option value="light">Nền sáng – để in</option></select></div>
         <div class="field"><label for="pdfBrand">Thương hiệu / người luận</label><input type="text" id="pdfBrand" maxlength="60" placeholder="VD: Phòng luận giải An Nhiên"></div>

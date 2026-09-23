@@ -1,6 +1,6 @@
 # Thiên Cơ Các – Web App Lá Số Tử Vi & Bát Tự (Google Apps Script)
 
-Web app lập lá số **Tử Vi Đẩu Số 12 cung** (phái Việt Nam) kết hợp **Bát Tự – Tứ Trụ**, **Chiêm tinh phương Tây (cung hoàng đạo)**, **Thần số học Pythagoras** và **Human Design**, cùng phần **Luận tổng hợp 5 hệ** (xuất thân, vóc dáng, đặc điểm cơ thể, tính cách, đường đời), nhập ngày sinh theo **Dương lịch hoặc Âm lịch** (có tháng nhuận), lưu lịch sử vào **Google Sheet**. Giao diện phong cách **huyền bí** tông hoàng hôn tím mờ sương (sáng vừa phải, dễ đọc); từ khóa/tên sao được tô màu, có biểu đồ trực quan và báo cáo **PDF thương mại** (bìa, tóm lược, mục lục, thương hiệu người luận).
+Web app lập lá số **Tử Vi Đẩu Số 12 cung** (phái Việt Nam) kết hợp **Bát Tự – Tứ Trụ**, **Chiêm tinh phương Tây (cung hoàng đạo)**, **Thần số học Pythagoras** và **Human Design**, cùng phần **Luận tổng hợp 5 hệ** (xuất thân, vóc dáng, đặc điểm cơ thể, tính cách, đường đời), nhập ngày sinh theo **Dương lịch hoặc Âm lịch** (có tháng nhuận), lưu lịch sử vào **Google Sheet**. Giao diện tông **cyan** với card xanh đen nổi khối và lá số nền giấy ngà; chỉ còn các tab: Lá số & Luận giải 12 cung, Bát Tự, Hà Lạc, Chiêm tinh, Thần số, Human Design, **Tổng hợp 6 hệ** (gồm cả vận hạn & dự đoán); từ khóa/tên sao được tô màu, có biểu đồ trực quan và báo cáo **PDF thương mại** (bìa, tóm lược, mục lục, thương hiệu người luận).
 
 ## Các file
 
@@ -19,6 +19,7 @@ Web app lập lá số **Tử Vi Đẩu Số 12 cung** (phái Việt Nam) kết 
 | `ThanSoHoc.gs` | Thần số học: số chủ đạo (2–11, 22, 33), ngày sinh, thái độ, biểu đồ ngày sinh & 15 mũi tên, biểu đồ tên tiếng Việt (linh hồn, nhân cách, sứ mệnh, trưởng thành, cân bằng, bài học nghiệp, đam mê ẩn), 4 đỉnh cao – thử thách, năm/tháng cá nhân |
 | `TongHop.gs` | Luận tổng hợp 5 hệ bằng "bỏ phiếu" độc lập & độ đồng thuận: xuất thân – gia cảnh, vóc dáng – diện mạo, vùng cơ thể có dấu vết/cần giữ gìn, tính cách 5 trục, phối ngẫu tương lai, chủ đề đời – nghề nghiệp – các chặng đời, năm đang xem theo 5 hệ, bảng may mắn |
 | `HaLac.gs` | Bát Tự Hà Lạc: đổi tứ trụ ra số Hà Đồ – Lạc Thư, Thiên số/Địa số, quẻ Tiên thiên – Hậu thiên – Hỗ, hào nguyên đường theo giờ, đại vận theo 12 hào (dương 9 năm, âm 6 năm), quẻ lưu niên từng năm, chấm điểm theo cát/hung quẻ, vị hào và dụng thần |
+| `HoiTu.gs` | **Biến cố hội tụ 6 hệ**: mỗi năm (30 năm tới) cho 8 chủ đề (tài lộc, thăng tiến, kết hôn, con cái, bước ngoặt, sức khỏe, hao tài, gia đạo) được Tử Vi, Bát Tự, Hà Lạc, Chiêm tinh, Thần số bỏ phiếu – từ 3 hệ trở lên là xác suất cao; vận 12 tháng & 7 ngày đa hệ; "mật mã cá nhân" (nguyên tố linh hồn, con số định mệnh, giờ vàng, mùa, quý nhân, cán cân âm dương, năm vàng…) |
 | `PhoiNgau.gs` | Chân dung vợ/chồng tương lai từ 5 hệ (ngoại hình, tính cách, chênh tuổi, nơi gặp, chất lượng hôn nhân, năm dễ cưới) + chấm điểm năm sinh (thang 10: nạp âm, thiên can, địa chi, cung phi Bát trạch, thiên mệnh + dụng thần) và tháng sinh âm/dương lịch phù hợp |
 | `Index.html` | Khung trang |
 | `Styles.html` | CSS |
@@ -74,6 +75,7 @@ Các điểm khác biệt có chủ đích giữa phái Việt Nam và Trung Hoa
 Ngoài tiểu hạn, lưu tinh và Tứ Hóa đại vận, bộ suy luận dùng thêm:
 
 - **Lưu niên đại hạn** (phái Thái Thứ Lang): năm 1 tại cung đại hạn, năm 2 sang cung xung chiếu, năm 3 Dương Nam/Âm Nữ lùi 1 cung (ngược lại thì tiến), năm 4 trở về cung xung chiếu, từ năm 5 đi tiếp mỗi năm một cung – xét như "điểm rơi" thứ hai của năm (trọng số 0,6).
+- **Luận sao lưu niên** (mục riêng trong vận năm): từng sao lưu (Thái Tuế, Lộc Tồn, Tứ Hóa, Kình – Đà, Thiên Mã, Tang – Hổ, Hồng – Hỷ – Đào) rơi vào cung gốc nào → lĩnh vực nào; các cách lưu gặp gốc: song Lộc, Lộc Mã giao trì, chiết túc mã, song Kỵ / Kỵ xung Kỵ, Kình – Đà trùng phùng, Hổ gặp Kình, Tang – Hổ trùng phùng, Thái Tuế xung Mệnh / nhập hạn – có cộng trừ điểm vào đánh giá năm.
 - **Lưu tinh bổ sung** theo can/chi năm (đối chiếu iztro): lưu Văn Xương – Văn Khúc, Thiên Khôi – Thiên Việt, Đào Hoa.
 - **Hóa Kỵ xung chiếu** (nặng hơn Kỵ tọa thủ), **Song/Tam Kỵ** (Kỵ lưu niên + đại vận + gốc hội tam phương tiểu hạn), **Lộc – Kỵ giao xung**.
 - **Nền đại vận**: đại hạn kém khuếch đại rủi ro, đại hạn tốt giảm nhẹ ("đại hạn là gốc, tiểu hạn là ngọn").
@@ -87,8 +89,8 @@ Tham khảo Bát Tự chi tiết: [douban – 四柱宫位定义](https://www.do
 
 ## Thiết kế & nội dung báo cáo
 
-- **Giao diện**: toàn bộ màu đi qua token CSS (`:root` = nền tối, `.theme-light` = nền sáng cho bản in). Bảng màu biểu đồ (vàng kim `#b08a2c`, ngọc `#1fa688`, tím `#8a74e0`, san hô `#d9503f`) đã chạy bộ kiểm tra tương phản & mù màu cho cả nền tối và nền sáng.
+- **Giao diện**: toàn bộ màu đi qua token CSS (`:root` = nền cyan + card xanh đen, `.theme-light` = nền sáng cho bản in và cho ô lá số). Bảng màu biểu đồ (hổ phách `#b08a2c`, ngọc `#1fa688`, lam `#4f8ff0`, san hô `#d9503f`) đã chạy bộ kiểm tra tương phản & mù màu cho cả nền tối và nền sáng.
 - **Tô đậm tự động**: tên sao (tím nhạt), khái niệm then chốt (vàng), tín hiệu tốt (xanh), điều cần lưu ý (đỏ); phần mở đầu trước dấu ":" của mỗi ý được in đậm.
 - **Biểu đồ**: đường vận trình cả đời, điểm hợp tuổi theo năm sinh, cường độ từng lĩnh vực trong năm, cân bằng 4 nguyên tố – đều có tooltip khi rê chuột.
 - **Lời văn**: phần "Chân dung hé lộ" và các câu dẫn viết theo nguyên tắc copywriting – rõ ràng hơn bay bổng, cụ thể (số liệu, năm, x/5 hệ đồng thuận), nói trực tiếp với "bạn", mỗi mục một ý, kết bằng hành động; không phóng đại (tham khảo [coreyhaines31/marketingskills – copywriting](https://github.com/coreyhaines31/marketingskills/blob/main/skills/copywriting/SKILL.md), [robpalmer99/claude-code-copywriting-skills](https://github.com/robpalmer99/claude-code-copywriting-skills)).
-- **PDF 2 loại**: *bản đầy đủ* (~60–70 trang, đã lược phần cơ sở lý luận/căn cứ trùng lặp, các chặng đã qua và chi tiết quá xa) và *bản xem thử* (~14 trang: mỗi phần hé lộ vài thông tin then chốt, che bớt dữ liệu, ảnh xem trước làm mờ, trang kêu gọi mua kèm ưu đãi). Cả hai có bìa tràn trang, trang "Chân dung hé lộ", mục lục có số trang + bookmark, trang mở đầu mỗi phần có câu dẫn, trang lời kết, chân trang tiếng Việt kèm thương hiệu/liên hệ người luận; chọn nền tối (đọc trên máy) hoặc sáng (để in).
+- **PDF 2 loại**: *bản đầy đủ* (~85–95 trang, chia 3 khối: A. Tổng hợp 6 hệ – chân dung & mật mã, con người, tình duyên, đường đời + 12 đại vận, biến cố hội tụ, vận năm–tháng–ngày; B. Chi tiết từng hệ – lá số + luận 12 cung, Bát Tự, Hà Lạc, Chiêm tinh, Thần số, Human Design; C. Kiểm chứng & may mắn. Chỉ lược phần giải thích phương pháp, giữ "căn cứ từ từng hệ"; ngắt trang theo từng mục nhỏ nên ít khoảng trống) và *bản xem thử* (~14 trang: mỗi phần hé lộ vài thông tin then chốt, che bớt dữ liệu, ảnh xem trước làm mờ, trang kêu gọi mua kèm ưu đãi). Cả hai có bìa tràn trang, trang "Chân dung hé lộ", mục lục có số trang + bookmark, trang mở đầu mỗi phần có câu dẫn, trang lời kết, chân trang tiếng Việt kèm thương hiệu/liên hệ người luận; chọn nền tối (đọc trên máy) hoặc sáng (để in).

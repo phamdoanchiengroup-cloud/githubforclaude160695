@@ -195,6 +195,17 @@ function phoiNgauLuan(C) {
   hdi.push('Loại hợp tác tự nhiên: ' + hopLoai[hd.loai] + '. Thẩm quyền của bạn nhắc: ' + (hd.thamQuyen === 'emotional' ? 'đừng nhận lời cầu hôn khi đang ở đỉnh/đáy cảm xúc – chờ rõ ràng.' : hd.thamQuyen === 'sacral' ? 'hãy tin phản hồi "ừ-hứ" từ bụng khi được hỏi.' : 'lắng nghe trực giác/nơi chốn khi chọn bạn đời.'));
   he.push({ he: 'Human Design', items: hdi });
 
+  /* ---------- Hà Lạc ---------- */
+  if (C.hl) {
+    var ng = C.hl.tien.tren, Q = TH_QUAI_HINH[ng], nd = C.hl.tien.nguyenDuong, dh = hlDiemHao_(C.hl.tien, nd), hli = [];
+    add('Hà Lạc', Q.v, 1);
+    hli.push('Ngoại quái Tiên thiên ' + ng + ' tượng cho "người kia": ' + Q.hinh + '; tính chất ' + HL_QUAI[ng].y + '.');
+    hli.push(dh.ung ? '✓ Hào nguyên đường có ứng (âm – dương tương cầu): dễ gặp người bổ khuyết cho mình, hôn nhân có hậu thuẫn.' : '◇ Hào nguyên đường không ứng: duyên đến chậm hoặc phải tự chủ động, hai người dễ "cùng cực" nên cần nhường.');
+    chatP.push({ he: 'Hà Lạc', v: (dh.ung ? 0.6 : -0.3) + C.hl.hau.diem * 0.3 });
+    var qhn = (C.hlL ? C.hlL.nam : []).filter(function (n) { return n.tuoi >= 20 && n.tuoi <= 45 && HT_QUE.ketHon.indexOf(n.que) >= 0; }).slice(0, 5);
+    if (qhn.length) hli.push('Năm quẻ lưu niên chủ hôn nhân (20–45 tuổi): ' + qhn.map(function (n) { return n.nam + ' (' + n.que + ')'; }).join(', ') + '.');
+    he.push({ he: 'Hà Lạc', items: hli });
+  }
   /* ---------- Tổng hợp ---------- */
   var tong = { cao: 0, beo: 0, wc: 0, wb: 0 }, mat = {}, da = {};
   phieu.forEach(function (p) {
