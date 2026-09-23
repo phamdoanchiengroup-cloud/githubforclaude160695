@@ -47,7 +47,7 @@ var FILE_HTML_CAN_CO = { 'Index': '<!DOCTYPE html>', 'Styles': '<style>', 'Scrip
 var HAM_CAN_CO = {
   'Lunar.gs': 'solarToLunar', 'TuVi.gs': 'tuviLapLaSo', 'BatTu.gs': 'batTuLap',
   'LuanGiai.gs': 'luanChiTiet', 'DuDoan.gs': 'duDoanCuocDoi', 'BatTuChiTiet.gs': 'batTuChiTiet',
-  'Astro.gs': 'astToanBo', 'ChiemTinh.gs': 'chiemTinhLap', 'HumanDesign.gs': 'hdLap', 'ThanSoHoc.gs': 'thanSoHocLap', 'TongHop.gs': 'tongHopLuan', 'PhoiNgau.gs': 'phoiNgauLuan'
+  'Astro.gs': 'astToanBo', 'ChiemTinh.gs': 'chiemTinhLap', 'HumanDesign.gs': 'hdLap', 'ThanSoHoc.gs': 'thanSoHocLap', 'TongHop.gs': 'tongHopLuan', 'PhoiNgau.gs': 'phoiNgauLuan', 'HaLac.gs': 'haLacLap'
 };
 
 /** Trả về danh sách lỗi cài đặt (rỗng nếu mọi thứ đúng) */
@@ -87,7 +87,7 @@ function trangLoiCaiDat_(loi) {
 /** Chạy hàm này trong trình soạn thảo (chọn kiemTraCaiDat → Chạy) để xem lỗi trong Nhật ký thực thi */
 function kiemTraCaiDat() {
   var loi = kiemTraCaiDat_();
-  if (!loi.length) { Logger.log('✔ Cài đặt đúng: đủ 13 file .gs và 3 file HTML.'); return; }
+  if (!loi.length) { Logger.log('✔ Cài đặt đúng: đủ 14 file .gs và 3 file HTML.'); return; }
   loi.forEach(function (x) { Logger.log('✘ ' + x.replace(/<[^>]+>/g, '').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&amp;/g, '&')); });
 }
 
@@ -169,14 +169,16 @@ function lapMoRong_(input, result) {
   var ctL = chiemTinhLuan(ct, vy);
   var ts = thanSoHocLap(input, tv.info.solar, vy);
   var hd = hdLap(ct.thoiDiem.jd);
-  var th = tongHopLuan({ tv: tv, bt: result.battu, btct: result.battuChiTiet, ct: ct, ctL: ctL, ts: ts, hd: hd,
+  var hl = haLacLap(result.battu, tv), hlL = haLacLuan(hl, result.battu, vy);
+  var th = tongHopLuan({ tv: tv, bt: result.battu, btct: result.battuChiTiet, ct: ct, ctL: ctL, ts: ts, hd: hd, hl: hl, hlL: hlL,
     duDoan: result.duDoan, daiVanTV: result.chiTiet.daiVan, input: input });
   // Gọn dữ liệu trả về trình duyệt
   var ctOut = { thoiDiem: ct.thoiDiem, heNha: ct.heNha, cusp: ct.cusp, hanhTinh: ct.hanhTinh, asc: ct.asc, mc: ct.mc, goc: ct.goc,
     nguyenTo: ct.nguyenTo, tinhChat: ct.tinhChat, phaTrang: ct.phaTrang, chuTinh: ct.chuTinh };
   var hdOut = { act: hd.act, gates: hd.gates, kenh: hd.kenh, dinh: hd.dinh, loai: hd.loai, loaiTen: HD_TYPES[hd.loai].ten, thamQuyen: HD_AUTH[hd.thamQuyen].ten,
     chienLuoc: HD_TYPES[hd.loai].chienLuoc, profile: hd.profile, dinhNghia: hd.dinhNghia, cross: hd.cross, goc: hd.goc, luan: hdLuan(hd) };
-  return { chiemTinh: ctOut, chiemTinhLuan: ctL, thanSo: ts, thanSoLuan: thanSoHocLuan(ts), hd: hdOut, tongHop: th };
+  var hlOut = { tien: hl.tien, hau: hl.hau, hoTien: hl.hoTien, hoHau: hl.hoHau, luan: hlL };
+  return { haLac: hlOut, chiemTinh: ctOut, chiemTinhLuan: ctL, thanSo: ts, thanSoLuan: thanSoHocLuan(ts), hd: hdOut, tongHop: th };
 }
 
 /* ---------------------- Lưu trữ Google Sheet ---------------------- */

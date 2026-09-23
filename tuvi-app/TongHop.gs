@@ -89,6 +89,9 @@ var TH_SO_TC = { 1: [1, 0.5, 0, 2, 0.5], 2: [-1, -1, 0.5, -1.5, 0], 3: [1.5, -0.
 var TH_HD_TYPE_TC = { 'Manifestor': [0.5, 0, 0, 2, 0], 'Generator': [0, 0, 1.5, 0, 0.5], 'Manifesting Generator': [1, 0, -1.5, 0.5, 0.5], 'Projector': [0, 1, 0, -1, 0], 'Reflector': [-0.5, 0, -1, -1.5, -0.5] };
 var TH_HD_AUTH_TC = { emotional: [0, -1.5, 0, 0, 0], sacral: [0, -0.5, 0, 0, 0.5], splenic: [0, -0.5, 0, 0, 0.5], mental: [0, 1.5, 0, 0, 0], egoM: [0, 0, 0, 1, 0.5], egoP: [0, 0, 0, 1, 0.5], self: [0, -0.5, 0, 0.5, -0.5], lunar: [-0.5, 0, -0.5, -0.5, -0.5] };
 
+var TH_QUAI_TC = { 'Càn': [0.5, 0.5, 0.5, 2, 0.5], 'Khôn': [-0.5, -0.5, 1, -1.5, 1], 'Chấn': [1, -0.5, -1.5, 1, 0.5], 'Tốn': [0.5, 0.5, -0.5, -0.5, 0.5],
+  'Khảm': [-1, 1, 0, 0, -0.5], 'Ly': [1.5, -0.5, -0.5, 0.5, -0.5], 'Cấn': [-1, 0.5, 2, 0, 1], 'Đoài': [1.5, -0.5, 0, 0, 0] };
+var TH_QUAI_NGHE = { 'Càn': ['qly', 'pl'], 'Khôn': ['kd', 'yt'], 'Chấn': ['kt', 'tt'], 'Tốn': ['kd', 'tt'], 'Khảm': ['kt', 'dl'], 'Ly': ['nt', 'gd'], 'Cấn': ['kd', 'tl'], 'Đoài': ['tt', 'gd'] };
 var TH_NGHE = {
   qly: 'Lãnh đạo – quản lý – hành chính', kd: 'Kinh doanh – tài chính – đầu tư', nt: 'Nghệ thuật – sáng tạo – thiết kế', gd: 'Giáo dục – đào tạo – tư vấn',
   kt: 'Kỹ thuật – công nghệ – nghiên cứu', yt: 'Y tế – chăm sóc – chữa lành', tt: 'Truyền thông – ngoại giao – bán hàng', pl: 'Pháp luật – quân sự – an ninh',
@@ -191,6 +194,11 @@ function thXuatThan_(C) {
   if (ts.dinhCao[0].thuThach === 6 || ts.dinhCao[0].thuThach === 4) { aT -= 0.3; tsi.push('◇ Thử thách tuổi trẻ ' + ts.dinhCao[0].thuThach + ': ' + TS_THU_THACH[ts.dinhCao[0].thuThach] + '.'); }
   vote(am, 'Thần số học', aT); vote(tuLap, 'Thần số học', tT);
   he.push({ he: 'Thần số học', items: tsi });
+  if (C.hlL && C.hlL.daiVan[0]) {
+    var v0 = C.hlL.daiVan[0];
+    vote(giau, 'Hà Lạc', Math.max(-2, Math.min(2, v0.diem / 1.5)));
+    he.push({ he: 'Hà Lạc', items: ['Vận hào đầu đời ' + v0.khoang + ': ' + v0.ten + ' – ' + v0.danhGia + '. ' + v0.items[1]] });
+  }
   he.push({ he: 'Human Design', items: ['Human Design không luận gia cảnh; hồ sơ ' + C.hd.profile + ' cho biết cách bạn học từ môi trường tuổi nhỏ: ' + HD_LINE[C.hd.l2][0] + ' (vô thức) – ' + HD_LINE[C.hd.l2][1] + '.'] });
 
   function tb(arr) { var s = 0; arr.forEach(function (x) { s += x.v; }); return arr.length ? s / arr.length : 0; }
@@ -419,6 +427,12 @@ function thTinhCach_(C) {
   if (!hd.dinh.g) cong('Human Design', [0.3, 0, -0.5, -0.3, 0], 0.5);
   he.push({ he: 'Human Design', items: [HD_TYPES[hd.loai].ten + ' · ' + HD_AUTH[hd.thamQuyen].ten + ' · Hồ sơ ' + hd.profile + ' (' + HD_LINE[hd.l1][0] + ' / ' + HD_LINE[hd.l2][0] + ').', HD_TYPES[hd.loai].moTa] });
 
+  // Hà Lạc
+  if (C.hl) {
+    var TQ = C.hl.tien, HQ = C.hl.hau;
+    cong('Hà Lạc', TH_QUAI_TC[TQ.tren], 1); cong('Hà Lạc', TH_QUAI_TC[TQ.duoi], 1.2); cong('Hà Lạc', TH_QUAI_TC[HQ.duoi], 0.5);
+    he.push({ he: 'Hà Lạc', items: ['Quẻ Tiên thiên ' + TQ.ten + ': ' + TQ.y + '.', 'Nội quái ' + TQ.duoi + ' (' + HL_QUAI[TQ.duoi].y + ') là bản chất bên trong; ngoại quái ' + TQ.tren + ' (' + HL_QUAI[TQ.tren].y + ') là cách bạn thể hiện ra ngoài.'] });
+  }
   // Tính trục
   var hs = Object.keys(heV), truc = TH_TRUC.map(function (T, i) {
     var vals = hs.map(function (h) { return { he: h, v: heV[h].s[i] / heV[h].w }; });
@@ -443,7 +457,7 @@ function thTinhCach_(C) {
   var manh = [], yeu = [];
   manh.push(TS_SO[ts.duongDoi].manh); manh.push(CT_CUNG[ct.by.sun.cung].tuKhoa);
   yeu.push(TS_SO[ts.duongDoi].yeu); yeu.push(CT_CUNG[ct.by.sun.cung].bong); yeu.push('Dấu hiệu lệch hướng theo HD: ' + HD_TYPES[hd.loai].saiLech.toLowerCase());
-  return { tieuDe: 'Tính cách', ketLuan: [chanDung].concat(kl), truc: truc, nguon: he, manh: manh, yeu: yeu };
+  return { tieuDe: 'Tính cách', ketLuan: [chanDung].concat(kl), truc: truc, nguon: he, manh: manh, yeu: yeu, soHe: hs.length };
 }
 
 /* =========================================================
@@ -460,6 +474,7 @@ function thNghe_(C) {
   add(TH_NGHE_CUNG[ct.mc.cung], 'Chiêm tinh', 1.5); add(TH_NGHE_CUNG[ct.by.sun.cung], 'Chiêm tinh', 0.8);
   add(TH_NGHE_SO[ts.duongDoi], 'Thần số học', 1.5); if (ts.coTen) add(TH_NGHE_SO[ts.suMenh], 'Thần số học', 1);
   add(TH_NGHE_HD[hd.loai], 'Human Design', 1);
+  if (C.hl) { add(TH_QUAI_NGHE[C.hl.tien.tren], 'Hà Lạc', 1); add(TH_QUAI_NGHE[C.hl.tien.duoi], 'Hà Lạc', 0.7); }
   hd.kenh.forEach(function (k) { add(TH_NGHE_KENH[[k.a, k.b].sort(function (x, y) { return x - y; }).join('-')], 'Human Design', 0.8); });
   return Object.keys(dem).map(function (k) { return { k: k, ten: TH_NGHE[k], diem: Math.round(dem[k].d * 10) / 10, he: Object.keys(dem[k].he) }; })
     .sort(function (a, b) { return b.he.length - a.he.length || b.diem - a.diem; });
@@ -479,11 +494,14 @@ function thDuongDoi_(C) {
       (CD.top || []).forEach(function (t) { if (t.tuoi >= a && t.tuoi <= b) suKien.push({ nam: t.nam, tuoi: t.tuoi, ten: CD.ten, loai: CD.loai }); });
     });
     suKien.sort(function (x, y) { return x.nam - y.nam; });
-    var diem = dv.diem * 0.55 + btD * 1.6;
+    var hlv = (C.hlL ? C.hlL.daiVan : []).filter(function (x) { var t = String(x.khoang).match(/(\d+)\D+(\d+)/); return +t[1] <= b && +t[2] >= a; });
+    var hlD = hlv.length ? hlv.reduce(function (s0, x) { return s0 + x.diem; }, 0) / hlv.length : 0;
+    var diem = dv.diem * 0.5 + btD * 1.4 + hlD * 0.8;
     var lines = [];
     lines.push('Tử Vi: đại hạn cung ' + dv.cung + ' (' + dv.canChi + ', ' + (dv.sao || 'VCD') + ') – ' + dv.danhGia + ' (điểm ' + dv.diem + ').');
     if (btv.length) lines.push('Bát Tự: ' + btv.map(function (x) { return 'đại vận ' + x.canChi + ' từ ' + x.tuoi + ' tuổi (' + x.thapThan + ') – ' + x.danhGia; }).join('; ') + '.');
     if (pin.length) lines.push('Thần số học: ' + pin.map(function (p) { return 'đỉnh cao số ' + p.so + ' (' + TS_SO[p.so].tk.split(',').slice(0, 2).join(',') + ')' + ', thử thách ' + p.thuThach; }).join('; ') + '.');
+    if (hlv.length) lines.push('Hà Lạc: ' + hlv.map(function (x) { return x.ten + ' ' + x.khoang + ' – ' + x.danhGia + ' (quẻ biến ' + x.items[1].split(' – ')[0].replace('Quẻ biến của vận: ', '') + ')'; }).join('; ') + '.');
     if (chuKy.length) lines.push('Chiêm tinh: ' + chuKy.map(function (c) { return c.ten + ' ~' + Math.round(c.tuoi) + ' tuổi (' + c.nam + ')'; }).join('; ') + '.');
     if (a <= 30 && b >= 27) lines.push('Human Design: Sao Thổ hồi quy ~29 tuổi – bắt đầu sống theo chiến lược ' + HD_TYPES[hd.loai].chienLuoc.toLowerCase() + '.');
     if (a <= 50 && b >= 48) lines.push('Human Design: Chiron hồi quy ~50 tuổi – bước vào giai đoạn "hình mẫu".' + (hd.l1 === 6 || hd.l2 === 6 ? ' Với hào 6, đây là lúc "xuống mái nhà" làm gương.' : ''));
@@ -534,6 +552,11 @@ function thNamNay_(C, ctL) {
   diem.push({ he: 'Thần số học', v: TH_NAM_CN[ts.namNay] });
   var ai = ctL.namXem.items, aS = 0; ai.forEach(function (x) { if (x.charAt(0) === '✓') aS += 0.5; if (x.charAt(0) === '✗') aS -= 0.6; });
   he.push({ he: 'Chiêm tinh', items: ai }); diem.push({ he: 'Chiêm tinh', v: Math.max(-2, Math.min(2, aS)) });
+  if (C.hlL && C.hlL.namNay) {
+    var hn = C.hlL.namNay;
+    he.push({ he: 'Hà Lạc', items: ['Quẻ lưu niên ' + hn.que + ' (hào động ' + hn.hao + ') – ' + hn.danhGia + ': ' + hn.y + '. Nên ' + hn.khuyen + '.'].concat(hn.ghi) });
+    diem.push({ he: 'Hà Lạc', v: Math.max(-2, Math.min(2, hn.diem)) });
+  }
   he.push({ he: 'Human Design', items: ['Chiến lược vẫn là kim chỉ nam mỗi năm: ' + HD_TYPES[C.hd.loai].chienLuoc + '. Khi thấy ' + HD_TYPES[C.hd.loai].saiLech.toLowerCase() + ' kéo dài – đó là tín hiệu đang đi lệch.'] });
   var t = 0; diem.forEach(function (x) { t += x.v; }); t /= diem.length;
   var cung = diem.filter(function (x) { return x.v * t > 0; }).map(function (x) { return x.he; });
@@ -544,7 +567,7 @@ function thNamNay_(C, ctL) {
   if (manh) kl.push('Lĩnh vực sáng nhất: ' + manh.ten.toLowerCase() + ' (' + manh.diem + ').');
   if (yeu && yeu.diem > 1) kl.push('✗ Cần phòng: ' + yeu.ten.toLowerCase() + ' (' + yeu.diem + ').');
   kl.push('Chủ đề thần số: ' + TS_NAM[ts.namNay].split(':')[0] + '; chiêm tinh kích hoạt nhà ' + ctL.namXem.nha + ' (' + CT_NHA[ctL.namXem.nha - 1].y.split(',')[0] + ').');
-  return { tieuDe: 'Năm ' + vy + ' theo 5 hệ', diem: t, ketLuan: kl, nguon: he, linhVuc: linhVuc };
+  return { tieuDe: 'Năm ' + vy + ' theo 6 hệ', diem: t, ketLuan: kl, nguon: he, linhVuc: linhVuc };
 }
 
 /* =========================================================
@@ -591,7 +614,7 @@ function tongHopLuan(C) {
     duongDoi: dd,
     nghe: nghe.slice(0, 6),
     coSo: [
-      'Mỗi hệ luận "bỏ phiếu" độc lập trên cùng một thang đo (ví dụ trục Hướng ngoại ↔ Hướng nội từ −2 đến +2); kết quả chung là trung bình các hệ, độ đồng thuận là tỷ lệ hệ cùng chiều.',
+      'Sáu hệ: Tử Vi, Bát Tự, Bát Tự Hà Lạc, Chiêm tinh, Thần số học, Human Design. Mỗi hệ luận "bỏ phiếu" độc lập trên cùng một thang đo (ví dụ trục Hướng ngoại ↔ Hướng nội từ −2 đến +2); kết quả chung là trung bình các hệ, độ đồng thuận là tỷ lệ hệ cùng chiều.',
       'Xuất thân: Tử Vi (Phụ Mẫu – Phúc Đức – Điền Trạch, Tuần/Triệt ở Mệnh, Thiên Mã), Bát Tự (niên trụ = tổ nghiệp, nguyệt trụ = cha mẹ; Ấn/Tài/Kiếp ở trụ năm – tháng, Dịch Mã), Chiêm tinh (nhà 4/IC, Mặt Trăng, Sao Thổ, Sao Mộc), Thần số học (số 4, 6, đỉnh cao thứ nhất).',
       'Vóc dáng: hình tướng chính tinh Mệnh – Thân (cổ thư Tử Vi), hình tướng ngũ hành của nhật chủ và hành vượng (Bát Tự – "Ngũ hành hình tướng"), cung Mọc – chủ tinh lá số – hành tinh nhà 1 (chiêm tinh cổ điển, Ptolemy/Alan Leo).',
       'Đặc điểm cơ thể: sát tinh/Hóa Kỵ/Xương Khúc ở Mệnh – Thân – Tật (Tử Vi), ngũ hành thái quá/bất cập ↔ tạng phủ (Hoàng Đế Nội Kinh), Sao Hỏa – Sao Thổ – cung Mọc – nhà 6 ↔ bộ phận theo cung (Melothesia), trung tâm mở ↔ tuyến nội tiết (Human Design).',
@@ -636,7 +659,7 @@ function thTomLuoc_(C, T) {
   var nay = dd.chang.filter(function (c) { return c.isNow; })[0];
   var sang = [], canh = [], khuyen = [];
   sang.push(NM[1].charAt(0).toUpperCase() + NM[1].slice(1) + '.');
-  if (truc[0]) sang.push(truc[0].moTa.split(':')[0] + ' là nét rõ nhất ở bạn – ' + truc[0].dong.length + ' trên 5 hệ cùng xác nhận.');
+  if (truc[0]) sang.push(truc[0].moTa.split(':')[0] + ' là nét rõ nhất ở bạn – ' + truc[0].dong.length + ' trên ' + T.tinhCach.soHe + ' hệ cùng xác nhận.');
   if (nghe) sang.push('Đất dụng võ: ' + nghe.ten.toLowerCase() + ' (' + nghe.he.length + ' hệ cùng gợi ý).');
   if (sang.length < 3) sang.push('Tài sản bẩm sinh (số chủ đạo ' + ts.duongDoi + '): ' + TS_SO[ts.duongDoi].manh + '.');
   var x = T.coThe.vung && T.coThe.vung[0];
@@ -651,12 +674,12 @@ function thTomLuoc_(C, T) {
     nguyenMau: ten,
     tieuDe: 'Bạn là ' + ten,
     phuDe: NM[1].charAt(0).toUpperCase() + NM[1].slice(1) + '. Mệnh ' + (menh.map(function (s) { return s.n; }).join(' – ') || 'vô chính diệu') + ', nhật chủ ' + bt.nhatChu +
-      ', Mặt Trời ' + ct.by.sun.cungTen + ', số chủ đạo ' + ts.duongDoi + ', ' + HD_TYPES[hd.loai].ten.split(' (')[0] + ' ' + hd.profile + '.',
+      ', Mặt Trời ' + ct.by.sun.cungTen + ', số chủ đạo ' + ts.duongDoi + ', ' + HD_TYPES[hd.loai].ten.split(' (')[0] + ' ' + hd.profile + (C.hl ? ', quẻ Hà Lạc ' + C.hl.tien.ten + ' → ' + C.hl.hau.ten : '') + '.',
     chiSo: [
       { nhan: 'Giai đoạn vàng', gt: vang ? vang.khoang.replace(' tuổi', '') : '—', phu: vang ? vang.nam : '' },
       { nhan: 'Năm ' + tv.info.viewYear, gt: T.namNay ? (T.namNay.diem > 0.8 ? 'Thuận lợi' : T.namNay.diem > 0.2 ? 'Khá' : T.namNay.diem > -0.3 ? 'Bình ổn' : 'Thử thách') : '—', phu: nay ? 'chặng ' + nay.khoang : '' },
       { nhan: 'Tuổi hợp nhất', gt: pn && pn.tuoiHop.tot[0] ? String(pn.tuoiHop.tot[0].nam) : '—', phu: pn && pn.tuoiHop.tot[0] ? pn.tuoiHop.tot[0].canChi + ' · ' + pn.tuoiHop.tot[0].diem + '/10' : '' },
-      { nhan: 'Nghề nổi bật', gt: nghe ? nghe.ten.split(' – ')[0] : '—', phu: nghe ? nghe.he.length + '/5 hệ đồng thuận' : '' }
+      { nhan: 'Nghề nổi bật', gt: nghe ? nghe.ten.split(' – ')[0] : '—', phu: nghe ? nghe.he.length + '/6 hệ đồng thuận' : '' }
     ],
     diemSang: sang, canhBao: canh, loiKhuyen: khuyen,
     thoiDiem: 'Thời điểm vàng của bạn: ' + (vang ? vang.khoang + ' (' + vang.nam + ')' : '—') + '. ' + dd.ketLuan[2]

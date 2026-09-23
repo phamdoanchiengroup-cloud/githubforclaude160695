@@ -1,6 +1,6 @@
 # Thiên Cơ Các – Web App Lá Số Tử Vi & Bát Tự (Google Apps Script)
 
-Web app lập lá số **Tử Vi Đẩu Số 12 cung** (phái Việt Nam) kết hợp **Bát Tự – Tứ Trụ**, **Chiêm tinh phương Tây (cung hoàng đạo)**, **Thần số học Pythagoras** và **Human Design**, cùng phần **Luận tổng hợp 5 hệ** (xuất thân, vóc dáng, đặc điểm cơ thể, tính cách, đường đời), nhập ngày sinh theo **Dương lịch hoặc Âm lịch** (có tháng nhuận), lưu lịch sử vào **Google Sheet**. Giao diện tối phong cách **huyền bí (mystery)** – đêm sâu, ánh kim, tinh vân; từ khóa/tên sao được tô màu, có biểu đồ trực quan và báo cáo **PDF thương mại** (bìa, tóm lược, mục lục, thương hiệu người luận).
+Web app lập lá số **Tử Vi Đẩu Số 12 cung** (phái Việt Nam) kết hợp **Bát Tự – Tứ Trụ**, **Chiêm tinh phương Tây (cung hoàng đạo)**, **Thần số học Pythagoras** và **Human Design**, cùng phần **Luận tổng hợp 5 hệ** (xuất thân, vóc dáng, đặc điểm cơ thể, tính cách, đường đời), nhập ngày sinh theo **Dương lịch hoặc Âm lịch** (có tháng nhuận), lưu lịch sử vào **Google Sheet**. Giao diện phong cách **huyền bí** tông hoàng hôn tím mờ sương (sáng vừa phải, dễ đọc); từ khóa/tên sao được tô màu, có biểu đồ trực quan và báo cáo **PDF thương mại** (bìa, tóm lược, mục lục, thương hiệu người luận).
 
 ## Các file
 
@@ -18,6 +18,7 @@ Web app lập lá số **Tử Vi Đẩu Số 12 cung** (phái Việt Nam) kết 
 | `HumanDesign.gs` | Human Design: 26 kích hoạt (Tính cách + Thiết kế 88°), 9 trung tâm, 36 kênh, Loại, Chiến lược, Thẩm quyền, Hồ sơ, Định nghĩa, Giao điểm hóa thân, sinh học trung tâm |
 | `ThanSoHoc.gs` | Thần số học: số chủ đạo (2–11, 22, 33), ngày sinh, thái độ, biểu đồ ngày sinh & 15 mũi tên, biểu đồ tên tiếng Việt (linh hồn, nhân cách, sứ mệnh, trưởng thành, cân bằng, bài học nghiệp, đam mê ẩn), 4 đỉnh cao – thử thách, năm/tháng cá nhân |
 | `TongHop.gs` | Luận tổng hợp 5 hệ bằng "bỏ phiếu" độc lập & độ đồng thuận: xuất thân – gia cảnh, vóc dáng – diện mạo, vùng cơ thể có dấu vết/cần giữ gìn, tính cách 5 trục, phối ngẫu tương lai, chủ đề đời – nghề nghiệp – các chặng đời, năm đang xem theo 5 hệ, bảng may mắn |
+| `HaLac.gs` | Bát Tự Hà Lạc: đổi tứ trụ ra số Hà Đồ – Lạc Thư, Thiên số/Địa số, quẻ Tiên thiên – Hậu thiên – Hỗ, hào nguyên đường theo giờ, đại vận theo 12 hào (dương 9 năm, âm 6 năm), quẻ lưu niên từng năm, chấm điểm theo cát/hung quẻ, vị hào và dụng thần |
 | `PhoiNgau.gs` | Chân dung vợ/chồng tương lai từ 5 hệ (ngoại hình, tính cách, chênh tuổi, nơi gặp, chất lượng hôn nhân, năm dễ cưới) + chấm điểm năm sinh (thang 10: nạp âm, thiên can, địa chi, cung phi Bát trạch, thiên mệnh + dụng thần) và tháng sinh âm/dương lịch phù hợp |
 | `Index.html` | Khung trang |
 | `Styles.html` | CSS |
@@ -90,4 +91,4 @@ Tham khảo Bát Tự chi tiết: [douban – 四柱宫位定义](https://www.do
 - **Tô đậm tự động**: tên sao (tím nhạt), khái niệm then chốt (vàng), tín hiệu tốt (xanh), điều cần lưu ý (đỏ); phần mở đầu trước dấu ":" của mỗi ý được in đậm.
 - **Biểu đồ**: đường vận trình cả đời, điểm hợp tuổi theo năm sinh, cường độ từng lĩnh vực trong năm, cân bằng 4 nguyên tố – đều có tooltip khi rê chuột.
 - **Lời văn**: phần "Chân dung hé lộ" và các câu dẫn viết theo nguyên tắc copywriting – rõ ràng hơn bay bổng, cụ thể (số liệu, năm, x/5 hệ đồng thuận), nói trực tiếp với "bạn", mỗi mục một ý, kết bằng hành động; không phóng đại (tham khảo [coreyhaines31/marketingskills – copywriting](https://github.com/coreyhaines31/marketingskills/blob/main/skills/copywriting/SKILL.md), [robpalmer99/claude-code-copywriting-skills](https://github.com/robpalmer99/claude-code-copywriting-skills)).
-- **PDF**: bìa tràn trang, trang "Chân dung hé lộ", mục lục có số trang + bookmark, trang mở đầu mỗi phần có câu dẫn, trang lời kết, chân trang tiếng Việt kèm thương hiệu/liên hệ người luận; chọn nền tối (đọc trên máy) hoặc sáng (để in).
+- **PDF 2 loại**: *bản đầy đủ* (~60–70 trang, đã lược phần cơ sở lý luận/căn cứ trùng lặp, các chặng đã qua và chi tiết quá xa) và *bản xem thử* (~14 trang: mỗi phần hé lộ vài thông tin then chốt, che bớt dữ liệu, ảnh xem trước làm mờ, trang kêu gọi mua kèm ưu đãi). Cả hai có bìa tràn trang, trang "Chân dung hé lộ", mục lục có số trang + bookmark, trang mở đầu mỗi phần có câu dẫn, trang lời kết, chân trang tiếng Việt kèm thương hiệu/liên hệ người luận; chọn nền tối (đọc trên máy) hoặc sáng (để in).
