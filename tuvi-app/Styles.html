@@ -899,7 +899,7 @@ b.lead { color: var(--head); font-weight: 700; }
 @media (max-width: 400px) { .mm-grid { grid-template-columns: 1fr; } }
 /* ---------- Tài khoản & chế độ khách ---------- */
 .modal-box { padding: 22px 24px; }
-.modal-actions .btn-primary, .lock-cta .btn-primary, .khach-bar .btn-primary { width: auto; margin-top: 0; padding: 10px 20px; font-size: 17px; }
+.modal-actions .btn-primary, .lock-cta .btn-primary, .khach-bar .btn-primary, #qtBody .btn-primary, .vi-box .btn-primary, #napBody .btn-primary { width: auto; margin-top: 0; padding: 10px 20px; font-size: 17px; }
 .btn-login { border-color: var(--gold); color: var(--gold-hi); font-weight: 700; }
 .user-chip { max-width: 180px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .form-err { color: var(--bad-ink); min-height: 18px; font-size: 13px; margin: 4px 0 0; }
@@ -911,4 +911,35 @@ b.lead { color: var(--head); font-weight: 700; }
 .khach-bar { margin: 0 0 14px; padding: 10px 14px; border-radius: 12px; background: var(--gold-soft); border: 1px solid var(--gold); font-size: 14px; display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
 .khach-bar span { flex: 1; min-width: 200px; }
 .khach-page .demo-card { margin-bottom: 12px; }
+/* ---------- Ví xu, nạp xu, quản trị ---------- */
+.auth-seg { display: flex; gap: 6px; background: var(--surface-2); border-radius: 12px; padding: 4px; border: 1px solid var(--line); }
+.auth-seg button { flex: 1; border: 0; background: transparent; color: var(--ink-soft); font: inherit; font-weight: 700; padding: 9px; border-radius: 9px; cursor: pointer; }
+.auth-seg button.on { background: var(--surface); color: var(--head); box-shadow: 0 2px 8px rgba(0,0,0,.2); }
+.vi-box { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; padding: 12px 14px; border-radius: 14px; border: 1px solid var(--gold); background: var(--gold-soft); margin: 4px 0 12px; }
+.vi-box > div { flex: 1; } .vi-box small { display: block; color: var(--ink-soft); font-size: 12px; } .vi-box b { font-size: 22px; color: var(--gold-hi); font-family: var(--font-title); }
+.vi-box > span { flex: 1; min-width: 200px; }
+.xu-cong { color: var(--good-ink); font-weight: 700; } .xu-tru { color: var(--bad-ink); font-weight: 700; }
+.goi-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 10px; }
+.goi { display: flex; flex-direction: column; align-items: center; gap: 2px; padding: 14px 10px; border-radius: 14px; border: 1px solid var(--line); background: var(--surface); color: var(--ink); cursor: pointer; font: inherit; position: relative; }
+.goi b { font-family: var(--font-title); font-size: 22px; color: var(--head); } .goi span { color: var(--ink-soft); font-size: 13px; }
+.goi em { position: absolute; top: -8px; right: -6px; font-style: normal; font-size: 11px; font-weight: 800; background: var(--gold); color: #1a1406; padding: 2px 7px; border-radius: 999px; }
+.goi:hover, .goi-chon { border-color: var(--gold); box-shadow: 0 0 0 2px var(--gold-soft); }
+.qr-wrap { display: grid; grid-template-columns: 220px 1fr; gap: 16px; align-items: start; }
+.qr-img { width: 220px; min-height: 220px; height: auto; border-radius: 12px; background: #fff; padding: 6px; }
+.qr-info p { margin: 0 0 8px; } .qr-info .gio-tbl th { width: 90px; }
+.copy { cursor: pointer; }
+.nap-tt { font-weight: 700; color: var(--gold-hi); margin-top: 10px !important; }
+.nap-ok { text-align: center; padding: 26px 10px; font-family: var(--font-title); font-size: 24px; color: var(--good-ink); }
+.nap-ok small { font-family: var(--font-body); font-size: 14px; color: var(--ink-soft); }
+.khoa-phan { border: 1px dashed var(--gold); }
+.qt-box { max-width: 920px; }
+.qt-tbl td, .qt-tbl th { vertical-align: top; }
+.gia-list { display: grid; gap: 8px; margin-bottom: 10px; }
+.gia-row { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.gia-row span { flex: 1; min-width: 200px; }
+.gia-row input[type=number] { width: 120px; }
+.acc-item select { width: auto; padding: 6px 28px 6px 10px; font-size: 13px; }
+.pdf-lock { margin: 6px 0 0; font-size: 13px; color: var(--gold-hi); }
+.pdf-lock:empty { display: none; }
+@media (max-width: 640px) { .qr-wrap { grid-template-columns: 1fr; justify-items: center; } .qr-img { width: 200px; } }
 </style>

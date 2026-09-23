@@ -7,7 +7,8 @@
  *  - Sai mật khẩu 5 lần → khóa tài khoản 15 phút.
  *  - Khách (chưa đăng nhập) vẫn lập được lá số, nhưng máy chủ chỉ trả về bản rút gọn
  *    (lá số + phần "hé lộ" như bản PDF xem thử); phần luận giải không rời khỏi máy chủ.
- *  - Vai trò: "chu" (chủ sở hữu – quản lý tài khoản, xem mọi lịch sử) và "thanhVien".
+ *  - Vai trò: "chu" (chủ sở hữu – toàn quyền, quản trị), "vip" (xem không giới hạn, không quản trị)
+ *    và "thanhVien" (tự đăng ký, mở khóa bằng xu – xem ThanhToan.gs).
  * ============================================================
  */
 var TK_VONG = 400;
@@ -36,6 +37,7 @@ function tkKiemMatKhau_(p) {
   return p;
 }
 function tkNguoi_(u, o) { return { ten: u, hienThi: o.hienThi || u, vaiTro: o.vaiTro || 'thanhVien' }; }
+var TK_VAI_TRO = { chu: 'Chủ sở hữu', vip: 'Thành viên VIP', thanhVien: 'Thành viên' };
 
 /* ---------- Phiên ---------- */
 function tkPhien_(token) {
@@ -87,18 +89,44 @@ function dsTaiKhoan(token) {
   Object.keys(p).forEach(function (k) {
     if (k.indexOf('TK_') !== 0) return;
     var o = JSON.parse(p[k]), u = k.slice(3);
-    out.push({ ten: u, hienThi: o.hienThi || u, vaiTro: o.vaiTro || 'thanhVien', taoLuc: o.taoLuc || '', lanCuoi: o.lanCuoi || '' });
+    out.push({ ten: u, hienThi: o.hienThi || u, vaiTro: o.vaiTro || 'thanhVien', lienHe: o.lienHe || '', tuDangKy: !!o.tuDangKy, taoLuc: o.taoLuc || '', lanCuoi: o.lanCuoi || '' });
   });
-  return out.sort(function (a, b) { return (a.vaiTro === 'chu' ? 0 : 1) - (b.vaiTro === 'chu' ? 0 : 1) || a.ten.localeCompare(b.ten); });
+  var TT = { chu: 0, vip: 1, thanhVien: 2 };
+  return out.sort(function (a, b) { return (TT[a.vaiTro] || 2) - (TT[b.vaiTro] || 2) || String(b.taoLuc).localeCompare(String(a.taoLuc)); });
 }
-function taoTaiKhoan(token, user, pass, hienThi) {
-  tkCan_(token, true);
+function tkTaoMoi_(user, pass, hienThi, vaiTro, them) {
   var u = tkTen_(user);
   if (!/^[a-z0-9._-]{3,32}$/.test(u)) throw new Error('Tên đăng nhập 3–32 ký tự: chữ thường không dấu, số, dấu chấm, gạch.');
   if (tkDoc_(u)) throw new Error('Tên đăng nhập đã tồn tại.');
   tkKiemMatKhau_(pass);
-  var salt = tkSalt_();
-  tkGhi_(u, { salt: salt, hash: tkBam_(pass, salt), vaiTro: 'thanhVien', hienThi: String(hienThi || u).slice(0, 60), taoLuc: new Date().toISOString() });
+  var salt = tkSalt_(), o = { salt: salt, hash: tkBam_(pass, salt), vaiTro: vaiTro, hienThi: String(hienThi || u).trim().slice(0, 60) || u, taoLuc: new Date().toISOString() };
+  for (var k in (them || {})) o[k] = them[k];
+  tkGhi_(u, o);
+  return u;
+}
+function taoTaiKhoan(token, user, pass, hienThi, vaiTro) {
+  tkCan_(token, true);
+  tkTaoMoi_(user, pass, hienThi, vaiTro === 'vip' ? 'vip' : 'thanhVien');
+  return dsTaiKhoan(token);
+}
+/** Khách tự đăng ký tài khoản thành viên, đăng nhập luôn */
+function dangKy(user, pass, hienThi, lienHe) {
+  var c = CacheService.getScriptCache(), n = parseInt(c.get('DK_DEM') || '0', 10);
+  if (n >= 30) throw new Error('Hệ thống đang nhận quá nhiều đăng ký – vui lòng thử lại sau ít phút.');
+  lienHe = String(lienHe || '').trim().slice(0, 80);
+  var hopLe = lienHe.indexOf('@') >= 0 ? /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(lienHe) : /^\+?\d{9,13}$/.test(lienHe.replace(/[\s.-]/g, ''));
+  if (!hopLe) throw new Error('Nhập số điện thoại hoặc email hợp lệ – dùng khi cần khôi phục tài khoản.');
+  var u = tkTaoMoi_(user, pass, hienThi, 'thanhVien', { lienHe: lienHe, tuDangKy: true });
+  c.put('DK_DEM', String(n + 1), 600);
+  return dangNhap(u, pass);
+}
+function qtDatVaiTro(token, user, vaiTro) {
+  tkCan_(token, true);
+  var u = tkTen_(user), o = tkDoc_(u);
+  if (!o) throw new Error('Không tìm thấy tài khoản.');
+  if (o.vaiTro === 'chu') throw new Error('Không đổi vai trò chủ sở hữu.');
+  o.vaiTro = vaiTro === 'vip' ? 'vip' : 'thanhVien';
+  tkGhi_(u, o);
   return dsTaiKhoan(token);
 }
 function datLaiMatKhau(token, user, pass) {
@@ -124,8 +152,16 @@ function lapLaSo(input, token) {
   input.taiKhoan = u ? u.ten : '';
   var r = lapLaSoDayDu_(input);
   try { r.teaser = demoTeaser_(r); } catch (e) { r.teaser = {}; }
-  if (!u) return khachRutGon_(r);
-  r.nguoiDung = u;
+  var khoa = ttKhoaLaSo_(input), bg = ttBangGia_();
+  if (!u) { var k = khachRutGon_(r); k.khoa = khoa; k.bangGia = bg; return k; }
+  var q = ttQuyen_(u, khoa), soDu = q.toanQuyen ? null : ttSoDu_(u.ten);
+  if (!q.co_ban) {                                   // đã đăng nhập nhưng chưa mở lá số này: vẫn là bản rút gọn, kèm nút mở khóa
+    var k2 = khachRutGon_(r);
+    k2.nguoiDung = u; k2.khoa = khoa; k2.quyen = q; k2.bangGia = bg; k2.soDu = soDu; k2.canMo = true; k2.saved = r.saved; k2.saveError = r.saveError;
+    return k2;
+  }
+  if (!q.toanQuyen) ttCatPhan_(r, q);
+  r.nguoiDung = u; r.khoa = khoa; r.quyen = q; r.bangGia = bg; r.soDu = soDu;
   return r;
 }
 /** Bản rút gọn cho khách: đủ để vẽ lá số và phần "hé lộ", không có lời luận */

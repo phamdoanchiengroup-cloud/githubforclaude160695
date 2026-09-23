@@ -10,7 +10,8 @@
  *    BatTu.gs     – Bát Tự (Tứ Trụ), ngũ hành, đại vận
  *    LuanGiai.gs  – luận 12 cung chuyên sâu, đại vận, tiểu vận, nguyệt vận, nhật vận
  *    BatTuChiTiet.gs – luận Bát Tự chi tiết: cung vị tứ trụ, lục thân, cách cục, thần sát mở rộng
- *    TaiKhoan.gs  – đăng nhập, phân quyền, chế độ khách (bản rút gọn)
+ *    TaiKhoan.gs  – đăng nhập, đăng ký, phân quyền, chế độ khách (bản rút gọn)
+ *    ThanhToan.gs – ví xu, mở khóa từng phần, đơn nạp payOS/thủ công, quản trị
  *    DuDoan.gs    – suy luận các năm biến cố sức khỏe/tài chính/gia đạo, kết hôn, sinh con, tài lộc, quan lộc
  *    Index.html   – khung giao diện
  *    Styles.html  – CSS (phong cách tiên hiệp sáng)
@@ -49,7 +50,7 @@ var FILE_HTML_CAN_CO = { 'Index': '<!DOCTYPE html>', 'Styles': '<style>', 'Scrip
 var HAM_CAN_CO = {
   'Lunar.gs': 'solarToLunar', 'TuVi.gs': 'tuviLapLaSo', 'BatTu.gs': 'batTuLap',
   'LuanGiai.gs': 'luanChiTiet', 'DuDoan.gs': 'duDoanCuocDoi', 'BatTuChiTiet.gs': 'batTuChiTiet',
-  'Astro.gs': 'astToanBo', 'ChiemTinh.gs': 'chiemTinhLap', 'HumanDesign.gs': 'hdLap', 'ThanSoHoc.gs': 'thanSoHocLap', 'TongHop.gs': 'tongHopLuan', 'PhoiNgau.gs': 'phoiNgauLuan', 'HaLac.gs': 'haLacLap', 'HoiTu.gs': 'htHoiTu_', 'BatTuLuan.gs': 'btlLinhVuc_', 'TaiKhoan.gs': 'dangNhap'
+  'Astro.gs': 'astToanBo', 'ChiemTinh.gs': 'chiemTinhLap', 'HumanDesign.gs': 'hdLap', 'ThanSoHoc.gs': 'thanSoHocLap', 'TongHop.gs': 'tongHopLuan', 'PhoiNgau.gs': 'phoiNgauLuan', 'HaLac.gs': 'haLacLap', 'HoiTu.gs': 'htHoiTu_', 'BatTuLuan.gs': 'btlLinhVuc_', 'TaiKhoan.gs': 'dangNhap', 'ThanhToan.gs': 'muaPhan'
 };
 
 /** Trả về danh sách lỗi cài đặt (rỗng nếu mọi thứ đúng) */
@@ -89,7 +90,7 @@ function trangLoiCaiDat_(loi) {
 /** Chạy hàm này trong trình soạn thảo (chọn kiemTraCaiDat → Chạy) để xem lỗi trong Nhật ký thực thi */
 function kiemTraCaiDat() {
   var loi = kiemTraCaiDat_();
-  if (!loi.length) { Logger.log('✔ Cài đặt đúng: đủ 17 file .gs và 3 file HTML.'); return; }
+  if (!loi.length) { Logger.log('✔ Cài đặt đúng: đủ 18 file .gs và 3 file HTML.'); return; }
   loi.forEach(function (x) { Logger.log('✘ ' + x.replace(/<[^>]+>/g, '').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&amp;/g, '&')); });
 }
 
@@ -128,7 +129,7 @@ function lapLaSoDayDu_(input) {
  * @param {Object} input dữ liệu form, cần input.events = [{nam, loai}]
  */
 function doGioSinh(input, token) {
-  tkCan_(token);
+  ttCanPhan_(token, input, 'do_gio');
   input = input || {};
   var ev = (input.events || []).filter(function (e) { return e && e.nam && e.loai; });
   if (!ev.length) throw new Error('Hãy nhập ít nhất một sự kiện đã biết (năm + loại sự kiện).');
@@ -187,19 +188,7 @@ function lapMoRong_(input, result) {
 /* ---------------------- Lưu trữ Google Sheet ---------------------- */
 
 function getSheet_() {
-  var ss = null;
-  try { ss = SpreadsheetApp.getActiveSpreadsheet(); } catch (e) { ss = null; }
-  if (!ss) {
-    var props = PropertiesService.getScriptProperties();
-    var id = props.getProperty('SHEET_ID');
-    if (id) {
-      try { ss = SpreadsheetApp.openById(id); } catch (e2) { ss = null; }
-    }
-    if (!ss) {
-      ss = SpreadsheetApp.create('Thiên Cơ Các – Lịch sử lá số');
-      props.setProperty('SHEET_ID', ss.getId());
-    }
-  }
+  var ss = laySS_();
   var sh = ss.getSheetByName(SHEET_NAME);
   if (!sh) {
     sh = ss.insertSheet(SHEET_NAME);

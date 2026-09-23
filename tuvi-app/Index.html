@@ -247,23 +247,43 @@
   <div class="toast" id="toast"></div>
 
   <div class="modal" id="loginModal" role="dialog" aria-modal="true" aria-labelledby="loginTitle">
-    <form class="modal-box panel" id="loginForm" autocomplete="on">
-      <h2 class="panel-title" id="loginTitle"><span class="han">鑰</span> Đăng nhập</h2>
-      <p class="muted" style="margin-top:0">Chưa đăng nhập bạn vẫn lập được lá số và xem phần hé lộ. Đăng nhập để mở toàn bộ luận giải, lưu lịch sử và tải PDF bản đầy đủ.</p>
-      <div class="field"><label for="lgUser">Tên đăng nhập</label><input type="text" id="lgUser" autocomplete="username" autocapitalize="none" spellcheck="false" required></div>
-      <div class="field"><label for="lgPass">Mật khẩu</label><input type="password" id="lgPass" autocomplete="current-password" required></div>
-      <p class="form-err" id="lgErr"></p>
-      <div class="modal-actions"><span style="flex:1"></span>
-        <button type="button" class="btn btn-ghost" id="lgCancel">Để sau</button>
-        <button type="submit" class="btn btn-primary" id="lgGo">Đăng nhập</button></div>
-    </form>
+    <div class="modal-box panel">
+      <div class="seg auth-seg"><button type="button" class="on" data-auth="in">🔑 Đăng nhập</button><button type="button" data-auth="up">✦ Đăng ký</button></div>
+      <p class="muted" id="authNote" style="margin-top:10px">Chưa đăng nhập bạn vẫn lập được lá số và xem phần hé lộ. Đăng nhập để mở khóa luận giải, lưu lịch sử và tải PDF.</p>
+      <form id="loginForm" autocomplete="on">
+        <h2 class="panel-title" id="loginTitle"><span class="han">鑰</span> Đăng nhập</h2>
+        <div class="field"><label for="lgUser">Tên đăng nhập</label><input type="text" id="lgUser" autocomplete="username" autocapitalize="none" spellcheck="false" required></div>
+        <div class="field"><label for="lgPass">Mật khẩu</label><input type="password" id="lgPass" autocomplete="current-password" required></div>
+        <p class="form-err" id="lgErr"></p>
+        <div class="modal-actions"><span style="flex:1"></span>
+          <button type="button" class="btn btn-ghost" data-dong="loginModal">Để sau</button>
+          <button type="submit" class="btn btn-primary" id="lgGo">Đăng nhập</button></div>
+      </form>
+      <form id="regForm" autocomplete="on" style="display:none">
+        <h2 class="panel-title"><span class="han">籍</span> Tạo tài khoản</h2>
+        <div class="row c2">
+          <div class="field"><label for="rgUser">Tên đăng nhập</label><input type="text" id="rgUser" autocomplete="username" autocapitalize="none" spellcheck="false" placeholder="vd: an.nguyen" required></div>
+          <div class="field"><label for="rgName">Tên hiển thị</label><input type="text" id="rgName" maxlength="60" placeholder="vd: Nguyễn An"></div>
+        </div>
+        <div class="field"><label for="rgContact">Số điện thoại hoặc email (để khôi phục tài khoản)</label><input type="text" id="rgContact" autocomplete="tel" required></div>
+        <div class="row c2">
+          <div class="field"><label for="rgPass">Mật khẩu (≥ 8 ký tự, có chữ và số)</label><input type="password" id="rgPass" autocomplete="new-password" required></div>
+          <div class="field"><label for="rgPass2">Nhập lại mật khẩu</label><input type="password" id="rgPass2" autocomplete="new-password" required></div>
+        </div>
+        <p class="form-err" id="rgErr"></p>
+        <div class="modal-actions"><span style="flex:1"></span>
+          <button type="button" class="btn btn-ghost" data-dong="loginModal">Để sau</button>
+          <button type="submit" class="btn btn-primary" id="rgGo">Tạo tài khoản</button></div>
+      </form>
+    </div>
   </div>
 
   <div class="modal" id="accModal" role="dialog" aria-modal="true" aria-labelledby="accTitle">
     <div class="modal-box panel">
-      <h2 class="panel-title" id="accTitle"><span class="han">戶</span> Tài khoản</h2>
+      <h2 class="panel-title" id="accTitle"><span class="han">戶</span> Tài khoản của tôi</h2>
       <p id="accWho" class="muted" style="margin-top:0"></p>
-      <details class="coso" open><summary>🔒 Đổi mật khẩu</summary>
+      <div id="accVi"></div>
+      <details class="coso"><summary>🔒 Đổi mật khẩu</summary>
         <div class="field"><label for="pwOld">Mật khẩu hiện tại</label><input type="password" id="pwOld" autocomplete="current-password"></div>
         <div class="row c2">
           <div class="field"><label for="pwNew">Mật khẩu mới</label><input type="password" id="pwNew" autocomplete="new-password"></div>
@@ -271,20 +291,32 @@
         </div>
         <button type="button" class="btn btn-ghost btn-sm" id="pwGo">Lưu mật khẩu mới</button>
       </details>
-      <div id="accOwner" style="display:none">
-        <h3 class="dd-h">Quản lý tài khoản (chủ sở hữu)</h3>
-        <div id="accList" class="acc-list"></div>
-        <details class="coso"><summary>➕ Tạo tài khoản thành viên</summary>
-          <div class="row c2">
-            <div class="field"><label for="nuUser">Tên đăng nhập</label><input type="text" id="nuUser" autocapitalize="none" spellcheck="false" placeholder="vd: khach01"></div>
-            <div class="field"><label for="nuName">Tên hiển thị</label><input type="text" id="nuName" maxlength="60"></div>
-          </div>
-          <div class="field"><label for="nuPass">Mật khẩu (≥ 8 ký tự, có chữ và số)</label><input type="text" id="nuPass" autocomplete="off"></div>
-          <button type="button" class="btn btn-ghost btn-sm" id="nuGo">Tạo tài khoản</button>
-        </details>
+      <div class="modal-actions"><button type="button" class="btn btn-ghost" id="accLogout">⎋ Đăng xuất</button>
+        <button type="button" class="btn btn-ghost" id="accAdmin" style="display:none">⚙ Quản trị</button><span style="flex:1"></span>
+        <button type="button" class="btn btn-primary" data-dong="accModal">Đóng</button></div>
+    </div>
+  </div>
+
+  <div class="modal" id="napModal" role="dialog" aria-modal="true" aria-labelledby="napTitle">
+    <div class="modal-box panel">
+      <h2 class="panel-title" id="napTitle"><span class="han">幣</span> Nạp xu</h2>
+      <div id="napBody"></div>
+      <div class="modal-actions"><span style="flex:1"></span><button type="button" class="btn btn-ghost" id="napClose">Đóng</button></div>
+    </div>
+  </div>
+
+  <div class="modal" id="qtModal" role="dialog" aria-modal="true" aria-labelledby="qtTitle">
+    <div class="modal-box panel qt-box">
+      <h2 class="panel-title" id="qtTitle"><span class="han">管</span> Quản trị</h2>
+      <div class="subtabs" id="qtTabs">
+        <button type="button" class="subtab active" data-qt="don">Doanh thu & đơn</button>
+        <button type="button" class="subtab" data-qt="tk">Tài khoản</button>
+        <button type="button" class="subtab" data-qt="gia">Bảng giá</button>
+        <button type="button" class="subtab" data-qt="tt">Thanh toán</button>
       </div>
-      <div class="modal-actions"><button type="button" class="btn btn-ghost" id="accLogout">⎋ Đăng xuất</button><span style="flex:1"></span>
-        <button type="button" class="btn btn-primary" id="accClose">Đóng</button></div>
+      <div id="qtBody"><span class="muted">Đang tải…</span></div>
+      <div class="modal-actions"><button type="button" class="btn btn-ghost btn-sm" id="qtReload">↻ Tải lại</button><span style="flex:1"></span>
+        <button type="button" class="btn btn-primary" data-dong="qtModal">Đóng</button></div>
     </div>
   </div>
 
@@ -309,7 +341,7 @@
         <label class="check"><input type="checkbox" value="them" checked> Kiểm chứng sự kiện &amp; bảng may mắn</label>
       </div>
       <div class="field" style="margin-top:10px"><label for="pdfType">Loại báo cáo</label>
-        <select id="pdfType"><option value="full">Bản đầy đủ – phân tích chi tiết (~85 trang)</option><option value="demo">Bản xem thử – ngắn, hé lộ ý chính để khách đặt mua (~14 trang)</option></select></div>
+        <select id="pdfType"><option value="full">Bản đầy đủ – phân tích chi tiết (~85 trang)</option><option value="demo">Bản xem thử – ngắn, hé lộ ý chính để khách đặt mua (~14 trang)</option></select><p class="pdf-lock" id="pdfLock"></p></div>
       <div class="row c2">
         <div class="field"><label for="pdfTheme">Giao diện</label><select id="pdfTheme"><option value="dark">Nền huyền bí – đọc trên máy</option><option value="light">Nền sáng – để in</option></select></div>
         <div class="field"><label for="pdfBrand">Thương hiệu / người luận</label><input type="text" id="pdfBrand" maxlength="60" placeholder="VD: Phòng luận giải An Nhiên"></div>

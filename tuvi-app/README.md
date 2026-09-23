@@ -19,6 +19,7 @@ Web app lập lá số **Tử Vi Đẩu Số 12 cung** (phái Việt Nam) kết 
 | `ThanSoHoc.gs` | Thần số học: số chủ đạo (2–11, 22, 33), ngày sinh, thái độ, biểu đồ ngày sinh & 15 mũi tên, biểu đồ tên tiếng Việt (linh hồn, nhân cách, sứ mệnh, trưởng thành, cân bằng, bài học nghiệp, đam mê ẩn), 4 đỉnh cao – thử thách, năm/tháng cá nhân |
 | `TongHop.gs` | Luận tổng hợp 5 hệ bằng "bỏ phiếu" độc lập & độ đồng thuận: xuất thân – gia cảnh, vóc dáng – diện mạo, vùng cơ thể có dấu vết/cần giữ gìn, tính cách 5 trục, phối ngẫu tương lai, chủ đề đời – nghề nghiệp – các chặng đời, năm đang xem theo 5 hệ, bảng may mắn |
 | `TaiKhoan.gs` | **Đăng nhập & phân quyền**: tài khoản lưu trong Script Properties, mật khẩu chỉ lưu dạng băm SHA-256 lặp 400 vòng + salt; phiên 6 giờ (CacheService); sai 5 lần khóa 15 phút; chủ sở hữu tạo/xóa/đặt lại mật khẩu thành viên; **chế độ khách**: chưa đăng nhập vẫn lập lá số nhưng máy chủ chỉ trả lá số + phần "hé lộ" (giống PDF xem thử), PDF chỉ xuất bản xem thử |
+| `ThanhToan.gs` | **Ví xu & mở khóa**: 1 xu = 1.000đ; nạp qua VietQR (payOS tự đối soát hoặc chủ sở hữu xác nhận thủ công); mở khóa theo từng lá số, vĩnh viễn: Bản mở 49 xu + phần trả thêm (biến cố hội tụ 29, phối ngẫu 19, lưu niên 19, PDF đầy đủ 29, dò giờ 9, trọn gói 119 – trừ phần đã mua); chủ sở hữu & VIP toàn quyền; trang quản trị: doanh thu, đơn, tài khoản, bảng giá, cài đặt thanh toán |
 | `BatTuLuan.gs` | **Luận Tứ Trụ theo 12 lĩnh vực** (tương ứng 12 cung Tử Vi: bản mệnh, cha mẹ, anh em, phu thê, con cái, tài bạch, tật ách, thiên di, quý nhân, quan lộc, điền trạch, phúc đức) theo nguyên tắc "cung vị làm thể, thập thần làm dụng" + hỷ/kỵ, hợp – xung – hình – hại – phá, Không Vong, thần sát và các cách kinh điển; **lưu niên Tứ Trụ** 14 năm (dẫn động tứ trụ, phục ngâm, phản ngâm, tuế vận tịnh lâm, thần sát năm, sự việc theo lĩnh vực) |
 | `HaLac.gs` | Bát Tự Hà Lạc: đổi tứ trụ ra số Hà Đồ – Lạc Thư, Thiên số/Địa số, quẻ Tiên thiên – Hậu thiên – Hỗ, hào nguyên đường theo giờ, đại vận theo 12 hào (dương 9 năm, âm 6 năm), quẻ lưu niên từng năm, chấm điểm theo cát/hung quẻ, vị hào và dụng thần |
 | `HoiTu.gs` | **Biến cố hội tụ 6 hệ**: mỗi năm (30 năm tới) cho 8 chủ đề (tài lộc, thăng tiến, kết hôn, con cái, bước ngoặt, sức khỏe, hao tài, gia đạo) được Tử Vi, Bát Tự, Hà Lạc, Chiêm tinh, Thần số bỏ phiếu – từ 3 hệ trở lên là xác suất cao; vận 12 tháng & 7 ngày đa hệ; "mật mã cá nhân" (nguyên tố linh hồn, con số định mệnh, giờ vàng, mùa, quý nhân, cán cân âm dương, năm vàng…) |
@@ -94,6 +95,16 @@ Tham khảo Bát Tự chi tiết: [douban – 四柱宫位定义](https://www.do
 - Tài khoản **chủ sở hữu** `chienpham` được tạo sẵn (trong mã chỉ có salt + mã băm, không có mật khẩu gốc). Nên **đổi mật khẩu ngay sau lần đăng nhập đầu** (nút 👑 trên thanh tiêu đề → Đổi mật khẩu) – mật khẩu mới được băm với salt mới và lưu trong Script Properties, ghi đè bản mặc định.
 - Chủ sở hữu tạo tài khoản thành viên trong cùng hộp thoại. Thành viên xem đầy đủ luận giải, lưu và xem lịch sử lá số của mình; chủ sở hữu xem được toàn bộ lịch sử.
 - Khách chưa đăng nhập: lập lá số, xem lá số và phần hé lộ; lời luận chi tiết không được gửi xuống trình duyệt.
+
+## Thanh toán & mở khóa
+
+1. Dán mã, rồi trong trình soạn thảo chạy **`capQuyenThanhToan`** một lần để cấp quyền (gọi payOS, cài trigger) và tạo các trang tính `Vi`, `SoCai`, `MoKhoa`, `DonHang`. Triển khai lại Web App.
+2. Đăng nhập chủ sở hữu → 👑 → **⚙ Quản trị → Thanh toán**:
+   - Chưa có payOS: nhập BIN ngân hàng, số tài khoản, chủ tài khoản → khách chuyển khoản theo mã VietQR, bạn đối chiếu nội dung `TCCxxxxxx` rồi bấm "✓ Đã nhận tiền".
+   - Có payOS (mở tài khoản KienlongBank + my.payos.vn → Kênh thanh toán): nhập Client ID, API Key, Checksum Key → xu được cộng tự động (trang kiểm tra trạng thái mỗi 4 giây khi khách đang chờ + trigger quét mỗi 5 phút). Không cần webhook.
+3. Sửa giá và gói nạp trong **Quản trị → Bảng giá**; đặt vai trò **VIP** (xem không giới hạn) hoặc tặng/trừ xu trong **Tài khoản**.
+
+Bảo mật: phần chưa mở bị cắt ngay trên máy chủ; mỗi đơn chỉ cộng xu một lần (khóa LockService); khóa payOS lưu trong Script Properties, không bao giờ gửi xuống trình duyệt. Riêng "PDF bản đầy đủ" được khóa ở giao diện (nội dung các phần đã mở vốn đã hiển thị trên web).
 
 ## Thang điểm
 

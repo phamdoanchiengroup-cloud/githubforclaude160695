@@ -247,11 +247,13 @@
     if (!(f.year >= 1800 && f.year <= 2200)) { toast('Năm sinh cần trong khoảng 1800 – 2200.', true); return; }
     storeSet('tcc_last_input', JSON.stringify(f));
     loading(true);
+    state.input = f;
     call('lapLaSo', [f], function (res) {
       loading(false);
       state.result = res;
+      if (res.soDu != null) { state.soDu = res.soDu; capNhatUser(); }
       render(res);
-      if (res.khach) toast('Đã lập lá số (bản xem giới hạn – đăng nhập để xem đầy đủ) ✦');
+      if (res.khach) toast(res.canMo ? 'Đã lập lá số – lá số này chưa mở khóa, bạn đang xem phần hé lộ ✦' : 'Đã lập lá số (bản xem giới hạn – đăng nhập để xem đầy đủ) ✦');
       else if (res.saved) toast('Đã lập lá số và lưu vào Google Sheet ✦');
       else if (res.saveError) toast('Đã lập lá số (chưa lưu được: ' + res.saveError + ')', true);
       else toast('Đã lập lá số ✦');
@@ -260,117 +262,339 @@
 
 
   /* ------------------------ TÀI KHOẢN ------------------------ */
+  var VAI_TRO = { chu: 'Chủ sở hữu', vip: 'Thành viên VIP', thanhVien: 'Thành viên' };
+  function toanQuyen() { var u = state.nguoiDung; return !!u && (u.vaiTro === 'chu' || u.vaiTro === 'vip'); }
+  function fmtXu(n) { return (Number(n) || 0).toLocaleString('vi-VN') + ' xu'; }
+  function fmtTien(n) { return (Number(n) || 0).toLocaleString('vi-VN') + 'đ'; }
   function capNhatUser() {
     var u = state.nguoiDung;
     $('btnLogin').style.display = u ? 'none' : '';
     $('btnUser').style.display = u ? '' : 'none';
-    if (u) $('btnUser').textContent = (u.vaiTro === 'chu' ? '👑 ' : '👤 ') + (u.hienThi || u.ten);
+    if (u) $('btnUser').textContent = (u.vaiTro === 'chu' ? '👑 ' : u.vaiTro === 'vip' ? '⭐ ' : '👤 ') + (u.hienThi || u.ten) +
+      (!toanQuyen() && state.soDu != null ? ' · ' + fmtXu(state.soDu) : '');
   }
   function datPhien(token, u) {
     state.token = token || ''; state.nguoiDung = u || null;
+    if (!u) state.soDu = null;
     storeSet('tcc_token', state.token);
     capNhatUser();
   }
   function lapLai() { if (state.result && hasServer()) submit(); }
-  function moDangNhap() {
-    $('lgErr').textContent = ''; $('lgPass').value = '';
+  function authTab(t) {
+    document.querySelectorAll('[data-auth]').forEach(function (b) { b.classList.toggle('on', b.getAttribute('data-auth') === t); });
+    $('loginForm').style.display = t === 'in' ? '' : 'none';
+    $('regForm').style.display = t === 'up' ? '' : 'none';
+  }
+  function moDangNhap(ghiChu, tab) {
+    $('lgErr').textContent = ''; $('rgErr').textContent = ''; $('lgPass').value = '';
+    $('authNote').textContent = ghiChu || 'Chưa đăng nhập bạn vẫn lập được lá số và xem phần hé lộ. Đăng nhập để mở khóa luận giải, lưu lịch sử và tải PDF.';
+    authTab(tab || 'in');
     $('loginModal').classList.add('show');
-    setTimeout(function () { $('lgUser').focus(); }, 50);
+    setTimeout(function () { $(tab === 'up' ? 'rgUser' : 'lgUser').focus(); }, 50);
+  }
+  function sauDangNhap(r) {
+    datPhien(r.token, r.nguoiDung);
+    $('loginModal').classList.remove('show');
+    toast('Xin chào ' + (r.nguoiDung.hienThi || r.nguoiDung.ten) + ' ✦');
+    taiVi();
+    if (state.result && state.result.khach) lapLai();
+    if (state.sauDangNhap) { var f = state.sauDangNhap; state.sauDangNhap = null; f(); }
   }
   function dangNhapGo(e) {
     if (e) e.preventDefault();
     var u = $('lgUser').value.trim(), p = $('lgPass').value;
     if (!u || !p) { $('lgErr').textContent = 'Nhập tên đăng nhập và mật khẩu.'; return; }
     $('lgGo').disabled = true; $('lgErr').textContent = 'Đang kiểm tra…';
-    call('dangNhap', [u, p], function (r) {
-      $('lgGo').disabled = false; $('lgPass').value = '';
-      datPhien(r.token, r.nguoiDung);
-      $('loginModal').classList.remove('show');
-      toast('Xin chào ' + (r.nguoiDung.hienThi || r.nguoiDung.ten) + ' ✦');
-      if (state.result && state.result.khach) lapLai();
-    }, function (err) { $('lgGo').disabled = false; $('lgErr').textContent = (err && err.message) || String(err); });
+    call('dangNhap', [u, p], function (r) { $('lgGo').disabled = false; $('lgPass').value = ''; sauDangNhap(r); },
+      function (err) { $('lgGo').disabled = false; $('lgErr').textContent = (err && err.message) || String(err); });
+  }
+  function dangKyGo(e) {
+    if (e) e.preventDefault();
+    if ($('rgPass').value !== $('rgPass2').value) { $('rgErr').textContent = 'Hai lần nhập mật khẩu không khớp.'; return; }
+    $('rgGo').disabled = true; $('rgErr').textContent = 'Đang tạo tài khoản…';
+    call('dangKy', [$('rgUser').value, $('rgPass').value, $('rgName').value, $('rgContact').value], function (r) {
+      $('rgGo').disabled = false; ['rgPass', 'rgPass2'].forEach(function (id) { $(id).value = ''; }); sauDangNhap(r);
+    }, function (err) { $('rgGo').disabled = false; $('rgErr').textContent = (err && err.message) || String(err); });
   }
   function dangXuatGo() {
     var t = state.token;
     datPhien('', null);
-    $('accModal').classList.remove('show');
+    ['accModal', 'qtModal', 'napModal'].forEach(function (id) { $(id).classList.remove('show'); });
     if (t && hasServer()) call('dangXuat', [t], function () {}, function () {});
     toast('Đã đăng xuất.');
     if (state.result && !state.result.khach) lapLai();
   }
+  function taiVi(cb) {
+    if (!state.token || !hasServer()) return;
+    call('viCuaToi', [state.token], function (v) {
+      state.vi = v; state.soDu = v.toanQuyen ? null : v.soDu; state.nguoiDung = v.nguoiDung; capNhatUser();
+      if (cb) cb(v);
+    }, function () {});
+  }
+  function viHtml(v) {
+    if (v.toanQuyen) return '<div class="vi-box"><b>' + (v.nguoiDung.vaiTro === 'chu' ? '👑 Toàn quyền' : '⭐ VIP') + '</b><span>Bạn xem được mọi nội dung, không cần xu.</span></div>';
+    return '<div class="vi-box"><div><small>Số dư</small><b>' + fmtXu(v.soDu) + '</b></div><button type="button" class="btn btn-primary btn-sm" id="accNap">＋ Nạp xu</button></div>' +
+      (v.soCai.length ? '<details class="coso"><summary>🧾 Lịch sử giao dịch xu</summary><div class="tbl-wrap"><table class="gio-tbl"><tbody>' + v.soCai.map(function (x) {
+        return '<tr><td>' + esc(x.luc) + '</td><td class="' + (x.n > 0 ? 'xu-cong' : 'xu-tru') + '">' + (x.n > 0 ? '+' : '') + x.n + '</td><td>' + esc(x.lyDo) + '</td></tr>';
+      }).join('') + '</tbody></table></div></details>' : '');
+  }
   function moTaiKhoan() {
     var u = state.nguoiDung; if (!u) { moDangNhap(); return; }
-    $('accWho').textContent = 'Đang đăng nhập: ' + (u.hienThi || u.ten) + ' (' + u.ten + ') · ' + (u.vaiTro === 'chu' ? 'Chủ sở hữu' : 'Thành viên');
+    $('accWho').textContent = (u.hienThi || u.ten) + ' (' + u.ten + ') · ' + (VAI_TRO[u.vaiTro] || u.vaiTro);
+    $('accAdmin').style.display = u.vaiTro === 'chu' ? '' : 'none';
     ['pwOld', 'pwNew', 'pwNew2'].forEach(function (id) { $(id).value = ''; });
-    $('accOwner').style.display = u.vaiTro === 'chu' ? '' : 'none';
-    if (u.vaiTro === 'chu') taiDsTK();
+    $('accVi').innerHTML = '<span class="muted">Đang tải ví…</span>';
     $('accModal').classList.add('show');
+    taiVi(function (v) { $('accVi').innerHTML = viHtml(v); if ($('accNap')) $('accNap').addEventListener('click', function () { moNap(); }); });
   }
-  function dsTKHtml(ds) {
-    $('accList').innerHTML = ds.map(function (a) {
-      return '<div class="acc-item"><b>' + (a.vaiTro === 'chu' ? '👑 ' : '👤 ') + esc(a.hienThi) + ' <small>(' + esc(a.ten) + ')</small></b>' +
-        '<small>' + (a.lanCuoi ? 'đăng nhập ' + esc(a.lanCuoi.slice(0, 10)) : 'chưa đăng nhập') + '</small>' +
-        (a.vaiTro === 'chu' ? '' : '<button type="button" class="btn btn-ghost btn-sm" data-reset="' + esc(a.ten) + '">Đặt lại MK</button><button type="button" class="btn btn-ghost btn-sm" data-xoa="' + esc(a.ten) + '">✕ Xóa</button>') + '</div>';
-    }).join('');
+
+  /* ---------- Mở khóa & nạp xu ---------- */
+  function giaPhan(k) { var bg = (state.result && state.result.bangGia) || (state.vi && state.vi.bangGia); return bg && bg.phan[k] ? bg.phan[k] : { ten: k, xu: 0 }; }
+  function muaGo(phan) {
+    if (!state.result) return;
+    if (!state.token) {
+      state.sauDangNhap = function () { if (!toanQuyen()) muaGo(phan); };
+      moDangNhap('Đăng nhập hoặc tạo tài khoản miễn phí để mở khóa "' + giaPhan(phan).ten + '". Lá số đang xem được giữ nguyên.', 'up');
+      return;
+    }
+    var g = giaPhan(phan);
+    if (!window.confirm('Mở khóa "' + g.ten + '" cho lá số của ' + (state.input.name || 'bạn') + '?\nGiá: ' + fmtXu(g.xu) + (phan === 'tron_goi' ? ' (trừ phần đã mua)' : '') + ' · mở vĩnh viễn.')) return;
+    loading(true);
+    call('muaPhan', [state.token, state.input, phan], function (r) {
+      loading(false);
+      if (r.ok) { state.soDu = r.soDu != null ? r.soDu : state.soDu; capNhatUser(); toast(r.daCo ? 'Phần này đã được mở trước đó.' : 'Đã mở khóa ✦ – đang tải nội dung…'); lapLai(); return; }
+      state.soDu = r.soDu; capNhatUser();
+      state.sauNap = function () { muaGo(phan); };
+      moNap('Bạn cần thêm ' + fmtXu(r.thieu) + ' để mở "' + g.ten + '" (' + fmtXu(r.gia) + '). Chọn gói nạp:', r.thieu);
+    }, function (e) { loading(false); showErr(e); });
   }
-  function taiDsTK() { $('accList').innerHTML = '<span class="muted">Đang tải…</span>'; call('dsTaiKhoan', [state.token], dsTKHtml); }
+  function moNap(ghiChu, thieu) {
+    if (!state.token) { moDangNhap('Đăng nhập để nạp xu.'); return; }
+    $('napModal').classList.add('show');
+    var body = $('napBody');
+    body.innerHTML = '<span class="muted">Đang tải bảng giá…</span>';
+    taiVi(function (v) {
+      if (v.toanQuyen) { body.innerHTML = '<p>Tài khoản của bạn có toàn quyền, không cần nạp xu.</p>'; return; }
+      var goi = v.bangGia.goi, chon = -1;
+      goi.forEach(function (g, i) { if (chon < 0 && g.xu >= (thieu || 0)) chon = i; });
+      body.innerHTML = (ghiChu ? '<p class="lede" style="margin-top:0">' + esc(ghiChu) + '</p>' : '<p class="muted" style="margin-top:0">1 xu = 1.000đ · số dư hiện tại ' + fmtXu(v.soDu) + '. Chuyển khoản VietQR, xu được cộng tự động sau vài giây.</p>') +
+        '<div class="goi-grid">' + goi.map(function (g, i) {
+          var km = g.xu * 1000 - g.tien;
+          return '<button type="button" class="goi' + (i === chon ? ' goi-chon' : '') + '" data-goi="' + i + '"><b>' + fmtXu(g.xu) + '</b><span>' + fmtTien(g.tien) + '</span>' + (km > 0 ? '<em>+' + Math.round(km / g.tien * 100) + '% xu</em>' : '') + '</button>';
+        }).join('') + '</div>';
+      body.querySelectorAll('[data-goi]').forEach(function (b) { b.addEventListener('click', function () { taoDon(+b.getAttribute('data-goi')); }); });
+    });
+  }
+  function taoDon(i) {
+    var body = $('napBody');
+    body.innerHTML = '<span class="muted">Đang tạo mã thanh toán…</span>';
+    call('taoDonNap', [state.token, i], function (d) {
+      var het = Date.now() + 15 * 60e3;
+      body.innerHTML = '<div class="qr-wrap"><img class="qr-img" alt="Mã VietQR" src="' + esc(d.qrAnh) + '">' +
+        '<div class="qr-info"><p>Quét mã bằng app ngân hàng bất kỳ. <b>Giữ nguyên nội dung chuyển khoản.</b></p><table class="gio-tbl"><tbody>' +
+        '<tr><th>Số tiền</th><td><b>' + fmtTien(d.tien) + '</b> → ' + fmtXu(d.xu) + '</td></tr>' +
+        '<tr><th>Nội dung</th><td><b class="copy" data-copy="' + esc(d.noiDung) + '">' + esc(d.noiDung) + ' ⧉</b></td></tr>' +
+        '<tr><th>Số TK</th><td class="copy" data-copy="' + esc(d.stk) + '">' + esc(d.stk) + ' ⧉</td></tr>' +
+        '<tr><th>Chủ TK</th><td>' + esc(d.chuTK || '') + (d.tenNH ? ' · ' + esc(d.tenNH) : '') + '</td></tr></tbody></table>' +
+        (d.checkoutUrl ? '<a class="btn btn-ghost btn-sm" href="' + esc(d.checkoutUrl) + '" target="_blank" rel="noopener">Mở trang thanh toán payOS ↗</a>' : '') +
+        '<p class="nap-tt" id="napTT">⏳ Đang chờ thanh toán…</p>' +
+        (d.kenh === 'thucong' ? '<p class="muted" style="font-size:12.5px">Xu được cộng sau khi chủ sở hữu xác nhận đã nhận tiền (thường trong ít phút, giờ hành chính).</p>' : '') + '</div></div>';
+      body.querySelectorAll('[data-copy]').forEach(function (el) {
+        el.addEventListener('click', function () { try { navigator.clipboard.writeText(el.getAttribute('data-copy')); toast('Đã chép'); } catch (e) {} });
+      });
+      clearInterval(state.napTimer);
+      state.napTimer = setInterval(function () {
+        if (!$('napModal').classList.contains('show') || Date.now() > het) { clearInterval(state.napTimer); if ($('napTT') && Date.now() > het) $('napTT').textContent = 'Hết thời gian chờ. Nếu đã chuyển khoản, xu vẫn sẽ được cộng – mở lại "Tài khoản" để xem số dư.'; return; }
+        call('kiemTraDon', [state.token, d.ma], function (k) {
+          if (k.trangThai === 'DA_TRA') {
+            clearInterval(state.napTimer);
+            state.soDu = k.soDu; capNhatUser();
+            $('napBody').innerHTML = '<div class="nap-ok">✦ Đã nhận ' + fmtTien(d.tien) + ' – cộng ' + fmtXu(d.xu) + '<br><small>Số dư: ' + fmtXu(k.soDu) + '</small></div>';
+            toast('Nạp xu thành công ✦');
+            if (state.sauNap) { var f = state.sauNap; state.sauNap = null; setTimeout(function () { $('napModal').classList.remove('show'); f(); }, 1200); }
+          } else if (k.trangThai !== 'CHO' && $('napTT')) { clearInterval(state.napTimer); $('napTT').textContent = 'Đơn ' + k.ten.toLowerCase() + '. Hãy tạo đơn mới.'; }
+        }, function () {});
+      }, 4000);
+    });
+  }
+  /** Thẻ khóa một phần (hé lộ + nút mở) */
+  function khoaMuaHtml(res, teaserKey, tieuDe, phan, han) {
+    var d = (res.teaser || {})[teaserKey] || { lo: [], an: [] }, g = giaPhan(phan);
+    return '<div class="panel section khoa-phan"><h2 class="panel-title"><span class="han">' + (han || '秘') + '</span> ' + esc(tieuDe) + ' <span class="chip neutral">🔒 ' + fmtXu(g.xu) + '</span></h2>' +
+      '<div class="demo-card"><div class="demo-lo"><h4>✦ Hé lộ</h4><ul>' + d.lo.filter(Boolean).map(function (x) { return '<li>' + hl(String(x).replace(/^[✓✗◇]\s*/, '')) + '</li>'; }).join('') + '</ul></div>' +
+      '<div class="demo-an"><h4>🔒 Khi mở khóa</h4><ul>' + d.an.map(function (x) { return '<li>' + esc(x) + '</li>'; }).join('') + '</ul></div></div>' +
+      '<div class="lock-cta"><p>Mở <b>' + esc(g.ten) + '</b> cho lá số này – vĩnh viễn.</p><button type="button" class="btn btn-primary btn-sm" data-mua="' + phan + '">Mở khóa · ' + fmtXu(g.xu) + '</button>' +
+      '<button type="button" class="btn btn-ghost btn-sm" data-mua="tron_goi">Trọn gói · ' + fmtXu(giaPhan('tron_goi').xu) + '</button></div></div>';
+  }
+  /** Sau khi hiển thị bản đầy đủ: chèn thẻ khóa vào các phần chưa mua */
+  function chenKhoa(res) {
+    var q = res.quyen;
+    if (!q || q.toanQuyen) return;
+    var tong = $('page-tong');
+    function chen(g, html, sau) {
+      var el = tong.querySelector('.tg[data-g="' + g + '"]');
+      if (el) { el.insertAdjacentHTML('beforeend', html); return; }
+      var ref = tong.querySelector('.tg[data-g="' + sau + '"]');
+      var div = '<div class="tg" data-g="' + g + '">' + html + '</div>';
+      if (ref) ref.insertAdjacentHTML('afterend', div); else tong.insertAdjacentHTML('beforeend', div);
+    }
+    if (!q.bien_co) chen('bien', khoaMuaHtml(res, 'bien', 'Biến cố hội tụ 6 hệ & dự đoán cả đời', 'bien_co', '會'), 'doi');
+    if (!q.phoi_ngau) chen('duyen', khoaMuaHtml(res, 'duyen', 'Chân dung người phối ngẫu & tuổi hợp', 'phoi_ngau', '姻'), 'nguoi');
+    if (!q.luu_nien) {
+      chen('van', khoaMuaHtml(res, 'van', 'Lưu niên 14 năm, 12 tháng, 7 ngày', 'luu_nien', '運'), 'bien');
+      $('page-battu').insertAdjacentHTML('beforeend', khoaMuaHtml(res, 'battu', 'Lưu niên Tứ Trụ 14 năm', 'luu_nien', '流年'));
+    }
+    var bg = $('btnDoGio');
+    if (bg && !q.do_gio) { var nb = bg.cloneNode(true); nb.removeAttribute('id'); nb.setAttribute('data-mua', 'do_gio'); nb.textContent = '🔒 Dò giờ sinh (thử 12 giờ) · ' + fmtXu(giaPhan('do_gio').xu); bg.parentNode.replaceChild(nb, bg); }
+  }
+
+  /* ---------- Quản trị (chủ sở hữu) ---------- */
+  var qt = { tab: 'don', data: null };
+  function moQuanTri() { $('accModal').classList.remove('show'); $('qtModal').classList.add('show'); taiQT(); }
+  function taiQT() { $('qtBody').innerHTML = '<span class="muted">Đang tải…</span>'; call('qtTongQuan', [state.token], function (d) { qt.data = d; veQT(); }); }
+  function veQT() {
+    var d = qt.data, b = $('qtBody'), h = '';
+    document.querySelectorAll('#qtTabs .subtab').forEach(function (x) { x.classList.toggle('active', x.getAttribute('data-qt') === qt.tab); });
+    if (qt.tab === 'don') {
+      var dt = d.doanhThu;
+      h = '<div class="stat-row">' + [['Hôm nay', fmtTien(dt.homNay)], ['Tháng này', fmtTien(dt.thangNay)], ['Tổng', fmtTien(dt.tong)], ['Đơn đã trả', dt.soDon], ['Đơn chờ', dt.choXuLy]].map(function (x) {
+        return '<div class="stat"><small>' + x[0] + '</small><b>' + x[1] + '</b></div>'; }).join('') + '</div>' +
+        '<div class="tbl-wrap"><table class="gio-tbl qt-tbl"><thead><tr><th>Mã / nội dung</th><th>Tài khoản</th><th>Số tiền</th><th>Trạng thái</th><th></th></tr></thead><tbody>' +
+        (d.don.length ? d.don.map(function (x) {
+          return '<tr><td><b>' + esc(x.noiDung) + '</b><br><small>' + esc(x.tao) + ' · ' + esc(x.kenh) + '</small></td><td>' + esc(x.tk) + '</td><td>' + fmtTien(x.tien) + '<br><small>' + fmtXu(x.xu) + '</small></td>' +
+            '<td><span class="rate ' + (x.trangThai === 'DA_TRA' ? 'r4' : x.trangThai === 'CHO' ? 'r3' : 'r1') + '">' + esc(x.ten) + '</span>' + (x.tra ? '<br><small>' + esc(x.tra) + '</small>' : '') + '</td>' +
+            '<td>' + (x.trangThai === 'CHO' ? '<button type="button" class="btn btn-ghost btn-sm" data-xn="' + x.ma + '">✓ Đã nhận tiền</button> <button type="button" class="btn btn-ghost btn-sm" data-huy="' + x.ma + '">✕</button>' : '') + '</td></tr>';
+        }).join('') : '<tr><td colspan="5" class="muted">Chưa có đơn nào.</td></tr>') + '</tbody></table></div>' +
+        '<p class="muted" style="font-size:12.5px">Đơn chuyển khoản thủ công: đối chiếu "nội dung" trong app ngân hàng rồi bấm "✓ Đã nhận tiền" để cộng xu.</p>';
+    } else if (qt.tab === 'tk') {
+      h = '<div class="acc-list">' + d.taiKhoan.map(function (a) {
+        var chu = a.vaiTro === 'chu';
+        return '<div class="acc-item"><b>' + (chu ? '👑 ' : a.vaiTro === 'vip' ? '⭐ ' : '👤 ') + esc(a.hienThi) + ' <small>(' + esc(a.ten) + ')</small><br><small>' + esc(a.lienHe || '') +
+          (a.lanCuoi ? ' · đăng nhập ' + esc(String(a.lanCuoi).slice(0, 10)) : '') + '</small></b>' +
+          (chu ? '<small>Toàn quyền</small>' : '<small>' + fmtXu(a.soDu) + '</small><select data-vt="' + esc(a.ten) + '"><option value="thanhVien"' + (a.vaiTro !== 'vip' ? ' selected' : '') + '>Thành viên</option><option value="vip"' + (a.vaiTro === 'vip' ? ' selected' : '') + '>VIP (xem không giới hạn)</option></select>' +
+            '<button type="button" class="btn btn-ghost btn-sm" data-xu="' + esc(a.ten) + '">± Xu</button><button type="button" class="btn btn-ghost btn-sm" data-reset="' + esc(a.ten) + '">Đặt lại MK</button><button type="button" class="btn btn-ghost btn-sm" data-xoa="' + esc(a.ten) + '">✕</button>') + '</div>';
+      }).join('') + '</div>' +
+        '<details class="coso"><summary>➕ Tạo tài khoản</summary><div class="row c2"><div class="field"><label>Tên đăng nhập</label><input type="text" id="nuUser" autocapitalize="none"></div>' +
+        '<div class="field"><label>Tên hiển thị</label><input type="text" id="nuName"></div></div><div class="row c2"><div class="field"><label>Mật khẩu</label><input type="text" id="nuPass" autocomplete="off"></div>' +
+        '<div class="field"><label>Vai trò</label><select id="nuVT"><option value="thanhVien">Thành viên</option><option value="vip">VIP</option></select></div></div><button type="button" class="btn btn-ghost btn-sm" id="nuGo">Tạo</button></details>';
+    } else if (qt.tab === 'gia') {
+      var bg = d.bangGia;
+      h = '<p class="muted" style="margin-top:0">Giá tính bằng xu (1 xu = 1.000đ). Trọn gói tự trừ các phần khách đã mua.</p><div class="gia-list">' + Object.keys(bg.phan).map(function (k) {
+        return '<label class="gia-row"><span>' + esc(bg.phan[k].ten) + '</span><input type="number" min="0" data-gia="' + k + '" value="' + bg.phan[k].xu + '"> xu</label>';
+      }).join('') + '</div><h4 class="dd-h">Gói nạp</h4><div class="gia-list" id="goiList">' + bg.goi.map(function (g) {
+        return '<div class="gia-row goi-row"><input type="number" min="2000" step="1000" class="g-tien" value="' + g.tien + '"> đ → <input type="number" min="1" class="g-xu" value="' + g.xu + '"> xu <button type="button" class="btn btn-ghost btn-sm" data-bo-goi>✕</button></div>';
+      }).join('') + '</div><button type="button" class="btn btn-ghost btn-sm" id="themGoi">＋ Thêm gói</button> <button type="button" class="btn btn-primary btn-sm" id="luuGia">Lưu bảng giá</button>';
+    } else {
+      var c = d.cauHinh;
+      h = '<p>Trạng thái: <b>' + (c.payos ? '✓ Đã kết nối payOS – tự động cộng xu' : '◇ Chưa có payOS – dùng chuyển khoản thủ công') + '</b></p>' +
+        '<details class="coso" open><summary>payOS (tự động đối soát)</summary><p class="muted" style="font-size:12.5px">Lấy 3 mã ở my.payos.vn → Kênh thanh toán. Để trống ô nào thì giữ giá trị cũ; nhập "-" để xóa.</p>' +
+        '<div class="field"><label>Client ID ' + (c.clientId ? '<small>(đang lưu ' + esc(c.clientId) + ')</small>' : '') + '</label><input type="text" id="pClient" autocomplete="off"></div>' +
+        '<div class="row c2"><div class="field"><label>API Key ' + (c.coApiKey ? '<small>(đã lưu)</small>' : '') + '</label><input type="password" id="pApi" autocomplete="off"></div>' +
+        '<div class="field"><label>Checksum Key ' + (c.coChecksum ? '<small>(đã lưu)</small>' : '') + '</label><input type="password" id="pCk" autocomplete="off"></div></div>' +
+        '<div class="field"><label>Link quay về sau thanh toán (tùy chọn)</label><input type="text" id="pVe" value="' + esc(c.traVe || '') + '" placeholder="mặc định: link Web App"></div></details>' +
+        '<details class="coso" open><summary>Tài khoản nhận tiền (dùng khi chưa có payOS)</summary><div class="row c2">' +
+        '<div class="field"><label>Mã BIN ngân hàng</label><input type="text" id="nBin" value="' + esc(c.nganHang.bin || '') + '" placeholder="vd: 970452 (KienlongBank)"></div>' +
+        '<div class="field"><label>Tên ngân hàng</label><input type="text" id="nTen" value="' + esc(c.nganHang.tenNH || '') + '"></div></div><div class="row c2">' +
+        '<div class="field"><label>Số tài khoản</label><input type="text" id="nStk" value="' + esc(c.nganHang.stk || '') + '"></div>' +
+        '<div class="field"><label>Chủ tài khoản</label><input type="text" id="nChu" value="' + esc(c.nganHang.chuTK || '') + '"></div></div></details>' +
+        '<button type="button" class="btn btn-primary btn-sm" id="luuTT">Lưu cài đặt</button> <button type="button" class="btn btn-ghost btn-sm" id="thuPayos">Kiểm tra kết nối payOS</button><p id="ttMsg" class="muted"></p>';
+    }
+    b.innerHTML = h;
+    ganQT();
+  }
+  function ganQT() {
+    var b = $('qtBody');
+    b.querySelectorAll('[data-xn]').forEach(function (x) { x.addEventListener('click', function () { if (confirm('Xác nhận đã nhận tiền cho đơn này?')) call('qtXacNhanDon', [state.token, x.getAttribute('data-xn')], function (d) { qt.data = d; veQT(); toast('Đã cộng xu.'); }); }); });
+    b.querySelectorAll('[data-huy]').forEach(function (x) { x.addEventListener('click', function () { if (confirm('Hủy đơn?')) call('qtHuyDon', [state.token, x.getAttribute('data-huy')], function (d) { qt.data = d; veQT(); }); }); });
+    b.querySelectorAll('[data-vt]').forEach(function (x) { x.addEventListener('change', function () { call('qtDatVaiTro', [state.token, x.getAttribute('data-vt'), x.value], function () { toast('Đã đổi vai trò.'); taiQT(); }); }); });
+    b.querySelectorAll('[data-xu]').forEach(function (x) { x.addEventListener('click', function () {
+      var n = prompt('Số xu cộng cho "' + x.getAttribute('data-xu') + '" (số âm để trừ):'); if (!n) return;
+      var ly = prompt('Lý do:', 'Tặng') || '';
+      call('qtDieuChinhXu', [state.token, x.getAttribute('data-xu'), n, ly], function (d) { qt.data = d; veQT(); toast('Đã cập nhật xu.'); });
+    }); });
+    b.querySelectorAll('[data-reset]').forEach(function (x) { x.addEventListener('click', function () {
+      var p = prompt('Mật khẩu mới cho "' + x.getAttribute('data-reset') + '" (≥ 8 ký tự, có chữ và số):');
+      if (p) call('datLaiMatKhau', [state.token, x.getAttribute('data-reset'), p], function () { toast('Đã đặt lại mật khẩu.'); });
+    }); });
+    b.querySelectorAll('[data-xoa]').forEach(function (x) { x.addEventListener('click', function () { if (confirm('Xóa tài khoản "' + x.getAttribute('data-xoa') + '"? (Lịch sử giao dịch vẫn giữ trong Sheet)')) call('xoaTaiKhoan', [state.token, x.getAttribute('data-xoa')], function () { taiQT(); }); }); });
+    if ($('nuGo')) $('nuGo').addEventListener('click', function () { call('taoTaiKhoan', [state.token, $('nuUser').value, $('nuPass').value, $('nuName').value, $('nuVT').value], function () { toast('Đã tạo tài khoản.'); taiQT(); }); });
+    if ($('themGoi')) $('themGoi').addEventListener('click', function () { $('goiList').insertAdjacentHTML('beforeend', '<div class="gia-row goi-row"><input type="number" min="2000" step="1000" class="g-tien" value="100000"> đ → <input type="number" min="1" class="g-xu" value="100"> xu <button type="button" class="btn btn-ghost btn-sm" data-bo-goi>✕</button></div>'); });
+    b.addEventListener('click', function (e) { var x = e.target.closest('[data-bo-goi]'); if (x) x.parentNode.remove(); });
+    if ($('luuGia')) $('luuGia').addEventListener('click', function () {
+      var phan = {}; b.querySelectorAll('[data-gia]').forEach(function (i) { phan[i.getAttribute('data-gia')] = +i.value; });
+      var goi = Array.prototype.map.call(b.querySelectorAll('.goi-row'), function (r) { return { tien: +r.querySelector('.g-tien').value, xu: +r.querySelector('.g-xu').value }; });
+      call('qtLuuBangGia', [state.token, { phan: phan, goi: goi }], function () { toast('Đã lưu bảng giá.'); taiQT(); });
+    });
+    if ($('luuTT')) $('luuTT').addEventListener('click', function () {
+      call('qtLuuCauHinh', [state.token, { clientId: $('pClient').value, apiKey: $('pApi').value, checksum: $('pCk').value, traVe: $('pVe').value,
+        nganHang: { bin: $('nBin').value, tenNH: $('nTen').value, stk: $('nStk').value, chuTK: $('nChu').value } }], function (r) {
+        toast('Đã lưu cài đặt thanh toán.' + (r.trigger ? ' (' + r.trigger + ')' : '')); taiQT(); qt.tab = 'tt';
+      });
+    });
+    if ($('thuPayos')) $('thuPayos').addEventListener('click', function () { $('ttMsg').textContent = 'Đang kiểm tra…'; call('qtKiemTraPayos', [state.token], function (r) { $('ttMsg').textContent = r.thongBao; }); });
+  }
+
   function initTaiKhoan() {
-    $('btnLogin').addEventListener('click', moDangNhap);
+    $('btnLogin').addEventListener('click', function () { moDangNhap(); });
     $('btnUser').addEventListener('click', moTaiKhoan);
     $('loginForm').addEventListener('submit', dangNhapGo);
-    $('lgCancel').addEventListener('click', function () { $('loginModal').classList.remove('show'); });
-    $('accClose').addEventListener('click', function () { $('accModal').classList.remove('show'); });
+    $('regForm').addEventListener('submit', dangKyGo);
+    document.querySelectorAll('[data-auth]').forEach(function (b) { b.addEventListener('click', function () { authTab(b.getAttribute('data-auth')); }); });
     $('accLogout').addEventListener('click', dangXuatGo);
-    ['loginModal', 'accModal'].forEach(function (id) { $(id).addEventListener('click', function (e) { if (e.target === $(id)) $(id).classList.remove('show'); }); });
-    document.addEventListener('click', function (e) { if (e.target.closest('[data-login]')) moDangNhap(); });
+    $('accAdmin').addEventListener('click', moQuanTri);
+    $('napClose').addEventListener('click', function () { $('napModal').classList.remove('show'); clearInterval(state.napTimer); if (state.soDu != null) taiVi(); });
+    $('qtReload').addEventListener('click', taiQT);
+    $('qtTabs').addEventListener('click', function (e) { var t = e.target.closest('[data-qt]'); if (t) { qt.tab = t.getAttribute('data-qt'); if (qt.data) veQT(); } });
+    document.addEventListener('click', function (e) {
+      var d = e.target.closest('[data-dong]'); if (d) $(d.getAttribute('data-dong')).classList.remove('show');
+      if (e.target.closest('[data-login]')) moDangNhap();
+      var m = e.target.closest('[data-mua]'); if (m) muaGo(m.getAttribute('data-mua'));
+      if (e.target.closest('[data-nap]')) moNap();
+    });
+    ['loginModal', 'accModal', 'qtModal'].forEach(function (id) { $(id).addEventListener('click', function (e) { if (e.target === $(id)) $(id).classList.remove('show'); }); });
     $('pwGo').addEventListener('click', function () {
       if ($('pwNew').value !== $('pwNew2').value) { toast('Hai lần nhập mật khẩu mới không khớp.', true); return; }
       call('doiMatKhau', [state.token, $('pwOld').value, $('pwNew').value], function () {
         ['pwOld', 'pwNew', 'pwNew2'].forEach(function (id) { $(id).value = ''; }); toast('Đã đổi mật khẩu ✦');
       });
     });
-    $('nuGo').addEventListener('click', function () {
-      call('taoTaiKhoan', [state.token, $('nuUser').value, $('nuPass').value, $('nuName').value], function (ds) {
-        dsTKHtml(ds); toast('Đã tạo tài khoản ' + $('nuUser').value.trim().toLowerCase());
-        ['nuUser', 'nuPass', 'nuName'].forEach(function (id) { $(id).value = ''; });
-      });
-    });
-    $('accList').addEventListener('click', function (e) {
-      var r = e.target.closest('[data-reset]'), x = e.target.closest('[data-xoa]');
-      if (r) {
-        var p = window.prompt('Mật khẩu mới cho "' + r.getAttribute('data-reset') + '" (≥ 8 ký tự, có chữ và số):');
-        if (p) call('datLaiMatKhau', [state.token, r.getAttribute('data-reset'), p], function () { toast('Đã đặt lại mật khẩu.'); });
-      }
-      if (x && window.confirm('Xóa tài khoản "' + x.getAttribute('data-xoa') + '"?')) call('xoaTaiKhoan', [state.token, x.getAttribute('data-xoa')], dsTKHtml);
-    });
     capNhatUser();
     var t = storeGet('tcc_token');
-    if (t && hasServer()) call('phien', [t], function (u) { if (u) datPhien(t, u); else datPhien('', null); }, function () {});
+    if (t && hasServer()) call('phien', [t], function (u) { if (u) { datPhien(t, u); taiVi(); } else datPhien('', null); }, function () {});
   }
 
-  /* ---------- Chế độ khách: chỉ hiện lá số + phần hé lộ ---------- */
+  /* ---------- Chế độ khách / chưa mở khóa: chỉ hiện lá số + phần hé lộ ---------- */
   function khoaHtml(res, k, tieuDe, han) {
     var d = (res.teaser || {})[k];
     if (!d) return '';
     return '<div class="panel section"><h2 class="panel-title"><span class="han">' + (han || '秘') + '</span> ' + esc(tieuDe) + '</h2><div class="demo-card">' +
       '<div class="demo-lo"><h4>✦ Hé lộ</h4><ul>' + d.lo.filter(Boolean).map(function (x) { return '<li>' + hl(String(x).replace(/^[✓✗◇]\s*/, '')) + '</li>'; }).join('') + '</ul></div>' +
-      '<div class="demo-an"><h4>🔒 Mở khi đăng nhập</h4><ul>' + d.an.map(function (x) { return '<li>' + esc(x) + '</li>'; }).join('') + '</ul></div></div></div>';
+      '<div class="demo-an"><h4>🔒 Khi mở khóa</h4><ul>' + d.an.map(function (x) { return '<li>' + esc(x) + '</li>'; }).join('') + '</ul></div></div></div>';
   }
-  var KHACH_CTA = '<div class="lock-cta"><p><b>Bạn đang xem bản giới hạn.</b> Đăng nhập để mở toàn bộ luận giải 6 hệ, lưu lịch sử và tải PDF bản đầy đủ.</p><button type="button" class="btn btn-primary" data-login>🔑 Đăng nhập</button></div>';
+  function ctaHtml(res) {
+    var co = giaPhan('co_ban'), tg = giaPhan('tron_goi');
+    if (res.canMo) return '<div class="lock-cta"><p><b>Mở khóa lá số này – vĩnh viễn.</b> Bản mở (' + fmtXu(co.xu) + '): luận giải đầy đủ 6 hệ. Trọn gói (' + fmtXu(tg.xu) + '): thêm biến cố hội tụ, phối ngẫu, lưu niên, PDF đầy đủ, dò giờ sinh.' +
+      (res.soDu != null ? ' Số dư của bạn: <b>' + fmtXu(res.soDu) + '</b>.' : '') + '</p><button type="button" class="btn btn-primary" data-mua="co_ban">Mở Bản mở · ' + fmtXu(co.xu) + '</button>' +
+      '<button type="button" class="btn btn-ghost" data-mua="tron_goi">Trọn gói · ' + fmtXu(tg.xu) + '</button></div>';
+    return '<div class="lock-cta"><p><b>Bạn đang xem bản giới hạn.</b> Tạo tài khoản miễn phí, nạp xu để mở khóa: Bản mở ' + fmtXu(co.xu) + ' – luận giải đầy đủ 6 hệ, xem vĩnh viễn.</p>' +
+      '<button type="button" class="btn btn-primary" data-mua="co_ban">Mở khóa · ' + fmtXu(co.xu) + '</button><button type="button" class="btn btn-ghost" data-login>🔑 Đăng nhập</button></div>';
+  }
   function renderKhach(res) {
     kwInit(res);
     $('welcome').style.display = 'none';
     $('chartArea').style.display = '';
     renderChart(res);
+    var CTA = ctaHtml(res);
     function trang(id, html) { var el = $(id); if (el) el.innerHTML = '<div class="khach-page">' + html + '</div>'; }
-    trang('page-luan', '<div class="khach-bar"><span>🔒 Chưa đăng nhập – bạn đang xem lá số và phần hé lộ. Luận giải chi tiết mở khi đăng nhập.</span><button type="button" class="btn btn-primary btn-sm" data-login>🔑 Đăng nhập</button></div>' + khoaHtml(res, 'chart', 'Luận giải 12 cung', '宮'));
-    trang('page-battu', khoaHtml(res, 'battu', 'Bát Tự – Tứ Trụ', '八字') + KHACH_CTA);
-    trang('page-halac', khoaHtml(res, 'halac', 'Bát Tự Hà Lạc', '易') + KHACH_CTA);
-    trang('page-astro', khoaHtml(res, 'astro', 'Chiêm tinh – Bản đồ sao', '星') + KHACH_CTA);
-    trang('page-so', khoaHtml(res, 'so', 'Thần số học', '數') + KHACH_CTA);
-    trang('page-hd', khoaHtml(res, 'hd', 'Human Design', '圖') + KHACH_CTA);
+    trang('page-luan', '<div class="khach-bar"><span>🔒 ' + (res.canMo ? 'Lá số này chưa được mở khóa' : 'Chưa đăng nhập') + ' – bạn đang xem lá số và phần hé lộ.</span><button type="button" class="btn btn-primary btn-sm" data-mua="co_ban">Mở khóa · ' + fmtXu(giaPhan('co_ban').xu) + '</button></div>' +
+      khoaHtml(res, 'chart', 'Luận giải 12 cung', '宮') + CTA);
+    trang('page-battu', khoaHtml(res, 'battu', 'Bát Tự – Tứ Trụ', '八字') + CTA);
+    trang('page-halac', khoaHtml(res, 'halac', 'Bát Tự Hà Lạc', '易') + CTA);
+    trang('page-astro', khoaHtml(res, 'astro', 'Chiêm tinh – Bản đồ sao', '星') + CTA);
+    trang('page-so', khoaHtml(res, 'so', 'Thần số học', '數') + CTA);
+    trang('page-hd', khoaHtml(res, 'hd', 'Human Design', '圖') + CTA);
     trang('page-tong', khoaHtml(res, 'tom', 'Chân dung hé lộ', '命') + khoaHtml(res, 'nguoi', 'Con người bạn', '性') + khoaHtml(res, 'duyen', 'Tình duyên & người bạn đời', '姻') +
-      khoaHtml(res, 'doi', 'Đường đời & sự nghiệp', '途') + khoaHtml(res, 'bien', 'Biến cố hội tụ 6 hệ', '會') + khoaHtml(res, 'van', 'Vận năm – tháng – ngày', '運') + KHACH_CTA);
+      khoaHtml(res, 'doi', 'Đường đời & sự nghiệp', '途') + khoaHtml(res, 'bien', 'Biến cố hội tụ 6 hệ', '會') + khoaHtml(res, 'van', 'Vận năm – tháng – ngày', '運') + CTA);
     ['page-van', 'page-dudoan'].forEach(function (id) { if ($(id)) $(id).innerHTML = ''; });
     $('btnPdfTop').style.display = '';
     showTab('chart');
@@ -407,6 +631,7 @@
       var pg = $('page-' + k); if (!pg || !PDF_HOOK[k]) return;
       var d = document.createElement('p'); d.className = 'lede tab-lede'; d.textContent = PDF_HOOK[k]; pg.insertBefore(d, pg.firstChild);
     });
+    chenKhoa(res);
     showTab('chart');
     selectPalace(res.tuvi.info.menh);
     if (window.innerWidth < 1080) $('tabs').scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -587,7 +812,7 @@
         return '<span class="chip neutral"><small>' + r[0] + ':</small> <b>' + esc(r[1] || '') + '</b>' + (inf[2] ? ' <small>· ' + esc(inf[2]) + '</small>' : '') + '</span>';
       }).join('') + '</div>' +
       (P.luu.length ? '<div class="star-list">' + P.luu.map(function (x) { return '<span class="chip" style="color:var(--lavender)">' + esc(x) + '</span>'; }).join('') + '</div>' : '');
-    if (luan && !luan.lines) html += '<div class="lock-cta"><p>🔒 Lời luận chi tiết của cung này chỉ hiện khi đăng nhập.</p><button type="button" class="btn btn-primary btn-sm" data-login>🔑 Đăng nhập</button></div>';
+    if (luan && !luan.lines) html += '<div class="lock-cta"><p>🔒 Lời luận chi tiết của cung này hiện khi mở khóa lá số (Bản mở ' + fmtXu(giaPhan('co_ban').xu) + ').</p><button type="button" class="btn btn-primary btn-sm" data-mua="co_ban">Mở khóa</button></div>';
     if (luan && luan.lines) {
       html += '<div class="meter"><i style="width:' + scorePct(luan.diem) + '%"></i></div>' +
         '<p><b>Đánh giá: ' + esc(luan.danhGia) + '</b> (' + d10(luan.diem) + '/10)</p><ul>' +
@@ -1456,9 +1681,11 @@
   function setLoadingText(t) { var el = $('loadingText'); if (el) el.textContent = t; }
   function moPdf() {
     if (!state.result) { toast('Hãy lập lá số trước.', true); return; }
-    var khach = !!state.result.khach;
-    $('pdfType').querySelector('option[value="full"]').disabled = khach;
-    if (khach) { $('pdfType').value = 'demo'; toast('Chưa đăng nhập: chỉ tải được bản xem thử.'); }
+    var R = state.result, khoaPdf = !!R.khach || !!(R.quyen && !R.quyen.pdf);
+    $('pdfType').querySelector('option[value="full"]').disabled = khoaPdf;
+    $('pdfLock').innerHTML = khoaPdf ? '🔒 PDF bản đầy đủ cần mở khóa' + (R.khach && !R.canMo ? ' (đăng nhập và mở Bản mở trước).' : ' – ' + fmtXu(giaPhan('pdf').xu) + '. ') +
+      (R.khach && !R.canMo ? '' : '<button type="button" class="btn btn-ghost btn-sm" data-mua="' + (R.khach ? 'co_ban' : 'pdf') + '">Mở khóa</button>') : '';
+    if (khoaPdf) $('pdfType').value = 'demo';
     try { $('pdfBrand').value = storeGet('tcc_pdf_brand') || ''; $('pdfContact').value = storeGet('tcc_pdf_contact') || ''; $('pdfOffer').value = storeGet('tcc_pdf_offer') || ''; } catch (e) {}
     $('pdfModal').classList.add('show');
   }
