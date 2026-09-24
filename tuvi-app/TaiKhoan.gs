@@ -223,7 +223,7 @@ function demoTeaser_(res) {
   if (T.phoiNgau) {
     var P = T.phoiNgau, top = P.tuoiHop.tot[0];
     out.duyen = { lo: [P.ketLuan[0] ? String(P.ketLuan[0].t || P.ketLuan[0]).split('.')[0] + '.' : 'Chân dung người bạn đời được ghép từ 5 hệ.'],
-      an: [(I.male ? 'Người vợ' : 'Người chồng') + ' tương lai: dáng ███, tính ███, gặp qua ███', 'Năm kết hôn & năm có con kèm xác suất % từng năm', 'Chân dung con cái: trai/gái, số con, tính cách', 'Tuổi hợp nhất: ' + che_(top.nam) + ' (' + top.diem + '/10) · 4 năm sinh hợp khác', 'Tháng sinh âm lịch và dương lịch hợp: █, █, █'] };
+      an: [(I.male ? 'Người vợ' : 'Người chồng') + ' tương lai: dáng ███, tính ███, gặp qua ███', 'Năm kết hôn & năm có con kèm xác suất % từng năm – cả 10 năm đã qua (nếu bạn đã lập gia đình) và các năm phía trước', 'Chân dung con cái: trai/gái, số con, tính cách', 'Tuổi hợp nhất: ' + che_(top.nam) + ' (' + top.diem + '/10) · 4 năm sinh hợp khác', 'Tháng sinh âm lịch và dương lịch hợp: █, █, █'] };
   }
   if (T.duongDoi) out.doi = { lo: [String(T.duongDoi.ketLuan[0] || T.duongDoi.chuDe[0] || '').replace(/^[✓✗◇]\s*/, '').split(/\.\s/)[0] + '.'], an: ['Nghề được nhiều hệ cùng gợi ý nhất: ███', 'Chặng đời rực rỡ nhất: ███ tuổi', '12 đại vận Tử Vi chi tiết – Tứ Hóa, cung chức từng vận'] };
   out.them = { lo: ['Kiểm chứng giờ sinh bằng các sự kiện bạn đã trải qua.'], an: ['Bảng màu – số – hướng – ngày may mắn tổng hợp từ 6 hệ'] };

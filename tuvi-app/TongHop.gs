@@ -658,6 +658,14 @@ function tongHopLuan(C) {
       function top3(x) { return x && x.nam ? x.nam.slice().sort(function (a, b) { return b.pct - a.pct; }).slice(0, 3).map(function (n) { return n.nam + ' (' + n.pct + '%)'; }).join(', ') : ''; }
       if (top3(kh)) T.phoiNgau.ketLuan.push('Xác suất cưới hỏi theo năm (tổng hợp 5 hệ + độ tuổi): ' + top3(kh) + '.');
       if (top3(sc)) T.phoiNgau.ketLuan.push('Xác suất có tin vui con cái theo năm: ' + top3(sc) + '.');
+      function quaKhu(x, ten) {
+        if (!x) return;
+        if (x.doiChieu && x.doiChieu.length) x.doiChieu.forEach(function (d) {
+          T.phoiNgau.ketLuan.push('Bạn đã ' + ten + ' năm ' + d.nam + (d.ngoai ? '.' : ': lá số xếp năm này hạng ' + d.hang + '/' + d.tong + ' trong giai đoạn ' + x.quaKhu.tu + '–' + x.quaKhu.den + ' (' + d.pct + '%, ' + d.soHe + ' hệ cùng báo).'));
+        });
+        else if (x.quaKhu && x.quaKhu.nam.length) T.phoiNgau.ketLuan.push('Nếu bạn đã ' + ten + ' (khả năng việc này đã diễn ra trước năm nay ≈ ' + x.pDaQua + '%), năm khả năng nhất giai đoạn ' + x.quaKhu.tu + '–' + x.quaKhu.den + ': ' + top3(x.quaKhu) + '.');
+      }
+      quaKhu(kh, 'kết hôn'); quaKhu(sc, 'có con');
     } catch (e) { T.phoiNgau.loiThem = String(e && e.message || e); }
   }
   delete T.hoiTu.namTin;

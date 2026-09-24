@@ -1616,27 +1616,52 @@
   function thoiDiemHtml(td, res) {
     if (!td) return '';
     var vy = res.tuvi.info.viewYear;
-    function khoi(k, han, tieuDe, loiMo) {
+    var MUC_CL = { 'Rất cao': 'r5', 'Cao': 'r4', 'Trung bình': 'r3', 'Thấp': 'r1' };
+    function bang(ds) {
+      return '<div class="tbl-wrap"><table class="gio-tbl"><thead><tr><th>Năm</th><th>Xác suất</th><th>Mức</th><th>Hệ cùng báo</th></tr></thead><tbody>' + ds.map(function (n) {
+        return '<tr><td><b>' + n.nam + '</b> · ' + n.tuoi + 't<br><small>' + esc(n.canChi) + '</small></td><td><b>' + fmt(n.pct) + '%</b></td><td><span class="rate ' + MUC_CL[n.muc] + '">' + esc(n.muc) + '</span></td>' +
+          '<td>' + (n.he.length ? n.he.map(heChip).join(' ') : '<small class="muted">chỉ theo độ tuổi</small>') + (n.ly && n.ly.length ? '<details class="ht-y"><summary><small>Lý do</small></summary>' + listHtml(n.ly) + '</details>' : '') + '</td></tr>';
+      }).join('') + '</tbody></table></div>';
+    }
+    function bieuDo(tieuDe, sub, bd, chiTiet, biet) {
+      var mx = Math.max.apply(null, bd.map(function (b) { return b.pct; }).concat([1]));
+      return barsChart(tieuDe, sub, bd.map(function (b) {
+        var n = chiTiet.filter(function (y) { return y.nam === b.nam; })[0] || b, daKhai = biet.indexOf(b.nam) >= 0;
+        return { ten: (daKhai ? '✔ ' : '') + b.nam + ' · ' + b.tuoi + ' tuổi', v: b.pct, mau: daKhai ? C_CORAL : b.pct >= mx * 0.6 ? C_JADE : b.pct >= mx * 0.3 ? C_GOLD : C_VIOLET,
+          tip: b.nam + ': ' + fmt(b.pct) + '%' + (daKhai ? ' (năm bạn đã khai)' : '') + (n.he && n.he.length ? '\n' + n.soHe + ' hệ cùng báo: ' + n.he.join(', ') : '') };
+      }), mx, '%');
+    }
+    function khoi(k, han, tieuDe, loiMo, dong) {
       var x = td[k];
       if (!x) return '';
-      if (x.hetCuaSo) return '<div class="panel section"><h2 class="panel-title"><span class="han">' + han + '</span> ' + tieuDe + '</h2><p class="muted">Đã qua độ tuổi thường gặp (đến 45 tuổi) nên không tính xác suất theo năm.</p></div>';
-      var mx = Math.max.apply(null, x.bieuDo.map(function (b) { return b.pct; }).concat([1]));
-      return '<div class="panel section"><h2 class="panel-title"><span class="han">' + han + '</span> ' + tieuDe + '</h2><p class="lede">' + loiMo + '</p>' +
-        (x.tichLuy ? '<div class="stat-row">' + [['Trong 3 năm tới', x.tichLuy.n3], ['Trong 5 năm tới', x.tichLuy.n5], ['Trong 10 năm tới', x.tichLuy.n10]].map(function (t) {
-          return '<div class="stat"><small>' + t[0] + '</small><b>' + t[1] + '%</b><span>khả năng rơi vào</span></div>'; }).join('') +
-          '<div class="stat"><small>Tuổi đỉnh theo lá số</small><b>' + x.tuoiDinh + '</b><span>tuổi</span></div></div>' : '') +
-        barsChart('Xác suất theo từng năm', 'Chiều dài = % khả năng sự việc rơi vào năm đó · rê chuột xem các hệ cùng báo', x.bieuDo.filter(function (b) { return b.nam <= vy + 14; }).map(function (b) {
-          var n = x.nam.filter(function (y) { return y.nam === b.nam; })[0];
-          return { ten: b.nam + ' · ' + b.tuoi + ' tuổi', v: b.pct, mau: b.pct >= mx * 0.6 ? C_JADE : b.pct >= mx * 0.3 ? C_GOLD : C_VIOLET, tip: b.nam + ': ' + fmt(b.pct) + '%' + (n && n.he.length ? '\n' + n.soHe + ' hệ cùng báo: ' + n.he.join(', ') : '') };
-        }), mx, '%') +
-        '<div class="tbl-wrap"><table class="gio-tbl"><thead><tr><th>Năm</th><th>Xác suất</th><th>Mức</th><th>Hệ cùng báo</th></tr></thead><tbody>' + x.nam.map(function (n) {
-          return '<tr><td><b>' + n.nam + '</b> · ' + n.tuoi + 't<br><small>' + esc(n.canChi) + '</small></td><td><b>' + fmt(n.pct) + '%</b></td><td><span class="rate ' + ({ 'Rất cao': 'r5', 'Cao': 'r4', 'Trung bình': 'r3', 'Thấp': 'r1' }[n.muc]) + '">' + esc(n.muc) + '</span></td>' +
-            '<td>' + (n.he.length ? n.he.map(heChip).join(' ') : '<small class="muted">chỉ theo độ tuổi</small>') + (n.ly.length ? '<details class="ht-y"><summary><small>Lý do</small></summary>' + listHtml(n.ly) + '</details>' : '') + '</td></tr>';
-        }).join('') + '</tbody></table></div>' +
-        (x.qua.length ? '<p class="muted" style="font-size:12.5px">Kiểm chứng quá khứ (12 năm gần đây) – các năm tín hiệu mạnh nhất: ' + x.qua.map(function (n) { return n.nam + ' (' + n.tuoi + 't, ' + n.soHe + ' hệ)'; }).join(', ') + '. Nếu sự kiện của bạn trùng các năm này, độ tin cậy của lá số càng cao.</p>' : '') + '</div>';
+      var biet = x.daBiet || [], h = '<div class="panel section"><h2 class="panel-title"><span class="han">' + han + '</span> ' + tieuDe + '</h2><p class="lede">' + loiMo + '</p>';
+      /* Năm đã khai → đối chiếu */
+      if (x.doiChieu && x.doiChieu.length) h += '<div class="km-banner" style="margin-bottom:12px">' + x.doiChieu.map(function (d) {
+        return d.ngoai ? '✔ Bạn đã khai ' + dong + ' năm <b>' + d.nam + '</b> (ngoài giai đoạn đối chiếu nên không xếp hạng).' :
+          '✔ Bạn đã khai ' + dong + ' năm <b>' + d.nam + '</b> (' + d.tuoi + ' tuổi): lá số xếp năm này <b>hạng ' + d.hang + '/' + d.tong + '</b> trong giai đoạn ' + x.quaKhu.tu + '–' + x.quaKhu.den + ' – ' + fmt(d.pct) + '%, mức ' + esc(d.muc) + (d.he.length ? ', ' + d.soHe + ' hệ cùng báo (' + d.he.join(', ') + ')' : '') + '.' +
+          (d.hang <= 3 ? ' Khớp tốt – độ tin cậy của lá số cao.' : ' Chưa khớp nhiều – hãy kiểm tra lại giờ sinh (tab Dò giờ sinh).');
+      }).join('<br>') + '</div>';
+      /* Ô số liệu */
+      var o = [];
+      if (!biet.length && x.pDaQua != null && x.quaKhu && x.quaKhu.nam.length) o.push(['Đã diễn ra trước ' + vy, x.pDaQua, 'theo độ tuổi & tín hiệu']);
+      var nhan = biet.length ? 'nếu có thêm con · đến 45t' : 'nếu chưa ' + dong + ' · đến 45t';
+      if (x.tichLuy) o.push(['Trong 3 năm tới', x.tichLuy.n3, nhan], ['Trong 5 năm tới', x.tichLuy.n5, nhan], ['Trong 10 năm tới', x.tichLuy.n10, nhan]);
+      if (o.length) h += '<div class="stat-row">' + o.map(function (t) { return '<div class="stat"><small>' + t[0] + '</small><b>' + t[1] + '%</b><span>' + t[2] + '</span></div>'; }).join('') +
+        '<div class="stat"><small>Tuổi đỉnh theo lá số</small><b>' + x.tuoiDinh + '</b><span>tuổi</span></div></div>';
+      /* Nhánh 1: nhìn lại các năm đã qua */
+      var Q = x.quaKhu;
+      if (Q && Q.bieuDo.length) h += '<h4 class="dd-h">↺ ' + (biet.length ? 'Đối chiếu' : 'Nếu bạn đã ' + dong + ' – nhìn lại') + ' ' + Q.tu + '–' + Q.den + '</h4>' +
+        bieuDo('Năm nào khả năng nhất trong giai đoạn đã qua', 'Các cột cộng lại = 100% · cột đỏ ✔ là năm bạn đã khai', Q.bieuDo, Q.nam, biet) + (biet.length ? '' : bang(Q.nam));
+      /* Nhánh 2: phía trước */
+      if (k === 'ketHon' && biet.length) h += '<p class="muted">Bạn đã khai năm kết hôn nên không tính năm cưới phía trước. Năm có con bên dưới được tính từ sau năm cưới.</p>';
+      else if (x.hetCuaSo) h += '<p class="muted">Đã qua độ tuổi thường gặp (đến 45 tuổi) nên không tính xác suất các năm phía trước.</p>';
+      else h += '<h4 class="dd-h">→ ' + (biet.length ? 'Các năm phía trước (thêm con)' : 'Nếu chưa ' + dong + ' – các năm phía trước') + '</h4>' +
+        bieuDo('Xác suất theo từng năm', 'Chiều dài = % khả năng sự việc rơi vào năm đó · rê chuột xem các hệ cùng báo', x.bieuDo.filter(function (b) { return b.nam <= vy + 14; }), x.nam, biet) + bang(x.nam);
+      if (!biet.length) h += '<p class="muted" style="font-size:12.5px">Mẹo: khai năm ' + dong + ' thật ở mục <b>Sự kiện đã biết</b> trong form để lá số đối chiếu và tính chính xác hơn.</p>';
+      return h + '</div>';
     }
-    return khoi('ketHon', '婚期', 'Năm kết hôn – xác suất theo năm', 'Nếu bạn chưa kết hôn: trong các năm còn lại đến 45 tuổi, khả năng việc cưới hỏi rơi vào từng năm là bao nhiêu? Kết quả ghép từ độ tuổi thường gặp (dịch theo xu hướng sớm/muộn của lá số) và số hệ cùng báo trong năm.') +
-      khoi('sinhCon', '添丁', 'Năm có con – xác suất theo năm', 'Khả năng tin vui con cái rơi vào từng năm (con đầu hoặc thêm con), dựa trên cung Tử Tức, sao con cái Bát Tự, Sao Mộc – nhà 5, quẻ lưu niên và năm cá nhân.') +
+    return khoi('ketHon', '婚期', 'Năm kết hôn – xác suất theo năm', 'Chia hai trường hợp: nếu bạn đã kết hôn, năm nào trong 10 năm qua (người lớn tuổi: cả giai đoạn 18–45 tuổi) khả năng nhất; nếu chưa, khả năng việc cưới hỏi rơi vào từng năm phía trước (đến 45 tuổi). Kết quả ghép từ độ tuổi thường gặp (dịch theo xu hướng sớm/muộn của lá số) và số hệ cùng báo trong năm.', 'kết hôn') +
+      khoi('sinhCon', '添丁', 'Năm có con – xác suất theo năm', 'Khả năng tin vui con cái rơi vào từng năm – nhìn lại 10 năm qua và các năm phía trước (con đầu hoặc thêm con), dựa trên cung Tử Tức, sao con cái Bát Tự, Sao Mộc – nhà 5, quẻ lưu niên và năm cá nhân.', 'có con') +
       (td.coSo ? coSoHtml('Cách tính xác suất', [td.coSo]) : '');
   }
   function conCaiHtml(cc) {

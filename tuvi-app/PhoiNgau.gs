@@ -346,44 +346,72 @@ function pnTuoiThangHop_(C, xuHuong) {
  *     dịch theo xu hướng "sớm/muộn" của lá số (Tử Vi, Bát Tự, Chiêm tinh – xem phoiNgauLuan.chiSo.tuoi).
  *   - Bằng chứng: tổng cường độ tín hiệu của 5 hệ có lịch năm (Tử Vi, Bát Tự, Hà Lạc, Chiêm tinh, Thần số)
  *     trong năm đó, mỗi hệ tối đa ~1,4 → hệ số exp(0,55 × tổng).
- *   - Chuẩn hóa trên các năm còn lại trong cửa sổ tuổi → "nếu sự kiện xảy ra, xác suất rơi vào năm này".
+ *   - Hai nhánh: "nếu chưa" chuẩn hóa trên các năm còn lại; "nếu đã có" chuẩn hóa trên 10 năm vừa qua;
+ *     cộng thêm tỷ lệ "đã diễn ra trước năm xem" và đối chiếu năm người dùng đã khai (Sự kiện đã biết).
  * ========================================================= */
 var PN_TD = {
   ketHon: { ten: 'kết hôn', tuoi: [18, 45], tam: [28, 25], sd: 5 },
   sinhCon: { ten: 'sinh con', tuoi: [20, 45], tam: [30, 27], sd: 5.5 }
 };
 function pnThoiDiem_(C, namTin, xuHuong) {
-  var male = C.tv.info.male, vy = C.tv.info.viewYear, out = {};
+  var male = C.tv.info.male, vy = C.tv.info.viewYear, out = {}, QUA = 10;
+  /* Sự kiện người dùng đã khai (mục "Sự kiện đã biết" trong form) */
+  var ev = ((C.input && C.input.events) || []).filter(function (e) { return e && +e.nam && +e.nam <= vy; });
+  function daBiet(k) { return ev.filter(function (e) { return e.loai === k; }).map(function (e) { return +e.nam; }).sort(); }
+  var tuoiNam = {}; namTin.forEach(function (n) { tuoiNam[n.nam] = n.tuoi; });
+  function mucOf(p, tb) { return p >= tb * 2.2 ? 'Rất cao' : p >= tb * 1.4 ? 'Cao' : p >= tb * 0.8 ? 'Trung bình' : 'Thấp'; }
+  function chuan(arr) {
+    var t = arr.reduce(function (s, x) { return s + x.w; }, 0) || 1, tb = arr.length ? 100 / arr.length : 0;
+    arr.forEach(function (x) { x.pct = Math.round(x.w / t * 1000) / 10; x.muc = mucOf(x.pct, tb); });
+    return arr;
+  }
+  var cuoi = daBiet('ketHon');
   Object.keys(PN_TD).forEach(function (k) {
-    var M = PN_TD[k], tam = M.tam[male ? 0 : 1] + (k === 'ketHon' ? xuHuong * 2 : xuHuong * 1.5), ds = [];
+    var M = PN_TD[k], tam = M.tam[male ? 0 : 1] + (k === 'ketHon' ? xuHuong * 2 : xuHuong * 1.5), ds = [], biet = daBiet(k);
+    /* Đã biết năm cưới → con đầu thường 1–3 năm sau cưới; năm trước khi cưới giảm trọng số */
+    var namCuoi = k === 'sinhCon' && cuoi.length ? cuoi[0] : 0;
+    if (namCuoi && tuoiNam[namCuoi]) tam = Math.max(tam, tuoiNam[namCuoi] + 1.5);
     namTin.forEach(function (n) {
       if (n.tuoi < M.tuoi[0] || n.tuoi > M.tuoi[1]) return;
       var o = n.tin[k] || {}, E = 0, he = [];
       Object.keys(o).forEach(function (h) { E += Math.min(1.4, o[h].v); if (o[h].v >= 0.8) he.push(h); });
-      var prior = Math.exp(-Math.pow(n.tuoi - tam, 2) / (2 * M.sd * M.sd));
+      var prior = 0.06 + Math.exp(-Math.pow(n.tuoi - tam, 2) / (2 * M.sd * M.sd)); // sàn nhỏ: muộn hơn tuổi phổ biến vẫn có thể xảy ra
+      if (namCuoi && n.nam < namCuoi) prior *= 0.25;
       ds.push({ nam: n.nam, tuoi: n.tuoi, canChi: n.canChi, soHe: he.length, he: he, E: Math.round(E * 10) / 10, w: prior * Math.exp(0.55 * E),
         ly: Object.keys(o).sort(function (a, b) { return o[b].v - o[a].v; }).slice(0, 4).map(function (h) { return o[h].ly; }), qua: n.nam < vy });
     });
-    var sap = ds.filter(function (x) { return !x.qua; }), tong = sap.reduce(function (s, x) { return s + x.w; }, 0) || 1;
-    var tb = sap.length ? 100 / sap.length : 0;
-    sap.forEach(function (x) {
-      x.pct = Math.round(x.w / tong * 1000) / 10;
-      x.muc = x.pct >= tb * 2.2 ? 'Rất cao' : x.pct >= tb * 1.4 ? 'Cao' : x.pct >= tb * 0.8 ? 'Trung bình' : 'Thấp';
-    });
-    var qua = ds.filter(function (x) { return x.qua && x.nam >= vy - 12; }), tq = qua.reduce(function (s, x) { return s + x.w; }, 0) || 1;
-    qua.forEach(function (x) { x.pct = Math.round(x.w / tq * 1000) / 10; });
+    /* Khả năng việc này (nếu có trong đời) đã diễn ra trước năm xem – theo toàn cửa sổ tuổi */
+    var tongAll = ds.reduce(function (s, x) { return s + x.w; }, 0) || 1;
+    var pDaQua = Math.round(ds.filter(function (x) { return x.qua; }).reduce(function (s, x) { return s + x.w; }, 0) / tongAll * 100);
+    /* Nhánh "nếu chưa": chuẩn hóa trên các năm còn lại. Nhánh "nếu đã có": chuẩn hóa trên 10 năm vừa qua */
+    var sap = chuan(ds.filter(function (x) { return !x.qua; }).map(function (x) { return JSON.parse(JSON.stringify(x)); }));
+    var daQua = ds.filter(function (x) { return x.qua; }), gan = daQua.filter(function (x) { return x.nam >= vy - QUA; });
+    if (gan.length < 5) gan = daQua; // đã qua độ tuổi phổ biến từ lâu → nhìn lại cả cửa sổ tuổi
+    var qua = chuan(gan.map(function (x) { return JSON.parse(JSON.stringify(x)); }));
     function tich(n) { return Math.round(sap.filter(function (x) { return x.nam < vy + n; }).reduce(function (s, x) { return s + x.pct; }, 0)); }
+    function top(a, n) { return a.slice().sort(function (x, y) { return y.pct - x.pct; }).slice(0, n).sort(function (x, y) { return x.nam - y.nam; }); }
+    /* Đối chiếu năm đã biết: lá số xếp năm đó hạng mấy trong 10 năm vừa qua */
+    var doiChieu = biet.map(function (Y) {
+      var x = qua.filter(function (q) { return q.nam === Y; })[0];
+      if (!x) return { nam: Y, ngoai: true };
+      var hang = 1 + qua.filter(function (q) { return q.pct > x.pct; }).length;
+      return { nam: Y, tuoi: x.tuoi, pct: x.pct, muc: x.muc, soHe: x.soHe, he: x.he, hang: hang, tong: qua.length };
+    });
+    var daCuoi = k === 'ketHon' && biet.length > 0;
     out[k] = {
-      ten: M.ten, tuoiDinh: Math.round(tam),
-      nam: sap.slice().sort(function (a, b) { return b.pct - a.pct; }).slice(0, 8).sort(function (a, b) { return a.nam - b.nam; }),
-      bieuDo: sap.map(function (x) { return { nam: x.nam, tuoi: x.tuoi, pct: x.pct }; }),
-      qua: qua.sort(function (a, b) { return b.pct - a.pct; }).slice(0, 3).sort(function (a, b) { return a.nam - b.nam; }),
-      tichLuy: sap.length ? { n3: tich(3), n5: tich(5), n10: tich(10) } : null,
-      hetCuaSo: !sap.length
+      ten: M.ten, tuoiDinh: Math.round(tam), daBiet: biet, doiChieu: doiChieu, pDaQua: ds.length ? pDaQua : null,
+      nam: daCuoi ? [] : top(sap, 8),
+      bieuDo: daCuoi ? [] : sap.map(function (x) { return { nam: x.nam, tuoi: x.tuoi, pct: x.pct }; }),
+      quaKhu: { nam: top(qua, 5), bieuDo: qua.map(function (x) { return { nam: x.nam, tuoi: x.tuoi, pct: x.pct, soHe: x.soHe, he: x.he }; }), tu: qua.length ? qua[0].nam : null, den: qua.length ? qua[qua.length - 1].nam : null },
+      qua: top(qua, 3),
+      tichLuy: sap.length && !daCuoi ? { n3: tich(3), n5: tich(5), n10: tich(10) } : null,
+      hetCuaSo: !sap.length, khongCoQua: !qua.length
     };
   });
-  out.coSo = 'Xác suất từng năm = (khả năng theo độ tuổi) × (sức mạnh tín hiệu của 5 hệ trong năm đó), chuẩn hóa trên các năm còn lại đến ' + PN_TD.ketHon.tuoi[1] +
-    ' tuổi. Con số trả lời câu hỏi: "nếu việc này xảy ra, khả năng nó rơi vào năm nào?". Tuổi đỉnh được dịch theo xu hướng sớm/muộn của lá số. Mức "Rất cao/Cao/Trung bình/Thấp" so với mức trung bình các năm. Đây là mô hình thống kê tham khảo, không phải chắc chắn.';
+  out.coSo = 'Xác suất từng năm = (khả năng theo độ tuổi) × (sức mạnh tín hiệu của 5 hệ trong năm đó). Vì không biết bạn đã kết hôn/có con hay chưa, kết quả chia hai nhánh: ' +
+    '"nếu đã có" – chuẩn hóa trên ' + QUA + ' năm vừa qua (người lớn tuổi: cả giai đoạn ' + PN_TD.ketHon.tuoi[0] + '–' + PN_TD.ketHon.tuoi[1] + ' tuổi) để xem năm nào khả năng nhất; "nếu chưa" – chuẩn hóa trên các năm còn lại đến ' + PN_TD.ketHon.tuoi[1] + ' tuổi. ' +
+    'Ô "đã diễn ra trước năm nay" là phần xác suất của cả cửa sổ tuổi rơi vào các năm đã qua. Nếu bạn khai năm kết hôn/sinh con ở mục "Sự kiện đã biết", lá số sẽ đối chiếu năm đó và tính năm có con sau năm cưới. ' +
+    'Tuổi đỉnh được dịch theo xu hướng sớm/muộn của lá số. Đây là mô hình thống kê tham khảo, không phải chắc chắn.';
   return out;
 }
 
