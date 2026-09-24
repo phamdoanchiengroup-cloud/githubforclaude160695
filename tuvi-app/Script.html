@@ -1712,7 +1712,7 @@
       function lv(d) { return d >= 8 ? 'r5' : d >= 6.5 ? 'r4' : d >= 5 ? 'r3' : d >= 3.5 ? 'r2' : 'r0'; }
       html += '<div class="panel section"><h2 class="panel-title"><span class="han">姻緣</span> ' + esc(P.tieuDe) + '</h2><p class="lede">Người ấy trông thế nào, tính ra sao, gặp ở đâu và tuổi nào hợp nhất? Câu trả lời được ghép từ cung Phu Thê, cung phối ngẫu Bát Tự, nhà 7 chiêm tinh, thần số và Human Design.</p><ul class="th-kl">' + P.ketLuan.map(itemHtml).join('') + '</ul>' +
         spouseChart(H.nam, topNam) +
-        '<h4 class="dd-h">Chấm điểm năm sinh người phối ngẫu (thang 10)</h4><div class="tuoi-grid">' + H.nam.map(function (x) {
+        '<h4 class="dd-h">Chấm điểm năm sinh người phối ngẫu (thang 10)</h4><p class="muted" style="font-size:12.5px;margin-top:-4px">Xét ' + H.nam.length + ' năm sinh từ ' + H.nam[0].nam + ' đến ' + H.nam[H.nam.length - 1].nam + ' (người phối ngẫu đã đủ 18 tuổi).</p><div class="tuoi-grid">' + H.nam.map(function (x) {
           return '<div class="tuoi ' + lv(x.diem) + (topNam.indexOf(x.nam) >= 0 ? ' top' : '') + '" title="' + esc(x.chiTiet.join('\n')) + '"><b>' + x.nam + '</b><span>' + esc(x.canChi) + '</span>' +
             '<i class="tb"><u style="width:' + (x.diem * 10) + '%"></u></i><em>' + x.diem + ' · ' + xl(x.diem) + '</em><small>' + esc(x.napAm) + ' · ' + esc(x.cungPhi) + '</small></div>';
         }).join('') + '</div>' +
@@ -1855,7 +1855,7 @@
       '<div class="demo-prev"><img alt="Xem trước"><span>🔒 Nội dung chi tiết chỉ có trong bản đầy đủ</span></div>';
   }
   function trangMua(brand, soTrangFull) {
-    return '<div class="pdf-end demo-cta"><div class="pdf-kicker">Bản đầy đủ</div><h2>Bạn mới xem khoảng 10% câu chuyện của mình.</h2>' +
+    return '<div class="pdf-end demo-cta">' + (typeof ANH_QC === 'string' && ANH_QC ? '<img class="cta-anh" alt="" src="' + ANH_QC + '">' : '') + '<div class="pdf-kicker">Bản đầy đủ</div><h2>Bạn mới xem khoảng 10% câu chuyện của mình.</h2>' +
       '<p>Bản đầy đủ mở khóa toàn bộ những gì bạn vừa thấy bị che:</p>' +
       '<ul><li><b>Luận chi tiết 12 cung Tử Vi</b> – tiền tài, sự nghiệp, hôn nhân, con cái, sức khỏe, nhà cửa.</li>' +
       '<li><b>Dự đoán cả đời</b> – năm tài lộc, năm kết hôn, sinh con, thăng tiến và các năm cần phòng.</li>' +
@@ -2171,6 +2171,14 @@
 
   /* ------------------------ KHỞI TẠO ------------------------ */
   document.addEventListener('DOMContentLoaded', function () {
+    // Ảnh quảng bá (Anh.html – tùy chọn)
+    if (typeof ANH_QC === 'string' && ANH_QC) $('anhQC').src = ANH_QC; else $('wlHero').classList.add('no-anh');
+    function khamPha() {
+      if (window.innerWidth < 1080) document.querySelector('.form-panel').scrollIntoView({ behavior: 'smooth', block: 'start' });
+      if (!$('name').value.trim()) { $('name').focus(); toast('Nhập họ tên và ngày giờ sinh, rồi bấm "Lập Lá Số" để bắt đầu ✦'); return; }
+      submit();
+    }
+    $('wlGo').addEventListener('click', khamPha); $('wlAnh').addEventListener('click', khamPha);
     initTaiKhoan();
     initForm();
     tipInit();

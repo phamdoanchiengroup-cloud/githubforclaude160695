@@ -182,13 +182,22 @@
 
         <div class="tab-page active" id="page-chart">
           <div class="panel welcome" id="welcome">
-            <svg class="taiji" viewBox="0 0 100 100" aria-hidden="true">
-              <circle cx="50" cy="50" r="48" fill="#fff" stroke="#c89b3c" stroke-width="2"/>
-              <path d="M50 2a48 48 0 0 1 0 96a24 24 0 0 1 0-48a24 24 0 0 0 0-48z" fill="#1f7a70"/>
-              <circle cx="50" cy="26" r="7" fill="#1f7a70"/><circle cx="50" cy="74" r="7" fill="#fff"/>
-            </svg>
-            <h2>Đạo pháp tự nhiên · Thiên cơ khả kiến</h2>
-            <p>Nhập ngày giờ sinh theo Dương lịch hoặc Âm lịch để lập lá số Tử Vi Đẩu Số đầy đủ 12 cung, an trọn chính tinh, phụ tinh, vòng Tràng Sinh, Bác Sĩ, Thái Tuế, Tuần – Triệt, kết hợp luận giải Bát Tự Tứ Trụ.</p>
+            <div class="wl-hero" id="wlHero">
+              <button type="button" class="wl-anh" id="wlAnh" aria-label="Khám phá ngay"><img id="anhQC" alt="Thiên Cơ Các – Hạnh phúc nằm trong tầm tay bạn"></button>
+              <div class="wl-nd">
+                <div class="wl-eyebrow">Tổng hợp 6 lĩnh vực huyền học</div>
+                <h2>Hiểu mình – để sống đúng với mình</h2>
+                <p>Nhập ngày giờ sinh, hệ thống lập lá số <b>Tử Vi, Tứ Trụ, Bát Tự Hà Lạc, Chiêm tinh, Thần số học, Human Design</b> rồi ghép 6 hệ lại: điều gì nhiều hệ cùng nói, điều đó đáng tin.</p>
+                <ul class="wl-loi">
+                  <li>Xem <b>miễn phí</b> xuất thân, vóc dáng, tính cách, nghề hợp (kèm % phù hợp)</li>
+                  <li>Năm kết hôn, năm có con – <b>xác suất % từng năm</b></li>
+                  <li>Biến cố hội tụ: những năm 3–5 hệ cùng báo</li>
+                  <li>Chân dung người bạn đời và con cái</li>
+                </ul>
+                <button type="button" class="btn btn-primary wl-go" id="wlGo">✦ Khám phá ngay – miễn phí</button>
+                <small class="muted wl-note">Nếu thấy đúng điều bạn đang thắc mắc, bạn sẽ hiểu vì sao cần xem sâu hơn.</small>
+              </div>
+            </div>
             <div class="features">
               <div class="feature"><span class="han">紫</span><b>14 Chính tinh</b><small>An theo Cục & ngày sinh, xét Miếu – Vượng – Đắc – Hãm.</small></div>
               <div class="feature"><span class="han">星</span><b>~100 Phụ tinh</b><small>Lục cát, lục sát, Tứ Hóa, Lộc Mã, Đào Hồng Hỷ…</small></div>
@@ -366,6 +375,7 @@
   <script>var INITIAL_PARAMS = <?!= initialParams ?>;</script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <?!= includeTuyChon('Anh'); ?>
   <?!= include('Script'); ?>
 </body>
 </html>

@@ -948,4 +948,20 @@ b.lead { color: var(--head); font-weight: 700; }
 .km-banner { margin: 8px 0 12px; padding: 10px 14px; border-radius: 12px; background: linear-gradient(90deg, rgba(246,182,74,.25), rgba(19,181,204,.18)); border: 1px solid var(--gold); font-size: 14px; }
 .ma-qua { display: flex; gap: 8px; margin: 8px 0; } .ma-qua input { flex: 1; min-width: 0; }
 .goi-th { font-size: 11.5px; color: var(--good-ink); font-weight: 700; }
+/* ---------- Khung chào mừng có ảnh quảng bá ---------- */
+.wl-hero { display: grid; grid-template-columns: minmax(220px, 340px) 1fr; gap: 26px; align-items: center; text-align: left; margin-bottom: 22px; }
+.wl-hero.no-anh { grid-template-columns: 1fr; text-align: center; }
+.wl-hero.no-anh .wl-anh { display: none; }
+.wl-anh { padding: 0; border: 1px solid var(--gold); border-radius: 18px; overflow: hidden; background: #0b2a36; cursor: pointer; box-shadow: 0 18px 40px rgba(2, 20, 30, .45); transition: transform .25s; }
+.wl-anh:hover { transform: translateY(-3px); }
+.wl-anh img { display: block; width: 100%; height: auto; aspect-ratio: 704 / 886; }
+.wl-eyebrow { font-size: 12px; letter-spacing: 3px; text-transform: uppercase; color: var(--gold); font-weight: 800; }
+.welcome .wl-nd h2 { margin: 6px 0 10px; font-size: 36px; line-height: 1.15; }
+.welcome .wl-nd p { margin: 0 0 12px; max-width: none; }
+.wl-loi { list-style: none; padding: 0; margin: 0 0 16px; display: grid; gap: 7px; }
+.wl-loi li { padding-left: 22px; position: relative; } .wl-loi li::before { content: '✦'; position: absolute; left: 0; color: var(--gold); }
+.welcome .wl-go { width: auto; padding: 13px 26px; margin-top: 0; }
+.wl-note { display: block; margin-top: 10px; font-style: italic; }
+@media (max-width: 760px) { .wl-hero { grid-template-columns: 1fr; text-align: left; } .wl-anh { max-width: 380px; margin: 0 auto; } .welcome .wl-nd h2 { font-size: 28px; } .welcome .wl-go { width: 100%; } }
+.cta-anh { float: right; width: 240px; margin: 0 0 12px 18px; border-radius: 14px; border: 1px solid var(--gold); }
 </style>

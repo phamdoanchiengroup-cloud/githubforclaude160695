@@ -44,6 +44,10 @@ function doGet(e) {
 function include(filename) {
   return HtmlService.createHtmlOutputFromFile(filename).getContent();
 }
+/** Nhúng file HTML tùy chọn (không có thì bỏ qua) – dùng cho ảnh quảng bá Anh.html */
+function includeTuyChon(filename) {
+  try { return HtmlService.createHtmlOutputFromFile(filename).getContent(); } catch (e) { return ''; }
+}
 
 /* ---------------------- Tự kiểm tra cài đặt ---------------------- */
 var FILE_HTML_CAN_CO = { 'Index': '<!DOCTYPE html>', 'Styles': '<style>', 'Script': '<script>' };

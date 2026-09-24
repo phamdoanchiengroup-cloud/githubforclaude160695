@@ -309,8 +309,11 @@ function pnXepLoai_(d) { return d >= 8 ? 'Rất hợp' : d >= 6.5 ? 'Hợp' : d 
 function pnTuoiThangHop_(C, xuHuong) {
   var tv = C.tv, bt = C.bt, ct = C.ct, male = tv.info.male, namAm = tv.info.lunar.year;
   var self = { male: male, nam: namAm, can: tv.info.yCan, chi: tv.info.yChi, napAm: tv.info.banMenh, quai: pnCungPhi_(namAm, male), hy: bt.goiY.hy, ky: bt.goiY.ky };
-  var tu = male ? -6 : -12, den = male ? 12 : 6, nam = [];
-  for (var Y = namAm + tu; Y <= namAm + den; Y++) nam.push(pnChamNam_(self, Y, xuHuong));
+  // Khoảng năm sinh xét: nam từ hơn 10 tuổi đến kém 15 tuổi, nữ từ hơn 15 tuổi đến kém 10 tuổi (26 năm),
+  // nới thêm 3 năm theo xu hướng chênh tuổi của lá số; người phối ngẫu phải đủ 18 tuổi vào năm xem.
+  var tu = male ? -10 : -15, den = male ? 15 : 10, nam = [], toiDa = Math.max(tv.info.viewYear, namAm + 20) - 18; // phối ngẫu đủ 18 tuổi vào năm xem (hoặc khi đương số 20 tuổi nếu còn nhỏ)
+  if (xuHuong > 0.4) tu -= 3; else if (xuHuong < -0.4) den += 3;
+  for (var Y = namAm + tu; Y <= Math.min(namAm + den, toiDa); Y++) nam.push(pnChamNam_(self, Y, xuHuong));
   var xep = nam.slice().sort(function (a, b) { return b.diem - a.diem || Math.abs(a.lech) - Math.abs(b.lech); });
   // Tháng âm lịch: chi tháng (tháng 1 = Dần) so với nhật chi (cung phu thê) và chi năm
   var nc = bt.pillars[2].chi, thangAm = [];
