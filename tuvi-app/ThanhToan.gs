@@ -64,16 +64,18 @@ function ttKhoa_(fn) {
 
 /* ---------------- Bảng giá & cấu hình ---------------- */
 function ttBangGia_() {
-  var phan = JSON.parse(JSON.stringify(TT_PHAN_MAC_DINH)), goi = TT_GOI_MAC_DINH.slice();
+  var phan = JSON.parse(JSON.stringify(TT_PHAN_MAC_DINH)), goi = TT_GOI_MAC_DINH.slice(), km = { lanDau: 100, gioiThieu: 20 };
   try {
     var v = PropertiesService.getScriptProperties().getProperty('TT_BANG_GIA');
     if (v) {
       var o = JSON.parse(v);
       Object.keys(o.phan || {}).forEach(function (k) { if (phan[k] && o.phan[k] >= 0) phan[k].xu = Math.round(o.phan[k]); });
       if (o.goi && o.goi.length) goi = o.goi.filter(function (g) { return g.tien > 0 && g.xu > 0; });
+      if (o.thuongLanDau != null) km.lanDau = Math.max(0, Math.min(500, +o.thuongLanDau || 0));
+      if (o.thuongGioiThieu != null) km.gioiThieu = Math.max(0, Math.min(100, +o.thuongGioiThieu || 0));
     }
   } catch (e) { /* dùng mặc định */ }
-  return { phan: phan, goi: goi, xuVnd: 1000 };
+  return { phan: phan, goi: goi, xuVnd: 1000, thuongLanDau: km.lanDau, thuongGioiThieu: km.gioiThieu };
 }
 function ttCauHinh_() {
   var c = {};
@@ -140,7 +142,9 @@ function ttCatPhan_(r, q) {
 /* ---------------- API: ví & mở khóa ---------------- */
 function viCuaToi(token) {
   var u = tkCan_(token), bg = ttBangGia_();
-  var out = { nguoiDung: u, toanQuyen: ttToanQuyen_(u), soDu: ttSoDu_(u.ten), bangGia: bg, soCai: [], donCho: [], thanhToan: ttCauHinh_().payos ? 'payos' : 'thucong' };
+  var shD = ttSheet_('DonHang'), daNap = ttTim_(shD, 2, u.ten).some(function (r) { return shD.getRange(r, 5).getValue() === 'DA_TRA'; });
+  var out = { nguoiDung: u, toanQuyen: ttToanQuyen_(u), soDu: ttSoDu_(u.ten), bangGia: bg, soCai: [], donCho: [], thanhToan: ttCauHinh_().payos ? 'payos' : 'thucong',
+    lanDau: !daNap, maGioiThieu: u.ten, url: (function () { try { return ScriptApp.getService().getUrl(); } catch (e) { return ''; } })() };
   var sh = ttSheet_('SoCai');
   ttTim_(sh, 2, u.ten).slice(-15).reverse().forEach(function (r) {
     var v = sh.getRange(r, 1, 1, 6).getValues()[0];
@@ -219,7 +223,17 @@ function ttGhiNhanDon_(ma, nguon, thamChieu) {
     sh.getRange(d.row, 5).setValue('DA_TRA');
     sh.getRange(d.row, 7).setValue(new Date());
     if (thamChieu) sh.getRange(d.row, 9).setValue(thamChieu);
+    var lanDau = !ttTim_(sh, 2, d.tk).some(function (r) { return r !== d.row && sh.getRange(r, 5).getValue() === 'DA_TRA'; });
     ttCong_(d.tk, d.xu, 'Nạp ' + d.tien + 'đ (' + nguon + ')', 'DON' + ma);
+    if (lanDau) {
+      var bg = ttBangGia_(), o = tkDoc_(d.tk) || {};
+      var th = Math.round(d.xu * bg.thuongLanDau / 100);
+      if (th > 0) ttCong_(d.tk, th, 'Thưởng nạp lần đầu +' + bg.thuongLanDau + '%', 'DON' + ma);
+      if (o.gioiThieu && tkDoc_(o.gioiThieu)) {
+        var tg = Math.round(d.xu * bg.thuongGioiThieu / 100);
+        if (tg > 0) ttCong_(o.gioiThieu, tg, 'Thưởng giới thiệu ' + d.tk + ' (+' + bg.thuongGioiThieu + '% lần nạp đầu)', 'DON' + ma);
+      }
+    }
     return true;
   });
 }
@@ -309,10 +323,14 @@ function qtTongQuan(token) {
 function qtLuuBangGia(token, bg) {
   tkCan_(token, true);
   var phan = {}, goi = [];
-  Object.keys(TT_PHAN_MAC_DINH).forEach(function (k) { var v = Math.round(Number(bg && bg.phan && bg.phan[k])); if (v >= 0 && v < 100000) phan[k] = v; });
+  var cu0 = ttBangGia_();
+  Object.keys(TT_PHAN_MAC_DINH).forEach(function (k) { var v = Math.round(Number(bg && bg.phan && bg.phan[k])); phan[k] = v >= 0 && v < 100000 ? v : cu0.phan[k].xu; });
   (bg && bg.goi || []).forEach(function (g) { var t = Math.round(Number(g.tien)), x = Math.round(Number(g.xu)); if (t >= 2000 && x > 0) goi.push({ tien: t, xu: x }); });
   if (!goi.length) throw new Error('Cần ít nhất một gói nạp (số tiền ≥ 2.000đ).');
-  PropertiesService.getScriptProperties().setProperty('TT_BANG_GIA', JSON.stringify({ phan: phan, goi: goi }));
+  var cu = ttBangGia_();
+  function pct(v, mac, tran) { return v == null || v === '' || isNaN(+v) ? mac : Math.max(0, Math.min(tran, Math.round(+v))); }
+  PropertiesService.getScriptProperties().setProperty('TT_BANG_GIA', JSON.stringify({ phan: phan, goi: goi,
+    thuongLanDau: pct(bg && bg.thuongLanDau, cu.thuongLanDau, 500), thuongGioiThieu: pct(bg && bg.thuongGioiThieu, cu.thuongGioiThieu, 100) }));
   return ttBangGia_();
 }
 function qtLuuCauHinh(token, moi) {
@@ -354,4 +372,46 @@ function capQuyenThanhToan() {
   try { UrlFetchApp.fetch('https://api-merchant.payos.vn', { muteHttpExceptions: true }); } catch (e) { /* chỉ để xin quyền */ }
   LockService.getScriptLock();
   Logger.log('✔ Đã cấp quyền và tạo các trang tính Vi, SoCai, MoKhoa, DonHang.');
+}
+
+/* ---------------- Mã quà tặng (khuyến mãi) ---------------- */
+function qtTaoMaQua(token, ma, xu, soLuot, hetHan) {
+  tkCan_(token, true);
+  ma = String(ma || '').trim().toUpperCase();
+  if (!/^[A-Z0-9_-]{4,24}$/.test(ma)) throw new Error('Mã 4–24 ký tự: chữ không dấu, số, gạch.');
+  xu = Math.round(+xu); soLuot = Math.round(+soLuot) || 1;
+  if (!(xu > 0 && xu <= 10000)) throw new Error('Số xu tặng từ 1 đến 10.000.');
+  var cu = PropertiesService.getScriptProperties().getProperty('QT_' + ma), o = cu ? JSON.parse(cu) : { daDung: [] };
+  o.xu = xu; o.soLuot = soLuot; o.hetHan = hetHan ? String(hetHan).slice(0, 10) : ''; o.taoLuc = o.taoLuc || new Date().toISOString();
+  PropertiesService.getScriptProperties().setProperty('QT_' + ma, JSON.stringify(o));
+  return qtDsMaQua(token);
+}
+function qtDsMaQua(token) {
+  tkCan_(token, true);
+  var p = PropertiesService.getScriptProperties().getProperties(), out = [];
+  Object.keys(p).forEach(function (k) {
+    if (k.indexOf('QT_') !== 0) return;
+    var o = JSON.parse(p[k]);
+    out.push({ ma: k.slice(3), xu: o.xu, soLuot: o.soLuot, daDung: (o.daDung || []).length, hetHan: o.hetHan || '', taoLuc: o.taoLuc || '' });
+  });
+  return out.sort(function (a, b) { return String(b.taoLuc).localeCompare(String(a.taoLuc)); });
+}
+function qtXoaMaQua(token, ma) { tkCan_(token, true); PropertiesService.getScriptProperties().deleteProperty('QT_' + String(ma).toUpperCase()); return qtDsMaQua(token); }
+function nhapMaQua(token, ma) {
+  var u = tkCan_(token), c = CacheService.getScriptCache(), k = 'MQ_' + u.ten, n = parseInt(c.get(k) || '0', 10);
+  if (n >= 10) throw new Error('Bạn nhập sai mã quá nhiều lần – thử lại sau 15 phút.');
+  ma = String(ma || '').trim().toUpperCase();
+  return ttKhoa_(function () {
+    var props = PropertiesService.getScriptProperties(), v = props.getProperty('QT_' + ma);
+    if (!v) { c.put(k, String(n + 1), 900); throw new Error('Mã quà tặng không đúng.'); }
+    var o = JSON.parse(v), hom = Utilities.formatDate(new Date(), 'Asia/Ho_Chi_Minh', 'yyyy-MM-dd');
+    o.daDung = o.daDung || [];
+    if (o.hetHan && hom > o.hetHan) throw new Error('Mã đã hết hạn.');
+    if (o.daDung.indexOf(u.ten) >= 0) throw new Error('Bạn đã dùng mã này rồi.');
+    if (o.daDung.length >= o.soLuot) throw new Error('Mã đã hết lượt sử dụng.');
+    o.daDung.push(u.ten);
+    props.setProperty('QT_' + ma, JSON.stringify(o));
+    var moi = ttCong_(u.ten, o.xu, 'Mã quà tặng ' + ma, 'MA' + ma);
+    return { ok: true, xu: o.xu, soDu: moi };
+  });
 }

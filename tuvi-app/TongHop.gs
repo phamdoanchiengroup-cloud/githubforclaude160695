@@ -499,8 +499,11 @@ function thNghe_(C) {
   add(TH_NGHE_HD[hd.loai], 'Human Design', 1);
   if (C.hl) { add(TH_QUAI_NGHE[C.hl.tien.tren], 'Hà Lạc', 1); add(TH_QUAI_NGHE[C.hl.tien.duoi], 'Hà Lạc', 0.7); }
   hd.kenh.forEach(function (k) { add(TH_NGHE_KENH[[k.a, k.b].sort(function (x, y) { return x - y; }).join('-')], 'Human Design', 0.8); });
-  return Object.keys(dem).map(function (k) { return { k: k, ten: TH_NGHE[k], diem: Math.round(dem[k].d * 10) / 10, he: Object.keys(dem[k].he) }; })
-    .sort(function (a, b) { return b.he.length - a.he.length || b.diem - a.diem; });
+  var ds = Object.keys(dem).map(function (k) { return { k: k, ten: TH_NGHE[k], diem: Math.round(dem[k].d * 10) / 10, he: Object.keys(dem[k].he) }; });
+  var mx = Math.max.apply(null, ds.map(function (x) { return x.diem; }).concat([0.1]));
+  // % phù hợp: 55% theo số hệ cùng gợi ý (trên 6), 45% theo tổng trọng số so với nghề mạnh nhất
+  ds.forEach(function (x) { x.pct = Math.max(30, Math.min(97, Math.round(100 * (0.55 * x.he.length / 6 + 0.45 * x.diem / mx)))); });
+  return ds.sort(function (a, b) { return b.pct - a.pct || b.he.length - a.he.length; });
 }
 
 function thDuongDoi_(C) {
@@ -646,7 +649,18 @@ function tongHopLuan(C) {
       'Kết luận chỉ mang tính tham khảo – xu hướng, không phải định mệnh; điểm càng nhiều hệ đồng thuận thì càng đáng lưu tâm.'
     ]
   };
-  T.hoiTu = htHoiTu_(C); delete T.hoiTu.namTin;
+  T.hoiTu = htHoiTu_(C);
+  if (T.phoiNgau) {
+    try {
+      T.phoiNgau.thoiDiem = pnThoiDiem_(C, T.hoiTu.namTin, T.phoiNgau.chiSo.tuoi || 0);
+      T.phoiNgau.conCai = pnConCai_(C, T.phoiNgau.thoiDiem);
+      var kh = T.phoiNgau.thoiDiem.ketHon, sc = T.phoiNgau.thoiDiem.sinhCon;
+      function top3(x) { return x && x.nam ? x.nam.slice().sort(function (a, b) { return b.pct - a.pct; }).slice(0, 3).map(function (n) { return n.nam + ' (' + n.pct + '%)'; }).join(', ') : ''; }
+      if (top3(kh)) T.phoiNgau.ketLuan.push('Xác suất cưới hỏi theo năm (tổng hợp 5 hệ + độ tuổi): ' + top3(kh) + '.');
+      if (top3(sc)) T.phoiNgau.ketLuan.push('Xác suất có tin vui con cái theo năm: ' + top3(sc) + '.');
+    } catch (e) { T.phoiNgau.loiThem = String(e && e.message || e); }
+  }
+  delete T.hoiTu.namTin;
   T.thang = htThang_(C); T.ngay = htNgay_(C);
   T.matMa = htMatMa_(C, T.hoiTu, T.thang);
   T.tomLuoc = thTomLuoc_(C, T);

@@ -65,6 +65,7 @@ for (let k = 0; k < 40; k++) {
   const r = ctx.lapLaSoDayDu_(inp); n++;
   ok(!r.moRongLoi && r.moRong && r.moRong.tongHop.tinhCach.truc.length === 5 && r.moRong.tongHop.phoiNgau.tuoiHop.nam.length === 19 && r.moRong.tongHop.namNay && r.moRong.tongHop.mayMan && r.moRong.tongHop.tomLuoc.chiSo.length === 4 && r.moRong.haLac.luan.daiVan.length === 12 && r.moRong.haLac.luan.nam.length >= 72, 'lapLaSo mở rộng lỗi: ' + r.moRongLoi + ' ' + JSON.stringify(inp));
   ok(r.battuChiTiet.linhVuc.length === 12 && r.battuChiTiet.linhVuc.every(function (x) { return isFinite(x.diem) && x.secs.length >= 2; }) && r.battuChiTiet.luuNien.length >= 10, 'Tứ Trụ 12 lĩnh vực / lưu niên lỗi: ' + JSON.stringify(inp));
+  { const P = r.moRong.tongHop.phoiNgau, td = P.thoiDiem; ok(!P.loiThem && td && P.conCai && ['ketHon', 'sinhCon'].every(function (k) { const x = td[k]; return x.hetCuaSo || Math.abs(x.bieuDo.reduce(function (s, b) { return s + b.pct; }, 0) - 100) < 1.5; }) && r.moRong.tongHop.nghe.every(function (n) { return n.pct >= 30 && n.pct <= 97; }), 'Thời điểm cưới/con (tổng xác suất 100%) hoặc nghề % lỗi: ' + (P.loiThem || '') + JSON.stringify(inp)); }
 }
 console.log('lapLaSo đầy đủ:', n, 'lá số,', Math.round((Date.now() - t0) / n), 'ms/lá');
 console.log(loi ? '✘ ' + loi + ' lỗi' : '✔ Tất cả kiểm tra đạt');

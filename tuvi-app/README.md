@@ -23,7 +23,7 @@ Web app lập lá số **Tử Vi Đẩu Số 12 cung** (phái Việt Nam) kết 
 | `BatTuLuan.gs` | **Luận Tứ Trụ theo 12 lĩnh vực** (tương ứng 12 cung Tử Vi: bản mệnh, cha mẹ, anh em, phu thê, con cái, tài bạch, tật ách, thiên di, quý nhân, quan lộc, điền trạch, phúc đức) theo nguyên tắc "cung vị làm thể, thập thần làm dụng" + hỷ/kỵ, hợp – xung – hình – hại – phá, Không Vong, thần sát và các cách kinh điển; **lưu niên Tứ Trụ** 14 năm (dẫn động tứ trụ, phục ngâm, phản ngâm, tuế vận tịnh lâm, thần sát năm, sự việc theo lĩnh vực) |
 | `HaLac.gs` | Bát Tự Hà Lạc: đổi tứ trụ ra số Hà Đồ – Lạc Thư, Thiên số/Địa số, quẻ Tiên thiên – Hậu thiên – Hỗ, hào nguyên đường theo giờ, đại vận theo 12 hào (dương 9 năm, âm 6 năm), quẻ lưu niên từng năm, chấm điểm theo cát/hung quẻ, vị hào và dụng thần |
 | `HoiTu.gs` | **Biến cố hội tụ 6 hệ**: mỗi năm (30 năm tới) cho 8 chủ đề (tài lộc, thăng tiến, kết hôn, con cái, bước ngoặt, sức khỏe, hao tài, gia đạo) được Tử Vi, Bát Tự, Hà Lạc, Chiêm tinh, Thần số bỏ phiếu – từ 3 hệ trở lên là xác suất cao; vận 12 tháng & 7 ngày đa hệ; "mật mã cá nhân" (nguyên tố linh hồn, con số định mệnh, giờ vàng, mùa, quý nhân, cán cân âm dương, năm vàng…) |
-| `PhoiNgau.gs` | Chân dung vợ/chồng tương lai từ 5 hệ (ngoại hình, tính cách, chênh tuổi, nơi gặp, chất lượng hôn nhân, năm dễ cưới) + chấm điểm năm sinh (thang 10: nạp âm, thiên can, địa chi, cung phi Bát trạch, thiên mệnh + dụng thần) và tháng sinh âm/dương lịch phù hợp |
+| `PhoiNgau.gs` | **Năm kết hôn / có con kèm xác suất % từng năm** (tiên nghiệm theo tuổi × tín hiệu 5 hệ, chuẩn hóa trên các năm còn lại), **chân dung con cái** (số con, trai/gái %, tính cách), chân dung vợ/chồng tương lai từ 5 hệ (ngoại hình, tính cách, chênh tuổi, nơi gặp, chất lượng hôn nhân, năm dễ cưới) + chấm điểm năm sinh (thang 10: nạp âm, thiên can, địa chi, cung phi Bát trạch, thiên mệnh + dụng thần) và tháng sinh âm/dương lịch phù hợp |
 | `Index.html` | Khung trang |
 | `Styles.html` | CSS |
 | `Script.html` | JS trình duyệt: form, vẽ lá số 4×4, tam hợp–xung chiếu, bánh xe bản đồ sao, bodygraph, tab luận giải, xuất PNG / **PDF (A4, có bìa, chọn phần)** / in |
@@ -103,6 +103,8 @@ Tham khảo Bát Tự chi tiết: [douban – 四柱宫位定义](https://www.do
    - Chưa có payOS: nhập BIN ngân hàng, số tài khoản, chủ tài khoản → khách chuyển khoản theo mã VietQR, bạn đối chiếu nội dung `TCCxxxxxx` rồi bấm "✓ Đã nhận tiền".
    - Có payOS (mở tài khoản KienlongBank + my.payos.vn → Kênh thanh toán): nhập Client ID, API Key, Checksum Key → xu được cộng tự động (trang kiểm tra trạng thái mỗi 4 giây khi khách đang chờ + trigger quét mỗi 5 phút). Không cần webhook.
 3. Sửa giá và gói nạp trong **Quản trị → Bảng giá**; đặt vai trò **VIP** (xem không giới hạn) hoặc tặng/trừ xu trong **Tài khoản**.
+
+Khuyến mãi (chỉnh trong **Quản trị → Bảng giá / Khuyến mãi**): thưởng **nạp lần đầu +100%** xu; **giới thiệu bạn bè** – link `…/exec?ref=<tên đăng nhập>` hoặc nhập mã khi đăng ký, người giới thiệu nhận 20% lần nạp đầu của bạn mới; **mã quà tặng** (số xu, số lượt, hạn dùng) khách nhập trong "Tài khoản". Khách chưa mở khóa vẫn xem miễn phí phần xuất thân, vóc dáng, tính cách và nghề phù hợp (kèm % phù hợp).
 
 Bảo mật: phần chưa mở bị cắt ngay trên máy chủ; mỗi đơn chỉ cộng xu một lần (khóa LockService); khóa payOS lưu trong Script Properties, không bao giờ gửi xuống trình duyệt. Riêng "PDF bản đầy đủ" được khóa ở giao diện (nội dung các phần đã mở vốn đã hiển thị trên web).
 

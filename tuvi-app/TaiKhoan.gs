@@ -89,7 +89,7 @@ function dsTaiKhoan(token) {
   Object.keys(p).forEach(function (k) {
     if (k.indexOf('TK_') !== 0) return;
     var o = JSON.parse(p[k]), u = k.slice(3);
-    out.push({ ten: u, hienThi: o.hienThi || u, vaiTro: o.vaiTro || 'thanhVien', lienHe: o.lienHe || '', tuDangKy: !!o.tuDangKy, taoLuc: o.taoLuc || '', lanCuoi: o.lanCuoi || '' });
+    out.push({ ten: u, hienThi: o.hienThi || u, vaiTro: o.vaiTro || 'thanhVien', lienHe: o.lienHe || '', tuDangKy: !!o.tuDangKy, gioiThieu: o.gioiThieu || '', taoLuc: o.taoLuc || '', lanCuoi: o.lanCuoi || '' });
   });
   var TT = { chu: 0, vip: 1, thanhVien: 2 };
   return out.sort(function (a, b) { return (TT[a.vaiTro] || 2) - (TT[b.vaiTro] || 2) || String(b.taoLuc).localeCompare(String(a.taoLuc)); });
@@ -110,13 +110,15 @@ function taoTaiKhoan(token, user, pass, hienThi, vaiTro) {
   return dsTaiKhoan(token);
 }
 /** Khách tự đăng ký tài khoản thành viên, đăng nhập luôn */
-function dangKy(user, pass, hienThi, lienHe) {
+function dangKy(user, pass, hienThi, lienHe, maGioiThieu) {
   var c = CacheService.getScriptCache(), n = parseInt(c.get('DK_DEM') || '0', 10);
   if (n >= 30) throw new Error('Hệ thống đang nhận quá nhiều đăng ký – vui lòng thử lại sau ít phút.');
   lienHe = String(lienHe || '').trim().slice(0, 80);
   var hopLe = lienHe.indexOf('@') >= 0 ? /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(lienHe) : /^\+?\d{9,13}$/.test(lienHe.replace(/[\s.-]/g, ''));
   if (!hopLe) throw new Error('Nhập số điện thoại hoặc email hợp lệ – dùng khi cần khôi phục tài khoản.');
-  var u = tkTaoMoi_(user, pass, hienThi, 'thanhVien', { lienHe: lienHe, tuDangKy: true });
+  var gt = tkTen_(maGioiThieu), them = { lienHe: lienHe, tuDangKy: true };
+  if (gt && gt !== tkTen_(user) && tkDoc_(gt)) them.gioiThieu = gt;
+  var u = tkTaoMoi_(user, pass, hienThi, 'thanhVien', them);
   c.put('DK_DEM', String(n + 1), 600);
   return dangNhap(u, pass);
 }
@@ -169,6 +171,8 @@ function khachRutGon_(r) {
   var tv = r.tuvi, B = r.battu;
   return {
     khach: true, createdAt: r.createdAt, saoInfo: r.saoInfo, teaser: r.teaser,
+    // Xem miễn phí: xuất thân, vóc dáng, tính cách, nghề hợp – để khách tự kiểm chứng độ chính xác
+    mien: r.moRong && r.moRong.tongHop ? { xuatThan: r.moRong.tongHop.xuatThan, vocDang: r.moRong.tongHop.vocDang, tinhCach: r.moRong.tongHop.tinhCach, nghe: r.moRong.tongHop.nghe } : null,
     tuvi: { info: tv.info, palaces: tv.palaces, luanGiai: { cung: (tv.luanGiai.cung || []).map(function (c) { return { cung: c.cung, yNghia: c.yNghia }; }) } },
     battu: { pillars: B.pillars.map(function (p) { return { tru: p.tru, can: p.can, chi: p.chi, canTen: p.canTen, chiTen: p.chiTen, canHanh: p.canHanh, chiHanh: p.chiHanh }; }),
       nhatChu: B.nhatChu, cuong: B.cuong }
@@ -219,7 +223,7 @@ function demoTeaser_(res) {
   if (T.phoiNgau) {
     var P = T.phoiNgau, top = P.tuoiHop.tot[0];
     out.duyen = { lo: [P.ketLuan[0] ? String(P.ketLuan[0].t || P.ketLuan[0]).split('.')[0] + '.' : 'Chân dung người bạn đời được ghép từ 5 hệ.'],
-      an: [(I.male ? 'Người vợ' : 'Người chồng') + ' tương lai: dáng ███, tính ███, gặp qua ███', 'Tuổi hợp nhất: ' + che_(top.nam) + ' (' + top.diem + '/10) · 4 năm sinh hợp khác', 'Tháng sinh âm lịch và dương lịch hợp: █, █, █'] };
+      an: [(I.male ? 'Người vợ' : 'Người chồng') + ' tương lai: dáng ███, tính ███, gặp qua ███', 'Năm kết hôn & năm có con kèm xác suất % từng năm', 'Chân dung con cái: trai/gái, số con, tính cách', 'Tuổi hợp nhất: ' + che_(top.nam) + ' (' + top.diem + '/10) · 4 năm sinh hợp khác', 'Tháng sinh âm lịch và dương lịch hợp: █, █, █'] };
   }
   if (T.duongDoi) out.doi = { lo: [String(T.duongDoi.ketLuan[0] || T.duongDoi.chuDe[0] || '').replace(/^[✓✗◇]\s*/, '').split(/\.\s/)[0] + '.'], an: ['Nghề được nhiều hệ cùng gợi ý nhất: ███', 'Chặng đời rực rỡ nhất: ███ tuổi', '12 đại vận Tử Vi chi tiết – Tứ Hóa, cung chức từng vận'] };
   out.them = { lo: ['Kiểm chứng giờ sinh bằng các sự kiện bạn đã trải qua.'], an: ['Bảng màu – số – hướng – ngày may mắn tổng hợp từ 6 hệ'] };

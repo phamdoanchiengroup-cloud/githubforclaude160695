@@ -81,11 +81,11 @@ ok(don.kenh === 'thucong' && /img\.vietqr\.io\/image\/970452-000111222/.test(don
 ok(ctx.kiemTraDon(T, don.ma).trangThai === 'CHO', 'Đơn chờ xác nhận');
 ok(nem(() => ctx.qtXacNhanDon(T, don.ma)) !== null, 'Thành viên không tự xác nhận đơn được');
 ctx.qtXacNhanDon(chu, don.ma);
-ok(ctx.kiemTraDon(T, don.ma).soDu === 50, 'Chủ sở hữu xác nhận → cộng 50 xu');
-ok(nem(() => ctx.qtXacNhanDon(chu, don.ma)) !== null && ctx.viCuaToi(T).soDu === 50, 'Xác nhận lần 2 không cộng trùng');
+ok(ctx.kiemTraDon(T, don.ma).soDu === 100, 'Chủ sở hữu xác nhận → cộng 50 xu + thưởng nạp lần đầu 100% = 100 xu');
+ok(nem(() => ctx.qtXacNhanDon(chu, don.ma)) !== null && ctx.viCuaToi(T).soDu === 100 && !ctx.viCuaToi(T).lanDau, 'Xác nhận lần 2 không cộng trùng');
 ok(/Bản mở/.test(nem(() => ctx.muaPhan(T, L, 'pdf'))), 'Mua phần thêm khi chưa có Bản mở → yêu cầu mở Bản mở trước');
 m = ctx.muaPhan(T, L, 'co_ban');
-ok(m.ok && m.soDu === 1, 'Mở Bản mở: trừ 49 xu, còn 1');
+ok(m.ok && m.soDu === 51, 'Mở Bản mở: trừ 49 xu, còn 51');
 r = ctx.lapLaSo(L, T);
 ok(!r.khach && r.moRong && r.battuChiTiet.linhVuc.length === 12 && r.quyen.co_ban, 'Đã mở: nhận bản đầy đủ');
 ok(r.moRong.tongHop.hoiTu === null && r.moRong.tongHop.phoiNgau === null && Object.keys(r.duDoan.chuDe).length === 0, 'Phần chưa mua (biến cố, phối ngẫu) bị cắt ở máy chủ');
@@ -102,11 +102,11 @@ ok(don.kenh === 'payos' && don.checkoutUrl && don.stk === '123456789', 'Đơn pa
 ok(ctx.kiemTraDon(T, don.ma).trangThai === 'CHO', 'Chưa trả → vẫn chờ');
 Object.assign(payos.don[don.ma], { status: 'PAID', amountPaid: 100000, transactions: [{ reference: 'FT123' }] });
 let k = ctx.kiemTraDon(T, don.ma);
-ok(k.trangThai === 'DA_TRA' && k.soDu === 111, 'payOS báo PAID → tự cộng 110 xu (số dư 111)');
+ok(k.trangThai === 'DA_TRA' && k.soDu === 161, 'payOS báo PAID → tự cộng 110 xu, không thưởng lần 2 (số dư 161)');
 ctx.ttQuetDonTuDong();
-ok(ctx.viCuaToi(T).soDu === 111, 'Trigger quét lại không cộng trùng');
+ok(ctx.viCuaToi(T).soDu === 161, 'Trigger quét lại không cộng trùng');
 m = ctx.muaPhan(T, L, 'tron_goi');
-ok(m.ok && m.gia === 70 && m.soDu === 41, 'Trọn gói trừ phần đã mua: 119 − 49 = 70 xu');
+ok(m.ok && m.gia === 70 && m.soDu === 91, 'Trọn gói trừ phần đã mua: 119 − 49 = 70 xu');
 r = ctx.lapLaSo(L, T);
 ok(r.moRong.tongHop.hoiTu && r.moRong.tongHop.phoiNgau && r.battuChiTiet.luuNien.length > 5 && r.quyen.pdf, 'Trọn gói: mở tất cả');
 // VIP & chủ sở hữu
@@ -121,8 +121,25 @@ ok(ctx.lapLaSo(Object.assign({}, L, { day: 20 }), vip).khach, 'Hạ VIP → thà
 const tq = ctx.qtTongQuan(chu);
 ok(tq.doanhThu.tong === 150000 && tq.doanhThu.soDon === 2 && tq.cauHinh.payos && !JSON.stringify(tq).includes('ck-secret'), 'Quản trị: doanh thu 150.000đ / 2 đơn, không lộ khóa bí mật');
 ctx.qtDieuChinhXu(chu, 'khachmoi', 10, 'tặng');
-ok(ctx.viCuaToi(T).soDu === 51 && ctx.viCuaToi(T).soCai.length >= 4, 'Tặng xu + sổ cái ghi nhận');
+ok(ctx.viCuaToi(T).soDu === 101 && ctx.viCuaToi(T).soCai.length >= 5, 'Tặng xu + sổ cái ghi nhận');
 ok(nem(() => ctx.qtLuuBangGia(T, {})) !== null, 'Thành viên không sửa được bảng giá');
 ctx.qtLuuBangGia(chu, { phan: { co_ban: 59 }, goi: [{ tien: 100000, xu: 120 }] });
 ok(ctx.ttBangGia_().phan.co_ban.xu === 59 && ctx.ttBangGia_().goi.length === 1, 'Sửa bảng giá');
+// giới thiệu bạn bè
+const b2 = ctx.dangKy('ban.moi', 'matkhau123', 'Bạn Mới', 'ban@moi.vn', 'khachmoi');
+don = ctx.taoDonNap(b2.token, 0);
+Object.assign(payos.don[don.ma], { status: 'PAID', amountPaid: 100000 });
+ctx.kiemTraDon(b2.token, don.ma);
+ok(ctx.viCuaToi(b2.token).soDu === 240, 'Người được giới thiệu: gói 120 xu + thưởng lần đầu 120 = 240');
+ok(ctx.viCuaToi(T).soDu === 101 + 24, 'Người giới thiệu nhận 20% lần nạp đầu của bạn (+24 xu)');
+// mã quà tặng
+ok(nem(() => ctx.qtTaoMaQua(T, 'TET2027', 30, 1)) !== null, 'Thành viên không tạo được mã quà');
+ctx.qtTaoMaQua(chu, 'tet2027', 30, 1, '2099-01-01');
+ok(ctx.nhapMaQua(b2.token, 'Tet2027').soDu === 270, 'Nhập mã quà tặng: +30 xu');
+ok(/đã dùng|hết lượt/.test(nem(() => ctx.nhapMaQua(b2.token, 'TET2027'))) && /hết lượt/.test(nem(() => ctx.nhapMaQua(T, 'TET2027'))), 'Mã chỉ dùng 1 lần / hết lượt');
+ok(/không đúng/.test(nem(() => ctx.nhapMaQua(T, 'SAIMA'))), 'Mã sai bị từ chối');
+ctx.qtTaoMaQua(chu, 'CU2020', 5, 10, '2020-01-01');
+ok(/hết hạn/.test(nem(() => ctx.nhapMaQua(T, 'CU2020'))), 'Mã hết hạn bị từ chối');
+ctx.qtLuuBangGia(chu, { phan: {}, goi: [{ tien: 50000, xu: 50 }], thuongLanDau: 50, thuongGioiThieu: 10 });
+ok(ctx.ttBangGia_().thuongLanDau === 50 && ctx.ttBangGia_().thuongGioiThieu === 10, 'Chỉnh % thưởng lần đầu / giới thiệu');
 if (loi) { console.log(loi + ' lỗi'); process.exit(1); } else console.log('✔ Thanh toán: tất cả kiểm tra đạt');

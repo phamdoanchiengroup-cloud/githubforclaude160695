@@ -228,7 +228,7 @@ function phoiNgauLuan(C) {
     'Chênh lệch tuổi: ' + (T > 0.6 ? (male ? 'vợ' : 'chồng') + ' nhiều khả năng lớn tuổi hơn hoặc chín chắn vượt tuổi' : T > 0.2 ? (male ? 'vợ ngang tuổi hoặc tính cách già dặn' : 'chồng lớn hơn vài tuổi') : T < -0.3 ? (male ? 'vợ kém khá nhiều tuổi' : 'chồng bằng tuổi hoặc trẻ hơn') : 'chênh ít tuổi') + ' (' + dong(tuoiP, T || 1) + ' dấu hiệu cùng chiều).',
     'Nơi/cách gặp: ' + PN_NHA7[r7.nha] + '; hướng cung Phu Thê là ' + PN_HUONG_CHI[pt.chi] + ' (so với nơi ở của bạn).',
     'Chất lượng hôn nhân: ' + (Q > 0.8 ? 'rất tốt – phối ngẫu là phúc tinh' : Q > 0.2 ? 'khá – hòa thuận, có vun đắp thì bền' : Q > -0.4 ? 'trung bình – có sóng gió, cần nhẫn nại và giao tiếp' : 'nhiều thử thách – nên kết hôn muộn, chọn kỹ, học cách dung hòa') + ' (điểm tổng ' + (Math.round(Q * 10) / 10) + ').',
-    'Năm dễ kết hôn nhất (tab Dự Đoán): ' + (tot.join(', ') || 'chưa rõ') + (sap.length ? '. Sắp tới: ' + sap.join(', ') : '') + '.'
+    'Năm tín hiệu cưới hỏi mạnh nhất theo Tử Vi: ' + (tot.join(', ') || 'chưa rõ') + (sap.length ? '. Sắp tới: ' + sap.join(', ') : '') + '.'
   ];
   var hop = pnTuoiThangHop_(C, T);
   kl.push('Tuổi hợp nhất (năm âm lịch): ' + hop.tot.slice(0, 5).map(function (x) { return x.nam + ' ' + x.canChi + ' – ' + x.diem + '/10'; }).join('; ') + '.');
@@ -334,4 +334,125 @@ function pnTuoiThangHop_(C, xuHuong) {
   }
   return { cungPhi: self.quai, napAm: self.napAm.ten, nam: nam, tot: xep.slice(0, 8), tranh: xep.filter(function (x) { return x.diem < 4; }).sort(function (a, b) { return a.nam - b.nam; }),
     thangAm: thangAm, thangDuong: thangDuong };
+}
+
+/* =========================================================
+ *  THỜI ĐIỂM KẾT HÔN / SINH CON – XÁC SUẤT THEO NĂM
+ *  Mô hình Bayes đơn giản, minh bạch:
+ *   - Tiên nghiệm theo tuổi: đường chuông quanh tuổi phổ biến (kết hôn: nam 28, nữ 25; con đầu: nam 30, nữ 27),
+ *     dịch theo xu hướng "sớm/muộn" của lá số (Tử Vi, Bát Tự, Chiêm tinh – xem phoiNgauLuan.chiSo.tuoi).
+ *   - Bằng chứng: tổng cường độ tín hiệu của 5 hệ có lịch năm (Tử Vi, Bát Tự, Hà Lạc, Chiêm tinh, Thần số)
+ *     trong năm đó, mỗi hệ tối đa ~1,4 → hệ số exp(0,55 × tổng).
+ *   - Chuẩn hóa trên các năm còn lại trong cửa sổ tuổi → "nếu sự kiện xảy ra, xác suất rơi vào năm này".
+ * ========================================================= */
+var PN_TD = {
+  ketHon: { ten: 'kết hôn', tuoi: [18, 45], tam: [28, 25], sd: 5 },
+  sinhCon: { ten: 'sinh con', tuoi: [20, 45], tam: [30, 27], sd: 5.5 }
+};
+function pnThoiDiem_(C, namTin, xuHuong) {
+  var male = C.tv.info.male, vy = C.tv.info.viewYear, out = {};
+  Object.keys(PN_TD).forEach(function (k) {
+    var M = PN_TD[k], tam = M.tam[male ? 0 : 1] + (k === 'ketHon' ? xuHuong * 2 : xuHuong * 1.5), ds = [];
+    namTin.forEach(function (n) {
+      if (n.tuoi < M.tuoi[0] || n.tuoi > M.tuoi[1]) return;
+      var o = n.tin[k] || {}, E = 0, he = [];
+      Object.keys(o).forEach(function (h) { E += Math.min(1.4, o[h].v); if (o[h].v >= 0.8) he.push(h); });
+      var prior = Math.exp(-Math.pow(n.tuoi - tam, 2) / (2 * M.sd * M.sd));
+      ds.push({ nam: n.nam, tuoi: n.tuoi, canChi: n.canChi, soHe: he.length, he: he, E: Math.round(E * 10) / 10, w: prior * Math.exp(0.55 * E),
+        ly: Object.keys(o).sort(function (a, b) { return o[b].v - o[a].v; }).slice(0, 4).map(function (h) { return o[h].ly; }), qua: n.nam < vy });
+    });
+    var sap = ds.filter(function (x) { return !x.qua; }), tong = sap.reduce(function (s, x) { return s + x.w; }, 0) || 1;
+    var tb = sap.length ? 100 / sap.length : 0;
+    sap.forEach(function (x) {
+      x.pct = Math.round(x.w / tong * 1000) / 10;
+      x.muc = x.pct >= tb * 2.2 ? 'Rất cao' : x.pct >= tb * 1.4 ? 'Cao' : x.pct >= tb * 0.8 ? 'Trung bình' : 'Thấp';
+    });
+    var qua = ds.filter(function (x) { return x.qua && x.nam >= vy - 12; }), tq = qua.reduce(function (s, x) { return s + x.w; }, 0) || 1;
+    qua.forEach(function (x) { x.pct = Math.round(x.w / tq * 1000) / 10; });
+    function tich(n) { return Math.round(sap.filter(function (x) { return x.nam < vy + n; }).reduce(function (s, x) { return s + x.pct; }, 0)); }
+    out[k] = {
+      ten: M.ten, tuoiDinh: Math.round(tam),
+      nam: sap.slice().sort(function (a, b) { return b.pct - a.pct; }).slice(0, 8).sort(function (a, b) { return a.nam - b.nam; }),
+      bieuDo: sap.map(function (x) { return { nam: x.nam, tuoi: x.tuoi, pct: x.pct }; }),
+      qua: qua.sort(function (a, b) { return b.pct - a.pct; }).slice(0, 3).sort(function (a, b) { return a.nam - b.nam; }),
+      tichLuy: sap.length ? { n3: tich(3), n5: tich(5), n10: tich(10) } : null,
+      hetCuaSo: !sap.length
+    };
+  });
+  out.coSo = 'Xác suất từng năm = (khả năng theo độ tuổi) × (sức mạnh tín hiệu của 5 hệ trong năm đó), chuẩn hóa trên các năm còn lại đến ' + PN_TD.ketHon.tuoi[1] +
+    ' tuổi. Con số trả lời câu hỏi: "nếu việc này xảy ra, khả năng nó rơi vào năm nào?". Tuổi đỉnh được dịch theo xu hướng sớm/muộn của lá số. Mức "Rất cao/Cao/Trung bình/Thấp" so với mức trung bình các năm. Đây là mô hình thống kê tham khảo, không phải chắc chắn.';
+  return out;
+}
+
+/* =========================================================
+ *  CHÂN DUNG CON CÁI
+ * ========================================================= */
+var PN_CON_TRAI = ['Thái Dương', 'Thất Sát', 'Phá Quân', 'Tử Vi', 'Vũ Khúc', 'Tham Lang', 'Liêm Trinh'];
+var PN_CON_GAI = ['Thái Âm', 'Thiên Đồng', 'Cự Môn', 'Thiên Lương', 'Thiên Phủ', 'Thiên Tướng', 'Thiên Cơ'];
+var PN_CON_NHA5 = { sun: 'con tự tin, thích dẫn dắt, là niềm tự hào của cha mẹ', moon: 'con giàu cảm xúc, gắn bó gia đình, cần được vỗ về', mercury: 'con lanh lợi, nói sớm, ham học hỏi',
+  venus: 'con xinh xắn, có năng khiếu nghệ thuật, dễ thương', mars: 'con hiếu động, mạnh mẽ, thích thể thao', jupiter: 'con may mắn, rộng lượng; duyên con đông',
+  saturn: 'con đến muộn hoặc ít; con chín chắn, có trách nhiệm', uranus: 'con độc lập, khác thường, sáng tạo', neptune: 'con nhạy cảm, mơ mộng, có năng khiếu nghệ thuật/tâm linh', pluto: 'con có ý chí mạnh, sâu sắc' };
+/** Lấy nét tính cách con từ câu luận, bỏ các vế nói về số lượng/thời điểm */
+function pnNetCon_(y) {
+  return String(y).split(/[,;.]/).map(function (x) { return x.trim().replace(/^con (cái )?/, ''); })
+    .filter(function (x) { return x && !/(ít|đông|muộn|sớm|nhiều con|khó nuôi|sinh khó)/.test(x); }).slice(0, 2);
+}
+function pnConCai_(C, td) {
+  var tv = C.tv, bt = C.bt, ct = C.ct, male = tv.info.male, nguon = [], soP = [], traiP = [], tc = [];
+  /* Tử Vi – cung Tử Tức */
+  var tt = thCungTheoTen_(tv, 'Tử Tức'), sao = thChinhTinh_(tv, tt), tvi = [];
+  tvi.push('Cung Tử Tức tại ' + tt.canTen + ' ' + tt.chiTen + ' – ' + diem10_(thDiemCung_(tv, 'Tử Tức')) + '/10' + (tt.chinh.length ? '' : ' (vô chính diệu, mượn sao cung đối)') + '.');
+  sao.forEach(function (s) {
+    var y = (LG_CUNG_SAO['Tử Tức'] || {})[s.n];
+    if (y) { tvi.push(s.n + (s.b ? ' (' + s.b + ')' : '') + ': ' + y); tc = tc.concat(pnNetCon_(y)); }
+    if (PN_CON_TRAI.indexOf(s.n) >= 0) traiP.push({ he: 'Tử Vi', v: 1 }); else if (PN_CON_GAI.indexOf(s.n) >= 0) traiP.push({ he: 'Tử Vi', v: -1 });
+    if (/đông/.test(y || '')) soP.push({ he: 'Tử Vi', v: 1 }); else if (/ít|muộn/.test(y || '')) soP.push({ he: 'Tử Vi', v: -1 });
+  });
+  thSaoCung_(tt).forEach(function (s) {
+    var y = (LG_DAC_THU['Tử Tức'] || {})[s.n];
+    if (y) tvi.push(y);
+    if (['Tả Phù', 'Hữu Bật', 'Thiên Hỷ', 'Thai', 'Long Trì', 'Phượng Các'].indexOf(s.n) >= 0) soP.push({ he: 'Tử Vi', v: 0.5 });
+    if (['Địa Không', 'Địa Kiếp', 'Cô Thần', 'Quả Tú', 'Kình Dương', 'Đà La'].indexOf(s.n) >= 0) soP.push({ he: 'Tử Vi', v: -0.6 });
+  });
+  if (tt.tuan || tt.triet) { tvi.push('◇ Tử Tức gặp ' + (tt.triet ? 'Triệt' : 'Tuần') + ': con đầu lòng thường đến muộn, hoặc có một lần lỡ.'); soP.push({ he: 'Tử Vi', v: -0.5 }); }
+  nguon.push({ he: 'Tử Vi', items: tvi });
+  /* Bát Tự – sao con + thời trụ */
+  var bti = [], sTrai = male ? 'Thất Sát' : 'Thương Quan', sGai = male ? 'Chính Quan' : 'Thực Thần', dT = 0, dG = 0;
+  bt.pillars.forEach(function (p, i) {
+    if (i !== 2) { if (p.thapThan === sTrai) dT += 1; if (p.thapThan === sGai) dG += 1; }
+    p.tangCan.forEach(function (t, j) { var w = j ? 0.3 : 0.6; if (t.thapThan === sTrai) dT += w; if (t.thapThan === sGai) dG += w; });
+  });
+  bti.push('Sao con trai: ' + sTrai + ' (lực ' + Math.round(dT * 10) / 10 + '), sao con gái: ' + sGai + ' (lực ' + Math.round(dG * 10) / 10 + ') – ' +
+    (dT > dG + 0.4 ? 'nghiêng về con trai.' : dG > dT + 0.4 ? 'nghiêng về con gái.' : 'khá cân bằng trai – gái.'));
+  if (dT + dG) traiP.push({ he: 'Bát Tự', v: Math.max(-1, Math.min(1, (dT - dG) / (dT + dG) * 1.5)) });
+  soP.push({ he: 'Bát Tự', v: dT + dG >= 2 ? 1 : dT + dG < 0.5 ? -1 : 0 });
+  var gio = bt.pillars[3], hk = btctHyKy_(bt, CAN_HANH[gio.tangCan[0].can]);
+  bti.push('Thời trụ (cung con cái) ' + gio.canTen + ' ' + gio.chiTen + ' là ' + hk + ' thần – ' + (hk === 'Kỵ' ? 'con cái cần nhiều công dạy dỗ, về già nên tự lo là chính.' : 'con cái hiếu thuận, về già được con đỡ đần.'));
+  if (bt.pillars[3].chi === (bt.pillars[2].chi + 6) % 12) bti.push('✗ Thời chi xung nhật chi: con cái có chí hướng riêng, lớn lên thường ở xa cha mẹ.');
+  nguon.push({ he: 'Bát Tự', items: bti });
+  /* Chiêm tinh – nhà 5 */
+  var ci = [], c5 = ct.cusp[4], S5 = CT_CUNG[c5.cung], h5 = ct.hanhTinh.filter(function (p) { return p.nha === 5 && PN_CON_NHA5[p.key]; });
+  ci.push('Nhà 5 (con cái) bắt đầu ở ' + S5.ten + ': con mang nét ' + S5.tuKhoa + '.');
+  tc.push('theo chiêm tinh: ' + S5.tuKhoa.split(',').slice(0, 2).join(','));
+  h5.forEach(function (p) { ci.push(p.ten + ' ở nhà 5: ' + PN_CON_NHA5[p.key] + '.'); if (p.key === 'jupiter' || p.key === 'moon') soP.push({ he: 'Chiêm tinh', v: 0.8 }); if (p.key === 'saturn') soP.push({ he: 'Chiêm tinh', v: -0.8 }); });
+  if (['Cự Giải', 'Bọ Cạp', 'Song Ngư'].indexOf(S5.ten) >= 0) soP.push({ he: 'Chiêm tinh', v: 0.6 });
+  if (['Song Tử', 'Sư Tử', 'Xử Nữ'].indexOf(S5.ten) >= 0) soP.push({ he: 'Chiêm tinh', v: -0.4 });
+  nguon.push({ he: 'Chiêm tinh', items: ci });
+  /* Thần số */
+  var ts = C.ts, tsi = [];
+  if (ts.bieuDo && ts.bieuDo[6]) tsi.push('Có số 6 trong ngày sinh (' + ts.bieuDo[6] + ' lần): yêu gia đình, chăm con chu đáo' + (ts.bieuDo[6] >= 3 ? ' – nhưng dễ bao bọc quá mức.' : '.'));
+  else tsi.push('Thiếu số 6: cần học cách thể hiện tình thương bằng hành động, dành thời gian cho con.');
+  if (tsGoc_(ts.duongDoi) === 6 || tsGoc_(ts.duongDoi) === 2) soP.push({ he: 'Thần số học', v: 0.6 });
+  nguon.push({ he: 'Thần số học', items: tsi });
+  function tb(a) { var s = 0; a.forEach(function (x) { s += x.v; }); return a.length ? s / a.length : 0; }
+  var S = tb(soP), Tr = tb(traiP), pTrai = Math.round(50 + Tr * 18);
+  var sinh = td && td.sinhCon, dau = sinh && sinh.nam.slice().sort(function (a, b) { return b.pct - a.pct; })[0];
+  var kl = [
+    'Số con xu hướng: ' + (S > 0.4 ? 'đông con (3 trở lên nếu điều kiện cho phép)' : S > -0.2 ? '2 con' : 'ít con (1–2), hoặc con đến muộn') + '.',
+    'Trai – gái: khả năng con đầu là con trai khoảng ' + pTrai + '%, con gái ' + (100 - pTrai) + '% (Tử Vi + Bát Tự; tham khảo).',
+    'Tính cách con: ' + (tc.filter(Boolean).slice(0, 4).join(', ') || 'hài hòa, dễ dạy') + '.',
+    'Quan hệ cha mẹ – con: ' + (hk === 'Kỵ' ? 'cần kiên nhẫn, dạy bằng lý lẽ; tránh áp đặt.' : 'gắn bó, con là chỗ dựa hậu vận.'),
+    dau ? 'Năm dễ có tin vui con cái nhất phía trước: ' + dau.nam + ' (' + dau.tuoi + ' tuổi, ' + dau.pct + '%).' : ''
+  ].filter(Boolean);
+  return { tieuDe: 'Chân dung con cái', ketLuan: kl, nguon: nguon, chiSo: { soCon: S, pTrai: pTrai } };
 }
