@@ -2460,7 +2460,7 @@
       box.querySelectorAll('[data-open]').forEach(function (b) {
         b.addEventListener('click', function () {
           var h = list.filter(function (x) { return String(x.row) === b.getAttribute('data-open'); })[0];
-          if (h && h.input) { setForm(h.input); $('save').checked = false; submit(); }
+          if (h && h.input) { var luu = $('save').checked; setForm(h.input); $('save').checked = false; submit(); $('save').checked = luu; }   // mở lại không lưu trùng, các lá số sau vẫn lưu
         });
       });
       box.querySelectorAll('[data-del]').forEach(function (b) {

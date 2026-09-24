@@ -213,8 +213,8 @@ function luuLichSu_(input, r) {
   sh.appendRow([
     new Date(), input.name || 'Vô Danh', I.gender, input.calendar === 'am' ? 'Âm lịch' : 'Dương lịch',
     input.day, input.month, input.year, input.leap ? 'x' : '', input.hour, input.minute,
-    s.day + '/' + s.month + '/' + s.year,
-    l.day + '/' + l.month + (l.leap ? ' (nhuận)' : '') + '/' + l.year,
+    "'" + s.day + '/' + s.month + '/' + s.year,                               // dấu ' giữ dạng chữ, tránh Sheet tự đổi thành ngày
+    "'" + l.day + '/' + l.month + (l.leap ? ' (nhuận)' : '') + '/' + l.year,
     I.namCanChi, I.banMenh.ten, I.cuc,
     B.pillars.map(function (p) { return p.canTen + ' ' + p.chiTen; }).join(' | '),
     B.nhatChu, B.goiY.dung,
@@ -222,24 +222,26 @@ function luuLichSu_(input, r) {
   ]);
 }
 
-/** Lấy 50 lá số gần nhất (chủ sở hữu xem tất cả, thành viên xem lá số của mình) */
+/** Lấy 50 lá số gần nhất (chủ sở hữu xem tất cả, thành viên xem lá số của mình).
+ *  Chỉ trả chữ: Sheet có thể tự đổi "15/8/1990" thành ô ngày, mà google.script.run không trả được Date
+ *  (trình duyệt nhận null → tưởng lịch sử trống). */
 function getLichSu(token) {
   var u = tkCan_(token), sh = getSheet_();
   var last = sh.getLastRow();
   if (last < 2) return [];
   var n = Math.min(400, last - 1), ncol = Math.max(sh.getLastColumn(), COT_JSON + 1);
-  var values = sh.getRange(last - n + 1, 1, n, ncol).getValues();
+  var rg = sh.getRange(last - n + 1, 1, n, ncol), values = rg.getValues(), hien = rg.getDisplayValues();   // chữ đúng như hiển thị trên Sheet
   var out = [];
   for (var i = values.length - 1; i >= 0 && out.length < 50; i--) {
-    var v = values[i], chu = String(v[COT_JSON + 1] || '');
+    var v = values[i], d = hien[i], chu = String(d[COT_JSON + 1] || '');
     if (u.vaiTro !== 'chu' && chu !== u.ten) continue;
     var inp = {};
-    try { inp = JSON.parse(v[COT_JSON]); } catch (e) { inp = {}; }
+    try { inp = JSON.parse(d[COT_JSON]); } catch (e) { inp = {}; }
     delete inp.taiKhoan;
     out.push({
       row: last - n + 1 + i,
-      time: v[0] instanceof Date ? Utilities.formatDate(v[0], 'Asia/Ho_Chi_Minh', 'dd/MM/yyyy HH:mm') : String(v[0]),
-      name: v[1], gender: v[2], duong: v[10], am: v[11], canChi: v[12], cuc: v[14], input: inp, taiKhoan: chu
+      time: v[0] instanceof Date ? Utilities.formatDate(v[0], 'Asia/Ho_Chi_Minh', 'dd/MM/yyyy HH:mm') : d[0],
+      name: d[1], gender: d[2], duong: d[10], am: d[11], canChi: d[12], cuc: d[14], input: inp, taiKhoan: chu
     });
   }
   return out;
