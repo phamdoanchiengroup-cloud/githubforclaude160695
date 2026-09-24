@@ -401,7 +401,7 @@ function pnThoiDiem_(C, namTin, xuHuong) {
     out[k] = {
       ten: M.ten, tuoiDinh: Math.round(tam), daBiet: biet, doiChieu: doiChieu, pDaQua: ds.length ? pDaQua : null,
       nam: daCuoi ? [] : top(sap, 8),
-      bieuDo: daCuoi ? [] : sap.map(function (x) { return { nam: x.nam, tuoi: x.tuoi, pct: x.pct }; }),
+      bieuDo: daCuoi ? [] : sap.map(function (x) { return { nam: x.nam, tuoi: x.tuoi, pct: x.pct, soHe: x.soHe, he: x.he }; }),
       quaKhu: { nam: top(qua, 5), bieuDo: qua.map(function (x) { return { nam: x.nam, tuoi: x.tuoi, pct: x.pct, soHe: x.soHe, he: x.he }; }), tu: qua.length ? qua[0].nam : null, den: qua.length ? qua[qua.length - 1].nam : null },
       qua: top(qua, 3),
       tichLuy: sap.length && !daCuoi ? { n3: tich(3), n5: tich(5), n10: tich(10) } : null,

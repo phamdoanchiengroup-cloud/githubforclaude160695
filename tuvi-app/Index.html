@@ -60,6 +60,7 @@
               <li>Năm kết hôn, năm có con – <b>xác suất % từng năm</b></li>
               <li>Biến cố hội tụ: những năm 3–5 hệ cùng báo</li>
               <li>Chân dung người bạn đời và con cái</li>
+              <li>💞 <b>Xem cặp đôi</b>: ghép lá số hai người – độ hợp, năm cưới, năm sinh con kèm %</li>
             </ul>
             <button type="button" class="btn btn-primary wl-go" id="wlGo">✦ Khám phá ngay – miễn phí</button>
             <small class="muted wl-note">Nếu thấy đúng điều bạn đang thắc mắc, bạn sẽ hiểu vì sao cần xem sâu hơn.</small>
@@ -211,6 +212,7 @@
           <div class="tab" data-tab="so">❖ Thần Số</div>
           <div class="tab" data-tab="hd">◈ Human Design</div>
           <div class="tab" data-tab="tong">✧ Tổng Hợp 6 Hệ</div>
+          <div class="tab tab-cd" data-tab="capdoi">💞 Cặp Đôi</div>
           <div class="tab" data-tab="hist">☰ Lịch Sử</div>
         </div>
         <button type="button" class="btn btn-ghost btn-sm toc-btn" id="btnToc" aria-controls="toc" aria-expanded="false">☰ Mục lục <span id="tocHien"></span></button>
@@ -254,6 +256,31 @@
         <div class="tab-page" id="page-so"><div class="panel section muted">Hãy lập lá số trước.</div></div>
         <div class="tab-page" id="page-hd"><div class="panel section muted">Hãy lập lá số trước.</div></div>
         <div class="tab-page" id="page-tong"><div class="panel section muted">Hãy lập lá số trước.</div></div>
+        <div class="tab-page" id="page-capdoi">
+          <div class="panel section cd-form-panel">
+            <h2 class="panel-title"><span class="han">合婚</span> Xem hợp đôi – ghép lá số hai người</h2>
+            <p class="lede">6 hệ cùng chấm độ hợp: tuổi, Bát Tự hợp hôn, Tử Vi (Mệnh – Phu Thê), chiêm tinh so sánh, thần số, Human Design. Kèm năm cưới và năm sinh con có xác suất, tài chính, công danh, gia đạo ảnh hưởng lẫn nhau.</p>
+            <div class="cd-nguoi1" id="cdNguoi1"></div>
+            <form id="cdForm" autocomplete="off" novalidate>
+              <div class="cd-grid">
+                <div class="field cd-ten"><label for="cdName">Họ tên người thứ hai</label><input type="text" id="cdName" maxlength="80" placeholder="Họ tên khai sinh"></div>
+                <div class="field"><span class="lbl">Giới tính</span>
+                  <div class="seg"><input type="radio" name="cdGender" id="cdNam" value="nam"><label for="cdNam">Nam</label><input type="radio" name="cdGender" id="cdNu" value="nu" checked><label for="cdNu">Nữ</label></div></div>
+                <div class="field"><span class="lbl">Loại lịch</span>
+                  <div class="seg"><input type="radio" name="cdCal" id="cdDuong" value="duong" checked><label for="cdDuong">Dương lịch</label><input type="radio" name="cdCal" id="cdAm" value="am"><label for="cdAm">Âm lịch</label></div></div>
+                <div class="field"><span class="lbl">Ngày sinh</span>
+                  <div class="row c3"><select id="cdDay" aria-label="Ngày"></select><select id="cdMonth" aria-label="Tháng"></select><input type="number" id="cdYear" min="1900" max="2100" placeholder="Năm" aria-label="Năm"></div>
+                  <label class="check" id="cdLeapWrap" style="display:none"><input type="checkbox" id="cdLeap"> Tháng nhuận</label></div>
+                <div class="field"><span class="lbl">Giờ sinh</span>
+                  <div class="row c2"><select id="cdHour" aria-label="Giờ"></select><select id="cdMinute" aria-label="Phút"></select></div></div>
+                <div class="field"><label for="cdPlace">Nơi sinh</label><select id="cdPlace"></select></div>
+                <div class="field"><label for="cdCuoi">Đã kết hôn năm (nếu có)</label><input type="number" id="cdCuoi" min="1950" max="2100" placeholder="Để trống nếu chưa cưới"></div>
+              </div>
+              <button type="submit" class="btn btn-primary cd-go">💞 Xem hợp đôi</button>
+            </form>
+          </div>
+          <div id="cdKetQua"></div>
+        </div>
         <div class="tab-page" id="page-hist"><div class="panel section" id="histBox"><span class="muted">Đang tải lịch sử…</span></div></div>
       </section>
 

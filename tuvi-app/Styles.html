@@ -1070,4 +1070,35 @@ body.co-cta .len-dau { bottom: 86px; }
   .qs-nut .btn { padding: 7px 11px; font-size: 13px; }
 }
 @media print { .qc-top { display: none !important; } }
+/* ---------- Xem cặp đôi ---------- */
+.tab.tab-cd { border-color: rgba(255, 150, 170, .55); }
+.tab.tab-cd:not(.active) { color: #ffc2cf; }
+.cd-nguoi1 { padding: 10px 14px; border-radius: 12px; background: var(--surface-glass); border: 1px dashed var(--line); margin-bottom: 14px; font-size: 14px; }
+.cd-nguoi1 span { color: var(--ink-soft); }
+.cd-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 16px; }
+.cd-grid .cd-ten { grid-column: 1 / -1; }
+.cd-go { max-width: 360px; }
+@media (max-width: 700px) { .cd-grid { grid-template-columns: minmax(0, 1fr); } .cd-go { max-width: none; } }
+.cd-hero { background: radial-gradient(600px 260px at 50% 0%, rgba(255, 140, 170, .16), transparent 70%), var(--card); }
+.cd-doi { display: grid; grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); gap: 18px; align-items: center; }
+.cd-nguoi { padding: 14px 16px; border-radius: 14px; background: var(--surface-glass); border: 1px solid var(--line); }
+.cd-nguoi b { display: block; font-family: var(--font-title); font-size: 22px; color: var(--head); }
+.cd-nguoi span { display: block; color: var(--gold-hi); font-size: 13.5px; margin: 2px 0 6px; }
+.cd-nguoi small { color: var(--ink-soft); line-height: 1.55; font-size: 12.5px; }
+.cd-doi .cd-nguoi:last-child { text-align: right; }
+.cd-diem { display: grid; justify-items: center; gap: 8px; }
+.cd-vong { --p: 50; width: 150px; height: 150px; border-radius: 50%; display: grid; place-content: center; text-align: center;
+  background: radial-gradient(closest-side, var(--card-solid) 78%, transparent 80% 100%), conic-gradient(from 0deg, #ff8fab, var(--gold) calc(var(--p) * 1%), rgba(255, 255, 255, .1) 0); }
+.cd-vong b { font-family: var(--font-title); font-size: 40px; line-height: 1; color: #ffd1dc; }
+.cd-vong small { color: var(--ink-soft); font-size: 13px; }
+@media (max-width: 700px) { .cd-doi { grid-template-columns: minmax(0, 1fr); } .cd-doi .cd-nguoi:last-child { text-align: left; } .cd-diem { order: -1; } }
+.cd-lv { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+@media (max-width: 800px) { .cd-lv { grid-template-columns: minmax(0, 1fr); } }
+.cd-lv-o { padding: 14px 16px; border-radius: 14px; background: var(--surface-glass); border: 1px solid var(--line); }
+.cd-lv-h { display: flex; align-items: center; gap: 10px; margin-bottom: 6px; }
+.cd-lv-h .han { font-family: var(--font-han); color: var(--gold-hi); font-size: 22px; }
+.cd-lv-h b { flex: 1; color: var(--head); font-size: 15.5px; }
+.cd-lv-h em { font-style: normal; }
+.cd-socon { font-size: 18px !important; line-height: 1.25; }
+.bad-ink { color: var(--bad-ink); }
 </style>

@@ -68,5 +68,17 @@ for (let k = 0; k < 40; k++) {
   { const P = r.moRong.tongHop.phoiNgau, td = P.thoiDiem; ok(!P.loiThem && td && P.conCai && ['ketHon', 'sinhCon'].every(function (k) { const x = td[k]; return x.hetCuaSo || Math.abs(x.bieuDo.reduce(function (s, b) { return s + b.pct; }, 0) - 100) < 1.5; }) && r.moRong.tongHop.nghe.every(function (n) { return n.pct >= 30 && n.pct <= 97; }), 'Thời điểm cưới/con (tổng xác suất 100%) hoặc nghề % lỗi: ' + (P.loiThem || '') + JSON.stringify(inp)); }
 }
 console.log('lapLaSo đầy đủ:', n, 'lá số,', Math.round((Date.now() - t0) / n), 'ms/lá');
+// 4. Xem cặp đôi: 12 cặp ngẫu nhiên (nam – nữ, cùng giới, đã cưới)
+for (let k = 0; k < 12; k++) {
+  const mk = (g) => ({ name: ['Lê Minh Khoa', 'Phạm Thu Hà', 'Đỗ An', ''][k % 4], gender: g, calendar: k % 3 ? 'duong' : 'am', day: 1 + Math.floor(rnd() * 28), month: 1 + Math.floor(rnd() * 12),
+    year: 1965 + Math.floor(rnd() * 40), hour: Math.floor(rnd() * 24), minute: 0, viewYear: 2026, place: '10.78|106.70|TP. Hồ Chí Minh', tz: '7' });
+  const a = mk('nam'), b = mk(k % 5 === 4 ? 'nam' : 'nu'); if (k % 6 === 5) a.namCuoi = 2020;
+  const A = ctx.lapLaSoDayDu_(Object.assign({}, a)), B = ctx.lapLaSoDayDu_(Object.assign({}, b));
+  let cd; try { cd = ctx.capDoiLuan_(A, B, a, b); } catch (e) { ok(false, 'capDoiLuan_ lỗi: ' + e.message + ' ' + JSON.stringify([a, b])); continue; }
+  const K = cd.thoiDiem.ketHon, tong = K && K.nam.length ? K.nam.reduce((s, x) => s + x.pct, 0) : 100;
+  ok(cd.tong >= 0 && cd.tong <= 10 && cd.tieuChi.length === 6 && cd.tieuChi.every(t => t.diem >= 0 && t.diem <= 10) && Math.abs(tong - 100) < 1.5 &&
+    ['tinhCam', 'taiChinh', 'congDanh', 'giaDao'].every(x => cd.linhVuc[x] && cd.linhVuc[x].y.length) && (a.namCuoi ? K === null : true), 'capDoi sai: ' + JSON.stringify([a, b, cd.tong, tong]));
+  const r = ctx.cdRutGon_(cd); ok(r.biKhoa && r.tieuChi.filter(t => t.diem != null).length === 2 && !r.linhVuc && !r.thoiDiem, 'capDoi bản xem thử lộ dữ liệu');
+}
 console.log(loi ? '✘ ' + loi + ' lỗi' : '✔ Tất cả kiểm tra đạt');
 process.exit(loi ? 1 : 0);

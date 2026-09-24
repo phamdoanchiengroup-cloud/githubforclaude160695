@@ -17,7 +17,8 @@ var TT_PHAN_MAC_DINH = {
   luu_nien: { ten: 'Lưu niên 14 năm, 12 tháng, 7 ngày', xu: 19 },
   pdf: { ten: 'PDF bản đầy đủ', xu: 29 },
   do_gio: { ten: 'Dò giờ sinh theo sự kiện', xu: 9 },
-  tron_goi: { ten: 'Trọn gói – mở tất cả', xu: 119 }
+  tron_goi: { ten: 'Trọn gói – mở tất cả', xu: 119 },
+  cap_doi: { ten: 'Xem cặp đôi – hợp hôn 2 lá số', xu: 29 }   // mở theo từng cặp, không thuộc trọn gói
 };
 var TT_GOI_MAC_DINH = [{ tien: 50000, xu: 50 }, { tien: 100000, xu: 110 }, { tien: 200000, xu: 240 }, { tien: 500000, xu: 650 }];
 var TT_SH = {
@@ -120,7 +121,7 @@ function ttQuyen_(u, khoa) {
     var v = sh.getRange(r, 1, 1, 4).getValues()[0];
     if (String(v[1]) === u.ten) q[v[3]] = true;
   });
-  if (q.tron_goi) Object.keys(q).forEach(function (k) { q[k] = true; });
+  if (q.tron_goi) Object.keys(q).forEach(function (k) { if (k !== 'cap_doi') q[k] = true; });
   return q;
 }
 /** Cắt bớt các phần chưa mở khỏi kết quả đầy đủ (Bản mở đã có) */
@@ -155,21 +156,22 @@ function viCuaToi(token) {
 function muaPhan(token, input, phan) {
   var u = tkCan_(token), bg = ttBangGia_(), p = bg.phan[phan];
   if (!p) throw new Error('Không có gói "' + phan + '".');
-  var khoa = ttKhoaLaSo_(input);
+  var capDoi = phan === 'cap_doi', khoa = capDoi ? ttKhoaCapDoi_(input && input.a, input && input.b) : ttKhoaLaSo_(input);
+  var tenLS = capDoi ? String(input.a.name || '?') + ' & ' + String(input.b.name || '?') : String(input && input.name || '');
   if (ttToanQuyen_(u)) return { ok: true, toanQuyen: true };
   return ttKhoa_(function () {
     var q = ttQuyen_(u, khoa);
     if (q[phan]) return { ok: true, daCo: true, soDu: ttSoDu_(u.ten) };
-    if (phan !== 'co_ban' && phan !== 'tron_goi' && !q.co_ban) throw new Error('Hãy mở "Bản mở" trước, hoặc chọn Trọn gói.');
+    if (phan !== 'co_ban' && phan !== 'tron_goi' && !capDoi && !q.co_ban) throw new Error('Hãy mở "Bản mở" trước, hoặc chọn Trọn gói.');
     var gia = p.xu;
     if (phan === 'tron_goi') {
-      var daTra = Object.keys(q).filter(function (k) { return q[k] && k !== 'tron_goi' && bg.phan[k]; }).reduce(function (s, k) { return s + bg.phan[k].xu; }, 0);
+      var daTra = Object.keys(q).filter(function (k) { return q[k] && k !== 'tron_goi' && k !== 'cap_doi' && bg.phan[k]; }).reduce(function (s, k) { return s + bg.phan[k].xu; }, 0);
       gia = Math.max(0, p.xu - daTra);
     }
     var du = ttSoDu_(u.ten);
     if (du < gia) return { ok: false, thieu: gia - du, gia: gia, soDu: du };
-    var moi = gia ? ttCong_(u.ten, -gia, 'Mở khóa: ' + p.ten + ' – ' + String(input && input.name || '').slice(0, 40), khoa) : du;
-    ttSheet_('MoKhoa').appendRow([new Date(), u.ten, khoa, phan, gia, String(input && input.name || '').slice(0, 60)]);
+    var moi = gia ? ttCong_(u.ten, -gia, 'Mở khóa: ' + p.ten + ' – ' + tenLS.slice(0, 60), khoa) : du;
+    ttSheet_('MoKhoa').appendRow([new Date(), u.ten, khoa, phan, gia, tenLS.slice(0, 80)]);
     return { ok: true, soDu: moi, gia: gia };
   });
 }

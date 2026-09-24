@@ -142,4 +142,18 @@ ctx.qtTaoMaQua(chu, 'CU2020', 5, 10, '2020-01-01');
 ok(/hết hạn/.test(nem(() => ctx.nhapMaQua(T, 'CU2020'))), 'Mã hết hạn bị từ chối');
 ctx.qtLuuBangGia(chu, { phan: {}, goi: [{ tien: 50000, xu: 50 }], thuongLanDau: 50, thuongGioiThieu: 10 });
 ok(ctx.ttBangGia_().thuongLanDau === 50 && ctx.ttBangGia_().thuongGioiThieu === 10, 'Chỉnh % thưởng lần đầu / giới thiệu');
+// Xem cặp đôi (29 xu, mở theo từng cặp, không thuộc trọn gói)
+const L2 = { name: 'Trần Thị Thùy Vy', gender: 'nu', calendar: 'duong', day: 3, month: 4, year: 1994, hour: 7, minute: 0, place: '10.78|106.70|TP. Hồ Chí Minh', tz: '7' };
+let cd = ctx.lapCapDoi(L, L2, T);
+ok(cd.biKhoa && !cd.moKhoa && cd.tieuChi.filter(t => t.diem != null).length === 2 && !cd.thoiDiem && !cd.linhVuc, 'Cặp đôi: trọn gói lá số không mở cặp đôi – chỉ bản xem thử');
+ok(ctx.lapCapDoi(L, L2, '').biKhoa && !ctx.lapCapDoi(L, L2, '').dangNhap, 'Cặp đôi: khách chưa đăng nhập xem thử được');
+if (ctx.viCuaToi(T).soDu < 29) ctx.qtDieuChinhXu(chu, 'khachmoi', 50, 'test cặp đôi');
+const truoc = ctx.viCuaToi(T).soDu;
+m = ctx.muaPhan(T, { a: L, b: L2 }, 'cap_doi');
+ok(m.ok && m.gia === 29 && m.soDu === truoc - 29, 'Mở cặp đôi: trừ 29 xu (không cần Bản mở của người thứ hai)');
+cd = ctx.lapCapDoi(L2, L, T);
+ok(cd.moKhoa && cd.thoiDiem && cd.linhVuc.taiChinh && cd.tieuChi.every(t => t.diem != null), 'Cặp đôi đã mở: đầy đủ, không phụ thuộc thứ tự nhập');
+ok(ctx.muaPhan(T, { a: L2, b: L }, 'cap_doi').daCo, 'Mua lại cặp đã mở → báo đã có, không trừ xu');
+ok(ctx.lapCapDoi(L, Object.assign({}, L2, { day: 4 }), T).biKhoa, 'Cặp khác → chưa mở');
+ok(ctx.lapCapDoi(L, L2, chu).moKhoa, 'Chủ sở hữu xem cặp đôi không cần mua');
 if (loi) { console.log(loi + ' lỗi'); process.exit(1); } else console.log('✔ Thanh toán: tất cả kiểm tra đạt');
