@@ -16,8 +16,8 @@ h1 { font-family: 'Cormorant Garamond', serif; font-weight: 700; color: var(--va
 h1 em { font-style: normal; color: var(--kem); }
 .phu { color: var(--chu); line-height: 1.5; }
 .phu b { color: var(--vang); font-weight: 700; }
-.chan-dung { position: absolute; background: url(chan-dung.png) center top / contain no-repeat;
-  -webkit-mask-image: linear-gradient(to bottom, #000 80%, transparent 100%); mask-image: linear-gradient(to bottom, #000 80%, transparent 100%); }
+.chan-dung { position: absolute; background: url(nguoi-lon.png) left top / contain no-repeat;
+  -webkit-mask-image: linear-gradient(to bottom, #000 86%, transparent 100%); mask-image: linear-gradient(to bottom, #000 86%, transparent 100%); }
 .loi { display: grid; gap: 14px; }
 .loi div { display: flex; gap: 14px; align-items: flex-start; }
 .loi i { flex: none; width: 34px; height: 34px; border-radius: 50%; border: 1.5px solid var(--vang); color: var(--vang); display: grid; place-items: center; font-style: normal; font-size: 17px; }

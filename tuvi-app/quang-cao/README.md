@@ -13,7 +13,7 @@ Bộ ảnh quảng cáo dựng từ ảnh gốc "Hạnh phúc nằm trong tầm 
 - Sửa chữ trong `qc-*.html`. Màu và font chung nằm trong `chung.css`.
 - Chạy `PW=<đường dẫn playwright> node render.js` để xuất lại PNG.
 - Font Be Vietnam Pro và Cormorant Garamond dùng giấy phép SIL OFL, lấy từ @fontsource.
-- `chan-dung.png` là chân dung đã tách khỏi chữ in sẵn trong ảnh gốc.
+- `nguoi-lon.png` là chân dung tách nền (đã cắt bỏ chữ sót, làm sạch viền).
 
 ## Nội dung chữ gợi ý
 
