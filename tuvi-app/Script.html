@@ -2396,10 +2396,11 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
     });
     return o + '</svg></figure>';
   }
+  /** Năm nổi bật: nhãn chữ (giữ lại trong PDF) + nút xem / mở riêng */
   function th6NutNam(n) {
-    var nhan = n.nam + ' · ' + (n.tot ? '✓ ' : '◇ ') + esc(n.ten.toLowerCase()) + ' · ' + n.soHe + ' hệ';
-    if (namDaMo(n.nam)) return '<button type="button" class="btn btn-ghost btn-sm" data-den="vh">' + nhan + ' → xem chi tiết</button>';
-    return nutMua('nam|' + n.nam, '🔒 ' + nhan + ' · mở ' + fmtXu(giaPhan('nam').xu), 'btn-ghost');
+    var nhan = '<span class="th6-y ' + (n.tot ? 'tot' : 'kho') + '"><b>' + n.nam + '</b> ' + (n.tot ? '✓ ' : '◇ ') + esc(n.ten.toLowerCase()) + ' · ' + n.soHe + ' hệ</span>';
+    if (namDaMo(n.nam)) return '<span class="th6-yw">' + nhan + '<button type="button" class="btn btn-ghost btn-sm" data-den="vh">Xem chi tiết →</button></span>';
+    return '<span class="th6-yw">' + nhan + nutMua('nam|' + n.nam, '🔒 Mở năm ' + n.nam + ' · ' + fmtXu(giaPhan('nam').xu), 'btn-ghost') + '</span>';
   }
   /** Bản miễn phí: bảng điểm 9 lĩnh vực + lộ trọn 1 lĩnh vực mạnh nhất, còn lại khóa */
   function th6KhachHtml(M) {
@@ -3434,7 +3435,7 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
   }
 
   /* ======================== XUẤT PDF ======================== */
-  var PDF_TEN = { tom: 'Chân dung hé lộ & mật mã cá nhân', linhvuc: 'Kết hợp 6 hệ theo từng lĩnh vực', vh: 'Vận hạn: đại vận – năm – tháng – ngày', nguoi: 'Con người bạn', duyen: 'Tình duyên & người bạn đời', doi: 'Đường đời & sự nghiệp', bien: 'Biến cố hội tụ 6 hệ',
+  var PDF_TEN = { tom: 'Chân dung hé lộ & mật mã cá nhân', linhvuc: 'Tổng hợp 6 hệ theo 9 lĩnh vực', vh: 'Vận hạn: đại vận – năm – tháng – ngày', nguoi: 'Con người bạn', duyen: 'Tình duyên & người bạn đời', doi: 'Đường đời & sự nghiệp', bien: 'Biến cố hội tụ 6 hệ',
     van: 'Vận năm – tháng – ngày', chart: 'Lá số Tử Vi & chân dung lá số', battu: 'Bát Tự – Tứ Trụ', halac: 'Bát Tự Hà Lạc', astro: 'Chiêm tinh – Bản đồ sao',
     so: 'Thần số học', hd: 'Human Design', them: 'Kiểm chứng & bảng may mắn' };
   var PDF_HOOK = {
@@ -3442,7 +3443,7 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
     nguoi: 'Xuất thân, vóc dáng, dấu hiệu trên cơ thể và tính cách – mỗi nét đều được nhiều hệ cùng bỏ phiếu.',
     duyen: 'Người ấy trông thế nào, tính ra sao, gặp ở đâu – và năm sinh, tháng sinh nào hợp nhất với bạn (chấm điểm).',
     doi: 'Chủ đề cuộc đời, nghề hợp và các chặng lên – xuống của đời bạn.',
-    linhvuc: 'Chín lĩnh vực đời sống, mỗi lĩnh vực gom nhận định của cả 6 hệ: điều nhiều hệ cùng thấy tốt, điều cần lưu ý và lời khuyên.',
+    linhvuc: 'Bảng điểm 9 lĩnh vực theo từng hệ, kết luận đồng thuận, điều cần phát huy – cần lưu ý, lời khuyên và năm nên hành động.',
     vh: 'Dòng thời gian 12 đại vận và vận năm với 12 tháng tốt – xấu – những giai đoạn bạn đã mở.',
     bien: 'Những năm mà 3–5 hệ cùng chỉ vào một biến cố: tài lộc, thăng tiến, kết hôn, con cái, sức khỏe, gia đạo – xác suất xảy ra cao.',
     van: 'Năm nay qua năm lăng kính, 12 tháng tốt – xấu, 7 ngày tới, kèm tiểu vận và nguyệt vận Tử Vi.',
@@ -3462,6 +3463,14 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
     astro: [{ sel: '.astro-top' }, { sel: 'figure.chart-fig', ten: /nguyên tố/ }],
     so: [{ sel: '.ts-luoi-row' }, { sel: 'figure.chart-fig', ten: /đỉnh cao|Chu kỳ 9 năm/, max: 2 }],
     hd: [{ sel: '.hd-top' }]
+  };
+  /** Phần luận tổng hợp theo lĩnh vực của từng hệ (data-g của khung Phần/Bước) đưa thêm vào PDF */
+  var PDF_LUAN = {
+    battu: ['bt-5', 'bt-7', 'bt-9'],
+    halac: ['hlp-3'],
+    astro: ['ctp-3', 'ctp-6'],
+    so: ['tsp-5', 'tsp-6'],
+    hd: ['hdp-2', 'hdp-3', 'hdp-10']
   };
   var PDF_NHOM = { tom: 'A · Tổng quan 6 hệ', linhvuc: 'A · Tổng quan 6 hệ', nguoi: 'A · Tổng quan 6 hệ', duyen: 'A · Tổng quan 6 hệ', doi: 'A · Tổng quan 6 hệ',
     vh: 'B · Vận hạn', bien: 'B · Vận hạn', them: 'D · Phụ lục' };
@@ -3643,7 +3652,7 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
     }
     function laTieuDe(n) {
       if (n.nodeType !== 1) return false;
-      return /^H[1-6]$/.test(n.tagName) || n.tagName === 'SUMMARY' || ['panel-title', 'dd-h', 'lede', 'pdf-tiep', 'meter'].some(function (c) { return n.classList.contains(c); }) ||
+      return /^H[1-6]$/.test(n.tagName) || n.tagName === 'SUMMARY' || ['panel-title', 'dd-h', 'lede', 'pdf-tiep', 'meter', 'tg-head'].some(function (c) { return n.classList.contains(c); }) ||
         n.classList.contains('lg-sec') && n.children.length === 1;
     }
     function voRong(el, tiep) {
@@ -3773,7 +3782,25 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
           if (vhp) Array.prototype.forEach.call(vhp.children, function (c) {
             if (c.matches('.tg[data-g="bien"], .tg[data-g="vh-ngay"]')) return;   // biến cố có mục riêng; lịch từng ngày quá chi tiết cho báo cáo
             if (c.classList.contains('vh-hero')) { var hc = chuanHoa(c.cloneNode(true)); if (hc.textContent.trim().length > 40) sec.appendChild(hc); return; }
-            if (c.classList.contains('tg')) { Array.prototype.forEach.call(c.children, function (x) { if (!x.classList.contains('tg-head')) { var cx = chuanHoa(x.cloneNode(true)); if (cx.textContent.trim()) sec.appendChild(cx); } }); return; }
+            if (c.classList.contains('tg')) {
+              // Bản gọn: đại vận chỉ giữ dòng thời gian + đại vận hiện tại; vận năm chỉ giữ các khung có biểu đồ
+              var g = c.getAttribute('data-g');
+              var con = [];
+              Array.prototype.forEach.call(c.children, function (x) {   // mở lớp bọc không tên để lọc từng khung bên trong
+                if (!x.className && x.tagName === 'DIV') Array.prototype.forEach.call(x.children, function (y) { con.push(y); }); else con.push(x);
+              });
+              con.forEach(function (x) {
+                if (x.classList.contains('tg-head')) return;
+                if (g === 'vh-dai' && x.classList.contains('van-page')) {
+                  var nay = x.querySelector('details.lg-block[open]') || x.querySelector('.dv-now');
+                  if (nay) sec.appendChild(chuanHoa(nay.cloneNode(true)));
+                  return;
+                }
+                if (g === 'vh-nam' && !x.querySelector('figure')) return;
+                var cx = chuanHoa(x.cloneNode(true)); if (cx.textContent.trim()) sec.appendChild(cx);
+              });
+              return;
+            }
             sec.appendChild(chuanHoa(c.cloneNode(true)));
           });
           var tomV = res.vanTom;
@@ -3786,7 +3813,13 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
         }
         if (PDF_TG.indexOf(k) >= 0) {
           var g = document.querySelector('.tg[data-g="' + k + '"]');
-          if (g) Array.prototype.forEach.call(g.children, function (c) { if (!c.classList.contains('tg-head')) sec.appendChild(chuanHoa(c.cloneNode(true))); });
+          if (g) Array.prototype.forEach.call(g.children, function (c) {
+            if (c.classList.contains('tg-head') || c.classList.contains('tg-slot-wrap')) return;
+            var cc = chuanHoa(c.cloneNode(true));
+            // Bản gọn: bỏ bảng lý do từng năm ("Hệ cùng báo") – biểu đồ cột phía trên đã tóm đủ
+            cc.querySelectorAll('table').forEach(function (t) { if (/Hệ cùng báo/.test((t.tHead || t).textContent.slice(0, 200))) { var w = t.closest('.tbl-wrap') || t; w.remove(); } });
+            sec.appendChild(cc);
+          });
           return;
         }
         if (k === 'chart') {
@@ -3794,7 +3827,7 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
           if (hh > hMax) { hh = hMax; ww = hh * kichLaSo[0] / kichLaSo[1]; }
           w.innerHTML = '<img class="pdf-chart" src="' + anhLaSo + '" alt="Lá số Tử Vi" width="' + Math.round(ww) + '" height="' + Math.round(hh) + '" style="width:' + Math.round(ww) + 'px;height:' + Math.round(hh) + 'px">';
           sec.appendChild(w); var pd = $('palaceDetail'); if (pd && !pd.querySelector('.pd-goiy')) sec.appendChild(chuanHoa(pd.cloneNode(true)));
-          Array.prototype.forEach.call($('page-luan').children, function (c) { if (c.getAttribute('data-g') === 'tvp-1') sec.appendChild(chuanHoa(c.cloneNode(true))); });
+          ['tvp-1', 'tvp-3'].forEach(function (g) { var c = $('page-luan').querySelector('.tg[data-g="' + g + '"]'); if (c) sec.appendChild(chuanHoa(c.cloneNode(true))); });
           return;
         }
         var page = $('page-' + k);
@@ -3808,6 +3841,10 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
             ds.slice(0, m.max || 1).forEach(function (el) { sec.appendChild(chuanHoa(el.cloneNode(true))); });
           });
           var dh = page.querySelector('.dh-panel'); if (dh) sec.appendChild(chuanHoa(dh.cloneNode(true)));
+          // Bản đầy đủ: thêm các phần luận lĩnh vực / tổng hợp / lời khuyên của hệ (không chép bảng kỹ thuật)
+          (PDF_LUAN[k] || []).forEach(function (g) {
+            var el = page.querySelector('.tg[data-g="' + g + '"]'); if (el) sec.appendChild(chuanHoa(el.cloneNode(true)));
+          });
           return;
         }
         if (page) Array.prototype.forEach.call(page.children, function (c) { if (!c.classList.contains('subtabs') && !c.classList.contains('reveal') && !c.classList.contains('tab-lede')) sec.appendChild(chuanHoa(c.cloneNode(true))); });
