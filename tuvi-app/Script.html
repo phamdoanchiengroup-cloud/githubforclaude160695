@@ -998,6 +998,7 @@
     renderHD(res);
     renderHaLac(res);
     renderTong(res);
+    veDeHieu(res);
     $('btnPdfTop').style.display = '';
     ['battu', 'halac', 'astro', 'so', 'hd', 'tong'].forEach(function (k) {
       var pg = $('page-' + k); if (!pg || !PDF_HOOK[k]) return;
@@ -2164,6 +2165,40 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
     $('page-battu').querySelectorAll('.strip-item').forEach(function (b) {
       b.addEventListener('click', function () { var el = document.getElementById(b.getAttribute('data-target')); if (el) { el.open = true; el.scrollIntoView({ behavior: 'smooth', block: 'start' }); } });
     });
+  }
+
+  /* ---------- Văn dễ hiểu cho 5 hệ + tổng hợp 6 hệ (DeHieu.gs) ---------- */
+  function dhKhoiHtml(k) {
+    var html = '<div class="cung-van-de-hieu">';
+    if (k.ten) html += '<div class="cvdh-tieude">' + esc(k.ten) + (k.diem != null ? ' <span class="dh-diem ' + dhMau(k.diem) + '">' + String(k.diem).replace('.', ',') + '/10</span>' : '') + '</div>';
+    (k.doan || []).forEach(function (d) {
+      html += '<div class="cv-doan"><h5>' + esc(d.tieuDe) + '</h5>';
+      if (d.text) html += '<p>' + esc(d.text) + '</p>';
+      if (d.list && d.list.length) html += '<ol class="cv-list">' + d.list.map(function (x) { return '<li>' + esc(x) + '</li>'; }).join('') + '</ol>';
+      html += '</div>';
+    });
+    return html + '</div>';
+  }
+  function dhMau(x) { return x >= 6.5 ? 'tot' : x <= 4 ? 'kho' : 'vua'; }
+  function veDeHieu(res) {
+    var D = res.moRong && res.moRong.deHieu;
+    if (!D || D.loi) return;
+    var trang = { battu: 'page-battu', chiemTinh: 'page-astro', thanSo: 'page-so', hd: 'page-hd', haLac: 'page-halac' };
+    Object.keys(trang).forEach(function (k) {
+      var pg = $(trang[k]), H = D[k];
+      if (!pg || !H || H.loi || !H.khoi || !H.khoi.length) return;
+      var html = '<div class="panel section dh-panel"><h2 class="panel-title">Luận giải dễ hiểu theo ' + esc(H.he) + '</h2>' +
+        '<p class="lede">Phần này viết bằng ngôn ngữ đời thường, cùng cấu trúc với phần luận 12 cung Tử Vi. Các bảng số liệu, thuật ngữ nằm ở <b>phần chuyên sâu</b> bên dưới.</p>' +
+        H.khoi.map(dhKhoiHtml).join('') + '</div><div class="dh-tach"><span>Phần chuyên sâu · số liệu &amp; lý luận</span></div>';
+      pg.insertAdjacentHTML('afterbegin', html);
+    });
+    var tong = $('page-tong');
+    if (tong && D.tongHop && D.tongHop.length) {
+      var html = '<div class="panel section dh-panel" id="dh-tonghop"><h2 class="panel-title">Kết hợp 6 hệ theo từng lĩnh vực</h2>' +
+        '<p class="lede">Mỗi lĩnh vực gom các nhận định của Tử Vi, Bát Tự, Chiêm tinh, Thần số, Human Design và Hà Lạc. Điều được <b>nhiều hệ cùng nhắc</b> là điều đáng tin nhất; điểm /10 là mức thuận lợi khi gộp tất cả các hệ (5 = cân bằng).</p>' +
+        D.tongHop.map(dhKhoiHtml).join('') + '</div>';
+      tong.insertAdjacentHTML('afterbegin', html);
+    }
   }
 
   function renderTong(res) {

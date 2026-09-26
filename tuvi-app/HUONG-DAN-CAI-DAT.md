@@ -9,7 +9,7 @@ Nên làm trên máy tính, dùng Chrome, đăng nhập bằng tài khoản Goog
 2. Trên thanh menu của bảng tính, chọn **Tiện ích mở rộng → Apps Script**. Một tab mới mở ra, đây là trình soạn thảo.
 3. Bấm vào tên `Dự án không có tiêu đề` ở góc trái và đổi thành `Thiên Cơ Các`.
 
-## Phần B – Dán mã (19 file .gs + 4 file HTML)
+## Phần B – Dán mã (23 file .gs + 5 file HTML)
 
 Mã nằm trên GitHub, nhánh `claude/happy-brown-lttkz3`, thư mục `tuvi-app/`.
 Với mỗi file: mở file trên GitHub → bấm nút **Raw** (hoặc biểu tượng 📋 *Copy raw file*) → **Ctrl+A**, **Ctrl+C**.
@@ -30,7 +30,9 @@ Với mỗi file: mở file trên GitHub → bấm nút **Raw** (hoặc biểu t
 | 7 | `DuDoan` | 16 | `HaLac` |
 | 8 | `Astro` | 17 | `HoiTu` |
 | 9 | `ChiemTinh` | 18 | `PhoiNgau` |
-|  |  | 19 | `CapDoi` |
+| 19 | `CapDoi` | 22 | `NghiemChung` |
+| 20 | `Facts` | 23 | `DeHieu` |
+| 21 | `TuViHeThong` |  |  |
 
 Thứ tự tạo file không quan trọng, chỉ cần **đúng tên, đúng chữ hoa/thường**.
 
@@ -43,6 +45,7 @@ Bấm **＋ → HTML**, gõ tên **không có đuôi .html**:
 | `Index` | Khung trang |
 | `Styles` | Giao diện |
 | `Script` | Mã chạy trên trình duyệt (file dài, chép bằng Raw cho đủ) |
+| `NghiemChungUI` | Trang nghiệm chứng (mở bằng `?page=nghiemchung`) |
 | `Anh` | Ảnh quảng bá (khoảng 118 KB, là một dòng base64 rất dài). Không bắt buộc, thiếu file này web vẫn chạy |
 
 ### B3. File cấu hình (nên làm)
@@ -59,7 +62,7 @@ Bấm **💾 Lưu** (Ctrl+S). Nếu có lỗi cú pháp, thường do chép thi�
 
 | Bước | Mở file | Chọn hàm | Kết quả mong đợi trong *Nhật ký thực thi* |
 |---|---|---|---|
-| 1 | `Code` | `kiemTraCaiDat` | `✔ Cài đặt đúng: đủ 19 file .gs và 3 file HTML.` Nếu thấy dòng `✘`, sửa đúng file được nêu |
+| 1 | `Code` | `kiemTraCaiDat` | `✔ Cài đặt đúng: đủ 23 file .gs và 3 file HTML.` Nếu thấy dòng `✘`, sửa đúng file được nêu |
 | 2 | `Code` | `testLapLaSo` | Lần đầu Google hỏi quyền (xem ghi chú bên dưới). Sau đó có kết quả lá số thử |
 | 3 | `ThanhToan` | `capQuyenThanhToan` | `✔ Đã cấp quyền và tạo các trang tính Vi, SoCai, MoKhoa, DonHang.` |
 
