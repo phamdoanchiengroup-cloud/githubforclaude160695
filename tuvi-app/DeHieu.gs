@@ -325,8 +325,18 @@ function dhThanSo_(ts, tsl) {
   if (s1) doan.push(dhDoan_('Năng khiếu bẩm sinh', s1.items.map(dhSach_).join(' ')));
   if (nghe) doan.push(dhDoan_('Công việc hợp với bạn', dhCau_(nghe)));
   if (baiHoc) doan.push(dhDoan_('Bài học đường đời', dhCau_(baiHoc)));
-  khoi.push({ ten: 'Con số chủ đạo của bạn', doan: doan });
-  if (s6 && s6.items.length) khoi.push({ ten: 'Năm nay theo thần số', doan: [dhDoan_('Nhịp năm cá nhân', s6.items.map(dhSach_).join(' '))] });
+  var P = ts.phanTich;
+  if (P && P.luan) {
+    // Văn đời thường từ phần luận tổng hợp: bỏ chú thích "(Linh Hồn 8)"… và ký hiệu đầu dòng
+    var gon = function (t) { return dhSach_(t).replace(/\s*\((Đường Đời|Nhân Cách|Linh Hồn|Ngày Sinh|Định Mệnh|Thái Độ|Thách Thức|Nợ nghiệp|Đỉnh Cao|số vắng)[^)]*\)/gi, '').replace(/\s+([,.;:])/g, '$1'); };
+    khoi.push({ ten: 'Con người bạn qua các con số', doan: [doan[0]].concat(P.luan.filter(function (x) { return x.k !== 'vanTrinh'; }).map(function (x) { return dhDoan_(x.ten, '', x.items.map(gon)); })) });
+    var vt = P.luan.filter(function (x) { return x.k === 'vanTrinh'; })[0];
+    if (vt) khoi.push({ ten: 'Năm nay và chặng đời hiện tại', doan: [dhDoan_('Nhịp thời gian', '', vt.items.map(gon))] });
+    khoi.push({ ten: 'Lời khuyên theo thần số', doan: P.loiKhuyen.map(function (x) { return dhDoan_(x.ten, gon(x.t)); }) });
+  } else {
+    khoi.push({ ten: 'Con số chủ đạo của bạn', doan: doan });
+    if (s6 && s6.items.length) khoi.push({ ten: 'Năm nay theo thần số', doan: [dhDoan_('Nhịp năm cá nhân', s6.items.map(dhSach_).join(' '))] });
+  }
   if (manh) facts.push(taoFact_(he, 'Menh', 'tinh_cach', 'manh', dhCau_(manh), 1.0, { nguon: 'Số chủ đạo ' + ts.duongDoi }));
   if (yeu) facts.push(taoFact_(he, 'Menh', 'tinh_cach', 'yeu', dhCau_(yeu), 0.8, { nguon: 'Số chủ đạo ' + ts.duongDoi }));
   if (nghe) facts.push(taoFact_(he, 'Quan Loc', 'cong_danh', 'trung', 'Công việc hợp: ' + nghe.replace(/\.$/, '') + '.', 0.9, { nguon: 'Số chủ đạo ' + ts.duongDoi }));

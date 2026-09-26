@@ -2316,7 +2316,7 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
             ['Luận giải cốt lõi', 'Mặt Trời – Mặt Trăng – cung Mọc, các hành tinh và nhà', /Luận giải/],
             ['Con người & các lĩnh vực', 'Ngoại hình, dấu hiệu cơ thể, gốc gác, nghề nghiệp', /Ngoại hình|Dấu hiệu|Gốc gác|Nghề/],
             ['Vận trình', 'Chu kỳ hành tinh trong đời và năm hiện tại', /Chu kỳ|Năm \d{4}/]],
-    so: [['Các con số gốc', 'Biểu đồ ngày sinh, các chỉ số chính', /Pythagoras|Biểu đồ/], ['Luận giải cốt lõi', 'Ý nghĩa từng con số', /Luận giải/], null, ['Vận trình', 'Năm, tháng cá nhân và đỉnh cao đời người', /Tháng cá nhân|Năm cá nhân|Đỉnh/]],
+    so: null,   // tab Thần số tự dựng khung Phần 1–8 trong renderThanSo
     hd: [['Bản đồ năng lượng', 'Loại, chiến lược, thẩm quyền, bodygraph', /Human Design|Bodygraph/], ['Luận giải cốt lõi', 'Loại, thẩm quyền, hồ sơ, trung tâm, kênh', /Luận giải/], null, null],
     halac: null   // tab Hà Lạc tự dựng khung Phần 1–5 trong renderHaLac
   };
@@ -2681,25 +2681,128 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
   }
 
   /* ---------- Thần số học ---------- */
+  /* ---------- Thần số học ---------- */
+  var TS_CHU_C = { A: 1, J: 1, S: 1, B: 2, K: 2, T: 2, C: 3, L: 3, U: 3, D: 4, M: 4, V: 4, E: 5, N: 5, W: 5, F: 6, O: 6, X: 6, G: 7, P: 7, Y: 7, H: 8, Q: 8, Z: 8, I: 9, R: 9 };
+  function tsRut(n, master) { while (n > 9 && !(master && (n === 11 || n === 22 || n === 33))) n = String(n).split('').reduce(function (a, c) { return a + (+c); }, 0); return n; }
+  function tsChuoiC(n) { var a = [n]; while (n > 9) { n = String(n).split('').reduce(function (x, c) { return x + (+c); }, 0); a.push(n); } return a; }
+  function tsBoDauC(s) { return String(s || '').replace(/[đĐ]/g, 'D').normalize('NFD').replace(/[̀-ͯ]/g, '').toUpperCase().replace(/[^A-Z ]/g, ' ').replace(/\s+/g, ' ').trim(); }
+  /** Tính nhanh các số của một cái tên (dùng cho "Thử tên cho con") */
+  function tsTinhTen(ten) {
+    var t = tsBoDauC(ten), lh = 0, nc = 0, dm = 0, dem = {}, raw = { lh: 0, nc: 0, dm: 0 };
+    t.split(' ').forEach(function (w) {
+      var nh = 0, pa = 0;
+      for (var i = 0; i < w.length; i++) {
+        var c = w.charAt(i), v = TS_CHU_C[c]; if (!v) continue; dem[v] = (dem[v] || 0) + 1;
+        var nguyen = 'AEIOU'.indexOf(c) >= 0 || (c === 'Y' && 'AEIOU'.indexOf(w.charAt(i - 1) || '-') < 0 && 'AEIOU'.indexOf(w.charAt(i + 1) || '-') < 0);
+        if (nguyen) nh += v; else pa += v;
+      }
+      lh += tsRut(nh, true); nc += tsRut(pa, true); dm += tsRut(nh + pa, true);
+    });
+    var thieu = []; for (var k = 1; k <= 9; k++) if (!dem[k]) thieu.push(k);
+    var no = [lh, nc, dm].map(tsChuoiC).reduce(function (a, c) { return a.concat(c); }, []).filter(function (n, i, a) { return [13, 14, 16, 19].indexOf(n) >= 0 && a.indexOf(n) === i; });
+    return { chuan: t, linhHon: tsRut(lh, true), nhanCach: tsRut(nc, true), dinhMenh: tsRut(dm, true), thieu: thieu, no: no, dem: dem };
+  }
+  function tsLuoi(dem, nhan, soSanh) {
+    function o(n) { var c = dem[n] || 0, th = soSanh && c && !soSanh[n]; return '<div class="lo ' + (c ? '' : 'empty') + (th ? ' bu' : '') + '"><b>' + (c ? (c > 3 ? n + '<sup>×' + c + '</sup>' : new Array(c + 1).join(String(n))) : '·') + '</b><small>' + n + '</small></div>'; }
+    return '<figure class="ts-luoi"><div class="lo-grid">' + o(3) + o(6) + o(9) + o(2) + o(5) + o(8) + o(1) + o(4) + o(7) + '</div><figcaption>' + esc(nhan) + '</figcaption></figure>';
+  }
+  /** Biểu đồ cột đơn giản: items [{nhan, gt (0–10), so, nay, tip}] */
+  function tsCot(items, tieuDe, phu) {
+    var n = items.length, W = 760, H = 190, L = 28, B = 34, cw = (W - L - 8) / n;
+    var o = '<figure class="chart-fig"><figcaption><b>' + esc(tieuDe) + '</b><span>' + esc(phu) + '</span></figcaption><svg viewBox="0 0 ' + W + ' ' + H + '" class="vchart" role="img" aria-label="' + esc(tieuDe) + '">';
+    [2.5, 5, 7.5].forEach(function (v) { var y = H - B - v / 10 * (H - B - 14); o += '<line x1="' + L + '" x2="' + (W - 8) + '" y1="' + y + '" y2="' + y + '" class="ch-grid"/>'; });
+    items.forEach(function (it, i) {
+      var x = L + i * cw + cw * 0.18, w = cw * 0.64, h = it.gt / 10 * (H - B - 14), y = H - B - h;
+      var mau = it.gt >= 7 ? '#1fa688' : it.gt >= 5.5 ? '#b08a2c' : '#8a6fd1';
+      o += '<g data-tip="' + esc(it.tip || '') + '"><rect x="' + x + '" y="' + y + '" width="' + w + '" height="' + h + '" rx="3" fill="' + mau + '" fill-opacity="' + (it.nay ? 1 : 0.55) + '"' + (it.nay ? ' stroke="#fff1c9" stroke-width="2"' : '') + '/>' +
+        '<text x="' + (x + w / 2) + '" y="' + (y - 4) + '" class="ch-ax" text-anchor="middle">' + it.so + '</text></g>' +
+        '<text x="' + (x + w / 2) + '" y="' + (H - B + 14) + '" class="ch-ax" text-anchor="middle">' + esc(it.nhan) + '</text>';
+    });
+    return o + '</svg></figure>';
+  }
+  /** Dòng thời gian 4 đỉnh cao & 4 thử thách */
+  function tsDinhCao(D, namSinh) {
+    var W = 760, H = 150, L = 10, R = 10, tong = 0, x = L;
+    var len = D.map(function () { return 1; }); tong = D.length;   // mỗi đỉnh một ô bằng nhau cho dễ đọc
+    var o = '<figure class="chart-fig"><figcaption><b>4 đỉnh cao & 4 thử thách đời người</b><span>Chiều cao đỉnh = sức mạnh năng lượng của giai đoạn · khung sáng = giai đoạn hiện tại · rê chuột để xem</span></figcaption><svg viewBox="0 0 ' + W + ' ' + H + '" class="vchart" role="img" aria-label="Đỉnh cao đời người">';
+    D.forEach(function (p, i) {
+      var w = len[i] / tong * (W - L - R), goc = p.so > 9 ? 8 : p.so, h = 30 + (TS_NL_C[goc] || 5) * 7, yb = 108;
+      o += '<g data-tip="' + esc('Đỉnh ' + (i + 1) + ' · số ' + p.so + ' · ' + p.tu + '–' + (p.den >= 99 ? 'cuối đời' : p.den) + ' tuổi\n' + p.y + '\nThử thách ' + p.thuThach + ': ' + p.tt) + '">' +
+        (p.nay ? '<rect x="' + (x + 2) + '" y="6" width="' + (w - 4) + '" height="' + (H - 10) + '" rx="8" fill="#ffffff" fill-opacity=".07"/>' : '') +
+        '<polygon points="' + (x + 6) + ',' + yb + ' ' + (x + w / 2) + ',' + (yb - h) + ' ' + (x + w - 6) + ',' + yb + '" fill="' + (p.nay ? '#d9a93f' : '#4a7fb0') + '" fill-opacity=".85"/>' +
+        '<text x="' + (x + w / 2) + '" y="' + (yb - h + 22) + '" text-anchor="middle" class="ts-dc-so">' + p.so + '</text>' +
+        '<text x="' + (x + w / 2) + '" y="' + (yb + 16) + '" text-anchor="middle" class="ch-ax">' + p.tu + '–' + (p.den >= 99 ? '…' : p.den) + ' tuổi · ' + p.namTu + '</text>' +
+        '<text x="' + (x + w / 2) + '" y="' + (yb + 32) + '" text-anchor="middle" class="ch-ax">thử thách ' + p.thuThach + '</text></g>';
+      x += w;
+    });
+    return o + '</svg></figure>';
+  }
+  var TS_NL_C = { 1: 7.5, 2: 5.5, 3: 7, 4: 5, 5: 6.5, 6: 6.5, 7: 4.5, 8: 8, 9: 5 };
+  function tsTheSo(c) { return '<div class="ts-so"><div class="ts-so-h"><b>' + esc(String(c.so)) + '</b><span><em>' + esc(c.ten) + '</em><small>' + esc(c.vai || c.cach || '') + '</small></span></div>' + (c.ten2 ? '<p class="ts-so-t">' + esc(c.ten2) + ' – ' + esc(c.tk) + '.</p>' : '<p class="ts-so-t">' + esc(c.y) + '.</p>') + (c.cach && c.vai ? '<small class="muted">' + esc(c.cach) + '</small>' : c.cach ? '<small class="muted">Cách tính: ' + esc(c.cach) + '</small>' : '') + '</div>'; }
   function renderThanSo(res) {
     if (moRongLoi(res, 'page-so')) return;
-    var T = res.moRong.thanSo, secs = res.moRong.thanSoLuan;
-    function o(n) { var c = T.bieuDo[n]; return '<div class="lo ' + (c ? '' : 'empty') + '"><b>' + (c ? new Array(c + 1).join(String(n)) : '·') + '</b><small>' + n + '</small></div>'; }
-    var nums = [['Chủ đạo', T.duongDoi + (T.duongDoi >= 10 ? '/' + T.duongDoiGoc : '')], ['Ngày sinh', T.ngaySinh], ['Thái độ', T.thaiDo]];
-    if (T.coTen) nums = nums.concat([['Linh hồn', T.linhHon], ['Nhân cách', T.nhanCach], ['Sứ mệnh', T.suMenh], ['Trưởng thành', T.truongThanh], ['Cân bằng', T.canBang]]);
-    nums.push(['Năm cá nhân ' + res.tuvi.info.viewYear, T.namNay]);
-    var html = '<div class="panel section"><h2 class="panel-title"><span class="han">數</span> Thần số học Pythagoras</h2>' +
-      '<div class="so-top"><div class="so-nums">' + nums.map(function (x, i) { return '<div class="so-n' + (i === 0 ? ' main' : '') + '"><b>' + esc(String(x[1])) + '</b><small>' + esc(x[0]) + '</small></div>'; }).join('') + '</div>' +
-      '<div><div class="lo-grid">' + o(3) + o(6) + o(9) + o(2) + o(5) + o(8) + o(1) + o(4) + o(7) + '</div><p class="muted" style="font-size:12px;text-align:center;margin:6px 0 0">Biểu đồ ngày sinh (lưới 3-6-9 / 2-5-8 / 1-4-7)</p></div></div>' +
-      (T.coTen ? '' : '<p class="muted">Nhập họ tên khai sinh để có thêm số Linh hồn, Nhân cách, Sứ mệnh…</p>') +
-      coSoHtml('Cơ sở lý luận', ['Số chủ đạo = tổng mọi chữ số của ngày/tháng/năm sinh, rút gọn tới 2–11; giữ 22 và 33 (trường phái Pythagoras – David A. Phillips phổ biến tại Việt Nam).',
-        'Biểu đồ ngày sinh: đặt các chữ số (bỏ số 0) vào lưới 3×3; hàng/cột/chéo đầy là "mũi tên sức mạnh", trống là "mũi tên điểm yếu".',
-        'Chữ cái → số theo bảng Pythagoras (A=1…I=9, J=1…); bỏ dấu tiếng Việt, Đ → D; Y là nguyên âm khi đứng giữa hai phụ âm. Linh hồn = nguyên âm, Nhân cách = phụ âm, Sứ mệnh = toàn tên.',
-        'Đỉnh cao 1 kết thúc ở tuổi 36 − số chủ đạo (rút về 1 chữ số), mỗi đỉnh sau 9 năm. Năm cá nhân = ngày + tháng sinh + năm xem.']) + '</div>';
-    html += '<div class="panel section"><h2 class="panel-title"><span class="han">論</span> Luận giải</h2><div class="lg-list">' + secs.map(function (s, i) { return secBlock(s, i < 2); }).join('') + '</div></div>';
-    html += '<div class="panel section"><h2 class="panel-title"><span class="han">月</span> Tháng cá nhân năm ' + res.tuvi.info.viewYear + '</h2><div class="giao-van">' +
-      T.thangNay.map(function (m) { return '<span class="gv r3"><b>Tháng ' + m.thang + '</b> · số ' + m.so + '</span>'; }).join('') + '</div></div>';
+    var T = res.moRong.thanSo, secs = res.moRong.thanSoLuan, P = T.phanTich, vy = res.tuvi.info.viewYear;
+    if (!P) { $('page-so').innerHTML = '<div class="panel section muted">Chưa có phân tích Thần số học đầy đủ – hãy dán lại file ThanSoHoc.gs.</div>'; return; }
+    function kl(a) { return '<ul class="th-kl">' + a.map(itemHtml).join('') + '</ul>'; }
+    var D = P.duLieu;
+    // Phần 1 – Dữ liệu & chỉ số cốt lõi
+    var p1 = '<div class="panel section"><h2 class="panel-title"><span class="han">數</span> Thần số học Pythagoras</h2>' +
+      '<div class="ts-dl"><span><small>Họ tên</small><b>' + esc(D.ten || '—') + '</b></span><span><small>Tên quy đổi</small><b>' + esc(D.tenChuan || '—') + '</b></span><span><small>Ngày sinh</small><b>' + esc(D.ngaySinh) + '</b></span><span><small>Giới tính</small><b>' + esc(D.gioiTinh) + '</b></span></div>' +
+      (D.tu.length ? '<div class="ts-chu">' + D.tu.map(function (w) { return '<span>' + w.tu.split('').map(function (c, i) { return '<i><b>' + c + '</b><small>' + w.so[i] + '</small></i>'; }).join('') + '<em>nguyên âm ' + w.nguyenAm + ' · phụ âm ' + w.phuAm + '</em></span>'; }).join('') + '</div>' : '<p class="muted">Nhập họ tên khai sinh để có thêm số Định Mệnh, Linh Hồn, Nhân Cách…</p>') +
+      '<div class="ts-grid">' + P.coLoi.map(tsTheSo).join('') + '</div></div>';
+    // Phần 2 – Chỉ số bổ sung
+    var p2 = '<div class="panel section"><h2 class="panel-title"><span class="han">補</span> Chỉ số bổ sung</h2><div class="ts-grid">' + P.boSung.map(tsTheSo).join('') + '</div>' +
+      (P.noNghiep.length ? '<h4 class="dd-h">Nợ nghiệp</h4>' + kl(P.noNghiep.map(function (x) { return '◇ ' + x.ten + ' (ở ' + x.o + '): ' + x.y + ' – bài học: ' + x.bh + '.'; })) : '') + '</div>';
+    // Phần 3 – Biểu đồ
+    var tong = {}; for (var k = 1; k <= 9; k++) tong[k] = (T.bieuDo[k] || 0) + ((T.demTen && T.demTen[k]) || 0);
+    var sBD = secs.filter(function (x) { return /Biểu đồ ngày sinh|Mũi tên/.test(x.tieuDe); });
+    var p3 = '<div class="panel section"><h2 class="panel-title"><span class="han">圖</span> Các biểu đồ</h2><p class="lede">Lưới 3×3 (hàng trên 3-6-9 trí tuệ, giữa 2-5-8 cảm xúc, dưới 1-4-7 thể chất). Ô đậm = số có mặt, "·" = số vắng; ở biểu đồ tổng hợp, ô viền vàng là số ngày sinh thiếu nhưng tên bù vào.</p>' +
+      '<div class="ts-luoi-row">' + tsLuoi(T.bieuDo, 'Biểu đồ ngày sinh') + (T.coTen ? tsLuoi(T.demTen, 'Biểu đồ tên') + tsLuoi(tong, 'Biểu đồ tổng hợp', T.bieuDo) : '') + '</div>' +
+      (T.muiTen.length ? '<div class="ts-mt">' + T.muiTen.map(function (a) { return '<span class="' + (a.tot ? 'tot' : 'kho') + '"><b>' + esc(a.ten) + '</b> ' + esc(a.so) + '<small>' + esc(a.y) + '</small></span>'; }).join('') + '</div>' : '<p class="muted">Không có mũi tên đầy hay trống trọn vẹn.</p>') +
+      '<div class="lg-list">' + sBD.map(function (x) { return secBlock(x, false); }).join('') + '</div></div>';
+    // Phần 4 – Chu kỳ
+    var p4 = '<div class="panel section"><h2 class="panel-title"><span class="han">期</span> Chu kỳ thời gian</h2>' + tsDinhCao(P.dinhCao, res.tuvi.info.solar.year) +
+      tsCot(P.chuKy.map(function (c) { return { nhan: String(c.nam), gt: c.diem, so: c.so, nay: c.nay, tip: c.nam + ' · năm cá nhân ' + c.so + '\n' + c.y }; }), 'Chu kỳ 9 năm – Năm cá nhân', 'Cột cao = năm thuận để tiến; thấp = năm nên thủ, nghỉ, học · viền sáng = năm ' + vy) +
+      tsCot(P.thang.map(function (m) { return { nhan: 'T' + m.thang, gt: m.diem, so: m.so, tip: 'Tháng ' + m.thang + ' · số ' + m.so + ': ' + m.y }; }), 'Tháng cá nhân năm ' + vy, 'Số tháng = năm cá nhân + tháng dương lịch') +
+      '<h4 class="dd-h">Ngày cá nhân – 30 ngày tới</h4><div class="ts-lich">' + P.ngay.map(function (d) { return '<span class="n' + d.so + '"><b>' + d.ngay + '</b><em>' + ['CN', 'T2', 'T3', 'T4', 'T5', 'T6', 'T7'][d.thu] + ' · số ' + d.so + '</em><small>' + esc(d.y) + '</small></span>'; }).join('') + '</div>' +
+      coSoHtml('Cách tính chu kỳ', ['Năm cá nhân = ngày sinh + tháng sinh + năm xem (rút gọn 1–9). Tháng cá nhân = năm cá nhân + tháng. Ngày cá nhân = tháng cá nhân + ngày.',
+        'Đỉnh cao 1 kết thúc ở tuổi 36 − Đường Đời (rút về 1 chữ số), các đỉnh sau mỗi đỉnh 9 năm. Đỉnh 1 = tháng + ngày, đỉnh 2 = ngày + năm, đỉnh 3 = đỉnh 1 + đỉnh 2, đỉnh 4 = tháng + năm.',
+        'Thử thách: hiệu tháng – ngày, ngày – năm, hiệu của hai số đó (thách thức chính), tháng – năm.']) + '</div>';
+    // Phần 5 – Luận tổng hợp
+    var p5 = '<div class="panel section"><h2 class="panel-title"><span class="han">論</span> Luận giải tổng hợp</h2><div class="hl-lv">' + P.luan.map(function (x) {
+      return '<div class="hl-lv-i"><h3><span>' + x.icon + '</span> ' + esc(x.ten) + '</h3><small class="muted">Dựa vào: ' + esc(x.dua) + '</small>' + kl(x.items) + '</div>';
+    }).join('') + '</div></div>';
+    // Phần 6 – Lời khuyên
+    var p6 = '<div class="panel section"><h2 class="panel-title"><span class="han">策</span> Lời khuyên</h2><ol class="ts-lk">' + P.loiKhuyen.map(function (x) { return '<li><b>' + esc(x.ten) + '</b><p>' + esc(x.t) + '</p></li>'; }).join('') + '</ol></div>';
+    // Phần 7 – Trường hợp đặc biệt
+    var p7 = '<div class="panel section"><h2 class="panel-title"><span class="han">特</span> Trường hợp đặc biệt</h2><div class="ts-db">' + P.dacBiet.map(function (x) { return '<div class="' + (x.co ? 'co' : '') + '"><b>' + (x.co ? '◆ ' : '◇ ') + esc(x.ten) + '</b><p>' + esc(x.t) + '</p></div>'; }).join('') + '</div></div>';
+    // Phần 8 – Ứng dụng
+    var p8 = '<div class="panel section"><h2 class="panel-title"><span class="han">用</span> Ứng dụng thực tế</h2>' +
+      '<h4 class="dd-h">1. Tự khám phá bản thân</h4>' + kl(P.hoaHop) +
+      '<h4 class="dd-h">2. Chọn nghề</h4>' + kl(P.luan[1].items.slice(0, 3)) +
+      '<h4 class="dd-h">3. Chọn người yêu / vợ chồng</h4>' + kl([P.luan[2].items[2], 'So sánh chi tiết hai người (Linh Hồn, Đường Đời, Nhân Cách của cả hai) ở tab <b>Cặp đôi</b>.']) +
+      '<h4 class="dd-h">4. Chọn thời điểm</h4>' + kl([P.loiKhuyen[2].t, 'Xem biểu đồ năm, tháng và lịch ngày cá nhân ở Phần 4.']) +
+      '<h4 class="dd-h">5. Thử tên (đặt tên cho con)</h4><p class="muted">Nguyên tắc: tính Đường Đời của con trước; chọn tên có các con số mà ngày sinh của con còn thiếu; tránh tên cho ra số nợ nghiệp 13, 14, 16, 19; cân bằng số chẵn (âm) và lẻ (dương).</p>' +
+      '<div class="ts-thu"><input id="tsTenThu" placeholder="Nhập tên muốn thử, ví dụ: Nguyễn Minh An"><button type="button" class="btn" id="tsTenBtn">Tính</button></div><div id="tsTenKq"></div></div>';
+    var html = khoiPhan('tsp', 1, 'Dữ liệu & chỉ số cốt lõi', 'Họ tên, ngày sinh; Đường Đời, Định Mệnh, Linh Hồn, Nhân Cách, Ngày Sinh, Thái Độ', p1) +
+      khoiPhan('tsp', 2, 'Chỉ số bổ sung', 'Trưởng thành, thách thức, cân bằng, tiềm thức, nợ nghiệp, bài học nghiệp', p2) +
+      khoiPhan('tsp', 3, 'Biểu đồ', 'Biểu đồ ngày sinh, tên, tổng hợp và các mũi tên', p3) +
+      khoiPhan('tsp', 4, 'Chu kỳ thời gian', '4 đỉnh cao – thử thách, năm, tháng, ngày cá nhân', p4) +
+      khoiPhan('tsp', 5, 'Luận giải tổng hợp', 'Tính cách, sự nghiệp, tình duyên, sức khỏe, bài học linh hồn, vận trình', p5) +
+      khoiPhan('tsp', 6, 'Lời khuyên', 'Phát huy, khắc phục, thời điểm, hướng đi, bài học', p6) +
+      khoiPhan('tsp', 7, 'Trường hợp đặc biệt', 'Số bậc thầy, nợ nghiệp, số 0, số lặp, tên có dấu', p7) +
+      khoiPhan('tsp', 8, 'Ứng dụng thực tế', 'Tự khám phá, chọn nghề, chọn bạn đời, chọn thời điểm, thử tên', p8);
     $('page-so').innerHTML = html;
+    var nut = $('tsTenBtn');
+    if (nut) nut.onclick = function () {
+      var v = $('tsTenThu').value; if (!v.trim()) return;
+      var r = tsTinhTen(v), sinh = T.bieuDo, bu = [];
+      for (var k = 1; k <= 9; k++) if (!sinh[k] && r.dem[k]) bu.push(k);
+      $('tsTenKq').innerHTML = '<ul class="th-kl"><li>"' + esc(r.chuan) + '": Định Mệnh <b>' + r.dinhMenh + '</b> · Linh Hồn <b>' + r.linhHon + '</b> · Nhân Cách <b>' + r.nhanCach + '</b>.</li>' +
+        '<li>' + (r.no.length ? '✗ Có số nợ nghiệp ' + r.no.join(', ') + ' – nên cân nhắc tên khác.' : '✓ Không có số nợ nghiệp.') + '</li>' +
+        '<li>' + (r.thieu.length ? '◇ Số vắng trong tên: ' + r.thieu.join(', ') + '.' : '✓ Tên có đủ các số 1–9.') + '</li>' +
+        '<li>Số tên bù cho ngày sinh (của lá số đang xem): ' + (bu.length ? bu.join(', ') : 'không có') + '.</li></ul>';
+    };
   }
 
   /* ---------- Human Design ---------- */
