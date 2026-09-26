@@ -1,189 +1,111 @@
 /**
  * ============================================================
  *  NghiemChung.gs — NGHIỆM CHỨNG LÁ SỐ (ĐỊNH BÀN)
- *  Sinh 8 đoạn mô tả để người dùng tự chấm, từ đó biết GIỜ SINH có đúng không.
- *  Nguyên tắc định bàn: giờ sinh đổi → cung Mệnh (Tử Vi), trụ giờ (Bát Tự) và cung Mọc
- *  (Chiêm tinh) đổi theo, kéo theo cả 12 cung. Vì vậy câu mô tả ưu tiên dựa trên các yếu tố
- *  ĐỔI THEO GIỜ: tướng mạo, tính cách, lục thân (cha mẹ, anh em, vợ chồng, con cái), sức khỏe.
- *  Thần số & Human Design gần như không đổi theo giờ → chỉ tham khảo, trọng số thấp.
- *  Hà Lạc không dùng ở đây.
+ *  Mục đích: khách tự chấm 8 nhóm mô tả để biết GIỜ SINH nhập vào có "đúng người" không.
+ *
+ *  v5 – LẤY KẾT LUẬN TỪ TỔNG HỢP 6 HỆ (TongHop.gs, BatTuChiTiet.gs, LuanGiai.gs):
+ *   • Mỗi câu là kết luận đã được các hệ "bỏ phiếu" – kèm số hệ đồng thuận, không dùng luật đơn lẻ của 1 hệ.
+ *   • Ưu tiên điều KIỂM CHỨNG ĐƯỢC: vóc dáng, dấu vết cơ thể, xuất thân, quan hệ với cha/mẹ/anh em,
+ *     năm cưới – năm có con đã qua, chặng đời đã qua (thuận/khó).
+ *   • Mỗi nhóm có "độ tin" = mức đồng thuận trung bình; nhóm đồng thuận cao nặng ký hơn khi tính điểm.
+ *   • Nhóm không áp dụng (chưa lập gia đình, chưa có con) được bỏ qua, không làm sai kết quả.
  * ============================================================
  */
 
-/* -------- BẢNG TRỌNG SỐ 6 HỆ THEO NHÓM -------- */
-// Trọng số = hệ nào thực sự có câu trong đoạn và câu đó đổi theo GIỜ sinh đến đâu.
-// Thần số & Human Design gần như không đổi theo giờ → chỉ giữ ở đoạn có câu của chúng (B, H), trọng số thấp.
-var NC_TRONG_SO = {
-  'A': { tuvi: 4, batu: 0, chiemtinh: 4, halac: 0, thanso: 0, hd: 0 },
-  'B': { tuvi: 3, batu: 2, chiemtinh: 3, halac: 0, thanso: 0, hd: 1 },
-  'C': { tuvi: 4, batu: 3, chiemtinh: 0, halac: 0, thanso: 0, hd: 0 },
-  'D': { tuvi: 4, batu: 3, chiemtinh: 0, halac: 0, thanso: 0, hd: 0 },
-  'E': { tuvi: 3, batu: 2, chiemtinh: 2, halac: 0, thanso: 0, hd: 0 },
-  'F': { tuvi: 4, batu: 3, chiemtinh: 0, halac: 0, thanso: 0, hd: 0 },
-  'G': { tuvi: 4, batu: 3, chiemtinh: 0, halac: 0, thanso: 0, hd: 0 },
-  'H': { tuvi: 3, batu: 3, chiemtinh: 0, halac: 0, thanso: 1, hd: 1 }
-};
+var NC_MUC_DIEM = { 'dung_het': 1.0, 'dung_phan_lon': 0.75, 'dung_mot_nua': 0.5, 'sai_phan_lon': 0.25, 'sai_hoan_toan': 0 };
+var NC_MUC_TEN = { 'dung_het': '✓ Đúng hết', 'dung_phan_lon': '◐ Đúng phần lớn', 'dung_mot_nua': '◑ Đúng một nửa', 'sai_phan_lon': '◒ Sai phần lớn', 'sai_hoan_toan': '✗ Sai hoàn toàn', 'khong_ap_dung': '— Không áp dụng' };
+var NC_TEN_NHOM = { 'A': 'Vóc dáng & dấu hiệu cơ thể', 'B': 'Tính cách', 'C': 'Anh chị em', 'D': 'Cha mẹ & xuất thân', 'E': 'Sức khỏe & giai đoạn khó đã qua',
+  'F': 'Hôn nhân & người bạn đời', 'G': 'Con cái', 'H': 'Sự nghiệp & giai đoạn thuận đã qua' };
+var NC_HE6 = ['Tử Vi', 'Bát Tự', 'Chiêm tinh', 'Thần số học', 'Human Design', 'Hà Lạc'];
 
-var NC_MUC_DIEM = {
-  'dung_het': 1.0,
-  'dung_phan_lon': 0.75,
-  'dung_mot_nua': 0.5,
-  'sai_phan_lon': 0.25,
-  'sai_hoan_toan': 0
-};
-
-var NC_MUC_TEN = {
-  'dung_het': '✓ Đúng hết',
-  'dung_phan_lon': '◐ Đúng phần lớn',
-  'dung_mot_nua': '◑ Đúng một nửa',
-  'sai_phan_lon': '◒ Sai phần lớn',
-  'sai_hoan_toan': '✗ Sai hoàn toàn'
-};
-
-var NC_TEN_NHOM = {
-  'A': 'Vóc dáng & cơ thể',
-  'B': 'Tính cách',
-  'C': 'Anh chị em',
-  'D': 'Cha mẹ',
-  'E': 'Sức khỏe & biến cố',
-  'F': 'Hôn nhân',
-  'G': 'Con cái',
-  'H': 'Sự nghiệp'
-};
-
-/* -------- HÀM CHÍNH: LẬP NGHIỆM CHỨNG -------- */
+/* -------- HÀM CHÍNH -------- */
 function nghiemChungLap(input) {
-  var tv = tuviLapLaSo(input);
-  var bt = batTuLap(input);
-  var ct = chiemTinhLap(input);
-  var hl = haLacLap(bt, tv);
-  var ts = thanSoHocLap(input, tv.info.solar, tv.info.viewYear);
-  var hd = hdLap(ct.thoiDiem.jd);
-
-  var D = { tv: tv, bt: bt, ct: ct, hl: hl, ts: ts, hd: hd, input: input };
-
+  input = JSON.parse(JSON.stringify(input || {}));
+  input.save = false;
+  var r = lapLaSoDayDu_(input);
+  var vy = r.tuvi.info.viewYear, tuoi = vy - r.tuvi.info.solar.year;
+  var X = { r: r, T: (r.moRong && r.moRong.tongHop) || {}, vy: vy, tuoi: tuoi, nam: !!r.tuvi.info.male };
+  var ds = [['A', ncNhomA_], ['B', ncNhomB_], ['C', ncNhomC_], ['D', ncNhomD_], ['E', ncNhomE_], ['F', ncNhomF_], ['G', ncNhomG_], ['H', ncNhomH_]];
   return {
-    data: D,
-    doan: [
-      { ma: 'A', ten: NC_TEN_NHOM.A, text: sinhDoanNhomA_(D) },
-      { ma: 'B', ten: NC_TEN_NHOM.B, text: sinhDoanNhomB_(D) },
-      { ma: 'C', ten: NC_TEN_NHOM.C, text: sinhDoanNhomC_(D) },
-      { ma: 'D', ten: NC_TEN_NHOM.D, text: sinhDoanNhomD_(D) },
-      { ma: 'E', ten: NC_TEN_NHOM.E, text: sinhDoanNhomE_(D) },
-      { ma: 'F', ten: NC_TEN_NHOM.F, text: sinhDoanNhomF_(D) },
-      { ma: 'G', ten: NC_TEN_NHOM.G, text: sinhDoanNhomG_(D) },
-      { ma: 'H', ten: NC_TEN_NHOM.H, text: sinhDoanNhomH_(D) }
-    ]
+    data: { tuoi: tuoi },
+    doan: ds.map(function (x) {
+      var g = { ma: x[0], ten: NC_TEN_NHOM[x[0]], dong: [], apDung: true, ghiChu: '' };
+      try { x[1](X, g); } catch (e) { g.dong = []; g.ghiChu = 'Chưa đủ dữ liệu cho nhóm này.'; }
+      // Chỉ giữ câu có từ 1/3 số hệ đồng thuận trở lên (câu "0% đồng thuận" là ý kiến thiểu số, không dùng để nghiệm chứng)
+      g.dong = g.dong.filter(function (d) { return d && d.t && (d.so == null || d.so >= 0.34); }).slice(0, 5);
+      var so = g.dong.map(function (d) { return d.so; }).filter(function (v) { return v != null; });
+      g.doTin = so.length ? Math.round(so.reduce(function (a, b) { return a + b; }, 0) / so.length * 100) / 100 : 0.5;
+      g.text = g.dong.map(function (d) { return d.t + (d.nhan ? ' (' + d.nhan + ')' : ''); }).join(' ');
+      if (!g.text) g.text = g.ghiChu || 'Chưa đủ dữ liệu.';
+      return g;
+    })
   };
 }
 
 /* -------- TÍNH ĐIỂM KHỚP -------- */
 function nghiemChungTinhDiem_(cauTraLoi) {
-  var diemMax = 0, diemDuoc = 0;
-  var chiTiet = [];
-  var soDungCao = 0, soSai = 0;
-
-  ['A','B','C','D','E','F','G','H'].forEach(function(ma) {
+  cauTraLoi = cauTraLoi || {};
+  var doTin = cauTraLoi._doTin || {};
+  var diemMax = 0, diemDuoc = 0, chiTiet = [], soDungCao = 0, soSai = 0;
+  ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'].forEach(function (ma) {
     var muc = cauTraLoi[ma];
+    if (muc === 'khong_ap_dung') { chiTiet.push({ ma: ma, ten: NC_TEN_NHOM[ma], muc: muc, mucTen: NC_MUC_TEN[muc], diem: null, trongSo: 0 }); return; }
     if (!muc || !NC_MUC_DIEM.hasOwnProperty(muc)) return;
-
-    var ts = NC_TRONG_SO[ma];
-    var tongTS = 0;
-    Object.keys(ts).forEach(function(k) { tongTS += ts[k]; });
-
-    var diem = NC_MUC_DIEM[muc];
-    diemMax += tongTS;
-    diemDuoc += diem * tongTS;
-
+    // Nhóm các hệ càng đồng thuận thì kết quả chấm càng có ý nghĩa → trọng số 1 … 2
+    var dt = Number(doTin[ma]); if (!(dt >= 0 && dt <= 1)) dt = 0.5;
+    var w = 1 + dt, diem = NC_MUC_DIEM[muc];
+    diemMax += w; diemDuoc += diem * w;
     if (muc === 'dung_het' || muc === 'dung_phan_lon') soDungCao++;
     if (muc === 'sai_phan_lon' || muc === 'sai_hoan_toan') soSai++;
-
-    chiTiet.push({ ma: ma, ten: NC_TEN_NHOM[ma], muc: muc, mucTen: NC_MUC_TEN[muc], diem: diem, trongSo: tongTS });
+    chiTiet.push({ ma: ma, ten: NC_TEN_NHOM[ma], muc: muc, mucTen: NC_MUC_TEN[muc], diem: diem, trongSo: Math.round(w * 100) / 100 });
   });
-
   var pct = diemMax > 0 ? Math.round(diemDuoc / diemMax * 100) : 0;
-
-  var ketLuan, khuyen, mau, soNhom = chiTiet.length, tyLe = soNhom ? soDungCao / soNhom : 0;
-  // Ngưỡng gốc: ≥ 6/8 nhóm "đúng cao" → xác nhận; 4–5/8 → có thể đúng. Quy ra tỷ lệ (≥ 75% / ≥ 50%) để người chỉ chấm 4–7 nhóm
-  // vẫn được đánh giá công bằng, và đòi thêm % khớp tương ứng để kết luận không mâu thuẫn với con số hiển thị.
-  if (tyLe >= 0.75 && pct >= 70) {
-    ketLuan = 'XAC_NHAN';
-    khuyen = 'Lá số của bạn RẤT KHỚP với giờ sinh đã nhập (' + soDungCao + '/' + soNhom + ' nhóm đúng cao). Yên tâm sử dụng.';
-    mau = 'jade';
-  } else if (tyLe >= 0.5 && pct >= 55) {
-    ketLuan = 'CO_THE_DUNG';
-    khuyen = 'Lá số CÓ THỂ ĐÚNG nhưng chưa hoàn toàn (' + soDungCao + '/' + soNhom + ' nhóm đúng cao). Bạn có thể tiếp tục, hoặc kiểm tra lại giờ sinh.';
-    mau = 'gold';
-  } else {
-    ketLuan = 'CO_THE_SAI';
-    khuyen = 'Lá số CHƯA KHỚP với giờ sinh (' + soDungCao + '/' + soNhom + ' nhóm đúng cao). Nên thử các giờ sinh lân cận để tìm giờ khớp nhất.';
-    mau = 'coral';
-  }
-
-  return { pct: pct, ketLuan: ketLuan, khuyen: khuyen, mau: mau, soDungCao: soDungCao, soSai: soSai, chiTiet: chiTiet };
+  var soNhom = chiTiet.filter(function (c) { return c.diem != null; }).length, tyLe = soNhom ? soDungCao / soNhom : 0;
+  var ketLuan, khuyen, mau;
+  // Ngưỡng gốc: ≥ 6/8 nhóm "đúng cao" → xác nhận; 4–5/8 → có thể đúng. Quy ra tỷ lệ trên số nhóm được chấm, kèm % khớp có trọng số.
+  if (soNhom >= 4 && tyLe >= 0.75 && pct >= 70) { ketLuan = 'XAC_NHAN'; mau = 'jade'; khuyen = 'Lá số của bạn RẤT KHỚP với giờ sinh đã nhập (' + soDungCao + '/' + soNhom + ' nhóm đúng cao). Yên tâm sử dụng.'; }
+  else if (soNhom >= 4 && tyLe >= 0.5 && pct >= 55) { ketLuan = 'CO_THE_DUNG'; mau = 'gold'; khuyen = 'Lá số CÓ THỂ ĐÚNG nhưng chưa hoàn toàn (' + soDungCao + '/' + soNhom + ' nhóm đúng cao). Bạn có thể tiếp tục, hoặc kiểm tra lại giờ sinh.'; }
+  else { ketLuan = 'CO_THE_SAI'; mau = 'coral'; khuyen = 'Lá số CHƯA KHỚP với giờ sinh (' + soDungCao + '/' + soNhom + ' nhóm đúng cao). Nên thử các giờ sinh lân cận để tìm giờ khớp nhất.'; }
+  return { pct: pct, ketLuan: ketLuan, khuyen: khuyen, mau: mau, soDungCao: soDungCao, soSai: soSai, soNhom: soNhom, chiTiet: chiTiet };
 }
 
-/* ============================================================
- *  NHÓM A — VÓC DÁNG & CƠ THỂ (v2 — hình tướng chính tinh theo độ sáng; cung Mọc)
- * ============================================================ */
-// [khi sáng (miếu/vượng/đắc), khi tối (bình/hãm)]
-var NC_HINH_SAO = {
-  'Tử Vi': ['Vóc người đầy đặn, mặt vuông hoặc tròn, dáng đĩnh đạc.', 'Vóc người trung bình, hơi đậm.'],
-  'Thiên Phủ': ['Vóc người đầy đặn, mặt vuông tròn, dễ tăng cân.', 'Vóc người trung bình, hơi đậm.'],
-  'Thiên Cơ': ['Dáng cao gầy, mảnh khảnh, khó tăng cân.', 'Dáng nhỏ gầy, hay lo nên khó lên cân.'],
-  'Thiên Lương': ['Dáng cao, thanh mảnh, trông chín chắn.', 'Dáng gầy, trông già dặn hơn tuổi.'],
-  'Thái Dương': ['Vóc người đầy đặn, mặt vuông tròn, da hồng hào.', 'Vóc người trung bình, sắc mặt kém tươi.'],
-  'Thái Âm': ['Vóc người đầy đặn, da trắng, nét thanh tú.', 'Dáng mảnh, da hơi xanh, nét buồn.'],
-  'Vũ Khúc': ['Vóc người không cao nhưng rắn chắc, giọng nói vang.', 'Vóc người nhỏ, gầy nhưng dẻo dai.'],
-  'Thất Sát': ['Vóc người vừa phải, rắn rỏi, mắt to sáng.', 'Vóc người nhỏ, gầy, cơ thể dễ có sẹo.'],
-  'Liêm Trinh': ['Dáng cao, lộ xương, lông mày rậm.', 'Dáng gầy, góc cạnh, dễ có sẹo.'],
-  'Phá Quân': ['Vóc người vạm vỡ, lưng dày, lông mày thưa.', 'Vóc người thấp, gầy, dễ có sẹo.'],
-  'Tham Lang': ['Vóc người cao lớn, có sức hút.', 'Vóc người thấp, đậm.'],
-  'Cự Môn': ['Vóc người đầy đặn, miệng rộng, nói nhiều.', 'Dáng gầy, nét mặt hay lo.'],
-  'Thiên Tướng': ['Vóc người đầy đặn, cân đối, dung mạo đoan chính.', 'Vóc người trung bình, gọn gàng.'],
-  'Thiên Đồng': ['Vóc người tròn đầy, mặt phúc hậu, trông trẻ.', 'Vóc người hơi mập, tay chân ngắn.']
-};
-function sinhDoanNhomA_(D) {
-  var tv = D.tv, bt = D.bt, ct = D.ct;
-  var P = tv.palaces, I = tv.info;
-  var cau = [];
-  /* TỬ VI: chính tinh tại Mệnh (VCD mượn cung xung chiếu). Hai sao khác dáng → mô tả trung dung. */
-  var ds = P[I.menh].chinh, muon = false;
-  if (!ds.length) { ds = P[(I.menh + 6) % 12].chinh; muon = true; }
-  // chính tinh đứng đầu là sao chủ của cung → lấy hình tướng theo sao đó (tránh ghép hai mô tả trái nhau)
-  var s0 = ds.filter(function (s) { return NC_HINH_SAO[s.n]; })[0];
-  cau.push(s0 ? NC_HINH_SAO[s0.n][ncSang_(s0) && !muon ? 0 : 1] : 'Vóc người trung bình.');
-  if (muon) cau.push('Mệnh không có chính tinh — dáng vẻ thay đổi theo từng giai đoạn, lúc nhỏ thường yếu hơn về sau.');
-
-  // Không dùng hình tướng theo nhật chủ Bát Tự: không đổi theo giờ sinh và hay trái với Tử Vi/cung Mọc.
-
-  /* CHIÊM TINH — cung Mọc đổi khoảng mỗi 2 giờ nên rất nhạy với giờ sinh */
-  if (ct && ct.asc) {
-    var moTaAsc = [
-      'Dáng săn chắc, bước đi nhanh, trán cao.', 'Thân hình đầy đặn, cổ chắc, dễ tăng cân.', 'Dáng mảnh khảnh, linh hoạt, trông trẻ hơn tuổi.',
-      'Mặt tròn, da sáng, dáng mềm.', 'Dáng đứng thẳng, vai rộng, tóc dày.', 'Dáng thanh mảnh, gọn gàng, trẻ lâu.',
-      'Thân hình cân đối, nụ cười duyên.', 'Ánh mắt sâu, thần thái mạnh.', 'Dáng cao, chân dài.',
-      'Xương gò má rõ, trông chín chắn.', 'Dáng cao, nét độc đáo.', 'Mắt to long lanh, nét mềm.'
-    ];
-    if (moTaAsc[ct.asc.cung]) cau.push('Chiêm tinh (cung Mọc): ' + moTaAsc[ct.asc.cung].charAt(0).toLowerCase() + moTaAsc[ct.asc.cung].slice(1));
-  }
-  return cau.join(' ');
+/* -------- TIỆN ÍCH -------- */
+/** Đọc mức đồng thuận có sẵn trong câu kết luận của TongHop: "3/4 hệ", "đồng thuận 75%", "58% phiếu", "được 3 hệ cùng chỉ ra" */
+function ncMucDong_(s) {
+  s = String(s || ''); var m;
+  if ((m = s.match(/(\d)\s*\/\s*(\d)\s*(hệ|dấu hiệu)/))) return Math.min(1, +m[1] / +m[2]);
+  if ((m = s.match(/đồng thuận\s*(\d+)\s*%/))) return +m[1] / 100;
+  if ((m = s.match(/(\d+)\s*%\s*phiếu/))) return +m[1] / 100;
+  if ((m = s.match(/được\s*(\d)\s*hệ cùng/))) return Math.min(1, +m[1] / 4);
+  return null;
+}
+function ncSach_(s) { return String(s && s.t || s || '').replace(/^[✓✗◇•\s]+/, '').trim(); }
+/** Rút gọn câu: bỏ phần chú thích kỹ thuật trong ngoặc cuối (tên sao, tên hệ) nhưng giữ mức đồng thuận để hiện riêng */
+function ncGon_(s) {
+  return ncSach_(s).replace(/\s*\((đồng thuận \d+%|\d\/\d (hệ|dấu hiệu) cùng chiều)\)/g, '')
+    .replace(/;\s*khí chất [^.;]+/g, '')                          // không nêu tên sao trong câu cho khách chấm
+    .replace(/\s*\((Sao|Mặt Trời|Mặt Trăng) [^)]*\)/g, '').replace(/\s+/g, ' ').replace(/\s+([.;,])/g, '$1').trim();
+}
+function ncDong_(t, so, nhan) { return { t: t, so: so == null ? null : Math.round(so * 100) / 100, nhan: nhan || (so != null ? Math.round(so * 100) + '% đồng thuận' : '') }; }
+function ncDiemCung_(r, ten) { var c = (r.chiTiet && r.chiTiet.cung || []).filter(function (x) { return x.cung === ten; })[0]; return c ? chuanHoa10_(c.diem) : null; }
+function ncLinhVucBT_(r, key) { var l = (r.battuChiTiet && r.battuChiTiet.linhVuc || []).filter(function (x) { return x.key === key; })[0]; return l ? chuanHoa10_(l.diem) : null; }
+/** Hai hệ (Tử Vi cung, Bát Tự lĩnh vực) cùng chiều? trả {chieu: 1 tốt / -1 khó / 0 lệch, so} */
+function ncHaiHe_(a, b) {
+  if (a == null || b == null) return { chieu: 0, so: null };
+  var ca = a >= 6 ? 1 : a <= 4.5 ? -1 : 0, cb = b >= 6 ? 1 : b <= 4.5 ? -1 : 0;
+  if (ca && ca === cb) return { chieu: ca, so: 1 };
+  if (ca && cb && ca !== cb) return { chieu: 0, so: 0.3 };
+  return { chieu: ca || cb, so: 0.6 };
+}
+function ncChangQua_(X) {   // các chặng đời đã qua (kết thúc trước năm xem), có điểm
+  return ((X.T.duongDoi && X.T.duongDoi.chang) || []).filter(function (c) { return +String(c.nam).split('–')[1] < X.vy && +String(c.nam).split('–')[0] >= X.r.tuvi.info.solar.year + 3; });
 }
 
-/* -------- BẢNG SỐ LƯỢNG THEO CHÍNH TINH (Tử Vi Đẩu Số Toàn Thư – bản lưu truyền) --------
- * [sáng (miếu/vượng/đắc), tối (bình/hãm)] = [min, max]. Sách cổ đếm theo "nhân khẩu" thời xưa;
- * ngày nay số người thường ít hơn → chỉ dùng như xu hướng NHIỀU / VỪA / ÍT. */
 var NC_SO_ANH_EM = {
   'Tử Vi': [[3, 4], [2, 3]], 'Thiên Cơ': [[2, 3], [1, 1]], 'Thái Dương': [[3, 4], [2, 2]], 'Vũ Khúc': [[2, 2], [1, 1]],
   'Thiên Đồng': [[4, 5], [2, 3]], 'Liêm Trinh': [[2, 2], [1, 1]], 'Thiên Phủ': [[4, 5], [3, 4]], 'Thái Âm': [[4, 5], [2, 3]],
   'Tham Lang': [[3, 3], [1, 2]], 'Cự Môn': [[2, 3], [1, 2]], 'Thiên Tướng': [[2, 3], [2, 2]], 'Thiên Lương': [[2, 3], [1, 2]],
   'Thất Sát': [[2, 3], [1, 1]], 'Phá Quân': [[2, 3], [1, 2]]
-};
-var NC_SO_CON = {
-  'Tử Vi': [[3, 3], [2, 2]], 'Thiên Cơ': [[1, 2], [1, 1]], 'Thái Dương': [[3, 3], [1, 2]], 'Vũ Khúc': [[1, 2], [1, 1]],
-  'Thiên Đồng': [[3, 5], [2, 2]], 'Liêm Trinh': [[1, 2], [1, 1]], 'Thiên Phủ': [[3, 5], [2, 3]], 'Thái Âm': [[3, 5], [1, 2]],
-  'Tham Lang': [[2, 3], [1, 1]], 'Cự Môn': [[2, 3], [1, 2]], 'Thiên Tướng': [[2, 3], [1, 2]], 'Thiên Lương': [[2, 3], [1, 2]],
-  'Thất Sát': [[1, 2], [1, 1]], 'Phá Quân': [[2, 3], [1, 2]]
 };
 var NC_LUC_SAT = ['Kình Dương', 'Đà La', 'Hỏa Tinh', 'Linh Tinh', 'Địa Không', 'Địa Kiếp'];
 function ncSang_(s) { return s.b === 'M' || s.b === 'V' || s.b === 'Đ'; }
@@ -204,512 +126,108 @@ function ncUocSo_(P, pi, bang) {
 function ncKhoang_(u) { return u.lo === u.hi ? String(u.hi) : u.lo + '–' + u.hi; }
 
 /* ============================================================
- *  NHÓM C — ANH CHỊ EM (v3 — bảng số theo sách cổ + độ sáng + sát tinh)
+ *  8 NHÓM – MỖI CÂU LÀ KẾT LUẬN ĐỒNG THUẬN NHIỀU HỆ
  * ============================================================ */
-function sinhDoanNhomC_(D) {
-  var tv = D.tv, bt = D.bt;
-  var P = tv.palaces;
-  var cau = [];
-  var pi = -1;
-  for (var i = 0; i < 12; i++) if (P[i].cung === 'Huynh Đệ') { pi = i; break; }
-  if (pi < 0) return '';
-  var HD = P[pi], u = ncUocSo_(P, pi, NC_SO_ANH_EM);
-  var chinh = (HD.chinh.length ? HD.chinh : P[(pi + 6) % 12].chinh).map(function (s) { return s.n; });
-
+/** A. Vóc dáng & dấu hiệu cơ thể: TongHop.vocDang (bỏ phiếu 6 hệ, gồm cung Mọc) + dấu vết cơ thể được nhiều hệ chỉ ra */
+function ncNhomA_(X, g) {
+  var V = X.T.vocDang, C = X.T.coThe;
+  (V && V.ketLuan || []).forEach(function (s) {
+    var t = ncSach_(s); if (/^Với (nam|nữ) giới/.test(t)) return;
+    g.dong.push(ncDong_(ncGon_(t), ncMucDong_(t)));
+  });
+  var dau = (C && C.ketLuan || []).map(ncSach_).filter(function (t) { return /được \d hệ cùng chỉ ra/.test(t); })[0];
+  if (dau) { var m = dau.match(/^(.+?) – được (\d) hệ cùng chỉ ra \(([^)]+)\)/); if (m) g.dong.push(ncDong_('Vùng ' + m[1].toLowerCase() + ' dễ có dấu vết (sẹo, nốt ruồi, bớt) hoặc hay gặp vấn đề nhỏ.', Math.min(1, +m[2] / 4), m[2] + ' hệ: ' + m[3])); }
+  var nhan = (C && C.ketLuan || []).map(ncSach_).filter(function (t) { return /^Dấu hiệu dễ nhận ra/.test(t); })[0];
+  if (nhan) g.dong.push(ncDong_(nhan, 0.5, 'Tử Vi'));
+}
+/** B. Tính cách: các trục tính cách có nhiều hệ cùng chiều nhất (TongHop.tinhCach.truc) */
+function ncNhomB_(X, g) {
+  var TC = X.T.tinhCach; if (!TC) return;
+  (TC.truc || []).filter(function (t) { return Math.abs(t.gt) >= 0.25 && t.tyLe >= 60 && !/^Cân bằng/.test(t.moTa); })   // "cân bằng" đúng với mọi người → không dùng để nghiệm chứng
+    .sort(function (a, b) { return b.tyLe - a.tyLe || Math.abs(b.gt) - Math.abs(a.gt); }).slice(0, 3)
+    .forEach(function (t) { g.dong.push(ncDong_(t.moTa.replace(/\s*\(mức [^)]+\)/, '') + '.', t.tyLe / 100, t.dong.length + '/' + (t.dong.length + t.nguoc.length) + ' hệ: ' + t.dong.join(', '))); });
+  if (TC.manh && TC.manh[0]) g.dong.push(ncDong_('Điểm mạnh dễ thấy: ' + TC.manh[0] + '.', null, ''));
+  if (TC.yeu && TC.yeu[0]) g.dong.push(ncDong_('Điểm hay bị người thân góp ý: ' + TC.yeu[0] + '.', null, ''));
+}
+/** C. Anh chị em: Tử Vi (cung Huynh Đệ + bảng số theo sách cổ) × Bát Tự (lĩnh vực anh em + sao Tỷ Kiếp) */
+function ncNhomC_(X, g) {
+  var r = X.r, P = r.tuvi.palaces, pi = -1;
+  for (var i = 0; i < 12; i++) if (P[i].cung === 'Huynh Đệ') pi = i;
+  var tv = ncDiemCung_(r, 'Huynh Đệ'), bt = ncLinhVucBT_(r, 'Huynh Đệ'), h = ncHaiHe_(tv, bt);
+  var u = pi >= 0 ? ncUocSo_(P, pi, NC_SO_ANH_EM) : null, tk = 0;
+  r.battu.pillars.forEach(function (p, j) {
+    if (j !== 2 && (p.thapThan === 'Tỷ Kiên' || p.thapThan === 'Kiếp Tài')) tk++;
+    p.tangCan.forEach(function (t) { if (t.thapThan === 'Tỷ Kiên' || t.thapThan === 'Kiếp Tài') tk += 0.5; });
+  });
   if (u) {
-    var muc = u.hi >= 4 ? 'đông anh chị em' : u.hi >= 2 ? 'số anh chị em vừa phải' : 'ít anh chị em';
-    cau.push('Gia đình bạn thuộc dạng ' + muc + ' (sách cổ ước khoảng ' + ncKhoang_(u) + ' người, tính cả những lần mang thai không thành).');
+    var tvNhieu = u.hi >= 3 ? 1 : u.hi <= 1 ? -1 : 0, btNhieu = tk >= 2.5 ? 1 : tk < 1 ? -1 : 0;
+    var dongY = tvNhieu && tvNhieu === btNhieu;
+    var muc = (dongY ? tvNhieu : tvNhieu || btNhieu) > 0 ? 'đông anh chị em (từ 3 người trở lên)' : (dongY ? tvNhieu : tvNhieu || btNhieu) < 0 ? 'ít anh chị em (1–2 người, hoặc là con một)' : 'số anh chị em vừa phải (khoảng 2–3 người)';
+    g.dong.push(ncDong_('Gia đình thuộc dạng ' + muc + '.', dongY ? 1 : tvNhieu === -btNhieu && tvNhieu ? 0.3 : 0.6, dongY ? '2/2 hệ: Tử Vi, Bát Tự' : 'Tử Vi' + (btNhieu ? ', Bát Tự khác chiều' : '')));
   }
-  // Tính chất quan hệ
-  if (chinh.indexOf('Cự Môn') >= 0) cau.push('Anh em dễ bất đồng, hay tranh luận, mỗi người một ý.');
-  else if (chinh.indexOf('Thiên Phủ') >= 0 || chinh.indexOf('Thiên Tướng') >= 0 || chinh.indexOf('Thiên Đồng') >= 0) cau.push('Anh em hòa thuận, có thể nâng đỡ nhau.');
-  else if (chinh.indexOf('Tử Vi') >= 0) cau.push('Trong anh em có người khá giả hoặc có vị thế, là chỗ dựa được.');
-  else if (chinh.indexOf('Thất Sát') >= 0 || chinh.indexOf('Phá Quân') >= 0 || chinh.indexOf('Liêm Trinh') >= 0) cau.push('Anh em mỗi người mỗi ngả, cá tính mạnh, ít nương tựa nhau.');
-  else if (chinh.indexOf('Thiên Cơ') >= 0 || chinh.indexOf('Thiên Lương') >= 0) cau.push('Anh em hiền lành, có học, quan hệ tốt nhưng không ồn ào.');
-  if (u && u.sat >= 2) cau.push('Có lúc xa cách hoặc va chạm với anh em.');
-  if (u && u.ten.indexOf('Hóa Kỵ') >= 0) cau.push('Dễ có hiểu lầm hoặc chuyện tiền bạc với anh em.');
-  if (HD.tuan || HD.triet) cau.push('Có giai đoạn anh em sống xa nhau hoặc ít liên lạc.');
-
-  /* BÁT TỰ — Tỷ Kiên/Kiếp Tài là sao anh em */
-  var soTyKiep = 0;
-  bt.pillars.forEach(function (p, i) {
-    if (i !== 2 && (p.thapThan === 'Tỷ Kiên' || p.thapThan === 'Kiếp Tài')) soTyKiep++;
-    p.tangCan.forEach(function (t) { if (t.thapThan === 'Tỷ Kiên' || t.thapThan === 'Kiếp Tài') soTyKiep += 0.5; });
+  if (h.chieu > 0) g.dong.push(ncDong_('Anh chị em hòa thuận, có lúc nâng đỡ nhau về công việc hoặc tiền bạc.', h.so, h.so === 1 ? '2/2 hệ: Tử Vi, Bát Tự' : ''));
+  else if (h.chieu < 0) g.dong.push(ncDong_('Anh chị em mỗi người một ngả, có khoảng cách hoặc bất đồng; ít nhờ cậy được nhau.', h.so, h.so === 1 ? '2/2 hệ: Tử Vi, Bát Tự' : ''));
+  else g.dong.push(ncDong_('Quan hệ anh em có lúc gần lúc xa: thân thiết giai đoạn nhỏ, trưởng thành thì mỗi người tự lo.', h.so == null ? 0.4 : h.so, 'các hệ chưa thống nhất'));
+  if (tk >= 2.5) g.dong.push(ncDong_('Có sự cạnh tranh ngầm giữa anh em (so sánh, chuyện tài sản chung).', 0.5, 'Bát Tự'));
+}
+/** D. Cha mẹ & xuất thân: TongHop.xuatThan (bỏ phiếu nhiều hệ) + chênh lệch duyên cha – mẹ khi Tử Vi và Bát Tự cùng chỉ ra */
+function ncNhomD_(X, g) {
+  (X.T.xuatThan && X.T.xuatThan.ketLuan || []).slice(0, 3).forEach(function (s) { var t = ncSach_(s); g.dong.push(ncDong_(ncGon_(t), ncMucDong_(t))); });
+  var lt = (X.r.battuChiTiet && X.r.battuChiTiet.lucThan) || [];
+  var cha = lt.filter(function (x) { return x.ten === 'Cha'; })[0], me = lt.filter(function (x) { return x.ten === 'Mẹ'; })[0];
+  if (cha && me && Math.abs(cha.diem - me.diem) >= 2) {
+    var P = X.r.tuvi.palaces, pos = X.r.tuvi.pos || {};
+    function doSang(ten) { var c = pos[ten] != null ? P[pos[ten]].chinh.filter(function (s) { return s.n === ten; })[0] : null; return c ? (ncSang_(c) ? 1 : c.b === 'H' ? -1 : 0) : 0; }
+    var tvCha = doSang('Thái Dương'), tvMe = doSang('Thái Âm'), btCha = cha.diem > me.diem;
+    var tvCung = (tvCha - tvMe) !== 0 && ((tvCha > tvMe) === btCha);
+    g.dong.push(ncDong_('Duyên với ' + (btCha ? 'cha' : 'mẹ') + ' sâu hơn; với ' + (btCha ? 'mẹ' : 'cha') + ' có giai đoạn xa cách hoặc khác quan điểm.', tvCung ? 1 : 0.5, tvCung ? '2/2 hệ: Bát Tự, Tử Vi (Nhật – Nguyệt)' : 'Bát Tự'));
+  }
+}
+/** E. Sức khỏe & giai đoạn khó đã qua: vùng cơ thể được nhiều hệ chỉ ra + chặng đời đã qua có điểm thấp */
+function ncNhomE_(X, g) {
+  (X.T.coThe && X.T.coThe.ketLuan || []).map(ncSach_).filter(function (t) { return /được \d hệ cùng chỉ ra/.test(t); }).slice(0, 3).forEach(function (t) {
+    var m = t.match(/^(.+?) – được (\d) hệ cùng chỉ ra \(([^)]+)\)/); if (!m) return;
+    g.dong.push(ncDong_('Hay gặp vấn đề ở ' + m[1].toLowerCase() + ' (mệt, đau, bệnh vặt tái lại).', Math.min(1, +m[2] / 4), m[2] + ' hệ: ' + m[3]));
   });
-  if (soTyKiep >= 2.5) cau.push('Bát Tự: sao anh em (Tỷ Kiếp) mạnh — đông anh em hoặc bạn bè thân như anh em, nhưng dễ cạnh tranh.');
-  else if (soTyKiep >= 1) cau.push('Bát Tự: sao anh em ở mức vừa — anh em có qua lại, mỗi người tự lo.');
-  else cau.push('Bát Tự: sao anh em yếu — ít anh em hoặc ít nhờ được anh em, phải tự lập sớm.');
-  return cau.join(' ');
+  var qua = ncChangQua_(X).slice().sort(function (a, b) { return a.diem - b.diem; })[0];
+  if (qua && qua.diem < 2) g.dong.push(ncDong_('Giai đoạn ' + qua.khoang + ' (' + qua.nam + ') từng vất vả hơn các chặng khác: áp lực tiền bạc, sức khỏe hoặc chuyện gia đình.', qua.dongThuan ? 1 : 0.5, qua.dongThuan ? 'Tử Vi & Bát Tự cùng chiều' : 'Tử Vi'));
+}
+/** F. Hôn nhân: chân dung người phối ngẫu + năm cưới đã qua (TongHop.phoiNgau – ghép 5 hệ) */
+function ncNhomF_(X, g) {
+  if (X.tuoi < 20) { g.apDung = false; g.ghiChu = 'Bạn chưa đến tuổi lập gia đình – chọn "Không áp dụng".'; }
+  var L = (X.T.phoiNgau && X.T.phoiNgau.ketLuan || []).map(ncSach_);
+  function lay(re, so, nhan) { var t = L.filter(function (x) { return re.test(x); })[0]; if (t) g.dong.push(ncDong_(t, so, nhan)); }
+  lay(/^Ngoại hình người/, 0.6, 'ghép 5 hệ');
+  lay(/^Tính cách:/, 0.6, 'ghép 5 hệ');
+  var cl = L.filter(function (x) { return /^Chênh lệch tuổi/.test(x); })[0];
+  if (cl) g.dong.push(ncDong_(ncGon_(cl), ncMucDong_(cl), (cl.match(/\((\d\/\d dấu hiệu) cùng chiều\)/) || [])[1]));
+  lay(/^Nơi\/cách gặp/, 0.5, 'Tử Vi, Chiêm tinh');
+  var da = L.filter(function (x) { return /^Nếu bạn đã kết hôn/.test(x); })[0];
+  if (da) g.dong.push(ncDong_(da.replace(/^Nếu bạn đã kết hôn \(khả năng việc này đã diễn ra trước năm nay ≈ \d+%\), /, 'Nếu đã kết hôn: '), 0.7, 'xác suất tổng hợp 5 hệ'));
+}
+/** G. Con cái: TongHop.phoiNgau.conCai + năm có con đã qua */
+function ncNhomG_(X, g) {
+  if (X.tuoi < 22) { g.apDung = false; g.ghiChu = 'Chưa đến tuổi có con – chọn "Không áp dụng".'; }
+  var CC = X.T.phoiNgau && X.T.phoiNgau.conCai;
+  ((CC && CC.ketLuan) || []).map(ncSach_).forEach(function (t) {
+    if (/^Số con/.test(t)) g.dong.push(ncDong_(t, 0.6, 'Tử Vi, Bát Tự'));
+    else if (/^Trai – gái/.test(t)) g.dong.push(ncDong_(t.replace(/\s*\(Tử Vi \+ Bát Tự; tham khảo\)/, ''), 0.4, 'Tử Vi, Bát Tự'));
+    else if (/^Quan hệ cha mẹ – con/.test(t)) g.dong.push(ncDong_(t, 0.5, ''));
+  });
+  var L = (X.T.phoiNgau && X.T.phoiNgau.ketLuan || []).map(ncSach_), co = L.filter(function (x) { return /^Nếu bạn đã có con/.test(x); })[0];
+  if (co) g.dong.push(ncDong_(co.replace(/^Nếu bạn đã có con \(khả năng việc này đã diễn ra trước năm nay ≈ \d+%\), /, 'Nếu đã có con: '), 0.7, 'xác suất tổng hợp 5 hệ'));
+}
+/** H. Sự nghiệp: nghề được nhiều hệ cùng gợi ý + chặng đời đã qua thuận lợi nhất */
+function ncNhomH_(X, g) {
+  var N = (X.T.nghe || []).slice(0, 3);
+  if (N.length) g.dong.push(ncDong_('Hợp nhất với: ' + N.map(function (n) { return n.ten.toLowerCase() + ' (' + n.he.length + '/6 hệ)'; }).join('; ') + '.', N[0].he.length / 6, ''));
+  var qua = ncChangQua_(X).slice().sort(function (a, b) { return b.diem - a.diem; })[0];
+  if (qua && qua.diem >= 3) g.dong.push(ncDong_('Giai đoạn ' + qua.khoang + ' (' + qua.nam + ') là thời kỳ thuận lợi nổi bật: học hành, công việc hoặc thu nhập lên rõ.', qua.dongThuan ? 1 : 0.5, qua.dongThuan ? 'Tử Vi & Bát Tự cùng chiều' : 'Tử Vi'));
+  var tv = ncDiemCung_(X.r, 'Quan Lộc'), bt = ncLinhVucBT_(X.r, 'Quan Lộc'), h = ncHaiHe_(tv, bt);
+  if (h.chieu > 0) g.dong.push(ncDong_('Công việc có đà thăng tiến, dễ được giao việc quan trọng hoặc tự làm chủ.', h.so, h.so === 1 ? '2/2 hệ: Tử Vi, Bát Tự' : ''));
+  else if (h.chieu < 0) g.dong.push(ncDong_('Đường công việc nhiều lần đổi hướng, phải tự bươn chải hơn người khác.', h.so, h.so === 1 ? '2/2 hệ: Tử Vi, Bát Tự' : ''));
 }
 
-/* ============================================================
- *  NHÓM D — CHA MẸ (v2 — hạ ngưỡng sát tinh, thêm Bệnh Phù/Thiên Y)
- * ============================================================ */
-function sinhDoanNhomD_(D) {
-  var tv = D.tv, bt = D.bt;
-  var P = tv.palaces, I = tv.info;
-  var cau = [];
-  var pi = -1;
-  for (var i = 0; i < 12; i++) if (P[i].cung === 'Phụ Mẫu') { pi = i; break; }
-  if (pi < 0) return '';
-
-  var PM = P[pi];
-  var dsSao = [].concat(PM.chinh, PM.cat, PM.hung, PM.tieu).map(function(s){ return s.n; });
-
-  var satNang = [];
-  ['Thiên Riêu','Thiên Hư','Phục Binh','Tuế Phá','Tang Môn','Thiên Khốc',
-   'Kình Dương','Đà La','Hỏa Tinh','Linh Tinh','Địa Không','Địa Kiếp',
-   'Hóa Kỵ','Thiên Hình','Bệnh Phù'].forEach(function(s) {
-    if (dsSao.indexOf(s) >= 0) satNang.push(s);
-  });
-
-  var coThienY = dsSao.indexOf('Thiên Y') >= 0;
-  var coBenh = dsSao.indexOf('Bệnh Phù') >= 0 ||
-                dsSao.indexOf('Thiên Riêu') >= 0 ||
-                dsSao.indexOf('Thiên Hư') >= 0;
-
-  /* --- Xếp loại theo ngưỡng mới --- */
-  if (satNang.length >= 3 || (satNang.length >= 2 && (coThienY || coBenh))) {
-    cau.push('Cha mẹ thuộc mẫu người vất vả, kinh tế khó khăn, không có địa vị xã hội cao.');
-    if (dsSao.indexOf('Hỏa Tinh') >= 0 || dsSao.indexOf('Linh Tinh') >= 0 ||
-        dsSao.indexOf('Kình Dương') >= 0 || dsSao.indexOf('Đà La') >= 0) {
-      cau.push('Gia đình có lúc căng thẳng, cha mẹ hay cãi vã — đặc biệt giai đoạn bạn nhỏ.');
-    }
-    if (dsSao.indexOf('Thiên Riêu') >= 0 || dsSao.indexOf('Thiên Hư') >= 0 || coBenh) {
-      cau.push('Có chuyện buồn hoặc bệnh tật ẩn trong gia đình.');
-    }
-    if (coThienY) {
-      cau.push('Có dấu hiệu liên quan đến y dược — thường là cha mẹ hay gặp bác sĩ, có bệnh cần chữa.');
-    }
-  } else if (satNang.length >= 1) {
-    cau.push('Cha mẹ ở mức trung bình — vất vả vừa phải, không quá khó khăn.');
-    if (coThienY) cau.push('Có dấu hiệu liên quan đến y dược — cha mẹ hay gặp bác sĩ.');
-  } else {
-    var saoCM = PM.chinh.map(function(s){ return s.n; });
-    if (saoCM.indexOf('Tử Vi') >= 0 || saoCM.indexOf('Thiên Phủ') >= 0) cau.push('Cha mẹ có uy tín, khá giả.');
-    else if (saoCM.indexOf('Thiên Lương') >= 0) cau.push('Cha mẹ hiền hậu, che chở con cái.');
-    else if (saoCM.indexOf('Thái Dương') >= 0) cau.push('Cha thành đạt, mẹ hiền.');
-    else cau.push('Cha mẹ ở mức bình thường.');
-  }
-
-  if (PM.tuan || PM.triet) cau.push('Tuần/Triệt tại Phụ Mẫu — tuổi thơ có thể thiếu thốn, cha mẹ vất vả.');
-
-  /* --- Bát Tự --- */
-  var soTai = 0, soAn = 0;
-  bt.pillars.forEach(function(p) {
-    if (p.thapThan === 'Chính Tài' || p.thapThan === 'Thiên Tài') soTai++;
-    if (p.thapThan === 'Chính Ấn' || p.thapThan === 'Thiên Ấn') soAn++;
-    p.tangCan.forEach(function(t) {
-      if (t.thapThan === 'Chính Tài' || t.thapThan === 'Thiên Tài') soTai += 0.5;
-      if (t.thapThan === 'Chính Ấn' || t.thapThan === 'Thiên Ấn') soAn += 0.5;
-    });
-  });
-  if (soTai < 1) cau.push('Bát Tự: sao cha (Tài) yếu — ít gần cha, hoặc cha vất vả, bận rộn.');
-  if (soAn < 1) cau.push('Bát Tự: sao mẹ (Ấn) yếu — mẹ vất vả, hoặc bạn tự lập sớm, ít được bao bọc.');
-
-  /* --- Nhật Nguyệt --- */
-  var pos = tv.pos;
-  var nhat = P[pos['Thái Dương']].chinh.filter(function(s){ return s.n === 'Thái Dương'; })[0];
-  var nguyet = P[pos['Thái Âm']].chinh.filter(function(s){ return s.n === 'Thái Âm'; })[0];
-  if (nhat && nhat.b === 'H') cau.push('Thái Dương hãm — hình ảnh người cha mờ nhạt, cha vất vả.');
-  if (nguyet && nguyet.b === 'H') cau.push('Thái Âm hãm — mẹ có giai đoạn sức khỏe yếu.');
-
-  return cau.join(' ');
-}
-
-/* ============================================================
- *  NHÓM B — TÍNH CÁCH (v3 — "việc nhỏ quyết, việc lớn lưỡng lự")
- * ============================================================ */
-function sinhDoanNhomB_(D) {
-  var tv = D.tv, bt = D.bt, ct = D.ct, hd = D.hd;
-  var P = tv.palaces, I = tv.info;
-  var chinhM = P[I.menh].chinh;
-  var saoM = chinhM.map(function(s){ return s.n; });
-  var cau = [];
-
-  /* --- Tầng 1: nét tính cách nền --- */
-  var net = [];
-  if (saoM.indexOf('Tử Vi') >= 0) net.push('tự trọng cao, có uy tự nhiên');
-  if (saoM.indexOf('Thiên Cơ') >= 0) net.push('thông minh, giỏi phân tích');
-  if (saoM.indexOf('Thiên Lương') >= 0) net.push('nhân hậu, hay giúp người');
-  if (saoM.indexOf('Thái Âm') >= 0) net.push('tinh tế, giàu cảm xúc, kín đáo');
-  if (saoM.indexOf('Cự Môn') >= 0) net.push('sắc sảo, khẩu tài tốt');
-  if (saoM.indexOf('Thiên Tướng') >= 0) net.push('sống đúng mực, chu đáo');
-  if (saoM.indexOf('Tham Lang') >= 0) net.push('đa tài, giao tiếp khéo');
-  if (saoM.indexOf('Vũ Khúc') >= 0) net.push('thực tế, chắc chắn');
-  if (saoM.indexOf('Thiên Đồng') >= 0) net.push('hiền hòa, lạc quan, dễ tính');
-  if (saoM.indexOf('Liêm Trinh') >= 0) net.push('sống nguyên tắc, đúng mực');
-  if (saoM.indexOf('Thái Dương') >= 0) net.push('sáng sủa, nhiệt tình');
-  if (net.length) cau.push('Bạn thuộc mẫu người ' + net.join(', ') + '.');
-
-  /* --- Tầng 2: "quyết đoán" CHỈ khi có sao dương tính mạnh --- */
-  var dsSao = [].concat(P[I.menh].chinh, P[I.menh].cat, P[I.menh].hung).map(function(s){ return s.n; });
-  var coQuyetDoan = (
-    saoM.indexOf('Thất Sát') >= 0 ||
-    saoM.indexOf('Phá Quân') >= 0 ||
-    saoM.indexOf('Kình Dương') >= 0 ||
-    dsSao.indexOf('Hóa Quyền') >= 0
-  );
-
-  /* --- Tầng 3: "lưỡng lự việc lớn" — nhận diện riêng --- */
-  var coLuongLu = (
-    saoM.indexOf('Thiên Cơ') >= 0 ||
-    saoM.indexOf('Thiên Đồng') >= 0 ||
-    saoM.indexOf('Thái Âm') >= 0 ||
-    saoM.indexOf('Thiên Lương') >= 0
-  );   // bỏ VCD / Tuần-Triệt / Liêm Trinh / Thiên Tướng: khiến câu này đúng với >60% lá số, mất tính phân biệt
-
-  /* --- Kết hợp 2 tín hiệu --- */
-  if (coQuyetDoan && coLuongLu) {
-    cau.push('Với việc nhỏ thì khá nhanh nhẹn, quyết đoán. Nhưng khi phải quyết việc lớn, bạn thường cân nhắc nhiều lần, đôi khi lưỡng lự — cần thời gian mới dám chốt.');
-  } else if (coQuyetDoan) {
-    cau.push('Cá tính mạnh, quyết đoán, dám nghĩ dám làm.');
-  } else if (coLuongLu) {
-    cau.push('Bề ngoài có vẻ điềm tĩnh, nhưng khi phải quyết việc lớn thì hay cân nhắc nhiều lần, đôi khi lưỡng lự — cần thời gian mới dám chốt.');
-  }
-
-  /* --- Phụ tinh --- */
-  if (dsSao.indexOf('Hóa Khoa') >= 0) cau.push('Có duyên học vấn, gặp khó có người giải.');
-  if (dsSao.indexOf('Hóa Lộc') >= 0) cau.push('Dễ được lòng người.');
-  if (dsSao.indexOf('Hóa Kỵ') >= 0) cau.push('Dễ bị hiểu lầm, cần kiên nhẫn.');
-  if (dsSao.indexOf('Cô Thần') >= 0 || dsSao.indexOf('Quả Tú') >= 0) cau.push('Ưa độc lập, đôi khi cô đơn.');
-  if (dsSao.indexOf('Hồng Loan') >= 0) cau.push('Duyên dáng, dễ được yêu mến.');
-
-  /* --- Bát Tự --- */
-  var ttCount = {};
-  bt.pillars.forEach(function(p, i) {
-    if (i !== 2) ttCount[p.thapThan] = (ttCount[p.thapThan] || 0) + 1;
-    ttCount[p.tangCan[0].thapThan] = (ttCount[p.tangCan[0].thapThan] || 0) + 0.8;
-  });
-  var ttMax = Object.keys(ttCount).sort(function(a,b){ return ttCount[b] - ttCount[a]; })[0];
-  if (ttMax) {
-    var yn = String(THAP_THAN_Y_NGHIA[ttMax] || '').split(/,\s*/).filter(function (x) { return I.male ? !/\(nữ\)/.test(x) : !/\(nam\)/.test(x); })
-      .map(function (x) { return x.replace(/\s*\((nam|nữ)\)/, ''); }).join(', ');
-    cau.push('Bát Tự: nổi bật năng lượng ' + ttMax + (yn ? ' — ' + yn : '') + '.');
-  }
-
-  /* --- Chiêm tinh --- */
-  if (ct && ct.by) {
-    var moTaSun = [
-      'Sun Bạch Dương: bản ngã chiến binh, dám nghĩ dám làm.',
-      'Sun Kim Ngưu: bản ngã người xây dựng, kiên nhẫn, thực tế.',
-      'Sun Song Tử: bản ngã người đưa tin, thông minh, đa tài.',
-      'Sun Cự Giải: bản ngã người che chở, giàu tình thương.',
-      'Sun Sư Tử: bản ngã vị vua, hào phóng, cần tỏa sáng.',
-      'Sun Xử Nữ: bản ngã người thợ cả, phân tích, cầu toàn.',
-      'Sun Thiên Bình: bản ngã nhà ngoại giao, duyên dáng, ngại va chạm.',
-      'Sun Bọ Cạp: bản ngã người chuyển hóa, sâu sắc.',
-      'Sun Nhân Mã: bản ngã nhà thám hiểm, tự do, lạc quan.',
-      'Sun Ma Kết: bản ngã người leo núi, kỷ luật, bền bỉ.',
-      'Sun Bảo Bình: bản ngã nhà cải cách, độc đáo.',
-      'Sun Song Ngư: bản ngã nghệ sĩ, thấu cảm, mơ mộng.'
-    ];
-    if (moTaSun[ct.by.sun.cung]) cau.push(moTaSun[ct.by.sun.cung].replace(/^Sun /, 'Mặt Trời '));
-  }
-  if (ct && ct.asc) {
-    var moTaAscB = ['xông xáo, thẳng thắn', 'điềm đạm, chắc chắn', 'nhanh nhẹn, hoạt ngôn', 'dịu dàng, dè dặt',
-      'tự tin, đường hoàng', 'chỉn chu, khiêm tốn', 'hòa nhã, lịch thiệp', 'kín đáo, khó đoán', 'cởi mở, vui vẻ',
-      'nghiêm túc, chững chạc', 'thân thiện nhưng giữ khoảng cách', 'mơ màng, dễ gần'];
-    if (moTaAscB[ct.asc.cung]) cau.push('Cung Mọc: lần đầu gặp, người khác thấy bạn ' + moTaAscB[ct.asc.cung] + '.');
-  }
-
-  /* --- Human Design --- */
-  if (hd && hd.loai) {
-    var moTaHD = {
-      'Generator': 'Bạn là Người Kiến Tạo — sinh lực bền bỉ, thành công khi làm điều mình thực sự thích.',
-      'Manifesting Generator': 'Bạn là Người Kiến Tạo Biểu Hiện — nhanh, đa nhiệm, hay nhảy bước.',
-      'Manifestor': 'Bạn là Người Khởi Xướng — mở đường, tác động mạnh.',
-      'Projector': 'Bạn là Người Dẫn Dắt — nhìn thấu hệ thống, hướng dẫn người khác.',
-      'Reflector': 'Bạn là Người Phản Chiếu — tấm gương của cộng đồng.'
-    };
-    if (moTaHD[hd.loai]) cau.push(moTaHD[hd.loai]);
-  }
-  return cau.join(' ');
-}
-
-/* ============================================================
- *  NHÓM E — SỨC KHỎE (v4 — chấm điểm hung/giải tinh thay vì "có 1 sao xấu là trung bình")
- * ============================================================ */
-var NC_TANG_SAO = {
-  'Tử Vi': 'dạ dày, tiêu hóa', 'Thiên Phủ': 'dạ dày, tiêu hóa', 'Thiên Lương': 'dạ dày, tiêu hóa',
-  'Thiên Cơ': 'gan, thần kinh, tay chân', 'Thái Dương': 'mắt, tim, huyết áp, đầu', 'Liêm Trinh': 'máu, tim, cơ quan sinh sản',
-  'Vũ Khúc': 'phổi, hô hấp, xương', 'Thất Sát': 'phổi, xương, dễ thương tích', 'Thiên Đồng': 'thận, bàng quang, tai',
-  'Thái Âm': 'thận, mắt, nội tiết', 'Tham Lang': 'gan, thận, sinh dục', 'Cự Môn': 'miệng, răng, dạ dày',
-  'Thiên Tướng': 'da, bàng quang', 'Phá Quân': 'thận, máu, dễ hao tổn'
-};
-var NC_TANG_HANH = { 'Kim': 'phổi, hô hấp, da', 'Mộc': 'gan, mật', 'Thủy': 'thận, tiết niệu', 'Hỏa': 'tim, huyết áp', 'Thổ': 'dạ dày, tiêu hóa' };
-function sinhDoanNhomE_(D) {
-  var tv = D.tv, bt = D.bt, ct = D.ct;
-  var P = tv.palaces, I = tv.info;
-  var cau = [];
-  var pi = -1;
-  for (var i = 0; i < 12; i++) if (P[i].cung === 'Tật Ách') { pi = i; break; }
-  if (pi < 0) return '';
-  var TA = P[pi];
-  var ten = [].concat(TA.chinh, TA.cat, TA.hung, TA.tieu).map(function (s) { return s.n; });
-  function co(x) { return ten.indexOf(x) >= 0; }
-  var nang = ['Kình Dương', 'Đà La', 'Hỏa Tinh', 'Linh Tinh', 'Địa Không', 'Địa Kiếp', 'Hóa Kỵ', 'Thiên Hình'].filter(co);
-  var nhe = ['Bệnh Phù', 'Thiên Hư', 'Thiên Riêu', 'Tang Môn', 'Thiên Khốc'].filter(co);
-  var giai = ['Thiên Giải', 'Địa Giải', 'Giải Thần', 'Thiên Quan', 'Thiên Phúc', 'Hóa Khoa', 'Thiên Đức', 'Nguyệt Đức', 'Thiên Y'].filter(co);
-  var d = nang.length + nhe.length * 0.5 - giai.length * 0.5;
-  if (TA.tuan || TA.triet) d -= 0.5;   // Tuần/Triệt ở Tật Ách chặn bớt hung tinh (quan điểm phổ biến)
-  var menh = [].concat(P[I.menh].chinh, P[I.menh].cat, P[I.menh].hung).map(function (s) { return s.n; });
-  if (['Kình Dương', 'Đà La', 'Thiên Hình', 'Hóa Kỵ', 'Địa Không', 'Địa Kiếp'].some(function (x) { return menh.indexOf(x) >= 0; })) d += 0.5;
-
-  if (d >= 2.5) {
-    cau.push('Sức khỏe có giai đoạn yếu rõ rệt, từng ốm nặng hoặc gặp biến cố về thân thể.');
-    if (co('Thiên Hình') || co('Kình Dương')) cau.push('Có dấu hiệu từng phải can thiệp y tế (mổ, khâu) hoặc có sẹo.');
-  } else if (d >= 1) {
-    cau.push('Sức khỏe nhìn chung ổn nhưng có một hai bệnh hay tái lại, cần theo dõi.');
-    if (co('Bệnh Phù') || co('Thiên Hư')) cau.push('Hay mệt vặt, bệnh âm ỉ khi làm việc quá sức.');
-  } else {
-    cau.push('Sức khỏe nền tảng khá tốt, ít ốm vặt' + (giai.length ? ', gặp bệnh thường gặp thầy gặp thuốc' : '') + '.');
-  }
-  var chinh = (TA.chinh.length ? TA.chinh : P[(pi + 6) % 12].chinh).map(function (s) { return s.n; });
-  var tang = chinh.map(function (x) { return NC_TANG_SAO[x]; }).filter(Boolean);
-  if (tang.length) cau.push('Tử Vi: bộ phận cần chú ý là ' + tang.join('; ') + '.');
-
-  /* BÁT TỰ — hành khuyết (<5%) hoặc quá vượng (>35%) mới nêu; nhật chủ yếu thì tạng của chính nó yếu */
-  if (bt.phanTram) {
-    var yeu = [], du = [];
-    ['Kim', 'Mộc', 'Thủy', 'Hỏa', 'Thổ'].forEach(function (h) {
-      if (bt.phanTram[h] < 5) yeu.push(h); else if (bt.phanTram[h] > 35) du.push(h);
-    });
-    if (yeu.length) cau.push('Bát Tự: thiếu hành ' + yeu.join(', ') + ' — dễ yếu ở ' + yeu.map(function (h) { return NC_TANG_HANH[h]; }).join('; ') + '.');
-    if (du.length) cau.push('Bát Tự: hành ' + du.join(', ') + ' quá mạnh — dễ quá tải ở ' + du.map(function (h) { return NC_TANG_HANH[h]; }).join('; ') + '.');
-    if (!bt.vuong && NC_TANG_HANH[bt.nhatChuHanh] && yeu.indexOf(bt.nhatChuHanh) < 0) cau.push('Nhật chủ ' + bt.nhatChuHanh + ' hơi yếu — chú ý ' + NC_TANG_HANH[bt.nhatChuHanh] + '.');
-  }
-  if (ct && ct.asc) {
-    var coQuan = ['đầu, não', 'cổ họng, tuyến giáp', 'phổi, vai, tay', 'ngực, dạ dày', 'tim, lưng', 'ruột, tiêu hóa',
-      'thận, thắt lưng', 'cơ quan sinh dục, bài tiết', 'hông, đùi, gan', 'đầu gối, xương, răng', 'bắp chân, mắt cá, tuần hoàn', 'bàn chân, hệ miễn dịch'];
-    if (coQuan[ct.asc.cung]) cau.push('Chiêm tinh (cung Mọc): vùng nhạy cảm là ' + coQuan[ct.asc.cung] + '.');
-  }
-  return cau.join(' ');
-}
-/* ============================================================
- *  NHÓM F — HÔN NHÂN (v2 — Cự+Nhật cùng cung = kín đáo)
- * ============================================================ */
-function sinhDoanNhomF_(D) {
-  var tv = D.tv, bt = D.bt;
-  var P = tv.palaces, I = tv.info;
-  var cau = [];
-  var pi = -1;
-  for (var i = 0; i < 12; i++) if (P[i].cung === 'Phu Thê') { pi = i; break; }
-  if (pi < 0) return '';
-
-  var PT = P[pi];
-  var chinh = PT.chinh.map(function(s){ return s.n; });
-  var dsSao = [].concat(PT.chinh, PT.cat, PT.hung, PT.tieu).map(function(s){ return s.n; });
-
-  /* --- Ưu tiên 1: Cự Môn + Thái Dương cùng cung --- */
-  var coCuNhat = (chinh.indexOf('Cự Môn') >= 0 && chinh.indexOf('Thái Dương') >= 0);
-
-  if (!chinh.length) {
-    var xc = P[(pi + 6) % 12];
-    var saoDoi = xc.chinh.map(function(s){ return s.n; });
-    if (saoDoi.indexOf('Thiên Cơ') >= 0 || saoDoi.indexOf('Thiên Lương') >= 0) {
-      cau.push('Bạn đời thuộc mẫu người hiền lành, đàng hoàng, có học thức.');
-      cau.push('Tình cảm bền nhưng không ồn ào — quan tâm nhau bằng hành động.');
-    } else if (saoDoi.indexOf('Tử Vi') >= 0 || saoDoi.indexOf('Thiên Phủ') >= 0) {
-      cau.push('Bạn đời chín chắn, có thể hơn tuổi hoặc trưởng thành hơn bạn.');
-    } else if (saoDoi.indexOf('Thái Âm') >= 0 || saoDoi.indexOf('Thiên Đồng') >= 0) {
-      cau.push('Bạn đời dịu dàng, hơi hướng nội, chăm lo gia đình.');
-    } else {
-      cau.push('Hôn nhân ở mức trung bình — cần vun đắp.');
-    }
-  } else if (coCuNhat) {
-    cau.push('Bạn đời có vẻ ngoài sáng sủa, giao tiếp tốt, nhưng nội tâm kín đáo, ít chia sẻ chuyện riêng.');
-    cau.push('Cần chủ động hỏi han, tạo không gian an toàn để bạn đời mở lòng.');
-  } else if (chinh.indexOf('Thiên Đồng') >= 0 || chinh.indexOf('Thái Âm') >= 0) {
-    cau.push('Bạn đời dịu dàng, tinh tế, hơi hướng nội, chăm lo gia đình.');
-  } else if (chinh.indexOf('Cự Môn') >= 0) {
-    cau.push('Bạn đời sắc sảo, kín đáo, ít nói khi ở nhà.');
-  } else if (chinh.indexOf('Thiên Phủ') >= 0) {
-    cau.push('Bạn đời đảm đang, chín chắn, biết lo toan.');
-  } else if (chinh.indexOf('Vũ Khúc') >= 0) {
-    cau.push('Bạn đời cương nghị, thực tế, ít nói lời tình cảm.');
-  } else if (chinh.indexOf('Tử Vi') >= 0) {
-    cau.push('Bạn đời có uy, tự trọng cao, thích được tôn trọng.');
-  } else if (chinh.indexOf('Thiên Tướng') >= 0) {
-    cau.push('Bạn đời chính trực, đàng hoàng, chu đáo.');
-  } else if (chinh.indexOf('Thiên Lương') >= 0) {
-    cau.push('Bạn đời lớn tuổi hơn hoặc chín chắn, hay giúp người.');
-  } else if (chinh.indexOf('Thiên Cơ') >= 0) {
-    cau.push('Bạn đời thông minh, nhiều ý tưởng, đôi khi hay lo.');
-  } else if (chinh.indexOf('Thái Dương') >= 0) {
-    cau.push('Bạn đời hướng ngoại, nhiệt tình.');
-  } else if (chinh.indexOf('Tham Lang') >= 0) {
-    cau.push('Bạn đời có sức hút, đa tài.');
-  } else if (chinh.indexOf('Thất Sát') >= 0 || chinh.indexOf('Phá Quân') >= 0) {
-    cau.push('Bạn đời cá tính mạnh, hôn nhân có sóng gió.');
-  } else {
-    cau.push('Bạn đời tính tình ở mức trung bình, hôn nhân ổn định.');
-  }
-
-  /* --- Sát tinh --- */
-  var satNang = [];
-  ['Kình Dương','Đà La','Hỏa Tinh','Linh Tinh','Địa Không','Địa Kiếp','Hóa Kỵ','Cô Thần','Quả Tú'].forEach(function(s){
-    if (dsSao.indexOf(s) >= 0) satNang.push(s);
-  });
-  if (satNang.length >= 3) cau.push('Hôn nhân có nhiều thử thách — cần kiên nhẫn và bao dung.');
-  else if (satNang.length >= 1) cau.push('Hôn nhân có vài trục trặc nhỏ, không đáng lo.');
-
-  if (PT.tuan || PT.triet) cau.push('Tuần/Triệt tại Phu Thê — hôn nhân có thể đến muộn hoặc trải qua giai đoạn xa cách.');
-
-  /* --- Bát Tự --- */
-  var viTri = I.male ? ['Chính Tài','Thiên Tài'] : ['Chính Quan','Thất Sát'];   // nam: Tài tinh = vợ; nữ: Quan/Sát = chồng (info.gender là 'Nam'/'Nữ' nên dùng info.male)
-  var soPhoi = 0;
-  bt.pillars.forEach(function(p){
-    if (viTri.indexOf(p.thapThan) >= 0) soPhoi++;
-    p.tangCan.forEach(function(t){
-      if (viTri.indexOf(t.thapThan) >= 0) soPhoi += 0.5;
-    });
-  });
-  if (soPhoi < 1) cau.push('Bát Tự: sao phối ngẫu nhược — duyên đến muộn hoặc phải chủ động.');
-  else if (soPhoi >= 3) cau.push('Bát Tự: sao phối ngẫu vượng — có nhiều mối duyên, cần chọn kỹ.');
-
-  return cau.join(' ');
-}
-
-/* ============================================================
- *  NHÓM G — CON CÁI (v3 — bảng số theo sách cổ; Bát Tự: nam xem Quan Sát, nữ xem Thực Thương, trụ giờ = cung con)
- * ============================================================ */
-function sinhDoanNhomG_(D) {
-  var tv = D.tv, bt = D.bt;
-  var P = tv.palaces, I = tv.info;
-  var cau = [];
-  var pi = -1;
-  for (var i = 0; i < 12; i++) if (P[i].cung === 'Tử Tức') { pi = i; break; }
-  if (pi < 0) return '';
-  var TT = P[pi], u = ncUocSo_(P, pi, NC_SO_CON);
-  var chinh = (TT.chinh.length ? TT.chinh : P[(pi + 6) % 12].chinh).map(function (s) { return s.n; });
-
-  if (u) {
-    var muc = u.hi >= 4 ? 'đông con' : u.hi >= 2 ? 'số con vừa phải' : 'ít con';
-    cau.push('Lá số thuộc dạng ' + muc + ' (sách cổ ước khoảng ' + ncKhoang_(u) + ' người con' + (u.muon ? ', cung trống nên mượn cung đối diện' : '') + ').');
-  }
-  if (chinh.indexOf('Thiên Cơ') >= 0 || chinh.indexOf('Thiên Tướng') >= 0 || chinh.indexOf('Vũ Khúc') >= 0 || chinh.indexOf('Tham Lang') >= 0) cau.push('Thường có con hơi muộn.');
-  if (chinh.indexOf('Thất Sát') >= 0 || chinh.indexOf('Phá Quân') >= 0) cau.push('Con đầu lòng dễ vất vả khi nuôi (hay ốm, hoặc khó mang thai lần đầu); con cá tính mạnh, có chí.');
-  if (chinh.indexOf('Thiên Đồng') >= 0 || chinh.indexOf('Thiên Lương') >= 0) cau.push('Con hiền lành, ngoan, tình cảm.');
-  if (chinh.indexOf('Thái Âm') >= 0) cau.push('Con tinh tế, có năng khiếu văn nghệ; thường có con gái.');
-  if (chinh.indexOf('Thiên Cơ') >= 0) cau.push('Con thông minh, hiếu động.');
-  if (chinh.indexOf('Cự Môn') >= 0) cau.push('Cha mẹ và con dễ khác quan điểm, cần kiên nhẫn trò chuyện.');
-  if (u && u.sat >= 2) cau.push('Cần chú ý sức khỏe của con lúc nhỏ và sức khỏe khi mang thai.');
-  if (TT.tuan || TT.triet) cau.push('Con có thể đến muộn hoặc ít hơn mong muốn.');
-
-  /* --- Bát Tự: sao con cái theo giới tính + trụ giờ --- */
-  var saoCon = I.male ? ['Chính Quan', 'Thất Sát'] : ['Thực Thần', 'Thương Quan'];
-  var soCon = 0;
-  bt.pillars.forEach(function (p, i) {
-    if (i !== 2 && saoCon.indexOf(p.thapThan) >= 0) soCon++;
-    p.tangCan.forEach(function (t) { if (saoCon.indexOf(t.thapThan) >= 0) soCon += 0.5; });
-  });
-  var tenSao = I.male ? 'Quan Sát' : 'Thực Thương';
-  if (soCon >= 2) cau.push('Bát Tự: sao con cái (' + tenSao + ') mạnh — có duyên con cái, con dễ thành đạt.');
-  else if (soCon < 0.5) cau.push('Bát Tự: sao con cái (' + tenSao + ') yếu — con có thể đến muộn hoặc ít' + (u && u.hi >= 2 ? ', dù Tử Vi cho số con vừa phải' : '') + '.');
-  else cau.push('Bát Tự: sao con cái ở mức vừa — con cái ổn định.');
-  var gio = bt.pillars[3];
-  if (gio && gio.thapThan) {
-    var tt = gio.thapThan;
-    if (saoCon.indexOf(tt) >= 0) cau.push('Trụ giờ (cung con cái của Bát Tự) mang đúng sao con cái — gắn bó với con, về già được nhờ con.');
-    else if (tt === 'Chính Ấn' || tt === 'Thiên Ấn') cau.push(I.male ? 'Trụ giờ là Ấn — con hiếu học, nhưng bạn dễ lo lắng, bao bọc con quá mức.' : 'Trụ giờ là Ấn (khắc sao con của nữ) — con dễ đến muộn; nên thả lỏng, bớt lo.');
-    else if (tt === 'Tỷ Kiên' || tt === 'Kiếp Tài') cau.push('Trụ giờ là Tỷ Kiếp — con độc lập, sớm tự lo cho bản thân.');
-    else if (tt === 'Chính Tài' || tt === 'Thiên Tài') cau.push('Trụ giờ là Tài — về già có của để dành, con cái giúp kinh tế.');
-  }
-  return cau.join(' ');
-}
-
-/* ============================================================
- *  NHÓM H — SỰ NGHIỆP
- * ============================================================ */
-function sinhDoanNhomH_(D) {
-  var tv = D.tv, bt = D.bt, ts = D.ts, hd = D.hd;
-  var P = tv.palaces;
-  var cau = [];
-  var pi = -1;
-  for (var i = 0; i < 12; i++) if (P[i].cung === 'Quan Lộc') { pi = i; break; }
-  if (pi < 0) return '';
-
-  var QL = P[pi];
-  var saoQL = QL.chinh.map(function(s){ return s.n; });
-  var dsSao = [].concat(QL.chinh, QL.cat, QL.hung, QL.tieu).map(function(s){ return s.n; });
-
-  if (!saoQL.length) {
-    var xc = P[(pi + 6) % 12];
-    var saoDoi = xc.chinh.map(function(s){ return s.n; });
-    if (saoDoi.indexOf('Tử Vi') >= 0 || saoDoi.indexOf('Thiên Phủ') >= 0) {
-      cau.push('Sự nghiệp vững vàng, có thể làm quản lý.');
-    } else if (saoDoi.indexOf('Thiên Cơ') >= 0 || saoDoi.indexOf('Thiên Lương') >= 0) {
-      cau.push('Sự nghiệp thiên về trí tuệ, cố vấn, giáo dục.');
-    } else {
-      cau.push('Sự nghiệp ở mức trung bình, phụ thuộc nỗ lực bản thân.');
-    }
-  } else {
-    if (saoQL.indexOf('Tử Vi') >= 0) cau.push('Có tố chất lãnh đạo, làm chủ.');
-    else if (saoQL.indexOf('Vũ Khúc') >= 0) cau.push('Phù hợp với kinh doanh, tài chính.');
-    else if (saoQL.indexOf('Thiên Tướng') >= 0) cau.push('Phù hợp với hành chính, luật, quản lý.');
-    else if (saoQL.indexOf('Thiên Cơ') >= 0) cau.push('Phù hợp với nghiên cứu, kỹ thuật, tư vấn.');
-    else if (saoQL.indexOf('Thái Dương') >= 0) cau.push('Phù hợp với đối ngoại, giáo dục, y tế.');
-    else if (saoQL.indexOf('Cự Môn') >= 0) cau.push('Phù hợp với kinh doanh, nói, thuyết trình.');
-    else if (saoQL.indexOf('Thất Sát') >= 0 || saoQL.indexOf('Phá Quân') >= 0) {
-      cau.push('Sự nghiệp có tính đột phá, dễ thay đổi ngành.');
-    } else if (saoQL.indexOf('Tham Lang') >= 0) cau.push('Đa tài, có thể làm nhiều nghề.');
-    else cau.push('Sự nghiệp ổn định.');
-  }
-
-  var satList = ['Kình Dương','Đà La','Hỏa Tinh','Linh Tinh','Địa Không','Địa Kiếp','Hóa Kỵ'];
-  var demSat = 0;
-  satList.forEach(function(s){ if (dsSao.indexOf(s) >= 0) demSat++; });
-  if (demSat >= 3) cau.push('Sự nghiệp nhiều trắc trở, dễ đổi việc.');
-  else if (demSat >= 1) cau.push('Sự nghiệp có vài lần chuyển hướng.');
-
-  if (dsSao.indexOf('Hóa Quyền') >= 0) cau.push('Có quyền trong công việc, dễ được đề bạt.');
-  if (dsSao.indexOf('Hóa Lộc') >= 0) cau.push('Kiếm tiền thuận lợi, thu nhập ổn định.');
-  if (dsSao.indexOf('Hóa Khoa') >= 0) cau.push('Được quý nhân giúp đỡ trong sự nghiệp.');
-
-  if (QL.tuan || QL.triet) cau.push('Tuần/Triệt tại Quan Lộc — sự nghiệp cần tích lũy lâu dài.');
-
-  var soQuanSat = 0;
-  bt.pillars.forEach(function(p){
-    if (p.thapThan === 'Chính Quan' || p.thapThan === 'Thất Sát') soQuanSat++;
-    p.tangCan.forEach(function(t){
-      if (t.thapThan === 'Chính Quan' || t.thapThan === 'Thất Sát') soQuanSat += 0.5;
-    });
-  });
-  var soThuongTai = 0;
-  bt.pillars.forEach(function(p, i){
-    var ok = function(x){ return ['Thực Thần','Thương Quan','Chính Tài','Thiên Tài'].indexOf(x) >= 0; };
-    if (i !== 2 && ok(p.thapThan)) soThuongTai++;
-    p.tangCan.forEach(function(t){ if (ok(t.thapThan)) soThuongTai += 0.5; });
-  });
-  if (soQuanSat >= 2) cau.push('Bát Tự: sao quyền chức (Quan Sát) mạnh — hợp môi trường có tổ chức, cấp bậc, dễ lên vị trí quản lý.');
-  else if (soQuanSat < 0.5 && soThuongTai >= 2) cau.push('Bát Tự: sao tài năng & tiền bạc (Thực Thương, Tài) mạnh hơn sao quyền chức — hợp kinh doanh, làm tự do, nghề chuyên môn.');
-  else if (soQuanSat < 0.5) cau.push('Bát Tự: sao quyền chức yếu — không thích bị ràng buộc, hợp công việc tự chủ.');
-
-  if (ts && ts.duongDoi) {
-    var so = ts.duongDoi, g = tsGoc_(so);   // xét theo số gốc 1–9; 11/22/33 là số bậc thầy
-    var ten = 'Thần số: số chủ đạo ' + so + ([11, 22, 33].indexOf(so) >= 0 ? ' (số bậc thầy, gốc ' + g + ')' : so !== g ? ' (gốc ' + g + ')' : '');
-    if (g === 1 || g === 8) cau.push(ten + ' — có tố chất lãnh đạo, tự làm chủ.');
-    else if (g === 2 || g === 6) cau.push(ten + ' — phù hợp làm việc nhóm, chăm sóc, hỗ trợ con người.');
-    else if (g === 3 || g === 5) cau.push(ten + ' — sáng tạo, giao tiếp, cần môi trường linh hoạt.');
-    else if (g === 4) cau.push(ten + ' — kiên nhẫn, kỷ luật, phù hợp kỹ thuật và quy trình.');
-    else if (g === 7) cau.push(ten + ' — thích nghiên cứu, phân tích, chuyên môn sâu.');
-    else if (g === 9) cau.push(ten + ' — phù hợp công việc nhân đạo, giáo dục, xã hội.');
-  }
-
-  if (hd && hd.loai) {
-    var moTaHD = {
-      'Generator': 'Human Design: Người Kiến Tạo — thành công khi làm điều mình thích.',
-      'Manifesting Generator': 'Human Design: Kiến Tạo Biểu Hiện — nhanh, đa nhiệm.',
-      'Manifestor': 'Human Design: Người Khởi Xướng — tự mở đường.',
-      'Projector': 'Human Design: Người Dẫn Dắt — hướng dẫn người khác.',
-      'Reflector': 'Human Design: Người Phản Chiếu — nhạy với môi trường.'
-    };
-    if (moTaHD[hd.loai]) cau.push(moTaHD[hd.loai]);
-  }
-
-  return cau.join(' ');
-}
 /* ============================================================
  *  TEST — Chạy 8 đoạn mô tả cho 3 lá số
  * ============================================================ */

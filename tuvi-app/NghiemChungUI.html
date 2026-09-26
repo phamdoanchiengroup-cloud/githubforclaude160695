@@ -206,7 +206,8 @@ var NC_MUC = [
   { ma: 'dung_phan_lon',  ten: '◐ Đúng phần lớn' },
   { ma: 'dung_mot_nua',   ten: '◑ Đúng một nửa' },
   { ma: 'sai_phan_lon',   ten: '◒ Sai phần lớn' },
-  { ma: 'sai_hoan_toan',  ten: '✗ Sai hoàn toàn' }
+  { ma: 'sai_hoan_toan',  ten: '✗ Sai hoàn toàn' },
+  { ma: 'khong_ap_dung',  ten: '— Không áp dụng' }
 ];
 
 var cauTraLoi = {};
@@ -275,13 +276,16 @@ function lapLaSo() {
     .getDoanNghiemChung(input);
 }
 
+var doTinNhom = {};
 function hienDoan(doan) {
-  cauTraLoi = {};
+  cauTraLoi = {}; doTinNhom = {};
   var html = '';
   doan.forEach(function(d) {
+    doTinNhom[d.ma] = d.doTin;
     html += '<div class="doan" data-ma="' + d.ma + '">';
-    html += '<div class="doan-tieude">【' + d.ma + '】 ' + d.ten + '</div>';
-    html += '<div class="doan-text">' + d.text + '</div>';
+    html += '<div class="doan-tieude">【' + d.ma + '】 ' + d.ten + ' <small style="font-weight:400;opacity:.7">· độ tin ' + Math.round((d.doTin || 0) * 100) + '%</small></div>';
+    if (d.ghiChu) html += '<div class="doan-text" style="opacity:.8">ⓘ ' + d.ghiChu + '</div>';
+    html += '<div class="doan-text">' + (d.dong && d.dong.length ? '<ul style="margin:0;padding-left:18px">' + d.dong.map(function (x) { return '<li>' + x.t + (x.nhan ? ' <small style="opacity:.7">(' + x.nhan + ')</small>' : '') + '</li>'; }).join('') + '</ul>' : d.text) + '</div>';
     html += '<div class="muc-group">';
     NC_MUC.forEach(function(m) {
       html += '<div class="muc" data-ma="' + d.ma + '" data-muc="' + m.ma + '" onclick="chonMuc(this)">' + m.ten + '</div>';
@@ -302,7 +306,8 @@ function chonMuc(el) {
 }
 
 function xacNhan() {
-  var soNhom = Object.keys(cauTraLoi).length;
+  var soNhom = Object.keys(cauTraLoi).filter(function (k) { return cauTraLoi[k] !== 'khong_ap_dung'; }).length;
+  cauTraLoi._doTin = doTinNhom;
   if (soNhom < 4) {
     alert('Cần đánh dấu ít nhất 4 nhóm để tính điểm. Hiện có ' + soNhom + ' nhóm.');
     return;

@@ -3396,6 +3396,8 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
     // người dùng vẫn chuyển tab và xem lịch sử được.
     var loiKhoiDong = [];
     function buoc(ten, fn) { try { fn(); } catch (e) { loiKhoiDong.push(ten + ': ' + (e && e.message)); if (window.console) console.error('[Khởi động] ' + ten, e); } }
+    // Mọi cửa sổ (modal) ra cấp ngoài cùng: tránh bị khung cha giới hạn lớp hiển thị (thanh mời mua đè lên)
+    buoc('cửa sổ', function () { document.querySelectorAll('.modal').forEach(function (m) { if (m.parentNode !== document.body) document.body.appendChild(m); }); });
     buoc('tabs', function () {
       $('tabs').addEventListener('click', function (e) {
         var t = e.target.closest('.tab');
@@ -3512,8 +3514,10 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
     { ma: 'dung_phan_lon',  ten: '◐ Đúng phần lớn' },
     { ma: 'dung_mot_nua',   ten: '◑ Đúng một nửa' },
     { ma: 'sai_phan_lon',   ten: '◒ Sai phần lớn' },
-    { ma: 'sai_hoan_toan',  ten: '✗ Sai hoàn toàn' }
+    { ma: 'sai_hoan_toan',  ten: '✗ Sai hoàn toàn' },
+    { ma: 'khong_ap_dung',  ten: '— Không áp dụng' }
   ];
+  var ncDoTin = {};   // độ tin từng nhóm (mức đồng thuận 6 hệ) – gửi kèm khi tính điểm
 
   function showBuoc(n) {
     ['ncBuoc1','ncBuoc2','ncBuoc3'].forEach(function (id, i) {
@@ -3672,14 +3676,20 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
 
 
   function hienDoan(doan) {
-    var h = '';
+    var h = '<p class="nc-huongdan">Mỗi câu dưới đây là kết luận mà <b>nhiều hệ cùng chỉ ra</b> (nhãn bên cạnh cho biết bao nhiêu hệ đồng thuận). Hãy chấm cả nhóm theo cuộc đời thật của bạn. Nhóm nào chưa áp dụng (chưa lập gia đình, chưa có con…) thì chọn <b>Không áp dụng</b>.</p>';
+    ncDoTin = {};
     doan.forEach(function (d) {
-      h += '<div class="nc-doan" data-ma="' + d.ma + '">';
-      h += '<div class="nc-tieude">【' + d.ma + '】 ' + d.ten + '</div>';
-      h += '<div class="nc-text">' + d.text + '</div>';
+      ncDoTin[d.ma] = d.doTin;
+      var mt = Math.round((d.doTin || 0) * 100);
+      h += '<div class="nc-doan' + (d.apDung === false ? ' nc-na' : '') + '" data-ma="' + d.ma + '">';
+      h += '<div class="nc-tieude">【' + d.ma + '】 ' + d.ten + '<span class="nc-tin" title="Mức đồng thuận trung bình của các hệ trong nhóm này">độ tin ' + mt + '%<i style="width:' + mt + '%"></i></span></div>';
+      if (d.ghiChu) h += '<div class="nc-ghichu">ⓘ ' + d.ghiChu + '</div>';
+      if (d.dong && d.dong.length) h += '<ul class="nc-ds">' + d.dong.map(function (x) {
+        return '<li>' + x.t + (x.nhan ? ' <span class="nc-nhan">' + x.nhan + '</span>' : '') + '</li>'; }).join('') + '</ul>';
+      else h += '<div class="nc-text">' + d.text + '</div>';
       h += '<div class="nc-muc-group">';
       NC_MUC.forEach(function (m) {
-        h += '<button type="button" class="nc-muc" data-ma="' + d.ma + '" data-muc="' + m.ma + '">' + m.ten + '</button>';
+        h += '<button type="button" class="nc-muc' + (m.ma === 'khong_ap_dung' ? ' nc-muc-na' : '') + '" data-ma="' + d.ma + '" data-muc="' + m.ma + '">' + m.ten + '</button>';
       });
       h += '</div></div>';
     });
@@ -3697,8 +3707,9 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
   }
 
   function xacNhan() {
-    var so = Object.keys(cauTraLoi).length;
-    if (so < 4) { alert('Cần đánh dấu ít nhất 4 nhóm để tính điểm. Hiện có ' + so + ' nhóm.'); return; }
+    var so = Object.keys(cauTraLoi).filter(function (k) { return cauTraLoi[k] !== 'khong_ap_dung'; }).length;
+    if (so < 4) { alert('Cần chấm ít nhất 4 nhóm (không tính nhóm "Không áp dụng"). Hiện có ' + so + ' nhóm.'); return; }
+    cauTraLoi._doTin = ncDoTin;
     $('ncXacNhan').disabled = true;
     $('ncXacNhan').textContent = 'Đang tính…';
     google.script.run
@@ -3722,7 +3733,7 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
     $('ncKhuyen').textContent = kq.khuyen;
     var h = '<div style="margin-bottom:8px"><b>Tổng:</b> ' + kq.soDungCao + ' nhóm đúng cao · ' + kq.soSai + ' nhóm sai</div>';
     kq.chiTiet.forEach(function (c) {
-      h += '<div style="padding:3px 0">【' + c.ma + '】 ' + c.ten + ' — ' + c.mucTen + ' (' + Math.round(c.diem * 100) + '%)</div>';
+      h += '<div style="padding:3px 0">【' + c.ma + '】 ' + c.ten + ' — ' + c.mucTen + (c.diem == null ? ' (bỏ qua)' : ' (' + Math.round(c.diem * 100) + '%)') + '</div>';
     });
     $('ncChiTiet').innerHTML = phieuNc(kq) + h;
     showBuoc(3);
