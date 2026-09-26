@@ -875,6 +875,7 @@
   function khoaCta(m) { return (m && m.phan === 'cap_doi' ? state.cd && state.cd.khoa : state.result && state.result.khoa) || 'x'; }
   function veCta() {
     var bar = $('ctaBar'), m = tinhTrangMua(), khoa = khoaCta(m);
+    if (!bar) return;
     if (!m || dh.anCta === khoa) { bar.hidden = true; bar.classList.remove('hien'); document.body.classList.remove('co-cta'); return; }
     bar.hidden = false;
     bar.innerHTML = '<div class="cb-nd"><b>🔓 ' + esc(m.tieuDe) + '</b> – ' + esc(m.moTa) + (m.phu ? '<small>' + esc(m.phu) + '</small>' : '') + '</div>' +
@@ -896,6 +897,7 @@
   /** Banner đầu trang: trước khi lập lá số là khung giới thiệu; sau đó là dải quảng cáo gọn, hiện ở mọi tab */
   function veQc() {
     var r = state.result, top = $('qcTop'), strip = $('qcStrip');
+    if (!top || !strip) return;
     top.classList.toggle('gon', !!r); strip.hidden = !r;
     if (!r) return;
     var m = tinhTrangMua(), nut = '';
@@ -922,6 +924,7 @@
     if (dh.hen) return;
     dh.hen = requestAnimationFrame(function () {
       dh.hen = 0;
+      if (!$('docBar') || !$('lenDau') || !$('ctaBar') || !$('tocHien') || !$('toc')) return;   // Index.html cũ thiếu thanh điều hướng
       var y = window.pageYOffset, H = document.documentElement.scrollHeight - window.innerHeight;
       $('docBar').style.width = (H > 0 ? Math.min(100, y / H * 100) : 0) + '%';
       $('lenDau').classList.toggle('hien', y > 700);
@@ -3171,19 +3174,34 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
 
   /* ------------------------ KHỞI TẠO ------------------------ */
   document.addEventListener('DOMContentLoaded', function () {
-    // Ảnh quảng bá (Anh.html – tùy chọn)
-    if (typeof ANH_QC === 'string' && ANH_QC) $('anhQC').src = ANH_QC; else $('wlHero').classList.add('no-anh');
-    function khamPha() {
-      if (window.innerWidth < 1080) document.querySelector('.form-panel').scrollIntoView({ behavior: 'smooth', block: 'start' });
-      if (!$('name').value.trim()) { $('name').focus(); toast('Nhập họ tên và ngày giờ sinh, rồi bấm "Lập Lá Số" để bắt đầu ✦'); return; }
-      submit();
-    }
-    $('wlGo').addEventListener('click', khamPha); $('wlAnh').addEventListener('click', khamPha);
-    initDieuHuong();
-    initTaiKhoan();
-    initForm();
-    initCapDoi();
-    tipInit();
+    // Tab & Lịch sử gắn TRƯỚC TIÊN: nếu một bước khởi động phía sau lỗi (vd. Index.html cũ thiếu phần tử),
+    // người dùng vẫn chuyển tab và xem lịch sử được.
+    var loiKhoiDong = [];
+    function buoc(ten, fn) { try { fn(); } catch (e) { loiKhoiDong.push(ten + ': ' + (e && e.message)); if (window.console) console.error('[Khởi động] ' + ten, e); } }
+    buoc('tabs', function () {
+      $('tabs').addEventListener('click', function (e) {
+        var t = e.target.closest('.tab');
+        if (t) showTab(t.getAttribute('data-tab'));
+      });
+    });
+    buoc('lịch sử', function () { $('btnHistoryTop').addEventListener('click', function () { showTab('hist'); }); });
+    buoc('ảnh quảng bá', function () {
+      // Ảnh quảng bá (Anh.html – tùy chọn)
+      if (typeof ANH_QC === 'string' && ANH_QC && $('anhQC')) $('anhQC').src = ANH_QC; else if ($('wlHero')) $('wlHero').classList.add('no-anh');
+      function khamPha() {
+        if (window.innerWidth < 1080) document.querySelector('.form-panel').scrollIntoView({ behavior: 'smooth', block: 'start' });
+        if (!$('name').value.trim()) { $('name').focus(); toast('Nhập họ tên và ngày giờ sinh, rồi bấm "Lập Lá Số" để bắt đầu ✦'); return; }
+        submit();
+      }
+      if ($('wlGo')) $('wlGo').addEventListener('click', khamPha);
+      if ($('wlAnh')) $('wlAnh').addEventListener('click', khamPha);
+    });
+    buoc('điều hướng', initDieuHuong);
+    buoc('tài khoản', initTaiKhoan);
+    buoc('biểu mẫu', initForm);
+    buoc('cặp đôi', initCapDoi);
+    buoc('chú giải', tipInit);
+    buoc('nút cơ sở', function () {
         // Nút bật/tắt hiện cơ sở phân tích (mặc định: ẩn để gọn)
     (function () {
       var nut = $('nutCoso');
@@ -3217,11 +3235,8 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
       danhDau();
       window._danhDauCoso = danhDau;
     })();
-    $('tabs').addEventListener('click', function (e) {
-      var t = e.target.closest('.tab');
-      if (t) showTab(t.getAttribute('data-tab'));
     });
-    $('btnHistoryTop').addEventListener('click', function () { showTab('hist'); });
+    buoc('tùy chọn & xuất file', function () {
     ['optLuu', 'optMinor', 'optLines'].forEach(function (id) { $(id).addEventListener('change', applyOptions); });
     $('btnPrint').addEventListener('click', function () { window.print(); });
     $('btnPdfTop').addEventListener('click', moPdf);
@@ -3252,8 +3267,12 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
         document.body.appendChild(a); a.click(); a.remove();
       }).catch(showErr);
     });
+    });
     var rt;
     window.addEventListener('resize', function () { clearTimeout(rt); rt = setTimeout(drawOverlay, 120); });
+    if (loiKhoiDong.length) {
+      toast('⚠ Một phần giao diện chưa khởi động được (' + loiKhoiDong.length + ' lỗi). Hãy dán lại cùng lúc 3 file Index, Styles, Script bản mới nhất rồi deploy phiên bản mới.', true);
+    }
   });
 })();
 
