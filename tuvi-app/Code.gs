@@ -198,6 +198,7 @@ function lapMoRong_(input, result) {
     nguyenTo: ct.nguyenTo, tinhChat: ct.tinhChat, phaTrang: ct.phaTrang, chuTinh: ct.chuTinh };
   var hdOut = { act: hd.act, gates: hd.gates, kenh: hd.kenh, dinh: hd.dinh, loai: hd.loai, loaiTen: HD_TYPES[hd.loai].ten, thamQuyen: HD_AUTH[hd.thamQuyen].ten,
     chienLuoc: HD_TYPES[hd.loai].chienLuoc, profile: hd.profile, dinhNghia: hd.dinhNghia, cross: hd.cross, goc: hd.goc, luan: hdLuan(hd) };
+  try { hdOut.phanTich = hdPhanTich_(hd, ct.thoiDiem, vy); } catch (e) { hdOut.phanTichLoi = String(e && e.message || e); }
   var hlOut = { tien: hl.tien, hau: hl.hau, hoTien: hl.hoTien, hoHau: hl.hoHau, lucHao: hl.lucHao, male: hl.male, luan: hlL };
   var tsL = thanSoHocLuan(ts);
   var dh = null;

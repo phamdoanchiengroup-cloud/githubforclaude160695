@@ -405,6 +405,19 @@ function dhHD_(hd) {
   facts.push(taoFact_(he, 'Menh', 'tinh_cach', 'manh', L.tomTat, 1.0, { nguon: 'Loại ' + hd.loai }));
   facts.push(taoFact_(he, 'Quan Loc', 'cong_danh', 'trung', L.loi[0], 0.8, { nguon: 'Chiến lược ' + hd.loai }));
   if (mo.indexOf('solar') >= 0) facts.push(taoFact_(he, 'Menh', 'tinh_cach', 'yeu', DH_HD_MO.solar, 0.6, { nguon: 'Trung tâm cảm xúc mở' }));
+  var P = hd.phanTich;
+  if (P && P.bienSo) {
+    var bs = P.bienSo, c7 = (P.chuKy7 || []).filter(function (c) { return c.nay; })[0], gon = function (t) { return String(t).split(' (')[0]; };
+    khoi.push({ ten: 'Sống hợp với thiết kế của bạn', doan: [
+      dhDoan_('Điều thúc đẩy bạn', 'Bạn có xu hướng hành động vì ' + bs[0].y.replace(/^động lực từ /, '') + '.'),
+      dhDoan_('Cách bạn nhìn cuộc sống', 'Bạn thường ' + bs[1].y + '.'),
+      dhDoan_('Môi trường hợp với bạn', 'Bạn làm việc và sống tốt nhất ở ' + bs[2].y + ' (kiểu "' + gon(bs[2].gt).toLowerCase() + '").'),
+      dhDoan_('Cách ăn uống hợp cơ thể', 'Cơ thể bạn tiêu hóa tốt khi ' + bs[3].y + '.'),
+      P.dinhNghia && P.dinhNghia.cau && P.dinhNghia.cau.length ? dhDoan_('Người giúp bạn thấy trọn vẹn', 'Bạn có hai "vùng" năng lượng tách rời; ở gần những người bổ sung được phần nối giữa hai vùng này, bạn thấy mình trọn vẹn và quyết định dễ hơn. Hãy để ý ai khiến bạn thấy "liền mạch" khi ở cạnh.') : null,
+      c7 ? dhDoan_('Giai đoạn đời hiện tại', 'Bạn đang ở chu kỳ 7 năm ' + c7.tu + '–' + c7.den + ' tuổi: ' + c7.y + '.') : null,
+      dhDoan_('Lời khuyên', '', P.loiKhuyen.slice(0, 2).map(function (x) { return x.ten + ': ' + x.t.replace(/\s*\([^)]*\)/g, ''); }))
+    ].filter(Boolean) });
+  }
   return { he: 'Human Design', khoi: khoi, facts: facts };
 }
 

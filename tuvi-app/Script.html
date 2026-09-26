@@ -2314,7 +2314,7 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
   var PHAN_HE = {
     astro: null,   // tab Chiêm tinh tự dựng khung Phần 1–8 trong renderAstro
     so: null,   // tab Thần số tự dựng khung Phần 1–8 trong renderThanSo
-    hd: [['Bản đồ năng lượng', 'Loại, chiến lược, thẩm quyền, bodygraph', /Human Design|Bodygraph/], ['Luận giải cốt lõi', 'Loại, thẩm quyền, hồ sơ, trung tâm, kênh', /Luận giải/], null, null],
+    hd: null,   // tab Human Design tự dựng khung Phần 1–11 trong renderHD
     halac: null   // tab Hà Lạc tự dựng khung Phần 1–5 trong renderHaLac
   };
   function xepPhan(pg, he) {
@@ -2917,16 +2917,76 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
   }
   function renderHD(res) {
     if (moRongLoi(res, 'page-hd')) return;
-    var H = res.moRong.hd;
-    var html = '<div class="panel section"><h2 class="panel-title"><span class="han">人類圖</span> Human Design</h2><div class="hd-top"><div class="hd-graph">' + bodygraphSvg(H) + '</div><div class="hd-sum">' +
-      [['Loại', H.loaiTen], ['Chiến lược', H.chienLuoc], ['Thẩm quyền', H.thamQuyen], ['Hồ sơ', H.profile], ['Định nghĩa', H.dinhNghia], ['Giao điểm hóa thân', H.cross + ' · ' + H.goc.split(' – ')[0]]]
-        .map(function (x) { return '<div class="hd-kv"><small>' + esc(x[0]) + '</small><b>' + esc(x[1]) + '</b></div>'; }).join('') +
-      '<p class="muted" style="font-size:12.5px">Trung tâm tô màu = xác định; kênh vàng = kênh xác định; nét đứt = cổng treo (chỉ một đầu kênh được kích hoạt).</p></div></div>' +
+    var H = res.moRong.hd, P = H.phanTich, vy = res.tuvi.info.viewYear;
+    if (!P) { $('page-hd').innerHTML = '<div class="panel section muted">Chưa có phân tích Human Design đầy đủ' + (H.phanTichLoi ? ' (' + esc(H.phanTichLoi) + ')' : '') + ' – hãy dán lại file HumanDesign.gs.</div>'; return; }
+    function kl(a) { return '<ul class="th-kl">' + a.map(itemHtml).join('') + '</ul>'; }
+    function ds(a) { return '<ul class="yr-ly">' + a.map(function (t) { return '<li>' + esc(t) + '</li>'; }).join('') + '</ul>'; }
+    function bang(hang, cot) { return '<div class="tbl-wrap"><table class="gio-tbl"><thead><tr>' + cot.map(function (c) { return '<th>' + esc(c) + '</th>'; }).join('') + '</tr></thead><tbody>' + hang.join('') + '</tbody></table></div>'; }
+    var D = P.duLieu;
+    // 1 – dữ liệu & bodygraph
+    var p1 = '<div class="panel section"><h2 class="panel-title"><span class="han">人類圖</span> Bodygraph</h2>' +
+      '<div class="ts-dl"><span><small>Sinh (Tính cách – đen)</small><b>' + esc(D.sinh) + '</b></span><span><small>Thiết kế (đỏ, Mặt Trời lùi 88°)</small><b>' + esc(D.thietKe) + '</b></span><span><small>Nơi sinh</small><b>' + esc(D.noiSinh) + '</b></span></div>' +
+      '<div class="hd-top"><div class="hd-graph">' + bodygraphSvg(H) + '</div><div class="hd-sum">' + D.coLoi.map(function (x) { return '<div class="hd-kv"><small>' + esc(x[0]) + '</small><b>' + esc(x[1]) + '</b></div>'; }).join('') +
+      '<div class="hd-kv"><small>Chiến lược</small><b>' + esc(H.chienLuoc) + '</b></div><div class="hd-kv"><small>Giao điểm hóa thân</small><b>' + esc(H.cross) + '</b></div>' +
+      '<p class="muted" style="font-size:12.5px">Trung tâm tô màu = xác định; kênh vàng = kênh xác định; nét đứt = cổng treo.</p></div></div>' +
+      bang(D.kichHoat.map(function (x) { return '<tr><td>' + esc(x.ten) + '</td><td class="hd-den"><b>' + x.p + '</b> <small>' + esc(x.pTen) + '</small></td><td class="hd-do"><b>' + x.d + '</b> <small>' + esc(x.dTen) + '</small></td></tr>'; }), ['Thiên thể', 'Tính cách (đen – ý thức)', 'Thiết kế (đỏ – vô thức)']) +
       coSoHtml('Cơ sở tính toán', ['Tính cách (Personality) = vị trí 13 thiên thể lúc sinh; Thiết kế (Design) = lúc Mặt Trời lùi đúng 88° hoàng đạo (~88 ngày trước sinh).',
-        'Vòng 64 cổng bắt đầu cổng 41 tại 302° hoàng đạo nhiệt đới; mỗi cổng 5,625°, mỗi hào 0,9375°.',
-        'Loại xác định bởi Xương cùng và việc động cơ (Sacral, Solar Plexus, Heart, Root) nối tới Cổ họng; Thẩm quyền theo thứ tự Cảm xúc → Xương cùng → Lá lách → Ý chí → Bản thể → Môi trường.',
-        'Đã đối chiếu 300 lá số ngẫu nhiên với thư viện mã nguồn mở hd-chart-engine: sai số vị trí < 4′, khác biệt chỉ ở ranh giới cổng/hào.']) + '</div>';
-    html += '<div class="panel section"><h2 class="panel-title"><span class="han">論</span> Luận giải</h2><div class="lg-list">' + H.luan.map(function (s, i) { return secBlock(s, i < 3); }).join('') + '</div></div>';
+        'Vòng 64 cổng bắt đầu cổng 41 tại 302° hoàng đạo nhiệt đới; mỗi cổng 5,625°, mỗi hào 0,9375°, mỗi màu 0,15625°, mỗi tông 0,026°.',
+        'Loại xác định bởi Xương cùng và việc động cơ (Xương cùng, Cảm xúc, Ý chí, Gốc) nối tới Cổ họng; Thẩm quyền theo thứ tự Cảm xúc → Xương cùng → Lá lách → Ý chí → Tự chiếu → Môi trường → Mặt Trăng.',
+        'Đã đối chiếu với thư viện mã nguồn mở hd-chart-engine: cổng, hào và màu của Mặt Trời trùng khớp. Riêng Nút Mặt Trăng dùng công thức Meeus nên có thể lệch vài phần mười độ – hai biến số Môi trường và Quan điểm (dựa vào màu của Nút) có thể lệch một bậc.']) + '</div>';
+    // 2 – 5 loại
+    var L = P.loai, p2 = '<div class="panel section"><h2 class="panel-title"><span class="han">型</span> 5 loại năng lượng</h2>' +
+      bang(L.ds.map(function (x) { return '<tr class="' + (x.la ? 'best' : '') + '"><td><b>' + esc(x.ten) + '</b>' + (x.la ? ' ← bạn' : '') + '</td><td>' + esc(x.tl) + '</td><td>' + esc(x.chienLuoc) + '</td><td>' + esc(x.dauHieu) + '</td><td>' + esc(x.saiLech) + '</td></tr>'; }), ['Loại', 'Tỷ lệ', 'Chiến lược', 'Đúng hướng', 'Lệch hướng']) +
+      kl([H.luan[0].items[0], 'Cách làm việc: ' + L.lam + '.', 'Trong quan hệ: ' + L.qh + '.']) + '</div>';
+    // 3 – thẩm quyền
+    var p3 = '<div class="panel section"><h2 class="panel-title"><span class="han">權</span> Thẩm quyền nội tâm</h2>' +
+      bang(P.thamQuyen.ds.map(function (x) { return '<tr class="' + (x.la ? 'best' : '') + '"><td><b>' + esc(x.ten) + '</b>' + (x.la ? ' ← bạn' : '') + '</td><td>' + esc(x.moTa) + '</td></tr>'; }), ['Thẩm quyền', 'Cách ra quyết định']) + '</div>';
+    // 4 – định nghĩa
+    var DN = P.dinhNghia, p4 = '<div class="panel section"><h2 class="panel-title"><span class="han">定</span> Định nghĩa</h2>' +
+      bang(DN.ds.map(function (x) { return '<tr class="' + (x.la ? 'best' : '') + '"><td><b>' + esc(x.ten) + '</b>' + (x.la ? ' ← bạn' : '') + '</td><td>' + esc(x.y) + '</td></tr>'; }), ['Định nghĩa', 'Ý nghĩa']) +
+      kl(DN.nhom.map(function (g, i) { return 'Nhóm ' + (i + 1) + ': ' + g.join(' – '); }).concat(DN.cau.length ? ['Cổng "bắc cầu" nối các nhóm: ' + DN.cau.map(function (x) { return x.cong + ' (kênh ' + x.kenh + ')'; }).join('; ') + ' – người có các cổng này giúp bạn thấy trọn vẹn.'] : [])) + '</div>';
+    // 5 – hồ sơ
+    var HS = P.hoSo, p5 = '<div class="panel section"><h2 class="panel-title"><span class="han">相</span> Hồ sơ (Profile)</h2><div class="hd-prof">' +
+      HS.ds.map(function (x) { return '<span class="' + (x.la ? 'la' : '') + '"><b>' + x.k + '</b><small>' + esc(x.y) + '</small></span>'; }).join('') + '</div>' +
+      kl(H.luan[2].items) + '</div>';
+    // 6 – 9 trung tâm
+    var p6 = '<div class="panel section"><h2 class="panel-title"><span class="han">心</span> 9 trung tâm</h2><div class="ts-db">' + P.trungTam.map(function (c) {
+      return '<div class="' + (c.dinh ? 'co' : '') + '"><b>' + (c.dinh ? '■ ' : '□ ') + esc(c.ten) + (c.dinh ? ' – xác định' : c.moHoanToan ? ' – mở hoàn toàn' : ' – mở') + '</b><p>' + esc(c.t) + '</p><small class="muted">Sinh học: ' + esc(c.sinhHoc) + (c.cong.length ? ' · cổng: ' + c.cong.join(', ') : '') + '</small></div>';
+    }).join('') + '</div></div>';
+    // 7 – 36 kênh
+    var K = P.kenh, p7 = '<div class="panel section"><h2 class="panel-title"><span class="han">道</span> 36 kênh</h2><p class="lede">' + esc(K.ketLuan) + ' Kênh xác định: cá nhân ' + K.dem['Cá nhân'] + ', tập thể ' + K.dem['Tập thể'] + ', bộ tộc ' + K.dem['Bộ tộc'] + '.</p>' +
+      bang(K.ds.slice().sort(function (a, b) { return (b.co - a.co) || (b.treo - a.treo); }).map(function (x) { return '<tr class="' + (x.co ? 'best' : '') + '"><td><b>' + x.k + '</b></td><td>' + esc(x.ten) + '</td><td>' + esc(x.mach) + '</td><td>' + (x.co ? '✓ xác định' : x.treo ? '◐ một nửa' : '<span class="muted">–</span>') + '</td><td>' + esc(x.moTa) + '</td></tr>'; }), ['Kênh', 'Tên', 'Mạch', 'Trạng thái', 'Ý nghĩa']) + '</div>';
+    // 8 – 64 cổng
+    var C = P.cong, byG = {}; C.kichHoat.forEach(function (x) { byG[x.g] = x; });
+    var luoi = ''; for (var g = 1; g <= 64; g++) { var x = byG[g]; luoi += '<span class="hd-g ' + (x ? (x.mau === 'đen' ? 'den' : x.mau === 'đỏ' ? 'do' : 'ca') : '') + '" title="' + esc(g + ' – ' + (x ? x.ten : C.trong.filter(function (t) { return t.g === g; })[0].ten)) + '">' + g + '</span>'; }
+    var p8 = '<div class="panel section"><h2 class="panel-title"><span class="han">門</span> 64 cổng</h2><p class="lede">' + C.kichHoat.length + ' cổng kích hoạt (' + C.soDen + ' đen – ý thức, ' + C.soDo + ' đỏ – vô thức), ' + C.trong.length + ' cổng bỏ trống. Ô đen = Tính cách, đỏ = Thiết kế, sọc = cả hai; rê chuột để xem tên cổng.</p><div class="hd-luoi">' + luoi + '</div>' +
+      (C.treo.length ? '<h4 class="dd-h">Cổng treo (chờ cổng đối ứng)</h4>' + ds(C.treo.map(function (x) { return 'Cổng ' + x.g + ' ' + x.ten + ' – chờ cổng ' + x.canCong.join('/') + ': bạn dễ bị thu hút bởi người có cổng này.'; })) : '') +
+      '<details class="hl-cancu"><summary>Cổng bỏ trống theo trung tâm (điểm cần phát triển)</summary>' + ds((function () { var m = {}; C.trong.forEach(function (t) { (m[t.tt] = m[t.tt] || []).push(t.g); }); return Object.keys(m).map(function (k) { return k + ': ' + m[k].join(', '); }); })()) + '</details></div>';
+    // 9 – yếu tố khác
+    var p9 = '<div class="panel section"><h2 class="panel-title"><span class="han">變</span> Nút Mặt Trăng & 4 biến số</h2>' + ds([P.nut.p, P.nut.d]) + '<div class="ts-grid">' +
+      P.bienSo.map(function (x) { return '<div class="ts-so"><div class="ts-so-h"><span><em>' + esc(x.ten) + '</em><small>' + esc(x.nguon) + '</small></span></div><p class="ts-so-t"><b>' + esc(x.gt) + '</b> – ' + esc(x.y) + '.</p><small class="muted">Mũi tên ' + esc(x.mui) + '</small></div>'; }).join('') + '</div></div>' +
+      '<div class="bt-grid"><div class="panel section"><h2 class="panel-title"><span class="han">歸</span> Hồi quy Mặt Trời ' + vy + '</h2>' + kl([P.solarReturn.t].concat(P.solarReturn.trungTam.length ? ['Trung tâm được kích hoạt thêm trong năm: ' + P.solarReturn.trungTam.join(', ') + '.'] : [])) + '</div>' +
+      '<div class="panel section"><h2 class="panel-title"><span class="han">運</span> Transit ngày ' + esc(P.transit.ngay) + '</h2>' + kl(['Mặt Trời đang ở cổng ' + P.transit.matTroi + '.'].concat(P.transit.kenh.length ? ['Kênh được nối tạm thời: ' + P.transit.kenh.join('; ') + '.'] : ['Không nối thêm kênh nào.'])) + '</div></div>' +
+      '<div class="panel section"><h2 class="panel-title"><span class="han">七</span> Chu kỳ 7 năm</h2><div class="giao-van">' + P.chuKy7.map(function (c) { return '<span class="gv ' + (c.nay ? 'r4 now' : 'r3') + '"><b>' + c.tu + '–' + c.den + ' tuổi</b> · ' + c.nam + '<br><small>' + esc(c.y) + '</small></span>'; }).join('') + '</div>' +
+      '<div class="lg-list">' + H.luan.filter(function (x) { return /Ba giai đoạn/.test(x.tieuDe); }).map(function (x) { return secBlock(x, false); }).join('') + '</div></div>';
+    // 10 – luận tổng hợp
+    var p10 = '<div class="panel section"><h2 class="panel-title"><span class="han">總</span> Luận giải tổng hợp</h2><div class="hl-lv">' + P.tongHop.map(function (x) { return '<div class="hl-lv-i"><h3>' + esc(x.ten) + '</h3>' + ds(x.items) + '</div>'; }).join('') + '</div></div>' +
+      '<div class="panel section"><h2 class="panel-title"><span class="han">策</span> Lời khuyên</h2><ol class="ts-lk">' + P.loiKhuyen.map(function (x) { return '<li><b>' + esc(x.ten) + '</b><p>' + esc(x.t) + '</p></li>'; }).join('') + '</ol></div>';
+    // 11 – ứng dụng
+    var mo = P.trungTam.filter(function (c) { return !c.dinh; }).map(function (c) { return c.ten.split(' (')[0]; });
+    var p11 = '<div class="panel section"><h2 class="panel-title"><span class="han">用</span> Ứng dụng thực tế</h2>' +
+      '<h4 class="dd-h">1. Tự khám phá bản thân</h4>' + kl(['Loại → chiến lược sống: ' + H.chienLuoc + '.', 'Thẩm quyền → cách quyết định: ' + H.thamQuyen + '.', 'Hồ sơ → nhân cách: ' + H.profile + ' – ' + HS.y + '.', 'Trung tâm mở → bài học: ' + mo.join(', ') + '.', 'Cổng bỏ trống → điểm cần phát triển: ' + C.trong.length + ' cổng (xem Phần 8).']) +
+      '<h4 class="dd-h">2. Chọn nghề</h4>' + kl(P.tongHop.filter(function (x) { return x.k === 'suNghiep'; })[0].items) +
+      '<h4 class="dd-h">3. Chọn người yêu / vợ chồng</h4>' + kl(P.tongHop.filter(function (x) { return x.k === 'quanHe'; })[0].items.concat(['So sánh hai bodygraph (kênh điện từ, đồng hành, áp đảo, thỏa hiệp) ở tab <b>Cặp đôi</b>.'])) +
+      '<h4 class="dd-h">4. Chọn thời điểm</h4>' + kl(['Năm: ' + P.solarReturn.t, 'Giai đoạn: chu kỳ 7 năm hiện tại – ' + (P.chuKy7.filter(function (c) { return c.nay; })[0] || { y: '' }).y + '.', 'Tháng: transit Mặt Trời hiện ở cổng ' + P.transit.matTroi + '.']) +
+      '<h4 class="dd-h">5. Đặt tên cho con</h4><p class="muted">Lập bodygraph của con; ưu tiên tên mang nghĩa nâng đỡ các trung tâm mở của con (ví dụ trung tâm Bản thể mở → tên gợi sự vững vàng, phương hướng), tránh tên mang nghĩa trái ngược với Loại của con.</p></div>';
+    var html = khoiPhan('hdp', 1, 'Dữ liệu & bodygraph', '13 thiên thể × 2, 4 yếu tố cốt lõi', p1) + khoiPhan('hdp', 2, 'Loại năng lượng', '5 loại và chiến lược', p2) +
+      khoiPhan('hdp', 3, 'Thẩm quyền nội tâm', '7 cách ra quyết định', p3) + khoiPhan('hdp', 4, 'Định nghĩa', 'Đơn, tách đôi, tách ba, tách bốn, không định nghĩa', p4) +
+      khoiPhan('hdp', 5, 'Hồ sơ', '12 hồ sơ nhân cách', p5) + khoiPhan('hdp', 6, '9 trung tâm', 'Xác định = sức mạnh, mở = bài học', p6) +
+      khoiPhan('hdp', 7, '36 kênh', 'Kênh cá nhân và kênh hợp tác', p7) + khoiPhan('hdp', 8, '64 cổng', 'Đen – đỏ, cổng treo, cổng bỏ trống', p8) +
+      khoiPhan('hdp', 9, 'Yếu tố khác', 'Nút, môi trường, quan điểm, động lực, hồi quy Mặt Trời, chu kỳ 7 năm, transit', p9) +
+      khoiPhan('hdp', 10, 'Luận tổng hợp & lời khuyên', 'Chiến lược, thẩm quyền, chủ đề đời, bài học, quan hệ, sự nghiệp, sức khỏe, vận trình', p10) +
+      khoiPhan('hdp', 11, 'Ứng dụng thực tế', 'Tự khám phá, chọn nghề, chọn bạn đời, chọn thời điểm, đặt tên', p11);
     $('page-hd').innerHTML = html;
   }
 
