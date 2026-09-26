@@ -1067,7 +1067,7 @@
     document.querySelectorAll('.tab').forEach(function (t) { t.classList.toggle('active', t.getAttribute('data-tab') === name); });
     document.querySelectorAll('.tab-page').forEach(function (p) { p.classList.toggle('active', p.id === 'page-' + name); });
     if (name === 'hist') loadHistory();
-    if (name === 'chart') setTimeout(drawOverlay, 30);
+    if (name === 'chart') setTimeout(function () { coLaSo(); drawOverlay(); }, 30);
     if (name === 'capdoi') cdNguoi1();
     dungMucLuc(); if (state.result || state.cd) { veCta(); veQc(); }
   }
@@ -1180,10 +1180,28 @@
     applyOptions();
   }
 
+  /** Điện thoại: thu nhỏ lá số vừa bề ngang (không phải kéo ngang); chạm một cung để xem chi tiết bên dưới */
+  function coLaSo() {
+    var fr = $('chartFrame'), sc = fr && fr.parentNode;
+    if (!fr || !sc || !sc.classList.contains('chart-scroll')) return;
+    fr.style.transform = ''; sc.style.height = ''; sc.classList.remove('co');
+    var w = sc.clientWidth, n = fr.offsetWidth;
+    if (!w || !n || w >= n) return;
+    var k = w / n;
+    fr.style.transformOrigin = '0 0'; fr.style.transform = 'scale(' + k + ')';
+    sc.style.height = Math.ceil(fr.offsetHeight * k) + 'px'; sc.classList.add('co');
+  }
+  /** Chụp lá số ở kích thước gốc (bỏ thu nhỏ tạm thời) */
+  function chupLaSo(opt) {
+    var fr = $('chartFrame'), sc = fr.parentNode, tf = fr.style.transform, h = sc.style.height;
+    fr.style.transform = ''; sc.style.height = '';
+    return html2canvas(fr, opt).then(function (c) { fr.style.transform = tf; sc.style.height = h; return c; }, function (e) { fr.style.transform = tf; sc.style.height = h; throw e; });
+  }
   function applyOptions() {
     var frame = $('chartFrame');
     frame.classList.toggle('hide-luu', !$('optLuu').checked);
     frame.classList.toggle('hide-minor', !$('optMinor').checked);
+    coLaSo();
     drawOverlay();
   }
 
@@ -1207,16 +1225,18 @@
     var svg = $('chartLines');
     var chart = $('chart');
     if (!svg || !chart || !state.result) return;
-    var cr = chart.getBoundingClientRect();
-    if (!cr.width) return;
-    var ctr = chart.querySelector('.center').getBoundingClientRect();
+    var cr0 = chart.getBoundingClientRect();
+    if (!cr0.width) return;
+    var k = cr0.width / (chart.offsetWidth || cr0.width);   // hệ số thu nhỏ (điện thoại) – quy mọi toạ độ về kích thước gốc
+    function goc(r) { return { left: r.left / k, top: r.top / k, width: r.width / k, height: r.height / k }; }
+    var cr = goc(cr0), ctr = goc(chart.querySelector('.center').getBoundingClientRect());
     svg.setAttribute('viewBox', '0 0 ' + ctr.width + ' ' + ctr.height);
     svg.setAttribute('width', ctr.width);
     svg.setAttribute('height', ctr.height);
     var cx = cr.width / 2, cy = cr.height / 2;
     // điểm neo: điểm trên cạnh cung gần tâm lá số nhất (toạ độ theo khung Thiên Bàn)
     function anchor(chi) {
-      var r = cellOf(chi).getBoundingClientRect();
+      var r = goc(cellOf(chi).getBoundingClientRect());
       var x0 = r.left - cr.left, y0 = r.top - cr.top, x1 = x0 + r.width, y1 = y0 + r.height;
       return [Math.min(Math.max(cx, x0), x1) - (ctr.left - cr.left), Math.min(Math.max(cy, y0), y1) - (ctr.top - cr.top)];
     }
@@ -3640,7 +3660,7 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
     if (chon.indexOf('chart') >= 0) {
       chuoi = chuoi.then(function () { showTab('chart'); return sleep(150); }).then(function () {
         drawOverlay();
-        return html2canvas($('chartFrame'), { scale: 2, backgroundColor: null, useCORS: true, logging: false });
+        return chupLaSo({ scale: 2, backgroundColor: null, useCORS: true, logging: false });
       }).then(function (c) { anhLaSo = c.toDataURL('image/png'); kichLaSo = [c.width, c.height]; });
     }
     var dsPhan = chon.map(function (k) { return { k: k, ten: PDF_TEN[k], hook: PDF_HOOK[k], trang: 0 }; });
@@ -3894,7 +3914,7 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
     $('btnPng').addEventListener('click', function () {
       if (typeof html2canvas === 'undefined') { toast('Không tải được thư viện chụp ảnh – hãy dùng nút In.', true); return; }
       loading(true);
-      html2canvas($('chartFrame'), { scale: 2, backgroundColor: getComputedStyle(document.body).backgroundColor || '#0a0c19', useCORS: true }).then(function (canvas) {
+      chupLaSo({ scale: 2, backgroundColor: getComputedStyle(document.body).backgroundColor || '#0a0c19', useCORS: true }).then(function (canvas) {
         loading(false);
         var a = document.createElement('a');
         a.href = canvas.toDataURL('image/png');
@@ -3904,7 +3924,7 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
     });
     });
     var rt;
-    window.addEventListener('resize', function () { clearTimeout(rt); rt = setTimeout(drawOverlay, 120); });
+    window.addEventListener('resize', function () { clearTimeout(rt); rt = setTimeout(function () { coLaSo(); drawOverlay(); }, 120); });
     if (loiKhoiDong.length) {
       toast('⚠ Một phần giao diện chưa khởi động được (' + loiKhoiDong.length + ' lỗi). Hãy dán lại cùng lúc 3 file Index, Styles, Script bản mới nhất rồi deploy phiên bản mới.', true);
     }
