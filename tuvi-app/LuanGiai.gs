@@ -295,17 +295,18 @@ function lgSaoMoTa_(P) {
   return P.chinh.map(function (s) { return s.n + (s.b ? ' (' + DO_SANG_TEN[s.b] + ')' : '') + (s.hoa ? ' hóa ' + s.hoa : ''); }).join(', ');
 }
 function lgXepHang_(d) {
-  if (d >= 5) return 'Rất tốt';
-  if (d >= 2.5) return 'Tốt';
-  if (d >= 0.5) return 'Khá';
-  if (d > -1.5) return 'Trung bình';
-  if (d > -4) return 'Kém';
+  var x = chuanHoa10_(d);   // d luôn là điểm thô (cộng dồn trọng số) – quy về thang 10 rồi mới xếp hạng
+  if (x >= 8.5) return 'Rất tốt';
+  if (x >= 7) return 'Tốt';
+  if (x >= 5.5) return 'Khá';
+  if (x >= 4) return 'Trung bình';
+  if (x >= 2.5) return 'Kém';
   return 'Cần thận trọng';
 }
 function lgR_(x) { return Math.round(x * 10) / 10; }
 /** Quy điểm thô (cộng dồn trọng số sao, không có trần) về thang 10 bằng hàm logistic:
  *  0 điểm thô = 5/10; +5 (Rất tốt) ≈ 8,4; +2,5 (Tốt) ≈ 7; +0,5 (Khá) ≈ 5,4; −1,5 ≈ 3,8; −4 (Kém) ≈ 2,1. */
-function diem10_(d) { return Math.round(100 / (1 + Math.exp(-d / 3))) / 10; }
+function diem10_(d) { return chuanHoa10_(d); }
 
 /** Quan hệ giữa hai địa chi */
 function lgQuanHeChi_(a, b) {
@@ -415,34 +416,70 @@ function lgPhanTichCung_(chart, pi, opt) {
   });
   secs.push({ tieuDe: 'Chính tinh & bộ sao', items: ct });
 
-  // --- Tương tác các cung ---
+    // --- Tương tác các cung (đầy đủ: TPTC + nhị hợp + giáp 2 bên + Tuần/Triệt kẹp) ---
   var tt = [];
   var th1 = mod12(pi + 4), th2 = mod12(pi + 8), xc = mod12(pi + 6), nh = lgNhiHop_(pi);
+  var giapL = mod12(pi - 1), giapR = mod12(pi + 1);
+
   function tenCung(x) { return (opt.tenCungHan ? opt.tenCungHan(x) : P[x].cung) + ' (' + P[x].chiTen + ')'; }
   function danhGiaGon(x) {
     var d = P[x].diem;
     return (P[x].chinh.length ? lgSaoMoTa_(P[x]) : 'vô chính diệu') + ' – ' + (d >= 2.5 ? 'hỗ trợ tốt' : d >= 0.5 ? 'hỗ trợ vừa' : d > -1.5 ? 'trung tính' : 'gây áp lực');
   }
-  tt.push('Tam hợp với ' + tenCung(th1) + ': ' + danhGiaGon(th1) + '.');
-  tt.push('Tam hợp với ' + tenCung(th2) + ': ' + danhGiaGon(th2) + '.');
-  tt.push('Xung chiếu từ ' + tenCung(xc) + ': ' + danhGiaGon(xc) + '. Cung xung chiếu là "tấm gương" phản ánh ngược lại lĩnh vực này.');
-  tt.push('Nhị hợp với ' + tenCung(nh) + ': ' + danhGiaGon(nh) + ' – ảnh hưởng ngầm, âm thầm.');
-  var giapL = mod12(pi - 1), giapR = mod12(pi + 1);
-  var giapGood = ['Tả Phù', 'Hữu Bật', 'Văn Xương', 'Văn Khúc', 'Thiên Khôi', 'Thiên Việt', 'Hóa Lộc', 'Hóa Quyền', 'Hóa Khoa', 'Lộc Tồn'];
-  var gL = lgSaoTrongCung_(chart, giapL).filter(function (s) { return giapGood.indexOf(s) >= 0; });
-  var gR = lgSaoTrongCung_(chart, giapR).filter(function (s) { return giapGood.indexOf(s) >= 0; });
-  if (gL.length && gR.length) tt.push('Giáp cát: hai cung kề có ' + gL.join(', ') + ' và ' + gR.join(', ') + ' – được nâng đỡ từ hai phía.');
-  var nhom = [];
+  function tomSao(p) {
+    var c = P[p].chinh.map(function(s){ return s.n; }).join(', ') || 'VCD';
+    var cat = P[p].cat.slice(0,3).map(function(s){ return s.n; }).join(', ');
+    var hung = P[p].hung.slice(0,3).map(function(s){ return s.n; }).join(', ');
+    var parts = ['chính: ' + c];
+    if (cat) parts.push('cát: ' + cat);
+    if (hung) parts.push('hung: ' + hung);
+    return parts.join(' · ');
+  }
+
+  // 1) Tam phương tứ chính – nêu rõ vai trò thể/dụng
+  tt.push('◈ Bản cung (THỂ – chủ, ~50% sức nặng): ' + tomSao(pi) + '.');
+  tt.push('◈ Tam hợp 1 – ' + tenCung(th1) + ' (~12,5%): ' + tomSao(th1) + ' → ' + danhGiaGon(th1) + '.');
+  tt.push('◈ Tam hợp 2 – ' + tenCung(th2) + ' (~12,5%): ' + tomSao(th2) + ' → ' + danhGiaGon(th2) + '.');
+  tt.push('◈ Xung chiếu (DỤNG – phản chiếu, ~25%): ' + tenCung(xc) + ' – ' + tomSao(xc) + ' → ' + danhGiaGon(xc) + '. Cung đối là "tấm gương": điều gì bị che ở bản cung sẽ lộ ra ở đây.');
+
+  // 2) Nhị hợp – ảnh hưởng ngầm
+  tt.push('◇ Nhị hợp (Lục hợp – ảnh hưởng NGẦM, nhẹ nhưng dai dẳng): ' + tenCung(nh) + ' – ' + tomSao(nh) + ' → ' + danhGiaGon(nh) +
+    '. Cổ điển: "nhị hợp là cái phông nền" – cát thì âm thầm nâng đỡ, hung thì âm thầm kéo lùi, khó nhận ra ngay.');
+
+  // 3) Giáp cung – kẹp hai bên (có cả giáp sát và giáp Tuần/Triệt)
+  var giapGood = ['Tả Phù', 'Hữu Bật', 'Văn Xương', 'Văn Khúc', 'Thiên Khôi', 'Thiên Việt', 'Hóa Lộc', 'Hóa Quyền', 'Hóa Khoa', 'Lộc Tồn', 'Thiên Đức', 'Nguyệt Đức', 'Long Trì', 'Phượng Các'];
+  var giapBad  = ['Kình Dương', 'Đà La', 'Hỏa Tinh', 'Linh Tinh', 'Địa Không', 'Địa Kiếp', 'Hóa Kỵ', 'Thiên Hình', 'Thiên Riêu', 'Tang Môn', 'Bạch Hổ', 'Thiên Khốc', 'Thiên Hư', 'Cô Thần', 'Quả Tú'];
+  var gLgood = lgSaoTrongCung_(chart, giapL).filter(function(s){ return giapGood.indexOf(s)>=0; });
+  var gRgood = lgSaoTrongCung_(chart, giapR).filter(function(s){ return giapGood.indexOf(s)>=0; });
+  var gLbad  = lgSaoTrongCung_(chart, giapL).filter(function(s){ return giapBad.indexOf(s)>=0; });
+  var gRbad  = lgSaoTrongCung_(chart, giapR).filter(function(s){ return giapBad.indexOf(s)>=0; });
+  var gLtuan = P[giapL].tuan || P[giapL].triet, gRtuan = P[giapR].tuan || P[giapR].triet;
+
+  if (gLgood.length && gRgood.length)
+    tt.push('✓ Giáp CÁT hai bên: ' + gLgood.join(', ') + ' (trái) và ' + gRgood.join(', ') + ' (phải) – được nâng đỡ từ hai phía, quý cách.');
+  if (gLbad.length && gRbad.length)
+    tt.push('✗ Giáp SÁT hai bên: ' + gLbad.join(', ') + ' (trái) và ' + gRbad.join(', ') + ' (phải) – bị kìm kẹp, dễ gặp trở ngại từ cả hai phía. Cần Tuần/Triệt hoặc Hóa Khoa giải.');
+  if ((gLgood.length && gRbad.length) || (gLbad.length && gRgood.length)) {
+    var tot = gLgood.length ? gLgood.join(', ') + ' (trái)' : gRgood.join(', ') + ' (phải)';
+    var xau = gLbad.length ? gLbad.join(', ') + ' (trái)' : gRbad.join(', ') + ' (phải)';
+    tt.push('◇ Giáp nửa cát nửa hung: bên cát là ' + tot + ', bên hung là ' + xau + '.');
+  }
+  if (gLtuan && gRtuan)
+    tt.push('◇ Giáp Tuần/Triệt cả hai bên – cung bị "bọc kín": việc tới lui đều bị cắt, nhưng hung tinh cũng bị chặn. Thường chủ về "vô sự" – ít được nhưng cũng ít mất.');
+  else if (gLtuan || gRtuan)
+    tt.push('◇ Một bên bị Tuần/Triệt chặn – một nửa cung bị cắt, ảnh hưởng lệch về bên còn lại.');
+
+  // 4) Nhóm lớn trong TPTC
   var tptc = lgTPTC_(pi);
   LG_NHOM_LON.forEach(function (g) {
     var c = g.sao.filter(function (s) { return tptc.indexOf(chart.pos[s]) >= 0; }).length;
-    if (c >= g.can) nhom.push('Tam phương tứ chính thuộc hệ ' + g.ten + ' (' + c + '/' + g.sao.length + ' sao): ' + g.moTa);
+    if (c >= g.can) tt.push('◆ Tam phương tứ chính thuộc hệ ' + g.ten + ' (' + c + '/' + g.sao.length + ' sao): ' + g.moTa);
   });
-  tt = tt.concat(nhom);
-  // tổng lực tam phương
+
+  // 5) Tổng lực tam phương có trọng số
   var tong = C.diem * 0.5 + P[xc].diem * 0.25 + (P[th1].diem + P[th2].diem) * 0.125;
-  tt.push('Tổng lực tam phương tứ chính (bản cung 1/2, xung chiếu 1/4, tam hợp 1/8 mỗi cung): ' + lgR_(tong) + '.');
-  secs.push({ tieuDe: 'Tương tác các cung', items: tt });
+  tt.push('◈ Tổng lực tam phương tứ chính (bản cung ½ + xung ¼ + 2 tam hợp mỗi cái ⅛): điểm thô ' + lgR_(tong) + ' → thang 10: ' + chuanHoa10_(tong) + '/10.');
+  secs.push({ tieuDe: 'Tương tác các cung (tam phương tứ chính · nhị hợp · giáp cung)', items: tt });
 
   // --- Bộ phụ tinh ---
   var bp = lgBoPhuTinh_(chart, pi, opt.extra).map(function (b) {
@@ -485,7 +522,68 @@ function lgLuan12Cung_(chart) {
     if (C.isDaiHan) ket.push('Đại hạn hiện tại đang đi qua cung này – lĩnh vực ' + LG_LINH_VUC[C.cung] + ' nổi bật trong 10 năm.');
     if (C.isTieuHan) ket.push('Tiểu hạn năm ' + I.viewYear + ' đóng tại đây.');
     a.secs.push({ tieuDe: 'Kết luận', items: ket });
-    out.push({ cung: C.cung, chi: C.chiTen, canChi: C.canTen + ' ' + C.chiTen, diem: d, danhGia: lgXepHang_(d), isThan: !!C.isThan, secs: a.secs });
+    // Sinh văn dễ hiểu cho cung — gửi xuống client
+    var vanFacts = null;
+    if (C.cung === 'Mệnh') {
+  var factsMenh = tuviSinhFactsCung_(chart, pi);
+  vanFacts = {
+    kieu: 'menh',
+    diemManh: tuviSinhDoanDiemManh_(factsMenh),
+    diemYeu:  tuviSinhDoanDiemYeu_(factsMenh),
+    anhHuong: tuviSinhDoanAnhHuong_(factsMenh),
+    dacBiet:  tuviSinhDoanDacBiet_(factsMenh),
+    hoanCanh: sinhDoanHoanCanh_(chart, pi, 'Mệnh')
+  };
+    } else if (C.cung === 'Phu Thê') {
+  vanFacts = {
+    kieu: 'phuthe',
+    doan: chenHoanCanh_(sinhVanCungPhuThe_(chart, pi), chart, pi, 'Phu Thê')
+  };
+} else if (C.cung === 'Tài Bạch') {
+      vanFacts = {
+        kieu: 'taibach',
+        doan: chenHoanCanh_(sinhVanCungTaiBach_(chart, pi), chart, pi, 'Tài Bạch')
+      };
+
+    } else if (C.cung === 'Quan Lộc') {
+      vanFacts = {
+        kieu: 'quanloc',
+        doan: chenHoanCanh_(sinhVanCungQuanLoc_(chart, pi), chart, pi, 'Quan Lộc')
+      };
+
+    } else if (C.cung === 'Tử Tức') {
+      vanFacts = {
+        kieu: 'tutuc',
+        doan: chenHoanCanh_(sinhVanCungTuTuc_(chart, pi), chart, pi, 'Tử Tức')
+      };
+    } else if (C.cung === 'Tật Ách') {
+      vanFacts = {
+        kieu: 'tatach',
+        doan: chenHoanCanh_(sinhVanCungTatAch_(chart, pi), chart, pi, 'Tật Ách')
+      };
+    } else if (C.cung === 'Điền Trạch') {
+      vanFacts = {
+        kieu: 'dientrach',
+        doan: chenHoanCanh_(sinhVanCungDienTrach_(chart, pi), chart, pi, 'Điền Trạch')
+      };
+    } else if (C.cung === 'Phúc Đức') {
+      vanFacts = {
+        kieu: 'phucduc',
+        doan: chenHoanCanh_(sinhVanCungPhucDuc_(chart, pi), chart, pi, 'Phúc Đức')
+      };
+    } else if (C.cung === 'Thiên Di') {
+  vanFacts = {
+    kieu: 'thiendi',
+    doan: chenHoanCanh_(sinhVanCungThienDi_(chart, pi), chart, pi, 'Thiên Di')
+  };
+    } else if (C.cung === 'Nô Bộc') {
+  vanFacts = { kieu: 'noboc', doan: chenHoanCanh_(sinhVanCungNoBoc_(chart, pi), chart, pi, 'Nô Bộc') };
+} else if (C.cung === 'Phụ Mẫu') {
+  vanFacts = { kieu: 'phumau', doan: chenHoanCanh_(sinhVanCungPhuMau_(chart, pi), chart, pi, 'Phụ Mẫu') };
+} else if (C.cung === 'Huynh Đệ') {
+  vanFacts = { kieu: 'huynhde', doan: chenHoanCanh_(sinhVanCungHuynhDe_(chart, pi), chart, pi, 'Huynh Đệ') };
+}
+    out.push({ cung: C.cung, chi: C.chiTen, canChi: C.canTen + ' ' + C.chiTen, diem: d, danhGia: lgXepHang_(d), isThan: !!C.isThan, secs: a.secs, vanFacts: vanFacts });
   }
   return out;
 }
@@ -938,6 +1036,7 @@ function luanChiTiet(chart, bt, input) {
   var I = chart.info;
   var vy = I.viewYear;
   var tieu = lgTieuVan_(chart, bt, vy);
+    chart._bt = bt; // đính Bát Tự vào chart để các hàm sinh văn Tử Tức truy cập
   var nhieuNam = [];
   for (var y = vy - 1; y <= vy + 9; y++) {
     var t = lgTieuVan_(chart, bt, y);
@@ -952,4 +1051,122 @@ function luanChiTiet(chart, bt, input) {
     nguyetVan: lgNguyetVan_(chart, bt, vy),
     nhatVan: lgNhatVan_(chart, bt, input && input.viewDate, 7, input && input.hoangDao === 'tiet')
   };
+}
+
+/* =========================================================
+ *  Sinh "facts dễ hiểu" cho mỗi cung — dùng để render văn
+ *  Trả về { anhHuong: [câu...], dacBiet: [câu...] }
+ * ========================================================= */
+function sinhFactsDeHieu_(chart, pi) {
+  var P = chart.palaces, pos = chart.pos;
+  var C = P[pi];
+  var xc = mod12(pi + 6), th1 = mod12(pi + 4), th2 = mod12(pi + 8), nh = mod12(1 - pi);
+  var anhHuong = [], dacBiet = [];
+
+  function d10c(p) { return P[p].diem10 != null ? P[p].diem10 : chuanHoa10_(P[p].diem); }
+  function lv(cung) { return (LG_LINH_VUC && LG_LINH_VUC[cung]) || cung; }
+  function saoChinhText(p) {
+    var s = P[p].chinh.map(function(x){ return x.n; }).join(', ');
+    return s || 'không có sao chính';
+  }
+
+  /* ========== 1. XUNG CHIẾU ========== */
+  var dxc = d10c(xc);
+  var saoXc = saoChinhText(xc);
+  if (dxc >= 7) {
+    anhHuong.push('Cung đối diện — nói về ' + lv(P[xc].cung) + ' — rất mạnh mẽ (có ' + saoXc + '). Đây là nguồn lực lớn mà bạn có thể dựa vào khi cần.');
+  } else if (dxc >= 5.5) {
+    anhHuong.push('Cung đối diện — nói về ' + lv(P[xc].cung) + ' — khá tốt (có ' + saoXc + '). Bạn nhận được sự hỗ trợ vừa phải từ phía này.');
+  } else if (dxc >= 4) {
+    anhHuong.push('Cung đối diện — nói về ' + lv(P[xc].cung) + ' — ở mức bình thường. Không giúp cũng không cản trở bạn.');
+  } else {
+    anhHuong.push('Cung đối diện — nói về ' + lv(P[xc].cung) + ' — khá yếu. Đây là điểm bạn cần tự lực nhiều hơn, không nên ỷ lại.');
+  }
+
+  /* ========== 2. TAM HỢP ========== */
+  var dt1 = d10c(th1), dt2 = d10c(th2), dtb = (dt1 + dt2) / 2;
+  if (dtb >= 6.5) {
+    anhHuong.push('Hai cung tam hợp — nói về ' + lv(P[th1].cung) + ' và ' + lv(P[th2].cung) + ' — đều tốt. Bạn có hai nguồn nâng đỡ đáng kể trong cuộc sống.');
+  } else if (dtb >= 5) {
+    anhHuong.push('Hai cung tam hợp khá ổn — mang lại cho bạn sự nâng đỡ vừa phải.');
+  } else if (dtb >= 3.5) {
+    anhHuong.push('Hai cung tam hợp ở mức trung bình — bạn không được nâng đỡ nhiều từ hai phía này.');
+  } else {
+    anhHuong.push('Hai cung tam hợp khá yếu — bạn cần tự lực nhiều hơn, đừng trông chờ vào bên ngoài.');
+  }
+
+  /* ========== 3. NHỊ HỢP ========== */
+  var dnh = d10c(nh);
+  if (dnh >= 6.5) {
+    anhHuong.push('Cung nhị hợp — nói về ' + lv(P[nh].cung) + ' — khá tốt. Đây là một nguồn trợ lực âm thầm nhưng bền bỉ mà bạn chưa chắc đã nhận ra.');
+  } else if (dnh >= 4) {
+    anhHuong.push('Cung nhị hợp ở mức bình thường — không có gì đặc biệt đáng lo.');
+  } else {
+    anhHuong.push('Cung nhị hợp khá yếu — có thể có một yếu tố âm thầm đang kéo lùi bạn ở lĩnh vực này, cần quan sát.');
+  }
+
+  /* ========== 4. GIÁP CUNG ========== */
+  var gl = mod12(pi - 1), gr = mod12(pi + 1);
+  var saoL = [].concat(P[gl].chinh, P[gl].cat, P[gl].hung).map(function(s){ return s.n; });
+  var saoR = [].concat(P[gr].chinh, P[gr].cat, P[gr].hung).map(function(s){ return s.n; });
+  var catSao = ['Tả Phù','Hữu Bật','Văn Xương','Văn Khúc','Thiên Khôi','Thiên Việt','Hóa Lộc','Hóa Quyền','Hóa Khoa','Lộc Tồn'];
+  var hungSao = ['Kình Dương','Đà La','Hỏa Tinh','Linh Tinh','Địa Không','Địa Kiếp','Hóa Kỵ'];
+  var catL = catSao.filter(function(s){ return saoL.indexOf(s) >= 0; });
+  var catR = catSao.filter(function(s){ return saoR.indexOf(s) >= 0; });
+  var hungL = hungSao.filter(function(s){ return saoL.indexOf(s) >= 0; });
+  var hungR = hungSao.filter(function(s){ return saoR.indexOf(s) >= 0; });
+  if (catL.length && catR.length) {
+    anhHuong.push('Đặc biệt, cung này được hai cung bên cạnh "kẹp" bằng cát tinh — đây là dấu hiệu được nâng đỡ từ hai phía, có quý nhân bảo vệ.');
+  } else if (hungL.length && hungR.length) {
+    anhHuong.push('Cung này bị hai cung bên cạnh "kẹp" bằng sát tinh — dấu hiệu bị kìm hãm, khó phát huy. Cần kiên nhẫn và cẩn trọng.');
+  } else if (catL.length || catR.length) {
+    anhHuong.push('Có một bên được cát tinh nâng đỡ — bạn nhận được trợ lực từ một phía, không đầy đủ nhưng vẫn đáng quý.');
+  } else if (hungL.length || hungR.length) {
+    anhHuong.push('Có một bên có sát tinh — có thể có người hoặc hoàn cảnh âm thầm gây khó cho bạn.');
+  }
+  var tuanL = P[gl].tuan || P[gl].triet, tuanR = P[gr].tuan || P[gr].triet;
+  if (tuanL && tuanR) {
+    anhHuong.push('Đặc biệt: cả hai cung bên cạnh đều bị Tuần/Triệt chặn — bạn bị "bọc kín" hai bên, ít được nhưng cũng ít mất.');
+  } else if (tuanL || tuanR) {
+    anhHuong.push('Một bên bị Tuần/Triệt chặn — ảnh hưởng từ hai phía không đồng đều, bạn cần tự quan sát để cân bằng.');
+  }
+
+  /* ========== YẾU TỐ ĐẶC BIỆT ========== */
+  /* 5. Tứ Hóa nhập cung */
+  var dsSao = [].concat(C.chinh, C.cat, C.hung, C.tieu);
+  var hoaDa = {};
+  dsSao.forEach(function(s) {
+    if (!s.hoa || hoaDa[s.hoa]) return;
+    hoaDa[s.hoa] = true;
+    var moTa = {
+      'Lộc':   'Có Hóa Lộc — tài lộc và may mắn đến với lĩnh vực này. Bạn được hưởng lợi tự nhiên.',
+      'Quyền': 'Có Hóa Quyền — bạn có quyền, có uy trong lĩnh vực này. Người khác nể trọng và nghe theo.',
+      'Khoa':  'Có Hóa Khoa — danh tiếng và học vấn tỏa sáng. Khi gặp khó sẽ có người giúp giải.',
+      'Kỵ':    'Có Hóa Kỵ — đây là điểm cần đặc biệt lưu ý. Dễ gặp trở ngại, hiểu lầm, hoặc hao tổn ở lĩnh vực này.'
+    }[s.hoa];
+    if (moTa) dacBiet.push(moTa);
+  });
+
+  /* 6. Vòng Tràng Sinh */
+  if (C.trangSinh && LG_TRANG_SINH_Y[C.trangSinh]) {
+    dacBiet.push('Vòng Tràng Sinh đóng tại đây ở vị trí "' + C.trangSinh + '" — ' + LG_TRANG_SINH_Y[C.trangSinh] + '.');
+  }
+
+  /* 7. Vòng Bác Sĩ */
+  if (C.bacSi) {
+    var totBS = ['Bác Sĩ','Lực Sĩ','Thanh Long','Tướng Quân','Tấu Thư','Hỷ Thần'].indexOf(C.bacSi) >= 0;
+    var xauBS = ['Bệnh Phù','Đại Hao','Phục Binh','Quan Phủ','Tiểu Hao','Phi Liêm'].indexOf(C.bacSi) >= 0;
+    if (totBS) dacBiet.push('Vòng Bác Sĩ đóng ở "' + C.bacSi + '" — điểm sáng tích cực, thêm thuận lợi cho lĩnh vực này.');
+    else if (xauBS) dacBiet.push('Vòng Bác Sĩ đóng ở "' + C.bacSi + '" — dấu hiệu cần thận trọng hơn mức bình thường.');
+  }
+
+  /* 8. Vòng Thái Tuế */
+  if (C.thaiTue) {
+    var totTT = ['Thái Tuế','Thiếu Dương','Thiếu Âm','Long Đức','Phúc Đức'].indexOf(C.thaiTue) >= 0;
+    var xauTT = ['Tang Môn','Quan Phù','Tử Phù','Tuế Phá','Bạch Hổ','Điếu Khách','Trực Phù'].indexOf(C.thaiTue) >= 0;
+    if (totTT) dacBiet.push('Vòng Thái Tuế đóng ở "' + C.thaiTue + '" — mang lại điều tích cực cho lĩnh vực này.');
+    else if (xauTT) dacBiet.push('Vòng Thái Tuế đóng ở "' + C.thaiTue + '" — dấu hiệu cần đề phòng ở một số khía cạnh.');
+  }
+
+  return { anhHuong: anhHuong, dacBiet: dacBiet };
 }

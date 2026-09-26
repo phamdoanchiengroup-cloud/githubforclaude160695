@@ -27,6 +27,11 @@ var COT_JSON = 18; // cột Input JSON (0-based) – giữ cố định cho shee
 
 /** Trang web */
 function doGet(e) {
+    // Patch 8f — nhánh nghiệm chứng lá số
+  if (e && e.parameter && e.parameter.page === 'nghiemchung') {
+    return HtmlService.createHtmlOutputFromFile('NghiemChungUI')
+      .setTitle('Nghiệm Chứng Lá Số');   // không bật ALLOWALL: không cho web khác nhúng trang
+  }
   var loi = kiemTraCaiDat_();
   if (loi.length) {
     return HtmlService.createHtmlOutput(trangLoiCaiDat_(loi)).setTitle('Thiên Cơ Các – lỗi cài đặt')
@@ -54,7 +59,8 @@ var FILE_HTML_CAN_CO = { 'Index': '<!DOCTYPE html>', 'Styles': '<style>', 'Scrip
 var HAM_CAN_CO = {
   'Lunar.gs': 'solarToLunar', 'TuVi.gs': 'tuviLapLaSo', 'BatTu.gs': 'batTuLap',
   'LuanGiai.gs': 'luanChiTiet', 'DuDoan.gs': 'duDoanCuocDoi', 'BatTuChiTiet.gs': 'batTuChiTiet',
-  'Astro.gs': 'astToanBo', 'ChiemTinh.gs': 'chiemTinhLap', 'HumanDesign.gs': 'hdLap', 'ThanSoHoc.gs': 'thanSoHocLap', 'TongHop.gs': 'tongHopLuan', 'PhoiNgau.gs': 'phoiNgauLuan', 'HaLac.gs': 'haLacLap', 'HoiTu.gs': 'htHoiTu_', 'BatTuLuan.gs': 'btlLinhVuc_', 'TaiKhoan.gs': 'dangNhap', 'ThanhToan.gs': 'muaPhan', 'CapDoi.gs': 'lapCapDoi'
+  'Astro.gs': 'astToanBo', 'ChiemTinh.gs': 'chiemTinhLap', 'HumanDesign.gs': 'hdLap', 'ThanSoHoc.gs': 'thanSoHocLap', 'TongHop.gs': 'tongHopLuan', 'PhoiNgau.gs': 'phoiNgauLuan', 'HaLac.gs': 'haLacLap', 'HoiTu.gs': 'htHoiTu_', 'BatTuLuan.gs': 'btlLinhVuc_', 'TaiKhoan.gs': 'dangNhap', 'ThanhToan.gs': 'muaPhan', 'CapDoi.gs': 'lapCapDoi',
+  'Facts.gs': 'taoFact_', 'TuViHeThong.gs': 'tuviSinhFactsCung_', 'NghiemChung.gs': 'nghiemChungLap'
 };
 
 /** Trả về danh sách lỗi cài đặt (rỗng nếu mọi thứ đúng) */
@@ -94,7 +100,7 @@ function trangLoiCaiDat_(loi) {
 /** Chạy hàm này trong trình soạn thảo (chọn kiemTraCaiDat → Chạy) để xem lỗi trong Nhật ký thực thi */
 function kiemTraCaiDat() {
   var loi = kiemTraCaiDat_();
-  if (!loi.length) { Logger.log('✔ Cài đặt đúng: đủ 19 file .gs và 3 file HTML.'); return; }
+  if (!loi.length) { Logger.log('✔ Cài đặt đúng: đủ 22 file .gs và 3 file HTML.'); return; }
   loi.forEach(function (x) { Logger.log('✘ ' + x.replace(/<[^>]+>/g, '').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&amp;/g, '&')); });
 }
 

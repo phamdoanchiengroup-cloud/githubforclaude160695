@@ -76,6 +76,7 @@
       ['Berlin', 52.52, 13.40, 1], ['Paris', 48.86, 2.35, 1], ['London', 51.51, -0.13, 0], ['Toronto', 43.65, -79.38, -5], ['New York', 40.71, -74.01, -5],
       ['Houston', 29.76, -95.37, -6], ['Los Angeles', 34.05, -118.24, -8], ['San Jose', 37.34, -121.89, -8]], null]
   ];
+  window.NOI_SINH = NOI_SINH;
   function fillPlaces() {
     var html = '';
     NOI_SINH.forEach(function (g) {
@@ -890,6 +891,7 @@
       t.classList.toggle('khoa', !!(r && r.khach && k !== 'chart' && k !== 'hist' && k !== 'capdoi'));
     });
     dungMucLuc(); veCta(); veQc();
+        if (window._danhDauCoso) window._danhDauCoso();
   }
   /** Banner đầu trang: trước khi lập lá số là khung giới thiệu; sau đó là dải quảng cáo gọn, hiện ở mọi tab */
   function veQc() {
@@ -1194,7 +1196,7 @@
     $('palaceDetail').innerHTML = html;
   }
 
-  function d10(d) { return fmt(Math.round(100 / (1 + Math.exp(-d / 3))) / 10); }
+  function d10(d) { var x = 100 / (1 + Math.exp(-(Number(d) || 0) / 3)) / 10; return fmt(Math.round(x * 10) / 10); }   // điểm thô → thang 10
   function scorePct(d) { return Math.max(4, Math.min(100, Math.round((d + 6) / 16 * 100))); }
   function rateClass(d) { return d >= 5 ? 'r5' : d >= 2.5 ? 'r4' : d >= 0.5 ? 'r3' : d > -1.5 ? 'r2' : d > -4 ? 'r1' : 'r0'; }
 
@@ -1221,7 +1223,7 @@
     'Tổng hợp nhiều hệ: mỗi hệ cho điểm từ −2 đến +2 (Tử Vi, Bát Tự, Hà Lạc, Chiêm tinh, Thần số), lấy trung bình rồi đổi sang thang 10 (5 + 2,5 × trung bình). Hợp tuổi vợ chồng chấm thẳng thang 10 theo 5 tiêu chí: nạp âm, thiên can, địa chi, cung phi Bát trạch, thiên mệnh & dụng thần.'
   ];
   function coSoHtml(title, arr) {
-    return '<details class="coso"><summary>📖 ' + esc(title) + '</summary><ol>' + arr.map(function (x) { return '<li>' + esc(x) + '</li>'; }).join('') + '</ol></details>';
+    return '<details class="coso coso-ly-luan"><summary>📖 ' + esc(title) + '</summary><ol>' + arr.map(function (x) { return '<li>' + esc(x) + '</li>'; }).join('') + '</ol></details>';
   }
   function stripHtml(list, labelFn, subFn, activeFn, target) {
     return '<div class="strip">' + list.map(function (x, i) {
@@ -1405,6 +1407,234 @@
   }
 
   /* ---------- Tab Vận hạn ---------- */
+    /* ============================================================
+   *  TẦNG 2 VĂN — ĐẠI VẬN
+   *  Mỗi đại vận 10 năm có 4 đoạn văn dễ hiểu
+   * ============================================================ */
+  var KHO_VAN_DAIVAN_MUC = {
+    'rat_tot': {
+      tomTat: 'Đây là một trong những giai đoạn thuận lợi nhất của đời bạn. Cơ hội đến nhiều, quý nhân xuất hiện đúng lúc, và những gì bạn gieo trước đây bắt đầu cho quả ngọt.',
+      banChat: 'Bạn như người đi đúng đường, gặp đúng gió. Mọi việc dù không dễ nhưng đều hanh thông — tài chính khá lên, công danh thăng tiến, gia đạo yên ấm. Đây là 10 năm đáng để dốc sức.',
+      diemManh: 'Nắm bắt cơ hội tốt, tự tin mở rộng quy mô công việc, đầu tư dài hạn.',
+      diemLuuY: 'Đừng chủ quan — thắng nhiều thì dễ sinh tâm lý "còn mãi", dẫn đến quyết định mạo hiểm vượt tầm.',
+      loiKhuyen: [
+        'Đặt mục tiêu lớn cho 10 năm này — đây là lúc xây nền cho nửa đời sau.',
+        'Học cách chia sẻ thành quả với người thân — vui một mình không trọn.',
+        'Vẫn nên giữ 20–30% thu nhập để dự phòng, kể cả khi mọi thứ đang tốt.'
+      ]
+    },
+    'tot': {
+      tomTat: 'Giai đoạn khá thuận — không phải lúc nào cũng suôn sẻ, nhưng nhìn tổng thể thì được nhiều hơn mất.',
+      banChat: 'Bạn có những đợt lên xuống đan xen, nhưng xu hướng chung là đi lên. Có cơ hội mới, có người giúp đỡ, nhưng cũng có vài lần va vấp. Đây là 10 năm để xây — không phải để mơ lớn.',
+      diemManh: 'Kiên trì với mục tiêu đã chọn; biết lắng nghe lời khuyên của người đi trước.',
+      diemLuuY: 'Đừng vội mừng khi vừa có thắng lợi — chuẩn bị tinh thần cho vài đợt lùi nhỏ.',
+      loiKhuyen: [
+        'Đi từng bước nhưng chắc — không nên nhảy vọt trong giai đoạn này.',
+        'Đầu tư vào các mối quan hệ chất lượng, sẽ có lúc cần đến.',
+        'Giữ sức khoẻ vì đây là giai đoạn xây dựng lâu dài.'
+      ]
+    },
+    'trung_binh': {
+      tomTat: 'Giai đoạn trung bình — có thuận có nghịch đan xen. Không kỳ vọng đột phá lớn, nhưng cũng không có biến cố nặng.',
+      banChat: 'Đây là 10 năm "sống bình thường" — đi làm, lo gia đình, cố gắng đều đặn. Không có điều gì quá nổi bật, nhưng cũng không có gì đáng lo. Đôi khi bạn sẽ thấy hơi nhàm chán, nhưng bình yên cũng là một loại may mắn.',
+      diemManh: 'Giữ được nhịp sống ổn định — đây là nền tảng cho giai đoạn bùng nổ sau này.',
+      diemLuuY: 'Đừng buồn khi thấy bạn bè đồng trang lứa "nổi" hơn — mỗi người có thời điểm của mình.',
+      loiKhuyen: [
+        'Dùng giai đoạn này để học thêm kỹ năng và tích luỹ vốn — chuẩn bị cho 10 năm sau.',
+        'Chăm sóc sức khoẻ và các mối quan hệ gia đình — đây là lúc củng cố những gì đã có.',
+        'Không nên đầu tư lớn hay khởi nghiệp trong giai đoạn trung bình này.'
+      ]
+    },
+    'kho_khan': {
+      tomTat: 'Giai đoạn khá vất vả — có những lúc phải cố gắng gấp đôi mới giữ được vị trí.',
+      banChat: 'Bạn sẽ gặp nhiều thử thách: công việc trắc trở, tài chính eo hẹp, hoặc các mối quan hệ có va chạm. Nhưng đây cũng là giai đoạn rèn luyện bản lĩnh — qua được thì sau này bạn sẽ mạnh hơn nhiều.',
+      diemManh: 'Ý chí kiên cường — bạn sẽ khám phá ra sức chịu đựng của mình lớn hơn tưởng tượng.',
+      diemLuuY: 'Cẩn trọng với các quyết định tài chính lớn, tránh vay mượn nhiều, tránh đầu tư mạo hiểm.',
+      loiKhuyen: [
+        'Ưu tiên giữ việc làm ổn định, không nên nhảy việc trong lúc sóng gió.',
+        'Học cách nói "không" với những khoản chi không cần thiết.',
+        'Chăm sóc sức khoẻ tinh thần — đừng để stress kéo dài thành bệnh.'
+      ]
+    },
+    'rat_kho': {
+      tomTat: 'Giai đoạn nhiều thử thách — có thể có biến cố về sức khoẻ, tài chính, hoặc gia đình. Cần đặc biệt cẩn trọng.',
+      banChat: 'Đây là 10 năm bạn cần sống chậm lại. Có những chuyện không phải lỗi của bạn nhưng vẫn xảy đến — mất mát, thay đổi ngoài ý muốn, hoặc những người thân ra đi. Nhưng chính giai đoạn này sẽ dạy bạn những bài học quý giá nhất về cuộc đời.',
+      diemManh: 'Khả năng chịu đựng và thích nghi — sau giai đoạn này bạn sẽ trưởng thành vượt bậc.',
+      diemLuuY: 'Tránh mọi quyết định lớn (mua nhà, đổi nghề, đầu tư) nếu không thật sự cần thiết. Ưu tiên an toàn và sức khoẻ.',
+      loiKhuyen: [
+        'Giữ vững tinh thần — khó khăn rồi cũng qua, đây không phải số phận vĩnh viễn.',
+        'Dựa vào gia đình và bạn bè thân thiết — đừng một mình chống chọi.',
+        'Chăm sóc sức khoẻ cả thể chất lẫn tinh thần — đây là ưu tiên số một.',
+        'Đọc sách, học thiền hoặc tìm một niềm tin tâm linh để có điểm tựa.'
+      ]
+    }
+  };
+
+  var KHO_VAN_DAIVAN_CUNG = {
+    'Mệnh': 'Đại vận rơi vào cung Mệnh — bản thân bạn là nhân vật chính. Mọi thay đổi lớn trong 10 năm này đều xuất phát từ chính bạn: từ suy nghĩ, lựa chọn, đến hành động.',
+    'Phụ Mẫu': 'Đại vận rơi vào cung Phụ Mẫu — câu chuyện xoay quanh cha mẹ, người lớn tuổi, hoặc những bậc bề trên. Có thể có tin buồn về cha mẹ, hoặc ngược lại, được cha mẹ/lãnh đạo nâng đỡ nhiều.',
+    'Phúc Đức': 'Đại vận rơi vào cung Phúc Đức — 10 năm này nói về tinh thần, tâm linh và những giá trị vô hình. Bạn sẽ quan tâm hơn đến ý nghĩa cuộc sống, có thể hướng về tôn giáo hoặc triết học.',
+    'Điền Trạch': 'Đại vận rơi vào cung Điền Trạch — trọng tâm là nhà cửa, đất đai, tài sản cố định. Có thể bạn sẽ mua nhà, chuyển nhà, hoặc có thay đổi lớn về nơi ở.',
+    'Quan Lộc': 'Đại vận rơi vào cung Quan Lộc — sự nghiệp là trọng tâm. Đây là 10 năm để thăng tiến, chuyển việc, hoặc khởi nghiệp. Công danh đi lên hay đi xuống đều do giai đoạn này.',
+    'Nô Bộc': 'Đại vận rơi vào cung Nô Bộc — câu chuyện xoay quanh bạn bè, đồng nghiệp, cấp dưới. Có thể có người bạn tri kỷ xuất hiện, hoặc có người thân thiết trở mặt.',
+    'Thiên Di': 'Đại vận rơi vào cung Thiên Di — 10 năm của di chuyển và mở rộng. Bạn có thể đi xa, ra nước ngoài, hoặc tiếp xúc với nhiều môi trường văn hoá mới.',
+    'Tật Ách': 'Đại vận rơi vào cung Tật Ách — sức khoẻ là điều cần quan tâm hàng đầu. Có thể có bệnh cần chữa, hoặc cơ thể bắt đầu "xuống" rõ rệt — cần chăm sóc kỹ hơn.',
+    'Tài Bạch': 'Đại vận rơi vào cung Tài Bạch — tiền bạc là câu chuyện chính. Có thể bạn phát tài, hoặc ngược lại, có giai đoạn hao tổn tài chính. Quản lý tiền bạc là ưu tiên.',
+    'Tử Tức': 'Đại vận rơi vào cung Tử Tức — con cái và thế hệ sau là trọng tâm. Có thể bạn sinh con, con lớn lên và có chuyện vui buồn, hoặc bạn dành nhiều tâm sức cho thế hệ trẻ.',
+    'Phu Thê': 'Đại vận rơi vào cung Phu Thê — tình cảm vợ chồng, người bạn đời là câu chuyện chính. Có thể là 10 năm mặn nồng, hoặc có sóng gió cần vượt qua. Cũng có thể đây là giai đoạn bạn kết hôn.',
+    'Huynh Đệ': 'Đại vận rơi vào cung Huynh Đệ — anh chị em, bạn bè ngang hàng là trọng tâm. Có thể có chuyện về anh chị em, hoặc bạn nhận được sự giúp đỡ từ họ trong giai đoạn này.'
+  };
+
+  /** Xác định mức của đại vận dựa vào danhGia backend */
+  function danhGiaDaiVan_(d) {
+    var x = String(d.danhGia || '').trim();
+    // Nhãn thang 10 (Rất tốt / Tốt / Khá / Trung bình / Kém / Cần thận trọng) và nhãn cát hung (Đại cát / Cát / Bình / Hơi kém / Cẩn trọng)
+    if (/^(Rất tốt|Đại cát|Tháng vàng)$/i.test(x)) return 'rat_tot';
+    if (/^(Tốt|Khá|Cát|Thuận)$/i.test(x)) return 'tot';
+    if (/^(Trung bình|Bình)$/i.test(x)) return 'trung_binh';
+    if (/^(Kém|Hơi kém|Cần giữ)$/i.test(x)) return 'kho_khan';
+    if (/^(Cần thận trọng|Cẩn trọng|Thận trọng)$/i.test(x)) return 'rat_kho';
+    var s10 = 100 / (1 + Math.exp(-(Number(d.diem) || 0) / 3)) / 10;   // không có nhãn → dùng điểm thô quy thang 10
+    return s10 >= 8.5 ? 'rat_tot' : s10 >= 5.5 ? 'tot' : s10 >= 4 ? 'trung_binh' : s10 >= 2.5 ? 'kho_khan' : 'rat_kho';
+  }
+
+
+  /** Sinh HTML 4 đoạn văn cho 1 đại vận */
+  function sinhVanDaiVanHtml_(d) {
+    var muc = danhGiaDaiVan_(d);
+    var van = KHO_VAN_DAIVAN_MUC[muc];
+    if (!van) return '';
+    var dacThu = KHO_VAN_DAIVAN_CUNG[d.cung] || '';
+
+    var doan = [];
+    doan.push({ tieuDe: 'Tóm tắt 10 năm', text: 'Giai đoạn ' + d.khoang + ' tuổi (từ năm ' + d.nam + '), đại vận đi vào cung ' + d.cung + '. ' + van.tomTat });
+    doan.push({ tieuDe: 'Bản chất giai đoạn', text: van.banChat });
+    if (dacThu) doan.push({ tieuDe: 'Đặc thù theo cung', text: dacThu });
+    doan.push({ tieuDe: 'Điểm mạnh & lưu ý', text: van.diemManh + ' ' + van.diemLuuY });
+    doan.push({ tieuDe: 'Lời khuyên cho 10 năm này', text: '', list: van.loiKhuyen.slice() });
+
+    return renderVanCung_(doan, 'Đại vận ' + d.khoang + ' tuổi');
+  }
+
+    /* ============================================================
+   *  TẦNG 2 VĂN — TIỂU VẬN (1 năm)
+   * ============================================================ */
+  var KHO_VAN_TIEUVAN_MUC = {
+    'rat_tot': {
+      tomTat: 'Năm nay là một năm thuận lợi — công việc hanh thông, tài lộc khá, gia đạo yên ấm. Đây là lúc để bạn tiến lên, không phải để chờ đợi.',
+      banChat: 'Mọi việc dù không dễ nhưng đều đi đúng hướng. Bạn gặp được người giúp đỡ đúng lúc, và những nỗ lực từ năm ngoái bắt đầu cho kết quả. Đây là năm nên dốc sức.',
+      diemManh: 'Tự tin mở rộng công việc, chủ động đề xuất thăng tiến, đầu tư vừa phải.',
+      diemLuuY: 'Đừng tham quá — thắng nhiều dễ sinh tâm lý chủ quan, dẫn đến quyết định mạo hiểm vượt tầm.',
+      loiKhuyen: [
+        'Đặt mục tiêu rõ ràng cho năm nay và theo đuổi đến cùng.',
+        'Chia sẻ thành quả với gia đình — niềm vui nhân đôi khi có người cùng vui.',
+        'Vẫn giữ khoản dự phòng 20–30% thu nhập, kể cả khi mọi thứ tốt.'
+      ]
+    },
+    'tot': {
+      tomTat: 'Năm nay khá thuận — có vài đợt lên xuống nhưng nhìn chung được nhiều hơn mất.',
+      banChat: 'Bạn có cơ hội mới, có người giúp đỡ, nhưng cũng có vài lần va vấp. Đây là năm để xây, không phải năm để mơ lớn. Kiên trì sẽ có quả ngọt.',
+      diemManh: 'Giữ vững mục tiêu đã chọn, biết lắng nghe người đi trước.',
+      diemLuuY: 'Đừng vội mừng khi có thắng lợi nhỏ — chuẩn bị tinh thần cho vài đợt lùi.',
+      loiKhuyen: [
+        'Đi từng bước vững chắc, không nên nhảy vọt trong năm nay.',
+        'Đầu tư vào các mối quan hệ chất lượng.',
+        'Giữ sức khoẻ để theo đuổi mục tiêu dài hạn.'
+      ]
+    },
+    'trung_binh': {
+      tomTat: 'Năm nay ở mức trung bình — không có đột phá lớn, cũng không có biến cố nặng.',
+      banChat: 'Đây là năm "sống bình thường" — đi làm, lo gia đình, cố gắng đều đặn. Có thể bạn sẽ thấy hơi nhàm chán, nhưng bình yên cũng là may mắn. Đây là năm nên tích luỹ, không nên mạo hiểm.',
+      diemManh: 'Duy trì nhịp sống ổn định — đây là nền tảng cho năm sau bùng nổ.',
+      diemLuuY: 'Đừng buồn khi thấy người khác "nổi" hơn — mỗi người có thời điểm riêng.',
+      loiKhuyen: [
+        'Học thêm kỹ năng, đọc sách, tích luỹ vốn cho năm sau.',
+        'Chăm sóc sức khoẻ và gia đình.',
+        'Không nên đầu tư lớn hay khởi nghiệp trong năm nay.'
+      ]
+    },
+    'kho_khan': {
+      tomTat: 'Năm nay khá vất vả — có những lúc phải cố gắng gấp đôi mới giữ được vị trí.',
+      banChat: 'Bạn sẽ gặp nhiều thử thách: công việc trắc trở, tài chính eo hẹp, hoặc các mối quan hệ có va chạm. Nhưng đây cũng là năm rèn luyện bản lĩnh — qua được thì bạn mạnh hơn nhiều.',
+      diemManh: 'Ý chí kiên cường — bạn sẽ khám phá ra sức chịu đựng của mình lớn hơn tưởng tượng.',
+      diemLuuY: 'Cẩn trọng với các quyết định tài chính lớn, tránh vay mượn nhiều, tránh đầu tư mạo hiểm.',
+      loiKhuyen: [
+        'Ưu tiên giữ việc làm ổn định — không nên nhảy việc trong năm nay.',
+        'Cắt giảm chi tiêu không cần thiết.',
+        'Chăm sóc sức khoẻ tinh thần, đừng để stress kéo dài.'
+      ]
+    },
+    'rat_kho': {
+      tomTat: 'Năm nay nhiều thử thách — có thể có biến cố về sức khoẻ, tài chính, hoặc gia đình. Cần đặc biệt cẩn trọng.',
+      banChat: 'Đây là năm bạn cần sống chậm lại. Có những chuyện không phải lỗi của bạn nhưng vẫn xảy đến. Nhưng chính năm này sẽ dạy bạn những bài học quý giá nhất.',
+      diemManh: 'Khả năng chịu đựng và thích nghi — sau năm nay bạn sẽ trưởng thành vượt bậc.',
+      diemLuuY: 'Tránh mọi quyết định lớn (mua nhà, đổi nghề, đầu tư) nếu không thật sự cần thiết.',
+      loiKhuyen: [
+        'Giữ vững tinh thần — khó khăn rồi cũng qua.',
+        'Dựa vào gia đình và bạn bè thân thiết.',
+        'Chăm sóc sức khoẻ cả thể chất lẫn tinh thần là ưu tiên số một.',
+        'Tìm một điểm tựa tinh thần (thiền, đọc sách, tôn giáo).'
+      ]
+    }
+  };
+
+  /* ============================================================
+   *  TẦNG 2 VĂN — NGUYỆT VẬN (1 tháng) — NGẮN GỌN 2 đoạn
+   * ============================================================ */
+  var KHO_VAN_NGUYETVAN_MUC = {
+    'rat_tot': {
+      tomTat: 'Tháng thuận lợi — công việc hanh thông, tài lộc khá, mối quan hệ tốt đẹp. Đây là lúc nên chủ động, không nên chờ đợi.',
+      loiKhuyen: 'Nên: Khởi động dự án mới, ký kết hợp đồng, mở rộng quan hệ. Không nên: Chủ quan, mạo hiểm vượt tầm.'
+    },
+    'tot': {
+      tomTat: 'Tháng khá thuận — có cơ hội nhỏ, có người giúp đỡ, nhưng cũng có vài va vấp. Nên kiên trì với kế hoạch đã có.',
+      loiKhuyen: 'Nên: Hoàn thành việc đang dở, củng cố quan hệ cũ. Không nên: Nhảy việc, đầu tư lớn.'
+    },
+    'trung_binh': {
+      tomTat: 'Tháng trung bình — mọi thứ diễn ra bình thường, không có gì nổi bật. Nên dùng thời gian này để chuẩn bị cho tháng sau.',
+      loiKhuyen: 'Nên: Học hỏi, nghỉ ngơi, sắp xếp lại kế hoạch. Không nên: Kỳ vọng đột phá, đầu tư mạo hiểm.'
+    },
+    'kho_khan': {
+      tomTat: 'Tháng khá vất vả — có trắc trở trong công việc hoặc tài chính. Nên sống chậm lại, không nên quyết định lớn.',
+      loiKhuyen: 'Nên: Giữ nguyên hiện trạng, cắt chi tiêu, chăm sóc sức khoẻ. Không nên: Vay mượn, đổi việc, tranh cãi.'
+    },
+    'rat_kho': {
+      tomTat: 'Tháng nhiều thử thách — có thể có biến cố nhỏ về sức khoẻ, tiền bạc, hoặc quan hệ. Cần đặc biệt cẩn trọng.',
+      loiKhuyen: 'Nên: Ở yên, giữ sức, tránh xung đột. Không nên: Đi xa, đầu tư, quyết định lớn.'
+    }
+  };
+
+  /* ============================================================
+   *  HÀM SINH VĂN CHO TIỂU VẬN & NGUYỆT VẬN
+   * ============================================================ */
+
+  /** Sinh HTML 4 đoạn văn cho Tiểu vận */
+  function sinhVanTieuVanHtml_(T) {
+    var muc = danhGiaDaiVan_(T);
+    var van = KHO_VAN_TIEUVAN_MUC[muc];
+    if (!van) return '';
+
+    var doan = [];
+    doan.push({ tieuDe: 'Tóm tắt năm ' + T.nam + ' (' + T.canChi + ')', text: van.tomTat });
+    doan.push({ tieuDe: 'Bản chất năm nay', text: van.banChat });
+    doan.push({ tieuDe: 'Điểm mạnh & lưu ý', text: van.diemManh + ' ' + van.diemLuuY });
+    doan.push({ tieuDe: 'Lời khuyên cho năm nay', text: '', list: van.loiKhuyen.slice() });
+
+    return renderVanCung_(doan, 'Tiểu vận ' + T.nam);
+  }
+
+  /** Sinh HTML 2 đoạn văn ngắn cho 1 tháng Nguyệt vận */
+  function sinhVanNguyetVanHtml_(m) {
+    var muc = danhGiaDaiVan_(m);
+    var van = KHO_VAN_NGUYETVAN_MUC[muc];
+    if (!van) return '';
+
+    var doan = [];
+    doan.push({ tieuDe: 'Tháng ' + m.thang + ' (' + m.canChi + ')', text: van.tomTat });
+    doan.push({ tieuDe: 'Lời khuyên', text: van.loiKhuyen });
+
+    return renderVanCung_(doan, 'Tháng ' + m.thang);
+  }
   function renderVan(res) {
     var CT = res.chiTiet, I = res.tuvi.info;
     var html = '<div class="subtabs" id="vanTabs">' +
@@ -1418,7 +1648,7 @@
       coSoHtml('Cơ sở lý luận đại vận', CT.coSo.daiVan) +
       stripHtml(CT.daiVan, function (d) { return d.khoang; }, function (d) { return d.cung + ' · ' + d.nam; }, function (d) { return d.isNow; }, 'dv-') +
       '<div class="lg-list">' + CT.daiVan.map(function (d, i) {
-        return blockHtml(d, 'Đại vận ' + d.khoang + (d.isNow ? ' ★ hiện tại' : ''), 'Cung ' + d.cung + ' (' + d.canChi + ') · ' + d.sao + ' · năm ' + d.nam, d.isNow, 'dv-' + i);
+        return sinhVanDaiVanHtml_(d) + blockHtml(d, 'Đại vận ' + d.khoang + (d.isNow ? ' ★ hiện tại' : ''), 'Cung ' + d.cung + ' (' + d.canChi + ') · ' + d.sao + ' · năm ' + d.nam, d.isNow, 'dv-' + i);
       }).join('') + '</div></div></div>';
 
     // Tiểu vận
@@ -1427,14 +1657,14 @@
       coSoHtml('Cơ sở lý luận tiểu vận', CT.coSo.tieuVan) +
       stripHtml(CT.tieuVanNhieuNam, function (y) { return y.nam + ''; }, function (y) { return y.canChi + ' · ' + y.cung; }, function (y) { return y.nam === I.viewYear; }, 'tv-') +
       '<p class="muted" style="font-size:12.5px">Đổi "Năm xem hạn" trong Tùy chọn nâng cao để luận chi tiết năm khác.</p>' +
-      blockHtml(T, 'Năm ' + T.nam + ' ' + T.canChi + ' · ' + T.tuoi + ' tuổi', 'Tiểu hạn tại ' + T.cung + ' (' + T.chi + ')', true) + '</div></div>';
+     sinhVanTieuVanHtml_(T) + blockHtml(T, 'Năm ' + T.nam + ' ' + T.canChi + ' · ' + T.tuoi + ' tuổi', 'Tiểu hạn tại ' + T.cung + ' (' + T.chi + ')', true) + '</div></div>';
 
     // Nguyệt vận
     html += '<div class="van-page" id="van-nguyet"><div class="panel section"><h2 class="panel-title"><span class="han">流月</span> Nguyệt vận năm ' + I.viewYear + '</h2>' +
       coSoHtml('Cơ sở lý luận nguyệt vận', CT.coSo.nguyetVan) +
       stripHtml(CT.nguyetVan, function (m) { return 'Th.' + m.thang; }, function (m) { return m.canChi + ' · ' + m.cung; }, function () { return false; }, 'nv-') +
       '<div class="lg-grid">' + CT.nguyetVan.map(function (m, i) {
-        return blockHtml(m, m.ten + ' · ' + m.canChi, 'từ ' + m.batDau + ' · cung ' + m.cung, false, 'nv-' + i);
+      return sinhVanNguyetVanHtml_(m) + blockHtml(m, m.ten + ' · ' + m.canChi, 'từ ' + m.batDau + ' · cung ' + m.cung, false, 'nv-' + i);
       }).join('') + '</div></div></div>';
 
     // Nhật vận
@@ -1462,6 +1692,381 @@
     });
   }
 
+    /* =========================================================
+   *  "CUNG DỄ HIỂU" — luận cung bằng đoạn văn không có tên sao
+   *  Mỗi cung có 5–7 đoạn, có tiêu đề nhỏ, đọc như bài viết.
+   * ========================================================= */
+
+  // Từ điển phụ tinh → câu ý nghĩa (không nêu tên sao)
+  var PHU_TINH_VAN = {
+    // Cát tinh → thêm vào đoạn "Điểm mạnh"
+    'Tả Phù':    { loai: 'manh', text: 'Bạn cũng có duyên được người khác giúp đỡ khi cần.' },
+    'Hữu Bật':   { loai: 'manh', text: 'Bạn cũng có duyên được người khác giúp đỡ khi cần.' },
+    'Văn Xương': { loai: 'manh', text: 'Bạn có duyên với học hành, chữ nghĩa và các lĩnh vực cần sự tinh tế.' },
+    'Văn Khúc':  { loai: 'manh', text: 'Bạn ăn nói có duyên và có khiếu với nghệ thuật, cái đẹp.' },
+    'Thiên Khôi':{ loai: 'manh', text: 'Bạn thường được những người bề trên nâng đỡ.' },
+    'Thiên Việt':{ loai: 'manh', text: 'Bạn thường gặp được người tốt sẵn lòng giúp mình.' },
+    'Lộc Tồn':   { loai: 'manh', text: 'Cuộc sống của bạn tương đối ổn định về vật chất.' },
+    'Hóa Lộc':   { loai: 'manh', text: 'Tiền bạc của bạn thường hanh thông, có nhiều cơ hội kiếm tiền.' },
+    'Hóa Quyền': { loai: 'manh', text: 'Bạn có uy tự nhiên, thường được người khác nghe theo.' },
+    'Hóa Khoa':  { loai: 'manh', text: 'Bạn có duyên với học vấn và khi gặp khó thường có người giúp giải quyết.' },
+    'Thiên Đức': { loai: 'manh', text: 'Bạn được phù hộ, gặp khó khăn thường có người giúp đỡ.' },
+    'Nguyệt Đức':{ loai: 'manh', text: 'Bạn là người hiền lành và được hưởng phúc.' },
+    'Long Trì':  { loai: 'manh', text: 'Bạn có khí chất thanh nhã, dễ được người khác quý mến.' },
+    'Phượng Các':{ loai: 'manh', text: 'Bạn có khí chất thanh nhã, dễ được người khác quý mến.' },
+    'Thiên Mã':  { loai: 'manh', text: 'Bạn là người năng động, thích di chuyển và đổi mới.' },
+    'Hồng Loan': { loai: 'manh', text: 'Bạn có duyên về ngoại hình, dễ được người khác yêu mến.' },
+    'Thiên Hỷ':  { loai: 'manh', text: 'Bạn có duyên với chuyện vui, hỷ sự.' },
+
+    // Hung tinh → thêm vào đoạn "Điểm cần lưu ý"
+    'Kình Dương':{ loai: 'yeu', text: 'Bạn có cá tính mạnh mẽ và quyết đoán, nhưng đôi khi điều đó khiến bạn dễ va chạm với người xung quanh.' },
+    'Đà La':     { loai: 'yeu', text: 'Bạn dễ bị trì hoãn, dây dưa, đôi khi bỏ lỡ cơ hội vì do dự quá lâu.' },
+    'Hỏa Tinh':  { loai: 'yeu', text: 'Bạn có thể nóng tính, hành động nhanh và đôi khi hối hận vì đã quá vội vàng.' },
+    'Linh Tinh': { loai: 'yeu', text: 'Bạn hay lo nghĩ và đôi khi gặp những chuyện bất ngờ không lường trước.' },
+    'Địa Không': { loai: 'yeu', text: 'Bạn có những suy nghĩ khác người, thích những điều lớn lao, nhưng cũng dễ hụt hẫng khi thực tế không như mơ.' },
+    'Địa Kiếp':  { loai: 'yeu', text: 'Cuộc đời bạn có những lúc thăng trầm, đôi khi gặp mất mát đột ngột.' },
+    'Hóa Kỵ':    { loai: 'yeu', text: 'Bạn dễ bị hiểu lầm và đôi khi gặp chuyện không như ý — quan trọng là giữ được sự kiên nhẫn.' },
+    'Thiên Hình':{ loai: 'yeu', text: 'Bạn là người nghiêm khắc với chính mình và đôi khi cả với người khác.' },
+    'Thiên Riêu':{ loai: 'yeu', text: 'Bạn dễ vướng vào những chuyện tình cảm phức tạp.' },
+    'Tang Môn':  { loai: 'yeu', text: 'Bạn nhạy cảm và đôi khi hay buồn phiền về những chuyện nhỏ.' },
+    'Bạch Hổ':   { loai: 'yeu', text: 'Bạn nên cẩn thận với những chuyện bất ngờ — đề phòng tai nạn nhỏ khi đi lại.' },
+    'Thiên Khốc':{ loai: 'yeu', text: 'Bạn là người nhạy cảm, dễ xúc động và hay lo lắng.' },
+    'Thiên Hư':  { loai: 'yeu', text: 'Bạn có thể gặp những lúc hao tổn hoặc hụt hẫng không rõ lý do.' },
+    'Cô Thần':   { loai: 'yeu', text: 'Bạn thích sống độc lập và đôi khi cảm thấy cô đơn — nhưng bạn không yếu đuối, chỉ là không muốn phụ thuộc ai.' },
+    'Quả Tú':    { loai: 'yeu', text: 'Bạn thích sống độc lập và đôi khi cảm thấy cô đơn — nhưng bạn không yếu đuối, chỉ là không muốn phụ thuộc ai.' }
+  };
+
+  // Kho văn cho cung Mệnh — 6 nhóm tính cách
+  var KHO_VAN_MENH = {
+    'A': {  // Tử Vi / Thái Dương / Thiên Tướng — Khí chất lãnh đạo
+      tomTat: 'Mệnh của bạn thuộc nhóm "khí chất lãnh đạo" — cuộc đời có nhiều cơ hội tỏa sáng, được người khác nể trọng và tin cậy.',
+      banChat: 'Bạn sinh ra đã mang khí chất của một người đứng đầu. Người khác nhìn vào bạn thường thấy sự chững chạc, đáng tin và tự nhiên muốn nghe theo. Bạn không thích bị sai bảo, thích tự mình quyết định, và có xu hướng gánh vác trách nhiệm thay người khác — đôi khi quá sức.',
+      diemManh: 'Bạn có phong thái đường hoàng, biết nhìn người, biết dùng người. Trong công việc, bạn thường là người vạch hướng đi và động viên mọi người cùng tiến. Bạn công bằng và có chữ tín, nên được cấp dưới và đồng nghiệp tin cậy.',
+      diemLuuY: 'Sự tự trọng cao khiến bạn khó nói lời xin lỗi, khó nhận sai. Khi bị tổn thương, bạn có xu hướng giữ trong lòng chứ không chia sẻ — lâu dần thành cô đơn ngay giữa đám đông. Bạn cũng có thể khắt khe với bản thân và người xung quanh hơn mức cần thiết.',
+      khiChat: 'Bề ngoài bạn là người mạnh mẽ, tự tin. Nhưng bên trong, bạn cũng có những lúc yếu đuối, lo lắng — chỉ là bạn không cho ai thấy.',
+      dauDoi: 'Tuổi trẻ của bạn có thể gặp một vài trắc trở nhỏ vì bản tính tự lập, ít chịu học hỏi người khác. Sau 30 tuổi, khi đã tích lũy đủ kinh nghiệm, uy tín và vị trí của bạn sẽ ổn định và ngày càng vững.',
+      loiKhuyen: [
+        'Học cách nói lời xin lỗi và thừa nhận khi mình sai — điều đó không làm bạn yếu đi, mà làm bạn đáng tin hơn.',
+        'Dành thời gian lắng nghe những người thân thiết, đừng chỉ nghe cấp dưới hoặc người ngoài.',
+        'Đôi khi chấp nhận sự giúp đỡ của người khác — bạn không cần một mình gánh cả thế giới.'
+      ]
+    },
+    'B': {  // Thiên Cơ / Cự Môn / Thái Âm — Trí tuệ
+      tomTat: 'Mệnh của bạn thuộc nhóm "trí tuệ" — bạn sống bằng đầu óc, giỏi phân tích và nhìn thấu vấn đề.',
+      banChat: 'Bạn là người có đầu óc nhạy bén, thích tìm tòi, đặt câu hỏi và phân tích mọi thứ đến tận gốc rễ. Bạn ghét sự hời hợt, không thích làm theo lối mòn, luôn muốn hiểu tại sao trước khi hành động. Điều này khiến bạn giỏi trong các việc cần chiều sâu, nhưng đôi khi lại làm bạn chậm chạp hơn người khác.',
+      diemManh: 'Bạn có khả năng quan sát và phân tích mà nhiều người không có. Bạn học nhanh, nhớ lâu, đặc biệt giỏi với các lĩnh vực cần lý luận, ngôn ngữ, nghiên cứu. Bạn cũng có trực giác tốt, nhiều khi "cảm" được điều người khác chưa kịp nói ra.',
+      diemLuuY: 'Bạn dễ bị suy nghĩ quá nhiều, dẫn đến lo lắng và bỏ lỡ cơ hội. Bạn cũng có xu hướng sống nội tâm, giữ cảm xúc trong lòng, ít chia sẻ với người khác. Đôi khi bạn nói lời sắc bén và vô tình làm tổn thương người bên cạnh.',
+      khiChat: 'Bề ngoài bạn có vẻ điềm tĩnh, ít nói. Nhưng bên trong là cả một thế giới suy nghĩ, cảm xúc phong phú mà ít ai nhìn thấy được.',
+      dauDoi: 'Tuổi trẻ của bạn có thể nhiều trăn trở vì hay suy nghĩ và tự vấn. Sau 30 tuổi, khi đã tích lũy đủ kiến thức và trải nghiệm, bạn sẽ tìm được con đường phù hợp — thường là con đường chuyên môn hoặc sáng tạo.',
+      loiKhuyen: [
+        'Học cách dừng suy nghĩ khi đã có đủ thông tin — không phải vấn đề nào cũng cần phân tích đến cùng.',
+        'Chủ động chia sẻ cảm xúc với 1–2 người bạn thật sự tin tưởng — bạn không cần phải mạnh mẽ một mình.',
+        'Đôi khi hãy "làm trước, nghĩ sau" — có những cơ hội chỉ đến một lần, không chờ bạn phân tích xong.'
+      ]
+    },
+    'C': {  // Vũ Khúc / Thiên Phủ / Thiên Đồng — Thực tế
+      tomTat: 'Mệnh của bạn thuộc nhóm "thực tế" — cuộc đời bạn gắn với vật chất, ổn định và những điều chắc chắn.',
+      banChat: 'Bạn là người sống thực tế, không thích viển vông. Bạn coi trọng sự ổn định, tiền bạc và những điều có thể nhìn thấy, sờ thấy. Bạn làm gì cũng có kế hoạch, ít mạo hiểm, thích tích lũy dần dần. Người khác thường cảm thấy ở bạn sự đáng tin và chắc chắn.',
+      diemManh: 'Bạn giỏi quản lý tiền bạc và tài sản — biết tiêu đúng chỗ, biết để dành cho tương lai. Bạn cũng chăm chỉ, kiên nhẫn và có khả năng làm việc lâu dài với một mục tiêu. Trong tập thể, bạn là người giữ nhịp và đảm bảo mọi thứ vận hành trơn tru.',
+      diemLuuY: 'Bạn có xu hướng quá coi trọng vật chất, đôi khi đánh giá bản thân và người khác bằng những gì họ có. Bạn cũng ngại thay đổi, sợ mất những gì đã có — đôi khi bỏ lỡ cơ hội lớn vì quá thận trọng. Bạn cần học cách linh hoạt hơn.',
+      khiChat: 'Bề ngoài bạn điềm tĩnh, ít bộc lộ cảm xúc. Nhưng bên trong, bạn là người giàu tình cảm — chỉ là bạn thể hiện bằng hành động hơn là lời nói.',
+      dauDoi: 'Tuổi trẻ của bạn thường vất vả vì phải tự gây dựng từ đầu. Nhưng càng về sau, cuộc sống càng ổn định và thịnh vượng — đây là kiểu "tiền hung hậu cát". Sau 35 tuổi, bạn sẽ gặt hái được nhiều thành quả.',
+      loiKhuyen: [
+        'Đôi khi hãy thử những điều mới, dù chưa chắc thành công — cuộc đời không chỉ có những gì đã biết.',
+        'Đầu tư vào bản thân (học hỏi, sức khỏe, trải nghiệm) cũng quan trọng như đầu tư vào tài sản.',
+        'Đừng quên bày tỏ tình cảm với người thân — có những điều không thể đo bằng tiền.'
+      ]
+    },
+    'D': {  // Thất Sát / Phá Quân / Liêm Trinh — Quyết liệt
+      tomTat: 'Mệnh của bạn thuộc nhóm "quyết liệt" — cuộc đời nhiều biến động nhưng bạn là người dám nghĩ dám làm.',
+      banChat: 'Bạn sinh ra với tinh thần chiến binh. Bạn không chấp nhận sự tầm thường, không thích bị trói buộc, luôn muốn phá bỏ giới hạn để vươn xa hơn. Bạn sống mãnh liệt, yêu ghét rõ ràng, và sẵn sàng đánh đổi để đạt được điều mình muốn.',
+      diemManh: 'Bạn có ý chí sắt đá, dám đương đầu với khó khăn mà nhiều người bỏ cuộc. Trong nghịch cảnh, bạn càng mạnh mẽ hơn — bạn là người sinh ra để vượt qua thử thách. Bạn có tố chất của người tiên phong, dám khai phá con đường mới.',
+      diemLuuY: 'Bạn có xu hướng nóng nảy, quyết định nhanh và đôi khi hối hận vì quá vội vàng. Bạn cũng khó chấp nhận sự chậm chạp, dễ mất kiên nhẫn với người khác. Cuộc đời bạn thường thăng trầm vì dám liều — nếu không kiểm soát được cảm xúc, dễ tự tạo ra sóng gió.',
+      khiChat: 'Bề ngoài bạn mạnh mẽ, dứt khoát, ít khi lộ cảm xúc. Nhưng bên trong, bạn là người nhạy cảm và dễ bị tổn thương hơn bạn thể hiện.',
+      dauDoi: 'Tuổi trẻ của bạn thường xáo trộn, nhiều biến động và có lúc tưởng như mất phương hướng. Nhưng chính những trải nghiệm đó hun đúc nên bản lĩnh của bạn. Sau 35 tuổi, khi đã hiểu mình và biết kiềm chế, bạn sẽ đạt được vị trí xứng đáng.',
+      loiKhuyen: [
+        'Học cách hít thở và chờ 24 giờ trước khi đưa ra quyết định lớn — sự nóng vội đã lấy đi của bạn nhiều hơn là mang lại.',
+        'Bạn không cần một mình chống cả thế giới — xây dựng vài mối quan hệ thật sự tin cậy sẽ giúp bạn đi xa hơn.',
+        'Đôi khi sức mạnh thật sự không nằm ở việc tiến lên, mà ở việc biết lùi đúng lúc.'
+      ]
+    },
+    'E': {  // Tham Lang / Thiên Lương — Đa tài
+      tomTat: 'Mệnh của bạn thuộc nhóm "đa tài" — cuộc đời bạn phong phú, nhiều trải nghiệm và nhiều mối quan hệ.',
+      banChat: 'Bạn là người có sức hút tự nhiên, dễ được người khác yêu mến. Bạn ham học hỏi, thích trải nghiệm, thích khám phá những điều mới lạ. Bạn có nhiều mối quan tâm khác nhau và thường giỏi nhiều thứ chứ không chỉ một. Cuộc đời bạn phong phú, ít khi nhàm chán.',
+      diemManh: 'Bạn có khả năng giao tiếp và kết nối tuyệt vời — bạn biết cách làm cho người khác cảm thấy thoải mái và được trân trọng. Bạn cũng có khiếu thẩm mỹ, yêu cái đẹp, và có thể thành công trong những lĩnh vực cần sự sáng tạo, giao tiếp, nghệ thuật hoặc chăm sóc người khác.',
+      diemLuuY: 'Bạn dễ bị phân tán vì thích nhiều thứ cùng lúc — đôi khi không đi đến tận cùng của bất kỳ việc gì. Bạn cũng có xu hướng sống cho hiện tại, ít để dành cho tương lai. Bên cạnh đó, sức hút của bạn đôi khi khiến bạn vướng vào những chuyện tình cảm phức tạp.',
+      khiChat: 'Bề ngoài bạn vui vẻ, hòa đồng, dễ gần. Nhưng bên trong, bạn cũng có những khoảng lặng sâu kín mà ít ai chạm tới — có những điều bạn giữ cho riêng mình.',
+      dauDoi: 'Tuổi trẻ của bạn thường sôi nổi, nhiều trải nghiệm và cũng nhiều va vấp. Sau 35 tuổi, bạn sẽ tìm được hướng đi phù hợp với mình và gặt hái thành quả — đây là kiểu "phát muộn nhưng bền".',
+      loiKhuyen: [
+        'Chọn một con đường chính và đi cho sâu — bạn không cần giỏi mọi thứ, chỉ cần giỏi một thứ đủ để sống tốt.',
+        'Học cách nói "không" với những cám dỗ không cần thiết — sự tập trung là món quà lớn nhất bạn có thể tặng cho chính mình.',
+        'Đầu tư vào các mối quan hệ lâu dài, không chỉ những mối quan hệ mới — những người ở bên bạn từ sớm sẽ là chỗ dựa quan trọng.'
+      ]
+    },
+        'VCD-1': {  // Đối cung Tử Phủ Vũ Tướng — mượn uy quyền + ổn định
+      tomTat: 'Mệnh của bạn không có sao chính, nhưng cung đối diện lại là nhóm "uy quyền và ổn định" — bạn mượn được tố chất của người quản lý, cuộc đời vững vàng.',
+      banChat: 'Bạn sinh ra không có bản chất cố định, nhưng khi đối diện với cuộc đời, bạn lại bộc lộ tố chất của một người điềm đạm, đáng tin, có khả năng quản lý và giữ của. Bạn như một tấm gương phản chiếu hoàn cảnh — ở môi trường tốt, bạn càng tốt hơn; ở môi trường xấu, bạn dễ bị cuốn theo. Nhưng bản năng sâu bên trong vẫn là sự thận trọng và cẩn thận.',
+      diemManh: 'Bạn dễ được người khác tin cậy giao cho những việc quan trọng — tiền bạc, tài sản, trách nhiệm. Bạn không thích mạo hiểm, làm gì cũng có kế hoạch, nên thường tránh được những sai lầm lớn. Bạn cũng có khả năng làm việc lâu dài với một mục tiêu, không bỏ dở giữa chừng.',
+      diemLuuY: 'Vì không có bản chất cố định, bạn dễ bị ảnh hưởng bởi người xung quanh — đôi khi bạn sống theo kỳ vọng của gia đình hoặc bạn bè thay vì theo chính mình. Bạn cũng có xu hướng quá thận trọng, ngại thay đổi, ngại mất những gì đã có — dễ bỏ lỡ cơ hội lớn.',
+      khiChat: 'Bề ngoài bạn trông chững chạc, đáng tin, đôi khi có vẻ già dặn hơn tuổi. Nhưng bên trong, bạn là người nhạy cảm và cần sự an toàn — chỉ là bạn không cho người khác thấy điều đó.',
+      dauDoi: 'Tuổi trẻ của bạn thường phải dựa vào người khác hoặc đi theo con đường đã có sẵn. Sau 30 tuổi, khi bản chất "mượn" của cung đối đã thấm vào bạn, cuộc đời sẽ ổn định và bạn bắt đầu gặt hái thành quả của sự kiên nhẫn. Đây là kiểu "mượn uy quyền để xây dựng cuộc đời".',
+      loiKhuyen: [
+        'Xây dựng cho mình một vài nguyên tắc cốt lõi — bạn cần điểm neo khi xung quanh thay đổi.',
+        'Đôi khi hãy thử mạo hiểm có tính toán — bạn đã có nền tảng đủ tốt để chấp nhận rủi ro nhỏ.',
+        'Đầu tư vào tài sản cố định và các mối quan hệ lâu dài — đây là nơi bạn tỏa sáng nhất.'
+      ]
+    },
+    'VCD-2': {  // Đối cung Sát Phá Tham — mượn mãnh liệt
+      tomTat: 'Mệnh của bạn không có sao chính, nhưng cung đối diện là nhóm "mãnh liệt và đổi mới" — bạn mượn được tinh thần chiến binh, cuộc đời nhiều biến động nhưng cũng nhiều cơ hội lớn.',
+      banChat: 'Bạn sinh ra không có bản chất cố định, nhưng khi đối diện với thử thách, bạn bộc lộ tinh thần mạnh mẽ của một người dám nghĩ dám làm. Bạn như ngọn lửa chưa có hình dạng — khi gặp điều kiện phù hợp, bạn bùng lên; khi gặp môi trường chật hẹp, bạn tắt ngấm. Cuộc đời bạn ít nhàm chán, nhưng cũng ít yên ổn.',
+      diemManh: 'Bạn dễ bộc lộ bản lĩnh trong nghịch cảnh — bạn sinh ra để đương đầu với khó khăn, không phải để ngồi yên. Bạn có tố chất của người tiên phong, sẵn sàng đi vào con đường chưa ai đi, không sợ thất bại. Khi được giao trọng trách, bạn thường làm tốt hơn cả người có sao chính ở cung Mệnh.',
+      diemLuuY: 'Vì mượn tính mãnh liệt từ cung đối, bạn dễ nóng nảy, quyết định nhanh và đôi khi hối hận vì quá vội. Cuộc đời bạn thăng trầm vì dám liều — không phải liều để thắng, mà liều vì không chịu nổi sự tầm thường. Bạn cũng dễ mất phương hướng khi không có mục tiêu rõ ràng.',
+      khiChat: 'Bề ngoài bạn trông có vẻ bình thường, khiêm tốn — nhưng khi đụng chuyện, người ta mới thấy bạn mạnh mẽ đến mức nào. Bạn là kiểu người "không đụng thì thôi, đụng là biết tay".',
+      dauDoi: 'Tuổi trẻ của bạn thường nhiều biến động, có lúc tưởng như mất hết, có lúc bùng lên đầy năng lượng. Sau 30 tuổi, khi đã trải qua đủ va vấp, bạn sẽ học được cách kiểm soát ngọn lửa của mình — và đây là lúc bạn bắt đầu xây dựng sự nghiệp vững chắc. Đây là kiểu "mượn sóng gió để rèn bản lĩnh".',
+      loiKhuyen: [
+        'Học cách chờ 24 giờ trước khi đưa ra quyết định lớn — bạn đã mất nhiều hơn là được vì nóng vội.',
+        'Xây dựng một vài mối quan hệ sâu sắc và lâu dài — đây là điểm neo giúp bạn không bị cuốn theo sóng gió.',
+        'Khi đã có mục tiêu rõ ràng, hãy kiên nhẫn với nó ít nhất 3 năm trước khi đổi hướng.'
+      ]
+    },
+    'VCD-3': {  // Đối cung Cơ Nguyệt Đồng Lương — mượn mềm mỏng
+      tomTat: 'Mệnh của bạn không có sao chính, nhưng cung đối diện là nhóm "mềm mỏng và trí tuệ" — bạn mượn được sự điềm đạm, hiền hòa, cuộc đời ổn định nhưng đôi khi thiếu đột phá.',
+      banChat: 'Bạn sinh ra không có bản chất cố định, nhưng khi tiếp xúc với người, bạn bộc lộ tố chất của một người hiền lành, biết lắng nghe, sống nội tâm. Bạn như nước — mềm mại, dễ thích nghi, chảy theo hoàn cảnh nhưng cũng thấm dần. Cuộc đời bạn không nhiều sóng gió, nhưng cũng không có nhiều bùng nổ.',
+      diemManh: 'Bạn có khả năng thích nghi tuyệt vời và dễ được lòng người. Bạn học hỏi nhanh từ môi trường, có trực giác tốt về cảm xúc của người khác, và thường thành công trong các vai trò cần sự kiên nhẫn, tinh tế. Bạn cũng có khả năng chuyên môn sâu nếu chọn đúng lĩnh vực.',
+      diemLuuY: 'Bạn dễ thiếu quyết đoán vì luôn nhìn thấy nhiều mặt của vấn đề. Bạn cũng có xu hướng sống nội tâm, giữ cảm xúc cho riêng mình, đôi khi tự cô lập bản thân. Vì mượn tính mềm mỏng của cung đối, bạn khó đứng ra lãnh đạo hoặc đưa ra quyết định cứng rắn khi cần.',
+      khiChat: 'Bề ngoài bạn trông hiền hòa, dễ gần, ít khi gây chú ý. Nhưng bên trong, bạn có một thế giới nội tâm phong phú và sâu sắc mà chỉ những người thân thiết mới hiểu được.',
+      dauDoi: 'Tuổi trẻ của bạn thường trôi qua êm đềm, ít biến động, nhưng cũng ít cơ hội đột phá. Sau 30 tuổi, khi đã có chuyên môn và vốn sống, bạn sẽ ổn định dần. Đây là kiểu "mượn nước chảy để nuôi cuộc đời" — không nhanh, nhưng bền.',
+      loiKhuyen: [
+        'Chọn một lĩnh vực chuyên môn và đi thật sâu — đây là con đường hợp với bạn nhất.',
+        'Học cách nói "không" và đưa ra quyết định dứt khoát — bạn không thể làm hài lòng tất cả.',
+        'Chủ động tạo ra những thay đổi nhỏ trong cuộc sống — đừng để sự ổn định trở thành sự tù hãm.'
+      ]
+    },
+    'VCD-4': {  // Đối cung Cự Nhật — mượn khẩu tài
+      tomTat: 'Mệnh của bạn không có sao chính, nhưng cung đối diện là nhóm "danh tiếng và ngôn luận" — bạn mượn được khẩu tài và tầm nhìn, hợp với những nghề nói và viết.',
+      banChat: 'Bạn sinh ra không có bản chất cố định, nhưng khi cần thể hiện, bạn bộc lộ khả năng ăn nói và thuyết phục đáng nể. Bạn như một diễn giả không được đào tạo bài bản — khi cần nói thì nói rất hay, nhưng khi không có đất diễn thì có vẻ bình thường. Bạn dễ thành công trong những môi trường cần giao tiếp, đàm phán, giảng dạy.',
+      diemManh: 'Bạn có khả năng diễn đạt và thuyết phục tự nhiên — nhiều khi bạn không hiểu tại sao mình nói hay, chỉ biết là người khác nghe theo. Bạn cũng có tầm nhìn rộng, thích nhìn xa hơn những gì trước mắt. Khi được đặt đúng vị trí, bạn có thể trở thành người truyền cảm hứng cho người khác.',
+      diemLuuY: 'Vì mượn tính khẩu tài từ cung đối, bạn dễ nói nhiều hơn làm, hoặc hứa nhiều hơn những gì bạn thực hiện được. Bạn cũng dễ vướng vào thị phi vì lời nói. Cuộc đời bạn phụ thuộc vào việc có ai nghe và công nhận bạn hay không — nếu không có đất diễn, bạn dễ rơi vào trạng thái thiếu tự tin.',
+      khiChat: 'Bề ngoài bạn trông tự tin, hoạt bát, dễ giao tiếp. Nhưng bên trong, bạn cũng có những lúc tự ti, hoài nghi về chính mình — chỉ là bạn không cho ai thấy.',
+      dauDoi: 'Tuổi trẻ của bạn thường có cơ hội thể hiện, được nhiều người biết đến, nhưng cũng dễ vướng thị phi vì nói chưa chín. Sau 30 tuổi, khi đã học được cách dùng lời nói đúng lúc đúng chỗ, bạn sẽ có vị trí ổn định. Đây là kiểu "mượn lời nói để tạo dựng vị thế".',
+      loiKhuyen: [
+        'Học cách lắng nghe nhiều hơn nói — nửa khả năng thuyết phục của bạn nằm ở việc hiểu đối phương.',
+        'Xây dựng một chuyên môn cụ thể để lời nói của bạn có trọng lượng — nói hay mà không có chuyên môn thì chỉ là nói.',
+        'Cẩn trọng với lời hứa — bạn dễ bị đánh giá là người nói nhiều làm ít hơn là người ta nghĩ.'
+      ]
+    },
+    'VCD-5': {  // Đối cung cũng VCD — cực linh hoạt
+      tomTat: 'Mệnh và cung đối diện của bạn đều không có sao chính — đây là trường hợp đặc biệt hiếm gặp, cuộc đời bạn cực kỳ linh hoạt và khó đoán trước.',
+      banChat: 'Bạn sinh ra với bản chất hoàn toàn để ngỏ — không có bất kỳ định hình nào. Bạn không phải là bất kỳ ai cố định, mà là một người có thể trở thành nhiều phiên bản khác nhau tùy môi trường và lựa chọn. Điều này vừa là tự do tuyệt đối, vừa là thách thức lớn nhất của đời bạn: bạn phải tự tay vẽ nên con người mình, không có khuôn mẫu nào để noi theo.',
+      diemManh: 'Bạn có khả năng thích nghi vô hạn — bạn có thể sống và làm việc trong hầu hết mọi môi trường. Bạn cũng dễ dàng hiểu được nhiều kiểu người khác nhau, trở thành cầu nối giữa các nhóm. Bạn có tiềm năng bất ngờ — vì bạn không bị giới hạn bởi bản chất nào, bạn có thể bứt phá ở những giai đoạn mà người khác không ngờ tới.',
+      diemLuuY: 'Bạn dễ bị cuốn theo người khác hoặc hoàn cảnh — sống gần ai thì giống người đó, ở môi trường nào thì thích nghi với môi trường đó. Bạn cũng có thể cảm thấy mất phương hướng, không biết mình thật sự là ai, muốn gì. Đây là thách thức lớn nhất của cuộc đời bạn: tự định vị chính mình.',
+      khiChat: 'Bạn là người khó đoán — mỗi người tiếp xúc với bạn đều có thể thấy một con người khác nhau. Bạn như tấm gương — phản chiếu điều người khác mang đến cho bạn, và đôi khi chính bạn cũng không biết đâu là bản chất thật của mình.',
+      dauDoi: 'Tuổi trẻ của bạn thường rất lung linh, đổi thay nhiều, ít ai đoán được bạn sẽ đi đâu về đâu. Sau 30 tuổi, nếu bạn chịu khó quan sát và chiêm nghiệm bản thân, bạn sẽ bắt đầu tìm được hình dạng của mình. Đây là kiểu "vô chiêu thắng hữu chiêu" — không có bản chất cố định lại chính là lợi thế lớn nhất nếu bạn biết dùng.',
+      loiKhuyen: [
+        'Dành thời gian ở một mình để hiểu chính mình — bạn không thể cứ mãi thích nghi với người khác.',
+        'Chọn 2-3 giá trị cốt lõi và bảo vệ chúng suốt đời — đây sẽ là la bàn của bạn.',
+        'Ghi nhật ký — vì bạn dễ quên mình đã từng là ai và đã trải qua những gì.'
+      ]
+    },
+    'VCD-6': {  // Đắc Tam Không — quý cách
+      tomTat: 'Mệnh của bạn không có sao chính, nhưng lại gặp được những yếu tố đặc biệt — đây là "quý cách", cuộc đời bất ngờ, phát muộn và có duyên với những điều huyền bí.',
+      banChat: 'Bạn sinh ra với bản chất trống rỗng — không có định hình cố định nào. Nhưng chính sự trống rỗng đó, khi gặp được những yếu tố đặc biệt, lại trở thành một dạng "quý cách" hiếm gặp. Bạn là người có trực giác mạnh, thích tìm hiểu những điều sâu kín mà người khác không chạm tới. Cuộc đời bạn ít khi theo một khuôn mẫu thông thường.',
+      diemManh: 'Bạn có khả năng nhìn thấy những điều người khác không thấy — bạn nhạy cảm với những tầng nghĩa sâu hơn của cuộc sống. Bạn cũng có tố chất của người tu hành, nhà nghiên cứu, triết gia — những người làm việc với ý tưởng và tâm linh. Khi bạn chọn đúng con đường, sự nghiệp của bạn có thể đạt đến tầm cao mà người thường không với tới.',
+      diemLuuY: 'Bạn dễ cảm thấy lạc lõng với cuộc sống thông thường — những giá trị mà người khác theo đuổi có thể khiến bạn thấy vô nghĩa. Bạn cũng dễ rơi vào trạng thái suy tư quá nhiều, hoặc tách biệt khỏi thực tế. Điều này có thể khiến bạn bỏ lỡ những cơ hội thực tế nếu không để ý.',
+      khiChat: 'Bề ngoài bạn có vẻ bình thường, thậm chí hơi khép kín. Nhưng bên trong, bạn có một thế giới nội tâm cực kỳ sâu sắc, phức tạp và đôi khi nghịch lý. Người bình thường khó hiểu được bạn, nhưng người hiểu bạn sẽ thấy bạn rất thú vị.',
+      dauDoi: 'Tuổi trẻ của bạn thường có nhiều trăn trở, có thể có những biến cố khiến bạn nhìn cuộc đời khác đi. Sau 30 tuổi, khi đã trải qua đủ và chiêm nghiệm đủ, bạn sẽ dần tìm được con đường riêng. Thường sau 35 tuổi, bạn mới thật sự phát huy được khả năng của mình — đây là kiểu "vô chiêu đắc quý cách".',
+      loiKhuyen: [
+        'Đừng cố sống theo khuôn mẫu của người khác — bạn sinh ra không phải để làm theo số đông.',
+        'Chọn một lĩnh vực đủ sâu để phát huy trực giác và chiều sâu nội tâm — đây là vũ khí của bạn.',
+        'Giữ kết nối với thực tế bằng một công việc cụ thể — điều này giúp bạn không bị cuốn vào thế giới nội tâm.'
+      ]
+    }
+  };
+
+  /* Xác định nhóm VCD con (1-6) cho cung Mệnh Vô Chính Diệu */
+  function xacDinhVcdCon_(palace, P, pi) {
+    // Ưu tiên 1: đắc Tam Không (Tuần + Triệt + Địa Không / Thiên Không — từ 2 yếu tố trở lên)
+    var soKhong = 0;
+    if (palace.tuan) soKhong++;
+    if (palace.triet) soKhong++;
+    var tenSao = [].concat(palace.chinh, palace.cat, palace.hung, palace.tieu).map(function(s){ return s.n; });
+    if (tenSao.indexOf('Địa Không') >= 0) soKhong++;
+    if (tenSao.indexOf('Thiên Không') >= 0) soKhong++;
+    if (soKhong >= 2) return 'VCD-6';
+
+    // Ưu tiên 2: xét chính tinh ở cung đối chiếu
+    var xc = (pi + 6) % 12;
+    var doiCung = P[xc].chinh.map(function(s){ return s.n; });
+    if (!doiCung.length) return 'VCD-5'; // đối cung cũng VCD
+
+    if (doiCung.some(function(s){ return ['Tử Vi','Thiên Phủ','Vũ Khúc','Thiên Tướng'].indexOf(s) >= 0; })) return 'VCD-1';
+    if (doiCung.some(function(s){ return ['Thất Sát','Phá Quân','Tham Lang'].indexOf(s) >= 0; })) return 'VCD-2';
+    if (doiCung.some(function(s){ return ['Thiên Cơ','Thái Âm','Thiên Đồng','Thiên Lương'].indexOf(s) >= 0; })) return 'VCD-3';
+    if (doiCung.some(function(s){ return ['Cự Môn','Thái Dương'].indexOf(s) >= 0; })) return 'VCD-4';
+    return 'VCD-3'; // mặc định
+  }
+
+  /* Sinh câu bổ trợ cho VCD: Tuần/Triệt, phụ tinh mạnh ở Mệnh, Không Kiếp */
+  function sinhBoTroVcd_(palace, P, pi) {
+    var cau = [];
+    var xc = (pi + 6) % 12;
+    var doiCung = P[xc];
+    var tenSao = [].concat(palace.chinh, palace.cat, palace.hung, palace.tieu).map(function(s){ return s.n; });
+
+    // Tuần/Triệt
+    if (palace.tuan && palace.triet) {
+      cau.push('Cung Mệnh của bạn đồng thời bị cả Tuần và Triệt — đây là dấu hiệu cho thấy cuộc đời bạn có một giai đoạn đầu khá mờ nhạt, nhưng sau 30 tuổi sẽ sáng rõ dần theo cách bất ngờ.');
+    } else if (palace.triet) {
+      cau.push('Cung Mệnh của bạn bị Triệt che phủ — tuổi trẻ thường gặp khó khăn trong việc định hình bản thân, sau 30 tuổi mới hanh thông rõ.');
+    } else if (palace.tuan) {
+      cau.push('Cung Mệnh của bạn bị Tuần che phủ — cuộc đời bạn có thể chậm hơn người khác một nhịp, nhưng điều đó giúp bạn tránh được nhiều sai lầm.');
+    }
+
+    // Tuần/Triệt ở cung đối → sao mượn bị chặn
+    if (doiCung.tuan || doiCung.triet) {
+      cau.push('Cung đối diện — nơi bạn mượn sao — lại bị Tuần/Triệt chặn một nửa, nên dù mượn được tính cách của cung đó, bạn vẫn chỉ có được khoảng một nửa sức mạnh thật sự. Bạn cần tự lực nhiều hơn.');
+    }
+
+    // Phụ tinh đặc biệt ở bản cung
+    var saoManh = ['Tả Phù','Hữu Bật','Văn Xương','Văn Khúc','Thiên Khôi','Thiên Việt','Hóa Lộc','Hóa Quyền','Hóa Khoa','Lộc Tồn'];
+    var saoPhongManh = saoManh.filter(function(s){ return tenSao.indexOf(s) >= 0; });
+    if (saoPhongManh.length >= 2) {
+      cau.push('May mắn thay, cung Mệnh của bạn tuy không có sao chính nhưng lại có nhiều sao hỗ trợ tốt — điều này giúp bù đắp phần nào sự mờ nhạt và mang lại cho bạn nhiều cơ hội, quý nhân.');
+    }
+
+    var saoManh2 = ['Kình Dương','Đà La','Hỏa Tinh','Linh Tinh','Địa Không','Địa Kiếp','Hóa Kỵ'];
+    var saoPhongHung = saoManh2.filter(function(s){ return tenSao.indexOf(s) >= 0; });
+    if (saoPhongHung.length >= 2) {
+      cau.push('Tuy nhiên, cung Mệnh của bạn cũng có nhiều sao thử thách — cuộc đời bạn sẽ có những giai đoạn khá sóng gió, cần đặc biệt kiên nhẫn và bình tĩnh.');
+    }
+
+    return cau;
+  }
+
+    function xacDinhNhomMenh_(palace, P, pi) {
+    if (!palace.chinh.length) return xacDinhVcdCon_(palace, P, pi);
+    var sao = palace.chinh.map(function(s){ return s.n; });
+    if (sao.some(function(s){ return ['Tử Vi','Thái Dương','Thiên Tướng'].indexOf(s) >= 0; })) return 'A';
+    if (sao.some(function(s){ return ['Thất Sát','Phá Quân','Liêm Trinh'].indexOf(s) >= 0; })) return 'D';
+    if (sao.some(function(s){ return ['Thiên Cơ','Cự Môn','Thái Âm'].indexOf(s) >= 0; })) return 'B';
+    if (sao.some(function(s){ return ['Vũ Khúc','Thiên Phủ','Thiên Đồng'].indexOf(s) >= 0; })) return 'C';
+    if (sao.some(function(s){ return ['Tham Lang','Thiên Lương'].indexOf(s) >= 0; })) return 'E';
+    return 'C';
+  }
+
+     function sinhVanCungMenh_(palace, P, pi, vanFacts) {
+    var nhom = xacDinhNhomMenh_(palace, P, pi);
+    var van = KHO_VAN_MENH[nhom];
+    if (!van) van = KHO_VAN_MENH['VCD-3'];
+    var doan = [];
+    var laVcd = nhom.indexOf('VCD-') === 0;
+
+    doan.push({ tieuDe: 'Tóm tắt', text: van.tomTat });
+    if (vanFacts && vanFacts.hoanCanh) doan.push(vanFacts.hoanCanh);
+    doan.push({ tieuDe: 'Bản chất con người bạn', text: van.banChat });
+
+    // Đoạn 3 — Điểm mạnh: dùng facts backend
+    if (vanFacts && vanFacts.diemManh) {
+      doan.push({ tieuDe: 'Điểm mạnh nổi bật', text: vanFacts.diemManh });
+    }
+
+    // Đoạn 4 — Điểm lưu ý: dùng facts backend
+    if (vanFacts && vanFacts.diemYeu) {
+      doan.push({ tieuDe: 'Điểm cần lưu ý', text: vanFacts.diemYeu });
+    }
+
+    doan.push({ tieuDe: 'Khí chất bề ngoài và nội tâm', text: van.khiChat });
+
+    // Đầu đời: với VCD, KHÔNG chèn câu chung về Tuần/Triệt (đã có fact riêng)
+    var textDauDoi = van.dauDoi;
+    if (!laVcd && (palace.tuan || palace.triet)) {
+      textDauDoi += ' Ngoài ra, tuổi trẻ của bạn có một lớp mờ che phủ — giai đoạn đầu thường gặp khó khăn, sau 30 tuổi mới dần hanh thông rõ rệt.';
+    }
+    doan.push({ tieuDe: 'Đầu đời và hậu vận', text: textDauDoi });
+
+    // Đoạn 7 — Ảnh hưởng: facts backend
+    if (vanFacts && vanFacts.anhHuong) {
+      doan.push({ tieuDe: 'Ảnh hưởng từ các cung xung quanh bạn', text: vanFacts.anhHuong });
+    }
+
+    // Đoạn 8 — Đặc biệt: facts backend
+    if (vanFacts && vanFacts.dacBiet) {
+      doan.push({ tieuDe: 'Những yếu tố đặc biệt của cung này', text: vanFacts.dacBiet });
+    }
+
+    // Lời khuyên ở cuối
+    doan.push({ tieuDe: 'Lời khuyên cụ thể', text: '', list: van.loiKhuyen.slice() });
+
+    return doan;
+  }
+
+    function renderVanCung_(doan, tenCung) {
+    var html = '<div class="cung-van-de-hieu">';
+    if (tenCung) {
+      html += '<div class="cvdh-tieude">Cung ' + tenCung + '</div>';
+    }
+    doan.forEach(function(d) {
+      html += '<div class="cv-doan">';
+      html += '<h5>' + d.tieuDe + '</h5>';
+      if (d.text) html += '<p>' + d.text + '</p>';
+      if (d.list && d.list.length) {
+        html += '<ol class="cv-list">';
+        d.list.forEach(function(x) { html += '<li>' + x + '</li>'; });
+        html += '</ol>';
+      }
+      html += '</div>';
+    });
+    html += '</div>';
+    return html;
+  }
+
+  // Dispatcher: cung Mệnh dùng kho văn mới, các cung khác tạm để trống
+  function taoCungDeHieu_(c) {
+    var res = state.result;
+    if (!res || !res.tuvi) return '';
+    var P = res.tuvi.palaces;
+    var pi = -1;
+    for (var i = 0; i < 12; i++) if (P[i].cung === c.cung) { pi = i; break; }
+    if (pi < 0) return '';
+    if (c.cung === 'Mệnh') {
+      return renderVanCung_(sinhVanCungMenh_(P[pi], P, pi, c.vanFacts), 'Mệnh');
+    }
+    if (c.cung === 'Phu Thê' && c.vanFacts && c.vanFacts.kieu === 'phuthe') {
+      return renderVanCung_(c.vanFacts.doan, 'Phu Thê');
+    }
+        if (c.cung === 'Tài Bạch' && c.vanFacts && c.vanFacts.kieu === 'taibach') {
+      return renderVanCung_(c.vanFacts.doan, 'Tài Bạch');
+    }
+        if (c.cung === 'Quan Lộc' && c.vanFacts && c.vanFacts.kieu === 'quanloc') {
+      return renderVanCung_(c.vanFacts.doan, 'Quan Lộc');
+    }
+        if (c.cung === 'Tử Tức' && c.vanFacts && c.vanFacts.kieu === 'tutuc') {
+      return renderVanCung_(c.vanFacts.doan, 'Tử Tức');
+    }
+        if (c.cung === 'Tật Ách' && c.vanFacts && c.vanFacts.kieu === 'tatach') {
+      return renderVanCung_(c.vanFacts.doan, 'Tật Ách');
+    }
+        if (c.cung === 'Điền Trạch' && c.vanFacts && c.vanFacts.kieu === 'dientrach') {
+      return renderVanCung_(c.vanFacts.doan, 'Điền Trạch');
+    }
+        if (c.cung === 'Phúc Đức' && c.vanFacts && c.vanFacts.kieu === 'phucduc') {
+      return renderVanCung_(c.vanFacts.doan, 'Phúc Đức');
+    }
+    if (c.cung === 'Thiên Di' && c.vanFacts && c.vanFacts.kieu === 'thiendi') {
+  return renderVanCung_(c.vanFacts.doan, 'Thiên Di');
+}
+if (c.cung === 'Nô Bộc' && c.vanFacts && c.vanFacts.kieu === 'noboc') {
+  return renderVanCung_(c.vanFacts.doan, 'Nô Bộc');
+}
+if (c.cung === 'Phụ Mẫu' && c.vanFacts && c.vanFacts.kieu === 'phumau') {
+  return renderVanCung_(c.vanFacts.doan, 'Phụ Mẫu');
+}
+if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
+  return renderVanCung_(c.vanFacts.doan, 'Huynh Đệ');
+}
+    // 11 cung còn lại: chưa làm, hiển thị ghi chú ngắn
+    return '<div class="cung-van-de-hieu"><div class="cv-doan"><h5>' + c.cung + '</h5><p><i>Cung này sẽ được bổ sung ở bản cập nhật tiếp theo. Hiện bạn có thể xem phần "chi tiết chuyên sâu" bên dưới.</i></p></div></div>';
+  }
   function renderLuan(res) {
     var L = res.tuvi.luanGiai;
     var html = '<div class="panel section"><h2 class="panel-title"><span class="han">總</span> Tổng quan</h2><ul>' +
@@ -1476,7 +2081,10 @@
     html += '<div class="panel section"><h2 class="panel-title"><span class="han">宮</span> Luận 12 cung chuyên sâu</h2>' +
       coSoHtml('Cơ sở lý luận luận cung', CT.coSo.cung) +
       '<div class="lg-list">' + CT.cung.map(function (c, i) {
-        return blockHtml(voiTuTru(res, c), 'Cung ' + c.cung + (c.isThan ? ' · Thân cư' : ''), c.canChi, i === 0);
+                var blockGoc = blockHtml(voiTuTru(res, c), 'Cung ' + c.cung + (c.isThan ? ' · Thân cư' : ''), c.canChi, i === 0);
+        var deHieu = taoCungDeHieu_(c);
+        var full = deHieu + '<details class="cung-chitiet"><summary>Xem chi tiết chuyên sâu (thuật ngữ Tử Vi)</summary>' + blockGoc + '</details>';
+        return full;
       }).join('') + '</div></div>';
     var tops = res.tuvi.luanGiai.cung.slice().sort(function (a, b) { return b.diem - a.diem; });
     html += '<div class="bt-grid"><div class="panel section"><h2 class="panel-title"><span class="han">吉</span> Cung mạnh</h2><ul class="th-kl">' +
@@ -2541,6 +3149,39 @@
     initForm();
     initCapDoi();
     tipInit();
+        // Nút bật/tắt hiện cơ sở phân tích (mặc định: ẩn để gọn)
+    (function () {
+      var nut = $('nutCoso');
+      if (!nut) return;
+      var TIET_MUC_AN = /^(Cơ sở|Tương tác các cung|Sao đặc thù tại cung|Thần sát|Căn cứ|lý do|Lý do)/i;
+      function danhDau() {
+        document.querySelectorAll('.lg-sec').forEach(function (sec) {
+          var h = sec.querySelector('h5');
+          if (!h) return;
+          var t = h.textContent.trim();
+          if (TIET_MUC_AN.test(t)) sec.classList.add('an-mac-dinh');
+        });
+      }
+      function apDung(bat) {
+        document.body.classList.toggle('gon-coso', !bat);
+        nut.classList.toggle('on', bat);
+        nut.title = bat ? 'Ẩn cơ sở phân tích' : 'Hiện cơ sở phân tích';
+        document.querySelectorAll('details.coso-ly-luan').forEach(function (d) { d.open = bat; });
+      }
+      // Mặc định: ẩn (gon)
+      apDung(false);
+      nut.addEventListener('click', function () {
+        var bat = !nut.classList.contains('on');
+        apDung(bat);
+        toast(bat ? '🔍 Đã hiện cơ sở phân tích' : '🔍 Đã ẩn cơ sở phân tích (chế độ gọn)');
+      });
+      // Đánh dấu lại mỗi khi có nội dung mới render
+      window.addEventListener('click', function (e) {
+        if (e.target.closest('.tab, .subtab')) setTimeout(danhDau, 100);
+      });
+      danhDau();
+      window._danhDauCoso = danhDau;
+    })();
     $('tabs').addEventListener('click', function (e) {
       var t = e.target.closest('.tab');
       if (t) showTab(t.getAttribute('data-tab'));
@@ -2579,5 +3220,269 @@
     var rt;
     window.addEventListener('resize', function () { clearTimeout(rt); rt = setTimeout(drawOverlay, 120); });
   });
+})();
+
+
+/* ============================================================
+ *  PATCH 8G — NGHIỆM CHỨNG LÁ SỐ (tích hợp vào web app chính)
+ *  Độc lập với IIFE trên — chỉ dùng server: getDoanNghiemChung
+ *  và tinhDiemNghiemChung đã có trong NghiemChung.gs.
+ * ============================================================ */
+(function () {
+  'use strict';
+  var $ = function (id) { return document.getElementById(id); };
+  function hasServer() {
+    return typeof google !== 'undefined' && google.script && google.script.run;
+  }
+  var cauTraLoi = {};
+  var NC_MUC = [
+    { ma: 'dung_het',       ten: '✓ Đúng hết' },
+    { ma: 'dung_phan_lon',  ten: '◐ Đúng phần lớn' },
+    { ma: 'dung_mot_nua',   ten: '◑ Đúng một nửa' },
+    { ma: 'sai_phan_lon',   ten: '◒ Sai phần lớn' },
+    { ma: 'sai_hoan_toan',  ten: '✗ Sai hoàn toàn' }
+  ];
+
+  function showBuoc(n) {
+    ['ncBuoc1','ncBuoc2','ncBuoc3'].forEach(function (id, i) {
+      var el = $(id); if (el) el.style.display = (i === n - 1) ? '' : 'none';
+    });
+  }
+  function err(m) { var e = $('ncErr'); if (e) e.textContent = m || ''; }
+
+      function fillNcNoi() {
+    var sel = $('ncNoi');
+    if (!sel || sel.options.length) return;
+    var ds = window.NOI_SINH || [];
+    var h = '';
+    if (ds.length) {
+      ds.forEach(function (g) {
+        h += '<optgroup label="' + g[0] + '">';
+        g[1].forEach(function (c) {
+          var val = c[1] + '|' + c[2] + '|' + c[0];
+          h += '<option value="' + val + '">' + c[0] + '</option>';
+        });
+        h += '</optgroup>';
+      });
+    }
+    h += '<option value="custom">Nơi khác – tự nhập tọa độ…</option>';
+    sel.innerHTML = h;
+    if (!ds.length) {
+      // Fallback nếu NOI_SINH chưa load kịp: dùng Hà Nội
+      sel.innerHTML = '<option value="21.03|105.85|Hà Nội">Hà Nội</option>' +
+        '<option value="10.78|106.70|TP. Hồ Chí Minh">TP. Hồ Chí Minh</option>' +
+        '<option value="20.45|106.34|Thái Bình">Thái Bình</option>' +
+        '<option value="custom">Nơi khác – tự nhập tọa độ…</option>';
+    }
+    sel.addEventListener('change', function () {
+      var cust = $('ncNoiCustom');
+      if (cust) cust.style.display = (sel.value === 'custom') ? '' : 'none';
+    });
+  }
+
+  function prefill() {
+    fillNcNoi();
+    try {
+      var s = JSON.parse(localStorage.getItem('tcc_last_input') || 'null');
+      if (!s || !s.day || !s.month || !s.year) return false;
+      if (s.gender) $('ncGioi').value = s.gender;
+      if (s.calendar) $('ncLich').value = s.calendar;
+      $('ncNgay').value = s.day;
+      $('ncThang').value = s.month;
+      $('ncNam').value = s.year;
+      if (s.hour != null && s.hour !== '') $('ncGio').value = s.hour;
+      if (s.minute != null && s.minute !== '') $('ncPhut').value = s.minute;
+      if (s.place) {
+        var sel = $('ncNoi');
+        var co = false;
+        for (var i = 0; i < sel.options.length; i++) {
+          if (sel.options[i].value === s.place) { sel.value = s.place; co = true; break; }
+        }
+        if (!co) {
+          // Nơi sinh cũ không có trong danh sách → dùng custom
+          sel.value = 'custom';
+          $('ncNoiCustom').style.display = '';
+          var pp = String(s.place).split('|');
+          if (pp[0]) $('ncLat').value = pp[0];
+          if (pp[1]) $('ncLon').value = pp[1];
+        }
+      }
+      return true;
+    } catch (e) { return false; }
+  }
+
+  function thongTinTomTat() {
+    var pad = function (n) { return (n < 10 ? '0' : '') + n; };
+    var g = $('ncGioi').value === 'nu' ? 'Nữ' : 'Nam';
+    var lich = $('ncLich').value === 'am' ? 'ÂL' : 'DL';
+    var ngay = pad(parseInt($('ncNgay').value, 10)) + '/' + pad(parseInt($('ncThang').value, 10)) + '/' + $('ncNam').value;
+    var gio = pad(parseInt($('ncGio').value, 10)) + 'h' + pad(parseInt($('ncPhut').value, 10));
+    var noi = ($('ncNoi').value || '').split('|')[2] || '';
+    return g + ' · ' + lich + ' ' + ngay + ' · ' + gio + (noi ? ' · ' + noi : '');
+  }
+
+      function mo() {
+    err('');
+    cauTraLoi = {};
+    $('ncDs').innerHTML = '';
+    $('ncChiTiet').innerHTML = '';
+    $('ncDiem').textContent = '—%';
+    $('ncKhuyen').textContent = '';
+    fillNcNoi();
+    $('ncModal').classList.add('show');
+
+    var coThongTin = prefill();
+    if (coThongTin) {
+      showBuoc(2);
+      $('ncThongTin').innerHTML = '<b>Đang nghiệm chứng:</b> ' + thongTinTomTat();
+      $('ncDs').innerHTML = '<p class="muted" style="margin:0">Đang tính 6 hệ… vui lòng đợi 3-5 giây.</p>';
+      lap();
+    } else {
+      showBuoc(1);
+    }
+  }
+      function lap() {
+    err('');
+    var placeVal;
+    if ($('ncNoi').value === 'custom') {
+      var la = parseFloat($('ncLat').value), lo = parseFloat($('ncLon').value);
+      if (isNaN(la) || isNaN(lo)) { err('Nhập vĩ độ và kinh độ cho nơi sinh tùy chỉnh.'); return; }
+      placeVal = la + '|' + lo + '|Tùy chỉnh';
+    } else {
+      placeVal = $('ncNoi').value;
+      if (!placeVal) { err('Chọn nơi sinh.'); return; }
+    }
+
+    var input = {
+      name: 'NguoiDung',
+      gender: $('ncGioi').value,
+      calendar: $('ncLich').value,
+      day: parseInt($('ncNgay').value, 10),
+      month: parseInt($('ncThang').value, 10),
+      year: parseInt($('ncNam').value, 10),
+      hour: parseInt($('ncGio').value, 10),
+      minute: parseInt($('ncPhut').value, 10),
+      place: placeVal,
+      tz: 7,
+      viewYear: new Date().getFullYear()
+    };
+    if (!input.day || !input.month || !input.year) { err('Nhập đủ ngày/tháng/năm sinh.'); return; }
+    if (input.hour < 0 || input.hour > 23) { err('Giờ phải từ 0 đến 23.'); return; }
+    if (!hasServer()) { err('Không tìm thấy máy chủ Apps Script.'); return; }
+
+    var tt = $('ncThongTin');
+    if (tt) tt.innerHTML = '<b>Đang nghiệm chứng:</b> ' + thongTinTomTat();
+    if ($('ncDs')) $('ncDs').innerHTML = '<p class="muted" style="margin:0">Đang tính 6 hệ… vui lòng đợi 3-5 giây.</p>';
+
+    if ($('ncLap')) { $('ncLap').disabled = true; $('ncLap').textContent = 'Đang tính 6 hệ…'; }
+
+    google.script.run
+      .withSuccessHandler(function (doan) {
+        if ($('ncLap')) { $('ncLap').disabled = false; $('ncLap').textContent = 'Lập 8 đoạn'; }
+        if (!doan || !doan.length) {
+          if ($('ncDs')) $('ncDs').innerHTML = '';
+          err('Không sinh được đoạn mô tả. Kiểm tra lại thông tin.');
+          showBuoc(1);
+          return;
+        }
+        hienDoan(doan);
+        showBuoc(2);
+      })
+      .withFailureHandler(function (e) {
+        if ($('ncLap')) { $('ncLap').disabled = false; $('ncLap').textContent = 'Lập 8 đoạn'; }
+        if ($('ncDs')) $('ncDs').innerHTML = '';
+        err('Lỗi: ' + (e && e.message ? e.message : 'không xác định'));
+        showBuoc(1);
+      })
+      .getDoanNghiemChung(input);
+  }
+
+
+
+  function hienDoan(doan) {
+    var h = '';
+    doan.forEach(function (d) {
+      h += '<div class="nc-doan" data-ma="' + d.ma + '">';
+      h += '<div class="nc-tieude">【' + d.ma + '】 ' + d.ten + '</div>';
+      h += '<div class="nc-text">' + d.text + '</div>';
+      h += '<div class="nc-muc-group">';
+      NC_MUC.forEach(function (m) {
+        h += '<button type="button" class="nc-muc" data-ma="' + d.ma + '" data-muc="' + m.ma + '">' + m.ten + '</button>';
+      });
+      h += '</div></div>';
+    });
+    $('ncDs').innerHTML = h;
+    $('ncDs').querySelectorAll('.nc-muc').forEach(function (b) {
+      b.addEventListener('click', function () {
+        var ma = b.getAttribute('data-ma');
+        var box = b.parentNode;
+        box.querySelectorAll('.nc-muc').forEach(function (x) { x.classList.remove('chon'); });
+        b.classList.add('chon');
+        cauTraLoi[ma] = b.getAttribute('data-muc');
+      });
+    });
+    showBuoc(2);
+  }
+
+  function xacNhan() {
+    var so = Object.keys(cauTraLoi).length;
+    if (so < 4) { alert('Cần đánh dấu ít nhất 4 nhóm để tính điểm. Hiện có ' + so + ' nhóm.'); return; }
+    $('ncXacNhan').disabled = true;
+    $('ncXacNhan').textContent = 'Đang tính…';
+    google.script.run
+      .withSuccessHandler(function (kq) {
+        $('ncXacNhan').disabled = false;
+        $('ncXacNhan').textContent = 'Xác nhận & tính điểm';
+        hienKetQua(kq);
+      })
+      .withFailureHandler(function (e) {
+        $('ncXacNhan').disabled = false;
+        $('ncXacNhan').textContent = 'Xác nhận & tính điểm';
+        alert('Lỗi: ' + (e && e.message ? e.message : 'không xác định'));
+      })
+      .tinhDiemNghiemChung(cauTraLoi);
+  }
+
+  function hienKetQua(kq) {
+    var mau = { jade: 'var(--good-ink)', gold: 'var(--mid-ink)', coral: 'var(--bad-ink)' }[kq.mau] || 'var(--head)';
+    $('ncDiem').textContent = kq.pct + '%';
+    $('ncDiem').style.color = mau;
+    $('ncKhuyen').textContent = kq.khuyen;
+    var h = '<div style="margin-bottom:8px"><b>Tổng:</b> ' + kq.soDungCao + ' nhóm đúng cao · ' + kq.soSai + ' nhóm sai</div>';
+    kq.chiTiet.forEach(function (c) {
+      h += '<div style="padding:3px 0">【' + c.ma + '】 ' + c.ten + ' — ' + c.mucTen + ' (' + Math.round(c.diem * 100) + '%)</div>';
+    });
+    $('ncChiTiet').innerHTML = h;
+    showBuoc(3);
+  }
+
+    function init() {
+    var nut1 = $('btnNghiemChung');        // nút cũ ở header (nếu còn sót)
+    if (nut1) nut1.addEventListener('click', mo);
+    var nut2 = $('ncBannerGo');            // nút mới ở banner
+    if (nut2) nut2.addEventListener('click', mo);
+
+    // Theo dõi #chartArea: khi hiện → bật banner, khi ẩn → tắt
+    var ca = $('chartArea'), nb = $('ncBanner');
+    if (ca && nb) {
+      function capNhat() { nb.style.display = (ca.style.display === 'none') ? 'none' : 'block'; }   // block: nội dung trên, nút xuống dòng dưới (flex làm nút bị bóp thành cột)
+      capNhat();
+      new MutationObserver(capNhat).observe(ca, { attributes: true, attributeFilter: ['style'] });
+    }
+
+    if ($('ncLap')) $('ncLap').addEventListener('click', lap);
+    if ($('ncXacNhan')) $('ncXacNhan').addEventListener('click', xacNhan);
+    if ($('ncBack')) $('ncBack').addEventListener('click', function () { showBuoc(1); });
+    if ($('ncThuLai')) $('ncThuLai').addEventListener('click', function () { cauTraLoi = {}; showBuoc(1); });
+    var modal = $('ncModal');
+    if (modal) modal.addEventListener('click', function (e) {
+      if (e.target === modal) modal.classList.remove('show');
+    });
+  }
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
 })();
 </script>

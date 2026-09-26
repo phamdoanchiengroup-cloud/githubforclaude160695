@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html>
+<head>
+<base target="_top">
+<style>
+  * { box-sizing: border-box; }
+  body {
+    font-family: -apple-system, "Segoe UI", Roboto, sans-serif;
+    margin: 0; padding: 16px;
+    background: #f7f5ef;
+    color: #2a2a2a;
+    font-size: 14px;
+    line-height: 1.55;
+  }
+  h1 {
+    font-size: 20px; margin: 0 0 4px;
+    color: #6b4f1d;
+  }
+  .phu {
+    font-size: 12px; color: #7a6a4a; margin-bottom: 16px;
+  }
+  .buoc {
+    background: #fff; border-radius: 10px; padding: 16px;
+    box-shadow: 0 2px 8px rgba(0,0,0,.06);
+    margin-bottom: 14px;
+  }
+  .buoc-tieude {
+    font-weight: 600; color: #6b4f1d; margin-bottom: 12px;
+    font-size: 15px;
+  }
+  label { display: block; margin: 8px 0 4px; font-size: 13px; color: #4a4a4a; }
+  input[type=text], input[type=number], select {
+    width: 100%; padding: 8px 10px; font-size: 14px;
+    border: 1px solid #d8d0bd; border-radius: 6px;
+    background: #fdfcf8;
+  }
+  input:focus, select:focus {
+    outline: none; border-color: #b8945a;
+    box-shadow: 0 0 0 3px rgba(184,148,90,.15);
+  }
+  .hang { display: flex; gap: 10px; }
+  .hang > div { flex: 1; }
+  .nut {
+    display: inline-block; padding: 10px 20px; border: none;
+    border-radius: 6px; font-size: 14px; font-weight: 600;
+    cursor: pointer; margin-top: 12px;
+  }
+  .nut-chinh { background: #b8945a; color: #fff; }
+  .nut-chinh:hover { background: #a07c3f; }
+  .nut-chinh:disabled { background: #ccc; cursor: not-allowed; }
+  .nut-phu {
+    background: #fff; color: #6b4f1d;
+    border: 1px solid #d8d0bd;
+  }
+  .doan {
+    background: #fff; border-radius: 10px; padding: 14px 16px;
+    margin-bottom: 12px;
+    border-left: 4px solid #b8945a;
+    box-shadow: 0 1px 4px rgba(0,0,0,.05);
+  }
+  .doan-tieude {
+    font-weight: 600; color: #6b4f1d; margin-bottom: 6px;
+    font-size: 14px;
+  }
+  .doan-text {
+    color: #3a3a3a; font-size: 13.5px; margin-bottom: 10px;
+  }
+  .muc-group {
+    display: flex; gap: 6px; flex-wrap: wrap;
+  }
+  .muc {
+    flex: 1; min-width: 90px;
+    padding: 8px 6px; border: 2px solid #e0d8c4;
+    border-radius: 6px; background: #fdfcf8;
+    cursor: pointer; text-align: center;
+    font-size: 13px; transition: all .15s;
+    user-select: none;
+  }
+  .muc:hover { border-color: #b8945a; }
+  .muc.chon {
+    background: #b8945a; color: #fff;
+    border-color: #b8945a; font-weight: 600;
+  }
+  .ketqua {
+    background: #fff; border-radius: 10px; padding: 20px;
+    box-shadow: 0 2px 12px rgba(0,0,0,.08);
+    text-align: center;
+  }
+  .diem {
+    font-size: 42px; font-weight: 700;
+    color: #6b4f1d; margin: 8px 0;
+  }
+  .khuyen {
+    font-size: 14px; color: #4a4a4a; margin: 12px 0 16px;
+  }
+  .mau-jade { color: #2a7a4a; }
+  .mau-gold { color: #a07c3f; }
+  .mau-coral { color: #c0553a; }
+  .chi-tiet {
+    text-align: left; font-size: 12.5px; color: #6a6a6a;
+    margin-top: 14px; padding-top: 14px;
+    border-top: 1px dashed #e0d8c4;
+  }
+  .chi-tiet div { padding: 3px 0; }
+  .an { display: none; }
+  .loading {
+    text-align: center; padding: 30px; color: #8a7a5a;
+  }
+  .loi {
+    background: #fbeae5; color: #a03a1a;
+    padding: 12px; border-radius: 6px;
+    font-size: 13px; margin-top: 10px;
+  }
+</style>
+</head>
+<body>
+
+<div id="khung-nhap">
+  <h1>Nghiệm Chứng Lá Số</h1>
+  <div class="phu">Nhập giờ sinh → xem 8 đoạn mô tả → đánh dấu mức độ khớp. Hệ thống tính % và kết luận lá số đúng hay sai.</div>
+
+  <div class="buoc">
+    <div class="buoc-tieude">1 · Thông tin sinh</div>
+
+    <label>Họ tên (tùy chọn)</label>
+    <input type="text" id="f-ten" placeholder="VD: Nguyễn Văn A">
+
+    <div class="hang">
+      <div>
+        <label>Giới tính</label>
+        <select id="f-gioi">
+          <option value="nam">Nam</option>
+          <option value="nu">Nữ</option>
+        </select>
+      </div>
+      <div>
+        <label>Lịch</label>
+        <select id="f-lich">
+          <option value="duong">Dương lịch</option>
+          <option value="am">Âm lịch</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="hang">
+      <div>
+        <label>Ngày</label>
+        <input type="number" id="f-ngay" min="1" max="31" value="16">
+      </div>
+      <div>
+        <label>Tháng</label>
+        <input type="number" id="f-thang" min="1" max="12" value="6">
+      </div>
+      <div>
+        <label>Năm</label>
+        <input type="number" id="f-nam" min="1900" max="2100" value="1995">
+      </div>
+    </div>
+
+    <div class="hang">
+      <div>
+        <label>Giờ</label>
+        <input type="number" id="f-gio" min="0" max="23" value="4">
+      </div>
+      <div>
+        <label>Phút</label>
+        <input type="number" id="f-phut" min="0" max="59" value="30">
+      </div>
+    </div>
+
+    <label>Nơi sinh (lat|lon|tên — cách nhau bằng dấu |)</label>
+    <input type="text" id="f-noi" value="20.45|106.34|Thái Bình">
+
+    <button class="nut nut-chinh" id="nut-lap" onclick="lapLaSo()">Lập lá số</button>
+    <div id="loi-nhap" class="loi an"></div>
+  </div>
+</div>
+
+<div id="khung-loading" class="loading an">
+  Đang tính 6 hệ… vui lòng đợi khoảng 3-5 giây…
+</div>
+
+<div id="khung-doan" class="an">
+  <h1>Đánh Giá 8 Nhóm</h1>
+  <div class="phu">Chọn mức độ khớp cho từng nhóm. Có thể bỏ trống nhóm không chắc.</div>
+
+  <div id="ds-doan"></div>
+
+  <button class="nut nut-chinh" id="nut-xacnhan" onclick="xacNhan()">Xác nhận</button>
+  <button class="nut nut-phu" onclick="quayLai()">Nhập lại</button>
+</div>
+
+<div id="khung-ketqua" class="an">
+  <div class="ketqua">
+    <div style="font-size:14px;color:#7a6a4a">Tỉ lệ khớp</div>
+    <div class="diem" id="kq-diem">—%</div>
+    <div class="khuyen" id="kq-khuyen">—</div>
+    <div id="kq-chitiet" class="chi-tiet"></div>
+    <button class="nut nut-chinh" onclick="quayLai()">Thử giờ sinh khác</button>
+  </div>
+</div>
+
+<script>
+var NC_MUC = [
+  { ma: 'dung_het',       ten: '✓ Đúng hết' },
+  { ma: 'dung_phan_lon',  ten: '◐ Đúng phần lớn' },
+  { ma: 'dung_mot_nua',   ten: '◑ Đúng một nửa' },
+  { ma: 'sai_phan_lon',   ten: '◒ Sai phần lớn' },
+  { ma: 'sai_hoan_toan',  ten: '✗ Sai hoàn toàn' }
+];
+
+var cauTraLoi = {};
+
+function doiKhung(id) {
+  ['khung-nhap','khung-loading','khung-doan','khung-ketqua'].forEach(function(k){
+    document.getElementById(k).classList.add('an');
+  });
+  document.getElementById(id).classList.remove('an');
+}
+
+function hienLoi(msg) {
+  var e = document.getElementById('loi-nhap');
+  e.textContent = msg;
+  e.classList.remove('an');
+}
+
+function anLoi() {
+  document.getElementById('loi-nhap').classList.add('an');
+}
+
+function lapLaSo() {
+  anLoi();
+  var input = {
+    name: document.getElementById('f-ten').value || 'NguoiDung',
+    gender: document.getElementById('f-gioi').value,
+    calendar: document.getElementById('f-lich').value,
+    day: parseInt(document.getElementById('f-ngay').value, 10),
+    month: parseInt(document.getElementById('f-thang').value, 10),
+    year: parseInt(document.getElementById('f-nam').value, 10),
+    hour: parseInt(document.getElementById('f-gio').value, 10),
+    minute: parseInt(document.getElementById('f-phut').value, 10),
+    place: document.getElementById('f-noi').value,
+    tz: 7,
+    viewYear: new Date().getFullYear()
+  };
+
+  if (!input.day || !input.month || !input.year) {
+    hienLoi('Vui lòng nhập đủ ngày/tháng/năm sinh.');
+    return;
+  }
+  if (input.hour < 0 || input.hour > 23) {
+    hienLoi('Giờ phải từ 0 đến 23.');
+    return;
+  }
+  if (input.place.split('|').length < 3) {
+    hienLoi('Nơi sinh phải có dạng: vĩ độ|kinh độ|tên (VD: 20.45|106.34|Thái Bình).');
+    return;
+  }
+
+  doiKhung('khung-loading');
+
+  google.script.run
+    .withSuccessHandler(function(doan) {
+      if (!doan || !doan.length) {
+        doiKhung('khung-nhap');
+        hienLoi('Không sinh được đoạn mô tả. Vui lòng kiểm tra lại.');
+        return;
+      }
+      hienDoan(doan);
+    })
+    .withFailureHandler(function(err) {
+      doiKhung('khung-nhap');
+      hienLoi('Lỗi: ' + (err && err.message ? err.message : 'không xác định'));
+    })
+    .getDoanNghiemChung(input);
+}
+
+function hienDoan(doan) {
+  cauTraLoi = {};
+  var html = '';
+  doan.forEach(function(d) {
+    html += '<div class="doan" data-ma="' + d.ma + '">';
+    html += '<div class="doan-tieude">【' + d.ma + '】 ' + d.ten + '</div>';
+    html += '<div class="doan-text">' + d.text + '</div>';
+    html += '<div class="muc-group">';
+    NC_MUC.forEach(function(m) {
+      html += '<div class="muc" data-ma="' + d.ma + '" data-muc="' + m.ma + '" onclick="chonMuc(this)">' + m.ten + '</div>';
+    });
+    html += '</div></div>';
+  });
+  document.getElementById('ds-doan').innerHTML = html;
+  doiKhung('khung-doan');
+}
+
+function chonMuc(el) {
+  var ma = el.getAttribute('data-ma');
+  var muc = el.getAttribute('data-muc');
+  var box = el.parentNode;
+  Array.prototype.forEach.call(box.children, function(c){ c.classList.remove('chon'); });
+  el.classList.add('chon');
+  cauTraLoi[ma] = muc;
+}
+
+function xacNhan() {
+  var soNhom = Object.keys(cauTraLoi).length;
+  if (soNhom < 4) {
+    alert('Cần đánh dấu ít nhất 4 nhóm để tính điểm. Hiện có ' + soNhom + ' nhóm.');
+    return;
+  }
+  doiKhung('khung-loading');
+  google.script.run
+    .withSuccessHandler(function(kq) {
+      hienKetQua(kq);
+    })
+    .withFailureHandler(function(err) {
+      doiKhung('khung-doan');
+      alert('Lỗi: ' + (err && err.message ? err.message : 'không xác định'));
+    })
+    .tinhDiemNghiemChung(cauTraLoi);
+}
+
+function hienKetQua(kq) {
+  document.getElementById('kq-diem').textContent = kq.pct + '%';
+  document.getElementById('kq-diem').className = 'diem mau-' + kq.mau;
+  document.getElementById('kq-khuyen').textContent = kq.khuyen;
+
+  var html = '';
+  html += '<div><b>Tổng:</b> ' + kq.soDungCao + ' nhóm đúng cao · ' + kq.soSai + ' nhóm sai</div>';
+  kq.chiTiet.forEach(function(c) {
+    html += '<div>【' + c.ma + '】 ' + c.ten + ' — ' + c.mucTen + ' (' + Math.round(c.diem * 100) + '%)</div>';
+  });
+  document.getElementById('kq-chitiet').innerHTML = html;
+  doiKhung('khung-ketqua');
+}
+
+function quayLai() {
+  cauTraLoi = {};
+  document.getElementById('ds-doan').innerHTML = '';
+  document.getElementById('kq-chitiet').innerHTML = '';
+  doiKhung('khung-nhap');
+}
+</script>
+
+</body>
+</html>

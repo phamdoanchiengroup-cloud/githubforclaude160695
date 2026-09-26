@@ -510,7 +510,11 @@ function tuviLapLaSo(input) {
   }
 
   // Tính điểm từng cung
-  for (i = 0; i < 12; i++) palaces[i].diem = diemCung_(palaces[i]);
+  for (i = 0; i < 12; i++)    { 
+    var P0 = palaces[i];
+    P0.diem = diemCung_(P0);
+    P0.diem10 = chuanHoa10_(P0.diem); 
+  }
 
   var info = {
     name: input.name || 'Vô Danh',
@@ -606,13 +610,35 @@ function chuanHoaThoiGian_(input) {
     hour: h, minute: mi, totalMin: totalMin, notes: notes
   };
 }
+/**
+ * Quy đổi điểm thô (cộng dồn trọng số, không trần) về thang 0–10 bằng logistic.
+ * 0 → 5.0; +2.5 → 7.0; +5 → 8.4; +8 → 9.3; -2.5 → 3.0; -5 → 1.6
+ */
+function chuanHoa10_(diemTho, heSo) {
+  var d = (Number(diemTho) || 0) * (heSo == null ? 1 : heSo);
+  return Math.round(100 / (1 + Math.exp(-d / 3))) / 10;
+}
+
+// Trọng số vòng sao (dùng cho chấm điểm cung)
+var VONG_DIEM = {
+  // Vòng Bác Sĩ
+  'Bác Sĩ': +0.5, 'Lực Sĩ': +0.4, 'Thanh Long': +0.6, 'Tiểu Hao': -0.4,
+  'Tướng Quân': +0.6, 'Tấu Thư': +0.4, 'Phi Liêm': -0.5, 'Hỷ Thần': +0.5,
+  'Bệnh Phù': -0.6, 'Đại Hao': -0.8, 'Phục Binh': -0.7, 'Quan Phủ': -0.6,
+  // Vòng Thái Tuế
+  'Thái Tuế': +0.2, 'Thiếu Dương': +0.4, 'Tang Môn': -0.6, 'Thiếu Âm': +0.4,
+  'Quan Phù': -0.5, 'Tử Phù': -0.7, 'Tuế Phá': -0.6, 'Long Đức': +0.6,
+  'Bạch Hổ': -0.7, 'Phúc Đức': +0.7, 'Điếu Khách': -0.4, 'Trực Phù': -0.4,
+  // Vòng Tràng Sinh
+  'Tràng Sinh': +0.8, 'Mộc Dục': -0.3, 'Quan Đới': +0.5, 'Lâm Quan': +0.7,
+  'Đế Vượng': +0.9, 'Suy': -0.4, 'Bệnh': -0.5, 'Tử': -0.8,
+  'Mộ': +0.3, 'Tuyệt': -0.9, 'Thai': +0.2, 'Dưỡng': +0.4
+};
 
 /** Điểm cát hung của một cung */
 function diemCung_(P) {
   var s = 0;
-  P.chinh.forEach(function (st) {
-    s += DO_SANG_DIEM[st.b] || 0;
-  });
+  P.chinh.forEach(function (st) { s += DO_SANG_DIEM[st.b] || 0; });
   var big = { 'Tả Phù': 1.5, 'Hữu Bật': 1.5, 'Văn Xương': 1.5, 'Văn Khúc': 1.5, 'Thiên Khôi': 1.5, 'Thiên Việt': 1.5,
     'Lộc Tồn': 2, 'Hóa Lộc': 2, 'Hóa Quyền': 1.5, 'Hóa Khoa': 1.5, 'Thiên Mã': 1 };
   var bad = { 'Kình Dương': 1.5, 'Đà La': 1.5, 'Hỏa Tinh': 1.5, 'Linh Tinh': 1.5, 'Địa Không': 2, 'Địa Kiếp': 2, 'Hóa Kỵ': 2 };
@@ -623,6 +649,12 @@ function diemCung_(P) {
     s -= w;
   });
   if (P.tuan || P.triet) s = s * 0.6;
+
+  // Vòng sao
+  if (P.trangSinh && VONG_DIEM[P.trangSinh] != null) s += VONG_DIEM[P.trangSinh];
+  if (P.bacSi    && VONG_DIEM[P.bacSi]    != null) s += VONG_DIEM[P.bacSi] * 0.7;
+  if (P.thaiTue  && VONG_DIEM[P.thaiTue]  != null) s += VONG_DIEM[P.thaiTue] * 0.7;
+
   return Math.round(s * 10) / 10;
 }
 
@@ -877,3 +909,4 @@ function tuviLuanGiai_(chart) {
 function mucDo_(d) {
   return d >= 5 ? 'rất tốt' : d >= 2.5 ? 'tốt' : d >= 0.5 ? 'khá' : d > -1.5 ? 'trung bình' : 'cần thận trọng';
 }
+
