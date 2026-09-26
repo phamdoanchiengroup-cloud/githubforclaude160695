@@ -2318,7 +2318,7 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
             ['Vận trình', 'Chu kỳ hành tinh trong đời và năm hiện tại', /Chu kỳ|Năm \d{4}/]],
     so: [['Các con số gốc', 'Biểu đồ ngày sinh, các chỉ số chính', /Pythagoras|Biểu đồ/], ['Luận giải cốt lõi', 'Ý nghĩa từng con số', /Luận giải/], null, ['Vận trình', 'Năm, tháng cá nhân và đỉnh cao đời người', /Tháng cá nhân|Năm cá nhân|Đỉnh/]],
     hd: [['Bản đồ năng lượng', 'Loại, chiến lược, thẩm quyền, bodygraph', /Human Design|Bodygraph/], ['Luận giải cốt lõi', 'Loại, thẩm quyền, hồ sơ, trung tâm, kênh', /Luận giải/], null, null],
-    halac: [['Quẻ gốc', 'Tiên thiên, Hậu thiên, quẻ Hỗ, hào nguyên đường', /Hà Lạc$|Bát Tự Hà Lạc/], ['Luận quẻ', 'Ý nghĩa quẻ theo từng giai đoạn', /Luận quẻ/], null, ['Vận trình', 'Đại vận theo hào và quẻ từng năm', /Đại vận|hào/]]
+    halac: null   // tab Hà Lạc tự dựng khung Phần 1–5 trong renderHaLac
   };
   function xepPhan(pg, he) {
     var Q = PHAN_HE[he]; if (!pg || !Q) return;
@@ -2761,20 +2761,74 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
     var d = q.diem, cls = d >= 1 ? 'r4' : d <= -1 ? 'r1' : 'r3';
     return '<div class="que-card">' + queSvg(q, nd) + '<small>' + esc(nhan) + '</small><b>' + esc(q.ten) + '</b><span class="rate ' + cls + '">' + (d >= 1.5 ? 'Đại cát' : d >= 1 ? 'Cát' : d >= 0 ? 'Bình' : d > -1 ? 'Hơi kém' : 'Hung') + '</span><em>' + esc(q.y) + '</em></div>';
   }
+  var HL_LT_Y = {
+    'Phụ Mẫu': 'cha mẹ, bề trên, nhà cửa, học vấn, giấy tờ', 'Huynh Đệ': 'anh chị em, bạn bè, đồng nghiệp ngang hàng – cũng là cạnh tranh, hao tài',
+    'Tử Tôn': 'con cái, niềm vui, phúc đức – "thuốc" hóa giải bệnh, tai', 'Thê Tài': 'tiền bạc, tài sản; với nam còn là vợ',
+    'Quan Quỷ': 'công danh, chức vụ, áp lực; với nữ còn là chồng; cũng là bệnh tật'
+  };
+  function hlMucCls(m) { return { 'Rất mạnh': 'r5', 'Mạnh': 'r4', 'Trung bình': 'r3', 'Yếu': 'r1', 'Rất yếu': 'r0' }[m] || 'r3'; }
+  /** Bảng lục hào: hào 6 ở trên cùng như quẻ vẽ */
+  function hlBangHao(LH, nhan) {
+    var rows = LH.hao.slice().reverse().map(function (h) {
+      var vach = h.duong ? '<i class="hl-v d"></i>' : '<i class="hl-v a"></i><i class="hl-v a"></i>';
+      var tu = (h.the ? '<b class="hl-the">Thế</b>' : '') + (h.ung ? '<b class="hl-ung">Ứng</b>' : '');
+      var ghi = h.suc.ghi.slice();
+      if (h.dong) ghi.unshift('<b>động</b> → hóa ' + esc(h.hoa.lucThan + ' ' + h.hoa.canChi) + ' (' + esc(h.hoa.kieu) + ')');
+      if (h.dongTac) ghi.push(h.dongTac);
+      var ph = LH.phuc.filter(function (x) { return x.vi === h.vi; }).map(function (x) { return '<span class="hl-phuc">phục: ' + esc(x.lucThan + ' ' + x.canChi) + '</span>'; }).join('');
+      return '<tr class="' + (h.dong ? 'hl-dong' : '') + '"><td>' + h.vi + '</td><td>' + esc(h.thu) + '</td><td><b>' + esc(h.lucThan) + '</b>' + ph + '</td><td>' + esc(h.canChi) + ' · ' + esc(h.hanh) + '</td>' +
+        '<td class="hl-vach">' + vach + '</td><td>' + tu + '</td><td><span class="rate ' + hlMucCls(hlMucTen(h.diem)) + '">' + esc(h.suc.the) + '</span></td><td class="hl-ghi">' + ghi.map(function (g) { return g.charAt(0) === '<' ? g : esc(g); }).join(' · ') + '</td></tr>';
+    }).join('');
+    return '<h4 class="dd-h">' + esc(nhan) + ': ' + esc(LH.que) + ' <small class="muted">· cung ' + esc(LH.cung) + ' (' + esc(LH.cungHanh) + '), ' + esc(LH.theTen) + ' · hào động ' + LH.dong + ' → ' + esc(LH.bien) + '</small></h4>' +
+      '<div class="tbl-wrap"><table class="gio-tbl hl-hao"><thead><tr><th>Hào</th><th>Lục thú</th><th>Lục thân</th><th>Can chi · hành</th><th>Vạch</th><th>Thế/Ứng</th><th>Lệnh tháng</th><th>Nhật thần, không vong, động biến</th></tr></thead><tbody>' + rows + '</tbody></table></div>' +
+      (LH.phuc.length ? '<p class="muted hl-note">Phục thần (lục thân vắng, ẩn dưới hào khác): ' + LH.phuc.map(function (x) { return esc(x.lucThan + ' ' + x.canChi + ' nấp dưới hào ' + x.vi + ' ' + x.phi + ' – ' + x.quanHe); }).join('; ') + '.</p>' : '');
+  }
+  function hlMucTen(s) { return s >= 2 ? 'Rất mạnh' : s >= 0.8 ? 'Mạnh' : s >= -0.4 ? 'Trung bình' : s >= -1.5 ? 'Yếu' : 'Rất yếu'; }
+  function hlThanh(d) { var w = Math.max(4, Math.min(100, Math.round((d + 3) / 6 * 100))); return '<span class="hl-bar"><i style="width:' + w + '%"></i></span>'; }
+  function hlLinhVucHtml(L) {
+    function ds(a) { return '<ul class="yr-ly">' + a.map(function (t) { return '<li>' + esc(t) + '</li>'; }).join('') + '</ul>'; }
+    return '<div class="hl-lv">' + L.linhVuc.map(function (x) {
+      return '<div class="hl-lv-i ' + x.bac + '"><h3><span>' + x.icon + '</span> ' + esc(x.ten) + '<span class="rate ' + hlMucCls(x.muc) + '">' + esc(x.muc) + '</span></h3>' +
+        '<p>' + esc(x.van) + '</p>' + (x.them.length ? '<ul class="yr-ly">' + x.them.map(function (t) { return '<li>' + esc(t) + '</li>'; }).join('') + '</ul>' : '') +
+        '<p class="hl-khuyen">💡 ' + esc(x.khuyen) + '</p>' +
+        '<details class="hl-cancu"><summary>Căn cứ trên quẻ · ' + esc(x.giai) + '</summary>' +
+        '<div class="hl-tl"><span>Tiên thiên (trước ~' + L.tuoiHau + ' tuổi)</span>' + hlThanh(x.tien.diem) + '<b>' + esc(x.tien.muc) + '</b></div>' + ds(x.tien.ghi) +
+        '<div class="hl-tl"><span>Hậu thiên (từ ~' + L.tuoiHau + ' tuổi)</span>' + hlThanh(x.hau.diem) + '<b>' + esc(x.hau.muc) + '</b></div>' + ds(x.hau.ghi) + '</details></div>';
+    }).join('') + '</div>';
+  }
   function renderHaLac(res) {
     if (!res.moRong || !res.moRong.haLac) { $('page-halac').innerHTML = '<div class="panel section muted">Chưa tính được Hà Lạc – hãy thêm file HaLac.gs.</div>'; return; }
     var H = res.moRong.haLac, L = H.luan;
-    var html = '<div class="panel section"><h2 class="panel-title"><span class="han">河洛</span> Bát Tự Hà Lạc</h2>' +
+    // Phần 1 – Quẻ gốc & thời vị
+    var p1 = '<div class="panel section"><h2 class="panel-title"><span class="han">河洛</span> Bát Tự Hà Lạc</h2>' +
       '<div class="que-row">' + queCard('Tiên thiên · nửa đầu đời', H.tien, H.tien.nguyenDuong) + queCard('Hậu thiên · nửa sau đời', H.hau, H.hau.nguyenDuong) +
       queCard('Hỗ Tiên thiên · điều ẩn', H.hoTien, 0) + queCard('Hỗ Hậu thiên · điều ẩn', H.hoHau, 0) + '</div>' +
       '<p class="muted" style="font-size:12.5px">Vạch liền = hào dương, vạch đứt = hào âm (đọc từ dưới lên). Hào vàng có chấm là <b>hào nguyên đường</b> – hào chủ của đời bạn.</p>' +
-      '<ul class="th-kl">' + L.tongQuan.map(itemHtml).join('') + '</ul>' + coSoHtml('Cơ sở lập quẻ & luận', L.coSo) + '</div>';
-    html += '<div class="panel section"><h2 class="panel-title"><span class="han">卦</span> Luận quẻ</h2><div class="lg-list">' + L.secs.map(function (s, i) { return secBlock(s, i > 0 && i < 3); }).join('') + '</div></div>';
-    html += '<div class="panel section"><h2 class="panel-title"><span class="han">運</span> Đại vận theo hào</h2><p class="lede">Mỗi hào của quẻ cai quản một chặng đời: hào dương 9 năm, hào âm 6 năm. Trong mỗi chặng, từng năm lại có quẻ riêng.</p>' +
+      '<ul class="th-kl">' + L.tongQuan.map(itemHtml).join('') + '</ul></div>';
+    if (L.queKhac) p1 += '<div class="panel section"><h2 class="panel-title"><span class="han">變</span> Quẻ Biến · Thác · Tổng</h2><p class="lede">Ba quẻ phụ nhìn quẻ Tiên thiên từ ba góc: đi về đâu, thiếu điều gì, người khác thấy mình ra sao.</p>' +
+      '<div class="que-row hl-3">' + L.queKhac.map(function (x) { return queCard(x.nhan + ' · ' + x.vai, x.q, 0); }).join('') + '</div></div>';
+    if (L.thoiVi) p1 += '<div class="panel section"><h2 class="panel-title"><span class="han">時</span> Được thời hay chưa</h2><p class="lede">Sách Hà Lạc xét quẻ có hợp mùa tháng sinh (<b>hóa công</b>) và có gốc từ can năm sinh (<b>nguyên khí</b>) hay không – quẻ tốt mà không được thời thì phát chậm, quẻ vừa mà được thời vẫn nổi.</p>' +
+      '<ul class="th-kl">' + L.thoiVi.ds.map(function (x) { return itemHtml(x.t); }).join('') + '<li><b>' + esc(L.thoiVi.ketLuan) + '</b></li></ul></div>';
+    p1 += '<div class="panel section">' + coSoHtml('Cơ sở lập quẻ & luận', L.coSo) + '</div>';
+    // Phần 2 – Lục hào
+    var p2 = '';
+    if (H.lucHao) p2 = '<div class="panel section"><h2 class="panel-title"><span class="han">爻</span> Lục hào nạp giáp</h2>' +
+      '<p class="lede">Mỗi hào của quẻ được gắn một can chi, một "người thân" (lục thân) và một linh vật (lục thú). Sức mạnh của từng hào xét theo tháng sinh và ngày sinh; hào nguyên đường là hào động, biến ra hào mới.</p>' +
+      '<div class="hl-lt-y">' + Object.keys(HL_LT_Y).map(function (k) { return '<span><b>' + k + '</b> – ' + esc(HL_LT_Y[k]) + '</span>'; }).join('') + '</div>' +
+      '<p class="muted hl-note">Tháng sinh ' + esc(H.lucHao.tien.thang) + ' · ngày sinh ' + esc(H.lucHao.tien.ngay) + ' · không vong: ' + esc(H.lucHao.tien.khongVong.join(', ')) + '. Lệnh tháng: Vượng (cùng hành) › Tướng (được sinh) › Hưu › Tù › Tử (bị khắc).</p>' +
+      hlBangHao(H.lucHao.tien, 'Tiên thiên') + hlBangHao(H.lucHao.hau, 'Hậu thiên') + '</div>';
+    // Phần 3 – Lĩnh vực
+    var p3 = L.linhVuc ? '<div class="panel section"><h2 class="panel-title"><span class="han">親</span> Luận lục thân theo lĩnh vực</h2>' +
+      '<p class="lede">Mỗi mặt đời sống ứng với một lục thân (gọi là <b>dụng thần</b>). Xét dụng thần mạnh hay yếu, có "người sinh" (nguyên thần) nâng đỡ hay "người khắc" (kỵ thần) cản trở, trên cả quẻ Tiên thiên và Hậu thiên.</p>' +
+      hlLinhVucHtml(L) + '</div>' : '';
+    // Phần 4 – Luận quẻ
+    var p4 = '<div class="panel section"><h2 class="panel-title"><span class="han">卦</span> Luận quẻ</h2><div class="lg-list">' + L.secs.map(function (s, i) { return secBlock(s, i > 0 && i < 3); }).join('') + '</div></div>';
+    // Phần 5 – Vận trình
+    var p5 = '<div class="panel section"><h2 class="panel-title"><span class="han">運</span> Đại vận theo hào</h2><p class="lede">Mỗi hào của quẻ cai quản một chặng đời: hào dương 9 năm, hào âm 6 năm. Lục thân của hào cho biết chủ đề nổi bật của chặng; trong mỗi chặng, từng năm lại có quẻ riêng.</p>' +
       lifeChart(L.daiVan, 'Vận trình theo hào (Hà Lạc)', 'Điểm vận hào = cát/hung quẻ + vị hào (đắc vị, đắc trung, có ứng) · rê chuột để xem') +
       '<div class="lg-list">' + L.daiVan.map(function (v) {
         var quaKhu = +String(v.nam).split('–')[1] < res.tuvi.info.viewYear;
-        return '<details class="lg-block' + (quaKhu ? ' qua-khu' : '') + '"' + (v.isNow ? ' open' : '') + '><summary><span class="lg-t">' + esc(v.ten) + '</span><span class="lg-meta">' + esc(v.khoang) + ' · ' + esc(v.nam) + '</span>' +
+        return '<details class="lg-block' + (quaKhu ? ' qua-khu' : '') + '"' + (v.isNow ? ' open' : '') + '><summary><span class="lg-t">' + esc(v.ten) + (v.lucThan ? ' · ' + esc(v.lucThan) : '') + '</span><span class="lg-meta">' + esc(v.khoang) + ' · ' + esc(v.nam) + '</span>' +
           '<span class="rate ' + rateClass(v.diem * 2) + '">' + esc(v.danhGia) + '</span></summary><div class="lg-body">' + listHtml(v.items) +
           '<div class="tbl-wrap"><table class="gio-tbl hl-tbl"><thead><tr><th>Năm</th><th>Tuổi</th><th>Quẻ lưu niên</th><th>Hào động</th><th>Đánh giá</th><th>Ý nghĩa & lời khuyên</th></tr></thead><tbody>' +
           v.cacNam.map(function (n) {
@@ -2782,6 +2836,11 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
               '<td>' + hl(n.y + '. Nên ' + n.khuyen + '.') + (n.ghi.length ? '<br><small class="muted">' + esc(n.ghi.join('; ')) + '</small>' : '') + '</td></tr>';
           }).join('') + (v.namKhoa ? '<tr><td colspan="6" class="muted">🔒 ' + v.namKhoa + ' quẻ năm khác trong chặng này – mỗi năm mở cùng <b>Vận năm</b> (' + fmtXu(giaPhan('nam').xu) + '/năm).</td></tr>' : '') + '</tbody></table></div></div></details>';
       }).join('') + '</div></div>';
+    var html = khoiPhan('hlp', 1, 'Quẻ gốc & thời vị', 'Tiên thiên, Hậu thiên, quẻ Hỗ – Biến – Thác – Tổng, hóa công, nguyên khí', p1) +
+      (p2 ? khoiPhan('hlp', 2, 'Lục hào & lục thân', 'Nạp giáp, Thế – Ứng, lục thân, lục thú, phục thần, vượng suy', p2) : '') +
+      (p3 ? khoiPhan('hlp', p2 ? 3 : 2, 'Luận theo lĩnh vực', 'Bản thân, cha mẹ, anh em, con cái, tiền bạc, hôn nhân, công danh, sức khỏe', p3) : '');
+    var n = (p2 ? 1 : 0) + (p3 ? 1 : 0) + 2;
+    html += khoiPhan('hlp', n, 'Luận quẻ', 'Ý nghĩa quẻ Tiên thiên, Hậu thiên, quẻ Hỗ', p4) + khoiPhan('hlp', n + 1, 'Vận trình', 'Đại vận theo hào và quẻ từng năm', p5);
     $('page-halac').innerHTML = html;
   }
 

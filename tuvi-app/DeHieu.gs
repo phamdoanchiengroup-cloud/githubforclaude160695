@@ -388,6 +388,7 @@ function dhHD_(hd) {
 function dhHaLacMuc_(d) { return d >= 1.5 ? 'rat_tot' : d >= 0.5 ? 'tot' : d > -0.5 ? 'trung_binh' : d > -1.5 ? 'kho_khan' : 'rat_kho'; }
 var DH_HL_MUC = { rat_tot: 'Đây là quẻ tốt – giai đoạn này nhiều thuận lợi, nên chủ động nắm bắt.', tot: 'Quẻ khá thuận – có cơ hội, cần kiên trì là thành.', trung_binh: 'Quẻ ở mức bình ổn – thành bại tùy cách bạn ứng xử.',
   kho_khan: 'Quẻ có thử thách – nên đi chậm, giữ mình, chờ thời.', rat_kho: 'Quẻ nhiều trở ngại – ưu tiên giữ an toàn, tránh quyết định lớn; qua giai đoạn này sẽ mở ra.' };
+var DH_HL_LV = { banThan: 'Menh', chaMe: 'Phu Mau', anhEm: 'Huynh De', conCai: 'Tu Tuc', tienBac: 'Tai Bach', honNhan: 'Phu The', congDanh: 'Quan Loc', sucKhoe: 'Tat Ach' };
 function dhHaLac_(hl) {
   if (!hl || !hl.tien) return null;
   var khoi = [], facts = [], he = 'Ha Lac', L = hl.luan || {}, now = (L.daiVan || []).filter(function (d) { return d.isNow; })[0], nn = L.namNay;
@@ -399,7 +400,18 @@ function dhHaLac_(hl) {
     hl.tien.diem > hl.hau.diem ? 'Đời bạn có xu hướng "tiền thuận – hậu giữ": tuổi trẻ nhiều cơ hội, về sau nên giữ gìn và tích lũy.' : 'Đời bạn khá đều tay – ổn định qua các giai đoạn.'));
   if (now) doan.push(dhDoan_('Giai đoạn bạn đang đi qua', 'Từ ' + now.khoang + ' (' + now.nam + '): giai đoạn được đánh giá "' + now.danhGia + '". ' + DH_HL_MUC[dhHaLacMuc_(now.diem)]));
   if (nn) doan.push(dhDoan_('Năm ' + nn.nam, 'Quẻ năm nay là ' + nn.que + ' – ' + String(nn.y || '').toLowerCase() + '. ' + DH_HL_MUC[dhHaLacMuc_(nn.diem)] + (nn.khuyen ? ' Lời khuyên: ' + nn.khuyen + '.' : '')));
+  if (L.thoiVi) doan.push(dhDoan_('Thời vận bẩm sinh', L.thoiVi.ketLuan.replace(/^Mệnh "([^"]+)": /, 'Lá số của bạn thuộc dạng "$1": ')));
   khoi.push({ ten: 'Hai nửa cuộc đời theo Kinh Dịch', doan: doan });
+  // Luận lục thân theo 6 hào → văn đời thường cho từng mặt đời sống
+  if (L.linhVuc && L.linhVuc.length) {
+    khoi.push({ ten: 'Các mặt đời sống theo 6 hào của quẻ', doan: L.linhVuc.map(function (x) {
+      return dhDoan_(x.ten, x.van + (x.them.length ? ' ' + x.them.join(' ') : '') + ' Gợi ý: ' + x.khuyen);
+    }) });
+    L.linhVuc.forEach(function (x) {
+      var lv = DH_HL_LV[x.k]; if (!lv) return;
+      facts.push(taoFact_(he, lv, x.nhom, dhLoai_(dhD10_(x.diem * 1.5)), x.ten + ': ' + x.van, 0.6, { nguon: 'Lục thân theo 6 hào' }));
+    });
+  }
   facts.push(taoFact_(he, 'ALL', 'tinh_cach', dhLoai_(5 + hl.tien.diem * 1.5), 'Nửa đầu đời: ' + que(hl.tien) + '.', 0.8, { nguon: 'Quẻ Tiên thiên', thoiDiem: 'tien_van' }));
   if (hl.hau) facts.push(taoFact_(he, 'ALL', 'tam_linh', dhLoai_(5 + hl.hau.diem * 1.5), 'Nửa sau đời: ' + que(hl.hau) + '.', 0.8, { nguon: 'Quẻ Hậu thiên', thoiDiem: 'hau_van' }));
   return { he: 'Hà Lạc', khoi: khoi, facts: facts };

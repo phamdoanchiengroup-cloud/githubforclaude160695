@@ -1264,4 +1264,32 @@ details.dh-lv .cung-van-de-hieu { margin-bottom: 12px; }
 .tv-chiso { grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); }
 .tv-chiso .stat b { font-size: 15px; }
 .tv-cung { scroll-margin-top: 90px; }
+/* Hà Lạc – lục hào */
+.que-row.hl-3 { grid-template-columns: repeat(3, 1fr); }
+@media (max-width: 700px) { .que-row.hl-3 { grid-template-columns: 1fr 1fr; } }
+.hl-lt-y { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 6px 14px; font-size: 13px; margin: 6px 0 10px; color: var(--ink-soft); }
+.hl-lt-y b { color: var(--head); }
+.hl-note { font-size: 12.5px; }
+.hl-hao td { vertical-align: middle; }
+.hl-hao tr.hl-dong td { background: rgba(255, 216, 138, .10); }
+.hl-vach { white-space: nowrap; }
+.hl-v { display: inline-block; height: 8px; border-radius: 2px; background: var(--ink-soft); vertical-align: middle; }
+.hl-v.d { width: 44px; } .hl-v.a { width: 19px; margin-right: 6px; } .hl-v.a + .hl-v.a { margin-right: 0; }
+.hl-the, .hl-ung { display: inline-block; font-size: 11px; padding: 1px 6px; border-radius: 8px; margin-right: 3px; }
+.hl-the { background: #b08a2c; color: #fff; } .hl-ung { background: #4a6fa5; color: #fff; }
+.hl-phuc { display: block; font-size: 11.5px; color: var(--ink-soft); }
+.hl-ghi { font-size: 12.5px; color: var(--ink-soft); min-width: 180px; }
+.hl-lv { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 12px; }
+.hl-lv-i { border: 1px solid var(--line); border-radius: 14px; padding: 12px 14px; background: var(--surface-2); font-size: 14px; line-height: 1.55; }
+.hl-lv-i.tot { border-left: 4px solid #1fa688; } .hl-lv-i.vua { border-left: 4px solid #b08a2c; } .hl-lv-i.kho { border-left: 4px solid #d9503f; }
+.hl-lv-i h3 { margin: 0 0 6px; font-size: 16px; display: flex; align-items: center; gap: 6px; color: var(--head); }
+.hl-lv-i h3 .rate { margin-left: auto; }
+.hl-lv-i p { margin: 4px 0; }
+.hl-khuyen { color: var(--ink-soft); font-style: italic; }
+.hl-cancu { margin-top: 6px; font-size: 13px; }
+.hl-cancu summary { cursor: pointer; color: var(--ink-soft); }
+.hl-tl { display: flex; align-items: center; gap: 8px; margin-top: 8px; font-size: 12.5px; }
+.hl-tl span:first-child { min-width: 150px; color: var(--ink-soft); }
+.hl-bar { flex: 1; height: 6px; border-radius: 3px; background: var(--line); overflow: hidden; }
+.hl-bar i { display: block; height: 100%; background: linear-gradient(90deg, #d9503f, #b08a2c, #1fa688); }
 </style>
