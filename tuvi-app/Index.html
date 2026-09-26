@@ -275,6 +275,10 @@
                   <div class="row c2"><select id="cdHour" aria-label="Giờ"></select><select id="cdMinute" aria-label="Phút"></select></div></div>
                 <div class="field"><label for="cdPlace">Nơi sinh</label><select id="cdPlace"></select></div>
                 <div class="field"><label for="cdCuoi">Đã kết hôn năm (nếu có)</label><input type="number" id="cdCuoi" min="1950" max="2100" placeholder="Để trống nếu chưa cưới"></div>
+                <div class="field cd-con-wrap"><span class="lbl">Con đã có (nếu có)</span>
+                  <div id="cdConList"></div>
+                  <button type="button" class="btn btn-ghost btn-sm" id="cdThemCon">＋ Thêm con</button>
+                  <small class="hint">Chỉ cần năm sinh. Nhập thêm ngày, tháng, giờ để xét cả Bát Tự của con (con hợp bố hay mẹ, con là "phúc tinh" của ai).</small></div>
               </div>
               <button type="submit" class="btn btn-primary cd-go">💞 Xem hợp đôi</button>
             </form>

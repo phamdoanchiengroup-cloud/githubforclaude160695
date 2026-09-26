@@ -662,7 +662,35 @@
       if (b.place && $('cdPlace').querySelector('option[value="' + b.place.replace(/"/g, '') + '"]')) $('cdPlace').value = b.place;
       $('cdLeap').checked = !!b.leap; $('cdLeapWrap').style.display = b.calendar === 'am' ? '' : 'none';
     }
+    var dsCon = []; try { dsCon = JSON.parse(storeGet('tcc_cd_con') || '[]') || []; } catch (e) { dsCon = []; }
+    dsCon.forEach(cdThemCon);
+    if (b && b.namCuoi) $('cdCuoi').value = b.namCuoi;
+    $('cdThemCon').addEventListener('click', function () { cdThemCon(); });
     $('cdForm').addEventListener('submit', function (e) { e.preventDefault(); xemCapDoi(); });
+  }
+  function cdThemCon(c) {
+    c = c || {};
+    var n = document.querySelectorAll('#cdConList .cd-con').length;
+    if (n >= 6) { toast('Tối đa 6 con.', true); return; }
+    function opt(from, to, sel, rong, nhan) { var h = '<option value="">' + rong + '</option>'; for (var i = from; i <= to; i++) h += '<option value="' + i + '"' + (String(sel) === String(i) ? ' selected' : '') + '>' + (nhan ? nhan(i) : i) + '</option>'; return h; }
+    var row = document.createElement('div'); row.className = 'cd-con';
+    row.innerHTML = '<input type="text" class="cc-ten" maxlength="40" placeholder="Tên gọi (tùy chọn)" value="' + esc(c.ten || '') + '">' +
+      '<select class="cc-gt"><option value="">Trai/gái</option><option value="trai"' + (c.gioiTinh === 'trai' ? ' selected' : '') + '>Con trai</option><option value="gai"' + (c.gioiTinh === 'gai' ? ' selected' : '') + '>Con gái</option></select>' +
+      '<input type="number" class="cc-nam" min="1950" max="2100" placeholder="Năm sinh" value="' + esc(c.nam || '') + '">' +
+      '<select class="cc-ngay">' + opt(1, 31, c.ngay, 'Ngày') + '</select><select class="cc-thang">' + opt(1, 12, c.thang, 'Tháng', function (i) { return 'Th ' + i; }) + '</select>' +
+      '<select class="cc-gio">' + opt(0, 23, c.gio, 'Giờ ?', function (i) { return pad(i) + 'h'; }) + '</select>' +
+      '<button type="button" class="btn btn-ghost btn-sm cc-xoa" title="Xóa">✕</button>';
+    row.querySelector('.cc-xoa').addEventListener('click', function () { row.remove(); });
+    $('cdConList').appendChild(row);
+  }
+  function cdLayCon() {
+    var out = [];
+    document.querySelectorAll('#cdConList .cd-con').forEach(function (r) {
+      var nam = parseInt(r.querySelector('.cc-nam').value, 10);
+      if (nam) out.push({ ten: r.querySelector('.cc-ten').value.trim(), gioiTinh: r.querySelector('.cc-gt').value, nam: nam,
+        ngay: r.querySelector('.cc-ngay').value, thang: r.querySelector('.cc-thang').value, gio: r.querySelector('.cc-gio').value });
+    });
+    return out;
   }
   function cdNguoi1() {
     var f = getForm();
@@ -683,8 +711,9 @@
     if (!A.year) { toast('Hãy nhập ngày sinh người thứ nhất ở khung "Nhập thông tin".', true); return; }
     if (!B.year || B.year < 1900) { toast('Nhập năm sinh của người thứ hai.', true); $('cdYear').focus(); return; }
     var cuoi = parseInt($('cdCuoi').value, 10); if (cuoi) A.namCuoi = cuoi;
+    A.con = cdLayCon();
     state.cdInput = { a: A, b: B };
-    storeSet('tcc_cd_b', JSON.stringify(B));
+    storeSet('tcc_cd_b', JSON.stringify(Object.assign({ namCuoi: cuoi || '' }, B))); storeSet('tcc_cd_con', JSON.stringify(A.con));
     loading(true);
     call('lapCapDoi', [A, B], function (r) {
       loading(false); state.cd = r;
@@ -746,11 +775,36 @@
         bieuDo(K.nam.filter(function (x) { return x.nam <= vy + 10; }), 'Xác suất cưới theo từng năm') + bangNam(K.top, true),
         'Nếu hai bạn cưới trong 15 năm tới, khả năng rơi vào từng năm là bao nhiêu? Năm cả hai lá số cùng báo hỷ sự được đẩy lên; năm cô dâu' + (TD.coDau ? ' (' + esc(TD.coDau) + ')' : '') + ' phạm Kim Lâu hoặc năm xung tuổi bị giảm (cột đỏ).');
     } else if (TD.namCuoi) h += cdPanel('婚期', 'Năm kết hôn', '<p>Hai bạn đã kết hôn năm <b>' + TD.namCuoi + '</b> – năm sinh con bên dưới tính từ sau năm cưới.</p>');
+    else if (TD.daCoCon) h += cdPanel('婚期', 'Năm kết hôn', '<p>Hai bạn đã có con nên không tính năm cưới. Nếu đã cưới, hãy nhập <b>năm kết hôn</b> để phần đối chiếu chính xác hơn.</p>');
     if (r.conCai || TD.sinhCon.nam.length) {
-      var C = r.conCai;
-      h += cdPanel('子女', 'Con cái – số con & năm sinh con', (C ? '<div class="stat-row"><div class="stat"><small>Số con dự kiến</small><b class="cd-socon">' + esc(C.soCon) + '</b></div><div class="stat"><small>Con đầu là trai</small><b>' + C.pTrai + '%</b><span>tham khảo</span></div><div class="stat"><small>Con đầu là gái</small><b>' + (100 - C.pTrai) + '%</b><span>tham khảo</span></div></div><ul class="th-kl">' + C.ketLuan.map(function (x) { return '<li>' + hl(x) + '</li>'; }).join('') + '</ul>' : '') +
-        (TD.sinhCon.nam.length ? bieuDo(TD.sinhCon.nam.filter(function (x) { return x.nam <= (vy || TD.sinhCon.nam[0].nam) + 12; }), 'Xác suất có tin vui con cái theo năm') + bangNam(TD.sinhCon.top, false) : ''),
-        'Ghép cung Tử Tức, sao con cái Bát Tự, nhà 5 chiêm tinh của cả hai; năm sinh con = tích xác suất hai lá số × khả năng đã cưới trước năm đó.');
+      var C = r.conCai, daCo = C && C.daCo || [];
+      var stat = C ? '<div class="stat-row">' + (daCo.length ? '<div class="stat"><small>Đã có</small><b>' + daCo.length + ' con</b><span>' + esc(daCo.map(function (c) { return c.nam; }).join(', ')) + '</span></div>' : '') +
+        '<div class="stat"><small>Số con xu hướng</small><b class="cd-socon">' + esc(C.soCon) + '</b></div><div class="stat"><small>' + (daCo.length ? 'Con tiếp theo là trai' : 'Con đầu là trai') + '</small><b>' + C.pTrai + '%</b><span>tham khảo</span></div>' +
+        '<div class="stat"><small>' + (daCo.length ? 'Con tiếp theo là gái' : 'Con đầu là gái') + '</small><b>' + (100 - C.pTrai) + '%</b><span>tham khảo</span></div></div>' +
+        '<ul class="th-kl">' + C.ketLuan.map(function (x) { return '<li>' + hl(x) + '</li>'; }).join('') + '</ul>' : '';
+      var the = daCo.length ? '<h4 class="dd-h">👶 Con đã có – tuổi con với bố mẹ & đối chiếu lá số</h4><div class="cd-con-the">' + daCo.map(function (c) {
+        var hop = c.voi.slice().sort(function (x, y) { return y.diem - x.diem; });
+        return '<div class="cd-lv-o"><div class="cd-lv-h"><span class="han">' + (c.gioiTinh === 'gai' ? '女' : c.gioiTinh === 'trai' ? '男' : '子') + '</span><b>' + esc(c.ten) + ' · ' + c.nam + ' (' + esc(c.canChi) + ')</b><em class="rate ' + cdXep(c.diem) + '">' + fmt(c.diem) + '/10</em></div>' +
+          '<p class="muted" style="margin:0 0 6px;font-size:13px">' + esc(c.napAm) + (c.moTa ? ' · ' + esc(c.moTa) : '') + '</p>' +
+          '<div class="cd-voi">' + c.voi.map(function (v) { return '<span><b>' + esc(v.ten) + '</b> <i style="width:' + (v.diem * 10) + '%;background:' + cdMau(v.diem) + '"></i> ' + fmt(v.diem) + '</span>'; }).join('') + '</div>' +
+          '<p style="margin:6px 0">' + (Math.abs(hop[0].diem - hop[1].diem) < 0.5 ? 'Con hợp cả bố lẫn mẹ.' : 'Con hợp tuổi <b>' + esc(hop[0].ten) + '</b> hơn – ' + esc(hop[1].ten) + ' nên dành thêm thời gian gần gũi con.') + '</p>' +
+          '<details class="ht-y"><summary><small>Lý do</small></summary>' + c.voi.map(function (v) { return '<b>' + esc(v.ten) + ':</b>' + listHtml(v.ly); }).join('') + '</details>' +
+          '<ul class="th-kl">' + [c.doiChieu, c.anhEm, c.ghiChu].filter(Boolean).map(function (x) { return '<li>' + hl(x) + '</li>'; }).join('') + '</ul></div>';
+      }).join('') + '</div>' : '';
+      var goi = C && C.goiY.length ? '<h4 class="dd-h">🌱 Gợi ý năm sinh ' + (daCo.length ? 'thêm con' : 'con') + ' hợp tuổi bố mẹ</h4>' +
+        barsChart('Điểm chọn năm sinh con (thang 10)', '65% hợp tuổi với bố mẹ' + (daCo.length ? ' & anh chị' : '') + ' + 35% xác suất theo hai lá số · tính theo năm âm lịch (sinh sau Tết)', C.goiY.filter(function (x) { return x.nam <= (TD.sinhCon.nam[0] ? TD.sinhCon.nam[0].nam : 0) + 12; }).map(function (x) {
+          var top = C.goiYTop.some(function (t) { return t.nam === x.nam; });
+          return { ten: (top ? '★ ' : '') + x.nam + ' · ' + x.canChi, v: x.tong, mau: top ? C_JADE : cdMau(x.tong), tip: x.nam + ' ' + x.canChi + ' (' + x.napAm + ') · hợp tuổi ' + fmt(x.hopTuoi) + '/10 · xác suất ' + fmt(x.pct) + '%' + (x.anhEm.length ? '\n' + x.anhEm.join('; ') : '') };
+        }), 10) +
+        '<div class="tbl-wrap"><table class="gio-tbl"><thead><tr><th>Năm</th><th>Mệnh con</th><th>Hợp ' + esc(r.ten[0]) + '</th><th>Hợp ' + esc(r.ten[1]) + '</th>' + (daCo.length ? '<th>Với anh chị</th>' : '') + '<th>Xác suất</th><th>Điểm chọn</th></tr></thead><tbody>' +
+        C.goiYTop.map(function (x) {
+          return '<tr><td><b>' + x.nam + '</b><br><small>' + esc(x.canChi) + '</small></td><td>' + esc(x.napAm) + '</td>' + x.voi.map(function (v) { return '<td><span class="rate ' + cdXep(v.diem) + '">' + fmt(v.diem) + '</span></td>'; }).join('') +
+            (daCo.length ? '<td><small>' + esc(x.anhEm.join('; ') || 'bình hòa') + '</small></td>' : '') + '<td>' + fmt(x.pct) + '%</td><td><b>' + fmt(x.tong) + '/10</b></td></tr>';
+        }).join('') + '</tbody></table></div>' +
+        '<details class="coso"><summary>Lý do từng năm gợi ý</summary>' + C.goiYTop.map(function (x) { return '<p><b>' + x.nam + ' ' + esc(x.canChi) + ':</b></p>' + listHtml(x.ly.concat(x.anhEm.length ? ['Với anh chị: ' + x.anhEm.join('; ') + '.'] : [])); }).join('') + '</details>' : '';
+      h += cdPanel('子女', 'Con cái – số con, năm sinh con & tuổi hợp', stat + the +
+        (TD.sinhCon.nam.length ? '<h4 class="dd-h">📈 Xác suất có tin vui con cái theo năm</h4>' + bieuDo(TD.sinhCon.nam.filter(function (x) { return x.nam <= (vy || TD.sinhCon.nam[0].nam) + 12; }), 'Xác suất có tin vui con cái theo năm') + bangNam(TD.sinhCon.top, false) : '') + goi,
+        'Ghép cung Tử Tức, sao con cái Bát Tự, nhà 5 chiêm tinh của cả hai; năm sinh con = tích xác suất hai lá số × khả năng đã cưới' + (daCo.length ? ', giãn cách với con trước' : '') + '. Tuổi con xét theo mệnh nạp âm, thiên can, địa chi và hỷ/kỵ thần Bát Tự của bố mẹ.');
     }
     h += cdPanel('言', 'Lời khuyên cho hai bạn', '<ul class="th-kl">' + r.loiKhuyen.map(function (x) { return '<li>' + hl(x) + '</li>'; }).join('') + '</ul>');
     h += '<div class="panel section">' + coSoHtml('Phương pháp luận giải hợp đôi', r.coSo) + '</div>';

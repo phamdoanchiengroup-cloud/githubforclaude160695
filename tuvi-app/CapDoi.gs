@@ -237,7 +237,9 @@ function cdHD_(A, B, tA, tB) {
 }
 
 /* ---------------- Thời điểm: năm cưới & năm sinh con ---------------- */
-function cdThoiDiem_(A, B, tA, tB, namCuoi) {
+function cdThoiDiem_(A, B, tA, tB, namCuoi, con) {
+  con = con || [];
+  var conCuoi = con.reduce(function (m, c) { return Math.max(m, c.nam); }, 0);
   var vy = A.tuvi.info.viewYear, male = [A, B].filter(function (r) { return r.tuvi.info.male; }), nu = [A, B].filter(function (r) { return !r.tuvi.info.male; });
   var coDau = nu.length === 1 ? nu[0] : null, tdA = A.moRong.tongHop.phoiNgau && A.moRong.tongHop.phoiNgau.thoiDiem, tdB = B.moRong.tongHop.phoiNgau && B.moRong.tongHop.phoiNgau.thoiDiem;
   function bd(td, k) { var m = {}; ((td && td[k] && td[k].bieuDo) || []).forEach(function (x) { m[x.nam] = x; }); return m; }
@@ -257,7 +259,7 @@ function cdThoiDiem_(A, B, tA, tB, namCuoi) {
     return { cb: cb, h: h, canChi: CAN[((Y - 4) % 10 + 10) % 10] + ' ' + CHI[cy] };
   }
   var kA = bd(tdA, 'ketHon'), kB = bd(tdB, 'ketHon'), ket = null;
-  if (!namCuoi) {
+  if (!namCuoi && !con.length) {
     var ds = [];
     for (var Y = vy; Y <= vy + 15; Y++) {
       if (!kA[Y] && !kB[Y]) continue;
@@ -272,23 +274,69 @@ function cdThoiDiem_(A, B, tA, tB, namCuoi) {
   // Sinh con: nhân khả năng đã cưới trước năm đó
   var cA = bd(tdA, 'sinhCon'), cB = bd(tdB, 'sinhCon'), F = {}, cum = 0;
   for (var y = vy; y <= vy + 16; y++) {
-    F[y] = namCuoi ? (y > namCuoi ? 1 : 0.05) : cum / 100;
+    F[y] = namCuoi ? (y > namCuoi ? 1 : 0.05) : con.length ? 1 : cum / 100;
     if (ket) ket.nam.forEach(function (x) { if (x.nam === y) cum += x.pct; });
   }
   var dc = [];
   for (var Y2 = vy; Y2 <= vy + 16; Y2++) {
     if (!cA[Y2] && !cB[Y2]) continue;
     var qa = cA[Y2] ? cA[Y2].pct : 0.3, qb = cB[Y2] ? cB[Y2].pct : 0.3;
-    dc.push({ nam: Y2, canChi: canhBao(Y2).canChi, w: qa * qb * (0.08 + F[Y2]), heA: cA[Y2] ? cA[Y2].soHe || 0 : 0, heB: cB[Y2] ? cB[Y2].soHe || 0 : 0,
+    var gian = conCuoi && Y2 <= conCuoi ? 0.1 : conCuoi && Y2 < conCuoi + 2 ? 0.35 : 1;   // cách con trước ít nhất ~2 năm
+    dc.push({ nam: Y2, canChi: canhBao(Y2).canChi, w: qa * qb * (0.08 + F[Y2]) * gian, heA: cA[Y2] ? cA[Y2].soHe || 0 : 0, heB: cB[Y2] ? cB[Y2].soHe || 0 : 0,
       tuoi: [Y2 - A.tuvi.info.lunar.year + 1, Y2 - B.tuvi.info.lunar.year + 1] });
   }
   chuan(dc);
-  return { ketHon: ket, namCuoi: namCuoi || null, coDau: coDau ? (coDau === A ? tA : tB) : '',
+  return { ketHon: ket, namCuoi: namCuoi || null, daCoCon: con.length, coDau: coDau ? (coDau === A ? tA : tB) : '',
     sinhCon: { nam: dc, top: dc.slice().sort(function (x, y) { return y.pct - x.pct; }).slice(0, 5).sort(function (x, y) { return x.nam - y.nam; }) } };
 }
 
 /* ---------------- Con cái ---------------- */
-function cdConCai_(A, B, tA, tB, bt) {
+/** Tuổi con (năm âm lịch Y) với một người cha/mẹ: nạp âm, thiên can, địa chi + dụng thần Bát Tự của cha/mẹ */
+function cdConVoi_(Y, P, tenP, hanhManhCon) {
+  var can = ((Y - 4) % 10 + 10) % 10, chi = ((Y - 4) % 12 + 12) % 12, na = napAm(can, chi), I = P.tuvi.info, pm = I.banMenh.hanh, q = quanHeHanh(na.hanh, pm);
+  var m = q === 'sinh' ? [2, 'Mệnh con (' + na.ten + ') sinh mệnh ' + tenP + ' (' + I.banMenh.ten + '): con mang phúc, hiếu thuận với ' + tenP + '.'] :
+    q === 'binh' ? [1.5, 'Mệnh con cùng hành ' + pm + ' với ' + tenP + ': tính giống nhau, dễ hiểu nhau.'] :
+    q === 'duoc_sinh' ? [1.5, 'Mệnh ' + tenP + ' (' + I.banMenh.ten + ') sinh mệnh con: ' + tenP + ' hết lòng nâng đỡ, con được che chở.'] :
+    q === 'bi_khac' ? [0.5, 'Mệnh ' + tenP + ' khắc mệnh con: ' + tenP + ' dễ nghiêm khắc, con chịu áp lực – nên mềm mỏng.'] :
+    [0, 'Mệnh con (' + na.ten + ') khắc mệnh ' + tenP + ': con cá tính, hay trái ý ' + tenP + ' – cần kiên nhẫn.'];
+  var c = pnQuanHeCan_(I.yCan, can), z = pnQuanHeChi_(I.yChi, chi), bonus = 0, ly = [m[1], 'Thiên can ' + CAN[I.yCan] + ' – ' + CAN[can] + ': ' + c.t + '.', 'Địa chi ' + CHI[I.yChi] + ' – ' + CHI[chi] + ': ' + z.t + '.'];
+  var hy = P.battu.goiY.hy, ky = P.battu.goiY.ky;
+  if (hy.indexOf(CAN_HANH[can]) >= 0) { bonus += 0.5; ly.push('Can năm của con (' + CAN_HANH[can] + ') là hỷ dụng thần của ' + tenP + '.'); }
+  else if (ky.indexOf(CAN_HANH[can]) >= 0) { bonus -= 0.4; ly.push('Can năm của con (' + CAN_HANH[can] + ') là kỵ thần của ' + tenP + '.'); }
+  if (hanhManhCon) {
+    if (hy.indexOf(hanhManhCon) >= 0) { bonus += 0.8; ly.push('Ngũ hành mạnh nhất trong Bát Tự của con (' + hanhManhCon + ') là hỷ dụng của ' + tenP + ': con là "phúc tinh" của ' + tenP + '.'); }
+    else if (ky.indexOf(hanhManhCon) >= 0) { bonus -= 0.5; ly.push('Ngũ hành mạnh của con (' + hanhManhCon + ') là kỵ thần của ' + tenP + ': hai người dễ "nghịch nhau" – cần thêm thời gian thấu hiểu.'); }
+  }
+  return { ten: tenP, diem: cdKep_((m[0] + c.d + z.d) / 6 * 8 + 1 + bonus), ly: ly };
+}
+function cdConNam_(Y, A, B, tA, tB, hanhManhCon) {
+  var can = ((Y - 4) % 10 + 10) % 10, chi = ((Y - 4) % 12 + 12) % 12, voi = [cdConVoi_(Y, A, tA, hanhManhCon), cdConVoi_(Y, B, tB, hanhManhCon)];
+  return { canChi: CAN[can] + ' ' + CHI[chi], chi: chi, napAm: napAm(can, chi).ten, voi: voi, diem: cdKep_((voi[0].diem + voi[1].diem) / 2) };
+}
+/** Tín hiệu có con năm Y trên lá số một người: số hệ báo và hạng của năm đó trong giai đoạn đã qua (xác suất theo năm) */
+function cdHeConNam_(r, Y) {
+  var td = r.moRong.tongHop.phoiNgau && r.moRong.tongHop.phoiNgau.thoiDiem, q = td && td.sinhCon && td.sinhCon.quaKhu, bd = q ? q.bieuDo : [];
+  var x = bd.filter(function (n) { return n.nam === Y; })[0];
+  if (x) return { he: x.soHe || 0, hang: 1 + bd.filter(function (n) { return n.pct > x.pct; }).length, tong: bd.length, pct: x.pct };
+  var H = r.moRong.tongHop.hoiTu, c = H && H.chuDe.filter(function (k) { return k.k === 'sinhCon'; })[0], y = c && c.nam.filter(function (n) { return n.nam === Y; })[0];
+  return { he: y ? y.soHe : 0, hang: 0, tong: 0 };
+}
+/** Chuẩn hóa thông tin con đã có: năm âm lịch, Bát Tự nếu có ngày sinh */
+function cdChuanCon_(ds, vy) {
+  return (ds || []).filter(function (c) { return c && +c.nam >= 1900 && +c.nam <= vy; }).slice(0, 6).map(function (c, i) {
+    var o = { ten: String(c.ten || '').trim() || 'Con thứ ' + (i + 1), gioiTinh: c.gioiTinh === 'gai' ? 'gai' : c.gioiTinh === 'trai' ? 'trai' : '', nam: +c.nam, namAm: +c.nam, day: +c.ngay || 0, thang: +c.thang || 0, gio: c.gio === '' || c.gio == null ? null : +c.gio };
+    if (o.day && o.thang) {
+      try {
+        var inp = { name: o.ten, gender: o.gioiTinh === 'gai' ? 'nu' : 'nam', calendar: 'duong', day: o.day, month: o.thang, year: o.nam, hour: o.gio == null ? 12 : o.gio, minute: 0, viewYear: vy };
+        var tv = tuviLapLaSo(inp), bt = batTuLap(inp);
+        o.namAm = tv.info.lunar.year; o.hanhManh = cdHanhManh_(bt);
+        o.moTa = 'Mệnh ' + (tv.palaces[tv.info.menh].chinh.map(function (x) { return x.n; }).join(', ') || 'vô chính diệu') + ' · nhật chủ ' + bt.nhatChu + ' (' + bt.cuong + ')' + (o.gio == null ? ' · chưa rõ giờ sinh' : '');
+      } catch (e) { /* thiếu dữ liệu → chỉ xét năm */ }
+    }
+    return o;
+  }).sort(function (x, y) { return x.nam - y.nam; });
+}
+function cdConCai_(A, B, tA, tB, bt, con, td) {
   var ca = A.moRong.tongHop.phoiNgau && A.moRong.tongHop.phoiNgau.conCai, cb = B.moRong.tongHop.phoiNgau && B.moRong.tongHop.phoiNgau.conCai;
   if (!ca || !cb) return null;
   var S = (ca.chiSo.soCon + cb.chiSo.soCon) / 2, cha = A.tuvi.info.male && !B.tuvi.info.male ? ca : !A.tuvi.info.male && B.tuvi.info.male ? cb : null;
@@ -296,11 +344,43 @@ function cdConCai_(A, B, tA, tB, bt) {
   var pTrai = cha ? Math.round(cha.chiSo.pTrai * 0.6 + me.chiSo.pTrai * 0.4) : Math.round((ca.chiSo.pTrai + cb.chiSo.pTrai) / 2);
   if (/xung/.test(bt.chiTiet.join(' ')) && /nhật chi|phu thê/i.test(bt.xau.join(' '))) S -= 0.15;
   var soCon = S > 0.4 ? '3 con trở lên (nếu điều kiện cho phép)' : S > 0.05 ? '2 – 3 con' : S > -0.25 ? '2 con' : '1 – 2 con, hoặc con đến muộn';
+  var duKien = S > 0.4 ? 3 : S > 0.05 ? 2.5 : S > -0.25 ? 2 : 1.5;
   function netCon(c) { var k = (c.ketLuan || []).filter(function (x) { return /^Tính cách con/.test(x); })[0]; return k ? k.replace(/^Tính cách con:\s*/, '').replace(/\.$/, '') : ''; }
-  return { soCon: soCon, chiSo: Math.round(S * 100) / 100, pTrai: pTrai,
-    ketLuan: ['Số con dự kiến khi ghép hai lá số: ' + soCon + '.',
-      'Con đầu: trai khoảng ' + pTrai + '%, gái ' + (100 - pTrai) + '%' + (cha ? ' (lá số người cha nặng hơn 60/40 theo truyền thống)' : '') + '.',
-      'Nét con thừa hưởng từ ' + tA + ': ' + (netCon(ca) || 'hài hòa') + '.', 'Nét con thừa hưởng từ ' + tB + ': ' + (netCon(cb) || 'hài hòa') + '.'] };
+  var kl = ['Số con xu hướng khi ghép hai lá số: ' + soCon + '.'];
+  if (con.length) {
+    var them = duKien - con.length;
+    kl.push('Hai bạn đã có ' + con.length + ' con (' + con.map(function (c) { return c.ten + (c.gioiTinh ? ' – ' + (c.gioiTinh === 'trai' ? 'trai' : 'gái') : '') + ', ' + c.nam; }).join('; ') + '). ' +
+      (them >= 0.9 ? 'Lá số còn "duyên con": có thể thêm khoảng ' + Math.round(them) + ' con nữa.' : them > 0.2 ? 'Lá số còn khả năng thêm 1 con nếu hai bạn mong muốn.' : 'Số con đã khá đủ so với lá số – nếu sinh thêm nên chọn năm hợp tuổi và chăm sóc sức khỏe người mẹ kỹ.'));
+  }
+  kl.push((con.length ? 'Con tiếp theo: trai' : 'Con đầu: trai') + ' khoảng ' + pTrai + '%, gái ' + (100 - pTrai) + '%' + (cha ? ' (lá số người cha nặng hơn 60/40 theo truyền thống)' : '') + '.');
+  kl.push('Nét con thừa hưởng từ ' + tA + ': ' + (netCon(ca) || 'hài hòa') + '.', 'Nét con thừa hưởng từ ' + tB + ': ' + (netCon(cb) || 'hài hòa') + '.');
+  // Con đã có: tuổi con với cha mẹ + đối chiếu lá số
+  var daCo = con.map(function (c) {
+    var t = cdConNam_(c.namAm, A, B, tA, tB, c.hanhManh), hA = cdHeConNam_(A, c.nam), hB = cdHeConNam_(B, c.nam);
+    function mo(h, ten) { return ten + ' ' + h.he + ' hệ' + (h.tong ? ' (năm này xếp hạng ' + h.hang + '/' + h.tong + ')' : ''); }
+    var khop = (hA.hang && hA.hang <= 3) || (hB.hang && hB.hang <= 3) || hA.he >= 3 || hB.he >= 3, motPhan = hA.he + hB.he >= 2 || (hA.hang && hA.hang <= 5) || (hB.hang && hB.hang <= 5);
+    return { ten: c.ten, gioiTinh: c.gioiTinh, nam: c.nam, namAm: c.namAm, canChi: t.canChi, napAm: t.napAm, diem: t.diem, voi: t.voi, moTa: c.moTa || '',
+      doiChieu: 'Năm ' + c.nam + ' – tín hiệu tin vui con cái: ' + mo(hA, tA) + ', ' + mo(hB, tB) + (khop ? ' → khớp, độ tin cậy của lá số cao.' : motPhan ? ' → khớp một phần.' : ' → tín hiệu yếu (có thể lệch giờ sinh của bố/mẹ).'),
+      ghiChu: c.day ? '' : 'Chỉ nhập năm: tính theo năm âm lịch ' + c.nam + ' – nếu con sinh trước Tết, hãy nhập đủ ngày tháng để chính xác.' };
+  });
+  if (daCo.length > 1) for (var i = 1; i < daCo.length; i++) {
+    var z = pnQuanHeChi_(((daCo[i - 1].namAm - 4) % 12 + 12) % 12, ((daCo[i].namAm - 4) % 12 + 12) % 12);
+    daCo[i].anhEm = daCo[i - 1].ten + ' & ' + daCo[i].ten + ': ' + z.t + (z.d >= 2 ? ' – anh chị em thương nhau, hay bênh nhau.' : z.d === 0 ? ' – dễ tranh giành, cha mẹ nên công bằng.' : '.');
+  }
+  // Gợi ý năm sinh con hợp tuổi: điểm hợp tuổi với cha mẹ + xác suất hai lá số + hòa hợp với anh chị
+  var dsSC = td && td.sinhCon ? td.sinhCon.nam : [], mxP = Math.max.apply(null, dsSC.map(function (x) { return x.pct; }).concat([1]));
+  var goiY = dsSC.map(function (x) {
+    var t = cdConNam_(x.nam, A, B, tA, tB, null), anh = [], d = t.diem;
+    daCo.forEach(function (c) {
+      var z = pnQuanHeChi_(((c.namAm - 4) % 12 + 12) % 12, t.chi);
+      if (z.d === 0) { d -= 0.6; anh.push('xung tuổi ' + c.ten); } else if (z.d >= 2) { d += 0.3; anh.push(z.t.toLowerCase() + ' với ' + c.ten); }
+    });
+    var tong = cdKep_(Math.max(0, d) * 0.65 + (x.pct / mxP) * 10 * 0.35);
+    return { nam: x.nam, canChi: t.canChi, napAm: t.napAm, hopTuoi: cdKep_(d), pct: x.pct, tong: tong, voi: t.voi.map(function (v) { return { ten: v.ten, diem: v.diem }; }), anhEm: anh,
+      ly: t.voi.map(function (v) { return v.ten + ' ' + v.diem + '/10: ' + v.ly[0]; }) };
+  }).filter(function (x) { return x.pct > 0.2 || x.hopTuoi >= 7; });
+  var topGoi = goiY.slice().sort(function (x, y) { return y.tong - x.tong; }).slice(0, 5).sort(function (x, y) { return x.nam - y.nam; });
+  return { soCon: soCon, chiSo: Math.round(S * 100) / 100, pTrai: pTrai, ketLuan: kl, daCo: daCo, goiY: goiY, goiYTop: topGoi };
 }
 
 /* ---------------- Lĩnh vực ảnh hưởng lẫn nhau ---------------- */
@@ -365,7 +445,8 @@ function capDoiLuan_(A, B, inA, inB) {
   tong = cdKep_(tong);
   var namCuoi = +inA.namCuoi || +inB.namCuoi || 0;
   (inA.events || []).forEach(function (e) { if (e && e.loai === 'ketHon' && +e.nam && !namCuoi) namCuoi = +e.nam; });
-  var td = cdThoiDiem_(A, B, tA, tB, namCuoi), con = cdConCai_(A, B, tA, tB, P.battu), lv = cdLinhVuc_(A, B, tA, tB, P);
+  var dsCon = cdChuanCon_(inA.con, A.tuvi.info.viewYear);
+  var td = cdThoiDiem_(A, B, tA, tB, namCuoi, dsCon), con = cdConCai_(A, B, tA, tB, P.battu, dsCon, td), lv = cdLinhVuc_(A, B, tA, tB, P);
   var hoa = [], va = [];
   ['battu', 'tuvi', 'tuoi', 'chiemTinh', 'hd', 'thanSo'].forEach(function (k) { hoa = hoa.concat(P[k].tot.slice(0, 3)); va = va.concat(P[k].xau.slice(0, 3)); });
   var yeu = Object.keys(CD_TRONG_SO).sort(function (x, y) { return P[x].diem - P[y].diem; }), loi = [];
@@ -382,6 +463,7 @@ function capDoiLuan_(A, B, inA, inB) {
     var dep = td.ketHon.top.slice().sort(function (x, y) { return y.pct - x.pct; })[0];
     loi.push('Năm cưới đẹp nhất theo hai lá số: ' + dep.nam + ' (' + dep.canChi + ', ' + dep.pct + '%)' + (dep.canhBao.length ? ' – lưu ý: ' + dep.canhBao.join('; ') + '.' : '.'));
   }
+  if (con && con.goiYTop.length) { var gy = con.goiYTop.slice().sort(function (x, y) { return y.tong - x.tong; })[0]; loi.push('Năm sinh ' + (dsCon.length ? 'thêm con' : 'con') + ' đẹp nhất (hợp tuổi bố mẹ + lá số cùng báo): ' + gy.nam + ' ' + gy.canChi + ' (hợp tuổi ' + gy.hopTuoi + '/10, xác suất ' + gy.pct + '%).'); }
   loi.push('Kết quả là xu hướng tham khảo từ lá số – sự thấu hiểu, tôn trọng và vun đắp mỗi ngày mới quyết định hạnh phúc.');
   var tt = function (r, i) {
     var I = r.tuvi.info, s = r.tuvi.info.solar, inp = i ? inB : inA;
@@ -396,7 +478,8 @@ function capDoiLuan_(A, B, inA, inB) {
     coSo: ['Điểm tổng (thang 10) = trung bình có trọng số 6 tiêu chí: ' + tieuChi.map(function (t) { return t.ten + ' ' + t.trongSo + '%'; }).join(', ') + '. % hợp = điểm × 10.',
       'Tuổi: 5 tiêu chí xem tuổi truyền thống (nạp âm, thiên can, địa chi, cung phi Bát trạch, thiên mệnh), chấm hai chiều. Bát Tự hợp hôn: nhật can, nhật chi (cung phu thê), dụng thần trao đổi, nguyệt trụ, thế thân vượng – nhược. Tử Vi: cung Mệnh hai người, sao Mệnh người này trong Phu Thê người kia, chất lượng cung Phu Thê.',
       'Chiêm tinh so sánh (synastry): 15 cặp hành tinh chủ chốt, góc trùng tụ/lục hợp/tam hợp/vuông/đối với sai số cho phép, góc càng sát càng mạnh. Thần số: nhóm số chủ đạo và số linh hồn. Human Design: kênh điện từ, đồng hành, áp đảo, thỏa hiệp và cặp Loại.',
-      'Năm cưới: tích xác suất theo năm của hai lá số (năm cả hai cùng báo mới nổi bật), giảm 40% năm cô dâu phạm Kim Lâu (tuổi mụ chia 9 dư 1, 3, 6, 8) và 20% năm xung tuổi. Năm sinh con: tích xác suất của hai lá số × khả năng đã cưới trước năm đó. Năm chung thuận/khó lấy từ Biến cố hội tụ (≥3 hệ) của từng người.']
+      'Năm cưới: tích xác suất theo năm của hai lá số (năm cả hai cùng báo mới nổi bật), giảm 40% năm cô dâu phạm Kim Lâu (tuổi mụ chia 9 dư 1, 3, 6, 8) và 20% năm xung tuổi. Năm sinh con: tích xác suất của hai lá số × khả năng đã cưới trước năm đó; đã có con thì các năm sát con trước bị giảm (khoảng cách ~2 năm).',
+      'Tuổi con với cha mẹ: mệnh nạp âm (con sinh cha mẹ = mang phúc; cha mẹ sinh con = nâng đỡ; khắc = dễ trái ý), thiên can, địa chi, can năm và ngũ hành mạnh của con so với hỷ/kỵ thần Bát Tự của cha mẹ. Gợi ý năm sinh con = 65% điểm hợp tuổi (có xét xung – hợp với anh chị) + 35% xác suất theo hai lá số. Năm chung thuận/khó lấy từ Biến cố hội tụ (≥3 hệ) của từng người.']
   };
 }
 
@@ -407,6 +490,8 @@ function cdRutGon_(cd) {
     tieuChi: cd.tieuChi.map(function (t, i) { return { k: t.k, ten: t.ten, he: t.he, trongSo: t.trongSo, diem: i < 2 ? t.diem : null, chiTiet: i < 2 ? t.chiTiet.slice(0, 2) : [] }; }),
     hoaHop: cd.hoaHop.slice(0, 2), soVaCham: cd.vaCham.length,
     heLo: [dep ? 'Năm cưới đẹp nhất: ' + String(dep.nam).slice(0, 2) + '██ (' + dep.pct + '%)' : '', cd.conCai ? 'Số con dự kiến: ██ · con đầu trai ' + cd.conCai.pTrai + '%' : '',
+      cd.conCai && cd.conCai.goiYTop.length ? 'Năm sinh con hợp tuổi bố mẹ nhất: ' + String(cd.conCai.goiYTop[0].nam).slice(0, 2) + '██' : '',
+      cd.conCai && cd.conCai.daCo.length ? 'Đối chiếu ' + cd.conCai.daCo.length + ' con đã có: tuổi con hợp bố hay mẹ hơn ███' : '',
       'Người nên giữ quỹ chung: ███', cd.vaCham.length + ' điểm va chạm cần lưu ý và cách hóa giải'].filter(Boolean) };
 }
 
