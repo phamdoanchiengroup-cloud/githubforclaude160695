@@ -1014,9 +1014,10 @@
       li.forEach(function (x, i) { x.classList.toggle('on', i === on); });
       $('tocHien').textContent = '· ' + dh.muc[on].ten;
       var a = li[on];
-      if (a && nav.scrollHeight > nav.clientHeight) {
-        var t = a.offsetTop - nav.scrollTop;
-        if (t < 40 || t > nav.clientHeight - 60) nav.scrollTop = a.offsetTop - nav.clientHeight / 3;
+      var cuon = $('navCol') && nav.parentNode === $('navCol') ? $('navCol') : nav;   // máy tính: cột trái cuộn cả khối tab + mục lục
+      if (a && cuon.scrollHeight > cuon.clientHeight) {
+        var ra = a.getBoundingClientRect(), rc = cuon.getBoundingClientRect();
+        if (ra.top < rc.top + 40 || ra.bottom > rc.bottom - 40) cuon.scrollTop += ra.top - rc.top - cuon.clientHeight / 3;
       }
     });
   }
@@ -1024,6 +1025,18 @@
     window.addEventListener('scroll', capNhatCuon, { passive: true });
     window.addEventListener('resize', capNhatCuon);
     $('lenDau').addEventListener('click', function () { window.scrollTo({ top: 0, behavior: 'smooth' }); });
+    // Cột trái (máy tính): chuyển thanh tab và mục lục vào #navCol; điện thoại trả về chỗ cũ
+    if ($('navCol')) {
+      var mq = window.matchMedia('(min-width: 1081px)');
+      var datCot = function () {
+        var tabs = $('tabs'), toc = $('toc'), cot = $('navCol'), top = $('resTop');
+        if (mq.matches) { if (tabs.parentNode !== cot) { cot.appendChild(tabs); cot.appendChild(toc); } }
+        else if (tabs.parentNode === cot) { top.insertBefore(tabs, $('btnToc')); document.querySelector('.layout').appendChild(toc); }
+        document.documentElement.style.setProperty('--top-h', Math.round(caoThanhTren()) + 'px');
+      };
+      datCot();
+      if (mq.addEventListener) mq.addEventListener('change', datCot); else if (mq.addListener) mq.addListener(datCot);
+    }
     $('btnToc').addEventListener('click', function (e) {
       e.stopPropagation();
       var mo = $('toc').classList.toggle('mo'); $('btnToc').setAttribute('aria-expanded', mo ? 'true' : 'false');
