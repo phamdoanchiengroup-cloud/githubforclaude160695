@@ -60,7 +60,7 @@ var HAM_CAN_CO = {
   'Lunar.gs': 'solarToLunar', 'TuVi.gs': 'tuviLapLaSo', 'BatTu.gs': 'batTuLap',
   'LuanGiai.gs': 'luanChiTiet', 'DuDoan.gs': 'duDoanCuocDoi', 'BatTuChiTiet.gs': 'batTuChiTiet',
   'Astro.gs': 'astToanBo', 'ChiemTinh.gs': 'chiemTinhLap', 'HumanDesign.gs': 'hdLap', 'ThanSoHoc.gs': 'thanSoHocLap', 'TongHop.gs': 'tongHopLuan', 'PhoiNgau.gs': 'phoiNgauLuan', 'HaLac.gs': 'haLacLap', 'HoiTu.gs': 'htHoiTu_', 'BatTuLuan.gs': 'btlLinhVuc_', 'TaiKhoan.gs': 'dangNhap', 'ThanhToan.gs': 'muaPhan', 'CapDoi.gs': 'lapCapDoi',
-  'Facts.gs': 'taoFact_', 'TuViHeThong.gs': 'tuviSinhFactsCung_', 'NghiemChung.gs': 'nghiemChungLap', 'DeHieu.gs': 'deHieuLap_'
+  'Facts.gs': 'taoFact_', 'TuViHeThong.gs': 'tuviSinhFactsCung_', 'NghiemChung.gs': 'nghiemChungLap', 'DeHieu.gs': 'deHieuLap_', 'BatTuPhanTich.gs': 'btPhanTich_'
 };
 
 /** Trả về danh sách lỗi cài đặt (rỗng nếu mọi thứ đúng) */
@@ -100,7 +100,7 @@ function trangLoiCaiDat_(loi) {
 /** Chạy hàm này trong trình soạn thảo (chọn kiemTraCaiDat → Chạy) để xem lỗi trong Nhật ký thực thi */
 function kiemTraCaiDat() {
   var loi = kiemTraCaiDat_();
-  if (!loi.length) { Logger.log('✔ Cài đặt đúng: đủ 23 file .gs và 3 file HTML.'); return; }
+  if (!loi.length) { Logger.log('✔ Cài đặt đúng: đủ 24 file .gs và 3 file HTML.'); return; }
   loi.forEach(function (x) { Logger.log('✘ ' + x.replace(/<[^>]+>/g, '').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&amp;/g, '&')); });
 }
 
@@ -123,6 +123,13 @@ function lapLaSoDayDu_(input) {
   result.chiTiet = luanChiTiet(tv, bt, input);
   result.duDoan = duDoanCuocDoi(tv, bt, input, result.chiTiet.daiVan);
   result.battuChiTiet = batTuChiTiet(bt, input, tv);
+  // Trường hợp đặc biệt từng lưu niên (BatTuPhanTich.gs): tuế vận tịnh lâm, thiên khắc địa xung, tam hình, Thiên La Địa Võng
+  if (typeof btpLuuNienDacBiet_ === 'function' && result.battuChiTiet && result.battuChiTiet.luuNien) {
+    result.battuChiTiet.luuNien.forEach(function (y) {
+      var dv = (bt.daiVan || []).filter(function (d) { return y.nam >= d.nam && y.nam < d.nam + 10; })[0];
+      try { y.dacBiet = btpLuuNienDacBiet_(bt, y.nam, dv); } catch (e) { y.dacBiet = []; }
+    });
+  }
   try {
     result.moRong = lapMoRong_(input, result);
   } catch (err) {

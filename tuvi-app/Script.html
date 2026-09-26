@@ -1084,7 +1084,7 @@
     });
     chenKhoa(res);
     showTab('chart');
-    selectPalace(res.tuvi.info.menh);
+    selectPalace(res.tuvi.info.menh, true);
     if (window.innerWidth < 1080) document.querySelector('.result-wrap').scrollIntoView({ behavior: 'smooth', block: 'start' });
     sauHienThi();
   }
@@ -1176,7 +1176,7 @@
 
   function cellOf(chi) { return $('chart').querySelector('.cung[data-chi="' + chi + '"]'); }
 
-  function selectPalace(chi) {
+  function selectPalace(chi, chiToMau) {
     state.sel = chi;
     var tam = [(chi + 4) % 12, (chi + 8) % 12], xung = (chi + 6) % 12;
     $('chart').querySelectorAll('.cung').forEach(function (el) {
@@ -1186,6 +1186,7 @@
       el.classList.toggle('xungchieu', c === xung);
     });
     drawOverlay();
+    if (chiToMau) { $('palaceDetail').innerHTML = '<div class="pd-goiy">👆 Bấm vào một cung trên lá số để xem nhanh các sao và lời luận của cung đó. Luận đầy đủ Mệnh, Thân và 12 cung ở ngay bên dưới.</div>'; return; }
     renderPalaceDetail(chi);
   }
 
@@ -1358,7 +1359,7 @@
         'Ứng sự: Quan Sát → công việc, áp lực, (nữ) chồng, (nam) con; Tài → tiền bạc, (nam) vợ, cha; Ấn → học hành, giấy tờ, nhà cửa, mẹ; Thực Thương → tài năng, (nữ) con; Tỷ Kiếp → bạn bè, cạnh tranh, hao tài.']) +
       '<div class="tbl-wrap"><table class="gio-tbl"><thead><tr><th>Năm</th><th>Can chi</th><th>Thập thần (can / chi)</th><th>Việc nổi bật</th><th>Đánh giá</th></tr></thead><tbody>' +
       Y.map(function (y) {
-        return '<tr' + (y.nam === vy ? ' class="best"' : '') + '><td><b>' + y.nam + '</b> · ' + y.tuoi + 't</td><td>' + esc(y.canChi) + '</td><td>' + esc(y.thapThan) + '</td><td>' + esc(y.dong.join(', ') || '—') + (y.ketHon ? ' 💍' : '') + '</td>' +
+        return '<tr' + (y.nam === vy ? ' class="best"' : '') + '><td><b>' + y.nam + '</b> · ' + y.tuoi + 't</td><td>' + esc(y.canChi) + '</td><td>' + esc(y.thapThan) + '</td><td>' + esc(y.dong.join(', ') || '—') + (y.ketHon ? ' 💍' : '') + (y.dacBiet && y.dacBiet.length ? '<br><small class="bad-t">⚠ ' + esc(y.dacBiet.join(' ')) + '</small>' : '') + '</td>' +
           '<td><span class="rate ' + rateClass(y.diem) + '">' + esc(y.danhGia) + ' · ' + d10(y.diem) + '</span></td></tr>';
       }).join('') + '</tbody></table></div>' +
       '<p class="muted" style="font-size:12.5px">💍 = năm có tín hiệu hỷ sự/kết hôn theo Tứ Trụ (sao phối ngẫu chính, chi năm lục hợp cung phu thê, Hồng Loan – Thiên Hỷ).</p>' +
@@ -1366,31 +1367,32 @@
         return blockHtml(y, 'Năm ' + y.nam + ' ' + y.canChi, y.tuoi + ' tuổi · ' + y.thapThan, y.nam === vy);
       }).join('') + '</div></div>';
   }
-  function batTuChiTietHtml(res) {
-    var C = res.battuChiTiet;
-    if (!C) return '';
+  /** Các khối Bát Tự chi tiết (BatTuChiTiet.gs) – trả về từng khối để xếp vào đúng bước trong tab Bát Tự */
+  function btKhoiChiTiet(res) {
+    var C = res.battuChiTiet, K = {};
+    if (!C) return K;
     var cc = C.cachCuc;
-    var html = '<div class="panel section"><h2 class="panel-title"><span class="han">格局</span> Cách cục</h2>' +
+    K.cachCuc = '<div class="panel section"><h2 class="panel-title"><span class="han">格局</span> Điều kiện thành – phá cách</h2>' +
       coSoHtml('Cơ sở lý luận Bát Tự chi tiết', C.coSo) +
       '<div class="cach-head"><b>' + esc(cc.ten) + '</b><span class="chip neutral">' + esc(cc.loai) + '</span>' +
       '<span class="rate ' + (cc.thanh === true ? 'r5' : cc.thanh === false ? 'r1' : 'r3') + '">' + (cc.thanh === true ? 'Thành cách' : cc.thanh === false ? 'Phá cách / chưa đủ' : 'Cần xét vận') + '</span></div>' +
       listHtml(cc.items) + '<p class="quote">' + hl(cc.ketLuan) + '</p></div>';
-    html += '<div class="panel section"><h2 class="panel-title"><span class="han">宮位</span> Cung vị tứ trụ</h2><div class="lg-list">' +
+    K.cungVi = '<div class="panel section"><h2 class="panel-title"><span class="han">宮位</span> Cung vị tứ trụ</h2><div class="lg-list">' +
       C.cungVi.map(function (c, i) { return blockHtml(heSo(c, 1.6), c.ten + ' · ' + c.canChi, c.tuoi, i === 2); }).join('') + '</div></div>';
-    html += '<div class="panel section"><h2 class="panel-title"><span class="han">六親</span> Lục thân</h2><div class="lg-grid">' +
+    K.lucThan = '<div class="panel section"><h2 class="panel-title"><span class="han">六親</span> Lục thân</h2><div class="lg-grid">' +
       C.lucThan.map(function (l) { return blockHtml(heSo(l, 1.6), l.ten, 'sao ' + l.sao, false); }).join('') + '</div></div>';
-    html += '<div class="bt-grid">' +
+    K.thapThan = '<div class="bt-grid">' +
       '<div class="panel section"><h2 class="panel-title"><span class="han">十神</span> Thập thần – tính cách, nghề nghiệp</h2>' + listHtml(C.tinhCach) + '</div>' +
       '<div class="panel section"><h2 class="panel-title"><span class="han">臟腑</span> Ngũ hành – tạng phủ</h2>' + listHtml(C.sucKhoe) + '</div></div>';
-    html += '<div class="panel section"><h2 class="panel-title"><span class="han">神煞</span> Thần sát mở rộng</h2><ul class="rel-list">' +
+    K.thanSat = '<div class="panel section"><h2 class="panel-title"><span class="han">神煞</span> Thần sát</h2><ul class="rel-list">' +
       (C.thanSat.length ? C.thanSat.map(function (t) { return '<li class="' + (t.tot ? 'hop' : 'xung') + '"><b>' + esc(t.ten) + '</b> <small class="muted">(' + esc(t.o) + ')</small><br><small>' + esc(t.moTa) + '</small></li>'; }).join('') : '<li class="binh">Không có thần sát nổi bật.</li>') + '</ul></div>';
-    html += '<div class="panel section"><h2 class="panel-title"><span class="han">運宮</span> Đại vận tác động lên cung vị</h2><div class="lg-grid">' +
+    K.daiVanCungVi = '<div class="panel section"><h2 class="panel-title"><span class="han">運宮</span> Đại vận tác động lên cung vị</h2><div class="lg-grid">' +
       C.daiVanCungVi.map(function (d) {
         return '<details class="lg-block"><summary><span class="lg-t">' + esc(d.canChi) + '</span><span class="lg-meta">' + d.tuoi + ' tuổi · ' + d.nam + '</span>' +
           '<span class="rate ' + (/Đại cát|Cát/.test(d.danhGia) ? 'r4' : d.danhGia === 'Bình' ? 'r3' : 'r1') + '">' + esc(d.danhGia) + '</span></summary><div class="lg-body">' + listHtml(d.items) + '</div></details>';
       }).join('') + '</div></div>';
-    html += btLinhVucHtml(res) + btLuuNienHtml(res);
-    return html;
+    K.linhVuc = btLinhVucHtml(res); K.luuNien = btLuuNienHtml(res);
+    return K;
   }
 
   /* ---------- Tab Dự đoán ---------- */
@@ -2149,32 +2151,42 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
     // 11 cung còn lại: chưa làm, hiển thị ghi chú ngắn
     return '<div class="cung-van-de-hieu"><div class="cv-doan"><h5>' + c.cung + '</h5><p><i>Cung này sẽ được bổ sung ở bản cập nhật tiếp theo. Hiện bạn có thể xem phần "chi tiết chuyên sâu" bên dưới.</i></p></div></div>';
   }
+  /** Khối "Phần N" dùng chung cho phần chuyên sâu của mọi hệ (tiêu đề lớn, hiện trong mục lục) */
+  function khoiPhan(nhom, so, ten, phu, noi) { return '<div class="tg ' + nhom + '" data-g="' + nhom + '-' + so + '"><div class="tg-head"><span>Phần ' + so + '</span><b>' + ten + '</b><em>' + phu + '</em></div>' + noi + '</div>'; }
   function renderLuan(res) {
-    var L = res.tuvi.luanGiai;
-    var html = '<div class="panel section"><h2 class="panel-title"><span class="han">總</span> Tổng quan</h2><ul>' +
-      L.tongQuan.map(function (x) { return '<li>' + hl(x) + '</li>'; }).join('') + '</ul>' + coSoHtml('Cách chấm điểm (thang 10)', CACH_CHAM.slice(0, 2)) + '</div>';
-    html += '<div class="panel section"><h2 class="panel-title"><span class="han">命</span> Cung Mệnh & Thân</h2>' +
-      L.menh.map(function (x) { return '<p>' + hl(x) + '</p>'; }).join('') + '</div>';
-    html += '<div class="panel section"><h2 class="panel-title"><span class="han">格</span> Cách cục</h2><div class="cc-list">' +
-      L.cachCuc.map(function (c) {
-        return '<div class="cc-item ' + (c.tot === true ? 'good' : c.tot === false ? 'bad' : 'mid') + '"><b>' + esc(c.ten) + '</b><small>' + esc(c.moTa) + '</small></div>';
-      }).join('') + '</div></div>';
-    var CT = res.chiTiet;
-    html += '<div class="panel section"><h2 class="panel-title"><span class="han">宮</span> Luận 12 cung chuyên sâu</h2>' +
-      coSoHtml('Cơ sở lý luận luận cung', CT.coSo.cung) +
+    var L = res.tuvi.luanGiai, I = res.tuvi.info, CT = res.chiTiet;
+    var tops = L.cung.slice().sort(function (a, b) { return b.diem - a.diem; });
+    var P = res.tuvi.palaces, chinhMenh = P[I.menh].chinh.map(function (x) { return x.n; }).join(' – ') || 'Vô chính diệu';
+    var chiSo = [['Mệnh', chinhMenh], ['Thân cư', I.thanCu], ['Cục', I.cuc], ['Bản mệnh (nạp âm năm)', I.banMenh && I.banMenh.ten || ''], ['Nạp âm cung Mệnh', I.menhNapAm && I.menhNapAm.ten || ''], ['Mệnh chủ · Thân chủ', I.menhChu + ' · ' + I.thanChu], ['Âm dương', I.amDuong]];
+    var dvNay = (CT.daiVan || []).filter(function (d) { return d.isNow; })[0];
+    // PHẦN 1 – Chân dung lá số: gộp Tổng quan + Mệnh & Thân + Cách cục + Cung mạnh / cung yếu (trước đây tách 5 khung, trùng ý)
+    var p1 = '<div class="panel section tv-chandung"><h2 class="panel-title"><span class="han">命</span> Chân dung lá số</h2>' +
+      '<div class="stat-row tv-chiso">' + chiSo.map(function (c) { return '<div class="stat"><small>' + esc(c[0]) + '</small><b>' + esc(c[1]) + '</b></div>'; }).join('') + '</div>' +
+      '<h4 class="dd-h">Cung Mệnh & Thân</h4>' + L.menh.map(function (x) { return '<p>' + hl(x) + '</p>'; }).join('') +
+      '<h4 class="dd-h">Bố cục lá số</h4><ul>' + L.tongQuan.map(function (x) { return '<li>' + hl(x) + '</li>'; }).join('') + '</ul>' +
+      (L.cachCuc.length ? '<h4 class="dd-h">Cách cục</h4><div class="cc-list">' + L.cachCuc.map(function (c) {
+        return '<div class="cc-item ' + (c.tot === true ? 'good' : c.tot === false ? 'bad' : 'mid') + '"><b>' + esc(c.ten) + '</b><small>' + esc(c.moTa) + '</small></div>'; }).join('') + '</div>' : '') +
+      '<div class="bt-grid"><div><h4 class="dd-h good">☀ Cung mạnh</h4><ul class="th-kl">' + tops.slice(0, 4).map(function (c) { return '<li>' + hl(c.cung + ' (' + c.danhGia + '): ' + c.yNghia) + '</li>'; }).join('') + '</ul></div>' +
+      '<div><h4 class="dd-h bad">☾ Cung cần lưu ý</h4><ul class="th-kl">' + tops.slice(-4).reverse().map(function (c) { return '<li>' + hl(c.cung + ' (' + c.danhGia + '): ' + c.yNghia) + '</li>'; }).join('') + '</ul></div></div>' +
+      coSoHtml('Cách chấm điểm (thang 10)', CACH_CHAM.slice(0, 2)) + '</div>';
+    // PHẦN 2 – Luận 12 cung (văn dễ hiểu + chi tiết chuyên sâu thu gọn)
+    var p2 = '<div class="panel section"><h2 class="panel-title"><span class="han">宮</span> Luận 12 cung</h2>' + coSoHtml('Cơ sở lý luận luận cung', CT.coSo.cung) +
+      stripHtml(CT.cung.map(function (c) { return { diem: c.diem, danhGia: c.danhGia, cung: c.cung, canChi: c.canChi }; }), function (c) { return c.cung; }, function (c) { return c.canChi; }, function (c, i) { return i === 0; }, 'tvc-') +
       '<div class="lg-list">' + CT.cung.map(function (c, i) {
-                var blockGoc = blockHtml(voiTuTru(res, c), 'Cung ' + c.cung + (c.isThan ? ' · Thân cư' : ''), c.canChi, i === 0);
-        var deHieu = taoCungDeHieu_(c);
-        var full = deHieu + '<details class="cung-chitiet"><summary>Xem chi tiết chuyên sâu (thuật ngữ Tử Vi)</summary>' + blockGoc + '</details>';
-        return full;
+        var blockGoc = blockHtml(voiTuTru(res, c), 'Cung ' + c.cung + (c.isThan ? ' · Thân cư' : ''), c.canChi, i === 0);
+        return '<div id="tvc-' + i + '" class="tv-cung">' + taoCungDeHieu_(c) + '<details class="cung-chitiet"><summary>Xem chi tiết chuyên sâu (thuật ngữ Tử Vi)</summary>' + blockGoc + '</details></div>';
       }).join('') + '</div></div>';
-    var tops = res.tuvi.luanGiai.cung.slice().sort(function (a, b) { return b.diem - a.diem; });
-    html += '<div class="bt-grid"><div class="panel section"><h2 class="panel-title"><span class="han">吉</span> Cung mạnh</h2><ul class="th-kl">' +
-      tops.slice(0, 4).map(function (c) { return '<li>' + hl(c.cung + ' (' + c.danhGia + '): ' + c.yNghia) + '</li>'; }).join('') + '</ul></div>' +
-      '<div class="panel section"><h2 class="panel-title"><span class="han">慎</span> Cung cần lưu ý</h2><ul class="th-kl">' +
-      tops.slice(-4).reverse().map(function (c) { return '<li>' + hl(c.cung + ' (' + c.danhGia + '): ' + c.yNghia) + '</li>'; }).join('') + '</ul></div></div>';
-    html += '<div class="panel section"><h2 class="panel-title"><span class="han">合參</span> Tử Vi × Bát Tự</h2>' + res.ketHop.map(function (x) { return '<p>✦ ' + hl(x) + '</p>'; }).join('') + '</div>';
+    var p3 = '<div class="panel section"><h2 class="panel-title"><span class="han">合參</span> Tử Vi × Bát Tự</h2>' + res.ketHop.map(function (x) { return '<p>✦ ' + hl(x) + '</p>'; }).join('') + '</div>';
+    var p4 = '<div class="panel section"><h2 class="panel-title"><span class="han">運</span> Đại vận – tiểu vận Tử Vi</h2><p>' + (dvNay ? 'Bạn đang ở đại hạn <b>' + esc(dvNay.khoang) + '</b> (' + esc(String(dvNay.nam)) + ', cung ' + esc(dvNay.cung) + ' – ' + esc(dvNay.danhGia.toLowerCase()) + ').' : '') + ' Toàn bộ đại vận 10 năm, vận năm ' + I.viewYear + ', 12 tháng và lịch từng ngày nằm ở tab <b>Vận hạn</b>.</p>' +
+      '<button type="button" class="btn btn-ghost btn-sm" data-den="vh">⏳ Sang tab Vận hạn</button></div>';
+    var html = khoiPhan('tvp', 1, 'Chân dung lá số', 'Mệnh – Thân, bố cục, cách cục, cung mạnh và cung yếu', p1) +
+      khoiPhan('tvp', 2, 'Luận 12 cung', 'Mỗi cung: văn dễ hiểu trước, thuật ngữ chuyên sâu thu gọn bên dưới', p2) +
+      khoiPhan('tvp', 3, 'Đối chiếu Tử Vi × Bát Tự', 'Hai hệ cùng chiều thì kết luận chắc chắn hơn', p3) +
+      khoiPhan('tvp', 4, 'Vận hạn', 'Đại vận, vận năm, tháng, ngày', p4);
     $('page-luan').innerHTML = html;
+    $('page-luan').querySelectorAll('.strip-item').forEach(function (b) {
+      b.addEventListener('click', function () { var el = document.getElementById(b.getAttribute('data-target')); if (el) cuonToi(el); });
+    });
   }
 
   function renderBatTu(res) {
@@ -2199,50 +2211,87 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
       }).join('') + '</div>' +
       '<p class="muted" style="font-size:12.5px;margin-top:10px">Sinh trong tiết <b>' + esc(B.tietKhi) + '</b> (kinh độ mặt trời ' + B.kinhDoMatTroi + '°). Trụ năm & tháng tính theo Lập Xuân và 12 Tiết; trụ giờ theo Ngũ Thử Độn.</p></div>';
 
-    html += batTuChiTietHtml(res);
-    var maxPct = Math.max.apply(null, Object.keys(B.phanTram).map(function (k) { return B.phanTram[k]; }));
-    html += '<div class="bt-grid">' +
-      '<div class="panel section"><h2 class="panel-title"><span class="han">五行</span> Ngũ hành</h2><div class="bars">' +
-      ['Mộc', 'Hỏa', 'Thổ', 'Kim', 'Thủy'].map(function (h) {
-        return '<div class="bar"><b class="h-' + h + '">' + h + '</b><div class="track"><div class="fill ' + h + '" style="width:' + (B.phanTram[h] / maxPct * 100) + '%"></div></div><span>' + B.phanTram[h] + '%</span></div>';
-      }).join('') + '</div>' +
-      '<p class="muted" style="font-size:12.5px">Số lần xuất hiện trên can chi: ' + ['Mộc', 'Hỏa', 'Thổ', 'Kim', 'Thủy'].map(function (h) { return h + ' ' + B.dem[h]; }).join(' · ') + '</p></div>' +
-      '<div class="panel section"><h2 class="panel-title"><span class="han">日主</span> Nhật chủ</h2>' +
-      '<p style="font-size:18px;margin:0"><b class="h-' + B.nhatChuHanh + '" style="font-family:var(--font-serif)">' + esc(B.nhatChu) + '</b> · ' + esc(B.cuong) + '</p>' +
-      '<div class="strength"><i style="left:' + Math.max(2, Math.min(98, B.tyLeTro)) + '%"></i></div>' +
-      '<div class="strength-lbl"><span>Nhược</span><span>Trung hòa</span><span>Vượng</span></div>' +
-      '<p style="margin-top:12px">Trạng thái theo lệnh tháng: <b>' + esc(B.trangThai) + '</b> · Lực trợ thân: <b>' + B.tyLeTro + '%</b></p>' +
-      '<div class="lbl" style="font-size:12px;font-weight:600;color:var(--ink-soft)">DỤNG THẦN · HỶ THẦN</div><div class="el-chips">' +
-      B.goiY.hy.map(function (h, i) { return '<span class="el-chip ' + h + '">' + (i === 0 ? '★ ' : '') + h + '</span>'; }).join('') + '</div>' +
-      '<div class="lbl" style="font-size:12px;font-weight:600;color:var(--ink-soft)">KỴ THẦN</div><div class="el-chips">' +
-      B.goiY.ky.map(function (h) { return '<span class="el-chip ky ' + h + '">' + h + '</span>'; }).join('') + '</div></div></div>';
+    var HANH_SINH = ['Mộc', 'Hỏa', 'Thổ', 'Kim', 'Thủy'];
+    var PT = B.phanTich, K = btKhoiChiTiet(res), vy = res.tuvi.info.viewYear;
+    if (!PT) { $('page-battu').innerHTML = html + '<div class="panel section muted">Chưa có phân tích 9 bước – hãy dán thêm file BatTuPhanTich.gs.</div>'; return; }
+    var D = PT.diem, DT = PT.dungThan, NH = DT.nhomHanh, TN = DT.tenNhom;
+    function buoc(so, ten, phu, noi) { return '<div class="tg bt-buoc" data-g="bt-' + so + '"><div class="tg-head"><span>Bước ' + so + '</span><b>' + ten + '</b><em>' + phu + '</em></div>' + noi + '</div>'; }
+    function vaiTro(h) { return h === DT.dung ? 'dung' : DT.hy.indexOf(h) >= 0 ? 'hy' : DT.ky.indexOf(h) >= 0 ? 'ky' : 'nhan'; }
+    var VT = { dung: 'Dụng', hy: 'Hỷ', ky: 'Kỵ', nhan: 'Nhàn' };
+    function nhomCua(h) { return Object.keys(NH).filter(function (k) { return NH[k] === h; }).map(function (k) { return TN[k]; })[0] || ''; }
 
-    var vy = res.tuvi.info.viewYear;
-    html += '<div class="panel section"><h2 class="panel-title"><span class="han">大運</span> Đại vận</h2>' +
-      '<p class="muted" style="margin-top:0">' + (B.khoiVan.thuan ? 'Đi thuận' : 'Đi nghịch') + ' · khởi vận sau ' + B.khoiVan.nam + ' năm ' + B.khoiVan.thang + ' tháng (cách tiết ' + B.khoiVan.soNgay + ' ngày, mốc ' + esc(B.khoiVan.tiet) + ').</p>' +
-      '<div class="dv-row">' + B.daiVan.map(function (d) {
-        var now = vy >= d.nam && vy < d.nam + 10;
+    // BƯỚC 1–3: Tứ trụ, tàng can, thập thần + quan hệ can chi
+    var quanHe = '<div class="panel section"><h2 class="panel-title"><span class="han">合沖</span> Hợp – xung – hình – hại</h2><ul class="rel-list">' +
+      B.quanHe.map(function (q) { return '<li class="' + q.loai + '">' + esc(q.txt) + '</li>'; }).join('') + '</ul>' +
+      (D.hop.length ? '<p class="muted" style="font-size:12.5px">Ngũ hợp thiên can: ' + D.hop.map(function (h) { return esc(h.ly); }).join('; ') + '.</p>' : '') + '</div>';
+    var out = buoc('1–3', 'Lập Tứ Trụ · Tàng can · Thập thần', 'Can chi năm – tháng – ngày – giờ theo tiết khí; tàng can và mười thần so với Nhật can', html + quanHe);
+
+    // BƯỚC 4: Vượng suy
+    var maxPct = Math.max.apply(null, HANH_SINH.map(function (h) { return D.pct[h]; }).concat([1]));
+    var b4 = '<div class="panel section"><h2 class="panel-title"><span class="han">旺衰</span> Bốn tiêu chí vượng suy của Nhật can ' + esc(B.nhatChu) + '</h2>' +
+      '<div class="bt-tc">' + PT.tieuChi.map(function (t) { return '<div class="bt-tc-i ' + (t.dat ? 'dat' : 'khong') + '"><b>' + (t.dat ? '✓' : '✗') + ' ' + esc(t.ten) + '</b><span>' + esc(t.ly) + '</span></div>'; }).join('') + '</div></div>';
+    b4 += '<div class="panel section"><h2 class="panel-title"><span class="han">量</span> Tính điểm lực lượng (phương pháp Thiệu Vĩ Hoa)</h2>' +
+      '<p class="lede">Mỗi thiên can 36 độ; mỗi địa chi 30 độ chia cho tàng can (bản khí 60% · trung khí 30% · dư khí 10%). Điểm nhân hệ số mùa theo nguyệt lệnh <b>' + esc(D.lenh) + '</b>: vượng 100% · tướng 80% · hưu 60% · tù 40% · tử 20%. Can có gốc +6, bị khắc gần −12, khắc xa −6, xì hơi −6; ngũ hợp thành hóa tính theo hành hóa, không hóa giảm 1/3.</p>' +
+      '<div class="bars">' + HANH_SINH.map(function (h) {
+        return '<div class="bar"><b class="h-' + h + '">' + h + '</b><div class="track"><div class="fill ' + h + '" style="width:' + (D.pct[h] / maxPct * 100) + '%"></div></div><span>' + D.pct[h] + '% <small class="muted">· ' + esc(nhomCua(h)) + '</small></span></div>';
+      }).join('') + '</div>' +
+      '<details class="coso bt-bang"><summary>📋 Bảng tính chi tiết từng can – tàng can (' + D.dong.length + ' dòng, tổng ' + D.tong + ' độ)</summary><div class="tbl-wrap"><table class="gio-tbl"><thead><tr><th>Vị trí</th><th>Can</th><th>Hành</th><th>Độ gốc</th><th>Mùa</th><th>Điểm</th><th>Điều chỉnh</th></tr></thead><tbody>' +
+      D.dong.map(function (r) { return '<tr><td>' + esc(r.loai + ' ' + r.tru.toLowerCase()) + '</td><td>' + esc(r.ten) + '</td><td class="h-' + r.hanh + '">' + r.hanh + '</td><td>' + fmt(Math.round(r.goc * 10) / 10) + '</td><td>' + esc(r.mua) + ' ×' + r.heSo + '</td><td><b>' + fmt(r.diem) + '</b></td><td><small>' + esc(r.dc.join('; ') || '—') + '</small></td></tr>'; }).join('') +
+      '</tbody></table></div></details>' +
+      '<div class="strength"><i style="left:' + Math.max(2, Math.min(98, D.phe)) + '%"></i><u style="left:40%"></u></div><div class="strength-lbl"><span>Nhược</span><span>40% ranh giới</span><span>Vượng</span></div>' +
+      '<p class="quote">' + esc(PT.ketLuanVS) + '</p></div>';
+    out += buoc(4, 'Vượng suy Nhật can', 'Được lệnh · đắc địa · được sinh · được trợ, và điểm lực lượng từng hành', b4);
+
+    // BƯỚC 5: Dụng thần
+    var BANG = [['Nhược', 'Quan Sát nhiều', 'Ấn', 'Tỷ Kiếp'], ['Nhược', 'Tài nhiều', 'Tỷ Kiếp', 'Ấn'], ['Nhược', 'Thực Thương nhiều', 'Ấn', 'Tỷ Kiếp'], ['Vượng', 'Ấn nhiều', 'Tài', 'Quan/Thực Thương'], ['Vượng', 'Tỷ Kiếp nhiều', 'Quan Sát', 'Thực Thương']];
+    var b5 = '<div class="panel section"><h2 class="panel-title"><span class="han">用神</span> Chọn dụng thần</h2>' +
+      '<div class="tbl-wrap"><table class="gio-tbl"><thead><tr><th>Nhật can</th><th>Mệnh cục</th><th>Dụng thần 1</th><th>Dụng thần 2</th></tr></thead><tbody>' +
+      BANG.map(function (r) { var on = PT.cachCuc.dacBiet ? false : (r[0] === 'Vượng') === PT.vuong && r[1] === DT.ducPhu.cuc; return '<tr' + (on ? ' class="best"' : '') + '><td>' + r[0] + '</td><td>' + r[1] + (on ? ' ← lá số này' : '') + '</td><td>' + r[2] + '</td><td>' + r[3] + '</td></tr>'; }).join('') +
+      '</tbody></table></div><ol class="bt-pp">' + DT.phuongPhap.map(function (x) { return '<li><b>' + esc(x.ten) + ':</b> ' + esc(x.ket) + (x.ly ? '<br><small class="muted">' + esc(x.ly) + '</small>' : '') + '</li>'; }).join('') + '</ol>' +
+      '<div class="bt-dt">' + HANH_SINH.map(function (h) { var v = vaiTro(h); return '<div class="bt-dt-i ' + v + '"><small>' + VT[v] + ' thần</small><b class="h-' + h + '">' + h + '</b><span>' + esc(nhomCua(h)) + ' · ' + D.pct[h] + '%</span></div>'; }).join('') + '</div>' +
+      '<p><b>Ứng dụng:</b> màu ' + esc(B.goiY.mau) + ' · hướng ' + esc(B.goiY.huong) + ' · số ' + esc(B.goiY.so) + ' · nghề hợp: ' + esc(B.goiY.nghe) + '.</p></div>';
+    out += buoc(5, 'Xác định dụng thần', 'Ức phù theo bảng ưu tiên, rồi điều hậu, thông quan, bệnh dược', b5);
+
+    // BƯỚC 6: Cách cục
+    var CC = PT.cachCuc;
+    var b6 = '<div class="panel section"><h2 class="panel-title"><span class="han">格</span> Cách cục: ' + esc(CC.ten) + '</h2><p><span class="chip neutral">' + esc(CC.loai) + '</span></p>' +
+      '<p><b>Chính cách theo nguyệt lệnh:</b> ' + esc(CC.chinhLy) + '</p>' + (CC.yNghia ? '<p class="quote">' + hl(CC.yNghia) + '</p>' : '') +
+      '<h4 class="dd-h">Kiểm tra ngoại cách (Tòng · Chuyên vượng · Hóa khí)</h4><ul class="rel-list">' +
+      CC.kiemTra.map(function (k) { return '<li class="' + (k.dat ? 'hop' : 'binh') + '"><b>' + (k.dat ? '✓ ' : '✗ ') + esc(k.ten) + '</b><br><small>' + esc(k.ly) + '</small></li>'; }).join('') + '</ul></div>' + (K.cachCuc || '');
+    out += buoc(6, 'Xác định cách cục', 'Chính cách theo nguyệt lệnh; ngoại cách khi đủ điều kiện đặc biệt', b6);
+
+    // BƯỚC 7: Cát hung & phương diện
+    var b7 = '<div class="panel section"><h2 class="panel-title"><span class="han">吉凶</span> Luận cát hung mệnh cục</h2><div class="bt-ch">' +
+      PT.catHung.map(function (c) { return '<div class="bt-ch-i ' + (c.dau === '✓' ? 'tot' : 'xau') + (c.ds.length ? '' : ' rong') + '"><b>' + esc(c.ten) + '</b>' + (c.ds.length ? '<ul>' + c.ds.map(function (x) { return '<li>' + c.dau + ' ' + esc(x) + '</li>'; }).join('') + '</ul>' : '<span class="muted">Không có dấu hiệu rõ.</span>') + '</div>'; }).join('') + '</div></div>' +
+      '<div class="panel section"><h2 class="panel-title"><span class="han">論</span> Luận các phương diện</h2><div class="lg-list">' +
+      PT.phuongDien.map(function (x, i) { return '<details class="lg-block"' + (i < 2 ? ' open' : '') + '><summary><span class="lg-t">' + esc(x.ten) + '</span></summary><div class="lg-body">' + listHtml(x.ds) + '</div></details>'; }).join('') + '</div></div>' +
+      (K.linhVuc || '') + (K.lucThan || '') + (K.cungVi || '') + (K.thapThan || '') + (K.thanSat || '');
+    out += buoc(7, 'Luận giải cát hung', 'Giàu sang, quý hiển, cát – hung; tính cách, sự nghiệp, hôn nhân, con cái, sức khỏe', b7);
+
+    // BƯỚC 8: Đại vận & lưu niên
+    var KV = B.khoiVan;
+    var b8 = '<div class="panel section"><h2 class="panel-title"><span class="han">大運</span> Đại vận 10 năm</h2>' +
+      '<p class="lede">' + (KV.thuan ? 'Đi <b>thuận</b>' : 'Đi <b>nghịch</b>') + ' (' + (res.tuvi.info.male ? 'nam' : 'nữ') + ' sinh năm ' + (B.pillars[0].can % 2 === 0 ? 'dương' : 'âm') + '). Cách tiết gần nhất ' + KV.soNgay + ' ngày (mốc ' + esc(KV.tiet) + ') → 3 ngày = 1 năm → khởi vận sau <b>' + KV.nam + ' năm ' + KV.thang + ' tháng</b>. Mỗi vận 10 năm, can chi tiếp nối từ trụ tháng; 5 năm đầu can nặng 70%, 5 năm sau chi nặng 70%.</p>' +
+      '<div class="dv-row">' + PT.daiVan.map(function (d, i) {
+        var now = vy >= d.nam && vy < d.nam + 10, g = B.daiVan[i];
         return '<div class="dv' + (now ? ' now' : '') + '"><div class="age">' + d.tuoi + ' tuổi · ' + d.nam + '</div>' +
-          '<div class="gz"><span class="h-' + d.hanhCan + '">' + CAN_HAN[d.can] + '</span><span class="h-' + d.hanhChi + '">' + CHI_HAN[d.chi] + '</span></div>' +
-          '<div class="nm">' + esc(d.canChi) + '</div><div class="tt">' + esc(d.thapThan) + '</div>' +
-          '<div class="dg dg-' + d.danhGia.split(' ')[0] + '">' + esc(d.danhGia) + '</div></div>';
+          '<div class="gz"><span class="h-' + d.hanhCan + '">' + CAN_HAN[g.can] + '</span><span class="h-' + d.hanhChi + '">' + CHI_HAN[g.chi] + '</span></div>' +
+          '<div class="nm">' + esc(d.canChi) + '</div><div class="tt">' + esc(d.thapThan) + ' · ' + VT[vaiTro(d.hanhCan)] + '/' + VT[vaiTro(d.hanhChi)] + '</div>' +
+          '<div class="dg dg-' + d.danhGia.split(' ')[0] + '">' + esc(d.danhGia) + '</div><small class="muted">đầu ' + esc(d.dau.toLowerCase()) + ' · sau ' + esc(d.cuoi.toLowerCase()) + '</small></div>';
       }).join('') + '</div>' +
-      '<p style="margin-bottom:0">Lưu niên <b>' + vy + ' ' + esc(B.luuNien.canChi) + '</b>: can ' + esc(B.luuNien.thapThan) + ', chi ' + esc(B.luuNien.chiThapThan) +
-      ' – <b>' + esc(B.luuNien.danhGia) + '</b>. ' + B.luuNien.ghiChu.map(esc).join(' ') + '</p></div>';
+      '<ul class="rel-list">' + PT.daiVan.filter(function (d) { return d.ghiChu.length; }).map(function (d) { return '<li class="binh"><b>' + esc(d.canChi) + ' (' + d.nam + '):</b> ' + esc(d.ghiChu.join(' ')) + '</li>'; }).join('') + '</ul>' +
+      '<p style="margin-bottom:0">Lưu niên <b>' + vy + ' ' + esc(B.luuNien.canChi) + '</b>: can ' + esc(B.luuNien.thapThan) + ', chi ' + esc(B.luuNien.chiThapThan) + ' – <b>' + esc(B.luuNien.danhGia) + '</b>. ' + B.luuNien.ghiChu.map(esc).join(' ') + '</p></div>' +
+      (K.daiVanCungVi || '') + (K.luuNien || '');
+    out += buoc(8, 'Đại vận & lưu niên', 'Chiều vận, tuổi khởi vận, luận từng vận; Thái Tuế, tuế vận tịnh lâm, thiên khắc địa xung, tam hình, Thiên La Địa Võng', b8);
 
-    html += '<div class="bt-grid">' +
-      '<div class="panel section"><h2 class="panel-title"><span class="han">合沖</span> Hợp – Xung – Hình – Hại</h2><ul class="rel-list">' +
-      B.quanHe.map(function (q) { return '<li class="' + q.loai + '">' + esc(q.txt) + '</li>'; }).join('') + '</ul></div>' +
-      '<div class="panel section"><h2 class="panel-title"><span class="han">神煞</span> Thần sát</h2><ul class="rel-list">' +
-      B.thanSat.map(function (t) { return '<li class="binh"><b>' + esc(t.ten) + '</b> <small class="muted">(' + esc(t.o) + ')</small><br><small>' + esc(t.moTa) + '</small></li>'; }).join('') + '</ul></div></div>';
+    // BƯỚC 9: Tổng hợp
+    var b9 = '<div class="panel section"><h2 class="panel-title"><span class="han">總</span> Tổng hợp & lời khuyên</h2>' +
+      '<p><b>' + esc(B.nhatChu) + '</b> · ' + esc(PT.cuong) + ' (' + D.phe + '%) · ' + esc(CC.ten) + ' · dụng ' + esc(DT.dung) + ', hỷ ' + esc(DT.hy.join(', ') || '—') + ', kỵ ' + esc(DT.ky.join(', ') || '—') + '.</p>' +
+      (PT.dacBiet.length ? '<h4 class="dd-h">Trường hợp đặc biệt</h4><ul class="rel-list">' + PT.dacBiet.map(function (x) { return '<li class="xung"><b>' + esc(x.ten) + '</b><br><small>' + esc(x.y) + '</small></li>'; }).join('') + '</ul>' : '') +
+      '<h4 class="dd-h">Lời khuyên</h4>' + listHtml(PT.loiKhuyen) + '</div>';
+    out += buoc(9, 'Tổng hợp', 'Kết luận, trường hợp đặc biệt và lời khuyên', b9);
 
-    html += '<div class="panel section"><h2 class="panel-title"><span class="han">論</span> Luận Bát Tự</h2>' +
-      B.luan.map(function (x) { return '<p>' + hl(x) + '</p>'; }).join('') +
-      '<p><b>Màu hợp:</b> ' + B.goiY.mauHy.map(esc).join(' · ') + '</p>' +
-      '<p><b>Hướng tốt:</b> ' + esc(B.goiY.huong) + ' · <b>Số may mắn:</b> ' + esc(B.goiY.so) + '</p>' +
-      '<p><b>Ngành nghề hợp dụng thần:</b> ' + esc(B.goiY.nghe) + '</p>' +
-      '<p><b>Sức khỏe cần chú ý:</b> ' + esc(B.goiY.tang) + '</p></div>';
-    $('page-battu').innerHTML = html;
+    $('page-battu').innerHTML = out;
     $('page-battu').querySelectorAll('.strip-item').forEach(function (b) {
       b.addEventListener('click', function () { var el = document.getElementById(b.getAttribute('data-target')); if (el) { el.open = true; el.scrollIntoView({ behavior: 'smooth', block: 'start' }); } });
     });
@@ -2261,6 +2310,35 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
     return html + '</div>';
   }
   function dhMau(x) { return x >= 6.5 ? 'tot' : x <= 4 ? 'kho' : 'vua'; }
+  /** Xếp các khung chuyên sâu của một tab vào khung "Phần 1–4" thống nhất (theo tiêu đề khung). Khung không tiêu đề đi theo khung trước. */
+  var PHAN_HE = {
+    astro: [['Bản đồ sao & dữ liệu gốc', 'Bánh xe hoàng đạo, vị trí hành tinh, nguyên tố', /Bản đồ sao|Vị trí hành tinh|Nguyên tố|Góc chiếu/],
+            ['Luận giải cốt lõi', 'Mặt Trời – Mặt Trăng – cung Mọc, các hành tinh và nhà', /Luận giải/],
+            ['Con người & các lĩnh vực', 'Ngoại hình, dấu hiệu cơ thể, gốc gác, nghề nghiệp', /Ngoại hình|Dấu hiệu|Gốc gác|Nghề/],
+            ['Vận trình', 'Chu kỳ hành tinh trong đời và năm hiện tại', /Chu kỳ|Năm \d{4}/]],
+    so: [['Các con số gốc', 'Biểu đồ ngày sinh, các chỉ số chính', /Pythagoras|Biểu đồ/], ['Luận giải cốt lõi', 'Ý nghĩa từng con số', /Luận giải/], null, ['Vận trình', 'Năm, tháng cá nhân và đỉnh cao đời người', /Tháng cá nhân|Năm cá nhân|Đỉnh/]],
+    hd: [['Bản đồ năng lượng', 'Loại, chiến lược, thẩm quyền, bodygraph', /Human Design|Bodygraph/], ['Luận giải cốt lõi', 'Loại, thẩm quyền, hồ sơ, trung tâm, kênh', /Luận giải/], null, null],
+    halac: [['Quẻ gốc', 'Tiên thiên, Hậu thiên, quẻ Hỗ, hào nguyên đường', /Hà Lạc$|Bát Tự Hà Lạc/], ['Luận quẻ', 'Ý nghĩa quẻ theo từng giai đoạn', /Luận quẻ/], null, ['Vận trình', 'Đại vận theo hào và quẻ từng năm', /Đại vận|hào/]]
+  };
+  function xepPhan(pg, he) {
+    var Q = PHAN_HE[he]; if (!pg || !Q) return;
+    var nhom = Q.map(function () { return []; }), truoc = 1;
+    Array.prototype.slice.call(pg.children).forEach(function (el) {
+      var t = el.querySelector('.panel-title'), ten = t ? t.textContent.replace(/\s+/g, ' ').trim() : '', k = -1;
+      if (ten) Q.forEach(function (q, i) { if (k < 0 && q && q[2].test(ten)) k = i; });
+      if (k < 0) k = ten ? (Q[1] ? 1 : truoc) : truoc;
+      truoc = k; nhom[k].push(el);
+    });
+    var so = 0;
+    nhom.forEach(function (ds, i) {
+      if (!ds.length || !Q[i]) return;
+      so++;
+      var w = document.createElement('div'); w.className = 'tg phan-' + he; w.setAttribute('data-g', he + '-p' + so);
+      w.innerHTML = '<div class="tg-head"><span>Phần ' + so + '</span><b>' + Q[i][0] + '</b><em>' + Q[i][1] + '</em></div>';
+      ds.forEach(function (el) { w.appendChild(el); });
+      pg.appendChild(w);
+    });
+  }
   function veDeHieu(res) {
     var D = res.moRong && res.moRong.deHieu;
     if (!D || D.loi) return;
@@ -2271,7 +2349,8 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
       var html = '<div class="panel section dh-panel"><h2 class="panel-title">Luận giải dễ hiểu theo ' + esc(H.he) + '</h2>' +
         '<p class="lede">Phần này viết bằng ngôn ngữ đời thường, cùng cấu trúc với phần luận 12 cung Tử Vi. Các bảng số liệu, thuật ngữ nằm ở <b>phần chuyên sâu</b> bên dưới.</p>' +
         H.khoi.map(dhKhoiHtml).join('') + '</div>';
-      // Phần chuyên sâu (bảng số, thuật ngữ) gom vào một khối thu gọn → trang ngắn, người đọc không bị "ngợp"
+      // Phần chuyên sâu: xếp vào khung Phần 1–4 thống nhất, rồi gom vào một khối thu gọn → trang ngắn, người đọc không bị "ngợp"
+      xepPhan(pg, { chiemTinh: 'astro', thanSo: 'so', hd: 'hd', haLac: 'halac' }[k]);
       var cu = Array.prototype.slice.call(pg.children);
       pg.insertAdjacentHTML('afterbegin', html);
       if (cu.length) {
@@ -3295,7 +3374,7 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
           var w = document.createElement('div'); w.className = 'panel section'; var hMax = 1000, wMax = W - 40, ww = wMax, hh = ww * kichLaSo[1] / kichLaSo[0];
           if (hh > hMax) { hh = hMax; ww = hh * kichLaSo[0] / kichLaSo[1]; }
           w.innerHTML = '<img class="pdf-chart" src="' + anhLaSo + '" alt="Lá số Tử Vi" width="' + Math.round(ww) + '" height="' + Math.round(hh) + '" style="width:' + Math.round(ww) + 'px;height:' + Math.round(hh) + 'px">';
-          sec.appendChild(w); var pd = $('palaceDetail'); if (pd) sec.appendChild(chuanHoa(pd.cloneNode(true)));
+          sec.appendChild(w); var pd = $('palaceDetail'); if (pd && !pd.querySelector('.pd-goiy')) sec.appendChild(chuanHoa(pd.cloneNode(true)));
           Array.prototype.forEach.call($('page-luan').children, function (c) { sec.appendChild(chuanHoa(c.cloneNode(true))); });
           return;
         }

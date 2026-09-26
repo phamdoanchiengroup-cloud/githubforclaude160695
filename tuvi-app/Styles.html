@@ -1235,4 +1235,33 @@ details.dh-lv .cung-van-de-hieu { margin-bottom: 12px; }
 .pdf-toc.gon .t b { font-size: 15.5px; }
 .pdf-toc.gon .t small { font-size: 11.5px; line-height: 1.35; display: block; }
 .pdf-toc.gon .pdf-note { font-size: 12px; margin-top: 10px; }
+.strength u { position: absolute; top: -3px; width: 2px; height: 22px; background: var(--gold); opacity: .8; transform: translateX(-1px); }
+.bt-tc { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 10px; }
+.bt-tc-i { border: 1px solid var(--line); border-radius: 12px; padding: 10px 12px; display: flex; flex-direction: column; gap: 4px; font-size: 13.5px; line-height: 1.5; }
+.bt-tc-i b { font-size: 14.5px; }
+.bt-tc-i.dat { border-color: rgba(46,160,67,.5); background: var(--good-bg); }
+.bt-tc-i.dat b { color: var(--good-ink); }
+.bt-tc-i.khong { border-color: rgba(200,60,60,.35); background: var(--bad-bg); }
+.bt-tc-i.khong b { color: var(--bad-ink); }
+.bt-pp { padding-left: 20px; line-height: 1.65; font-size: 14px; }
+.bt-pp li { margin: 6px 0; }
+.bt-dt { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 8px; margin: 12px 0; }
+.bt-dt-i { border: 1px solid var(--line); border-radius: 12px; padding: 8px; text-align: center; display: flex; flex-direction: column; gap: 2px; }
+.bt-dt-i small { font-size: 11.5px; color: var(--ink-soft); text-transform: uppercase; letter-spacing: .04em; }
+.bt-dt-i b { font-size: 18px; font-family: var(--font-title); }
+.bt-dt-i span { font-size: 12px; color: var(--ink-soft); }
+.bt-dt-i.dung { border: 2px solid var(--gold); background: linear-gradient(160deg, rgba(246,182,74,.16), transparent 70%); }
+.bt-dt-i.hy { border-color: rgba(46,160,67,.5); }
+.bt-dt-i.ky { border-color: rgba(200,60,60,.45); opacity: .9; }
+.bt-ch { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 10px; }
+.bt-ch-i { border: 1px solid var(--line); border-radius: 12px; padding: 10px 12px; font-size: 13.5px; line-height: 1.55; }
+.bt-ch-i ul { margin: 6px 0 0; padding-left: 4px; list-style: none; }
+.bt-ch-i.tot:not(.rong) { border-color: rgba(46,160,67,.5); }
+.bt-ch-i.xau:not(.rong) { border-color: rgba(200,60,60,.45); }
+.bt-ch-i.rong { opacity: .7; }
+@media (max-width: 560px) { .bt-dt { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+.pd-goiy { padding: 14px 16px; border: 1px dashed var(--line); border-radius: 12px; color: var(--ink-soft); font-size: 14px; line-height: 1.6; }
+.tv-chiso { grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); }
+.tv-chiso .stat b { font-size: 15px; }
+.tv-cung { scroll-margin-top: 90px; }
 </style>

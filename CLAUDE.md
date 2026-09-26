@@ -5,7 +5,7 @@ File này được Claude Code tự đọc khi mở repo. Nó thay cho "trí nh�
 ## Dự án
 - Web app **Google Apps Script** luận vận mệnh 6 hệ: Tử Vi, Bát Tự, Hà Lạc, Chiêm tinh, Thần số học, Human Design. Có bán nội dung bằng **xu**.
 - Toàn bộ mã nằm trong `tuvi-app/`:
-  - 23 file `.gs` (chạy chung một phạm vi toàn cục như Apps Script).
+  - 24 file `.gs` (chạy chung một phạm vi toàn cục như Apps Script).
   - `Index.html`, `Styles.html`, `Script.html`, `Anh.html` (tùy chọn) và `NghiemChungUI.html`.
   - Bảng vai trò từng file: `tuvi-app/README.md`. Hướng dẫn cài đặt cho chủ dự án: `tuvi-app/HUONG-DAN-CAI-DAT.md`.
 - **Nhánh làm việc: `claude/happy-brown-lttkz3`.** Chỉ commit và push lên nhánh này. Không tạo PR nếu chủ dự án không yêu cầu.
@@ -39,10 +39,9 @@ File này được Claude Code tự đọc khi mở repo. Nó thay cho "trí nh�
   4. Đồng thuận 6 hệ: `dhTongHop_` trong DeHieu.gs, gồm 9 lĩnh vực và điểm /10.
 - **Thang điểm:** điểm thô → /10 bằng `chuanHoa10_(d) = round(100/(1+e^(-d/3)))/10`. Nhãn phải khớp điểm (có bài kiểm tra).
 - **DeHieu.gs:** văn dễ hiểu cho Bát Tự, Chiêm tinh, Thần số, HD, Hà Lạc, cùng cấu trúc với phần Tử Vi. Hiển thị đầu mỗi tab; phần kỹ thuật gom vào `<details class="chuyen-sau">` (mặc định đóng, PDF tự mở).
-- **NghiemChung.gs:** 8 đoạn mô tả để khách tự chấm độ khớp giờ sinh.
-  - Câu ưu tiên yếu tố đổi theo giờ: cung Mệnh, trụ giờ, cung Mọc.
-  - Bảng số anh em / số con theo sách cổ.
-  - Sao con cái Bát Tự: nam xem Quan Sát, nữ xem Thực Thương.
+- **NghiemChung.gs (v5):** 8 nhóm mô tả để khách tự chấm độ khớp giờ sinh, **lấy kết luận từ tổng hợp 6 hệ** (TongHop: vóc dáng, dấu vết cơ thể, trục tính cách, xuất thân, phối ngẫu + năm cưới đã qua, con cái, nghề, chặng đời) và đối chiếu Tử Vi × Bát Tự. Mỗi câu có nhãn đồng thuận; bỏ câu thiểu số (<1/3) và câu "cân bằng"; nhóm có độ tin làm trọng số; có lựa chọn "Không áp dụng".
+- **BatTuPhanTich.gs:** Bát Tự theo quy trình 9 bước (vượng suy Thiệu Vĩ Hoa, dụng thần 4 phương pháp + bảng ưu tiên, cách cục đủ ngoại cách, cát hung, phương diện, đại vận, lưu niên đặc biệt). `batTuLap` gọi `btPhanTich_` rồi ghi đè `vuong/cuong/tyLeTro/phanTram/goiY` (giữ quy ước `goiY.hy[0]` = dụng thần) để mọi module dùng chung. Tab Bát Tự hiển thị theo Bước 1–9.
+- **Bố cục chuyên sâu thống nhất:** tab Tử Vi chia Phần 1–4 (`khoiPhan`, chân dung lá số gộp một khung; thẻ xem nhanh cung chỉ hiện khi bấm). Chiêm tinh/Thần số/HD/Hà Lạc được `xepPhan` (theo `PHAN_HE`) xếp vào Phần 1–4 trước khi gom vào `details.chuyen-sau`.
 - **Tab (Index.html):** Lá số → Tổng quan 6 hệ → **Vận hạn** (`page-vh`, dựng bởi `veVanHan` trong Script.html; gom đại vận, năm, tháng, ngày, biến cố) → Bát Tự, Chiêm tinh, Thần số, HD, Hà Lạc → Cặp đôi → Lịch sử.
 
 ## Mô hình bán hàng (ThanhToan.gs) – bán theo giai đoạn
@@ -67,6 +66,8 @@ File này được Claude Code tự đọc khi mở repo. Nó thay cho "trí nh�
 ```bash
 cd tuvi-app
 node tests/giai-doan.js                        # bán theo giai đoạn, gói gia đình, phần cắt ở máy chủ (34 kiểm tra)
+node tests/nghiem-chung.js                     # nghiệm chứng dựa trên tổng hợp 6 hệ
+node tests/bat-tu.js                           # Bát Tự 9 bước trên 400 lá số
 TK_PASS='<mật khẩu chủ>' node tests/tai-khoan.js   # cần mật khẩu chủ sở hữu – hỏi chủ dự án hoặc đặt biến môi trường TK_PASS
 TK_PASS='<mật khẩu chủ>' node tests/thanh-toan.js
 cd tests && npm install && node thien-van.mjs && node doi-chieu.js   # đối chiếu thiên văn / an sao với thư viện nguồn mở
@@ -97,6 +98,7 @@ cd tests && npm install && node thien-van.mjs && node doi-chieu.js   # đối ch
 - PDF theo bố cục mới.
 
 **Việc có thể làm tiếp / còn ngỏ:**
+- Chủ dự án muốn làm **kỹ từng hệ một**. Đã xong: Bát Tự 9 bước. Đang làm: **Hà Lạc – lục thân theo 6 hào** và bổ sung các phần luận. Sau đó lần lượt Chiêm tinh, Thần số, Human Design.
 - Bản PDF xem thử: mục "Kết hợp 6 hệ theo lĩnh vực" chưa có ảnh xem trước mờ, trông trống (có thể bỏ khỏi bản xem thử).
 - Giá bán là mức khởi đầu, chưa qua thử nghiệm; nên xem doanh thu trong Quản trị rồi điều chỉnh.
 - Chủ dự án nên đổi mật khẩu chủ sở hữu sau lần đăng nhập đầu, nếu chưa đổi.

@@ -298,36 +298,14 @@ function btctCachCuc_(bt, co, thau, ttDem, nhomDem) {
   var P = bt.pillars, mc = P[1].chi, dCan = bt.nhatChuCan;
   var items = [], ten = '', loai = '', thanh = null;
   var tang = P[1].tangCan;
-  // 1. ngoại cách
-  var tyLe = bt.tyLeTro / 100;
-  var coGoc = P.some(function (p, i) { return p.tangCan.some(function (t) { return CAN_HANH[t.can] === bt.nhatChuHanh; }); });
-  var coAnCan = P.some(function (p, i) { return i !== 2 && (p.thapThan === 'Chính Ấn' || p.thapThan === 'Thiên Ấn' || p.thapThan === 'Tỷ Kiên' || p.thapThan === 'Kiếp Tài'); });
-  var hopHoa = null;
-  [1, 3].forEach(function (i) {
-    if (Math.abs(P[i].can - dCan) === 5) {
-      var hh = ['Thổ', 'Kim', 'Thủy', 'Mộc', 'Hỏa'][Math.min(P[i].can, dCan) % 5];
-      if (CAN_HANH[tang[0].can] === hh || CHI_HANH[mc] === hh) hopHoa = { tru: i, hanh: hh };
-    }
-  });
-  if (tyLe <= 0.2 && !coGoc && !coAnCan) {
-    var nhoms = ['Tài', 'Quan Sát', 'Thực Thương'].sort(function (a, b) { return (nhomDem[b] || 0) - (nhomDem[a] || 0); });
-    ten = { 'Tài': 'Tòng Tài cách', 'Quan Sát': 'Tòng Sát cách', 'Thực Thương': 'Tòng Nhi cách' }[nhoms[0]];
-    loai = 'Ngoại cách';
-    items.push('Nhật chủ cực nhược (lực trợ ' + bt.tyLeTro + '%), không có gốc ở địa chi, không có Ấn/Tỷ thấu can → bỏ mình theo thế mạnh nhất (' + nhoms[0] + ').');
-    items.push('Tòng cách hỷ thuận theo thế tòng (hành ' + nhoms[0] + ' và hành nó sinh), kỵ gặp Ấn – Tỷ Kiếp làm "phá tòng". Khi đó Dụng thần thông thường (phù trợ Nhật chủ) cần đảo lại.');
-    thanh = true;
-  } else if (tyLe >= 0.8 && CAN_HANH[tang[0].can] === bt.nhatChuHanh) {
-    ten = { 'Mộc': 'Khúc Trực cách', 'Hỏa': 'Viêm Thượng cách', 'Thổ': 'Giá Sắc cách', 'Kim': 'Tòng Cách (Kim)', 'Thủy': 'Nhuận Hạ cách' }[bt.nhatChuHanh] + ' (Chuyên vượng)';
-    loai = 'Ngoại cách';
-    items.push('Nhật chủ ' + bt.nhatChuHanh + ' cực vượng (' + bt.tyLeTro + '%), đắc lệnh – một hành chuyên vượng.');
-    items.push('Chuyên vượng cách hỷ thuận thế: Tỷ Kiếp, Ấn, và hành Nhật chủ sinh ra (Thực Thương) để tiết tú; kỵ Quan Sát nghịch thế.');
-    thanh = !co('Chính Quan') && !co('Thất Sát');
-  } else if (hopHoa) {
-    ten = 'Hóa ' + hopHoa.hanh + ' cách (khả năng)';
-    loai = 'Ngoại cách';
-    items.push('Nhật can ' + CAN[dCan] + ' ngũ hợp can ' + (hopHoa.tru === 1 ? 'tháng' : 'giờ') + ' ' + P[hopHoa.tru].canTen + ', hóa khí ' + hopHoa.hanh + ' được nguyệt lệnh hỗ trợ.');
-    items.push('Hóa khí cách thành khi hóa thần vượng và không bị khắc phá; nếu có can khác tranh hợp hoặc hóa thần bị khắc thì "hợp mà không hóa" – khi đó luận theo chính cách bên dưới.');
-    thanh = null;
+  // 1. ngoại cách – lấy từ bộ phân tích 9 bước (BatTuPhanTich.gs) để mọi nơi cùng một kết luận
+  var PTC = bt.phanTich && bt.phanTich.cachCuc;
+  if (PTC && PTC.dacBiet) {
+    ten = PTC.ten; loai = PTC.loai; thanh = true;
+    items.push(PTC.yNghia);
+    PTC.kiemTra.filter(function (k) { return k.ten === PTC.ten; }).forEach(function (k) { items.push('✓ ' + k.ly); });
+    var dtC = bt.phanTich.dungThan;
+    items.push('Ngoại cách dùng thần theo thế cách: dụng ' + dtC.dung + ', hỷ ' + dtC.hy.join(', ') + ', kỵ ' + dtC.ky.join(', ') + '.');
   }
 
   // 2. chính cách (luôn tính để tham khảo)

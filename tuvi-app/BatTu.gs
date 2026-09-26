@@ -324,7 +324,7 @@ function batTuLap(input) {
     tang: HANH_INFO[manh[0]].tang + ' (hành vượng), ' + HANH_INFO[manh[4]].tang + ' (hành suy)'
   };
 
-  return {
+  var R = {
     pillars: pillars, nhatChu: CAN[dCan] + ' ' + dmHanh, nhatChuCan: dCan, nhatChuHanh: dmHanh,
     score: score, phanTram: phanTram, dem: dem, tyLeTro: Math.round(tyLe * 1000) / 10,
     trangThai: trangThai, cuong: cuong, vuong: vuong,
@@ -334,6 +334,32 @@ function batTuLap(input) {
     luuNien: luuNien, tietKhi: tietKhi, kinhDoMatTroi: Math.round(L * 100) / 100,
     luan: luan, goiY: goiY, phuTru: phuTru
   };
+  // Phân tích 9 bước (BatTuPhanTich.gs): vượng suy theo điểm Thiệu Vĩ Hoa, dụng thần nhiều phương pháp, cách cục đủ ngoại cách.
+  // Kết quả thay cho ước lượng nhanh ở trên để MỌI module (Tử Vi × Bát Tự, cặp đôi, dự đoán, hội tụ…) dùng chung một kết luận.
+  if (typeof btPhanTich_ === 'function') {
+    try {
+      var PT = btPhanTich_(R, input), dt = PT.dungThan;
+      R.phanTich = PT;
+      R.vuong = PT.vuong; R.cuong = PT.cuong; R.tyLeTro = PT.diem.phe;
+      R.phanTram = PT.diem.pct; R.score = PT.diem.tongHanh;
+      var hyMoi = [dt.dung].concat(dt.hy);            // quy ước cũ: hy[0] là dụng thần
+      var manhMoi = HANH_SINH.slice().sort(function (a, b) { return PT.diem.pct[b] - PT.diem.pct[a]; });
+      R.goiY = { dung: dt.dung, hy: hyMoi, ky: dt.ky.slice(), nhan: dt.nhan.slice(),
+        mau: HANH_INFO[dt.dung].mau, huong: HANH_INFO[dt.dung].huong, so: HANH_INFO[dt.dung].so, nghe: HANH_INFO[dt.dung].nghe,
+        mauHy: hyMoi.map(function (x) { return x + ': ' + HANH_INFO[x].mau; }),
+        tang: HANH_INFO[manhMoi[0]].tang + ' (hành vượng), ' + HANH_INFO[manhMoi[4]].tang + ' (hành suy)' };
+      R.daiVan.forEach(function (d, k) { if (PT.daiVan[k]) { d.danhGia = PT.daiVan[k].danhGia; d.dau = PT.daiVan[k].dau; d.cuoi = PT.daiVan[k].cuoi; } });
+      R.luuNien.danhGia = danhGiaVan_(CAN_HANH[lnCan], CHI_HANH[lnChi], R.goiY.hy, R.goiY.ky);
+      R.luuNien.ghiChu = R.luuNien.ghiChu.concat(btpLuuNienDacBiet_(R, vy, R.daiVan.filter(function (d) { return vy >= d.nam && vy < d.nam + 10; })[0]));
+      R.luan = [
+        'Nhật chủ ' + CAN[dCan] + ' ' + dmHanh + ': ' + NHAT_CHU_LUAN[dCan],
+        PT.ketLuanVS,
+        'Dụng thần ' + dt.dung + ', hỷ thần ' + (dt.hy.join(', ') || '—') + ', kỵ thần ' + (dt.ky.join(', ') || '—') + '.',
+        'Cách cục: ' + PT.cachCuc.ten + ' (' + PT.cachCuc.loai + ').'
+      ].concat(luan.slice(3));
+    } catch (e) { R.phanTichLoi = String(e && e.message || e); }
+  }
+  return R;
 }
 
 function pad2_(n) { return (n < 10 ? '0' : '') + n; }
