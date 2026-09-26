@@ -1586,13 +1586,14 @@
     var dacThu = KHO_VAN_DAIVAN_CUNG[d.cung] || '';
 
     var doan = [];
-    doan.push({ tieuDe: 'Tóm tắt 10 năm', text: 'Giai đoạn ' + d.khoang + ' tuổi (từ năm ' + d.nam + '), đại vận đi vào cung ' + d.cung + '. ' + van.tomTat });
+    var khoang = String(d.khoang).replace(/\s*tuổi\s*$/, '');   // d.khoang đã có chữ "tuổi"
+    doan.push({ tieuDe: 'Tóm tắt 10 năm', text: 'Giai đoạn ' + khoang + ' tuổi (từ năm ' + d.nam + '), đại vận đi vào cung ' + d.cung + '. ' + van.tomTat });
     doan.push({ tieuDe: 'Bản chất giai đoạn', text: van.banChat });
     if (dacThu) doan.push({ tieuDe: 'Đặc thù theo cung', text: dacThu });
     doan.push({ tieuDe: 'Điểm mạnh & lưu ý', text: van.diemManh + ' ' + van.diemLuuY });
     doan.push({ tieuDe: 'Lời khuyên cho 10 năm này', text: '', list: van.loiKhuyen.slice() });
 
-    return renderVanCung_(doan, 'Đại vận ' + d.khoang + ' tuổi');
+    return renderVanCung_(doan, 'Đại vận ' + khoang + ' tuổi');
   }
 
     /* ============================================================
@@ -2084,7 +2085,7 @@
     function renderVanCung_(doan, tenCung) {
     var html = '<div class="cung-van-de-hieu">';
     if (tenCung) {
-      html += '<div class="cvdh-tieude">Cung ' + tenCung + '</div>';
+      html += '<div class="cvdh-tieude">' + (/^(Đại vận|Tiểu vận|Tháng)/.test(tenCung) ? '' : 'Cung ') + tenCung + '</div>';
     }
     doan.forEach(function(d) {
       html += '<div class="cv-doan">';
@@ -2343,7 +2344,7 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
       '<p class="lede">Bản mệnh cho biết bạn là ai. <b>Vận hạn cho biết khi nào</b>: khi nào nên tiến, khi nào nên giữ, năm nào là bản lề. Mỗi giai đoạn được luận riêng – mở đúng phần bạn cần, khi bạn cần.</p>' +
       (full ? '' : uuDaiVanHtml(res)) + '</div>';
     html += '<div class="tg" data-g="vh-dai"><div class="tg-head"><span>10 năm</span><b>12 đại vận – dòng thời gian cuộc đời</b><em>Điểm từng vận hiện sẵn · lời luận mở theo từng vận</em></div>' +
-      '<div class="panel section">' + dvTimelineHtml(ds, full ? 'full' : 'mua') + (full ? '' : '<p class="muted" style="font-size:12.5px">Mẹo: mở một vận <b>đã qua</b> (' + fmtXu(giaPhan('dai_van_qua').xu) + ') để tự kiểm chứng độ chính xác trước khi mở vận tương lai.</p>') + '</div><div id="vh-slot-dai"></div></div>';
+      '<div class="panel section">' + dvTimelineHtml(ds, full ? 'full' : 'mua') + (full ? '' : '<p class="muted meo-mua" style="font-size:12.5px">Mẹo: mở một vận <b>đã qua</b> (' + fmtXu(giaPhan('dai_van_qua').xu) + ') để tự kiểm chứng độ chính xác trước khi mở vận tương lai.</p>') + '</div><div id="vh-slot-dai"></div></div>';
     html += '<div class="tg" data-g="vh-nam"><div class="tg-head"><span>1 năm</span><b>Vận năm ' + vy + '</b><em>Tiểu vận · 12 tháng · lưu niên Bát Tự & quẻ năm</em></div>' + chonNamHtml(vy) +
       (v.coNam ? '' : theKhoa('Vận năm ' + vy + ' chưa mở', res.moRong && res.moRong.tongHop && res.moRong.tongHop.namNay ? hl(String(res.moRong.tongHop.namNay.ketLuan[0] || '')) + ' Vì sao, lĩnh vực nào mở, lĩnh vực nào cần phòng – và 12 tháng cụ thể?' : '',
         nutNam(vy) + nutDongHanh(vy), 'Mở một lần, xem lại bao nhiêu lần cũng được.')) + '<div id="vh-slot-nam"></div></div>';
@@ -2943,7 +2944,7 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
   }
 
   /* ======================== XUẤT PDF ======================== */
-  var PDF_TEN = { tom: 'Chân dung hé lộ & mật mã cá nhân', nguoi: 'Con người bạn', duyen: 'Tình duyên & người bạn đời', doi: 'Đường đời & sự nghiệp', bien: 'Biến cố hội tụ 6 hệ',
+  var PDF_TEN = { tom: 'Chân dung hé lộ & mật mã cá nhân', linhvuc: 'Kết hợp 6 hệ theo từng lĩnh vực', vh: 'Vận hạn: đại vận – năm – tháng – ngày', nguoi: 'Con người bạn', duyen: 'Tình duyên & người bạn đời', doi: 'Đường đời & sự nghiệp', bien: 'Biến cố hội tụ 6 hệ',
     van: 'Vận năm – tháng – ngày', chart: 'Lá số Tử Vi & luận giải 12 cung', battu: 'Bát Tự – Tứ Trụ', halac: 'Bát Tự Hà Lạc', astro: 'Chiêm tinh – Bản đồ sao',
     so: 'Thần số học', hd: 'Human Design', them: 'Kiểm chứng & bảng may mắn' };
   var PDF_HOOK = {
@@ -2951,6 +2952,8 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
     nguoi: 'Xuất thân, vóc dáng, dấu hiệu trên cơ thể và tính cách – mỗi nét đều được nhiều hệ cùng bỏ phiếu.',
     duyen: 'Người ấy trông thế nào, tính ra sao, gặp ở đâu – và năm sinh, tháng sinh nào hợp nhất với bạn (chấm điểm).',
     doi: 'Chủ đề cuộc đời, nghề hợp và các chặng lên – xuống của đời bạn.',
+    linhvuc: 'Chín lĩnh vực đời sống, mỗi lĩnh vực gom nhận định của cả 6 hệ: điều nhiều hệ cùng thấy tốt, điều cần lưu ý và lời khuyên.',
+    vh: 'Dòng thời gian 12 đại vận, vận năm với 12 tháng tốt – xấu và lịch từng ngày – những giai đoạn bạn đã mở.',
     bien: 'Những năm mà 3–5 hệ cùng chỉ vào một biến cố: tài lộc, thăng tiến, kết hôn, con cái, sức khỏe, gia đạo – xác suất xảy ra cao.',
     van: 'Năm nay qua năm lăng kính, 12 tháng tốt – xấu, 7 ngày tới, kèm tiểu vận và nguyệt vận Tử Vi.',
     chart: 'Tấm bản thiết kế số phận an theo đúng giờ sinh, cùng lời luận cho từng cung: đâu là "đất lành", đâu là vùng cần gia cố.',
@@ -2961,7 +2964,10 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
     hd: 'Bản thiết kế năng lượng: cách bạn ra quyết định đúng, làm việc hiệu quả và sống thuận với chính mình.',
     them: 'Đối chiếu với những sự kiện bạn đã trải qua để kiểm chứng giờ sinh, cùng bảng màu – số – hướng may mắn.'
   };
-  var PDF_TG = ['nguoi', 'duyen', 'doi', 'bien', 'van', 'them'];
+  var PDF_TG = ['nguoi', 'duyen', 'doi', 'bien', 'them'];
+  var PDF_NHOM = { tom: 'A · Tổng quan 6 hệ', linhvuc: 'A · Tổng quan 6 hệ', nguoi: 'A · Tổng quan 6 hệ', duyen: 'A · Tổng quan 6 hệ', doi: 'A · Tổng quan 6 hệ',
+    vh: 'B · Vận hạn', bien: 'B · Vận hạn', them: 'D · Phụ lục' };
+  var PDF_DEMO_KEY = { vh: 'van', linhvuc: 'nguoi' };   // bản xem thử: phần hé lộ tương ứng
   function sleep(ms) { return new Promise(function (r) { setTimeout(r, ms); }); }
   function setLoadingText(t) { var el = $('loadingText'); if (el) el.textContent = t; }
   function moPdf() {
@@ -3010,8 +3016,8 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
   }
   function mucLuc(ds) {
     var nhomCu = '';
-    return '<div class="pdf-toc"><div class="pdf-kicker">Mục lục</div><h2>Hành trình khám phá bản thân</h2><ol>' + ds.map(function (x, i) {
-      var nhom = x.k === 'tom' || PDF_TG.indexOf(x.k) >= 0 && x.k !== 'them' ? 'A · Tổng hợp 6 hệ' : x.k === 'them' ? 'C · Phụ lục' : 'B · Chi tiết từng hệ';
+    return '<div class="pdf-toc' + (ds.length > 10 ? ' gon' : '') + '"><div class="pdf-kicker">Mục lục</div><h2>Hành trình khám phá bản thân</h2><ol>' + ds.map(function (x, i) {
+      var nhom = PDF_NHOM[x.k] || 'C · Chi tiết từng hệ';
       var dau = nhom !== nhomCu ? '<li class="toc-grp">' + nhom + '</li>' : ''; nhomCu = nhom;
       return dau + '<li><span class="n">' + pad(i + 1) + '</span><span class="t"><b>' + esc(x.ten) + '</b><small>' + esc(x.hook) + '</small></span><span class="p">' + (x.trang || '') + '</span></li>';
     }).join('') + '</ol><p class="pdf-note">Cách đọc: chữ <b class="kw kw-star">tím nhạt</b> là tên sao, chữ <b class="kw kw-kw">vàng</b> là khái niệm then chốt, <b class="kw kw-good">xanh</b> là tín hiệu tốt, <b class="kw kw-bad">đỏ</b> là điều cần lưu ý. ' +
@@ -3051,7 +3057,8 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
       '<li><b>Bát Tự & Hà Lạc</b> – dụng thần, cách cục, quẻ Tiên – Hậu thiên, luận quẻ theo từng năm.</li>' +
       '<li><b>Chiêm tinh, Thần số học, Human Design</b> – bản đồ sao, các con số, cách bạn ra quyết định đúng.</li>' +
       '<li><b>Chân dung người phối ngẫu</b> – ngoại hình, tính cách, nơi gặp, năm sinh hợp nhất (chấm điểm).</li>' +
-      '<li><b>Tổng luận 6 hệ</b> – kết luận được nhiều hệ cùng xác nhận, kèm lời khuyên hành động.</li></ul>' +
+      '<li><b>Tổng luận 6 hệ</b> – kết luận được nhiều hệ cùng xác nhận, kèm lời khuyên hành động.</li>' +
+      '<li><b>Vận hạn theo từng giai đoạn</b> – mở từng đại vận 10 năm, từng năm với 12 tháng tốt – xấu, và lịch từng ngày mỗi tháng.</li></ul>' +
       (brand.uuDai ? '<div class="demo-offer">' + esc(brand.uuDai) + '</div>' : '') +
       '<div class="pdf-brand"><b>' + esc(brand.ten || 'Liên hệ để nhận bản đầy đủ') + '</b><span>' + esc(brand.lienHe || '') + '</span></div>' +
       '<p class="pdf-disc">Báo cáo mang tính tham khảo, chiêm nghiệm và phát triển bản thân.</p></div>';
@@ -3114,6 +3121,9 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
       node.querySelectorAll('details').forEach(function (d) { d.setAttribute('open', ''); });
       if (node.tagName === 'DETAILS') node.setAttribute('open', '');
       node.querySelectorAll('.strip, button, .subtabs').forEach(function (b) { b.remove(); });
+      // PDF là tài liệu đọc: bỏ thẻ khóa, ưu đãi, bảng giá, nút chọn năm, lời mời nghiệm chứng
+      node.querySelectorAll('.khoa-gd, .ud-row, .nam-xem, .gia-bac, .cam-ket, .meo-mua, .khoa-phan, .dv-khoa, .kg-moi, .dv-mo, .khach-bar, .hk-hanh, .lock-cta').forEach(function (b) { b.remove(); });
+      if (node.classList && (node.classList.contains('khoa-phan') || node.classList.contains('dv-khoa'))) node.innerHTML = '';
       node.querySelectorAll('.van-page').forEach(function (p) { p.style.display = 'block'; });
       if (node.classList.contains('van-page')) node.style.display = 'block';
       return node;
@@ -3245,7 +3255,7 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
         var k = sec.getAttribute('data-k');
         if (demo && k !== 'ket') {
           var src = document.createElement('div'); src.className = 'pdf-sec pdf-src'; src.setAttribute('data-src', k); root.appendChild(src);
-          var d = DM[k];
+          var d = DM[k] || DM[PDF_DEMO_KEY[k]];
           var card = document.createElement('div'); card.innerHTML = demoCard(d || { lo: [], an: ['Nội dung phần này có trong bản đầy đủ'] }); while (card.firstChild) sec.appendChild(card.firstChild);
           if (k === 'chart' && anhLaSo) { var im = document.createElement('div'); im.className = 'panel section'; var hh2 = 640, ww2 = Math.min(W - 40, hh2 * kichLaSo[0] / kichLaSo[1]); im.innerHTML = '<img class="pdf-chart" src="' + anhLaSo + '" style="width:' + Math.round(ww2) + 'px;height:' + Math.round(ww2 * kichLaSo[1] / kichLaSo[0]) + 'px">'; sec.insertBefore(im, sec.querySelector('.demo-card')); sec.querySelector('.demo-prev').remove(); return; }
           sec = src;
@@ -3253,6 +3263,27 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
         if (k === 'tom') {
           var t = document.createElement('div'); t.innerHTML = tongHopHtml(res, true); if (t.firstChild) sec.appendChild(chuanHoa(t.firstChild));
           var mm = $('page-tong').querySelector('.tg[data-g="chan"] .mm-wrap'); if (mm) sec.appendChild(chuanHoa(mm.cloneNode(true)));
+          return;
+        }
+        if (k === 'linhvuc') {
+          var lv = $('dh-tonghop');
+          if (lv) { var lc = chuanHoa(lv.cloneNode(true)); var tt = lc.querySelector('.panel-title'); if (tt) tt.remove(); sec.appendChild(lc); }
+          return;
+        }
+        if (k === 'vh') {
+          var vhp = $('page-vh');
+          if (vhp) Array.prototype.forEach.call(vhp.children, function (c) {
+            if (c.matches('.tg[data-g="bien"]')) return;   // biến cố có mục riêng
+            if (c.classList.contains('vh-hero')) { var hc = chuanHoa(c.cloneNode(true)); if (hc.textContent.trim().length > 40) sec.appendChild(hc); return; }
+            if (c.classList.contains('tg')) { Array.prototype.forEach.call(c.children, function (x) { if (!x.classList.contains('tg-head')) { var cx = chuanHoa(x.cloneNode(true)); if (cx.textContent.trim()) sec.appendChild(cx); } }); return; }
+            sec.appendChild(chuanHoa(c.cloneNode(true)));
+          });
+          var tomV = res.vanTom;
+          if (tomV && !demo && (!tomV.coNam || tomV.dv.some(function (d) { return !d.co; }))) {
+            var gc = document.createElement('p'); gc.className = 'muted'; gc.style.fontSize = '13px';
+            gc.textContent = 'Ghi chú: báo cáo gồm các giai đoạn đã mở trong tài khoản. Các đại vận, năm hoặc tháng chưa mở chỉ hiện điểm đánh giá.';
+            sec.appendChild(gc);
+          }
           return;
         }
         if (PDF_TG.indexOf(k) >= 0) {
