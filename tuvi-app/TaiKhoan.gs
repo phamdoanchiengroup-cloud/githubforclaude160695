@@ -156,14 +156,14 @@ function lapLaSo(input, token) {
   try { r.teaser = demoTeaser_(r); } catch (e) { r.teaser = {}; }
   var khoa = ttKhoaLaSo_(input), bg = ttBangGia_();
   if (!u) { var k = khachRutGon_(r); k.khoa = khoa; k.bangGia = bg; return k; }
-  var q = ttQuyen_(u, khoa), soDu = q.toanQuyen ? null : ttSoDu_(u.ten);
+  var q = ttQuyen_(u, khoa), soDu = q.toanQuyen ? null : ttSoDu_(u.ten), soVe = q.toanQuyen ? 0 : ttSoVe_(u.ten);
   if (!q.co_ban) {                                   // đã đăng nhập nhưng chưa mở lá số này: vẫn là bản rút gọn, kèm nút mở khóa
     var k2 = khachRutGon_(r);
-    k2.nguoiDung = u; k2.khoa = khoa; k2.quyen = q; k2.bangGia = bg; k2.soDu = soDu; k2.canMo = true; k2.saved = r.saved; k2.saveError = r.saveError;
+    k2.nguoiDung = u; k2.khoa = khoa; k2.quyen = q; k2.bangGia = bg; k2.soDu = soDu; k2.soVe = soVe; k2.canMo = true; k2.saved = r.saved; k2.saveError = r.saveError;
     return k2;
   }
   if (!q.toanQuyen) ttCatPhan_(r, q);
-  r.nguoiDung = u; r.khoa = khoa; r.quyen = q; r.bangGia = bg; r.soDu = soDu;
+  r.nguoiDung = u; r.khoa = khoa; r.quyen = q; r.bangGia = bg; r.soDu = soDu; r.soVe = soVe;
   return r;
 }
 /** Bản rút gọn cho khách: đủ để vẽ lá số và phần "hé lộ", không có lời luận */
@@ -175,8 +175,21 @@ function khachRutGon_(r) {
     mien: r.moRong && r.moRong.tongHop ? { xuatThan: r.moRong.tongHop.xuatThan, vocDang: r.moRong.tongHop.vocDang, tinhCach: r.moRong.tongHop.tinhCach, nghe: r.moRong.tongHop.nghe } : null,
     tuvi: { info: tv.info, palaces: tv.palaces, luanGiai: { cung: (tv.luanGiai.cung || []).map(function (c) { return { cung: c.cung, yNghia: c.yNghia }; }) } },
     battu: { pillars: B.pillars.map(function (p) { return { tru: p.tru, can: p.can, chi: p.chi, canTen: p.canTen, chiTen: p.chiTen, canHanh: p.canHanh, chiHanh: p.chiHanh }; }),
-      nhatChu: B.nhatChu, cuong: B.cuong }
+      nhatChu: B.nhatChu, cuong: B.cuong },
+    moi: moiVanHan_(r)
   };
+}
+/** "Mồi" vận hạn cho bản giới hạn: chỉ khung + điểm, không có lời luận */
+function moiVanHan_(r) {
+  var CT = r.chiTiet || {}, T = (r.moRong && r.moRong.tongHop) || {}, vy = r.tuvi.info.viewYear;
+  var out = {
+    nam: vy,
+    daiVan: (CT.daiVan || []).map(function (d) { return { khoang: d.khoang, nam: d.nam, cung: d.cung, diem: d.diem, danhGia: d.danhGia, isNow: d.isNow }; }),
+    thang: (T.thang || []).map(function (m) { return { thang: m.thang, diem: m.diem, danhGia: m.danhGia }; }),
+    namNay: T.namNay ? { tieuDe: T.namNay.tieuDe, diem: T.namNay.diem, dong: (T.namNay.ketLuan || [])[0] || '' } : null,
+    tieuVan: CT.tieuVan ? { nam: CT.tieuVan.nam, canChi: CT.tieuVan.canChi, danhGia: CT.tieuVan.danhGia, diem: CT.tieuVan.diem } : null
+  };
+  return out;
 }
 
 /* ---------- Phần "hé lộ" (dùng cho khách và bản PDF xem thử) ---------- */

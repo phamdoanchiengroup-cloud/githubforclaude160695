@@ -64,7 +64,7 @@ Bấm **💾 Lưu** (Ctrl+S). Nếu có lỗi cú pháp, thường do chép thi�
 |---|---|---|---|
 | 1 | `Code` | `kiemTraCaiDat` | `✔ Cài đặt đúng: đủ 23 file .gs và 3 file HTML.` Nếu thấy dòng `✘`, sửa đúng file được nêu |
 | 2 | `Code` | `testLapLaSo` | Lần đầu Google hỏi quyền (xem ghi chú bên dưới). Sau đó có kết quả lá số thử |
-| 3 | `ThanhToan` | `capQuyenThanhToan` | `✔ Đã cấp quyền và tạo các trang tính Vi, SoCai, MoKhoa, DonHang.` |
+| 3 | `ThanhToan` | `capQuyenThanhToan` | `✔ Đã cấp quyền và tạo các trang tính Vi, SoCai, MoKhoa, DonHang, Ve.` |
 
 **Khi Google hỏi quyền:**
 1. Bấm **Xem xét quyền** và chọn tài khoản Google của bạn.
@@ -73,7 +73,7 @@ Bấm **💾 Lưu** (Ctrl+S). Nếu có lỗi cú pháp, thường do chép thi�
 3. Bấm **Cho phép**.
 
 Các quyền được xin: đọc/ghi bảng tính, gọi mạng (payOS), cài trình kích hoạt 5 phút, khóa đồng thời.
-Quay lại bảng tính, bạn sẽ thấy các trang `Vi`, `SoCai`, `MoKhoa`, `DonHang`.
+Quay lại bảng tính, bạn sẽ thấy các trang `Vi`, `SoCai`, `MoKhoa`, `DonHang`, `Ve` (lượt gói gia đình).
 
 ## Phần D – Triển khai web
 
@@ -167,3 +167,23 @@ Nếu nghi bị lộ, vào my.payos.vn tạo lại khóa, rồi nhập mã mới
 - [ ] Mở khóa *Bản mở* (49 xu) → xem được đầy đủ → tải được PDF.
 - [ ] Đăng nhập `chienpham`: xem toàn bộ, không bị trừ xu, vào được trang quản trị.
 - [ ] Bảng tính có dữ liệu ở `DonHang`, `SoCai`, `MoKhoa`, `Vi`.
+
+
+## Phụ lục – Bảng giá mặc định (bán theo giai đoạn)
+
+Sửa được trong **Tài khoản → Quản trị → Bảng giá**. 1 xu = 1.000đ.
+
+| Gói | Giá | Ghi chú |
+|---|---|---|
+| Bản mở | 49 xu | Luận giải bản mệnh 6 hệ, mở vĩnh viễn cho 1 lá số |
+| 1 đại vận (10 năm) | 19 xu | Vận **đã qua** chỉ 9 xu – để khách tự kiểm chứng trước khi mua vận tương lai |
+| Trọn 12 đại vận | 99 xu | |
+| Vận năm | 29 xu / năm | Tiểu vận, 12 tháng, lưu niên Bát Tự, quẻ năm – **năm sau mua tiếp** |
+| Nhật vận | 9 xu / tháng | Lịch từng ngày trong tháng |
+| Đồng hành cả năm | 79 xu | Vận năm + nhật vận 12 tháng (trừ phần đã mua của năm đó) |
+| Biến cố hội tụ · Phối ngẫu · PDF · Dò giờ | 29 · 19 · 29 · 19 xu | |
+| Trọn đời | 149 xu | Bản mở + 12 đại vận + biến cố + phối ngẫu + PDF + dò giờ (không gồm vận năm/tháng) |
+| Gia đình 3 / 5 người | 129 / 199 xu | Mỗi lượt mở Bản mở + vận năm cho 1 lá số bất kỳ |
+| Cặp đôi | 29 xu / cặp | |
+
+Khách đã mua "Lưu niên" hoặc "Trọn gói" theo giá cũ vẫn giữ nguyên quyền (lưu niên cũ = xem mọi năm/tháng).

@@ -89,7 +89,7 @@ ok(m.ok && m.soDu === 51, 'Mở Bản mở: trừ 49 xu, còn 51');
 r = ctx.lapLaSo(L, T);
 ok(!r.khach && r.moRong && r.battuChiTiet.linhVuc.length === 12 && r.quyen.co_ban, 'Đã mở: nhận bản đầy đủ');
 ok(r.moRong.tongHop.hoiTu === null && r.moRong.tongHop.phoiNgau === null && Object.keys(r.duDoan.chuDe).length === 0, 'Phần chưa mua (biến cố, phối ngẫu) bị cắt ở máy chủ');
-ok(r.battuChiTiet.luuNien.length === 1 && r.moRong.tongHop.thang.length === 0, 'Lưu niên chưa mua: chỉ còn năm hiện tại');
+ok(r.battuChiTiet.luuNien.length === 0 && r.moRong.tongHop.thang.every(function (t) { return t.khoa && t.tv === undefined; }) && r.chiTiet.daiVan.every(function (d) { return d.khoa; }), 'Vận hạn chưa mua: đại vận, lưu niên, lời luận 12 tháng bị khóa (chỉ còn điểm làm mồi)');
 ok(ctx.lapLaSo(Object.assign({}, L, { viewYear: 2031 }), T).quyen.co_ban, 'Đổi năm xem vẫn giữ quyền (mở vĩnh viễn)');
 ok(ctx.lapLaSo(Object.assign({}, L, { day: 16 }), T).khach, 'Lá số khác → chưa mở');
 ok(/cần mở khóa/.test(nem(() => ctx.doGioSinh(Object.assign({ events: [{ nam: 2015, loai: 'ketHon' }] }, L), T))), 'Dò giờ sinh cần mở khóa riêng');
@@ -106,9 +106,9 @@ ok(k.trangThai === 'DA_TRA' && k.soDu === 161, 'payOS báo PAID → tự cộng 
 ctx.ttQuetDonTuDong();
 ok(ctx.viCuaToi(T).soDu === 161, 'Trigger quét lại không cộng trùng');
 m = ctx.muaPhan(T, L, 'tron_goi');
-ok(m.ok && m.gia === 70 && m.soDu === 91, 'Trọn gói trừ phần đã mua: 119 − 49 = 70 xu');
+ok(m.ok && m.gia === 100 && m.soDu === 61, 'Trọn đời trừ phần đã mua: 149 − 49 = 100 xu');
 r = ctx.lapLaSo(L, T);
-ok(r.moRong.tongHop.hoiTu && r.moRong.tongHop.phoiNgau && r.battuChiTiet.luuNien.length > 5 && r.quyen.pdf, 'Trọn gói: mở tất cả');
+ok(r.moRong.tongHop.hoiTu && r.moRong.tongHop.phoiNgau && r.quyen.pdf && r.chiTiet.daiVan.every(function (d) { return !d.khoa; }) && r.battuChiTiet.luuNien.length === 0, 'Trọn đời: mở bản mệnh, 12 đại vận, biến cố, phối ngẫu, PDF – vận năm vẫn bán theo năm');
 // VIP & chủ sở hữu
 ctx.taoTaiKhoan(chu, 'nguoinha', 'matkhau123', 'Người nhà', 'vip');
 const vip = ctx.dangNhap('nguoinha', 'matkhau123').token;
@@ -121,7 +121,7 @@ ok(ctx.lapLaSo(Object.assign({}, L, { day: 20 }), vip).khach, 'Hạ VIP → thà
 const tq = ctx.qtTongQuan(chu);
 ok(tq.doanhThu.tong === 150000 && tq.doanhThu.soDon === 2 && tq.cauHinh.payos && !JSON.stringify(tq).includes('ck-secret'), 'Quản trị: doanh thu 150.000đ / 2 đơn, không lộ khóa bí mật');
 ctx.qtDieuChinhXu(chu, 'khachmoi', 10, 'tặng');
-ok(ctx.viCuaToi(T).soDu === 101 && ctx.viCuaToi(T).soCai.length >= 5, 'Tặng xu + sổ cái ghi nhận');
+ok(ctx.viCuaToi(T).soDu === 71 && ctx.viCuaToi(T).soCai.length >= 5, 'Tặng xu + sổ cái ghi nhận');
 ok(nem(() => ctx.qtLuuBangGia(T, {})) !== null, 'Thành viên không sửa được bảng giá');
 ctx.qtLuuBangGia(chu, { phan: { co_ban: 59 }, goi: [{ tien: 100000, xu: 120 }] });
 ok(ctx.ttBangGia_().phan.co_ban.xu === 59 && ctx.ttBangGia_().goi.length === 1, 'Sửa bảng giá');
@@ -131,7 +131,7 @@ don = ctx.taoDonNap(b2.token, 0);
 Object.assign(payos.don[don.ma], { status: 'PAID', amountPaid: 100000 });
 ctx.kiemTraDon(b2.token, don.ma);
 ok(ctx.viCuaToi(b2.token).soDu === 240, 'Người được giới thiệu: gói 120 xu + thưởng lần đầu 120 = 240');
-ok(ctx.viCuaToi(T).soDu === 101 + 24, 'Người giới thiệu nhận 20% lần nạp đầu của bạn (+24 xu)');
+ok(ctx.viCuaToi(T).soDu === 71 + 24, 'Người giới thiệu nhận 20% lần nạp đầu của bạn (+24 xu)');
 // mã quà tặng
 ok(nem(() => ctx.qtTaoMaQua(T, 'TET2027', 30, 1)) !== null, 'Thành viên không tạo được mã quà');
 ctx.qtTaoMaQua(chu, 'tet2027', 30, 1, '2099-01-01');
