@@ -3,6 +3,9 @@
  *  NghiemChung.gs — NGHIỆM CHỨNG LÁ SỐ (ĐỊNH BÀN)
  *  Mục đích: khách tự chấm 8 nhóm mô tả để biết GIỜ SINH nhập vào có "đúng người" không.
  *
+ *  v6 – NỀN TẢNG LÀ TỔNG HỢP 6 HỆ bản 2 (DeHieu.gs › th6Lap_): mỗi lĩnh vực có câu kết luận của hệ
+ *   cùng chiều với đa số + tỷ lệ đồng thuận; NĂM ĐÃ QUA mà từ 3 hệ cùng báo (Biến cố hội tụ) được đưa vào để
+ *   khách kiểm chứng bằng ký ức thật; anh em / cha mẹ lấy phiếu 3 hệ (Tử Vi, Bát Tự, Hà Lạc).
  *  v5 – LẤY KẾT LUẬN TỪ TỔNG HỢP 6 HỆ (TongHop.gs, BatTuChiTiet.gs, LuanGiai.gs):
  *   • Mỗi câu là kết luận đã được các hệ "bỏ phiếu" – kèm số hệ đồng thuận, không dùng luật đơn lẻ của 1 hệ.
  *   • Ưu tiên điều KIỂM CHỨNG ĐƯỢC: vóc dáng, dấu vết cơ thể, xuất thân, quan hệ với cha/mẹ/anh em,
@@ -24,7 +27,10 @@ function nghiemChungLap(input) {
   input.save = false;
   var r = lapLaSoDayDu_(input);
   var vy = r.tuvi.info.viewYear, tuoi = vy - r.tuvi.info.solar.year;
-  var X = { r: r, T: (r.moRong && r.moRong.tongHop) || {}, vy: vy, tuoi: tuoi, nam: !!r.tuvi.info.male };
+  var th6 = r.moRong && r.moRong.deHieu && r.moRong.deHieu.th6, lv = {}, hl = {};
+  if (th6 && th6.linhVuc) th6.linhVuc.forEach(function (x) { lv[x.k] = x; });
+  ((r.moRong && r.moRong.haLac && r.moRong.haLac.luan && r.moRong.haLac.luan.linhVuc) || []).forEach(function (x) { hl[x.k] = x; });
+  var X = { r: r, T: (r.moRong && r.moRong.tongHop) || {}, vy: vy, tuoi: tuoi, nam: !!r.tuvi.info.male, lv: lv, hl: hl };
   var ds = [['A', ncNhomA_], ['B', ncNhomB_], ['C', ncNhomC_], ['D', ncNhomD_], ['E', ncNhomE_], ['F', ncNhomF_], ['G', ncNhomG_], ['H', ncNhomH_]];
   return {
     data: { tuoi: tuoi },
@@ -101,6 +107,41 @@ function ncChangQua_(X) {   // các chặng đời đã qua (kết thúc trướ
   return ((X.T.duongDoi && X.T.duongDoi.chang) || []).filter(function (c) { return +String(c.nam).split('–')[1] < X.vy && +String(c.nam).split('–')[0] >= X.r.tuvi.info.solar.year + 3; });
 }
 
+/** Câu kết luận đồng thuận của một lĩnh vực trong Tổng hợp 6 hệ (câu của hệ cùng chiều với đa số) */
+function ncLv_(X, g, k, toiDa) {
+  var x = X.lv[k]; if (!x) return;
+  var soP = x.soHe || 0, so = soP ? x.dong / soP : null, ds = (x.huong === 'xau' ? x.yeu.concat(x.manh) : x.manh.concat(x.yeu));
+  ds.slice(0, toiDa || 1).forEach(function (m, i) {
+    g.dong.push(ncDong_(m.t, i === 0 ? so : so != null ? so * 0.8 : null, (i === 0 && soP ? x.dong + '/' + soP + ' hệ cùng chiều · ' : '') + m.he));
+  });
+}
+var NC_NAM_MAU = {
+  taiLoc: 'tiền bạc hoặc thu nhập khởi sắc rõ', quanLoc: 'công việc có chuyển động lớn (thăng tiến, đổi việc hoặc nhận trách nhiệm mới)',
+  ketHon: 'có chuyện tình cảm quan trọng (bắt đầu yêu, cưới hỏi hoặc thay đổi lớn trong quan hệ)', sinhCon: 'có tin vui hoặc chuyện nổi bật về con cái',
+  sucKhoe: 'sức khỏe đi xuống, mệt mỏi kéo dài hoặc phải chữa trị', taiChinh: 'hao tài – tiền bạc thất thoát hoặc chi lớn ngoài dự tính',
+  giaDao: 'gia đình, nhà cửa có biến động (chuyển nhà, sửa nhà hoặc chuyện người thân)', buocNgoat: 'có bước ngoặt – đổi môi trường sống hoặc làm việc'
+};
+/** Năm đã qua mà từ 3 hệ cùng báo – bằng chứng kiểm chứng bằng ký ức (bỏ năm trước 16 tuổi) */
+function ncNamQua_(X, g, keys, toiDa) {
+  var ds = [], namSinh = X.r.tuvi.info.solar.year;
+  Object.keys(X.lv).forEach(function (k) { (X.lv[k].namQua || []).forEach(function (n) { if (keys.indexOf(n.k) >= 0 && n.nam - namSinh >= 16 && !ds.some(function (d) { return d.nam === n.nam && d.k === n.k; })) ds.push(n); }); });
+  // gộp các chủ đề cùng một năm thành một câu
+  var theoNam = {};
+  ds.forEach(function (n) { var x = theoNam[n.nam] = theoNam[n.nam] || { nam: n.nam, y: [], soHe: 0, he: [] }; x.y.push(NC_NAM_MAU[n.k]); x.soHe = Math.max(x.soHe, n.soHe); (n.he || []).forEach(function (h) { if (x.he.indexOf(h) < 0) x.he.push(h); }); });
+  Object.keys(theoNam).map(function (k) { return theoNam[k]; }).sort(function (a, b) { return b.soHe - a.soHe || b.nam - a.nam; }).slice(0, toiDa || 2).forEach(function (n) {
+    g.dong.push(ncDong_('Năm ' + n.nam + ' (' + (n.nam - namSinh) + ' tuổi): ' + n.y.join('; ') + '.', Math.min(1, n.soHe / 4), n.soHe + ' hệ cùng báo' + (n.he.length ? ': ' + n.he.join(', ') : '')));
+  });
+}
+/** Phiếu 3 hệ cho một quan hệ gia đình: Tử Vi (cung), Bát Tự (lĩnh vực), Hà Lạc (lục thân) → {chieu, so, nhan} */
+function ncBaHe_(X, cung, keyBT, keyHL) {
+  var p = [], tv = ncDiemCung_(X.r, cung), bt = ncLinhVucBT_(X.r, keyBT), hl = X.hl[keyHL];
+  if (tv != null) p.push(['Tử Vi', tv >= 6 ? 1 : tv <= 4.5 ? -1 : 0]);
+  if (bt != null) p.push(['Bát Tự', bt >= 6 ? 1 : bt <= 4.5 ? -1 : 0]);
+  if (hl) p.push(['Hà Lạc', hl.bac === 'tot' ? 1 : hl.bac === 'kho' ? -1 : 0]);
+  var tong = p.reduce(function (t, x) { return t + x[1]; }, 0), chieu = tong > 0 ? 1 : tong < 0 ? -1 : 0;
+  var dong = p.filter(function (x) { return x[1] === chieu; });
+  return { chieu: chieu, so: p.length ? dong.length / p.length : null, nhan: dong.length + '/' + p.length + ' hệ: ' + dong.map(function (x) { return x[0]; }).join(', ') };
+}
 var NC_SO_ANH_EM = {
   'Tử Vi': [[3, 4], [2, 3]], 'Thiên Cơ': [[2, 3], [1, 1]], 'Thái Dương': [[3, 4], [2, 2]], 'Vũ Khúc': [[2, 2], [1, 1]],
   'Thiên Đồng': [[4, 5], [2, 3]], 'Liêm Trinh': [[2, 2], [1, 1]], 'Thiên Phủ': [[4, 5], [3, 4]], 'Thái Âm': [[4, 5], [2, 3]],
@@ -146,7 +187,7 @@ function ncNhomB_(X, g) {
   (TC.truc || []).filter(function (t) { return Math.abs(t.gt) >= 0.25 && t.tyLe >= 60 && !/^Cân bằng/.test(t.moTa); })   // "cân bằng" đúng với mọi người → không dùng để nghiệm chứng
     .sort(function (a, b) { return b.tyLe - a.tyLe || Math.abs(b.gt) - Math.abs(a.gt); }).slice(0, 3)
     .forEach(function (t) { g.dong.push(ncDong_(t.moTa.replace(/\s*\(mức [^)]+\)/, '') + '.', t.tyLe / 100, t.dong.length + '/' + (t.dong.length + t.nguoc.length) + ' hệ: ' + t.dong.join(', '))); });
-  if (TC.manh && TC.manh[0]) g.dong.push(ncDong_('Điểm mạnh dễ thấy: ' + TC.manh[0] + '.', null, ''));
+  ncLv_(X, g, 'tinh_cach', 2);
   if (TC.yeu && TC.yeu[0]) g.dong.push(ncDong_('Điểm hay bị người thân góp ý: ' + TC.yeu[0] + '.', null, ''));
 }
 /** C. Anh chị em: Tử Vi (cung Huynh Đệ + bảng số theo sách cổ) × Bát Tự (lĩnh vực anh em + sao Tỷ Kiếp) */
@@ -165,14 +206,21 @@ function ncNhomC_(X, g) {
     var muc = (dongY ? tvNhieu : tvNhieu || btNhieu) > 0 ? 'đông anh chị em (từ 3 người trở lên)' : (dongY ? tvNhieu : tvNhieu || btNhieu) < 0 ? 'ít anh chị em (1–2 người, hoặc là con một)' : 'số anh chị em vừa phải (khoảng 2–3 người)';
     g.dong.push(ncDong_('Gia đình thuộc dạng ' + muc + '.', dongY ? 1 : tvNhieu === -btNhieu && tvNhieu ? 0.3 : 0.6, dongY ? '2/2 hệ: Tử Vi, Bát Tự' : 'Tử Vi' + (btNhieu ? ', Bát Tự khác chiều' : '')));
   }
-  if (h.chieu > 0) g.dong.push(ncDong_('Anh chị em hòa thuận, có lúc nâng đỡ nhau về công việc hoặc tiền bạc.', h.so, h.so === 1 ? '2/2 hệ: Tử Vi, Bát Tự' : ''));
-  else if (h.chieu < 0) g.dong.push(ncDong_('Anh chị em mỗi người một ngả, có khoảng cách hoặc bất đồng; ít nhờ cậy được nhau.', h.so, h.so === 1 ? '2/2 hệ: Tử Vi, Bát Tự' : ''));
-  else g.dong.push(ncDong_('Quan hệ anh em có lúc gần lúc xa: thân thiết giai đoạn nhỏ, trưởng thành thì mỗi người tự lo.', h.so == null ? 0.4 : h.so, 'các hệ chưa thống nhất'));
+  var b3 = ncBaHe_(X, 'Huynh Đệ', 'Huynh Đệ', 'anhEm');
+  if (b3.chieu > 0) g.dong.push(ncDong_('Anh chị em hòa thuận, có lúc nâng đỡ nhau về công việc hoặc tiền bạc.', b3.so, b3.nhan));
+  else if (b3.chieu < 0) g.dong.push(ncDong_('Anh chị em mỗi người một ngả, có khoảng cách hoặc bất đồng; ít nhờ cậy được nhau.', b3.so, b3.nhan));
+  else g.dong.push(ncDong_('Quan hệ anh em có lúc gần lúc xa: thân thiết giai đoạn nhỏ, trưởng thành thì mỗi người tự lo.', b3.so == null ? 0.4 : Math.max(0.4, b3.so), 'các hệ chưa thống nhất'));
   if (tk >= 2.5) g.dong.push(ncDong_('Có sự cạnh tranh ngầm giữa anh em (so sánh, chuyện tài sản chung).', 0.5, 'Bát Tự'));
 }
 /** D. Cha mẹ & xuất thân: TongHop.xuatThan (bỏ phiếu nhiều hệ) + chênh lệch duyên cha – mẹ khi Tử Vi và Bát Tự cùng chỉ ra */
 function ncNhomD_(X, g) {
-  (X.T.xuatThan && X.T.xuatThan.ketLuan || []).slice(0, 3).forEach(function (s) { var t = ncSach_(s); g.dong.push(ncDong_(ncGon_(t), ncMucDong_(t))); });
+  (X.T.xuatThan && X.T.xuatThan.ketLuan || []).slice(0, 2).forEach(function (s) { var t = ncSach_(s); g.dong.push(ncDong_(ncGon_(t), ncMucDong_(t))); });
+  var b3 = ncBaHe_(X, 'Phụ Mẫu', 'Phụ Mẫu', 'chaMe');
+  if (b3.chieu > 0) g.dong.push(ncDong_('Được cha mẹ che chở, nâng đỡ; việc học hành, nhà cửa lúc trẻ có gia đình hỗ trợ.', b3.so, b3.nhan));
+  else if (b3.chieu < 0) {
+    var khaGia = g.dong.some(function (d) { return /khá giả|nền tảng vật chất|điều kiện/.test(d.t); });
+    g.dong.push(ncDong_((khaGia ? 'Dù gia đình có nền tảng, bạn vẫn sớm phải tự lập, ít dựa vào cha mẹ' : 'Sớm phải tự lập, ít dựa được vào cha mẹ') + '; học hành, nhà cửa chủ yếu tự gây dựng.', b3.so, b3.nhan));
+  }
   var lt = (X.r.battuChiTiet && X.r.battuChiTiet.lucThan) || [];
   var cha = lt.filter(function (x) { return x.ten === 'Cha'; })[0], me = lt.filter(function (x) { return x.ten === 'Mẹ'; })[0];
   if (cha && me && Math.abs(cha.diem - me.diem) >= 2) {
@@ -189,6 +237,8 @@ function ncNhomE_(X, g) {
     var m = t.match(/^(.+?) – được (\d) hệ cùng chỉ ra \(([^)]+)\)/); if (!m) return;
     g.dong.push(ncDong_('Hay gặp vấn đề ở ' + m[1].toLowerCase() + ' (mệt, đau, bệnh vặt tái lại).', Math.min(1, +m[2] / 4), m[2] + ' hệ: ' + m[3]));
   });
+  ncLv_(X, g, 'suc_khoe', 1);
+  ncNamQua_(X, g, ['sucKhoe', 'taiChinh', 'giaDao'], 2);
   var qua = ncChangQua_(X).slice().sort(function (a, b) { return a.diem - b.diem; })[0];
   if (qua && qua.diem < 2) g.dong.push(ncDong_('Giai đoạn ' + qua.khoang + ' (' + qua.nam + ') từng vất vả hơn các chặng khác: áp lực tiền bạc, sức khỏe hoặc chuyện gia đình.', qua.dongThuan ? 1 : 0.5, qua.dongThuan ? 'Tử Vi & Bát Tự cùng chiều' : 'Tử Vi'));
 }
@@ -197,6 +247,8 @@ function ncNhomF_(X, g) {
   if (X.tuoi < 20) { g.apDung = false; g.ghiChu = 'Bạn chưa đến tuổi lập gia đình – chọn "Không áp dụng".'; }
   var L = (X.T.phoiNgau && X.T.phoiNgau.ketLuan || []).map(ncSach_);
   function lay(re, so, nhan) { var t = L.filter(function (x) { return re.test(x); })[0]; if (t) g.dong.push(ncDong_(t, so, nhan)); }
+  ncLv_(X, g, 'tinh_duyen', 1);
+  ncNamQua_(X, g, ['ketHon'], 1);
   lay(/^Ngoại hình người/, 0.6, 'ghép 5 hệ');
   lay(/^Tính cách:/, 0.6, 'ghép 5 hệ');
   var cl = L.filter(function (x) { return /^Chênh lệch tuổi/.test(x); })[0];
@@ -208,6 +260,8 @@ function ncNhomF_(X, g) {
 /** G. Con cái: TongHop.phoiNgau.conCai + năm có con đã qua */
 function ncNhomG_(X, g) {
   if (X.tuoi < 22) { g.apDung = false; g.ghiChu = 'Chưa đến tuổi có con – chọn "Không áp dụng".'; }
+  ncLv_(X, g, 'con_cai', 1);
+  ncNamQua_(X, g, ['sinhCon'], 1);
   var CC = X.T.phoiNgau && X.T.phoiNgau.conCai;
   ((CC && CC.ketLuan) || []).map(ncSach_).forEach(function (t) {
     if (/^Số con/.test(t)) g.dong.push(ncDong_(t, 0.6, 'Tử Vi, Bát Tự'));
@@ -219,13 +273,13 @@ function ncNhomG_(X, g) {
 }
 /** H. Sự nghiệp: nghề được nhiều hệ cùng gợi ý + chặng đời đã qua thuận lợi nhất */
 function ncNhomH_(X, g) {
+  ncLv_(X, g, 'cong_danh', 1);
+  ncNamQua_(X, g, ['quanLoc', 'taiLoc', 'buocNgoat'], 2);
   var N = (X.T.nghe || []).slice(0, 3);
   if (N.length) g.dong.push(ncDong_('Hợp nhất với: ' + N.map(function (n) { return n.ten.toLowerCase() + ' (' + n.he.length + '/6 hệ)'; }).join('; ') + '.', N[0].he.length / 6, ''));
   var qua = ncChangQua_(X).slice().sort(function (a, b) { return b.diem - a.diem; })[0];
   if (qua && qua.diem >= 3) g.dong.push(ncDong_('Giai đoạn ' + qua.khoang + ' (' + qua.nam + ') là thời kỳ thuận lợi nổi bật: học hành, công việc hoặc thu nhập lên rõ.', qua.dongThuan ? 1 : 0.5, qua.dongThuan ? 'Tử Vi & Bát Tự cùng chiều' : 'Tử Vi'));
-  var tv = ncDiemCung_(X.r, 'Quan Lộc'), bt = ncLinhVucBT_(X.r, 'Quan Lộc'), h = ncHaiHe_(tv, bt);
-  if (h.chieu > 0) g.dong.push(ncDong_('Công việc có đà thăng tiến, dễ được giao việc quan trọng hoặc tự làm chủ.', h.so, h.so === 1 ? '2/2 hệ: Tử Vi, Bát Tự' : ''));
-  else if (h.chieu < 0) g.dong.push(ncDong_('Đường công việc nhiều lần đổi hướng, phải tự bươn chải hơn người khác.', h.so, h.so === 1 ? '2/2 hệ: Tử Vi, Bát Tự' : ''));
+
 }
 
 /* ============================================================

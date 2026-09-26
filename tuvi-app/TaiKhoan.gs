@@ -176,8 +176,19 @@ function khachRutGon_(r) {
     tuvi: { info: tv.info, palaces: tv.palaces, luanGiai: { cung: (tv.luanGiai.cung || []).map(function (c) { return { cung: c.cung, yNghia: c.yNghia }; }) } },
     battu: { pillars: B.pillars.map(function (p) { return { tru: p.tru, can: p.can, chi: p.chi, canTen: p.canTen, chiTen: p.chiTen, canHanh: p.canHanh, chiHanh: p.chiHanh }; }),
       nhatChu: B.nhatChu, cuong: B.cuong },
-    moi: moiVanHan_(r)
+    moi: moiVanHan_(r),
+    th6: th6Moi_(r)
   };
+}
+/** Mồi Tổng hợp 6 hệ cho bản miễn phí: điểm từng lĩnh vực và số hệ đồng thuận (không có lời luận); lộ trọn 1 lĩnh vực mạnh nhất */
+function th6Moi_(r) {
+  var T = r.moRong && r.moRong.deHieu && r.moRong.deHieu.th6;
+  if (!T || T.loi || !T.linhVuc) return null;
+  var tot = T.linhVuc.slice().sort(function (a, b) { return b.diem - a.diem; })[0];
+  return { tomTat: T.tomTat, theManh: T.theManh, canChuY: T.canChuY,
+    linhVuc: T.linhVuc.map(function (x) { return { ten: x.ten, icon: x.icon, diem: x.diem, huong: x.huong, dong: x.dong, soHe: x.soHe,
+      lo: x.k === tot.k ? { ket: x.ket, noiBat: x.noiBat, manh: x.manh } : null, soNam: x.namToi.length }; }),
+    soNam: T.namToi.length };
 }
 /** "Mồi" vận hạn cho bản giới hạn: chỉ khung + điểm, không có lời luận */
 function moiVanHan_(r) {

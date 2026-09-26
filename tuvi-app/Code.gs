@@ -202,7 +202,7 @@ function lapMoRong_(input, result) {
   var hlOut = { tien: hl.tien, hau: hl.hau, hoTien: hl.hoTien, hoHau: hl.hoHau, lucHao: hl.lucHao, male: hl.male, luan: hlL };
   var tsL = thanSoHocLuan(ts);
   var dh = null;
-  try { dh = deHieuLap_({ tv: tv, chiTiet: result.chiTiet, bt: result.battu, btct: result.battuChiTiet, ct: ctOut, ctl: ctL, ts: ts, tsl: tsL, hdOut: hdOut, hl: hlOut }); }
+  try { dh = deHieuLap_({ tv: tv, chiTiet: result.chiTiet, bt: result.battu, btct: result.battuChiTiet, ct: ctOut, ctl: ctL, th: th, ts: ts, tsl: tsL, hdOut: hdOut, hl: hlOut }); }
   catch (e) { dh = { loi: String(e && e.message || e) }; }
   return { haLac: hlOut, chiemTinh: ctOut, chiemTinhLuan: ctL, thanSo: ts, thanSoLuan: tsL, hd: hdOut, tongHop: th, deHieu: dh };
 }

@@ -698,7 +698,7 @@
     trang('page-astro', khoaHtml(res, 'astro', 'Chiêm tinh – Bản đồ sao', '星') + CTA);
     trang('page-so', khoaHtml(res, 'so', 'Thần số học', '數') + CTA);
     trang('page-hd', khoaHtml(res, 'hd', 'Human Design', '圖') + CTA);
-    trang('page-tong', khoaHtml(res, 'tom', 'Chân dung hé lộ', '命') + (res.mien ? '' : khoaHtml(res, 'nguoi', 'Con người bạn', '性')) + khoaHtml(res, 'duyen', 'Tình duyên & người bạn đời', '姻') +
+    trang('page-tong', th6KhachHtml(res.th6) + khoaHtml(res, 'tom', 'Chân dung hé lộ', '命') + (res.mien ? '' : khoaHtml(res, 'nguoi', 'Con người bạn', '性')) + khoaHtml(res, 'duyen', 'Tình duyên & người bạn đời', '姻') +
       khoaHtml(res, 'doi', 'Đường đời & sự nghiệp', '途') + CTA);
     ['page-van', 'page-dudoan'].forEach(function (id) { if ($(id)) $(id).innerHTML = ''; });
     $('btnPdfTop').style.display = '';
@@ -2369,6 +2369,78 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
       pg.appendChild(w);
     });
   }
+  /* ---------- Tổng hợp 6 hệ (bản 2): 9 lĩnh vực, điểm từng hệ, đồng thuận, năm nổi bật + nút mở ---------- */
+  var TH6_HE = ['Tử Vi', 'Bát Tự', 'Hà Lạc', 'Chiêm tinh'];
+  function namDaMo(y) {
+    var r = state.result, q = r && r.quyen;
+    return toanQuyen() || !!(q && (q.toanQuyen || q.namAll || (q.namMo || {})[String(y)] || (q.dhNam || {})[String(y)]));
+  }
+  function th6Mau(d) { return d >= 6.2 ? '#1fa688' : d <= 4.3 ? '#d9503f' : '#c9a23a'; }
+  /** Bảng nhiệt 9 lĩnh vực × 4 hệ có chấm điểm + cột điểm chung */
+  function th6BangNhiet(T) {
+    var W = 760, L = 210, cw = (W - L - 90) / TH6_HE.length, rh = 30, H = 34 + T.linhVuc.length * rh + 6;
+    var o = '<figure class="chart-fig"><figcaption><b>Bảng điểm 9 lĩnh vực theo từng hệ</b><span>Xanh = thuận (≥ 6,2) · vàng = vừa · đỏ = cần lưu ý (≤ 4,3) · cột cuối = điểm chung sau khi gộp · rê chuột để xem</span></figcaption><svg viewBox="0 0 ' + W + ' ' + H + '" class="vchart th6-nhiet" role="img" aria-label="Bảng điểm 9 lĩnh vực">';
+    TH6_HE.concat(['Chung']).forEach(function (he, j) { o += '<text x="' + (L + j * cw + cw / 2) + '" y="20" text-anchor="middle" class="ch-ax">' + he + '</text>'; });
+    T.linhVuc.forEach(function (x, i) {
+      var y = 30 + i * rh;
+      o += '<text x="' + (L - 10) + '" y="' + (y + 19) + '" text-anchor="end" class="ch-ax">' + esc(x.icon + ' ' + x.ten) + '</text>';
+      TH6_HE.forEach(function (he, j) {
+        var p = x.phieu.filter(function (z) { return z.he === he; })[0], xx = L + j * cw + 4;
+        o += p ? '<g data-tip="' + esc(x.ten + ' · ' + he + ': ' + String(p.d10).replace('.', ',') + '/10\n' + p.nguon) + '"><rect x="' + xx + '" y="' + (y + 2) + '" width="' + (cw - 8) + '" height="' + (rh - 6) + '" rx="5" style="fill:' + th6Mau(p.d10) + ';fill-opacity:' + (0.35 + Math.abs(p.d10 - 5) / 10) + '"/>' +
+          '<text x="' + (xx + (cw - 8) / 2) + '" y="' + (y + 19) + '" text-anchor="middle" class="th6-so">' + String(p.d10).replace('.', ',') + '</text></g>'
+          : '<rect x="' + xx + '" y="' + (y + 2) + '" width="' + (cw - 8) + '" height="' + (rh - 6) + '" rx="5" class="th6-trong"/>';
+      });
+      var xc = L + TH6_HE.length * cw + 4;
+      o += '<g data-tip="' + esc(x.ten + ': ' + String(x.diem).replace('.', ',') + '/10 · ' + x.dong + '/' + x.soHe + ' hệ cùng chiều') + '"><rect x="' + xc + '" y="' + (y + 2) + '" width="' + (cw - 8) + '" height="' + (rh - 6) + '" rx="5" style="fill:' + th6Mau(x.diem) + '"/>' +
+        '<text x="' + (xc + (cw - 8) / 2) + '" y="' + (y + 19) + '" text-anchor="middle" class="th6-so">' + String(x.diem).replace('.', ',') + '</text></g>';
+    });
+    return o + '</svg></figure>';
+  }
+  function th6NutNam(n) {
+    var nhan = n.nam + ' · ' + (n.tot ? '✓ ' : '◇ ') + esc(n.ten.toLowerCase()) + ' · ' + n.soHe + ' hệ';
+    if (namDaMo(n.nam)) return '<button type="button" class="btn btn-ghost btn-sm" data-den="vh">' + nhan + ' → xem chi tiết</button>';
+    return nutMua('nam|' + n.nam, '🔒 ' + nhan + ' · mở ' + fmtXu(giaPhan('nam').xu), 'btn-ghost');
+  }
+  /** Bản miễn phí: bảng điểm 9 lĩnh vực + lộ trọn 1 lĩnh vực mạnh nhất, còn lại khóa */
+  function th6KhachHtml(M) {
+    if (!M) return '';
+    var html = '<div class="panel section th6"><h2 class="panel-title"><span class="han">合</span> Tổng hợp 6 hệ – bảng điểm của bạn</h2>' +
+      '<p class="lede">' + esc(M.tomTat) + '</p><div class="th6-chip">' + M.theManh.map(function (t) { return '<span class="tot">✦ ' + esc(t) + '</span>'; }).join('') +
+      M.canChuY.map(function (t) { return '<span class="kho">◇ ' + esc(t) + '</span>'; }).join('') + '</div>' +
+      M.linhVuc.map(function (x) {
+        var head = '<summary><b>' + x.icon + ' ' + esc(x.ten) + '</b><span class="dh-diem ' + dhMau(x.diem) + '">' + String(x.diem).replace('.', ',') + '/10</span><small>' + (x.soHe ? x.dong + '/' + x.soHe + ' hệ cùng chiều' : '') + '</small></summary>';
+        if (x.lo) return '<details class="dh-lv th6-lv ' + x.huong + '" open>' + head + '<div class="th6-body"><p class="th6-ket"><b>' + esc(x.lo.ket) + '</b>' + (x.lo.noiBat ? ' ' + esc(x.lo.noiBat.t) : '') + '</p>' +
+          (x.lo.manh.length ? '<ul class="th6-ds">' + x.lo.manh.map(function (m) { return '<li>✓ ' + esc(m.t) + ' <span class="th6-he">' + esc(m.he) + '</span></li>'; }).join('') + '</ul>' : '') + '<small class="muted">Lĩnh vực mạnh nhất của bạn được mở miễn phí để bạn tự kiểm chứng.</small></div></details>';
+        return '<details class="dh-lv th6-lv ' + x.huong + '">' + head + '<div class="th6-body"><p class="muted">🔒 Kết luận, điều các hệ cùng thấy, lời khuyên' + (x.soNam ? ' và ' + x.soNam + ' năm nổi bật sắp tới' : '') + ' có trong bản mở.</p></div></details>';
+      }).join('') +
+      '<div class="th6-cta"><b>Xem đầy đủ 9 lĩnh vực' + (M.soNam ? ' và ' + M.soNam + ' năm nhiều hệ cùng báo' : '') + '</b><p>Mỗi lĩnh vực: kết luận của 6 hệ, điều cần phát huy – cần lưu ý, lời khuyên cụ thể và năm nên hành động.</p>' +
+      nutMua('co_ban', 'Mở khóa · ' + fmtXu(giaPhan('co_ban').xu)) + '</div></div>';
+    return html;
+  }
+  function th6Html(T) {
+    var vy = state.result.tuvi.info.viewYear;
+    function li(a, dau) { return a.map(function (m) { return '<li>' + dau + ' ' + esc(m.t) + ' <span class="th6-he">' + esc(m.he) + '</span></li>'; }).join(''); }
+    var html = '<div class="panel section dh-panel th6" id="dh-tonghop"><h2 class="panel-title"><span class="han">合</span> Tổng hợp 6 hệ theo 9 lĩnh vực</h2>' +
+      '<p class="lede">' + esc(T.tomTat) + '</p>' +
+      '<div class="th6-chip">' + T.theManh.map(function (t) { return '<span class="tot">✦ ' + esc(t) + '</span>'; }).join('') + T.canChuY.map(function (t) { return '<span class="kho">◇ ' + esc(t) + '</span>'; }).join('') + '</div>' +
+      th6BangNhiet(T);
+    if (T.namToi.length) html += '<h4 class="dd-h">Những năm nhiều hệ cùng báo (5 năm tới)</h4><p class="muted" style="font-size:13px">Từ 3 hệ trở lên cùng chỉ vào một năm – nên chuẩn bị trước. Mở vận năm để xem tháng nào tiến, tháng nào giữ.</p><div class="th6-nam">' +
+      T.namToi.map(th6NutNam).join('') + '</div>';
+    html += T.linhVuc.map(function (x, i) {
+      var tag = x.huong === 'tot' ? 'Thuận' : x.huong === 'xau' ? 'Cần chăm chút' : 'Vừa';
+      return '<details class="dh-lv th6-lv ' + x.huong + '"' + (i < 3 ? ' open' : '') + '><summary><b>' + x.icon + ' ' + esc(x.ten) + '</b><span class="dh-diem ' + dhMau(x.diem) + '">' + String(x.diem).replace('.', ',') + '/10</span><small>' + tag + (x.soHe ? ' · ' + x.dong + '/' + x.soHe + ' hệ cùng chiều' : '') + '</small></summary>' +
+        '<div class="th6-body"><div class="th6-phieu">' + x.phieu.map(function (p) { return '<span style="--m:' + th6Mau(p.d10) + '"><i style="width:' + Math.round(p.d10 * 10) + '%"></i><b>' + esc(p.he) + '</b><em>' + String(p.d10).replace('.', ',') + '</em></span>'; }).join('') + '</div>' +
+        '<p class="th6-ket"><b>' + esc(x.ket) + '</b>' + (x.noiBat ? ' ' + esc(x.noiBat.t) : '') + '</p>' +
+        (x.manh.length || x.yeu.length ? '<ul class="th6-ds">' + li(x.manh, '✓') + li(x.yeu, '◇') + '</ul>' : '') +
+        (x.them.length ? '<details class="hl-cancu"><summary>Góc nhìn thêm từ ' + x.them.map(function (m) { return m.he; }).join(', ') + '</summary><ul class="th6-ds">' + li(x.them, '•') + '</ul></details>' : '') +
+        (x.khuyen.length ? '<p class="hl-khuyen">💡 ' + x.khuyen.map(esc).join(' ') + '</p>' : '') +
+        (x.namToi.length ? '<div class="th6-nam"><small>Năm nổi bật sắp tới:</small>' + x.namToi.slice(0, 2).map(th6NutNam).join('') + '</div>' : '') +
+        (x.namQua.length ? '<small class="muted">Đã qua (để bạn tự kiểm chứng): ' + x.namQua.map(function (n) { return n.nam + ' – ' + n.ten.toLowerCase() + ' (' + n.soHe + ' hệ)'; }).join('; ') + '.</small>' : '') + '</div></details>';
+    }).join('');
+    var tt = tinhTrangMua();
+    if (tt) html += '<div class="th6-cta"><b>' + esc(tt.tieuDe) + '</b><p>' + esc(tt.moTa) + '</p>' + nutMua(tt.phan, tt.nut) + (tt.phu ? '<small>' + esc(tt.phu) + '</small>' : '') + '</div>';
+    return html + coSoHtml('Cách tổng hợp', T.coSo) + '</div>';
+  }
   function veDeHieu(res) {
     var D = res.moRong && res.moRong.deHieu;
     if (!D || D.loi) return;
@@ -2390,7 +2462,10 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
       }
     });
     var tong = $('page-tong');
-    if (tong && D.tongHop && D.tongHop.length) {
+    if (tong && D.th6 && !D.th6.loi && D.th6.linhVuc) {
+      var hero6 = tong.querySelector('.tg[data-g="tom"]'), h6 = th6Html(D.th6);
+      if (hero6) hero6.insertAdjacentHTML('afterend', h6); else tong.insertAdjacentHTML('afterbegin', h6);
+    } else if (tong && D.tongHop && D.tongHop.length) {
       var html = '<div class="panel section dh-panel" id="dh-tonghop"><h2 class="panel-title">Kết hợp 6 hệ theo từng lĩnh vực</h2>' +
         '<p class="lede">Mỗi lĩnh vực gom các nhận định của Tử Vi, Bát Tự, Chiêm tinh, Thần số, Human Design và Hà Lạc. Điều được <b>nhiều hệ cùng nhắc</b> là điều đáng tin nhất; điểm /10 là mức thuận lợi khi gộp tất cả các hệ (5 = cân bằng).</p>' +
         D.tongHop.map(function (k, i) {

@@ -572,6 +572,134 @@ function deHieuLap_(C) {
   try { tv = dhTuViDiem_(C.chiTiet).concat(dhTuViFacts_(C.tv)); } catch (e) { tv = []; }
   all = tv.concat(all);
   out.tongHop = dhTongHop_(all);
+  try { out.th6 = th6Lap_(C); } catch (e) { out.th6 = { loi: String(e && e.message || e) }; }
   out.soFacts = { tuVi: tv.length, tong: all.length };
   return out;
+}
+
+/* ============================================================
+ *  7. TỔNG HỢP 6 HỆ (bản 2) – ghép PHÂN TÍCH CHI TIẾT của từng hệ theo 9 lĩnh vực
+ *  Mỗi lĩnh vực lấy: điểm /10 + câu văn dễ hiểu của Tử Vi (điểm cung), Bát Tự (12 lĩnh vực),
+ *  Hà Lạc (lục thân 8 lĩnh vực), Chiêm tinh (8 lĩnh vực); Thần số và HD góp góc nhìn (không chấm điểm).
+ *  → điểm chung (trung bình có trọng số), độ đồng thuận (số hệ cùng chiều), kết luận hai tầng,
+ *    điểm sáng / điều cần lưu ý (ghi rõ hệ), lời khuyên, năm nổi bật sắp tới và đã qua (Biến cố hội tụ).
+ * ============================================================ */
+var TH6_LV = [
+  { k: 'tinh_cach', ten: 'Tính cách & con người', icon: '🧭', tv: ['Mệnh'], bt: ['Mệnh'], hl: ['banThan'], ct: ['tinhCach'], ts: 'tinhCach', hd: 'chienLuoc', hoi: [] },
+  { k: 'cong_danh', ten: 'Công danh – sự nghiệp', icon: '🏛', tv: ['Quan Lộc'], bt: ['Quan Lộc'], hl: ['congDanh'], ct: ['suNghiep'], ts: 'suNghiep', hd: 'suNghiep', hoi: ['quanLoc'] },
+  { k: 'tai_chinh', ten: 'Tiền bạc – tài sản', icon: '💰', tv: ['Tài Bạch', 'Điền Trạch'], bt: ['Tài Bạch', 'Điền Trạch'], hl: ['tienBac'], ct: ['taiChinh'], ts: 'suNghiep', tsLoc: /^Tài chính/, hoi: ['taiLoc', 'taiChinh'] },
+  { k: 'tinh_duyen', ten: 'Tình duyên – hôn nhân', icon: '💞', tv: ['Phu Thê'], bt: ['Phu Thê'], hl: ['honNhan'], ct: ['tinhYeu'], ts: 'tinhDuyen', hd: 'quanHe', hoi: ['ketHon'] },
+  { k: 'con_cai', ten: 'Con cái', icon: '👶', tv: ['Tử Tức'], bt: ['Tử Tức'], hl: ['conCai'], hoi: ['sinhCon'] },
+  { k: 'suc_khoe', ten: 'Sức khỏe', icon: '🌿', tv: ['Tật Ách'], bt: ['Tật Ách'], hl: ['sucKhoe'], ct: ['sucKhoe'], ts: 'sucKhoe', hd: 'sucKhoe', hoi: ['sucKhoe'] },
+  { k: 'gia_dao', ten: 'Gia đình – cha mẹ – anh em', icon: '🏠', tv: ['Phụ Mẫu', 'Huynh Đệ'], bt: ['Phụ Mẫu', 'Huynh Đệ'], hl: ['chaMe', 'anhEm'], ct: ['camXuc'], hoi: ['giaDao'] },
+  { k: 'xa_hoi', ten: 'Bạn bè – quý nhân – đi xa', icon: '🤝', tv: ['Nô Bộc', 'Thiên Di'], bt: ['Nô Bộc', 'Thiên Di'], hd: 'quanHe', hoi: ['buocNgoat'] },
+  { k: 'tam_linh', ten: 'Đời sống tinh thần – bài học', icon: '🕯', tv: ['Phúc Đức'], bt: ['Phúc Đức'], ts: 'linhHon', hd: 'baiHoc', ctNut: true, hoi: [] }
+];
+var TH6_W = { 'Tử Vi': 1.2, 'Bát Tự': 1.1, 'Chiêm tinh': 1.0, 'Hà Lạc': 0.8 };
+/** Câu Tử Vi theo cung và mức (thuận / vừa / cần lưu ý) – viết riêng cho phần tổng hợp, không nêu tên sao */
+var TH6_TV_CAU = {
+  'Mệnh': ['Bạn có nền tảng bản thân vững, dễ được người khác tin cậy.', 'Bạn có nền tảng bản thân ở mức khá, thành công đến từ sự rèn luyện.', 'Bạn có xu hướng phải tự nỗ lực nhiều hơn người khác để khẳng định mình.'],
+  'Quan Lộc': ['Đường công danh thuận, dễ có vị trí và được ghi nhận.', 'Công việc lên xuống theo giai đoạn, cần kiên trì và chọn đúng thời điểm.', 'Công danh nhiều thử thách, dễ phải đổi hướng vài lần trước khi ổn định.'],
+  'Tài Bạch': ['Tiền bạc đến tương đối thuận, có khả năng tích lũy.', 'Tài chính đủ dùng; muốn dư dả cần có kế hoạch.', 'Tiền bạc dễ vào ra thất thường, cần giữ kỷ luật chi tiêu.'],
+  'Điền Trạch': ['Có phúc về nhà cửa, đất đai.', 'Nhà cửa có được nhờ tích lũy dần.', 'Nhà cửa, tài sản cố định đến muộn hoặc hay thay đổi chỗ ở.'],
+  'Phu Thê': ['Duyên vợ chồng thuận, người bạn đời là chỗ dựa.', 'Hôn nhân có thuận có nghịch, cần vun đắp từ cả hai phía.', 'Chuyện tình cảm nhiều trắc trở, nên tìm hiểu kỹ và kiên nhẫn.'],
+  'Tử Tức': ['Có phúc về con cái, con là niềm vui và chỗ dựa.', 'Chuyện con cái bình thường, có vui có lo.', 'Con cái đến muộn hoặc cần nhiều tâm sức chăm lo.'],
+  'Tật Ách': ['Thể trạng tương đối tốt, ít bệnh nặng.', 'Sức khỏe bình thường, cần để ý vài điểm yếu.', 'Sức khỏe có điểm yếu cần theo dõi định kỳ.'],
+  'Phụ Mẫu': ['Được cha mẹ che chở, nâng đỡ.', 'Quan hệ với cha mẹ ở mức bình thường, có lúc phải tự lo.', 'Duyên với cha mẹ mỏng hoặc sớm phải tự lập.'],
+  'Huynh Đệ': ['Anh chị em hòa thuận, có lúc nâng đỡ nhau.', 'Anh chị em mỗi người tự lo, qua lại vừa phải.', 'Anh chị em ít nhờ cậy được, dễ có khoảng cách.'],
+  'Nô Bộc': ['Có bạn bè, cộng sự tốt giúp đỡ.', 'Bạn bè ở mức vừa phải, nên chọn lọc.', 'Dễ gặp bạn bè, cộng sự không như ý – nên cẩn trọng khi hợp tác.'],
+  'Thiên Di': ['Ra ngoài, đi xa dễ gặp may và quý nhân.', 'Đi xa có lợi có hại tùy giai đoạn.', 'Ra ngoài hay gặp trở ngại, nên chuẩn bị kỹ khi đi xa.'],
+  'Phúc Đức': ['Có phúc phần, đời sống tinh thần an ổn.', 'Phúc phần ở mức vừa; tự tu dưỡng thì tăng thêm.', 'Đời sống tinh thần nhiều lo nghĩ, nên dành thời gian tĩnh tâm.']
+};
+function th6Huong_(d) { return d >= 6.2 ? 'tot' : d <= 4.3 ? 'xau' : 'vua'; }
+/** Ngưỡng cho điểm CHUNG của lĩnh vực: trung bình nhiều hệ dồn về giữa nên ngưỡng hẹp hơn */
+function th6HuongChung_(d) { return d >= 6 ? 'tot' : d <= 4.8 ? 'xau' : 'vua'; }
+function th6Gon_(s) {
+  return dhSach_(s).replace(/\s*\((Đường Đời|Nhân Cách|Linh Hồn|Ngày Sinh|Định Mệnh|Thái Độ|Thách Thức|Nợ nghiệp|Đỉnh Cao|số vắng)[^)]*\)/gi, '')
+    .replace(/\s*\([A-Z][A-Za-z\- ]+\)/g, '').replace(/\s+([,.;:])/g, '$1').trim();
+}
+function th6Lap_(C) {
+  var tv = C.tv, vy = tv.info.viewYear, cungTV = {}, lvBT = {};
+  ((C.chiTiet && C.chiTiet.cung) || []).forEach(function (c) { cungTV[c.cung] = c; });
+  ((C.btct && C.btct.linhVuc) || []).forEach(function (l) { lvBT[l.key] = l; });
+  var HL = {}, CT = {}, TS = {}, HD = {};
+  (((C.hl && C.hl.luan) || {}).linhVuc || []).forEach(function (x) { HL[x.k] = x; });
+  (((C.ctl && C.ctl.phanTich) || {}).linhVuc || []).forEach(function (x) { CT[x.k] = x; });
+  ((C.ts && C.ts.phanTich && C.ts.phanTich.luan) || []).forEach(function (x) { TS[x.k] = x; });
+  ((C.hdOut && C.hdOut.phanTich && C.hdOut.phanTich.tongHop) || []).forEach(function (x) { HD[x.k] = x; });
+  var H = (C.th && C.th.hoiTu) || { chuDe: [] }, CD = {}; (H.chuDe || []).forEach(function (c) { CD[c.k] = c; });
+  var ketQua = TH6_LV.map(function (L) {
+    var sig = [];
+    (L.tv || []).forEach(function (ten) { var c = cungTV[ten]; if (!c || !isFinite(c.diem)) return; var d = chuanHoa10_(c.diem), h = th6Huong_(d); sig.push({ he: 'Tử Vi', nguon: 'cung ' + ten, d10: d, huong: h, t: TH6_TV_CAU[ten] ? TH6_TV_CAU[ten][['tot', 'vua', 'xau'].indexOf(h)] : '' }); });
+    (L.bt || []).forEach(function (key) {
+      var l = lvBT[key]; if (!l) return;
+      var kl = (l.secs || []).filter(function (s) { return /Kết luận/.test(s.tieuDe); })[0], it = kl ? kl.items : [];
+      var m = String(it[0] || '').match(/\(([\d.]+)\/10\)/), d = m ? +m[1] : chuanHoa10_(l.diem);
+      sig.push({ he: 'Bát Tự', nguon: l.ten, d10: d, huong: th6Huong_(d), t: dhCau_(String(it[1] || '').replace(/\s*Muốn "thuận mệnh".*$/, '')) });
+    });
+    (L.hl || []).forEach(function (k) { var x = HL[k]; if (!x) return; var d = chuanHoa10_(x.diem * 1.5); sig.push({ he: 'Hà Lạc', nguon: x.ten, d10: d, huong: th6Huong_(d), t: x.van, khuyen: x.khuyen }); });
+    var ctMoTa = [];
+    (L.ct || []).forEach(function (k) { var x = CT[k]; if (!x) return; var d = chuanHoa10_(x.diem * 1.8); sig.push({ he: 'Chiêm tinh', nguon: x.ten, d10: d, huong: th6Huong_(d), t: '', khuyen: x.khuyen }); ctMoTa.push(x.tron); });
+    // gộp theo hệ (một hệ có 2 nguồn → trung bình) để mỗi hệ chỉ có một phiếu
+    var theoHe = {};
+    sig.forEach(function (s) { (theoHe[s.he] = theoHe[s.he] || []).push(s); });
+    var phieu = Object.keys(theoHe).map(function (he) {
+      var a = theoHe[he], d = Math.round(a.reduce(function (t, s) { return t + s.d10; }, 0) / a.length * 10) / 10;
+      return { he: he, d10: d, huong: th6Huong_(d), nguon: a.map(function (s) { return s.nguon; }).join(', ') };
+    });
+    var wT = 0, sT = 0; phieu.forEach(function (p) { var w = TH6_W[p.he] || 1; wT += w; sT += p.d10 * w; });
+    var diem = wT ? Math.round(sT / wT * 10) / 10 : 5, huong = th6HuongChung_(diem);
+    var dong = phieu.filter(function (p) { return p.huong === huong; }).length;
+    var chieu = huong === 'vua' ? phieu.filter(function (p) { return p.huong !== 'vua'; }).length : dong;
+    // câu tốt / câu cần lưu ý (mỗi hệ một câu, bỏ trùng)
+    var da = {};
+    function chon(h, n, sx) {
+      return sig.filter(function (s) { return s.huong === h && s.t; }).sort(sx).filter(function (s) { if (da[s.t]) return false; da[s.t] = 1; return true; })
+        .filter(function (s, i, a) { return a.map(function (x) { return x.he; }).indexOf(s.he) === i; }).slice(0, n).map(function (s) { return { he: s.he, t: dhCau_(s.t) }; });
+    }
+    var manh = chon('tot', 3, function (a, b) { return b.d10 - a.d10; }), yeu = chon('xau', 3, function (a, b) { return a.d10 - b.d10; });
+    var them = [];
+    if (ctMoTa[0]) them.push({ he: 'Chiêm tinh', t: ctMoTa[0] });
+    if (L.ts && TS[L.ts]) { var it = TS[L.ts].items.filter(function (x) { return !L.tsLoc || L.tsLoc.test(dhSach_(x)); })[0] || TS[L.ts].items[0]; if (it) them.push({ he: 'Thần số', t: dhCau_(th6Gon_(it)) }); }
+    if (L.hd && HD[L.hd] && HD[L.hd].items[0]) them.push({ he: 'Human Design', t: dhCau_(th6Gon_(HD[L.hd].items[0])) });
+    if (L.ctNut && C.ctl && C.ctl.phanTich && C.ctl.phanTich.nut) them.push({ he: 'Chiêm tinh', t: C.ctl.phanTich.nut.tron });
+    // kết luận hai tầng
+    var soP = phieu.length, tieu = soP ? dong + '/' + soP + ' hệ' : '';
+    var ket = huong === 'tot' ? 'Đây là một thế mạnh của bạn' + (soP ? ' – ' + tieu + ' có điểm cùng chiều thuận.' : '.') :
+      huong === 'xau' ? 'Đây là lĩnh vực bạn nên chăm chút nhiều hơn' + (soP ? ' – ' + tieu + ' cùng nhắc.' : '.') :
+      (!manh.length && yeu.length ? 'Lĩnh vực này nghiêng về thử thách – chưa đến mức đáng lo, nhưng nên chủ động chăm chút.' :
+       manh.length && !yeu.length ? 'Lĩnh vực này nghiêng về thuận – có nền tảng tốt, cần thêm nỗ lực để bứt lên.' :
+       'Lĩnh vực này có cả thuận lẫn khó – kết quả phụ thuộc nhiều vào cách bạn lựa chọn và thời điểm.');
+    var noiBat = (huong === 'xau' ? yeu[0] || manh[0] : manh[0] || yeu[0]);
+    var khuyen = [];
+    sig.filter(function (s) { return s.khuyen; }).sort(function (a, b) { return huong === 'tot' ? b.d10 - a.d10 : a.d10 - b.d10; })
+      .forEach(function (s) { if (khuyen.indexOf(s.khuyen) < 0 && khuyen.length < 2) khuyen.push(s.khuyen); });
+    if (!khuyen.length) { var bt0 = sig.filter(function (s) { return s.he === 'Bát Tự' && s.t; })[0]; if (bt0) khuyen.push(dhCau_(bt0.t)); }
+    // năm nổi bật sắp tới / đã qua
+    var toi = [], qua = [];
+    (L.hoi || []).forEach(function (k) {
+      var c = CD[k]; if (!c) return;
+      (c.dinh || []).forEach(function (x) { if (x.nam >= vy) toi.push({ k: c.k, nam: x.nam, tuoi: x.tuoi, soHe: x.soHe, he: x.he, tot: c.loai === 'tot', ten: c.ten }); });
+      (c.qua || []).forEach(function (x) { qua.push({ k: c.k, nam: x.nam, soHe: x.soHe, he: x.he, tot: c.loai === 'tot', ten: c.ten }); });
+    });
+    toi.sort(function (a, b) { return a.nam - b.nam; });
+    return { k: L.k, ten: L.ten, icon: L.icon, diem: diem, huong: huong, phieu: phieu, dong: dong, soHe: soP, chieu: chieu,
+      doDong: soP ? Math.round(dong / soP * 100) : 0, ket: ket, noiBat: noiBat, manh: manh, yeu: yeu, them: them, khuyen: khuyen,
+      namToi: toi.slice(0, 3), namQua: qua.sort(function (a, b) { return b.nam - a.nam; }).slice(0, 3) };
+  });
+  var xep = ketQua.slice().sort(function (a, b) { return b.diem - a.diem; });
+  var theManh = xep.filter(function (x) { return x.diem >= 6; }).slice(0, 3), canChuY = xep.slice().reverse().filter(function (x) { return x.diem < 5; }).slice(0, 2);
+  var doTin = Math.round(ketQua.reduce(function (t, x) { return t + x.doDong; }, 0) / ketQua.length);
+  var namToi = []; ketQua.forEach(function (x) { x.namToi.forEach(function (n) { if (n.nam >= vy && n.nam <= vy + 5) namToi.push({ nam: n.nam, ten: n.ten, tot: n.tot, soHe: n.soHe, lv: x.ten }); }); });
+  namToi.sort(function (a, b) { return a.nam - b.nam || b.soHe - a.soHe; });
+  return {
+    linhVuc: ketQua, theManh: theManh.map(function (x) { return x.ten; }), canChuY: canChuY.map(function (x) { return x.ten; }), doTin: doTin,
+    tomTat: (theManh.length ? 'Thế mạnh nổi bật: ' + theManh.map(function (x) { return x.ten.toLowerCase(); }).join(', ') + '. ' : '') +
+      (canChuY.length ? 'Cần chăm chút: ' + canChuY.map(function (x) { return x.ten.toLowerCase(); }).join(', ') + '. ' : '') +
+      'Mức đồng thuận trung bình giữa các hệ: ' + doTin + '%.',
+    namToi: namToi.slice(0, 6),
+    coSo: ['Mỗi lĩnh vực lấy điểm /10 của Tử Vi (cung tương ứng), Bát Tự (12 lĩnh vực), Hà Lạc (lục thân theo 6 hào) và Chiêm tinh (8 lĩnh vực); trọng số Tử Vi 1,2 · Bát Tự 1,1 · Chiêm tinh 1,0 · Hà Lạc 0,8.',
+      'Điểm từng hệ: từ 6,2 là thuận, từ 4,3 trở xuống là cần lưu ý. Điểm chung (đã gộp): từ 6,0 là thuận, từ 4,8 trở xuống là cần lưu ý. "x/y hệ" = số hệ có điểm cùng chiều với kết luận chung.',
+      'Thần số học và Human Design không chấm điểm lĩnh vực, được dùng làm "góc nhìn thêm". Năm nổi bật lấy từ Biến cố hội tụ (từ 3 hệ cùng báo).']
+  };
 }
