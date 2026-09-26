@@ -616,7 +616,7 @@
       if (e.target.closest('[data-login]')) moDangNhap();
       var m = e.target.closest('[data-mua]'); if (m) muaGo(m.getAttribute('data-mua'));
       if (e.target.closest('[data-dung-ve]')) dungLuot();
-      var den = e.target.closest('[data-den]'); if (den) { var dd = den.getAttribute('data-den'); if (dd === 'vh') showTab('vh'); else { showTab('tong'); var dc = document.querySelector('.dc-panel'); if (dc) cuonToi(dc); } }
+      var den = e.target.closest('[data-den]'); if (den) { var dd = den.getAttribute('data-den'); if (dd === 'vh' || dd === 'capdoi') showTab(dd); else { showTab('tong'); var dc = document.querySelector('.dc-panel'); if (dc) cuonToi(dc); } }
       if (e.target.closest('[data-mo-nc]')) { var nb = $('ncBannerGo') || $('btnNghiemChung'); if (nb) nb.click(); }
       var nx = e.target.closest('[data-nam-xem]'); if (nx && state.result) { $('viewYear').value = nx.getAttribute('data-nam-xem'); lapLai(); }
       if (e.target.closest('[data-nap]')) moNap();
@@ -2312,10 +2312,7 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
   function dhMau(x) { return x >= 6.5 ? 'tot' : x <= 4 ? 'kho' : 'vua'; }
   /** Xếp các khung chuyên sâu của một tab vào khung "Phần 1–4" thống nhất (theo tiêu đề khung). Khung không tiêu đề đi theo khung trước. */
   var PHAN_HE = {
-    astro: [['Bản đồ sao & dữ liệu gốc', 'Bánh xe hoàng đạo, vị trí hành tinh, nguyên tố', /Bản đồ sao|Vị trí hành tinh|Nguyên tố|Góc chiếu/],
-            ['Luận giải cốt lõi', 'Mặt Trời – Mặt Trăng – cung Mọc, các hành tinh và nhà', /Luận giải/],
-            ['Con người & các lĩnh vực', 'Ngoại hình, dấu hiệu cơ thể, gốc gác, nghề nghiệp', /Ngoại hình|Dấu hiệu|Gốc gác|Nghề/],
-            ['Vận trình', 'Chu kỳ hành tinh trong đời và năm hiện tại', /Chu kỳ|Năm \d{4}/]],
+    astro: null,   // tab Chiêm tinh tự dựng khung Phần 1–8 trong renderAstro
     so: null,   // tab Thần số tự dựng khung Phần 1–8 trong renderThanSo
     hd: [['Bản đồ năng lượng', 'Loại, chiến lược, thẩm quyền, bodygraph', /Human Design|Bodygraph/], ['Luận giải cốt lõi', 'Loại, thẩm quyền, hồ sơ, trung tâm, kênh', /Luận giải/], null, null],
     halac: null   // tab Hà Lạc tự dựng khung Phần 1–5 trong renderHaLac
@@ -2643,44 +2640,128 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
     return o + '</svg>';
   }
 
+  /** Lưới góc chiếu (tam giác) giữa 10 hành tinh + Mọc + MC */
+  function gocLuoiSvg(A) {
+    var ds = A.hanhTinh.filter(function (p) { return p.key !== 'northNode'; }).concat([A.asc, A.mc]), n = ds.length, c = 30, L = 34, W = L + n * c + 4, H = n * c + 30;
+    var M = {}; (A.goc || []).forEach(function (g) { M[g.a + '|' + g.b] = g; M[g.b + '|' + g.a] = g; });
+    var MAU = { tot: '#1fa688', xau: '#d9503f', hop: '#d9a93f' };
+    var o = '<figure class="chart-fig"><figcaption><b>Lưới góc chiếu</b><span>Xanh = hài hòa (lục hợp, tam hợp) · đỏ = căng (vuông, đối, lệch) · vàng = hợp · rê chuột xem độ lệch</span></figcaption><svg viewBox="0 0 ' + W + ' ' + H + '" class="vchart goc-luoi" role="img" aria-label="Lưới góc chiếu">';
+    ds.forEach(function (p, i) {
+      o += '<text x="' + (L + i * c + c / 2) + '" y="' + (H - 8) + '" text-anchor="middle" class="gl-ky">' + esc(p.ky) + '</text>';
+      o += '<text x="' + (L - 8) + '" y="' + (i * c + c / 2 + 5) + '" text-anchor="end" class="gl-ky">' + esc(p.ky) + '</text>';
+      for (var j = 0; j < i; j++) {
+        var q = ds[j], g = M[p.key + '|' + q.key], x = L + j * c, y = i * c;
+        o += '<rect x="' + x + '" y="' + y + '" width="' + (c - 2) + '" height="' + (c - 2) + '" rx="3" class="gl-o"' + (g ? ' style="fill:' + MAU[g.loai] + ';fill-opacity:.85"' : '') + '/>';
+        if (g) o += '<g data-tip="' + esc(p.ten + ' ' + g.goc + ' ' + q.ten + ' · lệch ' + g.orb + '°') + '"><text x="' + (x + c / 2 - 1) + '" y="' + (y + c / 2 + 5) + '" text-anchor="middle" class="gl-g">' + esc(g.ky) + '</text></g>';
+      }
+    });
+    return o + '</svg></figure>';
+  }
+  function ctBac(b) { return b === 'tot' ? 'r4' : b === 'kho' ? 'r1' : 'r3'; }
   function renderAstro(res) {
     if (moRongLoi(res, 'page-astro')) return;
-    var A = res.moRong.chiemTinh, L = res.moRong.chiemTinhLuan, T = A.thoiDiem;
-    var html = '<div class="panel section"><h2 class="panel-title"><span class="han">星盤</span> Bản đồ sao</h2>' +
-      '<p class="muted" style="margin-top:0">' + T.d + '/' + T.m + '/' + T.y + ' ' + pad(T.h) + ':' + pad(T.mi) + ' (UTC' + (T.tz >= 0 ? '+' : '') + T.tz + ') · ' + esc(T.noiSinh) +
-      ' (' + T.lat.toFixed(2) + '°, ' + T.lon.toFixed(2) + '°) · hoàng đạo nhiệt đới · nhà ' + esc(A.heNha) + '</p>' +
-      '<div class="astro-top"><div class="wheel-wrap">' + wheelSvg(A) + '</div><div class="big3">' +
-      L.boBa.map(function (b) { return '<div class="b3"><h4>' + esc(b.tieuDe) + '</h4><ul class="yr-ly">' + b.items.map(itemHtml).join('') + '</ul></div>'; }).join('') + '</div></div>' +
-      coSoHtml('Cơ sở tính toán & lý luận', L.coSo) + '</div>';
+    var A = res.moRong.chiemTinh, L = res.moRong.chiemTinhLuan, T = A.thoiDiem, P = L.phanTich, vy = res.tuvi.info.viewYear, y0 = res.tuvi.info.solar.year;
+    if (!P) { $('page-astro').innerHTML = '<div class="panel section muted">Chưa có phân tích Chiêm tinh đầy đủ' + (L.phanTichLoi ? ' (' + esc(L.phanTichLoi) + ')' : '') + ' – hãy dán lại file ChiemTinh.gs.</div>'; return; }
+    function kl(a) { return '<ul class="th-kl">' + a.map(itemHtml).join('') + '</ul>'; }
+    function ds(a) { return '<ul class="yr-ly">' + a.map(function (t) { return '<li>' + esc(t) + '</li>'; }).join('') + '</ul>'; }
+    var D = P.duLieu;
+    // Phần 1 – dữ liệu & lá số
     var ntT = 0; Object.keys(A.nguyenTo).forEach(function (k) { ntT += A.nguyenTo[k]; });
     var NTM = { 'Lửa': C_CORAL, 'Đất': C_GOLD, 'Khí': C_VIOLET, 'Nước': C_JADE };
-    html += '<div class="panel section">' + barsChart('Cân bằng 4 nguyên tố', 'Tỷ trọng (%) có trọng số: Mặt Trời, Mặt Trăng, Mọc ×3 · Thủy, Kim, Hỏa ×2', Object.keys(A.nguyenTo).map(function (k) {
-      return { ten: k, v: Math.round(A.nguyenTo[k] / ntT * 100), mau: NTM[k], tip: k + ': ' + Math.round(A.nguyenTo[k] / ntT * 100) + '%' };
-    })) + '</div>';
-    html += '<div class="panel section"><h2 class="panel-title"><span class="han">行星</span> Vị trí hành tinh</h2><div class="tbl-wrap"><table class="gio-tbl ast-tbl"><thead><tr><th>Thiên thể</th><th>Cung</th><th>Độ</th><th>Nhà</th><th>Phẩm chất</th></tr></thead><tbody>' +
-      A.hanhTinh.concat([A.asc, A.mc]).map(function (p) {
-        return '<tr><td><b class="pl-ky">' + p.ky + '</b> ' + esc(p.ten) + (p.nghich ? ' <small class="muted">℞</small>' : '') + '</td><td>' + SIGN_KY[p.cung] + ' ' + esc(p.cungTen) + '</td><td>' + esc(p.do) + '</td><td>' + (p.nha || '') + '</td><td>' +
-          (p.pham ? '<span class="chip ' + (/Miếu|Vượng/.test(p.pham) ? 'good' : 'bad') + '">' + esc(p.pham) + '</span>' : '') + '</td></tr>';
-      }).join('') + '</tbody></table></div>' +
-      '<p class="muted" style="font-size:12.5px">Đỉnh các nhà: ' + A.cusp.map(function (h, i) { return (i + 1) + ' ' + SIGN_KY[h.cung] + h.do; }).join(' · ') + '</p></div>';
-    html += '<div class="panel section"><h2 class="panel-title"><span class="han">論</span> Luận giải</h2><div class="lg-list">' + L.secs.map(function (s, i) { return secBlock(s, i === 0); }).join('') + '</div></div>';
-    html += '<div class="bt-grid">' +
-      '<div class="panel section"><h2 class="panel-title"><span class="han">相</span> Ngoại hình (cung Mọc)</h2>' + listHtml(L.ngoaiHinh) + '</div>' +
-      '<div class="panel section"><h2 class="panel-title"><span class="han">體</span> Dấu hiệu cơ thể</h2>' + listHtml(L.coThe) + '</div></div>';
-    html += '<div class="bt-grid">' +
-      '<div class="panel section"><h2 class="panel-title"><span class="han">根</span> Gốc gác – gia đình</h2>' + listHtml(L.gocGac) + '</div>' +
+    var p1 = '<div class="panel section"><h2 class="panel-title"><span class="han">星盤</span> Bản đồ sao</h2>' +
+      '<div class="ts-dl"><span><small>Ngày giờ sinh</small><b>' + esc(D.ngay + ' ' + D.gio) + ' (UTC' + (D.tz >= 0 ? '+' : '') + D.tz + ')</b></span><span><small>Giờ quốc tế (GMT)</small><b>' + esc(D.gmt) + '</b></span>' +
+      '<span><small>Giờ sao địa phương</small><b>' + esc(D.gioSao) + '</b></span><span><small>Nơi sinh</small><b>' + esc(D.noiSinh) + ' (' + D.lat.toFixed(2) + '°, ' + D.lon.toFixed(2) + '°)</b></span><span><small>Giới tính · hệ nhà</small><b>' + esc(D.gioiTinh + ' · ' + D.heNha) + '</b></span></div>' +
+      '<div class="astro-top"><div class="wheel-wrap">' + wheelSvg(A) + '</div><div>' + gocLuoiSvg(A) + '</div></div>' +
+      barsChart('Cân bằng 4 nguyên tố', 'Tỷ trọng (%) có trọng số: Mặt Trời, Mặt Trăng, Mọc ×3 · Thủy, Kim, Hỏa ×2', Object.keys(A.nguyenTo).map(function (k) {
+        return { ten: k, v: Math.round(A.nguyenTo[k] / ntT * 100), mau: NTM[k], tip: k + ': ' + Math.round(A.nguyenTo[k] / ntT * 100) + '%' };
+      })) +
+      '<div class="tbl-wrap"><table class="gio-tbl ast-tbl"><thead><tr><th>Thiên thể</th><th>Cung</th><th>Độ</th><th>Nhà</th><th>Phẩm chất</th><th>Sức</th></tr></thead><tbody>' +
+      P.hanhTinh.map(function (p) {
+        return '<tr><td><b class="pl-ky">' + p.ky + '</b> ' + esc(p.ten) + (p.nghich ? ' <small class="muted">℞</small>' : '') + '</td><td>' + esc(p.cungTen) + '</td><td>' + esc(p.do) + '</td><td>' + p.nha + '</td><td>' +
+          (p.pham ? '<span class="chip ' + (/Vượng|Miếu/.test(p.pham) ? 'good' : 'bad') + '">' + esc(p.pham) + '</span>' : '') + '</td><td>' + (p.suc == null ? '' : '<span class="rate ' + (p.suc >= 0.8 ? 'r4' : p.suc <= -0.6 ? 'r1' : 'r3') + '">' + (p.suc > 0 ? '+' : '') + p.suc + '</span>') + '</td></tr>';
+      }).join('') + [A.asc, A.mc].map(function (p) { return '<tr><td><b class="pl-ky">' + p.ky + '</b> ' + esc(p.ten) + '</td><td>' + esc(p.cungTen) + '</td><td>' + esc(p.do) + '</td><td>' + p.nha + '</td><td></td><td></td></tr>'; }).join('') +
+      P.diemPhu.map(function (p) { return '<tr><td><b class="pl-ky">' + p.ky + '</b> ' + esc(p.ten) + '</td><td>' + esc(p.cungTen) + '</td><td>' + esc(p.do) + '</td><td>' + p.nha + '</td><td></td><td></td></tr>'; }).join('') + '</tbody></table></div>' +
+      '<p class="muted" style="font-size:12.5px">Đỉnh các nhà: ' + A.cusp.map(function (h, i) { return (i + 1) + ' ' + SIGN_KY[h.cung] + h.do; }).join(' · ') + '</p>' +
+      coSoHtml('Cơ sở tính toán & lý luận', L.coSo.concat(['Giờ địa phương → giờ quốc tế (trừ múi giờ) → giờ sao địa phương (giờ sao Greenwich + kinh độ) để tính Mọc, MC và các nhà.',
+        'Nút Nam đối xứng Nút Bắc; Lilith = viễn điểm trung bình quỹ đạo Mặt Trăng (Meeus); Chiron tính theo quỹ đạo Kepler (sai số cỡ 1°).',
+        'Phẩm chất theo quy trình: Vượng (Exaltation) mạnh nhất › Miếu (Domicile) › Hãm (Detriment) › Tù (Fall) yếu nhất. Cột "Sức" = phẩm chất + góc với Kim/Mộc (cát) và Hỏa/Thổ/hành tinh ngoài (hung) + nghịch hành.'])) + '</div>';
+    // Phần 2 – phân tích cá nhân
+    var p2 = '<div class="panel section"><h2 class="panel-title"><span class="han">三</span> Big Three</h2><p class="lede">' + esc(P.bigThree.ket) + '</p><div class="big3">' +
+      P.bigThree.ds.map(function (b) { return '<div class="b3"><h4>' + esc(b.ten) + ' ' + esc(b.cung) + ' · nhà ' + b.nha + '</h4><small class="muted">' + esc(b.vai) + '</small><p>' + esc(b.t) + '</p></div>'; }).join('') + '</div></div>' +
+      '<div class="panel section"><h2 class="panel-title"><span class="han">行星</span> Từng hành tinh (cung + nhà + góc)</h2>' + kl(P.hanhTinh.map(function (p) { return p.t + (p.goc.length ? ' Góc: ' + p.goc.join(', ') + '.' : ''); }).concat(P.diemPhu.map(function (p) { return p.t; }))) + '</div>' +
+      '<div class="panel section"><h2 class="panel-title"><span class="han">宮</span> 12 nhà</h2><div class="tbl-wrap"><table class="gio-tbl"><thead><tr><th>Nhà</th><th>Khởi ở</th><th>Hành tinh</th><th>Chủ tinh ở</th><th>Mức</th></tr></thead><tbody>' +
+      P.nha12.map(function (h) { return '<tr><td><b>' + esc(h.ten) + '</b><br><small class="muted">' + esc(h.y) + '</small></td><td>' + esc(h.cungTen + ' ' + h.do) + '</td><td>' + (h.hanhTinh.length ? esc(h.hanhTinh.join(', ')) : '<span class="muted">trống</span>') + '</td><td>' + esc(h.chu + ' – ' + h.chuO) + '</td><td><span class="rate ' + (h.diem >= 0.8 ? 'r4' : h.diem <= -0.6 ? 'r1' : 'r3') + '">' + (h.diem > 0 ? '+' : '') + h.diem + '</span></td></tr>'; }).join('') + '</tbody></table></div></div>' +
+      '<div class="panel section"><h2 class="panel-title"><span class="han">相</span> Góc chiếu & cấu hình</h2><p class="lede">' + esc(P.gocTom) + '</p>' +
+      (P.cauHinh.length ? '<div class="ts-db">' + P.cauHinh.map(function (x) { return '<div class="co"><b>◆ ' + esc(x.ten) + '</b><p>' + esc(x.t) + '</p></div>'; }).join('') + '</div>' : '<p class="muted">Không có cấu hình đặc biệt (Stellium, T-Square, Grand Trine, Grand Cross, Yod).</p>') +
+      '<div class="lg-list">' + L.secs.filter(function (x) { return /Góc chiếu|Nguyên tố/.test(x.tieuDe); }).map(function (x) { return secBlock(x, false); }).join('') + '</div></div>';
+    // Phần 3 – lĩnh vực
+    var p3 = '<div class="panel section"><h2 class="panel-title"><span class="han">域</span> Tám lĩnh vực</h2><div class="hl-lv">' + P.linhVuc.map(function (x) {
+      return '<div class="hl-lv-i ' + x.bac + '"><h3><span>' + x.icon + '</span> ' + esc(x.ten) + '<span class="rate ' + ctBac(x.bac) + '">' + (x.bac === 'tot' ? 'Thuận' : x.bac === 'kho' ? 'Cần rèn' : 'Vừa') + '</span></h3>' +
+        '<p>' + esc(x.tron) + '</p><p class="hl-khuyen">💡 ' + esc(x.khuyen) + '</p><details class="hl-cancu"><summary>Căn cứ · ' + esc(x.dua) + '</summary>' + ds(x.ky) + '</details></div>';
+    }).join('') + '</div></div>' +
+      '<div class="bt-grid"><div class="panel section"><h2 class="panel-title"><span class="han">相</span> Ngoại hình (cung Mọc)</h2>' + listHtml(L.ngoaiHinh) + '</div>' +
+      '<div class="panel section"><h2 class="panel-title"><span class="han">體</span> Dấu hiệu cơ thể</h2>' + listHtml(L.coThe) + '</div></div>' +
+      '<div class="bt-grid"><div class="panel section"><h2 class="panel-title"><span class="han">根</span> Gốc gác – gia đình</h2>' + listHtml(L.gocGac) + '</div>' +
       '<div class="panel section"><h2 class="panel-title"><span class="han">業</span> Nghề nghiệp</h2>' + listHtml(L.nghe.items) + '</div></div>';
-    var vy = res.tuvi.info.viewYear, y0 = res.tuvi.info.solar.year;
-    html += '<div class="panel section"><h2 class="panel-title"><span class="han">周期</span> Chu kỳ hành tinh trong đời</h2><div class="giao-van">' +
+    // Phần 4 – chu kỳ thời gian
+    var C = P.chuKy;
+    var p4 = '<div class="panel section"><h2 class="panel-title"><span class="han">運</span> Transit (quá cảnh) – ngày ' + esc(C.ngayXet) + '</h2>' +
+      '<div class="tbl-wrap"><table class="gio-tbl"><thead><tr><th>Hành tinh</th><th>Đang ở</th><th>Qua nhà gốc</th><th>Góc với lá số gốc</th></tr></thead><tbody>' +
+      C.transit.map(function (t) { return '<tr><td>' + esc(t.ten) + '</td><td>' + esc(t.cungTen + ' ' + t.do) + '</td><td>' + t.nha + '</td><td>' + esc(t.goc.join(', ')) + '</td></tr>'; }).join('') + '</tbody></table></div>' +
+      ds(C.transit.filter(function (t) { return t.t; }).map(function (t) { return t.t; })) +
+      '<h4 class="dd-h">Transit quan trọng trong năm ' + vy + '</h4>' + (C.suKien.length ? kl(C.suKien.map(function (e) { return (e.tot ? '✓ ' : '✗ ') + e.t; })) : '<p class="muted">Không có góc chính xác của các hành tinh chậm với điểm quan trọng trong năm.</p>') + '</div>' +
+      '<div class="bt-grid"><div class="panel section"><h2 class="panel-title"><span class="han">進</span> Tiến triển thứ cấp (' + C.tienTrien.tuoi + ' tuổi)</h2><p class="muted">1 ngày sau khi sinh = 1 năm cuộc đời.</p>' +
+      ds(C.tienTrien.ds.map(function (x) { return x.ten + ' tiến triển: ' + x.cungTen + ' ' + x.do + ', nhà ' + x.nha + (x.doiCung ? ' (đã đổi cung so với gốc)' : ''); })) +
+      '<h4 class="dd-h">Mặt Trời tiến triển đổi cung</h4>' + ds(C.tienTrien.matTroi) + '<h4 class="dd-h">Mặt Trăng tiến triển đổi cung (10 năm tới)</h4>' + ds(C.tienTrien.matTrang) + '</div>' +
+      '<div class="panel section"><h2 class="panel-title"><span class="han">弧</span> Solar Arc (cung dịch ' + C.solarArc.cung + '°)</h2><p class="muted">Mọi điểm dịch cùng một cung bằng Mặt Trời tiến triển (~1°/năm).</p>' +
+      (C.solarArc.ds.length ? ds(C.solarArc.ds.map(function (x) { return x.t; })) : '<p class="muted">Không có góc Solar Arc chính xác trong 5 năm tới.</p>') + '</div></div>' +
+      '<div class="bt-grid"><div class="panel section"><h2 class="panel-title"><span class="han">歸</span> Solar Return ' + vy + '</h2>' + ds(C.solarReturn.ds) + '</div>' +
+      '<div class="panel section"><h2 class="panel-title"><span class="han">月</span> Lunar Return (tháng)</h2>' + ds(C.lunarReturn.map(function (x) { return x.t; })) + '</div></div>' +
+      '<div class="panel section"><h2 class="panel-title"><span class="han">周期</span> Chu kỳ hành tinh trong đời</h2><div class="giao-van">' +
       L.chuKy.map(function (c) {
         var cls = /Mộc/.test(c.ten) ? 'r4' : /Thổ hồi quy|Thiên Vương đối/.test(c.ten) ? 'r1' : /Thổ/.test(c.ten) ? 'r2' : 'r3';
         return '<span class="gv ' + cls + (Math.abs(c.nam - vy) <= 0 ? ' now' : '') + '" title="' + esc(c.moTa) + '"><b>' + c.nam + '</b> · ' + Math.round(c.tuoi) + ' tuổi<br><small>' + esc(c.ten) + '</small></span>';
-      }).join('') + '</div><p class="muted" style="font-size:12.5px">Rê chuột (hoặc chạm) vào từng mốc để xem ý nghĩa. Năm tính theo ngày quá cảnh thực của hành tinh; sinh năm ' + y0 + '.</p></div>';
-    html += '<div class="panel section"><h2 class="panel-title"><span class="han">年</span> Năm ' + vy + ' theo chiêm tinh</h2>' + listHtml(L.namXem.items) + '</div>';
+      }).join('') + '</div><p class="muted" style="font-size:12.5px">Rê chuột (hoặc chạm) vào từng mốc để xem ý nghĩa; sinh năm ' + y0 + '.</p></div>' +
+      '<div class="panel section"><h2 class="panel-title"><span class="han">年</span> Năm ' + vy + ' – hồ sơ năm & quá cảnh Mộc/Thổ</h2>' + listHtml(L.namXem.items) + '</div>';
+    // Phần 5 – so sánh
+    var p5 = '<div class="panel section"><h2 class="panel-title"><span class="han">合</span> So sánh lá số (Synastry)</h2><p class="lede">So Mặt Trời, Mặt Trăng, Kim, Hỏa và các góc chiếu giữa hai lá số; hành tinh người này rơi vào nhà nào của người kia; lá số Composite (trung điểm) và Davison (thời gian – địa điểm trung bình).</p>' +
+      '<p>Nhập lá số người thứ hai ở tab <b>Cặp đôi</b> để xem phân tích đầy đủ.</p><button type="button" class="btn" data-den="capdoi">Sang tab Cặp đôi →</button></div>';
+    // Phần 6 – luận tổng hợp & lời khuyên
+    var MY = P.manhYeu;
+    var p6 = '<div class="panel section"><h2 class="panel-title"><span class="han">總</span> Luận giải tổng hợp</h2>' +
+      '<h4 class="dd-h">Tổng quan</h4>' + kl([P.bigThree.ket].concat(P.cauHinh.map(function (x) { return '◆ ' + x.ten + ': ' + x.ds.join(', '); }))) +
+      '<h4 class="dd-h">Điểm mạnh</h4>' + kl(MY.manh.length ? MY.manh.map(function (t) { return '✓ ' + t; }) : ['Năng lượng khá cân bằng, không có hành tinh vượt trội.']) +
+      '<h4 class="dd-h">Điểm yếu</h4>' + kl(MY.yeu.length ? MY.yeu.map(function (t) { return '◇ ' + t; }) : ['Không có hành tinh bị cản trở nặng.']) +
+      '<h4 class="dd-h">Cách người khác nhìn nhận</h4>' + kl([MY.nhinNhan]) +
+      '<h4 class="dd-h">Bài học linh hồn</h4>' + kl([P.nut.bac, P.nut.nam]) + '</div>' +
+      '<div class="panel section"><h2 class="panel-title"><span class="han">策</span> Lời khuyên</h2><ol class="ts-lk">' + P.loiKhuyen.map(function (x) { return '<li><b>' + esc(x.ten) + '</b><p>' + esc(x.t) + '</p></li>'; }).join('') + '</ol></div>';
+    // Phần 7 – trường hợp đặc biệt
+    var DB = P.dacBiet;
+    var p7 = '<div class="panel section"><h2 class="panel-title"><span class="han">特</span> Trường hợp đặc biệt</h2><div class="ts-db">' +
+      '<div class="' + (DB.nghich.length ? 'co' : '') + '"><b>Hành tinh nghịch hành</b>' + (DB.nghich.length ? ds(DB.nghich.map(function (x) { return x.ten + ' (' + x.tanSuat + '): ' + x.y; })) : '<p>Không có (trừ các điểm luôn lùi).</p>') + '<p class="muted">Nghịch hành trong lá số gốc → năng lượng hướng nội, cần thời gian để thể hiện.</p></div>' +
+      '<div class="' + (DB.pham.length ? 'co' : '') + '"><b>Phẩm chất hành tinh</b>' + (DB.pham.length ? ds(DB.pham.map(function (x) { return x.ten + ' ở ' + x.cung + ': ' + x.pham; })) : '<p>Không hành tinh nào ở vị trí đặc biệt.</p>') + '</div>' +
+      '<div class="' + (DB.cauHinh.length ? 'co' : '') + '"><b>Stellium · T-Square · Grand Trine · Grand Cross · Yod</b>' + (DB.cauHinh.length ? ds(DB.cauHinh.map(function (x) { return x.ten + ': ' + x.ds.join(', '); })) : '<p>Không có.</p>') + '</div>' +
+      '<div class="' + (DB.nhaTrong.length ? 'co' : '') + '"><b>Nhà trống</b>' + (DB.nhaTrong.length ? ds(DB.nhaTrong.map(function (x) { return 'Nhà ' + x.nha + ' (' + x.y.split(',').slice(0, 2).join(',') + '): ít được kích hoạt – xem chủ tinh ' + x.chu + ' (' + x.chuO + ').'; })) : '<p>Không có.</p>') + '</div></div></div>';
+    // Phần 8 – ứng dụng
+    var lv = function (k) { return P.linhVuc.filter(function (x) { return x.k === k; })[0]; };
+    var p8 = '<div class="panel section"><h2 class="panel-title"><span class="han">用</span> Ứng dụng thực tế</h2>' +
+      '<h4 class="dd-h">1. Tự khám phá bản thân</h4>' + kl(['Big Three: ' + P.bigThree.ket, 'Mục đích sống (Mặt Trời): ' + P.bigThree.ds[0].t, 'Nhu cầu cảm xúc (Mặt Trăng): ' + P.bigThree.ds[1].t, 'Cách thể hiện (Mọc): ' + P.bigThree.ds[2].t, P.nut.bac]) +
+      '<h4 class="dd-h">2. Chọn nghề</h4>' + kl(lv('suNghiep').ky) +
+      '<h4 class="dd-h">3. Chọn người yêu / vợ chồng</h4>' + kl(lv('tinhYeu').ky.concat(['So sánh hai lá số (synastry, Composite, Davison) ở tab <b>Cặp đôi</b>.'])) +
+      '<h4 class="dd-h">4. Chọn thời điểm</h4>' + kl([P.loiKhuyen[2].t, 'Lunar Return: ' + C.lunarReturn.map(function (x) { return x.ngay.split(' ')[0] + ' (nhà ' + x.nha + ')'; }).join(', ') + '.']) +
+      '<h4 class="dd-h">5. Đặt tên cho con</h4><p class="muted">Lập lá số của con, xem nguyên tố nào thiếu rồi chọn tên mang nghĩa bổ sung; tránh tên mang nghĩa trái ngược với cung Mặt Trời của con.</p>' +
+      kl(P.ungDung.tenBu.length ? ['Theo lá số đang xem: ' + P.ungDung.tenBu.join('; ') + '.'] : ['Lá số đang xem khá cân bằng bốn nguyên tố – tên nào cũng hợp, ưu tiên nghĩa đẹp.']) + '</div>';
+    var html = khoiPhan('ctp', 1, 'Dữ liệu & lá số', 'Giờ sinh → GMT → giờ sao; hành tinh, 12 nhà, góc chiếu, Nút, Chiron, Lilith', p1) +
+      khoiPhan('ctp', 2, 'Phân tích cá nhân', 'Big Three, từng hành tinh, 12 nhà, góc chiếu, cấu hình đặc biệt', p2) +
+      khoiPhan('ctp', 3, 'Các lĩnh vực', 'Tính cách, cảm xúc, tư duy, tình yêu, hành động, sự nghiệp, tài chính, sức khỏe', p3) +
+      khoiPhan('ctp', 4, 'Chu kỳ thời gian', 'Transit, tiến triển, Solar Arc, Solar Return, Lunar Return', p4) +
+      khoiPhan('ctp', 5, 'So sánh lá số', 'Synastry, Composite, Davison', p5) +
+      khoiPhan('ctp', 6, 'Luận tổng hợp & lời khuyên', 'Mạnh – yếu, bài học linh hồn, thời điểm hành động', p6) +
+      khoiPhan('ctp', 7, 'Trường hợp đặc biệt', 'Nghịch hành, phẩm chất, cấu hình, nhà trống', p7) +
+      khoiPhan('ctp', 8, 'Ứng dụng thực tế', 'Tự khám phá, chọn nghề, chọn bạn đời, chọn thời điểm, đặt tên', p8);
     $('page-astro').innerHTML = html;
   }
 
-  /* ---------- Thần số học ---------- */
   /* ---------- Thần số học ---------- */
   var TS_CHU_C = { A: 1, J: 1, S: 1, B: 2, K: 2, T: 2, C: 3, L: 3, U: 3, D: 4, M: 4, V: 4, E: 5, N: 5, W: 5, F: 6, O: 6, X: 6, G: 7, P: 7, Y: 7, H: 8, Q: 8, Z: 8, I: 9, R: 9 };
   function tsRut(n, master) { while (n > 9 && !(master && (n === 11 || n === 22 || n === 33))) n = String(n).split('').reduce(function (a, c) { return a + (+c); }, 0); return n; }

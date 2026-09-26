@@ -177,10 +177,14 @@ function cdChiemTinh_(A, B, tA, tB) {
   var mA = CT_CUNG[pa.moon.cung].nt, mB = CT_CUNG[pb.moon.cung].nt;
   if (mA === mB || HOP[mA] === mB) S += 0.6;
   var tot = ds.filter(function (x) { return x.v > 0.3; }).map(function (x) { return x.t; }), xau = ds.filter(function (x) { return x.v < -0.3; }).map(function (x) { return x.t; });
-  return { k: 'chiemTinh', ten: 'Chiêm tinh so sánh', he: 'Chiêm tinh', diem: cdKep_(5 + S * 0.42),
+  var SS = null;
+  try { if (typeof ctSoSanh_ === 'function') SS = ctSoSanh_(A.moRong.chiemTinh, B.moRong.chiemTinh, tA, tB); } catch (e) { SS = null; }
+  if (SS) { SS.nhaAB.concat(SS.nhaBA).forEach(function (x) { S += x.nha === 7 || x.nha === 5 ? 0.3 : x.nha === 12 ? -0.1 : 0.1; }); }
+  return { k: 'chiemTinh', ten: 'Chiêm tinh so sánh', he: 'Chiêm tinh', diem: cdKep_(5 + S * 0.42), soSanh: SS,
     chiTiet: [ntT + (ntA === ntB || HOP[ntA] === ntB ? ' – nguyên tố hòa hợp.' : ' – nguyên tố khác nhau, bổ sung cho nhau nếu biết lắng nghe.'),
       'Mặt Trăng ' + tA + ' ở ' + pa.moon.cungTen + ' – ' + tB + ' ở ' + pb.moon.cungTen + (mA === mB || HOP[mA] === mB ? ': nhu cầu cảm xúc giống nhau.' : ': cách được vỗ về khác nhau – hỏi nhau "em/anh cần gì lúc buồn".')]
-      .concat(ds.slice(0, 10).map(function (x) { return x.t; })),
+      .concat(ds.slice(0, 10).map(function (x) { return x.t; }))
+      .concat(SS ? SS.tomTat.concat([SS.composite.t, SS.davison.t]) : []),
     tot: tot.slice(0, 5), xau: xau.slice(0, 4), goc: ds };
 }
 

@@ -268,7 +268,7 @@ var DH_CT_THO = { 1: 'bạn nghiêm khắc với bản thân, trưởng thành s
   7: 'hôn nhân đến muộn hoặc đòi hỏi nhiều cam kết; khi đã vững thì rất bền', 8: 'chuyện tài sản chung, nợ nần cần rõ ràng; bạn học được cách quản lý rủi ro', 9: 'niềm tin và học vấn cao đòi hỏi nhiều công sức; bạn trở thành người hiểu biết sâu',
   10: 'sự nghiệp đi lên từng bậc bằng nỗ lực thật; danh tiếng đến muộn nhưng bền', 11: 'bạn bè ít nhưng chất; hãy chủ động kết nối cộng đồng', 12: 'bài học nằm ở thế giới nội tâm; thiền, tĩnh lặng giúp bạn mạnh mẽ' };
 
-function dhChiemTinh_(ct) {
+function dhChiemTinh_(ct, ctl) {
   var by = {}, khoi = [], facts = [], he = 'Chiem Tinh';
   (ct.hanhTinh || []).forEach(function (p) { by[p.key] = p; });
   var sun = by.sun, moon = by.moon, asc = ct.asc, mc = ct.mc;
@@ -306,6 +306,22 @@ function dhChiemTinh_(ct) {
   facts.push(taoFact_(he, 'Quan Loc', 'cong_danh', 'trung', DH_CT_MC[nt(mc.cung)], 1.0, { nguon: 'Thiên đỉnh ' + mc.cungTen }));
   if (jn) facts.push(taoFact_(he, DH_CT_NHA_LV[jn][0], DH_CT_NHA_LV[jn][1], 'manh', dhCau_(DH_CT_MOC[jn]), 1.2, { nguon: 'Sao Mộc nhà ' + jn }));
   if (sn) facts.push(taoFact_(he, DH_CT_NHA_LV[sn][0], DH_CT_NHA_LV[sn][1], 'yeu', dhCau_(DH_CT_THO[sn]), 1.1, { nguon: 'Sao Thổ nhà ' + sn }));
+  // Luận 8 lĩnh vực theo quy trình 7 bước (văn không nêu tên hành tinh)
+  var P = ctl && ctl.phanTich;
+  if (P && P.linhVuc) {
+    khoi.push({ ten: 'Tám mặt đời sống qua bản đồ sao', doan: P.linhVuc.map(function (x) { return dhDoan_(x.ten, x.tron + ' Gợi ý: ' + x.khuyen); }) });
+    var MY = P.manhYeu, CK = P.chuKy, sr = CK && CK.solarReturn, tot = (CK.suKien || []).filter(function (e) { return e.tot; }), kho = (CK.suKien || []).filter(function (e) { return !e.tot; });
+    var uniq = function (a) { return a.filter(function (x, i) { return a.indexOf(x) === i; }); };
+    khoi.push({ ten: 'Điểm mạnh, bài học và năm nay', doan: [
+      MY.manhTron.length ? dhDoan_('Điểm mạnh nên phát huy', 'Bạn có lợi thế tự nhiên về ' + MY.manhTron.join(', ') + '.') : null,
+      MY.yeuTron.length ? dhDoan_('Điều cần rèn thêm', 'Bạn có xu hướng cần nhiều công sức hơn người khác ở ' + MY.yeuTron.join(', ') + ' – rèn từng chút, đều đặn, đây cũng là nơi bạn trưởng thành nhất.') : null,
+      dhDoan_('Cách người khác nhìn bạn', MY.nhinNhan),
+      dhDoan_('Bài học của đời này', P.nut.tron),
+      sr ? dhDoan_('Năm nay', 'Chủ đề nổi bật của năm là chuyện ' + CT_NHA_NGAN[sr.nhaMatTroi - 1] + '.' + (tot.length ? ' Thời điểm thuận: ' + uniq(tot.map(function (e) { return e.thang; })).join(', ') + '.' : '') + (kho.length ? ' Nên thận trọng: ' + uniq(kho.map(function (e) { return e.thang; })).join(', ') + '.' : '')) : null
+    ].filter(Boolean) });
+    var LVF = { tinhCach: ['Menh', 'tinh_cach'], camXuc: ['Phuc Duc', 'tam_linh'], tuDuy: ['Menh', 'tinh_cach'], tinhYeu: ['Phu The', 'tinh_duyen'], suNghiep: ['Quan Loc', 'cong_danh'], taiChinh: ['Tai Bach', 'tai_chinh'], sucKhoe: ['Tat Ach', 'suc_khoe'] };
+    P.linhVuc.forEach(function (x) { var f = LVF[x.k]; if (f) facts.push(taoFact_(he, f[0], f[1], dhLoai_(dhD10_(x.diem * 1.5)), x.tron, 0.6, { nguon: 'Chiêm tinh – ' + x.ten })); });
+  }
   return { he: 'Chiêm tinh', khoi: khoi, facts: facts };
 }
 
@@ -460,7 +476,7 @@ var DH_HE_TEN = { 'Tu Vi': 'Tử Vi', 'Bat Tu': 'Bát Tự', 'Chiem Tinh': 'Chi�
 var DH_TV_CUNG_NHOM = { 'Menh': 'tinh_cach', 'Tai Bach': 'tai_chinh', 'Quan Loc': 'cong_danh', 'Phu The': 'tinh_duyen', 'Tu Tuc': 'con_cai',
   'Tat Ach': 'suc_khoe', 'Phu Mau': 'gia_dao', 'Huynh De': 'gia_dao', 'Dien Trach': 'tai_chinh', 'No Boc': 'xa_hoi', 'Thien Di': 'xa_hoi', 'Phuc Duc': 'tam_linh' };
 // Câu Tử Vi nói về "cấu trúc lá số" (cung kẹp, cung đối diện…) khó hiểu khi đứng riêng → không đưa vào phần tổng hợp
-var DH_TV_BO = /(^|\s)(cung này|cung đối diện|kẹp|tam hợp|chính tinh|vô chính diệu|tuần|triệt)(\s|$|,|\.)/i;
+var DH_TV_BO = /(^|\s)(cung này|cung đối diện|kẹp|tam hợp|nhị hợp|chính tinh|vô chính diệu|tuần|triệt)(\s|$|,|\.)/i;
 var DH_TV_CUNG_TEN = { 'Mệnh': ['Menh', 'bản thân'], 'Huynh Đệ': ['Huynh De', 'anh chị em'], 'Phu Thê': ['Phu The', 'vợ chồng'], 'Tử Tức': ['Tu Tuc', 'con cái'],
   'Tài Bạch': ['Tai Bach', 'tiền bạc'], 'Tật Ách': ['Tat Ach', 'sức khỏe'], 'Thiên Di': ['Thien Di', 'ra ngoài, đi xa'], 'Nô Bộc': ['No Boc', 'bạn bè, cộng sự'],
   'Quan Lộc': ['Quan Loc', 'sự nghiệp'], 'Điền Trạch': ['Dien Trach', 'nhà cửa'], 'Phúc Đức': ['Phuc Duc', 'phúc phần, tinh thần'], 'Phụ Mẫu': ['Phu Mau', 'cha mẹ'] };
@@ -485,19 +501,22 @@ function dhTongHop_(facts) {
     if (DH_TV_CUNG_NHOM[f.linhVuc]) f.nhom = DH_TV_CUNG_NHOM[f.linhVuc];
     // Ngoài cung Mệnh, câu "Bạn …" là tính chất sao (thường tả người/việc của cung đó) – dễ gây hiểu nhầm khi gộp
     if (!f.tvDiem && f.nhom !== 'tinh_cach' && /^Bạn\s/.test(dhBoTenSao_(f.yNghia))) return false;
+    // Câu mô tả sao vòng Trường Sinh / Thái Tuế ("Bệnh Phù (bệnh tật): …") là tính chất chung, không nói riêng về lĩnh vực → bỏ khỏi phần gộp
+    if (!f.tvDiem && f.nhom !== 'tinh_cach' && /^[^:—.]{2,25}\([^)]*\):/.test(f.yNghia)) return false;
     return true;
   });
   DH_TH_NHOM.forEach(function (N) {
     var ds = facts.filter(function (f) { return f.nhom === N.k; });
     if (!ds.length) return;
-    var heM = {}, heY = {}, heAll = {}, wM = 0, wY = 0;
+    var heM = {}, heY = {}, heAll = {}, wM = 0, wY = 0, wT = 0;
     ds.forEach(function (f) {
       heAll[f.he] = 1; var w = Math.abs(Number(f.trongSo) || 1);
-      if (f.loai === 'manh') { heM[f.he] = 1; wM += w; } else if (f.loai === 'yeu') { heY[f.he] = 1; wY += w; }
+      if (f.loai === 'manh') { heM[f.he] = 1; wM += w; } else if (f.loai === 'yeu') { heY[f.he] = 1; wY += w; } else wT += w;
     });
     var nAll = Object.keys(heAll).length, nM = Object.keys(heM).length, nY = Object.keys(heY).length;
     // Điểm /10: 5 là cân bằng; càng nhiều điểm thuận (có trọng số) càng gần 10
-    var d10 = Math.round((5 + 5 * (wM - wY) / (wM + wY + 1)) * 10) / 10;
+    // nhận định trung tính tính nửa trọng số ở mẫu số → vài câu "yếu" không kéo điểm xuống sát 0 khi các hệ khác chỉ mô tả trung tính
+    var d10 = Math.round((5 + 5 * (wM - wY) / (wM + wY + wT * 0.5 + 1)) * 10) / 10;
     function chon(loai, max, boTuVi) {
       var daHe = {}, kq = [];
       ds.filter(function (f) { return f.loai === loai && !(boTuVi && f.he === 'Tu Vi' && !f.tvDiem); })
@@ -532,7 +551,7 @@ function deHieuLap_(C) {
   var out = {}, all = [];
   function chay(k, f) { try { var r = f(); if (r) { out[k] = { he: r.he, khoi: r.khoi }; all = all.concat(r.facts || []); } } catch (e) { out[k] = { loi: String(e && e.message || e) }; } }
   chay('battu', function () { return dhBatTu_(C.bt, C.btct); });
-  chay('chiemTinh', function () { return dhChiemTinh_(C.ct); });
+  chay('chiemTinh', function () { return dhChiemTinh_(C.ct, C.ctl); });
   chay('thanSo', function () { return dhThanSo_(C.ts, C.tsl); });
   chay('hd', function () { return dhHD_(C.hdOut); });
   chay('haLac', function () { return dhHaLac_(C.hl); });

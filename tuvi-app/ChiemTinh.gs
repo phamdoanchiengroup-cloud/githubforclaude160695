@@ -331,7 +331,7 @@ function chiemTinhLap(input) {
   return { thoiDiem: T, heNha: H.he, cusp: H.cusp.map(function (c) { return { lon: c, cung: ctCung_(c), cungTen: CT_CUNG[ctCung_(c)].ten, do: ctFmtDo_(c) }; }),
     hanhTinh: ht, asc: diem, mc: mc, by: by, goc: goc, nguyenTo: nt, tinhChat: tc, banCau: ban,
     phaTrang: { idx: pha, ten: CT_PHA_TRANG[pha][0], y: CT_PHA_TRANG[pha][1], goc: Math.round(goc2) },
-    chuTinh: chuKey, chuTinhMoi: chuMoi, demNha: demNha, chuKy: ctChuKy_(jd, pos, T) };
+    chuTinh: chuKey, chuTinhMoi: chuMoi, demNha: demNha, chuKy: ctChuKy_(jd, pos, T), nhap: { gender: input.gender } };
 }
 
 /** Chu kỳ đời người: tìm ngày quá cảnh chính xác */
@@ -536,6 +536,7 @@ function chiemTinhLuan(ct, viewYear) {
   out.chuKy = ct.chuKy.map(function (c) { return { tuoi: c.tuoi, nam: c.nam, ten: c.ten, moTa: c.moTa }; });
   out.namXem = ctNamXem_(ct, viewYear);
   out.nghe = ctNghe_(ct);
+  try { out.phanTich = ctPhanTich_(ct, viewYear, ct.nhap); } catch (e) { out.phanTichLoi = String(e && e.message || e) + ' @ ' + String(e && e.stack || '').split('\n')[1]; }
   out.coSo = [
     'Hoàng đạo nhiệt đới (tropical) tính từ điểm xuân phân của ngày sinh; vị trí hành tinh tính bằng quỹ đạo Kepler + nhiễu động, Mặt Trăng theo chuỗi Meeus (sai số < 5′ so với astronomy-engine).',
     'Nhà Placidus theo nửa cung ban ngày/ban đêm (tự chuyển Porphyry ở vĩ độ trên 66°). Giờ sinh cần chính xác: cung Mọc dịch 1° mỗi ~4 phút.',
@@ -557,4 +558,382 @@ function ctNghe_(ct) {
   h10.forEach(function (p) { items.push(p.ten + ' ở nhà 10 – sự nghiệp mang dấu ấn ' + CT_HT[p.key].cn + '.'); });
   items.push('Mặt Trời ' + ct.by.sun.cungTen + ' gợi ý thêm: ' + nghe[ct.by.sun.cung] + '.');
   return { items: items, mcCung: ct.mc.cung, sunCung: ct.by.sun.cung };
+}
+
+/* ============================================================
+ *  ĐIỂM PHỤ: CHIRON, LILITH (Trăng Đen trung bình), NÚT NAM
+ * ============================================================ */
+/** Chiron (2060): quỹ đạo Kepler hai vật từ phần tử J2000 (q 8,533 AU; a 13,70 AU; i 6,93°; Ω 209,27°; ω 339,71°;
+ *  qua điểm cận nhật 14/2/1996). Sai số cỡ 1° trong giai đoạn 1940–2040 do nhiễu động của Sao Thổ. */
+function ctChiron_(jd) {
+  var d = jd - 2451543.5, a = 13.70, e = 1 - 8.533 / 13.70, i = 6.93, N = 209.27, w = 339.71;
+  var n = 0.9856076686 / Math.pow(a, 1.5);
+  function helio(jj) {
+    var MM = astNorm_(n * (jj - 2450128.0)), E = astKepler_(MM, e);
+    var xv = a * (astCos_(E) - e), yv = a * Math.sqrt(1 - e * e) * astSin_(E), v = astAtan2_(yv, xv), r = Math.sqrt(xv * xv + yv * yv);
+    var xh = r * (astCos_(N) * astCos_(v + w) - astSin_(N) * astSin_(v + w) * astCos_(i));
+    var yh = r * (astSin_(N) * astCos_(v + w) + astCos_(N) * astSin_(v + w) * astCos_(i));
+    var zh = r * astSin_(v + w) * astSin_(i);
+    var lon = astAtan2_(yh, xh) + 1.396971 * (jj - 2451545.0) / 36525, lat = astAtan2_(zh, Math.sqrt(xh * xh + yh * yh));
+    return { x: r * astCos_(lon) * astCos_(lat), y: r * astSin_(lon) * astCos_(lat), z: r * astSin_(lat) };
+  }
+  var sun = astSun_(d), h = helio(jd), gx = h.x + sun.x, gy = h.y + sun.y, gz = h.z;
+  var tau = Math.sqrt(gx * gx + gy * gy + gz * gz) * 0.0057755183;
+  h = helio(jd - tau);
+  return astNorm_(astAtan2_(h.y + sun.y, h.x + sun.x) - 0.0057);
+}
+/** Lilith – Trăng Đen trung bình = viễn điểm trung bình của quỹ đạo Mặt Trăng (Meeus, cận điểm trung bình + 180°) */
+function ctLilith_(jd) {
+  var T = (jd - 2451545.0) / 36525;
+  return astNorm_(83.3532465 + 4069.0137287 * T - 0.0103200 * T * T - T * T * T / 80053 + 180);
+}
+
+/* ============================================================
+ *  PHÂN TÍCH ĐẦY ĐỦ THEO QUY TRÌNH 7 BƯỚC (xem docs/quy-trinh-chiem-tinh.md)
+ *  B1 dữ liệu & giờ sao · B2 lá số (kể cả Nút Nam, Chiron, Lilith) · B3 Big Three, hành tinh,
+ *  12 nhà, góc chiếu, cấu hình (Stellium, T-Square, Grand Trine, Grand Cross, Yod)
+ *  B4 tám lĩnh vực · B5 transit, tiến triển thứ cấp, Solar Arc, Solar Return, Lunar Return
+ *  B7 luận tổng hợp + lời khuyên · trường hợp đặc biệt (nghịch hành, phẩm chất, nhà trống) · ứng dụng.
+ *  B6 (so sánh hai lá số, Composite, Davison) nằm ở CapDoi.gs › cdChiemTinh_ (dùng ctSoSanh_).
+ * ============================================================ */
+var CT_PHAM_TEN = { 'Vượng': 'Vượng (Exaltation) – mạnh nhất', 'Miếu': 'Miếu (Domicile) – mạnh', 'Hãm': 'Hãm (Detriment) – yếu', 'Tù': 'Tù (Fall) – yếu nhất' };
+var CT_PHAM_DIEM2 = { 'Vượng': 2, 'Miếu': 1.5, 'Hãm': -1, 'Tù': -1.5 };
+var CT_NGHICH = {
+  mercury: ['3–4 lần/năm', 'giao tiếp hướng nội: nghĩ kỹ rồi mới nói, học sâu hơn học nhanh; hay xem lại, sửa lại'],
+  venus: ['1 lần/18 tháng', 'tình yêu hướng nội: chậm mở lòng, giá trị riêng khác số đông; hay nhìn lại chuyện cũ'],
+  mars: ['1 lần/2 năm', 'hành động hướng nội: dồn nén rồi bùng; hợp làm việc âm thầm, bền bỉ'],
+  jupiter: ['1 lần/năm', 'mở rộng hướng nội: niềm tin tự tìm lấy, may mắn đến qua chiêm nghiệm'],
+  saturn: ['1 lần/năm', 'kỷ luật hướng nội: tự đặt chuẩn rất cao cho mình, trách nhiệm nặng trong lòng'],
+  uranus: ['1 lần/năm', 'đổi mới hướng nội: cách mạng trong suy nghĩ trước khi thể hiện ra ngoài'],
+  neptune: ['1 lần/năm', 'tâm linh hướng nội: trực giác mạnh, đời sống tinh thần phong phú'],
+  pluto: ['1 lần/năm', 'chuyển hóa hướng nội: sức mạnh ngầm, tự "lột xác" từ bên trong']
+};
+var CT_CAU_HINH = {
+  stellium: 'năng lượng tập trung – chủ đề này nổi bật suốt đời',
+  tSquare: 'căng thẳng tạo động lực phát triển – đỉnh chữ T là nơi phải nỗ lực nhiều nhất',
+  grandTrine: 'tài năng bẩm sinh, may mắn tự nhiên – cần chủ động dùng, kẻo dễ dãi',
+  grandCross: 'bốn phía giằng co – đời nhiều thử thách nhưng rèn nên bản lĩnh lớn',
+  yod: '"ngón tay của định mệnh" – cần điều chỉnh liên tục, có sứ mệnh đặc biệt ở hành tinh đỉnh'
+};
+var CT_HT_TRON = { sun: 'tự tin, nổi bật', moon: 'nhạy cảm, dễ biểu lộ cảm xúc', mercury: 'lanh lợi, hoạt ngôn', venus: 'duyên dáng, dễ mến', mars: 'mạnh mẽ, nhanh nhẹn, hơi nóng',
+  jupiter: 'hào phóng, lạc quan', saturn: 'nghiêm túc, dè dặt, chín chắn', uranus: 'khác biệt, độc lập', neptune: 'mơ mộng, khó đoán', pluto: 'bí ẩn, có sức hút mạnh', northNode: 'hướng về sự trưởng thành' };
+var CT_HT_CN_TRON = { sun: 'sức sống và ý chí', moon: 'sự nhạy cảm, thấu hiểu cảm xúc', mercury: 'trí óc và cách giao tiếp', venus: 'sức hút, gu thẩm mỹ và chuyện tình cảm', mars: 'năng lượng hành động',
+  jupiter: 'sự lạc quan và may mắn', saturn: 'kỷ luật và sự bền bỉ', uranus: 'óc sáng tạo, đổi mới', neptune: 'trí tưởng tượng, lòng trắc ẩn', pluto: 'nội lực và khả năng tái sinh' };
+var CT_TRANSIT_Y = {
+  jupiter: ['mở rộng, gặp may, quý nhân nâng đỡ', 'dễ quá đà, hứa nhiều, tiêu nhiều'],
+  saturn: ['xây nền vững, được ghi nhận nhờ bền bỉ', 'thử thách, trì hoãn, cần kỷ luật và kiên nhẫn'],
+  uranus: ['đổi mới bất ngờ theo hướng tốt, cơ hội lạ', 'xáo trộn đột ngột, muốn phá khuôn'],
+  neptune: ['cảm hứng, trực giác, lòng trắc ẩn', 'mơ hồ, dễ nhầm lẫn hoặc bị lừa – kiểm tra kỹ'],
+  pluto: ['chuyển hóa sâu, nắm lại quyền chủ động', 'khủng hoảng buộc thay đổi tận gốc']
+};
+var CT_DIEM_CHU_DE = { sun: 'bản thân, mục tiêu sống, sức khỏe', moon: 'gia đình, cảm xúc, nhà ở', mercury: 'học tập, giấy tờ, giao tiếp', venus: 'tình cảm, tiền bạc, niềm vui',
+  mars: 'năng lượng, cạnh tranh, dự án mới', asc: 'hình ảnh bản thân, thể lực', mc: 'sự nghiệp, danh tiếng' };
+function ctDuyNhat_(a) { return a.filter(function (x, i) { return a.indexOf(x) === i; }); }
+var CT_NHA_NGAN = ['bản thân', 'tiền bạc', 'học tập, giao tiếp', 'gia đình, nhà cửa', 'sáng tạo, tình yêu, con cái', 'công việc hằng ngày, sức khỏe', 'hôn nhân, đối tác', 'tài chính chung, chuyển hóa', 'học vấn cao, đi xa', 'sự nghiệp, danh tiếng', 'bạn bè, cộng đồng', 'đời sống tinh thần, điều thầm kín'];
+var CT_TEN_BU = { 'Lửa': 'ánh sáng, sức nóng: Minh, Quang, Huy, Dương, Hỏa, Nhật, Hồng', 'Đất': 'đất đá, núi, ruộng: Sơn, Thạch, Điền, Khôi, An, Kiên, Ngọc',
+  'Khí': 'gió, mây, bầu trời: Phong, Vân, Thiên, Không, Tú, Linh, Khang', 'Nước': 'sông, biển, mưa: Hải, Giang, Hà, Thủy, Tuyết, Băng, Uyên' };
+
+function ctPhamDiem_(ph) { return CT_PHAM_DIEM2[ph] || 0; }
+function ctJdNgay_(jd, tz) { var x = jd + (tz || 0) / 24 + 0.5, z = Math.floor(x), f = x - z, dmy = jdToDate(z), h = Math.floor(f * 24), mi = Math.floor((f * 24 - h) * 60); return { d: dmy[0], m: dmy[1], y: dmy[2], h: h, mi: mi, t: dmy[0] + '/' + dmy[1] + '/' + dmy[2] + ' ' + (h < 10 ? '0' : '') + h + ':' + (mi < 10 ? '0' : '') + mi }; }
+function ctGocGiua_(a, b, dsG) {
+  var dist = ctKhoang_(a, b);
+  for (var k = 0; k < dsG.length; k++) if (Math.abs(dist - dsG[k][0]) <= dsG[k][1]) return { deg: dsG[k][0], orb: Math.round(Math.abs(dist - dsG[k][0]) * 10) / 10 };
+  return null;
+}
+var CT_GOC_TEN = { 0: ['Hợp', '☌'], 60: ['Lục hợp', '⚹'], 90: ['Vuông', '□'], 120: ['Tam hợp', '△'], 150: ['Lệch', '⚻'], 180: ['Đối', '☍'] };
+function ctBac_(d) { return d >= 0.6 ? 'tot' : d >= -0.6 ? 'vua' : 'kho'; }
+
+function ctPhanTich_(ct, viewYear, input) {
+  var T = ct.thoiDiem, by = ct.by, cuspLon = ct.cusp.map(function (c) { return c.lon; }), out = {};
+  var HT10 = ct.hanhTinh.filter(function (p) { return p.key !== 'northNode'; });
+  // ---- B1: dữ liệu, đổi giờ
+  var ut = ctJdNgay_(T.jd, 0), lst = astNorm_(astGMST_(T.jd) + T.lon) / 15, lh = Math.floor(lst), lm = Math.floor((lst - lh) * 60), ls = Math.round(((lst - lh) * 60 - lm) * 60);
+  out.duLieu = { ngay: T.d + '/' + T.m + '/' + T.y, gio: (T.h < 10 ? '0' : '') + T.h + ':' + (T.mi < 10 ? '0' : '') + T.mi, tz: T.tz, gmt: ut.t, gioSao: lh + 'h' + (lm < 10 ? '0' : '') + lm + 'm' + (ls < 10 ? '0' : '') + ls + 's',
+    jd: Math.round(T.jd * 10000) / 10000, noiSinh: T.noiSinh, lat: T.lat, lon: T.lon, heNha: ct.heNha, gioiTinh: input && /nu|nữ/i.test(String(input.gender || '')) ? 'Nữ' : 'Nam' };
+  // ---- B2: điểm phụ
+  function diem(key, ten, ky, lon) { var s = ctCung_(lon); return { key: key, ten: ten, ky: ky, lon: lon, cung: s, cungTen: CT_CUNG[s].ten, do: ctFmtDo_(lon), nha: ctNhaCua_(lon, cuspLon) }; }
+  var nn = by.northNode;
+  var phu = [diem('southNode', 'Nút Nam', '☋', astNorm_(nn.lon + 180)), diem('chiron', 'Chiron', '⚷', ctChiron_(T.jd)), diem('lilith', 'Lilith', '⚸', ctLilith_(T.jd))];
+  out.diemPhu = phu.map(function (p) {
+    var Y = { southNode: 'thói quen, sở trường cũ – vùng an toàn cần bước ra', chiron: 'vết thương sâu nhất, cũng là nơi bạn có khả năng chữa lành người khác', lilith: 'phần bản năng bị dồn nén, khao khát tự do không muốn bị kiểm soát' }[p.key];
+    return { key: p.key, ten: p.ten, ky: p.ky, cungTen: p.cungTen, do: p.do, nha: p.nha, y: Y, t: p.ten + ' ở ' + p.cungTen + ' ' + p.do + ', nhà ' + p.nha + ': ' + Y + ' – thể hiện qua ' + CT_CUNG[p.cung].tuKhoa + ', trong lĩnh vực ' + CT_NHA[p.nha - 1].y + '.' };
+  });
+  // ---- Góc chiếu giữa 10 hành tinh (dùng cho cấu hình và chấm điểm)
+  var G = [[0, 8], [60, 5], [90, 7], [120, 7], [150, 3], [180, 8]], M = {};
+  HT10.forEach(function (a) { M[a.key] = {}; });
+  HT10.forEach(function (a, i) { HT10.forEach(function (b, j) { if (j > i) { var g = ctGocGiua_(a.lon, b.lon, G); if (g) { M[a.key][b.key] = g.deg; M[b.key][a.key] = g.deg; } } }); });
+  function co(a, b, deg) { return M[a] && M[a][b] === deg; }
+  // Điểm sức mạnh từng hành tinh: phẩm chất + góc với cát tinh / hung tinh + nghịch hành
+  var CAT = ['venus', 'jupiter'], HUNG = ['mars', 'saturn', 'pluto', 'uranus', 'neptune'];
+  function sucHT(k) {
+    var p = by[k]; if (!p) return 0;
+    var d = ctPhamDiem_(p.pham) + (p.nghich ? -0.2 : 0);
+    Object.keys(M[k] || {}).forEach(function (o) {
+      var g = M[k][o];
+      if (CAT.indexOf(o) >= 0) d += g === 120 || g === 60 ? 0.6 : g === 0 ? 0.4 : g === 90 || g === 180 ? -0.1 : 0;
+      if (HUNG.indexOf(o) >= 0) d += g === 90 || g === 180 ? -0.6 : g === 150 ? -0.3 : g === 0 ? -0.3 : 0.2;
+    });
+    return Math.round(d * 10) / 10;
+  }
+  function trongNha(n) { return HT10.filter(function (p) { return p.nha === n; }); }
+  function chuNha(n) { return CT_CUNG[ct.cusp[n - 1].cung].chuCo; }
+  var WN = { venus: 0.8, jupiter: 0.9, sun: 0.3, moon: 0.2, mercury: 0.1, mars: -0.5, saturn: -0.7, pluto: -0.4, uranus: -0.3, neptune: -0.3 };
+  function sucNha(n) { var d = 0; trongNha(n).forEach(function (p) { d += WN[p.key] || 0; }); d += sucHT(chuNha(n)) * 0.4; return Math.round(d * 10) / 10; }
+  // ---- B3: Big Three, hành tinh, 12 nhà, góc chiếu, cấu hình
+  var S = CT_CUNG, sun = by.sun, moon = by.moon, asc = ct.asc;
+  out.bigThree = {
+    ket: 'Mặt Trời ' + sun.cungTen + ' + Mặt Trăng ' + moon.cungTen + ' + Mọc ' + asc.cungTen + ' → bề ngoài ' + S[asc.cung].tuKhoa + '; bên trong ' + S[sun.cung].tuKhoa + '; cảm xúc ' + S[moon.cung].tuKhoa + '.',
+    ds: [{ ten: 'Mặt Trời', cung: sun.cungTen, nha: sun.nha, vai: 'bản ngã, mục đích sống', t: S[sun.cung].sun }, { ten: 'Mặt Trăng', cung: moon.cungTen, nha: moon.nha, vai: 'cảm xúc, nhu cầu an toàn', t: S[moon.cung].moon },
+      { ten: 'Điểm Mọc', cung: asc.cungTen, nha: 1, vai: 'vẻ ngoài, cách khởi đầu', t: S[asc.cung].asc }]
+  };
+  out.hanhTinh = ct.hanhTinh.map(function (p) {
+    var gs = ct.goc.filter(function (g) { return g.a === p.key || g.b === p.key; }).map(function (g) { return g.ky + ' ' + (g.a === p.key ? g.bTen : g.aTen); });
+    return { key: p.key, ten: p.ten, ky: p.ky, cungTen: p.cungTen, do: p.do, nha: p.nha, pham: p.pham ? CT_PHAM_TEN[p.pham] : '', nghich: p.nghich, suc: p.key === 'northNode' ? null : sucHT(p.key), goc: gs, t: ctPlanetInSign_(p) };
+  });
+  out.nha12 = ct.cusp.map(function (c, i) {
+    var n = i + 1, ds = trongNha(n), ck = chuNha(n), cp = by[ck];
+    return { nha: n, ten: CT_NHA[i].ten, y: CT_NHA[i].y, cungTen: c.cungTen, do: c.do, hanhTinh: ds.map(function (p) { return p.ten; }), chu: CT_HT[ck].ten, chuO: cp.cungTen + ', nhà ' + cp.nha, trong: !ds.length, diem: sucNha(n),
+      t: 'Nhà ' + n + ' khởi ở ' + c.cungTen + ' (' + S[c.cung].tuKhoa + ')' + (ds.length ? '; có ' + ds.map(function (p) { return p.ten; }).join(', ') : '; nhà trống – chủ đề ít được kích hoạt trực tiếp, xem chủ tinh') + '. Chủ tinh ' + CT_HT[ck].ten + ' ở ' + cp.cungTen + ', nhà ' + cp.nha + '.' };
+  });
+  var soTot = ct.goc.filter(function (g) { return g.loai === 'tot'; }).length, soXau = ct.goc.filter(function (g) { return g.loai === 'xau'; }).length;
+  out.gocTom = 'Có ' + ct.goc.length + ' góc chiếu: ' + soTot + ' góc hài hòa, ' + soXau + ' góc căng, ' + (ct.goc.length - soTot - soXau) + ' góc hợp. ' +
+    (soTot > soXau + 2 ? 'Lá số thiên về thuận – năng lực đến dễ, cần tự đặt thử thách để không dễ dãi.' : soXau > soTot + 2 ? 'Lá số nhiều góc căng – đời nhiều thử thách, nhưng đó cũng là nguồn động lực và bản lĩnh.' : 'Thuận và căng khá cân bằng.');
+  // Cấu hình đặc biệt
+  var ch = [], keys = HT10.map(function (p) { return p.key; });
+  var theoCung = {}, theoNha = {};
+  HT10.forEach(function (p) { (theoCung[p.cung] = theoCung[p.cung] || []).push(p.ten); (theoNha[p.nha] = theoNha[p.nha] || []).push(p.ten); });
+  Object.keys(theoCung).forEach(function (c) { if (theoCung[c].length >= 3) ch.push({ loai: 'stellium', ten: 'Stellium cung ' + S[c].ten, ds: theoCung[c], t: theoCung[c].length + ' hành tinh (' + theoCung[c].join(', ') + ') cùng ở ' + S[c].ten + ': ' + CT_CAU_HINH.stellium + ' – ' + S[c].tuKhoa + '.' }); });
+  Object.keys(theoNha).forEach(function (n) { if (theoNha[n].length >= 3) ch.push({ loai: 'stellium', ten: 'Stellium nhà ' + n, ds: theoNha[n], t: theoNha[n].length + ' hành tinh (' + theoNha[n].join(', ') + ') cùng ở nhà ' + n + ': ' + CT_CAU_HINH.stellium + ' – ' + CT_NHA[n - 1].y + '.' }); });
+  var ten = function (k) { return CT_HT[k].ten; };
+  for (var i = 0; i < keys.length; i++) for (var j = i + 1; j < keys.length; j++) for (var k = j + 1; k < keys.length; k++) {
+    var a = keys[i], b = keys[j], c = keys[k];
+    if (co(a, b, 120) && co(b, c, 120) && co(a, c, 120)) ch.push({ loai: 'grandTrine', ten: 'Grand Trine (tam hợp lớn)', ds: [ten(a), ten(b), ten(c)], t: ten(a) + ' – ' + ten(b) + ' – ' + ten(c) + ' tam hợp nhau: ' + CT_CAU_HINH.grandTrine + '.' });
+    [[a, b, c], [a, c, b], [b, c, a]].forEach(function (x) {
+      if (co(x[0], x[1], 180) && co(x[0], x[2], 90) && co(x[1], x[2], 90)) ch.push({ loai: 'tSquare', ten: 'T-Square (chữ T)', ds: [ten(x[0]), ten(x[1]), ten(x[2])], dinh: ten(x[2]), t: ten(x[0]) + ' đối ' + ten(x[1]) + ', cùng vuông ' + ten(x[2]) + ' (đỉnh): ' + CT_CAU_HINH.tSquare + '.' });
+      if (co(x[0], x[1], 60) && co(x[0], x[2], 150) && co(x[1], x[2], 150)) ch.push({ loai: 'yod', ten: 'Yod', ds: [ten(x[0]), ten(x[1]), ten(x[2])], dinh: ten(x[2]), t: ten(x[0]) + ' lục hợp ' + ten(x[1]) + ', cùng lệch 150° tới ' + ten(x[2]) + ' (đỉnh): ' + CT_CAU_HINH.yod + '.' });
+    });
+  }
+  for (i = 0; i < keys.length; i++) for (j = i + 1; j < keys.length; j++) if (co(keys[i], keys[j], 180)) for (k = 0; k < keys.length; k++) for (var l = k + 1; l < keys.length; l++) {
+    if ([i, j].indexOf(k) >= 0 || [i, j].indexOf(l) >= 0 || k < i) continue;
+    var A2 = keys[i], B2 = keys[j], C2 = keys[k], D2 = keys[l];
+    if (co(C2, D2, 180) && co(A2, C2, 90) && co(A2, D2, 90) && co(B2, C2, 90) && co(B2, D2, 90)) ch.push({ loai: 'grandCross', ten: 'Grand Cross (thập tự lớn)', ds: [ten(A2), ten(B2), ten(C2), ten(D2)], t: ten(A2) + ', ' + ten(B2) + ', ' + ten(C2) + ', ' + ten(D2) + ' tạo hai cặp đối vuông nhau: ' + CT_CAU_HINH.grandCross + '.' });
+  }
+  out.cauHinh = ch;
+  // ---- B4: tám lĩnh vực
+  function tenDs(ds) { return ds.length ? ds.map(function (p) { return p.ten; }).join(', ') : 'không có hành tinh'; }
+  function tronDs(ds) { return ds.map(function (p) { return CT_HT_TRON[p.key]; }).join('; '); }
+  function boNgoac(s) { return String(s).replace(/\s*\([^)]*\)/g, ''); }
+  var c4 = ct.cusp[3], c3 = ct.cusp[2], c5 = ct.cusp[4], c7 = ct.cusp[6], c2 = ct.cusp[1], c8 = ct.cusp[7], c6 = ct.cusp[5], c12 = ct.cusp[11], c10 = ct.cusp[9];
+  var h1 = trongNha(1), h3 = trongNha(3), h4 = trongNha(4), h5 = trongNha(5), h7 = trongNha(7), h2 = trongNha(2), h8 = trongNha(8), h6 = trongNha(6), h12 = trongNha(12), h10 = trongNha(10);
+  var me = by.mercury, ve = by.venus, ma = by.mars, ju = by.jupiter, sa = by.saturn, mc = ct.mc;
+  var NGHE = ['quân đội, thể thao, khởi nghiệp, cơ khí, cấp cứu', 'tài chính – ngân hàng, bất động sản, ẩm thực, làm đẹp', 'truyền thông, báo chí, giảng dạy, bán hàng, công nghệ thông tin', 'giáo dục, y tế – điều dưỡng, nhà hàng, bất động sản',
+    'giải trí, lãnh đạo, thiết kế, thời trang', 'y tế, dinh dưỡng, kế toán, biên tập, phân tích dữ liệu', 'luật, ngoại giao, thiết kế, tư vấn, nhân sự', 'tâm lý, điều tra, nghiên cứu, y khoa, đầu tư, bảo hiểm',
+    'giáo dục đại học, du lịch, xuất bản, luật, xuất nhập khẩu', 'quản lý, hành chính, xây dựng, kỹ thuật, doanh nghiệp lớn', 'công nghệ, khoa học, cải cách xã hội, phi lợi nhuận', 'nghệ thuật, âm nhạc, điện ảnh, chữa lành, từ thiện'];
+  var LV = [
+    { k: 'tinhCach', ten: 'Tính cách', icon: '🧭', dua: 'Mặt Trời · Điểm Mọc · nhà 1 · hành tinh trong nhà 1', diem: sucHT('sun') * 0.5 + sucHT(ct.chuTinh) * 0.4 + sucNha(1) * 0.5,
+      ky: ['Mặt Trời ' + sun.cungTen + ' nhà ' + sun.nha + (sun.pham ? ' (' + sun.pham + ')' : '') + ': ' + S[sun.cung].tuKhoa + '.', 'Mọc ' + asc.cungTen + ': ' + S[asc.cung].tuKhoa + '. Chủ tinh lá số ' + CT_HT[ct.chuTinh].ten + ' ở ' + by[ct.chuTinh].cungTen + ', nhà ' + by[ct.chuTinh].nha + '.', 'Nhà 1: ' + tenDs(h1) + '.'],
+      tron: 'Bạn có xu hướng bề ngoài ' + S[asc.cung].tuKhoa + ', nhưng bên trong ' + S[sun.cung].tuKhoa + '.' + (h1.length ? ' Người khác còn thấy ở bạn nét ' + tronDs(h1) + '.' : '') },
+    { k: 'camXuc', ten: 'Cảm xúc', icon: '🌙', dua: 'Mặt Trăng · nhà 4 · hành tinh trong nhà 4', diem: sucHT('moon') * 0.7 + sucNha(4) * 0.5,
+      ky: ['Mặt Trăng ' + moon.cungTen + ' nhà ' + moon.nha + (moon.pham ? ' (' + moon.pham + ')' : '') + ': ' + S[moon.cung].moon, 'Nhà 4 khởi ở ' + c4.cungTen + ' (' + S[c4.cung].tuKhoa + '); có ' + tenDs(h4) + '.'],
+      tron: 'Về cảm xúc, bạn có xu hướng ' + S[moon.cung].tuKhoa + '. Tổ ấm với bạn mang màu sắc ' + S[c4.cung].tuKhoa + '.' + (h4.length ? ' Gia đình để lại dấu ấn ' + tronDs(h4) + '.' : '') },
+    { k: 'tuDuy', ten: 'Tư duy', icon: '💭', dua: 'Sao Thủy · nhà 3 · hành tinh trong nhà 3', diem: sucHT('mercury') * 0.7 + sucNha(3) * 0.5,
+      ky: ['Sao Thủy ' + me.cungTen + ' nhà ' + me.nha + (me.nghich ? ' (nghịch hành)' : '') + ': ' + CT_PHONG_CACH.mercury[me.cung] + '.', 'Nhà 3 khởi ở ' + c3.cungTen + '; có ' + tenDs(h3) + '.'],
+      tron: 'Cách bạn suy nghĩ và nói chuyện: ' + boNgoac(CT_PHONG_CACH.mercury[me.cung]) + '.' + (me.nghich ? ' Bạn hay nghĩ kỹ rồi mới nói, học chậm mà sâu.' : '') },
+    { k: 'tinhYeu', ten: 'Tình yêu', icon: '💞', dua: 'Sao Kim · Sao Hỏa · nhà 5 · nhà 7', diem: sucHT('venus') * 0.5 + sucHT('mars') * 0.3 + sucNha(5) * 0.3 + sucNha(7) * 0.5,
+      ky: ['Sao Kim ' + ve.cungTen + ' nhà ' + ve.nha + (ve.pham ? ' (' + ve.pham + ')' : '') + ': ' + CT_PHONG_CACH.venus[ve.cung] + '.', 'Sao Hỏa ' + ma.cungTen + ' nhà ' + ma.nha + ': ' + CT_PHONG_CACH.mars[ma.cung] + '.',
+        'Nhà 5 (tình yêu lãng mạn) khởi ở ' + c5.cungTen + '; có ' + tenDs(h5) + '.', 'Nhà 7 (hôn nhân) khởi ở ' + c7.cungTen + ' (' + S[c7.cung].tuKhoa + '); có ' + tenDs(h7) + '.'],
+      tron: 'Khi yêu, bạn ' + boNgoac(CT_PHONG_CACH.venus[ve.cung]) + '. Mẫu người bạn đời hợp với bạn mang nét ' + S[c7.cung].tuKhoa + '.' },
+    { k: 'hanhDong', ten: 'Hành động', icon: '⚡', dua: 'Sao Hỏa · nhà 1 · hành tinh trong nhà 1', diem: sucHT('mars') * 0.7 + sucNha(1) * 0.4,
+      ky: ['Sao Hỏa ' + ma.cungTen + ' nhà ' + ma.nha + (ma.pham ? ' (' + ma.pham + ')' : '') + (ma.nghich ? ', nghịch hành' : '') + ': ' + CT_PHONG_CACH.mars[ma.cung] + '.', 'Nhà 1: ' + tenDs(h1) + '.'],
+      tron: 'Cách bạn hành động: ' + boNgoac(CT_PHONG_CACH.mars[ma.cung]) + '.' },
+    { k: 'suNghiep', ten: 'Sự nghiệp', icon: '🏛', dua: 'MC · nhà 10 · Sao Thổ · Sao Mộc', diem: sucNha(10) * 0.6 + sucHT('saturn') * 0.3 + sucHT('jupiter') * 0.3 + sucHT(CT_CUNG[mc.cung].chuCo) * 0.3,
+      ky: ['MC ở ' + mc.cungTen + ' ' + mc.do + ': hợp ' + NGHE[mc.cung] + '.', 'Nhà 10: ' + tenDs(h10) + '. Chủ tinh MC ' + CT_HT[CT_CUNG[mc.cung].chuCo].ten + ' ở ' + by[CT_CUNG[mc.cung].chuCo].cungTen + ', nhà ' + by[CT_CUNG[mc.cung].chuCo].nha + '.',
+        'Sao Thổ ' + sa.cungTen + ' nhà ' + sa.nha + ': kỷ luật và thành tựu muộn về ' + CT_NHA[sa.nha - 1].y + '.', 'Sao Mộc ' + ju.cungTen + ' nhà ' + ju.nha + ': mở rộng, gặp quý nhân qua ' + CT_NHA[ju.nha - 1].y + '.'],
+      tron: 'Nghề hợp với bạn: ' + NGHE[mc.cung] + '. Con đường sự nghiệp mang màu sắc ' + S[mc.cung].tuKhoa + '; bạn thường gặp may qua chuyện ' + CT_NHA_NGAN[ju.nha - 1] + ', còn thành tựu bền vững đến từ sự kiên trì ở chuyện ' + CT_NHA_NGAN[sa.nha - 1] + '.' },
+    { k: 'taiChinh', ten: 'Tài chính', icon: '💰', dua: 'nhà 2 · nhà 8 · Sao Kim · Sao Mộc', diem: sucNha(2) * 0.5 + sucNha(8) * 0.3 + sucHT('venus') * 0.3 + sucHT('jupiter') * 0.3,
+      ky: ['Nhà 2 (tiền tự kiếm) khởi ở ' + c2.cungTen + ' (' + S[c2.cung].tuKhoa + '); có ' + tenDs(h2) + '.', 'Nhà 8 (tiền chung, đầu tư, thừa kế) khởi ở ' + c8.cungTen + '; có ' + tenDs(h8) + '.',
+        'Sao Kim (giá trị) ' + ve.cungTen + ' nhà ' + ve.nha + '; Sao Mộc (may mắn) ' + ju.cungTen + ' nhà ' + ju.nha + '.'],
+      tron: 'Cách bạn kiếm tiền mang màu sắc ' + S[c2.cung].tuKhoa + '; chuyện tiền chung, đầu tư thì ' + S[c8.cung].tuKhoa + '.' + (h2.some(function (p) { return p.key === 'jupiter' || p.key === 'venus'; }) ? ' Bạn có duyên với tiền bạc.' : h2.some(function (p) { return p.key === 'saturn'; }) ? ' Tiền đến chậm, cần tích lũy đều đặn.' : '') },
+    { k: 'sucKhoe', ten: 'Sức khỏe', icon: '🌿', dua: 'nhà 6 · nhà 12 · hành tinh trong nhà 6, 12', diem: sucNha(6) * 0.6 + sucNha(12) * 0.4 + sucHT('sun') * 0.2 + 0.2,
+      ky: ['Nhà 6 khởi ở ' + c6.cungTen + ' → vùng ' + S[c6.cung].bp + '; có ' + tenDs(h6) + '.', 'Nhà 12 khởi ở ' + c12.cungTen + ' → vùng ' + S[c12.cung].bp + '; có ' + tenDs(h12) + '.'],
+      tron: 'Vùng cơ thể nên chăm sóc: ' + S[c6.cung].bp + '; khi căng thẳng kéo dài, để ý thêm ' + S[c12.cung].bp + '.' + (h6.concat(h12).some(function (p) { return p.key === 'saturn' || p.key === 'mars'; }) ? ' Nên khám định kỳ và không làm việc quá sức.' : '') }
+  ];
+  var KHUYEN = {
+    tinhCach: ['Hãy để bề ngoài và con người thật bên trong cùng xuất hiện – người khác sẽ tin bạn hơn.', 'Cho người mới quen thời gian để biết con người thật của bạn.', 'Tự tin là thứ rèn được: bắt đầu từ việc nhỏ và giữ lời với chính mình.'],
+    camXuc: ['Giữ những thói quen khiến bạn thấy an toàn – đó là "pin sạc" của bạn.', 'Gọi tên cảm xúc của mình thay vì để nó tích tụ.', 'Cảm xúc không sai – hãy tìm người để chia sẻ và cho mình khoảng lặng.'],
+    tuDuy: ['Viết, dạy hoặc chia sẻ điều bạn biết – trí óc bạn sáng nhất khi được dùng.', 'Ghi chép lại ý tưởng; chọn một hướng học sâu.', 'Học theo cách của mình – chậm không có nghĩa là kém.'],
+    tinhYeu: ['Nói rõ cách bạn cần được yêu để người ấy không phải đoán.', 'Dành thời gian hiểu nhu cầu của người kia trước khi đòi hỏi.', 'Đừng vội – chọn người hiểu mình hơn người khiến mình say mê nhất thời.'],
+    hanhDong: ['Dùng năng lượng dồi dào vào mục tiêu dài hạn.', 'Chia nhỏ việc lớn và làm đều mỗi ngày.', 'Vận động thể chất đều đặn để giải tỏa năng lượng dồn nén.'],
+    suNghiep: ['Chọn nơi cho bạn thể hiện thế mạnh và có đường thăng tiến rõ.', 'Đầu tư vào chuyên môn; thành tựu đến từ sự bền bỉ.', 'Thành công của bạn có thể đến muộn – mỗi bước nhỏ đều đang xây nền.'],
+    taiChinh: ['Dùng lúc thuận để tích lũy và đa dạng tài sản.', 'Trích tiết kiệm ngay khi nhận tiền.', 'Tránh đầu tư theo cảm hứng; ưu tiên thu nhập ổn định trước.'],
+    sucKhoe: ['Giữ nếp ngủ và vận động – thể trạng tốt cũng cần bảo dưỡng.', 'Khám định kỳ và để ý những vùng nêu trên.', 'Đừng lo lắng quá – phát hiện sớm là chữa được; nghỉ ngơi đúng lúc là thuốc.']
+  };
+  out.linhVuc = LV.map(function (x) { var d = Math.round(x.diem * 10) / 10, b = ctBac_(d); return { k: x.k, ten: x.ten, icon: x.icon, dua: x.dua, diem: d, bac: b, ky: x.ky, tron: x.tron, khuyen: KHUYEN[x.k][['tot', 'vua', 'kho'].indexOf(b)] }; });
+  // ---- B5: chu kỳ thời gian
+  out.chuKy = ctChuKyThoiGian_(ct, viewYear, M);
+  // ---- Bài học linh hồn (Nút Bắc – Nút Nam)
+  var sn = phu[0];
+  out.nut = { bac: 'Nút Bắc ' + nn.cungTen + ', nhà ' + nn.nha + ': bài học đời này là phát triển ' + S[nn.cung].tuKhoa + ', qua ' + CT_NHA[nn.nha - 1].y + '.',
+    nam: 'Nút Nam ' + sn.cungTen + ', nhà ' + sn.nha + ': sở trường sẵn có nhưng dễ thành vùng an toàn – ' + S[sn.cung].bong + '.',
+    tron: 'Bài học lớn của bạn là hướng tới ' + S[nn.cung].tuKhoa + ', bớt dựa vào thói quen cũ (' + S[sn.cung].bong + ').' };
+  // ---- B7: điểm mạnh / yếu, lời khuyên
+  var xep = HT10.map(function (p) { return { k: p.key, d: sucHT(p.key) }; }).sort(function (a, b) { return b.d - a.d; });
+  var manh = xep.filter(function (x) { return x.d >= 0.8; }).slice(0, 3), yeu = xep.slice().reverse().filter(function (x) { return x.d <= -0.6; }).slice(0, 3);
+  out.manhYeu = {
+    manh: manh.map(function (x) { return CT_HT[x.k].ten + ' ' + by[x.k].cungTen + (by[x.k].pham ? ' (' + by[x.k].pham + ')' : '') + ': ' + CT_HT[x.k].cn + ' được phát huy.'; }),
+    yeu: yeu.map(function (x) { return CT_HT[x.k].ten + ' ' + by[x.k].cungTen + (by[x.k].pham ? ' (' + by[x.k].pham + ')' : '') + ': ' + CT_HT[x.k].cn + ' cần rèn luyện nhiều hơn.'; }),
+    manhTron: manh.map(function (x) { return CT_HT_CN_TRON[x.k]; }), yeuTron: yeu.map(function (x) { return CT_HT_CN_TRON[x.k]; }),
+    nhinNhan: 'Người khác thường thấy bạn ' + S[asc.cung].tuKhoa + (h1.length ? ', ' + tronDs(h1) : '') + '.'
+  };
+  var CK = out.chuKy, tot = CK.suKien.filter(function (e) { return e.tot; }).slice(0, 4), kho = CK.suKien.filter(function (e) { return !e.tot; }).slice(0, 4);
+  out.loiKhuyen = [
+    { ten: 'Phát huy điểm mạnh', t: manh.length ? 'Dựa vào ' + manh.map(function (x) { return CT_HT_CN_TRON[x.k]; }).join(', ') + ' – đây là những điều đến với bạn tự nhiên nhất.' : 'Các năng lượng khá cân bằng – thế mạnh đến từ sự đều tay; hãy chọn một lĩnh vực và đi sâu.' },
+    { ten: 'Khắc phục điểm yếu', t: yeu.length ? 'Rèn ' + yeu.map(function (x) { return CT_HT_CN_TRON[x.k]; }).join(', ') + ' – từng bước nhỏ, đều đặn; đây cũng là nơi bạn trưởng thành nhiều nhất.' : 'Không có điểm yếu nổi bật – hãy để ý bài học từ Nút Bắc bên dưới.' },
+    { ten: 'Thời điểm hành động', t: 'Năm ' + viewYear + ': chủ đề chính ở ' + CT_NHA[CK.solarReturn.nhaMatTroi - 1].y.split(',').slice(0, 2).join(',') + ' (Mặt Trời hồi quy ở nhà ' + CK.solarReturn.nhaMatTroi + ').' +
+      (tot.length ? ' Thời điểm thuận: ' + ctDuyNhat_(tot.map(function (e) { return e.thang; })).join(', ') + '.' : '') + (kho.length ? ' Cần thận trọng: ' + ctDuyNhat_(kho.map(function (e) { return e.thang; })).join(', ') + '.' : '') },
+    { ten: 'Bài học linh hồn', t: out.nut.tron }
+  ];
+  // ---- Trường hợp đặc biệt
+  var ngh = HT10.filter(function (p) { return p.nghich && CT_NGHICH[p.key]; }), pham = HT10.filter(function (p) { return p.pham; }), trong = out.nha12.filter(function (h) { return h.trong; });
+  out.dacBiet = {
+    nghich: ngh.map(function (p) { return { ten: p.ten, tanSuat: CT_NGHICH[p.key][0], y: CT_NGHICH[p.key][1] }; }),
+    pham: pham.map(function (p) { return { ten: p.ten, cung: p.cungTen, pham: CT_PHAM_TEN[p.pham], tot: p.pham === 'Vượng' || p.pham === 'Miếu' }; }),
+    cauHinh: ch, nhaTrong: trong.map(function (h) { return { nha: h.nha, y: h.y, chu: h.chu, chuO: h.chuO }; })
+  };
+  // ---- Ứng dụng: tên bổ sung năng lượng thiếu
+  var ntT = 0; Object.keys(ct.nguyenTo).forEach(function (x) { ntT += ct.nguyenTo[x]; });
+  var thieu = Object.keys(ct.nguyenTo).filter(function (x) { return ct.nguyenTo[x] / ntT < 0.14; });
+  out.ungDung = { thieu: thieu, tenBu: thieu.map(function (x) { return 'Thiếu ' + x + ' → tên mang nghĩa ' + CT_TEN_BU[x]; }) };
+  return out;
+}
+
+/** B5 – transit, tiến triển thứ cấp, Solar Arc, Solar Return, Lunar Return */
+function ctChuKyThoiGian_(ct, viewYear, M) {
+  var T = ct.thoiDiem, by = ct.by, cuspLon = ct.cusp.map(function (c) { return c.lon; }), out = {};
+  var hom = new Date(), jdNay = hom.getFullYear() === viewYear ? astJD_(hom.getFullYear(), hom.getMonth() + 1, hom.getDate(), 12, 0, T.tz) : astJD_(viewYear, 7, 1, 12, 0, T.tz);
+  var TR = ['jupiter', 'saturn', 'uranus', 'neptune', 'pluto'], DIEM = ['sun', 'moon', 'mercury', 'venus', 'mars', 'asc', 'mc'];
+  function lonCua(k) { return by[k].lon; }
+  // Transit hiện tại
+  var P = astToanBo(jdNay);
+  out.ngayXet = ctJdNgay_(jdNay, T.tz).t.split(' ')[0];
+  out.transit = ['sun', 'moon', 'mercury', 'venus', 'mars'].concat(TR).map(function (k) {
+    var lon = P[k], n = ctNhaCua_(lon, cuspLon), gs = [];
+    DIEM.forEach(function (d) { var g = ctGocGiua_(lon, lonCua(d), [[0, 3], [90, 3], [120, 3], [180, 3]]); if (g && TR.indexOf(k) >= 0) gs.push(CT_GOC_TEN[g.deg][1] + ' ' + (by[d].ten || d)); });
+    return { key: k, ten: CT_HT[k].ten, cungTen: CT_CUNG[ctCung_(lon)].ten, do: ctFmtDo_(lon), nha: n, goc: gs,
+      t: TR.indexOf(k) >= 0 ? CT_HT[k].ten + ' qua nhà ' + n + ' → ' + CT_HT[k].nha + ' ' + CT_NHA[n - 1].y + '.' : '' };
+  });
+  // Sự kiện transit trong năm (quét 5 ngày một lần, bắt thời điểm góc chính xác)
+  var ev = [], j0 = astJD_(viewYear, 1, 1, 0, 0, T.tz), j1 = astJD_(viewYear + 1, 1, 1, 0, 0, T.tz), prev = {};
+  for (var jd = j0; jd <= j1; jd += 5) {
+    var Q = {}, dd0 = jd - 2451543.5; TR.forEach(function (k) { Q[k] = astPlanetLon_(k, dd0); });
+    TR.forEach(function (k) {
+      DIEM.forEach(function (d) {
+        [0, 90, 120, 180].forEach(function (g) {
+          var diff = astNorm_(Q[k] - lonCua(d)), key = k + d + g;
+          var s1 = ((diff - g + 540) % 360) - 180, s2 = ((diff + g + 540) % 360) - 180, s = Math.abs(s1) < Math.abs(s2) ? s1 : s2;
+          if (prev[key] != null && Math.abs(s) < 3 && Math.abs(prev[key]) < 3 && (s === 0 || (s > 0) !== (prev[key] > 0))) {
+            var dt = ctJdNgay_(jd, T.tz), tot = g === 120 || (g === 0 && (k === 'jupiter')), Y = CT_TRANSIT_Y[k][tot ? 0 : 1];
+            if (!ev.some(function (e) { return e.key === key && Math.abs(e.jd - jd) < 60; }))
+              ev.push({ key: key, jd: jd, thang: 'tháng ' + dt.m, tot: tot, t: CT_HT[k].ten + ' ' + CT_GOC_TEN[g][0].toLowerCase() + ' ' + (by[d].ten || d) + ' gốc (' + dt.d + '/' + dt.m + '): ' + Y + ' – về ' + CT_DIEM_CHU_DE[d] + '.' });
+          }
+          prev[key] = s;
+        });
+      });
+    });
+  }
+  ev.sort(function (a, b) { return a.jd - b.jd; });
+  out.suKien = ev.map(function (e) { return { thang: e.thang, tot: e.tot, t: e.t }; });
+  // Tiến triển thứ cấp (1 ngày sau sinh = 1 năm đời)
+  var tuoi = (jdNay - T.jd) / 365.2422, jdP = T.jd + tuoi, PP = astToanBo(jdP);
+  out.tienTrien = { tuoi: Math.round(tuoi * 10) / 10, ds: ['sun', 'moon', 'mercury', 'venus', 'mars'].map(function (k) {
+    var lon = PP[k], s = ctCung_(lon); return { ten: CT_HT[k].ten, cungTen: CT_CUNG[s].ten, do: ctFmtDo_(lon), nha: ctNhaCua_(lon, cuspLon), doiCung: s !== by[k].cung };
+  }) };
+  // Mặt Trời tiến triển đổi cung: các mốc trong đời
+  var ms = [], sPrev = by.sun.cung;
+  for (var a = 0; a <= 90; a += 0.25) { var sc = ctCung_(astToanBoSun_(T.jd + a)); if (sc !== sPrev) { ms.push({ tuoi: Math.round(a), nam: T.y + Math.round(a), cung: CT_CUNG[sc].ten }); sPrev = sc; } }
+  out.tienTrien.matTroi = ms.map(function (x) { return 'Khoảng ' + x.tuoi + ' tuổi (' + x.nam + '): Mặt Trời tiến triển sang ' + x.cung + ' – bản ngã chuyển dần sang nét ' + CT_CUNG[CT_CUNG.map(function (c) { return c.ten; }).indexOf(x.cung)].tuKhoa + '.'; });
+  var mm = [], mPrev = ctCung_(astMoonLonJD_(jdP));
+  for (var b = tuoi; b <= tuoi + 10; b += 0.05) { var mc2 = ctCung_(astMoonLonJD_(T.jd + b)); if (mc2 !== mPrev) { mm.push({ nam: T.y + Math.floor(b + (T.m - 1) / 12), cung: CT_CUNG[mc2].ten }); mPrev = mc2; } }
+  out.tienTrien.matTrang = mm.map(function (x) { return 'Năm ' + x.nam + ': Mặt Trăng tiến triển sang ' + x.cung + ' – nhu cầu cảm xúc chuyển sang ' + CT_CUNG[CT_CUNG.map(function (c) { return c.ten; }).indexOf(x.cung)].tuKhoa + '.'; });
+  // Solar Arc: mọi điểm dịch cùng cung Mặt Trời tiến triển
+  var arc = astNorm_(PP.sun - by.sun.lon), sa = [];
+  DIEM.forEach(function (x) {
+    DIEM.forEach(function (y) {
+      if (x === y) return;
+      [0, 60, 90, 120, 180].forEach(function (g) {
+        var dir = astNorm_(lonCua(x) + arc), diff = astNorm_(dir - lonCua(y));
+        var s1 = ((diff - g + 540) % 360) - 180, s2 = ((diff + g + 540) % 360) - 180, s = Math.abs(s1) < Math.abs(s2) ? s1 : s2;
+        var namCon = -s / 0.9856, tot = g === 60 || g === 120;
+        if (namCon > -1 && namCon <= 10) sa.push({ nam: Math.round(viewYear + namCon), tot: tot, t: (by[x].ten || x) + ' (Solar Arc) ' + CT_GOC_TEN[g][0].toLowerCase() + ' ' + (by[y].ten || y) + ' gốc – khoảng năm ' + Math.round(viewYear + namCon) + ': ' + (tot ? 'thuận lợi' : g === 0 ? 'bước ngoặt' : 'thử thách') + ' về ' + CT_DIEM_CHU_DE[y] + '.' });
+      });
+    });
+  });
+  sa.sort(function (p, q) { return p.nam - q.nam; });
+  out.solarArc = { cung: Math.round(arc * 10) / 10, ds: sa.slice(0, 10) };
+  // Solar Return năm xem
+  var jdSR = astTimMatTroi_(by.sun.lon, astJD_(viewYear, T.m, T.d, 12, 0, T.tz)), H = ctPlacidus_(jdSR, T.lat, T.lon), R = astToanBo(jdSR);
+  var srNha = function (k) { return ctNhaCua_(R[k], H.cusp); };
+  var n1 = ['sun', 'moon', 'mercury', 'venus', 'mars', 'jupiter', 'saturn', 'uranus', 'neptune', 'pluto'].filter(function (k) { return srNha(k) === 1; });
+  out.solarReturn = { ngay: ctJdNgay_(jdSR, T.tz).t, moc: CT_CUNG[ctCung_(H.asc)].ten, nhaMatTroi: srNha('sun'), matTrang: CT_CUNG[ctCung_(R.moon)].ten + ', nhà ' + srNha('moon'),
+    nha1: n1.map(function (k) { return CT_HT[k].ten; }),
+    ds: ['Lá số hồi quy lúc ' + ctJdNgay_(jdSR, T.tz).t + ' (tại nơi sinh): Mọc ' + CT_CUNG[ctCung_(H.asc)].ten + ' – năm này bạn thể hiện mình theo lối ' + CT_CUNG[ctCung_(H.asc)].tuKhoa + '.',
+      'Mặt Trời ở nhà ' + srNha('sun') + ' → chủ đề năm: ' + CT_NHA[srNha('sun') - 1].y + '.',
+      'Mặt Trăng ở ' + CT_CUNG[ctCung_(R.moon)].ten + ', nhà ' + srNha('moon') + ' → nhu cầu cảm xúc năm nay xoay quanh ' + CT_NHA[srNha('moon') - 1].y + '.',
+      n1.length ? 'Hành tinh ở nhà 1: ' + n1.map(function (k) { return CT_HT[k].ten + ' (' + CT_HT_TRON[k] + ')'; }).join(', ') + ' → năng lượng cá nhân năm nay.' : 'Không có hành tinh ở nhà 1 – năm hướng ra ngoài hơn là tập trung vào bản thân.'] };
+  // Lunar Return: lần gần nhất trước ngày xét và lần kế tiếp
+  function timLR(tu) {
+    var jj = tu, pv = null;
+    for (var t = 0; t < 30; t += 0.25) {
+      var d = astNorm_(astMoonLonJD_(jj + t) - by.moon.lon); if (d > 180) d -= 360;
+      if (pv != null && pv < 0 && d >= 0) { var lo = jj + t - 0.25, hi = jj + t; for (var z = 0; z < 30; z++) { var mid = (lo + hi) / 2, dm = astNorm_(astMoonLonJD_(mid) - by.moon.lon); if (dm > 180) dm -= 360; if (dm < 0) lo = mid; else hi = mid; } return (lo + hi) / 2; }
+      pv = d;
+    }
+    return null;
+  }
+  var lr0 = timLR(jdNay - 28), lr1 = lr0 && lr0 < jdNay ? timLR(lr0 + 1) : null;
+  out.lunarReturn = [lr0, lr1].filter(Boolean).map(function (jj) {
+    var HL = ctPlacidus_(jj, T.lat, T.lon), n = ctNhaCua_(astMoonLonJD_(jj), HL.cusp);
+    return { ngay: ctJdNgay_(jj, T.tz).t, moc: CT_CUNG[ctCung_(HL.asc)].ten, nha: n, t: 'Từ ' + ctJdNgay_(jj, T.tz).t + ': Mặt Trăng hồi quy ở nhà ' + n + ' → tháng này chú ý ' + CT_NHA[n - 1].y + '; Mọc ' + CT_CUNG[ctCung_(HL.asc)].ten + '.' };
+  });
+  return out;
+}
+
+
+/* ============================================================
+ *  B6 – SO SÁNH HAI LÁ SỐ: nhà chồng lấn, Composite (trung điểm), Davison (thời gian – nơi chốn trung bình)
+ *  A, B = moRong.chiemTinh (hanhTinh, asc, mc, cusp, thoiDiem); tA, tB = tên gọi
+ * ============================================================ */
+var CT_SS_NHA = { 1: 'bản thân – người kia tác động mạnh tới hình ảnh, sức sống của', 4: 'gia đình – người kia mang cảm giác "về nhà" cho', 5: 'tình yêu, niềm vui – lãng mạn, vui vẻ với', 7: 'hôn nhân – người kia là "người phối ngẫu" tự nhiên của',
+  8: 'gắn kết sâu, tiền chung – hấp dẫn và chuyển hóa mạnh với', 10: 'sự nghiệp – người kia nâng đỡ hoặc đặt yêu cầu cho sự nghiệp của', 11: 'tình bạn – người kia là bạn đồng hành của', 12: 'tiềm thức – mối nối khó gọi tên, có thể hy sinh cho' };
+function ctTrungDiem_(a, b) { var d = astNorm_(b - a); return astNorm_(d > 180 ? a + (d - 360) / 2 : a + d / 2); }
+function ctSoSanh_(A, B, tA, tB) {
+  var KEY = ['sun', 'moon', 'mercury', 'venus', 'mars', 'jupiter', 'saturn'], out = {};
+  function by(X) { var m = {}; X.hanhTinh.forEach(function (p) { m[p.key] = p; }); m.asc = X.asc; m.mc = X.mc; return m; }
+  var a = by(A), b = by(B), ca = A.cusp.map(function (c) { return c.lon; }), cb = B.cusp.map(function (c) { return c.lon; });
+  function chong(X, Y, cY, tX, tY) {
+    var r = [];
+    ['sun', 'moon', 'venus', 'mars', 'jupiter', 'saturn'].forEach(function (k) {
+      var n = ctNhaCua_(X[k].lon, cY);
+      if (CT_SS_NHA[n]) r.push({ k: k, nha: n, t: CT_HT[k].ten + ' của ' + tX + ' rơi vào nhà ' + n + ' của ' + tY + ' (' + CT_SS_NHA[n] + ' ' + tY + ').' });
+    });
+    return r;
+  }
+  out.nhaAB = chong(a, b, cb, tA, tB); out.nhaBA = chong(b, a, ca, tB, tA);
+  // Composite: trung điểm từng hành tinh; nhà theo hệ nhà đều từ Mọc composite
+  var comp = {}; KEY.concat(['asc', 'mc']).forEach(function (k) { comp[k] = ctTrungDiem_(a[k].lon, b[k].lon); });
+  var cAsc = comp.asc, nhaC = function (lon) { return Math.floor(astNorm_(lon - cAsc) / 30) + 1; }, gc = [];
+  for (var i = 0; i < KEY.length; i++) for (var j = i + 1; j < KEY.length; j++) {
+    var g = ctGocGiua_(comp[KEY[i]], comp[KEY[j]], [[0, 6], [60, 4], [90, 5], [120, 5], [180, 6]]);
+    if (g && (/sun|moon|venus|mars/.test(KEY[i]) || /sun|moon|venus|mars/.test(KEY[j]))) gc.push(CT_HT[KEY[i]].ten + ' ' + CT_GOC_TEN[g.deg][0].toLowerCase() + ' ' + CT_HT[KEY[j]].ten + (g.deg === 60 || g.deg === 120 ? ' (hài hòa)' : g.deg === 0 ? ' (gắn kết)' : ' (cần điều chỉnh)'));
+  }
+  out.composite = { ds: ['sun', 'moon', 'venus', 'mars'].map(function (k) { return CT_HT[k].ten + ' chung ở ' + CT_CUNG[ctCung_(comp[k])].ten + ', nhà ' + nhaC(comp[k]); }),
+    moc: CT_CUNG[ctCung_(cAsc)].ten, goc: gc.slice(0, 6),
+    t: 'Lá số Composite (trung điểm hai lá số): Mặt Trời chung ở ' + CT_CUNG[ctCung_(comp.sun)].ten + ', nhà ' + nhaC(comp.sun) + ' → mục đích chung của cặp đôi xoay quanh ' + CT_NHA_NGAN[nhaC(comp.sun) - 1] + '; Mặt Trăng chung ở ' + CT_CUNG[ctCung_(comp.moon)].ten + ' → không khí cảm xúc ' + CT_CUNG[ctCung_(comp.moon)].tuKhoa + '.' };
+  // Davison: thời điểm và nơi chốn trung bình
+  var TA = A.thoiDiem, TB = B.thoiDiem, jd = (TA.jd + TB.jd) / 2, lat = (TA.lat + TB.lat) / 2, lon = (TA.lon + TB.lon) / 2;
+  var P = astToanBo(jd), H = ctPlacidus_(jd, lat, lon), nd = function (k) { return ctNhaCua_(P[k], H.cusp); };
+  out.davison = { ngay: ctJdNgay_(jd, 7).t, moc: CT_CUNG[ctCung_(H.asc)].ten,
+    t: 'Lá số Davison (' + ctJdNgay_(jd, 7).t + ', giữa hai nơi sinh): Mọc ' + CT_CUNG[ctCung_(H.asc)].ten + ' – mối quan hệ hiện ra với người ngoài theo lối ' + CT_CUNG[ctCung_(H.asc)].tuKhoa + '; Mặt Trời ở nhà ' + nd('sun') + ' (' + CT_NHA_NGAN[nd('sun') - 1] + '), Sao Kim ở nhà ' + nd('venus') + ' (' + CT_NHA_NGAN[nd('venus') - 1] + ').' };
+  out.tomTat = out.nhaAB.concat(out.nhaBA).filter(function (x) { return x.nha === 7 || x.nha === 5 || x.nha === 1; }).slice(0, 4).map(function (x) { return x.t; });
+  return out;
 }

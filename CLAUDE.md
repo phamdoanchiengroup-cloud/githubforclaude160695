@@ -41,7 +41,7 @@ File này được Claude Code tự đọc khi mở repo. Nó thay cho "trí nh�
 - **DeHieu.gs:** văn dễ hiểu cho Bát Tự, Chiêm tinh, Thần số, HD, Hà Lạc, cùng cấu trúc với phần Tử Vi. Hiển thị đầu mỗi tab; phần kỹ thuật gom vào `<details class="chuyen-sau">` (mặc định đóng, PDF tự mở).
 - **NghiemChung.gs (v5):** 8 nhóm mô tả để khách tự chấm độ khớp giờ sinh, **lấy kết luận từ tổng hợp 6 hệ** (TongHop: vóc dáng, dấu vết cơ thể, trục tính cách, xuất thân, phối ngẫu + năm cưới đã qua, con cái, nghề, chặng đời) và đối chiếu Tử Vi × Bát Tự. Mỗi câu có nhãn đồng thuận; bỏ câu thiểu số (<1/3) và câu "cân bằng"; nhóm có độ tin làm trọng số; có lựa chọn "Không áp dụng".
 - **BatTuPhanTich.gs:** Bát Tự theo quy trình 9 bước (vượng suy Thiệu Vĩ Hoa, dụng thần 4 phương pháp + bảng ưu tiên, cách cục đủ ngoại cách, cát hung, phương diện, đại vận, lưu niên đặc biệt). `batTuLap` gọi `btPhanTich_` rồi ghi đè `vuong/cuong/tyLeTro/phanTram/goiY` (giữ quy ước `goiY.hy[0]` = dụng thần) để mọi module dùng chung. Tab Bát Tự hiển thị theo Bước 1–9.
-- **Bố cục chuyên sâu thống nhất:** tab Tử Vi chia Phần 1–4 (`khoiPhan`, chân dung lá số gộp một khung; thẻ xem nhanh cung chỉ hiện khi bấm). Tab Hà Lạc (`renderHaLac`, Phần 1–5) và Thần số (`renderThanSo`, Phần 1–8) tự dựng khung (`PHAN_HE` = null). Chiêm tinh/HD được `xepPhan` (theo `PHAN_HE`) xếp vào Phần 1–4 trước khi gom vào `details.chuyen-sau`.
+- **Bố cục chuyên sâu thống nhất:** tab Tử Vi chia Phần 1–4 (`khoiPhan`, chân dung lá số gộp một khung; thẻ xem nhanh cung chỉ hiện khi bấm). Tab Hà Lạc (`renderHaLac`, Phần 1–5), Thần số (`renderThanSo`, Phần 1–8) và Chiêm tinh (`renderAstro`, Phần 1–8) tự dựng khung (`PHAN_HE` = null). HD được `xepPhan` (theo `PHAN_HE`) xếp vào Phần 1–4 trước khi gom vào `details.chuyen-sau`.
 - **Tab (Index.html):** Lá số → Tổng quan 6 hệ → **Vận hạn** (`page-vh`, dựng bởi `veVanHan` trong Script.html; gom đại vận, năm, tháng, ngày, biến cố) → Bát Tự, Chiêm tinh, Thần số, HD, Hà Lạc → Cặp đôi → Lịch sử.
 
 ## Mô hình bán hàng (ThanhToan.gs) – bán theo giai đoạn
@@ -70,6 +70,7 @@ node tests/nghiem-chung.js                     # nghiệm chứng dựa trên t�
 node tests/bat-tu.js                           # Bát Tự 9 bước trên 400 lá số
 node tests/ha-lac.js                           # Hà Lạc lục hào nạp giáp (bát cung, lục thân, phục thần) trên 200 lá số
 node tests/than-so.js                          # Thần số học 6 bước (nợ nghiệp, số 0, số bậc thầy…) trên 300 lá số
+node tests/chiem-tinh.js                       # Chiêm tinh 7 bước: Chiron/Lilith, cấu hình, 8 lĩnh vực, chu kỳ, so sánh (~40 giây)
 TK_PASS='<mật khẩu chủ>' node tests/tai-khoan.js   # cần mật khẩu chủ sở hữu – hỏi chủ dự án hoặc đặt biến môi trường TK_PASS
 TK_PASS='<mật khẩu chủ>' node tests/thanh-toan.js
 cd tests && npm install && node thien-van.mjs && node doi-chieu.js   # đối chiếu thiên văn / an sao với thư viện nguồn mở
@@ -100,7 +101,7 @@ cd tests && npm install && node thien-van.mjs && node doi-chieu.js   # đối ch
 - PDF theo bố cục mới.
 
 **Việc có thể làm tiếp / còn ngỏ:**
-- Chủ dự án muốn làm **kỹ từng hệ một**. Đã xong: Bát Tự 9 bước; Hà Lạc lục hào (HaLac.gs: `hlLucHao_` nạp giáp/Thế Ứng/lục thân/lục thú/phục thần/vượng suy theo tháng–ngày sinh/không vong/hào động hóa; `hlLinhVuc_` 8 lĩnh vực; `hlThoiVi_` hóa công – nguyên khí; `hlQueKhac_` Biến/Thác/Tổng). Thần số học 6 bước (ThanSoHoc.gs `tsPhanTich_`: chỉ số cốt lõi + bổ sung, nợ nghiệp, chu kỳ năm/tháng/ngày, 4 đỉnh cao, luận 5 lĩnh vực, lời khuyên, trường hợp đặc biệt; tab 8 phần có biểu đồ ngày sinh/tên/tổng hợp, đỉnh cao, chu kỳ 9 năm, tháng, lịch 30 ngày, ô "Thử tên"). **Việc tiếp theo: Chiêm tinh** theo quy trình 7 bước của chủ dự án – xem `tuvi-app/docs/quy-trinh-chiem-tinh.md`. Sau đó Human Design theo 11 bước – xem `tuvi-app/docs/quy-trinh-human-design.md`.
+- Chủ dự án muốn làm **kỹ từng hệ một**. Đã xong: Bát Tự 9 bước; Hà Lạc lục hào (HaLac.gs: `hlLucHao_` nạp giáp/Thế Ứng/lục thân/lục thú/phục thần/vượng suy theo tháng–ngày sinh/không vong/hào động hóa; `hlLinhVuc_` 8 lĩnh vực; `hlThoiVi_` hóa công – nguyên khí; `hlQueKhac_` Biến/Thác/Tổng). Thần số học 6 bước (ThanSoHoc.gs `tsPhanTich_`: chỉ số cốt lõi + bổ sung, nợ nghiệp, chu kỳ năm/tháng/ngày, 4 đỉnh cao, luận 5 lĩnh vực, lời khuyên, trường hợp đặc biệt; tab 8 phần có biểu đồ ngày sinh/tên/tổng hợp, đỉnh cao, chu kỳ 9 năm, tháng, lịch 30 ngày, ô "Thử tên"). Chiêm tinh 7 bước (ChiemTinh.gs `ctPhanTich_`: giờ sao, Nút Nam/Chiron/Lilith, Big Three, 12 nhà, cấu hình Stellium/T-Square/Grand Trine/Grand Cross/Yod, 8 lĩnh vực, `ctChuKyThoiGian_` transit/tiến triển/Solar Arc/Solar Return/Lunar Return, lời khuyên, trường hợp đặc biệt; `ctSoSanh_` nhà chồng lấn/Composite/Davison dùng trong CapDoi; tab 8 phần có lưới góc chiếu). **Việc tiếp theo:** Human Design theo 11 bước – xem `tuvi-app/docs/quy-trinh-human-design.md`.
 - Bản PDF xem thử: mục "Kết hợp 6 hệ theo lĩnh vực" chưa có ảnh xem trước mờ, trông trống (có thể bỏ khỏi bản xem thử).
 - Giá bán là mức khởi đầu, chưa qua thử nghiệm; nên xem doanh thu trong Quản trị rồi điều chỉnh.
 - Chủ dự án nên đổi mật khẩu chủ sở hữu sau lần đăng nhập đầu, nếu chưa đổi.
