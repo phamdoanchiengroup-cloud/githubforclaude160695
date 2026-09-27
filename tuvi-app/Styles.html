@@ -1376,4 +1376,55 @@ details.dh-lv .cung-van-de-hieu { margin-bottom: 12px; }
 .th6-he { display: inline-block; font-size: 11px; padding: 0 7px; border-radius: 999px; background: var(--surface-2); color: var(--ink-soft); border: 1px solid var(--line); margin-left: 4px; }
 .th6-cta { margin: 16px 0 8px; padding: 14px 16px; border-radius: 14px; border: 1px solid var(--gold-deep); background: linear-gradient(160deg, rgba(246, 182, 74, .16), rgba(19, 181, 204, .08)); }
 .th6-cta b { display: block; color: var(--gold-hi); font-size: 16px; } .th6-cta p { margin: 4px 0 10px; } .th6-cta small { display: block; margin-top: 6px; color: var(--ink-soft); }
+/* ---------- Vòm trời 6 hệ ---------- */
+.vt { margin: 14px 0 18px; container-type: inline-size; }
+.vt-tr { display: grid; grid-template-columns: 1fr; gap: 14px; align-items: center; }
+@container (min-width: 900px) { .vt-tr { grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); } }
+.vt-khung { border-radius: 22px; padding: 6px; background: radial-gradient(circle at 50% 45%, #10283d 0%, #07121f 70%); border: 1px solid rgba(246, 182, 74, .25); box-shadow: inset 0 0 60px rgba(0, 0, 0, .55), 0 10px 30px rgba(0, 0, 0, .25); }
+.vt-svg { display: block; width: 100%; height: auto; max-width: 560px; margin: 0 auto; overflow: visible; touch-action: manipulation; }
+.vt-sao { fill: #e8f4ff; animation: vtNhay 5s ease-in-out infinite; }
+@keyframes vtNhay { 0%, 100% { opacity: .25; } 50% { opacity: .95; } }
+.vt-quydao { transform-origin: 320px 320px; animation: vtTroi 240s linear infinite; }
+@keyframes vtTroi { to { transform: rotate(360deg); } }
+.vt-vien { fill: none; stroke: rgba(246, 182, 74, .28); stroke-dasharray: 2 6; }
+.vt-ht circle { fill: #0c1c2c; stroke: rgba(246, 182, 74, .55); }
+.vt-ht text { fill: #ffd88a; font-size: 9px; } .vt-ht { opacity: .75; }
+.vt-quay { transform-origin: 320px 320px; transform: rotate(var(--q, 0deg)); transition: transform .9s cubic-bezier(.22, .9, .25, 1); }
+.vt-nhan { transform-box: fill-box; transform-origin: center; transform: rotate(calc(-1 * var(--q, 0deg))); transition: transform .9s cubic-bezier(.22, .9, .25, 1); }
+.vt-lv { cursor: pointer; outline: none; }
+.vt-o { stroke: #07121f; stroke-width: 1; transition: fill-opacity .3s, opacity .3s; }
+.vt-o.trong { fill: rgba(255, 255, 255, .04); }
+.vt-vien-lv { fill: transparent; stroke: rgba(255, 255, 255, .12); stroke-width: 1; transition: stroke .3s, stroke-width .3s; }
+.vt-lv:hover .vt-vien-lv, .vt-lv:focus-visible .vt-vien-lv { stroke: rgba(255, 216, 138, .7); stroke-width: 2; }
+.vt-lv.on .vt-vien-lv { stroke: #ffd88a; stroke-width: 3; }
+.vt-lv.khoa .vt-o { opacity: .7; }
+.vt-hao { fill: #ffd88a; opacity: .35; animation: vtTho 3.2s ease-in-out infinite; pointer-events: none; }
+@keyframes vtTho { 0%, 100% { opacity: .18; } 50% { opacity: .5; } }
+.vt-ic { font-size: 24px; }
+.vt-d { font-size: 19px; font-weight: 700; paint-order: stroke; stroke: #07121f; stroke-width: 3px; }
+.vt-loi { fill: #0a1726; stroke: rgba(246, 182, 74, .6); stroke-width: 1.5; }
+.vt-loi-ic { font-size: 30px; } .vt-loi-t { fill: #eef8fb; font-size: 16px; font-weight: 700; } .vt-loi-d { font-size: 30px; font-weight: 800; }
+.vt-kim { fill: #ffd88a; }
+.vt-svg[data-noi] .vt-o:not(.trong) { opacity: .15; }
+.vt-svg[data-noi="0"] .vt-h0, .vt-svg[data-noi="1"] .vt-h1, .vt-svg[data-noi="2"] .vt-h2, .vt-svg[data-noi="3"] .vt-h3 { opacity: 1; }
+.vt-dieu { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 4px 8px 8px; font-size: 12.5px; color: #a9c6d3; text-align: center; }
+.vt-dieu button { width: 38px; height: 38px; flex: none; border-radius: 50%; border: 1px solid rgba(246, 182, 74, .45); background: rgba(246, 182, 74, .08); color: #ffd88a; font-size: 22px; line-height: 1; cursor: pointer; }
+.vt-dieu button:hover { background: rgba(246, 182, 74, .2); }
+.vt-the { padding: 16px; border-radius: 18px; border: 1px solid var(--line); background: var(--surface-2); min-height: 240px; }
+.vt-the.moi { animation: vtHien .45s ease-out; }
+@keyframes vtHien { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+.vt-the-h { display: flex; align-items: center; gap: 12px; margin-bottom: 10px; }
+.vt-the-h > span { font-size: 30px; } .vt-the-h div { flex: 1; } .vt-the-h b { display: block; font-size: 18px; color: var(--head, var(--ink)); }
+.vt-the-h small { color: var(--ink-soft); } .vt-the-h em { font-style: normal; font-size: 30px; font-weight: 800; }
+.vt-khoa { color: var(--ink-soft); }
+.vt-he { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+.vt-he button { display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; border-radius: 999px; border: 1px solid var(--line); background: var(--surface-2); color: var(--ink); font-size: 13px; cursor: pointer; }
+.vt-he button small { color: var(--ink-soft); font-size: 11px; }
+.vt-he button.on { border-color: var(--gold); box-shadow: 0 0 0 2px var(--gold-soft); }
+.vt-he i { width: 14px; height: 14px; border-radius: 50%; border: 2px solid var(--gold); display: inline-block; }
+.vt-he .vt-hc0 { border-width: 6px; } .vt-he .vt-hc1 { border-width: 4px; } .vt-he .vt-hc2 { border-width: 3px; } .vt-he .vt-hc3 { border-width: 1.5px; }
+.vt-chu { font-size: 13px; color: var(--ink-soft); margin: 10px 0 0; }
+.vt-sang { color: var(--gold-hi); text-shadow: 0 0 8px rgba(255, 216, 138, .8); }
+.vt-bang > summary { cursor: pointer; color: var(--accent, var(--jade)); font-size: 14px; margin: 6px 0; }
+@media (prefers-reduced-motion: reduce) { .vt-sao, .vt-quydao, .vt-hao, .vt-the.moi { animation: none; } .vt-quay, .vt-nhan { transition: none; } }
 </style>
