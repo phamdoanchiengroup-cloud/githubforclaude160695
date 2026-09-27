@@ -2246,7 +2246,11 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
 
     var HANH_SINH = ['Mộc', 'Hỏa', 'Thổ', 'Kim', 'Thủy'];
     var PT = B.phanTich, K = btKhoiChiTiet(res), vy = res.tuvi.info.viewYear;
-    if (!PT) { $('page-battu').innerHTML = html + '<div class="panel section muted">Chưa có phân tích 9 bước – hãy dán thêm file BatTuPhanTich.gs.</div>'; return; }
+    if (!PT) {
+      var lyDo = B.phanTichLoi ? 'Phân tích 9 bước bị lỗi khi chạy: <code>' + esc(B.phanTichLoi) + '</code>. Thường do các file .gs không cùng một đợt – hãy dán lại cả <b>BatTu</b> và <b>BatTuPhanTich</b> bản mới nhất.'
+        : 'Chưa có phân tích 9 bước. Nếu đã dán <b>BatTuPhanTich</b>, thì file <b>BatTu</b> vẫn là bản cũ (bản cũ không gọi phần 9 bước) – hãy mở file <b>BatTu</b>, xóa hết và dán lại bản mới, rồi tạo <b>phiên bản triển khai mới</b>.';
+      $('page-battu').innerHTML = html + '<div class="panel section muted">' + lyDo + '</div>'; return;
+    }
     var D = PT.diem, DT = PT.dungThan, NH = DT.nhomHanh, TN = DT.tenNhom;
     function buoc(so, ten, phu, noi) { return '<div class="tg bt-buoc" data-g="bt-' + so + '"><div class="tg-head"><span>Bước ' + so + '</span><b>' + ten + '</b><em>' + phu + '</em></div>' + noi + '</div>'; }
     function vaiTro(h) { return h === DT.dung ? 'dung' : DT.hy.indexOf(h) >= 0 ? 'hy' : DT.ky.indexOf(h) >= 0 ? 'ky' : 'nhan'; }

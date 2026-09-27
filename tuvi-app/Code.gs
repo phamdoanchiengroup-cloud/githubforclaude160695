@@ -64,6 +64,15 @@ var HAM_CAN_CO = {
 };
 
 /** Trả về danh sách lỗi cài đặt (rỗng nếu mọi thứ đúng) */
+/** Dấu hiệu bản mới: [hàm trong file, đoạn mã mà bản mới phải có] */
+var BAN_MOI_CAN_CO = {
+  'BatTu.gs': ['batTuLap', 'btPhanTich_'],
+  'Code.gs': ['lapLaSoDayDu_', 'btpLuuNienDacBiet_'],
+  'HaLac.gs': ['haLacLap', 'hlLucHao_'],
+  'ThanSoHoc.gs': ['thanSoHocLap', 'tsPhanTich_'],
+  'DeHieu.gs': ['deHieuLap_', 'th6Lap_'],
+  'TaiKhoan.gs': ['khachRutGon_', 'th6Moi_']
+};
 function kiemTraCaiDat_() {
   var loi = [];
   var g = typeof globalThis !== 'undefined' ? globalThis : this;
@@ -72,6 +81,13 @@ function kiemTraCaiDat_() {
       loi.push('Thiếu hoặc sai file <b>' + f + '</b>: không tìm thấy hàm <code>' + HAM_CAN_CO[f] + '</code>. ' +
         'Hãy tạo file loại <b>Tập lệnh</b> tên <b>' + f.replace('.gs', '') + '</b> và dán đúng nội dung ' + f + '.');
     }
+  });
+  // File đã có nhưng còn là BẢN CŨ (dán thiếu đợt cập nhật): hàm chính không gọi tới phần mới
+  Object.keys(BAN_MOI_CAN_CO).forEach(function (f) {
+    var m = BAN_MOI_CAN_CO[f], h = g[m[0]];
+    if (typeof h !== 'function') return;                                  // thiếu hẳn file → đã báo ở trên
+    if (String(h).indexOf(m[1]) < 0) loi.push('File <b>' + f + '</b> là <b>bản cũ</b> (hàm <code>' + m[0] + '</code> chưa gọi <code>' + m[1] + '</code>). ' +
+      'Hãy mở file <b>' + f.replace('.gs', '') + '</b>, xóa hết và dán lại bản mới nhất.');
   });
   Object.keys(FILE_HTML_CAN_CO).forEach(function (f) {
     var c;
