@@ -71,6 +71,7 @@ File này được Claude Code tự đọc khi mở repo. Nó thay cho "trí nh�
 ```bash
 cd tuvi-app
 node tests/giai-doan.js                        # bán theo giai đoạn, gói gia đình, phần cắt ở máy chủ (34 kiểm tra)
+node tests/lich-su.js                          # lịch sử: lá số trùng chỉ giữ bản mới nhất, ẩn trùng, dọn trùng
 node tests/nghiem-chung.js                     # nghiệm chứng dựa trên tổng hợp 6 hệ
 node tests/tong-hop.js                         # Tổng hợp 6 hệ bản 2: nhãn khớp điểm, không tên sao, bản miễn phí chỉ lộ 1 lĩnh vực
 node tests/bat-tu.js                           # Bát Tự 9 bước trên 400 lá số
@@ -91,6 +92,7 @@ cd tests && npm install && node thien-van.mjs && node doi-chieu.js   # đối ch
 - **Giới hạn mạng:** WebFetch bị chặn với một số trang tiếng Việt (vd. lasobattu.com, 4thuman.com); WebSearch dùng được.
 
 ## Lưu ý kỹ thuật đã gặp
+- **Lịch sử lá số (Code.gs):** trùng = cùng tài khoản + họ tên (bỏ hoa/thường, khoảng trắng) + giới tính + ngày dương + giờ + phút (`lsKhoa_`). `luuLichSu_` xóa bản cũ trùng trong 400 dòng gần nhất rồi ghi bản mới; `getLichSu` ẩn trùng; `donLichSu(token)` (nút "🧹 Dọn lá số trùng") xóa trùng cũ trong Sheet.
 - `google.script.run` **không trả được Date**, ra null. Vì vậy lịch sử dùng `getDisplayValues` và ghi ngày có tiền tố `'`.
 - **Khởi động trang:** gắn tab và Lịch sử **trước tiên**, mỗi bước bọc trong `buoc(...)`. Một bước lỗi (vd. Index.html cũ thiếu phần tử) không được làm chết cả trang.
 - **Lớp phủ:** `.modal` z-index 120 (trên thanh CTA 85 và mục lục 90). `.toast` có `pointer-events: none`.

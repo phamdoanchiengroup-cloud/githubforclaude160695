@@ -19,7 +19,7 @@
 
   var $ = function (id) { return document.getElementById(id); };
   var state = { result: null, sel: null, token: '', nguoiDung: null };
-  var CAN_TOKEN = { lapLaSo: 1, doGioSinh: 1, getLichSu: 1, xoaLichSu: 1, lapCapDoi: 1 };
+  var CAN_TOKEN = { lapLaSo: 1, doGioSinh: 1, getLichSu: 1, xoaLichSu: 1, donLichSu: 1, lapCapDoi: 1 };
 
   function esc(s) {
     return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) {
@@ -4060,7 +4060,9 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
     box.innerHTML = '<h2 class="panel-title"><span class="han">錄</span> Lịch sử lá số</h2><span class="muted">Đang tải…</span>';
     call('getLichSu', [], function (list) {
       if (!list || !list.length) { box.innerHTML = '<h2 class="panel-title"><span class="han">錄</span> Lịch sử lá số</h2><p class="muted">Chưa có lá số nào được lưu.</p>'; return; }
-      box.innerHTML = '<h2 class="panel-title"><span class="han">錄</span> Lịch sử lá số</h2><div class="hist-list">' + list.map(function (h) {
+      box.innerHTML = '<h2 class="panel-title"><span class="han">錄</span> Lịch sử lá số</h2>' +
+        '<p class="muted hist-ghi">Lá số lập lại nhiều lần (cùng họ tên, giới tính, ngày giờ sinh) chỉ hiện một lần – bản mới nhất. <button type="button" class="btn btn-ghost btn-sm" data-don>🧹 Dọn lá số trùng trong Sheet</button></p>' +
+        '<div class="hist-list">' + list.map(function (h) {
         return '<div class="hist-item"><div><b>' + esc(h.name) + '</b> · ' + esc(h.gender) + ' · ' + esc(h.canChi) +
           '<small>DL ' + esc(h.duong) + ' · ÂL ' + esc(h.am) + ' · ' + esc(h.cuc) + ' · lập lúc ' + esc(h.time) + '</small></div>' +
           '<div><button class="btn btn-ghost btn-sm" data-open="' + h.row + '">Mở</button> <button class="btn btn-ghost btn-sm" data-del="' + h.row + '">✕</button></div></div>';
@@ -4070,6 +4072,12 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
           var h = list.filter(function (x) { return String(x.row) === b.getAttribute('data-open'); })[0];
           if (h && h.input) { var luu = $('save').checked; setForm(h.input); $('save').checked = false; submit(); $('save').checked = luu; }   // mở lại không lưu trùng, các lá số sau vẫn lưu
         });
+      });
+      var don = box.querySelector('[data-don]');
+      if (don) don.addEventListener('click', function () {
+        if (!confirm('Xóa các dòng lá số trùng khỏi Google Sheet? Mỗi người chỉ giữ lại lần lập mới nhất.')) return;
+        don.disabled = true;
+        call('donLichSu', [], function (n) { toast(n ? 'Đã xóa ' + n + ' lá số trùng' : 'Không có lá số trùng'); loadHistory(); }, function (e) { don.disabled = false; toast('Không dọn được: ' + (e && e.message), true); });
       });
       box.querySelectorAll('[data-del]').forEach(function (b) {
         b.addEventListener('click', function () {

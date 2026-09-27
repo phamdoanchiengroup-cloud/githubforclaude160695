@@ -240,10 +240,37 @@ function getSheet_() {
   return sh;
 }
 
+/** Khóa nhận diện "cùng một lá số": tài khoản + họ tên + giới tính + ngày dương + giờ + phút.
+ *  (Lập lại cùng người để xem năm khác, nơi sinh khác… vẫn tính là trùng – chỉ giữ lần mới nhất.) */
+function lsKhoa_(chu, ten, gioi, duong, gio, phut) {
+  var d = String(duong || '').replace(/^'/, '').split(/[\/\-.]/).map(function (x) { return parseInt(x, 10) || 0; }).join('/');
+  function so(x) { var n = parseInt(x, 10); return isNaN(n) ? '' : String(n); }
+  return [String(chu || ''), String(ten || '').trim().replace(/\s+/g, ' ').toLowerCase(), String(gioi || '').trim().toLowerCase(), d, so(gio), so(phut)].join('|');
+}
+function lsKhoaDong_(d) { return lsKhoa_(d[COT_JSON + 1], d[1], d[2], d[10], d[8], d[9]); }
+
+/** Xóa các dòng trong danh sách (xóa từ dưới lên để số dòng không lệch) */
+function lsXoaDong_(sh, rows) {
+  rows.sort(function (a, b) { return b - a; }).forEach(function (r) { sh.deleteRow(r); });
+  return rows.length;
+}
+
 function luuLichSu_(input, r) {
   var sh = getSheet_();
   var I = r.tuvi.info, B = r.battu;
   var s = I.solar, l = I.lunar;
+  var lock = null;
+  try { lock = LockService.getScriptLock(); lock.waitLock(10000); } catch (e) { lock = null; }
+  try {
+  // Lá số trùng (cùng người, cùng giờ sinh, cùng tài khoản) trong 400 dòng gần nhất → xóa bản cũ, chỉ giữ lần lập mới nhất
+  var khoa = lsKhoa_(input.taiKhoan || '', input.name || 'Vô Danh', I.gender, s.day + '/' + s.month + '/' + s.year, input.hour, input.minute);
+  var last = sh.getLastRow();
+  if (last >= 2) {
+    var n = Math.min(400, last - 1), ncol = Math.max(sh.getLastColumn(), COT_JSON + 2);
+    var hien = sh.getRange(last - n + 1, 1, n, ncol).getDisplayValues(), trung = [];
+    hien.forEach(function (d, i) { if (lsKhoaDong_(d) === khoa) trung.push(last - n + 1 + i); });
+    lsXoaDong_(sh, trung);
+  }
   sh.appendRow([
     new Date(), input.name || 'Vô Danh', I.gender, input.calendar === 'am' ? 'Âm lịch' : 'Dương lịch',
     input.day, input.month, input.year, input.leap ? 'x' : '', input.hour, input.minute,
@@ -254,6 +281,7 @@ function luuLichSu_(input, r) {
     B.nhatChu, B.goiY.dung,
     JSON.stringify(input), input.taiKhoan || ''
   ]);
+  } finally { if (lock) try { lock.releaseLock(); } catch (e) {} }
 }
 
 /** Lấy 50 lá số gần nhất (chủ sở hữu xem tất cả, thành viên xem lá số của mình).
@@ -265,10 +293,11 @@ function getLichSu(token) {
   if (last < 2) return [];
   var n = Math.min(400, last - 1), ncol = Math.max(sh.getLastColumn(), COT_JSON + 1);
   var rg = sh.getRange(last - n + 1, 1, n, ncol), values = rg.getValues(), hien = rg.getDisplayValues();   // chữ đúng như hiển thị trên Sheet
-  var out = [];
+  var out = [], daCo = {};
   for (var i = values.length - 1; i >= 0 && out.length < 50; i--) {
     var v = values[i], d = hien[i], chu = String(d[COT_JSON + 1] || '');
     if (u.vaiTro !== 'chu' && chu !== u.ten) continue;
+    var k = lsKhoaDong_(d); if (daCo[k]) continue; daCo[k] = 1;         // lá số trùng: chỉ hiện lần lập mới nhất
     var inp = {};
     try { inp = JSON.parse(d[COT_JSON]); } catch (e) { inp = {}; }
     delete inp.taiKhoan;
@@ -289,6 +318,25 @@ function xoaLichSu(row, token) {
   if (u.vaiTro !== 'chu' && String(sh.getRange(row, COT_JSON + 2).getValue()) !== u.ten) throw new Error('Bạn chỉ xóa được lá số do mình lập.');
   sh.deleteRow(row);
   return true;
+}
+
+/** Dọn lá số trùng: mỗi người + giờ sinh chỉ giữ lần lập mới nhất (chủ sở hữu dọn toàn bộ, thành viên dọn lá số của mình).
+ *  Trả về số dòng đã xóa. */
+function donLichSu(token) {
+  var u = tkCan_(token), sh = getSheet_(), last = sh.getLastRow();
+  if (last < 3) return 0;
+  var lock = null;
+  try { lock = LockService.getScriptLock(); lock.waitLock(20000); } catch (e) { lock = null; }
+  try {
+    var ncol = Math.max(sh.getLastColumn(), COT_JSON + 2), hien = sh.getRange(2, 1, last - 1, ncol).getDisplayValues(), daCo = {}, xoa = [];
+    for (var i = hien.length - 1; i >= 0; i--) {                         // đi từ mới → cũ
+      var d = hien[i], chu = String(d[COT_JSON + 1] || '');
+      if (u.vaiTro !== 'chu' && chu !== u.ten) continue;
+      var k = lsKhoaDong_(d);
+      if (daCo[k]) xoa.push(i + 2); else daCo[k] = 1;
+    }
+    return lsXoaDong_(sh, xoa);
+  } finally { if (lock) try { lock.releaseLock(); } catch (e) {} }
 }
 
 /** Hàm chạy thử trong trình soạn thảo Apps Script */
