@@ -2471,7 +2471,7 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
       o += '<circle cx="' + sx.toFixed(1) + '" cy="' + sy.toFixed(1) + '" r="' + sr.toFixed(2) + '" class="vt-sao" style="animation-delay:' + (rnd() * 6).toFixed(1) + 's"/>';
     }
     var svg = '<svg viewBox="0 0 ' + S + ' ' + S + '" class="vt-svg" role="group" aria-label="Vòm trời 9 lĩnh vực – bấm từng vùng để xem luận giải">' +
-      '<defs><radialGradient id="' + id + 'g"><stop offset="0" stop-color="#1b3c55"/><stop offset=".62" stop-color="#0b1d30"/><stop offset="1" stop-color="#050d18" stop-opacity="0"/></radialGradient>' +
+      '<defs><radialGradient id="' + id + 'g"><stop offset="0" stop-color="#3d2415"/><stop offset=".62" stop-color="#1c0f08"/><stop offset="1" stop-color="#120906" stop-opacity="0"/></radialGradient>' +
       '<filter id="' + id + 'f" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="5"/></filter></defs>' +
       '<circle cx="' + c + '" cy="' + c + '" r="316" fill="url(#' + id + 'g)"/>' + o;
     // quỹ đạo hành tinh thật lúc sinh (trang trí, xoay rất chậm)
@@ -3239,7 +3239,7 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
   function queSvg(q, nd) {
     var o = '<svg viewBox="0 0 120 132" width="120" height="132" class="que-svg" role="img" aria-label="' + esc(q.ten) + '">';
     for (var i = 6; i >= 1; i--) {
-      var y = 6 + (6 - i) * 21, on = i === nd, c = on ? '#ffd88a' : '#bccbe6';
+      var y = 6 + (6 - i) * 21, on = i === nd, c = on ? '#b8322b' : '#4a3a2c';
       if (q.hao[i - 1]) o += '<rect x="10" y="' + y + '" width="100" height="12" rx="3" fill="' + c + '"/>';
       else o += '<rect x="10" y="' + y + '" width="44" height="12" rx="3" fill="' + c + '"/><rect x="66" y="' + y + '" width="44" height="12" rx="3" fill="' + c + '"/>';
       if (on) o += '<circle cx="4" cy="' + (y + 6) + '" r="3.5" fill="#ffd88a"/>';
@@ -3679,7 +3679,7 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
   function chanTrang(txt, so, tong, sang) {
     var c = document.createElement('canvas'); c.width = 1600; c.height = 44;
     var g = c.getContext('2d');
-    g.font = '500 20px "Be Vietnam Pro", system-ui, sans-serif'; g.fillStyle = sang ? '#8a7a55' : '#9fd8e2'; g.textBaseline = 'middle';
+    g.font = '500 20px "Be Vietnam Pro", system-ui, sans-serif'; g.fillStyle = '#8a7a55'; g.textBaseline = 'middle';
     g.fillText(txt, 0, 22);
     g.textAlign = 'right'; g.fillText(so + ' / ' + tong, 1600, 22);
     g.strokeStyle = sang ? 'rgba(120,100,60,.35)' : 'rgba(246,182,74,.35)'; g.beginPath(); g.moveTo(0, 2); g.lineTo(1600, 2); g.stroke();
@@ -3712,7 +3712,7 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
     if (!window.jspdf || typeof html2canvas === 'undefined') { toast('Không tải được thư viện PDF – hãy dùng nút In → Lưu dưới dạng PDF.', true); return; }
     var jsPDF = window.jspdf.jsPDF, pdf = new jsPDF({ unit: 'pt', format: 'a4', compress: true });
     var PW = 595.28, PH = 841.89, MX = 30, MT = 32, MB = 40, CW = PW - 2 * MX, CH = PH - MT - MB;
-    var W = 820, pxPt = CW / W, pageHpx = CH / pxPt, NEN = sang ? [247, 251, 252] : [11, 90, 105], NEN_HEX = sang ? '#f7fbfc' : '#0b5a69';
+    var W = 820, pxPt = CW / W, pageHpx = CH / pxPt, NEN = sang ? [255, 255, 255] : [243, 234, 215], NEN_HEX = sang ? '#ffffff' : '#f3ead7';
     var root = document.createElement('div');
     root.id = 'pdfRoot'; root.className = 'pdf-root ' + (sang ? 'theme-light' : 'theme-dark');
     document.body.appendChild(root);
@@ -4023,7 +4023,7 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
       setLoadingText('Đang dựng trang bìa…');
       var cv = root.querySelector('.pdf-page-cover');
       cv.style.height = Math.round(W * PH / CW * (CW / PW)) + 'px';
-      var o = {}; Object.keys(opt).forEach(function (k) { o[k] = opt[k]; }); o.backgroundColor = '#08172e';
+      var o = {}; Object.keys(opt).forEach(function (k) { o[k] = opt[k]; }); o.backgroundColor = '#2a0907';
       return html2canvas(cv, o).then(function (c) { trangMoi(); dat(c, true); trangMoi(); /* chỗ cho mục lục */ });
     }).then(function () {
       var secs = root.querySelectorAll('.pdf-sec'), p = Promise.resolve();
