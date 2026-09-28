@@ -161,14 +161,23 @@ input{width:100%;outline:none;font-family:inherit}
         <radialGradient id="bbBong" cx="50%" cy="50%" r="50%"><stop offset="0" stop-color="#000" stop-opacity=".85"/><stop offset=".6" stop-color="#000" stop-opacity=".35"/><stop offset="1" stop-color="#000" stop-opacity="0"/></radialGradient>
         <radialGradient id="bbVien" cx="50%" cy="50%" r="50%"><stop offset=".86" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".35"/></radialGradient>
         <!-- Ngọn carbon trơn, đen bóng -->
-        <linearGradient id="bbCarbon" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3a3e45"/><stop offset=".35" stop-color="#1c1f23"/><stop offset="1" stop-color="#08090a"/></linearGradient>
+        <linearGradient id="bbCarbon" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#6a6e74"/><stop offset=".22" stop-color="#5a5e64"/><stop offset=".55" stop-color="#43464b"/><stop offset=".85" stop-color="#2c2e32"/><stop offset="1" stop-color="#1b1c1f"/></linearGradient>
         <linearGradient id="bbOng" x1="0" y1="0" x2="0" y2="1">
           <stop offset="0" stop-color="#fff" stop-opacity=".30"/><stop offset=".14" stop-color="#fff" stop-opacity=".10"/>
           <stop offset=".42" stop-color="#fff" stop-opacity="0"/><stop offset=".78" stop-color="#000" stop-opacity=".35"/><stop offset="1" stop-color="#000" stop-opacity=".7"/></linearGradient>
-        <linearGradient id="bbKhau" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffffff"/><stop offset=".5" stop-color="#ece6d8"/><stop offset="1" stop-color="#a59f92"/></linearGradient>
-        <linearGradient id="bbDa" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#5a8fd6"/><stop offset=".5" stop-color="#2d5ea5"/><stop offset="1" stop-color="#173763"/></linearGradient>
-        <linearGradient id="bbMo" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#000" stop-opacity="1"/><stop offset=".55" stop-color="#000" stop-opacity="0"/></linearGradient>
-        <filter id="bbMoi"><feGaussianBlur stdDeviation="14"/></filter>
+        <!-- Khâu (ferrule): nhựa trắng ngà, bóng hình trụ -->
+        <linearGradient id="bbKhau" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#e9e5dc"/><stop offset=".1" stop-color="#ffffff"/><stop offset=".22" stop-color="#fbf9f3"/>
+          <stop offset=".55" stop-color="#e6e0d2"/><stop offset=".85" stop-color="#b9b2a2"/><stop offset="1" stop-color="#8d8677"/></linearGradient>
+        <linearGradient id="bbKhauMep" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#000" stop-opacity=".22"/><stop offset=".12" stop-color="#000" stop-opacity="0"/>
+          <stop offset=".88" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".18"/></linearGradient>
+        <!-- Đầu tip xanh lấm tấm, bằng đường kính ngọn, mặt vòm -->
+        <linearGradient id="bbDa" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#7db4f0"/><stop offset=".18" stop-color="#4b90e0"/><stop offset=".5" stop-color="#2a6fc6"/><stop offset=".82" stop-color="#1a4c93"/><stop offset="1" stop-color="#0f2f62"/></linearGradient>
+        <filter id="bbHatSang" x="0" y="0" width="100%" height="100%"><feTurbulence type="fractalNoise" baseFrequency=".95" numOctaves="2" seed="7"/>
+          <feColorMatrix values="0 0 0 0 .78  0 0 0 0 .89  0 0 0 0 1  0 0 0 2.4 -1.25"/></filter>
+        <filter id="bbHatToi" x="0" y="0" width="100%" height="100%"><feTurbulence type="fractalNoise" baseFrequency="1.1" numOctaves="2" seed="21"/>
+          <feColorMatrix values="0 0 0 0 .04  0 0 0 0 .14  0 0 0 0 .33  0 0 0 2.2 -1.2"/></filter>
+        <linearGradient id="bbDen2" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#4a4c50"/><stop offset=".3" stop-color="#1c1d20"/><stop offset="1" stop-color="#050506"/></linearGradient>
+        <clipPath id="bbTip"><path d="M371.5 629.8 L391 629.8 C399.2 633.4 402.6 640 402.6 648 C402.6 656 399.2 662.6 391 666.2 L371.5 666.2 Z"/></clipPath>
       </defs>
       <rect width="900" height="1000" fill="url(#bbDen)" class="nhip"/>
       <rect y="380" width="900" height="620" fill="url(#bbSan)"/>
@@ -204,10 +213,23 @@ input{width:100%;outline:none;font-family:inherit}
           <rect x="18" y="626" width="4" height="44" fill="#b8935a" opacity=".85"/>
           <text x="170" y="652" font-family="JetBrains Mono,monospace" font-size="10.5" font-weight="600" letter-spacing="3.2" fill="#d9dde2" opacity=".62">CARBON · CB</text>
           <path d="M-120 625.5 L344 629.5 L344 666.5 L-120 670.5 Z" fill="url(#bbMo)" opacity=".9"/>
-          <rect x="344" y="629" width="36" height="38" rx="2" fill="url(#bbKhau)"/>
-          <rect x="380" y="630" width="15" height="36" rx="6" fill="url(#bbDa)"/>
-          <path d="M-120 630 L380 633" stroke="#fff" stroke-opacity=".45" stroke-width="2" stroke-linecap="round"/>
-          <path d="M-60 669.5 L344 665.8" stroke="#d9bd8c" stroke-opacity=".45" stroke-width="1.5" stroke-linecap="round"/>
+          <!-- vệt sáng mờ trên ngọn (carbon xám mờ, không bóng gương) -->
+          <path d="M-120 631 L342 634" stroke="#fff" stroke-opacity=".16" stroke-width="5" stroke-linecap="round"/>
+          <!-- khâu: trắng – vạch đen – trắng -->
+          <rect x="343.5" y="629.5" width="12.5" height="37" fill="url(#bbKhau)"/>
+          <rect x="356" y="629.5" width="3.2" height="37" fill="url(#bbDen2)"/>
+          <rect x="359.2" y="629.5" width="12.4" height="37" fill="url(#bbKhau)"/>
+          <line x1="343.6" y1="629.6" x2="343.6" y2="666.4" stroke="#000" stroke-opacity=".45" stroke-width=".8"/>
+          <path d="M345 633.2 L355.5 633.2 M360 633.2 L371 633.2" stroke="#fff" stroke-opacity=".95" stroke-width="1.5" stroke-linecap="round"/>
+          <!-- đầu tip -->
+          <g clip-path="url(#bbTip)">
+            <rect x="371" y="629" width="33" height="38" fill="url(#bbDa)"/>
+            <rect x="371" y="629" width="33" height="38" filter="url(#bbHatToi)" opacity=".8"/>
+            <rect x="371" y="629" width="33" height="38" filter="url(#bbHatSang)" opacity=".9"/>
+            <rect x="371" y="629" width="33" height="38" fill="url(#bbOng)" opacity=".7"/>
+            <path d="M373 634.6 L391.5 634.6 C395.5 636.5 398 639 399.6 641.8" stroke="#fff" stroke-opacity=".55" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+          </g>
+          <line x1="371.6" y1="629.8" x2="371.6" y2="666.2" stroke="#0b1d3a" stroke-opacity=".5" stroke-width=".7"/>
         </g>
         <ellipse cx="200" cy="742" rx="220" ry="14" fill="#000" opacity=".45" filter="url(#bbMoi)"/>
       </g>
