@@ -114,6 +114,20 @@ Mở lại web app, nhấn **Ctrl+F5** để tải bản mới.
 - Bớt đọc lại tiêu đề cột mỗi lần ghi.
 - Tính KPI quản lý nhanh hơn.
 
+**Màn đăng nhập mới "Bàn bi-a"** (nằm trong Index.html)
+- Cả màn hình là một mặt bàn: thành bàn vân carbon, 6 lỗ, chấm ngắm, đèn treo; thẻ đăng nhập ở bên trái.
+- Trên máy tính, cây cơ xoay theo con trỏ chuột.
+- Mỗi ký tự mật khẩu hiện thành một viên bi trong khay, người đứng cạnh không đọc được mật khẩu.
+- Đăng nhập đúng: cây cơ thọc, bi cái phá dàn bi, một bi rơi lỗ, rồi vào hệ thống (khoảng 1 giây).
+- Đăng nhập sai: bi cái lăn vào lỗ kèm chữ "PHẠM LỖI!", thẻ rung nhẹ.
+- Trên điện thoại, dàn bi thu gọn ở dưới thẻ.
+- Máy nào đã bật "giảm chuyển động" thì bỏ hiệu ứng.
+- **Đổi tông màu:** trong Index.html, tìm `var BB_TONG_MAC_DINH = 'dem';` rồi đổi `'dem'` thành:
+  - `'than'`: than chì & cam
+  - `'vang'`: rượu vang
+  
+  Lưu, rồi Triển khai phiên bản mới.
+
 ## Nếu có lỗi
 
 Mở bản sao đã tạo ở Bước 0, hoặc dán lại file trong `kpi-app/goc/` (bản cũ của bạn), rồi Triển khai phiên bản mới.

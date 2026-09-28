@@ -94,8 +94,48 @@ R("""        '<li>Snapshot tự động 9h mỗi ngày.</li>'+
         '<li>Tháng đã qua mà chưa chốt chính thức: vẫn tính trực tiếp. Đã chốt: đọc bản chốt, không tính lại.</li>'+
         '<li>Ngày lễ (sheet NgayLe) không tính quên điểm danh, không tính vào hạn duyệt / hạn nhập.</li></ul>'],""")
 
-# 5) Ô tên đăng nhập không gợi ý sẵn tên tài khoản giám đốc
-R('''<input id="l_tk" autocomplete="username" placeholder="giamdoc"''', '''<input id="l_tk" autocomplete="username" placeholder="Mã nhân viên, VD: c123"''')
+# 5) Màn đăng nhập "Bàn bi-a" (nguồn chung: tests/dang-nhap-bi-a.html, cũng dùng cho bản xem thử)
+bb = io.open(os.path.join(D, 'dang-nhap-bi-a.html'), encoding='utf-8').read()
+BB_CSS = bb.split('<!--CSS-->')[1].split('<!--HTML-->')[0].strip('\n')
+BB_HTML = bb.split('<!--HTML-->')[1].split('<!--JS-->')[0].strip('\n')
+BB_JS = bb.split('<!--JS-->')[1].strip('\n')
+
+
+def VUNG(dau, cuoi, new):
+    global s
+    i = s.find(dau)
+    j = s.find(cuoi, i + 1)
+    if i < 0 or j < 0 or s.count(dau) != 1:
+        sys.exit('KHÔNG THẤY VÙNG: ' + dau[:80])
+    s = s[:i] + new + s[j:]
+
+
+VUNG('/* GATE */\n', '.spin{width:26px', BB_CSS + '\n')
+VUNG('<div id="gate">\n', '<div id="app">', BB_HTML + '\n\n')
+R("""/* ===== ĐĂNG NHẬP ===== */
+var TOKEN=null;""", BB_JS + """
+
+/* ===== ĐĂNG NHẬP ===== */
+var TOKEN=null;""")
+# Đăng nhập sai -> bi cái rơi lỗ; đúng -> phá dàn bi rồi mới vào
+R("""    $('gspin').classList.add('hide');
+    if(!r.ok){lerr(r.msg);return}
+    TOKEN=r.token; ME=r.me;
+    try{sessionStorage.setItem('kpi_token',TOKEN)}catch(e){}
+    if(ME.phaiDoiMK){batDoiMK();return}
+    vaoHeThong();""", """    $('gspin').classList.add('hide');
+    if(!r.ok){bbTruot();lerr(r.msg);return}
+    TOKEN=r.token; ME=r.me;
+    try{sessionStorage.setItem('kpi_token',TOKEN)}catch(e){}
+    $('btnLogin').disabled=true;
+    bbTrung(function(){
+      $('btnLogin').disabled=false;
+      if(ME.phaiDoiMK){batDoiMK();return}
+      vaoHeThong();
+    });""")
+R("""  else{setTimeout(function(){var e=$('l_tk'); if(e)e.focus()},300)}""",
+  """  else{setTimeout(function(){var e=$('l_tk'); if(e)e.focus()},300)}
+  try{bbKhoiDong()}catch(e){}""")
 
 io.open(os.path.join(D, '..', 'Index.html'), 'w', encoding='utf-8').write(s)
 print('OK Index.html')
