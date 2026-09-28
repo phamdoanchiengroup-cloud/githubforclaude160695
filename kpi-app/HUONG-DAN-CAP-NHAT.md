@@ -1,171 +1,256 @@
-# Hướng dẫn cập nhật web app KPI (bản 29/09/2026)
+# Hướng dẫn cập nhật web app KPI – từng bước chi tiết
 
-> **Bạn đã làm bản 28/09 rồi?** Chỉ cần: Bước 0 (sao lưu) → Bước 1 (Code.gs) → Bước 2 (Index.html) → **Bước 3b** (bật Sheets API) → chạy `CAI_LAI_TAT_CA_TRIGGER` rồi `KIEM_TRA_SHEETS_API` (Bước 4, dòng 1 và 9) → Bước 5 (triển khai). Xem phần mới ở mục **"Bản 29/09: nhanh hơn và giao diện mới"** cuối file.
+Bản này gồm **mọi thay đổi từ đầu** (sửa lỗi chốt tháng, bảo mật, màn đăng nhập mới, tăng tốc, giao diện mới). Bạn chưa dán lần nào thì chỉ cần làm theo file này từ trên xuống, **một lần là đủ**.
 
-Làm **trước 23h ngày 30/9**: bản cũ sẽ tự chốt KPI tháng 9 vào giờ đó và chốt sai.
-
-Cần dán lại **2 file**: `Code.gs` và `Index.html` (lấy trong thư mục `kpi-app/` của repo).
+- **Hạn chót:** xong **trước 23h ngày 30/9**. Bản cũ sẽ tự chốt KPI tháng 9 vào giờ đó và chốt sai.
+- **Thời gian:** khoảng 30–45 phút. Nên làm lúc ít người dùng (buổi trưa hoặc tối).
+- **Cần có:** máy tính (không làm trên điện thoại), trình duyệt Chrome, đăng nhập đúng tài khoản Google đang giữ dự án Apps Script và file Sheet "CSDL KPI".
+- **Cần dán lại 2 file:** `Code.gs` và `Index.html`.
 
 ---
 
-## Bước 0 — Sao lưu (bắt buộc)
+## Phần A — Chuẩn bị
 
-1. Mở dự án Apps Script của web app KPI.
-2. Bấm **Tổng quan** (biểu tượng ⓘ bên trái), chọn **Tạo bản sao**. Có bản sao thì lỡ lỗi vẫn quay lại được.
+### A1. Tải 2 file mới về máy
 
-## Bước 1 — Dán Code.gs
+Cách 1 (dễ nhất): tải 2 file `Code.gs` và `Index.html` mà Claude gửi trong khung chat.
 
-1. MỞ file **Code.gs** trong Apps Script.
-2. Bấm vào trong file, nhấn **Ctrl+A** rồi **Delete** để xóa hết.
-3. Mở file `kpi-app/Code.gs` trong repo, chép toàn bộ và dán vào.
-4. Nhấn **Ctrl+S** để lưu.
+Cách 2: lấy trên GitHub:
+1. Mở repo, vào thư mục `kpi-app`, bấm vào file `Code.gs`.
+2. Bấm nút **Raw** (góc phải phía trên nội dung file).
+3. Trang chỉ còn chữ: nhấn **Ctrl+A** rồi **Ctrl+C** là đã chép xong. Làm tương tự với `Index.html`.
 
-## Bước 2 — Dán Index.html
+**Cách mở file đã tải để chép:** bấm chuột phải vào file → **Mở bằng** → **Notepad**. Trong Notepad: **Ctrl+A** (chọn hết) → **Ctrl+C** (chép).
 
-Làm giống bước 1: MỞ file **Index.html**, xóa hết, dán nội dung `kpi-app/Index.html`, rồi **Ctrl+S**.
+> Đừng mở `Index.html` bằng cách bấm đúp: file sẽ mở thành trang web trong Chrome, không chép mã được.
 
-## Bước 3 — Đặt múi giờ dự án
+### A2. Mở dự án Apps Script
 
-1. Bấm **Cài đặt dự án** (bánh răng ⚙ bên trái).
-2. Ở mục **Múi giờ**, chọn **(GMT+07:00) Giờ Đông Dương – Hồ Chí Minh**.
+1. Mở Google Sheet **CSDL KPI**.
+2. Menu **Tiện ích mở rộng** → **Apps Script**. Một thẻ mới mở ra, đó là trình soạn thảo.
+   - Nếu dự án là dự án riêng (không gắn với Sheet), mở https://script.google.com và bấm vào tên dự án web app KPI.
+3. Cột bên trái có mục **Tệp**, trong đó có `Code.gs` và `Index.html`.
 
-## Bước 3b — Bật dịch vụ Google Sheets API (để tải trang nhanh hơn)
+### A3. Sao lưu (bắt buộc)
 
-1. Trong trình soạn thảo Apps Script, ở cột trái tìm mục **Dịch vụ**, bấm dấu **+**.
-2. Tìm **Google Sheets API**, bấm vào, giữ nguyên tên `Sheets`, bấm **Thêm**.
-3. Sau đó chạy hàm `KIEM_TRA_SHEETS_API` (Bước 4, dòng 9). Hàm so **từng ô** giữa cách đọc cũ và cách đọc mới; khớp hết mới bật. Nếu báo lệch thì web vẫn chạy cách cũ, không ảnh hưởng gì.
+1. Ở cột ngoài cùng bên trái, bấm biểu tượng **ⓘ Tổng quan**.
+2. Góc trên bên phải, bấm biểu tượng **Tạo bản sao** (hình hai tờ giấy chồng nhau).
+3. Một bản "Bản sao của …" được tạo. Có bản này thì lỡ lỗi vẫn quay lại được. Bạn **tiếp tục làm trên dự án gốc**, không làm trên bản sao.
+4. Bấm biểu tượng **< >  Trình chỉnh sửa** ở cột trái để quay lại màn hình mã.
 
-Không bật bước này thì web vẫn chạy bình thường, chỉ mở trang chậm hơn một chút.
+---
 
-## Bước 4 — Chạy các hàm một lần
+## Phần B — Dán mã mới
 
-Cách chạy: ở thanh trên cùng, chọn tên hàm trong ô danh sách, bấm **▶ Chạy**, rồi xem kết quả ở **Nhật ký thực thi** phía dưới. Lần đầu Google có thể hỏi cấp quyền: bấm **Xem lại quyền**, chọn tài khoản, rồi **Cho phép**.
+### B1. Dán Code.gs
 
-Chạy lần lượt:
+1. Ở cột trái, bấm vào **Code.gs**.
+2. Bấm chuột vào giữa vùng mã, nhấn **Ctrl+A** (bôi đen hết) rồi **Delete**. Vùng mã trống trơn.
+3. Mở file `Code.gs` mới bằng Notepad, **Ctrl+A**, **Ctrl+C**.
+4. Quay lại Apps Script, bấm vào vùng mã trống, nhấn **Ctrl+V**. Mã dài khoảng 5.270 dòng, đợi vài giây cho dán xong.
+5. Nhấn **Ctrl+S** để lưu. Tên file không còn dấu chấm tròn là đã lưu.
 
-| # | Hàm | Việc hàm làm |
-|---|---|---|
-| 1 | `CAI_LAI_TAT_CA_TRIGGER` | Cài lại 6 trigger tự động theo giờ VN. Chốt tháng giờ chạy vào **ngày làm việc thứ 3 của tháng sau**. Trigger mới: lưu trữ nhật ký cũ lúc 2h sáng ngày 5 hằng tháng |
-| 2 | `TAO_SHEET_NGAY_LE` | Tạo sheet **NgayLe** (đã điền sẵn 1–2/9/2026 và 1/1/2027). Sau đó bạn tự thêm Tết Âm lịch, Giỗ Tổ, 30/4–1/5… theo lịch nghỉ của công ty |
-| 3 | `NGUNG_TK_NGHI_VIEC` | Ngừng tài khoản của 9 người đã nghỉ việc |
-| 4 | `BO_SUNG_MA_GHI_VIPHAM` | Thêm mã cho 95 vi phạm "nhập trễ" cũ, để xóa lẻ được trên giao diện |
-| 5 | `DON_PHAT_NHAP_TRE_TP_PP` | Xóa 11 lượt phạt oan của phó phòng C160 (hàm này có sẵn từ trước) |
-| 6 | `BAT_BUOC_DOI_MAT_KHAU_MAC_DINH` | Bật "phải đổi mật khẩu" cho **mọi** tài khoản còn dùng 123456, kể cả giamdoc, phogd2, nhansu, kcs. Lần đăng nhập tới họ sẽ bị buộc đặt mật khẩu mới. Nên **báo trước** cho mọi người |
-| 7 | `SUA_NGAY_NHAT_KY` | Xem mục "Sửa ngày sai" ngay dưới đây |
-| 8 | `KIEM_TRA_SAU_CAP_NHAT` | Kiểm tra lại toàn bộ (chỉ đọc, không sửa gì). Dòng nào có chữ "->" là việc còn phải làm |
-| 9 | `KIEM_TRA_SHEETS_API` | Chạy sau Bước 3b. Báo "KHỚP toàn bộ… ĐÃ BẬT" là xong. Muốn tắt lại thì chạy `TAT_SHEETS_API` |
+**Kiểm tra dán đủ:** kéo xuống cuối file. Dòng cuối cùng phải là:
+```
+  return napDuLieuLoi_(token, phan && phan.length ? phan : null);
+}
+```
+Nếu Ctrl+S báo lỗi kiểu "Lỗi cú pháp…" thì thường là dán thiếu: xóa hết và dán lại.
 
-**Hai hàm dùng khi cần (không phải chạy bây giờ):**
-- `XOA_BO_NHO_TAM`: web nhớ kết quả tính (bảng KPI, KPI quản lý, chấm công tháng…) trong **10 phút** cho nhanh. Ai lưu gì trên web thì tự tính lại ngay. Nhưng nếu bạn **sửa tay trực tiếp trong Google Sheet**, chạy hàm này để web thấy số mới ngay (không thì đợi tối đa 10 phút).
-- `LUU_TRU_NHAT_KY`: chuyển nhật ký sản xuất của những tháng **đã chốt chính thức và cũ hơn 3 tháng** sang trang tính `NhatKySanXuat_LuuTru`, để sheet chính nhẹ. Trigger tự chạy hằng tháng; bạn không cần bấm. Dữ liệu không mất, lịch sử KPI và KPI quản lý vẫn đọc được tháng cũ.
+### B2. Dán Index.html
 
-### Sửa ngày sai trong nhật ký (hàm số 7)
+1. Ở cột trái, bấm vào **Index.html**.
+2. **Ctrl+A** → **Delete**.
+3. Mở file `Index.html` mới bằng Notepad, **Ctrl+A**, **Ctrl+C**.
+4. Quay lại Apps Script, **Ctrl+V**. File dài khoảng 6.380 dòng, trong đó có 1 dòng rất dài (ảnh ngọn cơ). Đợi dán xong.
+5. **Ctrl+S**.
 
-- **Lần 1:** chạy `SUA_NGAY_NHAT_KY` luôn. Hàm chỉ **liệt kê**, chưa sửa gì.
-- **Lần 2:** trong file Code.gs, tìm dòng `var CHE_DO = 'XEM';` và đổi thành `var CHE_DO = 'SUA';`. Lưu, rồi chạy lại. Hàm sẽ tự sửa 21 dòng của C049 bị đảo ngày/tháng (VD 2026-01-08 thành 2026-08-01).
-- Sửa xong, đổi lại thành `'XEM'` và lưu.
-- **Các dòng còn lại phải sửa tay** trong sheet NhatKySanXuat, theo số dòng mà hàm in ra:
-  - 5 dòng C049 có ô ngày lỗi `#VALUE!`. Nhiều khả năng là 04/08: C049 nhập các ngày 1, 3, 5, 6… tháng 8, còn thiếu đúng ngày 4.
-  - 9 dòng xưởng DG nhập ngày 03/09 nhưng lại ghi các ngày 27, 28, 29/9 (lúc nhập các ngày này chưa tới). Nhiều khả năng là 27–29/8. Cần hỏi TP xưởng DG.
-  - 4 dòng DG nhập 03/09 ghi ngày 07/09 (cũng chưa tới lúc nhập). Hàm gợi ý 07/08, nhưng có thể là ngày khác. Cần hỏi TP xưởng DG.
-  - 1 dòng C631 nhập 26/08 ghi ngày 21/09. Dòng này đã bị từ chối nên không ảnh hưởng KPI, sửa hay không cũng được.
-  - 6 dòng C668 năm 1483: đổi thành 2026-09-15.
-  - Các dòng ô ngày trống và dòng 2026-10-10: hỏi trưởng phòng rồi điền.
-- Nếu sửa dòng thuộc tháng 8 (tháng đã chốt), vào **Bảng KPI → chọn tháng 8 → Chốt bù** để bảng tính lại.
+**Kiểm tra:** dòng cuối cùng là `</html>`.
 
-## Bước 5 — Triển khai phiên bản mới
+### B3. Đặt múi giờ dự án
 
-1. Bấm **Triển khai → Quản lý triển khai**.
-2. Bấm biểu tượng **✏️** (chỉnh sửa).
-3. Ở mục **Phiên bản**, chọn **Phiên bản mới**.
-4. Bấm **Triển khai**.
+1. Cột trái, bấm biểu tượng **⚙ Cài đặt dự án**.
+2. Mục **Múi giờ**: chọn **(GMT+07:00) Giờ Đông Dương – Hồ Chí Minh**. Nếu đã đúng thì để nguyên.
+3. Bấm **< > Trình chỉnh sửa** để quay lại.
 
-Mở lại web app, nhấn **Ctrl+F5** để tải bản mới.
+### B4. Bật dịch vụ Google Sheets API (để trang mở nhanh hơn)
 
-## Bước 6 — Việc của bạn trên giao diện
+1. Cột trái, cạnh chữ **Dịch vụ**, bấm dấu **+**.
+2. Trong danh sách, bấm **Google Sheets API**.
+3. Giữ nguyên ô **Mã nhận dạng** là `Sheets`, bấm **Thêm**.
+4. Dưới mục **Dịch vụ** xuất hiện dòng **Sheets** là xong.
 
-- Đăng nhập **chienpham**, vào tab **Tài khoản**, bấm **Cấp lại mật khẩu** cho `giamdoc` và `phogd2`. Máy sẽ hiện một **mật khẩu tạm 6 số ngẫu nhiên**. Báo riêng cho từng người; họ sẽ phải đổi ngay khi đăng nhập.
-- Đặt định mức cho công đoạn `XPT-VSR-VSP` và `SON-MAY-TU-DONG-1`. Hiện 80 dòng sản lượng của 2 công đoạn này không được tính vào KPI.
+Nếu vì lý do nào đó không thêm được, bỏ qua bước này và bỏ qua hàm số 8 ở Phần C. Web vẫn chạy bình thường, chỉ mở chậm hơn một chút.
+
+---
+
+## Phần C — Chạy các hàm một lần
+
+### Cách chạy một hàm
+
+1. Bấm vào **Code.gs** ở cột trái (ô chọn hàm chỉ liệt kê hàm của file đang mở).
+2. Trên thanh công cụ, cạnh nút **▶ Chạy** và **Gỡ lỗi**, có một ô chứa tên hàm. Bấm vào ô đó để mở danh sách.
+3. Danh sách xếp theo thứ tự trong file và khá dài. Các hàm chạy tay đa số nằm **gần cuối** danh sách, hãy cuộn xuống. Tên hàm viết HOA nên dễ nhận ra.
+4. Bấm vào đúng tên hàm, rồi bấm **▶ Chạy**.
+5. Phía dưới hiện khung **Nhật ký thực thi**. Đợi đến khi có dòng **"Đã hoàn tất thực thi"**, rồi đọc các dòng thông báo phía trên nó.
+
+### Lần chạy đầu: Google hỏi cấp quyền
+
+Chỉ xảy ra một lần (hoặc thêm một lần sau khi bật Sheets API):
+1. Hộp **"Cần cấp quyền"** hiện ra: bấm **Xem lại quyền**.
+2. Chọn tài khoản Google của bạn.
+3. Nếu hiện **"Google chưa xác minh ứng dụng này"**: bấm chữ nhỏ **Nâng cao**, rồi **Đi tới … (không an toàn)**. Đây là mã của chính bạn nên an toàn.
+4. Bấm **Cho phép**. Sau đó bấm **▶ Chạy** lại hàm đó.
+
+### Chạy lần lượt 9 hàm dưới đây
+
+Chạy **đúng thứ tự**, xong hàm này mới chạy hàm kia. Cột "Thông báo mong đợi" là kết quả khi chạy thử trên bản sao dữ liệu ngày 28/9; số của bạn có thể chênh một chút.
+
+| # | Hàm | Việc hàm làm | Thông báo mong đợi |
+|---|---|---|---|
+| 1 | `CAI_LAI_TAT_CA_TRIGGER` | Xóa và cài lại 6 việc chạy tự động theo giờ VN. Chốt tháng giờ chạy vào **ngày làm việc thứ 3 của tháng sau** | 6 dòng "Đã cài trigger…" và "Xong: đã cài 6 trigger theo giờ Việt Nam." |
+| 2 | `TAO_SHEET_NGAY_LE` | Tạo trang tính **NgayLe** (có sẵn 1–2/9/2026 và 1/1/2027) | "Đã tạo sheet NgayLe với 3 ngày mẫu…" |
+| 3 | `NGUNG_TK_NGHI_VIEC` | Ngừng tài khoản của người đã chuyển "Nghỉ việc" | "Đã ngừng 9 tài khoản: c491 (…), …" |
+| 4 | `BO_SUNG_MA_GHI_VIPHAM` | Thêm mã cho các vi phạm "nhập trễ" cũ, để xóa lẻ được trên giao diện | "Đã bổ sung mã ghi cho 95 vi phạm." |
+| 5 | `DON_PHAT_NHAP_TRE_TP_PP` | Xóa các lượt phạt oan của trưởng/phó phòng (hàm này nằm ở **giữa** danh sách) | "Đã dọn: 11 dòng PhatNhapTre…" |
+| 6 | `BAT_BUOC_DOI_MAT_KHAU_MAC_DINH` | Bắt mọi tài khoản còn dùng mật khẩu 123456 phải đặt mật khẩu mới ở lần đăng nhập tới. **Không** đổi mật khẩu của ai | "Đã bật "phải đổi mật khẩu" cho 4 tài khoản…" |
+| 7 | `SUA_NGAY_NHAT_KY` | Tìm dòng nhật ký bị sai ngày. Xem mục **C1** ngay dưới bảng | "=== 55 dòng nhật ký có ngày sai (chế độ XEM) ===" rồi danh sách |
+| 8 | `KIEM_TRA_SHEETS_API` | Chỉ chạy nếu đã làm B4. So từng ô giữa cách đọc cũ và mới, khớp hết mới bật đọc nhanh | "KHỚP toàn bộ 24 trang tính. ĐÃ BẬT đọc gộp bằng Sheets API." |
+| 9 | `KIEM_TRA_SAU_CAP_NHAT` | Kiểm tra lại mọi thứ (chỉ đọc, không sửa gì) | Xem mục **C2** |
+
+**Trước khi chạy hàm số 6:** báo trước cho mọi người (kể cả giamdoc, phogd2, nhansu, kcs nếu còn dùng 123456) rằng lần đăng nhập tới web sẽ bắt đặt mật khẩu mới. Nếu **chính bạn** còn dùng 123456 thì bạn cũng sẽ bị hỏi; hãy chọn mật khẩu bạn nhớ được.
+
+**Nếu hàm số 8 báo "Có … ô lệch → CHƯA bật":** không sao, web vẫn chạy cách đọc cũ. Chụp màn hình nhật ký gửi Claude xem.
+
+**Nếu hàm nào báo lỗi màu đỏ:** chụp màn hình khung Nhật ký thực thi, gửi Claude. Không cần làm lại từ đầu.
+
+### C1. Sửa ngày sai trong nhật ký (hàm số 7)
+
+Hàm này có 2 chế độ. Lần chạy đầu ở chế độ **XEM**: chỉ liệt kê, không sửa gì.
+
+**Lần 1 – xem danh sách:** chạy `SUA_NGAY_NHAT_KY`. Mỗi dòng trong nhật ký có dạng:
+```
+Dòng 588 | C049 | HT-HK-1 | Đã chốt | ngày đang ghi: 2026-01-08 | nhập lúc: 2026-08-30 | TỰ SỬA thành 2026-08-01
+```
+- "Dòng 588" là số dòng trong trang tính **NhatKySanXuat**.
+- **TỰ SỬA thành …**: hàm chắc chắn (ngày và tháng bị đảo), sẽ tự sửa ở lần 2.
+- **có thể là … (sửa tay)** hoặc **không đoán được**: bạn phải tự sửa trong Sheet.
+
+**Lần 2 – cho hàm tự sửa:**
+1. Trong Code.gs, nhấn **Ctrl+F**, gõ `var CHE_DO`, nhấn Enter. Con trỏ nhảy tới dòng:
+   ```
+   var CHE_DO = 'XEM';   // <-- đổi thành 'SUA' ở bước 2
+   ```
+2. Sửa chữ `XEM` thành `SUA` (giữ nguyên hai dấu nháy đơn): `var CHE_DO = 'SUA';`
+3. **Ctrl+S**, rồi chọn lại hàm `SUA_NGAY_NHAT_KY` và bấm **▶ Chạy**. Cuối nhật ký báo "ĐÃ SỬA 21 dòng…" (21 dòng của C049).
+4. Sửa lại `SUA` thành `XEM` rồi **Ctrl+S**, để lần sau lỡ bấm chạy cũng không sửa gì.
+
+**Các dòng còn lại – sửa tay trong Google Sheet:** mở trang tính **NhatKySanXuat**, tìm đúng số dòng, sửa ô cột **Ngay** theo dạng `2026-08-04`.
+- 5 dòng C049 có ô ngày lỗi `#VALUE!`. Nhiều khả năng là 04/08: C049 nhập các ngày 1, 3, 5, 6… tháng 8, thiếu đúng ngày 4.
+- 9 dòng xưởng DG nhập ngày 03/09 nhưng ghi ngày 27, 28, 29/9 (khi nhập các ngày đó chưa tới). Nhiều khả năng là 27–29/8. **Hỏi trưởng phòng xưởng DG** cho chắc.
+- 4 dòng DG nhập 03/09 ghi ngày 07/09. Hàm gợi ý 07/08, nhưng cũng nên hỏi trưởng phòng DG.
+- 1 dòng C631 nhập 26/08 ghi 21/09: dòng đã bị từ chối, không ảnh hưởng KPI, sửa hay không cũng được.
+- 6 dòng C668 ghi năm 1483: sửa thành `2026-09-15`.
+- Các dòng ô ngày trống và dòng `2026-10-10`: hỏi trưởng phòng rồi điền.
+
+Nếu chưa hỏi được ai thì cứ để đó, làm tiếp Phần D rồi sửa sau cũng được. Sửa xong các dòng thuộc tháng 8 (tháng đã chốt) thì làm thêm bước E3.
+
+### C2. Đọc kết quả kiểm tra (hàm số 9)
+
+Hàm in ra nhiều dòng. Những dòng nên thấy:
+- `Múi giờ dự án: Asia/Ho_Chi_Minh (đúng)`
+- `Trigger đang cài:` có đủ 6 tên: chayPhatNhapTre, chotThangTuDong, snapshotKPIHangNgay, donTokenHetHan, saoLuuHangNgay, LUU_TRU_NHAT_KY.
+- `Tài khoản của người đã nghỉ việc vẫn "Đang dùng": 0`
+- `Vi phạm thiếu mã ghi: 0`
+- `Sheet NgayLe: 3 ngày` (hoặc nhiều hơn nếu bạn đã thêm)
+
+Dòng nào có dấu **->** là việc còn phải làm, ví dụ `-> chạy CAI_LAI_TAT_CA_TRIGGER`: chạy hàm được chỉ tên rồi chạy lại hàm số 9. Riêng dòng "ngày sai → SUA_NGAY_NHAT_KY" sẽ còn cho tới khi bạn sửa tay xong mục C1, không sao.
+
+---
+
+## Phần D — Triển khai phiên bản mới (bắt buộc)
+
+Chưa làm bước này thì người dùng vẫn thấy bản cũ.
+
+1. Góc trên bên phải trình soạn thảo, bấm nút xanh **Triển khai** → **Quản lý triển khai**.
+2. Bên trái chọn bản triển khai đang dùng (thường chỉ có một, loại "Ứng dụng web").
+3. Bấm biểu tượng **✏️ Chỉnh sửa** (hình bút chì, phía trên bên phải).
+4. Ô **Phiên bản**: bấm vào, chọn **Phiên bản mới**. Có thể gõ mô tả "Cập nhật 29/9".
+5. **Không** đổi các ô khác (Thực thi dưới dạng, Ai có quyền truy cập).
+6. Bấm **Triển khai**, rồi **Xong**.
+
+Đường link web app **giữ nguyên**, không phải gửi lại cho ai.
+
+> Không bấm **"Triển khai mới"** vì sẽ tạo ra link mới. Chỉ dùng **Quản lý triển khai → ✏️**.
+
+---
+
+## Phần E — Kiểm tra trên web và việc của bạn
+
+### E1. Mở web app
+
+1. Mở link web app như mọi ngày.
+2. Nhấn **Ctrl+F5** để trình duyệt bỏ bản cũ đã lưu. Điện thoại: đóng hẳn trình duyệt rồi mở lại.
+3. Thấy màn đăng nhập mới (bi cái và ngọn cơ carbon, nền trắng ngà) là đúng.
+4. Đăng nhập **chienpham**. Vào xong sẽ thấy menu dọc bên trái và trang **Việc hôm nay**.
+
+Nếu vẫn thấy giao diện cũ: kiểm tra lại Phần D (đã chọn **Phiên bản mới** chưa), rồi Ctrl+F5.
+
+### E2. Cấp mật khẩu mới cho ban điều hành
+
+1. Menu trái → **Hệ thống → Tài khoản**.
+2. Ở dòng `giamdoc`, bấm nút **Cấp lại MK**. Máy hiện một **mật khẩu tạm 6 số ngẫu nhiên**: ghi lại, báo riêng cho người dùng tài khoản đó. Họ sẽ phải đổi ngay khi đăng nhập.
+3. Làm tương tự với `phogd2`.
+
+### E3. Việc khác
+
+- **Định mức còn thiếu:** vào **Định mức → Công đoạn**, đặt định mức cho `XPT-VSR-VSP` và `SON-MAY-TU-DONG-1`. Hiện khoảng 80 dòng sản lượng của 2 công đoạn này chưa được tính vào KPI.
+- **Ngày lễ:** mở trang tính **NgayLe** trong Google Sheet, thêm các ngày nghỉ (Tết Âm lịch, Giỗ Tổ, 30/4, 1/5…), mỗi ngày một dòng:
+  - Cột `Ngay`: dạng `2027-02-06`.
+  - Cột `TenLe`: tên ngày lễ.
+  - Cột `MaXuong`: để trống nếu cả nhà máy nghỉ; ghi mã xưởng (VD `CNC`) nếu chỉ xưởng đó nghỉ.
+- **Nếu đã sửa tay ngày của tháng 8** (mục C1): vào **KPI → Bảng KPI**, chọn Kỳ **Tháng 8/2026**, bấm **Chốt bù tháng này (toàn nhà máy)** để bảng tính lại.
+
+---
+
+## Sau khi cập nhật: những điều nên biết
+
+- **Chốt tháng:** tháng 9 sẽ được chốt chính thức lúc 23h ngày làm việc thứ 3 của tháng 10, không phải 23h ngày 30/9 như trước. Nhờ vậy sản lượng duyệt muộn mấy ngày cuối tháng vẫn được tính.
+- **Sửa tay trong Google Sheet:** web nhớ kết quả tính (bảng KPI, KPI quản lý, chấm công…) trong 10 phút cho nhanh. Sửa trên web thì tự cập nhật ngay. Sửa tay trong Sheet thì chạy hàm `XOA_BO_NHO_TAM` để web thấy ngay, không thì đợi tối đa 10 phút.
+- **Lưu trữ tự động:** ngày 5 hằng tháng lúc 2h sáng, nhật ký của các tháng đã chốt và cũ hơn 3 tháng được chuyển sang trang tính `NhatKySanXuat_LuuTru` cho sheet chính nhẹ. Dữ liệu không mất.
+- **Nếu có lỗi nặng:** Triển khai → Quản lý triển khai → ✏️ → ô Phiên bản chọn lại **phiên bản cũ** (số nhỏ hơn) → Triển khai. Web quay về bản cũ ngay. Hoặc mở bản sao đã tạo ở bước A3.
 
 ---
 
 ## Những gì đã thay đổi
 
 **Chốt tháng**
-- Tháng trước được chốt chính thức lúc 23h **ngày làm việc thứ 3** của tháng sau, thay vì 23h ngày cuối tháng như trước. Nhờ vậy sản lượng duyệt muộn mấy ngày cuối tháng vẫn được tính.
-- Trước khi chốt chính thức, bảng KPI tháng đó vẫn tính trực tiếp.
-- Bảng KPI công nhân **không còn trưởng/phó phòng** (trước đây họ lọt vào với 30 điểm). Các bản chốt cũ cũng tự lọc ra khi hiển thị.
-- Snapshot 9h sáng chỉ là **bản tạm**, không bị coi là đã chốt.
+- Chốt chính thức lúc 23h **ngày làm việc thứ 3** của tháng sau. Trước khi chốt, bảng KPI tháng đó vẫn tính trực tiếp.
+- Bảng KPI công nhân **không còn trưởng/phó phòng** (trước đây họ lọt vào với 30 điểm).
+- Snapshot 9h sáng chỉ là **bản tạm**.
 
 **Bảo mật**
-- Người dùng bị **buộc đổi mật khẩu** lần đầu và sau khi được cấp lại. Không đặt được 123456, 888888, tên đăng nhập hay mã nhân viên.
-- Nhập sai mật khẩu 5 lần thì khóa 15 phút. Chủ sở hữu cấp lại mật khẩu là mở khóa ngay.
-- "Cấp lại mật khẩu" tạo mật khẩu tạm ngẫu nhiên, không còn đặt về 123456.
-- Người có hồ sơ **Nghỉ việc** không đăng nhập được. Chuyển ai sang Nghỉ việc thì tài khoản của họ tự ngừng.
-- Công nhân chỉ xem được hồ sơ của chính mình. Chi tiết KPI chỉ xem được của người cùng xưởng. Kiểm soát chất lượng không xem hồ sơ.
-- Trưởng/phó phòng không đổi được chức danh sang cấp quản lý, để tránh tự nâng quyền tài khoản.
-- Ô đăng nhập không còn gợi ý sẵn chữ "giamdoc".
+- Bắt đổi mật khẩu lần đầu và sau khi được cấp lại; không đặt được 123456, 888888, tên đăng nhập hay mã nhân viên.
+- Nhập sai 5 lần thì khóa 15 phút. "Cấp lại mật khẩu" tạo mật khẩu tạm ngẫu nhiên.
+- Người **Nghỉ việc** không đăng nhập được.
+- Công nhân chỉ xem hồ sơ của chính mình. Trước đây máy công nhân còn nhận về **CCCD, điện thoại, địa chỉ, lương của cả xưởng** (không hiện trên màn hình nhưng xem được bằng công cụ trình duyệt); nay đã chặn. Trưởng phòng không nhận CCCD và lương.
+- Trưởng/phó phòng không đổi được chức danh sang cấp quản lý.
 
 **Dữ liệu**
-- Có **khóa ghi**: khi nhiều người cùng lưu, máy xử lý lần lượt, không còn đè hay xóa nhầm dòng. Nếu bận quá 30 giây sẽ báo "Hệ thống đang bận, đợi vài giây rồi bấm lại".
-- **Kiểm tra ngày**: không nhận ngày tương lai, ngày trước 1/7/2026 hay ngày không tồn tại. Công nhân nhập bù tối đa 31 ngày, trưởng phòng tối đa 62 ngày.
-- **Lưu điểm danh ngày** không còn xóa mất các ô nửa ngày / đi muộn đã chấm ở Lịch tháng, và không xóa dữ liệu cũ của người đã nghỉ việc.
-- Điểm danh mới luôn có **ký hiệu chấm công**. Lý do như "nghỉ bệnh", "cv gđ" được hiểu là nghỉ không lương, giống "ốm" và "việc gia đình".
-- Vi phạm "nhập trễ" tự động có mã ghi, nên xóa lẻ được.
-
-**Ngày lễ**
-- Ngày trong sheet NgayLe (và sheet MienTruDiemDanh có sẵn) không bị trừ "quên điểm danh", không tính vào hạn duyệt / hạn nhập, và không hiện nhắc điểm danh.
-
-**Trọng số KPI theo kỳ**
-- Mỗi tháng dùng trọng số có "Kỳ áp dụng" gần nhất, tính đến tháng đó. Đổi trọng số tháng 10 không làm thay đổi KPI tháng 8, 9.
-
-**KPI quản lý**
-- Điểm trung bình xưởng chỉ tính công nhân. Trước đây tính cả KPI cá nhân của chính TP/PP (gần 0 vì họ không nhập sản lượng), kéo điểm xuống.
-- Kết quả: KPI quản lý tháng 9 của cả 27 TP/PP **tăng từ 2,6 đến 10,9 điểm**. KPI công nhân tháng 9 giữ **y hệt** bản cũ (đã so 144 người).
+- Có **khóa ghi**: nhiều người cùng lưu thì máy xử lý lần lượt, không đè hay xóa nhầm dòng.
+- Kiểm tra ngày: không nhận ngày tương lai, ngày trước 1/7/2026 hay ngày không tồn tại.
+- Lưu điểm danh ngày không còn xóa mất ô nửa ngày / đi muộn, không xóa dữ liệu cũ của người đã nghỉ việc.
+- Ngày lễ (sheet NgayLe) không tính quên điểm danh, không tính vào hạn duyệt / hạn nhập.
+- Trọng số KPI áp theo từng kỳ; phạt nhập trễ không phạt trưởng/phó phòng.
 
 **Tốc độ**
-- Trình duyệt chỉ nhận dữ liệu từ đầu tháng trước. Muốn gửi hết như cũ, sửa `var SO_THANG_GUI_VE = 2;` thành `0`.
-- Nhật ký thao tác chỉ đọc 80 dòng cuối.
-- Bớt đọc lại tiêu đề cột mỗi lần ghi.
-- Tính KPI quản lý nhanh hơn.
-
-**Màn đăng nhập mới "Carbon Billiards — Precision"** (nằm trong Index.html)
-- Bố cục chia đôi theo phong cách thương hiệu cao cấp. Bên trái là khung ảnh sản phẩm trên nền đen obsidian: viên bi cái có logo "CB", đầu cơ cận cảnh với ngọn cơ là ảnh chụp thật (ngọn carbon xám, khâu trắng – đen – trắng, tip xanh; ảnh ở kpi-app/anh/ngon-carbon.png, đã nhúng sẵn trong Index.html), các đường dựng hình kỹ thuật (Ø 57.2 mm, góc 26.6°), khẩu hiệu *"Chính xác trong từng công đoạn."* và dải 5 công đoạn sản xuất. Bên phải là biểu mẫu nền trắng ngà.
-- Bảng màu: đen obsidian, trắng ngà, vàng đồng. Tiêu đề dùng chữ có chân Cormorant Garamond (hỗ trợ đủ dấu tiếng Việt), nội dung dùng Inter.
-- Dòng chào đổi theo giờ trong ngày.
-- Ô "Ghi nhớ mã nhân viên": máy chỉ nhớ mã, **không bao giờ lưu mật khẩu**.
-- Nút "Quên mật khẩu?" hướng dẫn liên hệ trưởng phòng hoặc chủ sở hữu.
-- Báo khi đang bật Caps Lock. Nút Hiện/Ẩn mật khẩu.
-- Chuyển động nhẹ:
-  - Rê chuột thì ánh sáng trên bi và các đường dựng hình nhích theo.
-  - Bấm Đăng nhập thì đầu cơ lùi lại ngắm, nút hiện "Đang xác thực" kèm vạch chạy vàng đồng.
-  - Đúng: cơ chạm bi, bi lăn ra khỏi khung, biểu mẫu chuyển thành "Chào mừng, [tên]." trong lúc tải dữ liệu.
-  - Sai: ô mật khẩu viền đỏ, thẻ rung nhẹ, báo lỗi ngay dưới nút.
-- Điện thoại: ảnh thu thành dải trên cùng, biểu mẫu trượt lên như một tấm thẻ.
-- Máy đã bật "giảm chuyển động" thì bỏ hiệu ứng.
-
-## Bản 29/09: nhanh hơn và giao diện mới
-
-**Hết treo khi lưu**
-- Trước: bấm lưu là cả màn hình tối lại, chờ máy chủ ghi **từng ô một** rồi tải lại **toàn bộ** dữ liệu (~2,9 MB).
-- Nay: máy chủ gom các ô cần sửa và ghi một lần. VD duyệt sản lượng 1 người: từ 38 lần ghi còn 3.
-- Sau khi lưu, web chỉ tải lại **phần vừa đổi** (VD ghi vi phạm thì chỉ tải lại danh sách vi phạm).
-- Không còn lớp phủ che màn hình: chỉ có một vạch vàng chạy trên cùng, và nút vừa bấm hiện vòng xoay (không bấm 2 lần được). Đang tải mà chuyển tab thì kết quả cũ không vẽ đè lên tab mới.
-- Bảng KPI, KPI quản lý, chấm công tháng, phân tích định mức, lịch sử KPI: lần mở thứ hai trong 10 phút lấy từ bộ nhớ tạm, gần như tức thì.
-- Tab Tổng quan vẽ nhanh gấp khoảng 8 lần. Bỏ hiệu ứng nền chuyển động (đốm sáng, hạt bay), vốn làm máy yếu bị giật khi cuộn.
+- Lưu nhanh hơn nhiều: máy chủ gom các ô cần sửa và ghi một lần (duyệt 1 người: 38 lần ghi còn 3), sau đó web chỉ tải lại phần vừa đổi.
+- Không còn lớp phủ che cả màn hình khi lưu: chỉ có vạch vàng chạy trên cùng, nút vừa bấm hiện vòng xoay.
+- Bảng KPI, KPI quản lý, chấm công tháng mở lần hai trong 10 phút gần như tức thì. Tổng quan vẽ nhanh gấp khoảng 8 lần.
 
 **Giao diện**
-- Cùng tông với màn đăng nhập: nền đen, chữ trắng ngà, điểm nhấn vàng đồng.
-- Máy tính: menu dọc bên trái, chia nhóm **Hôm nay · Sản xuất · KPI · Định mức · Danh mục · Hệ thống**, có số đếm việc chờ (chấm đỏ/vàng).
-- Điện thoại: thanh dưới có 4 mục hay dùng nhất theo vai trò, cộng nút **Menu** mở toàn bộ danh sách.
-- **Việc hôm nay** (trang mở đầu của ban điều hành và trưởng/phó phòng) gom mọi nhắc việc vào một chỗ: chưa điểm danh, chờ duyệt sản lượng, công nhân chưa nhập, đề xuất định mức, yêu cầu sửa hồ sơ, thông báo từ ban điều hành. Mỗi việc có nút đi thẳng tới chỗ xử lý. Ban điều hành xem thêm xưởng nào đã/chưa điểm danh hôm nay.
+- Màn đăng nhập mới "Precision" (bi cái, ngọn cơ carbon thật).
+- Bên trong cùng tông: nền đen, chữ trắng ngà, điểm nhấn vàng đồng.
+- Máy tính: menu dọc bên trái chia nhóm, có số đếm việc chờ. Điện thoại: thanh dưới 4 mục + nút Menu.
+- **Việc hôm nay** (trang đầu của ban điều hành, trưởng/phó phòng) gom mọi nhắc việc, mỗi việc có nút đi thẳng tới chỗ xử lý.
 - **Hướng dẫn** chuyển thành nút **?** trên đầu trang.
-- Bảng dài: dòng tiêu đề cột dính trên cùng khi cuộn.
-- Công nhân vẫn mở thẳng vào "Nhập sản lượng của tôi" như cũ.
-
-**Bảo mật**
-- Trước đây công nhân nhận về máy **CCCD, số điện thoại, địa chỉ, lương của cả xưởng** (không hiện trên màn hình nhưng xem được bằng công cụ trình duyệt). Nay công nhân chỉ nhận tên, xưởng, công đoạn của đồng nghiệp; hồ sơ đầy đủ chỉ của chính mình. Trưởng phòng không nhận CCCD và lương.
-
-## Nếu có lỗi
-
-Mở bản sao đã tạo ở Bước 0, hoặc dán lại file trong `kpi-app/goc/` (bản cũ của bạn), rồi Triển khai phiên bản mới.
