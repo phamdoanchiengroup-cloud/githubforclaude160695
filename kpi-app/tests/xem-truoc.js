@@ -32,6 +32,16 @@ http.createServer((req, res) => {
     });
     return;
   }
+  // Chỉ để chụp ảnh / thử: /phien/<tên đăng nhập> -> mã phiên (bỏ qua bước bắt đổi mật khẩu trong bộ nhớ giả lập)
+  if (req.url.startsWith('/phien/')) {
+    const tenDN = decodeURIComponent(req.url.slice(7));
+    const sh = ctx.__sheets.TaiKhoan, cot = sh.rows[0].indexOf('DoiMatKhauLanDau');
+    sh.rows.forEach((r, i) => { if (i && String(r[sh.rows[0].indexOf('TenDangNhap')]).toLowerCase() === tenDN && cot >= 0) r[cot] = 'Không'; });
+    ctx.__DOC_CACHE = {};
+    const tk = ctx.doc_('TaiKhoan').filter(x => String(x.TenDangNhap).toLowerCase() === tenDN)[0];
+    res.end(tk ? ctx.taoPhien_(tk) : '');
+    return;
+  }
   const html = fs.readFileSync(FILE_HTML, 'utf8').replace('<script>', STUB + '<script>');
   res.setHeader('content-type', 'text/html; charset=utf-8'); res.end(html);
 }).listen(process.env.PORT || 8787, () => console.log('Xem thử: http://localhost:' + (process.env.PORT || 8787)));

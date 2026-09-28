@@ -1,0 +1,350 @@
+<!--CSS-->
+/* ============================================================
+   GIAO DIỆN BÊN TRONG — bản 29/09/2026
+   Cùng tông với màn đăng nhập: obsidian · trắng ngà · vàng đồng.
+   Máy tính: cột điều hướng bên trái chia nhóm. Điện thoại: thanh dưới + ngăn kéo menu.
+   ============================================================ */
+:root{--serif:'Cormorant Garamond','Times New Roman',serif;--nav-w:236px}
+body{background:var(--bg)}
+#bgfx{display:none}
+/* Không làm mờ nền sau thẻ (tốn GPU, gây giật khi cuộn) */
+.card{background:var(--panel)!important;backdrop-filter:none!important;-webkit-backdrop-filter:none!important}
+header{background:rgba(12,13,15,.94)!important;backdrop-filter:none!important;-webkit-backdrop-filter:none!important;border-bottom:1px solid var(--line)}
+.ptitle{font-family:var(--serif);font-weight:600;font-size:30px;letter-spacing:-.2px;line-height:1.1}
+.hlogo{background:none!important;border:1px solid var(--cyan-d);color:var(--cyan)!important;border-radius:50%;font-size:10.5px;letter-spacing:.5px}
+.htitle{font-family:var(--serif);font-size:18px;font-weight:600;letter-spacing:0}
+.card h3{letter-spacing:1.1px;font-size:11.5px;color:var(--ink2)}
+.btn.pri{box-shadow:0 1px 0 rgba(255,255,255,.18) inset}
+.kpi .v{letter-spacing:-.5px}
+
+/* --- Thanh tiến trình mảnh (thay lớp phủ che cả màn hình) --- */
+#busy{position:fixed!important;left:0;right:0;top:0;bottom:auto!important;height:2px;inset:auto 0 auto 0;z-index:300;
+  display:block!important;background:none!important;backdrop-filter:none!important;pointer-events:none;opacity:0;transition:opacity .25s;overflow:hidden}
+#busy.on{opacity:1}
+#busy .spin{display:none}
+#busy::before{content:'';position:absolute;top:0;bottom:0;left:-35%;width:35%;
+  background:linear-gradient(90deg,transparent,var(--cyan),transparent);animation:gdChay 1.1s ease-in-out infinite}
+@keyframes gdChay{to{left:100%}}
+.btn.dang-chay{position:relative;color:transparent!important;pointer-events:none}
+.btn.dang-chay::after{content:'';position:absolute;left:50%;top:50%;width:14px;height:14px;margin:-7px 0 0 -7px;border-radius:50%;
+  border:2px solid currentColor;border-color:var(--ink2) var(--ink2) var(--ink2) transparent;animation:sp .7s linear infinite}
+.btn.pri.dang-chay::after{border-color:#1b1408 #1b1408 #1b1408 transparent}
+
+/* --- Tiêu đề bảng dính khi cuộn (bảng dài) --- */
+.tw{max-height:calc(100vh - 150px);overflow:auto}
+.tw thead th{position:sticky;top:0;z-index:3;background:var(--panel2)!important;box-shadow:0 1px 0 var(--line)}
+.tw thead th[style*="left:0"]{z-index:7!important}
+
+/* --- Bố cục có cột điều hướng --- */
+#app{--head:58px}
+#nav{position:fixed;left:0;top:var(--head);bottom:0;width:var(--nav-w);display:block!important;overflow-y:auto;overflow-x:hidden;
+  padding:14px 12px 24px;background:#0b0c0e!important;backdrop-filter:none!important;border-right:1px solid var(--line);border-bottom:none;z-index:45}
+#nav::-webkit-scrollbar{width:0}
+#nav .ng{margin-bottom:14px}
+#nav .ngt{font:500 10px var(--mono);letter-spacing:.2em;text-transform:uppercase;color:var(--ink3);padding:6px 10px 6px}
+#nav button{display:flex;align-items:center;gap:11px;width:100%;text-align:left;padding:8px 10px;margin:1px 0;border-radius:8px;
+  font-size:13px;color:var(--ink2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#nav button svg{width:17px;height:17px;flex:none;stroke:currentColor;fill:none;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round;opacity:.85}
+#nav button span.nl{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis}
+#nav button:hover{background:rgba(255,255,255,.035);color:var(--ink)}
+#nav button.on{background:rgba(201,163,106,.10);color:var(--ink)}
+#nav button.on svg{color:var(--cyan);opacity:1}
+#nav button.on::after{content:'';position:absolute;left:-12px;top:8px;bottom:8px;width:2px;height:auto;right:auto;background:var(--cyan);border-radius:0 2px 2px 0}
+#nav .dem{font:600 10.5px var(--mono);min-width:20px;height:18px;padding:0 6px;border-radius:9px;display:inline-flex;align-items:center;justify-content:center;
+  background:var(--amber);color:#2a1a00}
+#nav .dem.do{background:var(--red);color:#fff}
+#nav .nav-chan{margin-top:18px;padding:12px 10px 0;border-top:1px solid var(--line);font-size:11px;color:var(--ink3);line-height:1.5}
+#app>#ducbar,#app>#minibar,#app>main{margin-left:var(--nav-w)}
+#app>#festbar{position:relative;left:calc(var(--nav-w) / 2)}
+.badge{white-space:nowrap}
+main{max-width:1240px;padding:26px 30px 70px}
+#app>main{margin-right:auto}
+body.ql #ducbar,body.ql #minibar{display:none!important}
+.hnut{display:none}
+.hhelp{width:32px;height:32px;padding:0;border-radius:50%;font:600 14px var(--serif);display:inline-flex;align-items:center;justify-content:center}
+
+/* Thanh dưới (điện thoại) */
+#botbar{display:none}
+@media(max-width:900px){
+  #nav{transform:translateX(-102%);transition:transform .22s ease;width:min(290px,84vw);z-index:160;top:0;padding-top:18px;box-shadow:0 0 60px rgba(0,0,0,.6)}
+  body.mo-nav #nav{transform:none}
+  body.mo-nav::after{content:'';position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:155}
+  #app>#ducbar,#app>#minibar,#app>main{margin-left:0}
+  #app>#festbar{left:0;margin:0 12px 12px;max-width:none}
+  header{padding:0 10px 0 8px}
+  .hlogo{display:none!important}
+  .htitle{font-size:16px;white-space:nowrap}
+  header .hr{gap:6px}
+  main{padding:18px 14px 96px}
+  .hnut{display:inline-flex;width:36px;height:36px;padding:0;align-items:center;justify-content:center;border-radius:9px;margin-right:4px}
+  .hnut svg{width:19px;height:19px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round}
+  .hwho{display:none}
+  header .btn.sm:not(.hhelp):not(.dg){display:none}
+  #botbar{display:flex;position:fixed;left:0;right:0;bottom:0;z-index:60;background:rgba(11,12,14,.97);border-top:1px solid var(--line);
+    padding:6px 4px calc(6px + env(safe-area-inset-bottom))}
+  #botbar button{flex:1;background:none;border:none;color:var(--ink3);font:500 10.5px inherit;font-family:inherit;display:flex;flex-direction:column;align-items:center;gap:3px;padding:5px 2px;position:relative;min-width:0}
+  #botbar button svg{width:21px;height:21px;stroke:currentColor;fill:none;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+  #botbar button span.nl{max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  #botbar button.on{color:var(--cyan)}
+  #botbar .dem{position:absolute;top:0;left:calc(50% + 6px);font:600 9.5px var(--mono);min-width:16px;height:15px;padding:0 4px;border-radius:8px;background:var(--amber);color:#2a1a00;display:flex;align-items:center;justify-content:center}
+  #botbar .dem.do{background:var(--red);color:#fff}
+  .tw{max-height:none}
+  .tw thead th{position:static}
+  .ptitle{font-size:25px}
+}
+
+/* --- Việc hôm nay --- */
+.hn-dau{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-bottom:20px}
+.hn-ngay{font:500 11px var(--mono);letter-spacing:.2em;text-transform:uppercase;color:var(--cyan);margin-bottom:8px}
+.hn-tom{font-size:13px;color:var(--ink2);margin-top:6px}
+.hn-ds{display:flex;flex-direction:column;gap:10px;margin-bottom:26px}
+.hn-viec{display:grid;grid-template-columns:54px 1fr auto;align-items:center;gap:16px;background:var(--panel);border:1px solid var(--line);
+  border-radius:12px;padding:14px 16px 14px 14px;position:relative;overflow:hidden}
+.hn-viec::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--ink3)}
+.hn-viec.do::before{background:var(--red)} .hn-viec.vang::before{background:var(--amber)} .hn-viec.dong::before{background:var(--cyan)}
+.hn-so{font:600 26px/1 var(--mono);text-align:center;letter-spacing:-1px;color:var(--ink)}
+.hn-viec.do .hn-so{color:var(--red)} .hn-viec.vang .hn-so{color:var(--amber)} .hn-viec.dong .hn-so{color:var(--cyan)}
+.hn-so small{display:block;font:500 9.5px/1.3 'Inter',system-ui,sans-serif;letter-spacing:.06em;color:var(--ink3);margin-top:6px;text-transform:uppercase}
+.hn-t{font-size:14.5px;font-weight:600;color:var(--ink)}
+.hn-m{font-size:12.5px;color:var(--ink2);margin-top:3px;line-height:1.5}
+.hn-m b{color:var(--ink)}
+.hn-xong{display:flex;align-items:center;gap:16px;padding:22px;border:1px solid rgba(74,222,128,.25);background:rgba(74,222,128,.05);border-radius:12px;margin-bottom:26px}
+.hn-xong b{font-family:var(--serif);font-size:22px;font-weight:600;display:block}
+.hn-luoi{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:10px}
+.hn-lt{display:flex;align-items:center;gap:12px;padding:14px;border:1px solid var(--line);border-radius:12px;background:var(--panel);cursor:pointer;color:var(--ink2);font:inherit;font-size:13px;text-align:left;transition:border-color .15s,color .15s}
+.hn-lt:hover{border-color:var(--cyan-d);color:var(--ink)}
+.hn-lt svg{width:20px;height:20px;flex:none;stroke:var(--cyan);fill:none;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+.hn-h{font:500 10.5px var(--mono);letter-spacing:.2em;text-transform:uppercase;color:var(--ink3);margin:0 0 12px}
+.hn-xuong{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:26px}
+.hn-xuong span{font-size:12px;padding:6px 11px;border-radius:20px;border:1px solid var(--line);color:var(--ink2);background:var(--panel)}
+.hn-xuong span.ok{border-color:rgba(74,222,128,.3);color:var(--green)}
+.hn-xuong span.chua{border-color:rgba(242,169,59,.35);color:var(--amber)}
+@media(max-width:640px){
+  .hn-viec{grid-template-columns:44px 1fr;gap:12px}
+  .hn-viec .btn{grid-column:1/-1;width:100%}
+  .hn-so{font-size:22px}
+  header .badge{display:none}
+}
+@media (prefers-reduced-motion:reduce){#busy::before{animation-duration:3s}}
+<!--JS-->
+/* ===== GIAO DIỆN MỚI: điều hướng chia nhóm, thanh dưới, Việc hôm nay ===== */
+var ICON={
+  homnay:'<path d="M4 12.5 12 5l8 7.5"/><path d="M6.5 10.5V19h11v-8.5"/><path d="M10 19v-5h4v5"/>',
+  dash:'<rect x="4" y="4" width="7" height="7" rx="1.5"/><rect x="13" y="4" width="7" height="4" rx="1.5"/><rect x="13" y="10" width="7" height="10" rx="1.5"/><rect x="4" y="13" width="7" height="7" rx="1.5"/>',
+  duyetsl:'<path d="M5 12.5l4 4L19 7"/>',
+  nk:'<path d="M7 4h8l3 3v13H7z"/><path d="M10 10h5M10 13.5h5M10 17h3"/>',
+  cnnhap:'<path d="M5 19h4L19 9l-4-4L5 15z"/><path d="M13 7l4 4"/>',
+  kcs:'<circle cx="11" cy="11" r="6"/><path d="M20 20l-4.5-4.5"/><path d="M8.5 11l2 2 3.5-3.5"/>',
+  dd:'<rect x="4" y="5.5" width="16" height="14" rx="2"/><path d="M8 3.5v4M16 3.5v4M4 10h16"/><path d="M9 14.5l2 2 4-4"/>',
+  nenep:'<path d="M12 3.5l7 3v5.5c0 4-3 7-7 8.5-4-1.5-7-4.5-7-8.5V6.5z"/>',
+  cccn:'<rect x="4" y="5.5" width="16" height="14" rx="2"/><path d="M8 3.5v4M16 3.5v4M4 10h16M8 14h2M12 14h2M16 14h0"/>',
+  kpi:'<path d="M4 19h16"/><path d="M7 16v-5M11 16V7M15 16v-7M19 16v-3"/>',
+  kpicn:'<path d="M4 19h16"/><path d="M7 16v-5M11 16V7M15 16v-7M19 16v-3"/>',
+  kpica:'<circle cx="12" cy="8" r="3.5"/><path d="M5 20c1.2-3.8 4-5.5 7-5.5s5.8 1.7 7 5.5"/>',
+  kpiql:'<circle cx="9" cy="8.5" r="3"/><path d="M3.5 19c.9-3.2 3-4.6 5.5-4.6s4.6 1.4 5.5 4.6"/><path d="M15.5 5.8a3 3 0 0 1 0 5.4M17.5 14.6c1.5.6 2.5 2 3 4.4"/>',
+  dx:'<path d="M12 4v16M5 8h14"/><path d="M5 8l-2.5 6h5zM19 8l-2.5 6h5z"/>',
+  ptdm:'<path d="M4 19V5"/><path d="M4 19h16"/><path d="M7 15l4-4 3 3 5-6"/>',
+  cd:'<circle cx="12" cy="12" r="3"/><path d="M12 3v3M12 18v3M3 12h3M18 12h3M5.6 5.6l2.1 2.1M16.3 16.3l2.1 2.1M5.6 18.4l2.1-2.1M16.3 7.7l2.1-2.1"/>',
+  ns:'<circle cx="9" cy="9" r="3.2"/><path d="M3.5 19.5c.8-3.2 3-4.8 5.5-4.8s4.7 1.6 5.5 4.8"/><path d="M15 6h5M15 10h5M17 14h3"/>',
+  mm:'<rect x="3.5" y="9" width="17" height="10" rx="1.5"/><path d="M7 9V6h6v3M7 13h4M15.5 14a1.5 1.5 0 1 0 0-.01"/>',
+  ts:'<path d="M5 6h9M17 6h2M5 12h3M11 12h8M5 18h11M19 18h0"/><circle cx="15.5" cy="6" r="1.8"/><circle cx="9.5" cy="12" r="1.8"/><circle cx="17.5" cy="18" r="1.8"/>',
+  pq:'<rect x="5" y="10.5" width="14" height="9.5" rx="2"/><path d="M8 10.5V8a4 4 0 0 1 8 0v2.5"/>',
+  log:'<circle cx="12" cy="12" r="8"/><path d="M12 7.5V12l3 2"/>',
+  hd:'<circle cx="12" cy="12" r="8"/><path d="M9.8 9.6a2.3 2.3 0 1 1 3.4 2c-.8.5-1.2 1-1.2 1.9M12 16.6v.1"/>'
+};
+function svgIcon(k){return '<svg viewBox="0 0 24 24" aria-hidden="true">'+(ICON[k]||ICON.dash)+'</svg>'}
+
+/* Nhóm điều hướng: [tiêu đề, [các khóa tab]] — tab nào vai trò không có thì tự bỏ */
+var NHOM_NAV=[
+  ['Hôm nay',['homnay','dash','cnnhap','kpica']],
+  ['Sản xuất',['duyetsl','nk','kcs','dd','nenep','cccn']],
+  ['KPI',['kpi','kpicn','kpiql']],
+  ['Định mức',['dx','ptdm','cd']],
+  ['Danh mục',['ns','mm','ts']],
+  ['Hệ thống',['pq','log']]
+];
+/* Thanh dưới trên điện thoại: 4 mục hay dùng nhất theo vai trò (mục thứ 5 là "Menu") */
+var BOTBAR={
+  ADMIN:['homnay','nk','kpi','dx'],
+  TP:['homnay','duyetsl','dd','nk'],
+  CN:['cnnhap','kpica','cccn','kpicn'],
+  HR:['ns'],
+  QC:['kcs','nk']
+};
+function dsTabHienCo(){
+  var tabChiOwner={pq:1, ptdm:1, log:1, kpiql:1};
+  return TABS[ME.vaiTro].filter(function(t){ return ME.laOwner || !tabChiOwner[t[0]]; });
+}
+function tenTab(k){var t=(TABS[ME.vaiTro]||[]).filter(function(x){return x[0]===k})[0];return t?t[1]:k}
+function nutNav(k,nhan){
+  return '<button data-k="'+k+'" onclick="go(\''+k+'\')">'+svgIcon(k)+'<span class="nl">'+esc(nhan)+'</span><span class="dem hide"></span></button>';
+}
+function veNav(){
+  var co={}; dsTabHienCo().forEach(function(t){co[t[0]]=t[1]});
+  var h='', daXep={};
+  NHOM_NAV.forEach(function(g){
+    var ds=g[1].filter(function(k){return co[k]&&k!=='hd'});
+    if(!ds.length)return;
+    h+='<div class="ng"><div class="ngt">'+esc(g[0])+'</div>';
+    ds.forEach(function(k){daXep[k]=1;h+=nutNav(k,co[k])});
+    h+='</div>';
+  });
+  var le=Object.keys(co).filter(function(k){return !daXep[k]&&k!=='hd'});
+  if(le.length){h+='<div class="ng"><div class="ngt">Khác</div>';le.forEach(function(k){h+=nutNav(k,co[k])});h+='</div>';}
+  h+='<div class="nav-chan">'+esc(ME.ten||'')+'<br>'+esc(ME.tenXuong||'Toàn nhà máy')+'</div>';
+  $('nav').innerHTML=h;
+  // thanh dưới
+  var bb=$('botbar');
+  if(!bb){bb=document.createElement('div');bb.id='botbar';$('app').appendChild(bb);}
+  var ds=(BOTBAR[ME.vaiTro]||[]).filter(function(k){return co[k]});
+  var ngan={homnay:'Hôm nay',duyetsl:'Duyệt',dd:'Điểm danh',nk:'Nhật ký',kpi:'KPI',dx:'Định mức',cnnhap:'Nhập',kpica:'KPI tôi',
+            cccn:'Chấm công',kpicn:'KPI xưởng',ns:'Nhân sự',kcs:'Kiểm tra'};
+  bb.innerHTML=ds.map(function(k){
+    return '<button data-k="'+k+'" onclick="go(\''+k+'\')">'+svgIcon(k)+'<span class="nl">'+esc(ngan[k]||co[k])+'</span><span class="dem hide"></span></button>';
+  }).join('')+'<button onclick="moNav(true)"><svg viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></svg><span class="nl">Menu</span></button>';
+  capNhatDem();
+}
+function moNav(mo){document.body.classList.toggle('mo-nav',!!mo)}
+document.addEventListener('click',function(e){
+  if(!document.body.classList.contains('mo-nav'))return;
+  if(e.target.closest&&(e.target.closest('#nav')||e.target.closest('#botbar')||e.target.closest('.hnut')))return;
+  moNav(false);
+});
+/* Số đếm trên menu: việc cần làm */
+function demViec(){
+  var o={};
+  try{
+    if(ME.vaiTro==='TP'){
+      var nv={}; (D.choDuyet||[]).forEach(function(r){nv[r.MaNV]=1}); o.duyetsl=Object.keys(nv).length;
+    }
+    if(ME.vaiTro==='ADMIN'){ o.dx=cho(); }
+    if(ME.vaiTro==='ADMIN'||ME.vaiTro==='TP'){ o.homnay=viecHomNay().filter(function(v){return v.muc==='do'||v.muc==='vang'}).length; }
+  }catch(e){}
+  return o;
+}
+function capNhatDem(){
+  var o=demViec();
+  Array.prototype.forEach.call(document.querySelectorAll('#nav button[data-k],#botbar button[data-k]'),function(b){
+    var k=b.getAttribute('data-k'), d=b.querySelector('.dem'); if(!d)return;
+    var n=o[k]||0;
+    d.textContent=n>99?'99+':n; d.classList.toggle('hide',!n); d.classList.toggle('do',k==='homnay');
+  });
+}
+
+/* ===== VIỆC HÔM NAY (ban điều hành, trưởng/phó phòng) =====
+   Gom mọi nhắc việc (trước đây nằm rải trong các dải cảnh báo đầu trang) thành một danh sách. */
+function viecHomNay(){
+  var laAdmin=(ME.vaiTro==='ADMIN'), hn=today(), v=[];
+  var laChuNhat=(new Date(hn+'T00:00:00').getDay()===0);
+  // 1) Điểm danh hôm nay
+  if(!laAdmin && ME.xuong && !laChuNhat && !laNgayLeKH(hn,ME.xuong)){
+    var daDD=(D.xacNhanDD||[]).some(function(r){return String(r.MaXuong)===String(ME.xuong)&&ngayChuan_(r.Ngay)===hn});
+    if(!daDD) v.push({muc:'do',so:'!',nho:'hạn 9h',t:'Chưa điểm danh xưởng hôm nay',
+      m:'Điểm danh trước 9h để không bị trừ KPI vận hành. Quên điểm danh bị trừ nặng hơn.',k:'dd',nut:'Điểm danh'});
+  }
+  // 2) Chờ duyệt sản lượng
+  var cd_=D.choDuyet||[];
+  if(cd_.length){
+    var nguoi={}, ngCu='';
+    cd_.forEach(function(r){nguoi[r.MaNV]=1; var n=ngayChuan_(r.Ngay); if(!ngCu||n<ngCu)ngCu=n;});
+    var soNg=Object.keys(nguoi).length;
+    if(laAdmin){
+      var theoX={}; cd_.forEach(function(r){var x=pbTen(cd(r.MaCD).MaXuong)||'?';theoX[x]=(theoX[x]||0)+1});
+      v.push({muc:'dong',so:cd_.length,nho:'dòng',t:'Sản lượng đang chờ trưởng phòng duyệt',
+        m:Object.keys(theoX).map(function(x){return esc(x)+': <b>'+theoX[x]+'</b>'}).join(' · ')+' — cũ nhất ngày '+dmy(ngCu)+'.',k:'nk',nut:'Xem nhật ký'});
+    } else {
+      v.push({muc:'vang',so:soNg,nho:'công nhân',t:'Chờ bạn duyệt sản lượng',
+        m:cd_.length+' dòng, cũ nhất ngày <b>'+dmy(ngCu)+'</b>. Duyệt trong 2 ngày làm việc — trễ mỗi công nhân bị trừ 2 điểm vận hành.',k:'duyetsl',nut:'Duyệt ngay'});
+    }
+  }
+  // 3) Công nhân chưa nhập sản lượng
+  try{
+    var cn=nguoiChuaNhap(laAdmin?null:(ME.xuong||null)), nvCN={};
+    cn.forEach(function(o){Object.keys(o.theoXuong).forEach(function(mx){o.theoXuong[mx].forEach(function(u){nvCN[u.maNV]=1})})});
+    var soCN=Object.keys(nvCN).length;
+    if(soCN) v.push({muc:laAdmin?'dong':'vang',so:soCN,nho:'công nhân',t:'Chưa nhập sản lượng',
+      m:'Trong '+cn.length+' ngày gần đây (xưởng đã điểm danh). '+(laAdmin?'':'Nhắc họ nhập trước hạn — quá hạn mỗi người bạn bị trừ 2 điểm vận hành.'),k:'dash',nut:'Xem danh sách'});
+  }catch(e){}
+  // 4) Đề xuất định mức
+  var dx=(D.dexuat||[]).filter(function(x){return x.TrangThai==='Chờ duyệt'});
+  if(dx.length) v.push(laAdmin
+    ? {muc:'vang',so:dx.length,nho:'đề xuất',t:'Đề xuất định mức chờ bạn duyệt',m:'Trưởng phòng gửi đề xuất thay đổi định mức công đoạn.',k:'dx',nut:'Duyệt'}
+    : {muc:'',so:dx.length,nho:'đề xuất',t:'Đề xuất định mức đang chờ ban điều hành',m:'Bạn không cần làm gì thêm.',k:'cd',nut:'Xem'});
+  // 5) Yêu cầu sửa hồ sơ
+  var yc=D.yeuCauHoSo||[];
+  if(yc.length) v.push({muc:'vang',so:yc.length,nho:'yêu cầu',t:'Công nhân xin sửa thông tin liên hệ',m:'Duyệt để cập nhật số điện thoại, CCCD, địa chỉ vào hồ sơ.',k:'hd',nut:'Xem & duyệt'});
+  // 6) Thông báo từ ban điều hành (TP)
+  var tb=D.thongBao||[];
+  if(tb.length) v.push({muc:'do',so:tb.length,nho:'thông báo',t:'Thông báo từ ban điều hành',m:esc(tb[0].TieuDe||'')+(tb.length>1?' và '+(tb.length-1)+' thông báo khác':''),k:'nk',nut:'Xem'});
+  // 7) Định mức cần xem lại (TP, nạp một lần mỗi phiên)
+  if(!laAdmin && _dmChuYCache && _dmChuYCache.length)
+    v.push({muc:'',so:_dmChuYCache.length,nho:'định mức',t:'Định mức nên xem lại',m:'Hiệu suất thực tế đang vượt xa định mức — cân nhắc đề xuất điều chỉnh.',k:'cd',nut:'Xem & đề xuất'});
+  // 8) Hồ sơ cá nhân còn thiếu
+  var me=(ME.maNV&&D.nhansu)?D.nhansu.filter(function(x){return x.MaNV===ME.maNV})[0]:null;
+  if(me){
+    var thieu=[];
+    if(!String(me.DienThoai||'').trim())thieu.push('SĐT');
+    if(!String(me.SoCCCD||'').trim())thieu.push('CCCD');
+    if(!String(me.DiaChi||'').trim())thieu.push('địa chỉ');
+    if(!String(me.SdtKhanCap||'').trim())thieu.push('SĐT khẩn cấp');
+    var dangCho=(D.yeuCauHoSoCuaToi||[]).some(function(y){return String(y.TrangThai).trim()==='Chờ duyệt'});
+    if(thieu.length&&!dangCho) v.push({muc:'',so:thieu.length,nho:'mục',t:'Hồ sơ của bạn còn thiếu',m:'Thiếu '+esc(thieu.join(', '))+'.',fn:'moHoSo()',nut:'Cập nhật'});
+  }
+  return v;
+}
+function vHomNay(){
+  var laAdmin=(ME.vaiTro==='ADMIN'), hn=today(), d=new Date(hn+'T00:00:00');
+  var thu=['Chủ nhật','Thứ Hai','Thứ Ba','Thứ Tư','Thứ Năm','Thứ Sáu','Thứ Bảy'][d.getDay()];
+  var v=viecHomNay(), gap=v.filter(function(x){return x.muc==='do'||x.muc==='vang'}).length;
+  var h='<div class="hn-dau"><div><div class="hn-ngay">'+thu+' · '+dmy(hn)+'</div>'+
+    '<div class="ptitle">Việc hôm nay</div>'+
+    '<div class="hn-tom">'+(gap?('Có <b>'+gap+'</b> việc cần bạn xử lý.'):'Không có việc gấp.')+' '+esc(ME.tenXuong||'Toàn nhà máy')+'</div></div></div>';
+  if(!v.length){
+    h+='<div class="hn-xong"><svg viewBox="0 0 24 24" width="34" height="34" fill="none" stroke="var(--green)" stroke-width="1.6"><circle cx="12" cy="12" r="9"/><path d="M8 12.5l2.8 2.8L16 10"/></svg>'+
+      '<div><b>Mọi việc đã xong</b><span style="color:var(--ink2);font-size:13px">Không có sản lượng chờ duyệt, điểm danh đã xác nhận.</span></div></div>';
+  } else {
+    h+='<div class="hn-ds">'+v.map(function(x){
+      var nut=x.fn?('<button class="btn'+(x.muc==='do'||x.muc==='vang'?' pri':'')+'" onclick="'+x.fn+'">'+esc(x.nut)+'</button>')
+                  :('<button class="btn'+(x.muc==='do'||x.muc==='vang'?' pri':'')+'" onclick="go(\''+x.k+'\')">'+esc(x.nut)+' →</button>');
+      return '<div class="hn-viec '+(x.muc||'')+'"><div class="hn-so">'+esc(x.so)+'<small>'+esc(x.nho||'')+'</small></div>'+
+        '<div><div class="hn-t">'+esc(x.t)+'</div><div class="hn-m">'+x.m+'</div></div>'+nut+'</div>';
+    }).join('')+'</div>';
+  }
+  // Tình hình điểm danh các xưởng (ban điều hành)
+  if(laAdmin){
+    var laCN=(d.getDay()===0);
+    var xs=(D.phongban||[]).filter(function(p){return (D.nhansu||[]).some(function(n){return n.MaXuong===p.MaXuong})});
+    if(xs.length && !laCN){
+      h+='<div class="hn-h">Điểm danh hôm nay</div><div class="hn-xuong">'+xs.map(function(p){
+        if(laNgayLeKH(hn,p.MaXuong)) return '<span>'+esc(p.TenXuong)+' · nghỉ lễ</span>';
+        var ok=(D.xacNhanDD||[]).some(function(r){return String(r.MaXuong)===String(p.MaXuong)&&ngayChuan_(r.Ngay)===hn});
+        return '<span class="'+(ok?'ok':'chua')+'">'+(ok?'✓ ':'○ ')+esc(p.TenXuong)+'</span>';
+      }).join('')+'</div>';
+    }
+  }
+  // Lối tắt
+  var co={}; dsTabHienCo().forEach(function(t){co[t[0]]=t[1]});
+  var lt=(laAdmin?['dash','kpi','nk','dx','ns','cd']:['dash','duyetsl','nenep','kpi','nk','cd']).filter(function(k){return co[k]});
+  h+='<div class="hn-h">Đi nhanh</div><div class="hn-luoi">'+lt.map(function(k){
+    return '<button class="hn-lt" onclick="go(\''+k+'\')">'+svgIcon(k)+esc(co[k])+'</button>';
+  }).join('')+'</div>';
+  $('main').innerHTML=h;
+}
+
+/* ===== TRA CỨU NHANH: chỉ mục theo mã (thay cho lọc cả mảng mỗi lần) =====
+   Chỉ mục tự dựng lại khi mảng dữ liệu đổi (tải lại) hoặc thêm/bớt phần tử. Giữ tham chiếu tới
+   phần tử gốc nên sửa trực tiếp một trường vẫn thấy ngay. */
+var __IX={};
+function ix_(ten, arr, khoa, nhieu){
+  arr=arr||[];
+  var c=__IX[ten];
+  if(c&&c.a===arr&&c.n===arr.length) return c.m;
+  var m={};
+  for(var i=0;i<arr.length;i++){
+    var k=khoa(arr[i]);
+    if(nhieu){(m[k]=m[k]||[]).push(arr[i]);}
+    else if(!(k in m)) m[k]=arr[i];                 // giống .filter()[0]: lấy phần tử đầu tiên
+  }
+  __IX[ten]={a:arr,n:arr.length,m:m};
+  return m;
+}

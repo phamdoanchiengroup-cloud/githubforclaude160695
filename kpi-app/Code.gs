@@ -139,6 +139,7 @@ function doc_(name) {
 
 /* Xóa cache một sheet (gọi sau khi ghi/sửa để lần đọc kế tiếp lấy dữ liệu mới) */
 function xoaCache_(name) {
+  __DA_GHI[name || '*'] = 1;                          // sheet đã đổi -> báo giao diện tải lại đúng phần
   if (name) delete __DOC_CACHE[name]; else __DOC_CACHE = {};
 }
 
@@ -234,6 +235,7 @@ function ma_(p) { return p + Utilities.getUuid().replace(/-/g, '').slice(0, 8).t
    Hàm này chuyển mọi thứ về chuỗi hoặc số. */
 function sach_(v) {
   xong_();                                            // cuối lượt: ghi bộ đệm, tăng phiên bản dữ liệu nếu có ghi
+  ganPhanDoi_(v);                                     // báo giao diện phần dữ liệu nào vừa đổi
   return sachLoi_(v);
 }
 function sachLoi_(v) {
@@ -5048,6 +5050,27 @@ function xong_() {
   if (__KHOA && !__DA_TANG_PB) { tangPhienBan_(); __DA_TANG_PB = true; }
 }
 var __DA_TANG_PB = false;
+
+/* Sheet đã đổi trong lượt gọi -> "phần" dữ liệu giao diện cần tải lại (napPhan).
+   Sheet không thuộc phần nào (TaiKhoan, KPIThang, nhật ký thao tác…) thì bỏ qua; '*' = tải lại hết. */
+var __DA_GHI = {};
+var PHAN_CUA_SHEET_ = {
+  NhatKySanXuat: 'nk', PhieuKCS: 'nk',
+  DiemDanhNghi: 'cc', XacNhanDiemDanh: 'cc', NgayLe: 'cc', MienTruDiemDanh: 'cc', NghiDaiHan: 'cc',
+  NhanSu: 'ns', YeuCauSuaHoSo: 'ns',
+  CongDoan: 'cd', DinhMuc: 'cd', DeXuatDinhMuc: 'cd',
+  MayMoc: 'mm', DanhMucViPham: 'vp', ViPham: 'vp', TrongSoKPI: 'ts', ThongBao: 'tb',
+  PhongBan: 'dm', DanhMucLoi: 'dm', LyDoDung: 'dm'
+};
+function ganPhanDoi_(v) {
+  if (!v || typeof v !== 'object' || Array.isArray(v) || !v.ok) return;
+  var ten = Object.keys(__DA_GHI);
+  if (!ten.length) return;
+  if (__DA_GHI['*']) { v.phanDoi = 'tat'; return; }
+  var p = {};
+  ten.forEach(function(t) { if (PHAN_CUA_SHEET_[t]) p[PHAN_CUA_SHEET_[t]] = 1; });
+  v.phanDoi = Object.keys(p);
+}
 
 /* ---------- 2) PHIÊN BẢN DỮ LIỆU + BỘ NHỚ TẠM ---------- */
 var __PB = null;

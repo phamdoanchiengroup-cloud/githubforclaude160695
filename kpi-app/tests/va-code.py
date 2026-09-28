@@ -1083,10 +1083,16 @@ R("""  var head = sh.getRange(1, 1, 1, sh.getLastColumn()).getValues()[0];
     delete __HEAD_CACHE[sheetName];
   }
   suaO_(sheetName, row, colName, val);                // vào bộ đệm ghi như các ô khác""")
+# xoaCache_: ghi nhớ sheet đã đổi trong lượt gọi
+R("""function xoaCache_(name) {
+  if (name) delete __DOC_CACHE[name]; else __DOC_CACHE = {};""", """function xoaCache_(name) {
+  __DA_GHI[name || '*'] = 1;                          // sheet đã đổi -> báo giao diện tải lại đúng phần
+  if (name) delete __DOC_CACHE[name]; else __DOC_CACHE = {};""")
 # sach_: ghi bộ đệm trước khi trả kết quả
 R("""function sach_(v) {
   if (v === null || v === undefined) return '';""", """function sach_(v) {
   xong_();                                            // cuối lượt: ghi bộ đệm, tăng phiên bản dữ liệu nếu có ghi
+  ganPhanDoi_(v);                                     // báo giao diện phần dữ liệu nào vừa đổi
   return sachLoi_(v);
 }
 function sachLoi_(v) {

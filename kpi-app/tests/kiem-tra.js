@@ -306,6 +306,11 @@ console.log('\n10. Tăng tốc: bộ đệm ghi, bộ nhớ tạm, nạp theo ph
   const nk = c.__goi('napPhan', tO, ['nk']);
   ok(nk.nhatky && JSON.stringify(nk.nhatky) === JSON.stringify(day.nhatky) && !nk.nhansu, 'napPhan([nk]) gửi nhật ký giống bản đầy đủ');
 
+  const gv = c.__goi('ghiViPham', tO, { MaNV: 'C040', MaVP: 'VP04' });
+  ok(gv.ok && JSON.stringify(gv.phanDoi) === '["vp"]', 'ghi vi phạm -> máy chủ báo chỉ cần tải lại phần vi phạm', gv.phanDoi);
+  ok(r1.phanDoi && r1.phanDoi.indexOf('nk') >= 0, 'duyệt sản lượng -> báo tải lại phần nhật ký', r1.phanDoi);
+  ok(!('phanDoi' in k1), 'hàm chỉ đọc không kèm phanDoi');
+
   // 10d) Quyền riêng tư hồ sơ nhân sự
   const cn = c.doc_('TaiKhoan').filter(x => x.VaiTro === 'CN' && x.TrangThai === 'Đang dùng' && x.MaNV)[0];
   c.__sheets.TaiKhoan.rows[cn._row - 1][c.dauCot_('TaiKhoan').indexOf('DoiMatKhauLanDau')] = 'Không';

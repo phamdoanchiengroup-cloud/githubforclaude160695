@@ -149,7 +149,7 @@ function tao(fileCode, duLieu, gioHienTai) {
 
   // Mỗi "lượt gọi" của Apps Script bắt đầu với biến toàn cục mới: xóa bộ nhớ đệm và nhả khóa.
   ctx.__goi = function (ten, ...a) {   // một lượt gọi máy chủ
-    vm.runInContext('__SS_CACHE=null;__DOC_CACHE={};if(typeof __HEAD_CACHE!=="undefined")__HEAD_CACHE={};if(typeof __KHOA!=="undefined")__KHOA=null;if(typeof __NGAY_LE!=="undefined")__NGAY_LE=null;if(typeof __CHO_GHI!=="undefined")__CHO_GHI={};if(typeof __PB!=="undefined")__PB=null;if(typeof __DA_TANG_PB!=="undefined")__DA_TANG_PB=false;', ctx);
+    vm.runInContext('__SS_CACHE=null;__DOC_CACHE={};if(typeof __HEAD_CACHE!=="undefined")__HEAD_CACHE={};if(typeof __KHOA!=="undefined")__KHOA=null;if(typeof __NGAY_LE!=="undefined")__NGAY_LE=null;if(typeof __CHO_GHI!=="undefined")__CHO_GHI={};if(typeof __PB!=="undefined")__PB=null;if(typeof __DA_TANG_PB!=="undefined")__DA_TANG_PB=false;if(typeof __DA_GHI!=="undefined")__DA_GHI={};', ctx);
     khoa = false;
     try { const r = ctx[ten](...a); return r === undefined ? null : JSON.parse(JSON.stringify(r)); }
     finally { khoa = false; }

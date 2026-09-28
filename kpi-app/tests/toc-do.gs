@@ -54,6 +54,27 @@ function xong_() {
 }
 var __DA_TANG_PB = false;
 
+/* Sheet đã đổi trong lượt gọi -> "phần" dữ liệu giao diện cần tải lại (napPhan).
+   Sheet không thuộc phần nào (TaiKhoan, KPIThang, nhật ký thao tác…) thì bỏ qua; '*' = tải lại hết. */
+var __DA_GHI = {};
+var PHAN_CUA_SHEET_ = {
+  NhatKySanXuat: 'nk', PhieuKCS: 'nk',
+  DiemDanhNghi: 'cc', XacNhanDiemDanh: 'cc', NgayLe: 'cc', MienTruDiemDanh: 'cc', NghiDaiHan: 'cc',
+  NhanSu: 'ns', YeuCauSuaHoSo: 'ns',
+  CongDoan: 'cd', DinhMuc: 'cd', DeXuatDinhMuc: 'cd',
+  MayMoc: 'mm', DanhMucViPham: 'vp', ViPham: 'vp', TrongSoKPI: 'ts', ThongBao: 'tb',
+  PhongBan: 'dm', DanhMucLoi: 'dm', LyDoDung: 'dm'
+};
+function ganPhanDoi_(v) {
+  if (!v || typeof v !== 'object' || Array.isArray(v) || !v.ok) return;
+  var ten = Object.keys(__DA_GHI);
+  if (!ten.length) return;
+  if (__DA_GHI['*']) { v.phanDoi = 'tat'; return; }
+  var p = {};
+  ten.forEach(function(t) { if (PHAN_CUA_SHEET_[t]) p[PHAN_CUA_SHEET_[t]] = 1; });
+  v.phanDoi = Object.keys(p);
+}
+
 /* ---------- 2) PHIÊN BẢN DỮ LIỆU + BỘ NHỚ TẠM ---------- */
 var __PB = null;
 function phienBan_() {
