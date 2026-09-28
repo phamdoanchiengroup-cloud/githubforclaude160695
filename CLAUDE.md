@@ -119,4 +119,5 @@ cd tests && npm install && node thien-van.mjs && node doi-chieu.js   # đối ch
 
 ## Dự án phụ: `kpi-app/` (web app KPI sản xuất của chủ dự án, không liên quan Thiên Cơ Các)
 - `kpi-app/Code.gs`, `kpi-app/Index.html` là bản đã vá, sinh từ `kpi-app/goc/` bằng `tests/va-code.py` và `tests/va-index.py`. Sửa tiếp thì sửa hai script vá này (hoặc sửa thẳng rồi cập nhật `goc/`).
-- Hướng dẫn cho chủ dự án: `kpi-app/HUONG-DAN-CAP-NHAT.md`. Kiểm thử: `kpi-app/README.md` (cần dữ liệu JSON xuất từ Sheet, không commit vì có dữ liệu cá nhân).
+- Hướng dẫn cho chủ dự án: `kpi-app/HUONG-DAN-CAP-NHAT.md`.
+- Bản 29/09: tăng tốc máy chủ (`tests/toc-do.gs`: gom ghi, nhớ tạm kết quả, `napPhan` + `phanDoi`, Sheets API, lưu trữ nhật ký) và giao diện bên trong mới (`tests/giao-dien-moi.html`: menu nhóm, thanh dưới điện thoại, tab Việc hôm nay, bảng màu vàng đồng). Bản xem thử 1 file: `tests/tao-ban-xem-thu.js` (kết quả có số liệu thật đã ẩn danh, không commit). Kiểm thử: `kpi-app/README.md` (cần dữ liệu JSON xuất từ Sheet, không commit vì có dữ liệu cá nhân).

@@ -1,4 +1,6 @@
-# Hướng dẫn cập nhật web app KPI (bản 28/09/2026)
+# Hướng dẫn cập nhật web app KPI (bản 29/09/2026)
+
+> **Bạn đã làm bản 28/09 rồi?** Chỉ cần: Bước 0 (sao lưu) → Bước 1 (Code.gs) → Bước 2 (Index.html) → **Bước 3b** (bật Sheets API) → chạy `CAI_LAI_TAT_CA_TRIGGER` rồi `KIEM_TRA_SHEETS_API` (Bước 4, dòng 1 và 9) → Bước 5 (triển khai). Xem phần mới ở mục **"Bản 29/09: nhanh hơn và giao diện mới"** cuối file.
 
 Làm **trước 23h ngày 30/9**: bản cũ sẽ tự chốt KPI tháng 9 vào giờ đó và chốt sai.
 
@@ -27,6 +29,14 @@ Làm giống bước 1: MỞ file **Index.html**, xóa hết, dán nội dung `k
 1. Bấm **Cài đặt dự án** (bánh răng ⚙ bên trái).
 2. Ở mục **Múi giờ**, chọn **(GMT+07:00) Giờ Đông Dương – Hồ Chí Minh**.
 
+## Bước 3b — Bật dịch vụ Google Sheets API (để tải trang nhanh hơn)
+
+1. Trong trình soạn thảo Apps Script, ở cột trái tìm mục **Dịch vụ**, bấm dấu **+**.
+2. Tìm **Google Sheets API**, bấm vào, giữ nguyên tên `Sheets`, bấm **Thêm**.
+3. Sau đó chạy hàm `KIEM_TRA_SHEETS_API` (Bước 4, dòng 9). Hàm so **từng ô** giữa cách đọc cũ và cách đọc mới; khớp hết mới bật. Nếu báo lệch thì web vẫn chạy cách cũ, không ảnh hưởng gì.
+
+Không bật bước này thì web vẫn chạy bình thường, chỉ mở trang chậm hơn một chút.
+
 ## Bước 4 — Chạy các hàm một lần
 
 Cách chạy: ở thanh trên cùng, chọn tên hàm trong ô danh sách, bấm **▶ Chạy**, rồi xem kết quả ở **Nhật ký thực thi** phía dưới. Lần đầu Google có thể hỏi cấp quyền: bấm **Xem lại quyền**, chọn tài khoản, rồi **Cho phép**.
@@ -35,7 +45,7 @@ Chạy lần lượt:
 
 | # | Hàm | Việc hàm làm |
 |---|---|---|
-| 1 | `CAI_LAI_TAT_CA_TRIGGER` | Cài lại 5 trigger tự động theo giờ VN. Chốt tháng giờ chạy vào **ngày làm việc thứ 3 của tháng sau** |
+| 1 | `CAI_LAI_TAT_CA_TRIGGER` | Cài lại 6 trigger tự động theo giờ VN. Chốt tháng giờ chạy vào **ngày làm việc thứ 3 của tháng sau**. Trigger mới: lưu trữ nhật ký cũ lúc 2h sáng ngày 5 hằng tháng |
 | 2 | `TAO_SHEET_NGAY_LE` | Tạo sheet **NgayLe** (đã điền sẵn 1–2/9/2026 và 1/1/2027). Sau đó bạn tự thêm Tết Âm lịch, Giỗ Tổ, 30/4–1/5… theo lịch nghỉ của công ty |
 | 3 | `NGUNG_TK_NGHI_VIEC` | Ngừng tài khoản của 9 người đã nghỉ việc |
 | 4 | `BO_SUNG_MA_GHI_VIPHAM` | Thêm mã cho 95 vi phạm "nhập trễ" cũ, để xóa lẻ được trên giao diện |
@@ -43,6 +53,11 @@ Chạy lần lượt:
 | 6 | `BAT_BUOC_DOI_MAT_KHAU_MAC_DINH` | Bật "phải đổi mật khẩu" cho **mọi** tài khoản còn dùng 123456, kể cả giamdoc, phogd2, nhansu, kcs. Lần đăng nhập tới họ sẽ bị buộc đặt mật khẩu mới. Nên **báo trước** cho mọi người |
 | 7 | `SUA_NGAY_NHAT_KY` | Xem mục "Sửa ngày sai" ngay dưới đây |
 | 8 | `KIEM_TRA_SAU_CAP_NHAT` | Kiểm tra lại toàn bộ (chỉ đọc, không sửa gì). Dòng nào có chữ "->" là việc còn phải làm |
+| 9 | `KIEM_TRA_SHEETS_API` | Chạy sau Bước 3b. Báo "KHỚP toàn bộ… ĐÃ BẬT" là xong. Muốn tắt lại thì chạy `TAT_SHEETS_API` |
+
+**Hai hàm dùng khi cần (không phải chạy bây giờ):**
+- `XOA_BO_NHO_TAM`: web nhớ kết quả tính (bảng KPI, KPI quản lý, chấm công tháng…) trong **10 phút** cho nhanh. Ai lưu gì trên web thì tự tính lại ngay. Nhưng nếu bạn **sửa tay trực tiếp trong Google Sheet**, chạy hàm này để web thấy số mới ngay (không thì đợi tối đa 10 phút).
+- `LUU_TRU_NHAT_KY`: chuyển nhật ký sản xuất của những tháng **đã chốt chính thức và cũ hơn 3 tháng** sang trang tính `NhatKySanXuat_LuuTru`, để sheet chính nhẹ. Trigger tự chạy hằng tháng; bạn không cần bấm. Dữ liệu không mất, lịch sử KPI và KPI quản lý vẫn đọc được tháng cũ.
 
 ### Sửa ngày sai trong nhật ký (hàm số 7)
 
@@ -128,6 +143,28 @@ Mở lại web app, nhấn **Ctrl+F5** để tải bản mới.
   - Sai: ô mật khẩu viền đỏ, thẻ rung nhẹ, báo lỗi ngay dưới nút.
 - Điện thoại: ảnh thu thành dải trên cùng, biểu mẫu trượt lên như một tấm thẻ.
 - Máy đã bật "giảm chuyển động" thì bỏ hiệu ứng.
+
+## Bản 29/09: nhanh hơn và giao diện mới
+
+**Hết treo khi lưu**
+- Trước: bấm lưu là cả màn hình tối lại, chờ máy chủ ghi **từng ô một** rồi tải lại **toàn bộ** dữ liệu (~2,9 MB).
+- Nay: máy chủ gom các ô cần sửa và ghi một lần. VD duyệt sản lượng 1 người: từ 38 lần ghi còn 3.
+- Sau khi lưu, web chỉ tải lại **phần vừa đổi** (VD ghi vi phạm thì chỉ tải lại danh sách vi phạm).
+- Không còn lớp phủ che màn hình: chỉ có một vạch vàng chạy trên cùng, và nút vừa bấm hiện vòng xoay (không bấm 2 lần được). Đang tải mà chuyển tab thì kết quả cũ không vẽ đè lên tab mới.
+- Bảng KPI, KPI quản lý, chấm công tháng, phân tích định mức, lịch sử KPI: lần mở thứ hai trong 10 phút lấy từ bộ nhớ tạm, gần như tức thì.
+- Tab Tổng quan vẽ nhanh gấp khoảng 8 lần. Bỏ hiệu ứng nền chuyển động (đốm sáng, hạt bay), vốn làm máy yếu bị giật khi cuộn.
+
+**Giao diện**
+- Cùng tông với màn đăng nhập: nền đen, chữ trắng ngà, điểm nhấn vàng đồng.
+- Máy tính: menu dọc bên trái, chia nhóm **Hôm nay · Sản xuất · KPI · Định mức · Danh mục · Hệ thống**, có số đếm việc chờ (chấm đỏ/vàng).
+- Điện thoại: thanh dưới có 4 mục hay dùng nhất theo vai trò, cộng nút **Menu** mở toàn bộ danh sách.
+- **Việc hôm nay** (trang mở đầu của ban điều hành và trưởng/phó phòng) gom mọi nhắc việc vào một chỗ: chưa điểm danh, chờ duyệt sản lượng, công nhân chưa nhập, đề xuất định mức, yêu cầu sửa hồ sơ, thông báo từ ban điều hành. Mỗi việc có nút đi thẳng tới chỗ xử lý. Ban điều hành xem thêm xưởng nào đã/chưa điểm danh hôm nay.
+- **Hướng dẫn** chuyển thành nút **?** trên đầu trang.
+- Bảng dài: dòng tiêu đề cột dính trên cùng khi cuộn.
+- Công nhân vẫn mở thẳng vào "Nhập sản lượng của tôi" như cũ.
+
+**Bảo mật**
+- Trước đây công nhân nhận về máy **CCCD, số điện thoại, địa chỉ, lương của cả xưởng** (không hiện trên màn hình nhưng xem được bằng công cụ trình duyệt). Nay công nhân chỉ nhận tên, xưởng, công đoạn của đồng nghiệp; hồ sơ đầy đủ chỉ của chính mình. Trưởng phòng không nhận CCCD và lương.
 
 ## Nếu có lỗi
 

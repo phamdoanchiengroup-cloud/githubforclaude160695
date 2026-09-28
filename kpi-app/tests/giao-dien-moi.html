@@ -93,6 +93,18 @@ body.ql #ducbar,body.ql #minibar{display:none!important}
   .ptitle{font-size:25px}
 }
 
+/* --- Dải nhắc (công nhân): cùng tông, không nhấp nháy --- */
+#app>#ducbar,#app>#minibar{max-width:1180px;margin:20px auto 0 calc(var(--nav-w) + 30px)}
+#ducbar{background:var(--panel)!important;border:1px solid rgba(229,72,77,.4)!important;color:var(--ink)!important;
+  box-shadow:none!important;animation:none!important;padding:14px 16px!important}
+#ducbar .num{min-width:42px;height:42px;padding:0 8px;border-radius:10px;display:inline-flex;align-items:center;justify-content:center;
+  font:600 20px var(--mono)!important;background:rgba(229,72,77,.14);color:var(--red)}
+#ducbar .txt{color:var(--ink)!important;font-size:14.5px}
+#ducbar .txt small{color:var(--ink2)!important}
+#ducbar .go{background:var(--cyan)!important;color:#1b1408!important;font-weight:600}
+#minibar .mini{background:var(--panel)}
+@media(max-width:900px){#app>#ducbar,#app>#minibar{margin:12px 14px 0}}
+
 /* --- Việc hôm nay --- */
 .hn-dau{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-bottom:20px}
 .hn-ngay{font:500 11px var(--mono);letter-spacing:.2em;text-transform:uppercase;color:var(--cyan);margin-bottom:8px}
