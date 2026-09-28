@@ -2658,7 +2658,7 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
     var y0 = new Date().getFullYear(), ds = [y0 - 1, y0, y0 + 1, y0 + 2];
     return '<div class="nam-xem"><span>Xem vận năm:</span>' + ds.map(function (y) { return '<button type="button" class="chip' + (y === vy ? ' on' : '') + '" data-nam-xem="' + y + '">' + y + (y > y0 ? ' ✦' : '') + '</button>'; }).join('') + '</div>';
   }
-  /* ---------- Hành trình dẫn dắt: nhập từng bước → khởi quẻ → lật từng lá hé lộ ---------- */
+  /* ---------- Hành trình dẫn dắt: nhập từng bước → khởi quẻ → xem lần lượt từng lá hé lộ ---------- */
   var HT = { buoc: 0, la: 0, ds: [], cho: false };
   var HT_BUOC = [
     { t: 'Bạn tên là gì?', p: 'Họ tên khai sinh đầy đủ, có dấu – dùng cho Thần số học. Không bắt buộc đúng từng chữ.' },
@@ -2744,9 +2744,8 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
     var m = $('htModal'); m.setAttribute('data-man', 'bai');
     $('htBai').innerHTML = HT.ds.map(function (b, i) {
       var sau = b.cuoi ? htCuoiHtml(res) : '<ul>' + b.l.map(function (x) { return '<li>' + esc(x) + '</li>'; }).join('') + '</ul>';
-      return '<div class="ht-la" data-i="' + i + '" hidden><div class="ht-la-in"><button type="button" class="ht-mat truoc" data-ht-lat="' + i + '" aria-label="Lật lá ' + (i + 1) + '">' +
-        '<span class="ht-so">Lá ' + (i + 1) + ' / ' + HT.ds.length + '</span><span class="ht-han">' + b.ic + '</span><b>' + esc(b.t) + '</b><small>Chạm để lật</small></button>' +
-        '<div class="ht-mat sau"><div class="ht-sau-h"><span class="ht-han nho">' + b.ic + '</span><b>' + esc(b.t) + '</b></div>' + sau + '</div></div></div>';
+      return '<div class="ht-la mo" data-i="' + i + '" hidden><div class="ht-mat sau"><span class="ht-so">Lá ' + (i + 1) + ' / ' + HT.ds.length + '</span>' +
+        '<div class="ht-sau-h"><span class="ht-han nho">' + b.ic + '</span><b>' + esc(b.t) + '</b></div>' + sau + '</div></div>';
     }).join('');
     htLa(0);
   }
@@ -2768,12 +2767,6 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
     $('htBaiCham').innerHTML = HT.ds.map(function (x, k) { return '<i class="' + (k < HT.la ? 'xong' : k === HT.la ? 'on' : '') + '"></i>'; }).join('');
     $('htBaiLui').style.visibility = HT.la ? '' : 'hidden';
     $('htBaiToi').style.visibility = HT.la < HT.ds.length - 1 ? '' : 'hidden';
-    var cur = document.querySelector('#htBai .ht-la[data-i="' + HT.la + '"]');
-    if (cur && cur.classList.contains('lat')) $('htBaiToi').classList.add('nhay'); else $('htBaiToi').classList.remove('nhay');
-  }
-  function htLat(i) {
-    var el = document.querySelector('#htBai .ht-la[data-i="' + i + '"]'); if (!el) return;
-    el.classList.add('lat'); $('htBaiToi').classList.add('nhay');
   }
   (function ganHanhTrinh() {
     document.addEventListener('click', function (e) {
@@ -2783,8 +2776,7 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
       if (t.closest('#htDong') || t === $('htModal')) { htDong(); return; }
       if (t.closest('#htToi')) { htToi(); return; }
       if (t.closest('#htLui')) { htBuoc(Math.max(0, HT.buoc - 1)); return; }
-      var lt = t.closest('[data-ht-lat]'); if (lt) { htLat(+lt.getAttribute('data-ht-lat')); return; }
-      if (t.closest('#htBaiToi')) { var c = document.querySelector('#htBai .ht-la[data-i="' + HT.la + '"]'); if (c && !c.classList.contains('lat')) htLat(HT.la); else htLa(HT.la + 1); return; }
+      if (t.closest('#htBaiToi')) { htLa(HT.la + 1); return; }
       if (t.closest('#htBaiLui')) { htLa(HT.la - 1); return; }
       var di = t.closest('[data-ht-di]');
       if (di) {
@@ -2802,7 +2794,6 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
       if (man === 'nhap' && e.key === 'Enter' && !e.target.closest('button')) { e.preventDefault(); htToi(); }
       if (man === 'bai') {
         if (e.key === 'ArrowRight') htLa(HT.la + 1); else if (e.key === 'ArrowLeft') htLa(HT.la - 1);
-        else if ((e.key === ' ' || e.key === 'Enter') && !e.target.closest('button')) { e.preventDefault(); htLat(HT.la); }
       }
     });
     var x0 = null;   // vuốt trái/phải trên điện thoại

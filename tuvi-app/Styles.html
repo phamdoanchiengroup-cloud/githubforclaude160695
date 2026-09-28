@@ -1491,7 +1491,10 @@ body.ht-mo .loading, body.ht-mo .cta-bar { display: none !important; }
 .ht-mat.sau ul { margin: 0; padding-left: 18px; display: grid; gap: 8px; font-size: 16px; line-height: 1.6; }
 .ht-mat.sau p { margin: 0 0 10px; }
 .ht-cuoi { display: grid; gap: 8px; margin-top: 12px; } .ht-cuoi .btn { width: 100%; margin: 0; }
-#htBaiToi.nhay { animation: htNhay 1.6s ease-in-out infinite; }
+.ht-la.mo { height: auto; min-height: 220px; } .ht-la.mo:not([hidden]) { animation: htVao .4s ease-out; }
+.ht-la.mo .ht-mat.sau { position: relative; transform: none; min-height: 220px; }
+.ht-la.mo .ht-so { display: block; margin-bottom: 6px; }
+@keyframes htVao { from { opacity: 0; transform: translateX(24px); } to { opacity: 1; transform: none; } }
 @keyframes htNhay { 0%, 100% { box-shadow: 0 0 0 0 rgba(246, 182, 74, .0); } 50% { box-shadow: 0 0 0 6px rgba(246, 182, 74, .35); } }
 @media (max-width: 520px) { .ht-hop { padding: 24px 16px 18px; } .ht-td { font-size: 25px; } .ht-la { height: 400px; } .ht-han { font-size: 54px; } }
 @media (prefers-reduced-motion: reduce) { .ht-la-in { transition: none; } .ht-bat .quay, .ht-bat path.am, #htBaiToi.nhay { animation: none; } }
