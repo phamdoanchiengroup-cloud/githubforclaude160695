@@ -116,3 +116,7 @@ cd tests && npm install && node thien-van.mjs && node doi-chieu.js   # đối ch
 - Bản PDF xem thử: mục "Kết hợp 6 hệ theo lĩnh vực" chưa có ảnh xem trước mờ, trông trống (có thể bỏ khỏi bản xem thử).
 - Giá bán là mức khởi đầu, chưa qua thử nghiệm; nên xem doanh thu trong Quản trị rồi điều chỉnh.
 - Chủ dự án nên đổi mật khẩu chủ sở hữu sau lần đăng nhập đầu, nếu chưa đổi.
+
+## Dự án phụ: `kpi-app/` (web app KPI sản xuất của chủ dự án, không liên quan Thiên Cơ Các)
+- `kpi-app/Code.gs`, `kpi-app/Index.html` là bản đã vá, sinh từ `kpi-app/goc/` bằng `tests/va-code.py` và `tests/va-index.py`. Sửa tiếp thì sửa hai script vá này (hoặc sửa thẳng rồi cập nhật `goc/`).
+- Hướng dẫn cho chủ dự án: `kpi-app/HUONG-DAN-CAP-NHAT.md`. Kiểm thử: `kpi-app/README.md` (cần dữ liệu JSON xuất từ Sheet, không commit vì có dữ liệu cá nhân).
