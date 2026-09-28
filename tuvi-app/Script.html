@@ -44,7 +44,7 @@
     clearTimeout(toast._t);
     toast._t = setTimeout(function () { t.className = 'toast'; }, 3800);
   }
-  function showErr(e) { loading(false); toast((e && e.message) || String(e), true); }
+  function showErr(e) { loading(false); if (typeof HT !== 'undefined' && HT.cho) { HT.cho = false; clearInterval(HT.dem); htBuoc(HT_BUOC.length - 1); } toast((e && e.message) || String(e), true); }
   function loading(on) { $('loading').className = 'loading' + (on ? ' show' : ''); }
 
   /* ------------------------ FORM ------------------------ */
@@ -254,6 +254,7 @@
       state.result = res;
       if (res.soDu != null) { state.soDu = res.soDu; capNhatUser(); }
       render(res);
+      if (HT.cho) { HT.cho = false; htKetQua(res); }
       if (res.khach) toast(res.canMo ? 'Đã lập lá số – lá số này chưa mở khóa, bạn đang xem phần hé lộ ✦' : 'Đã lập lá số (bản xem giới hạn – đăng nhập để xem đầy đủ) ✦');
       else if (res.saved) toast('Đã lập lá số và lưu vào Google Sheet ✦');
       else if (res.saveError) toast('Đã lập lá số (chưa lưu được: ' + res.saveError + ')', true);
@@ -692,7 +693,7 @@
     trang('page-luan', '<div class="khach-bar"><span>🔒 ' + (res.canMo ? 'Lá số này chưa được mở khóa' : 'Bạn đang xem bản miễn phí') + ' – lá số, chân dung và phần hé lộ.</span>' +
       (res.canMo && soVe() ? '<button type="button" class="btn btn-primary btn-sm" data-dung-ve>Dùng 1 lượt gia đình (còn ' + soVe() + ')</button>' : '<button type="button" class="btn btn-primary btn-sm" data-mua="co_ban">Mở khóa · ' + fmtXu(giaPhan('co_ban').xu) + '</button>') + '</div>' +
       hookKhachHtml(res) + mienPhiHtml(res) + moiVanKhachHtml(res) + khoaHtml(res, 'chart', 'Luận giải 12 cung', '宮') + CTA);
-    trang('page-vh', moiVanKhachHtml(res) + khoaHtml(res, 'van', 'Vận năm – tháng – ngày', '運') + khoaHtml(res, 'bien', 'Biến cố hội tụ 6 hệ', '會') + CTA);
+    trang('page-vh', dtHtml(res) + moiVanKhachHtml(res) + khoaHtml(res, 'van', 'Vận năm – tháng – ngày', '運') + khoaHtml(res, 'bien', 'Biến cố hội tụ 6 hệ', '會') + CTA);
     trang('page-battu', khoaHtml(res, 'battu', 'Bát Tự – Tứ Trụ', '八字') + CTA);
     trang('page-halac', khoaHtml(res, 'halac', 'Bát Tự Hà Lạc', '易') + CTA);
     trang('page-astro', khoaHtml(res, 'astro', 'Chiêm tinh – Bản đồ sao', '星') + CTA);
@@ -2657,6 +2658,267 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
     var y0 = new Date().getFullYear(), ds = [y0 - 1, y0, y0 + 1, y0 + 2];
     return '<div class="nam-xem"><span>Xem vận năm:</span>' + ds.map(function (y) { return '<button type="button" class="chip' + (y === vy ? ' on' : '') + '" data-nam-xem="' + y + '">' + y + (y > y0 ? ' ✦' : '') + '</button>'; }).join('') + '</div>';
   }
+  /* ---------- Hành trình dẫn dắt: nhập từng bước → khởi quẻ → lật từng lá hé lộ ---------- */
+  var HT = { buoc: 0, la: 0, ds: [], cho: false };
+  var HT_BUOC = [
+    { t: 'Bạn tên là gì?', p: 'Họ tên khai sinh đầy đủ, có dấu – dùng cho Thần số học. Không bắt buộc đúng từng chữ.' },
+    { t: 'Bạn sinh ngày nào?', p: 'Chọn loại lịch bạn nhớ chắc nhất. Hệ thống tự đổi sang lịch còn lại.' },
+    { t: 'Bạn sinh lúc mấy giờ?', p: 'Không nhớ chính xác cũng không sao – chọn gần đúng. Sau khi xem, phần "Kiểm chứng" sẽ giúp dò lại giờ sinh.' },
+    { t: 'Bạn sinh ở đâu?', p: 'Nơi sinh giúp tính cung Mọc (Chiêm tinh) và giờ mặt trời thật.' }
+  ];
+  function htMo() {
+    var m = $('htModal'); if (!m) return;
+    // chép lựa chọn từ form chính để hai nơi luôn khớp
+    $('htName').value = $('name').value;
+    (($('gNu').checked) ? $('htNu') : $('htNam')).checked = true;
+    ($('calAm').checked ? $('htAm') : $('htDuong')).checked = true;
+    ['day', 'month', 'hour', 'minute', 'place'].forEach(function (k) {
+      var a = $(k), b = $('ht' + k.charAt(0).toUpperCase() + k.slice(1));
+      b.innerHTML = a.innerHTML; if (k === 'place') { var cu = b.querySelector('option[value=custom]'); if (cu) cu.remove(); }
+      b.value = a.value; if (b.selectedIndex < 0) b.selectedIndex = 0;
+    });
+    $('htYear').value = $('year').value; $('htLeap').checked = $('leap').checked;
+    m.classList.add('show'); document.body.classList.add('ht-mo');
+    htBuoc(0);
+  }
+  function htDong() {
+    $('htModal').classList.remove('show'); document.body.classList.remove('ht-mo'); HT.cho = false;
+    if (state.result && HT.ds.length) showTab('tong');
+  }
+  function htBuoc(i) {
+    HT.buoc = i;
+    var m = $('htModal'); m.setAttribute('data-man', 'nhap');
+    m.querySelectorAll('.ht-b').forEach(function (b, k) { b.hidden = k !== i; });
+    $('htTieuDe').textContent = HT_BUOC[i].t; $('htPhu').textContent = HT_BUOC[i].p;
+    $('htCham').innerHTML = HT_BUOC.map(function (x, k) { return '<i class="' + (k < i ? 'xong' : k === i ? 'on' : '') + '"></i>'; }).join('');
+    $('htLui').style.visibility = i ? '' : 'hidden';
+    $('htToi').textContent = i === HT_BUOC.length - 1 ? '✦ Khởi quẻ' : 'Tiếp →';
+    $('htLeapWrap').style.display = $('htAm').checked ? '' : 'none';
+    var dau = m.querySelector('.ht-b:not([hidden]) input[type=text], .ht-b:not([hidden]) input[type=number], .ht-b:not([hidden]) select');
+    if (dau && window.innerWidth > 700) setTimeout(function () { dau.focus(); }, 60);
+  }
+  function htToi() {
+    if (HT.buoc === 1) { var y = parseInt($('htYear').value, 10); if (!(y >= 1800 && y <= 2200)) { toast('Năm sinh cần trong khoảng 1800 – 2200.', true); $('htYear').focus(); return; } }
+    if (HT.buoc < HT_BUOC.length - 1) { htBuoc(HT.buoc + 1); return; }
+    // ghi vào form chính rồi lập lá số như bình thường
+    setForm({ name: $('htName').value.trim(), gender: $('htNu').checked ? 'nu' : 'nam', calendar: $('htAm').checked ? 'am' : 'duong',
+      day: $('htDay').value, month: $('htMonth').value, year: $('htYear').value, leap: $('htLeap').checked, hour: $('htHour').value, minute: $('htMinute').value });
+    $('place').value = $('htPlace').value; $('place').dispatchEvent(new Event('change', { bubbles: true }));
+    htKhoiQue(); HT.cho = true; HT.ds = []; submit();
+  }
+  var HT_CHU = ['Đang an sao Tử Vi…', 'Đang lập Tứ Trụ theo tiết khí…', 'Đang khởi quẻ Hà Lạc…', 'Đang tính vị trí các hành tinh…', 'Đang giải mã các con số…', 'Đang dựng bản thiết kế năng lượng…', 'Đang ghép 6 hệ lại với nhau…'];
+  function htKhoiQue() {
+    var m = $('htModal'), i = 0; m.setAttribute('data-man', 'que');
+    $('htQueChu').textContent = HT_CHU[0];
+    clearInterval(HT.dem); HT.dem = setInterval(function () { i = (i + 1) % HT_CHU.length; $('htQueChu').textContent = HT_CHU[i]; }, 800);
+  }
+  /** Làm sạch câu cho lá bài: bỏ phần liệt kê thuật ngữ (tên sao, số, quẻ) – chỉ giữ câu đời thường đầu tiên */
+  function htCau(s) {
+    s = String(s || ''); if (/:\s*—/.test(s)) return '';                          // dữ liệu trống ("Tính cách: —")
+    var k = s.search(/\.\s+(Mệnh|Nhật chủ|Mặt Trời|Số chủ đạo)/); if (k > 0) s = s.slice(0, k + 1);
+    return s.replace(/\s*\(đồng thuận 0%\)/, '').replace(/\.{2,}$/, '.').trim();
+  }
+  function htLaBai(res) {
+    var T = res.teaser || {}, vy = res.tuvi.info.viewYear;
+    function lo(k) { return ((T[k] && T[k].lo) || []).map(htCau).filter(Boolean); }
+    var mn = null, T6 = res.th6 || (res.moRong && res.moRong.deHieu && res.moRong.deHieu.th6);
+    if (T6 && T6.linhVuc) {
+      var tot = T6.linhVuc.slice().sort(function (a, b) { return b.diem - a.diem; })[0], k = tot.lo || tot;
+      if (k.ket) mn = [tot.icon + ' ' + tot.ten + ' – ' + String(tot.diem).replace('.', ',') + '/10', k.ket + (k.noiBat ? ' ' + k.noiBat.t : '')];
+    }
+    var ds = [
+      { ic: '命', t: 'Bạn là ai', l: lo('tom').slice(0, 2) },
+      { ic: '性', t: 'Con người bạn', l: lo('nguoi').slice(0, 2) },
+      { ic: '合', t: 'Thế mạnh nhất theo 6 hệ', l: mn || [] },
+      { ic: '姻', t: 'Tình duyên', l: lo('duyen').slice(0, 2) },
+      { ic: '途', t: 'Đường đời', l: lo('doi').slice(0, 1) },
+      { ic: '運', t: 'Năm ' + vy + ' của bạn', l: lo('van').slice(0, 2) },
+      { ic: '會', t: '30 năm tới', l: lo('bien').slice(0, 1) }
+    ].filter(function (x) { return x.l.length; });
+    ds.push({ ic: '✦', t: 'Bước tiếp theo', cuoi: true });
+    return ds;
+  }
+  function htKetQua(res) {
+    clearInterval(HT.dem);
+    HT.ds = htLaBai(res); HT.la = 0; HT.res = res;
+    var m = $('htModal'); m.setAttribute('data-man', 'bai');
+    $('htBai').innerHTML = HT.ds.map(function (b, i) {
+      var sau = b.cuoi ? htCuoiHtml(res) : '<ul>' + b.l.map(function (x) { return '<li>' + esc(x) + '</li>'; }).join('') + '</ul>';
+      return '<div class="ht-la" data-i="' + i + '" hidden><div class="ht-la-in"><button type="button" class="ht-mat truoc" data-ht-lat="' + i + '" aria-label="Lật lá ' + (i + 1) + '">' +
+        '<span class="ht-so">Lá ' + (i + 1) + ' / ' + HT.ds.length + '</span><span class="ht-han">' + b.ic + '</span><b>' + esc(b.t) + '</b><small>Chạm để lật</small></button>' +
+        '<div class="ht-mat sau"><div class="ht-sau-h"><span class="ht-han nho">' + b.ic + '</span><b>' + esc(b.t) + '</b></div>' + sau + '</div></div></div>';
+    }).join('');
+    htLa(0);
+  }
+  function htCuoiHtml(res) {
+    if (res.khach) return '<p>Những điều vừa rồi <b>có đúng với bạn không?</b> Nếu phần lớn là đúng, giờ sinh của bạn chuẩn – phần luận đầy đủ sẽ rất sát.</p>' +
+      '<p class="muted">Chưa chắc? Làm bài kiểm chứng 2 phút, miễn phí. Nếu không khớp, chúng tôi sẽ nói thật – đừng mua.</p>' +
+      '<div class="ht-cuoi"><button type="button" class="btn btn-primary btn-sm" data-ht-di="nc">🔍 Kiểm chứng giờ sinh</button>' +
+      nutMua(res.canMo && soVe() ? 've' : 'co_ban', 'Mở khóa luận đầy đủ · ' + fmtXu(giaPhan('co_ban').xu), 'btn-ghost') +
+      '<button type="button" class="btn btn-ghost btn-sm" data-ht-di="tong">Xem bảng điểm 9 lĩnh vực →</button></div>';
+    return '<p>Bạn đã xem qua những nét chính. Chọn nơi muốn đi tiếp:</p><div class="ht-cuoi">' +
+      '<button type="button" class="btn btn-primary btn-sm" data-ht-di="tong">☯ Vòm trời 9 lĩnh vực</button>' +
+      '<button type="button" class="btn btn-ghost btn-sm" data-ht-di="dt">⏳ Dòng thời gian cuộc đời</button>' +
+      '<button type="button" class="btn btn-ghost btn-sm" data-ht-di="chart">📜 Lá số & luận 12 cung</button>' +
+      '<button type="button" class="btn btn-ghost btn-sm" data-ht-di="nc">🔍 Kiểm chứng giờ sinh</button></div>';
+  }
+  function htLa(i) {
+    HT.la = Math.max(0, Math.min(i, HT.ds.length - 1));
+    document.querySelectorAll('#htBai .ht-la').forEach(function (el, k) { el.hidden = k !== HT.la; });
+    $('htBaiCham').innerHTML = HT.ds.map(function (x, k) { return '<i class="' + (k < HT.la ? 'xong' : k === HT.la ? 'on' : '') + '"></i>'; }).join('');
+    $('htBaiLui').style.visibility = HT.la ? '' : 'hidden';
+    $('htBaiToi').style.visibility = HT.la < HT.ds.length - 1 ? '' : 'hidden';
+    var cur = document.querySelector('#htBai .ht-la[data-i="' + HT.la + '"]');
+    if (cur && cur.classList.contains('lat')) $('htBaiToi').classList.add('nhay'); else $('htBaiToi').classList.remove('nhay');
+  }
+  function htLat(i) {
+    var el = document.querySelector('#htBai .ht-la[data-i="' + i + '"]'); if (!el) return;
+    el.classList.add('lat'); $('htBaiToi').classList.add('nhay');
+  }
+  (function ganHanhTrinh() {
+    document.addEventListener('click', function (e) {
+      var t = e.target;
+      if (t.closest('[data-ht]')) { e.preventDefault(); htMo(); return; }
+      if (!t.closest('#htModal')) return;
+      if (t.closest('#htDong') || t === $('htModal')) { htDong(); return; }
+      if (t.closest('#htToi')) { htToi(); return; }
+      if (t.closest('#htLui')) { htBuoc(Math.max(0, HT.buoc - 1)); return; }
+      var lt = t.closest('[data-ht-lat]'); if (lt) { htLat(+lt.getAttribute('data-ht-lat')); return; }
+      if (t.closest('#htBaiToi')) { var c = document.querySelector('#htBai .ht-la[data-i="' + HT.la + '"]'); if (c && !c.classList.contains('lat')) htLat(HT.la); else htLa(HT.la + 1); return; }
+      if (t.closest('#htBaiLui')) { htLa(HT.la - 1); return; }
+      var di = t.closest('[data-ht-di]');
+      if (di) {
+        var d = di.getAttribute('data-ht-di'); htDong();
+        if (d === 'nc') { var nb = $('ncBannerGo') || $('btnNghiemChung'); if (nb) nb.click(); }
+        else if (d === 'dt') { showTab('vh'); var dt = document.querySelector('#page-vh .dt'); if (dt) cuonToi(dt); }
+        else showTab(d);
+      }
+      if (t.closest('[data-mua], [data-dung-ve]')) htDong();          // mở luồng mua như thường
+    });
+    document.addEventListener('keydown', function (e) {
+      var m = $('htModal'); if (!m || !m.classList.contains('show')) return;
+      if (e.key === 'Escape') { htDong(); return; }
+      var man = m.getAttribute('data-man');
+      if (man === 'nhap' && e.key === 'Enter' && !e.target.closest('button')) { e.preventDefault(); htToi(); }
+      if (man === 'bai') {
+        if (e.key === 'ArrowRight') htLa(HT.la + 1); else if (e.key === 'ArrowLeft') htLa(HT.la - 1);
+        else if ((e.key === ' ' || e.key === 'Enter') && !e.target.closest('button')) { e.preventDefault(); htLat(HT.la); }
+      }
+    });
+    var x0 = null;   // vuốt trái/phải trên điện thoại
+    document.addEventListener('touchstart', function (e) { if (e.target.closest && e.target.closest('#htBai')) x0 = e.touches[0].clientX; }, { passive: true });
+    document.addEventListener('touchend', function (e) {
+      if (x0 == null) return; var dx = e.changedTouches[0].clientX - x0; x0 = null;
+      if (Math.abs(dx) > 50) htLa(HT.la + (dx < 0 ? 1 : -1));
+    }, { passive: true });
+    document.addEventListener('change', function (e) { if (e.target.name === 'htCal') $('htLeapWrap').style.display = $('htAm').checked ? '' : 'none'; });
+  })();
+  /* ---------- Dòng thời gian cuộc đời: thanh 0–90 tuổi, kéo/chạm vào năm nào thì hiện luận năm đó ---------- */
+  var CAN10 = ['Giáp', 'Ất', 'Bính', 'Đinh', 'Mậu', 'Kỷ', 'Canh', 'Tân', 'Nhâm', 'Quý'];
+  var DT = { ds: {}, so: 0 };
+  var DT_MAU = { r5: '#1fa688', r4: '#4fbf8f', r3: '#c9a23a', r2: '#8a93a8', r1: '#e07b4f', r0: '#d9503f' };
+  function dtLop(dg, diem) {
+    var t = String(dg || '').toLowerCase();
+    if (/rất tốt|đại cát/.test(t)) return 'r5'; if (/tốt|cát|thuận/.test(t)) return 'r4'; if (/khá/.test(t)) return 'r3';
+    if (/rất xấu|đại hung/.test(t)) return 'r0'; if (/kém|xấu|hung|thận trọng|cần/.test(t)) return 'r1'; if (/bình|trung/.test(t)) return 'r2';
+    return diem != null ? rateClass(diem) : 'r2';
+  }
+  /** Gom dữ liệu theo năm từ những gì máy chủ trả về (bản đầy đủ hoặc bản miễn phí) */
+  function dtDuLieu(res) {
+    var I = res.tuvi.info, y0 = I.solar.year, now = new Date().getFullYear();
+    var dv = ((res.chiTiet && res.chiTiet.daiVan) || (res.moi && res.moi.daiVan) || []).map(function (d) {
+      var bd = dvNamBd(d); return { bd: bd, kt: bd + 9, khoang: d.khoang, danhGia: d.danhGia, diem: d.diem, khoa: !!d.khoa || !!res.khach, isNow: d.isNow, cung: d.cung };
+    });
+    var nam = {};
+    ((res.chiTiet && res.chiTiet.tieuVanNhieuNam) || []).forEach(function (y) { nam[y.nam] = { danhGia: y.danhGia, cung: y.cung, khoa: !!y.khoa }; });
+    var su = {}, H = res.moRong && res.moRong.tongHop && res.moRong.tongHop.hoiTu, T6 = res.moRong && res.moRong.deHieu && res.moRong.deHieu.th6;
+    function them(y, x) { (su[y] = su[y] || []).push(x); }
+    if (H && H.chuDe) H.chuDe.forEach(function (c) { c.nam.forEach(function (n) { them(n.nam, { ten: c.ten, tot: c.loai === 'tot', soHe: n.soHe, he: n.he || [], ly: n.ly || [] }); }); });
+    else if (T6 && T6.linhVuc) T6.linhVuc.forEach(function (lv) { (lv.namToi || []).concat(lv.namQua || []).forEach(function (n) { them(n.nam, { ten: n.ten, tot: n.tot, soHe: n.soHe, he: n.he || [], ly: [] }); }); });
+    Object.keys(su).forEach(function (y) {   // gộp trùng tên trong cùng năm
+      var da = {}; su[y] = su[y].filter(function (x) { if (da[x.ten]) return false; da[x.ten] = 1; return true; });
+    });
+    return { y0: y0, now: now, dv: dv, nam: nam, su: su, coSu: !!(H || T6), khach: !!res.khach, bienMo: !!H };
+  }
+  function dtHtml(res) {
+    var D = dtDuLieu(res); if (!D.dv.length) return '';
+    var id = 'dt' + (++DT.so), N = 91, L = 12, cw = 10, W = L * 2 + N * cw, top = 8;
+    var chon = Math.min(Math.max(D.now, D.y0), D.y0 + 90);
+    DT.ds[id] = { D: D, chon: chon, res: res };
+    setTimeout(function () { if ($(id)) dtChon(id, chon); }, 60);   // điện thoại: cuộn tới năm đang chọn
+    function X(y) { return L + (y - D.y0) * cw; }
+    var o = '<svg viewBox="0 0 ' + W + ' 150" class="dt-svg" role="img" aria-label="Dòng thời gian cuộc đời từ 0 đến 90 tuổi">';
+    // biến cố: chấm tròn xếp chồng phía trên
+    Object.keys(D.su).forEach(function (y) {
+      y = +y; if (y < D.y0 || y > D.y0 + 90) return;
+      D.su[y].slice(0, 4).forEach(function (s, k) { o += '<circle cx="' + (X(y) + cw / 2) + '" cy="' + (top + 34 - k * 9) + '" r="3.6" class="dt-su ' + (s.tot ? 'tot' : 'kho') + '"/>'; });
+    });
+    // đại vận: dải màu 10 năm
+    D.dv.forEach(function (d) {
+      if (d.bd > D.y0 + 90) return;
+      var x1 = X(Math.max(d.bd, D.y0)), x2 = X(Math.min(d.kt, D.y0 + 90) + 1);
+      o += '<rect x="' + x1 + '" y="' + (top + 76) + '" width="' + (x2 - x1 - 2) + '" height="26" rx="5" style="fill:' + DT_MAU[dtLop(d.danhGia, d.diem)] + '" class="dt-dv' + (d.isNow ? ' now' : '') + '"/>' +
+        '<text x="' + ((x1 + x2) / 2) + '" y="' + (top + 93) + '" text-anchor="middle" class="dt-dv-t">' + esc(String(d.khoang).replace(' tuổi', '')) + (d.khoa ? ' 🔒' : '') + '</text>';
+    });
+    // từng năm: cột nhỏ (màu theo vận năm nếu có, không thì theo đại vận)
+    for (var y = D.y0; y <= D.y0 + 90; y++) {
+      var n = D.nam[y], dvy = D.dv.filter(function (d) { return y >= d.bd && y <= d.kt; })[0];
+      var lop = n ? dtLop(n.danhGia) : dvy ? dtLop(dvy.danhGia, dvy.diem) : 'r2', h = n ? 26 : 14;
+      o += '<rect x="' + (X(y) + 1) + '" y="' + (top + 72 - h) + '" width="' + (cw - 2) + '" height="' + h + '" rx="2" style="fill:' + DT_MAU[lop] + ';fill-opacity:' + (n ? .95 : .35) + '" class="dt-y" data-dt="' + id + '|' + y + '"/>';
+    }
+    // trục tuổi
+    for (var t = 0; t <= 90; t += 10) o += '<text x="' + (X(D.y0 + t) + cw / 2) + '" y="' + (top + 122) + '" text-anchor="middle" class="dt-ax">' + t + ' tuổi</text><text x="' + (X(D.y0 + t) + cw / 2) + '" y="' + (top + 136) + '" text-anchor="middle" class="dt-ax sm">' + (D.y0 + t) + '</text>';
+    o += '<line x1="' + (X(D.now) + cw / 2) + '" x2="' + (X(D.now) + cw / 2) + '" y1="' + (top + 4) + '" y2="' + (top + 106) + '" class="dt-nay"/><text x="' + (X(D.now) + cw / 2) + '" y="' + (top + 2) + '" text-anchor="middle" class="dt-nay-t">NAY</text>';
+    o += '<rect x="' + X(chon) + '" y="' + top + '" width="' + cw + '" height="104" rx="3" class="dt-chon"/></svg>';
+    return '<div class="panel section dt" id="' + id + '"><h2 class="panel-title"><span class="han">時</span> Dòng thời gian cuộc đời</h2>' +
+      '<p class="lede">Kéo thanh trượt hoặc chạm vào một năm để xem năm đó ra sao. Dải dưới là <b>đại vận 10 năm</b>, cột trên là <b>từng năm</b>, chấm tròn là năm <b>nhiều hệ cùng báo</b> (xanh = việc vui, đỏ = cần giữ).</p>' +
+      '<div class="dt-cuon">' + o + '</div>' +
+      '<div class="dt-keo"><button type="button" data-dt-di="' + id + '|-1" aria-label="Năm trước">‹</button><input type="range" min="' + D.y0 + '" max="' + (D.y0 + 90) + '" value="' + chon + '" data-dt-keo="' + id + '" aria-label="Chọn năm"><button type="button" data-dt-di="' + id + '|1" aria-label="Năm sau">›</button></div>' +
+      '<div class="dt-the" aria-live="polite">' + dtThe(id) + '</div></div>';
+  }
+  function dtThe(id) {
+    var V = DT.ds[id], D = V.D, y = V.chon, tuoi = y - D.y0 + 1, n = D.nam[y], su = D.su[y] || [];
+    var dv = D.dv.filter(function (d) { return y >= d.bd && y <= d.kt; })[0], qua = y < D.now, nay = y === D.now;
+    var o = '<div class="dt-the-h"><b>' + y + '</b><span>' + tuoi + ' tuổi (tuổi mụ) · năm ' + CAN10[(y + 6) % 10] + ' ' + CHI[(y + 8) % 12] + (nay ? ' · <em>năm nay</em>' : qua ? ' · đã qua' : ' · sắp tới') + '</span></div>';
+    if (dv) o += '<p class="dt-dong"><span class="rate ' + dtLop(dv.danhGia, dv.diem) + '">' + esc(dv.danhGia) + '</span> Thuộc <b>đại vận ' + esc(dv.khoang) + '</b>' + (dv.cung ? ' (cung ' + esc(dv.cung) + ')' : '') + '.' +
+      (dv.khoa && !D.khach ? ' ' + nutMua('dai_van|' + dv.bd, 'Mở 10 năm này · ' + fmtXu(giaDv(dv.bd).xu), 'btn-ghost') : '') + '</p>';
+    if (n) o += '<p class="dt-dong"><span class="rate ' + dtLop(n.danhGia) + '">' + esc(n.danhGia) + '</span> Riêng năm ' + y + (n.cung ? ': tiểu vận ở cung <b>' + esc(n.cung) + '</b>' : '') + '.</p>';
+    if (su.length) o += '<ul class="dt-su-ds">' + su.map(function (s) {
+      return '<li class="' + (s.tot ? 'tot' : 'kho') + '">' + (s.tot ? '✦ ' : '◇ ') + '<b>' + esc(s.ten) + '</b>' + (s.soHe ? ' · ' + s.soHe + ' hệ cùng báo' + (s.he.length ? ' (' + esc(s.he.join(', ')) + ')' : '') : '') + '</li>';
+    }).join('') + '</ul>' + (qua ? '<p class="muted dt-nho">Năm đã qua – hãy đối chiếu với điều bạn đã trải qua để kiểm chứng giờ sinh.</p>' : '');
+    else if (D.khach) o += '<p class="muted">🔒 Những năm nhiều hệ cùng báo (cưới hỏi, sự nghiệp, tiền bạc, sức khỏe…) hiện trong bản mở.</p>';
+    else if (!D.coSu || !D.bienMo && !su.length) o += '<p class="muted">' + (D.bienMo ? 'Năm này không có biến cố lớn nào được từ 3 hệ cùng báo – một năm tương đối êm.' : 'Chưa thấy năm này trong các năm nổi bật. Mở <b>Biến cố hội tụ 30 năm</b> để xem đủ từng năm.') + '</p>';
+    // hành động
+    var nut = '';
+    if (D.khach) nut = nutMua('co_ban', 'Mở khóa để xem vận từng năm · ' + fmtXu(giaPhan('co_ban').xu));
+    else {
+      if (y >= D.now - 1 && y <= D.now + 10) nut += namDaMo(y) ? '<button type="button" class="btn btn-primary btn-sm" data-nam-xem="' + y + '" data-den="vh">Xem vận năm ' + y + ' →</button>' : nutNam(y);
+      if (!D.bienMo) nut += nutMua('bien_co', 'Biến cố hội tụ 30 năm · ' + fmtXu(giaPhan('bien_co').xu), 'btn-ghost');
+    }
+    return o + (nut ? '<div class="dt-nut">' + nut + '</div>' : '');
+  }
+  function dtChon(id, y) {
+    var V = DT.ds[id], box = $(id); if (!V || !box) return;
+    y = Math.min(Math.max(y, V.D.y0), V.D.y0 + 90); V.chon = y;
+    var r = box.querySelector('.dt-chon'); if (r) r.setAttribute('x', 12 + (y - V.D.y0) * 10);
+    var k = box.querySelector('[data-dt-keo]'); if (k && +k.value !== y) k.value = y;
+    box.querySelector('.dt-the').innerHTML = dtThe(id);
+    var cuon = box.querySelector('.dt-cuon'), sv = box.querySelector('.dt-svg');
+    if (cuon && sv && cuon.scrollWidth > cuon.clientWidth + 4) {       // điện thoại: giữ năm đang chọn trong tầm nhìn
+      var tl = sv.getBoundingClientRect().width / 934, xx = (12 + (y - V.D.y0) * 10) * tl;
+      if (xx < cuon.scrollLeft + 30 || xx > cuon.scrollLeft + cuon.clientWidth - 30) cuon.scrollLeft = xx - cuon.clientWidth / 2;
+    }
+  }
+  (function ganDongThoiGian() {
+    document.addEventListener('click', function (e) {
+      var g = e.target.closest && e.target.closest('[data-dt], [data-dt-di]'); if (!g) return;
+      var a = (g.getAttribute('data-dt') || g.getAttribute('data-dt-di')).split('|'), V = DT.ds[a[0]]; if (!V) return;
+      dtChon(a[0], g.hasAttribute('data-dt') ? +a[1] : V.chon + +a[1]);
+    });
+    document.addEventListener('input', function (e) {
+      var k = e.target.closest && e.target.closest('[data-dt-keo]'); if (k) dtChon(k.getAttribute('data-dt-keo'), +k.value);
+    });
+  })();
   /** Dựng tab "Vận hạn": gom đại vận, vận năm, tháng, ngày, biến cố từ các tab khác về một chỗ */
   function veVanHan(res) {
     var pg = $('page-vh'); if (!pg) return;
@@ -2664,6 +2926,7 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
     var html = '<div class="panel section vh-hero"><h2 class="panel-title"><span class="han">運</span> Vận hạn của bạn</h2>' +
       '<p class="lede">Bản mệnh cho biết bạn là ai. <b>Vận hạn cho biết khi nào</b>: khi nào nên tiến, khi nào nên giữ, năm nào là bản lề. Mỗi giai đoạn được luận riêng – mở đúng phần bạn cần, khi bạn cần.</p>' +
       (full ? '' : uuDaiVanHtml(res)) + '</div>';
+    html += dtHtml(res);
     html += '<div class="tg" data-g="vh-dai"><div class="tg-head"><span>10 năm</span><b>12 đại vận – dòng thời gian cuộc đời</b><em>Điểm từng vận hiện sẵn · lời luận mở theo từng vận</em></div>' +
       '<div class="panel section">' + dvTimelineHtml(ds, full ? 'full' : 'mua') + (full ? '' : '<p class="muted meo-mua" style="font-size:12.5px">Mẹo: mở một vận <b>đã qua</b> (' + fmtXu(giaPhan('dai_van_qua').xu) + ') để tự kiểm chứng độ chính xác trước khi mở vận tương lai.</p>') + '</div><div id="vh-slot-dai"></div></div>';
     html += '<div class="tg" data-g="vh-nam"><div class="tg-head"><span>1 năm</span><b>Vận năm ' + vy + '</b><em>Tiểu vận · 12 tháng · lưu niên Bát Tự & quẻ năm</em></div>' + chonNamHtml(vy) +
@@ -3923,7 +4186,7 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
         if (k === 'vh') {
           var vhp = $('page-vh');
           if (vhp) Array.prototype.forEach.call(vhp.children, function (c) {
-            if (c.matches('.tg[data-g="bien"], .tg[data-g="vh-ngay"]')) return;   // biến cố có mục riêng; lịch từng ngày quá chi tiết cho báo cáo
+            if (c.matches('.tg[data-g="bien"], .tg[data-g="vh-ngay"], .dt')) return;   // dòng thời gian là phần tương tác – không in   // biến cố có mục riêng; lịch từng ngày quá chi tiết cho báo cáo
             if (c.classList.contains('vh-hero')) { var hc = chuanHoa(c.cloneNode(true)); if (hc.textContent.trim().length > 40) sec.appendChild(hc); return; }
             if (c.classList.contains('tg')) {
               // Bản gọn: đại vận chỉ giữ dòng thời gian + đại vận hiện tại; vận năm chỉ giữ các khung có biểu đồ
@@ -4111,7 +4374,7 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
         if (!$('name').value.trim()) { $('name').focus(); toast('Nhập họ tên và ngày giờ sinh, rồi bấm "Lập Lá Số" để bắt đầu ✦'); return; }
         submit();
       }
-      if ($('wlGo')) $('wlGo').addEventListener('click', khamPha);
+      if ($('wlGo')) $('wlGo').addEventListener('click', function () { if ($('htModal')) htMo(); else khamPha(); });
       if ($('wlAnh')) $('wlAnh').addEventListener('click', khamPha);
     });
     buoc('điều hướng', initDieuHuong);

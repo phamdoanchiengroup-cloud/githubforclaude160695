@@ -1427,4 +1427,72 @@ details.dh-lv .cung-van-de-hieu { margin-bottom: 12px; }
 .vt-sang { color: var(--gold-hi); text-shadow: 0 0 8px rgba(255, 216, 138, .8); }
 .vt-bang > summary { cursor: pointer; color: var(--accent, var(--jade)); font-size: 14px; margin: 6px 0; }
 @media (prefers-reduced-motion: reduce) { .vt-sao, .vt-quydao, .vt-hao, .vt-the.moi { animation: none; } .vt-quay, .vt-nhan { transition: none; } }
+/* ---------- Dòng thời gian cuộc đời ---------- */
+.dt-cuon { overflow-x: auto; margin: 6px -4px 0; padding: 0 4px; scrollbar-width: thin; }
+.dt-svg { display: block; width: 100%; min-width: 720px; height: auto; }
+.dt-y { cursor: pointer; transition: fill-opacity .2s; } .dt-y:hover { fill-opacity: 1 !important; stroke: var(--gold-hi); stroke-width: 1; }
+.dt-dv { opacity: .85; } .dt-dv.now { stroke: var(--gold-hi); stroke-width: 2; opacity: 1; }
+.dt-dv-t { fill: #fff; font-size: 11px; font-weight: 700; pointer-events: none; }
+.dt-ax { fill: var(--ink-soft); font-size: 11px; } .dt-ax.sm { font-size: 9.5px; opacity: .8; }
+.dt-su.tot { fill: #5eead4; } .dt-su.kho { fill: #ff7b6b; }
+.dt-nay { stroke: var(--gold); stroke-width: 2; stroke-dasharray: 3 3; } .dt-nay-t { fill: var(--gold-hi); font-size: 10px; font-weight: 800; letter-spacing: 1px; }
+.dt-chon { fill: rgba(255, 216, 138, .16); stroke: var(--gold-hi); stroke-width: 2; pointer-events: none; transition: x .25s ease; }
+.dt-keo { display: flex; align-items: center; gap: 10px; margin: 10px 0 6px; }
+.dt-keo input { flex: 1; accent-color: var(--gold); height: 28px; }
+.dt-keo button { width: 40px; height: 40px; flex: none; border-radius: 50%; border: 1px solid var(--line); background: var(--surface-glass); color: var(--gold-hi); font-size: 22px; line-height: 1; cursor: pointer; }
+.dt-the { padding: 14px 16px; border-radius: 14px; border: 1px solid var(--line); background: var(--surface-2); animation: vtHien .35s ease-out; }
+.dt-the-h { display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap; margin-bottom: 8px; }
+.dt-the-h b { font-family: var(--font-title); font-size: 34px; line-height: 1; color: var(--gold-hi); }
+.dt-the-h span { color: var(--ink-soft); } .dt-the-h em { color: var(--gold-hi); font-style: normal; font-weight: 700; }
+.dt-dong { margin: 6px 0; } .dt-dong .rate { margin-right: 6px; font-size: 12px; padding: 2px 9px; border-radius: 999px; }
+.dt-su-ds { list-style: none; padding: 0; margin: 8px 0; display: grid; gap: 5px; }
+.dt-su-ds li.tot b { color: var(--kw-good); } .dt-su-ds li.kho b { color: var(--kw-bad); }
+.dt-nho { font-size: 12.5px; margin: 4px 0; }
+.dt-nut { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; } .dt-nut .btn { width: auto; margin: 0; }
+/* ---------- Hành trình dẫn dắt ---------- */
+.ht-vao { width: 100%; margin: -4px 0 14px; justify-content: center; }
+.ht-modal { background: radial-gradient(900px 600px at 50% 20%, rgba(19, 60, 90, .75), rgba(4, 10, 22, .92)); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); }
+body.ht-mo .loading, body.ht-mo .cta-bar { display: none !important; }
+.ht-hop { width: min(560px, 100%); max-height: 92vh; overflow: auto; padding: 28px 26px 22px; position: relative; }
+.ht-x { position: absolute; top: 10px; right: 12px; background: none; border: 0; color: var(--ink-soft); font-size: 20px; cursor: pointer; z-index: 2; }
+.ht-man { display: none; } .ht-modal[data-man="nhap"] .ht-nhap, .ht-modal[data-man="que"] .ht-que, .ht-modal[data-man="bai"] .ht-bai-man { display: block; animation: vtHien .4s ease-out; }
+.ht-cham { display: flex; gap: 6px; justify-content: center; margin-bottom: 14px; }
+.ht-cham i { width: 26px; height: 5px; border-radius: 3px; background: var(--surface-3); transition: background .3s; } .ht-cham i.xong { background: var(--gold-deep); } .ht-cham i.on { background: var(--gold); box-shadow: 0 0 8px var(--gold); }
+.ht-td { font-family: var(--font-title); font-size: 30px; color: var(--head); margin: 4px 0 6px; text-align: center; }
+.ht-phu { text-align: center; color: var(--ink-soft); font-size: 14px; margin: 0 0 18px; }
+.ht-b { display: grid; gap: 12px; } .ht-b[hidden] { display: none; } .ht-b input[type=text], .ht-b input[type=number], .ht-b select { font-size: 17px; padding: 13px 14px; }
+.ht-seg label { padding: 11px 6px; font-size: 15px; }
+.ht-dieu { display: flex; justify-content: space-between; align-items: center; gap: 10px; margin-top: 20px; }
+.ht-dieu .btn-primary { width: auto; margin: 0; padding: 12px 26px; font-size: 18px; }
+.ht-que { text-align: center; padding: 10px 0 6px; }
+.ht-bat { width: 190px; height: 190px; display: block; margin: 0 auto 12px; }
+.ht-bat .v1 { fill: none; stroke: var(--gold); stroke-width: 1.5; stroke-dasharray: 4 6; }
+.ht-bat .v2 { fill: rgba(19, 181, 204, .08); stroke: var(--line); }
+.ht-bat .quay { transform-origin: 100px 100px; animation: spin 6s linear infinite; } .ht-bat .quay text { fill: var(--gold-hi); font-size: 20px; dominant-baseline: central; }
+.ht-bat .am { fill: var(--jade); } .ht-bat .duong { fill: var(--card-solid); }
+.ht-bat path.am { transform-origin: 100px 100px; animation: spin 2.4s linear infinite reverse; }
+.ht-que-t { display: block; font-family: var(--font-title); font-size: 26px; color: var(--head); }
+.ht-que p { color: var(--ink-soft); min-height: 22px; margin: 6px 0 0; }
+.ht-bai { perspective: 1200px; }
+.ht-la { height: 360px; } .ht-la[hidden] { display: none; }
+.ht-la-in { position: relative; width: 100%; height: 100%; transform-style: preserve-3d; transition: transform .75s cubic-bezier(.3, .7, .2, 1); }
+.ht-la.lat .ht-la-in { transform: rotateY(180deg); }
+.ht-mat { position: absolute; inset: 0; border-radius: 18px; backface-visibility: hidden; -webkit-backface-visibility: hidden; overflow: auto; }
+.ht-mat.truoc { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; cursor: pointer; font: inherit; color: var(--ink);
+  border: 1px solid var(--gold); background: radial-gradient(300px 220px at 50% 35%, rgba(246, 182, 74, .22), transparent 70%), repeating-linear-gradient(45deg, rgba(246, 182, 74, .05) 0 12px, transparent 12px 24px), var(--card-solid);
+  box-shadow: inset 0 0 0 6px rgba(246, 182, 74, .10), 0 14px 30px rgba(0, 0, 0, .3); transition: transform .2s; }
+.ht-mat.truoc:hover { transform: translateY(-3px); }
+.ht-mat.truoc b { font-family: var(--font-title); font-size: 28px; color: var(--head); } .ht-mat.truoc small { color: var(--gold-hi); letter-spacing: 2px; text-transform: uppercase; font-size: 11.5px; }
+.ht-so { color: var(--ink-soft); font-size: 12.5px; letter-spacing: 2px; text-transform: uppercase; }
+.ht-han { font-family: var(--font-han); font-size: 64px; line-height: 1; color: var(--gold-hi); text-shadow: 0 0 22px rgba(246, 182, 74, .45); }
+.ht-han.nho { font-size: 30px; text-shadow: none; }
+.ht-mat.sau { transform: rotateY(180deg); padding: 20px 20px 16px; border: 1px solid var(--line); background: var(--surface-2); }
+.ht-sau-h { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; } .ht-sau-h b { font-family: var(--font-title); font-size: 24px; color: var(--head); }
+.ht-mat.sau ul { margin: 0; padding-left: 18px; display: grid; gap: 8px; font-size: 16px; line-height: 1.6; }
+.ht-mat.sau p { margin: 0 0 10px; }
+.ht-cuoi { display: grid; gap: 8px; margin-top: 12px; } .ht-cuoi .btn { width: 100%; margin: 0; }
+#htBaiToi.nhay { animation: htNhay 1.6s ease-in-out infinite; }
+@keyframes htNhay { 0%, 100% { box-shadow: 0 0 0 0 rgba(246, 182, 74, .0); } 50% { box-shadow: 0 0 0 6px rgba(246, 182, 74, .35); } }
+@media (max-width: 520px) { .ht-hop { padding: 24px 16px 18px; } .ht-td { font-size: 25px; } .ht-la { height: 400px; } .ht-han { font-size: 54px; } }
+@media (prefers-reduced-motion: reduce) { .ht-la-in { transition: none; } .ht-bat .quay, .ht-bat path.am, #htBaiToi.nhay { animation: none; } }
 </style>

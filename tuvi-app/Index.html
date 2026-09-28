@@ -84,6 +84,7 @@
       <!-- ============ FORM ============ -->
       <aside class="panel form-panel">
         <h2 class="panel-title"><span class="han">命</span> Nhập thông tin</h2>
+        <button type="button" class="btn btn-ghost btn-sm ht-vao" data-ht>✦ Nhập từng bước – có hướng dẫn</button>
         <form id="form" autocomplete="off" novalidate>
           <div class="field">
             <label for="name">Họ và tên khai sinh</label>
@@ -545,5 +546,46 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <?!= includeTuyChon('Anh'); ?>
   <?!= include('Script'); ?>
+  <!-- ============ HÀNH TRÌNH DẪN DẮT: nhập từng bước → khởi quẻ → lật từng lá hé lộ ============ -->
+  <div class="modal ht-modal" id="htModal" role="dialog" aria-modal="true" aria-labelledby="htTieuDe" data-man="nhap">
+    <div class="panel ht-hop">
+      <button type="button" class="ht-x" id="htDong" aria-label="Đóng">✕</button>
+      <div class="ht-man ht-nhap">
+        <div class="ht-cham" id="htCham"></div>
+        <h2 class="ht-td" id="htTieuDe"></h2>
+        <p class="ht-phu" id="htPhu"></p>
+        <div class="ht-b">
+          <input type="text" id="htName" placeholder="Ví dụ: Nguyễn Văn An" maxlength="80" autocomplete="off">
+          <div class="seg ht-seg"><input type="radio" name="htGender" id="htNam" value="nam" checked><label for="htNam">☯ Nam</label><input type="radio" name="htGender" id="htNu" value="nu"><label for="htNu">☯ Nữ</label></div>
+        </div>
+        <div class="ht-b" hidden>
+          <div class="seg ht-seg"><input type="radio" name="htCal" id="htDuong" value="duong" checked><label for="htDuong">☀ Dương lịch</label><input type="radio" name="htCal" id="htAm" value="am"><label for="htAm">☾ Âm lịch</label></div>
+          <div class="row c3"><select id="htDay" aria-label="Ngày"></select><select id="htMonth" aria-label="Tháng"></select><input type="number" id="htYear" min="1800" max="2200" placeholder="Năm" aria-label="Năm"></div>
+          <label class="check" id="htLeapWrap" style="display:none"><input type="checkbox" id="htLeap"> Tháng nhuận</label>
+        </div>
+        <div class="ht-b" hidden>
+          <div class="row c2"><select id="htHour" aria-label="Giờ"></select><select id="htMinute" aria-label="Phút"></select></div>
+        </div>
+        <div class="ht-b" hidden>
+          <select id="htPlace" aria-label="Nơi sinh"></select>
+        </div>
+        <div class="ht-dieu"><button type="button" class="btn btn-ghost btn-sm" id="htLui">← Quay lại</button><button type="button" class="btn btn-primary" id="htToi">Tiếp →</button></div>
+      </div>
+      <div class="ht-man ht-que" aria-live="polite">
+        <svg class="ht-bat" viewBox="0 0 200 200" aria-hidden="true">
+          <circle cx="100" cy="100" r="92" class="v1"/><circle cx="100" cy="100" r="70" class="v2"/>
+          <g class="quay"><text x="100" y="22" text-anchor="middle">☰</text><text x="165" y="50" text-anchor="middle">☱</text><text x="186" y="106" text-anchor="middle">☲</text><text x="165" y="162" text-anchor="middle">☳</text><text x="100" y="190" text-anchor="middle">☷</text><text x="35" y="162" text-anchor="middle">☶</text><text x="14" y="106" text-anchor="middle">☵</text><text x="35" y="50" text-anchor="middle">☴</text></g>
+          <path d="M100 52a48 48 0 0 1 0 96a24 24 0 0 1 0-48a24 24 0 0 0 0-48z" class="am"/><circle cx="100" cy="76" r="6" class="am"/><circle cx="100" cy="124" r="6" class="duong"/>
+        </svg>
+        <b class="ht-que-t">Đang khởi quẻ</b>
+        <p id="htQueChu"></p>
+      </div>
+      <div class="ht-man ht-bai-man">
+        <div class="ht-cham" id="htBaiCham"></div>
+        <div class="ht-bai" id="htBai"></div>
+        <div class="ht-dieu"><button type="button" class="btn btn-ghost btn-sm" id="htBaiLui">← Lá trước</button><button type="button" class="btn btn-primary" id="htBaiToi">Lá tiếp →</button></div>
+      </div>
+    </div>
+  </div>
 </body>
 </html>
