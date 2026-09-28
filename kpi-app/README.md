@@ -10,7 +10,7 @@ Dự án riêng, **không liên quan** tới `tuvi-app/`.
 | `Index.html` | Giao diện, là bản đã vá. Dán vào Apps Script |
 | `goc/` | Bản gốc chủ dự án gửi ngày 28/09/2026 (đã đổi xuống dòng CRLF sang LF). Dùng làm gốc khi gộp 3 chiều |
 | `HUONG-DAN-CAP-NHAT.md` | Các bước dán mã và chạy hàm một lần, viết cho chủ dự án |
-| `xem-thu-dang-nhap.html` | Bản xem thử màn đăng nhập "Bàn bi-a", có nút đổi 3 tông màu. Sinh bằng `tests/tao-xem-thu.py`. Gõ mật khẩu `demo` để xem hiệu ứng đăng nhập đúng |
+| `xem-thu-dang-nhap.html` | Bản xem thử màn đăng nhập "Precision". Sinh bằng `tests/tao-xem-thu.py`. Gõ mật khẩu `demo` để xem hiệu ứng đăng nhập đúng |
 | `tests/dang-nhap-bi-a.html` | Nguồn duy nhất của màn đăng nhập (gồm 3 đoạn CSS / HTML / JS). `va-index.py` chèn vào Index.html, `tao-xem-thu.py` dựng bản xem thử |
 | `tests/va-code.py`, `tests/va-index.py` | Tạo `Code.gs` / `Index.html` từ `goc/` bằng các lần thay có kiểm tra (mỗi chuỗi gốc phải khớp đúng số lần) |
 | `tests/ham-chay-tay.gs` | Các hàm chạy tay (kiểm tra, sửa ngày sai, ngày lễ…), được nối vào cuối `Code.gs` |

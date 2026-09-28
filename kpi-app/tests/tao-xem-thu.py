@@ -8,8 +8,8 @@ HTML = bb.split('<!--HTML-->')[1].split('<!--JS-->')[0]
 JS = bb.split('<!--JS-->')[1]
 trang = u'''<!DOCTYPE html>
 <html lang="vi"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Xem thử đăng nhập Bàn bi-a</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@600;700;800&display=swap" rel="stylesheet">
+<title>Xem thử đăng nhập — Carbon Billiards</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
 <style>
 :root{--mono:'JetBrains Mono',ui-monospace,Consolas,monospace}
 *{box-sizing:border-box;margin:0;padding:0}
@@ -23,39 +23,26 @@ input{width:100%;outline:none;font-family:inherit}
 #gate #lerr.a-ok{background:rgba(74,222,128,.12);border-color:rgba(74,222,128,.35);color:#9ff0bd}
 .spin{width:26px;height:26px;border:2.5px solid rgba(255,255,255,.2);border-top-color:#fff;border-radius:50%;animation:sp .7s linear infinite}
 @keyframes sp{to{transform:rotate(360deg)}}
-.tong{position:fixed;top:34px;right:40px;z-index:50;display:flex;gap:6px;padding:5px;border-radius:12px;
-  background:rgba(0,0,0,.55);backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,.14);font-family:system-ui,sans-serif}
-.tong button{border:0;background:transparent;color:#dfe6ea;font:600 12.5px system-ui,sans-serif;padding:7px 11px;border-radius:8px;cursor:pointer;display:flex;align-items:center;gap:6px}
-.tong button i{width:12px;height:12px;border-radius:50%;display:inline-block}
-.tong button.on{background:#fff;color:#111}
-@media (max-width:860px),(orientation:portrait){.tong{top:22px;right:50%;transform:translateX(50%)}.tong button{padding:6px 8px;font-size:11.5px}#gate .bb-khung{padding-top:74px}}
 ''' + CSS + u'''
 </style></head><body>
-<div class="tong" id="tong">
-  <button class="on" onclick="chonTong('dem',this)"><i style="background:#2168b3"></i>Xanh đêm</button>
-  <button onclick="chonTong('than',this)"><i style="background:#555c65;box-shadow:inset 0 0 0 3px #ff8a3d"></i>Than chì</button>
-  <button onclick="chonTong('vang',this)"><i style="background:#9a2d45"></i>Rượu vang</button>
-</div>
 ''' + HTML + u'''
 <script>
 function $(i){return document.getElementById(i)}
 ''' + JS + u'''
 /* ---- Bản xem thử: mật khẩu "demo" = đúng, còn lại = sai ---- */
-function lerr(m,ok){var e=$('lerr');e.textContent=m;e.className='alert '+(ok?'a-ok':'a-bd');}
+function lerr(m){var e=$('lerr');e.textContent=m;e.className='alert a-bd';}
 function login(){
   if(BB.dang||$('btnLogin').disabled)return;
-  $('lerr').className='alert a-bd hide';
+  if(!$('l_tk').value.trim()||!$('l_mk').value){lerr('Nhập đủ mã nhân viên và mật khẩu.');return}
   $('btnLogin').disabled=true; bbCho();
   setTimeout(function(){                       // giả lập chờ máy chủ trả lời
+    $('btnLogin').disabled=false;
     if($('l_mk').value==='demo'){
-      bbTrung(function(){
-        setTimeout(function(){ $('gate').classList.remove('bb-vao'); bbXep(); bbChu('Đăng nhập'); $('btnLogin').disabled=false;
-          lerr('Đúng mật khẩu — bản thật sẽ mở ứng dụng ở bước này.',true); },1600);
-      });
-    } else { $('btnLogin').disabled=false; bbTruot(); lerr('Sai tên đăng nhập hoặc mật khẩu. (Bản xem thử: gõ "demo")'); }
-  },650);
+      window.ME={ten:'Phạm Doãn Chiến'};
+      bbTrung(function(){ setTimeout(function(){ bbXep(); $('l_mk').value=''; },2600); });
+    } else { bbTruot(); lerr('Sai tên đăng nhập hoặc mật khẩu. (Bản xem thử: gõ "demo")'); }
+  },900);
 }
-function chonTong(t,b){bbDoiTong(t);document.querySelectorAll('#tong button').forEach(function(x){x.classList.remove('on')});b.classList.add('on')}
 bbKhoiDong();
 </script></body></html>
 '''

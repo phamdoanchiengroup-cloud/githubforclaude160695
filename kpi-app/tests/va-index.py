@@ -94,6 +94,10 @@ R("""        '<li>Snapshot tự động 9h mỗi ngày.</li>'+
         '<li>Tháng đã qua mà chưa chốt chính thức: vẫn tính trực tiếp. Đã chốt: đọc bản chốt, không tính lại.</li>'+
         '<li>Ngày lễ (sheet NgayLe) không tính quên điểm danh, không tính vào hạn duyệt / hạn nhập.</li></ul>'],""")
 
+# 4b) Font tiêu đề cho màn đăng nhập (Cormorant Garamond, có dấu tiếng Việt)
+R("""<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">""",
+  """<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">""")
+
 # 5) Màn đăng nhập "Bàn bi-a" (nguồn chung: tests/dang-nhap-bi-a.html, cũng dùng cho bản xem thử)
 bb = io.open(os.path.join(D, 'dang-nhap-bi-a.html'), encoding='utf-8').read()
 BB_CSS = bb.split('<!--CSS-->')[1].split('<!--HTML-->')[0].strip('\n')

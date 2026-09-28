@@ -114,19 +114,20 @@ Mở lại web app, nhấn **Ctrl+F5** để tải bản mới.
 - Bớt đọc lại tiêu đề cột mỗi lần ghi.
 - Tính KPI quản lý nhanh hơn.
 
-**Màn đăng nhập mới "Bàn bi-a"** (nằm trong Index.html)
-- Cả màn hình là một mặt bàn: thành bàn vân carbon, 6 lỗ, chấm ngắm, đèn treo; thẻ đăng nhập ở bên trái.
-- Trên máy tính, cây cơ xoay theo con trỏ chuột.
-- Mỗi ký tự mật khẩu hiện thành một viên bi trong khay, người đứng cạnh không đọc được mật khẩu.
-- Đăng nhập đúng: cây cơ thọc, bi cái phá dàn bi, một bi rơi lỗ, rồi vào hệ thống (khoảng 1 giây).
-- Đăng nhập sai: bi cái lăn vào lỗ kèm chữ "PHẠM LỖI!", thẻ rung nhẹ.
-- Trên điện thoại, dàn bi thu gọn ở dưới thẻ.
-- Máy nào đã bật "giảm chuyển động" thì bỏ hiệu ứng.
-- **Đổi tông màu:** trong Index.html, tìm `var BB_TONG_MAC_DINH = 'dem';` rồi đổi `'dem'` thành:
-  - `'than'`: than chì & cam
-  - `'vang'`: rượu vang
-  
-  Lưu, rồi Triển khai phiên bản mới.
+**Màn đăng nhập mới "Carbon Billiards — Precision"** (nằm trong Index.html)
+- Bố cục chia đôi theo phong cách thương hiệu cao cấp. Bên trái là khung ảnh sản phẩm trên nền đen obsidian: viên bi cái có logo "CB", đầu cơ cận cảnh, các đường dựng hình kỹ thuật (Ø 57.2 mm, góc 26.6°), khẩu hiệu *"Chính xác trong từng công đoạn."* và dải 5 công đoạn sản xuất. Bên phải là biểu mẫu nền trắng ngà.
+- Bảng màu: đen obsidian, trắng ngà, vàng đồng. Tiêu đề dùng chữ có chân Cormorant Garamond (hỗ trợ đủ dấu tiếng Việt), nội dung dùng Inter.
+- Dòng chào đổi theo giờ trong ngày.
+- Ô "Ghi nhớ mã nhân viên": máy chỉ nhớ mã, **không bao giờ lưu mật khẩu**.
+- Nút "Quên mật khẩu?" hướng dẫn liên hệ trưởng phòng hoặc chủ sở hữu.
+- Báo khi đang bật Caps Lock. Nút Hiện/Ẩn mật khẩu.
+- Chuyển động nhẹ:
+  - Rê chuột thì ánh sáng trên bi và các đường dựng hình nhích theo.
+  - Bấm Đăng nhập thì đầu cơ lùi lại ngắm, nút hiện "Đang xác thực" kèm vạch chạy vàng đồng.
+  - Đúng: cơ chạm bi, bi lăn ra khỏi khung, biểu mẫu chuyển thành "Chào mừng, [tên]." trong lúc tải dữ liệu.
+  - Sai: ô mật khẩu viền đỏ, thẻ rung nhẹ, báo lỗi ngay dưới nút.
+- Điện thoại: ảnh thu thành dải trên cùng, biểu mẫu trượt lên như một tấm thẻ.
+- Máy đã bật "giảm chuyển động" thì bỏ hiệu ứng.
 
 ## Nếu có lỗi
 
