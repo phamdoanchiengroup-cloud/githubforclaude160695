@@ -120,6 +120,7 @@ function ss_() {
 }
 
 function doc_(name) {
+  if (__CHO_GHI[name]) xaGhi_(name);                 // còn ô chờ ghi của sheet này -> ghi trước rồi mới đọc
   if (__DOC_CACHE.hasOwnProperty(name)) return __DOC_CACHE[name];
   var sh = ss_().getSheetByName(name);
   if (!sh) { __DOC_CACHE[name] = []; return []; }
@@ -159,16 +160,19 @@ function themNhieu_(name, arr) {
   xoaCache_(name);
 }
 
+/* Sửa một ô: KHÔNG ghi ngay mà đưa vào bộ đệm; cuối lượt gọi (sach_ -> xong_) ghi một lần theo khối. */
 function suaO_(name, row, col, val) {
-  var sh = ss_().getSheetByName(name);
   var head = dauCot_(name);
   var i = head.indexOf(col);
-  if (i >= 0) sh.getRange(row, i + 1).setValue(val);
+  if (i < 0) return;
+  var m = __CHO_GHI[name] || (__CHO_GHI[name] = {});
+  (m[row] = m[row] || {})[i + 1] = val;
   xoaCache_(name);
 }
 
 /* Ghi ô ở dạng VĂN BẢN — giữ nguyên số 0 đầu (điện thoại, CCCD). */
 function suaOText_(name, row, col, val) {
+  xaGhi_(name);
   var sh = ss_().getSheetByName(name);
   var head = dauCot_(name);
   var i = head.indexOf(col);
@@ -181,6 +185,7 @@ function suaOText_(name, row, col, val) {
 }
 
 function xoaDong_(name, row) {
+  xaGhi_(name);                                       // ghi hết trước khi xóa dòng (xóa làm lệch số dòng)
   var sh = ss_().getSheetByName(name);
   if (sh && row >= 2) sh.deleteRow(row);
   xoaCache_(name);
@@ -188,6 +193,7 @@ function xoaDong_(name, row) {
 
 /* Xóa nhiều dòng một lượt (từ dưới lên, gom các dòng liền nhau). rows = số dòng trong sheet. */
 function xoaNhieuDong_(name, rows) {
+  xaGhi_(name);
   var sh = ss_().getSheetByName(name);
   if (!sh || !rows || !rows.length) return 0;
   var da = {}, ds = [];
@@ -227,6 +233,10 @@ function ma_(p) { return p + Utilities.getUuid().replace(/-/g, '').slice(0, 8).t
    gặp phải sẽ ném lỗi "Uncaught Ys" và yêu cầu chết giữa chừng.
    Hàm này chuyển mọi thứ về chuỗi hoặc số. */
 function sach_(v) {
+  xong_();                                            // cuối lượt: ghi bộ đệm, tăng phiên bản dữ liệu nếu có ghi
+  return sachLoi_(v);
+}
+function sachLoi_(v) {
   if (v === null || v === undefined) return '';
   var t = typeof v;
   if (t === 'number') return isFinite(v) ? v : 0;
@@ -236,14 +246,14 @@ function sach_(v) {
     return isNaN(v.getTime()) ? '' : Utilities.formatDate(v, 'GMT+7', 'yyyy-MM-dd HH:mm:ss');
   }
   if (Object.prototype.toString.call(v) === '[object Array]') {
-    return v.map(function(x) { return sach_(x); });
+    return v.map(function(x) { return sachLoi_(x); });
   }
   if (t === 'object') {
     var o = {};
     for (var k in v) {
       if (!Object.prototype.hasOwnProperty.call(v, k)) continue;
       if (k === '_row') continue;
-      o[k] = sach_(v[k]);
+      o[k] = sachLoi_(v[k]);
     }
     return o;
   }
@@ -466,126 +476,137 @@ function ghiLog_(me, hd, ct, cu, moi) {
 }
 
 /* ===== NẠP DỮ LIỆU ===== */
-function napDuLieu(token) {
+function napDuLieu(token) { return napDuLieuLoi_(token, null); }
+
+/* Các "phần" dữ liệu gửi về trình duyệt. Sau khi lưu, giao diện chỉ xin lại phần bị ảnh hưởng. */
+var PHAN_NAP_ = { nk: 1, cc: 1, ns: 1, cd: 1, mm: 1, vp: 1, ts: 1, tb: 1, dm: 1 };
+var COT_NK_GUI_ = ['MaDong', 'Ngay', 'MaNV', 'MaCD', 'MaMay', 'GioLam', 'SoLuongLamRa', 'GioDung', 'LyDoDung', 'GhiChu', 'TrangThai'];
+function chonCot_(r, cot) { var o = {}; cot.forEach(function(k) { o[k] = r[k]; }); return o; }
+
+function napDuLieuLoi_(token, phan) {
   try {
   var me = docPhien_(token, true);
   if (!me) return sach_({ ok: false, hetHan: true, msg: 'Phiên đăng nhập đã hết hạn. Đăng nhập lại.' });
   if (me.phaiDoiMK) return sach_({ ok: false, phaiDoiMK: true, me: me, msg: 'Cần đổi mật khẩu lần đầu trước khi dùng hệ thống.' });
+  var can = function(p) { return !phan || phan.indexOf(p) >= 0; };
+  napTruoc_(SHEET_NAP_);                              // đọc gộp 1 lần (nếu đã bật Sheets API)
 
   var loc = function(arr, key) {
     if (me.vaiTro !== 'TP') return arr;
     return arr.filter(function(x) { return x[key] === me.xuong; });
   };
-
-  var congdoan = doc_('CongDoan').filter(function(x) { return x.TrangThai !== 'Ngừng'; });
-  var nhatkyTat = doc_('NhatKySanXuat');
-  var kcs = doc_('PhieuKCS');
-
-  // Lọc theo xưởng cho trưởng phòng (dựa vào công đoạn thuộc xưởng)
-  if (me.vaiTro === 'TP') {
-    var mine = congdoan.filter(function(c) { return c.MaXuong === me.xuong; })
-                       .map(function(c) { return c.MaCD; });
-    nhatkyTat = nhatkyTat.filter(function(r) { return mine.indexOf(r.MaCD) >= 0; });
-  }
-  // Công nhân chỉ thấy dữ liệu của chính mình
-  if (me.vaiTro === 'CN') {
-    // Công nhân: xem được nhật ký ĐÃ CHỐT của cả xưởng (để có bảng xếp hạng KPI),
-    // nhưng phần CHỜ DUYỆT thì chỉ của riêng mình.
-    var cdXuong = doc_('CongDoan').filter(function(c) { return c.MaXuong === me.xuong; })
-                    .map(function(c) { return c.MaCD; });
-    nhatkyTat = nhatkyTat.filter(function(r) {
-      var thuocXuong = cdXuong.indexOf(r.MaCD) >= 0;
-      var daChot = String(r.TrangThai).trim() !== 'Chờ duyệt';
-      if (daChot) return thuocXuong;              // đã chốt: cả xưởng
-      return r.MaNV === me.maNV;                    // chờ duyệt: chỉ của mình
-    });
-  }
-
-  nhatkyTat = nhatkyTat.map(function(r) { r.Ngay = ngayVN_(r.Ngay); return r; });
-  kcs = kcs.map(function(r) { r.Ngay = ngayVN_(r.Ngay); return r; });
-
-  // GIẢM TẢI: chỉ gửi về trình duyệt dữ liệu từ đầu tháng trước (dòng Chờ duyệt thì gửi hết).
-  // Bảng KPI, lịch sử KPI, chấm công theo tháng vẫn do máy chủ tính trên toàn bộ dữ liệu.
   var tuNgay = mocGuiVe_();
-  if (tuNgay) {
-    nhatkyTat = nhatkyTat.filter(function(r) { return r.Ngay >= tuNgay || String(r.TrangThai).trim() === 'Chờ duyệt'; });
-    kcs = kcs.filter(function(r) { return r.Ngay >= tuNgay; });
-  }
   var sauMoc = function(arr) {
     return tuNgay ? arr.filter(function(r) { return ngayVN_(r.Ngay) >= tuNgay; }) : arr;
   };
+  var out = { ok: true, me: me, phan: phan || 'tat' };
+  var congdoan = doc_('CongDoan').filter(function(x) { return x.TrangThai !== 'Ngừng'; });
 
-  // Chỉ "Đã chốt" mới vào KPI và hiển thị. "Từ chối" KHÔNG tính, KHÔNG hiện
-  // (công nhân biết bị từ chối qua danh sách "cần nhập lại" riêng).
-  var nhatky = nhatkyTat.filter(function(r) { return String(r.TrangThai).trim() === 'Đã chốt'; });
-  var choDuyet = nhatkyTat.filter(function(r) { return String(r.TrangThai).trim() === 'Chờ duyệt'; });
-
-  var ts = doc_('TrongSoKPI');
-  var trongso = trongSoKy_(ts, kyVN_());   // trọng số áp cho THÁNG NÀY
-
-  var dexuat = doc_('DeXuatDinhMuc');
-  if (me.vaiTro === 'TP') dexuat = dexuat.filter(function(x) { return x.MaXuong === me.xuong; });
-
-  // Máy đã thanh lý bị ẩn khỏi danh sách thao tác hàng ngày; dữ liệu vẫn giữ trong Sheet.
-  var maymoc = doc_('MayMoc').filter(function(x) { return String(x.TinhTrang).trim() !== 'Thanh lý'; });
-
-  // Vi phạm nề nếp/chuyên cần. TP chỉ thấy vi phạm của nhân viên xưởng mình; CN chỉ thấy của mình.
-  var dmVP = docAnToan_('DanhMucViPham');
-  var vipham = docAnToan_('ViPham').map(function(v) { v.Ngay = ngayVN_(v.Ngay); return v; });
-  if (me.vaiTro === 'TP') {
-    var nvXuong = doc_('NhanSu').filter(function(x) { return x.MaXuong === me.xuong; }).map(function(x) { return x.MaNV; });
-    vipham = vipham.filter(function(v) { return nvXuong.indexOf(v.MaNV) >= 0; });
-  } else if (me.vaiTro === 'CN') {
-    vipham = vipham.filter(function(v) { return v.MaNV === me.maNV; });
-  }
-
-  return sach_({
-    ok: true, me: me,
-    phongban: doc_('PhongBan'),
-    nhansu: loc(nhanSuGomTP_(), 'MaXuong'),
-    maymoc: loc(maymoc, 'MaXuong'),
-    congdoan: congdoan,
-    dinhmuc: doc_('DinhMuc'),
-    dexuat: dexuat,
-    loi: doc_('DanhMucLoi'),
-    lydo: doc_('LyDoDung'),
-    nhatky: nhatky,
-    choDuyet: choDuyet,
-    canNhapLai: (me.vaiTro === 'CN' ? doc_('NhatKySanXuat').filter(function(r){
+  if (can('nk')) {
+    var nhatkyTat = doc_('NhatKySanXuat');
+    var kcs = doc_('PhieuKCS');
+    if (me.vaiTro === 'TP') {
+      var mine = {};
+      congdoan.forEach(function(c) { if (c.MaXuong === me.xuong) mine[c.MaCD] = 1; });
+      nhatkyTat = nhatkyTat.filter(function(r) { return mine[r.MaCD]; });
+    }
+    if (me.vaiTro === 'CN') {
+      // Công nhân: xem nhật ký ĐÃ CHỐT của cả xưởng (bảng xếp hạng), phần CHỜ DUYỆT chỉ của mình.
+      var cdX = {};
+      doc_('CongDoan').forEach(function(c) { if (c.MaXuong === me.xuong) cdX[c.MaCD] = 1; });
+      nhatkyTat = nhatkyTat.filter(function(r) {
+        return String(r.TrangThai).trim() !== 'Chờ duyệt' ? !!cdX[r.MaCD] : r.MaNV === me.maNV;
+      });
+    }
+    // Chỉ gửi các cột giao diện dùng; chỉ gửi từ đầu tháng trước (dòng Chờ duyệt thì gửi hết)
+    var nk = [], cho = [];
+    nhatkyTat.forEach(function(r) {
+      var tt = String(r.TrangThai).trim(), ng = ngayVN_(r.Ngay);
+      if (tt === 'Chờ duyệt') { var a = chonCot_(r, COT_NK_GUI_); a.Ngay = ng; cho.push(a); return; }
+      if (tt !== 'Đã chốt' || (tuNgay && ng < tuNgay)) return;
+      var b = chonCot_(r, COT_NK_GUI_); b.Ngay = ng; nk.push(b);
+    });
+    out.nhatky = nk; out.choDuyet = cho;
+    out.kcs = kcs.map(function(r) { var o = chonCot_(r, ['MaPhieu', 'Ngay', 'MaNV', 'MaCD', 'SoLuongKhongDat', 'MaLoi']); o.Ngay = ngayVN_(r.Ngay); return o; })
+      .filter(function(r) { return !tuNgay || r.Ngay >= tuNgay; });
+    out.canNhapLai = (me.vaiTro === 'CN' ? doc_('NhatKySanXuat').filter(function(r) {
       return r.MaNV === me.maNV && String(r.TrangThai).trim() === 'Từ chối';
-    }).map(function(r){ return { Ngay: ngayVN_(r.Ngay), MaCD: r.MaCD, LyDo: r.LyDoTuChoi || r.GhiChu || '' }; }) : []),
-    chamcong: sauMoc(ss_().getSheetByName('DiemDanhNghi') ? doc_('DiemDanhNghi') : []),
-    xacNhanDD: sauMoc(ss_().getSheetByName('XacNhanDiemDanh') ? docAnToan_('XacNhanDiemDanh') : []),
-    ngayLe: Object.keys(bangNgayLe_()),
-    nghiDaiHan: (ss_().getSheetByName('NghiDaiHan') ? docAnToan_('NghiDaiHan') : []),
-    kcs: kcs,
-    dmvp: dmVP,
-    vipham: vipham,
-    trongso: trongso,
-    log: me.laOwner ? docCuoi_('NhatKyThaoTac', 80).reverse() : [],
-    // Yêu cầu sửa hồ sơ: TP/ADMIN/HR thấy các yêu cầu Chờ duyệt để xử lý; CN thấy yêu cầu của chính mình
-    yeuCauHoSo: (function(){
-      if (['ADMIN','HR','TP'].indexOf(me.vaiTro) < 0) return [];
+    }).map(function(r) { return { Ngay: ngayVN_(r.Ngay), MaCD: r.MaCD, LyDo: r.LyDoTuChoi || r.GhiChu || '' }; }) : []);
+  }
+  if (can('cc')) {
+    out.chamcong = sauMoc(ss_().getSheetByName('DiemDanhNghi') ? doc_('DiemDanhNghi') : []);
+    out.xacNhanDD = sauMoc(ss_().getSheetByName('XacNhanDiemDanh') ? docAnToan_('XacNhanDiemDanh') : []);
+    out.ngayLe = Object.keys(bangNgayLe_());
+    out.nghiDaiHan = (ss_().getSheetByName('NghiDaiHan') ? docAnToan_('NghiDaiHan') : []);
+  }
+  if (can('ns')) {
+    // Nhân sự: ban điều hành / nhân sự thấy đủ; trưởng phòng không thấy CCCD, lương, hợp đồng;
+    // công nhân chỉ thấy tên + xưởng + công đoạn của người cùng xưởng (hồ sơ đầy đủ chỉ của chính mình).
+    var full = (me.vaiTro === 'ADMIN' || me.vaiTro === 'HR');
+    var coBan = ['MaNV', 'HoTen', 'MaXuong', 'ChucDanh', 'TrangThai', 'NgayVaoLam', 'CongDoanLamDuoc', 'NamSinh', 'laTP'];
+    var lienHe = ['DienThoai', 'DiaChi', 'SdtKhanCap'];
+    var ns = nhanSuGomTP_();
+    if (me.vaiTro === 'TP' || me.vaiTro === 'CN') ns = ns.filter(function(x) { return x.MaXuong === me.xuong || x.MaNV === me.maNV; });
+    out.nhansu = ns.map(function(x) {
+      if (full) { var o = {}; for (var k in x) if (k !== 'NguoiTao' && k !== 'NgayTao') o[k] = x[k]; return o; }
+      if (x.MaNV === me.maNV) return chonCot_(x, coBan.concat(lienHe, ['SoCCCD', 'BacTayNghe']));
+      return chonCot_(x, me.vaiTro === 'TP' ? coBan.concat(lienHe, ['BacTayNghe']) : coBan);
+    });
+    out.yeuCauHoSo = (function() {
+      if (['ADMIN', 'HR', 'TP'].indexOf(me.vaiTro) < 0) return [];
       if (!ss_().getSheetByName('YeuCauSuaHoSo')) return [];
-      var ds = doc_('YeuCauSuaHoSo').filter(function(y){ return String(y.TrangThai).trim() === 'Chờ duyệt'; });
-      if (me.vaiTro === 'TP') ds = ds.filter(function(y){ return String(y.MaXuong) === String(me.xuong); });
+      var ds = doc_('YeuCauSuaHoSo').filter(function(y) { return String(y.TrangThai).trim() === 'Chờ duyệt'; });
+      if (me.vaiTro === 'TP') ds = ds.filter(function(y) { return String(y.MaXuong) === String(me.xuong); });
       return ds;
-    })(),
-    yeuCauHoSoCuaToi: (function(){
+    })();
+    out.yeuCauHoSoCuaToi = (function() {
       if (me.vaiTro !== 'CN' || !me.maNV) return [];
       if (!ss_().getSheetByName('YeuCauSuaHoSo')) return [];
-      return doc_('YeuCauSuaHoSo').filter(function(y){ return y.MaNV === me.maNV; })
-        .slice(-5).reverse();
-    })(),
-    thongBao: (function(){
+      return doc_('YeuCauSuaHoSo').filter(function(y) { return y.MaNV === me.maNV; }).slice(-5).reverse();
+    })();
+  }
+  if (can('cd')) {
+    out.congdoan = congdoan;
+    out.dinhmuc = doc_('DinhMuc');
+    var dexuat = doc_('DeXuatDinhMuc');
+    if (me.vaiTro === 'TP') dexuat = dexuat.filter(function(x) { return x.MaXuong === me.xuong; });
+    out.dexuat = dexuat;
+  }
+  if (can('mm')) {
+    // Máy đã thanh lý bị ẩn khỏi danh sách thao tác hằng ngày; dữ liệu vẫn giữ trong Sheet.
+    out.maymoc = loc(doc_('MayMoc').filter(function(x) { return String(x.TinhTrang).trim() !== 'Thanh lý'; }), 'MaXuong');
+  }
+  if (can('vp')) {
+    // Vi phạm nề nếp/chuyên cần. TP chỉ thấy của xưởng mình; CN chỉ thấy của mình.
+    out.dmvp = docAnToan_('DanhMucViPham');
+    var vipham = docAnToan_('ViPham').map(function(v) { var o = {}; for (var k in v) o[k] = v[k]; o.Ngay = ngayVN_(v.Ngay); return o; });
+    if (me.vaiTro === 'TP') {
+      var nvX = {};
+      doc_('NhanSu').forEach(function(x) { if (x.MaXuong === me.xuong) nvX[x.MaNV] = 1; });
+      vipham = vipham.filter(function(v) { return nvX[v.MaNV]; });
+    } else if (me.vaiTro === 'CN') {
+      vipham = vipham.filter(function(v) { return v.MaNV === me.maNV; });
+    }
+    out.vipham = vipham;
+  }
+  if (can('ts')) out.trongso = trongSoKy_(doc_('TrongSoKPI'), kyVN_());   // trọng số áp cho THÁNG NÀY
+  if (can('tb')) {
+    out.thongBao = (function() {
       if (me.vaiTro !== 'TP') return [];
       if (!ss_().getSheetByName('ThongBao')) return [];
       return doc_('ThongBao')
-        .filter(function(t){ return String(t.MaXuong) === String(me.xuong) && String(t.DaDoc).trim() !== 'Rồi'; })
-        .map(function(t){ return { MaTB: t.MaTB, ThoiDiem: t.ThoiDiem, TieuDe: t.TieuDe, NoiDung: t.NoiDung }; })
+        .filter(function(t) { return String(t.MaXuong) === String(me.xuong) && String(t.DaDoc).trim() !== 'Rồi'; })
+        .map(function(t) { return { MaTB: t.MaTB, ThoiDiem: t.ThoiDiem, TieuDe: t.TieuDe, NoiDung: t.NoiDung }; })
         .reverse();
-    })()
-  });
+    })();
+  }
+  if (can('dm')) {
+    out.phongban = doc_('PhongBan');
+    out.loi = doc_('DanhMucLoi');
+    out.lydo = doc_('LyDoDung');
+  }
+  out.log = me.laOwner ? docCuoi_('NhatKyThaoTac', 80).reverse() : [];
+  return sach_(out);
   } catch (e) {
     return sach_({ ok: false, msg: 'Lỗi khi nạp dữ liệu: ' + (e.message || e) });
   }
@@ -1922,13 +1943,18 @@ function kpiQuanLy_(maNV, maXuong, kyThang, dt) {
 function layKPIQuanLy(token, kyThang) {
   var me = docPhien_(token);
   if (!me) return sach_({ ok:false, hetHan:true, msg:'Phiên đăng nhập đã hết hạn.' });
+  return nho_('layKPIQuanLy', [kyThang || kyVN_(), me.vaiTro, me.xuong, me.laOwner], function() { return layKPIQuanLyGoc_(token, kyThang); });
+}
+function layKPIQuanLyGoc_(token, kyThang) {
+  var me = docPhien_(token);
+  if (!me) return sach_({ ok:false, hetHan:true, msg:'Phiên đăng nhập đã hết hạn.' });
   if (['ADMIN','TP'].indexOf(me.vaiTro) < 0)
     return sach_({ ok:false, msg:'Không có quyền xem KPI quản lý.' });
 
   kyThang = kyThang || kyVN_();
 
   // Chuẩn bị dữ liệu dùng chung
-  var dt = docDuLieuKPI_();
+  var dt = docDuLieuKPI_(canLuuTru_([kyThang]));
   dt.congdoan = doc_('CongDoan');
   if (!dt.xacNhanDD) dt.xacNhanDD = ss_().getSheetByName('XacNhanDiemDanh') ? doc_('XacNhanDiemDanh') : [];
   dt.phatTre   = ss_().getSheetByName('PhatNhapTre') ? doc_('PhatNhapTre') : [];
@@ -1936,7 +1962,7 @@ function layKPIQuanLy(token, kyThang) {
   dt.mienKPI = {};
   if (ss_().getSheetByName('MienTruKPIQuanLy'))
     doc_('MienTruKPIQuanLy').forEach(function(m){ dt.mienKPI[String(m.IdKhoan)] = m.LyDo || 1; });
-  var nkTat = doc_('NhatKySanXuat');
+  var nkTat = dt.nhatky;
 
   // Danh sách TP/PP cần tính (từ TaiKhoan)
   var tks = doc_('TaiKhoan').filter(function(a){
@@ -2161,6 +2187,7 @@ function chayPhatNhapTre() {
                GhiChu: 'Tự động: quá hạn nhập SL', NguoiGhi: 'Hệ thống (tự động)', ThoiDiemGhi: now };
     }));
   }
+  xong_();
   Logger.log('Đã phạt nhập trễ: ' + phatMoi.length + ' lượt.');
   return phatMoi.length;
 }
@@ -2281,6 +2308,7 @@ function DON_PHAT_NHAP_TRE_TP_PP() {
       'Xóa '+soPhat+' dòng PhatNhapTre, '+soVP+' vi phạm NHAPTRE','','']);
   } catch(e){}
 
+  tangPhienBan_();
   Logger.log('Đã dọn: '+soPhat+' dòng PhatNhapTre, '+soVP+' vi phạm NHAPTRE của TP/PP.');
   return { phat: soPhat, vipham: soVP };
 }
@@ -2935,9 +2963,10 @@ function gioCoMat_(kyHieu){
   return 0;   // mọi loại nghỉ cả ngày
 }
 
-function docDuLieuKPI_() {
+function docDuLieuKPI_(canLuuTru) {
+  napTruoc_(SHEET_NAP_);
   var dt = {
-    nhatky: doc_('NhatKySanXuat'),
+    nhatky: (canLuuTru && ss_().getSheetByName(TEN_LUU_TRU)) ? doc_(TEN_LUU_TRU).concat(doc_('NhatKySanXuat')) : doc_('NhatKySanXuat'),
     kcs: doc_('PhieuKCS'),
     dinhmuc: doc_('DinhMuc'),
     diemdanh: (ss_().getSheetByName('DiemDanhNghi') ? doc_('DiemDanhNghi') : []),
@@ -3043,7 +3072,7 @@ function chotThang(token, kyThang, chiXuong) {
 /* Lõi chốt: tính & ghi snapshot cho 1 kỳ. Ghi đè các dòng cùng kỳ (và cùng xưởng nếu lọc).
    Trả về số người đã chốt. */
 function chotThangLoi_(ky, xuongLoc, nguoiChot) {
-  var dt = docDuLieuKPI_();
+  var dt = docDuLieuKPI_(canLuuTru_([ky]));
 
   // Bảng KPI công nhân: BỎ trưởng/phó phòng (họ có bảng KPI quản lý riêng) — giống cách tính trực tiếp
   var maQL = mapQuanLy_();
@@ -3077,6 +3106,7 @@ function chotThangLoi_(ky, xuongLoc, nguoiChot) {
   var sh = taoSheetKPIThang_();
   ghiSnapshot_(sh, ky, xuongLoc, rows);
   xoaCache_('KPIThang');   // làm mới cache để bảng KPI đọc được snapshot vừa ghi
+  xong_();
   return rows.length;
 }
 
@@ -3164,6 +3194,11 @@ function CAI_TRIGGER_SNAPSHOT_9H() {
    - Tháng hiện tại chưa chốt -> tính trực tiếp (đánh dấu tamTinh=true).
    - Quý/năm = trung bình cộng điểm KPI các tháng có dữ liệu. */
 function layKPIKy(token, kieu, giaTri, maXuong) {
+  var me = docPhien_(token);
+  if (!me) return sach_({ ok:false, hetHan:true, msg:'Phiên hết hạn.' });
+  return nho_('layKPIKy', [kieu, giaTri, maXuong || ''], function() { return layKPIKyGoc_(token, kieu, giaTri, maXuong); });
+}
+function layKPIKyGoc_(token, kieu, giaTri, maXuong) {
   var me = docPhien_(token);
   if (!me) return sach_({ ok:false, hetHan:true, msg:'Phiên hết hạn.' });
 
@@ -3262,7 +3297,7 @@ function laySnapshotThang_(thg, xuongLoc) {
 
 /* Tính trực tiếp 1 tháng (chưa chốt) — trả cùng dạng field như snapshot */
 function tinhThangTrucTiep_(thg, xuongLoc) {
-  var dt = docDuLieuKPI_();
+  var dt = docDuLieuKPI_(canLuuTru_([thg]));
   var dsNV = dt.nhansu;
   if (xuongLoc) dsNV = dsNV.filter(function(x){ return x.MaXuong === xuongLoc; });
   // Loại TRƯỞNG/PHÓ PHÒNG khỏi bảng KPI công nhân (họ có bảng KPI quản lý riêng)
@@ -3301,6 +3336,11 @@ function tinhThangTrucTiep_(thg, xuongLoc) {
 function layLichSuKPI(token, maNV) {
   var me = docPhien_(token);
   if (!me) return sach_({ ok:false, hetHan:true, msg:'Phiên hết hạn.' });
+  return nho_('layLichSuKPI', [maNV, me.vaiTro, me.xuong, me.maNV], function() { return layLichSuKPIGoc_(token, maNV); });
+}
+function layLichSuKPIGoc_(token, maNV) {
+  var me = docPhien_(token);
+  if (!me) return sach_({ ok:false, hetHan:true, msg:'Phiên hết hạn.' });
   // Công nhân / trưởng phòng: chỉ xem chi tiết KPI của người trong xưởng mình
   if ((me.vaiTro === 'CN' || me.vaiTro === 'TP') && String(maNV) !== String(me.maNV)) {
     var nvXem = nhanSuGomTP_().filter(function(x){ return x.MaNV === maNV; })[0];
@@ -3308,7 +3348,7 @@ function layLichSuKPI(token, maNV) {
       return sach_({ ok:false, msg:'Chỉ xem được chi tiết KPI của người trong xưởng mình.' });
   }
 
-  var dt = docDuLieuKPI_();
+  var dt = docDuLieuKPI_(canLuuTru_(['']));
   // Tất cả tháng có nhật ký đã chốt của người này
   var thangSet = {};
   dt.nhatky.forEach(function(r){
@@ -3397,6 +3437,7 @@ function taoSheetDiemDanh_() {
     // Chèn 2 cột KyHieu, Cong ngay sau LyDo (cột 5) nếu thiếu
     var idxLyDo = head.indexOf('LyDo');
     var chen = idxLyDo >= 0 ? idxLyDo + 2 : sh.getLastColumn() + 1;
+    xaGhi_('DiemDanhNghi');
     if (head.indexOf('Cong') < 0){ sh.insertColumnBefore(chen); sh.getRange(1, chen).setValue('Cong'); }
     if (head.indexOf('KyHieu') < 0){ sh.insertColumnBefore(chen); sh.getRange(1, chen).setValue('KyHieu'); }
     delete __HEAD_CACHE['DiemDanhNghi']; xoaCache_('DiemDanhNghi');
@@ -3852,6 +3893,11 @@ function khTuBanGhi_(r){
 function thongKeNghiThang(token, kyThang, maXuong) {
   var me = docPhien_(token);
   if (!me) return sach_({ ok:false, hetHan:true, msg:'Phiên hết hạn.' });
+  return nho_('thongKeNghiThang', [kyThang || kyVN_(), maXuong || '', me.vaiTro, me.xuong], function() { return thongKeNghiThangGoc_(token, kyThang, maXuong); });
+}
+function thongKeNghiThangGoc_(token, kyThang, maXuong) {
+  var me = docPhien_(token);
+  if (!me) return sach_({ ok:false, hetHan:true, msg:'Phiên hết hạn.' });
 
   var ky = kyThang || kyVN_();
   var xuongLoc = (me.vaiTro === 'TP') ? me.xuong : (maXuong || '');
@@ -4283,17 +4329,14 @@ function danhDauDaDoc(token, maTB) {
 function ghiCotNeuCo_(sheetName, row, colName, val) {
   var sh = ss_().getSheetByName(sheetName);
   if (!sh) return;
-  var head = sh.getRange(1, 1, 1, sh.getLastColumn()).getValues()[0];
-  var idx = head.indexOf(colName);
-  if (idx < 0) {
+  var head = dauCot_(sheetName);
+  if (head.indexOf(colName) < 0) {
     // thêm cột mới ở cuối
-    idx = head.length;
-    sh.getRange(1, idx + 1).setValue(colName).setFontWeight('bold')
+    sh.getRange(1, head.length + 1).setValue(colName).setFontWeight('bold')
       .setBackground('#12313a').setFontColor('#ffffff');
     delete __HEAD_CACHE[sheetName];
   }
-  sh.getRange(row, idx + 1).setValue(val);
-  xoaCache_(sheetName);
+  suaO_(sheetName, row, colName, val);                // vào bộ đệm ghi như các ô khác
 }
 /* ============================================================
    ===== KIỂM TRA TỒN "CHỜ DUYỆT" THEO THÁNG (cho ban điều hành) =====
@@ -4408,6 +4451,11 @@ var SO_NGUOI_TOI_THIEU = 5;   // số người tối thiểu mới xét
 function phanTichDinhMuc(token, kieu, giaTri) {
   var me = docPhien_(token);
   if (!me) return sach_({ ok:false, hetHan:true, msg:'Phiên đăng nhập đã hết hạn.' });
+  return nho_('phanTichDinhMuc', [kieu, giaTri, me.vaiTro, me.xuong, me.laOwner], function() { return phanTichDinhMucGoc_(token, kieu, giaTri); });
+}
+function phanTichDinhMucGoc_(token, kieu, giaTri) {
+  var me = docPhien_(token);
+  if (!me) return sach_({ ok:false, hetHan:true, msg:'Phiên đăng nhập đã hết hạn.' });
   // OWNER: xem toàn nhà máy (tab Phân tích định mức). TP/PP: chỉ xem xưởng mình
   // (dùng cho banner + phần "Định mức cần chú ý" trong tab Công đoạn & định mức).
   if (!me.laOwner && me.vaiTro !== 'TP')
@@ -4421,7 +4469,7 @@ function phanTichDinhMuc(token, kieu, giaTri) {
     if (m) { var y=m[1], q=Number(m[2]); for (var i=0;i<3;i++) thangCanLay.push(y+'-'+('0'+((q-1)*3+1+i)).slice(-2)); }
   } else return sach_({ ok:false, msg:'Chỉ hỗ trợ xem theo Tháng hoặc Quý.' });
 
-  var dt = docDuLieuKPI_();
+  var dt = docDuLieuKPI_(canLuuTru_(thangCanLay));
   var congdoan = doc_('CongDoan');
   var dinhmuc = doc_('DinhMuc');
   var tenCD = function(mc){ var c=congdoan.filter(function(x){return x.MaCD===mc;})[0]; return c?c.TenCD:mc; };
@@ -4757,7 +4805,7 @@ function KIEM_TRA_SAU_CAP_NHAT() {
   L.push('Múi giờ dự án: ' + Session.getScriptTimeZone() + (Session.getScriptTimeZone() === TZ_VN ? ' (đúng)' : '  <-- NÊN ĐỔI sang Asia/Ho_Chi_Minh trong Cài đặt dự án'));
   var tg = ScriptApp.getProjectTriggers().map(function(t){ return t.getHandlerFunction(); });
   L.push('Trigger đang cài: ' + (tg.length ? tg.join(', ') : '(chưa có)'));
-  ['chayPhatNhapTre','chotThangTuDong','snapshotKPIHangNgay','donTokenHetHan','saoLuuHangNgay'].forEach(function(h){
+  ['chayPhatNhapTre','chotThangTuDong','snapshotKPIHangNgay','donTokenHetHan','saoLuuHangNgay','LUU_TRU_NHAT_KY'].forEach(function(h){
     if (tg.indexOf(h) < 0) L.push('   THIẾU trigger ' + h + ' -> chạy CAI_LAI_TAT_CA_TRIGGER');
   });
 
@@ -4792,7 +4840,8 @@ function CAI_LAI_TAT_CA_TRIGGER() {
   CAI_TRIGGER_SNAPSHOT_9H();
   CAI_TRIGGER_DON_TOKEN();
   CAI_TRIGGER_SAO_LUU();
-  Logger.log('Xong: đã cài 5 trigger theo giờ Việt Nam.');
+  CAI_TRIGGER_LUU_TRU();
+  Logger.log('Xong: đã cài 6 trigger theo giờ Việt Nam.');
 }
 
 /* 3) Ngừng tài khoản của những người đã chuyển "Nghỉ việc" trong NhanSu. */
@@ -4806,6 +4855,7 @@ function NGUNG_TK_NGHI_VIEC() {
     }
   });
   ghiLog_({ tk: 'HE_THONG', ten: 'Chạy tay' }, 'Ngừng TK người nghỉ việc', ds.length + ' tài khoản', '', ds.join(', '));
+  xong_();
   Logger.log('Đã ngừng ' + ds.length + ' tài khoản: ' + ds.join(', '));
 }
 
@@ -4820,6 +4870,7 @@ function BAT_BUOC_DOI_MAT_KHAU_MAC_DINH() {
       n++;
     }
   });
+  xong_();
   Logger.log('Đã bật "phải đổi mật khẩu" cho ' + n + ' tài khoản đang dùng 123456.');
 }
 
@@ -4840,6 +4891,7 @@ function BO_SUNG_MA_GHI_VIPHAM() {
     n++;
   });
   if (n) { rng.setValues(v); xoaCache_('ViPham'); }
+  xong_();
   Logger.log('Đã bổ sung mã ghi cho ' + n + ' vi phạm.');
 }
 
@@ -4929,7 +4981,271 @@ function SUA_NGAY_NHAT_KY() {
     });
     xoaCache_('NhatKySanXuat');
     ghiLog_({ tk: 'HE_THONG', ten: 'Chạy tay' }, 'Sửa ngày sai nhật ký', n + ' dòng (đảo ngày/tháng)');
+    xong_();
     L.push('ĐÃ SỬA ' + n + ' dòng. Sau khi sửa, nếu tháng đó đã chốt thì chốt lại tháng đó để bảng KPI cập nhật.');
   }
   Logger.log(L.join('\n'));
+}
+
+/* 8) Xóa bộ nhớ tạm (bảng KPI, thống kê… được nhớ 10 phút cho nhanh).
+   Chạy sau khi SỬA TAY trực tiếp trong Google Sheet để web hiện số mới ngay. */
+function XOA_BO_NHO_TAM() {
+  tangPhienBan_();
+  Logger.log('Đã xóa bộ nhớ tạm. Tải lại trang web để thấy số liệu mới.');
+}
+
+/* ============================================================
+   ===== TĂNG TỐC (bản 29/09/2026) =====
+   1) Bộ đệm ghi: suaO_ không ghi ngay từng ô mà gom lại, cuối lượt gọi ghi một lần theo khối dòng.
+   2) Số phiên bản dữ liệu + bộ nhớ tạm: kết quả tính nặng (bảng KPI, KPI quản lý, chấm công tháng,
+      phân tích định mức, lịch sử KPI) được nhớ 10 phút; có ai lưu thay đổi là tự bỏ nhớ.
+   3) Đọc gộp nhiều trang tính bằng Sheets API (chỉ bật sau khi KIEM_TRA_SHEETS_API xác nhận khớp).
+   4) Lưu trữ nhật ký sản xuất cũ sang trang tính riêng (LUU_TRU_NHAT_KY).
+   ============================================================ */
+
+/* ---------- 1) BỘ ĐỆM GHI ---------- */
+var __CHO_GHI = {};          // tên sheet -> { dòng: { cột (1-based): giá trị } }
+
+/* Ghi hết các ô đang chờ của một sheet (hoặc mọi sheet nếu không truyền tên).
+   Gom các dòng gần nhau (cách nhau ≤ 3 dòng) thành một khối: đọc khối 1 lần, thay ô, ghi khối 1 lần.
+   Khối nào mọi ô đều có giá trị mới thì ghi thẳng, khỏi đọc. */
+function xaGhi_(name) {
+  var ds = name ? [name] : Object.keys(__CHO_GHI);
+  ds.forEach(function(ten) {
+    var m = __CHO_GHI[ten];
+    if (!m) return;
+    delete __CHO_GHI[ten];
+    var sh = ss_().getSheetByName(ten);
+    if (!sh) return;
+    var dong = Object.keys(m).map(Number).sort(function(a, b) { return a - b; });
+    var i = 0;
+    while (i < dong.length) {
+      var j = i;
+      while (j + 1 < dong.length && dong[j + 1] - dong[j] <= 4) j++;
+      var r1 = dong[i], r2 = dong[j], c1 = 1e9, c2 = 0, soO = 0;
+      for (var k = i; k <= j; k++) Object.keys(m[dong[k]]).forEach(function(c) {
+        c = Number(c); if (c < c1) c1 = c; if (c > c2) c2 = c; soO++;
+      });
+      var cao = r2 - r1 + 1, rong = c2 - c1 + 1, rng = sh.getRange(r1, c1, cao, rong);
+      var v;
+      if (soO === cao * rong) {
+        v = []; for (var a = 0; a < cao; a++) { v.push([]); for (var b = 0; b < rong; b++) v[a].push(''); }
+      } else v = rng.getValues();
+      for (var k2 = i; k2 <= j; k2++) {
+        var o = m[dong[k2]];
+        Object.keys(o).forEach(function(c) { v[dong[k2] - r1][Number(c) - c1] = o[c]; });
+      }
+      rng.setValues(v);
+      i = j + 1;
+    }
+    xoaCache_(ten);
+  });
+}
+
+/* Kết thúc một lượt có ghi: ghi hết bộ đệm, rồi tăng số phiên bản dữ liệu (để bỏ bộ nhớ tạm cũ). */
+function xong_() {
+  xaGhi_();
+  if (__KHOA && !__DA_TANG_PB) { tangPhienBan_(); __DA_TANG_PB = true; }
+}
+var __DA_TANG_PB = false;
+
+/* ---------- 2) PHIÊN BẢN DỮ LIỆU + BỘ NHỚ TẠM ---------- */
+var __PB = null;
+function phienBan_() {
+  if (__PB === null) {
+    try { __PB = PropertiesService.getScriptProperties().getProperty('KPI_PB') || '0'; } catch (e) { __PB = '0'; }
+  }
+  return __PB;
+}
+function tangPhienBan_() {
+  __PB = new Date().getTime() + '.' + Math.floor(Math.random() * 1e6);
+  try { PropertiesService.getScriptProperties().setProperty('KPI_PB', __PB); } catch (e) {}
+}
+var NHO_GIAY = 600;          // nhớ kết quả tính 10 phút
+var NHO_KHOI = 90000;        // CacheService giới hạn 100KB mỗi khóa -> cắt khối 90KB
+
+/* Trả kết quả đã nhớ nếu còn; nếu không thì tính bằng fn(), nhớ lại (chỉ nhớ kết quả ok). */
+function nho_(ten, thamSo, fn) {
+  var khoa = '';
+  try {
+    var raw = ten + '|' + JSON.stringify(thamSo) + '|' + phienBan_() + '|' + homNayVN_() + (gioVN_() >= 17 ? 'c' : 's');
+    khoa = 'NHO_' + Utilities.base64EncodeWebSafe(Utilities.computeDigest(Utilities.DigestAlgorithm.MD5, raw, Utilities.Charset.UTF_8));
+    var c = CacheService.getScriptCache(), dau = c.get(khoa);
+    if (dau) {
+      var n = Number(dau), ks = [];
+      for (var i = 0; i < n; i++) ks.push(khoa + '_' + i);
+      var cac = c.getAll(ks), s = '';
+      for (var j = 0; j < n; j++) { if (cac[ks[j]] == null) { s = null; break; } s += cac[ks[j]]; }
+      if (s !== null) {
+        var json = Utilities.ungzip(Utilities.newBlob(Utilities.base64Decode(s), 'application/x-gzip')).getDataAsString();
+        var kq = JSON.parse(json);
+        kq.tuBoNho = true;
+        return kq;
+      }
+    }
+  } catch (e) { khoa = khoa || ''; }
+  var r = fn();
+  try {
+    if (khoa && r && r.ok) {
+      var z = Utilities.base64Encode(Utilities.gzip(Utilities.newBlob(JSON.stringify(r), 'application/json')).getBytes());
+      var soKhoi = Math.ceil(z.length / NHO_KHOI), dat = {};
+      if (soKhoi <= 20) {
+        for (var q = 0; q < soKhoi; q++) dat[khoa + '_' + q] = z.substr(q * NHO_KHOI, NHO_KHOI);
+        var cc = CacheService.getScriptCache();
+        cc.putAll(dat, NHO_GIAY);
+        cc.put(khoa, String(soKhoi), NHO_GIAY);
+      }
+    }
+  } catch (e) {}
+  return r;
+}
+
+/* ---------- 3) ĐỌC GỘP BẰNG SHEETS API ----------
+   Cần bật: trình soạn thảo Apps Script -> Dịch vụ (+) -> Google Sheets API -> Thêm.
+   Sau đó chạy KIEM_TRA_SHEETS_API một lần: hàm so từng ô giữa 2 cách đọc, khớp hết mới bật. */
+var COT_NGAY_ = ['Ngay', 'ThoiDiem', 'ThoiDiemNhap', 'ThoiDiemDuyet', 'ThoiDiemPhat', 'ThoiDiemGhi', 'ThoiDiemChot',
+  'NgayTao', 'NgayVaoLam', 'LanDangNhapCuoi', 'TuNgay', 'DenNgay', 'NgayGui', 'NgayDuyet', 'NgayDeXuat',
+  'HieuLucTu', 'BaoTriKeTiep', 'KyApDung', 'Ky'];
+function dungSheetsApi_() {
+  try {
+    return typeof Sheets !== 'undefined' && PropertiesService.getScriptProperties().getProperty('KPI_SHEETS_API') === '1';
+  } catch (e) { return false; }
+}
+/* Đọc nhiều sheet trong MỘT lần gọi, trả { tên: mảng 2 chiều giống getValues() } */
+function docGopApi_(tenDs) {
+  var z = Utilities.formatDate(new Date(), ss_().getSpreadsheetTimeZone(), 'Z');     // VD "+0700"
+  var lech = (z.charAt(0) === '-' ? -1 : 1) * (Number(z.substr(1, 2)) + Number(z.substr(3, 2)) / 60);
+  var r = Sheets.Spreadsheets.Values.batchGet(ss_().getId(), {
+    ranges: tenDs.map(function(t) { return "'" + t.replace(/'/g, "''") + "'"; }),
+    valueRenderOption: 'UNFORMATTED_VALUE', dateTimeRenderOption: 'SERIAL_NUMBER', majorDimension: 'ROWS'
+  });
+  var out = {};
+  (r.valueRanges || []).forEach(function(vr, k) {
+    var v = vr.values || [];
+    if (!v.length) { out[tenDs[k]] = []; return; }
+    var head = v[0], rong = head.length, laNgay = head.map(function(h) { return COT_NGAY_.indexOf(String(h)) >= 0; });
+    out[tenDs[k]] = v.map(function(row, i) {
+      var o = [];
+      for (var j = 0; j < rong; j++) {
+        var x = row[j];
+        if (x === undefined || x === null) x = '';
+        if (i > 0 && laNgay[j] && typeof x === 'number') x = new Date(Math.round((x - 25569) * 864e5 - lech * 3600e3));
+        o.push(x);
+      }
+      return o;
+    });
+  });
+  return out;
+}
+/* Nạp trước vào bộ nhớ đệm đọc (__DOC_CACHE) nhiều sheet cùng lúc */
+function napTruoc_(tenDs) {
+  if (!dungSheetsApi_()) return;
+  var can = tenDs.filter(function(t) { return !__DOC_CACHE.hasOwnProperty(t) && !__CHO_GHI[t] && ss_().getSheetByName(t); });
+  if (can.length < 2) return;
+  try {
+    var gop = docGopApi_(can);
+    can.forEach(function(t) { __DOC_CACHE[t] = bangThanhDoiTuong_(gop[t] || []); });
+  } catch (e) { /* lỗi API -> để doc_ đọc cách cũ */ }
+}
+function bangThanhDoiTuong_(v) {
+  if (v.length < 2) return [];
+  var head = v[0], out = [];
+  for (var i = 1; i < v.length; i++) {
+    if (v[i].join('') === '') continue;
+    var o = { _row: i + 1 };
+    for (var j = 0; j < head.length; j++) o[head[j]] = v[i][j];
+    out.push(o);
+  }
+  return out;
+}
+var SHEET_NAP_ = ['TaiKhoan', 'NhanSu', 'PhongBan', 'CongDoan', 'DinhMuc', 'DeXuatDinhMuc', 'DanhMucLoi', 'LyDoDung',
+  'NhatKySanXuat', 'PhieuKCS', 'TrongSoKPI', 'MayMoc', 'DanhMucViPham', 'ViPham', 'DiemDanhNghi', 'XacNhanDiemDanh',
+  'NghiDaiHan', 'YeuCauSuaHoSo', 'ThongBao', 'NgayLe', 'MienTruDiemDanh', 'KPIThang', 'PhatNhapTre', 'MienTruKPIQuanLy'];
+
+/* CHẠY TAY: so từng ô giữa cách đọc cũ (getValues) và Sheets API. Khớp hết -> bật đọc gộp. */
+function KIEM_TRA_SHEETS_API() {
+  if (typeof Sheets === 'undefined') {
+    Logger.log('Chưa bật dịch vụ Google Sheets API. Vào Dịch vụ (+) -> Google Sheets API -> Thêm, rồi chạy lại.');
+    return;
+  }
+  var ten = SHEET_NAP_.filter(function(t) { return ss_().getSheetByName(t); });
+  var gop = docGopApi_(ten), lech = 0, vd = [];
+  ten.forEach(function(t) {
+    var a = ss_().getSheetByName(t).getDataRange().getValues(), b = gop[t] || [];
+    // bỏ dòng trống cuối cho công bằng
+    var cat = function(x) { while (x.length && x[x.length - 1].join('') === '') x.pop(); return x; };
+    a = cat(a); b = cat(b);
+    var n = Math.max(a.length, b.length);
+    for (var i = 0; i < n; i++) {
+      var ra = a[i] || [], rb = b[i] || [], m = Math.max(ra.length, rb.length);
+      for (var j = 0; j < m; j++) {
+        var x = ra[j] === undefined ? '' : ra[j], y = rb[j] === undefined ? '' : rb[j];
+        var giong = (x instanceof Date || y instanceof Date)
+          ? (x instanceof Date && y instanceof Date && Math.abs(x.getTime() - y.getTime()) < 1000)
+          : String(x) === String(y);
+        if (!giong) { lech++; if (vd.length < 15) vd.push(t + '!' + (i + 1) + ':' + (j + 1) + ' [' + x + '] ≠ [' + y + ']'); }
+      }
+    }
+  });
+  var p = PropertiesService.getScriptProperties();
+  if (lech === 0) { p.setProperty('KPI_SHEETS_API', '1'); Logger.log('KHỚP toàn bộ ' + ten.length + ' trang tính. ĐÃ BẬT đọc gộp bằng Sheets API.'); }
+  else { p.setProperty('KPI_SHEETS_API', '0'); Logger.log('Có ' + lech + ' ô lệch -> CHƯA bật. Ví dụ:\n' + vd.join('\n')); }
+}
+function TAT_SHEETS_API() { PropertiesService.getScriptProperties().setProperty('KPI_SHEETS_API', '0'); Logger.log('Đã tắt đọc gộp.'); }
+
+/* ---------- 4) LƯU TRỮ NHẬT KÝ CŨ ----------
+   Chuyển các dòng NhatKySanXuat của những tháng ĐÃ CHỐT CHÍNH THỨC và cũ hơn SO_THANG_GIU tháng
+   sang trang tính NhatKySanXuat_LuuTru. Bảng KPI tháng cũ đọc bản chốt nên không đổi;
+   các phép tính cần tháng cũ (KPI quản lý, lịch sử) tự đọc thêm trang lưu trữ. */
+var SO_THANG_GIU = 3;
+var TEN_LUU_TRU = 'NhatKySanXuat_LuuTru';
+function mocLuuTru_() {
+  try { return PropertiesService.getScriptProperties().getProperty('KPI_MOC_LUU_TRU') || ''; } catch (e) { return ''; }
+}
+/* Có cần đọc thêm trang lưu trữ cho các tháng này không */
+function canLuuTru_(cacThang) {
+  var moc = mocLuuTru_();
+  if (!moc) return false;
+  return (cacThang || []).some(function(t) { return !t || String(t) < moc; });
+}
+function LUU_TRU_NHAT_KY() {
+  khoa_();
+  var sh = ss_().getSheetByName('NhatKySanXuat');
+  if (!sh || sh.getLastRow() < 2) { Logger.log('Không có dữ liệu.'); return; }
+  var moc = kyVN_();
+  for (var k = 0; k < SO_THANG_GIU; k++) moc = kyTruoc_(moc);        // tháng cũ nhất còn giữ lại
+  var head = dauCot_('NhatKySanXuat'), cNgay = head.indexOf('Ngay');
+  var v = sh.getRange(2, 1, sh.getLastRow() - 1, head.length).getValues();
+  var daChot = {}, chuyen = [], dongXoa = [];
+  v.forEach(function(r, i) {
+    if (r.join('') === '') return;
+    var ng = ngayVN_(r[cNgay]), ky = ng.slice(0, 7);
+    if (!/^\d{4}-\d{2}$/.test(ky) || ky >= moc) return;
+    if (!(ky in daChot)) daChot[ky] = daChotChinhThuc_(ky);
+    if (!daChot[ky]) return;                                            // tháng chưa chốt: giữ lại
+    chuyen.push(r); dongXoa.push(i + 2);
+  });
+  if (!chuyen.length) { Logger.log('Không có tháng nào đủ điều kiện lưu trữ (cũ hơn ' + moc + ' và đã chốt chính thức).'); return; }
+  var lt = ss_().getSheetByName(TEN_LUU_TRU);
+  if (!lt) { lt = ss_().insertSheet(TEN_LUU_TRU); lt.getRange(1, 1, 1, head.length).setValues([head]).setFontWeight('bold'); lt.setFrozenRows(1); }
+  lt.getRange(lt.getLastRow() + 1, 1, chuyen.length, head.length).setValues(chuyen);
+  xoaNhieuDong_('NhatKySanXuat', dongXoa);
+  var cu = mocLuuTru_();
+  PropertiesService.getScriptProperties().setProperty('KPI_MOC_LUU_TRU', cu && cu > moc ? cu : moc);
+  var thang = Object.keys(daChot).filter(function(t) { return daChot[t]; }).sort();
+  ghiLog_({ tk: 'HE_THONG', ten: 'Lưu trữ' }, 'Lưu trữ nhật ký cũ', chuyen.length + ' dòng', '', thang.join(', '));
+  xong_();
+  Logger.log('Đã chuyển ' + chuyen.length + ' dòng (' + thang.join(', ') + ') sang ' + TEN_LUU_TRU + '.');
+}
+/* Trigger: ngày 5 hằng tháng, 2h30 sáng */
+function CAI_TRIGGER_LUU_TRU() {
+  ScriptApp.getProjectTriggers().forEach(function(t) { if (t.getHandlerFunction() === 'LUU_TRU_NHAT_KY') ScriptApp.deleteTrigger(t); });
+  ScriptApp.newTrigger('LUU_TRU_NHAT_KY').timeBased().onMonthDay(5).atHour(2).inTimezone(TZ_VN).create();
+  Logger.log('Đã cài trigger lưu trữ nhật ký: ngày 5 hằng tháng, 2h sáng.');
+}
+
+/* ---------- NẠP THEO PHẦN (tải lại nhẹ sau khi lưu) ----------
+   Giao diện gọi napPhan(token, ['nk','cc',...]) thay vì napDuLieu -> chỉ đọc và gửi phần đã đổi. */
+function napPhan(token, phan) {
+  return napDuLieuLoi_(token, phan && phan.length ? phan : null);
 }

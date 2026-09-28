@@ -267,5 +267,83 @@ console.log('\n9. Khóa ghi');
   ok(r.ok, 'hết khóa thì lưu bình thường');
 }
 
+// ===================================================================== 10. Tăng tốc
+console.log('\n10. Tăng tốc: bộ đệm ghi, bộ nhớ tạm, nạp theo phần, Sheets API, lưu trữ');
+{
+  // 10a) Bộ đệm ghi: duyệt 1 người cho kết quả Sheet y hệt mã gốc nhưng ít lần ghi hơn
+  const c = G.tao(MOI, duLieu(), BAY_GIO), g = G.tao(GOC, duLieu(), BAY_GIO);
+  const cho = dong(c, 'NhatKySanXuat').filter(r => String(r.TrangThai).trim() === 'Chờ duyệt');
+  const nv = cho[0].MaNV, ngay = c.ngayVN_(cho[0].Ngay);
+  const ds = cho.filter(r => r.MaNV === nv && c.ngayVN_(r.Ngay) === ngay).map(r => r.MaDong);
+  const xuong = c.doc_('CongDoan').filter(x => x.MaCD === cho[0].MaCD)[0].MaXuong;
+  const tpTen = c.doc_('TaiKhoan').filter(x => x.VaiTro === 'TP' && x.MaXuong === xuong)[0].TenDangNhap;
+  c.__thongKe.ghi = 0; g.__thongKe.ghi = 0;
+  const r1 = c.__goi('duyetNhomNguoi', phien(c, tpTen), ds, 0, '', {});
+  const r2 = g.__goi('duyetNhomNguoi', phien(g, tpTen), ds, 0, '', {});
+  const bo = rows => JSON.stringify(rows.map(r => r.map(x => (x instanceof Date || (x && x.getTime)) ? x.getTime() : x)));
+  ok(r1.ok && r2.ok && bo(c.__sheets.NhatKySanXuat.rows) === bo(g.__sheets.NhatKySanXuat.rows), 'duyệt ' + ds.length + ' công đoạn: NhatKySanXuat giống hệt mã gốc');
+  ok(c.__thongKe.ghi < g.__thongKe.ghi, 'số lần ghi Sheet giảm: ' + g.__thongKe.ghi + ' -> ' + c.__thongKe.ghi);
+
+  // 10b) Bộ nhớ tạm: lần 2 lấy từ bộ nhớ; có người lưu -> tính lại
+  const tO = phien(c, 'chienpham');
+  const k1 = c.__goi('layKPIKy', tO, 'thang', '2026-09', '');
+  const k2 = c.__goi('layKPIKy', tO, 'thang', '2026-09', '');
+  ok(!k1.tuBoNho && k2.tuBoNho && JSON.stringify(k1.ds) === JSON.stringify(k2.ds), 'bảng KPI lần 2 lấy từ bộ nhớ tạm, kết quả giống lần 1');
+  const q1 = c.__goi('layKPIQuanLy', tO, '2026-09'), q2 = c.__goi('layKPIQuanLy', tO, '2026-09');
+  ok(q2.tuBoNho && JSON.stringify(Object.assign({}, q1, { tuBoNho: 0 })) === JSON.stringify(Object.assign({}, q2, { tuBoNho: 0 })), 'KPI quản lý (244KB) nhớ được qua nhiều khối cache');
+  const cho2 = dong(c, 'NhatKySanXuat').filter(x => String(x.TrangThai).trim() === 'Chờ duyệt' && c.ngayVN_(x.Ngay).slice(0, 7) === '2026-09')[0];
+  c.__goi('duyetSanLuong', phien(c, 'phogd2'), cho2.MaDong, true);
+  const k3 = c.__goi('layKPIKy', tO, 'thang', '2026-09', '');
+  const a1 = k1.ds.filter(o => o.MaNV === cho2.MaNV)[0], a3 = k3.ds.filter(o => o.MaNV === cho2.MaNV)[0];
+  ok(!k3.tuBoNho && a3 && (!a1 || a3.spl > a1.spl), 'sau khi duyệt thêm sản lượng: bỏ bộ nhớ cũ, KPI cập nhật ngay');
+  c.__goi('XOA_BO_NHO_TAM');
+  ok(!c.__goi('layKPIKy', tO, 'thang', '2026-09', '').tuBoNho, 'XOA_BO_NHO_TAM bỏ bộ nhớ tạm (sau khi sửa tay trong Sheet)');
+
+  // 10c) Nạp theo phần
+  const day = c.__goi('napDuLieu', tO), vp = c.__goi('napPhan', tO, ['vp']);
+  ok(vp.ok && vp.vipham && !vp.nhatky && !vp.nhansu && !vp.congdoan, 'napPhan([vp]) chỉ gửi phần vi phạm', Object.keys(vp));
+  ok(JSON.stringify(vp.vipham) === JSON.stringify(day.vipham) && vp.vipham.length > 0, 'phần vi phạm giống bản nạp đầy đủ');
+  const nk = c.__goi('napPhan', tO, ['nk']);
+  ok(nk.nhatky && JSON.stringify(nk.nhatky) === JSON.stringify(day.nhatky) && !nk.nhansu, 'napPhan([nk]) gửi nhật ký giống bản đầy đủ');
+
+  // 10d) Quyền riêng tư hồ sơ nhân sự
+  const cn = c.doc_('TaiKhoan').filter(x => x.VaiTro === 'CN' && x.TrangThai === 'Đang dùng' && x.MaNV)[0];
+  c.__sheets.TaiKhoan.rows[cn._row - 1][c.dauCot_('TaiKhoan').indexOf('DoiMatKhauLanDau')] = 'Không';
+  c.__DOC_CACHE = {};
+  const dCN = c.__goi('napDuLieu', c.taoPhien_(dong(c, 'TaiKhoan').filter(x => x.TenDangNhap === cn.TenDangNhap)[0]));
+  const khac = (dCN.nhansu || []).filter(x => x.MaNV !== cn.MaNV), minh = (dCN.nhansu || []).filter(x => x.MaNV === cn.MaNV)[0];
+  ok(dCN.ok && khac.length > 0 && khac.every(x => !('SoCCCD' in x) && !('DienThoai' in x) && !('DiaChi' in x)), 'công nhân KHÔNG còn thấy CCCD / điện thoại / địa chỉ của người khác', khac[0]);
+  ok(minh && ('SoCCCD' in minh) && ('DienThoai' in minh), 'công nhân vẫn thấy hồ sơ của chính mình');
+  const gCN = g.__goi('napDuLieu', g.taoPhien_(g.doc_('TaiKhoan').filter(x => x.TenDangNhap === cn.TenDangNhap)[0]));
+  ok(gCN.nhansu && gCN.nhansu.some(x => x.MaNV !== cn.MaNV && x.SoCCCD), '(đối chứng) mã gốc gửi CCCD của cả xưởng cho công nhân');
+
+  // 10e) Sheets API: kiểm tra khớp từng ô rồi mới bật; bật rồi kết quả giống hệt, ít lượt đọc hơn
+  const s = G.tao(MOI, duLieu(), BAY_GIO);
+  s.__batSheetsApi();
+  s.__goi('KIEM_TRA_SHEETS_API');
+  ok(s.PropertiesService.getScriptProperties().getProperty('KPI_SHEETS_API') === '1', 'KIEM_TRA_SHEETS_API: khớp từng ô -> bật', s.__log.slice(-1)[0]);
+  const tS = phien(s, 'chienpham');
+  s.__thongKe.doc = 0; const qApi = s.__goi('napDuLieu', tS); const docApi = s.__thongKe.doc;
+  s.PropertiesService.getScriptProperties().setProperty('KPI_SHEETS_API', '0');
+  s.__thongKe.doc = 0; const qCu = s.__goi('napDuLieu', tS); const docCu = s.__thongKe.doc;
+  ok(JSON.stringify(qApi) === JSON.stringify(qCu), 'napDuLieu qua Sheets API giống hệt cách đọc cũ');
+  ok(docApi < docCu, 'số lượt đọc: ' + docCu + ' -> ' + docApi);
+
+  // 10f) Lưu trữ nhật ký cũ: KPI quản lý / lịch sử KPI tháng cũ không đổi
+  const l = G.tao(MOI, duLieu(), '2026-12-10T10:00:00+07:00');
+  const tL = phien(l, 'chienpham');
+  const nvLS = dong(l, 'KPIThang').filter(r => l.chuanKy_(r.Ky) === '2026-08')[0].MaNV;
+  const ls1 = l.__goi('layLichSuKPI', tL, nvLS), ql1 = l.__goi('layKPIQuanLy', tL, '2026-08');
+  const n0 = l.__sheets.NhatKySanXuat.rows.length;
+  l.__goi('LUU_TRU_NHAT_KY');
+  const n1 = l.__sheets.NhatKySanXuat.rows.length, lt = l.__sheets.NhatKySanXuat_LuuTru;
+  ok(lt && n1 < n0 && lt.rows.length - 1 === n0 - n1, 'chuyển ' + (n0 - n1) + ' dòng tháng đã chốt sang NhatKySanXuat_LuuTru', l.__log.slice(-1)[0]);
+  ok(dong(l, 'NhatKySanXuat').every(r => l.ngayVN_(r.Ngay).slice(0, 7) >= '2026-09' || !l.daChotChinhThuc_(l.ngayVN_(r.Ngay).slice(0, 7))), 'chỉ chuyển tháng đã chốt chính thức và cũ hơn 3 tháng');
+  const ls2 = l.__goi('layLichSuKPI', tL, nvLS), ql2 = l.__goi('layKPIQuanLy', tL, '2026-08');
+  const bt = x => JSON.stringify(Object.assign({}, x, { tuBoNho: 0 }));
+  ok(!ql2.tuBoNho && bt(ql1) === bt(ql2), 'KPI quản lý tháng 8 giống trước khi lưu trữ');
+  ok(bt(ls1) === bt(ls2), 'lịch sử KPI giống trước khi lưu trữ');
+}
+
 console.log('\n' + (loi ? '✗ ' + loi + '/' + dem + ' kiểm tra LỖI' : '✓ Tất cả ' + dem + ' kiểm tra đạt'));
 process.exit(loi ? 1 : 0);

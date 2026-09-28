@@ -7,6 +7,8 @@
  * duLieu = { TenSheet: [[tiêu đề...], [dòng...]] } — ô ngày dạng { $d: '2026-08-25T00:00:00' } (giờ VN).
  */
 const fs = require('fs'), vm = require('vm'), crypto = require('crypto');
+const zlib = require('zlib');
+const blob = buf => ({ __buf: buf, getBytes: () => Array.from(buf).map(b => (b > 127 ? b - 256 : b)), getDataAsString: () => buf.toString('utf8') });
 
 const VN = 7 * 3600e3;
 function dinhDang(d, f) {
@@ -14,7 +16,8 @@ function dinhDang(d, f) {
   const p = (n, k = 2) => String(n).padStart(k, '0');
   const map = { yyyy: x.getUTCFullYear(), MM: p(x.getUTCMonth() + 1), dd: p(x.getUTCDate()), HH: p(x.getUTCHours()),
     mm: p(x.getUTCMinutes()), ss: p(x.getUTCSeconds()), H: x.getUTCHours(), m: x.getUTCMinutes(), u: (x.getUTCDay() || 7) };
-  return f.replace(/yyyy|MM|dd|HH|mm|ss|H|m|u/g, t => map[t]);
+  map.Z = '+0700';
+  return f.replace(/yyyy|MM|dd|HH|mm|ss|H|m|u|Z/g, t => map[t]);
 }
 
 function tao(fileCode, duLieu, gioHienTai) {
@@ -96,7 +99,7 @@ function tao(fileCode, duLieu, gioHienTai) {
   const ss = {
     getSheetByName: n => sheets[n] || null,
     insertSheet: n => (sheets[n] = new Sheet(n, [])),
-    getName: () => 'CSDL KPI', getId: () => 'id'
+    getName: () => 'CSDL KPI', getId: () => 'id', getSpreadsheetTimeZone: () => 'Asia/Ho_Chi_Minh'
   };
   let khoa = false;
   const ctx = {
@@ -105,25 +108,48 @@ function tao(fileCode, duLieu, gioHienTai) {
     Logger: { log: m => log.push(String(m)) },
     Session: { getScriptTimeZone: () => 'Asia/Ho_Chi_Minh' },
     Utilities: {
-      DigestAlgorithm: { SHA_256: 'sha256' }, Charset: { UTF_8: 'utf8' },
-      computeDigest: (a, s) => Array.from(crypto.createHash('sha256').update(s, 'utf8').digest()).map(b => (b > 127 ? b - 256 : b)),
+      DigestAlgorithm: { SHA_256: 'sha256', MD5: 'md5' }, Charset: { UTF_8: 'utf8' },
+      computeDigest: (a, s) => Array.from(crypto.createHash(a).update(s, 'utf8').digest()).map(b => (b > 127 ? b - 256 : b)),
+      newBlob: (d, type) => { const buf = typeof d === 'string' ? Buffer.from(d, 'utf8') : Buffer.from(d.map(b => b & 255)); return blob(buf); },
+      gzip: b => blob(zlib.gzipSync(b.__buf)),
+      ungzip: b => blob(zlib.gunzipSync(b.__buf)),
+      base64Encode: x => Buffer.from(Array.isArray(x) ? x.map(b => b & 255) : x).toString('base64'),
+      base64EncodeWebSafe: x => Buffer.from(Array.isArray(x) ? x.map(b => b & 255) : x).toString('base64').replace(/\+/g, '-').replace(/\//g, '_'),
+      base64Decode: s => Array.from(Buffer.from(s, 'base64')).map(b => (b > 127 ? b - 256 : b)),
       getUuid: () => crypto.randomUUID(),
       formatDate: (d, tz, f) => dinhDang(d, f)
     },
     PropertiesService: { getScriptProperties: () => ({ getProperty: k => (k in props ? props[k] : null), setProperty: (k, v) => { props[k] = v; }, deleteProperty: k => { delete props[k]; }, getProperties: () => Object.assign({}, props) }) },
-    CacheService: { getScriptCache: () => ({ get: k => (k in cache ? cache[k] : null), put: (k, v) => { cache[k] = v; }, remove: k => { delete cache[k]; } }) },
+    CacheService: { getScriptCache: () => ({
+      get: k => (k in cache ? cache[k] : null),
+      put: (k, v) => { if (String(v).length > 100000) throw new Error('Cache > 100KB'); cache[k] = v; },
+      remove: k => { delete cache[k]; },
+      getAll: ks => { const o = {}; ks.forEach(k => { if (k in cache) o[k] = cache[k]; }); return o; },
+      putAll: o => { Object.keys(o).forEach(k => { if (String(o[k]).length > 100000) throw new Error('Cache > 100KB'); cache[k] = o[k]; }); }
+    }) },
     LockService: { getScriptLock: () => ({ tryLock: () => { if (khoa) return false; khoa = true; return true; }, waitLock() { khoa = true; }, releaseLock() { khoa = false; } }) },
     SpreadsheetApp: { getActiveSpreadsheet: () => ss },
     HtmlService: { createTemplateFromFile: () => ({ evaluate: () => ({ setTitle() { return this; }, addMetaTag() { return this; }, setXFrameOptionsMode() { return this; } }) }), XFrameOptionsMode: {} },
-    ScriptApp: { getProjectTriggers: () => [], deleteTrigger() {}, newTrigger: () => { const b = { timeBased: () => b, atHour: () => b, everyDays: () => b, inTimezone: () => b, create: () => b }; return b; } },
+    ScriptApp: { getProjectTriggers: () => [], deleteTrigger() {}, newTrigger: () => { const b = { timeBased: () => b, atHour: () => b, everyDays: () => b, onMonthDay: () => b, inTimezone: () => b, create: () => b }; return b; } },
     DriveApp: {}
   };
+  // Sheets API (dịch vụ nâng cao) giả: batchGet trả UNFORMATTED_VALUE, ngày ở dạng số serial như Google
+  const sheetsApi = { Spreadsheets: { Values: { batchGet: (id, o) => {
+    thongKe.doc++; thongKe.api = (thongKe.api || 0) + 1;
+    return { valueRanges: o.ranges.map(r => {
+      const ten = r.replace(/^'|'$/g, '').replace(/''/g, "'"), sh = sheets[ten];
+      const v = sh.rows.map(row => row.map(x => (x instanceof RealDate) ? (x.getTime() + 7 * 3600e3) / 864e5 + 25569 : x));
+      while (v.length && v[v.length - 1].every(x => x === '' || x === null || x === undefined)) v.pop();
+      return { range: r, values: v.map(row => { const c = row.slice(); while (c.length && (c[c.length - 1] === '' || c[c.length - 1] == null)) c.pop(); return c; }) };
+    }) };
+  } } } };
+  ctx.__batSheetsApi = () => { ctx.Sheets = sheetsApi; };
   vm.createContext(ctx);
   vm.runInContext(fs.readFileSync(fileCode, 'utf8'), ctx, { filename: fileCode });
 
   // Mỗi "lượt gọi" của Apps Script bắt đầu với biến toàn cục mới: xóa bộ nhớ đệm và nhả khóa.
   ctx.__goi = function (ten, ...a) {   // một lượt gọi máy chủ
-    vm.runInContext('__SS_CACHE=null;__DOC_CACHE={};if(typeof __HEAD_CACHE!=="undefined")__HEAD_CACHE={};if(typeof __KHOA!=="undefined")__KHOA=null;if(typeof __NGAY_LE!=="undefined")__NGAY_LE=null;', ctx);
+    vm.runInContext('__SS_CACHE=null;__DOC_CACHE={};if(typeof __HEAD_CACHE!=="undefined")__HEAD_CACHE={};if(typeof __KHOA!=="undefined")__KHOA=null;if(typeof __NGAY_LE!=="undefined")__NGAY_LE=null;if(typeof __CHO_GHI!=="undefined")__CHO_GHI={};if(typeof __PB!=="undefined")__PB=null;if(typeof __DA_TANG_PB!=="undefined")__DA_TANG_PB=false;', ctx);
     khoa = false;
     try { const r = ctx[ten](...a); return r === undefined ? null : JSON.parse(JSON.stringify(r)); }
     finally { khoa = false; }

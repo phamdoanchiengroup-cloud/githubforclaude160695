@@ -13,7 +13,7 @@ function KIEM_TRA_SAU_CAP_NHAT() {
   L.push('Múi giờ dự án: ' + Session.getScriptTimeZone() + (Session.getScriptTimeZone() === TZ_VN ? ' (đúng)' : '  <-- NÊN ĐỔI sang Asia/Ho_Chi_Minh trong Cài đặt dự án'));
   var tg = ScriptApp.getProjectTriggers().map(function(t){ return t.getHandlerFunction(); });
   L.push('Trigger đang cài: ' + (tg.length ? tg.join(', ') : '(chưa có)'));
-  ['chayPhatNhapTre','chotThangTuDong','snapshotKPIHangNgay','donTokenHetHan','saoLuuHangNgay'].forEach(function(h){
+  ['chayPhatNhapTre','chotThangTuDong','snapshotKPIHangNgay','donTokenHetHan','saoLuuHangNgay','LUU_TRU_NHAT_KY'].forEach(function(h){
     if (tg.indexOf(h) < 0) L.push('   THIẾU trigger ' + h + ' -> chạy CAI_LAI_TAT_CA_TRIGGER');
   });
 
@@ -48,7 +48,8 @@ function CAI_LAI_TAT_CA_TRIGGER() {
   CAI_TRIGGER_SNAPSHOT_9H();
   CAI_TRIGGER_DON_TOKEN();
   CAI_TRIGGER_SAO_LUU();
-  Logger.log('Xong: đã cài 5 trigger theo giờ Việt Nam.');
+  CAI_TRIGGER_LUU_TRU();
+  Logger.log('Xong: đã cài 6 trigger theo giờ Việt Nam.');
 }
 
 /* 3) Ngừng tài khoản của những người đã chuyển "Nghỉ việc" trong NhanSu. */
@@ -62,6 +63,7 @@ function NGUNG_TK_NGHI_VIEC() {
     }
   });
   ghiLog_({ tk: 'HE_THONG', ten: 'Chạy tay' }, 'Ngừng TK người nghỉ việc', ds.length + ' tài khoản', '', ds.join(', '));
+  xong_();
   Logger.log('Đã ngừng ' + ds.length + ' tài khoản: ' + ds.join(', '));
 }
 
@@ -76,6 +78,7 @@ function BAT_BUOC_DOI_MAT_KHAU_MAC_DINH() {
       n++;
     }
   });
+  xong_();
   Logger.log('Đã bật "phải đổi mật khẩu" cho ' + n + ' tài khoản đang dùng 123456.');
 }
 
@@ -96,6 +99,7 @@ function BO_SUNG_MA_GHI_VIPHAM() {
     n++;
   });
   if (n) { rng.setValues(v); xoaCache_('ViPham'); }
+  xong_();
   Logger.log('Đã bổ sung mã ghi cho ' + n + ' vi phạm.');
 }
 
@@ -185,7 +189,15 @@ function SUA_NGAY_NHAT_KY() {
     });
     xoaCache_('NhatKySanXuat');
     ghiLog_({ tk: 'HE_THONG', ten: 'Chạy tay' }, 'Sửa ngày sai nhật ký', n + ' dòng (đảo ngày/tháng)');
+    xong_();
     L.push('ĐÃ SỬA ' + n + ' dòng. Sau khi sửa, nếu tháng đó đã chốt thì chốt lại tháng đó để bảng KPI cập nhật.');
   }
   Logger.log(L.join('\n'));
+}
+
+/* 8) Xóa bộ nhớ tạm (bảng KPI, thống kê… được nhớ 10 phút cho nhanh).
+   Chạy sau khi SỬA TAY trực tiếp trong Google Sheet để web hiện số mới ngay. */
+function XOA_BO_NHO_TAM() {
+  tangPhienBan_();
+  Logger.log('Đã xóa bộ nhớ tạm. Tải lại trang web để thấy số liệu mới.');
 }
