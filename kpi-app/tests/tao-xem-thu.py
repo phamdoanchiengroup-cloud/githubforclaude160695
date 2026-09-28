@@ -9,6 +9,7 @@ JS = bb.split('<!--JS-->')[1]
 trang = u'''<!DOCTYPE html>
 <html lang="vi"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Xem thử đăng nhập Bàn bi-a</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@600;700;800&display=swap" rel="stylesheet">
 <style>
 :root{--mono:'JetBrains Mono',ui-monospace,Consolas,monospace}
 *{box-sizing:border-box;margin:0;padding:0}
@@ -19,6 +20,7 @@ input{width:100%;outline:none;font-family:inherit}
 .alert{padding:11px 14px;border-radius:10px;font-size:13px;border:1px solid}
 .a-bd{background:rgba(242,85,90,.12);border-color:rgba(242,85,90,.35);color:#ff9ea1}
 .a-ok{background:rgba(74,222,128,.12);border-color:rgba(74,222,128,.35);color:#86efac}
+#gate #lerr.a-ok{background:rgba(74,222,128,.12);border-color:rgba(74,222,128,.35);color:#9ff0bd}
 .spin{width:26px;height:26px;border:2.5px solid rgba(255,255,255,.2);border-top-color:#fff;border-radius:50%;animation:sp .7s linear infinite}
 @keyframes sp{to{transform:rotate(360deg)}}
 .tong{position:fixed;top:34px;right:40px;z-index:50;display:flex;gap:6px;padding:5px;border-radius:12px;
@@ -41,15 +43,17 @@ function $(i){return document.getElementById(i)}
 /* ---- Bản xem thử: mật khẩu "demo" = đúng, còn lại = sai ---- */
 function lerr(m,ok){var e=$('lerr');e.textContent=m;e.className='alert '+(ok?'a-ok':'a-bd');}
 function login(){
-  if(BB.dang)return;
+  if(BB.dang||$('btnLogin').disabled)return;
   $('lerr').className='alert a-bd hide';
-  if($('l_mk').value==='demo'){
-    $('btnLogin').disabled=true;
-    bbTrung(function(){
-      lerr('Đúng mật khẩu — bản thật sẽ mở ứng dụng lúc này.',true);
-      setTimeout(function(){$('btnLogin').disabled=false;bbXep();},2200);
-    });
-  } else { bbTruot(); lerr('Sai tên đăng nhập hoặc mật khẩu. (Bản xem thử: gõ "demo")'); }
+  $('btnLogin').disabled=true; bbCho();
+  setTimeout(function(){                       // giả lập chờ máy chủ trả lời
+    if($('l_mk').value==='demo'){
+      bbTrung(function(){
+        setTimeout(function(){ $('gate').classList.remove('bb-vao'); bbXep(); bbChu('Đăng nhập'); $('btnLogin').disabled=false;
+          lerr('Đúng mật khẩu — bản thật sẽ mở ứng dụng ở bước này.',true); },1600);
+      });
+    } else { $('btnLogin').disabled=false; bbTruot(); lerr('Sai tên đăng nhập hoặc mật khẩu. (Bản xem thử: gõ "demo")'); }
+  },650);
 }
 function chonTong(t,b){bbDoiTong(t);document.querySelectorAll('#tong button').forEach(function(x){x.classList.remove('on')});b.classList.add('on')}
 bbKhoiDong();

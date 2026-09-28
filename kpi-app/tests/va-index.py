@@ -133,6 +133,19 @@ R("""    $('gspin').classList.add('hide');
       if(ME.phaiDoiMK){batDoiMK();return}
       vaoHeThong();
     });""")
+R("""  $('gspin').classList.remove('hide');
+  $('lerr').classList.add('hide');
+  google.script.run.withSuccessHandler(function(r){""", """  $('gspin').classList.remove('hide');
+  $('lerr').classList.add('hide');
+  try{bbCho()}catch(e){}              // kéo cơ, ngắm trong lúc chờ máy chủ
+  google.script.run.withSuccessHandler(function(r){""")
+R("""    lerr('Không kết nối được: '+(e.message||e));
+  }).dangNhap(tk,mk);""", """    try{bbTha()}catch(x){}
+    lerr('Không kết nối được: '+(e.message||e));
+  }).dangNhap(tk,mk);""")
+R("""function lerr(m){var e=$('lerr');e.textContent=m;e.classList.remove('hide')}""",
+  """function lerr(m){var e=$('lerr');e.textContent=m;e.classList.remove('hide');
+  var g=$('gate'); if(g&&g.classList.contains('bb-vao')){g.classList.remove('bb-vao');try{bbXep();bbChu('Đăng nhập')}catch(x){}}}""")
 R("""  else{setTimeout(function(){var e=$('l_tk'); if(e)e.focus()},300)}""",
   """  else{setTimeout(function(){var e=$('l_tk'); if(e)e.focus()},300)}
   try{bbKhoiDong()}catch(e){}""")
