@@ -100,6 +100,8 @@ R("""<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600
 
 # 5) Màn đăng nhập "Bàn bi-a" (nguồn chung: tests/dang-nhap-bi-a.html, cũng dùng cho bản xem thử)
 bb = io.open(os.path.join(D, 'dang-nhap-bi-a.html'), encoding='utf-8').read()
+import base64
+bb = bb.replace('{{ANH_NGON}}', 'data:image/png;base64,' + base64.b64encode(open(os.path.join(D, '..', 'anh', 'ngon-carbon.png'), 'rb').read()).decode())
 BB_CSS = bb.split('<!--CSS-->')[1].split('<!--HTML-->')[0].strip('\n')
 BB_HTML = bb.split('<!--HTML-->')[1].split('<!--JS-->')[0].strip('\n')
 BB_JS = bb.split('<!--JS-->')[1].strip('\n')

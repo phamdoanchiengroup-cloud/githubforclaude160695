@@ -3,6 +3,8 @@
 import io, os
 D = os.path.dirname(__file__)
 bb = io.open(os.path.join(D, 'dang-nhap-bi-a.html'), encoding='utf-8').read()
+import base64
+bb = bb.replace('{{ANH_NGON}}', 'data:image/png;base64,' + base64.b64encode(open(os.path.join(D, '..', 'anh', 'ngon-carbon.png'), 'rb').read()).decode())
 CSS = bb.split('<!--CSS-->')[1].split('<!--HTML-->')[0]
 HTML = bb.split('<!--HTML-->')[1].split('<!--JS-->')[0]
 JS = bb.split('<!--JS-->')[1]

@@ -115,7 +115,7 @@ Mở lại web app, nhấn **Ctrl+F5** để tải bản mới.
 - Tính KPI quản lý nhanh hơn.
 
 **Màn đăng nhập mới "Carbon Billiards — Precision"** (nằm trong Index.html)
-- Bố cục chia đôi theo phong cách thương hiệu cao cấp. Bên trái là khung ảnh sản phẩm trên nền đen obsidian: viên bi cái có logo "CB", đầu cơ cận cảnh với ngọn carbon xám than, khâu trắng – vạch đen – trắng và tip xanh vân hạt (theo mẫu ngọn Rhino), các đường dựng hình kỹ thuật (Ø 57.2 mm, góc 26.6°), khẩu hiệu *"Chính xác trong từng công đoạn."* và dải 5 công đoạn sản xuất. Bên phải là biểu mẫu nền trắng ngà.
+- Bố cục chia đôi theo phong cách thương hiệu cao cấp. Bên trái là khung ảnh sản phẩm trên nền đen obsidian: viên bi cái có logo "CB", đầu cơ cận cảnh với ngọn cơ là ảnh chụp thật (ngọn carbon xám, khâu trắng – đen – trắng, tip xanh; ảnh ở kpi-app/anh/ngon-carbon.png, đã nhúng sẵn trong Index.html), các đường dựng hình kỹ thuật (Ø 57.2 mm, góc 26.6°), khẩu hiệu *"Chính xác trong từng công đoạn."* và dải 5 công đoạn sản xuất. Bên phải là biểu mẫu nền trắng ngà.
 - Bảng màu: đen obsidian, trắng ngà, vàng đồng. Tiêu đề dùng chữ có chân Cormorant Garamond (hỗ trợ đủ dấu tiếng Việt), nội dung dùng Inter.
 - Dòng chào đổi theo giờ trong ngày.
 - Ô "Ghi nhớ mã nhân viên": máy chỉ nhớ mã, **không bao giờ lưu mật khẩu**.

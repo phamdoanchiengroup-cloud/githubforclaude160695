@@ -189,28 +189,9 @@
       <!-- Đầu cơ (cận cảnh) -->
       <g class="co" id="bbCo">
         <g transform="rotate(-6 420 650)">
-          <path d="M-120 625.5 L344 629.5 L344 666.5 L-120 670.5 Z" fill="url(#bbCarbon)"/>
-          <path d="M-120 625.5 L344 629.5 L344 666.5 L-120 670.5 Z" fill="url(#bbOng)"/>
-          <rect x="18" y="626" width="4" height="44" fill="#b8935a" opacity=".85"/>
-          <text x="170" y="652" font-family="JetBrains Mono,monospace" font-size="10.5" font-weight="600" letter-spacing="3.2" fill="#d9dde2" opacity=".62">CARBON · CB</text>
-          <path d="M-120 625.5 L344 629.5 L344 666.5 L-120 670.5 Z" fill="url(#bbMo)" opacity=".9"/>
-          <!-- vệt sáng mờ trên ngọn (carbon xám mờ, không bóng gương) -->
-          <path d="M-120 631 L342 634" stroke="#fff" stroke-opacity=".16" stroke-width="5" stroke-linecap="round"/>
-          <!-- khâu: trắng – vạch đen – trắng -->
-          <rect x="343.5" y="629.5" width="12.5" height="37" fill="url(#bbKhau)"/>
-          <rect x="356" y="629.5" width="3.2" height="37" fill="url(#bbDen2)"/>
-          <rect x="359.2" y="629.5" width="12.4" height="37" fill="url(#bbKhau)"/>
-          <line x1="343.6" y1="629.6" x2="343.6" y2="666.4" stroke="#000" stroke-opacity=".45" stroke-width=".8"/>
-          <path d="M345 633.2 L355.5 633.2 M360 633.2 L371 633.2" stroke="#fff" stroke-opacity=".95" stroke-width="1.5" stroke-linecap="round"/>
-          <!-- đầu tip -->
-          <g clip-path="url(#bbTip)">
-            <rect x="371" y="629" width="33" height="38" fill="url(#bbDa)"/>
-            <rect x="371" y="629" width="33" height="38" filter="url(#bbHatToi)" opacity=".8"/>
-            <rect x="371" y="629" width="33" height="38" filter="url(#bbHatSang)" opacity=".9"/>
-            <rect x="371" y="629" width="33" height="38" fill="url(#bbOng)" opacity=".7"/>
-            <path d="M373 634.6 L391.5 634.6 C395.5 636.5 398 639 399.6 641.8" stroke="#fff" stroke-opacity=".55" stroke-width="2.2" fill="none" stroke-linecap="round"/>
-          </g>
-          <line x1="371.6" y1="629.8" x2="371.6" y2="666.2" stroke="#0b1d3a" stroke-opacity=".5" stroke-width=".7"/>
+          <!-- Ngọn carbon + khâu + tip: ảnh chụp thật (kpi-app/anh/ngon-carbon.png, chèn dạng base64 khi dựng) -->
+          <image href="{{ANH_NGON}}" x="-49.7" y="626.9" width="458.2" height="42.8" preserveAspectRatio="none"/>
+          <rect x="-120" y="620" width="300" height="56" fill="url(#bbMo)" opacity=".9"/>
         </g>
         <ellipse cx="200" cy="742" rx="220" ry="14" fill="#000" opacity=".45" filter="url(#bbMoi)"/>
       </g>
