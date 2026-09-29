@@ -18,6 +18,10 @@ html[data-gd="sang"]{color-scheme:light;--bg:#eef1f3;--panel:#ffffff;--panel2:#f
   --on-acc:#ffffff;--nav-bg:#f8fafb;--head-bg:#ffffff;--bot-bg:rgba(255,255,255,.97);--hover:rgba(20,40,50,.05);
   --bong:0 1px 2px rgba(20,40,50,.06),0 4px 14px -6px rgba(20,40,50,.12);--row-line:rgba(20,40,50,.08)}
 html[data-gd="toi"]{color-scheme:dark}
+/* Ô chọn ngày: nền tối đã tự vẽ biểu tượng lịch màu sáng -> bỏ bộ lọc đảo màu cũ (làm biểu tượng tối lẫn vào nền) */
+html[data-gd="toi"] input[type=date]::-webkit-calendar-picker-indicator{filter:none;opacity:.9}
+html[data-gd="toi"] input[type=date]::-webkit-calendar-picker-indicator:hover{filter:none;opacity:1}
+input[type=date]{cursor:pointer}
 .card,.kpi,.hn-viec,.hn-lt{box-shadow:var(--bong)}
 td{border-bottom-color:var(--row-line)!important}
 body{background:var(--bg)}
@@ -264,6 +268,11 @@ function veNav(){
   }).join('')+'<button onclick="moNav(true)"><svg viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></svg><span class="nl">Menu</span></button>';
   capNhatDem();
 }
+/* Bấm vào bất cứ đâu trong ô ngày cũng mở lịch (không chỉ đúng biểu tượng nhỏ) */
+document.addEventListener('click',function(e){
+  var o=e.target;
+  if(o&&o.tagName==='INPUT'&&o.type==='date'&&!o.disabled&&!o.readOnly&&typeof o.showPicker==='function'){try{o.showPicker()}catch(x){}}
+});
 function moNav(mo){document.body.classList.toggle('mo-nav',!!mo)}
 document.addEventListener('click',function(e){
   if(!document.body.classList.contains('mo-nav'))return;
