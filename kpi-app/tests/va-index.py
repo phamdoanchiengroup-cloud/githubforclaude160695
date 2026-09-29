@@ -335,6 +335,24 @@ R("""  var rows=D.nhatky.filter(function(r){return r.MaNV===maNV && String(r.Tra
 R("""function pbTen(m){var p=D.phongban.filter(function(x){return x.MaXuong===m})[0];return p?p.TenXuong:m}""",
   """function pbTen(m){var p=ix_('pb',D.phongban,function(x){return x.MaXuong})[m];return p?p.TenXuong:m}""")
 
+# 6i) Hai bộ màu (tối dịu / trắng ngà): bỏ các màu viết cứng cho nền tối
+for a, b in [('#111316', 'var(--panel2)'), ('#1f1c17', 'var(--panel2)'), ('#1a1815', 'var(--panel2)'),
+             ('style="color:#4ade80"', 'style="color:var(--green)"'), ('style="color:#f2a93b"', 'style="color:var(--amber)"'),
+             ('style="color:#c9a36a"', 'style="color:var(--cyan)"'), ('color:#3a2600', 'color:var(--panel)'),
+             ('.btn:hover{border-color:var(--ink3);background:#22303a}', '.btn:hover{border-color:var(--ink3);background:var(--hover)}'),
+             ('.btn.pri:hover{background:#3ee0d3;border-color:#3ee0d3}', '.btn.pri:hover{background:var(--cyan);border-color:var(--cyan);filter:brightness(1.08)}'),
+             ('linear-gradient(135deg,#c9a36a,#38bdf8)', 'linear-gradient(135deg,var(--cyan-d),var(--cyan))'),
+             ('.cn-note.i b{color:#38bdf8}', '.cn-note.i b{color:var(--cyan)}'), ('rgba(56,189,248,', 'rgba(201,163,106,')]:
+    RA(a, b)
+R("""function hexOf(v){return v>=90?'#c9a36a':(v>=80?'#f2a93b':'#f2555a')}""",
+  """function hexOf(v){var s=document.documentElement.getAttribute('data-gd')==='sang';
+  return v>=90?(s?'#8a6a3a':'#d1ae78'):(v>=80?(s?'#a86400':'#e8a94a'):(s?'#c0302b':'#f06a6e'))}""")
+R("""function mauKPI(v){ return v>=90?'#4ade80':(v>=80?'#c9a36a':(v>=70?'#f2a93b':'#f2555a')); }""",
+  """function mauKPI(v){ var s=document.documentElement.getAttribute('data-gd')==='sang';
+  return v>=90?(s?'#1f7a48':'#62cf90'):(v>=80?(s?'#8a6a3a':'#d1ae78'):(v>=70?(s?'#a86400':'#e8a94a'):(s?'#c0302b':'#f06a6e'))); }""")
+R("""      <button class="btn sm hhelp" onclick="go('hd')" title="Hướng dẫn sử dụng">?</button>""",
+  """      <button class="btn sm hgd" id="btnGD" onclick="gdDoi()" title="Đổi nền sáng / tối"></button>
+      <button class="btn sm hhelp" onclick="go('hd')" title="Hướng dẫn sử dụng">?</button>""")
 R("""/* ===== ĐĂNG NHẬP ===== */
 var TOKEN=null;""", GD_JS + """
 

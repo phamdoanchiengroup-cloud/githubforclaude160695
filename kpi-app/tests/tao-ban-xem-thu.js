@@ -79,6 +79,13 @@ const GOI_Y = [[tk.filter(r => String(r[cotTK('TenDangNhap')]).toLowerCase() ===
 // ---------- 2) Ghép trang ----------
 const code = fs.readFileSync(path.join(__dirname, '..', 'Code.gs'), 'utf8');
 let html = fs.readFileSync(path.join(__dirname, '..', 'Index.html'), 'utf8');
+// GIAO_DIEN=toi|sang: bộ màu mở đầu của bản xem thử (mỗi bản nhớ lựa chọn ☀/☾ riêng)
+const GD = process.env.GIAO_DIEN;
+if (GD) {
+  html = html.replace("var GIAO_DIEN_MAC_DINH='sang';", () => "var GIAO_DIEN_MAC_DINH='" + GD + "';")
+             .replace("var KHOA_GIAO_DIEN='kpi_giao_dien';", () => "var KHOA_GIAO_DIEN='kpi_giao_dien_xt_" + GD + "';");
+  if (html.indexOf("var GIAO_DIEN_MAC_DINH='" + GD + "';") < 0) console.log('Cảnh báo: không đặt được bộ màu');
+}
 const tenHam = [...new Set([...code.matchAll(/^function\s+([A-Za-z_$][\w$]*)\s*\(/gm)].map(m => m[1]))];
 const anToan = s => s.replace(/<\/(script)/gi, '<\\/$1').replace(/<!--/g, '<\\!--');
 
@@ -200,7 +207,7 @@ const MAY = `<script>
 
 const GOI_Y_HTML = `<div id="xtGoiY" style="position:fixed;right:16px;bottom:16px;z-index:9999;background:#0f1012;color:#f1ede4;border:1px solid #3a3226;
   border-radius:12px;padding:12px 14px;font:12.5px Inter,system-ui,sans-serif;box-shadow:0 12px 40px rgba(0,0,0,.45);max-width:290px">
-  <div style="font:600 10.5px 'JetBrains Mono',monospace;letter-spacing:.16em;color:#c9a36a;margin-bottom:8px">BẢN XEM THỬ · MẬT KHẨU: demo</div>
+  <div style="font:600 10.5px 'JetBrains Mono',monospace;letter-spacing:.16em;color:#c9a36a;margin-bottom:8px">BẢN XEM THỬ${process.env.NHAN ? ' · ' + process.env.NHAN : ''} · MẬT KHẨU: demo</div>
   ${GOI_Y.map(g => `<button type="button" onclick="document.getElementById('l_tk').value='${g.tk}';document.getElementById('l_mk').value='demo';login()"
     style="display:flex;justify-content:space-between;gap:10px;width:100%;background:none;border:0;border-top:1px solid #24211c;color:inherit;padding:7px 2px;cursor:pointer;font:inherit;text-align:left">
     <span><b style="font-weight:600">${g.vt}</b><br><span style="color:#8d8a83">${g.ten}</span></span><span style="font-family:'JetBrains Mono',monospace;color:#c9a36a">${g.tk}</span></button>`).join('')}
