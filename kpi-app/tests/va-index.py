@@ -177,9 +177,9 @@ R("""  --bg:#0e1418; --panel:#151d23; --panel2:#1b262e; --line:#26343d;
   --cyan:#22d3c5; --cyan-d:#0e8f86;
   --amber:#f2a93b; --red:#f2555a; --green:#4ade80;""", """  --bg:#0c0d0f; --panel:#141619; --panel2:#1b1e22; --line:#2a2d33;
   --ink:#f1ede4; --ink2:#a8a49b; --ink3:#77746d;
-  --cyan:#c9a36a; --cyan-d:#8a6a3a;           /* tên biến giữ nguyên để khỏi sửa khắp nơi; màu là vàng đồng */
+  --cyan:#2fd3c6; --cyan-d:#138f87; --acc-rgb:47,211,198;
   --amber:#e3a33e; --red:#e5484d; --green:#5cc98a;""")
-for a, b in [('34,211,197', '201,163,106'), ('#22d3c5', '#c9a36a'), ('14,20,24', '12,13,15'),
+for a, b in [('34,211,197', 'var(--acc-rgb)'), ('#22d3c5', 'var(--cyan)'), ('14,20,24', '12,13,15'),
              ('21,29,35', '20,22,25'), ('38,52,61', '42,45,51'), ('#131b21', '#111316'), ('#0b6f68', '#5e4726'),
              ('#124b52', '#2a2219'), ('#06231f', '#1b1408'), ('#16242a', '#1f1c17'), ('#152229', '#1a1815'),
              ('143,163,176', '168,164,155')]:
@@ -338,18 +338,18 @@ R("""function pbTen(m){var p=D.phongban.filter(function(x){return x.MaXuong===m}
 # 6i) Hai bộ màu (tối dịu / trắng ngà): bỏ các màu viết cứng cho nền tối
 for a, b in [('#111316', 'var(--panel2)'), ('#1f1c17', 'var(--panel2)'), ('#1a1815', 'var(--panel2)'),
              ('style="color:#4ade80"', 'style="color:var(--green)"'), ('style="color:#f2a93b"', 'style="color:var(--amber)"'),
-             ('style="color:#c9a36a"', 'style="color:var(--cyan)"'), ('color:#3a2600', 'color:var(--panel)'),
+             ('color:#3a2600', 'color:var(--panel)'),
              ('.btn:hover{border-color:var(--ink3);background:#22303a}', '.btn:hover{border-color:var(--ink3);background:var(--hover)}'),
              ('.btn.pri:hover{background:#3ee0d3;border-color:#3ee0d3}', '.btn.pri:hover{background:var(--cyan);border-color:var(--cyan);filter:brightness(1.08)}'),
-             ('linear-gradient(135deg,#c9a36a,#38bdf8)', 'linear-gradient(135deg,var(--cyan-d),var(--cyan))'),
-             ('.cn-note.i b{color:#38bdf8}', '.cn-note.i b{color:var(--cyan)}'), ('rgba(56,189,248,', 'rgba(201,163,106,')]:
+             ('linear-gradient(135deg,var(--cyan),#38bdf8)', 'linear-gradient(135deg,var(--cyan-d),var(--cyan))'),
+             ('.cn-note.i b{color:#38bdf8}', '.cn-note.i b{color:var(--cyan)}'), ('rgba(56,189,248,', 'rgba(var(--acc-rgb),')]:
     RA(a, b)
-R("""function hexOf(v){return v>=90?'#c9a36a':(v>=80?'#f2a93b':'#f2555a')}""",
+R("""function hexOf(v){return v>=90?'var(--cyan)':(v>=80?'#f2a93b':'#f2555a')}""",
   """function hexOf(v){var s=document.documentElement.getAttribute('data-gd')==='sang';
-  return v>=90?(s?'#8a6a3a':'#d1ae78'):(v>=80?(s?'#a86400':'#e8a94a'):(s?'#c0302b':'#f06a6e'))}""")
-R("""function mauKPI(v){ return v>=90?'#4ade80':(v>=80?'#c9a36a':(v>=70?'#f2a93b':'#f2555a')); }""",
+  return v>=90?(s?'#0b7a73':'#2fd3c6'):(v>=80?(s?'#a86400':'#f0b04e'):(s?'#c0302b':'#f47272'))}""")
+R("""function mauKPI(v){ return v>=90?'#4ade80':(v>=80?'var(--cyan)':(v>=70?'#f2a93b':'#f2555a')); }""",
   """function mauKPI(v){ var s=document.documentElement.getAttribute('data-gd')==='sang';
-  return v>=90?(s?'#1f7a48':'#62cf90'):(v>=80?(s?'#8a6a3a':'#d1ae78'):(v>=70?(s?'#a86400':'#e8a94a'):(s?'#c0302b':'#f06a6e'))); }""")
+  return v>=90?(s?'#1f7a48':'#66d49a'):(v>=80?(s?'#0b7a73':'#2fd3c6'):(v>=70?(s?'#a86400':'#f0b04e'):(s?'#c0302b':'#f47272'))); }""")
 R("""      <button class="btn sm hhelp" onclick="go('hd')" title="Hướng dẫn sử dụng">?</button>""",
   """      <button class="btn sm hgd" id="btnGD" onclick="gdDoi()" title="Đổi nền sáng / tối"></button>
       <button class="btn sm hhelp" onclick="go('hd')" title="Hướng dẫn sử dụng">?</button>""")

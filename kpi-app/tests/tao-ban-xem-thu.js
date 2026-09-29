@@ -82,7 +82,7 @@ let html = fs.readFileSync(path.join(__dirname, '..', 'Index.html'), 'utf8');
 // GIAO_DIEN=toi|sang: bộ màu mở đầu của bản xem thử (mỗi bản nhớ lựa chọn ☀/☾ riêng)
 const GD = process.env.GIAO_DIEN;
 if (GD) {
-  html = html.replace("var GIAO_DIEN_MAC_DINH='sang';", () => "var GIAO_DIEN_MAC_DINH='" + GD + "';")
+  html = html.replace(/var GIAO_DIEN_MAC_DINH='(toi|sang)';/, () => "var GIAO_DIEN_MAC_DINH='" + GD + "';")
              .replace("var KHOA_GIAO_DIEN='kpi_giao_dien';", () => "var KHOA_GIAO_DIEN='kpi_giao_dien_xt_" + GD + "';");
   if (html.indexOf("var GIAO_DIEN_MAC_DINH='" + GD + "';") < 0) console.log('Cảnh báo: không đặt được bộ màu');
 }

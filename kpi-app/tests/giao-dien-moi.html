@@ -5,18 +5,18 @@
    Máy tính: cột điều hướng bên trái chia nhóm. Điện thoại: thanh dưới + ngăn kéo menu.
    ============================================================ */
 :root{--serif:'Cormorant Garamond','Times New Roman',serif;--nav-w:236px}
-/* ---- Bộ màu. Mẫu 1 "tối dịu" (mặc định tối) ---- */
-:root{--bg:#17191d;--panel:#22252b;--panel2:#2b2f36;--line:#3d424b;
-  --ink:#f3efe6;--ink2:#c9c4b9;--ink3:#a8a397;
-  --cyan:#d1ae78;--cyan-d:#9c7a45;--amber:#e8a94a;--red:#f06a6e;--green:#62cf90;
-  --on-acc:var(--on-acc);--nav-bg:#131519;--head-bg:#131519;--bot-bg:rgba(19,21,25,.97);--hover:rgba(255,255,255,.045);
+/* ---- Bộ màu. Nền tối (mặc định): xám than + cyan ---- */
+:root{--bg:#1d2125;--panel:#262b30;--panel2:#2f353b;--line:#3e464e;
+  --ink:#eef2f4;--ink2:#c3ccd2;--ink3:#9ca8b0;
+  --cyan:#2fd3c6;--cyan-d:#138f87;--acc-rgb:47,211,198;--amber:#f0b04e;--red:#f47272;--green:#66d49a;
+  --on-acc:#062622;--nav-bg:#181b1f;--head-bg:#181b1f;--bot-bg:rgba(24,27,31,.97);--hover:rgba(255,255,255,.05);
   --bong:0 1px 0 rgba(255,255,255,.03) inset;--row-line:rgba(255,255,255,.07)}
-/* ---- Mẫu 2 "trắng ngà" ---- */
-html[data-gd="sang"]{color-scheme:light;--bg:#f3efe7;--panel:#fffdf9;--panel2:#f5f0e6;--line:#ddd4c3;
-  --ink:#1c1a16;--ink2:#4a463e;--ink3:#6b665b;
-  --cyan:#8a6a3a;--cyan-d:#c9a36a;--amber:#a86400;--red:#c0302b;--green:#1f7a48;
-  --on-acc:#ffffff;--nav-bg:#fbf8f2;--head-bg:#fffdf9;--bot-bg:rgba(255,253,249,.97);--hover:rgba(60,45,20,.05);
-  --bong:0 1px 2px rgba(60,45,20,.06),0 4px 14px -6px rgba(60,45,20,.10);--row-line:rgba(60,45,20,.08)}
+/* ---- Nền sáng: trắng xám + cyan đậm ---- */
+html[data-gd="sang"]{color-scheme:light;--bg:#eef1f3;--panel:#ffffff;--panel2:#f4f6f8;--line:#d6dde2;
+  --ink:#151b20;--ink2:#3f4a53;--ink3:#5d6973;
+  --cyan:#0b7a73;--cyan-d:#2fd3c6;--acc-rgb:11,122,115;--amber:#a86400;--red:#c0302b;--green:#1f7a48;
+  --on-acc:#ffffff;--nav-bg:#f8fafb;--head-bg:#ffffff;--bot-bg:rgba(255,255,255,.97);--hover:rgba(20,40,50,.05);
+  --bong:0 1px 2px rgba(20,40,50,.06),0 4px 14px -6px rgba(20,40,50,.12);--row-line:rgba(20,40,50,.08)}
 html[data-gd="toi"]{color-scheme:dark}
 .card,.kpi,.hn-viec,.hn-lt{box-shadow:var(--bong)}
 td{border-bottom-color:var(--row-line)!important}
@@ -62,7 +62,7 @@ header{background:var(--head-bg)!important;backdrop-filter:none!important;-webki
 #nav button svg{width:17px;height:17px;flex:none;stroke:currentColor;fill:none;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round;opacity:.85}
 #nav button span.nl{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis}
 #nav button:hover{background:var(--hover);color:var(--ink)}
-#nav button.on{background:rgba(201,163,106,.10);color:var(--ink)}
+#nav button.on{background:rgba(var(--acc-rgb),.10);color:var(--ink)}
 #nav button.on svg{color:var(--cyan);opacity:1}
 #nav button.on::after{content:'';position:absolute;left:-12px;top:8px;bottom:8px;width:2px;height:auto;right:auto;background:var(--cyan);border-radius:0 2px 2px 0}
 #nav .dem{font:600 10.5px var(--mono);min-width:20px;height:18px;padding:0 6px;border-radius:9px;display:inline-flex;align-items:center;justify-content:center;
@@ -158,12 +158,12 @@ html[data-gd="sang"] .btn{color:var(--ink)}
 html[data-gd="sang"] .btn.pri{color:#fff}
 html[data-gd="sang"] .btn.dg{color:var(--red)}
 html[data-gd="sang"] .kpi{background:var(--panel)!important}
-html[data-gd="sang"] .card:hover{box-shadow:0 8px 24px -8px rgba(60,45,20,.18)!important}
+html[data-gd="sang"] .card:hover{box-shadow:0 8px 24px -8px rgba(20,40,50,.18)!important}
 html[data-gd="sang"] #busy{background:none!important}
 html[data-gd="sang"] .modal-bg,html[data-gd="sang"] [id$="box"]{color:var(--ink)}
-html[data-gd="sang"] #toast{background:var(--panel);box-shadow:0 10px 30px rgba(60,45,20,.18)}
+html[data-gd="sang"] #toast{background:var(--panel);box-shadow:0 10px 30px rgba(20,40,50,.18)}
 html[data-gd="sang"] input[type=date]::-webkit-calendar-picker-indicator{filter:none}
-html[data-gd="sang"] body.tet-tt #festbar,html[data-gd="sang"] #festbar{color:#7a4a0a!important;background:#fbeed6!important;border-color:#e8c88e!important}
+html[data-gd="sang"] body.tet-tt #festbar,html[data-gd="sang"] #festbar{color:#7a4a0a!important;background:#fdf1dc!important;border-color:#eccb8f!important}
 html[data-gd="sang"] .hd-hero{color:#fff}
 html[data-gd="sang"] .dem{color:#fff!important}
 html[data-gd="sang"] #nav .dem:not(.do){background:var(--amber)}
@@ -171,7 +171,7 @@ html[data-gd="sang"] #nav .dem:not(.do){background:var(--amber)}
 .hgd svg{width:17px!important;height:17px!important;flex:none;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round}
 <!--JS-->
 /* ===== BỘ MÀU: 'toi' (tối dịu) hoặc 'sang' (trắng ngà). Mỗi người tự chọn bằng nút ☀/☾, máy nhớ lựa chọn ===== */
-var GIAO_DIEN_MAC_DINH='sang';
+var GIAO_DIEN_MAC_DINH='toi';
 var KHOA_GIAO_DIEN='kpi_giao_dien';
 function gdHienTai(){var v=null;try{v=localStorage.getItem(KHOA_GIAO_DIEN)}catch(e){}return v==='toi'||v==='sang'?v:GIAO_DIEN_MAC_DINH}
 function gdDat(v){
