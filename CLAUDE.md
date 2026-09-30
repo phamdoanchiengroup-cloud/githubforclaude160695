@@ -31,7 +31,7 @@ File này được Claude Code tự đọc khi mở repo. Nó thay cho "trí nh�
 ## Kiến trúc chính
 - **Lập lá số:**
   - `Code.gs › lapLaSoDayDu_` → `lapMoRong_` gọi các hệ phụ, `tongHopLuan` (TongHop.gs) và `deHieuLap_` (DeHieu.gs).
-  - `TaiKhoan.gs › lapLaSo(input, token)` áp quyền. Khách chưa mua nhận bản rút gọn `khachRutGon_` (có `mien`, `teaser`, `moi` = mồi vận hạn).
+  - `TaiKhoan.gs › lapLaSo(input, token)` áp quyền. **Từ 10/2026: mọi người (kể cả chưa đăng nhập) nhận bản đầy đủ luận giải 6 hệ**; máy chủ chỉ cắt phần khóa: `ttCatPhan_` (vận hạn, biến cố, phối ngẫu) và `ttCatTongHop_` khi chưa có `co_ban` (bỏ `deHieu.th6/tongHop`, các mục Tổng hợp trong `moRong.tongHop`; gắn `r.th6 = th6Moi_(r)` làm mồi, `r.tongKhoa = true`). `khachRutGon_` không còn dùng.
 - **Bốn tầng luận** (thiết kế của chủ dự án):
   1. Dữ liệu.
   2. Facts: `taoFact_` trong Facts.gs, gồm he / linhVuc / nhom / loai / yNghia / trongSo.
@@ -55,7 +55,8 @@ File này được Claude Code tự đọc khi mở repo. Nó thay cho "trí nh�
 
 ## Mô hình bán hàng (ThanhToan.gs) – bán theo giai đoạn
 - `TT_PHAN_MAC_DINH` là bảng giá mặc định; chủ dự án sửa được trong Quản trị.
-- **Bản mở** `co_ban` (49 xu): bản mệnh, mở vĩnh viễn.
+- **Luận giải 6 hệ miễn phí** (12 cung Tử Vi, Bát Tự, Chiêm tinh, Thần số, HD, Hà Lạc).
+- `co_ban` (49 xu) nay là **Tổng hợp 6 hệ**: 9 lĩnh vực, chân dung, con người, tình duyên, đường đời, mật mã; mở vĩnh viễn. Client: `tongKhoa(r)`, `tongKhoaHtml` (tab Tổng quan khóa), `tinhTrangMua` mời mở Tổng hợp (trừ ở tab Vận hạn). Mua vận hạn/biến cố/PDF không cần `co_ban`; riêng `phoi_ngau` cần `co_ban` (nằm trong phần Tổng hợp).
 - **Vận hạn bán lẻ theo giai đoạn.** Mỗi lần mở ghi một dòng vào sheet `MoKhoa` (cột "Phần") với mã:
   - `dv:<năm bắt đầu>`: một đại vận, 19 xu (vận đã qua 9 xu).
   - `nam:<năm>`: vận năm, 29 xu.

@@ -70,7 +70,7 @@ const dk = ctx.dangKy('khachmoi', 'matkhau123', 'Khách Mới', '0912 345 678');
 ok(dk.token && dk.nguoiDung.vaiTro === 'thanhVien', 'Khách tự đăng ký và đăng nhập luôn');
 const T = dk.token;
 let r = ctx.lapLaSo(L, T);
-ok(r.khach && r.canMo && r.soDu === 0 && r.bangGia.phan.co_ban.xu === 49, 'Thành viên chưa mở: nhận bản rút gọn + nút mở khóa (49 xu)');
+ok(!r.khach && r.tongKhoa && r.canMo && r.soDu === 0 && r.bangGia.phan.co_ban.xu === 49, 'Thành viên chưa mua: đọc 6 hệ, Tổng hợp 6 hệ khóa (49 xu)');
 let m = ctx.muaPhan(T, L, 'co_ban');
 ok(m.ok === false && m.thieu === 49, 'Không đủ xu → báo thiếu 49 xu');
 // nạp thủ công khi chưa có payOS
@@ -83,15 +83,15 @@ ok(nem(() => ctx.qtXacNhanDon(T, don.ma)) !== null, 'Thành viên không tự x�
 ctx.qtXacNhanDon(chu, don.ma);
 ok(ctx.kiemTraDon(T, don.ma).soDu === 100, 'Chủ sở hữu xác nhận → cộng 50 xu + thưởng nạp lần đầu 100% = 100 xu');
 ok(nem(() => ctx.qtXacNhanDon(chu, don.ma)) !== null && ctx.viCuaToi(T).soDu === 100 && !ctx.viCuaToi(T).lanDau, 'Xác nhận lần 2 không cộng trùng');
-ok(/Bản mở/.test(nem(() => ctx.muaPhan(T, L, 'pdf'))), 'Mua phần thêm khi chưa có Bản mở → yêu cầu mở Bản mở trước');
+ok(/Tổng hợp 6 hệ/.test(nem(() => ctx.muaPhan(T, L, 'phoi_ngau'))), 'Mua phối ngẫu khi chưa có Tổng hợp → yêu cầu mở Tổng hợp trước');
 m = ctx.muaPhan(T, L, 'co_ban');
-ok(m.ok && m.soDu === 51, 'Mở Bản mở: trừ 49 xu, còn 51');
+ok(m.ok && m.soDu === 51, 'Mở Tổng hợp 6 hệ: trừ 49 xu, còn 51');
 r = ctx.lapLaSo(L, T);
 ok(!r.khach && r.moRong && r.battuChiTiet.linhVuc.length === 12 && r.quyen.co_ban, 'Đã mở: nhận bản đầy đủ');
 ok(r.moRong.tongHop.hoiTu === null && r.moRong.tongHop.phoiNgau === null && Object.keys(r.duDoan.chuDe).length === 0, 'Phần chưa mua (biến cố, phối ngẫu) bị cắt ở máy chủ');
 ok(r.battuChiTiet.luuNien.length === 0 && r.moRong.tongHop.thang.every(function (t) { return t.khoa && t.tv === undefined; }) && r.chiTiet.daiVan.every(function (d) { return d.khoa; }), 'Vận hạn chưa mua: đại vận, lưu niên, lời luận 12 tháng bị khóa (chỉ còn điểm làm mồi)');
 ok(ctx.lapLaSo(Object.assign({}, L, { viewYear: 2031 }), T).quyen.co_ban, 'Đổi năm xem vẫn giữ quyền (mở vĩnh viễn)');
-ok(ctx.lapLaSo(Object.assign({}, L, { day: 16 }), T).khach, 'Lá số khác → chưa mở');
+ok(ctx.lapLaSo(Object.assign({}, L, { day: 16 }), T).tongKhoa, 'Lá số khác → Tổng hợp chưa mở');
 ok(/cần mở khóa/.test(nem(() => ctx.doGioSinh(Object.assign({ events: [{ nam: 2015, loai: 'ketHon' }] }, L), T))), 'Dò giờ sinh cần mở khóa riêng');
 // payOS
 ctx.__checksum = 'ck-secret';
@@ -117,7 +117,7 @@ ok(!r.khach && r.quyen.toanQuyen && r.moRong.tongHop.hoiTu, 'VIP: xem toàn bộ
 r = ctx.lapLaSo(Object.assign({}, L, { day: 21 }), chu);
 ok(!r.khach && r.quyen.toanQuyen && r.soDu === null, 'Chủ sở hữu: toàn quyền, không cần xu');
 ctx.qtDatVaiTro(chu, 'nguoinha', 'thanhVien');
-ok(ctx.lapLaSo(Object.assign({}, L, { day: 20 }), vip).khach, 'Hạ VIP → thành viên thường');
+ok(ctx.lapLaSo(Object.assign({}, L, { day: 20 }), vip).tongKhoa, 'Hạ VIP → thành viên thường');
 const tq = ctx.qtTongQuan(chu);
 ok(tq.doanhThu.tong === 150000 && tq.doanhThu.soDon === 2 && tq.cauHinh.payos && !JSON.stringify(tq).includes('ck-secret'), 'Quản trị: doanh thu 150.000đ / 2 đơn, không lộ khóa bí mật');
 ctx.qtDieuChinhXu(chu, 'khachmoi', 10, 'tặng');

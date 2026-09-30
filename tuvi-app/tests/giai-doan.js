@@ -7,13 +7,16 @@ ctx.ttKhoa_(() => ctx.ttCong_('khachgd', 1000, 'test', ''));
 const vy = new Date().getFullYear();
 const inp = { name: 'Nguyễn Văn An', gender: 'nam', calendar: 'duong', day: 5, month: 6, year: 1990, hour: 8, minute: 0, viewYear: vy, place: '21.03|105.85|Hà Nội', tz: '7' };
 let r = ctx.lapLaSo(inp, tok);
-kt(r.khach && r.canMo && r.moi && r.moi.daiVan.length === 12, 'chưa mở: bản rút gọn có mồi 12 đại vận');
-kt(!JSON.stringify(r).includes('"secs"'), 'bản rút gọn không lộ lời luận');
-try { ctx.muaPhan(tok, inp, 'nam', vy); kt(false, 'mua năm khi chưa có Bản mở phải lỗi'); } catch (e) { kt(/Bản mở/.test(e.message), 'yêu cầu Bản mở trước'); }
-let m = ctx.muaPhan(tok, inp, 'co_ban'); kt(m.ok && m.gia === 49, 'mua Bản mở 49');
+kt(!r.khach && r.canMo && r.tongKhoa && !r.quyen.co_ban, 'chưa mua: nhận bản đầy đủ, Tổng hợp 6 hệ khóa');
+kt(r.tuvi.luanGiai.cung.length === 12 && r.battu.goiY && r.battu.phanTich && r.moRong.chiemTinhLuan && r.moRong.haLac && r.moRong.thanSo && r.moRong.hd, 'luận giải 6 hệ mở miễn phí');
+kt(!r.moRong.deHieu.th6 && r.th6 && r.th6.linhVuc.filter(x => x.lo).length === 1 && r.moRong.tongHop.tinhCach === null && r.moRong.tongHop.duongDoi === null, 'Tổng hợp 6 hệ: chỉ còn điểm + 1 lĩnh vực mồi');
+kt(r.chiTiet.daiVan.every(d => d.khoa && d.secs.length === 0) && r.vanTom.coNam === false && r.chiTiet.nhatVan.length === 0, 'chưa mua: đại vận, vận năm, nhật vận khóa');
+try { ctx.muaPhan(tok, inp, 'phoi_ngau'); kt(false, 'mua phối ngẫu khi chưa có Tổng hợp phải lỗi'); } catch (e) { kt(/Tổng hợp 6 hệ/.test(e.message), 'phối ngẫu yêu cầu Tổng hợp 6 hệ trước'); }
+let m = ctx.muaPhan(tok, inp, 'co_ban'); kt(m.ok && m.gia === 49, 'mua Tổng hợp 6 hệ 49');
 r = ctx.lapLaSo(inp, tok);
 const nowDv = r.chiTiet.daiVan.filter(d => d.isNow)[0];
-kt(!r.khach && r.chiTiet.daiVan.every(d => d.khoa && d.secs.length === 0), 'Bản mở: 12 đại vận đều khóa, không có lời luận');
+kt(!r.tongKhoa && r.moRong.deHieu.th6 && r.moRong.tongHop.tinhCach, 'đã mua Tổng hợp: có kết luận 6 hệ');
+kt(r.chiTiet.daiVan.every(d => d.khoa && d.secs.length === 0), 'Tổng hợp không gồm đại vận: 12 đại vận đều khóa');
 kt(r.vanTom && r.vanTom.coNam === false && r.chiTiet.nguyetVan.length === 0 && r.chiTiet.tieuVan.khoa, 'Bản mở: vận năm khóa');
 kt(r.chiTiet.nhatVan.length === 0 && r.vanTom.coThang === false, 'Bản mở: nhật vận khóa');
 kt(r.moRong.tongHop.thang.every(t => t.khoa && t.tv === undefined), '12 tháng chỉ còn điểm');
@@ -45,11 +48,11 @@ kt(r.quyen.bien_co && r.quyen.phoi_ngau && r.quyen.do_gio, 'Trọn đời gồm 
 // Gói gia đình
 m = ctx.muaPhan(tok, null, 'gia_dinh_3'); kt(m.ok && m.gia === 129 && m.soVe === 3, 'mua gói gia đình 3 → 3 lượt');
 const me = { name: 'Trần Thị Mẹ', gender: 'nu', calendar: 'duong', day: 2, month: 3, year: 1965, hour: 6, minute: 0, viewYear: vy, place: '21.03|105.85|Hà Nội', tz: '7' };
-r = ctx.lapLaSo(me, tok); kt(r.khach && r.canMo && r.soVe === 3, 'lá số người nhà: chưa mở, thấy 3 lượt');
+r = ctx.lapLaSo(me, tok); kt(r.tongKhoa && r.canMo && r.soVe === 3, 'lá số người nhà: Tổng hợp chưa mở, thấy 3 lượt');
 m = ctx.dungLuotGiaDinh(tok, me); kt(m.ok && m.soVe === 2, 'dùng 1 lượt → còn 2');
-r = ctx.lapLaSo(me, tok); kt(!r.khach && r.vanTom.coNam && r.chiTiet.daiVan.every(d => d.khoa), 'lượt gia đình: Bản mở + vận năm, đại vận vẫn bán riêng');
+r = ctx.lapLaSo(me, tok); kt(!r.tongKhoa && r.vanTom.coNam && r.chiTiet.daiVan.every(d => d.khoa), 'lượt gia đình: Tổng hợp + vận năm, đại vận vẫn bán riêng');
 m = ctx.dungLuotGiaDinh(tok, me); kt(m.daCo && m.soVe === 2, 'dùng lại cho cùng lá số không mất lượt');
 const soDu = ctx.ttSoDu_('khachgd'); kt(soDu === 1000 - 49 - 19 - 9 - 29 - 50 - 9 - 100 - 129, 'số dư khớp sổ cái (' + soDu + ')');
 // Khách chưa đăng nhập
-r = ctx.lapLaSo(inp, ''); kt(r.khach && !r.canMo && r.moi && r.moi.thang.length === 12, 'khách: có mồi vận hạn');
+r = ctx.lapLaSo(inp, ''); kt(!r.khach && !r.canMo && r.tongKhoa && r.tuvi.luanGiai.cung.length === 12 && r.chiTiet.daiVan.every(d => d.khoa) && r.moRong.tongHop.thang.every(t => t.khoa) && !r.moRong.tongHop.hoiTu, 'khách chưa đăng nhập: đọc được 6 hệ, vận hạn & biến cố khóa');
 console.log('Đạt', ok, '/', ok + sai);

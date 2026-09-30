@@ -45,7 +45,7 @@ for (let i = 0; i < 5; i++) nem(() => ctx.dangNhap('chienpham', 'sai-mat-khau'))
 ok(/tạm khóa/.test(nem(() => ctx.dangNhap('chienpham', PASS || 'x'))), 'Khóa tạm sau 5 lần sai');
 const k = ctx.lapLaSo({ name: 'B', gender: 'nu', calendar: 'duong', day: 3, month: 2, year: 1985, hour: 22, minute: 0, save: true }, 'token-gia-mao-khong-hop-le-123');
 const js = JSON.stringify(k);
-ok(k.khach && !k.moRong && !k.battuChiTiet && !k.chiTiet && !k.duDoan && !k.tuvi.luanGiai.tongQuan && !k.battu.goiY, 'Khách: máy chủ chỉ trả bản rút gọn');
-ok(k.teaser && k.teaser.chart && k.teaser.battu && k.tuvi.palaces.length === 12 && js.length < 200000, 'Khách: có lá số + phần hé lộ (' + Math.round(js.length / 1024) + ' KB)');
-ok(!/lines/.test(JSON.stringify(k.tuvi.luanGiai)), 'Khách: không có lời luận cung');
+ok(!k.khach && k.tongKhoa && k.moRong && !k.moRong.deHieu.th6 && k.chiTiet.daiVan.every(function (d) { return d.khoa; }) && !k.moRong.tongHop.hoiTu, 'Khách: đọc được 6 hệ; Tổng hợp, vận hạn, biến cố bị cắt ở máy chủ');
+ok(k.teaser && k.teaser.chart && k.tuvi.palaces.length === 12 && k.th6 && js.length < 3000000, 'Khách: có lá số + hé lộ Tổng hợp (' + Math.round(js.length / 1024) + ' KB)');
+ok(/lines/.test(JSON.stringify(k.tuvi.luanGiai)) && k.battu.goiY, 'Khách: có lời luận 12 cung và Bát Tự (miễn phí)');
 if (loi) { console.log(loi + ' lỗi'); process.exit(1); } else console.log('✔ Tài khoản: tất cả kiểm tra đạt');

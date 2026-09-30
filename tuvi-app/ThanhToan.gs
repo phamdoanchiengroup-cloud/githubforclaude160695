@@ -5,7 +5,7 @@
  *    rồi dùng xu mở khóa "Bản mở" (49 xu) và các phần trả thêm cho từng lá số.
  *  - Mô hình nhiều giai đoạn: bản mệnh mở 1 lần; VẬN HẠN bán theo từng đại vận (dv:<năm bắt đầu>), từng năm
  *    (nam:<năm>), nhật vận theo tháng (thang:<yyyy-mm>) và gói "Đồng hành cả năm" (dong_hanh:<năm>) → khách quay lại mỗi năm/tháng.
- *  - Gói gia đình: mua N "lượt mở" (sheet Ve), mỗi lượt mở Bản mở + vận năm hiện tại cho một lá số bất kỳ.
+ *  - Gói gia đình: mua N "lượt mở" (sheet Ve), mỗi lượt mở Tổng hợp 6 hệ + vận năm hiện tại cho một lá số bất kỳ.
  *  - Khóa lá số = băm của (loại lịch, ngày, tháng, năm, nhuận, giờ, phút, giới tính, họ tên) – đổi năm xem không mất quyền.
  *  - Chủ sở hữu và thành viên VIP: toàn quyền, không trừ xu.
  *  - Dữ liệu trong Google Sheet: Vi, SoCai (sổ cái), MoKhoa, DonHang. Cấu hình payOS & bảng giá trong Script Properties.
@@ -14,7 +14,7 @@
  * ============================================================
  */
 var TT_PHAN_MAC_DINH = {
-  co_ban: { ten: 'Bản mở – luận giải bản mệnh 6 hệ', xu: 49 },
+  co_ban: { ten: 'Tổng hợp 6 hệ – kết luận 9 lĩnh vực, chân dung, con người, tình duyên, đường đời', xu: 49 },
   dai_van: { ten: 'Luận chi tiết 1 đại vận (10 năm)', xu: 19, theo: 'dv' },
   dai_van_qua: { ten: 'Đại vận đã qua – kiểm chứng', xu: 9, theo: 'dv' },
   tron_dai_van: { ten: 'Trọn 12 đại vận cả đời', xu: 99 },
@@ -25,7 +25,7 @@ var TT_PHAN_MAC_DINH = {
   phoi_ngau: { ten: 'Chân dung người phối ngẫu & tuổi hợp', xu: 19 },
   pdf: { ten: 'PDF bản đầy đủ', xu: 29 },
   do_gio: { ten: 'Dò chính xác giờ sinh', xu: 19 },
-  tron_goi: { ten: 'Trọn đời – bản mệnh, 12 đại vận, biến cố, phối ngẫu, PDF, dò giờ', xu: 149 },
+  tron_goi: { ten: 'Trọn đời – tổng hợp 6 hệ, 12 đại vận, biến cố, phối ngẫu, PDF, dò giờ', xu: 149 },
   cap_doi: { ten: 'Xem cặp đôi – hợp hôn 2 lá số', xu: 29 },   // mở theo từng cặp, không thuộc trọn gói
   gia_dinh_3: { ten: 'Gói gia đình 3 người', xu: 129, luot: 3 },
   gia_dinh_5: { ten: 'Gói gia đình 5 người', xu: 199, luot: 5 },
@@ -229,7 +229,8 @@ function muaPhan(token, input, phan, id) {
     var daCo = ma === phan ? q[phan] : (/^dv:/.test(ma) ? ttCoDv_(q, id) : /^thang:/.test(ma) ? ttCoThang_(q, +ma.slice(6, 10), +ma.slice(11)) :
       /^dong_hanh:/.test(ma) ? !!q.dhNam[String(id)] : ttCoNam_(q, id));
     if (daCo) return { ok: true, daCo: true, soDu: ttSoDu_(u.ten) };
-    if (['co_ban', 'tron_goi', 'do_gio'].indexOf(phan) < 0 && !capDoi && !q.co_ban) throw new Error('Hãy mở "Bản mở" trước (hoặc dùng lượt gia đình / Trọn đời).');
+    // Luận giải 6 hệ đã miễn phí → mua vận hạn, biến cố, PDF… không cần mở Tổng hợp 6 hệ trước
+    if (phan === 'phoi_ngau' && !q.co_ban && !q.toanQuyen) throw new Error('Chân dung người phối ngẫu nằm trong phần Tổng hợp 6 hệ – hãy mở "Tổng hợp 6 hệ" trước (hoặc Trọn đời).');
     var gia = p.xu;
     if (phan === 'dai_van' && +id + 9 < new Date().getFullYear()) gia = bg.phan.dai_van_qua.xu;   // vận đã qua: giá kiểm chứng
     if (phan === 'dong_hanh') {   // trừ phần đã mua của năm đó
@@ -271,7 +272,7 @@ function ttMuaGiaDinh_(u, phan, bg) {
     return { ok: true, soDu: moi, gia: p.xu, soVe: ttCongVe_(u.ten, luot), luot: luot };
   });
 }
-/** Dùng 1 lượt gia đình cho lá số đang xem: mở Bản mở + vận năm đang xem */
+/** Dùng 1 lượt gia đình cho lá số đang xem: mở Tổng hợp 6 hệ + vận năm đang xem */
 function dungLuotGiaDinh(token, input) {
   var u = tkCan_(token);
   if (ttToanQuyen_(u)) return { ok: true, toanQuyen: true };

@@ -155,15 +155,24 @@ function lapLaSo(input, token) {
   var r = lapLaSoDayDu_(input);
   try { r.teaser = demoTeaser_(r); } catch (e) { r.teaser = {}; }
   var khoa = ttKhoaLaSo_(input), bg = ttBangGia_();
-  if (!u) { var k = khachRutGon_(r); k.khoa = khoa; k.bangGia = bg; return k; }
-  var q = ttQuyen_(u, khoa), soDu = q.toanQuyen ? null : ttSoDu_(u.ten), soVe = q.toanQuyen ? 0 : ttSoVe_(u.ten);
-  if (!q.co_ban) {                                   // đã đăng nhập nhưng chưa mở lá số này: vẫn là bản rút gọn, kèm nút mở khóa
-    var k2 = khachRutGon_(r);
-    k2.nguoiDung = u; k2.khoa = khoa; k2.quyen = q; k2.bangGia = bg; k2.soDu = soDu; k2.soVe = soVe; k2.canMo = true; k2.saved = r.saved; k2.saveError = r.saveError;
-    return k2;
+  // Luận giải 6 hệ (12 cung Tử Vi, Bát Tự, Chiêm tinh, Thần số, HD, Hà Lạc) mở cho mọi người đọc.
+  // Khóa: Tổng hợp 6 hệ (gói co_ban), đại vận – tiểu – nguyệt – nhật vận, biến cố, phối ngẫu, PDF đầy đủ, cặp đôi.
+  var q = ttQuyen_(u, khoa);
+  if (!q.toanQuyen) {
+    ttCatPhan_(r, q);
+    if (!q.co_ban) ttCatTongHop_(r);
   }
-  if (!q.toanQuyen) ttCatPhan_(r, q);
-  r.nguoiDung = u; r.khoa = khoa; r.quyen = q; r.bangGia = bg; r.soDu = soDu; r.soVe = soVe;
+  r.nguoiDung = u || null; r.khoa = khoa; r.quyen = q; r.bangGia = bg; r.dangNhap = !!u; r.canMo = !!u;
+  r.soDu = u && !q.toanQuyen ? ttSoDu_(u.ten) : null; r.soVe = u && !q.toanQuyen ? ttSoVe_(u.ten) : 0;
+  return r;
+}
+/** Tổng hợp 6 hệ chưa mở: bỏ kết luận ghép 6 hệ, chỉ giữ điểm 9 lĩnh vực + lĩnh vực mạnh nhất làm mồi (th6Moi_) */
+function ttCatTongHop_(r) {
+  var M = r.moRong || {}, T = M.tongHop, D = M.deHieu;
+  r.th6 = th6Moi_(r);
+  if (T) ['xuatThan', 'vocDang', 'coThe', 'tinhCach', 'duongDoi', 'nghe', 'matMa', 'tomLuoc', 'mayMan', 'phoiNgau'].forEach(function (k) { T[k] = null; });
+  if (D) { delete D.th6; delete D.tongHop; }
+  r.tongKhoa = true;
   return r;
 }
 /** Bản rút gọn cho khách: đủ để vẽ lá số và phần "hé lộ", không có lời luận */
