@@ -26,6 +26,8 @@
       return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
     });
   }
+  /** Mã phiên bản giao diện – phải trùng với Index.html (meta tcc-ban) và Styles.html (--tcc-ban) */
+  var BAN_GIAO_DIEN = '2026.10.08';
   function storeGet(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
   function storeSet(k, v) { try { localStorage.setItem(k, v); } catch (e) { /* bỏ qua */ } }
 
@@ -4769,6 +4771,18 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
     }, function (e) { box.innerHTML = '<p class="muted">Không tải được lịch sử: ' + esc(e && e.message) + '</p>'; });
   }
 
+  /** Khung báo lỗi khởi động: ghi rõ bước nào lỗi để chủ dự án chụp màn hình gửi hỗ trợ */
+  function baoLoiKhoiDong(ds) {
+    var el = document.createElement('div');
+    el.setAttribute('role', 'alert');
+    el.style.cssText = 'position:fixed;left:12px;right:12px;bottom:12px;z-index:200;max-width:720px;margin:0 auto;background:#3a1512;color:#ffe9e4;border:1px solid #e8897a;border-radius:12px;padding:12px 14px;font:13.5px/1.5 system-ui,sans-serif;box-shadow:0 8px 24px rgba(0,0,0,.5)';
+    el.innerHTML = '<b>⚠ Có ' + ds.length + ' phần giao diện chưa khởi động được</b> (giao diện bản ' + BAN_GIAO_DIEN + '). Hãy chụp màn hình khung này gửi người hỗ trợ:' +
+      '<ol style="margin:6px 0 8px;padding-left:20px">' + ds.map(function (x) { return '<li>' + esc(x) + '</li>'; }).join('') + '</ol>' +
+      '<button type="button" style="font:inherit;background:#e8897a;color:#1a0a08;border:0;border-radius:8px;padding:5px 12px;cursor:pointer">Đóng</button>';
+    el.querySelector('button').addEventListener('click', function () { el.remove(); });
+    document.body.appendChild(el);
+  }
+
   /* ------------------------ KHỞI TẠO ------------------------ */
   document.addEventListener('DOMContentLoaded', function () {
     // Tab & Lịch sử gắn TRƯỚC TIÊN: nếu một bước khởi động phía sau lỗi (vd. Index.html cũ thiếu phần tử),
@@ -4869,9 +4883,15 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
     });
     var rt;
     window.addEventListener('resize', function () { clearTimeout(rt); rt = setTimeout(function () { coLaSo(); drawOverlay(); }, 120); });
-    if (loiKhoiDong.length) {
-      toast('⚠ Một phần giao diện chưa khởi động được (' + loiKhoiDong.length + ' lỗi). Hãy dán lại cùng lúc 3 file Index, Styles, Script bản mới nhất rồi deploy phiên bản mới.', true);
-    }
+    buoc('kiểm tra phiên bản', function () {
+      var m = document.querySelector('meta[name="tcc-ban"]'), bi = m ? m.getAttribute('content') : '', bs = '';
+      try { bs = getComputedStyle(document.documentElement).getPropertyValue('--tcc-ban').replace(/["'\s]/g, ''); } catch (e) { bs = ''; }
+      var cu = [];
+      if (bi !== BAN_GIAO_DIEN) cu.push('Index (đang là ' + (bi || 'bản cũ') + ')');
+      if (bs !== BAN_GIAO_DIEN) cu.push('Styles (đang là ' + (bs || 'bản cũ') + ')');
+      if (cu.length) loiKhoiDong.unshift('File chưa phải bản mới nhất ' + BAN_GIAO_DIEN + ': ' + cu.join(', ') + ' – Script đã là bản mới. Mở từng file này → xóa hết → dán lại.');
+    });
+    if (loiKhoiDong.length) baoLoiKhoiDong(loiKhoiDong);
   });
 })();
 

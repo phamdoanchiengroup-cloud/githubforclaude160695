@@ -111,6 +111,7 @@ cd tests && npm install && node thien-van.mjs && node doi-chieu.js   # đối ch
 - **Lịch sử lá số (Code.gs):** trùng = cùng tài khoản + họ tên (bỏ hoa/thường, khoảng trắng) + giới tính + ngày dương + giờ + phút (`lsKhoa_`). `luuLichSu_` xóa bản cũ trùng trong 400 dòng gần nhất rồi ghi bản mới; `getLichSu` ẩn trùng; `donLichSu(token)` (nút "🧹 Dọn lá số trùng") xóa trùng cũ trong Sheet.
 - `google.script.run` **không trả được Date**, ra null. Vì vậy lịch sử dùng `getDisplayValues` và ghi ngày có tiền tố `'`.
 - **Khởi động trang:** gắn tab và Lịch sử **trước tiên**, mỗi bước bọc trong `buoc(...)`. Một bước lỗi (vd. Index.html cũ thiếu phần tử) không được làm chết cả trang.
+- **Mã phiên bản giao diện:** `<meta name="tcc-ban">` (Index.html), `--tcc-ban` (đầu Styles.html) và `BAN_GIAO_DIEN` (Script.html) phải **trùng nhau** – mỗi đợt sửa giao diện hãy tăng cả 3. Bước khởi động "kiểm tra phiên bản" chỉ đích danh file cũ; mọi lỗi khởi động hiện trong khung `baoLoiKhoiDong` (ghi tên bước + thông điệp lỗi) để chủ dự án chụp gửi, thay cho câu báo chung chung trước đây.
 - **Lớp phủ:** `.modal` z-index 120 (trên thanh CTA 85 và mục lục 90). `.toast` có `pointer-events: none`.
 - **PDF:** `xuatPdf` trong Script.html dựng từ nội dung đang hiển thị.
   - `chuanHoa` bỏ giao diện bán hàng (thẻ khóa, ưu đãi, bảng giá).
