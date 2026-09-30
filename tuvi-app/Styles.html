@@ -1498,4 +1498,46 @@ body.ht-mo .loading, body.ht-mo .cta-bar { display: none !important; }
 @keyframes htNhay { 0%, 100% { box-shadow: 0 0 0 0 rgba(246, 182, 74, .0); } 50% { box-shadow: 0 0 0 6px rgba(246, 182, 74, .35); } }
 @media (max-width: 520px) { .ht-hop { padding: 24px 16px 18px; } .ht-td { font-size: 25px; } .ht-la { height: 400px; } .ht-han { font-size: 54px; } }
 @media (prefers-reduced-motion: reduce) { .ht-la-in { transition: none; } .ht-bat .quay, .ht-bat path.am, #htBaiToi.nhay { animation: none; } }
+/* ---------- Sinh động & gần gũi ---------- */
+.chao { margin: 0 0 14px; } .chao[hidden] { display: none; }
+.chao-in { position: relative; display: flex; gap: 14px; align-items: flex-start; padding: 14px 44px 14px 16px; border-radius: 16px; border: 1px solid var(--line);
+  background: radial-gradient(420px 160px at 0% 0%, rgba(246, 182, 74, .16), transparent 70%), var(--surface-glass); animation: chaoVao .6s cubic-bezier(.2, .8, .2, 1) both; }
+.chao.di .chao-in { animation: chaoRa .3s ease-in both; }
+@keyframes chaoVao { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: none; } }
+@keyframes chaoRa { to { opacity: 0; transform: translateY(-8px); } }
+.chao-ic { font-size: 30px; line-height: 1; animation: chaoLac 4s ease-in-out infinite; transform-origin: 50% 80%; }
+@keyframes chaoLac { 0%, 100% { transform: rotate(0); } 50% { transform: rotate(-8deg) translateY(-2px); } }
+.chao-nd { flex: 1; min-width: 0; } .chao-t { display: block; font-family: var(--font-title); font-size: 21px; color: var(--head); margin-bottom: 2px; }
+.chao-nd p { margin: 2px 0; font-size: 14.5px; } .chao-phu { color: var(--ink-soft); font-size: 13.5px !important; }
+.chao-so { color: var(--gold-hi); border-bottom: 1px dashed var(--gold); cursor: help; }
+.chao-x { position: absolute; top: 8px; right: 10px; background: none; border: 0; color: var(--ink-soft); font-size: 16px; cursor: pointer; padding: 4px; }
+/* hiện dần khi cuộn tới */
+.cho-hien { opacity: 0; transform: translateY(18px); }
+.hien { animation: huLen .6s cubic-bezier(.2, .8, .2, 1) both; }
+@keyframes huLen { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: none; } }
+.hien .th6-phieu i, .hien .hb-t u, .th6-phieu.hien i { transform-origin: left center; animation: huMoc .9s .15s cubic-bezier(.2, .8, .2, 1) both; }
+@keyframes huMoc { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+/* lá số: 12 cung hiện lần lượt từ cung Mệnh */
+.an-sao .cung { animation: cungHien .5s cubic-bezier(.2, .8, .2, 1) both; }
+@keyframes cungHien { from { opacity: 0; transform: scale(.92); filter: blur(2px); } to { opacity: 1; transform: none; filter: none; } }
+/* phản hồi khi bấm */
+.btn { transition: transform .12s, box-shadow .2s, background .2s; } .btn:active { transform: scale(.97); }
+.tab { transition: all .2s, transform .12s; } .tab:active { transform: scale(.96); }
+/* mừng mở khóa */
+.hu-mung { position: fixed; inset: 0; z-index: 130; display: grid; place-items: center; pointer-events: none; background: radial-gradient(circle, rgba(8, 20, 40, .35), transparent 60%); animation: huNen .3s ease-out both; }
+.hu-mung.di { animation: huNenRa .45s ease-in both; }
+@keyframes huNen { from { opacity: 0; } to { opacity: 1; } } @keyframes huNenRa { to { opacity: 0; } }
+.hu-dau { display: grid; place-items: center; gap: 4px; min-width: 190px; padding: 22px 26px 18px; border-radius: 18px; text-align: center;
+  background: linear-gradient(145deg, #c9463a, #8e2219); color: #fff4e6; box-shadow: 0 18px 50px rgba(0, 0, 0, .45), inset 0 0 0 3px rgba(255, 230, 200, .45);
+  animation: huDong .55s cubic-bezier(.3, 1.6, .5, 1) both; }
+.hu-dau .han { font-family: var(--font-han); font-size: 54px; line-height: 1; } .hu-dau b { font-family: var(--font-title); font-size: 24px; } .hu-dau small { opacity: .85; max-width: 240px; }
+@keyframes huDong { 0% { opacity: 0; transform: scale(2.2) rotate(-12deg); } 70% { opacity: 1; transform: scale(.94) rotate(-4deg); } 100% { transform: scale(1) rotate(-4deg); } }
+.hu-tia { position: fixed; width: 0; height: 0; z-index: 131; pointer-events: none; }
+.hu-tia i { position: absolute; left: -4px; top: -4px; width: 8px; height: 8px; border-radius: 50%; background: #ffd88a; box-shadow: 0 0 10px #ffd88a; animation: huBay 1.2s cubic-bezier(.1, .7, .3, 1) both; }
+.hu-tia i.l { width: 5px; height: 12px; border-radius: 2px; background: #5eead4; box-shadow: 0 0 8px #5eead4; }
+@keyframes huBay { 0% { opacity: 1; transform: translate(0, 0) scale(1); } 100% { opacity: 0; transform: translate(var(--x), calc(var(--y) + 40px)) scale(.4) rotate(160deg); } }
+/* PDF và người chọn "giảm chuyển động": không hiệu ứng, mọi thứ hiện đủ */
+.pdf-root .cho-hien, .pdf-root .hien { opacity: 1 !important; transform: none !important; }
+.pdf-root *, .pdf-root *::before, .pdf-root *::after { animation: none !important; transition: none !important; }
+@media (prefers-reduced-motion: reduce) { .cho-hien { opacity: 1; transform: none; } .hien, .an-sao .cung, .chao-in, .chao-ic, .hien .th6-phieu i, .hien .hb-t u, .hu-dau { animation: none !important; } }
 </style>

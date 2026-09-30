@@ -396,7 +396,8 @@
       loading(false);
       if (r.ok) {
         state.soDu = r.soDu != null ? r.soDu : state.soDu; if (r.soVe != null) state.soVe = r.soVe; capNhatUser();
-        if (giaDinh) { toast('Đã thêm ' + r.luot + ' lượt gia đình ✦ – bạn có ' + r.soVe + ' lượt.'); if (state.result && state.result.khach && state.result.canMo) dungLuot(); return; }
+        if (giaDinh) { mungMo(g.ten); toast('Đã thêm ' + r.luot + ' lượt gia đình ✦ – bạn có ' + r.soVe + ' lượt.'); if (state.result && state.result.khach && state.result.canMo) dungLuot(); return; }
+        if (!r.daCo) mungMo(g.ten);
         toast(r.daCo ? 'Phần này đã được mở trước đó.' : 'Đã mở khóa ✦ – đang tải nội dung…'); if (cap) xemCapDoi(); else lapLai(); return;
       }
       state.soDu = r.soDu; capNhatUser();
@@ -968,6 +969,7 @@
     });
     dungMucLuc(); veCta(); veQc();
         if (window._danhDauCoso) window._danhDauCoso();
+    try { veChao(); setTimeout(hieuUng, 80); } catch (e) { if (window.console) console.error('[Sinh động]', e); }
   }
   /** Banner đầu trang: trước khi lập lá số là khung giới thiệu; sau đó là dải quảng cáo gọn, hiện ở mọi tab */
   function veQc() {
@@ -1175,6 +1177,11 @@
       '</div>';
     var chart = $('chart');
     chart.innerHTML = html;
+    if (!HU_IT) {   // "an sao": 12 cung hiện lần lượt, bắt đầu từ cung Mệnh
+      chart.classList.remove('an-sao'); void chart.offsetWidth; chart.classList.add('an-sao');
+      chart.querySelectorAll('.cung').forEach(function (el) { el.style.animationDelay = (((+el.getAttribute('data-chi') - I.menh) + 12) % 12 * 70) + 'ms'; });
+      setTimeout(function () { chart.classList.remove('an-sao'); }, 1500);
+    }
     chart.querySelectorAll('.cung').forEach(function (el) {
       el.addEventListener('click', function () { selectPalace(parseInt(el.getAttribute('data-chi'), 10)); });
     });
@@ -2658,6 +2665,108 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
     var y0 = new Date().getFullYear(), ds = [y0 - 1, y0, y0 + 1, y0 + 2];
     return '<div class="nam-xem"><span>Xem vận năm:</span>' + ds.map(function (y) { return '<button type="button" class="chip' + (y === vy ? ' on' : '') + '" data-nam-xem="' + y + '">' + y + (y > y0 ? ' ✦' : '') + '</button>'; }).join('') + '</div>';
   }
+  /* ---------- Sinh động & gần gũi: lời chào hôm nay, hiện dần khi cuộn, điểm số đếm lên, mừng mở khóa ---------- */
+  var HU_IT = (function () { try { return window.matchMedia('(prefers-reduced-motion: reduce)').matches; } catch (e) { return false; } })();
+  function huRut(n) { while (n > 9) n = String(n).split('').reduce(function (s, c) { return s + (+c); }, 0); return n; }
+  var HU_NGAY = {
+    1: ['khởi đầu', 'hợp để bắt tay vào việc mới, chủ động đề xuất ý tưởng'],
+    2: ['kết nối', 'hợp để lắng nghe, hợp tác, làm lành – đừng ép mọi việc phải nhanh'],
+    3: ['sáng tạo & trò chuyện', 'hợp để gặp gỡ, viết, trình bày; nhớ giữ lời nói nhẹ nhàng'],
+    4: ['chăm chỉ & sắp xếp', 'hợp để dọn dẹp, lập kế hoạch, làm việc cần tỉ mỉ'],
+    5: ['đổi mới & di chuyển', 'hợp để đi lại, thử điều mới; cẩn thận với quyết định bốc đồng'],
+    6: ['gia đình & chăm sóc', 'hợp để dành thời gian cho người thân, lo cho tổ ấm'],
+    7: ['lắng lại & suy ngẫm', 'hợp để đọc, học, nghỉ ngơi; chưa nên quyết việc lớn vội'],
+    8: ['tài chính & quyết đoán', 'hợp để bàn chuyện tiền bạc, công việc, ký kết có cân nhắc'],
+    9: ['hoàn tất & buông bỏ', 'hợp để khép lại việc cũ, giúp đỡ người khác, chuẩn bị chu kỳ mới']
+  };
+  var HU_NAM = { 1: 'năm gieo hạt – bắt đầu điều mới', 2: 'năm vun đắp quan hệ, kiên nhẫn chờ quả', 3: 'năm mở rộng, thể hiện bản thân', 4: 'năm xây nền móng, làm việc bền bỉ',
+    5: 'năm thay đổi, dịch chuyển', 6: 'năm gia đình, trách nhiệm và yêu thương', 7: 'năm nhìn lại, học hỏi, chăm sóc bên trong', 8: 'năm gặt hái về sự nghiệp, tài chính', 9: 'năm tổng kết, khép lại để sang chu kỳ mới' };
+  function chaoHtml(res) {
+    var I = res.tuvi.info, s = I.solar, now = new Date(), h = now.getHours();
+    var ten = String((state.input && state.input.name) || I.name || '').trim().split(/\s+/).pop() || 'bạn';
+    var buoi = h < 5 ? ['✨', 'Khuya rồi'] : h < 11 ? ['☀️', 'Chào buổi sáng'] : h < 13 ? ['🌤️', 'Chào buổi trưa'] : h < 18 ? ['⛅', 'Chào buổi chiều'] : h < 22 ? ['🌙', 'Chào buổi tối'] : ['✨', 'Khuya rồi'];
+    var py = huRut(huRut(s.day) + huRut(s.month) + huRut(String(now.getFullYear()).split('').reduce(function (a, c) { return a + (+c); }, 0)));
+    var pm = huRut(py + now.getMonth() + 1), pd = huRut(pm + now.getDate()), nd = HU_NGAY[pd];
+    var sn = new Date(now.getFullYear(), s.month - 1, s.day); if (sn < new Date(now.getFullYear(), now.getMonth(), now.getDate())) sn.setFullYear(now.getFullYear() + 1);
+    var conNgay = Math.round((sn - new Date(now.getFullYear(), now.getMonth(), now.getDate())) / 864e5), tuoiMoi = sn.getFullYear() - s.year;
+    var sinhNhat = conNgay === 0 ? '🎂 <b>Chúc mừng sinh nhật ' + tuoiMoi + ' tuổi!</b> Một vòng năm cá nhân mới bắt đầu – hãy ước một điều thật cụ thể nhé.'
+      : conNgay <= 60 ? '🎂 Còn <b>' + conNgay + ' ngày</b> nữa là sinh nhật ' + tuoiMoi + ' tuổi của bạn.' : '';
+    return '<div class="chao-in"><span class="chao-ic" aria-hidden="true">' + buoi[0] + '</span><div class="chao-nd">' +
+      '<b class="chao-t">' + buoi[1] + ', ' + esc(ten) + '!' + (h >= 22 || h < 5 ? ' Nhớ nghỉ sớm nhé.' : '') + '</b>' +
+      '<p>Hôm nay ' + now.getDate() + '/' + (now.getMonth() + 1) + ' là <b class="chao-so" title="Ngày cá nhân theo Thần số học">ngày số ' + pd + '</b> của bạn – ngày <b>' + nd[0] + '</b>: ' + nd[1] + '.</p>' +
+      '<p class="chao-phu">Năm ' + now.getFullYear() + ' là năm cá nhân số ' + py + ' – ' + HU_NAM[py] + '.' + (sinhNhat ? ' ' + sinhNhat : '') + '</p></div>' +
+      '<button type="button" class="chao-x" data-chao-x aria-label="Ẩn lời chào">✕</button></div>';
+  }
+  function veChao() {
+    var r = state.result, top = $('resTop'); if (!r || !top || !r.tuvi) return;
+    var el = $('chaoBan');
+    if (!el) { el = document.createElement('div'); el.id = 'chaoBan'; el.className = 'chao'; top.parentNode.insertBefore(el, top.nextSibling); }
+    var khoa = 'tcc_chao_' + new Date().toDateString();
+    var an = false; try { an = sessionStorage.getItem(khoa) === '1'; } catch (e) {}
+    el.hidden = an; if (an) return;
+    el.innerHTML = chaoHtml(r);
+    if (/Chúc mừng sinh nhật/.test(el.textContent) && !HU_IT) setTimeout(function () { huPhaoHoa(el, 22); }, 400);
+  }
+  /** Tia kim sa bung ra từ một phần tử (mừng mở khóa, sinh nhật) */
+  function huPhaoHoa(goc, n) {
+    if (HU_IT || !goc) return;
+    var r = goc.getBoundingClientRect(), wrap = document.createElement('div');
+    wrap.className = 'hu-tia'; wrap.style.left = (r.left + r.width / 2) + 'px'; wrap.style.top = (r.top + Math.min(r.height / 2, 60)) + 'px';
+    for (var i = 0; i < n; i++) {
+      var t = document.createElement('i'), a = (360 / n) * i + Math.random() * 12, d = 70 + Math.random() * 90;
+      t.style.setProperty('--x', (Math.cos(a * Math.PI / 180) * d).toFixed(0) + 'px'); t.style.setProperty('--y', (Math.sin(a * Math.PI / 180) * d).toFixed(0) + 'px');
+      t.style.animationDelay = (Math.random() * .15).toFixed(2) + 's'; if (i % 3 === 0) t.className = 'l';
+      wrap.appendChild(t);
+    }
+    document.body.appendChild(wrap); setTimeout(function () { wrap.remove(); }, 1600);
+  }
+  /** Mừng mở khóa: con dấu "Đã mở" đóng xuống giữa màn hình + kim sa */
+  function mungMo(ten) {
+    var o = document.createElement('div'); o.className = 'hu-mung'; o.setAttribute('role', 'status');
+    o.innerHTML = '<div class="hu-dau"><span class="han">開</span><b>Đã mở khóa</b>' + (ten ? '<small>' + esc(ten) + '</small>' : '') + '</div>';
+    document.body.appendChild(o); setTimeout(function () { huPhaoHoa(o.querySelector('.hu-dau'), 26); }, HU_IT ? 0 : 260);
+    setTimeout(function () { o.classList.add('di'); }, 1500); setTimeout(function () { o.remove(); }, 2000);
+  }
+  /** Điểm số đếm từ 0 lên – giữ đúng định dạng "7,6/10" */
+  function huDem(el) {
+    if (el._dem || HU_IT) return; var m = /^(\D*)(\d+(?:[.,]\d+)?)(.*)$/.exec(el.textContent.trim()); if (!m) return;
+    el._dem = 1; var dich = parseFloat(m[2].replace(',', '.')), le = (m[2].split(/[.,]/)[1] || '').length, t0 = null, goc = el.textContent;
+    function buoc(t) {
+      if (t0 == null) t0 = t; var k = Math.min(1, (t - t0) / 800), v = dich * (1 - Math.pow(1 - k, 3));
+      el.textContent = m[1] + v.toFixed(le).replace('.', ',') + m[3];
+      if (k < 1) requestAnimationFrame(buoc); else el.textContent = goc;
+    }
+    requestAnimationFrame(buoc);
+  }
+  var HU_DEM_SEL = '.dh-diem, .th6-phieu em, .cd-vong b, .vt-the-h em';
+  var huQs = null;
+  function huHien(el) {
+    el.classList.remove('cho-hien'); el.classList.add('hien');
+    el.querySelectorAll(HU_DEM_SEL).forEach(huDem); if (el.matches(HU_DEM_SEL)) huDem(el);
+  }
+  /** Gắn hiệu ứng "hiện dần khi cuộn tới" cho các khung mới dựng (gọi sau mỗi lần hiển thị kết quả) */
+  function hieuUng() {
+    if (HU_IT || !('IntersectionObserver' in window)) return;
+    if (!huQs) huQs = new IntersectionObserver(function (ds) {
+      ds.forEach(function (d) { if (d.isIntersecting) { huQs.unobserve(d.target); setTimeout(function () { huHien(d.target); }, (d.target._tre || 0)); } });
+    }, { rootMargin: '0px 0px -8% 0px', threshold: 0.06 });
+    var vh = window.innerHeight, k = 0;
+    document.querySelectorAll('.result-wrap .tab-page .panel, .result-wrap .tab-page .tg-head, .result-wrap .tab-page .chart-fig, .result-wrap .tab-page details.dh-lv').forEach(function (el) {
+      if (el._hu || el.closest('.pdf-root')) return; el._hu = 1;
+      var r = el.getBoundingClientRect(), dangThay = r.height && r.top < vh && r.bottom > 0;
+      if (!dangThay) el.classList.add('cho-hien');
+      el._tre = dangThay ? 0 : (k++ % 4) * 70;
+      huQs.observe(el);
+    });
+  }
+  (function ganSinhDong() {
+    document.addEventListener('click', function (e) {
+      if (e.target.closest && e.target.closest('[data-chao-x]')) {
+        var el = $('chaoBan'); if (el) { el.classList.add('di'); setTimeout(function () { el.hidden = true; el.classList.remove('di'); }, 300); }
+        try { sessionStorage.setItem('tcc_chao_' + new Date().toDateString(), '1'); } catch (x) {}
+      }
+    });
+  })();
   /* ---------- Hành trình dẫn dắt: nhập từng bước → khởi quẻ → xem lần lượt từng lá hé lộ ---------- */
   var HT = { buoc: 0, la: 0, ds: [], cho: false };
   var HT_BUOC = [
