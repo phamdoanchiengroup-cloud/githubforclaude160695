@@ -52,25 +52,26 @@ File này được Claude Code tự đọc khi mở repo. Nó thay cho "trí nh�
 - **Bố cục trang (máy tính ≥1081px):** cột trái `#navCol` (tab xếp dọc + mục lục, JS chuyển vào lúc khởi động), giữa là kết quả, phải là form. Điện thoại: tab ngang như cũ. Lá số Tử Vi trên điện thoại được thu nhỏ vừa màn hình (`coLaSo`; `chupLaSo` bỏ thu nhỏ khi chụp PNG/PDF; `drawOverlay` quy toạ độ về kích thước gốc).
 - **PDF bản đầy đủ (~82 trang, ~70 giây):** mỗi hệ lấy biểu đồ chính (`PDF_CHINH`) + văn dễ hiểu + các phần luận lĩnh vực/tổng hợp/lời khuyên (`PDF_LUAN`, theo `data-g` của khung Phần/Bước); Tử Vi lấy ảnh lá số + Phần 1 chân dung + Phần 3 Tử Vi × Bát Tự; vận hạn bỏ lịch ngày. Không chép bảng kỹ thuật. `tg-head` được coi là tiêu đề để không mồ côi cuối trang.
 - **Tiện ích bán lẻ (TienIch.gs + Script.html › `veTienIch`, `tiChay`, `tiKqHtml`; tab `ti` "✦ Tiện Ích"):** 7 công cụ, mỗi công cụ có phần hé lộ miễn phí + phần trả phí, luôn kèm mục "Cơ sở" và câu "chỉ để tham khảo" (`TI_THAM_KHAO`). API `tienIch(input, loai, thamSo, token)`:
-  - `xem_tuoi` (19 xu): Kim Lâu, Hoang Ốc, Tam Tai theo tuổi mụ; miễn phí năm nay, trả phí bảng 10 năm + hóa giải.
-  - `phong_thuy` (29 xu): cung phi Bát trạch (`tiCungPhi_`), miễn phí hướng Sinh Khí, trả phí 8 hướng + bố trí.
-  - `chon_ngay` (19 xu/việc/tháng, mã `ngay:<việc>:<yyyy-mm>`): chấm điểm ngày (hoàng đạo, trực, tú, Tam Nương, Nguyệt Kỵ, xung tuổi, Bành Tổ); "Nên tránh" khi xung tuổi hoặc điểm ≤ −4.
-  - `hop_tac` (29 xu, khóa theo cặp như `cap_doi`), `dat_ten` (49 xu, từ điển `TI_TEN` theo ngũ hành dụng thần).
+  - `xem_tuoi` (9 xu): Kim Lâu, Hoang Ốc, Tam Tai theo tuổi mụ; miễn phí năm nay, trả phí bảng 10 năm + hóa giải.
+  - `phong_thuy` (19 xu): cung phi Bát trạch (`tiCungPhi_`), miễn phí hướng Sinh Khí, trả phí 8 hướng + bố trí.
+  - `chon_ngay` (9 xu/việc/tháng, mã `ngay:<việc>:<yyyy-mm>`): chấm điểm ngày (hoàng đạo, trực, tú, Tam Nương, Nguyệt Kỵ, xung tuổi, Bành Tổ); "Nên tránh" khi xung tuổi hoặc điểm ≤ −4.
+  - `hop_tac` (19 xu, khóa theo cặp như `cap_doi`), `dat_ten` (29 xu, từ điển `TI_TEN` theo ngũ hành dụng thần).
   - `gieoQue` (Mai Hoa theo thời gian; câu đầu miễn phí, sau đó 9 xu/câu; sheet `GieoQue`).
-  - `dangKyBanTin` (99 xu, 12 tháng; email hằng tháng qua `guiBanTinThang`, chủ dự án chạy `caiDatBanTin` một lần để tạo trigger).
+  - `dangKyBanTin` (39 xu, 12 tháng; email hằng tháng qua `guiBanTinThang`, chủ dự án chạy `caiDatBanTin` một lần để tạo trigger).
   - `xem_tuoi`, `phong_thuy` nằm trong `TT_TRON_GOI`.
 - **Tab (Index.html):** Lá số → Tổng quan 6 hệ → **Vận hạn** (`page-vh`, dựng bởi `veVanHan` trong Script.html; gom đại vận, năm, tháng, ngày, biến cố) → Bát Tự, Chiêm tinh, Thần số, HD, Hà Lạc → Cặp đôi → Lịch sử.
 
 ## Mô hình bán hàng (ThanhToan.gs) – bán theo giai đoạn
 - `TT_PHAN_MAC_DINH` là bảng giá mặc định; chủ dự án sửa được trong Quản trị.
+- **Chiến lược 10/2026: kéo người dùng.** Mọi phần 9–49 xu, trường `goc` = giá cũ để hiện gạch ngang (`giaHtml` ở client). `TT_GIA_PHIEN`: bảng giá lưu trong Script Properties không cùng phiên thì bỏ qua phần giá/gói nạp (chỉ giữ mức thưởng) – tăng số này mỗi khi đổi giá mặc định. `TT_KM_MAC_DINH`: quà đăng ký 19 xu (đủ mở `co_ban`), mời bạn đăng ký thì cả hai +9 xu (trần 30 lượt/người mời, đếm `soMoiDK` trong tài khoản), vẫn giữ 20% lần nạp đầu của bạn bè. `dangKy` → `ttQuaDangKy_` trả `r.qua`. `bangGiaCongKhai()` cho khách chưa đăng nhập (kèm `url` để làm link mời). Client: `quaDK()`, `linkMoi()`, `chiaSe()` (Web Share, không có thì chép lời mời), `moiBanHtml()` (cuối tab Tổng quan và Tiện ích), nút "↗ Mời bạn bè" ở thẻ hồ sơ, `#wlQua` ở trang chủ, `#rgQua` trong hộp đăng ký; khách chưa đăng nhập thấy CTA "Đăng ký nhận quà & mở Tổng hợp" (`tinhTrangMua`, `th6KhachHtml`, `tongKhoaHtml`). `tests/thanh-toan.js` ghim bảng giá cũ cho phần đầu, phần cuối kiểm tra giá mới + quà.
 - **Luận giải 6 hệ miễn phí** (12 cung Tử Vi, Bát Tự, Chiêm tinh, Thần số, HD, Hà Lạc).
-- `co_ban` (49 xu) nay là **Tổng hợp 6 hệ**: 9 lĩnh vực, chân dung, con người, tình duyên, đường đời, mật mã; mở vĩnh viễn. Client: `tongKhoa(r)`, `tongKhoaHtml` (tab Tổng quan khóa), `tinhTrangMua` mời mở Tổng hợp (trừ ở tab Vận hạn). Mua vận hạn/biến cố/PDF không cần `co_ban`; riêng `phoi_ngau` cần `co_ban` (nằm trong phần Tổng hợp).
+- `co_ban` (19 xu) nay là **Tổng hợp 6 hệ**: 9 lĩnh vực, chân dung, con người, tình duyên, đường đời, mật mã; mở vĩnh viễn. Client: `tongKhoa(r)`, `tongKhoaHtml` (tab Tổng quan khóa), `tinhTrangMua` mời mở Tổng hợp (trừ ở tab Vận hạn). Mua vận hạn/biến cố/PDF không cần `co_ban`; riêng `phoi_ngau` cần `co_ban` (nằm trong phần Tổng hợp).
 - **Vận hạn bán lẻ theo giai đoạn.** Mỗi lần mở ghi một dòng vào sheet `MoKhoa` (cột "Phần") với mã:
-  - `dv:<năm bắt đầu>`: một đại vận, 19 xu (vận đã qua 9 xu).
-  - `nam:<năm>`: vận năm, 29 xu.
+  - `dv:<năm bắt đầu>`: một đại vận, 9 xu.
+  - `nam:<năm>`: vận năm, 19 xu.
   - `thang:<yyyy-mm>`: nhật vận một tháng, 9 xu.
-  - `dong_hanh:<năm>`: đồng hành cả năm, 79 xu (trừ phần đã mua).
-- **Gói trọn:** `tron_dai_van` 99 xu. `tron_goi` (Trọn đời, 149 xu) gồm `TT_TRON_GOI`, **không gồm năm/tháng** (vẫn giữ nguồn thu định kỳ).
+  - `dong_hanh:<năm>`: đồng hành cả năm, 39 xu (trừ phần đã mua).
+- **Gói trọn:** `tron_dai_van` 39 xu. `tron_goi` (Trọn đời, 49 xu) gồm `TT_TRON_GOI`, **không gồm năm/tháng** (vẫn giữ nguồn thu định kỳ).
 - **Gói gia đình:** `gia_dinh_3` / `gia_dinh_5` cộng lượt vào sheet `Ve`. `dungLuotGiaDinh` dùng 1 lượt = Bản mở + vận năm cho 1 lá số.
 - **Quyền:** `ttQuyen_` trả `q` gồm cờ từng phần, `q.dvMo`, `q.namMo`, `q.thangMo`, `q.dhNam` và `dvAll/namAll/thangAll`.
   - **Chú ý:** không đặt tên map trùng tên gói (`nam`, `thang`), vì từng gây lỗi ghi đè.

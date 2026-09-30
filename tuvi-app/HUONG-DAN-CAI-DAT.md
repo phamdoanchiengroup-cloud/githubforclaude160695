@@ -164,27 +164,39 @@ Nếu nghi bị lộ, vào my.payos.vn tạo lại khóa, rồi nhập mã mới
 ## Phần G – Kiểm tra cuối cùng
 
 - [ ] Mở link ở cửa sổ ẩn danh: lập được lá số, thấy phần xem thử và nút mở khóa.
-- [ ] Đăng ký một tài khoản thử → nạp → xu được cộng, kèm thưởng 100% cho lần nạp đầu.
-- [ ] Mở khóa *Bản mở* (49 xu) → xem được đầy đủ → tải được PDF.
+- [ ] Đăng ký một tài khoản thử → được tặng 19 xu → mở ngay *Tổng hợp 6 hệ* (19 xu).
+- [ ] Nạp thử → xu được cộng, kèm thưởng 100% cho lần nạp đầu → tải được PDF.
 - [ ] Đăng nhập `chienpham`: xem toàn bộ, không bị trừ xu, vào được trang quản trị.
 - [ ] Bảng tính có dữ liệu ở `DonHang`, `SoCai`, `MoKhoa`, `Vi`.
 
 
-## Phụ lục – Bảng giá mặc định (bán theo giai đoạn)
+## Phụ lục – Bảng giá mặc định (giá khai trương – ưu tiên kéo người dùng)
 
-Sửa được trong **Tài khoản → Quản trị → Bảng giá**. 1 xu = 1.000đ.
+Sửa được trong **Tài khoản → Quản trị → Bảng giá**. 1 xu = 1.000đ. Giá cũ hiện gạch ngang bên cạnh để khách thấy mức giảm.
 
-| Gói | Giá | Ghi chú |
+| Gói | Giá (giá cũ) | Ghi chú |
 |---|---|---|
-| Bản mở | 49 xu | Luận giải bản mệnh 6 hệ, mở vĩnh viễn cho 1 lá số |
-| 1 đại vận (10 năm) | 19 xu | Vận **đã qua** chỉ 9 xu – để khách tự kiểm chứng trước khi mua vận tương lai |
-| Trọn 12 đại vận | 99 xu | |
-| Vận năm | 29 xu / năm | Tiểu vận, 12 tháng, lưu niên Bát Tự, quẻ năm – **năm sau mua tiếp** |
+| Tổng hợp 6 hệ | **19 xu** (49) | Kết luận 9 lĩnh vực, chân dung, tình duyên, đường đời – mở vĩnh viễn cho 1 lá số |
+| 1 đại vận (10 năm) | 9 xu (19) | Vận đã qua cũng 9 xu |
+| Trọn 12 đại vận | 39 xu (99) | |
+| Vận năm | 19 xu / năm (29) | **Năm sau mua tiếp** |
 | Nhật vận | 9 xu / tháng | Lịch từng ngày trong tháng |
-| Đồng hành cả năm | 79 xu | Vận năm + nhật vận 12 tháng (trừ phần đã mua của năm đó) |
-| Biến cố hội tụ · Phối ngẫu · PDF · Dò giờ | 29 · 19 · 29 · 19 xu | |
-| Trọn đời | 149 xu | Bản mở + 12 đại vận + biến cố + phối ngẫu + PDF + dò giờ (không gồm vận năm/tháng) |
-| Gia đình 3 / 5 người | 129 / 199 xu | Mỗi lượt mở Bản mở + vận năm cho 1 lá số bất kỳ |
-| Cặp đôi | 29 xu / cặp | |
+| Đồng hành cả năm | 39 xu (79) | Vận năm + nhật vận 12 tháng (trừ phần đã mua) |
+| Biến cố · Phối ngẫu · PDF · Dò giờ | 19 · 9 · 19 · 9 xu | |
+| Trọn đời | **49 xu** (149) | Tổng hợp + 12 đại vận + biến cố + phối ngẫu + PDF + dò giờ + xem tuổi + phong thủy |
+| Gia đình 3 / 5 người | 39 / 49 xu (129 / 199) | Mỗi lượt mở Tổng hợp + vận năm cho 1 lá số bất kỳ |
+| Cặp đôi · Hợp tác | 19 xu / cặp (29) | |
+| Xem tuổi · Chọn ngày · Phong thủy · Đặt tên | 9 · 9 · 19 · 29 xu | Chọn ngày tính theo 1 việc / 1 tháng |
+| Gieo quẻ | 9 xu / câu | Câu đầu miễn phí |
+| Bản tin email | 39 xu / 12 tháng (99) | |
+
+**Gói nạp:** 20.000đ → 20 xu · 50.000đ → 55 xu · 100.000đ → 120 xu · 200.000đ → 260 xu. Lần nạp đầu tặng thêm 100%.
+
+**Chương trình kéo người dùng (chỉnh được trong Quản trị → Thưởng):**
+- Quà chào mừng khi đăng ký: **19 xu** – đủ mở Tổng hợp 6 hệ mà không cần nạp tiền.
+- Mời bạn: mỗi người đăng ký qua link mời → **người mời +9 xu, người được mời +9 xu** (tối đa 30 lượt thưởng mỗi người mời). Khi bạn bè nạp lần đầu, người mời nhận thêm 20%.
+- Đặt quà = 0 để tắt.
+
+**Lưu ý khi đổi bảng giá mặc định trong mã:** bảng giá bạn từng bấm "Lưu" ở Quản trị theo mức cũ sẽ tự bị bỏ qua (chỉ giữ các mức thưởng %), để giá mới có hiệu lực ngay.
 
 Khách đã mua "Lưu niên" hoặc "Trọn gói" theo giá cũ vẫn giữ nguyên quyền (lưu niên cũ = xem mọi năm/tháng).

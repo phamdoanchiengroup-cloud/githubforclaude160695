@@ -13,35 +13,39 @@
  *    (Apps Script trả 302 cho POST và không đọc được header).
  * ============================================================
  */
+/** Bảng giá "kéo người dùng" (10/2026): mọi phần 9–49 xu. goc = giá cũ, chỉ để hiển thị gạch ngang. */
+var TT_GIA_PHIEN = 2;   // tăng số này khi đổi bảng giá mặc định → bảng giá cũ đã lưu trong Quản trị bị bỏ qua
 var TT_PHAN_MAC_DINH = {
-  co_ban: { ten: 'Tổng hợp 6 hệ – kết luận 9 lĩnh vực, chân dung, con người, tình duyên, đường đời', xu: 49 },
-  dai_van: { ten: 'Luận chi tiết 1 đại vận (10 năm)', xu: 19, theo: 'dv' },
+  co_ban: { ten: 'Tổng hợp 6 hệ – kết luận 9 lĩnh vực, chân dung, con người, tình duyên, đường đời', xu: 19, goc: 49 },
+  dai_van: { ten: 'Luận chi tiết 1 đại vận (10 năm)', xu: 9, goc: 19, theo: 'dv' },
   dai_van_qua: { ten: 'Đại vận đã qua – kiểm chứng', xu: 9, theo: 'dv' },
-  tron_dai_van: { ten: 'Trọn 12 đại vận cả đời', xu: 99 },
-  nam: { ten: 'Vận năm – tiểu vận, 12 tháng, lưu niên', xu: 29, theo: 'nam' },
+  tron_dai_van: { ten: 'Trọn 12 đại vận cả đời', xu: 39, goc: 99 },
+  nam: { ten: 'Vận năm – tiểu vận, 12 tháng, lưu niên', xu: 19, goc: 29, theo: 'nam' },
   thang: { ten: 'Nhật vận từng ngày trong 1 tháng', xu: 9, theo: 'thang' },
-  dong_hanh: { ten: 'Đồng hành cả năm – vận năm + nhật vận 12 tháng', xu: 79, theo: 'nam' },
-  bien_co: { ten: 'Biến cố hội tụ 30 năm & dự đoán cả đời', xu: 29 },
-  phoi_ngau: { ten: 'Chân dung người phối ngẫu & tuổi hợp', xu: 19 },
-  pdf: { ten: 'PDF bản đầy đủ', xu: 29 },
-  do_gio: { ten: 'Dò chính xác giờ sinh', xu: 19 },
-  tron_goi: { ten: 'Trọn đời – tổng hợp 6 hệ, 12 đại vận, biến cố, phối ngẫu, PDF, dò giờ', xu: 149 },
-  cap_doi: { ten: 'Xem cặp đôi – hợp hôn 2 lá số', xu: 29 },   // mở theo từng cặp, không thuộc trọn gói
+  dong_hanh: { ten: 'Đồng hành cả năm – vận năm + nhật vận 12 tháng', xu: 39, goc: 79, theo: 'nam' },
+  bien_co: { ten: 'Biến cố hội tụ 30 năm & dự đoán cả đời', xu: 19, goc: 29 },
+  phoi_ngau: { ten: 'Chân dung người phối ngẫu & tuổi hợp', xu: 9, goc: 19 },
+  pdf: { ten: 'PDF bản đầy đủ', xu: 19, goc: 29 },
+  do_gio: { ten: 'Dò chính xác giờ sinh', xu: 9, goc: 19 },
+  tron_goi: { ten: 'Trọn đời – tổng hợp 6 hệ, 12 đại vận, biến cố, phối ngẫu, PDF, dò giờ', xu: 49, goc: 149 },
+  cap_doi: { ten: 'Xem cặp đôi – hợp hôn 2 lá số', xu: 19, goc: 29 },   // mở theo từng cặp, không thuộc trọn gói
   // Tiện ích (TienIch.gs)
-  xem_tuoi: { ten: 'Xem tuổi làm nhà, cưới hỏi – 10 năm + tuổi mượn', xu: 19 },
-  phong_thuy: { ten: 'Phong thủy Bát trạch – 8 hướng, bố trí, màu hợp', xu: 29 },
-  chon_ngay: { ten: 'Chọn ngày tốt – 1 việc trong 1 tháng', xu: 19, theo: 'ngay' },
-  hop_tac: { ten: 'Hợp tác làm ăn – ghép 2 lá số', xu: 29 },        // mở theo từng cặp
-  dat_ten: { ten: 'Đặt tên con – chấm tên & gợi ý theo ngũ hành', xu: 49 },   // mở theo lá số của bé
+  xem_tuoi: { ten: 'Xem tuổi làm nhà, cưới hỏi – 10 năm + tuổi mượn', xu: 9, goc: 19 },
+  phong_thuy: { ten: 'Phong thủy Bát trạch – 8 hướng, bố trí, màu hợp', xu: 19, goc: 29 },
+  chon_ngay: { ten: 'Chọn ngày tốt – 1 việc trong 1 tháng', xu: 9, goc: 19, theo: 'ngay' },
+  hop_tac: { ten: 'Hợp tác làm ăn – ghép 2 lá số', xu: 19, goc: 29 },        // mở theo từng cặp
+  dat_ten: { ten: 'Đặt tên con – chấm tên & gợi ý theo ngũ hành', xu: 29, goc: 49 },   // mở theo lá số của bé
   gieo_que: { ten: 'Gieo quẻ hỏi việc – 1 câu hỏi', xu: 9 },         // trừ theo từng câu (gieoQue)
-  ban_tin: { ten: 'Bản tin vận tháng qua email – 12 tháng', xu: 99 }, // đăng ký theo năm (dangKyBanTin)
-  gia_dinh_3: { ten: 'Gói gia đình 3 người', xu: 129, luot: 3 },
-  gia_dinh_5: { ten: 'Gói gia đình 5 người', xu: 199, luot: 5 },
+  ban_tin: { ten: 'Bản tin vận tháng qua email – 12 tháng', xu: 39, goc: 99 }, // đăng ký theo năm (dangKyBanTin)
+  gia_dinh_3: { ten: 'Gói gia đình 3 người', xu: 39, goc: 129, luot: 3 },
+  gia_dinh_5: { ten: 'Gói gia đình 5 người', xu: 49, goc: 199, luot: 5 },
   luu_nien: { ten: 'Lưu niên nhiều năm (gói cũ)', xu: 19, an: true }   // gói cũ: người đã mua được xem mọi năm/tháng
 };
 /** Phần thuộc Trọn đời (không gồm vận năm/tháng – bán theo từng năm) */
 var TT_TRON_GOI = ['co_ban', 'tron_dai_van', 'bien_co', 'phoi_ngau', 'pdf', 'do_gio', 'xem_tuoi', 'phong_thuy'];
-var TT_GOI_MAC_DINH = [{ tien: 50000, xu: 50 }, { tien: 100000, xu: 110 }, { tien: 200000, xu: 240 }, { tien: 500000, xu: 650 }];
+var TT_GOI_MAC_DINH = [{ tien: 20000, xu: 20 }, { tien: 50000, xu: 55 }, { tien: 100000, xu: 120 }, { tien: 200000, xu: 260 }];
+/** Thưởng kéo người dùng: quà đăng ký, thưởng giới thiệu khi bạn bè đăng ký (xu), trần số lượt thưởng giới thiệu mỗi người */
+var TT_KM_MAC_DINH = { lanDau: 100, gioiThieu: 20, dangKy: 19, gtDangKy: 9, gtToiDa: 30 };
 var TT_SH = {
   Vi: ['Tài khoản', 'Số dư (xu)', 'Cập nhật'],
   SoCai: ['Thời gian', 'Tài khoản', 'Thay đổi (xu)', 'Số dư sau', 'Lý do', 'Tham chiếu'],
@@ -88,19 +92,46 @@ function ttKhoa_(fn) {
 
 /* ---------------- Bảng giá & cấu hình ---------------- */
 function ttBangGia_() {
-  var phan = JSON.parse(JSON.stringify(TT_PHAN_MAC_DINH)), goi = TT_GOI_MAC_DINH.slice(), km = { lanDau: 100, gioiThieu: 20 };
+  var phan = JSON.parse(JSON.stringify(TT_PHAN_MAC_DINH)), goi = TT_GOI_MAC_DINH.slice(), km = JSON.parse(JSON.stringify(TT_KM_MAC_DINH));
   try {
     var v = PropertiesService.getScriptProperties().getProperty('TT_BANG_GIA');
     if (v) {
-      var o = JSON.parse(v);
-      Object.keys(o.phan || {}).forEach(function (k) { if (phan[k] && o.phan[k] >= 0) phan[k].xu = Math.round(o.phan[k]); });
-      if (o.goi && o.goi.length) goi = o.goi.filter(function (g) { return g.tien > 0 && g.xu > 0; });
+      var o = JSON.parse(v), cungPhien = +o.phien === TT_GIA_PHIEN;
+      // Bảng giá lưu từ phiên cũ (giá cao) bị bỏ qua – chỉ giữ các mức thưởng
+      if (cungPhien) {
+        Object.keys(o.phan || {}).forEach(function (k) { if (phan[k] && o.phan[k] >= 0) phan[k].xu = Math.round(o.phan[k]); });
+        if (o.goi && o.goi.length) goi = o.goi.filter(function (g) { return g.tien > 0 && g.xu > 0; });
+      }
       if (o.thuongLanDau != null) km.lanDau = Math.max(0, Math.min(500, +o.thuongLanDau || 0));
       if (o.thuongGioiThieu != null) km.gioiThieu = Math.max(0, Math.min(100, +o.thuongGioiThieu || 0));
+      if (o.thuongDangKy != null) km.dangKy = Math.max(0, Math.min(200, +o.thuongDangKy || 0));
+      if (o.thuongGTDangKy != null) km.gtDangKy = Math.max(0, Math.min(100, +o.thuongGTDangKy || 0));
     }
   } catch (e) { /* dùng mặc định */ }
-  return { phan: phan, goi: goi, xuVnd: 1000, thuongLanDau: km.lanDau, thuongGioiThieu: km.gioiThieu };
+  Object.keys(phan).forEach(function (k) { if (!(phan[k].goc > phan[k].xu)) delete phan[k].goc; });
+  return { phan: phan, goi: goi, xuVnd: 1000, thuongLanDau: km.lanDau, thuongGioiThieu: km.gioiThieu,
+    thuongDangKy: km.dangKy, thuongGTDangKy: km.gtDangKy, gtToiDa: km.gtToiDa };
 }
+/** Bảng giá công khai (khách chưa đăng nhập cũng xem được) */
+function bangGiaCongKhai() {
+  var bg = ttBangGia_();
+  bg.url = (function () { try { return ScriptApp.getService().getUrl(); } catch (e) { return ''; } })();
+  return bg;
+}
+/** Quà khi tự đăng ký + thưởng người giới thiệu. Gọi từ dangKy (TaiKhoan.gs) sau khi tạo tài khoản. */
+function ttQuaDangKy_(u, gt) {
+  var bg = ttBangGia_(), qua = { xu: 0, gt: 0 };
+  ttKhoa_(function () {
+    if (bg.thuongDangKy > 0) { ttCong_(u, bg.thuongDangKy, 'Quà chào mừng khi đăng ký', 'DK'); qua.xu += bg.thuongDangKy; }
+    if (!gt || !(bg.thuongGTDangKy > 0)) return;
+    var o = tkDoc_(gt); if (!o) return;
+    ttCong_(u, bg.thuongGTDangKy, 'Thưởng đăng ký qua lời mời của ' + gt, 'DK'); qua.xu += bg.thuongGTDangKy; qua.gt = bg.thuongGTDangKy;
+    var n = +o.soMoiDK || 0;
+    if (n < bg.gtToiDa) { ttCong_(gt, bg.thuongGTDangKy, 'Bạn ' + u + ' đăng ký qua lời mời của bạn', 'GT'); o.soMoiDK = n + 1; tkGhi_(gt, o); }
+  });
+  return qua;
+}
+
 function ttCauHinh_() {
   var c = {};
   try { c = JSON.parse(PropertiesService.getScriptProperties().getProperty('TT_CAU_HINH') || '{}'); } catch (e) { c = {}; }
@@ -456,8 +487,9 @@ function qtLuuBangGia(token, bg) {
   if (!goi.length) throw new Error('Cần ít nhất một gói nạp (số tiền ≥ 2.000đ).');
   var cu = ttBangGia_();
   function pct(v, mac, tran) { return v == null || v === '' || isNaN(+v) ? mac : Math.max(0, Math.min(tran, Math.round(+v))); }
-  PropertiesService.getScriptProperties().setProperty('TT_BANG_GIA', JSON.stringify({ phan: phan, goi: goi,
-    thuongLanDau: pct(bg && bg.thuongLanDau, cu.thuongLanDau, 500), thuongGioiThieu: pct(bg && bg.thuongGioiThieu, cu.thuongGioiThieu, 100) }));
+  PropertiesService.getScriptProperties().setProperty('TT_BANG_GIA', JSON.stringify({ phien: TT_GIA_PHIEN, phan: phan, goi: goi,
+    thuongLanDau: pct(bg && bg.thuongLanDau, cu.thuongLanDau, 500), thuongGioiThieu: pct(bg && bg.thuongGioiThieu, cu.thuongGioiThieu, 100),
+    thuongDangKy: pct(bg && bg.thuongDangKy, cu.thuongDangKy, 200), thuongGTDangKy: pct(bg && bg.thuongGTDangKy, cu.thuongGTDangKy, 100) }));
   return ttBangGia_();
 }
 function qtLuuCauHinh(token, moi) {

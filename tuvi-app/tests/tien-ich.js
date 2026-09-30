@@ -19,20 +19,21 @@ let r = ctx.tienIch(inp, 'xem_tuoi', {}, ''); kt(!r.mo && !r.bang && r.nay && r.
 r = ctx.tienIch(inp, 'phong_thuy', {}, ''); kt(!r.mo && !r.huong && r.cungPhi === 'Khảm', 'phong thủy miễn phí: cung phi, chưa có 8 hướng');
 r = ctx.tienIch(inp, 'chon_ngay', { viec: 'cuoi', thang: '2026-11' }, ''); kt(!r.mo && !r.ngay && r.dem && r.ma === 'ngay:cuoi:2026-11', 'chọn ngày miễn phí: chỉ số ngày tốt');
 const dk = ctx.dangKy('khachti', 'matkhau123', 'Khách TI', '0912000111', ''); const tok = dk.token;
+const G = k => ctx.TT_PHAN_MAC_DINH[k].xu, qua0 = ctx.ttSoDu_('khachti');
 ctx.ttKhoa_(() => ctx.ttCong_('khachti', 300, 'test', ''));
-let m = ctx.muaPhan(tok, inp, 'xem_tuoi'); kt(m.ok && m.gia === 19, 'mua xem tuổi 19 xu');
+let m = ctx.muaPhan(tok, inp, 'xem_tuoi'); kt(m.ok && m.gia === G('xem_tuoi'), 'mua xem tuổi ' + G('xem_tuoi') + ' xu');
 r = ctx.tienIch(inp, 'xem_tuoi', { muon: 1965 }, tok); kt(r.mo && r.bang.length === 10 && r.muon, 'đã mua: 10 năm + tuổi mượn');
-m = ctx.muaPhan(tok, inp, 'chon_ngay', 'cuoi|2026-11'); kt(m.ok && m.gia === 19, 'mua chọn ngày 1 việc 1 tháng 19 xu');
+m = ctx.muaPhan(tok, inp, 'chon_ngay', 'cuoi|2026-11'); kt(m.ok && m.gia === G('chon_ngay'), 'mua chọn ngày 1 việc 1 tháng ' + G('chon_ngay') + ' xu');
 r = ctx.tienIch(inp, 'chon_ngay', { viec: 'cuoi', thang: '2026-11' }, tok); kt(r.mo && r.ngay.length === 30, 'chọn ngày đã mua: đủ 30 ngày');
 r = ctx.tienIch(inp, 'chon_ngay', { viec: 'cuoi', thang: '2026-12' }, tok); kt(!r.mo, 'tháng khác phải mua riêng');
 m = ctx.muaPhan(tok, inp, 'chon_ngay', 'cuoi|2026-11'); kt(m.daCo, 'mua lại cùng việc – tháng: đã có');
 const nu = { name: 'Trần Thị Mai', gender: 'nu', calendar: 'duong', day: 3, month: 11, year: 1996, hour: 7, minute: 0 };
 r = ctx.tienIch({ a: inp, b: nu }, 'hop_tac', {}, tok); kt(!r.mo && r.diem > 0 && !r.dong, 'hợp tác miễn phí: chỉ điểm');
-m = ctx.muaPhan(tok, { a: inp, b: nu }, 'hop_tac'); kt(m.ok && m.gia === 29, 'mua hợp tác theo cặp 29 xu');
+m = ctx.muaPhan(tok, { a: inp, b: nu }, 'hop_tac'); kt(m.ok && m.gia === G('hop_tac'), 'mua hợp tác theo cặp ' + G('hop_tac') + ' xu');
 r = ctx.tienIch({ a: inp, b: nu }, 'hop_tac', {}, tok); kt(r.mo && r.dong.length && r.vaiTro.length === 2, 'hợp tác đã mua: chi tiết + vai trò');
 const con = { name: '', gender: 'nu', calendar: 'duong', day: 10, month: 3, year: 2027, hour: 9, minute: 0 };
 r = ctx.tienIch(con, 'dat_ten', { ho: 'Nguyễn Thị', ten: ['Hà', 'Ngọc'] }, tok); kt(!r.mo && r.cham.length === 1 && !r.goiY, 'đặt tên miễn phí: chấm 1 tên');
-m = ctx.muaPhan(tok, con, 'dat_ten'); kt(m.ok && m.gia === 49, 'mua đặt tên 49 xu');
+m = ctx.muaPhan(tok, con, 'dat_ten'); kt(m.ok && m.gia === G('dat_ten'), 'mua đặt tên ' + G('dat_ten') + ' xu');
 r = ctx.tienIch(con, 'dat_ten', { ho: 'Nguyễn Thị', ten: ['Hà', 'Ngọc'] }, tok); kt(r.mo && r.cham.length === 2 && r.goiY.length > 5 && r.cham[0].ten === 'Hà', 'đặt tên đã mua: chấm nhiều tên + gợi ý, tên hợp dụng thần xếp trên');
 // Gieo quẻ: câu đầu miễn phí, câu sau 9 xu
 let g = ctx.gieoQue('Tôi có nên nhận công việc mới không?', 'cong_viec', tok); kt(g.ok && g.mienPhi && g.gia === 0 && g.luan.length >= 4, 'gieo quẻ câu đầu miễn phí');
@@ -41,10 +42,10 @@ g = ctx.gieoQue('Việc mua nhà năm nay có thuận không?', 'tai_loc', tok);
 kt(ctx.dsGieoQue(tok).length === 2, 'lưu lịch sử câu hỏi');
 try { ctx.muaPhan(tok, inp, 'gieo_que'); kt(false, 'gieo_que không mua qua muaPhan'); } catch (e) { kt(true, 'gieo_que chỉ mua trong công cụ'); }
 // Bản tin
-let b = ctx.dangKyBanTin(inp, 'an@example.com', tok); kt(b.ok && b.gia === 99 && /^\d{4}-\d{2}-\d{2}$/.test(b.hanDen), 'đăng ký bản tin 99 xu / 12 tháng');
+let b = ctx.dangKyBanTin(inp, 'an@example.com', tok); kt(b.ok && b.gia === G('ban_tin') && /^\d{4}-\d{2}-\d{2}$/.test(b.hanDen), 'đăng ký bản tin ' + G('ban_tin') + ' xu / 12 tháng');
 kt(ctx.dsBanTin(tok).length === 1, 'danh sách bản tin của tôi');
 const html = ctx.tiBanTinHtml_(Object.assign({}, inp), 2026, 11); kt(/Vận tháng 11\/2026/.test(html) && /Ngày tốt/.test(html), 'nội dung email bản tin');
-kt(ctx.ttSoDu_('khachti') === 300 - 19 - 19 - 29 - 49 - 9 - 99, 'số dư khớp (' + ctx.ttSoDu_('khachti') + ')');
+kt(ctx.ttSoDu_('khachti') === qua0 + 300 - G('xem_tuoi') - G('chon_ngay') - G('hop_tac') - G('dat_ten') - G('gieo_que') - G('ban_tin'), 'số dư khớp (' + ctx.ttSoDu_('khachti') + ')');
 // Trọn đời gồm xem tuổi & phong thủy
 kt(ctx.TT_TRON_GOI.indexOf('xem_tuoi') >= 0 && ctx.TT_TRON_GOI.indexOf('phong_thuy') >= 0, 'Trọn đời gồm xem tuổi, phong thủy');
 console.log('Tiện ích: đạt ' + ok + '/' + (ok + sai));
