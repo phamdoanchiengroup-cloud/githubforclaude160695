@@ -30,7 +30,7 @@ Web app lập lá số **Tử Vi Đẩu Số 12 cung** (phái Việt Nam) kết 
 | `Index.html` | Khung trang |
 | `Styles.html` | CSS |
 | `Anh.html` | *(Tùy chọn)* Ảnh quảng bá nhúng base64, hiện ở màn chào và trang cuối PDF xem thử; không có file này web vẫn chạy |
-| `LaSo3D.html` | *(Tùy chọn, tự sinh bằng `node tools/demo-3d.js`)* Lá số Tử Vi 3D + Tứ Trụ 3D, mở toàn màn hình trong khung riêng (`window.moLaSo3D`, `window.moBatTu3D`); không có file này web vẫn chạy |
+| `LaSo3D.gs` | *(Tùy chọn, tự sinh bằng `node tools/demo-3d.js`)* Mã xem 3D (Tử Vi + Tứ Trụ) dạng chuỗi; trình duyệt gọi `layMa3D()` khi bấm nút 3D lần đầu rồi chạy (`window.moLaSo3D`, `window.moBatTu3D`); không có file này web vẫn chạy |
 | `Script.html` | JS trình duyệt: form, vẽ lá số 4×4, tam hợp–xung chiếu, bánh xe bản đồ sao, bodygraph, tab luận giải, xuất PNG / **PDF (A4, có bìa, chọn phần)** / in |
 | `appsscript.json` | Manifest (V8, múi giờ Asia/Ho_Chi_Minh, cấu hình web app) |
 

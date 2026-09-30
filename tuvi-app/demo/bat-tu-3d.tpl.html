@@ -178,7 +178,22 @@ footer a { color: var(--gold); }
   </div>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
+<script>
+/* Nạp Three.js (thử lần lượt nhiều nguồn) và hiện lỗi ngay trên màn hình nếu có */
+(function () {
+  var ds = ['https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js', 'https://unpkg.com/three@0.160.0/build/three.min.js'];
+  window.__cho3D = new Promise(function (ok) {
+    (function thu(i) {
+      if (window.THREE) return ok(true);
+      if (i >= ds.length) return ok(false);
+      var s = document.createElement('script'); s.src = ds[i];
+      s.onload = function () { ok(!!window.THREE); }; s.onerror = function () { s.remove(); thu(i + 1); };
+      document.head.appendChild(s);
+    })(0);
+  });
+  window.addEventListener('error', function (e) { var l = document.getElementById('loi'); if (l && e && e.message) { l.hidden = false; l.textContent = 'Lỗi hiển thị 3D: ' + e.message + ' – hãy chụp màn hình này gửi cho người hỗ trợ.'; } });
+})();
+</script>
 <script>window.BATTU = /*DATA*/null;</script>
 <script>
 (function () {
@@ -378,7 +393,7 @@ footer a { color: var(--gold); }
   }
 
   /* ---------------- Cảnh 3D ---------------- */
-  var T = window.THREE, S = null;
+  var T = null, S = null;
   var XT = [-6.3, -2.1, 2.1, 6.3];                              // Năm, Tháng, Ngày, Giờ – trái sang phải
   var TAM_HANH = new (function () { this.c = [0, 1.2, 7.2]; this.r = 4.3; })();
   function viTriHanh(h) { var i = SINH.indexOf(h), a = i / 5 * Math.PI * 2 - Math.PI / 2; return [TAM_HANH.c[0] + TAM_HANH.r * Math.cos(a), TAM_HANH.c[1], TAM_HANH.c[2] + TAM_HANH.r * Math.sin(a)]; }
@@ -517,7 +532,7 @@ footer a { color: var(--gold); }
     hen = setInterval(function () { diBuoc((buoc + 1) % BUOC.length); }, 8000);
   }
   function khoiDong3D() {
-    try { if (!T) throw new Error('thiếu thư viện'); var thu = document.createElement('canvas'); if (!(thu.getContext('webgl2') || thu.getContext('webgl'))) throw new Error('không có WebGL'); S = ve3D(); }
+    try { T = window.THREE; if (!T) throw new Error('không tải được thư viện 3D – kiểm tra kết nối mạng'); var thu = document.createElement('canvas'); if (!(thu.getContext('webgl2') || thu.getContext('webgl'))) throw new Error('không có WebGL'); S = ve3D(); }
     catch (e) { $('loi').hidden = false; $('loi').textContent = 'Thiết bị này chưa hiển thị được hình 3D (' + e.message + '). Bạn vẫn đọc được từng chặng luận giải ở khung bên cạnh.'; return; }
     veQH();
     var cv = $('c'), ray = new T.Raycaster(), chuot = new T.Vector2(), keo = {}, soNgon = 0, kc0 = 0, r0 = 0, luc = 0;
@@ -581,7 +596,7 @@ footer a { color: var(--gold); }
     $('bToan').addEventListener('click', toanCanh);
     $('bQH').addEventListener('change', function () { if (S) veQH(); });
   }
-  var xong = false; function chay() { if (xong) return; xong = true; napTranh().then(batDau, batDau); }
+  var xong = false; function chay() { if (xong) return; xong = true; Promise.all([napTranh(), window.__cho3D]).then(batDau, batDau); }
   if (document.fonts && document.fonts.ready) { document.fonts.ready.then(chay); setTimeout(chay, 1500); } else chay();
 })();
 </script>

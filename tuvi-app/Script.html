@@ -2924,13 +2924,25 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
   function mo3D(loai) {
     var r = state.result;
     if (!r) { toast('Hãy lập lá số trước.', true); return; }
-    var fn = loai === 'bt' ? window.moBatTu3D : window.moLaSo3D;
-    if (!fn) { toast('Chưa cài phần xem 3D (file LaSo3D) – xem hướng dẫn cài đặt.', true); return; }
-    if (!fn(r, state.input)) toast('Lá số này chưa đủ dữ liệu để dựng 3D.', true);
+    function chay() {
+      var fn = loai === 'bt' ? window.moBatTu3D : window.moLaSo3D;
+      if (!fn) { toast('Không chạy được phần 3D – hãy dán lại file LaSo3D.gs cho đủ.', true); return; }
+      if (!fn(r, state.input)) toast('Lá số này chưa đủ dữ liệu để dựng 3D.', true);
+    }
+    if (window.moLaSo3D) { chay(); return; }
+    // Mã 3D nằm ở LaSo3D.gs (file Tập lệnh tùy chọn) – tải về lần đầu rồi chạy
+    toast('Đang tải phần xem 3D…');
+    call('layMa3D', [], function (ma) {
+      try { var s = document.createElement('script'); s.textContent = ma; document.head.appendChild(s); } catch (e) { if (window.console) console.error('[3D]', e); }
+      chay();
+    }, function (e) {
+      var m = String((e && e.message) || e || '');
+      toast(/layMa3D|not found|không tìm thấy|is not defined/i.test(m) ? 'Chưa cài phần xem 3D: tạo file Tập lệnh tên LaSo3D, dán nội dung LaSo3D.gs, rồi Triển khai phiên bản mới.' : 'Không tải được phần 3D: ' + m, true);
+    });
   }
   /** Khung mời xem Tứ Trụ 3D ở đầu tab Bát Tự */
   function veMoi3D() {
-    var pg = $('page-battu'); if (!pg || !state.result || !state.result.battu || !window.moBatTu3D || pg.querySelector('.xem3d')) return;
+    var pg = $('page-battu'); if (!pg || !state.result || !state.result.battu || !state.result.battu.pillars || pg.querySelector('.xem3d')) return;
     pg.insertAdjacentHTML('afterbegin', '<div class="panel xem3d"><div class="x3-ic" aria-hidden="true"><i></i><i></i><i></i><i></i></div><div class="x3-nd"><b>Tứ Trụ 3D – bốn cột đời bạn</b><span>Bốn trụ Năm, Tháng, Ngày, Giờ dựng thành không gian ba chiều cùng bánh xe ngũ hành và con đường đại vận. Đi qua 11 chặng luận giải dễ hiểu.</span></div><button type="button" class="btn btn-primary btn-sm" data-bt3d>✦ Mở Tứ Trụ 3D</button></div>');
   }
   function veHoSo() {

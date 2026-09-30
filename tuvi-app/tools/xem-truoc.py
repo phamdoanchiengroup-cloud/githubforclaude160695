@@ -19,8 +19,6 @@ idx = idx.replace("<script>var INITIAL_PARAMS = <?!= initialParams ?>;</script>"
 anh = D + 'Anh.html'
 idx = idx.replace("<?!= includeTuyChon('Anh'); ?>", open(anh).read() if os.path.exists(anh) else '')
 idx = idx.replace("<?!= include('Script'); ?>", open(D + 'Script.html').read())
-l3 = D + 'LaSo3D.html'
-idx = idx.replace("<?!= includeTuyChon('LaSo3D'); ?>", open(l3).read() if os.path.exists(l3) else '')
 # Thư viện PDF: dùng bản cài cục bộ nếu có (tests/node_modules), không thì giữ CDN
 R = D + 'tests/node_modules'
 for cdn, loc in [('https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js', '/html2canvas/dist/html2canvas.min.js'),

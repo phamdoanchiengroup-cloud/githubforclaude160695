@@ -47,25 +47,25 @@ fs.writeFileSync(path.join(D, 'demo/la-so-3d.html'), nhung(TPL_TV, mauTV));
 fs.writeFileSync(path.join(D, 'demo/bat-tu-3d.html'), nhung(TPL_BT, mauBT));
 console.log('Đã dựng demo/la-so-3d.html và demo/bat-tu-3d.html –', mauTV.info.name);
 
-/* ---- File LaSo3D.html cho app ---- */
-const chuoi = s => JSON.stringify(s).replace(/<\//g, '<\\/').replace(/<!--/g, '<\\!--');
-const js = `<!-- LaSo3D.html – Lá số Tử Vi 3D và Tứ Trụ 3D (tùy chọn). Tự sinh bằng: node tools/demo-3d.js – đừng sửa tay. -->
-<style>
-#ls3dNen { position: fixed; inset: 0; z-index: 130; background: #07131f; display: none; }
+/* ---- File LaSo3D.gs cho app ----
+ * Mã 3D đặt trong file Tập lệnh (.gs) chứ không phải HTML: HtmlService từ chối file HTML nó cho là "sai định dạng"
+ * (khiến includeTuyChon âm thầm bỏ qua). Trình duyệt gọi layMa3D() khi bấm nút 3D lần đầu rồi chạy mã trả về. */
+const dong = s => '[\n' + s.split('\n').map(x => JSON.stringify(x)).join(',\n') + "\n].join('\\n')";
+const CSS = `#ls3dNen { position: fixed; inset: 0; z-index: 130; background: #07131f; display: none; }
 #ls3dNen.mo { display: block; }
 #ls3dNen iframe { border: 0; width: 100%; height: 100%; display: block; }
 .ls3d-dong { position: absolute; top: calc(10px + env(safe-area-inset-top, 0px)); right: 12px; z-index: 2; font: 600 13.5px/1 'Be Vietnam Pro', system-ui, sans-serif; color: #07131f; background: #e2c078; border: 0; border-radius: 10px; padding: 9px 13px; cursor: pointer; box-shadow: 0 4px 14px rgba(0, 0, 0, .4); }
 .ls3d-dong:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
-body.ls3d-mo { overflow: hidden; }
-</style>
-<script>
-(function () {
+body.ls3d-mo { overflow: hidden; }`;
+const MA = `(function () {
   'use strict';
-  var TPL = { tv: ${chuoi(TPL_TV)}, bt: ${chuoi(TPL_BT)} };
+  if (window.moLaSo3D) return;
+  var st = document.createElement('style'); st.textContent = ${dong(CSS)}; document.head.appendChild(st);
+  var TPL = { tv: ${dong(TPL_TV)}, bt: ${dong(TPL_BT)} };
   ${thongTin3D.toString()}
   ${duLieuTV.toString()}
   ${duLieuBT.toString()}
-  function dong() { var n = document.getElementById('ls3dNen'); if (!n) return; n.classList.remove('mo'); document.body.classList.remove('ls3d-mo'); }
+  function dongLai() { var n = document.getElementById('ls3dNen'); if (!n) return; n.classList.remove('mo'); document.body.classList.remove('ls3d-mo'); }
   function mo(loai, r, input) {
     if (!r || !r.tuvi || !r.tuvi.palaces || (loai === 'bt' && !(r.battu && r.battu.pillars))) return false;
     var nen = document.getElementById('ls3dNen');
@@ -73,8 +73,8 @@ body.ls3d-mo { overflow: hidden; }
       nen = document.createElement('div'); nen.id = 'ls3dNen'; nen.setAttribute('role', 'dialog'); nen.setAttribute('aria-modal', 'true');
       nen.innerHTML = '<button type="button" class="ls3d-dong">✕ Đóng</button><iframe title="Xem 3D" allow="fullscreen"></iframe>';
       document.body.appendChild(nen);
-      nen.querySelector('.ls3d-dong').addEventListener('click', dong);
-      document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && nen.classList.contains('mo')) dong(); });
+      nen.querySelector('.ls3d-dong').addEventListener('click', dongLai);
+      document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && nen.classList.contains('mo')) dongLai(); });
     }
     nen.setAttribute('aria-label', loai === 'bt' ? 'Tứ Trụ 3D' : 'Lá số Tử Vi 3D');
     var I = r.tuvi.info, khoa = loai + JSON.stringify([I.name, I.gender, I.solar, I.hour, I.minute, r.tuvi.palaces.map(function (p) { return p.cungIdx; })]);
@@ -91,8 +91,17 @@ body.ls3d-mo { overflow: hidden; }
   /** Mở lá số Tử Vi 3D / Tứ Trụ 3D toàn màn hình cho kết quả đang xem. Trả về false nếu chưa có dữ liệu. */
   window.moLaSo3D = function (r, input) { return mo('tv', r, input); };
   window.moBatTu3D = function (r, input) { return mo('bt', r, input); };
-})();
-</script>
+})();`;
+const gs = `/**
+ * LaSo3D.gs – Lá số Tử Vi 3D và Tứ Trụ 3D (TÙY CHỌN – thiếu file này web vẫn chạy, chỉ nút 3D báo chưa cài).
+ * Tự sinh bằng: node tools/demo-3d.js (từ demo/la-so-3d.tpl.html, demo/bat-tu-3d.tpl.html) – đừng sửa tay.
+ * Trình duyệt gọi layMa3D() khi người dùng bấm nút 3D lần đầu, rồi chạy đoạn mã trả về.
+ */
+function layMa3D() { return LS3D_MA_; }
+/** Chạy trong trình soạn thảo để kiểm tra file đã dán đủ chưa */
+function kiemTra3D() { Logger.log('✔ LaSo3D.gs đã dán đủ – mã 3D dài ' + Math.round(LS3D_MA_.length / 1024) + ' KB.'); }
+var LS3D_MA_ = ${dong(MA)};
 `;
-fs.writeFileSync(path.join(D, 'LaSo3D.html'), js);
-console.log('Đã dựng LaSo3D.html –', (js.length / 1024).toFixed(0) + ' KB');
+new Function(gs + '; return layMa3D();')();                  // tự kiểm tra: file .gs chạy được
+fs.writeFileSync(path.join(D, 'LaSo3D.gs'), gs);
+console.log('Đã dựng LaSo3D.gs –', (gs.length / 1024).toFixed(0) + ' KB, dòng dài nhất ' + Math.max.apply(null, gs.split('\n').map(x => x.length)) + ' ký tự');

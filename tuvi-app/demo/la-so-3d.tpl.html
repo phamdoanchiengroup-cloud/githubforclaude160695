@@ -165,7 +165,22 @@ footer a { color: var(--gold); }
   </div>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
+<script>
+/* Nạp Three.js (thử lần lượt nhiều nguồn) và hiện lỗi ngay trên màn hình nếu có */
+(function () {
+  var ds = ['https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js', 'https://unpkg.com/three@0.160.0/build/three.min.js'];
+  window.__cho3D = new Promise(function (ok) {
+    (function thu(i) {
+      if (window.THREE) return ok(true);
+      if (i >= ds.length) return ok(false);
+      var s = document.createElement('script'); s.src = ds[i];
+      s.onload = function () { ok(!!window.THREE); }; s.onerror = function () { s.remove(); thu(i + 1); };
+      document.head.appendChild(s);
+    })(0);
+  });
+  window.addEventListener('error', function (e) { var l = document.getElementById('loi'); if (l && e && e.message) { l.hidden = false; l.textContent = 'Lỗi hiển thị 3D: ' + e.message + ' – hãy chụp màn hình này gửi cho người hỗ trợ.'; } });
+})();
+</script>
 <script>window.LASO = /*DATA*/null;</script>
 <script>
 (function () {
@@ -716,7 +731,7 @@ footer a { color: var(--gold); }
   function dongHM() { $('hop').hidden = true; }
 
   /* ---------------- Cảnh 3D ---------------- */
-  var T = window.THREE, S = null;
+  var T = null, S = null;
   function ve3D() {
     var cv = $('c'), san = $('san');
     var R = new T.WebGLRenderer({ canvas: cv, antialias: true, alpha: true });
@@ -849,7 +864,7 @@ footer a { color: var(--gold); }
 
   function khoiDong3D() {
     try {
-      if (!T) throw new Error('thiếu thư viện');
+      T = window.THREE; if (!T) throw new Error('không tải được thư viện 3D – kiểm tra kết nối mạng');
       var thu = document.createElement('canvas'); if (!(thu.getContext('webgl2') || thu.getContext('webgl'))) throw new Error('không có WebGL');
       S = ve3D();
     } catch (e) {
@@ -924,7 +939,7 @@ footer a { color: var(--gold); }
     $('bTH').addEventListener('change', function () { if (S) veDuong(dangChon); });
   }
   // Chờ phông chữ để chữ vẽ trên hình mẫu đúng kiểu (tối đa 1,5 giây)
-  var xong = false; function chay() { if (xong) return; xong = true; napTranh().then(batDau, batDau); }
+  var xong = false; function chay() { if (xong) return; xong = true; Promise.all([napTranh(), window.__cho3D]).then(batDau, batDau); }
   if (document.fonts && document.fonts.ready) { document.fonts.ready.then(chay); setTimeout(chay, 1500); } else chay();
 })();
 </script>
