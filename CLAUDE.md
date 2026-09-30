@@ -59,6 +59,7 @@ File này được Claude Code tự đọc khi mở repo. Nó thay cho "trí nh�
   - `gieoQue` (Mai Hoa theo thời gian; câu đầu miễn phí, sau đó 9 xu/câu; sheet `GieoQue`).
   - `dangKyBanTin` (39 xu, 12 tháng; email hằng tháng qua `guiBanTinThang`, chủ dự án chạy `caiDatBanTin` một lần để tạo trigger).
   - `xem_tuoi`, `phong_thuy` nằm trong `TT_TRON_GOI`.
+- **Demo lá số Tử Vi 3D (chưa gắn vào app):** `tuvi-app/demo/la-so-3d.tpl.html` (khuôn) → `node tools/demo-3d.js ['{json input}']` dựng `demo/la-so-3d.html` từ lá số thật. Three.js r160 (UMD từ jsdelivr), bàn 4×4 truyền thống, 12 đền cao theo `diem10`, 14 chính tinh thành "hình mẫu" (`HM`: biểu tượng, tên hình mẫu, nhân vật Phong Thần, mặt sáng/tối, lời khuyên; vẽ canvas `veHinhMau`), cung vô chính diệu mượn hình mẫu cung đối (mờ), phụ tinh là hạt sáng quay quanh đền, đường tam hợp (vàng) – xung chiếu (lam), đèn dẫn đường nhảy qua 12 cung theo thứ tự Mệnh → Phụ Mẫu (`diToi`, `tuChay`), thẻ luận dễ hiểu không nêu tên sao (`vanCung`). Thử trong sandbox: chặn jsdelivr thì route tới `three/build/three.min.js` cài bằng npm, chạy Chromium với `--use-angle=swiftshader --enable-unsafe-swiftshader`.
 - **Tab (Index.html):** Lá số → Tổng quan 6 hệ → **Vận hạn** (`page-vh`, dựng bởi `veVanHan` trong Script.html; gom đại vận, năm, tháng, ngày, biến cố) → Bát Tự, Chiêm tinh, Thần số, HD, Hà Lạc → Cặp đôi → Lịch sử.
 
 ## Mô hình bán hàng (ThanhToan.gs) – bán theo giai đoạn
