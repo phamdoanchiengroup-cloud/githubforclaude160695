@@ -141,6 +141,12 @@ footer a { color: var(--teal); }
   .hop-nd img { max-width: 180px; margin: 0 auto; }
 }
 @media (prefers-reduced-motion: reduce) { * { scroll-behavior: auto !important; transition: none !important; } .nap::before { animation: none; } }
+/* Nhúng trong trang Lá số (chế độ xem mặc định): chiều cao cố định để khung ngoài tự khớp, cuộn trang không bị lá số giữ lại */
+html.nhung .san { height: 720px; min-height: 0; }
+html.nhung .wrap, html.nhung .phu header { display: none; }
+html.nhung .phu { top: 16px; left: 18px; }
+html.nhung .san canvas { touch-action: pan-y; }
+@media (max-width: 900px) { html.nhung .san { height: 540px; } }
 </style>
 
 <main class="khung">
@@ -971,7 +977,7 @@ Promise.all(['three', 'three/addons/postprocessing/EffectComposer.js', 'three/ad
     function coGian() {
       var w = san.clientWidth, h = san.clientHeight; R.setSize(w, h, false);
       var rong = w > 900 ? w - 424 : w;
-      if (w > 900) cam.setViewOffset(w, h, 212, -h * 0.03, w, h); else cam.setViewOffset(w, h, 0, -h * 0.13, w, h);
+      if (w > 900) cam.setViewOffset(w, h, 212, -h * (D.nhung ? 0.05 : 0.03), w, h); else cam.setViewOffset(w, h, 0, -h * (D.nhung ? 0.08 : 0.13), w, h);
       cam.aspect = w / h; cam.updateProjectionMatrix();
       if (comp) { comp.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.5)); comp.setSize(w, h); }
       var tv = Math.tan(cam.fov * Math.PI / 360), can = 21.5;
@@ -1103,7 +1109,8 @@ Promise.all(['three', 'three/addons/postprocessing/EffectComposer.js', 'three/ad
       soNgon = Object.keys(keo).length;
     }
     cv.addEventListener('pointerup', tha); cv.addEventListener('pointercancel', function (e) { delete keo[e.pointerId]; soNgon = Object.keys(keo).length; });
-    cv.addEventListener('wheel', function (e) { e.preventDefault(); anGoi(); S.dich.r = Math.max(6, Math.min(90, S.dich.r * (1 + Math.sign(e.deltaY) * 0.08))); if (GIAM) S.goc.r = S.dich.r; }, { passive: false });
+    var daBam = false; cv.addEventListener('pointerdown', function () { daBam = true; });
+    cv.addEventListener('wheel', function (e) { if (D.nhung && !daBam && !e.ctrlKey) return; e.preventDefault(); anGoi(); S.dich.r = Math.max(6, Math.min(90, S.dich.r * (1 + Math.sign(e.deltaY) * 0.08))); if (GIAM) S.goc.r = S.dich.r; }, { passive: false });
     cv.addEventListener('keydown', function (e) {
       if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') { e.preventDefault(); var i = dangChon ? dangChon.cungIdx : -1; tuChay(false); diToi(thuTuCung[i < 0 ? 0 : (i + (e.key === 'ArrowRight' ? 1 : 11)) % 12]); }
     });
@@ -1142,6 +1149,7 @@ Promise.all(['three', 'three/addons/postprocessing/EffectComposer.js', 'three/ad
   /* ---------------- Gắn sự kiện ---------------- */
   function batDau(M) {
     var I = D.info;
+    if (D.nhung) { document.documentElement.classList.add('nhung'); $('goi').textContent = 'Kéo để xoay · bấm vào lá số rồi cuộn (hoặc giữ Ctrl) để phóng to · chạm vào một cung'; }
     $('sub').textContent = I.name + ' · ' + (I.gioiTinh || '') + ' · ' + I.solar.day + '/' + I.solar.month + '/' + I.solar.year + ' · giờ ' + I.gioTen + (I.noi ? ' · ' + I.noi : '') + ' · tuổi ' + I.namCanChi;
     $('mau').hidden = !D.mau;
     $('vongCung').innerHTML = thuTuCung.map(function (p) {

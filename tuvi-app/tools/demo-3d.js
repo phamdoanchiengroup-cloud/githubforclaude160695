@@ -66,6 +66,22 @@ const MA = `(function () {
   ${thongTin3D.toString()}
   ${duLieuTV.toString()}
   ${duLieuBT.toString()}
+  function khoaLS(loai, r) { var I = r.tuvi.info; return loai + JSON.stringify([I.name, I.gender, I.solar, I.hour, I.minute, r.tuvi.palaces.map(function (p) { return p.cungIdx; })]); }
+  function taoTrang(loai, r, input, nhung) {
+    var data = loai === 'bt' ? duLieuBT(r, input) : duLieuTV(r, input); data.nhung = !!nhung;
+    return '<!DOCTYPE html><html lang="vi"><head><meta charset="utf-8"></head><body>' +
+      TPL[loai].replace('/*DATA*/null', function () { return JSON.stringify(data).replace(/</g, '\\\\u003c'); }) + '</body></html>';
+  }
+  /** Khung nhúng tự khớp chiều cao theo nội dung bên trong (srcdoc cùng nguồn gốc nên đọc được) */
+  function khopCao(fr) {
+    if (fr._ro) { fr._ro.disconnect(); fr._ro = null; }
+    try {
+      var d = fr.contentDocument; if (!d || !d.body) return;
+      // đo chiều cao nội dung (body), không dùng scrollHeight của trang vì nó không bao giờ nhỏ hơn khung → khung cứ cao dần
+      var dat = function () { var h = Math.max(420, Math.ceil(d.body.getBoundingClientRect().height)); if (Math.abs(parseFloat(fr.style.height) - h) > 1) fr.style.height = h + 'px'; };
+      dat(); if (window.ResizeObserver) { fr._ro = new ResizeObserver(dat); fr._ro.observe(d.body); }
+    } catch (e) { fr.style.height = '760px'; }
+  }
   function dongLai() { var n = document.getElementById('ls3dNen'); if (!n) return; n.classList.remove('mo'); document.body.classList.remove('ls3d-mo'); }
   function mo(loai, r, input) {
     if (!r || !r.tuvi || !r.tuvi.palaces || (loai === 'bt' && !(r.battu && r.battu.pillars))) return false;
@@ -78,13 +94,8 @@ const MA = `(function () {
       document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && nen.classList.contains('mo')) dongLai(); });
     }
     nen.setAttribute('aria-label', loai === 'bt' ? 'Tứ Trụ 3D' : 'Lá số Tử Vi 3D');
-    var I = r.tuvi.info, khoa = loai + JSON.stringify([I.name, I.gender, I.solar, I.hour, I.minute, r.tuvi.palaces.map(function (p) { return p.cungIdx; })]);
-    if (nen._khoa !== khoa) {
-      var data = loai === 'bt' ? duLieuBT(r, input) : duLieuTV(r, input);
-      nen.querySelector('iframe').srcdoc = '<!DOCTYPE html><html lang="vi"><head><meta charset="utf-8"></head><body>' +
-        TPL[loai].replace('/*DATA*/null', function () { return JSON.stringify(data).replace(/</g, '\\\\u003c'); }) + '</body></html>';
-      nen._khoa = khoa;
-    }
+    var khoa = khoaLS(loai, r);
+    if (nen._khoa !== khoa) { nen.querySelector('iframe').srcdoc = taoTrang(loai, r, input, false); nen._khoa = khoa; }
     nen.classList.add('mo'); document.body.classList.add('ls3d-mo');
     setTimeout(function () { nen.querySelector('.ls3d-dong').focus(); }, 30);
     return true;
@@ -92,6 +103,19 @@ const MA = `(function () {
   /** Mở lá số Tử Vi 3D / Tứ Trụ 3D toàn màn hình cho kết quả đang xem. Trả về false nếu chưa có dữ liệu. */
   window.moLaSo3D = function (r, input) { return mo('tv', r, input); };
   window.moBatTu3D = function (r, input) { return mo('bt', r, input); };
+  /** Nhúng lá số 3D ngay trong trang (chế độ xem mặc định của tab Lá số). Trả về false nếu chưa có dữ liệu. */
+  window.nhung3D = function (el, loai, r, input) {
+    if (!el || !r || !r.tuvi || !r.tuvi.palaces || (loai === 'bt' && !(r.battu && r.battu.pillars))) return false;
+    var fr = el.querySelector('iframe.ls3d-nhung');
+    if (!fr) {
+      el.innerHTML = ''; fr = document.createElement('iframe'); fr.className = 'ls3d-nhung'; fr.title = loai === 'bt' ? 'Tứ Trụ 3D' : 'Lá số Tử Vi 3D';
+      fr.setAttribute('allow', 'fullscreen'); fr.style.cssText = 'display:block;width:100%;border:0;height:760px';
+      fr.addEventListener('load', function () { khopCao(fr); }); el.appendChild(fr);
+    }
+    var khoa = khoaLS(loai, r);
+    if (fr._khoa !== khoa) { fr.srcdoc = taoTrang(loai, r, input, true); fr._khoa = khoa; }
+    return true;
+  };
 })();`;
 const gs = `/**
  * LaSo3D.gs – Lá số Tử Vi 3D và Tứ Trụ 3D (TÙY CHỌN – thiếu file này web vẫn chạy, chỉ nút 3D báo chưa cài).

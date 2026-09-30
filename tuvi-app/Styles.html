@@ -1,6 +1,6 @@
 <style>
 /* Mã phiên bản giao diện – phải trùng với Index.html (meta tcc-ban) và Script.html (BAN_GIAO_DIEN) */
-:root { --tcc-ban: "2026.10.08"; }
+:root { --tcc-ban: "2026.10.09"; }
 /* ================================================================
    THIÊN CƠ CÁC — phong cách tiên hiệp sáng: ngọc bích, kim sa, mây trắng
    ================================================================ */
@@ -1712,6 +1712,15 @@ table { border-collapse: collapse; } th { font-weight: 600; }
 .moi-ban .mb-nut { display: flex; gap: 8px; flex-wrap: wrap; }
 
 /* ======== XEM 3D (mã dựng nằm trong LaSo3D.html) ======== */
+/* Lá số 3D là chế độ xem mặc định của tab Lá số (nhúng trong trang); ▦ 2D hiện lại lá số giấy */
+.ls3d-khung { border-radius: 14px; overflow: hidden; margin: 8px 0 12px; background: #0a1433; border: 1px solid rgba(226,192,120,.45); }
+.ls3d-cho { padding: 60px 16px; text-align: center; color: #e8c778; font-weight: 600; letter-spacing: .04em; }
+#chartArea:not(.xem-3d) .ls3d-khung { display: none; }
+#chartArea.xem-3d .chart-scroll, #chartArea.xem-3d .palace-detail, #chartArea.xem-3d .toolbar .check, #chartArea.xem-3d .toolbar .legend, #chartArea.xem-3d #btnPrint { display: none; }
+.che-do { display: inline-flex; border: 1px solid var(--line); border-radius: 999px; overflow: hidden; }
+.che-do button { font: 600 12.5px/1 inherit; font-family: inherit; padding: 7px 12px; border: 0; background: transparent; color: var(--ink); cursor: pointer; }
+.che-do button[aria-pressed="true"] { background: var(--gold); color: #fff; }
+.che-do button:focus-visible { outline: 2px solid var(--gold); outline-offset: -2px; }
 .xem3d { padding: 14px 16px; display: flex; gap: 14px; align-items: center; flex-wrap: wrap; border: 1px solid rgba(226,192,120,.45); background: linear-gradient(120deg, rgba(38,181,181,.10), rgba(226,192,120,.08)); }
 .xem3d .x3-ic { display: flex; gap: 5px; align-items: flex-end; height: 44px; flex: none; }
 .xem3d .x3-ic i { display: block; width: 9px; border-radius: 2px 2px 0 0; background: linear-gradient(#f3d99c, #a8762c); }
