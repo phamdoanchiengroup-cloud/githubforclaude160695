@@ -86,6 +86,7 @@ if (GD) {
              .replace("var KHOA_GIAO_DIEN='kpi_giao_dien';", () => "var KHOA_GIAO_DIEN='kpi_giao_dien_xt_" + GD + "';");
   if (html.indexOf("var GIAO_DIEN_MAC_DINH='" + GD + "';") < 0) console.log('Cảnh báo: không đặt được bộ màu');
 }
+const THAM = ['Date', 'Logger', 'Session', 'Utilities', 'PropertiesService', 'CacheService', 'LockService', 'SpreadsheetApp', 'ScriptApp', 'HtmlService', 'DriveApp', 'MailApp'];
 const tenHam = [...new Set([...code.matchAll(/^function\s+([A-Za-z_$][\w$]*)\s*\(/gm)].map(m => m[1]))];
 const anToan = s => s.replace(/<\/(script)/gi, '<\\/$1').replace(/<!--/g, '<\\!--');
 
@@ -176,12 +177,9 @@ const MAY = `<script>
       everyDays:function(){return b},onMonthDay:function(){return b},inTimezone:function(){return b},create:function(){return b}};return b}},
     HtmlService:{}, DriveApp:{}, MailApp:{sendEmail:function(){}}
   };
-  var ten=Object.keys(G);
-  var nguon=document.getElementById('ma-may-chu').textContent;
-  var TEN_HAM=${JSON.stringify(tenHam)};
-  var MAY_CHU=new Function(ten.join(','), nguon+'\\n;return {'+TEN_HAM.map(function(t){return JSON.stringify(t)+':(typeof '+t+'==="function"?'+t+':null)'}).join(',')+
-    ',__datLai:function(){__SS_CACHE=null;__DOC_CACHE={};__HEAD_CACHE={};__KHOA=null;__NGAY_LE=null;__CHO_GHI={};__PB=null;__DA_TANG_PB=false;__DA_GHI={};}};')
-    .apply(null,ten.map(function(k){return G[k]}));
+  var ten=${JSON.stringify(THAM)};
+  // Code.gs được nhúng sẵn thành một hàm (không dựng mã lúc chạy -> chạy được cả trong khung xem cấm eval)
+  var MAY_CHU=window.__TAO_MAY_CHU.apply(null,ten.map(function(k){return G[k]}));
   // mật khẩu xem thử: "demo"
   var mk=MAY_CHU.bam_('demo'), tkS=sheets.TaiKhoan, cMK=tkS.rows[0].indexOf('MatKhauMaHoa');
   tkS.rows.forEach(function(r,i){if(i&&r[cMK]==='__DEMO__')r[cMK]=mk});
@@ -217,7 +215,10 @@ const GOI_Y_HTML = `<div id="xtGoiY" style="position:fixed;right:16px;bottom:16p
 
 html = html.replace('<script>', () =>   // hàm thay thế: tránh $' $& trong mã bị hiểu là mẫu thay thế
   `<script type="application/json" id="du-lieu-xem-thu">${JSON.stringify(d).replace(/</g, '\\u003c')}</script>\n` +
-  `<script type="text/plain" id="ma-may-chu">${anToan(code)}</script>\n` + MAY + '\n<script>');
+  '<script>window.__TAO_MAY_CHU=function(' + THAM.join(',') + '){\n' + anToan(code) + '\n;return {' +
+    tenHam.map(t => JSON.stringify(t) + ':(typeof ' + t + '==="function"?' + t + ':null)').join(',') +
+    ',__datLai:function(){__SS_CACHE=null;__DOC_CACHE={};__HEAD_CACHE={};__KHOA=null;__NGAY_LE=null;__CHO_GHI={};__PB=null;__DA_TANG_PB=false;__DA_GHI={};}};};</script>\n' +
+    MAY + '\n<script>');
 const cuoi = html.lastIndexOf('</body>');   // chữ </body> đầu tiên nằm trong chuỗi JS (in bảng chấm công)
 html = html.slice(0, cuoi) + GOI_Y_HTML + '\n' + html.slice(cuoi);
 fs.writeFileSync(OUT, html);
