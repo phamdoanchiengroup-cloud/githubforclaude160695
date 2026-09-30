@@ -32,10 +32,17 @@
   function storeSet(k, v) { try { localStorage.setItem(k, v); } catch (e) { /* bỏ qua */ } }
 
   function hasServer() { return typeof google !== 'undefined' && google.script && google.script.run; }
+  /** Hàm máy chủ mới thêm gần đây → file .gs chứa nó (để báo đúng file khi còn bản cũ) */
+  var FILE_HAM = { bangGiaCongKhai: 'ThanhToan.gs', muaPhan: 'ThanhToan.gs', viCuaToi: 'ThanhToan.gs', dangKy: 'TaiKhoan.gs', lapLaSo: 'TaiKhoan.gs', layMa3D: 'LaSo3D.gs',
+    tienIch: 'TienIch.gs', gieoQue: 'TienIch.gs', dsGieoQue: 'TienIch.gs', dangKyBanTin: 'TienIch.gs', dsBanTin: 'TienIch.gs', donLichSu: 'Code.gs', getLichSu: 'Code.gs', lapCapDoi: 'CapDoi.gs' };
   function call(fn, args, ok, fail) {
     if (!hasServer()) { (fail || showErr)({ message: 'Không tìm thấy máy chủ Apps Script. Hãy mở ứng dụng qua URL Web App.' }); return; }
     var r = google.script.run.withSuccessHandler(ok).withFailureHandler(fail || showErr), a = (args || []).slice();
     if (CAN_TOKEN[fn]) a.push(state.token || '');
+    if (typeof r[fn] !== 'function') {                    // máy chủ chưa có hàm này → file .gs tương ứng còn bản cũ hoặc chưa tạo
+      var f = FILE_HAM[fn], loi = { thieuHam: true, message: 'Máy chủ chưa có hàm ' + fn + (f ? ' – file ' + f + ' trên Apps Script còn là bản cũ hoặc chưa tạo. Mở file ' + f.replace('.gs', '') + ' → xóa hết → dán bản mới → Triển khai phiên bản mới.' : ' – có file .gs còn là bản cũ.') };
+      setTimeout(function () { (fail || showErr)(loi); }, 0); return;
+    }
     r[fn].apply(r, a);
   }
 
@@ -689,7 +696,7 @@
     });
     var ref = (typeof INITIAL_PARAMS === 'object' && INITIAL_PARAMS && INITIAL_PARAMS.ref) || storeGet('tcc_ref') || '';
     if (ref) { storeSet('tcc_ref', ref); $('rgRef').value = ref; state.refMoi = ref; }
-    if (hasServer()) call('bangGiaCongKhai', [], function (bg) { state.bgCK = bg; veQuaTrangChu(); }, function () {});
+    if (hasServer()) call('bangGiaCongKhai', [], function (bg) { state.bgCK = bg; veQuaTrangChu(); }, function (e) { if (e && e.thieuHam) baoLoiKhoiDong([e.message]); });
     capNhatUser();
     var t = storeGet('tcc_token');
     if (t && hasServer()) {
@@ -2939,7 +2946,7 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
       chay();
     }, function (e) {
       var m = String((e && e.message) || e || '');
-      toast(/layMa3D|not found|không tìm thấy|is not defined/i.test(m) ? 'Chưa cài phần xem 3D: tạo file Tập lệnh tên LaSo3D, dán nội dung LaSo3D.gs, rồi Triển khai phiên bản mới.' : 'Không tải được phần 3D: ' + m, true);
+      toast(e && e.thieuHam ? 'Chưa cài phần xem 3D: tạo file Tập lệnh tên LaSo3D, dán nội dung LaSo3D.gs, rồi Triển khai phiên bản mới.' : /layMa3D|not found|không tìm thấy|is not defined/i.test(m) ? 'Chưa cài phần xem 3D: tạo file Tập lệnh tên LaSo3D, dán nội dung LaSo3D.gs, rồi Triển khai phiên bản mới.' : 'Không tải được phần 3D: ' + m, true);
     });
   }
   /** Khung mời xem Tứ Trụ 3D ở đầu tab Bát Tự */
