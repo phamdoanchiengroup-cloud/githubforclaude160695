@@ -27,19 +27,28 @@ var TT_PHAN_MAC_DINH = {
   do_gio: { ten: 'Dò chính xác giờ sinh', xu: 19 },
   tron_goi: { ten: 'Trọn đời – tổng hợp 6 hệ, 12 đại vận, biến cố, phối ngẫu, PDF, dò giờ', xu: 149 },
   cap_doi: { ten: 'Xem cặp đôi – hợp hôn 2 lá số', xu: 29 },   // mở theo từng cặp, không thuộc trọn gói
+  // Tiện ích (TienIch.gs)
+  xem_tuoi: { ten: 'Xem tuổi làm nhà, cưới hỏi – 10 năm + tuổi mượn', xu: 19 },
+  phong_thuy: { ten: 'Phong thủy Bát trạch – 8 hướng, bố trí, màu hợp', xu: 29 },
+  chon_ngay: { ten: 'Chọn ngày tốt – 1 việc trong 1 tháng', xu: 19, theo: 'ngay' },
+  hop_tac: { ten: 'Hợp tác làm ăn – ghép 2 lá số', xu: 29 },        // mở theo từng cặp
+  dat_ten: { ten: 'Đặt tên con – chấm tên & gợi ý theo ngũ hành', xu: 49 },   // mở theo lá số của bé
+  gieo_que: { ten: 'Gieo quẻ hỏi việc – 1 câu hỏi', xu: 9 },         // trừ theo từng câu (gieoQue)
+  ban_tin: { ten: 'Bản tin vận tháng qua email – 12 tháng', xu: 99 }, // đăng ký theo năm (dangKyBanTin)
   gia_dinh_3: { ten: 'Gói gia đình 3 người', xu: 129, luot: 3 },
   gia_dinh_5: { ten: 'Gói gia đình 5 người', xu: 199, luot: 5 },
   luu_nien: { ten: 'Lưu niên nhiều năm (gói cũ)', xu: 19, an: true }   // gói cũ: người đã mua được xem mọi năm/tháng
 };
 /** Phần thuộc Trọn đời (không gồm vận năm/tháng – bán theo từng năm) */
-var TT_TRON_GOI = ['co_ban', 'tron_dai_van', 'bien_co', 'phoi_ngau', 'pdf', 'do_gio'];
+var TT_TRON_GOI = ['co_ban', 'tron_dai_van', 'bien_co', 'phoi_ngau', 'pdf', 'do_gio', 'xem_tuoi', 'phong_thuy'];
 var TT_GOI_MAC_DINH = [{ tien: 50000, xu: 50 }, { tien: 100000, xu: 110 }, { tien: 200000, xu: 240 }, { tien: 500000, xu: 650 }];
 var TT_SH = {
   Vi: ['Tài khoản', 'Số dư (xu)', 'Cập nhật'],
   SoCai: ['Thời gian', 'Tài khoản', 'Thay đổi (xu)', 'Số dư sau', 'Lý do', 'Tham chiếu'],
   MoKhoa: ['Thời gian', 'Tài khoản', 'Khóa lá số', 'Phần', 'Xu', 'Lá số'],
   DonHang: ['Mã đơn', 'Tài khoản', 'Số tiền (đ)', 'Xu', 'Trạng thái', 'Tạo lúc', 'Trả lúc', 'Kênh', 'Tham chiếu', 'Nội dung CK'],
-  Ve: ['Tài khoản', 'Lượt mở còn lại', 'Cập nhật']
+  Ve: ['Tài khoản', 'Lượt mở còn lại', 'Cập nhật'],
+  GieoQue: ['Thời gian', 'Tài khoản', 'Câu hỏi', 'Lĩnh vực', 'Kết quả (JSON)']
 };
 var TT_TRANG_THAI = { CHO: 'Chờ thanh toán', DA_TRA: 'Đã thanh toán', HUY: 'Đã hủy', HET_HAN: 'Hết hạn' };
 
@@ -211,6 +220,10 @@ function ttMaPhan_(phan, id) {
   var P = TT_PHAN_MAC_DINH[phan];
   if (!P.theo) return phan;
   id = String(id == null ? '' : id).trim();
+  if (P.theo === 'ngay') {   // chọn ngày: 'việc|yyyy-mm'
+    var n = id.match(/^([a-z_]+)\|(\d{4})-(\d{1,2})$/); if (!n || +n[3] < 1 || +n[3] > 12) throw new Error('Việc hoặc tháng không hợp lệ.');
+    return 'ngay:' + n[1] + ':' + n[2] + '-' + ttPad2_(+n[3]);
+  }
   if (P.theo === 'thang') { var m = id.match(/^(\d{4})-(\d{1,2})$/); if (!m || +m[2] < 1 || +m[2] > 12) throw new Error('Tháng không hợp lệ.'); return 'thang:' + m[1] + '-' + ttPad2_(+m[2]); }
   if (!/^\d{4}$/.test(id) || +id < 1800 || +id > 2300) throw new Error('Năm không hợp lệ.');
   return (P.theo === 'dv' ? 'dv' : phan === 'dong_hanh' ? 'dong_hanh' : 'nam') + ':' + id;
@@ -219,14 +232,15 @@ function muaPhan(token, input, phan, id) {
   var u = tkCan_(token), bg = ttBangGia_(), p = bg.phan[phan];
   if (!p || TT_PHAN_MAC_DINH[phan].an) throw new Error('Không có gói "' + phan + '".');
   if (TT_PHAN_MAC_DINH[phan].luot) return ttMuaGiaDinh_(u, phan, bg);
-  var capDoi = phan === 'cap_doi', khoa = capDoi ? ttKhoaCapDoi_(input && input.a, input && input.b) : ttKhoaLaSo_(input);
+  var capDoi = phan === 'cap_doi' || phan === 'hop_tac', khoa = capDoi ? ttKhoaCapDoi_(input && input.a, input && input.b) : ttKhoaLaSo_(input);
   var tenLS = capDoi ? String(input.a.name || '?') + ' & ' + String(input.b.name || '?') : String(input && input.name || '');
   if (ttToanQuyen_(u)) return { ok: true, toanQuyen: true };
   if (phan === 'dai_van_qua') { phan = 'dai_van'; p = bg.phan.dai_van; }
   var ma = ttMaPhan_(phan, id);
   return ttKhoa_(function () {
     var q = ttQuyen_(u, khoa);
-    var daCo = ma === phan ? q[phan] : (/^dv:/.test(ma) ? ttCoDv_(q, id) : /^thang:/.test(ma) ? ttCoThang_(q, +ma.slice(6, 10), +ma.slice(11)) :
+    if (phan === 'gieo_que' || phan === 'ban_tin') throw new Error('Gói này mua trực tiếp trong công cụ.');
+    var daCo = ma === phan ? q[phan] : /^ngay:/.test(ma) ? !!q[ma] : (/^dv:/.test(ma) ? ttCoDv_(q, id) : /^thang:/.test(ma) ? ttCoThang_(q, +ma.slice(6, 10), +ma.slice(11)) :
       /^dong_hanh:/.test(ma) ? !!q.dhNam[String(id)] : ttCoNam_(q, id));
     if (daCo) return { ok: true, daCo: true, soDu: ttSoDu_(u.ten) };
     // Luận giải 6 hệ đã miễn phí → mua vận hạn, biến cố, PDF… không cần mở Tổng hợp 6 hệ trước

@@ -60,7 +60,7 @@ var HAM_CAN_CO = {
   'Lunar.gs': 'solarToLunar', 'TuVi.gs': 'tuviLapLaSo', 'BatTu.gs': 'batTuLap',
   'LuanGiai.gs': 'luanChiTiet', 'DuDoan.gs': 'duDoanCuocDoi', 'BatTuChiTiet.gs': 'batTuChiTiet',
   'Astro.gs': 'astToanBo', 'ChiemTinh.gs': 'chiemTinhLap', 'HumanDesign.gs': 'hdLap', 'ThanSoHoc.gs': 'thanSoHocLap', 'TongHop.gs': 'tongHopLuan', 'PhoiNgau.gs': 'phoiNgauLuan', 'HaLac.gs': 'haLacLap', 'HoiTu.gs': 'htHoiTu_', 'BatTuLuan.gs': 'btlLinhVuc_', 'TaiKhoan.gs': 'dangNhap', 'ThanhToan.gs': 'muaPhan', 'CapDoi.gs': 'lapCapDoi',
-  'Facts.gs': 'taoFact_', 'TuViHeThong.gs': 'tuviSinhFactsCung_', 'NghiemChung.gs': 'nghiemChungLap', 'DeHieu.gs': 'deHieuLap_', 'BatTuPhanTich.gs': 'btPhanTich_'
+  'Facts.gs': 'taoFact_', 'TuViHeThong.gs': 'tuviSinhFactsCung_', 'NghiemChung.gs': 'nghiemChungLap', 'DeHieu.gs': 'deHieuLap_', 'BatTuPhanTich.gs': 'btPhanTich_', 'TienIch.gs': 'tienIch'
 };
 
 /** Trả về danh sách lỗi cài đặt (rỗng nếu mọi thứ đúng) */
@@ -116,7 +116,7 @@ function trangLoiCaiDat_(loi) {
 /** Chạy hàm này trong trình soạn thảo (chọn kiemTraCaiDat → Chạy) để xem lỗi trong Nhật ký thực thi */
 function kiemTraCaiDat() {
   var loi = kiemTraCaiDat_();
-  if (!loi.length) { Logger.log('✔ Cài đặt đúng: đủ 24 file .gs và 3 file HTML.'); return; }
+  if (!loi.length) { Logger.log('✔ Cài đặt đúng: đủ 25 file .gs và 3 file HTML.'); return; }
   loi.forEach(function (x) { Logger.log('✘ ' + x.replace(/<[^>]+>/g, '').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&amp;/g, '&')); });
 }
 

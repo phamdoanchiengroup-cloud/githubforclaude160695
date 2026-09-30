@@ -5,7 +5,7 @@ File này được Claude Code tự đọc khi mở repo. Nó thay cho "trí nh�
 ## Dự án
 - Web app **Google Apps Script** luận vận mệnh 6 hệ: Tử Vi, Bát Tự, Hà Lạc, Chiêm tinh, Thần số học, Human Design. Có bán nội dung bằng **xu**.
 - Toàn bộ mã nằm trong `tuvi-app/`:
-  - 24 file `.gs` (chạy chung một phạm vi toàn cục như Apps Script).
+  - 25 file `.gs` (chạy chung một phạm vi toàn cục như Apps Script).
   - `Index.html`, `Styles.html`, `Script.html`, `Anh.html` (tùy chọn) và `NghiemChungUI.html`.
   - Bảng vai trò từng file: `tuvi-app/README.md`. Hướng dẫn cài đặt cho chủ dự án: `tuvi-app/HUONG-DAN-CAI-DAT.md`.
 - **Nhánh làm việc: `claude/happy-brown-lttkz3`.** Chỉ commit và push lên nhánh này. Không tạo PR nếu chủ dự án không yêu cầu.
@@ -51,6 +51,14 @@ File này được Claude Code tự đọc khi mở repo. Nó thay cho "trí nh�
 - **Giao diện chuyên nghiệp (khối cuối Styles.html "GIAO DIỆN CHUYÊN NGHIỆP" + Script.html › `veHoSo`, `moForm`, `dongForm`):** giữ bảng màu cũ; bỏ quả cầu/núi/góc trang trí/chữ chuyển màu; tiêu đề khung chữ không chân; `.tg-head` thành đầu mục có vạch vàng (không còn tấm băng); nút chính màu đặc; tab trái dạng danh sách có vạch sáng. Khi có kết quả: `body.co-ket-qua` ẩn ô nhập, bố cục 2 cột (tab | nội dung ≤1080px), thẻ hồ sơ `#hoSoTom` (✎ Sửa thông tin / ＋ Lá số mới) mở ô nhập dạng ngăn kéo phải (`body.mo-form`, nền `#formNen`, Esc để đóng; `submit` tự đóng). Dải quảng cáo sau khi có kết quả chỉ còn 1 dòng. Gợi ý kiểm chứng `#ncBanner.nc-goi` gọn (chi tiết trong `details`). Xóa khối CSS này là về giao diện cũ.
 - **Bố cục trang (máy tính ≥1081px):** cột trái `#navCol` (tab xếp dọc + mục lục, JS chuyển vào lúc khởi động), giữa là kết quả, phải là form. Điện thoại: tab ngang như cũ. Lá số Tử Vi trên điện thoại được thu nhỏ vừa màn hình (`coLaSo`; `chupLaSo` bỏ thu nhỏ khi chụp PNG/PDF; `drawOverlay` quy toạ độ về kích thước gốc).
 - **PDF bản đầy đủ (~82 trang, ~70 giây):** mỗi hệ lấy biểu đồ chính (`PDF_CHINH`) + văn dễ hiểu + các phần luận lĩnh vực/tổng hợp/lời khuyên (`PDF_LUAN`, theo `data-g` của khung Phần/Bước); Tử Vi lấy ảnh lá số + Phần 1 chân dung + Phần 3 Tử Vi × Bát Tự; vận hạn bỏ lịch ngày. Không chép bảng kỹ thuật. `tg-head` được coi là tiêu đề để không mồ côi cuối trang.
+- **Tiện ích bán lẻ (TienIch.gs + Script.html › `veTienIch`, `tiChay`, `tiKqHtml`; tab `ti` "✦ Tiện Ích"):** 7 công cụ, mỗi công cụ có phần hé lộ miễn phí + phần trả phí, luôn kèm mục "Cơ sở" và câu "chỉ để tham khảo" (`TI_THAM_KHAO`). API `tienIch(input, loai, thamSo, token)`:
+  - `xem_tuoi` (19 xu): Kim Lâu, Hoang Ốc, Tam Tai theo tuổi mụ; miễn phí năm nay, trả phí bảng 10 năm + hóa giải.
+  - `phong_thuy` (29 xu): cung phi Bát trạch (`tiCungPhi_`), miễn phí hướng Sinh Khí, trả phí 8 hướng + bố trí.
+  - `chon_ngay` (19 xu/việc/tháng, mã `ngay:<việc>:<yyyy-mm>`): chấm điểm ngày (hoàng đạo, trực, tú, Tam Nương, Nguyệt Kỵ, xung tuổi, Bành Tổ); "Nên tránh" khi xung tuổi hoặc điểm ≤ −4.
+  - `hop_tac` (29 xu, khóa theo cặp như `cap_doi`), `dat_ten` (49 xu, từ điển `TI_TEN` theo ngũ hành dụng thần).
+  - `gieoQue` (Mai Hoa theo thời gian; câu đầu miễn phí, sau đó 9 xu/câu; sheet `GieoQue`).
+  - `dangKyBanTin` (99 xu, 12 tháng; email hằng tháng qua `guiBanTinThang`, chủ dự án chạy `caiDatBanTin` một lần để tạo trigger).
+  - `xem_tuoi`, `phong_thuy` nằm trong `TT_TRON_GOI`.
 - **Tab (Index.html):** Lá số → Tổng quan 6 hệ → **Vận hạn** (`page-vh`, dựng bởi `veVanHan` trong Script.html; gom đại vận, năm, tháng, ngày, biến cố) → Bát Tự, Chiêm tinh, Thần số, HD, Hà Lạc → Cặp đôi → Lịch sử.
 
 ## Mô hình bán hàng (ThanhToan.gs) – bán theo giai đoạn
@@ -84,6 +92,7 @@ node tests/ha-lac.js                           # Hà Lạc lục hào nạp giá
 node tests/than-so.js                          # Thần số học 6 bước (nợ nghiệp, số 0, số bậc thầy…) trên 300 lá số
 node tests/chiem-tinh.js                       # Chiêm tinh 7 bước: Chiron/Lilith, cấu hình, 8 lĩnh vực, chu kỳ, so sánh (~40 giây)
 node tests/human-design.js                     # Human Design 11 bước; đối chiếu màu Mặt Trời với hd-chart-engine nếu đã npm install trong tests/
+node tests/tien-ich.js                         # 7 tiện ích bán lẻ: công thức, miễn phí/trả phí, mua, gieo quẻ, bản tin (55 kiểm tra)
 TK_PASS='<mật khẩu chủ>' node tests/tai-khoan.js   # cần mật khẩu chủ sở hữu – hỏi chủ dự án hoặc đặt biến môi trường TK_PASS
 TK_PASS='<mật khẩu chủ>' node tests/thanh-toan.js
 cd tests && npm install && node thien-van.mjs && node doi-chieu.js   # đối chiếu thiên văn / an sao với thư viện nguồn mở

@@ -1644,4 +1644,57 @@ table { border-collapse: collapse; } th { font-weight: 600; }
   .section { padding: 18px 16px; }
 }
 
+/* ---------- Tiện ích xem thêm ---------- */
+.ti-luoi { display: grid; gap: 12px; }
+.ti-the { padding: 0; margin: 0; }
+.ti-the > summary { list-style: none; display: flex; align-items: center; gap: 14px; padding: 16px 18px; cursor: pointer; }
+.ti-the > summary::-webkit-details-marker { display: none; }
+.ti-the[open] > summary { border-bottom: 1px solid var(--line); }
+.ti-ic { font-size: 28px; width: 44px; text-align: center; flex: none; }
+.ti-tt { flex: 1; min-width: 0; } .ti-tt b { display: block; font-size: 16px; } .ti-tt small { color: var(--ink-soft); font-size: 13px; }
+.ti-gia { font-style: normal; font-size: 12.5px; font-weight: 700; color: var(--gold-hi); white-space: nowrap; border: 1px solid rgba(246, 182, 74, .4); border-radius: 999px; padding: 3px 10px; }
+.ti-than { padding: 16px 18px 18px; }
+.ti-f { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(200px, 100%), 1fr)); gap: 10px 12px; margin-bottom: 12px; }
+.ti-f label { display: flex; flex-direction: column; gap: 5px; font-size: 13px; color: var(--ink-soft); }
+.ti-f .ti-rong, .ti-f1 label { grid-column: 1 / -1; }
+.ti-f textarea { width: 100%; padding: 10px 12px; font: inherit; color: var(--ink); background: var(--card-solid); border: 1px solid var(--line); border-radius: 10px; resize: vertical; }
+.ti-f input[type=month], .ti-f input[type=email] { width: 100%; padding: 10px 12px; font: inherit; color: var(--ink); background: var(--card-solid); border: 1px solid var(--line); border-radius: 10px; color-scheme: dark; }
+.ti-f input[type=date] { color-scheme: dark; }
+.ti-chay { width: auto !important; margin: 0 0 12px !important; }
+.ti-kq:empty { display: none; }
+.ti-ket { font-size: 15px; line-height: 1.6; padding: 12px 14px; border-radius: 12px; background: rgba(19, 181, 204, .08); border-left: 3px solid var(--jade); }
+.ti-ds { margin: 8px 0; padding-left: 20px; display: grid; gap: 5px; font-size: 14.5px; line-height: 1.6; }
+.ti-ds li.tot b, .tot { color: var(--kw-good); } .ti-ds li.xau b, .xau { color: var(--kw-bad); }
+.ti-h { margin: 16px 0 6px; font-size: 14.5px; color: var(--head); }
+.ti-khoa { margin: 12px 0; padding: 14px 16px; border-radius: 12px; border: 1px dashed var(--gold); background: var(--gold-soft); }
+.ti-khoa p { margin: 0 0 10px; } .ti-khoa .btn { width: auto; margin: 0; }
+.ti-bang td, .ti-bang th { font-size: 13px; vertical-align: top; }
+.ti-dem { display: flex; flex-wrap: wrap; gap: 8px; margin: 10px 0; }
+.ti-m { padding: 4px 10px; border-radius: 999px; font-size: 13px; }
+.ti-m.r5, .ti-lich span.r5, .ti-ngay.r5 { background: rgba(31, 166, 136, .28); } .ti-m.r4, .ti-lich span.r4, .ti-ngay.r4 { background: rgba(79, 191, 143, .18); }
+.ti-m.r2, .ti-lich span.r2 { background: rgba(138, 147, 168, .16); } .ti-m.r0, .ti-lich span.r0 { background: rgba(217, 80, 63, .18); }
+.ti-nen { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(210px, 100%), 1fr)); gap: 10px; }
+.ti-ngay { display: flex; flex-direction: column; gap: 3px; padding: 12px; border-radius: 12px; border: 1px solid var(--line); }
+.ti-ngay b { font-size: 16px; } .ti-ngay span { font-weight: 700; color: var(--good-ink); } .ti-ngay small { font-size: 12px; color: var(--ink-soft); }
+.ti-lich { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; margin-top: 6px; }
+.ti-lich > b { text-align: center; font-size: 11.5px; color: var(--ink-soft); }
+.ti-lich span { min-height: 46px; border-radius: 8px; padding: 4px 6px; display: flex; flex-direction: column; cursor: help; }
+.ti-lich span:empty { background: none; cursor: default; }
+.ti-lich span b { font-size: 14px; } .ti-lich span small { font-size: 10.5px; color: var(--ink-soft); }
+.ti-pt { display: grid; grid-template-columns: 240px minmax(0, 1fr); gap: 18px; align-items: start; }
+@media (max-width: 640px) { .ti-pt { grid-template-columns: 1fr; } }
+.la-ban { display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px; aspect-ratio: 1; }
+.lb-o, .lb-tam { border-radius: 10px; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 4px; font-size: 12px; }
+.lb-o b { font-size: 12.5px; } .lb-o small { font-size: 11px; }
+.lb-o.tot { background: rgba(31, 166, 136, .3); } .lb-o.xau { background: rgba(217, 80, 63, .25); } .lb-o.khoa { background: rgba(255, 255, 255, .05); color: var(--ink-soft); }
+.lb-tam { background: rgba(246, 182, 74, .2); border: 1px solid var(--gold); } .lb-tam b { font-size: 18px; color: var(--gold-hi); }
+.ti-diem { display: flex; align-items: baseline; gap: 6px; margin: 10px 0; } .ti-diem b { font-size: 34px; font-weight: 800; } .ti-diem span { color: var(--ink-soft); }
+.ti-goi-y { display: flex; flex-wrap: wrap; gap: 8px; } .ti-goi-y span { padding: 5px 12px; border-radius: 999px; border: 1px solid var(--line); background: var(--surface-glass); font-size: 13px; }
+.ti-que { margin-top: 6px; } .ti-que-dau b { display: block; font-size: 16px; } .ti-que-dau small { color: var(--ink-soft); }
+.ti-que-hinh { display: flex; flex-wrap: wrap; align-items: center; gap: 18px; margin: 12px 0; }
+.ti-que-hinh figure { margin: 0; text-align: center; } .ti-que-hinh figcaption { font-size: 12px; color: var(--ink-soft); }
+.ti-que-svg { width: 70px; height: auto; }
+.ti-dang-gieo { text-align: center; padding: 12px; } .ti-dang-gieo .ti-que-svg { animation: queLac 0.6s ease-in-out infinite alternate; }
+@keyframes queLac { from { transform: rotate(-6deg); } to { transform: rotate(6deg); } }
+.tab.tab-ti:not(.active) { color: var(--gold-hi); }
 </style>
