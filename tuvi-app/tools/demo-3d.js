@@ -22,8 +22,9 @@ function duLieuTV(r, input) {
   var t = r.tuvi, luan = {};
   ((t.luanGiai || {}).cung || []).forEach(function (c) { luan[c.cung] = { yNghia: c.yNghia, lines: c.lines || [], danhGia: c.danhGia }; });
   return { mau: false, info: thongTin3D(r, input), luan: luan,
+    tru: ((r.battu && r.battu.pillars) || []).map(function (p) { return { tru: p.tru, can: p.canTen, chi: p.chiTen, h: p.canHanh }; }),
     palaces: t.palaces.slice().sort(function (a, b) { return a.chi - b.chi; }).map(function (p) {
-      return { chi: p.chi, chiTen: p.chiTen, canTen: p.canTen, cung: p.cung, cungIdx: p.cungIdx, isThan: !!p.isThan, tuan: !!p.tuan, triet: !!p.triet,
+      return { chi: p.chi, chiTen: p.chiTen, canTen: p.canTen, cung: p.cung, cungIdx: p.cungIdx, isThan: !!p.isThan, tuan: !!p.tuan, triet: !!p.triet, ts: p.trangSinh || '', dh: p.daiHan || 0,
         diem10: p.diem10 != null ? p.diem10 : Math.round(100 / (1 + Math.exp(-(p.diem || 0) / 3))) / 10,
         chinh: (p.chinh || []).map(function (s) { return { n: s.n, h: s.h, b: s.b || '', hoa: s.hoa || '' }; }),
         cat: (p.cat || []).map(function (s) { return s.n; }), hung: (p.hung || []).map(function (s) { return s.n; }) };
