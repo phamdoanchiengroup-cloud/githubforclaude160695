@@ -48,6 +48,7 @@ Bấm **＋ → HTML**, gõ tên **không có đuôi .html**:
 | `Script` | Mã chạy trên trình duyệt (file dài, chép bằng Raw cho đủ) |
 | `NghiemChungUI` | Trang nghiệm chứng (mở bằng `?page=nghiemchung`) |
 | `Anh` | Ảnh quảng bá (khoảng 118 KB, là một dòng base64 rất dài). Không bắt buộc, thiếu file này web vẫn chạy |
+| `LaSo3D` | Xem lá số Tử Vi 3D và Tứ Trụ 3D (khoảng 160 KB). Không bắt buộc: thiếu file này web vẫn chạy, chỉ là bấm nút 3D sẽ báo chưa cài |
 
 ### B3. File cấu hình (nên làm)
 

@@ -1035,6 +1035,7 @@
     dungMucLuc(); veCta(); veQc();
         if (window._danhDauCoso) window._danhDauCoso();
     try { veHoSo(); } catch (e) { if (window.console) console.error('[Hồ sơ]', e); }
+    try { veMoi3D(); } catch (e) { if (window.console) console.error('[3D]', e); }
     try { veChao(); setTimeout(hieuUng, 80); } catch (e) { if (window.console) console.error('[Sinh động]', e); }
   }
   /** Banner đầu trang: trước khi lập lá số là khung giới thiệu; sau đó là dải quảng cáo gọn, hiện ở mọi tab */
@@ -2919,6 +2920,19 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
     el.hidden = !qd;
     if (qd) el.innerHTML = '🎁 <b>Đăng ký miễn phí nhận ' + qd + ' xu</b> – đủ mở Tổng hợp 6 hệ' + (giaPhan('co_ban').goc ? ' (giá khai trương ' + giaHtml('co_ban') + ')' : '') + '. <a href="javascript:void 0" data-dang-ky>Đăng ký ngay</a>';
   }
+  /** Mở lá số Tử Vi 3D ('tv') hoặc Tứ Trụ 3D ('bt') – mã nằm trong file tùy chọn LaSo3D.html */
+  function mo3D(loai) {
+    var r = state.result;
+    if (!r) { toast('Hãy lập lá số trước.', true); return; }
+    var fn = loai === 'bt' ? window.moBatTu3D : window.moLaSo3D;
+    if (!fn) { toast('Chưa cài phần xem 3D (file LaSo3D) – xem hướng dẫn cài đặt.', true); return; }
+    if (!fn(r, state.input)) toast('Lá số này chưa đủ dữ liệu để dựng 3D.', true);
+  }
+  /** Khung mời xem Tứ Trụ 3D ở đầu tab Bát Tự */
+  function veMoi3D() {
+    var pg = $('page-battu'); if (!pg || !state.result || !state.result.battu || !window.moBatTu3D || pg.querySelector('.xem3d')) return;
+    pg.insertAdjacentHTML('afterbegin', '<div class="panel xem3d"><div class="x3-ic" aria-hidden="true"><i></i><i></i><i></i><i></i></div><div class="x3-nd"><b>Tứ Trụ 3D – bốn cột đời bạn</b><span>Bốn trụ Năm, Tháng, Ngày, Giờ dựng thành không gian ba chiều cùng bánh xe ngũ hành và con đường đại vận. Đi qua 11 chặng luận giải dễ hiểu.</span></div><button type="button" class="btn btn-primary btn-sm" data-bt3d>✦ Mở Tứ Trụ 3D</button></div>');
+  }
   function veHoSo() {
     var r = state.result, f = state.input, top = $('resTop');
     document.body.classList.toggle('co-ket-qua', !!r);
@@ -2931,7 +2945,7 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
     el.innerHTML = '<div class="ho-so-av" aria-hidden="true">' + esc((String(f.name || '?').trim().split(/\s+/).pop() || '?').charAt(0).toUpperCase()) + '</div>' +
       '<div class="ho-so-nd"><b>' + esc(f.name || 'Chưa có tên') + '</b><span>' + (f.gender === 'nu' ? 'Nữ' : 'Nam') + ' · ' + ngay + (f.calendar === 'am' ? ' (nhập âm lịch)' : '') +
       ' · ' + pad(f.hour) + ':' + pad(f.minute) + (noi ? ' · ' + esc(noi) : '') + (I && I.namCanChi ? ' · tuổi ' + esc(I.namCanChi) : '') + '</span></div>' +
-      '<div class="ho-so-nut"><button type="button" class="btn btn-ghost btn-sm" data-sua-form>✎ Sửa thông tin</button><button type="button" class="btn btn-ghost btn-sm" data-la-so-moi>＋ Lá số mới</button><button type="button" class="btn btn-ghost btn-sm" data-chia-se>↗ Mời bạn bè</button></div>';
+      '<div class="ho-so-nut"><button type="button" class="btn btn-ghost btn-sm" data-sua-form>✎ Sửa thông tin</button><button type="button" class="btn btn-ghost btn-sm" data-la-so-moi>＋ Lá số mới</button><button type="button" class="btn btn-ghost btn-sm" data-ls3d>✦ Lá số 3D</button><button type="button" class="btn btn-ghost btn-sm" data-chia-se>↗ Mời bạn bè</button></div>';
   }
   function moForm(moi) {
     document.body.classList.add('mo-form');
@@ -2948,6 +2962,8 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
       if (t.closest('[data-sua-form]')) { moForm(false); return; }
       if (t.closest('[data-la-so-moi]')) { moForm(true); return; }
       if (t.closest('[data-chia-se]')) { chiaSe(); return; }
+      if (t.closest('[data-ls3d]')) { mo3D('tv'); return; }
+      if (t.closest('[data-bt3d]')) { mo3D('bt'); return; }
       if (t.closest('[data-dang-ky]')) { moDangNhap('', 'up'); return; }
       if (t.closest('[data-dong-form]') || t.id === 'formNen') { dongForm(); return; }
     });
@@ -4418,7 +4434,7 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
       if (node.tagName === 'DETAILS') node.setAttribute('open', '');
       node.querySelectorAll('.strip, button, .subtabs').forEach(function (b) { b.remove(); });
       // PDF là tài liệu đọc: bỏ thẻ khóa, ưu đãi, bảng giá, nút chọn năm, lời mời nghiệm chứng
-      node.querySelectorAll('.khoa-gd, .ud-row, .nam-xem, .gia-bac, .cam-ket, .meo-mua, .khoa-phan, .dv-khoa, .kg-moi, .dv-mo, .khach-bar, .hk-hanh, .lock-cta, .vt-the, .vt-dieu, .vt-he').forEach(function (b) { b.remove(); });
+      node.querySelectorAll('.khoa-gd, .ud-row, .nam-xem, .gia-bac, .cam-ket, .meo-mua, .khoa-phan, .dv-khoa, .kg-moi, .dv-mo, .khach-bar, .hk-hanh, .lock-cta, .xem3d, [data-ls3d], .vt-the, .vt-dieu, .vt-he').forEach(function (b) { b.remove(); });
       if (node.classList && (node.classList.contains('khoa-phan') || node.classList.contains('dv-khoa'))) node.innerHTML = '';
       // Vòm trời: html2canvas cần kích thước SVG cố định, không thì ảnh bị phóng và cắt mép
       node.querySelectorAll('.vt-svg').forEach(function (v) { v.setAttribute('width', '640'); v.setAttribute('height', '640'); v.style.width = v.style.height = '640px'; v.style.maxWidth = 'none'; v.style.overflow = 'hidden';

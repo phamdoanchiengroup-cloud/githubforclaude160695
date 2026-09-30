@@ -253,6 +253,7 @@
               <label class="check"><input type="checkbox" id="optLines" checked> Tam hợp – xung chiếu</label>
               <span class="sp"></span>
               <div class="legend"><span class="h-Kim">Kim</span><span class="h-Mộc">Mộc</span><span class="h-Thủy">Thủy</span><span class="h-Hỏa">Hỏa</span><span class="h-Thổ">Thổ</span></div>
+              <button class="btn btn-primary btn-sm" data-ls3d type="button">✦ Lá số 3D</button>
               <button class="btn btn-ghost btn-sm" id="btnPng" type="button">⤓ Tải ảnh</button>
               <button class="btn btn-ghost btn-sm" id="btnPdf" type="button">⤓ Tải PDF</button>
               <button class="btn btn-ghost btn-sm" id="btnPrint" type="button">⎙ In</button>
@@ -543,6 +544,7 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <?!= includeTuyChon('Anh'); ?>
   <?!= include('Script'); ?>
+  <?!= includeTuyChon('LaSo3D'); ?>
   <!-- ============ HÀNH TRÌNH DẪN DẮT: nhập từng bước → khởi quẻ → lật từng lá hé lộ ============ -->
   <div class="modal ht-modal" id="htModal" role="dialog" aria-modal="true" aria-labelledby="htTieuDe" data-man="nhap">
     <div class="panel ht-hop">

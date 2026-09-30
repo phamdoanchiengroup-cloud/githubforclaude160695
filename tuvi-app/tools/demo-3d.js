@@ -1,7 +1,9 @@
 /**
- * Dựng trang demo "Lá số Tử Vi 3D" (demo/la-so-3d.html) từ một lá số thật của bộ máy an sao.
+ * Dựng 3D cho Tử Vi và Bát Tự từ lá số thật:
+ *  - demo/la-so-3d.html, demo/bat-tu-3d.html (trang xem thử độc lập)
+ *  - LaSo3D.html (file tùy chọn của app, nạp bằng includeTuyChon – mở trong khung riêng toàn màn hình)
  * Chạy: node tools/demo-3d.js ['{"name":"...","gender":"nam","calendar":"duong","day":15,"month":8,"year":1990,"hour":10,"minute":30}']
- * Khuôn trang: demo/la-so-3d.tpl.html (chỗ /*DATA*\/ được thay bằng dữ liệu lá số).
+ * Khuôn: demo/la-so-3d.tpl.html, demo/bat-tu-3d.tpl.html (chỗ /*DATA*\/null được thay bằng dữ liệu).
  */
 const fs = require('fs'), path = require('path');
 const { ctx } = require('./gia-lap.js');
@@ -9,17 +11,88 @@ const D = path.join(__dirname, '..');
 const macDinh = { name: 'Nguyễn Văn An', gender: 'nam', calendar: 'duong', day: 15, month: 8, year: 1990, hour: 10, minute: 30, place: '21.03|105.85|Hà Nội', tz: '7' };
 const inp = Object.assign({}, macDinh, process.argv[2] ? JSON.parse(process.argv[2]) : {});
 const r = ctx.lapLaSo(inp, '');
-const I = r.tuvi.info;
-const P = r.tuvi.palaces.slice().sort((a, b) => a.chi - b.chi);
-const data = {
-  mau: !process.argv[2],
-  info: { name: I.name, gioiTinh: I.gender, namCanChi: I.namCanChi, conGiap: I.conGiap, amDuong: I.amDuong, banMenh: I.banMenh.ten, cuc: I.cuc,
-    gioTen: I.gioTen, solar: I.solar, lunar: I.lunar, noi: String(inp.place || '').split('|')[2] || '' },
-  palaces: P.map(p => ({ chi: p.chi, chiTen: p.chiTen, canTen: p.canTen, cung: p.cung, cungIdx: p.cungIdx, isThan: !!p.isThan, tuan: !!p.tuan, triet: !!p.triet,
-    diem10: p.diem10, chinh: p.chinh.map(s => ({ n: s.n, h: s.h, b: s.b || '', hoa: s.hoa || '' })), cat: p.cat.map(s => s.n), hung: p.hung.map(s => s.n) })),
-  luan: Object.fromEntries(r.tuvi.luanGiai.cung.map(c => [c.cung, { yNghia: c.yNghia, lines: c.lines, danhGia: c.danhGia }]))
-};
-const tpl = fs.readFileSync(path.join(D, 'demo/la-so-3d.tpl.html'), 'utf8');
-const out = tpl.replace('/*DATA*/null', JSON.stringify(data).replace(/</g, '\\u003c'));
-fs.writeFileSync(path.join(D, 'demo/la-so-3d.html'), out);
-console.log('Đã dựng demo/la-so-3d.html –', data.info.name, '·', (out.length / 1024).toFixed(0) + ' KB');
+
+/* Hàm rút dữ liệu dùng chung cho Node (demo) và trình duyệt (LaSo3D.html) – viết ES5 */
+function thongTin3D(r, input) {
+  var I = r.tuvi.info;
+  return { name: I.name || (input && input.name) || '', gioiTinh: I.gender, namCanChi: I.namCanChi, conGiap: I.conGiap, amDuong: I.amDuong, banMenh: (I.banMenh || {}).ten || '', cuc: I.cuc,
+    gioTen: I.gioTen, solar: I.solar, lunar: I.lunar, noi: String((input && input.place) || '').split('|')[2] || '' };
+}
+function duLieuTV(r, input) {
+  var t = r.tuvi, luan = {};
+  ((t.luanGiai || {}).cung || []).forEach(function (c) { luan[c.cung] = { yNghia: c.yNghia, lines: c.lines || [], danhGia: c.danhGia }; });
+  return { mau: false, info: thongTin3D(r, input), luan: luan,
+    palaces: t.palaces.slice().sort(function (a, b) { return a.chi - b.chi; }).map(function (p) {
+      return { chi: p.chi, chiTen: p.chiTen, canTen: p.canTen, cung: p.cung, cungIdx: p.cungIdx, isThan: !!p.isThan, tuan: !!p.tuan, triet: !!p.triet,
+        diem10: p.diem10 != null ? p.diem10 : Math.round(100 / (1 + Math.exp(-(p.diem || 0) / 3))) / 10,
+        chinh: (p.chinh || []).map(function (s) { return { n: s.n, h: s.h, b: s.b || '', hoa: s.hoa || '' }; }),
+        cat: (p.cat || []).map(function (s) { return s.n; }), hung: (p.hung || []).map(function (s) { return s.n; }) };
+    }) };
+}
+function duLieuBT(r, input) {
+  var b = r.battu, g = b.goiY || {}, dh = r.moRong && r.moRong.deHieu && r.moRong.deHieu.battu;
+  return { mau: false, info: thongTin3D(r, input), nhatChu: b.nhatChu, phanTram: b.phanTram || {}, tyLeTro: b.tyLeTro, cuong: b.cuong,
+    pillars: b.pillars.map(function (p) { return { tru: p.tru, canTen: p.canTen, chiTen: p.chiTen, canHanh: p.canHanh, chiHanh: p.chiHanh, thapThan: p.thapThan, napAm: p.napAm, truongSinh: p.truongSinh,
+      tangCan: (p.tangCan || []).map(function (x) { return { ten: x.ten, hanh: x.hanh, thapThan: x.thapThan }; }) }; }),
+    goiY: { dung: g.dung, hy: g.hy || [], ky: g.ky || [], mau: g.mau || '', huong: g.huong || '', so: g.so || '', nghe: g.nghe || '' },
+    quanHe: (b.quanHe || []).map(function (q) { return { loai: q.loai, txt: q.txt }; }),
+    daiVan: (b.daiVan || []).map(function (d) { return { tuoi: d.tuoi, nam: d.nam, canChi: d.canChi, hanhCan: d.hanhCan, hanhChi: d.hanhChi, danhGia: d.danhGia }; }),
+    deHieu: (dh && dh.khoi) || [] };
+}
+const nhung = (tpl, data) => tpl.replace('/*DATA*/null', () => JSON.stringify(data).replace(/</g, '\\u003c'));
+const TPL_TV = fs.readFileSync(path.join(D, 'demo/la-so-3d.tpl.html'), 'utf8');
+const TPL_BT = fs.readFileSync(path.join(D, 'demo/bat-tu-3d.tpl.html'), 'utf8');
+const mauTV = Object.assign(duLieuTV(r, inp), { mau: !process.argv[2] }), mauBT = Object.assign(duLieuBT(r, inp), { mau: !process.argv[2] });
+fs.writeFileSync(path.join(D, 'demo/la-so-3d.html'), nhung(TPL_TV, mauTV));
+fs.writeFileSync(path.join(D, 'demo/bat-tu-3d.html'), nhung(TPL_BT, mauBT));
+console.log('Đã dựng demo/la-so-3d.html và demo/bat-tu-3d.html –', mauTV.info.name);
+
+/* ---- File LaSo3D.html cho app ---- */
+const chuoi = s => JSON.stringify(s).replace(/<\//g, '<\\/').replace(/<!--/g, '<\\!--');
+const js = `<!-- LaSo3D.html – Lá số Tử Vi 3D và Tứ Trụ 3D (tùy chọn). Tự sinh bằng: node tools/demo-3d.js – đừng sửa tay. -->
+<style>
+#ls3dNen { position: fixed; inset: 0; z-index: 130; background: #07131f; display: none; }
+#ls3dNen.mo { display: block; }
+#ls3dNen iframe { border: 0; width: 100%; height: 100%; display: block; }
+.ls3d-dong { position: absolute; top: calc(10px + env(safe-area-inset-top, 0px)); right: 12px; z-index: 2; font: 600 13.5px/1 'Be Vietnam Pro', system-ui, sans-serif; color: #07131f; background: #e2c078; border: 0; border-radius: 10px; padding: 9px 13px; cursor: pointer; box-shadow: 0 4px 14px rgba(0, 0, 0, .4); }
+.ls3d-dong:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
+body.ls3d-mo { overflow: hidden; }
+</style>
+<script>
+(function () {
+  'use strict';
+  var TPL = { tv: ${chuoi(TPL_TV)}, bt: ${chuoi(TPL_BT)} };
+  ${thongTin3D.toString()}
+  ${duLieuTV.toString()}
+  ${duLieuBT.toString()}
+  function dong() { var n = document.getElementById('ls3dNen'); if (!n) return; n.classList.remove('mo'); document.body.classList.remove('ls3d-mo'); }
+  function mo(loai, r, input) {
+    if (!r || !r.tuvi || !r.tuvi.palaces || (loai === 'bt' && !(r.battu && r.battu.pillars))) return false;
+    var nen = document.getElementById('ls3dNen');
+    if (!nen) {
+      nen = document.createElement('div'); nen.id = 'ls3dNen'; nen.setAttribute('role', 'dialog'); nen.setAttribute('aria-modal', 'true');
+      nen.innerHTML = '<button type="button" class="ls3d-dong">✕ Đóng</button><iframe title="Xem 3D" allow="fullscreen"></iframe>';
+      document.body.appendChild(nen);
+      nen.querySelector('.ls3d-dong').addEventListener('click', dong);
+      document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && nen.classList.contains('mo')) dong(); });
+    }
+    nen.setAttribute('aria-label', loai === 'bt' ? 'Tứ Trụ 3D' : 'Lá số Tử Vi 3D');
+    var I = r.tuvi.info, khoa = loai + JSON.stringify([I.name, I.gender, I.solar, I.hour, I.minute, r.tuvi.palaces.map(function (p) { return p.cungIdx; })]);
+    if (nen._khoa !== khoa) {
+      var data = loai === 'bt' ? duLieuBT(r, input) : duLieuTV(r, input);
+      nen.querySelector('iframe').srcdoc = '<!DOCTYPE html><html lang="vi"><head><meta charset="utf-8"></head><body>' +
+        TPL[loai].replace('/*DATA*/null', function () { return JSON.stringify(data).replace(/</g, '\\\\u003c'); }) + '</body></html>';
+      nen._khoa = khoa;
+    }
+    nen.classList.add('mo'); document.body.classList.add('ls3d-mo');
+    setTimeout(function () { nen.querySelector('.ls3d-dong').focus(); }, 30);
+    return true;
+  }
+  /** Mở lá số Tử Vi 3D / Tứ Trụ 3D toàn màn hình cho kết quả đang xem. Trả về false nếu chưa có dữ liệu. */
+  window.moLaSo3D = function (r, input) { return mo('tv', r, input); };
+  window.moBatTu3D = function (r, input) { return mo('bt', r, input); };
+})();
+</script>
+`;
+fs.writeFileSync(path.join(D, 'LaSo3D.html'), js);
+console.log('Đã dựng LaSo3D.html –', (js.length / 1024).toFixed(0) + ' KB');
