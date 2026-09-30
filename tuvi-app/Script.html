@@ -245,6 +245,7 @@
 
   function submit() {
     var f = getForm();
+    document.body.classList.remove('mo-form');
     if (!(f.year >= 1800 && f.year <= 2200)) { toast('Năm sinh cần trong khoảng 1800 – 2200.', true); return; }
     storeSet('tcc_last_input', JSON.stringify(f));
     loading(true);
@@ -969,6 +970,7 @@
     });
     dungMucLuc(); veCta(); veQc();
         if (window._danhDauCoso) window._danhDauCoso();
+    try { veHoSo(); } catch (e) { if (window.console) console.error('[Hồ sơ]', e); }
     try { veChao(); setTimeout(hieuUng, 80); } catch (e) { if (window.console) console.error('[Sinh động]', e); }
   }
   /** Banner đầu trang: trước khi lập lá số là khung giới thiệu; sau đó là dải quảng cáo gọn, hiện ở mọi tab */
@@ -2665,6 +2667,39 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
     var y0 = new Date().getFullYear(), ds = [y0 - 1, y0, y0 + 1, y0 + 2];
     return '<div class="nam-xem"><span>Xem vận năm:</span>' + ds.map(function (y) { return '<button type="button" class="chip' + (y === vy ? ' on' : '') + '" data-nam-xem="' + y + '">' + y + (y > y0 ? ' ✦' : '') + '</button>'; }).join('') + '</div>';
   }
+  /* ---------- Bố cục chuyên nghiệp: khi đã có kết quả, ô nhập thu vào ngăn kéo; đầu kết quả là thẻ hồ sơ gọn ---------- */
+  function veHoSo() {
+    var r = state.result, f = state.input, top = $('resTop');
+    document.body.classList.toggle('co-ket-qua', !!r);
+    if (!r || !f || !top) return;
+    var el = $('hoSoTom');
+    if (!el) { el = document.createElement('div'); el.id = 'hoSoTom'; el.className = 'ho-so'; top.parentNode.insertBefore(el, top.nextSibling); }
+    var ch = $('chaoBan'); if (ch && ch.previousElementSibling !== el) el.parentNode.insertBefore(ch, el.nextSibling);
+    var noi = String(f.place || '').split('|')[2] || '', I = r.tuvi && r.tuvi.info, s = I && I.solar;
+    var ngay = s ? s.day + '/' + s.month + '/' + s.year : f.day + '/' + f.month + '/' + f.year;
+    el.innerHTML = '<div class="ho-so-av" aria-hidden="true">' + esc((String(f.name || '?').trim().split(/\s+/).pop() || '?').charAt(0).toUpperCase()) + '</div>' +
+      '<div class="ho-so-nd"><b>' + esc(f.name || 'Chưa có tên') + '</b><span>' + (f.gender === 'nu' ? 'Nữ' : 'Nam') + ' · ' + ngay + (f.calendar === 'am' ? ' (nhập âm lịch)' : '') +
+      ' · ' + pad(f.hour) + ':' + pad(f.minute) + (noi ? ' · ' + esc(noi) : '') + (I && I.namCanChi ? ' · tuổi ' + esc(I.namCanChi) : '') + '</span></div>' +
+      '<div class="ho-so-nut"><button type="button" class="btn btn-ghost btn-sm" data-sua-form>✎ Sửa thông tin</button><button type="button" class="btn btn-ghost btn-sm" data-la-so-moi>＋ Lá số mới</button></div>';
+  }
+  function moForm(moi) {
+    document.body.classList.add('mo-form');
+    if (!$('formNen')) { var n = document.createElement('div'); n.id = 'formNen'; n.className = 'form-nen'; document.body.appendChild(n); }
+    var fp = document.querySelector('.form-panel');
+    if (fp && !fp.querySelector('.form-dong')) fp.insertAdjacentHTML('afterbegin', '<button type="button" class="form-dong" data-dong-form aria-label="Đóng">✕</button>');
+    if (moi) { $('name').value = ''; }
+    setTimeout(function () { var x = $('name'); if (x) x.focus(); }, 60);
+  }
+  function dongForm() { document.body.classList.remove('mo-form'); }
+  (function ganBoCuc() {
+    document.addEventListener('click', function (e) {
+      var t = e.target;
+      if (t.closest('[data-sua-form]')) { moForm(false); return; }
+      if (t.closest('[data-la-so-moi]')) { moForm(true); return; }
+      if (t.closest('[data-dong-form]') || t.id === 'formNen') { dongForm(); return; }
+    });
+    document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && document.body.classList.contains('mo-form')) dongForm(); });
+  })();
   /* ---------- Sinh động & gần gũi: lời chào hôm nay, hiện dần khi cuộn, điểm số đếm lên, mừng mở khóa ---------- */
   var HU_IT = (function () { try { return window.matchMedia('(prefers-reduced-motion: reduce)').matches; } catch (e) { return false; } })();
   function huRut(n) { while (n > 9) n = String(n).split('').reduce(function (s, c) { return s + (+c); }, 0); return n; }
@@ -2700,7 +2735,7 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
   function veChao() {
     var r = state.result, top = $('resTop'); if (!r || !top || !r.tuvi) return;
     var el = $('chaoBan');
-    if (!el) { el = document.createElement('div'); el.id = 'chaoBan'; el.className = 'chao'; top.parentNode.insertBefore(el, top.nextSibling); }
+    if (!el) { el = document.createElement('div'); el.id = 'chaoBan'; el.className = 'chao'; var sau = $('hoSoTom') || top; sau.parentNode.insertBefore(el, sau.nextSibling); }
     var khoa = 'tcc_chao_' + new Date().toDateString();
     var an = false; try { an = sessionStorage.getItem(khoa) === '1'; } catch (e) {}
     el.hidden = an; if (an) return;

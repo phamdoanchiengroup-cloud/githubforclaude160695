@@ -231,26 +231,18 @@
               <div class="feature"><span class="han">柱</span><b>Bát Tự</b><small>Tứ trụ theo Tiết khí, thập thần, dụng thần, đại vận.</small></div>
             </div>
           </div>
-            <div id="ncBanner" class="panel" style="display:none;margin-bottom:14px;padding:20px 22px;background:linear-gradient(135deg,rgba(246,182,74,.22),rgba(19,181,204,.16));border:1px solid var(--gold)">
-            <div style="display:flex;align-items:flex-start;gap:16px;flex-wrap:wrap">
-              <div style="font-size:44px;line-height:1;flex:none">🔍</div>
-              <div style="flex:1;min-width:240px">
-                <div style="font-family:var(--font-title);font-size:22px;color:var(--head);font-weight:700;margin-bottom:6px">Lá số này có đúng giờ sinh của bạn không?</div>
-                <div style="font-size:14px;color:var(--ink);line-height:1.55">
-                  <b>Nghiệm chứng là gì?</b> Cùng một ngày sinh, mỗi giờ sinh khác nhau sẽ cho ra một lá số khác — và cuộc đời khác. Nếu bạn không chắc giờ sinh (mẹ kể khác nhau, giấy khai sinh ghi ước lượng…), lá số lập ra có thể <b>không đúng người</b>.
-                </div>
-                <div style="font-size:14px;color:var(--ink);line-height:1.55;margin-top:6px">
-                  <b>Cách làm:</b> Hệ thống đọc lá số của bạn, tạo ra 8 đoạn mô tả ngắn về vóc dáng, tính cách, cha mẹ, anh chị em, sức khỏe, hôn nhân, con cái, sự nghiệp. Bạn tự đối chiếu với cuộc đời mình và chấm mức độ khớp. Nếu khớp <b>từ 6/8 nhóm trở lên</b>, lá số này đúng là của bạn — yên tâm đọc luận giải. Nếu khớp thấp, nên thử lại với giờ sinh khác.
-                </div>
-                <div style="font-size:13px;color:var(--ink-soft);line-height:1.5;margin-top:8px;padding-top:8px;border-top:1px dashed var(--line)">
-                  ⏱ Mất khoảng 2 phút. Không cần đăng nhập. Chỉ dùng để kiểm tra, không ảnh hưởng đến luận giải phía dưới.
-                </div>
+            <div id="ncBanner" class="panel nc-goi" style="display:none">
+              <div class="nc-goi-ic" aria-hidden="true">🔍</div>
+              <div class="nc-goi-nd">
+                <b>Lá số này có đúng giờ sinh của bạn không?</b>
+                <span>Kiểm chứng trong 2 phút: đối chiếu 8 mô tả ngắn với cuộc đời bạn. Miễn phí, không cần đăng nhập.</span>
+                <details class="nc-goi-them"><summary>Vì sao nên kiểm chứng?</summary>
+                  <p>Cùng một ngày sinh, mỗi giờ sinh khác nhau cho ra một lá số khác. Nếu bạn không chắc giờ sinh (mẹ kể khác nhau, giấy khai sinh ghi ước lượng…), lá số có thể <b>không đúng người</b>.</p>
+                  <p>Hệ thống tạo 8 đoạn mô tả về vóc dáng, tính cách, cha mẹ, anh chị em, sức khỏe, hôn nhân, con cái, sự nghiệp. Khớp <b>từ 6/8 nhóm</b> trở lên: lá số đúng là của bạn. Khớp thấp: nên thử lại với giờ sinh khác.</p>
+                </details>
               </div>
+              <button type="button" class="btn btn-primary nc-goi-nut" id="ncBannerGo">Bắt đầu kiểm chứng</button>
             </div>
-            <div style="display:flex;justify-content:flex-end;margin-top:14px">
-              <button type="button" class="btn btn-primary" id="ncBannerGo" style="width:auto;padding:12px 24px;font-size:16px;margin:0">🔍 Bắt đầu nghiệm chứng</button>
-            </div>
-          </div>
           <div id="chartArea" style="display:none">
             <div class="toolbar">
               <label class="check"><input type="checkbox" id="optLuu" checked> Lưu tinh</label>
