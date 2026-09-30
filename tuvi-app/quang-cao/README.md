@@ -50,6 +50,27 @@ Bộ ảnh quảng cáo dựng từ ảnh gốc "Hạnh phúc nằm trong tầm 
 **Tiêu đề:** 6 hệ huyền học · 1 bản đồ về bạn
 **Mô tả:** Xem miễn phí chân dung bản thân
 
+## Bộ quảng cáo 3D (tháng 10/2026)
+
+Ảnh chụp trực tiếp từ Lá số Tử Vi 3D (la bàn 12 cung) và Tứ Trụ 3D (bốn trụ pha lê).
+
+| File | Kích thước | Dùng cho |
+|---|---|---|
+| `QC-tu-vi-vuong.png` | 1080×1080 | Bài đăng Facebook/Instagram – Tử Vi 3D |
+| `QC-tu-tru-vuong.png` | 1080×1080 | Bài đăng Facebook/Instagram – Tứ Trụ 3D |
+| `QC-story.png` | 1080×1920 | Story, Reels, TikTok |
+| `QC-ngang.png` | 1200×628 | Ảnh bìa link, Google Display, Zalo |
+
+### Mẫu D – Lá số 3D
+
+**Chữ chính:**
+> Lá số Tử Vi của bạn, giờ xoay được trong tay.
+> 12 cung thành một la bàn phát sáng. Mỗi chính tinh là một nhân vật – chạm vào để nghe kể về tính cách, tiền bạc, tình duyên của chính bạn. Bát Tự dựng thành bốn trụ pha lê: gốc rễ, bệ phóng, chính bạn, hậu vận.
+> ✦ Luận giải 6 hệ miễn phí · Đăng ký tặng 19 xu · Mời bạn bè, cả hai cùng được thêm xu.
+
+**Tiêu đề:** Lá số 3D – xem mình theo cách chưa từng thấy
+**Nút:** Khám phá ngay
+
 ## Lưu ý khi chạy quảng cáo
 
 - Không cam kết kết quả tuyệt đối. Chỉ nên dùng các cụm như "xác suất", "tham khảo", "luận giải".
