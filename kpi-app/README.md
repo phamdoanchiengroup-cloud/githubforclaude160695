@@ -15,10 +15,11 @@ Dự án riêng, **không liên quan** tới `tuvi-app/`.
 | `tests/va-code.py`, `tests/va-index.py` | Tạo `Code.gs` / `Index.html` từ `goc/` bằng các lần thay có kiểm tra (mỗi chuỗi gốc phải khớp đúng số lần) |
 | `tests/ham-chay-tay.gs` | Các hàm chạy tay (kiểm tra, sửa ngày sai, ngày lễ…), được nối vào cuối `Code.gs` |
 | `tests/toc-do.gs` | Tăng tốc, nối vào cuối `Code.gs`: bộ đệm ghi `suaO_` → `xaGhi_`, `xong_()` cuối lượt (trong `sach_`), số phiên bản `KPI_PB` + `nho_()` (CacheService gzip, khối 90KB, 10 phút), `ganPhanDoi_` (sheet đã đổi → `phanDoi`), `napPhan`, Sheets API `batchGet` (bật bằng `KIEM_TRA_SHEETS_API`), `LUU_TRU_NHAT_KY` |
-| `tests/giao-dien-moi.html` | CSS + JS giao diện bên trong (menu nhóm, thanh dưới, Việc hôm nay, chỉ mục tra cứu `ix_`). `va-index.py` chèn vào Index.html |
+| `tests/giao-dien-moi.html` | CSS + JS giao diện bên trong (menu nhóm, thanh dưới, Việc hôm nay, chỉ mục tra cứu `ix_`, 2 bộ màu xám than/sáng + nút ☀/☾, hiệu ứng: số chạy/vòng KPI `hieuUngMoi` qua MutationObserver trên `#main`, khung chờ tải `.gd-skel`, chuyển tab `sauKhiVeTab`, dấu ✓ + dòng trượt `hieuUngDuyet`, số lật `odoHTML`, vòng hạn `capNhatVongHan`, bi vào lỗ + tiếng `tiengVaoLo`, rung ô sai `rungONhap`). `va-index.py` chèn vào Index.html |
 | `tests/tao-ban-xem-thu.js` | Dựng **một file HTML** chạy cả web app trong trình duyệt (Code.gs chạy trên Sheet giả), dữ liệu ẩn danh, mật khẩu `demo`. File kết quả **không** đưa vào repo |
 | `tests/gia-lap-kpi.js` | Giả lập Apps Script: Sheet tự đổi chuỗi ngày như Google Sheets, khóa, cache, đồng hồ giả |
 | `tests/kiem-tra.js` | 85 kiểm tra trên dữ liệu thật, có đối chứng với mã gốc (mục 10: tăng tốc) |
+| `tests/hieu-ung.js` | 27 kiểm tra hiệu ứng (Playwright) trên bản xem thử 1 file: số chạy, vòng KPI, khung chờ tải, top 3, rung ô sai, đổi nền, duyệt ✓, số lật, bi vào lỗ, giảm chuyển động, mọi tab không lỗi |
 | `tests/xem-truoc.js` | Chạy giao diện trên máy với máy chủ giả lập. `/phien/<tên đăng nhập>` trả mã phiên để chụp ảnh không cần mật khẩu |
 
 ## Chạy kiểm tra

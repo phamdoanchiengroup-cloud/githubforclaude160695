@@ -353,6 +353,40 @@ R("""function mauKPI(v){ return v>=90?'#4ade80':(v>=80?'var(--cyan)':(v>=70?'#f2
 R("""      <button class="btn sm hhelp" onclick="go('hd')" title="Hướng dẫn sử dụng">?</button>""",
   """      <button class="btn sm hgd" id="btnGD" onclick="gdDoi()" title="Đổi nền sáng / tối"></button>
       <button class="btn sm hhelp" onclick="go('hd')" title="Hướng dẫn sử dụng">?</button>""")
+# 6j) Hiệu ứng: chuyển tab, duyệt, thông báo, bảng xếp hạng (mã hiệu ứng nằm trong giao-dien-moi.html)
+R("""cccn:vCCCaNhan}[k])();
+  capNhatDucBar();
+  capNhatDem();""", """cccn:vCCCaNhan}[k])();
+  capNhatDucBar();
+  capNhatDem();
+  try{sauKhiVeTab(arguments[2])}catch(e){}""")
+R("""      if(doc && tabHienTai!==tab0) return;          // đã sang tab khác: bỏ kết quả cũ, không vẽ đè
+      __phanDoi = (res && res.phanDoi) || null;
+      try{ cb(res); } catch(err){ toast('Lỗi xử lý: '+(err.message||err)); }
+      __phanDoi = null;""", """      if(doc && tabHienTai!==tab0) return;          // đã sang tab khác: bỏ kết quả cũ, không vẽ đè
+      var chay=function(){
+        __phanDoi = (res && res.phanDoi) || null;
+        try{ cb(res); } catch(err){ toast('Lỗi xử lý: '+(err.message||err)); }
+        __phanDoi = null;
+      };
+      // Duyệt xong: vẽ dấu ✓ và cho dòng trượt ra rồi mới cập nhật (0,3 giây)
+      var coHU=false;
+      try{ coHU = !!(res && res.ok && /^(duyet|banDieuHanhSuaDinhMuc)/.test(fn) && hieuUngDuyet(fn,args,nutGoc)); }catch(e){}
+      if(coHU) setTimeout(chay,300); else chay();""")
+R("""  if(nut){nut.disabled=true;nut.classList.add('dang-chay');}""", """  var nutGoc=nut;
+  if(nut){nut.disabled=true;nut.classList.add('dang-chay');}""")
+R("""function toast(m,ok){
+  var t=$('toast'); t.textContent=m; t.className='on '+(ok?'ok':'bd');
+  setTimeout(function(){t.className=''},3400);
+}""", """function toast(m,ok){
+  var t=$('toast'); t.textContent=m; t.className=''; void t.offsetWidth; t.className='on '+(ok?'ok':'bd');
+  clearTimeout(toast._h); toast._h=setTimeout(function(){t.className=''},3400);
+  if(!ok){try{rungONhap()}catch(e){}}
+}""")
+R("""      var huy=o.hang===1?'🥇':o.hang===2?'🥈':o.hang===3?'🥉':String(o.hang);
+      body+='<tr'+(laToi?""", """      var huy=o.hang<=3?'<span class="bi-so s'+o.hang+'" title="Hạng '+o.hang+'"><b>'+o.hang+'</b></span>':String(o.hang);
+      body+='<tr'+(o.hang<=3?' class="gd-top"':'')+(laToi?""")
+
 R("""/* ===== ĐĂNG NHẬP ===== */
 var TOKEN=null;""", GD_JS + """
 
