@@ -22,6 +22,8 @@ Dự án riêng, **không liên quan** tới `tuvi-app/`.
 | `tests/hieu-ung.js` | 27 kiểm tra hiệu ứng (Playwright) trên bản xem thử 1 file: số chạy, vòng KPI, khung chờ tải, top 3, rung ô sai, đổi nền, duyệt ✓, số lật, bi vào lỗ, giảm chuyển động, mọi tab không lỗi |
 | `tests/hieu-ung-2.js` | 13 kiểm tra đợt 2: giữ để duyệt (thả sớm không duyệt), vuốt để duyệt trên điện thoại (vuốt nửa không duyệt), quầng sáng, tia lửa, bảng lật hạng, ly nước KPI |
 | `demo-2.html` | Trang demo 8 màn hình có chuyển động (số liệu mẫu, chưa gắn vào web): vòng KPI 3 thành phần, biểu đồ kéo dò, bản đồ nhà máy 3D, bảng xếp hạng tự sắp xếp, tìm nhanh Ctrl+K, duyệt có Hoàn tác 5 giây, lịch chấm công bản đồ nhiệt, đồng hồ hiệu suất kim lò xo. Kiểm tra: `tests/demo-2.js` |
+| `demo-3.html` | Trang demo 8 dụng cụ đo kiểu công nghiệp cùng phong cách đồng hồ đã chọn: cụm 9 đồng hồ xưởng, bộ đếm cơ khí, tháp đèn andon, máy ghi biểu đồ chạy giấy, đồng hồ ca làm việc, cột đèn LED, núm xoay chọn kỳ, đồng hồ lật đếm ngược hạn. Kiểm tra: `tests/demo-3.js` (21 kiểm tra) |
+| `mau-da-chon/dong-ho-hieu-suat.html` | Mẫu chủ dự án đã duyệt (đồng hồ hiệu suất kim lò xo, demo-2 số 8), tách riêng để gắn vào web: số thật lấy từ `phanTichDinhMuc` |
 | `tests/xem-truoc.js` | Chạy giao diện trên máy với máy chủ giả lập. `/phien/<tên đăng nhập>` trả mã phiên để chụp ảnh không cần mật khẩu |
 
 ## Chạy kiểm tra
