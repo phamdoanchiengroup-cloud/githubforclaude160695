@@ -372,8 +372,10 @@ R("""      if(doc && tabHienTai!==tab0) return;          // đã sang tab khác:
       // Duyệt xong: vẽ dấu ✓ và cho dòng trượt ra rồi mới cập nhật (0,3 giây)
       var coHU=false;
       try{ coHU = !!(res && res.ok && /^(duyet|banDieuHanhSuaDinhMuc)/.test(fn) && hieuUngDuyet(fn,args,nutGoc)); }catch(e){}
-      if(coHU) setTimeout(chay,300); else chay();""")
-R("""  if(nut){nut.disabled=true;nut.classList.add('dang-chay');}""", """  var nutGoc=nut;
+      if(coHU) setTimeout(chay,300); else chay();
+      // Lưu thành công (không phải duyệt, không phải đọc): tia lửa nhỏ tại nút
+      try{ if(!coHU && !doc && res && res.ok) tiaLua(nutGoc); }catch(e){}""")
+R("""  if(nut){nut.disabled=true;nut.classList.add('dang-chay');}""", """  var nutGoc=nut||window.__nutHU||null; window.__nutHU=null;
   if(nut){nut.disabled=true;nut.classList.add('dang-chay');}""")
 R("""function toast(m,ok){
   var t=$('toast'); t.textContent=m; t.className='on '+(ok?'ok':'bd');

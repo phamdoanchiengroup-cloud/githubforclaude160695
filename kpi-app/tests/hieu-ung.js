@@ -76,7 +76,7 @@ async function vao(b, tk, opt = {}) {
   const dem0 = await p.evaluate(() => document.querySelector('#nav button[data-k="homnay"] .dem').getAttribute('data-v'));
   await p.evaluate(() => go('duyetsl')); await p.waitForTimeout(800);
   await p.evaluate(() => { const g = hieuUngDuyet; window.hieuUngDuyet = function (fn, a, n) { const r = g(fn, a, n); window.__di = document.querySelectorAll('.gd-di').length; window.__tick = !!document.querySelector('.gd-tick'); return r; }; });
-  await p.locator('#main button.btn.pri:visible', { hasText: /^Duyệt$/ }).first().click();
+  { const n = p.locator('#main button.giu').first(); const q = await n.boundingBox(); await p.mouse.move(q.x + q.width / 2, q.y + q.height / 2); await p.mouse.down(); await p.waitForTimeout(950); await p.mouse.up(); }
   await p.waitForSelector('.gd-tick', { timeout: 3000 }).catch(() => {});
   await p.waitForTimeout(60);
   await p.waitForFunction(() => window.__di !== undefined, null, { timeout: 5000 });
