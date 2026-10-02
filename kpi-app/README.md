@@ -27,6 +27,8 @@ Dự án riêng, **không liên quan** tới `tuvi-app/`.
 | `mau-da-chon/cum-dong-ho-xuong.html` | Mẫu đã duyệt (demo-3 số 1): cụm 9 đồng hồ hiệu suất xưởng, bấm để chọn xưởng. Số thật: hiệu suất hôm nay từng xưởng so với định mức |
 | `mau-da-chon/dong-ho-lat-dem-nguoc.html` | Mẫu đã duyệt (demo-3 số 8): đồng hồ lật đếm ngược hạn điểm danh 9:00 / nhập sản lượng 17:00 / chốt tháng, giờ Việt Nam |
 | `demo-4.html` | Trang demo 8 thiết bị nhà máy đợt 2: bảng lật điểm danh kiểu nhà ga, đồng hồ hai kim kế hoạch – thực tế, màn LED 7 đoạn, bảng đèn cảnh báo, thước trượt định mức công đoạn, thẻ chấm công bấm giờ, phiếu lương in nhiệt, bàn trượt mô phỏng KPI. Kiểm tra: `tests/demo-4.js` (30 kiểm tra) |
+| `mau-da-chon/thuoc-truot-dinh-muc.html` | Mẫu đã duyệt (demo-4 số 5): thước trượt định mức công đoạn, kim tam giác lò xo, vạch mờ là kỳ trước. Số thật: `phanTichDinhMuc` theo kỳ |
+| `demo-5.html` | Trang demo 8 thiết bị nhà máy đợt 3: thước KPI từng người (dùng lại thước trượt đã duyệt), đồng hồ áp suất tồn duyệt, sơ đồ dây chuyền tìm điểm nghẽn, máy ghi biểu đồ tròn cả tuần, ống Nixie, bảng chữ chạy LED có dấu tiếng Việt, nhiệt kế tiến độ tháng, đồng hồ VU đôi. Kiểm tra: `tests/demo-5.js` (26 kiểm tra) |
 | `tests/xem-truoc.js` | Chạy giao diện trên máy với máy chủ giả lập. `/phien/<tên đăng nhập>` trả mã phiên để chụp ảnh không cần mật khẩu |
 
 ## Chạy kiểm tra
