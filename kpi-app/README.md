@@ -21,7 +21,7 @@ Dự án riêng, **không liên quan** tới `tuvi-app/`.
 | `tests/kiem-tra.js` | 85 kiểm tra trên dữ liệu thật, có đối chứng với mã gốc (mục 10: tăng tốc) |
 | `tests/hieu-ung.js` | 27 kiểm tra hiệu ứng (Playwright) trên bản xem thử 1 file: số chạy, vòng KPI, khung chờ tải, top 3, rung ô sai, đổi nền, duyệt ✓, số lật, bi vào lỗ, giảm chuyển động, mọi tab không lỗi |
 | `tests/hieu-ung-2.js` | 13 kiểm tra đợt 2: giữ để duyệt (thả sớm không duyệt), vuốt để duyệt trên điện thoại (vuốt nửa không duyệt), quầng sáng, tia lửa, bảng lật hạng, ly nước KPI |
-| `demo-3d.html` | Trang demo 8 hiệu ứng 3D/chuyển động (số liệu mẫu, không dữ liệu thật): thẻ nghiêng, thẻ lật, bi-a 3D canvas, bục vinh danh, cột 3D, chồng thẻ, chuyển tab khối lập phương, pháo giấy. Chưa gắn vào web. Kiểm tra: `tests/demo-3d.js` |
+| `demo-2.html` | Trang demo 8 màn hình có chuyển động (số liệu mẫu, chưa gắn vào web): vòng KPI 3 thành phần, biểu đồ kéo dò, bản đồ nhà máy 3D, bảng xếp hạng tự sắp xếp, tìm nhanh Ctrl+K, duyệt có Hoàn tác 5 giây, lịch chấm công bản đồ nhiệt, đồng hồ hiệu suất kim lò xo. Kiểm tra: `tests/demo-2.js` |
 | `tests/xem-truoc.js` | Chạy giao diện trên máy với máy chủ giả lập. `/phien/<tên đăng nhập>` trả mã phiên để chụp ảnh không cần mật khẩu |
 
 ## Chạy kiểm tra
