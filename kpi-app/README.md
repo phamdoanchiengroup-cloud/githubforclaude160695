@@ -29,6 +29,8 @@ Dự án riêng, **không liên quan** tới `tuvi-app/`.
 | `demo-4.html` | Trang demo 8 thiết bị nhà máy đợt 2: bảng lật điểm danh kiểu nhà ga, đồng hồ hai kim kế hoạch – thực tế, màn LED 7 đoạn, bảng đèn cảnh báo, thước trượt định mức công đoạn, thẻ chấm công bấm giờ, phiếu lương in nhiệt, bàn trượt mô phỏng KPI. Kiểm tra: `tests/demo-4.js` (30 kiểm tra) |
 | `mau-da-chon/thuoc-truot-dinh-muc.html` | Mẫu đã duyệt (demo-4 số 5): thước trượt định mức công đoạn, kim tam giác lò xo, vạch mờ là kỳ trước. Số thật: `phanTichDinhMuc` theo kỳ |
 | `demo-5.html` | Trang demo 8 thiết bị nhà máy đợt 3: thước KPI từng người (dùng lại thước trượt đã duyệt), đồng hồ áp suất tồn duyệt, sơ đồ dây chuyền tìm điểm nghẽn, máy ghi biểu đồ tròn cả tuần, ống Nixie, bảng chữ chạy LED có dấu tiếng Việt, nhiệt kế tiến độ tháng, đồng hồ VU đôi. Kiểm tra: `tests/demo-5.js` (26 kiểm tra) |
+| `demo-tuong-tac.html` | Demo **thao tác nhập liệu**: điểm danh bằng chạm (giữ để chọn lý do), bàn phím sản lượng lớn có kiểm tra định mức, duyệt hàng loạt có nắp an toàn + cần gạt, kéo thả phân công vào công đoạn (tự cân bằng), biên bản vi phạm 4 bước có chữ ký trên màn hình, kéo chọn khoảng ngày. Kiểm tra: `tests/demo-tuong-tac.js` (39 kiểm tra) |
+| `demo-giao-dien-nen.html` | Demo **giao diện nền** (cả khung web: menu, đầu trang, trang Việc hôm nay): 4 kiểu nền (Xám than, Bảng điều khiển, Giấy kỹ thuật sáng, Kính đêm xanh) × 3 bố cục menu (thanh bên, thanh biểu tượng, menu trên) × 2 mật độ, xem như máy tính / điện thoại. Kiểm tra: `tests/demo-giao-dien-nen.js` (17 kiểm tra) |
 | `tests/xem-truoc.js` | Chạy giao diện trên máy với máy chủ giả lập. `/phien/<tên đăng nhập>` trả mã phiên để chụp ảnh không cần mật khẩu |
 
 ## Chạy kiểm tra
