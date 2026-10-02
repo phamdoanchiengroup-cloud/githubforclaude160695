@@ -1,0 +1,403 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Demo 3D KPI</title>
+<!-- Demo hiệu ứng 3D & chuyển động cho web KPI. Số liệu MẪU, không phải dữ liệu thật. CSS 3D + canvas thuần, không thư viện ngoài. -->
+<style>
+:root{--bg:#1d2125;--panel:#262b30;--panel2:#2f353b;--line:#3e464e;--ink:#eef2f4;--ink2:#c3ccd2;--ink3:#9ca8b0;
+  --cyan:#2fd3c6;--cyan-d:#138f87;--acc:47,211,198;--amber:#f0b04e;--red:#f47272;--green:#66d49a;
+  --serif:'Cormorant Garamond','Times New Roman',serif;--mono:'JetBrains Mono',ui-monospace,Consolas,monospace}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:var(--bg);color:var(--ink);font:14px/1.55 Inter,system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;-webkit-font-smoothing:antialiased}
+body{padding:28px 16px 60px}
+.dau{max-width:1180px;margin:0 auto 22px}
+.dau small{font:500 11px var(--mono);letter-spacing:.2em;color:var(--cyan);text-transform:uppercase}
+.dau h1{font:600 34px/1.1 var(--serif);margin:8px 0 6px}
+.dau p{color:var(--ink2);max-width:720px}
+.luoi{max-width:1180px;margin:0 auto;display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:18px}
+.o{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:18px 18px 16px;display:flex;flex-direction:column;min-height:400px;overflow:hidden}
+.o h2{font:600 16px/1.3 inherit;display:flex;align-items:center;gap:10px}
+.o h2 b{font:600 11px var(--mono);color:var(--cyan);border:1px solid rgba(var(--acc),.4);border-radius:6px;padding:2px 6px}
+.o .mo{color:var(--ink3);font-size:12.5px;margin:6px 0 4px}
+.nhan{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px}
+.nhan span{font:500 10.5px var(--mono);padding:3px 8px;border-radius:20px;border:1px solid var(--line);color:var(--ink2)}
+.nhan span.nhe{border-color:rgba(102,212,154,.4);color:var(--green)}.nhan span.vua{border-color:rgba(240,176,78,.45);color:var(--amber)}
+.san{flex:1;display:flex;align-items:center;justify-content:center;position:relative;min-height:250px}
+.nut{font:600 12.5px inherit;font-family:inherit;padding:8px 14px;border-radius:9px;border:1px solid var(--line);background:var(--panel2);color:var(--ink);cursor:pointer}
+.nut:hover{border-color:var(--cyan-d)}.nut.pri{background:var(--cyan);color:#062622;border-color:var(--cyan)}
+.hang-nut{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:10px}
+
+/* 1. Thẻ nghiêng 3D theo con trỏ */
+.tilt-wrap{perspective:900px}
+.tilt{width:270px;height:170px;border-radius:16px;position:relative;transform-style:preserve-3d;transition:transform .5s cubic-bezier(.2,.8,.2,1);
+  background:linear-gradient(145deg,#2c3238,#22272c);border:1px solid rgba(var(--acc),.35);box-shadow:0 18px 40px -12px rgba(0,0,0,.6);padding:18px 20px;cursor:grab}
+.tilt.dang{transition:transform .08s linear}
+.tilt .l{font:500 10.5px var(--mono);letter-spacing:.16em;color:var(--ink3)}
+.tilt .v{font:600 44px/1 var(--mono);color:var(--cyan);margin-top:14px;transform:translateZ(40px)}
+.tilt .s{color:var(--ink2);font-size:12.5px;margin-top:10px;transform:translateZ(25px)}
+.tilt .bi{position:absolute;right:16px;top:16px;transform:translateZ(55px)}
+.tilt .loa{position:absolute;inset:0;border-radius:16px;pointer-events:none;background:radial-gradient(circle at var(--gx,50%) var(--gy,50%),rgba(255,255,255,.18),transparent 55%);opacity:0;transition:opacity .3s}
+.tilt.dang .loa{opacity:1}
+.bi-so{display:inline-flex;width:34px;height:34px;border-radius:50%;align-items:center;justify-content:center;
+  box-shadow:inset -4px -5px 8px rgba(0,0,0,.35),inset 3px 3px 6px rgba(255,255,255,.35),0 4px 8px rgba(0,0,0,.35)}
+.bi-so i{width:17px;height:17px;border-radius:50%;background:#fff;color:#111;font:700 11px/17px Inter,sans-serif;font-style:normal;text-align:center}
+
+/* 2. Thẻ lật 3D */
+.lat-wrap{perspective:1000px;width:270px;height:200px;cursor:pointer}
+.lat{position:relative;width:100%;height:100%;transform-style:preserve-3d;transition:transform .8s cubic-bezier(.4,.2,.2,1)}
+.lat.mo{transform:rotateY(180deg)}
+.mat{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;border-radius:16px;padding:18px 20px;border:1px solid var(--line);
+  background:linear-gradient(160deg,var(--panel2),var(--panel))}
+.mat.sau{transform:rotateY(180deg);border-color:rgba(var(--acc),.4)}
+.mat .l{font:500 10.5px var(--mono);letter-spacing:.16em;color:var(--ink3)}
+.mat .lon{font:600 46px/1 var(--mono);margin-top:12px}
+.mat .lon small{font-size:18px;color:var(--ink3)}
+.mat .goi{position:absolute;bottom:14px;left:20px;font-size:11.5px;color:var(--cyan)}
+.dongct{display:grid;grid-template-columns:80px 1fr 46px;gap:8px;align-items:center;font-size:12px;margin-top:9px;color:var(--ink2)}
+.dongct i{height:6px;border-radius:3px;background:var(--panel);overflow:hidden;display:block}
+.dongct i b{display:block;height:100%;background:var(--cyan);border-radius:3px;width:0;transition:width .8s .45s cubic-bezier(.2,.7,.2,1)}
+.lat.mo .dongct i b{width:var(--w)}
+.dongct em{font:600 11.5px var(--mono);font-style:normal;text-align:right;color:var(--ink)}
+
+/* 3. Bi-a 3D (canvas) */
+.bi3d{width:200px;height:200px;cursor:grab;touch-action:none}
+.bong{position:absolute;bottom:22px;left:50%;width:150px;height:22px;margin-left:-75px;border-radius:50%;background:radial-gradient(rgba(0,0,0,.55),transparent 70%);filter:blur(2px)}
+
+/* 4. Bục vinh danh & 5. Cột 3D (khối hộp CSS) */
+.canh{perspective:1100px;width:100%;height:270px;display:flex;align-items:flex-end;justify-content:center;touch-action:none;cursor:grab;user-select:none;-webkit-user-select:none}
+.the-gioi{transform-style:preserve-3d;transform:rotateX(-16deg) rotateY(var(--ry,-28deg));transition:transform .15s linear;display:flex;align-items:flex-end;gap:var(--gap,14px);margin-bottom:34px}
+.hop{position:relative;transform-style:preserve-3d;width:var(--w);height:var(--h);transform-origin:50% 100%;transition:transform 1s cubic-bezier(.2,.8,.2,1)}
+.hop.thap{transform:scaleY(.001)}
+.hop>.tr,.hop>.sa,.hop>.tri,.hop>.ph,.hop>.tren{position:absolute;left:0;top:0}
+.hop .tr{width:var(--w);height:var(--h);transform:translateZ(calc(var(--d)/2));background:var(--c1)}
+.hop .sa{width:var(--w);height:var(--h);transform:rotateY(180deg) translateZ(calc(var(--d)/2));background:var(--c2)}
+.hop .tri{width:var(--d);height:var(--h);left:calc((var(--w) - var(--d))/2);transform:rotateY(90deg) translateZ(calc(var(--w)/2));background:var(--c2)}
+.hop .ph{width:var(--d);height:var(--h);left:calc((var(--w) - var(--d))/2);transform:rotateY(-90deg) translateZ(calc(var(--w)/2));background:var(--c2)}
+.hop .tren{width:var(--w);height:var(--d);top:calc(var(--d)/-2);transform:rotateX(90deg);background:var(--c3)}
+.bucchu{position:absolute;left:0;right:0;top:12px;text-align:center;transform:translateZ(calc(var(--d)/2 + 1px));pointer-events:none}
+.bucchu .bi-so{width:30px;height:30px}
+.bucchu b{display:block;font:600 12px Inter,sans-serif;margin-top:6px;color:#fff;text-shadow:0 1px 2px rgba(0,0,0,.5)}
+.bucchu em{font:600 11px var(--mono);font-style:normal;color:rgba(255,255,255,.85)}
+.cotso{position:absolute;left:50%;top:-30px;transform:translate(-50%,0) translateZ(calc(var(--d)/2));font:600 11px var(--mono);color:var(--ink);opacity:0;transition:opacity .3s;white-space:nowrap;pointer-events:none}
+.hop:hover .cotso,.hop.hien .cotso{opacity:1}
+.cotngay{position:absolute;left:-6px;right:-6px;bottom:-22px;text-align:center;font:500 10.5px var(--mono);color:var(--ink3);transform:translateZ(calc(var(--d)/2))}
+
+/* 6. Chồng thẻ */
+.chong{position:relative;width:280px;height:170px;perspective:900px}
+.chong .tt{position:absolute;inset:0;border-radius:14px;background:linear-gradient(160deg,var(--panel2),#2a3036);border:1px solid var(--line);padding:16px 18px;
+  transition:transform .5s cubic-bezier(.2,.8,.2,1),opacity .4s;box-shadow:0 14px 30px -14px rgba(0,0,0,.7);touch-action:pan-y;user-select:none;cursor:grab}
+.chong .tt .so{font:600 30px/1 var(--mono)}
+.chong .tt .t{font-weight:600;margin-top:10px}
+.chong .tt .m{color:var(--ink3);font-size:12px;margin-top:4px}
+.chong .tt::before{content:'';position:absolute;left:0;top:14px;bottom:14px;width:3px;border-radius:0 3px 3px 0;background:var(--c)}
+
+/* 7. Khối lập phương chuyển tab */
+.hop-tab{width:280px}
+.tab-nut{display:flex;gap:6px;margin-bottom:12px}
+.tab-nut button{flex:1;font:600 12px inherit;font-family:inherit;padding:7px 4px;border-radius:8px;border:1px solid var(--line);background:none;color:var(--ink2);cursor:pointer}
+.tab-nut button.on{background:rgba(var(--acc),.14);color:var(--cyan);border-color:rgba(var(--acc),.4)}
+.lp-wrap{perspective:900px;width:280px;height:180px}
+.lp{position:relative;width:280px;height:180px;transform-style:preserve-3d;transition:transform .7s cubic-bezier(.5,.1,.2,1);transform:translateZ(-140px) rotateY(var(--ry,0deg))}
+.lp .m{position:absolute;inset:0;border-radius:12px;border:1px solid var(--line);background:linear-gradient(160deg,var(--panel2),var(--panel));padding:14px 16px;backface-visibility:hidden}
+.lp .m h3{font:600 15px inherit;margin-bottom:8px}
+.lp .m p{color:var(--ink3);font-size:12px}
+.lp .m:nth-child(1){transform:rotateY(0) translateZ(140px)}
+.lp .m:nth-child(2){transform:rotateY(90deg) translateZ(140px)}
+.lp .m:nth-child(3){transform:rotateY(180deg) translateZ(140px)}
+.lp .m:nth-child(4){transform:rotateY(270deg) translateZ(140px)}
+.mini-cot{display:flex;align-items:flex-end;gap:6px;height:80px;margin-top:10px}
+.mini-cot i{flex:1;background:linear-gradient(var(--cyan),var(--cyan-d));border-radius:3px 3px 0 0}
+
+/* 8. Pháo giấy */
+.dat{text-align:center}
+.dat .so{font:600 64px/1 var(--mono);color:var(--cyan)}
+.dat .so.vang{color:#ffd166;text-shadow:0 0 24px rgba(255,209,102,.45)}
+.dat .l{font:500 11px var(--mono);letter-spacing:.16em;color:var(--ink3);margin-top:10px}
+#phao{position:fixed;inset:0;pointer-events:none;z-index:50}
+
+@media(max-width:420px){.o{min-height:360px}.the-gioi{--gap:8px}}
+@media (prefers-reduced-motion:reduce){*{transition-duration:.01ms!important;animation-duration:.01ms!important}}
+</style>
+</head>
+<body>
+<div class="dau">
+  <small>Web KPI · Bản demo · số liệu mẫu</small>
+  <h1>Demo hiệu ứng 3D &amp; chuyển động</h1>
+  <p>8 hiệu ứng theo tông xám than + cyan của web. Bấm, kéo hoặc rê chuột để thử. Mỗi thẻ ghi gợi ý nên dùng ở đâu và độ nặng với máy yếu. Chọn cái bạn thích, tôi đưa vào web thật.</p>
+</div>
+
+<div class="luoi">
+  <!-- 1 -->
+  <section class="o">
+    <h2><b>01</b>Thẻ KPI nghiêng 3D</h2>
+    <p class="mo">Rê chuột (hoặc kéo ngón tay) trên thẻ: thẻ nghiêng theo, con số nổi lên phía trước, có ánh sáng lướt.</p>
+    <div class="nhan"><span class="nhe">Nhẹ</span><span>Tổng quan · KPI cá nhân</span></div>
+    <div class="san tilt-wrap"><div class="tilt" id="tilt">
+      <div class="l">KPI THÁNG 9 · XƯỞNG CNC</div>
+      <div class="v">96.5%</div>
+      <div class="s">Hạng 1/9 xưởng · tăng 3,2% so với tháng 8</div>
+      <span class="bi bi-so" style="background:#f2c230"><i>1</i></span>
+      <div class="loa"></div>
+    </div></div>
+  </section>
+
+  <!-- 2 -->
+  <section class="o">
+    <h2><b>02</b>Thẻ lật 2 mặt</h2>
+    <p class="mo">Bấm vào thẻ: mặt trước là điểm tổng, lật ra mặt sau là 4 thành phần KPI, thanh chạy dần.</p>
+    <div class="nhan"><span class="nhe">Nhẹ</span><span>KPI cá nhân của công nhân</span></div>
+    <div class="san"><div class="lat-wrap" id="latWrap"><div class="lat" id="lat">
+      <div class="mat">
+        <div class="l">KPI CỦA BẠN · THÁNG 9</div>
+        <div class="lon">92.4<small>%</small></div>
+        <div style="margin-top:10px;color:var(--ink2);font-size:12.5px">Hạng <b style="color:var(--cyan)">3</b> / 29 trong xưởng · Loại A</div>
+        <div class="goi">Bấm để xem chi tiết ↻</div>
+      </div>
+      <div class="mat sau">
+        <div class="l">CHI TIẾT</div>
+        <div class="dongct">Sản lượng<i><b style="--w:88%"></b></i><em>88.0</em></div>
+        <div class="dongct">Chất lượng<i><b style="--w:99%"></b></i><em>99.1</em></div>
+        <div class="dongct">Tuân thủ<i><b style="--w:95%"></b></i><em>95.0</em></div>
+        <div class="dongct">An toàn<i><b style="--w:100%"></b></i><em>100</em></div>
+        <div class="goi">Bấm để lật lại ↻</div>
+      </div>
+    </div></div></div>
+  </section>
+
+  <!-- 3 -->
+  <section class="o">
+    <h2><b>03</b>Viên bi-a 3D thật</h2>
+    <p class="mo">Viên bi tự lăn, có đổ bóng và ánh phản chiếu. Kéo để tự xoay. Vẽ từng điểm ảnh bằng canvas, không dùng ảnh.</p>
+    <div class="nhan"><span class="vua">Vừa (chỉ chạy khi đang nhìn thấy)</span><span>Màn đăng nhập · màn chờ tải</span></div>
+    <div class="san"><div class="bong"></div><canvas class="bi3d" id="bi3d" width="200" height="200"></canvas></div>
+    <div class="hang-nut"><button class="nut" data-bi="1">Bi 1 trơn</button><button class="nut" data-bi="9">Bi 9 sọc</button><button class="nut" data-bi="8">Bi 8</button></div>
+  </section>
+
+  <!-- 4 -->
+  <section class="o">
+    <h2><b>04</b>Bục vinh danh 3 xưởng</h2>
+    <p class="mo">Ba bục mọc lên theo thứ hạng tháng. Kéo ngang để xoay cả bục nhìn từ góc khác.</p>
+    <div class="nhan"><span class="nhe">Nhẹ</span><span>Tổng quan (ban điều hành) · bảng tin</span></div>
+    <div class="san"><div class="canh" id="canhBuc"><div class="the-gioi" id="buc"></div></div></div>
+    <div class="hang-nut"><button class="nut" id="lamLaiBuc">Chạy lại</button></div>
+  </section>
+
+  <!-- 5 -->
+  <section class="o">
+    <h2><b>05</b>Biểu đồ cột 3D sản lượng 7 ngày</h2>
+    <p class="mo">Cột khối mọc lần lượt từng ngày. Rê lên cột để xem số. Kéo ngang để xoay.</p>
+    <div class="nhan"><span class="nhe">Nhẹ</span><span>Tổng quan · KPI phòng</span></div>
+    <div class="san"><div class="canh" id="canhCot"><div class="the-gioi" id="cot" style="--gap:10px;--ry:24deg"></div></div></div>
+    <div class="hang-nut"><button class="nut" id="lamLaiCot">Chạy lại</button></div>
+  </section>
+
+  <!-- 6 -->
+  <section class="o">
+    <h2><b>06</b>Chồng thẻ việc cần làm</h2>
+    <p class="mo">Các việc xếp chồng 3D. Vuốt thẻ trên cùng sang ngang (hoặc bấm) để xong việc và lật sang việc tiếp theo.</p>
+    <div class="nhan"><span class="nhe">Nhẹ</span><span>Việc hôm nay trên điện thoại</span></div>
+    <div class="san"><div class="chong" id="chong"></div></div>
+    <div class="hang-nut"><button class="nut" id="lamLaiChong">Xếp lại</button></div>
+  </section>
+
+  <!-- 7 -->
+  <section class="o">
+    <h2><b>07</b>Chuyển tab kiểu khối lập phương</h2>
+    <p class="mo">Bấm tab: nội dung xoay như mặt khối lập phương sang mặt mới.</p>
+    <div class="nhan"><span class="vua">Vừa · dễ chóng mặt nếu dùng nhiều</span><span>Chuyển kỳ tháng/quý/năm ở Bảng KPI</span></div>
+    <div class="san"><div class="hop-tab">
+      <div class="tab-nut" id="tabNut"><button class="on" data-i="0">Tháng</button><button data-i="1">Quý</button><button data-i="2">Năm</button><button data-i="3">So sánh</button></div>
+      <div class="lp-wrap"><div class="lp" id="lp">
+        <div class="m"><h3>Tháng 9/2026</h3><p>KPI trung bình nhà máy</p><div class="mini-cot"><i style="height:62%"></i><i style="height:70%"></i><i style="height:66%"></i><i style="height:81%"></i><i style="height:77%"></i><i style="height:88%"></i></div></div>
+        <div class="m"><h3>Quý 3/2026</h3><p>Tháng 7 · 8 · 9</p><div class="mini-cot"><i style="height:58%"></i><i style="height:74%"></i><i style="height:86%"></i></div></div>
+        <div class="m"><h3>Năm 2026</h3><p>9 tháng đầu năm</p><div class="mini-cot"><i style="height:40%"></i><i style="height:48%"></i><i style="height:52%"></i><i style="height:55%"></i><i style="height:61%"></i><i style="height:66%"></i><i style="height:72%"></i><i style="height:80%"></i><i style="height:86%"></i></div></div>
+        <div class="m"><h3>So sánh xưởng</h3><p>CNC · Sơn · In UV · Đóng gói</p><div class="mini-cot"><i style="height:92%"></i><i style="height:78%"></i><i style="height:84%"></i><i style="height:69%"></i></div></div>
+      </div></div>
+    </div></div>
+  </section>
+
+  <!-- 8 -->
+  <section class="o">
+    <h2><b>08</b>Pháo giấy khi đạt KPI</h2>
+    <p class="mo">Khi KPI tháng đạt từ 100%: số chạy lên, đổi màu vàng và pháo giấy cyan/vàng/trắng bắn từ hai bên. Chỉ 1,5 giây.</p>
+    <div class="nhan"><span class="nhe">Nhẹ (chỉ khi đạt)</span><span>KPI cá nhân · bảng KPI khi chốt tháng</span></div>
+    <div class="san dat"><div><div class="so" id="soDat">87.0%</div><div class="l">KPI THÁNG CỦA BẠN</div></div></div>
+    <div class="hang-nut"><button class="nut pri" id="banPhao">Giả lập đạt 100% KPI</button></div>
+  </section>
+</div>
+<canvas id="phao"></canvas>
+
+<script>
+(function(){
+var GIAM=false; try{GIAM=matchMedia('(prefers-reduced-motion: reduce)').matches}catch(e){}
+function $(i){return document.getElementById(i)}
+
+/* ---------- 1. Thẻ nghiêng ---------- */
+(function(){
+  var t=$('tilt');
+  function nghieng(e){
+    var r=t.getBoundingClientRect(), x=(e.clientX-r.left)/r.width, y=(e.clientY-r.top)/r.height;
+    t.classList.add('dang');
+    t.style.transform='rotateY('+((x-.5)*24)+'deg) rotateX('+((.5-y)*20)+'deg) translateZ(10px)';
+    t.style.setProperty('--gx',(x*100)+'%'); t.style.setProperty('--gy',(y*100)+'%');
+  }
+  t.addEventListener('pointermove',nghieng);
+  t.addEventListener('pointerdown',function(e){try{t.setPointerCapture(e.pointerId)}catch(x){}nghieng(e)});
+  function ve(){t.classList.remove('dang');t.style.transform='';}
+  t.addEventListener('pointerleave',ve); t.addEventListener('pointerup',ve); t.addEventListener('pointercancel',ve);
+})();
+
+/* ---------- 2. Thẻ lật ---------- */
+$('latWrap').addEventListener('click',function(){$('lat').classList.toggle('mo')});
+
+/* ---------- 3. Viên bi-a 3D vẽ bằng canvas ---------- */
+(function(){
+  var cv=$('bi3d'), dpr=Math.min(2,window.devicePixelRatio||1), N=Math.round(200*dpr);
+  cv.width=N; cv.height=N;
+  var g=cv.getContext('2d'), img=g.createImageData(N,N), d=img.data;
+  var MAU={1:[242,194,48],9:[242,194,48],8:[22,24,28]}, so=1, soc=false;
+  // nhãn số (vòng trắng có số) vẽ sẵn ra canvas nhỏ để lấy mẫu màu
+  var NH=128, nh=document.createElement('canvas'); nh.width=nh.height=NH; var ng=nh.getContext('2d'), nd;
+  function veNhan(){ ng.clearRect(0,0,NH,NH); ng.fillStyle='#fbfbf6'; ng.beginPath(); ng.arc(NH/2,NH/2,NH/2,0,7); ng.fill();
+    ng.fillStyle='#111'; ng.font='700 '+(NH*.62)+'px Inter,Arial,sans-serif'; ng.textAlign='center'; ng.textBaseline='middle'; ng.fillText(String(so),NH/2,NH/2+NH*.04);
+    nd=ng.getImageData(0,0,NH,NH).data; }
+  veNhan();
+  // ma trận xoay 3x3
+  var R=[1,0,0,0,1,0,0,0,1];
+  function nhan(a,b){var o=[];for(var i=0;i<3;i++)for(var j=0;j<3;j++)o[i*3+j]=a[i*3]*b[j]+a[i*3+1]*b[3+j]+a[i*3+2]*b[6+j];return o}
+  function xoay(ax,ay,az,goc){var c=Math.cos(goc),s=Math.sin(goc),t=1-c;
+    return [t*ax*ax+c,t*ax*ay-s*az,t*ax*az+s*ay, t*ax*ay+s*az,t*ay*ay+c,t*ay*az-s*ax, t*ax*az-s*ay,t*ay*az+s*ax,t*az*az+c]}
+  var L=[-.45,-.55,.7], ln=Math.hypot(L[0],L[1],L[2]); L=[L[0]/ln,L[1]/ln,L[2]/ln];
+  var H=[L[0],L[1],L[2]+1], hn=Math.hypot(H[0],H[1],H[2]); H=[H[0]/hn,H[1]/hn,H[2]/hn];
+  var BK=.42, COSBK=Math.cos(BK), SINBK=Math.sin(BK);
+  function ve(){
+    var m=MAU[so], r0=N/2-2*dpr, cx=N/2, cy=N/2, k=0;
+    for(var py=0;py<N;py++){ for(var px=0;px<N;px++,k+=4){
+      var x=(px-cx)/r0, y=(py-cy)/r0, q=x*x+y*y;
+      if(q>1){ d[k+3]=0; continue; }
+      var z=Math.sqrt(1-q);
+      // điểm trên mặt cầu -> toạ độ trong khung của viên bi (R chuyển vị)
+      var lx=R[0]*x+R[3]*y+R[6]*z, ly=R[1]*x+R[4]*y+R[7]*z, lz=R[2]*x+R[5]*y+R[8]*z;
+      var cr=m[0],cg=m[1],cb=m[2];
+      if(soc && Math.abs(ly)>.55){cr=246;cg=244;cb=236;}                 // bi sọc: hai đầu trắng
+      var nhanHai=Math.abs(lz)>COSBK;                                     // vòng số ở hai mặt đối nhau
+      if(nhanHai){ var sgn=lz>0?1:-1, u=(sgn*lx/SINBK+1)/2, v=(ly/SINBK+1)/2;
+        var ix=Math.max(0,Math.min(NH-1,(u*NH)|0)), iy=Math.max(0,Math.min(NH-1,(v*NH)|0)), o=(iy*NH+ix)*4;
+        if(nd[o+3]>10){cr=nd[o];cg=nd[o+1];cb=nd[o+2];} }
+      var dif=Math.max(0,x*L[0]+y*L[1]+z*L[2]), spe=Math.pow(Math.max(0,x*H[0]+y*H[1]+z*H[2]),60);
+      var tr=.32+.78*dif, vien=.75+.25*z;                                  // tối dần ở mép
+      d[k]=Math.min(255,cr*tr*vien+255*spe*.9); d[k+1]=Math.min(255,cg*tr*vien+255*spe*.9); d[k+2]=Math.min(255,cb*tr*vien+255*spe*.9);
+      d[k+3]=q>.985?Math.round(255*(1-q)/.015):255;                         // khử răng cưa mép
+    } }
+    g.putImageData(img,0,0);
+  }
+  var keo=false, x0=0, y0=0, chay=true, thay=true, raf=null;
+  function vong(){ raf=null; if(!thay)return;
+    if(chay&&!keo&&!GIAM) R=nhan(xoay(.35,1,0,.025/Math.hypot(.35,1)*1.0),R);
+    ve(); if(!GIAM||keo) raf=requestAnimationFrame(vong); }
+  cv.addEventListener('pointerdown',function(e){keo=true;x0=e.clientX;y0=e.clientY;try{cv.setPointerCapture(e.pointerId)}catch(x){} if(!raf)raf=requestAnimationFrame(vong)});
+  cv.addEventListener('pointermove',function(e){ if(!keo)return; var dx=e.clientX-x0, dy=e.clientY-y0; x0=e.clientX; y0=e.clientY;
+    var a=Math.hypot(dx,dy); if(a>0) R=nhan(xoay(dy/a,-dx/a,0,a*.012),R); if(GIAM)ve(); });
+  function tha(){keo=false} cv.addEventListener('pointerup',tha); cv.addEventListener('pointercancel',tha);
+  document.querySelectorAll('[data-bi]').forEach(function(b){b.addEventListener('click',function(){so=Number(b.getAttribute('data-bi'));soc=(so===9);veNhan();ve();})});
+  try{ new IntersectionObserver(function(es){ thay=es[0].isIntersecting; if(thay&&!raf) raf=requestAnimationFrame(vong); }).observe(cv); }catch(e){}
+  R=nhan(xoay(1,0,0,-.35),R); ve(); raf=requestAnimationFrame(vong);
+  window.__bi3d={ve:ve};
+})();
+
+/* ---------- Khối hộp CSS dùng chung (bục, cột) ---------- */
+function hop(w,h,dd,c1,c2,c3,trong){
+  return '<div class="hop thap" style="--w:'+w+'px;--h:'+h+'px;--d:'+dd+'px;--c1:'+c1+';--c2:'+c2+';--c3:'+c3+'">'+
+    '<div class="sa"></div><div class="tri"></div><div class="ph"></div><div class="tren"></div><div class="tr"></div>'+(trong||'')+'</div>';
+}
+function moc(id,tre){
+  var hs=$(id).querySelectorAll('.hop');
+  hs.forEach(function(h){h.classList.add('thap')}); void $(id).offsetWidth;
+  hs.forEach(function(h,i){setTimeout(function(){h.classList.remove('thap')},GIAM?0:(tre(i)))});
+}
+function xoayCanh(canh,tg,goc0){
+  var keo=false,x0=0,goc=goc0;
+  canh.addEventListener('pointerdown',function(e){keo=true;x0=e.clientX;try{canh.setPointerCapture(e.pointerId)}catch(x){}});
+  canh.addEventListener('pointermove',function(e){if(!keo)return;goc=Math.max(-60,Math.min(60,goc+(e.clientX-x0)*.4));x0=e.clientX;tg.style.setProperty('--ry',goc+'deg')});
+  function tha(){keo=false} canh.addEventListener('pointerup',tha); canh.addEventListener('pointercancel',tha);
+}
+/* ---------- 4. Bục vinh danh ---------- */
+(function(){
+  var ds=[{x:'Sơn',k:'94.1%',so:2,h:120,m:'#2860d8'},{x:'CNC',k:'96.5%',so:1,h:165,m:'#f2c230'},{x:'In UV',k:'91.8%',so:3,h:92,m:'#d8362b'}];
+  $('buc').innerHTML=ds.map(function(o){
+    return hop(84,o.h,84,'linear-gradient(180deg,#3a434b,#2a3036)','#20252a','linear-gradient(135deg,#4a555e,#38414a)',
+      '<div class="bucchu"><span class="bi-so" style="background:'+o.m+'"><i>'+o.so+'</i></span><b>'+o.x+'</b><em>'+o.k+'</em></div>');
+  }).join('');
+  function chay(){moc('buc',function(i){return [250,500,0][i]})}   // mọc theo hạng: 3 (In UV) -> 2 (Sơn) -> 1 (CNC)
+  $('lamLaiBuc').onclick=chay; chay(); xoayCanh($('canhBuc'),$('buc'),-28);
+})();
+/* ---------- 5. Cột 3D ---------- */
+(function(){
+  var ngay=['T2','T3','T4','T5','T6','T7','CN'], sl=[812,905,866,1012,958,640,0], max=1012;
+  $('cot').innerHTML=sl.map(function(v,i){
+    var h=Math.max(4,Math.round(v/max*170)), c=v>=950?'var(--cyan)':v>=800?'#21a99f':'#1b7c76';
+    return hop(28,h,28,'linear-gradient(180deg,'+c+','+c+')','#106e68','#5ee6db','<div class="cotso">'+(v?v.toLocaleString('vi-VN')+' sp':'nghỉ')+'</div><div class="cotngay">'+ngay[i]+'</div>');
+  }).join('');
+  $('cot').querySelectorAll('.hop').forEach(function(h){h.addEventListener('click',function(){h.classList.toggle('hien')})});
+  function chay(){moc('cot',function(i){return i*110})}
+  $('lamLaiCot').onclick=chay; chay(); xoayCanh($('canhCot'),$('cot'),24);
+})();
+
+/* ---------- 6. Chồng thẻ ---------- */
+(function(){
+  var VIEC=[{so:'1',t:'Chưa điểm danh xưởng',m:'Hạn 9h sáng nay',c:'var(--red)'},{so:'3',t:'Chờ bạn duyệt sản lượng',m:'Cũ nhất ngày 26/09',c:'var(--amber)'},
+            {so:'14',t:'Công nhân chưa nhập',m:'Trong 4 ngày gần đây',c:'var(--amber)'},{so:'2',t:'Định mức nên xem lại',m:'Hiệu suất vượt xa định mức',c:'var(--cyan)'}];
+  var ds=[];
+  function dung(){ var c=$('chong'); c.innerHTML='';
+    ds=VIEC.map(function(v,i){var e=document.createElement('div');e.className='tt';e.style.setProperty('--c',v.c);
+      e.innerHTML='<div class="so" style="color:'+v.c+'">'+v.so+'</div><div class="t">'+v.t+'</div><div class="m">'+v.m+'</div>';c.appendChild(e);return e});
+    xep(); }
+  function xep(){ ds.forEach(function(e,i){ e.style.zIndex=10-i; e.style.opacity=i>2?0:1;
+    e.style.transform='translateY('+(i*12)+'px) translateZ('+(-i*40)+'px) rotateX(4deg)'; e.style.pointerEvents=i?'none':'auto'; }); gan(); }
+  function boDi(dx){ var e=ds.shift(); e.style.transform='translateX('+(dx>0?380:-380)+'px) rotateZ('+(dx>0?18:-18)+'deg)'; e.style.opacity=0;
+    setTimeout(function(){ ds.push(e); e.style.transition='none'; xep(); void e.offsetWidth; e.style.transition=''; },GIAM?0:420); xep(); }
+  function gan(){ var e=ds[0]; if(!e||e.__gan)return; e.__gan=1; var x0=0,dx=0,keo=false;
+    e.addEventListener('pointerdown',function(v){keo=true;x0=v.clientX;dx=0;e.style.transition='none';try{e.setPointerCapture(v.pointerId)}catch(x){}});
+    e.addEventListener('pointermove',function(v){if(!keo)return;dx=v.clientX-x0;e.style.transform='translateX('+dx+'px) rotateZ('+(dx/18)+'deg)'});
+    var tha=function(){ if(!keo)return; keo=false; e.style.transition=''; if(Math.abs(dx)>70||Math.abs(dx)<4){ e.__gan=0; boDi(dx||1); } else xep(); };
+    e.addEventListener('pointerup',tha); e.addEventListener('pointercancel',tha); }
+  $('lamLaiChong').onclick=dung; dung();
+  window.__chong=function(){return ds.map(function(e){return e.querySelector('.t').textContent})};
+})();
+
+/* ---------- 7. Khối lập phương ---------- */
+(function(){
+  var bs=$('tabNut').querySelectorAll('button'), goc=0, hien=0;
+  bs.forEach(function(b){b.addEventListener('click',function(){ var i=Number(b.getAttribute('data-i'));
+    var buoc=((i-hien)%4+4)%4; if(buoc===3)buoc=-1; goc-=buoc*90; hien=i;   // xoay đường ngắn nhất
+    $('lp').style.setProperty('--ry',goc+'deg'); bs.forEach(function(x){x.classList.toggle('on',x===b)}); })});
+})();
+
+/* ---------- 8. Pháo giấy ---------- */
+(function(){
+  var cv=$('phao'), g=cv.getContext('2d'), manh=[], raf=null, dpr=Math.min(2,window.devicePixelRatio||1);
+  function co(){cv.width=innerWidth*dpr;cv.height=innerHeight*dpr;cv.style.width=innerWidth+'px';cv.style.height=innerHeight+'px'}
+  var MAU=['#2fd3c6','#ffd166','#ffffff','#5ee6db','#f2c230'];
+  function ban(){ co(); manh=[];
+    for(var s=0;s<2;s++) for(var i=0;i<70;i++){ var tr=s===0;
+      manh.push({x:(tr?0:innerWidth)*dpr, y:innerHeight*.65*dpr, vx:(tr?1:-1)*(4+Math.random()*9)*dpr, vy:-(9+Math.random()*10)*dpr,
+        w:(6+Math.random()*6)*dpr, h:(3+Math.random()*4)*dpr, a:Math.random()*6, va:(Math.random()-.5)*.4, lat:Math.random()*6, c:MAU[(Math.random()*MAU.length)|0]}); }
+    var t0=performance.now(); if(!raf) raf=requestAnimationFrame(function ve(t){
+      g.clearRect(0,0,cv.width,cv.height); var het=t-t0>1700;
+      manh.forEach(function(p){ p.vy+=.38*dpr; p.vx*=.985; p.x+=p.vx; p.y+=p.vy; p.a+=p.va; p.lat+=.2;
+        g.save(); g.translate(p.x,p.y); g.rotate(p.a); g.scale(1,Math.cos(p.lat)); g.globalAlpha=het?0:Math.max(0,1-(t-t0)/1700*.6);
+        g.fillStyle=p.c; g.fillRect(-p.w/2,-p.h/2,p.w,p.h); g.restore(); });
+      if(!het) raf=requestAnimationFrame(ve); else { raf=null; g.clearRect(0,0,cv.width,cv.height); } }); }
+  function soChay(el,tu,den,xong){ var t0=performance.now(); (function b(t){ var k=Math.min(1,(t-t0)/900), e=1-Math.pow(1-k,3);
+    el.textContent=(tu+(den-tu)*e).toFixed(1)+'%'; if(k<1)requestAnimationFrame(b); else xong(); })(t0); }
+  $('banPhao').onclick=function(){ var el=$('soDat'); el.classList.remove('vang');
+    if(GIAM){ el.textContent='102.4%'; el.classList.add('vang'); return; }
+    soChay(el,87,102.4,function(){ el.classList.add('vang'); ban(); }); };
+  window.__banPhao=ban; window.__soManh=function(){return manh.length};
+})();
+})();
+</script>
+</body>
+</html>
