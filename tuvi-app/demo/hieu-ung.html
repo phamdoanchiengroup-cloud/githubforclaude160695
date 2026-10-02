@@ -1,0 +1,341 @@
+<title>Hiệu ứng Thiên Cơ Các</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&family=Cormorant+Garamond:ital,wght@0,600;0,700;1,600&display=swap" rel="stylesheet">
+<style>
+/* Bản xem thử hiệu ứng cho Thiên Cơ Các: một giao diện đêm cố định theo bảng màu của app (đêm xanh, ngọc lam, vàng kim).
+   Bố cục: dải giới thiệu ngắn → 4 màn hình mẫu xếp dọc, mỗi màn có nhãn hiệu ứng và nút chạy lại. */
+:root {
+  --dem: #07131f; --dem-2: #0d2235; --vien: #22445f; --ngoc: #26b5b5; --vang: #e2c078; --vang-sang: #f6dfa4;
+  --chu: #e8eef2; --chu-mo: #9fb4c4; --tot: #6fd3a8; --xau: #e8897a;
+  --f-tieu-de: 'Cormorant Garamond', 'Noto Serif', Georgia, serif;
+  --f-chu: 'Be Vietnam Pro', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body { background: var(--dem); color: var(--chu); font-family: var(--f-chu); font-size: 15px; line-height: 1.6; }
+.trang { max-width: 1120px; margin: 0 auto; padding-inline: 16px; padding-block: 28px 64px; display: flex; flex-direction: column; gap: 40px; }
+.dau { display: flex; flex-direction: column; gap: 6px; }
+.dau .eb { font-size: 12px; letter-spacing: .2em; text-transform: uppercase; color: var(--vang); }
+.dau h1 { font-family: var(--f-tieu-de); font-size: clamp(30px, 4.4vw, 46px); line-height: 1.05; margin: 0; color: var(--vang-sang); text-wrap: balance; }
+.dau p { margin: 0; color: var(--chu-mo); max-width: 68ch; }
+.man { display: flex; flex-direction: column; gap: 12px; }
+.man-dau { display: flex; justify-content: space-between; align-items: flex-end; gap: 12px; flex-wrap: wrap; }
+.man-dau h2 { font-family: var(--f-tieu-de); font-size: 28px; line-height: 1.1; margin: 0; color: var(--vang-sang); }
+.man-dau .the-hu { display: flex; gap: 6px; flex-wrap: wrap; }
+.nhan { font-size: 11.5px; letter-spacing: .04em; color: var(--chu-mo); border: 1px solid var(--vien); border-radius: 999px; padding: 3px 10px; white-space: nowrap; }
+.nhan b { color: var(--ngoc); font-weight: 600; }
+.chay-lai { font: 600 12.5px/1 var(--f-chu); color: var(--chu); background: transparent; border: 1px solid var(--vien); border-radius: 999px; padding: 7px 12px; cursor: pointer; }
+.chay-lai:hover { border-color: var(--vang); color: var(--vang-sang); }
+button:focus-visible, .la:focus-visible { outline: 2px solid var(--vang-sang); outline-offset: 3px; }
+.khung { position: relative; border: 1px solid var(--vien); border-radius: 20px; overflow: hidden; background: var(--dem-2); }
+
+/* ---------- 1. Trang chủ: cực quang + trời sao + chữ lấp lánh + chữ hiện dần + nút lực hút ---------- */
+.hero { min-height: 520px; display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, .85fr); gap: 28px; align-items: center; padding: 40px clamp(18px, 4vw, 48px); isolation: isolate; }
+.cuc-quang { position: absolute; inset: -20%; z-index: -2; filter: blur(60px); opacity: .75; }
+.cuc-quang i { position: absolute; border-radius: 50%; mix-blend-mode: screen; animation: troi 18s ease-in-out infinite alternate; }
+.cuc-quang i:nth-child(1) { width: 55%; height: 55%; left: 5%; top: 10%; background: radial-gradient(circle, #1a8f95 0%, transparent 65%); }
+.cuc-quang i:nth-child(2) { width: 50%; height: 60%; right: 5%; top: 0; background: radial-gradient(circle, #3a3f9a 0%, transparent 65%); animation-duration: 22s; animation-delay: -6s; }
+.cuc-quang i:nth-child(3) { width: 45%; height: 45%; left: 35%; bottom: 0; background: radial-gradient(circle, #8a6a24 0%, transparent 65%); animation-duration: 26s; animation-delay: -12s; }
+@keyframes troi { 0% { transform: translate(0, 0) scale(1); } 50% { transform: translate(8%, -6%) scale(1.15); } 100% { transform: translate(-6%, 8%) scale(.95); } }
+#troiSao { position: absolute; inset: 0; z-index: -1; width: 100%; height: 100%; }
+.hero-chu { display: flex; flex-direction: column; gap: 16px; min-width: 0; }
+.hero-chu .eb { font-size: 12px; letter-spacing: .22em; text-transform: uppercase; color: var(--vang); }
+.lap-lanh { font-family: var(--f-tieu-de); font-size: clamp(44px, 7vw, 80px); line-height: .95; margin: 0; font-weight: 700;
+  background: linear-gradient(110deg, var(--vang) 35%, #fff8e2 50%, var(--vang) 65%) 0 0 / 250% 100%; -webkit-background-clip: text; background-clip: text; color: transparent;
+  animation: lapLanh 4.5s linear infinite; }
+@keyframes lapLanh { from { background-position: 125% 0; } to { background-position: -125% 0; } }
+.hien-dan { font-size: clamp(16px, 2vw, 19px); color: var(--chu); margin: 0; max-width: 34ch; text-wrap: balance; }
+.hien-dan span { display: inline-block; opacity: .2; filter: blur(6px); transform: translateY(8px); animation: hienChu .7s cubic-bezier(.2, .7, .2, 1) forwards; }
+@keyframes hienChu { to { opacity: 1; filter: blur(0); transform: none; } }
+.hang-nut { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
+.nut-hut { position: relative; font: 700 16px/1 var(--f-chu); color: #1a1305; background: linear-gradient(180deg, #f5dea6, #d4ac5c); border: 0; border-radius: 999px; padding: 18px 30px; cursor: pointer;
+  box-shadow: 0 10px 30px rgba(226, 192, 120, .3); transition: transform .25s cubic-bezier(.2, .7, .2, 1); will-change: transform; }
+.nut-hut span { display: inline-block; transition: transform .25s cubic-bezier(.2, .7, .2, 1); }
+.nut-phu { font: 600 14px/1 var(--f-chu); color: var(--chu); background: rgba(13, 34, 53, .6); border: 1px solid var(--vien); border-radius: 999px; padding: 15px 20px; cursor: pointer; }
+.qua { font-size: 13px; color: var(--vang-sang); }
+.the-nhap { background: rgba(9, 24, 39, .72); border: 1px solid rgba(226, 192, 120, .3); border-radius: 18px; padding: 20px; display: flex; flex-direction: column; gap: 12px; backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); min-width: 0; }
+.the-nhap h3 { margin: 0; font-family: var(--f-tieu-de); font-size: 24px; color: var(--vang-sang); }
+.o { display: flex; flex-direction: column; gap: 4px; }
+.o label { font-size: 12px; color: var(--chu-mo); }
+.o input, .o select { font: 500 14px/1.2 var(--f-chu); color: var(--chu); background: rgba(7, 19, 31, .8); border: 1px solid var(--vien); border-radius: 10px; padding: 10px 12px; width: 100%; }
+.o2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.mau { font-size: 11px; color: var(--chu-mo); font-style: italic; }
+
+/* ---------- 2. Màn chờ: vòng thiên văn + chữ giải mã ---------- */
+.cho { min-height: 380px; display: grid; place-items: center; align-content: center; gap: 24px; padding: 40px 16px;
+  background: radial-gradient(60% 70% at 50% 45%, #12304a 0%, var(--dem) 70%); }
+.vong-thien { position: relative; width: 190px; height: 190px; }
+.vong-thien i { position: absolute; inset: 0; border-radius: 50%; border: 1px solid rgba(226, 192, 120, .35); }
+.vong-thien i:nth-child(1) { border-top-color: var(--vang); animation: quay 3s linear infinite; }
+.vong-thien i:nth-child(2) { inset: 22px; border-color: rgba(38, 181, 181, .35); border-right-color: var(--ngoc); animation: quay 2.2s linear infinite reverse; }
+.vong-thien i:nth-child(3) { inset: 46px; border-style: dashed; animation: quay 9s linear infinite; }
+.vong-thien b { position: absolute; inset: 72px; border-radius: 50%; background: radial-gradient(circle at 35% 30%, #fff6dc, #e2c078 45%, #8a6a24); box-shadow: 0 0 40px rgba(226, 192, 120, .6); }
+.vong-thien em { position: absolute; left: 50%; top: -5px; width: 10px; height: 10px; margin-left: -5px; border-radius: 50%; background: var(--vang-sang); box-shadow: 0 0 12px var(--vang); transform-origin: 5px 100px; animation: quay 3s linear infinite; }
+@keyframes quay { to { transform: rotate(360deg); } }
+.giai-ma { font: 600 clamp(16px, 2.4vw, 20px)/1.3 var(--f-chu); color: var(--vang-sang); letter-spacing: .02em; min-height: 1.3em; text-align: center; font-variant-numeric: tabular-nums; }
+.giai-ma .nhieu { color: var(--ngoc); opacity: .8; }
+.tien-do { width: min(320px, 80vw); height: 4px; border-radius: 2px; background: rgba(159, 180, 196, .15); overflow: hidden; }
+.tien-do i { display: block; height: 100%; width: 0; background: linear-gradient(90deg, var(--ngoc), var(--vang)); transition: width .5s; }
+.buoc-cho { font-size: 12.5px; color: var(--chu-mo); }
+
+/* ---------- 3. Tám lá hé lộ: thẻ nghiêng theo chuột + vệt sáng + lật ---------- */
+.ba-i { padding: 28px clamp(14px, 3vw, 32px); display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; perspective: 1000px;
+  background: radial-gradient(80% 60% at 50% 0%, #10304a 0%, var(--dem-2) 70%); }
+.la { position: relative; aspect-ratio: 3 / 4.2; max-width: 100%; border: 0; padding: 0; background: none; cursor: pointer; transform-style: preserve-3d; transition: transform .2s ease-out; font: inherit; color: inherit; }
+.la .mat { position: absolute; inset: 0; border-radius: 16px; backface-visibility: hidden; -webkit-backface-visibility: hidden; overflow: hidden; transition: transform .7s cubic-bezier(.3, .7, .2, 1); }
+.la .sau { background: radial-gradient(circle at 50% 40%, #173a57, #0a1a29); border: 1.5px solid rgba(226, 192, 120, .6); display: grid; place-items: center; }
+.la .sau svg { width: 62%; height: auto; }
+.la .sau small { position: absolute; bottom: 12px; left: 0; right: 0; text-align: center; font-size: 11px; letter-spacing: .14em; text-transform: uppercase; color: var(--vang); }
+.la .truoc { transform: rotateY(180deg); background: linear-gradient(180deg, #fbf4e2, #efe0bd); color: #142b40; border: 1.5px solid #c9a052; padding: 14px; display: flex; flex-direction: column; gap: 6px; text-align: left; }
+.la .truoc b { font-family: var(--f-tieu-de); font-size: 20px; line-height: 1.1; color: #6b4a12; }
+.la .truoc span { font-size: 12.5px; line-height: 1.5; }
+.la .truoc em { margin-top: auto; font-style: normal; font-size: 11px; color: #7a6a4a; }
+.la.lat .sau { transform: rotateY(-180deg); }
+.la.lat .truoc { transform: rotateY(0deg); }
+.la .ve-sang { position: absolute; inset: 0; border-radius: 16px; pointer-events: none; opacity: 0; transition: opacity .3s;
+  background: radial-gradient(240px circle at var(--mx, 50%) var(--my, 50%), rgba(255, 240, 200, .35), transparent 45%); mix-blend-mode: soft-light; }
+.la:hover .ve-sang { opacity: 1; }
+
+/* ---------- 4. Bảng điểm: số đếm lên + thanh dâng ---------- */
+.diem { padding: 26px clamp(16px, 3vw, 32px); display: grid; grid-template-columns: minmax(0, .8fr) minmax(0, 1.2fr); gap: 28px; align-items: center; }
+.vong-diem { position: relative; width: min(240px, 100%); aspect-ratio: 1; margin-inline: auto; }
+.vong-diem svg { width: 100%; height: 100%; transform: rotate(-90deg); }
+.vong-diem .so { position: absolute; inset: 0; display: grid; place-items: center; align-content: center; text-align: center; }
+.vong-diem .so b { font-family: var(--f-tieu-de); font-size: 64px; line-height: 1; color: var(--vang-sang); font-variant-numeric: tabular-nums; }
+.vong-diem .so small { font-size: 12.5px; color: var(--chu-mo); }
+.ds-lv { display: flex; flex-direction: column; gap: 12px; min-width: 0; }
+.lv { display: grid; grid-template-columns: 110px minmax(0, 1fr) 46px 86px; gap: 10px; align-items: center; font-size: 14px; }
+.lv .thanh { height: 8px; border-radius: 4px; background: rgba(159, 180, 196, .14); overflow: hidden; }
+.lv .thanh i { display: block; height: 100%; width: 0; border-radius: 4px; transition: width 1.4s cubic-bezier(.2, .7, .2, 1); }
+.lv .so-lv { font-variant-numeric: tabular-nums; font-weight: 700; text-align: right; }
+.lv .tag { font-size: 11.5px; font-weight: 600; padding: 2px 8px; border-radius: 999px; justify-self: start; white-space: nowrap; }
+.tag.tot { background: rgba(111, 211, 168, .14); color: var(--tot); }
+.tag.vua { background: rgba(226, 192, 120, .14); color: var(--vang); }
+.tag.xau { background: rgba(232, 137, 122, .14); color: var(--xau); }
+.ghi-chu { font-size: 12.5px; color: var(--chu-mo); margin: 0; }
+.chan { font-size: 12.5px; color: var(--chu-mo); border-top: 1px solid var(--vien); padding-top: 14px; }
+.chan a { color: var(--vang); }
+
+@media (max-width: 860px) {
+  .hero { grid-template-columns: minmax(0, 1fr); min-height: 0; }
+  .ba-i { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .diem { grid-template-columns: minmax(0, 1fr); }
+  .lv { grid-template-columns: 92px minmax(0, 1fr) 40px; }
+  .lv .tag { display: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+  .hien-dan span { opacity: 1; filter: none; transform: none; }
+}
+</style>
+
+<div class="trang">
+  <header class="dau">
+    <span class="eb">Thiên Cơ Các · Bản xem thử giao diện</span>
+    <h1>Hiệu ứng mới cho web luận vận mệnh</h1>
+    <p>Bốn màn hình mẫu, mỗi màn dùng vài hiệu ứng mượn ý từ thư viện React Bits và viết lại bằng HTML/JS thuần, để dán thẳng vào Script và Styles của app. Rê chuột, bấm thử từng phần. Số liệu trên trang là ví dụ.</p>
+  </header>
+
+  <section class="man" aria-labelledby="m1">
+    <div class="man-dau">
+      <h2 id="m1">Trang chủ mới</h2>
+      <div class="the-hu"><span class="nhan"><b>Aurora</b> nền cực quang</span><span class="nhan"><b>Stars</b> trời sao</span><span class="nhan"><b>Shiny Text</b> chữ lấp lánh</span><span class="nhan"><b>Split Text</b> chữ hiện dần</span><span class="nhan"><b>Magnet</b> nút lực hút</span></div>
+    </div>
+    <div class="khung hero" id="hero">
+      <div class="cuc-quang" aria-hidden="true"><i></i><i></i><i></i></div>
+      <canvas id="troiSao" aria-hidden="true"></canvas>
+      <div class="hero-chu">
+        <span class="eb">Luận vận mệnh 6 hệ</span>
+        <h3 class="lap-lanh">Thiên Cơ Các</h3>
+        <p class="hien-dan" id="hienDan">Tử Vi, Bát Tự, Hà Lạc, Chiêm tinh, Thần số và Human Design cùng nhìn về một con người. Chỉ điều nhiều hệ cùng nói mới thành kết luận.</p>
+        <div class="hang-nut">
+          <button type="button" class="nut-hut" id="nutHut"><span>Khám phá ngay ›</span></button>
+          <button type="button" class="nut-phu">✦ Nhập từng bước</button>
+        </div>
+        <span class="qua">🎁 Đăng ký miễn phí nhận 19 xu, đủ mở Tổng hợp 6 hệ</span>
+      </div>
+      <form class="the-nhap" id="formMau" aria-label="Ô nhập mẫu">
+        <h3>Lập lá số</h3>
+        <div class="o"><label for="hoTen">Họ và tên</label><input id="hoTen" value="Nguyễn Văn An"></div>
+        <div class="o2">
+          <div class="o"><label for="ngaySinh">Ngày sinh (dương lịch)</label><input id="ngaySinh" value="15/08/1990"></div>
+          <div class="o"><label for="gioSinh">Giờ sinh</label><input id="gioSinh" value="10:30"></div>
+        </div>
+        <div class="o2">
+          <div class="o"><label for="gioiTinh">Giới tính</label><select id="gioiTinh"><option>Nam</option><option>Nữ</option></select></div>
+          <div class="o"><label for="noiSinh">Nơi sinh</label><input id="noiSinh" value="Hà Nội"></div>
+        </div>
+        <span class="mau">Dữ liệu điền sẵn để xem thử</span>
+      </form>
+    </div>
+  </section>
+
+  <section class="man" aria-labelledby="m2">
+    <div class="man-dau">
+      <h2 id="m2">Màn chờ lập lá số</h2>
+      <div class="the-hu"><span class="nhan"><b>Decrypted Text</b> chữ giải mã</span><span class="nhan"><b>Orbit</b> vòng thiên văn</span><button type="button" class="chay-lai" id="laiCho">↻ Chạy lại</button></div>
+    </div>
+    <div class="khung cho">
+      <div class="vong-thien" aria-hidden="true"><i></i><i></i><i></i><b></b><em></em></div>
+      <div class="giai-ma" id="giaiMa" aria-live="polite">Đang an 14 chính tinh…</div>
+      <div class="tien-do" aria-hidden="true"><i id="tienDo"></i></div>
+      <span class="buoc-cho" id="buocCho">Bước 1/5</span>
+    </div>
+  </section>
+
+  <section class="man" aria-labelledby="m3">
+    <div class="man-dau">
+      <h2 id="m3">Tám lá hé lộ</h2>
+      <div class="the-hu"><span class="nhan"><b>Tilted Card</b> thẻ nghiêng</span><span class="nhan"><b>Spotlight</b> vệt sáng</span><span class="nhan"><b>Flip</b> lật bài</span><button type="button" class="chay-lai" id="latHet">⟲ Lật lại tất cả</button></div>
+    </div>
+    <div class="khung ba-i" id="baI"></div>
+  </section>
+
+  <section class="man" aria-labelledby="m4">
+    <div class="man-dau">
+      <h2 id="m4">Bảng điểm 9 lĩnh vực</h2>
+      <div class="the-hu"><span class="nhan"><b>Count Up</b> số đếm lên</span><span class="nhan"><b>Progress</b> thanh dâng</span><button type="button" class="chay-lai" id="laiDiem">↻ Chạy lại</button></div>
+    </div>
+    <div class="khung diem">
+      <div class="vong-diem">
+        <svg viewBox="0 0 120 120" aria-hidden="true"><circle cx="60" cy="60" r="52" fill="none" stroke="rgba(159,180,196,.14)" stroke-width="9"></circle><circle id="cungDiem" cx="60" cy="60" r="52" fill="none" stroke="url(#gv)" stroke-width="9" stroke-linecap="round" stroke-dasharray="326.7" stroke-dashoffset="326.7" style="transition: stroke-dashoffset 1.6s cubic-bezier(.2,.7,.2,1)"></circle><defs><linearGradient id="gv" x1="0" x2="1"><stop offset="0" stop-color="#26b5b5"></stop><stop offset="1" stop-color="#e2c078"></stop></linearGradient></defs></svg>
+        <div class="so"><b id="soChung">0,0</b><small>điểm chung /10<br>4 hệ cùng chấm</small></div>
+      </div>
+      <div class="ds-lv" id="dsLv"></div>
+    </div>
+    <p class="ghi-chu">Ngưỡng nhãn giống app: từ 6 điểm là thuận, từ 4,8 trở xuống là cần lưu ý. Số liệu là ví dụ.</p>
+  </section>
+
+  <footer class="chan">Hiệu ứng mượn ý từ <a href="https://github.com/DavidHDev/react-bits" target="_blank" rel="noopener">React Bits</a> (giấy phép MIT), viết lại không cần React. Tắt hiệu ứng chuyển động trong cài đặt máy thì trang tự đứng yên.</footer>
+</div>
+
+<script>
+(function () {
+  'use strict';
+  var giam = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var $ = function (id) { return document.getElementById(id); };
+
+  /* 1a. Trời sao lấp lánh (canvas) */
+  (function () {
+    var cv = $('troiSao'), g = cv.getContext('2d'), sao = [], w = 0, h = 0;
+    function coGian() {
+      var r = cv.getBoundingClientRect(), d = Math.min(window.devicePixelRatio || 1, 2);
+      w = r.width; h = r.height; cv.width = w * d; cv.height = h * d; g.setTransform(d, 0, 0, d, 0, 0);
+      sao = []; for (var i = 0; i < Math.round(w * h / 2600); i++) sao.push({ x: Math.random() * w, y: Math.random() * h, r: Math.random() * 1.3 + .3, p: Math.random() * 6.28, v: .6 + Math.random() * 1.6 });
+    }
+    function ve(t) {
+      g.clearRect(0, 0, w, h);
+      sao.forEach(function (s) { var a = giam ? .7 : .35 + .65 * (.5 + .5 * Math.sin(t / 1000 * s.v + s.p)); g.globalAlpha = a; g.fillStyle = s.r > 1.2 ? '#f6dfa4' : '#dbe9ff'; g.beginPath(); g.arc(s.x, s.y, s.r, 0, 6.29); g.fill(); });
+      if (!giam) requestAnimationFrame(ve);
+    }
+    coGian(); window.addEventListener('resize', coGian); requestAnimationFrame(ve);
+  })();
+
+  /* 1b. Chữ hiện dần theo từng chữ */
+  function hienDan() {
+    var el = $('hienDan'), chu = el.textContent.trim().split(/\s+/);
+    el.innerHTML = chu.map(function (c, i) { return '<span style="animation-delay:' + (i * 45) + 'ms">' + c + '</span>'; }).join(' ');
+  }
+  hienDan();
+
+  /* 1c. Nút lực hút: nút và chữ trôi theo con trỏ khi lại gần */
+  (function () {
+    var nut = $('nutHut'), chu = nut.firstElementChild, vung = $('hero');
+    if (giam) return;
+    vung.addEventListener('pointermove', function (e) {
+      var r = nut.getBoundingClientRect(), dx = e.clientX - (r.left + r.width / 2), dy = e.clientY - (r.top + r.height / 2), kc = Math.hypot(dx, dy);
+      if (kc < 140) { nut.style.transform = 'translate(' + dx * .28 + 'px,' + dy * .28 + 'px)'; chu.style.transform = 'translate(' + dx * .12 + 'px,' + dy * .12 + 'px)'; }
+      else { nut.style.transform = ''; chu.style.transform = ''; }
+    });
+    vung.addEventListener('pointerleave', function () { nut.style.transform = ''; chu.style.transform = ''; });
+  })();
+  $('formMau').addEventListener('submit', function (e) { e.preventDefault(); });
+
+  /* 2. Màn chờ: chữ giải mã qua 5 bước */
+  var BUOC = ['Đang an 14 chính tinh…', 'Đang tính vượng suy Bát Tự…', 'Đang lập quẻ Hà Lạc…', 'Đang dựng bản đồ sao lúc bạn chào đời…', 'Đang đối chiếu 6 hệ – sắp xong!'];
+  var KY = 'ABCDEGHIKLMNOPQRSTUVXY0123456789✦☯';
+  var henCho = null, henChu = null;
+  function giaiMa(dich) {
+    clearInterval(henChu);
+    var el = $('giaiMa');
+    if (giam) { el.textContent = dich; return; }
+    var buoc = 0, tong = dich.length + 8;
+    henChu = setInterval(function () {
+      buoc++;
+      var html = '';
+      for (var i = 0; i < dich.length; i++) {
+        if (i < buoc - 8 || dich[i] === ' ') html += dich[i];
+        else html += '<span class="nhieu">' + KY[Math.floor(Math.random() * KY.length)] + '</span>';
+      }
+      el.innerHTML = html;
+      if (buoc >= tong) { clearInterval(henChu); el.textContent = dich; }
+    }, 32);
+  }
+  function chayCho() {
+    clearInterval(henCho); var i = 0;
+    function mot() { giaiMa(BUOC[i]); $('tienDo').style.width = ((i + 1) / BUOC.length * 100) + '%'; $('buocCho').textContent = 'Bước ' + (i + 1) + '/' + BUOC.length; i++; if (i >= BUOC.length) clearInterval(henCho); }
+    mot(); henCho = setInterval(mot, 2200);
+  }
+  $('laiCho').addEventListener('click', chayCho); chayCho();
+
+  /* 3. Tám lá hé lộ: nghiêng theo chuột, vệt sáng, bấm để lật */
+  var LA = [
+    ['Tính cách', 'Bạn thuộc mẫu người quyết đoán, thực tế, làm gì cũng muốn thấy kết quả rõ ràng.', 'Tử Vi · Bát Tự cùng nói'],
+    ['Tiền bạc', 'Bạn có xu hướng kiếm tiền bằng tay nghề và sự bền bỉ, giữ tiền tốt hơn tiêu tiền.', '3/4 hệ cùng chiều'],
+    ['Sự nghiệp', 'Hợp vai trò dẫn dắt hoặc chuyên môn sâu. Giai đoạn 33–42 tuổi là bệ phóng.', '4/4 hệ cùng chiều'],
+    ['Tình duyên', 'Bạn thể hiện tình cảm bằng việc làm hơn lời nói. Nên nói ra điều mình nghĩ nhiều hơn.', 'Cần lưu ý nhẹ'],
+    ['Sức khỏe', 'Dễ căng thẳng khi ôm việc. Ngủ đủ và vận động đều là lá chắn tốt nhất của bạn.', 'Chiêm tinh · Hà Lạc'],
+    ['Gia đạo', 'Gia đình là chỗ dựa vững. Bạn hay là người gánh vác và giữ lửa trong nhà.', '3/4 hệ cùng chiều'],
+    ['Năm nổi bật', '2027 có cơ hội đổi việc hoặc mở rộng; nên chuẩn bị từ cuối năm nay.', 'Biến cố hội tụ'],
+    ['Lời khuyên', 'Chọn một mục tiêu lớn cho 12 tháng tới và chia nhỏ theo quý – bạn làm tốt nhất khi có lộ trình.', 'Tổng hợp 6 hệ']
+  ];
+  var MAT_SAU = '<svg viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="44" fill="none" stroke="#e2c078" stroke-width="1.5"/><circle cx="50" cy="50" r="32" fill="none" stroke="#e2c078" stroke-opacity=".5"/>' +
+    Array.apply(null, Array(12)).map(function (_, i) { return '<line x1="50" y1="6" x2="50" y2="' + (i % 3 ? 11 : 14) + '" stroke="#e2c078" stroke-width="' + (i % 3 ? 1 : 2) + '" transform="rotate(' + i * 30 + ' 50 50)"/>'; }).join('') +
+    '<path d="M50 22 L55 45 L78 50 L55 55 L50 78 L45 55 L22 50 L45 45 Z" fill="#f6dfa4"/><circle cx="50" cy="50" r="4" fill="#0a1a29"/></svg>';
+  $('baI').innerHTML = LA.map(function (l, i) {
+    return '<button type="button" class="la" aria-pressed="false" aria-label="Lá ' + (i + 1) + ': ' + l[0] + '"><span class="mat sau">' + MAT_SAU + '<small>Lá ' + (i + 1) + '</small></span>' +
+      '<span class="mat truoc"><b>' + l[0] + '</b><span>' + l[1] + '</span><em>' + l[2] + '</em></span><span class="ve-sang"></span></button>';
+  }).join('');
+  [].forEach.call(document.querySelectorAll('.la'), function (la) {
+    la.addEventListener('pointermove', function (e) {
+      var r = la.getBoundingClientRect(), x = (e.clientX - r.left) / r.width, y = (e.clientY - r.top) / r.height;
+      la.style.setProperty('--mx', x * 100 + '%'); la.style.setProperty('--my', y * 100 + '%');
+      if (!giam) la.style.transform = 'rotateX(' + ((.5 - y) * 14) + 'deg) rotateY(' + ((x - .5) * 16) + 'deg) scale(1.03)';
+    });
+    la.addEventListener('pointerleave', function () { la.style.transform = ''; });
+    la.addEventListener('click', function () { var lat = la.classList.toggle('lat'); la.setAttribute('aria-pressed', lat ? 'true' : 'false'); });
+  });
+  // mở sẵn hai lá đầu để trang có nội dung ngay khi tải
+  [].slice.call(document.querySelectorAll('.la'), 0, 2).forEach(function (la) { la.classList.add('lat'); la.setAttribute('aria-pressed', 'true'); });
+  $('latHet').addEventListener('click', function () { [].forEach.call(document.querySelectorAll('.la'), function (la) { la.classList.remove('lat'); la.setAttribute('aria-pressed', 'false'); }); });
+
+  /* 4. Bảng điểm: số đếm lên, thanh dâng, vòng điểm chung */
+  var LV = [['Sự nghiệp', 7.6], ['Tiền bạc', 6.9], ['Gia đạo', 7.2], ['Sức khỏe', 6.1], ['Tình duyên', 5.4], ['Con cái', 6.4], ['Bạn bè', 5.8], ['Học vấn', 7.0], ['Xuất ngoại', 4.6]];
+  var CHUNG = 6.6;
+  function fmt(x) { return x.toFixed(1).replace('.', ','); }
+  function nhan(d) { return d >= 6 ? ['tot', 'Thuận'] : d <= 4.8 ? ['xau', 'Cần lưu ý'] : ['vua', 'Trung bình']; }
+  function mau(d) { return d >= 6 ? 'linear-gradient(90deg,#26b5b5,#6fd3a8)' : d <= 4.8 ? 'linear-gradient(90deg,#b86a5e,#e8897a)' : 'linear-gradient(90deg,#a8792a,#e2c078)'; }
+  $('dsLv').innerHTML = LV.map(function (l, i) {
+    var n = nhan(l[1]);
+    return '<div class="lv"><span>' + l[0] + '</span><span class="thanh"><i data-d="' + l[1] + '" style="background:' + mau(l[1]) + ';transition-delay:' + (i * 60) + 'ms"></i></span><span class="so-lv" data-d="' + l[1] + '">' + fmt(l[1]) + '</span><span class="tag ' + n[0] + '">' + n[1] + '</span></div>';
+  }).join('');
+  function demLen(el, dich, ms) {
+    if (giam) { el.textContent = fmt(dich); return; }
+    var t0 = performance.now();
+    (function buoc(t) { var k = Math.min(1, (t - t0) / ms), e = 1 - Math.pow(1 - k, 3); el.textContent = fmt(dich * e); if (k < 1) requestAnimationFrame(buoc); })(t0);
+  }
+  function chayDiem() {
+    var thanh = document.querySelectorAll('.lv .thanh i'), so = document.querySelectorAll('.lv .so-lv'), cung = $('cungDiem');
+    [].forEach.call(thanh, function (i) { i.style.transition = 'none'; i.style.width = '0'; });
+    cung.style.transition = 'none'; cung.style.strokeDashoffset = 326.7;
+    void cung.getBoundingClientRect();
+    [].forEach.call(thanh, function (i) { i.style.transition = ''; i.style.width = (+i.getAttribute('data-d') * 10) + '%'; });
+    cung.style.transition = 'stroke-dashoffset 1.6s cubic-bezier(.2,.7,.2,1)'; cung.style.strokeDashoffset = 326.7 * (1 - CHUNG / 10);
+    [].forEach.call(so, function (s) { demLen(s, +s.getAttribute('data-d'), 1400); });
+    demLen($('soChung'), CHUNG, 1600);
+  }
+  $('laiDiem').addEventListener('click', chayDiem);
+  requestAnimationFrame(function () { requestAnimationFrame(chayDiem); });
+})();
+</script>
