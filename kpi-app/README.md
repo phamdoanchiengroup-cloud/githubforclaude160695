@@ -20,6 +20,7 @@ Dự án riêng, **không liên quan** tới `tuvi-app/`.
 | `tests/gia-lap-kpi.js` | Giả lập Apps Script: Sheet tự đổi chuỗi ngày như Google Sheets, khóa, cache, đồng hồ giả |
 | `tests/kiem-tra.js` | 85 kiểm tra trên dữ liệu thật, có đối chứng với mã gốc (mục 10: tăng tốc) |
 | `tests/hieu-ung.js` | 27 kiểm tra hiệu ứng (Playwright) trên bản xem thử 1 file: số chạy, vòng KPI, khung chờ tải, top 3, rung ô sai, đổi nền, duyệt ✓, số lật, bi vào lỗ, giảm chuyển động, mọi tab không lỗi |
+| `tests/hieu-ung-2.js` | 13 kiểm tra đợt 2: giữ để duyệt (thả sớm không duyệt), vuốt để duyệt trên điện thoại (vuốt nửa không duyệt), quầng sáng, tia lửa, bảng lật hạng, ly nước KPI |
 | `tests/xem-truoc.js` | Chạy giao diện trên máy với máy chủ giả lập. `/phien/<tên đăng nhập>` trả mã phiên để chụp ảnh không cần mật khẩu |
 
 ## Chạy kiểm tra
