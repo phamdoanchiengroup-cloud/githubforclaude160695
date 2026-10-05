@@ -7,6 +7,8 @@ Bản này gồm **mọi thay đổi từ đầu** (sửa lỗi chốt tháng, b
 - **Cần có:** máy tính (không làm trên điện thoại), trình duyệt Chrome, đăng nhập đúng tài khoản Google đang giữ dự án Apps Script và file Sheet "CSDL KPI".
 - **Cần dán lại 2 file:** `Code.gs` và `Index.html`.
 
+> **Bản 05/10/2026 – Báo cáo tháng.** Nếu bạn **đã dán bản trước** và chỉ cần thêm báo cáo tháng: làm **A3 (sao lưu) → B1 → B2 → Phần F → Phần D**. Nếu chưa dán lần nào: làm cả file từ trên xuống, Phần F làm sau Phần C.
+
 ---
 
 ## Phần A — Chuẩn bị
@@ -182,6 +184,68 @@ Chưa làm bước này thì người dùng vẫn thấy bản cũ.
 Đường link web app **giữ nguyên**, không phải gửi lại cho ai.
 
 > Không bấm **"Triển khai mới"** vì sẽ tạo ra link mới. Chỉ dùng **Quản lý triển khai → ✏️**.
+
+---
+
+## Phần F — Báo cáo tháng (PDF tự động)
+
+Mỗi tháng, vào **ngày làm việc thứ 3** (lúc 23h chốt KPI tháng trước), hệ thống tự tạo báo cáo PDF và làm 3 việc:
+
+- Lưu vào Google Drive, thư mục **Báo cáo KPI hằng tháng / 2026-09** (mỗi tháng một thư mục). Trong đó có **1 báo cáo toàn nhà máy** và **1 báo cáo cho mỗi xưởng**.
+- Gửi email báo cáo toàn nhà máy cho ban lãnh đạo, kèm tóm tắt và các nhận định chính ngay trong email.
+- Gửi email báo cáo xưởng cho người phụ trách xưởng đó (nếu có trong danh sách).
+
+Trưởng phòng và ban điều hành cũng **tải được bất cứ lúc nào** trên web: **Bảng KPI → khung "Báo cáo tháng"** → chọn tháng → **Tải PDF** hoặc **Xem & in**.
+
+### F1. Tạo danh sách người nhận (làm 1 lần)
+
+1. Trong Apps Script, chạy hàm **`TAO_SHEET_NGUOI_NHAN_BAO_CAO`** (cách chạy như mục "Cách chạy một hàm" ở Phần C).
+2. Mở Google Sheet "CSDL KPI". Có thêm trang tính **NguoiNhanBaoCao** với 3 cột: `Email | NhanBaoCao | GhiChu`.
+3. **Xóa dòng mẫu**, rồi điền mỗi người một dòng:
+
+| Email | NhanBaoCao | Ý nghĩa |
+|---|---|---|
+| giamdoc@congty.com | `TOAN_NHA_MAY` | nhận báo cáo toàn nhà máy |
+| truongphong.son@congty.com | `SON` | nhận báo cáo riêng xưởng Sơn (ghi **mã xưởng**) |
+| nhansu@congty.com | `TAT_CA` | nhận báo cáo toàn nhà máy **và** tất cả xưởng |
+
+   Mã xưởng xem trong trang tính **PhongBan** (cột `MaXuong`), hoặc xem dòng chữ hiện ra sau khi chạy hàm ở bước 1.
+
+### F2. Cấp quyền Drive và Gmail, gửi thử (bắt buộc làm 1 lần)
+
+Báo cáo cần thêm quyền **lưu file vào Drive** và **gửi email**. Google chỉ hỏi quyền khi bạn tự chạy tay một lần:
+
+1. Chạy hàm **`GUI_BAO_CAO_THANG_TRUOC`**.
+2. Google hiện hộp **"Cần được cho phép"** → **Xem lại quyền** → chọn tài khoản → **Nâng cao → Đi tới … (không an toàn)** → **Cho phép**. Đây là dự án của chính bạn nên an toàn.
+3. Đợi khoảng 1 phút. Dòng cuối của **Nhật ký thực thi** ghi kiểu: `Đã tạo 10 tệp trong Drive và gửi 3 email cho kỳ 2026-09.`
+4. Mở Google Drive, vào thư mục **Báo cáo KPI hằng tháng → 2026-09** để xem các file PDF. Mở hộp thư để xem email.
+
+> Không làm F2 thì đến ngày chốt, máy vẫn chốt KPI bình thường nhưng **không gửi được báo cáo** (thiếu quyền).
+> Hàm `GUI_BAO_CAO_THANG_TRUOC` cũng dùng để **gửi bù** khi lỡ ngày, hoặc **gửi lại** sau khi sửa số liệu. File cũ cùng tên trong Drive tự chuyển vào thùng rác, không bị trùng.
+
+### F3. Báo cáo gồm những gì
+
+- **Toàn nhà máy:**
+  - 6 chỉ số chính, so với tháng trước;
+  - nhận định tự động bằng lời (xưởng dẫn đầu / thấp nhất, xưởng giảm mạnh, số người loại D, công đoạn dưới định mức, chuyên cần, vi phạm);
+  - bảng so sánh 9 xưởng;
+  - phân bố xếp loại A+ → D;
+  - biểu đồ sản lượng theo ngày;
+  - 10 người dẫn đầu và 10 người cần hỗ trợ;
+  - công đoạn dưới 85% định mức;
+  - công đoạn nhiều lỗi;
+  - KPI trưởng/phó phòng.
+- **Từng xưởng:**
+  - tóm tắt và vị trí của xưởng so với toàn nhà máy;
+  - nhận định;
+  - **bảng KPI từng công nhân** (hạng, 4 thành phần, so với tháng trước);
+  - sản lượng theo ngày;
+  - 15 công đoạn chính;
+  - chuyên cần từng người;
+  - danh sách vi phạm;
+  - KPI quản lý của xưởng.
+- Số KPI **lấy đúng như Bảng KPI trên web** (bản chốt chính thức). Tải tháng chưa chốt thì báo cáo ghi rõ "tạm tính".
+- Tháng 8/2026 mới bắt đầu dùng web, ít dữ liệu, nên báo cáo tháng 9 **không so sánh** với tháng 8. Từ tháng 10 trở đi sẽ có cột so sánh.
 
 ---
 

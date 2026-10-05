@@ -175,7 +175,7 @@ const MAY = `<script>
     SpreadsheetApp:{getActiveSpreadsheet:function(){return ss},openById:function(){return ss}},
     ScriptApp:{getProjectTriggers:function(){return []},deleteTrigger:function(){},newTrigger:function(){var b={timeBased:function(){return b},atHour:function(){return b},
       everyDays:function(){return b},onMonthDay:function(){return b},inTimezone:function(){return b},create:function(){return b}};return b}},
-    HtmlService:{}, DriveApp:{}, MailApp:{sendEmail:function(){}}
+    HtmlService:{createHtmlOutput:function(){return {getAs:function(){throw new Error('Bản xem thử không tạo được PDF (chỉ Apps Script làm được) – bấm "Xem & in" để xem báo cáo.')}}}}, DriveApp:{}, MailApp:{sendEmail:function(){}}
   };
   var ten=${JSON.stringify(THAM)};
   // Code.gs được nhúng sẵn thành một hàm (không dựng mã lúc chạy -> chạy được cả trong khung xem cấm eval)

@@ -1309,9 +1309,14 @@ R("""  Logger.log('Đã dọn: '+soPhat+' dòng PhatNhapTre, '+soVP+' vi phạm 
   """  tangPhienBan_();
   Logger.log('Đã dọn: '+soPhat+' dòng PhatNhapTre, '+soVP+' vi phạm NHAPTRE của TP/PP.');""")
 
+# Sau khi chốt tháng tự động: tạo báo cáo PDF, lưu Drive, gửi email (lỗi gửi báo cáo không được làm hỏng việc chốt)
+R("""  var n = chotThangLoi_(kyCu, '', 'Tự động (ngày làm việc thứ 3)');""", """  var n = chotThangLoi_(kyCu, '', 'Tự động (ngày làm việc thứ 3)');
+  try { guiBaoCaoThang_(kyCu); } catch (e) { Logger.log('Gửi báo cáo tháng lỗi: ' + e); }""")
+
 # ---------------------------------------------------------------- hàm chạy tay một lần
 s = s.rstrip() + '\n' + io.open(os.path.join(os.path.dirname(__file__), 'ham-chay-tay.gs'), encoding='utf-8').read()
 s = s.rstrip() + '\n' + io.open(os.path.join(os.path.dirname(__file__), 'toc-do.gs'), encoding='utf-8').read()
+s = s.rstrip() + '\n' + io.open(os.path.join(os.path.dirname(__file__), 'bao-cao.gs'), encoding='utf-8').read()
 
 io.open(RA, 'w', encoding='utf-8').write(s)
 print('OK ->', os.path.abspath(RA))

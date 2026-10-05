@@ -395,5 +395,58 @@ var TOKEN=null;""", GD_JS + """
 /* ===== ĐĂNG NHẬP ===== */
 var TOKEN=null;""")
 
+
+# 7) BÁO CÁO THÁNG (PDF) trên trang Bảng KPI — TP tải báo cáo xưởng mình, ban điều hành tải toàn nhà máy / xưởng bất kỳ
+R("""  // KPI quản lý (TP xem xưởng mình; ADMIN xem toàn bộ) — đặt TRÊN bảng KPI công nhân
+  if(ME.vaiTro==='ADMIN'||ME.vaiTro==='TP'){""", """  if(ME.vaiTro==='ADMIN'||ME.vaiTro==='TP') h+=khoiBaoCaoThang();
+  // KPI quản lý (TP xem xưởng mình; ADMIN xem toàn bộ) — đặt TRÊN bảng KPI công nhân
+  if(ME.vaiTro==='ADMIN'||ME.vaiTro==='TP'){""")
+R("""/* Fallback: tải nội dung HTML thành file */""", """/* ===== BÁO CÁO THÁNG (PDF) ===== */
+function khoiBaoCaoThang(){
+  var d=new Date(), opt='';
+  for(var i=0;i<13;i++){
+    var t=new Date(d.getFullYear(), d.getMonth()-i, 1), ky=t.getFullYear()+'-'+('0'+(t.getMonth()+1)).slice(-2);
+    opt+='<option value="'+ky+'"'+(i===1?' selected':'')+'>Tháng '+(t.getMonth()+1)+'/'+t.getFullYear()+(i===0?' (đang chạy – tạm tính)':'')+'</option>';
+  }
+  var xu='';
+  if(ME.vaiTro==='ADMIN'){
+    xu='<div><label>Phạm vi</label><select id="bc_xuong"><option value="">Toàn nhà máy (gửi ban lãnh đạo)</option>'+
+      (D.phongban||[]).map(function(p){return '<option value="'+esc(p.MaXuong)+'">'+esc(p.TenXuong)+'</option>'}).join('')+'</select></div>';
+  }
+  return '<div class="card"><h3>Báo cáo tháng<span>'+(ME.vaiTro==='TP'?'báo cáo riêng xưởng của bạn':'PDF tổng hợp KPI, sản lượng, chuyên cần, vi phạm')+'</span></h3>'+
+    '<div class="row r3" style="align-items:flex-end"><div><label>Tháng</label><select id="bc_ky">'+opt+'</select></div>'+xu+
+    '<div style="display:flex;gap:8px;align-items:flex-end;flex-wrap:wrap"><button class="btn pri" onclick="taiBaoCaoUI(\\'pdf\\')">Tải PDF</button>'+
+    '<button class="btn" onclick="taiBaoCaoUI(\\'html\\')">Xem &amp; in</button></div></div>'+
+    '<div class="note">Báo cáo tháng trước được tự tạo vào ngày làm việc thứ 3 (lúc chốt KPI), lưu trong Google Drive và gửi email cho người có tên trong sheet NguoiNhanBaoCao. Tổng hợp mất khoảng 10–40 giây.</div></div>';
+}
+function taiBaoCaoUI(dang){
+  var ky=$('bc_ky').value, mx=$('bc_xuong')?$('bc_xuong').value:'';
+  toast('Đang tổng hợp báo cáo… vui lòng đợi',true);
+  call('layBaoCaoThang',[ky,mx,dang],function(r){
+    if(!r||!r.ok){toast((r&&r.msg)||'Không tạo được báo cáo');return}
+    if(dang==='html'){
+      var cu=document.getElementById('bc_frame'); if(cu) cu.parentNode.removeChild(cu);
+      var ifr=document.createElement('iframe'); ifr.id='bc_frame';
+      ifr.style.cssText='position:fixed;right:0;bottom:0;width:0;height:0;border:0';
+      document.body.appendChild(ifr);
+      var idoc=ifr.contentWindow.document;
+      idoc.open(); idoc.write(r.html.replace('<style>','<style>@page{size:A4;margin:14mm 12mm}*{-webkit-print-color-adjust:exact;print-color-adjust:exact}')); idoc.close();
+      setTimeout(function(){
+        try{ ifr.contentWindow.focus(); ifr.contentWindow.print(); toast('Đã mở hộp thoại in — chọn "Lưu thành PDF" hoặc máy in',true); }
+        catch(e){ taiFileHTML(r.html,'Bao-cao-KPI-'+ky+'.html'); toast('Không in trực tiếp được — đã tải file HTML, mở rồi bấm Ctrl+P'); }
+      },500);
+      return;
+    }
+    var bin=atob(r.b64), u=new Uint8Array(bin.length);
+    for(var i=0;i<bin.length;i++) u[i]=bin.charCodeAt(i);
+    var url=URL.createObjectURL(new Blob([u],{type:'application/pdf'})), a=document.createElement('a');
+    a.href=url; a.download=r.ten; document.body.appendChild(a); a.click();
+    setTimeout(function(){ document.body.removeChild(a); URL.revokeObjectURL(url); },1000);
+    toast('Đã tải '+r.ten,true);
+  });
+}
+
+/* Fallback: tải nội dung HTML thành file */""")
+
 io.open(os.path.join(D, '..', 'Index.html'), 'w', encoding='utf-8').write(s)
 print('OK Index.html')

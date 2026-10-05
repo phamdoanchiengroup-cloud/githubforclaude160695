@@ -129,9 +129,21 @@ function tao(fileCode, duLieu, gioHienTai) {
     }) },
     LockService: { getScriptLock: () => ({ tryLock: () => { if (khoa) return false; khoa = true; return true; }, waitLock() { khoa = true; }, releaseLock() { khoa = false; } }) },
     SpreadsheetApp: { getActiveSpreadsheet: () => ss },
-    HtmlService: { createTemplateFromFile: () => ({ evaluate: () => ({ setTitle() { return this; }, addMetaTag() { return this; }, setXFrameOptionsMode() { return this; } }) }), XFrameOptionsMode: {} },
+    HtmlService: { createTemplateFromFile: () => ({ evaluate: () => ({ setTitle() { return this; }, addMetaTag() { return this; }, setXFrameOptionsMode() { return this; } }) }), XFrameOptionsMode: {},
+      // HTML -> "PDF" giả: giữ nguyên HTML trong blob để bài kiểm tra đọc lại / dựng PDF thật bằng Chromium
+      createHtmlOutput: html => ({ getContent: () => html, getAs: type => { const b = blob(Buffer.from(html, 'utf8')); b.__html = html; b.__type = type; b.__ten = ''; b.setName = n => { b.__ten = n; return b; }; b.getName = () => b.__ten; return b; } }) },
+    MailApp: { sendEmail: o => { (ctx.__mail = ctx.__mail || []).push(o); }, getRemainingDailyQuota: () => 100 },
     ScriptApp: { getProjectTriggers: () => [], deleteTrigger() {}, newTrigger: () => { const b = { timeBased: () => b, atHour: () => b, everyDays: () => b, onMonthDay: () => b, inTimezone: () => b, create: () => b }; return b; } },
-    DriveApp: {}
+    DriveApp: (() => {   // Drive giả: thư mục + tệp trong bộ nhớ
+      const thuMuc = [];
+      const it = a => { let i = 0; return { hasNext: () => i < a.length, next: () => a[i++] }; };
+      function TM(ten) { this.ten = ten; this.con = []; this.tep = []; }
+      TM.prototype = { getName() { return this.ten; }, getUrl() { return 'https://drive.google.com/drive/folders/' + encodeURIComponent(this.ten); },
+        getFoldersByName(n) { return it(this.con.filter(x => x.ten === n)); }, createFolder(n) { const f = new TM(n); this.con.push(f); return f; },
+        getFilesByName(n) { return it(this.tep.filter(x => x.ten === n && !x.rac)); },
+        createFile(b) { const t = { ten: b.getName(), b, rac: false, getName() { return this.ten; }, setTrashed(v) { this.rac = v; } }; this.tep.push(t); return t; } };
+      return { __thuMuc: thuMuc, getFoldersByName: n => it(thuMuc.filter(x => x.ten === n)), createFolder: n => { const f = new TM(n); thuMuc.push(f); return f; } };
+    })()
   };
   // Sheets API (dịch vụ nâng cao) giả: batchGet trả UNFORMATTED_VALUE, ngày ở dạng số serial như Google
   const sheetsApi = { Spreadsheets: { Values: { batchGet: (id, o) => {
