@@ -454,7 +454,8 @@ function taiBaoCaoUI(dang){
 #    Thư viện lottie-web tải từ cdnjs khi cần (như thư viện Excel); không tải được thì dùng hiệu ứng cũ.
 import json as _json
 LT = {}
-for _t in ['dang-tong-hop-bao-cao', 'duyet-xong', 'da-duyet-het', 'mat-ket-noi']:
+for _t in ['dang-tong-hop-bao-cao', 'duyet-xong', 'da-duyet-het', 'mat-ket-noi',
+           'chot-thang', 'diem-danh-xong', 'gui-cho-duyet', 'xuat-excel', 'chua-co-du-lieu', 'het-phien']:   # đợt 2 (07/10)
     LT[_t] = _json.load(io.open(os.path.join(D, '..', 'lottie', _t + '.json'), encoding='utf-8'))
 LT_JSON = _json.dumps(LT, ensure_ascii=False, separators=(',', ':')).replace('</', '<\\/')
 R(""".hgd svg{width:17px!important;height:17px!important;flex:none;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round}
@@ -496,7 +497,13 @@ var LT_TINH=(function(){ var v=function(x){return '<svg viewBox="0 0 200 200" wi
   return {'dang-tong-hop-bao-cao':v('<circle cx="100" cy="100" r="75" stroke="#3a434b" stroke-width="6"/><circle class="lt-quay" cx="100" cy="100" r="75" stroke="#16a89d" stroke-width="6" stroke-dasharray="110 400"/><rect x="65" y="55" width="70" height="90" rx="8" stroke="#aab5bc" stroke-width="5"/><path d="M80 80h40M80 96h40M80 112h28" stroke="#2fd3c6" stroke-width="6"/>'),
     'duyet-xong':v('<circle cx="100" cy="100" r="48" fill="#2fd3c6"/><path d="M78 101l16 16 30-32" stroke="#06201e" stroke-width="10"/>'),
     'da-duyet-het':v('<rect x="60" y="50" width="80" height="100" rx="10" stroke="#aab5bc" stroke-width="5"/><rect x="85" y="49" width="30" height="12" rx="4" fill="#aab5bc"/><path d="M76 82l6 6 10-12M76 104l6 6 10-12M76 126l6 6 10-12" stroke="#2fd3c6" stroke-width="5"/><path d="M100 82h22M100 104h22M100 126h22" stroke="#3a434b" stroke-width="5"/>'),
-    'mat-ket-noi':v('<path d="M38 92a88 88 0 0 1 124 0M60 114a56 56 0 0 1 80 0M82 136a24 24 0 0 1 36 0" stroke="#aab5bc" stroke-width="7"/><circle cx="100" cy="150" r="7" fill="#aab5bc"/><path d="M54 60l92 92" stroke="#f26b6b" stroke-width="8"/>')}; })();
+    'mat-ket-noi':v('<path d="M38 92a88 88 0 0 1 124 0M60 114a56 56 0 0 1 80 0M82 136a24 24 0 0 1 36 0" stroke="#aab5bc" stroke-width="7"/><circle cx="100" cy="150" r="7" fill="#aab5bc"/><path d="M54 60l92 92" stroke="#f26b6b" stroke-width="8"/>'),
+    'chot-thang':v('<rect x="54" y="44" width="92" height="112" rx="9" fill="#21262b" stroke="#aab5bc" stroke-width="5"/><circle cx="100" cy="106" r="32" stroke="#f0b04e" stroke-width="5"/><path d="M86 107l10 10 19-21" stroke="#f0b04e" stroke-width="6"/>'),
+    'diem-danh-xong':v('<g fill="#2fd3c6"><circle cx="36" cy="66" r="8"/><circle cx="68" cy="66" r="8"/><circle cx="100" cy="66" r="8"/><circle cx="164" cy="66" r="8"/><rect x="23" y="80" width="26" height="16" rx="8"/><rect x="55" y="80" width="26" height="16" rx="8"/><rect x="87" y="80" width="26" height="16" rx="8"/><rect x="151" y="80" width="26" height="16" rx="8"/></g><circle cx="132" cy="66" r="8" fill="#f0b04e"/><rect x="119" y="80" width="26" height="16" rx="8" fill="#f0b04e"/><path d="M26 130h148" stroke="#3a434b" stroke-width="8"/><path d="M26 130h118" stroke="#2fd3c6" stroke-width="8"/>'),
+    'gui-cho-duyet':v('<rect x="73" y="71" width="54" height="66" rx="6" fill="#21262b" stroke="#aab5bc" stroke-width="4.5"/><path d="M84 88h32M84 100h24" stroke="#2fd3c6" stroke-width="4"/><rect x="48" y="131" width="104" height="30" rx="6" fill="#2a3036" stroke="#aab5bc" stroke-width="5"/><circle cx="146" cy="60" r="18" fill="#21262b" stroke="#f0b04e" stroke-width="4"/><path d="M146 60v-11M146 60h7" stroke="#f0b04e" stroke-width="3.5"/>'),
+    'xuat-excel':v('<rect x="59" y="35" width="82" height="68" rx="7" fill="#21262b" stroke="#aab5bc" stroke-width="4.5"/><path d="M70 52h62M70 67h62M70 82h62" stroke="#2fd3c6" stroke-width="8"/><path d="M100 120v28M88 138l12 12 12-12" stroke="#f0b04e" stroke-width="6"/><path d="M66 166v14h68v-14" stroke="#aab5bc" stroke-width="5"/>'),
+    'chua-co-du-lieu':v('<path d="M30 46v94h142" stroke="#aab5bc" stroke-width="5"/><path d="M40 100h126" stroke="#3a434b" stroke-width="4" stroke-dasharray="7 9"/><circle cx="96" cy="88" r="19" stroke="#2fd3c6" stroke-width="5.5"/><path d="M110 102l16 16" stroke="#2fd3c6" stroke-width="7"/>'),
+    'het-phien':v('<circle cx="92" cy="92" r="56" fill="#21262b" stroke="#aab5bc" stroke-width="5"/><path d="M92 92V58M92 92h20" stroke="#aab5bc" stroke-width="5"/><path d="M131 140v-11a11 11 0 0 1 22 0v11" stroke="#f0b04e" stroke-width="6"/><rect x="123" y="138" width="38" height="28" rx="6" fill="#f0b04e"/>')}; })();
 /* Phát hoạt ảnh vào el. Trả đối tượng có .huy(). lap=true: lặp (dùng khi chờ). */
 function ltPhat(el,ten,lap,khiXong){
   var h={a:null,huy:function(){try{if(h.a)h.a.destroy()}catch(e){} h.a=null; h.huyRoi=true}};
@@ -527,11 +534,14 @@ function ltMo(ten,tieuDe,phu,lap,nut){
   var p=ltKhung(); if(__ltPhu)__ltPhu.huy(); clearTimeout(ltMo._h);
   p.querySelector('b').textContent=tieuDe||''; p.querySelector('small').textContent=phu||'';
   var hinh=p.querySelector('.lt-hinh'); hinh.innerHTML=''; p.querySelector('.lt-nut').innerHTML=nut||'';
-  p.classList.add('mo'); __ltPhu=ltPhat(hinh,ten,lap);
+  p.onclick=null; p.classList.add('mo'); __ltPhu=ltPhat(hinh,ten,lap);
   return p;
 }
 function ltDong(){ var p=$('ltPhu'); if(p)p.classList.remove('mo'); if(__ltPhu){__ltPhu.huy();__ltPhu=null} clearTimeout(ltMo._h); }
-function ltXong(tieuDe,phu){ ltMo('duyet-xong',tieuDe,phu,false); ltMo._h=setTimeout(ltDong,1700); }
+/* Xong việc: hoạt ảnh phát 1 lần rồi tự đóng (bấm vào lớp phủ để đóng sớm) */
+function ltXong(tieuDe,phu,ten,ms){ var p=ltMo(ten||'duyet-xong',tieuDe,phu,false); p.onclick=ltDong; ltMo._h=setTimeout(ltDong,ms||1700); }
+/* Trang trống "chưa có dữ liệu" có hoạt ảnh kính lúp */
+function ltTrong(tieuDe,phu){ return '<div class="empty lt-trong"><div class="lt-o" data-lt="chua-co-du-lieu" aria-hidden="true"></div><b>'+esc(tieuDe)+'</b>'+esc(phu||'')+'</div>'; }
 /* Lỗi mạng (Apps Script trả "NetworkError … HTTP 0" khi rớt mạng / mạng chập chờn) */
 function laLoiMang(e){ var m=String(e&&e.message||e||''); return /NetworkError|HTTP 0|Failed to fetch|network|mạng|timed? ?out|Connection/i.test(m); }
 function ltMatMang(fn,args,cb){
@@ -579,6 +589,67 @@ R("""  try{hieuUngDot2(main)}catch(e){}
   if(GIAM_CD())return;""", """  try{hieuUngDot2(main)}catch(e){}
   try{ ltDon(); Array.prototype.forEach.call(main.querySelectorAll('[data-lt]:not([data-lt-on])'),function(el){ el.setAttribute('data-lt-on','1'); ltPhat(el,el.getAttribute('data-lt'),true); }); }catch(e){}
   if(GIAM_CD())return;""")
+
+
+# 9) LOTTIE ĐỢT 2 (duyệt 07/10): chốt tháng, lưu điểm danh, công nhân gửi sản lượng, xuất Excel, chưa có dữ liệu, hết phiên.
+R("""function hetHan(){
+  toast('Phiên đăng nhập đã hết hạn. Đăng nhập lại.');
+  try{sessionStorage.removeItem('kpi_token')}catch(e){}
+  setTimeout(function(){location.reload()},1800);
+}""", """function hetHan(){
+  // Không tự tải lại trang nữa: để người dùng kịp chép số đang nhập dở rồi mới đăng nhập lại
+  try{sessionStorage.removeItem('kpi_token')}catch(e){}
+  if(typeof ltMo!=='function'){ toast('Phiên đăng nhập đã hết hạn. Đăng nhập lại.'); setTimeout(function(){location.reload()},1800); return; }
+  ltMo('het-phien','Phiên đăng nhập đã hết hạn','Trang không tự tải lại: chép lại số đang nhập nếu cần, rồi bấm Đăng nhập lại.',true,
+    '<button class="btn" id="ltDeSau">Để sau</button><button class="btn pri" id="ltDNLai">Đăng nhập lại</button>');
+  $('ltDeSau').onclick=ltDong;
+  $('ltDNLai').onclick=function(){ location.reload(); };
+  setTimeout(function(){ var b=$('ltDNLai'); if(b)b.focus(); },50);
+}""")
+# chốt tháng
+R("""    chotThangUI._dang=false;
+    toast(r.msg, r.ok);
+    if(r.ok) taiKPIKy();""", """    chotThangUI._dang=false;
+    if(r.ok) ltXong(r.msg, 'Số liệu đã được lưu lại để tính thưởng và xếp hạng', 'chot-thang', 2800); else toast(r.msg, false);
+    if(r.ok) taiKPIKy();""")
+# điểm danh
+R("""  call('luuDiemDanh',[ddNgay, nghi], function(r){
+    toast(r.msg, r.ok);""", """  call('luuDiemDanh',[ddNgay, nghi], function(r){
+    if(r.ok) ltXong(r.msg, $('dd_siso')?$('dd_siso').textContent:'', 'diem-danh-xong', 2400); else toast(r.msg, false);""")
+# công nhân gửi sản lượng
+R("""    cnGui._dangGui=false;
+    toast(r.msg,r.ok);""", """    cnGui._dangGui=false;
+    if(r.ok) ltXong('Đã gửi – chờ trưởng phòng duyệt', (r.msg||'')+' Duyệt xong mới tính vào KPI.', 'gui-cho-duyet', 3200); else toast(r.msg,false);""")
+# xuất Excel: lớp chờ khi tải thư viện + dựng file, xong thì báo tên file
+R("""function xuatExcelLich(){
+  var r=window.__tk; if(!r)return;""", """function xuatExcelLich(){
+  var r=window.__tk; if(!r)return;
+  ltMo('xuat-excel','Đang tạo file Excel…','Chấm công tháng '+r.ky.slice(5)+'/'+r.ky.slice(0,4),true);""")
+R("""    XLSX.writeFile(wb, 'ChamCong_'+r.ky+'.xlsx');""", """    XLSX.writeFile(wb, 'ChamCong_'+r.ky+'.xlsx');
+    ltXong('Đã tải file Excel', 'ChamCong_'+r.ky+'.xlsx', 'xuat-excel', 2200);""")
+R("""function xuatMauHCNS(){
+  var r=window.__tk; if(!r)return;""", """function xuatMauHCNS(){
+  var r=window.__tk; if(!r)return;
+  ltMo('xuat-excel','Đang tạo file Excel…','Bảng chấm công HC-NS tháng '+r.ky.slice(5)+'/'+r.ky.slice(0,4),true);""")
+R("""    XLSX.writeFile(wb, 'BangChamCong_HCNS_'+r.ky+'.xlsx');""", """    XLSX.writeFile(wb, 'BangChamCong_HCNS_'+r.ky+'.xlsx');
+    ltXong('Đã tải file Excel', 'BangChamCong_HCNS_'+r.ky+'.xlsx', 'xuat-excel', 2200);""")
+R("""function napThuVien(url, bienToanCuc, cb){
+  if(window[bienToanCuc]){cb();return}
+  var s=document.createElement('script'); s.src=url;
+  s.onload=function(){cb()};
+  s.onerror=function(){toast('Không tải được thư viện xuất Excel (cần mạng)')};""", """function napThuVien(url, bienToanCuc, cb){
+  var chay=function(){ try{cb()}catch(e){ try{ltDong()}catch(x){} toast('Lỗi tạo file: '+(e.message||e)); } };
+  if(window[bienToanCuc]){chay();return}
+  var s=document.createElement('script'); s.src=url;
+  s.onload=chay;
+  s.onerror=function(){ try{ltDong()}catch(x){} toast('Không tải được thư viện xuất Excel (cần mạng)')};""")
+# trang chưa có dữ liệu
+R("""  if(!ds.length)h+='<div class="card"><div class="empty">Chưa có dữ liệu kỳ này</div></div>';""",
+  """  if(!ds.length)h+='<div class="card">'+ltTrong('Chưa có dữ liệu kỳ này','Kỳ này chưa có sản lượng nào được duyệt. Chọn kỳ khác ở ô Kỳ.')+'</div>';""")
+R("""    if(!ds.length){ $('qlBody').innerHTML='<div class="empty">Chưa có dữ liệu KPI quản lý cho tháng này.</div>'; return; }""",
+  """    if(!ds.length){ $('qlBody').innerHTML=ltTrong('Chưa có KPI quản lý tháng này','Chọn tháng khác, hoặc chờ trưởng phòng nhập và duyệt sản lượng.'); return; }""")
+R("""  if(!arr||!arr.length){box.innerHTML='<div class="empty">Chưa có dữ liệu</div>';return}""",
+  """  if(!arr||!arr.length){box.innerHTML=ltTrong('Chưa có dữ liệu','Chưa có kỳ nào được chốt để xem lịch sử.');return}""")
 
 io.open(os.path.join(D, '..', 'Index.html'), 'w', encoding='utf-8').write(s)
 print('OK Index.html')

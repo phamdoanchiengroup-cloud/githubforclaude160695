@@ -109,6 +109,52 @@ const svgTrong = (p, sel) => p.evaluate(s => { const e = document.querySelector(
   ok(!p.loi.length, 'không lỗi trang', p.loi);
   await p.context().close();
 
+  console.log('\n7. Đợt 2: chốt tháng, điểm danh, công nhân gửi, Excel, chưa có dữ liệu, hết phiên');
+  const phu = p => p.evaluate(() => { const x = $('ltPhu'); return x ? { mo: x.classList.contains('mo'), b: x.querySelector('b').textContent, svg: x.querySelectorAll('.lt-hinh svg path').length } : {}; });
+  const choPhu = async (p, re) => { for (let i = 0; i < 60; i++) { const x = await phu(p); if (x.mo && re.test(x.b)) return x; await p.waitForTimeout(150); } return phu(p); };
+  p = await vao(b, 'chienpham'); p.on('dialog', d => d.accept());
+  await p.evaluate(() => go('kpi')); await p.waitForTimeout(2500);
+  await p.evaluate(() => chotThangUI());
+  let x = await choPhu(p, /Đã chốt KPI/);
+  ok(x.mo && x.svg > 5, 'chốt tháng: lớp phủ con dấu "Đã chốt KPI…"', x);
+  await p.waitForTimeout(3200); ok(!(await phu(p)).mo, 'chốt tháng: tự đóng');
+  await p.evaluate(() => { kpiXuong = kpiXuong || (D.phongban[0] || {}).MaXuong; kpiKy.giaTri = '2030-01'; taiKPIKy(); }); await p.waitForTimeout(2500);
+  ok(await svgTrong(p, '#main .lt-trong .lt-o') > 3 && /Chưa có dữ liệu kỳ này/.test(await p.textContent('#main')), 'kỳ chưa có dữ liệu: kính lúp + lời gợi ý', await svgTrong(p, '#main .lt-trong .lt-o'));
+  // hết phiên: không tự tải lại, chờ bấm
+  await p.evaluate(() => { window.__chuaTai = 1; hetHan(); }); await p.waitForTimeout(2500);
+  x = await phu(p);
+  ok(x.mo && /hết hạn/.test(x.b) && await p.evaluate(() => window.__chuaTai === 1), 'hết phiên: lớp phủ, trang KHÔNG tự tải lại sau 2,5 giây', x);
+  ok(await p.evaluate(() => document.activeElement.id === 'ltDNLai'), 'hết phiên: con trỏ ở nút Đăng nhập lại');
+  await p.click('#ltDeSau'); ok(!(await phu(p)).mo, 'hết phiên: "Để sau" đóng lớp phủ');
+  ok(!p.loi.length, 'không lỗi trang', p.loi);
+  await p.context().close();
+  p = await vao(b, 'tpdg');
+  await p.evaluate(() => go('dd')); await p.waitForSelector('#dd_siso', { timeout: 20000 });
+  await p.evaluate(() => luuDiemDanhUI());
+  x = await choPhu(p, /điểm danh/);
+  ok(x.mo && x.svg > 5 && /đi làm/.test(await p.evaluate(() => $('ltPhu').querySelector('small').textContent)), 'điểm danh: lớp phủ 5 người + sĩ số', x);
+  await p.waitForTimeout(2800); ok(!(await phu(p)).mo, 'điểm danh: tự đóng');
+  ok(!p.loi.length, 'không lỗi trang', p.loi);
+  await p.context().close();
+  p = await vao(b, 'c068');
+  await p.evaluate(() => go('cnnhap')); await p.waitForTimeout(1500);
+  const cdCN = await p.evaluate(() => { const c = (D.congdoan || []).find(c => c.MaXuong === ME.xuong && String(c.TrangThai || '').indexOf('Ngừng') < 0); if (!c) return null; cnRows = [{ MaCD: c.MaCD, SoLuongLamRa: 10, SoLoi: 0 }]; cnGui(); return c.MaCD; });
+  x = await choPhu(p, /chờ trưởng phòng duyệt/);
+  ok(cdCN && x.mo && x.svg > 3, 'công nhân gửi: phiếu vào khay + đồng hồ chờ', [cdCN, x, await p.textContent('#toast')]);
+  ok(!p.loi.length, 'không lỗi trang', p.loi);
+  await p.context().close();
+  // Excel (bảng thống kê tháng của điểm danh); giả thư viện XLSX vì sandbox chặn cdnjs
+  p = await vao(b, 'tpdg');
+  await p.evaluate(() => { ddCheDo = 'thang'; go('dd'); }); await p.waitForFunction(() => !!window.__tk, null, { timeout: 30000 });
+  await p.evaluate(() => { window.__tep = []; window.XLSX = { utils: { book_new: () => ({}), aoa_to_sheet: () => ({}), book_append_sheet: () => {} }, writeFile: (w, t) => window.__tep.push(t) }; });
+  await p.click('button:has-text("Xuất Excel")');
+  x = await choPhu(p, /Đã tải file Excel/);
+  ok(x.mo && x.svg > 5 && await p.evaluate(() => /^ChamCong_\d{4}-\d\d\.xlsx$/.test(window.__tep[0] || '')), 'Excel: lớp phủ bảng tính, báo đã tải + tên file', [x, await p.evaluate(() => window.__tep)]);
+  await p.evaluate(() => { ltDong(); window.XLSX.writeFile = () => { throw new Error('hỏng thử'); }; xuatExcelLich(); }); await p.waitForTimeout(300);
+  ok(!(await phu(p)).mo && /Lỗi tạo file/.test(await p.textContent('#toast')), 'Excel lỗi: đóng lớp phủ, báo lỗi');
+  ok(!p.loi.length, 'không lỗi trang', p.loi);
+  await p.context().close();
+
   await b.close();
   console.log(`\n${dem - loiDem}/${dem} đạt`); process.exit(loiDem ? 1 : 0);
 })();
