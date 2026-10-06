@@ -7,6 +7,8 @@ Bản này gồm **mọi thay đổi từ đầu** (sửa lỗi chốt tháng, b
 - **Cần có:** máy tính (không làm trên điện thoại), trình duyệt Chrome, đăng nhập đúng tài khoản Google đang giữ dự án Apps Script và file Sheet "CSDL KPI".
 - **Cần dán lại 2 file:** `Code.gs` và `Index.html`.
 
+> **Bản 06/10/2026 – Hoạt ảnh Lottie.** Chỉ đổi **`Index.html`** (4 hoạt ảnh: đang tổng hợp báo cáo, dấu tích khi duyệt, "Đã duyệt hết", mất kết nối có nút Thử lại). Đã dán bản 05/10 thì chỉ cần **A3 (sao lưu) → B2 → Phần D**. Mạng chặn thư viện hoạt ảnh thì web tự dùng hình tĩnh, không ảnh hưởng chức năng.
+
 > **Bản 05/10/2026 – Báo cáo tháng.** Nếu bạn **đã dán bản trước** và chỉ cần thêm báo cáo tháng: làm **A3 (sao lưu) → B1 → B2 → Phần F → Phần D**. Nếu chưa dán lần nào: làm cả file từ trên xuống, Phần F làm sau Phần C.
 
 ---

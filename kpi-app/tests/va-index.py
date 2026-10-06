@@ -421,9 +421,11 @@ function khoiBaoCaoThang(){
 }
 function taiBaoCaoUI(dang){
   var ky=$('bc_ky').value, mx=$('bc_xuong')?$('bc_xuong').value:'';
-  toast('Đang tổng hợp báo cáo… vui lòng đợi',true);
+  var th='tháng '+Number(ky.slice(5))+'/'+ky.slice(0,4);
+  ltMo('dang-tong-hop-bao-cao','Đang tổng hợp báo cáo '+th+'…','Khoảng 10–40 giây – đừng tắt trang',true);
   call('layBaoCaoThang',[ky,mx,dang],function(r){
-    if(!r||!r.ok){toast((r&&r.msg)||'Không tạo được báo cáo');return}
+    if(!r||!r.ok){ltDong();toast((r&&r.msg)||'Không tạo được báo cáo');return}
+    ltXong(dang==='html'?'Báo cáo đã sẵn sàng':'Đã tải báo cáo',dang==='html'?'Đang mở hộp thoại in…':r.ten);
     if(dang==='html'){
       var cu=document.getElementById('bc_frame'); if(cu) cu.parentNode.removeChild(cu);
       var ifr=document.createElement('iframe'); ifr.id='bc_frame';
@@ -442,11 +444,141 @@ function taiBaoCaoUI(dang){
     var url=URL.createObjectURL(new Blob([u],{type:'application/pdf'})), a=document.createElement('a');
     a.href=url; a.download=r.ten; document.body.appendChild(a); a.click();
     setTimeout(function(){ document.body.removeChild(a); URL.revokeObjectURL(url); },1000);
-    toast('Đã tải '+r.ten,true);
   });
 }
 
 /* Fallback: tải nội dung HTML thành file */""")
+
+
+# 8) HOẠT ẢNH LOTTIE (4 mẫu đã duyệt 06/10): chờ báo cáo, duyệt xong, đã duyệt hết, mất kết nối.
+#    Thư viện lottie-web tải từ cdnjs khi cần (như thư viện Excel); không tải được thì dùng hiệu ứng cũ.
+import json as _json
+LT = {}
+for _t in ['dang-tong-hop-bao-cao', 'duyet-xong', 'da-duyet-het', 'mat-ket-noi']:
+    LT[_t] = _json.load(io.open(os.path.join(D, '..', 'lottie', _t + '.json'), encoding='utf-8'))
+LT_JSON = _json.dumps(LT, ensure_ascii=False, separators=(',', ':')).replace('</', '<\\/')
+R(""".hgd svg{width:17px!important;height:17px!important;flex:none;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round}
+</style>""", """.hgd svg{width:17px!important;height:17px!important;flex:none;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round}
+/* ===== Lottie ===== */
+#ltPhu{position:fixed;inset:0;z-index:9000;display:none;align-items:center;justify-content:center;padding:20px;background:rgba(8,10,12,.62)}
+#ltPhu.mo{display:flex}
+#ltPhu .lt-the{width:min(360px,100%);background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:22px 20px 20px;text-align:center;box-shadow:0 30px 60px -20px rgba(0,0,0,.6)}
+#ltPhu .lt-hinh{width:132px;height:132px;margin:0 auto 6px}
+#ltPhu b{display:block;font-size:15px;color:var(--ink)}
+#ltPhu small{display:block;font-size:12.5px;color:var(--ink2);margin-top:3px;word-break:break-word}
+#ltPhu .lt-nut{display:flex;gap:8px;justify-content:center;margin-top:14px}
+#ltPhu .lt-nut:empty{display:none}
+.lt-quay{transform-origin:100px 100px;animation:ltQuay 1.1s linear infinite}
+@keyframes ltQuay{to{transform:rotate(360deg)}}
+@media (prefers-reduced-motion:reduce){.lt-quay{animation:none}}
+.lt-o{width:96px;height:96px;margin:0 auto 4px}
+.hn-xong .lt-o{width:84px;height:84px;margin:0;flex:none}
+.lt-tich{position:fixed;width:64px;height:64px;margin:-32px 0 0 -32px;z-index:8000;pointer-events:none}
+.empty.lt-trong b{display:block;color:var(--ink);font-size:15px;margin-bottom:2px}
+</style>""")
+R("""/* Fallback: tải nội dung HTML thành file */""", """/* ===== HOẠT ẢNH LOTTIE =====
+   4 hoạt ảnh tự vẽ (kpi-app/lottie/*.json, 4–9 KB). lottie-web tải từ cdnjs lần đầu cần; lỗi mạng -> bỏ qua, dùng hiệu ứng cũ.
+   Máy bật "giảm chuyển động": hiện khung cuối, đứng yên. */
+var LT_DATA=""" + LT_JSON + """;
+var LT_URL='https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.12.2/lottie_light.min.js';
+var __ltCho=[], __ltDang=false, __ltLoi=false, __ltDs=[];
+function ltNap(cb){
+  if(window.lottie){cb(true);return}
+  if(__ltLoi){cb(false);return}
+  __ltCho.push(cb); if(__ltDang)return; __ltDang=true;
+  var s=document.createElement('script'); s.src=LT_URL; s.async=true;
+  var xong=function(ok){__ltDang=false; if(!ok)__ltLoi=true; var c=__ltCho; __ltCho=[]; c.forEach(function(f){try{f(ok&&!!window.lottie)}catch(e){}})};
+  s.onload=function(){xong(true)}; s.onerror=function(){xong(false)};
+  document.head.appendChild(s);
+}
+/* Hình tĩnh thay thế khi không tải được lottie-web (mạng chặn cdnjs) */
+var LT_TINH=(function(){ var v=function(x){return '<svg viewBox="0 0 200 200" width="100%" height="100%" fill="none" stroke-linecap="round" stroke-linejoin="round">'+x+'</svg>'};
+  return {'dang-tong-hop-bao-cao':v('<circle cx="100" cy="100" r="75" stroke="#3a434b" stroke-width="6"/><circle class="lt-quay" cx="100" cy="100" r="75" stroke="#16a89d" stroke-width="6" stroke-dasharray="110 400"/><rect x="65" y="55" width="70" height="90" rx="8" stroke="#aab5bc" stroke-width="5"/><path d="M80 80h40M80 96h40M80 112h28" stroke="#2fd3c6" stroke-width="6"/>'),
+    'duyet-xong':v('<circle cx="100" cy="100" r="48" fill="#2fd3c6"/><path d="M78 101l16 16 30-32" stroke="#06201e" stroke-width="10"/>'),
+    'da-duyet-het':v('<rect x="60" y="50" width="80" height="100" rx="10" stroke="#aab5bc" stroke-width="5"/><rect x="85" y="49" width="30" height="12" rx="4" fill="#aab5bc"/><path d="M76 82l6 6 10-12M76 104l6 6 10-12M76 126l6 6 10-12" stroke="#2fd3c6" stroke-width="5"/><path d="M100 82h22M100 104h22M100 126h22" stroke="#3a434b" stroke-width="5"/>'),
+    'mat-ket-noi':v('<path d="M38 92a88 88 0 0 1 124 0M60 114a56 56 0 0 1 80 0M82 136a24 24 0 0 1 36 0" stroke="#aab5bc" stroke-width="7"/><circle cx="100" cy="150" r="7" fill="#aab5bc"/><path d="M54 60l92 92" stroke="#f26b6b" stroke-width="8"/>')}; })();
+/* Phát hoạt ảnh vào el. Trả đối tượng có .huy(). lap=true: lặp (dùng khi chờ). */
+function ltPhat(el,ten,lap,khiXong){
+  var h={a:null,huy:function(){try{if(h.a)h.a.destroy()}catch(e){} h.a=null; h.huyRoi=true}};
+  if(!el||!LT_DATA[ten])return h;
+  ltNap(function(ok){
+    if(!ok&&!h.huyRoi&&LT_TINH[ten]&&!el.firstChild) el.innerHTML=LT_TINH[ten];   // không tải được thư viện: hình tĩnh
+    if(!ok||h.huyRoi||!document.body.contains(el)){ if(khiXong)khiXong(false); return; }
+    el.innerHTML='';
+    var giam=GIAM_CD();
+    h.a=lottie.loadAnimation({container:el,renderer:'svg',loop:!!lap&&!giam,autoplay:!giam,animationData:JSON.parse(JSON.stringify(LT_DATA[ten]))});
+    if(giam) h.a.addEventListener('DOMLoaded',function(){h.a.goToAndStop(h.a.totalFrames-1,true)});
+    h.a.__el=el; __ltDs.push(h.a);
+    if(khiXong)khiXong(true);
+  });
+  return h;
+}
+/* Dọn hoạt ảnh có khung đã bị vẽ lại (tránh tốn máy) */
+function ltDon(){ __ltDs=__ltDs.filter(function(a){ if(a.__el&&document.body.contains(a.__el))return true; try{a.destroy()}catch(e){} return false; }); }
+/* Lớp phủ giữa màn hình: chờ / xong / lỗi */
+var __ltPhu=null;
+function ltKhung(){
+  var p=$('ltPhu'); if(p)return p;
+  p=document.createElement('div'); p.id='ltPhu'; p.setAttribute('role','status'); p.setAttribute('aria-live','polite');
+  p.innerHTML='<div class="lt-the"><div class="lt-hinh"></div><b></b><small></small><div class="lt-nut"></div></div>';
+  document.body.appendChild(p); return p;
+}
+function ltMo(ten,tieuDe,phu,lap,nut){
+  var p=ltKhung(); if(__ltPhu)__ltPhu.huy(); clearTimeout(ltMo._h);
+  p.querySelector('b').textContent=tieuDe||''; p.querySelector('small').textContent=phu||'';
+  var hinh=p.querySelector('.lt-hinh'); hinh.innerHTML=''; p.querySelector('.lt-nut').innerHTML=nut||'';
+  p.classList.add('mo'); __ltPhu=ltPhat(hinh,ten,lap);
+  return p;
+}
+function ltDong(){ var p=$('ltPhu'); if(p)p.classList.remove('mo'); if(__ltPhu){__ltPhu.huy();__ltPhu=null} clearTimeout(ltMo._h); }
+function ltXong(tieuDe,phu){ ltMo('duyet-xong',tieuDe,phu,false); ltMo._h=setTimeout(ltDong,1700); }
+/* Lỗi mạng (Apps Script trả "NetworkError … HTTP 0" khi rớt mạng / mạng chập chờn) */
+function laLoiMang(e){ var m=String(e&&e.message||e||''); return /NetworkError|HTTP 0|Failed to fetch|network|mạng|timed? ?out|Connection/i.test(m); }
+function ltMatMang(fn,args,cb){
+  var doc=laHamDoc_(fn);
+  ltMo('mat-ket-noi','Mất kết nối',doc?'Chưa tải được dữ liệu. Kiểm tra mạng (wifi / 4G) rồi bấm Thử lại.':'Chưa lưu được. Số bạn vừa nhập vẫn còn trên màn hình – kiểm tra mạng rồi bấm Thử lại.',true,
+    '<button class="btn" id="ltDongNut">Đóng</button><button class="btn pri" id="ltThuLai">Thử lại</button>');
+  $('ltDongNut').onclick=ltDong;
+  $('ltThuLai').onclick=function(){ ltDong(); call(fn,args,cb); };
+  setTimeout(function(){ var b=$('ltThuLai'); if(b)b.focus(); },50);
+}
+/* Nạp sẵn thư viện sau khi trang mở 4 giây, để lần dùng đầu không phải chờ */
+setTimeout(function(){ ltNap(function(){}); },4000);
+
+/* Fallback: tải nội dung HTML thành file */""")
+# lỗi mạng trong call()
+R("""    }).withFailureHandler(function(e){
+      ketThuc();
+      toast('Lỗi: '+(e&&e.message||e));
+    });
+    r[fn].apply(r,[TOKEN].concat(args));""", """    }).withFailureHandler(function(e){
+      ketThuc();
+      if(laLoiMang(e)){ ltMatMang(fn,args,cb); return; }
+      toast('Lỗi: '+(e&&e.message||e));
+    });
+    r[fn].apply(r,[TOKEN].concat(args));""")
+# duyệt xong: dấu tích Lottie tại nút (từ chối vẫn dùng dấu ✕ cũ)
+R("""  var sv=t.firstChild; sv.style.left=(r.left+r.width/2)+'px'; sv.style.top=(r.top+r.height/2)+'px';
+  document.body.appendChild(sv); setTimeout(function(){sv.remove()},950);""", """  var sv=t.firstChild; sv.style.left=(r.left+r.width/2)+'px'; sv.style.top=(r.top+r.height/2)+'px';
+  if(!tuChoi&&window.lottie){
+    var lt=document.createElement('div'); lt.className='lt-tich'; lt.style.left=sv.style.left; lt.style.top=sv.style.top;
+    document.body.appendChild(lt); var hl=ltPhat(lt,'duyet-xong',false); setTimeout(function(){hl.huy();lt.remove()},1100);
+  } else { document.body.appendChild(sv); setTimeout(function(){sv.remove()},950); }""")
+# Việc hôm nay: mọi việc đã xong
+R("""    h+='<div class="hn-xong"><svg class="hn-bi" viewBox="0 0 130 56" aria-hidden="true">'+
+      '<ellipse class="sang" cx="106" cy="30" rx="22" ry="16" fill="rgba(var(--acc-rgb),.35)"/>'+
+      '<line x1="4" y1="38.5" x2="90" y2="38.5" stroke="var(--line)" stroke-width="2" stroke-linecap="round"/>'+
+      '<ellipse class="lo" cx="106" cy="30" rx="15" ry="11"/>'+
+      '<g class="bi"><circle cx="104" cy="28" r="9" fill="#f4f1ea"/><circle cx="101" cy="25" r="3" fill="#fff" opacity=".9"/>'+
+      '<circle cx="106" cy="31" r="2.2" fill="var(--cyan)"/></g></svg>'+""", """    h+='<div class="hn-xong"><div class="lt-o" data-lt="da-duyet-het" aria-hidden="true"></div>'+""")
+# Duyệt sản lượng: không còn gì chờ
+R("""    h+='<div class="card"><div class="empty">Không có sản lượng nào đang chờ duyệt</div></div>';""",
+  """    h+='<div class="card"><div class="empty lt-trong"><div class="lt-o" data-lt="da-duyet-het" aria-hidden="true"></div><b>Đã duyệt hết</b>Không có sản lượng nào đang chờ duyệt</div></div>';""")
+# Gắn hoạt ảnh cho mọi khung [data-lt] mới vẽ (dùng bộ theo dõi #main sẵn có)
+R("""  try{hieuUngDot2(main)}catch(e){}
+  if(GIAM_CD())return;""", """  try{hieuUngDot2(main)}catch(e){}
+  try{ ltDon(); Array.prototype.forEach.call(main.querySelectorAll('[data-lt]:not([data-lt-on])'),function(el){ el.setAttribute('data-lt-on','1'); ltPhat(el,el.getAttribute('data-lt'),true); }); }catch(e){}
+  if(GIAM_CD())return;""")
 
 io.open(os.path.join(D, '..', 'Index.html'), 'w', encoding='utf-8').write(s)
 print('OK Index.html')

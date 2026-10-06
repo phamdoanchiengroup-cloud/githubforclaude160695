@@ -97,9 +97,9 @@ async function vao(b, tk, opt = {}) {
   await p.waitForTimeout(500);
   await p.screenshot({ path: OUT + 'xong-giua.png' });
   await p.waitForTimeout(1600);
-  const x = await p.evaluate(() => ({ bi: !!document.querySelector('.hn-bi .bi'), anim: getComputedStyle(document.querySelector('.hn-bi .bi')).animationName, am: window.__am }));
+  const x = await p.evaluate(() => ({ lt: (document.querySelector('.hn-xong .lt-o[data-lt="da-duyet-het"]') || {}).innerHTML || '', am: window.__am }));
   await p.screenshot({ path: OUT + 'xong.png' });
-  ok(x.bi && x.anim === 'gdVaoLo', 'mọi việc xong: bi lăn vào lỗ');
+  ok(/<svg/.test(x.lt), 'mọi việc xong: hoạt ảnh Lottie bảng kẹp (thay viên bi cũ)');
   ok(x.am === 1, 'phát tiếng "cạch" đúng 1 lần khi vừa xong việc', x.am);
   ok(p.loi.length === 0, 'không lỗi JS', p.loi);
 
