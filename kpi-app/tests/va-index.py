@@ -423,7 +423,16 @@ function taiBaoCaoUI(dang){
   var ky=$('bc_ky').value, mx=$('bc_xuong')?$('bc_xuong').value:'';
   var th='tháng '+Number(ky.slice(5))+'/'+ky.slice(0,4);
   ltMo('dang-tong-hop-bao-cao','Đang tổng hợp báo cáo '+th+'…','Khoảng 10–40 giây – đừng tắt trang',true);
+  // Quá 60 giây: cho phép đóng khung chờ (máy chủ vẫn làm tiếp, xong sẽ tự tải)
+  clearTimeout(taiBaoCaoUI._h);
+  taiBaoCaoUI._h=setTimeout(function(){
+    var p=$('ltPhu'); if(!p||!p.classList.contains('mo')||!/^Đang tổng hợp/.test(p.querySelector('b').textContent))return;
+    p.querySelector('small').textContent='Lâu hơn bình thường. Có thể đóng khung này – báo cáo xong sẽ tự tải về. Nếu quá 5 phút chưa có, thử lại sau.';
+    p.querySelector('.lt-nut').innerHTML='<button class="btn" id="bcDongCho">Đóng</button>';
+    $('bcDongCho').onclick=ltDong;
+  },60000);
   call('layBaoCaoThang',[ky,mx,dang],function(r){
+    clearTimeout(taiBaoCaoUI._h);
     if(!r||!r.ok){ltDong();toast((r&&r.msg)||'Không tạo được báo cáo');return}
     ltXong(dang==='html'?'Báo cáo đã sẵn sàng':'Đã tải báo cáo',dang==='html'?'Đang mở hộp thoại in…':r.ten);
     if(dang==='html'){
@@ -571,6 +580,7 @@ R("""    }).withFailureHandler(function(e){
     r[fn].apply(r,[TOKEN].concat(args));""", """    }).withFailureHandler(function(e){
       ketThuc();
       if(laLoiMang(e)){ ltMatMang(fn,args,cb); return; }
+      try{ ltDong(); }catch(x){}          // khung chờ (vd. đang tổng hợp báo cáo) không được che mất lời báo lỗi
       toast('Lỗi: '+(e&&e.message||e));
     });
     r[fn].apply(r,[TOKEN].concat(args));""")

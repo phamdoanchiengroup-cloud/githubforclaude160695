@@ -63,10 +63,30 @@ const svgTrong = (p, sel) => p.evaluate(s => { const e = document.querySelector(
   ok(!(await p.evaluate(() => $('ltPhu').classList.contains('mo'))), 'lớp phủ tự đóng sau 1,7 giây');
   ok(await p.evaluate(() => !!$('bc_frame')), 'vẫn mở bản in như cũ');
 
+  console.log('\n3b. Báo cáo: máy chủ báo lỗi (vd. Code.gs cũ chưa có hàm) → không được treo khung chờ');
+  await p.evaluate(() => {
+    const goc = Object.getOwnPropertyDescriptor(window.google.script, 'run').get; window.__gocRun = goc;
+    Object.defineProperty(window.google.script, 'run', { configurable: true, get() {
+      let loi = () => {}; const px = new Proxy({}, { get(_, t) {
+        if (t === 'withSuccessHandler') return () => px; if (t === 'withFailureHandler') return f => (loi = f, px);
+        return () => setTimeout(() => loi(new Error('Script function not found: layBaoCaoThang')), 300);
+      } }); return px; } });
+  });
+  await p.click('button:has-text("Tải PDF")'); await p.waitForTimeout(1200);
+  ok(!(await p.evaluate(() => $('ltPhu').classList.contains('mo'))) && /Script function not found/.test(await p.textContent('#toast')), 'lỗi máy chủ: khung chờ đóng, hiện rõ lời báo lỗi', await p.textContent('#toast'));
+  await p.evaluate(() => Object.defineProperty(window.google.script, 'run', { configurable: true, get: window.__gocRun }));
+  // chậm quá 60 giây: hiện nút Đóng
+  await p.evaluate(() => { window.__st = window.setTimeout; window.setTimeout = (f, ms, ...a) => window.__st(f, ms >= 60000 ? 50 : ms, ...a);
+    const goc = window.__gocRun; Object.defineProperty(window.google.script, 'run', { configurable: true, get() { const px = new Proxy({}, { get(_, t) { return (t === 'withSuccessHandler' || t === 'withFailureHandler') ? () => px : () => {}; } }); return px; } }); });
+  await p.click('button:has-text("Tải PDF")'); await p.waitForTimeout(500);
+  ok(await p.evaluate(() => !!$('bcDongCho') && /Lâu hơn bình thường/.test($('ltPhu').querySelector('small').textContent)), 'chờ quá lâu: có nút Đóng và lời giải thích');
+  await p.click('#bcDongCho'); ok(!(await p.evaluate(() => $('ltPhu').classList.contains('mo'))), 'nút Đóng đóng khung chờ');
+  await p.evaluate(() => { window.setTimeout = window.__st; Object.defineProperty(window.google.script, 'run', { configurable: true, get: window.__gocRun }); });
+
   console.log('\n4. Mất kết nối → Thử lại');
   await p.evaluate(() => {
     const goc = Object.getOwnPropertyDescriptor(window.google.script, 'run').get; window.__hong = 1; window.__goi = 0;
-    Object.defineProperty(window.google.script, 'run', { get() {
+    Object.defineProperty(window.google.script, 'run', { configurable: true, get() {
       const r = goc(); if (!window.__hong) return r;
       let loi = () => {}; const px = new Proxy({}, { get(_, t) {
         if (t === 'withSuccessHandler') return () => px; if (t === 'withFailureHandler') return f => (loi = f, px);
