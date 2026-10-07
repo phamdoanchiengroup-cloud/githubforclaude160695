@@ -5679,11 +5679,13 @@ function layBaoCaoThang(token, ky, maXuong, dang) {
 }
 
 /* Danh sách người nhận (sheet NguoiNhanBaoCao). Trả {tong:[email], xuong:{MaXuong:[email]}} */
+var BC_EMAIL_MAU = 'email-ban-giam-doc@vidu.com';
 function bcNguoiNhan_() {
   var o = { tong:[], xuong:{} };
   docAnToan_(BC_SHEET_NHAN).forEach(function(r){
     var em = String(r.Email || '').trim(), loai = String(r.NhanBaoCao || '').trim().toUpperCase();
     if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(em)) return;
+    if (em.toLowerCase() === BC_EMAIL_MAU) return;   // dòng mẫu do TAO_SHEET_NGUOI_NHAN_BAO_CAO tạo, chưa thay email thật
     if (loai === 'TOAN_NHA_MAY' || loai === 'TAT_CA' || !loai) o.tong.push(em);
     if (loai === 'TAT_CA') o.tatCa = (o.tatCa || []).concat(em);
     else if (loai && loai !== 'TOAN_NHA_MAY') (o.xuong[String(r.NhanBaoCao).trim()] = o.xuong[String(r.NhanBaoCao).trim()] || []).push(em);
@@ -5738,7 +5740,7 @@ function TAO_SHEET_NGUOI_NHAN_BAO_CAO() {
   if (!sh) {
     sh = ss.insertSheet(BC_SHEET_NHAN);
     sh.appendRow(['Email', 'NhanBaoCao', 'GhiChu']);
-    sh.appendRow(['email-ban-giam-doc@vidu.com', 'TOAN_NHA_MAY', 'Thay bằng email thật. Xóa dòng mẫu này nếu không dùng.']);
+    sh.appendRow([BC_EMAIL_MAU, 'TOAN_NHA_MAY', 'Thay bằng email thật. Xóa dòng mẫu này nếu không dùng.']);
     sh.setFrozenRows(1);
   }
   Logger.log('Sheet ' + BC_SHEET_NHAN + ' đã sẵn sàng. Mã xưởng dùng được: ' + doc_('PhongBan').map(function(p){ return p.MaXuong + ' (' + p.TenXuong + ')'; }).join(', '));

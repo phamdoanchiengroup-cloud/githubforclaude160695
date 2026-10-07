@@ -59,6 +59,8 @@ console.log('\n3. Gửi tự động khi chốt tháng');
 const c2 = G.tao(MOI, duLieu(), '2026-10-03T23:00:00+07:00');
 c2.TAO_SHEET_NGUOI_NHAN_BAO_CAO();
 const shN = c2.SpreadsheetApp.getActiveSpreadsheet().getSheetByName('NguoiNhanBaoCao');
+ok(c2.bcNguoiNhan_().tong.length === 0, 'dòng email mẫu chưa thay thì không gửi tới đó');
+for (const k in c2.__DOC_CACHE) delete c2.__DOC_CACHE[k];   // mỗi lần chạy Apps Script là bộ nhớ tạm mới
 const mxA = xs[0];
 shN.getRange(2, 1, 4, 3).setValues([['bgd@vidu.com', 'TOAN_NHA_MAY', ''], ['tp@vidu.com', mxA, ''], ['hr@vidu.com', 'TAT_CA', ''], ['sai-email', 'TOAN_NHA_MAY', '']]);
 const nhan = c2.bcNguoiNhan_();
