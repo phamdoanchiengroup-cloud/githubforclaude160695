@@ -728,5 +728,9 @@ R("""      fills.forEach(function(el){
         fills.forEach(function(el,i){ el.style.width = finals[i]; el.removeAttribute('data-w'); });
       });});""")
 
+
+# 12) NHÂN VẬT MAI (08/10): chào mỗi ngày, khẩu hiệu của ngày, hướng dẫn công nhân, đọc lại trước khi gửi, khen, động viên KPI, nhắc nghỉ.
+exec(io.open(os.path.join(D, 'mai', 'va-mai.py'), encoding='utf-8').read())
+
 io.open(os.path.join(D, '..', 'Index.html'), 'w', encoding='utf-8').write(s)
 print('OK Index.html')

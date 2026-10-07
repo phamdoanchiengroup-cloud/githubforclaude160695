@@ -159,6 +159,7 @@ const svgTrong = (p, sel) => p.evaluate(s => { const e = document.querySelector(
   p = await vao(b, 'c068');
   await p.evaluate(() => go('cnnhap')); await p.waitForTimeout(1500);
   const cdCN = await p.evaluate(() => { const c = (D.congdoan || []).find(c => c.MaXuong === ME.xuong && String(c.TrangThai || '').indexOf('Ngừng') < 0); if (!c) return null; cnRows = [{ MaCD: c.MaCD, SoLuongLamRa: 10, SoLoi: 0 }]; cnGui(); return c.MaCD; });
+  await p.waitForSelector('#maiGui', { timeout: 5000 }); await p.click('#maiGui');   // Mai đọc lại trước khi gửi
   x = await choPhu(p, /chờ trưởng phòng duyệt/);
   ok(cdCN && x.mo && x.svg > 3, 'công nhân gửi: phiếu vào khay + đồng hồ chờ', [cdCN, x, await p.textContent('#toast')]);
   ok(!p.loi.length, 'không lỗi trang', p.loi);

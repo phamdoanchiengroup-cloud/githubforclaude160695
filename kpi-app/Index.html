@@ -1000,6 +1000,67 @@ html[data-gd="sang"] #nav .dem:not(.do){background:var(--amber)}
 .hn-xong .lt-o{width:84px;height:84px;margin:0;flex:none}
 .lt-tich{position:fixed;width:64px;height:64px;margin:-32px 0 0 -32px;z-index:8000;pointer-events:none}
 .empty.lt-trong b{display:block;color:var(--ink);font-size:15px;margin-bottom:2px}
+/* ===== MAI – nhân vật hướng dẫn / cổ vũ (SVG tự vẽ, tests/mai/mai-chibi.js) ===== */
+.mai .duoi{transform-origin:104px 34px;animation:maiDuoi 2.4s ease-in-out infinite}
+@keyframes maiDuoi{0%,100%{transform:rotate(-8deg)}50%{transform:rotate(10deg)}}
+.mai .than-tren{transform-origin:100px 256px;animation:maiTho 3.2s ease-in-out infinite}
+@keyframes maiTho{50%{transform:translateY(1.6px) scaleY(.995)}}
+.mai .mat-g{transform-box:fill-box;transform-origin:center;animation:maiChop 4.2s infinite}
+@keyframes maiChop{0%,92%,100%{transform:scaleY(1)}95%{transform:scaleY(.08)}}
+.mai .mieng-mo{display:none}
+.mai.noi .mieng-mo{display:inline;animation:maiNoi .28s steps(2) infinite}
+.mai.noi .mieng-cuoi{animation:maiNoi2 .28s steps(2) infinite}
+@keyframes maiNoi{0%{opacity:1}100%{opacity:0}}@keyframes maiNoi2{0%{opacity:0}100%{opacity:1}}
+.mai .mo-hoi,.mai .lap-lanh,.mai .may-lo{display:none}
+.mai.lo .mo-hoi,.mai.lo .may-lo{display:inline}.mai.lo .may-vui{display:none}
+.mai.vui .lap-lanh{display:inline}
+.mai .tay-chi{transform-origin:128px 180px;transition:transform .4s}
+.mai .ngon{display:none}.mai.chi .ngon{display:inline}
+.mai.chi .tay-chi{transform:rotate(-70deg)}
+.mai.covu .tay-chi{transform:rotate(-142deg)}
+.mai.vay .tay-chi{animation:maiVay 1s ease-in-out infinite}
+@keyframes maiVay{0%,100%{transform:rotate(-128deg)}50%{transform:rotate(-156deg)}}
+.mai .lap-lanh path{animation:maiLap 1.2s ease-in-out infinite;transform-box:fill-box;transform-origin:center}
+@keyframes maiLap{50%{transform:scale(.4);opacity:.4}}
+/* lời Mai ở góc màn hình (chào, nhắc nghỉ, khen) */
+#maiGoc{position:fixed;right:16px;bottom:16px;z-index:8500;display:flex;align-items:flex-end;width:min(400px,calc(100vw - 20px));transform:translateY(150%);transition:transform .5s cubic-bezier(.3,1.25,.4,1);pointer-events:none}
+#maiGoc.hien{transform:none}
+#maiGoc svg{width:92px;height:124px;flex:none;margin-right:-16px;position:relative;z-index:1}
+#maiGoc .bb{flex:1;background:var(--panel);border:1.5px solid rgba(var(--acc-rgb),.5);border-radius:14px;padding:9px 28px 10px 22px;box-shadow:0 14px 30px rgba(0,0,0,.35);pointer-events:auto;position:relative;color:var(--ink);font-size:13px}
+#maiGoc .bb small{display:block;color:var(--ink3);font-size:11.5px}
+#maiGoc .bb .kh{font-weight:650;font-size:14px;line-height:1.4;margin:2px 0 4px}
+#maiGoc .bb .kh b{color:var(--cyan)}
+#maiGoc .x{position:absolute;top:3px;right:6px;background:none;border:0;color:var(--ink3);font-size:17px;cursor:pointer;line-height:1}
+.mai-chuoi{display:flex;gap:3px;margin-top:4px}.mai-chuoi i{width:16px;height:16px;border-radius:5px;background:var(--line);font:600 9px/16px sans-serif;text-align:center;font-style:normal;color:var(--ink3)}
+.mai-chuoi i.co{background:rgba(var(--acc-rgb),.25);color:var(--cyan)}
+/* dải khẩu hiệu của ngày */
+.mai-bang{display:flex;align-items:center;gap:10px;padding:4px 12px 0 4px;border-radius:12px;background:linear-gradient(100deg,rgba(var(--acc-rgb),.10),rgba(var(--acc-rgb),.02) 60%);border:1px solid rgba(var(--acc-rgb),.25);overflow:hidden;margin:0 0 14px}
+.mai-bang svg{width:58px;height:72px;flex:none;align-self:flex-end;margin-bottom:-3px}
+.mai-bang .nd{flex:1;padding:4px 0 8px}.mai-bang .kh{font-weight:650;font-size:14px;line-height:1.4}.mai-bang .kh b{color:var(--cyan)}
+.mai-bang small{color:var(--ink3);font-size:11px}
+.mai-chip{display:inline-block;font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:1px 8px;border-radius:99px;margin-right:6px}
+.mc-at{background:rgba(242,107,107,.15);color:#f08a8a}.mc-cl{background:rgba(var(--acc-rgb),.14);color:var(--cyan)}.mc-ns{background:rgba(240,176,78,.15);color:#d99a3a}
+.mc-5s{background:rgba(160,140,255,.15);color:#9a88e6}.mc-dd{background:rgba(74,222,128,.13);color:#3fb36a}.mc-sk{background:rgba(120,190,255,.14);color:#5a9fe0}
+/* hướng dẫn rọi sáng + hộp đọc lại */
+#maiTour{position:fixed;inset:0;z-index:8800;display:none}
+#maiTour.mo{display:block}
+#maiTour .ro{position:fixed;border-radius:10px;box-shadow:0 0 0 3000px rgba(6,8,10,.66);transition:all .4s cubic-bezier(.3,1,.4,1);pointer-events:none}
+#maiTour .ro::after{content:'';position:absolute;inset:-4px;border-radius:12px;border:2px solid var(--cyan);animation:maiRo 1.6s ease-in-out infinite}
+@keyframes maiRo{50%{inset:-9px;opacity:.35}}
+#maiTour .ro.toan{box-shadow:0 0 0 3000px rgba(6,8,10,.55)}#maiTour .ro.toan::after{display:none}
+#maiTour .vn,#maiHop .vn{position:fixed;left:50%;transform:translateX(-50%);bottom:14px;width:min(560px,calc(100vw - 16px));display:flex;align-items:flex-end}
+#maiTour .vn svg,#maiHop .vn svg{width:120px;height:162px;flex:none;margin-right:-24px;margin-bottom:-6px;position:relative;z-index:1}
+.mai-thoai{flex:1;position:relative;background:var(--panel);border:1.5px solid rgba(var(--acc-rgb),.55);border-radius:16px;padding:14px 12px 10px 30px;min-height:126px;box-shadow:0 14px 34px rgba(0,0,0,.5);color:var(--ink)}
+.mai-thoai .ten{position:absolute;top:-11px;left:30px;background:var(--cyan);color:#06201e;font-weight:700;font-size:11px;padding:2px 10px;border-radius:99px}
+.mai-thoai .loi{font-size:14px;line-height:1.5;min-height:60px}
+.mai-thoai .loi b{color:var(--cyan)}.mai-thoai .loi .do{color:var(--red);font-weight:650}.mai-thoai .loi .vang{color:var(--amber);font-weight:650}
+.mai-thoai .dk{display:flex;align-items:center;gap:6px;margin-top:8px}.mai-thoai .dk .buoc{font-size:11px;color:var(--ink3);margin-right:auto}
+.mai-tom{margin:6px 0 2px;font-size:13px;background:rgba(0,0,0,.18);border-radius:10px;padding:6px 9px}
+.mai-tom div{display:flex;justify-content:space-between;gap:10px;padding:2px 0}
+.mai-tom .tong{border-top:1px solid var(--line);margin-top:3px;padding-top:4px;color:var(--ink2)}
+#maiHop{position:fixed;inset:0;z-index:8900;background:rgba(6,8,10,.55);display:none}#maiHop.mo{display:block}
+@media(max-width:900px){#maiGoc{bottom:76px;right:6px}.mai-thoai .dk{flex-wrap:wrap}.mai-thoai .dk .buoc{width:100%;margin:0 0 2px}.mai-thoai .dk .btn{flex:1}.mai-thoai .loi{font-size:13.5px}#maiTour .vn,#maiHop .vn{bottom:72px}#maiTour .vn svg,#maiHop .vn svg{width:96px;height:130px}}
+@media (prefers-reduced-motion:reduce){.mai *,#maiTour .ro::after{animation:none!important}#maiGoc,#maiTour .ro{transition:none!important}}
 </style>
 </head>
 <body>
@@ -1136,6 +1197,7 @@ html[data-gd="sang"] #nav .dem:not(.do){background:var(--amber)}
       <span class="badge" id="hbadge"></span>
       <div class="hwho"><b id="hten"></b><span id="hmail"></span></div>
       <button class="btn sm hgd" id="btnGD" onclick="gdDoi()" title="Đổi nền sáng / tối"></button>
+      <button class="btn sm hgd" id="btnMai" onclick="maiDoi()" title="Tắt nhân vật Mai">🙂 Mai</button>
       <button class="btn sm hhelp" onclick="go('hd')" title="Hướng dẫn sử dụng">?</button>
       <button class="btn sm" onclick="moDoiMK()">Đổi mật khẩu</button>
       <button class="btn sm dg" onclick="logout()">Thoát</button>
@@ -1567,6 +1629,7 @@ function vHomNay(){
   var h='<div class="hn-dau"><div><div class="hn-ngay">'+thu+' · '+dmy(hn)+'</div>'+
     '<div class="ptitle">Việc hôm nay</div>'+
     '<div class="hn-tom">'+(gap?('Có <b>'+gap+'</b> việc cần bạn xử lý.'):'Không có việc gấp.')+' '+esc(ME.tenXuong||'Toàn nhà máy')+'</div></div></div>';
+  try{ h+=maiBang(); }catch(e){}
   var tong=v.length, vuaXong=(__hnTruocTong!==null&&__hnTruocTong>0&&tong===0);
   __hnTruocTong=tong;
   if(!v.length){
@@ -1930,6 +1993,7 @@ function vaoHeThong(){
     $('hmail').textContent='@'+ME.tk;
     $('hsub').textContent=ME.tenXuong||'Toàn nhà máy';
     buildNav();
+    try{ maiNut(); maiKhoiDong(); }catch(e){}
   }).withFailureHandler(function(e){
     $('gspin').classList.add('hide');
     lerr('Lỗi: '+(e.message||e));
@@ -3826,7 +3890,7 @@ function taiBaoCaoUI(dang){
   // Quá 60 giây: cho phép đóng khung chờ (máy chủ vẫn làm tiếp, xong sẽ tự tải)
   clearTimeout(taiBaoCaoUI._h);
   taiBaoCaoUI._h=setTimeout(function(){
-    var p=$('ltPhu'); if(!p||!p.classList.contains('mo'))return;
+    var p=$('ltPhu'); if(!p||!p.classList.contains('mo')||!/^Đang tổng hợp/.test(p.querySelector('b').textContent))return;
     p.querySelector('small').textContent='Lâu hơn bình thường. Có thể đóng khung này – báo cáo xong sẽ tự tải về. Nếu quá 5 phút chưa có, thử lại sau.';
     p.querySelector('.lt-nut').innerHTML='<button class="btn" id="bcDongCho">Đóng</button>';
     $('bcDongCho').onclick=ltDong;
@@ -3939,6 +4003,226 @@ function ltMatMang(fn,args,cb){
 }
 /* Nạp sẵn thư viện sau khi trang mở 4 giây, để lần dùng đầu không phải chờ */
 setTimeout(function(){ ltNap(function(){}); },4000);
+
+
+/* ===== MAI – nhân vật hướng dẫn / cổ vũ =====
+   Chào mỗi ngày, khẩu hiệu của ngày, hướng dẫn công nhân lần đầu, đọc lại trước khi gửi, khen sau khi gửi,
+   động viên theo hạng KPI, nhắc nghỉ giữa ca. Ai không thích bấm nút "Mai" ở đầu trang để tắt (máy nhớ). */
+var MAI_SVG=''+
+'<defs>'+
+ '<linearGradient id="gToc" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#4a3530"/><stop offset=".6" stop-color="#2a1d1a"/><stop offset="1" stop-color="#1c1312"/></linearGradient>'+
+ '<linearGradient id="gMong" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3b2016"/><stop offset=".5" stop-color="#9a5a32"/><stop offset="1" stop-color="#f2b46a"/></linearGradient>'+
+ '<linearGradient id="gAo" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2f4a5e"/><stop offset="1" stop-color="#1d2f3d"/></linearGradient>'+
+ '<linearGradient id="gDa" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff0e6"/><stop offset="1" stop-color="#ffe0d0"/></linearGradient>'+
+ '<radialGradient id="gMa" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="#ff7d96" stop-opacity=".55"/><stop offset="1" stop-color="#ff7d96" stop-opacity="0"/></radialGradient>'+
+'</defs>'+
+/* sợi tóc "ăng-ten" trên đỉnh đầu – đung đưa */
+'<g class="duoi"><path d="M100 34c-2-14 6-24 18-26-8 6-12 14-10 26z" fill="#2a1d1a"/></g>'+
+'<g class="than-tren">'+
+/* tóc sau (bob ngang cằm) */
+'<path d="M28 120c-6-60 26-94 72-94s78 34 72 94c-2 20-8 34-16 42-8-10-12-24-13-38H57c-1 14-5 28-13 38-8-8-14-22-16-42z" fill="url(#gToc)"/>'+
+/* chân + giày */
+'<rect x="80" y="232" width="15" height="24" rx="7" fill="#22303c"/><rect x="105" y="232" width="15" height="24" rx="7" fill="#22303c"/>'+
+'<path d="M74 256c0-7 6-10 13-10h8v14H77c-2 0-3-2-3-4z" fill="#f4f7f8"/><path d="M126 256c0-7-6-10-13-10h-8v14h18c2 0 3-2 3-4z" fill="#f4f7f8"/>'+
+'<path d="M76 258h19M105 258h19" stroke="#2fd3c6" stroke-width="2.5" stroke-linecap="round"/>'+
+/* thân: áo khoác thể thao, áo thun trắng bên trong */
+'<path d="M66 238c0-38 12-66 34-70 22 4 34 32 34 70z" fill="url(#gAo)"/>'+
+'<path d="M88 168l12 24 12-24z" fill="#f4f7f8"/>'+
+'<path d="M86 168l14 26 14-26" fill="none" stroke="#2fd3c6" stroke-width="4" stroke-linejoin="round"/>'+
+'<path d="M100 194v44" stroke="#14212c" stroke-width="2"/>'+
+'<path d="M68 222h64" stroke="#2fd3c6" stroke-width="2" opacity=".55"/>'+
+'<rect x="106" y="200" width="20" height="11" rx="2.5" fill="#eef2f4"/><rect x="106" y="200" width="20" height="3" rx="1.5" fill="#2fd3c6"/>'+
+'<text x="116" y="209.4" text-anchor="middle" font-size="6.2" font-weight="700" fill="#1d2a33" font-family="Arial,sans-serif">MAI</text>'+
+/* tay trái */
+'<path d="M72 180c-8 10-12 22-12 34" stroke="#2f4a5e" stroke-width="13" fill="none" stroke-linecap="round"/>'+
+'<rect x="53" y="208" width="14" height="6" rx="3" fill="#2fd3c6"/><circle cx="60" cy="219" r="6.5" fill="#ffe6d8"/>'+
+/* tay phải: chỉ / cổ vũ */
+'<g class="tay-chi"><path d="M128 180c8 10 12 22 12 34" stroke="#2f4a5e" stroke-width="13" fill="none" stroke-linecap="round"/>'+
+ '<rect x="133" y="208" width="14" height="6" rx="3" fill="#2fd3c6"/><circle cx="140" cy="219" r="6.5" fill="#ffe6d8"/>'+
+ '<path class="ngon" d="M140 220l1 10" stroke="#ffe6d8" stroke-width="4.5" stroke-linecap="round"/></g>'+
+/* cổ */
+'<path d="M92 156h16v14c-4 3-12 3-16 0z" fill="#f6d2c0"/>'+
+/* mặt chibi tròn, cằm nhọn nhẹ */
+'<path d="M44 108c0-34 24-56 56-56s56 22 56 56c0 26-12 44-30 52-9 4-17 6-26 6s-17-2-26-6c-18-8-30-26-30-52z" fill="url(#gDa)"/>'+
+/* má hồng */
+'<ellipse cx="66" cy="132" rx="12" ry="7" fill="url(#gMa)"/><ellipse cx="134" cy="132" rx="12" ry="7" fill="url(#gMa)"/>'+
+/* mắt trái */
+'<g class="mat-g"><ellipse cx="76" cy="114" rx="14" ry="17" fill="#fff"/><ellipse cx="76" cy="117" rx="12" ry="14.5" fill="url(#gMong)"/>'+
+ '<ellipse cx="76" cy="118" rx="5.5" ry="7.5" fill="#24120c"/><ellipse cx="70.5" cy="109" rx="4.4" ry="5.6" fill="#fff"/><circle cx="81" cy="124" r="2.4" fill="#fff" opacity=".9"/><circle cx="73" cy="126" r="1.2" fill="#fff" opacity=".7"/>'+
+ '<path d="M60 110c2-11 9-17 17-17 8 0 14 4 16 10" stroke="#20140f" stroke-width="3.6" fill="none" stroke-linecap="round"/><path d="M61 108l-6-3M62 112l-5 0" stroke="#20140f" stroke-width="2.2" stroke-linecap="round"/>'+
+ '<path d="M69 132c4 1.5 9 1.5 13 0" stroke="#c48d7a" stroke-width="1.3" fill="none" stroke-linecap="round" opacity=".7"/></g>'+
+/* mắt phải */
+'<g class="mat-g"><ellipse cx="124" cy="114" rx="14" ry="17" fill="#fff"/><ellipse cx="124" cy="117" rx="12" ry="14.5" fill="url(#gMong)"/>'+
+ '<ellipse cx="124" cy="118" rx="5.5" ry="7.5" fill="#24120c"/><ellipse cx="118.5" cy="109" rx="4.4" ry="5.6" fill="#fff"/><circle cx="129" cy="124" r="2.4" fill="#fff" opacity=".9"/><circle cx="121" cy="126" r="1.2" fill="#fff" opacity=".7"/>'+
+ '<path d="M140 110c-2-11-9-17-17-17-8 0-14 4-16 10" stroke="#20140f" stroke-width="3.6" fill="none" stroke-linecap="round"/><path d="M139 108l6-3M138 112l5 0" stroke="#20140f" stroke-width="2.2" stroke-linecap="round"/>'+
+ '<path d="M118 132c4 1.5 9 1.5 13 0" stroke="#c48d7a" stroke-width="1.3" fill="none" stroke-linecap="round" opacity=".7"/></g>'+
+/* mũi + miệng */
+'<path d="M100 128l-1.2 3h2.4" stroke="#e3a690" stroke-width="1.2" fill="none" stroke-linecap="round"/>'+
+'<path class="mieng-cuoi" d="M92 138c3 4 6 4 8 1.5 2 2.5 5 2.5 8-1.5" stroke="#b8405a" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>'+
+'<g class="mieng-mo"><path d="M93 136c1.5 9 12.5 9 14 0z" fill="#8f2a42"/><path d="M96 142c2.5 1.6 5.5 1.6 8 0" stroke="#ff8fa3" stroke-width="2.6" stroke-linecap="round"/></g>'+
+/* tóc mái lệch (giống ảnh: rẽ ngôi, quét sang một bên) */
+'<path d="M38 116C34 64 62 32 102 32c40 0 66 30 60 80Q156 92 150 82Q150 94 144 102Q140 86 130 76Q128 92 120 100Q118 82 106 72Q102 88 92 98Q92 82 84 74Q76 90 62 100Q66 88 64 78Q50 94 38 116z" fill="url(#gToc)"/>'+
+'<path d="M58 62c14-14 36-20 58-14" stroke="#7a5a50" stroke-width="5" fill="none" stroke-linecap="round" opacity=".6"/>'+
+'<path d="M120 46c10 4 18 12 22 22" stroke="#7a5a50" stroke-width="3" fill="none" stroke-linecap="round" opacity=".45"/>'+
+/* tóc hai bên ôm má, ngang cằm */
+'<path d="M42 104c-8 26-6 50 6 64 4-6 6-14 6-24 0-14-4-28-12-40z" fill="url(#gToc)"/><path d="M158 104c8 26 6 50-6 64-4-6-6-14-6-24 0-14 4-28 12-40z" fill="url(#gToc)"/>'+
+/* khuyên tai tròn nhỏ */
+'<circle cx="47" cy="140" r="3.2" fill="none" stroke="#e8c27a" stroke-width="1.6"/><circle cx="153" cy="140" r="3.2" fill="none" stroke="#e8c27a" stroke-width="1.6"/>'+
+/* kẹp tóc cyan */
+'<g transform="rotate(-24 134 66)"><rect x="124" y="62" width="20" height="6" rx="3" fill="#2fd3c6"/><circle cx="127.5" cy="65" r="1.8" fill="#eafffd"/></g>'+
+/* lông mày (vẽ đè lên tóc mái như anime) */
+'<g class="may-vui" stroke="#3a2622" stroke-width="2.2" fill="none" stroke-linecap="round" opacity=".85"><path d="M66 90c5-3 11-3 16-1"/><path d="M118 89c5-2 11-2 16 1"/></g>'+
+'<g class="may-lo" stroke="#3a2622" stroke-width="2.2" fill="none" stroke-linecap="round" opacity=".85"><path d="M66 92c6 0 11-2 16-6"/><path d="M134 92c-6 0-11-2-16-6"/></g>'+
+/* mồ hôi + lấp lánh */
+'<path class="mo-hoi" d="M152 78c4 6 6 10 3 13s-8 0-7-4 2-6 4-9z" fill="#9fe3ff" stroke="#5ab8e0" stroke-width="1"/>'+
+'<g class="lap-lanh" fill="#f0b04e"><path d="M22 70l3 7 7 3-7 3-3 7-3-7-7-3 7-3z"/><path d="M176 40l2 5 5 2-5 2-2 5-2-5-5-2 5-2z" style="animation-delay:.4s"/><path d="M170 150l1.5 4 4 1.5-4 1.5-1.5 4-1.5-4-4-1.5 4-1.5z" style="animation-delay:.8s"/></g>'+
+'</g>';
+function maiTat(){try{return localStorage.getItem('kpi_mai')==='tat'}catch(e){return false}}
+function maiNho(k,v){try{if(v===undefined)return localStorage.getItem(k);localStorage.setItem(k,v)}catch(e){return null}}
+function maiHinh(cls){return '<svg class="mai '+(cls||'')+'" viewBox="0 0 200 270" aria-hidden="true">'+MAI_SVG+'</svg>'}
+function maiTen(){var t=String(ME&&ME.ten||'').trim().split(/\s+/);return t[t.length-1]||'bạn'}
+var MAI_CD={at:['An toàn','mc-at'],cl:['Chất lượng','mc-cl'],ns:['Năng suất','mc-ns'],'5s':['5S – Gọn gàng','mc-5s'],dd:['Đồng đội','mc-dd'],sk:['Sức khỏe','mc-sk']};
+var MAI_KH={
+  at:['An toàn là trên hết – <b>về nhà bình an</b> mới là thắng lợi!','Đồ bảo hộ đeo đủ, <b>ca làm yên tâm</b>!','Máy kêu lạ? <b>Dừng lại, báo ngay</b> – không sao cả!','Một phút cẩn thận, <b>cả đời bình an</b>.','Thấy nguy hiểm – <b>nhắc nhau một câu</b>, cứu nhau một lần.'],
+  cl:['Làm <b>đúng ngay từ đầu</b>, khỏi phải làm lại!','Một sản phẩm đẹp – <b>trăm khách hàng vui</b>!','Kiểm tra kỹ một giây, <b>đỡ lo cả ngày</b>.','Không nhận lỗi – không làm lỗi – <b>không giao lỗi</b>.','Hàng mình làm ra, <b>mình tự hào</b>!'],
+  ns:['Từng cái một, <b>cuối ca thành nghìn</b>!','Hôm nay hơn hôm qua một chút là <b>đủ giỏi rồi</b>!','Nhịp tay đều, <b>năng suất lên đều</b>.','Chuẩn bị kỹ đầu ca, <b>làm nhanh cả ngày</b>.','Mỗi phút không chờ việc là <b>một phút ra hàng</b>.'],
+  '5s':['Chỗ làm gọn gàng – <b>tay làm nhanh nhẹn</b>!','Dụng cụ đúng chỗ, <b>không mất công tìm</b>.','Sạch máy, <b>máy bền</b> – sạch chỗ, <b>người khỏe</b>.','Cuối ca 5 phút dọn dẹp, <b>đầu ca vào việc ngay</b>.'],
+  dd:['Một người khỏe, cả tổ vui – <b>cả xưởng mạnh</b>!','Giúp nhau một tay, <b>cả ca về sớm</b>.','Biết cách hay – <b>chỉ cho nhau</b>, cùng tiến bộ!','Tổ đồng lòng, <b>việc khó cũng xong</b>.'],
+  sk:['Làm hết sức – <b>nghỉ hết mình</b>!','Uống đủ nước, <b>tay chân dẻo dai</b>.','Ngủ đủ giấc, <b>ca làm tỉnh táo</b>.','Mệt thì nói – <b>sức khỏe bạn quan trọng nhất</b>.']};
+var MAI_THU=['at','cl','ns','5s','dd','sk'];
+/* Khẩu hiệu của ngày: cùng một ngày cả nhà máy thấy cùng một câu; ngày sau đổi chủ đề */
+function maiKhNgay(dStr){var p=String(dStr||today()).split('-'),n=Math.floor(Date.UTC(+p[0],+p[1]-1,+p[2])/864e5),cd=MAI_THU[((n%6)+6)%6],ds=MAI_KH[cd];return {cd:cd,cau:ds[Math.floor(n/6)%ds.length]}}
+function maiChip(cd){return '<span class="mai-chip '+MAI_CD[cd][1]+'">'+MAI_CD[cd][0]+'</span>'}
+function maiBang(){
+  if(maiTat())return '';
+  var k=maiKhNgay();
+  return '<div class="mai-bang">'+maiHinh('vui')+'<div class="nd">'+maiChip(k.cd)+'<small>Khẩu hiệu hôm nay · Mai</small><div class="kh">'+k.cau+'</div></div></div>';
+}
+/* Lời Mai ở góc màn hình */
+function maiBan(){var a=$('maiTour'),b=$('maiHop');return !!((a&&a.classList.contains('mo'))||(b&&b.classList.contains('mo')))}
+function maiGoc(nho,kh,phu,cls,ms){
+  if(maiTat()||maiBan())return false;
+  var g=$('maiGoc');
+  if(!g){g=document.createElement('div');g.id='maiGoc';g.setAttribute('role','status');document.body.appendChild(g);}
+  g.innerHTML=maiHinh(cls||'vui')+'<div class="bb"><button class="x" aria-label="Đóng" onclick="maiGocDong()">×</button><small>'+nho+'</small><div class="kh">'+kh+'</div>'+(phu||'')+'</div>';
+  g.classList.remove('hien'); void g.offsetWidth; g.classList.add('hien');
+  clearTimeout(maiGoc._h); maiGoc._h=setTimeout(maiGocDong,ms||6500);
+  return true;
+}
+function maiGocDong(){var g=$('maiGoc');if(g)g.classList.remove('hien');clearTimeout(maiGoc._h)}
+/* Chào mỗi ngày (lần đầu mở web trong ngày) */
+function maiChao(){
+  if(maiTat()||!ME)return;
+  var khoa='kpi_mai_chao_'+ME.tk; if(maiNho(khoa)===today())return;
+  if(maiBan()){ if(!maiChao._lai){maiChao._lai=1;setTimeout(maiChao,20000);} return; }   // đang hướng dẫn: chào sau
+  maiNho(khoa,today());
+  var g=new Date().getHours(), b=g<11?'☀ Chào buổi sáng':g<18?'🌤 Chào buổi chiều':'🌙 Chào ca tối', k=maiKhNgay();
+  maiGoc(b+', '+esc(maiTen())+'!', k.cau, maiChip(k.cd), 'vay vui', 6500);
+}
+/* Nhắc nghỉ giữa ca 10:00 và 15:00 (mỗi mốc một lần/ngày) */
+function maiNghi(){
+  if(maiTat()||!ME)return;
+  var d=new Date(),g=d.getHours(); if(!(g===10||g===15)||d.getMinutes()>=30)return;
+  var khoa='kpi_mai_nghi_'+g; if(maiNho(khoa)===today()||maiBan())return; maiNho(khoa,today());
+  var ds=MAI_KH.sk; maiGoc('Mai nhắc giữa ca · '+g+':00','Uống ngụm nước, nhìn xa 20 giây cho mắt nghỉ nhé!',ds[d.getDate()%ds.length].replace(/<\/?b>/g,''),'vui',10000);
+}
+function maiKhoiDong(){ setTimeout(maiChao,1400); if(!maiKhoiDong._t){ maiKhoiDong._t=setInterval(maiNghi,60000); setTimeout(maiNghi,5000); } }
+/* Nút bật/tắt Mai ở đầu trang */
+function maiNut(){var b=$('btnMai');if(b){b.textContent=maiTat()?'Mai: tắt':'🙂 Mai';b.title=maiTat()?'Bật lại nhân vật Mai':'Tắt nhân vật Mai (lời chào, khẩu hiệu, cổ vũ)';}}
+function maiDoi(){maiNho('kpi_mai',maiTat()?'bat':'tat');maiNut();maiGocDong();toast(maiTat()?'Đã tắt Mai. Bấm lại để bật.':'Đã bật Mai 🙂',true);try{go(tabHienTai)}catch(e){}}
+/* Động viên theo hạng KPI (số liệu thật) */
+function maiKPI(hang,tong){
+  if(maiTat())return '';
+  var t={'A+':['vui covu','Bạn đang <b>dẫn đầu</b>! Giữ nhịp này và chỉ mẹo cho đồng đội nhé.'],
+    'A':['vui','Rất tốt! Còn <b>'+f(Math.max(0,100-tong))+'%</b> nữa là lên hạng A+.'],
+    'B':['','Ổn định đó! Còn <b>'+f(Math.max(0,90-tong))+'%</b> nữa là lên hạng A. Thử <b>giảm hàng lỗi</b> – bớt một cái lỗi là điểm tăng lên.'],
+    'C':['lo','Tháng này hơi vất vả. Mai tin bạn làm được hơn! <b>Hỏi trưởng phòng</b> mẹo của công đoạn khó nhé.'],
+    'D':['lo','Đừng nản nhé! Nhập <b>đủ sản lượng mỗi ngày</b> và hỏi trưởng phòng cách làm nhanh hơn – Mai cổ vũ bạn!']}[hang]||['','Cố lên nhé!'];
+  return '<div class="mai-bang" style="margin-top:12px">'+maiHinh(t[0])+'<div class="nd"><small>Mai nói về KPI của bạn · hạng '+esc(hang)+'</small><div class="kh" style="font-weight:500">'+t[1]+'</div></div></div>';
+}
+/* Số ngày làm việc liên tiếp (bỏ Chủ nhật) có gửi sản lượng, tính tới hôm nay */
+function maiChuoi(){
+  var co={}; (D.choDuyet||[]).concat(D.nhatky||[]).forEach(function(r){if(r.MaNV===ME.maNV)co[ngay(r.Ngay)]=1});
+  var d=new Date(today()+'T00:00:00'),n=0;
+  for(var i=0;i<40;i++){var s=d.getFullYear()+'-'+('0'+(d.getMonth()+1)).slice(-2)+'-'+('0'+d.getDate()).slice(-2);
+    if(d.getDay()!==0){ if(co[s])n++; else if(i>0||n>0)break; }
+    d.setDate(d.getDate()-1);}
+  return n;
+}
+var MAI_KHEN=['Giỏi quá! Gửi đúng giờ, trưởng phòng duyệt nhanh hơn đó!','Xong một ca rồi! Về nghỉ ngơi thật khỏe nhé!','Cảm ơn bạn đã nhập cẩn thận – số đúng thì KPI mới đúng!','Mỗi ngày gửi đều là một bước gần hơn tới hạng A!','Tuyệt! Hôm nay bạn đã góp phần vào kế hoạch của xưởng!','Làm tốt lắm! Mai ghi nhận rồi nha ✨'];
+function maiKhenGui(){
+  if(maiTat())return;
+  var n=maiChuoi(), c='';
+  if(n>=2){c='<div class="mai-chuoi">';for(var i=1;i<=7;i++)c+='<i class="'+(i<=Math.min(n,7)?'co':'')+'">'+(i<=Math.min(n,7)?'✓':i)+'</i>';c+='</div><small>'+n+' ngày liên tiếp gửi đều'+(n<7?' · thêm '+(7-n)+' ngày nữa là tròn tuần!':' – tuyệt vời!')+'</small>';}
+  maiGoc('Đã gửi – chờ trưởng phòng duyệt',MAI_KHEN[Math.floor(Math.random()*MAI_KHEN.length)],c,'covu vui',7000);
+}
+/* Đọc lại trước khi gửi (công nhân): tránh nhập nhầm */
+function maiXacNhan(out,ok,huy){
+  var h=$('maiHop'); if(!h){h=document.createElement('div');h.id='maiHop';document.body.appendChild(h);}
+  var tong=0,loi=0,canh='';
+  var dong=out.map(function(r){tong+=Number(r.SoLuongLamRa)||0;loi+=Number(r.SoLoi)||0;
+    if(Number(r.SoLuongLamRa)>5000)canh='<div class="vang" style="margin-top:4px">⚠ Có dòng trên 5.000 cái – kiểm tra xem có gõ thừa số 0 không nhé.</div>';
+    return '<div><span>'+esc(cd(r.MaCD).TenCD)+'</span><b>'+Number(r.SoLuongLamRa).toLocaleString('vi-VN')+' cái · lỗi '+(Number(r.SoLoi)||0)+'</b></div>';}).join('');
+  var nd=String(out[0]&&out[0].Ngay||today());
+  h.innerHTML='<div class="vn">'+(maiTat()?'':maiHinh(canh?'lo':'vui'))+'<div class="mai-thoai" role="dialog" aria-label="Kiểm tra trước khi gửi"><span class="ten">Mai · đọc lại trước khi gửi</span>'+
+    '<div class="loi">Bạn kiểm tra giúp Mai nhé, ngày <b>'+dmy(nd)+'</b>:<div class="mai-tom">'+dong+'<div class="tong"><span>Tổng</span><span>'+tong.toLocaleString('vi-VN')+' cái · lỗi '+loi+'</span></div></div>'+canh+'</div>'+
+    '<div class="dk"><span class="buoc">Duyệt rồi sẽ không sửa được</span><button class="btn" id="maiSua">Sửa lại</button><button class="btn pri" id="maiGui">Đúng rồi, gửi</button></div></div></div>';
+  maiGocDong(); h.classList.add('mo');
+  var dong2=function(){h.classList.remove('mo');h.innerHTML='';};
+  $('maiGui').onclick=function(){dong2();ok();};
+  $('maiSua').onclick=function(){dong2();if(huy)huy();};
+  h.onclick=function(e){if(e.target===h){dong2();if(huy)huy();}};
+  setTimeout(function(){var b=$('maiGui');if(b)b.focus();},50);
+}
+/* Hướng dẫn rọi sáng cho công nhân (không tự gõ vào ô thật) */
+var __maiT={i:0,ds:[]};
+function maiPhanTu(f){try{return typeof f==='function'?f():(f?document.querySelector(f):null)}catch(e){return null}}
+function maiRo(el){
+  var ro=$('maiTour').querySelector('.ro');
+  if(!el){ro.className='ro toan';ro.style.cssText='left:50%;top:40%;width:0;height:0';return}
+  var r=el.getBoundingClientRect(); window.scrollBy(0,r.top-Math.max(80,innerHeight*0.22));
+  setTimeout(function(){var b=el.getBoundingClientRect(),p=6;ro.className='ro';ro.style.cssText='left:'+(b.left-p)+'px;top:'+(b.top-p)+'px;width:'+(b.width+2*p)+'px;height:'+(b.height+2*p)+'px';},GIAM_CD()?0:120);
+}
+function maiTourDen(i){
+  var T=__maiT; if(i<0)i=0; if(i>=T.ds.length){maiTourDong();return;}
+  T.i=i; var b=T.ds[i], el=maiPhanTu(b.s);
+  var w=$('maiTour'); w.querySelector('.vn svg').setAttribute('class','mai '+(b.cam||'')+(el?' chi':''));
+  w.querySelector('.loi').innerHTML=b.t; w.querySelector('.buoc').textContent='Bước '+(i+1)+'/'+T.ds.length;
+  $('maiLui').style.visibility=i?'visible':'hidden'; $('maiTiep').textContent=i===T.ds.length-1?'Xong ✓':'Tiếp ›';
+  maiRo(el); setTimeout(function(){$('maiTiep').focus()},30);
+}
+function maiTourDong(){var w=$('maiTour');if(w)w.classList.remove('mo')}
+function maiTour(ds,khoa){
+  var w=$('maiTour');
+  if(!w){w=document.createElement('div');w.id='maiTour';
+    w.innerHTML='<div class="ro"></div><div class="vn">'+maiHinh('')+'<div class="mai-thoai" role="dialog" aria-label="Hướng dẫn"><span class="ten">Mai · hướng dẫn viên</span><div class="loi"></div>'+
+      '<div class="dk"><span class="buoc"></span><button class="btn" id="maiBo">Bỏ qua</button><button class="btn" id="maiLui">‹ Lại</button><button class="btn pri" id="maiTiep">Tiếp ›</button></div></div></div>';
+    document.body.appendChild(w);
+    $('maiTiep').onclick=function(){maiTourDen(__maiT.i+1)}; $('maiLui').onclick=function(){maiTourDen(__maiT.i-1)}; $('maiBo').onclick=maiTourDong;
+    w.addEventListener('keydown',function(e){if(e.key==='Escape')maiTourDong();});
+  }
+  if(khoa)maiNho(khoa,'1');
+  // chỉ giữ các bước có phần tử thật trên trang (vd. không có khung đỏ "nhập lại" thì bỏ bước đó)
+  ds=ds.filter(function(b){return !b.s||maiPhanTu(b.s)});
+  maiGocDong(); __maiT={i:0,ds:ds}; w.classList.add('mo'); maiTourDen(0);
+}
+function maiTourCN(){
+  var o=function(sel,n){return function(){var a=document.querySelectorAll(sel);return a[n||0]||null}};
+  var daGui=function(){var a=document.querySelectorAll('#main .card h3');for(var i=0;i<a.length;i++)if(/Sản lượng đã gửi/.test(a[i].textContent))return a[i].parentNode;return null};
+  maiTour([
+    {cam:'vui',t:'Chào <b>'+esc(maiTen())+'</b>! Mình là <b>Mai</b>. Mỗi cuối ca bạn ghi lại <b>mình đã làm công đoạn gì, được bao nhiêu cái</b> ở trang này. Mình chỉ từng ô nhé!'},
+    {s:'#cf_ngay',t:'Xem <b>Ngày</b> trước. Web tự để <b>hôm nay</b>; nhập bù hôm qua thì bấm vào đây đổi ngày. <span class="vang">Mỗi ngày chỉ gửi một lần</span>, nên nhập đủ các việc trong ngày rồi mới gửi.'},
+    {s:'#cf_socd',t:'Hôm nay làm <b>mấy công đoạn</b>? Ví dụ sáng mài, chiều lắp ráp là <b>2</b>. Ghi số đó rồi bấm <b>Đặt số dòng</b> – mỗi dòng bên dưới là một công đoạn.'},
+    {s:o('#cf_grid select'),t:'Cột <b>Công đoạn</b>: chọn <b>đúng tên việc</b> bạn làm. Hai dòng <span class="vang">không được trùng một công đoạn</span> – cùng một việc thì cộng số lại, ghi một dòng.'},
+    {s:o('#cf_grid input[type=number]',0),t:'Cột <b>Số lượng</b>: <b>tổng số sản phẩm làm ra</b> ở công đoạn đó, <b>tính cả hàng lỗi</b>. <span class="do">Không ghi số giờ, không ghi số tiền.</span>'},
+    {s:o('#cf_grid input[type=number]',1),t:'Cột <b>Số lỗi</b>: số hàng <b>hỏng trong số đó</b>. Không có lỗi thì để <b>0</b>. Số lỗi <span class="do">không bao giờ lớn hơn</span> số lượng.'},
+    {s:o('#cf_grid .btn.sm'),t:'Quên một công đoạn? Bấm <b>+</b> để thêm dòng ngay dưới. Thừa dòng thì bấm <b>−</b>.'},
+    {s:'#cf_bgui',t:'Xong thì bấm <b>Gửi cho trưởng phòng</b>. Mai sẽ <b>đọc lại từng dòng</b> để bạn kiểm tra trước khi gửi. <span class="vang">Trưởng phòng duyệt rồi thì không sửa được nữa.</span>'},
+    {s:daGui,t:'Gửi xong xem ở đây: <span class="vang">Chờ duyệt</span> là trưởng phòng chưa xem, <b>Đã duyệt</b> là đã vào KPI, <span class="do">Bị từ chối</span> là cần nhập lại ngày đó.'},
+    {s:'#main .alert.a-bd',cam:'lo',t:'Bị từ chối thì đầu trang hiện <span class="do">khung đỏ</span> ghi ngày cần nhập lại. Chọn đúng ngày đó, nhập lại cho đúng rồi gửi lần nữa.'},
+    {cam:'vui',t:'Xong rồi! Nhớ 4 điều: <b>đúng ngày</b> · <b>đúng công đoạn, không trùng</b> · <b>số lượng là số cái làm ra</b> · <b>số lỗi nhỏ hơn số lượng</b>. Quên thì bấm <b>"? Hướng dẫn nhập"</b> ở đầu trang nhé!'}
+  ],'kpi_mai_hd_cn_'+ME.tk);
+}
 
 /* Fallback: tải nội dung HTML thành file */
 function taiFileHTML(html, ten){
@@ -4489,6 +4773,7 @@ function vKPICaNhanToi(){
       boxG('Tỷ lệ đạt',k.cl,f(k.cl)+'%')+
       boxG('KPI tổng',k.tong,f(k.tong)+'%')+
       box('Xếp loại',lo[0],null,'A đến D')+'</div>';
+    try{ h+=maiKPI(lo[0],k.tong); }catch(e){}
   }
 
   if(!rows.length){
@@ -6298,7 +6583,9 @@ function vCNNhap(){
   if(!cnNgay)cnNgay=today();
 
   var h='<div class="ptitle">Nhập sản lượng của tôi</div>'+
-    '<div class="pdesc">'+esc(me.HoTen||ME.ten)+' · '+esc(ME.tenXuong)+'</div>';
+    '<div class="pdesc">'+esc(me.HoTen||ME.ten)+' · '+esc(ME.tenXuong)+
+    ' <button class="btn sm" style="margin-left:6px" onclick="maiTourCN()">? Hướng dẫn nhập</button></div>';
+  try{ h+=maiBang(); }catch(e){}
 
   // Banner: các ngày bị TỪ CHỐI cần nhập lại
   var nhapLai=(D.canNhapLai||[]);
@@ -6364,6 +6651,8 @@ function vCNNhap(){
 
   $('main').innerHTML=h;
   cnVeGrid();
+  // Lần đầu vào trang: Mai tự hướng dẫn (mỗi tài khoản một lần; xem lại bằng nút "? Hướng dẫn nhập")
+  try{ if(!maiTat()&&!maiNho('kpi_mai_hd_cn_'+ME.tk)) setTimeout(function(){ if(tabHienTai==='cnnhap') maiTourCN(); },700); }catch(e){}
 }
 
 /* Đặt số dòng theo ô "Số công đoạn" (1–10), giữ dữ liệu đã nhập */
@@ -6467,11 +6756,12 @@ function cnGui(){
       SoLoi:Number(r.SoLoi)||0};
   });
 
-  call('congNhanGuiSanLuong',[out],function(r){
+  maiXacNhan(out, function(){ call('congNhanGuiSanLuong',[out],function(r){
     cnGui._dangGui=false;
+    if(r.ok) setTimeout(function(){ try{maiKhenGui()}catch(e){} },3600);
     if(r.ok) ltXong('Đã gửi – chờ trưởng phòng duyệt', (r.msg||'')+' Duyệt xong mới tính vào KPI.', 'gui-cho-duyet', 3200); else toast(r.msg,false);
     if(r.ok){cnRows=[];cnLyDo='';cnNgay='';cnGioDung='';cnLuuNhap();reload(vCNNhap)}
-  });
+  }); }, huy);
 }
 
 /* ===== TRƯỞNG PHÒNG DUYỆT SẢN LƯỢNG ===== */
