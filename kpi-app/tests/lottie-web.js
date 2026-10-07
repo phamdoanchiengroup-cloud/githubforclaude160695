@@ -111,7 +111,7 @@ const svgTrong = (p, sel) => p.evaluate(s => { const e = document.querySelector(
 
   console.log('\n7. Đợt 2: chốt tháng, điểm danh, công nhân gửi, Excel, chưa có dữ liệu, hết phiên');
   const phu = p => p.evaluate(() => { const x = $('ltPhu'); return x ? { mo: x.classList.contains('mo'), b: x.querySelector('b').textContent, svg: x.querySelectorAll('.lt-hinh svg path').length } : {}; });
-  const choPhu = async (p, re) => { for (let i = 0; i < 60; i++) { const x = await phu(p); if (x.mo && re.test(x.b)) return x; await p.waitForTimeout(150); } return phu(p); };
+  const choPhu = async (p, re) => { for (let i = 0; i < 60; i++) { const x = await phu(p); if (x.mo && re.test(x.b) && x.svg > 0) return x; await p.waitForTimeout(150); } return phu(p); };
   p = await vao(b, 'chienpham'); p.on('dialog', d => d.accept());
   await p.evaluate(() => go('kpi')); await p.waitForTimeout(2500);
   await p.evaluate(() => chotThangUI());
@@ -152,6 +152,42 @@ const svgTrong = (p, sel) => p.evaluate(s => { const e = document.querySelector(
   ok(x.mo && x.svg > 5 && await p.evaluate(() => /^ChamCong_\d{4}-\d\d\.xlsx$/.test(window.__tep[0] || '')), 'Excel: lớp phủ bảng tính, báo đã tải + tên file', [x, await p.evaluate(() => window.__tep)]);
   await p.evaluate(() => { ltDong(); window.XLSX.writeFile = () => { throw new Error('hỏng thử'); }; xuatExcelLich(); }); await p.waitForTimeout(300);
   ok(!(await phu(p)).mo && /Lỗi tạo file/.test(await p.textContent('#toast')), 'Excel lỗi: đóng lớp phủ, báo lỗi');
+  ok(!p.loi.length, 'không lỗi trang', p.loi);
+  await p.context().close();
+
+  console.log('\n8. Đợt 3: trả lại, máy bảo trì, vi phạm, nghỉ dài hạn, thêm nhân sự, đổi mật khẩu');
+  const daNoi = async (p, re, ten, min = 3) => { const x = await choPhu(p, re); ok(x.mo && re.test(x.b) && x.svg >= min, ten, [x, await p.textContent('#toast').catch(() => '')]); };
+  p = await vao(b, 'tpdg'); p.on('dialog', d => d.accept());
+  await p.evaluate(() => go('duyetsl')); await p.waitForTimeout(1200);
+  const nutTC = p.locator('#main button.dg:has-text("Từ chối")').first();
+  if (await nutTC.count()) { await nutTC.click(); await daNoi(p, /Đã trả lại/, 'trưởng phòng từ chối: phiếu bật ra, dấu ✕'); } else ok(false, 'không có nút Từ chối');
+  await p.evaluate(() => ltDong());
+  await p.evaluate(() => go('nenep')); await p.waitForSelector('#vp_nv', { timeout: 20000 });
+  await p.evaluate(() => { const n = $('vp_nv'), l = $('vp_loai'); n.selectedIndex = n.options.length > 1 ? 1 : 0; l.selectedIndex = l.options.length > 1 ? 1 : 0; addVP(); });
+  await daNoi(p, /Đã ghi vi phạm/, 'ghi vi phạm: sổ + bút, ghi rõ người và lỗi');
+  ok(/Xóa/.test(await p.evaluate(() => $('ltPhu').querySelector('small').textContent)), 'ghi vi phạm: có hướng dẫn xóa nếu ghi nhầm');
+  await p.evaluate(() => ltDong());
+  await p.evaluate(() => { ddCheDo = 'thang'; go('dd'); }); await p.waitForSelector('#ndh_nv', { timeout: 30000 });
+  await p.evaluate(() => { $('ndh_tu').value = '2026-10-20'; $('ndh_den').value = '2026-12-31'; dangKyNDH(); });
+  await daNoi(p, /Đã đăng ký nghỉ dài hạn/, 'nghỉ dài hạn: dải ngày tô lên lịch');
+  ok(!p.loi.length, 'không lỗi trang', p.loi);
+  await p.context().close();
+  p = await vao(b, 'chienpham'); p.on('dialog', d => d.type() === 'prompt' ? d.accept('thử') : d.accept());
+  await p.evaluate(() => go('mm')); await p.waitForTimeout(1500);
+  const nutMay = p.locator('#main button:has-text("Bảo trì"), #main button:has-text("bảo trì")').first();
+  if (await nutMay.count()) { await nutMay.click(); await daNoi(p, /chuyển sang "Bảo trì"/, 'máy sang bảo trì: bánh răng + cờ lê'); } else ok(false, 'không thấy nút Bảo trì', await p.evaluate(() => $('main').textContent.slice(0, 200)));
+  await p.evaluate(() => ltDong());
+  await p.evaluate(() => go('ns')); await p.waitForTimeout(1500);
+  const coForm = await p.evaluate(() => { if (!$('n_ma')) return false; $('n_ma').value = 'NVTHU99'; $('n_ten').value = 'Người Thử'; addNS(); return true; });
+  if (coForm) await daNoi(p, /Đã thêm Người Thử/, 'thêm nhân sự: thẻ nhân viên + dấu ✓'); else ok(false, 'không có form thêm nhân sự');
+  await p.evaluate(() => ltDong());
+  await p.evaluate(() => go('nk')); await p.waitForTimeout(1500);
+  const bdh = await p.evaluate(() => { const b = [...document.querySelectorAll('#main button')].find(x => /bdhTuChoi/.test(x.getAttribute('onclick') || '')); if (b) b.click(); return !!b; });
+  if (bdh) await daNoi(p, /Đã trả lại/, 'ban điều hành từ chối dòng đã chốt: cùng hoạt ảnh trả lại'); else console.log('  · (không có dòng đã chốt để ban điều hành từ chối – bỏ qua)');
+  await p.evaluate(() => ltDong());
+  await p.evaluate(() => moDoiMK()); await p.waitForSelector('#d_cu');
+  await p.evaluate(() => { $('d_cu').value = 'demo'; $('d_moi').value = 'demo-moi-123'; $('d_lai').value = 'demo-moi-123'; doiMK(); });
+  await daNoi(p, /Đã đổi mật khẩu/, 'đổi mật khẩu: ổ khóa sập lại');
   ok(!p.loi.length, 'không lỗi trang', p.loi);
   await p.context().close();
 

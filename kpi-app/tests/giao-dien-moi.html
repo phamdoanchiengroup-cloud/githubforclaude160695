@@ -627,9 +627,11 @@ function hieuUngMoi(){
   var thanh=main.querySelectorAll('.kpi .bar i:not([data-hu]),.hbar .hfill:not([data-hu]),.cbfill:not([data-hu])');
   Array.prototype.forEach.call(thanh,function(b,i){
     b.setAttribute('data-hu','1'); if(i>80)return;
-    var w=b.style.width; if(!w)return;
+    // data-w: chiều rộng thật – đoạn hiệu ứng cũ (play) cũng đặt 0 rồi trả lại, nên hai bên phải đọc cùng một giá trị
+    var w=b.getAttribute('data-w')||b.style.width; if(!w||w==='0'||w==='0px')return;
+    b.setAttribute('data-w',w);
     b.style.transition='none'; b.style.width='0'; b.getBoundingClientRect();
-    requestAnimationFrame(function(){b.style.transition='width .7s cubic-bezier(.2,.7,.2,1)';b.style.width=w;});
+    requestAnimationFrame(function(){b.style.transition='width .7s cubic-bezier(.2,.7,.2,1)';b.style.width=w;b.removeAttribute('data-w');});
   });
   if(main.querySelector('.hn-vong'))capNhatVongHan();
 }

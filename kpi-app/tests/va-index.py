@@ -455,7 +455,8 @@ function taiBaoCaoUI(dang){
 import json as _json
 LT = {}
 for _t in ['dang-tong-hop-bao-cao', 'duyet-xong', 'da-duyet-het', 'mat-ket-noi',
-           'chot-thang', 'diem-danh-xong', 'gui-cho-duyet', 'xuat-excel', 'chua-co-du-lieu', 'het-phien']:   # đợt 2 (07/10)
+           'chot-thang', 'diem-danh-xong', 'gui-cho-duyet', 'xuat-excel', 'chua-co-du-lieu', 'het-phien',   # đợt 2 (07/10)
+           'tra-lai', 'may-bao-tri', 'ghi-vi-pham', 'nghi-dai-han', 'them-nhan-su', 'doi-mat-khau']:          # đợt 3 (07/10)
     LT[_t] = _json.load(io.open(os.path.join(D, '..', 'lottie', _t + '.json'), encoding='utf-8'))
 LT_JSON = _json.dumps(LT, ensure_ascii=False, separators=(',', ':')).replace('</', '<\\/')
 R(""".hgd svg{width:17px!important;height:17px!important;flex:none;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round}
@@ -503,7 +504,13 @@ var LT_TINH=(function(){ var v=function(x){return '<svg viewBox="0 0 200 200" wi
     'gui-cho-duyet':v('<rect x="73" y="71" width="54" height="66" rx="6" fill="#21262b" stroke="#aab5bc" stroke-width="4.5"/><path d="M84 88h32M84 100h24" stroke="#2fd3c6" stroke-width="4"/><rect x="48" y="131" width="104" height="30" rx="6" fill="#2a3036" stroke="#aab5bc" stroke-width="5"/><circle cx="146" cy="60" r="18" fill="#21262b" stroke="#f0b04e" stroke-width="4"/><path d="M146 60v-11M146 60h7" stroke="#f0b04e" stroke-width="3.5"/>'),
     'xuat-excel':v('<rect x="59" y="35" width="82" height="68" rx="7" fill="#21262b" stroke="#aab5bc" stroke-width="4.5"/><path d="M70 52h62M70 67h62M70 82h62" stroke="#2fd3c6" stroke-width="8"/><path d="M100 120v28M88 138l12 12 12-12" stroke="#f0b04e" stroke-width="6"/><path d="M66 166v14h68v-14" stroke="#aab5bc" stroke-width="5"/>'),
     'chua-co-du-lieu':v('<path d="M30 46v94h142" stroke="#aab5bc" stroke-width="5"/><path d="M40 100h126" stroke="#3a434b" stroke-width="4" stroke-dasharray="7 9"/><circle cx="96" cy="88" r="19" stroke="#2fd3c6" stroke-width="5.5"/><path d="M110 102l16 16" stroke="#2fd3c6" stroke-width="7"/>'),
-    'het-phien':v('<circle cx="92" cy="92" r="56" fill="#21262b" stroke="#aab5bc" stroke-width="5"/><path d="M92 92V58M92 92h20" stroke="#aab5bc" stroke-width="5"/><path d="M131 140v-11a11 11 0 0 1 22 0v11" stroke="#f0b04e" stroke-width="6"/><rect x="123" y="138" width="38" height="28" rx="6" fill="#f0b04e"/>')}; })();
+    'het-phien':v('<circle cx="92" cy="92" r="56" fill="#21262b" stroke="#aab5bc" stroke-width="5"/><path d="M92 92V58M92 92h20" stroke="#aab5bc" stroke-width="5"/><path d="M131 140v-11a11 11 0 0 1 22 0v11" stroke="#f0b04e" stroke-width="6"/><rect x="123" y="138" width="38" height="28" rx="6" fill="#f0b04e"/>'),
+    'tra-lai':v('<rect x="62" y="22" width="54" height="66" rx="6" fill="#21262b" stroke="#aab5bc" stroke-width="4.5" transform="rotate(-8 89 55)"/><circle cx="134" cy="36" r="17" fill="#f26b6b"/><path d="M127 29l14 14M141 29l-14 14" stroke="#fff" stroke-width="4.5"/><rect x="48" y="131" width="104" height="30" rx="6" fill="#2a3036" stroke="#aab5bc" stroke-width="5"/><path d="M136 184H66M76 175l-11 9 11 9" stroke="#f0b04e" stroke-width="5"/>'),
+    'may-bao-tri':v('<circle cx="84" cy="112" r="36" fill="#aab5bc"/><circle cx="84" cy="112" r="13" fill="#21262b"/><circle cx="142" cy="70" r="20" fill="#2fd3c6"/><circle cx="142" cy="70" r="7" fill="#21262b"/><path d="M58 62l26 30" stroke="#f0b04e" stroke-width="10"/><circle cx="52" cy="54" r="12" stroke="#f0b04e" stroke-width="8"/>'),
+    'ghi-vi-pham':v('<rect x="48" y="42" width="96" height="116" rx="8" fill="#21262b" stroke="#aab5bc" stroke-width="5"/><path d="M58 42v116" stroke="#aab5bc" stroke-width="4"/><path d="M68 62h60M68 78h50M68 94h40" stroke="#3a434b" stroke-width="5"/><path d="M68 112h58" stroke="#f0b04e" stroke-width="5"/><circle cx="148" cy="48" r="16" fill="#f0b04e"/><path d="M140 48h16" stroke="#06201e" stroke-width="5"/>'),
+    'nghi-dai-han':v('<rect x="44" y="50" width="112" height="100" rx="10" fill="#21262b" stroke="#aab5bc" stroke-width="5"/><rect x="44" y="58" width="112" height="20" rx="6" fill="#3a434b"/><path d="M76 52v14M124 52v14" stroke="#aab5bc" stroke-width="5"/><rect x="66" y="102" width="96" height="12" rx="6" fill="#f0b04e" opacity=".85" transform="translate(-14 -14)"/><rect x="52" y="116" width="54" height="12" rx="6" fill="#f0b04e" opacity=".85"/>'),
+    'them-nhan-su':v('<rect x="38" y="67" width="124" height="78" rx="10" fill="#21262b" stroke="#aab5bc" stroke-width="5"/><circle cx="66" cy="96" r="11" fill="#2fd3c6"/><rect x="50" y="110" width="32" height="16" rx="8" fill="#2fd3c6"/><path d="M94 94h42M94 108h28M94 122h14" stroke="#3a434b" stroke-width="5"/><circle cx="156" cy="68" r="18" fill="#2fd3c6"/><path d="M148 68l6 6 11-12" stroke="#06201e" stroke-width="4.5"/>'),
+    'doi-mat-khau':v('<g fill="#2fd3c6"><circle cx="67" cy="44" r="7"/><circle cx="89" cy="44" r="7"/><circle cx="111" cy="44" r="7"/><circle cx="133" cy="44" r="7"/></g><path d="M83 112V97a17 17 0 0 1 34 0v15" stroke="#aab5bc" stroke-width="8"/><rect x="70" y="109" width="60" height="46" rx="9" fill="#2fd3c6"/><circle cx="100" cy="128" r="4.5" fill="#06201e"/>')}; })();
 /* Phát hoạt ảnh vào el. Trả đối tượng có .huy(). lap=true: lặp (dùng khi chờ). */
 function ltPhat(el,ten,lap,khiXong){
   var h={a:null,huy:function(){try{if(h.a)h.a.destroy()}catch(e){} h.a=null; h.huyRoi=true}};
@@ -650,6 +657,66 @@ R("""    if(!ds.length){ $('qlBody').innerHTML='<div class="empty">Chưa có d�
   """    if(!ds.length){ $('qlBody').innerHTML=ltTrong('Chưa có KPI quản lý tháng này','Chọn tháng khác, hoặc chờ trưởng phòng nhập và duyệt sản lượng.'); return; }""")
 R("""  if(!arr||!arr.length){box.innerHTML='<div class="empty">Chưa có dữ liệu</div>';return}""",
   """  if(!arr||!arr.length){box.innerHTML=ltTrong('Chưa có dữ liệu','Chưa có kỳ nào được chốt để xem lịch sử.');return}""")
+
+
+# 10) LOTTIE ĐỢT 3 (duyệt 07/10): trả lại sản lượng, máy bảo trì, ghi vi phạm, nghỉ dài hạn, thêm nhân sự, đổi mật khẩu.
+TRA_LAI = "ltXong('Đã trả lại để nhập lại', r.msg, 'tra-lai', 2600)"
+R("""  call('tuChoiNhieu',[ids],function(r){
+    toast(r.msg,r.ok);""", """  call('tuChoiNhieu',[ids],function(r){
+    if(r.ok) """ + TRA_LAI + """; else toast(r.msg,false);""")
+R("""  call('banDieuHanhTuChoi',[maDong,lyDo],function(r){
+    toast(r.msg,r.ok);""", """  call('banDieuHanhTuChoi',[maDong,lyDo],function(r){
+    if(r.ok) """ + TRA_LAI + """; else toast(r.msg,false);""")
+R("""  call('banDieuHanhTuChoiNhieu',[ids],function(r){
+    toast(r.msg,r.ok);""", """  call('banDieuHanhTuChoiNhieu',[ids],function(r){
+    if(r.ok) """ + TRA_LAI + """; else toast(r.msg,false);""")
+# máy: chuyển sang bảo trì -> bánh răng; hoạt động lại -> dấu tích
+R("""  call('doiTinhTrangMay',[ma,tt],function(r){
+    toast(r.msg,r.ok); if(r.ok)reload(vMM);""", """  call('doiTinhTrangMay',[ma,tt],function(r){
+    if(r.ok) ltXong(ma+(tt==='Hoạt động'?' hoạt động lại':' chuyển sang "'+tt+'"'), tt==='Hoạt động'?'Máy đã sẵn sàng nhận sản lượng.':'Sửa xong thì bấm lại nút ở dòng máy này để chuyển về "Hoạt động".', tt==='Hoạt động'?'duyet-xong':'may-bao-tri', 2600);
+    else toast(r.msg,false);
+    if(r.ok)reload(vMM);""")
+# vi phạm
+R("""  call('ghiViPham',[o],function(r){toast(r.msg,r.ok); if(r.ok)reload(vNeNep)});""",
+  """  var tenOpt=function(id){ var e=$(id); return e&&e.selectedIndex>=0?e.options[e.selectedIndex].text:''; };
+  var nguoiVP=tenOpt('vp_nv'), loaiVP=tenOpt('vp_loai');
+  call('ghiViPham',[o],function(r){
+    if(r.ok) ltXong('Đã ghi vi phạm', (loaiVP?loaiVP+' – ':'')+nguoiVP+'. Ghi nhầm thì bấm Xóa ở danh sách, điểm được cộng lại.', 'ghi-vi-pham', 2800); else toast(r.msg,false);
+    if(r.ok)reload(vNeNep)});""")
+# nghỉ dài hạn
+R("""  call('dangKyNghiDaiHan',[nv.value,loai.value,tu.value,den.value,''],function(res){
+    toast(res.msg,res.ok);""", """  call('dangKyNghiDaiHan',[nv.value,loai.value,tu.value,den.value,''],function(res){
+    if(res.ok) ltXong('Đã đăng ký nghỉ dài hạn', res.msg.replace(/^Đã đăng ký nghỉ dài hạn cho nhân sự /,'')+' Những ngày này tự ghi vào điểm danh.', 'nghi-dai-han', 2800); else toast(res.msg,false);""")
+# thêm nhân sự
+R("""  call('luuNhanSu',[o],function(r){toast(r.msg,r.ok); if(r.ok)reload(vNS)});""",
+  """  call('luuNhanSu',[o],function(r){
+    if(r.ok) ltXong('Đã thêm '+o.HoTen, 'Mã '+o.MaNV+(o.MaXuong?' · '+((D.phongban||[]).filter(function(x){return x.MaXuong===o.MaXuong})[0]||{TenXuong:o.MaXuong}).TenXuong:''), 'them-nhan-su', 2600); else toast(r.msg,false);
+    if(r.ok)reload(vNS)});""")
+# đổi mật khẩu
+R("""    if(!r.ok){bao(r.msg);return}
+    toast(r.msg,true);
+    var b=$('mkbox'); if(b)b.remove();""", """    if(!r.ok){bao(r.msg);return}
+    try{ ltXong('Đã đổi mật khẩu','Lần sau đăng nhập bằng mật khẩu mới. Đừng chia sẻ mật khẩu cho người khác.','doi-mat-khau',2600); }catch(x){ toast(r.msg,true); }
+    var b=$('mkbox'); if(b)b.remove();""")
+
+
+# 11) Sửa lỗi 07/10: thanh "So sánh hiệu suất giữa các xưởng" (và các thanh khác) kẹt ở 0.
+#     Hai đoạn hiệu ứng "mọc từ 0" (play cũ + hieuUngMoi) cùng chạy; đoạn sau ghi nhớ nhầm chiều rộng 0. Dùng chung data-w.
+R("""      fills.forEach(function(el){
+        finals.push(el.style.width || '');
+        el.style.width='0';
+      });
+      requestAnimationFrame(function(){requestAnimationFrame(function(){
+        fills.forEach(function(el,i){ el.style.width = finals[i]; });
+      });});""", """      fills.forEach(function(el){
+        var w=el.getAttribute('data-w') || el.style.width || '';
+        if(w && w!=='0' && w!=='0px') el.setAttribute('data-w',w);
+        finals.push(w);
+        el.style.width='0';
+      });
+      requestAnimationFrame(function(){requestAnimationFrame(function(){
+        fills.forEach(function(el,i){ el.style.width = finals[i]; el.removeAttribute('data-w'); });
+      });});""")
 
 io.open(os.path.join(D, '..', 'Index.html'), 'w', encoding='utf-8').write(s)
 print('OK Index.html')

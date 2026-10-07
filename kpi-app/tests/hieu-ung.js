@@ -29,6 +29,12 @@ async function vao(b, tk, opt = {}) {
   await p.waitForTimeout(90);
   const giua = await p.evaluate(() => ({ vao: $('main').classList.contains('gd-vao'), so: document.querySelector('.gauge .gval').textContent, off: getComputedStyle(document.querySelector('.gauge svg circle:nth-of-type(2)')).strokeDashoffset }));
   await p.waitForTimeout(1200);
+  // lỗi 07/10: hai hiệu ứng "mọc từ 0" chạy chồng làm thanh So sánh hiệu suất kẹt ở 0
+  const thanh = await p.evaluate(() => [...document.querySelectorAll('#main .hbar .hfill, #main .bar i, #main .cbfill')].map(x => [x.style.width, x.getBoundingClientRect().width]));
+  ok(thanh.length > 0 && thanh.every(([sw, w]) => sw && sw !== '0' && sw !== '0px' && (parseFloat(sw) === 0 || w > 0)), 'mọi thanh (So sánh hiệu suất giữa các xưởng…) mọc đủ, không kẹt ở 0', thanh.filter(([sw, w]) => !(sw && sw !== '0' && sw !== '0px' && w > 0)).slice(0, 5));
+  for (const tab of ['kpi', 'homnay', 'dash']) { await p.evaluate(t => go(t), tab); await p.waitForTimeout(1500); }
+  const thanh2 = await p.evaluate(() => [...document.querySelectorAll('#main .hbar .hfill')].map(x => x.getBoundingClientRect().width));
+  ok(thanh2.length > 0 && thanh2.every(w => w > 0), 'chuyển tab qua lại rồi về Tổng quan: thanh vẫn hiện', thanh2);
   const cuoi = await p.evaluate(() => { const c = document.querySelector('.gauge svg circle:nth-of-type(2)'); return { so: document.querySelector('.gauge .gval').textContent, off: getComputedStyle(c).strokeDashoffset, dich: c.getAttribute('stroke-dashoffset') }; });
   ok(giua.vao, 'chuyển tab: nội dung trượt vào');
   ok(giua.so !== cuoi.so && /%$/.test(giua.so), 'số KPI đang chạy dần (' + giua.so + ' → ' + cuoi.so + ')');

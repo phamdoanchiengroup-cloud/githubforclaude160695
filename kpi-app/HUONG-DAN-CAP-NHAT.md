@@ -7,6 +7,8 @@ Bản này gồm **mọi thay đổi từ đầu** (sửa lỗi chốt tháng, b
 - **Cần có:** máy tính (không làm trên điện thoại), trình duyệt Chrome, đăng nhập đúng tài khoản Google đang giữ dự án Apps Script và file Sheet "CSDL KPI".
 - **Cần dán lại 2 file:** `Code.gs` và `Index.html`.
 
+> **Bản 07/10/2026 (chiều) – Sửa lỗi + Lottie đợt 3.** Chỉ đổi **`Index.html`**: sửa lỗi **thẻ "So sánh hiệu suất giữa các xưởng" (tab Tổng quan) không hiện vạch** – lỗi có từ bản 29/09, các thanh khác cùng kiểu cũng được sửa; thêm hoạt ảnh khi từ chối/trả lại sản lượng, đổi tình trạng máy, ghi vi phạm, đăng ký nghỉ dài hạn, thêm nhân sự, đổi mật khẩu. Làm **A3 (sao lưu) → B2 → Phần D**.
+
 > **Bản 07/10/2026 – Hoạt ảnh Lottie đợt 2.** Chỉ đổi **`Index.html`**: thêm hoạt ảnh khi chốt tháng, lưu điểm danh, công nhân gửi sản lượng, xuất Excel, trang "chưa có dữ liệu"; **hết phiên đăng nhập không tự tải lại trang nữa** mà chờ bấm "Đăng nhập lại". Làm **A3 (sao lưu) → B2 → Phần D**.
 
 > **Bản 06/10/2026 – Hoạt ảnh Lottie.** Chỉ đổi **`Index.html`** (4 hoạt ảnh: đang tổng hợp báo cáo, dấu tích khi duyệt, "Đã duyệt hết", mất kết nối có nút Thử lại). Đã dán bản 05/10 thì chỉ cần **A3 (sao lưu) → B2 → Phần D**. Mạng chặn thư viện hoạt ảnh thì web tự dùng hình tĩnh, không ảnh hưởng chức năng.
