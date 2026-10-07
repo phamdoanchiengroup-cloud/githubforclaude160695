@@ -1,0 +1,200 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Demo Lottie đợt 4</title>
+<!-- Demo Lottie đợt 4 cho web KPI: chốt ca, đề xuất định mức, miễn trừ KPI, cấp lại mật khẩu, gán công đoạn, thanh lý máy.
+     Bên trái là cách web đang làm, bên phải có hoạt ảnh Lottie (tự vẽ bằng tests/tao-lottie-4.py). Dựng bằng tests/tao-demo-lottie.py. Tên người là tên giả. -->
+<style>
+:root{--bg:#121518;--s1:#1a1e22;--s2:#21262b;--s3:#2a3036;--bd:rgba(255,255,255,.07);--bd2:rgba(255,255,255,.13);--t1:#eef2f4;--t2:#aab5bc;--t3:#7b8891;--ac:#2fd3c6;--acr:47,211,198;--am:#f0b04e;--rd:#f26b6b;
+  --f:'Inter',system-ui,-apple-system,'Segoe UI',Roboto,Arial,sans-serif}
+*{box-sizing:border-box;margin:0;padding:0}
+html{background:var(--bg)}
+body{color:var(--t1);font:14px/1.5 var(--f);-webkit-font-smoothing:antialiased;padding:26px 18px 60px}
+button{font:inherit;color:inherit}
+.vo{max-width:1120px;margin:0 auto}
+h1{font-size:22px;font-weight:650;letter-spacing:-.01em}
+.mo{color:var(--t2);font-size:13.5px;margin:4px 0 22px;max-width:820px}
+.muc{margin-bottom:26px}
+.muc h2{font-size:15px;font-weight:600;margin-bottom:4px}
+.muc .gt{font-size:12.5px;color:var(--t3);margin-bottom:10px}
+.doi{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.o{position:relative;border:1px solid var(--bd);border-radius:14px;background:var(--s1);min-height:290px;overflow:hidden;display:flex;flex-direction:column}
+.o .nhan{font-size:10.5px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;padding:9px 14px;border-bottom:1px solid var(--bd);color:var(--t3);display:flex;justify-content:space-between;align-items:center}
+.o.moi .nhan{color:var(--ac)}
+.o .than{flex:1;padding:14px;display:flex;flex-direction:column;gap:10px;position:relative}
+.nut{border:1px solid var(--bd2);background:var(--s2);font-size:12.5px;font-weight:500;padding:6px 12px;border-radius:9px;cursor:pointer;white-space:nowrap}
+.nut:hover{background:var(--s3)}
+.nut.chinh{background:var(--ac);border-color:var(--ac);color:#06201e;font-weight:600}
+.nut:disabled{opacity:.5;cursor:default}
+.vach{position:absolute;left:0;top:0;height:3px;background:var(--am);width:0}
+.vach.chay{animation:vach 2.2s linear infinite}
+@keyframes vach{0%{left:0;width:0}50%{left:20%;width:50%}100%{left:100%;width:0}}
+.toast{align-self:center;margin-top:auto;font-size:12.5px;padding:8px 14px;border-radius:10px;background:#1f3b38;border:1px solid rgba(var(--acr),.45);opacity:0;transition:opacity .2s}
+.toast.hien{opacity:1}.toast.loi{background:#3b1f22;border-color:rgba(242,107,107,.5)}
+.dong{display:flex;align-items:center;gap:10px;padding:9px 10px;border-radius:10px;background:var(--s2);border:1px solid var(--bd);font-size:13px;transition:opacity .25s,transform .25s}
+.dong small{display:block;font-size:11.5px;color:var(--t3)}
+.dong .nut{margin-left:auto}
+.dong.di{opacity:0;transform:translateX(30px)}
+.trong{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:4px;color:var(--t3);font-size:13px}
+.trong b{color:var(--t1);font-size:14.5px}
+.la{width:120px;height:120px}
+.la.nho{width:44px;height:44px;flex:none;margin:-6px 6px -6px auto;display:none}
+.dong.xong .la.nho{display:block}.dong.xong .nut{display:none}
+.loi-the .la{width:96px;height:96px}
+.cho{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;text-align:center}
+.cho b{font-size:14px}.cho small{color:var(--t3);font-size:12px}
+.phu{position:absolute;inset:0;background:rgba(18,21,24,.92);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;text-align:center;opacity:0;pointer-events:none;transition:opacity .2s}
+.phu.hien{opacity:1;pointer-events:auto}
+.loi-the{display:flex;flex-direction:column;align-items:center;gap:6px;text-align:center;margin:auto}
+.loi-the b{font-size:14.5px}.loi-the small{color:var(--t3);font-size:12.5px;max-width:280px}
+.cuoi{font-size:12px;color:var(--t3);margin-top:8px;max-width:820px}
+.the{border:1px solid var(--bd);background:var(--s2);border-radius:12px;padding:12px;display:flex;flex-direction:column;gap:8px}
+.the h4{font-size:13px;font-weight:600}.the .mo2{font-size:12px;color:var(--t3)}
+.bang{width:100%;border-collapse:collapse;font-size:12.5px}.bang td,.bang th{padding:6px 8px;border-bottom:1px solid var(--bd);text-align:left}.bang th{font-size:10.5px;color:var(--t3);letter-spacing:.08em;text-transform:uppercase;font-weight:600}
+.bang td:last-child,.bang th:last-child{text-align:right}
+.chon{display:flex;gap:8px;align-items:center;flex-wrap:wrap;font-size:12.5px;color:var(--t2)}
+select,input{font:inherit;color:var(--t1);background:var(--s2);border:1px solid var(--bd2);border-radius:9px;padding:6px 9px}
+input{width:90px}
+.nghi{color:var(--am);font-size:11.5px}
+.ket{display:flex;align-items:center;gap:12px;padding:8px 10px;border-radius:12px;background:rgba(var(--acr),.07);border:1px solid rgba(var(--acr),.3);opacity:0;transform:translateY(6px);transition:opacity .25s,transform .25s}
+.ket.hien{opacity:1;transform:none}.ket .la{width:96px;height:96px;flex:none;margin:-6px 0}.ket b{display:block;font-size:14px}.ket small{color:var(--t2);font-size:12px}
+.ket.cho-duyet{background:rgba(240,176,78,.07);border-color:rgba(240,176,78,.35)}
+.mo-trang{position:absolute;inset:0;background:#fff;opacity:0;pointer-events:none;transition:opacity .15s}
+.mo-trang.hien{opacity:.9}
+@media(max-width:700px){.doi{grid-template-columns:1fr}}
+.hop-tb{border:1px solid var(--bd2);background:#2b2f34;border-radius:8px;padding:12px 14px;font-size:13px;display:none;flex-direction:column;gap:10px;max-width:320px;box-shadow:0 10px 30px rgba(0,0,0,.5)}
+.hop-tb.hien{display:flex}.hop-tb .goc{font-size:11.5px;color:var(--t3)}
+.mk{font:600 22px/1.2 ui-monospace,Menlo,Consolas,monospace;letter-spacing:.06em;color:var(--t1);background:var(--s2);border:1px dashed var(--bd2);border-radius:10px;padding:8px 14px;margin:4px 0}
+</style>
+</head>
+<body>
+<div class="vo">
+  <h1>Hoạt ảnh Lottie – đợt 4: 6 chỗ khác trong web</h1>
+  <div class="mo">Cùng phong cách 16 mẫu đã gắn vào web. Mỗi mục: bên trái là <b>cách web đang làm</b>, bên phải là <b>có Lottie</b>. Bấm nút trong từng ô để chạy thử.</div>
+
+  <div class="muc">
+    <h2>1. Chốt ca (lưu nhật ký ca) <span style="color:var(--t3);font-weight:500">· Nhật ký (trưởng phòng)</span></h2>
+    <div class="gt">Thẻ ca vào máy chấm công rồi bật ra đã bấm lỗ – quen mắt với người làm ca.</div>
+    <div class="doi">
+      <div class="o"><div class="nhan">Hiện tại</div><div class="than" id="a1"></div></div>
+      <div class="o moi"><div class="nhan">Có Lottie</div><div class="than" id="b1"></div></div>
+    </div>
+  </div>
+
+  <div class="muc">
+    <h2>2. Gửi đề xuất định mức <span style="color:var(--t3);font-weight:500">· Công đoạn &amp; định mức (trưởng phòng)</span></h2>
+    <div class="gt">Kim trên thước dịch từ mức cũ sang mức đề xuất – thấy ngay đề xuất tăng hay giảm bao nhiêu.</div>
+    <div class="doi">
+      <div class="o"><div class="nhan">Hiện tại</div><div class="than" id="a2"></div></div>
+      <div class="o moi"><div class="nhan">Có Lottie</div><div class="than" id="b2"></div></div>
+    </div>
+  </div>
+
+  <div class="muc">
+    <h2>3. Miễn trừ KPI <span style="color:var(--t3);font-weight:500">· KPI quản lý → Miễn trừ (ban điều hành)</span></h2>
+    <div class="gt">Tấm khiên che lên ngày bị trừ: những khoản này không còn tính vào KPI.</div>
+    <div class="doi">
+      <div class="o"><div class="nhan">Hiện tại</div><div class="than" id="a3"></div></div>
+      <div class="o moi"><div class="nhan">Có Lottie</div><div class="than" id="b3"></div></div>
+    </div>
+  </div>
+
+  <div class="muc">
+    <h2>4. Cấp lại mật khẩu <span style="color:var(--t3);font-weight:500">· Tài khoản (ban điều hành)</span></h2>
+    <div class="gt">Hiện tại mật khẩu tạm hiện trong hộp thông báo của trình duyệt, khó chép trên điện thoại. Bản mới: chữ to, có nút Chép, không tự đóng.</div>
+    <div class="doi">
+      <div class="o"><div class="nhan">Hiện tại</div><div class="than" id="a4"></div></div>
+      <div class="o moi"><div class="nhan">Có Lottie</div><div class="than" id="b4"></div></div>
+    </div>
+  </div>
+
+  <div class="muc">
+    <h2>5. Gán công đoạn cho nhiều người <span style="color:var(--t3);font-weight:500">· Công đoạn &amp; định mức</span></h2>
+    <div class="gt">Dây nối từng người tới thẻ công đoạn – kiểm tra lại được ai vừa được gán.</div>
+    <div class="doi">
+      <div class="o"><div class="nhan">Hiện tại</div><div class="than" id="a5"></div></div>
+      <div class="o moi"><div class="nhan">Có Lottie</div><div class="than" id="b5"></div></div>
+    </div>
+  </div>
+
+  <div class="muc">
+    <h2>6. Thanh lý máy <span style="color:var(--t3);font-weight:500">· Máy móc</span></h2>
+    <div class="gt">Máy hạ vào hộp lưu trữ, kèm mũi tên vòng: nhắc rằng thanh lý vẫn khôi phục được.</div>
+    <div class="doi">
+      <div class="o"><div class="nhan">Hiện tại</div><div class="than" id="a6"></div></div>
+      <div class="o moi"><div class="nhan">Có Lottie</div><div class="than" id="b6"></div></div>
+    </div>
+  </div>
+
+  <div class="cuoi">6 hoạt ảnh tự vẽ, mỗi file 5–9 KB, cùng màu với web. Máy bật "giảm chuyển động" thì hiện hình tĩnh. Bạn duyệt mẫu nào thì tôi gắn mẫu đó vào web thật.</div>
+</div>
+<script>/*LOTTIE_LIB*/</script>
+<script>
+(function(){
+'use strict';
+var LA=/*LOTTIE_DATA*/, GIAM=false; try{GIAM=matchMedia('(prefers-reduced-motion: reduce)').matches}catch(e){}
+function $(i){return document.getElementById(i)}
+function phat(el,ten,lap){ el.innerHTML=''; var a=lottie.loadAnimation({container:el,renderer:'svg',loop:!!lap,autoplay:!GIAM,animationData:JSON.parse(JSON.stringify(LA[ten]))});
+  if(GIAM) a.addEventListener('DOMLoaded',function(){ a.goToAndStop(a.totalFrames-1,true) }); return a; }
+function toast(t,chu,ms){ t.textContent=chu; t.classList.add('hien'); clearTimeout(t._h); t._h=setTimeout(function(){t.classList.remove('hien')},ms||2200); }
+window.__lt={};
+/* Khung chung: form + nút; bản hiện tại báo bằng dòng chữ, bản Lottie dùng lớp phủ (kieu='phu') hoặc thẻ kết quả (kieu='ket') */
+function dung(id,coLa,o){
+  var el=$(id);
+  el.innerHTML=o.form+(coLa?(o.kieu==='phu'?'<div class="phu"><div class="la"></div><b></b><small style="color:var(--t3);font-size:12.5px;max-width:300px"></small></div>'
+      :'<div class="ket"><div class="la"></div><div><b></b><small></small></div></div>'):'<div class="toast"></div>')+
+    '<button class="nut lai" style="align-self:flex-start;margin-top:auto">Làm lại</button>';
+  el.querySelector('.lai').onclick=function(){ dung(id,coLa,o) };
+  Array.prototype.forEach.call(el.querySelectorAll('[data-lam]'),function(n){ n.onclick=function(){
+    var kq=o.lam(el,n); if(!kq)return; n.disabled=true;
+    setTimeout(function(){
+      if(!coLa){ toast(el.querySelector('.toast'),kq.chu,2400); return; }
+      var k=el.querySelector(o.kieu==='phu'?'.phu':'.ket'); k.querySelector('b').textContent=kq.tieuDe; k.querySelector('small').textContent=kq.phu;
+      k.classList.add('hien'); var a=window.__lt[id]=phat(k.querySelector('.la'),o.ten);
+      if(o.kieu==='phu') setTimeout(function(){ k.classList.remove('hien'); setTimeout(function(){a.destroy()},250); if(kq.sau)kq.sau(); },o.ms||2400);
+      else if(kq.sau) kq.sau();
+    },450); }; });
+}
+var NG=['Đỗ Thị Hoa','Ngô Văn Hùng','Vũ Thị Hà'];
+/* 1. chốt ca */
+var o1={kieu:'phu',ten:'chot-ca',ms:2800,form:'<div class="the"><h4>Nhập nhật ký ca – Thứ Ba 06/10</h4><table class="bang"><tr><th>Người</th><th>Sản lượng</th></tr>'+NG.map(function(n,i){return '<tr><td>'+n+'</td><td>'+[412,1380,955][i]+'</td></tr>'}).join('')+'</table><div><button class="nut chinh" data-lam="1">Chốt ca</button></div></div>',
+  lam:function(){ return {chu:'Đã chốt 3 dòng vào sổ.', tieuDe:'Đã chốt ca 06/10', phu:'3 dòng sản lượng đã vào sổ nhật ký.'}; }};
+dung('a1',false,o1); dung('b1',true,o1);
+/* 2. đề xuất định mức */
+var o2={kieu:'ket',ten:'de-xuat-dinh-muc',form:'<div class="the"><h4>Đề xuất định mức mới</h4><div class="chon">Công đoạn <select><option>Mài bóng</option></select> Hiện tại <b>120</b> sp/giờ</div><div class="chon">Đề xuất <input value="135"> sp/giờ</div><div><button class="nut chinh" data-lam="1">Gửi đề xuất</button></div></div>',
+  lam:function(el){ var m=Number(el.querySelector('input').value)||0; if(!(m>0))return null; var d=m-120;
+    return {chu:'Đã gửi đề xuất. Ban điều hành sẽ xem xét.', tieuDe:'Đã gửi đề xuất: Mài bóng 120 → '+m+' sp/giờ', phu:(d>=0?'Tăng ':'Giảm ')+Math.abs(Math.round(d/120*100))+'%. Ban điều hành sẽ xem xét.'}; }};
+dung('a2',false,o2); dung('b2',true,o2);
+/* 3. miễn trừ */
+var o3={kieu:'phu',ten:'mien-tru',ms:2800,form:'<table class="bang"><tr><th>Khoản trừ KPI</th><th>Chọn</th></tr>'+['02/09 · Nghỉ lễ – thiếu sản lượng','03/09 · Mất điện 4 giờ','15/09 · Hỏng máy CNC-03'].map(function(x,i){return '<tr><td>'+x+'</td><td><input type="checkbox"'+(i<2?' checked':'')+' style="width:auto"></td></tr>'}).join('')+'</table><div class="chon">Lý do <input value="Nghỉ lễ, mất điện" style="width:160px"><button class="nut chinh" data-lam="1" style="margin-left:auto">Miễn trừ</button></div>',
+  lam:function(el){ var n=el.querySelectorAll('input[type=checkbox]:checked').length; if(!n)return null;
+    return {chu:'Đã miễn trừ '+n+' khoản', tieuDe:'Đã miễn trừ '+n+' khoản', phu:'Lý do: '+el.querySelector('input:not([type])').value+'. Chọn nhầm thì bấm "Bỏ miễn trừ".'}; }};
+dung('a3',false,o3); dung('b3',true,o3);
+/* 4. cấp lại mật khẩu: bản hiện tại là hộp thông báo của trình duyệt, bản mới không tự đóng, có nút Chép */
+var MK='K7m-42xq';
+$('a4').innerHTML='<table class="bang"><tr><th>Tài khoản</th><th></th></tr><tr><td>c191 · Vũ Thị Hà</td><td><button class="nut" id="a4Nut">Cấp lại MK</button></td></tr></table>'+
+  '<div class="hop-tb" id="a4Hop"><span class="goc">Trang web này cho biết</span>Đã cấp mật khẩu tạm cho c191: '+MK+'. Người dùng phải đổi khi đăng nhập.<button class="nut chinh" id="a4Ok" style="align-self:flex-end">OK</button></div>';
+$('a4Nut').onclick=function(){ $('a4Hop').classList.add('hien') }; $('a4Ok').onclick=function(){ $('a4Hop').classList.remove('hien') };
+$('b4').innerHTML='<table class="bang"><tr><th>Tài khoản</th><th></th></tr><tr><td>c191 · Vũ Thị Hà</td><td><button class="nut" id="b4Nut">Cấp lại MK</button></td></tr></table>'+
+  '<div class="phu" id="b4Phu"><div class="la" id="b4La" style="width:96px;height:96px"></div><b>Mật khẩu tạm cho c191</b><div class="mk">'+MK+'</div><small style="color:var(--t3);font-size:12px;max-width:290px">Đưa mật khẩu này cho người dùng. Lần đăng nhập đầu họ phải đổi sang mật khẩu riêng.</small>'+
+  '<div style="display:flex;gap:8px;margin-top:6px"><button class="nut" id="b4Chep">Chép</button><button class="nut chinh" id="b4Xong">Xong</button></div></div>';
+$('b4Nut').onclick=function(){ $('b4Phu').classList.add('hien'); window.__lt.b4=phat($('b4La'),'cap-lai-mat-khau'); };
+function chepDuPhong(t){ var x=document.createElement('textarea'); x.value=t; x.style.position='fixed'; x.style.opacity='0'; document.body.appendChild(x); x.select(); try{document.execCommand('copy')}catch(e){} x.remove(); }
+$('b4Chep').onclick=function(){ var b=this; try{ navigator.clipboard.writeText(MK).catch(function(){ chepDuPhong(MK) }) }catch(e){ chepDuPhong(MK) } b.textContent='✓ Đã chép'; setTimeout(function(){b.textContent='Chép'},1500); };
+$('b4Xong').onclick=function(){ $('b4Phu').classList.remove('hien'); if(window.__lt.b4)window.__lt.b4.destroy(); };
+/* 5. gán công đoạn */
+var o5={kieu:'ket',ten:'gan-cong-doan',form:'<div class="the"><h4>Gán công đoạn cho nhiều người</h4><div class="chon">Công đoạn <select><option>Mài bóng</option><option>Lắp ráp</option></select></div>'+NG.map(function(n){return '<label class="chon"><input type="checkbox" checked style="width:auto"> '+n+'</label>'}).join('')+'<div><button class="nut chinh" data-lam="1">Gán</button></div></div>',
+  lam:function(el){ var ds=[].map.call(el.querySelectorAll('input:checked'),function(i){return i.parentNode.textContent.trim()}); if(!ds.length)return null;
+    return {chu:'Đã gán công đoạn cho '+ds.length+' người', tieuDe:'Đã gán '+el.querySelector('select').value+' cho '+ds.length+' người', phu:ds.join(', ')}; }};
+dung('a5',false,o5); dung('b5',true,o5);
+/* 6. thanh lý máy */
+var o6={kieu:'phu',ten:'thanh-ly-may',ms:2800,form:'<table class="bang"><tr><th>Máy</th><th></th></tr>'+['CNC-03','Máy mài MB-07','Máy ép EP-12'].map(function(m){return '<tr><td>'+m+'</td><td><button class="nut" data-lam="1">Thanh lý</button></td></tr>'}).join('')+'</table>',
+  lam:function(el,n){ var tr=n.closest('tr'), ten=tr.querySelector('td').textContent;
+    return {chu:'Đã thanh lý máy', tieuDe:'Đã thanh lý '+ten, phu:'Máy được ẩn khỏi danh sách. Dữ liệu cũ giữ nguyên, khôi phục được ở mục "Máy đã thanh lý".', sau:function(){ tr.style.opacity='.35'; }}; }};
+dung('a6',false,{form:o6.form,lam:function(el,n){ var r=o6.lam(el,n); n.closest('tr').style.opacity='.35'; return r; }}); dung('b6',true,o6);
+})();
+</script>
+</body>
+</html>

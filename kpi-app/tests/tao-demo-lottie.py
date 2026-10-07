@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""Dựng kpi-app/demo-lottie.html (4 mẫu) demo-lottie-2.html, demo-lottie-3.html (6 mẫu mỗi đợt): nhúng lottie-web (bản light, MIT) + file kpi-app/lottie/*.json vào tests/demo-lottie*.src.html.
+"""Dựng kpi-app/demo-lottie.html (4 mẫu) demo-lottie-2/3/4.html (6 mẫu mỗi đợt): nhúng lottie-web (bản light, MIT) + file kpi-app/lottie/*.json vào tests/demo-lottie*.src.html.
    LOTTIE=/đường/dẫn/lottie_light.min.js python3 kpi-app/tests/tao-demo-lottie.py
    (lấy lottie_light.min.js bằng: npm install lottie-web@5.12.2 → node_modules/lottie-web/build/player/)"""
 import io, json, os, sys
@@ -9,7 +9,8 @@ if not lib: sys.exit('Cần LOTTIE=<đường dẫn lottie_light.min.js>')
 code = io.open(lib, encoding='utf-8').read().replace('</script', '<\\/script')
 for nguon, ra, ds in [('demo-lottie.src.html', 'demo-lottie.html', ['dang-tong-hop-bao-cao', 'duyet-xong', 'da-duyet-het', 'mat-ket-noi']),
                       ('demo-lottie-2.src.html', 'demo-lottie-2.html', ['chot-thang', 'diem-danh-xong', 'gui-cho-duyet', 'xuat-excel', 'chua-co-du-lieu', 'het-phien']),
-                      ('demo-lottie-3.src.html', 'demo-lottie-3.html', ['tra-lai', 'may-bao-tri', 'ghi-vi-pham', 'nghi-dai-han', 'them-nhan-su', 'doi-mat-khau'])]:
+                      ('demo-lottie-3.src.html', 'demo-lottie-3.html', ['tra-lai', 'may-bao-tri', 'ghi-vi-pham', 'nghi-dai-han', 'them-nhan-su', 'doi-mat-khau']),
+                      ('demo-lottie-4.src.html', 'demo-lottie-4.html', ['chot-ca', 'de-xuat-dinh-muc', 'mien-tru', 'cap-lai-mat-khau', 'gan-cong-doan', 'thanh-ly-may'])]:
     src = io.open(os.path.join(D, nguon), encoding='utf-8').read()
     data = {}
     for ten in ds:
