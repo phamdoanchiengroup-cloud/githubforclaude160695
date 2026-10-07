@@ -89,9 +89,9 @@ h1{font-size:22px;font-weight:650}
 .nhom ul{list-style:none;margin-top:6px}.nhom li{font-size:13px;padding:5px 0;border-top:1px solid var(--bd);color:var(--t2)}.nhom li:first-child{border-top:0}
 .cuoi{font-size:12px;color:var(--t3);max-width:820px}
 /* ===== Nhân vật Mai (SVG) ===== */
-.mai .duoi{transform-origin:150px 62px;animation:duoi 2.8s ease-in-out infinite}
-@keyframes duoi{50%{transform:rotate(7deg)}}
-.mai .than-tren{transform-origin:100px 250px;animation:tho 3.2s ease-in-out infinite}
+.mai .duoi{transform-origin:104px 34px;animation:duoi 2.4s ease-in-out infinite}
+@keyframes duoi{0%,100%{transform:rotate(-8deg)}50%{transform:rotate(10deg)}}
+.mai .than-tren{transform-origin:100px 256px;animation:tho 3.2s ease-in-out infinite}
 @keyframes tho{50%{transform:translateY(1.6px) scaleY(.995)}}
 .mai .mat-g{transform-box:fill-box;transform-origin:center;animation:chop 4.2s infinite}
 @keyframes chop{0%,92%,100%{transform:scaleY(1)}95%{transform:scaleY(.08)}}
@@ -104,12 +104,12 @@ h1{font-size:22px;font-weight:650}
 .mai.lo .mo-hoi,.mai.lo .may-lo{display:inline}
 .mai.lo .may-vui{display:none}
 .mai.vui .lap-lanh{display:inline}
-.mai .tay-chi{transform-origin:150px 196px;transition:transform .4s}
+.mai .tay-chi{transform-origin:128px 180px;transition:transform .4s}
 .mai .ngon{display:none}.mai.chi .ngon{display:inline}
-.mai.chi .tay-chi{transform:rotate(-52deg)}
+.mai.chi .tay-chi{transform:rotate(-70deg)}
 .mai .lap-lanh path{animation:lapLanh 1.2s ease-in-out infinite;transform-box:fill-box;transform-origin:center}
 @keyframes lapLanh{50%{transform:scale(.4);opacity:.4}}
-.mai .tay-chi{transform-origin:150px 196px}
+.mai .tay-chi{transform-origin:128px 180px}
 .mai.covu .tay-chi{transform:rotate(-142deg)}
 .mai.vay .tay-chi{animation:vay 1s ease-in-out infinite}
 @keyframes vay{0%,100%{transform:rotate(-128deg)}50%{transform:rotate(-156deg)}}
@@ -172,64 +172,72 @@ var $=function(i){return document.getElementById(i)};
 var GIAM=false; try{GIAM=matchMedia('(prefers-reduced-motion: reduce)').matches}catch(e){}
 var MAI=''+
 '<defs>'+
- '<linearGradient id="gToc" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#46324f"/><stop offset="1" stop-color="#221a2a"/></linearGradient>'+
- '<linearGradient id="gMong" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#0d5f59"/><stop offset=".45" stop-color="#1fb5a9"/><stop offset="1" stop-color="#8ff5ec"/></linearGradient>'+
- '<linearGradient id="gAo" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#32465c"/><stop offset="1" stop-color="#1c2836"/></linearGradient>'+
- '<linearGradient id="gDa" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffeadf"/><stop offset="1" stop-color="#ffdccb"/></linearGradient>'+
- '<radialGradient id="gMa" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="#ff8fa3" stop-opacity=".6"/><stop offset="1" stop-color="#ff8fa3" stop-opacity="0"/></radialGradient>'+
+ '<linearGradient id="gToc" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#4a3530"/><stop offset=".6" stop-color="#2a1d1a"/><stop offset="1" stop-color="#1c1312"/></linearGradient>'+
+ '<linearGradient id="gMong" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3b2016"/><stop offset=".5" stop-color="#9a5a32"/><stop offset="1" stop-color="#f2b46a"/></linearGradient>'+
+ '<linearGradient id="gAo" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2f4a5e"/><stop offset="1" stop-color="#1d2f3d"/></linearGradient>'+
+ '<linearGradient id="gDa" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff0e6"/><stop offset="1" stop-color="#ffe0d0"/></linearGradient>'+
+ '<radialGradient id="gMa" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="#ff7d96" stop-opacity=".55"/><stop offset="1" stop-color="#ff7d96" stop-opacity="0"/></radialGradient>'+
 '</defs>'+
-/* đuôi ngựa buộc cao, đung đưa */
-'<g class="duoi"><path d="M146 50c30 4 44 34 38 72-4 26-16 46-30 56 6-22 8-42 4-62-4-24-12-40-22-50z" fill="url(#gToc)"/>'+
- '<path d="M160 70c12 16 15 36 10 58" stroke="#7a5d86" stroke-width="2.5" fill="none" stroke-linecap="round" opacity=".7"/></g>'+
+/* sợi tóc "ăng-ten" trên đỉnh đầu – đung đưa */
+'<g class="duoi"><path d="M100 34c-2-14 6-24 18-26-8 6-12 14-10 26z" fill="#2a1d1a"/></g>'+
 '<g class="than-tren">'+
-/* tóc sau */
-'<path d="M44 102c-6-52 22-86 56-86s62 34 56 86c-3 22-8 40-15 54H59c-7-14-13-32-15-54z" fill="url(#gToc)"/>'+
-/* thân áo + cổ */
-'<path d="M50 270c0-48 20-86 50-92 30 6 50 44 50 92z" fill="url(#gAo)"/>'+
-'<path d="M91 140h18v26c-5 4-13 4-18 0z" fill="#f7d3c1"/>'+
-'<path d="M80 172l20 22 20-22" fill="none" stroke="#2fd3c6" stroke-width="5" stroke-linejoin="round"/>'+
-'<path d="M100 194v76" stroke="#16232f" stroke-width="2"/>'+
-'<rect x="112" y="208" width="30" height="16" rx="3" fill="#eef2f4"/><rect x="112" y="208" width="30" height="4" rx="2" fill="#2fd3c6"/>'+
-'<text x="127" y="220.5" text-anchor="middle" font-size="9" font-weight="700" fill="#1d2a33" font-family="Arial,sans-serif">MAI</text>'+
-/* tay trái buông */
-'<path d="M58 200c-10 18-12 40-6 62" stroke="#2c3d51" stroke-width="16" fill="none" stroke-linecap="round"/>'+
-/* tay phải chỉ */
-'<g class="tay-chi"><path d="M142 198c14 10 22 26 24 44" stroke="#2c3d51" stroke-width="16" fill="none" stroke-linecap="round"/>'+
- '<circle cx="166" cy="247" r="7.5" fill="#ffe0cf"/><path class="ngon" d="M166 248l1 13" stroke="#ffe0cf" stroke-width="5" stroke-linecap="round"/></g>'+
-/* mặt: cằm thon */
-'<path d="M60 92c0-30 18-50 40-50s40 20 40 50c0 22-8 38-21 49-7 6-13 8-19 9-6-1-12-3-19-9-13-11-21-27-21-49z" fill="url(#gDa)"/>'+
-'<path d="M88 146c8 4 16 4 24 0" stroke="#f0bea9" stroke-width="2" fill="none" opacity=".7"/>'+
+/* tóc sau (bob ngang cằm) */
+'<path d="M28 120c-6-60 26-94 72-94s78 34 72 94c-2 20-8 34-16 42-8-10-12-24-13-38H57c-1 14-5 28-13 38-8-8-14-22-16-42z" fill="url(#gToc)"/>'+
+/* chân + giày */
+'<rect x="80" y="232" width="15" height="24" rx="7" fill="#22303c"/><rect x="105" y="232" width="15" height="24" rx="7" fill="#22303c"/>'+
+'<path d="M74 256c0-7 6-10 13-10h8v14H77c-2 0-3-2-3-4z" fill="#f4f7f8"/><path d="M126 256c0-7-6-10-13-10h-8v14h18c2 0 3-2 3-4z" fill="#f4f7f8"/>'+
+'<path d="M76 258h19M105 258h19" stroke="#2fd3c6" stroke-width="2.5" stroke-linecap="round"/>'+
+/* thân: áo khoác thể thao, áo thun trắng bên trong */
+'<path d="M66 238c0-38 12-66 34-70 22 4 34 32 34 70z" fill="url(#gAo)"/>'+
+'<path d="M88 168l12 24 12-24z" fill="#f4f7f8"/>'+
+'<path d="M86 168l14 26 14-26" fill="none" stroke="#2fd3c6" stroke-width="4" stroke-linejoin="round"/>'+
+'<path d="M100 194v44" stroke="#14212c" stroke-width="2"/>'+
+'<path d="M68 222h64" stroke="#2fd3c6" stroke-width="2" opacity=".55"/>'+
+'<rect x="106" y="200" width="20" height="11" rx="2.5" fill="#eef2f4"/><rect x="106" y="200" width="20" height="3" rx="1.5" fill="#2fd3c6"/>'+
+'<text x="116" y="209.4" text-anchor="middle" font-size="6.2" font-weight="700" fill="#1d2a33" font-family="Arial,sans-serif">MAI</text>'+
+/* tay trái */
+'<path d="M72 180c-8 10-12 22-12 34" stroke="#2f4a5e" stroke-width="13" fill="none" stroke-linecap="round"/>'+
+'<rect x="53" y="208" width="14" height="6" rx="3" fill="#2fd3c6"/><circle cx="60" cy="219" r="6.5" fill="#ffe6d8"/>'+
+/* tay phải: chỉ / cổ vũ */
+'<g class="tay-chi"><path d="M128 180c8 10 12 22 12 34" stroke="#2f4a5e" stroke-width="13" fill="none" stroke-linecap="round"/>'+
+ '<rect x="133" y="208" width="14" height="6" rx="3" fill="#2fd3c6"/><circle cx="140" cy="219" r="6.5" fill="#ffe6d8"/>'+
+ '<path class="ngon" d="M140 220l1 10" stroke="#ffe6d8" stroke-width="4.5" stroke-linecap="round"/></g>'+
+/* cổ */
+'<path d="M92 156h16v14c-4 3-12 3-16 0z" fill="#f6d2c0"/>'+
+/* mặt chibi tròn, cằm nhọn nhẹ */
+'<path d="M44 108c0-34 24-56 56-56s56 22 56 56c0 26-12 44-30 52-9 4-17 6-26 6s-17-2-26-6c-18-8-30-26-30-52z" fill="url(#gDa)"/>'+
 /* má hồng */
-'<ellipse cx="74" cy="121" rx="10" ry="5.5" fill="url(#gMa)"/><ellipse cx="126" cy="121" rx="10" ry="5.5" fill="url(#gMa)"/>'+
-'<path d="M70 120l3-3M75 120l3-3" stroke="#ff9fb0" stroke-width="1.2" stroke-linecap="round" opacity=".7"/><path d="M122 120l3-3M127 120l3-3" stroke="#ff9fb0" stroke-width="1.2" stroke-linecap="round" opacity=".7"/>'+
+'<ellipse cx="66" cy="132" rx="12" ry="7" fill="url(#gMa)"/><ellipse cx="134" cy="132" rx="12" ry="7" fill="url(#gMa)"/>'+
 /* mắt trái */
-'<g class="mat-g"><ellipse cx="80" cy="102" rx="12" ry="14.5" fill="#fff"/><ellipse cx="80" cy="104" rx="10" ry="12.5" fill="url(#gMong)"/>'+
- '<ellipse cx="80" cy="105" rx="4.6" ry="6.4" fill="#073a36"/><ellipse cx="75.5" cy="97.5" rx="3.6" ry="4.6" fill="#fff"/><circle cx="84.5" cy="110" r="2" fill="#fff" opacity=".9"/>'+
- '<path d="M66 100c2-10 9-15 15-15 7 0 12 4 14 9" stroke="#1b1420" stroke-width="3.2" fill="none" stroke-linecap="round"/><path d="M67 98l-5-4" stroke="#1b1420" stroke-width="2.6" stroke-linecap="round"/>'+
- '<path d="M73 117c4 2 10 2 14 0" stroke="#c99a8a" stroke-width="1.2" fill="none" stroke-linecap="round" opacity=".7"/></g>'+
+'<g class="mat-g"><ellipse cx="76" cy="114" rx="14" ry="17" fill="#fff"/><ellipse cx="76" cy="117" rx="12" ry="14.5" fill="url(#gMong)"/>'+
+ '<ellipse cx="76" cy="118" rx="5.5" ry="7.5" fill="#24120c"/><ellipse cx="70.5" cy="109" rx="4.4" ry="5.6" fill="#fff"/><circle cx="81" cy="124" r="2.4" fill="#fff" opacity=".9"/><circle cx="73" cy="126" r="1.2" fill="#fff" opacity=".7"/>'+
+ '<path d="M60 110c2-11 9-17 17-17 8 0 14 4 16 10" stroke="#20140f" stroke-width="3.6" fill="none" stroke-linecap="round"/><path d="M61 108l-6-3M62 112l-5 0" stroke="#20140f" stroke-width="2.2" stroke-linecap="round"/>'+
+ '<path d="M69 132c4 1.5 9 1.5 13 0" stroke="#c48d7a" stroke-width="1.3" fill="none" stroke-linecap="round" opacity=".7"/></g>'+
 /* mắt phải */
-'<g class="mat-g"><ellipse cx="120" cy="102" rx="12" ry="14.5" fill="#fff"/><ellipse cx="120" cy="104" rx="10" ry="12.5" fill="url(#gMong)"/>'+
- '<ellipse cx="120" cy="105" rx="4.6" ry="6.4" fill="#073a36"/><ellipse cx="115.5" cy="97.5" rx="3.6" ry="4.6" fill="#fff"/><circle cx="124.5" cy="110" r="2" fill="#fff" opacity=".9"/>'+
- '<path d="M134 100c-2-10-9-15-15-15-7 0-12 4-14 9" stroke="#1b1420" stroke-width="3.2" fill="none" stroke-linecap="round"/><path d="M133 98l5-4" stroke="#1b1420" stroke-width="2.6" stroke-linecap="round"/>'+
- '<path d="M113 117c4 2 10 2 14 0" stroke="#c99a8a" stroke-width="1.2" fill="none" stroke-linecap="round" opacity=".7"/></g>'+
-/* lông mày */
-'<g class="may-vui" stroke="#46324f" stroke-width="2" fill="none" stroke-linecap="round"><path d="M70 80c5-3 12-4 18-2"/><path d="M112 78c6-2 13-1 18 2"/></g>'+
-'<g class="may-lo" stroke="#46324f" stroke-width="2" fill="none" stroke-linecap="round"><path d="M70 82c6-1 12-4 17-8"/><path d="M130 82c-6-1-12-4-17-8"/></g>'+
-/* mũi, miệng */
-'<path d="M100 116l-1.4 3.5h2.6" stroke="#e2a491" stroke-width="1.3" fill="none" stroke-linecap="round"/>'+
-'<path class="mieng-cuoi" d="M93 128c4 4.5 10 4.5 14 0" stroke="#c2475b" stroke-width="2.4" fill="none" stroke-linecap="round"/>'+
-'<g class="mieng-mo"><path d="M94 126c2 8 10 8 12 0z" fill="#9e2f45"/><path d="M96.5 131c2 1.6 5 1.6 7 0" stroke="#ff8fa3" stroke-width="2.4" stroke-linecap="round"/></g>'+
-/* tóc mái gọn */
-'<path transform="translate(0 -11)" d="M50 106c-6-46 16-78 50-78 34 0 56 30 50 76-3-12-9-22-16-28 1 10-2 18-6 24-3-12-10-22-18-27-1 11-6 20-12 25-1-10-5-18-10-23-4 10-10 18-17 22 1-8 0-15-3-20-6 10-12 20-14 29z" fill="url(#gToc)"/>'+
-'<path d="M64 46c12-12 32-16 50-11" stroke="#9a7aa8" stroke-width="4" fill="none" stroke-linecap="round" opacity=".55"/>'+
-/* tóc mai hai bên má */
-'<path d="M52 98c-6 24-3 46 7 62 0-22 2-42 0-60z" fill="url(#gToc)"/><path d="M148 98c6 24 3 46-7 62 0-22-2-42 0-60z" fill="url(#gToc)"/>'+
-/* dây buộc tóc + kẹp */
-'<ellipse cx="148" cy="48" rx="7" ry="9" fill="#2fd3c6" transform="rotate(30 148 48)"/>'+
-'<g transform="rotate(-20 62 62)"><rect x="54" y="58" width="18" height="6" rx="3" fill="#2fd3c6"/><circle cx="57" cy="61" r="1.8" fill="#eafffd"/></g>'+
+'<g class="mat-g"><ellipse cx="124" cy="114" rx="14" ry="17" fill="#fff"/><ellipse cx="124" cy="117" rx="12" ry="14.5" fill="url(#gMong)"/>'+
+ '<ellipse cx="124" cy="118" rx="5.5" ry="7.5" fill="#24120c"/><ellipse cx="118.5" cy="109" rx="4.4" ry="5.6" fill="#fff"/><circle cx="129" cy="124" r="2.4" fill="#fff" opacity=".9"/><circle cx="121" cy="126" r="1.2" fill="#fff" opacity=".7"/>'+
+ '<path d="M140 110c-2-11-9-17-17-17-8 0-14 4-16 10" stroke="#20140f" stroke-width="3.6" fill="none" stroke-linecap="round"/><path d="M139 108l6-3M138 112l5 0" stroke="#20140f" stroke-width="2.2" stroke-linecap="round"/>'+
+ '<path d="M118 132c4 1.5 9 1.5 13 0" stroke="#c48d7a" stroke-width="1.3" fill="none" stroke-linecap="round" opacity=".7"/></g>'+
+/* mũi + miệng */
+'<path d="M100 128l-1.2 3h2.4" stroke="#e3a690" stroke-width="1.2" fill="none" stroke-linecap="round"/>'+
+'<path class="mieng-cuoi" d="M92 138c3 4 6 4 8 1.5 2 2.5 5 2.5 8-1.5" stroke="#b8405a" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>'+
+'<g class="mieng-mo"><path d="M93 136c1.5 9 12.5 9 14 0z" fill="#8f2a42"/><path d="M96 142c2.5 1.6 5.5 1.6 8 0" stroke="#ff8fa3" stroke-width="2.6" stroke-linecap="round"/></g>'+
+/* tóc mái lệch (giống ảnh: rẽ ngôi, quét sang một bên) */
+'<path d="M38 116C34 64 62 32 102 32c40 0 66 30 60 80Q156 92 150 82Q150 94 144 102Q140 86 130 76Q128 92 120 100Q118 82 106 72Q102 88 92 98Q92 82 84 74Q76 90 62 100Q66 88 64 78Q50 94 38 116z" fill="url(#gToc)"/>'+
+'<path d="M58 62c14-14 36-20 58-14" stroke="#7a5a50" stroke-width="5" fill="none" stroke-linecap="round" opacity=".6"/>'+
+'<path d="M120 46c10 4 18 12 22 22" stroke="#7a5a50" stroke-width="3" fill="none" stroke-linecap="round" opacity=".45"/>'+
+/* tóc hai bên ôm má, ngang cằm */
+'<path d="M42 104c-8 26-6 50 6 64 4-6 6-14 6-24 0-14-4-28-12-40z" fill="url(#gToc)"/><path d="M158 104c8 26 6 50-6 64-4-6-6-14-6-24 0-14 4-28 12-40z" fill="url(#gToc)"/>'+
+/* khuyên tai tròn nhỏ */
+'<circle cx="47" cy="140" r="3.2" fill="none" stroke="#e8c27a" stroke-width="1.6"/><circle cx="153" cy="140" r="3.2" fill="none" stroke="#e8c27a" stroke-width="1.6"/>'+
+/* kẹp tóc cyan */
+'<g transform="rotate(-24 134 66)"><rect x="124" y="62" width="20" height="6" rx="3" fill="#2fd3c6"/><circle cx="127.5" cy="65" r="1.8" fill="#eafffd"/></g>'+
+/* lông mày (vẽ đè lên tóc mái như anime) */
+'<g class="may-vui" stroke="#3a2622" stroke-width="2.2" fill="none" stroke-linecap="round" opacity=".85"><path d="M66 90c5-3 11-3 16-1"/><path d="M118 89c5-2 11-2 16 1"/></g>'+
+'<g class="may-lo" stroke="#3a2622" stroke-width="2.2" fill="none" stroke-linecap="round" opacity=".85"><path d="M66 92c6 0 11-2 16-6"/><path d="M134 92c-6 0-11-2-16-6"/></g>'+
 /* mồ hôi + lấp lánh */
-'<path class="mo-hoi" d="M146 74c4 6 6 10 3 13s-8 0-7-4 2-6 4-9z" fill="#9fe3ff" stroke="#5ab8e0" stroke-width="1"/>'+
-'<g class="lap-lanh" fill="#f0b04e"><path d="M28 64l3 7 7 3-7 3-3 7-3-7-7-3 7-3z"/><path d="M174 30l2 5 5 2-5 2-2 5-2-5-5-2 5-2z" style="animation-delay:.4s"/></g>'+
+'<path class="mo-hoi" d="M152 78c4 6 6 10 3 13s-8 0-7-4 2-6 4-9z" fill="#9fe3ff" stroke="#5ab8e0" stroke-width="1"/>'+
+'<g class="lap-lanh" fill="#f0b04e"><path d="M22 70l3 7 7 3-7 3-3 7-3-7-7-3 7-3z"/><path d="M176 40l2 5 5 2-5 2-2 5-2-5-5-2 5-2z" style="animation-delay:.4s"/><path d="M170 150l1.5 4 4 1.5-4 1.5-1.5 4-1.5-4-4-1.5 4-1.5z" style="animation-delay:.8s"/></g>'+
 '</g>';
 
 [].forEach.call(document.querySelectorAll('svg.mai'),function(s){ s.innerHTML=MAI; });
