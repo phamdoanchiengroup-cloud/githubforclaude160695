@@ -732,5 +732,37 @@ R("""      fills.forEach(function(el){
 # 12) NHÂN VẬT MAI (08/10): chào mỗi ngày, khẩu hiệu của ngày, hướng dẫn công nhân, đọc lại trước khi gửi, khen, động viên KPI, nhắc nghỉ.
 exec(io.open(os.path.join(D, 'mai', 'va-mai.py'), encoding='utf-8').read())
 
+# 13) Thẻ "Chờ chốt" (trưởng/phó phòng, 09/10): thêm cột NGÀY. Gom theo người + ngày (cùng người nhập 2 ngày thì
+#     thành 2 nhóm), ngày khác hôm nay tô vàng kèm "không phải hôm nay" để tránh chốt nhầm ngày.
+R("""  draft.forEach(function(r,i){
+    if(!grp[r.MaNV]){ grp[r.MaNV]={rows:[]}; order.push(r.MaNV); }
+    grp[r.MaNV].rows.push({r:r,i:i});
+  });
+
+  var h='<div class="tw"><table><thead><tr><th>Nhân viên</th><th>Công đoạn</th>'+""", """  draft.forEach(function(r,i){
+    var kg=r.MaNV+'|'+ngay(r.Ngay);
+    if(!grp[kg]){ grp[kg]={rows:[],manv:r.MaNV,ngay:ngay(r.Ngay)}; order.push(kg); }
+    grp[kg].rows.push({r:r,i:i});
+  });
+  var THU=['CN','Th 2','Th 3','Th 4','Th 5','Th 6','Th 7'], hn=today(), cacNgay={};
+  order.forEach(function(k){cacNgay[grp[k].ngay]=1});
+  var nNgay=Object.keys(cacNgay).length;
+  var oNgay=function(d){
+    var khac=(d!==hn), t=d?THU[new Date(d+'T00:00:00').getDay()]:'';
+    return '<td rowspan="__N__" style="vertical-align:top;min-width:64px'+(khac?';color:var(--amber)':'')+'">'+
+      '<b style="font-family:var(--mono,monospace);white-space:nowrap">'+(d?d.slice(8,10)+'/'+d.slice(5,7):'–')+'</b>'+
+      '<div style="font-size:11px;margin-top:2px;color:'+(khac?'var(--amber)':'var(--ink3)')+'">'+t+(khac?' · không phải hôm nay':' · hôm nay')+'</div></td>';
+  };
+
+  var h=(nNgay>1?'<div class="alert a-nu" style="margin-bottom:10px">Danh sách có <b>'+nNgay+' ngày</b> khác nhau – kiểm tra cột Ngày trước khi chốt ca.</div>':'')+
+    '<div class="tw"><table><thead><tr><th>Nhân viên</th><th>Ngày</th><th>Công đoạn</th>'+""")
+R("""  order.forEach(function(manv){
+    var g=grp[manv], n=g.rows.length;""", """  order.forEach(function(kg){
+    var g=grp[kg], manv=g.manv, n=g.rows.length;""")
+R("""          '<div style="font-size:11px;color:var(--ink3);font-weight:400;margin-top:2px">'+n+' công đoạn</div></td>':'')+
+        '<td>'+esc(cd(r.MaCD).TenCD)""", """          '<div style="font-size:11px;color:var(--ink3);font-weight:400;margin-top:2px">'+n+' công đoạn</div></td>'+oNgay(g.ngay).replace('__N__',n):'')+
+        '<td>'+esc(cd(r.MaCD).TenCD)""")
+R("""      '<td colspan="2" style="font-weight:600;color:var(--cyan)">Tổng</td>'+""", """      '<td colspan="3" style="font-weight:600;color:var(--cyan)">Tổng</td>'+""")
+
 io.open(os.path.join(D, '..', 'Index.html'), 'w', encoding='utf-8').write(s)
 print('OK Index.html')

@@ -4501,15 +4501,26 @@ function renderDraft(){
   // Gom theo người: mỗi người một nhóm gồm nhiều dòng công đoạn + dòng tổng
   var order=[], grp={};
   draft.forEach(function(r,i){
-    if(!grp[r.MaNV]){ grp[r.MaNV]={rows:[]}; order.push(r.MaNV); }
-    grp[r.MaNV].rows.push({r:r,i:i});
+    var kg=r.MaNV+'|'+ngay(r.Ngay);
+    if(!grp[kg]){ grp[kg]={rows:[],manv:r.MaNV,ngay:ngay(r.Ngay)}; order.push(kg); }
+    grp[kg].rows.push({r:r,i:i});
   });
+  var THU=['CN','Th 2','Th 3','Th 4','Th 5','Th 6','Th 7'], hn=today(), cacNgay={};
+  order.forEach(function(k){cacNgay[grp[k].ngay]=1});
+  var nNgay=Object.keys(cacNgay).length;
+  var oNgay=function(d){
+    var khac=(d!==hn), t=d?THU[new Date(d+'T00:00:00').getDay()]:'';
+    return '<td rowspan="__N__" style="vertical-align:top;min-width:64px'+(khac?';color:var(--amber)':'')+'">'+
+      '<b style="font-family:var(--mono,monospace);white-space:nowrap">'+(d?d.slice(8,10)+'/'+d.slice(5,7):'–')+'</b>'+
+      '<div style="font-size:11px;margin-top:2px;color:'+(khac?'var(--amber)':'var(--ink3)')+'">'+t+(khac?' · không phải hôm nay':' · hôm nay')+'</div></td>';
+  };
 
-  var h='<div class="tw"><table><thead><tr><th>Nhân viên</th><th>Công đoạn</th>'+
+  var h=(nNgay>1?'<div class="alert a-nu" style="margin-bottom:10px">Danh sách có <b>'+nNgay+' ngày</b> khác nhau – kiểm tra cột Ngày trước khi chốt ca.</div>':'')+
+    '<div class="tw"><table><thead><tr><th>Nhân viên</th><th>Ngày</th><th>Công đoạn</th>'+
     '<th class="n">SL</th><th class="n">Lỗi</th><th></th></tr></thead><tbody>';
 
-  order.forEach(function(manv){
-    var g=grp[manv], n=g.rows.length;
+  order.forEach(function(kg){
+    var g=grp[kg], manv=g.manv, n=g.rows.length;
     var tgl=0;
     g.rows.forEach(function(o,k){
       var r=o.r, d=dm(r.MaCD);
@@ -4517,14 +4528,14 @@ function renderDraft(){
       tgl+=Number(r.GioLam)||0;
       h+='<tr'+(k===0?' style="border-top:2px solid var(--line)"':'')+'>'+
         (k===0?'<td rowspan="'+n+'" style="vertical-align:top;font-weight:600">'+esc(nv(manv).HoTen)+
-          '<div style="font-size:11px;color:var(--ink3);font-weight:400;margin-top:2px">'+n+' công đoạn</div></td>':'')+
+          '<div style="font-size:11px;color:var(--ink3);font-weight:400;margin-top:2px">'+n+' công đoạn</div></td>'+oNgay(g.ngay).replace('__N__',n):'')+
         '<td>'+esc(cd(r.MaCD).TenCD)+(d<=0?'<div style="font-size:11px;color:var(--ink3)">chưa có định mức</div>':'')+'</td>'+
         '<td class="n">'+r.SoLuongLamRa+'</td><td class="n">'+(tl.soLoi||'–')+'</td>'+
         '<td class="n"><button class="btn sm dg" onclick="delD('+o.i+')">Xóa</button></td></tr>';
     });
     // Dòng TỔNG của người này
     h+='<tr style="background:rgba(var(--acc-rgb),.06)">'+
-      '<td colspan="2" style="font-weight:600;color:var(--cyan)">Tổng</td>'+
+      '<td colspan="3" style="font-weight:600;color:var(--cyan)">Tổng</td>'+
       '<td class="n" style="font-weight:600">–</td>'+
       '<td class="n">–</td><td></td></tr>';
   });

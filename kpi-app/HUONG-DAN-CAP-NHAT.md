@@ -7,6 +7,8 @@ Bản này gồm **mọi thay đổi từ đầu** (sửa lỗi chốt tháng, b
 - **Cần có:** máy tính (không làm trên điện thoại), trình duyệt Chrome, đăng nhập đúng tài khoản Google đang giữ dự án Apps Script và file Sheet "CSDL KPI".
 - **Cần dán lại 2 file:** `Code.gs` và `Index.html`.
 
+> **Bản 09/10/2026 – Ngày trong thẻ "Chờ chốt".** Chỉ đổi **`Index.html`**: thẻ *Chờ chốt* (trưởng/phó phòng, trang nhập sản lượng) có thêm **cột Ngày** (ngày/tháng + thứ). Cùng một người mà nhập 2 ngày khác nhau thì tách thành 2 nhóm; ngày không phải hôm nay tô **màu vàng** kèm chữ "không phải hôm nay", và danh sách có nhiều ngày thì hiện lời nhắc kiểm tra trước khi bấm **Chốt ca**. Làm **A3 (sao lưu) → B2 → Phần D**.
+
 > **Bản 08/10/2026 – Nhân vật Mai.** Chỉ đổi **`Index.html`**. Mai (nhân vật chibi) chào mỗi ngày, hiện khẩu hiệu của ngày ở *Việc hôm nay* và *Nhập sản lượng*, hướng dẫn công nhân lần đầu vào trang nhập (nút **? Hướng dẫn nhập** để xem lại), **đọc lại số trước khi công nhân gửi** (bấm "Đúng rồi, gửi" mới gửi), khen sau khi gửi, động viên theo hạng ở *KPI cá nhân*, nhắc nghỉ lúc 10:00 và 15:00. Ai không thích bấm nút **🙂 Mai** ở đầu trang để tắt. Làm **A3 (sao lưu) → B2 → Phần D**.
 
 > **Bản 07/10/2026 (tối) – Sửa lỗi treo khung "Đang tổng hợp báo cáo".** Chỉ đổi **`Index.html`**: khi máy chủ báo lỗi, khung chờ tự đóng và hiện rõ lời báo lỗi (trước đây khung che mất lời báo lỗi nên trông như treo); chờ quá 60 giây có nút Đóng. Muốn tải được PDF thì **`Code.gs` cũng phải là bản mới** (có `layBaoCaoThang`) và đã cấp quyền theo **Phần F**.
