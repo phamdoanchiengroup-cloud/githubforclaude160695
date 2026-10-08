@@ -7,7 +7,10 @@ D = os.path.dirname(os.path.abspath(__file__))
 G = os.path.join(D, '..', '..')
 doc = lambda p: io.open(p, encoding='utf-8').read()
 
-ba_d = doc(os.path.join(G, 'so-do', 'nha-may-3d.html'))
+import sys
+sys.path.insert(0, os.path.join(D, '..', 'dang-nhap'))
+from anh_rhino import anh_rhino
+ba_d = anh_rhino(doc(os.path.join(G, 'so-do', 'nha-may-3d.html')))   # chèn logo RHINO ({{RH_LOGO}}) cho biển tên, cờ
 m = re.search(r'const DATA = (\[.*?\])\n;', ba_d, re.S)
 assert m, 'không thấy DATA trong bản 3D'
 DATA = json.loads(m.group(1))
@@ -53,7 +56,6 @@ b = R(b, 'parts.mc.add(m);pick.push(m);const a=rc(Mc.r);', '''parts.mc.add(m);pi
     if(window.SS&&SS.baoTri(fi,Mc)){parts.mc.add(box(a.x1-a.x0+.5,.04,a.y1-a.y0+.5,S({color:0xe5484d,emissive:0xe5484d,emissiveIntensity:.9}),px((a.x0+a.x1)/2),.08,pz((a.y0+a.y1)/2),false));
       const el=document.createElement('div');el.className='lbl bt';el.textContent='⚠ Bảo trì';const L=new CSS2DObject(el);L.position.set(px((a.x0+a.x1)/2),Mc.h+.7,pz((a.y0+a.y1)/2));L.userData.big=true;parts.labels.add(L);}''')
 
-exec(doc(os.path.join(D, 'va-anh-that.py')))   # chế độ "📷 Ảnh như thật" (dò tia sáng)
 
 trang = doc(os.path.join(D, 'demo.src.html'))
 trang = trang.replace('{{SS}}', ss).replace('{{DATA}}', json.dumps(DATA, ensure_ascii=False, separators=(',', ':')))

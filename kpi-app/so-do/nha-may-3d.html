@@ -538,9 +538,9 @@ const roofGroup=new THREE.Group(); scene.add(roofGroup);
 const CYAN=S({color:0x2aa6c4,metalness:.5,roughness:.35});
 {const rise=PEAK-EAVE-.6,half=D/2,sl=Math.hypot(half,rise),ang=Math.atan2(rise,half);
   [[1,D/4],[-1,-D/4]].forEach(([s,z])=>{const r=box(W+.6,.12,sl+.3,M.roofL,0,EAVE+.6+rise/2,z);uvWorld(r.geometry,(W+.6)/0.25,1);r.rotation.x=s*ang;roofGroup.add(r);});
-  // tường chắn mái trắng, viền xanh ngọc
-  [[W+.5,0,D/2,0],[W+.5,0,-D/2,0],[D+.5,W/2,0,1],[D+.5,-W/2,0,1]].forEach(([l,x,z,r])=>{const b=box(r?.25:l,1.3,r?l:.25,M.clad,x,EAVE+.65,z);uvWorld(b.geometry,l/4,1);roofGroup.add(b);
-    roofGroup.add(box(r?.3:l+.05,.12,r?l+.05:.3,CYAN,x,EAVE+1.32,z,false));});
+  // tường đỉnh thấp tới mép mái + viền xanh ngọc (ảnh phối cảnh & video: thấy rõ hai mái dốc, không có tường chắn mái cao)
+  [[W+.5,0,D/2,0],[W+.5,0,-D/2,0],[D+.5,W/2,0,1],[D+.5,-W/2,0,1]].forEach(([l,x,z,r])=>{const b=box(r?.25:l,.62,r?l:.25,M.clad,x,EAVE+.31,z);uvWorld(b.geometry,l/4,1);roofGroup.add(b);
+    roofGroup.add(box(r?.3:l+.05,.12,r?l+.05:.3,CYAN,x,EAVE+.64,z,false));});
   // cửa mái (monitor) chạy dọc nóc
   const mon=new THREE.Group();mon.add(box(W*.62,.12,3.2,M.roofL,0,PEAK+1.25,0));
   [-1,1].forEach(s=>{const l=box(W*.6,1.1,.08,M.louver,0,PEAK+.65,s*1.45);uvWorld(l.geometry,1,6);mon.add(l);});
@@ -555,6 +555,15 @@ const CYAN=S({color:0x2aa6c4,metalness:.5,roughness:.35});
   lad.position.set(W/2+.25,0,-D/2+6);roofGroup.add(lad);
 }
 
+/* logo RHINO (thương hiệu của Carbon Billiards): ảnh viền trắng nằm ngang [con tê giác | chữ RHINO], tô vàng khi vẽ lên biển */
+const RH_IMG=new Image(); RH_IMG.src='{{RH_LOGO}}';
+function logoTex(w,h,ve){const c=document.createElement('canvas');c.width=w;c.height=h;const g=c.getContext('2d');const t=new THREE.CanvasTexture(c);t.colorSpace=THREE.SRGBColorSpace;t.anisotropy=8;
+  const draw=()=>{g.clearRect(0,0,w,h);ve(g,w,h,RH_IMG.naturalWidth>0);t.needsUpdate=true;};draw();if(!(RH_IMG.complete&&RH_IMG.naturalWidth))RH_IMG.addEventListener('load',draw);return t;}
+function rhinoVang(g,phan,x,y,w){const sx=phan==='con'?0:224,sw=phan==='con'?214:296,h=Math.round(w*118/sw);
+  const tc=document.createElement('canvas');tc.width=w;tc.height=h;const t=tc.getContext('2d');
+  [[0,0],[1,0],[0,1],[1,1],[-1,0],[0,-1],[2,0],[0,2]].forEach(([dx,dy])=>t.drawImage(RH_IMG,sx,0,sw,118,dx,dy,w,h));   // vẽ chồng cho nét dày
+  t.globalCompositeOperation='source-in';const gr=t.createLinearGradient(0,0,0,h);gr.addColorStop(0,'#f7df8f');gr.addColorStop(1,'#c8922c');t.fillStyle=gr;t.fillRect(0,0,w,h);
+  g.drawImage(tc,x,y);return h;}
 const leafM=[mat('#3f7a35',{roughness:.9}),mat('#4f8a3c',{roughness:.9}),mat('#356b2e',{roughness:.9})];
 const ico=new THREE.IcosahedronGeometry(1,1);
 /* ---------- tòa điều hành (theo phối cảnh DELCO + video) ---------- */
@@ -611,14 +620,17 @@ function win(f,c,a,w,h0,h1,g=office,cols=2){const t=.08,m=(h0+h1)/2,hh=h1-h0;
   blk(-11,0,11,28,3*FH+.6,3*FH+4.4,OF.dark);
   win('W',-11,19.5,14,3*FH+1.3,3*FH+3.6,office,8);
   blk(-14,-11,13,28,3*FH+.6,3*FH+.66,OF.tile);blk(-14.02,-13.96,13,28,3*FH+.6,3*FH+1.7,OF.rail);blk(-14.05,-13.93,13,28,3*FH+1.66,3*FH+1.74,M.steel);
-  blk(-11.3,0,10.7,28.3,3*FH+4.4,3*FH+4.6,OF.dark);
+  const MAI_SANG=S({color:0xc9ccc8,roughness:.85,map:TX.concrete});
+  blk(-11.3,0,10.7,28.3,3*FH+4.4,3*FH+4.6,OF.dark);blk(-11.1,-.2,10.9,28.1,3*FH+4.6,3*FH+4.62,MAI_SANG);
   // tháp thang đen + dải kính + biển hiệu
-  blk(-15.6,-10.8,28,33,0,19.4,OF.dark);
+  // khối ốp nhôm sẫm phía Bắc (thang bộ + biển RHINO): chạy suốt từ mặt tiền tới tường xưởng, cao hơn tầng 4
+  const ALU=S({color:0x363b40,roughness:.42,metalness:.35});
+  blk(-15.6,0,28,33,0,19.4,ALU);blk(-15.8,.1,27.8,33.2,19.4,19.75,ALU);blk(-15.3,-.3,28.3,32.7,19.75,19.78,MAI_SANG);
+  for(let k=0;k<4;k++)for(let i=0;i<5;i++)win('N',33,-12.2+i*2.5,.85,k*FH+1.5+(k?0:.3),k*FH+2.55,office,1);   // ô cửa nhỏ mặt hông (phối cảnh nhìn từ bãi xe)
   blk(-15.68,-15.6,29,32,.4,15.2,OFW);for(let k=1;k<5;k++)blk(-15.72,-15.62,29,32,k*3.6,k*3.6+.08,OF.frame);
   blk(-15.72,-15.62,30.47,30.53,.4,15.2,OF.frame);
-  const sg=canvasTex(512,(g,s)=>{g.fillStyle='#2b3034';g.fillRect(0,0,s,s);g.fillStyle='#e8c77a';g.textAlign='center';g.font='bold 74px "Barlow Condensed",Arial Narrow,sans-serif';g.fillText('CARBON',s/2,s*.55);g.font='bold 58px "Barlow Condensed",Arial Narrow,sans-serif';g.fillText('BILLIARDS',s/2,s*.7);
-    g.strokeStyle='#e8c77a';g.lineWidth=6;g.beginPath();g.arc(s/2,s*.3,46,0,Math.PI*2);g.stroke();g.beginPath();g.moveTo(s/2-30,s*.3);g.lineTo(s/2+30,s*.3);g.stroke();});
-  const sign=new THREE.Mesh(new THREE.PlaneGeometry(3,3),S({map:sg,roughness:.5,emissive:0xffffff,emissiveMap:sg,emissiveIntensity:.25}));sign.rotation.y=-Math.PI/2;sign.position.set(px(-15.7),17,pz(30.5));office.add(sign);
+  const sg=logoTex(512,512,(g,w,h,co)=>{g.fillStyle='#363b40';g.fillRect(0,0,w,h);if(!co)return;rhinoVang(g,'con',96,70,320);rhinoVang(g,'chu',86,330,340);});
+  const sign=new THREE.Mesh(new THREE.PlaneGeometry(3.4,3.4),S({map:sg,roughness:.5,emissive:0xffffff,emissiveMap:sg,emissiveIntensity:.3}));sign.rotation.y=-Math.PI/2;sign.position.set(px(-15.7),17,pz(30.5));office.add(sign);
   pot(-12,9,FH+.35,.8);pot(-3,11,FH+.35,.7);
 }
 
@@ -651,8 +663,9 @@ for(let i=0;i<7;i++)sceneGroup.add(plane(.12,5,M.line,px(-36+i*2.8),-.28,pz(36),
     [.45,1.85].forEach(h=>sceneGroup.add(box(.06,.08,d-c,fenceM,px(SITE.x0),h,pz((c+d)/2),false)));
     for(let y=c;y<=d;y+=3)sceneGroup.add(box(.2,2.1,.2,fenceM,px(SITE.x0),.75,pz(y)));});
   // tường biển tên công ty
-  const sgn=canvasTex(512,(g,s)=>{g.fillStyle='#8f9294';g.fillRect(0,0,s,s);noise(g,s,'rgba(0,0,0,0)',.18,9000,2);g.fillStyle='#e8c77a';g.textAlign='center';
-    g.font='bold 34px "Be Vietnam Pro",Arial,sans-serif';g.fillText('Công ty TNHH',s/2,s*.42);g.font='bold 46px "Barlow Condensed",Arial Narrow,sans-serif';g.fillText('CARBON BILLIARDS',s/2,s*.56);});
+  const sgn=logoTex(1024,296,(g,w,h,co)=>{g.fillStyle='#8f9294';g.fillRect(0,0,w,h);for(let i=0;i<5000;i++){g.fillStyle=`rgba(0,0,0,${Math.random()*.12})`;g.fillRect(Math.random()*w,Math.random()*h,2,2);}
+    g.fillStyle='#e8c77a';g.textAlign='center';g.font='600 46px "Be Vietnam Pro",Arial,sans-serif';g.fillText('Công ty TNHH CARBON BILLIARDS',w/2,72);
+    if(co){rhinoVang(g,'con',w/2-95,100,190);rhinoVang(g,'chu',w/2-90,212,180);}});
   const sw=new THREE.Mesh(new THREE.BoxGeometry(.6,2.6,9),[S({color:0x8f9294,roughness:.8}),S({color:0x8f9294,roughness:.8}),S({color:0x8f9294}),S({color:0x8f9294}),S({color:0x8f9294}),S({color:0x8f9294})]);
   sw.position.set(px(SITE.x0+.2),1,pz(13.5));sw.castShadow=true;sceneGroup.add(sw);
   const face=new THREE.Mesh(new THREE.PlaneGeometry(9,2.6),S({map:sgn,roughness:.8}));face.rotation.y=-Math.PI/2;face.position.set(px(SITE.x0-.11),1,pz(13.5));sceneGroup.add(face);
@@ -666,8 +679,13 @@ function house(x0,x1,y0,y1,h,label,g=auxGroup){const b=blk(x0,x1,y0,y1,0,h,OF.re
   win('W',x0,(y0+y1)/2,Math.min(2.4,(y1-y0)*.5),1,2.2,g,2);if(label)lblAt(g,label,px((x0+x1)/2),h+1.4,pz((y0+y1)/2));return b;}
 house(-38,-32.5,-15.5,-13,3.4,'Nhà bảo vệ');house(-38,-33,33,38.5,3.4,'Nhà phụ trợ');
 // cột cờ 3 lá
-{[[0xda251d,9],[0xf0f0f0,10],[0x2e9e44,9]].forEach(([c,h],i)=>{auxGroup.add(cyl(.06,h,M.steel,px(-35),h/2,pz(2+i*1.6),12));
-  const f=new THREE.Mesh(new THREE.PlaneGeometry(1.5,1,8,4),S({color:c,side:THREE.DoubleSide,roughness:.8}));f.rotation.y=Math.PI/2;f.position.set(px(-35),h-.6,pz(2+i*1.6)-.76);f.userData.flag=1;auxGroup.add(f);animUV.push(f);});}
+{const coTex=k=>logoTex(192,128,(g,w,h,co)=>{
+    if(k===0){g.fillStyle='#da251d';g.fillRect(0,0,w,h);g.fillStyle='#ffde00';g.beginPath();for(let i=0;i<10;i++){const r=i%2?17:42,a=-Math.PI/2+i*Math.PI/5;g.lineTo(w/2+r*Math.cos(a),h/2+r*Math.sin(a));}g.fill();}
+    else if(k===1){g.fillStyle='#f4f4f2';g.fillRect(0,0,w,h);if(co){rhinoVang(g,'con',56,24,80);rhinoVang(g,'chu',51,76,90);}}
+    else{g.fillStyle='#1f9a4a';g.fillRect(0,0,w,h);g.fillStyle='#fff';g.fillRect(w/2-14,h/2-42,28,84);g.fillRect(w/2-42,h/2-14,84,28);}});
+  const COT=[coTex(0),coTex(1),coTex(2)];
+ [[0xda251d,9],[0xf0f0f0,10],[0x2e9e44,9]].forEach(([c,h],i)=>{auxGroup.add(cyl(.06,h,M.steel,px(-35),h/2,pz(2+i*1.6),12));
+  const f=new THREE.Mesh(new THREE.PlaneGeometry(1.5,1,8,4),S({map:COT[i],side:THREE.DoubleSide,roughness:.8}));f.rotation.y=Math.PI/2;f.position.set(px(-35),h-.6,pz(2+i*1.6)-.76);f.userData.flag=1;auxGroup.add(f);animUV.push(f);});}
 // ô tô
 const carC=['#b71c1c','#e8e8e8','#2b2b2b','#8a8f94','#1d3f73','#c62828'];
 function car(x,y,c,ry){const cm=mat(c,{metalness:.75,roughness:.25});const g=new THREE.Group();

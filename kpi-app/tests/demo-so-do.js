@@ -1,13 +1,13 @@
 const { chromium } = require('/opt/node22/lib/node_modules/playwright');
 const fs = require('fs'), path = require('path');
 /** Kiểm tra demo-so-do-nha-may.html (sơ đồ nhà máy 2D + 3D tô màu KPI / sĩ số):
- *    THREE=<thư mục gói npm three@0.160.0> PT=<thư mục có three-gpu-pathtracer@0.0.23 và three-mesh-bvh@0.7.6 (gói npm)> OUT=<thư mục ảnh> node tests/demo-so-do.js
+ *    THREE=<thư mục gói npm three@0.160.0> OUT=<thư mục ảnh> node tests/demo-so-do.js
  *  (sandbox chặn jsdelivr nên trả thư viện Three.js từ gói npm cục bộ; không có THREE thì bỏ qua phần 3D) */
-const F = 'file://' + path.resolve(__dirname, '..', 'demo-so-do-nha-may.html'), OUT = process.env.OUT || '', THREE = process.env.THREE || '', PT = process.env.PT || '';
+const F = 'file://' + path.resolve(__dirname, '..', 'demo-so-do-nha-may.html'), OUT = process.env.OUT || '', THREE = process.env.THREE || '';
 let dem = 0, loi = 0; const ok = (d, t, c) => { dem++; if (d) console.log('  ✓ ' + t); else { loi++; console.log('  ✗ ' + t + (c !== undefined ? ' → ' + JSON.stringify(c).slice(0, 300) : '')); } };
 async function mo(b, o = {}) {
   const ctx = await b.newContext(Object.assign({ viewport: { width: o.w || 1360, height: o.h || 900 }, deviceScaleFactor: o.dsf || 1 }, o.cham ? { isMobile: true, hasTouch: true } : {}, o.giam ? { reducedMotion: 'reduce' } : {}));
-  if (THREE) await ctx.route(/cdn\.jsdelivr\.net\/npm\//, r => { const u = r.request().url(), goi = [['three@0.160.0/', THREE], ['three-mesh-bvh@0.7.6/', PT + '/three-mesh-bvh'], ['three-gpu-pathtracer@0.0.23/', PT + '/three-gpu-pathtracer']].find(g => u.includes(g[0]));
+  if (THREE) await ctx.route(/cdn\.jsdelivr\.net\/npm\//, r => { const u = r.request().url(), goi = [['three@0.160.0/', THREE]].find(g => u.includes(g[0]));
     if (!goi) return r.abort(); r.fulfill({ status: 200, contentType: 'application/javascript', body: fs.readFileSync(path.join(goi[1], u.split(goi[0])[1])) }); });
   await ctx.route(/fonts\.googleapis|fonts\.gstatic/, r => r.abort());
   const p = await ctx.newPage(); p.loi = []; p.on('pageerror', e => p.loi.push(e.message));
@@ -64,16 +64,6 @@ const mauPhong = (p, ten) => p.evaluate(t => { const g = [...document.querySelec
     ok(await p.evaluate(() => document.querySelector('#segMau button[data-c="siso"]').getAttribute('aria-pressed')) === 'true', 'đổi "Sĩ số" trong 3D thì bản 2D cũng đổi theo (dùng chung)');
     await f3.evaluate(() => document.querySelector('#segMau button[data-c=""]').click()); await p.waitForTimeout(500);
     ok(!/A \/ A\+/.test(await f3.textContent('#legend')), '"Màu thật": trở lại chú giải vật liệu sàn như bản gốc');
-    if (PT) {
-      await f3.evaluate(() => document.querySelector('#segFloor button[data-f="all"]').click()); await p.waitForTimeout(2500);
-      await f3.evaluate(() => document.getElementById('btnAnh').click());
-      let n = 0; for (let i = 0; i < 90 && n < 2; i++) { await p.waitForTimeout(2000); n = await f3.evaluate(() => __pt.samples); }
-      s = await f3.evaluate(() => [__pt.on, __pt.soVatLieu, document.getElementById('ptTT').textContent, document.querySelector('.app').classList.contains('pt-on')]);
-      ok(n >= 2 && s[0] && s[1] > 20 && s[1] < 255 && /Ảnh thật · \d+\/600 mẫu/.test(s[2]) && s[3], '📷 Ảnh như thật: nạp bộ dò tia sáng, gộp còn < 255 vật liệu (đúng màu), ảnh mịn dần theo số mẫu', [n, s]);
-      if (OUT) await p.screenshot({ path: OUT + '/so-do-anh-that.png', timeout: 120000 });
-      await f3.evaluate(() => document.getElementById('btnAnh').click()); await p.waitForTimeout(800);
-      ok(await f3.evaluate(() => !__pt.on && document.getElementById('ptTT').hidden), 'bấm lại: về bản thường');
-    }
     ok(!p.loi.length, 'không lỗi JS (3D)', p.loi);
   }
   await p.ctx.close();
