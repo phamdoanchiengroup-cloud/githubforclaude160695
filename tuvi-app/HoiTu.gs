@@ -30,11 +30,20 @@ var HT_QUE = {
   buocNgoat: ['Trạch Hỏa Cách', 'Thuần Chấn', 'Lôi Thủy Giải', 'Địa Lôi Phục', 'Hỏa Sơn Lữ', 'Trạch Lôi Tùy', 'Sơn Phong Cổ', 'Phong Thủy Hoán'],
   sucKhoe: ['Thuần Khảm', 'Thủy Sơn Kiển', 'Trạch Thủy Khốn', 'Sơn Địa Bác', 'Địa Hỏa Minh Di', 'Trạch Phong Đại Quá', 'Sơn Trạch Tổn'],
   taiChinh: ['Sơn Trạch Tổn', 'Sơn Địa Bác', 'Trạch Thủy Khốn', 'Thiên Thủy Tụng', 'Phong Thủy Hoán', 'Thiên Địa Bĩ'],
-  giaDao: ['Hỏa Trạch Khuê', 'Thiên Thủy Tụng', 'Thiên Địa Bĩ', 'Sơn Phong Cổ', 'Phong Thủy Hoán', 'Hỏa Sơn Lữ']
+  giaDao: ['Hỏa Trạch Khuê', 'Thiên Thủy Tụng', 'Thiên Địa Bĩ', 'Sơn Phong Cổ', 'Phong Thủy Hoán', 'Hỏa Sơn Lữ'],
+  // Nhóm thêm cho Hồ sơ năm (không vào 8 chủ đề hội tụ)
+  hocHanh: ['Sơn Thủy Mông', 'Hỏa Phong Đỉnh', 'Thuần Ly', 'Phong Địa Quan', 'Địa Sơn Khiêm', 'Thuần Đoài', 'Địa Phong Thăng'],
+  diXa: ['Hỏa Sơn Lữ', 'Thuần Tốn', 'Phong Thủy Hoán', 'Phong Sơn Tiệm', 'Thiên Sơn Độn', 'Thủy Thiên Nhu', 'Thuần Chấn'],
+  quyNhan: ['Thiên Hỏa Đồng Nhân', 'Thủy Địa Tỷ', 'Địa Thiên Thái', 'Lôi Thủy Giải', 'Phong Lôi Ích', 'Hỏa Thiên Đại Hữu', 'Phong Trạch Trung Phu'],
+  thiPhi: ['Thiên Thủy Tụng', 'Hỏa Lôi Phệ Hạp', 'Hỏa Trạch Khuê', 'Trạch Thủy Khốn', 'Thủy Sơn Kiển', 'Thiên Địa Bĩ', 'Trạch Thiên Quải'],
+  nhaDat: ['Phong Hỏa Gia Nhân', 'Thuần Cấn', 'Lôi Phong Hằng', 'Thuần Khôn', 'Thủy Phong Tỉnh', 'Sơn Thiên Đại Súc', 'Địa Trạch Lâm'],
+  tinhThan: ['Thuần Khảm', 'Trạch Phong Đại Quá', 'Địa Hỏa Minh Di', 'Thủy Sơn Kiển', 'Thiên Sơn Độn', 'Lôi Sơn Tiểu Quá', 'Sơn Địa Bác']
 };
 var HT_SO = { // năm cá nhân → sức nặng theo chủ đề
   taiLoc: { 8: 1, 1: 0.5, 3: 0.4 }, quanLoc: { 1: 1, 8: 1, 4: 0.5 }, ketHon: { 2: 1, 6: 1 }, sinhCon: { 6: 0.9, 3: 0.5, 2: 0.4 },
-  buocNgoat: { 5: 1, 1: 0.9, 9: 0.8 }, sucKhoe: { 7: 0.9, 4: 0.6, 9: 0.5 }, taiChinh: { 7: 0.8, 9: 0.7, 5: 0.5 }, giaDao: { 9: 0.9, 5: 0.7, 6: 0.5 }
+  buocNgoat: { 5: 1, 1: 0.9, 9: 0.8 }, sucKhoe: { 7: 0.9, 4: 0.6, 9: 0.5 }, taiChinh: { 7: 0.8, 9: 0.7, 5: 0.5 }, giaDao: { 9: 0.9, 5: 0.7, 6: 0.5 },
+  hocHanh: { 7: 1, 3: 0.5, 1: 0.4 }, diXa: { 5: 1, 9: 0.6, 3: 0.4 }, quyNhan: { 2: 0.8, 3: 0.6, 8: 0.4 }, thiPhi: { 5: 0.5, 1: 0.4, 9: 0.4 },
+  nhaDat: { 4: 1, 6: 0.7, 8: 0.5 }, tinhThan: { 7: 0.8, 9: 0.7, 2: 0.5 }
 };
 var HT_DAO_HOA = { 0: 9, 4: 9, 8: 9, 2: 3, 6: 3, 10: 3, 5: 6, 9: 6, 1: 6, 11: 0, 3: 0, 7: 0 };
 
@@ -53,6 +62,7 @@ function htTinHieu_(C, y, ctx) {
     else if (v >= ctx.tv[T.k][0]) add(T.k, 'Tử Vi', 1, 'Tử Vi: tín hiệu mạnh (top 20% cả đời, cường độ ' + Math.min(10, v) + '/10)');
   });
   if ((C.daiVanTV || []).some(function (d) { return +String(d.nam).slice(0, 4) === y; })) add('buocNgoat', 'Tử Vi', 1.2, 'Tử Vi: năm chuyển đại hạn');
+  htTinTuViThem_(tv, y, add);
   // Bát Tự
   var nc = bt.nhatChuCan, can = ((y - 4) % 10 + 10) % 10, chi = ((y - 4) % 12 + 12) % 12, hy = bt.goiY.hy, ky = bt.goiY.ky;
   var tC = thapThanTen_(nc, can), tZ = thapThanTen_(nc, TANG_CAN[chi][0]), cc = CAN[can] + ' ' + CHI[chi];
@@ -60,9 +70,9 @@ function htTinHieu_(C, y, ctx) {
   var co = function (re) { return re.test(tC) || re.test(tZ); };
   var male = tv.info.male, dChi = bt.pillars[2].chi, nChi = bt.pillars[0].chi, mChi = bt.pillars[1].chi, gChi = bt.pillars[3].chi;
   var xungNgay = (chi - dChi + 12) % 12 === 6, xungNam = (chi - nChi + 12) % 12 === 6, hopNgay = PN_LUC_HOP[dChi] === chi || (chi !== dChi && (chi - dChi + 12) % 4 === 0);
-  if (co(/Tài/)) add('taiLoc', 'Bát Tự', tot ? 1.3 : 0.6, 'Bát Tự: năm ' + cc + ' mang Tài tinh (' + tC + '/' + tZ + ')' + (tot ? ', lại là hỷ dụng' : ''));
+  if (co(/Chính Tài|Thiên Tài/)) add('taiLoc', 'Bát Tự', tot ? 1.3 : 0.6, 'Bát Tự: năm ' + cc + ' mang Tài tinh (' + tC + '/' + tZ + ')' + (tot ? ', lại là hỷ dụng' : ''));
   if (co(/Quan|Sát/)) add('quanLoc', 'Bát Tự', tot ? 1.2 : 0.9, 'Bát Tự: năm ' + cc + ' mang Quan/Sát – áp lực và cơ hội thăng tiến');
-  var pn = male ? /Tài/ : /Quan|Sát/;
+  var pn = male ? /Chính Tài|Thiên Tài/ : /Quan|Sát/;
   var kh = (co(pn) ? 0.8 : 0) + (hopNgay ? 0.6 : 0) + (HT_DAO_HOA[nChi] === chi || HT_DAO_HOA[dChi] === chi ? 0.5 : 0);
   if (kh) add('ketHon', 'Bát Tự', kh, 'Bát Tự: ' + [co(pn) ? 'sao phối ngẫu xuất hiện' : '', hopNgay ? 'năm hợp cung phu thê (nhật chi)' : '', HT_DAO_HOA[nChi] === chi || HT_DAO_HOA[dChi] === chi ? 'gặp Đào hoa' : ''].filter(Boolean).join(', '));
   var sc = male ? /Quan|Sát/ : /Thực|Thương/;
@@ -70,12 +80,24 @@ function htTinHieu_(C, y, ctx) {
   if (sv) add('sinhCon', 'Bát Tự', sv, 'Bát Tự: ' + (co(sc) ? 'sao con cái (' + (male ? 'Quan/Sát' : 'Thực/Thương') + ') đến' : 'năm hợp trụ giờ (cung con cái)'));
   var sk = (xau ? 0.7 : 0) + (xungNgay ? 0.5 : 0) + (xungNam ? 0.5 : 0) + (chi === nChi ? 0.3 : 0);
   if (sk) add('sucKhoe', 'Bát Tự', sk, 'Bát Tự: ' + [xau ? 'can chi năm đều là kỵ thần' : '', xungNgay ? 'xung nhật chi' : '', xungNam ? 'xung Thái Tuế năm sinh' : '', chi === nChi ? 'năm tuổi' : ''].filter(Boolean).join(', '));
-  var tcv = (co(/Kiếp|Tỷ/) && bt.tyLeTro >= 45 ? 0.9 : 0) + (co(/Tài/) && !tot ? 0.4 : 0) + (xau ? 0.3 : 0);
+  var tcv = (co(/Kiếp|Tỷ/) && bt.tyLeTro >= 45 ? 0.9 : 0) + (co(/Chính Tài|Thiên Tài/) && !tot ? 0.4 : 0) + (xau ? 0.3 : 0);
   if (tcv) add('taiChinh', 'Bát Tự', tcv, 'Bát Tự: ' + (co(/Kiếp|Tỷ/) ? 'Tỷ Kiếp đoạt tài khi thân đã vượng' : 'tài đến nhưng thuộc kỵ thần – dễ vào nhanh ra nhanh'));
   var gd = (xungNgay ? 1 : 0) + ((chi - mChi + 12) % 12 === 6 ? 0.6 : 0);
   if (gd) add('giaDao', 'Bát Tự', gd, 'Bát Tự: ' + (xungNgay ? 'năm xung cung phu thê' : 'năm xung trụ tháng (cha mẹ, anh em)'));
   if (bt.daiVan.some(function (d) { return d.nam === y; })) add('buocNgoat', 'Bát Tự', 1.3, 'Bát Tự: năm giao đại vận');
   if (xungNam) add('buocNgoat', 'Bát Tự', 0.9, 'Bát Tự: năm xung Thái Tuế – dễ đổi chỗ ở/công việc');
+  // Bát Tự – nhóm thêm cho Hồ sơ năm
+  if (co(/Ấn/)) add('hocHanh', 'Bát Tự', tot ? 1.1 : 0.8, 'Bát Tự: năm ' + cc + ' mang Ấn tinh – học hành, bằng cấp, giấy tờ');
+  if (co(/Ấn/)) add('nhaDat', 'Bát Tự', tot ? 0.8 : 0.5, 'Bát Tự: Ấn tinh còn chủ nhà cửa, chỗ dựa');
+  if ((HT_QUY_NHAN[nc] || []).indexOf(chi) >= 0) add('quyNhan', 'Bát Tự', 1.1, 'Bát Tự: năm ' + cc + ' gặp Thiên Ất quý nhân của nhật chủ');
+  else if (co(/Ấn/) && tot) add('quyNhan', 'Bát Tự', 0.6, 'Bát Tự: Ấn tinh hỷ dụng – có bề trên nâng đỡ');
+  var tp = (co(/Thương/) ? 0.9 : 0) + (co(/Kiếp/) ? 0.5 : 0) + (lgQuanHeChi_(chi, dChi).indexOf('tương hình') >= 0 ? 0.6 : 0);
+  if (tp) add('thiPhi', 'Bát Tự', Math.min(1.4, tp), 'Bát Tự: ' + [co(/Thương/) ? 'Thương Quan – lời nói dễ gây va chạm, kỵ kiện tụng' : '', co(/Kiếp/) ? 'Kiếp Tài – cạnh tranh, tiểu nhân' : '', lgQuanHeChi_(chi, dChi).indexOf('tương hình') >= 0 ? 'chi năm hình nhật chi' : ''].filter(Boolean).join(', '));
+  var maNam = [2, 11, 8, 5][nChi % 4], maNgay = [2, 11, 8, 5][dChi % 4];
+  if (chi === maNam || chi === maNgay) add('diXa', 'Bát Tự', 1, 'Bát Tự: năm ' + cc + ' gặp Dịch Mã – đi lại, đổi chỗ');
+  else if (xungNgay) add('diXa', 'Bát Tự', 0.5, 'Bát Tự: năm xung nhật chi – dễ phải di chuyển');
+  var tt = (co(/Thiên Ấn|Kiêu/) ? 0.6 : 0) + (co(/Sát/) && !tot ? 0.7 : 0) + (xau ? 0.4 : 0);
+  if (tt) add('tinhThan', 'Bát Tự', Math.min(1.4, tt), 'Bát Tự: ' + [co(/Thiên Ấn|Kiêu/) ? 'Thiên Ấn – hay lo nghĩ, dễ cô độc' : '', co(/Sát/) && !tot ? 'Thất Sát là kỵ – áp lực đè nặng' : '', xau ? 'can chi năm đều là kỵ thần' : ''].filter(Boolean).join(', '));
   // Hà Lạc
   var hn = ctx.hlNam[y];
   if (hn) {
@@ -106,6 +128,23 @@ function htTinHieu_(C, y, ctx) {
     if (S === 4) add('giaDao', 'Chiêm tinh', 1, 'Chiêm tinh: Sao Thổ qua nhà 4 (gia đình, nhà cửa)');
     if (P === 4) add('giaDao', 'Chiêm tinh', 0.6, 'Chiêm tinh: hồ sơ năm nhà 4');
     A.chuKy.forEach(function (c) { add('buocNgoat', 'Chiêm tinh', /Mộc/.test(c) ? 0.6 : 1.2, 'Chiêm tinh: ' + c); });
+    // nhóm thêm cho Hồ sơ năm
+    if (J === 9 || J === 3) add('hocHanh', 'Chiêm tinh', J === 9 ? 1.1 : 0.8, 'Chiêm tinh: Sao Mộc qua nhà ' + J + ' (học tập, ' + (J === 9 ? 'bằng cấp' : 'kỹ năng') + ')');
+    else if (P === 9 || P === 3) add('hocHanh', 'Chiêm tinh', 0.6, 'Chiêm tinh: hồ sơ năm nhà ' + P);
+    if (J === 9) add('diXa', 'Chiêm tinh', 1, 'Chiêm tinh: Sao Mộc qua nhà 9 (đi xa, nước ngoài)');
+    else if (P === 9) add('diXa', 'Chiêm tinh', 0.7, 'Chiêm tinh: hồ sơ năm nhà 9');
+    else if (J === 3) add('diXa', 'Chiêm tinh', 0.4, 'Chiêm tinh: Sao Mộc qua nhà 3 (đi lại gần)');
+    if (J === 11) add('quyNhan', 'Chiêm tinh', 1, 'Chiêm tinh: Sao Mộc qua nhà 11 (bạn bè, người giúp)');
+    else if (P === 11) add('quyNhan', 'Chiêm tinh', 0.6, 'Chiêm tinh: hồ sơ năm nhà 11');
+    else if (J === 7) add('quyNhan', 'Chiêm tinh', 0.5, 'Chiêm tinh: Sao Mộc qua nhà 7 (đối tác tốt)');
+    if (S === 7) add('thiPhi', 'Chiêm tinh', 0.9, 'Chiêm tinh: Sao Thổ qua nhà 7 – quan hệ, hợp đồng căng thẳng');
+    else if (S === 3 || S === 9) add('thiPhi', 'Chiêm tinh', 0.5, 'Chiêm tinh: Sao Thổ qua nhà ' + S + ' – giấy tờ, thủ tục chậm trễ');
+    if (P === 12) add('thiPhi', 'Chiêm tinh', 0.4, 'Chiêm tinh: hồ sơ năm nhà 12 – kẻ ngầm cản trở');
+    if (J === 4) add('nhaDat', 'Chiêm tinh', 1, 'Chiêm tinh: Sao Mộc qua nhà 4 (nhà cửa mở rộng)');
+    else if (P === 4) add('nhaDat', 'Chiêm tinh', 0.5, 'Chiêm tinh: hồ sơ năm nhà 4');
+    if (S === 4) add('nhaDat', 'Chiêm tinh', 0.6, 'Chiêm tinh: Sao Thổ qua nhà 4 (sửa sang, gánh vác nhà cửa)');
+    var tts = (S === 12 ? 1 : S === 1 ? 0.6 : 0) + (A.sSun === 'vuông' || A.sSun === 'đối' ? 0.6 : 0) + (P === 12 ? 0.4 : 0);
+    if (tts) add('tinhThan', 'Chiêm tinh', Math.min(1.4, tts), 'Chiêm tinh: ' + [S === 12 || S === 1 ? 'Sao Thổ qua nhà ' + S : '', A.sSun === 'vuông' || A.sSun === 'đối' ? 'Sao Thổ ' + A.sSun + ' Mặt Trời gốc' : '', P === 12 ? 'hồ sơ năm nhà 12' : ''].filter(Boolean).join(', '));
   }
   // Thần số học
   var so = htNamCaNhan_(C.ts, tv.info.solar, y);
@@ -259,4 +298,219 @@ function htMatMa_(C, hoiTu, thang) {
   var giai = hd.l1 === 6 || hd.l2 === 6 ? 'Hồ sơ có hào 6: đời chia 3 chặng – thử nghiệm đến ~30, "lên mái nhà" quan sát 30–50, sau 50 thành hình mẫu.' : 'Human Design: sau Sao Thổ hồi quy (~29) bạn mới thật sự sống đúng thiết kế; sau Chiron hồi quy (~50) là lúc truyền lại kinh nghiệm.';
   items.push({ ten: 'Nhịp đời của bạn', gt: (hl && hl.tien.diem < hl.hau.diem ? 'Tiền khó – hậu thuận' : hl && hl.tien.diem > hl.hau.diem ? 'Tiền thuận – hậu giữ' : 'Đều tay'), y: giai + (hl ? ' Hà Lạc: quẻ Tiên thiên ' + hl.tien.ten + ' → Hậu thiên ' + hl.hau.ten + '.' : '') });
   return items;
+}
+
+/* ===================================================================
+ *  HỒ SƠ NĂM – BIẾN CỐ TỪNG NĂM (19 sự kiện · 8 khía cạnh)
+ *  Mỗi sự kiện ghép tín hiệu "ủng hộ" và "ngược chiều" của 5 hệ có lịch năm.
+ *  Xác suất = (số lần sự kiện thường gặp trong đời, theo độ tuổi) phân bổ cho
+ *  từng năm theo sức mạnh tín hiệu: λ_năm = N × A(tuổi)·e^(βE) / Σ A·e^(βE),
+ *  p = 1 − e^(−λ). E = Σ trọng số hệ × (ủng hộ − ngược chiều).
+ *  Đây là mô hình tham khảo minh bạch, chưa hiệu chỉnh bằng dữ liệu thống kê thực.
+ * =================================================================== */
+/** Tín hiệu Tử Vi cho nhóm thêm (học hành, đi xa, quý nhân, thị phi, nhà đất, tinh thần) */
+function htTinTuViThem_(tv, y, add) {
+  var th = lgTieuHanCung_(tv, y); if (th < 0) return;
+  var ex = lgLuuTinh_(tv, y).ex, P = tv.palaces, tp = lgTPTC_(th);
+  function luu(p, n) { return (ex[mod12(p)] || []).indexOf('L.' + n) >= 0; }
+  function luuTP(n) { return tp.some(function (p) { return luu(p, n); }); }
+  function goc(p, n) { return lgSaoTrongCung_(tv, mod12(p)).indexOf(n) >= 0; }
+  function cong(k, ds) {
+    var v = 0, ly = [];
+    ds.forEach(function (d) { if (d[0]) { v += d[1]; ly.push(d[2]); } });
+    if (v > 0) add(k, 'Tử Vi', Math.min(1.4, Math.round(v * 10) / 10), 'Tử Vi: ' + ly.join(', '));
+  }
+  var khoa = luu(th, 'Hóa Khoa'), xk = luu(th, 'Văn Xương') || luu(th, 'Văn Khúc'), kv = luu(th, 'Thiên Khôi') || luu(th, 'Thiên Việt');
+  cong('hocHanh', [[khoa, 1.1, 'lưu Hóa Khoa tại cung tiểu hạn'], [!khoa && (luu(th - 8, 'Hóa Khoa') || luuTP('Hóa Khoa')), 0.6, 'lưu Hóa Khoa chiếu hạn'],
+    [xk, 0.8, 'lưu Văn Xương/Văn Khúc tại hạn'], [!xk && (luuTP('Văn Xương') || luuTP('Văn Khúc')), 0.4, 'lưu Văn Xương/Văn Khúc chiếu hạn']]);
+  cong('diXa', [[luu(th, 'Thiên Mã'), 1.1, 'lưu Thiên Mã tại cung tiểu hạn'], [luu(th + 6, 'Thiên Mã'), 0.7, 'lưu Thiên Mã tại Thiên Di năm'],
+    [P[th].cung === 'Thiên Di', 0.8, 'tiểu hạn đi vào cung Thiên Di gốc'], [goc(th, 'Thiên Mã'), 0.4, 'Thiên Mã gốc tại hạn']]);
+  cong('quyNhan', [[kv, 1, 'lưu Thiên Khôi/Thiên Việt tại hạn'], [!kv && (luuTP('Thiên Khôi') || luuTP('Thiên Việt')), 0.5, 'lưu Khôi/Việt chiếu hạn'],
+    [goc(th, 'Tả Phù') || goc(th, 'Hữu Bật'), 0.4, 'Tả Phù/Hữu Bật gốc tại hạn'], [khoa, 0.3, 'lưu Hóa Khoa – có người giải nguy']]);
+  cong('thiPhi', [[luu(th, 'Kình Dương') || luu(th, 'Đà La'), 0.7, 'lưu Kình Dương/Đà La tại hạn'], [luu(th, 'Hóa Kỵ') || luu(th - 7, 'Hóa Kỵ'), 1, 'lưu Hóa Kỵ tại hạn hoặc Nô Bộc năm'],
+    [luu(th, 'Thái Tuế'), 0.6, 'lưu Thái Tuế tại hạn – lời ra tiếng vào'], [goc(th, 'Quan Phù') || goc(th, 'Quan Phủ'), 0.5, 'Quan Phù/Quan Phủ tại hạn – giấy tờ, kiện tụng'], [goc(th, 'Thiên Hình'), 0.4, 'Thiên Hình gốc tại hạn']]);
+  cong('nhaDat', [[P[th].cung === 'Điền Trạch', 0.9, 'tiểu hạn đi vào cung Điền Trạch gốc'], [luu(th - 9, 'Hóa Lộc') || luu(th - 9, 'Lộc Tồn'), 0.8, 'lưu Lộc nhập Điền Trạch năm'],
+    [luu(th - 9, 'Hóa Quyền'), 0.5, 'lưu Hóa Quyền nhập Điền Trạch năm'], [luu(th - 9, 'Thiên Mã'), 0.4, 'lưu Thiên Mã tại Điền Trạch năm – dời nhà']]);
+  cong('tinhThan', [[luu(th, 'Thiên Khốc') || luu(th, 'Thiên Hư'), 0.6, 'lưu Thiên Khốc/Thiên Hư tại hạn'], [luu(th - 10, 'Hóa Kỵ'), 1, 'lưu Hóa Kỵ nhập Phúc Đức năm – lo nghĩ'],
+    [luu(th, 'Tang Môn'), 0.5, 'lưu Tang Môn tại hạn'], [P[th].cung === 'Phúc Đức' && P[th].diem < 0, 0.5, 'tiểu hạn vào cung Phúc Đức gốc yếu']]);
+}
+
+var HSN_HE = ['Tử Vi', 'Bát Tự', 'Hà Lạc', 'Chiêm tinh', 'Thần số học'];
+var HSN_W = { 'Tử Vi': 1.2, 'Bát Tự': 1.1, 'Chiêm tinh': 1, 'Hà Lạc': 0.8, 'Thần số học': 0.6 };
+var HSN_NGUON = { 'Tử Vi': 'vận năm trên lá số', 'Bát Tự': 'khí của năm so với ngũ hành gốc', 'Hà Lạc': 'quẻ của năm', 'Chiêm tinh': 'chu kỳ các hành tinh lớn', 'Thần số học': 'con số năm cá nhân' };
+var HSN_BETA = 0.9;
+var HSN_KC = [
+  { k: 'nghiep', ten: 'Sự nghiệp – công việc', icon: '▲' },
+  { k: 'tien', ten: 'Tài chính – tài sản', icon: '◈' },
+  { k: 'tinh', ten: 'Tình cảm – hôn nhân', icon: '❤' },
+  { k: 'con', ten: 'Con cái', icon: '✿' },
+  { k: 'khoe', ten: 'Sức khỏe – tinh thần', icon: '✚' },
+  { k: 'nha', ten: 'Gia đình – nhà cửa', icon: '⌂' },
+  { k: 'hoc', ten: 'Học hành – đi xa', icon: '✎' },
+  { k: 'quanHe', ten: 'Quan hệ – giấy tờ', icon: '☯' }
+];
+/* N: số lần sự kiện thường gặp trong cả cửa sổ tuổi (ước lượng đời thường); ngan: tên ngắn; nguoc: chiều ngược khi có hệ phản đối */
+var HSN_SK = [
+  { k: 'thangTien', kc: 'nghiep', loai: 'tot', ten: 'Thăng tiến, được giao việc lớn hoặc ghi nhận thành tích', ngan: 'thăng tiến', nguoc: 'trở ngại, va chạm nơi làm việc',
+    ung: { quanLoc: 1, quyNhan: 0.4 }, nghich: { thiPhi: 0.5, tinhThan: 0.3 }, N: 4, tuoi: [20, 65],
+    khuyen: 'Chủ động nhận việc khó, ghi lại kết quả cụ thể và nói rõ mong muốn với người có quyền quyết định.' },
+  { k: 'doiViec', kc: 'nghiep', loai: 'dong', ten: 'Đổi việc, chuyển nơi làm hoặc đổi hướng nghề', ngan: 'thay đổi công việc', nguoc: 'mọi thứ giữ nguyên',
+    ung: { buocNgoat: 1, quanLoc: 0.3, diXa: 0.3 }, nghich: {}, N: 5, tuoi: [18, 65],
+    khuyen: 'Nếu muốn đổi, chuẩn bị trước hồ sơ và khoản dự phòng 3–6 tháng; nếu muốn ở lại, đây là lúc nói chuyện lại về vai trò.' },
+  { k: 'apLucViec', kc: 'nghiep', loai: 'xau', ten: 'Áp lực, cạnh tranh hoặc va chạm nơi làm việc', ngan: 'áp lực công việc', nguoc: 'được nâng đỡ',
+    ung: { thiPhi: 0.8, tinhThan: 0.4, quanLoc: 0.2 }, nghich: { quyNhan: 0.5 }, N: 10, tuoi: [18, 68],
+    khuyen: 'Giữ mọi thỏa thuận bằng văn bản, tránh tranh luận lúc nóng, chọn một người đáng tin để trao đổi trước khi phản ứng.' },
+  { k: 'thuNhap', kc: 'tien', loai: 'tot', ten: 'Thu nhập tăng rõ rệt hoặc có khoản tiền lớn', ngan: 'thu nhập tăng', nguoc: 'hao hụt tiền bạc',
+    ung: { taiLoc: 1 }, nghich: { taiChinh: 0.7 }, N: 6, tuoi: [18, 80],
+    khuyen: 'Đặt trước tỷ lệ tiết kiệm cho mọi khoản thu thêm; đừng để thu nhập tăng kéo chi tiêu tăng theo.' },
+  { k: 'haoTai', kc: 'tien', loai: 'xau', ten: 'Hao tài: chi lớn ngoài dự kiến, mất tiền hoặc đầu tư thua lỗ', ngan: 'hao tài', nguoc: 'tiền vào thuận',
+    ung: { taiChinh: 1 }, nghich: { taiLoc: 0.6 }, N: 6, tuoi: [18, 90],
+    khuyen: 'Không cho vay hay đứng tên bảo lãnh lớn; giữ quỹ dự phòng; mọi khoản đầu tư mới nên thử nhỏ trước.' },
+  { k: 'taiSan', kc: 'tien', loai: 'dong', ten: 'Mua bán nhà đất, xe hoặc tài sản lớn', ngan: 'giao dịch tài sản lớn', nguoc: 'chưa thuận để mua bán',
+    ung: { nhaDat: 1, taiLoc: 0.4 }, nghich: { taiChinh: 0.4 }, N: 3, tuoi: [22, 75],
+    khuyen: 'Kiểm tra kỹ giấy tờ pháp lý, đọc hợp đồng với người có chuyên môn; đừng vay vượt 40% thu nhập hằng tháng.' },
+  { k: 'quenMoi', kc: 'tinh', loai: 'tot', ten: 'Có mối quan hệ tình cảm mới hoặc tình cảm hiện tại thăng hoa', ngan: 'tình cảm khởi sắc', nguoc: 'tình cảm nguội lạnh',
+    ung: { ketHon: 1 }, nghich: { giaDao: 0.4 }, N: 4, tuoi: [16, 50],
+    khuyen: 'Mở lòng với các mối quan hệ qua bạn bè, công việc; nếu đã có đôi, dành thời gian riêng cho hai người.' },
+  { k: 'cuoiHoi', kc: 'tinh', loai: 'tot', ten: 'Cưới hỏi (hoặc hỷ sự lớn trong gia đình nếu đã lập gia đình)', ngan: 'cưới hỏi', nguoc: 'trắc trở chuyện lứa đôi',
+    ung: { ketHon: 1.2 }, nghich: { giaDao: 0.5 }, N: 1.2, tuoi: [18, 45],
+    khuyen: 'Nếu đã có ý định, đây là năm nên bàn chuyện tương lai rõ ràng với người kia và gia đình hai bên.' },
+  { k: 'batHoa', kc: 'tinh', loai: 'xau', ten: 'Bất hòa, xa cách trong chuyện vợ chồng – người yêu', ngan: 'bất hòa tình cảm', nguoc: 'tình cảm êm ấm',
+    ung: { giaDao: 0.8, thiPhi: 0.3 }, nghich: { ketHon: 0.5 }, N: 5, tuoi: [18, 80],
+    khuyen: 'Nói ra điều mình cần thay vì chờ người kia tự hiểu; tránh quyết định lớn về quan hệ khi đang giận.' },
+  { k: 'conCai', kc: 'con', loai: 'tot', ten: 'Tin vui con cái (mang thai, sinh nở) hoặc niềm vui lớn từ con', ngan: 'tin vui con cái', nguoc: 'lo lắng về con',
+    ung: { sinhCon: 1 }, nghich: {}, N: 2, tuoi: [20, 44],
+    khuyen: 'Nếu đang mong con, chăm sức khỏe cả hai vợ chồng từ đầu năm; nếu đã có con, dành thời gian đồng hành cùng con.' },
+  { k: 'omDau', kc: 'khoe', loai: 'xau', ten: 'Ốm đau phải chữa trị hoặc mệt mỏi kéo dài', ngan: 'ốm đau', nguoc: 'sức khỏe vững',
+    ung: { sucKhoe: 1, tinhThan: 0.3 }, nghich: {}, N: 12, tuoi: [1, 90],
+    khuyen: 'Khám sức khỏe định kỳ đầu năm, ngủ đủ, đừng trì hoãn khi cơ thể báo hiệu bất thường.' },
+  { k: 'taiNan', kc: 'khoe', loai: 'xau', ten: 'Va chạm, tai nạn nhỏ hoặc phải phẫu thuật', ngan: 'va chạm, tai nạn', nguoc: 'đi lại bình an',
+    ung: { sucKhoe: 0.6, diXa: 0.3, thiPhi: 0.2 }, nghich: {}, N: 4, tuoi: [5, 90],
+    khuyen: 'Cẩn thận khi lái xe, leo cao, dùng máy móc; mua bảo hiểm phù hợp; không đi đường xa khi mệt.' },
+  { k: 'tinhThan', kc: 'khoe', loai: 'xau', ten: 'Áp lực tinh thần, lo âu, cần nghỉ ngơi', ngan: 'căng thẳng tinh thần', nguoc: 'tinh thần thoải mái',
+    ung: { tinhThan: 1, sucKhoe: 0.2 }, nghich: { quyNhan: 0.3 }, N: 10, tuoi: [12, 90],
+    khuyen: 'Giữ một thói quen giúp đầu óc nghỉ (đi bộ, thiền, viết), chia sẻ với người thân, đừng ôm việc một mình.' },
+  { k: 'nguoiThan', kc: 'nha', loai: 'xau', ten: 'Biến động liên quan cha mẹ hoặc người thân (sức khỏe, việc hiếu)', ngan: 'biến động người thân', nguoc: 'gia đình yên ổn',
+    ung: { giaDao: 1 }, nghich: {}, N: 6, tuoi: [10, 90],
+    khuyen: 'Thăm hỏi cha mẹ, người lớn tuổi thường xuyên hơn; nhắc mọi người khám sức khỏe.' },
+  { k: 'nhaCua', kc: 'nha', loai: 'dong', ten: 'Sửa nhà, chuyển nhà hoặc thay đổi chỗ ở', ngan: 'thay đổi chỗ ở', nguoc: 'chỗ ở ổn định',
+    ung: { nhaDat: 0.8, buocNgoat: 0.5, diXa: 0.3 }, nghich: {}, N: 6, tuoi: [18, 85],
+    khuyen: 'Nếu sửa hay chuyển nhà, chọn tháng thuận bên dưới và dự trù ngân sách dư 20%.' },
+  { k: 'hocThi', kc: 'hoc', loai: 'tot', ten: 'Học thêm, thi cử, lấy bằng cấp – chứng chỉ', ngan: 'học hành thi cử', nguoc: 'học hành trắc trở',
+    ung: { hocHanh: 1 }, nghich: { tinhThan: 0.3 }, N: 5, tuoi: [6, 60],
+    khuyen: 'Đăng ký khóa học hay kỳ thi bạn đã định – năm có tín hiệu học hành thì công sức bỏ ra dễ thành kết quả.' },
+  { k: 'diXa', kc: 'hoc', loai: 'dong', ten: 'Đi xa: công tác dài, du học, định cư hoặc chuyến đi đáng nhớ', ngan: 'đi xa', nguoc: 'ở yên một chỗ',
+    ung: { diXa: 1, buocNgoat: 0.3 }, nghich: {}, N: 6, tuoi: [6, 85],
+    khuyen: 'Chuẩn bị giấy tờ (hộ chiếu, visa) sớm; chuyến đi năm nay dễ mở ra cơ hội hoặc mối quan hệ mới.' },
+  { k: 'quyNhan', kc: 'quanHe', loai: 'tot', ten: 'Gặp quý nhân giúp đỡ, mở rộng quan hệ có ích', ngan: 'quý nhân giúp đỡ', nguoc: 'thị phi, tiểu nhân',
+    ung: { quyNhan: 1 }, nghich: { thiPhi: 0.5 }, N: 10, tuoi: [10, 85],
+    khuyen: 'Tham gia hội nhóm, sự kiện nghề nghiệp; chủ động nhờ giúp – người phù hợp dễ xuất hiện năm nay.' },
+  { k: 'thiPhi', kc: 'quanHe', loai: 'xau', ten: 'Thị phi, tranh chấp hoặc rắc rối giấy tờ – pháp lý', ngan: 'thị phi, tranh chấp', nguoc: 'được giúp đỡ',
+    ung: { thiPhi: 1 }, nghich: { quyNhan: 0.5 }, N: 5, tuoi: [16, 85],
+    khuyen: 'Đọc kỹ trước khi ký, giữ chứng từ, tránh nói sau lưng người khác; có tranh chấp thì nên hòa giải sớm.' }
+];
+var HSN_THANG_TT = { taiLoc: /Chính Tài|Thiên Tài/, quanLoc: /Quan|Sát/, hocHanh: /Ấn/, nhaDat: /Ấn/, quyNhan: /Ấn/, thiPhi: /Thương|Kiếp/, taiChinh: /Kiếp|Tỷ/, tinhThan: /Thiên Ấn|Sát/ };
+
+/** Mức khả năng: xét cả xác suất tuyệt đối lẫn mức so với bình thường của chính người đó (rel) */
+function htMucP_(p, rel) { return p >= 50 || (rel >= 3 && p >= 20) ? 'Rất cao' : rel >= 2.2 ? 'Cao' : rel >= 1.5 ? 'Khá cao' : rel >= 0.8 ? 'Bình thường' : 'Thấp'; }
+function htDs_(a) { return a.length <= 1 ? a.join('') : a.slice(0, -1).join(', ') + ' và ' + a[a.length - 1]; }
+
+/** Hồ sơ năm xem: 19 sự kiện, xác suất, hệ ủng hộ – ngược chiều, tháng nên chú ý, lời khuyên */
+function htHoSoNam_(C, namTin, thang) {
+  var vy = C.tv.info.viewYear, nay = new Date().getFullYear(), male = C.tv.info.male, bt = C.bt;
+  var n0 = namTin.filter(function (n) { return n.nam === vy; })[0];
+  if (!n0) return null;
+  function net(n, sk, he) {
+    var v = 0, o = n.tin;
+    Object.keys(sk.ung).forEach(function (k) { var x = o[k] && o[k][he]; if (x) v += sk.ung[k] * Math.min(1.4, x.v); });
+    Object.keys(sk.nghich).forEach(function (k) { var x = o[k] && o[k][he]; if (x) v -= sk.nghich[k] * Math.min(1.4, x.v); });
+    return v;
+  }
+  function E(n, sk) { var e = 0; HSN_HE.forEach(function (h) { e += HSN_W[h] * Math.max(-1.2, Math.min(1.6, net(n, sk, h))); }); return e; }
+  function A(sk, t) {
+    if (sk.k === 'cuoiHoi') return ddTuoiHeSo_('ketHon', t);
+    if (sk.k === 'conCai') return ddTuoiHeSo_('sinhCon', t);
+    if (t < sk.tuoi[0] - 3 || t > sk.tuoi[1] + 5) return 0;
+    var w = t < sk.tuoi[0] || t > sk.tuoi[1] ? 0.3 : 1;
+    if (sk.k === 'omDau' || sk.k === 'taiNan' || sk.k === 'nguoiThan') w *= 0.6 + t / 60;
+    return w;
+  }
+  // Tháng (âm lịch) của năm xem: thập thần can/chi tháng khớp chủ đề + điểm tháng tổng hợp
+  var nc = bt.nhatChuCan, MT = Object.assign({}, HSN_THANG_TT, { ketHon: male ? /Chính Tài|Thiên Tài/ : /Quan|Sát/, sinhCon: male ? /Quan|Sát/ : /Thực|Thương/ });
+  var thTT = (thang || []).map(function (m) {
+    var p = String(m.canChi).split(' '), can = CAN.indexOf(p[0]), chi = CHI.indexOf(p[1]);
+    return { thang: m.thang, diem: +m.diem || 0, tt: can >= 0 && chi >= 0 ? thapThanTen_(nc, can) + '/' + thapThanTen_(nc, TANG_CAN[chi][0]) : '' };
+  });
+  function thangHop(sk) {
+    if (!thTT.length) return [];
+    return thTT.map(function (m) {
+      var khop = 0; Object.keys(sk.ung).forEach(function (k) { if (MT[k] && MT[k].test(m.tt)) khop += sk.ung[k]; });
+      return { thang: m.thang, d: (sk.loai === 'xau' ? -m.diem : m.diem) + 0.8 * khop };
+    }).sort(function (a, b) { return b.d - a.d; }).slice(0, 2).map(function (m) { return m.thang; }).sort(function (a, b) { return a - b; });
+  }
+  var qua = vy < nay;
+  var sk = HSN_SK.map(function (S) {
+    var tong = 0, tongA = 0;
+    namTin.forEach(function (n) { var a = A(S, n.tuoi); if (a > 0) { tong += a * Math.exp(HSN_BETA * E(n, S)); tongA += a; } });
+    var a0 = A(S, n0.tuoi), e0 = E(n0, S);
+    var lam = tong > 0 && a0 > 0 ? S.N * a0 * Math.exp(HSN_BETA * e0) / tong : 0;
+    var p = a0 > 0 ? Math.max(2, Math.min(90, Math.round((1 - Math.exp(-lam)) * 100))) : 0;
+    var rel = tong > 0 && a0 > 0 ? Math.round(Math.exp(HSN_BETA * e0) * tongA / tong * 10) / 10 : 0;
+    var ung = [], nghich = [], ly = {};
+    HSN_HE.forEach(function (h) {
+      var v = net(n0, S, h);
+      if (v >= 0.5) ung.push(h); else if (v <= -0.4) nghich.push(h);
+      var l = [];
+      Object.keys(S.ung).concat(Object.keys(S.nghich)).forEach(function (k) { var x = n0.tin[k] && n0.tin[k][h]; if (x && l.indexOf(x.ly) < 0) l.push(x.ly); });
+      if (l.length) ly[h] = l;
+    });
+    var dong = !a0 ? 'Ngoài độ tuổi' : ung.length >= 3 && !nghich.length ? 'Đồng thuận' : ung.length && nghich.length ? 'Đối lập' : ung.length >= 2 ? 'Nghiêng về' : ung.length === 1 ? 'Một hệ báo' : nghich.length ? 'Nghiêng chiều ngược' : 'Ít tín hiệu';
+    var tenUng = ung.map(function (h) { return h + ' (' + HSN_NGUON[h] + ')'; });
+    var giai = !a0 ? 'Ngoài độ tuổi thường gặp của việc này.' :
+      dong === 'Đồng thuận' ? ung.length + ' hệ – ' + htDs_(tenUng) + ' – cùng nghiêng về ' + S.ngan + '. Khi nhiều phương pháp độc lập cùng chỉ một hướng, khả năng cao hơn mức thường của bạn' + (rel >= 1.3 ? ' (khoảng ×' + String(rel).replace('.', ',') + ')' : '') + '.' :
+      dong === 'Đối lập' ? htDs_(ung) + ' nghiêng về ' + S.ngan + '; ' + htDs_(nghich) + ' lại cho chiều ngược (' + S.nguoc + '). ' +
+        (S.loai === 'tot' ? 'Cơ hội có thật nhưng kèm trở ngại – kết quả phụ thuộc nhiều vào sự chuẩn bị và thời điểm bạn chọn.' : S.loai === 'xau' ? 'Rủi ro có, nhưng cũng có yếu tố đỡ – phòng trước thì nhẹ đi đáng kể.' : 'Thay đổi có thể đến nhưng chưa chắc theo cách bạn muốn – cân nhắc kỹ trước khi quyết.') :
+      dong === 'Nghiêng về' ? htDs_(tenUng) + ' cùng nghiêng về ' + S.ngan + ', các hệ còn lại không phản đối.' :
+      dong === 'Một hệ báo' ? 'Chỉ ' + tenUng[0] + ' báo – tín hiệu riêng lẻ, nên coi là khả năng, chưa phải xu hướng chung.' :
+      dong === 'Nghiêng chiều ngược' ? htDs_(nghich) + ' nghiêng về ' + S.nguoc + ' – việc này khó xảy ra hơn mức thường.' :
+      'Các hệ không có tín hiệu đáng kể – khả năng ở mức nền theo độ tuổi.';
+    return { k: S.k, kc: S.kc, loai: S.loai, ten: S.ten, ngan: S.ngan, p: p, muc: a0 ? htMucP_(p, rel) : '—', rel: rel, E: Math.round(e0 * 10) / 10,
+      ung: ung, nghich: nghich, dong: dong, giai: giai, khuyen: S.khuyen, thang: a0 ? thangHop(S) : [], ly: ly, ngoai: !a0 };
+  });
+  // Khía cạnh
+  var khiaCanh = HSN_KC.map(function (K) {
+    var ds = sk.filter(function (x) { return x.kc === K.k && !x.ngoai; });
+    function mx(loai) { return ds.filter(function (x) { return x.loai === loai && x.p >= 15; }).reduce(function (m, x) { return Math.max(m, x.rel); }, 0); }
+    var g = mx('tot'), b = mx('xau'), d = mx('dong');
+    var nhan = !ds.length ? 'Chưa đến tuổi' : g >= 1.8 && b >= 1.8 ? 'Cơ hội lẫn thử thách' : b >= 1.8 ? 'Cần giữ' : g >= 1.8 ? 'Thuận' : d >= 1.8 ? 'Có thay đổi' : 'Bình ổn';
+    var huong = nhan === 'Thuận' ? 'tot' : nhan === 'Cần giữ' ? 'xau' : nhan === 'Bình ổn' || nhan === 'Chưa đến tuổi' ? 'vua' : 'dong';
+    var top = ds.slice().sort(function (a, b) { return b.p - a.p; })[0];
+    return { k: K.k, ten: K.ten, icon: K.icon, nhan: nhan, huong: huong, doiLap: ds.some(function (x) { return x.dong === 'Đối lập' && x.p >= 15; }),
+      cau: top && top.p < 10 && top.muc !== 'Cao' && top.muc !== 'Rất cao' ? 'Không có việc nổi bật – khía cạnh này khá yên trong năm.' : top ? 'Nổi bật nhất: ' + top.ngan + ' (' + top.p + '%, ' + top.dong.toLowerCase() + ').' : '', sk: ds.map(function (x) { return x.k; }) };
+  });
+  // Mỗi hệ nói gì về cả năm
+  var he = HSN_HE.map(function (h) {
+    var t = 0, x = 0;
+    sk.forEach(function (s) { if (s.ngoai) return; var v = net(n0, HSN_SK.filter(function (S) { return S.k === s.k; })[0], h); if (s.loai === 'tot') t += Math.max(0, v); else if (s.loai === 'xau') x += Math.max(0, v); });
+    var d = t - x;
+    return { he: h, nguon: HSN_NGUON[h], tot: Math.round(t * 10) / 10, xau: Math.round(x * 10) / 10, huong: d >= 0.8 ? 'tot' : d <= -0.8 ? 'xau' : 'vua', nhan: d >= 0.8 ? 'Nghiêng thuận' : d <= -0.8 ? 'Nghiêng thử thách' : 'Trung tính' };
+  });
+  var soTot = he.filter(function (x) { return x.huong === 'tot'; }).length, soXau = he.filter(function (x) { return x.huong === 'xau'; }).length;
+  var noiBat = sk.filter(function (x) { return !x.ngoai && (x.muc === 'Rất cao' || x.muc === 'Cao' || x.muc === 'Khá cao'); }).sort(function (a, b) { return b.p - a.p; }).slice(0, 5);
+  var doiLap = sk.filter(function (x) { return x.dong === 'Đối lập' && x.p >= 15; });
+  var canGiu = sk.filter(function (x) { return x.loai === 'xau' && !x.ngoai; }).sort(function (a, b) { return b.p - a.p; })[0];
+  var tom = [];
+  tom.push('Năm ' + vy + ' (' + n0.canChi + ', ' + n0.tuoi + ' tuổi mụ): ' + (soTot > soXau ? soTot + '/5 hệ nghiêng thuận' + (soXau ? ', ' + soXau + ' hệ nghiêng thử thách' : '') + '.' :
+    soXau > soTot ? soXau + '/5 hệ nghiêng thử thách' + (soTot ? ', ' + soTot + ' hệ nghiêng thuận' : '') + ' – năm nên chắc hơn tiến.' : 'các hệ chia đều thuận – khó, năm có cả cơ hội lẫn việc cần giữ.'));
+  if (noiBat.length) tom.push((qua ? 'Những việc nhiều khả năng đã diễn ra: ' : 'Những việc nhiều khả năng xảy ra: ') + noiBat.slice(0, 3).map(function (x) { return x.ngan + ' (' + x.p + '%)'; }).join(', ') + '.');
+  if (canGiu && canGiu.p >= 15) tom.push(noiBat.slice(0, 3).indexOf(canGiu) >= 0 ? 'Với ' + canGiu.ngan + ': ' + canGiu.khuyen.charAt(0).toLowerCase() + canGiu.khuyen.slice(1) :
+    'Điều nên chủ động phòng: ' + canGiu.ngan + ' (' + canGiu.p + '%). ' + canGiu.khuyen);
+  if (doiLap.length) tom.push('Các hệ chưa thống nhất ở: ' + doiLap.map(function (x) { return x.ngan; }).join(', ') + ' – xem phần giải thích để biết hệ nào nói gì.');
+  if (qua) tom.push('Năm này đã qua: hãy đối chiếu với những gì bạn đã trải qua – càng khớp, các năm tới càng đáng tin.');
+  return { nam: vy, tuoi: n0.tuoi, canChi: n0.canChi, soCN: n0.soCN, qua: qua, tom: tom, he: he, khiaCanh: khiaCanh, suKien: sk,
+    noiBat: noiBat.map(function (x) { return x.k; }), doiLap: doiLap.map(function (x) { return x.k; }),
+    coSo: 'Mỗi sự kiện ghép tín hiệu của 5 hệ có lịch năm (Tử Vi, Bát Tự, Hà Lạc, Chiêm tinh, Thần số học; Human Design không có lịch năm). Mỗi hệ có tín hiệu "ủng hộ" và "ngược chiều" – ví dụ với thu nhập tăng, tín hiệu hao tài là ngược chiều. ' +
+      'Xác suất lấy số lần việc đó thường gặp trong đời người (ví dụ đổi việc khoảng 5 lần, cưới khoảng 1 lần) rồi phân bổ cho từng năm theo độ tuổi và sức mạnh tín hiệu: năm càng nhiều hệ cùng báo càng nhận phần lớn. ' +
+      '"×2" nghĩa là gấp đôi mức thường của chính bạn ở độ tuổi đó. Đồng thuận = từ 3 hệ cùng báo, không hệ nào ngược; Đối lập = có hệ báo và có hệ ngược chiều. ' +
+      'Đây là mô hình tham khảo minh bạch, chưa được hiệu chỉnh bằng thống kê thực tế – hãy dùng các năm đã qua để tự kiểm chứng.' };
 }

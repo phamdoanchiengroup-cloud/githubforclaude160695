@@ -27,7 +27,7 @@
     });
   }
   /** Mã phiên bản giao diện – phải trùng với Index.html (meta tcc-ban) và Styles.html (--tcc-ban) */
-  var BAN_GIAO_DIEN = '2026.10.09';
+  var BAN_GIAO_DIEN = '2026.10.10';
   function storeGet(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
   function storeSet(k, v) { try { localStorage.setItem(k, v); } catch (e) { /* bỏ qua */ } }
 
@@ -3379,6 +3379,42 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
     });
   })();
   /** Dựng tab "Vận hạn": gom đại vận, vận năm, tháng, ngày, biến cố từ các tab khác về một chỗ */
+  /* ---------- HỒ SƠ BIẾN CỐ NĂM (HoiTu.gs › htHoSoNam_): 19 sự kiện · 8 khía cạnh · xác suất · đồng thuận/đối lập ---------- */
+  var HSN_LOAI = { tot: 'Việc tốt', xau: 'Cần phòng', dong: 'Thay đổi' };
+  function hsnDongCls(d) { return d === 'Đồng thuận' ? 'dt' : d === 'Đối lập' ? 'dl' : d === 'Nghiêng về' ? 'ng' : 'it'; }
+  function hsnSk(x) {
+    if (x.khoa) return '<div class="hsn-sk hsn-l-' + x.loai + ' khoa"><div class="hsn-sk-h"><b>' + esc(x.ten) + '</b><span class="hsn-mo">🔒 ••%</span></div></div>';
+    if (x.ngoai) return '<div class="hsn-sk hsn-l-' + x.loai + ' ngoai"><div class="hsn-sk-h"><b>' + esc(x.ten) + '</b><span class="muted">ngoài độ tuổi</span></div></div>';
+    var ly = Object.keys(x.ly || {}).map(function (h) { return '<li><b>' + esc(h) + (x.ung.indexOf(h) >= 0 ? ' · ủng hộ' : x.nghich.indexOf(h) >= 0 ? ' · ngược chiều' : '') + ':</b> ' + esc(x.ly[h].map(function (t) { return t.replace(/^[^:]+:\s*/, ''); }).join('; ')) + '</li>'; }).join('');
+    return '<div class="hsn-sk hsn-l-' + x.loai + '"><div class="hsn-sk-h"><b>' + esc(x.ten) + '</b><span class="hsn-loai">' + HSN_LOAI[x.loai] + '</span></div>' +
+      '<div class="hsn-p"><div class="hsn-bar"><i style="width:' + Math.max(3, x.p) + '%"></i></div><b>' + x.p + '%</b><span class="hsn-muc m-' + esc(x.muc.replace(/\s/g, '')) + '">' + esc(x.muc) + '</span>' +
+        (x.rel >= 1.3 ? '<span class="hsn-rel" title="So với mức thường của chính bạn ở độ tuổi này">×' + String(x.rel).replace('.', ',') + '</span>' : '') + '</div>' +
+      '<div class="hsn-dong"><span class="hsn-d ' + hsnDongCls(x.dong) + '">' + esc(x.dong) + '</span>' +
+        x.ung.map(function (h) { return '<span class="hsn-he up">✓ ' + esc(h) + '</span>'; }).join('') + x.nghich.map(function (h) { return '<span class="hsn-he dn">✗ ' + esc(h) + '</span>'; }).join('') + '</div>' +
+      '<p>' + esc(x.giai) + '</p>' +
+      '<p class="hsn-kh"><b>' + (x.loai === 'xau' ? 'Cách phòng:' : 'Nên làm:') + '</b> ' + esc(x.khuyen) + (x.thang && x.thang.length ? ' <span class="hsn-th">' + (x.loai === 'xau' ? 'Tháng cần để ý' : 'Tháng thuận') + ': ' + x.thang.map(function (m) { return 'tháng ' + m; }).join(', ') + ' (âm lịch).</span>' : '') + '</p>' +
+      (ly ? '<details class="hsn-ly"><summary>Cơ sở từng hệ</summary><ul>' + ly + '</ul></details>' : '') + '</div>';
+  }
+  function hsnHtml(res) {
+    var H = res.moRong && res.moRong.tongHop && res.moRong.tongHop.hoSoNam;
+    if (!H || H.loi || !H.khiaCanh) return '';
+    var SK = {}; (H.suKien || []).forEach(function (x) { SK[x.k] = x; });
+    var dau = '<div class="tg" data-g="vh-hsn"><div class="tg-head"><span>1 năm</span><b>Hồ sơ biến cố năm ' + H.nam + '</b><em>19 sự kiện · 8 khía cạnh · xác suất và độ đồng thuận của 5 hệ</em></div><div class="panel section hsn">';
+    var tom = '<div class="hsn-tom">' + (H.qua ? '<span class="hsn-qua">Năm đã qua – dùng để kiểm chứng</span>' : '') + H.tom.map(function (t) { return '<p>' + esc(t) + '</p>'; }).join('') + '</div>';
+    var he = '<div class="hsn-hes"><small>Mỗi hệ nói gì về năm này</small><div>' + H.he.map(function (x) {
+      return '<span class="hsn-h ' + x.huong + '" title="' + esc(x.nguon) + '"><b>' + esc(x.he) + '</b>' + esc(x.nhan) + '</span>'; }).join('') + '</div></div>';
+    var luoi = '<div class="hsn-luoi">' + H.khiaCanh.map(function (k) {
+      return '<a class="hsn-kc ' + k.huong + '" data-hsn="' + k.k + '"><i>' + k.icon + '</i><b>' + esc(k.ten) + '</b><span>' + esc(k.nhan) + '</span>' + (k.doiLap ? '<em>⚖ các hệ chưa thống nhất</em>' : '') + '</a>'; }).join('') + '</div>';
+    var khoi = H.khiaCanh.map(function (k, i) {
+      var ds = k.sk.map(function (sk) { return SK[sk]; }).filter(Boolean);
+      return '<details class="hsn-khoi" id="hsn-' + k.k + '"' + (!H.khoa && i < 2 ? ' open' : '') + '><summary><i>' + k.icon + '</i> ' + esc(k.ten) + ' <span class="hsn-nhan ' + k.huong + '">' + esc(k.nhan) + '</span>' + (k.doiLap ? ' <span class="hsn-d dl">Đối lập</span>' : '') + '</summary>' +
+        (k.cau ? '<p class="muted">' + esc(k.cau) + '</p>' : '') + ds.map(hsnSk).join('') + '</details>';
+    }).join('');
+    var khoa = H.khoa ? theKhoa('Hồ sơ biến cố năm ' + H.nam + ' chưa mở', 'Đủ 19 sự kiện với xác suất từng việc, hệ nào ủng hộ – hệ nào ngược chiều, vì sao, tháng nào cần để ý và nên làm gì. Đã gồm trong vận năm ' + H.nam + '.',
+      nutNam(H.nam) + nutDongHanh(H.nam), 'Mở một lần, xem lại bao nhiêu lần cũng được.') : '';
+    var coSo = H.coSo ? '<details class="hsn-coso"><summary>Cách tính xác suất và đồng thuận</summary><p>' + esc(H.coSo) + '</p></details>' : '';
+    return dau + tom + he + luoi + khoa + khoi + coSo + '</div></div>';
+  }
   function veVanHan(res) {
     var pg = $('page-vh'); if (!pg) return;
     var vy = res.tuvi.info.viewYear, ds = (res.chiTiet && res.chiTiet.daiVan) || [], v = res.vanTom || { coNam: true, coThang: true }, full = !res.quyen || res.quyen.toanQuyen;
@@ -3391,6 +3427,7 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
     html += '<div class="tg" data-g="vh-nam"><div class="tg-head"><span>1 năm</span><b>Vận năm ' + vy + '</b><em>Tiểu vận · 12 tháng · lưu niên Bát Tự & quẻ năm</em></div>' + chonNamHtml(vy) +
       (v.coNam ? '' : theKhoa('Vận năm ' + vy + ' chưa mở', res.moRong && res.moRong.tongHop && res.moRong.tongHop.namNay ? hl(String(res.moRong.tongHop.namNay.ketLuan[0] || '')) + ' Vì sao, lĩnh vực nào mở, lĩnh vực nào cần phòng – và 12 tháng cụ thể?' : '',
         nutNam(vy) + nutDongHanh(vy), 'Mở một lần, xem lại bao nhiêu lần cũng được.')) + '<div id="vh-slot-nam"></div></div>';
+    html += hsnHtml(res);
     var tn = thangNhatVan(res), tt = tn.split('-');
     html += '<div class="tg" data-g="vh-ngay"><div class="tg-head"><span>1 tháng</span><b>Nhật vận – lịch từng ngày</b><em>Ngày hoàng đạo, ngày cá nhân, ngày nên ký kết – nên nghỉ</em></div>' +
       (v.coThang ? '' : theKhoa('Nhật vận tháng ' + (+tt[1]) + '/' + tt[0] + ' chưa mở', 'Mỗi ngày một lời khuyên: nên gặp đối tác, nên ký giấy tờ, hay nên nghỉ ngơi. Đổi "Ngày xem nhật vận" trong tùy chọn để xem tuần khác trong tháng.',
@@ -3408,6 +3445,9 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
     // Tách bảng 7 ngày (tổng hợp) khỏi phần năm, đưa về nhật vận
     var p7 = Array.prototype.filter.call(document.querySelectorAll('#vh-slot-nam > .panel'), function (x) { return /7 ngày tới/.test((x.querySelector('.panel-title') || {}).textContent || ''); })[0];
     if (p7) $('vh-slot-ngay').insertBefore(p7, $('vh-slot-ngay').firstChild);
+    pg.querySelectorAll('.hsn-kc[data-hsn]').forEach(function (a) {
+      a.addEventListener('click', function () { var el = $('hsn-' + a.getAttribute('data-hsn')); if (el) { el.open = true; cuonToi(el); } });
+    });
     pg.querySelectorAll('.dv-mo[data-dv]').forEach(function (a) {
       a.addEventListener('click', function () {
         var i = ds.map(dvNamBd).indexOf(+a.getAttribute('data-dv')), el = document.getElementById('dv-' + i);

@@ -220,6 +220,14 @@ function ttCatPhan_(r, q) {
     if (T && T.namNay) { T.namNay.ketLuan = (T.namNay.ketLuan || []).slice(0, 1); T.namNay.linhVuc = []; T.namNay.khoa = true; }
     if (T && T.thang) T.thang = T.thang.map(function (m) { return { thang: m.thang, canChi: m.canChi, batDau: m.batDau, diem: m.diem, danhGia: m.danhGia, khoa: true }; });
     if (r.moRong && r.moRong.haLac && r.moRong.haLac.luan && r.moRong.haLac.luan.namNay) { var hn = r.moRong.haLac.luan.namNay; hn.y = ''; hn.khuyen = ''; hn.ghi = []; hn.khoa = true; }
+    // Hồ sơ năm: giữ thế đứng 5 hệ + nhãn khía cạnh + 1 sự kiện nổi bật làm mồi
+    if (T && T.hoSoNam && !T.hoSoNam.loi) {
+      var H = T.hoSoNam, lo = H.noiBat[0];
+      H.tom = H.tom.slice(0, 1); H.khoa = true;
+      H.he = H.he.map(function (x) { return { he: x.he, nguon: x.nguon, huong: x.huong, nhan: x.nhan }; });
+      H.khiaCanh = H.khiaCanh.map(function (x) { return { k: x.k, ten: x.ten, icon: x.icon, nhan: x.nhan, huong: x.huong, doiLap: x.doiLap, sk: x.sk }; });
+      H.suKien = H.suKien.map(function (x) { return x.k === lo ? x : { k: x.k, kc: x.kc, loai: x.loai, ten: x.ten, ngan: x.ngan, ngoai: x.ngoai, khoa: true }; });
+    }
   }
   if (r.battuChiTiet && r.battuChiTiet.luuNien) r.battuChiTiet.luuNien = r.battuChiTiet.luuNien.filter(function (y) { return ttCoNam_(q, y.nam); });
   if (r.moRong && r.moRong.haLac && r.moRong.haLac.luan) {

@@ -668,8 +668,9 @@ function tongHopLuan(C) {
       quaKhu(kh, 'kết hôn'); quaKhu(sc, 'có con');
     } catch (e) { T.phoiNgau.loiThem = String(e && e.message || e); }
   }
-  delete T.hoiTu.namTin;
   T.thang = htThang_(C); T.ngay = htNgay_(C);
+  try { T.hoSoNam = htHoSoNam_(C, T.hoiTu.namTin, T.thang); } catch (e) { T.hoSoNam = { loi: String(e && e.message || e) }; }
+  delete T.hoiTu.namTin;
   T.matMa = htMatMa_(C, T.hoiTu, T.thang);
   T.tomLuoc = thTomLuoc_(C, T);
   return T;
