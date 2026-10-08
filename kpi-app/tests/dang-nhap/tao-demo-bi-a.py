@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""Dựng kpi-app/demo-dang-nhap-bi-a.html và demo-dang-nhap-rhino.html: màn đăng nhập bi-a HIỆN TẠI (tests/dang-nhap-bi-a.html)
+"""Dựng kpi-app/demo-dang-nhap-bi-a.html, demo-dang-nhap-rhino.html và demo-dang-nhap-khac.html: màn đăng nhập bi-a HIỆN TẠI (tests/dang-nhap-bi-a.html)
    đặt cạnh BẢN MỚI (tests/dang-nhap-bi-a-2.html, có Mai). Mỗi bản chạy trong một khung riêng với login() giả:
    mật khẩu "demo" là đúng, sai thì báo như máy chủ thật.
    python3 kpi-app/tests/dang-nhap/tao-demo-bi-a.py"""
@@ -34,7 +34,7 @@ function lamLai(){ $('demoXong').classList.remove('hien'); $('l_mk').value=''; b
 """
 
 RH = {'{{RH_LOGO}}': ('logo-rhino.png', 'png'), '{{RH_1}}': ('must-shaft.jpg', 'jpeg'), '{{RH_2}}': ('eclipse-2.jpg', 'jpeg'),
-      '{{RH_3}}': ('retro-2.jpg', 'jpeg'), '{{RH_4}}': ('must-cue.jpg', 'jpeg')}
+      '{{RH_3}}': ('retro-2.jpg', 'jpeg'), '{{RH_4}}': ('must-cue.jpg', 'jpeg'), '{{RH_KHAC}}': ('khac-laser.jpg', 'jpeg')}
 def anh_rhino(s):
     """Chèn ảnh thương hiệu Rhino (kpi-app/anh/rhino) dạng base64 – dùng chung cho va-index.py khi gắn vào web."""
     for k, (f, loai) in RH.items():
@@ -64,3 +64,10 @@ for nguon, mau, ra in [('dang-nhap-bi-a-2.html', 'demo-bi-a.src.html', 'demo-dan
     trang = doc(os.path.join(D, mau)).replace('{{MOI}}', html.escape(moi, quote=True)).replace('{{CU}}', html.escape(cu, quote=True))
     io.open(os.path.join(T, '..', ra), 'w', encoding='utf-8').write(trang)
     print('OK', ra, len(trang.encode('utf-8')) // 1024, 'KB')
+
+# Bản "Khắc laser" (09/10): đặt cạnh bản Phòng trưng bày và bản hiện tại
+trang = doc(os.path.join(D, 'demo-khac.src.html'))
+for k, nguon, mai in [('{{MOI}}', 'dang-nhap-khac.html', True), ('{{TRUOC}}', 'dang-nhap-rhino.html', True), ('{{CU}}', 'dang-nhap-bi-a.html', False)]:
+    trang = trang.replace(k, html.escape(khung(nguon, mai), quote=True))
+io.open(os.path.join(T, '..', 'demo-dang-nhap-khac.html'), 'w', encoding='utf-8').write(trang)
+print('OK demo-dang-nhap-khac.html', len(trang.encode('utf-8')) // 1024, 'KB')

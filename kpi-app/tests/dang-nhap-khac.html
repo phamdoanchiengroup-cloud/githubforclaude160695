@@ -1,0 +1,383 @@
+<!--CSS-->
+/* ============================================================
+   MÀN ĐĂNG NHẬP — "KHẮC LASER" (Rhino / Carbon Billiards Co., Ltd.)
+   Nền: khung hình đầu video khắc laser của hãng (4 ngọn carbon cắm trong cát đen, đã xóa logo in sẵn, chỉnh tông tối) –
+   kpi-app/anh/rhino/khac-laser.jpg, chèn base64 {{RH_KHAC}}; logo {{RH_LOGO}}.
+   Ý tưởng riêng: gõ MÃ NHÂN VIÊN thì tia laser khắc từng ký tự lên ngọn cơ thứ 3 (chữ nóng sáng rồi nguội màu vàng đồng).
+   Gõ mật khẩu: laser chỉ lóe tia, không khắc gì. Đúng: vệt sáng chạy dọc ngọn cơ. Sai: tia đỏ, chữ khắc mờ đi.
+   Bảng đăng nhập là tấm kính tối nổi trên khoảng tường trống. Giữ nguyên API cho login(): bbCho, bbTrung, bbTruot, bbTha, bbXep, bbChu, bbKhoiDong.
+   ============================================================ */
+#gate{--vang:#f7b829;--vang2:#ffd36b;--than:#0a0a0a;--vien:rgba(255,255,255,.12);--chu:#f2f2f2;--chu2:#a9a9a9;--chu3:#707070;--do:#ff6b5b;--dong:#cdb08a;
+  --sans:'Arimo','Helvetica Neue',Arial,system-ui,sans-serif;
+  position:relative;z-index:2;min-height:100vh;min-height:100dvh;overflow:hidden;background:#070707;color:var(--chu);font-family:var(--sans);-webkit-font-smoothing:antialiased}
+#gate .lk-nen{position:absolute;inset:0;width:100%;height:100%;display:block}
+#gate .lk-nen image.anh{animation:lkTho 18s ease-in-out infinite alternate;transform-origin:800px 450px}
+@keyframes lkTho{to{transform:scale(1.04)}}
+#gate .lk-phu{position:absolute;inset:0;pointer-events:none;background:linear-gradient(90deg,rgba(0,0,0,.25),transparent 30%,transparent 52%,rgba(0,0,0,.55) 80%),linear-gradient(180deg,rgba(0,0,0,.45),transparent 25%,transparent 70%,rgba(0,0,0,.6))}
+/* chữ khắc */
+#gate .lk-chu{font:700 58px var(--sans);letter-spacing:5px;fill:var(--dong);opacity:.93;paint-order:stroke;stroke:rgba(0,0,0,.35);stroke-width:1.2px;transition:fill .9s,opacity .6s}
+#gate .lk-chu tspan{transition:fill 1.1s ease}
+#gate .lk-chu tspan.nong{fill:#fff6dc;filter:url(#lkNong)}
+#gate .lk-chu.mo{opacity:.35}
+#gate .lk-chu.vang tspan{fill:var(--vang2);filter:url(#lkNong)}
+#gate .lk-lua{opacity:0;pointer-events:none}
+#gate .lk-lua.bat{animation:lkBat .45s ease-out}
+@keyframes lkBat{0%{opacity:1}35%{opacity:.75}55%{opacity:1}100%{opacity:0}}
+#gate .lk-lua line{stroke:#bfe0ff;stroke-width:2.2;filter:url(#lkNong)}
+#gate .lk-lua.loi line{stroke:#ff5a4a}
+#gate .lk-lua .hoa{fill:url(#lkHoa)}
+#gate .lk-lua.loi .hoa{fill:url(#lkHoaDo)}
+#gate .lk-lua .tl circle{fill:#ffb347;opacity:0}
+#gate .lk-lua.bat .tl circle{animation:lkTia .45s ease-out forwards}
+@keyframes lkTia{0%{opacity:1;transform:translate(0,0)}100%{opacity:0;transform:translate(var(--x),var(--y))}}
+#gate .lk-quet{opacity:0}
+#gate .lk-quet.chay{animation:lkQuet 1.3s cubic-bezier(.3,.6,.3,1) forwards}
+@keyframes lkQuet{0%{opacity:0;transform:translateX(-160px)}15%{opacity:1}85%{opacity:1}100%{opacity:0;transform:translateX(620px)}}
+/* chữ trên nền */
+#gate .lk-dau{position:absolute;z-index:2;left:clamp(24px,4vw,56px);top:clamp(22px,4vh,40px);display:flex;align-items:center;gap:16px}
+#gate .lk-dau img{height:34px;width:auto;display:block}
+#gate .lk-dau span{font:700 10.5px var(--sans);letter-spacing:.24em;text-transform:uppercase;color:rgba(255,255,255,.55);padding-left:16px;border-left:1px solid rgba(255,255,255,.18)}
+#gate .lk-goc{position:absolute;z-index:2;left:clamp(24px,4vw,56px);bottom:clamp(22px,5vh,48px);max-width:min(520px,45vw)}
+#gate .lk-goc .lk-cau{font:700 clamp(30px,3.4vw,50px)/1.05 var(--sans);letter-spacing:.02em;color:#fff;text-transform:uppercase}
+#gate .lk-goc .lk-cau em{font-style:normal;color:var(--vang)}
+#gate .lk-goc p{margin:12px 0 0;font-size:14.5px;line-height:1.55;color:rgba(255,255,255,.72)}
+#gate .lk-may{display:inline-flex;align-items:center;gap:10px;margin-top:16px;padding:7px 12px;border:1px solid rgba(255,255,255,.14);border-radius:8px;background:rgba(0,0,0,.45);
+  font:700 11px var(--sans);letter-spacing:.18em;text-transform:uppercase;color:rgba(255,255,255,.6)}
+#gate .lk-may i{width:7px;height:7px;border-radius:50%;background:#4a4a4a;transition:background .2s,box-shadow .2s}
+#gate .lk-may.bat i{background:#8fd0ff;box-shadow:0 0 10px #8fd0ff}
+#gate .lk-may b{color:var(--vang);letter-spacing:.12em;min-width:5ch}
+/* tấm kính đăng nhập */
+#gate .lk-kinh{position:absolute;z-index:3;right:clamp(20px,6vw,96px);top:50%;transform:translateY(-50%);width:min(410px,calc(100% - 40px));
+  padding:28px 30px 18px;border-radius:20px;background:rgba(14,14,14,.68);-webkit-backdrop-filter:blur(16px) saturate(1.15);backdrop-filter:blur(16px) saturate(1.15);
+  border:1px solid rgba(255,255,255,.09);box-shadow:0 40px 90px -20px rgba(0,0,0,.7),inset 0 1px 0 rgba(255,255,255,.05)}
+#gate .lk-kinh::before{content:"";position:absolute;left:30px;right:30px;top:0;height:2px;background:linear-gradient(90deg,transparent,var(--vang),transparent);opacity:.7}
+/* ---------------- Phải: bảng đăng nhập ---------------- */
+#gate .bb-the{width:100%}
+#gate .rh-mai{display:flex;align-items:center;gap:13px;margin-bottom:22px}
+#gate .rh-mai-anh{position:relative;flex:none;width:50px;height:50px;border-radius:50%;overflow:hidden;background:radial-gradient(circle at 50% 38%,#fffdf8,#ece4d4);
+  box-shadow:0 0 0 2px var(--vang),0 0 0 5px rgba(247,184,41,.14)}
+#gate .rh-mai-anh svg{position:absolute;left:-4px;top:-2px;width:58px;height:58px;display:block}
+#gate .rh-mai-chu{min-width:0}
+#gate #bbChao{font:700 11px var(--sans);letter-spacing:.2em;text-transform:uppercase;color:var(--vang)}
+#gate .rh-mai-noi{font:400 14.5px/1.45 var(--sans);color:var(--chu);margin-top:3px}
+#gate .rh-mai-noi b{color:var(--vang2);font-weight:700}
+#gate .rh-mai-noi.lo{color:#ffb0a6}
+#gate .rh-mai-noi.doi{animation:rhDoi .35s ease}
+@keyframes rhDoi{from{opacity:0;transform:translateY(3px)}}
+#gate .rh-mai.tat .rh-mai-anh,#gate .rh-mai.tat .rh-mai-noi{display:none}
+#gate h1{font:700 clamp(28px,2.6vw,34px)/1.1 var(--sans);letter-spacing:.04em;text-transform:uppercase;margin:0 0 10px;color:#fff}
+#gate h1::after{content:"";display:block;width:36px;height:3px;background:var(--vang);margin-top:14px}
+#gate #gsub{font-size:14.5px;line-height:1.6;color:var(--chu2);margin:0 0 28px}
+#gate .bb-o{margin-bottom:18px}
+#gate label{display:block;font:700 11px var(--sans);letter-spacing:.14em;text-transform:uppercase;color:var(--chu2);margin-bottom:8px}
+#gate .bb-nhap{position:relative}
+#gate input[type=text],#gate input[type=password]{width:100%;height:50px;padding:0 16px;border-radius:10px;font:400 16px var(--sans);color:#fff;
+  background:rgba(0,0,0,.55);border:1px solid var(--vien);outline:none;transition:border-color .2s,box-shadow .2s}
+#gate #l_mk{padding-right:76px}
+#gate input:hover{border-color:#444}
+#gate input:focus{border-color:var(--vang);box-shadow:0 0 0 4px rgba(247,184,41,.14)}
+#gate input::placeholder{color:#5c5c5c}
+#gate .bb-sai input{border-color:var(--do)!important;box-shadow:0 0 0 4px rgba(255,107,91,.12)!important}
+#gate .bb-hien{position:absolute;right:8px;top:50%;transform:translateY(-50%);height:36px;padding:0 12px;border:0;border-radius:8px;background:transparent;
+  font:700 11px var(--sans);letter-spacing:.12em;text-transform:uppercase;color:var(--chu2);cursor:pointer}
+#gate .bb-hien:hover{background:#1f1f1f;color:#fff}
+#gate .bb-caps{display:none;margin-top:8px;font-size:12.5px;color:var(--vang2)}
+#gate .bb-caps.hien{display:block}
+#gate .bb-dong{display:flex;justify-content:space-between;align-items:center;margin:2px 0 24px;font-size:13.5px}
+#gate .bb-nho{display:flex;align-items:center;gap:9px;margin:0;font:400 13.5px var(--sans);letter-spacing:0;text-transform:none;color:var(--chu2);cursor:pointer;user-select:none}
+#gate .bb-nho input{appearance:none;-webkit-appearance:none;width:18px;height:18px;margin:0;border:1.5px solid #4a4a4a;border-radius:4px;background:#0c0c0c;display:grid;place-items:center;cursor:pointer}
+#gate .bb-nho input:checked{background:var(--vang);border-color:var(--vang)}
+#gate .bb-nho input:checked::after{content:"";width:9px;height:5px;border:2px solid #111;border-top:0;border-right:0;transform:translateY(-1px) rotate(-45deg)}
+#gate .bb-quen{background:none;border:0;padding:0 0 1px;font:400 13.5px var(--sans);color:#fff;cursor:pointer;border-bottom:1px solid var(--vang)}
+#gate .bb-quen:hover{color:var(--vang)}
+#gate .bb-nut{position:relative;overflow:hidden;width:100%;height:54px;border:0;border-radius:10px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:12px;
+  font:700 15px var(--sans);letter-spacing:.16em;text-transform:uppercase;color:#111;background:var(--vang);box-shadow:0 14px 30px -14px rgba(247,184,41,.55);transition:background .2s,transform .12s}
+#gate .bb-nut:hover{background:var(--vang2)}
+#gate .bb-nut:active{transform:translateY(1px)}
+#gate .bb-nut svg{width:18px;height:18px;transition:transform .25s}
+#gate .bb-nut:hover svg{transform:translateX(4px)}
+#gate .bb-nut:disabled{cursor:progress;background:#b88a1f}
+#gate .bb-nut:disabled::after{content:"";position:absolute;inset:0;background:repeating-linear-gradient(-45deg,rgba(0,0,0,.12) 0 12px,transparent 12px 24px);background-size:34px 34px;animation:rhSoc .8s linear infinite}
+@keyframes rhSoc{to{background-position:34px 0}}
+#gate .bb-nut:focus-visible,#gate .bb-hien:focus-visible,#gate .bb-quen:focus-visible,#gate .bb-nho input:focus-visible,#gate .rh-mai-nut:focus-visible{outline:2px solid var(--vang);outline-offset:3px}
+#gate #lerr{display:flex;gap:10px;align-items:flex-start;margin:16px 0 0;padding:12px 14px;border-radius:10px;font-size:13.5px;line-height:1.5;color:#ffd0ca;background:rgba(255,107,91,.08);border:1px solid rgba(255,107,91,.35)}
+#gate #lerr::before{content:"!";flex:none;width:18px;height:18px;margin-top:1px;border-radius:50%;background:var(--do);color:#111;font:700 11px/18px var(--sans);text-align:center}
+#gate #lerr.hide{display:none}
+#gate #lerr.bb-tin{color:#f2e3bd;background:rgba(247,184,41,.07);border-color:rgba(247,184,41,.35)}
+#gate #lerr.bb-tin::before{content:"i";background:var(--vang)}
+#gate #gspin{display:none}
+#gate .bb-the.rung{animation:rhRung .42s cubic-bezier(.36,.07,.19,.97)}
+@keyframes rhRung{20%,60%{transform:translateX(-6px)}40%,80%{transform:translateX(6px)}}
+#gate .rh-chan{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-top:22px;padding-top:14px;border-top:1px solid rgba(255,255,255,.08);font-size:11.5px;color:var(--chu3)}
+#gate .rh-chan span{display:inline-flex;align-items:center;gap:7px}
+#gate .rh-chan svg{width:14px;height:14px}
+#gate .rh-mai-nut{background:none;border:0;padding:0;font:inherit;color:inherit;cursor:pointer;border-bottom:1px dotted currentColor}
+#gate .rh-mai-nut:hover{color:#fff}
+/* Đăng nhập xong */
+#gate .bb-vao-hop{display:none}
+#gate.bb-vao .bb-the > :not(.bb-vao-hop):not(.rh-mai){display:none}
+#gate.bb-vao .bb-vao-hop{display:block;animation:rhDoi .5s ease}
+#gate .bb-vao-hop .rh-ok{font:700 11px var(--sans);letter-spacing:.22em;text-transform:uppercase;color:var(--vang)}
+#gate .bb-vao-hop h1{margin-top:12px}
+#gate .bb-vao-hop p{font-size:14.5px;line-height:1.6;color:var(--chu2)}
+#gate .bb-vao-hop .rh-tai{height:3px;margin-top:22px;background:#262626;overflow:hidden;border-radius:2px}
+#gate .bb-vao-hop .rh-tai i{display:block;height:100%;width:40%;background:var(--vang);animation:rhChay 1.2s cubic-bezier(.4,0,.2,1) infinite}
+@keyframes rhChay{from{transform:translateX(-100%)}to{transform:translateX(250%)}}
+/* Mai (hình chung MAI_SVG) */
+#gate .mai .duoi{transform-origin:104px 34px;animation:rhmDuoi 2.4s ease-in-out infinite}@keyframes rhmDuoi{0%,100%{transform:rotate(-8deg)}50%{transform:rotate(10deg)}}
+#gate .mai .mat-g{transform-box:fill-box;transform-origin:center;animation:rhmChop 4.2s infinite}@keyframes rhmChop{0%,92%,100%{transform:scaleY(1)}95%{transform:scaleY(.08)}}
+#gate .mai .mieng-mo,#gate .mai .mo-hoi,#gate .mai .lap-lanh,#gate .mai .may-lo,#gate .mai .ngon,#gate .mai .che-mat{display:none}
+#gate .mai.noi .mieng-mo{display:inline;animation:rhmNoi .28s steps(2) infinite}#gate .mai.noi .mieng-cuoi{animation:rhmNoi2 .28s steps(2) infinite}
+@keyframes rhmNoi{0%{opacity:1}100%{opacity:0}}@keyframes rhmNoi2{0%{opacity:0}100%{opacity:1}}
+#gate .mai.lo .mo-hoi,#gate .mai.lo .may-lo{display:inline}#gate .mai.lo .may-vui{display:none}
+#gate .mai .tay-chi{transform-origin:128px 180px;transition:transform .4s}
+#gate .mai.covu .tay-chi{transform:rotate(-142deg)}
+#gate .mai.che .che-mat{display:inline}#gate .mai.che .tay-chi{display:none}
+
+
+/* ---------------- Màn hẹp / điện thoại ---------------- */
+@media (max-width:760px){
+  #gate{overflow:visible;display:flow-root}
+  #gate .lk-nen,#gate .lk-phu{bottom:auto;height:50vh}
+  #gate .lk-phu{background:linear-gradient(180deg,rgba(0,0,0,.45),transparent 30%,transparent 60%,rgba(0,0,0,.75))}
+  #gate .lk-goc{top:calc(50vh - 120px);bottom:auto;max-width:none;right:24px}
+  #gate .lk-goc .lk-cau{font-size:26px}
+  #gate .lk-goc p{display:none}
+  #gate .lk-may{margin-top:10px}
+  #gate .lk-kinh{position:relative;right:auto;top:auto;transform:none;width:auto;margin:calc(50vh - 22px) 0 0;border-radius:22px 22px 0 0;padding:24px 22px 20px;background:#111;border-left:0;border-right:0;border-bottom:0}
+  #gate .lk-dau span{display:none}
+}
+@media (prefers-reduced-motion:reduce){#gate *,#gate *::after,#gate *::before{animation:none!important;transition:none!important}}
+<!--HTML-->
+<div id="gate">
+  <svg class="lk-nen" id="lkNen" viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+    <defs>
+      <filter id="lkNong" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="2.5" result="m"/><feMerge><feMergeNode in="m"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+      <radialGradient id="lkHoa"><stop offset="0" stop-color="#fff"/><stop offset=".25" stop-color="#d6ecff" stop-opacity=".9"/><stop offset=".6" stop-color="#5aa6ff" stop-opacity=".25"/><stop offset="1" stop-color="#5aa6ff" stop-opacity="0"/></radialGradient>
+      <radialGradient id="lkHoaDo"><stop offset="0" stop-color="#fff"/><stop offset=".3" stop-color="#ffb4a8" stop-opacity=".9"/><stop offset="1" stop-color="#ff3b2b" stop-opacity="0"/></radialGradient>
+      <linearGradient id="lkVet" x1="0" x2="1"><stop offset="0" stop-color="#fff" stop-opacity="0"/><stop offset=".5" stop-color="#fff2cf" stop-opacity=".55"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient>
+    </defs>
+    <image class="anh" href="{{RH_KHAC}}" x="0" y="0" width="1600" height="900" preserveAspectRatio="xMidYMid slice"/>
+    <g transform="translate(671 430) rotate(-82.4)">
+      <rect class="lk-quet" id="lkQuet" x="-60" y="-80" width="180" height="120" fill="url(#lkVet)" style="mix-blend-mode:screen"/>
+      <text class="lk-chu" id="lkChu" x="0" y="0" dominant-baseline="middle" dy="2"></text>
+    </g>
+    <g class="lk-lua" id="lkLua">
+      <line id="lkTia" x1="0" y1="0" x2="0" y2="0"/>
+      <circle class="hoa" id="lkHoaO" r="46"/>
+      <g class="tl" id="lkTl"><circle r="3" style="--x:-34px;--y:-22px"/><circle r="2.4" style="--x:28px;--y:-30px"/><circle r="2" style="--x:40px;--y:6px"/><circle r="2.6" style="--x:-26px;--y:18px"/><circle r="1.8" style="--x:12px;--y:34px"/><circle r="2.2" style="--x:-44px;--y:-2px"/><circle r="1.6" style="--x:22px;--y:-46px"/></g>
+    </g>
+  </svg>
+  <div class="lk-phu"></div>
+  <div class="lk-dau"><img src="{{RH_LOGO}}" alt="Rhino – Made by Vietnam"><span>Cổng nội bộ · KPI sản xuất</span></div>
+  <div class="lk-goc">
+    <div class="lk-cau">Mỗi người<br>một <em>dấu ấn.</em></div>
+    <p>Gõ mã nhân viên – tia laser sẽ khắc mã của bạn lên ngọn cơ, như cách xưởng mình khắc tên cho từng khách hàng.</p>
+    <div class="lk-may" id="lkMay"><i></i>Khắc laser <b id="lkMa">—</b></div>
+  </div>
+
+  <section class="lk-kinh">
+    <div class="bb-the" id="frmLogin">
+      <div class="rh-mai" id="rhMai"><div class="rh-mai-anh" id="rhMaiAnh" aria-hidden="true"></div>
+        <div class="rh-mai-chu"><div id="bbChao">Chào buổi sáng</div><div class="rh-mai-noi" id="rhMaiNoi" aria-live="polite"></div></div></div>
+      <h1>Đăng nhập</h1>
+      <p id="gsub">Dùng mã nhân viên và mật khẩu được cấp để bắt đầu ca làm việc.</p>
+      <div class="bb-o" id="bbOTk"><label for="l_tk">Mã nhân viên</label>
+        <div class="bb-nhap"><input id="l_tk" type="text" autocomplete="username" autocapitalize="none" spellcheck="false" placeholder="VD: c123" onkeydown="if(event.key==='Enter')login()"></div></div>
+      <div class="bb-o" id="bbOMk"><label for="l_mk">Mật khẩu</label>
+        <div class="bb-nhap">
+          <input id="l_mk" type="password" autocomplete="current-password" placeholder="Nhập mật khẩu" onkeydown="if(event.key==='Enter')login()" oninput="bbKhay()">
+          <button type="button" class="bb-hien" onclick="bbHien(this)" aria-label="Hiện mật khẩu">Hiện</button>
+        </div>
+        <div class="bb-caps" id="bbCaps">⇪ Đang bật Caps Lock</div></div>
+      <div class="bb-dong">
+        <label class="bb-nho" for="bbNho"><input type="checkbox" id="bbNho">Ghi nhớ mã nhân viên</label>
+        <button type="button" class="bb-quen" onclick="bbQuen()">Quên mật khẩu?</button>
+      </div>
+      <button class="bb-nut" onclick="login()" id="btnLogin"><span id="bbNutChu">Đăng nhập</span>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h15M13 6l6 6-6 6"/></svg></button>
+      <div id="lerr" class="alert a-bd hide" role="alert"></div>
+      <div class="spin hide" id="gspin"></div>
+      <div class="bb-vao-hop" aria-live="polite">
+        <div class="rh-ok">Xác thực thành công</div>
+        <h1 id="bbVaoTen">Chào mừng trở lại.</h1>
+        <p>Đang chuẩn bị số liệu ca làm việc của bạn…</p>
+        <div class="rh-tai"><i></i></div>
+      </div>
+    </div>
+    <div class="rh-chan">
+      <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>Phiên hết hạn sau 6 giờ</span>
+      <span><button type="button" class="rh-mai-nut" id="rhMaiNut" onclick="bbMaiDoi()">Ẩn Mai</button> · © <span id="bbNam">2026</span> Carbon Billiards</span>
+    </div>
+  </section>
+</div>
+<!--JS-->
+
+/* ===== MÀN ĐĂNG NHẬP "KHẮC LASER" =====
+   Các hàm bb* được login() gọi: bbCho (đang chờ máy chủ), bbTrung (đúng), bbTruot (sai), bbTha (mất kết nối). */
+var BB = { ban: false, dang: false, kh: '' };
+var LK = { x0: 671, y0: 430, goc: -82.4 * Math.PI / 180, cu: '', hen: 0 };
+function bbE(id) { return document.getElementById(id); }
+function bbG() { return bbE('gate'); }
+function bbGiam() { return window.matchMedia('(prefers-reduced-motion:reduce)').matches; }
+function bbChu(t) { var s = bbE('bbNutChu'); if (s) s.textContent = t; }
+/* ---- Khắc laser ---- */
+function lkMa() { return bbE('l_tk').value.trim().toUpperCase().replace(/[^A-Z0-9._-]/g, '').slice(0, 10); }
+function lkDauBut() {   // vị trí đầu khắc (cuối chữ) trên ảnh 1600x900
+  var t = bbE('lkChu'), d = 0;
+  try { d = t.textContent ? t.getComputedTextLength() + 6 : 0; } catch (e) {}
+  return { x: LK.x0 + d * Math.cos(LK.goc), y: LK.y0 + d * Math.sin(LK.goc) };
+}
+function lkLua(loi) {   // tia laser lóe tại đầu khắc
+  if (bbGiam()) return;
+  var p = lkDauBut(), l = bbE('lkLua');
+  bbE('lkTia').setAttribute('x1', p.x); bbE('lkTia').setAttribute('x2', p.x); bbE('lkTia').setAttribute('y1', -20); bbE('lkTia').setAttribute('y2', p.y);
+  bbE('lkHoaO').setAttribute('cx', p.x); bbE('lkHoaO').setAttribute('cy', p.y);
+  bbE('lkTl').setAttribute('transform', 'translate(' + p.x + ' ' + p.y + ')');
+  l.setAttribute('class', 'lk-lua'); void l.getBoundingClientRect(); l.setAttribute('class', 'lk-lua bat' + (loi ? ' loi' : ''));
+  var m = bbE('lkMay'); m.classList.add('bat'); clearTimeout(LK.hen); LK.hen = setTimeout(function () { m.classList.remove('bat'); }, 450);
+}
+function lkVe() {   // khắc lại theo mã nhân viên đang gõ
+  var v = lkMa(), cu = LK.cu, chung = 0, t = bbE('lkChu');
+  while (chung < v.length && chung < cu.length && v[chung] === cu[chung]) chung++;
+  t.innerHTML = v.split('').map(function (c, k) { return '<tspan' + (k >= chung ? ' class="nong"' : '') + '>' + c + '</tspan>'; }).join('');
+  LK.cu = v; bbE('lkMa').textContent = v || '—';
+  if (v.length > chung) { lkLua(); setTimeout(function () { [].forEach.call(t.querySelectorAll('tspan.nong'), function (s) { s.removeAttribute('class'); }); }, 380); }
+}
+function lkXep() { var t = bbE('lkChu'); t.setAttribute('class', 'lk-chu'); bbE('lkQuet').setAttribute('class', 'lk-quet'); }
+function lkKhung() { var n = bbE('lkNen'); if (n) n.setAttribute('preserveAspectRatio', (window.matchMedia('(max-width:760px)').matches ? 'xMinYMid' : 'xMidYMid') + ' slice'); }
+function lkKhoiDong() {
+  lkKhung(); window.addEventListener('resize', lkKhung);
+  bbE('l_tk').addEventListener('input', lkVe);
+  bbE('l_mk').addEventListener('input', function () { if (bbE('l_mk').value) lkLua(); });
+  LK.cu = ''; lkVe();
+}
+/* ---- Mai: chân dung tròn (hình chung MAI_SVG ở mục 12) ---- */
+var BB_CHE = '<g class="che-mat"><path d="M58 170c-4-20 2-40 18-52" stroke="#2f4a5e" stroke-width="13" fill="none" stroke-linecap="round"/><path d="M142 170c4-20-2-40-18-52" stroke="#2f4a5e" stroke-width="13" fill="none" stroke-linecap="round"/>' +
+  '<ellipse cx="76" cy="113" rx="17" ry="14" fill="#ffe6d8"/><ellipse cx="124" cy="113" rx="17" ry="14" fill="#ffe6d8"/><path d="M64 108h22M64 114h24M66 120h20M112 108h22M110 114h24M112 120h20" stroke="#f0c2ad" stroke-width="1.4" stroke-linecap="round"/></g>';
+var BB_KH = ['Làm <b>đúng ngay từ đầu</b>, khỏi phải làm lại!', 'An toàn là trên hết – <b>về nhà bình an</b>!', 'Từng cái một, <b>cuối ca thành nghìn</b>!', 'Tổ đồng lòng, <b>việc khó cũng xong</b>.'];
+function bbMaiTat() { try { return localStorage.getItem('kpi_mai') === 'tat'; } catch (e) { return false; } }
+function bbMai(lop, noi, lo) {
+  if (bbMaiTat()) return;
+  var m = document.querySelector('#rhMaiAnh svg'); if (m) m.setAttribute('class', 'mai ' + (lop || ''));
+  var n = bbE('rhMaiNoi'); if (!n || noi == null) return;
+  n.innerHTML = noi; n.className = 'rh-mai-noi' + (lo ? ' lo' : ''); void n.offsetWidth; n.classList.add('doi');
+}
+function bbMaiThuong() { bbMai('', 'Mai chúc bạn một ca tốt lành. ' + BB.kh); }
+function bbMaiVe() {
+  var w = bbE('rhMai'), a = bbE('rhMaiAnh'), nut = bbE('rhMaiNut'), tat = bbMaiTat();
+  w.classList.toggle('tat', tat); if (nut) nut.textContent = tat ? 'Hiện Mai' : 'Ẩn Mai';
+  if (tat || a.firstChild || typeof MAI_SVG === 'undefined') return;
+  /* chỉ lấy phần mặt; đổi id gradient để không trùng hình Mai bên trong web (#gate bị ẩn sau khi vào) */
+  a.innerHTML = '<svg class="mai" viewBox="26 22 148 148">' + MAI_SVG.replace(/(id="|url\(#)g(Toc|Mong|Ao|Da|Ma)\b/g, '$1gbb$2') + BB_CHE + '</svg>';
+}
+/* Trong web, phần Mai (va-mai.py, mục 12) nạp sau màn này: chờ MAI_SVG + khẩu hiệu sẵn sàng */
+function bbMaiNap(lan) {
+  if (typeof MAI_SVG === 'undefined' && lan < 20) { setTimeout(function () { bbMaiNap(lan + 1); }, lan ? 150 : 0); return; }
+  try { BB.kh = (typeof maiKhNgay === 'function') ? maiKhNgay().cau : ''; } catch (e) { BB.kh = ''; }
+  if (!BB.kh) BB.kh = BB_KH[Math.floor(Date.now() / 864e5) % BB_KH.length];
+  bbMaiVe();
+  if (BB.dang) return;
+  if (document.activeElement === bbE('l_mk')) bbMai('che', 'Mai không nhìn đâu – cứ yên tâm gõ mật khẩu nhé.'); else bbMaiThuong();
+}
+function bbMaiDoi() {
+  try { if (bbMaiTat()) localStorage.removeItem('kpi_mai'); else localStorage.setItem('kpi_mai', 'tat'); } catch (e) {}
+  bbMaiVe(); bbMaiThuong();
+}
+/* ---- Biểu mẫu ---- */
+function bbKhay() { var o = bbE('bbOMk'); if (o) o.classList.remove('bb-sai'); }
+function bbHien(b) {
+  var i = bbE('l_mk');
+  i.type = i.type === 'password' ? 'text' : 'password';
+  b.textContent = i.type === 'password' ? 'Hiện' : 'Ẩn';
+  i.focus();
+}
+function bbQuen() {
+  var e = bbE('lerr');
+  e.className = 'alert bb-tin';
+  e.textContent = 'Liên hệ trưởng phòng hoặc chủ sở hữu hệ thống để được cấp mật khẩu tạm. Bạn sẽ đặt lại mật khẩu mới ngay khi đăng nhập.';
+  bbMai('', 'Không sao đâu – nhờ <b>trưởng phòng</b> cấp mật khẩu tạm là vào được ngay.');
+}
+function bbLoiChao() {
+  var h = new Date().getHours();
+  var c = h < 5 ? 'Chúc ca đêm thuận lợi' : h < 11 ? 'Chào buổi sáng' : h < 14 ? 'Chào buổi trưa' : h < 18 ? 'Chào buổi chiều' : 'Chào buổi tối';
+  var s = bbE('bbChao'); if (s) s.textContent = c;
+  var n = bbE('bbNam'); if (n) n.textContent = new Date().getFullYear();
+}
+/* Ghi nhớ mã nhân viên trên máy này (không bao giờ lưu mật khẩu) */
+function bbNhoTk() {
+  try {
+    var c = bbE('bbNho'), tk = bbE('l_tk');
+    if (c.checked && tk.value.trim()) localStorage.setItem('kpi_tk_nho', tk.value.trim());
+    else localStorage.removeItem('kpi_tk_nho');
+  } catch (e) {}
+}
+function bbXep() {   // về trạng thái đầu
+  BB.dang = false;
+  var g = bbG(); if (!g) return;
+  g.classList.remove('bb-vao', 'rh-dung');
+  bbChu('Đăng nhập');
+  bbMaiThuong();
+  lkXep();
+}
+function bbCho() {
+  bbNhoTk();
+  bbChu('Đang xác thực');
+  bbE('lerr').className = 'alert a-bd hide';
+  bbG().classList.add('rh-dung');
+  bbMai('noi', 'Đợi Mai kiểm tra một chút nha…');
+}
+function bbTha() {
+  bbG().classList.remove('rh-dung'); bbChu('Đăng nhập');
+  bbMai('lo', 'Mạng đang chập chờn – đợi vài giây rồi thử lại nhé.', 1);
+}
+/* ĐÚNG: chữ khắc sáng vàng, vệt sáng chạy dọc ngọn cơ, bảng chuyển sang "Chào mừng"; Mai chúc ca làm */
+function bbTrung(tiep) {
+  BB.dang = true;
+  var ten = (typeof ME !== 'undefined' && ME && ME.ten) ? String(ME.ten).trim().split(/\s+/).pop() : '';
+  var t = bbE('bbVaoTen'); if (t) t.textContent = ten ? 'Chào mừng, ' + ten + '.' : 'Chào mừng trở lại.';
+  bbMai('covu', 'Chúc ' + (ten ? '<b>' + ten + '</b>' : 'bạn') + ' một ca làm việc thật suôn sẻ!');
+  bbG().classList.add('bb-vao');
+  bbE('lkChu').setAttribute('class', 'lk-chu vang');
+  if (bbGiam()) { tiep(); return; }
+  bbE('lkQuet').setAttribute('class', 'lk-quet chay');
+  setTimeout(tiep, 1300);
+}
+/* SAI: tia laser đỏ, chữ khắc mờ đi một nhịp; báo lỗi tại ô, bảng rung nhẹ; Mai lo lắng nhắc Caps Lock / chữ hoa */
+function bbTruot() {
+  bbTha();
+  lkLua(1); var lc = bbE('lkChu'); lc.setAttribute('class', 'lk-chu mo'); setTimeout(function () { lc.setAttribute('class', 'lk-chu'); }, 900);
+  var o = bbE('bbOMk'), the = bbE('frmLogin');
+  o.classList.add('bb-sai');
+  bbMai('lo', bbE('bbCaps').classList.contains('hien') ? 'Phím <b>Caps Lock</b> đang bật đó – tắt đi rồi gõ lại nhé.' : 'Chưa đúng rồi – gõ lại chậm thôi, để ý chữ hoa/thường nhé.', 1);
+  the.classList.remove('rung'); void the.offsetWidth; the.classList.add('rung');
+  bbE('l_mk').focus();
+}
+function bbKhoiDong() {
+  var g = bbG();
+  if (!g || BB.ban) return;
+  BB.ban = true;
+  bbLoiChao();
+  lkKhoiDong();
+  try {
+    var nho = localStorage.getItem('kpi_tk_nho');
+    if (nho) { bbE('l_tk').value = nho; bbE('bbNho').checked = true; lkVe();
+      setTimeout(function () { bbE('l_mk').focus(); }, 350); }
+  } catch (e) {}
+  var mk = bbE('l_mk');
+  var caps = function (e) { if (e.getModifierState) bbE('bbCaps').classList.toggle('hien', e.getModifierState('CapsLock')); };
+  mk.addEventListener('keyup', caps);
+  mk.addEventListener('keydown', caps);
+  /* Mai che mắt khi gõ mật khẩu */
+  mk.addEventListener('focus', function () {
+    if (BB.dang || bbMaiTat()) return;
+    var n = bbE('rhMaiNoi');
+    if (n && n.classList.contains('lo')) { var m = document.querySelector('#rhMaiAnh svg'); if (m) m.setAttribute('class', 'mai lo che'); }
+    else bbMai('che', 'Mai không nhìn đâu – cứ yên tâm gõ mật khẩu nhé.');
+  });
+  mk.addEventListener('blur', function () {
+    if (BB.dang || bbMaiTat()) return;
+    var m = document.querySelector('#rhMaiAnh svg'); if (m) m.setAttribute('class', String(m.getAttribute('class')).replace(/\s*che\b/, ''));
+  });
+  bbMaiNap(0);
+}
