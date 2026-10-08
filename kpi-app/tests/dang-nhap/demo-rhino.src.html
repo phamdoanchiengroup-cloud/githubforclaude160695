@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Màn đăng nhập Rhino</title>
+<style>
+:root{--nen:#0e1012;--the:#171a1d;--chu:#e9eef0;--phu:#8d989f;--cy:#2fd3c6;--dong:#d9bd8c}
+*{box-sizing:border-box}
+body{margin:0;background:var(--nen);color:var(--chu);font:15px/1.55 Inter,system-ui,-apple-system,'Segoe UI',sans-serif}
+.vo{max-width:1320px;margin:0 auto;padding:22px 16px 40px}
+h1{font-size:22px;margin:0 0 6px}
+.mo{color:var(--phu);margin:0 0 14px;max-width:900px}
+.mo b{color:var(--chu)}
+.dk{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:0 0 14px}
+.dk button{font:inherit;font-size:14px;padding:8px 14px;border-radius:10px;border:1px solid rgba(255,255,255,.14);background:var(--the);color:var(--chu);cursor:pointer}
+.dk button.chon{border-color:var(--cy);color:var(--cy);background:rgba(47,211,198,.08)}
+.dk .cach{width:1px;height:24px;background:rgba(255,255,255,.12);margin:0 4px}
+.khung{margin:0 auto;border-radius:14px;overflow:hidden;border:1px solid rgba(255,255,255,.12);background:#000;transition:width .3s;width:100%}
+.khung iframe{display:block;width:100%;height:800px;border:0}
+.khung.dt{width:390px;border-radius:30px;border:9px solid #050607}
+.khung.dt iframe{height:780px}
+.diem{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:10px;margin:16px 0 0}
+.diem div{background:var(--the);border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:12px 14px;font-size:13.5px;color:var(--phu)}
+.diem b{display:block;color:var(--dong);font-size:14px;margin-bottom:2px}
+.khung iframe.an{display:none}
+</style>
+</head>
+<body>
+<div class="vo">
+  <h1>Màn đăng nhập theo phong cách Rhino</h1>
+  <p class="mo">Theo đúng bộ nhận diện của <b>rhino-billiards.com</b>: nền than chì, vàng Rhino, chữ Arimo, logo tê giác và <b>ảnh studio thật</b> các dòng Must, Eclipse II, Retro II. Mai là chân dung tròn nhỏ. Mật khẩu thử là <b>"demo"</b>. Bấm "Hiện tại" để so.</p>
+  <div class="dk">
+    <button class="chon" data-b="moi">✦ Rhino</button><button data-b="cu">Hiện tại</button>
+    <span class="cach"></span>
+    <button class="chon" data-v="pc">🖥 Máy tính</button><button data-v="dt">📱 Điện thoại</button>
+    <span class="cach"></span>
+    <button id="lai">↻ Làm lại</button>
+  </div>
+  <div class="khung" id="khung">
+    <iframe id="fMoi" title="Bản mới" srcdoc="{{MOI}}"></iframe>
+    <iframe id="fCu" class="an" title="Hiện tại" srcdoc="{{CU}}"></iframe>
+  </div>
+  <div class="diem">
+    <div><b>Phòng trưng bày</b>Bên trái là ảnh thật của hãng, tự chuyển mỗi 7 giây và phóng rất chậm; vạch vàng bên dưới cho biết đang ở ảnh nào, bấm vạch để chọn.</div>
+    <div><b>Bảng đăng nhập</b>Nền than chì, nút vàng Rhino, chữ in hoa giãn chữ như trang của hãng. Đang kiểm tra thì nút có sọc chạy và ảnh tạm dừng.</div>
+    <div><b>Mai</b>Chân dung tròn viền vàng: chào theo buổi + khẩu hiệu ngày, che mắt khi gõ mật khẩu, lo khi sai, chúc khi vào. Có nút "Ẩn Mai".</div>
+    <div><b>Điện thoại</b>Ảnh thành dải trên cùng kèm tên dòng sản phẩm, bảng đăng nhập trượt lên phía dưới.</div>
+  </div>
+</div>
+<script>
+(function(){
+  var k=document.getElementById('khung'), m=document.getElementById('fMoi'), c=document.getElementById('fCu');
+  function hien(){ return m.classList.contains('an')?c:m; }
+  document.querySelectorAll('[data-b]').forEach(function(b){ b.onclick=function(){
+    document.querySelectorAll('[data-b]').forEach(function(x){x.classList.toggle('chon',x===b)});
+    m.classList.toggle('an',b.dataset.b!=='moi'); c.classList.toggle('an',b.dataset.b==='moi'); }; });
+  document.querySelectorAll('[data-v]').forEach(function(b){ b.onclick=function(){
+    document.querySelectorAll('[data-v]').forEach(function(x){x.classList.toggle('chon',x===b)});
+    k.classList.toggle('dt',b.dataset.v==='dt'); }; });
+  document.getElementById('lai').onclick=function(){ var f=hien(); f.srcdoc=f.getAttribute('srcdoc'); };
+})();
+</script>
+</body>
+</html>

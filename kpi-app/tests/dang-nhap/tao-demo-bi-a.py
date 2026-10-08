@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""Dựng kpi-app/demo-dang-nhap-bi-a.html: màn đăng nhập bi-a HIỆN TẠI (tests/dang-nhap-bi-a.html)
+"""Dựng kpi-app/demo-dang-nhap-bi-a.html và demo-dang-nhap-rhino.html: màn đăng nhập bi-a HIỆN TẠI (tests/dang-nhap-bi-a.html)
    đặt cạnh BẢN MỚI (tests/dang-nhap-bi-a-2.html, có Mai). Mỗi bản chạy trong một khung riêng với login() giả:
    mật khẩu "demo" là đúng, sai thì báo như máy chủ thật.
    python3 kpi-app/tests/dang-nhap/tao-demo-bi-a.py"""
@@ -33,13 +33,22 @@ function login(){
 function lamLai(){ $('demoXong').classList.remove('hien'); $('l_mk').value=''; bbXep(); }
 """
 
+RH = {'{{RH_LOGO}}': ('logo-rhino.png', 'png'), '{{RH_1}}': ('must-shaft.jpg', 'jpeg'), '{{RH_2}}': ('eclipse-2.jpg', 'jpeg'),
+      '{{RH_3}}': ('retro-2.jpg', 'jpeg'), '{{RH_4}}': ('must-cue.jpg', 'jpeg')}
+def anh_rhino(s):
+    """Chèn ảnh thương hiệu Rhino (kpi-app/anh/rhino) dạng base64 – dùng chung cho va-index.py khi gắn vào web."""
+    for k, (f, loai) in RH.items():
+        if k in s:
+            s = s.replace(k, 'data:image/%s;base64,' % loai + base64.b64encode(open(os.path.join(T, '..', 'anh', 'rhino', f), 'rb').read()).decode())
+    return s
+
 def khung(nguon, co_mai):
-    s = doc(os.path.join(T, nguon)).replace('{{ANH_NGON}}', ANH)
+    s = anh_rhino(doc(os.path.join(T, nguon)).replace('{{ANH_NGON}}', ANH))
     css = s.split('<!--CSS-->')[1].split('<!--HTML-->')[0]
     htm = s.split('<!--HTML-->')[1].split('<!--JS-->')[0]
     js = s.split('<!--JS-->')[1]
     return ('<!doctype html><html lang="vi"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">'
-            '<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">'
+            '<link href="https://fonts.googleapis.com/css2?family=Arimo:wght@400;700&family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">'
             '<style>*{box-sizing:border-box}body{margin:0}.hide{display:none!important}.alert{padding:12px 15px;border-radius:10px;font-size:13px;border:1px solid}'
             '#demoXong{position:fixed;inset:0;z-index:50;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:14px;background:rgba(10,11,13,.82);color:#f5f2eb;font:600 17px Inter,sans-serif;text-align:center;padding:20px;opacity:0;pointer-events:none;transition:opacity .3s}'
             '#demoXong.hien{opacity:1;pointer-events:auto}#demoXong small{font-weight:400;opacity:.75;font-size:13px}'
@@ -48,7 +57,10 @@ def khung(nguon, co_mai):
             '<div id="demoXong">✓ Đã vào hệ thống<small>(demo dừng ở đây – web thật sẽ mở trang làm việc)</small><button onclick="lamLai()">↻ Thử lại</button></div>'
             '<script>' + (MAI if co_mai else '') + GIA + js + '\nbbKhoiDong();</script></body></html>')
 
-moi, cu = khung('dang-nhap-bi-a-2.html', True), khung('dang-nhap-bi-a.html', False)
-trang = doc(os.path.join(D, 'demo-bi-a.src.html')).replace('{{MOI}}', html.escape(moi, quote=True)).replace('{{CU}}', html.escape(cu, quote=True))
-io.open(os.path.join(T, '..', 'demo-dang-nhap-bi-a.html'), 'w', encoding='utf-8').write(trang)
-print('OK demo-dang-nhap-bi-a.html', len(trang.encode('utf-8')) // 1024, 'KB')
+cu = khung('dang-nhap-bi-a.html', False)
+for nguon, mau, ra in [('dang-nhap-bi-a-2.html', 'demo-bi-a.src.html', 'demo-dang-nhap-bi-a.html'),
+                       ('dang-nhap-rhino.html', 'demo-rhino.src.html', 'demo-dang-nhap-rhino.html')]:
+    moi = khung(nguon, True)
+    trang = doc(os.path.join(D, mau)).replace('{{MOI}}', html.escape(moi, quote=True)).replace('{{CU}}', html.escape(cu, quote=True))
+    io.open(os.path.join(T, '..', ra), 'w', encoding='utf-8').write(trang)
+    print('OK', ra, len(trang.encode('utf-8')) // 1024, 'KB')
