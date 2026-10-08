@@ -53,6 +53,8 @@ b = R(b, 'parts.mc.add(m);pick.push(m);const a=rc(Mc.r);', '''parts.mc.add(m);pi
     if(window.SS&&SS.baoTri(fi,Mc)){parts.mc.add(box(a.x1-a.x0+.5,.04,a.y1-a.y0+.5,S({color:0xe5484d,emissive:0xe5484d,emissiveIntensity:.9}),px((a.x0+a.x1)/2),.08,pz((a.y0+a.y1)/2),false));
       const el=document.createElement('div');el.className='lbl bt';el.textContent='⚠ Bảo trì';const L=new CSS2DObject(el);L.position.set(px((a.x0+a.x1)/2),Mc.h+.7,pz((a.y0+a.y1)/2));L.userData.big=true;parts.labels.add(L);}''')
 
+exec(doc(os.path.join(D, 'va-anh-that.py')))   # chế độ "📷 Ảnh như thật" (dò tia sáng)
+
 trang = doc(os.path.join(D, 'demo.src.html'))
 trang = trang.replace('{{SS}}', ss).replace('{{DATA}}', json.dumps(DATA, ensure_ascii=False, separators=(',', ':')))
 trang = trang.replace('{{BA_D}}', html.escape(b, quote=False))
