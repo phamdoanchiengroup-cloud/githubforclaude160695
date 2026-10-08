@@ -7,6 +7,13 @@ Bản này gồm **mọi thay đổi từ đầu** (sửa lỗi chốt tháng, b
 - **Cần có:** máy tính (không làm trên điện thoại), trình duyệt Chrome, đăng nhập đúng tài khoản Google đang giữ dự án Apps Script và file Sheet "CSDL KPI".
 - **Cần dán lại 2 file:** `Code.gs` và `Index.html`.
 
+> **Bản 10/10/2026 – Hiệu ứng thao tác + hiệu ứng màn đăng nhập.** Chỉ đổi **`Index.html`**. Làm **A3 (sao lưu) → B2 → Phần D**, rồi Ctrl+F5.
+> - **Màn đăng nhập:** mở trang là **cửa cuốn** đóng – kéo lên (hoặc chạm tay nắm / nhấn Enter) mới thấy ô nhập; chưa điền đủ mà rê chuột vào **Đăng nhập** thì nút chạy trốn (điện thoại: chạm thì nút nhảy sang bên); mắt Mai nhìn theo chữ đang gõ, bật Caps Lock thì Mai bịt tai; sai mật khẩu 3 lần liền thì khóa kiểu két sắt 30 giây; lời chào và màu nền đổi theo giờ (ca đêm tông vàng ấm). Máy bật "giảm chuyển động" thì bỏ qua cửa cuốn.
+> - **Duyệt sản lượng:** bấm Duyệt / Từ chối thì nhóm đó đóng tem **ĐÃ DUYỆT / TRẢ LẠI** và có **4 giây "Hoàn tác"** rồi mới gửi đi (Từ chối không hỏi "Bạn có chắc?" nữa). Điện thoại: **vuốt cả nhóm** sang phải = Duyệt, sang trái = Từ chối.
+> - **Chốt ca:** thay nút bằng **cần gạt** – kéo hẳn xuống đáy mới chốt (bàn phím: chọn cần gạt rồi Enter). Thẻ Chờ chốt: **Xóa** dòng có **Hoàn tác 5 giây**; điện thoại vuốt dòng sang trái để xóa.
+> - **Kéo xuống ở đầu trang để làm mới** (điện thoại). **Nhập sai** thì Mai đứng cạnh ô và chỉ tay. **KPI cá nhân hạng A** hoặc gửi đều 7 ngày liền: pháo giấy (mỗi ngày 1 lần). **Hết phiên:** màn tối, sợi dây thả xuống – kéo dây là hiện hộp **đăng nhập lại ngay tại chỗ**, không mất trang đang xem.
+> - **Giữ nguyên như cũ:** trang công nhân nhập sản lượng và trang điểm danh.
+
 > **Bản 09/10/2026 (tối) – Màn đăng nhập "Khắc laser" (thương hiệu Rhino).** Chỉ đổi **`Index.html`** (đã gồm cả cột Ngày ở thẻ Chờ chốt bên dưới). Màn đăng nhập mới: nền ảnh ngọn carbon Rhino trong cát đen; gõ **mã nhân viên** thì tia laser khắc mã lên ngọn cơ (mật khẩu không bao giờ hiện lên), Mai chào ở góc bảng đăng nhập. Ảnh và font đã nằm sẵn trong file nên file nặng hơn (~1 MB) – dán bình thường. Làm **A3 (sao lưu) → B2 → Phần D**.
 
 > **Bản 09/10/2026 – Ngày trong thẻ "Chờ chốt".** Chỉ đổi **`Index.html`**: thẻ *Chờ chốt* (trưởng/phó phòng, trang nhập sản lượng) có thêm **cột Ngày** (ngày/tháng + thứ). Cùng một người mà nhập 2 ngày khác nhau thì tách thành 2 nhóm; ngày không phải hôm nay tô **màu vàng** kèm chữ "không phải hôm nay", và danh sách có nhiều ngày thì hiện lời nhắc kiểm tra trước khi bấm **Chốt ca**. Làm **A3 (sao lưu) → B2 → Phần D**.

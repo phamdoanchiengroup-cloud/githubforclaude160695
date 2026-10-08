@@ -63,13 +63,13 @@ for nguon, mau, ra in [('dang-nhap-bi-a-2.html', 'demo-bi-a.src.html', 'demo-dan
 # Bản "Khắc laser" (09/10): đặt cạnh bản Phòng trưng bày và bản hiện tại
 trang = anh_rhino(doc(os.path.join(D, 'demo-khac.src.html')))
 for k, nguon, mai in [('{{MOI}}', 'dang-nhap-khac.html', True), ('{{TRUOC}}', 'dang-nhap-rhino.html', True), ('{{CU}}', 'dang-nhap-bi-a.html', False)]:
-    trang = trang.replace(k, html.escape(khung(nguon, mai), quote=True))
+    trang = trang.replace(k, html.escape(khung(nguon, mai, 'window.LK_HU={};'), quote=True))  # demo so mẫu: tắt hiệu ứng thêm
 io.open(os.path.join(T, '..', 'demo-dang-nhap-khac.html'), 'w', encoding='utf-8').write(trang)
 print('OK demo-dang-nhap-khac.html', len(trang.encode('utf-8')) // 1024, 'KB')
 
 # Hiệu ứng thêm cho màn Khắc laser (09/10): dây kéo bật đèn + nút chạy trốn – đặt cạnh bản hiện tại
 trang = anh_rhino(doc(os.path.join(D, 'demo-hieu-ung.src.html')))
-for k, dau in [('{{MOI}}', 'window.LK_HU={day:true,chay:true};'), ('{{CU}}', '')]:
+for k, dau in [('{{MOI}}', 'window.LK_HU={day:true,chay:true};'), ('{{CU}}', 'window.LK_HU={};')]:
     trang = trang.replace(k, html.escape(khung('dang-nhap-khac.html', True, dau), quote=True))
 io.open(os.path.join(T, '..', 'demo-dang-nhap-hieu-ung.html'), 'w', encoding='utf-8').write(trang)
 print('OK demo-dang-nhap-hieu-ung.html', len(trang.encode('utf-8')) // 1024, 'KB')

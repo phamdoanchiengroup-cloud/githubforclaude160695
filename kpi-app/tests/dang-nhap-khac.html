@@ -161,7 +161,7 @@
 #gate .lk-dau,#gate .lk-goc,#gate .lk-kinh{transition:opacity .7s ease,filter .7s ease}
 #gate .lk-goc{transition-delay:.15s}#gate .lk-kinh{transition-delay:.3s}
 /* 2) Nút Đăng nhập "chạy trốn" khi chưa điền đủ (chỉ máy tính có chuột) */
-#gate .bb-nut.chay{z-index:30;width:210px;transition:transform .3s cubic-bezier(.3,1.5,.5,1),background .2s;box-shadow:0 18px 40px -12px rgba(247,184,41,.7)}
+#gate .bb-nut.chay{z-index:30;width:210px;transition:transform .3s cubic-bezier(.3,1.2,.5,1),background .2s;box-shadow:0 18px 40px -12px rgba(247,184,41,.7)}
 #gate .bb-nut.ve{transition:transform .45s cubic-bezier(.3,1.3,.5,1),width .3s}
 #gate .bb-nut.met{animation:lkLac .55s ease}
 @keyframes lkLac{20%,60%{rotate:-4deg}40%,80%{rotate:4deg}}
@@ -442,8 +442,12 @@ function bbTruot() {
   the.classList.remove('rung'); void the.offsetWidth; the.classList.add('rung');
   bbE('l_mk').focus();
 }
-/* ===== Hiệu ứng thêm (09/10, chờ duyệt): đặt window.LK_HU = { day: true, chay: true } trước khi nạp để bật ===== */
-var LK_HU = (typeof window !== 'undefined' && window.LK_HU) || { day: false, chay: false, cham: false, cua: false, mat: false, ket: false, gio: false };
+/* ===== Hiệu ứng thêm – chủ dự án đã duyệt (09/10), BẬT trên web thật:
+   cửa cuốn khi mở trang (cua, thay dây kéo `day`), nút Đăng nhập chạy trốn khi chưa điền đủ (chay: máy có chuột thì né,
+   điện thoại thì nhảy khi chạm; cham = ép kiểu nhảy cả trên máy tính), mắt Mai theo chữ + bịt tai khi Caps Lock (mat),
+   két sắt sai 3 lần khóa 30 giây (ket), lời chào + tông màu theo giờ (gio).
+   Muốn tắt/đổi: đặt window.LK_HU = {...} trước khi nạp (window.LK_HU = {} là tắt hết). ===== */
+var LK_HU = (typeof window !== 'undefined' && window.LK_HU) || { day: false, chay: true, cham: false, cua: true, mat: true, ket: true, gio: true };
 /* 1) Màn tối, chỉ có sợi dây: kéo xuống (hoặc bấm / Enter) để bật đèn, rồi mới hiện ô nhập */
 function lkDay() {
   var g = bbG(); g.classList.add('lk-chuabat');
@@ -484,7 +488,7 @@ function lkNe(e) {
   }
   nut.__ne = true; setTimeout(function () { nut.__ne = false; }, 280);
   if (!nut.classList.contains('chay')) { nut.classList.remove('ve'); nut.classList.add('chay'); void nut.offsetWidth; }
-  var g = bbG().getBoundingClientRect(), r = nut.getBoundingClientRect(), m = 18;
+  var g = bbG().getBoundingClientRect(), r = nut.getBoundingClientRect(), m = 26;   // chừa lề cho đà nảy khi bay
   /* tâm nút: lấy điểm đích lần trước (nút có thể đang bay dở), lần đầu mới đo */
   var cx = LKC.cx != null ? LKC.cx : r.left + r.width / 2, cy = LKC.cy != null ? LKC.cy : r.top + r.height / 2, vx = cx - e.clientX, vy = cy - e.clientY, l = Math.hypot(vx, vy) || 1;
   var buoc = 150 + Math.random() * 90, nx = cx + vx / l * buoc + (Math.random() - .5) * 120, ny = cy + vy / l * buoc + (Math.random() - .5) * 90;

@@ -209,7 +209,7 @@ h1{font-size:22px;margin:0 0 6px}
 #gate .lk-dau,#gate .lk-goc,#gate .lk-kinh{transition:opacity .7s ease,filter .7s ease}
 #gate .lk-goc{transition-delay:.15s}#gate .lk-kinh{transition-delay:.3s}
 /* 2) Nút Đăng nhập &quot;chạy trốn&quot; khi chưa điền đủ (chỉ máy tính có chuột) */
-#gate .bb-nut.chay{z-index:30;width:210px;transition:transform .3s cubic-bezier(.3,1.5,.5,1),background .2s;box-shadow:0 18px 40px -12px rgba(247,184,41,.7)}
+#gate .bb-nut.chay{z-index:30;width:210px;transition:transform .3s cubic-bezier(.3,1.2,.5,1),background .2s;box-shadow:0 18px 40px -12px rgba(247,184,41,.7)}
 #gate .bb-nut.ve{transition:transform .45s cubic-bezier(.3,1.3,.5,1),width .3s}
 #gate .bb-nut.met{animation:lkLac .55s ease}
 @keyframes lkLac{20%,60%{rotate:-4deg}40%,80%{rotate:4deg}}
@@ -328,7 +328,7 @@ h1{font-size:22px;margin:0 0 6px}
     &lt;/div&gt;
   &lt;/section&gt;
 &lt;/div&gt;
-&lt;div id=&quot;demoXong&quot;&gt;✓ Đã vào hệ thống&lt;small&gt;(demo dừng ở đây – web thật sẽ mở trang làm việc)&lt;/small&gt;&lt;button onclick=&quot;lamLai()&quot;&gt;↻ Thử lại&lt;/button&gt;&lt;/div&gt;&lt;script&gt;var MAI_SVG=&#x27;&#x27;+
+&lt;div id=&quot;demoXong&quot;&gt;✓ Đã vào hệ thống&lt;small&gt;(demo dừng ở đây – web thật sẽ mở trang làm việc)&lt;/small&gt;&lt;button onclick=&quot;lamLai()&quot;&gt;↻ Thử lại&lt;/button&gt;&lt;/div&gt;&lt;script&gt;window.LK_HU={};var MAI_SVG=&#x27;&#x27;+
 &#x27;&lt;defs&gt;&#x27;+
  &#x27;&lt;linearGradient id=&quot;gToc&quot; x1=&quot;0&quot; y1=&quot;0&quot; x2=&quot;0&quot; y2=&quot;1&quot;&gt;&lt;stop offset=&quot;0&quot; stop-color=&quot;#4a3530&quot;/&gt;&lt;stop offset=&quot;.6&quot; stop-color=&quot;#2a1d1a&quot;/&gt;&lt;stop offset=&quot;1&quot; stop-color=&quot;#1c1312&quot;/&gt;&lt;/linearGradient&gt;&#x27;+
  &#x27;&lt;linearGradient id=&quot;gMong&quot; x1=&quot;0&quot; y1=&quot;0&quot; x2=&quot;0&quot; y2=&quot;1&quot;&gt;&lt;stop offset=&quot;0&quot; stop-color=&quot;#3b2016&quot;/&gt;&lt;stop offset=&quot;.5&quot; stop-color=&quot;#9a5a32&quot;/&gt;&lt;stop offset=&quot;1&quot; stop-color=&quot;#f2b46a&quot;/&gt;&lt;/linearGradient&gt;&#x27;+
@@ -579,8 +579,12 @@ function bbTruot() {
   the.classList.remove(&#x27;rung&#x27;); void the.offsetWidth; the.classList.add(&#x27;rung&#x27;);
   bbE(&#x27;l_mk&#x27;).focus();
 }
-/* ===== Hiệu ứng thêm (09/10, chờ duyệt): đặt window.LK_HU = { day: true, chay: true } trước khi nạp để bật ===== */
-var LK_HU = (typeof window !== &#x27;undefined&#x27; &amp;&amp; window.LK_HU) || { day: false, chay: false, cham: false, cua: false, mat: false, ket: false, gio: false };
+/* ===== Hiệu ứng thêm – chủ dự án đã duyệt (09/10), BẬT trên web thật:
+   cửa cuốn khi mở trang (cua, thay dây kéo `day`), nút Đăng nhập chạy trốn khi chưa điền đủ (chay: máy có chuột thì né,
+   điện thoại thì nhảy khi chạm; cham = ép kiểu nhảy cả trên máy tính), mắt Mai theo chữ + bịt tai khi Caps Lock (mat),
+   két sắt sai 3 lần khóa 30 giây (ket), lời chào + tông màu theo giờ (gio).
+   Muốn tắt/đổi: đặt window.LK_HU = {...} trước khi nạp (window.LK_HU = {} là tắt hết). ===== */
+var LK_HU = (typeof window !== &#x27;undefined&#x27; &amp;&amp; window.LK_HU) || { day: false, chay: true, cham: false, cua: true, mat: true, ket: true, gio: true };
 /* 1) Màn tối, chỉ có sợi dây: kéo xuống (hoặc bấm / Enter) để bật đèn, rồi mới hiện ô nhập */
 function lkDay() {
   var g = bbG(); g.classList.add(&#x27;lk-chuabat&#x27;);
@@ -621,7 +625,7 @@ function lkNe(e) {
   }
   nut.__ne = true; setTimeout(function () { nut.__ne = false; }, 280);
   if (!nut.classList.contains(&#x27;chay&#x27;)) { nut.classList.remove(&#x27;ve&#x27;); nut.classList.add(&#x27;chay&#x27;); void nut.offsetWidth; }
-  var g = bbG().getBoundingClientRect(), r = nut.getBoundingClientRect(), m = 18;
+  var g = bbG().getBoundingClientRect(), r = nut.getBoundingClientRect(), m = 26;   // chừa lề cho đà nảy khi bay
   /* tâm nút: lấy điểm đích lần trước (nút có thể đang bay dở), lần đầu mới đo */
   var cx = LKC.cx != null ? LKC.cx : r.left + r.width / 2, cy = LKC.cy != null ? LKC.cy : r.top + r.height / 2, vx = cx - e.clientX, vy = cy - e.clientY, l = Math.hypot(vx, vy) || 1;
   var buoc = 150 + Math.random() * 90, nx = cx + vx / l * buoc + (Math.random() - .5) * 120, ny = cy + vy / l * buoc + (Math.random() - .5) * 90;
@@ -965,7 +969,7 @@ bbKhoiDong();&lt;/script&gt;&lt;/body&gt;&lt;/html&gt;"></iframe>
     &lt;/div&gt;
   &lt;/section&gt;
 &lt;/div&gt;
-&lt;div id=&quot;demoXong&quot;&gt;✓ Đã vào hệ thống&lt;small&gt;(demo dừng ở đây – web thật sẽ mở trang làm việc)&lt;/small&gt;&lt;button onclick=&quot;lamLai()&quot;&gt;↻ Thử lại&lt;/button&gt;&lt;/div&gt;&lt;script&gt;var MAI_SVG=&#x27;&#x27;+
+&lt;div id=&quot;demoXong&quot;&gt;✓ Đã vào hệ thống&lt;small&gt;(demo dừng ở đây – web thật sẽ mở trang làm việc)&lt;/small&gt;&lt;button onclick=&quot;lamLai()&quot;&gt;↻ Thử lại&lt;/button&gt;&lt;/div&gt;&lt;script&gt;window.LK_HU={};var MAI_SVG=&#x27;&#x27;+
 &#x27;&lt;defs&gt;&#x27;+
  &#x27;&lt;linearGradient id=&quot;gToc&quot; x1=&quot;0&quot; y1=&quot;0&quot; x2=&quot;0&quot; y2=&quot;1&quot;&gt;&lt;stop offset=&quot;0&quot; stop-color=&quot;#4a3530&quot;/&gt;&lt;stop offset=&quot;.6&quot; stop-color=&quot;#2a1d1a&quot;/&gt;&lt;stop offset=&quot;1&quot; stop-color=&quot;#1c1312&quot;/&gt;&lt;/linearGradient&gt;&#x27;+
  &#x27;&lt;linearGradient id=&quot;gMong&quot; x1=&quot;0&quot; y1=&quot;0&quot; x2=&quot;0&quot; y2=&quot;1&quot;&gt;&lt;stop offset=&quot;0&quot; stop-color=&quot;#3b2016&quot;/&gt;&lt;stop offset=&quot;.5&quot; stop-color=&quot;#9a5a32&quot;/&gt;&lt;stop offset=&quot;1&quot; stop-color=&quot;#f2b46a&quot;/&gt;&lt;/linearGradient&gt;&#x27;+
@@ -1464,7 +1468,7 @@ bbKhoiDong();&lt;/script&gt;&lt;/body&gt;&lt;/html&gt;"></iframe>
     &lt;/div&gt;
   &lt;/section&gt;
 &lt;/div&gt;
-&lt;div id=&quot;demoXong&quot;&gt;✓ Đã vào hệ thống&lt;small&gt;(demo dừng ở đây – web thật sẽ mở trang làm việc)&lt;/small&gt;&lt;button onclick=&quot;lamLai()&quot;&gt;↻ Thử lại&lt;/button&gt;&lt;/div&gt;&lt;script&gt;
+&lt;div id=&quot;demoXong&quot;&gt;✓ Đã vào hệ thống&lt;small&gt;(demo dừng ở đây – web thật sẽ mở trang làm việc)&lt;/small&gt;&lt;button onclick=&quot;lamLai()&quot;&gt;↻ Thử lại&lt;/button&gt;&lt;/div&gt;&lt;script&gt;window.LK_HU={};
 var ME=null, __dangDangNhap=false;
 function $(i){return document.getElementById(i)}
 function today(){var d=new Date();return d.getFullYear()+&#x27;-&#x27;+(&#x27;0&#x27;+(d.getMonth()+1)).slice(-2)+&#x27;-&#x27;+(&#x27;0&#x27;+d.getDate()).slice(-2)}

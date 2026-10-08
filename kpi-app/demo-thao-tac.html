@@ -65,20 +65,30 @@ h1{font-size:22px;margin:0 0 6px}
 .e7 .xong{position:absolute;left:0;right:0;bottom:60px;text-align:center;font-weight:650;color:var(--green);opacity:0;transition:opacity .4s}
 .e7.da .xong{opacity:1}.e7.gui .truot,.e7.gui .bam{opacity:0;pointer-events:none;transition:opacity .3s}
 
-/* 8. Số đếm cơ khí + đồng hồ kim */
-.e8 .than{padding:14px;display:flex;flex-direction:column;align-items:center;gap:12px}
-.e8 .dongho{width:230px;height:130px}
+/* 8. Nhập số lượng: bàn phím số to + nút nhanh, số đếm cơ khí + đồng hồ kim */
+.mh.e8{height:540px}
+.e8 .than{padding:10px 12px 12px;display:flex;flex-direction:column;align-items:stretch;gap:8px}
+.e8 .tren{display:flex;align-items:center;justify-content:center;gap:10px}
+.e8 .dongho{width:132px;height:76px;flex:none}
 .e8 .kim{transform-origin:115px 118px;transition:transform .7s cubic-bezier(.3,1.55,.5,1)}
-.e8 .dem{display:flex;gap:4px;padding:8px 10px;border-radius:12px;background:#0d0f11;border:1px solid var(--line);box-shadow:inset 0 2px 8px rgba(0,0,0,.6)}
-.e8 .chuso{width:34px;height:48px;overflow:hidden;border-radius:6px;background:linear-gradient(#22272c,#181c20 50%,#22272c);position:relative}
+.e8 .dem{display:flex;gap:3px;padding:6px 8px;border-radius:12px;background:#0d0f11;border:1px solid var(--line);box-shadow:inset 0 2px 8px rgba(0,0,0,.6);cursor:text;outline:none}
+.e8 .dem:focus-visible{box-shadow:0 0 0 2px var(--cyan)}
+.e8 .chuso{width:32px;height:46px;overflow:hidden;border-radius:6px;background:linear-gradient(#22272c,#181c20 50%,#22272c);position:relative}
 .e8 .chuso::after{content:"";position:absolute;left:0;right:0;top:50%;height:1px;background:rgba(0,0,0,.6)}
+.e8 .chuso.mo .cot span{color:#4a535b}
 .e8 .cot{display:flex;flex-direction:column;transition:transform .45s cubic-bezier(.3,1.2,.5,1)}
-.e8 .cot span{height:48px;line-height:48px;text-align:center;font:700 30px var(--mono);color:var(--ink)}
-.e8 .dk{display:flex;gap:8px;align-items:center}
-.e8 .dk button{width:52px;height:52px;border-radius:14px;border:1px solid var(--line);background:var(--panel2);font-size:24px;cursor:pointer;touch-action:manipulation}
-.e8 .dk input{width:110px;height:52px;border-radius:14px;border:1px solid var(--line);background:#0d0f11;text-align:center;font:700 20px var(--mono)}
-.e8 .bao{min-height:38px;font-size:12.5px;text-align:center;color:var(--ink3)}
+.e8 .cot span{height:46px;line-height:46px;text-align:center;font:700 28px var(--mono);color:var(--ink)}
+.e8 .bao{min-height:20px;font-size:12.5px;text-align:center;color:var(--ink3)}
 .e8 .bao.do{color:var(--red);font-weight:600}.e8 .bao.vang{color:var(--amber)}
+.e8 .nhanh{display:grid;grid-template-columns:1fr 1fr 1fr 1.6fr;gap:6px}
+.e8 .nhanh button{height:40px;border-radius:10px;border:1px solid var(--line);background:var(--panel);color:var(--ink2);font:600 14px var(--mono);cursor:pointer;touch-action:manipulation}
+.e8 .nhanh .dm{font:700 12.5px var(--f);color:var(--cyan);border-color:rgba(47,211,198,.45);background:rgba(47,211,198,.08)}
+.e8 .phim{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+.e8 .phim button{height:50px;border-radius:12px;border:1px solid var(--line);background:var(--panel2);color:var(--ink);font:600 22px var(--mono);cursor:pointer;touch-action:manipulation;transition:transform .08s,background .15s}
+.e8 .phim button:active,.e8 .nhanh button:active,.e8 .phim button.an{transform:scale(.94);background:#3a424a}
+.e8 .phim .xoa{font-size:15px;color:var(--ink2)}
+.e8 .ghi-nut{height:48px;font-size:15px}
+.e8 .ghi-nut:disabled{opacity:.45;cursor:default}
 
 /* 9. Vuốt thẻ duyệt */
 .e9 .chong{position:absolute;left:16px;right:16px;top:56px;height:250px}
@@ -113,13 +123,42 @@ h1{font-size:22px;margin:0 0 6px}
 @keyframes cach{30%{transform:translateY(4px)}60%{transform:translateY(-1px)}}
 .e10 .kq{font-weight:650;min-height:22px;color:var(--ink3);font-size:13px}.e10 .kq.ok{color:var(--green)}
 
-/* 11. Điểm danh đóng dấu */
+/* 11. Điểm danh: mặc định có mặt, chạm người vắng → chọn lý do → đóng dấu VẮNG */
 .e11 .ds{position:absolute;top:44px;left:0;right:0;bottom:62px;overflow:auto}
-.e11 .hang{position:relative;cursor:pointer}
-.e11 .o-dau{width:86px;height:34px;flex:none;position:relative;touch-action:none;border-radius:8px;border:1px dashed var(--line)}
-.e11 .dau{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;border:2px solid var(--green);border-radius:6px;color:var(--green);font-weight:800;font-size:11px;letter-spacing:.08em;transform:rotate(-8deg) scale(2.2);opacity:0;transition:transform .22s cubic-bezier(.3,1.6,.5,1),opacity .15s}
-.e11 .co .dau{transform:rotate(-8deg) scale(1);opacity:1}
-.e11 .chan{position:absolute;left:0;right:0;bottom:0;padding:10px 14px;display:flex;justify-content:space-between;align-items:center;border-top:1px solid var(--line);background:#181b1f}
+.e11 .hang{position:relative;cursor:pointer;gap:8px}
+.e11 .hang>div:first-child{min-width:0}
+.e11 .hang small{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.e11 .hang.vang{background:rgba(244,114,114,.07)}
+.e11 .hang.vang small.ld{color:var(--red)}
+.e11 .hang.dh{cursor:default;background:rgba(214,69,158,.08)}
+.e11 .hang.dh small.ld{color:#e48ac4}
+.e11 .o-dau{width:78px;height:34px;flex:none;position:relative;border-radius:8px;border:1px dashed var(--line)}
+.e11 .co-mat{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:11px;color:var(--green);opacity:.7;transition:opacity .2s}
+.e11 .vang .co-mat,.e11 .dh .co-mat{opacity:0}
+.e11 .dau{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:1.05;border:2px solid var(--red);border-radius:6px;color:var(--red);font-weight:800;font-size:11px;letter-spacing:.06em;transform:rotate(-8deg) scale(2.2);opacity:0;transition:transform .22s cubic-bezier(.3,1.6,.5,1),opacity .15s}
+.e11 .dau i{font-style:normal;font-size:9.5px;letter-spacing:.02em}
+.e11 .vang .dau,.e11 .dh .dau{transform:rotate(-8deg) scale(1);opacity:1}
+.e11 .dh .dau{border-color:#d6459e;color:#e48ac4}
+.e11 .chan{position:absolute;left:0;right:0;bottom:0;padding:10px 14px;display:flex;justify-content:space-between;align-items:center;gap:8px;border-top:1px solid var(--line);background:#181b1f}
+.e11 .chan .sl{font-size:12.5px;color:var(--ink2)}.e11 .chan .sl b{color:var(--ink)}
+.e11 .man{position:absolute;inset:0;z-index:24;background:rgba(0,0,0,.5);opacity:0;pointer-events:none;transition:opacity .25s}
+.e11 .man.hien{opacity:1;pointer-events:auto}
+.e11 .tam{position:absolute;left:0;right:0;bottom:0;z-index:25;max-height:92%;overflow:auto;padding:12px 14px 14px;border-radius:18px 18px 0 0;background:var(--panel);border-top:1px solid var(--line);box-shadow:0 -14px 30px rgba(0,0,0,.5);transform:translateY(105%);transition:transform .3s cubic-bezier(.3,1.2,.5,1)}
+.e11 .tam.hien{transform:none}
+.e11 .tam .nam{width:40px;height:4px;border-radius:2px;background:var(--line);margin:0 auto 10px}
+.e11 .tam b.ai{display:block;font-size:15px}.e11 .tam .hoi{font-size:12px;color:var(--ink3);margin:2px 0 10px}
+.e11 .chips{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.e11 .chips button{display:flex;align-items:center;gap:8px;min-height:42px;padding:6px 10px;border-radius:10px;border:1px solid var(--line);background:var(--panel2);color:var(--ink);text-align:left;cursor:pointer;font-size:13px;touch-action:manipulation}
+.e11 .chips button em{font:700 11px var(--mono);font-style:normal;min-width:30px;text-align:center;padding:2px 4px;border-radius:6px;color:#fff}
+.e11 .chips button.chon{border-color:var(--cyan);box-shadow:0 0 0 2px rgba(47,211,198,.35);background:rgba(47,211,198,.1)}
+.e11 .tam input{width:100%;height:42px;margin-top:10px;border-radius:10px;border:1px solid var(--line);background:#0d0f11;padding:0 12px;outline:none}
+.e11 .tam input:focus{border-color:var(--cyan)}
+.e11 .tam .nuts{display:flex;gap:8px;margin-top:10px}
+.e11 .tam .nuts .nut{flex:1}
+.e11 .tam .bo{flex:0 0 auto;background:none;border:1px solid var(--line);color:var(--ink2)}
+.e11 .hoi-luu{position:absolute;left:12px;right:12px;bottom:70px;z-index:22;padding:12px;border-radius:12px;background:#0d0f11;border:1px solid var(--amber);font-size:12.5px;display:none}
+.e11 .hoi-luu.hien{display:block}
+.e11 .hoi-luu div{display:flex;gap:8px;margin-top:8px}.e11 .hoi-luu button{flex:1;padding:8px;font-size:13px}
 
 /* 12. Vuốt trái để xóa */
 .e12 .ds{position:absolute;top:44px;left:0;right:0;bottom:0;overflow:auto}
@@ -311,35 +350,54 @@ var MUC=[
   num.addEventListener('keydown',function(e){ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); gui(); } });
   $('.bam button',mh).onclick=gui; }},
 
-/* ===== 8. Số đếm cơ khí + đồng hồ kim ===== */
-{so:8,ten:'Số đếm cơ khí + đồng hồ kim',ghi:'Tăng giảm số lượng thì các chữ số lăn như đồng hồ cơ; kim chỉ % định mức. Vượt 130% định mức thì kim vào vùng đỏ và nhắc kiểm tra lại.',
+/* ===== 8. Nhập số lượng: bàn phím số to + nút nhanh ===== */
+{so:8,ten:'Nhập số lượng: bàn phím số to',ghi:'Bàn phím số to ngay trên màn hình (không bật bàn phím điện thoại che mất nội dung). Nút nhanh +1, +10 và "Đúng định mức" cho trường hợp hay gặp. Số lăn như đồng hồ cơ, kim chỉ % định mức; vượt 130% thì kim vào vùng đỏ và phải bấm xác nhận lần nữa.',
  ve:function(mh){ mh.className='mh e8'; var DM=120;
   mh.innerHTML='<div class="tde">CNC – Tiện ngọn<small>Định mức '+DM+'/ca</small></div><div class="than">'+
-   '<svg class="dongho" viewBox="0 0 230 130"><path d="M20 118a95 95 0 0 1 190 0" fill="none" stroke="#2f353b" stroke-width="16"/>'+
-   '<path d="M20 118a95 95 0 0 1 142.5-82.3" fill="none" stroke="#66d49a" stroke-width="16" stroke-dasharray="1 0" opacity=".85"/>'+
+   '<div class="tren"><svg class="dongho" viewBox="0 0 230 130" aria-hidden="true"><path d="M20 118a95 95 0 0 1 190 0" fill="none" stroke="#2f353b" stroke-width="16"/>'+
+   '<path d="M20 118a95 95 0 0 1 142.5-82.3" fill="none" stroke="#66d49a" stroke-width="16" opacity=".85"/>'+
    '<path d="M162.5 35.7a95 95 0 0 1 32.8 39.8" fill="none" stroke="#f0b04e" stroke-width="16"/><path d="M195.3 75.5a95 95 0 0 1 14.7 42.5" fill="none" stroke="#f47272" stroke-width="16"/>'+
-   '<g fill="#9ca8b0" font-size="10" font-family="monospace" text-anchor="middle"><text x="20" y="128">0</text><text x="115" y="12">75%</text><text x="210" y="128">150%</text></g>'+
-   '<g class="kim"><path d="M115 118L111 116 115 34 119 116z" fill="#eef2f4"/><circle cx="115" cy="118" r="8" fill="#2fd3c6"/></g></svg>'+
-   '<div class="dem" aria-hidden="true"></div>'+
-   '<div class="dk"><button type="button" data-d="-1" aria-label="Bớt 1">−</button><input type="number" inputmode="numeric" min="0" max="999" value="96" aria-label="Số lượng"><button type="button" data-d="1" aria-label="Thêm 1">+</button></div>'+
-   '<div class="bao" aria-live="polite"></div></div>';
-  var dem=$('.dem',mh), inp=$('input',mh), kim=$('.kim',mh), b=$('.bao',mh);
+   '<g class="kim"><path d="M115 118L111 116 115 34 119 116z" fill="#eef2f4"/><circle cx="115" cy="118" r="9" fill="#2fd3c6"/></g></svg>'+
+   '<div class="dem" tabindex="0" role="spinbutton" aria-label="Số lượng làm ra" aria-valuemin="0" aria-valuemax="999"></div></div>'+
+   '<div class="bao" aria-live="polite"></div>'+
+   '<div class="nhanh"><button type="button" data-c="-1" aria-label="Bớt 1">−1</button><button type="button" data-c="1" aria-label="Thêm 1">+1</button><button type="button" data-c="10" aria-label="Thêm 10">+10</button><button type="button" class="dm" data-dm="1">= Định mức '+DM+'</button></div>'+
+   '<div class="phim">'+[1,2,3,4,5,6,7,8,9].map(function(k){ return '<button type="button" data-k="'+k+'">'+k+'</button>'; }).join('')+
+   '<button type="button" class="xoa" data-x="c" aria-label="Xóa hết">Xóa</button><button type="button" data-k="0">0</button><button type="button" class="xoa" data-x="b" aria-label="Xóa 1 số">⌫</button></div>'+
+   '<button type="button" class="nut ghi-nut"></button></div>';
+  var dem=$('.dem',mh), kim=$('.kim',mh), b=$('.bao',mh), ghi=$('.ghi-nut',mh), v=0, truoc=0, hoi=false;
   dem.innerHTML=[0,1,2].map(function(){ return '<div class="chuso"><div class="cot">'+'0123456789'.split('').map(function(c){return '<span>'+c+'</span>'}).join('')+'</div></div>'; }).join('');
-  var truoc=0;
-  function dat(v){ v=Math.max(0,Math.min(999,v|0)); inp.value=v; var s=('00'+v).slice(-3);
-    $$('.cot',mh).forEach(function(c,k){ c.style.transform='translateY('+(-48*(+s[k]))+'px)'; });
+  function lac(){ dem.classList.remove('rung-o'); void dem.offsetWidth; dem.classList.add('rung-o'); rung([20,30,20]); }
+  function dat(n){ v=Math.max(0,Math.min(999,n|0)); hoi=false; var s=('00'+v).slice(-3), dau=true;
+    $$('.chuso',mh).forEach(function(c,k){ $('.cot',c).style.transform='translateY('+(-46*(+s[k]))+'px)'; if(s[k]!=='0'||k===2) dau=false; c.classList.toggle('mo',dau); });
+    dem.setAttribute('aria-valuenow',v); dem.setAttribute('aria-valuetext',v+' sản phẩm');
     var p=v/DM*100, g=Math.min(150,p)/150*180-90; kim.style.transform='rotate('+g+'deg)';
-    if(p>130){ b.className='bao do'; b.textContent='Vượt '+Math.round(p)+'% định mức – kiểm tra lại số trước khi gửi nhé.'; if(truoc<=130){ rung([30,40,30]); mh.classList.remove('rung-o'); void mh.offsetWidth; mh.classList.add('rung-o'); } }
+    if(!v){ b.className='bao'; b.textContent='Gõ số trên bàn phím bên dưới'; }
+    else if(p>130){ b.className='bao do'; b.textContent='Vượt '+Math.round(p)+'% định mức – kiểm tra lại số nhé.'; if(truoc<=130) lac(); }
     else if(p>110){ b.className='bao vang'; b.textContent=Math.round(p)+'% định mức – cao hơn bình thường.'; }
     else { b.className='bao'; b.textContent=Math.round(p)+'% định mức'; }
-    truoc=p; }
-  var giu=null;
-  $$('[data-d]',mh).forEach(function(n){ var d=+n.dataset.d;
-    n.addEventListener('pointerdown',function(){ dat(+inp.value+d); rung(8); var t=0; giu=setInterval(function(){ t++; dat(+inp.value+d*(t>8?5:1)); },140); });
+    truoc=p; veGhi(); }
+  function veGhi(){ ghi.disabled=!v; ghi.style.background=hoi?'var(--red)':''; ghi.style.color=hoi?'#fff':'';
+    ghi.textContent=!v?'Nhập số lượng':hoi?'Đúng là '+v+' – vẫn ghi':'✓ Ghi '+v+' sản phẩm'; }
+  function go(k){ if(v*10+k>999){ lac(); b.className='bao vang'; b.textContent='Tối đa 3 chữ số (999)'; return; } dat(v*10+k); rung(6); }
+  $$('[data-k]',mh).forEach(function(n){ n.onclick=function(){ go(+n.dataset.k); }; });
+  $$('[data-x]',mh).forEach(function(n){ n.onclick=function(){ dat(n.dataset.x==='c'?0:Math.floor(v/10)); rung(6); }; });
+  $('[data-dm]',mh).onclick=function(){ dat(DM); rung(10); };
+  // giữ nút +1/−1/+10 thì cộng liên tục, giữ lâu thì nhanh dần
+  var giu=null, cham=0;
+  $$('[data-c]',mh).forEach(function(n){ var d=+n.dataset.c;
+    n.addEventListener('pointerdown',function(e){ if(e.button>0)return; cham=1; dat(v+d); rung(6); var t=0; clearInterval(giu); giu=setInterval(function(){ t++; if(t>3) dat(v+d*(t>12?5:1)); },130); });
     ['pointerup','pointerleave','pointercancel'].forEach(function(ev){ n.addEventListener(ev,function(){ clearInterval(giu); }); });
-    n.addEventListener('keydown',function(e){ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); dat(+inp.value+d); } }); });
-  inp.addEventListener('input',function(){ dat(+inp.value); });
-  dat(96); }},
+    n.addEventListener('click',function(){ if(cham){ cham=0; return; } dat(v+d); }); });  // click không kèm pointerdown = bàn phím (Enter/Space)
+  // bàn phím máy tính: gõ số, Backspace, Esc, Enter, mũi tên lên/xuống
+  mh.addEventListener('keydown',function(e){ if(/^[0-9]$/.test(e.key)){ e.preventDefault(); go(+e.key); var n=$('[data-k="'+e.key+'"]',mh); n.classList.add('an'); setTimeout(function(){ n.classList.remove('an'); },120); }
+    else if(e.key==='Backspace'){ e.preventDefault(); dat(Math.floor(v/10)); }
+    else if(e.key==='Escape'){ dat(0); }
+    else if(e.target===dem&&(e.key==='ArrowUp'||e.key==='ArrowDown')){ e.preventDefault(); dat(v+(e.key==='ArrowUp'?1:-1)); }
+    else if(e.key==='Enter'&&e.target===dem){ e.preventDefault(); ghi.click(); } });
+  dem.addEventListener('click',function(){ dem.focus(); });
+  ghi.onclick=function(){ if(!v)return; if(v/DM*100>130&&!hoi){ hoi=true; veGhi(); lac(); return; }
+    bao(mh,'✓ Đã ghi '+v+' sản phẩm vào danh sách chờ gửi'); rung(20); dat(0); };
+  dat(0); }},
 
 /* ===== 9. Vuốt thẻ duyệt ===== */
 {so:9,ten:'Vuốt thẻ để duyệt',ghi:'Trưởng phòng vuốt phải = duyệt (tem xanh), vuốt trái = trả lại (tem đỏ). Có nút ✓ ✕ cho máy tính, và "Hoàn tác" nếu lỡ tay.',
@@ -378,21 +436,51 @@ var MUC=[
     bam:function(){ if(xong)return; can.style.transform='translateY(22px)'; setTimeout(function(){ can.style.transform=''; },250); $('.kq',mh).textContent='Kéo hẳn xuống đáy mới chốt nhé'; }});
   can.addEventListener('keydown',function(e){ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); chot(); } }); }},
 
-/* ===== 11. Điểm danh đóng dấu ===== */
-{so:11,ten:'Điểm danh đóng dấu',ghi:'Chạm vào người nào thì đóng dấu "CÓ MẶT"; giữ ngón tay ở cột dấu rồi vuốt dọc để đóng dấu cả loạt. Chạm lại để bỏ.',
+/* ===== 11. Điểm danh: chạm người vắng → chọn lý do ===== */
+{so:11,ten:'Điểm danh: chạm người vắng, chọn lý do',ghi:'Giống web thật: mọi người mặc định có mặt, chỉ cần chạm vào người vắng. Ngăn chọn lý do trồi lên (Phép năm, Ốm, Việc gia đình…) + ô ghi thêm; dòng đó đóng dấu "VẮNG" kèm ký hiệu và hiện lý do ngay dưới tên. Người nghỉ dài hạn được đánh dấu sẵn. Lưu khi còn người vắng chưa có lý do thì Mai nhắc.',
  ve:function(mh){ mh.className='mh e11';
-  mh.innerHTML='<div class="tde">Điểm danh<small>Xưởng CNC · 09/10</small></div><div class="ds">'+NG.map(function(n,k){ return '<div class="hang" data-i="'+k+'"><div><b>'+n+'</b><small>'+CD[k%5][0]+'</small></div><div class="o-dau"><span class="dau">CÓ MẶT</span></div></div>'; }).join('')+
-   '</div><div class="chan"><span class="sl">0/8 có mặt</span><button type="button" class="nut">Lưu điểm danh</button></div>';
-  var hang=$$('.hang',mh);
-  function dem(){ $('.sl',mh).textContent=$$('.hang.co',mh).length+'/8 có mặt'; }
-  function dat(h,co){ if(h.classList.contains('co')===co)return; h.classList.toggle('co',co); rung(12); dem(); }
-  hang.forEach(function(h){ h.addEventListener('click',function(e){ if(mh.__vuot) return; dat(h,!h.classList.contains('co')); }); });
-  // vuốt dọc ở cột dấu: đóng dấu cả loạt
-  var dang=false, giaTri=true;
-  $$('.o-dau',mh).forEach(function(o){ o.addEventListener('pointerdown',function(e){ dang=true; mh.__vuot=false; var h=o.parentNode; giaTri=!h.classList.contains('co'); try{o.releasePointerCapture(e.pointerId)}catch(x){} }); });
-  mh.addEventListener('pointermove',function(e){ if(!dang)return; var el=document.elementFromPoint(e.clientX,e.clientY), h=el&&el.closest&&el.closest('.e11 .hang'); if(h&&mh.contains(h)){ if(h.classList.contains('co')!==giaTri){ mh.__vuot=true; } dat(h,giaTri); } });
-  ['pointerup','pointercancel','pointerleave'].forEach(function(ev){ mh.addEventListener(ev,function(){ if(dang){ dang=false; setTimeout(function(){ mh.__vuot=false; },0); } }); });
-  $('.chan .nut',mh).onclick=function(){ bao(mh,'✓ Đã lưu điểm danh: '+$$('.hang.co',mh).length+'/8 có mặt'); }; }},
+  var LD=[['P','Phép năm','#d9902a'],['Ốm','Ốm / đi khám','#5d7f99'],['VGĐ','Việc gia đình','#7d6bb0'],['Nb','Nghỉ bù','#3f8f7a'],['Cu','Cưới hỏi','#c0558a'],['Ta','Việc tang','#6b6f75'],['Nkl','Không lương','#c94a4a'],['Nkp','Không phép','#a33030']];
+  var ds=NG.map(function(n,k){ return {ten:n,cd:CD[k%5][0],ma:'',ld:'',ghi:'',vang:false,dh:k===5}; });
+  ds[5].ma='TS'; ds[5].ld='Thai sản'; ds[5].vang=true;
+  mh.innerHTML='<div class="tde">Điểm danh<small>Xưởng CNC · 09/10</small></div><div class="ds"></div>'+
+   '<div class="hoi-luu" role="alert"></div>'+
+   '<div class="chan"><span class="sl"></span><button type="button" class="nut luu">Lưu điểm danh</button></div>'+
+   '<div class="man"></div><div class="tam" role="dialog" aria-label="Chọn lý do vắng"><div class="nam"></div><b class="ai"></b><div class="hoi">Vắng vì lý do gì? Chọn một ô, ghi thêm nếu cần.</div>'+
+   '<div class="chips">'+LD.map(function(l,k){ return '<button type="button" data-i="'+k+'"><em style="background:'+l[2]+'">'+l[0]+'</em>'+l[1]+'</button>'; }).join('')+'</div>'+
+   '<input type="text" class="ghi" maxlength="80" placeholder="Ghi thêm (không bắt buộc) – vd: đi khám răng" aria-label="Ghi thêm lý do">'+
+   '<div class="nuts"><button type="button" class="nut bo">Có mặt</button><button type="button" class="nut ok">Ghi vắng</button></div></div>';
+  var box=$('.ds',mh), tam=$('.tam',mh), man=$('.man',mh), hl=$('.hoi-luu',mh), dangSua=-1, chon=-1;
+  function lyDo(o){ return o.ld?(o.ld+(o.ghi?' – '+o.ghi:'')):(o.ghi||''); }
+  function veHang(i){ var o=ds[i], h=$('.hang[data-i="'+i+'"]',box);
+    h.className='hang'+(o.dh?' dh':o.vang?' vang':'');
+    $('.ld',h).textContent=o.dh?'Nghỉ dài hạn: '+o.ld:o.vang?(lyDo(o)||'⚠ chưa ghi lý do'):o.cd;
+    $('.dau',h).innerHTML='VẮNG<i>'+(o.ma||'?')+'</i>';
+    h.setAttribute('aria-label',o.ten+(o.vang?', vắng'+(lyDo(o)?': '+lyDo(o):''):', có mặt')); }
+  function dem(){ var v=ds.filter(function(o){return o.vang}).length; $('.chan .sl',mh).innerHTML='<b>'+(ds.length-v)+'</b>/'+ds.length+' đi làm · '+v+' vắng'; }
+  box.innerHTML=ds.map(function(o,i){ return '<div class="hang" data-i="'+i+'" tabindex="0" role="button"><div><b>'+o.ten+'</b><small class="ld"></small></div><div class="o-dau"><span class="co-mat">✓ có mặt</span><span class="dau"></span></div></div>'; }).join('');
+  ds.forEach(function(o,i){ veHang(i); }); dem();
+  function moTam(i){ var o=ds[i]; dangSua=i; hl.classList.remove('hien');
+    chon=-1; LD.forEach(function(l,k){ if(l[0]===o.ma) chon=k; });
+    $('.ai',tam).textContent=o.ten; $('.ghi',tam).value=o.ghi; $('.bo',tam).textContent=o.vang?'Bỏ – có mặt':'Hủy';
+    $$('.chips button',tam).forEach(function(c,k){ c.classList.toggle('chon',k===chon); });
+    man.classList.add('hien'); tam.classList.add('hien'); setTimeout(function(){ try{ $$('.chips button',tam)[Math.max(0,chon)].focus({preventScroll:true}); }catch(e){} },60); }
+  function dongTam(){ man.classList.remove('hien'); tam.classList.remove('hien'); var i=dangSua; dangSua=-1; if(i>=0){ try{ $('.hang[data-i="'+i+'"]',box).focus({preventScroll:true}); }catch(e){} } }
+  function ghiVang(){ var o=ds[dangSua]; if(!o)return; o.vang=true; o.ma=chon>=0?LD[chon][0]:''; o.ld=chon>=0?LD[chon][1]:''; o.ghi=$('.ghi',tam).value.trim();
+    var i=dangSua; dongTam(); veHang(i); dem(); rung(15); }
+  function coMat(){ var o=ds[dangSua]; if(!o)return; if(o.vang){ o.vang=false; o.ma=o.ld=o.ghi=''; } var i=dangSua; dongTam(); veHang(i); dem(); }
+  $$('.chips button',tam).forEach(function(c,k){ c.onclick=function(){ chon=k; $$('.chips button',tam).forEach(function(x,j){ x.classList.toggle('chon',j===k); }); rung(8); }; });
+  $('.ok',tam).onclick=ghiVang; $('.bo',tam).onclick=coMat; man.onclick=dongTam;
+  $('.ghi',tam).addEventListener('keydown',function(e){ if(e.key==='Enter'){ e.preventDefault(); ghiVang(); } });
+  tam.addEventListener('keydown',function(e){ if(e.key==='Escape') dongTam(); });
+  $$('.hang',box).forEach(function(h){ var i=+h.dataset.i;
+    var mo=function(){ if(ds[i].dh){ bao(mh,ds[i].ten+' đã đăng ký nghỉ dài hạn – sửa ở mục Nghỉ dài hạn'); return; } moTam(i); };
+    h.addEventListener('click',mo); h.addEventListener('keydown',function(e){ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); mo(); } }); });
+  function luu(){ hl.classList.remove('hien'); var v=ds.filter(function(o){return o.vang}).length; bao(mh,'✓ Đã lưu điểm danh 09/10: '+(ds.length-v)+'/'+ds.length+' đi làm, '+v+' vắng'); rung(20); }
+  $('.chan .luu',mh).onclick=function(){ var thieu=ds.filter(function(o){ return o.vang&&!o.dh&&!lyDo(o); });
+    if(!thieu.length) return luu();
+    hl.innerHTML='<div style="display:flex;gap:10px;align-items:center;margin:0">'+maiTron('lo')+'<span>'+thieu.length+' người vắng chưa có lý do ('+thieu.map(function(o){return o.ten.split(' ').pop()}).join(', ')+'). Ghi lý do giúp phòng nhân sự chấm công đúng nhé.</span></div><div><button type="button" class="nut phu sau">Vẫn lưu</button><button type="button" class="nut ghi-ld">Ghi lý do</button></div>';
+    hl.classList.add('hien'); rung([20,30,20]);
+    $('.sau',hl).onclick=luu; $('.ghi-ld',hl).onclick=function(){ moTam(ds.indexOf(thieu[0])); }; }; }},
 
 /* ===== 12. Vuốt trái để xóa + Hoàn tác ===== */
 {so:12,ten:'Vuốt trái để xóa + Hoàn tác',ghi:'Vuốt dòng sang trái để xóa (vuốt ngắn thì lộ nút Xóa). Có thanh "Hoàn tác" trong 5 giây, khỏi hỏi "Bạn có chắc?". Máy tính: rê chuột vào dòng để thấy nút Xóa.',

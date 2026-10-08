@@ -768,5 +768,10 @@ R("""          '<div style="font-size:11px;color:var(--ink3);font-weight:400;mar
         '<td>'+esc(cd(r.MaCD).TenCD)""")
 R("""      '<td colspan="2" style="font-weight:600;color:var(--cyan)">Tổng</td>'+""", """      '<td colspan="3" style="font-weight:600;color:var(--cyan)">Tổng</td>'+""")
 
+
+# 14) HIỆU ỨNG THAO TÁC (duyệt 10/10): duyệt có Hoàn tác + vuốt nhóm, cần gạt chốt ca, vuốt xóa Chờ chốt, kéo xuống làm mới,
+#     Mai chỉ ô nhập sai, pháo giấy hạng A, hết phiên kéo dây. Giữ nguyên trang công nhân nhập sản lượng và điểm danh.
+exec(io.open(os.path.join(D, 'thao-tac', 'va-thao-tac.py'), encoding='utf-8').read())
+
 io.open(os.path.join(D, '..', 'Index.html'), 'w', encoding='utf-8').write(s)
 print('OK Index.html')

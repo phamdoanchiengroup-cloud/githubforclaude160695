@@ -37,8 +37,9 @@ const svgTrong = (p, sel) => p.evaluate(s => { const e = document.querySelector(
   if (cho0 && await nut.count()) {
     const bx = await nut.boundingBox();
     await p.mouse.move(bx.x + bx.width / 2, bx.y + bx.height / 2); await p.mouse.down(); await p.waitForTimeout(1000); await p.mouse.up();
-    let thay = false; for (let i = 0; i < 20 && !thay; i++) { await p.waitForTimeout(60); thay = await p.evaluate(() => !!document.querySelector('.lt-tich svg')); }
-    ok(thay, 'dấu tích Lottie hiện tại nút vừa duyệt');
+    // (10/10) duyệt có 4 giây "Hoàn tác" rồi mới gửi máy chủ → dấu tích hiện sau đó
+    let thay = false; for (let i = 0; i < 100 && !thay; i++) { await p.waitForTimeout(60); thay = await p.evaluate(() => !!document.querySelector('.lt-tich svg')); }
+    ok(thay, 'dấu tích Lottie hiện tại nút vừa duyệt (sau 4 giây Hoàn tác)');
     await p.waitForTimeout(1500);
     ok(!(await p.evaluate(() => !!document.querySelector('.lt-tich'))), 'dấu tích tự biến mất');
     ok(await p.evaluate(() => D.choDuyet.length) < cho0, 'vẫn duyệt đúng');
@@ -142,10 +143,14 @@ const svgTrong = (p, sel) => p.evaluate(s => { const e = document.querySelector(
   ok(await svgTrong(p, '#main .lt-trong .lt-o') > 3 && /Chưa có dữ liệu kỳ này/.test(await p.textContent('#main')), 'kỳ chưa có dữ liệu: kính lúp + lời gợi ý', await svgTrong(p, '#main .lt-trong .lt-o'));
   // hết phiên: không tự tải lại, chờ bấm
   await p.evaluate(() => { window.__chuaTai = 1; hetHan(); }); await p.waitForTimeout(2500);
-  x = await phu(p);
-  ok(x.mo && /hết hạn/.test(x.b) && await p.evaluate(() => window.__chuaTai === 1), 'hết phiên: lớp phủ, trang KHÔNG tự tải lại sau 2,5 giây', x);
-  ok(await p.evaluate(() => document.activeElement.id === 'ltDNLai'), 'hết phiên: con trỏ ở nút Đăng nhập lại');
-  await p.click('#ltDeSau'); ok(!(await phu(p)).mo, 'hết phiên: "Để sau" đóng lớp phủ');
+  // (10/10) hết phiên đổi sang màn tối + dây kéo + đăng nhập lại tại chỗ (mục 16 demo-thao-tac) – thay lớp phủ Lottie
+  x = await p.evaluate(() => [!!document.getElementById('ttHet'), document.querySelector('#ttHet .day').classList.contains('xuong'), window.__chuaTai === 1]);
+  ok(x[0] && x[1] && x[2], 'hết phiên: màn tối + dây thả xuống, trang KHÔNG tự tải lại sau 2,5 giây', x);
+  ok(await p.evaluate(() => document.activeElement === document.querySelector('#ttHet .day button')), 'hết phiên: con trỏ ở dây kéo (Enter là bật đèn)');
+  await p.keyboard.press('Enter'); await p.waitForTimeout(600);
+  ok(await p.evaluate(() => document.getElementById('ttHet').classList.contains('sang') && document.activeElement.type === 'password'), 'Enter: đèn sáng, hiện hộp đăng nhập lại, con trỏ ở ô mật khẩu');
+  await p.fill('#ttHet input', 'demo'); await p.press('#ttHet input', 'Enter'); await p.waitForTimeout(1500);
+  ok(await p.evaluate(() => !document.getElementById('ttHet') && !!TOKEN), 'đăng nhập lại tại chỗ: đóng màn tối, có phiên mới');
   ok(!p.loi.length, 'không lỗi trang', p.loi);
   await p.context().close();
   p = await vao(b, 'tpdg');
