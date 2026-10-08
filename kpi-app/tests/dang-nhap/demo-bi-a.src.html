@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Màn đăng nhập bi-a – bản mới</title>
+<style>
+:root{--nen:#0e1012;--the:#171a1d;--chu:#e9eef0;--phu:#8d989f;--cy:#2fd3c6;--dong:#d9bd8c}
+*{box-sizing:border-box}
+body{margin:0;background:var(--nen);color:var(--chu);font:15px/1.55 Inter,system-ui,-apple-system,'Segoe UI',sans-serif}
+.vo{max-width:1320px;margin:0 auto;padding:22px 16px 40px}
+h1{font-size:22px;margin:0 0 6px}
+.mo{color:var(--phu);margin:0 0 14px;max-width:900px}
+.mo b{color:var(--chu)}
+.dk{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:0 0 14px}
+.dk button{font:inherit;font-size:14px;padding:8px 14px;border-radius:10px;border:1px solid rgba(255,255,255,.14);background:var(--the);color:var(--chu);cursor:pointer}
+.dk button.chon{border-color:var(--cy);color:var(--cy);background:rgba(47,211,198,.08)}
+.dk .cach{width:1px;height:24px;background:rgba(255,255,255,.12);margin:0 4px}
+.khung{margin:0 auto;border-radius:14px;overflow:hidden;border:1px solid rgba(255,255,255,.12);background:#000;transition:width .3s;width:100%}
+.khung iframe{display:block;width:100%;height:800px;border:0}
+.khung.dt{width:390px;border-radius:30px;border:9px solid #050607}
+.khung.dt iframe{height:780px}
+.diem{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:10px;margin:16px 0 0}
+.diem div{background:var(--the);border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:12px 14px;font-size:13.5px;color:var(--phu)}
+.diem b{display:block;color:var(--dong);font-size:14px;margin-bottom:2px}
+.khung iframe.an{display:none}
+</style>
+</head>
+<body>
+<div class="vo">
+  <h1>Màn đăng nhập bi-a – bản mới có Mai</h1>
+  <p class="mo">Giữ bi cái và ngọn cơ như hiện tại, làm lại thành <b>góc bàn bi-a thật</b> và thêm <b>Mai</b>. Mật khẩu thử là <b>"demo"</b>; gõ sai để xem trượt cơ. Bấm "Hiện tại" để so với màn đang dùng.</p>
+  <div class="dk">
+    <button class="chon" data-b="moi">✦ Bản mới</button><button data-b="cu">Hiện tại</button>
+    <span class="cach"></span>
+    <button class="chon" data-v="pc">🖥 Máy tính</button><button data-v="dt">📱 Điện thoại</button>
+    <span class="cach"></span>
+    <button id="lai">↻ Làm lại</button>
+  </div>
+  <div class="khung" id="khung">
+    <iframe id="fMoi" title="Bản mới" srcdoc="{{MOI}}"></iframe>
+    <iframe id="fCu" class="an" title="Hiện tại" srcdoc="{{CU}}"></iframe>
+  </div>
+  <div class="diem">
+    <div><b>Góc bàn bi-a</b>Mặt nỉ xanh có sợi vải, băng bàn với nút ngắm bằng đồng, lỗ góc, quầng đèn treo và bụi bay trong ánh đèn.</div>
+    <div><b>Ngắm khi gõ mật khẩu</b>Gõ càng nhiều ký tự, cơ kéo càng xa, đường ngắm sáng dần, đồng hồ "LỰC ĐÁNH" tăng vạch.</div>
+    <div><b>Đúng → bi KPI vào lỗ</b>Cơ đánh, bi cái lăn tới điểm ngắm, bi vàng "KPI" rơi vào lỗ, miệng lỗ sáng lên rồi mới vào trang làm việc.</div>
+    <div><b>Sai → trượt cơ</b>Đầu cơ trượt, phấn xanh văng ra, bi cái lắc nhẹ, ô mật khẩu viền đỏ. Mai lo lắng nhắc kiểm tra Caps Lock / chữ hoa.</div>
+    <div><b>Mai chào đón</b>Chào theo buổi + khẩu hiệu của ngày (chung với khẩu hiệu trong web). Lấy tay <b>che mắt</b> khi bạn gõ mật khẩu, cổ vũ khi vào được.</div>
+    <div><b>Ẩn/hiện Mai</b>Nút "Ẩn Mai" dưới cùng; dùng chung cài đặt tắt Mai bên trong web. Máy bật "giảm chuyển động" thì mọi hiệu ứng tự tắt.</div>
+  </div>
+</div>
+<script>
+(function(){
+  var k=document.getElementById('khung'), m=document.getElementById('fMoi'), c=document.getElementById('fCu');
+  function hien(){ return m.classList.contains('an')?c:m; }
+  document.querySelectorAll('[data-b]').forEach(function(b){ b.onclick=function(){
+    document.querySelectorAll('[data-b]').forEach(function(x){x.classList.toggle('chon',x===b)});
+    m.classList.toggle('an',b.dataset.b!=='moi'); c.classList.toggle('an',b.dataset.b==='moi'); }; });
+  document.querySelectorAll('[data-v]').forEach(function(b){ b.onclick=function(){
+    document.querySelectorAll('[data-v]').forEach(function(x){x.classList.toggle('chon',x===b)});
+    k.classList.toggle('dt',b.dataset.v==='dt'); }; });
+  document.getElementById('lai').onclick=function(){ var f=hien(); f.srcdoc=f.getAttribute('srcdoc'); };
+})();
+</script>
+</body>
+</html>
