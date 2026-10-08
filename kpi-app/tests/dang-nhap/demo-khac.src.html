@@ -24,12 +24,16 @@ h1{font-size:22px;margin:0 0 6px}
 .diem div{background:var(--the);border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:12px 14px;font-size:13.5px;color:var(--phu)}
 .diem b{display:block;color:var(--dong);font-size:14px;margin-bottom:2px}
 .khung iframe.an{display:none}
+@font-face{font-family:'LkOrb';src:url({{RH_F_ORB}}) format('woff2');font-weight:700}
+@font-face{font-family:'LkMic';src:url({{RH_F_MIC}}) format('woff2')}
+@font-face{font-family:'LkOsw';src:url({{RH_F_OSW}}) format('woff2');font-weight:400 700}
+@font-face{font-family:'LkSai';src:url({{RH_F_SAI}}) format('woff2');font-weight:700}
 </style>
 </head>
 <body>
 <div class="vo">
   <h1>Màn đăng nhập "Khắc laser"</h1>
-  <p class="mo">Khác hẳn website: không bày sản phẩm mà kể đúng <b>dịch vụ riêng của Rhino – khắc laser lên ngọn cơ</b>. Nền là khung hình từ video khắc laser của hãng. Gõ <b>mã nhân viên</b> để xem tia laser khắc mã lên ngọn cơ; mật khẩu thử là <b>"demo"</b>.</p>
+  <p class="mo">Thử 4 font khắc bằng nút <b>Font khắc</b> bên dưới (gõ mã nhân viên trước để thấy rõ). Khác hẳn website: không bày sản phẩm mà kể đúng <b>dịch vụ riêng của Rhino – khắc laser lên ngọn cơ</b>. Nền là khung hình từ video khắc laser của hãng. Gõ <b>mã nhân viên</b> để xem tia laser khắc mã lên ngọn cơ; mật khẩu thử là <b>"demo"</b>.</p>
   <div class="dk">
     <button class="chon" data-b="moi">✦ Khắc laser</button><button data-b="truoc">Phòng trưng bày</button><button data-b="cu">Hiện tại</button>
     <span class="cach"></span>
@@ -37,13 +41,16 @@ h1{font-size:22px;margin:0 0 6px}
     <span class="cach"></span>
     <button id="lai">↻ Làm lại</button>
   </div>
+  <div class="dk" id="dkFont"><span style="color:var(--phu);font-size:14px">Font khắc:</span>
+    <button class="chon" data-f="LkOrb" style="font-family:'LkOrb'">ORBITRON</button><button data-f="LkMic" style="font-family:'LkMic'">MICHROMA</button><button data-f="LkOsw" style="font-family:'LkOsw'">OSWALD</button><button data-f="LkSai" style="font-family:'LkSai'">SAIRA</button>
+  </div>
   <div class="khung" id="khung">
     <iframe id="fMoi" title="Bản mới" srcdoc="{{MOI}}"></iframe>
     <iframe id="fTruoc" class="an" title="Phòng trưng bày" srcdoc="{{TRUOC}}"></iframe>
     <iframe id="fCu" class="an" title="Hiện tại" srcdoc="{{CU}}"></iframe>
   </div>
   <div class="diem">
-    <div><b>Khắc mã nhân viên</b>Mỗi ký tự gõ vào được tia laser khắc lên ngọn cơ thứ 3: chữ nóng sáng trắng rồi nguội thành màu đồng. Xóa ký tự thì chữ khắc cũng mất.</div>
+    <div><b>Khắc mã nhân viên</b>Mỗi ký tự gõ vào được tia laser khắc dọc đúng trục thân ngọn cơ thứ 3 (đo từ ảnh, nghiêng 8,5°), có đổ bóng theo thân tròn: chữ nóng sáng trắng rồi nguội thành màu đồng. Xóa ký tự thì chữ khắc cũng mất.</div>
     <div><b>Gõ mật khẩu</b>Tia laser chỉ lóe sáng, không khắc gì – mật khẩu không bao giờ hiện lên ngọn cơ.</div>
     <div><b>Đúng / sai</b>Đúng: chữ khắc sáng vàng, vệt sáng chạy dọc ngọn cơ rồi vào. Sai: tia chuyển đỏ, chữ khắc mờ đi một nhịp, Mai nhắc kiểm tra.</div>
     <div><b>Bảng đăng nhập</b>Tấm kính tối nổi trên khoảng tường trống của ảnh, viền vàng Rhino. Mai chân dung tròn, có nút "Ẩn Mai".</div>
@@ -59,6 +66,13 @@ h1{font-size:22px;margin:0 0 6px}
   document.querySelectorAll('[data-v]').forEach(function(b){ b.onclick=function(){
     document.querySelectorAll('[data-v]').forEach(function(x){x.classList.toggle('chon',x===b)});
     k.classList.toggle('dt',b.dataset.v==='dt'); }; });
+  var fontChon='LkOrb';
+  function datFont(){ try{ F.moi.contentWindow.lkFont(fontChon); }catch(e){} }
+  F.moi.addEventListener('load',function(){ setTimeout(datFont,50); });
+  document.querySelectorAll('[data-f]').forEach(function(b){ b.onclick=function(){
+    document.querySelectorAll('[data-f]').forEach(function(x){x.classList.toggle('chon',x===b)});
+    fontChon=b.dataset.f; datFont();
+    if(F.moi.classList.contains('an')) document.querySelector('[data-b=moi]').click(); }; });
   document.getElementById('lai').onclick=function(){ var f=hien(); f.srcdoc=f.getAttribute('srcdoc'); };
 })();
 </script>

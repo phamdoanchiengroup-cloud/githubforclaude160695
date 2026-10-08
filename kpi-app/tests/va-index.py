@@ -94,12 +94,16 @@ R("""        '<li>Snapshot tự động 9h mỗi ngày.</li>'+
         '<li>Tháng đã qua mà chưa chốt chính thức: vẫn tính trực tiếp. Đã chốt: đọc bản chốt, không tính lại.</li>'+
         '<li>Ngày lễ (sheet NgayLe) không tính quên điểm danh, không tính vào hạn duyệt / hạn nhập.</li></ul>'],""")
 
-# 4b) Font tiêu đề cho màn đăng nhập (Cormorant Garamond, có dấu tiếng Việt)
+# 4b) Font cho màn đăng nhập: Arimo (chữ của thương hiệu Rhino) + Cormorant Garamond (có dấu tiếng Việt)
 R("""<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">""",
-  """<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">""")
+  """<link href="https://fonts.googleapis.com/css2?family=Arimo:wght@400;700&family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">""")
 
-# 5) Màn đăng nhập "Bàn bi-a" (nguồn chung: tests/dang-nhap-bi-a.html, cũng dùng cho bản xem thử)
-bb = io.open(os.path.join(D, 'dang-nhap-bi-a.html'), encoding='utf-8').read()
+# 5) Màn đăng nhập "Khắc laser" – thương hiệu Rhino (duyệt 09/10; nguồn chung: tests/dang-nhap-khac.html, cũng dùng cho bản xem thử).
+#    Ảnh nền + logo + font khắc nằm ở kpi-app/anh/rhino, chèn base64 bằng tests/dang-nhap/anh_rhino.py.
+#    Bản bi-a cũ vẫn giữ ở tests/dang-nhap-bi-a.html (đổi tên file dưới đây là quay lại được).
+sys.path.insert(0, os.path.join(D, 'dang-nhap'))
+from anh_rhino import anh_rhino
+bb = anh_rhino(io.open(os.path.join(D, 'dang-nhap-khac.html'), encoding='utf-8').read())
 import base64
 bb = bb.replace('{{ANH_NGON}}', 'data:image/png;base64,' + base64.b64encode(open(os.path.join(D, '..', 'anh', 'ngon-carbon.png'), 'rb').read()).decode())
 BB_CSS = bb.split('<!--CSS-->')[1].split('<!--HTML-->')[0].strip('\n')

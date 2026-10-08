@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*-
-"""Tạo kpi-app/xem-thu-dang-nhap.html từ tests/dang-nhap-bi-a.html (cùng nguồn với Index.html)."""
-import io, os
-D = os.path.dirname(__file__)
-bb = io.open(os.path.join(D, 'dang-nhap-bi-a.html'), encoding='utf-8').read()
+"""Tạo kpi-app/xem-thu-dang-nhap.html từ tests/dang-nhap-khac.html (cùng nguồn với Index.html)."""
+import io, os, sys
+D = os.path.dirname(os.path.abspath(__file__))
+sys.path.insert(0, os.path.join(D, 'dang-nhap'))
+from anh_rhino import anh_rhino
+bb = anh_rhino(io.open(os.path.join(D, 'dang-nhap-khac.html'), encoding='utf-8').read())
 import base64
 bb = bb.replace('{{ANH_NGON}}', 'data:image/png;base64,' + base64.b64encode(open(os.path.join(D, '..', 'anh', 'ngon-carbon.png'), 'rb').read()).decode())
 CSS = bb.split('<!--CSS-->')[1].split('<!--HTML-->')[0]
@@ -11,7 +13,7 @@ JS = bb.split('<!--JS-->')[1]
 trang = u'''<!DOCTYPE html>
 <html lang="vi"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Xem thử đăng nhập — Carbon Billiards</title>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Arimo:wght@400;700&family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
 <style>
 :root{--mono:'JetBrains Mono',ui-monospace,Consolas,monospace}
 *{box-sizing:border-box;margin:0;padding:0}

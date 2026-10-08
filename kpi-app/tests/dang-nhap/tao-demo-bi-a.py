@@ -33,14 +33,9 @@ function login(){
 function lamLai(){ $('demoXong').classList.remove('hien'); $('l_mk').value=''; bbXep(); }
 """
 
-RH = {'{{RH_LOGO}}': ('logo-rhino.png', 'png'), '{{RH_1}}': ('must-shaft.jpg', 'jpeg'), '{{RH_2}}': ('eclipse-2.jpg', 'jpeg'),
-      '{{RH_3}}': ('retro-2.jpg', 'jpeg'), '{{RH_4}}': ('must-cue.jpg', 'jpeg'), '{{RH_KHAC}}': ('khac-laser.jpg', 'jpeg')}
-def anh_rhino(s):
-    """Chèn ảnh thương hiệu Rhino (kpi-app/anh/rhino) dạng base64 – dùng chung cho va-index.py khi gắn vào web."""
-    for k, (f, loai) in RH.items():
-        if k in s:
-            s = s.replace(k, 'data:image/%s;base64,' % loai + base64.b64encode(open(os.path.join(T, '..', 'anh', 'rhino', f), 'rb').read()).decode())
-    return s
+import sys
+sys.path.insert(0, D)
+from anh_rhino import anh_rhino
 
 def khung(nguon, co_mai):
     s = anh_rhino(doc(os.path.join(T, nguon)).replace('{{ANH_NGON}}', ANH))
@@ -66,7 +61,7 @@ for nguon, mau, ra in [('dang-nhap-bi-a-2.html', 'demo-bi-a.src.html', 'demo-dan
     print('OK', ra, len(trang.encode('utf-8')) // 1024, 'KB')
 
 # Bản "Khắc laser" (09/10): đặt cạnh bản Phòng trưng bày và bản hiện tại
-trang = doc(os.path.join(D, 'demo-khac.src.html'))
+trang = anh_rhino(doc(os.path.join(D, 'demo-khac.src.html')))
 for k, nguon, mai in [('{{MOI}}', 'dang-nhap-khac.html', True), ('{{TRUOC}}', 'dang-nhap-rhino.html', True), ('{{CU}}', 'dang-nhap-bi-a.html', False)]:
     trang = trang.replace(k, html.escape(khung(nguon, mai), quote=True))
 io.open(os.path.join(T, '..', 'demo-dang-nhap-khac.html'), 'w', encoding='utf-8').write(trang)

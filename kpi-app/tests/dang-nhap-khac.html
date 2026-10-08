@@ -3,7 +3,7 @@
    MÀN ĐĂNG NHẬP — "KHẮC LASER" (Rhino / Carbon Billiards Co., Ltd.)
    Nền: khung hình đầu video khắc laser của hãng (4 ngọn carbon cắm trong cát đen, đã xóa logo in sẵn, chỉnh tông tối) –
    kpi-app/anh/rhino/khac-laser.jpg, chèn base64 {{RH_KHAC}}; logo {{RH_LOGO}}.
-   Ý tưởng riêng: gõ MÃ NHÂN VIÊN thì tia laser khắc từng ký tự lên ngọn cơ thứ 3 (chữ nóng sáng rồi nguội màu vàng đồng).
+   Ý tưởng riêng: gõ MÃ NHÂN VIÊN thì tia laser khắc từng ký tự lên ngọn cơ thứ 3 (trục đo từ ảnh: tâm x = 0.1464·y + 616.2, nghiêng 8.33°, thân rộng ~139px) (chữ nóng sáng rồi nguội màu vàng đồng).
    Gõ mật khẩu: laser chỉ lóe tia, không khắc gì. Đúng: vệt sáng chạy dọc ngọn cơ. Sai: tia đỏ, chữ khắc mờ đi.
    Bảng đăng nhập là tấm kính tối nổi trên khoảng tường trống. Giữ nguyên API cho login(): bbCho, bbTrung, bbTruot, bbTha, bbXep, bbChu, bbKhoiDong.
    ============================================================ */
@@ -15,7 +15,11 @@
 @keyframes lkTho{to{transform:scale(1.04)}}
 #gate .lk-phu{position:absolute;inset:0;pointer-events:none;background:linear-gradient(90deg,rgba(0,0,0,.25),transparent 30%,transparent 52%,rgba(0,0,0,.55) 80%),linear-gradient(180deg,rgba(0,0,0,.45),transparent 25%,transparent 70%,rgba(0,0,0,.6))}
 /* chữ khắc */
-#gate .lk-chu{font:700 58px var(--sans);letter-spacing:5px;fill:var(--dong);opacity:.93;paint-order:stroke;stroke:rgba(0,0,0,.35);stroke-width:1.2px;transition:fill .9s,opacity .6s}
+@font-face{font-family:'LkOrb';src:url({{RH_F_ORB}}) format('woff2');font-weight:700;font-display:block}
+@font-face{font-family:'LkMic';src:url({{RH_F_MIC}}) format('woff2');font-weight:400 700;font-display:block}
+@font-face{font-family:'LkOsw';src:url({{RH_F_OSW}}) format('woff2');font-weight:400 700;font-display:block}
+@font-face{font-family:'LkSai';src:url({{RH_F_SAI}}) format('woff2');font-weight:700;font-display:block}
+#gate .lk-chu{font-family:var(--lkf,'LkOrb'),var(--sans);font-weight:700;font-size:64px;letter-spacing:.14em;fill:url(#lkTru);opacity:.93;paint-order:stroke;stroke:rgba(0,0,0,.35);stroke-width:1.2px;transition:fill .9s,opacity .6s}
 #gate .lk-chu tspan{transition:fill 1.1s ease}
 #gate .lk-chu tspan.nong{fill:#fff6dc;filter:url(#lkNong)}
 #gate .lk-chu.mo{opacity:.35}
@@ -155,12 +159,13 @@
       <filter id="lkNong" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="2.5" result="m"/><feMerge><feMergeNode in="m"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
       <radialGradient id="lkHoa"><stop offset="0" stop-color="#fff"/><stop offset=".25" stop-color="#d6ecff" stop-opacity=".9"/><stop offset=".6" stop-color="#5aa6ff" stop-opacity=".25"/><stop offset="1" stop-color="#5aa6ff" stop-opacity="0"/></radialGradient>
       <radialGradient id="lkHoaDo"><stop offset="0" stop-color="#fff"/><stop offset=".3" stop-color="#ffb4a8" stop-opacity=".9"/><stop offset="1" stop-color="#ff3b2b" stop-opacity="0"/></radialGradient>
+      <linearGradient id="lkTru" gradientUnits="userSpaceOnUse" x1="0" y1="-40" x2="0" y2="40"><stop offset="0" stop-color="#8a7352"/><stop offset=".42" stop-color="#e0c79f"/><stop offset=".55" stop-color="#d4b88c"/><stop offset="1" stop-color="#6e5a3f"/></linearGradient>
       <linearGradient id="lkVet" x1="0" x2="1"><stop offset="0" stop-color="#fff" stop-opacity="0"/><stop offset=".5" stop-color="#fff2cf" stop-opacity=".55"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient>
     </defs>
     <image class="anh" href="{{RH_KHAC}}" x="0" y="0" width="1600" height="900" preserveAspectRatio="xMidYMid slice"/>
-    <g transform="translate(671 430) rotate(-82.4)">
+    <g transform="translate(682.4 452) rotate(-98.33)">
       <rect class="lk-quet" id="lkQuet" x="-60" y="-80" width="180" height="120" fill="url(#lkVet)" style="mix-blend-mode:screen"/>
-      <text class="lk-chu" id="lkChu" x="0" y="0" dominant-baseline="middle" dy="2"></text>
+      <text class="lk-chu" id="lkChu" x="0" y="0" dominant-baseline="central"></text>
     </g>
     <g class="lk-lua" id="lkLua">
       <line id="lkTia" x1="0" y1="0" x2="0" y2="0"/>
@@ -216,13 +221,13 @@
 /* ===== MÀN ĐĂNG NHẬP "KHẮC LASER" =====
    Các hàm bb* được login() gọi: bbCho (đang chờ máy chủ), bbTrung (đúng), bbTruot (sai), bbTha (mất kết nối). */
 var BB = { ban: false, dang: false, kh: '' };
-var LK = { x0: 671, y0: 430, goc: -82.4 * Math.PI / 180, cu: '', hen: 0 };
+var LK = { x0: 682.4, y0: 452, goc: -98.33 * Math.PI / 180, cu: '', hen: 0, dai: 410, co: 62 };
 function bbE(id) { return document.getElementById(id); }
 function bbG() { return bbE('gate'); }
 function bbGiam() { return window.matchMedia('(prefers-reduced-motion:reduce)').matches; }
 function bbChu(t) { var s = bbE('bbNutChu'); if (s) s.textContent = t; }
 /* ---- Khắc laser ---- */
-function lkMa() { return bbE('l_tk').value.trim().toUpperCase().replace(/[^A-Z0-9._-]/g, '').slice(0, 10); }
+function lkMa() { return bbE('l_tk').value.trim().toUpperCase().replace(/[^A-Z0-9._-]/g, '').slice(0, 14); }
 function lkDauBut() {   // vị trí đầu khắc (cuối chữ) trên ảnh 1600x900
   var t = bbE('lkChu'), d = 0;
   try { d = t.textContent ? t.getComputedTextLength() + 6 : 0; } catch (e) {}
@@ -242,8 +247,15 @@ function lkVe() {   // khắc lại theo mã nhân viên đang gõ
   while (chung < v.length && chung < cu.length && v[chung] === cu[chung]) chung++;
   t.innerHTML = v.split('').map(function (c, k) { return '<tspan' + (k >= chung ? ' class="nong"' : '') + '>' + c + '</tspan>'; }).join('');
   LK.cu = v; bbE('lkMa').textContent = v || '—';
+  lkCo();
   if (v.length > chung) { lkLua(); setTimeout(function () { [].forEach.call(t.querySelectorAll('tspan.nong'), function (s) { s.removeAttribute('class'); }); }, 380); }
 }
+function lkCo() {   // thu nhỏ chữ khi mã dài để nằm gọn trên thân cơ
+  var t = bbE('lkChu'); t.style.fontSize = LK.co + 'px';
+  try { var d = t.getComputedTextLength(); if (d > LK.dai) t.style.fontSize = Math.max(30, LK.co * LK.dai / d) + 'px'; } catch (e) {}
+}
+/* Đổi font khắc (bản demo có nút chọn; web thật dùng Orbitron) */
+function lkFont(ten) { bbG().style.setProperty('--lkf', "'" + ten + "'"); lkCo(); }
 function lkXep() { var t = bbE('lkChu'); t.setAttribute('class', 'lk-chu'); bbE('lkQuet').setAttribute('class', 'lk-quet'); }
 function lkKhung() { var n = bbE('lkNen'); if (n) n.setAttribute('preserveAspectRatio', (window.matchMedia('(max-width:760px)').matches ? 'xMinYMid' : 'xMidYMid') + ' slice'); }
 function lkKhoiDong() {
@@ -251,6 +263,7 @@ function lkKhoiDong() {
   bbE('l_tk').addEventListener('input', lkVe);
   bbE('l_mk').addEventListener('input', function () { if (bbE('l_mk').value) lkLua(); });
   LK.cu = ''; lkVe();
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(lkCo);
 }
 /* ---- Mai: chân dung tròn (hình chung MAI_SVG ở mục 12) ---- */
 var BB_CHE = '<g class="che-mat"><path d="M58 170c-4-20 2-40 18-52" stroke="#2f4a5e" stroke-width="13" fill="none" stroke-linecap="round"/><path d="M142 170c4-20-2-40-18-52" stroke="#2f4a5e" stroke-width="13" fill="none" stroke-linecap="round"/>' +

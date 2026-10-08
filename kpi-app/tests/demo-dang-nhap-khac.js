@@ -21,6 +21,9 @@ let dem = 0, loi = 0; const ok = (d, t, c) => { dem++; if (d) console.log('  ✓
     await moi.click('#l_tk'); await moi.type('#l_tk', 'c068', { delay: 40 }); await p.waitForTimeout(500);
     let k = await moi.evaluate(() => [document.getElementById('lkChu').textContent, document.getElementById('lkMa').textContent, document.querySelectorAll('#lkChu tspan').length]);
     ok(k[0] === 'C068' && k[1] === 'C068' && k[2] === 4, 'gõ mã nhân viên: laser khắc "C068" lên ngọn cơ (4 ký tự)', k);
+    const truc = await moi.evaluate(() => { const g = document.getElementById('lkChu').parentNode.getAttribute('transform'); const m = /rotate\((-?[\d.]+)\)/.exec(g); return [parseFloat(m[1]), document.fonts.check("700 62px LkOrb"), getComputedStyle(document.getElementById('lkChu')).fontFamily]; });
+    // trục đo từ ảnh: tâm x = 0.1464·y + 616.2 → đi lên thì lệch TRÁI 8,33° → góc chữ phải là −98,33° (không phải −81,67°)
+    ok(Math.abs(truc[0] + 98.33) < 0.05 && truc[1] && /LkOrb/.test(truc[2]), 'chữ khắc nghiêng cùng chiều thân ngọn cơ (−98,33°), font khắc Orbitron đã nạp', truc);
     await moi.press('#l_tk', 'Backspace'); await p.waitForTimeout(100);
     ok(await moi.evaluate(() => document.getElementById('lkChu').textContent === 'C06'), 'xóa ký tự thì chữ khắc cũng bớt');
     await moi.type('#l_tk', '8'); await moi.click('#l_mk'); await p.waitForTimeout(150);
