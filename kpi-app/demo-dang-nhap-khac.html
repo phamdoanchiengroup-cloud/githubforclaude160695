@@ -187,8 +187,37 @@ h1{font-size:22px;margin:0 0 6px}
 #gate .mai.che .che-mat{display:inline}#gate .mai.che .tay-chi{display:none}
 
 
+/* ===== Hiệu ứng thêm (09/10, chờ duyệt) – bật bằng LK_HU = { day: true, chay: true } ===== */
+/* 1) Màn tối + sợi dây kéo bật đèn */
+#gate .lk-toi{position:absolute;inset:0;z-index:20;background:radial-gradient(55% 45% at var(--dx,50%) 0%,#111,#020202 70%);transition:opacity .8s ease}
+#gate .lk-toi.chop{animation:lkChop .85s steps(1) forwards}
+@keyframes lkChop{0%{opacity:1}12%{opacity:.3}22%{opacity:.92}34%{opacity:.12}46%{opacity:.6}58%{opacity:0}100%{opacity:0}}
+#gate .lk-toi.tat{opacity:0;pointer-events:none}
+#gate .lk-day{position:absolute;z-index:21;left:var(--dx,50%);top:0;width:64px;margin-left:-32px;display:flex;flex-direction:column;align-items:center;transform-origin:50% 0;animation:lkDua 3.4s ease-in-out infinite;transition:transform .6s cubic-bezier(.5,0,.75,0)}
+@keyframes lkDua{0%,100%{rotate:-1.6deg}50%{rotate:1.6deg}}
+#gate .lk-day .soi{width:2px;height:calc(var(--dai,36vh) + var(--keo,0px));background:linear-gradient(#1a1a1a,#9a9a9a);transition:height .5s cubic-bezier(.25,1.9,.45,1)}
+#gate .lk-day.dang .soi{transition:none}
+#gate .lk-day .num{width:24px;height:36px;margin-top:-1px;border:0;padding:0;border-radius:12px 12px 15px 15px;cursor:grab;touch-action:none;
+  background:radial-gradient(circle at 35% 30%,#ffe7a3,#f7b829 45%,#9b6b06);box-shadow:0 6px 14px rgba(0,0,0,.6);animation:lkGoi 2.4s ease-in-out infinite}
+#gate .lk-day.dang .num{cursor:grabbing}
+#gate .lk-day .num:focus-visible{outline:2px solid #fff;outline-offset:4px}
+@keyframes lkGoi{0%,100%{box-shadow:0 6px 14px rgba(0,0,0,.6),0 0 0 0 rgba(247,184,41,0)}50%{box-shadow:0 6px 14px rgba(0,0,0,.6),0 0 26px 6px rgba(247,184,41,.4)}}
+#gate .lk-day .goi{margin-top:16px;font:700 11px var(--sans);letter-spacing:.26em;text-transform:uppercase;color:rgba(255,255,255,.6);white-space:nowrap;opacity:0;animation:lkHien .8s ease 1.4s forwards}
+@keyframes lkHien{to{opacity:1}}
+#gate .lk-day.di{transform:translateY(-120%);animation:none}
+#gate.lk-chuabat .lk-dau,#gate.lk-chuabat .lk-goc,#gate.lk-chuabat .lk-kinh{opacity:0;filter:blur(6px);pointer-events:none}
+#gate .lk-dau,#gate .lk-goc,#gate .lk-kinh{transition:opacity .7s ease,filter .7s ease}
+#gate .lk-goc{transition-delay:.15s}#gate .lk-kinh{transition-delay:.3s}
+/* 2) Nút Đăng nhập &quot;chạy trốn&quot; khi chưa điền đủ (chỉ máy tính có chuột) */
+#gate .bb-nut.chay{z-index:30;width:210px;transition:transform .3s cubic-bezier(.3,1.5,.5,1),background .2s;box-shadow:0 18px 40px -12px rgba(247,184,41,.7)}
+#gate .bb-nut.ve{transition:transform .45s cubic-bezier(.3,1.3,.5,1),width .3s}
+#gate .bb-nut.met{animation:lkLac .55s ease}
+@keyframes lkLac{20%,60%{rotate:-4deg}40%,80%{rotate:4deg}}
+#gate .bb-o.thieu input{border-color:var(--vang);animation:lkNhay 1s ease 2}
+@keyframes lkNhay{50%{box-shadow:0 0 0 5px rgba(247,184,41,.3)}}
 /* ---------------- Màn hẹp / điện thoại ---------------- */
 @media (max-width:760px){
+  #gate .lk-day{--dai:24vh}
   #gate{overflow:visible;display:flow-root}
   #gate .lk-nen,#gate .lk-phu{bottom:auto;height:50vh}
   #gate .lk-phu{background:linear-gradient(180deg,rgba(0,0,0,.45),transparent 30%,transparent 60%,rgba(0,0,0,.75))}
@@ -469,6 +498,7 @@ function bbXep() {   // về trạng thái đầu
   bbChu(&#x27;Đăng nhập&#x27;);
   bbMaiThuong();
   lkXep();
+  if (LK_HU.chay) lkNutVe();
 }
 function bbCho() {
   bbNhoTk();
@@ -503,6 +533,74 @@ function bbTruot() {
   the.classList.remove(&#x27;rung&#x27;); void the.offsetWidth; the.classList.add(&#x27;rung&#x27;);
   bbE(&#x27;l_mk&#x27;).focus();
 }
+/* ===== Hiệu ứng thêm (09/10, chờ duyệt): đặt window.LK_HU = { day: true, chay: true } trước khi nạp để bật ===== */
+var LK_HU = (typeof window !== &#x27;undefined&#x27; &amp;&amp; window.LK_HU) || { day: false, chay: false };
+/* 1) Màn tối, chỉ có sợi dây: kéo xuống (hoặc bấm / Enter) để bật đèn, rồi mới hiện ô nhập */
+function lkDay() {
+  var g = bbG(); g.classList.add(&#x27;lk-chuabat&#x27;);
+  var toi = document.createElement(&#x27;div&#x27;); toi.className = &#x27;lk-toi&#x27;; toi.id = &#x27;lkToi&#x27;;
+  var d = document.createElement(&#x27;div&#x27;); d.className = &#x27;lk-day&#x27;; d.id = &#x27;lkDay&#x27;;
+  d.innerHTML = &#x27;&lt;div class=&quot;soi&quot;&gt;&lt;/div&gt;&lt;button type=&quot;button&quot; class=&quot;num&quot; aria-label=&quot;Kéo dây để bật đèn&quot;&gt;&lt;/button&gt;&lt;div class=&quot;goi&quot;&gt;Kéo dây để bật đèn&lt;/div&gt;&#x27;;
+  g.appendChild(toi); g.appendChild(d);
+  var num = d.querySelector(&#x27;.num&#x27;), y0 = null, keo = 0, daKeo = false;
+  num.addEventListener(&#x27;pointerdown&#x27;, function (e) { y0 = e.clientY; keo = 0; daKeo = false; try { num.setPointerCapture(e.pointerId); } catch (x) {} d.classList.add(&#x27;dang&#x27;); });
+  num.addEventListener(&#x27;pointermove&#x27;, function (e) { if (y0 == null) return; keo = Math.max(0, Math.min(150, e.clientY - y0)); if (keo &gt; 6) daKeo = true; d.style.setProperty(&#x27;--keo&#x27;, keo + &#x27;px&#x27;); });
+  var tha = function () { if (y0 == null) return; y0 = null; d.classList.remove(&#x27;dang&#x27;); if (keo &gt; 50) lkBatDen(); else d.style.setProperty(&#x27;--keo&#x27;, &#x27;0px&#x27;); };
+  num.addEventListener(&#x27;pointerup&#x27;, tha); num.addEventListener(&#x27;pointercancel&#x27;, tha);
+  num.addEventListener(&#x27;click&#x27;, function () { if (daKeo || !g.classList.contains(&#x27;lk-chuabat&#x27;)) return; d.style.setProperty(&#x27;--keo&#x27;, &#x27;70px&#x27;); setTimeout(lkBatDen, 170); });
+  setTimeout(function () { try { num.focus({ preventScroll: true }); } catch (e) {} }, 300);
+}
+function lkBatDen() {
+  var g = bbG(), d = bbE(&#x27;lkDay&#x27;), toi = bbE(&#x27;lkToi&#x27;);
+  if (!g.classList.contains(&#x27;lk-chuabat&#x27;)) return;
+  d.style.setProperty(&#x27;--keo&#x27;, &#x27;0px&#x27;);
+  toi.classList.add(&#x27;chop&#x27;);
+  setTimeout(function () { g.classList.remove(&#x27;lk-chuabat&#x27;); }, 260);
+  setTimeout(function () { toi.classList.add(&#x27;tat&#x27;); d.classList.add(&#x27;di&#x27;); }, 650);
+  setTimeout(function () { var o = bbE(&#x27;l_tk&#x27;).value ? bbE(&#x27;l_mk&#x27;) : bbE(&#x27;l_tk&#x27;); try { o.focus(); } catch (e) {} }, 1000);
+  setTimeout(function () { if (toi.parentNode) toi.parentNode.removeChild(toi); if (d.parentNode) d.parentNode.removeChild(d); }, 1700);
+}
+/* 2) Chưa điền đủ mã + mật khẩu mà rê chuột vào nút Đăng nhập thì nút né đi chỗ khác (chỉ máy tính có chuột;
+      bàn phím / Enter / màn cảm ứng vẫn bấm bình thường). Né 6 lần thì &quot;mệt&quot;, đứng yên lắc đầu. Điền đủ thì nút bay về chỗ cũ. */
+var LKC = { dx: 0, dy: 0, n: 0, noi: 0 };
+function lkThieu() { return !bbE(&#x27;l_tk&#x27;).value.trim() || !bbE(&#x27;l_mk&#x27;).value; }
+function lkNe(e) {
+  var nut = bbE(&#x27;btnLogin&#x27;);
+  if (BB.dang || !lkThieu() || nut.__ne) return;
+  [&#x27;bbOTk&#x27;, &#x27;bbOMk&#x27;].forEach(function (id, k) { var o = bbE(id), v = k ? bbE(&#x27;l_mk&#x27;).value : bbE(&#x27;l_tk&#x27;).value.trim(); o.classList.toggle(&#x27;thieu&#x27;, !v); });
+  if (++LKC.n &gt; 6) {
+    nut.classList.remove(&#x27;met&#x27;); void nut.offsetWidth; nut.classList.add(&#x27;met&#x27;);
+    if (LKC.noi &lt; 2) { LKC.noi = 2; bbMai(&#x27;&#x27;, &#x27;Thôi được rồi, nút đứng yên đây – nhưng điền đủ &lt;b&gt;mã nhân viên&lt;/b&gt; và &lt;b&gt;mật khẩu&lt;/b&gt; đã nha!&#x27;); }
+    return;
+  }
+  nut.__ne = true; setTimeout(function () { nut.__ne = false; }, 280);
+  if (!nut.classList.contains(&#x27;chay&#x27;)) { nut.classList.remove(&#x27;ve&#x27;); nut.classList.add(&#x27;chay&#x27;); void nut.offsetWidth; }
+  var g = bbG().getBoundingClientRect(), r = nut.getBoundingClientRect(), m = 18;
+  var cx = r.left + r.width / 2, cy = r.top + r.height / 2, vx = cx - e.clientX, vy = cy - e.clientY, l = Math.hypot(vx, vy) || 1;
+  var buoc = 150 + Math.random() * 90, nx = cx + vx / l * buoc + (Math.random() - .5) * 120, ny = cy + vy / l * buoc + (Math.random() - .5) * 90;
+  var kep = function (v, a, b) { return Math.min(b, Math.max(a, v)); };
+  nx = kep(nx, g.left + m + r.width / 2, g.right - m - r.width / 2); ny = kep(ny, g.top + m + r.height / 2, g.bottom - m - r.height / 2);
+  if (Math.hypot(nx - e.clientX, ny - e.clientY) &lt; r.height * 2) {   // bị dồn vào góc: nhảy sang phía đối diện
+    nx = kep(g.left + g.right - nx, g.left + m + r.width / 2, g.right - m - r.width / 2); ny = kep(g.top + g.bottom - ny, g.top + m + r.height / 2, g.bottom - m - r.height / 2);
+  }
+  LKC.dx += nx - cx; LKC.dy += ny - cy;
+  nut.style.transform = &#x27;translate(&#x27; + LKC.dx.toFixed(0) + &#x27;px,&#x27; + LKC.dy.toFixed(0) + &#x27;px)&#x27;;
+  if (!LKC.noi) { LKC.noi = 1; bbMai(&#x27;&#x27;, &#x27;Ấy, chưa điền đủ mà! Nhập &lt;b&gt;mã nhân viên&lt;/b&gt; và &lt;b&gt;mật khẩu&lt;/b&gt; trước, nút mới chịu đứng yên đó.&#x27;); }
+}
+function lkNutVe() {
+  var nut = bbE(&#x27;btnLogin&#x27;);
+  bbE(&#x27;bbOTk&#x27;).classList.remove(&#x27;thieu&#x27;); bbE(&#x27;bbOMk&#x27;).classList.remove(&#x27;thieu&#x27;);
+  if (!nut.classList.contains(&#x27;chay&#x27;)) return;
+  nut.classList.add(&#x27;ve&#x27;); nut.style.transform = &#x27;&#x27;; LKC.dx = LKC.dy = 0; LKC.n = 0;
+  setTimeout(function () { nut.classList.remove(&#x27;chay&#x27;, &#x27;ve&#x27;); }, 460);
+  if (LKC.noi &amp;&amp; LKC.noi &lt; 3) { LKC.noi = 3; bbMai(&#x27;covu&#x27;, &#x27;Đủ rồi! Giờ bấm &lt;b&gt;Đăng nhập&lt;/b&gt; được rồi nè.&#x27;); }
+}
+function lkChay() {
+  if (!window.matchMedia(&#x27;(hover:hover) and (pointer:fine)&#x27;).matches) return;
+  var nut = bbE(&#x27;btnLogin&#x27;);
+  nut.addEventListener(&#x27;pointerenter&#x27;, lkNe); nut.addEventListener(&#x27;pointermove&#x27;, lkNe);
+  [&#x27;l_tk&#x27;, &#x27;l_mk&#x27;].forEach(function (id) { bbE(id).addEventListener(&#x27;input&#x27;, function () { if (!lkThieu()) lkNutVe(); }); });
+}
 function bbKhoiDong() {
   var g = bbG();
   if (!g || BB.ban) return;
@@ -512,7 +610,7 @@ function bbKhoiDong() {
   try {
     var nho = localStorage.getItem(&#x27;kpi_tk_nho&#x27;);
     if (nho) { bbE(&#x27;l_tk&#x27;).value = nho; bbE(&#x27;bbNho&#x27;).checked = true; lkVe();
-      setTimeout(function () { bbE(&#x27;l_mk&#x27;).focus(); }, 350); }
+      if (!(LK_HU.day &amp;&amp; !bbGiam())) setTimeout(function () { bbE(&#x27;l_mk&#x27;).focus(); }, 350); }
   } catch (e) {}
   var mk = bbE(&#x27;l_mk&#x27;);
   var caps = function (e) { if (e.getModifierState) bbE(&#x27;bbCaps&#x27;).classList.toggle(&#x27;hien&#x27;, e.getModifierState(&#x27;CapsLock&#x27;)); };
@@ -530,6 +628,8 @@ function bbKhoiDong() {
     var m = document.querySelector(&#x27;#rhMaiAnh svg&#x27;); if (m) m.setAttribute(&#x27;class&#x27;, String(m.getAttribute(&#x27;class&#x27;)).replace(/\s*che\b/, &#x27;&#x27;));
   });
   bbMaiNap(0);
+  if (LK_HU.day &amp;&amp; !bbGiam()) lkDay();
+  if (LK_HU.chay &amp;&amp; !bbGiam()) lkChay();
 }
 
 bbKhoiDong();&lt;/script&gt;&lt;/body&gt;&lt;/html&gt;"></iframe>

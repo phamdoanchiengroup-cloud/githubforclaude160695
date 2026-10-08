@@ -37,7 +37,7 @@ import sys
 sys.path.insert(0, D)
 from anh_rhino import anh_rhino
 
-def khung(nguon, co_mai):
+def khung(nguon, co_mai, dau=''):
     s = anh_rhino(doc(os.path.join(T, nguon)).replace('{{ANH_NGON}}', ANH))
     css = s.split('<!--CSS-->')[1].split('<!--HTML-->')[0]
     htm = s.split('<!--HTML-->')[1].split('<!--JS-->')[0]
@@ -50,7 +50,7 @@ def khung(nguon, co_mai):
             '#demoXong button{font:600 14px Inter,sans-serif;padding:10px 20px;border-radius:10px;border:1px solid #d9bd8c;background:none;color:#d9bd8c;cursor:pointer}\n'
             + css + '</style></head><body>' + htm +
             '<div id="demoXong">✓ Đã vào hệ thống<small>(demo dừng ở đây – web thật sẽ mở trang làm việc)</small><button onclick="lamLai()">↻ Thử lại</button></div>'
-            '<script>' + (MAI if co_mai else '') + GIA + js + '\nbbKhoiDong();</script></body></html>')
+            '<script>' + dau + (MAI if co_mai else '') + GIA + js + '\nbbKhoiDong();</script></body></html>')
 
 cu = khung('dang-nhap-bi-a.html', False)
 for nguon, mau, ra in [('dang-nhap-bi-a-2.html', 'demo-bi-a.src.html', 'demo-dang-nhap-bi-a.html'),
@@ -66,3 +66,10 @@ for k, nguon, mai in [('{{MOI}}', 'dang-nhap-khac.html', True), ('{{TRUOC}}', 'd
     trang = trang.replace(k, html.escape(khung(nguon, mai), quote=True))
 io.open(os.path.join(T, '..', 'demo-dang-nhap-khac.html'), 'w', encoding='utf-8').write(trang)
 print('OK demo-dang-nhap-khac.html', len(trang.encode('utf-8')) // 1024, 'KB')
+
+# Hiệu ứng thêm cho màn Khắc laser (09/10): dây kéo bật đèn + nút chạy trốn – đặt cạnh bản hiện tại
+trang = anh_rhino(doc(os.path.join(D, 'demo-hieu-ung.src.html')))
+for k, dau in [('{{MOI}}', 'window.LK_HU={day:true,chay:true};'), ('{{CU}}', '')]:
+    trang = trang.replace(k, html.escape(khung('dang-nhap-khac.html', True, dau), quote=True))
+io.open(os.path.join(T, '..', 'demo-dang-nhap-hieu-ung.html'), 'w', encoding='utf-8').write(trang)
+print('OK demo-dang-nhap-hieu-ung.html', len(trang.encode('utf-8')) // 1024, 'KB')
