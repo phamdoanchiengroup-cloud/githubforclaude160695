@@ -209,6 +209,9 @@ function ttCatPhan_(r, q) {
     tomTat.dv.push({ nam: bd, co: co });
     if (!co) { d.secs = []; d.khoa = true; }
   });
+  if (T && T.daiVanSau && T.daiVanSau.ds) T.daiVanSau.ds = T.daiVanSau.ds.map(function (d) {
+    return ttCoDv_(q, d.nam) ? d : { nam: d.nam, den: d.den, khoang: d.khoang, isNow: d.isNow, nhan: d.nhan, huong: d.huong, he: d.he.map(function (x) { return { he: x.he, huong: x.huong }; }), khoa: true };
+  });
   if (T && T.duongDoi) (T.duongDoi.chang || []).forEach(function (c) {
     var bd = +String(c.nam).slice(0, 4);
     if (!ttCoDv_(q, bd)) { c.lines = (c.lines || []).slice(0, 1); c.khoa = true; }
@@ -227,6 +230,11 @@ function ttCatPhan_(r, q) {
       H.he = H.he.map(function (x) { return { he: x.he, nguon: x.nguon, huong: x.huong, nhan: x.nhan }; });
       H.khiaCanh = H.khiaCanh.map(function (x) { return { k: x.k, ten: x.ten, icon: x.icon, nhan: x.nhan, huong: x.huong, doiLap: x.doiLap, sk: x.sk }; });
       H.suKien = H.suKien.map(function (x) { return x.k === lo ? x : { k: x.k, kc: x.kc, loai: x.loai, ten: x.ten, ngan: x.ngan, ngoai: x.ngoai, khoa: true }; });
+    }
+    // Hồ sơ 12 tháng: chỉ giữ khung tháng + đánh giá chung
+    if (T && T.hoSoThang && !T.hoSoThang.loi) {
+      T.hoSoThang.khoa = true; T.hoSoThang.suKien = [];
+      T.hoSoThang.thang = T.hoSoThang.thang.map(function (m) { return { thang: m.thang, nay: m.nay, canChi: m.canChi, tu: m.tu, den: m.den, danhGia: m.danhGia, diem: m.diem, khoa: true }; });
     }
   }
   if (r.battuChiTiet && r.battuChiTiet.luuNien) r.battuChiTiet.luuNien = r.battuChiTiet.luuNien.filter(function (y) { return ttCoNam_(q, y.nam); });

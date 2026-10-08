@@ -59,7 +59,7 @@ var FILE_HTML_CAN_CO = { 'Index': '<!DOCTYPE html>', 'Styles': '<style>', 'Scrip
 var HAM_CAN_CO = {
   'Lunar.gs': 'solarToLunar', 'TuVi.gs': 'tuviLapLaSo', 'BatTu.gs': 'batTuLap',
   'LuanGiai.gs': 'luanChiTiet', 'DuDoan.gs': 'duDoanCuocDoi', 'BatTuChiTiet.gs': 'batTuChiTiet',
-  'Astro.gs': 'astToanBo', 'ChiemTinh.gs': 'chiemTinhLap', 'HumanDesign.gs': 'hdLap', 'ThanSoHoc.gs': 'thanSoHocLap', 'TongHop.gs': 'tongHopLuan', 'PhoiNgau.gs': 'phoiNgauLuan', 'HaLac.gs': 'haLacLap', 'HoiTu.gs': 'htHoiTu_', 'BatTuLuan.gs': 'btlLinhVuc_', 'TaiKhoan.gs': 'dangNhap', 'ThanhToan.gs': 'muaPhan', 'CapDoi.gs': 'lapCapDoi',
+  'Astro.gs': 'astToanBo', 'ChiemTinh.gs': 'chiemTinhLap', 'HumanDesign.gs': 'hdLap', 'ThanSoHoc.gs': 'thanSoHocLap', 'TongHop.gs': 'tongHopLuan', 'PhoiNgau.gs': 'phoiNgauLuan', 'HaLac.gs': 'haLacLap', 'HoiTu.gs': 'htHoiTu_', 'VanSau.gs': 'vsHoSoThang_', 'BatTuLuan.gs': 'btlLinhVuc_', 'TaiKhoan.gs': 'dangNhap', 'ThanhToan.gs': 'muaPhan', 'CapDoi.gs': 'lapCapDoi',
   'Facts.gs': 'taoFact_', 'TuViHeThong.gs': 'tuviSinhFactsCung_', 'NghiemChung.gs': 'nghiemChungLap', 'DeHieu.gs': 'deHieuLap_', 'BatTuPhanTich.gs': 'btPhanTich_', 'TienIch.gs': 'tienIch'
 };
 
@@ -72,7 +72,9 @@ var BAN_MOI_CAN_CO = {
   'ThanSoHoc.gs': ['thanSoHocLap', 'tsPhanTich_'],
   'DeHieu.gs': ['deHieuLap_', 'th6Lap_'],
   'TaiKhoan.gs': ['dangKy', 'ttQuaDangKy_'],
-  'ThanhToan.gs': ['ttBangGia_', 'TT_GIA_PHIEN']
+  'ThanhToan.gs': ['ttBangGia_', 'TT_GIA_PHIEN'],
+  'HoiTu.gs': ['htHoiTu_', 'htBtTin_'],
+  'TongHop.gs': ['tongHopLuan', 'vsHieuChinh_']
 };
 function kiemTraCaiDat_() {
   var loi = [];
@@ -117,7 +119,7 @@ function trangLoiCaiDat_(loi) {
 /** Chạy hàm này trong trình soạn thảo (chọn kiemTraCaiDat → Chạy) để xem lỗi trong Nhật ký thực thi */
 function kiemTraCaiDat() {
   var loi = kiemTraCaiDat_();
-  if (!loi.length) { Logger.log('✔ Cài đặt đúng: đủ 25 file .gs và 3 file HTML.'); return; }
+  if (!loi.length) { Logger.log('✔ Cài đặt đúng: đủ 26 file .gs và 3 file HTML.'); return; }
   loi.forEach(function (x) { Logger.log('✘ ' + x.replace(/<[^>]+>/g, '').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&amp;/g, '&')); });
 }
 
@@ -165,8 +167,11 @@ function lapLaSoDayDu_(input) {
 function doGioSinh(input, token) {
   ttCanPhan_(token, input, 'do_gio');
   input = input || {};
-  var ev = (input.events || []).filter(function (e) { return e && e.nam && e.loai; });
-  if (!ev.length) throw new Error('Hãy nhập ít nhất một sự kiện đã biết (năm + loại sự kiện).');
+  // Dò giờ dựa trên 7 chủ đề của Tử Vi (DuDoan.gs): loại sự kiện mới quy về chủ đề gần nhất, loại không có chủ đề tương ứng thì bỏ qua
+  var QUY = { thangTien: 'quanLoc', doiViec: 'quanLoc', taiSan: 'taiLoc', batHoa: 'giaDao', nguoiThan: 'giaDao', nhaCua: 'giaDao', quenMoi: 'ketHon' };
+  var ev = (input.events || []).filter(function (e) { return e && e.nam && e.loai; })
+    .map(function (e) { return { nam: e.nam, loai: DD_CHU_DE[e.loai] ? e.loai : QUY[e.loai] }; }).filter(function (e) { return e.loai && DD_CHU_DE[e.loai]; });
+  if (!ev.length) throw new Error('Hãy nhập ít nhất một sự kiện đã biết thuộc các loại: kết hôn, sinh con, ốm nặng, mất tiền, biến cố gia đình, phát tài, công việc (đi xa, thi cử, kiện tụng chưa dùng để dò giờ).');
   var gocChi = Math.floor(((parseInt(input.hour, 10) || 0) + 1) / 2) % 12;
   var out = [];
   for (var h = 0; h < 12; h++) {

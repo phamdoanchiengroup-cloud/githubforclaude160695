@@ -64,40 +64,14 @@ function htTinHieu_(C, y, ctx) {
   if ((C.daiVanTV || []).some(function (d) { return +String(d.nam).slice(0, 4) === y; })) add('buocNgoat', 'Tử Vi', 1.2, 'Tử Vi: năm chuyển đại hạn');
   htTinTuViThem_(tv, y, add);
   // Bát Tự
-  var nc = bt.nhatChuCan, can = ((y - 4) % 10 + 10) % 10, chi = ((y - 4) % 12 + 12) % 12, hy = bt.goiY.hy, ky = bt.goiY.ky;
-  var tC = thapThanTen_(nc, can), tZ = thapThanTen_(nc, TANG_CAN[chi][0]), cc = CAN[can] + ' ' + CHI[chi];
-  var hC = CAN_HANH[can], hZ = CHI_HANH[chi], tot = hy.indexOf(hC) >= 0 || hy.indexOf(hZ) >= 0, xau = ky.indexOf(hC) >= 0 && ky.indexOf(hZ) >= 0;
-  var co = function (re) { return re.test(tC) || re.test(tZ); };
-  var male = tv.info.male, dChi = bt.pillars[2].chi, nChi = bt.pillars[0].chi, mChi = bt.pillars[1].chi, gChi = bt.pillars[3].chi;
-  var xungNgay = (chi - dChi + 12) % 12 === 6, xungNam = (chi - nChi + 12) % 12 === 6, hopNgay = PN_LUC_HOP[dChi] === chi || (chi !== dChi && (chi - dChi + 12) % 4 === 0);
-  if (co(/Chính Tài|Thiên Tài/)) add('taiLoc', 'Bát Tự', tot ? 1.3 : 0.6, 'Bát Tự: năm ' + cc + ' mang Tài tinh (' + tC + '/' + tZ + ')' + (tot ? ', lại là hỷ dụng' : ''));
-  if (co(/Quan|Sát/)) add('quanLoc', 'Bát Tự', tot ? 1.2 : 0.9, 'Bát Tự: năm ' + cc + ' mang Quan/Sát – áp lực và cơ hội thăng tiến');
-  var pn = male ? /Chính Tài|Thiên Tài/ : /Quan|Sát/;
-  var kh = (co(pn) ? 0.8 : 0) + (hopNgay ? 0.6 : 0) + (HT_DAO_HOA[nChi] === chi || HT_DAO_HOA[dChi] === chi ? 0.5 : 0);
-  if (kh) add('ketHon', 'Bát Tự', kh, 'Bát Tự: ' + [co(pn) ? 'sao phối ngẫu xuất hiện' : '', hopNgay ? 'năm hợp cung phu thê (nhật chi)' : '', HT_DAO_HOA[nChi] === chi || HT_DAO_HOA[dChi] === chi ? 'gặp Đào hoa' : ''].filter(Boolean).join(', '));
-  var sc = male ? /Quan|Sát/ : /Thực|Thương/;
-  var sv = (co(sc) ? 0.8 : 0) + (PN_LUC_HOP[gChi] === chi || (chi !== gChi && (chi - gChi + 12) % 4 === 0) ? 0.4 : 0);
-  if (sv) add('sinhCon', 'Bát Tự', sv, 'Bát Tự: ' + (co(sc) ? 'sao con cái (' + (male ? 'Quan/Sát' : 'Thực/Thương') + ') đến' : 'năm hợp trụ giờ (cung con cái)'));
-  var sk = (xau ? 0.7 : 0) + (xungNgay ? 0.5 : 0) + (xungNam ? 0.5 : 0) + (chi === nChi ? 0.3 : 0);
-  if (sk) add('sucKhoe', 'Bát Tự', sk, 'Bát Tự: ' + [xau ? 'can chi năm đều là kỵ thần' : '', xungNgay ? 'xung nhật chi' : '', xungNam ? 'xung Thái Tuế năm sinh' : '', chi === nChi ? 'năm tuổi' : ''].filter(Boolean).join(', '));
-  var tcv = (co(/Kiếp|Tỷ/) && bt.tyLeTro >= 45 ? 0.9 : 0) + (co(/Chính Tài|Thiên Tài/) && !tot ? 0.4 : 0) + (xau ? 0.3 : 0);
-  if (tcv) add('taiChinh', 'Bát Tự', tcv, 'Bát Tự: ' + (co(/Kiếp|Tỷ/) ? 'Tỷ Kiếp đoạt tài khi thân đã vượng' : 'tài đến nhưng thuộc kỵ thần – dễ vào nhanh ra nhanh'));
-  var gd = (xungNgay ? 1 : 0) + ((chi - mChi + 12) % 12 === 6 ? 0.6 : 0);
-  if (gd) add('giaDao', 'Bát Tự', gd, 'Bát Tự: ' + (xungNgay ? 'năm xung cung phu thê' : 'năm xung trụ tháng (cha mẹ, anh em)'));
+  var can = ((y - 4) % 10 + 10) % 10, chi = ((y - 4) % 12 + 12) % 12, cc = CAN[can] + ' ' + CHI[chi], nChi = bt.pillars[0].chi;
+  htBtTin_(bt, tv.info.male, can, chi, add, 'năm');
   if (bt.daiVan.some(function (d) { return d.nam === y; })) add('buocNgoat', 'Bát Tự', 1.3, 'Bát Tự: năm giao đại vận');
-  if (xungNam) add('buocNgoat', 'Bát Tự', 0.9, 'Bát Tự: năm xung Thái Tuế – dễ đổi chỗ ở/công việc');
-  // Bát Tự – nhóm thêm cho Hồ sơ năm
-  if (co(/Ấn/)) add('hocHanh', 'Bát Tự', tot ? 1.1 : 0.8, 'Bát Tự: năm ' + cc + ' mang Ấn tinh – học hành, bằng cấp, giấy tờ');
-  if (co(/Ấn/)) add('nhaDat', 'Bát Tự', tot ? 0.8 : 0.5, 'Bát Tự: Ấn tinh còn chủ nhà cửa, chỗ dựa');
-  if ((HT_QUY_NHAN[nc] || []).indexOf(chi) >= 0) add('quyNhan', 'Bát Tự', 1.1, 'Bát Tự: năm ' + cc + ' gặp Thiên Ất quý nhân của nhật chủ');
-  else if (co(/Ấn/) && tot) add('quyNhan', 'Bát Tự', 0.6, 'Bát Tự: Ấn tinh hỷ dụng – có bề trên nâng đỡ');
-  var tp = (co(/Thương/) ? 0.9 : 0) + (co(/Kiếp/) ? 0.5 : 0) + (lgQuanHeChi_(chi, dChi).indexOf('tương hình') >= 0 ? 0.6 : 0);
-  if (tp) add('thiPhi', 'Bát Tự', Math.min(1.4, tp), 'Bát Tự: ' + [co(/Thương/) ? 'Thương Quan – lời nói dễ gây va chạm, kỵ kiện tụng' : '', co(/Kiếp/) ? 'Kiếp Tài – cạnh tranh, tiểu nhân' : '', lgQuanHeChi_(chi, dChi).indexOf('tương hình') >= 0 ? 'chi năm hình nhật chi' : ''].filter(Boolean).join(', '));
-  var maNam = [2, 11, 8, 5][nChi % 4], maNgay = [2, 11, 8, 5][dChi % 4];
-  if (chi === maNam || chi === maNgay) add('diXa', 'Bát Tự', 1, 'Bát Tự: năm ' + cc + ' gặp Dịch Mã – đi lại, đổi chỗ');
-  else if (xungNgay) add('diXa', 'Bát Tự', 0.5, 'Bát Tự: năm xung nhật chi – dễ phải di chuyển');
-  var tt = (co(/Thiên Ấn|Kiêu/) ? 0.6 : 0) + (co(/Sát/) && !tot ? 0.7 : 0) + (xau ? 0.4 : 0);
-  if (tt) add('tinhThan', 'Bát Tự', Math.min(1.4, tt), 'Bát Tự: ' + [co(/Thiên Ấn|Kiêu/) ? 'Thiên Ấn – hay lo nghĩ, dễ cô độc' : '', co(/Sát/) && !tot ? 'Thất Sát là kỵ – áp lực đè nặng' : '', xau ? 'can chi năm đều là kỵ thần' : ''].filter(Boolean).join(', '));
+  if ((chi - nChi + 12) % 12 === 6) add('buocNgoat', 'Bát Tự', 0.9, 'Bát Tự: năm xung Thái Tuế – dễ đổi chỗ ở/công việc');
+  // Tuế vận tịnh lâm: can chi năm trùng can chi đại vận đang đi ("Tứ trụ dự đoán học" – Thiệu Vĩ Hoa: năm có biến lớn)
+  var dvHt = bt.daiVan.filter(function (d) { return d.nam <= y; }).slice(-1)[0];
+  if (dvHt && dvHt.can === can && dvHt.chi === chi) { add('buocNgoat', 'Bát Tự', 1.3, 'Bát Tự: tuế vận tịnh lâm (năm ' + cc + ' trùng đại vận) – năm biến động lớn'); add('sucKhoe', 'Bát Tự', 0.7, 'Bát Tự: tuế vận tịnh lâm – giữ sức khỏe'); }
+  else if (dvHt && (dvHt.chi - chi + 12) % 12 === 6 && htKhacCan_(dvHt.can, can)) add('buocNgoat', 'Bát Tự', 0.9, 'Bát Tự: năm thiên khắc địa xung với đại vận ' + dvHt.canChi + ' – đổi hướng');
   // Hà Lạc
   var hn = ctx.hlNam[y];
   if (hn) {
@@ -151,6 +125,50 @@ function htTinHieu_(C, y, ctx) {
   Object.keys(HT_SO).forEach(function (k) { var v = HT_SO[k][so]; if (v) add(k, 'Thần số học', v, 'Thần số: năm cá nhân ' + so); });
   if (C.ts.dinhCao.some(function (p, i) { return i > 0 && tv.info.solar.year + p.tu === y; })) add('buocNgoat', 'Thần số học', 1, 'Thần số: bước sang đỉnh cao mới');
   return { nam: y, tuoi: tuoi, canChi: cc, soCN: so, tin: out };
+}
+
+/** Tín hiệu Bát Tự của một can chi lưu (năm hoặc tháng) so với tứ trụ gốc: thập thần, hỷ – kỵ, xung – hợp – hình,
+ *  Đào hoa, Dịch Mã, Thiên Ất quý nhân, phục ngâm – phản ngâm (Thiệu Vĩ Hoa "Tứ trụ dự đoán học"; Tử Bình chân thuyên) */
+function htKhacCan_(a, b) { var r = quanHeHanh(CAN_HANH[a], CAN_HANH[b]); return r === 'khac' || r === 'bi_khac'; }
+function htBtTin_(bt, male, can, chi, add, kieu) {
+  var cc = CAN[can] + ' ' + CHI[chi];
+  var nc = bt.nhatChuCan, hy = bt.goiY.hy, ky = bt.goiY.ky;
+  var tC = thapThanTen_(nc, can), tZ = thapThanTen_(nc, TANG_CAN[chi][0]), cc = CAN[can] + ' ' + CHI[chi];
+  var hC = CAN_HANH[can], hZ = CHI_HANH[chi], tot = hy.indexOf(hC) >= 0 || hy.indexOf(hZ) >= 0, xau = ky.indexOf(hC) >= 0 && ky.indexOf(hZ) >= 0;
+  var co = function (re) { return re.test(tC) || re.test(tZ); };
+  var dChi = bt.pillars[2].chi, nChi = bt.pillars[0].chi, mChi = bt.pillars[1].chi, gChi = bt.pillars[3].chi;
+  var xungNgay = (chi - dChi + 12) % 12 === 6, xungNam = (chi - nChi + 12) % 12 === 6, hopNgay = PN_LUC_HOP[dChi] === chi || (chi !== dChi && (chi - dChi + 12) % 4 === 0);
+  if (co(/Chính Tài|Thiên Tài/)) add('taiLoc', 'Bát Tự', tot ? 1.3 : 0.6, 'Bát Tự: ' + kieu + ' ' + cc + ' mang Tài tinh (' + tC + '/' + tZ + ')' + (tot ? ', lại là hỷ dụng' : ''));
+  if (co(/Quan|Sát/)) add('quanLoc', 'Bát Tự', tot ? 1.2 : 0.9, 'Bát Tự: ' + kieu + ' ' + cc + ' mang Quan/Sát – áp lực và cơ hội thăng tiến');
+  var pn = male ? /Chính Tài|Thiên Tài/ : /Quan|Sát/;
+  var kh = (co(pn) ? 0.8 : 0) + (hopNgay ? 0.6 : 0) + (HT_DAO_HOA[nChi] === chi || HT_DAO_HOA[dChi] === chi ? 0.5 : 0);
+  if (kh) add('ketHon', 'Bát Tự', kh, 'Bát Tự: ' + [co(pn) ? 'sao phối ngẫu xuất hiện' : '', hopNgay ? kieu + ' hợp cung phu thê (nhật chi)' : '', HT_DAO_HOA[nChi] === chi || HT_DAO_HOA[dChi] === chi ? 'gặp Đào hoa' : ''].filter(Boolean).join(', '));
+  var sc = male ? /Quan|Sát/ : /Thực|Thương/;
+  var sv = (co(sc) ? 0.8 : 0) + (PN_LUC_HOP[gChi] === chi || (chi !== gChi && (chi - gChi + 12) % 4 === 0) ? 0.4 : 0);
+  if (sv) add('sinhCon', 'Bát Tự', sv, 'Bát Tự: ' + (co(sc) ? 'sao con cái (' + (male ? 'Quan/Sát' : 'Thực/Thương') + ') đến' : kieu + ' hợp trụ giờ (cung con cái)'));
+  var sk = (xau ? 0.7 : 0) + (xungNgay ? 0.5 : 0) + (xungNam ? 0.5 : 0) + (chi === nChi ? 0.3 : 0);
+  if (sk) add('sucKhoe', 'Bát Tự', sk, 'Bát Tự: ' + [xau ? 'can chi ' + kieu + ' đều là kỵ thần' : '', xungNgay ? 'xung nhật chi' : '', xungNam ? 'xung Thái Tuế năm sinh' : '', chi === nChi ? (kieu === 'năm' ? 'năm tuổi' : 'tháng trùng chi tuổi') : ''].filter(Boolean).join(', '));
+  var tcv = (co(/Kiếp|Tỷ/) && bt.tyLeTro >= 45 ? 0.9 : 0) + (co(/Chính Tài|Thiên Tài/) && !tot ? 0.4 : 0) + (xau ? 0.3 : 0);
+  if (tcv) add('taiChinh', 'Bát Tự', tcv, 'Bát Tự: ' + (co(/Kiếp|Tỷ/) ? 'Tỷ Kiếp đoạt tài khi thân đã vượng' : 'tài đến nhưng thuộc kỵ thần – dễ vào nhanh ra nhanh'));
+  var gd = (xungNgay ? 1 : 0) + ((chi - mChi + 12) % 12 === 6 ? 0.6 : 0);
+  if (gd) add('giaDao', 'Bát Tự', gd, 'Bát Tự: ' + (xungNgay ? kieu + ' xung cung phu thê' : kieu + ' xung trụ tháng (cha mẹ, anh em)'));
+  if (co(/Ấn/)) add('hocHanh', 'Bát Tự', tot ? 1.1 : 0.8, 'Bát Tự: ' + kieu + ' ' + cc + ' mang Ấn tinh – học hành, bằng cấp, giấy tờ');
+  if (co(/Ấn/)) add('nhaDat', 'Bát Tự', tot ? 0.8 : 0.5, 'Bát Tự: Ấn tinh còn chủ nhà cửa, chỗ dựa');
+  if ((HT_QUY_NHAN[nc] || []).indexOf(chi) >= 0) add('quyNhan', 'Bát Tự', 1.1, 'Bát Tự: ' + kieu + ' ' + cc + ' gặp Thiên Ất quý nhân của nhật chủ');
+  else if (co(/Ấn/) && tot) add('quyNhan', 'Bát Tự', 0.6, 'Bát Tự: Ấn tinh hỷ dụng – có bề trên nâng đỡ');
+  var tp = (co(/Thương/) ? 0.9 : 0) + (co(/Kiếp/) ? 0.5 : 0) + (lgQuanHeChi_(chi, dChi).indexOf('tương hình') >= 0 ? 0.6 : 0);
+  if (tp) add('thiPhi', 'Bát Tự', Math.min(1.4, tp), 'Bát Tự: ' + [co(/Thương/) ? 'Thương Quan – lời nói dễ gây va chạm, kỵ kiện tụng' : '', co(/Kiếp/) ? 'Kiếp Tài – cạnh tranh, tiểu nhân' : '', lgQuanHeChi_(chi, dChi).indexOf('tương hình') >= 0 ? 'chi ' + kieu + ' hình nhật chi' : ''].filter(Boolean).join(', '));
+  var maNam = [2, 11, 8, 5][nChi % 4], maNgay = [2, 11, 8, 5][dChi % 4];
+  if (chi === maNam || chi === maNgay) add('diXa', 'Bát Tự', 1, 'Bát Tự: ' + kieu + ' ' + cc + ' gặp Dịch Mã – đi lại, đổi chỗ');
+  else if (xungNgay) add('diXa', 'Bát Tự', 0.5, 'Bát Tự: ' + kieu + ' xung nhật chi – dễ phải di chuyển');
+  var tt = (co(/Thiên Ấn|Kiêu/) ? 0.6 : 0) + (co(/Sát/) && !tot ? 0.7 : 0) + (xau ? 0.4 : 0);
+  if (tt) add('tinhThan', 'Bát Tự', Math.min(1.4, tt), 'Bát Tự: ' + [co(/Thiên Ấn|Kiêu/) ? 'Thiên Ấn – hay lo nghĩ, dễ cô độc' : '', co(/Sát/) && !tot ? 'Thất Sát là kỵ – áp lực đè nặng' : '', xau ? 'can chi ' + kieu + ' đều là kỵ thần' : ''].filter(Boolean).join(', '));
+  // Phục ngâm (can chi lưu trùng hệt trụ ngày/trụ năm) – sầu muộn, việc cũ lặp lại; Phản ngâm (thiên khắc địa xung) – đảo lộn
+  [[2, 'trụ ngày (bản thân, hôn nhân)'], [0, 'trụ năm (gốc gác, cha mẹ)']].forEach(function (x) {
+    var P = bt.pillars[x[0]];
+    if (P.can === can && P.chi === chi) { add('tinhThan', 'Bát Tự', 0.9, 'Bát Tự: ' + kieu + ' ' + cc + ' phục ngâm ' + x[1] + ' – buồn phiền, việc cũ lặp lại'); add('giaDao', 'Bát Tự', 0.5, 'Bát Tự: phục ngâm ' + x[1]); }
+    else if ((P.chi - chi + 12) % 12 === 6 && htKhacCan_(P.can, can)) { add('buocNgoat', 'Bát Tự', 1, 'Bát Tự: ' + kieu + ' ' + cc + ' phản ngâm (thiên khắc địa xung) ' + x[1] + ' – đảo lộn, thay đổi lớn'); add(x[0] === 2 ? 'giaDao' : 'sucKhoe', 'Bát Tự', 0.7, 'Bát Tự: phản ngâm ' + x[1]); }
+  });
 }
 
 function htChuanBi_(C) {
@@ -411,30 +429,50 @@ var HSN_SK = [
 ];
 var HSN_THANG_TT = { taiLoc: /Chính Tài|Thiên Tài/, quanLoc: /Quan|Sát/, hocHanh: /Ấn/, nhaDat: /Ấn/, quyNhan: /Ấn/, thiPhi: /Thương|Kiếp/, taiChinh: /Kiếp|Tỷ/, tinhThan: /Thiên Ấn|Sát/ };
 
+/** Hiệu số ủng hộ − ngược chiều của một hệ cho một sự kiện trong một năm (hoặc tháng) */
+function htNet_(n, sk, he) {
+  var v = 0, o = n.tin;
+  Object.keys(sk.ung).forEach(function (k) { var x = o[k] && o[k][he]; if (x) v += sk.ung[k] * Math.min(1.4, x.v); });
+  Object.keys(sk.nghich).forEach(function (k) { var x = o[k] && o[k][he]; if (x) v -= sk.nghich[k] * Math.min(1.4, x.v); });
+  return v;
+}
+/** Sức mạnh tín hiệu chung E = Σ trọng số hệ × hiệu số (mỗi hệ kẹp −1,2 … 1,6) */
+function htE_(n, sk, W) { var e = 0; Object.keys(W).forEach(function (h) { e += W[h] * Math.max(-1.2, Math.min(1.6, htNet_(n, sk, h))); }); return e; }
+/** Khả năng theo độ tuổi (tiên nghiệm) */
+function htTuoiA_(sk, t) {
+  if (sk.k === 'cuoiHoi') return ddTuoiHeSo_('ketHon', t);
+  if (sk.k === 'conCai') return ddTuoiHeSo_('sinhCon', t);
+  if (t < sk.tuoi[0] - 3 || t > sk.tuoi[1] + 5) return 0;
+  var w = t < sk.tuoi[0] || t > sk.tuoi[1] ? 0.3 : 1;
+  if (sk.k === 'omDau' || sk.k === 'taiNan' || sk.k === 'nguoiThan') w *= 0.6 + t / 60;
+  return w;
+}
+/** Bảng λ (kỳ vọng số lần) và rel (gấp mấy lần mức thường) của mọi sự kiện trong mọi năm – dùng chung cho năm, tháng, đại vận */
+function htSkLuoi_(namTin, W) {
+  var out = {};
+  HSN_SK.forEach(function (S) {
+    var tong = 0, tongA = 0, ds = namTin.map(function (n) {
+      var a = htTuoiA_(S, n.tuoi), w = a > 0 ? a * Math.exp(HSN_BETA * htE_(n, S, W)) : 0; tong += w; tongA += a; return { nam: n.nam, tuoi: n.tuoi, a: a, w: w };
+    });
+    ds.forEach(function (x) { x.lam = tong > 0 ? S.N * x.w / tong : 0; x.rel = tong > 0 && x.a > 0 ? x.w / x.a * tongA / tong : 0; x.p = Math.round((1 - Math.exp(-x.lam)) * 100); });
+    out[S.k] = ds;
+  });
+  return out;
+}
+
 /** Mức khả năng: xét cả xác suất tuyệt đối lẫn mức so với bình thường của chính người đó (rel) */
 function htMucP_(p, rel) { return p >= 50 || (rel >= 3 && p >= 20) ? 'Rất cao' : rel >= 2.2 ? 'Cao' : rel >= 1.5 ? 'Khá cao' : rel >= 0.8 ? 'Bình thường' : 'Thấp'; }
 function htDs_(a) { return a.length <= 1 ? a.join('') : a.slice(0, -1).join(', ') + ' và ' + a[a.length - 1]; }
 
 /** Hồ sơ năm xem: 19 sự kiện, xác suất, hệ ủng hộ – ngược chiều, tháng nên chú ý, lời khuyên */
-function htHoSoNam_(C, namTin, thang) {
+function htHoSoNam_(C, namTin, thang, W) {
+  W = W || HSN_W;
   var vy = C.tv.info.viewYear, nay = new Date().getFullYear(), male = C.tv.info.male, bt = C.bt;
   var n0 = namTin.filter(function (n) { return n.nam === vy; })[0];
   if (!n0) return null;
-  function net(n, sk, he) {
-    var v = 0, o = n.tin;
-    Object.keys(sk.ung).forEach(function (k) { var x = o[k] && o[k][he]; if (x) v += sk.ung[k] * Math.min(1.4, x.v); });
-    Object.keys(sk.nghich).forEach(function (k) { var x = o[k] && o[k][he]; if (x) v -= sk.nghich[k] * Math.min(1.4, x.v); });
-    return v;
-  }
-  function E(n, sk) { var e = 0; HSN_HE.forEach(function (h) { e += HSN_W[h] * Math.max(-1.2, Math.min(1.6, net(n, sk, h))); }); return e; }
-  function A(sk, t) {
-    if (sk.k === 'cuoiHoi') return ddTuoiHeSo_('ketHon', t);
-    if (sk.k === 'conCai') return ddTuoiHeSo_('sinhCon', t);
-    if (t < sk.tuoi[0] - 3 || t > sk.tuoi[1] + 5) return 0;
-    var w = t < sk.tuoi[0] || t > sk.tuoi[1] ? 0.3 : 1;
-    if (sk.k === 'omDau' || sk.k === 'taiNan' || sk.k === 'nguoiThan') w *= 0.6 + t / 60;
-    return w;
-  }
+  var net = htNet_;
+  function E(n, sk) { return htE_(n, sk, W); }
+  var A = htTuoiA_;
   // Tháng (âm lịch) của năm xem: thập thần can/chi tháng khớp chủ đề + điểm tháng tổng hợp
   var nc = bt.nhatChuCan, MT = Object.assign({}, HSN_THANG_TT, { ketHon: male ? /Chính Tài|Thiên Tài/ : /Quan|Sát/, sinhCon: male ? /Quan|Sát/ : /Thực|Thương/ });
   var thTT = (thang || []).map(function (m) {
@@ -467,7 +505,7 @@ function htHoSoNam_(C, namTin, thang) {
     var dong = !a0 ? 'Ngoài độ tuổi' : ung.length >= 3 && !nghich.length ? 'Đồng thuận' : ung.length && nghich.length ? 'Đối lập' : ung.length >= 2 ? 'Nghiêng về' : ung.length === 1 ? 'Một hệ báo' : nghich.length ? 'Nghiêng chiều ngược' : 'Ít tín hiệu';
     var tenUng = ung.map(function (h) { return h + ' (' + HSN_NGUON[h] + ')'; });
     var giai = !a0 ? 'Ngoài độ tuổi thường gặp của việc này.' :
-      dong === 'Đồng thuận' ? ung.length + ' hệ – ' + htDs_(tenUng) + ' – cùng nghiêng về ' + S.ngan + '. Khi nhiều phương pháp độc lập cùng chỉ một hướng, khả năng cao hơn mức thường của bạn' + (rel >= 1.3 ? ' (khoảng ×' + String(rel).replace('.', ',') + ')' : '') + '.' :
+      dong === 'Đồng thuận' ? ung.length + ' hệ – ' + htDs_(tenUng) + ' – cùng nghiêng về ' + S.ngan + '. Khi nhiều phương pháp độc lập cùng chỉ một hướng, khả năng cao hơn mức thường của bạn' + (rel >= 1.3 ? ' (khoảng ' + (rel >= 5 ? 'hơn ×5' : '×' + String(rel).replace('.', ',')) + ')' : '') + '.' :
       dong === 'Đối lập' ? htDs_(ung) + ' nghiêng về ' + S.ngan + '; ' + htDs_(nghich) + ' lại cho chiều ngược (' + S.nguoc + '). ' +
         (S.loai === 'tot' ? 'Cơ hội có thật nhưng kèm trở ngại – kết quả phụ thuộc nhiều vào sự chuẩn bị và thời điểm bạn chọn.' : S.loai === 'xau' ? 'Rủi ro có, nhưng cũng có yếu tố đỡ – phòng trước thì nhẹ đi đáng kể.' : 'Thay đổi có thể đến nhưng chưa chắc theo cách bạn muốn – cân nhắc kỹ trước khi quyết.') :
       dong === 'Nghiêng về' ? htDs_(tenUng) + ' cùng nghiêng về ' + S.ngan + ', các hệ còn lại không phản đối.' :

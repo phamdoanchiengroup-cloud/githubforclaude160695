@@ -1,6 +1,6 @@
 <style>
 /* Mã phiên bản giao diện – phải trùng với Index.html (meta tcc-ban) và Script.html (BAN_GIAO_DIEN) */
-:root { --tcc-ban: "2026.10.10"; }
+:root { --tcc-ban: "2026.10.11"; }
 /* ================================================================
    THIÊN CƠ CÁC — phong cách tiên hiệp sáng: ngọc bích, kim sa, mây trắng
    ================================================================ */
@@ -1769,4 +1769,37 @@ table { border-collapse: collapse; } th { font-weight: 600; }
 .hsn-sk.khoa, .hsn-sk.ngoai { opacity: .6; } .hsn-mo { font-size: 12px; color: var(--ink-soft); filter: blur(.3px); }
 .pdf-root .hsn-khoi { break-inside: avoid; }
 @media (max-width: 600px) { .hsn-luoi { grid-template-columns: 1fr 1fr; gap: 6px; } .hsn-kc { padding: 7px 9px; } .hsn-kc b { font-size: 12.5px; } .hsn-h { min-width: 0; flex: 1 1 44%; } }
+/* ===== HIỆU CHỈNH · HỒ SƠ THÁNG · ĐẠI VẬN 5 HỆ (Script.html › hsnHtml, hstHtml, dvsHtml) ===== */
+.hc-box { border: 1px solid var(--gold); border-radius: 12px; padding: 10px 12px; margin-bottom: 12px; background: var(--surface-2); }
+.hc-box p { margin: 4px 0; font-size: 13.5px; line-height: 1.55; }
+.hc-he { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; }
+.hc-h { display: inline-flex; flex-direction: column; font-size: 12px; padding: 4px 9px; border-radius: 9px; border: 1px solid var(--line); }
+.hc-h.len { border-color: #1fa688; color: var(--good-ink); } .hc-h.xuong { border-color: #d9503f; color: var(--bad-ink); }
+.hc-goi { border-style: dashed; }
+.hst-nhiet-wrap { overflow-x: auto; margin: 6px 0 12px; }
+.hst-nhiet { border-collapse: separate; border-spacing: 2px; font-size: 12px; min-width: 520px; }
+.hst-nhiet th { font-weight: 500; color: var(--ink-soft); padding: 2px 4px; text-align: center; } .hst-nhiet tbody th { text-align: left; white-space: nowrap; }
+.hst-nhiet th.nay { color: var(--gold-deep); font-weight: 700; }
+.hst-nhiet td { width: 30px; height: 22px; border-radius: 5px; text-align: center; font-size: 9px; color: #fff; background: rgba(201,162,58,var(--a)); }
+.hst-nhiet td.h-tot { background: rgba(31,166,136,var(--a)); } .hst-nhiet td.h-xau { background: rgba(217,80,63,var(--a)); }
+.hst-the > summary small { font-weight: 400; color: var(--ink-soft); }
+.hst-the p { margin: 4px 0; line-height: 1.55; font-size: 14px; }
+.hst-nhom { margin: 8px 0; } .hst-nhom > small { display: block; color: var(--ink-soft); margin-bottom: 4px; }
+.hst-sk { display: inline-flex; flex-wrap: wrap; align-items: center; gap: 4px; margin: 0 6px 6px 0; padding: 4px 9px; border-radius: 10px; border: 1px solid var(--line); font-size: 12.5px; border-left: 3px solid #c9a23a; }
+.hst-sk.hsn-l-tot { border-left-color: #1fa688; } .hst-sk.hsn-l-xau { border-left-color: #d9503f; }
+.hst-moc { margin: 0; padding-left: 18px; font-size: 13.5px; line-height: 1.55; }
+.hst-khoa { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 6px; margin-bottom: 10px; }
+.hst-m { display: flex; flex-direction: column; padding: 6px 9px; border: 1px solid var(--line); border-radius: 10px; font-size: 12.5px; } .hst-m em { font-style: normal; color: var(--ink-soft); }
+.hst-m.nay { border-color: var(--gold); }
+.dvs-luoi { display: grid; gap: 8px; }
+.dvs-the { border: 1px solid var(--line); border-radius: 12px; padding: 8px 12px; background: var(--surface); }
+.dvs-the.nay { border-color: var(--gold); }
+.dvs-the > summary { cursor: pointer; list-style: none; }
+.dvs-dau { display: flex; flex-wrap: wrap; align-items: baseline; gap: 8px; } .dvs-dau small { color: var(--ink-soft); }
+.dvs-cham { display: flex; flex-wrap: wrap; gap: 4px; margin: 6px 0 2px; }
+.dvs-cham i { font-style: normal; font-size: 11px; padding: 1px 8px; border-radius: 99px; background: var(--surface-3); }
+.dvs-cham i.tot { background: var(--good-bg); color: var(--good-ink); } .dvs-cham i.xau { background: var(--bad-bg); color: var(--bad-ink); }
+.dvs-the p { margin: 6px 0; line-height: 1.55; font-size: 14px; }
+.dvs-he { margin: 6px 0; padding-left: 18px; font-size: 13.5px; line-height: 1.55; } .dvs-he li.tot b { color: var(--good-ink); } .dvs-he li.xau b { color: var(--bad-ink); }
+.dvs-the.khoa .btn { margin-top: 6px; width: auto; }
 </style>

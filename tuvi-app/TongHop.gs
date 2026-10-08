@@ -669,7 +669,17 @@ function tongHopLuan(C) {
     } catch (e) { T.phoiNgau.loiThem = String(e && e.message || e); }
   }
   T.thang = htThang_(C); T.ngay = htNgay_(C);
-  try { T.hoSoNam = htHoSoNam_(C, T.hoiTu.namTin, T.thang); } catch (e) { T.hoSoNam = { loi: String(e && e.message || e) }; }
+  // Vận hạn chuyên sâu (VanSau.gs – file tùy chọn: thiếu thì bỏ qua, các phần khác vẫn chạy)
+  var coVS = typeof vsHieuChinh_ === 'function', W = null;
+  if (coVS) { try { T.hieuChinh = vsHieuChinh_(C, T.hoiTu.namTin); W = T.hieuChinh.ap ? T.hieuChinh.W : null; } catch (e) { T.hieuChinh = { loi: String(e && e.message || e) }; } }
+  try { T.hoSoNam = htHoSoNam_(C, T.hoiTu.namTin, T.thang, W); } catch (e) { T.hoSoNam = { loi: String(e && e.message || e) }; }
+  if (coVS) {
+    var luoi = htSkLuoi_(T.hoiTu.namTin, W || HSN_W);
+    try { T.hoSoThang = vsHoSoThang_(C, luoi, W, T.thang); } catch (e) { T.hoSoThang = { loi: String(e && e.message || e) }; }
+    try { T.daiVanSau = vsDaiVan_(C, luoi, T.hoiTu.namTin); } catch (e) { T.daiVanSau = { loi: String(e && e.message || e) }; }
+    try { vsNhatThem_(C); } catch (e) { /* nhật vận giữ bản cũ */ }
+    if (T.hieuChinh && T.hieuChinh.W) delete T.hieuChinh.W;
+  }
   delete T.hoiTu.namTin;
   T.matMa = htMatMa_(C, T.hoiTu, T.thang);
   T.tomLuoc = thTomLuoc_(C, T);

@@ -244,14 +244,15 @@ function tiLuanQue_(Q, linhVuc) {
   return { muc: muc, diem: Math.round(d * 100) / 100, luan: luan, khuyen: khuyen };
 }
 function tiQueKetQua_(Q, cauHoi, linhVuc, t) {
-  var L = tiLuanQue_(Q, linhVuc);
+  var L = tiLuanQue_(Q, linhVuc), UK = null;
+  if (typeof vsUngKy_ === 'function') { try { UK = vsUngKy_(Q, t); L.luan = L.luan.concat(UK.luan); } catch (e) { UK = null; } }
   return { cauHoi: cauHoi, linhVuc: linhVuc, luc: t.d + '/' + t.m + '/' + t.y + ' ' + (t.h < 10 ? '0' : '') + t.h + ':' + (t.mi < 10 ? '0' : '') + t.mi,
     am: Q.lu.day + '/' + Q.lu.month + '/' + Q.lu.year + ' giờ ' + CHI[Q.chiGio], so: Q.so, dong: Q.dong,
     chu: { ten: Q.chu.ten, hao: Q.chu.hao, tren: Q.tren, duoi: Q.duoi }, ho: { ten: Q.ho.ten, hao: Q.ho.hao }, bien: { ten: Q.bien.ten, hao: Q.bien.hao },
-    the: Q.the, dung: Q.dung, muc: L.muc, diem: L.diem, luan: L.luan, khuyen: L.khuyen,
+    the: Q.the, dung: Q.dung, ungKy: UK ? { ngay: UK.ngay, thang: UK.thang, so: UK.so, hanh: UK.hanh } : null, muc: L.muc, diem: L.diem, luan: L.luan, khuyen: L.khuyen,
     coSo: ['Mai hoa dịch số (Thiệu Khang Tiết) – lập quẻ theo thời gian hỏi: (số chi năm + tháng âm + ngày âm) chia 8 được quẻ trên; cộng thêm số chi giờ chia 8 được quẻ dưới; tổng chia 6 được hào động. Số tiên thiên: Càn 1, Đoài 2, Ly 3, Chấn 4, Tốn 5, Khảm 6, Cấn 7, Khôn 8.',
       'Quẻ không có hào động là Thể (bạn), quẻ có hào động là Dụng (sự việc). Xét ngũ hành Thể – Dụng ở quẻ chủ (hiện tại), quẻ Hỗ (quá trình), quẻ Biến (kết cục) và mùa hỏi.',
-      'Mỗi câu hỏi nên hỏi một lần, lúc lòng thật sự muốn biết. ' + TI_THAM_KHAO] };
+      (UK ? UK.coSo + ' ' : '') + 'Mỗi câu hỏi nên hỏi một lần, lúc lòng thật sự muốn biết. ' + TI_THAM_KHAO] };
 }
 function gieoQue(cauHoi, linhVuc, token) {
   var u = tkCan_(token);

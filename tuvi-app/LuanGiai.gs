@@ -861,6 +861,7 @@ function lgTieuVan_(chart, bt, year) {
     return x[0] + ' (cung ' + P[p].cung + ' gốc' + (L.ex[p] ? ', lưu: ' + L.ex[p].join(', ') : '') + '): ' + lgXepHang_(sc).toLowerCase() + '.';
   });
   secs.push({ tieuDe: 'Các lĩnh vực trong năm', items: linh });
+  if (typeof vsTieuVanThem_ === 'function') { try { secs = secs.concat(vsTieuVanThem_(chart, year, th, L)); } catch (e) { /* bỏ qua phần mở rộng */ } }
 
   if (bt) {
     var bz = [];
