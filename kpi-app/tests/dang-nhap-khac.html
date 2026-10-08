@@ -167,6 +167,41 @@
 @keyframes lkLac{20%,60%{rotate:-4deg}40%,80%{rotate:4deg}}
 #gate .bb-o.thieu input{border-color:var(--vang);animation:lkNhay 1s ease 2}
 @keyframes lkNhay{50%{box-shadow:0 0 0 5px rgba(247,184,41,.3)}}
+/* 3) Nút nhảy khi chạm (điện thoại) */
+#gate .bb-nut.nhay{animation:lkHop .42s cubic-bezier(.3,1.6,.5,1)}
+@keyframes lkHop{40%{translate:0 -18px}}
+/* 4) Cửa cuốn xưởng */
+#gate .lk-cua{position:absolute;inset:0;z-index:20;touch-action:none;cursor:grab;transition:transform .9s cubic-bezier(.6,0,.3,1);
+  background:linear-gradient(90deg,rgba(0,0,0,.45),transparent 12%,transparent 88%,rgba(0,0,0,.45)),
+    repeating-linear-gradient(180deg,#4a4f55 0 3px,#3a3e43 3px 22px,#2b2e32 22px 26px,#55595f 26px 28px,#34383c 28px 34px);
+  box-shadow:inset 0 -14px 0 #1b1d20}
+#gate .lk-cua.dang{transition:none;cursor:grabbing}
+#gate .lk-cua.mo{transform:translateY(-102%)}
+#gate .lk-cua::before{content:"";position:absolute;inset:0;background:radial-gradient(70% 60% at 50% 40%,transparent,rgba(0,0,0,.55));pointer-events:none}
+#gate .lk-cua .bien{position:absolute;left:50%;top:38%;transform:translate(-50%,-50%);text-align:center;color:rgba(255,255,255,.75);pointer-events:none}
+#gate .lk-cua .bien img{height:34px;width:auto;display:block;margin:0 auto 12px;opacity:.85;filter:drop-shadow(0 2px 0 rgba(0,0,0,.6))}
+#gate .lk-cua .bien b{display:block;font:700 12px var(--sans);letter-spacing:.3em;text-transform:uppercase;color:rgba(255,255,255,.55)}
+#gate .lk-cua .tay{position:absolute;left:50%;bottom:20px;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:8px;border:0;background:none;color:#fff;cursor:pointer;font:700 11px var(--sans);letter-spacing:.24em;text-transform:uppercase}
+#gate .lk-cua .tay i{display:block;width:120px;height:16px;border-radius:8px;background:linear-gradient(#f7b829,#a87a10);box-shadow:0 3px 0 #5c4306,0 0 18px rgba(247,184,41,.35)}
+#gate .lk-cua .tay span{animation:lkLen 1.6s ease-in-out infinite}
+@keyframes lkLen{50%{transform:translateY(-6px);opacity:.6}}
+#gate .lk-cua .tay:focus-visible{outline:2px solid #fff;outline-offset:6px;border-radius:8px}
+/* 5) Mắt Mai dõi theo chữ, bịt tai khi bật Caps Lock */
+#gate .mai .bit-tai{display:none}#gate .mai.bit .bit-tai{display:inline}#gate .mai.bit .tay-chi{display:none}
+/* 6) Két sắt: sai 3 lần thì tạm khóa */
+#gate .lk-ket{position:absolute;inset:0;z-index:8;border-radius:inherit;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;text-align:center;padding:24px;
+  background:radial-gradient(120% 90% at 50% 30%,#3a3e44,#1c1e21 70%);box-shadow:inset 0 0 0 1px rgba(255,255,255,.08),inset 0 0 40px rgba(0,0,0,.6);transform-origin:0 50%;transition:transform .8s cubic-bezier(.5,0,.3,1),opacity .8s}
+#gate .lk-ket.mo{transform:perspective(900px) rotateY(-100deg);opacity:0}
+#gate .lk-ket .num{width:130px;height:130px;border-radius:50%;position:relative;background:radial-gradient(circle,#55595f 0 30%,#2d3034 31% 62%,#45494f 63% 66%,#24272a 67%);box-shadow:0 10px 24px rgba(0,0,0,.6),inset 0 2px 0 rgba(255,255,255,.12);animation:lkXoay 6s linear infinite}
+#gate .lk-ket .num::before{content:"";position:absolute;inset:8px;border-radius:50%;background:repeating-conic-gradient(rgba(255,255,255,.55) 0 1.2deg,transparent 1.2deg 10deg);-webkit-mask:radial-gradient(circle,transparent 54%,#000 55% 60%,transparent 61%);mask:radial-gradient(circle,transparent 54%,#000 55% 60%,transparent 61%)}
+#gate .lk-ket .num::after{content:"";position:absolute;left:50%;top:6px;width:4px;height:16px;margin-left:-2px;background:var(--vang);border-radius:2px}
+@keyframes lkXoay{to{rotate:360deg}}
+#gate .lk-ket .dem{font:700 34px 'LkOrb',var(--sans);color:var(--vang);letter-spacing:.06em}
+#gate .lk-ket b{font-size:13px;letter-spacing:.2em;text-transform:uppercase;color:#fff}
+#gate .lk-ket small{font-size:13px;color:var(--chu2);max-width:280px;line-height:1.5}
+/* 7) Theo giờ: ca đêm đèn vàng ấm, mờ hơn */
+#gate.lk-dem .lk-nen image.anh{filter:brightness(.72) sepia(.28) saturate(1.1)}
+#gate.lk-dem .lk-toi{background:radial-gradient(45% 40% at var(--dx,50%) 0%,#2a1d08,#020202 70%)}
 /* ---------------- Màn hẹp / điện thoại ---------------- */
 @media (max-width:760px){
   #gate .lk-day{--dai:24vh}
@@ -297,6 +332,8 @@ function lkKhoiDong() {
 /* ---- Mai: chân dung tròn (hình chung MAI_SVG ở mục 12) ---- */
 var BB_CHE = '<g class="che-mat"><path d="M58 170c-4-20 2-40 18-52" stroke="#2f4a5e" stroke-width="13" fill="none" stroke-linecap="round"/><path d="M142 170c4-20-2-40-18-52" stroke="#2f4a5e" stroke-width="13" fill="none" stroke-linecap="round"/>' +
   '<ellipse cx="76" cy="113" rx="17" ry="14" fill="#ffe6d8"/><ellipse cx="124" cy="113" rx="17" ry="14" fill="#ffe6d8"/><path d="M64 108h22M64 114h24M66 120h20M112 108h22M110 114h24M112 120h20" stroke="#f0c2ad" stroke-width="1.4" stroke-linecap="round"/></g>';
+var BB_TAI = '<g class="bit-tai"><path d="M30 215c-6-28 0-55 14-70" stroke="#2f4a5e" stroke-width="13" fill="none" stroke-linecap="round"/><path d="M170 215c6-28 0-55-14-70" stroke="#2f4a5e" stroke-width="13" fill="none" stroke-linecap="round"/>' +
+  '<ellipse cx="44" cy="138" rx="11" ry="15" fill="#ffe6d8"/><ellipse cx="156" cy="138" rx="11" ry="15" fill="#ffe6d8"/><path d="M38 132h10M38 138h11M39 144h9M152 132h10M151 138h11M152 144h9" stroke="#f0c2ad" stroke-width="1.3" stroke-linecap="round"/></g>';
 var BB_KH = ['Làm <b>đúng ngay từ đầu</b>, khỏi phải làm lại!', 'An toàn là trên hết – <b>về nhà bình an</b>!', 'Từng cái một, <b>cuối ca thành nghìn</b>!', 'Tổ đồng lòng, <b>việc khó cũng xong</b>.'];
 function bbMaiTat() { try { return localStorage.getItem('kpi_mai') === 'tat'; } catch (e) { return false; } }
 function bbMai(lop, noi, lo) {
@@ -305,13 +342,20 @@ function bbMai(lop, noi, lo) {
   var n = bbE('rhMaiNoi'); if (!n || noi == null) return;
   n.innerHTML = noi; n.className = 'rh-mai-noi' + (lo ? ' lo' : ''); void n.offsetWidth; n.classList.add('doi');
 }
-function bbMaiThuong() { bbMai('', 'Mai chúc bạn một ca tốt lành. ' + BB.kh); }
+function bbMaiThuong() {
+  if (LK_HU.gio) { var h = lkGio();
+    if (h >= 22 || h < 5) return bbMai('', 'Ca đêm vất vả rồi! Nhớ uống nước, giữ ấm và tỉnh táo khi đứng máy nhé.');
+    if (h < 8) return bbMai('', 'Chào ngày mới! Ăn sáng chưa? Có sức mới làm tốt được nha.');
+    if (h >= 11.5 && h < 13) return bbMai('noi', 'Ăn trưa chưa? Nghỉ trưa cho đủ giấc để chiều làm khỏe nhé.');
+    if (h >= 17) return bbMai('', 'Tăng ca rồi à? Vất vả quá – làm xong nhớ về nghỉ sớm nhé.'); }
+  bbMai('', 'Mai chúc bạn một ca tốt lành. ' + BB.kh);
+}
 function bbMaiVe() {
   var w = bbE('rhMai'), a = bbE('rhMaiAnh'), nut = bbE('rhMaiNut'), tat = bbMaiTat();
   w.classList.toggle('tat', tat); if (nut) nut.textContent = tat ? 'Hiện Mai' : 'Ẩn Mai';
   if (tat || a.firstChild || typeof MAI_SVG === 'undefined') return;
   /* chỉ lấy phần mặt; đổi id gradient để không trùng hình Mai bên trong web (#gate bị ẩn sau khi vào) */
-  a.innerHTML = '<svg class="mai" viewBox="26 22 148 148">' + MAI_SVG.replace(/(id="|url\(#)g(Toc|Mong|Ao|Da|Ma)\b/g, '$1gbb$2') + BB_CHE + '</svg>';
+  a.innerHTML = '<svg class="mai" viewBox="26 22 148 148">' + MAI_SVG.replace(/(id="|url\(#)g(Toc|Mong|Ao|Da|Ma)\b/g, '$1gbb$2') + BB_CHE + BB_TAI + '</svg>';
 }
 /* Trong web, phần Mai (va-mai.py, mục 12) nạp sau màn này: chờ MAI_SVG + khẩu hiệu sẵn sàng */
 function bbMaiNap(lan) {
@@ -340,9 +384,10 @@ function bbQuen() {
   e.textContent = 'Liên hệ trưởng phòng hoặc chủ sở hữu hệ thống để được cấp mật khẩu tạm. Bạn sẽ đặt lại mật khẩu mới ngay khi đăng nhập.';
   bbMai('', 'Không sao đâu – nhờ <b>trưởng phòng</b> cấp mật khẩu tạm là vào được ngay.');
 }
+function lkGio() { var d = new Date(); return (typeof window !== 'undefined' && typeof window.LK_GIO === 'number') ? window.LK_GIO : d.getHours() + d.getMinutes() / 60; }
 function bbLoiChao() {
-  var h = new Date().getHours();
-  var c = h < 5 ? 'Chúc ca đêm thuận lợi' : h < 11 ? 'Chào buổi sáng' : h < 14 ? 'Chào buổi trưa' : h < 18 ? 'Chào buổi chiều' : 'Chào buổi tối';
+  var h = Math.floor(lkGio());
+  var c = (h < 5 || h >= 22) ? 'Chúc ca đêm thuận lợi' : h < 11 ? 'Chào buổi sáng' : h < 14 ? 'Chào buổi trưa' : h < 18 ? 'Chào buổi chiều' : 'Chào buổi tối';
   var s = bbE('bbChao'); if (s) s.textContent = c;
   var n = bbE('bbNam'); if (n) n.textContent = new Date().getFullYear();
 }
@@ -376,7 +421,7 @@ function bbTha() {
 }
 /* ĐÚNG: chữ khắc sáng vàng, vệt sáng chạy dọc ngọn cơ, bảng chuyển sang "Chào mừng"; Mai chúc ca làm */
 function bbTrung(tiep) {
-  BB.dang = true;
+  BB.dang = true; LKK.sai = 0;
   var ten = (typeof ME !== 'undefined' && ME && ME.ten) ? String(ME.ten).trim().split(/\s+/).pop() : '';
   var t = bbE('bbVaoTen'); if (t) t.textContent = ten ? 'Chào mừng, ' + ten + '.' : 'Chào mừng trở lại.';
   bbMai('covu', 'Chúc ' + (ten ? '<b>' + ten + '</b>' : 'bạn') + ' một ca làm việc thật suôn sẻ!');
@@ -389,6 +434,7 @@ function bbTrung(tiep) {
 /* SAI: tia laser đỏ, chữ khắc mờ đi một nhịp; báo lỗi tại ô, bảng rung nhẹ; Mai lo lắng nhắc Caps Lock / chữ hoa */
 function bbTruot() {
   bbTha();
+  if (LK_HU.ket && ++LKK.sai >= 3) { setTimeout(function () { lkKhoa(30); }, 450); }
   lkLua(1); var lc = bbE('lkChu'); lc.setAttribute('class', 'lk-chu mo'); setTimeout(function () { lc.setAttribute('class', 'lk-chu'); }, 900);
   var o = bbE('bbOMk'), the = bbE('frmLogin');
   o.classList.add('bb-sai');
@@ -397,7 +443,7 @@ function bbTruot() {
   bbE('l_mk').focus();
 }
 /* ===== Hiệu ứng thêm (09/10, chờ duyệt): đặt window.LK_HU = { day: true, chay: true } trước khi nạp để bật ===== */
-var LK_HU = (typeof window !== 'undefined' && window.LK_HU) || { day: false, chay: false };
+var LK_HU = (typeof window !== 'undefined' && window.LK_HU) || { day: false, chay: false, cham: false, cua: false, mat: false, ket: false, gio: false };
 /* 1) Màn tối, chỉ có sợi dây: kéo xuống (hoặc bấm / Enter) để bật đèn, rồi mới hiện ô nhập */
 function lkDay() {
   var g = bbG(); g.classList.add('lk-chuabat');
@@ -439,14 +485,15 @@ function lkNe(e) {
   nut.__ne = true; setTimeout(function () { nut.__ne = false; }, 280);
   if (!nut.classList.contains('chay')) { nut.classList.remove('ve'); nut.classList.add('chay'); void nut.offsetWidth; }
   var g = bbG().getBoundingClientRect(), r = nut.getBoundingClientRect(), m = 18;
-  var cx = r.left + r.width / 2, cy = r.top + r.height / 2, vx = cx - e.clientX, vy = cy - e.clientY, l = Math.hypot(vx, vy) || 1;
+  /* tâm nút: lấy điểm đích lần trước (nút có thể đang bay dở), lần đầu mới đo */
+  var cx = LKC.cx != null ? LKC.cx : r.left + r.width / 2, cy = LKC.cy != null ? LKC.cy : r.top + r.height / 2, vx = cx - e.clientX, vy = cy - e.clientY, l = Math.hypot(vx, vy) || 1;
   var buoc = 150 + Math.random() * 90, nx = cx + vx / l * buoc + (Math.random() - .5) * 120, ny = cy + vy / l * buoc + (Math.random() - .5) * 90;
   var kep = function (v, a, b) { return Math.min(b, Math.max(a, v)); };
   nx = kep(nx, g.left + m + r.width / 2, g.right - m - r.width / 2); ny = kep(ny, g.top + m + r.height / 2, g.bottom - m - r.height / 2);
   if (Math.hypot(nx - e.clientX, ny - e.clientY) < r.height * 2) {   // bị dồn vào góc: nhảy sang phía đối diện
     nx = kep(g.left + g.right - nx, g.left + m + r.width / 2, g.right - m - r.width / 2); ny = kep(g.top + g.bottom - ny, g.top + m + r.height / 2, g.bottom - m - r.height / 2);
   }
-  LKC.dx += nx - cx; LKC.dy += ny - cy;
+  LKC.dx += nx - cx; LKC.dy += ny - cy; LKC.cx = nx; LKC.cy = ny;
   nut.style.transform = 'translate(' + LKC.dx.toFixed(0) + 'px,' + LKC.dy.toFixed(0) + 'px)';
   if (!LKC.noi) { LKC.noi = 1; bbMai('', 'Ấy, chưa điền đủ mà! Nhập <b>mã nhân viên</b> và <b>mật khẩu</b> trước, nút mới chịu đứng yên đó.'); }
 }
@@ -454,7 +501,7 @@ function lkNutVe() {
   var nut = bbE('btnLogin');
   bbE('bbOTk').classList.remove('thieu'); bbE('bbOMk').classList.remove('thieu');
   if (!nut.classList.contains('chay')) return;
-  nut.classList.add('ve'); nut.style.transform = ''; LKC.dx = LKC.dy = 0; LKC.n = 0;
+  nut.classList.add('ve'); nut.style.transform = ''; LKC.dx = LKC.dy = 0; LKC.n = 0; LKC.cx = LKC.cy = null;
   setTimeout(function () { nut.classList.remove('chay', 've'); }, 460);
   if (LKC.noi && LKC.noi < 3) { LKC.noi = 3; bbMai('covu', 'Đủ rồi! Giờ bấm <b>Đăng nhập</b> được rồi nè.'); }
 }
@@ -464,6 +511,86 @@ function lkChay() {
   nut.addEventListener('pointerenter', lkNe); nut.addEventListener('pointermove', lkNe);
   ['l_tk', 'l_mk'].forEach(function (id) { bbE(id).addEventListener('input', function () { if (!lkThieu()) lkNutVe(); }); });
 }
+/* 3) Nút nhảy khi chạm (điện thoại / màn cảm ứng): chưa điền đủ mà chạm Đăng nhập thì nút nhảy sang bên, máy rung nhẹ
+      (Android; iPhone không cho trang web rung), ô còn trống nhấp nháy và được chọn sẵn. Nhảy 3 lần rồi thì báo lỗi như thường. */
+function lkRung(ms) { try { if (navigator.vibrate) navigator.vibrate(ms); } catch (e) {} }
+var LKT = { n: 0, ben: -1 };
+function lkChayCham() {
+  bbE('frmLogin').addEventListener('click', function (e) {
+    var nut = bbE('btnLogin');
+    if (!nut.contains(e.target) || BB.dang || !lkThieu() || LKT.n >= 3) return;
+    e.stopPropagation(); e.preventDefault(); LKT.n++; lkRung(35);
+    var trong = !bbE('l_tk').value.trim() ? 'l_tk' : 'l_mk';
+    ['bbOTk', 'bbOMk'].forEach(function (id, k) { bbE(id).classList.toggle('thieu', !(k ? bbE('l_mk').value : bbE('l_tk').value.trim())); });
+    nut.classList.remove('ve'); nut.classList.add('chay');
+    var w = bbE('frmLogin').getBoundingClientRect().width, rw = nut.getBoundingClientRect().width;
+    LKT.ben = -LKT.ben; LKC.dx = LKT.ben > 0 ? Math.max(0, w - rw) : 0; LKC.dy = 0;
+    nut.style.transform = 'translate(' + LKC.dx.toFixed(0) + 'px,0)';
+    nut.classList.remove('nhay'); void nut.offsetWidth; nut.classList.add('nhay');
+    bbMai('', LKT.n < 3 ? 'Ấy, chưa điền đủ mà! Điền <b>' + (trong === 'l_tk' ? 'mã nhân viên' : 'mật khẩu') + '</b> trước nha.' : 'Thôi được rồi, nút không nhảy nữa – nhưng điền đủ đã nha!');
+    LKC.noi = LKC.noi || 1;
+    try { bbE(trong).focus(); } catch (x) {}
+  }, true);
+  ['l_tk', 'l_mk'].forEach(function (id) { bbE(id).addEventListener('input', function () { if (!lkThieu()) { LKT.n = 0; lkNutVe(); } }); });
+}
+/* 4) Cửa cuốn xưởng: vuốt / kéo lên để mở (hoặc bấm tay nắm, Enter). Kéo chưa tới 1/3 thì cửa rơi xuống lại. */
+function lkCua() {
+  var g = bbG(); g.classList.add('lk-chuabat');
+  var c = document.createElement('div'); c.className = 'lk-cua'; c.id = 'lkCua';
+  c.innerHTML = '<div class="bien"><img src="{{RH_LOGO}}" alt=""><b>Xưởng · Ca làm việc</b></div><button type="button" class="tay" aria-label="Kéo cửa cuốn lên để mở"><span>⌃ Vuốt lên để mở cửa</span><i></i></button>';
+  g.appendChild(c);
+  var y0 = null, len = 0, daKeo = false, h = 1;
+  c.addEventListener('pointerdown', function (e) { y0 = e.clientY; len = 0; daKeo = false; h = c.getBoundingClientRect().height; try { c.setPointerCapture(e.pointerId); } catch (x) {} c.classList.add('dang'); });
+  c.addEventListener('pointermove', function (e) { if (y0 == null) return; len = Math.max(0, y0 - e.clientY); if (len > 6) daKeo = true; c.style.transform = 'translateY(' + (-len) + 'px)'; });
+  var tha = function () { if (y0 == null) return; y0 = null; c.classList.remove('dang'); if (len > h * .3) lkMoCua(); else { c.style.transform = ''; if (daKeo) lkRung(15); } };
+  c.addEventListener('pointerup', tha); c.addEventListener('pointercancel', tha);
+  c.querySelector('.tay').addEventListener('click', function () { if (!daKeo) lkMoCua(); });
+  setTimeout(function () { try { c.querySelector('.tay').focus({ preventScroll: true }); } catch (e) {} }, 300);
+}
+function lkMoCua() {
+  var g = bbG(), c = bbE('lkCua'); if (!c || c.classList.contains('mo')) return;
+  c.style.transform = ''; c.classList.add('mo'); lkRung(25);
+  setTimeout(function () { g.classList.remove('lk-chuabat'); }, 350);
+  setTimeout(function () { var o = bbE('l_tk').value ? bbE('l_mk') : bbE('l_tk'); try { o.focus(); } catch (e) {} if (c.parentNode) c.parentNode.removeChild(c); }, 950);
+}
+/* 5) Mắt Mai dõi theo chữ đang gõ ở ô mã nhân viên; bật Caps Lock thì Mai bịt tai */
+function lkMatNhin(dx, dy) {
+  var m = document.querySelector('#rhMaiAnh svg'); if (!m) return;
+  [].forEach.call(m.querySelectorAll('.mat-g'), function (g) { [].slice.call(g.children, 1, 6).forEach(function (c) { c.style.transition = 'transform .15s'; c.style.transform = dx == null ? '' : 'translate(' + dx + 'px,' + dy + 'px)'; }); });
+}
+function lkMat() {
+  var tk = bbE('l_tk'), nhin = function () { var p = Math.min(1, tk.value.length / 12); lkMatNhin((-3.5 + p * 7).toFixed(1), 3); };
+  tk.addEventListener('input', nhin); tk.addEventListener('focus', nhin); tk.addEventListener('blur', function () { lkMatNhin(null); });
+}
+function lkCaps(bat) {
+  if (!LK_HU.mat || BB.dang || bbMaiTat()) return;
+  var m = document.querySelector('#rhMaiAnh svg'); if (!m) return;
+  var co = /\bbit\b/.test(m.getAttribute('class'));
+  if (bat && !co) bbMai('bit', '<b>Chữ to quá!</b> Phím Caps Lock đang bật đó – mật khẩu phân biệt chữ hoa/thường.', 1);
+  if (!bat && co) { m.setAttribute('class', 'mai'); bbMaiThuong(); }
+}
+/* 6) Két sắt: sai mật khẩu 3 lần liền thì bảng đăng nhập tạm khóa 30 giây (đếm ngược). Chỉ là nhắc nhở phía trình duyệt. */
+var LKK = { sai: 0, hen: 0 };
+function lkKhoa(giay) {
+  var den = Date.now() + giay * 1000; try { localStorage.setItem('lk_khoa_den', den); } catch (e) {}
+  lkKhoaVe(den);
+}
+function lkKhoaVe(den) {
+  var kinh = document.querySelector('#gate .lk-kinh'), k = bbE('lkKet');
+  if (!k) { k = document.createElement('div'); k.className = 'lk-ket'; k.id = 'lkKet'; kinh.appendChild(k);
+    k.innerHTML = '<div class="num"></div><b>Tạm khóa</b><div class="dem" id="lkDem">30</div><small>Sai mật khẩu 3 lần liền. Đợi hết giờ rồi thử lại, hoặc nhờ trưởng phòng cấp lại mật khẩu.</small>'; }
+  ['l_tk', 'l_mk', 'btnLogin'].forEach(function (id) { bbE(id).disabled = true; });
+  bbMai('lo', 'Sai 3 lần rồi – mình tạm khóa một chút cho an toàn nha. Quên thì nhờ <b>trưởng phòng</b> cấp lại.', 1);
+  clearInterval(LKK.hen);
+  var chay = function () { var con = Math.ceil((den - Date.now()) / 1000);
+    if (con > 0) { bbE('lkDem').textContent = ('0' + con).slice(-2); return; }
+    clearInterval(LKK.hen); LKK.sai = 0; try { localStorage.removeItem('lk_khoa_den'); } catch (e) {}
+    ['l_tk', 'l_mk', 'btnLogin'].forEach(function (id) { bbE(id).disabled = false; });
+    k.classList.add('mo'); setTimeout(function () { if (k.parentNode) k.parentNode.removeChild(k); }, 850);
+    bbMai('', 'Mở khóa rồi! Gõ lại chậm thôi nhé.'); try { bbE('l_mk').value = ''; bbE('l_mk').focus(); } catch (e) {} };
+  chay(); LKK.hen = setInterval(chay, 250);
+}
+function lkKetKhoiDong() { try { var den = +localStorage.getItem('lk_khoa_den'); if (den > Date.now()) lkKhoaVe(den); } catch (e) {} }
 function bbKhoiDong() {
   var g = bbG();
   if (!g || BB.ban) return;
@@ -473,10 +600,11 @@ function bbKhoiDong() {
   try {
     var nho = localStorage.getItem('kpi_tk_nho');
     if (nho) { bbE('l_tk').value = nho; bbE('bbNho').checked = true; lkVe();
-      if (!(LK_HU.day && !bbGiam())) setTimeout(function () { bbE('l_mk').focus(); }, 350); }
+      if (!((LK_HU.day || LK_HU.cua) && !bbGiam())) setTimeout(function () { bbE('l_mk').focus(); }, 350); }
   } catch (e) {}
   var mk = bbE('l_mk');
-  var caps = function (e) { if (e.getModifierState) bbE('bbCaps').classList.toggle('hien', e.getModifierState('CapsLock')); };
+  var caps = function (e) { if (e.getModifierState) { var b = e.getModifierState('CapsLock'); bbE('bbCaps').classList.toggle('hien', b); lkCaps(b); } };
+  bbE('l_tk').addEventListener('keyup', caps);
   mk.addEventListener('keyup', caps);
   mk.addEventListener('keydown', caps);
   /* Mai che mắt khi gõ mật khẩu */
@@ -491,6 +619,10 @@ function bbKhoiDong() {
     var m = document.querySelector('#rhMaiAnh svg'); if (m) m.setAttribute('class', String(m.getAttribute('class')).replace(/\s*che\b/, ''));
   });
   bbMaiNap(0);
-  if (LK_HU.day && !bbGiam()) lkDay();
-  if (LK_HU.chay && !bbGiam()) lkChay();
+  if (LK_HU.gio) { var h = lkGio(); bbG().classList.toggle('lk-dem', h >= 22 || h < 5); }
+  if (LK_HU.cua && !bbGiam()) lkCua(); else if (LK_HU.day && !bbGiam()) lkDay();
+  /* nút chạy: máy có chuột thì né khi rê chuột, màn cảm ứng thì nhảy khi chạm – mỗi lúc chỉ một kiểu */
+  if (!bbGiam()) { if (LK_HU.cham || (LK_HU.chay && !window.matchMedia('(hover:hover) and (pointer:fine)').matches)) lkChayCham(); else if (LK_HU.chay) lkChay(); }
+  if (LK_HU.mat) lkMat();
+  if (LK_HU.ket) lkKetKhoiDong();
 }

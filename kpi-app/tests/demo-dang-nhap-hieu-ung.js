@@ -67,9 +67,8 @@ const toi = f => f.evaluate(() => [document.getElementById('gate').classList.con
   ok(t[0] && t[1], 'điện thoại cũng có màn tối + dây', t);
   await moi.tap('.lk-day .num', { force: true }); await p.waitForTimeout(1900);
   ok(!(await toi(moi))[0], 'chạm vào dây: đèn sáng');
-  const r4 = await moi.locator('#btnLogin').boundingBox(); await moi.tap('#btnLogin'); await p.waitForTimeout(300);
-  const r5 = await moi.locator('#btnLogin').boundingBox();
-  ok(Math.abs(r5.x - r4.x) < 2 && await moi.evaluate(() => !document.getElementById('lerr').classList.contains('hide')), 'cảm ứng: nút không chạy, bấm khi trống thì báo lỗi như thường');
+  await moi.tap('#btnLogin'); await p.waitForTimeout(500);
+  ok(await moi.evaluate(() => /translate\(\d+px/.test(document.getElementById('btnLogin').style.transform) && document.getElementById('lerr').classList.contains('hide')), 'cảm ứng: chạm nút khi trống thì nút nhảy sang bên (bản đợt 2), chưa báo lỗi');
   ok(await moi.evaluate(() => document.documentElement.scrollWidth <= innerWidth), 'không tràn ngang');
   ok(p.loi.length === 0, 'không lỗi JS', p.loi);
   await ctx.close();

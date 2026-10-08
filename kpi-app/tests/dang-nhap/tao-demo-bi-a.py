@@ -73,3 +73,9 @@ for k, dau in [('{{MOI}}', 'window.LK_HU={day:true,chay:true};'), ('{{CU}}', '')
     trang = trang.replace(k, html.escape(khung('dang-nhap-khac.html', True, dau), quote=True))
 io.open(os.path.join(T, '..', 'demo-dang-nhap-hieu-ung.html'), 'w', encoding='utf-8').write(trang)
 print('OK demo-dang-nhap-hieu-ung.html', len(trang.encode('utf-8')) // 1024, 'KB')
+
+# Hiệu ứng đợt 2 (09/10): nút nhảy khi chạm, cửa cuốn, mắt Mai, két sắt, theo giờ – trang có công tắc bật/tắt từng hiệu ứng
+goc = khung('dang-nhap-khac.html', True, '/*LKHU*/')
+trang = doc(os.path.join(D, 'demo-hieu-ung-2.src.html')).replace('{{GOC}}', html.escape(goc, quote=False))
+io.open(os.path.join(T, '..', 'demo-dang-nhap-hieu-ung-2.html'), 'w', encoding='utf-8').write(trang)
+print('OK demo-dang-nhap-hieu-ung-2.html', len(trang.encode('utf-8')) // 1024, 'KB')
