@@ -481,7 +481,7 @@ const W=44.75, D=34.25, H=5.3, GAP=6.5, EAVE=15.9, PEAK=15.9+0.6+17.125*0.08;
 const GX=[0,8.875,17.875,26.875,35.875,44.75], GY=[0,8.475,17.125,25.775,34.25];
 const CAT={sx:["Sản xuất","#7fb3a3"],son:["Khu sơn","#d8a86b"],kho:["Kho / tập kết","#8da3c9"],vp:["Quản lý / văn phòng","#c9b27a"],
   hl:["Hành lang","#c4c8c2"],wc:["Vệ sinh","#9cc4d6"],thang:["Thang / lõi kỹ thuật","#9a8f86"],ky:["Phòng kỹ thuật","#a9a29a"]};
-const MT={banbi:"Bàn bi-a thử cơ",ghecao:"Ghế cao",ep:"Máy ép",langda:"Máy lạng da",inpad:"Máy in pad (in logo)",banh:"Máy đánh bóng (có hút bụi)",ratd:"Máy ra tự động",chanham:"Máy chà nhám",tiencnc:"Máy tiện CNC",hamco:"Hầm co màng",pallet:"Pallet thùng hàng",bantien:"Bàn tiện nhỏ",tuuv:"Tủ điện / tủ mực máy in UV",xejig:"Xe jig treo cơ",thung:"Thùng carton",phunson:"Máy phun sơn tự động",cuon:"Máy cuốn phôi carbon",banthep:"Bàn thép",bankinh:"Bàn cắt mặt kính",maycat:"Máy dập cắt",lo:"Lò nướng",rutkhuon:"Máy rút khuôn",mai:"Máy mài / cắt",chuot:"Máy chuốt (có hút bụi)",ro:"Sọt tròn",tienl:"Máy tiện (có hút bụi)",phuy:"Thùng phuy hóa chất",cay:"Chậu cây",tienn:"Bàn tiện mini (có hút bụi)",cncn:"Máy CNC nhỏ (có màn hình)",xeong:"Xe ống giấy đựng ngọn",sot:"Sọt nhựa",bandg:"Bàn đóng gói",laser:"Bàn khắc laser",seal:"Máy co màng / hàn miệng túi",pccc:"Tủ chữa cháy",cnc:"Máy CNC",tien:"Máy tiện",uv:"Máy in UV / máy 3 pha",son:"Buồng sơn kín",ke:"Kệ / giá vật liệu",ban:"Bàn thao tác",khoan:"Máy khoan",foam:"Máy đổ foam",tb:"Thiết bị"};
+const MT={banbi:"Bàn bi-a thử cơ",ghenhua:"Ghế nhựa",ghecao:"Ghế cao",ep:"Máy ép",langda:"Máy lạng da",inpad:"Máy in pad (in logo)",banh:"Máy đánh bóng (có hút bụi)",ratd:"Máy ra tự động",chanham:"Máy chà nhám",tiencnc:"Máy tiện CNC",hamco:"Hầm co màng",pallet:"Pallet thùng hàng",bantien:"Bàn tiện nhỏ",tuuv:"Tủ điện / tủ mực máy in UV",xejig:"Xe jig treo cơ",thung:"Thùng carton",phunson:"Máy phun sơn tự động",cuon:"Máy cuốn phôi carbon",banthep:"Bàn thép",bankinh:"Bàn cắt mặt kính",maycat:"Máy dập cắt",lo:"Lò nướng",rutkhuon:"Máy rút khuôn",mai:"Máy mài / cắt",chuot:"Máy chuốt (có hút bụi)",ro:"Sọt tròn",tienl:"Máy tiện (có hút bụi)",phuy:"Thùng phuy hóa chất",cay:"Chậu cây",tienn:"Bàn tiện mini (có hút bụi)",cncn:"Máy CNC nhỏ (có màn hình)",xeong:"Xe ống giấy đựng ngọn",sot:"Sọt nhựa",bandg:"Bàn đóng gói",laser:"Bàn khắc laser",seal:"Máy co màng / hàn miệng túi",pccc:"Tủ chữa cháy",cnc:"Máy CNC",tien:"Máy tiện",uv:"Máy in UV / máy 3 pha",son:"Buồng sơn kín",ke:"Kệ / giá vật liệu",ban:"Bàn thao tác",khoan:"Máy khoan",foam:"Máy đổ foam",tb:"Thiết bị"};
 const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
 const small=matchMedia('(max-width:820px)').matches;
 
@@ -498,7 +498,7 @@ const scene=new THREE.Scene();
 const cam=new THREE.PerspectiveCamera(38,1,0.3,5000);
 const ctl=new OrbitControls(cam,renderer.domElement);
 ctl.enableDamping=true; ctl.maxPolarAngle=Math.PI*0.49; ctl.minDistance=2.5; ctl.maxDistance=520;
-ctl.zoomToCursor=true; ctl.zoomSpeed=1.6; window.__v3={cam,ctl,dungBay:()=&gt;{flyT=null;}};   // cuộn chuột phóng to đúng chỗ con trỏ, mỗi nấc mạnh hơn
+ctl.zoomToCursor=true; ctl.zoomSpeed=1.6; window.__v3={cam,ctl,scene,dungBay:()=&gt;{flyT=null;},mk:(t,L,D,H,l)=&gt;buildMachine({t,l:l||'',r:[0,0,L,D],h:H}),THREE};   // cuộn chuột phóng to đúng chỗ con trỏ, mỗi nấc mạnh hơn
 
 /* ---------- bầu trời, mặt trời, môi trường ---------- */
 const sky=new Sky(); sky.scale.setScalar(4000); scene.add(sky);
@@ -638,7 +638,7 @@ function mkTuUV(L,Dp,Hh){const g=new THREE.Group();const x=mat('#6c7277',{metaln
   [1.6,.12].forEach(y=&gt;g.add(box(L*.86,.04,.005,mat('#d9d9d6'),0,y,Dp/2+.003)));return g;}
 function mkXeJig(L,Dp,Hh,lab){const g=new THREE.Group();const H=1.15,st=mat('#b9bec1',{metalness:.75,roughness:.32});
   [[-1,-1],[1,-1],[-1,1],[1,1]].forEach(([a,b])=&gt;{g.add(box(.035,H,.035,st,a*(L/2-.02),H/2+.08,b*(Dp/2-.02)));g.add(cyl(.04,.06,C.rubber,a*(L/2-.05),.03,b*(Dp/2-.05),8));});
-  g.add(box(L,.03,Dp,st,0,.14,0));g.add(box(L,.05,Dp,mat('#4a3a2c',{roughness:.7}),0,H+.08,0));
+  g.add(box(L,.03,Dp,st,0,.14,0));[-1,0,1].forEach(j=&gt;{const z=j*(Dp-.24)/2;g.add(box(L,.03,.05,st,0,H+.08,z));for(let x=-L/2+.08;x&lt;L/2-.05;x+=.15)g.add(box(.06,.05,.07,mat('#202224',{roughness:.5}),x,H+.12,z));});
   const trang=/trắng/.test(lab),pal=trang?['#f2f2ef']:['#141414','#f2f2ef','#a5281f','#2b3f8a','#5a1f1f','#e4e4e0'],nx=Math.floor((L-.1)/.075),nz=3,n=nx*nz,m4=new THREE.Matrix4(),cl=new THREE.Color();
   const q=new THREE.InstancedMesh(new THREE.CylinderGeometry(.016,.014,.92,6),mat('#ffffff',{roughness:.35}),n);let k=0;
   for(let i=0;i&lt;nx;i++)for(let j=0;j&lt;nz;j++){m4.makeTranslation(-L/2+.08+i*.075,H+.05-.47,-Dp/2+.12+j*(Dp-.24)/2);q.setMatrixAt(k,m4);cl.set(pal[(rnd()*pal.length)|0]);q.setColorAt(k,cl);k++;}
@@ -646,21 +646,27 @@ function mkXeJig(L,Dp,Hh,lab){const g=new THREE.Group();const H=1.15,st=mat('#b9
 function mkThung(L,Dp,Hh){const g=new THREE.Group();const c=mat('#b8895a',{roughness:.85});g.add(box(L,.02,Dp,c,0,.01,0));
   [Dp/2,-Dp/2].forEach(z=&gt;g.add(box(L,Hh,.015,c,0,Hh/2,z)));[L/2,-L/2].forEach(x=&gt;g.add(box(.015,Hh,Dp,c,x,Hh/2,0)));
   g.add(box(L*.9,.06,Dp*.8,mat('#ededea'),0,.05,0));return g;}
-function mkPhunSon(L,Dp,Hh){const g=new THREE.Group();const xb=mat('#1f7ad0',{metalness:.3,roughness:.4});
-  g.add(box(L,.5,Dp,xb,0,.25,0));[-1,1].forEach(a=&gt;g.add(box(.16,2.2,.3,xb,a*(L/2-.08),1.35,-Dp*.2)));
-  g.add(box(L+.1,.35,Dp*.8,xb,0,2.55,-Dp*.05));g.add(box(L*.8,.08,Dp*.7,xb,0,2.75,-Dp*.05));
-  g.add(cyl(L*.32,.04,C.grey,0,1.6,0,20));for(let i=0;i&lt;4;i++)g.add(cyl(.02,.18,C.white,Math.cos(i*1.57)*L*.3,1.48,Math.sin(i*1.57)*L*.3,6));
-  g.add(box(.3,.25,.06,mat('#eef0f0'),L/2-.12,1.4,Dp*.1));g.add(box(.2,.13,.01,C.screen,L/2-.12,1.42,Dp*.1+.035));
-  g.add(box(L*.98,2.1,.01,mat('#dfe8ea',{transparent:true,opacity:.18,roughness:.1}),0,1.4,Dp/2));return g;}
+/* máy phun sơn tự động (ảnh Sơn số 4): khung thép sơn xanh cao ~2,6 m, tháp nâng ở giữa, bồn inox dưới, tủ điện bên hông, bọc màng nhựa */
+function mkPhunSon(L,Dp,Hh){const g=new THREE.Group();const xb=mat('#1f6fd0',{metalness:.3,roughness:.4}),inox=mat('#d3d7d9',{metalness:.8,roughness:.25}),H=2.6;
+  g.add(box(L,.22,Dp,xb,0,.11,0));
+  [[-1,-1],[1,-1],[-1,1],[1,1]].forEach(([a,b])=&gt;g.add(box(.1,H,.1,xb,a*(L/2-.05),H/2,b*(Dp/2-.05))));
+  g.add(box(L,.4,Dp,xb,0,H+.2,0));g.add(box(L*.5,.5,Dp*.5,xb,-L*.18,H+.65,-Dp*.12));
+  [.9,1.7].forEach(y=&gt;{g.add(box(L,.07,.07,xb,0,y,-Dp/2+.05));g.add(box(.07,.07,Dp,xb,-L/2+.05,y,0));g.add(box(.07,.07,Dp,xb,L/2-.05,y,0));});
+  g.add(box(L*.72,.55,Dp*.62,inox,0,.5,0));g.add(box(.16,H-.3,.16,inox,0,(H-.3)/2+.2,-Dp*.25));
+  g.add(box(L*.7,.06,.08,inox,0,1.95,-Dp*.12));for(let i=0;i&lt;6;i++)g.add(cyl(.016,1.0,mat('#f2f2ef',{roughness:.35}),-L*.28+i*L*.11,1.4,-Dp*.05,6));
+  g.add(box(.36,.55,.2,mat('#e9ecec',{roughness:.5}),L/2+.12,1.35,Dp*.15));g.add(box(.24,.17,.01,C.screen,L/2+.12,1.45,Dp*.15+.105));g.add(cyl(.03,.02,C.red,L/2+.05,1.2,Dp*.15+.11,10));
+  g.add(box(L*.98,H-.3,.01,mat('#dfe8ea',{transparent:true,opacity:.16,roughness:.1}),0,(H-.3)/2+.25,Dp/2+.01));return g;}
 function mkBooth(L,Dp,Hh){const g=new THREE.Group();const xa=mat('#a7abae',{metalness:.35,roughness:.42}),xb=mat('#1f3fae',{roughness:.4}),inox=mat('#d6d9db',{metalness:.85,roughness:.22});
   g.add(box(L,Hh,.08,xa,0,Hh/2,-Dp/2+.04));g.add(box(.08,Hh,Dp,xa,-L/2+.04,Hh/2,0));g.add(box(.08,Hh,Dp,xa,L/2-.04,Hh/2,0));
   g.add(box(L,Hh*.32,Dp*.75,xa,0,Hh*.84,-Dp*.12));[-.25,.25].forEach(o=&gt;g.add(box(L*.42,Hh*.14,.01,xb,o*L,Hh*.84,Dp*.26+.005)));
-  g.add(box(L*.94,Hh*.6,.02,inox,0,Hh*.36,-Dp/2+.1));g.add(box(L*.94,.12,Dp*.5,mat('#6b7c80',{metalness:.3,roughness:.2}),0,.06,-Dp*.2));
+  g.add(box(L*.94,Hh*.6,.02,mat('#8e979c',{metalness:.85,roughness:.18}),0,Hh*.36,-Dp/2+.1));g.add(box(L*.94,.12,Dp*.5,mat('#6b7c80',{metalness:.3,roughness:.2}),0,.06,-Dp*.2));
   g.add(box(L,.06,Dp,xa,0,Hh+.03,0));[-.3,.3].forEach(k=&gt;{g.add(cyl(.17,.12,xa,k*L,Hh+.1,-Dp*.15,16));g.add(cyl(.15,3.4-Hh-.16,NG.duct,k*L,Hh+.16+(3.4-Hh-.16)/2,-Dp*.15,16));}); // ống hút tôn xoắn lên trần
   return g;}
 function mkRack(L,Dp,Hh,lab){const g=new THREE.Group();const up=mat('#2f5aa8',{metalness:.4,roughness:.45}),bm=mat('#e0702a',{metalness:.3,roughness:.45});
   const nx=Math.max(2,Math.round(L/2.2)+1);
   for(let i=0;i&lt;nx;i++){const x=-L/2+.05+i*(L-.1)/(nx-1);g.add(box(.07,Hh,.07,up,x,Hh/2,-Dp/2+.05));g.add(box(.07,Hh,.07,up,x,Hh/2,Dp/2-.05));}
+  {const seg=.55,dd=Dp-.1,len=Math.hypot(seg,dd),an=Math.atan2(dd,seg);for(let i=0;i&lt;nx;i++){const x=-L/2+.05+i*(L-.1)/(nx-1);
+    for(let y=.1;y+seg&lt;Hh;y+=seg){const k=Math.round(y/seg)%2;const b=box(.025,len,.025,up,x,y+seg/2,0);b.rotation.x=k?an:-an;b.castShadow=false;g.add(b);}}}
   if(/^(Kh?\d|Kệ)/.test(lab)){const lv=[.15,Hh*.36,Hh*.66,Hh*.95],th=[mat('#b8895a',{roughness:.85}),mat('#c99d6a',{roughness:.85}),mat('#a77a4b',{roughness:.85}),mat('#ededea',{roughness:.7})];
     lv.forEach((y,k)=&gt;{g.add(box(L,.07,.06,bm,0,y,-Dp/2+.05));g.add(box(L,.07,.06,bm,0,y,Dp/2-.05));g.add(box(L-.05,.02,Dp-.1,mat('#8a9196',{metalness:.5}),0,y+.045,0));
       if(k===3&amp;&amp;rnd()&lt;.4)return;let x=-L/2+.08;while(x&lt;L/2-.3){const w=.3+rnd()*.35,h=Math.min(.22+rnd()*.3,(k&lt;3?lv[k+1]-y-.12:.5)),d=Math.min(Dp-.15,.35+rnd()*.3);
@@ -768,9 +774,11 @@ function mkCuon(L,Dp,Hh){const g=new THREE.Group();g.add(box(L,.85,Dp*.75,PC.xam
   g.add(box(.3,.18,.3,PC.cam,L*.15,1.55,-Dp*.25));g.add(cyl(.1,.75,PC.inox,L*.15,2.32,-Dp*.25,16));g.add(cyl(.12,.05,C.dark,L*.15,2.7,-Dp*.25,16)); // xi lanh khí nén
   const h=new THREE.Mesh(new THREE.TubeGeometry(new THREE.CatmullRomCurve3([new THREE.Vector3(L*.15+.1,2.6,-Dp*.25),new THREE.Vector3(L*.15+.35,2.2,-Dp*.25),new THREE.Vector3(L*.2+.3,1.9,-Dp*.25)]),10,.012,6),mat('#2a6fd1'));g.add(h);
   g.add(box(.5,.4,.12,PC.xam,L*.38,1.35,-Dp*.25+.05));g.add(box(.3,.22,.01,C.screen,L*.38,1.35,-Dp*.25+.115));[0,1].forEach(i=&gt;g.add(cyl(.05,.02,mat('#f2f2f2'),L*.32+i*.12,1.6,-Dp*.25+.12,14)));
-  g.add(box(.25,.2,.03,PC.cam,-L*.35,.65,Dp*.38));return g;}
+  g.add(box(.25,.2,.03,PC.cam,-L*.35,.65,Dp*.38));
+  {const v=cyl(.28,.05,PC.inox,L/2+.06,1.0,Dp*.1,24);v.rotation.z=Math.PI/2;g.add(v);const tr=cyl(.04,.12,C.grey,L/2+.02,1.0,Dp*.1,10);tr.rotation.z=Math.PI/2;g.add(tr);} // vô lăng chỉnh ở đầu máy (ảnh khu cuốn số 7)
+  return g;}
 function mkBanThep(L,Dp,Hh,kinh){const g=new THREE.Group();const H=.85;chan4(g,L,Dp,H,NG.st);
-  g.add(box(L,.03,Dp,NG.st,0,H-.03,0));g.add(box(L-.06,.02,Dp-.06,kinh?PC.kinh:PC.inox,0,H,0));g.add(box(L-.1,.03,Dp-.1,PC.go,0,.25,0));
+  g.add(box(L,.03,Dp,NG.st,0,H-.03,0));g.add(box(L-.06,.025,Dp-.06,kinh?PC.kinh:mat('#2a2624',{roughness:.45}),0,H,0));g.add(box(L-.1,.03,Dp-.1,PC.go,0,.25,0));
   for(let i=0;i&lt;3;i++)g.add(box(L*.25,.01+rnd()*.03,Dp*.3,kinh?mat('#2a2a2c',{roughness:.4}):C.grey,(rnd()-.5)*L*.6,H+.02,(rnd()-.5)*Dp*.4));return g;}
 function mkMayCat(L,Dp,Hh){const g=new THREE.Group();g.add(box(L,.9,Dp,PC.xam,0,.45,0));g.add(box(L*.9,.06,Dp*.8,PC.inox,0,.93,0));
   g.add(box(L*.95,.45,Dp*.3,PC.cam,0,1.5,-Dp*.3));g.add(box(.12,.6,Dp*.3,PC.xam,-L*.45,1.2,-Dp*.3));g.add(box(.12,.6,Dp*.3,PC.xam,L*.45,1.2,-Dp*.3));
@@ -795,19 +803,32 @@ function mkChuot(L,Dp,Hh){const g=new THREE.Group();g.add(box(L,.75,Dp,PC.xanhd,
 function mkRo(L,Dp,Hh){const g=new THREE.Group();const r=Math.min(L,Dp)/2;g.add(cyl(r,Hh,mat(rnd()&lt;.5?'#b9b2a4':'#8fa3a8',{roughness:.8}),0,Hh/2,0,16,r*.85));
   for(let i=0;i&lt;12;i++){const a=rnd()*6.28,d=rnd()*r*.6,n=cyl(.015,1.1,NG.den,Math.cos(a)*d,Hh+.3,Math.sin(a)*d,6);n.rotation.set((rnd()-.5)*.5,0,(rnd()-.5)*.5);g.add(n);}return g;}
 /* đợt ảnh 11/10 (2): router CNC, bàn bi-a, máy ép, máy lạng da, máy in pad, máy đánh bóng, máy ra tự động, máy chà nhám, tiện CNC xanh, hầm co màng, pallet thùng */
-function mkCNC(L,Dp,Hh){const g=new THREE.Group();const nv=mat('#23284a',{metalness:.35,roughness:.4}),tr=mat('#f0f1ef',{roughness:.45}),xm=mat('#dfe2e3',{metalness:.3,roughness:.4});
-  const W=Math.max(L,Dp),D2=Math.min(L,Dp);g.add(box(W,.8,D2,nv,0,.4,0));g.add(box(W*.96,.06,D2*.92,tr,0,.83,0));g.add(box(W*.9,.05,D2*.8,mat('#c9b48e',{roughness:.8}),0,.88,0));
-  [-1,1].forEach(a=&gt;g.add(box(.16,.85,.18,nv,a*W*.3,1.25,-D2*.38)));g.add(box(W*.7,.22,.2,mat('#2d3136',{roughness:.4}),0,1.62,-D2*.38));
-  g.add(box(.36,.42,.3,xm,0,1.62,-D2*.2));g.add(cyl(.05,.3,C.grey,0,1.3,-D2*.15,10));g.add(box(.3,.28,.25,xm,-W*.12,1.95,-D2*.38));
-  const ch=new THREE.Mesh(new THREE.TorusGeometry(.22,.035,6,14,Math.PI),mat('#111')),c2=ch.clone();ch.position.set(W*.15,1.85,-D2*.38);g.add(ch);
-  g.add(box(.02,.12,.12,mat('#2a62b8'),W/2+.01,.6,D2*.2));ongHut(g,W*.32,-D2/2-.1,3.4,2.2,W*.05,-D2*.15,1.5);
+function mkCNC(L,Dp,Hh){const g=new THREE.Group();const nv=mat('#23284a',{metalness:.35,roughness:.4}),tr=mat('#f0f1ef',{roughness:.45}),xm=mat('#dfe2e3',{metalness:.3,roughness:.4}),xd=mat('#6d7378',{metalness:.5,roughness:.35});
+  // router CNC (ảnh CNC số 2, 4): thân hộp xanh than, bàn hút chân không, cổng trục cao màu xám trắng, cụm trục Z trắng, xích cáp đen
+  const W=Math.max(L,Dp),D2=Math.min(L,Dp);g.add(box(W,.78,D2,nv,0,.39,0));g.add(box(W*.94,.5,.02,mat('#1a1e38'),0,.42,D2/2+.005));
+  g.add(box(W*.96,.06,D2*.92,tr,0,.81,0));g.add(box(W*.9,.05,D2*.8,mat('#c9b48e',{roughness:.8}),0,.865,0));
+  [-1,1].forEach(a=&gt;{g.add(box(.08,.08,D2*.96,xd,a*W*.47,.9,0));g.add(box(.18,1.05,.42,xm,a*W*.36,1.36,-D2*.08));});
+  g.add(box(W*.8,.3,.32,xm,0,1.98,-D2*.08));g.add(box(W*.78,.04,.05,xd,0,1.86,D2*.08));
+  g.add(box(.42,.6,.34,tr,W*.05,1.72,D2*.12));g.add(box(.2,.25,.2,mat('#2d3136'),W*.05,1.3,D2*.12));g.add(cyl(.04,.16,C.grey,W*.05,1.1,D2*.12,10));
+  const ch=new THREE.Mesh(new THREE.TorusGeometry(.24,.04,6,16,Math.PI),mat('#111'));ch.position.set(-W*.2,2.2,-D2*.08);g.add(ch);
+  g.add(box(.02,.12,.12,mat('#2a62b8'),W/2+.01,.6,D2*.2));g.add(box(.35,.5,.06,mat('#e8eaea'),W/2+.2,1.25,D2*.3));g.add(box(.25,.18,.01,C.screen,W/2+.2,1.33,D2*.3+.035));
+  ongHut(g,W*.32,-D2/2-.1,3.4,2.3,W*.05,D2*.05,1.95);
   const o=new THREE.Group();o.add(g);if(L&lt;Dp)o.rotation.y=Math.PI/2;return o;}
-function mkBanBi(L,Dp,Hh){const g=new THREE.Group();const d=mat('#1c1d1f',{roughness:.4,metalness:.2}),n=mat('#7d838a',{roughness:.95});
-  g.add(box(L,.1,Dp,d,0,.72,0));g.add(box(L-.24,.03,Dp-.24,n,0,.78,0));[[L/2-.06,0,.12,Dp],[-L/2+.06,0,.12,Dp],[0,Dp/2-.06,L,.12],[0,-Dp/2+.06,L,.12]].forEach(([x,z,w,dd])=&gt;g.add(box(w,.1,dd,d,x,.82,z)));
-  [[-1,-1],[1,-1],[-1,1],[1,1]].forEach(([a,b])=&gt;g.add(cyl(.13,.67,d,a*(L/2-.3),.335,b*(Dp/2-.3),14)));
-  [['#f5f5f2',.4],['#e3b91b',-.3]].forEach(([c,x])=&gt;g.add(cyl(.028,.05,mat(c,{roughness:.2}),x,.81,(rnd()-.5)*.6,10)));return g;}
-function mkGheCao(L,Dp,Hh){const g=new THREE.Group();const k=mat('#1b1b1b',{metalness:.5,roughness:.4});
-  [[-1,-1],[1,-1],[-1,1],[1,1]].forEach(([a,b])=&gt;{const c=cyl(.012,.75,k,a*.15,.37,b*.15,6);c.rotation.set(b*.12,0,-a*.12);g.add(c);});g.add(cyl(.17,.04,k,0,.76,0,14));return g;}
+function mkBanBi(L,Dp,Hh){const g=new THREE.Group();const d=mat('#18191b',{roughness:.35,metalness:.25}),n=mat('#8a939a',{roughness:.95}),cr=mat('#c9cdd0',{metalness:.85,roughness:.25});
+  // bàn bi-a hiện đại (ảnh QC, Hoàn thiện): thân đen hộp, nỉ xám bạc, chân vuông to, 6 lỗ
+  g.add(box(L-.1,.2,Dp-.1,d,0,.66,0));g.add(box(L-.24,.03,Dp-.24,n,0,.775,0));
+  [[L/2-.06,0,.12,Dp],[-L/2+.06,0,.12,Dp],[0,Dp/2-.06,L,.12],[0,-Dp/2+.06,L,.12]].forEach(([x,z,w,dd])=&gt;g.add(box(w,.09,dd,d,x,.81,z)));
+  [[-1,-1],[1,-1],[-1,1],[1,1],[0,-1],[0,1]].forEach(([a,b])=&gt;{g.add(cyl(.055,.02,mat('#050505'),a*(L/2-.13),.85,b*(Dp/2-.13),12));if(a)g.add(box(.14,.012,.14,cr,a*(L/2-.07),.857,b*(Dp/2-.07)));});
+  [[-1,-1],[1,-1],[-1,1],[1,1]].forEach(([a,b])=&gt;g.add(box(.24,.56,.24,d,a*(L/2-.32),.28,b*(Dp/2-.3))));
+  g.add(box(L*.62,.1,.12,d,0,.12,0));
+  [['#f5f5f2',.4],['#e3b91b',-.3],['#b3261e',-.5]].forEach(([c,x])=&gt;g.add(cyl(.028,.056,mat(c,{roughness:.2}),x,.818,(rnd()-.5)*.6,10)));return g;}
+function mkGheCao(L,Dp,Hh){const g=new THREE.Group();const k=mat('#1b1b1b',{metalness:.5,roughness:.4}),dem=mat('#232325',{roughness:.6});
+  [[-1,-1],[1,-1],[-1,1],[1,1]].forEach(([a,b])=&gt;{const c=cyl(.012,.76,k,a*.13,.37,b*.13,6);c.rotation.set(b*.09,0,-a*.09);g.add(c);});
+  g.add(cyl(.18,.06,dem,0,.77,0,16));const v=new THREE.Mesh(new THREE.TorusGeometry(.17,.01,6,20),k);v.rotation.x=Math.PI/2;v.position.y=.28;g.add(v);return g;}
+/* ghế đẩu nhựa xanh dương (có ở hầu hết các phòng) */
+function mkGheNhua(L,Dp,Hh){const g=new THREE.Group();const x=mat('#2f57cf',{roughness:.5});const H=Hh||.45;
+  const t=new THREE.Mesh(new THREE.CylinderGeometry(.19,.24,H-.03,4,1,true),x);t.rotation.y=Math.PI/4;t.position.y=(H-.03)/2;t.castShadow=true;g.add(t);
+  g.add(box(.3,.03,.3,x,0,H-.015,0));g.add(box(.1,.004,.035,mat('#1c3a96'),0,H+.001,0));return g;}
 function mkEp(L,Dp,Hh){const g=new THREE.Group();const k=mat('#1f1f22',{metalness:.4,roughness:.4}),r=mat('#c62828',{roughness:.45});
   g.add(box(L,.85,Dp,mat('#9aa0a4',{metalness:.5}),0,.425,0));[-1,1].forEach(a=&gt;g.add(box(.08,1.0,.08,k,a*L*.35,1.35,0)));g.add(box(L*.8,.14,.16,k,0,1.85,0));
   g.add(box(L*.45,.16,.3,r,0,1.62,0));g.add(cyl(.05,.3,C.grey,0,1.38,0,10));g.add(box(L*.5,.05,.3,r,0,.95,0));return g;}
@@ -816,17 +837,27 @@ function mkLangDa(L,Dp,Hh){const g=new THREE.Group();const n=mat('#5a1e1e',{roug
 function mkInPad(L,Dp,Hh){const g=new THREE.Group();const x=mat('#c9cdcf',{metalness:.5,roughness:.35});
   g.add(box(L*.6,.8,Dp*.6,x,0,.4,0));g.add(box(L*.3,.7,Dp*.3,x,0,1.15,-Dp*.1));g.add(box(L*.7,.15,Dp*.6,x,0,1.5,0));g.add(box(.2,.12,.1,mat('#2a62b8'),0,1.68,0));
   g.add(cyl(.07,.06,C.dark,0,1.2,Dp*.15,12));return g;}
+/* máy đánh bóng (ảnh Hoàn thiện số 7): bàn inox, mỗi máy là mô-tơ nằm ngang 2 đầu bánh vải màu kem, chụp hút sau bánh, ống tôn xoắn từ trần xuống */
 function mkBanh(L,Dp,Hh){const g=new THREE.Group();g.add(box(L,.05,Dp,NG.st,0,.85,0));chan4(g,L,Dp,.85,NG.st);g.add(box(L-.1,.03,Dp-.1,NG.st,0,.2,0));
-  const n=Math.max(1,Math.round(L/1.1)),bo=mat('#e8dcc0',{roughness:.95});
-  for(let i=0;i&lt;n;i++){const x=-L/2+(i+.5)*L/n;g.add(cyl(.12,.22,mat('#8d9499',{metalness:.6,roughness:.35}),x-.12,1.0,0,14));
-    const w=cyl(.17,.1,bo,x+.18,1.05,0,16);w.rotation.z=Math.PI/2;g.add(w);g.add(box(.3,.4,.35,mat('#c8ccce',{metalness:.5}),x+.2,1.1,-.02));
-    ongHut(g,x+.18,-Dp/2-.1,3.4,2.3,x+.18,-.1,1.3);}
+  const n=Math.max(1,Math.round(L/1.1)),bo=mat('#e6d8b8',{roughness:.95}),mo=mat('#8d9499',{metalness:.6,roughness:.35}),cu=mat('#c8ccce',{metalness:.6,roughness:.3});
+  for(let i=0;i&lt;n;i++){const x=-L/2+(i+.5)*L/n;
+    g.add(box(.2,.12,.22,mo,x,.93,0));const m=cyl(.11,.34,mo,x,1.08,0,16);m.rotation.z=Math.PI/2;g.add(m);
+    const tr=cyl(.012,.72,C.steel,x,1.08,0,8);tr.rotation.z=Math.PI/2;g.add(tr);
+    [-1,1].forEach(a=&gt;{const w=cyl(.16,.07,bo,x+a*.33,1.08,0,20);w.rotation.z=Math.PI/2;g.add(w);
+      const h=new THREE.Mesh(new THREE.CylinderGeometry(.2,.2,.12,16,1,true,Math.PI*.5,Math.PI),cu);h.rotation.z=Math.PI/2;h.position.set(x+a*.33,1.08,-.02);g.add(h);});
+    ongHut(g,x,-Dp/2-.1,3.4,2.3,x+.33,-.12,1.25);}
   return g;}
-function mkRaTuDong(L,Dp,Hh){const g=new THREE.Group();const c=mat('#ede8da',{roughness:.5}),k=mat('#1f1f22',{roughness:.4});
-  g.add(box(L,1.9,Dp,c,0,.95,0));g.add(box(L+.04,1.92,.05,k,0,.96,Dp/2));g.add(box(L*.55,.5,.06,k,0,.95,Dp/2+.01));
-  const cu=cyl(.18,L*.4,mat('#d9a83a',{roughness:.9}),0,1.0,Dp/2+.05,14);cu.rotation.z=Math.PI/2;g.add(cu);
-  for(let i=0;i&lt;5;i++){const o=cyl(.025,1.6,mat('#e0402c'),-L*.2+i*.1,.75,Dp/2+.6,8);o.rotation.x=Math.PI/2;g.add(o);}
-  g.add(box(.25,.18,.02,C.screen,-L*.3,1.55,Dp/2+.03));g.add(cyl(.18,3.4-1.9,PC.inox,0,1.9+(3.4-1.9)/2,0,14));return g;}
+/* máy ra tự động (ảnh Hoàn thiện số 6): tủ màu kem khung đen, ô kính, bảng điều khiển màn hình bên phải, cuộn băng vàng, máng con lăn đỏ phía trước, ống hút lên trần */
+function mkRaTuDong(L,Dp,Hh){const g=new THREE.Group();const c=mat('#ece6d3',{roughness:.5}),k=mat('#1f1f22',{roughness:.4}),H=1.95;
+  g.add(box(L,H,Dp,c,0,H/2+.06,0));g.add(box(L+.02,.06,Dp+.02,k,0,.03,0));
+  [[-1],[1]].forEach(([a])=&gt;g.add(box(.07,H+.02,.07,k,a*(L/2-.02),H/2+.06,Dp/2)));g.add(box(L+.02,.07,.07,k,0,H+.06,Dp/2));g.add(box(L+.02,.05,.06,k,0,1.15,Dp/2));
+  g.add(box(L*.62,.7,.02,mat('#2b3236',{roughness:.1,metalness:.3}),-L*.1,1.55,Dp/2+.01));
+  g.add(box(.42,1.0,.12,mat('#f4f2ea',{roughness:.45}),L/2-.26,1.45,Dp/2+.07));g.add(box(.3,.2,.01,C.screen,L/2-.26,1.7,Dp/2+.135));
+  [0,1,2].forEach(i=&gt;g.add(cyl(.022,.02,[C.red,mat('#2aa84a'),mat('#e3b91b')][i],L/2-.36+i*.1,1.42,Dp/2+.135,10)));
+  const cu=cyl(.14,.34,mat('#e0b23a',{roughness:.8}),-L*.1,.95,Dp/2+.18,18);cu.rotation.z=Math.PI/2;g.add(cu);
+  g.add(box(L*.7,.06,.5,k,-L*.05,.62,Dp/2+.45));for(let i=0;i&lt;7;i++){const o=cyl(.03,L*.66,mat('#d8402c',{roughness:.5}),-L*.05,.68,Dp/2+.24+i*.07,10);o.rotation.z=Math.PI/2;g.add(o);}
+  [[-1],[1]].forEach(([a])=&gt;g.add(box(.05,.6,.05,k,a*L*.3,.3,Dp/2+.65)));
+  g.add(cyl(.16,3.4-H-.06,PC.inox,-L*.25,H+.06+(3.4-H-.06)/2,0,14));g.add(cyl(.12,3.4-H-.06,PC.inox,L*.2,H+.06+(3.4-H-.06)/2,-Dp*.2,14));return g;}
 function mkChaNham(L,Dp,Hh){const g=new THREE.Group();const xb=mat('#2b62b8',{metalness:.3,roughness:.4});g.add(box(L,.9,Dp,xb,0,.45,0));
   g.add(box(L*.7,.05,Dp*.8,mat('#3a3d40'),0,.92,0));g.add(cyl(.2,.12,mat('#cfd3d5',{metalness:.5}),-L*.2,1.2,0,18));g.add(box(.3,.5,.3,mat('#cfd3d5',{metalness:.5}),L*.15,1.2,0));return g;}
 function mkTienCNC(L,Dp,Hh){const g=new THREE.Group();const xb=mat('#2766c4',{metalness:.35,roughness:.4}),xd=mat('#3d4246',{metalness:.4,roughness:.4});
@@ -839,8 +870,19 @@ function mkPallet(L,Dp,Hh){const g=new THREE.Group();const go=mat('#a9875b',{rou
   const t=mat('#c9a463',{roughness:.6}),nx=Math.max(1,Math.floor(L/.95)),nz=Math.max(1,Math.floor(Dp/.4)),nh=Math.max(1,Math.round((Hh-.13)/.22));
   for(let i=0;i&lt;nx;i++)for(let j=0;j&lt;nz;j++){const h=nh-((rnd()&lt;.3)?1:0);for(let k=0;k&lt;h;k++)g.add(box(.92,.21,.38,t,-L/2+.47+i*.95,.13+.105+k*.22,-Dp/2+.2+j*.4,k===h-1));}
   return g;}
-function mkSot(L,Dp,Hh){const g=new THREE.Group();g.add(box(L,Hh,Dp,NG.sot,0,Hh/2,0));g.add(box(L*.92,.01,Dp*.92,mat('#101a3a',{roughness:.8}),0,Hh+.002,0));
-  for(let i=0;i&lt;3;i++){const n=cyl(.015,L*.9,NG.den,0,Hh+.03+i*.03,-Dp*.25+i*Dp*.25,6);n.rotation.z=Math.PI/2;g.add(n);}return g;}
+/* sóng nhựa xanh dương (ảnh phôi thô, cuốn): thùng hở miệng thành lưới lỗ, chồng 0,3 m mỗi tầng, tầng trên có phôi đen nằm ngang */
+let TX_SOT=null;
+function mkSot(L,Dp,Hh){const g=new THREE.Group();
+  if(!TX_SOT)TX_SOT=canvasTex(128,(c,s)=&gt;{c.fillStyle='#2347b8';c.fillRect(0,0,s,s);c.fillStyle='#0d1a4a';
+    for(let i=0;i&lt;7;i++)for(let j=0;j&lt;3;j++)c.fillRect(6+i*17.5,14+j*36,11,26);c.fillStyle='#3a62d6';c.fillRect(0,0,s,6);c.fillRect(0,s-6,s,6);});
+  const m=S({color:0xffffff,map:TX_SOT,roughness:.55}),vien=S({color:0x2a50c4,roughness:.5}),day=S({color:0x10173a,roughness:.8});
+  const h=.3,n=Math.max(1,Math.round(Hh/h));
+  for(let i=0;i&lt;n;i++){const y=i*h;
+    [[0,Dp/2-.01,L,.02],[0,-Dp/2+.01,L,.02]].forEach(([x,z,w,d])=&gt;g.add(box(w,h-.02,d,m,x,y+h/2,z)));
+    [[L/2-.01,0],[-L/2+.01,0]].forEach(([x,z])=&gt;g.add(box(.02,h-.02,Dp-.04,m,x,y+h/2,z)));
+    g.add(box(L-.04,.02,Dp-.04,day,0,y+.02,0));[[0,Dp/2,L+.02,.03],[0,-Dp/2,L+.02,.03]].forEach(([x,z,w,d])=&gt;g.add(box(w,.035,d,vien,x,y+h-.015,z)));[[L/2,0],[-L/2,0]].forEach(([x,z])=&gt;g.add(box(.03,.035,Dp+.02,vien,x,y+h-.015,z)));g.add(box(L-.04,.03,.06,vien,0,y+h-.06,Dp/2-.03));g.add(box(L-.04,.03,.06,vien,0,y+h-.06,-Dp/2+.03));}
+  const k=6+((rnd()*6)|0);for(let i=0;i&lt;k;i++){const r=cyl(.014,L*.98,NG.den,(rnd()-.5)*.04,(n-1)*h+.05+((i/4)|0)*.03,-Dp/2+.06+(i%4)*(Dp-.12)/3+(rnd()-.5)*.03,6);r.rotation.z=Math.PI/2;r.castShadow=false;g.add(r);}
+  return g;}
 function mkDrill(L,Dp,Hh){const g=new THREE.Group();g.add(box(L,.08,Dp,C.dark,0,.04,0));g.add(cyl(.05,Hh,C.steel,0,Hh/2,-Dp*.3));
   g.add(box(L*.7,.3,Dp*.8,C.green,0,Hh-.25,-Dp*.05));g.add(cyl(.12,.25,C.green,0,Hh-.5,0));g.add(box(L*.6,.04,L*.6,C.grey,0,Hh*.5,.02));
   const sp=cyl(.015,.2,C.steel,0,Hh-.75,0,8);g.add(sp);tower(g,L*.3,Hh,-Dp*.3);return g;}
@@ -861,7 +903,7 @@ function buildMachine(Mc){
   let g;switch(Mc.t){case 'cnc':g=mkCNC(L,Dp,Hh);break;case 'tien':g=mkLathe(L,Dp,Hh);break;
     case 'uv':g=/UV/.test(Mc.l)?mkUV(L,Dp,Hh):mkGeneric(L,Dp,Hh,Mc.l);break;case 'son':g=mkBooth(L,Dp,Hh);break;
     case 'ke':g=/^Tủ/.test(Mc.l)?mkCabinet(L,Dp,Hh):mkRack(L,Dp,Hh,Mc.l);break;case 'ban':g=mkBench(L,Dp,Hh,Mc.l);break;
-    case 'khoan':g=mkDrill(L,Dp,Hh);break;case 'bandg':g=mkBanDG(L,Dp,Hh);break;case 'tienn':g=mkTienNho(L,Dp,Hh);break;case 'tienl':g=mkTienLon(L,Dp,Hh);break;case 'banbi':g=mkBanBi(L,Dp,Hh);break;case 'ghecao':g=mkGheCao(L,Dp,Hh);break;case 'ep':g=mkEp(L,Dp,Hh);break;case 'langda':g=mkLangDa(L,Dp,Hh);break;case 'inpad':g=mkInPad(L,Dp,Hh);break;case 'banh':g=mkBanh(L,Dp,Hh);break;case 'ratd':g=mkRaTuDong(L,Dp,Hh);break;case 'chanham':g=mkChaNham(L,Dp,Hh);break;case 'tiencnc':g=mkTienCNC(L,Dp,Hh);break;case 'hamco':g=mkHamCo(L,Dp,Hh);break;case 'pallet':g=mkPallet(L,Dp,Hh);break;case 'bantien':g=mkTienNho(L,Dp,Hh,true);break;case 'tuuv':g=mkTuUV(L,Dp,Hh);break;case 'xejig':g=mkXeJig(L,Dp,Hh,Mc.l);break;case 'thung':g=mkThung(L,Dp,Hh);break;case 'phunson':g=mkPhunSon(L,Dp,Hh);break;case 'cuon':g=mkCuon(L,Dp,Hh);break;case 'banthep':g=mkBanThep(L,Dp,Hh,false);break;case 'bankinh':g=mkBanThep(L,Dp,Hh,true);break;case 'maycat':g=mkMayCat(L,Dp,Hh);break;case 'lo':g=mkLo(L,Dp,Hh);break;case 'rutkhuon':g=mkRutKhuon(L,Dp,Hh);break;case 'mai':g=mkMai(L,Dp,Hh);break;case 'chuot':g=mkChuot(L,Dp,Hh);break;case 'ro':g=mkRo(L,Dp,Hh);break;case 'phuy':g=mkPhuy(L,Dp,Hh,Mc.l);break;case 'cay':g=mkCay(L,Dp,Hh);break;case 'cncn':g=mkCNCNho(L,Dp,Hh);break;case 'xeong':g=mkXeOng(L,Dp,Hh);break;case 'sot':g=mkSot(L,Dp,Hh);break;case 'laser':g=mkLaser(L,Dp,Hh);break;case 'seal':g=mkSeal(L,Dp,Hh);break;case 'pccc':g=mkPCCC(L,Dp,Hh);break;case 'foam':g=mkRotFoam(L,Dp,Hh);break;default:g=mkGeneric(L,Dp,Hh,Mc.l);}
+    case 'khoan':g=mkDrill(L,Dp,Hh);break;case 'bandg':g=mkBanDG(L,Dp,Hh);break;case 'tienn':g=mkTienNho(L,Dp,Hh);break;case 'tienl':g=mkTienLon(L,Dp,Hh);break;case 'banbi':g=mkBanBi(L,Dp,Hh);break;case 'ghecao':g=mkGheCao(L,Dp,Hh);break;case 'ghenhua':g=mkGheNhua(L,Dp,Hh);break;case 'ep':g=mkEp(L,Dp,Hh);break;case 'langda':g=mkLangDa(L,Dp,Hh);break;case 'inpad':g=mkInPad(L,Dp,Hh);break;case 'banh':g=mkBanh(L,Dp,Hh);break;case 'ratd':g=mkRaTuDong(L,Dp,Hh);break;case 'chanham':g=mkChaNham(L,Dp,Hh);break;case 'tiencnc':g=mkTienCNC(L,Dp,Hh);break;case 'hamco':g=mkHamCo(L,Dp,Hh);break;case 'pallet':g=mkPallet(L,Dp,Hh);break;case 'bantien':g=mkTienNho(L,Dp,Hh,true);break;case 'tuuv':g=mkTuUV(L,Dp,Hh);break;case 'xejig':g=mkXeJig(L,Dp,Hh,Mc.l);break;case 'thung':g=mkThung(L,Dp,Hh);break;case 'phunson':g=mkPhunSon(L,Dp,Hh);break;case 'cuon':g=mkCuon(L,Dp,Hh);break;case 'banthep':g=mkBanThep(L,Dp,Hh,false);break;case 'bankinh':g=mkBanThep(L,Dp,Hh,true);break;case 'maycat':g=mkMayCat(L,Dp,Hh);break;case 'lo':g=mkLo(L,Dp,Hh);break;case 'rutkhuon':g=mkRutKhuon(L,Dp,Hh);break;case 'mai':g=mkMai(L,Dp,Hh);break;case 'chuot':g=mkChuot(L,Dp,Hh);break;case 'ro':g=mkRo(L,Dp,Hh);break;case 'phuy':g=mkPhuy(L,Dp,Hh,Mc.l);break;case 'cay':g=mkCay(L,Dp,Hh);break;case 'cncn':g=mkCNCNho(L,Dp,Hh);break;case 'xeong':g=mkXeOng(L,Dp,Hh);break;case 'sot':g=mkSot(L,Dp,Hh);break;case 'laser':g=mkLaser(L,Dp,Hh);break;case 'seal':g=mkSeal(L,Dp,Hh);break;case 'pccc':g=mkPCCC(L,Dp,Hh);break;case 'foam':g=mkRotFoam(L,Dp,Hh);break;default:g=mkGeneric(L,Dp,Hh,Mc.l);}
   if(rot&amp;&amp;Mc.t!=='cnc')g.rotation.y=Math.PI/2;
   // buồng sơn mở về phía hành lang (phía Bắc trên bản vẽ)
   if(Mc.t==='son')g.rotation.y=Math.PI;
@@ -974,6 +1016,14 @@ DATA.forEach((F,fi)=&gt;{
       const el=document.createElement('div');el.className='lbl bt';el.textContent='⚠ Bảo trì';const L=new CSS2DObject(el);L.position.set(px((a.x0+a.x1)/2),Mc.h+.7,pz((a.y0+a.y1)/2));L.userData.big=true;parts.labels.add(L);}
     Mc.room=F.rooms.find(R=&gt;R.r.some(r=&gt;inRect((a.x0+a.x1)/2,(a.y0+a.y1)/2,r)));
   });
+  // ghế đẩu nhựa xanh cạnh bàn làm việc (như ảnh chụp các phòng), không chắn máy khác
+  seed=57+fi*13;
+  F.mc.forEach(Mc=&gt;{if(!['banthep','ban','bantien','tienn'].includes(Mc.t)||rnd()&gt;.75)return;const a=rc(Mc.r),ngang=a.x1-a.x0&gt;=a.y1-a.y0;
+    for(const phia of (rnd()&lt;.5?[1,-1]:[-1,1])){const t=(rnd()-.5)*.5;
+      const x=ngang?(a.x0+a.x1)/2+t*(a.x1-a.x0):(phia&gt;0?a.x1+.4:a.x0-.4), y=ngang?(phia&gt;0?a.y1+.4:a.y0-.4):(a.y0+a.y1)/2+t*(a.y1-a.y0);
+      if(F.mc.some(o=&gt;{const b=rc(o.r);return x&gt;b.x0-.25&amp;&amp;x&lt;b.x1+.25&amp;&amp;y&gt;b.y0-.25&amp;&amp;y&lt;b.y1+.25;}))continue;
+      if(!F.rooms.some(R=&gt;R.r.some(r=&gt;{const q=rc(r);return x&gt;q.x0+.25&amp;&amp;x&lt;q.x1-.25&amp;&amp;y&gt;q.y0+.25&amp;&amp;y&lt;q.y1-.25;})))continue;
+      const gh=mkGheNhua(.3,.3,.45);gh.position.set(px(x),0,pz(y));gh.rotation.y=rnd()*.6;parts.mc.add(gh);break;}});
   // công nhân theo số người ghi trên bản vẽ
   seed=101+fi*31;
   F.rooms.forEach(R=&gt;{if(!R.p)return;let placed=0,tries=0;const rects=R.r.map(rc);
