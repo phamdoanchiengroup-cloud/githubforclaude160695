@@ -157,6 +157,26 @@ D[2]['mc'] += DG
 D[2]['bang'] = [[13.7, 2.5, 24.4, 2.5], [24.4, 2.5, 24.4, 10.2], [24.4, 10.2, 13.7, 10.2], [13.7, 10.2, 13.7, 2.5],
                 [7.6, 1.75, 26.2, 1.75], [25.3, 1.75, 25.3, 8.4]]
 
+# ---------- Phòng ngọn tầng 3 (khu vực ngọn + làm đầu): theo ảnh chụp thực tế (11/10) ----------
+import re as _re
+for R in D[2]['rooms']:
+    if R['n'] in ('Khu vực ngọn', 'Khu làm đầu'): R['san'] = 'trang'
+for M in D[2]['mc']:
+    if _re.match(r'^(MT\d|D\d)$', M['l']): M['t'] = 'tienn'
+    elif _re.match(r'^M\d$', M['l']): M['t'] = 'cncn'
+NGON = []
+for xa in (14.95, 17.25, 20.6):      # xe ống giấy giữa các dãy bàn
+    for ya in (21.2, 24.2, 27.2, 30.2):
+        if xa == 14.95 and ya < 23: continue   # chỗ này là phòng quản lý
+        NGON.append(may('Xe ống ngọn', xa, ya, xa + 1.0, ya + 0.6, 1.0, 'xeong', 'Xe đẩy ống giấy cắm ngọn cơ'))
+for xc in (1.25, 6.1, 11.14):         # khu làm đầu
+    NGON.append(may('Xe ống ngọn', xc - 0.5, 30.9, xc + 0.5, 31.5, 1.0, 'xeong', 'Xe đẩy ống giấy cắm ngọn cơ'))
+for (xa, ya) in ((12.4, 31.6), (13.15, 31.6), (12.4, 32.25)):
+    NGON.append(may('Sọt nhựa', xa, ya, xa + 0.6, ya + 0.4, 0.32, 'sot'))
+D[2]['mc'] += NGON
+D[2]['bang'] += [[14.75, 20.6, 21.75, 20.6], [21.75, 20.6, 21.75, 32.6], [21.75, 32.6, 14.75, 32.6], [14.75, 32.6, 14.75, 20.6],
+                 [0.3, 27.9, 12.6, 27.9]]
+
 moi = json.dumps(D, ensure_ascii=False, separators=(',', ':'))
 s = s[:m.start(1)] + moi + s[m.end(1):]
 io.open(P, 'w', encoding='utf-8').write(s)
