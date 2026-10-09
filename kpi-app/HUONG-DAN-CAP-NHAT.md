@@ -7,6 +7,10 @@ Bản này gồm **mọi thay đổi từ đầu** (sửa lỗi chốt tháng, b
 - **Cần có:** máy tính (không làm trên điện thoại), trình duyệt Chrome, đăng nhập đúng tài khoản Google đang giữ dự án Apps Script và file Sheet "CSDL KPI".
 - **Cần dán lại 2 file:** `Code.gs` và `Index.html`.
 
+> **Bản 11/10/2026 – Sơ đồ nhà máy theo mặt bằng mới + phóng to dễ hơn.** Chỉ đổi **`Index.html`**. Làm **A3 (sao lưu) → B2 → Phần D**, rồi Ctrl+F5.
+> - Phòng các tầng vẽ lại đúng **mặt bằng bố trí máy tầng 1–3** anh/chị gửi (diện tích, số người theo chữ ghi trên bản vẽ). Tầng 1: khu phôi thô, P. khuôn, khu đổ foam, phòng nén khí, P. kỹ thuật cạnh thang T-02, máy khu nướng / cuốn / cắt. Tầng 3: "Bộ phận may" và "Tập kết sản phẩm tạm" thành **kho**, "Máy CNC thùng chạy ren" thành **Phòng QC**, thêm Bàn cắt, Hoàn thiện, Phòng kỹ thuật, phòng máy MT.
+> - **Phóng to:** sơ đồ phẳng cuộn chuột để phóng đúng chỗ con trỏ, kéo để dời, nhấp/chạm đúp để phóng nhanh, nút **+ − ⌂**; bản 3D phóng theo con trỏ, có nút **+ − ⌂** và nhấp đúp để bay tới chỗ đó.
+
 > **Bản 10/10/2026 (tối) – Sơ đồ nhà máy.** Chỉ đổi **`Index.html`**. Làm **A3 (sao lưu) → B2 → Phần D**, rồi Ctrl+F5.
 > - Menu mới **"Sơ đồ nhà máy"** (dưới Tổng quan) cho Ban điều hành và Trưởng phòng: mặt bằng 3 tầng theo bản vẽ, mỗi khu tô màu theo **KPI tháng này** (sản lượng đã chốt từ đầu tháng, cùng cách tính với "So sánh hiệu suất giữa các xưởng") hoặc **Sĩ số hôm nay** (xưởng đã điểm danh). Chạm khu để xem KPI, có mặt, số dòng chờ duyệt và **máy đang báo bảo trì** của xưởng.
 > - Trưởng phòng chỉ thấy số của xưởng mình. Công nhân không có menu này.

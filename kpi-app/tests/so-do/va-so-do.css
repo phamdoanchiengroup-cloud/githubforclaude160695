@@ -9,7 +9,11 @@
 .sd-seg button+button{border-left:1px solid var(--line)}
 .sd-seg button[aria-pressed="true"]{background:var(--ink);color:var(--bg)}
 .sd-cong .btn{margin-left:auto;min-height:40px}
-.sd-khung{border-radius:12px;background:#121518;border:1px solid #3e464e;overflow:hidden}
+.sd-khung{position:relative;border-radius:12px;background:#121518;border:1px solid #3e464e;overflow:hidden}
+.sd-zoom{position:absolute;right:8px;bottom:8px;display:flex;flex-direction:column;gap:6px}
+.sd-zoom button{width:40px;height:40px;border-radius:10px;border:1px solid #3e464e;background:rgba(24,27,31,.92);color:#eef2f4;font:600 20px/1 inherit;font-family:inherit;cursor:pointer}
+.sd-zoom button:hover{background:#2b3035}
+#sdMb.to{touch-action:none;cursor:grab}#sdMb.keo{cursor:grabbing}
 #sdMb{display:block;width:100%;height:auto;touch-action:manipulation}
 #sdMb .phong{cursor:pointer;outline:none}
 #sdMb .phong rect{stroke:#0c0d0f;stroke-width:.14;transition:opacity .25s,fill .3s}
@@ -19,7 +23,7 @@
 #sdMb .nhan{pointer-events:none}
 #sdMb .nhan text{font-family:inherit;text-anchor:middle}
 #sdMb.loc .nhan:not(.sang){opacity:.3}
-#sdMb .may{fill:#0c0d0f;opacity:.45}
+#sdMb .may{fill:#0c0d0f;opacity:.45;pointer-events:none}
 .sd-huong{margin-top:6px;font-size:11.5px;color:var(--ink3)}
 .sd-cgiai{display:flex;flex-wrap:wrap;gap:6px 14px;margin-top:10px;font-size:12px;color:var(--ink2)}
 .sd-cgiai i{display:inline-block;width:11px;height:11px;border-radius:3px;margin-right:6px;vertical-align:-1px}

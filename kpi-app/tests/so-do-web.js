@@ -27,7 +27,7 @@ const mauPhong = (p, ten) => p.evaluate(t => { const g = [...document.querySelec
   ok(s.indexOf('sodo') === s.indexOf('dash') + 1, 'menu có "Sơ đồ nhà máy" ngay sau Tổng quan', s);
   await p.evaluate(() => go('sodo')); await p.waitForTimeout(1500);
   s = await p.evaluate(() => [document.querySelectorAll('#sdMb .phong').length, document.querySelectorAll('#sdXs button').length, D.phongban.length, document.querySelector('.ptitle').textContent]);
-  ok(s[0] === 19 && s[1] === s[2] && s[3] === 'Sơ đồ nhà máy', 'Tầng 1 vẽ 19 khu; danh sách đủ mọi xưởng', s);
+  ok(s[0] === 20 && s[1] === s[2] && s[3] === 'Sơ đồ nhà máy', 'Tầng 1 vẽ 20 khu; danh sách đủ mọi xưởng', s);
   // KPI xưởng tính lại độc lập từ dữ liệu (đã chốt, từ đầu tháng)
   const kt = await p.evaluate(() => {
     const dau = today().slice(0, 8) + '01', ra = {};
@@ -71,6 +71,28 @@ const mauPhong = (p, ten) => p.evaluate(t => { const g = [...document.querySelec
   ok(Object.values(s[0]).includes('') && s[1] === '', 'bảng ghép: đổi khu → lưu localStorage, sơ đồ đổi ngay', s);
   await p.evaluate(() => localStorage.removeItem('kpi_sodo_ghep'));
   ok(await p.evaluate(() => !document.getElementById('sdNut3d').classList.contains('hide')), 'máy tính: có nút "Xem 3D"');
+  // phóng to 2D
+  await p.evaluate(() => { SD.chon = null; sdDatTang(0); });
+  const bx = await p.locator('#sdMb').boundingBox(), vb = () => p.evaluate(() => document.getElementById('sdMb').getAttribute('viewBox').split(' ').map(Number));
+  const y0 = await p.evaluate(() => scrollY);
+  await p.mouse.move(bx.x + bx.width * .8, bx.y + bx.height * .3); await p.mouse.wheel(0, 300); await p.waitForTimeout(150);
+  ok((await vb())[2] === 45.75 && (await p.evaluate(() => scrollY)) >= y0, 'đang toàn cảnh mà cuộn ra: sơ đồ giữ nguyên, trang cuộn bình thường');
+  await p.evaluate(() => scrollTo(0, 0)); const bx2 = await p.locator('#sdMb').boundingBox();
+  const px = bx2.x + bx2.width * .8, py = bx2.y + bx2.height * .3;
+  const truoc = await p.evaluate(([x, y]) => sdDiem(document.getElementById('sdMb'), x, y), [px, py]);
+  await p.mouse.move(px, py); for (let i = 0; i < 3; i++) { await p.mouse.wheel(0, -120); await p.waitForTimeout(60); }
+  let v = await vb(); const sau = await p.evaluate(([x, y]) => sdDiem(document.getElementById('sdMb'), x, y), [px, py]);
+  ok(v[2] < 30 && Math.hypot(truoc[0] - sau[0], truoc[1] - sau[1]) < .05 && !(await p.evaluate(() => SD.chon)), 'cuộn chuột vào: phóng to, điểm dưới con trỏ đứng yên', [v, truoc, sau]);
+  await p.mouse.move(px, py); await p.mouse.down(); await p.mouse.move(px - 120, py + 40, { steps: 6 }); await p.mouse.up(); await p.waitForTimeout(100);
+  const v2 = await vb();
+  ok(v2[0] > v[0] && v2[2] === v[2] && !(await p.evaluate(() => SD.chon)), 'kéo để dời sơ đồ, thả tay không chọn nhầm khu', [v, v2]);
+  await p.click('.sd-zoom button[data-z="in"]'); await p.waitForTimeout(80);
+  ok((await vb())[2] < v2[2] - 1, 'nút + phóng to thêm');
+  await p.click('.sd-zoom button[data-z="fit"]'); await p.waitForTimeout(80);
+  ok(JSON.stringify(await vb()) === JSON.stringify([-0.5, -0.5, 45.75, 35.25]), 'nút ⌂ về toàn cảnh');
+  await p.mouse.dblclick(px, py); await p.waitForTimeout(80);
+  ok((await vb())[2] < 25, 'nhấp đúp: phóng nhanh vào chỗ đó');
+  await p.click('.sd-zoom button[data-z="fit"]');
   if (OUT) await p.screenshot({ path: OUT + '/so-do-web.png', fullPage: true });
   if (THREE) {
     await p.click('#sdNut3d');
@@ -79,6 +101,18 @@ const mauPhong = (p, ten) => p.evaluate(t => { const g = [...document.querySelec
     s = await f3.evaluate(() => [!!window.SS, document.querySelector('#segMau button[data-c="kpi"]').textContent, document.getElementById('legend').textContent]);
     ok(s[0] && s[1] === 'KPI tháng này' && /A \/ A\+/.test(s[2]), 'bản 3D dùng chung số liệu thật: nút "KPI tháng này", chú giải KPI', s);
     if (OUT) await p.screenshot({ path: OUT + '/so-do-web-3d.png' });
+    const kc = () => f3.evaluate(() => __v3.cam.position.distanceTo(__v3.ctl.target));
+    s = [await f3.evaluate(() => __v3.ctl.zoomToCursor), await kc()];
+    // máy ảo vẽ 3D chậm: chờ camera bay xong rồi mới đo
+    const doi = async () => { let a = await kc(), b; for (let i = 0; i < 40; i++) { await p.waitForTimeout(300); b = await kc(); if (Math.abs(a - b) < 1e-3 && !(await f3.evaluate(() => __v3.dangBay && __v3.dangBay()))) break; a = b; } return b; };
+    await f3.evaluate(() => document.getElementById('zIn').click()); await p.waitForTimeout(400); s.push(await doi());
+    await f3.evaluate(() => document.getElementById('zOut').click()); await p.waitForTimeout(400); s.push(await doi());
+    ok(s[0] && s[2] < s[1] * .7 && Math.abs(s[3] - s[1]) < 1, '3D: cuộn chuột phóng theo con trỏ; nút + / − phóng to, thu nhỏ', s);
+    const c3 = await f3.locator('#c3d canvas').boundingBox(); const t0 = await f3.evaluate(() => __v3.ctl.target.toArray());
+    await p.mouse.move(c3.x + c3.width * .3, c3.y + c3.height * .7); await p.mouse.wheel(0, -400); await p.waitForTimeout(800);
+    const t1 = await f3.evaluate(() => __v3.ctl.target.toArray());
+    ok(Math.hypot(t1[0] - t0[0], t1[2] - t0[2]) > .5, '3D: cuộn chuột ở góc màn hình thì tâm nhìn dời về phía con trỏ', [t0, t1]);
+    await f3.evaluate(() => document.getElementById('zFit').click()); await p.waitForTimeout(900);
     await p.keyboard.press('Escape'); await p.waitForTimeout(200);
     ok(await p.evaluate(() => !document.getElementById('sd3d') && SS.nghe.length === 1), 'Esc đóng 3D, gỡ phần nghe của bản 3D');
   }

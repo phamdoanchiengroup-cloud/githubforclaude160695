@@ -8,14 +8,14 @@ var SS = (function () {
   var TEN = {}; XUONG.forEach(function (x) { TEN[x[0]] = x[1]; });
   var GHEP = {
     '0|Khu chuốt': 'PHOICB', '0|Nướng + rút khuôn': 'PHOICB', '0|ISO phôi CB': 'PHOICB', '0|Cuốn': 'PHOICB', '0|Cắt': 'PHOICB',
-    '0|Khuôn': 'PHOITHO', '0|Khu đổ foam': 'PHOITHO', '0|Khu đúc keo': 'PHOITHO',
-    '0|Xưởng gia công (khoan, ren, taro, cắt)': 'NGONTARO',
+    '0|P. khuôn': 'PHOITHO', '0|Khu đổ foam': 'PHOITHO', '0|Khu đúc keo': 'PHOITHO',
+    '0|Khu vực phôi thô': 'PHOITHO',
     '1|Ráp nước': 'HT', '1|Đánh ráp, đánh bóng': 'HT', '1|Bọc da': 'HT', '1|Bôi keo': 'HT', '1|ISO': 'HT', '1|P. cắt mặt': 'HT',
     '1|Khu vực hoàn thiện': 'HT', '1|Khu chờ khô bán thành phẩm': 'HT', '1|P. kiểm tra chuẩn bị': 'HT', '1|P. ráp tuốt lót': 'HT', '1|Buồng sấy': 'HT',
     '1|Khu vực in UV': 'INUV', '1|Khu hoàn thiện (buồng sơn kín 1–5)': 'SON', '1|Khu sơn tĩnh điện (vách tấm panel)': 'SON',
     '2|Khu làm đầu': 'NGONTIP', '2|Khu vực ngọn': 'NGONTARO', '2|Khu vực CNC': 'CNC', '2|P. máy CNC 2': 'CNC', '2|P. máy tiện': 'CNC',
-    '2|P. máy CNC 1': 'CNC', '2|Máy CNC thùng chạy ren': 'CNC', '2|P. kỹ thuật làm phôi': 'CNC',
-    '2|Đóng gói': 'DG', '2|Bộ phận đóng gói': 'DG', '2|Bộ phận may': 'DG'
+    '2|P. máy CNC 1': 'CNC', '2|P. kỹ thuật làm phôi': 'CNC',
+    '2|Đóng gói': 'DG', '2|Bộ phận đóng gói': 'DG'
   };
   // số liệu MẪU hôm nay: kpi = hiệu suất KPI %, coMat / dinhBien = sĩ số, cho = dòng chờ duyệt
   var SO = {

@@ -7,7 +7,8 @@
    - Ghép khu ↔ xưởng: SS.GHEP (mặc định trong mã), ADMIN chỉnh được, lưu ở trình duyệt (kpi_sodo_ghep). */
 {{SS}}
 var SD_DATA = {{DATA}};
-var SD = { tang: 0, loc: '', chon: null, siso: null, sisoNgay: '' };
+var SD = { tang: 0, loc: '', chon: null, siso: null, sisoNgay: '', vb: [-0.5, -0.5, 45.75, 35.25] };
+var SD_VB0 = SD.vb.slice(), SD_ZMAX = 6;
 var SD_TANG = ['Tầng 1', 'Tầng 2', 'Tầng 3'], SD_W = 44.75, SD_D = 34.25, SD_NS = 'http://www.w3.org/2000/svg';
 SS.nhanKPI = 'Hiệu suất KPI tháng này';
 SS.ghiChu = 'KPI tính từ sản lượng đã chốt từ đầu tháng; sĩ số theo điểm danh hôm nay.';
@@ -160,8 +161,9 @@ function vSoDo() {
     '<div class="sd-cong"><div class="sd-seg" id="sdTang" role="group" aria-label="Chọn tầng">' + SD_TANG.map(function (t, i) { return '<button type="button" data-f="' + i + '" aria-pressed="' + (i === SD.tang) + '">' + t + '</button>'; }).join('') + '</div>' +
     '<div class="sd-seg" id="sdMau" role="group" aria-label="Tô màu theo"><button type="button" data-c="kpi" aria-pressed="' + (SS.cheDo === 'kpi') + '">KPI tháng này</button><button type="button" data-c="siso" aria-pressed="' + (SS.cheDo === 'siso') + '">Sĩ số hôm nay</button></div>' +
     '<button class="btn' + (sdLaMayTinh() ? '' : ' hide') + '" type="button" id="sdNut3d">Xem 3D</button></div>' +
-    '<div class="sd-khung"><svg id="sdMb" viewBox="-0.5 -0.5 45.75 35.25" role="img" aria-label="Mặt bằng tầng"></svg></div>' +
-    '<div class="sd-huong">↓ Phía dưới sơ đồ là mặt tiền, cổng chính</div><div class="sd-cgiai" id="sdCgiai"></div></div>' +
+    '<div class="sd-khung"><svg id="sdMb" viewBox="' + SD.vb.join(' ') + '" role="img" aria-label="Mặt bằng tầng"></svg>' +
+    '<div class="sd-zoom" role="group" aria-label="Phóng to thu nhỏ"><button type="button" data-z="in" aria-label="Phóng to" title="Phóng to">+</button><button type="button" data-z="out" aria-label="Thu nhỏ" title="Thu nhỏ">−</button><button type="button" data-z="fit" aria-label="Xem cả tầng" title="Xem cả tầng">⌂</button></div></div>' +
+    '<div class="sd-huong">↓ Phía dưới sơ đồ là mặt tiền, cổng chính · ' + (sdLaMayTinh() ? 'cuộn chuột để phóng to đúng chỗ, kéo để dời, nhấp đúp để phóng nhanh' : 'nút + − để phóng to, chạm đúp vào chỗ cần xem, phóng to rồi kéo một ngón để dời') + '</div><div class="sd-cgiai" id="sdCgiai"></div></div>' +
     '<div class="sd-ben"><div class="card" id="sdCt" aria-live="polite"></div>' +
     '<div class="card"><h3>Theo xưởng<span>bấm để soi trên sơ đồ</span></h3><ul class="sd-xs" id="sdXs"></ul><div id="sdSiSoGhi" class="sd-huong"></div></div>' +
     (ad ? '<div class="card"><details class="sd-ghep"><summary>Bảng ghép khu ↔ xưởng</summary><p>Ghép tạm theo tên khu trên bản vẽ. Chỗ nào chưa đúng anh/chị chọn lại – sơ đồ (cả 3D) đổi màu ngay. Lựa chọn được lưu trên trình duyệt của máy này.</p><div class="sd-bg" id="sdBg"></div></details></div>' : '') +
@@ -174,6 +176,7 @@ function vSoDo() {
     SS.datCheDo(b.dataset.c);
   };
   document.getElementById('sdNut3d').onclick = sdMo3D;
+  sdGanZoom();
   sdDatTang(SD.tang); sdVeXs(); sdVeBg(); sdGhiSiSo();
   if (SD.sisoNgay !== today()) sdTaiSiSo();
 }
@@ -216,4 +219,62 @@ function sdDong3D() {
   if (SD.nghe0 !== undefined) { SS.nghe.length = SD.nghe0; delete SD.nghe0; }
   document.removeEventListener('keydown', sdEsc3D);
   var n = document.getElementById('sdNut3d'); if (n) n.focus();
+}
+
+/* Phóng to / dời sơ đồ 2D: cuộn chuột (phóng đúng chỗ con trỏ; đã ở toàn cảnh mà cuộn ra thì để trang cuộn bình thường),
+   kéo để dời (chỉ khi đã phóng to; ngưỡng 6px nên bấm vào khu vẫn chọn được), nhấp/chạm đúp, nút + − ⌂. */
+function sdDatVb(x, y, w) {
+  var w0 = SD_VB0[2], h0 = SD_VB0[3];
+  w = Math.max(w0 / SD_ZMAX, Math.min(w0, w)); var h = w * h0 / w0;
+  x = Math.max(SD_VB0[0], Math.min(SD_VB0[0] + w0 - w, x)); y = Math.max(SD_VB0[1], Math.min(SD_VB0[1] + h0 - h, y));
+  SD.vb = [x, y, w, h];
+  var svg = document.getElementById('sdMb'); if (!svg) return;
+  svg.setAttribute('viewBox', SD.vb.map(function (v) { return +v.toFixed(3); }).join(' '));
+  svg.classList.toggle('to', w < w0 - 1e-6);
+}
+function sdDiem(svg, cx, cy) {   // toạ độ màn hình -> toạ độ sơ đồ
+  var r = svg.getBoundingClientRect();
+  return [SD.vb[0] + (cx - r.left) / r.width * SD.vb[2], SD.vb[1] + (cy - r.top) / r.height * SD.vb[3]];
+}
+function sdZoom(k, p) {   // k < 1: phóng to; p: điểm giữ nguyên (mặc định giữa khung)
+  var v = SD.vb; p = p || [v[0] + v[2] / 2, v[1] + v[3] / 2];
+  var w = Math.max(SD_VB0[2] / SD_ZMAX, Math.min(SD_VB0[2], v[2] * k)), t = w / v[2];
+  sdDatVb(p[0] - (p[0] - v[0]) * t, p[1] - (p[1] - v[1]) * t, w);
+}
+function sdGanZoom() {
+  var svg = document.getElementById('sdMb'); if (!svg) return;
+  sdDatVb(SD.vb[0], SD.vb[1], SD.vb[2]);
+  svg.parentNode.querySelector('.sd-zoom').onclick = function (e) {
+    var b = e.target.closest('button'); if (!b) return;
+    if (b.dataset.z === 'fit') sdDatVb(SD_VB0[0], SD_VB0[1], SD_VB0[2]); else sdZoom(b.dataset.z === 'in' ? 0.6 : 1 / 0.6);
+  };
+  svg.addEventListener('wheel', function (e) {
+    if (e.deltaY > 0 && SD.vb[2] >= SD_VB0[2] - 1e-6) return;   // đã toàn cảnh: cho trang cuộn
+    e.preventDefault();
+    var d = e.deltaMode === 1 ? e.deltaY * 16 : e.deltaY;
+    sdZoom(Math.exp(Math.max(-200, Math.min(200, d)) * 0.0022), sdDiem(svg, e.clientX, e.clientY));
+  }, { passive: false });
+  // nhấp / chạm đúp: tự đo 2 cú click (cú đầu vẽ lại sơ đồ nên sự kiện dblclick của trình duyệt không đến)
+  var truoc = null;
+  svg.addEventListener('click', function (e) {
+    var t = Date.now();
+    if (truoc && t - truoc.t < 350 && Math.hypot(e.clientX - truoc.x, e.clientY - truoc.y) < 12) { truoc = null; sdZoom(0.5, sdDiem(svg, e.clientX, e.clientY)); }
+    else truoc = { t: t, x: e.clientX, y: e.clientY };
+  });
+  var keo = null;
+  svg.addEventListener('pointerdown', function (e) {
+    if (e.button || SD.vb[2] >= SD_VB0[2] - 1e-6) return;
+    keo = { id: e.pointerId, x: e.clientX, y: e.clientY, vb: SD.vb.slice(), dang: false };
+  });
+  svg.addEventListener('pointermove', function (e) {
+    if (!keo || e.pointerId !== keo.id) return;
+    var dx = e.clientX - keo.x, dy = e.clientY - keo.y;
+    if (!keo.dang) { if (Math.hypot(dx, dy) < 6) return; keo.dang = true; try { svg.setPointerCapture(e.pointerId); } catch (x) {} svg.classList.add('keo'); }
+    var r = svg.getBoundingClientRect();
+    sdDatVb(keo.vb[0] - dx / r.width * keo.vb[2], keo.vb[1] - dy / r.height * keo.vb[3], keo.vb[2]);
+  });
+  var tha = function (e) { if (!keo || e.pointerId !== keo.id) return; if (keo.dang) { SD.vuaKeo = Date.now(); svg.classList.remove('keo'); } keo = null; };
+  svg.addEventListener('pointerup', tha); svg.addEventListener('pointercancel', tha);
+  // vừa kéo xong thì bỏ cú click (không chọn nhầm khu)
+  svg.addEventListener('click', function (e) { if (SD.vuaKeo && Date.now() - SD.vuaKeo < 250) { e.stopPropagation(); e.preventDefault(); } }, true);
 }
