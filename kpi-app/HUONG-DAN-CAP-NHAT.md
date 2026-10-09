@@ -10,6 +10,7 @@ Bản này gồm **mọi thay đổi từ đầu** (sửa lỗi chốt tháng, b
 > **Bản 11/10/2026 – Sơ đồ nhà máy theo mặt bằng mới + phóng to dễ hơn.** Chỉ đổi **`Index.html`**. Làm **A3 (sao lưu) → B2 → Phần D**, rồi Ctrl+F5.
 > - Phòng các tầng vẽ lại đúng **mặt bằng bố trí máy tầng 1–3** anh/chị gửi (diện tích, số người theo chữ ghi trên bản vẽ). Tầng 1: khu phôi thô, P. khuôn, khu đổ foam, phòng nén khí, P. kỹ thuật cạnh thang T-02, máy khu nướng / cuốn / cắt. Tầng 3: "Bộ phận may" và "Tập kết sản phẩm tạm" thành **kho**, "Máy CNC thùng chạy ren" thành **Phòng QC**, thêm Bàn cắt, Hoàn thiện, Phòng kỹ thuật, phòng máy MT.
 > - **Tầng 2:** toàn bộ các phòng phía dưới hành lang (khu chờ khô, P. quản lý BP Sơn, P. kiểm tra chuẩn bị, P. ráp tuốt lót, buồng sấy, khu buồng sơn kín, khu sơn tĩnh điện) tính vào **xưởng Sơn**.
+> - **Phòng đóng gói (tầng 3)** dựng theo ảnh chụp thực tế: sàn epoxy trắng bóng, vạch vàng đen quanh khu bàn, 12 bàn đóng gói có khung đèn LED, kệ xanh–cam K1–K11 / Kh1–3 chất thùng carton, 4 bàn khắc laser dọc vách hành lang, máy co màng, cột tủ chữa cháy.
 > - **Phóng to:** sơ đồ phẳng cuộn chuột để phóng đúng chỗ con trỏ, kéo để dời, nhấp/chạm đúp để phóng nhanh, nút **+ − ⌂**; bản 3D phóng theo con trỏ, có nút **+ − ⌂** và nhấp đúp để bay tới chỗ đó.
 
 > **Bản 10/10/2026 (tối) – Sơ đồ nhà máy.** Chỉ đổi **`Index.html`**. Làm **A3 (sao lưu) → B2 → Phần D**, rồi Ctrl+F5.
