@@ -160,7 +160,7 @@ function vSoDo() {
     '<div class="sd-luoi"><div class="card">' +
     '<div class="sd-cong"><div class="sd-seg" id="sdTang" role="group" aria-label="Chọn tầng">' + SD_TANG.map(function (t, i) { return '<button type="button" data-f="' + i + '" aria-pressed="' + (i === SD.tang) + '">' + t + '</button>'; }).join('') + '</div>' +
     '<div class="sd-seg" id="sdMau" role="group" aria-label="Tô màu theo"><button type="button" data-c="kpi" aria-pressed="' + (SS.cheDo === 'kpi') + '">KPI tháng này</button><button type="button" data-c="siso" aria-pressed="' + (SS.cheDo === 'siso') + '">Sĩ số hôm nay</button></div>' +
-    '<button class="btn' + (sdLaMayTinh() ? '' : ' hide') + '" type="button" id="sdNut3d">Xem 3D</button></div>' +
+    '<button class="btn" type="button" id="sdNut3d">Xem 3D</button></div>' +
     '<div class="sd-khung"><svg id="sdMb" viewBox="' + SD.vb.join(' ') + '" role="img" aria-label="Mặt bằng tầng"></svg>' +
     '<div class="sd-zoom" role="group" aria-label="Phóng to thu nhỏ"><button type="button" data-z="in" aria-label="Phóng to" title="Phóng to">+</button><button type="button" data-z="out" aria-label="Thu nhỏ" title="Thu nhỏ">−</button><button type="button" data-z="fit" aria-label="Xem cả tầng" title="Xem cả tầng">⌂</button></div></div>' +
     '<div class="sd-huong">↓ Phía dưới sơ đồ là mặt tiền, cổng chính · ' + (sdLaMayTinh() ? 'cuộn chuột để phóng to đúng chỗ, kéo để dời, nhấp đúp để phóng nhanh' : 'nút + − để phóng to, chạm đúp vào chỗ cần xem, phóng to rồi kéo một ngón để dời') + '</div><div class="sd-cgiai" id="sdCgiai"></div></div>' +
@@ -204,7 +204,7 @@ function sdMo3D() {
   if (document.getElementById('sd3d')) return;
   var k = document.createElement('div'); k.id = 'sd3d'; k.setAttribute('role', 'dialog'); k.setAttribute('aria-label', 'Mô hình 3D nhà máy');
   k.innerHTML = '<div class="sd3d-dau"><b>Mô hình 3D nhà máy</b><span style="color:#9ca8b0;font-size:12.5px">Cùng màu KPI / sĩ số với sơ đồ</span><button class="btn" type="button" id="sd3dDong">✕ Đóng</button></div>' +
-    '<div class="cho3d">Đang tải mô hình 3D… (cần mạng để tải thư viện Three.js)</div>';
+    '<div class="cho3d">Đang tải mô hình 3D… (cần mạng để tải thư viện Three.js)' + (sdLaMayTinh() ? '' : '<br><small>Điện thoại tự dùng chế độ ⚡ Nhẹ cho mượt – bấm nút đó để đổi sang Đầy đủ.</small>') + '</div>';
   var f = document.createElement('iframe'); f.title = 'Mô hình 3D nhà máy'; f.srcdoc = document.getElementById('sdNguon3d').value;
   f.onload = function () { var c = k.querySelector('.cho3d'); if (c) c.remove(); };
   k.appendChild(f); document.body.appendChild(k);

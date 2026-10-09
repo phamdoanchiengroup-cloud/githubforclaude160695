@@ -139,6 +139,11 @@ D[0]['mc'] += [
 # ---------- Phòng đóng gói tầng 3: theo ảnh chụp thực tế (11/10) ----------
 for R in D[2]['rooms']:
     if R['n'] == 'Bộ phận đóng gói': R['san'] = 'trang'   # sàn epoxy trắng bóng
+    if R['n'] == 'Bộ phận đóng gói':
+        R['p'] = 14   # theo ảnh chụp: ~14 người làm ở bàn đóng gói
+        # mỗi bàn đóng gói một người đứng ở lối giữa 2 dãy bàn, quay mặt vào bàn
+        R['ppl'] = [[round(x + 0.78, 2), 6.0, 0.0] for x in (13.0, 14.7, 16.4, 18.1, 19.8, 21.5, 23.2)] + \
+                   [[round(x + 0.78, 2), 7.25, 3.1416] for x in (13.0, 14.7, 16.4, 18.1, 19.8, 21.5, 23.2)]
 D[2]['mc'] = [M for M in D[2]['mc'] if M.get('src') != 'mb10']
 K = [(5.64, 7.7), (7.7, 9.75), (9.75, 11.79), (11.79, 13.84), (13.84, 15.89), (15.89, 17.9), (17.9, 19.94), (19.94, 21.99), (21.99, 23.98), (23.98, 26.05)]
 DG = [may('K%d' % (i + 1), a, 0.2, b - 0.05, 1.15, 2.0, 'ke', 'Kệ hàng đóng gói') for i, (a, b) in enumerate(K)]

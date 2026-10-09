@@ -55,5 +55,6 @@ details.sd-ghep p{color:var(--ink3);font-size:12.5px;margin:8px 0}
 #sd3d .sd3d-dau{display:flex;align-items:center;gap:10px;padding:8px 12px;border-bottom:1px solid #2c3238;color:#eef2f4;font-size:14px}
 #sd3d .sd3d-dau b{flex:1}
 #sd3d iframe{flex:1;width:100%;border:0;display:block}
+@media (max-width:899px){#sd3d .sd3d-dau span{display:none}#sd3d .sd3d-dau{padding:6px 10px}}
 #sd3d .cho3d{position:absolute;inset:50px 0 0;display:grid;place-items:center;color:#9ca8b0;text-align:center;padding:20px;pointer-events:none}
 @media (prefers-reduced-motion:reduce){#sdMb .phong rect{transition:none}}
