@@ -860,8 +860,10 @@ function lgTieuVan_(chart, bt, year) {
     var p = mod12(x[1]), sc = lgDiemVung_(chart, p, L.ex);
     return x[0] + ' (cung ' + P[p].cung + ' gốc' + (L.ex[p] ? ', lưu: ' + L.ex[p].join(', ') : '') + '): ' + lgXepHang_(sc).toLowerCase() + '.';
   });
-  secs.push({ tieuDe: 'Các lĩnh vực trong năm', items: linh });
-  if (typeof vsTieuVanThem_ === 'function') { try { secs = secs.concat(vsTieuVanThem_(chart, year, th, L)); } catch (e) { /* bỏ qua phần mở rộng */ } }
+  // Có VanSau.gs: "Mười hai cung của năm" thay cho mục 4 lĩnh vực (tránh trùng); thiếu file thì giữ mục cũ
+  var them = null;
+  if (typeof vsTieuVanThem_ === 'function') { try { them = vsTieuVanThem_(chart, year, th, L); } catch (e) { them = null; } }
+  if (them) secs = secs.concat(them); else secs.push({ tieuDe: 'Các lĩnh vực trong năm', items: linh });
 
   if (bt) {
     var bz = [];

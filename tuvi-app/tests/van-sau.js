@@ -38,9 +38,29 @@ for (let k = 0; k < 16; k++) {
     kt(d.dinh.every(x => x.nam >= d.nam && x.nam <= d.den && x.rel >= 1.8), 'năm đỉnh nằm trong vận');
     kt(!SAO.test(d.tom.join(' ')), 'tóm tắt vận không nêu tên sao');
   });
+  // --- Mốc đổi vận riêng từng hệ ---
+  if (D && !D.loi) D.ds.forEach(d => {
+    kt(d.moc && d.moc[0].he === 'Tử Vi' && d.moc.every(m => m.nam >= d.nam && m.nam <= d.den), 'mốc đổi vận nằm trong giai đoạn');
+    kt(!d.moc.some(m => m.he !== 'Tử Vi' && m.he !== 'Chiêm tinh') || /chuyển tiếp/.test(d.lech), 'có ghi chú lệch mốc khi hệ khác đổi vận giữa chừng');
+    const bt = d.he.filter(x => x.he === 'Bát Tự')[0]; if (bt) kt(/\(\d{4}–\d{4}/.test(bt.y), 'Bát Tự ghi rõ năm của từng đại vận');
+  });
+  // --- Bát Tự tháng theo tiết khí ---
+  if (M && !M.loi) kt(M.thang.every(m => /tiết khí/.test(m.ly['Bát Tự'][0])), 'Bát Tự tháng ghi theo tiết khí');
+  // --- Mỗi hệ góp phần · kế hoạch · cầu nối ---
+  const HN = T.hoSoNam;
+  kt(HN.gocNhin && HN.gocNhin.length >= 5 && HN.gocNhin.some(x => x.he === 'Human Design'), 'có phần đóng góp của từng hệ, kể cả Human Design: ' + (HN.gocNhinLoi || ''));
+  kt(!SAO.test(HN.gocNhin.filter(x => x.he !== 'Chiêm tinh').map(x => x.y).join(' ')), 'văn đóng góp không nêu tên sao: ' + (HN.gocNhin.map(x => x.y).join(' ').match(SAO) || ''));
+  kt(Array.isArray(HN.hanhDong) && HN.hanhDong.every(x => x.lam && x.hd), 'kế hoạch hành động có lời khuyên + cách làm theo Human Design');
+  kt(HN.cauNoi && HN.cauNoi.length >= 2 && !SAO.test(HN.cauNoi.join(' ')), 'có cầu nối HD – Kinh Dịch – Hà Lạc, không nêu tên sao');
+  const gS = r.moRong.hd.act.p.sun.gate; kt(HN.cauNoi[0].indexOf(ctx.HL_QUE[gS - 1][2]) >= 0, 'cổng HD ' + gS + ' khớp quẻ Kinh Dịch cùng số');
+  // --- Biến cố 30 năm ---
+  const B = T.bienCo;
+  kt(B && B.suKien.length === 19 && B.nam.length >= 25, 'biến cố 30 năm đủ 19 việc');
+  if (B) B.suKien.forEach(x => kt(x.dinh.every(y => y.nam >= inp.viewYear && y.rel >= 1.8) && x.rel.length === B.nam.length, 'năm đỉnh biến cố hợp lệ'));
   // --- Tử Vi 12 cung + phi hóa ---
   const TV = r.chiTiet.tieuVan.secs, c12 = TV.filter(x => /^Mười hai cung/.test(x.tieuDe))[0], ph = TV.filter(x => /phi nhập/.test(x.tieuDe))[0];
   kt(c12 && c12.items.length === 12, '12 cung của năm');
+  kt(!TV.some(x => x.tieuDe === 'Các lĩnh vực trong năm'), 'bỏ mục 4 lĩnh vực trùng với 12 cung');
   kt(ph && ph.items.filter(x => /^Hóa (Lộc|Quyền|Khoa|Kỵ) năm/.test(x)).length === 4 && /xung chiếu/.test(ph.items[3]), 'Tứ Hóa năm phi nhập + Kỵ xung');
   // --- Nhật vận ---
   const nv = r.chiTiet.nhatVan[0].secs[0].items.join(' ');
@@ -60,6 +80,9 @@ for (let k = 0; k < 16; k++) {
   const MK = r.moRong.tongHop.hoSoThang, DK = r.moRong.tongHop.daiVanSau;
   kt(MK.khoa && MK.suKien.length === 0 && MK.thang.every(m => m.khoa && !m.tom && !m.noiBat), 'bản khóa tháng không lộ lời luận');
   kt(DK.ds.every(d => d.khoa && !d.tom && !d.dinh && d.he.every(x => !x.y)), 'bản khóa đại vận chỉ còn thế đứng các hệ');
+  const HK = r.moRong.tongHop.hoSoNam;
+  kt(!HK.hanhDong && !HK.cauNoi && (HK.gocNhin || []).every(x => !x.y), 'bản khóa năm không lộ kế hoạch, cầu nối, lời từng hệ');
+  kt(r.moRong.tongHop.bienCo === null, 'chưa mua biến cố thì không có Biến cố 30 năm');
 }
 // Hiệu chỉnh (đơn vị): Bát Tự báo đúng 3 năm ốm, Chiêm tinh báo 3 năm khác → Bát Tự tăng, Chiêm tinh giảm
 const namTin = []; for (let t = 1; t <= 70; t++) { const tin = {}; if ([30, 40, 50].includes(t)) tin.sucKhoe = { 'Bát Tự': { v: 1.2, ly: '' } }; if ([33, 44, 55].includes(t)) tin.sucKhoe = { 'Chiêm tinh': { v: 1.2, ly: '' } }; namTin.push({ nam: 1950 + t, tuoi: t, tin }); }

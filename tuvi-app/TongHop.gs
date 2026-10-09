@@ -678,6 +678,8 @@ function tongHopLuan(C) {
     try { T.hoSoThang = vsHoSoThang_(C, luoi, W, T.thang); } catch (e) { T.hoSoThang = { loi: String(e && e.message || e) }; }
     try { T.daiVanSau = vsDaiVan_(C, luoi, T.hoiTu.namTin); } catch (e) { T.daiVanSau = { loi: String(e && e.message || e) }; }
     try { vsNhatThem_(C); } catch (e) { /* nhật vận giữ bản cũ */ }
+    if (T.hoSoNam && !T.hoSoNam.loi) { try { var GN = vsGocNhin_(C, T); T.hoSoNam.gocNhin = GN.gocNhin; T.hoSoNam.hanhDong = GN.hanhDong; T.hoSoNam.cauNoi = GN.cauNoi; } catch (e) { T.hoSoNam.gocNhinLoi = String(e && e.message || e); } }
+    try { T.bienCo = vsBienCo_(C, luoi, T.hoiTu.namTin); } catch (e) { T.bienCo = null; }
     if (T.hieuChinh && T.hieuChinh.W) delete T.hieuChinh.W;
   }
   delete T.hoiTu.namTin;

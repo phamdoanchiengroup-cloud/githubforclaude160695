@@ -63,6 +63,15 @@ function vsThienVan_(jd0, jd1, cusp) {
   return out;
 }
 
+/** Trụ tháng theo tiết khí tại ngày jd: chi theo kinh độ Mặt Trời (Dần = 315°…), can theo Ngũ hổ độn của năm Bát Tự (đổi năm tại Lập Xuân) */
+function vsTietThang_(jd) {
+  var L = astToanBoSun_(jd), k = Math.floor(astNorm_(L - 315) / 30), d = jdToDate(jd), y = d[2];
+  if (k >= 10 && d[1] <= 2) y--;            // tháng Tý/Sửu đầu năm dương lịch vẫn thuộc năm Bát Tự trước
+  var canNam = mod10(y + 6), canDan = mod10((canNam % 5) * 2 + 2);
+  return { can: mod10(canDan + k), chi: mod12(k + 2) };
+}
+function vsTimTiet_(jd0, jd1) { var c = vsTietThang_(jd0).chi; for (var j = jd0 + 1; j <= jd1; j++) if (vsTietThang_(j).chi !== c) return j; return jd0; }
+
 /** Tín hiệu 4 hệ cho tháng âm lịch m của năm Y. Trả về { tin, info } cùng định dạng với htTinHieu_ */
 function vsTinThang_(C, Y, m) {
   var tv = C.tv, bt = C.bt, P = tv.palaces, out = {}, info = { thang: m, ly: {} };
@@ -106,11 +115,15 @@ function vsTinThang_(C, Y, m) {
   if (gocCung === 'Quan Lộc') tvA('quanLoc', 0.5, 'nguyệt hạn vào cung Quan Lộc gốc');
   if (gocCung === 'Tài Bạch') tvA('taiLoc', 0.4, 'nguyệt hạn vào cung Tài Bạch gốc');
   info.ly['Tử Vi'] = ['Nguyệt hạn tại cung ' + gocCung + ' (' + P[pi].chiTen + '), can tháng ' + CAN[mc] + ': Lộc ' + tv.tuHoa[mc][0] + ', Quyền ' + tv.tuHoa[mc][1] + ', Khoa ' + tv.tuHoa[mc][2] + ', Kỵ ' + kyTen + ' (tại ' + P[ky].cung + ' gốc).'];
-  // ---- Bát Tự: can chi tháng so với tứ trụ ----
+  // ---- Bát Tự: tháng tính theo TIẾT KHÍ (tháng Dần bắt đầu từ Lập Xuân), không theo mùng 1 âm lịch ----
+  // Lấy trụ tháng tiết khí phủ lên phần lớn tháng âm lịch này (xét tại giữa tháng); nếu tháng âm vắt qua một tiết thì ghi chú.
+  var T0 = vsTietThang_(jd0 + 2), TM = vsTietThang_(Math.round((jd0 + jd1) / 2)), T1 = vsTietThang_(jd1 - 2);
   var btAdd = function (k, he, v, ly) { add(k, he, v, ly); };
-  htBtTin_(bt, tv.info.male, mc, mz, btAdd, 'tháng');
-  var tC = thapThanTen_(bt.nhatChuCan, mc), tZ = thapThanTen_(bt.nhatChuCan, TANG_CAN[mz][0]);
-  info.ly['Bát Tự'] = ['Tháng ' + info.canChi + ': can là ' + tC + ', chi tàng ' + tZ + ' – ' + danhGiaVan_(CAN_HANH[mc], CHI_HANH[mz], bt.goiY.hy, bt.goiY.ky) + ' theo dụng thần ' + bt.goiY.dung + '.'];
+  htBtTin_(bt, tv.info.male, TM.can, TM.chi, btAdd, 'tháng');
+  var tC = thapThanTen_(bt.nhatChuCan, TM.can), tZ = thapThanTen_(bt.nhatChuCan, TANG_CAN[TM.chi][0]);
+  info.btCanChi = CAN[TM.can] + ' ' + CHI[TM.chi];
+  info.ly['Bát Tự'] = ['Bát Tự tính tháng theo tiết khí: phần lớn tháng âm này thuộc tháng ' + info.btCanChi + (T0.chi !== T1.chi ? ' (đổi tiết khoảng ' + vsNgay_(vsTimTiet_(jd0, jd1)) + ': từ ' + CAN[T0.can] + ' ' + CHI[T0.chi] + ' sang ' + CAN[T1.can] + ' ' + CHI[T1.chi] + ')' : '') +
+    ' – can là ' + tC + ', chi tàng ' + tZ + ', ' + danhGiaVan_(CAN_HANH[TM.can], CHI_HANH[TM.chi], bt.goiY.hy, bt.goiY.ky).toLowerCase() + ' theo dụng thần ' + bt.goiY.dung + '.'];
   // ---- Chiêm tinh: quá cảnh trong tháng ----
   var ct = C.ct, cusp = ct.cusp.map(function (c) { return c.lon; }), TVn = vsThienVan_(jd0, jd1, cusp), ctLy = [], dh = [];
   var ctA = function (k, v, ly) { add(k, 'Chiêm tinh', v, 'Chiêm tinh: ' + ly); };
@@ -249,6 +262,15 @@ var VS_DC_Y = { 1: 'tự lập, khởi nghiệp, khẳng định bản thân', 2
   11: 'trực giác, truyền cảm hứng', 22: 'kiến tạo công trình lớn', 33: 'phụng sự, chữa lành' };
 var VS_TT_Y = { 0: 'tự chọn hướng đi giữa nhiều lựa chọn', 1: 'tự tin mà không áp đặt', 2: 'bớt nhạy cảm, bớt phụ thuộc', 3: 'nói ra cảm xúc thay vì giấu', 4: 'kỷ luật mà không cứng nhắc',
   5: 'tự do mà không buông thả', 6: 'chăm người khác mà không ôm đồm', 7: 'tin người, mở lòng', 8: 'cân bằng tiền bạc và giá trị sống' };
+/** Thế mạnh riêng của từng hệ – dùng để mỗi hệ "nói phần mình giỏi nhất" thay vì luận hệ này theo hệ kia */
+var VS_THE_MANH = {
+  'Tử Vi': 'chỉ rõ việc gì, ở lĩnh vực nào, liên quan đến ai (12 cung)',
+  'Bát Tự': 'đo thời vận thịnh – suy theo ngũ hành cần bổ sung (dụng thần); đại vận Bát Tự là thước đo thời điểm lên – xuống đáng tin nhất',
+  'Hà Lạc': 'cho biết thế của thời và cách ứng xử – nên tiến hay lui, giữ hay buông (lời quẻ Kinh Dịch)',
+  'Chiêm tinh': 'định thời điểm cụ thể đến tháng, tuần, ngày và trạng thái tâm lý',
+  'Thần số học': 'cho nhịp chu kỳ – chủ đề nên tập trung của năm, tháng',
+  'Human Design': 'chỉ cách hành động và ra quyết định cho đúng với bản thân – "làm thế nào", không đoán "việc gì"'
+};
 var VS_DG = { 'Đại cát': 2, 'Cát': 1, 'Bình': 0, 'Hơi kém': -1, 'Cẩn trọng': -2 };
 function vsDaiVan_(C, luoi, namTin) {
   var tv = C.tv, bt = C.bt, y0 = tv.info.solar.year, out = [];
@@ -264,24 +286,35 @@ function vsDaiVan_(C, luoi, namTin) {
     var d10 = chuanHoa10_(d.diem);
     he.push({ he: 'Tử Vi', huong: d10 >= 6.2 ? 'tot' : d10 <= 4.3 ? 'xau' : 'vua', y: 'Đại hạn tại cung ' + d.cung + (d.canChi ? ' (' + d.canChi + ')' : '') + ': ' + d.danhGia.toLowerCase() + ' (' + String(d10).replace('.', ',') + '/10).' });
     // Bát Tự
-    var sBT = 0, nBT = 0, ten = [];
-    nams.forEach(function (y) { var v = bt.daiVan.filter(function (x) { return x.nam <= y; }).slice(-1)[0]; if (!v) return; sBT += VS_DG[v.danhGia] || 0; nBT++; var t = v.canChi + ' (' + v.thapThan + ', ' + v.danhGia.toLowerCase() + ')'; if (ten.indexOf(t) < 0) ten.push(t); });
-    if (nBT) { var aB = sBT / nBT; he.push({ he: 'Bát Tự', huong: aB >= 0.5 ? 'tot' : aB <= -0.5 ? 'xau' : 'vua', y: 'Đại vận ' + ten.join(' rồi ') + '.' }); }
+    var sBT = 0, nBT = 0, ten = [], moc = [];
+    moc.push({ he: 'Tử Vi', nam: bd, y: 'Tử Vi vào đại hạn ' + d.khoang + ' (tuổi mụ) từ năm ' + bd });
+    nams.forEach(function (y) {
+      var v = bt.daiVan.filter(function (x) { return x.nam <= y; }).slice(-1)[0]; if (!v) return; sBT += VS_DG[v.danhGia] || 0; nBT++;
+      var t = ten.filter(function (z) { return z.v === v; })[0]; if (t) t.den = y; else ten.push({ v: v, tu: y, den: y });
+      if (v.nam === y && y !== bd) moc.push({ he: 'Bát Tự', nam: y, y: 'Bát Tự sang đại vận ' + v.canChi + ' năm ' + y });
+    });
+    if (nBT) { var aB = sBT / nBT; he.push({ he: 'Bát Tự', huong: aB >= 0.5 ? 'tot' : aB <= -0.5 ? 'xau' : 'vua', y: 'Đại vận ' + ten.map(function (z) { return z.v.canChi + ' (' + z.tu + '–' + z.den + ': ' + z.v.thapThan + ', ' + z.v.danhGia.toLowerCase() + ')'; }).join(' → ') + '.' }); }
     // Hà Lạc
     var sHL = 0, nHL = 0, tH = [];
-    nams.forEach(function (y) { var v = hlDv.filter(function (x) { return x.tu <= y && y <= x.den; })[0]; if (!v) return; sHL += v.diem; nHL++; if (tH.indexOf(v.ten) < 0) tH.push(v.ten + ' – ' + String(v.danhGia || '').toLowerCase()); });
-    if (nHL) { var aH = sHL / nHL; he.push({ he: 'Hà Lạc', huong: aH >= 0.6 ? 'tot' : aH <= -0.6 ? 'xau' : 'vua', y: 'Vận hào ' + tH.filter(function (x, i, a) { return a.indexOf(x) === i; }).join('; ') + '.' }); }
+    nams.forEach(function (y) {
+      var v = hlDv.filter(function (x) { return x.tu <= y && y <= x.den; })[0]; if (!v) return; sHL += v.diem; nHL++;
+      var t = tH.filter(function (z) { return z.v === v; })[0]; if (t) t.den = y; else tH.push({ v: v, tu: y, den: y });
+      if (v.tu === y && y !== bd) moc.push({ he: 'Hà Lạc', nam: y, y: 'Hà Lạc sang vận hào mới năm ' + y + ' (vận hào dài ' + (v.den - v.tu + 1) + ' năm)' });
+    });
+    if (nHL) { var aH = sHL / nHL; he.push({ he: 'Hà Lạc', huong: aH >= 0.6 ? 'tot' : aH <= -0.6 ? 'xau' : 'vua', y: 'Vận hào ' + tH.map(function (z) { return z.v.ten.replace(/ \((dương|âm)[^)]*\)/, '') + ' (' + z.tu + '–' + z.den + ', ' + String(z.v.danhGia || '').toLowerCase() + ')'; }).join(' → ') + '.' }); }
     // Chiêm tinh: chu kỳ lớn + trung bình tín hiệu năm
     var cks = ck.filter(function (c) { return c.nam >= bd && c.nam <= kt; }), sCK = 0;
+    cks.forEach(function (c) { if (/Thổ|Thiên Vương|Chiron|Nút/.test(c.ten)) moc.push({ he: 'Chiêm tinh', nam: c.nam, y: 'Chiêm tinh: ' + c.ten + ' năm ' + c.nam }); });
+    dc.forEach(function (p, i) { var yy = y0 + p.tu; if (i > 0 && yy > bd && yy <= kt) moc.push({ he: 'Thần số học', nam: yy, y: 'Thần số sang đỉnh cao số ' + p.so + ' năm ' + yy }); });
     cks.forEach(function (c) { sCK += /Thổ/.test(c.ten) ? -0.8 : /Mộc/.test(c.ten) ? 0.6 : 0; });
     var sCT = 0; nams.forEach(function (y) { var n = namTin[idx[y]]; HSN_SK.forEach(function (S) { var v = Math.max(0, htNet_(n, S, 'Chiêm tinh')); if (S.loai === 'tot') sCT += v; else if (S.loai === 'xau') sCT -= v; }); });
     var aC = sCT / nams.length / 3 + sCK / 2;
     he.push({ he: 'Chiêm tinh', huong: aC >= 0.5 ? 'tot' : aC <= -0.5 ? 'xau' : 'vua', y: cks.length ? 'Chu kỳ lớn: ' + cks.map(function (c) { return c.ten + ' (' + c.nam + ')'; }).join('; ') + '.' : 'Không có chu kỳ lớn; xét các hành tinh chậm qua 12 nhà từng năm.' });
     // Thần số: đỉnh cao ở giữa vận
-    var tuoiG = Math.round((bd + kt) / 2) - y0, dcx = dc.filter(function (p) { return tuoiG >= p.tu && tuoiG <= p.den; })[0];
     var sTS = 0; nams.forEach(function (y) { var n = namTin[idx[y]]; HSN_SK.forEach(function (S) { var v = Math.max(0, htNet_(n, S, 'Thần số học')); if (S.loai === 'tot') sTS += v; else if (S.loai === 'xau') sTS -= v; }); });
     var aT = sTS / nams.length / 3;
-    he.push({ he: 'Thần số học', huong: aT >= 0.5 ? 'tot' : aT <= -0.5 ? 'xau' : 'vua', y: dcx ? 'Đỉnh cao số ' + dcx.so + ' (' + (dcx.tu) + '–' + (dcx.den > 90 ? 'cuối đời' : dcx.den) + ' tuổi): chủ đề ' + (VS_DC_Y[dcx.so] || '') + '; bài học (thử thách số ' + dcx.thuThach + '): ' + (VS_TT_Y[dcx.thuThach] || '') + '.' : 'Không xác định đỉnh cao.' });
+    var dcs = []; nams.forEach(function (y) { var p = dc.filter(function (q) { return y - y0 >= q.tu && y - y0 <= q.den; })[0]; if (!p) return; var t = dcs.filter(function (z) { return z.p === p; })[0]; if (t) t.den = y; else dcs.push({ p: p, tu: y, den: y }); });
+    he.push({ he: 'Thần số học', huong: aT >= 0.5 ? 'tot' : aT <= -0.5 ? 'xau' : 'vua', y: dcs.length ? dcs.map(function (z) { return 'Đỉnh cao số ' + z.p.so + ' (' + z.tu + '–' + z.den + '): chủ đề ' + (VS_DC_Y[z.p.so] || '') + '; bài học ' + (VS_TT_Y[z.p.thuThach] || ''); }).join(' → ') + '.' : 'Không xác định đỉnh cao.' });
     // Năm đỉnh từng sự kiện trong 10 năm
     var dinh = [];
     HSN_SK.forEach(function (S) {
@@ -297,9 +330,13 @@ function vsDaiVan_(C, luoi, namTin) {
     if (soTot && soXau) tom.push(he.filter(function (x) { return x.huong === 'tot'; }).map(function (x) { return x.he; }).join(', ') + ' thấy thuận; ' + he.filter(function (x) { return x.huong === 'xau'; }).map(function (x) { return x.he; }).join(', ') + ' thấy thử thách – thường nghĩa là giai đoạn có cơ hội lớn nhưng phải trả giá bằng công sức hoặc biến động; chọn đúng năm để tiến.');
     if (dinh.length) tom.push('Các năm đỉnh: ' + dinh.map(function (x) { return x.ngan + ' ' + x.nam; }).join(', ') + '.');
     if (dem[banLe] >= 2) tom.push('Năm bản lề của vận: ' + banLe + ' (' + dem[banLe] + ' việc cùng nổi lên).');
-    out.push({ nam: bd, den: kt, khoang: d.khoang, isNow: !!d.isNow, he: he, nhan: nhan, huong: soTot > soXau ? 'tot' : soXau > soTot ? 'xau' : 'vua', dinh: dinh, banLe: dem[banLe] >= 2 ? banLe : null, tom: tom });
+    moc.sort(function (a, b) { return a.nam - b.nam; });
+    var namDoi = moc.filter(function (m) { return m.he !== 'Tử Vi' && m.he !== 'Chiêm tinh'; }).map(function (m) { return m.nam; });
+    var lech = namDoi.length ? 'Các hệ chia giai đoạn theo cách riêng nên mốc đổi vận không trùng nhau: Tử Vi tính đại hạn 10 năm theo cục và tuổi mụ; Bát Tự tính từ số ngày đến tiết khí kế tiếp (3 ngày = 1 năm); Hà Lạc theo vận hào 6 hoặc 9 năm; Thần số theo đỉnh cao. ' +
+      'Trong 10 năm này, ' + moc.filter(function (m) { return m.he !== 'Tử Vi' && m.he !== 'Chiêm tinh'; }).map(function (m) { return m.y; }).join('; ') + '. Những năm giữa các mốc là giai đoạn chuyển tiếp – nhận định của mỗi hệ chỉ đúng cho phần thời gian của chính nó, nên đọc theo từng đoạn năm thay vì gộp cả 10 năm.' : '';
+    out.push({ nam: bd, den: kt, khoang: d.khoang + ' (tuổi mụ)', isNow: !!d.isNow, he: he, moc: moc, lech: lech, nhan: nhan, huong: soTot > soXau ? 'tot' : soXau > soTot ? 'xau' : 'vua', dinh: dinh, banLe: dem[banLe] >= 2 ? banLe : null, tom: tom });
   });
-  return { ds: out, coSo: 'Mỗi đại vận 10 năm (mốc theo Tử Vi) được xem qua 5 hệ: Tử Vi (điểm đại hạn), Bát Tự (các đại vận 10 năm phủ lên giai đoạn, đánh giá theo dụng – kỵ thần), Hà Lạc (vận hào 6 hoặc 9 năm), Chiêm tinh (chu kỳ lớn như Sao Thổ hồi quy và tín hiệu các hành tinh chậm từng năm) và Thần số học (đỉnh cao – thử thách đang đi qua). Năm đỉnh của từng sự kiện lấy từ Hồ sơ năm (gấp ≥1,8 lần mức thường).' };
+  return { ds: out, vaiTro: VS_THE_MANH, coSo: 'Mỗi đại vận 10 năm (mốc theo Tử Vi) được xem qua 5 hệ: Tử Vi (điểm đại hạn), Bát Tự (các đại vận 10 năm phủ lên giai đoạn, đánh giá theo dụng – kỵ thần), Hà Lạc (vận hào 6 hoặc 9 năm), Chiêm tinh (chu kỳ lớn như Sao Thổ hồi quy và tín hiệu các hành tinh chậm từng năm) và Thần số học (đỉnh cao – thử thách đang đi qua). Năm đỉnh của từng sự kiện lấy từ Hồ sơ năm (gấp ≥1,8 lần mức thường). Vì mỗi hệ có mốc đổi vận riêng (lệch nhau vài năm là bình thường), đánh giá của Bát Tự, Hà Lạc và Thần số được tính theo đúng từng năm trong giai đoạn rồi cộng lại, và các mốc đổi vận được ghi rõ.' };
 }
 
 /* =================== 4. TỬ VI LƯU NIÊN 12 CUNG + PHI HÓA =================== */
@@ -376,4 +413,110 @@ function vsUngKy_(Q, t) {
   luan.push('Ứng kỳ theo quái số: số quẻ trên (' + Q.tren + ' ' + so[Q.tren] + ') + quẻ dưới (' + Q.duoi + ' ' + so[Q.duoi] + ') + hào động ' + Q.dong + ' = ' + n + ' – việc gấp tính khoảng ' + n + ' ngày, việc thường ' + n + ' tuần đến ' + n + ' tháng; người hỏi đang vội thì nhanh hơn (một nửa), đang thong thả thì chậm hơn (gấp đôi).');
   return { hao: VS_HAO_VI[Q.dong - 1], luan: luan, ngay: ngay, thang: thang, so: n, hanh: dich,
     coSo: 'Ứng kỳ theo "Mai Hoa Dịch Số": quẻ lập theo thời gian là quẻ tiên thiên, ứng kỳ chủ yếu xét quái khí – ngũ hành của quẻ sinh Thể (hoặc hành sinh Thể khi Thể bị khắc) ứng vào ngày, tháng cùng hành; phép quái số lấy tổng số Tiên thiên của hai quẻ đơn cộng hào động, nhanh chậm tùy tình thế người hỏi (đi – đứng – ngồi – nằm). Ý nghĩa hào theo Hệ Từ truyện: "nhị đa dự, tứ đa cụ, tam đa hung, ngũ đa công". Các bản Mai Hoa lưu hành có khác biệt về hệ số nhanh chậm.' };
+}
+
+/* =================== 7. MỖI HỆ GÓP PHẦN MẠNH NHẤT · KẾ HOẠCH HÀNH ĐỘNG · CẦU NỐI HD – KINH DỊCH – HÀ LẠC =================== */
+var VS_TS_NAM = { 1: 'năm khởi đầu chu kỳ 9 năm mới – gieo hạt, bắt đầu việc mới', 2: 'năm kiên nhẫn – vun đắp quan hệ, hợp tác, chờ hạt nảy mầm',
+  3: 'năm thể hiện – giao tiếp, sáng tạo, mở rộng các mối quen biết', 4: 'năm xây nền – làm việc chăm chỉ, kỷ luật, củng cố tài chính và sức khỏe',
+  5: 'năm thay đổi – đi lại, thử cái mới, linh hoạt', 6: 'năm gia đình – trách nhiệm, chăm sóc, chuyện nhà và tình cảm',
+  7: 'năm chiêm nghiệm – học sâu, nghỉ ngơi, nhìn lại bản thân', 8: 'năm thu hoạch – tiền bạc, vị trí, khẳng định thành quả',
+  9: 'năm khép lại chu kỳ – buông bỏ cái cũ, hoàn tất, cho đi' };
+var VS_HD_LAM = {
+  'Generator': ['chờ cơ hội tự tìm đến rồi xem bản thân có thật sự hào hứng không – đừng cố "đi săn" việc', 'hỏi cơ thể còn năng lượng không; dừng sớm những việc khiến bạn bực bội'],
+  'Manifesting Generator': ['thấy hứng thú thì làm nhanh, nhưng báo trước cho người liên quan', 'đừng nhảy cóc bỏ bước; báo trước khi đổi hướng để tránh va chạm'],
+  'Manifestor': ['chủ động khởi xướng, nhưng thông báo trước cho người bị ảnh hưởng để việc trơn tru', 'nói rõ ý định trước khi làm, tránh để người khác bất ngờ rồi phản đối'],
+  'Projector': ['đừng tự lao vào; chờ được mời, được giới thiệu hoặc được ghi nhận rồi mới nhận việc lớn', 'giữ sức, không ôm việc; chỉ góp ý khi được hỏi'],
+  'Reflector': ['đợi trọn một chu kỳ trăng (khoảng 28 ngày), bàn với vài người tin cậy rồi mới quyết', 'chọn môi trường và con người lành mạnh – nơi chốn ảnh hưởng bạn rất mạnh'] };
+var VS_HD_TQ = { emotional: 'đừng chốt khi đang vui quá hay buồn quá – ngủ qua vài đêm cho cảm xúc lắng rồi hãy quyết', sacral: 'nghe phản ứng tức thì của cơ thể ("ừ-hử" là có, "ừm-ừm" là không)',
+  splenic: 'tin cảm giác đầu tiên – trực giác chỉ nhắc một lần', egoM: 'chỉ cam kết điều bạn thật lòng muốn và giữ được lời', egoP: 'tự hỏi "việc này có lợi cho mình không" trước khi nhận',
+  self: 'nói thành lời với người tin cậy và lắng nghe chính mình', mental: 'bàn với vài người tin cậy, ở vài nơi khác nhau rồi mới quyết', lunar: 'đợi khoảng 28 ngày trước quyết định lớn' };
+function vsQueSo_(ten) { for (var i = 0; i < HL_QUE.length; i++) if (HL_QUE[i][2] === ten) return i + 1; return 0; }
+
+function vsGocNhin_(C, T) {
+  var H = T.hoSoNam, M = T.hoSoThang && !T.hoSoThang.loi ? T.hoSoThang : null, bt = C.bt, hd = C.hd || {}, vy = H.nam;
+  var SK = {}; H.suKien.forEach(function (x) { SK[x.k] = x; });
+  var gn = [];
+  // Tử Vi – việc gì, lĩnh vực nào
+  var tvv = H.suKien.filter(function (x) { return !x.ngoai && x.ung.indexOf('Tử Vi') >= 0; }).sort(function (a, b) { return b.p - a.p; }).slice(0, 3);
+  gn.push({ he: 'Tử Vi', vai: VS_THE_MANH['Tử Vi'], y: tvv.length ? 'Việc cụ thể Tử Vi chỉ ra trong năm: ' + tvv.map(function (x) { return x.ngan; }).join(', ') + '.' : 'Tử Vi không thấy việc nào nổi lên rõ – các lĩnh vực chính tương đối êm.' });
+  // Bát Tự – thời vận thịnh suy
+  var can = mod10(vy - 4), chi = mod12(vy - 4), dg = danhGiaVan_(CAN_HANH[can], CHI_HANH[chi], bt.goiY.hy, bt.goiY.ky), dv = bt.daiVan.filter(function (x) { return x.nam <= vy; }).slice(-1)[0];
+  var tt = thapThanTen_(bt.nhatChuCan, can);
+  var LOI = { 'Đại cát': 'rất hợp', 'Cát': 'hợp', 'Bình': 'trung tính', 'Hơi kém': 'hơi nghịch', 'Cẩn trọng': 'nghịch' };
+  gn.push({ he: 'Bát Tự', vai: VS_THE_MANH['Bát Tự'], y: 'Năm ' + CAN[can] + ' ' + CHI[chi] + ' mang hành ' + (CAN_HANH[can] === CHI_HANH[chi] ? CAN_HANH[can] : CAN_HANH[can] + ' và ' + CHI_HANH[chi]) + ' – ' + (LOI[dg] || dg) + ' với hành bạn cần bổ sung (' + bt.goiY.dung + ')' +
+    (dv ? '; mười năm đại vận ' + dv.canChi + ' (từ ' + dv.nam + ') ' + (LOI[dv.danhGia] || dv.danhGia) + ' với bạn' : '') + '. Năng lượng chủ đạo của năm: ' + String(THAP_THAN_Y_NGHIA[tt] || '').split(',').slice(0, 3).join(',') + '.' });
+  // Hà Lạc – thế của thời, cách ứng xử
+  var hn = ((C.hlL && C.hlL.nam) || []).filter(function (n) { return n.nam === vy; })[0];
+  if (hn) gn.push({ he: 'Hà Lạc', vai: VS_THE_MANH['Hà Lạc'], y: 'Quẻ năm ' + hn.que + ' (' + String(hn.danhGia).toLowerCase() + '): ' + hn.y + '. Lời quẻ khuyên: ' + hn.khuyen + '.' });
+  // Chiêm tinh – khi nào
+  if (M) {
+    // gộp các mốc trùng/vắt qua hai tháng âm (vd. đợt nghịch hành 27/2–18/3 và 19/3–20/3 → 27/2–20/3)
+    var ngoat = [], cham = [];
+    function nd(t) { var a = t.split('/'); return new Date(vy, +a[1] - 1, +a[0]).getTime(); }
+    M.thang.forEach(function (m) { (m.dauMoc || []).forEach(function (d) {
+      var k = d.split(':')[0];
+      if (/điểm ngoặt/.test(d) && ngoat.indexOf(k) < 0) ngoat.push(k);
+      if (/chậm trễ/.test(d)) { var r = k.split('–'), tr = cham[cham.length - 1]; if (tr && Math.abs(nd(r[0]) - nd(tr[1]) - 864e5) < 2 * 864e5) tr[1] = r[1]; else cham.push([r[0], r[1] || r[0]]); }
+    }); });
+    var moc = cham.map(function (r) { return r[0] + '–' + r[1] + ' (dễ trục trặc giấy tờ, liên lạc, đi lại)'; }).concat(ngoat.map(function (k) { return k + ' (điểm ngoặt – tránh quyết định vội)'; }));
+    var tot = M.thang.map(function (m, i) { var s = 0; M.suKien.forEach(function (x) { if (x.loai !== 'xau') s += Math.max(0, x.rel[i] - 1); }); return { t: m.thang, s: s }; }).sort(function (a, b) { return b.s - a.s; }).slice(0, 2).map(function (x) { return x.t; }).sort(function (a, b) { return a - b; });
+    gn.push({ he: 'Chiêm tinh', vai: VS_THE_MANH['Chiêm tinh'], y: 'Tháng nhiều cơ hội nhất: ' + tot.map(function (t) { return 'tháng ' + t; }).join(', ') + ' (âm lịch).' + (moc.length ? ' Mốc cần chú ý: ' + moc.slice(0, 7).join('; ') + '.' : '') });
+  }
+  // Thần số – chủ đề nhịp
+  gn.push({ he: 'Thần số học', vai: VS_THE_MANH['Thần số học'], y: 'Năm cá nhân ' + H.soCN + ': ' + (VS_TS_NAM[H.soCN] || '') + '.' });
+  // Human Design – hành động thế nào
+  var lam = VS_HD_LAM[hd.loai] || VS_HD_LAM.Generator, tq = VS_HD_TQ[hd.thamQuyen] || '';
+  if (hd.loai) gn.push({ he: 'Human Design', vai: VS_THE_MANH['Human Design'], y: 'Bạn thuộc nhóm ' + ((typeof HD_TYPES !== 'undefined' && HD_TYPES[hd.loai]) ? HD_TYPES[hd.loai].ten : hd.loai) + ': với mọi việc lớn trong năm, ' + lam[0] + '; khi ra quyết định, ' + tq + '.' });
+  // Kế hoạch hành động: việc nổi bật + việc cần phòng
+  var ds = H.noiBat.slice(0, 3).map(function (k) { return SK[k]; }).filter(Boolean);
+  var phong = H.suKien.filter(function (x) { return x.loai === 'xau' && !x.ngoai && x.p >= 15 && ds.indexOf(x) < 0; }).sort(function (a, b) { return b.p - a.p; })[0];
+  if (phong) ds.push(phong);
+  var MS = {}; if (M) M.suKien.forEach(function (x) { MS[x.k] = x; });
+  var hanhDong = ds.map(function (x) {
+    var m = MS[x.k], thang = m ? m.rel.map(function (r, i) { return { t: i + 1, r: r }; }).sort(function (a, b) { return b.r - a.r; }).slice(0, 2).map(function (z) { return z.t; }).sort(function (a, b) { return a - b; }) : x.thang;
+    return { k: x.k, ngan: x.ngan, loai: x.loai, p: x.p, dong: x.dong,
+      khi: thang && thang.length ? (x.loai === 'xau' ? 'Dễ rơi vào ' : 'Thuận nhất vào ') + thang.map(function (t) { return 'tháng ' + t; }).join(', ') + ' âm lịch' : '',
+      lam: x.khuyen, hd: hd.loai ? (x.loai === 'xau' ? lam[1] : lam[0]) + (tq ? '; ' + tq : '') : '', que: hn ? hn.khuyen : '' };
+  });
+  // Cầu nối HD – Kinh Dịch – Hà Lạc: 64 cổng HD trùng thứ tự 64 quẻ Kinh Dịch (Văn Vương)
+  var cauNoi = [], gates = hd.gates || {}, coCong = function (g) { return !!gates[g]; };
+  var sun = hd.act && hd.act.p && hd.act.p.sun ? hd.act.p.sun.gate : 0, tien = C.hl && C.hl.tien;
+  if (sun) cauNoi.push('Cổng chủ đạo trong biểu đồ Human Design của bạn (cổng nơi mặt trời đứng lúc bạn sinh) là cổng ' + sun + ' – cũng là quẻ ' + HL_QUE[sun - 1][2] + ' trong Kinh Dịch (' + (HD_GATE_TEN[sun] || '') + '): chủ đề sống cốt lõi theo Human Design.');
+  if (tien) {
+    var so = vsQueSo_(tien.ten);
+    cauNoi.push('Quẻ mệnh Hà Lạc (Tiên thiên) của bạn là ' + tien.ten + ' – tương ứng cổng ' + so + ' của Human Design. ' + (so === sun ? 'Trùng đúng cổng chủ đạo: hai hệ cùng chỉ một năng lượng gốc – đây là điểm mạnh rất rõ của bạn.' :
+      coCong(so) ? 'Cổng này đang được kích hoạt trong biểu đồ của bạn: năng lượng của quẻ mệnh là thứ bạn sẵn có và dùng được ngay.' : 'Cổng này không kích hoạt trong biểu đồ: năng lượng của quẻ mệnh là điều bạn học dần qua người và hoàn cảnh xung quanh.'));
+  }
+  if (hn) {
+    var sn = vsQueSo_(hn.que);
+    if (sn) cauNoi.push('Quẻ năm ' + vy + ' theo Hà Lạc là ' + hn.que + ' = cổng ' + sn + ' (' + (HD_GATE_TEN[sn] || '') + '). ' + (coCong(sn) ? 'Bạn có sẵn cổng này nên chủ đề của năm "hợp tạng" – dễ phát huy.' : 'Bạn không có sẵn cổng này: chủ đề của năm là điều mới mẻ, nên học hỏi từ người có thế mạnh đó và đừng ép mình phải giỏi ngay.'));
+  }
+  if (cauNoi.length) cauNoi.push('Cách đọc: 64 cổng của Human Design được xây trên 64 quẻ Kinh Dịch, còn Hà Lạc lập quẻ từ giờ sinh – ghép hai hệ cho một góc nhìn tham khảo về "năng lượng sẵn có" và "bài học cần học", không dùng để đoán sự việc.');
+  return { gocNhin: gn, hanhDong: hanhDong, cauNoi: cauNoi };
+}
+
+/* =================== 8. BIẾN CỐ 30 NĂM (cùng bộ máy 19 sự kiện) =================== */
+function vsBienCo_(C, luoi, namTin) {
+  var vy = C.tv.info.viewYear, idx = {}; namTin.forEach(function (n, i) { idx[n.nam] = i; });
+  function soHe(n, S) { return HSN_HE.filter(function (h) { return htNet_(n, S, h) >= 0.5; }); }
+  var nam = []; for (var y = vy - 3; y <= vy + 26; y++) if (idx[y] != null) nam.push(y);
+  var suKien = HSN_SK.map(function (S) {
+    var tuong = [], qua = [];
+    nam.forEach(function (y) {
+      var x = luoi[S.k][idx[y]]; if (x.a <= 0 || x.rel < 1.8) return;
+      var he = soHe(namTin[idx[y]], S), o = { nam: y, tuoi: x.tuoi, p: Math.min(90, x.p), rel: Math.round(x.rel * 10) / 10, he: he };
+      (y < vy ? qua : tuong).push(o);
+    });
+    for (var yq = vy - 12; yq < vy - 3; yq++) if (idx[yq] != null) { var xq = luoi[S.k][idx[yq]]; if (xq.a > 0 && xq.rel >= 2) qua.push({ nam: yq, tuoi: xq.tuoi, p: Math.min(90, xq.p), rel: Math.round(xq.rel * 10) / 10, he: soHe(namTin[idx[yq]], S) }); }
+    tuong.sort(function (a, b) { return b.rel - a.rel; });
+    qua.sort(function (a, b) { return b.rel - a.rel; });
+    return { k: S.k, ngan: S.ngan, ten: S.ten, loai: S.loai, kc: S.kc, dinh: tuong.slice(0, 4).sort(function (a, b) { return a.nam - b.nam; }), qua: qua.slice(0, 2).sort(function (a, b) { return a.nam - b.nam; }),
+      rel: nam.map(function (y) { var x = luoi[S.k][idx[y]]; return x.a > 0 ? Math.round(x.rel * 10) / 10 : 0; }) };
+  });
+  var nong = nam.filter(function (y) { return y >= vy; }).map(function (y) {
+    var cd = HSN_SK.filter(function (S) { var x = luoi[S.k][idx[y]]; return x.a > 0 && x.rel >= 2.2; });
+    return { nam: y, tuoi: namTin[idx[y]].tuoi, sk: cd.map(function (S) { return S.ngan; }), loai: cd.map(function (S) { return S.loai; }) };
+  }).filter(function (x) { return x.sk.length >= 2; }).sort(function (a, b) { return b.sk.length - a.sk.length; }).slice(0, 8).sort(function (a, b) { return a.nam - b.nam; });
+  return { nam: nam, vy: vy, suKien: suKien, nong: nong,
+    coSo: 'Dùng cùng bộ máy với Hồ sơ năm: 19 sự kiện, 5 hệ có lịch năm, trọng số theo thế mạnh từng hệ (và theo sự kiện bạn đã khai nếu có). Với mỗi việc, liệt kê các năm trong 30 năm tới mà khả năng cao gấp từ 1,8 lần mức thường của chính bạn, kèm số hệ cùng báo; các năm đã qua để bạn tự kiểm chứng. "Năm nóng" là năm có từ 2 việc cùng nổi lên mạnh.' };
 }

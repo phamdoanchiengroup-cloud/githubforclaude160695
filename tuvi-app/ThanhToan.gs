@@ -200,7 +200,7 @@ function ttCatPhan_(r, q) {
   var tomTat = { nam: vy, coNam: coNam, thangNhat: tn[0] + '-' + ttPad2_(tn[1]), coThang: coThang, dv: [] };
   if (!q.bien_co) {
     if (r.duDoan) { r.duDoan.chuDe = {}; delete r.duDoan._years; }
-    if (T) T.hoiTu = null;
+    if (T) { T.hoiTu = null; T.bienCo = null; }
   }
   if (!q.phoi_ngau && T) T.phoiNgau = null;
   // ĐẠI VẬN: giữ khung (tuổi, năm, cung, điểm) – bỏ lời luận của vận chưa mở
@@ -226,7 +226,8 @@ function ttCatPhan_(r, q) {
     // Hồ sơ năm: giữ thế đứng 5 hệ + nhãn khía cạnh + 1 sự kiện nổi bật làm mồi
     if (T && T.hoSoNam && !T.hoSoNam.loi) {
       var H = T.hoSoNam, lo = H.noiBat[0];
-      H.tom = H.tom.slice(0, 1); H.khoa = true;
+      H.tom = H.tom.slice(0, 1); H.khoa = true; delete H.hanhDong; delete H.cauNoi;
+      if (H.gocNhin) H.gocNhin = H.gocNhin.map(function (x) { return { he: x.he, vai: x.vai }; });
       H.he = H.he.map(function (x) { return { he: x.he, nguon: x.nguon, huong: x.huong, nhan: x.nhan }; });
       H.khiaCanh = H.khiaCanh.map(function (x) { return { k: x.k, ten: x.ten, icon: x.icon, nhan: x.nhan, huong: x.huong, doiLap: x.doiLap, sk: x.sk }; });
       H.suKien = H.suKien.map(function (x) { return x.k === lo ? x : { k: x.k, kc: x.kc, loai: x.loai, ten: x.ten, ngan: x.ngan, ngoai: x.ngoai, khoa: true }; });
