@@ -651,22 +651,25 @@ sceneGroup.add(plane(260,9,M.water,px(45),-.3,pz(46),20));sceneGroup.add(plane(2
 // sân trong khu đất: bê tông sẫm, vạch giao thông, bồn cỏ
 const lawn=(x0,x1,y0,y1)=>{sceneGroup.add(plane(x1-x0,y1-y0,M.grass,px((x0+x1)/2),-.27,pz((y0+y1)/2),4));
   const cb=S({color:0xbdbab1,roughness:.9});[[x0,x1,y0,y0],[x0,x1,y1,y1],[x0,x0,y0,y1],[x1,x1,y0,y1]].forEach(([a,b,c,d])=>sceneGroup.add(box(Math.max(b-a,.15),.18,Math.max(d-c,.15),cb,px((a+b)/2),-.2,pz((c+d)/2),false)));};
-// sân trước theo phối cảnh DELCO: bồn cờ có lối đá bước sau tường biển tên, bồn cây trước sảnh, bồn dọc mặt tiền, dải cỏ sau hàng rào bãi xe
-lawn(-39.4,-29,10.6,19.4);lawn(-25,-19.5,15.5,24.5);lawn(-17.6,-14.6,13.2,17.2);lawn(-17.6,-14.6,22.8,27.8);lawn(-39.4,-37.2,20,40);lawn(-39.4,-37.6,-16,-8);
+// sân trước theo đúng 2 ảnh phối cảnh DELCO (mặt đứng cổng + chim bay): cổng giữa tường biển tên và nhà bảo vệ, bãi 5 xe một hàng bên trái, hai bồn cây hai bên bậc sảnh
+lawn(-39.4,-31,11,19.6);                       // dải cỏ lối đá bước + 3 cột cờ, sau tường biển tên
+lawn(-22,-15.7,23.6,33.6);lawn(-22,-14.6,6,16.4);  // hai bồn cây lớn hai bên bậc sảnh (trái ôm khối đen, phải trước cánh Nam); giữa là đường vào sảnh
+lawn(-39.4,-38,20,40);lawn(-39.4,-38,-16,-8.5);   // dải bụi cây sau hàng rào
+lawn(-41.8,-40.3,-16,-1.2);lawn(-41.8,-40.3,10.2,40); // dải cỏ bụi tròn ngoài hàng rào (chừa lối vào)
 lawn(74,96,-1,38);lawn(-12,-1,33.5,38);
-{const da=S({color:0xcfccc4,roughness:.85,map:TX.concrete});for(let i=0;i<7;i++)sceneGroup.add(box(.9,.06,1.1,da,px(-37.6+i*1.25),-.22,pz(11.8+i*.95),false));}  // lối đá bước
+{const da=S({color:0xcfccc4,roughness:.85,map:TX.concrete});for(let i=0;i<7;i++)sceneGroup.add(box(.9,.06,1.1,da,px(-38.7+i*1.05),-.22,pz(12+i*1.15),false));}  // lối đá bước
 // mũi tên trên đường vào: làn vào (phía Nam) chỉ vào trong, làn ra chỉ ra đường
 function muiTen(x,y,huong){const sh=new THREE.Shape();sh.moveTo(-1.6,-.18);sh.lineTo(.4,-.18);sh.lineTo(.4,-.55);sh.lineTo(1.5,0);sh.lineTo(.4,.55);sh.lineTo(.4,.18);sh.lineTo(-1.6,.18);sh.closePath();
   const m=new THREE.Mesh(new THREE.ShapeGeometry(sh),M.line);m.rotation.x=-Math.PI/2;m.rotation.z=huong;m.position.set(px(x),-.27,pz(y));sceneGroup.add(m);}
 muiTen(-33,1.5,0);muiTen(-27,1.5,0);muiTen(-33,7,Math.PI);muiTen(-27,7,Math.PI);
 for(let x=-38;x<-22;x+=2.4)sceneGroup.add(plane(1.2,.15,M.line,px(x),-.28,pz(4.25),1));   // vạch chia làn
 // bãi đỗ ô tô phía trước bên trái
-for(let i=0;i<7;i++){sceneGroup.add(plane(.12,5,M.line,px(-36+i*2.8),-.28,pz(36),1));sceneGroup.add(plane(.12,5,M.line,px(-36+i*2.8),-.28,pz(26),1));}
+for(let i=0;i<6;i++)sceneGroup.add(plane(5,.12,M.line,px(-34.4),-.28,pz(20.05+i*2.7),1));   // 5 chỗ đỗ một hàng song song hàng rào, xe quay đầu vào nhà
 // hàng rào: tường bê tông 2 bên + phía sau, phía trước hàng rào sắt hồng nhạt trên tường thấp
 {const wallM=S({color:0xb9b9b2,roughness:.95,map:TX.concrete});
   [[SITE.x0+.1,SITE.x1,SITE.y0,SITE.y0],[SITE.x0+.1,SITE.x1,SITE.y1,SITE.y1],[SITE.x1,SITE.x1,SITE.y0,SITE.y1]].forEach(([a,b,c,d])=>{const w=box(Math.max(b-a,.25),2.4,Math.max(d-c,.25),wallM,px((a+b)/2),.9,pz((c+d)/2));uvWorld(w.geometry,Math.max(b-a,d-c)/4,1);sceneGroup.add(w);});
   const fenceM=S({color:0xc9737f,metalness:.4,roughness:.45});
-  [[SITE.y0,-7.5],[19.6,SITE.y1]].forEach(([c,d])=>{   // hàng rào hồng hai bên cổng (cổng nằm giữa nhà bảo vệ và tường biển tên)
+  [[SITE.y0,-8.2],[19.6,SITE.y1]].forEach(([c,d])=>{   // hàng rào hồng hai bên cổng (cổng nằm giữa nhà bảo vệ và tường biển tên)
 sceneGroup.add(box(.35,.6,d-c,M.plinth,px(SITE.x0),0,pz((c+d)/2)));
     for(let y=c;y<=d;y+=.25)sceneGroup.add(box(.04,1.6,.04,fenceM,px(SITE.x0),1.1,pz(y),false));
     [.45,1.85].forEach(h=>sceneGroup.add(box(.06,.08,d-c,fenceM,px(SITE.x0),h,pz((c+d)/2),false)));
@@ -688,15 +691,15 @@ sceneGroup.add(box(.35,.6,d-c,M.plinth,px(SITE.x0),0,pz((c+d)/2)));
 // nhà bảo vệ, nhà phụ phía trước
 function house(x0,x1,y0,y1,h,label,g=auxGroup){const b=blk(x0,x1,y0,y1,0,h,OF.render,g);blk(x0-.6,x1+.6,y0-.6,y1+.6,h,h+.25,OF.render,g);
   win('W',x0,(y0+y1)/2,Math.min(2.4,(y1-y0)*.5),1,2.2,g,2);if(label)lblAt(g,label,px((x0+x1)/2),h+1.4,pz((y0+y1)/2));return b;}
-house(-38.6,-32,-7,-1.6,3.4,'Nhà bảo vệ');house(-38,-33,33,38.5,3.4,'Nhà phụ trợ');
+house(-39.6,-32,-8.2,-1.4,3.4,'Nhà bảo vệ');house(-39.6,-33,34.4,39.6,3.4,'Nhà phụ trợ');
 // cột cờ 3 lá
 {const coTex=k=>logoTex(192,128,(g,w,h,co)=>{
     if(k===0){g.fillStyle='#da251d';g.fillRect(0,0,w,h);g.fillStyle='#ffde00';g.beginPath();for(let i=0;i<10;i++){const r=i%2?17:42,a=-Math.PI/2+i*Math.PI/5;g.lineTo(w/2+r*Math.cos(a),h/2+r*Math.sin(a));}g.fill();}
     else if(k===1){g.fillStyle='#f4f4f2';g.fillRect(0,0,w,h);if(co){rhinoVang(g,'con',56,24,80);rhinoVang(g,'chu',51,76,90);}}
     else{g.fillStyle='#1f9a4a';g.fillRect(0,0,w,h);g.fillStyle='#fff';g.fillRect(w/2-14,h/2-42,28,84);g.fillRect(w/2-42,h/2-14,84,28);}});
   const COT=[coTex(0),coTex(1),coTex(2)];
- [[0xda251d,9],[0xf0f0f0,10],[0x2e9e44,9]].forEach(([c,h],i)=>{auxGroup.add(cyl(.06,h,M.steel,px(-31.5),h/2,pz(13.4+i*1.6),12));
-  const f=new THREE.Mesh(new THREE.PlaneGeometry(1.5,1,8,4),S({map:COT[i],side:THREE.DoubleSide,roughness:.8}));f.rotation.y=Math.PI/2;f.position.set(px(-31.5),h-.6,pz(13.4+i*1.6)-.76);f.userData.flag=1;auxGroup.add(f);animUV.push(f);});}
+ [[0xda251d,9],[0xf0f0f0,10],[0x2e9e44,9]].forEach(([c,h],i)=>{auxGroup.add(cyl(.06,h,M.steel,px(-33.2),h/2,pz(13.2+i*1.6),12));
+  const f=new THREE.Mesh(new THREE.PlaneGeometry(1.5,1,8,4),S({map:COT[i],side:THREE.DoubleSide,roughness:.8}));f.rotation.y=Math.PI/2;f.position.set(px(-33.2),h-.6,pz(13.2+i*1.6)-.76);f.userData.flag=1;auxGroup.add(f);animUV.push(f);});}
 // ô tô
 const carC=['#b71c1c','#e8e8e8','#2b2b2b','#8a8f94','#1d3f73','#c62828'];
 function car(x,y,c,ry){const cm=mat(c,{metalness:.75,roughness:.25});const g=new THREE.Group();
@@ -704,7 +707,7 @@ function car(x,y,c,ry){const cm=mat(c,{metalness:.75,roughness:.25});const g=new
   const cab=new THREE.Mesh(new THREE.CapsuleGeometry(.72,1.4,4,12),mat('#141b22',{metalness:.9,roughness:.08}));cab.rotation.x=Math.PI/2;cab.scale.set(1,1,.55);cab.position.set(0,1.12,-.15);g.add(cab);
   [[-.82,1.3],[.82,1.3],[-.82,-1.3],[.82,-1.3]].forEach(([a,b])=>{const w=cyl(.33,.24,C.rubber,a,.33,b,16);w.rotation.z=Math.PI/2;g.add(w);});
   g.traverse(o=>{if(o.isMesh)o.castShadow=true;});g.position.set(px(x),-.3,pz(y));g.rotation.y=ry;auxGroup.add(g);}
-[0,1,2,3,4].forEach(i=>car(-34.6+i*2.8,36,carC[i],0));[0,2,3].forEach(i=>car(-34.6+i*2.8,26,carC[(i+3)%6],Math.PI));
+[0,1,2,3,4].forEach(i=>car(-34.4,21.4+i*2.7,carC[i],Math.PI/2));
 // xe tải container trên đường nội bộ
 {const g=new THREE.Group();g.add(box(2.5,3,9,S({color:0xf2f2ee,roughness:.5,metalness:.2}),0,2.1,-1.5),box(2.5,2.6,2.4,S({color:0xe9eef2,metalness:.5,roughness:.3}),0,1.7,4.6),box(2.3,.9,.05,mat('#141b22',{metalness:.9,roughness:.08}),0,2.3,5.82));
   [-4.5,-3.3,1.2,4.6].forEach(z=>[-1.1,1.1].forEach(x=>{const w=cyl(.5,.35,C.rubber,x,.5,z,16);w.rotation.z=Math.PI/2;g.add(w);}));
@@ -743,15 +746,17 @@ function tree(x,y,s){const g=new THREE.Group();g.add(cyl(.12*s,2.2*s,M.trunk,0,1
 function bush(x,y,s){const m=new THREE.Mesh(new THREE.SphereGeometry(.7*s,12,8),leafM[Math.abs((x*7+y*3)|0)%3]);m.scale.y=.75;m.position.set(px(x),-.3+.45*s,pz(y));m.castShadow=true;sceneGroup.add(m);}
 for(let y=-150;y<170;y+=8)tree(-60.5,y,.9+rnd()*.3);
 for(let x=-40;x<130;x+=5)tree(x+rnd()*2,53+rnd()*3,1+rnd()*.4);
-[[-22.2,20],[-38.3,22],[-38.3,31],[-38.3,39],[-38.3,-12],[-30,8.6],[-16,12.2],[-16,28.6],[85,5],[90,20]].forEach(([x,y])=>tree(x,y,.75));
-[[-23.6,17.3],[-23.6,22.7],[-20.6,17],[-20.6,23]].forEach(([x,y])=>bush(x,y,1));for(let y=13.8;y<17;y+=1.1)bush(-16.2,y,.75);for(let y=23.3;y<27.6;y+=1.1)bush(-16.2,y,.75);
+[[-19.6,31],[-20.4,25.5],[-18.6,9.5],[-38.3,-12],[85,5],[90,20]].forEach(([x,y])=>tree(x,y,.75));
+for(let x=-21.3;x<-15.8;x+=1.35)for(let y=24.3;y<33;y+=1.35)if(Math.abs(x+20)+Math.abs(y-29)>1.6)bush(x+((y*3|0)%2)*.3,y,.7);       // bồn trái
+for(let x=-21.3;x<-15;x+=1.35)for(let y=6.7;y<16;y+=1.35)if(Math.abs(x+18.6)+Math.abs(y-9.5)>1.6)bush(x+((y*3|0)%2)*.3,y,.7);          // bồn phải
+for(let y=-15.4;y<-1.6;y+=1.4)bush(-41,y,.6);for(let y=10.8;y<40;y+=1.4)bush(-41,y,.6);                                                 // ngoài hàng rào
 for(let y=20.6;y<40;y+=1.15)bush(-38.6,y,.7);for(let y=-15.4;y<-8;y+=1.15)bush(-38.6,y,.7);for(let y=33.8;y<38;y+=1.1)bush(-11.5,y,.7);
-for(let i=0;i<6;i++)bush(-30.4+(i%2)*.9,11.6+i*1.3,.55);
+for(let i=0;i<6;i++)bush(-31.6,11.8+i*1.4,.55);
 
 // đèn đường cần cong
 function lamp(x,y,ry){const g=new THREE.Group();g.add(cyl(.08,8,M.steelDark,0,4,0,10));const a=new THREE.Mesh(new THREE.TorusGeometry(.8,.05,6,12,Math.PI/2),M.steelDark);a.position.set(.8,8,0);a.rotation.z=Math.PI/2;g.add(a);
   g.add(box(.7,.1,.3,M.lampHead,1.6,8.75,0,false));g.position.set(px(x),-.3,pz(y));g.rotation.y=ry;sceneGroup.add(g);}
-for(let y=-150;y<170;y+=24)lamp(-44.5,y,Math.PI);for(let x=-25;x<125;x+=22)lamp(x,-14.8,Math.PI/2);
+for(let y=-150;y<170;y+=24)lamp(-44.5,y,Math.PI);lamp(-38.4,20.4,0);lamp(-24,11.8,0);lamp(-37.6,-9.2,0);   // đèn cao trong sân như phối cảnhfor(let x=-25;x<125;x+=22)lamp(x,-14.8,Math.PI/2);
 // mây
 {const ct=canvasTex(1024,(g,s)=>{g.clearRect(0,0,s,s);for(let i=0;i<45;i++){const x=rnd()*s,y=rnd()*s,r=40+rnd()*140;const gr=g.createRadialGradient(x,y,0,x,y,r);gr.addColorStop(0,`rgba(255,255,255,${.25+rnd()*.35})`);gr.addColorStop(1,'rgba(255,255,255,0)');g.fillStyle=gr;g.beginPath();g.ellipse(x,y,r*1.8,r*.7,0,0,Math.PI*2);g.fill();}});
   const cl=new THREE.Mesh(new THREE.PlaneGeometry(2600,2600),new THREE.MeshBasicMaterial({map:ct,transparent:true,depthWrite:false,fog:false,opacity:.55}));
