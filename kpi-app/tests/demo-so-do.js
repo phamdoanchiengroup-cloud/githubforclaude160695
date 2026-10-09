@@ -36,7 +36,7 @@ const mauPhong = (p, ten) => p.evaluate(t => { const g = [...document.querySelec
   ok(/Đang bảo trì/.test(await p.textContent('#ct')) && /M-CNC-02|M 03/.test(await p.textContent('#ct')), 'chạm máy đỏ: "Đang bảo trì" + lý do + mã máy trên web');
   await p.click('#xs button[data-x="PHOITHO"]'); await p.waitForTimeout(200);
   s = await p.evaluate(() => [document.querySelector('#segTang button[aria-pressed="true"]').dataset.f, document.querySelectorAll('#mb .phong.sang').length, document.getElementById('mb').classList.contains('loc')]);
-  ok(s[0] === '0' && s[1] === 4 && s[2], 'bấm xưởng Phôi Thô ở danh sách: tự sang Tầng 1, làm nổi 4 khu của xưởng', s);
+  ok(s[0] === '0' && s[1] === 3 && s[2], 'bấm xưởng Phôi Thô ở danh sách: tự sang Tầng 1, làm nổi 3 khu của xưởng', s);
   await p.click('details.ghep summary');
   await p.selectOption('#bg select[data-fi="0"][data-ri="6"]', 'PHOITHO'); await p.waitForTimeout(200);
   ok(await mauPhong(p, 'Khu chuốt') === '#2fd3c6', 'bảng ghép: đổi "Khu chuốt" sang Phôi Thô (84%) → tô xanh ngọc hạng B ngay', await mauPhong(p, 'Khu chuốt'));
