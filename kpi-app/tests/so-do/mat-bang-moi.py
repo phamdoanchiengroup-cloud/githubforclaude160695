@@ -4,6 +4,7 @@
    trên bản vẽ. Theo yêu cầu: "Bộ phận may" và "Tập kết sản phẩm tạm" (tầng 3) thành kho, "Máy CNC thùng chạy ren" thành Phòng QC.
    Chạy một lần: python3 tests/so-do/mat-bang-moi.py (đã chạy thì DATA mới nằm sẵn trong nha-may-3d.html)."""
 import io, os, re, json
+import re as _re
 P = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', '..', 'so-do', 'nha-may-3d.html')
 s = io.open(P, encoding='utf-8').read()
 m = re.search(r'const DATA = (\[.*?\])\n;', s, re.S)
@@ -176,6 +177,104 @@ for (xa, ya) in ((12.4, 31.6), (13.15, 31.6), (12.4, 32.25)):
 D[2]['mc'] += NGON
 D[2]['bang'] += [[14.75, 20.6, 21.75, 20.6], [21.75, 20.6, 21.75, 32.6], [21.75, 32.6, 14.75, 32.6], [14.75, 32.6, 14.75, 20.6],
                  [0.3, 27.9, 12.6, 27.9]]
+
+# ---------- Khu phôi thô tầng 1 (sảnh phôi thô, P. khuôn, khu đổ foam, đúc keo): theo ảnh chụp thực tế (11/10) ----------
+SAN1 = {'Khu vực phôi thô': 'trang', 'P. khuôn': 'trang', 'Khu đúc keo': 'trang', 'Khu đổ foam': 'xam'}
+for R in D[0]['rooms']:
+    if R['n'] in SAN1: R['san'] = SAN1[R['n']]
+for M in D[0]['mc']:
+    if _re.match(r'^(T\d+|N\d)$', M['l']): M['t'] = 'tienl'
+    if M['l'] == 'F2' and M['r'][1] > 2: M['l'] = 'F3'
+PT = []
+for xa in (22.2, 31.85):                       # xe ống giấy giữa hai cột máy tiện
+    for ya in (2.0, 5.0, 8.0, 11.0):
+        PT.append(may('Xe ống phôi', xa, ya, xa + 1.0, ya + 0.6, 1.0, 'xeong', 'Xe đẩy ống giấy cắm phôi'))
+for ya in (3.4, 9.6):                          # lối giữa
+    PT.append(may('Xe ống phôi', 26.4, ya, 27.4, ya + 0.6, 1.0, 'xeong', 'Xe đẩy ống giấy cắm phôi'))
+PT += [may('Sọt nhựa', 27.9, 5.6, 28.7, 6.15, 0.45, 'sot'), may('Sọt nhựa', 27.9, 6.3, 28.7, 6.85, 0.45, 'sot'),
+       may('Sọt nhựa', 36.2, 5.2, 37.0, 5.75, 0.45, 'sot'), may('Chậu cây', 27.35, 7.95, 27.85, 8.45, 1.6, 'cay')]
+# P. khuôn: kệ hàng sát vách, xe ống giấy dọc vách khu foam, sọt nhựa đựng phôi ở giữa
+PT += [may('Kệ khuôn', 6.6, 9.0, 7.2, 11.0, 2.0, 'ke', 'Kệ chai hóa chất + thùng'), may('Kệ khuôn', 6.6, 11.1, 7.2, 13.1, 2.0, 'ke', 'Kệ chai hóa chất + thùng'),
+       may('Kệ khuôn', 8.0, 12.95, 10.0, 13.5, 2.0, 'ke', 'Kệ hàng'), may('Kệ khuôn', 10.1, 12.95, 12.1, 13.5, 2.0, 'ke', 'Kệ hàng')]
+for xa in (8.2, 9.3, 10.4, 11.5, 12.6):
+    PT.append(may('Xe ống phôi', xa, 8.6, xa + 1.0, 9.2, 1.0, 'xeong', 'Xe đẩy ống giấy cắm phôi'))
+for (xa, ya) in ((10.4, 10.4), (11.4, 10.4), (10.4, 11.15), (13.2, 11.6)):
+    PT.append(may('Sọt nhựa', xa, ya, xa + 0.85, ya + 0.6, 0.45, 'sot'))
+# khu đổ foam: thùng phuy hóa chất cạnh máy rót; khu đúc keo: bàn làm việc sát cửa sổ
+for (x, y, mau) in ((11.6, 0.35, 'xanh'), (13.1, 0.35, 'đỏ'), (15.2, 0.35, 'xanh'), (15.8, 1.3, 'đỏ'), (17.05, 1.7, 'xanh'), (17.05, 4.4, 'đỏ')):
+    PT.append(may('Phuy ' + mau, x, y, x + 0.58, y + 0.58, 0.9, 'phuy', 'Thùng phuy hóa chất 200 lít'))
+PT += [may('Bàn làm việc', 7.0, 0.4, 9.4, 1.1, 0.85, 'ban'), may('Xe ống phôi', 9.9, 2.8, 10.9, 3.4, 1.0, 'xeong', 'Xe đẩy ống giấy cắm phôi')]
+D[0]['mc'] = [M for M in D[0]['mc'] if M.get('src') != 'mb11'] + [dict(M, src='mb11') for M in PT]
+D[0]['bang'] = [[25.95, 0.6, 25.95, 13.2], [28.9, 0.6, 28.9, 13.2], [35.7, 0.6, 35.7, 4.7], [35.7, 4.7, 42.1, 4.7],
+                [11.5, 0.3, 11.5, 4.2], [7.5, 9.4, 7.5, 12.8]]
+
+# ---------- Khu phôi carbon tầng 1 (chuốt, nướng + rút khuôn, ISO phôi CB, cuốn, cắt): theo ảnh chụp thực tế (11/10) ----------
+for R in D[0]['rooms']:
+    R['san'] = {'Nướng + rút khuôn': 'gach', 'ISO phôi CB': 'gach', 'Khu chuốt': 'gach', 'Cuốn': 'trang', 'Cắt': 'trang'}.get(R['n'], R.get('san'))
+    if R.get('san') is None: R.pop('san', None)
+LOAI = [(r'^RYM', 'chuot'), (r'^TQD', 'mai'), (r'^TD-', 'mai'), (r'^RT\d', 'rutkhuon'), (r'^GH-', 'lo'), (r'^TWC', 'banthep'),
+        (r'^DZC', 'maycat'), (r'^CB-X', 'bankinh'), (r'^SKTG', 'cuon')]
+for M in D[0]['mc']:
+    for mu, t in LOAI:
+        if _re.match(mu, M['l']): M['t'] = t
+CB = []
+for (x, y) in ((13.9, 30.3), (14.6, 30.3), (9.0, 30.3), (8.3, 26.0), (13.0, 26.2), (5.2, 25.6)):     # sọt tròn đựng phôi ở khu nướng
+    CB.append(may('Sọt tròn', x, y, x + 0.5, y + 0.5, 0.45, 'ro'))
+for y in (18.8, 19.6, 20.4, 21.2):                                                              # lối đi: sọt xanh + kệ
+    CB.append(may('Sọt nhựa', 7.4, y, 8.3, y + 0.62, 0.5, 'sot'))
+CB += [may('Kệ hàng', 10.65, 18.4, 11.25, 20.4, 2.0, 'ke'), may('Kệ hàng', 10.65, 20.5, 11.25, 22.5, 2.0, 'ke'),
+       # ISO phôi CB: kệ sát vách, bàn mặt kính, sọt tròn
+       may('Kệ ISO', 17.1, 17.5, 17.7, 19.5, 2.0, 'ke'), may('Kệ ISO', 17.1, 19.6, 17.7, 21.6, 2.0, 'ke'),
+       may('Bàn ISO', 11.8, 18.6, 13.9, 19.6, 0.85, 'bankinh'), may('Bàn ISO', 11.8, 20.6, 13.9, 21.6, 0.85, 'bankinh'), may('Bàn ISO', 14.6, 18.6, 16.4, 19.6, 0.85, 'bankinh'),
+       may('Sọt tròn', 14.7, 21.0, 15.2, 21.5, 0.45, 'ro'), may('Sọt tròn', 15.5, 21.0, 16.0, 21.5, 0.45, 'ro'),
+       # cắt: bàn gỗ ép + kệ cuối phòng
+       may('Bàn gỗ', 33.6, 25.0, 35.0, 28.0, 0.85, 'banthep'), may('Kệ hàng', 29.4, 33.6, 31.4, 34.2, 2.0, 'ke')]
+D[0]['mc'] = [M for M in D[0]['mc'] if M.get('src') != 'mb12'] + [dict(M, src='mb12') for M in CB]
+D[0]['bang'] += [[20.8, 17.4, 20.8, 33.8], [26.45, 17.4, 26.45, 33.8], [30.7, 23.0, 34.6, 23.0], [34.6, 23.0, 34.6, 30.2], [34.6, 30.2, 30.7, 30.2], [30.7, 30.2, 30.7, 23.0]]
+
+# ---------- Tầng 2: phòng In UV + bộ phận Sơn – theo ảnh chụp thực tế (11/10) ----------
+SAN2 = ('Khu vực in UV', 'Khu vực hoàn thiện', 'Khu chờ khô bán thành phẩm', 'P. quản lý BP Sơn', 'P. kiểm tra chuẩn bị', 'P. ráp tuốt lót',
+        'Buồng sấy', 'Khu hoàn thiện (buồng sơn kín 1–5)', 'Khu sơn tĩnh điện (vách tấm panel)')
+for R in D[1]['rooms']:
+    if R['n'] in SAN2: R['san'] = 'trang'
+for M in D[1]['mc']:
+    cy = (M['r'][1] + M['r'][3]) / 2
+    if M['l'] == 'MT1' and cy > 23.2: M['t'] = 'tuuv'          # tủ cao cạnh máy in UV
+    if _re.match(r'^BS\d', M['l']): M['t'] = 'bantien'
+    if M['l'].startswith('STĐ'): M['t'] = 'phunson'
+U = []
+def xj(x, y, mau=''):
+    U.append(may('Xe jig' + (' trắng' if mau else ''), x, y, x + 1.0, y + 0.6, 1.15, 'xejig', 'Xe jig treo cơ'))
+# In UV: bàn máy tính trước máy in, xe jig dọc 2 lối đi
+for x in (23.2, 29.0, 34.2, 39.6):
+    U.append(may('MT', x, 24.6, x + 1.2, 25.1, 0.75))
+for x in (29.4, 37.2):
+    U.append(may('MT', x, 32.2, x + 1.2, 32.7, 0.75))
+for x in (22.8, 28.5, 31.0, 33.6, 39.0): xj(x, 25.6)
+for x in (23.6, 28.6, 36.0, 42.6): xj(x, 30.9)
+# Khu vực hoàn thiện (cạnh phòng UV): bãi xe jig + kệ + bàn gỗ
+for x in (31.0, 32.1, 33.2, 34.3):
+    for y in (18.4, 19.1, 19.8): xj(x, y)
+U += [may('Kệ hàng', 34.0, 22.5, 36.0, 23.05, 2.0, 'ke'), may('Kệ hàng', 37.9, 17.4, 38.45, 19.4, 2.0, 'ke'), may('Bàn gỗ', 30.5, 21.8, 32.3, 22.8, 0.85, 'banthep')]
+# Sơn – khu chờ khô: xe jig cơ đã sơn trắng
+for x in (8.7, 9.8, 10.85):
+    for y in (7.4, 8.2, 9.0, 9.8): xj(x, y, 'trắng')
+# Sơn – P. kiểm tra chuẩn bị: thùng carton, sọt, xe jig sát vách
+for (x, y) in ((17.5, 9.5), (18.5, 9.5), (17.5, 10.3), (20.3, 9.8), (21.3, 9.8)):
+    U.append(may('Thùng carton', x, y, x + 0.85, y + 0.55, 0.35, 'thung'))
+U += [may('Sọt tròn', 19.6, 11.2, 20.1, 11.7, 0.45, 'ro'), may('Sọt tròn', 22.4, 11.0, 22.9, 11.5, 0.45, 'ro')]
+for y in (9.0, 9.8, 10.6): xj(15.1, y, 'trắng')
+# Sơn – P. quản lý BP Sơn: bàn họp
+U.append(may('Bàn họp', 12.4, 8.8, 13.9, 9.7, 0.75, 'ban'))
+# Sơn – trước buồng sơn kín và máy phun sơn: xe jig
+for x in (7.5, 11.6, 15.7, 19.8, 23.9): xj(x, 3.4, 'trắng')
+for x in (28.5, 32.6, 36.7, 40.8): xj(x, 3.9, 'trắng')
+U.append(may('Bàn pha sơn', 42.6, 4.6, 44.4, 5.4, 0.85, 'banthep'))
+D[1]['mc'] = [M for M in D[1]['mc'] if M.get('src') != 'mb13'] + [dict(M, src='mb13') for M in U]
+D[1]['bang'] = [[22.6, 26.4, 41.5, 26.4], [22.6, 30.6, 44.5, 30.6], [30.8, 18.2, 35.5, 18.2], [35.5, 18.2, 35.5, 20.6], [35.5, 20.6, 30.8, 20.6], [30.8, 20.6, 30.8, 18.2],
+                [8.55, 7.25, 11.75, 7.25], [11.75, 7.25, 11.75, 10.55], [11.75, 10.55, 8.55, 10.55], [8.55, 10.55, 8.55, 7.25],
+                [17.2, 9.2, 22.6, 9.2], [22.6, 9.2, 22.6, 11.9], [22.6, 11.9, 17.2, 11.9], [17.2, 11.9, 17.2, 9.2],
+                [4.6, 5.3, 26.8, 5.3], [27.3, 5.3, 44.4, 5.3]]
 
 moi = json.dumps(D, ensure_ascii=False, separators=(',', ':'))
 s = s[:m.start(1)] + moi + s[m.end(1):]
