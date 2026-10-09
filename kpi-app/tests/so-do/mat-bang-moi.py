@@ -51,8 +51,9 @@ SO2 = {'Đánh ráp, đánh bóng': (149, 10), 'Bọc da': (47.9, 4), 'Bôi keo'
        'Buồng sấy': (38.3, 1), 'WC-02': (21.8, None), 'Khu hoàn thiện (buồng sơn kín 1–5)': (None, 8)}
 for R in D[1]['rooms']:
     if R['n'] in SO2: R['a'], R['p'] = SO2[R['n']]
-    if R['n'] == 'P. quản lý': R['a'], R['p'] = (15.4, 1) if R['r'][0][0] < 20 else (18.9, 1)
-    if R['n'] == 'Quản lý': R['n'] = 'P. quản lý'
+    # phòng quản lý phía dưới hành lang thuộc bộ phận Sơn (11/10: "toàn bộ phía dưới hành lang là BP Sơn")
+    if R['n'] in ('Quản lý', 'P. quản lý', 'P. quản lý BP Sơn') and R['r'][0][1] < 13.7: R['n'], R['a'], R['p'] = 'P. quản lý BP Sơn', 13, 1
+    elif R['n'] == 'P. quản lý': R['a'], R['p'] = (15.4, 1) if R['r'][0][0] < 20 else (18.9, 1)
 
 # ---------- Tầng 3 (BTM-03) ----------
 D[2]['rooms'] = [
