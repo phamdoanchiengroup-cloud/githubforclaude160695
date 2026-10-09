@@ -73,7 +73,7 @@ var BAN_MOI_CAN_CO = {
   'DeHieu.gs': ['deHieuLap_', 'th6Lap_'],
   'TaiKhoan.gs': ['dangKy', 'ttQuaDangKy_'],
   'ThanhToan.gs': ['ttBangGia_', 'TT_GIA_PHIEN'],
-  'HoiTu.gs': ['htHoiTu_', 'htBtTin_'],
+  'HoiTu.gs': ['htTinHieu_', 'htBtTin_'],
   'TongHop.gs': ['tongHopLuan', 'vsHieuChinh_']
 };
 function kiemTraCaiDat_() {

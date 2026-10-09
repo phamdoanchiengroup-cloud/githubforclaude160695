@@ -99,6 +99,7 @@ File này được Claude Code tự đọc khi mở repo. Nó thay cho "trí nh�
 ## Kiểm thử (chạy trước khi commit)
 ```bash
 cd tuvi-app
+node tests/cai-dat.js                          # bộ kiemTraCaiDat: HAM_CAN_CO đủ file, BAN_MOI_CAN_CO khớp mã hiện tại (tránh báo nhầm "bản cũ")
 node tests/giai-doan.js                        # bán theo giai đoạn, gói gia đình, phần cắt ở máy chủ (34 kiểm tra)
 node tests/lich-su.js                          # lịch sử: lá số trùng chỉ giữ bản mới nhất, ẩn trùng, dọn trùng
 node tests/nghiem-chung.js                     # nghiệm chứng dựa trên tổng hợp 6 hệ
@@ -133,6 +134,7 @@ cd tests && npm install && node thien-van.mjs && node doi-chieu.js   # đối ch
   - `chuanHoa` bỏ giao diện bán hàng (thẻ khóa, ưu đãi, bảng giá).
   - Các mục: tom, linhvuc, nguoi, duyen, doi, vh, bien, chart, battu, astro, so, hd, halac, them. Nhóm hiển thị theo `PDF_NHOM`.
 - **Thêm file `.gs` mới:** phải thêm vào `HAM_CAN_CO` trong Code.gs (hàm `kiemTraCaiDat`) và cập nhật số file trong HUONG-DAN-CAI-DAT.md.
+- **`BAN_MOI_CAN_CO` = [hàm, chuỗi phải có trong thân hàm đó]:** chọn đúng hàm thực sự chứa lời gọi (đã từng đặt nhầm `htHoiTu_` thay vì `htTinHieu_` → chủ dự án dán đúng vẫn bị báo bản cũ). Luôn chạy `node tests/cai-dat.js`.
 
 ## Tiến trình
 **Đã xong** (xem `git log`):
