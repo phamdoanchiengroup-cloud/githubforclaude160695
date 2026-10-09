@@ -276,6 +276,45 @@ D[1]['bang'] = [[22.6, 26.4, 41.5, 26.4], [22.6, 30.6, 44.5, 30.6], [30.8, 18.2,
                 [17.2, 9.2, 22.6, 9.2], [22.6, 9.2, 22.6, 11.9], [22.6, 11.9, 17.2, 11.9], [17.2, 11.9, 17.2, 9.2],
                 [4.6, 5.3, 26.8, 5.3], [27.3, 5.3, 44.4, 5.3]]
 
+# ---------- Đợt ảnh 11/10 (2): Hoàn thiện tầng 2, CNC / Phòng da / QC tầng 3, sắp lại phòng đóng gói ----------
+def dat(fi, nhan, t, dk=lambda M: True):
+    for M in D[fi]['mc']:
+        if _re.match(nhan, M['l']) and dk(M): M['t'] = t
+dat(1, r'^HK1$', 'banh'); dat(1, r'^Thiết bị$', 'ratd'); dat(1, r'^B[13]$', 'banthep', lambda M: abs(M['r'][2]-M['r'][0]) > 1.5 or abs(M['r'][3]-M['r'][1]) > 1.5)
+dat(2, r'^(BTT \d|BK\d)$', 'banthep'); dat(2, r'^TL$', 'ep'); dat(2, r'^Máy logo$', 'inpad')
+for R in D[2]['rooms']:
+    if R['n'] == 'P. kỹ thuật làm phôi': R['n'] = 'Phòng da'
+    if R['n'] in ('Phòng da', 'P. máy CNC 1', 'P. máy CNC 2', 'Khu vực CNC', 'P. máy tiện', 'Đóng gói', 'Phòng QC', 'P. quản lý'): R['san'] = 'trang'
+for R in D[1]['rooms']:
+    if R['n'] in ('Ráp nước', 'Đánh ráp, đánh bóng', 'Bọc da', 'Bôi keo', 'ISO', 'P. cắt mặt'): R['san'] = 'trang'
+H2 = [may('Máy chà nhám', 0.4, 32.9, 1.4, 33.8, 1.2, 'chanham'), may('Máy chà nhám', 2.3, 32.9, 3.3, 33.8, 1.2, 'chanham'),
+      may('Sọt tròn', 1.6, 31.0, 2.1, 31.5, 0.45, 'ro'),
+      may('Bàn bi-a thử cơ', 15.7, 25.7, 18.2, 27.1, 0.8, 'banbi'), may('Ghế cao', 18.5, 27.3, 18.85, 27.65, 0.75, 'ghecao'),
+      may('Bàn ISO', 18.6, 17.6, 21.6, 18.6, 0.85, 'banthep'),
+      may('Máy tiện', 23.0, 18.9, 25.0, 19.55, 1.3, 'tienl'), may('Máy tiện', 23.0, 21.3, 25.0, 21.95, 1.3, 'tienl'),
+      may('Máy tiện CNC', 27.0, 17.6, 29.8, 18.4, 1.5, 'tiencnc')]
+for x in (12.4, 13.5, 14.6): H2.append(may('Xe ống cơ', x, 22.6, x + 1.0, 23.2, 1.0, 'xeong', 'Xe ống giấy cắm cơ'))
+for x in (15.8, 16.9): H2.append(may('Xe ống cơ', x, 17.6, x + 1.0, 18.2, 1.0, 'xeong', 'Xe ống giấy cắm cơ'))
+for x in (26.7, 27.8): H2.append(may('Xe jig', x, 20.5, x + 1.0, 21.1, 1.15, 'xejig', 'Xe jig treo cơ'))
+D[1]['mc'] = [M for M in D[1]['mc'] if M.get('src') != 'mb14'] + [dict(M, src='mb14') for M in H2]
+H3 = [may('Máy lạng da', 31.2, 33.2, 32.6, 33.9, 1.1, 'langda'), may('Kệ phòng da', 31.1, 29.3, 31.7, 31.3, 2.0, 'ke'),
+      may('Bàn họp', 27.8, 30.0, 29.8, 31.0, 0.75, 'ban'),
+      may('Bàn bi-a thử cơ', 32.2, 8.0, 34.8, 9.4, 0.8, 'banbi'),
+      may('Xe ống cơ', 31.0, 10.6, 32.0, 11.2, 1.0, 'xeong', 'Xe ống giấy cắm cơ'), may('Xe ống cơ', 36.4, 11.6, 37.4, 12.2, 1.0, 'xeong', 'Xe ống giấy cắm cơ'),
+      may('Xe ống cơ', 36.4, 10.7, 37.4, 11.3, 1.0, 'xeong', 'Xe ống giấy cắm cơ')]
+for x in (34.4, 35.0, 35.6): H3.append(may('Ghế cao', x, 12.5, x + 0.35, 12.85, 0.75, 'ghecao'))
+# đóng gói: bỏ lưới 12 bàn + máy co màng cũ, thay bằng 2 dãy bàn dài, máy co màng + hầm co sát vách hành lang, pallet hàng đã đóng
+D[2]['mc'] = [M for M in D[2]['mc'] if not (M.get('src') == 'mb10' and (M['l'] in ('VSĐG', 'SEAL') or (M['l'] == 'MT' and M['r'][0] < 10)))]
+for y in (4.6, 7.6):
+    for x in (13.0, 14.7, 16.4, 18.1, 19.8, 21.5, 23.2):
+        H3.append(may('VSĐG', x, y, x + 1.55, y + 1.05, 0.85, 'bandg', 'Bàn đóng gói (khung đèn LED)'))
+H3 += [may('SEAL', 6.45, 9.7, 7.2, 11.2, 1.3, 'seal', 'Máy hàn cắt màng chữ L'), may('Hầm co màng', 7.5, 10.3, 9.4, 11.0, 1.2, 'hamco'),
+       may('Pallet hàng', 22.8, 9.2, 24.2, 10.4, 1.0, 'pallet'), may('Pallet hàng', 24.6, 9.2, 26.0, 10.4, 1.3, 'pallet'),
+       may('Pallet hàng', 27.0, 4.0, 28.4, 5.2, 1.5, 'pallet'), may('Pallet hàng', 27.0, 5.6, 28.4, 6.8, 1.1, 'pallet')]
+D[2]['mc'] = [M for M in D[2]['mc'] if M.get('src') != 'mb14'] + [dict(M, src='mb14') for M in H3]
+D[2]['bang'] = [b for b in D[2]['bang'] if b[0] != 13.7 and b[2] != 13.7 and not (b[0] == 24.4 and b[2] == 24.4)] + \
+               [[12.8, 4.3, 25.0, 4.3], [25.0, 4.3, 25.0, 8.95], [25.0, 8.95, 12.8, 8.95], [12.8, 8.95, 12.8, 4.3]]
+
 moi = json.dumps(D, ensure_ascii=False, separators=(',', ':'))
 s = s[:m.start(1)] + moi + s[m.end(1):]
 io.open(P, 'w', encoding='utf-8').write(s)

@@ -14,7 +14,7 @@ var SS = (function () {
     '1|Khu vực hoàn thiện': 'HT', '1|Khu chờ khô bán thành phẩm': 'SON', '1|P. kiểm tra chuẩn bị': 'SON', '1|P. ráp tuốt lót': 'SON', '1|Buồng sấy': 'SON',
     '1|Khu vực in UV': 'INUV', '1|Khu hoàn thiện (buồng sơn kín 1–5)': 'SON', '1|Khu sơn tĩnh điện (vách tấm panel)': 'SON', '1|P. quản lý BP Sơn': 'SON',
     '2|Khu làm đầu': 'NGONTIP', '2|Khu vực ngọn': 'NGONTARO', '2|Khu vực CNC': 'CNC', '2|P. máy CNC 2': 'CNC', '2|P. máy tiện': 'CNC',
-    '2|P. máy CNC 1': 'CNC', '2|P. kỹ thuật làm phôi': 'CNC',
+    '2|P. máy CNC 1': 'CNC', '2|Phòng da': 'CNC',
     '2|Đóng gói': 'DG', '2|Bộ phận đóng gói': 'DG'
   };
   // số liệu MẪU hôm nay: kpi = hiệu suất KPI %, coMat / dinhBien = sĩ số, cho = dòng chờ duyệt
