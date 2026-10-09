@@ -773,5 +773,9 @@ R("""      '<td colspan="2" style="font-weight:600;color:var(--cyan)">Tổng</td
 #     Mai chỉ ô nhập sai, pháo giấy hạng A, hết phiên kéo dây. Giữ nguyên trang công nhân nhập sản lượng và điểm danh.
 exec(io.open(os.path.join(D, 'thao-tac', 'va-thao-tac.py'), encoding='utf-8').read())
 
+# 15) SƠ ĐỒ NHÀ MÁY (10/10): tab "Sơ đồ nhà máy" cho ADMIN + TP – mặt bằng 2D tô màu theo KPI tháng này / sĩ số hôm nay
+#     (số liệu thật), máy đang bảo trì theo xưởng, nút "Xem 3D" (bản 3D của chủ dự án) trên máy tính.
+exec(io.open(os.path.join(D, 'so-do', 'va-so-do.py'), encoding='utf-8').read())
+
 io.open(os.path.join(D, '..', 'Index.html'), 'w', encoding='utf-8').write(s)
 print('OK Index.html')

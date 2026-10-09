@@ -7,6 +7,12 @@ Bản này gồm **mọi thay đổi từ đầu** (sửa lỗi chốt tháng, b
 - **Cần có:** máy tính (không làm trên điện thoại), trình duyệt Chrome, đăng nhập đúng tài khoản Google đang giữ dự án Apps Script và file Sheet "CSDL KPI".
 - **Cần dán lại 2 file:** `Code.gs` và `Index.html`.
 
+> **Bản 10/10/2026 (tối) – Sơ đồ nhà máy.** Chỉ đổi **`Index.html`**. Làm **A3 (sao lưu) → B2 → Phần D**, rồi Ctrl+F5.
+> - Menu mới **"Sơ đồ nhà máy"** (dưới Tổng quan) cho Ban điều hành và Trưởng phòng: mặt bằng 3 tầng theo bản vẽ, mỗi khu tô màu theo **KPI tháng này** (sản lượng đã chốt từ đầu tháng, cùng cách tính với "So sánh hiệu suất giữa các xưởng") hoặc **Sĩ số hôm nay** (xưởng đã điểm danh). Chạm khu để xem KPI, có mặt, số dòng chờ duyệt và **máy đang báo bảo trì** của xưởng.
+> - Trưởng phòng chỉ thấy số của xưởng mình. Công nhân không có menu này.
+> - Máy tính có nút **"Xem 3D"** (mô hình 3D, cần mạng để tải thư viện; điện thoại dùng bản 2D).
+> - **Bảng ghép khu ↔ xưởng** (chỉ Ban điều hành, cuối trang): ghép tạm theo tên khu trên bản vẽ; chọn lại nếu sai – lựa chọn lưu trên trình duyệt của máy đó. Máy bảo trì chưa có vị trí trên bản vẽ nên hiện theo xưởng, chưa nháy trên sơ đồ.
+
 > **Bản 10/10/2026 – Hiệu ứng thao tác + hiệu ứng màn đăng nhập.** Chỉ đổi **`Index.html`**. Làm **A3 (sao lưu) → B2 → Phần D**, rồi Ctrl+F5.
 > - **Màn đăng nhập:** mở trang là **cửa cuốn** đóng – kéo lên (hoặc chạm tay nắm / nhấn Enter) mới thấy ô nhập; chưa điền đủ mà rê chuột vào **Đăng nhập** thì nút chạy trốn (điện thoại: chạm thì nút nhảy sang bên); mắt Mai nhìn theo chữ đang gõ, bật Caps Lock thì Mai bịt tai; sai mật khẩu 3 lần liền thì khóa kiểu két sắt 30 giây; lời chào và màu nền đổi theo giờ (ca đêm tông vàng ấm). Máy bật "giảm chuyển động" thì bỏ qua cửa cuốn.
 > - **Duyệt sản lượng:** bấm Duyệt / Từ chối thì nhóm đó đóng tem **ĐÃ DUYỆT / TRẢ LẠI** và có **4 giây "Hoàn tác"** rồi mới gửi đi (Từ chối không hỏi "Bạn có chắc?" nữa). Điện thoại: **vuốt cả nhóm** sang phải = Duyệt, sang trái = Từ chối.
