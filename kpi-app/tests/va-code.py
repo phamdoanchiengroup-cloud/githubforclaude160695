@@ -1311,12 +1311,24 @@ R("""  Logger.log('Đã dọn: '+soPhat+' dòng PhatNhapTre, '+soVP+' vi phạm 
 
 # Sau khi chốt tháng tự động: tạo báo cáo PDF, lưu Drive, gửi email (lỗi gửi báo cáo không được làm hỏng việc chốt)
 R("""  var n = chotThangLoi_(kyCu, '', 'Tự động (ngày làm việc thứ 3)');""", """  var n = chotThangLoi_(kyCu, '', 'Tự động (ngày làm việc thứ 3)');
+  try { comTongKetThang_(kyCu); } catch (e) { Logger.log('Tổng kết cơm trưa lỗi: ' + e); }
   try { guiBaoCaoThang_(kyCu); } catch (e) { Logger.log('Gửi báo cáo tháng lỗi: ' + e); }""")
+
+# Cơm trưa (11/10): vai trò BEP chỉ dùng trang Cơm trưa – không gửi dữ liệu sản xuất / nhân sự
+R("""  if (me.phaiDoiMK) return sach_({ ok: false, phaiDoiMK: true, me: me, msg: 'Cần đổi mật khẩu lần đầu trước khi dùng hệ thống.' });
+  var can = function(p) { return !phan || phan.indexOf(p) >= 0; };""", """  if (me.phaiDoiMK) return sach_({ ok: false, phaiDoiMK: true, me: me, msg: 'Cần đổi mật khẩu lần đầu trước khi dùng hệ thống.' });
+  if (me.vaiTro === 'BEP') {
+    var rong = { ok: true, me: me, phan: phan || 'tat', phongban: doc_('PhongBan').map(function(p) { return { MaXuong: p.MaXuong, TenXuong: p.TenXuong }; }) };
+    ['nhatky','choDuyet','nhansu','congdoan','dinhmuc','chamcong','maymoc','kcs','loi','vipham','dexuat','trongso','log','thongBao','ngayLe','lydo','nghiDaiHan','dmvp','xacNhanDD','yeuCauHoSo','yeuCauHoSoCuaToi','canNhapLai'].forEach(function(k) { rong[k] = []; });
+    return sach_(rong);
+  }
+  var can = function(p) { return !phan || phan.indexOf(p) >= 0; };""")
 
 # ---------------------------------------------------------------- hàm chạy tay một lần
 s = s.rstrip() + '\n' + io.open(os.path.join(os.path.dirname(__file__), 'ham-chay-tay.gs'), encoding='utf-8').read()
 s = s.rstrip() + '\n' + io.open(os.path.join(os.path.dirname(__file__), 'toc-do.gs'), encoding='utf-8').read()
 s = s.rstrip() + '\n' + io.open(os.path.join(os.path.dirname(__file__), 'bao-cao.gs'), encoding='utf-8').read()
+s = s.rstrip() + '\n' + io.open(os.path.join(os.path.dirname(__file__), 'com-trua.gs'), encoding='utf-8').read()
 
 io.open(RA, 'w', encoding='utf-8').write(s)
 print('OK ->', os.path.abspath(RA))

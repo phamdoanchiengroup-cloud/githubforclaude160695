@@ -157,7 +157,19 @@ function bcDuLieu_(ky) {
     return nsX[mx] || sl.X[mx] || k.ds.some(function(o){ return o.MaXuong === mx; });
   });
   return { ky:ky, kyT:kyT, tenX:tenX, dsX:dsX, tenNV:tenNV, kpi:k.ds, kpiT:kpiT, kpiTds:kT.ds, chinhThuc:k.chinhThuc,
-           sl:sl, slT:slT, cc:cc, ccT:ccT, vp:vp, vpT:vpT, duSo:duSo, tre:tre, ns:nsX, ql:ql, lapLuc:new Date() };
+           sl:sl, slT:slT, cc:cc, ccT:ccT, vp:vp, vpT:vpT, duSo:duSo, tre:tre, ns:nsX, ql:ql, com:bcCom_(ky), lapLuc:new Date() };
+}
+
+/* Suất ăn trưa của tháng theo xưởng (module cơm trưa); lỗi / chưa dùng thì trả mảng rỗng */
+function bcCom_(ky) { try { return typeof comBaoCao_ === 'function' ? comBaoCao_(ky) : []; } catch (e) { return []; } }
+function bcComHtml_(ds, so) {
+  if (!ds.length) return '';
+  var tong = { soNgay:0, an:0, khong:0, chua:0 };
+  ds.forEach(function(x){ tong.soNgay = Math.max(tong.soNgay, x.soNgay); tong.an += x.an; tong.khong += x.khong; tong.chua += x.chua; });
+  var dong = function(x, i, dam){ return '<tr' + (i % 2 ? ' class="chan"' : '') + '><td>' + (dam ? '<b>' : '') + bcE_(x.ten) + (dam ? '</b>' : '') + '</td><td class="r">' + x.soNgay + '</td><td class="r"><b>' + bcSo_(x.an) + '</b></td><td class="r">' + bcSo_(x.khong) + '</td><td class="r">' + bcSo_(x.chua) + '</td><td class="r">' + (x.soNgay ? bcSo_(x.an / x.soNgay, 1) : '–') + '</td></tr>'; };
+  return '<h2>' + so + '. Suất ăn trưa</h2><table class="bang"><tr><th>Xưởng</th><th class="r">Ngày có cơm</th><th class="r">Suất ăn</th><th class="r">Không ăn</th><th class="r">Chưa đăng ký</th><th class="r">TB suất / ngày</th></tr>' +
+    ds.map(function(x, i){ return dong(x, i); }).join('') + (ds.length > 1 ? dong({ ten:'Toàn nhà máy', soNgay:tong.soNgay, an:tong.an, khong:tong.khong, chua:tong.chua }, ds.length, true) : '') +
+    '</table><p class="nho">Theo đăng ký cơm trưa trên web (hạn chót 16:00 hôm trước). "Chưa đăng ký": người có tài khoản nhưng không bấm Ăn / Không ăn.</p>';
 }
 
 /* Tóm tắt số của 1 phạm vi (mx = '' -> toàn nhà máy) */
@@ -339,6 +351,7 @@ function bcHtmlTong_(du) {
         '<td class="r"><b>' + bcSo_(q.tong,1) + '</b></td><td class="c" style="color:#fff;background:' + BC_MAU_LOAI[l] + ';font-weight:bold">' + l + '</td></tr>'; });
     h += '</table>';
   }
+  h += bcComHtml_(du.com || [], (du.ql.length ? (loi.length ? 11 : 10) : (loi.length ? 10 : 9)));
   return bcThead_(h + bcPhuongPhap_(du) + '</body></html>');
 }
 
@@ -373,6 +386,7 @@ function bcHtmlXuong_(du, mx) {
   var ql = du.ql.filter(function(q){ return q.MaXuong === mx; });
   if (ql.length) h += '<h2>9. KPI quản lý</h2><table class="bang"><tr><th>Họ tên</th><th>Chức vụ</th><th class="r">Hiệu suất xưởng</th><th class="r">Tỷ lệ đạt</th><th class="r">Vận hành</th><th class="r">Nề nếp</th><th class="r">KPI quản lý</th></tr>' +
     ql.map(function(q){ return '<tr><td>' + bcE_(q.HoTen) + '</td><td>' + (q.vaiTro === 'TP' ? 'Trưởng phòng' : 'Phó phòng') + '</td><td class="r">' + bcSo_(q.hsXuong,1) + '</td><td class="r">' + bcSo_(q.tlDat,1) + '</td><td class="r">' + bcSo_(q.vanHanh,1) + '</td><td class="r">' + bcSo_(q.neNep,1) + '</td><td class="r"><b>' + bcSo_(q.tong,1) + '</b></td></tr>'; }).join('') + '</table>';
+  h += bcComHtml_((du.com || []).filter(function(x){ return x.mx === mx; }), ql.length ? 10 : 9);
   return bcThead_(h + bcPhuongPhap_(du) + '</body></html>');
 }
 

@@ -777,5 +777,8 @@ exec(io.open(os.path.join(D, 'thao-tac', 'va-thao-tac.py'), encoding='utf-8').re
 #     (số liệu thật), máy đang bảo trì theo xưởng, nút "Xem 3D" (bản 3D của chủ dự án) trên máy tính.
 exec(io.open(os.path.join(D, 'so-do', 'va-so-do.py'), encoding='utf-8').read())
 
+# ---------------------------------------------------------------- 16. Cơm trưa (11/10): thực đơn, đăng ký ăn / không ăn, tổng hợp số suất theo xưởng
+exec(io.open(os.path.join(D, 'com-trua', 'va-com.py'), encoding='utf-8').read())
+
 io.open(os.path.join(D, '..', 'Index.html'), 'w', encoding='utf-8').write(s)
 print('OK Index.html')

@@ -7,6 +7,16 @@ Bản này gồm **mọi thay đổi từ đầu** (sửa lỗi chốt tháng, b
 - **Cần có:** máy tính (không làm trên điện thoại), trình duyệt Chrome, đăng nhập đúng tài khoản Google đang giữ dự án Apps Script và file Sheet "CSDL KPI".
 - **Cần dán lại 2 file:** `Code.gs` và `Index.html`.
 
+> **Bản 11/10/2026 (tối) – Cơm trưa: thực đơn + đăng ký ăn.** Đổi **cả 2 file `Code.gs` và `Index.html`**. Làm **A3 (sao lưu) → B1 → B2 → Phần D**, rồi Ctrl+F5. Sau đó làm 2 việc:
+> 1. **Tạo tài khoản cho người phụ trách bếp:** tab *Tài khoản* → Tạo tài khoản mới → Vai trò **"Bếp ăn"**. Tài khoản này chỉ thấy trang *Cơm trưa* (không xem được số liệu sản xuất, nhân sự).
+> 2. **Kiểm tra trigger chốt tháng đã cài** (hàm `CAI_TRIGGER_CHOT_THANG`, Phần C). Tổng kết cơm trưa chạy cùng lúc chốt KPI tháng.
+> - **Thanh thực đơn** hiện ở đầu **mọi trang của mọi tài khoản** ngay khi bếp lưu thực đơn: món ăn, hạn đăng ký, nút **🍚 Ăn** / **Không ăn**. Bấm vào thanh để mở trang *Cơm trưa*.
+> - **Hạn đăng ký: 16:00 hôm trước** ngày ăn (bếp báo khoảng 14–15h). Quá 16:00 nút bị khóa. Muốn đổi giờ: mở hàm `DAT_GIO_CHOT_COM`, sửa số 16, bấm Chạy.
+> - **Bếp hoặc ban điều hành** nhập thực đơn ở trang *Cơm trưa* (mỗi dòng một món, có ô ghi chú), sửa / xóa được thực đơn ngày chưa tới.
+> - **Tổng hợp số suất theo xưởng** (ăn / không ăn / chưa đăng ký): ban điều hành, nhân sự, bếp xem cả danh sách tên; trưởng / phó phòng xem số của mọi xưởng và danh sách tên xưởng mình. Nút **📋 Chép số suất gửi bếp** để dán vào Zalo; nút **In**.
+> - **Sang tháng mới** (ngày làm việc thứ 3, cùng lúc chốt KPI): số suất từng xưởng được đưa vào **báo cáo tháng** (mục "Suất ăn trưa"); danh sách ai ăn / không ăn / chưa đăng ký từng ngày + thực đơn được lưu thành file **"Đăng ký cơm trưa yyyy-mm"** trong thư mục Drive *Báo cáo KPI hằng tháng / tháng đó*, **rồi mới xóa** dữ liệu tháng cũ khỏi Sheet (không lưu được file thì không xóa). Muốn làm ngay: chạy hàm `TONG_KET_COM_THANG_TRUOC`.
+> - Sheet mới tự tạo khi dùng lần đầu: `ThucDon`, `DangKyCom`, `SuatAnThang` – không cần tạo tay.
+
 > **Bản 11/10/2026 – Sơ đồ nhà máy theo mặt bằng mới + phóng to dễ hơn.** Chỉ đổi **`Index.html`**. Làm **A3 (sao lưu) → B2 → Phần D**, rồi Ctrl+F5.
 > - Phòng các tầng vẽ lại đúng **mặt bằng bố trí máy tầng 1–3** anh/chị gửi (diện tích, số người theo chữ ghi trên bản vẽ). Tầng 1: khu phôi thô, P. khuôn, khu đổ foam, phòng nén khí, P. kỹ thuật cạnh thang T-02, máy khu nướng / cuốn / cắt. Tầng 3: "Bộ phận may" và "Tập kết sản phẩm tạm" thành **kho**, "Máy CNC thùng chạy ren" thành **Phòng QC**, thêm Bàn cắt, Hoàn thiện, Phòng kỹ thuật, phòng máy MT.
 > - **Tầng 2:** toàn bộ các phòng phía dưới hành lang (khu chờ khô, P. quản lý BP Sơn, P. kiểm tra chuẩn bị, P. ráp tuốt lót, buồng sấy, khu buồng sơn kín, khu sơn tĩnh điện) tính vào **xưởng Sơn**.

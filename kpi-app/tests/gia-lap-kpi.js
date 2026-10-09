@@ -128,7 +128,14 @@ function tao(fileCode, duLieu, gioHienTai) {
       putAll: o => { Object.keys(o).forEach(k => { if (String(o[k]).length > 100000) throw new Error('Cache > 100KB'); cache[k] = o[k]; }); }
     }) },
     LockService: { getScriptLock: () => ({ tryLock: () => { if (khoa) return false; khoa = true; return true; }, waitLock() { khoa = true; }, releaseLock() { khoa = false; } }) },
-    SpreadsheetApp: { getActiveSpreadsheet: () => ss },
+    SpreadsheetApp: { getActiveSpreadsheet: () => ss,
+      create: ten => {   // bảng tính mới (lưu chi tiết cơm trưa lên Drive)
+        ctx.__bangMoi = ctx.__bangMoi || []; const ds = [new Sheet('Trang tính1', [])], id = 'ss' + (ctx.__bangMoi.length + 1);
+        const o = { ten, id, ds, getId: () => id, getName: () => ten, getSheets: () => ds, getSheetByName: n => ds.find(x => x.ten === n) || null,
+          insertSheet: n => { const x = new Sheet(n, []); ds.push(x); return x; } };
+        Sheet.prototype.setName = Sheet.prototype.setName || function (n) { this.ten = n; return this; };
+        ctx.__bangMoi.push(o); return o;
+      } },
     HtmlService: { createTemplateFromFile: () => ({ evaluate: () => ({ setTitle() { return this; }, addMetaTag() { return this; }, setXFrameOptionsMode() { return this; } }) }), XFrameOptionsMode: {},
       // HTML -> "PDF" giả: giữ nguyên HTML trong blob để bài kiểm tra đọc lại / dựng PDF thật bằng Chromium
       createHtmlOutput: html => ({ getContent: () => html, getAs: type => { const b = blob(Buffer.from(html, 'utf8')); b.__html = html; b.__type = type; b.__ten = ''; b.setName = n => { b.__ten = n; return b; }; b.getName = () => b.__ten; return b; } }) },
@@ -142,7 +149,9 @@ function tao(fileCode, duLieu, gioHienTai) {
         getFoldersByName(n) { return it(this.con.filter(x => x.ten === n)); }, createFolder(n) { const f = new TM(n); this.con.push(f); return f; },
         getFilesByName(n) { return it(this.tep.filter(x => x.ten === n && !x.rac)); },
         createFile(b) { const t = { ten: b.getName(), b, rac: false, getName() { return this.ten; }, setTrashed(v) { this.rac = v; } }; this.tep.push(t); return t; } };
-      return { __thuMuc: thuMuc, getFoldersByName: n => it(thuMuc.filter(x => x.ten === n)), createFolder: n => { const f = new TM(n); thuMuc.push(f); return f; } };
+      const tepId = {};
+      return { __thuMuc: thuMuc, getFileById: id => tepId[id] || (tepId[id] = { id, cha: null, getUrl: () => 'https://docs.google.com/spreadsheets/d/' + id, moveTo(tm) { this.cha = tm; tm.tep.push({ ten: id, rac: false, bangTinh: id, getName: () => id }); return this; } }),
+        getFoldersByName: n => it(thuMuc.filter(x => x.ten === n)), createFolder: n => { const f = new TM(n); thuMuc.push(f); return f; } };
     })()
   };
   // Sheets API (dịch vụ nâng cao) giả: batchGet trả UNFORMATTED_VALUE, ngày ở dạng số serial như Google
