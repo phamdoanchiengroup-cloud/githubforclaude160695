@@ -320,6 +320,67 @@ D[2]['mc'] = [M for M in D[2]['mc'] if M.get('src') != 'mb14'] + [dict(M, src='m
 D[2]['bang'] = [b for b in D[2]['bang'] if b[0] != 13.7 and b[2] != 13.7 and not (b[0] == 24.4 and b[2] == 24.4)] + \
                [[12.8, 4.3, 25.0, 4.3], [25.0, 4.3, 25.0, 8.95], [25.0, 8.95, 12.8, 8.95], [12.8, 8.95, 12.8, 4.3]]
 
+# ---------- Đợt ảnh 11/10 (3): máy Hoàn thiện tầng 2 dựng theo ảnh chụp cận ----------
+# máy đánh bóng tự động = tủ + băng đỡ nhô ra (trước là "Thiết bị" + "Bàn đặt máy" cạnh nhau trên bản vẽ) → gộp một máy
+for M in D[1]['mc']:
+    if M['t'] == 'ratd': M['r'][2] = 4.22; M['l'] = 'Máy đánh bóng tự động'; M['h'] = 2.0; M.pop('note', None)
+D[1]['mc'] = [M for M in D[1]['mc'] if not (M['l'] == 'Bàn đặt máy' and M['r'][0] == 2.73)]
+for M in D[1]['mc']:
+    if M.get('src') == 'mb14' and M['t'] in ('tienl', 'tienkl') and 22.3 <= M['r'][0] <= 30.26: M['t'] = 'tienkl'; M['l'] = 'Máy tiện WM210V'
+    if M['t'] == 'tiencnc': M['l'] = 'Máy hạ khấc CNC HQT-850'; M['xoay'] = 1
+    if M['t'] == 'chanham': M['l'] = 'Máy chà nhám HQTECH'
+H15 = [dict(may('Máy tiện gỗ Hisimen', x, 20.85, x + 1.6, 21.5, 1.4, 'tiengo', 'Vị trí tạm – chờ chủ dự án xác nhận'), xoay=1) for x in (5.2, 7.2)]
+D[1]['mc'] = [M for M in D[1]['mc'] if M.get('src') != 'mb15'] + [dict(M, src='mb15') for M in H15]
+
+# ---------- Đợt ảnh 11/10 (4): phòng da tầng 3 theo ảnh toàn cảnh ----------
+# nhìn từ máy lạng da (góc cửa sổ): trái = tường ngoài có cửa sổ (bàn trắng cuộn da, 2 kệ), giữa = bàn lớn 2 tầng,
+# cuối phòng = 2 máy ép thủy lực sát tường + giá khuôn, phải = vách kính có bàn thép dài, máy ép nhiệt ở đầu bàn
+D[2]['mc'] = [M for M in D[2]['mc'] if not (M['l'] in ('TL', 'BK1') or (M['l'] == 'BK2' and M['r'][0] == 33.11))]
+for M in D[2]['mc']:
+    if M['t'] == 'langda': M['l'] = 'Máy lạng da Cuebots C420L'
+P16 = [may('Bàn thép dài', 34.75, 28.39, 44.2, 29.02, 0.9, 'banthep'), may('Máy ép nhiệt', 33.2, 28.39, 34.6, 29.02, 1.2, 'epnhiet', 'Máy ép nhiệt khí nén 2 mâm'),
+       may('Bàn cuộn da', 32.9, 33.3, 34.4, 33.95, 0.8, 'banthep'),
+       may('Kệ phòng da', 34.8, 33.4, 36.8, 33.95, 2.0, 'ke'), may('Kệ phòng da', 37.0, 33.4, 39.0, 33.95, 2.0, 'ke'),
+       may('Bàn lớn 2 tầng', 35.2, 30.3, 38.2, 31.9, 0.85, 'banthep'),
+       dict(may('Máy ép thủy lực', 43.9, 29.9, 44.6, 31.0, 2.05, 'ep', 'Máy ép thủy lực khung H 50 tấn'), xoay=1),
+       dict(may('Máy ép thủy lực', 43.9, 31.5, 44.6, 32.6, 2.05, 'ep', 'Máy ép thủy lực khung H 50 tấn'), xoay=1),
+       may('Giá khuôn ép', 44.05, 32.9, 44.6, 34.0, 0.9, 'banthep'), may('Giá khuôn ép', 40.5, 33.4, 43.6, 33.95, 0.9, 'banthep')]
+D[2]['mc'] = [M for M in D[2]['mc'] if M.get('src') != 'mb16'] + [dict(M, src='mb16') for M in P16]
+
+# máy in UV: mặt trước (khe in + bàn máy tính) quay ra lối đi – dãy y 28,99 và dãy y 23,75 quay ngược lại
+for M in D[1]['mc']:
+    if M['t'] == 'uv':
+        M['l'] = 'UV1'; M['note'] = 'Máy in UV cơ – kèm 1 bàn máy tính điều khiển'
+        if M['r'][1] in (28.99, 23.75): M['xoay'] = 1
+
+for M in D[2]['mc']:
+    if M['t'] == 'inpad': M['l'] = 'Máy in pad (dập logo)'; M['note'] = 'Máy in pad 1 màu đứng sàn'
+
+# ---------- Đợt ảnh 11/10 (5): phòng đóng gói CNC + khu giữa CNC (máy tiện) tầng 3 ----------
+# đóng gói: bàn chữ L sát tường trái có máy hàn miệng túi, 2 máy in pad sát tường cuối, tủ mát tường phải
+D[2]['mc'] = [M for M in D[2]['mc'] if not (M['l'] == 'ĐG' and M['r'][0] == 22.59)]
+C17 = [may('Máy hàn miệng túi', 22.55, 29.0, 23.2, 30.6, 1.15, 'hanmieng', 'Máy hàn miệng túi băng tải FR-900'),
+       dict(may('Tủ mát', 26.35, 29.6, 26.9, 30.25, 1.9, 'tulanh'), xoay=1),
+       # khu giữa CNC: đầu gần phòng đóng gói là chỗ 2 máy tiện; giữa là bàn làm việc, kệ, quạt hơi nước, cây nước
+       dict(may('Máy tiện WM210V', 23.0, 25.8, 25.0, 26.5, 1.3, 'tienkl'), xoay=1),
+       may('Máy tiện CNC tự chế', 23.0, 27.5, 25.4, 28.1, 1.2, 'tiendiy', 'Khung thép tự chế, tủ điện + máy tính bên cạnh'),
+       may('Bàn làm việc', 28.0, 26.5, 29.8, 27.2, 0.85, 'banthep'), may('Kệ khu CNC', 29.2, 25.8, 30.8, 26.25, 2.0, 'ke'),
+       may('Cây nước', 31.2, 27.7, 31.55, 28.05, 1.4, 'caynuoc'),
+       may('Quạt hơi nước', 31.8, 27.6, 32.4, 28.1, 1.1, 'quatnuoc'), may('Quạt hơi nước', 32.6, 27.6, 33.2, 28.1, 1.1, 'quatnuoc')]
+D[2]['mc'] = [M for M in D[2]['mc'] if M.get('src') != 'mb17'] + [dict(M, src='mb17') for M in C17]
+
+# ---------- Đợt ảnh 11/10 (6): phòng ngọn tầng 3 – khu ngọn tip ngay phía cửa (nhánh dưới chữ L), khu ngọn taro phía trong chữ L ----------
+# taro: dãy giữa (x 19,06) là máy tiện WM210V, dãy trong (x 16,07) và dãy ngoài (x 21,93, M4–M8) là máy tiện CNC
+for M in D[2]['mc']:
+    cx, cy = (M['r'][0] + M['r'][2]) / 2, (M['r'][1] + M['r'][3]) / 2
+    if not (12.0 <= cx <= 22.45 and 16.9 <= cy <= 34.25) or not _re.match(r'^MT\d$', M['l']): continue
+    if cy >= 25.7 and abs(M['r'][0] - 19.06) < .01: M['t'] = 'tienkl'; M['note'] = 'Khu ngọn taro – dãy giữa máy tiện WM210V'
+    elif cy >= 25.7 and abs(M['r'][0] - 16.07) < .01: M['t'] = 'cncn'; M['note'] = 'Khu ngọn taro – dãy trong máy tiện CNC'
+    elif M['l'] == 'MT4': M['t'] = 'tienkl'; M['note'] = 'Khu ngọn tip – máy tiện WM210V gần cửa'
+D[2]['zones'] = [z for z in D[2]['zones'] if z[0] not in ('Khu ngọn tip', 'Khu ngọn taro')] + [['Khu ngọn tip', [18.0, 19.5, 18.0, 19.5]], ['Khu ngọn taro', [18.0, 31.5, 18.0, 31.5]]]
+N18 = [may('Giá bình chữa cháy', 17.35, 17.05, 18.05, 17.3, 1.0, 'pccc')]
+D[2]['mc'] = [M for M in D[2]['mc'] if M.get('src') != 'mb18'] + [dict(M, src='mb18') for M in N18]
+
 moi = json.dumps(D, ensure_ascii=False, separators=(',', ':'))
 s = s[:m.start(1)] + moi + s[m.end(1):]
 io.open(P, 'w', encoding='utf-8').write(s)
