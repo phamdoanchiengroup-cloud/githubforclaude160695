@@ -27,9 +27,9 @@ var SS = (function () {
   };
   // máy MẪU đang bảo trì: khóa = tầng|ký hiệu|x|y (toạ độ góc máy trên bản vẽ)
   var BAO_TRI = {
-    '2|CNC|26|20.56': { ma: 'M-CNC-02', ly: 'Thay dao, chờ linh kiện' },
-    '2|CNC|34.38|17.63': { ma: 'M 03', ly: 'Bảo trì định kỳ' },
-    '1|UV1|33.74|23.75': { ma: 'M-IN-01', ly: 'Lỗi đầu phun' }
+    '2|CNC|17.54|11.82': { ma: 'M-CNC-02', ly: 'Thay dao, chờ linh kiện' },
+    '2|CNC|9.15|14.75': { ma: 'M 03', ly: 'Bảo trì định kỳ' },
+    '1|UV1|7.71|9.73': { ma: 'M-IN-01', ly: 'Lỗi đầu phun' }
   };
   var o = { cheDo: 'kpi', XUONG: XUONG, TEN: TEN, GHEP: GHEP, SO: SO, BAO_TRI: BAO_TRI, nghe: [],
     nhanKPI: 'Hiệu suất KPI hôm nay', ghiChu: 'Số liệu mẫu – web thật lấy từ sản lượng và điểm danh hôm nay.', them: null };

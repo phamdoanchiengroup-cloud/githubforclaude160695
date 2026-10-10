@@ -10,6 +10,29 @@ s = io.open(P, encoding='utf-8').read()
 m = re.search(r'const DATA = (\[.*?\])\n;', s, re.S)
 D = json.loads(m.group(1))
 
+# Chủ dự án 11/10: khối xưởng sản xuất bị đặt ngược – phải XOAY 180° (x -> 44,75 - x, y -> 34,25 - y). Toàn bộ mã dưới đây vẫn dùng
+# toạ độ ĐO TRÊN BẢN VẼ; DATA ghi ra file đã xoay và có cờ latY. Chạy lại: xoay về toạ độ bản vẽ trước (xoay 180° hai lần = như cũ).
+import math as _math
+DX, DY = 44.75, 34.25
+def lat(D):
+    for F in D:
+        f = lambda r: [round(DX - r[2], 3), round(DY - r[3], 3), round(DX - r[0], 3), round(DY - r[1], 3)]
+        for R in F['rooms']:
+            R['r'] = [f(r) for r in R['r']]
+            if R.get('ppl'): R['ppl'] = [[round(DX - x, 3), round(DY - y, 3), round(g + _math.pi, 4)] for x, y, g in R['ppl']]
+        for M in F['mc']:
+            M['r'] = f(M['r'])
+            if M.get('xoay'): M.pop('xoay')        # mọi máy quay theo 180°
+            else: M['xoay'] = 1
+        F['doors'] = [[round(DX - d[0], 3), round(DY - d[1], 3)] + d[2:] for d in F.get('doors', [])]
+        F['zones'] = [[n, f(r)] for n, r in F.get('zones', [])]
+        for k in ('xw', 'bang'):
+            if k in F: F[k] = [[round(DX - a, 3), round(DY - b, 3), round(DX - c, 3), round(DY - d, 3)] for a, b, c, d in F[k]]
+        if F.get('latY'): F.pop('latY')
+        else: F['latY'] = 1
+    return D
+if D[0].get('latY'): D = lat(D)
+
 def ph(n, c, r, a=None, p=None, w=1, pn=None):
     o = {'n': n, 'a': a, 'p': p, 'c': c, 'w': w, 'r': r}
     if pn: o['pn'] = pn
@@ -449,6 +472,8 @@ R20T3 = [may('Kệ kho', 30.3 + i * 2.5, 0.4, 32.3 + i * 2.5, 1.0, 2.0, 'ke', 'K
         [may('Kệ kho', 30.3 + i * 2.5, 3.8, 32.3 + i * 2.5, 4.4, 2.0, 'ke', 'K%d' % (23 + i)) for i in range(3)]
 D[0]['mc'] += [dict(M, src='mb20') for M in R20]
 D[2]['mc'] = [M for M in D[2]['mc'] if M.get('src') != 'mb20'] + [dict(M, src='mb20') for M in R20T3]
+
+D = lat(D)   # ghi ra bản đã xoay 180°
 
 moi = json.dumps(D, ensure_ascii=False, separators=(',', ':'))
 s = s[:m.start(1)] + moi + s[m.end(1):]
