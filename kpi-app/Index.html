@@ -10262,15 +10262,26 @@ function comNut(ng,mo){
 }
 function comTai(cb){
   if(typeof TOKEN==='undefined'||!TOKEN)return;
+  var lan=COM.lan=(COM.lan||0)+1;
+  clearTimeout(COM.cho); COM.cho=setTimeout(function(){ if(lan===COM.lan&&!COM.d)comLoi('Máy chủ chưa trả lời sau 30 giây.') },30000);
   google.script.run.withSuccessHandler(function(r){
+    if(lan!==COM.lan)return; clearTimeout(COM.cho);
     if(r&&r.hetHan){try{hetHan()}catch(e){}return}
-    if(!r||!r.ok)return;
-    COM.d=r; COM.tai=Date.now();
+    if(!r||!r.ok){comLoi((r&&r.msg)||'Máy chủ trả về dữ liệu trống (có thể chưa dán bản Code.gs mới).');return}
+    COM.d=r; COM.tai=Date.now(); COM.loi='';
     veComBar();
     if(typeof tabHienTai!=='undefined'&&tabHienTai==='com')veCom();
     if(cb)cb();
-  }).withFailureHandler(function(){}).napComTrua(TOKEN);
+  }).withFailureHandler(function(e){ if(lan!==COM.lan)return; clearTimeout(COM.cho); comLoi((e&&e.message)||String(e||'Lỗi không rõ')); }).napComTrua(TOKEN);
   clearTimeout(COM.hen); COM.hen=setTimeout(function(){comTai()},5*60*1000);   // tự cập nhật 5 phút/lần (bếp vừa báo thực đơn)
+}
+/* Không tải được: trên trang Cơm trưa báo rõ lỗi + nút Thử lại (trước đây trang đứng mãi ở "Đang tải…") */
+function comLoi(msg){
+  COM.loi=msg; try{console.warn('Cơm trưa:',msg)}catch(e){}
+  if(typeof tabHienTai==='undefined'||tabHienTai!=='com'||COM.d)return;
+  $('main').innerHTML='<div class="ptitle">Cơm trưa</div><div class="card"><h3>Chưa tải được thực đơn</h3>'+
+    '<p class="cm-ghi">'+esc(msg)+'</p><p><button class="btn pri" type="button" onclick="vCom()">Thử lại</button></p>'+
+    '<p class="cm-ghi">Nếu vẫn lỗi: chủ dự án mở Apps Script, chạy hàm <b>KIEM_TRA_COM_TRUA</b> rồi gửi nội dung Nhật ký thực thi.</p></div>';
 }
 /* Thanh thực đơn: ngày gần nhất còn hạn đăng ký; hết hạn thì hiện thực đơn hôm nay */
 function veComBar(){

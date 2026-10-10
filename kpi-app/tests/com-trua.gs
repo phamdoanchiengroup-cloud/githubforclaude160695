@@ -300,3 +300,18 @@ function DAT_GIO_CHOT_COM() {
   PropertiesService.getScriptProperties().setProperty('COM_GIO_CHOT', '16');
   Logger.log('Giờ chốt đăng ký cơm: ' + comGioChot_() + ':00 hôm trước.');
 }
+
+/* Chạy tay khi trang Cơm trưa không tải được: thử từng bước bằng tài khoản chủ sở hữu, ghi lỗi chi tiết vào Nhật ký thực thi */
+function KIEM_TRA_COM_TRUA() {
+  var buoc = function(ten, fn) { try { var v = fn(); Logger.log('✓ ' + ten + (v !== undefined ? ': ' + v : '')); return true; } catch (e) { Logger.log('✗ ' + ten + ': ' + e.message + '\n' + (e.stack || '')); return false; } };
+  buoc('Sheet ThucDon', function() { return comDoc_('ThucDon').length + ' dòng'; });
+  buoc('Sheet DangKyCom', function() { return comDoc_('DangKyCom').length + ' dòng, cột: ' + dauCot_('DangKyCom').join(', '); });
+  buoc('Người cần đăng ký', function() { return comNguoi_().length + ' người'; });
+  var tk = doc_('TaiKhoan').filter(function(t) { return String(t.VaiTro).trim() === 'OWNER' || String(t.VaiTro).trim() === 'ADMIN'; })[0];
+  if (!tk) { Logger.log('✗ Không thấy tài khoản ADMIN/OWNER để thử'); return; }
+  buoc('Tổng hợp hôm nay', function() { var t = comTongHop_(homNayVN_(), { vaiTro: 'ADMIN', xuong: '' }); return t.an + ' ăn / ' + t.khong + ' không / ' + t.chua + ' chưa'; });
+  buoc('napComTrua (giả lập phiên ' + tk.TenDangNhap + ')', function() {
+    var r = napComTrua(taoPhien_(tk));
+    return r && r.ok ? 'OK – ' + r.thucDon.length + ' thực đơn' : 'LỖI – ' + (r && r.msg);
+  });
+}

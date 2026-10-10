@@ -83,6 +83,12 @@ const doiNguoi = (p, f) => p.evaluate(f => {
   s = await p.evaluate(() => [!!$('cmMon'), !!document.querySelector('.cm-bang'), /1<\/b> bữa không ăn/.test($('main').innerHTML)]);
   ok(!s[0] && !s[1] && s[2], 'công nhân: không có form, không có tổng hợp; dòng "tháng này 1 bữa không ăn"', s);
   if (OUT) await p.screenshot({ path: OUT + '/com-dien-thoai.png', fullPage: true });
+  await p.evaluate(() => { window.__napCu = __MAY_CHU.napComTrua; __MAY_CHU.napComTrua = () => { throw new Error('Lỗi thử: không đọc được sheet'); }; COM.d = null; go('com'); });
+  await p.waitForTimeout(1500);
+  s = await p.evaluate(() => $('main').textContent);
+  ok(/Chưa tải được thực đơn/.test(s) && /Lỗi thử/.test(s) && /Thử lại/.test(s), 'máy chủ lỗi: trang báo lỗi + nút Thử lại (không đứng ở "Đang tải…")', s.slice(0, 200));
+  await p.evaluate(() => { __MAY_CHU.napComTrua = window.__napCu; }); await p.click('button:has-text("Thử lại")'); await p.waitForTimeout(1500);
+  ok(await p.evaluate(() => !!document.querySelector('.cm-the')), 'bấm Thử lại: tải lại được');
   ok(!p.loi.length, 'không lỗi JS', p.loi);
   await p.ctx.close(); await b.close();
   console.log((loi ? '✗ ' : '✓ ') + (dem - loi) + '/' + dem + ' đạt'); process.exit(loi ? 1 : 0);
