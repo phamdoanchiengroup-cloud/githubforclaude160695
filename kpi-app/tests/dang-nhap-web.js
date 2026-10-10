@@ -27,7 +27,7 @@ const daVao = p => p.evaluate(() => !!window.ME && getComputedStyle(document.get
   const r2 = await p.locator('#btnLogin').boundingBox();
   ok(Math.hypot(r2.x - r.x, r2.y - r.y) > 60, 'chưa điền mà rê chuột vào Đăng nhập: nút né đi', [r, r2]);
   await p.type('#l_tk', 'c068', { delay: 30 }); await p.waitForTimeout(200);
-  ok(await p.evaluate(() => [...document.querySelectorAll('#rhMaiAnh .mat-g')].some(g => /translate/.test((g.children[2] || {}).style ? g.children[2].style.transform : ''))), 'gõ mã: mắt Mai đưa theo chữ');
+  ok(await p.evaluate(() => { const i = document.querySelector('#rhMaiAnh svg .rh-anh'); return !!i && /^data:image\/webp/.test(i.getAttribute('href')) && !document.querySelector('#rhMaiAnh .mat-g'); }), 'màn đăng nhập: chân dung tê giác Rhino (thay Mai)');
   ok(await p.evaluate(() => !!document.getElementById('bbChao') && document.getElementById('bbChao').textContent.length > 3), 'có lời chào theo giờ');
   await p.type('#l_mk', 'demo'); await p.waitForTimeout(500);
   ok(await p.evaluate(() => document.getElementById('btnLogin').style.transform === ''), 'điền đủ: nút về chỗ cũ');

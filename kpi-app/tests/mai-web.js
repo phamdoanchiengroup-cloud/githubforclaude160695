@@ -107,7 +107,7 @@ const goc = p => p.evaluate(() => { const g = document.getElementById('maiGoc');
   ok(await p.evaluate(() => getComputedStyle(document.getElementById('btnMai')).display !== 'none'), 'điện thoại: nút Mai vẫn hiện ở đầu trang');
   await p.context().close();
   p = await vao(b, 'c068', { giam: true });
-  ok(await p.evaluate(() => { const e = document.querySelector('.mai .duoi'); return e && getComputedStyle(e).animationName === 'none'; }), 'giảm chuyển động: Mai đứng yên');
+  ok(await p.evaluate(() => { const e = document.querySelector('.mai .rh-anh'); return e && getComputedStyle(e).animationName === 'none'; }), 'giảm chuyển động: nhân vật Rhino đứng yên');
   await p.context().close();
 
   await b.close();

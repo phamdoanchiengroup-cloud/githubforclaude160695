@@ -372,6 +372,12 @@ Nếu vẫn thấy giao diện cũ: kiểm tra lại Phần D (đã chọn **Phi
 - **Hướng dẫn** chuyển thành nút **?** trên đầu trang.
 
 
+## Nhân vật hướng dẫn: tê giác Rhino thay Mai (11/10)
+
+- Ở mọi chỗ trước đây có Mai (lời chào góc màn hình, khẩu hiệu của ngày, hướng dẫn công nhân nhập sản lượng, hộp đọc lại trước khi gửi, chân dung ở màn đăng nhập) giờ là **chú tê giác Rhino** (mẫu 3B, vác cơ Retro).
+- Nút bật/tắt ở đầu trang đổi thành **🦏 Rhino**; ai đã tắt Mai thì vẫn giữ trạng thái tắt.
+- Hình là ảnh tĩnh, chỉ nhún nhẹ; không còn các động tác chỉ tay, che mắt như Mai.
+
 ## Cơm trưa – nhân sự (HR) và kiểm soát chất lượng (QC) không tính suất (11/10)
 
 - Tài khoản vai trò **Nhân sự** và **Kiểm soát chất lượng** không còn nút Ăn / Không ăn và không tính vào bảng số suất.
