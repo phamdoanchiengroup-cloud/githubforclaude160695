@@ -374,7 +374,7 @@ Nếu vẫn thấy giao diện cũ: kiểm tra lại Phần D (đã chọn **Phi
 
 ## Cơm trưa – trưởng phòng ăn cùng ban điều hành (11/10)
 
-- Suất ăn của **trưởng phòng** (và trưởng bộ phận Kho / Hành chính – Kế toán / Marketing – Bán hàng / Showroom – Store) **không tính theo xưởng nữa** mà tính vào dòng **"Ban điều hành và trưởng bộ phận"** (trước đây là "Văn phòng / khác"). **Phó phòng vẫn tính theo xưởng.**
+- Suất ăn của **trưởng phòng** **không tính theo xưởng nữa** mà tính vào dòng **"Ban điều hành và trưởng bộ phận"** (trước đây là "Văn phòng / khác"). **Phó phòng vẫn tính theo xưởng; trưởng 4 bộ phận Kho / Hành chính – Kế toán / Marketing – Bán hàng / Showroom – Store vẫn tính theo bộ phận của mình.**
 - Dòng này cũng gồm các tài khoản không gắn xưởng (ban điều hành, trợ lý, nhân sự, QC…). Ban điều hành / trợ lý / nhân sự đăng ký hộ được cho trưởng phòng.
 
 ## Cơm trưa – trưởng / phó phòng đăng ký hộ (11/10)

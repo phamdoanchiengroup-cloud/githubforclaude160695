@@ -58,7 +58,7 @@ th = c.__goi('napComTrua', tO).tongHop.find(x => x.ngay === '2026-10-13');   // 
 const xTP = th.xuong.find(x => x.mx === tp.MaXuong), xVP = th.xuong.find(x => x.mx === 'VP');
 ok(xTP && xTP.an === 1 && xTP.dsAn.length === 1 && !xTP.dsAn.concat(xTP.dsKhong, xTP.dsChua).includes(tp.HoTen), 'ban điều hành: xưởng của trưởng phòng chỉ còn suất công nhân (suất trưởng phòng không tính theo xưởng), có tên', xTP);
 ok(xVP && xVP.an === 2 && xVP.dsAn.includes(tp.HoTen) && xVP.ten === 'Ban điều hành và trưởng bộ phận' && !(xVP.dsAn || []).concat(xVP.dsKhong || [], xVP.dsChua || []).includes('Bếp ăn') && th.xuong[th.xuong.length - 1].mx === 'VP', 'suất trưởng phòng + tài khoản không gắn xưởng gom vào "Ban điều hành và trưởng bộ phận" (cuối bảng)', xVP);
-ok(c.comMx_('PP', 'X9') === 'X9' && c.comMx_('TP', 'X9') === 'VP' && c.comMx_('CN', 'X9') === 'X9' && c.comMx_('QC', '') === 'VP', 'phó phòng vẫn tính suất theo xưởng, chỉ trưởng phòng gom vào ban điều hành');
+ok(c.comMx_('PP', 'X9') === 'X9' && c.comMx_('TP', 'X9') === 'VP' && c.comMx_('CN', 'X9') === 'X9' && c.comMx_('QC', '') === 'VP' && c.comMx_('TBP', 'KHO') === 'KHO', 'phó phòng, trưởng bộ phận vẫn tính suất theo xưởng / bộ phận, chỉ trưởng phòng gom vào ban điều hành');
 r = c.__goi('napComTrua', tTP); th = r.tongHop.find(x => x.ngay === '2026-10-13');
 ok(r.quyen.xem && !r.quyen.sua && th.xuong.length > 1 && th.xuong.every(x => x.mx === tp.MaXuong ? Array.isArray(x.dsAn) : x.dsAn === undefined), 'trưởng phòng: thấy số mọi xưởng, tên chỉ xưởng mình');
 const khongTP = th.dsKhongCT;
@@ -109,7 +109,7 @@ r = c.__goi('dangKyComHo', tTP, '2026-10-14', chuaDK, true); ok(r.ok && r.so ===
 r = c.__goi('napComTrua', tTP); ok(dsHo.every(x => r.hoDK['2026-10-14'][x.tk]), 'sau đó cả xưởng đã có lựa chọn');
 ok(!c.__goi('napComTrua', tCN).quyen.ho, 'công nhân không có mục đăng ký hộ');
 { const rO = c.__goi('napComTrua', tO), tkX = x => c.doc_('TaiKhoan').find(t => t.TenDangNhap.toLowerCase() === x.tk);
-  ok(rO.hoNguoi.length > 0 && rO.hoNguoi.every(x => !String(tkX(x).MaXuong || '').trim() || ['TP', 'TBP'].includes(String(tkX(x).VaiTro).trim())) && rO.hoNguoi.some(x => String(tkX(x).VaiTro).trim() === 'TP') && !rO.hoNguoi.some(x => String(tkX(x).VaiTro).trim() === 'PP'), 'ban điều hành: danh sách đăng ký hộ chỉ gồm nhóm ban điều hành (không gắn xưởng + trưởng phòng; phó phòng vẫn thuộc xưởng)', rO.hoNguoi.length);
+  ok(rO.hoNguoi.length > 0 && rO.hoNguoi.every(x => !String(tkX(x).MaXuong || '').trim() || String(tkX(x).VaiTro).trim() === 'TP') && rO.hoNguoi.some(x => String(tkX(x).VaiTro).trim() === 'TP') && !rO.hoNguoi.some(x => String(tkX(x).VaiTro).trim() === 'PP'), 'ban điều hành: danh sách đăng ký hộ chỉ gồm nhóm ban điều hành (không gắn xưởng + trưởng phòng; phó phòng vẫn thuộc xưởng)', rO.hoNguoi.length);
   const rr = c.__goi('dangKyComHo', tO, '2026-10-14', [cn.TenDangNhap], true); ok(!rr.ok && /văn phòng/.test(rr.msg), 'ban điều hành không đăng ký hộ được công nhân xưởng', rr.msg); }
 ok(c.dauCot_('DangKyCom').includes('DangKyHo'), 'sheet DangKyCom có cột DangKyHo');
 // trả dữ liệu ngày 14 về như trước phần này để các bước sau tính đúng
