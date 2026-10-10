@@ -50,3 +50,7 @@
 .cm-ho-loc select,.cm-ho-loc input{font:inherit;padding:6px 8px;border-radius:8px;border:1px solid var(--line);background:var(--panel2);color:var(--ink)}
 .cm-ho-loc input{flex:1 1 180px;min-width:0}
 .cm-ho-ds li{flex-wrap:wrap}
+/* tài khoản nhóm: ô số suất + nút báo */
+.cm-nhom{display:inline-flex;gap:6px;align-items:center;flex-wrap:wrap}
+.cm-so-in{width:96px;font-size:18px;font-weight:700;padding:8px 10px;text-align:right}
+.cm-nhom-dong td{background:color-mix(in srgb,var(--cy,#2fd3c6) 6%,transparent)}

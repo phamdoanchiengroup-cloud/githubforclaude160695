@@ -372,6 +372,19 @@ Nếu vẫn thấy giao diện cũ: kiểm tra lại Phần D (đã chọn **Phi
 - **Hướng dẫn** chuyển thành nút **?** trên đầu trang.
 
 
+## Cơm trưa – 5 nhóm ngoài xưởng báo tổng số suất (11/10)
+
+- Có vai trò mới **"Nhóm báo cơm"**. Mỗi nhóm có 1 tài khoản; nhóm không cần danh sách nhân sự.
+- Tạo tài khoản: tab *Tài khoản* → Tạo tài khoản mới → Vai trò **"Nhóm báo cơm"** → chọn nhóm:
+  1. Bếp + lái xe + bảo vệ (Hà Nam)
+  2. Kế toán kho + tạp vụ (Hà Nam)
+  3. May + kế toán kho + lái xe (Hà Nội)
+  4. Marketing (Hà Nội)
+  5. Store 47 Nguyễn Tuân (Hà Nội)
+- Người giữ tài khoản nhóm đăng nhập → thấy thực đơn, gõ **tổng số suất** của cả nhóm → bấm **Báo suất**. Cả nhóm không ăn thì gõ **0**. Sửa được tới hết ngày ăn.
+- Bếp / ban điều hành thấy mỗi nhóm thành 1 dòng trong bảng tổng hợp (sau các xưởng). Nhóm chưa báo hiện chữ **"chưa báo"**.
+- 4 bộ phận chuẩn bị trước đây (Kho, HC–KT, Marketing–Bán hàng, Showroom–Store, mỗi người 1 tài khoản) **đã bỏ** để không trùng với 5 nhóm này.
+
 ## Cơm trưa – trưởng phòng ăn cùng ban điều hành (11/10)
 
 - Suất ăn của **trưởng phòng** **không tính theo xưởng nữa** mà tính vào dòng **"Ban điều hành và trưởng bộ phận"** (trước đây là "Văn phòng / khác"). **Phó phòng vẫn tính theo xưởng; trưởng 4 bộ phận Kho / Hành chính – Kế toán / Marketing – Bán hàng / Showroom – Store vẫn tính theo bộ phận của mình.**

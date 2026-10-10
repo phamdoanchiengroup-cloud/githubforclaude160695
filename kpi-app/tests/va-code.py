@@ -1314,25 +1314,24 @@ R("""  var n = chotThangLoi_(kyCu, '', 'Tự động (ngày làm việc thứ 3)
   try { comTongKetThang_(kyCu); } catch (e) { Logger.log('Tổng kết cơm trưa lỗi: ' + e); }
   try { guiBaoCaoThang_(kyCu); } catch (e) { Logger.log('Gửi báo cáo tháng lỗi: ' + e); }""")
 
-# Cơm trưa (11/10): vai trò BEP, NV, TBP (4 bộ phận ngoài sản xuất) chỉ dùng trang Cơm trưa – không gửi dữ liệu sản xuất / nhân sự
+# Cơm trưa (11/10): vai trò BEP, NHOM (nhóm báo tổng số suất; NV/TBP cũ) chỉ dùng trang Cơm trưa – không gửi dữ liệu sản xuất / nhân sự
 R("""  if (me.phaiDoiMK) return sach_({ ok: false, phaiDoiMK: true, me: me, msg: 'Cần đổi mật khẩu lần đầu trước khi dùng hệ thống.' });
   var can = function(p) { return !phan || phan.indexOf(p) >= 0; };""", """  if (me.phaiDoiMK) return sach_({ ok: false, phaiDoiMK: true, me: me, msg: 'Cần đổi mật khẩu lần đầu trước khi dùng hệ thống.' });
-  if (me.vaiTro === 'BEP' || me.vaiTro === 'NV' || me.vaiTro === 'TBP') {
+  if (me.vaiTro === 'BEP' || me.vaiTro === 'NHOM' || me.vaiTro === 'NV' || me.vaiTro === 'TBP') {
     var rong = { ok: true, me: me, phan: phan || 'tat', phongban: doc_('PhongBan').map(function(p) { return { MaXuong: p.MaXuong, TenXuong: p.TenXuong }; }) };
     ['nhatky','choDuyet','nhansu','congdoan','dinhmuc','chamcong','maymoc','kcs','loi','vipham','dexuat','trongso','log','thongBao','ngayLe','lydo','nghiDaiHan','dmvp','xacNhanDD','yeuCauHoSo','yeuCauHoSoCuaToi','canNhapLai'].forEach(function(k) { rong[k] = []; });
     return sach_(rong);
   }
   var can = function(p) { return !phan || phan.indexOf(p) >= 0; };""")
 
-# Bộ phận ngoài sản xuất (11/10): tài khoản NV (nhân viên bộ phận) / TBP (trưởng bộ phận) gắn 1 trong 4 bộ phận COM_BO_PHAN,
-# mã NV ghi tự do (chưa có trong sheet NhanSu) – chỉ dùng để báo cơm, không vào KPI
+# Nhóm ngoài sản xuất (11/10): tài khoản NHOM gắn 1 nhóm COM_BO_PHAN, chỉ báo tổng số suất cơm, không vào KPI
 R("""  // Vai trò CN (công nhân) và TP (trưởng phòng) gắn với một mã nhân viên có thật
   var maNV = '';""", """  // Vai trò CN (công nhân) và TP (trưởng phòng) gắn với một mã nhân viên có thật
   var maNV = '';
-  if (o.VaiTro === 'NV' || o.VaiTro === 'TBP') {
-    if (!COM_BO_PHAN[o.MaXuong]) return sach_({ ok: false, msg: 'Chọn bộ phận cho tài khoản.' });
-    maNV = String(o.MaNV || '').trim().toUpperCase();
-  }""")
+  if (o.VaiTro === 'NHOM') {   // tài khoản nhóm báo tổng số suất cơm (chủ dự án 11/10) – gắn 1 nhóm trong COM_BO_PHAN, không có mã NV
+    if (!COM_BO_PHAN[o.MaXuong]) return sach_({ ok: false, msg: 'Chọn nhóm báo cơm cho tài khoản.' });
+  }
+  if (o.VaiTro === 'NV' || o.VaiTro === 'TBP') return sach_({ ok: false, msg: 'Vai trò này đã bỏ – dùng tài khoản nhóm báo cơm.' });""")
 
 # ---------------------------------------------------------------- hàm chạy tay một lần
 s = s.rstrip() + '\n' + io.open(os.path.join(os.path.dirname(__file__), 'ham-chay-tay.gs'), encoding='utf-8').read()

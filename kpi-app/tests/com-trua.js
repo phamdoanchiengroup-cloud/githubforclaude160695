@@ -116,25 +116,38 @@ ok(c.dauCot_('DangKyCom').includes('DangKyHo'), 'sheet DangKyCom có cột DangK
 { const bo = new Set(chuaDK.concat([cn2.TenDangNhap.toLowerCase()]));
   c.xoaNhieuDong_('DangKyCom', c.doc_('DangKyCom').filter(x => String(x.Ngay).replace(/^'/, '').slice(0, 10) === '2026-10-14' && bo.has(String(x.TenDangNhap).toLowerCase())).map(x => x._row)); }
 
-console.log('\n4c. Bộ phận ngoài sản xuất (Kho, HC-KT, Marketing, Showroom)');
-r = c.__goi('taoTaiKhoan', tO, { TenDangNhap: 'khotruong', HoTen: 'Trưởng kho A', VaiTro: 'TBP', MaXuong: '', MaNV: '' });
-ok(!r.ok && /bộ phận/.test(r.msg), 'tạo tài khoản bộ phận phải chọn bộ phận', r.msg);
-r = c.__goi('taoTaiKhoan', tO, { TenDangNhap: 'khotruong', HoTen: 'Trưởng kho A', VaiTro: 'TBP', MaXuong: 'KHO', MaNV: 'kho01' });
-const r2 = c.__goi('taoTaiKhoan', tO, { TenDangNhap: 'khonv', HoTen: 'Nhân viên kho B', VaiTro: 'NV', MaXuong: 'KHO', MaNV: '' });
-const r3 = c.__goi('taoTaiKhoan', tO, { TenDangNhap: 'ketoan1', HoTen: 'Kế toán C', VaiTro: 'NV', MaXuong: 'HCKT', MaNV: '' });
-ok(r.ok && r2.ok && r3.ok && tk(x => x.TenDangNhap === 'khotruong').MaNV === 'KHO01', 'tạo tài khoản trưởng kho, nhân viên kho, kế toán (mã NV ghi tự do)', [r.msg, r2.msg]);
-[['khotruong'], ['khonv'], ['ketoan1']].forEach(([t]) => { const row = tk(x => x.TenDangNhap === t); c.suaO_('TaiKhoan', row._row, 'DoiMatKhauLanDau', 'Không'); });
-const tKT = P(tk(x => x.TenDangNhap === 'khotruong')), tKN = P(tk(x => x.TenDangNhap === 'khonv'));
-r = c.__goi('napDuLieu', tKN); ok(r.ok && !r.nhatky.length && !r.nhansu.length, 'nhân viên bộ phận không nhận dữ liệu sản xuất / nhân sự', r.ok && [r.nhatky.length, r.nhansu.length]);
-r = c.__goi('dangKyCom', tKN, '2026-10-14', true); ok(r.ok, 'nhân viên kho tự đăng ký ăn', r.msg);
-r = c.__goi('dangKyComHo', tKT, '2026-10-14', ['ketoan1'], true); ok(!r.ok, 'trưởng kho không đăng ký hộ người bộ phận khác', r.msg);
-r = c.__goi('dangKyComHo', tKT, '2026-10-14', ['khonv'], false); ok(r.ok, 'trưởng kho đăng ký hộ nhân viên kho', r.msg);
-r = c.__goi('napComTrua', tKT); th = r.tongHop.find(x => x.ngay === '2026-10-14');
-const xKho = th && th.xuong.find(x => x.mx === 'KHO'), xKT = th && th.xuong.find(x => x.mx === 'HCKT');
-ok(r.quyen.ho && r.hoNguoi.length === 1 && xKho && xKho.ten === 'Bộ phận Kho' && xKho.khong === 1 && Array.isArray(xKho.dsKhong) && xKT && xKT.ten === 'Hành chính – Kế toán' && xKT.dsAn === undefined,
-  'tổng hợp có dòng "Bộ phận Kho", "Hành chính – Kế toán"; trưởng kho thấy tên người kho, không thấy tên bộ phận khác', [xKho, xKT]);
-ok(!c.doc_('PhongBan').some(p => p.MaXuong === 'KHO'), 'bộ phận mới không nằm trong PhongBan (không vào KPI)');
-{ const bo = new Set(['khonv', 'khotruong', 'ketoan1']);
+console.log('\n4c. Nhóm ngoài xưởng báo tổng số suất (tài khoản NHOM)');
+r = c.__goi('taoTaiKhoan', tO, { TenDangNhap: 'nhom.mkt', HoTen: 'Marketing Hà Nội', VaiTro: 'NHOM', MaXuong: '', MaNV: '' });
+ok(!r.ok && /nhóm/.test(r.msg), 'tạo tài khoản nhóm phải chọn nhóm', r.msg);
+r = c.__goi('taoTaiKhoan', tO, { TenDangNhap: 'khonv', HoTen: 'NV kho', VaiTro: 'NV', MaXuong: 'KHO', MaNV: '' });
+ok(!r.ok, 'vai trò NV / TBP cũ đã bỏ', r.msg);
+r = c.__goi('taoTaiKhoan', tO, { TenDangNhap: 'nhom.mkt', HoTen: 'Marketing Hà Nội', VaiTro: 'NHOM', MaXuong: 'HNOI_MKT', MaNV: '' });
+const r2 = c.__goi('taoTaiKhoan', tO, { TenDangNhap: 'nhom.store', HoTen: 'Store 47 Nguyễn Tuân', VaiTro: 'NHOM', MaXuong: 'HNOI_STORE', MaNV: '' });
+ok(r.ok && r2.ok && tk(x => x.TenDangNhap === 'nhom.mkt').MaXuong === 'HNOI_MKT', 'tạo tài khoản nhóm Marketing, Store', [r.msg, r2.msg]);
+['nhom.mkt', 'nhom.store'].forEach(t => { const row = tk(x => x.TenDangNhap === t); c.suaO_('TaiKhoan', row._row, 'DoiMatKhauLanDau', 'Không'); });
+const tNM = P(tk(x => x.TenDangNhap === 'nhom.mkt'));
+r = c.__goi('napDuLieu', tNM); ok(r.ok && !r.nhatky.length && !r.nhansu.length, 'tài khoản nhóm không nhận dữ liệu sản xuất / nhân sự', r.ok && [r.nhatky.length, r.nhansu.length]);
+const truoc = c.__goi('napComTrua', tO).tongHop.find(x => x.ngay === '2026-10-14');
+r = c.__goi('napComTrua', tNM); ok(r.ok && r.quyen.nhom && !r.quyen.dangKy && !r.quyen.xem && !r.quyen.ho, 'nhóm: chỉ báo số suất, không xem tổng hợp, không đăng ký hộ', r.quyen);
+r = c.__goi('dangKyCom', tNM, '2026-10-14', true); ok(!r.ok && /nhóm/.test(r.msg), 'nhóm không bấm Ăn / Không ăn', r.msg);
+ok(!c.__goi('baoSuatNhom', tNM, '2026-10-14', -2).ok && !c.__goi('baoSuatNhom', tNM, '2026-10-14', 2.5).ok && !c.__goi('baoSuatNhom', tNM, '2026-10-14', '').ok && !c.__goi('baoSuatNhom', tNM, '2026-10-14', 999).ok, 'số suất phải là số nguyên 0–300');
+ok(!c.__goi('baoSuatNhom', tNM, '2026-10-20', 5).ok, 'ngày chưa có thực đơn thì không báo được');
+ok(!c.__goi('baoSuatNhom', tCN, '2026-10-14', 5).ok, 'công nhân không dùng được hàm báo suất nhóm');
+r = c.__goi('baoSuatNhom', tNM, '2026-10-14', 7); ok(r.ok && r.so === 7, 'nhóm Marketing báo 7 suất', r.msg);
+r = c.__goi('baoSuatNhom', tNM, '2026-10-14', 6); ok(r.ok && c.doc_('DangKyCom').filter(x => x.TenDangNhap === 'nhom.mkt').length === 1, 'sửa số suất không sinh dòng trùng');
+ok(c.__goi('napComTrua', tNM).cuaToi['2026-10-14'] === 6, 'trang của nhóm hiện số đã báo (6)');
+{ const sau = c.__goi('napComTrua', tB).tongHop.find(x => x.ngay === '2026-10-14'), xM = sau.xuong.find(x => x.mx === 'HNOI_MKT'), xS = sau.xuong.find(x => x.mx === 'HNOI_STORE');
+  ok(xM && xM.nhom && xM.an === 6 && xM.ten === 'Marketing (Hà Nội)' && xS && xS.baoChua === 1 && sau.nhomChua === 1 && sau.an === truoc.an + 6 && sau.chua === truoc.chua,
+    'bếp: dòng "Marketing (Hà Nội)" 6 suất cộng vào tổng; Store chưa báo; nhóm không tính vào số người chưa đăng ký', [xM, xS, sau.an, truoc.an]);
+  ok(sau.xuong[sau.xuong.length - 1].mx === 'VP' && sau.xuong.findIndex(x => x.nhom) > sau.xuong.findIndex(x => x.mx === tp.MaXuong), 'dòng nhóm nằm sau các xưởng, trước dòng ban điều hành'); }
+r = c.__goi('baoSuatNhom', tNM, '2026-10-14', 0); ok(r.ok && c.__goi('napComTrua', tB).tongHop.find(x => x.ngay === '2026-10-14').an === truoc.an, 'báo 0 suất = cả nhóm không ăn');
+c.__goi('baoSuatNhom', tNM, '2026-10-14', 6);
+ok(!c.doc_('PhongBan').some(p => p.MaXuong === 'HNOI_MKT'), 'nhóm không nằm trong PhongBan (không vào KPI)');
+ok(c.dauCot_('DangKyCom').includes('SoSuat'), 'sheet DangKyCom có cột SoSuat');
+{ const t = c.comTinhThang_('2026-10'), ct = t.chiTiet.filter(x => x[2] === '(nhóm báo tổng)');
+  ok(ct.some(x => x[0] === '2026-10-14' && x[1] === 'Marketing (Hà Nội)' && x[4] === '6 suất') && ct.some(x => x[1] === 'Store 47 Nguyễn Tuân (Hà Nội)' && x[4] === 'Chưa báo') && t.ds.find(x => x.mx === 'HNOI_MKT').an === 6,
+    'file lưu tháng có dòng nhóm (số suất / chưa báo), tổng tháng cộng suất nhóm', ct.slice(0, 4)); }
+{ const bo = new Set(['nhom.mkt', 'nhom.store']);
   c.xoaNhieuDong_('DangKyCom', c.doc_('DangKyCom').filter(x => bo.has(String(x.TenDangNhap).toLowerCase())).map(x => x._row));
   c.xoaNhieuDong_('TaiKhoan', c.doc_('TaiKhoan').filter(x => bo.has(String(x.TenDangNhap).toLowerCase())).map(x => x._row)); }
 
