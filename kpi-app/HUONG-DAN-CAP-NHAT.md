@@ -372,6 +372,12 @@ Nếu vẫn thấy giao diện cũ: kiểm tra lại Phần D (đã chọn **Phi
 - **Hướng dẫn** chuyển thành nút **?** trên đầu trang.
 
 
+## Cơm trưa – nhân sự (HR) và kiểm soát chất lượng (QC) không tính suất (11/10)
+
+- Tài khoản vai trò **Nhân sự** và **Kiểm soát chất lượng** không còn nút Ăn / Không ăn và không tính vào bảng số suất.
+- Trợ lý ban điều hành vẫn tính vào dòng "Ban điều hành và trưởng bộ phận".
+- Nhân sự vẫn báo thực đơn và xem số suất được như trước.
+
 ## Cơm trưa – 5 nhóm ngoài xưởng báo tổng số suất (11/10)
 
 - Có vai trò mới **"Nhóm báo cơm"**. Mỗi nhóm có 1 tài khoản; nhóm không cần danh sách nhân sự.

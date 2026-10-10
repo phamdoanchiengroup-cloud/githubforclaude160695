@@ -24,7 +24,7 @@ const vt = v => x => String(x.VaiTro).trim() === v && String(x.TrangThai).trim()
 const owner = tk(vt('OWNER')), tp = tk(x => vt('TP')(x) && x.MaXuong), cn = tk(x => vt('CN')(x) && x.MaXuong !== tp.MaXuong), cn2 = tk(x => vt('CN')(x) && x.MaXuong === tp.MaXuong), bep = tk(vt('BEP')), cn3 = tk(x => vt('CN')(x) && x.MaXuong !== tp.MaXuong && x.TenDangNhap !== cn.TenDangNhap);
 const P = t => c.taoPhien_(t), tO = P(owner), tTP = P(tp), tCN = P(cn), tCN2 = P(cn2), tB = P(bep), tCN3 = P(cn3);
 const nghi = new Set(c.doc_('NhanSu').filter(x => String(x.TrangThai).trim() === 'Nghỉ việc').map(x => String(x.MaNV).trim()));
-const soNguoi = c.doc_('TaiKhoan').filter(x => String(x.TrangThai).trim() === 'Đang dùng' && String(x.VaiTro).trim() !== 'BEP' && !(x.MaNV && nghi.has(String(x.MaNV).trim()))).length;   // tài khoản đang dùng, bỏ người đã nghỉ việc
+const soNguoi = c.doc_('TaiKhoan').filter(x => String(x.TrangThai).trim() === 'Đang dùng' && !['BEP', 'HR', 'QC'].includes(String(x.VaiTro).trim()) && !(x.MaNV && nghi.has(String(x.MaNV).trim()))).length;   // tài khoản đang dùng, bỏ người đã nghỉ việc
 
 console.log('\n1. Thực đơn');
 let r = c.__goi('luuThucDon', tCN, '2026-10-13', 'Cơm, gà rang', '');
@@ -53,7 +53,7 @@ r = c.__goi('napComTrua', tCN); ok(r.cuaToi['2026-10-13'] === 0, 'trang của t�
 console.log('\n3. Tổng hợp gửi bếp');
 r = c.__goi('napComTrua', tB);
 let th = r.tongHop.find(x => x.ngay === '2026-10-13');
-ok(r.quyen.xem && r.quyen.sua && th && th.an === 3 && th.khong === 2 && th.an + th.khong + th.chua === soNguoi, 'bếp: 3 ăn, 2 không ăn, còn lại chưa đăng ký (tổng = ' + soNguoi + ' tài khoản đang dùng, đã bỏ người nghỉ việc và tài khoản bếp)', th && [th.an, th.khong, th.chua]);
+ok(r.quyen.xem && r.quyen.sua && th && th.an === 3 && th.khong === 2 && th.an + th.khong + th.chua === soNguoi, 'bếp: 3 ăn, 2 không ăn, còn lại chưa đăng ký (tổng = ' + soNguoi + ' tài khoản đang dùng, đã bỏ người nghỉ việc, tài khoản bếp, nhân sự, QC)', th && [th.an, th.khong, th.chua]);
 th = c.__goi('napComTrua', tO).tongHop.find(x => x.ngay === '2026-10-13');   // ban điều hành: có tên
 const xTP = th.xuong.find(x => x.mx === tp.MaXuong), xVP = th.xuong.find(x => x.mx === 'VP');
 ok(xTP && xTP.an === 1 && xTP.dsAn.length === 1 && !xTP.dsAn.concat(xTP.dsKhong, xTP.dsChua).includes(tp.HoTen), 'ban điều hành: xưởng của trưởng phòng chỉ còn suất công nhân (suất trưởng phòng không tính theo xưởng), có tên', xTP);
@@ -150,6 +150,20 @@ ok(c.dauCot_('DangKyCom').includes('SoSuat'), 'sheet DangKyCom có cột SoSuat'
 { const bo = new Set(['nhom.mkt', 'nhom.store']);
   c.xoaNhieuDong_('DangKyCom', c.doc_('DangKyCom').filter(x => bo.has(String(x.TenDangNhap).toLowerCase())).map(x => x._row));
   c.xoaNhieuDong_('TaiKhoan', c.doc_('TaiKhoan').filter(x => bo.has(String(x.TenDangNhap).toLowerCase())).map(x => x._row)); }
+
+console.log('\n4d. Nhân sự (HR), kiểm soát chất lượng (QC) không tính suất cơm');
+{ const hr = tk(x => String(x.VaiTro).trim() === 'HR' && String(x.TrangThai).trim() === 'Đang dùng'), qc = tk(x => String(x.VaiTro).trim() === 'QC' && String(x.TrangThai).trim() === 'Đang dùng');
+  ok(hr && qc, 'dữ liệu có tài khoản HR và QC');
+  const tH = P(hr), tQ = P(qc), th0 = c.__goi('napComTrua', tO).tongHop.find(x => x.ngay === '2026-10-14');
+  let q = c.__goi('dangKyCom', tH, '2026-10-14', true); ok(!q.ok && /không tính suất/.test(q.msg), 'HR không đăng ký được', q.msg);
+  q = c.__goi('dangKyCom', tQ, '2026-10-14', true); ok(!q.ok, 'QC không đăng ký được', q.msg);
+  // dòng cũ HR đã đăng ký trước đây không được tính
+  c.them_('DangKyCom', { Ngay: "'2026-10-14", TenDangNhap: String(hr.TenDangNhap).toLowerCase(), HoTen: hr.HoTen, MaNV: '', MaXuong: 'VP', An: 1, ThoiDiem: "'2026-10-12 10:00", DangKyHo: '', SoSuat: '' });
+  const th1 = c.__goi('napComTrua', tO).tongHop.find(x => x.ngay === '2026-10-14'), xV = th1.xuong.find(x => x.mx === 'VP');
+  ok(th1.an === th0.an && th1.chua === th0.chua && !xV.dsAn.concat(xV.dsKhong, xV.dsChua).includes(hr.HoTen), 'HR không có trong dòng ban điều hành, lượt đăng ký cũ không tính', [th0.an, th1.an]);
+  q = c.__goi('napComTrua', tH); ok(q.quyen.khongTinh && !q.quyen.dangKy && q.quyen.sua && q.quyen.xem, 'HR: vẫn báo thực đơn + xem tổng hợp, không có nút đăng ký', q.quyen);
+  ok(!c.__goi('napComTrua', tO).hoNguoi.some(p => p.tk === String(hr.TenDangNhap).toLowerCase()), 'ban điều hành không thấy HR trong danh sách đăng ký hộ');
+  c.xoaNhieuDong_('DangKyCom', c.doc_('DangKyCom').filter(x => String(x.TenDangNhap).toLowerCase() === String(hr.TenDangNhap).toLowerCase()).map(x => x._row)); }
 
 console.log('\n5. Vai trò BEP');
 r = c.__goi('napDuLieu', tB);

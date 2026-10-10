@@ -64,14 +64,16 @@ function comSua_(me) { return me.vaiTro === 'ADMIN' || me.vaiTro === 'BEP' || me
 
 /* Tài khoản bếp: chỉ phục vụ cơm nước – không đăng ký suất, không tính vào số người */
 function comLaBep_(t) { return String(t.VaiTro || t.vaiTro || '').trim() === 'BEP'; }
-function comTkBep_() { var m = {}; doc_('TaiKhoan').forEach(function(t) { if (comLaBep_(t)) m[String(t.TenDangNhap).toLowerCase()] = 1; }); return m; }
+/* Chủ dự án 11/10: tài khoản Nhân sự (HR) và Kiểm soát chất lượng (QC) KHÔNG tính suất cơm (không đăng ký, không vào tổng hợp) */
+function comKhongTinh_(t) { var v = String(t.VaiTro || t.vaiTroGoc || t.vaiTro || '').trim(); return v === 'HR' || v === 'QC'; }
+function comTkBep_() { var m = {}; doc_('TaiKhoan').forEach(function(t) { if (comLaBep_(t) || comKhongTinh_(t)) m[String(t.TenDangNhap).toLowerCase()] = 1; }); return m; }
 
 /* Người cần đăng ký: tài khoản đang dùng (bỏ tài khoản có hồ sơ đã nghỉ việc và tài khoản bếp) */
 function comNguoi_() {
   var nghi = {};
   docAnToan_('NhanSu').forEach(function(n) { if (String(n.TrangThai).trim() === 'Nghỉ việc') nghi[String(n.MaNV).trim()] = 1; });
   return doc_('TaiKhoan').filter(function(t) {
-    return String(t.TrangThai).trim() === 'Đang dùng' && !comLaBep_(t) && !comLaNhom_(t) && !(t.MaNV && nghi[String(t.MaNV).trim()]);
+    return String(t.TrangThai).trim() === 'Đang dùng' && !comLaBep_(t) && !comLaNhom_(t) && !comKhongTinh_(t) && !(t.MaNV && nghi[String(t.MaNV).trim()]);
   }).map(function(t) {
     return { tk: String(t.TenDangNhap).toLowerCase(), ten: t.HoTen, ma: String(t.MaNV || '').trim(), mx: comMx_(t.VaiTro, t.MaXuong), xg: String(t.MaXuong || '').trim() };
   });
@@ -153,7 +155,7 @@ function napComTrua(token) {
       if (ng.slice(0, 7) === ky) thang[an ? 'an' : 'khong']++;
     });
     var out = { ok: true, homNay: homNay, bayGio: comBayGio_(), gioChot: comGioChot_(), thucDon: td, cuaToi: cuaToi, cuaToiHo: cuaToiHo, thang: thang,
-      quyen: { xem: comXem_(me), sua: comSua_(me), dangKy: !comLaBep_(me) && !laNhom, nhom: laNhom, maxSuat: COM_MAX_SUAT, ho: ['ADMIN', 'TL', 'HR'].indexOf(me.vaiTro) >= 0 || comLaTruong_(me) }, tongHop: [] };
+      quyen: { xem: comXem_(me), sua: comSua_(me), dangKy: !comLaBep_(me) && !laNhom && !comKhongTinh_(me), khongTinh: comKhongTinh_(me), nhom: laNhom, maxSuat: COM_MAX_SUAT, ho: ['ADMIN', 'TL', 'HR'].indexOf(me.vaiTro) >= 0 || comLaTruong_(me) }, tongHop: [] };
     if (out.quyen.ho) {
       // danh sách người được đăng ký hộ + trạng thái các ngày có thực đơn sắp tới: hoDK[ngay][tk] = [an, ai đăng ký hộ]
       var tenX = comTenX_(), ngays = {};
@@ -177,6 +179,7 @@ function dangKyCom(token, ngay, an) {
   if (!me) return sach_({ ok: false, hetHan: true, msg: 'Phiên đăng nhập đã hết hạn.' });
   if (comLaBep_(me)) return sach_({ ok: false, msg: 'Tài khoản bếp chỉ báo thực đơn và xem số suất, không cần đăng ký ăn.' });
   if (comLaNhom_(me)) return sach_({ ok: false, msg: 'Tài khoản nhóm báo tổng số suất, không đăng ký Ăn / Không ăn.' });
+  if (comKhongTinh_(me)) return sach_({ ok: false, msg: 'Tài khoản nhân sự / kiểm soát chất lượng không tính suất cơm.' });
   ngay = String(ngay || '').slice(0, 10);
   if (!/^\d{4}-\d{2}-\d{2}$/.test(ngay)) return sach_({ ok: false, msg: 'Ngày không hợp lệ.' });
   khoa_();
