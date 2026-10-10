@@ -1,0 +1,38 @@
+/* ===== Hiệu ứng đợt 3 cho màn Khắc laser (demo 11/10) – bật từng cái bằng window.LK_HU3 ===== */
+/* 0. video nền Remotion: nằm dưới SVG nền; khi video chạy thì ẩn ảnh tĩnh (chữ khắc laser trong SVG vẫn ở trên) */
+#gate .lk3-video{position:absolute;object-fit:cover;display:block;pointer-events:none;background:#000}
+#gate.lk3-ng .lk3-video{transition:transform .5s cubic-bezier(.2,.8,.3,1)}
+#gate.lk3-co-video .lk-nen image.anh{opacity:0}
+/* 1. bụi carbon lấp lánh: canvas nằm giữa ảnh nền và lớp phủ tối */
+#gate .lk3-bui{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:0}
+/* 2. vệt sáng quét qua các ngọn cơ */
+#gate .lk3-quet{position:absolute;inset:0;pointer-events:none;mix-blend-mode:screen;
+  background:linear-gradient(104deg,transparent 0 40%,rgba(255,236,200,.0) 44%,rgba(255,236,200,.16) 49%,rgba(255,248,230,.24) 50%,rgba(255,236,200,.16) 51%,transparent 56% 100%) no-repeat;
+  background-size:260% 100%;background-position:130% 0;animation:lk3Quet 7.5s cubic-bezier(.5,0,.3,1) infinite;
+  -webkit-mask-image:linear-gradient(180deg,#000 0,#000 62%,transparent 80%);mask-image:linear-gradient(180deg,#000 0,#000 62%,transparent 80%)}
+@keyframes lk3Quet{0%,30%{background-position:130% 0}75%,100%{background-position:-30% 0}}
+/* 3. nghiêng theo chuột / điện thoại */
+#gate.lk3-ng{overflow-x:hidden;overflow-x:clip}   /* nền phóng 3,5% để nghiêng không lộ mép – không được làm trang tràn ngang */
+#gate.lk3-ng .lk-nen{transition:transform .5s cubic-bezier(.2,.8,.3,1);will-change:transform}
+#gate.lk3-ng .lk-goc{transition:transform .5s cubic-bezier(.2,.8,.3,1)}
+/* 4. tiêu đề hiện dần như đang được khắc */
+#gate .lk3-k{opacity:0;display:inline-block;transform:translateY(.12em);filter:blur(3px);transition:opacity .35s,transform .35s,filter .35s,text-shadow 1.2s}
+#gate .lk3-k.ra{opacity:1;transform:none;filter:none;text-shadow:0 0 14px rgba(255,214,140,.9)}
+#gate .lk3-k.nguoi{text-shadow:none}
+#gate .lk3-tia{position:absolute;width:10px;height:10px;margin:-5px 0 0 -5px;border-radius:50%;pointer-events:none;z-index:5;
+  background:radial-gradient(circle,#fff 0 25%,#ffe2a8 40%,rgba(255,170,60,0) 70%);box-shadow:0 0 18px 6px rgba(255,190,90,.55);transition:left .07s linear,top .07s linear,opacity .4s}
+#gate .lk-goc p,#gate .lk-goc .lk-may{transition:opacity .6s .1s}
+#gate .lk-goc.lk3-cho p,#gate .lk-goc.lk3-cho .lk-may{opacity:0}
+/* 5. lời Rhino hiện từng chữ */
+#gate .rh-mai-noi .lk3-c{opacity:0}#gate .rh-mai-noi .lk3-c.ra{opacity:1}
+/* 6. chuyển cảnh khi đăng nhập đúng: tia laser quét từ trên xuống, phía sau tối dần */
+.lk3-man{position:fixed;inset:0;z-index:9000;pointer-events:none}
+.lk3-man .toi{position:absolute;inset:0;background:#0b0c0e;clip-path:inset(0 0 100% 0);animation:lk3Toi .95s cubic-bezier(.6,0,.3,1) forwards}
+.lk3-man .tia{position:absolute;left:0;right:0;top:0;height:3px;background:linear-gradient(90deg,transparent,#ffe7b0 12%,#fff 50%,#ffe7b0 88%,transparent);
+  box-shadow:0 0 22px 6px rgba(247,184,41,.55),0 0 60px 18px rgba(247,184,41,.25);animation:lk3Tia .95s cubic-bezier(.6,0,.3,1) forwards}
+.lk3-man .logo{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%) scale(.9);opacity:0;width:min(220px,46vw);animation:lk3Logo .7s .75s ease-out forwards}
+@keyframes lk3Toi{to{clip-path:inset(0 0 0 0)}}
+@keyframes lk3Tia{to{top:100%;opacity:.6}}
+@keyframes lk3Logo{to{opacity:1;transform:translate(-50%,-50%) scale(1)}}
+@media (prefers-reduced-motion:reduce){#gate .lk3-bui,#gate .lk3-quet,#gate .lk3-tia{display:none}#gate .lk3-k,#gate .rh-mai-noi .lk3-c{opacity:1!important}}
+@media (max-width:760px){#gate .lk3-bui,#gate .lk3-quet{bottom:auto;height:50vh}}
