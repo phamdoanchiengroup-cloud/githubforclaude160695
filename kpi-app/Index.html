@@ -9998,8 +9998,16 @@ function comTongHopHtml(){
       th.xuong.map(function(x){return '<tr><td><b>'+esc(x.ten)+'</b></td><td class="r"><b>'+x.an+'</b></td><td class="r">'+x.khong+'</td><td class="r">'+x.chua+'</td><td>'+
         (x.dsAn?ten(x.dsAn,'Ăn')+ten(x.dsKhong,'Không ăn')+ten(x.dsChua,'Chưa đăng ký'):'<span class="cm-ghi">–</span>')+'</td></tr>'}).join('')+
       '<tr class="tong"><td>Toàn nhà máy</td><td class="r">'+th.an+'</td><td class="r">'+th.khong+'</td><td class="r">'+th.chua+'</td><td></td></tr></tbody></table>'+
+      comKhongHtml(th)+
       '<p class="cm-khong-in" style="margin-top:10px"><button class="btn sm" type="button" onclick="comChep('+i+')">📋 Chép số suất gửi bếp</button> <button class="btn sm" type="button" onclick="window.print()">🖨 In</button></p></div>';
   }).join('');
+}
+/* Danh sách người KHÔNG ĂN: họ tên, mã nhân viên, xưởng (ban điều hành / nhân sự / bếp: cả nhà máy; trưởng phòng: xưởng mình) */
+function comKhongHtml(th){
+  var ds=th.dsKhongCT||[]; if(!ds.length&&!th.khong)return '';
+  return '<h4 style="margin:16px 0 6px">Danh sách không ăn ('+ds.length+(ds.length<th.khong?' / '+th.khong+' – chỉ hiện xưởng của bạn':'')+')</h4>'+
+    (ds.length?'<table class="cm-bang"><thead><tr><th class="r" style="width:42px">#</th><th>Họ tên</th><th>Mã NV</th><th>Xưởng</th></tr></thead><tbody>'+
+      ds.map(function(c,i){return '<tr><td class="r">'+(i+1)+'</td><td>'+esc(c.ten)+'</td><td>'+esc(c.ma||'–')+'</td><td>'+esc(c.xuong)+'</td></tr>'}).join('')+'</tbody></table>':'');
 }
 function comChep(i){
   var th=COM.d.tongHop[i]; if(!th)return;

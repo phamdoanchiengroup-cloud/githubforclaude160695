@@ -55,8 +55,14 @@ ok(xTP && xTP.an === 2 && xTP.dsAn.length === 2, 'xưởng của trưởng phòn
 ok(xVP && xVP.an === 1 && xVP.khong === 1 && th.xuong[th.xuong.length - 1].mx === 'VP', 'tài khoản không gắn xưởng gom vào "Văn phòng / khác" (cuối bảng)', xVP);
 r = c.__goi('napComTrua', tTP); th = r.tongHop.find(x => x.ngay === '2026-10-13');
 ok(r.quyen.xem && !r.quyen.sua && th.xuong.length > 1 && th.xuong.every(x => x.mx === tp.MaXuong ? Array.isArray(x.dsAn) : x.dsAn === undefined), 'trưởng phòng: thấy số mọi xưởng, tên chỉ xưởng mình');
+const khongTP = th.dsKhongCT;
 r = c.__goi('napComTrua', tO); th = r.tongHop.find(x => x.ngay === '2026-10-13');
 ok(th.xuong.every(x => Array.isArray(x.dsChua)), 'ban điều hành: thấy tên mọi xưởng');
+const cnK = th.dsKhongCT.find(x => x.ten === cn.HoTen);
+ok(th.dsKhongCT.length === 2 && cnK && cnK.ma === String(cn.MaNV) && cnK.xuong === c.tenXuong_(cn.MaXuong) && th.dsKhongCT.some(x => x.ten === 'Bếp ăn' && x.xuong === 'Văn phòng / khác'),
+  'ban điều hành: danh sách không ăn đủ họ tên, mã NV, xưởng', th.dsKhongCT);
+ok(Array.isArray(khongTP) && khongTP.every(x => x.mx === tp.MaXuong), 'trưởng phòng: danh sách không ăn chỉ xưởng mình', khongTP);
+r = c.__goi('napComTrua', tCN); ok(!r.tongHop.length, 'công nhân không nhận danh sách không ăn');
 
 console.log('\n4. Hạn chót 16:00 hôm trước');
 c.__datGio('2026-10-12T15:59:00+07:00'); ok(c.__goi('dangKyCom', tCN, '2026-10-13', true).ok, '15:59 vẫn đổi được');
@@ -82,7 +88,7 @@ ok(tc && /spreadsheets/.test(tc.tep) && sub && sub.tep.length === 1, 'tạo file
 const bt = c.__bangMoi && c.__bangMoi[0];
 const ct = bt && bt.ds.find(s => s.ten === 'Chi tiết từng người');
 ok(bt && bt.ten === 'Đăng ký cơm trưa 2026-10' && ct && ct.rows.length - 1 === soNguoi * 2, 'file có tổng hợp + chi tiết từng người × 2 ngày + thực đơn', bt && bt.ds.map(s => [s.ten, s.rows.length]));
-ok(ct && ct.rows.some(x => x[3] === 'Ăn') && ct.rows.some(x => x[3] === 'Không ăn') && ct.rows.some(x => x[3] === 'Chưa đăng ký'), 'chi tiết ghi rõ Ăn / Không ăn / Chưa đăng ký');
+ok(ct && ct.rows[0].join() === 'Ngày,Xưởng,Họ tên,Mã NV,Đăng ký' && ct.rows.some(x => x[4] === 'Ăn') && ct.rows.some(x => x[4] === 'Không ăn' && x[3]) && ct.rows.some(x => x[4] === 'Chưa đăng ký'), 'chi tiết có cột Mã NV, ghi rõ Ăn / Không ăn / Chưa đăng ký');
 const sat = c.doc_('SuatAnThang');
 ok(sat.length > 1 && sat.reduce((s, x) => s + Number(x.SuatAn), 0) === 4, 'SuatAnThang: tổng 4 suất tháng 10 (ngày 13: 4 người ăn; ngày 14: chỉ 1 người báo không ăn)', sat.map(x => [x.MaXuong, x.SuatAn, x.KhongAn]));
 const dk = c.doc_('DangKyCom').map(x => String(x.Ngay)), tdn = c.doc_('ThucDon').map(x => String(x.Ngay));

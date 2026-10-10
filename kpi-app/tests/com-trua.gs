@@ -9,7 +9,7 @@
    Sheet tự tạo khi dùng lần đầu: ThucDon, DangKyCom, SuatAnThang. */
 var COM_SHEET = {
   ThucDon: ['Ngay', 'MonAn', 'GhiChu', 'NguoiNhap', 'CapNhat'],
-  DangKyCom: ['Ngay', 'TenDangNhap', 'HoTen', 'MaXuong', 'An', 'ThoiDiem'],
+  DangKyCom: ['Ngay', 'TenDangNhap', 'HoTen', 'MaNV', 'MaXuong', 'An', 'ThoiDiem'],
   SuatAnThang: ['Ky', 'MaXuong', 'TenXuong', 'SoNgay', 'SuatAn', 'KhongAn', 'ChuaDangKy', 'TepLuu']
 };
 var COM_VP = 'VP';                       // nhóm cho tài khoản không gắn xưởng (ban điều hành, nhân sự, bếp…)
@@ -46,7 +46,7 @@ function comNguoi_() {
   return doc_('TaiKhoan').filter(function(t) {
     return String(t.TrangThai).trim() === 'Đang dùng' && !(t.MaNV && nghi[String(t.MaNV).trim()]);
   }).map(function(t) {
-    return { tk: String(t.TenDangNhap).toLowerCase(), ten: t.HoTen, mx: String(t.MaXuong || '').trim() || COM_VP };
+    return { tk: String(t.TenDangNhap).toLowerCase(), ten: t.HoTen, ma: String(t.MaNV || '').trim(), mx: String(t.MaXuong || '').trim() || COM_VP };
   });
 }
 function comTenX_() {
@@ -57,20 +57,20 @@ function comTenX_() {
 function comTongHop_(ngay, me) {
   var nguoi = comNguoi_(), tenX = comTenX_(), dk = {};
   comDoc_('DangKyCom').forEach(function(r) { if (comNgay_(r.Ngay) === ngay) dk[String(r.TenDangNhap).toLowerCase()] = r; });
-  var X = {};
+  var X = {}, ctKhong = [];
   nguoi.forEach(function(p) {
     var x = X[p.mx] || (X[p.mx] = { mx: p.mx, ten: tenX[p.mx] || p.mx, an: 0, khong: 0, chua: 0, dsAn: [], dsKhong: [], dsChua: [] });
     var r = dk[p.tk];
     if (!r) { x.chua++; x.dsChua.push(p.ten); }
     else if (Number(r.An) === 1) { x.an++; x.dsAn.push(p.ten); }
-    else { x.khong++; x.dsKhong.push(p.ten); }
+    else { x.khong++; x.dsKhong.push(p.ten); ctKhong.push({ ten: p.ten, ma: p.ma, mx: p.mx, xuong: x.ten }); }
   });
   // người đã đăng ký nhưng tài khoản nay không còn trong danh sách vẫn được tính suất
   Object.keys(dk).forEach(function(k) {
     if (nguoi.some(function(p) { return p.tk === k; })) return;
     var r = dk[k], mx = String(r.MaXuong || '') || COM_VP;
     var x = X[mx] || (X[mx] = { mx: mx, ten: tenX[mx] || mx, an: 0, khong: 0, chua: 0, dsAn: [], dsKhong: [], dsChua: [] });
-    if (Number(r.An) === 1) { x.an++; x.dsAn.push(r.HoTen); } else { x.khong++; x.dsKhong.push(r.HoTen); }
+    if (Number(r.An) === 1) { x.an++; x.dsAn.push(r.HoTen); } else { x.khong++; x.dsKhong.push(r.HoTen); ctKhong.push({ ten: r.HoTen, ma: String(r.MaNV || ''), mx: mx, xuong: x.ten }); }
   });
   var ds = Object.keys(X).map(function(k) { return X[k]; }).sort(function(a, b) {
     return (a.mx === COM_VP) - (b.mx === COM_VP) || String(a.ten).localeCompare(String(b.ten));
@@ -80,7 +80,10 @@ function comTongHop_(ngay, me) {
     if (!(tenOk || (me && me.vaiTro === 'TP' && x.mx === me.xuong))) { delete x.dsAn; delete x.dsKhong; delete x.dsChua; }
   });
   var tong = function(k) { return ds.reduce(function(s, x) { return s + x[k]; }, 0); };
-  return { ngay: ngay, xuong: ds, an: tong('an'), khong: tong('khong'), chua: tong('chua') };
+  // danh sách người KHÔNG ĂN đủ họ tên, mã NV, xưởng: ban điều hành / nhân sự / bếp thấy cả nhà máy, trưởng phòng thấy xưởng mình
+  ctKhong = ctKhong.filter(function(c) { return tenOk || (me && me.vaiTro === 'TP' && c.mx === me.xuong); })
+    .sort(function(a, b) { return String(a.xuong).localeCompare(String(b.xuong)) || String(a.ten).localeCompare(String(b.ten)); });
+  return { ngay: ngay, xuong: ds, an: tong('an'), khong: tong('khong'), chua: tong('chua'), dsKhongCT: ctKhong };
 }
 
 /* Dữ liệu cho thanh thực đơn + trang Cơm trưa */
@@ -126,7 +129,7 @@ function dangKyCom(token, ngay, an) {
     suaO_('DangKyCom', cu[0]._row, 'An', v); suaO_('DangKyCom', cu[0]._row, 'ThoiDiem', thoi);
     if (cu.length > 1) xoaNhieuDong_('DangKyCom', cu.slice(1).map(function(r) { return r._row; }));
   } else {
-    them_('DangKyCom', { Ngay: "'" + ngay, TenDangNhap: tk, HoTen: me.ten, MaXuong: me.xuong || COM_VP, An: v, ThoiDiem: thoi });
+    them_('DangKyCom', { Ngay: "'" + ngay, TenDangNhap: tk, HoTen: me.ten, MaNV: me.maNV || '', MaXuong: me.xuong || COM_VP, An: v, ThoiDiem: thoi });
   }
   return sach_({ ok: true, ngay: ngay, an: v, msg: v ? 'Đã đăng ký ăn trưa ' + ngay.slice(8) + '/' + ngay.slice(5, 7) + '.' : 'Đã báo không ăn trưa ' + ngay.slice(8) + '/' + ngay.slice(5, 7) + '.' });
 }
@@ -176,12 +179,16 @@ function comTinhThang_(ky) {
   docAnToan_('ThucDon').forEach(function(r) { var n = comNgay_(r.Ngay); if (n.slice(0, 7) === ky) ngays[n] = 1; });
   var dsNgay = Object.keys(ngays).sort(), X = {}, tenX = comTenX_(), chiTiet = [];
   dsNgay.forEach(function(ng) {
-    comTongHop_(ng, { vaiTro: 'ADMIN' }).xuong.forEach(function(x) {
+    var th = comTongHop_(ng, { vaiTro: 'ADMIN' }), maTen = {};
+    comNguoi_().forEach(function(p) { maTen[p.mx + '|' + p.ten] = p.ma; });
+    th.dsKhongCT.forEach(function(c) { maTen[c.mx + '|' + c.ten] = c.ma; });
+    th.xuong.forEach(function(x) {
+      var ma = function(t) { return maTen[x.mx + '|' + t] || ''; };
       var o = X[x.mx] || (X[x.mx] = { mx: x.mx, ten: tenX[x.mx] || x.mx, soNgay: 0, an: 0, khong: 0, chua: 0 });
       o.soNgay++; o.an += x.an; o.khong += x.khong; o.chua += x.chua;
-      x.dsAn.forEach(function(t) { chiTiet.push([ng, x.ten, t, 'Ăn']); });
-      x.dsKhong.forEach(function(t) { chiTiet.push([ng, x.ten, t, 'Không ăn']); });
-      x.dsChua.forEach(function(t) { chiTiet.push([ng, x.ten, t, 'Chưa đăng ký']); });
+      x.dsAn.forEach(function(t) { chiTiet.push([ng, x.ten, t, ma(t), 'Ăn']); });
+      x.dsKhong.forEach(function(t) { chiTiet.push([ng, x.ten, t, ma(t), 'Không ăn']); });
+      x.dsChua.forEach(function(t) { chiTiet.push([ng, x.ten, t, ma(t), 'Chưa đăng ký']); });
     });
   });
   return { ngay: dsNgay, ds: Object.keys(X).map(function(k) { return X[k]; }).sort(function(a, b) { return b.an - a.an; }), chiTiet: chiTiet };
@@ -203,8 +210,8 @@ function comTongKetThang_(ky) {
     return [x.ten, x.soNgay, x.an, x.khong, x.chua, x.soNgay ? Math.round(x.an / x.soNgay * 10) / 10 : 0]; }));
   sh1.getRange(1, 1, bang.length, 6).setValues(bang); sh1.getRange(1, 1, 1, 6).setFontWeight('bold'); sh1.setFrozenRows(1);
   var sh2 = tep.insertSheet('Chi tiết từng người');
-  var ct = [['Ngày', 'Xưởng', 'Họ tên', 'Đăng ký']].concat(t.chiTiet);
-  sh2.getRange(1, 1, ct.length, 4).setNumberFormat('@').setValues(ct); sh2.getRange(1, 1, 1, 4).setFontWeight('bold'); sh2.setFrozenRows(1);
+  var ct = [['Ngày', 'Xưởng', 'Họ tên', 'Mã NV', 'Đăng ký']].concat(t.chiTiet);
+  sh2.getRange(1, 1, ct.length, 5).setNumberFormat('@').setValues(ct); sh2.getRange(1, 1, 1, 5).setFontWeight('bold'); sh2.setFrozenRows(1);
   var sh3 = tep.insertSheet('Thực đơn');
   var td = [['Ngày', 'Món ăn', 'Ghi chú', 'Người nhập']].concat(docAnToan_('ThucDon').filter(function(r) { return comNgay_(r.Ngay).slice(0, 7) === ky; })
     .map(function(r) { return [comNgay_(r.Ngay), String(r.MonAn || ''), String(r.GhiChu || ''), String(r.NguoiNhap || '')]; }).sort());
