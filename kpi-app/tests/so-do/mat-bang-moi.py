@@ -85,8 +85,9 @@ D[2]['rooms'] = [
     giu(2, 'WC-03', a=21.8),
     giu(2, 'Thang bộ T-03'),
     giu(2, 'Thang bộ T-02'),
-    ph('Khu làm đầu', 'sx', [[0.0, 25.7, 12.0, 34.25]], w=0),
-    ph('Khu vực ngọn', 'sx', [[12.0, 25.7, 22.45, 34.25], [14.6, 16.97, 22.45, 25.7], [12.0, 22.7, 14.6, 25.7]], a=256, p=19, w=0),
+    # chủ dự án 11/10: bản vẽ ghi nhầm tên – khối chữ nhật sát thang máy là KHU VỰC NGỌN, khối chữ L là KHU LÀM ĐẦU (máy giữ nguyên chỗ)
+    ph('Khu vực ngọn', 'sx', [[0.0, 25.7, 12.0, 34.25]], w=0),
+    ph('Khu làm đầu', 'sx', [[12.0, 25.7, 22.45, 34.25], [14.6, 16.97, 22.45, 25.7], [12.0, 22.7, 14.6, 25.7]], a=256, p=19, w=0),
     ph('Kho (khu tập kết)', 'kho', [[0.0, 20.81, 12.0, 25.7], [7.15, 16.97, 12.0, 20.81]], a=79.75),
     ph('P. quản lý', 'vp', [[12.0, 16.97, 14.6, 22.7]], a=15, p=1),
     ph('Đóng gói', 'sx', [[22.45, 28.2, 26.99, 34.25]], a=25.8, p=3),
@@ -396,10 +397,10 @@ D[2]['mc'] = [M for M in D[2]['mc'] if M.get('src') != 'mb17'] + [dict(M, src='m
 for M in D[2]['mc']:
     cx, cy = (M['r'][0] + M['r'][2]) / 2, (M['r'][1] + M['r'][3]) / 2
     if not (12.0 <= cx <= 22.45 and 16.9 <= cy <= 34.25) or not _re.match(r'^MT\d$', M['l']): continue
-    if cy >= 25.7 and abs(M['r'][0] - 19.06) < .01: M['t'] = 'tienkl'; M['note'] = 'Khu ngọn taro – dãy giữa máy tiện WM210V'
-    elif cy >= 25.7 and abs(M['r'][0] - 16.07) < .01: M['t'] = 'cncn'; M['note'] = 'Khu ngọn taro – dãy trong máy tiện CNC'
-    elif M['l'] == 'MT4': M['t'] = 'tienkl'; M['note'] = 'Khu ngọn tip – máy tiện WM210V gần cửa'
-D[2]['zones'] = [z for z in D[2]['zones'] if z[0] not in ('Khu ngọn tip', 'Khu ngọn taro')] + [['Khu ngọn tip', [18.0, 19.5, 18.0, 19.5]], ['Khu ngọn taro', [18.0, 31.5, 18.0, 31.5]]]
+    if cy >= 25.7 and abs(M['r'][0] - 19.06) < .01: M['t'] = 'tienkl'; M['note'] = 'Dãy giữa máy tiện WM210V'
+    elif cy >= 25.7 and abs(M['r'][0] - 16.07) < .01: M['t'] = 'cncn'; M['note'] = 'Dãy trong máy tiện CNC'
+    elif M['l'] == 'MT4': M['t'] = 'tienkl'; M['note'] = 'Máy tiện WM210V gần cửa'
+D[2]['zones'] = [z for z in D[2]['zones'] if z[0] not in ('Khu ngọn tip', 'Khu ngọn taro')]   # 11/10: đổi tên khu ngọn / làm đầu -> bỏ nhãn tip / taro
 N18 = [may('Giá bình chữa cháy', 17.35, 17.05, 18.05, 17.3, 1.0, 'pccc')]
 D[2]['mc'] = [M for M in D[2]['mc'] if M.get('src') != 'mb18'] + [dict(M, src='mb18') for M in N18]
 
@@ -472,6 +473,26 @@ R20T3 = [may('Kệ kho', 30.3 + i * 2.5, 0.4, 32.3 + i * 2.5, 1.0, 2.0, 'ke', 'K
         [may('Kệ kho', 30.3 + i * 2.5, 3.8, 32.3 + i * 2.5, 4.4, 2.0, 'ke', 'K%d' % (23 + i)) for i in range(3)]
 D[0]['mc'] += [dict(M, src='mb20') for M in R20]
 D[2]['mc'] = [M for M in D[2]['mc'] if M.get('src') != 'mb20'] + [dict(M, src='mb20') for M in R20T3]
+
+# ---------- 11/10 tối: Hoàn thiện tầng 2 ----------
+# (1) 2 máy đánh bóng tự động nằm chung phòng có vách với khu ráp nước -> phòng 'Ráp nước' có vách, gồm cả dải máy đánh bóng tự động
+F2 = D[1]
+for R in F2['rooms']:
+    if R['n'] == 'Ráp nước': R['r'] = [[0.0, 29.09, 4.02, 34.25], [0.0, 20.72, 4.6, 29.09]]; R['w'] = 1
+    if R['n'] == 'Đánh ráp, đánh bóng': R['r'] = [[4.02, 29.09, 11.26, 34.25], [4.6, 20.72, 11.26, 29.09]]
+F2['xw'] = [w for w in F2.get('xw', []) if w != [4.02, 29.09, 4.6, 29.09]] + [[4.02, 29.09, 4.6, 29.09]]
+F2['doors'] = [d for d in F2['doors'] if not (abs(d[0] - 4.6) < .01 and abs(d[1] - 28.05) < .01)] + [[4.6, 28.05, 'v', 1.2, 'D']]
+# (2) bỏ vách giữa Bôi keo và Bọc da; Bôi keo là phần nhỏ sát khu đánh ráp, đánh bóng (máy bọc da dời sang phải đúng bề rộng Bôi keo)
+_bk = next(R for R in F2['rooms'] if R['n'] == 'Bôi keo')
+if abs(_bk['r'][0][0] - 19.87) < .01:
+    for M in F2['mc']:
+        x0, y0, x1, y1 = M['r']
+        if x0 >= 11.26 and x1 <= 19.87 and y0 >= 28.29: M['r'] = [round(x0 + 2.43, 3), y0, round(x1 + 2.43, 3), y1]
+for R in F2['rooms']:
+    if R['n'] == 'Bôi keo': R['r'] = [[11.26, 28.29, 13.69, 34.25]]; R['w'] = 0
+    if R['n'] == 'Bọc da': R['r'] = [[13.69, 28.29, 22.3, 34.25]]; R['w'] = 0
+_vo = [[11.26, 28.29, 22.3, 28.29], [11.26, 34.25, 22.3, 34.25], [11.26, 28.29, 11.26, 34.25], [22.3, 28.29, 22.3, 34.25]]   # vách bao chung 2 phòng
+F2['xw'] = [w for w in F2['xw'] if w not in _vo] + _vo
 
 D = lat(D)   # ghi ra bản đã xoay 180°
 
