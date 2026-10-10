@@ -36,7 +36,7 @@ const doiNguoi = (p, f) => p.evaluate(f => {
   s = await p.evaluate(() => [$('combar').querySelector('.cm-nut.an').getAttribute('aria-pressed'), document.querySelector('.cm-so .an b').textContent, document.querySelector('.cm-the').textContent]);
   ok(s[0] === 'true' && s[1] === '1' && /đã đăng ký ăn/.test(s[2]), 'bấm Ăn trên thanh: nút sáng, tổng hợp 1 suất, thẻ ghi "đã đăng ký ăn"', s);
   s = await p.evaluate(() => [...document.querySelectorAll('.cm-bang tbody tr')].map(r => r.textContent));
-  ok(s.length > 3 && /Toàn nhà máy/.test(s[s.length - 1]) && s.some(x => /Ban điều hành và trưởng bộ phận/.test(x)), 'bảng tổng hợp theo xưởng + dòng Toàn nhà máy', s.slice(-2));
+  ok(s.length > 3 && /Tổng tất cả/.test(s[s.length - 1]) && s.some(x => /Ban điều hành và trưởng bộ phận/.test(x)), 'bảng tổng hợp theo xưởng + dòng Tổng tất cả', s.slice(-2));
   await p.evaluate(() => __MAY_CHU.dangKyCom(__MAY_CHU.taoPhien_(__MAY_CHU.doc_('TaiKhoan').find(x => String(x.VaiTro).trim() === 'CN' && x.MaNV && x.TrangThai === 'Đang dùng')), '2026-10-13', false));
   await p.evaluate(() => comTai()); await p.waitForTimeout(1200);
   s = await p.evaluate(() => { const h = [...document.querySelectorAll('h4')].find(x => /Danh sách không ăn/.test(x.textContent)); const t = h && h.nextElementSibling;
@@ -66,8 +66,8 @@ const doiNguoi = (p, f) => p.evaluate(f => {
   await doiNguoi(p, "x.TenDangNhap==='bep'");
   s = await p.evaluate(() => [[...document.querySelectorAll('#nav button')].map(x => x.dataset.k), tabHienTai, $('hbadge').textContent, !!$('cmMon'), !!document.querySelector('.cm-bang')]);
   ok(s[0].join() === 'com' && s[1] === 'com' && s[2] === 'BẾP ĂN' && s[3] && s[4], 'bếp chỉ có trang Cơm trưa: nhập thực đơn + xem tổng hợp', s);
-  s = await p.evaluate(() => [document.querySelectorAll('.cm-bang details').length, /Danh sách không ăn/.test($('main').textContent), document.querySelector('.cm-so .an b').textContent, document.querySelector('.cm-bang tr.tong').textContent]);
-  ok(s[0] === 0 && !s[1] && /Toàn nhà máy/.test(s[3]), 'bếp: chỉ số suất theo xưởng + tổng, không có họ tên', s);
+  s = await p.evaluate(() => [document.querySelectorAll('.cm-bang details').length, /Danh sách không ăn/.test($('main').textContent), document.querySelector('.cm-so .an b').textContent, document.querySelector('.cm-bang tr.tong:last-child').textContent]);
+  ok(s[0] === 0 && !s[1] && /Tổng tất cả/.test(s[3]), 'bếp: chỉ số suất theo xưởng + tổng, không có họ tên', s);
   s = await p.evaluate(() => [document.querySelectorAll('.cm-nut.an,.cm-nut.khong').length, $('combar').textContent, document.querySelector('.cm-the').textContent]);
   ok(s[0] === 0 && /suất ăn/.test(s[1]) && /suất ăn/.test(s[2]) && !/Bạn chưa đăng ký/.test(s[2]), 'bếp: không có nút Ăn / Không ăn, thanh + thẻ hiện số suất', s);
 
@@ -127,6 +127,8 @@ const doiNguoi = (p, f) => p.evaluate(f => {
   await p.evaluate(() => go('com')); await p.waitForTimeout(1200);
   s = await p.evaluate(() => [...document.querySelectorAll('.cm-bang tr.cm-nhom-dong')].map(r => r.textContent.replace(/\s+/g, ' ').trim()));
   ok(s.some(x => /Marketing \(Hà Nội\).*8/.test(x)), 'bếp: bảng tổng hợp có dòng "Marketing (Hà Nội)" 8 suất', s);
+  s = await p.evaluate(() => { const th = COM.d.tongHop.find(t => t.xuong.some(x => x.mx === 'HNOI_MKT' && x.an === 8)); const rows = [...document.querySelectorAll('.cm-bang tr.cm-noi-dong')].map(r => r.textContent.replace(/\s+/g, ' ')); return th && [th.an, th.haNam, th.haNoi, rows.join(' | '), $('main').querySelector('.cm-noi') ? $('main').querySelector('.cm-noi').textContent : '']; });
+  ok(s && s[2] === 8 && s[1] + s[2] === s[0] && /Tổng ở Hà Nam/.test(s[3]) && /Tổng ở Hà Nội\s*8/.test(s[3]) && /suất ở Hà Nội/.test(s[4]), 'bếp: tổng tất cả = Hà Nam + Hà Nội (Hà Nội 8 suất)', s);
 
   console.log('Công nhân · điện thoại');
   await p.close(); await p.ctx.close();

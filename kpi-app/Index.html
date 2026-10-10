@@ -10236,6 +10236,8 @@ d.textContent='Không tải được thư viện 3D (Three.js). Hãy kiểm tra 
 .cm-nhom{display:inline-flex;gap:6px;align-items:center;flex-wrap:wrap}
 .cm-so-in{width:96px;font-size:18px;font-weight:700;padding:8px 10px;text-align:right}
 .cm-nhom-dong td{background:color-mix(in srgb,var(--cy,#2fd3c6) 6%,transparent)}
+.cm-noi{margin-top:-4px}
+.cm-noi-dong td{font-weight:600}
 </style>
 <script>
 /* Mục 16: CƠM TRƯA – thanh thực đơn (#combar) trên mọi trang của mọi tài khoản + trang "Cơm trưa".
@@ -10404,12 +10406,15 @@ function comTongHopHtml(){
     var ten=function(ds,nhan){return ds&&ds.length?'<details><summary>'+nhan+' ('+ds.length+')</summary><p>'+esc(ds.join(', '))+'</p></details>':''};
     return '<div class="card"><h3>Tổng hợp số suất – '+esc(th.ngay===d.homNay?'hôm nay, '+comNgayTen(th.ngay):comNgayTen(th.ngay))+' <span>'+(mo?'tạm tính – nhắc đăng ký trước '+esc(comHanChu(t)):'đã qua giờ nhắc '+esc(comHanChu(t))+' – vẫn nhận đăng ký, số có thể tăng')+'</span></h3>'+
       '<div class="cm-so"><div class="an"><b>'+th.an+'</b><span>suất ăn</span></div><div class="khong"><b>'+th.khong+'</b><span>không ăn</span></div><div class="chua"><b>'+th.chua+'</b><span>chưa đăng ký</span></div>'+(th.nhomChua?'<div class="chua"><b>'+th.nhomChua+'</b><span>nhóm chưa báo suất</span></div>':'')+'</div>'+
+      (th.haNam!==undefined?'<div class="cm-so cm-noi"><div class="an"><b>'+th.haNam+'</b><span>suất ở Hà Nam</span></div><div class="an"><b>'+th.haNoi+'</b><span>suất ở Hà Nội</span></div></div>':'')+
       '<table class="cm-bang"><thead><tr><th>Xưởng</th><th class="r">Ăn</th><th class="r">Không ăn</th><th class="r">Chưa đăng ký</th>'+(coTen?'<th>Danh sách</th>':'')+'</tr></thead><tbody>'+
       th.xuong.map(function(x){
         if(x.nhom)return '<tr class="cm-nhom-dong"><td><b>'+esc(x.ten)+'</b> <span class="cm-ghi">· nhóm báo tổng</span></td><td class="r"><b>'+(x.baoChua?'–':x.an)+'</b></td><td class="r">–</td><td class="r">'+(x.baoChua?'<span class="cm-tt chua">chưa báo</span>':'–')+'</td>'+(coTen?'<td></td>':'')+'</tr>';
         return '<tr><td><b>'+esc(x.ten)+'</b></td><td class="r"><b>'+x.an+'</b></td><td class="r">'+x.khong+'</td><td class="r">'+x.chua+'</td>'+
         (coTen?'<td>'+(x.dsAn?ten(x.dsAn,'Ăn')+ten(x.dsKhong,'Không ăn')+ten(x.dsChua,'Chưa đăng ký'):'<span class="cm-ghi">–</span>')+'</td>':'')+'</tr>'}).join('')+
-      '<tr class="tong"><td>Toàn nhà máy</td><td class="r">'+th.an+'</td><td class="r">'+th.khong+'</td><td class="r">'+th.chua+'</td>'+(coTen?'<td></td>':'')+'</tr></tbody></table>'+
+      (th.haNam!==undefined?'<tr class="tong cm-noi-dong"><td>Tổng ở Hà Nam <span class="cm-ghi">(xưởng sản xuất + ban điều hành + nhóm Hà Nam)</span></td><td class="r">'+th.haNam+'</td><td></td><td></td>'+(coTen?'<td></td>':'')+'</tr>'+
+        '<tr class="tong cm-noi-dong"><td>Tổng ở Hà Nội</td><td class="r">'+th.haNoi+'</td><td></td><td></td>'+(coTen?'<td></td>':'')+'</tr>':'')+
+      '<tr class="tong"><td>Tổng tất cả</td><td class="r">'+th.an+'</td><td class="r">'+th.khong+'</td><td class="r">'+th.chua+'</td>'+(coTen?'<td></td>':'')+'</tr></tbody></table>'+
       comMuonHtml(th)+comKhongHtml(th)+
       '<p class="cm-khong-in" style="margin-top:10px"><button class="btn sm" type="button" onclick="comChep('+i+')">📋 Chép số suất gửi bếp</button> <button class="btn sm" type="button" onclick="window.print()">🖨 In</button></p></div>';
   }).join('');
@@ -10431,7 +10436,7 @@ function comKhongHtml(th){
 }
 function comChep(i){
   var th=COM.d.tongHop[i]; if(!th)return;
-  var txt='Cơm trưa '+comNgayTen(th.ngay)+': '+th.an+' suất\n'+th.xuong.filter(function(x){return x.an}).map(function(x){return '- '+x.ten+': '+x.an}).join('\n')+
+  var txt='Cơm trưa '+comNgayTen(th.ngay)+': '+th.an+' suất'+(th.haNam!==undefined?' (Hà Nam '+th.haNam+', Hà Nội '+th.haNoi+')':'')+'\n'+th.xuong.filter(function(x){return x.an}).map(function(x){return '- '+x.ten+': '+x.an}).join('\n')+
     (th.chua?'\n(Chưa đăng ký: '+th.chua+' người)':'')+
     (th.nhomChua?'\n(Nhóm chưa báo suất: '+th.xuong.filter(function(x){return x.baoChua}).map(function(x){return x.ten}).join(', ')+')':'');
   var xong=function(){toast('Đã chép – dán vào Zalo / tin nhắn gửi bếp',true)};

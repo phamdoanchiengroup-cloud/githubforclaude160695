@@ -54,3 +54,5 @@
 .cm-nhom{display:inline-flex;gap:6px;align-items:center;flex-wrap:wrap}
 .cm-so-in{width:96px;font-size:18px;font-weight:700;padding:8px 10px;text-align:right}
 .cm-nhom-dong td{background:color-mix(in srgb,var(--cy,#2fd3c6) 6%,transparent)}
+.cm-noi{margin-top:-4px}
+.cm-noi-dong td{font-weight:600}

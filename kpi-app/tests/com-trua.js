@@ -139,6 +139,7 @@ ok(c.__goi('napComTrua', tNM).cuaToi['2026-10-14'] === 6, 'trang của nhóm hi�
 { const sau = c.__goi('napComTrua', tB).tongHop.find(x => x.ngay === '2026-10-14'), xM = sau.xuong.find(x => x.mx === 'HNOI_MKT'), xS = sau.xuong.find(x => x.mx === 'HNOI_STORE');
   ok(xM && xM.nhom && xM.an === 6 && xM.ten === 'Marketing (Hà Nội)' && xS && xS.baoChua === 1 && sau.nhomChua === 1 && sau.an === truoc.an + 6 && sau.chua === truoc.chua,
     'bếp: dòng "Marketing (Hà Nội)" 6 suất cộng vào tổng; Store chưa báo; nhóm không tính vào số người chưa đăng ký', [xM, xS, sau.an, truoc.an]);
+  ok(sau.haNoi === 6 && sau.haNam + sau.haNoi === sau.an, 'tổng suất ở Hà Nội (6) + Hà Nam = tổng tất cả', [sau.haNam, sau.haNoi, sau.an]);
   ok(sau.xuong[sau.xuong.length - 1].mx === 'VP' && sau.xuong.findIndex(x => x.nhom) > sau.xuong.findIndex(x => x.mx === tp.MaXuong), 'dòng nhóm nằm sau các xưởng, trước dòng ban điều hành'); }
 r = c.__goi('baoSuatNhom', tNM, '2026-10-14', 0); ok(r.ok && c.__goi('napComTrua', tB).tongHop.find(x => x.ngay === '2026-10-14').an === truoc.an, 'báo 0 suất = cả nhóm không ăn');
 c.__goi('baoSuatNhom', tNM, '2026-10-14', 6);

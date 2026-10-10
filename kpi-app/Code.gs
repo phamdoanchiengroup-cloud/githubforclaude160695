@@ -5803,6 +5803,7 @@ var COM_BO_PHAN = {
   HNOI_STORE: 'Store 47 Nguyễn Tuân (Hà Nội)'
 };
 var COM_MAX_SUAT = 300;
+function comHaNoi_(mx) { return /^HNOI_/.test(String(mx || '')); }   // nhóm ăn ở Hà Nội
 function comLaNhom_(t) { return String(t.VaiTro || t.vaiTro || '').trim() === 'NHOM'; }
 function comLaTruong_(me) { return !!me && (me.vaiTro === 'TP' || me.vaiTro === 'TBP') && !!me.xuong; }   // trưởng xưởng / trưởng bộ phận
 
@@ -5907,7 +5908,10 @@ function comTongHop_(ngay, me) {
   var choXem = function(c) { return tenOk || (comLaTruong_(me) && c.mx === me.xuong); };
   ctKhong = ctKhong.filter(choXem).sort(function(a, b) { return String(a.xuong).localeCompare(String(b.xuong)) || String(a.ten).localeCompare(String(b.ten)); });
   var muonAn = muon.reduce(function(s, m) { return s + (m.nhom ? m.an : (m.an ? 1 : 0)); }, 0);
-  return { ngay: ngay, xuong: ds, an: tong('an'), khong: tong('khong'), chua: tong('chua'), nhomChua: nhomChua, dsKhongCT: ctKhong,
+  // chủ dự án 11/10: tổng suất theo nơi ăn – Hà Nội = các nhóm mã HNOI_*, còn lại (xưởng sản xuất, ban điều hành, nhóm Hà Nam) = Hà Nam
+  var noi = { haNam: 0, haNoi: 0 };
+  ds.forEach(function(x) { noi[comHaNoi_(x.mx) ? 'haNoi' : 'haNam'] += x.an; });
+  return { ngay: ngay, xuong: ds, an: tong('an'), khong: tong('khong'), chua: tong('chua'), nhomChua: nhomChua, haNam: noi.haNam, haNoi: noi.haNoi, dsKhongCT: ctKhong,
     muon: muon.length, muonAn: muonAn, dsMuon: muon.filter(function(m) { return m.nhom || choXem(m); }).sort(function(a, b) { return a.luc < b.luc ? -1 : 1; }) };
 }
 

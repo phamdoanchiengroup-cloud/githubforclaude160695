@@ -389,6 +389,7 @@ Nếu vẫn thấy giao diện cũ: kiểm tra lại Phần D (đã chọn **Phi
   5. Store 47 Nguyễn Tuân (Hà Nội)
 - Người giữ tài khoản nhóm đăng nhập → thấy thực đơn, gõ **tổng số suất** của cả nhóm → bấm **Báo suất**. Cả nhóm không ăn thì gõ **0**. Sửa được tới hết ngày ăn.
 - Bếp / ban điều hành thấy mỗi nhóm thành 1 dòng trong bảng tổng hợp (sau các xưởng). Nhóm chưa báo hiện chữ **"chưa báo"**.
+- Cuối bảng có **Tổng ở Hà Nam** (xưởng sản xuất + ban điều hành + 2 nhóm Hà Nam), **Tổng ở Hà Nội** (3 nhóm Hà Nội) và **Tổng tất cả**. Nút "Chép số suất gửi bếp" cũng ghi kèm 2 số này.
 - 4 bộ phận chuẩn bị trước đây (Kho, HC–KT, Marketing–Bán hàng, Showroom–Store, mỗi người 1 tài khoản) **đã bỏ** để không trùng với 5 nhóm này.
 
 ## Cơm trưa – trưởng phòng ăn cùng ban điều hành (11/10)
