@@ -5450,7 +5450,7 @@ function bcComHtml_(ds, so) {
   var dong = function(x, i, dam){ return '<tr' + (i % 2 ? ' class="chan"' : '') + '><td>' + (dam ? '<b>' : '') + bcE_(x.ten) + (dam ? '</b>' : '') + '</td><td class="r">' + x.soNgay + '</td><td class="r"><b>' + bcSo_(x.an) + '</b></td><td class="r">' + bcSo_(x.khong) + '</td><td class="r">' + bcSo_(x.chua) + '</td><td class="r">' + (x.soNgay ? bcSo_(x.an / x.soNgay, 1) : '–') + '</td></tr>'; };
   return '<h2>' + so + '. Suất ăn trưa</h2><table class="bang"><tr><th>Xưởng</th><th class="r">Ngày có cơm</th><th class="r">Suất ăn</th><th class="r">Không ăn</th><th class="r">Chưa đăng ký</th><th class="r">TB suất / ngày</th></tr>' +
     ds.map(function(x, i){ return dong(x, i); }).join('') + (ds.length > 1 ? dong({ ten:'Toàn nhà máy', soNgay:tong.soNgay, an:tong.an, khong:tong.khong, chua:tong.chua }, ds.length, true) : '') +
-    '</table><p class="nho">Theo đăng ký cơm trưa trên web (hạn chót 16:00 hôm trước). "Chưa đăng ký": người có tài khoản nhưng không bấm Ăn / Không ăn.</p>';
+    '</table><p class="nho">Theo đăng ký cơm trưa trên web (nhắc đăng ký trước 16:00 hôm trước, quá giờ vẫn nhận). "Chưa đăng ký": người có tài khoản nhưng không bấm Ăn / Không ăn.</p>';
 }
 
 /* Tóm tắt số của 1 phạm vi (mx = '' -> toàn nhà máy) */
@@ -5773,7 +5773,8 @@ function GUI_BAO_CAO_THANG_TRUOC() {
 
 /* ================== CƠM TRƯA (11/10) ==================
    Bếp (vai trò BEP) hoặc ban điều hành báo THỰC ĐƠN cho một ngày (thường 14–15h hôm trước).
-   Mọi tài khoản tự đăng ký "Ăn" / "Không ăn" tới HẠN CHÓT 16:00 hôm trước (Script Property COM_GIO_CHOT để đổi giờ).
+   Mọi tài khoản tự đăng ký "Ăn" / "Không ăn". Giờ 16:00 hôm trước (Script Property COM_GIO_CHOT) chỉ là GIỜ NHẮC:
+   quá giờ vẫn đăng ký / đổi được tới hết ngày ăn (chủ dự án 11/10: không hủy suất của người bận / quên); tổng hợp ghi rõ ai đăng ký sau giờ nhắc.
    Ban điều hành, nhân sự, bếp xem tổng hợp số suất theo xưởng (kèm tên); trưởng / phó phòng xem số của mọi xưởng
    và danh sách tên của xưởng mình.
    Sang tháng mới (cùng lúc chốt KPI tháng): số suất theo xưởng ghi vào sheet SuatAnThang (đưa vào báo cáo tháng),
@@ -5807,7 +5808,8 @@ function comGioChot_() {
 /* Hạn chót đăng ký cơm ngày `ngay`: giờ chốt của NGÀY HÔM TRƯỚC, dạng 'yyyy-MM-dd HH:mm' */
 function comHan_(ngay) { return congNgay_(ngay, -1) + ' ' + ('0' + comGioChot_()).slice(-2) + ':00'; }
 function comBayGio_() { return Utilities.formatDate(new Date(), TZ_VN, 'yyyy-MM-dd HH:mm'); }
-function comConHan_(ngay) { return comBayGio_() < comHan_(ngay); }
+function comConHan_(ngay) { return comBayGio_() < comHan_(ngay); }   // còn trước giờ nhắc
+function comThoi_(v) { return v instanceof Date ? Utilities.formatDate(v, TZ_VN, 'yyyy-MM-dd HH:mm') : String(v || '').replace(/^'/, '').slice(0, 16); }
 function comXem_(me) { return ['ADMIN', 'HR', 'BEP', 'TP'].indexOf(me.vaiTro) >= 0; }
 function comSua_(me) { return me.vaiTro === 'ADMIN' || me.vaiTro === 'BEP'; }
 
@@ -5829,10 +5831,12 @@ function comTenX_() {
 function comTongHop_(ngay, me) {
   var nguoi = comNguoi_(), tenX = comTenX_(), dk = {};
   comDoc_('DangKyCom').forEach(function(r) { if (comNgay_(r.Ngay) === ngay) dk[String(r.TenDangNhap).toLowerCase()] = r; });
-  var X = {}, ctKhong = [];
+  var X = {}, ctKhong = [], muon = [], han = comHan_(ngay);
+  var ghiMuon = function(r, ten, ma, mx, tenXg) { if (r && comThoi_(r.ThoiDiem) >= han) muon.push({ ten: ten, ma: ma, mx: mx, xuong: tenXg, an: Number(r.An) === 1 ? 1 : 0, luc: comThoi_(r.ThoiDiem) }); };
   nguoi.forEach(function(p) {
     var x = X[p.mx] || (X[p.mx] = { mx: p.mx, ten: tenX[p.mx] || p.mx, an: 0, khong: 0, chua: 0, dsAn: [], dsKhong: [], dsChua: [] });
     var r = dk[p.tk];
+    ghiMuon(r, p.ten, p.ma, p.mx, x.ten);
     if (!r) { x.chua++; x.dsChua.push(p.ten); }
     else if (Number(r.An) === 1) { x.an++; x.dsAn.push(p.ten); }
     else { x.khong++; x.dsKhong.push(p.ten); ctKhong.push({ ten: p.ten, ma: p.ma, mx: p.mx, xuong: x.ten }); }
@@ -5853,9 +5857,11 @@ function comTongHop_(ngay, me) {
   });
   var tong = function(k) { return ds.reduce(function(s, x) { return s + x[k]; }, 0); };
   // danh sách người KHÔNG ĂN đủ họ tên, mã NV, xưởng: ban điều hành / nhân sự / bếp thấy cả nhà máy, trưởng phòng thấy xưởng mình
-  ctKhong = ctKhong.filter(function(c) { return tenOk || (me && me.vaiTro === 'TP' && c.mx === me.xuong); })
-    .sort(function(a, b) { return String(a.xuong).localeCompare(String(b.xuong)) || String(a.ten).localeCompare(String(b.ten)); });
-  return { ngay: ngay, xuong: ds, an: tong('an'), khong: tong('khong'), chua: tong('chua'), dsKhongCT: ctKhong };
+  var choXem = function(c) { return tenOk || (me && me.vaiTro === 'TP' && c.mx === me.xuong); };
+  ctKhong = ctKhong.filter(choXem).sort(function(a, b) { return String(a.xuong).localeCompare(String(b.xuong)) || String(a.ten).localeCompare(String(b.ten)); });
+  var muonAn = muon.filter(function(m) { return m.an; }).length;
+  return { ngay: ngay, xuong: ds, an: tong('an'), khong: tong('khong'), chua: tong('chua'), dsKhongCT: ctKhong,
+    muon: muon.length, muonAn: muonAn, dsMuon: muon.filter(choXem).sort(function(a, b) { return a.luc < b.luc ? -1 : 1; }) };
 }
 
 /* Dữ liệu cho thanh thực đơn + trang Cơm trưa */
@@ -5894,7 +5900,7 @@ function dangKyCom(token, ngay, an) {
   khoa_();
   var td = comDoc_('ThucDon').filter(function(r) { return comNgay_(r.Ngay) === ngay; })[0];
   if (!td) return sach_({ ok: false, msg: 'Bếp chưa báo thực đơn ngày này.' });
-  if (!comConHan_(ngay)) return sach_({ ok: false, msg: 'Đã quá hạn đăng ký (' + comGioChot_() + ':00 hôm trước). Liên hệ bếp nếu cần đổi.' });
+  if (ngay < homNayVN_()) return sach_({ ok: false, msg: 'Ngày ăn đã qua.' });
   var tk = String(me.tk).toLowerCase(), v = an ? 1 : 0, thoi = comBayGio_();
   var cu = comDoc_('DangKyCom').filter(function(r) { return comNgay_(r.Ngay) === ngay && String(r.TenDangNhap).toLowerCase() === tk; });
   if (cu.length) {

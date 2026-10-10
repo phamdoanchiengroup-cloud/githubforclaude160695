@@ -64,10 +64,21 @@ ok(th.dsKhongCT.length === 2 && cnK && cnK.ma === String(cn.MaNV) && cnK.xuong =
 ok(Array.isArray(khongTP) && khongTP.every(x => x.mx === tp.MaXuong), 'trưởng phòng: danh sách không ăn chỉ xưởng mình', khongTP);
 r = c.__goi('napComTrua', tCN); ok(!r.tongHop.length, 'công nhân không nhận danh sách không ăn');
 
-console.log('\n4. Hạn chót 16:00 hôm trước');
+console.log('\n4. 16:00 hôm trước chỉ là giờ nhắc');
 c.__datGio('2026-10-12T15:59:00+07:00'); ok(c.__goi('dangKyCom', tCN, '2026-10-13', true).ok, '15:59 vẫn đổi được');
-c.__datGio('2026-10-12T16:00:00+07:00'); r = c.__goi('dangKyCom', tCN, '2026-10-13', false);
-ok(!r.ok && /quá hạn/.test(r.msg), '16:00 khóa đăng ký ngày 13/10', r.msg);
+c.__datGio('2026-10-12T17:20:00+07:00'); r = c.__goi('dangKyCom', tCN, '2026-10-13', false);
+ok(r.ok, 'quá 16:00 vẫn đăng ký / đổi được (16:00 chỉ là giờ nhắc)', r.msg);
+const muonTk = tk(x => vt('CN')(x) && x.MaXuong === tp.MaXuong && x.TenDangNhap !== cn2.TenDangNhap);
+c.__datGio('2026-10-13T07:45:00+07:00'); r = c.__goi('dangKyCom', P(muonTk), '2026-10-13', true);
+ok(r.ok, 'sáng ngày ăn người quên vẫn đăng ký được', r.msg);
+r = c.__goi('napComTrua', tB); th = r.tongHop.find(x => x.ngay === '2026-10-13');
+ok(th.muon === 2 && th.muonAn === 1 && th.dsMuon.length === 2 && th.dsMuon.every(m => m.luc >= '2026-10-12 16:00' && 'ma' in m && m.xuong),
+  'tổng hợp ghi rõ 2 người đăng ký sau giờ nhắc (1 ăn), có giờ, mã NV, xưởng', th && th.dsMuon);
+r = c.__goi('napComTrua', tTP); th = r.tongHop.find(x => x.ngay === '2026-10-13');
+ok(th.muon === 2 && th.dsMuon.length === 1 && th.dsMuon[0].mx === tp.MaXuong, 'trưởng phòng: thấy số đăng ký muộn, tên chỉ xưởng mình', th.dsMuon);
+c.__datGio('2026-10-14T09:00:00+07:00'); r = c.__goi('dangKyCom', tCN, '2026-10-13', true);
+ok(!r.ok && /đã qua/.test(r.msg), 'ngày ăn đã qua thì không đăng ký được nữa', r.msg);
+c.__datGio('2026-10-12T16:00:00+07:00');
 ok(c.__goi('dangKyCom', tCN, '2026-10-14', false).ok, 'ngày 14/10 vẫn đăng ký được (hạn 16:00 ngày 13)');
 r = c.__goi('napComTrua', tCN); ok(!r.thucDon.find(t => t.ngay === '2026-10-13').conHan && r.thucDon.find(t => t.ngay === '2026-10-14').conHan, 'trang báo đúng ngày nào còn hạn');
 r = c.__goi('xoaThucDon', tCN, '2026-10-14'); ok(!r.ok, 'công nhân không xóa được thực đơn');

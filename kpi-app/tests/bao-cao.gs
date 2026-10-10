@@ -169,7 +169,7 @@ function bcComHtml_(ds, so) {
   var dong = function(x, i, dam){ return '<tr' + (i % 2 ? ' class="chan"' : '') + '><td>' + (dam ? '<b>' : '') + bcE_(x.ten) + (dam ? '</b>' : '') + '</td><td class="r">' + x.soNgay + '</td><td class="r"><b>' + bcSo_(x.an) + '</b></td><td class="r">' + bcSo_(x.khong) + '</td><td class="r">' + bcSo_(x.chua) + '</td><td class="r">' + (x.soNgay ? bcSo_(x.an / x.soNgay, 1) : '–') + '</td></tr>'; };
   return '<h2>' + so + '. Suất ăn trưa</h2><table class="bang"><tr><th>Xưởng</th><th class="r">Ngày có cơm</th><th class="r">Suất ăn</th><th class="r">Không ăn</th><th class="r">Chưa đăng ký</th><th class="r">TB suất / ngày</th></tr>' +
     ds.map(function(x, i){ return dong(x, i); }).join('') + (ds.length > 1 ? dong({ ten:'Toàn nhà máy', soNgay:tong.soNgay, an:tong.an, khong:tong.khong, chua:tong.chua }, ds.length, true) : '') +
-    '</table><p class="nho">Theo đăng ký cơm trưa trên web (hạn chót 16:00 hôm trước). "Chưa đăng ký": người có tài khoản nhưng không bấm Ăn / Không ăn.</p>';
+    '</table><p class="nho">Theo đăng ký cơm trưa trên web (nhắc đăng ký trước 16:00 hôm trước, quá giờ vẫn nhận). "Chưa đăng ký": người có tài khoản nhưng không bấm Ăn / Không ăn.</p>';
 }
 
 /* Tóm tắt số của 1 phạm vi (mx = '' -> toàn nhà máy) */
