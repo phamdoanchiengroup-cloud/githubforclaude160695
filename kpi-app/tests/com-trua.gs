@@ -24,7 +24,8 @@ var COM_BO_PHAN = {
   HNAM_KTK: 'Kế toán kho + tạp vụ (Hà Nam)',
   HNOI_MAY: 'May + kế toán kho + lái xe (Hà Nội)',
   HNOI_MKT: 'Marketing (Hà Nội)',
-  HNOI_STORE: 'Store 47 Nguyễn Tuân (Hà Nội)'
+  HNOI_STORE: 'Store 47 Nguyễn Tuân (Hà Nội)',
+  HNOI_HCKT: 'Hành chính – kế toán (Hà Nội)'
 };
 var COM_MAX_SUAT = 300;
 function comHaNoi_(mx) { return /^HNOI_/.test(String(mx || '')); }   // nhóm ăn ở Hà Nội
@@ -60,7 +61,7 @@ function comHan_(ngay) { return congNgay_(ngay, -1) + ' ' + ('0' + comGioChot_()
 function comBayGio_() { return Utilities.formatDate(new Date(), TZ_VN, 'yyyy-MM-dd HH:mm'); }
 function comConHan_(ngay) { return comBayGio_() < comHan_(ngay); }   // còn trước giờ nhắc
 function comThoi_(v) { return v instanceof Date ? Utilities.formatDate(v, TZ_VN, 'yyyy-MM-dd HH:mm') : String(v || '').replace(/^'/, '').slice(0, 16); }
-function comXem_(me) { return ['ADMIN', 'HR', 'BEP', 'TP', 'TL', 'TBP'].indexOf(me.vaiTro) >= 0; }
+function comXem_(me) { return ['ADMIN', 'HR', 'BEP', 'TP', 'TL', 'TBP', 'NHOM'].indexOf(me.vaiTro) >= 0; }   // NHOM: xem số suất toàn công ty như bếp (chủ dự án 11/10)
 function comSua_(me) { return me.vaiTro === 'ADMIN' || me.vaiTro === 'BEP' || me.vaiTro === 'TL' || me.vaiTro === 'HR'; }   // TL = trợ lý ban điều hành
 
 /* Tài khoản bếp: chỉ phục vụ cơm nước – không đăng ký suất, không tính vào số người */

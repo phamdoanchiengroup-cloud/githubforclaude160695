@@ -107,7 +107,7 @@ const doiNguoi = (p, f) => p.evaluate(f => {
   ok(/NHOM/.test(s) && !/\bNV\b|TBP/.test(s), 'form tạo tài khoản: có vai trò Nhóm báo cơm, đã bỏ NV / TBP', s);
   await p.selectOption('#q_vt', 'NHOM'); await p.waitForTimeout(200);
   s = await p.evaluate(() => [$('qbpbox').style.display, [...$('q_bp').options].map(o => o.textContent).join('|')]);
-  ok(s[0] === 'block' && s[1] === 'Bếp + lái xe + bảo vệ (Hà Nam)|Kế toán kho + tạp vụ (Hà Nam)|May + kế toán kho + lái xe (Hà Nội)|Marketing (Hà Nội)|Store 47 Nguyễn Tuân (Hà Nội)', 'chọn vai trò Nhóm báo cơm hiện ô chọn 5 nhóm', s);
+  ok(s[0] === 'block' && s[1] === 'Bếp + lái xe + bảo vệ (Hà Nam)|Kế toán kho + tạp vụ (Hà Nam)|May + kế toán kho + lái xe (Hà Nội)|Marketing (Hà Nội)|Store 47 Nguyễn Tuân (Hà Nội)|Hành chính – kế toán (Hà Nội)', 'chọn vai trò Nhóm báo cơm hiện ô chọn 6 nhóm', s);
   await p.fill('#q_tk', 'nhom.mkt'); await p.fill('#q_ten', 'Marketing Hà Nội'); await p.selectOption('#q_bp', 'HNOI_MKT');
   await p.click('button:has-text("Tạo tài khoản")'); await p.waitForTimeout(1500);
   s = await p.evaluate(() => { const t = __MAY_CHU.doc_('TaiKhoan').find(x => x.TenDangNhap === 'nhom.mkt'); return t && [t.VaiTro, t.MaXuong, t.MaNV]; });
@@ -122,7 +122,9 @@ const doiNguoi = (p, f) => p.evaluate(f => {
   ok(s[1] === 8 && s[2] === '8', 'nhóm báo 8 suất trên thanh thực đơn', s);
   await p.evaluate(() => go('com')); await p.waitForTimeout(1000);
   s = await p.evaluate(() => [$('main').querySelector('.ptitle').textContent, /Đã báo 8 suất/.test($('main').textContent), !!document.querySelector('.cm-bang')]);
-  ok(/Marketing \(Hà Nội\)/.test(s[0]) && s[1] && !s[2], 'trang Cơm trưa của nhóm: tên nhóm, "Đã báo 8 suất", không thấy tổng hợp', s);
+  ok(/Marketing \(Hà Nội\)/.test(s[0]) && s[1] && s[2], 'trang Cơm trưa của nhóm: tên nhóm, "Đã báo 8 suất", có bảng tổng hợp toàn công ty', s);
+  s = await p.evaluate(() => [document.querySelectorAll('.cm-bang details').length, !$('cmMon'), /Tổng ở Hà Nội\s*8/.test($('main').textContent), /Tổng tất cả/.test($('main').textContent)]);
+  ok(s[0] === 0 && s[1] && s[2] && s[3], 'nhóm: xem số suất như bếp (không họ tên, không form thực đơn), có tổng Hà Nam / Hà Nội', s);
   await doiNguoi(p, "String(x.VaiTro).trim()==='BEP'");
   await p.evaluate(() => go('com')); await p.waitForTimeout(1200);
   s = await p.evaluate(() => [...document.querySelectorAll('.cm-bang tr.cm-nhom-dong')].map(r => r.textContent.replace(/\s+/g, ' ').trim()));

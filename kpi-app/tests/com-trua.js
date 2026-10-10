@@ -128,7 +128,7 @@ ok(r.ok && r2.ok && tk(x => x.TenDangNhap === 'nhom.mkt').MaXuong === 'HNOI_MKT'
 const tNM = P(tk(x => x.TenDangNhap === 'nhom.mkt'));
 r = c.__goi('napDuLieu', tNM); ok(r.ok && !r.nhatky.length && !r.nhansu.length, 'tài khoản nhóm không nhận dữ liệu sản xuất / nhân sự', r.ok && [r.nhatky.length, r.nhansu.length]);
 const truoc = c.__goi('napComTrua', tO).tongHop.find(x => x.ngay === '2026-10-14');
-r = c.__goi('napComTrua', tNM); ok(r.ok && r.quyen.nhom && !r.quyen.dangKy && !r.quyen.xem && !r.quyen.ho, 'nhóm: chỉ báo số suất, không xem tổng hợp, không đăng ký hộ', r.quyen);
+r = c.__goi('napComTrua', tNM); ok(r.ok && r.quyen.nhom && !r.quyen.dangKy && r.quyen.xem && !r.quyen.sua && !r.quyen.ho && r.tongHop.length && r.tongHop.every(t => t.xuong.every(x => x.dsAn === undefined) && !t.dsKhongCT.length && !t.dsMuon.some(m => !m.nhom)), 'nhóm: báo số suất + xem số suất toàn công ty như bếp (không họ tên), không sửa thực đơn, không đăng ký hộ', r.quyen);
 r = c.__goi('dangKyCom', tNM, '2026-10-14', true); ok(!r.ok && /nhóm/.test(r.msg), 'nhóm không bấm Ăn / Không ăn', r.msg);
 ok(!c.__goi('baoSuatNhom', tNM, '2026-10-14', -2).ok && !c.__goi('baoSuatNhom', tNM, '2026-10-14', 2.5).ok && !c.__goi('baoSuatNhom', tNM, '2026-10-14', '').ok && !c.__goi('baoSuatNhom', tNM, '2026-10-14', 999).ok, 'số suất phải là số nguyên 0–300');
 ok(!c.__goi('baoSuatNhom', tNM, '2026-10-20', 5).ok, 'ngày chưa có thực đơn thì không báo được');

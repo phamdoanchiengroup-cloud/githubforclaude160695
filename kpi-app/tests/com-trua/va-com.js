@@ -1,7 +1,7 @@
 /* Mục 16: CƠM TRƯA – thanh thực đơn (#combar) trên mọi trang của mọi tài khoản + trang "Cơm trưa".
    Máy chủ: napComTrua / dangKyCom / luuThucDon / xoaThucDon (tests/com-trua.gs). 16:00 hôm trước chỉ là GIỜ NHẮC – quá giờ vẫn đăng ký được tới hết ngày ăn. */
 /* Nhóm ngoài xưởng sản xuất báo TỔNG số suất (tài khoản vai trò NHOM) – giữ đúng mã như COM_BO_PHAN trong tests/com-trua.gs */
-var COM_BO_PHAN={HNAM_BEP:'Bếp + lái xe + bảo vệ (Hà Nam)',HNAM_KTK:'Kế toán kho + tạp vụ (Hà Nam)',HNOI_MAY:'May + kế toán kho + lái xe (Hà Nội)',HNOI_MKT:'Marketing (Hà Nội)',HNOI_STORE:'Store 47 Nguyễn Tuân (Hà Nội)'};
+var COM_BO_PHAN={HNAM_BEP:'Bếp + lái xe + bảo vệ (Hà Nam)',HNAM_KTK:'Kế toán kho + tạp vụ (Hà Nam)',HNOI_MAY:'May + kế toán kho + lái xe (Hà Nội)',HNOI_MKT:'Marketing (Hà Nội)',HNOI_STORE:'Store 47 Nguyễn Tuân (Hà Nội)',HNOI_HCKT:'Hành chính – kế toán (Hà Nội)'};
 var COM={d:null,tai:0,hen:null};
 var COM_THU=['Chủ nhật','Thứ Hai','Thứ Ba','Thứ Tư','Thứ Năm','Thứ Sáu','Thứ Bảy'];
 function comMs_(s){var p=String(s).match(/^(\d{4})-(\d{2})-(\d{2})(?: (\d{2}):(\d{2}))?/);return p?Date.UTC(+p[1],+p[2]-1,+p[3],+(p[4]||0),+(p[5]||0)):0}
