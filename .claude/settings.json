@@ -1,0 +1,19 @@
+{
+  "extraKnownMarketplaces": {
+    "ponytail": {
+      "source": { "source": "github", "repo": "DietrichGebert/ponytail" }
+    },
+    "thedotmack": {
+      "source": { "source": "github", "repo": "thedotmack/claude-mem" }
+    },
+    "one-skill-to-rule-them-all": {
+      "source": { "source": "github", "repo": "rebelytics/one-skill-to-rule-them-all" }
+    }
+  },
+  "enabledPlugins": {
+    "ponytail@ponytail": true,
+    "claude-mem@thedotmack": true,
+    "task-observer@one-skill-to-rule-them-all": true,
+    "claude-code-setup@claude-plugins-official": true
+  }
+}

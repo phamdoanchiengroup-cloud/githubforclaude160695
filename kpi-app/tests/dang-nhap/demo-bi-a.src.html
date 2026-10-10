@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Màn đăng nhập bi-a – thêm Mai</title>
+<style>
+:root{--nen:#0e1012;--the:#171a1d;--chu:#e9eef0;--phu:#8d989f;--cy:#2fd3c6;--dong:#d9bd8c}
+*{box-sizing:border-box}
+body{margin:0;background:var(--nen);color:var(--chu);font:15px/1.55 Inter,system-ui,-apple-system,'Segoe UI',sans-serif}
+.vo{max-width:1320px;margin:0 auto;padding:22px 16px 40px}
+h1{font-size:22px;margin:0 0 6px}
+.mo{color:var(--phu);margin:0 0 14px;max-width:900px}
+.mo b{color:var(--chu)}
+.dk{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:0 0 14px}
+.dk button{font:inherit;font-size:14px;padding:8px 14px;border-radius:10px;border:1px solid rgba(255,255,255,.14);background:var(--the);color:var(--chu);cursor:pointer}
+.dk button.chon{border-color:var(--cy);color:var(--cy);background:rgba(47,211,198,.08)}
+.dk .cach{width:1px;height:24px;background:rgba(255,255,255,.12);margin:0 4px}
+.khung{margin:0 auto;border-radius:14px;overflow:hidden;border:1px solid rgba(255,255,255,.12);background:#000;transition:width .3s;width:100%}
+.khung iframe{display:block;width:100%;height:800px;border:0}
+.khung.dt{width:390px;border-radius:30px;border:9px solid #050607}
+.khung.dt iframe{height:780px}
+.diem{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:10px;margin:16px 0 0}
+.diem div{background:var(--the);border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:12px 14px;font-size:13.5px;color:var(--phu)}
+.diem b{display:block;color:var(--dong);font-size:14px;margin-bottom:2px}
+.khung iframe.an{display:none}
+</style>
+</head>
+<body>
+<div class="vo">
+  <h1>Màn đăng nhập bi-a – thêm Mai</h1>
+  <p class="mo">Giữ <b>nguyên màn đăng nhập hiện tại</b>, chỉ thêm <b>Mai</b>: chân dung tròn nhỏ cạnh lời chào và một câu nói. Mật khẩu thử là <b>"demo"</b>; gõ sai để xem Mai nhắc. Bấm "Hiện tại" để so.</p>
+  <div class="dk">
+    <button class="chon" data-b="moi">✦ Thêm Mai</button><button data-b="cu">Hiện tại</button>
+    <span class="cach"></span>
+    <button class="chon" data-v="pc">🖥 Máy tính</button><button data-v="dt">📱 Điện thoại</button>
+    <span class="cach"></span>
+    <button id="lai">↻ Làm lại</button>
+  </div>
+  <div class="khung" id="khung">
+    <iframe id="fMoi" title="Bản mới" srcdoc="{{MOI}}"></iframe>
+    <iframe id="fCu" class="an" title="Hiện tại" srcdoc="{{CU}}"></iframe>
+  </div>
+  <div class="diem">
+    <div><b>Chào + khẩu hiệu</b>Mai chào theo buổi, câu nói là khẩu hiệu của ngày (giống khẩu hiệu bên trong web).</div>
+    <div><b>Che mắt</b>Bấm vào ô mật khẩu, Mai lấy tay che mắt: "Mai không nhìn đâu".</div>
+    <div><b>Sai / đúng</b>Sai thì Mai lo, nhắc Caps Lock hoặc chữ hoa/thường. Đúng thì Mai giơ tay chúc ca làm suôn sẻ.</div>
+    <div><b>Ẩn Mai</b>Nút "Ẩn Mai" ở cuối trang, dùng chung cài đặt tắt Mai bên trong web. Phần còn lại giữ y như cũ.</div>
+  </div>
+</div>
+<script>
+(function(){
+  var k=document.getElementById('khung'), m=document.getElementById('fMoi'), c=document.getElementById('fCu');
+  function hien(){ return m.classList.contains('an')?c:m; }
+  document.querySelectorAll('[data-b]').forEach(function(b){ b.onclick=function(){
+    document.querySelectorAll('[data-b]').forEach(function(x){x.classList.toggle('chon',x===b)});
+    m.classList.toggle('an',b.dataset.b!=='moi'); c.classList.toggle('an',b.dataset.b==='moi'); }; });
+  document.querySelectorAll('[data-v]').forEach(function(b){ b.onclick=function(){
+    document.querySelectorAll('[data-v]').forEach(function(x){x.classList.toggle('chon',x===b)});
+    k.classList.toggle('dt',b.dataset.v==='dt'); }; });
+  document.getElementById('lai').onclick=function(){ var f=hien(); f.srcdoc=f.getAttribute('srcdoc'); };
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,31 @@
+const { chromium } = require('/opt/node22/lib/node_modules/playwright');
+/** Kiểm tra demo-lottie.html (4 chỗ dùng Lottie):  S=<thư mục lưu ảnh> node tests/demo-lottie.js */
+const F = 'file:///home/user/githubforclaude160695/kpi-app/demo-lottie.html', S = (process.env.S || '/tmp') + '/lt/';
+require('fs').mkdirSync(S, { recursive: true });
+let dem = 0, loi = 0; const ok = (d, t, c) => { dem++; if (d) console.log('  ✓ ' + t); else { loi++; console.log('  ✗ ' + t + (c !== undefined ? ' → ' + JSON.stringify(c).slice(0, 300) : '')); } };
+(async () => {
+  const b = await chromium.launch();
+  const p = await (await b.newContext({ viewport: { width: 1200, height: 950 } })).newPage(); const e = []; p.on('pageerror', x => e.push(x.message)); p.on('console', m => { if (m.type() === 'error') e.push(m.text()) });
+  await p.goto(F); await p.waitForTimeout(800);
+  ok(await p.evaluate(() => typeof lottie === 'object' && document.querySelectorAll('#b3La svg').length === 1), 'thư viện Lottie chạy, ô "đã duyệt hết" có hoạt ảnh');
+  const f0 = await p.evaluate(() => __lt.a3.currentFrame); await p.waitForTimeout(500); ok(await p.evaluate(() => __lt.a3.currentFrame) !== f0, 'hoạt ảnh trang trống đang chạy (lặp nhẹ)');
+  await p.click('#b1Nut'); await p.click('#a1Nut'); await p.waitForTimeout(1200);
+  ok(await p.evaluate(() => __lt.a1.isPaused === false && document.getElementById('b1Phu').classList.contains('hien')), 'báo cáo: hoạt ảnh chờ đang chạy');
+  await p.locator('.muc').nth(0).screenshot({ path: S + '1-cho.png' });
+  await p.waitForTimeout(3300); await p.locator('.muc').nth(0).screenshot({ path: S + '1-xong.png' });
+  ok(/Đã tải báo cáo/.test(await p.textContent('#b1Chu')), 'xong: đổi sang dấu tích "Đã tải báo cáo"');
+  await p.waitForTimeout(2000); ok(!(await p.evaluate(() => document.getElementById('b1Phu').classList.contains('hien'))), 'tự đóng lớp chờ');
+  await p.locator('#b2 .dong >> nth=0 >> .nut').click(); await p.locator('#a2 .dong >> nth=0 >> .nut').click(); await p.waitForTimeout(450);
+  await p.locator('.muc').nth(1).screenshot({ path: S + '2-duyet.png' });
+  await p.waitForTimeout(1000); ok(await p.locator('#b2 .dong').count() === 2, 'duyệt: dấu tích chạy xong rồi dòng mới trượt đi');
+  await p.locator('.muc').nth(2).screenshot({ path: S + '3-trong.png' });
+  await p.click('#b4Nut'); await p.click('#a4Nut'); await p.waitForTimeout(1300); await p.locator('.muc').nth(3).screenshot({ path: S + '4-loi.png' });
+  await p.click('#b4Lai'); ok(!(await p.evaluate(() => document.getElementById('b4Phu').classList.contains('hien'))), 'mất mạng: bấm Thử lại thì đóng');
+  ok(e.length === 0, 'không lỗi JS', e);
+  const m = await (await b.newContext({ viewport: { width: 390, height: 844 }, isMobile: true })).newPage(); await m.goto(F); await m.waitForTimeout(600);
+  ok(await m.evaluate(() => document.documentElement.scrollWidth) <= 391, 'điện thoại: không tràn ngang');
+  const r = await (await b.newContext({ reducedMotion: 'reduce' })).newPage(); await r.goto(F); await r.waitForTimeout(600);
+  const g = await r.evaluate(() => [__lt.a3.isPaused, __lt.a3.currentFrame, __lt.a3.totalFrames]);
+  ok(g[0] && g[1] >= g[2] - 2, 'giảm chuyển động: hình đứng yên', g);
+  await b.close(); console.log(`\n${dem - loi}/${dem} đạt`); process.exit(loi ? 1 : 0);
+})();

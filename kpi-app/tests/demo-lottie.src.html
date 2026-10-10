@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Demo hoạt ảnh Lottie</title>
+<!-- Demo Lottie cho web KPI: 4 chỗ, bên trái là cách hiện tại, bên phải có hoạt ảnh Lottie (tự vẽ, cùng tông màu web, mỗi file 4–9 KB).
+     Thư viện lottie-web (MIT) và 4 file JSON được nhúng thẳng vào trang nên mở ở đâu cũng chạy. Dựng bằng tests/tao-demo-lottie.py. -->
+<style>
+:root{--bg:#121518;--s1:#1a1e22;--s2:#21262b;--s3:#2a3036;--bd:rgba(255,255,255,.07);--bd2:rgba(255,255,255,.13);--t1:#eef2f4;--t2:#aab5bc;--t3:#7b8891;--ac:#2fd3c6;--acr:47,211,198;--am:#f0b04e;--rd:#f26b6b;
+  --f:'Inter',system-ui,-apple-system,'Segoe UI',Roboto,Arial,sans-serif}
+*{box-sizing:border-box;margin:0;padding:0}
+html{background:var(--bg)}
+body{color:var(--t1);font:14px/1.5 var(--f);-webkit-font-smoothing:antialiased;padding:26px 18px 60px}
+button{font:inherit;color:inherit}
+.vo{max-width:1120px;margin:0 auto}
+h1{font-size:22px;font-weight:650;letter-spacing:-.01em}
+.mo{color:var(--t2);font-size:13.5px;margin:4px 0 22px;max-width:820px}
+.muc{margin-bottom:26px}
+.muc h2{font-size:15px;font-weight:600;margin-bottom:4px}
+.muc .gt{font-size:12.5px;color:var(--t3);margin-bottom:10px}
+.doi{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.o{position:relative;border:1px solid var(--bd);border-radius:14px;background:var(--s1);min-height:290px;overflow:hidden;display:flex;flex-direction:column}
+.o .nhan{font-size:10.5px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;padding:9px 14px;border-bottom:1px solid var(--bd);color:var(--t3);display:flex;justify-content:space-between;align-items:center}
+.o.moi .nhan{color:var(--ac)}
+.o .than{flex:1;padding:14px;display:flex;flex-direction:column;gap:10px;position:relative}
+.nut{border:1px solid var(--bd2);background:var(--s2);font-size:12.5px;font-weight:500;padding:6px 12px;border-radius:9px;cursor:pointer;white-space:nowrap}
+.nut:hover{background:var(--s3)}
+.nut.chinh{background:var(--ac);border-color:var(--ac);color:#06201e;font-weight:600}
+.nut:disabled{opacity:.5;cursor:default}
+.vach{position:absolute;left:0;top:0;height:3px;background:var(--am);width:0}
+.vach.chay{animation:vach 2.2s linear infinite}
+@keyframes vach{0%{left:0;width:0}50%{left:20%;width:50%}100%{left:100%;width:0}}
+.toast{align-self:center;margin-top:auto;font-size:12.5px;padding:8px 14px;border-radius:10px;background:#1f3b38;border:1px solid rgba(var(--acr),.45);opacity:0;transition:opacity .2s}
+.toast.hien{opacity:1}.toast.loi{background:#3b1f22;border-color:rgba(242,107,107,.5)}
+.dong{display:flex;align-items:center;gap:10px;padding:9px 10px;border-radius:10px;background:var(--s2);border:1px solid var(--bd);font-size:13px;transition:opacity .25s,transform .25s}
+.dong small{display:block;font-size:11.5px;color:var(--t3)}
+.dong .nut{margin-left:auto}
+.dong.di{opacity:0;transform:translateX(30px)}
+.trong{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:4px;color:var(--t3);font-size:13px}
+.trong b{color:var(--t1);font-size:14.5px}
+.la{width:120px;height:120px}
+.la.nho{width:44px;height:44px;flex:none;margin:-6px 6px -6px auto;display:none}
+.dong.xong .la.nho{display:block}.dong.xong .nut{display:none}
+.loi-the .la{width:96px;height:96px}
+.cho{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;text-align:center}
+.cho b{font-size:14px}.cho small{color:var(--t3);font-size:12px}
+.phu{position:absolute;inset:0;background:rgba(18,21,24,.92);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;text-align:center;opacity:0;pointer-events:none;transition:opacity .2s}
+.phu.hien{opacity:1;pointer-events:auto}
+.loi-the{display:flex;flex-direction:column;align-items:center;gap:6px;text-align:center;margin:auto}
+.loi-the b{font-size:14.5px}.loi-the small{color:var(--t3);font-size:12.5px;max-width:280px}
+.cuoi{font-size:12px;color:var(--t3);margin-top:8px;max-width:820px}
+@media(max-width:700px){.doi{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="vo">
+  <h1>Hoạt ảnh Lottie – 4 chỗ dùng thử</h1>
+  <div class="mo">Mỗi mục: bên trái là <b>cách web đang làm</b>, bên phải là <b>có Lottie</b>. Bấm nút trong từng ô để chạy thử. Hoạt ảnh chỉ xuất hiện đúng lúc có việc, phát một lần hoặc lặp nhẹ khi đang chờ – không chạy liên tục ở chỗ khác.</div>
+
+  <div class="muc">
+    <h2>1. Đang tổng hợp báo cáo tháng (chờ 10–40 giây)</h2>
+    <div class="gt">Lâu nên người dùng dễ tưởng máy treo và bấm lại nhiều lần.</div>
+    <div class="doi">
+      <div class="o"><div class="nhan">Hiện tại</div><div class="than"><i class="vach" id="a1Vach"></i>
+        <div><button class="nut chinh" id="a1Nut">Tải PDF</button></div><div class="toast" id="a1Toast"></div></div></div>
+      <div class="o moi"><div class="nhan">Có Lottie</div><div class="than">
+        <div><button class="nut chinh" id="b1Nut">Tải PDF</button></div>
+        <div class="phu" id="b1Phu"><div class="la" id="b1La"></div><b id="b1Chu">Đang tổng hợp báo cáo tháng 9…</b><small id="b1Phu2">Khoảng 20 giây – đừng tắt trang</small></div></div></div>
+    </div>
+  </div>
+
+  <div class="muc">
+    <h2>2. Duyệt xong một người</h2>
+    <div class="gt">Xác nhận rõ ràng là đã duyệt, rồi dòng mới trượt đi.</div>
+    <div class="doi">
+      <div class="o"><div class="nhan">Hiện tại</div><div class="than" id="a2"></div></div>
+      <div class="o moi"><div class="nhan">Có Lottie</div><div class="than" id="b2"></div></div>
+    </div>
+  </div>
+
+  <div class="muc">
+    <h2>3. Không còn việc (đã duyệt hết)</h2>
+    <div class="gt">Trang trống trông như lỗi; có hình nhẹ nhàng thì người dùng biết là đã xong.</div>
+    <div class="doi">
+      <div class="o"><div class="nhan">Hiện tại</div><div class="than"><div class="trong" style="justify-content:flex-start"><span style="padding:14px;border:1px dashed var(--bd2);border-radius:10px;width:100%">Không có sản lượng nào đang chờ duyệt</span></div></div></div>
+      <div class="o moi"><div class="nhan">Có Lottie</div><div class="than"><div class="trong"><div class="la" id="b3La"></div><b>Đã duyệt hết</b>Không còn sản lượng nào chờ duyệt hôm nay</div></div></div>
+    </div>
+  </div>
+
+  <div class="muc">
+    <h2>4. Mất mạng / máy chủ không trả lời</h2>
+    <div class="gt">Hay gặp ở xưởng sóng yếu; nói rõ chuyện gì xảy ra và cho nút thử lại.</div>
+    <div class="doi">
+      <div class="o"><div class="nhan">Hiện tại</div><div class="than"><div><button class="nut" id="a4Nut">Lưu nhật ký</button></div><div class="toast loi" id="a4Toast"></div></div></div>
+      <div class="o moi"><div class="nhan">Có Lottie</div><div class="than"><div><button class="nut" id="b4Nut">Lưu nhật ký</button></div>
+        <div class="phu" id="b4Phu"><div class="loi-the"><div class="la" id="b4La"></div><b>Mất kết nối</b><small>Chưa lưu được. Dữ liệu bạn vừa nhập vẫn còn trên máy – kiểm tra mạng rồi bấm Thử lại.</small><button class="nut chinh" id="b4Lai">Thử lại</button></div></div></div></div>
+    </div>
+  </div>
+
+  <div class="cuoi">4 hoạt ảnh do tôi vẽ bằng Lottie, cùng màu với web; mỗi file chỉ 4–9 KB, sửa tiếp được trên lottiefiles.com (Upload file JSON). Máy bật "giảm chuyển động" thì hiện hình tĩnh. Muốn dùng mẫu khác trên LottieFiles: tải về dạng Lottie JSON rồi gửi tôi.</div>
+</div>
+<script>/*LOTTIE_LIB*/</script>
+<script>
+(function(){
+'use strict';
+var LA=/*LOTTIE_DATA*/, GIAM=false; try{GIAM=matchMedia('(prefers-reduced-motion: reduce)').matches}catch(e){}
+function $(i){return document.getElementById(i)}
+function phat(el,ten,lap){ var a=lottie.loadAnimation({container:el,renderer:'svg',loop:!!lap,autoplay:!GIAM,animationData:JSON.parse(JSON.stringify(LA[ten]))});
+  if(GIAM) a.addEventListener('DOMLoaded',function(){ a.goToAndStop(a.totalFrames-1,true) }); return a; }
+window.__lt={};
+/* 1. báo cáo */
+$('a1Nut').onclick=function(){ var n=this; n.disabled=true; $('a1Vach').classList.add('chay'); var t=$('a1Toast'); t.textContent='Đang tổng hợp báo cáo… vui lòng đợi'; t.classList.add('hien');
+  setTimeout(function(){ $('a1Vach').classList.remove('chay'); t.textContent='Đã tải Bao-cao-KPI-2026-09.pdf'; setTimeout(function(){ t.classList.remove('hien'); n.disabled=false; },1800); },4000); };
+var a1=null;
+$('b1Nut').onclick=function(){ var n=this; n.disabled=true; var p=$('b1Phu'); p.classList.add('hien'); $('b1La').innerHTML=''; $('b1Chu').textContent='Đang tổng hợp báo cáo tháng 9…'; $('b1Phu2').textContent='Khoảng 20 giây – đừng tắt trang';
+  a1=phat($('b1La'),'dang-tong-hop-bao-cao',true); window.__lt.a1=a1;
+  setTimeout(function(){ a1.destroy(); $('b1La').innerHTML=''; var ok=phat($('b1La'),'duyet-xong'); $('b1Chu').textContent='Đã tải báo cáo'; $('b1Phu2').textContent='Bao-cao-KPI-2026-09.pdf';
+    setTimeout(function(){ p.classList.remove('hien'); n.disabled=false; ok.destroy(); },1900); },4000); };
+/* 2. duyệt */
+var NG=[['Đỗ Thị Hoa','Mài bóng · 412 sp · 27/09'],['Ngô Văn Hùng','Lắp ráp · 380 sp · 27/09'],['Vũ Thị Hà','Đóng hộp · 955 sp · 28/09']];
+function veDs(id,coLa){ var el=$(id); el.innerHTML=NG.map(function(x,i){ return '<div class="dong" data-i="'+i+'"><div><b>'+x[0]+'</b><small>'+x[1]+'</small></div>'+(coLa?'<div class="la nho"></div>':'')+'<button class="nut chinh">Duyệt</button></div>' }).join('')+'<div class="toast"></div><button class="nut" style="align-self:flex-start;margin-top:auto">Làm lại</button>';
+  var t=el.querySelector('.toast'), lai=el.querySelector('.nut:not(.chinh)');
+  lai.onclick=function(){ veDs(id,coLa) };
+  el.querySelectorAll('.dong').forEach(function(d){ var b=d.querySelector('.nut'); b.onclick=function(){ b.disabled=true;
+    if(!coLa){ d.classList.add('di'); setTimeout(function(){ d.remove() },250); t.textContent='Đã duyệt '+d.querySelector('b').textContent; t.classList.add('hien'); setTimeout(function(){t.classList.remove('hien')},2000); return; }
+    d.classList.add('xong'); var a=phat(d.querySelector('.la'),'duyet-xong'); window.__lt.a2=a;
+    setTimeout(function(){ d.classList.add('di'); setTimeout(function(){ a.destroy(); d.remove() },250); }, GIAM?400:1000); }; }); }
+veDs('a2',false); veDs('b2',true);
+/* 3. trống */
+window.__lt.a3=phat($('b3La'),'da-duyet-het',true);
+/* 4. mất mạng */
+$('a4Nut').onclick=function(){ var t=$('a4Toast'); t.textContent='Lỗi: NetworkError: Connection failure due to HTTP 0'; t.classList.add('hien'); setTimeout(function(){t.classList.remove('hien')},3000); };
+var a4=null;
+$('b4Nut').onclick=function(){ $('b4Phu').classList.add('hien'); $('b4La').innerHTML=''; a4=phat($('b4La'),'mat-ket-noi',true); window.__lt.a4=a4; };
+$('b4Lai').onclick=function(){ $('b4Phu').classList.remove('hien'); if(a4) a4.destroy(); };
+})();
+</script>
+</body>
+</html>

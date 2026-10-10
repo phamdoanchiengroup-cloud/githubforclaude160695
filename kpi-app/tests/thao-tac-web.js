@@ -1,0 +1,137 @@
+const { chromium } = require('/opt/node22/lib/node_modules/playwright');
+/** Kiểm tra hiệu ứng thao tác đã gắn vào web (va-index.py mục 14, duyệt 10/10) trên bản xem thử 1 file:
+ *    DATA=csdl.json OUT=$S/xem-thu.html TZ=Asia/Ho_Chi_Minh node tests/tao-ban-xem-thu.js
+ *    F=$S/xem-thu.html node tests/thao-tac-web.js */
+const F = 'file://' + process.env.F;
+let dem = 0, loi = 0; const ok = (d, t, c) => { dem++; if (d) console.log('  ✓ ' + t); else { loi++; console.log('  ✗ ' + t + (c !== undefined ? ' → ' + JSON.stringify(c).slice(0, 300) : '')); } };
+async function vao(b, tk, o = {}) {
+  const ctx = await b.newContext(Object.assign({ viewport: { width: o.w || 1360, height: o.h || 900 }, timezoneId: 'Asia/Ho_Chi_Minh' }, o.cham ? { isMobile: true, hasTouch: true } : {}));
+  await ctx.route(/cdnjs\.cloudflare\.com/, r => r.abort());
+  const p = await ctx.newPage(); p.loi = []; p.on('pageerror', e => p.loi.push(e.message)); p.on('dialog', d => d.accept());
+  await p.goto(F); await p.waitForSelector('#xtGoiY'); await p.click(`#xtGoiY button:has-text("${tk}")`);
+  await p.waitForSelector('#app', { state: 'visible', timeout: 30000 }); await p.waitForTimeout(1200);
+  await p.evaluate(() => { try { maiGocDong(); } catch (e) {} });
+  p.ctx = ctx; return p;
+}
+const cdpVuot = async (p, x, y, dx, dy, buoc = 12) => {
+  const c = p.__cdp || (p.__cdp = await p.ctx.newCDPSession(p));
+  await c.send('Input.dispatchTouchEvent', { type: 'touchStart', touchPoints: [{ x, y }] });
+  for (let i = 1; i <= buoc; i++) await c.send('Input.dispatchTouchEvent', { type: 'touchMove', touchPoints: [{ x: x + dx * i / buoc, y: y + dy * i / buoc }] });
+  await c.send('Input.dispatchTouchEvent', { type: 'touchEnd', touchPoints: [] });
+};
+(async () => {
+  const b = await chromium.launch();
+
+  console.log('9. Duyệt / từ chối có Hoàn tác (máy tính)');
+  let p = await vao(b, 'tpdg');
+  await p.evaluate(() => go('duyetsl')); await p.waitForTimeout(900);
+  let cho0 = await p.evaluate(() => D.choDuyet.length);
+  let goi = await p.evaluate(() => { window.__goi = []; const g = google.script.run; return !!g; });
+  await p.evaluate(() => { const c = call; window.call = function (fn, a, cb) { if (/duyet|tuChoi|chotCa/.test(fn)) __goi.push(fn); return c.apply(this, arguments); }; });
+  const ids0 = await p.evaluate(() => document.querySelector('.sl-tick').getAttribute('data-ids'));
+  await p.evaluate(ids => { const t = [...document.querySelectorAll('.sl-tick')].find(x => x.getAttribute('data-ids') === ids); duyetNguoi(ids, t.getAttribute('data-gk')); }, ids0);
+  await p.waitForTimeout(400);
+  let s = await p.evaluate(() => [document.querySelectorAll('tr.tt-cho').length, !!document.querySelector('.tt-tem.ok.hien'), document.getElementById('ttBao').classList.contains('hien'), document.getElementById('ttBao').textContent, __goi.length]);
+  ok(s[0] >= 2 && s[1] && s[2] && /Đã duyệt .*Hoàn tác/.test(s[3]) && s[4] === 0, 'bấm Duyệt: nhóm mờ đi, tem "ĐÃ DUYỆT", thanh Hoàn tác – CHƯA gửi máy chủ', s);
+  await p.click('#ttBao button'); await p.waitForTimeout(400);
+  s = await p.evaluate(() => [document.querySelectorAll('tr.tt-cho').length, D.choDuyet.length, __goi.length]);
+  ok(s[0] === 0 && s[1] === cho0 && s[2] === 0, 'Hoàn tác: nhóm trở lại, không gửi gì', s);
+  await p.evaluate(ids => tuChoiNguoi(ids), ids0); await p.waitForTimeout(300);
+  ok(await p.evaluate(() => !!document.querySelector('.tt-tem.tl.hien') && /trả lại/.test(document.getElementById('ttBao').textContent) && !__goi.length), 'Từ chối: không hỏi confirm nữa, tem "TRẢ LẠI" + Hoàn tác, chưa gửi');
+  await p.click('#ttBao button'); await p.waitForTimeout(400);
+  ok(await p.evaluate(() => !document.querySelector('tr.tt-cho') && !__goi.length), 'Hoàn tác từ chối: không gửi gì');
+  await p.evaluate(ids => { const id = ids.split(',')[0]; document.getElementById('slr_' + id).value = '7'; }, ids0);
+  await p.evaluate(ids => { const t = [...document.querySelectorAll('.sl-tick')].find(x => x.getAttribute('data-ids') === ids); duyetNguoi(ids, t.getAttribute('data-gk')); }, ids0);
+  await p.waitForTimeout(6000);
+  s = await p.evaluate(() => [__goi.slice(), D.choDuyet.length, (D.nhatky || []).some(r => Number(r.SoLuongLamRa) === 7)]);
+  ok(s[0][0] === 'duyetNhomNguoi' && s[1] < cho0 && s[2], 'để yên 4 giây: tự gửi duyệt (kèm số đã sửa = 7), dòng rời danh sách chờ', s);
+  s = await p.evaluate(() => { const l = []; ttHen('A', () => l.push('lam A'), () => l.push('huy A')); ttHen('B', () => l.push('lam B'), () => l.push('huy B')); document.querySelector('#ttBao button').click(); return l; });
+  ok(s.join() === 'lam A,huy B', 'có việc mới khi việc trước còn Hoàn tác: việc trước gửi ngay, Hoàn tác áp cho việc mới', s);
+  ok(!p.loi.length, 'không lỗi JS', p.loi);
+
+  console.log('10 + 12. Chờ chốt: cần gạt, xóa + Hoàn tác (máy tính)');
+  await p.evaluate(() => go('nk')); await p.waitForTimeout(800);
+  ok(await p.evaluate(() => !!document.querySelector('.tt-may.tat') && document.getElementById('bchot').style.display === 'none'), 'chưa có dòng: cần gạt mờ, nút Chốt ca cũ ẩn đi');
+  await p.evaluate(() => { const nv = D.nhansu.filter(x => x.MaXuong === ME.xuong)[0]; const c = D.congdoan.filter(x => x.MaXuong === ME.xuong)[0];
+    ['a', 'b', 'c'].forEach((x, i) => draft.push({ Ngay: today(), MaNV: nv.MaNV, MaCD: c.MaCD, MaMay: '', GioLam: 0, SoLuongLamRa: 10 + i, GioDung: 0, LyDoDung: '', GhiChu: '' })); vNK(); });
+  await p.waitForTimeout(300);
+  s = await p.evaluate(() => document.querySelector('.tt-chot .tom').textContent);
+  ok(/3 dòng.*1 người.*33/.test(s), 'có 3 dòng: thẻ cần gạt ghi "3 dòng · 1 người · tổng 33"', s);
+  await p.evaluate(() => delD(1)); await p.waitForTimeout(300);
+  s = await p.evaluate(() => [draft.length, document.getElementById('ttBao').textContent]);
+  ok(s[0] === 2 && /Đã xóa dòng.*Hoàn tác/.test(s[1]), 'Xóa 1 dòng: còn 2, có Hoàn tác', s);
+  await p.click('#ttBao button'); await p.waitForTimeout(300);
+  ok(await p.evaluate(() => draft.length === 3 && draft[1].SoLuongLamRa === 11), 'Hoàn tác: dòng trở lại đúng chỗ');
+  await p.evaluate(() => document.querySelector('.tt-may .can').scrollIntoView({ block: 'center' })); await p.waitForTimeout(200);
+  let r = await p.locator('.tt-may .can').boundingBox();
+  await p.mouse.move(r.x + r.width / 2, r.y + r.height / 2); await p.mouse.down(); await p.mouse.move(r.x + r.width / 2, r.y + 30, { steps: 5 }); await p.mouse.up(); await p.waitForTimeout(500);
+  ok(await p.evaluate(() => draft.length === 3 && !__goi.includes('chotCa')), 'kéo cần gạt nửa chừng: bật về, chưa chốt');
+  r = await p.locator('.tt-may .can').boundingBox();
+  await p.mouse.move(r.x + r.width / 2, r.y + r.height / 2); await p.mouse.down(); await p.mouse.move(r.x + r.width / 2, r.y + 120, { steps: 8 }); await p.mouse.up(); await p.waitForTimeout(2500);
+  ok(await p.evaluate(() => __goi.includes('chotCa') && draft.length === 0), 'kéo tận đáy: đèn xanh, gửi chốt ca, danh sách trống');
+  ok(!p.loi.length, 'không lỗi JS', p.loi);
+
+  console.log('14. Nhập sai: Mai chỉ vào ô');
+  await p.evaluate(() => go('nk')); await p.waitForTimeout(500);
+  await p.fill('#f_sl', '0'); await p.evaluate(() => addRow()); await p.waitForTimeout(500);
+  s = await p.evaluate(() => { const m = document.getElementById('ttMaiChi'); return m ? [m.classList.contains('hien'), m.textContent, !!m.querySelector('svg.mai.chi')] : null; });
+  ok(s && s[0] && /số lượng/.test(s[1]) && s[2], 'thêm dòng khi chưa nhập số lượng: Mai đứng cạnh ô, chỉ tay, nói lỗi', s);
+  await p.type('#f_sl', '5'); await p.waitForTimeout(400);
+  ok(await p.evaluate(() => !document.getElementById('ttMaiChi').classList.contains('hien')), 'gõ lại vào ô: Mai đi');
+  await p.ctx.close();
+
+  console.log('15. Pháo giấy KPI hạng A (1 lần/ngày)');
+  p = await vao(b, 'c068');
+  await p.evaluate(() => { window.__phao = 0; const g = ttPhao; window.ttPhao = function () { __phao++; return g(); }; window.kpi = () => ({ sl: 100, cl: 100, tong: 98 }); localStorage.removeItem('kpi_phao_' + ME.tk); go('kpica'); });
+  await p.waitForTimeout(1200);
+  ok(await p.evaluate(() => __phao === 1 && /Hạng A/.test(document.getElementById('ttBao').textContent)), 'KPI hạng A: pháo giấy + "Hạng A – tuyệt vời!"');
+  await p.evaluate(() => go('kpica')); await p.waitForTimeout(1200);
+  ok(await p.evaluate(() => __phao === 1), 'mở lại trong ngày: không bắn nữa');
+  ok(!p.loi.length, 'không lỗi JS', p.loi);
+  await p.evaluate(() => go('cnnhap')); await p.waitForTimeout(600);
+  await p.evaluate(() => { __oNhap = document.querySelector('#cf_grid input[type=number]'); __oNhapLuc = Date.now(); toast('Dòng 1: chưa nhập số lượng', false); }); await p.waitForTimeout(300);
+  ok(await p.evaluate(() => !document.getElementById('ttMaiChi') || !document.getElementById('ttMaiChi').classList.contains('hien')), 'trang công nhân nhập sản lượng: giữ nguyên như cũ (không có Mai chỉ ô)');
+  await p.ctx.close();
+
+  console.log('— điện thoại: vuốt duyệt, vuốt xóa, kéo xuống làm mới');
+  p = await vao(b, 'tpdg', { w: 390, h: 844, cham: true });
+  await p.evaluate(() => go('duyetsl')); await p.waitForTimeout(900);
+  ok(await p.evaluate(() => !!document.getElementById('ttGoiY')), 'có dòng mẹo "vuốt phải = Duyệt, trái = Từ chối"');
+  cho0 = await p.evaluate(() => D.choDuyet.length);
+  await p.evaluate(() => { const t = document.querySelector('.sl-tick'); ttDongNhom(t.getAttribute('data-ids'))[0].querySelector('td:not([rowspan])').scrollIntoView({ block: 'center' }); }); await p.waitForTimeout(300);
+  let bx = await p.evaluate(() => { const t = document.querySelector('.sl-tick'); const td = ttDongNhom(t.getAttribute('data-ids'))[0].querySelector('td[rowspan]'); const q = td.getBoundingClientRect(); return { x: q.left + 20, y: q.top + 12 }; });
+  await cdpVuot(p, bx.x, bx.y, 40, 0); await p.waitForTimeout(500);
+  ok(await p.evaluate(() => !document.querySelector('tr.tt-cho')), 'vuốt ngắn: nhóm trượt về, chưa duyệt');
+  await cdpVuot(p, bx.x, bx.y, 200, 0); await p.waitForTimeout(500);
+  ok(await p.evaluate(() => !!document.querySelector('.tt-tem.ok.hien') && document.getElementById('ttBao').classList.contains('hien')), 'vuốt phải cả nhóm: tem ĐÃ DUYỆT + Hoàn tác');
+  await p.tap('#ttBao button'); await p.waitForTimeout(400);
+  bx = await p.evaluate(() => { const t = document.querySelector('.sl-tick'); const td = ttDongNhom(t.getAttribute('data-ids'))[0].querySelector('td[rowspan]'); td.scrollIntoView({ block: 'center' }); const q = td.getBoundingClientRect(); return { x: q.left + 60, y: q.top + 12 }; });
+  await cdpVuot(p, bx.x, bx.y, -200, 0); await p.waitForTimeout(500);
+  ok(await p.evaluate(() => !!document.querySelector('.tt-tem.tl.hien')), 'vuốt trái cả nhóm: tem TRẢ LẠI');
+  await p.tap('#ttBao button'); await p.waitForTimeout(400);
+  ok(await p.evaluate(() => D.choDuyet.length) === cho0, 'Hoàn tác: không gửi gì');
+  await p.evaluate(() => go('nk')); await p.waitForTimeout(700);
+  await p.evaluate(() => { const nv = D.nhansu.filter(x => x.MaXuong === ME.xuong)[0]; const c = D.congdoan.filter(x => x.MaXuong === ME.xuong)[0];
+    [1, 2].forEach(i => draft.push({ Ngay: today(), MaNV: nv.MaNV, MaCD: c.MaCD, MaMay: '', GioLam: 0, SoLuongLamRa: i, GioDung: 0, LyDoDung: '', GhiChu: '' })); vNK(); });
+  await p.waitForTimeout(300);
+  bx = await p.evaluate(() => { const b = document.querySelectorAll('#dbox button[onclick^="delD("]')[1]; const td = b.closest('tr').querySelector('td:not([rowspan])'); td.scrollIntoView({ block: 'center' }); const q = td.getBoundingClientRect(); return { x: q.left + q.width / 2, y: q.top + q.height / 2 }; });
+  await cdpVuot(p, bx.x, bx.y, -240, 0); await p.waitForTimeout(600);
+  ok(await p.evaluate(() => draft.length === 1 && /Hoàn tác/.test(document.getElementById('ttBao').textContent)), 'Chờ chốt: vuốt trái xóa dòng + Hoàn tác');
+  r = await p.evaluate(() => { const c = document.querySelector('.tt-may .can'); c.scrollIntoView({ block: 'center' }); const q = c.getBoundingClientRect(); return { x: q.left + q.width / 2, y: q.top + q.height / 2 }; });
+  await p.waitForTimeout(200);
+  await cdpVuot(p, r.x, r.y, 0, 110); await p.waitForTimeout(2500);
+  ok(await p.evaluate(() => draft.length === 0), 'ngón tay: kéo cần gạt chốt ca');
+  await p.evaluate(() => { go('homnay'); window.scrollTo(0, 0); window.__nap = 0; const g = reload; window.reload = function (cb) { __nap++; return g(cb); }; }); await p.waitForTimeout(700);
+  await cdpVuot(p, 195, 260, 0, 40); await p.waitForTimeout(500);
+  ok(await p.evaluate(() => __nap === 0), 'kéo xuống ngắn: không làm mới');
+  await cdpVuot(p, 195, 260, 0, 260, 16); await p.waitForTimeout(2500);
+  ok(await p.evaluate(() => __nap === 1 && /Đã cập nhật/.test(document.getElementById('ttBao').textContent)), 'kéo xuống đủ xa ở đầu trang: cơ đánh bi, tải lại, báo "Đã cập nhật"');
+  await p.evaluate(() => go('dd')); await p.waitForTimeout(1500); await p.evaluate(() => window.scrollTo(0, 0));
+  await cdpVuot(p, 195, 300, 0, 260, 16); await p.waitForTimeout(1200);
+  ok(await p.evaluate(() => __nap === 1), 'trang điểm danh: giữ như cũ, không kéo làm mới (tránh mất phần đang tích)');
+  ok(await p.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1), 'không tràn ngang');
+  ok(!p.loi.length, 'không lỗi JS', p.loi);
+  await p.ctx.close();
+  await b.close();
+  console.log((loi ? '✗ ' : '✓ ') + (dem - loi) + '/' + dem + ' đạt'); process.exit(loi ? 1 : 0);
+})();

@@ -1,0 +1,85 @@
+/* Sơ đồ nhà máy – phần dùng chung cho bản 2D và bản 3D (demo 10/10; web thật dùng lại, ghi đè SO / BAO_TRI / nhãn).
+   - GHEP: phòng trên bản vẽ → xưởng trong web KPI (ghép tạm, chủ dự án sửa được trong bảng ghép của demo).
+   - SO: số liệu MẪU của từng xưởng (khi gắn vào web sẽ lấy từ D.nhatky / điểm danh thật).
+   - BAO_TRI: máy MẪU đang bảo trì, kèm mã máy trên web (cần bảng ghép mã máy ↔ ký hiệu bản vẽ). */
+var SS = (function () {
+  var XUONG = [['PHOICB', 'Phôi Carbon'], ['PHOITHO', 'Phôi Thô'], ['CNC', 'CNC'], ['SON', 'Sơn'], ['INUV', 'In UV'],
+    ['HT', 'Hoàn thiện'], ['DG', 'Đóng gói'], ['NGONTARO', 'Ngọn Taro'], ['NGONTIP', 'Ngọn Tip']];
+  var TEN = {}; XUONG.forEach(function (x) { TEN[x[0]] = x[1]; });
+  var GHEP = {
+    '0|Khu chuốt': 'PHOICB', '0|Nướng + rút khuôn': 'PHOICB', '0|ISO phôi CB': 'PHOICB', '0|Cuốn': 'PHOICB', '0|Cắt': 'PHOICB',
+    '0|P. khuôn': 'PHOICB', '0|Khu đổ foam': 'PHOITHO', '0|Khu đúc keo': 'PHOITHO',
+    '0|Khu vực phôi thô': 'PHOITHO',
+    '1|Ráp nước': 'HT', '1|Đánh ráp, đánh bóng': 'HT', '1|Bọc da': 'HT', '1|Bôi keo': 'HT', '1|ISO': 'HT', '1|P. cắt mặt': 'HT',
+    '1|Khu vực hoàn thiện': 'HT', '1|Khu chờ khô bán thành phẩm': 'SON', '1|P. kiểm tra chuẩn bị': 'SON', '1|P. ráp tuốt lót': 'SON', '1|Buồng sấy': 'SON',
+    '1|Khu vực in UV': 'INUV', '1|Khu hoàn thiện (buồng sơn kín 1–5)': 'SON', '1|Khu sơn tĩnh điện (vách tấm panel)': 'SON', '1|P. quản lý BP Sơn': 'SON',
+    '2|Khu làm đầu': 'NGONTIP', '2|Khu vực ngọn': 'NGONTARO', '2|Khu vực CNC': 'CNC', '2|P. máy CNC 2': 'CNC', '2|P. máy tiện': 'CNC',
+    '2|P. máy CNC 1': 'CNC', '2|Phòng da': 'CNC',
+    '2|Đóng gói': 'DG', '2|Bộ phận đóng gói': 'DG'
+  };
+  // số liệu MẪU hôm nay: kpi = hiệu suất KPI %, coMat / dinhBien = sĩ số, cho = dòng chờ duyệt
+  var SO = {
+    PHOICB: { kpi: 96, coMat: 21, dinhBien: 22, cho: 3 }, PHOITHO: { kpi: 84, coMat: 9, dinhBien: 10, cho: 0 },
+    CNC: { kpi: 103, coMat: 26, dinhBien: 26, cho: 5 }, SON: { kpi: 78, coMat: 7, dinhBien: 8, cho: 2 },
+    INUV: { kpi: 92, coMat: 12, dinhBien: 14, cho: 1 }, HT: { kpi: 88, coMat: 38, dinhBien: 41, cho: 4 },
+    DG: { kpi: 99, coMat: 18, dinhBien: 18, cho: 0 }, NGONTARO: { kpi: 72, coMat: 16, dinhBien: 21, cho: 6 },
+    NGONTIP: { kpi: 64, coMat: 6, dinhBien: 9, cho: 2 }
+  };
+  // máy MẪU đang bảo trì: khóa = tầng|ký hiệu|x|y (toạ độ góc máy trên bản vẽ)
+  var BAO_TRI = {
+    '2|CNC|17.54|11.82': { ma: 'M-CNC-02', ly: 'Thay dao, chờ linh kiện' },
+    '2|CNC|9.15|14.75': { ma: 'M 03', ly: 'Bảo trì định kỳ' },
+    '1|UV1|7.71|9.73': { ma: 'M-IN-01', ly: 'Lỗi đầu phun' }
+  };
+  var o = { cheDo: 'kpi', XUONG: XUONG, TEN: TEN, GHEP: GHEP, SO: SO, BAO_TRI: BAO_TRI, nghe: [],
+    nhanKPI: 'Hiệu suất KPI hôm nay', ghiChu: 'Số liệu mẫu – web thật lấy từ sản lượng và điểm danh hôm nay.', them: null };
+  // web thật: danh sách xưởng lấy từ D.phongban
+  o.datXuong = function (ds) { o.XUONG = ds; ds.forEach(function (x) { TEN[x[0]] = x[1]; }); };
+  o.tenX = function (ma) { var t = TEN[ma] || ma; return /^xưởng\s/i.test(t) ? t : 'Xưởng ' + t; };
+  var co = function (v) { return v !== null && v !== undefined; };
+  o.khoa = function (fi, R) { return fi + '|' + R.n; };
+  o.xuong = function (fi, R) { return o.GHEP[o.khoa(fi, R)] || ''; };
+  o.doi = function (fi, R, ma) { if (ma) o.GHEP[o.khoa(fi, R)] = ma; else delete o.GHEP[o.khoa(fi, R)]; o.bao(); };
+  o.datCheDo = function (c) { o.cheDo = c; o.bao(); };
+  o.bao = function () { o.nghe.forEach(function (f) { try { f(); } catch (e) {} }); };
+  o.tyLe = function (s) { return s && s.dinhBien ? s.coMat / s.dinhBien * 100 : 0; };
+  o.hang = function (v) { return v >= 100 ? 'A+' : v >= 90 ? 'A' : v >= 80 ? 'B' : v >= 70 ? 'C' : 'D'; };
+  // cùng màu với web (mauKPI ở nền tối)
+  o.mauKPI = function (v) { return v >= 90 ? '#66d49a' : v >= 80 ? '#2fd3c6' : v >= 70 ? '#f0b04e' : '#f47272'; };
+  o.mauSiSo = function (p) { return p >= 95 ? '#66d49a' : p >= 85 ? '#f0b04e' : '#f47272'; };
+  o.MAU_TRONG = '#5d6670';   // xưởng có ghép nhưng chưa có số (chưa sản lượng / chưa điểm danh)
+  o.coSo = function (s) { return !!s && (o.cheDo === 'siso' ? !!s.dinhBien : co(s.kpi)); };
+  o.mauXuong = function (ma) { var s = o.SO[ma]; if (!s) return null; if (!o.coSo(s)) return o.MAU_TRONG;
+    return o.cheDo === 'siso' ? o.mauSiSo(o.tyLe(s)) : o.mauKPI(s.kpi); };
+  o.mau = function (fi, R) { return o.mauXuong(o.xuong(fi, R)); };
+  o.chuSo = function (ma) { var s = o.SO[ma]; if (!s) return ''; if (!o.coSo(s)) return '–'; return o.cheDo === 'siso' ? s.coMat + '/' + s.dinhBien : s.kpi + '%'; };
+  o.mayKhoa = function (fi, Mc) { return fi + '|' + Mc.l + '|' + (+Mc.r[0]) + '|' + (+Mc.r[1]); };
+  o.baoTri = function (fi, Mc) { return o.BAO_TRI[o.mayKhoa(fi, Mc)] || null; };
+  o.the = function (fi, R) {
+    var ma = o.xuong(fi, R), s = o.SO[ma];
+    if (!ma) return '<div class="ss-the ss-trong">Phòng này chưa ghép với xưởng nào trong web.</div>';
+    if (!s) return '<div class="ss-the"><div class="ss-dong"><span>Thuộc</span><b>' + o.tenX(ma) + '</b></div><small>Không có số liệu của xưởng này trong tài khoản của bạn.</small></div>';
+    var p = o.tyLe(s);
+    return '<div class="ss-the"><div class="ss-dong"><span>Thuộc</span><b>' + o.tenX(ma) + '</b></div>' +
+      '<div class="ss-dong"><span>' + o.nhanKPI + '</span>' + (co(s.kpi) ? '<b style="color:' + o.mauKPI(s.kpi) + '">' + s.kpi + '% · hạng ' + o.hang(s.kpi) + '</b>' : '<b class="ss-trong">chưa có sản lượng</b>') + '</div>' +
+      '<div class="ss-dong"><span>Có mặt</span>' + (s.dinhBien ? '<b style="color:' + o.mauSiSo(p) + '">' + s.coMat + '/' + s.dinhBien + ' người</b>' : '<b class="ss-trong">chưa có số</b>') + '</div>' +
+      '<div class="ss-dong"><span>Chờ trưởng phòng duyệt</span><b>' + (s.cho ? s.cho + ' dòng' : 'không có') + '</b></div>' +
+      (o.them ? o.them(ma) : '') + (o.ghiChu ? '<small>' + o.ghiChu + '</small>' : '') + '</div>';
+  };
+  o.theMay = function (fi, Mc) {
+    var b = o.baoTri(fi, Mc);
+    return b ? '<div class="ss-the ss-bt"><b>⚠ Đang bảo trì</b> – ' + b.ly + '<br><small>Mã trên web: ' + b.ma + ' (ghép mẫu)</small></div>' : '';
+  };
+  o.chuGiai = function () {
+    var ds = o.cheDo === 'siso'
+      ? [['#66d49a', 'Đủ người (≥ 95%)'], ['#f0b04e', 'Thiếu ít (85–95%)'], ['#f47272', 'Thiếu nhiều (< 85%)']]
+      : [['#66d49a', 'A / A+ (≥ 90%)'], ['#2fd3c6', 'B (80–90%)'], ['#f0b04e', 'C (70–80%)'], ['#f47272', 'D (< 70%)']];
+    var them = [];
+    if (o.XUONG.some(function (x) { var s = o.SO[x[0]]; return s && !o.coSo(s); })) them.push([o.MAU_TRONG, 'Chưa có số']);
+    them.push(['#8b9196', 'Chưa ghép xưởng']);
+    if (Object.keys(o.BAO_TRI).length) them.push(['#e5484d', 'Máy đang bảo trì']);
+    return ds.concat(them).map(function (x) {
+      return '<span><i style="background:' + x[0] + '"></i>' + x[1] + '</span>'; }).join('');
+  };
+  return o;
+})();
