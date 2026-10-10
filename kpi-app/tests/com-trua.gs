@@ -18,8 +18,8 @@ var COM_TEN_VP = 'Văn phòng / khác';
 
 function comSheet_(ten) {
   var ss = ss_(), sh = ss.getSheetByName(ten);
-  if (!sh) {
-    sh = ss.insertSheet(ten);
+  if (!sh || sh.getLastColumn() === 0) {          // chưa có, hoặc có nhưng trống trơn (chưa có dòng tiêu đề) -> ghi tiêu đề
+    if (!sh) sh = ss.insertSheet(ten);
     sh.getRange(1, 1, 1, COM_SHEET[ten].length).setValues([COM_SHEET[ten]]).setFontWeight('bold');
     sh.setFrozenRows(1);
     sh.getRange(1, 1, 1000, 1).setNumberFormat('@');          // ngày / kỳ lưu dạng văn bản 'yyyy-MM-dd'

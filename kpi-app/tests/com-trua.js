@@ -16,6 +16,9 @@ du.TaiKhoan.slice(1).forEach(r => { r[iDoi] = 'Không'; });
 du.TaiKhoan.push(hTK.map(h => ({ TenDangNhap: 'bep', HoTen: 'Bếp ăn', VaiTro: 'BEP', MaXuong: '', TrangThai: 'Đang dùng', DoiMatKhauLanDau: 'Không' }[h] || '')));
 // 12/10/2026 (thứ Hai) 14:30 – bếp báo thực đơn ngày mai
 const c = G.tao(MOI, du, '2026-10-12T14:30:00+07:00');
+// trường hợp thật 11/10: sheet DangKyCom đã có nhưng trống trơn (không có dòng tiêu đề) -> trước đây lỗi "number of columns … at least 1"
+c.SpreadsheetApp.getActiveSpreadsheet().insertSheet('DangKyCom');
+
 const tk = f => c.doc_('TaiKhoan').filter(f)[0];
 const vt = v => x => String(x.VaiTro).trim() === v && String(x.TrangThai).trim() === 'Đang dùng';
 const owner = tk(vt('OWNER')), tp = tk(x => vt('TP')(x) && x.MaXuong), cn = tk(x => vt('CN')(x) && x.MaXuong !== tp.MaXuong), cn2 = tk(x => vt('CN')(x) && x.MaXuong === tp.MaXuong), bep = tk(vt('BEP')), cn3 = tk(x => vt('CN')(x) && x.MaXuong !== tp.MaXuong && x.TenDangNhap !== cn.TenDangNhap);
@@ -84,6 +87,7 @@ ok(c.__goi('dangKyCom', tCN, '2026-10-14', false).ok, 'ngày 14/10 vẫn đăng 
 r = c.__goi('napComTrua', tCN); ok(!r.thucDon.find(t => t.ngay === '2026-10-13').conHan && r.thucDon.find(t => t.ngay === '2026-10-14').conHan, 'trang báo đúng ngày nào còn hạn');
 r = c.__goi('xoaThucDon', tCN, '2026-10-14'); ok(!r.ok, 'công nhân không xóa được thực đơn');
 
+ok(c.dauCot_('DangKyCom').slice(0, 2).join() === 'Ngay,TenDangNhap', 'sheet DangKyCom trống trơn: tự ghi dòng tiêu đề', c.dauCot_('DangKyCom'));
 console.log('\n4b. Trưởng / phó phòng đăng ký hộ');
 c.__datGio('2026-10-13T08:00:00+07:00');
 r = c.__goi('dangKyComHo', tCN, '2026-10-14', [cn2.TenDangNhap], true); ok(!r.ok && /trưởng/.test(r.msg), 'công nhân không đăng ký hộ được', r.msg);
