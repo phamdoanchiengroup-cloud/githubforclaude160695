@@ -77,9 +77,8 @@ D[2]['rooms'] = [
     ph('Bộ phận đóng gói', 'sx', [[6.2, 0.15, 30.0, 8.65], [6.2, 8.65, 26.3, 13.3], [4.33, 0.15, 6.2, 3.85]], a=292.6),
     ph('P. máy MT', 'sx', [[26.3, 8.65, 30.0, 13.3]]),
     ph('Phòng QC', 'vp', [[30.0, 5.1, 38.0, 13.3]], a=61.6),
-    ph('Bàn cắt', 'sx', [[30.0, 2.2, 38.0, 5.1]], a=21),
-    ph('Hoàn thiện', 'sx', [[30.0, 0.15, 38.0, 2.2]], a=21, w=0),
-    ph('Kho (khu bộ phận may)', 'kho', [[38.0, 0.15, 44.92, 11.0], [38.0, 11.0, 40.4, 13.3]], a=85.9),
+    # chủ dự án 11/10: phòng may tầng 3 (Bàn cắt + Hoàn thiện) đã thành kho → gộp vào kho khu bộ phận may
+    ph('Kho (khu bộ phận may)', 'kho', [[38.0, 0.15, 44.92, 11.0], [30.0, 0.15, 38.0, 5.1], [38.0, 11.0, 40.4, 13.3]], a=85.9 + 42),
     ph('Phòng kỹ thuật', 'ky', [[40.4, 11.0, 44.92, 13.3]], a=9),
 ]
 # Cuốn – Cắt thông nhau (không có vách); tường bao do xw vẽ
@@ -440,6 +439,16 @@ D[2]['mc'] = [M for M in D[2]['mc'] if not (M.get('src') == 'mb17' and M['t'] in
 for M in D[2]['mc']:
     if M['l'] == 'Máy tiện 1' and M['t'] == 'tien': M['t'] = 'tienkl'; M['note'] = 'Máy tiện WM210V'
     if M['l'] == 'Máy tiện 2' and M['t'] == 'tien': M['t'] = 'tiendiy'; M['note'] = 'Máy tiện CNC tự chế'
+
+# CNC rà tròn phôi nằm ở khu chuốt BP carbon (chủ dự án 11/10) → 4 máy RYM 1–4 trong phòng khu chuốt là máy rà tròn
+D[0]['mc'] = [M for M in D[0]['mc'] if not (M['t'] == 'chuot' and 0 <= M['r'][0] <= 7.2 and 20.9 <= M['r'][1] <= 25.0)]
+D[0]['mc'] = [M for M in D[0]['mc'] if M.get('src') != 'mb20']
+R20 = [may('CNC rà tròn %d' % (i + 1), x, y, x + 2.8, y + 0.65, 1.4, 'ratron', 'Máy CNC rà tròn phôi HQTECH') for i, (x, y) in enumerate(((0.3, 21.3), (3.9, 21.3), (0.3, 23.6), (3.9, 23.6)))]
+# kho mới tầng 3 (phòng may cũ): kệ hàng
+R20T3 = [may('Kệ kho', 30.3 + i * 2.5, 0.4, 32.3 + i * 2.5, 1.0, 2.0, 'ke', 'K%d' % (20 + i)) for i in range(3)] + \
+        [may('Kệ kho', 30.3 + i * 2.5, 3.8, 32.3 + i * 2.5, 4.4, 2.0, 'ke', 'K%d' % (23 + i)) for i in range(3)]
+D[0]['mc'] += [dict(M, src='mb20') for M in R20]
+D[2]['mc'] = [M for M in D[2]['mc'] if M.get('src') != 'mb20'] + [dict(M, src='mb20') for M in R20T3]
 
 moi = json.dumps(D, ensure_ascii=False, separators=(',', ':'))
 s = s[:m.start(1)] + moi + s[m.end(1):]
