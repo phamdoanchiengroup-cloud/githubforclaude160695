@@ -428,6 +428,19 @@ C19 += [may('Kệ thanh khuôn', 6.6, 9.0, 7.3, 10.6, 1.8, 'ke', 'Kệ thanh khu
 C19.append(may('DZC1200-B', 31.98, 25.0, 33.74, 27.12, 1.2, 'maycat', 'Máy xả khổ cắt vải DZC1200-B'))
 D[0]['mc'] = [M for M in D[0]['mc'] if M.get('src') != 'mb19'] + [dict(M, src='mb19') for M in C19]
 
+# ---------- Rà soát 11/10: bỏ trùng, đổi ký hiệu bản vẽ sang máy đã dựng ----------
+# bàn máy tính MT ở phòng in UV trùng với bàn máy tính đã gắn sẵn trong từng máy in UV
+D[1]['mc'] = [M for M in D[1]['mc'] if not (M['l'] == 'MT' and M.get('src') == 'mb13')]
+# MT / MT1 / MTK trong phòng quản lý, phòng máy MT = bàn máy tính
+for F in D:
+    for M in F['mc']:
+        if M['t'] == 'tb' and M['l'] in ('MT', 'MT1', 'MTK'): M['t'] = 'banvp'; M['note'] = 'Bàn máy tính (ký hiệu ' + M['l'] + ' trên bản vẽ)'
+# "Máy tiện 1/2" trên bản vẽ khu giữa CNC chính là máy tiện WM210V + máy tiện CNC tự chế trong ảnh → dùng vị trí bản vẽ, bỏ bản đặt ước lượng
+D[2]['mc'] = [M for M in D[2]['mc'] if not (M.get('src') == 'mb17' and M['t'] in ('tienkl', 'tiendiy'))]
+for M in D[2]['mc']:
+    if M['l'] == 'Máy tiện 1' and M['t'] == 'tien': M['t'] = 'tienkl'; M['note'] = 'Máy tiện WM210V'
+    if M['l'] == 'Máy tiện 2' and M['t'] == 'tien': M['t'] = 'tiendiy'; M['note'] = 'Máy tiện CNC tự chế'
+
 moi = json.dumps(D, ensure_ascii=False, separators=(',', ':'))
 s = s[:m.start(1)] + moi + s[m.end(1):]
 io.open(P, 'w', encoding='utf-8').write(s)
