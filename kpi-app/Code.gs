@@ -5789,8 +5789,10 @@ var COM_SHEET = {
   DangKyCom: ['Ngay', 'TenDangNhap', 'HoTen', 'MaNV', 'MaXuong', 'An', 'ThoiDiem', 'DangKyHo'],   // DangKyHo: tên người đăng ký hộ (trống = tự đăng ký)
   SuatAnThang: ['Ky', 'MaXuong', 'TenXuong', 'SoNgay', 'SuatAn', 'KhongAn', 'ChuaDangKy', 'TepLuu']
 };
-var COM_VP = 'VP';                       // nhóm cho tài khoản không gắn xưởng (ban điều hành, nhân sự, bếp…)
-var COM_TEN_VP = 'Văn phòng / khác';
+var COM_VP = 'VP';                       // nhóm Ban điều hành + trưởng phòng, trưởng bộ phận + tài khoản không gắn xưởng
+var COM_TEN_VP = 'Ban điều hành và trưởng bộ phận';
+/* Chủ dự án 11/10: trưởng phòng (và trưởng bộ phận) ăn cùng ban điều hành -> suất tính vào nhóm VP, không tính theo xưởng. Phó phòng vẫn tính theo xưởng. */
+function comMx_(vaiTro, maXuong) { var v = String(vaiTro || '').trim(); return (v === 'TP' || v === 'TBP') ? COM_VP : (String(maXuong || '').trim() || COM_VP); }
 /* 4 bộ phận ngoài sản xuất (chủ dự án 11/10): chỉ để báo cơm chung, KHÔNG nằm trong sheet PhongBan nên không vào KPI.
    Tài khoản: NV = nhân viên bộ phận (tự đăng ký), TBP = trưởng bộ phận (đăng ký hộ + xem tên trong bộ phận).
    Sau này muốn tính KPI: thêm dòng vào PhongBan với ĐÚNG mã dưới đây là tài khoản cũ tự khớp. */
@@ -5840,7 +5842,7 @@ function comNguoi_() {
   return doc_('TaiKhoan').filter(function(t) {
     return String(t.TrangThai).trim() === 'Đang dùng' && !comLaBep_(t) && !(t.MaNV && nghi[String(t.MaNV).trim()]);
   }).map(function(t) {
-    return { tk: String(t.TenDangNhap).toLowerCase(), ten: t.HoTen, ma: String(t.MaNV || '').trim(), mx: String(t.MaXuong || '').trim() || COM_VP };
+    return { tk: String(t.TenDangNhap).toLowerCase(), ten: t.HoTen, ma: String(t.MaNV || '').trim(), mx: comMx_(t.VaiTro, t.MaXuong), xg: String(t.MaXuong || '').trim() };
   });
 }
 function comTenX_() {
@@ -5934,7 +5936,7 @@ function dangKyCom(token, ngay, an) {
   if (!td) return sach_({ ok: false, msg: 'Bếp chưa báo thực đơn ngày này.' });
   if (ngay < homNayVN_()) return sach_({ ok: false, msg: 'Ngày ăn đã qua.' });
   var v = an ? 1 : 0;
-  comGhi_({ tk: String(me.tk).toLowerCase(), ten: me.ten, ma: me.maNV || '', mx: me.xuong || COM_VP }, ngay, v, '');
+  comGhi_({ tk: String(me.tk).toLowerCase(), ten: me.ten, ma: me.maNV || '', mx: comMx_(me.vaiTroGoc || me.vaiTro, me.xuong) }, ngay, v, '');
   return sach_({ ok: true, ngay: ngay, an: v, msg: v ? 'Đã đăng ký ăn trưa ' + ngay.slice(8) + '/' + ngay.slice(5, 7) + '.' : 'Đã báo không ăn trưa ' + ngay.slice(8) + '/' + ngay.slice(5, 7) + '.' });
 }
 
@@ -5952,7 +5954,7 @@ function comGhi_(p, ngay, v, ho) {
 
 /* Đăng ký hộ (chủ dự án 11/10: người lớn tuổi không quen điện thoại / không có mạng):
    trưởng – phó phòng đăng ký hộ người trong xưởng mình, ban điều hành (+ trợ lý) đăng ký hộ người khối văn phòng. dsTk = 1 hoặc nhiều tên đăng nhập. */
-function comHoDuoc_(me, p) {   // chủ dự án 11/10: xưởng nào đăng ký hộ xưởng đó; ban điều hành (+ trợ lý) chỉ đăng ký hộ người khối văn phòng (tài khoản không gắn xưởng)
+function comHoDuoc_(me, p) {   // chủ dự án 11/10: xưởng nào đăng ký hộ xưởng đó; ban điều hành (+ trợ lý) chỉ đăng ký hộ người nhóm VP (ban điều hành, trưởng phòng, trưởng bộ phận, tài khoản không gắn xưởng)
   if (me.vaiTro === 'ADMIN' || me.vaiTro === 'TL' || me.vaiTro === 'HR') return p.mx === COM_VP;
   return comLaTruong_(me) && p.mx === String(me.xuong);
 }

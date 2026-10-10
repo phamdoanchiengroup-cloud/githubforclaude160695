@@ -36,7 +36,7 @@ const doiNguoi = (p, f) => p.evaluate(f => {
   s = await p.evaluate(() => [$('combar').querySelector('.cm-nut.an').getAttribute('aria-pressed'), document.querySelector('.cm-so .an b').textContent, document.querySelector('.cm-the').textContent]);
   ok(s[0] === 'true' && s[1] === '1' && /đã đăng ký ăn/.test(s[2]), 'bấm Ăn trên thanh: nút sáng, tổng hợp 1 suất, thẻ ghi "đã đăng ký ăn"', s);
   s = await p.evaluate(() => [...document.querySelectorAll('.cm-bang tbody tr')].map(r => r.textContent));
-  ok(s.length > 3 && /Toàn nhà máy/.test(s[s.length - 1]) && s.some(x => /Văn phòng \/ khác/.test(x)), 'bảng tổng hợp theo xưởng + dòng Toàn nhà máy', s.slice(-2));
+  ok(s.length > 3 && /Toàn nhà máy/.test(s[s.length - 1]) && s.some(x => /Ban điều hành và trưởng bộ phận/.test(x)), 'bảng tổng hợp theo xưởng + dòng Toàn nhà máy', s.slice(-2));
   await p.evaluate(() => __MAY_CHU.dangKyCom(__MAY_CHU.taoPhien_(__MAY_CHU.doc_('TaiKhoan').find(x => String(x.VaiTro).trim() === 'CN' && x.MaNV && x.TrangThai === 'Đang dùng')), '2026-10-13', false));
   await p.evaluate(() => comTai()); await p.waitForTimeout(1200);
   s = await p.evaluate(() => { const h = [...document.querySelectorAll('h4')].find(x => /Danh sách không ăn/.test(x.textContent)); const t = h && h.nextElementSibling;

@@ -372,6 +372,11 @@ Nếu vẫn thấy giao diện cũ: kiểm tra lại Phần D (đã chọn **Phi
 - **Hướng dẫn** chuyển thành nút **?** trên đầu trang.
 
 
+## Cơm trưa – trưởng phòng ăn cùng ban điều hành (11/10)
+
+- Suất ăn của **trưởng phòng** (và trưởng bộ phận Kho / Hành chính – Kế toán / Marketing – Bán hàng / Showroom – Store) **không tính theo xưởng nữa** mà tính vào dòng **"Ban điều hành và trưởng bộ phận"** (trước đây là "Văn phòng / khác"). **Phó phòng vẫn tính theo xưởng.**
+- Dòng này cũng gồm các tài khoản không gắn xưởng (ban điều hành, trợ lý, nhân sự, QC…). Ban điều hành / trợ lý / nhân sự đăng ký hộ được cho trưởng phòng.
+
 ## Cơm trưa – trưởng / phó phòng đăng ký hộ (11/10)
 - Công nhân vẫn tự đăng ký như cũ.
 - Trưởng / phó phòng mở trang **Cơm trưa** → khung **Đăng ký hộ**: chọn ngày ăn, tìm tên, bấm **Ăn** / **Không ăn** cho từng người trong xưởng mình, hoặc bấm **Đăng ký ăn cho tất cả người chưa đăng ký**.
