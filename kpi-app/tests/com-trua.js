@@ -18,10 +18,10 @@ du.TaiKhoan.push(hTK.map(h => ({ TenDangNhap: 'bep', HoTen: 'Bếp ăn', VaiTro:
 const c = G.tao(MOI, du, '2026-10-12T14:30:00+07:00');
 const tk = f => c.doc_('TaiKhoan').filter(f)[0];
 const vt = v => x => String(x.VaiTro).trim() === v && String(x.TrangThai).trim() === 'Đang dùng';
-const owner = tk(vt('OWNER')), tp = tk(x => vt('TP')(x) && x.MaXuong), cn = tk(x => vt('CN')(x) && x.MaXuong !== tp.MaXuong), cn2 = tk(x => vt('CN')(x) && x.MaXuong === tp.MaXuong), bep = tk(vt('BEP'));
-const P = t => c.taoPhien_(t), tO = P(owner), tTP = P(tp), tCN = P(cn), tCN2 = P(cn2), tB = P(bep);
+const owner = tk(vt('OWNER')), tp = tk(x => vt('TP')(x) && x.MaXuong), cn = tk(x => vt('CN')(x) && x.MaXuong !== tp.MaXuong), cn2 = tk(x => vt('CN')(x) && x.MaXuong === tp.MaXuong), bep = tk(vt('BEP')), cn3 = tk(x => vt('CN')(x) && x.MaXuong !== tp.MaXuong && x.TenDangNhap !== cn.TenDangNhap);
+const P = t => c.taoPhien_(t), tO = P(owner), tTP = P(tp), tCN = P(cn), tCN2 = P(cn2), tB = P(bep), tCN3 = P(cn3);
 const nghi = new Set(c.doc_('NhanSu').filter(x => String(x.TrangThai).trim() === 'Nghỉ việc').map(x => String(x.MaNV).trim()));
-const soNguoi = c.doc_('TaiKhoan').filter(x => String(x.TrangThai).trim() === 'Đang dùng' && !(x.MaNV && nghi.has(String(x.MaNV).trim()))).length;   // tài khoản đang dùng, bỏ người đã nghỉ việc
+const soNguoi = c.doc_('TaiKhoan').filter(x => String(x.TrangThai).trim() === 'Đang dùng' && String(x.VaiTro).trim() !== 'BEP' && !(x.MaNV && nghi.has(String(x.MaNV).trim()))).length;   // tài khoản đang dùng, bỏ người đã nghỉ việc
 
 console.log('\n1. Thực đơn');
 let r = c.__goi('luuThucDon', tCN, '2026-10-13', 'Cơm, gà rang', '');
@@ -42,24 +42,25 @@ ok(r.quyen && !r.quyen.xem && !r.quyen.sua && !r.tongHop.length, 'công nhân kh
 r = c.__goi('dangKyCom', tCN, '2026-10-13', true); ok(r.ok && r.an === 1, 'công nhân bấm Ăn', r);
 r = c.__goi('dangKyCom', tCN, '2026-10-13', false); ok(r.ok && r.an === 0 && /không ăn/.test(r.msg), 'đổi sang Không ăn trước hạn', r);
 ok(c.__sheets.DangKyCom.rows.filter(x => String(x[1]).toLowerCase() === String(cn.TenDangNhap).toLowerCase()).length === 1, 'đổi ý không sinh dòng trùng');
-c.__goi('dangKyCom', tCN2, '2026-10-13', true); c.__goi('dangKyCom', tTP, '2026-10-13', true); c.__goi('dangKyCom', tO, '2026-10-13', true); c.__goi('dangKyCom', tB, '2026-10-13', false);
+c.__goi('dangKyCom', tCN2, '2026-10-13', true); c.__goi('dangKyCom', tTP, '2026-10-13', true); c.__goi('dangKyCom', tO, '2026-10-13', true); c.__goi('dangKyCom', tCN3, '2026-10-13', false);
+r = c.__goi('dangKyCom', tB, '2026-10-13', true); ok(!r.ok && /bếp/i.test(r.msg), 'tài khoản bếp không đăng ký suất ăn', r.msg);
 r = c.__goi('dangKyCom', tCN, '2026-10-20', true); ok(!r.ok && /chưa báo thực đơn/.test(r.msg), 'ngày chưa có thực đơn thì không đăng ký được', r.msg);
 r = c.__goi('napComTrua', tCN); ok(r.cuaToi['2026-10-13'] === 0, 'trang của tôi hiện đúng lựa chọn (Không ăn)', r.cuaToi);
 
 console.log('\n3. Tổng hợp gửi bếp');
 r = c.__goi('napComTrua', tB);
 let th = r.tongHop.find(x => x.ngay === '2026-10-13');
-ok(r.quyen.xem && r.quyen.sua && th && th.an === 3 && th.khong === 2 && th.an + th.khong + th.chua === soNguoi, 'bếp: 3 ăn, 2 không ăn, còn lại chưa đăng ký (tổng = ' + soNguoi + ' tài khoản đang dùng, đã bỏ người nghỉ việc)', th && [th.an, th.khong, th.chua]);
+ok(r.quyen.xem && r.quyen.sua && th && th.an === 3 && th.khong === 2 && th.an + th.khong + th.chua === soNguoi, 'bếp: 3 ăn, 2 không ăn, còn lại chưa đăng ký (tổng = ' + soNguoi + ' tài khoản đang dùng, đã bỏ người nghỉ việc và tài khoản bếp)', th && [th.an, th.khong, th.chua]);
 const xTP = th.xuong.find(x => x.mx === tp.MaXuong), xVP = th.xuong.find(x => x.mx === 'VP');
 ok(xTP && xTP.an === 2 && xTP.dsAn.length === 2, 'xưởng của trưởng phòng: 2 suất, có tên', xTP);
-ok(xVP && xVP.an === 1 && xVP.khong === 1 && th.xuong[th.xuong.length - 1].mx === 'VP', 'tài khoản không gắn xưởng gom vào "Văn phòng / khác" (cuối bảng)', xVP);
+ok(xVP && xVP.an === 1 && !(xVP.dsAn || []).concat(xVP.dsKhong || [], xVP.dsChua || []).includes('Bếp ăn') && th.xuong[th.xuong.length - 1].mx === 'VP', 'tài khoản không gắn xưởng gom vào "Văn phòng / khác" (cuối bảng)', xVP);
 r = c.__goi('napComTrua', tTP); th = r.tongHop.find(x => x.ngay === '2026-10-13');
 ok(r.quyen.xem && !r.quyen.sua && th.xuong.length > 1 && th.xuong.every(x => x.mx === tp.MaXuong ? Array.isArray(x.dsAn) : x.dsAn === undefined), 'trưởng phòng: thấy số mọi xưởng, tên chỉ xưởng mình');
 const khongTP = th.dsKhongCT;
 r = c.__goi('napComTrua', tO); th = r.tongHop.find(x => x.ngay === '2026-10-13');
 ok(th.xuong.every(x => Array.isArray(x.dsChua)), 'ban điều hành: thấy tên mọi xưởng');
 const cnK = th.dsKhongCT.find(x => x.ten === cn.HoTen);
-ok(th.dsKhongCT.length === 2 && cnK && cnK.ma === String(cn.MaNV) && cnK.xuong === c.tenXuong_(cn.MaXuong) && th.dsKhongCT.some(x => x.ten === 'Bếp ăn' && x.xuong === 'Văn phòng / khác'),
+ok(th.dsKhongCT.length === 2 && cnK && cnK.ma === String(cn.MaNV) && cnK.xuong === c.tenXuong_(cn.MaXuong) && th.dsKhongCT.some(x => x.ten === cn3.HoTen) && !th.dsKhongCT.some(x => x.ten === 'Bếp ăn'),
   'ban điều hành: danh sách không ăn đủ họ tên, mã NV, xưởng', th.dsKhongCT);
 ok(Array.isArray(khongTP) && khongTP.every(x => x.mx === tp.MaXuong), 'trưởng phòng: danh sách không ăn chỉ xưởng mình', khongTP);
 r = c.__goi('napComTrua', tCN); ok(!r.tongHop.length, 'công nhân không nhận danh sách không ăn');
@@ -86,6 +87,7 @@ r = c.__goi('xoaThucDon', tCN, '2026-10-14'); ok(!r.ok, 'công nhân không xóa
 console.log('\n5. Vai trò BEP');
 r = c.__goi('napDuLieu', tB);
 ok(r.ok && r.me.vaiTro === 'BEP' && !r.nhansu.length && !r.nhatky.length && r.phongban.length > 0, 'bếp không nhận dữ liệu sản xuất / nhân sự', r.ok && [r.nhansu.length, r.nhatky.length]);
+r = c.__goi('napComTrua', tB); ok(r.quyen.dangKy === false && r.quyen.sua && r.quyen.xem, 'bếp: báo thực đơn + xem tổng hợp, không có quyền đăng ký', r.quyen);
 ok(!c.__goi('layBaoCaoThang', tB, '2026-09', '', 'html').ok, 'bếp không tải được báo cáo KPI');
 
 console.log('\n6. Sang tháng: tổng kết, lưu Drive, xóa dữ liệu tháng cũ');

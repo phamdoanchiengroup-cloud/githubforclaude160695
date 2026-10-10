@@ -57,6 +57,8 @@ const doiNguoi = (p, f) => p.evaluate(f => {
   await doiNguoi(p, "x.TenDangNhap==='bep'");
   s = await p.evaluate(() => [[...document.querySelectorAll('#nav button')].map(x => x.dataset.k), tabHienTai, $('hbadge').textContent, !!$('cmMon'), !!document.querySelector('.cm-bang')]);
   ok(s[0].join() === 'com' && s[1] === 'com' && s[2] === 'BẾP ĂN' && s[3] && s[4], 'bếp chỉ có trang Cơm trưa: nhập thực đơn + xem tổng hợp', s);
+  s = await p.evaluate(() => [document.querySelectorAll('.cm-nut.an,.cm-nut.khong').length, $('combar').textContent, document.querySelector('.cm-the').textContent]);
+  ok(s[0] === 0 && /suất ăn/.test(s[1]) && /suất ăn/.test(s[2]) && !/Bạn chưa đăng ký/.test(s[2]), 'bếp: không có nút Ăn / Không ăn, thanh + thẻ hiện số suất', s);
 
   console.log('Công nhân · điện thoại');
   await p.close(); await p.ctx.close();
