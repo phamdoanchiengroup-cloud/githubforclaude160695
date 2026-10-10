@@ -170,8 +170,11 @@ function comGhi_(p, ngay, v, ho) {
 }
 
 /* Đăng ký hộ (chủ dự án 11/10: người lớn tuổi không quen điện thoại / không có mạng):
-   trưởng – phó phòng đăng ký hộ người trong xưởng mình, ban điều hành đăng ký hộ mọi người. dsTk = 1 hoặc nhiều tên đăng nhập. */
-function comHoDuoc_(me, p) { return me.vaiTro === 'ADMIN' || me.vaiTro === 'TL' || (me.vaiTro === 'TP' && me.xuong && p.mx === String(me.xuong)); }
+   trưởng – phó phòng đăng ký hộ người trong xưởng mình, ban điều hành (+ trợ lý) đăng ký hộ người khối văn phòng. dsTk = 1 hoặc nhiều tên đăng nhập. */
+function comHoDuoc_(me, p) {   // chủ dự án 11/10: xưởng nào đăng ký hộ xưởng đó; ban điều hành (+ trợ lý) chỉ đăng ký hộ người khối văn phòng (tài khoản không gắn xưởng)
+  if (me.vaiTro === 'ADMIN' || me.vaiTro === 'TL') return p.mx === COM_VP;
+  return me.vaiTro === 'TP' && !!me.xuong && p.mx === String(me.xuong);
+}
 function dangKyComHo(token, ngay, dsTk, an) {
   var me = docPhien_(token);
   if (!me) return sach_({ ok: false, hetHan: true, msg: 'Phiên đăng nhập đã hết hạn.' });
@@ -184,7 +187,7 @@ function dangKyComHo(token, ngay, dsTk, an) {
   var muon = {}; [].concat(dsTk || []).forEach(function(t) { muon[String(t).toLowerCase()] = 1; });
   var ds = comNguoi_().filter(function(p) { return muon[p.tk]; });
   if (!ds.length) return sach_({ ok: false, msg: 'Không tìm thấy người cần đăng ký.' });
-  if (ds.some(function(p) { return !comHoDuoc_(me, p); })) return sach_({ ok: false, msg: 'Chỉ đăng ký hộ được người trong xưởng của bạn.' });
+  if (ds.some(function(p) { return !comHoDuoc_(me, p); })) return sach_({ ok: false, msg: (me.vaiTro === 'TP' ? 'Chỉ đăng ký hộ được người trong xưởng của bạn.' : 'Ban điều hành chỉ đăng ký hộ được người thuộc khối văn phòng / ban điều hành.') });
   var v = an ? 1 : 0;
   ds.forEach(function(p) { comGhi_(p, ngay, v, me.ten); });
   var ng = ngay.slice(8) + '/' + ngay.slice(5, 7);

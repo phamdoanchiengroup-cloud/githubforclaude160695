@@ -107,6 +107,9 @@ const chuaDK = dsHo.filter(x => !r.hoDK['2026-10-14'][x.tk]).map(x => x.tk);
 r = c.__goi('dangKyComHo', tTP, '2026-10-14', chuaDK, true); ok(r.ok && r.so === chuaDK.length, 'đăng ký ăn cho tất cả người chưa đăng ký một lần', r.msg);
 r = c.__goi('napComTrua', tTP); ok(dsHo.every(x => r.hoDK['2026-10-14'][x.tk]), 'sau đó cả xưởng đã có lựa chọn');
 ok(!c.__goi('napComTrua', tCN).quyen.ho, 'công nhân không có mục đăng ký hộ');
+{ const rO = c.__goi('napComTrua', tO), tkX = x => c.doc_('TaiKhoan').find(t => t.TenDangNhap.toLowerCase() === x.tk);
+  ok(rO.hoNguoi.length > 0 && rO.hoNguoi.every(x => !String(tkX(x).MaXuong || '').trim()), 'ban điều hành: danh sách đăng ký hộ chỉ gồm người khối văn phòng (không gắn xưởng)', rO.hoNguoi.length);
+  const rr = c.__goi('dangKyComHo', tO, '2026-10-14', [cn.TenDangNhap], true); ok(!rr.ok && /văn phòng/.test(rr.msg), 'ban điều hành không đăng ký hộ được công nhân xưởng', rr.msg); }
 ok(c.dauCot_('DangKyCom').includes('DangKyHo'), 'sheet DangKyCom có cột DangKyHo');
 // trả dữ liệu ngày 14 về như trước phần này để các bước sau tính đúng
 { const bo = new Set(chuaDK.concat([cn2.TenDangNhap.toLowerCase()]));

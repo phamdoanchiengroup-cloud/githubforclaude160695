@@ -380,7 +380,8 @@ Nếu vẫn thấy giao diện cũ: kiểm tra lại Phần D (đã chọn **Phi
 
 
 ## Vai trò Trợ lý ban điều hành + bếp chỉ thấy số suất (11/10)
-- Tài khoản trợ lý: vào **Tài khoản**, ở dòng của người đó đổi vai trò (hoặc tạo mới) chọn **Trợ lý ban điều hành**.
+- Tài khoản trợ lý đã có: mở Google Sheet, trang tính **TaiKhoan**, sửa ô **VaiTro** của người đó thành `TL`; người đó đăng xuất rồi đăng nhập lại. Tạo mới thì vào **Tài khoản**, ô Vai trò chọn **Trợ lý ban điều hành**.
+- Đăng ký cơm hộ: trưởng / phó phòng chỉ cho người trong xưởng mình; ban điều hành và trợ lý chỉ cho người khối văn phòng (tài khoản không gắn xưởng).
   Trợ lý chỉ thấy Tổng quan, Bảng KPI, Sơ đồ nhà máy và Cơm trưa; không sửa / duyệt / chốt được gì. Ở Cơm trưa trợ lý báo thực đơn, đăng ký hộ, xem tổng hợp có họ tên.
 - Bếp chỉ thấy số suất ăn / không ăn / chưa đăng ký theo từng xưởng và tổng; không thấy họ tên, mã NV.
 - Cần dán lại **Code.gs** và **Index.html**.

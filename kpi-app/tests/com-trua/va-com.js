@@ -175,11 +175,11 @@ function comChep(i){
 }
 function comChepCu(txt){var t=document.createElement('textarea');t.value=txt;document.body.appendChild(t);t.select();try{document.execCommand('copy')}catch(e){}t.remove()}
 
-/* Đăng ký hộ (trưởng / phó phòng: người trong xưởng mình; ban điều hành: mọi người) – cho người lớn tuổi không quen điện thoại, không có mạng */
+/* Đăng ký hộ (trưởng / phó phòng: người trong xưởng mình; ban điều hành + trợ lý: người khối văn phòng) – cho người lớn tuổi không quen điện thoại, không có mạng */
 COM.hoNgay='';COM.hoTim='';COM.hoLoc='chua';
 function comHoHtml(sap){
   var d=COM.d; if(!sap.some(function(t){return t.ngay===COM.hoNgay}))COM.hoNgay=(sap.filter(function(t){return t.ngay>d.homNay})[0]||sap[0]).ngay;
-  return '<div class="card cm-khong-in" id="cmHo"><h3>Đăng ký hộ <span>'+(ME.vaiTro==='TP'?'người trong xưởng của bạn':'mọi người')+'</span></h3>'+
+  return '<div class="card cm-khong-in" id="cmHo"><h3>Đăng ký hộ <span>'+(ME.vaiTro==='TP'?'người trong xưởng của bạn':'người khối văn phòng / ban điều hành')+'</span></h3>'+
     '<p class="cm-ghi" style="margin-top:0">Dành cho người lớn tuổi không quen dùng điện thoại hoặc không có mạng. Mọi người vẫn tự đăng ký được như bình thường; người được đăng ký hộ sẽ thấy tên bạn bên cạnh lựa chọn.</p>'+
     '<div class="cm-ho-loc"><label>Ngày ăn <select id="cmHoNgay" onchange="COM.hoNgay=this.value;comHoVe()">'+sap.map(function(t){return '<option value="'+t.ngay+'"'+(t.ngay===COM.hoNgay?' selected':'')+'>'+esc(comNgayTen(t.ngay))+'</option>'}).join('')+'</select></label>'+
     '<input id="cmHoTim" type="search" placeholder="Tìm tên / mã NV" value="'+esc(COM.hoTim)+'" oninput="COM.hoTim=this.value;comHoVe()">'+
