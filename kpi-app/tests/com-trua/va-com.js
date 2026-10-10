@@ -1,5 +1,7 @@
 /* Mục 16: CƠM TRƯA – thanh thực đơn (#combar) trên mọi trang của mọi tài khoản + trang "Cơm trưa".
    Máy chủ: napComTrua / dangKyCom / luuThucDon / xoaThucDon (tests/com-trua.gs). 16:00 hôm trước chỉ là GIỜ NHẮC – quá giờ vẫn đăng ký được tới hết ngày ăn. */
+/* 4 bộ phận ngoài sản xuất – giữ đúng mã như COM_BO_PHAN trong tests/com-trua.gs */
+var COM_BO_PHAN={KHO:'Bộ phận Kho',HCKT:'Hành chính – Kế toán',MKTBH:'Marketing – Bán hàng',SRST:'Showroom – Store'};
 var COM={d:null,tai:0,hen:null};
 var COM_THU=['Chủ nhật','Thứ Hai','Thứ Ba','Thứ Tư','Thứ Năm','Thứ Sáu','Thứ Bảy'];
 function comMs_(s){var p=String(s).match(/^(\d{4})-(\d{2})-(\d{2})(?: (\d{2}):(\d{2}))?/);return p?Date.UTC(+p[1],+p[2]-1,+p[3],+(p[4]||0),+(p[5]||0)):0}
@@ -161,7 +163,7 @@ function comMuonHtml(th){
       ds.map(function(m){return '<tr><td>'+esc(m.luc.slice(11))+' '+esc(m.luc.slice(8,10)+'/'+m.luc.slice(5,7))+'</td><td>'+esc(m.ten)+'</td><td>'+esc(m.ma||'–')+'</td><td>'+esc(m.xuong)+'</td><td>'+(m.an?'Ăn':'Không ăn')+'</td></tr>'}).join('')+'</tbody></table></details>':'');
 }
 function comKhongHtml(th){
-  var ds=th.dsKhongCT||[]; if(!ds.length&&!th.khong)return ''; if(!ds.length&&ME.vaiTro!=='TP')return '';   // bếp / nhân sự: chỉ số, không danh sách tên
+  var ds=th.dsKhongCT||[]; if(!ds.length&&!th.khong)return ''; if(!ds.length&&ME.vaiTro!=='TP'&&ME.vaiTro!=='TBP')return '';   // bếp / nhân sự: chỉ số, không danh sách tên
   return '<h4 style="margin:16px 0 6px">Danh sách không ăn ('+ds.length+(ds.length<th.khong?' / '+th.khong+' – chỉ hiện xưởng của bạn':'')+')</h4>'+
     (ds.length?'<table class="cm-bang"><thead><tr><th class="r" style="width:42px">#</th><th>Họ tên</th><th>Mã NV</th><th>Xưởng</th></tr></thead><tbody>'+
       ds.map(function(c,i){return '<tr><td class="r">'+(i+1)+'</td><td>'+esc(c.ten)+'</td><td>'+esc(c.ma||'–')+'</td><td>'+esc(c.xuong)+'</td></tr>'}).join('')+'</tbody></table>':'');
@@ -179,7 +181,7 @@ function comChepCu(txt){var t=document.createElement('textarea');t.value=txt;doc
 COM.hoNgay='';COM.hoTim='';COM.hoLoc='chua';
 function comHoHtml(sap){
   var d=COM.d; if(!sap.some(function(t){return t.ngay===COM.hoNgay}))COM.hoNgay=(sap.filter(function(t){return t.ngay>d.homNay})[0]||sap[0]).ngay;
-  return '<div class="card cm-khong-in" id="cmHo"><h3>Đăng ký hộ <span>'+(ME.vaiTro==='TP'?'người trong xưởng của bạn':'người khối văn phòng / ban điều hành')+'</span></h3>'+
+  return '<div class="card cm-khong-in" id="cmHo"><h3>Đăng ký hộ <span>'+(ME.vaiTro==='TP'?'người trong xưởng của bạn':ME.vaiTro==='TBP'?'người trong bộ phận của bạn':'người khối văn phòng / ban điều hành')+'</span></h3>'+
     '<p class="cm-ghi" style="margin-top:0">Dành cho người lớn tuổi không quen dùng điện thoại hoặc không có mạng. Mọi người vẫn tự đăng ký được như bình thường; người được đăng ký hộ sẽ thấy tên bạn bên cạnh lựa chọn.</p>'+
     '<div class="cm-ho-loc"><label>Ngày ăn <select id="cmHoNgay" onchange="COM.hoNgay=this.value;comHoVe()">'+sap.map(function(t){return '<option value="'+t.ngay+'"'+(t.ngay===COM.hoNgay?' selected':'')+'>'+esc(comNgayTen(t.ngay))+'</option>'}).join('')+'</select></label>'+
     '<input id="cmHoTim" type="search" placeholder="Tìm tên / mã NV" value="'+esc(COM.hoTim)+'" oninput="COM.hoTim=this.value;comHoVe()">'+
@@ -195,7 +197,7 @@ function comHoDs(){
     (chua.length?' <button type="button" class="btn sm" onclick="comHoTatCa()">🍚 Đăng ký ăn cho tất cả '+chua.length+' người chưa đăng ký</button>':'')+'</p>';
   if(!ds.length)return h+'<p class="cm-ghi">'+(COM.hoLoc==='chua'?'Mọi người đã đăng ký.':'Không có ai khớp.')+'</p>';
   return h+'<ul class="cm-ds cm-ho-ds">'+ds.slice(0,300).map(function(p){var x=dk[p.tk],v=x?x[0]:undefined;
-    return '<li><span><b>'+esc(p.ten)+'</b> <span class="cm-ghi">'+esc(p.ma||'')+(ME.vaiTro!=='TP'?' · '+esc(p.xuong):'')+'</span>'+
+    return '<li><span><b>'+esc(p.ten)+'</b> <span class="cm-ghi">'+esc(p.ma||'')+(ME.vaiTro!=='TP'&&ME.vaiTro!=='TBP'?' · '+esc(p.xuong):'')+'</span>'+
       (x?' '+(v?'<span class="cm-tt an">Ăn</span>':'<span class="cm-tt khong">Không ăn</span>')+(x[1]?' <span class="cm-ghi">(hộ: '+esc(x[1])+')</span>':' <span class="cm-ghi">(tự đăng ký)</span>'):'')+'</span>'+
       '<span class="cb-nut"><button type="button" class="cm-nut an" aria-pressed="'+(v===1)+'" onclick="comHoDK([\''+p.tk+'\'],1)">🍚 Ăn</button>'+
       '<button type="button" class="cm-nut khong" aria-pressed="'+(v===0)+'" onclick="comHoDK([\''+p.tk+'\'],0)">Không ăn</button></span></li>'}).join('')+'</ul>';
@@ -212,3 +214,36 @@ function comHoTatCa(){
   if(!ds.length)return; if(!confirm('Đăng ký ĂN trưa '+comNgayTen(COM.hoNgay)+' cho '+ds.length+' người chưa đăng ký?'))return;
   comHoDK(ds,1);
 }
+
+/* ===== Chế độ CHỈ XEM (chủ dự án 11/10) =====
+   Trợ lý ban điều hành (TL): Điểm danh, Công đoạn, Nhân sự, Máy móc chỉ xem. Nhân sự (HR): như trợ lý, riêng Hồ sơ nhân sự sửa được.
+   Trang được vẽ như ban điều hành (thấy toàn nhà máy), rồi ẩn / khóa mọi nút sửa; máy chủ vẫn từ chối mọi thao tác sửa của TL. */
+var CHI_XEM_TAB={TL:{dd:1,cd:1,ns:1,mm:1},HR:{dd:1,cd:1,mm:1}};
+var CHI_XEM_VAI='';
+function chiXemTab(k){var m=CHI_XEM_TAB[CHI_XEM_VAI||ME.vaiTro];return !!(m&&m[k])}
+var CX_NUT=/(thanh lý|báo chạy|báo hỏng|lưu|thêm|xóa|xoá|sửa|ngừng|duyệt|gửi|chốt|xác nhận|khôi phục|cập nhật|bảo trì|đổi|hủy|huỷ|từ chối|kích hoạt|ghi|có mặt|vắng|nghỉ|import|nhập|tạo|gán|chuyển|đánh dấu|phạt|miễn|sửa chữa|hoạt động|đề xuất|tải lên)/i;
+function chiXemDon(){
+  var m=$('main'); if(!m||!chiXemTab(tabHienTai))return;
+  if(!m.querySelector('.cx-bao')){var b=document.createElement('div');b.className='alert a-nu cx-bao';b.innerHTML='👁 <b>Chế độ chỉ xem</b> – tài khoản của bạn xem được số liệu nhưng không sửa được ở trang này.';
+    var t=m.querySelector('.pdesc')||m.querySelector('.ptitle'); if(t&&t.parentNode===m)t.insertAdjacentElement('afterend',b); else m.insertBefore(b,m.firstChild);}
+  Array.prototype.forEach.call(m.querySelectorAll('.card'),function(c){var h=c.querySelector('h3');if(h&&/^\s*(Thêm|Tạo|Nhập|Gửi|Đề xuất|Khai báo|Ghi|Import|Sửa)/i.test(h.textContent))c.style.display='none'});
+  Array.prototype.forEach.call(m.querySelectorAll('button'),function(b){ var oc=b.getAttribute('onclick')||''; if(CX_NUT.test(b.textContent)||/^\s*[✎✕×🗑→]/.test(b.textContent)||/^(edKN|thanhLy|doiKieu|sua|xoa|luu|them|ngung|duyet)/i.test(oc)||/^\s*Công đoạn\s*$/.test(b.textContent)){b.style.display='none'} });
+  Array.prototype.forEach.call(m.querySelectorAll('table input,table select,table textarea,[contenteditable="true"]'),function(e){e.disabled=true;e.removeAttribute('contenteditable')});
+}
+(function(){
+  if(typeof go!=='function'||typeof call!=='function')return;
+  var goCu=go, callCu=call, theo=null, hen=0;
+  go=function(k){
+    var cx=chiXemTab(k), vt=ME.vaiTro;
+    if(cx){CHI_XEM_VAI=vt; ME.vaiTro='ADMIN';}            // vẽ như ban điều hành để thấy toàn nhà máy
+    try{ return goCu.apply(this,arguments); }
+    finally{
+      if(cx){ME.vaiTro=vt; CHI_XEM_VAI=''; chiXemDon();
+        if(!theo&&window.MutationObserver){theo=new MutationObserver(function(){clearTimeout(hen);hen=setTimeout(chiXemDon,30)});theo.observe($('main'),{childList:true,subtree:true})}}
+    }
+  };
+  call=function(fn){
+    if(chiXemTab(tabHienTai)&&!laHamDoc_(fn)){ try{toast('Tài khoản của bạn chỉ được xem trang này, không sửa được.')}catch(e){} return; }
+    return callCu.apply(this,arguments);
+  };
+})();

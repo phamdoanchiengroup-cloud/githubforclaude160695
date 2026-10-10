@@ -75,15 +75,45 @@ const doiNguoi = (p, f) => p.evaluate(f => {
   await p.evaluate(() => { __MAY_CHU.them_('TaiKhoan', { TenDangNhap: 'troly', HoTen: 'Trợ lý A', VaiTro: 'TL', MaXuong: '', TrangThai: 'Đang dùng', DoiMatKhauLanDau: 'Không' }); });
   await doiNguoi(p, "x.TenDangNhap==='troly'");
   s = await p.evaluate(() => [[...document.querySelectorAll('#nav button')].map(x => x.dataset.k).join(), $('hbadge').textContent]);
-  ok(s[0].split(',').sort().join() === 'com,dash,kpi,sodo' && s[1] === 'TRỢ LÝ BĐH', 'trợ lý: chỉ Hướng dẫn, Tổng quan, Bảng KPI, Sơ đồ nhà máy, Cơm trưa', s);
+  ok(s[0].split(',').sort().join() === 'cd,com,dash,dd,kpi,mm,ns,sodo' && s[1] === 'TRỢ LÝ BĐH', 'trợ lý: Tổng quan, Bảng KPI, Sơ đồ, Cơm trưa, Điểm danh, Công đoạn, Nhân sự, Máy móc', s);
   for (const k of ['dash', 'kpi', 'sodo']) { await p.evaluate(k => go(k), k); await p.waitForTimeout(1200); }
   s = await p.evaluate(() => { go('kpi'); return [/Chốt/.test($('main').textContent), $('main').textContent.length]; }); await p.waitForTimeout(800);
   ok(!s[0] && s[1] > 200, 'trợ lý: Bảng KPI hiện số liệu, không có nút chốt', s);
   await p.evaluate(() => go('com')); await p.waitForTimeout(1200);
   s = await p.evaluate(() => [!!$('cmMon'), !!$('cmHo'), !!document.querySelector('.cm-bang')]);
   ok(s[0] && s[1] && s[2], 'trợ lý: Cơm trưa có báo thực đơn, đăng ký hộ, tổng hợp', s);
+  for (const k of ['dd', 'cd', 'ns', 'mm']) {
+    await p.evaluate(k => go(k), k); await p.waitForTimeout(1500);
+    s = await p.evaluate(() => { const m = $('main'); return [!!m.querySelector('.cx-bao'), m.textContent.length, [...m.querySelectorAll('button')].filter(b => b.offsetParent && /(Lưu|Thêm|Xóa|Sửa|Thanh lý|Theo tổ|Cá nhân|Ngừng)/.test(b.textContent)).map(b => b.textContent.trim())]; });
+    ok(s[0] && s[1] > 500 && !s[2].length, 'trợ lý – ' + k + ': chế độ chỉ xem, có số liệu, không còn nút sửa', s);
+  }
+  s = await p.evaluate(() => { let goi = 0; const cu = __MAY_CHU.luuNhanSu; __MAY_CHU.luuNhanSu = () => { goi++; return { ok: true }; }; call('luuNhanSu', [{}], () => {}); setTimeout(() => { __MAY_CHU.luuNhanSu = cu; }, 1000); return goi; });
+  await p.waitForTimeout(600);
+  ok(s === 0, 'trợ lý: lệnh sửa bị chặn ngay trên trình duyệt');
+  await p.evaluate(() => { const t = __MAY_CHU.doc_('TaiKhoan').find(x => String(x.VaiTro).trim() === 'HR' && x.TrangThai === 'Đang dùng'); TOKEN = __MAY_CHU.taoPhien_(t); vaoHeThong(); });
+  await p.waitForTimeout(1500); await p.evaluate(() => go('ns')); await p.waitForTimeout(1500);
+  s = await p.evaluate(() => [!!$('main').querySelector('.cx-bao'), [...$('main').querySelectorAll('button')].some(b => b.offsetParent && /Lưu hồ sơ/.test(b.textContent))]);
+  ok(!s[0] && s[1], 'nhân sự: hồ sơ nhân sự sửa được', s);
+  await p.evaluate(() => go('mm')); await p.waitForTimeout(1500);
+  ok(await p.evaluate(() => !!$('main').querySelector('.cx-bao')), 'nhân sự: máy móc chỉ xem');
+  await doiNguoi(p, "x.TenDangNhap==='troly'");
   s = await p.evaluate(() => [__MAY_CHU.luuCongDoan ? 1 : 0, (function () { try { return __MAY_CHU.taoTaiKhoan(TOKEN, { TenDangNhap: 'xx', HoTen: 'x', VaiTro: 'ADMIN' }); } catch (e) { return { loi: e.message }; } })()]);
   ok(s[1] && !s[1].ok, 'trợ lý: máy chủ từ chối tạo tài khoản', s[1]);
+
+  console.log('Bộ phận ngoài sản xuất (NV / TBP)');
+  await p.evaluate(() => { const t = __MAY_CHU.doc_('TaiKhoan').find(x => String(x.VaiTro).trim() === 'OWNER'); TOKEN = __MAY_CHU.taoPhien_(t); vaoHeThong(); });
+  await p.waitForTimeout(1500); await p.evaluate(() => go('pq')); await p.waitForTimeout(1200);
+  await p.selectOption('#q_vt', 'NV'); await p.waitForTimeout(200);
+  s = await p.evaluate(() => [$('qbpbox').style.display, [...$('q_bp').options].map(o => o.textContent).join('|')]);
+  ok(s[0] === 'block' && /Bộ phận Kho\|Hành chính – Kế toán\|Marketing – Bán hàng\|Showroom – Store/.test(s[1]), 'form tạo tài khoản: chọn vai trò Nhân viên bộ phận hiện ô Bộ phận (4 bộ phận)', s);
+  await p.fill('#q_tk', 'khonv1'); await p.fill('#q_ten', 'Nhân viên kho'); await p.selectOption('#q_bp', 'KHO'); await p.fill('#q_manv', 'K01');
+  await p.click('button:has-text("Tạo tài khoản")'); await p.waitForTimeout(1500);
+  s = await p.evaluate(() => { const t = __MAY_CHU.doc_('TaiKhoan').find(x => x.TenDangNhap === 'khonv1'); return t && [t.VaiTro, t.MaXuong, t.MaNV]; });
+  ok(s && s.join() === 'NV,KHO,K01', 'tạo tài khoản nhân viên kho từ giao diện', s);
+  await p.evaluate(() => { const t = __MAY_CHU.doc_('TaiKhoan').find(x => x.TenDangNhap === 'khonv1'); __MAY_CHU.suaO_('TaiKhoan', t._row, 'DoiMatKhauLanDau', 'Không'); });
+  await doiNguoi(p, "x.TenDangNhap==='khonv1'");
+  s = await p.evaluate(() => [[...document.querySelectorAll('#nav button')].map(x => x.dataset.k).join(), $('hbadge').textContent, $('combar').className]);
+  ok(s[0] === 'com' && s[1] === 'NHÂN VIÊN BP' && s[2] === '', 'nhân viên bộ phận: chỉ có Cơm trưa, thanh thực đơn hiện', s);
 
   console.log('Công nhân · điện thoại');
   await p.close(); await p.ctx.close();

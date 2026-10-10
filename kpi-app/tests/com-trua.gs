@@ -15,6 +15,11 @@ var COM_SHEET = {
 };
 var COM_VP = 'VP';                       // nhóm cho tài khoản không gắn xưởng (ban điều hành, nhân sự, bếp…)
 var COM_TEN_VP = 'Văn phòng / khác';
+/* 4 bộ phận ngoài sản xuất (chủ dự án 11/10): chỉ để báo cơm chung, KHÔNG nằm trong sheet PhongBan nên không vào KPI.
+   Tài khoản: NV = nhân viên bộ phận (tự đăng ký), TBP = trưởng bộ phận (đăng ký hộ + xem tên trong bộ phận).
+   Sau này muốn tính KPI: thêm dòng vào PhongBan với ĐÚNG mã dưới đây là tài khoản cũ tự khớp. */
+var COM_BO_PHAN = { KHO: 'Bộ phận Kho', HCKT: 'Hành chính – Kế toán', MKTBH: 'Marketing – Bán hàng', SRST: 'Showroom – Store' };
+function comLaTruong_(me) { return !!me && (me.vaiTro === 'TP' || me.vaiTro === 'TBP') && !!me.xuong; }   // trưởng xưởng / trưởng bộ phận
 
 function comSheet_(ten) {
   var ss = ss_(), sh = ss.getSheetByName(ten);
@@ -45,8 +50,8 @@ function comHan_(ngay) { return congNgay_(ngay, -1) + ' ' + ('0' + comGioChot_()
 function comBayGio_() { return Utilities.formatDate(new Date(), TZ_VN, 'yyyy-MM-dd HH:mm'); }
 function comConHan_(ngay) { return comBayGio_() < comHan_(ngay); }   // còn trước giờ nhắc
 function comThoi_(v) { return v instanceof Date ? Utilities.formatDate(v, TZ_VN, 'yyyy-MM-dd HH:mm') : String(v || '').replace(/^'/, '').slice(0, 16); }
-function comXem_(me) { return ['ADMIN', 'HR', 'BEP', 'TP', 'TL'].indexOf(me.vaiTro) >= 0; }
-function comSua_(me) { return me.vaiTro === 'ADMIN' || me.vaiTro === 'BEP' || me.vaiTro === 'TL'; }   // TL = trợ lý ban điều hành
+function comXem_(me) { return ['ADMIN', 'HR', 'BEP', 'TP', 'TL', 'TBP'].indexOf(me.vaiTro) >= 0; }
+function comSua_(me) { return me.vaiTro === 'ADMIN' || me.vaiTro === 'BEP' || me.vaiTro === 'TL' || me.vaiTro === 'HR'; }   // TL = trợ lý ban điều hành
 
 /* Tài khoản bếp: chỉ phục vụ cơm nước – không đăng ký suất, không tính vào số người */
 function comLaBep_(t) { return String(t.VaiTro || t.vaiTro || '').trim() === 'BEP'; }
@@ -63,7 +68,7 @@ function comNguoi_() {
   });
 }
 function comTenX_() {
-  var m = {}; docAnToan_('PhongBan').forEach(function(p) { m[p.MaXuong] = p.TenXuong; }); m[COM_VP] = COM_TEN_VP; return m;
+  var m = {}; for (var k in COM_BO_PHAN) m[k] = COM_BO_PHAN[k]; docAnToan_('PhongBan').forEach(function(p) { m[p.MaXuong] = p.TenXuong; }); m[COM_VP] = COM_TEN_VP; return m;
 }
 
 /* Tổng hợp một ngày: { ngay, xuong:[{mx, ten, an, khong, chua, dsAn, dsKhong, dsChua}], an, khong, chua } */
@@ -90,14 +95,14 @@ function comTongHop_(ngay, me) {
   var ds = Object.keys(X).map(function(k) { return X[k]; }).sort(function(a, b) {
     return (a.mx === COM_VP) - (b.mx === COM_VP) || String(a.ten).localeCompare(String(b.ten));
   });
-  // họ tên / mã NV: chỉ ban điều hành (+ trợ lý BĐH) xem cả nhà máy; trưởng phòng xưởng mình; bếp và nhân sự chỉ thấy SỐ suất (chủ dự án 11/10)
-  var tenOk = me && (me.vaiTro === 'ADMIN' || me.vaiTro === 'TL');
+  // họ tên / mã NV: ban điều hành, trợ lý BĐH, nhân sự xem cả nhà máy; trưởng phòng xưởng mình; bếp chỉ thấy SỐ suất (chủ dự án 11/10)
+  var tenOk = me && (me.vaiTro === 'ADMIN' || me.vaiTro === 'TL' || me.vaiTro === 'HR');
   ds.forEach(function(x) {
-    if (!(tenOk || (me && me.vaiTro === 'TP' && x.mx === me.xuong))) { delete x.dsAn; delete x.dsKhong; delete x.dsChua; }
+    if (!(tenOk || (comLaTruong_(me) && x.mx === me.xuong))) { delete x.dsAn; delete x.dsKhong; delete x.dsChua; }
   });
   var tong = function(k) { return ds.reduce(function(s, x) { return s + x[k]; }, 0); };
   // danh sách người KHÔNG ĂN đủ họ tên, mã NV, xưởng: ban điều hành / nhân sự / bếp thấy cả nhà máy, trưởng phòng thấy xưởng mình
-  var choXem = function(c) { return tenOk || (me && me.vaiTro === 'TP' && c.mx === me.xuong); };
+  var choXem = function(c) { return tenOk || (comLaTruong_(me) && c.mx === me.xuong); };
   ctKhong = ctKhong.filter(choXem).sort(function(a, b) { return String(a.xuong).localeCompare(String(b.xuong)) || String(a.ten).localeCompare(String(b.ten)); });
   var muonAn = muon.filter(function(m) { return m.an; }).length;
   return { ngay: ngay, xuong: ds, an: tong('an'), khong: tong('khong'), chua: tong('chua'), dsKhongCT: ctKhong,
@@ -123,7 +128,7 @@ function napComTrua(token) {
       if (ng.slice(0, 7) === ky) thang[an ? 'an' : 'khong']++;
     });
     var out = { ok: true, homNay: homNay, bayGio: comBayGio_(), gioChot: comGioChot_(), thucDon: td, cuaToi: cuaToi, cuaToiHo: cuaToiHo, thang: thang,
-      quyen: { xem: comXem_(me), sua: comSua_(me), dangKy: !comLaBep_(me), ho: me.vaiTro === 'ADMIN' || me.vaiTro === 'TP' || me.vaiTro === 'TL' }, tongHop: [] };
+      quyen: { xem: comXem_(me), sua: comSua_(me), dangKy: !comLaBep_(me), ho: ['ADMIN', 'TL', 'HR'].indexOf(me.vaiTro) >= 0 || comLaTruong_(me) }, tongHop: [] };
     if (out.quyen.ho) {
       // danh sách người được đăng ký hộ + trạng thái các ngày có thực đơn sắp tới: hoDK[ngay][tk] = [an, ai đăng ký hộ]
       var tenX = comTenX_(), ngays = {};
@@ -172,13 +177,13 @@ function comGhi_(p, ngay, v, ho) {
 /* Đăng ký hộ (chủ dự án 11/10: người lớn tuổi không quen điện thoại / không có mạng):
    trưởng – phó phòng đăng ký hộ người trong xưởng mình, ban điều hành (+ trợ lý) đăng ký hộ người khối văn phòng. dsTk = 1 hoặc nhiều tên đăng nhập. */
 function comHoDuoc_(me, p) {   // chủ dự án 11/10: xưởng nào đăng ký hộ xưởng đó; ban điều hành (+ trợ lý) chỉ đăng ký hộ người khối văn phòng (tài khoản không gắn xưởng)
-  if (me.vaiTro === 'ADMIN' || me.vaiTro === 'TL') return p.mx === COM_VP;
-  return me.vaiTro === 'TP' && !!me.xuong && p.mx === String(me.xuong);
+  if (me.vaiTro === 'ADMIN' || me.vaiTro === 'TL' || me.vaiTro === 'HR') return p.mx === COM_VP;
+  return comLaTruong_(me) && p.mx === String(me.xuong);
 }
 function dangKyComHo(token, ngay, dsTk, an) {
   var me = docPhien_(token);
   if (!me) return sach_({ ok: false, hetHan: true, msg: 'Phiên đăng nhập đã hết hạn.' });
-  if (me.vaiTro !== 'ADMIN' && me.vaiTro !== 'TP' && me.vaiTro !== 'TL') return sach_({ ok: false, msg: 'Chỉ trưởng / phó phòng và ban điều hành được đăng ký hộ.' });
+  if (me.vaiTro !== 'ADMIN' && !comLaTruong_(me) && me.vaiTro !== 'TL' && me.vaiTro !== 'HR') return sach_({ ok: false, msg: 'Chỉ trưởng / phó phòng và ban điều hành được đăng ký hộ.' });
   ngay = String(ngay || '').slice(0, 10);
   if (!/^\d{4}-\d{2}-\d{2}$/.test(ngay)) return sach_({ ok: false, msg: 'Ngày không hợp lệ.' });
   khoa_();
@@ -187,7 +192,7 @@ function dangKyComHo(token, ngay, dsTk, an) {
   var muon = {}; [].concat(dsTk || []).forEach(function(t) { muon[String(t).toLowerCase()] = 1; });
   var ds = comNguoi_().filter(function(p) { return muon[p.tk]; });
   if (!ds.length) return sach_({ ok: false, msg: 'Không tìm thấy người cần đăng ký.' });
-  if (ds.some(function(p) { return !comHoDuoc_(me, p); })) return sach_({ ok: false, msg: (me.vaiTro === 'TP' ? 'Chỉ đăng ký hộ được người trong xưởng của bạn.' : 'Ban điều hành chỉ đăng ký hộ được người thuộc khối văn phòng / ban điều hành.') });
+  if (ds.some(function(p) { return !comHoDuoc_(me, p); })) return sach_({ ok: false, msg: (comLaTruong_(me) ? 'Chỉ đăng ký hộ được người trong xưởng / bộ phận của bạn.' : 'Ban điều hành chỉ đăng ký hộ được người thuộc khối văn phòng / ban điều hành.') });
   var v = an ? 1 : 0;
   ds.forEach(function(p) { comGhi_(p, ngay, v, me.ten); });
   var ng = ngay.slice(8) + '/' + ngay.slice(5, 7);

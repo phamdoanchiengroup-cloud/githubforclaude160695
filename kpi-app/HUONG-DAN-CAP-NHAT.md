@@ -385,3 +385,11 @@ Nếu vẫn thấy giao diện cũ: kiểm tra lại Phần D (đã chọn **Phi
   Trợ lý chỉ thấy Tổng quan, Bảng KPI, Sơ đồ nhà máy và Cơm trưa; không sửa / duyệt / chốt được gì. Ở Cơm trưa trợ lý báo thực đơn, đăng ký hộ, xem tổng hợp có họ tên.
 - Bếp chỉ thấy số suất ăn / không ăn / chưa đăng ký theo từng xưởng và tổng; không thấy họ tên, mã NV.
 - Cần dán lại **Code.gs** và **Index.html**.
+
+
+## Trợ lý / nhân sự xem thêm + 4 bộ phận báo cơm (11/10)
+- Trợ lý ban điều hành xem thêm Điểm danh, Công đoạn, Nhân sự, Máy móc (chỉ xem, có dòng "Chế độ chỉ xem"). Nhân sự có các trang như trợ lý và sửa được Hồ sơ nhân sự.
+- Thêm 4 bộ phận chỉ để báo cơm: Bộ phận Kho, Hành chính – Kế toán, Marketing – Bán hàng, Showroom – Store (không tính KPI).
+  Tạo tài khoản: **Tài khoản → Tạo tài khoản mới**, Vai trò chọn **Nhân viên bộ phận…** hoặc **Trưởng bộ phận…**, chọn **Bộ phận**, mã NV (nếu có).
+  Nhân viên bộ phận tự bấm Ăn / Không ăn; trưởng bộ phận đăng ký hộ được người trong bộ phận mình.
+- Cần dán lại **Code.gs** và **Index.html**.

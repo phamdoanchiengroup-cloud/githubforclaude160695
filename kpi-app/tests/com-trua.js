@@ -95,7 +95,7 @@ ok(c.dauCot_('DangKyCom').slice(0, 2).join() === 'Ngay,TenDangNhap', 'sheet Dang
 console.log('\n4b. Trưởng / phó phòng đăng ký hộ');
 c.__datGio('2026-10-13T08:00:00+07:00');
 r = c.__goi('dangKyComHo', tCN, '2026-10-14', [cn2.TenDangNhap], true); ok(!r.ok && /trưởng/.test(r.msg), 'công nhân không đăng ký hộ được', r.msg);
-r = c.__goi('dangKyComHo', tTP, '2026-10-14', [cn.TenDangNhap], true); ok(!r.ok && /xưởng của bạn/.test(r.msg), 'trưởng phòng không đăng ký hộ người xưởng khác', r.msg);
+r = c.__goi('dangKyComHo', tTP, '2026-10-14', [cn.TenDangNhap], true); ok(!r.ok && /xưởng \/ bộ phận của bạn/.test(r.msg), 'trưởng phòng không đăng ký hộ người xưởng khác', r.msg);
 r = c.__goi('dangKyComHo', tTP, '2026-10-14', [cn2.TenDangNhap], true); ok(r.ok && r.so === 1 && /đăng ký hộ/.test(r.msg), 'trưởng phòng đăng ký hộ người trong xưởng', r.msg);
 r = c.__goi('napComTrua', tCN2); ok(r.cuaToi['2026-10-14'] === 1 && r.cuaToiHo['2026-10-14'] === tp.HoTen, 'người được đăng ký hộ thấy tên trưởng phòng', [r.cuaToi, r.cuaToiHo]);
 r = c.__goi('dangKyCom', tCN2, '2026-10-14', false); r = c.__goi('napComTrua', tCN2); ok(r.cuaToi['2026-10-14'] === 0 && !r.cuaToiHo['2026-10-14'], 'tự đổi lại được, mất dấu "đăng ký hộ"', [r.cuaToi, r.cuaToiHo]);
@@ -114,6 +114,28 @@ ok(c.dauCot_('DangKyCom').includes('DangKyHo'), 'sheet DangKyCom có cột DangK
 // trả dữ liệu ngày 14 về như trước phần này để các bước sau tính đúng
 { const bo = new Set(chuaDK.concat([cn2.TenDangNhap.toLowerCase()]));
   c.xoaNhieuDong_('DangKyCom', c.doc_('DangKyCom').filter(x => String(x.Ngay).replace(/^'/, '').slice(0, 10) === '2026-10-14' && bo.has(String(x.TenDangNhap).toLowerCase())).map(x => x._row)); }
+
+console.log('\n4c. Bộ phận ngoài sản xuất (Kho, HC-KT, Marketing, Showroom)');
+r = c.__goi('taoTaiKhoan', tO, { TenDangNhap: 'khotruong', HoTen: 'Trưởng kho A', VaiTro: 'TBP', MaXuong: '', MaNV: '' });
+ok(!r.ok && /bộ phận/.test(r.msg), 'tạo tài khoản bộ phận phải chọn bộ phận', r.msg);
+r = c.__goi('taoTaiKhoan', tO, { TenDangNhap: 'khotruong', HoTen: 'Trưởng kho A', VaiTro: 'TBP', MaXuong: 'KHO', MaNV: 'kho01' });
+const r2 = c.__goi('taoTaiKhoan', tO, { TenDangNhap: 'khonv', HoTen: 'Nhân viên kho B', VaiTro: 'NV', MaXuong: 'KHO', MaNV: '' });
+const r3 = c.__goi('taoTaiKhoan', tO, { TenDangNhap: 'ketoan1', HoTen: 'Kế toán C', VaiTro: 'NV', MaXuong: 'HCKT', MaNV: '' });
+ok(r.ok && r2.ok && r3.ok && tk(x => x.TenDangNhap === 'khotruong').MaNV === 'KHO01', 'tạo tài khoản trưởng kho, nhân viên kho, kế toán (mã NV ghi tự do)', [r.msg, r2.msg]);
+[['khotruong'], ['khonv'], ['ketoan1']].forEach(([t]) => { const row = tk(x => x.TenDangNhap === t); c.suaO_('TaiKhoan', row._row, 'DoiMatKhauLanDau', 'Không'); });
+const tKT = P(tk(x => x.TenDangNhap === 'khotruong')), tKN = P(tk(x => x.TenDangNhap === 'khonv'));
+r = c.__goi('napDuLieu', tKN); ok(r.ok && !r.nhatky.length && !r.nhansu.length, 'nhân viên bộ phận không nhận dữ liệu sản xuất / nhân sự', r.ok && [r.nhatky.length, r.nhansu.length]);
+r = c.__goi('dangKyCom', tKN, '2026-10-14', true); ok(r.ok, 'nhân viên kho tự đăng ký ăn', r.msg);
+r = c.__goi('dangKyComHo', tKT, '2026-10-14', ['ketoan1'], true); ok(!r.ok, 'trưởng kho không đăng ký hộ người bộ phận khác', r.msg);
+r = c.__goi('dangKyComHo', tKT, '2026-10-14', ['khonv'], false); ok(r.ok, 'trưởng kho đăng ký hộ nhân viên kho', r.msg);
+r = c.__goi('napComTrua', tKT); th = r.tongHop.find(x => x.ngay === '2026-10-14');
+const xKho = th && th.xuong.find(x => x.mx === 'KHO'), xKT = th && th.xuong.find(x => x.mx === 'HCKT');
+ok(r.quyen.ho && r.hoNguoi.length === 1 && xKho && xKho.ten === 'Bộ phận Kho' && xKho.khong === 1 && Array.isArray(xKho.dsKhong) && xKT && xKT.ten === 'Hành chính – Kế toán' && xKT.dsAn === undefined,
+  'tổng hợp có dòng "Bộ phận Kho", "Hành chính – Kế toán"; trưởng kho thấy tên người kho, không thấy tên bộ phận khác', [xKho, xKT]);
+ok(!c.doc_('PhongBan').some(p => p.MaXuong === 'KHO'), 'bộ phận mới không nằm trong PhongBan (không vào KPI)');
+{ const bo = new Set(['khonv', 'khotruong', 'ketoan1']);
+  c.xoaNhieuDong_('DangKyCom', c.doc_('DangKyCom').filter(x => bo.has(String(x.TenDangNhap).toLowerCase())).map(x => x._row));
+  c.xoaNhieuDong_('TaiKhoan', c.doc_('TaiKhoan').filter(x => bo.has(String(x.TenDangNhap).toLowerCase())).map(x => x._row)); }
 
 console.log('\n5. Vai trò BEP');
 r = c.__goi('napDuLieu', tB);

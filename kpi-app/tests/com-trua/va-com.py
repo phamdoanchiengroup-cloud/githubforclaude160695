@@ -30,14 +30,34 @@ R("""    '<option value="CN">Công nhân</option></select></div>'+""", """    '<
 # vai trò TL = Trợ lý ban điều hành (chủ dự án 11/10): chỉ xem số liệu tổng (Tổng quan, Bảng KPI, Sơ đồ nhà máy) + Cơm trưa đầy đủ
 # (báo thực đơn, đăng ký hộ mọi người, tổng hợp). Máy chủ: vai trò 'TL' không trùng 'ADMIN' nên mọi thao tác sửa đều bị từ chối.
 R("""  BEP:[['hd','📖 Hướng dẫn'],['com','Cơm trưa']]""", """  BEP:[['hd','📖 Hướng dẫn'],['com','Cơm trưa']],
-  TL:[['hd','📖 Hướng dẫn'],['dash','Tổng quan'],['kpi','Bảng KPI'],['sodo','Sơ đồ nhà máy'],['com','Cơm trưa']]""")
+  NV:[['hd','📖 Hướng dẫn'],['com','Cơm trưa']],
+  TBP:[['hd','📖 Hướng dẫn'],['com','Cơm trưa']],
+  TL:[['hd','📖 Hướng dẫn'],['dash','Tổng quan'],['kpi','Bảng KPI'],['sodo','Sơ đồ nhà máy'],['com','Cơm trưa'],['dd','Điểm danh'],['cd','Công đoạn'],['ns','Nhân sự'],['mm','Máy móc']]""")
+# HR (11/10): như trợ lý + sửa được hồ sơ nhân sự
+R("""  HR:[['hd','📖 Hướng dẫn'],['ns','Hồ sơ nhân sự'],['com','Cơm trưa']],""", """  HR:[['hd','📖 Hướng dẫn'],['dash','Tổng quan'],['kpi','Bảng KPI'],['sodo','Sơ đồ nhà máy'],['com','Cơm trưa'],['dd','Điểm danh'],['cd','Công đoạn'],['ns','Hồ sơ nhân sự'],['mm','Máy móc']],""")
 R("""  BEP:['com']
 };""", """  BEP:['com'],
-  TL:['dash','kpi','sodo','com']
+  TL:['dash','kpi','sodo','com'],
+  NV:['com'],
+  TBP:['com'],
+  HR:['dash','ns','dd','com']
 };""")
-R("""CN:'CÔNG NHÂN',BEP:'BẾP ĂN'}""", """CN:'CÔNG NHÂN',BEP:'BẾP ĂN',TL:'TRỢ LÝ BĐH'}""")
-s = s.replace("""CN:'Công nhân',BEP:'Bếp ăn'}[vt]||vt;""", """CN:'Công nhân',BEP:'Bếp ăn',TL:'Trợ lý ban điều hành'}[vt]||vt;""")
-R("""<option value="BEP">Bếp ăn (thực đơn, số suất)</option></select></div>'+""", """<option value="BEP">Bếp ăn (thực đơn, số suất)</option><option value="TL">Trợ lý ban điều hành (chỉ xem số liệu tổng + cơm trưa)</option></select></div>'+""")
+R("""CN:'CÔNG NHÂN',BEP:'BẾP ĂN'}""", """CN:'CÔNG NHÂN',BEP:'BẾP ĂN',TL:'TRỢ LÝ BĐH',NV:'NHÂN VIÊN BP',TBP:'TRƯỞNG BP'}""")
+s = s.replace("""CN:'Công nhân',BEP:'Bếp ăn'}[vt]||vt;""", """CN:'Công nhân',BEP:'Bếp ăn',TL:'Trợ lý ban điều hành',NV:'Nhân viên bộ phận',TBP:'Trưởng bộ phận'}[vt]||vt;""")
+R("""<option value="BEP">Bếp ăn (thực đơn, số suất)</option></select></div>'+""", """<option value="BEP">Bếp ăn (thực đơn, số suất)</option><option value="TL">Trợ lý ban điều hành (chỉ xem + cơm trưa)</option><option value="TBP">Trưởng bộ phận Kho / HC-KT / Marketing / Showroom (chỉ cơm trưa)</option><option value="NV">Nhân viên bộ phận Kho / HC-KT / Marketing / Showroom (chỉ cơm trưa)</option></select></div>'+""")
+# tài khoản NV / TBP: ô chọn bộ phận + mã NV tự do (không lấy từ NhanSu)
+R("""    '<div id="qnvbox" style="display:none">""", """    '<div id="qbpbox" style="display:none"><label>Bộ phận</label><select id="q_bp">'+Object.keys(COM_BO_PHAN).map(function(k){return '<option value="'+k+'">'+esc(COM_BO_PHAN[k])+'</option>'}).join('')+'</select></div>'+
+    '<div id="qbpma" style="display:none"><label>Mã nhân viên (nếu có)</label><input id="q_manv" placeholder="vd. KHO01"></div>'+
+    '<div id="qnvbox" style="display:none">""")
+R("""  $('qcnhint').style.display=(v==='CN')?'block':'none';""", """  $('qcnhint').style.display=(v==='CN')?'block':'none';
+  if($('qbpbox')){var bp=(v==='NV'||v==='TBP');$('qbpbox').style.display=bp?'block':'none';$('qbpma').style.display=bp?'block':'none';}""")
+R("""    VaiTro:vt,MaXuong:'',
+    MaNV:(vt==='CN'||vt==='TP')?($('q_nv')?$('q_nv').value:''):'',""", """    VaiTro:vt,MaXuong:(vt==='NV'||vt==='TBP')&&$('q_bp')?$('q_bp').value:'',
+    MaNV:(vt==='CN'||vt==='TP')?($('q_nv')?$('q_nv').value:''):((vt==='NV'||vt==='TBP')&&$('q_manv')?$('q_manv').value.trim():''),""")
+# danh sách tài khoản: tên vai trò + tên bộ phận
+R("""  var vt={ADMIN:'Ban điều hành',TP:'Trưởng phòng',PP:'Phó phòng',HR:'Nhân sự',QC:'Kiểm soát CL',CN:'Công nhân'};""", """  var vt={ADMIN:'Ban điều hành',TP:'Trưởng phòng',PP:'Phó phòng',HR:'Nhân sự',QC:'Kiểm soát CL',CN:'Công nhân',BEP:'Bếp ăn',TL:'Trợ lý BĐH',NV:'Nhân viên BP',TBP:'Trưởng BP'};""")
+R("""  (D.phongban||[]).forEach(function(p){ tenXuong[p.MaXuong]=p.TenXuong; });""", """  (D.phongban||[]).forEach(function(p){ tenXuong[p.MaXuong]=p.TenXuong; });
+  Object.keys(COM_BO_PHAN).forEach(function(k){ if(!tenXuong[k])tenXuong[k]=COM_BO_PHAN[k]; });""")
 # tải thanh thực đơn ngay khi vào hệ thống
 R("""    buildNav();
     try{ maiNut(); maiKhoiDong(); }catch(e){}""", """    buildNav();
