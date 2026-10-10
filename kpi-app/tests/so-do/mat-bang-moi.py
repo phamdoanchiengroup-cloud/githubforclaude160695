@@ -329,7 +329,7 @@ for M in D[1]['mc']:
     if M.get('src') == 'mb14' and M['t'] in ('tienl', 'tienkl') and 22.3 <= M['r'][0] <= 30.26: M['t'] = 'tienkl'; M['l'] = 'Máy tiện WM210V'
     if M['t'] == 'tiencnc': M['l'] = 'Máy hạ khấc CNC HQT-850'; M['xoay'] = 1
     if M['t'] == 'chanham': M['l'] = 'Máy chà nhám HQTECH'
-H15 = [dict(may('Máy tiện gỗ Hisimen', x, 20.85, x + 1.6, 21.5, 1.4, 'tiengo', 'Vị trí tạm – chờ chủ dự án xác nhận'), xoay=1) for x in (5.2, 7.2)]
+H15 = [dict(may('Máy tiện gỗ Hisimen', x, 31.05, x + 1.6, 31.7, 1.4, 'tiengo', 'Cạnh dãy máy đánh bóng bánh vải'), xoay=1) for x in (5.0, 7.2)]
 D[1]['mc'] = [M for M in D[1]['mc'] if M.get('src') != 'mb15'] + [dict(M, src='mb15') for M in H15]
 
 # ---------- Đợt ảnh 11/10 (4): phòng da tầng 3 theo ảnh toàn cảnh ----------
@@ -380,6 +380,53 @@ for M in D[2]['mc']:
 D[2]['zones'] = [z for z in D[2]['zones'] if z[0] not in ('Khu ngọn tip', 'Khu ngọn taro')] + [['Khu ngọn tip', [18.0, 19.5, 18.0, 19.5]], ['Khu ngọn taro', [18.0, 31.5, 18.0, 31.5]]]
 N18 = [may('Giá bình chữa cháy', 17.35, 17.05, 18.05, 17.3, 1.0, 'pccc')]
 D[2]['mc'] = [M for M in D[2]['mc'] if M.get('src') != 'mb18'] + [dict(M, src='mb18') for M in N18]
+
+# ---------- Đợt ảnh 11/10 (7): máy cuốn màng nilon TWC36-B, hầm co nhỏ ở góc chữ L BP đóng gói, phòng quản lý cạnh đóng gói CNC ----------
+for M in D[0]['mc']:
+    if M['l'] == 'TWC-36-B': M['t'] = 'nilon'; M['note'] = 'Máy cuốn màng nilon TWC36-B'
+D[2]['mc'] = [M for M in D[2]['mc'] if not (M['l'] == 'Bàn họp' and M.get('src') == 'mb14')]
+Q19 = [may('Hầm co nhỏ (đen)', 9.7, 10.3, 11.1, 10.95, 1.3, 'hamconho', 'Máy co màng mini đặt trên bàn'),
+       may('Hầm co nhỏ (kem)', 11.3, 10.3, 12.7, 10.95, 1.3, 'hamconho', 'Máy co màng BSB-4020 đặt trên bàn'),
+       may('Bàn họp', 27.8, 30.0, 29.8, 31.0, 0.75, 'banhop'),
+       may('Bàn làm việc', 27.15, 33.45, 28.55, 34.1, 0.75, 'banvp'), may('Ghế văn phòng', 27.6, 32.85, 28.05, 33.3, 0.95, 'ghevp'),
+       may('Tủ hồ sơ kính', 29.0, 33.75, 29.9, 34.2, 1.8, 'tukinh'), may('Cây nước', 30.4, 31.5, 30.75, 31.85, 1.4, 'caynuoc')]
+for x in (28.1, 28.8, 29.5):
+    Q19.append(may('Ghế văn phòng', x - .22, 29.45, x + .22, 29.9, 0.95, 'ghevp'))
+    Q19.append(dict(may('Ghế văn phòng', x - .22, 31.1, x + .22, 31.55, 0.95, 'ghevp'), xoay=1))
+D[2]['mc'] = [M for M in D[2]['mc'] if M.get('src') != 'mb19'] + [dict(M, src='mb19') for M in Q19]
+for M in D[0]['mc']:
+    if M['l'] == 'SKTG50-B': M['note'] = 'Máy cuốn phôi CNC Tonglian'
+# chủ dự án 11/10: phòng cuốn có 7 máy cuốn phôi, 4 máy cuốn màng nilon, 6 bàn thao tác (bản vẽ có 8 + 3) – bỏ máy cuốn phôi sát lối vào, thêm 1 máy nilon cùng cột máy nilon phía Tây
+D[0]['mc'] = [M for M in D[0]['mc'] if not (M['l'] == 'SKTG50-B' and M['r'][:2] == [23.62, 22.74])]
+C19 = [may('Bàn inox cuốn', x, 18.4, x + 1.25, 20.4, 0.85, 'banthep', 'Bàn thao tác mặt inox – vị trí ước lượng theo ảnh') for x in (21.6, 22.9, 24.2, 26.0, 27.3)]
+C19 += [may('Bàn inox cuốn', 26.0, 21.0, 27.25, 23.0, 0.85, 'banthep', 'Bàn thao tác mặt inox – vị trí ước lượng theo ảnh'),
+        dict(may('TWC-36-B', 19.05, 24.6, 20.38, 28.22, 1.3, 'nilon', 'Máy cuốn màng nilon TWC36-B'))]
+# phòng cắt: 2 máy xả khổ cắt vải DZC1200-B, mỗi máy ra vải về bàn kính phía Nam
+for M in D[0]['mc']:
+    if M['t'] == 'maycat': M['note'] = 'Máy xả khổ cắt vải DZC1200-B'
+    if M['l'] == 'Bàn gỗ' and M.get('src') == 'mb12' and M['r'][0] == 33.6: M['r'] = [34.4, 25.0, 35.8, 28.0]
+# 6 bàn thao tác tỉa vải (ảnh toàn cảnh phòng cắt) – vị trí ước lượng
+C19 += [may('Bàn tỉa vải', x, 20.6, x + 1.3, 21.6, 0.85, 'banthep', 'Bàn thao tác tỉa vải') for x in (29.6, 31.3, 33.0, 34.6)]
+C19 += [may('Bàn tỉa vải', 34.45, y, 35.75, y + 1.0, 0.85, 'banthep', 'Bàn thao tác tỉa vải') for y in (29.0, 30.6)]
+# 3 lò nướng phôi (chủ dự án 11/10) – bản vẽ có 2 lò GH-2, thêm lò thứ 3 cùng dãy
+for M in D[0]['mc']:
+    if M['t'] == 'lo': M['note'] = 'Lò nướng phôi'
+C19.append(may('GH-2', 15.77, 25.5, 17.64, 28.13, 1.2, 'lo', 'Lò nướng phôi'))
+# khu cắt + chuốt ráp: máy TQD-50A trên bản vẽ = máy cắt phôi 2 đầu cưa (ảnh), máy RYM = máy chuốt ráp kiểu HQTECH
+for M in D[0]['mc']:
+    if M['l'] == 'TQD-50A': M['t'] = 'catphoi'; M['note'] = 'Máy cắt phôi 2 đầu cưa'
+    if M['t'] == 'chuot': M['note'] = 'Máy chuốt ráp (giống máy ráp nước BP hoàn thiện)'
+    if M['t'] == 'rutkhuon': M['note'] = 'Máy rút khuôn thủy lực'
+# phòng khuôn (ảnh 11/10): dãy xe treo khuôn đánh số, kệ thanh khuôn nằm, góc chất thùng carton + kiện gỗ
+D[0]['mc'] = [M for M in D[0]['mc'] if not (M.get('src') == 'mb11' and 6.5 <= (M['r'][0] + M['r'][2]) / 2 <= 17.8 and 8.4 <= (M['r'][1] + M['r'][3]) / 2 <= 13.6)]
+for j, y in enumerate((8.65, 10.15, 11.65)):
+    for i, x in enumerate((8.3, 9.6, 10.9, 12.2, 13.5, 14.8)):
+        C19.append(may('Xe khuôn %02d' % (j * 6 + i + 1), x, y, x + 1.2, y + 0.75, 1.75, 'xekhuon', 'Xe treo khuôn'))
+C19 += [may('Kệ thanh khuôn', 6.6, 9.0, 7.3, 10.6, 1.8, 'ke', 'Kệ thanh khuôn nằm'),
+        may('Thùng carton', 6.6, 11.0, 7.9, 13.4, 1.6, 'pallet', 'Thùng vật tư'), may('Kiện gỗ', 16.1, 8.6, 17.6, 9.5, 0.6, 'pallet', 'Kiện gỗ bọc màng'),
+        may('Xe chở thanh khuôn', 16.1, 10.0, 17.2, 11.5, 1.0, 'xejig', 'Xe chở thanh khuôn')]
+C19.append(may('DZC1200-B', 31.98, 25.0, 33.74, 27.12, 1.2, 'maycat', 'Máy xả khổ cắt vải DZC1200-B'))
+D[0]['mc'] = [M for M in D[0]['mc'] if M.get('src') != 'mb19'] + [dict(M, src='mb19') for M in C19]
 
 moi = json.dumps(D, ensure_ascii=False, separators=(',', ':'))
 s = s[:m.start(1)] + moi + s[m.end(1):]
