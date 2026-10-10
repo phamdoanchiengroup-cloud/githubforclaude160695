@@ -5775,7 +5775,7 @@ function GUI_BAO_CAO_THANG_TRUOC() {
    Bếp (vai trò BEP) hoặc ban điều hành báo THỰC ĐƠN cho một ngày (thường 14–15h hôm trước).
    Mọi tài khoản tự đăng ký "Ăn" / "Không ăn". Giờ 16:00 hôm trước (Script Property COM_GIO_CHOT) chỉ là GIỜ NHẮC:
    quá giờ vẫn đăng ký / đổi được tới hết ngày ăn (chủ dự án 11/10: không hủy suất của người bận / quên); tổng hợp ghi rõ ai đăng ký sau giờ nhắc.
-   Ban điều hành, nhân sự, bếp xem tổng hợp số suất theo xưởng (kèm tên); trưởng / phó phòng xem số của mọi xưởng
+   Ban điều hành (+ trợ lý BĐH) xem tổng hợp số suất theo xưởng kèm họ tên, mã NV; bếp, nhân sự chỉ xem SỐ suất; trưởng / phó phòng xem số của mọi xưởng
    và danh sách tên của xưởng mình.
    Sang tháng mới (cùng lúc chốt KPI tháng): số suất theo xưởng ghi vào sheet SuatAnThang (đưa vào báo cáo tháng),
    danh sách chi tiết lưu thành 1 file bảng tính trên Google Drive (thư mục báo cáo tháng) rồi mới xóa khỏi sheet.
@@ -5817,8 +5817,8 @@ function comHan_(ngay) { return congNgay_(ngay, -1) + ' ' + ('0' + comGioChot_()
 function comBayGio_() { return Utilities.formatDate(new Date(), TZ_VN, 'yyyy-MM-dd HH:mm'); }
 function comConHan_(ngay) { return comBayGio_() < comHan_(ngay); }   // còn trước giờ nhắc
 function comThoi_(v) { return v instanceof Date ? Utilities.formatDate(v, TZ_VN, 'yyyy-MM-dd HH:mm') : String(v || '').replace(/^'/, '').slice(0, 16); }
-function comXem_(me) { return ['ADMIN', 'HR', 'BEP', 'TP'].indexOf(me.vaiTro) >= 0; }
-function comSua_(me) { return me.vaiTro === 'ADMIN' || me.vaiTro === 'BEP'; }
+function comXem_(me) { return ['ADMIN', 'HR', 'BEP', 'TP', 'TL'].indexOf(me.vaiTro) >= 0; }
+function comSua_(me) { return me.vaiTro === 'ADMIN' || me.vaiTro === 'BEP' || me.vaiTro === 'TL'; }   // TL = trợ lý ban điều hành
 
 /* Tài khoản bếp: chỉ phục vụ cơm nước – không đăng ký suất, không tính vào số người */
 function comLaBep_(t) { return String(t.VaiTro || t.vaiTro || '').trim() === 'BEP'; }
@@ -5862,7 +5862,8 @@ function comTongHop_(ngay, me) {
   var ds = Object.keys(X).map(function(k) { return X[k]; }).sort(function(a, b) {
     return (a.mx === COM_VP) - (b.mx === COM_VP) || String(a.ten).localeCompare(String(b.ten));
   });
-  var tenOk = me && (me.vaiTro === 'ADMIN' || me.vaiTro === 'HR' || me.vaiTro === 'BEP');
+  // họ tên / mã NV: chỉ ban điều hành (+ trợ lý BĐH) xem cả nhà máy; trưởng phòng xưởng mình; bếp và nhân sự chỉ thấy SỐ suất (chủ dự án 11/10)
+  var tenOk = me && (me.vaiTro === 'ADMIN' || me.vaiTro === 'TL');
   ds.forEach(function(x) {
     if (!(tenOk || (me && me.vaiTro === 'TP' && x.mx === me.xuong))) { delete x.dsAn; delete x.dsKhong; delete x.dsChua; }
   });
@@ -5894,7 +5895,7 @@ function napComTrua(token) {
       if (ng.slice(0, 7) === ky) thang[an ? 'an' : 'khong']++;
     });
     var out = { ok: true, homNay: homNay, bayGio: comBayGio_(), gioChot: comGioChot_(), thucDon: td, cuaToi: cuaToi, cuaToiHo: cuaToiHo, thang: thang,
-      quyen: { xem: comXem_(me), sua: comSua_(me), dangKy: !comLaBep_(me), ho: me.vaiTro === 'ADMIN' || me.vaiTro === 'TP' }, tongHop: [] };
+      quyen: { xem: comXem_(me), sua: comSua_(me), dangKy: !comLaBep_(me), ho: me.vaiTro === 'ADMIN' || me.vaiTro === 'TP' || me.vaiTro === 'TL' }, tongHop: [] };
     if (out.quyen.ho) {
       // danh sách người được đăng ký hộ + trạng thái các ngày có thực đơn sắp tới: hoDK[ngay][tk] = [an, ai đăng ký hộ]
       var tenX = comTenX_(), ngays = {};
@@ -5942,11 +5943,11 @@ function comGhi_(p, ngay, v, ho) {
 
 /* Đăng ký hộ (chủ dự án 11/10: người lớn tuổi không quen điện thoại / không có mạng):
    trưởng – phó phòng đăng ký hộ người trong xưởng mình, ban điều hành đăng ký hộ mọi người. dsTk = 1 hoặc nhiều tên đăng nhập. */
-function comHoDuoc_(me, p) { return me.vaiTro === 'ADMIN' || (me.vaiTro === 'TP' && me.xuong && p.mx === String(me.xuong)); }
+function comHoDuoc_(me, p) { return me.vaiTro === 'ADMIN' || me.vaiTro === 'TL' || (me.vaiTro === 'TP' && me.xuong && p.mx === String(me.xuong)); }
 function dangKyComHo(token, ngay, dsTk, an) {
   var me = docPhien_(token);
   if (!me) return sach_({ ok: false, hetHan: true, msg: 'Phiên đăng nhập đã hết hạn.' });
-  if (me.vaiTro !== 'ADMIN' && me.vaiTro !== 'TP') return sach_({ ok: false, msg: 'Chỉ trưởng / phó phòng và ban điều hành được đăng ký hộ.' });
+  if (me.vaiTro !== 'ADMIN' && me.vaiTro !== 'TP' && me.vaiTro !== 'TL') return sach_({ ok: false, msg: 'Chỉ trưởng / phó phòng và ban điều hành được đăng ký hộ.' });
   ngay = String(ngay || '').slice(0, 10);
   if (!/^\d{4}-\d{2}-\d{2}$/.test(ngay)) return sach_({ ok: false, msg: 'Ngày không hợp lệ.' });
   khoa_();
@@ -5987,6 +5988,7 @@ function xoaThucDon(token, ngay) {
   if (!me) return sach_({ ok: false, hetHan: true, msg: 'Phiên đăng nhập đã hết hạn.' });
   if (!comSua_(me)) return sach_({ ok: false, msg: 'Chỉ bếp hoặc ban điều hành được xóa thực đơn.' });
   ngay = String(ngay || '').slice(0, 10);
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(ngay)) return sach_({ ok: false, msg: 'Ngày không hợp lệ.' });
   if (ngay < homNayVN_()) return sach_({ ok: false, msg: 'Không xóa thực đơn ngày đã qua.' });
   khoa_();
   var td = comDoc_('ThucDon').filter(function(r) { return comNgay_(r.Ngay) === ngay; });

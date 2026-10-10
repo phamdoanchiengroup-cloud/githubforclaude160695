@@ -139,18 +139,19 @@ function comTongHopHtml(){
   if(!d.tongHop.length)return '<div class="card"><h3>Tổng hợp số suất</h3><p class="cm-ghi">Chưa có thực đơn nào cho hôm nay / ngày tới.</p></div>';
   return d.tongHop.map(function(th,i){
     var t=d.thucDon.filter(function(x){return x.ngay===th.ngay})[0]||{han:th.ngay}, mo=comConHan(t);
+    var coTen=th.xuong.some(function(x){return x.dsAn});
     var ten=function(ds,nhan){return ds&&ds.length?'<details><summary>'+nhan+' ('+ds.length+')</summary><p>'+esc(ds.join(', '))+'</p></details>':''};
     return '<div class="card"><h3>Tổng hợp số suất – '+esc(th.ngay===d.homNay?'hôm nay, '+comNgayTen(th.ngay):comNgayTen(th.ngay))+' <span>'+(mo?'tạm tính – nhắc đăng ký trước '+esc(comHanChu(t)):'đã qua giờ nhắc '+esc(comHanChu(t))+' – vẫn nhận đăng ký, số có thể tăng')+'</span></h3>'+
       '<div class="cm-so"><div class="an"><b>'+th.an+'</b><span>suất ăn</span></div><div class="khong"><b>'+th.khong+'</b><span>không ăn</span></div><div class="chua"><b>'+th.chua+'</b><span>chưa đăng ký</span></div></div>'+
-      '<table class="cm-bang"><thead><tr><th>Xưởng</th><th class="r">Ăn</th><th class="r">Không ăn</th><th class="r">Chưa đăng ký</th><th>Danh sách</th></tr></thead><tbody>'+
-      th.xuong.map(function(x){return '<tr><td><b>'+esc(x.ten)+'</b></td><td class="r"><b>'+x.an+'</b></td><td class="r">'+x.khong+'</td><td class="r">'+x.chua+'</td><td>'+
-        (x.dsAn?ten(x.dsAn,'Ăn')+ten(x.dsKhong,'Không ăn')+ten(x.dsChua,'Chưa đăng ký'):'<span class="cm-ghi">–</span>')+'</td></tr>'}).join('')+
-      '<tr class="tong"><td>Toàn nhà máy</td><td class="r">'+th.an+'</td><td class="r">'+th.khong+'</td><td class="r">'+th.chua+'</td><td></td></tr></tbody></table>'+
+      '<table class="cm-bang"><thead><tr><th>Xưởng</th><th class="r">Ăn</th><th class="r">Không ăn</th><th class="r">Chưa đăng ký</th>'+(coTen?'<th>Danh sách</th>':'')+'</tr></thead><tbody>'+
+      th.xuong.map(function(x){return '<tr><td><b>'+esc(x.ten)+'</b></td><td class="r"><b>'+x.an+'</b></td><td class="r">'+x.khong+'</td><td class="r">'+x.chua+'</td>'+
+        (coTen?'<td>'+(x.dsAn?ten(x.dsAn,'Ăn')+ten(x.dsKhong,'Không ăn')+ten(x.dsChua,'Chưa đăng ký'):'<span class="cm-ghi">–</span>')+'</td>':'')+'</tr>'}).join('')+
+      '<tr class="tong"><td>Toàn nhà máy</td><td class="r">'+th.an+'</td><td class="r">'+th.khong+'</td><td class="r">'+th.chua+'</td>'+(coTen?'<td></td>':'')+'</tr></tbody></table>'+
       comMuonHtml(th)+comKhongHtml(th)+
       '<p class="cm-khong-in" style="margin-top:10px"><button class="btn sm" type="button" onclick="comChep('+i+')">📋 Chép số suất gửi bếp</button> <button class="btn sm" type="button" onclick="window.print()">🖨 In</button></p></div>';
   }).join('');
 }
-/* Danh sách người KHÔNG ĂN: họ tên, mã nhân viên, xưởng (ban điều hành / nhân sự / bếp: cả nhà máy; trưởng phòng: xưởng mình) */
+/* Danh sách người KHÔNG ĂN: họ tên, mã nhân viên, xưởng (ban điều hành + trợ lý: cả nhà máy; trưởng phòng: xưởng mình; bếp / nhân sự: chỉ số) */
 /* Đăng ký sau giờ nhắc (để bếp biết số đã đổi sau khi báo) */
 function comMuonHtml(th){
   if(!th.muon)return '';
@@ -160,7 +161,7 @@ function comMuonHtml(th){
       ds.map(function(m){return '<tr><td>'+esc(m.luc.slice(11))+' '+esc(m.luc.slice(8,10)+'/'+m.luc.slice(5,7))+'</td><td>'+esc(m.ten)+'</td><td>'+esc(m.ma||'–')+'</td><td>'+esc(m.xuong)+'</td><td>'+(m.an?'Ăn':'Không ăn')+'</td></tr>'}).join('')+'</tbody></table></details>':'');
 }
 function comKhongHtml(th){
-  var ds=th.dsKhongCT||[]; if(!ds.length&&!th.khong)return '';
+  var ds=th.dsKhongCT||[]; if(!ds.length&&!th.khong)return ''; if(!ds.length&&ME.vaiTro!=='TP')return '';   // bếp / nhân sự: chỉ số, không danh sách tên
   return '<h4 style="margin:16px 0 6px">Danh sách không ăn ('+ds.length+(ds.length<th.khong?' / '+th.khong+' – chỉ hiện xưởng của bạn':'')+')</h4>'+
     (ds.length?'<table class="cm-bang"><thead><tr><th class="r" style="width:42px">#</th><th>Họ tên</th><th>Mã NV</th><th>Xưởng</th></tr></thead><tbody>'+
       ds.map(function(c,i){return '<tr><td class="r">'+(i+1)+'</td><td>'+esc(c.ten)+'</td><td>'+esc(c.ma||'–')+'</td><td>'+esc(c.xuong)+'</td></tr>'}).join('')+'</tbody></table>':'');
@@ -178,7 +179,7 @@ function comChepCu(txt){var t=document.createElement('textarea');t.value=txt;doc
 COM.hoNgay='';COM.hoTim='';COM.hoLoc='chua';
 function comHoHtml(sap){
   var d=COM.d; if(!sap.some(function(t){return t.ngay===COM.hoNgay}))COM.hoNgay=(sap.filter(function(t){return t.ngay>d.homNay})[0]||sap[0]).ngay;
-  return '<div class="card cm-khong-in" id="cmHo"><h3>Đăng ký hộ <span>'+(ME.vaiTro==='ADMIN'?'mọi người':'người trong xưởng của bạn')+'</span></h3>'+
+  return '<div class="card cm-khong-in" id="cmHo"><h3>Đăng ký hộ <span>'+(ME.vaiTro==='TP'?'người trong xưởng của bạn':'mọi người')+'</span></h3>'+
     '<p class="cm-ghi" style="margin-top:0">Dành cho người lớn tuổi không quen dùng điện thoại hoặc không có mạng. Mọi người vẫn tự đăng ký được như bình thường; người được đăng ký hộ sẽ thấy tên bạn bên cạnh lựa chọn.</p>'+
     '<div class="cm-ho-loc"><label>Ngày ăn <select id="cmHoNgay" onchange="COM.hoNgay=this.value;comHoVe()">'+sap.map(function(t){return '<option value="'+t.ngay+'"'+(t.ngay===COM.hoNgay?' selected':'')+'>'+esc(comNgayTen(t.ngay))+'</option>'}).join('')+'</select></label>'+
     '<input id="cmHoTim" type="search" placeholder="Tìm tên / mã NV" value="'+esc(COM.hoTim)+'" oninput="COM.hoTim=this.value;comHoVe()">'+
@@ -194,7 +195,7 @@ function comHoDs(){
     (chua.length?' <button type="button" class="btn sm" onclick="comHoTatCa()">🍚 Đăng ký ăn cho tất cả '+chua.length+' người chưa đăng ký</button>':'')+'</p>';
   if(!ds.length)return h+'<p class="cm-ghi">'+(COM.hoLoc==='chua'?'Mọi người đã đăng ký.':'Không có ai khớp.')+'</p>';
   return h+'<ul class="cm-ds cm-ho-ds">'+ds.slice(0,300).map(function(p){var x=dk[p.tk],v=x?x[0]:undefined;
-    return '<li><span><b>'+esc(p.ten)+'</b> <span class="cm-ghi">'+esc(p.ma||'')+(ME.vaiTro==='ADMIN'?' · '+esc(p.xuong):'')+'</span>'+
+    return '<li><span><b>'+esc(p.ten)+'</b> <span class="cm-ghi">'+esc(p.ma||'')+(ME.vaiTro!=='TP'?' · '+esc(p.xuong):'')+'</span>'+
       (x?' '+(v?'<span class="cm-tt an">Ăn</span>':'<span class="cm-tt khong">Không ăn</span>')+(x[1]?' <span class="cm-ghi">(hộ: '+esc(x[1])+')</span>':' <span class="cm-ghi">(tự đăng ký)</span>'):'')+'</span>'+
       '<span class="cb-nut"><button type="button" class="cm-nut an" aria-pressed="'+(v===1)+'" onclick="comHoDK([\''+p.tk+'\'],1)">🍚 Ăn</button>'+
       '<button type="button" class="cm-nut khong" aria-pressed="'+(v===0)+'" onclick="comHoDK([\''+p.tk+'\'],0)">Không ăn</button></span></li>'}).join('')+'</ul>';

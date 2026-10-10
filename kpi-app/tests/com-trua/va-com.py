@@ -27,6 +27,17 @@ R("""cccn:vCCCaNhan,sodo:vSoDo}[k])();""", """cccn:vCCCaNhan,sodo:vSoDo,com:vCom
 R("""QC:'KIỂM SOÁT CL',CN:'CÔNG NHÂN'}[ME.vaiTroGoc||ME.vaiTro];""", """QC:'KIỂM SOÁT CL',CN:'CÔNG NHÂN',BEP:'BẾP ĂN'}[ME.vaiTroGoc||ME.vaiTro];""")
 s = s.replace("""HR:'Nhân sự',QC:'Kiểm soát chất lượng',CN:'Công nhân'}[vt]||vt;""", """HR:'Nhân sự',QC:'Kiểm soát chất lượng',CN:'Công nhân',BEP:'Bếp ăn'}[vt]||vt;""")
 R("""    '<option value="CN">Công nhân</option></select></div>'+""", """    '<option value="CN">Công nhân</option><option value="BEP">Bếp ăn (thực đơn, số suất)</option></select></div>'+""")
+# vai trò TL = Trợ lý ban điều hành (chủ dự án 11/10): chỉ xem số liệu tổng (Tổng quan, Bảng KPI, Sơ đồ nhà máy) + Cơm trưa đầy đủ
+# (báo thực đơn, đăng ký hộ mọi người, tổng hợp). Máy chủ: vai trò 'TL' không trùng 'ADMIN' nên mọi thao tác sửa đều bị từ chối.
+R("""  BEP:[['hd','📖 Hướng dẫn'],['com','Cơm trưa']]""", """  BEP:[['hd','📖 Hướng dẫn'],['com','Cơm trưa']],
+  TL:[['hd','📖 Hướng dẫn'],['dash','Tổng quan'],['kpi','Bảng KPI'],['sodo','Sơ đồ nhà máy'],['com','Cơm trưa']]""")
+R("""  BEP:['com']
+};""", """  BEP:['com'],
+  TL:['dash','kpi','sodo','com']
+};""")
+R("""CN:'CÔNG NHÂN',BEP:'BẾP ĂN'}""", """CN:'CÔNG NHÂN',BEP:'BẾP ĂN',TL:'TRỢ LÝ BĐH'}""")
+s = s.replace("""CN:'Công nhân',BEP:'Bếp ăn'}[vt]||vt;""", """CN:'Công nhân',BEP:'Bếp ăn',TL:'Trợ lý ban điều hành'}[vt]||vt;""")
+R("""<option value="BEP">Bếp ăn (thực đơn, số suất)</option></select></div>'+""", """<option value="BEP">Bếp ăn (thực đơn, số suất)</option><option value="TL">Trợ lý ban điều hành (chỉ xem số liệu tổng + cơm trưa)</option></select></div>'+""")
 # tải thanh thực đơn ngay khi vào hệ thống
 R("""    buildNav();
     try{ maiNut(); maiKhoiDong(); }catch(e){}""", """    buildNav();

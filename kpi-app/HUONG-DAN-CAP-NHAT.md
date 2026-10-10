@@ -377,3 +377,10 @@ Nếu vẫn thấy giao diện cũ: kiểm tra lại Phần D (đã chọn **Phi
 - Trưởng / phó phòng mở trang **Cơm trưa** → khung **Đăng ký hộ**: chọn ngày ăn, tìm tên, bấm **Ăn** / **Không ăn** cho từng người trong xưởng mình, hoặc bấm **Đăng ký ăn cho tất cả người chưa đăng ký**.
 - Ban điều hành đăng ký hộ được cho mọi người. Người được đăng ký hộ thấy tên người đã đăng ký giúp; họ vẫn tự đổi lại được.
 - Cần dán lại **Code.gs** và **Index.html**. Sheet `DangKyCom` tự thêm cột `DangKyHo`, không phải làm gì thêm.
+
+
+## Vai trò Trợ lý ban điều hành + bếp chỉ thấy số suất (11/10)
+- Tài khoản trợ lý: vào **Tài khoản**, ở dòng của người đó đổi vai trò (hoặc tạo mới) chọn **Trợ lý ban điều hành**.
+  Trợ lý chỉ thấy Tổng quan, Bảng KPI, Sơ đồ nhà máy và Cơm trưa; không sửa / duyệt / chốt được gì. Ở Cơm trưa trợ lý báo thực đơn, đăng ký hộ, xem tổng hợp có họ tên.
+- Bếp chỉ thấy số suất ăn / không ăn / chưa đăng ký theo từng xưởng và tổng; không thấy họ tên, mã NV.
+- Cần dán lại **Code.gs** và **Index.html**.

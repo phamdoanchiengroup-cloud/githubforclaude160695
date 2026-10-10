@@ -54,14 +54,18 @@ console.log('\n3. Tổng hợp gửi bếp');
 r = c.__goi('napComTrua', tB);
 let th = r.tongHop.find(x => x.ngay === '2026-10-13');
 ok(r.quyen.xem && r.quyen.sua && th && th.an === 3 && th.khong === 2 && th.an + th.khong + th.chua === soNguoi, 'bếp: 3 ăn, 2 không ăn, còn lại chưa đăng ký (tổng = ' + soNguoi + ' tài khoản đang dùng, đã bỏ người nghỉ việc và tài khoản bếp)', th && [th.an, th.khong, th.chua]);
+th = c.__goi('napComTrua', tO).tongHop.find(x => x.ngay === '2026-10-13');   // ban điều hành: có tên
 const xTP = th.xuong.find(x => x.mx === tp.MaXuong), xVP = th.xuong.find(x => x.mx === 'VP');
-ok(xTP && xTP.an === 2 && xTP.dsAn.length === 2, 'xưởng của trưởng phòng: 2 suất, có tên', xTP);
+ok(xTP && xTP.an === 2 && xTP.dsAn.length === 2, 'ban điều hành: xưởng của trưởng phòng 2 suất, có tên', xTP);
 ok(xVP && xVP.an === 1 && !(xVP.dsAn || []).concat(xVP.dsKhong || [], xVP.dsChua || []).includes('Bếp ăn') && th.xuong[th.xuong.length - 1].mx === 'VP', 'tài khoản không gắn xưởng gom vào "Văn phòng / khác" (cuối bảng)', xVP);
 r = c.__goi('napComTrua', tTP); th = r.tongHop.find(x => x.ngay === '2026-10-13');
 ok(r.quyen.xem && !r.quyen.sua && th.xuong.length > 1 && th.xuong.every(x => x.mx === tp.MaXuong ? Array.isArray(x.dsAn) : x.dsAn === undefined), 'trưởng phòng: thấy số mọi xưởng, tên chỉ xưởng mình');
 const khongTP = th.dsKhongCT;
 r = c.__goi('napComTrua', tO); th = r.tongHop.find(x => x.ngay === '2026-10-13');
 ok(th.xuong.every(x => Array.isArray(x.dsChua)), 'ban điều hành: thấy tên mọi xưởng');
+{ const rb = c.__goi('napComTrua', tB), tb = rb.tongHop.find(x => x.ngay === '2026-10-13');
+  ok(tb.xuong.every(x => x.dsAn === undefined && x.dsKhong === undefined) && !tb.dsKhongCT.length && !tb.dsMuon.length && tb.an === 3 && tb.xuong.length > 1,
+    'bếp: chỉ thấy số suất từng xưởng + tổng, không có họ tên / mã NV', tb.dsKhongCT); }
 const cnK = th.dsKhongCT.find(x => x.ten === cn.HoTen);
 ok(th.dsKhongCT.length === 2 && cnK && cnK.ma === String(cn.MaNV) && cnK.xuong === c.tenXuong_(cn.MaXuong) && th.dsKhongCT.some(x => x.ten === cn3.HoTen) && !th.dsKhongCT.some(x => x.ten === 'Bếp ăn'),
   'ban điều hành: danh sách không ăn đủ họ tên, mã NV, xưởng', th.dsKhongCT);
@@ -75,9 +79,9 @@ ok(r.ok, 'quá 16:00 vẫn đăng ký / đổi được (16:00 chỉ là giờ n
 const muonTk = tk(x => vt('CN')(x) && x.MaXuong === tp.MaXuong && x.TenDangNhap !== cn2.TenDangNhap);
 c.__datGio('2026-10-13T07:45:00+07:00'); r = c.__goi('dangKyCom', P(muonTk), '2026-10-13', true);
 ok(r.ok, 'sáng ngày ăn người quên vẫn đăng ký được', r.msg);
-r = c.__goi('napComTrua', tB); th = r.tongHop.find(x => x.ngay === '2026-10-13');
+r = c.__goi('napComTrua', tO); th = r.tongHop.find(x => x.ngay === '2026-10-13');
 ok(th.muon === 2 && th.muonAn === 1 && th.dsMuon.length === 2 && th.dsMuon.every(m => m.luc >= '2026-10-12 16:00' && 'ma' in m && m.xuong),
-  'tổng hợp ghi rõ 2 người đăng ký sau giờ nhắc (1 ăn), có giờ, mã NV, xưởng', th && th.dsMuon);
+  'ban điều hành: tổng hợp ghi rõ 2 người đăng ký sau giờ nhắc (1 ăn), có giờ, mã NV, xưởng', th && th.dsMuon);
 r = c.__goi('napComTrua', tTP); th = r.tongHop.find(x => x.ngay === '2026-10-13');
 ok(th.muon === 2 && th.dsMuon.length === 1 && th.dsMuon[0].mx === tp.MaXuong, 'trưởng phòng: thấy số đăng ký muộn, tên chỉ xưởng mình', th.dsMuon);
 c.__datGio('2026-10-14T09:00:00+07:00'); r = c.__goi('dangKyCom', tCN, '2026-10-13', true);

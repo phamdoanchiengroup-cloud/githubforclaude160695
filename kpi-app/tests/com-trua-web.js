@@ -66,8 +66,24 @@ const doiNguoi = (p, f) => p.evaluate(f => {
   await doiNguoi(p, "x.TenDangNhap==='bep'");
   s = await p.evaluate(() => [[...document.querySelectorAll('#nav button')].map(x => x.dataset.k), tabHienTai, $('hbadge').textContent, !!$('cmMon'), !!document.querySelector('.cm-bang')]);
   ok(s[0].join() === 'com' && s[1] === 'com' && s[2] === 'BẾP ĂN' && s[3] && s[4], 'bếp chỉ có trang Cơm trưa: nhập thực đơn + xem tổng hợp', s);
+  s = await p.evaluate(() => [document.querySelectorAll('.cm-bang details').length, /Danh sách không ăn/.test($('main').textContent), document.querySelector('.cm-so .an b').textContent, document.querySelector('.cm-bang tr.tong').textContent]);
+  ok(s[0] === 0 && !s[1] && /Toàn nhà máy/.test(s[3]), 'bếp: chỉ số suất theo xưởng + tổng, không có họ tên', s);
   s = await p.evaluate(() => [document.querySelectorAll('.cm-nut.an,.cm-nut.khong').length, $('combar').textContent, document.querySelector('.cm-the').textContent]);
   ok(s[0] === 0 && /suất ăn/.test(s[1]) && /suất ăn/.test(s[2]) && !/Bạn chưa đăng ký/.test(s[2]), 'bếp: không có nút Ăn / Không ăn, thanh + thẻ hiện số suất', s);
+
+  console.log('Trợ lý ban điều hành (vai trò TL)');
+  await p.evaluate(() => { __MAY_CHU.them_('TaiKhoan', { TenDangNhap: 'troly', HoTen: 'Trợ lý A', VaiTro: 'TL', MaXuong: '', TrangThai: 'Đang dùng', DoiMatKhauLanDau: 'Không' }); });
+  await doiNguoi(p, "x.TenDangNhap==='troly'");
+  s = await p.evaluate(() => [[...document.querySelectorAll('#nav button')].map(x => x.dataset.k).join(), $('hbadge').textContent]);
+  ok(s[0].split(',').sort().join() === 'com,dash,kpi,sodo' && s[1] === 'TRỢ LÝ BĐH', 'trợ lý: chỉ Hướng dẫn, Tổng quan, Bảng KPI, Sơ đồ nhà máy, Cơm trưa', s);
+  for (const k of ['dash', 'kpi', 'sodo']) { await p.evaluate(k => go(k), k); await p.waitForTimeout(1200); }
+  s = await p.evaluate(() => { go('kpi'); return [/Chốt/.test($('main').textContent), $('main').textContent.length]; }); await p.waitForTimeout(800);
+  ok(!s[0] && s[1] > 200, 'trợ lý: Bảng KPI hiện số liệu, không có nút chốt', s);
+  await p.evaluate(() => go('com')); await p.waitForTimeout(1200);
+  s = await p.evaluate(() => [!!$('cmMon'), !!$('cmHo'), !!document.querySelector('.cm-bang')]);
+  ok(s[0] && s[1] && s[2], 'trợ lý: Cơm trưa có báo thực đơn, đăng ký hộ, tổng hợp', s);
+  s = await p.evaluate(() => [__MAY_CHU.luuCongDoan ? 1 : 0, (function () { try { return __MAY_CHU.taoTaiKhoan(TOKEN, { TenDangNhap: 'xx', HoTen: 'x', VaiTro: 'ADMIN' }); } catch (e) { return { loi: e.message }; } })()]);
+  ok(s[1] && !s[1].ok, 'trợ lý: máy chủ từ chối tạo tài khoản', s[1]);
 
   console.log('Công nhân · điện thoại');
   await p.close(); await p.ctx.close();
