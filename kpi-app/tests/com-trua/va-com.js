@@ -22,6 +22,8 @@ function comMon(t){return String(t.mon||'').split(/\n+/).map(function(x){return 
 function comTT(ng){
   if(comBep())return '';
   var v=COM.d.cuaToi[ng];
+  var ho=COM.d.cuaToiHo&&COM.d.cuaToiHo[ng], hc=ho?' <span class="cm-ghi">('+esc(ho)+' đăng ký hộ)</span>':'';
+  if(ho&&v!==undefined)return (v===1?'<span class="cm-tt an">✓ Đã đăng ký ăn</span>':'<span class="cm-tt khong">Báo không ăn</span>')+hc;
   return v===1?'<span class="cm-tt an">✓ Bạn đã đăng ký ăn</span>':v===0?'<span class="cm-tt khong">Bạn báo không ăn</span>':'<span class="cm-tt chua">Bạn chưa đăng ký</span>';
 }
 /* Tài khoản bếp không đăng ký suất: thay nút bằng số suất đã đăng ký */
@@ -86,6 +88,7 @@ function veCom(){
         '<ul>'+comMon(t).map(function(m){return '<li>'+esc(m)+'</li>'}).join('')+'</ul>'+(t.ghiChu?'<div class="cm-gc">📝 '+esc(t.ghiChu)+'</div>':'')+
         '<div class="cb-nut">'+comNut(t.ngay,true)+comTT(t.ngay)+'</div></div>';
     }).join('')+'</div>':'<p class="cm-ghi">Bếp chưa báo thực đơn cho ngày tới.</p>')+'</div>';
+  if(d.quyen.ho&&sap.length&&d.hoNguoi&&d.hoNguoi.length)h+=comHoHtml(sap);
   if(d.quyen.sua)h+=comFormHtml(sap);
   if(d.quyen.xem)h+=comTongHopHtml();
   if(qua.length)h+='<div class="card cm-khong-in"><details><summary><b>Thực đơn những ngày trước</b></summary><ul class="cm-ds">'+qua.map(function(t){
@@ -159,3 +162,41 @@ function comChep(i){
   try{ navigator.clipboard.writeText(txt).then(xong,function(){comChepCu(txt);xong()}); }catch(e){ comChepCu(txt); xong(); }
 }
 function comChepCu(txt){var t=document.createElement('textarea');t.value=txt;document.body.appendChild(t);t.select();try{document.execCommand('copy')}catch(e){}t.remove()}
+
+/* Đăng ký hộ (trưởng / phó phòng: người trong xưởng mình; ban điều hành: mọi người) – cho người lớn tuổi không quen điện thoại, không có mạng */
+COM.hoNgay='';COM.hoTim='';COM.hoLoc='chua';
+function comHoHtml(sap){
+  var d=COM.d; if(!sap.some(function(t){return t.ngay===COM.hoNgay}))COM.hoNgay=(sap.filter(function(t){return t.ngay>d.homNay})[0]||sap[0]).ngay;
+  return '<div class="card cm-khong-in" id="cmHo"><h3>Đăng ký hộ <span>'+(ME.vaiTro==='ADMIN'?'mọi người':'người trong xưởng của bạn')+'</span></h3>'+
+    '<p class="cm-ghi" style="margin-top:0">Dành cho người lớn tuổi không quen dùng điện thoại hoặc không có mạng. Mọi người vẫn tự đăng ký được như bình thường; người được đăng ký hộ sẽ thấy tên bạn bên cạnh lựa chọn.</p>'+
+    '<div class="cm-ho-loc"><label>Ngày ăn <select id="cmHoNgay" onchange="COM.hoNgay=this.value;comHoVe()">'+sap.map(function(t){return '<option value="'+t.ngay+'"'+(t.ngay===COM.hoNgay?' selected':'')+'>'+esc(comNgayTen(t.ngay))+'</option>'}).join('')+'</select></label>'+
+    '<input id="cmHoTim" type="search" placeholder="Tìm tên / mã NV" value="'+esc(COM.hoTim)+'" oninput="COM.hoTim=this.value;comHoVe()">'+
+    '<span class="cm-ho-tab">'+[['chua','Chưa đăng ký'],['tat','Tất cả']].map(function(x){return '<button type="button" class="btn sm'+(COM.hoLoc===x[0]?' pri':'')+'" onclick="COM.hoLoc=\''+x[0]+'\';comHoVe(1)">'+x[1]+'</button>'}).join(' ')+'</span></div>'+
+    '<div id="cmHoDs">'+comHoDs()+'</div></div>';
+}
+function comHoVe(tab){ if(tab){var c=$('cmHo');if(c)c.outerHTML=comHoHtml(COM.d.thucDon.filter(function(t){return t.ngay>=COM.d.homNay}));return} var b=$('cmHoDs'); if(b)b.innerHTML=comHoDs(); }
+function comHoDs(){
+  var d=COM.d,dk=(d.hoDK&&d.hoDK[COM.hoNgay])||{},q=String(COM.hoTim||'').trim().toLowerCase();
+  var ds=d.hoNguoi.filter(function(p){return (COM.hoLoc==='tat'||!dk[p.tk])&&(!q||(p.ten+' '+p.ma).toLowerCase().indexOf(q)>=0)});
+  var chua=d.hoNguoi.filter(function(p){return !dk[p.tk]});
+  var h='<p class="cm-ghi">'+chua.length+' / '+d.hoNguoi.length+' người chưa đăng ký '+esc(comNgayTen(COM.hoNgay))+'.'+
+    (chua.length?' <button type="button" class="btn sm" onclick="comHoTatCa()">🍚 Đăng ký ăn cho tất cả '+chua.length+' người chưa đăng ký</button>':'')+'</p>';
+  if(!ds.length)return h+'<p class="cm-ghi">'+(COM.hoLoc==='chua'?'Mọi người đã đăng ký.':'Không có ai khớp.')+'</p>';
+  return h+'<ul class="cm-ds cm-ho-ds">'+ds.slice(0,300).map(function(p){var x=dk[p.tk],v=x?x[0]:undefined;
+    return '<li><span><b>'+esc(p.ten)+'</b> <span class="cm-ghi">'+esc(p.ma||'')+(ME.vaiTro==='ADMIN'?' · '+esc(p.xuong):'')+'</span>'+
+      (x?' '+(v?'<span class="cm-tt an">Ăn</span>':'<span class="cm-tt khong">Không ăn</span>')+(x[1]?' <span class="cm-ghi">(hộ: '+esc(x[1])+')</span>':' <span class="cm-ghi">(tự đăng ký)</span>'):'')+'</span>'+
+      '<span class="cb-nut"><button type="button" class="cm-nut an" aria-pressed="'+(v===1)+'" onclick="comHoDK([\''+p.tk+'\'],1)">🍚 Ăn</button>'+
+      '<button type="button" class="cm-nut khong" aria-pressed="'+(v===0)+'" onclick="comHoDK([\''+p.tk+'\'],0)">Không ăn</button></span></li>'}).join('')+'</ul>';
+}
+function comHoDK(ds,an,xong){
+  call('dangKyComHo',[COM.hoNgay,ds,!!an],function(r){
+    if(!r||!r.ok){toast((r&&r.msg)||'Không đăng ký được');return}
+    toast(r.msg,true); var o=COM.d.hoDK[COM.hoNgay]||(COM.d.hoDK[COM.hoNgay]={});
+    ds.forEach(function(t){o[t]=[r.an,ME.ten||'bạn']}); comHoVe(); if(xong)xong(); comTai();
+  });
+}
+function comHoTatCa(){
+  var dk=COM.d.hoDK[COM.hoNgay]||{},ds=COM.d.hoNguoi.filter(function(p){return !dk[p.tk]}).map(function(p){return p.tk});
+  if(!ds.length)return; if(!confirm('Đăng ký ĂN trưa '+comNgayTen(COM.hoNgay)+' cho '+ds.length+' người chưa đăng ký?'))return;
+  comHoDK(ds,1);
+}

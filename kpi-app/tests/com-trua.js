@@ -84,6 +84,26 @@ ok(c.__goi('dangKyCom', tCN, '2026-10-14', false).ok, 'ngày 14/10 vẫn đăng 
 r = c.__goi('napComTrua', tCN); ok(!r.thucDon.find(t => t.ngay === '2026-10-13').conHan && r.thucDon.find(t => t.ngay === '2026-10-14').conHan, 'trang báo đúng ngày nào còn hạn');
 r = c.__goi('xoaThucDon', tCN, '2026-10-14'); ok(!r.ok, 'công nhân không xóa được thực đơn');
 
+console.log('\n4b. Trưởng / phó phòng đăng ký hộ');
+c.__datGio('2026-10-13T08:00:00+07:00');
+r = c.__goi('dangKyComHo', tCN, '2026-10-14', [cn2.TenDangNhap], true); ok(!r.ok && /trưởng/.test(r.msg), 'công nhân không đăng ký hộ được', r.msg);
+r = c.__goi('dangKyComHo', tTP, '2026-10-14', [cn.TenDangNhap], true); ok(!r.ok && /xưởng của bạn/.test(r.msg), 'trưởng phòng không đăng ký hộ người xưởng khác', r.msg);
+r = c.__goi('dangKyComHo', tTP, '2026-10-14', [cn2.TenDangNhap], true); ok(r.ok && r.so === 1 && /đăng ký hộ/.test(r.msg), 'trưởng phòng đăng ký hộ người trong xưởng', r.msg);
+r = c.__goi('napComTrua', tCN2); ok(r.cuaToi['2026-10-14'] === 1 && r.cuaToiHo['2026-10-14'] === tp.HoTen, 'người được đăng ký hộ thấy tên trưởng phòng', [r.cuaToi, r.cuaToiHo]);
+r = c.__goi('dangKyCom', tCN2, '2026-10-14', false); r = c.__goi('napComTrua', tCN2); ok(r.cuaToi['2026-10-14'] === 0 && !r.cuaToiHo['2026-10-14'], 'tự đổi lại được, mất dấu "đăng ký hộ"', [r.cuaToi, r.cuaToiHo]);
+r = c.__goi('napComTrua', tTP);
+const dsHo = r.hoNguoi || [];
+ok(r.quyen.ho && dsHo.length > 1 && dsHo.every(x => c.doc_('TaiKhoan').find(t => t.TenDangNhap.toLowerCase() === x.tk).MaXuong === tp.MaXuong) && !dsHo.some(x => x.tk === tp.TenDangNhap.toLowerCase()) && r.hoDK['2026-10-14'],
+  'trưởng phòng nhận danh sách người trong xưởng (trừ chính mình) + trạng thái từng ngày', dsHo.length);
+const chuaDK = dsHo.filter(x => !r.hoDK['2026-10-14'][x.tk]).map(x => x.tk);
+r = c.__goi('dangKyComHo', tTP, '2026-10-14', chuaDK, true); ok(r.ok && r.so === chuaDK.length, 'đăng ký ăn cho tất cả người chưa đăng ký một lần', r.msg);
+r = c.__goi('napComTrua', tTP); ok(dsHo.every(x => r.hoDK['2026-10-14'][x.tk]), 'sau đó cả xưởng đã có lựa chọn');
+ok(!c.__goi('napComTrua', tCN).quyen.ho, 'công nhân không có mục đăng ký hộ');
+ok(c.dauCot_('DangKyCom').includes('DangKyHo'), 'sheet DangKyCom có cột DangKyHo');
+// trả dữ liệu ngày 14 về như trước phần này để các bước sau tính đúng
+{ const bo = new Set(chuaDK.concat([cn2.TenDangNhap.toLowerCase()]));
+  c.xoaNhieuDong_('DangKyCom', c.doc_('DangKyCom').filter(x => String(x.Ngay).replace(/^'/, '').slice(0, 10) === '2026-10-14' && bo.has(String(x.TenDangNhap).toLowerCase())).map(x => x._row)); }
+
 console.log('\n5. Vai trò BEP');
 r = c.__goi('napDuLieu', tB);
 ok(r.ok && r.me.vaiTro === 'BEP' && !r.nhansu.length && !r.nhatky.length && r.phongban.length > 0, 'bếp không nhận dữ liệu sản xuất / nhân sự', r.ok && [r.nhansu.length, r.nhatky.length]);

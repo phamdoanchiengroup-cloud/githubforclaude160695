@@ -370,3 +370,10 @@ Nếu vẫn thấy giao diện cũ: kiểm tra lại Phần D (đã chọn **Phi
 - Máy tính: menu dọc bên trái chia nhóm, có số đếm việc chờ. Điện thoại: thanh dưới 4 mục + nút Menu.
 - **Việc hôm nay** (trang đầu của ban điều hành, trưởng/phó phòng) gom mọi nhắc việc, mỗi việc có nút đi thẳng tới chỗ xử lý.
 - **Hướng dẫn** chuyển thành nút **?** trên đầu trang.
+
+
+## Cơm trưa – trưởng / phó phòng đăng ký hộ (11/10)
+- Công nhân vẫn tự đăng ký như cũ.
+- Trưởng / phó phòng mở trang **Cơm trưa** → khung **Đăng ký hộ**: chọn ngày ăn, tìm tên, bấm **Ăn** / **Không ăn** cho từng người trong xưởng mình, hoặc bấm **Đăng ký ăn cho tất cả người chưa đăng ký**.
+- Ban điều hành đăng ký hộ được cho mọi người. Người được đăng ký hộ thấy tên người đã đăng ký giúp; họ vẫn tự đổi lại được.
+- Cần dán lại **Code.gs** và **Index.html**. Sheet `DangKyCom` tự thêm cột `DangKyHo`, không phải làm gì thêm.

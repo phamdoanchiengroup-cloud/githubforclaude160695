@@ -5782,7 +5782,7 @@ function GUI_BAO_CAO_THANG_TRUOC() {
    Sheet tự tạo khi dùng lần đầu: ThucDon, DangKyCom, SuatAnThang. */
 var COM_SHEET = {
   ThucDon: ['Ngay', 'MonAn', 'GhiChu', 'NguoiNhap', 'CapNhat'],
-  DangKyCom: ['Ngay', 'TenDangNhap', 'HoTen', 'MaNV', 'MaXuong', 'An', 'ThoiDiem'],
+  DangKyCom: ['Ngay', 'TenDangNhap', 'HoTen', 'MaNV', 'MaXuong', 'An', 'ThoiDiem', 'DangKyHo'],   // DangKyHo: tên người đăng ký hộ (trống = tự đăng ký)
   SuatAnThang: ['Ky', 'MaXuong', 'TenXuong', 'SoNgay', 'SuatAn', 'KhongAn', 'ChuaDangKy', 'TepLuu']
 };
 var COM_VP = 'VP';                       // nhóm cho tài khoản không gắn xưởng (ban điều hành, nhân sự, bếp…)
@@ -5796,6 +5796,13 @@ function comSheet_(ten) {
     sh.setFrozenRows(1);
     sh.getRange(1, 1, 1000, 1).setNumberFormat('@');          // ngày / kỳ lưu dạng văn bản 'yyyy-MM-dd'
     delete __DOC_CACHE[ten]; delete __HEAD_CACHE[ten];
+  } else {
+    // sheet tạo từ bản cũ: thêm cột mới còn thiếu vào cuối dòng tiêu đề
+    var head = dauCot_(ten).map(String), thieu = COM_SHEET[ten].filter(function(h) { return head.indexOf(h) < 0; });
+    if (thieu.length) {
+      sh.getRange(1, head.length + 1, 1, thieu.length).setValues([thieu]).setFontWeight('bold');
+      delete __DOC_CACHE[ten]; delete __HEAD_CACHE[ten];
+    }
   }
   return sh;
 }
@@ -5878,16 +5885,26 @@ function napComTrua(token) {
       var ng = comNgay_(r.Ngay);
       return { ngay: ng, mon: String(r.MonAn || ''), ghiChu: String(r.GhiChu || ''), han: comHan_(ng), conHan: comConHan_(ng), nguoi: String(r.NguoiNhap || '') };
     }).filter(function(t) { return t.ngay >= congNgay_(homNay, -7) && t.ngay <= den; }).sort(function(a, b) { return a.ngay < b.ngay ? -1 : 1; });
-    var cuaToi = {}, tk = String(me.tk).toLowerCase(), ky = homNay.slice(0, 7);
+    var cuaToi = {}, cuaToiHo = {}, tk = String(me.tk).toLowerCase(), ky = homNay.slice(0, 7);
     var thang = { an: 0, khong: 0 };
     comDoc_('DangKyCom').forEach(function(r) {
       if (String(r.TenDangNhap).toLowerCase() !== tk) return;
       var ng = comNgay_(r.Ngay), an = Number(r.An) === 1 ? 1 : 0;
-      cuaToi[ng] = an;
+      cuaToi[ng] = an; if (r.DangKyHo) cuaToiHo[ng] = String(r.DangKyHo); else delete cuaToiHo[ng];
       if (ng.slice(0, 7) === ky) thang[an ? 'an' : 'khong']++;
     });
-    var out = { ok: true, homNay: homNay, bayGio: comBayGio_(), gioChot: comGioChot_(), thucDon: td, cuaToi: cuaToi, thang: thang,
-      quyen: { xem: comXem_(me), sua: comSua_(me), dangKy: !comLaBep_(me) }, tongHop: [] };
+    var out = { ok: true, homNay: homNay, bayGio: comBayGio_(), gioChot: comGioChot_(), thucDon: td, cuaToi: cuaToi, cuaToiHo: cuaToiHo, thang: thang,
+      quyen: { xem: comXem_(me), sua: comSua_(me), dangKy: !comLaBep_(me), ho: me.vaiTro === 'ADMIN' || me.vaiTro === 'TP' }, tongHop: [] };
+    if (out.quyen.ho) {
+      // danh sách người được đăng ký hộ + trạng thái các ngày có thực đơn sắp tới: hoDK[ngay][tk] = [an, ai đăng ký hộ]
+      var tenX = comTenX_(), ngays = {};
+      td.forEach(function(t) { if (t.ngay >= homNay) ngays[t.ngay] = {}; });
+      out.hoNguoi = comNguoi_().filter(function(p) { return comHoDuoc_(me, p) && p.tk !== tk; })
+        .map(function(p) { return { tk: p.tk, ten: p.ten, ma: p.ma, xuong: tenX[p.mx] || p.mx }; })
+        .sort(function(a, b) { return String(a.xuong).localeCompare(String(b.xuong)) || String(a.ten).localeCompare(String(b.ten)); });
+      comDoc_('DangKyCom').forEach(function(r) { var o = ngays[comNgay_(r.Ngay)]; if (o) o[String(r.TenDangNhap).toLowerCase()] = [Number(r.An) === 1 ? 1 : 0, String(r.DangKyHo || '')]; });
+      out.hoDK = ngays;
+    }
     if (out.quyen.xem) {
       // tổng hợp các ngày có thực đơn từ hôm nay trở đi (ngày gần nhất trước)
       out.tongHop = td.filter(function(t) { return t.ngay >= homNay; }).slice(0, 4).map(function(t) { return comTongHop_(t.ngay, me); });
@@ -5906,15 +5923,44 @@ function dangKyCom(token, ngay, an) {
   var td = comDoc_('ThucDon').filter(function(r) { return comNgay_(r.Ngay) === ngay; })[0];
   if (!td) return sach_({ ok: false, msg: 'Bếp chưa báo thực đơn ngày này.' });
   if (ngay < homNayVN_()) return sach_({ ok: false, msg: 'Ngày ăn đã qua.' });
-  var tk = String(me.tk).toLowerCase(), v = an ? 1 : 0, thoi = comBayGio_();
-  var cu = comDoc_('DangKyCom').filter(function(r) { return comNgay_(r.Ngay) === ngay && String(r.TenDangNhap).toLowerCase() === tk; });
+  var v = an ? 1 : 0;
+  comGhi_({ tk: String(me.tk).toLowerCase(), ten: me.ten, ma: me.maNV || '', mx: me.xuong || COM_VP }, ngay, v, '');
+  return sach_({ ok: true, ngay: ngay, an: v, msg: v ? 'Đã đăng ký ăn trưa ' + ngay.slice(8) + '/' + ngay.slice(5, 7) + '.' : 'Đã báo không ăn trưa ' + ngay.slice(8) + '/' + ngay.slice(5, 7) + '.' });
+}
+
+/* Ghi 1 lượt đăng ký (tự đăng ký: ho = ''; đăng ký hộ: ho = tên người đăng ký hộ) */
+function comGhi_(p, ngay, v, ho) {
+  var thoi = comBayGio_();
+  var cu = comDoc_('DangKyCom').filter(function(r) { return comNgay_(r.Ngay) === ngay && String(r.TenDangNhap).toLowerCase() === p.tk; });
   if (cu.length) {
-    suaO_('DangKyCom', cu[0]._row, 'An', v); suaO_('DangKyCom', cu[0]._row, 'ThoiDiem', thoi);
+    suaO_('DangKyCom', cu[0]._row, 'An', v); suaO_('DangKyCom', cu[0]._row, 'ThoiDiem', thoi); suaO_('DangKyCom', cu[0]._row, 'DangKyHo', ho || '');
     if (cu.length > 1) xoaNhieuDong_('DangKyCom', cu.slice(1).map(function(r) { return r._row; }));
   } else {
-    them_('DangKyCom', { Ngay: "'" + ngay, TenDangNhap: tk, HoTen: me.ten, MaNV: me.maNV || '', MaXuong: me.xuong || COM_VP, An: v, ThoiDiem: thoi });
+    them_('DangKyCom', { Ngay: "'" + ngay, TenDangNhap: p.tk, HoTen: p.ten, MaNV: p.ma || '', MaXuong: p.mx || COM_VP, An: v, ThoiDiem: thoi, DangKyHo: ho || '' });
   }
-  return sach_({ ok: true, ngay: ngay, an: v, msg: v ? 'Đã đăng ký ăn trưa ' + ngay.slice(8) + '/' + ngay.slice(5, 7) + '.' : 'Đã báo không ăn trưa ' + ngay.slice(8) + '/' + ngay.slice(5, 7) + '.' });
+}
+
+/* Đăng ký hộ (chủ dự án 11/10: người lớn tuổi không quen điện thoại / không có mạng):
+   trưởng – phó phòng đăng ký hộ người trong xưởng mình, ban điều hành đăng ký hộ mọi người. dsTk = 1 hoặc nhiều tên đăng nhập. */
+function comHoDuoc_(me, p) { return me.vaiTro === 'ADMIN' || (me.vaiTro === 'TP' && me.xuong && p.mx === String(me.xuong)); }
+function dangKyComHo(token, ngay, dsTk, an) {
+  var me = docPhien_(token);
+  if (!me) return sach_({ ok: false, hetHan: true, msg: 'Phiên đăng nhập đã hết hạn.' });
+  if (me.vaiTro !== 'ADMIN' && me.vaiTro !== 'TP') return sach_({ ok: false, msg: 'Chỉ trưởng / phó phòng và ban điều hành được đăng ký hộ.' });
+  ngay = String(ngay || '').slice(0, 10);
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(ngay)) return sach_({ ok: false, msg: 'Ngày không hợp lệ.' });
+  khoa_();
+  if (!comDoc_('ThucDon').some(function(r) { return comNgay_(r.Ngay) === ngay; })) return sach_({ ok: false, msg: 'Bếp chưa báo thực đơn ngày này.' });
+  if (ngay < homNayVN_()) return sach_({ ok: false, msg: 'Ngày ăn đã qua.' });
+  var muon = {}; [].concat(dsTk || []).forEach(function(t) { muon[String(t).toLowerCase()] = 1; });
+  var ds = comNguoi_().filter(function(p) { return muon[p.tk]; });
+  if (!ds.length) return sach_({ ok: false, msg: 'Không tìm thấy người cần đăng ký.' });
+  if (ds.some(function(p) { return !comHoDuoc_(me, p); })) return sach_({ ok: false, msg: 'Chỉ đăng ký hộ được người trong xưởng của bạn.' });
+  var v = an ? 1 : 0;
+  ds.forEach(function(p) { comGhi_(p, ngay, v, me.ten); });
+  var ng = ngay.slice(8) + '/' + ngay.slice(5, 7);
+  return sach_({ ok: true, ngay: ngay, an: v, so: ds.length,
+    msg: (ds.length === 1 ? 'Đã đăng ký hộ ' + ds[0].ten : 'Đã đăng ký hộ ' + ds.length + ' người') + (v ? ': ăn trưa ' : ': không ăn ') + ng + '.' });
 }
 
 function luuThucDon(token, ngay, monAn, ghiChu) {

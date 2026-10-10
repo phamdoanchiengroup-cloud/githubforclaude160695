@@ -46,3 +46,7 @@
 @media print{#combar,.cm-khong-in{display:none!important}}
 .cm-muon{margin:12px 0 4px;padding:8px 12px;border-radius:10px;background:rgba(242,169,59,.1);border:1px solid rgba(242,169,59,.4);font-size:13.5px}
 .cm-muon-ds summary{cursor:pointer;font-size:13px;color:var(--ink2);margin:4px 0}
+.cm-ho-loc{display:flex;flex-wrap:wrap;gap:8px 12px;align-items:center;margin:6px 0}
+.cm-ho-loc select,.cm-ho-loc input{font:inherit;padding:6px 8px;border-radius:8px;border:1px solid var(--line);background:var(--panel2);color:var(--ink)}
+.cm-ho-loc input{flex:1 1 180px;min-width:0}
+.cm-ho-ds li{flex-wrap:wrap}

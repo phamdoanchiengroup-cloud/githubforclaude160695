@@ -51,6 +51,15 @@ const doiNguoi = (p, f) => p.evaluate(f => {
   await p.evaluate(() => go('com')); await p.waitForTimeout(1000);
   s = await p.evaluate(() => [!!$('cmMon'), document.querySelectorAll('.cm-bang tbody tr').length, [...document.querySelectorAll('.cm-bang tbody tr')].filter(r => r.querySelector('details')).map(r => r.cells[0].textContent)]);
   ok(!s[0] && s[1] > 3 && s[2].length === 1, 'trưởng phòng ' + tp + ': không có form thực đơn, thấy số mọi xưởng, danh sách tên chỉ xưởng mình', s);
+  s = await p.evaluate(() => [!!$('cmHo'), document.querySelectorAll('#cmHoDs li').length, $('cmHoNgay').value]);
+  ok(s[0] && s[1] > 0 && s[2] === '2026-10-13', 'trưởng phòng có mục "Đăng ký hộ" (ngày mai, danh sách người chưa đăng ký)', s);
+  const ten1 = await p.evaluate(() => document.querySelector('#cmHoDs li b').textContent);
+  await p.click('#cmHoDs li .cm-nut.an'); await p.waitForTimeout(1500);
+  s = await p.evaluate(t => { COM.hoLoc = 'tat'; comHoVe(1); const li = [...document.querySelectorAll('#cmHoDs li')].find(x => x.querySelector('b').textContent === t); return li && li.textContent; }, ten1);
+  ok(s && /Ăn/.test(s) && /hộ:/.test(s), 'bấm Ăn: người đó ghi "Ăn (hộ: tên trưởng phòng)"', s);
+  await p.evaluate(() => { COM.hoLoc = 'chua'; comHoVe(1); });
+  await p.click('#cmHoDs button:has-text("Đăng ký ăn cho tất cả")'); await p.waitForTimeout(1800);
+  ok(await p.evaluate(() => /Mọi người đã đăng ký/.test($('cmHoDs').textContent)), 'nút "Đăng ký ăn cho tất cả người chưa đăng ký" chạy được');
 
   console.log('Bếp ăn (vai trò BEP)');
   await p.evaluate(() => { __MAY_CHU.them_('TaiKhoan', { TenDangNhap: 'bep', HoTen: 'Bếp ăn', VaiTro: 'BEP', MaXuong: '', TrangThai: 'Đang dùng', DoiMatKhauLanDau: 'Không' }); });
