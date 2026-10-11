@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Màn đăng nhập Trạm khắc</title>
+<style>
+:root{--nen:#0e1012;--the:#171a1d;--chu:#e9eef0;--phu:#a3adb3;--vang:#f7b829}
+*{box-sizing:border-box}
+body{margin:0;background:var(--nen);color:var(--chu);font:15px/1.55 Arimo,system-ui,-apple-system,'Segoe UI',sans-serif}
+.vo{max-width:1320px;margin:0 auto;padding:22px 16px 40px}
+h1{font-size:22px;margin:0 0 6px}
+.mo{color:var(--phu);margin:0 0 10px;max-width:980px}.mo b{color:var(--chu)}
+ul.mo{padding-left:18px}ul.mo li{margin:0 0 4px}
+.dk{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:14px 0}
+.dk span{font-size:13px;color:var(--phu);margin-left:6px}
+.dk button{font:inherit;font-size:14px;padding:8px 14px;min-height:40px;border-radius:9px;border:1px solid rgba(255,255,255,.16);background:var(--the);color:var(--chu);cursor:pointer}
+.dk button[aria-pressed="true"]{border-color:var(--vang);color:var(--vang)}
+.dk button:focus-visible{outline:2px solid var(--vang);outline-offset:2px}
+.khung{margin:0 auto;border-radius:14px;overflow:hidden;border:1px solid rgba(255,255,255,.12);background:#000;width:100%}
+.khung iframe{display:block;width:100%;height:820px;border:0}
+.khung.dt{width:390px;max-width:100%;border-radius:30px;border:9px solid #050607}.khung.dt iframe{height:780px}
+@media(max-width:760px){.khung iframe{height:720px}}
+</style>
+</head>
+<body>
+<div class="vo">
+  <h1>Màn đăng nhập mới – "Trạm khắc"</h1>
+  <p class="mo">Giữ <b>ảnh ngọn cơ</b> và <b>hiệu ứng khắc laser mã nhân viên</b>; đổi cách bố trí cho cả màn hình là một bàn máy khắc:</p>
+  <ul class="mo">
+    <li><b>Ảnh phủ kín</b>, bỏ tấm kính nổi bên phải – ngọn cơ đang được khắc nằm giữa tầm mắt, không bị che.</li>
+    <li><b>Bảng điều khiển chạy ngang đáy màn hình</b> như mặt máy: Rhino – Mã nhân viên – Mật khẩu – nút Đăng nhập trên một hàng.</li>
+    <li><b>Vòng ngắm đầu khắc</b> có đường ghi chú kiểu bản vẽ kỹ thuật, chạy theo từng ký tự vừa khắc.</li>
+    <li><b>Bảng đọc số của máy</b> góc phải trên: mã đang khắc, số ký tự, trạng thái (không bao giờ hiện gì về mật khẩu).</li>
+    <li>Vẫn giữ cửa cuốn, nút né, Rhino che mắt / bịt tai, két sắt, theo giờ. Điện thoại: ảnh ở trên, ô nhập bên dưới như bây giờ.</li>
+  </ul>
+  <p class="mo">Thử: gõ mã bất kỳ; mật khẩu <b>demo</b> là đúng, khác là sai.</p>
+  <div class="dk" role="group" aria-label="Chọn bản">
+    <button data-ban="moi" aria-pressed="true">Trạm khắc (mới)</button><button data-ban="cu" aria-pressed="false">Hiện tại</button>
+    <span>Khung</span><button data-v="pc" aria-pressed="true">Máy tính</button><button data-v="dt" aria-pressed="false">Điện thoại</button>
+    <button id="lai">↻ Làm lại</button>
+  </div>
+  <div class="khung" id="khung"><iframe id="f" title="Màn đăng nhập"></iframe></div>
+</div>
+<textarea id="moi" hidden>{{MOI}}</textarea>
+<textarea id="cu" hidden>{{CU}}</textarea>
+<script>
+(function(){
+  var f=document.getElementById('f'), k=document.getElementById('khung'), ban='moi';
+  function dung(){ try{ localStorage.removeItem('lk_khoa_den'); }catch(e){} f.srcdoc=document.getElementById(ban).value; }
+  document.querySelectorAll('[data-ban]').forEach(function(b){ b.onclick=function(){ ban=b.dataset.ban;
+    document.querySelectorAll('[data-ban]').forEach(function(x){x.setAttribute('aria-pressed',x===b)}); dung(); }; });
+  document.querySelectorAll('[data-v]').forEach(function(b){ b.onclick=function(){
+    document.querySelectorAll('[data-v]').forEach(function(x){x.setAttribute('aria-pressed',x===b)});
+    k.classList.toggle('dt',b.dataset.v==='dt'); dung(); }; });
+  document.getElementById('lai').onclick=dung;
+  window.__ban=function(b){ document.querySelector('[data-ban='+b+']').click(); };
+  dung();
+})();
+</script>
+</body>
+</html>
