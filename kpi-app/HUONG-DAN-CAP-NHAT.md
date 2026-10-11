@@ -426,3 +426,11 @@ Nếu vẫn thấy giao diện cũ: kiểm tra lại Phần D (đã chọn **Phi
   Tạo tài khoản: **Tài khoản → Tạo tài khoản mới**, Vai trò chọn **Nhân viên bộ phận…** hoặc **Trưởng bộ phận…**, chọn **Bộ phận**, mã NV (nếu có).
   Nhân viên bộ phận tự bấm Ăn / Không ăn; trưởng bộ phận đăng ký hộ được người trong bộ phận mình.
 - Cần dán lại **Code.gs** và **Index.html**.
+
+
+## Sửa lỗi giao diện theo bộ kiểm tra Impeccable (11/10)
+- Chữ nhỏ trong bảng, nhãn, ghi chú to lên một chút (11 → 12px) cho dễ đọc trên điện thoại.
+- Chữ gợi ý trong ô nhập màn đăng nhập, chữ phụ và chữ đỏ trên nền xám sáng hơn để đủ độ tương phản.
+- Bỏ vạch màu trang trí cạnh trái thẻ KPI / thẻ Việc hôm nay, bỏ chữ tô dải màu, chấm báo trên menu không nhấp nháy mãi.
+- Không đổi hiệu ứng màn đăng nhập đã duyệt (nút vàng phát sáng, nút nảy, thanh chạy khi vào).
+- Chỉ cần dán lại **Index.html**.
