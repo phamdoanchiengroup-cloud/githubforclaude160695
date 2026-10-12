@@ -436,10 +436,12 @@ Nếu vẫn thấy giao diện cũ: kiểm tra lại Phần D (đã chọn **Phi
 - Chỉ cần dán lại **Index.html**.
 
 
-## Cơm trưa – chốt đăng ký lúc 22:00 tối hôm trước (12/10)
-- Đăng ký / đổi Ăn – Không ăn, nhóm báo số suất, trưởng phòng đăng ký hộ: chỉ làm được **trước 22:00 tối hôm trước ngày ăn**.
-- Bữa **thứ Hai** (thực đơn báo thứ Bảy): hạn là **22:00 Chủ nhật**.
-- Quá giờ: nút bị khóa, hiện "🔒 Đã chốt lúc 22:00…". Có việc gấp thì báo trực tiếp với bếp.
-- Bếp vẫn sửa được thực đơn sau giờ chốt, nhưng sẽ có cảnh báo là mọi người không đăng ký được bữa đó nữa – nên báo thực đơn trước 22:00.
-- Muốn đổi giờ chốt: Apps Script → mở hàm `DAT_GIO_CHOT_COM` trong Code.gs, sửa số 22, bấm Chạy.
+## Cơm trưa – hạn đăng ký 16:00, được thay đổi tới 22:00 hôm trước (12/10)
+- **16:00 hôm trước ngày ăn** là hạn đăng ký: bếp chốt số suất, đặt đồ ăn. Người chưa đăng ký thấy "Đăng ký trước 16:00 … để bếp chuẩn bị".
+- Đăng ký xong sẽ hiện "✓ Đã đăng ký. Được thay đổi đăng ký trước 22:00 …" – chỉ dành cho trường hợp cá biệt.
+- Ai đăng ký / đổi sau 16:00 thì bếp thấy dòng "⏰ Sau hạn đăng ký có … lượt" trong bảng tổng hợp.
+- **22:00 hôm trước** là khóa hẳn: nút bị khóa, hiện "🔒 Đã chốt lúc 22:00…"; nhóm báo suất và đăng ký hộ cũng vậy.
+- Bữa **thứ Hai** (thực đơn báo thứ Bảy): hạn đăng ký 16:00 và khóa 22:00 **ngày Chủ nhật**.
+- Bếp vẫn sửa được thực đơn sau 22:00 nhưng có cảnh báo là mọi người không đăng ký được bữa đó nữa.
+- Muốn đổi giờ: Apps Script → hàm `DAT_GIO_CHOT_COM` trong Code.gs, sửa số 16 / 22, bấm Chạy.
 - Cần dán lại **Code.gs** và **Index.html**.
