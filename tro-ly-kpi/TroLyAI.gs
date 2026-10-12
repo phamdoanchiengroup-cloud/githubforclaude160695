@@ -123,7 +123,7 @@ function goiClaude_(key, he, messages, tools, model, effort, maxTok) {
 
 /** Trợ lý KPI một mình (khi chưa cài Agents.gs). */
 function heThongAI_(ctx) {
-  return ['Bạn là trợ lý của Phó giám đốc sản xuất một nhà máy làm gậy (cần câu). Bạn trả lời qua Zalo.', nenChung_(), kpiNguCanh_(ctx), cachTraLoi_(true)].join('\n\n');
+  return ['Bạn là trợ lý của Phó giám đốc sản xuất một nhà máy sản xuất cơ (gậy) bi-a. Bạn trả lời qua Zalo.', nenChung_(), kpiNguCanh_(ctx), cachTraLoi_(true)].join('\n\n');
 }
 
 function nenChung_() {
@@ -233,6 +233,7 @@ var AI_CONG_CU = [
 function chayCongCu_(ctx, ten, inp) {
   if (ctx.ag && ctx.ag.congCu.indexOf(ten) < 0) throw new Error('Phòng ' + ctx.ag.ten + ' không được dùng công cụ ' + ten);
   if (typeof AGENT_XU_LY !== 'undefined' && AGENT_XU_LY[ten]) return AGENT_XU_LY[ten](ctx, inp);
+  if (typeof TC_XU_LY !== 'undefined' && TC_XU_LY[ten]) return TC_XU_LY[ten](ctx, inp);
   if (ten === 'tra_cuu') return ccTraCuu_(ctx, inp);
   if (ten === 'hieu_suat') return ccHieuSuat_(ctx, inp);
   if (ten === 'ban_tin') {

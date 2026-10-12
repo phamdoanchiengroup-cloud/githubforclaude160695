@@ -3,126 +3,9 @@
  * Giả lập: Google Sheet (KPI + sheet Agent tự tạo), Lịch, Gmail, Zalo, Claude API.
  * Chạy: node tests/agents.js
  */
-const fs = require('fs'), vm = require('vm'), path = require('path'), assert = require('assert');
+const assert = require('assert');
 
-const KPI_ID = '1znHlbc3ulMRQILePmLZbwNQx-mMXFxd9sm0PBG9lrF8';
-const NOW = new Date('2026-10-11T07:00:00+07:00');   // Chủ nhật 11/10/2026, 07:00 giờ VN
-
-/* ---------- Google Sheet trong bộ nhớ ---------- */
-function Sheet(name, rows) { this.name = name; this.rows = rows || []; this.charts = []; }
-Sheet.prototype = {
-  getName() { return this.name; },
-  getLastRow() { return this.rows.length; },
-  getLastColumn() { return Math.max(0, ...this.rows.map(r => r.length)); },
-  getDataRange() { return this.getRange(1, 1, this.rows.length, this.getLastColumn()); },
-  getRange(r, c, nr, nc) {
-    const sh = this;
-    if (typeof r === 'string') return { setNumberFormat() { return this; } };
-    nr = nr || 1; nc = nc || 1;
-    const R = {
-      getValues: () => { const o = []; for (let i = 0; i < nr; i++) { const row = []; for (let j = 0; j < nc; j++) row.push(((sh.rows[r - 1 + i] || [])[c - 1 + j]) ?? ''); o.push(row); } return o; },
-      setValues: v => { v.forEach((row, i) => row.forEach((x, j) => { const X = sh.rows[r - 1 + i] = sh.rows[r - 1 + i] || []; X[c - 1 + j] = x; })); return R; },
-      setValue: x => R.setValues([[x]]),
-      setFontWeight: () => R, setBackground: () => R, setFontColor: () => R, setNumberFormat: () => R
-    };
-    return R;
-  },
-  appendRow(r) { this.rows.push(r.slice()); return this; },
-  setFrozenRows() {},
-  newChart() {
-    const ch = { o: {} };
-    const b = { setChartType: t => { ch.type = t; return b; }, addRange: () => b, setPosition: () => b, setOption: (k, v) => { ch.o[k] = v; return b; }, build: () => ch };
-    return b;
-  },
-  insertChart(ch) { this.charts.push(ch); }
-};
-function Spreadsheet(id, name) { this.id = id; this.name = name; this.tabs = []; }
-Spreadsheet.prototype = {
-  getId() { return this.id; }, getUrl() { return 'https://docs.google.com/spreadsheets/d/' + this.id; },
-  getSheetByName(n) { return this.tabs.find(t => t.name === n) || null; },
-  insertSheet(n) { const s = new Sheet(n); this.tabs.push(s); return s; },
-  getSheets() { return this.tabs; },
-  deleteSheet(s) { this.tabs.splice(this.tabs.indexOf(s), 1); }
-};
-
-function taoMoiTruong() {
-  const store = {}, cache = {}, gui = [], goi = [], triggers = [], ai = { kich: [], yeuCau: [] }, files = {}, lich = [], nhap = [];
-  const kpi = new Spreadsheet(KPI_ID, 'CSDL KPI');
-  files[KPI_ID] = kpi;
-  let soFile = 0;
-  class FakeDate extends Date { constructor(...a) { super(...(a.length ? a : [NOW.getTime()])); } static now() { return NOW.getTime(); } }
-  const ctx = {
-    console, Math, JSON, Date: FakeDate,
-    Utilities: {
-      getUuid: () => 'aaaa-bbbb-cccc-dddd',
-      formatDate: (d, tz, f) => {
-        const x = new Date(new Date(d).getTime() + 7 * 3600e3), p = n => String(n).padStart(2, '0');
-        return f.replace('yyyy', x.getUTCFullYear()).replace('MM', p(x.getUTCMonth() + 1)).replace('dd', p(x.getUTCDate()))
-          .replace('HH', p(x.getUTCHours())).replace('mm', p(x.getUTCMinutes())).replace('EEE', ['CN', 'T2', 'T3', 'T4', 'T5', 'T6', 'T7'][x.getUTCDay()]);
-      }
-    },
-    PropertiesService: { getScriptProperties: () => ({ getProperty: k => (k in store ? store[k] : null), setProperty: (k, v) => { store[k] = String(v); }, deleteProperty: k => { delete store[k]; }, getProperties: () => Object.assign({}, store) }) },
-    CacheService: { getScriptCache: () => ({ get: k => cache[k] || null, put: (k, v) => { cache[k] = v; }, remove: k => { delete cache[k]; } }) },
-    LockService: { getScriptLock: () => ({ waitLock() {}, releaseLock() {} }) },
-    SpreadsheetApp: {
-      openById: id => { if (!files[id]) throw new Error('không thấy file ' + id); return files[id]; },
-      create: name => { const s = new Spreadsheet('agent' + (++soFile), name); s.insertSheet('Sheet1'); files[s.id] = s; return s; }
-    },
-    Charts: { ChartType: { COLUMN: 'COLUMN', LINE: 'LINE', PIE: 'PIE' } },
-    CalendarApp: {
-      getDefaultCalendar: () => ({
-        getName: () => 'Lịch chính',
-        getEvents: (a, b) => lich.filter(e => e.bd >= a && e.bd <= b).map(e => ({ getStartTime: () => e.bd, getEndTime: () => e.kt, getTitle: () => e.t, getLocation: () => e.dd || '' })),
-        createEvent: (t, bd, kt, o) => { lich.push({ t, bd, kt, dd: o.location }); return { getTitle: () => t }; }
-      })
-    },
-    GmailApp: {   // không có sendEmail: nếu mã gọi gửi thật sẽ lỗi ngay
-      getAliases: () => [],
-      search: () => [{ getMessages: () => [{ getFrom: () => 'khach@abc.vn', getPlainBody: () => 'Xin báo giá 500 gậy' }], getLastMessageDate: () => NOW, getFirstMessageSubject: () => 'Báo giá' }],
-      createDraft: (to, sub, body) => { nhap.push({ to, sub, body }); }
-    },
-    ContentService: { createTextOutput: s => ({ s }) },
-    ScriptApp: {
-      getService: () => ({ getUrl: () => 'https://script.google.com/macros/s/ABC/exec' }),
-      getProjectTriggers: () => triggers, deleteTrigger: t => triggers.splice(triggers.indexOf(t), 1),
-      newTrigger: h => ({ timeBased: () => ({
-        everyDays: () => ({ atHour: g => ({ inTimezone: tz => ({ create: () => triggers.push({ h, g, tz, getHandlerFunction: () => h }) }) }) }),
-        everyMinutes: m => ({ create: () => triggers.push({ h, m, getHandlerFunction: () => h }) })
-      }) })
-    },
-    Logger: { log: () => {} },
-    UrlFetchApp: {
-      fetch(url, o) {
-        if (url === 'https://api.anthropic.com/v1/messages') {
-          const body = JSON.parse(o.payload);
-          ai.yeuCau.push({ body, headers: o.headers });
-          const r = ai.kich.shift();
-          assert.ok(r, 'AI được gọi ngoài dự kiến: ' + JSON.stringify(body.messages).slice(0, 300));
-          const tra = typeof r === 'function' ? r(body) : r;
-          return { getResponseCode: () => 200, getContentText: () => JSON.stringify(tra) };
-        }
-        const ham = url.split('/').pop(), body = JSON.parse(o.payload);
-        goi.push({ ham, body });
-        if (ham === 'sendMessage') gui.push(body);
-        return { getContentText: () => JSON.stringify({ ok: true, result: {} }) };
-      }
-    }
-  };
-  vm.createContext(ctx);
-  ['TroLyKPI.gs', 'TroLyAI.gs', 'Agents.gs'].forEach(f => vm.runInContext(fs.readFileSync(path.join(__dirname, '..', f), 'utf8'), ctx, { filename: f }));
-  return { ctx, store, cache, gui, goi, triggers, ai, files, kpi, lich, nhap };
-}
-
-function kpiMau(kpi) {
-  const them = (n, rows) => { kpi.insertSheet(n).rows = rows; };
-  them('PhongBan', [['MaXuong', 'TenXuong', 'TrangThai'], ['CNC', 'Xưởng CNC', 'Đang dùng']]);
-  them('CongDoan', [['MaCD', 'TenCD', 'MaXuong', 'CachCham', 'TrangThai'], ['CNC-TIP', 'Tip', 'CNC', 'CN', 'Đang dùng']]);
-  them('DinhMuc', [['MaCD', 'DinhMucGio'], ['CNC-TIP', 20]]);
-  them('DanhMucLoi', [['MaLoi', 'TenLoi']]);
-  them('NhanSu', [['MaNV', 'HoTen', 'MaXuong', 'ChucDanh', 'SoCCCD', 'LuongCoBan', 'TrangThai'], ['C1', 'A', 'CNC', 'Công nhân', '0010', 999, 'Đang làm']]);
-  them('NhatKySanXuat', [['MaDong', 'Ngay', 'MaNV', 'MaCD', 'GioLam', 'SoLuongLamRa', 'GioDung', 'LyDoDung', 'TrangThai'], ['x', '2026-10-10', 'C1', 'CNC-TIP', 8, 160, 0, '', 'Đã chốt']]);
-  them('XacNhanDiemDanh', [['Ngay', 'MaXuong'], ['2026-10-10', 'CNC']]);
-}
+const { taoMoiTruong, kpiMau } = require('./gia-lap.js');
 
 let n = 0;
 const ok = (c, m) => { assert.ok(c, m); n++; };
@@ -156,7 +39,7 @@ ok(M.triggers.filter(t => t.h === 'nhacViec').length === 1, 'chạy lại không
 
 const ds = M.ctx.docAgents_();
 ok(ds.length === 5 && !ds.some(a => a.ma === 'don_hang'), '5 phòng đang bật (Đơn hàng tắt)');
-ok(ds.find(a => a.ma === 'thu_ky').congCu.length === 7, 'thư ký có 7 công cụ');
+ok(ds.find(a => a.ma === 'thu_ky').congCu.length === 8, 'thư ký có 8 công cụ');
 
 // ---------- Lệnh nhanh ----------
 M.gui.length = 0;
@@ -166,7 +49,7 @@ ok(/CÁC PHÒNG ĐANG LÀM VIỆC/.test(cuoi()) && /Truyền thông \(@viết\)/
 // ---------- @viết: gọi thẳng, không cần điều phối ----------
 const soYC = M.ai.yeuCau.length;
 M.ai.kich.push(body => {
-  ok(body.tools.map(t => t.name).join() === 'so_tay_tim', 'Truyền thông chỉ có công cụ sổ tay');
+  ok(body.tools.map(t => t.name).join() === 'so_tay_tim,tin_tuc', 'Truyền thông chỉ có sổ tay + tin tức');
   const he = body.system[0].text;
   ok(/"Truyền thông"/.test(he) && /BỐI CẢNH/.test(he) && /Giọng văn \(SỬA DÒNG NÀY\)/.test(he), 'có vai trò + bối cảnh');
   ok(!/NhatKySanXuat/.test(he), 'phòng không đọc KPI thì không nhận mô tả dữ liệu KPI');
@@ -251,6 +134,7 @@ post('@thư ký: có việc gì mai?', 'b8');
 post('@sx', 'b9');
 ok(/Bạn muốn nhờ phòng Sản xuất việc gì/.test(cuoi()), '@phòng mà không có việc');
 ok(M.ai.kich.length === 0, 'không còn phản hồi AI chờ dùng');
+ok(M.ai.loiKich.length === 0, 'không có kiểm tra nào bị nuốt trong giả lập AI: ' + M.ai.loiKich.map(e => e.message).join(' | '));
 
 // ---------- Không lộ dữ liệu cá nhân ----------
 const tatCa = JSON.stringify(M.ai.yeuCau) + JSON.stringify(M.gui);

@@ -123,10 +123,46 @@ Bạn cứ nhắn tự nhiên, **thư ký điều phối** sẽ chuyển câu h�
 - Dữ liệu sản xuất chỉ đọc.
 - Phòng nào chỉ dùng được công cụ ghi trong cột `CongCu` của phòng đó.
 
+## Bước 7. "Tay chân": làm slide, đọc tệp Gmail, tin tức bi-a
+
+Ba việc nặng này chạy trên **máy tính cách ly của Anthropic** (Claude Managed Agents, đang ở bản thử nghiệm). Mỗi việc dùng một agent riêng, chỉ có đúng quyền cần thiết:
+
+| Việc | Cách gọi | Quyền của agent |
+|---|---|---|
+| **Làm slide báo cáo** | "làm slide báo cáo tháng 9" (phòng Phân tích) | Có kỹ năng PowerPoint. **Không vào được web.** |
+| **Đọc tệp trong Gmail** | "đọc file báo giá trong mail anh Hòa hôm qua, so với giá cũ" (Thư ký) | **Không có mạng.** Không có quyền vào Gmail: Apps Script tự lấy tệp rồi chuyển cho agent. |
+| **Tin tức ngành bi-a** | tự gửi **khoảng 7:30 mỗi sáng**; nhắn `tin tức` để lấy ngay | Chỉ tìm và đọc web. Không chạy lệnh, không có dữ liệu công ty. |
+
+Khi bạn giao việc, bot trả lời "⏳ Đã giao…". Xong việc (thường 2–10 phút), bot nhắn kết quả. Tệp (slide, Excel…) được lưu vào thư mục Drive **"Trợ lý – Kết quả"**, kèm đường link.
+Nhắn `việc nền` để xem việc đang chạy.
+
+**Cài đặt** (sao lưu trước: **Tổng quan → Tạo bản sao**):
+1. Dán lại `Mã.gs` ← `TroLyKPI.gs`, `TroLyAI` ← `TroLyAI.gs`, `Agents` ← `Agents.gs` (bản mới).
+2. **＋ → Tập lệnh** → đặt tên `TayChan` → xóa nội dung mẫu → dán `TayChan.gs` → 💾 Lưu.
+3. Chọn hàm **caiDatTayChan** → ▶ **Chạy** → Google hỏi quyền **Drive** (để lưu tệp kết quả) → **Nâng cao → Đi tới Trợ lý KPI → Cho phép**.
+   - ⚠ Phải làm bước này **trước** bước 4.
+   - Nhật ký thực thi phải hiện "ĐÃ CÀI TAY CHÂN". Nếu báo lỗi (ví dụ tài khoản chưa được dùng Managed Agents), chụp màn hình gửi Claude.
+4. **Triển khai → Quản lý triển khai → ✏️ → Phiên bản mới → Triển khai.**
+5. Thử: nhắn bot `tin tức`, chờ vài phút.
+
+**Muốn theo dõi chủ đề tin riêng:** trong sheet "Trợ lý – Công ty Agent", tab SoTay, thêm dòng có Loai = `Tin tức`, NoiDung = chủ đề. Ví dụ "giá ống carbon", "thuế nhập khẩu cơ bi-a vào Mỹ", "đối thủ X".
+
+**An toàn:**
+- Agent không bao giờ nhận mật khẩu hay quyền Gmail/Drive.
+- Agent đọc tệp không có mạng: dù tệp có cài lệnh ẩn, nó cũng không gửi được gì ra ngoài.
+- Thao tác nào máy chủ cho là cần người duyệt sẽ **tự bị từ chối**, vì không có ai trực để duyệt.
+
+**Chi phí** (ước tính thô, xem số thật ở console.anthropic.com → Usage):
+- Mỗi việc có **trần chi phí**: slide 3 USD, đọc tệp 2 USD, tin tức 1 USD. Chạm trần thì việc tự dừng và báo bạn.
+- Thường thực tế thấp hơn nhiều. Tin tức mỗi sáng khoảng 0,2–0,5 USD, tức khoảng 150–400 nghìn đồng/tháng.
+- Tối đa 15 việc nền/ngày. Đổi bằng thuộc tính `TC_GIOI_HAN_NGAY`.
+- Muốn tắt tin tức sáng: vào **Trình kích hoạt** (biểu tượng đồng hồ) → xóa `tinTucSang`.
+
 ## Khi cập nhật bản mới
-1. Mở từng file (`Mã.gs` ← `TroLyKPI.gs`, `TroLyAI` ← `TroLyAI.gs`, `Agents` ← `Agents.gs`) → xóa hết → dán bản mới → 💾 Lưu.
+1. Mở từng file (`Mã.gs` ← `TroLyKPI.gs`, `TroLyAI` ← `TroLyAI.gs`, `Agents` ← `Agents.gs`, `TayChan` ← `TayChan.gs`) → xóa hết → dán bản mới → 💾 Lưu.
 2. **Triển khai → Quản lý triển khai → ✏️ → Phiên bản: Phiên bản mới → Triển khai.** URL giữ nguyên, không cần chạy lại `caiDat`.
-   - Nếu Claude báo bản mới dùng thêm quyền: chạy `caiDatAgent` để cấp quyền **trước** khi triển khai.
+   - Nếu Claude báo bản mới dùng thêm quyền: chạy `caiDatAgent` / `caiDatTayChan` để cấp quyền **trước** khi triển khai.
+   - Nếu Claude báo đã đổi cách làm việc của agent tay chân: chạy lại `caiDatTayChan` (chỉ cập nhật, không tạo trùng).
 
 ## Cách tính (giống web app KPI)
 - Chỉ tính dòng `NhatKySanXuat` có TrangThai **"Đã chốt"** (trưởng phòng đã duyệt). "Chờ duyệt" được đếm riêng. "Từ chối" bị bỏ.
@@ -145,4 +181,4 @@ Bạn cứ nhắn tự nhiên, **thư ký điều phối** sẽ chuyển câu h�
   - Chạy lại **caiDat**.
 - Nếu lỡ để lộ token: vào Zalo Bot Creator (https://zalo.me/s/botcreator/) tạo token mới → sửa `ZALO_TOKEN` → chạy lại **caiDat**.
 - Bot báo lỗi quyền, hoặc ngừng trả lời sau khi cập nhật: chạy **caiDatAgent** trong Apps Script và bấm Cho phép.
-- Kiểm thử trên máy (dành cho Claude): `node tests/tro-ly.js && node tests/agents.js`.
+- Kiểm thử trên máy (dành cho Claude): `node tests/tro-ly.js && node tests/agents.js && node tests/tay-chan.js`.

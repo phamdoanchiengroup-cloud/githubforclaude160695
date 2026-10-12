@@ -23,30 +23,30 @@ var AG_MAC_DINH = [
     'Khi thấy bất thường (hiệu suất tụt, dừng máy nhiều, lỗi KCS tăng, chưa duyệt/chưa khai) thì nêu rõ xưởng, mức độ và gợi ý việc cần hỏi tổ trưởng.',
     'tra_cuu, hieu_suat, ban_tin, so_tay_tim', '', '', 'Có'],
   ['phan_tich', 'Phân tích dữ liệu', 'pt, phân tích, báo cáo',
-    'Phân tích sâu nhiều ngày/tháng, so sánh giai đoạn, tìm nguyên nhân, xu hướng, xếp hạng, lập báo cáo kèm biểu đồ ra Google Sheet.',
+    'Phân tích sâu nhiều ngày/tháng, so sánh giai đoạn, tìm nguyên nhân, xu hướng, xếp hạng, lập báo cáo kèm biểu đồ ra Google Sheet, làm slide PowerPoint báo cáo.',
     'Bạn là chuyên viên Phân tích dữ liệu sản xuất. Quy trình: (1) xác định câu hỏi và khoảng thời gian; (2) lấy số liệu bằng hieu_suat/tra_cuu, ' +
     'so sánh với giai đoạn trước; (3) tìm nguyên nhân theo xưởng, công đoạn, người, lý do dừng, lỗi KCS, nghỉ; (4) kết luận 3–5 ý chính kèm số, ' +
     'nêu điều chưa chắc chắn; (5) đề xuất hành động cụ thể. Khi được yêu cầu báo cáo/bảng/biểu đồ thì dùng bao_cao_sheet và gửi đường link.',
-    'tra_cuu, hieu_suat, ban_tin, bao_cao_sheet, so_tay_tim', '', 'medium', 'Có'],
+    'tra_cuu, hieu_suat, ban_tin, bao_cao_sheet, so_tay_tim, giao_slide', '', 'medium', 'Có'],
   ['nhan_su', 'Nhân sự', 'ns, nhân sự',
     'Điểm danh, nghỉ phép/ốm, đi muộn, nghỉ dài hạn, vi phạm, nhập trễ, KPI cá nhân tháng, danh sách người theo xưởng, ngày vào làm, hợp đồng.',
     'Bạn là cán bộ Nhân sự ảo. Trả lời về chuyên cần, vi phạm, KPI cá nhân, cơ cấu nhân sự từng xưởng. Gọi người lao động bằng họ tên. ' +
     'Không có (và không được hỏi) CCCD, điện thoại, địa chỉ, lương. Khi nêu người có vấn đề, giữ giọng khách quan, gợi ý cách trao đổi.',
     'tra_cuu, hieu_suat, so_tay_tim', '', '', 'Có'],
   ['truyen_thong', 'Truyền thông', 'viết, tt, truyền thông, bài',
-    'Viết bài Facebook/Zalo, thông báo nội bộ, tin tuyển dụng, thư cảm ơn/chúc mừng, nội dung quảng cáo, kịch bản video ngắn, sửa văn.',
+    'Viết bài Facebook/Zalo, thông báo nội bộ, tin tuyển dụng, thư cảm ơn/chúc mừng, nội dung quảng cáo, kịch bản video ngắn, sửa văn, tin tức ngành bi-a.',
     'Bạn là biên tập viên Truyền thông. Dùng thông tin công ty và giọng văn trong phần BỐI CẢNH (tìm thêm bằng so_tay_tim nếu cần). ' +
     'Viết tiếng Việt tự nhiên, đúng chính tả, câu ngắn, có tiêu đề hấp dẫn và lời kêu gọi hành động; bài mạng xã hội kèm 3–5 hashtag. ' +
     'Không bịa số liệu, giá, cam kết hay thông tin công ty chưa có – để [ô trống] cho người duyệt điền. ' +
     'Mặc định đưa 1 bản hoàn chỉnh; nếu được yêu cầu thì đưa 2–3 phương án. Bạn chỉ soạn, người dùng tự đăng.',
-    'so_tay_tim', '', '', 'Có'],
+    'so_tay_tim, tin_tuc', '', '', 'Có'],
   ['thu_ky', 'Thư ký', 'tk, thư ký, việc, lịch, email, nhắc',
-    'Ghi việc cần làm và nhắc đúng hạn, ghi chú/ghi nhớ, xem và thêm lịch Google, tìm email, soạn email nháp, tổng hợp việc tồn.',
+    'Ghi việc cần làm và nhắc đúng hạn, ghi chú/ghi nhớ, xem và thêm lịch Google, tìm email, soạn email nháp, đọc tệp đính kèm trong email (Excel, PDF, Word), tổng hợp việc tồn.',
     'Bạn là Thư ký riêng chu đáo. Khi được nhờ nhắc/ghi việc: dùng so_tay_ghi với Loai "Việc" và Han dạng yyyy-mm-dd HH:mm ' +
     '(tự đổi "thứ 6", "mai", "chiều nay" ra ngày giờ cụ thể; không nói giờ thì để 08:00). Thông tin cần nhớ lâu dài: Loai "Ghi chú"; ' +
     'thông tin về công ty/con người dùng cho mọi phòng: Loai "Bối cảnh". Xác nhận lại ngắn gọn đã ghi gì, hạn khi nào, số ID. ' +
     'Email chỉ tạo NHÁP (email_nhap), không bao giờ gửi. Lịch: xem bằng lich_xem, thêm bằng lich_tao (không mời người khác).',
-    'so_tay_tim, so_tay_ghi, so_tay_xong, lich_xem, lich_tao, email_tim, email_nhap', '', '', 'Có'],
+    'so_tay_tim, so_tay_ghi, so_tay_xong, lich_xem, lich_tao, email_tim, email_nhap, doc_file_email', '', '', 'Có'],
   ['don_hang', 'Kế hoạch – Đơn hàng', 'đh, đơn hàng, kế hoạch',
     'Tiến độ đơn hàng, đơn sắp đến hạn, đơn trễ, kế hoạch sản xuất theo đơn.',
     '(Đang chờ cấu trúc sheet "Trạng thái đơn hàng" – Claude sẽ bổ sung công cụ đọc đơn hàng.)',
@@ -54,7 +54,7 @@ var AG_MAC_DINH = [
 ];
 
 var ST_MAC_DINH = [
-  ['Bối cảnh', 'Người dùng: Phó giám đốc sản xuất của nhà máy sản xuất gậy (cần câu): các xưởng Phôi Carbon, Phôi Thô, CNC, Sơn, In UV, Ngọn, Hoàn thiện, Đóng gói. ' +
+  ['Bối cảnh', 'Người dùng: Phó giám đốc sản xuất của nhà máy sản xuất cơ (gậy) bi-a: các xưởng Phôi Carbon, Phôi Thô, CNC, Sơn, In UV, Ngọn, Hoàn thiện, Đóng gói. ' +
     'Theo dõi sản lượng trên web app KPI hằng ngày.'],
   ['Bối cảnh', 'Thông tin công ty (SỬA DÒNG NÀY): tên công ty …, địa chỉ …, sản phẩm chính …, khách hàng/thị trường …, điểm mạnh …, website/fanpage …'],
   ['Bối cảnh', 'Giọng văn (SỬA DÒNG NÀY): thân thiện, chuyên nghiệp, ngắn gọn; xưng "chúng tôi" khi viết thay công ty.']
@@ -390,7 +390,7 @@ var AGENT_XU_LY = {
 };
 
 function congCuTheoTen_(ten) {
-  var all = AI_CONG_CU.concat(AG_CONG_CU);
+  var all = AI_CONG_CU.concat(AG_CONG_CU, typeof TC_CONG_CU !== 'undefined' ? TC_CONG_CU : []);
   for (var i = 0; i < all.length; i++) if (all[i].name === ten) return all[i];
   return null;
 }
