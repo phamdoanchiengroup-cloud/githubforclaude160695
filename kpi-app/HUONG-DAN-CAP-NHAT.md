@@ -451,3 +451,11 @@ Nếu vẫn thấy giao diện cũ: kiểm tra lại Phần D (đã chọn **Phi
 - Qua **12:00** của ngày ăn, thẻ thực đơn và bảng tổng hợp số suất của ngày đó tự thu gọn.
 - Cần xem lại thì bấm **"Tổng hợp số suất đã qua giờ ăn"** hoặc **"Thực đơn đã qua giờ ăn"** ở cuối trang Cơm trưa.
 - Chỉ cần dán lại **Index.html**.
+
+
+## Cơm trưa – người nghỉ dài hạn tự tính "Không ăn" (12/10)
+- Người đang **nghỉ dài hạn** (thai sản, ốm dài…) mà trưởng phòng đã ghi trong mục Nghỉ dài hạn của web: những ngày trong khoảng nghỉ tự tính **Không ăn**, không cần ai bấm.
+- Bảng "Danh sách không ăn" ghi rõ "(tự động – Thai sản)". Trong khung đăng ký hộ họ hiện sẵn "Không ăn", nút "Đăng ký ăn cho tất cả" sẽ bỏ qua họ.
+- Nếu người đó vẫn đi ăn (hoặc được đăng ký hộ "Ăn") thì tính theo lần đăng ký đó.
+- Nghỉ xong (qua "đến ngày") thì tự trở lại bình thường.
+- Cần dán lại **Code.gs** và **Index.html**.

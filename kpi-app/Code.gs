@@ -5871,10 +5871,17 @@ function comTenX_() {
 }
 
 /* Tổng hợp một ngày: { ngay, xuong:[{mx, ten, an, khong, chua, dsAn, dsKhong, dsChua}], an, khong, chua } */
+/* Người đang nghỉ dài hạn (thai sản, ốm dài… – trưởng phòng ghi ở sheet NghiDaiHan) trong ngày `ngay`: MaNV -> loại nghỉ.
+   Chủ dự án 12/10: chưa đăng ký thì tự tính KHÔNG ĂN; ai tự đăng ký (hoặc được đăng ký hộ) thì theo lượt đăng ký đó. */
+function comNghiDai_(ngay) {
+  var m = {};
+  docAnToan_('NghiDaiHan').forEach(function(r) { if (ngayVN_(r.TuNgay) <= ngay && ngay <= ngayVN_(r.DenNgay)) m[String(r.MaNV).trim()] = String(r.Loai || 'Nghỉ dài hạn'); });
+  return m;
+}
 function comTongHop_(ngay, me) {
   var nguoi = comNguoi_(), tenX = comTenX_(), dk = {}, bep = comTkBep_();
   comDoc_('DangKyCom').forEach(function(r) { if (comNgay_(r.Ngay) === ngay && !bep[String(r.TenDangNhap).toLowerCase()]) dk[String(r.TenDangNhap).toLowerCase()] = r; });
-  var X = {}, ctKhong = [], muon = [], han = comHan_(ngay), nhomTk = {}, nhomChua = 0;
+  var X = {}, ctKhong = [], muon = [], han = comHan_(ngay), nhomTk = {}, nhomChua = 0, nd = comNghiDai_(ngay);
   var ghiMuon = function(r, ten, ma, mx, tenXg) {
     if (!r || comThoi_(r.ThoiDiem) < han) return;
     var nh = String(r.SoSuat === undefined ? '' : r.SoSuat).trim() !== '';
@@ -5884,7 +5891,8 @@ function comTongHop_(ngay, me) {
     var x = X[p.mx] || (X[p.mx] = { mx: p.mx, ten: tenX[p.mx] || p.mx, an: 0, khong: 0, chua: 0, dsAn: [], dsKhong: [], dsChua: [] });
     var r = dk[p.tk];
     ghiMuon(r, p.ten, p.ma, p.mx, x.ten);
-    if (!r) { x.chua++; x.dsChua.push(p.ten); }
+    if (!r && p.ma && nd[p.ma]) { x.khong++; x.dsKhong.push(p.ten); ctKhong.push({ ten: p.ten, ma: p.ma, mx: p.mx, xuong: x.ten, nghi: nd[p.ma] }); }   // nghỉ dài hạn: tự không ăn
+    else if (!r) { x.chua++; x.dsChua.push(p.ten); }
     else if (Number(r.An) === 1) { x.an++; x.dsAn.push(p.ten); }
     else { x.khong++; x.dsKhong.push(p.ten); ctKhong.push({ ten: p.ten, ma: p.ma, mx: p.mx, xuong: x.ten }); }
   });
@@ -5955,6 +5963,9 @@ function napComTrua(token) {
         .map(function(p) { return { tk: p.tk, ten: p.ten, ma: p.ma, xuong: tenX[p.mx] || p.mx }; })
         .sort(function(a, b) { return String(a.xuong).localeCompare(String(b.xuong)) || String(a.ten).localeCompare(String(b.ten)); });
       comDoc_('DangKyCom').forEach(function(r) { var o = ngays[comNgay_(r.Ngay)]; if (o) o[String(r.TenDangNhap).toLowerCase()] = [Number(r.An) === 1 ? 1 : 0, String(r.DangKyHo || '')]; });
+      var dsNg = comNguoi_();   // người nghỉ dài hạn chưa đăng ký: coi như đã báo không ăn (nút "đăng ký ăn cho tất cả" bỏ qua họ)
+      Object.keys(ngays).forEach(function(ng) { var nd = comNghiDai_(ng), o = ngays[ng];
+        dsNg.forEach(function(p) { if (p.ma && nd[p.ma] && !o[p.tk]) o[p.tk] = [0, '', nd[p.ma]]; }); });
       out.hoDK = ngays;
     }
     if (out.quyen.xem) {

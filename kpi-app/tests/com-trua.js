@@ -53,7 +53,8 @@ r = c.__goi('napComTrua', tCN); ok(r.cuaToi['2026-10-13'] === 0, 'trang của t�
 console.log('\n3. Tổng hợp gửi bếp');
 r = c.__goi('napComTrua', tB);
 let th = r.tongHop.find(x => x.ngay === '2026-10-13');
-ok(r.quyen.xem && r.quyen.sua && th && th.an === 3 && th.khong === 2 && th.an + th.khong + th.chua === soNguoi, 'bếp: 3 ăn, 2 không ăn, còn lại chưa đăng ký (tổng = ' + soNguoi + ' tài khoản đang dùng, đã bỏ người nghỉ việc, tài khoản bếp, nhân sự, QC)', th && [th.an, th.khong, th.chua]);
+const nND = Object.keys(c.comNghiDai_('2026-10-13')).length;   // dữ liệu thật có thể có người nghỉ dài hạn (tự tính không ăn)
+ok(r.quyen.xem && r.quyen.sua && th && th.an === 3 && th.khong >= 2 && th.khong <= 2 + nND && th.an + th.khong + th.chua === soNguoi, 'bếp: 3 ăn, 2 không ăn (+ người nghỉ dài hạn), còn lại chưa đăng ký (tổng = ' + soNguoi + ' tài khoản đang dùng, đã bỏ người nghỉ việc, tài khoản bếp, nhân sự, QC)', th && [th.an, th.khong, th.chua]);
 th = c.__goi('napComTrua', tO).tongHop.find(x => x.ngay === '2026-10-13');   // ban điều hành: có tên
 const xTP = th.xuong.find(x => x.mx === tp.MaXuong), xVP = th.xuong.find(x => x.mx === 'VP');
 ok(xTP && xTP.an === 1 && xTP.dsAn.length === 1 && !xTP.dsAn.concat(xTP.dsKhong, xTP.dsChua).includes(tp.HoTen), 'ban điều hành: xưởng của trưởng phòng chỉ còn suất công nhân (suất trưởng phòng không tính theo xưởng), có tên', xTP);
@@ -68,7 +69,7 @@ ok(th.xuong.every(x => Array.isArray(x.dsChua)), 'ban điều hành: thấy tên
   ok(tb.xuong.every(x => x.dsAn === undefined && x.dsKhong === undefined) && !tb.dsKhongCT.length && !tb.dsMuon.length && tb.an === 3 && tb.xuong.length > 1,
     'bếp: chỉ thấy số suất từng xưởng + tổng, không có họ tên / mã NV', tb.dsKhongCT); }
 const cnK = th.dsKhongCT.find(x => x.ten === cn.HoTen);
-ok(th.dsKhongCT.length === 2 && cnK && cnK.ma === String(cn.MaNV) && cnK.xuong === c.tenXuong_(cn.MaXuong) && th.dsKhongCT.some(x => x.ten === cn3.HoTen) && !th.dsKhongCT.some(x => x.ten === 'Bếp ăn'),
+ok(th.dsKhongCT.filter(x => !x.nghi).length === 2 && cnK && cnK.ma === String(cn.MaNV) && cnK.xuong === c.tenXuong_(cn.MaXuong) && th.dsKhongCT.some(x => x.ten === cn3.HoTen) && !th.dsKhongCT.some(x => x.ten === 'Bếp ăn'),
   'ban điều hành: danh sách không ăn đủ họ tên, mã NV, xưởng', th.dsKhongCT);
 ok(Array.isArray(khongTP) && khongTP.every(x => x.mx === tp.MaXuong), 'trưởng phòng: danh sách không ăn chỉ xưởng mình', khongTP);
 r = c.__goi('napComTrua', tCN); ok(!r.tongHop.length, 'công nhân không nhận danh sách không ăn');
@@ -167,6 +168,27 @@ ok(c.dauCot_('DangKyCom').includes('SoSuat'), 'sheet DangKyCom có cột SoSuat'
 { const bo = new Set(['nhom.mkt', 'nhom.store']);
   c.xoaNhieuDong_('DangKyCom', c.doc_('DangKyCom').filter(x => bo.has(String(x.TenDangNhap).toLowerCase())).map(x => x._row));
   c.xoaNhieuDong_('TaiKhoan', c.doc_('TaiKhoan').filter(x => bo.has(String(x.TenDangNhap).toLowerCase())).map(x => x._row)); }
+
+console.log('\n4e. Người nghỉ dài hạn (thai sản, ốm dài) tự tính không ăn');
+{
+  const dkTk = new Set(c.doc_('DangKyCom').filter(r => c.comNgay_(r.Ngay) === '2026-10-14').map(r => String(r.TenDangNhap).toLowerCase()));
+  const nd = c.doc_('TaiKhoan').find(x => vt('CN')(x) && x.MaXuong === tp.MaXuong && x.MaNV && !dkTk.has(String(x.TenDangNhap).toLowerCase()) && !(String(x.MaNV).trim() && nghi.has(String(x.MaNV).trim())));
+  const truoc = c.comTongHop_('2026-10-14', { vaiTro: 'ADMIN' });
+  c.taoSheetNghiDaiHan_();
+  c.them_('NghiDaiHan', { MaNghi: 'NDH-THU', MaNV: nd.MaNV, MaXuong: nd.MaXuong, Loai: 'Thai sản', TuNgay: '2026-10-01', DenNgay: '2026-12-31', GhiChu: '', NguoiGhi: 'thử', ThoiDiem: '' });
+  const sau = c.comTongHop_('2026-10-14', { vaiTro: 'ADMIN' });
+  ok(sau.khong === truoc.khong + 1 && sau.chua === truoc.chua - 1 && sau.an === truoc.an, 'chưa đăng ký + đang nghỉ thai sản: tự tính không ăn', [truoc.an, truoc.khong, truoc.chua, sau.an, sau.khong, sau.chua]);
+  const ct = sau.dsKhongCT.find(x => x.ma === String(nd.MaNV));
+  ok(ct && ct.nghi === 'Thai sản', 'danh sách không ăn ghi rõ lý do nghỉ dài hạn', ct);
+  // người đã tự đăng ký ăn mà rơi vào khoảng nghỉ: vẫn theo lượt đăng ký
+  const t13a = c.comTongHop_('2026-10-13', { vaiTro: 'ADMIN' });
+  c.them_('NghiDaiHan', { MaNghi: 'NDH-THU2', MaNV: muonTk.MaNV, MaXuong: muonTk.MaXuong, Loai: 'Ốm dài ngày', TuNgay: '2026-10-13', DenNgay: '2026-10-13', GhiChu: '', NguoiGhi: 'thử', ThoiDiem: '' });
+  const t13b = c.comTongHop_('2026-10-13', { vaiTro: 'ADMIN' });
+  ok(t13b.an === t13a.an && t13b.khong === t13a.khong, 'người đã đăng ký ăn thì vẫn tính theo đăng ký', [t13a.an, t13b.an]);
+  c.__datGio('2026-10-13T08:00:00+07:00'); r = c.__goi('napComTrua', tTP);
+  const o = r.hoDK && r.hoDK['2026-10-14'] && r.hoDK['2026-10-14'][String(nd.TenDangNhap).toLowerCase()];
+  ok(o && o[0] === 0 && o[2] === 'Thai sản', 'đăng ký hộ: người nghỉ dài hạn hiện sẵn "không ăn" (nút đăng ký ăn cho tất cả bỏ qua)', o);
+}
 
 console.log('\n4d. Nhân sự (HR), kiểm soát chất lượng (QC) không tính suất cơm');
 { const hr = tk(x => String(x.VaiTro).trim() === 'HR' && String(x.TrangThai).trim() === 'Đang dùng'), qc = tk(x => String(x.VaiTro).trim() === 'QC' && String(x.TrangThai).trim() === 'Đang dùng');

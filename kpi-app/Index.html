@@ -10390,7 +10390,7 @@ function comKhongHtml(th){
   var ds=th.dsKhongCT||[]; if(!ds.length&&!th.khong)return ''; if(!ds.length&&ME.vaiTro!=='TP'&&ME.vaiTro!=='TBP')return '';   // bếp / nhân sự: chỉ số, không danh sách tên
   return '<h4 style="margin:16px 0 6px">Danh sách không ăn ('+ds.length+(ds.length<th.khong?' / '+th.khong+' – chỉ hiện xưởng của bạn':'')+')</h4>'+
     (ds.length?'<table class="cm-bang"><thead><tr><th class="r" style="width:42px">#</th><th>Họ tên</th><th>Mã NV</th><th>Xưởng</th></tr></thead><tbody>'+
-      ds.map(function(c,i){return '<tr><td class="r">'+(i+1)+'</td><td>'+esc(c.ten)+'</td><td>'+esc(c.ma||'–')+'</td><td>'+esc(c.xuong)+'</td></tr>'}).join('')+'</tbody></table>':'');
+      ds.map(function(c,i){return '<tr><td class="r">'+(i+1)+'</td><td>'+esc(c.ten)+(c.nghi?' <span class="cm-ghi">(tự động – '+esc(c.nghi)+')</span>':'')+'</td><td>'+esc(c.ma||'–')+'</td><td>'+esc(c.xuong)+'</td></tr>'}).join('')+'</tbody></table>':'');
 }
 function comChep(i){
   var th=COM.d.tongHop[i]; if(!th)return;
@@ -10424,7 +10424,7 @@ function comHoDs(){
   if(!ds.length)return h+'<p class="cm-ghi">'+(COM.hoLoc==='chua'?'Mọi người đã đăng ký.':'Không có ai khớp.')+'</p>';
   return h+'<ul class="cm-ds cm-ho-ds">'+ds.slice(0,300).map(function(p){var x=dk[p.tk],v=x?x[0]:undefined;
     return '<li><span><b>'+esc(p.ten)+'</b> <span class="cm-ghi">'+esc(p.ma||'')+(ME.vaiTro!=='TP'&&ME.vaiTro!=='TBP'?' · '+esc(p.xuong):'')+'</span>'+
-      (x?' '+(v?'<span class="cm-tt an">Ăn</span>':'<span class="cm-tt khong">Không ăn</span>')+(x[1]?' <span class="cm-ghi">(hộ: '+esc(x[1])+')</span>':' <span class="cm-ghi">(tự đăng ký)</span>'):'')+'</span>'+
+      (x?' '+(v?'<span class="cm-tt an">Ăn</span>':'<span class="cm-tt khong">Không ăn</span>')+(x[2]?' <span class="cm-ghi">(tự động – '+esc(x[2])+')</span>':x[1]?' <span class="cm-ghi">(hộ: '+esc(x[1])+')</span>':' <span class="cm-ghi">(tự đăng ký)</span>'):'')+'</span>'+
       '<span class="cb-nut"><button type="button" class="cm-nut an" aria-pressed="'+(v===1)+'"'+kh+' onclick="comHoDK([\''+p.tk+'\'],1)">🍚 Ăn</button>'+
       '<button type="button" class="cm-nut khong" aria-pressed="'+(v===0)+'"'+kh+' onclick="comHoDK([\''+p.tk+'\'],0)">Không ăn</button></span></li>'}).join('')+'</ul>';
 }

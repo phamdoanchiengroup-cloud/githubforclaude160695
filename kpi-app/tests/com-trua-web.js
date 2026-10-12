@@ -35,13 +35,14 @@ const doiNguoi = (p, f) => p.evaluate(f => {
   await p.click('#combar .cm-nut.an'); await p.waitForTimeout(1500);
   s = await p.evaluate(() => [$('combar').querySelector('.cm-nut.an').getAttribute('aria-pressed'), document.querySelector('.cm-so .an b').textContent, document.querySelector('.cm-the').textContent]);
   ok(s[0] === 'true' && s[1] === '1' && /đã đăng ký ăn/.test(s[2]), 'bấm Ăn trên thanh: nút sáng, tổng hợp 1 suất, thẻ ghi "đã đăng ký ăn"', s);
-  s = await p.evaluate(() => [...document.querySelectorAll('.cm-bang tbody tr')].map(r => r.textContent));
+  s = await p.evaluate(() => [...document.querySelector('.cm-bang').querySelectorAll('tbody tr')].map(r => r.textContent));
   ok(s.length > 3 && /Tổng tất cả/.test(s[s.length - 1]) && s.some(x => /Ban điều hành và trưởng bộ phận/.test(x)), 'bảng tổng hợp theo xưởng + dòng Tổng tất cả', s.slice(-2));
   await p.evaluate(() => __MAY_CHU.dangKyCom(__MAY_CHU.taoPhien_(__MAY_CHU.doc_('TaiKhoan').find(x => String(x.VaiTro).trim() === 'CN' && x.MaNV && x.TrangThai === 'Đang dùng')), '2026-10-13', false));
   await p.evaluate(() => comTai()); await p.waitForTimeout(1200);
   s = await p.evaluate(() => { const h = [...document.querySelectorAll('h4')].find(x => /Danh sách không ăn/.test(x.textContent)); const t = h && h.nextElementSibling;
     return [h && h.textContent, t && [...t.querySelectorAll('th')].map(x => x.textContent).join('|'), t && t.querySelector('tbody tr') && [...t.querySelector('tbody tr').cells].map(x => x.textContent)]; });
-  ok(/Danh sách không ăn \(1\)/.test(s[0]) && s[1] === '#|Họ tên|Mã NV|Xưởng' && s[2] && /^C/i.test(s[2][2]) && /Xưởng/.test(s[2][3]), 'ban điều hành: bảng người không ăn có họ tên, mã NV, xưởng', s);
+  ok(/Danh sách không ăn \(\d+\)/.test(s[0])   // 1 người báo không ăn + người nghỉ dài hạn (tự động) nếu dữ liệu có
+     && s[1] === '#|Họ tên|Mã NV|Xưởng' && s[2] && /^C/i.test(s[2][2]) && /Xưởng/.test(s[2][3]), 'ban điều hành: bảng người không ăn có họ tên, mã NV, xưởng', s);
   await p.evaluate(() => go('kpi')); await p.waitForTimeout(800);
   ok(await p.evaluate(() => $('combar').className === '' && /Gà rang/.test($('combar').textContent)), 'thanh thực đơn vẫn hiện khi sang trang khác (Bảng KPI)');
   if (OUT) { await p.evaluate(() => go('com')); await p.waitForTimeout(600); await p.screenshot({ path: OUT + '/com-may-tinh.png', fullPage: true }); }
