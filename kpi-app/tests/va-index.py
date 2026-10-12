@@ -786,5 +786,8 @@ exec(io.open(os.path.join(D, 'mai', 'va-rhino.py'), encoding='utf-8').read())
 # ---------------------------------------------------------------- 18. Sửa lỗi giao diện theo bộ kiểm tra Impeccable (11/10)
 exec(io.open(os.path.join(D, 'sua-loi', 'va-sua-loi.py'), encoding='utf-8').read())
 
+# ---------------------------------------------------------------- 19. Phần giao diện tải sau: SoDo.html, HoatAnh.html (12/10, cho trang nhẹ)
+exec(io.open(os.path.join(D, 'manh', 'va-manh.py'), encoding='utf-8').read())
+
 io.open(os.path.join(D, '..', 'Index.html'), 'w', encoding='utf-8').write(s)
 print('OK Index.html')

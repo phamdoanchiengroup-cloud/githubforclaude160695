@@ -467,3 +467,20 @@ Nếu vẫn thấy giao diện cũ: kiểm tra lại Phần D (đã chọn **Phi
 - Bếp thấy: dòng nhóm vẫn ghi tổng 8 suất kèm "2 ăn ở Hà Nam"; "Tổng ở Hà Nam" / "Tổng ở Hà Nội" cộng theo nơi ăn thật; dưới bảng có dòng "↔ Suất ăn ở nơi khác".
 - Người dưới xưởng không cần chọn nơi ăn (giữ như cũ).
 - Cần dán lại **Code.gs** và **Index.html**. Sheet `DangKyCom` tự thêm cột `SoSuatNoiKhac`.
+
+
+## Web nhẹ hơn một nửa – tách 2 file tải sau (12/10)
+- Index.html giảm từ khoảng **1,5 MB xuống 0,77 MB**: mọi người (cả công nhân trên điện thoại) mở web nhanh hơn.
+- Phần **Sơ đồ nhà máy** và **dữ liệu hoạt ảnh** chuyển ra 2 file riêng, chỉ tải khi cần rồi trình duyệt nhớ lại:
+  - `SoDo.html` – chỉ tải khi bấm tab Sơ đồ nhà máy (ban điều hành, trưởng phòng, trợ lý, nhân sự). Lần đầu mở tab mất thêm 1–2 giây.
+  - `HoatAnh.html` – tự tải nền vài giây sau khi đăng nhập.
+- Đã bỏ ảnh / logo bị nhúng trùng và 3 font chữ khắc chỉ dùng cho trang demo.
+
+**Cách dán (lần này có 2 file MỚI):**
+1. Sao lưu: Tổng quan → Tạo bản sao dự án.
+2. MỞ FILE **Code.gs** → xóa hết → dán bản mới → Ctrl+S.
+3. MỞ FILE **Index.html** → xóa hết → dán bản mới → Ctrl+S.
+4. Tạo file mới: bấm dấu **+** cạnh "Tệp" → **HTML** → gõ tên **SoDo** (đúng chữ hoa S, D; Apps Script tự thêm .html) → xóa hết nội dung mẫu → dán nội dung file `SoDo.html` → Ctrl+S.
+5. Làm tương tự, tạo file **HoatAnh** → dán nội dung `HoatAnh.html` → Ctrl+S.
+6. Triển khai → Quản lý triển khai → ✏️ → Phiên bản mới → Triển khai. Rồi Ctrl+F5.
+- Nếu quên bước 4–5: tab Sơ đồ báo "Chưa có file SoDo.html…", hoạt ảnh tự dùng hình tĩnh – web vẫn chạy bình thường.

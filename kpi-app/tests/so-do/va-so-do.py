@@ -28,5 +28,21 @@ R("""  ['Hôm nay',['homnay','dash','cnnhap','kpica']],""", """  ['Hôm nay',['h
 R("""  hd:'<circle cx="12" cy="12" r="8"/>""", """  sodo:'<path d="M3.5 20.5h17"/><path d="M5 20.5V9l5 3V9l5 3V5.5h4v15"/><path d="M8 16h1.5M12.5 16H14M16.5 16H18"/>',
   hd:'<circle cx="12" cy="12" r="8"/>""")
 R("""cccn:vCCCaNhan}[k])();""", """cccn:vCCCaNhan,sodo:vSoDo}[k])();""")
+# 12/10: phần sơ đồ (~390 KB) KHÔNG nhúng vào Index.html nữa mà ghi ra file riêng kpi-app/SoDo.html (dán thêm vào Apps Script);
+# trình duyệt chỉ tải khi mở tab Sơ đồ (taiManh – mục 19, máy chủ layManhGiaoDien trong tests/manh.gs). Ở đây chỉ để hàm chờ vSoDo.
+_SODO_HTML = ('<!-- Sơ đồ nhà máy (tải khi mở tab, xem tests/so-do/va-so-do.py) -->\n<style>\n' + _css + '</style>\n<textarea id="sdNguon3d" hidden>'
+              + _html.escape(_b3, quote=False) + '</textarea>\n<script>\n' + _js + '</script>\n')
+io.open(os.path.join(D, '..', 'SoDo.html'), 'w', encoding='utf-8').write(_SODO_HTML)
 _k = s.rfind('</body>')
-s = s[:_k] + '<style>\n' + _css + '</style>\n<script>\n' + _js + '</script>\n<textarea id="sdNguon3d" hidden>' + _html.escape(_b3, quote=False) + '</textarea>\n' + s[_k:]
+s = s[:_k] + '''<script>
+/* Tab Sơ đồ nhà máy: mã nằm ở file SoDo.html, tải khi mở tab lần đầu (rồi trình duyệt nhớ). Hàm này bị thay bằng vSoDo thật sau khi tải. */
+function vSoDo(){
+  $('main').innerHTML='<div class="ptitle">Sơ đồ nhà máy</div><div class="pdesc">Đang tải sơ đồ…</div>';
+  taiManh('SoDo',function(ok,msg){
+    if(tabHienTai!=='sodo')return;
+    if(ok&&window.__sdDaNap){vSoDo();return}
+    $('main').innerHTML='<div class="ptitle">Sơ đồ nhà máy</div><div class="alert a-bd">'+esc(msg||'Không tải được sơ đồ.')+' <button class="btn sm" type="button" onclick="vSoDo()">Thử lại</button></div>';
+  });
+}
+</script>
+''' + s[_k:]

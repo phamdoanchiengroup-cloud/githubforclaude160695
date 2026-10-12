@@ -6,6 +6,7 @@
    - Chờ duyệt: D.choDuyet theo xưởng của công đoạn; máy bảo trì: D.maymoc TinhTrang 'Bảo trì' (chưa có vị trí trên bản vẽ).
    - Ghép khu ↔ xưởng: SS.GHEP (mặc định trong mã), ADMIN chỉnh được, lưu ở trình duyệt (kpi_sodo_ghep). */
 {{SS}}
+window.__sdDaNap = true;   // đã tải phần sơ đồ (SoDo.html) – vSoDo dưới đây thay hàm chờ trong Index.html
 var SD_DATA = {{DATA}};
 var SD = { tang: 0, loc: '', chon: null, siso: null, sisoNgay: '', vb: [-0.5, -0.5, 45.75, 35.25] };
 var SD_VB0 = SD.vb.slice(), SD_ZMAX = 6;

@@ -1338,6 +1338,7 @@ s = s.rstrip() + '\n' + io.open(os.path.join(os.path.dirname(__file__), 'ham-cha
 s = s.rstrip() + '\n' + io.open(os.path.join(os.path.dirname(__file__), 'toc-do.gs'), encoding='utf-8').read()
 s = s.rstrip() + '\n' + io.open(os.path.join(os.path.dirname(__file__), 'bao-cao.gs'), encoding='utf-8').read()
 s = s.rstrip() + '\n' + io.open(os.path.join(os.path.dirname(__file__), 'com-trua.gs'), encoding='utf-8').read()
+s = s.rstrip() + '\n' + io.open(os.path.join(os.path.dirname(__file__), 'manh.gs'), encoding='utf-8').read()   # phần giao diện tải sau (SoDo.html, HoatAnh.html)
 
 io.open(RA, 'w', encoding='utf-8').write(s)
 print('OK ->', os.path.abspath(RA))

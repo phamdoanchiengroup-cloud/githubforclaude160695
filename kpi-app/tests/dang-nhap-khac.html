@@ -2,7 +2,7 @@
 /* ============================================================
    MÀN ĐĂNG NHẬP — "KHẮC LASER" (Rhino / Carbon Billiards Co., Ltd.)
    Nền: khung hình đầu video khắc laser của hãng (4 ngọn carbon cắm trong cát đen, đã xóa logo in sẵn, chỉnh tông tối) –
-   kpi-app/anh/rhino/khac-laser.jpg, chèn base64 {{RH_KHAC}}; logo {{RH_LOGO}}.
+   kpi-app/anh/rhino/khac-laser.jpg, chèn base64 qua chỗ giữ RH_KHAC; logo qua RH_LOGO (chỉ nhúng 1 lần, cửa cuốn lấy lại từ .lk-dau img).
    Ý tưởng riêng: gõ MÃ NHÂN VIÊN thì tia laser khắc từng ký tự lên ngọn cơ thứ 3 (trục đo từ ảnh: tâm x = 0.1464·y + 616.2, nghiêng 8.33°, thân rộng ~139px) (chữ nóng sáng rồi nguội màu vàng đồng).
    Gõ mật khẩu: laser chỉ lóe tia, không khắc gì. Đúng: vệt sáng chạy dọc ngọn cơ. Sai: tia đỏ, chữ khắc mờ đi.
    Bảng đăng nhập là tấm kính tối nổi trên khoảng tường trống. Giữ nguyên API cho login(): bbCho, bbTrung, bbTruot, bbTha, bbXep, bbChu, bbKhoiDong.
@@ -541,7 +541,8 @@ function lkChayCham() {
 function lkCua() {
   var g = bbG(); g.classList.add('lk-chuabat');
   var c = document.createElement('div'); c.className = 'lk-cua'; c.id = 'lkCua';
-  c.innerHTML = '<div class="bien"><img src="{{RH_LOGO}}" alt=""><b>Xưởng · Ca làm việc</b></div><button type="button" class="tay" aria-label="Kéo cửa cuốn lên để mở"><span>⌃ Vuốt lên để mở cửa</span><i></i></button>';
+  var lg = document.querySelector('#gate .lk-dau img');   // dùng lại logo đã có (không nhúng ảnh lần 2 cho nhẹ trang)
+  c.innerHTML = '<div class="bien"><img src="' + (lg ? lg.getAttribute('src') : '') + '" alt=""><b>Xưởng · Ca làm việc</b></div><button type="button" class="tay" aria-label="Kéo cửa cuốn lên để mở"><span>⌃ Vuốt lên để mở cửa</span><i></i></button>';
   g.appendChild(c);
   var y0 = null, len = 0, daKeo = false, h = 1;
   c.addEventListener('pointerdown', function (e) { y0 = e.clientY; len = 0; daKeo = false; h = c.getBoundingClientRect().height; try { c.setPointerCapture(e.pointerId); } catch (x) {} c.classList.add('dang'); });

@@ -6,7 +6,7 @@
  * Dùng: const G = require('./gia-lap-kpi.js'); const ctx = G.tao('../Code.gs', duLieu, '2026-09-28T16:00:00+07:00');
  * duLieu = { TenSheet: [[tiêu đề...], [dòng...]] } — ô ngày dạng { $d: '2026-08-25T00:00:00' } (giờ VN).
  */
-const fs = require('fs'), vm = require('vm'), crypto = require('crypto');
+const fs = require('fs'), vm = require('vm'), crypto = require('crypto'), path = require('path');
 const zlib = require('zlib');
 const blob = buf => ({ __buf: buf, getBytes: () => Array.from(buf).map(b => (b > 127 ? b - 256 : b)), getDataAsString: () => buf.toString('utf8') });
 
@@ -138,6 +138,7 @@ function tao(fileCode, duLieu, gioHienTai) {
       } },
     HtmlService: { createTemplateFromFile: () => ({ evaluate: () => ({ setTitle() { return this; }, addMetaTag() { return this; }, setXFrameOptionsMode() { return this; } }) }), XFrameOptionsMode: {},
       // HTML -> "PDF" giả: giữ nguyên HTML trong blob để bài kiểm tra đọc lại / dựng PDF thật bằng Chromium
+      createHtmlOutputFromFile: f => ({ getContent: () => fs.readFileSync(path.join(__dirname, '..', f + '.html'), 'utf8') }),
       createHtmlOutput: html => ({ getContent: () => html, getAs: type => { const b = blob(Buffer.from(html, 'utf8')); b.__html = html; b.__type = type; b.__ten = ''; b.setName = n => { b.__ten = n; return b; }; b.getName = () => b.__ten; return b; } }) },
     MailApp: { sendEmail: o => { (ctx.__mail = ctx.__mail || []).push(o); }, getRemainingDailyQuota: () => 100 },
     ScriptApp: { getProjectTriggers: () => [], deleteTrigger() {}, newTrigger: () => { const b = { timeBased: () => b, atHour: () => b, everyDays: () => b, onMonthDay: () => b, inTimezone: () => b, create: () => b }; return b; } },

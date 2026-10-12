@@ -79,6 +79,8 @@ const GOI_Y = [[tk.filter(r => String(r[cotTK('TenDangNhap')]).toLowerCase() ===
 // ---------- 2) Ghép trang ----------
 const code = fs.readFileSync(path.join(__dirname, '..', 'Code.gs'), 'utf8');
 let html = fs.readFileSync(path.join(__dirname, '..', 'Index.html'), 'utf8');
+// phần giao diện tải sau (SoDo.html, HoatAnh.html – mục 19): nhúng vào máy chủ giả để layManhGiaoDien trả được
+const MANH = {}; ['SoDo', 'HoatAnh'].forEach(f => { const p = path.join(__dirname, '..', f + '.html'); if (fs.existsSync(p)) MANH[f] = fs.readFileSync(p, 'utf8'); });
 // GIAO_DIEN=toi|sang: bộ màu mở đầu của bản xem thử (mỗi bản nhớ lựa chọn ☀/☾ riêng)
 const GD = process.env.GIAO_DIEN;
 if (GD) {
@@ -91,6 +93,7 @@ const tenHam = [...new Set([...code.matchAll(/^function\s+([A-Za-z_$][\w$]*)\s*\
 const anToan = s => s.replace(/<\/(script)/gi, '<\\/$1').replace(/<!--/g, '<\\!--');
 
 const MAY = `<script>
+window.__MANH=${anToan(JSON.stringify(MANH))};
 /* ===== BẢN XEM THỬ: máy chủ Apps Script giả chạy ngay trong trình duyệt ===== */
 (function(){
   var RealDate=Date, BAT_DAU=RealDate.now(), GOC=new RealDate(${JSON.stringify(GIO)}).getTime();
@@ -175,7 +178,7 @@ const MAY = `<script>
     SpreadsheetApp:{getActiveSpreadsheet:function(){return ss},openById:function(){return ss}},
     ScriptApp:{getProjectTriggers:function(){return []},deleteTrigger:function(){},newTrigger:function(){var b={timeBased:function(){return b},atHour:function(){return b},
       everyDays:function(){return b},onMonthDay:function(){return b},inTimezone:function(){return b},create:function(){return b}};return b}},
-    HtmlService:{createHtmlOutput:function(){return {getAs:function(){throw new Error('Bản xem thử không tạo được PDF (chỉ Apps Script làm được) – bấm "Xem & in" để xem báo cáo.')}}}}, DriveApp:{}, MailApp:{sendEmail:function(){}}
+    HtmlService:{createHtmlOutputFromFile:function(f){var M=window.__MANH||{};if(!(f in M))throw new Error('Không có file '+f);return {getContent:function(){return M[f]}}},createHtmlOutput:function(){return {getAs:function(){throw new Error('Bản xem thử không tạo được PDF (chỉ Apps Script làm được) – bấm "Xem & in" để xem báo cáo.')}}}}, DriveApp:{}, MailApp:{sendEmail:function(){}}
   };
   var ten=${JSON.stringify(THAM)};
   // Code.gs được nhúng sẵn thành một hàm (không dựng mã lúc chạy -> chạy được cả trong khung xem cấm eval)
