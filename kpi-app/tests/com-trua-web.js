@@ -126,6 +126,18 @@ const doiNguoi = (p, f) => p.evaluate(f => {
   ok(/Marketing \(Hà Nội\)/.test(s[0]) && s[1] && s[2], 'trang Cơm trưa của nhóm: tên nhóm, "Đã báo 8 suất", có bảng tổng hợp toàn công ty', s);
   s = await p.evaluate(() => [document.querySelectorAll('.cm-bang details').length, !$('cmMon'), /Tổng ở Hà Nội\s*8/.test($('main').textContent), /Tổng tất cả/.test($('main').textContent)]);
   ok(s[0] === 0 && s[1] && s[2] && s[3], 'nhóm: xem số suất như bếp (không họ tên, không form thực đơn), có tổng Hà Nam / Hà Nội', s);
+  // 2 người Marketing xuống Hà Nam có việc: ô "Ăn ở Hà Nội" 6, ô "Ăn ở Hà Nam" 2 (chủ dự án 12/10)
+  s = await p.evaluate(() => [...document.querySelectorAll('.cm-the .cm-so-o span')].slice(0, 2).map(x => x.textContent));
+  ok(s.join() === 'Ăn ở Hà Nội,Ăn ở Hà Nam', 'nhóm Hà Nội có 2 ô: Ăn ở Hà Nội / Ăn ở Hà Nam', s);
+  const thHN = await p.evaluate(() => { const th = COM.d.tongHop[0]; return [th.haNam, th.haNoi]; });
+  await p.fill('.cm-the [data-noi=nha]', '6'); await p.fill('.cm-the [data-noi=kia]', '2'); await p.click('.cm-the .cm-nut.an'); await p.waitForTimeout(1800);
+  s = await p.evaluate(() => { const ng = document.querySelector('.cm-the [data-noi=nha]').dataset.ng, th = COM.d.tongHop[0];
+    return [COM.d.cuaToi[ng], COM.d.cuaToiKhac[ng], document.querySelector('.cm-the [data-noi=nha]').value, document.querySelector('.cm-the [data-noi=kia]').value, th.haNam, th.haNoi,
+      (document.querySelector('.cm-sang-ghi') || {}).textContent || '', /8 suất \(6 ở Hà Nội, 2 ở Hà Nam\)/.test($('main').textContent)]; });
+  ok(s[0] === 8 && s[1] === 2 && s[2] === '6' && s[3] === '2' && s[4] === thHN[0] + 2 && s[5] === thHN[1] - 2 && /Marketing \(Hà Nội\).*2 suất ăn ở Hà Nam/.test(s[6]) && s[7],
+    'báo 6 Hà Nội + 2 Hà Nam: tổng 8, Hà Nam +2, Hà Nội −2, bếp thấy dòng suất ăn ở nơi khác', s);
+  await p.fill('.cm-the [data-noi=nha]', '8'); await p.fill('.cm-the [data-noi=kia]', ''); await p.click('.cm-the .cm-nut.an'); await p.waitForTimeout(1800);   // trả lại 8 suất ở Hà Nội cho các bước sau
+  ok(await p.evaluate(() => COM.d.tongHop[0].haNoi === 8 && !document.querySelector('.cm-sang-ghi')), 'báo lại 8 suất cùng nơi: hết dòng suất ăn ở nơi khác');
   await doiNguoi(p, "String(x.VaiTro).trim()==='BEP'");
   await p.evaluate(() => go('com')); await p.waitForTimeout(1200);
   s = await p.evaluate(() => [...document.querySelectorAll('.cm-bang tr.cm-nhom-dong')].map(r => r.textContent.replace(/\s+/g, ' ').trim()));

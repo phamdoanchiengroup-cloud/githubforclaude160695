@@ -160,6 +160,21 @@ ok(c.__goi('napComTrua', tNM).cuaToi['2026-10-14'] === 6, 'trang của nhóm hi�
   ok(sau.xuong[sau.xuong.length - 1].mx === 'VP' && sau.xuong.findIndex(x => x.nhom) > sau.xuong.findIndex(x => x.mx === tp.MaXuong), 'dòng nhóm nằm sau các xưởng, trước dòng ban điều hành'); }
 r = c.__goi('baoSuatNhom', tNM, '2026-10-14', 0); ok(r.ok && c.__goi('napComTrua', tB).tongHop.find(x => x.ngay === '2026-10-14').an === truoc.an, 'báo 0 suất = cả nhóm không ăn');
 c.__goi('baoSuatNhom', tNM, '2026-10-14', 6);
+{ // nhóm Hà Nội có người xuống Hà Nam có việc: báo 8 suất, trong đó 2 ăn ở Hà Nam (chủ dự án 12/10)
+  const goc = c.__goi('napComTrua', tB).tongHop.find(x => x.ngay === '2026-10-14');
+  ok(!c.__goi('baoSuatNhom', tNM, '2026-10-14', 3, 5).ok && !c.__goi('baoSuatNhom', tNM, '2026-10-14', 3, -1).ok && !c.__goi('baoSuatNhom', tNM, '2026-10-14', 3, 1.5).ok, 'số suất ở nơi khác phải là số nguyên, không quá tổng');
+  r = c.__goi('baoSuatNhom', tNM, '2026-10-14', 8, 2);
+  ok(r.ok && r.so === 8 && r.khac === 2 && /6 ở Hà Nội, 2 ở Hà Nam/.test(r.msg), 'nhóm Hà Nội báo 8 suất, 2 suất ăn ở Hà Nam', r.msg);
+  const s2 = c.__goi('napComTrua', tB).tongHop.find(x => x.ngay === '2026-10-14'), xM = s2.xuong.find(x => x.mx === 'HNOI_MKT');
+  ok(s2.haNoi === goc.haNoi && s2.haNam === goc.haNam + 2 && s2.an === goc.an + 2 && xM.an === 8 && xM.noiKhac === 2 && xM.noiKhacTen === 'Hà Nam',
+    'tổng Hà Nam +2 (suất sang), Hà Nội vẫn 6, dòng nhóm vẫn 8 suất', [goc.haNam, goc.haNoi, s2.haNam, s2.haNoi]);
+  ok(s2.sangNoiKhac.length === 1 && s2.sangNoiKhac[0].so === 2 && s2.sangNoiKhac[0].den === 'Hà Nam', 'bếp thấy dòng "suất ăn ở nơi khác"', s2.sangNoiKhac);
+  const nr = c.__goi('napComTrua', tNM);
+  ok(nr.cuaToi['2026-10-14'] === 8 && nr.cuaToiKhac['2026-10-14'] === 2 && nr.noiNha === 'Hà Nội' && nr.noiKia === 'Hà Nam', 'trang nhóm nhận lại 2 ô (6 Hà Nội + 2 Hà Nam)', [nr.cuaToiKhac, nr.noiNha]);
+  ok(c.comTinhThang_('2026-10').chiTiet.some(x => x[1] === 'Marketing (Hà Nội)' && x[4] === '8 suất (2 ăn ở Hà Nam)'), 'file lưu tháng ghi rõ số suất ăn ở nơi khác');
+  r = c.__goi('baoSuatNhom', tNM, '2026-10-14', 6);   // báo lại không ghi nơi khác -> về 0
+  ok(r.ok && c.__goi('napComTrua', tB).tongHop.find(x => x.ngay === '2026-10-14').haNam === goc.haNam, 'báo lại không có suất nơi khác: Hà Nam trở về như cũ');
+}
 ok(!c.doc_('PhongBan').some(p => p.MaXuong === 'HNOI_MKT'), 'nhóm không nằm trong PhongBan (không vào KPI)');
 ok(c.dauCot_('DangKyCom').includes('SoSuat'), 'sheet DangKyCom có cột SoSuat');
 { const t = c.comTinhThang_('2026-10'), ct = t.chiTiet.filter(x => x[2] === '(nhóm báo tổng)');

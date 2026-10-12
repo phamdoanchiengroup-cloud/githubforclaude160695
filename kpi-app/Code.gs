@@ -5787,7 +5787,7 @@ function GUI_BAO_CAO_THANG_TRUOC() {
    Sheet tự tạo khi dùng lần đầu: ThucDon, DangKyCom, SuatAnThang. */
 var COM_SHEET = {
   ThucDon: ['Ngay', 'MonAn', 'GhiChu', 'NguoiNhap', 'CapNhat'],
-  DangKyCom: ['Ngay', 'TenDangNhap', 'HoTen', 'MaNV', 'MaXuong', 'An', 'ThoiDiem', 'DangKyHo', 'SoSuat'],   // DangKyHo: tên người đăng ký hộ (trống = tự đăng ký); SoSuat: số suất tài khoản NHÓM báo
+  DangKyCom: ['Ngay', 'TenDangNhap', 'HoTen', 'MaNV', 'MaXuong', 'An', 'ThoiDiem', 'DangKyHo', 'SoSuat', 'SoSuatNoiKhac'],   // DangKyHo: tên người đăng ký hộ (trống = tự đăng ký); SoSuat: số suất tài khoản NHÓM báo
   SuatAnThang: ['Ky', 'MaXuong', 'TenXuong', 'SoNgay', 'SuatAn', 'KhongAn', 'ChuaDangKy', 'TepLuu']
 };
 var COM_VP = 'VP';                       // nhóm Ban điều hành + trưởng phòng + tài khoản không gắn xưởng
@@ -5806,6 +5806,9 @@ var COM_BO_PHAN = {
 };
 var COM_MAX_SUAT = 300;
 function comHaNoi_(mx) { return /^HNOI_/.test(String(mx || '')); }   // nhóm ăn ở Hà Nội
+function comNoiTen_(haNoi) { return haNoi ? 'Hà Nội' : 'Hà Nam'; }
+/* Nhóm báo cơm (chủ dự án 12/10): SoSuat = TỔNG suất của nhóm; SoSuatNoiKhac = số suất trong đó ăn ở nơi kia (người Hà Nội xuống Hà Nam có việc, hoặc ngược lại) */
+function comKhac_(r) { return Math.max(0, Math.min(Number(r.SoSuat) || 0, Number(r.SoSuatNoiKhac) || 0)); }
 function comLaNhom_(t) { return String(t.VaiTro || t.vaiTro || '').trim() === 'NHOM'; }
 function comLaTruong_(me) { return !!me && (me.vaiTro === 'TP' || me.vaiTro === 'TBP') && !!me.xuong; }   // trưởng xưởng / trưởng bộ phận
 
@@ -5901,9 +5904,9 @@ function comTongHop_(ngay, me) {
     if (!comLaNhom_(t) || String(t.TrangThai).trim() !== 'Đang dùng') return;
     var tk = String(t.TenDangNhap).toLowerCase(), mx = String(t.MaXuong || '').trim() || tk, r = dk[tk];
     nhomTk[tk] = 1;
-    var x = X[mx] || (X[mx] = { mx: mx, ten: tenX[mx] || t.HoTen || mx, an: 0, khong: 0, chua: 0, dsAn: [], dsKhong: [], dsChua: [], nhom: true, baoChua: 0 });
+    var x = X[mx] || (X[mx] = { mx: mx, ten: tenX[mx] || t.HoTen || mx, an: 0, khong: 0, chua: 0, dsAn: [], dsKhong: [], dsChua: [], nhom: true, baoChua: 0, noiKhac: 0 });
     x.nhom = true;
-    if (r) { x.an += Math.max(0, Number(r.SoSuat) || 0); ghiMuon(r, x.ten, '', mx, x.ten); }
+    if (r) { x.an += Math.max(0, Number(r.SoSuat) || 0); x.noiKhac = (x.noiKhac || 0) + comKhac_(r); ghiMuon(r, x.ten, '', mx, x.ten); }
     else { x.baoChua++; nhomChua++; }
   });
   // người đã đăng ký nhưng tài khoản nay không còn trong danh sách vẫn được tính suất
@@ -5928,9 +5931,14 @@ function comTongHop_(ngay, me) {
   ctKhong = ctKhong.filter(choXem).sort(function(a, b) { return String(a.xuong).localeCompare(String(b.xuong)) || String(a.ten).localeCompare(String(b.ten)); });
   var muonAn = muon.reduce(function(s, m) { return s + (m.nhom ? m.an : (m.an ? 1 : 0)); }, 0);
   // chủ dự án 11/10: tổng suất theo nơi ăn – Hà Nội = các nhóm mã HNOI_*, còn lại (xưởng sản xuất, ban điều hành, nhóm Hà Nam) = Hà Nam
-  var noi = { haNam: 0, haNoi: 0 };
-  ds.forEach(function(x) { noi[comHaNoi_(x.mx) ? 'haNoi' : 'haNam'] += x.an; });
-  return { ngay: ngay, xuong: ds, an: tong('an'), khong: tong('khong'), chua: tong('chua'), nhomChua: nhomChua, haNam: noi.haNam, haNoi: noi.haNoi, dsKhongCT: ctKhong,
+  // nhóm báo cơm có thể có suất ăn ở nơi kia (SoSuatNoiKhac) -> cộng vào đúng nơi ăn, ghi lại để bếp biết vì sao số thay đổi
+  var noi = { haNam: 0, haNoi: 0 }, sang = [];
+  ds.forEach(function(x) {
+    var hn = comHaNoi_(x.mx), k = x.noiKhac || 0;
+    noi[hn ? 'haNoi' : 'haNam'] += x.an - k; noi[hn ? 'haNam' : 'haNoi'] += k;
+    if (k) { x.noiKhacTen = comNoiTen_(!hn); sang.push({ ten: x.ten, so: k, tu: comNoiTen_(hn), den: comNoiTen_(!hn) }); }
+  });
+  return { ngay: ngay, xuong: ds, an: tong('an'), khong: tong('khong'), chua: tong('chua'), nhomChua: nhomChua, haNam: noi.haNam, haNoi: noi.haNoi, sangNoiKhac: sang, dsKhongCT: ctKhong,
     muon: muon.length, muonAn: muonAn, dsMuon: muon.filter(function(m) { return m.nhom || choXem(m); }).sort(function(a, b) { return a.luc < b.luc ? -1 : 1; }) };
 }
 
@@ -5944,16 +5952,16 @@ function napComTrua(token) {
       var ng = comNgay_(r.Ngay);
       return { ngay: ng, mon: String(r.MonAn || ''), ghiChu: String(r.GhiChu || ''), han: comHan_(ng), conHan: comConHan_(ng), khoa: comKhoa_(ng), mo: comConMo_(ng), nguoi: String(r.NguoiNhap || '') };
     }).filter(function(t) { return t.ngay >= congNgay_(homNay, -7) && t.ngay <= den; }).sort(function(a, b) { return a.ngay < b.ngay ? -1 : 1; });
-    var cuaToi = {}, cuaToiHo = {}, tk = String(me.tk).toLowerCase(), ky = homNay.slice(0, 7), laNhom = comLaNhom_(me);
+    var cuaToi = {}, cuaToiHo = {}, cuaToiKhac = {}, tk = String(me.tk).toLowerCase(), ky = homNay.slice(0, 7), laNhom = comLaNhom_(me);
     var thang = { an: 0, khong: 0 };
     comDoc_('DangKyCom').forEach(function(r) {
       if (String(r.TenDangNhap).toLowerCase() !== tk) return;
       var ng = comNgay_(r.Ngay), an = Number(r.An) === 1 ? 1 : 0;
-      if (laNhom) { var so = Math.max(0, Number(r.SoSuat) || 0); cuaToi[ng] = so; if (ng.slice(0, 7) === ky) thang.an += so; return; }   // nhóm: cuaToi = số suất đã báo
+      if (laNhom) { var so = Math.max(0, Number(r.SoSuat) || 0); cuaToi[ng] = so; cuaToiKhac[ng] = comKhac_(r); if (ng.slice(0, 7) === ky) thang.an += so; return; }   // nhóm: cuaToi = số suất đã báo
       cuaToi[ng] = an; if (r.DangKyHo) cuaToiHo[ng] = String(r.DangKyHo); else delete cuaToiHo[ng];
       if (ng.slice(0, 7) === ky) thang[an ? 'an' : 'khong']++;
     });
-    var out = { ok: true, homNay: homNay, bayGio: comBayGio_(), gioChot: comGioChot_(), gioKhoa: comGioKhoa_(), thucDon: td, cuaToi: cuaToi, cuaToiHo: cuaToiHo, thang: thang,
+    var out = { ok: true, homNay: homNay, bayGio: comBayGio_(), gioChot: comGioChot_(), gioKhoa: comGioKhoa_(), thucDon: td, cuaToi: cuaToi, cuaToiHo: cuaToiHo, cuaToiKhac: cuaToiKhac, noiNha: comNoiTen_(comHaNoi_(me.xuong)), noiKia: comNoiTen_(!comHaNoi_(me.xuong)), thang: thang,
       quyen: { xem: comXem_(me), sua: comSua_(me), dangKy: !comLaBep_(me) && !laNhom && !comKhongTinh_(me), khongTinh: comKhongTinh_(me), nhom: laNhom, maxSuat: COM_MAX_SUAT, ho: ['ADMIN', 'TL', 'HR'].indexOf(me.vaiTro) >= 0 || comLaTruong_(me) }, tongHop: [] };
     if (out.quyen.ho) {
       // danh sách người được đăng ký hộ + trạng thái các ngày có thực đơn sắp tới: hoDK[ngay][tk] = [an, ai đăng ký hộ]
@@ -5995,20 +6003,21 @@ function dangKyCom(token, ngay, an) {
 }
 
 /* Ghi 1 lượt đăng ký (tự đăng ký: ho = ''; đăng ký hộ: ho = tên người đăng ký hộ) */
-function comGhi_(p, ngay, v, ho, soSuat) {
-  var ss = soSuat === undefined || soSuat === null ? '' : soSuat;
+function comGhi_(p, ngay, v, ho, soSuat, khac) {
+  var ss = soSuat === undefined || soSuat === null ? '' : soSuat, kh = ss === '' ? '' : (khac || 0);
   var thoi = comBayGio_();
   var cu = comDoc_('DangKyCom').filter(function(r) { return comNgay_(r.Ngay) === ngay && String(r.TenDangNhap).toLowerCase() === p.tk; });
   if (cu.length) {
-    suaO_('DangKyCom', cu[0]._row, 'An', v); suaO_('DangKyCom', cu[0]._row, 'ThoiDiem', thoi); suaO_('DangKyCom', cu[0]._row, 'DangKyHo', ho || ''); suaO_('DangKyCom', cu[0]._row, 'SoSuat', ss);
+    suaO_('DangKyCom', cu[0]._row, 'An', v); suaO_('DangKyCom', cu[0]._row, 'ThoiDiem', thoi); suaO_('DangKyCom', cu[0]._row, 'DangKyHo', ho || ''); suaO_('DangKyCom', cu[0]._row, 'SoSuat', ss); suaO_('DangKyCom', cu[0]._row, 'SoSuatNoiKhac', kh);
     if (cu.length > 1) xoaNhieuDong_('DangKyCom', cu.slice(1).map(function(r) { return r._row; }));
   } else {
-    them_('DangKyCom', { Ngay: "'" + ngay, TenDangNhap: p.tk, HoTen: p.ten, MaNV: p.ma || '', MaXuong: p.mx || COM_VP, An: v, ThoiDiem: thoi, DangKyHo: ho || '', SoSuat: ss });
+    them_('DangKyCom', { Ngay: "'" + ngay, TenDangNhap: p.tk, HoTen: p.ten, MaNV: p.ma || '', MaXuong: p.mx || COM_VP, An: v, ThoiDiem: thoi, DangKyHo: ho || '', SoSuat: ss, SoSuatNoiKhac: kh });
   }
 }
 
 /* Tài khoản NHÓM báo tổng số suất một ngày (sửa được tới giờ khóa 22:00 hôm trước, như mọi người) */
-function baoSuatNhom(token, ngay, so) {
+/* so = TỔNG số suất của nhóm; khac = số suất trong đó ăn ở nơi kia (Hà Nội <-> Hà Nam), không bắt buộc */
+function baoSuatNhom(token, ngay, so, khac) {
   var me = docPhien_(token);
   if (!me) return sach_({ ok: false, hetHan: true, msg: 'Phiên đăng nhập đã hết hạn.' });
   if (!comLaNhom_(me)) return sach_({ ok: false, msg: 'Chỉ tài khoản nhóm mới báo tổng số suất.' });
@@ -6017,13 +6026,15 @@ function baoSuatNhom(token, ngay, so) {
   var n = Number(String(so === undefined || so === null ? '' : so).trim());
   if (String(so).trim() === '' || !(n >= 0) || n !== Math.floor(n)) return sach_({ ok: false, msg: 'Nhập số suất là số nguyên từ 0 trở lên.' });
   if (n > COM_MAX_SUAT) return sach_({ ok: false, msg: 'Số suất quá lớn (tối đa ' + COM_MAX_SUAT + ').' });
+  var k = Number(String(khac === undefined || khac === null || khac === '' ? 0 : khac).trim());
+  if (!(k >= 0) || k !== Math.floor(k) || k > n) return sach_({ ok: false, msg: 'Số suất ăn ở nơi khác không hợp lệ.' });
   khoa_();
   if (!comDoc_('ThucDon').some(function(r) { return comNgay_(r.Ngay) === ngay; })) return sach_({ ok: false, msg: 'Bếp chưa báo thực đơn ngày này.' });
   if (ngay < homNayVN_()) return sach_({ ok: false, msg: 'Ngày ăn đã qua.' });
   if (!comConMo_(ngay)) return sach_({ ok: false, khoa: true, msg: comKhoaMsg_(ngay) });
-  comGhi_({ tk: String(me.tk).toLowerCase(), ten: me.ten, ma: '', mx: String(me.xuong || '') || COM_VP }, ngay, n > 0 ? 1 : 0, '', n);
-  var ng = ngay.slice(8) + '/' + ngay.slice(5, 7);
-  return sach_({ ok: true, ngay: ngay, so: n, msg: n ? 'Đã báo ' + n + ' suất cơm trưa ' + ng + '.' : 'Đã báo nhóm không ăn trưa ' + ng + ' (0 suất).' });
+  comGhi_({ tk: String(me.tk).toLowerCase(), ten: me.ten, ma: '', mx: String(me.xuong || '') || COM_VP }, ngay, n > 0 ? 1 : 0, '', n, k);
+  var ng = ngay.slice(8) + '/' + ngay.slice(5, 7), hn = comHaNoi_(me.xuong);
+  return sach_({ ok: true, ngay: ngay, so: n, khac: k, msg: n ? 'Đã báo ' + n + ' suất cơm trưa ' + ng + (k ? ' (' + (n - k) + ' ở ' + comNoiTen_(hn) + ', ' + k + ' ở ' + comNoiTen_(!hn) + ')' : '') + '.' : 'Đã báo nhóm không ăn trưa ' + ng + ' (0 suất).' });
 }
 
 /* Đăng ký hộ (chủ dự án 11/10: người lớn tuổi không quen điện thoại / không có mạng):
@@ -6109,7 +6120,7 @@ function comTinhThang_(ky) {
       x.dsAn.forEach(function(t) { chiTiet.push([ng, x.ten, t, ma(t), 'Ăn']); });
       x.dsKhong.forEach(function(t) { chiTiet.push([ng, x.ten, t, ma(t), 'Không ăn']); });
       x.dsChua.forEach(function(t) { chiTiet.push([ng, x.ten, t, ma(t), 'Chưa đăng ký']); });
-      if (x.nhom) chiTiet.push([ng, x.ten, '(nhóm báo tổng)', '', x.baoChua ? 'Chưa báo' : x.an + ' suất']);
+      if (x.nhom) chiTiet.push([ng, x.ten, '(nhóm báo tổng)', '', x.baoChua ? 'Chưa báo' : x.an + ' suất' + (x.noiKhac ? ' (' + x.noiKhac + ' ăn ở ' + x.noiKhacTen + ')' : '')]);
     });
   });
   return { ngay: dsNgay, ds: Object.keys(X).map(function(k) { return X[k]; }).sort(function(a, b) { return b.an - a.an; }), chiTiet: chiTiet };

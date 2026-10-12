@@ -459,3 +459,11 @@ Nếu vẫn thấy giao diện cũ: kiểm tra lại Phần D (đã chọn **Phi
 - Nếu người đó vẫn đi ăn (hoặc được đăng ký hộ "Ăn") thì tính theo lần đăng ký đó.
 - Nghỉ xong (qua "đến ngày") thì tự trở lại bình thường.
 - Cần dán lại **Code.gs** và **Index.html**.
+
+
+## Cơm trưa – nhóm báo cơm có người sang Hà Nam / Hà Nội (12/10)
+- Tài khoản nhóm báo cơm giờ có **2 ô**: "Ăn ở Hà Nội" và "Ăn ở Hà Nam" (ô đầu là nơi làm việc của nhóm).
+- Ngày nào có người sang nơi kia có việc thì điền số người đó vào ô thứ hai, ví dụ Marketing Hà Nội: "Ăn ở Hà Nội 6, Ăn ở Hà Nam 2". Không có ai thì để trống ô thứ hai.
+- Bếp thấy: dòng nhóm vẫn ghi tổng 8 suất kèm "2 ăn ở Hà Nam"; "Tổng ở Hà Nam" / "Tổng ở Hà Nội" cộng theo nơi ăn thật; dưới bảng có dòng "↔ Suất ăn ở nơi khác".
+- Người dưới xưởng không cần chọn nơi ăn (giữ như cũ).
+- Cần dán lại **Code.gs** và **Index.html**. Sheet `DangKyCom` tự thêm cột `SoSuatNoiKhac`.

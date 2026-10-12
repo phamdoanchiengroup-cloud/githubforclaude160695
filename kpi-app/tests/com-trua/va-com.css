@@ -61,3 +61,9 @@
 .cm-da-an>summary{cursor:pointer;list-style:none}.cm-da-an>summary::-webkit-details-marker{display:none}
 .cm-da-an>summary::before{content:'▸ ';color:var(--muted,#9aa)}.cm-da-an[open]>summary::before{content:'▾ '}
 .cm-da-an[open]>summary{margin-bottom:12px}.cm-da-an .card{box-shadow:none;margin:12px 0 0}
+
+/* nhóm báo cơm: 2 ô Hà Nội / Hà Nam (12/10) */
+.cm-so-o{display:inline-flex;flex-direction:column;gap:3px;font-size:12px;color:var(--muted,#9aa)}
+.cm-nhom{align-items:flex-end}
+.cm-sang{font-size:12px;font-weight:600;color:var(--amber,#f0b04e);margin-left:6px}
+.cm-sang-ghi{margin:8px 0 0}
