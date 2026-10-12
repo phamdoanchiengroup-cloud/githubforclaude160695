@@ -31,7 +31,7 @@ const doiNguoi = (p, f) => p.evaluate(f => {
   await p.fill('#cmMon', 'Cơm trắng\nGà rang sả ớt\nRau muống xào tỏi\nCanh bí đỏ'); await p.fill('#cmGc', 'Có suất chay');
   await p.click('button:has-text("Lưu thực đơn")'); await p.waitForTimeout(1500);
   s = await p.evaluate(() => [$('combar').className, $('combar').textContent]);
-  ok(s[0] === '' && /Thứ Ba 13\/10/.test(s[1]) && /Gà rang/.test(s[1]) && /16:00 hôm nay/.test(s[1]) && /còn 1 giờ (2\d|30) phút/.test(s[1]), 'lưu xong: thanh thực đơn hiện món, hạn 16:00 hôm nay, còn khoảng 1 giờ 30 phút', s[1]);
+  ok(s[0] === '' && /Thứ Ba 13\/10/.test(s[1]) && /Gà rang/.test(s[1]) && /22:00 hôm nay/.test(s[1]) && /còn 7 giờ (2\d|30) phút/.test(s[1]), 'lưu xong: thanh thực đơn hiện món, hạn 22:00 hôm nay, còn khoảng 7 giờ 30 phút', s[1]);
   await p.click('#combar .cm-nut.an'); await p.waitForTimeout(1500);
   s = await p.evaluate(() => [$('combar').querySelector('.cm-nut.an').getAttribute('aria-pressed'), document.querySelector('.cm-so .an b').textContent, document.querySelector('.cm-the').textContent]);
   ok(s[0] === 'true' && s[1] === '1' && /đã đăng ký ăn/.test(s[2]), 'bấm Ăn trên thanh: nút sáng, tổng hợp 1 suất, thẻ ghi "đã đăng ký ăn"', s);

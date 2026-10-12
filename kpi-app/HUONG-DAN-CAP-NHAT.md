@@ -434,3 +434,12 @@ Nếu vẫn thấy giao diện cũ: kiểm tra lại Phần D (đã chọn **Phi
 - Bỏ vạch màu trang trí cạnh trái thẻ KPI / thẻ Việc hôm nay, bỏ chữ tô dải màu, chấm báo trên menu không nhấp nháy mãi.
 - Không đổi hiệu ứng màn đăng nhập đã duyệt (nút vàng phát sáng, nút nảy, thanh chạy khi vào).
 - Chỉ cần dán lại **Index.html**.
+
+
+## Cơm trưa – chốt đăng ký lúc 22:00 tối hôm trước (12/10)
+- Đăng ký / đổi Ăn – Không ăn, nhóm báo số suất, trưởng phòng đăng ký hộ: chỉ làm được **trước 22:00 tối hôm trước ngày ăn**.
+- Bữa **thứ Hai** (thực đơn báo thứ Bảy): hạn là **22:00 Chủ nhật**.
+- Quá giờ: nút bị khóa, hiện "🔒 Đã chốt lúc 22:00…". Có việc gấp thì báo trực tiếp với bếp.
+- Bếp vẫn sửa được thực đơn sau giờ chốt, nhưng sẽ có cảnh báo là mọi người không đăng ký được bữa đó nữa – nên báo thực đơn trước 22:00.
+- Muốn đổi giờ chốt: Apps Script → mở hàm `DAT_GIO_CHOT_COM` trong Code.gs, sửa số 22, bấm Chạy.
+- Cần dán lại **Code.gs** và **Index.html**.

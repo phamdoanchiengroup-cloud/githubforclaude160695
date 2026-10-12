@@ -1,5 +1,5 @@
 /**
- * Kiểm tra cơm trưa (tests/com-trua.gs, đã gộp vào Code.gs): thực đơn, đăng ký ăn / không ăn, hạn 16:00 hôm trước,
+ * Kiểm tra cơm trưa (tests/com-trua.gs, đã gộp vào Code.gs): thực đơn, đăng ký ăn / không ăn, hạn chót 22:00 tối hôm trước (thứ Hai: tối Chủ nhật),
  * quyền xem tổng hợp, vai trò BEP, tổng kết sang tháng (lưu Drive rồi xóa) và mục "Suất ăn trưa" trong báo cáo tháng.
  *   DATA=/đường/dẫn/csdl.json node kpi-app/tests/com-trua.js      (dữ liệu thật – KHÔNG đưa vào repo)
  */
@@ -32,7 +32,7 @@ ok(!r.ok && /Chỉ bếp/.test(r.msg), 'công nhân không nhập được thự
 r = c.__goi('luuThucDon', tB, '2026-10-11', 'Cơm', '');
 ok(!r.ok && /đã qua/.test(r.msg), 'không nhập thực đơn cho ngày đã qua', r);
 r = c.__goi('luuThucDon', tB, '2026-10-13', 'Cơm trắng\nGà rang sả ớt\nRau muống xào tỏi\nCanh bí đỏ\nChuối tráng miệng', 'Có suất chay');
-ok(r.ok && /16:00 ngày 12\/10/.test(r.msg), 'bếp lưu thực đơn ngày 13/10, báo hạn 16:00 ngày 12/10', r.msg);
+ok(r.ok && /22:00 ngày 12\/10/.test(r.msg), 'bếp lưu thực đơn ngày 13/10, báo hạn 22:00 ngày 12/10', r.msg);
 r = c.__goi('luuThucDon', tO, '2026-10-13', 'Cơm trắng\nGà rang sả ớt\nRau muống xào tỏi\nCanh bí đỏ\nDưa hấu', 'Có suất chay');
 ok(r.ok && c.__sheets.ThucDon.rows.length === 2, 'ban điều hành sửa thực đơn: vẫn 1 dòng (ghi đè)', c.__sheets.ThucDon.rows.length);
 c.__goi('luuThucDon', tB, '2026-10-14', 'Cơm, cá kho, canh chua', '');
@@ -73,23 +73,36 @@ ok(th.dsKhongCT.length === 2 && cnK && cnK.ma === String(cn.MaNV) && cnK.xuong =
 ok(Array.isArray(khongTP) && khongTP.every(x => x.mx === tp.MaXuong), 'trưởng phòng: danh sách không ăn chỉ xưởng mình', khongTP);
 r = c.__goi('napComTrua', tCN); ok(!r.tongHop.length, 'công nhân không nhận danh sách không ăn');
 
-console.log('\n4. 16:00 hôm trước chỉ là giờ nhắc');
+console.log('\n4. Hạn chót 22:00 tối hôm trước: quá giờ là chốt');
 c.__datGio('2026-10-12T15:59:00+07:00'); ok(c.__goi('dangKyCom', tCN, '2026-10-13', true).ok, '15:59 vẫn đổi được');
 c.__datGio('2026-10-12T17:20:00+07:00'); r = c.__goi('dangKyCom', tCN, '2026-10-13', false);
-ok(r.ok, 'quá 16:00 vẫn đăng ký / đổi được (16:00 chỉ là giờ nhắc)', r.msg);
+ok(r.ok, 'sau 16:00 (giờ nhắc cũ) vẫn đổi được – hạn chót là 22:00', r.msg);
 const muonTk = tk(x => vt('CN')(x) && x.MaXuong === tp.MaXuong && x.TenDangNhap !== cn2.TenDangNhap);
-c.__datGio('2026-10-13T07:45:00+07:00'); r = c.__goi('dangKyCom', P(muonTk), '2026-10-13', true);
-ok(r.ok, 'sáng ngày ăn người quên vẫn đăng ký được', r.msg);
+c.__datGio('2026-10-12T21:59:00+07:00'); r = c.__goi('dangKyCom', P(muonTk), '2026-10-13', true);
+ok(r.ok, '21:59 tối hôm trước vẫn đăng ký được', r.msg);
+c.__datGio('2026-10-12T22:00:00+07:00'); r = c.__goi('dangKyCom', tCN, '2026-10-13', true);
+ok(!r.ok && r.khoa && /Đã chốt/.test(r.msg) && /22:00 ngày 12\/10/.test(r.msg), '22:00 tối hôm trước: không đổi được nữa', r.msg);
+c.__datGio('2026-10-13T07:45:00+07:00'); r = c.__goi('dangKyCom', P(muonTk), '2026-10-13', false);
+ok(!r.ok && r.khoa, 'sáng ngày ăn: không đổi được', r.msg);
+r = c.__goi('dangKyComHo', tTP, '2026-10-13', [muonTk.TenDangNhap], false);
+ok(!r.ok && r.khoa, 'sáng ngày ăn: trưởng phòng cũng không đăng ký hộ được', r.msg);
 r = c.__goi('napComTrua', tO); th = r.tongHop.find(x => x.ngay === '2026-10-13');
-ok(th.muon === 2 && th.muonAn === 1 && th.dsMuon.length === 2 && th.dsMuon.every(m => m.luc >= '2026-10-12 16:00' && 'ma' in m && m.xuong),
-  'ban điều hành: tổng hợp ghi rõ 2 người đăng ký sau giờ nhắc (1 ăn), có giờ, mã NV, xưởng', th && th.dsMuon);
-r = c.__goi('napComTrua', tTP); th = r.tongHop.find(x => x.ngay === '2026-10-13');
-ok(th.muon === 2 && th.dsMuon.length === 1 && th.dsMuon[0].mx === tp.MaXuong, 'trưởng phòng: thấy số đăng ký muộn, tên chỉ xưởng mình', th.dsMuon);
+ok(th.muon === 0, 'không có lượt ghi nào sau giờ chốt', th.muon);
+r = c.__goi('napComTrua', tCN); ok(!r.thucDon.find(t => t.ngay === '2026-10-13').conHan && r.gioChot === 22, 'trang nhận cờ đã chốt + giờ chốt 22', r.gioChot);
 c.__datGio('2026-10-14T09:00:00+07:00'); r = c.__goi('dangKyCom', tCN, '2026-10-13', true);
 ok(!r.ok && /đã qua/.test(r.msg), 'ngày ăn đã qua thì không đăng ký được nữa', r.msg);
+// bữa thứ Hai 19/10: thực đơn báo thứ Bảy 17/10, hạn 22:00 Chủ nhật 18/10
+c.__datGio('2026-10-17T15:00:00+07:00'); r = c.__goi('luuThucDon', tB, '2026-10-19', 'Cơm, thịt kho', '');
+ok(r.ok && /22:00 ngày 18\/10/.test(r.msg), 'thứ Bảy báo thực đơn thứ Hai: hạn 22:00 Chủ nhật 18/10', r.msg);
+c.__datGio('2026-10-18T21:59:00+07:00'); ok(c.__goi('dangKyCom', tCN, '2026-10-19', false).ok, 'Chủ nhật 21:59 vẫn đăng ký bữa thứ Hai được');
+c.__datGio('2026-10-18T22:00:00+07:00'); r = c.__goi('dangKyCom', tCN, '2026-10-19', true);
+ok(!r.ok && r.khoa, 'Chủ nhật 22:00: chốt bữa thứ Hai', r.msg);
+c.__datGio('2026-10-18T23:00:00+07:00'); r = c.__goi('luuThucDon', tB, '2026-10-19', 'Cơm, thịt kho tàu', '');
+ok(r.ok && /quá giờ chốt/.test(r.msg), 'bếp sửa thực đơn sau giờ chốt: được, nhưng có cảnh báo', r.msg);
+c.__goi('xoaThucDon', tB, '2026-10-19');
 c.__datGio('2026-10-12T16:00:00+07:00');
-ok(c.__goi('dangKyCom', tCN, '2026-10-14', false).ok, 'ngày 14/10 vẫn đăng ký được (hạn 16:00 ngày 13)');
-r = c.__goi('napComTrua', tCN); ok(!r.thucDon.find(t => t.ngay === '2026-10-13').conHan && r.thucDon.find(t => t.ngay === '2026-10-14').conHan, 'trang báo đúng ngày nào còn hạn');
+ok(c.__goi('dangKyCom', tCN, '2026-10-14', false).ok, 'ngày 14/10 vẫn đăng ký được (hạn 22:00 ngày 13)');
+r = c.__goi('napComTrua', tCN); ok(r.thucDon.find(t => t.ngay === '2026-10-13').conHan && r.thucDon.find(t => t.ngay === '2026-10-14').conHan, 'trang báo đúng ngày nào còn hạn (16:00 ngày 12: cả 13 và 14 còn hạn)');
 r = c.__goi('xoaThucDon', tCN, '2026-10-14'); ok(!r.ok, 'công nhân không xóa được thực đơn');
 
 ok(c.dauCot_('DangKyCom').slice(0, 2).join() === 'Ngay,TenDangNhap', 'sheet DangKyCom trống trơn: tự ghi dòng tiêu đề', c.dauCot_('DangKyCom'));
