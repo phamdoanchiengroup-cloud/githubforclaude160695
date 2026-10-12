@@ -445,3 +445,9 @@ Nếu vẫn thấy giao diện cũ: kiểm tra lại Phần D (đã chọn **Phi
 - Bếp vẫn sửa được thực đơn sau 22:00 nhưng có cảnh báo là mọi người không đăng ký được bữa đó nữa.
 - Muốn đổi giờ: Apps Script → hàm `DAT_GIO_CHOT_COM` trong Code.gs, sửa số 16 / 22, bấm Chạy.
 - Cần dán lại **Code.gs** và **Index.html**.
+
+
+## Cơm trưa – ẩn ngày đã qua giờ ăn (12/10)
+- Qua **12:00** của ngày ăn, thẻ thực đơn và bảng tổng hợp số suất của ngày đó tự thu gọn.
+- Cần xem lại thì bấm **"Tổng hợp số suất đã qua giờ ăn"** hoặc **"Thực đơn đã qua giờ ăn"** ở cuối trang Cơm trưa.
+- Chỉ cần dán lại **Index.html**.

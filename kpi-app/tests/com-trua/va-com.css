@@ -56,3 +56,8 @@
 .cm-nhom-dong td{background:color-mix(in srgb,var(--cy,#2fd3c6) 6%,transparent)}
 .cm-noi{margin-top:-4px}
 .cm-noi-dong td{font-weight:600}
+
+/* tổng hợp đã qua giờ ăn (12:00): thu gọn, bấm để xem */
+.cm-da-an>summary{cursor:pointer;list-style:none}.cm-da-an>summary::-webkit-details-marker{display:none}
+.cm-da-an>summary::before{content:'▸ ';color:var(--muted,#9aa)}.cm-da-an[open]>summary::before{content:'▾ '}
+.cm-da-an[open]>summary{margin-bottom:12px}.cm-da-an .card{box-shadow:none;margin:12px 0 0}

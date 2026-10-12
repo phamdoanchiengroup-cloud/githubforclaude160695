@@ -10171,6 +10171,11 @@ d.textContent='Không tải được thư viện 3D (Three.js). Hãy kiểm tra 
 .cm-noi{margin-top:-4px}
 .cm-noi-dong td{font-weight:600}
 
+/* tổng hợp đã qua giờ ăn (12:00): thu gọn, bấm để xem */
+.cm-da-an>summary{cursor:pointer;list-style:none}.cm-da-an>summary::-webkit-details-marker{display:none}
+.cm-da-an>summary::before{content:'▸ ';color:var(--muted,#9aa)}.cm-da-an[open]>summary::before{content:'▾ '}
+.cm-da-an[open]>summary{margin-bottom:12px}.cm-da-an .card{box-shadow:none;margin:12px 0 0}
+
 /* Rhino (mục 17): ảnh tĩnh thay cho Mai */
 svg.mai .rh-anh{transform-box:fill-box;transform-origin:50% 100%;animation:rhNhun 3.4s ease-in-out infinite;filter:drop-shadow(0 0 1.2px rgba(255,255,255,.55)) drop-shadow(0 3px 5px rgba(0,0,0,.35))}
 @keyframes rhNhun{50%{transform:translateY(-1.5px) scaleY(1.008)}}
@@ -10188,6 +10193,9 @@ var COM_THU=['Chủ nhật','Thứ Hai','Thứ Ba','Thứ Tư','Thứ Năm','Th�
 function comMs_(s){var p=String(s).match(/^(\d{4})-(\d{2})-(\d{2})(?: (\d{2}):(\d{2}))?/);return p?Date.UTC(+p[1],+p[2]-1,+p[3],+(p[4]||0),+(p[5]||0)):0}
 function comBayGio_(){return COM.d?comMs_(COM.d.bayGio)+(Date.now()-COM.tai):0}
 function comNgayTen(ng){return COM_THU[new Date(comMs_(ng)).getUTCDay()]+' '+ng.slice(8)+'/'+ng.slice(5,7)}
+/* Qua 12:00 của ngày ăn (giờ ăn trưa) thì coi như đã ăn: thực đơn + tổng hợp ngày đó thu vào mục "đã qua giờ ăn" (chủ dự án 12/10) */
+var COM_GIO_AN=12;
+function comDaAn(ng){var d=COM.d;return ng<d.homNay||(ng===d.homNay&&comBayGio_()>=comMs_(d.homNay+' '+('0'+COM_GIO_AN).slice(-2)+':00'))}
 function comConHan(t){return comMs_(t.han)>comBayGio_()}                 // còn trước hạn đăng ký 16:00
 function comMo(t){return comMs_(t.khoa||t.han)>comBayGio_()}               // còn trước giờ khóa 22:00
 function comConLai(t,k){
@@ -10260,7 +10268,7 @@ function veComBar(){
   var bar=$('combar'); if(!bar||!COM.d)return;
   var d=COM.d, toi=d.thucDon.filter(function(t){return t.ngay>d.homNay})[0], nay=d.thucDon.filter(function(t){return t.ngay===d.homNay})[0];
   var mo=d.thucDon.filter(function(x){return x.ngay>d.homNay&&comMo(x)})[0];   // ngày gần nhất còn đăng ký / đổi được
-  var t=mo||toi||nay;
+  var t=mo||toi||(nay&&!comDaAn(nay.ngay)?nay:null);
   if(!t){bar.className='hide';bar.innerHTML='';return}
   var mon=comMon(t);
   bar.className='';
@@ -10294,7 +10302,7 @@ function vCom(){
 }
 function veCom(){
   var d=COM.d; if(!d)return;
-  var sap=d.thucDon.filter(function(t){return t.ngay>=d.homNay}), qua=d.thucDon.filter(function(t){return t.ngay<d.homNay}).reverse();
+  var sap=d.thucDon.filter(function(t){return !comDaAn(t.ngay)}), qua=d.thucDon.filter(function(t){return comDaAn(t.ngay)}).reverse();
   var h=comNhom()?'<div class="ptitle">Cơm trưa – '+esc(COM_BO_PHAN[ME.xuong]||ME.ten||'Nhóm')+'</div><div class="pdesc">Mỗi ngày có thực đơn, nhập <b>tổng số suất</b> của cả nhóm rồi bấm <b>Báo suất</b>, báo trước <b>'+d.gioChot+':00 hôm trước</b> để bếp chốt số và đặt đồ (bữa thứ Hai: Chủ nhật); cần sửa thì sửa được tới <b>'+(d.gioKhoa||22)+':00</b>, quá giờ là chốt. Cả nhóm không ăn thì nhập <b>0</b>. Tháng này nhóm đã báo <b>'+d.thang.an+'</b> suất.</div>'
    :d.quyen.khongTinh?'<div class="ptitle">Cơm trưa</div><div class="pdesc">Tài khoản '+(ME.vaiTro==='QC'?'kiểm soát chất lượng':'nhân sự')+' <b>không tính suất cơm</b> (không cần đăng ký).'+(d.quyen.sua?' Bạn vẫn báo thực đơn và xem số suất theo từng xưởng được.':'')+'</div>'
       :comBep()?'<div class="ptitle">Cơm trưa – Bếp ăn</div><div class="pdesc">Báo thực đơn ngày mai (khoảng 14–15h), xem số suất theo từng xưởng và danh sách người không ăn. Tài khoản bếp không cần đăng ký ăn và không được tính vào số suất.</div>'
@@ -10308,7 +10316,7 @@ function veCom(){
   if(d.quyen.ho&&sap.length&&d.hoNguoi&&d.hoNguoi.length)h+=comHoHtml(sap);
   if(d.quyen.sua)h+=comFormHtml(sap);
   if(d.quyen.xem)h+=comTongHopHtml();
-  if(qua.length)h+='<div class="card cm-khong-in"><details><summary><b>Thực đơn những ngày trước</b></summary><ul class="cm-ds">'+qua.map(function(t){
+  if(qua.length)h+='<div class="card cm-khong-in"><details><summary><b>Thực đơn đã qua giờ ăn</b> <span class="cm-ghi">('+qua.length+' ngày – bấm để xem)</span></summary><ul class="cm-ds">'+qua.map(function(t){
       return '<li><span><b>'+esc(comNgayTen(t.ngay))+'</b> – '+esc(comMon(t).join(', '))+'</span>'+comTT(t.ngay)+'</li>';}).join('')+'</ul></details></div>';
   $('main').innerHTML=h;
 }
@@ -10343,7 +10351,14 @@ function comXoa(ng){
 function comTongHopHtml(){
   var d=COM.d;
   if(!d.tongHop.length)return '<div class="card"><h3>Tổng hợp số suất</h3><p class="cm-ghi">Chưa có thực đơn nào cho hôm nay / ngày tới.</p></div>';
-  return d.tongHop.map(function(th,i){
+  var the=function(th){return comTongHop1(th,d.tongHop.indexOf(th))};
+  var con=d.tongHop.filter(function(th){return !comDaAn(th.ngay)}), da=d.tongHop.filter(function(th){return comDaAn(th.ngay)});
+  return (con.length?con.map(the).join(''):'<div class="card"><h3>Tổng hợp số suất</h3><p class="cm-ghi">Chưa có thực đơn cho ngày tới.</p></div>')+
+    (da.length?'<details class="card cm-da-an"><summary><b>Tổng hợp số suất đã qua giờ ăn</b> <span class="cm-ghi">('+esc(da.map(function(th){return comNgayTen(th.ngay)}).join(', '))+' – bấm để xem)</span></summary>'+da.map(the).join('')+'</details>':'');
+}
+function comTongHop1(th,i){
+  var d=COM.d;
+  return (function(th,i){
     var t=d.thucDon.filter(function(x){return x.ngay===th.ngay})[0]||{han:th.ngay}, mo=comConHan(t), moKhoa=comMo(t);
     var coTen=th.xuong.some(function(x){return x.dsAn&&!x.nhom});
     var ten=function(ds,nhan){return ds&&ds.length?'<details><summary>'+nhan+' ('+ds.length+')</summary><p>'+esc(ds.join(', '))+'</p></details>':''};
@@ -10360,7 +10375,7 @@ function comTongHopHtml(){
       '<tr class="tong"><td>Tổng tất cả</td><td class="r">'+th.an+'</td><td class="r">'+th.khong+'</td><td class="r">'+th.chua+'</td>'+(coTen?'<td></td>':'')+'</tr></tbody></table>'+
       comMuonHtml(th)+comKhongHtml(th)+
       '<p class="cm-khong-in" style="margin-top:10px"><button class="btn sm" type="button" onclick="comChep('+i+')">📋 Chép số suất gửi bếp</button> <button class="btn sm" type="button" onclick="window.print()">🖨 In</button></p></div>';
-  }).join('');
+  })(th,i);
 }
 /* Danh sách người KHÔNG ĂN: họ tên, mã nhân viên, xưởng (ban điều hành + trợ lý: cả nhà máy; trưởng phòng: xưởng mình; bếp / nhân sự: chỉ số) */
 /* Đăng ký / đổi sau hạn 16:00 (để bếp biết số đã đổi sau khi chốt, đặt đồ) */
@@ -10398,7 +10413,7 @@ function comHoHtml(sap){
     '<span class="cm-ho-tab">'+[['chua','Chưa đăng ký'],['tat','Tất cả']].map(function(x){return '<button type="button" class="btn sm'+(COM.hoLoc===x[0]?' pri':'')+'" onclick="COM.hoLoc=\''+x[0]+'\';comHoVe(1)">'+x[1]+'</button>'}).join(' ')+'</span></div>'+
     '<div id="cmHoDs">'+comHoDs()+'</div></div>';
 }
-function comHoVe(tab){ if(tab){var c=$('cmHo');if(c)c.outerHTML=comHoHtml(COM.d.thucDon.filter(function(t){return t.ngay>=COM.d.homNay}));return} var b=$('cmHoDs'); if(b)b.innerHTML=comHoDs(); }
+function comHoVe(tab){ if(tab){var c=$('cmHo');if(c)c.outerHTML=comHoHtml(COM.d.thucDon.filter(function(t){return !comDaAn(t.ngay)}));return} var b=$('cmHoDs'); if(b)b.innerHTML=comHoDs(); }
 function comHoDs(){
   var tHo=COM.d.thucDon.filter(function(x){return x.ngay===COM.hoNgay})[0], mo=!tHo||comMo(tHo), kh=mo?'':' disabled';
   var d=COM.d,dk=(d.hoDK&&d.hoDK[COM.hoNgay])||{},q=String(COM.hoTim||'').trim().toLowerCase();
