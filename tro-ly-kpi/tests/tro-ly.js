@@ -62,28 +62,46 @@ function taoCtx(homNay) {
 }
 
 function duLieuMau(them) {
-  them('PhongBan', [['MaXuong', 'TenXuong', 'TrangThai'], ['CNC', 'Xưởng CNC', 'Đang dùng'], ['NGON', 'Xưởng Ngọn', 'Đang dùng'], ['SON', 'Xưởng Sơn', 'Đang dùng'], ['CU', 'Xưởng Cũ', 'Ngừng']]);
+  them('PhongBan', [['MaXuong', 'TenXuong', 'TrangThai'], ['CNC', 'Xưởng CNC', 'Đang dùng'], ['NGON', 'Xưởng Ngọn', 'Đang dùng'], ['SON', 'Xưởng Sơn', 'Đang dùng'],
+    ['HT', 'Xưởng Hoàn thiện', 'Đang dùng'], ['CU', 'Xưởng Cũ', 'Ngừng']]);
   them('CongDoan', [['MaCD', 'TenCD', 'MaXuong', 'CachCham', 'TrangThai'], ['CNC-TIP', 'Tip', 'CNC', 'CN', 'Đang dùng'], ['NGON-A', 'A', 'NGON', 'CN', 'Đang dùng']]);
+  // web app lấy dòng CUỐI của mỗi công đoạn → CNC-TIP = 20
   them('DinhMuc', [['MaCD', 'DinhMucGio', 'DonViTinh', 'HieuLucTu', 'NguoiDuyet', 'GhiChu'],
     ['CNC-TIP', 28, 'cái/giờ', '2026-01-01', '', ''], ['CNC-TIP', 20, 'cái/giờ', '2026-07-25', '', ''], ['NGON-A', '12,5', 'phôi/giờ', '2026-01-01', '', '']]);
-  them('NhanSu', [['MaNV', 'HoTen', 'MaXuong', 'ChucDanh', 'BacTayNghe', 'NamSinh', 'NgayVaoLam', 'SoCCCD', 'DienThoai', 'DiaChi', 'LoaiHopDong', 'LuongCoBan'],
-    ['C1', 'A', 'CNC', '', '', '', '', '001091234567', '0912345678', 'Hà Nội', '', 9000000], ['C2', 'B', 'NGON', '', '', '', '', '', '', '', '', 7000000]]);
+  them('NhanSu', [['MaNV', 'HoTen', 'MaXuong', 'ChucDanh', 'BacTayNghe', 'NamSinh', 'NgayVaoLam', 'SoCCCD', 'DienThoai', 'DiaChi', 'LoaiHopDong', 'LuongCoBan', 'CongDoanLamDuoc', 'TrangThai'],
+    ['C1', 'A', 'CNC', 'Công nhân', '', '', '', '001091234567', '0912345678', 'Hà Nội', '', 9000000, '', 'Đang làm'],
+    ['C2', 'B', 'NGON', 'Công nhân', '', '', '', '', '', '', '', 7000000, '', 'Đang làm'],
+    ['C3', 'C', 'SON', 'Công nhân', '', '', '', '', '', '', '', '', '', 'Đang làm'],
+    ['C4', 'D', 'NGON', 'Công nhân', '', '', '', '', '', '', '', '', '', 'Đang làm'],
+    ['C5', 'E', 'NGON', 'Công nhân', '', '', '', '', '', '', '', '', '', 'Đang làm'],
+    ['C6', 'F', 'HT', 'Công nhân', '', '', '', '', '', '', '', '', '', 'Đang làm'],
+    ['C9', 'G', 'CNC', 'Công nhân', '', '', '', '', '', '', '', '', '', 'Nghỉ việc'],
+    ['Q1', 'Quản lý CNC', 'CNC', 'Trưởng phòng', '', '', '', '', '', '', '', '', '', 'Đang làm'],
+    ['Q2', 'Tổ trưởng TK', 'CNC', 'Tổ trưởng', '', '', '', '', '', '', '', '', '', 'Đang làm']]);
+  them('TaiKhoan', [['TenDangNhap', 'MatKhauMaHoa', 'HoTen', 'VaiTro', 'MaXuong', 'TrangThai', 'DoiMatKhauLanDau', 'LanDangNhapCuoi', 'NgayTao', 'MaNV'],
+    ['tpcnc', 'hash', 'TP', 'TP', 'CNC', 'Đang dùng', '', '', '', 'Q2']]);
+  them('XacNhanDiemDanh', [['Ngay', 'MaXuong', 'NguoiXacNhan', 'ThoiDiem'], ['2026-10-10', 'CNC', '', ''], ['2026-10-10', 'NGON', '', ''], ['2026-10-10', 'SON', '', ''], ['2026-10-09', 'CNC', '', '']]);
+  them('NghiDaiHan', [['MaNghi', 'MaNV', 'MaXuong', 'Loai', 'TuNgay', 'DenNgay'], ['n', 'C5', 'NGON', 'Thai sản', '2026-09-01', '2027-03-01']]);
+  them('NgayLe', [['Ngay', 'TenLe', 'MaXuong'], ['2027-01-01', 'Tết', '']]);
+  them('MienTruDiemDanh', [['Ngay', 'MaXuong', 'LyDo', 'NguoiTao']]);
   const H = ['MaDong', 'Ngay', 'MaNV', 'MaCD', 'MaMay', 'GioLam', 'SoLuongLamRa', 'GioDung', 'LyDoDung', 'GhiChu', 'TrangThai', 'NguoiNhap', 'ThoiDiemNhap', 'LyDoTuChoi', 'ThoiDiemDuyet'];
   const nk = [H];
   const dong = (ngay, nv, cd, gio, sl, dung, ly, tt) => nk.push(['x', ngay, nv, cd, '', gio, sl, dung, ly, '', tt, '', '', '', '']);
-  // 10/10 (thứ Bảy): CNC 8h × 20/giờ đạt 100%; Ngọn 8h, 80 sp / 12,5 = 6,4h chuẩn = 80%, dừng 2h
-  dong('2026-10-10', 'C1', 'CNC-TIP', 8, 160, 0, '', 'Đã duyệt');
-  dong('2026-10-10', 'C2', 'NGON-A', 8, 80, 2, 'Chờ nguyên vật liệu', 'Đã duyệt');
+  // 10/10: C1 (160 − 2 lỗi)/20 = 7,9h chuẩn / 8h có mặt = 98,75%; C2 (80 − 7)/12,5 = 5,84 / 8 = 73%; C3 đi muộn 2h → 6h có mặt, chưa khai
+  dong('2026-10-10', 'C1', 'CNC-TIP', 8, 160, 0, '', 'Đã chốt');
+  dong('2026-10-10', 'C2', 'NGON-A', 8, 80, 2, 'Chờ nguyên vật liệu', 'Đã chốt');
   dong('2026-10-10', 'C2', 'NGON-A', 2, 999, 0, '', 'Từ chối');
   dong('2026-10-10', 'C1', 'CNC-TIP', 2, 40, 0, '', 'Chờ duyệt');
-  // ngày trước để so sánh: CNC 90%
-  dong(new Date(Date.UTC(2026, 9, 9, 0)), 'C1', 'CNC-TIP', 10, 180, 0, '', 'Đã duyệt');
-  dong('2026-10-08', 'C1', 'CNC-TIP', 8, 100, 0, '', 'TP đã chốt');
+  dong('2026-10-10', 'Q2', 'CNC-TIP', 8, 999, 0, '', 'Đã chốt');      // quản lý: không tính hiệu suất
+  dong('2026-10-10', 'C9', 'CNC-TIP', 8, 999, 0, '', 'Đã chốt');      // nghỉ việc: không tính
+  // 9/10: C1 180/20 = 9 / 8 = 112,5%
+  dong(new Date(Date.UTC(2026, 9, 9, 0)), 'C1', 'CNC-TIP', 10, 180, 0, '', 'Đã chốt');
+  dong('2026-10-08', 'C1', 'CNC-TIP', 8, 100, 0, '', 'Chờ duyệt');
   them('NhatKySanXuat', nk);
   them('PhieuKCS', [['MaPhieu', 'Ngay', 'MaNV', 'MaCD', 'SoLuongKhongDat', 'MaLoi', 'NguoiKiemTra', 'ThoiDiemNhap'],
     ['q', '2026-10-10', 'C2', 'NGON-A', 7, 'L02', '', ''], ['q', '2026-10-10', 'C1', 'CNC-TIP', 2, '', '', '']]);
   them('DanhMucLoi', [['MaLoi', 'TenLoi', 'NguyenNhan', 'MucDo'], ['L02', 'Bọt khí trong phôi', 'Người', 'Nặng']]);
-  them('DiemDanhNghi', [['MaDD', 'Ngay', 'MaNV', 'MaXuong', 'LyDo'], ['d', '2026-10-10', 'C1', 'CNC', 'ỐM'], ['d', '2026-10-10', 'C2', 'NGON', 'P']]);
+  them('DiemDanhNghi', [['MaDD', 'Ngay', 'MaNV', 'MaXuong', 'LyDo', 'KyHieu'], ['d', '2026-10-10', 'C4', 'NGON', 'ỐM', ''], ['d', '2026-10-10', 'C3', 'SON', 'Đi muộn 2 tiếng', '']]);
   them('MayMoc', [['MaMay', 'TenMay', 'MaXuong', 'ChungLoai', 'NamSuDung', 'TinhTrang', 'BaoTriKeTiep'],
     ['M1', 'Máy CNC 1', 'CNC', '', '', 'Đang chạy', '2026-10-09'], ['M2', 'Máy cũ', 'CNC', '', '', 'Thanh lý', '2026-01-01'], ['M3', 'Máy xa', 'CNC', '', '', 'Đang chạy', '2026-12-01']]);
   them('PhatNhapTre', [['MaNV', 'HoTen', 'MaXuong', 'Ngay', 'ThoiDiemPhat', 'GhiChu'], ['C1', '', 'CNC', '2026-10-07', '10/10/2026 18:38:52', '']]);
@@ -119,24 +137,26 @@ A.gui.length = 0;
 post('aaaabbbbccccdddd', 'u1', 'BC', 'm5');
 const t = A.gui.map(g => g.text).join('\n');
 ok(/Thứ Bảy 10\/10\/2026/.test(t), 'ngày gần nhất = 10/10');
-ok(/Xưởng CNC: 100% ▲10/.test(t), 'CNC 100%, hơn hôm trước 10 điểm (định mức theo ngày hiệu lực): ' + t);
-ok(/Xưởng Ngọn: 80% · 8h · dừng 2h/.test(t), 'Ngọn 80% (định mức 12,5), bỏ dòng từ chối');
-ok(/Toàn nhà máy: 90% định mức/.test(t), 'toàn nhà máy (8+6,4)/16 = 90%');
+ok(/Xưởng CNC: 99% ▼14 · 1 người/.test(t), 'CNC (160−2)/20/8 = 98,75%, so 112,5% hôm trước; bỏ quản lý & nghỉ việc: ' + t);
+ok(/Xưởng Ngọn: 73% · 1 người · dừng 2h/.test(t), 'Ngọn trừ lỗi KCS, bỏ người ốm và nghỉ dài hạn');
+ok(/Xưởng Sơn: 0% · 1 người/.test(t), 'Sơn có mặt 6h (đi muộn 2h) nhưng chưa khai');
+ok(/Toàn nhà máy: hiệu suất 62% ▼50 · đạt chất lượng 96,3%/.test(t) && /3 người · 22h có mặt · 2h dừng/.test(t), 'toàn nhà máy 13,74/22: ' + t);
 ok(/Chờ nguyên vật liệu: 2h \(Ngọn 2h\)/.test(t), 'lý do dừng');
 ok(/KCS: 9 sp không đạt \(Ngọn 7, CNC 2\)/.test(t) && /Bọt khí trong phôi \(7\)/.test(t), 'KCS');
-ok(/Nghỉ: 2 người/.test(t), 'nghỉ');
+ok(/Nghỉ: 1 người \(ỐM 1\)/.test(t) && /Đi muộn \/ làm nửa ngày: 1 người/.test(t), 'nghỉ theo ký hiệu chấm công');
 ok(/1 dòng còn chờ duyệt \(CNC 1\)/.test(t), 'dòng chờ duyệt');
-ok(/Chưa có số liệu: Xưởng Sơn/.test(t) && !/Xưởng Cũ/.test(t), 'xưởng thiếu số liệu, bỏ xưởng ngừng');
+ok(/1 người đi làm nhưng chưa có sản lượng đã chốt \(Sơn 1\)/.test(t), 'người chưa khai');
+ok(/Chưa xác nhận điểm danh: Xưởng Hoàn thiện/.test(t) && !/Xưởng Cũ/.test(t), 'xưởng chưa điểm danh, bỏ xưởng ngừng');
 ok(/1 lượt bị phạt nhập trễ/.test(t), 'nhập trễ');
 ok(/M1 Máy CNC 1 \(Xưởng CNC\): QUÁ HẠN 2 ngày/.test(t) && !/M2|M3/.test(t), 'bảo trì');
-ok(!/001091234567|0912345678|9000000|Hà Nội/.test(t), 'không lộ thông tin cá nhân');
+ok(!/001091234567|0912345678|9000000|Hà Nội|hash/.test(t), 'không lộ thông tin cá nhân');
 
 post('aaaabbbbccccdddd', 'u1', 'BC', 'm5'); ok(A.gui.length === 1, 'tin trùng message_id không trả lời lại');
 A.gui.length = 0;
-post('aaaabbbbccccdddd', 'u1', 'bc 9/10', 'm6'); ok(/09\/10\/2026/.test(A.gui[0].text) && /Xưởng CNC: 90%/.test(A.gui[0].text), 'bc theo ngày');
-post('aaaabbbbccccdddd', 'u1', 'tuần', 'm7'); ok(/TỔNG KẾT 7 NGÀY 04\/10 → 10\/10/.test(A.gui[1].text) && /Xưởng CNC: 94% · 18h/.test(A.gui[1].text), 'tuần: CNC (8+9)/18 = 94%');
+post('aaaabbbbccccdddd', 'u1', 'bc 9/10', 'm6'); ok(/09\/10\/2026/.test(A.gui[0].text) && /Xưởng CNC: 113%/.test(A.gui[0].text), 'bc theo ngày: ' + A.gui[0].text);
+post('aaaabbbbccccdddd', 'u1', 'tuần', 'm7'); ok(/TỔNG KẾT 7 NGÀY 04\/10 → 10\/10/.test(A.gui[1].text) && /Xưởng CNC: 106% · 1 người/.test(A.gui[1].text), 'tuần: CNC (7,9+9)/16 = 106%: ' + A.gui[1].text);
 post('aaaabbbbccccdddd', 'u1', 'xưởng nào tệ nhất?', 'm8'); ok(/chưa bật hỏi tự do/.test(A.gui[2].text) && /bc – bản tin/.test(A.gui[2].text), 'chưa có khóa AI → hướng dẫn');
-post('aaaabbbbccccdddd', 'u1', 'bc 8/10', 'm9'); ok(/Các dòng đang có: TP đã chốt 1/.test(A.gui[3].text), 'không có dòng Đã duyệt → kể trạng thái đang có');
+post('aaaabbbbccccdddd', 'u1', 'bc 8/10', 'm9'); ok(/Chưa có dòng nào "Đã chốt"/.test(A.gui[3].text) && /Các dòng đang có: Chờ duyệt 1/.test(A.gui[3].text), 'không có dòng Đã chốt → kể trạng thái đang có');
 
 // ---------- Trigger 7h ----------
 A.gui.length = 0;
@@ -181,16 +201,23 @@ post('aaaabbbbccccdddd', 'u1', 'còn xưởng CNC?', 'a2');
 const cc = { D: {} };
 A.ctx.heThongAI_(cc);
 const hs = A.ctx.chayCongCu_(cc, 'hieu_suat', { tu_ngay: '2026-10-10', den_ngay: '2026-10-10', theo: 'xuong' });
-ok(/Chung: 90% định mức/.test(hs) && /Xưởng CNC \| 100% \| 8 \| 0 \| 160 \| 1/.test(hs) && /Xưởng Ngọn \| 80%/.test(hs) && /1 dòng chờ duyệt/.test(hs), 'hieu_suat: ' + hs);
+ok(/Chung: 62\.5%, đạt chất lượng 96\.3%, 22 giờ có mặt/.test(hs) && /Xưởng CNC \| 98\.8% \| 8 \| 8 \| 0 \| 160 \| 2 \| 1 \| 0/.test(hs) &&
+  /Xưởng Ngọn \| 73% \| 8/.test(hs) && /Xưởng Sơn \| 0% \| 6 \| 0 \| 0 \| 0 \| 0 \| 1 \| 1/.test(hs) && /1 dòng chờ duyệt/.test(hs), 'hieu_suat: ' + hs);
+const hsN = A.ctx.chayCongCu_(cc, 'hieu_suat', { tu_ngay: '2026-10-04', den_ngay: '2026-10-10', theo: 'nguoi', ma_xuong: 'cnc' });
+ok(/C1 A \(CNC\) \| 105\.6% \| 16/.test(hsN) && !/Q2|C9/.test(hsN), 'hieu_suat theo người, lọc xưởng: ' + hsN);
+const hsC = A.ctx.chayCongCu_(cc, 'hieu_suat', { tu_ngay: '2026-10-10', den_ngay: '2026-10-10', theo: 'cong_doan' });
+ok(/CNC-TIP Tip \| /.test(hsC) && /GIỜ KHAI/.test(hsC), 'hieu_suat theo công đoạn: ' + hsC);
 const ns = A.ctx.chayCongCu_(cc, 'tra_cuu', { bang: 'NhanSu' });
 ok(!/001091234567|0912345678|9000000|Hà Nội/.test(ns) && /MaNV \| HoTen \| MaXuong/.test(ns), 'NhanSu không lộ thông tin cá nhân');
-const nk = A.ctx.chayCongCu_(cc, 'tra_cuu', { bang: 'NhatKySanXuat', loc: { TrangThai: 'đã duyệt', TenXuong: '~ngọn' }, cot: ['Ngay', 'HoTen', 'GioChuan'] });
+const nk = A.ctx.chayCongCu_(cc, 'tra_cuu', { bang: 'NhatKySanXuat', loc: { TrangThai: 'đã chốt', TenXuong: '~ngọn' }, cot: ['Ngay', 'HoTen', 'GioChuan'] });
 ok(/1 dòng khớp/.test(nk) && /2026-10-10 \| B \| 6\.4/.test(nk), 'lọc + cột tính thêm: ' + nk);
+const tk = A.ctx.chayCongCu_(cc, 'tra_cuu', { bang: 'NhatKySanXuat', loc: { MaNV: 'Q2' } });
+ok(!/hash/.test(tk) && !/hash/.test(JSON.stringify(A.ai.yeuCau)), 'không lộ mật khẩu băm');
 const dung = A.ctx.chayCongCu_(cc, 'tra_cuu', { bang: 'NhatKySanXuat', nhom_theo: ['LyDoDung'], tinh: ['tong:GioDung'], loc: { LyDoDung: '!' } });
 ok(/Chờ nguyên vật liệu \| 2/.test(dung), 'gom nhóm tổng giờ dừng, loại ô trống: ' + dung);
 assert.throws(() => A.ctx.chayCongCu_(cc, 'tra_cuu', { bang: 'TaiKhoan' }), /không được phép/); n++;
 const kpi = A.ctx.chayCongCu_(cc, 'ban_tin', { loai: 'ngay', ngay: '2026-10-10' });
-ok(/Xưởng CNC: 100%/.test(kpi), 'ban_tin');
+ok(/Xưởng CNC: 99%/.test(kpi), 'ban_tin');
 
 // lỗi khóa, giới hạn ngày
 A.ai.kich.push({ __ma: 401, type: 'error', error: { message: 'invalid x-api-key' } });

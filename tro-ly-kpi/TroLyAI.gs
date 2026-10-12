@@ -129,11 +129,14 @@ function heThongAI_(ctx) {
     moTa,
     '',
     'Cột có dấu * là cột tính thêm: MaXuong/TenXuong suy từ công đoạn hoặc nhân sự; HoTen từ NhanSu; ',
-    'NhatKySanXuat.DinhMucGio = định mức/giờ đang hiệu lực ngày đó, GioChuan = SoLuongLamRa ÷ DinhMucGio; TenLoi, TenViPham từ danh mục.',
+    'NhatKySanXuat.DinhMucGio = định mức/giờ của công đoạn, GioChuan = SoLuongLamRa ÷ DinhMucGio (chưa trừ lỗi KCS); TenLoi, TenViPham từ danh mục.',
     '',
-    'QUY TẮC TÍNH:',
-    '- Sản lượng chính thức chỉ tính dòng NhatKySanXuat có TrangThai "Đã duyệt". Dòng "Từ chối" bỏ hẳn; trạng thái khác là chờ duyệt.',
-    '- % đạt định mức = tổng GioChuan ÷ tổng GioLam của các dòng có định mức. Dùng công cụ hieu_suat để tính, đừng tự nhẩm.',
+    'QUY TẮC TÍNH (giống web app KPI):',
+    '- Sản lượng chính thức chỉ tính dòng NhatKySanXuat có TrangThai "Đã chốt" (trưởng phòng đã duyệt). "Chờ duyệt" chưa tính, "Từ chối" bỏ.',
+    '- Hiệu suất sản lượng = Σ (SoLuongLamRa − hàng lỗi KCS) ÷ định mức, chia cho tổng GIỜ CÓ MẶT theo chấm công',
+    '  (đi làm = 8h, nửa ngày 4h, đi muộn x-n trừ n giờ; nghỉ = 0). Ngày công = xưởng đã xác nhận điểm danh hoặc người đó có dòng đã chốt.',
+    '  Không tính trưởng/phó phòng, người nghỉ việc, ngày nghỉ dài hạn. Luôn dùng công cụ hieu_suat để tính, đừng tự nhẩm.',
+    '- Đạt chất lượng = (sản lượng − lỗi) ÷ sản lượng. KPI tháng đã chốt nằm ở bảng KPIThang (HieuSuatSL, ChatLuong, TuanThu, AnToan, TongKPI, Loai, Hang).',
     '- Đơn vị sản lượng khác nhau giữa công đoạn (cái, phôi…), đừng cộng sản lượng khác công đoạn rồi so sánh.',
     '- Số người nghỉ trong ngày: đếm MaNV khác nhau trong DiemDanhNghi ngày đó (có thể kèm NghiDaiHan đang hiệu lực).',
     '- Số liệu ngày gần đây có thể chưa nhập/duyệt xong (hạn nhập là 17h ngày làm việc thứ 3) – nói rõ khi số liệu có vẻ thiếu.',
@@ -177,14 +180,14 @@ var AI_CONG_CU = [
   },
   {
     name: 'hieu_suat',
-    description: 'Tính % đạt định mức, giờ làm, giờ dừng, sản lượng từ NhatKySanXuat (chỉ dòng Đã duyệt) cho một khoảng ngày, ' +
-      'gom theo xưởng, người, công đoạn hoặc ngày. Kèm số dòng còn chờ duyệt.',
+    description: 'Tính hiệu suất sản lượng đúng cách web app KPI (dòng Đã chốt, trừ lỗi KCS, chia giờ có mặt theo chấm công), ' +
+      'giờ có mặt, giờ dừng, sản lượng, lỗi, số người chưa khai – cho một khoảng ngày, gom theo xưởng, người, công đoạn hoặc ngày.',
     input_schema: {
       type: 'object',
       properties: {
         tu_ngay: { type: 'string', description: 'yyyy-mm-dd' },
         den_ngay: { type: 'string', description: 'yyyy-mm-dd' },
-        theo: { type: 'string', enum: ['xuong', 'nguoi', 'cong_doan', 'ngay'] },
+        theo: { type: 'string', enum: ['xuong', 'nguoi', 'cong_doan', 'ngay'], description: 'Gom theo xưởng, người, công đoạn (tính trên giờ khai) hoặc ngày.' },
         ma_xuong: { type: 'string', description: 'Chỉ tính một xưởng (mã, vd CNC). Bỏ trống = cả nhà máy.' },
         ma_nv: { type: 'string', description: 'Chỉ tính một người (mã NV).' },
         gioi_han: { type: 'integer', description: 'Số dòng tối đa (mặc định 30).' }
@@ -215,20 +218,11 @@ function chayCongCu_(ctx, ten, inp) {
   throw new Error('Không có công cụ ' + ten);
 }
 
-/** Nạp sheet theo nhu cầu, nhớ trong 1 lượt hỏi. ds=null → mọi sheet napDuLieu_ cần. */
+/** Nạp sheet theo nhu cầu, nhớ trong 1 lượt hỏi. ds=null → mọi sheet bản tin cần. */
 function ctxDuLieu_(ctx, ds) {
-  var can = ds || ['NhatKySanXuat', 'CongDoan', 'DinhMuc', 'PhongBan', 'PhieuKCS', 'DanhMucLoi', 'DiemDanhNghi', 'MayMoc', 'PhatNhapTre'];
   ctx.ss = ctx.ss || ss_();
-  can.forEach(function (t) { if (!ctx.D[t]) ctx.D[t] = bang_(t, ctx.ss); });
-  if (!ctx.D.nvXuong) {
-    var ns = ctx.D.NhanSu || (ctx.D.NhanSu = bang_('NhanSu', ctx.ss));
-    ctx.D.nvXuong = {}; ctx.nvTen = {};
-    ns.rows.forEach(function (r) {
-      var m = String(r[ns.c.MaNV]).trim();
-      ctx.D.nvXuong[m] = String(r[ns.c.MaXuong]).trim();
-      ctx.nvTen[m] = String(r[ns.c.HoTen]).trim();
-    });
-  }
+  (ds || SHEET_CAN).forEach(function (t) { if (!ctx.D[t]) ctx.D[t] = bang_(t, ctx.ss); });
+  if (!ctx.D.nvXuong) { napNhanSu_(ctx.D, ctx.ss); ctx.nvTen = ctx.D.nvTen; }
   return ctx.D;
 }
 
@@ -254,7 +248,7 @@ function bangAI_(ctx, ten) {
     if (them.indexOf('MaXuong') >= 0) o.MaXuong = mx;
     if (them.indexOf('TenXuong') >= 0) o.TenXuong = T.tenXuong[mx] || mx;
     if (ten === 'NhatKySanXuat') {
-      var dm = dinhMuc_(T, cd, ngay_(r[b.c.Ngay]));
+      var dm = dinhMuc_(T, cd);
       o.DinhMucGio = dm || '';
       o.GioChuan = dm ? Math.round(so_(r[b.c.SoLuongLamRa]) / dm * 100) / 100 : '';
     }
@@ -381,44 +375,58 @@ function ccTraCuu_(ctx, inp) {
 function loTxt_(tu, den) { return tu || den ? ' (' + (tu || '…') + ' → ' + (den || '…') + ')' : ''; }
 
 function ccHieuSuat_(ctx, inp) {
-  var D = ctxDuLieu_(ctx, ['NhatKySanXuat', 'CongDoan', 'DinhMuc', 'PhongBan', 'DanhMucLoi']);
+  var D = ctxDuLieu_(ctx, null);
   var T = ctx.T || (ctx.T = traCuu_(D));
   var tu = ngay_(inp.tu_ngay), den = ngay_(inp.den_ngay);
   if (!tu || !den) throw new Error('Cần tu_ngay và den_ngay dạng yyyy-mm-dd');
-  var b = D.NhatKySanXuat, c = b.c, G = {}, tenCD = {};
-  var cdB = D.CongDoan;
-  cdB.rows.forEach(function (r) { tenCD[String(r[cdB.c.MaCD]).trim()] = String(r[cdB.c.TenCD]).trim(); });
+  if (den < tu) throw new Error('den_ngay phải sau tu_ngay');
   var mx = inp.ma_xuong ? String(inp.ma_xuong).trim().toUpperCase() : '', mnv = inp.ma_nv ? String(inp.ma_nv).trim().toUpperCase() : '';
-  var cho = 0, ngayCo = {};
-  b.rows.forEach(function (r) {
-    var d = ngay_(r[c.Ngay]);
-    if (!d || d < tu || d > den) return;
-    var maCD = String(r[c.MaCD]).trim(), maNV = String(r[c.MaNV]).trim(), x = xuongCua_(T, D, maCD, maNV);
-    if (mx && x.toUpperCase() !== mx) return;
-    if (mnv && maNV.toUpperCase() !== mnv) return;
-    var tt = trangThai_(r[c.TrangThai]);
-    if (tt === 'loai') return;
-    if (tt === 'cho') { cho++; return; }
-    ngayCo[d] = 1;
-    var k = inp.theo === 'nguoi' ? maNV + ' ' + (ctx.nvTen[maNV] || '') + ' (' + x + ')'
-      : inp.theo === 'cong_doan' ? maCD + ' ' + (tenCD[maCD] || '')
-      : inp.theo === 'ngay' ? d : (T.tenXuong[x] || x);
-    var g = G[k] = G[k] || { gio: 0, chuan: 0, gioCoDm: 0, dung: 0, sl: 0, dong: 0, nguoi: {} };
-    var gio = so_(r[c.GioLam]), sl = so_(r[c.SoLuongLamRa]), dm = dinhMuc_(T, maCD, d);
-    g.gio += gio; g.sl += sl; g.dung += so_(r[c.GioDung]); g.dong++; g.nguoi[maNV] = 1;
-    if (dm > 0 && gio > 0) { g.chuan += sl / dm; g.gioCoDm += gio; }
+  var hop = function (x, nv) { return (!mx || String(x).toUpperCase() === mx) && (!mnv || String(nv).toUpperCase() === mnv); };
+  var I = chiMuc_(D, T), gh = Math.min(Number(inp.gioi_han) || 30, 200);
+  var cho = I.cho.filter(function (r) { return r.d >= tu && r.d <= den && hop(r.x, r.nv); }).length;
+  var tenX = function (x) { return T.tenXuong[x] || x; };
+  var r1 = function (n) { return Math.round(n * 10) / 10; };
+
+  if (inp.theo === 'cong_doan') {
+    var tenCD = {}, cdB = D.CongDoan, G = {};
+    cdB.rows.forEach(function (r) { tenCD[String(r[cdB.c.MaCD]).trim()] = String(r[cdB.c.TenCD]).trim(); });
+    Object.keys(I.nk).forEach(function (k) {
+      I.nk[k].forEach(function (r) {
+        if (r.d < tu || r.d > den || !hop(r.x, r.nv)) return;
+        var g = G[r.cd] = G[r.cd] || { gio: 0, chuan: 0, sl: 0, loi: 0, dung: 0, nguoi: {} };
+        var n = I.loi[r.nv + '|' + r.d + '|' + r.cd] || 0, dm = dinhMuc_(T, r.cd);
+        g.gio += r.gio; g.sl += r.sl; g.loi += n; g.dung += r.dung; g.nguoi[r.nv] = 1;
+        if (dm > 0) g.chuan += (r.sl - n) / dm;
+      });
+    });
+    var dsCD = Object.keys(G).map(function (k) { var g = G[k]; g.k = k; g.pt = g.gio > 0 ? g.chuan / g.gio * 100 : null; return g; })
+      .sort(function (a, b) { return (b.pt == null ? -1 : b.pt) - (a.pt == null ? -1 : a.pt); });
+    return 'Theo công đoạn ' + tu + ' → ' + den + ' (dòng đã chốt; % tính trên GIỜ KHAI vì giờ có mặt không chia theo công đoạn). ' + cho + ' dòng chờ duyệt.\n' +
+      'Công đoạn | % (giờ chuẩn/giờ khai) | giờ khai | giờ dừng | sản lượng | lỗi KCS | số người\n' +
+      dsCD.slice(0, gh).map(function (g) {
+        return g.k + ' ' + (tenCD[g.k] || '') + ' | ' + (g.pt == null ? 'không có định mức' : r1(g.pt) + '%') + ' | ' + r1(g.gio) + ' | ' + r1(g.dung) + ' | ' +
+          Math.round(g.sl) + ' | ' + Math.round(g.loi) + ' | ' + Object.keys(g.nguoi).length;
+      }).join('\n') + (dsCD.length > gh ? '\n… còn ' + (dsCD.length - gh) + ' dòng' : '');
+  }
+
+  var G2 = {}, ngayCo = {};
+  ngayCong_(D, T, tu, den).forEach(function (o) {
+    if (!hop(o.x, o.nv)) return;
+    var k = inp.theo === 'nguoi' ? o.nv + ' ' + (D.nvTen[o.nv] || '') + ' (' + o.x + ')' : inp.theo === 'ngay' ? o.d : tenX(o.x);
+    congVao_(G2[k] = G2[k] || nhomMoi_(), o);
+    ngayCo[o.d] = 1;
   });
-  var ds = Object.keys(G).map(function (k) { var g = G[k]; g.k = k; g.pt = pt_(g); return g; });
-  ds.sort(inp.theo === 'ngay' ? function (a, b) { return a.k < b.k ? -1 : 1; } : function (a, b) { return (b.pt == null ? -1 : b.pt) - (a.pt == null ? -1 : a.pt); });
-  var gh = Math.min(Number(inp.gioi_han) || 30, 200);
-  var t = tong_(G);
-  var dau = 'Hiệu suất ' + tu + ' → ' + den + (mx ? ' xưởng ' + mx : '') + (mnv ? ' NV ' + mnv : '') + ': ' + Object.keys(ngayCo).length + ' ngày có số liệu, ' +
-    t.dong + ' dòng đã duyệt, ' + cho + ' dòng chờ duyệt. Chung: ' + (pt_(t) == null ? 'không có định mức' : Math.round(pt_(t) * 10) / 10 + '% định mức') +
-    ', ' + Math.round(t.gio * 10) / 10 + ' giờ làm, ' + Math.round(t.dung * 10) / 10 + ' giờ dừng, ' + Object.keys(t.nguoi).length + ' người.';
-  return dau + '\n' + (inp.theo === 'nguoi' ? 'Người' : inp.theo === 'cong_doan' ? 'Công đoạn' : inp.theo === 'ngay' ? 'Ngày' : 'Xưởng') +
-    ' | % định mức | giờ làm | giờ dừng | sản lượng | số người\n' +
+  var ds = Object.keys(G2).map(function (k) { var g = G2[k]; g.k = k; g.pt = pt_(g); return g; });
+  ds.sort(inp.theo === 'ngay' ? function (a, b) { return a.k < b.k ? -1 : 1; } : function (a, b) { return (b.pt || 0) - (a.pt || 0); });
+  var t = tong_(G2), cl = t.sl > 0 ? (t.sl - t.loi) / t.sl * 100 : null;
+  var dau = 'Hiệu suất ' + tu + ' → ' + den + (mx ? ' xưởng ' + mx : '') + (mnv ? ' NV ' + mnv : '') + ' (cách tính web app): ' +
+    Object.keys(ngayCo).length + ' ngày công, ' + t.dong + ' dòng đã chốt, ' + cho + ' dòng chờ duyệt. Chung: ' +
+    (pt_(t) == null ? '—' : r1(pt_(t)) + '%') + (cl != null ? ', đạt chất lượng ' + r1(cl) + '%' : '') + ', ' + r1(t.mau) + ' giờ có mặt, ' +
+    r1(t.dung) + ' giờ dừng, ' + Object.keys(t.nguoi).length + ' người, ' + Object.keys(t.chuaKhai).length + ' lượt người-ngày đi làm chưa có sản lượng đã chốt.';
+  return dau + '\n' + (inp.theo === 'nguoi' ? 'Người' : inp.theo === 'ngay' ? 'Ngày' : 'Xưởng') +
+    ' | hiệu suất | giờ có mặt | giờ khai | giờ dừng | sản lượng | lỗi KCS | số người | ngày chưa khai\n' +
     ds.slice(0, gh).map(function (g) {
-      return g.k + ' | ' + (g.pt == null ? '—' : Math.round(g.pt * 10) / 10 + '%') + ' | ' + Math.round(g.gio * 10) / 10 + ' | ' +
-        Math.round(g.dung * 10) / 10 + ' | ' + Math.round(g.sl) + ' | ' + Object.keys(g.nguoi).length;
+      return g.k + ' | ' + (g.pt == null ? '—' : r1(g.pt) + '%') + ' | ' + r1(g.mau) + ' | ' + r1(g.gio) + ' | ' + r1(g.dung) + ' | ' +
+        Math.round(g.sl) + ' | ' + Math.round(g.loi) + ' | ' + Object.keys(g.nguoi).length + ' | ' + Object.keys(g.chuaKhai).length;
     }).join('\n') + (ds.length > gh ? '\n… còn ' + (ds.length - gh) + ' dòng' : '');
 }
