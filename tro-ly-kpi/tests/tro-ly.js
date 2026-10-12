@@ -5,12 +5,14 @@
 const fs = require('fs'), vm = require('vm'), path = require('path'), assert = require('assert');
 
 function taoCtx(homNay) {
-  const store = {}, cache = {}, gui = [], goi = [], triggers = [];
+  const store = {}, cache = {}, gui = [], goi = [], triggers = [], ai = { kich: [], yeuCau: [] };
   const sheets = {};
   const them = (ten, rows) => { sheets[ten] = rows; };
   const ss = {
     getSheetByName: n => sheets[n] ? {
       getLastRow: () => sheets[n].length,
+      getLastColumn: () => (sheets[n][0] || []).length,
+      getRange: (r, c, nr, nc) => ({ getValues: () => sheets[n].slice(r - 1, r - 1 + nr).map(x => x.slice(c - 1, c - 1 + nc)) }),
       getDataRange: () => ({ getValues: () => sheets[n].map(r => r.slice()) })
     } : null
   };
@@ -26,7 +28,7 @@ function taoCtx(homNay) {
           .replace('HH', p(x.getUTCHours())).replace('mm', p(x.getUTCMinutes()));
       }
     },
-    PropertiesService: { getScriptProperties: () => ({ getProperty: k => (k in store ? store[k] : null), setProperty: (k, v) => { store[k] = String(v); }, deleteProperty: k => { delete store[k]; } }) },
+    PropertiesService: { getScriptProperties: () => ({ getProperty: k => (k in store ? store[k] : null), setProperty: (k, v) => { store[k] = String(v); }, deleteProperty: k => { delete store[k]; }, getProperties: () => Object.assign({}, store) }) },
     CacheService: { getScriptCache: () => ({ get: k => cache[k] || null, put: (k, v) => { cache[k] = v; } }) },
     SpreadsheetApp: { openById: id => { assert.strictEqual(id, '1znHlbc3ulMRQILePmLZbwNQx-mMXFxd9sm0PBG9lrF8'); return ss; } },
     ContentService: { createTextOutput: s => ({ s }) },
@@ -38,6 +40,13 @@ function taoCtx(homNay) {
     Logger: { log: () => {} },
     UrlFetchApp: {
       fetch(url, o) {
+        if (url === 'https://api.anthropic.com/v1/messages') {
+          const body = JSON.parse(o.payload);
+          ai.yeuCau.push({ body, headers: o.headers });
+          const r = ai.kich.shift();
+          const tra = typeof r === 'function' ? r(body) : r;
+          return { getResponseCode: () => tra.__ma || 200, getContentText: () => JSON.stringify(tra) };
+        }
         const ham = url.split('/').pop(), body = JSON.parse(o.payload);
         assert.ok(url.startsWith('https://bot-api.zaloplatforms.com/botTOK/'), url);
         goi.push({ ham, body });
@@ -48,8 +57,8 @@ function taoCtx(homNay) {
     }
   };
   vm.createContext(ctx);
-  vm.runInContext(fs.readFileSync(path.join(__dirname, '..', 'TroLyKPI.gs'), 'utf8'), ctx, { filename: 'TroLyKPI.gs' });
-  return { ctx, store, gui, goi, triggers, them };
+  ['TroLyKPI.gs', 'TroLyAI.gs'].forEach(f => vm.runInContext(fs.readFileSync(path.join(__dirname, '..', f), 'utf8'), ctx, { filename: f }));
+  return { ctx, store, gui, goi, triggers, them, ai };
 }
 
 function duLieuMau(them) {
@@ -69,6 +78,7 @@ function duLieuMau(them) {
   dong('2026-10-10', 'C1', 'CNC-TIP', 2, 40, 0, '', 'Chờ duyệt');
   // ngày trước để so sánh: CNC 90%
   dong(new Date(Date.UTC(2026, 9, 9, 0)), 'C1', 'CNC-TIP', 10, 180, 0, '', 'Đã duyệt');
+  dong('2026-10-08', 'C1', 'CNC-TIP', 8, 100, 0, '', 'TP đã chốt');
   them('NhatKySanXuat', nk);
   them('PhieuKCS', [['MaPhieu', 'Ngay', 'MaNV', 'MaCD', 'SoLuongKhongDat', 'MaLoi', 'NguoiKiemTra', 'ThoiDiemNhap'],
     ['q', '2026-10-10', 'C2', 'NGON-A', 7, 'L02', '', ''], ['q', '2026-10-10', 'C1', 'CNC-TIP', 2, '', '', '']]);
@@ -125,7 +135,8 @@ post('aaaabbbbccccdddd', 'u1', 'BC', 'm5'); ok(A.gui.length === 1, 'tin trùng m
 A.gui.length = 0;
 post('aaaabbbbccccdddd', 'u1', 'bc 9/10', 'm6'); ok(/09\/10\/2026/.test(A.gui[0].text) && /Xưởng CNC: 90%/.test(A.gui[0].text), 'bc theo ngày');
 post('aaaabbbbccccdddd', 'u1', 'tuần', 'm7'); ok(/TỔNG KẾT 7 NGÀY 04\/10 → 10\/10/.test(A.gui[1].text) && /Xưởng CNC: 94% · 18h/.test(A.gui[1].text), 'tuần: CNC (8+9)/18 = 94%');
-post('aaaabbbbccccdddd', 'u1', 'xưởng nào tệ nhất?', 'm8'); ok(/bc – bản tin/.test(A.gui[2].text), 'câu lạ → hướng dẫn');
+post('aaaabbbbccccdddd', 'u1', 'xưởng nào tệ nhất?', 'm8'); ok(/chưa bật hỏi tự do/.test(A.gui[2].text) && /bc – bản tin/.test(A.gui[2].text), 'chưa có khóa AI → hướng dẫn');
+post('aaaabbbbccccdddd', 'u1', 'bc 8/10', 'm9'); ok(/Các dòng đang có: TP đã chốt 1/.test(A.gui[3].text), 'không có dòng Đã duyệt → kể trạng thái đang có');
 
 // ---------- Trigger 7h ----------
 A.gui.length = 0;
@@ -135,5 +146,58 @@ A.ctx.guiBanTinSang(); ok(A.gui.length === 1, 'không gửi lại cùng ngày (C
 // ---------- Dữ liệu ngày dạng Date và dd/mm/yyyy ----------
 ok(A.ctx.ngay_('25/08/2026 9:14:47') === '2026-08-25' && A.ctx.ngay_('2026-8-5') === '2026-08-05', 'chuẩn hóa ngày');
 ok(A.ctx.so_('12,5') === 12.5 && A.ctx.so_('1.234,5') === 1234.5 && A.ctx.so_('') === 0, 'đọc số kiểu VN');
+
+// ---------- Hỏi tự do bằng AI ----------
+A.store.ANTHROPIC_API_KEY = 'sk-test';
+A.gui.length = 0;
+let ketQuaCongCu = null;
+A.ai.kich.push(
+  { stop_reason: 'tool_use', content: [{ type: 'thinking', thinking: '', signature: 'x' }, { type: 'text', text: 'Để mình tra.' },
+    { type: 'tool_use', id: 't1', name: 'tra_cuu', input: { bang: 'DiemDanhNghi', tu_ngay: '2026-10-10', den_ngay: '2026-10-10', nhom_theo: ['LyDo'], tinh: ['dem_khac:MaNV'] } },
+    { type: 'tool_use', id: 't2', name: 'tra_cuu', input: { bang: 'NhanSu', loc: { SoCCCD: '1' } } }] },
+  body => { ketQuaCongCu = body.messages[body.messages.length - 1].content; return { stop_reason: 'end_turn', content: [{ type: 'text', text: 'Ngày 10/10 có 2 người nghỉ: • ỐM 1 • P 1' }] }; }
+);
+post('aaaabbbbccccdddd', 'u1', 'hôm qua có bao nhiêu người nghỉ', 'a1');
+const tin = A.gui.map(g => g.text);
+ok(tin[tin.length - 1] === 'Ngày 10/10 có 2 người nghỉ: • ỐM 1 • P 1', 'AI trả lời qua Zalo');
+ok(A.goi.some(g => g.ham === 'sendChatAction'), 'báo "đang gõ"');
+const y0 = A.ai.yeuCau[0];
+ok(y0.body.model === 'claude-opus-5-5' && y0.body.fallbacks === 'default' && y0.headers['anthropic-beta'] === 'server-side-fallback-2026-07-01', 'model + fallbacks');
+ok(y0.headers['x-api-key'] === 'sk-test' && y0.body.output_config.effort === 'low' && !('thinking' in y0.body), 'khóa + effort');
+ok(y0.body.tools.map(t => t.name).join() === 'tra_cuu,hieu_suat,ban_tin', 'công cụ');
+const he = y0.body.system[0].text;
+ok(/Chủ nhật 11\/10\/2026/.test(he) && /CNC = Xưởng CNC/.test(he) && /NhatKySanXuat \(lọc ngày theo Ngay\): .*GioChuan\*/.test(he), 'ngữ cảnh: ngày, xưởng, cột');
+ok(!/SoCCCD|LuongCoBan|DienThoai|DiaChi|NamSinh/.test(he), 'ngữ cảnh không nêu cột cá nhân');
+const y1 = A.ai.yeuCau[1];
+ok(y1.body.messages[1].role === 'assistant' && y1.body.messages[1].content[0].type === 'thinking', 'giữ nguyên khối thinking khi gửi lại');
+ok(ketQuaCongCu[0].tool_use_id === 't1' && /2 dòng khớp, 2 nhóm/.test(ketQuaCongCu[0].content) && /ỐM \| 1/.test(ketQuaCongCu[0].content), 'tra_cuu gom nhóm: ' + ketQuaCongCu[0].content);
+ok(ketQuaCongCu[1].is_error && /không có cột SoCCCD/.test(ketQuaCongCu[1].content), 'cột cá nhân bị chặn khi lọc');
+
+// lịch sử hội thoại cho câu hỏi nối tiếp
+A.ai.kich.push(body => { ok(body.messages.length === 3 && body.messages[1].content === 'Ngày 10/10 có 2 người nghỉ: • ỐM 1 • P 1', 'nhớ câu trước'); return { stop_reason: 'end_turn', content: [{ type: 'text', text: 'OK' }] }; });
+post('aaaabbbbccccdddd', 'u1', 'còn xưởng CNC?', 'a2');
+
+// công cụ trực tiếp
+const cc = { D: {} };
+A.ctx.heThongAI_(cc);
+const hs = A.ctx.chayCongCu_(cc, 'hieu_suat', { tu_ngay: '2026-10-10', den_ngay: '2026-10-10', theo: 'xuong' });
+ok(/Chung: 90% định mức/.test(hs) && /Xưởng CNC \| 100% \| 8 \| 0 \| 160 \| 1/.test(hs) && /Xưởng Ngọn \| 80%/.test(hs) && /1 dòng chờ duyệt/.test(hs), 'hieu_suat: ' + hs);
+const ns = A.ctx.chayCongCu_(cc, 'tra_cuu', { bang: 'NhanSu' });
+ok(!/001091234567|0912345678|9000000|Hà Nội/.test(ns) && /MaNV \| HoTen \| MaXuong/.test(ns), 'NhanSu không lộ thông tin cá nhân');
+const nk = A.ctx.chayCongCu_(cc, 'tra_cuu', { bang: 'NhatKySanXuat', loc: { TrangThai: 'đã duyệt', TenXuong: '~ngọn' }, cot: ['Ngay', 'HoTen', 'GioChuan'] });
+ok(/1 dòng khớp/.test(nk) && /2026-10-10 \| B \| 6\.4/.test(nk), 'lọc + cột tính thêm: ' + nk);
+const dung = A.ctx.chayCongCu_(cc, 'tra_cuu', { bang: 'NhatKySanXuat', nhom_theo: ['LyDoDung'], tinh: ['tong:GioDung'], loc: { LyDoDung: '!' } });
+ok(/Chờ nguyên vật liệu \| 2/.test(dung), 'gom nhóm tổng giờ dừng, loại ô trống: ' + dung);
+assert.throws(() => A.ctx.chayCongCu_(cc, 'tra_cuu', { bang: 'TaiKhoan' }), /không được phép/); n++;
+const kpi = A.ctx.chayCongCu_(cc, 'ban_tin', { loai: 'ngay', ngay: '2026-10-10' });
+ok(/Xưởng CNC: 100%/.test(kpi), 'ban_tin');
+
+// lỗi khóa, giới hạn ngày
+A.ai.kich.push({ __ma: 401, type: 'error', error: { message: 'invalid x-api-key' } });
+post('aaaabbbbccccdddd', 'u1', 'test lỗi', 'a3'); ok(/ANTHROPIC_API_KEY không đúng/.test(A.gui[A.gui.length - 1].text), 'báo lỗi khóa');
+A.ai.kich.push({ stop_reason: 'refusal', content: [] });
+post('aaaabbbbccccdddd', 'u1', 'test từ chối', 'a4'); ok(/không trả lời được/.test(A.gui[A.gui.length - 1].text), 'refusal');
+A.store.AI_GIOI_HAN_NGAY = '4';
+post('aaaabbbbccccdddd', 'u1', 'câu thứ 5', 'a5'); ok(/giới hạn 4/.test(A.gui[A.gui.length - 1].text) && A.ai.kich.length === 0, 'giới hạn câu hỏi/ngày');
 
 console.log('Trợ lý KPI: ' + n + ' kiểm tra đạt.');

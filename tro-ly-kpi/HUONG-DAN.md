@@ -41,8 +41,41 @@ Nó không đọc ra hay gửi đi số CCCD, điện thoại, địa chỉ, lư
   - `giúp` → hướng dẫn
 - Muốn thử ngay: trong trình soạn thảo, chọn hàm **thuGuiBanTin** → ▶ Chạy.
 
+## Bước 5. Bật hỏi tự do bằng AI
+
+Sau bước này bạn hỏi bot bằng câu thường, ví dụ: "hôm nay bao nhiêu người nghỉ?", "xưởng nào dừng máy nhiều nhất tháng 9?", "top 5 người hiệu suất cao nhất tuần này".
+
+1. **Lấy khóa API:**
+   - Vào https://console.anthropic.com → đăng ký / đăng nhập.
+   - **Billing**: nạp tiền trả trước (ví dụ 5–10 USD).
+   - **API Keys** → **Create Key** → sao chép khóa (bắt đầu bằng `sk-ant-`). Không gửi khóa cho ai, kể cả Claude.
+2. **Thêm file mã AI:** trong Apps Script, bấm **＋** cạnh "Tệp" → **Tập lệnh** → đặt tên `TroLyAI` → xóa nội dung mẫu → dán toàn bộ file `TroLyAI.gs` → Lưu.
+3. **Dán lại `Mã.gs`** bằng bản `TroLyKPI.gs` mới nhất: xóa hết → dán → Lưu.
+4. ⚙️ **Cài đặt dự án → Thuộc tính tập lệnh** → thêm `ANTHROPIC_API_KEY` = khóa vừa tạo → Lưu.
+5. **Triển khai → Quản lý triển khai → ✏️ → Phiên bản: Phiên bản mới → Triển khai.**
+
+**Tùy chọn** (thêm vào Thuộc tính tập lệnh nếu muốn):
+
+| Thuộc tính | Mặc định | Ý nghĩa |
+|---|---|---|
+| `AI_MODEL` | `claude-opus-5-5` | Đổi sang `claude-haiku-5-5` để rẻ hơn khoảng 40 lần (kém thông minh hơn) |
+| `AI_EFFORT` | `low` | `medium` / `high`: suy nghĩ kỹ hơn, chậm và tốn hơn |
+| `AI_GIOI_HAN_NGAY` | `60` | Số câu hỏi tối đa mỗi ngày, chống tốn tiền ngoài ý muốn |
+
+**Chi phí ước tính:** 1 USD ≈ 26.000đ. Đây là ước lượng thô, xem số thật ở console.anthropic.com → Usage.
+
+| Model | Mỗi câu hỏi | Hỏi 10 câu/ngày |
+|---|---|---|
+| `claude-opus-5-5` (mặc định) | ~1.000–2.000đ | ~300–550 nghìn đồng/tháng |
+| `claude-haiku-5-5` | ~50đ | ~15 nghìn đồng/tháng |
+
+**AI chỉ đọc được:**
+- Các sheet sản xuất, điểm danh, KCS, vi phạm, KPI tháng, máy móc, danh mục.
+- **Không** đọc được sheet tài khoản, yêu cầu sửa hồ sơ, nhật ký thao tác, cũng không đọc được các cột CCCD, điện thoại, địa chỉ, năm sinh, lương.
+- AI chỉ đọc, không sửa được gì.
+
 ## Khi cập nhật bản mới
-1. Mở file mã → xóa hết → dán bản mới → 💾 Lưu.
+1. Mở từng file (`Mã.gs` ← `TroLyKPI.gs`, `TroLyAI` ← `TroLyAI.gs`) → xóa hết → dán bản mới → 💾 Lưu.
 2. **Triển khai → Quản lý triển khai → ✏️ → Phiên bản: Phiên bản mới → Triển khai.** URL giữ nguyên, không cần chạy lại `caiDat`.
 
 ## Cách tính

@@ -120,12 +120,12 @@ function xuLyTin_(u) {
     return;
   }
   if (chat !== chu) { guiZalo_(chat, 'Đây là trợ lý riêng, không phục vụ tài khoản này.'); return; }
-  guiZalo_(chat, traLoiLenh_(text));
+  guiZalo_(chat, traLoiLenh_(text, chat));
 }
 
-var HUONG_DAN = 'Bạn có thể nhắn:\n• bc – bản tin ngày gần nhất\n• bc 10/10 – bản tin ngày 10/10\n• tuần – tổng kết 7 ngày\n• giúp – xem lại hướng dẫn';
+var HUONG_DAN = 'Bạn có thể nhắn:\n• bc – bản tin ngày gần nhất\n• bc 10/10 – bản tin ngày 10/10\n• tuần – tổng kết 7 ngày\n• giúp – xem lại hướng dẫn\n• hoặc hỏi tự nhiên, vd "hôm nay bao nhiêu người nghỉ?" (cần bật AI)';
 
-function traLoiLenh_(text) {
+function traLoiLenh_(text, chat) {
   var t = text.toLowerCase().replace(/\s+/g, ' ').trim();
   try {
     var mBc = t.match(/^(bc|báo cáo|bao cao|bản tin|ban tin)(?: (\d{1,2})[\/\-.](\d{1,2})(?:[\/\-.](\d{4}))?)?$/);
@@ -139,7 +139,11 @@ function traLoiLenh_(text) {
     }
     if (/^(tuần|tuan|tuần này|tuan nay)$/.test(t)) return banTinTuan_();
     if (/^(giúp|giup|help|\/start|xin chào|xin chao|chào|chao|hi)$/.test(t)) return 'Chào bạn 👋\n\n' + HUONG_DAN;
-    return 'Trợ lý chưa hiểu câu này (tính năng hỏi tự do sẽ có ở bước sau).\n\n' + HUONG_DAN;
+    if (typeof hoiAI_ === 'function' && PropertiesService.getScriptProperties().getProperty('ANTHROPIC_API_KEY')) {
+      try { zalo_('sendChatAction', { chat_id: chat, action: 'typing' }); } catch (e) { /* không bắt buộc */ }
+      return hoiAI_(chat, text);
+    }
+    return 'Trợ lý chưa hiểu câu này (chưa bật hỏi tự do bằng AI).\n\n' + HUONG_DAN;
   } catch (e) {
     console.error(e && e.stack || e);
     return '⚠ Lỗi khi đọc dữ liệu: ' + (e && e.message || e);
@@ -316,6 +320,17 @@ function lech_(a, b) {
   return d > 0 ? ' ▲' + d : d < 0 ? ' ▼' + (-d) : ' =';
 }
 
+/** "Chờ duyệt 120, Từ chối 3" – các trạng thái của một ngày. */
+function demTrangThai_(D, ngay) {
+  var b = D.NhatKySanXuat, dem = {};
+  b.rows.forEach(function (r) {
+    if (ngay_(r[b.c.Ngay]) !== ngay) return;
+    var t = String(r[b.c.TrangThai]).trim() || '(trống)';
+    dem[t] = (dem[t] || 0) + 1;
+  });
+  return Object.keys(dem).sort(function (a, b) { return dem[b] - dem[a]; }).map(function (k) { return k + ' ' + dem[k]; }).join(', ');
+}
+
 /* ============================ BẢN TIN NGÀY ============================ */
 
 function banTinNgay_(ngay, D) {
@@ -329,7 +344,9 @@ function banTinNgay_(ngay, D) {
   var out = ['📊 BẢN TIN SẢN XUẤT', tenNgay_(ngay), '(chỉ tính dòng đã duyệt · cập nhật ' + Utilities.formatDate(new Date(), TZ, 'HH:mm dd/MM') + ')', ''];
 
   if (!tg.dong) {
-    out.push('Chưa có dòng nào được duyệt cho ngày này.');
+    var tt = demTrangThai_(D, ngay);
+    out.push('Chưa có dòng nào ở trạng thái "Đã duyệt" cho ngày này.' +
+      (tt ? '\nCác dòng đang có: ' + tt + '.\nNếu trạng thái hoàn tất của web app có tên khác, báo Claude để sửa TT_TINH.' : ''));
   } else {
     var p = pt_(tg), pq = pt_(tq);
     out.push('🏭 Toàn nhà máy: ' + (p == null ? '—' : Math.round(p) + '% định mức' + lech_(p, pq)) +
