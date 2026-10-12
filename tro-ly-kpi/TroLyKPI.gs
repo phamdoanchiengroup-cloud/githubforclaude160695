@@ -123,7 +123,7 @@ function xuLyTin_(u) {
   guiZalo_(chat, traLoiLenh_(text, chat));
 }
 
-var HUONG_DAN = 'Bạn có thể nhắn:\n• bc – bản tin ngày gần nhất\n• bc 10/10 – bản tin ngày 10/10\n• tuần – tổng kết 7 ngày\n• giúp – xem lại hướng dẫn\n• hoặc hỏi tự nhiên, vd "hôm nay bao nhiêu người nghỉ?" (cần bật AI)';
+var HUONG_DAN = 'Bạn có thể nhắn:\n• bc – bản tin ngày gần nhất\n• bc 10/10 – bản tin ngày 10/10\n• tuần – tổng kết 7 ngày\n• giúp – xem lại hướng dẫn\n• phòng ban – các phòng AI đang làm việc\n• việc – việc đang mở · xong 3 – đánh dấu xong\n• hoặc nhắn tự nhiên, vd "hôm nay bao nhiêu người nghỉ?", "@viết bài tuyển dụng CNC"';
 
 function traLoiLenh_(text, chat) {
   var t = text.toLowerCase().replace(/\s+/g, ' ').trim();
@@ -139,6 +139,12 @@ function traLoiLenh_(text, chat) {
     }
     if (/^(tuần|tuan|tuần này|tuan nay)$/.test(t)) return banTinTuan_();
     if (/^(giúp|giup|help|\/start|xin chào|xin chao|chào|chao|hi)$/.test(t)) return 'Chào bạn 👋\n\n' + HUONG_DAN;
+    if (typeof docAgents_ === 'function') {
+      if (/^(phòng ban|phong ban|các phòng|cac phong|agent|agents)$/.test(t)) return danhSachPhong_();
+      if (/^(việc|viec|việc tồn|viec ton|todo)$/.test(t)) return viecDangMo_();
+      var mx = t.match(/^(xong|done)\s*#?(\d+)$/);
+      if (mx && agSS_()) return capNhatSoTay_(Number(mx[2]), null);
+    }
     if (typeof hoiAI_ === 'function' && PropertiesService.getScriptProperties().getProperty('ANTHROPIC_API_KEY')) {
       try { zalo_('sendChatAction', { chat_id: chat, action: 'typing' }); } catch (e) { /* không bắt buộc */ }
       return hoiAI_(chat, text);
@@ -158,7 +164,9 @@ function guiBanTinSang() {
   var D = napDuLieu_();
   var ngay = ngayGanNhat_(D, homNay_());
   if (!ngay || ngay === P.getProperty('DA_GUI_NGAY')) return;
-  guiZalo_(id, banTinNgay_(ngay, D));
+  var viec = '';
+  try { viec = typeof viecHomNay_ === 'function' ? viecHomNay_() : ''; } catch (e) { console.error(e); }
+  guiZalo_(id, banTinNgay_(ngay, D) + (viec ? '\n\n' + viec : ''));
   P.setProperty('DA_GUI_NGAY', ngay);
 }
 

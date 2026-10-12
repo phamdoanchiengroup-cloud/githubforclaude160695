@@ -74,17 +74,69 @@ Sau bước này bạn hỏi bot bằng câu thường, ví dụ: "hôm nay bao 
 - **Không** đọc được sheet tài khoản, yêu cầu sửa hồ sơ, nhật ký thao tác, cũng không đọc được các cột CCCD, điện thoại, địa chỉ, năm sinh, lương.
 - AI chỉ đọc, không sửa được gì.
 
-## Khi cập nhật bản mới
-1. Mở từng file (`Mã.gs` ← `TroLyKPI.gs`, `TroLyAI` ← `TroLyAI.gs`) → xóa hết → dán bản mới → 💾 Lưu.
-2. **Triển khai → Quản lý triển khai → ✏️ → Phiên bản: Phiên bản mới → Triển khai.** URL giữ nguyên, không cần chạy lại `caiDat`.
+## Bước 6. Công ty Agent (nhiều phòng ban AI)
 
-## Cách tính
-- Chỉ tính các dòng `NhatKySanXuat` có TrangThai = **Đã duyệt**. Dòng "Từ chối" bị bỏ. Các trạng thái khác được đếm là "chờ duyệt".
-  - Muốn xem các trạng thái đang có: chạy hàm **xemTrangThai**.
-- **% đạt định mức** = giờ chuẩn ÷ giờ làm. Giờ chuẩn = số lượng ÷ định mức/giờ của công đoạn, lấy định mức đang hiệu lực vào ngày đó.
-  - Công đoạn chưa có định mức không tính vào %, nhưng vẫn tính giờ làm.
-- ▲▼ là chênh lệch so với trung bình 14 ngày trước đó (bản tin ngày), hoặc so với 7 ngày trước đó (bản tin tuần).
-- Cách tính này **có thể khác một chút** với điểm KPI tháng của web app (`KPIThang` còn tính chất lượng, tuân thủ, an toàn). Nếu thấy lệch nhiều, báo Claude để chỉnh.
+Sau bước này bot có 5 "phòng" làm việc:
+
+| Phòng | Gọi thẳng | Việc |
+|---|---|---|
+| Sản xuất | `@sx` | số liệu ngày, hiệu suất, dừng máy, KCS |
+| Phân tích dữ liệu | `@pt` | so sánh, tìm nguyên nhân, báo cáo Google Sheet có biểu đồ |
+| Nhân sự | `@ns` | điểm danh, nghỉ, vi phạm, KPI cá nhân |
+| Truyền thông | `@viết` | bài Facebook, tuyển dụng, thông báo, thư |
+| Thư ký | `@tk` | ghi việc + nhắc đúng giờ, ghi chú, Lịch Google, email nháp |
+
+Phòng thứ 6 là "Kế hoạch – Đơn hàng", đang tắt, chờ Claude làm phần đọc sheet đơn hàng.
+
+Bạn cứ nhắn tự nhiên, **thư ký điều phối** sẽ chuyển câu hỏi đúng phòng. Câu trả lời có ghi `[Tên phòng]` ở đầu.
+
+**Cài đặt** (làm đúng thứ tự, nhớ sao lưu trước: **Tổng quan → Tạo bản sao**):
+
+1. Dán lại `Mã.gs` ← `TroLyKPI.gs` và `TroLyAI` ← `TroLyAI.gs` (bản mới).
+2. Bấm **＋ → Tập lệnh** → đặt tên `Agents` → xóa nội dung mẫu → dán `Agents.gs` → 💾 Lưu.
+3. Chọn hàm **caiDatAgent** → ▶ **Chạy**.
+   - Google sẽ hỏi quyền mới (Lịch, Gmail, tạo bảng tính) → **Xem lại quyền → chọn tài khoản → Nâng cao → Đi tới Trợ lý KPI → Cho phép**.
+   - ⚠ **Phải làm bước này TRƯỚC bước 4.** Nếu triển khai trước khi cấp quyền, bot sẽ ngừng trả lời cho đến khi bạn chạy `caiDatAgent`.
+4. **Triển khai → Quản lý triển khai → ✏️ → Phiên bản mới → Triển khai.**
+5. Xem **Nhật ký thực thi**, mở đường link sheet **"Trợ lý – Công ty Agent"** (nằm trong Drive của bạn). Vào tab **SoTay** → sửa 2 dòng có chữ **"SỬA DÒNG NÀY"**: thông tin công ty và giọng văn. Phòng Truyền thông dựa vào 2 dòng này để viết.
+6. Nhắn bot `phòng ban` để xem danh sách.
+
+**Sheet "Trợ lý – Công ty Agent"** (bạn sửa được trực tiếp, không cần đụng mã):
+- **CacAgent**: mỗi dòng một phòng.
+  - `Goi`: tên gọi tắt. `MoTa`: việc phụ trách, thư ký dựa vào đây để chia việc. `VaiTro`: cách làm việc.
+  - `CongCu`: công cụ được dùng. `Model` / `Effort`: để trống là dùng mặc định. `Bat`: Có / Không.
+  - **Thêm phòng mới**: thêm một dòng. Sau khi sửa sheet, chờ khoảng 10 phút để bot nhận thay đổi.
+  - Công cụ có sẵn: `tra_cuu, hieu_suat, ban_tin` (đọc KPI), `bao_cao_sheet`, `so_tay_tim, so_tay_ghi, so_tay_xong`, `lich_xem, lich_tao`, `email_tim, email_nhap`.
+- **SoTay**: trí nhớ chung của mọi phòng.
+  - Loại **Bối cảnh**: luôn được đưa cho mọi phòng (thông tin công ty, cách xưng hô, thói quen của bạn…).
+  - Loại **Việc** có **Hạn**: bot nhắn Zalo nhắc khi đến hạn, cứ 15 phút kiểm tra một lần. Việc trong ngày cũng được đưa vào bản tin 7 giờ sáng.
+- **NhatKy**: lịch sử hỏi đáp để bạn xem lại.
+
+**Lệnh nhanh** (không tốn tiền AI):
+- `phòng ban`: danh sách phòng
+- `việc`: các việc đang mở
+- `xong 5`: đánh dấu việc số 5 đã xong
+
+**An toàn:**
+- Email chỉ tạo **nháp**, bạn tự bấm gửi.
+- Lịch chỉ ghi vào lịch của bạn, không mời ai.
+- Dữ liệu sản xuất chỉ đọc.
+- Phòng nào chỉ dùng được công cụ ghi trong cột `CongCu` của phòng đó.
+
+## Khi cập nhật bản mới
+1. Mở từng file (`Mã.gs` ← `TroLyKPI.gs`, `TroLyAI` ← `TroLyAI.gs`, `Agents` ← `Agents.gs`) → xóa hết → dán bản mới → 💾 Lưu.
+2. **Triển khai → Quản lý triển khai → ✏️ → Phiên bản: Phiên bản mới → Triển khai.** URL giữ nguyên, không cần chạy lại `caiDat`.
+   - Nếu Claude báo bản mới dùng thêm quyền: chạy `caiDatAgent` để cấp quyền **trước** khi triển khai.
+
+## Cách tính (giống web app KPI)
+- Chỉ tính dòng `NhatKySanXuat` có TrangThai **"Đã chốt"** (trưởng phòng đã duyệt). "Chờ duyệt" được đếm riêng. "Từ chối" bị bỏ.
+- **Hiệu suất** = Σ (số lượng − hàng lỗi KCS) ÷ định mức, chia cho **giờ có mặt** theo chấm công:
+  - đi làm = 8h, nửa ngày = 4h, đi muộn x-n thì trừ n giờ, nghỉ = 0.
+  - Ngày công = xưởng đã xác nhận điểm danh, hoặc người đó có dòng đã chốt.
+  - Không tính trưởng/phó phòng, người nghỉ việc, ngày nghỉ dài hạn.
+  - Định mức lấy dòng cuối cùng của công đoạn trong sheet DinhMuc.
+- ▲▼ là chênh lệch so với 14 ngày trước đó (bản tin ngày) hoặc 7 ngày trước đó (bản tin tuần).
+- Điểm KPI tháng (chất lượng, tuân thủ, an toàn, tổng KPI) xem ở bảng `KPIThang` do web app chốt.
 
 ## Gỡ lỗi
 - Bot không trả lời:
@@ -92,4 +144,5 @@ Sau bước này bạn hỏi bot bằng câu thường, ví dụ: "hôm nay bao 
   - Kiểm tra `WEBAPP_URL` có đuôi `/exec`.
   - Chạy lại **caiDat**.
 - Nếu lỡ để lộ token: vào Zalo Bot Creator (https://zalo.me/s/botcreator/) tạo token mới → sửa `ZALO_TOKEN` → chạy lại **caiDat**.
-- Kiểm thử trên máy (dành cho Claude): `node tests/tro-ly.js`.
+- Bot báo lỗi quyền, hoặc ngừng trả lời sau khi cập nhật: chạy **caiDatAgent** trong Apps Script và bấm Cho phép.
+- Kiểm thử trên máy (dành cho Claude): `node tests/tro-ly.js && node tests/agents.js`.

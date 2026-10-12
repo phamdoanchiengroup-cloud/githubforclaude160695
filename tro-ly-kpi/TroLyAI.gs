@@ -38,6 +38,11 @@ function hoiAI_(chatId, cauHoi) {
   var lichSu = [];
   try { lichSu = JSON.parse(C.get(hsKey) || '[]'); } catch (e) { lichSu = []; }
 
+  // Công ty Agent (Agents.gs): chọn phòng ban phù hợp; thiếu file thì dùng trợ lý KPI một mình như trước.
+  var ag = typeof chonAgent_ === 'function' ? chonAgent_(key, chatId, cauHoi, lichSu) : null;
+  if (ag && ag.loi) return ag.loi;
+  if (ag) cauHoi = ag.cauHoi;
+
   var messages = [];
   lichSu.forEach(function (h) {
     messages.push({ role: 'user', content: h.q });
@@ -45,10 +50,12 @@ function hoiAI_(chatId, cauHoi) {
   });
   messages.push({ role: 'user', content: cauHoi });
 
-  var ctx = { D: {} }, traLoi = '';
-  var he = heThongAI_(ctx);
+  var ctx = { D: {}, ag: ag, chatId: chatId }, traLoi = '', batDau = Date.now();
+  var he = ag ? heThongAgent_(ctx, ag) : heThongAI_(ctx);
+  var tools = ag ? congCuCua_(ag) : AI_CONG_CU;
   for (var vong = 0; vong < AI_VONG_TOI_DA; vong++) {
-    var res = goiClaude_(key, he, messages);
+    if (Date.now() - batDau > 270000) break;   // Apps Script dừng sau 6 phút – chừa thời gian gửi trả lời
+    var res = goiClaude_(key, he, messages, tools, ag && ag.model, ag && ag.effort);
     if (res.loi) return '⚠ ' + res.loi;
     if (res.stop_reason === 'refusal') return 'Trợ lý không trả lời được câu này. Bạn thử hỏi cách khác nhé.';
     var content = res.content || [];
@@ -66,9 +73,10 @@ function hoiAI_(chatId, cauHoi) {
   }
   if (!traLoi) traLoi = 'Câu này cần tra cứu nhiều quá, bạn hỏi gọn lại giúp mình nhé.';
 
-  lichSu.push({ q: cauHoi, a: traLoi });
+  lichSu.push({ q: cauHoi, a: traLoi, ag: ag ? ag.ma : '' });
   C.put(hsKey, JSON.stringify(lichSu.slice(-4)), 1800);
-  return traLoi;
+  if (typeof ghiNhatKyAgent_ === 'function') ghiNhatKyAgent_(ag, cauHoi, traLoi);
+  return ag && ag.nhieuPhong ? '[' + ag.ten + ']\n' + traLoi : traLoi;
 }
 
 function xoaDemCu_(P, giu) {
@@ -77,17 +85,18 @@ function xoaDemCu_(P, giu) {
   } catch (e) { /* không quan trọng */ }
 }
 
-function goiClaude_(key, he, messages) {
+function goiClaude_(key, he, messages, tools, model, effort, maxTok) {
   var P = PropertiesService.getScriptProperties();
-  var model = P.getProperty('AI_MODEL') || AI_MODEL_MAC_DINH;
+  model = model || P.getProperty('AI_MODEL') || AI_MODEL_MAC_DINH;
   var body = {
     model: model,
-    max_tokens: 8000,
+    max_tokens: maxTok || 8000,
     system: [{ type: 'text', text: he, cache_control: { type: 'ephemeral' } }],
-    tools: AI_CONG_CU,
     messages: messages,
-    output_config: { effort: P.getProperty('AI_EFFORT') || 'low' }
+    output_config: { effort: effort || P.getProperty('AI_EFFORT') || 'low' }
   };
+  tools = tools === undefined ? AI_CONG_CU : tools;
+  if (tools && tools.length) body.tools = tools;
   var headers = { 'x-api-key': key, 'anthropic-version': '2023-06-01' };
   // Haiku không có chuyển dự phòng phía máy chủ; các dòng khác bật "fallbacks: default".
   if (!/haiku/.test(model)) { body.fallbacks = 'default'; headers['anthropic-beta'] = 'server-side-fallback-2026-07-01'; }
@@ -112,8 +121,18 @@ function goiClaude_(key, he, messages) {
 
 /* ============================ NGỮ CẢNH CHO AI ============================ */
 
+/** Trợ lý KPI một mình (khi chưa cài Agents.gs). */
 function heThongAI_(ctx) {
+  return ['Bạn là trợ lý của Phó giám đốc sản xuất một nhà máy làm gậy (cần câu). Bạn trả lời qua Zalo.', nenChung_(), kpiNguCanh_(ctx), cachTraLoi_(true)].join('\n\n');
+}
+
+function nenChung_() {
   var hn = homNay_();
+  return 'Hôm nay là ' + tenNgay_(hn) + ' (' + hn + '), giờ Việt Nam ' + Utilities.formatDate(new Date(), TZ, 'HH:mm') + '. "Hôm qua" = ' + congNgay_(hn, -1) + '.';
+}
+
+/** Mô tả dữ liệu CSDL KPI + quy tắc tính – chỉ đưa cho Agent có công cụ đọc KPI. */
+function kpiNguCanh_(ctx) {
   var T = traCuu_(ctxDuLieu_(ctx, ['CongDoan', 'DinhMuc', 'PhongBan', 'DanhMucLoi']));
   var xuong = Object.keys(T.tenXuong).map(function (k) { return k + ' = ' + T.tenXuong[k]; }).join('; ');
   var moTa = Object.keys(AI_BANG).map(function (t) {
@@ -121,8 +140,6 @@ function heThongAI_(ctx) {
     return cot ? '- ' + t + (AI_BANG[t] ? ' (lọc ngày theo ' + AI_BANG[t] + ')' : '') + ': ' + cot.join(', ') : '';
   }).filter(String).join('\n');
   return [
-    'Bạn là trợ lý của Phó giám đốc sản xuất một nhà máy làm gậy (cần câu). Bạn trả lời qua Zalo.',
-    'Hôm nay là ' + tenNgay_(hn) + ' (' + hn + '). "Hôm qua" = ' + congNgay_(hn, -1) + '.',
     'Các xưởng: ' + xuong + '.',
     '',
     'DỮ LIỆU (Google Sheet "CSDL KPI" của web app KPI) – các bảng và cột bạn đọc được:',
@@ -140,13 +157,18 @@ function heThongAI_(ctx) {
     '- Đơn vị sản lượng khác nhau giữa công đoạn (cái, phôi…), đừng cộng sản lượng khác công đoạn rồi so sánh.',
     '- Số người nghỉ trong ngày: đếm MaNV khác nhau trong DiemDanhNghi ngày đó (có thể kèm NghiDaiHan đang hiệu lực).',
     '- Số liệu ngày gần đây có thể chưa nhập/duyệt xong (hạn nhập là 17h ngày làm việc thứ 3) – nói rõ khi số liệu có vẻ thiếu.',
-    '',
-    'CÁCH TRẢ LỜI:',
-    '- Tiếng Việt, ngắn gọn, đi thẳng vào số liệu. Văn bản thường cho Zalo: KHÔNG dùng markdown, bảng hay dấu **; dùng "•" để liệt kê.',
-    '- Tối đa khoảng 1200 ký tự. Số có dấu chấm ngăn hàng nghìn (1.234). Ghi rõ ngày/khoảng ngày của số liệu.',
     '- Luôn tra dữ liệu bằng công cụ trước khi trả lời câu hỏi về số liệu; không bịa. Không tìm được thì nói không có dữ liệu.',
-    '- Nếu thấy điểm bất thường đáng chú ý (dừng máy nhiều, tụt hiệu suất, KCS tăng), nêu thêm một câu gợi ý ngắn.',
     '- Bạn chỉ đọc dữ liệu, không sửa được gì. Không có thông tin CCCD, điện thoại, địa chỉ, lương.'
+  ].join('\n');
+}
+
+function cachTraLoi_(ngan) {
+  return [
+    'CÁCH TRẢ LỜI:',
+    '- Tiếng Việt. Văn bản thường cho Zalo: KHÔNG dùng markdown, bảng hay dấu ** và #; dùng "•" để liệt kê.',
+    ngan ? '- Ngắn gọn, đi thẳng vào số liệu, tối đa khoảng 1200 ký tự. Số có dấu chấm ngăn hàng nghìn (1.234). Ghi rõ ngày/khoảng ngày của số liệu.'
+      : '- Câu trả lời thường ngắn gọn (dưới 1200 ký tự); bài viết/văn bản được yêu cầu thì dài vừa đủ, tối đa khoảng 3000 ký tự.',
+    '- Nếu thấy điểm bất thường đáng chú ý, nêu thêm một câu gợi ý ngắn.'
   ].join('\n');
 }
 
@@ -209,6 +231,8 @@ var AI_CONG_CU = [
 /* ============================ CÔNG CỤ ============================ */
 
 function chayCongCu_(ctx, ten, inp) {
+  if (ctx.ag && ctx.ag.congCu.indexOf(ten) < 0) throw new Error('Phòng ' + ctx.ag.ten + ' không được dùng công cụ ' + ten);
+  if (typeof AGENT_XU_LY !== 'undefined' && AGENT_XU_LY[ten]) return AGENT_XU_LY[ten](ctx, inp);
   if (ten === 'tra_cuu') return ccTraCuu_(ctx, inp);
   if (ten === 'hieu_suat') return ccHieuSuat_(ctx, inp);
   if (ten === 'ban_tin') {

@@ -151,3 +151,11 @@ cd tests && npm install && node thien-van.mjs && node doi-chieu.js   # đối ch
 - Bản PDF xem thử: mục "Kết hợp 6 hệ theo lĩnh vực" chưa có ảnh xem trước mờ, trông trống (có thể bỏ khỏi bản xem thử).
 - Giá bán là mức khởi đầu, chưa qua thử nghiệm; nên xem doanh thu trong Quản trị rồi điều chỉnh.
 - Chủ dự án nên đổi mật khẩu chủ sở hữu sau lần đăng nhập đầu, nếu chưa đổi.
+
+## Trợ lý KPI qua Zalo (`tro-ly-kpi/`) – dự án Apps Script riêng của chủ dự án
+- Nhánh: `claude/awesome-heisenberg-iulbd6`. Hướng dẫn cài: `tro-ly-kpi/HUONG-DAN.md`. Kiểm thử: `node tests/tro-ly.js && node tests/agents.js` (trong `tro-ly-kpi/`).
+- Chỉ ĐỌC Google Sheet "CSDL KPI" (ID trong `KPI_SHEET_ID_MAC_DINH`) của web app KPI sản xuất (mã web app không nằm trong repo; chủ dự án gửi qua chat). Không đọc/gửi CCCD, SĐT, địa chỉ, năm sinh, lương, mật khẩu băm (`AI_COT_CAM`).
+- `TroLyKPI.gs` (dán vào `Mã.gs`): Zalo Bot (webhook `doPost` + `?k=WEBHOOK_KEY`, kết nối chủ bằng `ketnoi <mã>`), bản tin 7h (`guiBanTinSang`), lệnh `bc`, `tuần`. **Cách tính giống web app**: dòng TrangThai "Đã chốt"; hiệu suất = Σ(SL − lỗi KCS)/định mức (dòng cuối DinhMuc) ÷ giờ có mặt theo chấm công (`kyHieu_`/`gioCoMat_` chép từ web app); bỏ quản lý (TP/PP, chức danh trưởng/phó…), nghỉ việc, nghỉ dài hạn (`ngayCong_`).
+- `TroLyAI.gs`: Claude API (raw HTTP, mặc định `claude-opus-5-5`, effort low, `fallbacks: "default"`), công cụ `tra_cuu`, `hieu_suat`, `ban_tin`; giới hạn câu/ngày.
+- `Agents.gs`: Công ty Agent – sheet "Trợ lý – Công ty Agent" (tab CacAgent / SoTay / NhatKy, tạo bởi `caiDatAgent`), điều phối bằng AI hoặc `@tên`, công cụ sổ tay, Lịch, Gmail (chỉ nháp), `bao_cao_sheet`; trigger `nhacViec` 15 phút. Thêm quyền mới → chủ dự án phải chạy `caiDatAgent` TRƯỚC khi triển khai phiên bản mới.
+- Còn chờ: phòng "Kế hoạch – Đơn hàng" (sheet "Trạng thái đơn hàng" của vtt19822000@gmail.com chia sẻ cho chủ dự án; cần ảnh chụp cấu trúc + mã web app đơn hàng).
