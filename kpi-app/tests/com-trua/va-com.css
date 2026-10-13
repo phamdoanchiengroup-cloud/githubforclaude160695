@@ -67,3 +67,4 @@
 .cm-nhom{align-items:flex-end}
 .cm-sang{font-size:12px;font-weight:600;color:var(--amber,#f0b04e);margin-left:6px}
 .cm-sang-ghi{margin:8px 0 0}
+.cm-cu-chon{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:6px}.cm-cu-chon input[type=date]{margin-left:6px;padding:4px 6px}

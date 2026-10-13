@@ -5984,6 +5984,23 @@ function napComTrua(token) {
   } catch (e) { return sach_({ ok: false, msg: 'Lỗi tải cơm trưa: ' + e.message }); }
 }
 
+/* Xem lại tổng hợp số suất một ngày ĐÃ QUA (chủ dự án 13/10: "phải xem lại được đăng ký cơm ngày thứ 2").
+   Dữ liệu còn tới khi chốt tháng (sau đó chuyển vào file lưu tháng trên Drive). */
+function xemTongHopCom(token, ngay) {
+  try {
+    var me = docPhien_(token);
+    if (!me) return sach_({ ok: false, hetHan: true, msg: 'Phiên đăng nhập đã hết hạn.' });
+    if (!comXem_(me)) return sach_({ ok: false, msg: 'Tài khoản của bạn không xem được tổng hợp số suất.' });
+    ngay = String(ngay || '').slice(0, 10);
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(ngay)) return sach_({ ok: false, msg: 'Ngày không hợp lệ.' });
+    if (ngay > homNayVN_()) return sach_({ ok: false, msg: 'Ngày này chưa tới – xem ở phần tổng hợp phía trên.' });
+    var co = comDoc_('ThucDon').some(function(r) { return comNgay_(r.Ngay) === ngay; }) ||
+      comDoc_('DangKyCom').some(function(r) { return comNgay_(r.Ngay) === ngay; });
+    if (!co) return sach_({ ok: false, msg: 'Không có dữ liệu cơm trưa ngày ' + ngay.slice(8) + '/' + ngay.slice(5, 7) + ' (ngày không nấu, hoặc tháng đã chốt – xem file "Đăng ký cơm trưa" của tháng đó trên Drive).' });
+    return sach_({ ok: true, tongHop: comTongHop_(ngay, me) });
+  } catch (e) { return sach_({ ok: false, msg: 'Lỗi tải tổng hợp: ' + e.message }); }
+}
+
 function dangKyCom(token, ngay, an) {
   var me = docPhien_(token);
   if (!me) return sach_({ ok: false, hetHan: true, msg: 'Phiên đăng nhập đã hết hạn.' });

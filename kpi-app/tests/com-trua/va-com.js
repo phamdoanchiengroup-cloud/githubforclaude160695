@@ -169,11 +169,25 @@ function comXoa(ng){
 /* Tổng hợp số suất theo xưởng (ban điều hành, nhân sự, bếp: kèm tên; trưởng / phó phòng: tên của xưởng mình) */
 function comTongHopHtml(){
   var d=COM.d;
-  if(!d.tongHop.length)return '<div class="card"><h3>Tổng hợp số suất</h3><p class="cm-ghi">Chưa có thực đơn nào cho hôm nay / ngày tới.</p></div>';
   var the=function(th){return comTongHop1(th,d.tongHop.indexOf(th))};
-  var con=d.tongHop.filter(function(th){return !comDaAn(th.ngay)}), da=d.tongHop.filter(function(th){return comDaAn(th.ngay)});
-  return (con.length?con.map(the).join(''):'<div class="card"><h3>Tổng hợp số suất</h3><p class="cm-ghi">Chưa có thực đơn cho ngày tới.</p></div>')+
-    (da.length?'<details class="card cm-da-an"><summary><b>Tổng hợp số suất đã qua giờ ăn</b> <span class="cm-ghi">('+esc(da.map(function(th){return comNgayTen(th.ngay)}).join(', '))+' – bấm để xem)</span></summary>'+da.map(the).join('')+'</details>':'');
+  var con=d.tongHop.filter(function(th){return !comDaAn(th.ngay)});
+  return (con.length?con.map(the).join(''):'<div class="card"><h3>Tổng hợp số suất</h3><p class="cm-ghi">Chưa có thực đơn cho ngày tới.</p></div>')+comCuHtml();
+}
+/* Xem lại số suất các ngày ĐÃ QUA GIỜ ĂN (chủ dự án 13/10): nút từng ngày gần đây + ô chọn ngày bất kỳ; tải từ máy chủ khi bấm */
+function comCuHtml(){
+  var d=COM.d, ngs=d.thucDon.filter(function(t){return comDaAn(t.ngay)}).map(function(t){return t.ngay}).reverse();
+  var mo=COM.cuNgay?' open':'';
+  return '<details class="card cm-da-an" id="cmCu"'+mo+'><summary><b>Xem lại số suất ngày đã qua</b> <span class="cm-ghi">(đã qua giờ ăn '+('0'+COM_GIO_AN).slice(-2)+':00 – bấm để xem)</span></summary>'+
+    '<div class="cm-cu-chon">'+ngs.map(function(ng){return '<button type="button" class="btn sm'+(ng===COM.cuNgay?' primary':'')+'" onclick="comXemCu(\''+ng+'\')">'+esc(comNgayTen(ng))+'</button>'}).join('')+
+    '<label class="cm-ghi">Ngày khác: <input type="date" id="cmCuNgay" max="'+d.homNay+'" value="'+esc(COM.cuNgay||'')+'" onchange="if(this.value)comXemCu(this.value)"></label></div>'+
+    '<div id="cmCuKq">'+(COM.cuTh&&COM.cuTh.ngay===COM.cuNgay?comTongHop1(COM.cuTh,'cu'):'<p class="cm-ghi">Chọn một ngày để xem tổng hợp số suất, danh sách ăn / không ăn.</p>')+'</div></details>';
+}
+function comXemCu(ng){
+  COM.cuNgay=ng; var k=$('cmCuKq'); if(k)k.innerHTML='<p class="cm-ghi">Đang tải số suất '+esc(comNgayTen(ng))+'…</p>';
+  var co=(COM.d.tongHop||[]).filter(function(x){return x.ngay===ng})[0];   // hôm nay sau 12:00: đã có sẵn
+  var ve=function(th){ COM.cuTh=th; var c=$('cmCu'); if(c)c.outerHTML=comCuHtml(); };
+  if(co){ve(co);return}
+  call('xemTongHopCom',[ng],function(r){ if(!r||!r.ok){ COM.cuTh=null; var k2=$('cmCuKq'); if(k2)k2.innerHTML='<p class="cm-ghi">'+esc((r&&r.msg)||'Không tải được.')+'</p>'; return } ve(r.tongHop); });
 }
 function comTongHop1(th,i){
   var d=COM.d;
@@ -194,7 +208,7 @@ function comTongHop1(th,i){
       '<tr class="tong"><td>Tổng tất cả</td><td class="r">'+th.an+'</td><td class="r">'+th.khong+'</td><td class="r">'+th.chua+'</td>'+(coTen?'<td></td>':'')+'</tr></tbody></table>'+
       ((th.sangNoiKhac||[]).length?'<p class="cm-ghi cm-sang-ghi">↔ Suất ăn ở nơi khác (đã cộng vào nơi ăn): '+th.sangNoiKhac.map(function(s){return '<b>'+esc(s.ten)+'</b> '+s.so+' suất ăn ở '+esc(s.den)}).join('; ')+'.</p>':'')+
       comMuonHtml(th)+comKhongHtml(th)+
-      '<p class="cm-khong-in" style="margin-top:10px"><button class="btn sm" type="button" onclick="comChep('+i+')">📋 Chép số suất gửi bếp</button> <button class="btn sm" type="button" onclick="window.print()">🖨 In</button></p></div>';
+      '<p class="cm-khong-in" style="margin-top:10px"><button class="btn sm" type="button" onclick="comChep(\''+i+'\')">📋 Chép số suất gửi bếp</button> <button class="btn sm" type="button" onclick="window.print()">🖨 In</button></p></div>';
   })(th,i);
 }
 /* Danh sách người KHÔNG ĂN: họ tên, mã nhân viên, xưởng (ban điều hành + trợ lý: cả nhà máy; trưởng phòng: xưởng mình; bếp / nhân sự: chỉ số) */
@@ -213,7 +227,7 @@ function comKhongHtml(th){
       ds.map(function(c,i){return '<tr><td class="r">'+(i+1)+'</td><td>'+esc(c.ten)+(c.nghi?' <span class="cm-ghi">(tự động – '+esc(c.nghi)+')</span>':'')+'</td><td>'+esc(c.ma||'–')+'</td><td>'+esc(c.xuong)+'</td></tr>'}).join('')+'</tbody></table>':'');
 }
 function comChep(i){
-  var th=COM.d.tongHop[i]; if(!th)return;
+  var th=i==='cu'?COM.cuTh:COM.d.tongHop[i]; if(!th)return;
   var txt='Cơm trưa '+comNgayTen(th.ngay)+': '+th.an+' suất'+(th.haNam!==undefined?' (Hà Nam '+th.haNam+', Hà Nội '+th.haNoi+')':'')+'\n'+th.xuong.filter(function(x){return x.an}).map(function(x){return '- '+x.ten+': '+x.an}).join('\n')+
     (th.chua?'\n(Chưa đăng ký: '+th.chua+' người)':'')+
     (th.nhomChua?'\n(Nhóm chưa báo suất: '+th.xuong.filter(function(x){return x.baoChua}).map(function(x){return x.ten}).join(', ')+')':'');

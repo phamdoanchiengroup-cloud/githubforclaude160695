@@ -46,6 +46,22 @@ const doiNguoi = (p, f) => p.evaluate(f => {
   await p.evaluate(() => go('kpi')); await p.waitForTimeout(800);
   ok(await p.evaluate(() => $('combar').className === '' && /Gà rang/.test($('combar').textContent)), 'thanh thực đơn vẫn hiện khi sang trang khác (Bảng KPI)');
   if (OUT) { await p.evaluate(() => go('com')); await p.waitForTimeout(600); await p.screenshot({ path: OUT + '/com-may-tinh.png', fullPage: true }); }
+  // xem lại số suất ngày đã qua (chủ dự án 13/10): thực đơn hôm nay 12/10, giờ giả 14:30 = đã qua giờ ăn
+  await p.evaluate(() => { const t = __MAY_CHU.taoPhien_(__MAY_CHU.doc_('TaiKhoan').find(x => String(x.VaiTro).trim() === 'ADMIN' && x.TrangThai === 'Đang dùng'));
+    __MAY_CHU.luuThucDon(t, '2026-10-12', 'Cơm trắng\nCá kho', ''); __MAY_CHU.dangKyCom(t, '2026-10-12', true); });
+  await p.evaluate(() => go('com')); await p.evaluate(() => comTai()); await p.waitForTimeout(1500);
+  s = await p.evaluate(() => [!!$('cmCu'), [...document.querySelectorAll('#cmCu .cm-cu-chon button')].map(x => x.textContent), $('cmCuNgay') && $('cmCuNgay').max,
+    [...document.querySelectorAll('.card h3')].filter(h => /Tổng hợp số suất – hôm nay/.test(h.textContent)).length]);
+  ok(s[0] && s[1].includes('Thứ Hai 12/10') && s[2] === '2026-10-12' && s[3] === 0, 'đã qua 12:00: hôm nay chuyển vào "Xem lại số suất ngày đã qua" (nút Thứ Hai 12/10 + ô chọn ngày)', s);
+  await p.click('#cmCu summary'); await p.click('#cmCu .cm-cu-chon button:has-text("12/10")'); await p.waitForTimeout(1200);
+  s = await p.evaluate(() => [$('cmCuKq').querySelector('h3') && $('cmCuKq').querySelector('h3').textContent, $('cmCuKq').querySelector('.cm-so .an b') && $('cmCuKq').querySelector('.cm-so .an b').textContent, $('cmCu').open]);
+  ok(/12\/10/.test(s[0]) && /đã chốt/.test(s[0]) && s[1] !== null && s[2], 'bấm Thứ Hai 12/10: hiện tổng hợp số suất ngày đó (đã chốt)', s);
+  await p.evaluate(() => { $('cmCuNgay').value = '2026-10-05'; $('cmCuNgay').dispatchEvent(new Event('change')); }); await p.waitForTimeout(1200);
+  s = await p.evaluate(() => $('cmCuKq').textContent);
+  ok(/Không có dữ liệu cơm trưa ngày 05\/10/.test(s), 'chọn ngày không nấu: báo không có dữ liệu', s);
+  s = await p.evaluate(() => __MAY_CHU.xemTongHopCom(__MAY_CHU.taoPhien_(__MAY_CHU.doc_('TaiKhoan').find(x => String(x.VaiTro).trim() === 'CN' && x.TrangThai === 'Đang dùng')), '2026-10-12'));
+  ok(s && s.ok === false, 'công nhân không xem được tổng hợp ngày đã qua', s);
+  await p.evaluate(() => { COM.cuNgay = null; COM.cuTh = null; comTai(); }); await p.waitForTimeout(1000);
 
   console.log('Trưởng phòng');
   const tp = await doiNguoi(p, "String(x.VaiTro).trim()==='TP' && x.MaXuong==='DG' && x.TrangThai==='Đang dùng'");
@@ -129,15 +145,15 @@ const doiNguoi = (p, f) => p.evaluate(f => {
   // 2 người Marketing xuống Hà Nam có việc: ô "Ăn ở Hà Nội" 6, ô "Ăn ở Hà Nam" 2 (chủ dự án 12/10)
   s = await p.evaluate(() => [...document.querySelectorAll('.cm-the .cm-so-o span')].slice(0, 2).map(x => x.textContent));
   ok(s.join() === 'Ăn ở Hà Nội,Ăn ở Hà Nam', 'nhóm Hà Nội có 2 ô: Ăn ở Hà Nội / Ăn ở Hà Nam', s);
-  const thHN = await p.evaluate(() => { const th = COM.d.tongHop[0]; return [th.haNam, th.haNoi]; });
+  const thHN = await p.evaluate(() => { const th = COM.d.tongHop.find(x => x.ngay === '2026-10-13'); return [th.haNam, th.haNoi]; });
   await p.fill('.cm-the [data-noi=nha]', '6'); await p.fill('.cm-the [data-noi=kia]', '2'); await p.click('.cm-the .cm-nut.an'); await p.waitForTimeout(1800);
-  s = await p.evaluate(() => { const ng = document.querySelector('.cm-the [data-noi=nha]').dataset.ng, th = COM.d.tongHop[0];
+  s = await p.evaluate(() => { const ng = document.querySelector('.cm-the [data-noi=nha]').dataset.ng, th = COM.d.tongHop.find(x => x.ngay === '2026-10-13');
     return [COM.d.cuaToi[ng], COM.d.cuaToiKhac[ng], document.querySelector('.cm-the [data-noi=nha]').value, document.querySelector('.cm-the [data-noi=kia]').value, th.haNam, th.haNoi,
       (document.querySelector('.cm-sang-ghi') || {}).textContent || '', /8 suất \(6 ở Hà Nội, 2 ở Hà Nam\)/.test($('main').textContent)]; });
   ok(s[0] === 8 && s[1] === 2 && s[2] === '6' && s[3] === '2' && s[4] === thHN[0] + 2 && s[5] === thHN[1] - 2 && /Marketing \(Hà Nội\).*2 suất ăn ở Hà Nam/.test(s[6]) && s[7],
     'báo 6 Hà Nội + 2 Hà Nam: tổng 8, Hà Nam +2, Hà Nội −2, bếp thấy dòng suất ăn ở nơi khác', s);
   await p.fill('.cm-the [data-noi=nha]', '8'); await p.fill('.cm-the [data-noi=kia]', ''); await p.click('.cm-the .cm-nut.an'); await p.waitForTimeout(1800);   // trả lại 8 suất ở Hà Nội cho các bước sau
-  ok(await p.evaluate(() => COM.d.tongHop[0].haNoi === 8 && !document.querySelector('.cm-sang-ghi')), 'báo lại 8 suất cùng nơi: hết dòng suất ăn ở nơi khác');
+  ok(await p.evaluate(() => COM.d.tongHop.find(x => x.ngay === '2026-10-13').haNoi === 8 && !document.querySelector('.cm-sang-ghi')), 'báo lại 8 suất cùng nơi: hết dòng suất ăn ở nơi khác');
   await doiNguoi(p, "String(x.VaiTro).trim()==='BEP'");
   await p.evaluate(() => go('com')); await p.waitForTimeout(1200);
   s = await p.evaluate(() => [...document.querySelectorAll('.cm-bang tr.cm-nhom-dong')].map(r => r.textContent.replace(/\s+/g, ' ').trim()));
