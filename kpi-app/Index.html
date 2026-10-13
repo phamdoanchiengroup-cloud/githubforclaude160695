@@ -8054,6 +8054,10 @@ function vSoDo(){
 .cm-nhom-mon{display:flex;flex-wrap:wrap;gap:6px 12px;flex-basis:100%;margin-top:6px}
 .cm-nhom-mon>.cm-ghi{flex-basis:100%}
 .cm-nhom-mon .cm-so-in{width:92px}
+.cm-mon-nhom{display:flex;flex-direction:column;gap:6px;padding:8px 10px;border:1px solid var(--line,#333);border-radius:10px;min-width:150px}
+.cm-mon-nhom>b{font-size:13.5px}
+.cm-mon-o{display:flex;align-items:center;justify-content:space-between;gap:10px;font-size:12.5px;color:var(--muted,#9aa)}
+.cm-mon-o .cm-so-in{width:72px;font-size:16px;padding:6px 8px}
 .cm-mon-doi{margin:10px 0;padding:10px 12px;border:1px dashed var(--line);border-radius:10px;display:grid;gap:4px}
 .cm-md{display:grid;gap:6px}.cm-md-dong{display:flex;gap:6px;align-items:center;flex-wrap:wrap}.cm-md-dong input{flex:1 1 160px;min-width:0}
 .cm-cuon{overflow-x:auto;max-width:100%;-webkit-overflow-scrolling:touch}   /* bảng tổng hợp cuộn ngang trên điện thoại, không đẩy cả trang */
@@ -8134,9 +8138,10 @@ function comBoLuu(el){
 }
 function comNhomMon(ng,dis){
   var md=comMd(ng); if(!md.length)return '';
-  var bo=(COM.d.cuaToiBo||{})[ng]||{}, o=function(x,i,ph,v){return '<input type="number" inputmode="numeric" min="0" step="1" class="cm-so-in" data-mon="'+esc(x.m)+'" data-k="'+i+'" placeholder="'+ph+'" value="'+(v||'')+'" aria-label="'+esc(x.m)+' – '+ph+'"'+dis+'>'};
+  // 13/10: mỗi ô có nhãn riêng ("Không ăn" / "Đổi → món thay") – điền số rồi vẫn biết ô nào là ô nào
+  var bo=(COM.d.cuaToiBo||{})[ng]||{}, o=function(x,i,nhan,v){return '<label class="cm-mon-o"><span>'+nhan+'</span><input type="number" inputmode="numeric" min="0" step="1" class="cm-so-in" data-mon="'+esc(x.m)+'" data-k="'+i+'" placeholder="0" value="'+(v||'')+'" aria-label="'+esc(x.m)+' – '+nhan.replace(/<[^>]+>/g,'')+'"'+dis+'></label>'};
   return '<span class="cm-nhom-mon"><span class="cm-ghi">Trong số suất trên, số suất <b>không ăn</b> / <b>đổi</b> món (không bắt buộc):</span>'+md.map(function(x){var v=bo[x.m]||[];
-    return '<label class="cm-so-o"><span>'+esc(x.m)+'</span>'+o(x,0,'không ăn',v[0])+(x.t?o(x,1,'đổi '+x.t,v[1]):'')+'</label>'}).join('')+'</span>';
+    return '<span class="cm-mon-nhom" role="group" aria-label="'+esc(x.m)+'"><b>'+esc(x.m)+'</b>'+o(x,0,'Không ăn',v[0])+(x.t?o(x,1,'Đổi → '+esc(x.t),v[1]):'')+'</span>'}).join('')+'</span>';
 }
 /* Tài khoản bếp không đăng ký suất: thay nút bằng số suất đã đăng ký */
 function comBep(){return COM.d&&COM.d.quyen&&COM.d.quyen.dangKy===false&&!COM.d.quyen.nhom}

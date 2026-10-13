@@ -66,9 +66,10 @@ function comBoLuu(el){
 }
 function comNhomMon(ng,dis){
   var md=comMd(ng); if(!md.length)return '';
-  var bo=(COM.d.cuaToiBo||{})[ng]||{}, o=function(x,i,ph,v){return '<input type="number" inputmode="numeric" min="0" step="1" class="cm-so-in" data-mon="'+esc(x.m)+'" data-k="'+i+'" placeholder="'+ph+'" value="'+(v||'')+'" aria-label="'+esc(x.m)+' – '+ph+'"'+dis+'>'};
+  // 13/10: mỗi ô có nhãn riêng ("Không ăn" / "Đổi → món thay") – điền số rồi vẫn biết ô nào là ô nào
+  var bo=(COM.d.cuaToiBo||{})[ng]||{}, o=function(x,i,nhan,v){return '<label class="cm-mon-o"><span>'+nhan+'</span><input type="number" inputmode="numeric" min="0" step="1" class="cm-so-in" data-mon="'+esc(x.m)+'" data-k="'+i+'" placeholder="0" value="'+(v||'')+'" aria-label="'+esc(x.m)+' – '+nhan.replace(/<[^>]+>/g,'')+'"'+dis+'></label>'};
   return '<span class="cm-nhom-mon"><span class="cm-ghi">Trong số suất trên, số suất <b>không ăn</b> / <b>đổi</b> món (không bắt buộc):</span>'+md.map(function(x){var v=bo[x.m]||[];
-    return '<label class="cm-so-o"><span>'+esc(x.m)+'</span>'+o(x,0,'không ăn',v[0])+(x.t?o(x,1,'đổi '+x.t,v[1]):'')+'</label>'}).join('')+'</span>';
+    return '<span class="cm-mon-nhom" role="group" aria-label="'+esc(x.m)+'"><b>'+esc(x.m)+'</b>'+o(x,0,'Không ăn',v[0])+(x.t?o(x,1,'Đổi → '+esc(x.t),v[1]):'')+'</span>'}).join('')+'</span>';
 }
 /* Tài khoản bếp không đăng ký suất: thay nút bằng số suất đã đăng ký */
 function comBep(){return COM.d&&COM.d.quyen&&COM.d.quyen.dangKy===false&&!COM.d.quyen.nhom}

@@ -77,6 +77,10 @@
 .cm-nhom-mon{display:flex;flex-wrap:wrap;gap:6px 12px;flex-basis:100%;margin-top:6px}
 .cm-nhom-mon>.cm-ghi{flex-basis:100%}
 .cm-nhom-mon .cm-so-in{width:92px}
+.cm-mon-nhom{display:flex;flex-direction:column;gap:6px;padding:8px 10px;border:1px solid var(--line,#333);border-radius:10px;min-width:150px}
+.cm-mon-nhom>b{font-size:13.5px}
+.cm-mon-o{display:flex;align-items:center;justify-content:space-between;gap:10px;font-size:12.5px;color:var(--muted,#9aa)}
+.cm-mon-o .cm-so-in{width:72px;font-size:16px;padding:6px 8px}
 .cm-mon-doi{margin:10px 0;padding:10px 12px;border:1px dashed var(--line);border-radius:10px;display:grid;gap:4px}
 .cm-md{display:grid;gap:6px}.cm-md-dong{display:flex;gap:6px;align-items:center;flex-wrap:wrap}.cm-md-dong input{flex:1 1 160px;min-width:0}
 .cm-cuon{overflow-x:auto;max-width:100%;-webkit-overflow-scrolling:touch}   /* bảng tổng hợp cuộn ngang trên điện thoại, không đẩy cả trang */
