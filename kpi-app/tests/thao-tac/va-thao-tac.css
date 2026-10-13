@@ -52,17 +52,24 @@ tr.tt-keo.ve{transition:transform .3s cubic-bezier(.3,1.3,.5,1)}
 #ttPhao{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:180}
 /* 16. Hết phiên: màn tối + dây kéo + đăng nhập lại tại chỗ */
 #ttHet{position:fixed;inset:0;z-index:9500}
-#ttHet:not(.sang){cursor:pointer}
-#ttHet .toi{position:absolute;inset:0;background:#030303;animation:ttTat .9s steps(1) forwards}
-#ttHet.sang .toi{animation:none;opacity:.6;transition:opacity .4s}
-@keyframes ttTat{0%{opacity:0}15%{opacity:.8}25%{opacity:.2}40%{opacity:.95}100%{opacity:1}}
-#ttHet .day{position:absolute;left:50%;top:0;width:80px;margin-left:-40px;display:flex;flex-direction:column;align-items:center;transform:translateY(-110%);transition:transform .6s cubic-bezier(.3,1.4,.5,1);transform-origin:50% 0}
-#ttHet .day.xuong{transform:none;animation:ttDua 3.4s ease-in-out infinite}
-@keyframes ttDua{0%,100%{rotate:-2deg}50%{rotate:2deg}}
-#ttHet .soi{width:2px;height:calc(34vh + var(--keo,0px));background:linear-gradient(#222,#999);transition:height .5s cubic-bezier(.25,1.9,.45,1)}
-#ttHet .day.dang .soi{transition:none}
-#ttHet .day button{width:26px;height:40px;border:0;border-radius:13px 13px 16px 16px;background:radial-gradient(circle at 35% 30%,#d6fffb,#2fd3c6 45%,#0b7a73);cursor:grab;touch-action:none;box-shadow:0 0 22px rgba(47,211,198,.45)}
-#ttHet .day small{margin-top:14px;color:rgba(255,255,255,.65);font-size:11.5px;letter-spacing:.18em;text-transform:uppercase;white-space:nowrap}
+#ttHet .toi{position:absolute;inset:0;background:#030303;opacity:.6}
+#ttHet .cua{position:absolute;inset:0;z-index:2;touch-action:none;cursor:grab;transform:translateY(-102%);transition:transform .7s cubic-bezier(.6,0,.3,1);
+  background:linear-gradient(90deg,rgba(0,0,0,.45),transparent 12%,transparent 88%,rgba(0,0,0,.45)),
+    repeating-linear-gradient(180deg,#4a4f55 0 3px,#3a3e43 3px 22px,#2b2e32 22px 26px,#55595f 26px 28px,#34383c 28px 34px);
+  box-shadow:inset 0 -14px 0 #1b1d20,0 10px 30px rgba(0,0,0,.6)}
+#ttHet .cua.xuong{transform:none;transition-timing-function:cubic-bezier(.5,0,.4,1.15)}
+#ttHet .cua.dang{transition:none;cursor:grabbing}
+#ttHet .cua.mo{transform:translateY(-102%);transition-timing-function:cubic-bezier(.6,0,.3,1)}
+#ttHet .cua::before{content:"";position:absolute;inset:0;background:radial-gradient(70% 60% at 50% 40%,transparent,rgba(0,0,0,.55));pointer-events:none}
+#ttHet .cua .bien{position:absolute;left:50%;top:38%;transform:translate(-50%,-50%);text-align:center;color:rgba(255,255,255,.75);pointer-events:none;width:calc(100% - 32px)}
+#ttHet .cua .bien img{height:34px;width:auto;display:block;margin:0 auto 12px;opacity:.85;filter:drop-shadow(0 2px 0 rgba(0,0,0,.6))}
+#ttHet .cua .bien b{display:block;font-size:13px;font-weight:700;letter-spacing:.24em;text-transform:uppercase;color:rgba(255,255,255,.7)}
+#ttHet .cua .bien small{display:block;margin-top:6px;font-size:12.5px;color:rgba(255,255,255,.55)}
+#ttHet .cua .tay{position:absolute;left:50%;bottom:24px;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:8px;border:0;background:none;color:#fff;cursor:pointer;font-size:12px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;white-space:nowrap}
+#ttHet .cua .tay i{display:block;width:120px;height:16px;border-radius:8px;background:linear-gradient(#f7b829,#a87a10);box-shadow:0 3px 0 #5c4306,0 0 18px rgba(247,184,41,.35)}
+#ttHet .cua .tay span{animation:ttLen 1.6s ease-in-out infinite}
+@keyframes ttLen{50%{transform:translateY(-6px);opacity:.6}}
+#ttHet .cua .tay:focus-visible{outline:2px solid #fff;outline-offset:6px;border-radius:8px}
 #ttHet .hop{position:absolute;left:50%;top:50%;width:min(380px,calc(100vw - 32px));transform:translate(-50%,-50%) scale(.96);opacity:0;pointer-events:none;transition:all .35s;padding:18px;border-radius:16px;background:var(--panel);color:var(--ink);border:1px solid var(--line);box-shadow:0 20px 50px rgba(0,0,0,.6)}
 #ttHet.sang .hop{opacity:1;transform:translate(-50%,-50%);pointer-events:auto}
 #ttHet .hop b{font-size:16px}#ttHet .hop .mo{font-size:12.5px;color:var(--ink3);margin-top:4px}
@@ -73,4 +80,4 @@ tr.tt-keo.ve{transition:transform .3s cubic-bezier(.3,1.3,.5,1)}
 @keyframes ttRung{20%,60%{transform:translateX(-7px)}40%,80%{transform:translateX(7px)}}
 #ttHet .hop.tt-rung{animation:ttRungHop .4s}
 @keyframes ttRungHop{20%,60%{transform:translate(calc(-50% - 7px),-50%)}40%,80%{transform:translate(calc(-50% + 7px),-50%)}}
-@media (prefers-reduced-motion:reduce){#ttBao,#ttMaiChi,.tt-may .can,.tt-tem,#ttHet .hop{transition:none!important}#ttHet .toi,#ttHet .day.xuong,.tt-rung,.tt-may.cach{animation:none!important}}
+@media (prefers-reduced-motion:reduce){#ttBao,#ttMaiChi,.tt-may .can,.tt-tem,#ttHet .hop{transition:none!important}#ttHet .cua,#ttHet .cua .tay span,.tt-rung,.tt-may.cach{animation:none!important}}

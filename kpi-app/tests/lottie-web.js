@@ -144,21 +144,27 @@ const svgTrong = (p, sel) => p.evaluate(s => { const e = document.querySelector(
   // hết phiên: không tự tải lại, chờ bấm
   await p.evaluate(() => { window.__chuaTai = 1; hetHan(); }); await p.waitForTimeout(2500);
   // (10/10) hết phiên đổi sang màn tối + dây kéo + đăng nhập lại tại chỗ (mục 16 demo-thao-tac) – thay lớp phủ Lottie
-  x = await p.evaluate(() => [!!document.getElementById('ttHet'), document.querySelector('#ttHet .day').classList.contains('xuong'), window.__chuaTai === 1]);
-  ok(x[0] && x[1] && x[2], 'hết phiên: màn tối + dây thả xuống, trang KHÔNG tự tải lại sau 2,5 giây', x);
-  ok(await p.evaluate(() => document.activeElement === document.querySelector('#ttHet .day button')), 'hết phiên: con trỏ ở dây kéo (Enter là bật đèn)');
+  x = await p.evaluate(() => [!!document.getElementById('ttHet'), document.querySelector('#ttHet .cua').classList.contains('xuong'), window.__chuaTai === 1]);
+  ok(x[0] && x[1] && x[2], 'hết phiên: cửa cuốn sập xuống, trang KHÔNG tự tải lại sau 2,5 giây', x);
+  ok(await p.evaluate(() => document.activeElement === document.querySelector('#ttHet .cua .tay')), 'hết phiên: con trỏ ở tay nắm cửa (Enter là mở cửa)');
   await p.keyboard.press('Enter'); await p.waitForTimeout(600);
-  ok(await p.evaluate(() => document.getElementById('ttHet').classList.contains('sang') && document.activeElement.type === 'password'), 'Enter: đèn sáng, hiện hộp đăng nhập lại, con trỏ ở ô mật khẩu');
+  ok(await p.evaluate(() => document.getElementById('ttHet').classList.contains('sang') && document.activeElement.type === 'password'), 'Enter: cửa mở, hiện hộp đăng nhập lại, con trỏ ở ô mật khẩu');
   await p.fill('#ttHet input', 'demo'); await p.press('#ttHet input', 'Enter'); await p.waitForTimeout(1500);
   ok(await p.evaluate(() => !document.getElementById('ttHet') && !!TOKEN), 'đăng nhập lại tại chỗ: đóng màn tối, có phiên mới');
-  // (13/10) chạm bất kỳ đâu trên màn tối / nhấn phím bất kỳ cũng bật đèn
+  // (13/10) cửa cuốn: chạm bất kỳ đâu / nhấn phím / vuốt lên đều mở
   await p.evaluate(() => hetHan()); await p.waitForTimeout(1200);
   await p.mouse.click(60, 700); await p.waitForTimeout(600);
-  ok(await p.evaluate(() => document.getElementById('ttHet').classList.contains('sang')), 'chạm vào góc màn tối: đèn sáng');
+  ok(await p.evaluate(() => document.getElementById('ttHet').classList.contains('sang')), 'chạm vào góc cửa cuốn: cửa mở');
   await p.evaluate(() => document.getElementById('ttHet').remove());
   await p.evaluate(() => hetHan()); await p.waitForTimeout(1200);
   await p.keyboard.press('a'); await p.waitForTimeout(600);
-  ok(await p.evaluate(() => document.getElementById('ttHet').classList.contains('sang') && document.activeElement.value === ''), 'nhấn phím bất kỳ: đèn sáng, phím đó không lọt vào ô mật khẩu');
+  ok(await p.evaluate(() => document.getElementById('ttHet').classList.contains('sang') && document.activeElement.value === ''), 'nhấn phím bất kỳ: cửa mở, phím đó không lọt vào ô mật khẩu');
+  await p.evaluate(() => document.getElementById('ttHet').remove());
+  await p.evaluate(() => hetHan()); await p.waitForTimeout(1200);
+  await p.mouse.move(680, 600); await p.mouse.down(); await p.mouse.move(680, 500, { steps: 4 }); await p.mouse.up(); await p.waitForTimeout(500);
+  ok(await p.evaluate(() => !document.getElementById('ttHet').classList.contains('sang')), 'vuốt lên ít (100px): cửa trượt về, chưa mở');
+  await p.mouse.move(680, 700); await p.mouse.down(); await p.mouse.move(680, 300, { steps: 6 }); await p.mouse.up(); await p.waitForTimeout(1200);
+  ok(await p.evaluate(() => document.getElementById('ttHet').classList.contains('sang') && !document.querySelector('#ttHet .cua')), 'vuốt lên quá 1/4 màn hình: cửa cuốn lên, hiện hộp đăng nhập');
   await p.evaluate(() => document.getElementById('ttHet').remove());
   ok(!p.loi.length, 'không lỗi trang', p.loi);
   await p.context().close();

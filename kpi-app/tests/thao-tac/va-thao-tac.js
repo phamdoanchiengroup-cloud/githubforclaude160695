@@ -257,31 +257,37 @@ vKPICaNhanToi=function(){
   return kq;
 };
 
-/* ---------- 16. Hết phiên: chạm màn hình / nhấn phím / kéo dây bật đèn, đăng nhập lại tại chỗ ---------- */
+/* ---------- 16. Hết phiên: cửa cuốn sập xuống (giống màn đăng nhập), vuốt lên / chạm / nhấn phím để mở, đăng nhập lại tại chỗ ---------- */
 var _ttHetHan=hetHan;
 hetHan=function(){
   try{ sessionStorage.removeItem('kpi_token'); }catch(e){}
   if($('ttHet'))return;
   try{ ltDong(); }catch(e){}
   var tk=(ME&&ME.tk)||'';
+  var lg=document.querySelector('#gate .lk-dau img');   // dùng lại logo của màn đăng nhập
   var w=document.createElement('div'); w.id='ttHet'; w.setAttribute('role','dialog'); w.setAttribute('aria-label','Phiên đăng nhập đã hết hạn');
-  w.innerHTML='<div class="toi"></div><div class="day"><div class="soi"></div><button type="button" aria-label="Bật đèn (hoặc nhấn phím bất kỳ)"></button><small>Chạm vào màn hình để bật đèn</small></div>'+
+  w.innerHTML='<div class="toi"></div>'+
     '<div class="hop"><b>Phiên làm việc đã hết</b><div class="mo">Đăng nhập lại để làm tiếp – trang đang xem vẫn giữ nguyên, số đang nhập dở không mất.</div>'+
     '<input type="password" autocomplete="current-password" placeholder="Mật khẩu của @'+esc(tk)+'" aria-label="Mật khẩu"><div class="loi"></div>'+
-    '<div class="nuts"><button type="button" class="btn tai">Tải lại trang</button><button type="button" class="btn pri vao">Đăng nhập lại</button></div></div>';
+    '<div class="nuts"><button type="button" class="btn tai">Tải lại trang</button><button type="button" class="btn pri vao">Đăng nhập lại</button></div></div>'+
+    '<div class="cua"><div class="bien">'+(lg?'<img src="'+lg.getAttribute('src')+'" alt="">':'')+'<b>Phiên làm việc đã hết</b><small>Đã lâu không thao tác nên cửa đã đóng</small></div>'+
+    '<button type="button" class="tay" aria-label="Mở cửa cuốn (hoặc nhấn phím bất kỳ)"><span>⌃ Vuốt lên để mở cửa</span><i></i></button></div>';
   document.body.appendChild(w);
-  var day=w.querySelector('.day'), num=day.querySelector('button'), hop=w.querySelector('.hop'), ip=hop.querySelector('input'), loi=hop.querySelector('.loi'), sang=false;
-  var bat=function(){ if(sang)return; sang=true; document.removeEventListener('keydown',phim,true); day.style.setProperty('--keo','0px'); day.classList.remove('xuong'); w.classList.add('sang'); ttRung(20); setTimeout(function(){ try{ ip.focus(); }catch(e){} },350); };
-  /* Chạm/bấm bất kỳ đâu trên màn tối hoặc nhấn phím bất kỳ cũng bật đèn (kéo dây vẫn dùng được) */
+  var cua=w.querySelector('.cua'), tay=cua.querySelector('.tay'), hop=w.querySelector('.hop'), ip=hop.querySelector('input'), loi=hop.querySelector('.loi'), sang=false;
+  var bat=function(){ if(sang)return; sang=true; document.removeEventListener('keydown',phim,true); cua.classList.remove('dang'); cua.style.transform=''; cua.classList.add('mo'); w.classList.add('sang'); ttRung(25);
+    setTimeout(function(){ try{ ip.focus(); }catch(e){} },500); setTimeout(function(){ if(cua.parentNode) cua.parentNode.removeChild(cua); },950); };
+  /* nhấn phím bất kỳ cũng mở cửa (phím đó không lọt vào ô mật khẩu) */
   var phim=function(e){ if(sang)return; if(['Shift','Control','Alt','Meta','CapsLock','Tab'].indexOf(e.key)>=0)return; e.preventDefault(); e.stopPropagation(); bat(); };
   document.addEventListener('keydown',phim,true);
-  w.addEventListener('click',function(e){ if(!sang&&!day.contains(e.target)) bat(); });
-  if(GIAM_CD()||!tk) bat(); else setTimeout(function(){ day.classList.add('xuong'); try{ num.focus({preventScroll:true}); }catch(e){} },800);
-  ttKeo(num,{truc:'y',giuNgay:true,dau:function(){day.classList.add('dang')},
-    di:function(dx,dy){ day.style.setProperty('--keo',Math.max(0,Math.min(140,dy))+'px'); },
-    tha:function(dx,dy){ day.classList.remove('dang'); if(dy>50) bat(); else day.style.setProperty('--keo','0px'); },
-    bam:function(){ day.style.setProperty('--keo','60px'); setTimeout(bat,160); }});
-  num.addEventListener('keydown',function(e){ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); bat(); } });
+  if(GIAM_CD()||!tk){ bat(); }
+  else setTimeout(function(){ cua.classList.add('xuong'); try{ tay.focus({preventScroll:true}); }catch(e){} },60);
+  /* vuốt lên quá 1/4 màn hình thì mở; chạm/bấm không kéo (kể cả ngoài tay nắm) cũng mở */
+  var y0=null, len=0, daKeo=false, h=1;
+  cua.addEventListener('pointerdown',function(e){ if(sang)return; y0=e.clientY; len=0; daKeo=false; h=cua.getBoundingClientRect().height; try{ cua.setPointerCapture(e.pointerId); }catch(x){} cua.classList.add('dang'); });
+  cua.addEventListener('pointermove',function(e){ if(y0==null)return; len=Math.max(0,y0-e.clientY); if(len>6)daKeo=true; cua.style.transform='translateY('+(-len)+'px)'; });
+  var tha=function(){ if(y0==null)return; y0=null; cua.classList.remove('dang'); if(!daKeo||len>h*.25) bat(); else { cua.style.transform=''; ttRung(15); } };
+  cua.addEventListener('pointerup',tha); cua.addEventListener('pointercancel',function(){ y0=null; cua.classList.remove('dang'); cua.style.transform=''; });
+  tay.addEventListener('click',function(){ bat(); });
   hop.querySelector('.tai').onclick=function(){ location.reload(); };
   var dang=false;
   var vao=function(){
