@@ -206,16 +206,41 @@ function sdMo3D() {
   var k = document.createElement('div'); k.id = 'sd3d'; k.setAttribute('role', 'dialog'); k.setAttribute('aria-label', 'Mô hình 3D nhà máy');
   k.innerHTML = '<div class="sd3d-dau"><b>Mô hình 3D nhà máy</b><span style="color:#9ca8b0;font-size:12.5px">Cùng màu KPI / sĩ số với sơ đồ</span><button class="btn" type="button" id="sd3dDong">✕ Đóng</button></div>' +
     '<div class="cho3d">Đang tải mô hình 3D… (cần mạng để tải thư viện Three.js)' + (sdLaMayTinh() ? '' : '<br><small>Điện thoại tự dùng chế độ ⚡ Nhẹ cho mượt – bấm nút đó để đổi sang Đầy đủ.</small>') + '</div>';
-  var f = document.createElement('iframe'); f.title = 'Mô hình 3D nhà máy'; f.srcdoc = document.getElementById('sdNguon3d').value;
-  f.onload = function () { var c = k.querySelector('.cho3d'); if (c) c.remove(); };
-  k.appendChild(f); document.body.appendChild(k);
+  document.body.appendChild(k);
+  // 13/10: bố trí máy đã lưu trên web (sheet BoTriMay) – nạp trước rồi mới dựng 3D; lỗi thì vẫn mở theo bản vẽ
+  sdBoTri(function () {
+    if (!document.getElementById('sd3d')) return;
+    var f = document.createElement('iframe'); f.title = 'Mô hình 3D nhà máy'; f.srcdoc = document.getElementById('sdNguon3d').value;
+    f.onload = function () { var c = k.querySelector('.cho3d'); if (c) c.remove(); };
+    k.appendChild(f);
+  });
   SD.nghe0 = SS.nghe.length;   // bản 3D tự đăng ký nghe SS.nghe – bỏ đi khi đóng
   document.getElementById('sd3dDong').onclick = sdDong3D;
   document.addEventListener('keydown', sdEsc3D);
   document.getElementById('sd3dDong').focus();
 }
-function sdEsc3D(e) { if (e.key === 'Escape') sdDong3D(); }
+/* Cầu nối lưu bố trí máy cho bản 3D (window.BTM, đọc trong iframe qua window.parent.BTM) */
+function sdBoTri(xong) {
+  var B = window.BTM = { data: null, sua: false, luc: '', nguoi: '', luu: function (chu, cb) {
+    google.script.run.withSuccessHandler(function (r) { if (r && r.hetHan) { cb({ ok: false, msg: 'phiên đăng nhập đã hết' }); hetHan(); return; } cb(r); })
+      .withFailureHandler(function (e) { cb({ ok: false, msg: (e && e.message) || String(e) }); }).luuBoTriMay(TOKEN, chu);
+  } };
+  var xong1 = function () { if (xong) { var x = xong; xong = null; x(); } };
+  setTimeout(xong1, 15000);   // máy chủ chậm quá thì vẫn mở theo bản vẽ
+  google.script.run.withSuccessHandler(function (r) {
+    if (r && r.ok && xong) { B.data = r.data; B.sua = !!r.sua; B.luc = r.luc || ''; B.nguoi = r.nguoi || ''; }
+    xong1();
+  }).withFailureHandler(xong1).layBoTriMay(TOKEN);
+}
+function sdEsc3D(e) { if (e.key === 'Escape' && !sdChuaLuu3D()) sdDong3D(); }
+function sdChuaLuu3D() { var f = document.querySelector('#sd3d iframe'); try { return !!(f && f.contentWindow.__btChuaLuu && f.contentWindow.__btChuaLuu()); } catch (e) { return false; } }
 function sdDong3D() {
+  // đang sắp xếp máy mà chưa lưu: lưu trước rồi mới đóng (lưu lỗi thì giữ cửa sổ để thử lại)
+  if (sdChuaLuu3D()) {
+    var f = document.querySelector('#sd3d iframe');
+    f.contentWindow.__btLuu(function (ok) { if (ok) sdDong3D(); });
+    return;
+  }
   var k = document.getElementById('sd3d'); if (k) k.remove();
   if (SD.nghe0 !== undefined) { SS.nghe.length = SD.nghe0; delete SD.nghe0; }
   document.removeEventListener('keydown', sdEsc3D);

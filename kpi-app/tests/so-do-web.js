@@ -115,8 +115,28 @@ const mauPhong = (p, ten) => p.evaluate(t => { const g = [...document.querySelec
     const t1 = await f3.evaluate(() => __v3.ctl.target.toArray());
     ok(Math.hypot(t1[0] - t0[0], t1[2] - t0[2]) > .5, '3D: cuộn chuột ở góc màn hình thì tâm nhìn dời về phía con trỏ', [t0, t1]);
     await f3.evaluate(() => document.getElementById('zFit').click()); await p.waitForTimeout(900);
+    // (13/10) sắp xếp máy: lưu bố trí lên web (sheet BoTriMay), mở lại vẫn còn
+    s = await f3.evaluate(() => [getComputedStyle(document.getElementById('btnBoTri')).display !== 'none', document.getElementById('btXuatNut').hidden, document.getElementById('btLuu').hidden]);
+    ok(s[0] && s[1] && !s[2], 'ADMIN: có "Sắp xếp máy" + nút "💾 Lưu bố trí", ẩn "Xuất bố trí"', s);
+    const tenMay = await f3.evaluate(() => { __v3.btBat(true); return __v3.btXoayThu(); });
+    s = await f3.evaluate(() => [document.getElementById('btLuuTT').textContent, document.getElementById('btLuu').disabled]);
+    ok(tenMay && /chưa lưu/.test(s[0]) && !s[1], 'xoay 1 máy: báo "Có thay đổi chưa lưu", nút Lưu bấm được', [tenMay, s]);
+    await f3.evaluate(() => document.getElementById('btLuu').click());
+    await f3.waitForFunction(() => !/Đang lưu/.test(document.getElementById('btLuuTT').textContent), null, { timeout: 90000 }).catch(() => {});   // vẽ 3D bằng phần mềm làm chậm cả trang
+    s = await f3.evaluate(() => [document.getElementById('btLuuTT').textContent, document.getElementById('btLuu').disabled]);
+    ok(/Đã lưu lên web/.test(s[0]) && s[1], 'bấm Lưu: "✓ Đã lưu lên web lúc …"', s);
     await p.keyboard.press('Escape'); await p.waitForTimeout(200);
     ok(await p.evaluate(() => !document.getElementById('sd3d') && SS.nghe.length === 1), 'Esc đóng 3D, gỡ phần nghe của bản 3D');
+    await p.click('#sdNut3d');
+    const f4 = await (await p.waitForSelector('#sd3d iframe')).contentFrame();
+    await f4.waitForSelector('#c3d canvas', { state: 'attached', timeout: 180000 });
+    s = await f4.evaluate(() => [document.getElementById('btSo').textContent, document.getElementById('btLuuTT').textContent]);
+    ok(/dời 1 máy/.test(s[0]) && /Đã lưu lên web/.test(s[1]), 'mở lại 3D: máy vẫn ở chỗ mới đã lưu', s);
+    // đổi mà chưa lưu, bấm Đóng: tự lưu rồi mới đóng
+    await f4.evaluate(() => { __v3.btBat(true); __v3.btXoayThu(); });
+    await p.evaluate(() => document.getElementById('sd3dDong').click()); await p.waitForFunction(() => !document.getElementById('sd3d'), null, { timeout: 90000 }).catch(() => {});
+    s = await p.evaluate(() => new Promise(k => google.script.run.withSuccessHandler(k).layBoTriMay(TOKEN)));
+    ok(await p.evaluate(() => !document.getElementById('sd3d')) && s.ok && s.sua && s.data && Object.keys(s.data.d).length >= 1, 'chưa lưu mà bấm Đóng: tự lưu rồi đóng', s);
   }
   ok(!p.loi.length, 'không lỗi JS', p.loi);
   await p.ctx.close();
@@ -126,6 +146,8 @@ const mauPhong = (p, ten) => p.evaluate(t => { const g = [...document.querySelec
   await p.evaluate(() => go('sodo')); await p.waitForTimeout(1500);
   s = await p.evaluate(() => [Object.keys(SS.SO), ME.xuong, !!document.getElementById('sdBg'), (SD.siso || []).map(x => x.MaXuong)]);
   ok(s[0].length === 1 && s[0][0] === s[1] && !s[2] && s[3].every(x => x === s[1]), 'TP chỉ thấy số liệu xưởng mình, không có bảng ghép, sĩ số chỉ xưởng mình', s);
+  s = await p.evaluate(() => Promise.all([new Promise(k => google.script.run.withSuccessHandler(k).layBoTriMay(TOKEN)), new Promise(k => google.script.run.withSuccessHandler(k).luuBoTriMay(TOKEN, '{"d":{}}'))]));
+  ok(s[0].ok && !s[0].sua && !s[1].ok, 'TP: xem được bố trí máy, không lưu được (chỉ ADMIN)', s);
   ok(!p.loi.length, 'không lỗi JS', p.loi);
   await p.ctx.close();
 

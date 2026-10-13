@@ -196,10 +196,10 @@ h1{font:700 26px/1.05 var(--f-display);margin:.25em 0 .2em;text-wrap:balance;let
     &lt;div class="thongBao" id="thongBao" role="status" hidden&gt;&lt;/div&gt;
     &lt;div class="boTri" id="boTri" hidden&gt;
       &lt;b&gt;Sắp xếp máy&lt;/b&gt;
-      &lt;p&gt;Kéo máy để dời chỗ (bước 10 cm). Bấm chọn máy rồi: &lt;kbd&gt;R&lt;/kbd&gt; xoay 90° · &lt;kbd&gt;Ctrl&lt;/kbd&gt;+&lt;kbd&gt;D&lt;/kbd&gt; nhân đôi · &lt;kbd&gt;Delete&lt;/kbd&gt; xóa · &lt;kbd&gt;Ctrl&lt;/kbd&gt;+&lt;kbd&gt;Z&lt;/kbd&gt; hoàn tác xóa. Máy không được chồng lên máy khác hay ra ngoài nhà xưởng. Bố trí tự lưu trên máy này.&lt;/p&gt;
-      &lt;p id="btSo" class="sub"&gt;&lt;/p&gt;
+      &lt;p&gt;Kéo máy để dời chỗ (bước 10 cm). Bấm chọn máy rồi: &lt;kbd&gt;R&lt;/kbd&gt; xoay 90° · &lt;kbd&gt;Ctrl&lt;/kbd&gt;+&lt;kbd&gt;D&lt;/kbd&gt; nhân đôi · &lt;kbd&gt;Delete&lt;/kbd&gt; xóa · &lt;kbd&gt;Ctrl&lt;/kbd&gt;+&lt;kbd&gt;Z&lt;/kbd&gt; hoàn tác xóa. Máy không được chồng lên máy khác hay ra ngoài nhà xưởng. &lt;span id="btGhiLuu"&gt;Bố trí tự lưu trên máy này.&lt;/span&gt;&lt;/p&gt;
+      &lt;p id="btSo" class="sub"&gt;&lt;/p&gt;&lt;p id="btLuuTT" class="sub" role="status"&gt;&lt;/p&gt;
       &lt;div class="btNut"&gt;&lt;button id="btXoay" type="button"&gt;↻ Xoay 90°&lt;/button&gt;&lt;button id="btNhan" type="button"&gt;⧉ Nhân đôi&lt;/button&gt;&lt;button id="btXoa" type="button" class="nguyHiem"&gt;✕ Xóa máy&lt;/button&gt;&lt;button id="btHoan" type="button"&gt;↶ Hoàn tác xóa&lt;/button&gt;&lt;button id="btGoc" type="button"&gt;Trả máy này về chỗ cũ&lt;/button&gt;
-        &lt;button id="btGocHet" type="button"&gt;Khôi phục toàn bộ&lt;/button&gt;&lt;button id="btXuatNut" type="button"&gt;Xuất bố trí&lt;/button&gt;&lt;button id="btDong" type="button"&gt;Xong&lt;/button&gt;&lt;/div&gt;
+        &lt;button id="btGocHet" type="button"&gt;Khôi phục toàn bộ&lt;/button&gt;&lt;button id="btLuu" type="button" hidden style="font-weight:700;background:#f7b829;color:#1a1a1a;border-color:#f7b829"&gt;💾 Lưu bố trí&lt;/button&gt;&lt;button id="btXuatNut" type="button"&gt;Xuất bố trí&lt;/button&gt;&lt;button id="btDong" type="button"&gt;Xong&lt;/button&gt;&lt;/div&gt;
       &lt;textarea id="btXuat" rows="4" readonly hidden aria-label="Bố trí máy dạng văn bản"&gt;&lt;/textarea&gt;
     &lt;/div&gt;
     &lt;div class="zoom" role="group" aria-label="Phóng to thu nhỏ"&gt;&lt;button id="zIn" title="Phóng to (phím +)" aria-label="Phóng to"&gt;+&lt;/button&gt;&lt;button id="zOut" title="Thu nhỏ (phím −)" aria-label="Thu nhỏ"&gt;−&lt;/button&gt;&lt;button id="zFit" title="Xem toàn cảnh (phím 0)" aria-label="Xem toàn cảnh" style="font-size:17px"&gt;⌂&lt;/button&gt;&lt;/div&gt;
@@ -244,6 +244,7 @@ h1{font:700 26px/1.05 var(--f-display);margin:.25em 0 .2em;text-wrap:balance;let
   &lt;/aside&gt;
 &lt;/div&gt;
 
+&lt;script&gt;window.BTM=(window.parent&amp;&amp;window.parent!==window&amp;&amp;window.parent.BTM)||null;&lt;/script&gt;
 &lt;script&gt;window.SS=(window.parent&amp;&amp;window.parent!==window&amp;&amp;window.parent.SS)||null;&lt;/script&gt;
 &lt;style&gt;.ss-the{margin-top:10px;display:grid;gap:5px;font-size:13px}.ss-the .ss-dong{display:flex;justify-content:space-between;gap:10px;border-bottom:1px dashed var(--line);padding-bottom:4px}
 .ss-the .ss-dong span{color:var(--muted)}.ss-the small{color:var(--muted);font-size:12.5px}.ss-trong{color:var(--muted)}
@@ -2054,10 +2055,10 @@ function luuBT(){const o={},n=[],x=[];let nd=0;
     if(Mc.moi){if(!Mc.xoa)n.push([fi,Mc.nguon,...Mc.r.map(v=&gt;+v.toFixed(2)),Mc.quay%4,Mc.l]);return;}
     if(Mc.xoa){x.push([fi,mi,Mc.l]);return;}
     if(Mc.quay%4||Mc.r.some((v,i)=&gt;Math.abs(v-Mc.r0[i])&gt;.001)){o[fi+'|'+mi]=[...Mc.r.map(v=&gt;+v.toFixed(2)),Mc.quay%4,Mc.l];nd++;}}));
-  try{localStorage.setItem(KHOA_BT,JSON.stringify({d:o,n,x}));}catch(e){}
+  if(window.BTM)btDoi(JSON.stringify({d:o,n,x}));else try{localStorage.setItem(KHOA_BT,JSON.stringify({d:o,n,x}));}catch(e){}
   const s=[nd&amp;&amp;`dời ${nd} máy`,n.length&amp;&amp;`thêm ${n.length} máy`,x.length&amp;&amp;`xóa ${x.length} máy`].filter(Boolean);
   document.getElementById('btSo').textContent=s.length?'So với bản vẽ: đã '+s.join(', ')+'.':'Chưa thay đổi máy nào.';return {d:o,n,x};}
-function napBT(){let o={};try{o=JSON.parse(localStorage.getItem(KHOA_BT)||'{}');}catch(e){}
+function napBT(){let o={};if(window.BTM)o=window.BTM.data||{};else try{o=JSON.parse(localStorage.getItem(KHOA_BT)||'{}');}catch(e){}
   (o.n||[]).forEach(v=&gt;{const F=floors[v[0]],S=F&amp;&amp;F.mc[v[1]];if(S&amp;&amp;S.l===v[7])taoBan(F,v[0],S,v.slice(2,6),v[6]);});
   Object.entries(o.d||{}).forEach(([k,v])=&gt;{const [fi,mi]=k.split('|').map(Number);const F=floors[fi],Mc=F&amp;&amp;F.mc[mi];if(Mc&amp;&amp;!Mc.moi&amp;&amp;Mc.l===v[5])datMay(F,Mc,v.slice(0,4),v[4]);});
   (o.x||[]).forEach(([fi,mi,l])=&gt;{const F=floors[fi],Mc=F&amp;&amp;F.mc[mi];if(Mc&amp;&amp;!Mc.moi&amp;&amp;Mc.l===l)anMay(F,Mc);});}
@@ -2099,7 +2100,7 @@ function xuatBT(){const o=luuBT();const txt=JSON.stringify({ten:'Bố trí máy 
 function batBoTri(on){st.boTri=on;document.getElementById('btnBoTri').setAttribute('aria-pressed',on);document.getElementById('boTri').hidden=!on;
   if(on){st.mc=true;document.getElementById('tgMc').checked=true;if(st.floor==='all'){st.floor='0';}st.mode='khoi';apply();frame();luuBT();
     bao('Kéo máy để dời · R xoay · Ctrl+D nhân đôi · Delete xóa · Esc thoát.');}
-  else{ctl.enabled=true;keo=null;document.getElementById('btXuat').hidden=true;}}
+  else{ctl.enabled=true;keo=null;document.getElementById('btXuat').hidden=true;if(btChuaLuu())btLuu();}}
 document.getElementById('btnBoTri').onclick=()=&gt;batBoTri(!st.boTri);
 document.getElementById('btXoay').onclick=xoay;document.getElementById('btNhan').onclick=nhanDoi;document.getElementById('btXoa').onclick=xoaMay;document.getElementById('btHoan').onclick=hoanTacXoa;document.getElementById('btGoc').onclick=()=&gt;veGoc(false);
 document.getElementById('btGocHet').onclick=()=&gt;veGoc(true);document.getElementById('btXuatNut').onclick=xuatBT;document.getElementById('btDong').onclick=()=&gt;batBoTri(false);
@@ -2119,7 +2120,22 @@ renderer.domElement.addEventListener('pointermove',e=&gt;{if(!keo)return;if(!die
 renderer.domElement.addEventListener('pointerup',e=&gt;{if(!keo)return;const k=keo;keo=null;ctl.enabled=true;tip.hidden=true;selBox.material.color.set(0xffd34d);
   if(k.dich){if(k.loi){datMay(k.F,k.Mc,k.r0,k.Mc.quay);bao('Không đặt được: '+k.loi+'. Máy đã về chỗ cũ.');}else{donNguoi(k.F,k.Mc.r);luuBT();}}
   selBox.setFromObject(k.Mc.obj);select({kind:'mc',fi:k.fi,mi:k.mi},false);});
+var btDaLuu=null,btHienTai='',btDang=false;
+function btChuaLuu(){return !!window.BTM&amp;&amp;window.BTM.sua&amp;&amp;btDaLuu!==null&amp;&amp;btHienTai!==btDaLuu;}
+function btDoi(chu){btHienTai=chu;const B=window.BTM;if(!B||btDaLuu===null)return;const doi=chu!==btDaLuu,n=document.getElementById('btLuu');if(n)n.disabled=!doi||btDang;
+  document.getElementById('btLuuTT').textContent=btDang?'Đang lưu lên web…':doi?'● Có thay đổi chưa lưu – bấm “💾 Lưu bố trí” để mọi người cùng thấy.':B.luc?'✓ Đã lưu lên web lúc '+B.luc+(B.nguoi?' ('+B.nguoi+')':'')+'.':'Đang dùng đúng vị trí theo bản vẽ.';}
+function btLuu(xong){const B=window.BTM;if(!B||!B.sua||btDang||btDaLuu===null||btHienTai===btDaLuu){if(xong)xong(true);return;}
+  const chu=btHienTai;btDang=true;btDoi(chu);
+  B.luu(chu,r=&gt;{btDang=false;if(r&amp;&amp;r.ok){btDaLuu=chu;B.luc=r.luc;B.nguoi=r.nguoi;B.data=JSON.parse(chu);bao('Đã lưu bố trí máy – ai mở sơ đồ cũng thấy bố trí này.');}
+    else bao('Chưa lưu được: '+((r&amp;&amp;r.msg)||'lỗi kết nối')+'. Bấm “💾 Lưu bố trí” lần nữa.');btDoi(btHienTai);if(xong)xong(!!(r&amp;&amp;r.ok));});}
+window.__btChuaLuu=btChuaLuu;window.__btLuu=btLuu;
 napBT();
+if(window.BTM){btDaLuu=btHienTai=JSON.stringify(luuBT());btDoi(btHienTai);
+  document.getElementById('btXuatNut').hidden=true;
+  if(window.BTM.sua){const n=document.getElementById('btLuu');n.hidden=false;n.onclick=()=&gt;btLuu();
+    document.getElementById('btGhiLuu').textContent='Sắp xếp xong bấm “💾 Lưu bố trí” (bấm Xong cũng tự lưu) – bố trí lưu lên web, ai mở sơ đồ cũng thấy.';}
+  else document.getElementById('btnBoTri').style.display='none';}
+if(window.__v3)Object.assign(window.__v3,{btBat:batBoTri,btXoayThu:()=&gt;{const F=floors[0];for(let mi=0;mi&lt;F.mc.length;mi++){const Mc=F.mc[mi];if(Mc.xoa||!Mc.obj)continue;selMc={fi:0,mi};const q=Mc.quay;xoay();if(Mc.quay!==q)return Mc.l;}return '';}});   // cho kiểm thử
 {const lo=floors[0].mc.find(Mc=&gt;Mc.obj&amp;&amp;Mc.obj.userData.cuaLo);if(lo){lo.obj.userData.mo=1;lo.obj.userData.cuaLo.rotation.y=1.9;if(lo.obj.userData.den)lo.obj.userData.den.material.emissiveIntensity=1.8;}}
 
 let tPrev=0,tVe=0; var canVe=60; ctl.addEventListener('change',()=&gt;{canVe=Math.max(canVe,4);}); renderer.domElement.addEventListener('pointerdown',()=&gt;{canVe=Math.max(canVe,30);});
@@ -2445,16 +2461,41 @@ function sdMo3D() {
   var k = document.createElement('div'); k.id = 'sd3d'; k.setAttribute('role', 'dialog'); k.setAttribute('aria-label', 'Mô hình 3D nhà máy');
   k.innerHTML = '<div class="sd3d-dau"><b>Mô hình 3D nhà máy</b><span style="color:#9ca8b0;font-size:12.5px">Cùng màu KPI / sĩ số với sơ đồ</span><button class="btn" type="button" id="sd3dDong">✕ Đóng</button></div>' +
     '<div class="cho3d">Đang tải mô hình 3D… (cần mạng để tải thư viện Three.js)' + (sdLaMayTinh() ? '' : '<br><small>Điện thoại tự dùng chế độ ⚡ Nhẹ cho mượt – bấm nút đó để đổi sang Đầy đủ.</small>') + '</div>';
-  var f = document.createElement('iframe'); f.title = 'Mô hình 3D nhà máy'; f.srcdoc = document.getElementById('sdNguon3d').value;
-  f.onload = function () { var c = k.querySelector('.cho3d'); if (c) c.remove(); };
-  k.appendChild(f); document.body.appendChild(k);
+  document.body.appendChild(k);
+  // 13/10: bố trí máy đã lưu trên web (sheet BoTriMay) – nạp trước rồi mới dựng 3D; lỗi thì vẫn mở theo bản vẽ
+  sdBoTri(function () {
+    if (!document.getElementById('sd3d')) return;
+    var f = document.createElement('iframe'); f.title = 'Mô hình 3D nhà máy'; f.srcdoc = document.getElementById('sdNguon3d').value;
+    f.onload = function () { var c = k.querySelector('.cho3d'); if (c) c.remove(); };
+    k.appendChild(f);
+  });
   SD.nghe0 = SS.nghe.length;   // bản 3D tự đăng ký nghe SS.nghe – bỏ đi khi đóng
   document.getElementById('sd3dDong').onclick = sdDong3D;
   document.addEventListener('keydown', sdEsc3D);
   document.getElementById('sd3dDong').focus();
 }
-function sdEsc3D(e) { if (e.key === 'Escape') sdDong3D(); }
+/* Cầu nối lưu bố trí máy cho bản 3D (window.BTM, đọc trong iframe qua window.parent.BTM) */
+function sdBoTri(xong) {
+  var B = window.BTM = { data: null, sua: false, luc: '', nguoi: '', luu: function (chu, cb) {
+    google.script.run.withSuccessHandler(function (r) { if (r && r.hetHan) { cb({ ok: false, msg: 'phiên đăng nhập đã hết' }); hetHan(); return; } cb(r); })
+      .withFailureHandler(function (e) { cb({ ok: false, msg: (e && e.message) || String(e) }); }).luuBoTriMay(TOKEN, chu);
+  } };
+  var xong1 = function () { if (xong) { var x = xong; xong = null; x(); } };
+  setTimeout(xong1, 15000);   // máy chủ chậm quá thì vẫn mở theo bản vẽ
+  google.script.run.withSuccessHandler(function (r) {
+    if (r && r.ok && xong) { B.data = r.data; B.sua = !!r.sua; B.luc = r.luc || ''; B.nguoi = r.nguoi || ''; }
+    xong1();
+  }).withFailureHandler(xong1).layBoTriMay(TOKEN);
+}
+function sdEsc3D(e) { if (e.key === 'Escape' && !sdChuaLuu3D()) sdDong3D(); }
+function sdChuaLuu3D() { var f = document.querySelector('#sd3d iframe'); try { return !!(f && f.contentWindow.__btChuaLuu && f.contentWindow.__btChuaLuu()); } catch (e) { return false; } }
 function sdDong3D() {
+  // đang sắp xếp máy mà chưa lưu: lưu trước rồi mới đóng (lưu lỗi thì giữ cửa sổ để thử lại)
+  if (sdChuaLuu3D()) {
+    var f = document.querySelector('#sd3d iframe');
+    f.contentWindow.__btLuu(function (ok) { if (ok) sdDong3D(); });
+    return;
+  }
   var k = document.getElementById('sd3d'); if (k) k.remove();
   if (SD.nghe0 !== undefined) { SS.nghe.length = SD.nghe0; delete SD.nghe0; }
   document.removeEventListener('keydown', sdEsc3D);
