@@ -40,7 +40,7 @@
 .cm-form textarea{min-height:120px;width:100%;resize:vertical;font:inherit}
 @media (max-width:700px){.cm-form{grid-template-columns:1fr}}
 .cm-ds{list-style:none;padding:0;margin:8px 0 0}
-.cm-ds li{display:flex;gap:10px;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px dashed var(--line);font-size:13.5px}
+.cm-ds li{display:flex;gap:10px;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px dashed var(--line);font-size:13.5px;flex-wrap:wrap}   /* nút Sửa / Xóa tự xuống dòng khi tên món dài (điện thoại) */
 .cm-ds li span{min-width:0}
 .cm-ghi{font-size:12px;color:var(--ink3)}
 @media print{#combar,.cm-khong-in{display:none!important}}
@@ -68,3 +68,16 @@
 .cm-sang{font-size:12px;font-weight:600;color:var(--amber,#f0b04e);margin-left:6px}
 .cm-sang-ghi{margin:8px 0 0}
 .cm-cu-chon{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:6px}.cm-cu-chon input[type=date]{margin-left:6px;padding:4px 6px}
+/* bớt / đổi món (13/10) */
+.cm-bo-ds{display:flex;flex-wrap:wrap;gap:6px 12px;align-items:center;margin-top:8px}
+.cm-bo-ds>.cm-ghi{flex-basis:100%}
+.cm-bo{display:inline-flex;align-items:center;gap:6px;font-size:13px}
+.cm-bo select{padding:4px 6px;border-radius:8px;border:1px solid var(--line);background:var(--panel);color:inherit;font:inherit}
+.cm-ho-ds li .cm-ho-bo{flex-basis:100%;margin-top:4px}
+.cm-nhom-mon{display:flex;flex-wrap:wrap;gap:6px 12px;flex-basis:100%;margin-top:6px}
+.cm-nhom-mon>.cm-ghi{flex-basis:100%}
+.cm-nhom-mon .cm-so-in{width:92px}
+.cm-mon-doi{margin:10px 0;padding:10px 12px;border:1px dashed var(--line);border-radius:10px;display:grid;gap:4px}
+.cm-md{display:grid;gap:6px}.cm-md-dong{display:flex;gap:6px;align-items:center;flex-wrap:wrap}.cm-md-dong input{flex:1 1 160px;min-width:0}
+.cm-cuon{overflow-x:auto;max-width:100%;-webkit-overflow-scrolling:touch}   /* bảng tổng hợp cuộn ngang trên điện thoại, không đẩy cả trang */
+.cm-bo>span,.cm-nhom-mon .cm-so-o>span{text-transform:none;letter-spacing:0;font-size:13px;color:inherit}
