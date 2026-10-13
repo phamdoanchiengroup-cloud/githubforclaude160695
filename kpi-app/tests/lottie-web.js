@@ -151,6 +151,15 @@ const svgTrong = (p, sel) => p.evaluate(s => { const e = document.querySelector(
   ok(await p.evaluate(() => document.getElementById('ttHet').classList.contains('sang') && document.activeElement.type === 'password'), 'Enter: đèn sáng, hiện hộp đăng nhập lại, con trỏ ở ô mật khẩu');
   await p.fill('#ttHet input', 'demo'); await p.press('#ttHet input', 'Enter'); await p.waitForTimeout(1500);
   ok(await p.evaluate(() => !document.getElementById('ttHet') && !!TOKEN), 'đăng nhập lại tại chỗ: đóng màn tối, có phiên mới');
+  // (13/10) chạm bất kỳ đâu trên màn tối / nhấn phím bất kỳ cũng bật đèn
+  await p.evaluate(() => hetHan()); await p.waitForTimeout(1200);
+  await p.mouse.click(60, 700); await p.waitForTimeout(600);
+  ok(await p.evaluate(() => document.getElementById('ttHet').classList.contains('sang')), 'chạm vào góc màn tối: đèn sáng');
+  await p.evaluate(() => document.getElementById('ttHet').remove());
+  await p.evaluate(() => hetHan()); await p.waitForTimeout(1200);
+  await p.keyboard.press('a'); await p.waitForTimeout(600);
+  ok(await p.evaluate(() => document.getElementById('ttHet').classList.contains('sang') && document.activeElement.value === ''), 'nhấn phím bất kỳ: đèn sáng, phím đó không lọt vào ô mật khẩu');
+  await p.evaluate(() => document.getElementById('ttHet').remove());
   ok(!p.loi.length, 'không lỗi trang', p.loi);
   await p.context().close();
   p = await vao(b, 'tpdg');
