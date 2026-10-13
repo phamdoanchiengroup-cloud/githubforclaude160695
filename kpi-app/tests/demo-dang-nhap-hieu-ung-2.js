@@ -45,7 +45,7 @@ const moCua = async (p, f) => { const c = await f.locator('#lkCua').boundingBox(
   await p.waitForTimeout(1600);
   s = await f().evaluate(() => [!!document.getElementById('lkKet'), document.getElementById('l_mk').disabled, localStorage.getItem('lk_khoa_den')]);
   ok(!s[0] && !s[1] && !s[2], 'hết giờ: cửa két mở, ô nhập dùng lại được', s);
-  await f().fill('#l_mk', 'demo'); await f().press('#l_mk', 'Enter'); await p.waitForTimeout(2800);
+  await f().fill('#l_mk', 'demo'); await f().press('#l_mk', 'Enter'); await p.waitForTimeout(3900);   // có khắc lại tên thật sau khi đúng
   ok(await f().evaluate(() => document.getElementById('demoXong').classList.contains('hien')), 'mở khóa rồi gõ đúng "demo": vào được');
   ok(p.loi.length === 0, 'không lỗi JS', p.loi);
   await ctx.close();

@@ -35,8 +35,10 @@ let dem = 0, loi = 0; const ok = (d, t, c) => { dem++; if (d) console.log('  ✓
     const sai = await moi.evaluate(() => [document.getElementById('bbOMk').classList.contains('bb-sai'), !document.getElementById('lerr').classList.contains('hide'), document.getElementById('gate').classList.contains('bb-vao')]);
     m = await mai();
     ok(sai[0] && sai[1] && !sai[2] && /\blo\b/.test(m[0]) && /lo/.test(m[1]) && /chữ hoa|Caps Lock/.test(m[2]), 'sai mật khẩu: báo lỗi như cũ, Mai lo lắng nhắc chữ hoa/thường', { sai, m });
-    await moi.fill('#l_mk', 'demo'); await moi.press('#l_mk', 'Enter'); await p.waitForTimeout(1100 + 1500);
+    await moi.fill('#l_mk', 'demo'); await moi.press('#l_mk', 'Enter'); await p.waitForTimeout(1100 + 2600);
     ok(await moi.evaluate(() => /vang/.test(document.getElementById('lkChu').getAttribute('class'))), 'đúng mật khẩu: chữ khắc sáng vàng');
+    const khac = await moi.evaluate(() => [document.getElementById('lkChu').textContent, String(ME.ten).trim().split(/\s+/).slice(-2).join(' ').toUpperCase(), getComputedStyle(document.getElementById('lkChu')).fontFamily]);
+    ok(khac[0] === khac[1] && /Arimo/.test(khac[2]), 'đúng mật khẩu: laser khắc lại 2 chữ cuối họ tên thật (font có dấu)', khac);
     const dung = await moi.evaluate(() => [document.getElementById('gate').classList.contains('bb-vao'), document.getElementById('demoXong').classList.contains('hien'), document.getElementById('bbVaoTen').textContent, getComputedStyle(document.getElementById('rhMai')).display]);
     m = await mai();
     ok(dung[0] && dung[1] && /Lan/.test(dung[2]) && dung[3] !== 'none' && /covu/.test(m[0]) && /Lan/.test(m[2]), 'đúng "demo": vào hệ thống, Mai giơ tay chúc ca làm', { dung, m });

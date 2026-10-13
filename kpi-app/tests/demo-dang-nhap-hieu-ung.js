@@ -48,7 +48,7 @@ const toi = f => f.evaluate(() => [document.getElementById('gate').classList.con
   await p.mouse.move(r.x + r.width / 2, r.y + r.height / 2, { steps: 3 }); await p.waitForTimeout(300);
   const r3 = await moi.locator('#btnLogin').boundingBox();
   ok(Math.abs(r3.x - r.x) < 2 && Math.abs(r3.y - r.y) < 2, 'điền đủ rồi thì rê chuột vào nút không chạy nữa');
-  await p.mouse.click(r3.x + r3.width / 2, r3.y + r3.height / 2); await p.waitForTimeout(1100 + 1400);
+  await p.mouse.click(r3.x + r3.width / 2, r3.y + r3.height / 2); await p.waitForTimeout(1100 + 2600);   // có khắc lại tên thật sau khi đúng
   ok(await moi.evaluate(() => document.getElementById('demoXong').classList.contains('hien')), 'bấm Đăng nhập với "demo": vào được');
   await p.click('[data-b=cu]'); await p.waitForTimeout(300);
   ok(await cu.evaluate(() => !document.getElementById('lkToi') && !document.getElementById('gate').classList.contains('lk-chuabat')), 'tab "Hiện tại" (không bật hiệu ứng): không có màn tối');
