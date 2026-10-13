@@ -5014,12 +5014,12 @@ function veKPIThongNhat(){
 
   if(ME.vaiTro==='ADMIN'||ME.vaiTro==='TP') h+=khoiBaoCaoThang();
   // KPI quản lý (TP xem xưởng mình; ADMIN xem toàn bộ) — đặt TRÊN bảng KPI công nhân
-  if(ME.vaiTro==='ADMIN'||ME.vaiTro==='TP'){
+  if(ME.vaiTro==='TP'){   // ban điều hành xem ở tab "KPI Quản lý" (chủ dự án 13/10)
     h+='<div id="kpiql_khoi"><div class="empty">Đang tải KPI quản lý…</div></div>';
   }
   h+='<div id="kpi_bang"><div class="empty">Đang tải…</div></div>';
   $('main').innerHTML=h;
-  if(ME.vaiTro==='ADMIN'||ME.vaiTro==='TP') napKPIQuanLyKhoi();
+  if(ME.vaiTro==='TP') napKPIQuanLyKhoi();
   taiKPIKy();
 }
 function vKPI(){ veKPIThongNhat(); }

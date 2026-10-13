@@ -792,5 +792,16 @@ exec(io.open(os.path.join(D, 'manh', 'va-manh.py'), encoding='utf-8').read())
 # ---------------------------------------------------------------- 20. Dải thông báo giải bóng đá (13/10): trận sắp tới / kết quả, tắt được
 exec(io.open(os.path.join(D, 'bong-da', 'va-bong-da.py'), encoding='utf-8').read())
 
+# ---------------------------------------------------------------- 21. Bỏ thẻ "KPI Quản lý" ở tab Bảng KPI của ban điều hành (13/10, chủ dự án)
+#     – ban điều hành đã có tab "KPI Quản lý" riêng; trưởng phòng (tab "KPI phòng", không có tab KPI Quản lý) vẫn giữ thẻ này.
+R("""  if(ME.vaiTro==='ADMIN'||ME.vaiTro==='TP'){
+    h+='<div id="kpiql_khoi"><div class="empty">Đang tải KPI quản lý…</div></div>';
+  }""", """  if(ME.vaiTro==='TP'){   // ban điều hành xem ở tab "KPI Quản lý" (chủ dự án 13/10)
+    h+='<div id="kpiql_khoi"><div class="empty">Đang tải KPI quản lý…</div></div>';
+  }""")
+R("""  if(ME.vaiTro==='ADMIN'||ME.vaiTro==='TP') napKPIQuanLyKhoi();
+  taiKPIKy();""", """  if(ME.vaiTro==='TP') napKPIQuanLyKhoi();
+  taiKPIKy();""")
+
 io.open(os.path.join(D, '..', 'Index.html'), 'w', encoding='utf-8').write(s)
 print('OK Index.html')
