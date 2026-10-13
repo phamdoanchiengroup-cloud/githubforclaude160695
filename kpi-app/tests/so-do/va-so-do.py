@@ -19,7 +19,7 @@ for _k in _re.findall(r"'(\d\|[^']+)': '", _ss):
     assert _k in _ten, 'khu không có trên bản vẽ: ' + _k
 _js = _doc(os.path.join(_sd, 'va-so-do.js')).replace('{{SS}}', _ss).replace('{{DATA}}', _json.dumps(_DATA, ensure_ascii=False, separators=(',', ':')))
 _css = _doc(os.path.join(_sd, 'va-so-do.css'))
-_b3 = _va_ba(_ba, 'KPI tháng này').replace('</textarea', '<\\/textarea')
+_b3 = _va_ba(_ba, 'KPI tháng này')   # không đổi </textarea: nội dung đã html.escape khi nhúng; đổi sẽ làm hỏng ô textarea riêng của bản 3D (btXuat, 13/10)
 assert 'sdMb' not in s
 # điều hướng: tab mới sau "Tổng quan" cho ADMIN + TP, nhóm "Hôm nay", biểu tượng, hàm vẽ
 R("""  ADMIN:[['hd','📖 Hướng dẫn'],['homnay','Việc hôm nay'],['dash','Tổng quan'],""", """  ADMIN:[['hd','📖 Hướng dẫn'],['homnay','Việc hôm nay'],['dash','Tổng quan'],['sodo','Sơ đồ nhà máy'],""")

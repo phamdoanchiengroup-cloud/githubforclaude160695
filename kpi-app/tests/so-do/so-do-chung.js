@@ -7,7 +7,7 @@ var SS = (function () {
     ['HT', 'Hoàn thiện'], ['DG', 'Đóng gói'], ['NGONTARO', 'Ngọn Taro'], ['NGONTIP', 'Ngọn Tip']];
   var TEN = {}; XUONG.forEach(function (x) { TEN[x[0]] = x[1]; });
   var GHEP = {
-    '0|Khu rà tròn phôi': 'PHOICB', '0|Nướng + rút khuôn': 'PHOICB', '0|ISO phôi CB': 'PHOICB', '0|Cuốn': 'PHOICB', '0|Cắt': 'PHOICB',
+    '0|Khu rà tròn phôi': 'PHOICB', '0|Khu chuốt ráp nước': 'PHOICB', '0|Nướng + rút khuôn': 'PHOICB', '0|ISO phôi CB': 'PHOICB', '0|Cuốn': 'PHOICB', '0|Cắt': 'PHOICB',
     '0|P. khuôn': 'PHOICB', '0|Khu đổ foam': 'PHOITHO', '0|Khu đúc keo': 'PHOITHO',
     '0|Khu vực phôi thô': 'PHOITHO',
     '1|Ráp nước': 'HT', '1|Đánh ráp, đánh bóng': 'HT', '1|Bọc da': 'HT', '1|Bôi keo': 'HT', '1|ISO': 'HT', '1|P. cắt mặt': 'HT',

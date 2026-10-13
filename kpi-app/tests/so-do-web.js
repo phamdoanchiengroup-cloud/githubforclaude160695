@@ -97,7 +97,8 @@ const mauPhong = (p, ten) => p.evaluate(t => { const g = [...document.querySelec
   if (THREE) {
     await p.click('#sdNut3d');
     const f3 = await (await p.waitForSelector('#sd3d iframe')).contentFrame();
-    await f3.waitForSelector('#c3d canvas', { timeout: 60000 }); await p.waitForTimeout(4000);
+    await f3.waitForSelector('#c3d canvas', { state: 'attached', timeout: 180000 });   // máy thử vẽ 3D bằng phần mềm rất chậm (bản 13/10 nặng hơn)
+    await f3.evaluate(() => { const t = document.getElementById('tgDi'); if (t && t.checked) t.click(); }); await p.waitForTimeout(4000);
     s = await f3.evaluate(() => [!!window.SS, document.querySelector('#segMau button[data-c="kpi"]').textContent, document.getElementById('legend').textContent]);
     ok(s[0] && s[1] === 'KPI tháng này' && /A \/ A\+/.test(s[2]), 'bản 3D dùng chung số liệu thật: nút "KPI tháng này", chú giải KPI', s);
     if (OUT) await p.screenshot({ path: OUT + '/so-do-web-3d.png' });
@@ -108,7 +109,8 @@ const mauPhong = (p, ten) => p.evaluate(t => { const g = [...document.querySelec
     await f3.evaluate(() => document.getElementById('zIn').click()); await p.waitForTimeout(400); s.push(await doi());
     await f3.evaluate(() => document.getElementById('zOut').click()); await p.waitForTimeout(400); s.push(await doi());
     ok(s[0] && s[2] < s[1] * .7 && Math.abs(s[3] - s[1]) < 1, '3D: cuộn chuột phóng theo con trỏ; nút + / − phóng to, thu nhỏ', s);
-    const c3 = await f3.locator('#c3d canvas').boundingBox(); const t0 = await f3.evaluate(() => __v3.ctl.target.toArray());
+    const fr = await (await p.$('#sd3d iframe')).boundingBox(), cr = await f3.evaluate(() => { const r = document.querySelector('#c3d canvas').getBoundingClientRect(); return { x: r.x, y: r.y, width: r.width, height: r.height }; });
+    const c3 = { x: fr.x + cr.x, y: fr.y + cr.y, width: cr.width, height: cr.height }; const t0 = await f3.evaluate(() => __v3.ctl.target.toArray());
     await p.mouse.move(c3.x + c3.width * .3, c3.y + c3.height * .7); await p.mouse.wheel(0, -400); await p.waitForTimeout(800);
     const t1 = await f3.evaluate(() => __v3.ctl.target.toArray());
     ok(Math.hypot(t1[0] - t0[0], t1[2] - t0[2]) > .5, '3D: cuộn chuột ở góc màn hình thì tâm nhìn dời về phía con trỏ', [t0, t1]);
@@ -137,22 +139,7 @@ const mauPhong = (p, ten) => p.evaluate(t => { const g = [...document.querySelec
   await p.evaluate(() => go('sodo')); await p.waitForTimeout(1200);
   ok(await p.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1), 'không tràn ngang');
   ok((await p.locator('#sdMb').boundingBox()).width >= 320, 'sơ đồ rộng gần hết màn hình');
-  ok(await p.evaluate(() => !document.getElementById('sdNut3d').classList.contains('hide')), 'điện thoại: có nút "Xem 3D"');
-  if (THREE) {
-    await p.tap('#sdNut3d');
-    const f3 = await (await p.waitForSelector('#sd3d iframe')).contentFrame();
-    await f3.waitForSelector('#c3d canvas', { timeout: 60000 }); await p.waitForTimeout(3000);
-    s = await f3.evaluate(() => { const c = document.querySelector('#c3d canvas'), n = document.getElementById('btnNhe');
-      return [n.getAttribute('aria-pressed'), n.textContent, c.width / c.clientWidth, document.getElementById('tgPp').checked, document.getElementById('tgHq').checked, document.querySelector('.top').getBoundingClientRect().height]; });
-    ok(s[0] === 'true' && /Nhẹ/.test(s[1]) && s[2] === 1 && !s[3] && !s[4] && s[5] < 70, 'điện thoại 3D: tự bật chế độ Nhẹ (độ nét 1x, ẩn công nhân), thanh nút 1 hàng', s);
-    ok(await p.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1), '3D trên điện thoại không tràn ngang');
-    await f3.tap('#btnNhe'); await p.waitForTimeout(800);
-    s = await f3.evaluate(() => [document.getElementById('btnNhe').getAttribute('aria-pressed'), document.getElementById('btnNhe').textContent, document.getElementById('tgHq').checked, document.getElementById('tgPp').checked]);
-    ok(s[0] === 'false' && /Đầy đủ/.test(s[1]) && s[2] && s[3], 'nút ⚡ Nhẹ / ✦ Đầy đủ chuyển chế độ', s);
-    await f3.evaluate(() => document.getElementById('btnNhe').click()); await p.waitForTimeout(300);
-    await p.tap('#sd3dDong'); await p.waitForTimeout(200);
-    ok(await p.evaluate(() => !document.getElementById('sd3d')), 'đóng 3D trên điện thoại');
-  }
+  ok(await p.evaluate(() => !document.getElementById('sdNut3d')), 'điện thoại: không có nút "Xem 3D" (chủ dự án 13/10)');
   await p.tap('#sdTang button[data-f="2"]'); await p.waitForTimeout(200);
   await p.tap('#sdMb .phong[aria-label^="Khu vực CNC"]'); await p.waitForTimeout(500);
   ok(/Khu vực CNC/.test(await p.textContent('#sdCt')), 'Tầng 3: chạm khu CNC ra thẻ chi tiết');

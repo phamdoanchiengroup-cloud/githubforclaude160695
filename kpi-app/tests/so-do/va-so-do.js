@@ -161,7 +161,7 @@ function vSoDo() {
     '<div class="sd-luoi"><div class="card">' +
     '<div class="sd-cong"><div class="sd-seg" id="sdTang" role="group" aria-label="Chọn tầng">' + SD_TANG.map(function (t, i) { return '<button type="button" data-f="' + i + '" aria-pressed="' + (i === SD.tang) + '">' + t + '</button>'; }).join('') + '</div>' +
     '<div class="sd-seg" id="sdMau" role="group" aria-label="Tô màu theo"><button type="button" data-c="kpi" aria-pressed="' + (SS.cheDo === 'kpi') + '">KPI tháng này</button><button type="button" data-c="siso" aria-pressed="' + (SS.cheDo === 'siso') + '">Sĩ số hôm nay</button></div>' +
-    '<button class="btn" type="button" id="sdNut3d">Xem 3D</button></div>' +
+    (window.matchMedia && window.matchMedia('(max-width: 899px)').matches ? '' : '<button class="btn" type="button" id="sdNut3d">Xem 3D</button>') + '</div>' +   // chủ dự án 13/10: điện thoại không xem 3D
     '<div class="sd-khung"><svg id="sdMb" viewBox="' + SD.vb.join(' ') + '" role="img" aria-label="Mặt bằng tầng"></svg>' +
     '<div class="sd-zoom" role="group" aria-label="Phóng to thu nhỏ"><button type="button" data-z="in" aria-label="Phóng to" title="Phóng to">+</button><button type="button" data-z="out" aria-label="Thu nhỏ" title="Thu nhỏ">−</button><button type="button" data-z="fit" aria-label="Xem cả tầng" title="Xem cả tầng">⌂</button></div></div>' +
     '<div class="sd-huong">↓ Phía dưới sơ đồ là mặt tiền, cổng chính · ' + (sdLaMayTinh() ? 'cuộn chuột để phóng to đúng chỗ, kéo để dời, nhấp đúp để phóng nhanh' : 'nút + − để phóng to, chạm đúp vào chỗ cần xem, phóng to rồi kéo một ngón để dời') + '</div><div class="sd-cgiai" id="sdCgiai"></div></div>' +
@@ -176,7 +176,7 @@ function vSoDo() {
     [].forEach.call(this.querySelectorAll('button'), function (x) { x.setAttribute('aria-pressed', String(x === b)); });
     SS.datCheDo(b.dataset.c);
   };
-  document.getElementById('sdNut3d').onclick = sdMo3D;
+  var n3 = document.getElementById('sdNut3d'); if (n3) n3.onclick = sdMo3D;
   sdGanZoom();
   sdDatTang(SD.tang); sdVeXs(); sdVeBg(); sdGhiSiSo();
   if (SD.sisoNgay !== today()) sdTaiSiSo();
