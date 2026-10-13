@@ -6229,7 +6229,7 @@ function layManhGiaoDien(token, ten) {
    Đọc thẳng sheet "Web đá bóng 2026" của web giải (cùng chủ sở hữu) – chỉ lấy tên giải, tên đội, lịch + tỉ số.
    KHÔNG đọc các ô khác của sheet CauHinh (có mật khẩu BTC). Nhớ tạm 10 phút để không mở sheet mỗi lần tải trang. */
 var BD_SHEET_ID = '1k8zaZhkRM88Oye0zcKvD6q7PHv9KetTvNmY9xCYR6bE';
-var BD_LINK = '';   // đường link web giải (…/exec); để trống thì không hiện nút "Xem lịch & video"
+var BD_LINK = 'https://script.google.com/macros/s/AKfycbyU0HwrkHWv_cBug5SJYhN_Vo2SZd9R5j_RXlGBeAozoTIZmapdraymm7VWCUJz73PCJA/exec';   // đường link web giải (…/exec); để trống thì không hiện nút "Xem lịch & video"
 
 function layBongDa(token) {
   try {
