@@ -11,6 +11,9 @@ function layManhGiaoDien(token, ten) {
   if (!Object.prototype.hasOwnProperty.call(MANH_GD, ten)) return sach_({ ok: false, msg: 'Không có phần giao diện này.' });
   var vt = MANH_GD[ten];
   if (vt && vt.indexOf(me.vaiTro) < 0 && vt.indexOf(me.vaiTroGoc) < 0) return sach_({ ok: false, msg: 'Tài khoản không xem được phần này.' });
-  try { return sach_({ ok: true, ten: ten, noiDung: HtmlService.createHtmlOutputFromFile(ten).getContent() }); }
-  catch (e) { return sach_({ ok: false, msg: 'Chưa có file ' + ten + '.html trong Apps Script – dán thêm file này theo hướng dẫn.' }); }
+  // Đọc nội dung thô (không kiểm tra cú pháp HTML – bản 3D rất dài, kiểm tra có thể báo lỗi dù file có thật); không được mới thử cách cũ
+  var loi = '';
+  try { return sach_({ ok: true, ten: ten, noiDung: HtmlService.createTemplateFromFile(ten).getRawContent() }); } catch (e) { loi = String(e && e.message || e); }
+  try { return sach_({ ok: true, ten: ten, noiDung: HtmlService.createHtmlOutputFromFile(ten).getContent() }); } catch (e2) { loi = loi || String(e2 && e2.message || e2); }
+  return sach_({ ok: false, msg: 'Không đọc được file ' + ten + ' trong Apps Script. Kiểm tra: tên file đúng "' + ten + '" (Apps Script tự thêm .html), đã Triển khai phiên bản mới sau khi thêm file. Lỗi Google báo: ' + loi });
 }

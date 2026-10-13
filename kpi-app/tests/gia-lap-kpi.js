@@ -136,7 +136,7 @@ function tao(fileCode, duLieu, gioHienTai) {
         Sheet.prototype.setName = Sheet.prototype.setName || function (n) { this.ten = n; return this; };
         ctx.__bangMoi.push(o); return o;
       } },
-    HtmlService: { createTemplateFromFile: () => ({ evaluate: () => ({ setTitle() { return this; }, addMetaTag() { return this; }, setXFrameOptionsMode() { return this; } }) }), XFrameOptionsMode: {},
+    HtmlService: { createTemplateFromFile: f => ({ getRawContent: () => fs.readFileSync(path.join(__dirname, '..', f + '.html'), 'utf8'), evaluate: () => ({ setTitle() { return this; }, addMetaTag() { return this; }, setXFrameOptionsMode() { return this; } }) }), XFrameOptionsMode: {},
       // HTML -> "PDF" giả: giữ nguyên HTML trong blob để bài kiểm tra đọc lại / dựng PDF thật bằng Chromium
       createHtmlOutputFromFile: f => ({ getContent: () => fs.readFileSync(path.join(__dirname, '..', f + '.html'), 'utf8') }),
       createHtmlOutput: html => ({ getContent: () => html, getAs: type => { const b = blob(Buffer.from(html, 'utf8')); b.__html = html; b.__type = type; b.__ten = ''; b.setName = n => { b.__ten = n; return b; }; b.getName = () => b.__ten; return b; } }) },
