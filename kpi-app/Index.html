@@ -8058,6 +8058,11 @@ function vSoDo(){
 .cm-mon-nhom>b{font-size:13.5px}
 .cm-mon-o{display:flex;align-items:center;justify-content:space-between;gap:10px;font-size:12.5px;color:var(--muted,#9aa)}
 .cm-mon-o .cm-so-in{width:72px;font-size:16px;padding:6px 8px}
+.cm-mon-noi{display:flex;flex-direction:column;gap:6px}
+.cm-mon-noi+.cm-mon-noi{border-top:1px dashed var(--line,#333);padding-top:6px}
+.cm-noi-ten{font-style:normal;font-size:12px;font-weight:700;color:var(--muted,#9aa)}
+.cm-nhom-mon:not(.co-kia) .cm-noi-ten,.cm-nhom-mon:not(.co-kia) .cm-mon-kia{display:none}
+.cm-mon-noi-dong{padding-left:12px}
 .cm-mon-doi{margin:10px 0;padding:10px 12px;border:1px dashed var(--line);border-radius:10px;display:grid;gap:4px}
 .cm-md{display:grid;gap:6px}.cm-md-dong{display:flex;gap:6px;align-items:center;flex-wrap:wrap}.cm-md-dong input{flex:1 1 160px;min-width:0}
 .cm-cuon{overflow-x:auto;max-width:100%;-webkit-overflow-scrolling:touch}   /* bảng tổng hợp cuộn ngang trên điện thoại, không đẩy cả trang */
@@ -8139,9 +8144,12 @@ function comBoLuu(el){
 function comNhomMon(ng,dis){
   var md=comMd(ng); if(!md.length)return '';
   // 13/10: mỗi ô có nhãn riêng ("Không ăn" / "Đổi → món thay") – điền số rồi vẫn biết ô nào là ô nào
-  var bo=(COM.d.cuaToiBo||{})[ng]||{}, o=function(x,i,nhan,v){return '<label class="cm-mon-o"><span>'+nhan+'</span><input type="number" inputmode="numeric" min="0" step="1" class="cm-so-in" data-mon="'+esc(x.m)+'" data-k="'+i+'" placeholder="0" value="'+(v||'')+'" aria-label="'+esc(x.m)+' – '+nhan.replace(/<[^>]+>/g,'')+'"'+dis+'></label>'};
-  return '<span class="cm-nhom-mon"><span class="cm-ghi">Trong số suất trên, số suất <b>không ăn</b> / <b>đổi</b> món (không bắt buộc):</span>'+md.map(function(x){var v=bo[x.m]||[];
-    return '<span class="cm-mon-nhom" role="group" aria-label="'+esc(x.m)+'"><b>'+esc(x.m)+'</b>'+o(x,0,'Không ăn',v[0])+(x.t?o(x,1,'Đổi → '+esc(x.t),v[1]):'')+'</span>'}).join('')+'</span>';
+  // 13/10: nhóm có suất ăn ở nơi kia thì nhập bớt / đổi riêng từng nơi (data-k 0,1 = nơi của nhóm; 2,3 = nơi kia) để bếp mỗi nơi biết nấu bao nhiêu
+  var bo=(COM.d.cuaToiBo||{})[ng]||{}, kia=((COM.d.cuaToiKhac||{})[ng]||0)>0, nha=COM.d.noiNha||'', kiaTen=COM.d.noiKia||'';
+  var o=function(x,i,nhan,v,noi){return '<label class="cm-mon-o"><span>'+nhan+'</span><input type="number" inputmode="numeric" min="0" step="1" class="cm-so-in" data-mon="'+esc(x.m)+'" data-k="'+i+'" placeholder="0" value="'+(v||'')+'" aria-label="'+esc(x.m)+' – '+nhan.replace(/<[^>]+>/g,'')+(noi?' – ở '+esc(noi):'')+'"'+dis+'></label>'};
+  var cot=function(x,v,i0,noi,lop){return '<span class="cm-mon-noi'+lop+'"><i class="cm-noi-ten">Ở '+esc(noi)+'</i>'+o(x,i0,'Không ăn',v[i0],noi)+(x.t?o(x,i0+1,'Đổi → '+esc(x.t),v[i0+1],noi):'')+'</span>'};
+  return '<span class="cm-nhom-mon'+(kia?' co-kia':'')+'"><span class="cm-ghi">Trong số suất trên, số suất <b>không ăn</b> / <b>đổi</b> món (không bắt buộc):</span>'+md.map(function(x){var v=bo[x.m]||[];
+    return '<span class="cm-mon-nhom" role="group" aria-label="'+esc(x.m)+'"><b>'+esc(x.m)+'</b>'+cot(x,v,0,nha,'')+cot(x,v,2,kiaTen,' cm-mon-kia')+'</span>'}).join('')+'</span>';
 }
 /* Tài khoản bếp không đăng ký suất: thay nút bằng số suất đã đăng ký */
 function comBep(){return COM.d&&COM.d.quyen&&COM.d.quyen.dangKy===false&&!COM.d.quyen.nhom}
@@ -8155,7 +8163,7 @@ function comNut(ng,mo,chiTiet){
   if(comBep())return comSoSuat(ng);
   if(comNhom()){   // 2 ô: số suất ăn ở nơi làm việc của nhóm + số suất ăn ở nơi kia (người có việc sang Hà Nam / Hà Nội) – chủ dự án 12/10
     var so=COM.d.cuaToi[ng],k=(COM.d.cuaToiKhac||{})[ng]||0,dis=mo?'':' disabled',mx=COM.d.quyen.maxSuat||300;
-    var o=function(noi,ten,v,ph){return '<label class="cm-so-o"><span>Ăn ở '+esc(ten)+'</span><input type="number" inputmode="numeric" min="0" max="'+mx+'" step="1" class="cm-so-in" data-noi="'+noi+'" data-ng="'+ng+'" aria-label="Số suất ăn ở '+esc(ten)+' '+esc(comNgayTen(ng))+'" placeholder="'+ph+'" value="'+v+'"'+dis+' onkeydown="if(event.key===\'Enter\')comBaoNhom(\''+ng+'\',this)"></label>'};
+    var o=function(noi,ten,v,ph){return '<label class="cm-so-o"><span>Ăn ở '+esc(ten)+'</span><input type="number" inputmode="numeric" min="0" max="'+mx+'" step="1" class="cm-so-in" data-noi="'+noi+'" data-ng="'+ng+'" aria-label="Số suất ăn ở '+esc(ten)+' '+esc(comNgayTen(ng))+'" placeholder="'+ph+'" value="'+v+'"'+dis+(noi==='kia'?' oninput="comKiaDoi(this)"':'')+' onkeydown="if(event.key===\'Enter\')comBaoNhom(\''+ng+'\',this)"></label>'};
     return '<span class="cm-nhom">'+o('nha',COM.d.noiNha||'',so===undefined?'':so-k,'Số suất')+o('kia',COM.d.noiKia||'',so===undefined||!k?'':k,'0')+
       '<button type="button" class="cm-nut an"'+dis+' onclick="comBaoNhom(\''+ng+'\',this)">'+(so===undefined?'Báo suất':'Cập nhật')+'</button>'+(chiTiet?comNhomMon(ng,dis):'')+'</span>';}
   var v=COM.d.cuaToi[ng];
@@ -8208,6 +8216,7 @@ function comDangKy(ng,an){
     comTai();
   });
 }
+function comKiaDoi(el){var w=el.closest('.cm-nhom'),m=w&&w.querySelector('.cm-nhom-mon');if(m)m.classList.toggle('co-kia',Number(el.value)>0)}
 function comBaoNhom(ng,el){
   var w=el&&el.closest?el.closest('.cm-nhom'):null, a=w&&w.querySelector('[data-noi=nha]'), b=w&&w.querySelector('[data-noi=kia]');
   var va=String(a&&a.value||'').trim(), vb=String(b&&b.value||'').trim(), n1=Number(va), n2=vb===''?0:Number(vb), mx=COM.d.quyen.maxSuat||300;
@@ -8217,8 +8226,10 @@ function comBaoNhom(ng,el){
   var mi=w?w.querySelectorAll('[data-mon]'):[], bo=null;
   if(mi.length){ bo={}; for(var i=0;i<mi.length;i++){ var e=mi[i], v=String(e.value||'').trim(), n=v===''?0:Number(v);
       if(!(n>=0)||n!==Math.floor(n)){toast('Số suất không ăn / đổi món phải là số nguyên');e.focus();return}
-      var m=e.getAttribute('data-mon'), a=bo[m]||(bo[m]=[0,0]); a[+e.getAttribute('data-k')]=n; }
-    for(var k in bo)if(bo[k][0]+bo[k][1]>n1+n2){toast(k+': số suất không ăn + đổi lớn hơn tổng số suất của nhóm');return} }
+      var m=e.getAttribute('data-mon'), kk=+e.getAttribute('data-k'), a=bo[m]||(bo[m]=[0,0,0,0]); a[kk]=(kk>1&&!n2)?0:n; }   // không còn suất ở nơi kia: bỏ số bớt / đổi ở nơi kia
+    for(var k in bo){
+      if(bo[k][0]+bo[k][1]>n1){toast(k+': ở '+(COM.d.noiNha||'nơi làm việc')+', số suất không ăn + đổi lớn hơn '+n1+' suất ăn ở đó');return}
+      if(bo[k][2]+bo[k][3]>n2){toast(k+': ở '+(COM.d.noiKia||'nơi kia')+', số suất không ăn + đổi lớn hơn '+n2+' suất ăn ở đó');return} } }
   call('baoSuatNhom',bo?[ng,n1+n2,n2,bo]:[ng,n1+n2,n2],function(r){
     if(!r||!r.ok){toast((r&&r.msg)||'Không báo được');comTai();return}
     toast(r.msg,true); COM.d.cuaToi[ng]=r.so; (COM.d.cuaToiBo=COM.d.cuaToiBo||{})[ng]=r.bo||{}; (COM.d.cuaToiKhac=COM.d.cuaToiKhac||{})[ng]=r.khac||0; veComBar(); if(tabHienTai==='com')veCom(); comTai();
@@ -8307,16 +8318,28 @@ function comXemCu(ng){
   call('xemTongHopCom',[ng],function(r){ if(!r||!r.ok){ COM.cuTh=null; var k2=$('cmCuKq'); if(k2)k2.innerHTML='<p class="cm-ghi">'+esc((r&&r.msg)||'Không tải được.')+'</p>'; return } ve(r.tongHop); });
 }
 /* Bếp: mỗi món có thể bớt / đổi cần nấu bao nhiêu suất */
+/* Số nấu từng món bớt / đổi; có suất ăn ở cả 2 nơi thì tách Hà Nam / Hà Nội (13/10) */
+function comHaiNoi(th){return th.haNam>0&&th.haNoi>0}
 function comMonDoiHtml(th){
   var md=th.monDoi||[]; if(!md.length)return '';
-  return '<div class="cm-mon-doi">'+md.map(function(m){return '<div><b>'+esc(m.m)+'</b>: nấu <b>'+m.nau+'</b> suất'+(m.b?' · <span class="cm-ghi">không ăn '+m.b+'</span>':'')+(m.t?' · '+esc(m.t)+': <b>'+m.d+'</b> suất':'')+'</div>'}).join('')+'</div>';
+  var mot=function(m,c){return 'nấu <b>'+c.nau+'</b> suất'+(c.b?' · <span class="cm-ghi">không ăn '+c.b+'</span>':'')+(m.t?' · '+esc(m.t)+': <b>'+c.d+'</b> suất':'')};
+  return '<div class="cm-mon-doi">'+md.map(function(m){
+    if(comHaiNoi(th)&&m.noi)return '<div><b>'+esc(m.m)+'</b><div class="cm-mon-noi-dong">Hà Nam: '+mot(m,m.noi.haNam)+'</div><div class="cm-mon-noi-dong">Hà Nội: '+mot(m,m.noi.haNoi)+'</div></div>';
+    return '<div><b>'+esc(m.m)+'</b>: '+mot(m,m)+'</div>'}).join('')+'</div>';
+}
+function comMonDoiChu(th){
+  var mot=function(m,c){return c.nau+' suất'+(m.t&&c.d?' · '+m.t+': '+c.d+' suất':'')+(c.b?' (không ăn '+c.b+')':'')};
+  return (th.monDoi||[]).map(function(m){return comHaiNoi(th)&&m.noi?m.m+': Hà Nam '+mot(m,m.noi.haNam)+' | Hà Nội '+mot(m,m.noi.haNoi):m.m+': '+mot(m,m)}).join('\n');
 }
 function comTongHop1(th,i){
   var d=COM.d;
   return (function(th,i){
     var t=d.thucDon.filter(function(x){return x.ngay===th.ngay})[0]||{han:th.ngay}, mo=comConHan(t), moKhoa=comMo(t);
     var coTen=th.xuong.some(function(x){return x.dsAn&&!x.nhom}), coMon=(th.monDoi||[]).some(function(m){return m.b||m.d});
-    var monX=function(x){return (th.monDoi||[]).filter(function(m){var c=x.mon&&x.mon[m.m];return c&&(c.b||c.d)}).map(function(m){var c=x.mon[m.m];return esc(m.m)+': '+(c.b?c.b+' không ăn':'')+(c.b&&c.d?', ':'')+(c.d?c.d+' đổi':'')}).join('<br>')||'<span class="cm-ghi">–</span>'};
+    var bd=function(b,d){return (b?b+' không ăn':'')+(b&&d?', ':'')+(d?d+' đổi':'')};
+    var monX=function(x){var hn=/^HNOI_/.test(x.mx),nha=hn?'Hà Nội':'Hà Nam',kia=hn?'Hà Nam':'Hà Nội';
+      return (th.monDoi||[]).filter(function(m){var c=x.mon&&x.mon[m.m];return c&&(c.b||c.d||c.bk||c.dk)}).map(function(m){var c=x.mon[m.m];
+        return esc(m.m)+': '+(c.bk||c.dk?(c.b||c.d?'ở '+nha+' '+bd(c.b,c.d)+' · ':'')+'ở '+kia+' '+bd(c.bk,c.dk):bd(c.b,c.d))}).join('<br>')||'<span class="cm-ghi">–</span>'};
     var ten=function(ds,nhan){return ds&&ds.length?'<details><summary>'+nhan+' ('+ds.length+')</summary><p>'+esc(ds.join(', '))+'</p></details>':''};
     return '<div class="card"><h3>Tổng hợp số suất – '+esc(th.ngay===d.homNay?'hôm nay, '+comNgayTen(th.ngay):comNgayTen(th.ngay))+' <span>'+(mo?'tạm tính – hạn đăng ký '+esc(comHanChu(t)):moKhoa?'đã qua hạn đăng ký '+esc(comHanChu(t))+' – còn thay đổi được tới '+esc(comHanChu(t,'khoa')):'🔒 đã chốt lúc '+esc(comHanChu(t,'khoa')))+'</span></h3>'+
       '<div class="cm-so"><div class="an"><b>'+th.an+'</b><span>suất ăn</span></div><div class="khong"><b>'+th.khong+'</b><span>không ăn</span></div><div class="chua"><b>'+th.chua+'</b><span>chưa đăng ký</span></div>'+(th.nhomChua?'<div class="chua"><b>'+th.nhomChua+'</b><span>nhóm chưa báo suất</span></div>':'')+'</div>'+
@@ -8353,7 +8376,7 @@ function comKhongHtml(th){
 function comChep(i){
   var th=i==='cu'?COM.cuTh:COM.d.tongHop[i]; if(!th)return;
   var txt='Cơm trưa '+comNgayTen(th.ngay)+': '+th.an+' suất'+(th.haNam!==undefined?' (Hà Nam '+th.haNam+', Hà Nội '+th.haNoi+')':'')+'\n'+th.xuong.filter(function(x){return x.an}).map(function(x){return '- '+x.ten+': '+x.an}).join('\n')+
-    ((th.monDoi||[]).length?'\n'+th.monDoi.map(function(m){return m.m+': '+m.nau+' suất'+(m.t&&m.d?' · '+m.t+': '+m.d+' suất':'')+(m.b?' (không ăn '+m.b+')':'')}).join('\n'):'')+
+    ((th.monDoi||[]).length?'\n'+comMonDoiChu(th):'')+
     (th.chua?'\n(Chưa đăng ký: '+th.chua+' người)':'')+
     (th.nhomChua?'\n(Nhóm chưa báo suất: '+th.xuong.filter(function(x){return x.baoChua}).map(function(x){return x.ten}).join(', ')+')':'');
   var xong=function(){toast('Đã chép – dán vào Zalo / tin nhắn gửi bếp',true)};

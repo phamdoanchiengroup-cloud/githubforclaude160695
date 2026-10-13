@@ -48,14 +48,16 @@ function comBoNguoi_(bo, ds) {
   ds.forEach(function(x) { var v = bo[x.m]; if (v === 'b' || v === 'd') o[x.m] = (v === 'd' && !x.t) ? 'b' : v; });
   return o;
 }
-/* Nhóm: {món: [bớt, đổi]} – số nguyên >= 0, bớt + đổi <= tổng suất; null nếu sai */
-function comBoNhom_(bo, ds, so) {
-  var o = {}, sai = false; bo = bo && typeof bo === 'object' ? bo : {};
+/* Nhóm: {món: [bớt, đổi, bớt ở nơi kia, đổi ở nơi kia]} – số nguyên >= 0; 2 số đầu là suất ăn ở nơi làm việc của nhóm (<= so − khac),
+   2 số sau là suất ăn ở nơi kia (<= khac; chủ dự án 13/10: bếp phải biết suất đổi món ở Hà Nội hay Hà Nam). Không có nơi kia thì chỉ ghi [bớt, đổi]. null nếu sai */
+function comBoNhom_(bo, ds, so, khac) {
+  var o = {}, sai = false, k = Math.max(0, Math.min(so, Number(khac) || 0)), nha = so - k; bo = bo && typeof bo === 'object' ? bo : {};
+  var so_ = function(v) { var n = Number(v) || 0; if (n < 0 || n !== Math.floor(n)) sai = true; return n; };
   ds.forEach(function(x) {
     var v = bo[x.m]; if (!v) return;
-    var b = Number(v[0]) || 0, d = x.t ? (Number(v[1]) || 0) : 0;
-    if (b < 0 || d < 0 || b !== Math.floor(b) || d !== Math.floor(d) || b + d > so) { sai = true; return; }
-    if (b || d) o[x.m] = [b, d];
+    var b = so_(v[0]), d = x.t ? so_(v[1]) : 0, bk = k ? so_(v[2]) : 0, dk = k && x.t ? so_(v[3]) : 0;   // không có suất ở nơi kia: bỏ qua 2 số sau
+    if (b + d > nha || bk + dk > k) { sai = true; return; }
+    if (bk || dk) o[x.m] = [b, d, bk, dk]; else if (b || d) o[x.m] = [b, d];
   });
   return sai ? null : o;
 }
@@ -140,12 +142,12 @@ function comTongHop_(ngay, me) {
   var congMon = function(x, r, ten) {
     if (!mdDs.length || !r) return;
     var bo = comJson_(r.BoMon, {}), laNhom = String(r.SoSuat === undefined ? '' : r.SoSuat).trim() !== '';
-    var o = laNhom ? (comBoNhom_(bo, mdDs, Math.max(0, Number(r.SoSuat) || 0)) || {}) : comBoNguoi_(bo, mdDs);
+    var o = laNhom ? (comBoNhom_(bo, mdDs, Math.max(0, Number(r.SoSuat) || 0), comKhac_(r)) || {}) : comBoNguoi_(bo, mdDs);
     x.mon = x.mon || {}; x.dsMon = x.dsMon || [];
     mdDs.forEach(function(md) {
       var v = o[md.m]; if (!v) return;
-      var c = x.mon[md.m] || (x.mon[md.m] = { b: 0, d: 0 });
-      if (laNhom) { c.b += v[0]; c.d += v[1]; } else { c[v]++; x.dsMon.push({ ten: ten, m: md.m, k: v }); }
+      var c = x.mon[md.m] || (x.mon[md.m] = { b: 0, d: 0 });   // b, d: suất ở nơi của xưởng / nhóm; bk, dk: suất nhóm ăn ở nơi kia
+      if (laNhom) { c.b += v[0]; c.d += v[1]; if (v[2] || v[3]) { c.bk = (c.bk || 0) + (v[2] || 0); c.dk = (c.dk || 0) + (v[3] || 0); } } else { c[v]++; x.dsMon.push({ ten: ten, m: md.m, k: v }); }
     });
   };
   var ghiMuon = function(r, ten, ma, mx, tenXg) {
@@ -202,9 +204,17 @@ function comTongHop_(ngay, me) {
     if (k) { x.noiKhacTen = comNoiTen_(!hn); sang.push({ ten: x.ten, so: k, tu: comNoiTen_(hn), den: comNoiTen_(!hn) }); }
   });
   // bếp: mỗi món bớt / đổi nấu bao nhiêu suất (= tổng suất ăn − bớt − đổi), món thay bao nhiêu suất
+  // 13/10: tách theo nơi ăn (noi.haNam / noi.haNoi: b, d, nau) – cùng thực đơn nhưng mỗi nơi nấu riêng
   var tongAn = tong('an'), monDoi = mdDs.map(function(md) {
-    var b = 0, d = 0; ds.forEach(function(x) { var c = x.mon && x.mon[md.m]; if (c) { b += c.b; d += c.d; } });
-    return { m: md.m, t: md.t, b: b, d: d, nau: Math.max(0, tongAn - b - d) };
+    var b = 0, d = 0, n = { haNam: { b: 0, d: 0 }, haNoi: { b: 0, d: 0 } };
+    ds.forEach(function(x) {
+      var c = x.mon && x.mon[md.m]; if (!c) return;
+      var hn = comHaNoi_(x.mx), nha = n[hn ? 'haNoi' : 'haNam'], kia = n[hn ? 'haNam' : 'haNoi'];
+      nha.b += c.b; nha.d += c.d; kia.b += c.bk || 0; kia.d += c.dk || 0;
+      b += c.b + (c.bk || 0); d += c.d + (c.dk || 0);
+    });
+    n.haNam.nau = Math.max(0, noi.haNam - n.haNam.b - n.haNam.d); n.haNoi.nau = Math.max(0, noi.haNoi - n.haNoi.b - n.haNoi.d);
+    return { m: md.m, t: md.t, b: b, d: d, nau: Math.max(0, tongAn - b - d), noi: n };
   });
   return { ngay: ngay, monDoi: monDoi, xuong: ds, an: tongAn, khong: tong('khong'), chua: tong('chua'), nhomChua: nhomChua, haNam: noi.haNam, haNoi: noi.haNoi, sangNoiKhac: sang, dsKhongCT: ctKhong,
     muon: muon.length, muonAn: muonAn, dsMuon: muon.filter(function(m) { return m.nhom || choXem(m); }).sort(function(a, b) { return a.luc < b.luc ? -1 : 1; }) };
@@ -330,8 +340,8 @@ function baoSuatNhom(token, ngay, so, khac, bo) {   // bo: {món: [số suất b
   if (!tdN) return sach_({ ok: false, msg: 'Bếp chưa báo thực đơn ngày này.' });
   if (ngay < homNayVN_()) return sach_({ ok: false, msg: 'Ngày ăn đã qua.' });
   if (!comConMo_(ngay)) return sach_({ ok: false, khoa: true, msg: comKhoaMsg_(ngay) });
-  var boN = bo === undefined || bo === null ? undefined : comBoNhom_(bo, comMonDoi_(tdN), n);
-  if (boN === null) return sach_({ ok: false, msg: 'Số suất bớt / đổi món không hợp lệ (số nguyên, tổng không quá số suất của nhóm).' });
+  var boN = bo === undefined || bo === null ? undefined : comBoNhom_(bo, comMonDoi_(tdN), n, k);
+  if (boN === null) return sach_({ ok: false, msg: 'Số suất bớt / đổi món không hợp lệ (số nguyên; ở mỗi nơi, không ăn + đổi không quá số suất ăn ở nơi đó).' });
   comGhi_({ tk: String(me.tk).toLowerCase(), ten: me.ten, ma: '', mx: String(me.xuong || '') || COM_VP }, ngay, n > 0 ? 1 : 0, '', n, k, boN);
   var ng = ngay.slice(8) + '/' + ngay.slice(5, 7), hn = comHaNoi_(me.xuong);
   return sach_({ ok: true, ngay: ngay, so: n, khac: k, bo: n ? (boN === undefined ? comBoCua_(me.tk, ngay) : boN) : {}, msg: n ? 'Đã báo ' + n + ' suất cơm trưa ' + ng + (k ? ' (' + (n - k) + ' ở ' + comNoiTen_(hn) + ', ' + k + ' ở ' + comNoiTen_(!hn) + ')' : '') + '.' : 'Đã báo nhóm không ăn trưa ' + ng + ' (0 suất).' });

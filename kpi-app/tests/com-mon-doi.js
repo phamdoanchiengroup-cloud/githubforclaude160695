@@ -76,6 +76,21 @@ ok(thBep.xuong.every(x => !x.dsMon) && thBep.monDoi.find(m => m.m === 'Cá kho')
 const ct = c.comTinhThang_('2026-10').chiTiet.filter(r => r[0] === NG && /\(/.test(r[4]));
 ok(ct.some(r => /không ăn Cá kho/.test(r[4])) && ct.some(r => /đổi Cá kho → Trứng rán/.test(r[4])), 'file lưu tháng ghi rõ "Ăn (không ăn Cá kho)" / "Ăn (đổi Cá kho → Trứng rán)"', ct.slice(0, 3));
 
+console.log('5b. Nhóm có suất ăn ở nơi kia: bớt / đổi tách theo nơi (13/10)');
+r = goi('baoSuatNhom', nhom, NG, 10, 3, { 'Cá kho': [2, 3, 2, 2] });
+ok(!r.ok, '3 suất ở Hà Nam mà bớt + đổi ở Hà Nam = 4: từ chối', r);
+r = goi('baoSuatNhom', nhom, NG, 10, 3, { 'Cá kho': [6, 2, 0, 0] });
+ok(!r.ok, '7 suất ở Hà Nội mà bớt + đổi ở Hà Nội = 8: từ chối', r);
+r = goi('baoSuatNhom', nhom, NG, 10, 3, { 'Cá kho': [2, 3, 1, 1], 'Canh cua': [1, 0, 0, 0] });
+ok(r.ok && r.bo['Cá kho'].join() === '2,3,1,1' && r.bo['Canh cua'].join() === '1,0', 'nhóm 7 suất Hà Nội + 3 Hà Nam: cá kho Hà Nội 2 không ăn 3 đổi, Hà Nam 1 không ăn 1 đổi', r.bo);
+const th2 = c.comTongHop_(NG, { vaiTro: 'ADMIN' }), ca2 = th2.monDoi.find(m => m.m === 'Cá kho');
+ok(ca2.noi.haNoi.b === 2 && ca2.noi.haNoi.d === 3 && ca2.noi.haNoi.nau === th2.haNoi - 5, 'bếp Hà Nội: cá kho 2 không ăn, 3 đổi, nấu = suất Hà Nội − 5', [ca2.noi.haNoi, th2.haNoi]);
+ok(ca2.noi.haNam.b === ca.b - 2 + 1 && ca2.noi.haNam.d === ca.d - 3 + 1 && ca2.noi.haNam.nau === th2.haNam - ca2.noi.haNam.b - ca2.noi.haNam.d, 'bếp Hà Nam: cộng thêm 1 không ăn + 1 đổi của nhóm ăn ở Hà Nam', [ca2.noi.haNam, th2.haNam]);
+ok(ca2.b === ca2.noi.haNam.b + ca2.noi.haNoi.b && ca2.d === ca2.noi.haNam.d + ca2.noi.haNoi.d && ca2.nau === ca2.noi.haNam.nau + ca2.noi.haNoi.nau, 'tổng = Hà Nam + Hà Nội', ca2);
+r = goi('baoSuatNhom', nhom, NG, 10, 0, { 'Cá kho': [2, 3, 1, 1] });
+ok(r.ok && r.bo['Cá kho'].join() === '2,3' , 'báo lại không còn suất ở nơi kia: bỏ phần bớt / đổi ở nơi kia', r.bo);
+r = goi('baoSuatNhom', nhom, NG, 10, 0, { 'Cá kho': [2, 3], 'Canh cua': [1, 5] });   // trả lại như mục 4 cho các bước sau
+
 console.log('6. Khóa sau 22:00');
 c.__datGio && c.__datGio('2026-10-12T22:05:00+07:00');
 if (c.__datGio) { r = goi('dangKyCom', cnX[0], NG, true, { 'Cá kho': 'd' }); ok(!r.ok && r.khoa, 'quá 22:00: không đổi được', r); }
