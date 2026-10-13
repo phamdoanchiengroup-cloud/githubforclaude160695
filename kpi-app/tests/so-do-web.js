@@ -27,7 +27,7 @@ const mauPhong = (p, ten) => p.evaluate(t => { const g = [...document.querySelec
   ok(s.indexOf('sodo') === s.indexOf('dash') + 1, 'menu có "Sơ đồ nhà máy" ngay sau Tổng quan', s);
   await p.evaluate(() => go('sodo')); await p.waitForTimeout(1500);
   s = await p.evaluate(() => [document.querySelectorAll('#sdMb .phong').length, document.querySelectorAll('#sdXs button').length, D.phongban.length, document.querySelector('.ptitle').textContent]);
-  ok(s[0] === 20 && s[1] === s[2] && s[3] === 'Sơ đồ nhà máy', 'Tầng 1 vẽ 20 khu; danh sách đủ mọi xưởng', s);
+  ok(s[0] === 22 && s[1] === s[2] && s[3] === 'Sơ đồ nhà máy', 'Tầng 1 vẽ 22 khu (bản 3D 13/10); danh sách đủ mọi xưởng', s);
   // KPI xưởng tính lại độc lập từ dữ liệu (đã chốt, từ đầu tháng)
   const kt = await p.evaluate(() => {
     const dau = today().slice(0, 8) + '01', ra = {};

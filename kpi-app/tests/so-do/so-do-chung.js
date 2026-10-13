@@ -7,14 +7,13 @@ var SS = (function () {
     ['HT', 'Hoàn thiện'], ['DG', 'Đóng gói'], ['NGONTARO', 'Ngọn Taro'], ['NGONTIP', 'Ngọn Tip']];
   var TEN = {}; XUONG.forEach(function (x) { TEN[x[0]] = x[1]; });
   var GHEP = {
-    '0|Khu chuốt': 'PHOICB', '0|Nướng + rút khuôn': 'PHOICB', '0|ISO phôi CB': 'PHOICB', '0|Cuốn': 'PHOICB', '0|Cắt': 'PHOICB',
+    '0|Khu rà tròn phôi': 'PHOICB', '0|Nướng + rút khuôn': 'PHOICB', '0|ISO phôi CB': 'PHOICB', '0|Cuốn': 'PHOICB', '0|Cắt': 'PHOICB',
     '0|P. khuôn': 'PHOICB', '0|Khu đổ foam': 'PHOITHO', '0|Khu đúc keo': 'PHOITHO',
     '0|Khu vực phôi thô': 'PHOITHO',
     '1|Ráp nước': 'HT', '1|Đánh ráp, đánh bóng': 'HT', '1|Bọc da': 'HT', '1|Bôi keo': 'HT', '1|ISO': 'HT', '1|P. cắt mặt': 'HT',
-    '1|Khu vực hoàn thiện': 'HT', '1|Khu chờ khô bán thành phẩm': 'SON', '1|P. kiểm tra chuẩn bị': 'SON', '1|P. ráp tuốt lót': 'SON', '1|Buồng sấy': 'SON',
-    '1|Khu vực in UV': 'INUV', '1|Khu hoàn thiện (buồng sơn kín 1–5)': 'SON', '1|Khu sơn tĩnh điện (vách tấm panel)': 'SON', '1|P. quản lý BP Sơn': 'SON',
-    '2|Khu làm đầu': 'NGONTIP', '2|Khu vực ngọn': 'NGONTARO', '2|Khu vực CNC': 'CNC', '2|P. máy CNC 2': 'CNC', '2|P. máy tiện': 'CNC',
-    '2|P. máy CNC 1': 'CNC', '2|Phòng da': 'CNC',
+    '1|Khu vực hoàn thiện': 'HT', '1|Khu chờ khô bán thành phẩm': 'SON', '1|P. kiểm tra chuẩn bị': 'SON', '1|Khu ráp và tuốt lót': 'SON', '1|Phòng bán thành phẩm': 'SON', '1|Buồng sấy': 'SON',
+    '1|Khu vực in UV': 'INUV', '1|Khu sơn tĩnh điện (vách tấm panel)': 'SON', '1|Phòng trưởng bộ phận Sơn': 'SON',
+    '2|Khu vực tip': 'NGONTIP', '2|Khu vực taro': 'NGONTARO', '2|Khu vực CNC': 'CNC', '2|P. máy CNC 2': 'CNC', '2|P. máy CNC 1': 'CNC', '2|Phòng da': 'CNC',   // tên phòng theo bản 3D chủ dự án gửi 13/10
     '2|Đóng gói': 'DG', '2|Bộ phận đóng gói': 'DG'
   };
   // số liệu MẪU hôm nay: kpi = hiệu suất KPI %, coMat / dinhBien = sĩ số, cho = dòng chờ duyệt
