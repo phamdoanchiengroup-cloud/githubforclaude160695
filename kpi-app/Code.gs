@@ -6235,8 +6235,8 @@ function layBongDa(token) {
   try {
     var me = docPhien_(token);
     if (!me) return sach_({ ok: false, hetHan: true });
-    var c = CacheService.getScriptCache(), cu = c.get('bd_v1');
-    if (cu) return JSON.parse(cu);
+    var c = CacheService.getScriptCache(), cu = c.get('bd_v2');
+    if (cu) { cu = JSON.parse(cu); cu.link = BD_LINK; return cu; }   // link luôn lấy mới, không theo bản nhớ tạm
     var ss = SpreadsheetApp.openById(BD_SHEET_ID);
     var bang = function(ten) {
       var sh = ss.getSheetByName(ten); if (!sh) return [];
@@ -6256,7 +6256,7 @@ function layBongDa(token) {
         tsA: xong ? Number(r.BanThangA) : null, tsB: xong ? Number(r.BanThangB) : null, xong: xong };
     }).filter(Boolean).sort(function(x, y) { return x.gio < y.gio ? -1 : 1; });
     var out = sach_({ ok: true, ten: ten || 'Giải bóng đá', link: BD_LINK, tran: tran });
-    try { c.put('bd_v1', JSON.stringify(out), 600); } catch (e) {}
+    try { c.put('bd_v2', JSON.stringify(out), 600); } catch (e) {}
     return out;
   } catch (e) { return sach_({ ok: false, msg: 'Không đọc được dữ liệu giải bóng đá: ' + e.message }); }
 }

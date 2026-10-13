@@ -28,6 +28,10 @@ ok(r.tran[1].a === 'FC RETRO' && !r.tran[1].xong && (r.tran[1].tsA === null || r
 ok(!/BI-MAT/.test(JSON.stringify(r)), 'không lộ mật khẩu trong sheet CauHinh của web giải');
 c.__goi('layBongDa', c.taoPhien_(tk));
 ok(moSheet === 1, 'lần tải thứ 2 dùng bản nhớ tạm, không mở lại sheet', moSheet);
+c.__goi('layBongDa', c.taoPhien_(tk));   // bản nhớ tạm cũ không có link (dán Code.gs mới khi bản cũ còn trong bộ nhớ tạm)
+c.CacheService.getScriptCache().put('bd_v2', JSON.stringify(Object.assign({}, r, { link: '' })));
+r = c.__goi('layBongDa', c.taoPhien_(tk));
+ok(/^https:\/\/script\.google\.com\//.test(r.link), 'link web giải luôn có, kể cả khi đọc từ bản nhớ tạm cũ', r.link);
 ok(c.__goi('layBongDa', 'sai').ok === false, 'phiên sai: không trả dữ liệu');
 
 (async () => {
