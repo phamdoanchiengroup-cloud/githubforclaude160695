@@ -420,7 +420,7 @@ function lamLai(){ $('demoXong').classList.remove('hien'); $('l_mk').value=''; b
 /* ===== MÀN ĐĂNG NHẬP "KHẮC LASER" =====
    Các hàm bb* được login() gọi: bbCho (đang chờ máy chủ), bbTrung (đúng), bbTruot (sai), bbTha (mất kết nối). */
 var BB = { ban: false, dang: false, kh: '' };
-var LK = { x0: 682.4, y0: 452, goc: -98.33 * Math.PI / 180, cu: '', hen: 0, dai: 410, co: 62 };
+var LK = { x0: 682.4, y0: 452, goc: -98.33 * Math.PI / 180, cu: '', hen: 0, dai: 410, co: 62, lech: 0, tenLech: 125 };   // tenLech: tên thật khắc thấp hơn mã, sát mặt cát (chủ dự án 13/10)
 function bbE(id) { return document.getElementById(id); }
 function bbG() { return bbE('gate'); }
 function bbGiam() { return window.matchMedia('(prefers-reduced-motion:reduce)').matches; }
@@ -430,6 +430,7 @@ function lkMa() { return bbE('l_tk').value.trim().toUpperCase().replace(/[^A-Z0-
 function lkDauBut() {   // vị trí đầu khắc (cuối chữ) trên ảnh 1600x900
   var t = bbE('lkChu'), d = 0;
   try { d = t.textContent ? t.getComputedTextLength() + 6 : 0; } catch (e) {}
+  d -= LK.lech;
   return { x: LK.x0 + d * Math.cos(LK.goc), y: LK.y0 + d * Math.sin(LK.goc) };
 }
 function lkLua(loi) {   // tia laser lóe tại đầu khắc
@@ -450,13 +451,14 @@ function lkVe() {   // khắc lại theo mã nhân viên đang gõ
   if (v.length &gt; chung) { lkLua(); setTimeout(function () { [].forEach.call(t.querySelectorAll('tspan.nong'), function (s) { s.removeAttribute('class'); }); }, 380); }
 }
 function lkCo(min) {   // thu nhỏ chữ khi mã dài để nằm gọn trên thân cơ
-  var t = bbE('lkChu'); t.style.fontSize = LK.co + 'px';
-  try { var d = t.getComputedTextLength(); if (d &gt; LK.dai) t.style.fontSize = Math.max(min || 30, LK.co * LK.dai / d) + 'px'; } catch (e) {}
+  var t = bbE('lkChu'), dai = LK.dai + LK.lech; t.style.fontSize = LK.co + 'px';
+  try { var d = t.getComputedTextLength(); if (d &gt; dai) t.style.fontSize = Math.max(min || 30, LK.co * dai / d) + 'px'; } catch (e) {}
 }
 /* Sau khi xác thực: laser khắc lại tên thật (2 chữ cuối họ tên) thay cho mã nhân viên, từng chữ một, xong thì gọi xong() */
 function lkKhacTen(ten, xong) {
   var t = bbE('lkChu'), s = String(ten || '').trim().split(/\s+/).slice(-2).join(' ').toUpperCase(), k = 0;   // 2 chữ cuối của họ tên (theo chủ dự án)
   LK.ten = []; if (!s) { xong(); return; }
+  LK.lech = LK.tenLech; t.setAttribute('x', -LK.lech);   // dời điểm bắt đầu xuống dọc thân cơ
   t.setAttribute('class', 'lk-chu ten'); t.textContent = s; lkCo(18);   // chốt cỡ chữ theo cả tên trước khi khắc
   if (bbGiam()) { t.setAttribute('class', 'lk-chu ten vang'); xong(); return; }
   t.textContent = '';
@@ -474,7 +476,7 @@ function lkKhacTen(ten, xong) {
 function lkFont(ten) { bbG().style.setProperty('--lkf', "'" + ten + "'"); lkCo(); }
 function lkXep() {
   var t = bbE('lkChu'); (LK.ten || []).forEach(clearTimeout); LK.ten = [];
-  if (/\bten\b/.test(t.getAttribute('class') || '')) { LK.cu = lkMa(); t.textContent = LK.cu; t.style.fontSize = ''; lkCo(); }   // đang hiện tên thật -&gt; về lại mã
+  if (/\bten\b/.test(t.getAttribute('class') || '')) { LK.lech = 0; t.setAttribute('x', 0); LK.cu = lkMa(); t.textContent = LK.cu; t.style.fontSize = ''; lkCo(); }   // đang hiện tên thật -&gt; về lại mã
   t.setAttribute('class', 'lk-chu'); bbE('lkQuet').setAttribute('class', 'lk-quet');
 }
 function lkKhung() { var n = bbE('lkNen'); if (n) n.setAttribute('preserveAspectRatio', (window.matchMedia('(max-width:760px)').matches ? 'xMinYMid' : 'xMidYMid') + ' slice'); }

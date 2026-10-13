@@ -48,13 +48,19 @@ ok(c.__goi('layBongDa', 'sai').ok === false, 'phiên sai: không trả dữ li�
       { a: 'RHINO FC', b: 'EVO FC', vong: 'Vòng tròn', gio: '2026-10-23 15:00', xong: false, tsA: null, tsB: null }] };
     let s = await ve(D);
     ok(s[0] === '' && /Kết quả: EVO FC 2 – 1 FC RETRO/.test(s[1]) && /Ngày mai 15:00: FC RETRO gặp JUNIORS FC/.test(s[1]) && /khai mạc/.test(s[1]) && !/RHINO FC gặp/.test(s[1]),
-      '19/10: hiện kết quả hôm qua + trận khai mạc ngày mai, chưa hiện trận 23/10', s[1]);
+      '19/10: hiện kết quả hôm qua + trận khai mạc ngày mai (chỉ ngày thi đấu gần nhất)', s[1]);
     ok(!/Xem lịch/.test(s[1]), 'chưa có link web giải: không hiện nút "Xem lịch & video"');
     s = await ve(Object.assign({}, D, { link: 'https://script.google.com/macros/s/x/exec' }));
     ok(await p.evaluate(() => { const a = $('bdbar').getBoundingClientRect(), n = $('navCol') || document.querySelector('nav'); return !n || n.getBoundingClientRect().right <= a.left + 1; }), 'máy tính: dải nằm bên phải cột menu, không bị che');
     ok(/Xem lịch & video/.test(s[1]) && await p.evaluate(() => $('bdbar').querySelector('a').target === '_blank'), 'có link: nút mở web giải ở tab mới');
     s = await ve(Object.assign({}, D, { tran: D.tran.slice(2) }));
-    ok(s[0] === 'hide', 'trận còn 4 ngày nữa: ẩn (không làm phiền)', s);
+    ok(s[0] === '' && /Thứ Sáu 23\/10, 15:00 \(còn 4 ngày\): RHINO FC gặp EVO FC/.test(s[1]), 'trận còn 4 ngày: hiện kèm "còn 4 ngày"', s[1]);
+    s = await p.evaluate(() => { BD.gio = () => new Date('2026-10-13T09:00:00+07:00'); return 1; });
+    s = await ve(Object.assign({}, D, { tran: D.tran.slice(1) }));
+    ok(s[0] === '' && /còn 7 ngày/.test(s[1]), '13/10: trận khai mạc 20/10 đã hiện (tròn 1 tuần trước)', s[1]);
+    s = await p.evaluate(() => { BD.gio = () => new Date('2026-10-12T09:00:00+07:00'); BD.d.tran = BD.d.tran.slice(); bdVe(); return $('bdbar').className; });
+    ok(s === 'hide', '12/10: còn 8 ngày → chưa hiện', s);
+    await p.evaluate(() => { BD.gio = () => new Date('2026-10-19T09:00:00+07:00'); });
     await ve(D); await p.click('#bdbar .bd-x'); await p.waitForTimeout(200);
     ok(await p.evaluate(() => $('bdbar').className === 'hide' && localStorage.getItem('kpi_bd_tat') === '2026-10-20 15:00'), 'bấm ×: ẩn tới trận sau (nhớ theo trận)');
     s = await p.evaluate(d => { BD.d = d; bdVe(); return $('bdbar').className; }, Object.assign({}, D, { tran: [{ a: 'X', b: 'Y', vong: '', gio: '2026-10-21 15:00', xong: false }] }));
