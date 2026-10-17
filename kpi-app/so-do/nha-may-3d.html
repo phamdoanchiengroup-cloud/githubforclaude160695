@@ -1291,7 +1291,18 @@ const OF={render:S({color:0xf4f4f1,roughness:.85,map:TX.concrete}),dark:S({color
   frame:S({color:0x1f2327,metalness:.6,roughness:.35}),blue:S({color:0x2f6fd0,metalness:.4,roughness:.35}),
   bglass:S({color:0x3d86e8,metalness:.3,roughness:.05,transparent:true,opacity:.45}),rail:S({color:0xbfd8e6,metalness:.2,roughness:.05,transparent:true,opacity:.3,depthWrite:false}),
   wood:S({color:0x8a5a3a,roughness:.6}),tile:S({color:0xd9d8d2,roughness:.3,map:TX.tile}),cloth:S({color:0x1f7a4a,roughness:.95})};
-const OFW=S({color:0x26313a,metalness:.9,roughness:.08,emissive:0xffe2b0,emissiveIntensity:.05});
+const OFW=S({color:0x2a3a44,metalness:.15,roughness:.05,transparent:true,opacity:.2,depthWrite:false,envMapIntensity:.4,emissive:0xffe2b0,emissiveIntensity:.05});   // kính trong (17/10)
+// 17/10 (chủ dự án: "các phần nào là kính đều cho nhìn xuyên vào trong"): tường có lỗ cửa – trả về các mảnh [u0,u1,v0,v1] của tường a0..a1 × h0..h1 trừ các lỗ
+function catLo(a0,a1,h0,h1,lo){const cu=[a0,a1];lo.forEach(([u0,u1])=>{if(u0>a0&&u0<a1)cu.push(u0);if(u1>a0&&u1<a1)cu.push(u1);});cu.sort((p,q)=>p-q);
+  const ra=[];let truoc=null;
+  for(let i=0;i<cu.length-1;i++){const ua=cu[i],ub=cu[i+1];if(ub-ua<1e-4)continue;
+    const iv=lo.filter(([u0,u1])=>u0<=ua+1e-4&&u1>=ub-1e-4).map(([,,v0,v1])=>[Math.max(h0,v0),Math.min(h1,v1)]).filter(([p,q])=>q>p).sort((p,q)=>p[0]-q[0]);
+    const doan=[];let v=h0;iv.forEach(([p,q])=>{if(p>v)doan.push([v,p]);v=Math.max(v,q);});if(v<h1)doan.push([v,h1]);
+    const key=JSON.stringify(doan);
+    if(truoc&&truoc.key===key){truoc.r.forEach(r=>r[1]=ub);}else{const r=doan.map(([p,q])=>[ua,ub,p,q]);ra.push(...r);truoc={key,r};}}
+  return ra;}
+// tường có lỗ theo toạ độ bản vẽ: truc 'x' = tường dọc tại x∈[c0,c1], chạy theo y a0..a1; 'y' = tường ngang tại y∈[c0,c1], chạy theo x
+function tuongLo(truc,c0,c1,a0,a1,h0,h1,lo,m,g=office){catLo(a0,a1,h0,h1,lo).forEach(([u0,u1,v0,v1])=>truc==='x'?blk(c0,c1,u0,u1,v0,v1,m,g):blk(u0,u1,c0,c1,v0,v1,m,g));}
 function blk(x0,x1,y0,y1,h0,h1,m,g=office,u=4){const b=box(x1-x0,h1-h0,y1-y0,m,px((x0+x1)/2),(h0+h1)/2,pz((y0+y1)/2));uvWorld(b.geometry,Math.max(x1-x0,y1-y0)/u,(h1-h0)/u);g.add(b);return b;}
 function blkSan(x0,x1,y0,y1,h0,h1,m,g=office,u=3.2){const b=box(x1-x0,h1-h0,y1-y0,m,px((x0+x1)/2),(h0+h1)/2,pz((y0+y1)/2));uvWorld(b.geometry,(x1-x0)/u,(y1-y0)/u);b.castShadow=false;g.add(b);return b;} // sàn gạch lát: UV theo mặt bằng (ô gạch ~0,8 m)
 // cửa sổ khung đen trên mặt: f = 'W' (mặt trước, x const) | 'S' | 'N' (y const)
@@ -1314,10 +1325,18 @@ function lanCan(g,x0,y0,x1,y1,h0,h=1.1,mk=OF.rail,mi=PC.inox){const ng=y0===y1,a
   const n=Math.max(1,Math.round((a1-a0)/1.2));for(let i=0;i<=n;i++){const u=a0+(a1-a0)*i/n;B(u-.03,u+.03,c-.03,c+.03,h0,h0+h,mi);}}
 { const FX=-14, FH=4.2, L2=4.2, L3=8.1, L4=12.0, MAI=15.9, DINH=17.3; // cao độ theo mặt đứng KT: sàn +4,20 / +8,10 / +12,00, mái +15,90, đỉnh tháp +17,30
   // khối chính 3 tầng
-  blk(FX,0,13,28,FH,L4,OF.render);
+  { const H2=L2+.3, cs=[[15,2.2],[19.2,4.2],[23.4,2.6]], loT=[];
+    [[L2+1.0,L2+3.1],[L3+.6,L3+3.1]].forEach(([h0,h1])=>cs.forEach(([y,w])=>loT.push([y-w/2,y+w/2,h0,h1]))); loT.push([26.6-1.1,26.6+1.1,L3+.6,L3+3.1]);
+    tuongLo('x',FX,FX+.25,13,28,FH,L4,loT,OF.render);
+    const loN=[[-11.85,4.5,H2+.02,H2+2.75],[-6.6,2.0,H2+.02,H2+2.75],[-3.4,1.2,H2+.02,H2+2.75],[-8.8,1.7,H2+.02,H2+2.66],[-4.65,1.7,H2+.02,H2+2.66],
+      [-4.746,.9,L2,L2+2.4],[-6.454,.9,L2,L2+2.4],[-10.82,.9,L2,L2+2.4],[-7.97,1.5,L3+.08,L3+2.6],[-3.51,1.5,L3+.08,L3+2.6],[-10.8,2.4,L3+.6,L3+3.1]].map(([x,w,a,c])=>[x-w/2,x+w/2,a,c]);
+    tuongLo('y',13,13.25,FX,0,FH,L4,loN,OF.render);
+    blk(FX,0,27.75,28,FH,L4,OF.render); blk(-.25,0,13,28,FH,L4,OF.render);
+    [L2,L3,L4].forEach(h=>blk(FX,0,13,28,h-.12,h-.02,OF.render));   // sàn các tầng (mặt trên thấp hơn sàn hoàn thiện của nội thất 2 cm)
+  }
   // tầng 1 rỗng để nhìn thấy phòng trưng bày qua vách kính: chỉ giữ tường 2 đầu, dải tường trên vách kính, tường phía xưởng
   blk(FX,0,13,13.35,0,FH,OF.render); blk(FX,0,27.65,28,0,FH,OF.render); blk(FX,FX+.3,13,28,3.6,FH,OF.render); blk(-.12,0,13,28,0,FH,OF.render);
-  blk(FX-.05,0,13,28,L4-.1,L4+.05,OF.render); // mép sàn tầng 4
+  blk(FX-.05,FX+.3,13,28,L4-.1,L4+.05,OF.render); // mép sàn tầng 4 (chỉ dải mép – trong là sàn nội thất)
   // mặt tiền tầng 1 theo phối cảnh DELCO + mặt đứng trục A–E (17/10): vách kính khung đen gần hết khối trắng (trục B → D), ngang đố ở +2,40,
   // cửa kính 2 cánh giữa mặt tiền, mái đón xám đậm có 2 đèn rọi, 3 bậc đá đen (±0,00 → −0,45), bệ chân tường xám nhạt
   { const y0=13.35,y1=27.65,hk=3.6,yc=20.5,wc=1.9,kd=OF.frame,dB=S({color:0x16181a,roughness:.25,metalness:.2}),dMui=S({color:0xcfd2d4,roughness:.5});
@@ -1344,13 +1363,11 @@ function lanCan(g,x0,y0,x1,y1,h0,h=1.1,mk=OF.rail,mi=PC.inox){const ng=y0===y1,a
   // mặt bên Nam phía trên khối khung (tầng 3) và mặt Bắc
   win('S',13,-10.8,2.4,L3+.6,L3+3.1,office,2);
   // lô gia tầng 3 (trên mái che sân hiên, trục D): sàn đá, lan can kính 2 phía, 2 cửa kính đi vào phòng ăn
-  blkSan(-12.05,0,11.5,13,L3+.05,L3+.08,S({color:0x55595c,roughness:.5,map:TX.tile}));
-  blk(-12.05,-2.6,11.44,11.56,L3+.05,L3+.2,OF.render); blk(-12.11,-11.99,11.5,13,L3+.05,L3+.2,OF.render);
-  lanCan(office,-12.05,11.5,-2.6,11.5,L3+.2,.95); lanCan(office,-12.05,11.5,-12.05,13,L3+.2,.95);
-  [-7.97,-3.51].forEach(x=>cuaDi(office,x,12.96,1.5,L3+.08,2.45));
+  // lô gia tầng 3: dựng trong nội thất tầng 3 (ofT3) – hiện cùng tòa nhà (17/10)
   [[-8,3],[-3,3]].forEach(([a,w])=>[L2,L3].forEach(h=>win('N',28,a,w,h+1,h+3,office,2)));
   // khối cánh Nam (theo phối cảnh sân hiên): tầng 1 kín; sân hiên tầng 2 có mái che sát tường, giàn thép xanh, lan can kính, bàn cà phê
-  blk(FX,0,6,13,0,L2,OF.render); blk(FX,0,6,13,L2,L2+.3,OF.render);
+  tuongLo('x',FX,FX+.25,6,13,0,L2,[[11.3-.7,11.3+.7,1.2,2.4]],OF.render); tuongLo('y',6,6.25,FX,0,0,L2,[[-5.3-1.0,-5.3+1.0,.05,2.45]],OF.render);
+  blk(-.25,0,6,13,0,L2,OF.render); blk(FX,0,12.75,13,0,L2,OF.render); blk(FX,0,6,13,L2-.12,L2-.02,OF.render); blk(FX,0,6,13,L2,L2+.3,OF.render);
   win('W',FX,11.3,1.4,1.2,2.4,office,1);
   // mặt Nam tầng 1: cửa đôi sẫm có 2 ô kính, lam thông gió phía trên, tấm tôn đục lỗ, cửa kính đôi khung đen
   const PERF=S({color:0x2b3034,roughness:.6,metalness:.4,map:canvasTex(128,(g,s)=>{g.fillStyle='#fff';g.fillRect(0,0,s,s);g.fillStyle='#000';for(let y=4;y<s;y+=8)for(let x=4+(y/8%2)*4;x<s;x+=8){g.beginPath();g.arc(x,y,2.2,0,7);g.fill();}},{rep:1})});
@@ -1412,15 +1429,16 @@ function lanCan(g,x0,y0,x1,y1,h0,h=1.1,mk=OF.rail,mi=PC.inox){const ng=y0===y1,a
   const pot=(x,y,h,s)=>{const g=new THREE.Group();g.add(cyl(.35,.5,S({color:0x55595c,roughness:.8}),0,.25,0,14));g.add(cyl(.06,1.2*s,M.trunk,0,.9,0,6));
     const c=new THREE.Mesh(new THREE.SphereGeometry(.9*s,14,10),leafM[1]);c.scale.y=.6;c.position.y=1.7*s;c.castShadow=true;g.add(c);g.position.set(px(x),h,pz(y));office.add(g);};
   // khối tầng 4 ốp tôn đen, lùi vào, dải kính dài
-  blk(-11.8,0,13,28,L4,MAI,OF.dark); blk(-11.8,0,11.7,11.76,L4,L4+1.1,OF.rail); blk(-11.8,0,11.67,11.8,L4+1.06,L4+1.14,M.steel); blk(-11.8,0,11.7,13,L4-.1,L4,OF.tile); // khối tầng 4 + lô-gia
-  win('W',-11.8,20.5,13,L4+.9,L4+3.4,office,8);
-  blk(-14,-11.8,13,28,L4,L4+.06,OF.tile);blk(-14.02,-13.96,13,28,L4,L4+1.1,OF.rail);blk(-14.05,-13.93,13,28,L4+1.06,L4+1.14,M.steel); // hiên trước + lan can kính LK-03
+  tuongLo('x',-11.8,-11.55,13,28,L4,MAI,[[13.25,27.75,L4,L4+3.4]],OF.dark); tuongLo('y',13,13.25,-11.8,0,L4,MAI,[[-5.6,-4.2,L4,L4+2.4]],OF.dark);
+  blk(-11.8,0,27.75,28,L4,MAI,OF.dark); blk(-.25,0,13,28,L4,MAI,OF.dark); blk(-11.8,0,13,28,MAI-.12,MAI,OF.dark); blk(-11.8,0,11.7,11.76,L4,L4+1.1,OF.rail); blk(-11.8,0,11.67,11.8,L4+1.06,L4+1.14,M.steel); blk(-11.8,0,11.7,13,L4-.1,L4,OF.tile); // khối tầng 4 + lô-gia
+  blk(-14,-11.8,13,28,L4-.12,L4-.02,OF.tile); // hiên trước + lan can kính LK-03
   const MAI_SANG=S({color:0xc9ccc8,roughness:.85,map:TX.concrete});
   blk(-12.1,0,11.4,28.3,MAI,MAI+.2,OF.dark);blk(-11.9,-.2,11.6,28.1,MAI+.2,MAI+.22,MAI_SANG);
   // tháp thang đen + dải kính + biển hiệu
   // khối ốp nhôm sẫm phía Bắc (thang bộ + biển RHINO): chạy suốt từ mặt tiền tới tường xưởng, cao hơn tầng 4
   const ALU=S({color:0x363b40,roughness:.42,metalness:.35});
-  blk(-15.6,0,28,33,0,DINH,ALU);blk(-15.8,.1,27.8,33.2,DINH,DINH+.3,ALU);blk(-15.3,-.3,28.3,32.7,DINH+.3,DINH+.32,MAI_SANG);
+  tuongLo('x',-15.6,-15.35,28,33,0,DINH,[[29,32,.4,15.2]],ALU); blk(-.25,0,28,33,0,DINH,ALU);
+  {const lo=[];for(let k=0;k<4;k++)for(let i=0;i<5;i++){const x=-12.2+i*2.5,h=[0,L2,L3,L4][k];lo.push([x-.425,x+.425,h+1.5+(k?0:.3),h+2.55]);}tuongLo('y',32.75,33,-15.6,0,0,DINH,lo,ALU);}blk(-15.8,.1,27.8,33.2,DINH,DINH+.3,ALU);blk(-15.3,-.3,28.3,32.7,DINH+.3,DINH+.32,MAI_SANG);
   for(let k=0;k<4;k++)for(let i=0;i<5;i++)win('N',33,-12.2+i*2.5,.85,[0,L2,L3,L4][k]+1.5+(k?0:.3),[0,L2,L3,L4][k]+2.55,office,1);   // ô cửa nhỏ mặt hông (phối cảnh nhìn từ bãi xe)
   blk(-15.68,-15.6,29,32,.4,15.2,OFW);for(let k=1;k<5;k++)blk(-15.72,-15.62,29,32,k*3.6,k*3.6+.08,OF.frame);
   blk(-15.72,-15.62,30.47,30.53,.4,15.2,OF.frame);
@@ -1433,7 +1451,7 @@ function lanCan(g,x0,y0,x1,y1,h0,h=1.1,mk=OF.rail,mi=PC.inox){const ng=y0===y1,a
    Cao độ: T2 +4,20 · T3 +8,10 · T4 +12,00 · mái +15,90. Đổi số đo bản vẽ (m tính từ X7 / từ trục D) sang toạ độ: */
 const VPX=m=>-m*14/14.75, VPY=d=>d<=14.4?13+d*15/14.4:28+(d-14.4);
 const VPL={t2:4.2,t3:8.1,t4:12.0,mai:15.9};
-const ofT2=new THREE.Group(), ofT3=new THREE.Group(), ofT4=new THREE.Group(); ofT2.visible=ofT3.visible=ofT4.visible=false; scene.add(ofT2,ofT3,ofT4);
+let DE2=null; const ofT2=new THREE.Group(), ofT3=new THREE.Group(), ofT4=new THREE.Group(); ofT2.visible=ofT3.visible=ofT4.visible=false; scene.add(ofT2,ofT3,ofT4);
 function vpBo(G,H,HT=3.1){
   const b=(x0,x1,y0,y1,h0,h1,m)=>blk(Math.min(x0,x1),Math.max(x0,x1),Math.min(y0,y1),Math.max(y0,y1),h0,h1,m,G);
   const den=OF.frame, trang=S({color:0xf2f2f0,roughness:.7}), kinh=S({color:0xcfe3ea,metalness:.1,roughness:.04,transparent:true,opacity:.18,depthWrite:false}),
@@ -1472,7 +1490,7 @@ function vpBo(G,H,HT=3.1){
 
 // ===== Tầng 2 (+4,20): Kế toán, Phòng họp-2 (phía xưởng), Chủ tịch, TGĐ (dọc trục D), không gian mở Thiết kế – Kinh doanh marketing – Hành chính =====
 { const H=VPL.t2, G=ofT2, T=vpBo(G,H), {b,nhan,vach,tuong,cua,cot}=T;
-  b(-14,0,13,28,0,H,OF.render); blkSan(-14,0,13,31.35,H,H+.05,T.san,G); blkSan(-15.5,-14,28,31.35,H,H+.05,T.san,G);
+  DE2=b(-14,0,13,28,0,H,OF.render); blkSan(-14,0,13,31.35,H,H+.05,T.san,G); blkSan(-15.5,-14,28,31.35,H,H+.05,T.san,G);
   const go=S({color:0x6b4a32,roughness:.5}), banT=S({color:0xeeeeea,roughness:.45}), ghe=S({color:0x1b1c1e,roughness:.6}), vang=S({color:0xf2c230,roughness:.5});
   // vỏ: mặt tiền kính khung đen, trục D tường + 3 cửa ra sân vườn, các mặt còn lại tường thấp để nhìn vào
   b(-14.05,-13.95,13,28,H,H+3.1,T.kinh); for(let y=13;y<=28.01;y+=1.5)b(-14.08,-13.92,y-.04,y+.04,H,H+3.1,T.den);
@@ -1878,7 +1896,8 @@ function apply(){
   roofGroup.visible=st.rf&&st.mode==='khoi'&&st.floor==='all';
   if(st.floor!=='all'||st.mode!=='khoi')st.vp=0; const vp=st.vp||0;
   office.visible=st.of&&st.mode==='khoi'&&st.floor==='all'&&!vp;
-  ofT1.visible=office.visible||vp>=1; ofVo1.visible=vp===1; ofT2.visible=vp>=2; ofT3.visible=vp>=3; ofT4.visible=vp===4;
+  ofT1.visible=office.visible||vp>=1; ofVo1.visible=vp===1||office.visible; ofT2.visible=office.visible||vp>=2; ofT3.visible=office.visible||vp>=3; ofT4.visible=office.visible||vp===4;   // 17/10: nội thất hiện cùng tòa nhà, nhìn qua kính
+  if(DE2)DE2.visible=!office.visible;
   [[ofVo1,1],[ofT2,2],[ofT3,3],[ofT4,4]].forEach(([g,n])=>g.children.forEach(o=>{if(o.isCSS2DObject)o.visible=vp===n&&st.lbl;}));
   auxGroup.visible=st.aux; auxGroup.children.forEach(o=>{if(o.isCSS2DObject)o.visible=st.aux&&st.lbl;});
   sceneGroup.visible=st.sc;
