@@ -205,8 +205,45 @@ Mỗi nhân vật thành **một phòng** trong Công ty Agent.
 
 **Chi phí:** mỗi lần hỏi phòng Agency tốn hơn một chút so với phòng thường (bản mô tả vai trò dài 5–12 nghìn ký tự), khoảng 1.000–3.000đ/câu với Opus 5.5. Phòng ít dùng thì nên để tắt.
 
+## Bước 10. Giọng nói – trò chuyện như "Jarvis"
+
+Tab **🎙 Giọng nói** trong web app (Bước 8):
+- **Chạm vòng tròn rồi nói**, ví dụ "Hôm qua xưởng nào thấp nhất, vì sao?". Nói xong trang tự gửi. Trợ lý trả lời bằng giọng, đồng thời hiện chữ trên màn hình.
+- **🔊 Đọc bản tin**: đọc to bản tin sản xuất ngày gần nhất (hiệu suất, xưởng cao/thấp, dừng máy, việc cần chú ý, việc hôm nay). **Không tốn tiền AI.**
+  - Nói "báo cáo" hoặc "việc hôm nay" cũng được, cũng không tốn AI.
+- **Trò chuyện liên tục** (công tắc): trợ lý đọc xong thì tự nghe tiếp, khỏi chạm lại.
+- **Rảnh tay** (công tắc): trang luôn lắng nghe. Gọi **"Trợ lý ơi, …"** (hoặc "Jarvis, …") rồi nói câu hỏi. Hợp máy tính để bàn ở phòng làm việc. Trên điện thoại có thể kêu "bíp" mỗi lần nghe lại.
+- **Hỏi phòng**: chọn phòng muốn hỏi, hoặc để Tự động.
+
+**Cài đặt** (sao lưu trước: Tổng quan → Tạo bản sao dự án):
+1. **＋ → Tập lệnh** → tên `GiongNoi` → xóa hết → dán `GiongNoi.gs` → 💾 Lưu.
+2. MỞ FILE `TroLyAI` → xóa hết → dán bản mới `TroLyAI.gs` → Lưu.
+3. MỞ FILE `WebApp` (HTML) → xóa hết → dán bản mới `WebApp.html` → Lưu.
+4. **Triển khai → Quản lý triển khai → ✏️ → Phiên bản mới → Triển khai.**
+5. Mở link bảng điều khiển → Ctrl+F5 (điện thoại: tải lại trang) → tab **🎙 Giọng nói**.
+6. Lần đầu chạm vòng tròn, trình duyệt hỏi **quyền dùng micro** → chọn **Cho phép**.
+
+**Nên dùng:** Chrome trên Android hoặc máy tính, Safari trên iPhone.
+- Nếu trang báo **"Không mở được micro"**: chạm vào ô chữ bên dưới vòng tròn, rồi bấm nút **🎤 trên bàn phím điện thoại** để nói. Bàn phím Gboard và bàn phím iPhone đều nghe được tiếng Việt. Trợ lý vẫn đọc to câu trả lời như thường.
+- Nếu **không nghe thấy tiếng đọc** hoặc giọng đọc lơ lớ tiếng Anh, là máy chưa có giọng tiếng Việt:
+  - Android: Cài đặt → tìm "Chuyển văn bản thành giọng nói" → Công cụ của Google → tải **Tiếng Việt**.
+  - iPhone: Cài đặt → Trợ năng → Nội dung được đọc → Giọng nói → **Tiếng Việt**.
+
+**Giọng tự nhiên hơn (tùy chọn) – FPT.AI:**
+1. Đăng ký tại console.fpt.ai → tạo khóa API cho Text to Speech. Không gửi khóa cho ai, kể cả Claude.
+2. Apps Script → ⚙️ **Cài đặt dự án** → **Thuộc tính tập lệnh** → thêm:
+   - `FPT_TTS_KEY` = khóa vừa tạo.
+   - (tùy chọn) `FPT_GIONG` = `banmai` (nữ miền Bắc, mặc định), `thuminh`, `lannhi`, `myan`, `linhsan`, `leminh` (nam miền Bắc) hoặc `giahuy`.
+3. Lưu. Không cần triển khai lại.
+4. Trong tab Giọng nói → **Giọng đọc** → chọn "FPT.AI". Giọng này đọc chậm hơn giọng máy khoảng 3 giây. Lỗi hoặc hết lượt thì trang tự quay về giọng máy.
+
+**Chi phí:**
+- Nghe giọng nói và đọc bằng giọng máy: **miễn phí** (chạy ngay trên điện thoại hoặc máy tính).
+- Câu hỏi tự do tốn tiền AI như khi gõ chữ. Câu trả lời giọng nói được dặn ngắn (2–5 câu) nên thường **rẻ hơn**.
+- FPT.AI có gói dùng thử miễn phí, sau đó tính theo số ký tự.
+
 ## Khi cập nhật bản mới
-1. Mở từng file (`Mã.gs` ← `TroLyKPI.gs`, `TroLyAI` ← `TroLyAI.gs`, `Agents` ← `Agents.gs`, `TayChan` ← `TayChan.gs`, `WebUI` ← `WebUI.gs`, `WebApp` ← `WebApp.html`, `Agency` ← `Agency.gs`) → xóa hết → dán bản mới → 💾 Lưu.
+1. Mở từng file (`Mã.gs` ← `TroLyKPI.gs`, `TroLyAI` ← `TroLyAI.gs`, `Agents` ← `Agents.gs`, `TayChan` ← `TayChan.gs`, `WebUI` ← `WebUI.gs`, `WebApp` ← `WebApp.html`, `Agency` ← `Agency.gs`, `GiongNoi` ← `GiongNoi.gs`) → xóa hết → dán bản mới → 💾 Lưu.
 2. **Triển khai → Quản lý triển khai → ✏️ → Phiên bản: Phiên bản mới → Triển khai.** URL giữ nguyên, không cần chạy lại `caiDat`.
    - Nếu Claude báo bản mới dùng thêm quyền: chạy `caiDatAgent` / `caiDatTayChan` để cấp quyền **trước** khi triển khai.
    - Nếu Claude báo đã đổi cách làm việc của agent tay chân: chạy lại `caiDatTayChan` (chỉ cập nhật, không tạo trùng).

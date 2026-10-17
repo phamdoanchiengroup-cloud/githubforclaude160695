@@ -45,7 +45,7 @@ Spreadsheet.prototype = {
 };
 
 function taoMoiTruong() {
-  const store = {}, cache = {}, gui = [], goi = [], triggers = [], ai = { kich: [], yeuCau: [], loiKich: [] }, files = {}, lich = [], nhap = [];
+  const store = {}, cache = {}, gui = [], goi = [], triggers = [], ai = { kich: [], yeuCau: [], loiKich: [] }, fpt = { goi: [], choLan: 2 }, files = {}, lich = [], nhap = [];
   const kpi = new Spreadsheet(KPI_ID, 'CSDL KPI');
   const ma = { env: [], agents: {}, files: {}, sess: {}, goi: [], n: 0 };
   const drive = { folders: {}, n: 0 };
@@ -57,6 +57,7 @@ function taoMoiTruong() {
     console, Math, JSON, Date: FakeDate,
     Utilities: {
       getUuid: () => require('crypto').randomUUID(),
+      sleep: () => {}, base64Encode: b => Buffer.from(b.map(x => x & 255)).toString('base64'),
       newBlob: (data, type, name) => taoBlob(data, name),
       DigestAlgorithm: { SHA_256: 'sha256' }, Charset: { UTF_8: 'utf8' },
       computeDigest: (a, data) => Array.from(require('crypto').createHash('sha256').update(Array.isArray(data) ? Buffer.from(data.map(b => b & 255)) : Buffer.from(String(data), 'utf8')).digest()).map(b => (b > 127 ? b - 256 : b)),
@@ -117,6 +118,12 @@ function taoMoiTruong() {
           return { getResponseCode: () => 200, getContentText: () => JSON.stringify(tra) };
         }
         if (url.startsWith('https://api.anthropic.com/v1/')) return maApi(url.slice(29), o);
+        if (url === 'https://api.fpt.ai/hmi/tts/v5' || url.startsWith('https://file01.fpt.ai/')) {
+          fpt.goi.push({ url, o });
+          const r = url.startsWith('https://api') ? { error: 0, async: 'https://file01.fpt.ai/text2speech-v5/short/a.mp3' } : null;
+          const san = !r && fpt.goi.filter(g => g.url === url).length > fpt.choLan;
+          return { getResponseCode: () => (r || san ? 200 : 404), getContentText: () => JSON.stringify(r || {}), getContent: () => Array.from(Buffer.alloc(san ? 4000 : 10, 7)) };
+        }
         if (url.startsWith('https://raw.githubusercontent.com/')) {
           const nd = gh[url];
           return { getResponseCode: () => (nd == null ? 404 : 200), getContent: () => Array.from(Buffer.from(nd || '', 'utf8')).map(b => (b > 127 ? b - 256 : b)), getContentText: () => nd || '' };
@@ -169,8 +176,8 @@ function taoMoiTruong() {
     throw new Error('MA API chưa giả lập: ' + m + ' ' + duong);
   }
   vm.createContext(ctx);
-  ['TroLyKPI.gs', 'TroLyAI.gs', 'Agents.gs', 'TayChan.gs', 'Agency.gs', 'WebUI.gs'].forEach(f => vm.runInContext(fs.readFileSync(path.join(__dirname, '..', f), 'utf8'), ctx, { filename: f }));
-  return { ctx, store, cache, gui, goi, triggers, ai, files, kpi, lich, nhap, ma, drive, thuGmail, taoBlob, gh, ui };
+  ['TroLyKPI.gs', 'TroLyAI.gs', 'Agents.gs', 'TayChan.gs', 'Agency.gs', 'WebUI.gs', 'GiongNoi.gs'].forEach(f => vm.runInContext(fs.readFileSync(path.join(__dirname, '..', f), 'utf8'), ctx, { filename: f }));
+  return { ctx, store, cache, gui, goi, triggers, ai, files, kpi, lich, nhap, ma, drive, thuGmail, taoBlob, gh, ui, fpt };
 }
 
 function kpiMau(kpi) {

@@ -52,6 +52,7 @@ function hoiAI_(chatId, cauHoi, maPhong) {
 
   var ctx = { D: {}, ag: ag, chatId: chatId }, traLoi = '', batDau = Date.now();
   var he = ag ? heThongAgent_(ctx, ag) : heThongAI_(ctx);
+  if (chatId === 'giong' && typeof GIONG_CACH === 'string') he += '\n\n' + GIONG_CACH;   // tab Giọng nói (GiongNoi.gs): trả lời để đọc to
   var tools = ag ? congCuCua_(ag) : AI_CONG_CU;
   for (var vong = 0; vong < AI_VONG_TOI_DA; vong++) {
     if (Date.now() - batDau > 270000) break;   // Apps Script dừng sau 6 phút – chừa thời gian gửi trả lời
