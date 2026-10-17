@@ -49,15 +49,17 @@ function taoMoiTruong() {
   const kpi = new Spreadsheet(KPI_ID, 'CSDL KPI');
   const ma = { env: [], agents: {}, files: {}, sess: {}, goi: [], n: 0 };
   const drive = { folders: {}, n: 0 };
-  const thuGmail = [];
+  const thuGmail = [], gh = {}, ui = { activeUser: '', owner: 'chu@gmail.com' };
   files[KPI_ID] = kpi;
   let soFile = 0;
   class FakeDate extends Date { constructor(...a) { super(...(a.length ? a : [NOW.getTime()])); } static now() { return NOW.getTime(); } }
   const ctx = {
     console, Math, JSON, Date: FakeDate,
     Utilities: {
-      getUuid: () => 'aaaa-bbbb-cccc-dddd',
+      getUuid: () => require('crypto').randomUUID(),
       newBlob: (data, type, name) => taoBlob(data, name),
+      DigestAlgorithm: { SHA_256: 'sha256' }, Charset: { UTF_8: 'utf8' },
+      computeDigest: (a, data) => Array.from(require('crypto').createHash('sha256').update(Array.isArray(data) ? Buffer.from(data.map(b => b & 255)) : Buffer.from(String(data), 'utf8')).digest()).map(b => (b > 127 ? b - 256 : b)),
       formatDate: (d, tz, f) => {
         const x = new Date(new Date(d).getTime() + 7 * 3600e3), p = n => String(n).padStart(2, '0');
         return f.replace('yyyy', x.getUTCFullYear()).replace('MM', p(x.getUTCMonth() + 1)).replace('dd', p(x.getUTCDate()))
@@ -89,6 +91,8 @@ function taoMoiTruong() {
       createDraft: (to, sub, body) => { nhap.push({ to, sub, body }); }
     },
     ContentService: { createTextOutput: s => ({ s }) },
+    Session: { getActiveUser: () => ({ getEmail: () => ui.activeUser }), getEffectiveUser: () => ({ getEmail: () => ui.owner }) },
+    HtmlService: { createTemplateFromFile: f => { const t = { f, evaluate: () => { const o = { html: f, k: t.k, setTitle: () => o, addMetaTag: () => o }; return o; } }; return t; } },
     ScriptApp: {
       getService: () => ({ getUrl: () => 'https://script.google.com/macros/s/ABC/exec' }),
       getProjectTriggers: () => triggers, deleteTrigger: t => triggers.splice(triggers.indexOf(t), 1),
@@ -113,6 +117,10 @@ function taoMoiTruong() {
           return { getResponseCode: () => 200, getContentText: () => JSON.stringify(tra) };
         }
         if (url.startsWith('https://api.anthropic.com/v1/')) return maApi(url.slice(29), o);
+        if (url.startsWith('https://raw.githubusercontent.com/')) {
+          const nd = gh[url];
+          return { getResponseCode: () => (nd == null ? 404 : 200), getContent: () => Array.from(Buffer.from(nd || '', 'utf8')).map(b => (b > 127 ? b - 256 : b)), getContentText: () => nd || '' };
+        }
         const ham = url.split('/').pop(), body = JSON.parse(o.payload);
         goi.push({ ham, body });
         if (ham === 'sendMessage') gui.push(body);
@@ -161,8 +169,8 @@ function taoMoiTruong() {
     throw new Error('MA API chưa giả lập: ' + m + ' ' + duong);
   }
   vm.createContext(ctx);
-  ['TroLyKPI.gs', 'TroLyAI.gs', 'Agents.gs', 'TayChan.gs'].forEach(f => vm.runInContext(fs.readFileSync(path.join(__dirname, '..', f), 'utf8'), ctx, { filename: f }));
-  return { ctx, store, cache, gui, goi, triggers, ai, files, kpi, lich, nhap, ma, drive, thuGmail, taoBlob };
+  ['TroLyKPI.gs', 'TroLyAI.gs', 'Agents.gs', 'TayChan.gs', 'Agency.gs', 'WebUI.gs'].forEach(f => vm.runInContext(fs.readFileSync(path.join(__dirname, '..', f), 'utf8'), ctx, { filename: f }));
+  return { ctx, store, cache, gui, goi, triggers, ai, files, kpi, lich, nhap, ma, drive, thuGmail, taoBlob, gh, ui };
 }
 
 function kpiMau(kpi) {

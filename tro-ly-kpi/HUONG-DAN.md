@@ -158,8 +158,55 @@ Nhắn `việc nền` để xem việc đang chạy.
 - Tối đa 15 việc nền/ngày. Đổi bằng thuộc tính `TC_GIOI_HAN_NGAY`.
 - Muốn tắt tin tức sáng: vào **Trình kích hoạt** (biểu tượng đồng hồ) → xóa `tinTucSang`.
 
+## Bước 8. Web app – bảng điều khiển
+
+Một trang web dùng trên điện thoại hoặc máy tính, gồm:
+- **Tổng quan**: hiệu suất từng xưởng, xu hướng 14 ngày, dừng máy, cảnh báo, việc, kết quả.
+- **Trò chuyện**: chọn phòng muốn hỏi.
+- **Phòng ban**: bật/tắt phòng, nhập chuyên gia Agency.
+- **Việc**: thêm việc, đánh dấu xong.
+- **Giao việc**: làm slide, đọc tệp Gmail, lấy tin tức.
+
+**Cài đặt** (sao lưu trước):
+1. Dán lại các file cũ bản mới: `Mã.gs` ← `TroLyKPI.gs`, `TroLyAI`, `Agents`, `TayChan`.
+2. **＋ → Tập lệnh** → tên `WebUI` → dán `WebUI.gs` → Lưu.
+3. **＋ → HTML** → tên đúng **`WebApp`** (không thêm đuôi) → xóa nội dung mẫu → dán `WebApp.html` → Lưu.
+4. **＋ → Tập lệnh** → tên `Agency` → dán `Agency.gs` → Lưu.
+5. Chọn hàm **caiDatWebApp** → ▶ Chạy → **Cho phép** (Google hỏi thêm quyền xem email đăng nhập để nhận ra chủ).
+   - Nhật ký hiện **đường link bảng điều khiển** (đuôi `?k=…`).
+   - **Lưu link này vào dấu trang hoặc màn hình chính điện thoại. Không chia sẻ cho ai.**
+6. **Triển khai → Quản lý triển khai → ✏️ → Phiên bản mới → Triển khai.**
+7. Mở link. Trên điện thoại: menu trình duyệt → **Thêm vào màn hình chính** để dùng như một ứng dụng.
+
+**Bảo mật:**
+- Chỉ ai có link chứa khóa riêng, hoặc chính bạn khi đăng nhập Google, mới mở được trang. Người khác chỉ thấy một dòng chữ.
+- Lỡ lộ link: chạy hàm **doiKhoaWebApp**, link cũ hết tác dụng ngay. Chạy xong lấy link mới trong nhật ký.
+
+## Bước 9. Chuyên gia Agency (thư viện nhân vật nguồn mở)
+
+Agency Agents (github.com/msitarzewski/agency-agents, giấy phép MIT) là bộ khoảng 270 "nhân vật chuyên gia" viết sẵn. Claude đã chọn **22 nhân vật hợp với nhà máy cơ bi-a**:
+- vận hành Lean, cung ứng, định giá, chiến lược, tuyển dụng, đào tạo
+- biên bản họp, tóm tắt điều hành, xu hướng thị trường
+- biên dịch, chăm sóc khách hàng, hồ sơ chào hàng OEM, ESG, pháp chế…
+
+Mỗi nhân vật thành **một phòng** trong Công ty Agent.
+
+**Nhập:** mở web app → **Phòng ban** → tích chọn → **Nhập các mục đã chọn**. Hoặc chạy hàm **nhapAgency** trong Apps Script để nhập cả 22.
+- 8 phòng bật sẵn: Vận hành, Cung ứng, Định giá, Chiến lược, Tuyển dụng, Đào tạo, Biên bản họp, Tóm tắt điều hành.
+- Các phòng còn lại nhập vào ở trạng thái tắt, muốn dùng thì bật.
+
+**An toàn:**
+- Chỉ tải đúng **phiên bản Claude đã đọc và rà soát** (khóa theo mã commit `652b269`). Mỗi tệp có **dấu vân tay SHA-256**: nếu ai đó sửa tệp trên mạng, bot **từ chối nhập**.
+- Đã bỏ phần mã ví dụ và giới hạn độ dài để tiết kiệm chi phí.
+- Nhân vật chỉ là lời mô tả vai trò. Quyền thật nằm ở cột `CongCu`.
+- Phòng có `tim_web` (tra cứu Internet) **không được** đồng thời có công cụ đọc dữ liệu nội bộ (KPI, Gmail, lịch, slide). Nếu bạn lỡ gán cả hai, bot **tự gỡ** `tim_web` và ghi cảnh báo 🔒 trong mục Phòng ban. Lý do: trang web có thể cài lệnh ẩn để dụ AI gửi dữ liệu công ty ra ngoài.
+
+**Gọi phòng:** chọn trong ô "Hỏi phòng" ở web app, hoặc nhắn Zalo `@cu tìm nhà cung cấp ống carbon`, `@giá báo giá 500 cơ cho khách Mỹ`, `@bb` kèm ghi chép cuộc họp…
+
+**Chi phí:** mỗi lần hỏi phòng Agency tốn hơn một chút so với phòng thường (bản mô tả vai trò dài 5–12 nghìn ký tự), khoảng 1.000–3.000đ/câu với Opus 5.5. Phòng ít dùng thì nên để tắt.
+
 ## Khi cập nhật bản mới
-1. Mở từng file (`Mã.gs` ← `TroLyKPI.gs`, `TroLyAI` ← `TroLyAI.gs`, `Agents` ← `Agents.gs`, `TayChan` ← `TayChan.gs`) → xóa hết → dán bản mới → 💾 Lưu.
+1. Mở từng file (`Mã.gs` ← `TroLyKPI.gs`, `TroLyAI` ← `TroLyAI.gs`, `Agents` ← `Agents.gs`, `TayChan` ← `TayChan.gs`, `WebUI` ← `WebUI.gs`, `WebApp` ← `WebApp.html`, `Agency` ← `Agency.gs`) → xóa hết → dán bản mới → 💾 Lưu.
 2. **Triển khai → Quản lý triển khai → ✏️ → Phiên bản: Phiên bản mới → Triển khai.** URL giữ nguyên, không cần chạy lại `caiDat`.
    - Nếu Claude báo bản mới dùng thêm quyền: chạy `caiDatAgent` / `caiDatTayChan` để cấp quyền **trước** khi triển khai.
    - Nếu Claude báo đã đổi cách làm việc của agent tay chân: chạy lại `caiDatTayChan` (chỉ cập nhật, không tạo trùng).
@@ -181,4 +228,4 @@ Nhắn `việc nền` để xem việc đang chạy.
   - Chạy lại **caiDat**.
 - Nếu lỡ để lộ token: vào Zalo Bot Creator (https://zalo.me/s/botcreator/) tạo token mới → sửa `ZALO_TOKEN` → chạy lại **caiDat**.
 - Bot báo lỗi quyền, hoặc ngừng trả lời sau khi cập nhật: chạy **caiDatAgent** trong Apps Script và bấm Cho phép.
-- Kiểm thử trên máy (dành cho Claude): `node tests/tro-ly.js && node tests/agents.js && node tests/tay-chan.js`.
+- Kiểm thử trên máy (dành cho Claude): `node tests/tro-ly.js && node tests/agents.js && node tests/tay-chan.js && node tests/web-agency.js`.

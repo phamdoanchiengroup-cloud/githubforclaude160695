@@ -99,7 +99,7 @@ function doPost(e) {
   return traLoi_('ok');
 }
 
-function doGet() { return traLoi_('Trợ lý KPI đang chạy.'); }
+function doGet(e) { return typeof webUi_ === 'function' ? webUi_(e) : traLoi_('Trợ lý KPI đang chạy.'); }
 
 function traLoi_(s) { return ContentService.createTextOutput(s); }
 
@@ -150,7 +150,7 @@ function traLoiLenh_(text, chat) {
       if (/^(việc nền|viec nen)$/.test(t)) return viecNenDangChay_();
     }
     if (typeof hoiAI_ === 'function' && PropertiesService.getScriptProperties().getProperty('ANTHROPIC_API_KEY')) {
-      try { zalo_('sendChatAction', { chat_id: chat, action: 'typing' }); } catch (e) { /* không bắt buộc */ }
+      if (chat !== 'web') try { zalo_('sendChatAction', { chat_id: chat, action: 'typing' }); } catch (e) { /* không bắt buộc */ }
       return hoiAI_(chat, text);
     }
     return 'Trợ lý chưa hiểu câu này (chưa bật hỏi tự do bằng AI).\n\n' + HUONG_DAN;

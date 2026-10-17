@@ -292,10 +292,20 @@ function ketThuc_(v, ghiChu, ev) {
   var dau = (ghiChu ? '⚠ ' : '✅ ') + TC_TEN[v.loai] + ': ' + v.tieuDe + (ghiChu ? ' (' + ghiChu + ')' : '');
   var tin = dau + (chu ? '\n\n' + chu.slice(0, 3000) : '') + (tep.length ? '\n\n📎 Tệp:\n' + tep.map(function (t) { return '• ' + t.ten + ': ' + t.url; }).join('\n') : '');
   baoViec_(v, tin);
+  luuKetQua_({ t: Utilities.formatDate(new Date(), TZ, 'HH:mm dd/MM'), loai: TC_TEN[v.loai], tieuDe: v.tieuDe, loi: ghiChu || '', chu: chu.slice(0, 3000), tep: tep });
   if (v.loai === 'tin' && chu) PropertiesService.getScriptProperties().setProperty('TC_TIN_TRUOC', chu.slice(0, 4000));
   try { if (typeof ghiNhatKyAgent_ === 'function') ghiNhatKyAgent_({ ten: TC_TEN[v.loai] }, v.tieuDe, tin); } catch (e) { console.error(e); }
   maGoi_('post', '/sessions/' + v.sid + '/archive', {});
   return true;
+}
+
+/** 20 kết quả gần nhất cho web app. */
+function luuKetQua_(kq) {
+  var P = PropertiesService.getScriptProperties(), ds = [];
+  try { ds = JSON.parse(P.getProperty('TC_KQ') || '[]'); } catch (e) { ds = []; }
+  ds.unshift(kq);
+  while (ds.length > 20 || JSON.stringify(ds).length > 8500) ds.pop();
+  P.setProperty('TC_KQ', JSON.stringify(ds));
 }
 
 function luuTepKetQua_(v) {
@@ -312,7 +322,7 @@ function luuTepKetQua_(v) {
 }
 
 function baoViec_(v, tin) {
-  var id = v.chat || PropertiesService.getScriptProperties().getProperty('CHU_CHAT_ID');
+  var id = v.chat && v.chat !== 'web' ? v.chat : PropertiesService.getScriptProperties().getProperty('CHU_CHAT_ID');
   if (id) guiZalo_(id, tin);
 }
 

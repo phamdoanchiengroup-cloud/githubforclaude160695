@@ -126,6 +126,11 @@ function docAgents_() {
       goi: g('Goi').toLowerCase().split(/[,;]/).map(function (x) { return x.trim(); }).filter(String).concat([g('Ma').toLowerCase()]),
       congCu: g('CongCu').split(/[,;\s]+/).filter(function (x) { return x && congCuTheoTen_(x); })
     });
+    var a = ds[ds.length - 1];
+    if (a.congCu.indexOf('tim_web') >= 0 && a.congCu.some(function (x) { return AG_NOI_BO.indexOf(x) >= 0; })) {
+      a.congCu = a.congCu.filter(function (x) { return x !== 'tim_web'; });
+      a.canhBao = 'đã gỡ tim_web vì phòng này đọc dữ liệu nội bộ';
+    }
   });
   C.put('agents', JSON.stringify(ds), 600);
   return ds;
@@ -135,11 +140,12 @@ function docAgents_() {
  * Chọn phòng cho câu hỏi: "@tên ..." gọi thẳng; không thì nhờ AI điều phối (cân nhắc phòng vừa trao đổi).
  * Trả về agent kèm cauHoi (đã bỏ phần @tên) hoặc null nếu chưa cài công ty Agent.
  */
-function chonAgent_(key, chatId, cauHoi, lichSu) {
+function chonAgent_(key, chatId, cauHoi, lichSu, maPhong) {
   var ds = docAgents_();
   if (!ds || !ds.length) return null;
-  var chon = null, q = cauHoi, dai = 0;
-  if (/^@/.test(cauHoi)) {
+  var chon = maPhong ? ds.filter(function (a) { return a.ma === maPhong; })[0] || null : null, q = cauHoi, dai = 0;
+  if (maPhong && !chon) return { loi: 'Phòng này đang tắt hoặc không còn. Bật lại trong mục Phòng ban.' };
+  if (!chon && /^@/.test(cauHoi)) {
     var sau = cauHoi.slice(1).replace(/^\s+/, ''), thap = sau.toLowerCase();
     ds.forEach(function (a) {
       a.goi.concat([a.ten.toLowerCase()]).forEach(function (g) {
@@ -389,7 +395,14 @@ var AGENT_XU_LY = {
   }
 };
 
+/**
+ * Công cụ đọc dữ liệu nội bộ. Phòng nào có một trong số này thì KHÔNG được tra web (tim_web):
+ * trang web có thể cài lệnh ẩn dụ AI nhét dữ liệu công ty vào câu tìm kiếm → lọt ra ngoài.
+ */
+var AG_NOI_BO = ['tra_cuu', 'hieu_suat', 'ban_tin', 'bao_cao_sheet', 'email_tim', 'email_nhap', 'lich_xem', 'lich_tao', 'doc_file_email', 'giao_slide'];
+
 function congCuTheoTen_(ten) {
+  if (ten === 'tim_web') return { type: 'web_search_20260209', name: 'web_search', max_uses: 5 };
   var all = AI_CONG_CU.concat(AG_CONG_CU, typeof TC_CONG_CU !== 'undefined' ? TC_CONG_CU : []);
   for (var i = 0; i < all.length; i++) if (all[i].name === ten) return all[i];
   return null;

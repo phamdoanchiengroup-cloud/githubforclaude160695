@@ -23,7 +23,7 @@ var AI_COT_CAM = ['SoCCCD', 'DienThoai', 'DiaChi', 'SdtKhanCap', 'LuongCoBan', '
 /* ============================ VÒNG HỎI – ĐÁP ============================ */
 
 /** Trả lời một câu hỏi tự do. Trả về chuỗi để gửi Zalo. */
-function hoiAI_(chatId, cauHoi) {
+function hoiAI_(chatId, cauHoi, maPhong) {
   var P = PropertiesService.getScriptProperties();
   var key = P.getProperty('ANTHROPIC_API_KEY');
   if (!key) return 'Chưa bật tính năng hỏi tự do (thiếu ANTHROPIC_API_KEY).\n\n' + HUONG_DAN;
@@ -39,7 +39,7 @@ function hoiAI_(chatId, cauHoi) {
   try { lichSu = JSON.parse(C.get(hsKey) || '[]'); } catch (e) { lichSu = []; }
 
   // Công ty Agent (Agents.gs): chọn phòng ban phù hợp; thiếu file thì dùng trợ lý KPI một mình như trước.
-  var ag = typeof chonAgent_ === 'function' ? chonAgent_(key, chatId, cauHoi, lichSu) : null;
+  var ag = typeof chonAgent_ === 'function' ? chonAgent_(key, chatId, cauHoi, lichSu, maPhong) : null;
   if (ag && ag.loi) return ag.loi;
   if (ag) cauHoi = ag.cauHoi;
 
@@ -60,6 +60,7 @@ function hoiAI_(chatId, cauHoi) {
     if (res.stop_reason === 'refusal') return 'Trợ lý không trả lời được câu này. Bạn thử hỏi cách khác nhé.';
     var content = res.content || [];
     var chu = content.filter(function (b) { return b.type === 'text'; }).map(function (b) { return b.text; }).join('\n').trim();
+    if (res.stop_reason === 'pause_turn') { messages.push({ role: 'assistant', content: content }); continue; }   // tra web dài: máy chủ tạm dừng, gửi lại để làm tiếp
     if (res.stop_reason !== 'tool_use') { traLoi = chu; break; }
     messages.push({ role: 'assistant', content: content });
     var ketQua = content.filter(function (b) { return b.type === 'tool_use'; }).map(function (b) {
