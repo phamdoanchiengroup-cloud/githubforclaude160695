@@ -239,6 +239,7 @@ Tab **🎙 Giọng nói** trong web app (Bước 8):
 
 **Chi phí:**
 - Nghe giọng nói và đọc bằng giọng máy: **miễn phí** (chạy ngay trên điện thoại hoặc máy tính).
+- Gõ hoặc nói `bc`, `bc 15/10`, `tuần`, `việc`, `xong 5` trong tab Giọng nói cũng miễn phí (kết quả hiện trên màn hình).
 - Câu hỏi tự do tốn tiền AI như khi gõ chữ. Câu trả lời giọng nói được dặn ngắn (2–5 câu) nên thường **rẻ hơn**.
 - FPT.AI có gói dùng thử miễn phí, sau đó tính theo số ký tự.
 

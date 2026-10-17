@@ -126,7 +126,7 @@ function xuLyTin_(u) {
 var HUONG_DAN = 'Bạn có thể nhắn:\n• bc – bản tin ngày gần nhất\n• bc 10/10 – bản tin ngày 10/10\n• tuần – tổng kết 7 ngày\n• giúp – xem lại hướng dẫn\n• phòng ban – các phòng AI đang làm việc\n• việc – việc đang mở · xong 3 – đánh dấu xong\n• tin tức – bản tin ngành bi-a · việc nền – việc đang chạy\n• hoặc nhắn tự nhiên, vd "hôm nay bao nhiêu người nghỉ?", "@viết bài tuyển dụng CNC"';
 
 function traLoiLenh_(text, chat) {
-  var t = text.toLowerCase().replace(/\s+/g, ' ').trim();
+  var t = text.toLowerCase().replace(/\s+/g, ' ').trim().replace(/[.!?]+$/, '');   // "Bc." (bàn phím tự thêm dấu chấm) vẫn là lệnh
   try {
     var mBc = t.match(/^(bc|báo cáo|bao cao|bản tin|ban tin)(?: (\d{1,2})[\/\-.](\d{1,2})(?:[\/\-.](\d{4}))?)?$/);
     if (mBc) {

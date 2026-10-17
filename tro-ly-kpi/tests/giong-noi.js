@@ -29,7 +29,11 @@ ok(!/[%#•*]|\d\/\d|https?:/.test(bt) && !/[\u{1F300}-\u{1FAFF}]/u.test(bt), 'k
 ok(/Cần chú ý|Không có gì bất thường/.test(bt), 'có phần cần chú ý');
 ok(M.ctx.uiNoi(K, 'Trợ lý ơi, báo cáo.').noi === M.ctx.uiBanTinNoi(K), '"Trợ lý ơi, báo cáo" → bản tin, bỏ từ gọi');
 ok(/việc/.test(M.ctx.uiNoi(K, 'việc hôm nay').noi), 'việc hôm nay');
-ok(M.ai.yeuCau.length === soAI, 'bản tin và việc không tốn AI');
+ok(M.ctx.uiNoi(K, 'bc').noi === bt && M.ctx.uiNoi(K, 'Bc.').noi === bt, 'gõ "bc" trong tab giọng nói → bản tin');
+const tuan = M.ctx.uiNoi(K, 'tuần');
+ok(/màn hình/.test(tuan.noi) && /TỔNG KẾT/.test(tuan.chu), 'tuần → tổng kết tuần trên màn hình');
+ok(/BẢN TIN SẢN XUẤT/.test(M.ctx.uiHoi(K, '', 'Bc.')) && /BẢN TIN SẢN XUẤT/.test(M.ctx.traLoiLenh_('Bc.', 'u1')), '"Bc." có dấu chấm vẫn là lệnh');
+ok(M.ai.yeuCau.length === soAI, 'bản tin, việc, tuần không tốn AI');
 ok(/đang nghe/.test(M.ctx.uiNoi(K, 'Jarvis').noi), 'chỉ gọi tên → trả lời đang nghe');
 
 // ---------- câu hỏi tự do: kèm cách trả lời bằng giọng, lịch sử riêng ----------
@@ -56,5 +60,7 @@ ok(M.fpt.goi.filter(g => g.url.startsWith('https://file01')).length === 3, 'ch�
 M.fpt.choLan = 999; M.fpt.goi.length = 0;
 ok(M.ctx.uiDocFPT(K, 'Thử lại') === '', 'FPT chậm quá → trả rỗng để dùng giọng máy');
 
+M.ai.kich.push({ __ma: 400, type: 'error', error: { type: 'invalid_request_error', message: 'Your credit balance is too low to access the Anthropic API.' } });
+ok(/hết tiền.*Buy credits.*bc, tuần/.test(M.ctx.uiHoi(K, 'san_xuat', 'vì sao xưởng Ngọn thấp')), 'hết tiền API → báo bằng tiếng Việt, chỉ cách nạp');
 ok(M.ai.kich.length === 0 && M.ai.loiKich.length === 0, 'giả lập AI: dùng hết, không có lỗi bị nuốt: ' + M.ai.loiKich.map(e => e.message).join(' | '));
 console.log('✓ giong-noi: ' + n + ' kiểm tra đạt');

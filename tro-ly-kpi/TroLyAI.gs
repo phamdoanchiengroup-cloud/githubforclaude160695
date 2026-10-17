@@ -115,6 +115,7 @@ function goiClaude_(key, he, messages, tools, model, effort, maxTok) {
   if (r.getResponseCode() !== 200) {
     var m = j && j.error && j.error.message || r.getContentText();
     if (r.getResponseCode() === 401) return { loi: 'ANTHROPIC_API_KEY không đúng.' };
+    if (/credit balance/i.test(m)) return { loi: 'Tài khoản Claude API đã hết tiền. Nạp thêm tại console.anthropic.com → Settings → Billing → Buy credits. Các lệnh bc, tuần, việc vẫn dùng bình thường (không tốn tiền).' };
     if (r.getResponseCode() === 429 || r.getResponseCode() >= 500) return { loi: 'AI đang bận, thử lại sau ít phút.' };
     return { loi: 'AI báo lỗi: ' + m };
   }

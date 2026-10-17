@@ -115,7 +115,7 @@ function taoMoiTruong() {
           assert.ok(r, 'AI được gọi ngoài dự kiến: ' + JSON.stringify(body.messages).slice(0, 300));
           let tra;
           try { tra = typeof r === 'function' ? r(body) : r; } catch (e) { ai.loiKich.push(e); throw e; }
-          return { getResponseCode: () => 200, getContentText: () => JSON.stringify(tra) };
+          return { getResponseCode: () => (tra && tra.__ma) || 200, getContentText: () => JSON.stringify(tra) };
         }
         if (url.startsWith('https://api.anthropic.com/v1/')) return maApi(url.slice(29), o);
         if (url === 'https://api.fpt.ai/hmi/tts/v5' || url.startsWith('https://file01.fpt.ai/')) {
