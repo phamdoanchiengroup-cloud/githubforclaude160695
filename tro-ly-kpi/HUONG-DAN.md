@@ -228,6 +228,10 @@ Tab **🎙 Giọng nói** trong web app (Bước 8):
 - Nếu **không nghe thấy tiếng đọc** hoặc giọng đọc lơ lớ tiếng Anh, là máy chưa có giọng tiếng Việt:
   - Android: Cài đặt → tìm "Chuyển văn bản thành giọng nói" → Công cụ của Google → tải **Tiếng Việt**.
   - iPhone: Cài đặt → Trợ năng → Nội dung được đọc → Giọng nói → **Tiếng Việt**.
+  - **Máy tính Windows – cách dễ nhất: mở bảng điều khiển bằng trình duyệt Microsoft Edge** (có sẵn trong Windows). Edge có sẵn 2 giọng tiếng Việt tự nhiên, miễn phí: **HoaiMy** (nữ) và **NamMinh** (nam). Trang tự chọn giọng này; đổi ở mục **Giọng đọc**. Chrome trên máy tính thường **không** có giọng tiếng Việt.
+  - Windows, nếu vẫn muốn dùng Chrome: ⊞ Start → **Cài đặt** → **Thời gian và ngôn ngữ** → **Giọng nói** → **Quản lý giọng nói / Thêm giọng nói** → chọn **Tiếng Việt** → Thêm → khởi động lại Chrome. (Chrome không phải lúc nào cũng nhận giọng này; không được thì dùng Edge hoặc giọng FPT.AI bên dưới.)
+  - Máy Mac: **Cài đặt hệ thống** → **Trợ năng** → **Nội dung được đọc** → **Giọng hệ thống** → **Quản lý giọng…** → tích **Tiếng Việt – Linh** → tải về.
+- Máy tính để bàn không có micro: cắm tai nghe có micro hoặc webcam có micro.
 
 **Giọng tự nhiên hơn (tùy chọn) – FPT.AI:**
 1. Đăng ký tại console.fpt.ai → tạo khóa API cho Text to Speech. Không gửi khóa cho ai, kể cả Claude.
@@ -243,8 +247,43 @@ Tab **🎙 Giọng nói** trong web app (Bước 8):
 - Câu hỏi tự do tốn tiền AI như khi gõ chữ. Câu trả lời giọng nói được dặn ngắn (2–5 câu) nên thường **rẻ hơn**.
 - FPT.AI có gói dùng thử miễn phí, sau đó tính theo số ký tự.
 
+## Bước 11. Câu lệnh sẵn – hỏi tự nhiên mà không tốn tiền AI
+
+Bot tự nhận ra các câu hỏi thường gặp và **tính ngay từ số liệu, không gọi AI** (Zalo, ô Trò chuyện, tab Giọng nói). Gõ/nói **"lệnh"** để xem danh sách.
+
+| Hỏi về | Ví dụ |
+|---|---|
+| Hiệu suất | "hiệu suất hôm qua", "hiệu suất tháng này", "xưởng Ngọn tuần này", "hiệu suất Nguyễn Văn An tháng trước" |
+| Xếp hạng | "hôm qua xưởng nào thấp nhất", "xưởng nào cao nhất 7 ngày qua" |
+| Dừng máy | "dừng máy tuần này", "xưởng CNC dừng máy hôm qua" |
+| Nghỉ | "hôm nay ai nghỉ", "nghỉ tháng này" |
+| Chất lượng | "lỗi KCS hôm qua", "chất lượng xưởng Ngọn tuần này" |
+| Duyệt, điểm danh | "còn bao nhiêu dòng chờ duyệt", "xưởng nào chưa điểm danh" |
+| Máy móc | "máy nào sắp bảo trì" |
+| Khác | "lịch hôm nay", "lịch ngày mai", "mấy giờ rồi" |
+
+- Thời gian hiểu được: hôm nay, hôm qua, hôm kia, 15/10, tuần này (7 ngày qua), tuần trước, tháng này, tháng trước, "10 ngày qua". Không nói thời gian → ngày gần nhất có số liệu.
+- Câu có **"vì sao, tại sao, phân tích, so sánh, đề xuất, viết, soạn, tìm, nhắc, slide, email…"** → chuyển cho AI (tính phí) vì cần suy luận hoặc làm việc.
+- Muốn AI trả lời một câu mà bot đang trả lời sẵn: thêm chữ "phân tích" vào câu.
+
+**Thêm câu của riêng bạn:**
+1. Apps Script → chọn hàm **caiDatLenhNhanh** → ▶ Chạy (chỉ 1 lần). Sheet "Trợ lý – Công ty Agent" có thêm tab **LenhNhanh**.
+2. Mỗi dòng: cột **CachGoi** = các cách gọi, ngăn bằng dấu chấm phẩy (vd `wifi xưởng; mật khẩu wifi`); cột **TraLoi** = câu trả lời.
+   - Trả lời cố định: ghi thẳng nội dung (quy trình, số điện thoại tổ bảo trì…).
+   - Chạy câu lệnh khác: bắt đầu bằng dấu **=**, vd `=hiệu suất xưởng Ngọn hôm qua`, `=bc`, `=tuần`.
+3. Sửa xong không cần triển khai lại; bot cập nhật sau tối đa 10 phút.
+
+**Cài đặt** (sao lưu trước: Tổng quan → Tạo bản sao dự án):
+1. **＋ → Tập lệnh** → tên `LenhNhanh` → xóa hết → dán `LenhNhanh.gs` → 💾 Lưu.
+2. MỞ FILE `Mã.gs` → xóa hết → dán bản mới `TroLyKPI.gs` → Lưu.
+3. MỞ FILE `WebUI` → xóa hết → dán bản mới `WebUI.gs` → Lưu.
+4. MỞ FILE `GiongNoi` → xóa hết → dán bản mới `GiongNoi.gs` → Lưu.
+5. MỞ FILE `WebApp` → xóa hết → dán bản mới `WebApp.html` → Lưu.
+6. **Triển khai → Quản lý triển khai → ✏️ → Phiên bản mới → Triển khai.** Mở lại web app, Ctrl+F5.
+7. (Tùy chọn) chạy **caiDatLenhNhanh** để có tab LenhNhanh. Nếu Google hỏi quyền thì bấm Cho phép.
+
 ## Khi cập nhật bản mới
-1. Mở từng file (`Mã.gs` ← `TroLyKPI.gs`, `TroLyAI` ← `TroLyAI.gs`, `Agents` ← `Agents.gs`, `TayChan` ← `TayChan.gs`, `WebUI` ← `WebUI.gs`, `WebApp` ← `WebApp.html`, `Agency` ← `Agency.gs`, `GiongNoi` ← `GiongNoi.gs`) → xóa hết → dán bản mới → 💾 Lưu.
+1. Mở từng file (`Mã.gs` ← `TroLyKPI.gs`, `TroLyAI` ← `TroLyAI.gs`, `Agents` ← `Agents.gs`, `TayChan` ← `TayChan.gs`, `WebUI` ← `WebUI.gs`, `WebApp` ← `WebApp.html`, `Agency` ← `Agency.gs`, `GiongNoi` ← `GiongNoi.gs`, `LenhNhanh` ← `LenhNhanh.gs`) → xóa hết → dán bản mới → 💾 Lưu.
 2. **Triển khai → Quản lý triển khai → ✏️ → Phiên bản: Phiên bản mới → Triển khai.** URL giữ nguyên, không cần chạy lại `caiDat`.
    - Nếu Claude báo bản mới dùng thêm quyền: chạy `caiDatAgent` / `caiDatTayChan` để cấp quyền **trước** khi triển khai.
    - Nếu Claude báo đã đổi cách làm việc của agent tay chân: chạy lại `caiDatTayChan` (chỉ cập nhật, không tạo trùng).

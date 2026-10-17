@@ -106,7 +106,7 @@ function traLoiNhanh_(text) {
   var t = text.toLowerCase().replace(/\s+/g, ' ').trim().replace(/[.!?]+$/, '');
   if (/^(bc|báo cáo|bao cao|bản tin|ban tin)( |$)/.test(t) || /^(tuần|tuan)$/.test(t) || /^(việc|viec|phòng ban|phong ban)$/.test(t) ||
     /^(xong|done)\s*#?\d+$/.test(t)) return traLoiLenh_(t, 'web');
-  return '';
+  return typeof lenhNhanh_ === 'function' ? lenhNhanh_(text) : '';   // câu lệnh sẵn (LenhNhanh.gs)
 }
 
 function uiDsViec_() {

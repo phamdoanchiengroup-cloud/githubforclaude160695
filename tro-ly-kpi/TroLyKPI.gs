@@ -123,7 +123,7 @@ function xuLyTin_(u) {
   guiZalo_(chat, traLoiLenh_(text, chat));
 }
 
-var HUONG_DAN = 'Bạn có thể nhắn:\n• bc – bản tin ngày gần nhất\n• bc 10/10 – bản tin ngày 10/10\n• tuần – tổng kết 7 ngày\n• giúp – xem lại hướng dẫn\n• phòng ban – các phòng AI đang làm việc\n• việc – việc đang mở · xong 3 – đánh dấu xong\n• tin tức – bản tin ngành bi-a · việc nền – việc đang chạy\n• hoặc nhắn tự nhiên, vd "hôm nay bao nhiêu người nghỉ?", "@viết bài tuyển dụng CNC"';
+var HUONG_DAN = 'Bạn có thể nhắn:\n• bc – bản tin ngày gần nhất\n• bc 10/10 – bản tin ngày 10/10\n• tuần – tổng kết 7 ngày\n• giúp – xem lại hướng dẫn · lệnh – các câu hỏi miễn phí\n• phòng ban – các phòng AI đang làm việc\n• việc – việc đang mở · xong 3 – đánh dấu xong\n• tin tức – bản tin ngành bi-a · việc nền – việc đang chạy\n• hoặc nhắn tự nhiên, vd "hôm nay bao nhiêu người nghỉ?", "@viết bài tuyển dụng CNC"';
 
 function traLoiLenh_(text, chat) {
   var t = text.toLowerCase().replace(/\s+/g, ' ').trim().replace(/[.!?]+$/, '');   // "Bc." (bàn phím tự thêm dấu chấm) vẫn là lệnh
@@ -149,6 +149,7 @@ function traLoiLenh_(text, chat) {
       if (/^(tin tức|tin tuc|tin bi-a|tin bia|tin)$/.test(t)) return giaoTinTuc_(chat, '');
       if (/^(việc nền|viec nen)$/.test(t)) return viecNenDangChay_();
     }
+    if (typeof lenhNhanh_ === 'function') { var ln = lenhNhanh_(text); if (ln) return ln; }   // câu lệnh sẵn (LenhNhanh.gs) – không tốn AI
     if (typeof hoiAI_ === 'function' && PropertiesService.getScriptProperties().getProperty('ANTHROPIC_API_KEY')) {
       if (chat !== 'web') try { zalo_('sendChatAction', { chat_id: chat, action: 'typing' }); } catch (e) { /* không bắt buộc */ }
       return hoiAI_(chat, text);

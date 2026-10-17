@@ -41,11 +41,11 @@ M.ai.kich.push(body => {
   ok(/TRẢ LỜI BẰNG GIỌNG NÓI/.test(body.system[0].text) && /"sếp"/.test(body.system[0].text), 'gửi kèm cách trả lời bằng giọng');
   return txt('Hôm qua xưởng Ngọn thấp nhất, 82 phần trăm, do chờ vật tư.\n---\nChi tiết:\n• Ngọn 82%\n• Cán 97%');
 });
-const r1 = M.ctx.uiNoi(K, 'hôm qua xưởng nào thấp nhất', 'san_xuat');
+const r1 = M.ctx.uiNoi(K, 'vì sao hôm qua xưởng Ngọn thấp nhất', 'san_xuat');
 ok(r1.noi === '[Sản xuất]\nHôm qua xưởng Ngọn thấp nhất, 82 phần trăm, do chờ vật tư.' && /Cán 97%/.test(r1.chu), 'tách phần đọc và phần chi tiết');
 ok(JSON.parse(M.cache.hsgiong || '[]').length === 1 && !M.cache.hsweb, 'lịch sử giọng nói riêng');
 M.ai.kich.push(body => { ok(!/TRẢ LỜI BẰNG GIỌNG NÓI/.test(body.system[0].text), 'web chữ: không có cách trả lời giọng'); return txt('ok'); });
-M.ctx.uiHoi(K, 'san_xuat', 'xưởng nào cao nhất');
+M.ctx.uiHoi(K, 'san_xuat', 'phân tích xưởng nào cao nhất');
 
 // ---------- FPT.AI ----------
 ok(M.ctx.uiGiongCauHinh(K).fpt === false && M.ctx.uiDocFPT(K, 'Xin chào sếp') === '', 'chưa có khóa FPT → dùng giọng máy');
@@ -61,6 +61,6 @@ M.fpt.choLan = 999; M.fpt.goi.length = 0;
 ok(M.ctx.uiDocFPT(K, 'Thử lại') === '', 'FPT chậm quá → trả rỗng để dùng giọng máy');
 
 M.ai.kich.push({ __ma: 400, type: 'error', error: { type: 'invalid_request_error', message: 'Your credit balance is too low to access the Anthropic API.' } });
-ok(/hết tiền.*Buy credits.*bc, tuần/.test(M.ctx.uiHoi(K, 'san_xuat', 'vì sao xưởng Ngọn thấp')), 'hết tiền API → báo bằng tiếng Việt, chỉ cách nạp');
+ok(/hết tiền.*Buy credits.*bc, tuần/.test(M.ctx.uiHoi(K, 'san_xuat', 'vì sao xưởng Ngọn thấp hôm qua')), 'hết tiền API → báo bằng tiếng Việt, chỉ cách nạp');
 ok(M.ai.kich.length === 0 && M.ai.loiKich.length === 0, 'giả lập AI: dùng hết, không có lỗi bị nuốt: ' + M.ai.loiKich.map(e => e.message).join(' | '));
 console.log('✓ giong-noi: ' + n + ' kiểm tra đạt');

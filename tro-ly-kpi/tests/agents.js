@@ -21,7 +21,7 @@ const cuoi = () => M.gui[M.gui.length - 1].text;
 // ---------- Chưa cài: bot vẫn là trợ lý KPI một mình ----------
 ok(M.ctx.chonAgent_('sk', 'u1', 'abc', []) === null, 'chưa cài → không có phòng');
 M.ai.kich.push(txt('Hôm qua CNC đạt 100%.'));
-post('hôm qua CNC thế nào', 'a0');
+post('phân tích hôm qua CNC', 'a0');
 ok(cuoi() === 'Hôm qua CNC đạt 100%.' && M.ai.yeuCau[0].body.tools.length === 3, 'chưa cài: dùng 3 công cụ KPI như cũ');
 
 // ---------- Cài đặt ----------

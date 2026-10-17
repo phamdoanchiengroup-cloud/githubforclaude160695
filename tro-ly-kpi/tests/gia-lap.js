@@ -27,7 +27,7 @@ Sheet.prototype = {
     return R;
   },
   appendRow(r) { this.rows.push(r.slice()); return this; },
-  setFrozenRows() {},
+  setFrozenRows() {}, setColumnWidth() {},
   newChart() {
     const ch = { o: {} };
     const b = { setChartType: t => { ch.type = t; return b; }, addRange: () => b, setPosition: () => b, setOption: (k, v) => { ch.o[k] = v; return b; }, build: () => ch };
@@ -176,7 +176,7 @@ function taoMoiTruong() {
     throw new Error('MA API chưa giả lập: ' + m + ' ' + duong);
   }
   vm.createContext(ctx);
-  ['TroLyKPI.gs', 'TroLyAI.gs', 'Agents.gs', 'TayChan.gs', 'Agency.gs', 'WebUI.gs', 'GiongNoi.gs'].forEach(f => vm.runInContext(fs.readFileSync(path.join(__dirname, '..', f), 'utf8'), ctx, { filename: f }));
+  ['TroLyKPI.gs', 'TroLyAI.gs', 'Agents.gs', 'TayChan.gs', 'Agency.gs', 'WebUI.gs', 'GiongNoi.gs', 'LenhNhanh.gs'].forEach(f => vm.runInContext(fs.readFileSync(path.join(__dirname, '..', f), 'utf8'), ctx, { filename: f }));
   return { ctx, store, cache, gui, goi, triggers, ai, files, kpi, lich, nhap, ma, drive, thuGmail, taoBlob, gh, ui, fpt };
 }
 

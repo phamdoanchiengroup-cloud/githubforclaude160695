@@ -26,6 +26,8 @@ function uiNoi(k, cauHoi, ma) {
   var t = q.toLowerCase().replace(/[.!?,]+$/g, '').trim();
   if (/^(đọc |cho tôi |xem )?(bc|bản tin|báo cáo|bao cao|ban tin)( (hôm nay|sáng nay|hôm qua|sản xuất|ngày))?$/.test(t)) return { noi: banTinNoi_(), chu: '' };
   if (/^(đọc |xem )?(việc|công việc|danh sách việc)( (hôm nay|của tôi|đang mở))?$|^hôm nay (có )?(việc gì|làm gì)$/.test(t)) return { noi: viecNoi_(), chu: '' };
+  var ln = typeof lenhNhanh_ === 'function' ? lenhNhanh_(q) : '';   // câu lệnh sẵn: đọc câu đầu, chi tiết để trên màn hình
+  if (ln) { var p = ln.split(/\n\n/); return { noi: p[0], chu: p.slice(1).join('\n\n') }; }
   var lenh = traLoiNhanh_(t);   // bc 15/10, tuần, xong 5… – không tốn AI, kết quả để trên màn hình
   if (lenh) return { noi: /^(xong|done)/.test(t) ? lenh : 'Kết quả tôi để trên màn hình, sếp xem nhé.', chu: /^(xong|done)/.test(t) ? '' : lenh };
   var tl = hoiAI_('giong', q, ma || '');

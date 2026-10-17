@@ -156,7 +156,7 @@ svg.xh{width:100%;height:70px;display:block}
         <label>Tốc độ đọc <b id="gnTocSo"></b></label><input type="range" id="gnToc" min="0.7" max="1.6" step="0.1" value="1.1" style="padding:0">
         <div class="cd"><label class="cong"><input type="checkbox" id="gnLienTuc"><span></span></label><div>Trò chuyện liên tục<small>Đọc xong tự nghe tiếp, khỏi chạm lại</small></div></div>
         <div class="cd"><label class="cong"><input type="checkbox" id="gnRanhTay"><span></span></label><div>Rảnh tay – gọi "Trợ lý ơi…"<small>Luôn lắng nghe khi trang đang mở. Hợp máy tính để bàn; điện thoại có thể kêu bíp mỗi lần nghe lại.</small></div></div>
-        <div class="nhan">Nghe và đọc bằng giọng của máy là miễn phí; chỉ câu hỏi tự do mới tốn tiền AI như khi gõ chữ. "Báo cáo" và "Việc hôm nay" không tốn AI.</div>
+        <div class="nhan">Nghe và đọc bằng giọng của máy là miễn phí. Câu hỏi về hiệu suất, xưởng cao/thấp, dừng máy, nghỉ, lỗi KCS, chờ duyệt, bảo trì, lịch… được trả lời ngay, không tốn AI (nói "lệnh" để nghe danh sách). Chỉ câu cần suy luận ("vì sao", "phân tích", "viết"…) mới tốn tiền AI.</div>
       </div>
     </div>
   </section>
@@ -168,7 +168,7 @@ svg.xh{width:100%;height:70px;display:block}
       <div class="hang" style="margin-top:10px" id="goiY"></div>
       <div class="chat" id="chat" style="margin-top:10px"></div>
       <div class="go"><textarea id="cauHoi" rows="2" placeholder="Nhập câu hỏi… (Enter để gửi, Shift+Enter xuống dòng)"></textarea><button class="nut" id="gui">Gửi</button></div>
-      <div class="nhan" style="margin-top:6px">Lệnh nhanh không tốn tiền AI: bc · bc 10/10 · tuần · việc · xong 5</div>
+      <div class="nhan" style="margin-top:6px">Không tốn tiền AI: bc · tuần · việc · xong 5 · hiệu suất / dừng máy / nghỉ / lỗi KCS / chờ duyệt / bảo trì / lịch + hôm nay, hôm qua, tuần này, tháng này… (gõ "lệnh" để xem hết). Có "vì sao", "phân tích", "viết"… mới hỏi AI.</div>
     </div>
   </section>
 
@@ -321,7 +321,7 @@ function xong(id, btn) { ban(btn, function () { return goi('uiXong', id).then(fu
 function napViec() { return goi('uiViec').then(function (ds) { if (DL) DL.viec = ds; veViec(ds, 'dsViec'); veViec(ds, 'viecTom', 5); }); }
 
 /* ---------- Trò chuyện ---------- */
-var GOI_Y = ['Hôm qua xưởng nào thấp nhất, vì sao?', 'Tuần này dừng máy vì lý do gì nhiều nhất?', 'Ai nghỉ nhiều nhất tháng này?', 'Viết bài tuyển 5 công nhân CNC', 'bc', 'tuần'];
+var GOI_Y = ['bc', 'tuần', 'lệnh', 'Hôm qua xưởng nào thấp nhất', 'Dừng máy tuần này', 'Hôm nay ai nghỉ', 'Hôm qua xưởng Ngọn thấp, vì sao?', 'Viết bài tuyển 5 công nhân CNC'];
 $('goiY').innerHTML = GOI_Y.map(function (g) { return '<span class="chip">' + esc(g) + '</span>'; }).join('');
 $('goiY').onclick = function (e) { if (e.target.classList.contains('chip')) { $('cauHoi').value = e.target.textContent; gui(); } };
 function themBong(chu, ai) {
@@ -423,6 +423,8 @@ function gnGhiChu(t) { $('gnGhiChu').textContent = t || ''; }
 
 function gnVeGiong() {
   var ds = window.speechSynthesis ? speechSynthesis.getVoices().filter(function (v) { return /^vi/i.test(v.lang); }) : [];
+  var hay = function (v) { return /natural|online|neural|google/i.test(v.name) ? 0 : 1; };   // giọng tự nhiên (Edge: HoaiMy, NamMinh) lên đầu
+  ds.sort(function (a, b) { return hay(a) - hay(b); });
   var op = [];
   if (GN.cfg && GN.cfg.fpt) op.push(['fpt', 'FPT.AI – ' + GN.cfg.fptGiong + ' (tự nhiên hơn, chậm hơn ~3 giây)']);
   ds.forEach(function (v) { op.push(['m:' + v.name, v.name + ' (giọng của máy)']); });
