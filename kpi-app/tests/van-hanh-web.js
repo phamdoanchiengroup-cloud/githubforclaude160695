@@ -49,9 +49,7 @@ const doiNguoi = (p, f, giuMai) => p.evaluate(([f, giuMai]) => {
     window.__cnThu = cn.TenDangNhap;
     return __MAY_CHU.congNhanGuiSanLuong(__MAY_CHU.taoPhien_(cn), [{ Ngay: '2026-10-13', MaCD: cdm.MaCD, GioLam: 8, SoLuongLamRa: 40, SoLoi: 0 }]); }, tpTk);
   await p.evaluate(() => reload(function () { go('duyetsl'); })); await p.waitForTimeout(2500);
-  s = await p.evaluate(() => [document.querySelectorAll('#main input[id^="tc_"]').length, document.querySelectorAll('#main input[id^="slr_"]').length]);
-  ok(s[0] > 0 && s[0] === s[1], 'duyệt sản lượng: mỗi dòng có ô "tăng ca"', s);
-  ok(await p.evaluate(() => /không tính KPI/.test($('main').textContent)), 'ghi chú: phần tăng ca không tính KPI');
+  ok(await p.evaluate(() => !document.querySelector('#main input[id^="tc_"]') && document.querySelectorAll('#main input[id^="slr_"]').length > 0), 'duyệt sản lượng: không có ô tăng ca (chủ dự án bỏ 18/10)');
   await p.evaluate(() => go('homnay')); await p.waitForTimeout(2500);
   s = await p.evaluate(() => $('vhNhac') ? $('vhNhac').textContent : null);
   ok(s !== null, 'Việc hôm nay của TP: khung "Cần nhắc nhập sản lượng" (rỗng nếu không ai thiếu)', s && s.slice(0, 100));

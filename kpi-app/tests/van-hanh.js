@@ -1,5 +1,5 @@
 /**
- * Kiểm thử các mục tư vấn đã duyệt 18/10 (kpi-app/TU-VAN-VAN-HANH.md): định mức theo ngày, vi phạm không ngày, tăng ca,
+ * Kiểm thử các mục tư vấn đã duyệt 18/10 (kpi-app/TU-VAN-VAN-HANH.md): định mức theo ngày, vi phạm không ngày, số gốc khi TP sửa,
  * học việc 1 tháng, nhắc hạn nhập, soát khâu duyệt, định mức lệch, đón người mới, bảng kỹ năng.
  *   DATA=/đường/dẫn/csdl.json TZ=Asia/Ho_Chi_Minh node kpi-app/tests/van-hanh.js
  */
@@ -48,19 +48,13 @@ c.__sheets.ViPham.rows[c.__sheets.ViPham.rows.length - 1][hVP.indexOf('ThoiDiemG
 const k9 = kpi(cn.MaNV, '2026-09'), k10 = kpi(cn.MaNV, '2026-10');
 ok(k10 && k10.at === sau.at && k10.tt === sau.tt, 'vi phạm thiếu ngày (ghi 20/09) không trừ vào tháng 10', [k10 && [k10.tt, k10.at], [sau.tt, sau.at]]);
 
-console.log('\nA7. Sản lượng tăng ca không tính KPI');
+console.log('\nA4. Trưởng phòng sửa số khi duyệt: lưu số gốc');
 const cho = (ngay, sl) => { r = c.__goi('congNhanGuiSanLuong', tCN, [{ Ngay: ngay, MaCD: cd1.MaCD, GioLam: 8, SoLuongLamRa: sl }]); return c.doc_('NhatKySanXuat').filter(x => x.MaNV === cn.MaNV && String(x.TrangThai).trim() === 'Chờ duyệt').map(x => x.MaDong); };
 let ids = cho('2026-10-12', 100);
-const kTruocTC = kpi(cn.MaNV, '2026-10');
-const sua = {}; ids.forEach(i => { sua[i] = { SoLuongLamRa: 130, soLoi: 0, tangCa: 30 }; });
-r = c.__goi('duyetNhomNguoi', tTP, ids, 0, '', sua); ok(r.ok, 'trưởng phòng duyệt: sửa SL 100 → 130, ghi 30 cái tăng ca', r.msg);
+const sua = {}; ids.forEach(i => { sua[i] = { SoLuongLamRa: 130, soLoi: 0 }; });
+r = c.__goi('duyetNhomNguoi', tTP, ids, 0, '', sua); ok(r.ok, 'trưởng phòng duyệt: sửa SL 100 → 130', r.msg);
 const dong = c.doc_('NhatKySanXuat').find(x => x.MaDong === ids[0]);
-ok(Number(dong.SLTangCa) === 30 && String(dong.SLGoc) === '100/0', 'lưu SLTangCa = 30 và số gốc công nhân khai (100/0)', [dong.SLTangCa, dong.SLGoc]);
-const kSauTC = kpi(cn.MaNV, '2026-10');
-const dmMoi = c.dmNgay_(c.docDuLieuKPI_(), cd1.MaCD, '2026-10-12');
-const rowTC = c.__sheets.NhatKySanXuat.rows.find(x => x[0] === ids[0]), iTC = c.__sheets.NhatKySanXuat.rows[0].indexOf('SLTangCa');
-rowTC[iTC] = 0; const kKhongTC = kpi(cn.MaNV, '2026-10'); rowTC[iTC] = 30;
-ok(Math.abs((kKhongTC.sl - kSauTC.sl) * kSauTC.gl / 100 - 30 / dmMoi) < 0.01 && kSauTC.spl - kTruocTC.spl === 130, 'KPI bỏ đúng 30 cái tăng ca; tổng sản lượng vẫn ghi 130', [kKhongTC.sl, kSauTC.sl, kSauTC.spl - kTruocTC.spl]);
+ok(String(dong.SLGoc) === '100/0' && Number(dong.SoLuongLamRa) === 130, 'lưu số gốc công nhân khai (100/0), số duyệt 130', [dong.SLGoc, dong.SoLuongLamRa]);
 
 console.log('\nD2 + D3. Học việc 1 tháng');
 const iVao = du.NhanSu[0].indexOf('NgayVaoLam');

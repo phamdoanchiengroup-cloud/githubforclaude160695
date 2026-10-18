@@ -1,6 +1,6 @@
 # Tư vấn vận hành / dễ dùng / động viên / đào tạo (18/10)
 
-**Đã làm 18/10** (chủ dự án: "Các phần còn lại triển khai luôn"): mọi mục [x]. Máy chủ: tests/van-hanh/va-van-hanh.py + van-hanh.gs; web: va-index.py mục 23 (tests/van-hanh/va-van-hanh-web.py + van-hanh-web.html). Kiểm thử: tests/van-hanh.js (27), tests/van-hanh-web.js (30). **Chưa làm, chờ chủ dự án quyết:** A5 (lỗi KCS phát hiện trừ nặng hơn), B6 phần ẩn "Đặt số dòng". A3 không làm (chủ dự án). A7 làm theo cách: trưởng phòng ghi "tăng ca" (số cái) khi duyệt. D6: video do chủ dự án quay, gửi link thì điền vào VIDEO_HD.
+**Đã làm 18/10** (chủ dự án: "Các phần còn lại triển khai luôn"): mọi mục [x]. Máy chủ: tests/van-hanh/va-van-hanh.py + van-hanh.gs; web: va-index.py mục 23 (tests/van-hanh/va-van-hanh-web.py + van-hanh-web.html). Kiểm thử: tests/van-hanh.js (27), tests/van-hanh-web.js (30). **Chưa làm, chờ chủ dự án quyết:** A5 (lỗi KCS phát hiện trừ nặng hơn), B6 phần ẩn "Đặt số dòng". A3 không làm (chủ dự án). A7 tăng ca: đã làm rồi GỠ BỎ (chủ dự án 18/10: "hiện tại không cần"). D6: video do chủ dự án quay, gửi link thì điền vào VIDEO_HD.
 
 Bốn chuyên gia (vai trò trong `.claude/agents/`) đọc mã và đề xuất. Các điểm chính đã đối chiếu lại với mã. **Chưa làm mục nào.** Mục có dấu ⚖ là chính sách, chủ dự án phải quyết trước.
 
@@ -20,7 +20,7 @@ Bốn chuyên gia (vai trò trong `.claude/agents/`) đọc mã và đề xuất
   - lấy mẫu 5% để đối chiếu.
 - [ ] A5 ⚖ **Lỗi do KCS bắt mà công nhân không tự khai thì trừ nặng hơn.** KCS ghi theo ngày sản xuất.
 - [x] A6. **Báo cáo định mức lệch:** công đoạn có trung vị trên 115% hoặc dưới 80% trong 3 tháng liền.
-- [x] A7 **Chủ dự án chốt 18/10: KHÔNG TÍNH SẢN LƯỢNG TĂNG CA vào KPI** (thay cho đề xuất cũ: tính giờ tăng ca vào mẫu số). Cần xác định sản lượng nào là tăng ca – chờ chủ dự án cho biết cách ghi tăng ca hiện nay. Đề xuất cũ: **Tính giờ tăng ca vào mẫu số** (`gioCoMat_` hiện tối đa 8 giờ).
+- [ ] ~~A7~~ BỎ (chủ dự án 18/10, không cần). **Chủ dự án chốt 18/10: KHÔNG TÍNH SẢN LƯỢNG TĂNG CA vào KPI** (thay cho đề xuất cũ: tính giờ tăng ca vào mẫu số). Cần xác định sản lượng nào là tăng ca – chờ chủ dự án cho biết cách ghi tăng ca hiện nay. Đề xuất cũ: **Tính giờ tăng ca vào mẫu số** (`gioCoMat_` hiện tối đa 8 giờ).
 - [x] A8. "KPI của tôi" thêm dòng "Còn N ngày chưa được duyệt, chưa tính vào KPI".
 - Cách làm: chạy thử công thức mới trên 2–3 tháng đã chốt để xem bao nhiêu người đổi loại. Báo trước 1 kỳ rồi mới áp dụng; tháng đã chốt giữ nguyên.
 

@@ -42,17 +42,14 @@ R("""  dt.idxDM = {};
     (dt.lsDM[x.MaCD] = dt.lsDM[x.MaCD] || []).push({ tu: x.TuNgay ? ngayVN_(x.TuNgay) : '', den: den, gio: soVN_(x.DinhMucGio) });
   });
   Object.keys(dt.lsDM).forEach(function(k){ dt.lsDM[k].sort(function(a, b){ return a.den < b.den ? -1 : 1; }); });""")
-# kpiThang_: định mức theo ngày + bỏ phần sản lượng tăng ca (A7)
+# kpiThang_: định mức theo ngày
 R("""      var d = dt.idxDM ? (dt.idxDM[r.MaCD] || 0) : dm_(r.MaCD, dt.dinhmuc);
       var n = dt.idxLoi ? (dt.idxLoi[maNV+'|'+ngayR+'|'+r.MaCD] || 0) : ngLoi_(r, dt.kcs);
       var dat = Number(r.SoLuongLamRa) - n;""", """      var d = dmNgay_(dt, r.MaCD, ngayR);
       var n = dt.idxLoi ? (dt.idxLoi[maNV+'|'+ngayR+'|'+r.MaCD] || 0) : ngLoi_(r, dt.kcs);
-      var dat = Number(r.SoLuongLamRa) - n;
-      var tcR = Math.min(Number(r.SLTangCa) || 0, Number(r.SoLuongLamRa) || 0);   // sản lượng làm trong giờ tăng ca: không tính KPI (chủ dự án 18/10)
-      if (tcR > 0) dat = Math.max(0, dat - tcR);""")
+      var dat = Number(r.SoLuongLamRa) - n;""")
 R("""      var d = dm_(r.MaCD, dt.dinhmuc), nl = ngLoi_(r, dt.kcs), dat = Number(r.SoLuongLamRa)-nl;""",
-  """      var d = dmNgay_(dt, r.MaCD, day), nl = ngLoi_(r, dt.kcs), dat = Number(r.SoLuongLamRa)-nl;
-      if (Number(r.SLTangCa) > 0) dat = Math.max(0, dat - Math.min(Number(r.SLTangCa), Number(r.SoLuongLamRa) || 0));""")
+  """      var d = dmNgay_(dt, r.MaCD, day), nl = ngLoi_(r, dt.kcs), dat = Number(r.SoLuongLamRa)-nl;""")
 R("""    var d = dt.idxDM[r.MaCD] || 0;
     if (d <= 0) return;                        // chưa có định mức -> bỏ""", """    var d = dmNgay_(dt, r.MaCD, ng);
     if (d <= 0) return;                        // chưa có định mức -> bỏ""")
@@ -68,17 +65,12 @@ R("""  var vpThang = vpNguoi.filter(function(v){
     return !!ng && ng.slice(0,7) === kyThang;
   });""")
 
-# ======================================================================= A7 + A4. KHI DUYỆT: SL TĂNG CA, LƯU SỐ GỐC NẾU TP SỬA
+# ======================================================================= A4. KHI DUYỆT: LƯU SỐ GỐC NẾU TP SỬA
 R("""    if (slLamRa !== Number(r.SoLuongLamRa)) suaO_('NhatKySanXuat', r._row, 'SoLuongLamRa', slLamRa);
     if (gioLam !== Number(r.GioLam)) suaO_('NhatKySanXuat', r._row, 'GioLam', gioLam);""", """    if (slLamRa !== Number(r.SoLuongLamRa) || soLoi !== tach.soLoi)   // A4: lưu số công nhân khai trước khi TP sửa (soát khâu duyệt)
       ghiCotNeuCo_('NhatKySanXuat', r._row, 'SLGoc', Number(r.SoLuongLamRa) + '/' + tach.soLoi);
-    var tcD = Math.max(0, Math.min(Math.round(Number(sua.tangCa) || 0), slLamRa));   // A7: phần làm trong giờ tăng ca
-    if (tcD || Number(r.SLTangCa)) ghiCotNeuCo_('NhatKySanXuat', r._row, 'SLTangCa', tcD);
     if (slLamRa !== Number(r.SoLuongLamRa)) suaO_('NhatKySanXuat', r._row, 'SoLuongLamRa', slLamRa);
     if (gioLam !== Number(r.GioLam)) suaO_('NhatKySanXuat', r._row, 'GioLam', gioLam);""", 2)
-R("""var COT_NK_GUI_ = ['MaDong', 'Ngay', 'MaNV', 'MaCD', 'MaMay', 'GioLam', 'SoLuongLamRa', 'GioDung', 'LyDoDung', 'GhiChu', 'TrangThai'];""",
-  """var COT_NK_GUI_ = ['MaDong', 'Ngay', 'MaNV', 'MaCD', 'MaMay', 'GioLam', 'SoLuongLamRa', 'GioDung', 'LyDoDung', 'GhiChu', 'TrangThai', 'SLTangCa'];""")
-
 # ======================================================================= A4 + A6. BẢNG SOÁT KHÂU DUYỆT + ĐỊNH MỨC LỆCH (ban điều hành, trợ lý)
 s = s.rstrip() + '\n' + io.open(os.path.join(os.path.dirname(__file__), 'van-hanh', 'van-hanh.gs'), encoding='utf-8').read()
 

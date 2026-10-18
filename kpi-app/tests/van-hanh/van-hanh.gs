@@ -120,7 +120,7 @@ function soatDuyetGoc_() {
     // A6: hiệu suất từng dòng theo định mức ngày đó, gom theo công đoạn + tháng
     var thg = ng.slice(0, 7), gio = soVN_(r.GioLam) || 0, d = dmNgay_(dt, r.MaCD, ng);
     if (ky.indexOf(thg) < 0 || !(gio > 0) || !(d > 0)) return;
-    var sl = (Number(r.SoLuongLamRa) || 0) - Math.min(Number(r.SLTangCa) || 0, Number(r.SoLuongLamRa) || 0);
+    var sl = Number(r.SoLuongLamRa) || 0;
     ((hs[r.MaCD] = hs[r.MaCD] || {})[thg] = hs[r.MaCD][thg] || []).push(sl / (d * gio) * 100);
   });
   // 5 dòng ngẫu nhiên đã duyệt trong 7 ngày để ban điều hành đối chiếu
@@ -140,7 +140,7 @@ function soatDuyetGoc_() {
     xuong: Object.keys(X).map(function(k){ return X[k]; }).sort(function(a, b){ return b.choLau - a.choLau || String(a.TenXuong).localeCompare(String(b.TenXuong)); }),
     mau: chon.map(function(r){ var c = cd[r.MaCD] || {}; var tl = tachLoi_(r.GhiChu);
       return { ngay: ngayVN_(r.Ngay), MaNV: r.MaNV, HoTen: ten[r.MaNV] || r.MaNV, TenXuong: tenXuong_(c.MaXuong || ''), TenCD: c.TenCD || r.MaCD,
-        SL: Number(r.SoLuongLamRa) || 0, tangCa: Number(r.SLTangCa) || 0, slGoc: String(r.SLGoc || ''), nguoi: String(r.NguoiNhap || '') }; }),
+        SL: Number(r.SoLuongLamRa) || 0, slGoc: String(r.SLGoc || ''), nguoi: String(r.NguoiNhap || '') }; }),
     lech: lech.slice(0, 15) });
 }
 

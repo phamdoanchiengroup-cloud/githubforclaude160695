@@ -2,44 +2,11 @@
 """Mục 23 của va-index.py – các mục tư vấn chủ dự án duyệt 18/10 (kpi-app/TU-VAN-VAN-HANH.md):
 A vận hành/KPI, B dễ dùng cho công nhân, C nhắc nhở động viên, D đào tạo hội nhập. Chạy bằng exec() sau mục 22."""
 
-# ---------------------------------------------------------------- A7. Duyệt sản lượng: ô "SL tăng ca" (không tính KPI)
-R("""      '<td class="n"><input type="number" id="slr_'+id+'" value="'+r.SoLuongLamRa+'" min="0" '+
-        'oninput="capNhatTongNguoi(\\''+esc(r.MaNV)+'_'+ngay(r.Ngay)+'\\')" style="width:64px;'+inp+'"></td>'+""",
-  """      '<td class="n"><input type="number" id="slr_'+id+'" value="'+r.SoLuongLamRa+'" min="0" '+
-        'oninput="capNhatTongNguoi(\\''+esc(r.MaNV)+'_'+ngay(r.Ngay)+'\\')" style="width:64px;'+inp+'">'+
-        '<label class="vh-tc" title="Số cái làm trong giờ tăng ca – không tính vào KPI">tăng ca <input type="number" inputmode="numeric" id="tc_'+id+'" value="" placeholder="0" min="0" '+
-        'oninput="capNhatTongNguoi(\\''+esc(r.MaNV)+'_'+ngay(r.Ngay)+'\\')" style="width:52px;'+inp+'"></label></td>'+""")
-R("""    var slr=Number(($('slr_'+r.MaDong)||{}).value)||0;
-    var loi=Number(($('sl_'+r.MaDong)||{}).value)||0;
-    if(d>0){ coDM=true; tgc+=Math.max(0,slr-loi)/d; }""", """    var slr=Number(($('slr_'+r.MaDong)||{}).value)||0;
-    var loi=Number(($('sl_'+r.MaDong)||{}).value)||0;
-    var tc=Math.min(slr,Number(($('tc_'+r.MaDong)||{}).value)||0);   // tăng ca: không tính KPI
-    if(d>0){ coDM=true; tgc+=Math.max(0,slr-loi-tc)/d; }""")
-R("""    var slr=$('slr_'+id), sl=$('sl_'+id);
-    if(slr)s.SoLuongLamRa=Number(slr.value)||0;
-    if(sl)s.soLoi=Number(sl.value)||0;
-    suaList[id]=s;""", """    var slr=$('slr_'+id), sl=$('sl_'+id), tc=$('tc_'+id);
-    if(slr)s.SoLuongLamRa=Number(slr.value)||0;
-    if(sl)s.soLoi=Number(sl.value)||0;
-    if(tc)s.tangCa=Number(tc.value)||0;
-    suaList[id]=s;""")
-R("""      var s={}, slr=$('slr_'+id), sl=$('sl_'+id);
-      if(slr)s.SoLuongLamRa=Number(slr.value)||0;
-      if(sl)s.soLoi=Number(sl.value)||0;""", """      var s={}, slr=$('slr_'+id), sl=$('sl_'+id), tc=$('tc_'+id);
-      if(slr)s.SoLuongLamRa=Number(slr.value)||0;
-      if(sl)s.soLoi=Number(sl.value)||0;
-      if(tc)s.tangCa=Number(tc.value)||0;""")
-R("""#main input[id^="slr_"],#main input[id^="sl_"]""", """#main input[id^="slr_"],#main input[id^="sl_"],#main input[id^="tc_"]""")
-R("""var x={}, a=$('slr_'+id), b=$('sl_'+id); if(a)x.SoLuongLamRa=Number(a.value)||0; if(b)x.soLoi=Number(b.value)||0;""",
-  """var x={}, a=$('slr_'+id), b=$('sl_'+id), c2=$('tc_'+id); if(a)x.SoLuongLamRa=Number(a.value)||0; if(b)x.soLoi=Number(b.value)||0; if(c2)x.tangCa=Number(c2.value)||0;""")
-R("""    'Sửa được Số lượng, Số lỗi từng dòng trước khi duyệt.</div>';""", """    'Sửa được Số lượng, Số lỗi từng dòng trước khi duyệt. Ô <b>tăng ca</b>: ghi số cái làm trong giờ tăng ca – phần đó vẫn lưu nhưng <b>không tính KPI</b>.</div>';""")
-
-# ---------------------------------------------------------------- A1 + A7. KPI tạm tính trên web: định mức theo ngày, bỏ phần tăng ca
+# ---------------------------------------------------------------- A1. KPI tạm tính trên web: định mức theo ngày
 R("""    theoNgay[nD].forEach(function(r){
       var d=dm(r.MaCD), n=ngLoi(r), dat=Number(r.SoLuongLamRa)-n;
       if(d>0)gc+=dat/d;""", """    theoNgay[nD].forEach(function(r){
       var d=dmNgay(r.MaCD,nD), n=ngLoi(r), dat=Number(r.SoLuongLamRa)-n;
-      var tc=Math.min(Number(r.SLTangCa)||0,Number(r.SoLuongLamRa)||0); if(tc>0)dat=Math.max(0,dat-tc);   // tăng ca không tính KPI
       if(d>0)gc+=dat/d;""")
 
 # ---------------------------------------------------------------- B2 + B3 + B6. Trang nhập: ô số to, bàn phím số, lỗi tại ô, nút to, không chọn ngày mai

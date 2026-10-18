@@ -2852,7 +2852,6 @@ function kpi(maNV){
     mauSo+=gcm;
     theoNgay[nD].forEach(function(r){
       var d=dmNgay(r.MaCD,nD), n=ngLoi(r), dat=Number(r.SoLuongLamRa)-n;
-      var tc=Math.min(Number(r.SLTangCa)||0,Number(r.SoLuongLamRa)||0); if(tc>0)dat=Math.max(0,dat-tc);   // tăng ca không tính KPI
       if(d>0)gc+=dat/d;
       sl+=Number(r.SoLuongLamRa); ng+=n;
     });
@@ -7099,7 +7098,7 @@ function vDuyetSL(){
     '<div class="pdesc">Công nhân gửi lên, duyệt xong mới được tính KPI</div>';
   h+='<div class="alert a-bd" style="font-weight:500">Hãy kiểm tra kỹ sản lượng của công nhân trước khi duyệt, sau khi duyệt không thể sửa!</div>';
   h+='<div class="alert a-nu"><b>Hiệu suất Tổng</b> (dòng xanh) là con số vào KPI — tính bằng tổng giờ chuẩn ÷ <b>giờ có mặt</b> của người đó (lấy từ chấm công: đủ ngày 8h, nửa ngày 4h, đi muộn thì trừ giờ muộn). '+
-    'Sửa được Số lượng, Số lỗi từng dòng trước khi duyệt. Ô <b>tăng ca</b>: ghi số cái làm trong giờ tăng ca – phần đó vẫn lưu nhưng <b>không tính KPI</b>.</div>';
+    'Sửa được Số lượng, Số lỗi từng dòng trước khi duyệt.</div>';
 
   if(!ch.length){
     h+='<div class="card"><div class="empty lt-trong"><div class="lt-o" data-lt="da-duyet-het" aria-hidden="true"></div><b>Đã duyệt hết</b>Không có sản lượng nào đang chờ duyệt</div></div>';
@@ -7122,9 +7121,7 @@ function vDuyetSL(){
     return '<td>'+esc(cd(r.MaCD).TenCD)+
         (d<=0?'<div style="font-size:12px;color:var(--ink3)">chưa có định mức</div>':'')+'</td>'+
       '<td class="n"><input type="number" id="slr_'+id+'" value="'+r.SoLuongLamRa+'" min="0" '+
-        'oninput="capNhatTongNguoi(\''+esc(r.MaNV)+'_'+ngay(r.Ngay)+'\')" style="width:64px;'+inp+'">'+
-        '<label class="vh-tc" title="Số cái làm trong giờ tăng ca – không tính vào KPI">tăng ca <input type="number" inputmode="numeric" id="tc_'+id+'" value="" placeholder="0" min="0" '+
-        'oninput="capNhatTongNguoi(\''+esc(r.MaNV)+'_'+ngay(r.Ngay)+'\')" style="width:52px;'+inp+'"></label></td>'+
+        'oninput="capNhatTongNguoi(\''+esc(r.MaNV)+'_'+ngay(r.Ngay)+'\')" style="width:64px;'+inp+'"></td>'+
       '<td class="n"><input type="number" id="sl_'+id+'" value="'+tl.soLoi+'" min="0" '+
         'oninput="capNhatTongNguoi(\''+esc(r.MaNV)+'_'+ngay(r.Ngay)+'\')" style="width:52px;'+inp+'"></td>'+
       '<td class="n"><button class="btn sm dg" title="Loại dòng này khỏi sổ" '+
@@ -7175,8 +7172,7 @@ function capNhatTongNguoi(gk){
     var d=dm(r.MaCD);
     var slr=Number(($('slr_'+r.MaDong)||{}).value)||0;
     var loi=Number(($('sl_'+r.MaDong)||{}).value)||0;
-    var tc=Math.min(slr,Number(($('tc_'+r.MaDong)||{}).value)||0);   // tăng ca: không tính KPI
-    if(d>0){ coDM=true; tgc+=Math.max(0,slr-loi-tc)/d; }
+    if(d>0){ coDM=true; tgc+=Math.max(0,slr-loi)/d; }
   });
   var gcm=gioCoMatNgay(rows[0].MaNV, ngay(rows[0].Ngay));
   var hs=(coDM&&gcm>0)?(tgc/gcm*100):0;
@@ -7190,10 +7186,9 @@ function duyetNguoi(idsStr, gk){
   var suaList={};
   ids.forEach(function(id){
     var s={};
-    var slr=$('slr_'+id), sl=$('sl_'+id), tc=$('tc_'+id);
+    var slr=$('slr_'+id), sl=$('sl_'+id);
     if(slr)s.SoLuongLamRa=Number(slr.value)||0;
     if(sl)s.soLoi=Number(sl.value)||0;
-    if(tc)s.tangCa=Number(tc.value)||0;
     suaList[id]=s;
   });
   call('duyetNhomNguoi',[ids,0,'',suaList],function(r){
@@ -7236,10 +7231,9 @@ function duyetDaChonSL(){
     if(!t.checked)return;
     t.getAttribute('data-ids').split(',').forEach(function(id){
       allIds.push(id);
-      var s={}, slr=$('slr_'+id), sl=$('sl_'+id), tc=$('tc_'+id);
+      var s={}, slr=$('slr_'+id), sl=$('sl_'+id);
       if(slr)s.SoLuongLamRa=Number(slr.value)||0;
       if(sl)s.soLoi=Number(sl.value)||0;
-      if(tc)s.tangCa=Number(tc.value)||0;
       suaList[id]=s;
     });
   });
@@ -7784,10 +7778,10 @@ function ttDanTem(rows, loai){
   rows.forEach(function(r){ r.classList.add('tt-cho'); r.style.transform=''; });
   var s=ttTem(rows,loai); if(s){ void s.offsetWidth; s.classList.add('hien'); }
 }
-function ttChupO(){ var o={}; Array.prototype.forEach.call(document.querySelectorAll('#main input[id^="slr_"],#main input[id^="sl_"],#main input[id^="tc_"]'),function(i){o[i.id]=i.value}); return o; }
+function ttChupO(){ var o={}; Array.prototype.forEach.call(document.querySelectorAll('#main input[id^="slr_"],#main input[id^="sl_"]'),function(i){o[i.id]=i.value}); return o; }
 function ttTraO(o){ for(var k in o){ var i=$(k); if(i&&i.value!==o[k]){ i.value=o[k]; try{ i.dispatchEvent(new Event('input')); }catch(e){} } } }
 function ttVeLaiDuyet(giu){ var o=ttChupO(); for(var k in (giu||{})) o[k]=giu[k]; if(tabHienTai==='duyetsl'){ vDuyetSL(); ttTraO(o); } }
-function ttSua(ids){ var s={}; ids.forEach(function(id){ var x={}, a=$('slr_'+id), b=$('sl_'+id), c2=$('tc_'+id); if(a)x.SoLuongLamRa=Number(a.value)||0; if(b)x.soLoi=Number(b.value)||0; if(c2)x.tangCa=Number(c2.value)||0; s[id]=x; }); return s; }
+function ttSua(ids){ var s={}; ids.forEach(function(id){ var x={}, a=$('slr_'+id), b=$('sl_'+id); if(a)x.SoLuongLamRa=Number(a.value)||0; if(b)x.soLoi=Number(b.value)||0; s[id]=x; }); return s; }
 function ttGoi(fn, args, cb, nut){ try{ if(document.activeElement&&document.activeElement.blur) document.activeElement.blur(); }catch(e){} window.__nutHU=(nut&&document.body.contains(nut))?nut:null; call(fn,args,cb); }
 var _ttDuyetNguoi=duyetNguoi;
 duyetNguoi=function(idsStr, gk){
@@ -8657,7 +8651,6 @@ function mkTamHien(r){
 </script>
 <style>
 /* ===== 23. VẬN HÀNH / DỄ DÙNG / ĐỘNG VIÊN / HỘI NHẬP (chủ dự án duyệt 18/10) ===== */
-.vh-tc{display:flex;align-items:center;justify-content:flex-end;gap:4px;margin-top:4px;font-size:11px;color:var(--ink3);white-space:nowrap}
 #cf_grid .cn-o{font-size:17px;min-height:46px;padding:8px 10px}
 #cf_grid select.cn-o{font-size:15px}
 #cf_grid .cn-nut{min-width:46px;min-height:46px;font-size:20px;line-height:1;padding:0}
@@ -8794,8 +8787,8 @@ function vhTheDinhMuc(){
   var ds=cua.filter(function(r){return ngay(r.Ngay)===nd}), gcm=gioCoMatNgay(ME.maNV,nd);
   if(gcm<=0)return '';
   var tgc=0, coDM=false, sl=0;
-  ds.forEach(function(r){ var d=dmNgay(r.MaCD,nd); var tc=Math.min(Number(r.SLTangCa)||0,Number(r.SoLuongLamRa)||0);
-    sl+=Number(r.SoLuongLamRa)||0; if(d>0){coDM=true; tgc+=Math.max(0,(Number(r.SoLuongLamRa)||0)-ngLoi(r)-tc)/d;} });
+  ds.forEach(function(r){ var d=dmNgay(r.MaCD,nd);
+    sl+=Number(r.SoLuongLamRa)||0; if(d>0){coDM=true; tgc+=Math.max(0,(Number(r.SoLuongLamRa)||0)-ngLoi(r))/d;} });
   if(!coDM)return '';
   var ngayChu=(nd===congNgayFE(today(),-1))?'Hôm qua':'Ngày '+dmy(nd), cau;
   if(ds.length===1){
@@ -8846,7 +8839,7 @@ function vhSoat(){
         return '<tr><td>'+esc(x.TenXuong)+'</td><td class="n">'+(x.choLau?'<b style="color:var(--amber)">'+x.choLau+'</b>':'0')+'</td><td class="n">'+x.duyet+'</td><td class="n">'+pt(x.sua)+'</td><td class="n">'+pt(x.chotCa)+'</td></tr>'; }).join('')+
       '</tbody></table></div><div class="nho">"TP sửa số" = dòng trưởng phòng đổi số lượng / số lỗi khi duyệt (tính từ 18/10). "TP nhập thẳng" = chốt ca, không qua công nhân gửi.</div>';
     if(r.mau&&r.mau.length) h+='<details style="margin-top:10px"><summary><b>5 dòng ngẫu nhiên để đối chiếu</b> <span class="nho">(đã duyệt trong 7 ngày)</span></summary><div class="tw"><table><tbody>'+
-      r.mau.map(function(m){return '<tr><td class="mono">'+dmy(m.ngay)+'</td><td>'+esc(m.HoTen)+' <span class="nho">'+esc(m.TenXuong)+'</span></td><td>'+esc(m.TenCD)+'</td><td class="n">'+m.SL+(m.tangCa?' <span class="nho">(tăng ca '+m.tangCa+')</span>':'')+(m.slGoc?' <span class="nho">· CN khai '+esc(m.slGoc.split('/')[0])+'</span>':'')+'</td></tr>'}).join('')+'</tbody></table></div></details>';
+      r.mau.map(function(m){return '<tr><td class="mono">'+dmy(m.ngay)+'</td><td>'+esc(m.HoTen)+' <span class="nho">'+esc(m.TenXuong)+'</span></td><td>'+esc(m.TenCD)+'</td><td class="n">'+m.SL+(m.slGoc?' <span class="nho">· CN khai '+esc(m.slGoc.split('/')[0])+'</span>':'')+'</td></tr>'}).join('')+'</tbody></table></div></details>';
     if(r.lech&&r.lech.length) h+='<details style="margin-top:8px"><summary><b>'+r.lech.length+' công đoạn có định mức lệch</b> <span class="nho">(3 tháng liền trung vị trên 115% hoặc dưới 80%)</span></summary><div class="tw"><table><thead><tr><th>Công đoạn</th><th class="n">Định mức</th><th class="n">'+r.lech[0].ky.map(function(k){return k.slice(5)+'/'+k.slice(2,4)}).join(' · ')+'</th><th></th></tr></thead><tbody>'+
       r.lech.map(function(x){return '<tr><td>'+esc(x.TenCD)+' <span class="nho">'+esc(x.TenXuong)+'</span></td><td class="n">'+x.dm+'</td><td class="n">'+x.trungVi.join('% · ')+'%</td><td>'+(x.huong==='cao'?'<span class="pill p-wn">định mức lỏng</span>':'<span class="pill p-bd">định mức chặt</span>')+'</td></tr>'}).join('')+
       '</tbody></table></div><div class="nho">Gợi ý: trưởng phòng gửi đề xuất định mức mới (tab Công đoạn), ban điều hành duyệt. Định mức mới chỉ áp dụng từ ngày duyệt.</div></details>';
@@ -8933,7 +8926,6 @@ function maiTourTP(){
   maiTour([
     {cam:'vui',t:'Chào <b>'+esc(maiTen())+'</b>! Mình là <b>Rhino</b>. Trang này là nơi bạn <b>duyệt sản lượng</b> công nhân gửi lên. Mình chỉ nhanh nhé!'},
     {s:'#main input[id^="slr_"]',t:'Mỗi người / ngày là một nhóm. Sửa được <b>Số lượng</b> và <b>Số lỗi</b> từng dòng nếu công nhân ghi sai – web vẫn lưu số gốc họ khai.'},
-    {s:'#main input[id^="tc_"]',t:'Ô <b>tăng ca</b>: số cái làm trong giờ tăng ca. Phần này vẫn lưu nhưng <span class="vang">không tính vào KPI</span>.'},
     {s:'#main .sl-tick',t:'Tích nhiều người rồi bấm <b>Duyệt các dòng đã chọn</b> ở đầu trang để duyệt một lượt.'},
     {s:function(){var a=document.querySelectorAll('#main .btn.pri');for(var i=0;i<a.length;i++)if(a[i].textContent==='Duyệt')return a[i];return null},t:'Bấm <b>Duyệt</b> cho từng người. Bấm nhầm thì có nút <b>Hoàn tác</b> trong 4 giây. <span class="vang">Duyệt rồi thì không sửa được.</span>'},
     {cam:'vui',t:'Mỗi ngày nhớ: <b>điểm danh</b> trước, <b>duyệt</b> trong ngày, cuối ca <b>gạt cần chốt ca</b>. Ở <b>Việc hôm nay</b> có danh sách bạn cần nhắc nhập sản lượng. Chúc ca làm suôn sẻ!'}

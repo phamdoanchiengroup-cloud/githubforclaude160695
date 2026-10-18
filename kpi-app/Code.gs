@@ -617,7 +617,7 @@ function napDuLieu(token) { return napDuLieuLoi_(token, null); }
 
 /* Các "phần" dữ liệu gửi về trình duyệt. Sau khi lưu, giao diện chỉ xin lại phần bị ảnh hưởng. */
 var PHAN_NAP_ = { nk: 1, cc: 1, ns: 1, cd: 1, mm: 1, vp: 1, ts: 1, tb: 1, dm: 1 };
-var COT_NK_GUI_ = ['MaDong', 'Ngay', 'MaNV', 'MaCD', 'MaMay', 'GioLam', 'SoLuongLamRa', 'GioDung', 'LyDoDung', 'GhiChu', 'TrangThai', 'SLTangCa'];
+var COT_NK_GUI_ = ['MaDong', 'Ngay', 'MaNV', 'MaCD', 'MaMay', 'GioLam', 'SoLuongLamRa', 'GioDung', 'LyDoDung', 'GhiChu', 'TrangThai'];
 function chonCot_(r, cot) { var o = {}; cot.forEach(function(k) { o[k] = r[k]; }); return o; }
 
 function napDuLieuLoi_(token, phan) {
@@ -946,8 +946,6 @@ function duyetSanLuong(token, maDong, dongY, soLoiSua, sua) {
     // Ghi các giá trị đã sửa (nếu có thay đổi)
     if (slLamRa !== Number(r.SoLuongLamRa) || soLoi !== tach.soLoi)   // A4: lưu số công nhân khai trước khi TP sửa (soát khâu duyệt)
       ghiCotNeuCo_('NhatKySanXuat', r._row, 'SLGoc', Number(r.SoLuongLamRa) + '/' + tach.soLoi);
-    var tcD = Math.max(0, Math.min(Math.round(Number(sua.tangCa) || 0), slLamRa));   // A7: phần làm trong giờ tăng ca
-    if (tcD || Number(r.SLTangCa)) ghiCotNeuCo_('NhatKySanXuat', r._row, 'SLTangCa', tcD);
     if (slLamRa !== Number(r.SoLuongLamRa)) suaO_('NhatKySanXuat', r._row, 'SoLuongLamRa', slLamRa);
     if (gioLam !== Number(r.GioLam)) suaO_('NhatKySanXuat', r._row, 'GioLam', gioLam);
     // Đã bỏ giờ dừng — luôn ghi 0
@@ -1023,8 +1021,6 @@ function duyetNhomNguoi(token, maDongList, gioDung, lyDo, suaList) {
 
     if (slLamRa !== Number(r.SoLuongLamRa) || soLoi !== tach.soLoi)   // A4: lưu số công nhân khai trước khi TP sửa (soát khâu duyệt)
       ghiCotNeuCo_('NhatKySanXuat', r._row, 'SLGoc', Number(r.SoLuongLamRa) + '/' + tach.soLoi);
-    var tcD = Math.max(0, Math.min(Math.round(Number(sua.tangCa) || 0), slLamRa));   // A7: phần làm trong giờ tăng ca
-    if (tcD || Number(r.SLTangCa)) ghiCotNeuCo_('NhatKySanXuat', r._row, 'SLTangCa', tcD);
     if (slLamRa !== Number(r.SoLuongLamRa)) suaO_('NhatKySanXuat', r._row, 'SoLuongLamRa', slLamRa);
     if (gioLam !== Number(r.GioLam)) suaO_('NhatKySanXuat', r._row, 'GioLam', gioLam);
 
@@ -3119,8 +3115,6 @@ function kpiThang_(maNV, kyThang, dt) {
       var d = dmNgay_(dt, r.MaCD, ngayR);
       var n = dt.idxLoi ? (dt.idxLoi[maNV+'|'+ngayR+'|'+r.MaCD] || 0) : ngLoi_(r, dt.kcs);
       var dat = Number(r.SoLuongLamRa) - n;
-      var tcR = Math.min(Number(r.SLTangCa) || 0, Number(r.SoLuongLamRa) || 0);   // sản lượng làm trong giờ tăng ca: không tính KPI (chủ dự án 18/10)
-      if (tcR > 0) dat = Math.max(0, dat - tcR);
       if (d > 0) gc += dat / d;
       sl += Number(r.SoLuongLamRa); ng2 += n;
     });
@@ -3667,7 +3661,6 @@ function layLichSuKPIGoc_(token, maNV) {
     .forEach(function(r){
       var day = ngayVN_(r.Ngay);
       var d = dmNgay_(dt, r.MaCD, day), nl = ngLoi_(r, dt.kcs), dat = Number(r.SoLuongLamRa)-nl;
-      if (Number(r.SLTangCa) > 0) dat = Math.max(0, dat - Math.min(Number(r.SLTangCa), Number(r.SoLuongLamRa) || 0));
       var b = byday[day] || (byday[day]={gc:0,gcm:0,sl:0});
       if (d>0) b.gc += dat/d;
       b.sl += Number(r.SoLuongLamRa);
@@ -6792,7 +6785,7 @@ function soatDuyetGoc_() {
     // A6: hiệu suất từng dòng theo định mức ngày đó, gom theo công đoạn + tháng
     var thg = ng.slice(0, 7), gio = soVN_(r.GioLam) || 0, d = dmNgay_(dt, r.MaCD, ng);
     if (ky.indexOf(thg) < 0 || !(gio > 0) || !(d > 0)) return;
-    var sl = (Number(r.SoLuongLamRa) || 0) - Math.min(Number(r.SLTangCa) || 0, Number(r.SoLuongLamRa) || 0);
+    var sl = Number(r.SoLuongLamRa) || 0;
     ((hs[r.MaCD] = hs[r.MaCD] || {})[thg] = hs[r.MaCD][thg] || []).push(sl / (d * gio) * 100);
   });
   // 5 dòng ngẫu nhiên đã duyệt trong 7 ngày để ban điều hành đối chiếu
@@ -6812,7 +6805,7 @@ function soatDuyetGoc_() {
     xuong: Object.keys(X).map(function(k){ return X[k]; }).sort(function(a, b){ return b.choLau - a.choLau || String(a.TenXuong).localeCompare(String(b.TenXuong)); }),
     mau: chon.map(function(r){ var c = cd[r.MaCD] || {}; var tl = tachLoi_(r.GhiChu);
       return { ngay: ngayVN_(r.Ngay), MaNV: r.MaNV, HoTen: ten[r.MaNV] || r.MaNV, TenXuong: tenXuong_(c.MaXuong || ''), TenCD: c.TenCD || r.MaCD,
-        SL: Number(r.SoLuongLamRa) || 0, tangCa: Number(r.SLTangCa) || 0, slGoc: String(r.SLGoc || ''), nguoi: String(r.NguoiNhap || '') }; }),
+        SL: Number(r.SoLuongLamRa) || 0, slGoc: String(r.SLGoc || ''), nguoi: String(r.NguoiNhap || '') }; }),
     lech: lech.slice(0, 15) });
 }
 
