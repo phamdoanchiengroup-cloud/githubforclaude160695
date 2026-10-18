@@ -8,8 +8,7 @@ function doGet() {
   return HtmlService.createTemplateFromFile('Index')
     .evaluate()
     .setTitle('Hệ thống KPI sản xuất')
-    .addMetaTag('viewport', 'width=device-width, initial-scale=1')
-    .setXFrameOptionsMode(HtmlService.XFrameOptionsMode.ALLOWALL);
+    .addMetaTag('viewport', 'width=device-width, initial-scale=1');   // bảo mật 18/10: bỏ ALLOWALL – trang khác không nhúng được (chống lừa bấm)
 }
 
 /* ===== TIỆN ÍCH ===== */

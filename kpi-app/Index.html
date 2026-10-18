@@ -1262,8 +1262,8 @@ function toast(m,ok){
   clearTimeout(toast._h); toast._h=setTimeout(function(){t.className=''},3400);
   if(!ok){try{rungONhap()}catch(e){}}
 }
-function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,function(c){
-  return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
+function esc(s){return String(s==null?'':s).replace(/[&<>"'`]/g,function(c){
+  return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;','`':'&#96;'}[c]})}
 function f(n,d){return Number(n||0).toFixed(d===undefined?2:d)}
 function ngay(s){return String(s||'').slice(0,10)}
 var NGAY_BAT_DAU_NHAC='2026-09-04';   // không nhắc chưa-nhập cho các ngày trước mốc này
@@ -2953,7 +2953,7 @@ function vHuongDan(){
   /* Ghi nhớ nhanh */
   h+='<div class="hd-card hd-tips"><div class="hd-h">💡 Ghi nhớ nhanh</div>'
    + '<ul class="hd-ul">'
-   + '<li>Đăng nhập lần đầu bằng mật khẩu <b>123456</b> — hệ thống sẽ bắt bạn <b>đổi mật khẩu riêng</b> ngay. Hãy đổi và giữ kín.</li>'
+   + '<li>Đăng nhập lần đầu bằng <b>mật khẩu tạm</b> được phát (dùng trong 48 giờ) — hệ thống sẽ bắt bạn <b>đổi mật khẩu riêng</b> ngay. Hãy đổi và giữ kín.</li>'
    + '<li>Nhập <b>đúng ngày, đúng số</b> — dữ liệu sai làm KPI sai. Có nhầm thì báo trưởng phòng sửa sớm.</li>'
    + '<li>KPI của <b>tháng hiện tại được tính trực tiếp</b> — mỗi khi sản lượng được duyệt hay chấm công thay đổi, điểm cập nhật ngay. Tháng đã qua thì giữ nguyên số đã chốt.</li>'
    + '<li>Mọi thao tác đều được ghi nhật ký — hệ thống minh bạch, không ai bị thiệt.</li>'
@@ -6432,6 +6432,7 @@ function addNS(){
   if(!o.MaNV||!o.HoTen){toast('Cần mã nhân viên và họ tên');return}
   call('luuNhanSu',[o],function(r){
     if(r.ok) ltXong('Đã thêm '+o.HoTen, 'Mã '+o.MaNV+(o.MaXuong?' · '+((D.phongban||[]).filter(function(x){return x.MaXuong===o.MaXuong})[0]||{TenXuong:o.MaXuong}).TenXuong:''), 'them-nhan-su', 2600); else toast(r.msg,false);
+    if(r.ok&&r.mkTam)setTimeout(function(){mkTamHien(r)},2700);
     if(r.ok)reload(vNS)});
 }
 
@@ -6654,7 +6655,7 @@ function vPQ(){
   var h='<div class="ptitle">Quản lý tài khoản</div>'+
     '<div class="pdesc">Tạo tài khoản, cấp lại mật khẩu, ngừng quyền truy cập</div>';
   h+='<div class="alert a-nu">Mật khẩu được <b>mã hóa một chiều</b> trước khi lưu. Người mở được Google Sheet cũng không đọc được mật khẩu của ai. '+
-    'Tài khoản mới mặc định mật khẩu <b>123456</b> và bắt buộc đổi ngay lần đăng nhập đầu.</div>';
+    'Tài khoản mới nhận <b>mật khẩu tạm ngẫu nhiên</b> (dùng trong 48 giờ) và bắt buộc đổi ngay lần đăng nhập đầu.</div>';
 
   h+='<div class="card"><h3>Tạo tài khoản mới</h3><div class="row r2">'+
     '<div><label>Tên đăng nhập — chữ thường, không dấu</label><input id="q_tk" placeholder="tphoanthien"></div>'+
@@ -6668,8 +6669,8 @@ function vPQ(){
     '<div id="qbpbox" style="display:none"><label>Nhóm báo cơm</label><select id="q_bp">'+Object.keys(COM_BO_PHAN).map(function(k){return '<option value="'+k+'">'+esc(COM_BO_PHAN[k])+'</option>'}).join('')+'</select></div>'+
     '<div id="qnvbox" style="display:none"><label>Gắn với nhân viên</label><select id="q_nv" onchange="cnDienTen()">'+
       sxTen(D.nhansu).map(function(x){return '<option value="'+esc(x.MaNV)+'">'+esc(x.HoTen)+' ('+esc(x.MaNV)+' · '+esc(x.MaXuong)+')</option>'}).join('')+'</select></div>'+
-    '</div><div class="row"><div><label>Mật khẩu tạm — để trống thì dùng 123456</label>'+
-    '<input id="q_mk" placeholder="123456"></div></div>'+
+    '</div><div class="row"><div><label>Mật khẩu tạm — để trống thì hệ thống tự tạo</label>'+
+    '<input id="q_mk" placeholder="Tự tạo" autocomplete="off"></div></div>'+
     '<div id="qcnhint" class="alert a-nu" style="display:none">Tài khoản công nhân gắn với một nhân viên. '+
     'Gợi ý: đặt tên đăng nhập bằng mã nhân viên viết thường cho dễ nhớ. Công nhân chỉ nhập được sản lượng của chính mình.</div>'+
     '<div class="acts"><button class="btn pri" onclick="addPQ()">Tạo tài khoản</button></div></div>';
@@ -6754,7 +6755,7 @@ function renderPQ(list){
   });
 
   h+='<div class="note" style="margin-top:14px">Nhân viên nghỉ việc: bấm Ngừng — quyền mất ngay lập tức. '+
-    'Quên mật khẩu: bấm Cấp lại MK, mật khẩu về 123456 và người đó phải đổi khi đăng nhập.</div>';
+    'Quên mật khẩu: bấm Cấp lại MK, hệ thống tạo mật khẩu tạm mới (dùng trong 48 giờ) và người đó phải đổi khi đăng nhập.</div>';
   $('pqlist').innerHTML=h;
 }
 function addPQ(){
@@ -6766,7 +6767,7 @@ function addPQ(){
   if(!o.TenDangNhap||o.TenDangNhap.length<3){toast('Tên đăng nhập phải từ 3 ký tự');return}
   if(!o.HoTen){toast('Cần họ tên');return}
   if(vt==='CN'&&!o.MaNV){toast('Chọn nhân viên để gắn tài khoản công nhân');return}
-  call('taoTaiKhoan',[o],function(r){toast(r.msg,r.ok); if(r.ok)vPQ()});
+  call('taoTaiKhoan',[o],function(r){ if(r.ok&&r.mkTam){vPQ();mkTamHien(r);return} toast(r.msg,r.ok); if(r.ok)vPQ()});
 }
 function tgQ(tk){
   call('doiTrangThaiTK',[tk],function(r){toast(r.msg,r.ok); if(r.ok)vPQ()});
@@ -6775,8 +6776,7 @@ function capLai(tk){
   if(!confirm('Cấp mật khẩu tạm mới cho "'+tk+'"?\nNgười này sẽ phải đổi mật khẩu ngay khi đăng nhập.'))return;
   call('capLaiMatKhau',[tk],function(r){
     if(!r.ok){toast(r.msg);return}
-    alert(r.msg);   // hiện đủ lâu để chép mật khẩu tạm
-    vPQ();
+    vPQ(); mkTamHien(r);   // hộp riêng: chữ to, nút Chép, In phiếu
   });
 }
 
@@ -8460,7 +8460,7 @@ function chiXemDon(){
 </script>
 <script>
 /* ===== 19. PHẦN GIAO DIỆN TẢI SAU (12/10) – SoDo.html, HoatAnh.html: chỉ tải khi cần, nhớ lại theo phiên bản ===== */
-var MANH_VER={"SoDo": "f4d113fa24", "HoatAnh": "1d1210594c"};
+var MANH_VER={"SoDo": "6917847a91f8c964", "HoatAnh": "b23cbe69d6aae56e"};
 var __manh={da:{},cho:{}};
 function ganManh_(nd){
   var js=[], ngoai=String(nd).replace(/<script>([\s\S]*?)<\/script>/g,function(_,x){js.push(x);return ''});
@@ -8475,15 +8475,25 @@ function taiManh(ten,cb){
   var xong=function(ok,msg){var c=__manh.cho[ten]||[];__manh.cho[ten]=[];c.forEach(function(f){try{f(ok,msg)}catch(e){}})};
   var gan=function(x){try{ganManh_(x);__manh.da[ten]=true;xong(true)}catch(e){xong(false,'Lỗi khi mở phần '+ten+': '+e.message)}};
   try{nd=localStorage.getItem(khoa)}catch(e){}
-  if(nd){gan(nd);return}
+  if(nd){ bamManh_(nd,function(h){ if(h&&h===MANH_VER[ten]){gan(nd);return}
+    try{localStorage.removeItem(khoa)}catch(e){} nd=null; taiMoi(); }); return; }
+  taiMoi();
+  function taiMoi(){
   if(typeof TOKEN==='undefined'||!TOKEN){xong(false,'Chưa đăng nhập.');return}
   google.script.run.withSuccessHandler(function(r){
     if(r&&r.hetHan){try{hetHan()}catch(e){} xong(false,'Phiên đăng nhập đã hết hạn.');return}
     if(!r||!r.ok){xong(false,(r&&r.msg)||'Không tải được.');return}
-    try{ for(var i=localStorage.length-1;i>=0;i--){var k=localStorage.key(i); if(k&&k.indexOf('kpi_manh_'+ten+'_')===0)localStorage.removeItem(k)}
-      localStorage.setItem(khoa,r.noiDung);}catch(e){}
+    try{ for(var i=localStorage.length-1;i>=0;i--){var k=localStorage.key(i); if(k&&k.indexOf('kpi_manh_'+ten+'_')===0)localStorage.removeItem(k)} }catch(e){}
+    bamManh_(r.noiDung,function(h){ if(h&&h===MANH_VER[ten]){try{localStorage.setItem(khoa,r.noiDung)}catch(e){}} });   // chỉ nhớ bản đúng phiên bản
     gan(r.noiDung);
   }).withFailureHandler(function(e){xong(false,'Không tải được (mạng chập chờn?).')}).layManhGiaoDien(TOKEN,ten);
+  }
+}
+/* SHA-256 (16 ký tự đầu) của một chuỗi; trình duyệt không hỗ trợ thì trả '' (không dùng bản nhớ) */
+function bamManh_(nd,cb){
+  try{ crypto.subtle.digest('SHA-256',new TextEncoder().encode(String(nd))).then(function(b){
+    cb(Array.prototype.map.call(new Uint8Array(b),function(x){return ('0'+x.toString(16)).slice(-2)}).join('').slice(0,16));
+  },function(){cb('')}); }catch(e){cb('')}
 }
 /* Sau khi vào web: tải nền dữ liệu hoạt ảnh (nhỏ, có nhớ) để lúc cần là có ngay */
 (function(){ var cu=window.vaoHeThong; if(typeof cu!=='function')return;
@@ -8547,6 +8557,53 @@ function bdVe() {
   el.className = '';
 }
 function bdTat() { var c = BD.d && bdChon(BD.d, BD.gio()); try { localStorage.setItem('kpi_bd_tat', c ? c.khoa : ''); } catch (e) {} bdVe(); }
+</script>
+<style>
+/* ===== 22. Hộp mật khẩu tạm (bảo mật 18/10) ===== */
+#mktHop{position:fixed;inset:0;z-index:130;background:rgba(0,0,0,.6);display:flex;align-items:center;justify-content:center;padding:16px}
+#mktHop .mkt-the{background:var(--panel);color:var(--ink);border:1px solid var(--line);border-radius:12px;max-width:420px;width:100%;padding:20px}
+#mktHop h3{margin:0 0 6px;font-size:17px}
+#mktHop .mkt-mk{font:700 30px/1.2 ui-monospace,Menlo,Consolas,monospace;letter-spacing:.12em;text-align:center;padding:14px 8px;margin:12px 0;
+  border:1px dashed var(--line);border-radius:10px;user-select:all;word-break:break-all}
+#mktHop .mkt-ghi{font-size:13px;color:var(--ink2);line-height:1.5}
+#mktHop .acts{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+#mktHop .acts .btn{min-height:44px;flex:1}
+</style>
+<script>
+/* ===== 22. MẬT KHẨU TẠM (bảo mật 18/10): hiện một lần, chép hoặc in phiếu để giao tận tay ===== */
+function mkTamHien(r){
+  var cu=document.getElementById('mktHop'); if(cu)cu.remove();
+  var gio=r.hanGio||48, han=new Date(Date.now()+gio*3600e3);
+  var hanChu=('0'+han.getHours()).slice(-2)+':'+('0'+han.getMinutes()).slice(-2)+' ngày '+han.getDate()+'/'+(han.getMonth()+1);
+  var d=document.createElement('div'); d.id='mktHop'; d.setAttribute('role','dialog'); d.setAttribute('aria-modal','true'); d.setAttribute('aria-labelledby','mktTieuDe');
+  d.innerHTML='<div class="mkt-the"><h3 id="mktTieuDe">Mật khẩu tạm</h3>'+
+    '<div class="mkt-ghi">'+esc(r.hoTen||'')+' · tên đăng nhập <b>'+esc(r.tenDN||'')+'</b></div>'+
+    '<div class="mkt-mk" id="mktMk">'+esc(r.mkTam)+'</div>'+
+    '<div class="mkt-ghi">Dùng được tới <b>'+hanChu+'</b> ('+gio+' giờ). Giao tận tay người này; lần đăng nhập đầu họ phải đặt mật khẩu riêng. '+
+    'Hộp này đóng lại là không xem lại được – quên thì bấm Cấp lại MK.</div>'+
+    '<div class="acts"><button class="btn pri" id="mktChep">Chép</button><button class="btn" id="mktIn">In phiếu</button><button class="btn" id="mktDong">Đóng</button></div></div>';
+  document.body.appendChild(d);
+  var dong=function(){d.remove();document.removeEventListener('keydown',phim)};
+  var phim=function(e){if(e.key==='Escape')dong()};
+  document.addEventListener('keydown',phim);
+  d.querySelector('#mktDong').onclick=dong;
+  d.querySelector('#mktChep').onclick=function(){
+    var ok=function(){toast('Đã chép mật khẩu tạm',true)};
+    try{navigator.clipboard.writeText(r.mkTam).then(ok,function(){chonMk()})}catch(e){chonMk()}
+    function chonMk(){var g=document.getElementById('mktMk'),rg=document.createRange();rg.selectNodeContents(g);var sl=getSelection();sl.removeAllRanges();sl.addRange(rg);try{document.execCommand('copy');ok()}catch(e){}}
+  };
+  d.querySelector('#mktIn').onclick=function(){
+    var w=window.open('','_blank'); if(!w){toast('Trình duyệt chặn cửa sổ in – bấm Chép rồi ghi tay.',false);return}
+    w.document.write('<!doctype html><meta charset="utf-8"><title>Phiếu tài khoản</title><style>body{font:16px/1.6 Arial,sans-serif;margin:32px;color:#000}'+
+      '.mk{font:700 28px monospace;letter-spacing:.15em;border:2px dashed #000;padding:10px 16px;display:inline-block;margin:6px 0}</style>'+
+      '<h2>Phiếu tài khoản web KPI</h2><p>Họ tên: <b>'+esc(r.hoTen||'')+'</b><br>Tên đăng nhập: <b>'+esc(r.tenDN||'')+'</b></p>'+
+      '<p>Mật khẩu tạm:<br><span class="mk">'+esc(r.mkTam)+'</span></p><p>Dùng được tới <b>'+hanChu+'</b>.</p>'+
+      '<ol><li>Mở web KPI, nhập tên đăng nhập và mật khẩu tạm.</li><li>Đặt mật khẩu riêng (từ 6 ký tự, không dùng ngày sinh hay mã nhân viên).</li>'+
+      '<li>Giữ kín mật khẩu, không đưa người khác.</li></ol>');
+    w.document.close(); w.focus(); w.print();
+  };
+  d.querySelector('#mktChep').focus();
+}
 </script>
 </body>
 </html>

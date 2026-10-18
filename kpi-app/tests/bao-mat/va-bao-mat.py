@@ -435,3 +435,7 @@ R("""  if (['ADMIN', 'HR', 'TP'].indexOf(me.vaiTro) < 0) return sach_({ ok: fals
   var cd = doc_('CongDoan').filter(function(x){ return x.MaCD === maCD; })[0];""", """  if (['ADMIN', 'TP'].indexOf(me.vaiTro) < 0) return sach_({ ok: false, msg: 'Không có quyền.' });
 
   var cd = doc_('CongDoan').filter(function(x){ return x.MaCD === maCD; })[0];""")
+
+# ======================================================================= 11. KHÔNG CHO TRANG KHÁC NHÚNG WEB KPI (chủ dự án 18/10: không nhúng ở đâu)
+R("""    .addMetaTag('viewport', 'width=device-width, initial-scale=1')
+    .setXFrameOptionsMode(HtmlService.XFrameOptionsMode.ALLOWALL);""", """    .addMetaTag('viewport', 'width=device-width, initial-scale=1');   // bảo mật 18/10: bỏ ALLOWALL – trang khác không nhúng được (chống lừa bấm)""")

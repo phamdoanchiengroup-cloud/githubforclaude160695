@@ -8,7 +8,7 @@ Bốn chuyên gia (vai trò trong `.claude/agents/`) đọc mã và đề xuất
   - Sửa: thêm dòng mới kèm `HieuLucTu`, chọn định mức theo ngày của từng dòng nhật ký (giống `trongSoKy_`).
 - [ ] A2. **Vi phạm không ghi ngày bị trừ lại mỗi tháng** (điều kiện `!ng` trong `kpiThang_`).
   - Sửa: bắt buộc nhập ngày khi ghi vi phạm, và bỏ điều kiện này.
-- [ ] A3 ⚖ **Giờ dừng có lý do** (Máy hỏng / Chờ vật tư / Đào tạo / Khác).
+- [x] ~~A3~~ **KHÔNG LÀM** (chủ dự án 18/10: máy hỏng không tính giờ dừng để công nhân có ý thức bảo dưỡng máy; máy hỏng thì đi làm công đoạn khác). Giữ nguyên. Đề xuất cũ: **Giờ dừng có lý do** (Máy hỏng / Chờ vật tư / Đào tạo / Khác).
   - TP chọn lý do lúc duyệt. Giờ dừng trừ khỏi mẫu số, nên máy hỏng thì công nhân không bị thiệt.
   - Báo cáo tháng thêm phần nguyên nhân dừng máy.
 - [ ] A4. **Bảng soát khâu duyệt cho ban điều hành:**
@@ -18,7 +18,7 @@ Bốn chuyên gia (vai trò trong `.claude/agents/`) đọc mã và đề xuất
   - lấy mẫu 5% để đối chiếu.
 - [ ] A5 ⚖ **Lỗi do KCS bắt mà công nhân không tự khai thì trừ nặng hơn.** KCS ghi theo ngày sản xuất.
 - [ ] A6. **Báo cáo định mức lệch:** công đoạn có trung vị trên 115% hoặc dưới 80% trong 3 tháng liền.
-- [ ] A7 ⚖ **Tính giờ tăng ca vào mẫu số** (`gioCoMat_` hiện tối đa 8 giờ).
+- [ ] A7 **Chủ dự án chốt 18/10: KHÔNG TÍNH SẢN LƯỢNG TĂNG CA vào KPI** (thay cho đề xuất cũ: tính giờ tăng ca vào mẫu số). Cần xác định sản lượng nào là tăng ca – chờ chủ dự án cho biết cách ghi tăng ca hiện nay. Đề xuất cũ: **Tính giờ tăng ca vào mẫu số** (`gioCoMat_` hiện tối đa 8 giờ).
 - [ ] A8. "KPI của tôi" thêm dòng "Còn N ngày chưa được duyệt, chưa tính vào KPI".
 - Cách làm: chạy thử công thức mới trên 2–3 tháng đã chốt để xem bao nhiêu người đổi loại. Báo trước 1 kỳ rồi mới áp dụng; tháng đã chốt giữ nguyên.
 
