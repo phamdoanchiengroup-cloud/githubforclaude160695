@@ -3,11 +3,11 @@
 Rà soát 17/10 (chỉ đọc mã, chưa sửa). Chủ dự án chốt (18/10): **làm hết trong 1 đợt**, sau phần tư vấn vận hành / dễ dùng / động viên / đào tạo.
 Số dòng dưới đây là Code.gs và Index.html tại thời điểm rà soát.
 
-## Còn chờ chủ dự án trả lời
-1. Mật khẩu tạm hết hạn sau bao lâu: 48 giờ / 7 ngày / không hết hạn?
-2. Có nhúng web KPI vào Google Sites hay trang khác không? (ảnh hưởng mục 11)
-3. Có trường hợp TP chốt ca cho người xưởng khác không, ví dụ người được điều động? (ảnh hưởng mục 8)
-4. Công nhân được xem bảng KPI của ai: chỉ mình / xưởng mình / cả nhà máy? (mục 7)
+## Chủ dự án đã trả lời (18/10)
+1. Mật khẩu tạm (khi tạo tài khoản mới và khi cấp lại) hết hạn sau **48 giờ**.
+2. Nhúng web vào trang khác: "không nhớ, hình như là không" → bỏ ALLOWALL; nếu có chỗ nhúng mà không hiện thì báo lại.
+3. TP chốt ca cho người xưởng khác: **hiện tại không** → chặn.
+4. Công nhân xem bảng KPI **của xưởng mình**.
 
 ## Danh sách việc
 

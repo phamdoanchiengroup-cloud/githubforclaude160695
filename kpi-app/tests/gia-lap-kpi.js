@@ -48,6 +48,9 @@ function tao(fileCode, duLieu, gioHienTai) {
   };
   function chuyen(sh, r, c, v) {
     if (typeof v === 'string' && sh.fmt[c] !== '@' && sh.fmt[r + ',' + c] !== '@') {
+      if (v[0] === "'") return v.slice(1);                                    // Sheets: dấu ' đầu = giữ nguyên văn bản (ẩn dấu)
+      if (v.length > 1 && /^[=+\-@]/.test(v) && !/^[+-]?\d+(\.\d+)?$/.test(v)) return '#CONG_THUC:' + v;   // Sheets coi là công thức -> đánh dấu để kiểm thử bắt được
+
       if (/^\d{4}-\d{2}-\d{2}$/.test(v)) return new RealDate(v + 'T00:00:00+07:00');
       if (/^\d{4}-\d{2}$/.test(v)) return new RealDate(v + '-01T00:00:00+07:00');   // Sheets đổi '2026-08' thành ngày
     }
@@ -106,7 +109,10 @@ function tao(fileCode, duLieu, gioHienTai) {
     console, Math, JSON, Object, Array, String, Number, isNaN, isFinite, parseFloat, parseInt, RegExp, Error,
     Date: FakeDate,
     Logger: { log: m => log.push(String(m)) },
-    Session: { getScriptTimeZone: () => 'Asia/Ho_Chi_Minh' },
+    // ctx.__nguoiDung: email người đang chạy. Mặc định = chủ dự án (chạy trong trình soạn thảo); '' = khách mở web.
+    Session: { getScriptTimeZone: () => 'Asia/Ho_Chi_Minh',
+      getActiveUser: () => ({ getEmail: () => (ctx.__nguoiDung === undefined ? 'chu@vidu.com' : ctx.__nguoiDung) }),
+      getEffectiveUser: () => ({ getEmail: () => 'chu@vidu.com' }) },
     Utilities: {
       DigestAlgorithm: { SHA_256: 'sha256', MD5: 'md5' }, Charset: { UTF_8: 'utf8' },
       computeDigest: (a, s) => Array.from(crypto.createHash(a).update(s, 'utf8').digest()).map(b => (b > 127 ? b - 256 : b)),
@@ -117,6 +123,8 @@ function tao(fileCode, duLieu, gioHienTai) {
       base64EncodeWebSafe: x => Buffer.from(Array.isArray(x) ? x.map(b => b & 255) : x).toString('base64').replace(/\+/g, '-').replace(/\//g, '_'),
       base64Decode: s => Array.from(Buffer.from(s, 'base64')).map(b => (b > 127 ? b - 256 : b)),
       getUuid: () => crypto.randomUUID(),
+      computeHmacSha256Signature: (v, k) => { const b = x => typeof x === 'string' ? Buffer.from(x, 'utf8') : Buffer.from(x.map(n => n & 255));
+        return Array.from(crypto.createHmac('sha256', b(k)).update(b(v)).digest()).map(n => (n > 127 ? n - 256 : n)); },
       formatDate: (d, tz, f) => dinhDang(d, f)
     },
     PropertiesService: { getScriptProperties: () => ({ getProperty: k => (k in props ? props[k] : null), setProperty: (k, v) => { props[k] = v; }, deleteProperty: k => { delete props[k]; }, getProperties: () => Object.assign({}, props) }) },
@@ -141,7 +149,8 @@ function tao(fileCode, duLieu, gioHienTai) {
       createHtmlOutputFromFile: f => ({ getContent: () => fs.readFileSync(path.join(__dirname, '..', f + '.html'), 'utf8') }),
       createHtmlOutput: html => ({ getContent: () => html, getAs: type => { const b = blob(Buffer.from(html, 'utf8')); b.__html = html; b.__type = type; b.__ten = ''; b.setName = n => { b.__ten = n; return b; }; b.getName = () => b.__ten; return b; } }) },
     MailApp: { sendEmail: o => { (ctx.__mail = ctx.__mail || []).push(o); }, getRemainingDailyQuota: () => 100 },
-    ScriptApp: { getProjectTriggers: () => [], deleteTrigger() {}, newTrigger: () => { const b = { timeBased: () => b, atHour: () => b, everyDays: () => b, onMonthDay: () => b, inTimezone: () => b, create: () => b }; return b; } },
+    // ctx.__trigger: danh sách trigger đã cài [{id, ham}]
+    ScriptApp: { getProjectTriggers: () => (ctx.__trigger || []).map(t => ({ getUniqueId: () => t.id, getHandlerFunction: () => t.ham })), deleteTrigger() {}, newTrigger: () => { const b = { timeBased: () => b, atHour: () => b, everyDays: () => b, onMonthDay: () => b, inTimezone: () => b, create: () => b }; return b; } },
     DriveApp: (() => {   // Drive giả: thư mục + tệp trong bộ nhớ
       const thuMuc = [];
       const it = a => { let i = 0; return { hasNext: () => i < a.length, next: () => a[i++] }; };

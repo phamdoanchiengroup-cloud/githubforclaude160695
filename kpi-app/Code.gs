@@ -146,7 +146,7 @@ function xoaCache_(name) {
 function them_(name, obj) {
   var sh = ss_().getSheetByName(name);
   var head = dauCot_(name);
-  sh.appendRow(head.map(function(h) { return obj[h] !== undefined ? obj[h] : ''; }));
+  sh.appendRow(head.map(function(h) { return obj[h] !== undefined ? chuAnToan_(obj[h]) : ''; }));
   xoaCache_(name);
 }
 
@@ -155,7 +155,7 @@ function themNhieu_(name, arr) {
   var sh = ss_().getSheetByName(name);
   var head = dauCot_(name);
   var rows = arr.map(function(o) {
-    return head.map(function(h) { return o[h] !== undefined ? o[h] : ''; });
+    return head.map(function(h) { return o[h] !== undefined ? chuAnToan_(o[h]) : ''; });
   });
   sh.getRange(sh.getLastRow() + 1, 1, rows.length, head.length).setValues(rows);
   xoaCache_(name);
@@ -167,7 +167,7 @@ function suaO_(name, row, col, val) {
   var i = head.indexOf(col);
   if (i < 0) return;
   var m = __CHO_GHI[name] || (__CHO_GHI[name] = {});
-  (m[row] = m[row] || {})[i + 1] = val;
+  (m[row] = m[row] || {})[i + 1] = chuAnToan_(val);
   xoaCache_(name);
 }
 
@@ -180,7 +180,7 @@ function suaOText_(name, row, col, val) {
   if (i >= 0) {
     var o = sh.getRange(row, i + 1);
     o.setNumberFormat('@');            // định dạng văn bản
-    o.setValue(String(val == null ? '' : val));
+    o.setValue(chuAnToan_(String(val == null ? '' : val)));
   }
   xoaCache_(name);
 }
@@ -273,8 +273,103 @@ function tenXuong_(m) {
   return p ? p.TenXuong : m;
 }
 
+/* ===== HÀM CHỈ CHẠY NỘI BỘ (bảo mật 18/10) =====
+   Trình duyệt gọi được mọi hàm toàn cục không có '_' cuối, kể cả khách chưa đăng nhập. Hàm chạy tay (viết hoa) và hàm
+   trigger kiểm tra noiBo_ trước: trigger thật (mã trigger có trong dự án) hoặc người chạy chính là chủ dự án
+   (trình soạn thảo Apps Script). Khách mở web: Session.getActiveUser() trả rỗng -> bị chặn. */
+function noiBo_(e) {
+  try {
+    if (e && e.triggerUid) {
+      var id = String(e.triggerUid);
+      if (ScriptApp.getProjectTriggers().some(function(t) { return String(t.getUniqueId()) === id; })) return true;
+    }
+  } catch (x) {}
+  try {
+    var a = String(Session.getActiveUser().getEmail() || ''), b = String(Session.getEffectiveUser().getEmail() || '');
+    return !!a && a.toLowerCase() === b.toLowerCase();
+  } catch (x) {}
+  return false;
+}
+function chanWeb_(ten) {
+  try { Logger.log('Đã chặn ' + ten + ': chỉ chạy được trong trình soạn thảo Apps Script (tài khoản chủ dự án) hoặc bằng trigger.'); } catch (x) {}
+  return { ok: false, msg: 'Chức năng này chỉ chạy trong trình soạn thảo Apps Script.' };
+}
+
+/* ===== CHẶN CÔNG THỨC KHI GHI VÀO SHEET (bảo mật 18/10) =====
+   Chữ người dùng nhập bắt đầu bằng = + - @ sẽ bị Google Sheets hiểu là công thức (đọc được ô của sheet khác).
+   Thêm dấu ' phía trước: Sheets giữ nguyên chữ, dấu ' bị ẩn. Số (kể cả '-5') giữ nguyên. */
+function chuAnToan_(v) {
+  if (typeof v !== 'string' || v.length < 2) return v;
+  if (!/^[=+\-@\t\r]/.test(v) || /^[+-]?\d+(\.\d+)?$/.test(v)) return v;
+  return "'" + v;
+}
+function dongAnToan_(row) { return row.map(chuAnToan_); }
+
 /* ===== MÃ HÓA MẬT KHẨU ===== */
 var MUOI = 'KPI@SanXuat#2026$Muoi';
+
+/* Bảo mật 18/10: mật khẩu mới lưu dạng 'v2$<muối riêng>$<HMAC-SHA256 lặp MK_VONG lần>'.
+   Dạng cũ (SHA-256 một vòng, muối chung) vẫn đăng nhập được và tự đổi sang dạng mới ngay khi đăng nhập đúng. */
+var MK_VONG = 400, MK_HAN_TAM_GIO = 48;
+function hex_(b) { return b.map(function(x) { return ('0' + (x & 0xFF).toString(16)).slice(-2); }).join(''); }
+function bam2_(mk, muoi) {
+  var k = Utilities.newBlob('KPI|' + muoi + '|' + MUOI).getBytes();
+  var h = Utilities.computeHmacSha256Signature(Utilities.newBlob(String(mk)).getBytes(), k);
+  for (var i = 1; i < MK_VONG; i++) h = Utilities.computeHmacSha256Signature(h, k);
+  return hex_(h);
+}
+function taoBam_(mk) {
+  var muoi = Utilities.getUuid().replace(/-/g, '').slice(0, 16).toLowerCase();
+  return 'v2$' + muoi + '$' + bam2_(mk, muoi);
+}
+function laBamCu_(luu) { return chuan_(luu).indexOf('v2$') !== 0; }
+function kiemMK_(luu, mk) {
+  var s = chuan_(luu);
+  if (s.indexOf('v2$') === 0) { var p = s.split('$'); return p.length === 3 && bam2_(mk, p[1]) === p[2]; }
+  return !!s && s === bam_(mk);
+}
+/* Mật khẩu tạm ngẫu nhiên 8 ký tự (bỏ chữ dễ nhầm 0/o, 1/l/i) */
+function mkTam_() {
+  var bo = 'abcdefghjkmnpqrstuvwxyz23456789', hx = Utilities.getUuid().replace(/-/g, ''), out = '';
+  for (var i = 0; out.length < 8; i += 2) out += bo.charAt(parseInt(hx.substr(i, 2), 16) % bo.length);
+  return out;
+}
+/* Bảo đảm sheet TaiKhoan có cột `ten` (thêm vào cuối nếu thiếu) */
+function cotTK_(ten) {
+  var sh = ss_().getSheetByName('TaiKhoan');
+  if (!sh) return;
+  var head = sh.getRange(1, 1, 1, Math.max(1, sh.getLastColumn())).getValues()[0];
+  if (head.indexOf(ten) < 0) {
+    sh.getRange(1, head.length + 1).setValue(ten).setFontWeight('bold');
+    delete __HEAD_CACHE['TaiKhoan']; delete __DOC_CACHE['TaiKhoan'];
+  }
+}
+/* Đặt mật khẩu tạm cho 1 dòng TaiKhoan: phải đổi khi đăng nhập, hết hạn sau MK_HAN_TAM_GIO giờ */
+function datMKTam_(row, mk) {
+  cotTK_('HanMatKhauTam');
+  ghiBam_(row, taoBam_(mk));
+  suaO_('TaiKhoan', row, 'DoiMatKhauLanDau', 'Có');
+  suaO_('TaiKhoan', row, 'HanMatKhauTam', new Date(new Date().getTime() + MK_HAN_TAM_GIO * 3600e3));
+}
+function hanMKTamQua_(tk) {
+  if (String(tk.DoiMatKhauLanDau).trim() !== 'Có' || !tk.HanMatKhauTam) return false;
+  var t = new Date(tk.HanMatKhauTam).getTime();
+  return !isNaN(t) && new Date().getTime() > t;
+}
+/* Phiên bản phiên: tăng khi đổi / cấp lại mật khẩu -> mọi phiên cũ của tài khoản đó hết hiệu lực */
+function tangPhienBan_(tk) {
+  cotTK_('PhienBan');
+  var pb = (Number(tk.PhienBan) || 0) + 1;
+  suaO_('TaiKhoan', tk._row, 'PhienBan', pb);
+  return pb;
+}
+function ghiPhien_(token, o) {
+  var con = Math.floor(((o.hanDen || 0) - new Date().getTime()) / 1000);
+  if (con < 1) return;
+  var s = JSON.stringify(o);
+  try { CacheService.getScriptCache().put('P_' + token, s, Math.min(con, 21600)); } catch (e) {}
+  try { PropertiesService.getScriptProperties().setProperty('P_' + token, s); } catch (e) {}
+}
 
 function bam_(mk) {
   var b = Utilities.computeDigest(
@@ -302,7 +397,7 @@ function taoPhien_(tk) {
   var ttl = Math.min(HAN_PHIEN, 21600); // CacheService không cho quá 21600 giây (6 giờ)
   var dulieu = JSON.stringify({
     tk: tk.TenDangNhap, ten: tk.HoTen, vaiTro: tk.VaiTro, xuong: tk.MaXuong || '',
-    maNV: tk.MaNV || '', hanDen: (new Date().getTime() + ttl * 1000)
+    maNV: tk.MaNV || '', hanDen: (new Date().getTime() + ttl * 1000), pb: Number(tk.PhienBan) || 0
   });
   // Lưu vào CacheService (nhanh) — nếu lỗi vẫn tiếp tục
   try { CacheService.getScriptCache().put('P_' + token, dulieu, ttl); } catch (e) {}
@@ -324,8 +419,9 @@ function docChuoiPhien_(token) {
         try { PropertiesService.getScriptProperties().deleteProperty('P_' + token); } catch (e) {}
         return null;
       }
-      // Nạp lại vào cache cho lần sau nhanh hơn
-      try { CacheService.getScriptCache().put('P_' + token, s, 21600); } catch (e) {}
+      // Nạp lại vào cache cho lần sau nhanh hơn (chỉ trong thời gian phiên còn hạn)
+      var con = Math.floor(((o.hanDen || 0) - new Date().getTime()) / 1000);
+      if (con > 0) try { CacheService.getScriptCache().put('P_' + token, s, Math.min(con, 21600)); } catch (e) {}
       return s;
     }
   } catch (e) {}
@@ -345,6 +441,8 @@ function docPhien_(token, choPhepChuaDoiMK) {
     return String(x.TenDangNhap).toLowerCase() === String(o.tk).toLowerCase();
   })[0];
   if (!tk || String(tk.TrangThai).trim() !== 'Đang dùng') return null;
+  if ((Number(tk.PhienBan) || 0) !== (Number(o.pb) || 0)) return null;   // đã đổi / cấp lại mật khẩu sau khi đăng nhập
+  if (o.hanDen && new Date().getTime() > o.hanDen) return null;
   if (tk.MaNV && nvDaNghi_(tk.MaNV)) return null;          // hồ sơ đã chuyển Nghỉ việc
   o.phaiDoiMK = String(tk.DoiMatKhauLanDau).trim() === 'Có';
   if (o.phaiDoiMK && !choPhepChuaDoiMK) return null;
@@ -355,6 +453,7 @@ function docPhien_(token, choPhepChuaDoiMK) {
   o.tenXuong = o.xuong ? tenXuong_(o.xuong) : '';
   o.maNV = tk.MaNV || o.maNV || '';
   o.token = token;
+  o.pb = Number(tk.PhienBan) || 0;
   // Phó phòng (PP) có quyền tương đương trưởng phòng (TP).
   // Giữ vai trò gốc để hiển thị đúng danh xưng, nhưng xử lý quyền như TP.
   o.vaiTroGoc = o.vaiTro;
@@ -381,13 +480,14 @@ function dangNhap(tenDN, matKhau) {
 
     var cache = CacheService.getScriptCache();
     var khoaKey = 'SAI_' + ten;
-    var soSai = 0;
-    try { soSai = Number(cache.get(khoaKey) || 0); } catch (e) {}
-    if (soSai >= SO_LAN_SAI_TOI_DA)
-      return sach_({ ok: false, msg: 'Nhập sai quá ' + SO_LAN_SAI_TOI_DA + ' lần. Tài khoản tạm khóa ' +
-        PHUT_KHOA_DANG_NHAP + ' phút — thử lại sau, hoặc nhờ chủ sở hữu cấp lại mật khẩu.' });
+    var soSai = 0, khoaDen = 0, bayGio = new Date().getTime();
+    try { var ks = String(cache.get(khoaKey) || '0').split('|'); soSai = Number(ks[0]) || 0; khoaDen = Number(ks[1]) || 0; } catch (e) {}
+    if (khoaDen > bayGio)
+      return sach_({ ok: false, msg: 'Nhập sai nhiều lần. Đợi ' + Math.ceil((khoaDen - bayGio) / 60000) +
+        ' phút rồi thử lại, hoặc nhờ người quản lý cấp lại mật khẩu.' });
     var baoSai = function() {
-      try { cache.put(khoaKey, String(soSai + 1), PHUT_KHOA_DANG_NHAP * 60); } catch (e) {}
+      var n = soSai + 1, den = n >= SO_LAN_SAI_TOI_DA ? bayGio + Math.min(PHUT_KHOA_DANG_NHAP, Math.pow(2, n - SO_LAN_SAI_TOI_DA)) * 60000 : 0;
+      try { cache.put(khoaKey, n + '|' + den, 6 * 3600); } catch (e) {}
       var con = SO_LAN_SAI_TOI_DA - soSai - 1;
       return sach_({ ok: false, msg: 'Sai tên đăng nhập hoặc mật khẩu.' + (con > 0 && con <= 2 ? ' Còn ' + con + ' lần thử.' : '') });
     };
@@ -403,8 +503,11 @@ function dangNhap(tenDN, matKhau) {
     })[0];
 
     if (!tk) return baoSai();
-    if (chuan_(tk.MatKhauMaHoa) !== bam_(matKhau)) return baoSai();
+    if (!kiemMK_(tk.MatKhauMaHoa, matKhau)) return baoSai();
     if (String(tk.TrangThai).trim() !== 'Đang dùng') return sach_({ ok: false, msg: 'Tài khoản đã bị ngừng sử dụng.' });
+    if (hanMKTamQua_(tk))
+      return sach_({ ok: false, msg: 'Mật khẩu tạm đã hết hạn (quá ' + MK_HAN_TAM_GIO + ' giờ). Nhờ người quản lý cấp lại mật khẩu.' });
+    if (laBamCu_(tk.MatKhauMaHoa)) { try { ghiBam_(tk._row, taoBam_(matKhau)); } catch (e) {} }   // đổi sang cách mã hóa mới
     if (tk.MaNV && nvDaNghi_(tk.MaNV))
       return sach_({ ok: false, msg: 'Hồ sơ nhân viên đã chuyển "Nghỉ việc" — tài khoản không còn dùng được.' });
     try { cache.remove(khoaKey); } catch (e) {}
@@ -430,7 +533,8 @@ function dangNhap(tenDN, matKhau) {
             phaiDoiMK: String(tk.DoiMatKhauLanDau).trim() === 'Có' }
     });
   } catch (e) {
-    return sach_({ ok: false, msg: 'Lỗi máy chủ: ' + (e.message || e) });
+    try { Logger.log('dangNhap lỗi: ' + (e && e.stack || e)); } catch (x) {}
+    return sach_({ ok: false, msg: 'Máy chủ đang bận, chưa đăng nhập được. Thử lại sau ít phút.' });
   }
 }
 
@@ -461,11 +565,15 @@ function doiMatKhau(token, cu, moi) {
     return String(x.TenDangNhap).toLowerCase() === String(me.tk).toLowerCase();
   })[0];
   if (!tk) return sach_({ ok: false, msg: 'Không tìm thấy tài khoản.' });
-  if (chuan_(tk.MatKhauMaHoa) !== bam_(cu)) return sach_({ ok: false, msg: 'Mật khẩu hiện tại không đúng.' });
+  if (!kiemMK_(tk.MatKhauMaHoa, cu)) return sach_({ ok: false, msg: 'Mật khẩu hiện tại không đúng.' });
   if (String(moi) === String(cu)) return sach_({ ok: false, msg: 'Mật khẩu mới phải khác mật khẩu cũ.' });
+  if (String(moi).length > 100) return sach_({ ok: false, msg: 'Mật khẩu quá dài.' });
 
-  ghiBam_(tk._row, bam_(moi));
+  ghiBam_(tk._row, taoBam_(moi));
   suaO_('TaiKhoan', tk._row, 'DoiMatKhauLanDau', 'Không');
+  if (tk.HanMatKhauTam) suaO_('TaiKhoan', tk._row, 'HanMatKhauTam', '');
+  var pbMoi = tangPhienBan_(tk);
+  try { var ph = JSON.parse(docChuoiPhien_(token)); ph.pb = pbMoi; ghiPhien_(token, ph); } catch (e) {}
   ghiLog_(me, 'Đổi mật khẩu', '', '', '');
   return sach_({ ok: true, msg: 'Đã đổi mật khẩu.' });
 }
@@ -693,12 +801,14 @@ function chotCa(token, rows, boQuaTrung) {
 }
 
 /* ===== CÔNG NHÂN GỬI SẢN LƯỢNG (chờ trưởng phòng duyệt) ===== */
+var SL_TOI_DA_DONG = 30, GHI_CHU_TOI_DA = 300;   // bảo mật 18/10: giới hạn mỗi lần công nhân gửi
 function congNhanGuiSanLuong(token, rows) {
   var me = docPhien_(token);
   if (!me) return sach_({ ok: false, hetHan: true, msg: 'Phiên đăng nhập đã hết hạn.' });
   if (me.vaiTro !== 'CN') return sach_({ ok: false, msg: 'Chỉ công nhân dùng chức năng này.' });
   if (!me.maNV) return sach_({ ok: false, msg: 'Tài khoản chưa gắn với mã nhân viên. Báo quản lý cấp lại.' });
   if (!rows || !rows.length) return sach_({ ok: false, msg: 'Chưa có dòng nào.' });
+  if (rows.length > SL_TOI_DA_DONG) return sach_({ ok: false, msg: 'Mỗi lần gửi tối đa ' + SL_TOI_DA_DONG + ' dòng.' });
   khoa_();
   var loiNgay = kiemNgay_(rows[0].Ngay, 31);
   if (loiNgay) return sach_({ ok: false, msg: loiNgay });
@@ -715,6 +825,9 @@ function congNhanGuiSanLuong(token, rows) {
     // Công đoạn phải thuộc xưởng của công nhân
     var c = cd.filter(function(x) { return x.MaCD === r.MaCD; })[0];
     if (!c || c.MaXuong !== me.xuong) return sach_({ ok: false, msg: 'Dòng ' + (i + 1) + ': công đoạn không thuộc xưởng của bạn.' });
+    if (r.MaMay && !doc_('MayMoc').some(function(x) { return String(x.MaMay) === String(r.MaMay) && x.MaXuong === me.xuong; }))
+      return sach_({ ok: false, msg: 'Dòng ' + (i + 1) + ': máy không thuộc xưởng của bạn.' });
+    r.GhiChu = String(r.GhiChu || '').slice(0, GHI_CHU_TOI_DA);
   }
 
   // MỖI NGÀY CHỈ NHẬP 1 LẦN: chặn nếu ngày đó đã có nhật ký "Chờ duyệt" hoặc "Đã chốt".
@@ -985,6 +1098,7 @@ function duyetSanLuongNhieu(token, maDongList) {
 
 /* ===== NÂNG CẤP: thêm cột MaNV vào sheet TaiKhoan (chạy MỘT LẦN, không xóa dữ liệu) ===== */
 function NANG_CAP_THEM_COT_MANV() {
+  if (!noiBo_(arguments[0])) return chanWeb_('NANG_CAP_THEM_COT_MANV');
   var sh = ss_().getSheetByName('TaiKhoan');
   if (!sh) { Logger.log('Không có sheet TaiKhoan'); return; }
   var head = sh.getRange(1, 1, 1, sh.getLastColumn()).getValues()[0];
@@ -1004,6 +1118,7 @@ function NANG_CAP_THEM_COT_MANV() {
    - ViPham: ghi nhận từng lần vi phạm
    Không đụng dữ liệu cũ. Chạy lại vẫn an toàn (bỏ qua nếu sheet đã có). */
 function NANG_CAP_TAO_SHEET_VIPHAM() {
+  if (!noiBo_(arguments[0])) return chanWeb_('NANG_CAP_TAO_SHEET_VIPHAM');
   var ss = ss_();
 
   // 1. Sheet DanhMucViPham
@@ -1120,6 +1235,7 @@ function xoaViPhamNhieu(token, maGhiList) {
    - Bỏ qua nhân viên đã có tài khoản công nhân (không tạo trùng).
    Chạy lại nhiều lần vẫn an toàn — chỉ tạo cho người còn thiếu. */
 function TAO_HANG_LOAT_TK_CONG_NHAN() {
+  if (!noiBo_(arguments[0])) return chanWeb_('TAO_HANG_LOAT_TK_CONG_NHAN');
   var shTK = ss_().getSheetByName('TaiKhoan');
   if (!shTK) { Logger.log('Không có sheet TaiKhoan'); return; }
 
@@ -1144,7 +1260,9 @@ function TAO_HANG_LOAT_TK_CONG_NHAN() {
       maNVDaCoTK[String(t.MaNV).toUpperCase().trim()] = true;
   });
 
-  var mk = bam_('123456');
+  cotTK_('HanMatKhauTam');
+  head = shTK.getRange(1, 1, 1, shTK.getLastColumn()).getValues()[0];
+  var han = new Date(new Date().getTime() + MK_HAN_TAM_GIO * 3600e3), dsMK = [];
   var now = new Date();
   var themDs = [];
   var boQua = [];
@@ -1161,8 +1279,10 @@ function TAO_HANG_LOAT_TK_CONG_NHAN() {
     // Tên đăng nhập trùng với tài khoản khác (ví dụ trưởng phòng) -> báo, không tạo
     if (tenDaCo[ten]) { trung.push(maNV + ' (tên "' + ten + '" đã dùng)'); return; }
 
+    var mk1 = mkTam_();
+    dsMK.push(maNV + ' | ' + nv.HoTen + ' | ' + mk1);
     themDs.push([
-      ten, mk, nv.HoTen, 'CN', nv.MaXuong || '', 'Đang dùng',
+      ten, taoBam_(mk1), nv.HoTen, 'CN', nv.MaXuong || '', 'Đang dùng',
       'Có', '', now, maNV
     ]);
     tenDaCo[ten] = true; // tránh trùng trong cùng mẻ
@@ -1179,7 +1299,7 @@ function TAO_HANG_LOAT_TK_CONG_NHAN() {
       var map = {
         TenDangNhap: d[0], MatKhauMaHoa: d[1], HoTen: d[2], VaiTro: d[3],
         MaXuong: d[4], TrangThai: d[5], DoiMatKhauLanDau: d[6],
-        LanDangNhapCuoi: d[7], NgayTao: d[8], MaNV: d[9]
+        LanDangNhapCuoi: d[7], NgayTao: d[8], MaNV: d[9], HanMatKhauTam: han
       };
       return cols.map(function(c) { return map[c] !== undefined ? map[c] : ''; });
     });
@@ -1192,7 +1312,8 @@ function TAO_HANG_LOAT_TK_CONG_NHAN() {
   }
 
   Logger.log('=== KẾT QUẢ TẠO HÀNG LOẠT ===');
-  Logger.log('Đã tạo mới: ' + themDs.length + ' tài khoản công nhân (mật khẩu 123456)');
+  Logger.log('Đã tạo mới: ' + themDs.length + ' tài khoản công nhân. Mật khẩu tạm (dùng trong ' + MK_HAN_TAM_GIO + ' giờ) – chép danh sách dưới đây để phát:');
+  if (dsMK.length) Logger.log(dsMK.join('\n'));
   Logger.log('Bỏ qua (đã có TK): ' + boQua.length + (boQua.length ? ' — ' + boQua.join(', ') : ''));
   if (trung.length) Logger.log('CẦN XEM: ' + trung.length + ' mã bị trùng tên đăng nhập — ' + trung.join(', '));
   if (themDs.length) {
@@ -1252,8 +1373,8 @@ function luuNhanSu(token, o) {
   ghiLog_(me, 'Thêm nhân sự', maNV + ' — ' + o.HoTen);
 
   // ===== TỰ ĐỘNG TẠO TÀI KHOẢN CÔNG NHÂN =====
-  // Tên đăng nhập = mã NV viết thường; mật khẩu 123456; bắt buộc đổi lần đầu.
-  var tkMsg = '';
+  // Tên đăng nhập = mã NV viết thường; mật khẩu tạm ngẫu nhiên (48 giờ); bắt buộc đổi lần đầu.
+  var tkMsg = '', tkMoi = null;
   try {
     var shTK = ss_().getSheetByName('TaiKhoan');
     var head = shTK ? shTK.getRange(1, 1, 1, shTK.getLastColumn()).getValues()[0] : [];
@@ -1276,25 +1397,29 @@ function luuNhanSu(token, o) {
       } else if (trungTen) {
         tkMsg = ' (Chưa tạo tài khoản: tên đăng nhập "' + tenDN + '" đã có người dùng — cần ban điều hành cấp thủ công.)';
       } else {
+        var mkMoi = mkTam_();
         them_('TaiKhoan', {
-          TenDangNhap: tenDN, MatKhauMaHoa: bam_('123456'), HoTen: o.HoTen,
+          TenDangNhap: tenDN, MatKhauMaHoa: '', HoTen: o.HoTen,
           VaiTro: 'CN', MaXuong: xuong || '', TrangThai: 'Đang dùng',
           DoiMatKhauLanDau: 'Có', LanDangNhapCuoi: '', NgayTao: new Date(), MaNV: maNV
         });
         var moiTao = doc_('TaiKhoan').filter(function(x) {
           return String(x.TenDangNhap).toLowerCase() === tenDN;
         })[0];
-        if (moiTao) ghiBam_(moiTao._row, bam_('123456'));
+        if (moiTao) datMKTam_(moiTao._row, mkMoi);
         ghiLog_(me, 'Tạo tài khoản (tự động)', tenDN + ' — CN (' + maNV + ')');
-        tkMsg = ' Đã tạo tài khoản đăng nhập "' + tenDN + '" (mật khẩu 123456, bắt buộc đổi lần đầu).';
+        tkMoi = { mkTam: mkMoi, tenDN: tenDN, hoTen: o.HoTen, hanGio: MK_HAN_TAM_GIO };
+        tkMsg = ' Đã tạo tài khoản đăng nhập "' + tenDN + '" (mật khẩu tạm ' + mkMoi + ', dùng trong ' + MK_HAN_TAM_GIO + ' giờ).';
       }
     }
   } catch (e) {
     tkMsg = ' (Lưu hồ sơ xong nhưng tạo tài khoản lỗi: ' + (e.message || e) + '. Ban điều hành cấp tài khoản thủ công.)';
   }
 
-  return sach_({ ok: true, msg: 'Đã lưu hồ sơ.' +
-    (full ? '' : ' Phòng nhân sự sẽ bổ sung giấy tờ và hợp đồng.') + tkMsg });
+  var kqNS = { ok: true, msg: 'Đã lưu hồ sơ.' +
+    (full ? '' : ' Phòng nhân sự sẽ bổ sung giấy tờ và hợp đồng.') + tkMsg };
+  if (tkMoi) for (var kN in tkMoi) kqNS[kN] = tkMoi[kN];
+  return sach_(kqNS);
 }
 
 function luuKyNang(token, maNV, ds) {
@@ -1540,6 +1665,7 @@ function taoSheetYeuCauHoSo_() {
 
 /* Nâng cấp: thêm cột SdtKhanCap vào NhanSu (chạy một lần, an toàn nếu đã có) */
 function NANG_CAP_THEM_COT_SDTKHANCAP() {
+  if (!noiBo_(arguments[0])) return chanWeb_('NANG_CAP_THEM_COT_SDTKHANCAP');
   var sh = ss_().getSheetByName('NhanSu');
   if (!sh) return;
   var head = sh.getRange(1, 1, 1, sh.getLastColumn()).getValues()[0];
@@ -1740,6 +1866,7 @@ function chuanHoaTenCongDoan_(s) {
    Quét & chuẩn hóa các cột tên. KHÔNG đổi mã, không đổi dữ liệu khác.
    Chọn hàm này trên thanh công cụ, bấm Chạy, rồi xem Nhật ký (Ctrl+Enter). */
 function CHUAN_HOA_TOAN_BO_TEN() {
+  if (!noiBo_(arguments[0])) return chanWeb_('CHUAN_HOA_TOAN_BO_TEN');
   var ss = ss_();
   var tong = 0;
   // Họ tên -> Title Case
@@ -2129,6 +2256,7 @@ function mapQuanLy_() {
 
 /* Trigger: chạy mỗi ngày. Rà các ngày đã quá hạn, phạt CN chưa nhập. */
 function chayPhatNhapTre() {
+  if (!noiBo_(arguments[0])) return chanWeb_('chayPhatNhapTre');
   taoSheetPhatTre_();
   var dt = docDuLieuKPI_();
   var homNay = homNayVN_();
@@ -2218,6 +2346,7 @@ function themViPhamNhapTre_(maNV, ngay) {
    In ra: tài khoản (vai trò/MaNV) trong TaiKhoan, hồ sơ trong NhanSu, các dòng PhatNhapTre
    và vi phạm NHAPTRE của CHÍNH người này, và số lượt CN khác trong xưởng bị phạt trễ. */
 function CHAN_DOAN_KPI_QL_MOT_NGUOI() {
+  if (!noiBo_(arguments[0])) return chanWeb_('CHAN_DOAN_KPI_QL_MOT_NGUOI');
   var MA_NV_CAN_KIEM = 'C160';   // <-- ĐỔI mã ở đây nếu cần
 
   var L = [];
@@ -2283,6 +2412,7 @@ function CHAN_DOAN_KPI_QL_MOT_NGUOI() {
    An toàn: chỉ đụng tới MaNV là TP/PP (theo sheet TaiKhoan), không đụng công nhân.
    Chạy trực tiếp trong trình soạn thảo Apps Script, rồi xem Nhật ký (Logger). */
 function DON_PHAT_NHAP_TRE_TP_PP() {
+  if (!noiBo_(arguments[0])) return chanWeb_('DON_PHAT_NHAP_TRE_TP_PP');
   // Tập MaNV của TP/PP (theo cả TaiKhoan lẫn ChucDanh trong NhanSu)
   var maQL = mapQuanLy_();
 
@@ -2322,6 +2452,7 @@ function DON_PHAT_NHAP_TRE_TP_PP() {
 
 /* Cài đặt trigger chạy mỗi ngày lúc ~18h. Chạy MỘT LẦN. */
 function CAI_TRIGGER_PHAT_TRE() {
+  if (!noiBo_(arguments[0])) return chanWeb_('CAI_TRIGGER_PHAT_TRE');
   ScriptApp.getProjectTriggers().forEach(function(t){
     if (t.getHandlerFunction()==='chayPhatNhapTre') ScriptApp.deleteTrigger(t);
   });
@@ -2686,7 +2817,8 @@ function taoTaiKhoan(token, o) {
   if (doc_('TaiKhoan').filter(function(x) { return String(x.TenDangNhap).toLowerCase() === tk; })[0])
     return sach_({ ok: false, msg: 'Tên đăng nhập đã tồn tại.' });
 
-  var mkTam = o.MatKhau && String(o.MatKhau).length >= 6 ? String(o.MatKhau) : '123456';
+  var mkTam = o.MatKhau && String(o.MatKhau).length >= 6 ? String(o.MatKhau) : mkTam_();
+  if (MK_YEU_.indexOf(mkTam.toLowerCase()) >= 0) return sach_({ ok: false, msg: 'Mật khẩu tạm quá dễ đoán. Để trống để hệ thống tự tạo.' });
 
   // Vai trò CN (công nhân) và TP (trưởng phòng) gắn với một mã nhân viên có thật
   var maNV = '';
@@ -2706,16 +2838,17 @@ function taoTaiKhoan(token, o) {
   }
 
   them_('TaiKhoan', {
-    TenDangNhap: tk, MatKhauMaHoa: bam_(mkTam), HoTen: o.HoTen,
+    TenDangNhap: tk, MatKhauMaHoa: '', HoTen: o.HoTen,
     VaiTro: o.VaiTro, MaXuong: o.MaXuong || '', TrangThai: 'Đang dùng',
     DoiMatKhauLanDau: 'Có', LanDangNhapCuoi: '', NgayTao: new Date(), MaNV: maNV
   });
   var moiTao = doc_('TaiKhoan').filter(function(x) {
     return String(x.TenDangNhap).toLowerCase() === tk;
   })[0];
-  if (moiTao) ghiBam_(moiTao._row, bam_(mkTam));
+  if (moiTao) datMKTam_(moiTao._row, mkTam);
   ghiLog_(me, 'Tạo tài khoản', tk + ' — ' + o.VaiTro + (maNV ? ' (' + maNV + ')' : ''));
-  return sach_({ ok: true, msg: 'Đã tạo tài khoản "' + tk + '". Mật khẩu tạm: ' + mkTam });
+  return sach_({ ok: true, mkTam: mkTam, tenDN: tk, hoTen: o.HoTen, hanGio: MK_HAN_TAM_GIO,
+    msg: 'Đã tạo tài khoản "' + tk + '". Mật khẩu tạm: ' + mkTam + ' (dùng trong ' + MK_HAN_TAM_GIO + ' giờ)' });
 }
 
 function doiTrangThaiTK(token, tenDN) {
@@ -2750,14 +2883,15 @@ function capLaiMatKhau(token, tenDN) {
   })[0];
   if (!tk) return sach_({ ok: false, msg: 'Không tìm thấy tài khoản.' });
 
-  // Mật khẩu tạm NGẪU NHIÊN 6 số (không dùng 123456 — ai cũng đoán được)
-  var mkTam = String(Math.floor(100000 + Math.random() * 900000));
-  ghiBam_(tk._row, bam_(mkTam));
-  suaO_('TaiKhoan', tk._row, 'DoiMatKhauLanDau', 'Có');
+  // Mật khẩu tạm NGẪU NHIÊN 8 ký tự, hết hạn sau 48 giờ; mọi phiên đang mở của tài khoản này bị đăng xuất
+  var mkTam = mkTam_();
+  datMKTam_(tk._row, mkTam);
+  tangPhienBan_(tk);
   try { CacheService.getScriptCache().remove('SAI_' + String(tenDN).toLowerCase().trim()); } catch (e) {}
   ghiLog_(me, 'Cấp lại mật khẩu', tenDN);
-  return sach_({ ok: true, mkTam: mkTam, msg: 'Mật khẩu tạm của "' + tenDN + '": ' + mkTam +
-    '\nHãy báo riêng cho người này. Họ sẽ phải đổi mật khẩu ngay lần đăng nhập đầu.' });
+  return sach_({ ok: true, mkTam: mkTam, tenDN: tk.TenDangNhap, hoTen: tk.HoTen, hanGio: MK_HAN_TAM_GIO,
+    msg: 'Mật khẩu tạm của "' + tenDN + '": ' + mkTam +
+    '\nHãy báo riêng cho người này trong ' + MK_HAN_TAM_GIO + ' giờ. Họ sẽ phải đổi mật khẩu ngay lần đăng nhập đầu.' });
 }
 
 /* ========================================================
@@ -2769,6 +2903,7 @@ function capLaiMatKhau(token, tenDN) {
 
 /* Đặt lại mật khẩu TẤT CẢ tài khoản về 123456 */
 function DAT_LAI_TAT_CA_MAT_KHAU() {
+  if (!noiBo_(arguments[0])) return chanWeb_('DAT_LAI_TAT_CA_MAT_KHAU');
   var sh = ss_().getSheetByName('TaiKhoan');
   if (!sh) { Logger.log('Không có trang tính TaiKhoan'); return; }
 
@@ -2788,6 +2923,7 @@ function DAT_LAI_TAT_CA_MAT_KHAU() {
 
 /* Tạo lại 7 tài khoản mặc định — không đụng tới dữ liệu sản xuất */
 function TAO_LAI_TAI_KHOAN() {
+  if (!noiBo_(arguments[0])) return chanWeb_('TAO_LAI_TAI_KHOAN');
   var ss = ss_();
   var sh = ss.getSheetByName('TaiKhoan');
   // AN TOÀN: hàm này XÓA SẠCH sheet TaiKhoan. Không cho chạy khi đã có dữ liệu thật.
@@ -3156,6 +3292,7 @@ function daChotChinhThuc_(ky) {
    (Trước đây chốt lúc 23h ngày cuối tháng -> mất phần sản lượng duyệt sau.)
    Nếu hôm đó trigger lỡ không chạy, những ngày sau vẫn tự chốt bù khi tháng trước chưa có bản chính thức. */
 function chotThangTuDong() {
+  if (!noiBo_(arguments[0])) return chanWeb_('chotThangTuDong');
   var homNay = homNayVN_();
   var kyNay = homNay.slice(0, 7), kyCu = kyTruoc_(kyNay);
   var thuTu = 0;
@@ -3173,6 +3310,7 @@ function chotThangTuDong() {
 
 /* Chạy 1 lần để cài trigger: mỗi ngày 23h (giờ VN) kiểm tra, đến ngày làm việc thứ 3 sẽ chốt tháng trước. */
 function CAI_TRIGGER_CHOT_THANG() {
+  if (!noiBo_(arguments[0])) return chanWeb_('CAI_TRIGGER_CHOT_THANG');
   ScriptApp.getProjectTriggers().forEach(function(tg){
     if (tg.getHandlerFunction() === 'chotThangTuDong') ScriptApp.deleteTrigger(tg);
   });
@@ -3184,6 +3322,7 @@ function CAI_TRIGGER_CHOT_THANG() {
    Ghi bản TẠM của tháng hiện tại (NguoiChot = 'Snapshot tự động 9h'). Bản tạm không được coi là chốt:
    tháng đã qua mà chỉ có bản tạm thì bảng KPI vẫn tính trực tiếp cho tới khi chốt chính thức. */
 function snapshotKPIHangNgay() {
+  if (!noiBo_(arguments[0])) return chanWeb_('snapshotKPIHangNgay');
   var ky = kyVN_();
   var n = chotThangLoi_(ky, '', NGUOI_CHOT_TAM);
   try {
@@ -3195,6 +3334,7 @@ function snapshotKPIHangNgay() {
 
 /* Chạy 1 lần trong trình soạn thảo để cài trigger 9h sáng mỗi ngày (giờ VN). */
 function CAI_TRIGGER_SNAPSHOT_9H() {
+  if (!noiBo_(arguments[0])) return chanWeb_('CAI_TRIGGER_SNAPSHOT_9H');
   ScriptApp.getProjectTriggers().forEach(function(tg){
     if (tg.getHandlerFunction() === 'snapshotKPIHangNgay') ScriptApp.deleteTrigger(tg);
   });
@@ -4299,9 +4439,9 @@ function banDieuHanhTuChoiNhieu(token, maDongList) {
 
 function taoThongBao_(maXuong, tieuDe, noiDung, nguoiTao) {
   var sh = taoSheetThongBao_();
-  sh.appendRow([
+  sh.appendRow(dongAnToan_([
     ma_('TB'), new Date(), maXuong || '', 'TP', tieuDe || '', noiDung || '', 'Chưa', nguoiTao || ''
-  ]);
+  ]));
   xoaCache_('ThongBao');
 }
 
@@ -4397,6 +4537,7 @@ function kiemTraTonThang(token, kyThang) {
 /* Chạy 1 lần trong Apps Script: chuyển mọi Ky cũ (đang là Date) về text 'yyyy-MM'.
    Sau khi chạy, cột Ky sạch, không còn phụ thuộc chuanKy_ khi đọc. */
 function SUA_KY_KPITHANG_VE_TEXT() {
+  if (!noiBo_(arguments[0])) return chanWeb_('SUA_KY_KPITHANG_VE_TEXT');
   var sh = ss_().getSheetByName('KPIThang');
   if (!sh) { Logger.log('Không có sheet KPIThang'); return; }
   var last = sh.getLastRow();
@@ -4418,6 +4559,7 @@ function SUA_KY_KPITHANG_VE_TEXT() {
    (kèm kiểu dữ liệu), và layKPIKy trả về bao nhiêu người.
    ============================================================ */
 function CHAN_DOAN_KPI_THANG8() {
+  if (!noiBo_(arguments[0])) return chanWeb_('CHAN_DOAN_KPI_THANG8');
   var thg = '2026-08';
   var sh = ss_().getSheetByName('KPIThang');
   if (!sh) { Logger.log('KHÔNG có sheet KPIThang'); return; }
@@ -4696,6 +4838,7 @@ function banDieuHanhSuaDinhMucNhieu(token, dsList, lyDo) {
    Chạy tự động 2h sáng mỗi ngày để không phình bộ nhớ.
    ============================================ */
 function donTokenHetHan() {
+  if (!noiBo_(arguments[0])) return chanWeb_('donTokenHetHan');
   try {
     var props = PropertiesService.getScriptProperties();
     var all = props.getProperties();
@@ -4728,6 +4871,7 @@ function donTokenHetHan() {
 
 /* Cài trigger tự động 2h sáng mỗi ngày. Chạy MỘT LẦN. */
 function CAI_TRIGGER_DON_TOKEN() {
+  if (!noiBo_(arguments[0])) return chanWeb_('CAI_TRIGGER_DON_TOKEN');
   ScriptApp.getProjectTriggers().forEach(function(t) {
     if (t.getHandlerFunction() === 'donTokenHetHan') ScriptApp.deleteTrigger(t);
   });
@@ -4747,6 +4891,7 @@ function CAI_TRIGGER_DON_TOKEN() {
    Chạy tự động 1h sáng mỗi ngày (sau khi cài trigger).
    ============================================ */
 function saoLuuHangNgay() {
+  if (!noiBo_(arguments[0])) return chanWeb_('saoLuuHangNgay');
   try {
     var ss = SpreadsheetApp.getActiveSpreadsheet();
     var tenGoc = ss.getName();
@@ -4789,6 +4934,7 @@ function saoLuuHangNgay() {
 /* Cài trigger tự động 1h sáng mỗi ngày. Chạy MỘT LẦN trong Apps Script.
    (Chạy tay: chọn hàm này trên thanh công cụ → bấm ▶ Run) */
 function CAI_TRIGGER_SAO_LUU() {
+  if (!noiBo_(arguments[0])) return chanWeb_('CAI_TRIGGER_SAO_LUU');
   // Xóa trigger cũ cùng tên (tránh trùng khi chạy lại)
   ScriptApp.getProjectTriggers().forEach(function(t) {
     if (t.getHandlerFunction() === 'saoLuuHangNgay') ScriptApp.deleteTrigger(t);
@@ -4814,6 +4960,7 @@ function CAI_TRIGGER_SAO_LUU() {
    In ra: múi giờ dự án, các trigger đang cài, số tài khoản còn mật khẩu mặc định, tài khoản của người
    đã nghỉ việc, vi phạm thiếu mã ghi, dòng nhật ký ngày sai, sheet NgayLe. */
 function KIEM_TRA_SAU_CAP_NHAT() {
+  if (!noiBo_(arguments[0])) return chanWeb_('KIEM_TRA_SAU_CAP_NHAT');
   var L = [];
   L.push('Múi giờ dự án: ' + Session.getScriptTimeZone() + (Session.getScriptTimeZone() === TZ_VN ? ' (đúng)' : '  <-- NÊN ĐỔI sang Asia/Ho_Chi_Minh trong Cài đặt dự án'));
   var tg = ScriptApp.getProjectTriggers().map(function(t){ return t.getHandlerFunction(); });
@@ -4848,6 +4995,7 @@ function KIEM_TRA_SAU_CAP_NHAT() {
 
 /* 2) Cài lại TẤT CẢ trigger theo giờ Việt Nam (xóa trigger cũ cùng tên trước khi cài). */
 function CAI_LAI_TAT_CA_TRIGGER() {
+  if (!noiBo_(arguments[0])) return chanWeb_('CAI_LAI_TAT_CA_TRIGGER');
   CAI_TRIGGER_PHAT_TRE();
   CAI_TRIGGER_CHOT_THANG();
   CAI_TRIGGER_SNAPSHOT_9H();
@@ -4859,6 +5007,7 @@ function CAI_LAI_TAT_CA_TRIGGER() {
 
 /* 3) Ngừng tài khoản của những người đã chuyển "Nghỉ việc" trong NhanSu. */
 function NGUNG_TK_NGHI_VIEC() {
+  if (!noiBo_(arguments[0])) return chanWeb_('NGUNG_TK_NGHI_VIEC');
   khoa_();
   var ds = [];
   doc_('TaiKhoan').forEach(function(t){
@@ -4875,6 +5024,7 @@ function NGUNG_TK_NGHI_VIEC() {
 /* 4) Bật cờ "phải đổi mật khẩu" cho mọi tài khoản đang dùng mật khẩu mặc định 123456.
    Lần đăng nhập tới họ sẽ bị buộc đặt mật khẩu mới. KHÔNG đổi mật khẩu của ai. */
 function BAT_BUOC_DOI_MAT_KHAU_MAC_DINH() {
+  if (!noiBo_(arguments[0])) return chanWeb_('BAT_BUOC_DOI_MAT_KHAU_MAC_DINH');
   khoa_();
   var mk = bam_('123456'), n = 0;
   doc_('TaiKhoan').forEach(function(t){
@@ -4890,6 +5040,7 @@ function BAT_BUOC_DOI_MAT_KHAU_MAC_DINH() {
 /* 5) Bổ sung mã ghi cho các vi phạm cũ bị thiếu (vi phạm nhập trễ tự động trước đây không có mã,
    nên không xóa lẻ được trên giao diện). */
 function BO_SUNG_MA_GHI_VIPHAM() {
+  if (!noiBo_(arguments[0])) return chanWeb_('BO_SUNG_MA_GHI_VIPHAM');
   khoa_();
   var sh = ss_().getSheetByName('ViPham');
   if (!sh || sh.getLastRow() < 2) { Logger.log('Sheet ViPham trống.'); return; }
@@ -4912,6 +5063,7 @@ function BO_SUNG_MA_GHI_VIPHAM() {
    Sau khi tạo: mở sheet NgayLe, thêm các ngày Tết Âm lịch, Giỗ Tổ… theo thông báo nghỉ của công ty.
    Cột MaXuong để trống = cả nhà máy nghỉ; ghi mã xưởng (VD CNC) nếu chỉ xưởng đó nghỉ. */
 function TAO_SHEET_NGAY_LE() {
+  if (!noiBo_(arguments[0])) return chanWeb_('TAO_SHEET_NGAY_LE');
   var ss = ss_();
   if (ss.getSheetByName('NgayLe')) { Logger.log('Sheet NgayLe đã có — giữ nguyên.'); return; }
   var sh = ss.insertSheet('NgayLe');
@@ -4976,6 +5128,7 @@ function dsNgaySaiNhatKy_() {
    Bước 2: đổi CHE_DO = 'SUA', Chạy lại: CHỈ sửa các dòng chắc chắn (ngày và tháng bị đảo).
    Dòng không đoán chắc được (ô trống, #VALUE!, năm lạ) -> sửa tay trong Sheet theo gợi ý. */
 function SUA_NGAY_NHAT_KY() {
+  if (!noiBo_(arguments[0])) return chanWeb_('SUA_NGAY_NHAT_KY');
   var CHE_DO = 'XEM';   // <-- đổi thành 'SUA' ở bước 2
 
   var ds = dsNgaySaiNhatKy_();
@@ -5003,6 +5156,7 @@ function SUA_NGAY_NHAT_KY() {
 /* 8) Xóa bộ nhớ tạm (bảng KPI, thống kê… được nhớ 10 phút cho nhanh).
    Chạy sau khi SỬA TAY trực tiếp trong Google Sheet để web hiện số mới ngay. */
 function XOA_BO_NHO_TAM() {
+  if (!noiBo_(arguments[0])) return chanWeb_('XOA_BO_NHO_TAM');
   tangPhienBan_();
   Logger.log('Đã xóa bộ nhớ tạm. Tải lại trang web để thấy số liệu mới.');
 }
@@ -5198,6 +5352,7 @@ var SHEET_NAP_ = ['TaiKhoan', 'NhanSu', 'PhongBan', 'CongDoan', 'DinhMuc', 'DeXu
 
 /* CHẠY TAY: so từng ô giữa cách đọc cũ (getValues) và Sheets API. Khớp hết -> bật đọc gộp. */
 function KIEM_TRA_SHEETS_API() {
+  if (!noiBo_(arguments[0])) return chanWeb_('KIEM_TRA_SHEETS_API');
   if (typeof Sheets === 'undefined') {
     Logger.log('Chưa bật dịch vụ Google Sheets API. Vào Dịch vụ (+) -> Google Sheets API -> Thêm, rồi chạy lại.');
     return;
@@ -5225,7 +5380,8 @@ function KIEM_TRA_SHEETS_API() {
   if (lech === 0) { p.setProperty('KPI_SHEETS_API', '1'); Logger.log('KHỚP toàn bộ ' + ten.length + ' trang tính. ĐÃ BẬT đọc gộp bằng Sheets API.'); }
   else { p.setProperty('KPI_SHEETS_API', '0'); Logger.log('Có ' + lech + ' ô lệch -> CHƯA bật. Ví dụ:\n' + vd.join('\n')); }
 }
-function TAT_SHEETS_API() { PropertiesService.getScriptProperties().setProperty('KPI_SHEETS_API', '0'); Logger.log('Đã tắt đọc gộp.'); }
+function TAT_SHEETS_API() {
+  if (!noiBo_(arguments[0])) return chanWeb_('TAT_SHEETS_API'); PropertiesService.getScriptProperties().setProperty('KPI_SHEETS_API', '0'); Logger.log('Đã tắt đọc gộp.'); }
 
 /* ---------- 4) LƯU TRỮ NHẬT KÝ CŨ ----------
    Chuyển các dòng NhatKySanXuat của những tháng ĐÃ CHỐT CHÍNH THỨC và cũ hơn SO_THANG_GIU tháng
@@ -5243,6 +5399,7 @@ function canLuuTru_(cacThang) {
   return (cacThang || []).some(function(t) { return !t || String(t) < moc; });
 }
 function LUU_TRU_NHAT_KY() {
+  if (!noiBo_(arguments[0])) return chanWeb_('LUU_TRU_NHAT_KY');
   khoa_();
   var sh = ss_().getSheetByName('NhatKySanXuat');
   if (!sh || sh.getLastRow() < 2) { Logger.log('Không có dữ liệu.'); return; }
@@ -5273,6 +5430,7 @@ function LUU_TRU_NHAT_KY() {
 }
 /* Trigger: ngày 5 hằng tháng, 2h30 sáng */
 function CAI_TRIGGER_LUU_TRU() {
+  if (!noiBo_(arguments[0])) return chanWeb_('CAI_TRIGGER_LUU_TRU');
   ScriptApp.getProjectTriggers().forEach(function(t) { if (t.getHandlerFunction() === 'LUU_TRU_NHAT_KY') ScriptApp.deleteTrigger(t); });
   ScriptApp.newTrigger('LUU_TRU_NHAT_KY').timeBased().onMonthDay(5).atHour(2).inTimezone(TZ_VN).create();
   Logger.log('Đã cài trigger lưu trữ nhật ký: ngày 5 hằng tháng, 2h sáng.');
@@ -5760,6 +5918,7 @@ function guiBaoCaoThang_(ky) {
 /* Chạy 1 lần: tạo sheet người nhận báo cáo. Điền email vào cột Email; cột NhanBaoCao ghi
    TOAN_NHA_MAY (báo cáo cả nhà máy), mã xưởng (vd. SON) để nhận báo cáo xưởng đó, hoặc TAT_CA. */
 function TAO_SHEET_NGUOI_NHAN_BAO_CAO() {
+  if (!noiBo_(arguments[0])) return chanWeb_('TAO_SHEET_NGUOI_NHAN_BAO_CAO');
   var ss = ss_(), sh = ss.getSheetByName(BC_SHEET_NHAN);
   if (!sh) {
     sh = ss.insertSheet(BC_SHEET_NHAN);
@@ -5771,6 +5930,7 @@ function TAO_SHEET_NGUOI_NHAN_BAO_CAO() {
 }
 /* Chạy tay: tạo + gửi báo cáo của THÁNG TRƯỚC ngay bây giờ (dùng để thử hoặc gửi bù). */
 function GUI_BAO_CAO_THANG_TRUOC() {
+  if (!noiBo_(arguments[0])) return chanWeb_('GUI_BAO_CAO_THANG_TRUOC');
   var r = guiBaoCaoThang_(kyTruoc_(kyVN_()));
   Logger.log('Đã tạo ' + r.tep.length + ' tệp trong Drive và gửi ' + r.email + ' email cho kỳ ' + r.ky + '.');
 }
@@ -6232,14 +6392,14 @@ function comTongKetThang_(ky) {
   var sh1 = tep.getSheets()[0]; sh1.setName('Tổng hợp theo xưởng');
   var bang = [['Xưởng', 'Số ngày có cơm', 'Suất ăn', 'Không ăn', 'Chưa đăng ký', 'Trung bình suất / ngày']].concat(t.ds.map(function(x) {
     return [x.ten, x.soNgay, x.an, x.khong, x.chua, x.soNgay ? Math.round(x.an / x.soNgay * 10) / 10 : 0]; }));
-  sh1.getRange(1, 1, bang.length, 6).setValues(bang); sh1.getRange(1, 1, 1, 6).setFontWeight('bold'); sh1.setFrozenRows(1);
+  sh1.getRange(1, 1, bang.length, 6).setValues(bang.map(dongAnToan_)); sh1.getRange(1, 1, 1, 6).setFontWeight('bold'); sh1.setFrozenRows(1);
   var sh2 = tep.insertSheet('Chi tiết từng người');
   var ct = [['Ngày', 'Xưởng', 'Họ tên', 'Mã NV', 'Đăng ký']].concat(t.chiTiet);
-  sh2.getRange(1, 1, ct.length, 5).setNumberFormat('@').setValues(ct); sh2.getRange(1, 1, 1, 5).setFontWeight('bold'); sh2.setFrozenRows(1);
+  sh2.getRange(1, 1, ct.length, 5).setNumberFormat('@').setValues(ct.map(dongAnToan_)); sh2.getRange(1, 1, 1, 5).setFontWeight('bold'); sh2.setFrozenRows(1);
   var sh3 = tep.insertSheet('Thực đơn');
   var td = [['Ngày', 'Món ăn', 'Ghi chú', 'Người nhập']].concat(docAnToan_('ThucDon').filter(function(r) { return comNgay_(r.Ngay).slice(0, 7) === ky; })
     .map(function(r) { return [comNgay_(r.Ngay), String(r.MonAn || ''), String(r.GhiChu || ''), String(r.NguoiNhap || '')]; }).sort());
-  sh3.getRange(1, 1, td.length, 4).setNumberFormat('@').setValues(td); sh3.getRange(1, 1, 1, 4).setFontWeight('bold');
+  sh3.getRange(1, 1, td.length, 4).setNumberFormat('@').setValues(td.map(dongAnToan_)); sh3.getRange(1, 1, 1, 4).setFontWeight('bold');
   var file = DriveApp.getFileById(tep.getId());
   try { file.moveTo(bcThuMuc_(ky)); } catch (e) { Logger.log('Không chuyển được file vào thư mục báo cáo: ' + e); }
   // 2) số suất vào SuatAnThang (đưa vào báo cáo tháng)
@@ -6259,11 +6419,13 @@ function comTongKetThang_(ky) {
 
 /* Chạy tay: tổng kết cơm trưa THÁNG TRƯỚC ngay (lưu Drive + xóa dữ liệu). Bình thường tự chạy khi chốt tháng. */
 function TONG_KET_COM_THANG_TRUOC() {
+  if (!noiBo_(arguments[0])) return chanWeb_('TONG_KET_COM_THANG_TRUOC');
   var r = comTongKetThang_(kyTruoc_(kyVN_()));
   Logger.log(JSON.stringify(r));
 }
 /* Chạy tay: đổi hạn đăng ký (mặc định 16) và giờ khóa thay đổi (mặc định 22) – đều tính theo hôm trước ngày ăn. Sửa số trong hàm rồi bấm Chạy. */
 function DAT_GIO_CHOT_COM() {
+  if (!noiBo_(arguments[0])) return chanWeb_('DAT_GIO_CHOT_COM');
   PropertiesService.getScriptProperties().setProperty('COM_GIO_CHOT', '16');
   PropertiesService.getScriptProperties().setProperty('COM_GIO_KHOA', '22');
   Logger.log('Hạn đăng ký cơm: ' + comGioChot_() + ':00, được thay đổi tới ' + comGioKhoa_() + ':00 hôm trước ngày ăn.');
@@ -6271,6 +6433,7 @@ function DAT_GIO_CHOT_COM() {
 
 /* Chạy tay khi trang Cơm trưa không tải được: thử từng bước bằng tài khoản chủ sở hữu, ghi lỗi chi tiết vào Nhật ký thực thi */
 function KIEM_TRA_COM_TRUA() {
+  if (!noiBo_(arguments[0])) return chanWeb_('KIEM_TRA_COM_TRUA');
   var buoc = function(ten, fn) { try { var v = fn(); Logger.log('✓ ' + ten + (v !== undefined ? ': ' + v : '')); return true; } catch (e) { Logger.log('✗ ' + ten + ': ' + e.message + '\n' + (e.stack || '')); return false; } };
   buoc('Sheet ThucDon', function() { return comDoc_('ThucDon').length + ' dòng'; });
   buoc('Sheet DangKyCom', function() { return comDoc_('DangKyCom').length + ' dòng, cột: ' + dauCot_('DangKyCom').join(', '); });
