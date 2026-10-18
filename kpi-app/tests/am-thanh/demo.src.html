@@ -29,20 +29,23 @@ header{display:flex;gap:14px;align-items:center;margin-bottom:8px}
 header img{width:72px;height:auto;flex:none}
 h1{font-size:22px;margin:0 0 2px}
 h2{font-size:18px;margin:0 0 4px}
+h3{font-size:16px;margin:18px 0 4px}
 p{margin:6px 0}
 .phu{color:var(--phu);font-size:14px}
 .the{background:var(--the);border:1px solid var(--vien);border-radius:12px;padding:16px;margin:16px 0;box-shadow:var(--bong)}
 .hang{display:flex;flex-wrap:wrap;gap:8px 16px;align-items:center;margin:10px 0}
 label{font-size:14px;color:var(--phu)}
 input[type=range]{width:160px;accent-color:var(--vang-nen)}
-select,input[type=text],input[type=number]{font:inherit;font-size:16px;color:var(--chu);background:var(--the2);border:1px solid var(--vien);border-radius:8px;padding:8px 10px;min-height:44px;max-width:100%}
+select,input[type=number]{font:inherit;font-size:16px;color:var(--chu);background:var(--the2);border:1px solid var(--vien);border-radius:8px;padding:8px 10px;min-height:44px;max-width:100%}
 button{font:inherit;cursor:pointer;min-height:44px;border-radius:8px}
 .nut{background:var(--vang-nen);color:var(--tren-vang);border:0;padding:10px 16px;font-weight:700}
 .nut2{background:transparent;color:var(--chu);border:1px solid var(--vien);padding:10px 14px}
 .nut:focus-visible,.nut2:focus-visible,.am:focus-visible,.chon button:focus-visible{outline:3px solid var(--vang);outline-offset:2px}
-.chon{display:inline-flex;border:1px solid var(--vien);border-radius:10px;overflow:hidden}
-.chon button{border:0;border-radius:0;background:transparent;color:var(--chu);padding:8px 14px}
-.chon button[aria-pressed=true]{background:var(--vang-nen);color:var(--tren-vang);font-weight:700}
+.chon{display:flex;flex-wrap:wrap;gap:6px}
+.chon button{border:1px solid var(--vien);background:transparent;color:var(--chu);padding:8px 12px;font-size:15px}
+.chon button[aria-pressed=true]{background:var(--vang-nen);border-color:var(--vang-nen);color:var(--tren-vang);font-weight:700}
+.bo4{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr))}
+.chon button small{display:block;font-size:12px;font-weight:400;opacity:.8}
 .luoi{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:10px;margin-top:12px}
 .am{display:flex;gap:10px;align-items:flex-start;text-align:left;background:var(--the2);border:1px solid var(--vien);color:var(--chu);padding:12px}
 .am .bieu{flex:none;width:32px;height:32px;border-radius:50%;background:var(--vang-nen);color:var(--tren-vang);display:grid;place-items:center;font-size:13px}
@@ -51,13 +54,14 @@ button{font:inherit;cursor:pointer;min-height:44px;border-radius:8px}
 .am.dang .bieu{animation:nhay .3s ease-out}
 @keyframes nhay{50%{transform:scale(1.25)}}
 .cau{display:flex;gap:8px;align-items:center;padding:8px 0;border-top:1px solid var(--vien)}
-.cau:first-of-type{border-top:0}
+.cau:first-child{border-top:0}
 .cau q{flex:1;font-size:15px;quotes:"“" "”"}
 .cau .nut2{flex:none;padding:6px 12px}
 .bao{border-radius:8px;padding:10px 12px;font-size:14px;margin:10px 0}
-.bao.tot{background:color-mix(in srgb,var(--xanh) 14%,transparent);color:var(--chu)}
-.bao.xau{background:color-mix(in srgb,var(--do) 14%,transparent);color:var(--chu)}
+.bao.tot{background:color-mix(in srgb,var(--xanh) 14%,transparent)}
+.bao.xau{background:color-mix(in srgb,var(--do) 14%,transparent)}
 ol{margin:6px 0;padding-left:20px;font-size:14px}
+ol li{margin:3px 0}
 .form{display:grid;grid-template-columns:1fr 110px 110px;gap:8px;align-items:end}
 .form div{display:flex;flex-direction:column;gap:4px}
 .form input{width:100%}
@@ -67,6 +71,9 @@ ol{margin:6px 0;padding-left:20px;font-size:14px}
 .mo{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px}
 .loi{border-color:var(--do)!important;outline:2px solid var(--do)}
 .nho{font-size:13px;color:var(--phu)}
+details{margin-top:6px}
+summary{cursor:pointer;min-height:44px;display:flex;align-items:center;font-weight:700}
+.chan{font-family:ui-monospace,Menlo,monospace;font-size:13px;background:var(--the2);border:1px solid var(--vien);border-radius:8px;padding:10px;white-space:pre-wrap;word-break:break-word}
 .toast{position:fixed;left:50%;bottom:calc(16px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--chu);color:var(--nen);padding:10px 16px;border-radius:10px;font-size:14px;opacity:0;transition:opacity .2s;pointer-events:none;max-width:calc(100% - 32px)}
 .toast.hien{opacity:1}
 @media (prefers-reduced-motion:reduce){.am.dang .bieu{animation:none}.toast{transition:none}}
@@ -81,50 +88,61 @@ ol{margin:6px 0;padding-left:20px;font-size:14px}
   </div>
 </header>
 
+<div class="bao xau" id="baoApp" hidden>Bạn đang mở trang trong một ứng dụng (Claude, Zalo, Facebook…). Nếu không nghe được, hãy bấm ⋮ → <b>Mở bằng Chrome</b>.</div>
 <div class="bao xau" id="baoIos" hidden>iPhone: nếu không nghe thấy tiếng, hãy gạt <b>nút im lặng</b> bên cạnh máy sang chế độ có chuông.</div>
 
 <section class="the" aria-labelledby="h1a">
   <h2 id="h1a">Kiểu 1 – Tiếng hiệu ứng ngắn</h2>
-  <p class="phu">Tiếng tự tạo ngay trong trình duyệt, không tải file, không tốn mạng. Có 2 bộ tiếng để so.</p>
+  <p class="phu">Tiếng tự tạo ngay trong trình duyệt, không tải file, không tốn mạng. Hai bộ mới kiểu công nghệ tương lai, hai bộ cũ để so.</p>
+  <div class="chon bo4" role="group" aria-label="Bộ tiếng">
+    <button type="button" data-bo="hud">HUD phi thuyền<small>mới – trong, có tiếng vang</small></button>
+    <button type="button" data-bo="so">Mạch số<small>mới – tiếng máy tính, dữ liệu</small></button>
+    <button type="button" data-bo="nhe">Nhẹ nhàng<small>bộ cũ</small></button>
+    <button type="button" data-bo="co">Bi-a / cơ khí<small>bộ cũ</small></button>
+  </div>
   <div class="hang">
-    <div class="chon" role="group" aria-label="Bộ tiếng">
-      <button type="button" data-bo="nhe" aria-pressed="true">Nhẹ nhàng</button>
-      <button type="button" data-bo="co" aria-pressed="false">Bi-a / cơ khí</button>
-    </div>
     <label>Âm lượng <input type="range" id="amLuong" min="0" max="1" step="0.05" value="0.7"></label>
   </div>
   <div class="luoi" id="luoiAm"></div>
 </section>
 
 <section class="the" aria-labelledby="h2a">
-  <h2 id="h2a">Kiểu 2 – Giọng nói tiếng Việt</h2>
-  <p class="phu">Dùng giọng đọc có sẵn của điện thoại (miễn phí). Giọng hay hay dở tùy máy.</p>
-  <div id="ttGiong" class="bao"></div>
-  <div id="huongDanGiong" hidden>
-    <p><b>Cách cài giọng tiếng Việt:</b></p>
-    <ol>
-      <li><b>Android:</b> Cài đặt → Quản lý chung (hoặc Hệ thống) → Ngôn ngữ → Chuyển văn bản thành giọng nói → chọn Google → bánh răng ⚙ → Cài đặt dữ liệu giọng nói → Tiếng Việt.</li>
-      <li><b>iPhone:</b> Cài đặt → Trợ năng → Nội dung được đọc → Giọng nói → Tiếng Việt → tải giọng Linh.</li>
-    </ol>
-    <p class="nho">Cài xong thì tải lại trang này.</p>
-  </div>
+  <h2 id="h2a">Kiểu 2 – Giọng Rhino nói tiếng Việt</h2>
+  <p class="phu"><b>Giọng thu sẵn</b>: chạy trên mọi điện thoại, không cần cài gì. Giọng đọc tự động chất lượng cao (không phải người thật đọc).</p>
   <div class="hang">
-    <label>Giọng <select id="chonGiong"></select></label>
-  </div>
-  <div class="hang">
-    <label>Tốc độ <input type="range" id="tocDo" min="0.6" max="1.4" step="0.05" value="1"></label>
-    <label>Độ cao <input type="range" id="doCao" min="0.6" max="1.4" step="0.05" value="1"></label>
+    <div class="chon" role="group" aria-label="Giọng">
+      <button type="button" data-giong="nu" aria-pressed="true">Giọng nữ</button>
+      <button type="button" data-giong="nam" aria-pressed="false">Giọng nam</button>
+    </div>
   </div>
   <div id="dsCau"></div>
 
-  <h2 style="margin-top:18px">Thử: Rhino đọc lại trước khi gửi</h2>
+  <h3>Thử: Rhino đọc lại trước khi gửi</h3>
+  <p class="nho">Số bất kỳ (0 – 99.999) được ghép từ các tiếng thu sẵn – thử gõ số khác rồi bấm nghe.</p>
   <div class="form">
     <div><label for="fCd">Công đoạn</label>
-      <select id="fCd"><option>Tiện ngọn</option><option>Ráp nước</option><option>Bọc da</option><option>Sơn lót</option><option>Đóng gói</option></select></div>
-    <div><label for="fSl">Số lượng</label><input id="fSl" type="number" inputmode="numeric" value="120"></div>
-    <div><label for="fLoi">Số lỗi</label><input id="fLoi" type="number" inputmode="numeric" value="2"></div>
+      <select id="fCd"><option value="0">Tiện ngọn</option><option value="1">Ráp nước</option><option value="2">Bọc da</option><option value="3">Sơn lót</option><option value="4">Đóng gói</option></select></div>
+    <div><label for="fSl">Số lượng</label><input id="fSl" type="number" inputmode="numeric" min="0" max="99999" value="125"></div>
+    <div><label for="fLoi">Số lỗi</label><input id="fLoi" type="number" inputmode="numeric" min="0" max="99999" value="2"></div>
   </div>
   <div class="mo"><button type="button" class="nut" id="docLai">🔊 Rhino đọc lại</button><button type="button" class="nut2" id="dungDoc">Dừng</button></div>
+
+  <details id="giongMay">
+    <summary>Giọng đọc có sẵn của điện thoại (cách cũ)</summary>
+    <p class="phu">Cách này dùng chức năng đọc của máy. Nhiều máy không đọc được nếu chưa cài giọng tiếng Việt hoặc khi mở trang trong ứng dụng. Bảng dưới cho biết máy bạn đang thiếu gì.</p>
+    <div class="chan" id="chanDoan">Đang kiểm tra…</div>
+    <div class="hang"><label>Giọng <select id="chonGiong"></select></label></div>
+    <div class="mo"><button type="button" class="nut2" id="thuMay">▶ Thử giọng của máy</button></div>
+    <p><b>Samsung (S24 Ultra…):</b></p>
+    <ol>
+      <li>Mở link này bằng <b>Chrome</b> (không mở trong ứng dụng Claude, Zalo hay Samsung Internet).</li>
+      <li>Cài đặt → <b>Quản lý chung</b> → <b>Chuyển văn bản thành giọng nói</b>.</li>
+      <li>Ở <b>Công cụ ưu tiên</b>, chọn <b>Dịch vụ lời nói của Google</b> (Speech Services by Google). Nếu không có, tải ứng dụng này trên CH Play.</li>
+      <li>Bấm ⚙ cạnh dòng đó → <b>Cài đặt dữ liệu giọng nói</b> → <b>Tiếng Việt</b> → tải về.</li>
+      <li>Quay lại Chrome, tải lại trang.</li>
+    </ol>
+    <p><b>iPhone:</b> Cài đặt → Trợ năng → Nội dung được đọc → Giọng nói → Tiếng Việt → tải giọng Linh.</p>
+  </details>
 </section>
 
 <section class="the" aria-labelledby="h3a">
@@ -146,107 +164,170 @@ ol{margin:6px 0;padding-left:20px;font-size:14px}
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
 <script>
+var GIONG_THU={{GIONG}};
 (function(){
 'use strict';
 var luu={get:function(k){try{return localStorage.getItem(k)}catch(e){return null}},set:function(k,v){try{localStorage.setItem(k,v)}catch(e){}}};
 var $=function(s){return document.querySelector(s)};
-function toast(t){var e=$('#toast');e.textContent=t;e.classList.add('hien');clearTimeout(toast.h);toast.h=setTimeout(function(){e.classList.remove('hien')},2200)}
+function toast(t){var e=$('#toast');e.textContent=t;e.classList.add('hien');clearTimeout(toast.h);toast.h=setTimeout(function(){e.classList.remove('hien')},2400)}
+var UA=navigator.userAgent;
+if(/iPhone|iPad|iPod/.test(UA))$('#baoIos').hidden=false;
+if(/; wv\)|FBAN|FBAV|Zalo|Instagram|Line\//.test(UA))$('#baoApp').hidden=false;
 
 /* ---------- Âm thanh (Web Audio, tự tạo) ---------- */
-var ac=null,master=null,vol=+(luu.get('am_vol')||0.7),bo=luu.get('am_bo')||'nhe',onBuf=null;
+var ac=null,master=null,vang=null,giongOut=null,vol=+(luu.get('am_vol')||0.7),bo=luu.get('am_bo2')||'hud',onBuf=null;
 $('#amLuong').value=vol;
 function ctx(){
-  if(!ac){var C=window.AudioContext||window.webkitAudioContext;if(!C)return null;ac=new C();master=ac.createGain();master.gain.value=vol;master.connect(ac.destination)}
+  if(!ac){var C=window.AudioContext||window.webkitAudioContext;if(!C)return null;ac=new C();
+    master=ac.createGain();master.gain.value=vol;master.connect(ac.destination);
+    // tiếng vang (echo) cho bộ HUD
+    var d=ac.createDelay(1),fb=ac.createGain(),loc=ac.createBiquadFilter(),ra=ac.createGain();
+    d.delayTime.value=0.13;fb.gain.value=0.32;loc.type='lowpass';loc.frequency.value=3500;ra.gain.value=0.45;
+    vang=ac.createGain();vang.connect(d);d.connect(loc);loc.connect(fb);fb.connect(d);loc.connect(ra);ra.connect(master);
+    giongOut=ac.createGain();giongOut.gain.value=1;giongOut.connect(ac.destination)}
   if(ac.state==='suspended')ac.resume();return ac;
 }
+function noiRa(node,o){node.connect(master);if(o.vang)node.connect(vang)}
 function ton(f,t0,dur,o){o=o||{};var os=ac.createOscillator(),g=ac.createGain();os.type=o.kieu||'sine';
-  os.frequency.setValueAtTime(f,t0);if(o.f2)os.frequency.exponentialRampToValueAtTime(o.f2,t0+dur);
+  os.frequency.setValueAtTime(f,t0);if(o.f2)os.frequency.exponentialRampToValueAtTime(o.f2,t0+(o.lt||dur));
+  if(o.lech)os.detune.value=o.lech;
   g.gain.setValueAtTime(0.0001,t0);g.gain.linearRampToValueAtTime(o.g||0.25,t0+(o.a||0.005));g.gain.exponentialRampToValueAtTime(0.0001,t0+dur);
-  var cuoi=g;if(o.loc){var l=ac.createBiquadFilter();l.type='lowpass';l.frequency.value=o.loc;g.connect(l);cuoi=l}
-  os.connect(g);cuoi.connect(master);os.start(t0);os.stop(t0+dur+0.05)}
+  var cuoi=g;if(o.loc){var l=ac.createBiquadFilter();l.type='lowpass';l.frequency.setValueAtTime(o.loc,t0);if(o.loc2)l.frequency.exponentialRampToValueAtTime(o.loc2,t0+dur);l.Q.value=o.q||1;g.connect(l);cuoi=l}
+  if(o.fm){var m=ac.createOscillator(),mg=ac.createGain();m.frequency.value=o.fm;mg.gain.value=o.fmSau||f*0.5;m.connect(mg);mg.connect(os.frequency);m.start(t0);m.stop(t0+dur+0.05)}
+  os.connect(g);noiRa(cuoi,o);os.start(t0);os.stop(t0+dur+0.05)}
 function on(t0,dur,o){o=o||{};if(!onBuf){var n=ac.sampleRate*1.5;onBuf=ac.createBuffer(1,n,ac.sampleRate);var d=onBuf.getChannelData(0);for(var i=0;i<n;i++)d[i]=Math.random()*2-1}
   var s=ac.createBufferSource();s.buffer=onBuf;var f=ac.createBiquadFilter();f.type=o.loai||'bandpass';f.frequency.setValueAtTime(o.f||2000,t0);
   if(o.f2)f.frequency.exponentialRampToValueAtTime(o.f2,t0+dur);f.Q.value=o.q||1;var g=ac.createGain();
   g.gain.setValueAtTime(0.0001,t0);g.gain.linearRampToValueAtTime(o.g||0.3,t0+(o.a||0.003));g.gain.exponentialRampToValueAtTime(0.0001,t0+dur);
-  s.connect(f);f.connect(g);g.connect(master);s.start(t0,Math.random()*0.5);s.stop(t0+dur+0.05)}
+  s.connect(f);f.connect(g);noiRa(g,o);s.start(t0,Math.random()*0.5);s.stop(t0+dur+0.05)}
 function cach(t,g){on(t,0.035,{loai:'highpass',f:2500,g:g||0.5});ton(2300,t,0.05,{kieu:'triangle',g:(g||0.5)*0.35})}
+function bip(f,t,d,g){ton(f,t,d||0.04,{kieu:'square',g:g||0.07,loc:5000})}
+// bậc thang tần số (tiếng quét kỹ thuật số)
+function bac(f1,f2,t,n,buoc,g){for(var i=0;i<n;i++)bip(f1*Math.pow(f2/f1,i/(n-1)),t+i*buoc,buoc*0.9,g)}
 
 var AM=[
  {id:'bam',ten:'Chạm nút',cho:'Bấm nút, chọn công đoạn, + / −',
+  hud:function(t){ton(1900,t,0.07,{f2:2600,lt:0.03,g:0.12,vang:1});ton(3800,t,0.03,{g:0.03})},
+  so:function(t){bip(2000,t,0.018,0.08);bip(3000,t+0.022,0.015,0.05)},
   nhe:function(t){ton(900,t,0.06,{g:0.12})},
   co:function(t){cach(t,0.35)}},
  {id:'gui',ten:'Gửi xong',cho:'Gửi sản lượng thành công, duyệt xong',
+  hud:function(t){ton(500,t,0.2,{f2:1700,lt:0.16,g:0.12,vang:1});ton(1760,t+0.2,0.22,{g:0.18,vang:1});ton(2637,t+0.29,0.45,{g:0.16,vang:1});on(t,0.22,{f:800,f2:6000,q:2,g:0.05,a:0.1})},
+  so:function(t){var x=[1,3,2,5,4,7,6,8];x.forEach(function(k,i){bip(700+k*180,t+i*0.03,0.026,0.06)});bip(1568,t+0.3,0.08,0.09);bip(2093,t+0.39,0.16,0.09)},
   nhe:function(t){ton(660,t,0.18,{g:0.22});ton(990,t+0.09,0.3,{g:0.22})},
-  co:function(t){cach(t,0.5);cach(t+0.14,0.35);ton(140,t+0.3,0.25,{f2:60,g:0.5,kieu:'sine'});on(t+0.3,0.15,{loai:'lowpass',f:400,g:0.25})}},
+  co:function(t){cach(t,0.5);cach(t+0.14,0.35);ton(140,t+0.3,0.25,{f2:60,g:0.5});on(t+0.3,0.15,{loai:'lowpass',f:400,g:0.25})}},
  {id:'sai',ten:'Nhập sai',cho:'Ô trống, số quá lớn, mất mạng',
+  hud:function(t){[0,0.17].forEach(function(d){ton(420,t+d,0.14,{f2:260,kieu:'sawtooth',g:0.09,loc:1400,fm:30,fmSau:40,vang:1})})},
+  so:function(t){bac(900,200,t,6,0.035,0.08);ton(110,t+0.22,0.22,{kieu:'square',g:0.08,loc:700})},
   nhe:function(t){ton(330,t,0.16,{kieu:'triangle',g:0.25});ton(247,t+0.14,0.26,{kieu:'triangle',g:0.25})},
   co:function(t){ton(150,t,0.22,{kieu:'square',g:0.09,loc:900});ton(150,t+0.26,0.22,{kieu:'square',g:0.09,loc:900})}},
  {id:'han',ten:'Nhắc hạn',cho:'Còn ngày chưa nhập, sắp hết hạn',
+  hud:function(t){ton(1320,t,0.6,{g:0.14,fm:7,fmSau:18,vang:1});ton(1980,t+0.02,0.5,{g:0.05,vang:1});ton(1320,t+0.35,0.7,{g:0.1,fm:7,fmSau:18,vang:1})},
+  so:function(t){[0,0.12,0.42,0.54].forEach(function(d){bip(1500,t+d,0.07,0.08)})},
   nhe:function(t){ton(784,t,0.25,{g:0.18});ton(784,t+0.3,0.35,{g:0.14})},
   co:function(t){[1568,2350,3140].forEach(function(f,i){ton(f,t,1.1-i*0.25,{g:0.14/(i+1)})})}},
  {id:'hang',ten:'Lên hạng',cho:'KPI lên loại trên (cùng pháo giấy)',
+  hud:function(t){[523,659,784,988,1175,1568].forEach(function(f,i){ton(f,t+i*0.06,0.3,{g:0.1,vang:1})});
+    [261,329,392].forEach(function(f){ton(f,t+0.1,1.4,{kieu:'sawtooth',g:0.035,a:0.35,loc:300,loc2:3000,lech:(Math.random()-0.5)*14,vang:1})});on(t+0.35,1,{f:6000,f2:12000,q:3,g:0.04,a:0.3})},
+  so:function(t){for(var i=0;i<12;i++)bip(523*Math.pow(2,Math.floor(i/3)/2+[0,0.33,0.58][i%3]),t+i*0.045,0.04,0.07);bip(2093,t+0.6,0.3,0.08);bip(2637,t+0.6,0.3,0.05)},
   nhe:function(t){[523,659,784,1047].forEach(function(f,i){ton(f,t+i*0.09,0.35,{g:0.18})});ton(1568,t+0.4,0.6,{g:0.08})},
   co:function(t){for(var i=0;i<9;i++)cach(t+i*0.035+Math.random()*0.03,0.25+Math.random()*0.25);[784,1047,1319].forEach(function(f,i){ton(f,t+0.5+i*0.08,0.5,{g:0.15})})}},
- {id:'cua',ten:'Cửa cuốn',cho:'Mở cửa cuốn màn đăng nhập / hết phiên',
+ {id:'cua',ten:'Mở cửa',cho:'Cửa cuốn màn đăng nhập / hết phiên',
+  hud:function(t){on(t,0.35,{loai:'highpass',f:3000,f2:800,g:0.12,a:0.01});ton(90,t+0.1,1,{kieu:'sawtooth',f2:240,g:0.07,loc:500,loc2:1500,a:0.1});ton(180,t+0.1,1,{kieu:'sawtooth',f2:480,g:0.03,loc:800,a:0.1,vang:1});on(t+1,0.4,{f:1200,f2:300,g:0.08,a:0.01})},
+  so:function(t){bac(200,1600,t,16,0.05,0.06);bip(2093,t+0.85,0.12,0.08)},
   nhe:function(t){on(t,0.9,{f:300,f2:1400,q:0.8,g:0.18,a:0.2})},
   co:function(t){on(t,1.1,{loai:'lowpass',f:220,g:0.25,a:0.1});var x=t;for(var i=0;i<22;i++){on(x,0.02,{loai:'highpass',f:3000,g:0.22});x+=0.07-i*0.002}}},
  {id:'vao',ten:'Đăng nhập đúng',cho:'Laser khắc tên xong, vào hệ thống',
+  hud:function(t){ton(150,t,0.55,{kieu:'sawtooth',f2:2400,lt:0.5,g:0.05,loc:600,loc2:6000,a:0.3});[880,1109,1319,1760].forEach(function(f,i){ton(f,t+0.55+i*0.015,0.9,{g:0.08,vang:1})})},
+  so:function(t){for(var i=0;i<10;i++)bip(1200+Math.random()*1800,t+i*0.03,0.025,0.05);bip(1319,t+0.36,0.1,0.08);bip(1760,t+0.46,0.2,0.08)},
   nhe:function(t){ton(1200,t,0.25,{kieu:'sawtooth',g:0.04,loc:2500});ton(1047,t+0.28,0.3,{g:0.2});ton(1319,t+0.38,0.45,{g:0.18})},
   co:function(t){for(var i=0;i<3;i++)ton(1800,t+i*0.11,0.09,{kieu:'sawtooth',f2:600,g:0.06,loc:3000});cach(t+0.4,0.5)}},
  {id:'vuot',ten:'Vuốt / xóa',cho:'Vuốt thẻ duyệt, xóa dòng, Hoàn tác',
+  hud:function(t){on(t,0.22,{f:400,f2:5000,q:4,g:0.12,a:0.08,vang:1});ton(600,t,0.2,{f2:1500,g:0.04})},
+  so:function(t){bac(2400,600,t,5,0.025,0.06)},
   nhe:function(t){on(t,0.2,{f:600,f2:2500,q:1.5,g:0.15,a:0.05})},
   co:function(t){on(t,0.18,{loai:'highpass',f:1500,f2:5000,g:0.2,a:0.04})}}
 ];
 function choi(id){var c=ctx();if(!c)return toast('Trình duyệt này không phát được âm thanh');var a=AM.filter(function(x){return x.id===id})[0];a[bo](c.currentTime+0.02)}
-function veAm(){$('#luoiAm').innerHTML=AM.map(function(a){return '<button type="button" class="am" data-am="'+a.id+'"><span class="bieu" aria-hidden="true">▶</span><span><b>'+a.ten+'</b><span>'+a.cho+'</span></span></button>'}).join('')}
-veAm();
+$('#luoiAm').innerHTML=AM.map(function(a){return '<button type="button" class="am" data-am="'+a.id+'"><span class="bieu" aria-hidden="true">▶</span><span><b>'+a.ten+'</b><span>'+a.cho+'</span></span></button>'}).join('');
 $('#luoiAm').addEventListener('click',function(e){var b=e.target.closest('[data-am]');if(!b)return;choi(b.dataset.am);b.classList.remove('dang');void b.offsetWidth;b.classList.add('dang')});
-document.querySelectorAll('[data-bo]').forEach(function(b){b.setAttribute('aria-pressed',b.dataset.bo===bo);b.addEventListener('click',function(){bo=b.dataset.bo;luu.set('am_bo',bo);document.querySelectorAll('[data-bo]').forEach(function(x){x.setAttribute('aria-pressed',x===b)});choi('bam')})});
+function veBo(){document.querySelectorAll('[data-bo]').forEach(function(x){x.setAttribute('aria-pressed',x.dataset.bo===bo)})}
+veBo();
+document.querySelectorAll('[data-bo]').forEach(function(b){b.addEventListener('click',function(){bo=b.dataset.bo;luu.set('am_bo2',bo);veBo();choi('gui')})});
 $('#amLuong').addEventListener('input',function(){vol=+this.value;luu.set('am_vol',vol);if(master)master.gain.value=vol});
 $('#amLuong').addEventListener('change',function(){choi('bam')});
-if(/iPhone|iPad|iPod/.test(navigator.userAgent))$('#baoIos').hidden=false;
 
-/* ---------- Giọng nói (speechSynthesis) ---------- */
-var coTTS='speechSynthesis' in window,giong=[],chon=null;
+/* ---------- Giọng thu sẵn: giải mã + ghép từng mảnh ---------- */
+var giongChon=luu.get('am_giong2')==='nam'?'nam':'nu',boDem={},dangPhat=[];
+function b64(s){var bin=atob(s),u=new Uint8Array(bin.length);for(var i=0;i<bin.length;i++)u[i]=bin.charCodeAt(i);return u.buffer}
+function giaiMa(ma){var k=giongChon+'|'+ma;if(boDem[k])return boDem[k];
+  boDem[k]=new Promise(function(ok,loi){ac.decodeAudioData(b64(GIONG_THU[giongChon][ma]),ok,loi)});return boDem[k]}
+function dungGiong(){dangPhat.forEach(function(s){try{s.stop()}catch(e){}});dangPhat=[];if('speechSynthesis' in window)speechSynthesis.cancel()}
+// ds: [mã, khoảng nghỉ sau (giây)]
+function phat(ds){var c=ctx();if(!c)return toast('Trình duyệt này không phát được âm thanh');dungGiong();
+  var lan=phat.lan=(phat.lan||0)+1;
+  Promise.all(ds.map(function(x){return giaiMa(x[0])})).then(function(bufs){
+    if(lan!==phat.lan)return;var t=c.currentTime+0.05;
+    bufs.forEach(function(b,i){var s=c.createBufferSource();s.buffer=b;s.connect(giongOut);s.start(t);dangPhat.push(s);t+=b.duration+ds[i][1]});
+  }).catch(function(){toast('Máy không giải mã được tiếng – thử Chrome')})}
+function cauTron(ma){phat([[ma,0]])}
+// đọc số tiếng Việt 0–99.999 thành mã mảnh
+function so3(n,day){var h=Math.floor(n/100),c=Math.floor(n%100/10),d=n%10,r=[];
+  if(day||h)r.push('d'+h,'tram');
+  if(c===0){if(d)r.push((day||h)?'linh':null,'d'+d)}
+  else if(c===1){r.push('muoi');if(d)r.push(d===5?'lam':'d'+d)}
+  else{r.push('d'+c,'muoi2');if(d)r.push(d===1?'mot2':d===5?'lam':'d'+d)}
+  return r.filter(Boolean)}
+function docSo(n){n=Math.max(0,Math.min(99999,Math.floor(+n||0)));if(!n)return['d0'];var r=[];
+  if(n>=1000){r=r.concat(so3(Math.floor(n/1000),false),['nghin']);var du=n%1000;if(du)r=r.concat(so3(du,true));return r}
+  return so3(n,false)}
+function cauDocLai(){var cd=$('#fCd').value,sl=$('#fSl').value,loi=+$('#fLoi').value||0,ds=[['ban_gui',0.04],['cd'+cd,0.18]];
+  docSo(sl).forEach(function(m){ds.push([m,0.015])});ds.push(['cai',0.18]);
+  if(loi){docSo(loi).forEach(function(m){ds.push([m,0.015])});ds.push(['loi',0.25])}else ds.push(['khong_loi',0.25]);
+  ds.push(['dung_chua',0]);return ds}
 var CAU=['Chào buổi sáng! Hôm nay cố lên nhé.','Bạn đã gửi đều 7 ngày liền. Giỏi lắm!','Còn ngày 15 tháng 10 chưa nhập. Hạn là 5 giờ chiều thứ Sáu.','Hôm qua bạn làm 42 trên 50. Còn 8 cái nữa là đạt định mức.','Chúc mừng! Tháng này bạn đã lên loại A.','Đã đến giờ nghỉ giữa ca. Uống chút nước nhé.'];
-function napGiong(){
-  if(!coTTS){$('#ttGiong').className='bao xau';$('#ttGiong').textContent='Trình duyệt này không có chức năng đọc. Thử Chrome (Android) hoặc Safari (iPhone).';return}
-  var tat=speechSynthesis.getVoices();giong=tat.filter(function(v){return /^vi/i.test(v.lang)});
-  var sel=$('#chonGiong'),daChon=luu.get('am_giong');
-  if(giong.length){
-    sel.innerHTML=giong.map(function(v,i){return '<option value="'+i+'">'+v.name.replace(/</g,'')+'</option>'}).join('');
-    var i=Math.max(0,giong.findIndex(function(v){return v.name===daChon}));sel.value=i;chon=giong[i];
-    $('#ttGiong').className='bao tot';$('#ttGiong').textContent='Máy có '+giong.length+' giọng tiếng Việt. Bấm ▶ để nghe.';$('#huongDanGiong').hidden=true;
-  }else{
-    sel.innerHTML='<option>Tiếng Việt (mặc định của máy)</option>';chon=null;
-    $('#ttGiong').className='bao xau';$('#ttGiong').textContent=tat.length?'Máy chưa có giọng tiếng Việt – vẫn bấm thử được, nhưng có thể đọc giọng nước ngoài hoặc im lặng.':'Đang tìm giọng đọc… Nếu dòng này không đổi, máy chưa có giọng tiếng Việt.';$('#huongDanGiong').hidden=!tat.length;
-  }
-}
-if(coTTS){napGiong();speechSynthesis.addEventListener?speechSynthesis.addEventListener('voiceschanged',napGiong):(speechSynthesis.onvoiceschanged=napGiong);setTimeout(napGiong,1500)}else napGiong();
-$('#chonGiong').addEventListener('change',function(){chon=giong[+this.value]||null;if(chon)luu.set('am_giong',chon.name);noi('Xin chào, tôi là Rhino.')});
-['tocDo','doCao'].forEach(function(id){var v=luu.get('am_'+id);if(v)$('#'+id).value=v;$('#'+id).addEventListener('change',function(){luu.set('am_'+id,this.value);noi('Thử giọng nói.')})});
-function noi(t){
-  if(!coTTS)return toast('Máy này không đọc được');
-  speechSynthesis.cancel();
-  setTimeout(function(){var u=new SpeechSynthesisUtterance(t);u.lang='vi-VN';if(chon)u.voice=chon;u.rate=+$('#tocDo').value;u.pitch=+$('#doCao').value;speechSynthesis.speak(u)},60);
-}
 $('#dsCau').innerHTML=CAU.map(function(c,i){return '<div class="cau"><q>'+c+'</q><button type="button" class="nut2" data-cau="'+i+'" aria-label="Nghe câu '+(i+1)+'">▶</button></div>'}).join('');
-$('#dsCau').addEventListener('click',function(e){var b=e.target.closest('[data-cau]');if(b)noi(CAU[+b.dataset.cau])});
-function docForm(){var sl=$('#fSl').value.trim(),loi=$('#fLoi').value.trim()||'0';
-  return 'Bạn gửi: công đoạn '+$('#fCd').value+', '+sl+' cái, '+(loi==='0'?'không có lỗi':loi+' lỗi')+'. Đúng chưa?'}
-$('#docLai').addEventListener('click',function(){noi(docForm())});
-$('#dungDoc').addEventListener('click',function(){if(coTTS)speechSynthesis.cancel()});
+$('#dsCau').addEventListener('click',function(e){var b=e.target.closest('[data-cau]');if(b)cauTron('c'+b.dataset.cau)});
+function veGiong(){document.querySelectorAll('[data-giong]').forEach(function(x){x.setAttribute('aria-pressed',x.dataset.giong===giongChon)})}
+veGiong();
+document.querySelectorAll('[data-giong]').forEach(function(b){b.addEventListener('click',function(){giongChon=b.dataset.giong;luu.set('am_giong2',giongChon);veGiong();cauTron('c0')})});
+$('#docLai').addEventListener('click',function(){phat(cauDocLai())});
+$('#dungDoc').addEventListener('click',dungGiong);
+
+/* ---------- Giọng của máy (speechSynthesis) + chẩn đoán ---------- */
+var coTTS='speechSynthesis' in window,giongMay=[],chonMay=null,ketQuaThu='chưa thử';
+function chanDoan(){
+  var tat=coTTS?speechSynthesis.getVoices():[];giongMay=tat.filter(function(v){return /^vi/i.test(v.lang)});
+  var trinh=/SamsungBrowser/.test(UA)?'Samsung Internet':/; wv\)/.test(UA)?'Trình duyệt trong ứng dụng (WebView)':/CriOS|Chrome\//.test(UA)?'Chrome':/Safari/.test(UA)?'Safari':'Khác';
+  var dong=['Trình duyệt: '+trinh,'Có chức năng đọc: '+(coTTS?'có':'KHÔNG'),'Số giọng trên máy: '+tat.length,'Giọng tiếng Việt: '+(giongMay.length?giongMay.map(function(v){return v.name}).join(', '):'KHÔNG CÓ'),'Lần thử gần nhất: '+ketQuaThu];
+  var goiY=!coTTS||/; wv\)/.test(UA)?'→ Mở link bằng Chrome.':!giongMay.length?'→ Máy chưa có giọng tiếng Việt: làm theo các bước bên dưới.':'→ Máy đã sẵn sàng.';
+  $('#chanDoan').textContent=dong.join('\n')+'\n'+goiY;
+  var sel=$('#chonGiong');
+  sel.innerHTML=giongMay.length?giongMay.map(function(v,i){return '<option value="'+i+'">'+v.name.replace(/</g,'')+'</option>'}).join(''):'<option>Tiếng Việt (mặc định của máy)</option>';
+  chonMay=giongMay[+sel.value]||null;
+}
+chanDoan();
+if(coTTS){if(speechSynthesis.addEventListener)speechSynthesis.addEventListener('voiceschanged',chanDoan);else speechSynthesis.onvoiceschanged=chanDoan;setTimeout(chanDoan,1500)}
+$('#chonGiong').addEventListener('change',function(){chonMay=giongMay[+this.value]||null});
+$('#thuMay').addEventListener('click',function(){
+  if(!coTTS){ketQuaThu='không có chức năng đọc';return chanDoan()}
+  dungGiong();var u=new SpeechSynthesisUtterance('Xin chào, tôi là Rhino.');u.lang='vi-VN';if(chonMay)u.voice=chonMay;
+  var batDau=false;u.onstart=function(){batDau=true;ketQuaThu='máy đã bắt đầu đọc';chanDoan()};
+  u.onerror=function(e){ketQuaThu='lỗi: '+(e.error||'không rõ');chanDoan()};
+  speechSynthesis.speak(u);
+  setTimeout(function(){if(!batDau){ketQuaThu='máy không phát (không có giọng hoặc bị chặn)';chanDoan()}},3000);
+});
 
 /* ---------- Mô phỏng web thật ---------- */
 ['batAm','batGiong'].forEach(function(id){var v=luu.get('am_'+id);if(v!==null)$('#'+id).checked=v==='1';$('#'+id).addEventListener('change',function(){luu.set('am_'+id,this.checked?'1':'0')})});
 function am(id){if($('#batAm').checked)choi(id)}
-function giongNoi(t,tre){if($('#batGiong').checked)setTimeout(function(){noi(t)},tre||0)}
+function noi(ds,tre){if($('#batGiong').checked)setTimeout(function(){phat(typeof ds==='string'?[[ds,0]]:ds)},tre||0)}
 var TINH={
-  gui:function(){am('bam');giongNoi(docForm(),150);toast('Hộp đọc lại hiện ra – bấm “Gửi”');setTimeout(function(){am('gui');toast('Đã gửi sản lượng')},4200)},
-  sai:function(){am('sai');var o=$('#fSl');o.classList.add('loi');setTimeout(function(){o.classList.remove('loi')},1800);giongNoi('Bạn chưa nhập số lượng.',350);toast('Ô số lượng còn trống')},
-  han:function(){am('han');giongNoi('Còn ngày 15 tháng 10 chưa nhập. Hạn là 5 giờ chiều thứ Sáu.',500)},
-  hang:function(){am('hang');giongNoi('Chúc mừng! Tháng này bạn đã lên loại A.',900);toast('🎉 Lên loại A')},
-  vao:function(){am('cua');setTimeout(function(){am('vao')},1200);giongNoi('Chào Nguyễn Văn An. Chúc một ngày làm việc tốt.',1900)}
+  gui:function(){am('bam');noi(cauDocLai(),150);toast('Hộp đọc lại hiện ra – bấm “Gửi”');setTimeout(function(){am('gui');toast('Đã gửi sản lượng')},5200)},
+  sai:function(){am('sai');var o=$('#fSl');o.classList.add('loi');setTimeout(function(){o.classList.remove('loi')},1800);noi('sai',400);toast('Ô số lượng còn trống')},
+  han:function(){am('han');noi('c2',700)},
+  hang:function(){am('hang');noi('c4',1300);toast('🎉 Lên loại A')},
+  vao:function(){am('cua');setTimeout(function(){am('vao')},1300);noi('chao',2500)}
 };
 document.querySelectorAll('[data-tinh]').forEach(function(b){b.addEventListener('click',function(){ctx();TINH[b.dataset.tinh]()})});
 })();
