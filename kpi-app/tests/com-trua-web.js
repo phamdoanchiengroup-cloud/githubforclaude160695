@@ -6,6 +6,7 @@ const F = 'file://' + process.env.F, OUT = process.env.OUT || '';
 let dem = 0, loi = 0; const ok = (d, t, c) => { dem++; if (d) console.log('  ✓ ' + t); else { loi++; console.log('  ✗ ' + t + (c !== undefined ? ' → ' + JSON.stringify(c).slice(0, 300) : '')); } };
 async function moTrang(b, o = {}) {
   const ctx = await b.newContext(Object.assign({ viewport: { width: o.w || 1360, height: o.h || 900 }, timezoneId: 'Asia/Ho_Chi_Minh' }, o.cham ? { isMobile: true, hasTouch: true, deviceScaleFactor: 2 } : {}));
+  await ctx.addInitScript(() => { const g = Storage.prototype.getItem; Storage.prototype.getItem = function (k) { return /^kpi_mai_hd_tp_/.test(k) ? '1' : g.call(this, k); }; });   // bỏ hướng dẫn Rhino cho TP lần đầu (mục 23) để chạm được nút
   await ctx.route(/cdnjs\.cloudflare\.com|fonts\.googleapis|fonts\.gstatic/, r => r.abort());
   const p = await ctx.newPage(); p.loi = []; p.on('pageerror', e => p.loi.push(e.message)); p.on('dialog', d => d.accept());
   await p.goto(F); await p.waitForSelector('#xtGoiY'); await p.click('#xtGoiY button:has-text("chienpham")');
@@ -129,6 +130,8 @@ const doiNguoi = (p, f) => p.evaluate(f => {
   await p.click('button:has-text("Tạo tài khoản")'); await p.waitForTimeout(1500);
   s = await p.evaluate(() => { const t = __MAY_CHU.doc_('TaiKhoan').find(x => x.TenDangNhap === 'nhom.mkt'); return t && [t.VaiTro, t.MaXuong, t.MaNV]; });
   ok(s && s.join() === 'NHOM,HNOI_MKT,', 'tạo tài khoản nhóm Marketing từ giao diện', s);
+  ok(await p.evaluate(() => !!$('mktHop') && /^[a-z2-9]{8}$/.test($('mktMk').textContent)), 'tạo xong: hộp mật khẩu tạm (mục 22)');
+  await p.keyboard.press('Escape');
   await p.evaluate(() => { const t = __MAY_CHU.doc_('TaiKhoan').find(x => x.TenDangNhap === 'nhom.mkt'); __MAY_CHU.suaO_('TaiKhoan', t._row, 'DoiMatKhauLanDau', 'Không'); });
   await doiNguoi(p, "x.TenDangNhap==='nhom.mkt'");
   await p.waitForTimeout(1200);

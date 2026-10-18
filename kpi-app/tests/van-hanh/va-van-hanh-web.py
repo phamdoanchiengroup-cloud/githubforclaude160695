@@ -144,3 +144,9 @@ R("""ttBao(/^A/.test(hang)?'🎉 Hạng '+hang+' – tuyệt vời!':'🎉 '+chu
 
 _k23 = s.rfind('</body>')
 s = s[:_k23] + io.open(os.path.join(D, 'van-hanh', 'van-hanh-web.html'), encoding='utf-8').read() + s[_k23:]
+
+# D3: bảng KPI – người đang học việc (hạng 0) xếp cuối, cột hạng ghi "–"
+R("""    arr=arr.slice().sort(function(a,b){return a.hang-b.hang});""", """    arr=arr.slice().sort(function(a,b){return (a.hang||1e9)-(b.hang||1e9)});   // hạng 0 = đang học việc: xếp cuối""")
+R("""      var huy=o.hang<=3?""", """      var huy=!o.hang?'<span title="Đang học việc – chưa xếp hạng">–</span>':o.hang<=3?""")
+R("""        box('Hạng của bạn','#'+me.hang+' / '+(theoXuong[me.MaXuong]||[]).length,null,'trong xưởng')+""", """        box('Hạng của bạn',me.hang?'#'+me.hang+' / '+(theoXuong[me.MaXuong]||[]).length:'Học việc',null,me.hang?'trong xưởng':'tháng đầu chưa xếp hạng')+""")
+R("""      body+='<tr'+(o.hang<=3?' class="gd-top"':'')""", """      body+='<tr'+(o.hang&&o.hang<=3?' class="gd-top"':'')""")

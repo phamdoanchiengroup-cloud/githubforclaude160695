@@ -10,6 +10,7 @@ let dem = 0, loiDem = 0;
 const ok = (dk, ten, ct) => { dem++; if (dk) console.log('  ✓ ' + ten); else { loiDem++; console.log('  ✗ ' + ten + (ct !== undefined ? ' → ' + JSON.stringify(ct).slice(0, 220) : '')); } };
 async function vao(b, tk, o = {}) {
   const ctx = await b.newContext(Object.assign({ viewport: { width: 1440, height: 900 } }, o.giam ? { reducedMotion: 'reduce' } : {}));
+  await ctx.addInitScript(() => { const g = Storage.prototype.getItem; Storage.prototype.getItem = function (k) { return /^kpi_mai_hd_tp_/.test(k) ? '1' : g.call(this, k); }; });   // bỏ hướng dẫn Rhino cho TP lần đầu (mục 23) để chạm được nút
   await ctx.route(/cdnjs\.cloudflare\.com\/ajax\/libs\/lottie-web/, r => o.chan ? r.abort() : r.fulfill({ status: 200, contentType: 'application/javascript', body: LIB }));
   const p = await ctx.newPage(); p.loi = []; p.on('pageerror', e => p.loi.push(e.message));
   await p.goto(F); await p.waitForSelector('#xtGoiY'); await p.click(`#xtGoiY button:has-text("${tk}")`);

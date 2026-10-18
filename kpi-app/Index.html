@@ -5262,7 +5262,7 @@ function veBangKPI(r){
     var me=ds.filter(function(o){return o.MaNV===ME.maNV})[0];
     if(me){
       h+='<div class="kpis" style="margin-bottom:16px">'+
-        box('Hạng của bạn','#'+me.hang+' / '+(theoXuong[me.MaXuong]||[]).length,null,'trong xưởng')+
+        box('Hạng của bạn',me.hang?'#'+me.hang+' / '+(theoXuong[me.MaXuong]||[]).length:'Học việc',null,me.hang?'trong xưởng':'tháng đầu chưa xếp hạng')+
         box('KPI của bạn',f(me.tong)+'%',me.tong,me.loai)+
         box('Sản lượng',f(me.sl)+'%',me.sl)+
         box('Chất lượng',f(me.cl)+'%',me.cl)+'</div>';
@@ -5270,7 +5270,7 @@ function veBangKPI(r){
   }
 
   function bang(tenXuong, arr){
-    arr=arr.slice().sort(function(a,b){return a.hang-b.hang});
+    arr=arr.slice().sort(function(a,b){return (a.hang||1e9)-(b.hang||1e9)});   // hạng 0 = đang học việc: xếp cuối
     var head='<div class="card"><h3>'+esc(tenXuong||'Xếp hạng KPI')+'<span>'+arr.length+' người</span></h3>';
     if(!arr.length)return head+'<div class="empty">Chưa có dữ liệu</div></div>';
     var body='<div class="tw"><table><thead><tr>'+
@@ -5278,8 +5278,8 @@ function veBangKPI(r){
       '<th class="n">Tuân thủ</th><th class="n">An toàn</th><th class="n">Tổng KPI</th><th>Loại</th><th></th></tr></thead><tbody>';
     arr.forEach(function(o){
       var laToi=(laCN&&o.MaNV===ME.maNV);
-      var huy=o.hang<=3?'<span class="bi-so s'+o.hang+'" title="Hạng '+o.hang+'"><b>'+o.hang+'</b></span>':String(o.hang);
-      body+='<tr'+(o.hang<=3?' class="gd-top"':'')+(laToi?' style="background:rgba(var(--acc-rgb),.10)"':'')+'>'+
+      var huy=!o.hang?'<span title="Đang học việc – chưa xếp hạng">–</span>':o.hang<=3?'<span class="bi-so s'+o.hang+'" title="Hạng '+o.hang+'"><b>'+o.hang+'</b></span>':String(o.hang);
+      body+='<tr'+(o.hang&&o.hang<=3?' class="gd-top"':'')+(laToi?' style="background:rgba(var(--acc-rgb),.10)"':'')+'>'+
         '<td style="font-weight:600;font-size:15px">'+huy+'</td>'+
         '<td>'+esc(o.HoTen)+(laToi?' <span class="pill p-nu" style="margin-left:4px">Bạn</span>':'')+
           (o.soThang>1?' <span class="pill p-gr" style="margin-left:4px">'+o.soThang+' tháng</span>':'')+'</td>'+

@@ -6,6 +6,7 @@ const F = 'file://' + process.env.F;
 let dem = 0, loi = 0; const ok = (d, t, c) => { dem++; if (d) console.log('  ✓ ' + t); else { loi++; console.log('  ✗ ' + t + (c !== undefined ? ' → ' + JSON.stringify(c).slice(0, 300) : '')); } };
 async function vao(b, tk, o = {}) {
   const ctx = await b.newContext(Object.assign({ viewport: { width: o.w || 1360, height: o.h || 900 }, timezoneId: 'Asia/Ho_Chi_Minh' }, o.cham ? { isMobile: true, hasTouch: true } : {}));
+  await ctx.addInitScript(() => { const g = Storage.prototype.getItem; Storage.prototype.getItem = function (k) { return /^kpi_mai_hd_tp_/.test(k) ? '1' : g.call(this, k); }; });   // bỏ hướng dẫn Rhino cho TP lần đầu (mục 23) để chạm được nút
   await ctx.route(/cdnjs\.cloudflare\.com/, r => r.abort());
   const p = await ctx.newPage(); p.loi = []; p.on('pageerror', e => p.loi.push(e.message)); p.on('dialog', d => d.accept());
   await p.goto(F); await p.waitForSelector('#xtGoiY'); await p.click(`#xtGoiY button:has-text("${tk}")`);
@@ -82,9 +83,9 @@ const cdpVuot = async (p, x, y, dx, dy, buoc = 12) => {
 
   console.log('15. Pháo giấy KPI hạng A (1 lần/ngày)');
   p = await vao(b, 'c068');
-  await p.evaluate(() => { window.__phao = 0; const g = ttPhao; window.ttPhao = function () { __phao++; return g(); }; window.kpi = () => ({ sl: 100, cl: 100, tong: 98 }); localStorage.removeItem('kpi_phao_' + ME.tk); go('kpica'); });
+  await p.evaluate(() => { window.__phao = 0; const g = ttPhao; window.ttPhao = function () { __phao++; return g(); }; window.kpi = () => ({ sl: 100, cl: 100, tong: 98 }); localStorage.removeItem('kpi_phao_' + ME.tk); localStorage.setItem('kpi_hang_' + ME.tk, 'B'); go('kpica'); });   // pháo giấy chỉ khi LÊN hạng (mục 23)
   await p.waitForTimeout(1200);
-  ok(await p.evaluate(() => __phao === 1 && /Hạng A/.test(document.getElementById('ttBao').textContent)), 'KPI hạng A: pháo giấy + "Hạng A – tuyệt vời!"');
+  ok(await p.evaluate(() => __phao === 1 && /Lên hạng A/.test(document.getElementById('ttBao').textContent)), 'KPI lên hạng A (từ B): pháo giấy + "Lên hạng A – tuyệt vời!"');
   await p.evaluate(() => go('kpica')); await p.waitForTimeout(1200);
   ok(await p.evaluate(() => __phao === 1), 'mở lại trong ngày: không bắn nữa');
   ok(!p.loi.length, 'không lỗi JS', p.loi);
