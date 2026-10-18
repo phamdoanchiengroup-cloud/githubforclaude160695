@@ -10,7 +10,7 @@ const duLieu = () => JSON.parse(fs.readFileSync(DATA, 'utf8'));
 let dem = 0, loi = 0;
 const ok = (dk, ten, ct) => { dem++; if (dk) console.log('  ✓ ' + ten); else { loi++; console.log('  ✗ ' + ten + (ct !== undefined ? '  → ' + JSON.stringify(ct).slice(0, 300) : '')); } };
 const tkTheo = (c, f) => c.doc_('TaiKhoan').filter(f)[0];
-const phien = (c, tk) => c.taoPhien_(tk);
+const phien = (c, tk) => c.__phienDai(tk);
 const chu = h => h.replace(/<[^>]+>/g, ' ').replace(/&amp;/g, '&').replace(/\s+/g, ' ');
 
 console.log('\n1. Quyền tải báo cáo');

@@ -21,16 +21,16 @@ const BANG = {
 let moSheet = 0;
 c.SpreadsheetApp.openById = id => { moSheet++; return { getSheetByName: n => BANG[n] ? { getDataRange: () => ({ getDisplayValues: () => BANG[n].map(r => r.slice()) }) } : null }; };
 const tk = c.doc_('TaiKhoan').find(x => String(x.VaiTro).trim() === 'CN' && String(x.TrangThai).trim() === 'Đang dùng');
-let r = c.__goi('layBongDa', c.taoPhien_(tk));
+let r = c.__goi('layBongDa', c.__phienDai(tk));
 ok(r.ok && r.ten === 'Giải Bóng Đá Rhino Billiards 2026' && r.tran.length === 3, 'công nhân đọc được tên giải + 3 trận', r);
 ok(r.tran[0].gio === '2026-10-18 15:00' && r.tran[0].xong && r.tran[0].tsA === 2 && r.tran[0].a === 'EVO FC', 'trận đã đá: giờ chuẩn hóa, tỉ số, tên đội', r.tran[0]);
 ok(r.tran[1].a === 'FC RETRO' && !r.tran[1].xong && (r.tran[1].tsA === null || r.tran[1].tsA === ''), 'trận chưa đá: không có tỉ số', r.tran[1]);
 ok(!/BI-MAT/.test(JSON.stringify(r)), 'không lộ mật khẩu trong sheet CauHinh của web giải');
-c.__goi('layBongDa', c.taoPhien_(tk));
+c.__goi('layBongDa', c.__phienDai(tk));
 ok(moSheet === 1, 'lần tải thứ 2 dùng bản nhớ tạm, không mở lại sheet', moSheet);
-c.__goi('layBongDa', c.taoPhien_(tk));   // bản nhớ tạm cũ không có link (dán Code.gs mới khi bản cũ còn trong bộ nhớ tạm)
+c.__goi('layBongDa', c.__phienDai(tk));   // bản nhớ tạm cũ không có link (dán Code.gs mới khi bản cũ còn trong bộ nhớ tạm)
 c.CacheService.getScriptCache().put('bd_v2', JSON.stringify(Object.assign({}, r, { link: '' })));
-r = c.__goi('layBongDa', c.taoPhien_(tk));
+r = c.__goi('layBongDa', c.__phienDai(tk));
 ok(/^https:\/\/script\.google\.com\//.test(r.link), 'link web giải luôn có, kể cả khi đọc từ bản nhớ tạm cũ', r.link);
 ok(c.__goi('layBongDa', 'sai').ok === false, 'phiên sai: không trả dữ liệu');
 

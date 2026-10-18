@@ -22,7 +22,7 @@ c.SpreadsheetApp.getActiveSpreadsheet().insertSheet('DangKyCom');
 const tk = f => c.doc_('TaiKhoan').filter(f)[0];
 const vt = v => x => String(x.VaiTro).trim() === v && String(x.TrangThai).trim() === 'Đang dùng';
 const owner = tk(vt('OWNER')), tp = tk(x => vt('TP')(x) && x.MaXuong), cn = tk(x => vt('CN')(x) && x.MaXuong !== tp.MaXuong), cn2 = tk(x => vt('CN')(x) && x.MaXuong === tp.MaXuong), bep = tk(vt('BEP')), cn3 = tk(x => vt('CN')(x) && x.MaXuong !== tp.MaXuong && x.TenDangNhap !== cn.TenDangNhap);
-const P = t => c.taoPhien_(t), tO = P(owner), tTP = P(tp), tCN = P(cn), tCN2 = P(cn2), tB = P(bep), tCN3 = P(cn3);
+const P = t => c.__phienDai(t), tO = P(owner), tTP = P(tp), tCN = P(cn), tCN2 = P(cn2), tB = P(bep), tCN3 = P(cn3);
 const nghi = new Set(c.doc_('NhanSu').filter(x => String(x.TrangThai).trim() === 'Nghỉ việc').map(x => String(x.MaNV).trim()));
 const soNguoi = c.doc_('TaiKhoan').filter(x => String(x.TrangThai).trim() === 'Đang dùng' && !['BEP', 'HR', 'QC'].includes(String(x.VaiTro).trim()) && !(x.MaNV && nghi.has(String(x.MaNV).trim()))).length;   // tài khoản đang dùng, bỏ người đã nghỉ việc
 

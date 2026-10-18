@@ -186,6 +186,8 @@ function tao(fileCode, duLieu, gioHienTai) {
     finally { khoa = false; }
   };
   ctx.__datGio = t => { NOW = new RealDate(t).getTime(); };
+  // Phiên dài hạn cho kiểm thử nhảy giờ nhiều ngày (phiên thật hết hạn sau 6 giờ)
+  ctx.__phienDai = tk => { const t = ctx.taoPhien_(tk), k = 'P_' + t, o = JSON.parse(props[k]); o.hanDen += 365 * 864e5; cache[k] = props[k] = JSON.stringify(o); return t; };
   ctx.__sheets = sheets; ctx.__log = log; ctx.__thongKe = thongKe; ctx.__cache = cache;
   ctx.__giuKhoa = () => { khoa = true; };
   return ctx;

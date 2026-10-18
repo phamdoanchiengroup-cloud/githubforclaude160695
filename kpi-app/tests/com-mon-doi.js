@@ -19,7 +19,7 @@ const tk = f => c.doc_('TaiKhoan').filter(f);
 const owner = tk(vt('OWNER'))[0], tp = tk(x => vt('TP')(x) && x.MaXuong === 'PHOITHO')[0] || tk(x => vt('TP')(x) && x.MaXuong)[0];
 const cnX = tk(x => vt('CN')(x) && x.MaXuong === tp.MaXuong), cnK = tk(x => vt('CN')(x) && x.MaXuong !== tp.MaXuong);
 const nhom = tk(x => x.TenDangNhap === 'nhom_mkt')[0];
-const P = t => c.taoPhien_(t), NG = '2026-10-13';
+const P = t => c.__phienDai(t), NG = '2026-10-13';
 const goi = (fn, t, ...a) => c.__goi(fn, P(t), ...a);
 
 console.log('1. Bếp báo thực đơn có món bớt / đổi');

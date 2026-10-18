@@ -19,7 +19,7 @@ function ok(dk, ten, chiTiet) {
 }
 function phien(c, tenDN) {
   const tk = c.doc_('TaiKhoan').filter(x => String(x.TenDangNhap).toLowerCase() === tenDN)[0];
-  return c.taoPhien_(tk);
+  return c.__phienDai(tk);
 }
 function dong(c, ten) { c.__DOC_CACHE = {}; return c.doc_(ten); }
 
@@ -31,7 +31,7 @@ console.log('\n1. Đăng nhập & mật khẩu');
   for (let i = 0; i < 5; i++) r = c.__goi('dangNhap', 'kcs', 'sai' + i);
   ok(/Còn/.test(c.__goi('dangNhap', 'phogd2', 'x').msg) === false, 'lần sai đầu không báo "còn N lần"');
   r = c.__goi('dangNhap', 'kcs', '123456');
-  ok(!r.ok && /tạm khóa/.test(r.msg), 'sai 5 lần -> khóa 15 phút, kể cả nhập đúng', r);
+  ok(!r.ok && /Đợi \d+ phút/.test(r.msg), 'sai 5 lần -> tạm khóa (tăng dần tới 15 phút), kể cả nhập đúng', r);
   delete c.__cache['SAI_kcs'];
   r = c.__goi('dangNhap', 'kcs', '123456');
   ok(r.ok, 'hết khóa (hoặc được cấp lại) thì đăng nhập đúng mật khẩu được', r.msg);
@@ -57,7 +57,7 @@ console.log('\n1. Đăng nhập & mật khẩu');
 
   const tOwner = phien(c, 'chienpham');
   r = c.__goi('capLaiMatKhau', tOwner, 'c044');
-  ok(r.ok && /^\d{6}$/.test(r.mkTam) && r.mkTam !== '123456', 'cấp lại mật khẩu -> mật khẩu tạm ngẫu nhiên 6 số', r.msg);
+  ok(r.ok && /^[a-z2-9]{8}$/.test(r.mkTam), 'cấp lại mật khẩu -> mật khẩu tạm ngẫu nhiên 8 ký tự', r.msg);
   r = c.__goi('dangNhap', 'c044', r.mkTam);
   ok(r.ok && r.me.phaiDoiMK, 'mật khẩu tạm đăng nhập được và bị buộc đổi');
 }
@@ -68,7 +68,7 @@ console.log('\n2. Quyền xem hồ sơ / lịch sử KPI');
   const c = G.tao(MOI, duLieu(), BAY_GIO);
   const tk = c.doc_('TaiKhoan');
   const cn = tk.filter(x => x.VaiTro === 'CN' && x.MaNV && String(x.DoiMatKhauLanDau).trim() !== 'Có' && x.TrangThai === 'Đang dùng' && !c.nvDaNghi_(x.MaNV))[0];
-  const tCN = c.taoPhien_(cn);
+  const tCN = c.__phienDai(cn);
   const ns = c.doc_('NhanSu');
   const khac = ns.filter(x => x.MaNV !== cn.MaNV && x.MaXuong === cn.MaXuong && x.TrangThai !== 'Nghỉ việc')[0];
   const khacXuong = ns.filter(x => x.MaXuong !== cn.MaXuong && x.TrangThai !== 'Nghỉ việc')[0];
@@ -98,7 +98,7 @@ console.log('\n3. Kiểm tra ngày nhập');
   ok(/27\/08\/2026 đã quá 31/.test(c.kiemNgay_('2026-08-27', 31)) && c.kiemNgay_('2026-08-28', 31) === '', 'chặn nhập bù quá 31 ngày');
   const cn = c.doc_('TaiKhoan').filter(x => x.VaiTro === 'CN' && x.MaNV && x.TrangThai === 'Đang dùng' && String(x.DoiMatKhauLanDau).trim() !== 'Có')[0];
   const cd = c.doc_('CongDoan').filter(x => x.MaXuong === cn.MaXuong && x.TrangThai !== 'Ngừng')[0];
-  const r = c.__goi('congNhanGuiSanLuong', c.taoPhien_(cn), [{ Ngay: '2026-10-10', MaCD: cd.MaCD, SoLuongLamRa: 5, GioLam: 8 }]);
+  const r = c.__goi('congNhanGuiSanLuong', c.__phienDai(cn), [{ Ngay: '2026-10-10', MaCD: cd.MaCD, SoLuongLamRa: 5, GioLam: 8 }]);
   ok(!r.ok && /tương lai/.test(r.msg), 'công nhân gửi sản lượng ngày tương lai bị chặn', r.msg);
 }
 
@@ -111,7 +111,7 @@ console.log('\n4. Điểm danh ngày giữ ô nửa ngày / đi muộn');
            || dd.filter(r => ['0.5x', 'x-1', 'x-1.5'].indexOf(String(r.KyHieu)) >= 0)[0];
   const ngay = c.ngayVN_(mau.Ngay);
   const tp = c.doc_('TaiKhoan').filter(x => x.VaiTro === 'TP' && x.MaXuong === mau.MaXuong)[0];
-  const tTP = c.taoPhien_(tp);
+  const tTP = c.__phienDai(tp);
   const truoc = dd.filter(r => c.ngayVN_(r.Ngay) === ngay && r.MaXuong === mau.MaXuong);
   const ds = c.__goi('layDiemDanh', tTP, ngay);
   const nghi = ds.ds.filter(o => o.nghi && !o.daiHan).map(o => ({ MaNV: o.MaNV, LyDo: o.LyDo }));
@@ -126,7 +126,7 @@ console.log('\n4. Điểm danh ngày giữ ô nửa ngày / đi muộn');
     ok(kh(truoc) === kh(sau), 'ký hiệu mọi người giữ nguyên sau khi lưu lại (gồm ' + mau.MaNV + ' = ' + mau.KyHieu + ')', { truoc: kh(truoc), sau: kh(sau) });
     // Chạy mã GỐC cùng thao tác -> ô nửa ngày bị mất
     const g = G.tao(GOC, duLieu(), BAY_GIO);
-    g.__goi('luuDiemDanh', g.taoPhien_(tp), ngay, nghi);
+    g.__goi('luuDiemDanh', g.__phienDai(tp), ngay, nghi);
     const sauGoc = dong(g, 'DiemDanhNghi').filter(r => g.ngayVN_(r.Ngay) === ngay && r.MaXuong === mau.MaXuong);
     ok(kh(sauGoc) !== kh(truoc), '(đối chứng) mã gốc làm mất ô nửa ngày/đi muộn: ' + kh(truoc).split(',').length + ' -> ' + kh(sauGoc).split(',').length + ' ô');
   }
@@ -315,11 +315,11 @@ console.log('\n10. Tăng tốc: bộ đệm ghi, bộ nhớ tạm, nạp theo ph
   const cn = c.doc_('TaiKhoan').filter(x => x.VaiTro === 'CN' && x.TrangThai === 'Đang dùng' && x.MaNV)[0];
   c.__sheets.TaiKhoan.rows[cn._row - 1][c.dauCot_('TaiKhoan').indexOf('DoiMatKhauLanDau')] = 'Không';
   c.__DOC_CACHE = {};
-  const dCN = c.__goi('napDuLieu', c.taoPhien_(dong(c, 'TaiKhoan').filter(x => x.TenDangNhap === cn.TenDangNhap)[0]));
+  const dCN = c.__goi('napDuLieu', c.__phienDai(dong(c, 'TaiKhoan').filter(x => x.TenDangNhap === cn.TenDangNhap)[0]));
   const khac = (dCN.nhansu || []).filter(x => x.MaNV !== cn.MaNV), minh = (dCN.nhansu || []).filter(x => x.MaNV === cn.MaNV)[0];
   ok(dCN.ok && khac.length > 0 && khac.every(x => !('SoCCCD' in x) && !('DienThoai' in x) && !('DiaChi' in x)), 'công nhân KHÔNG còn thấy CCCD / điện thoại / địa chỉ của người khác', khac[0]);
   ok(minh && ('SoCCCD' in minh) && ('DienThoai' in minh), 'công nhân vẫn thấy hồ sơ của chính mình');
-  const gCN = g.__goi('napDuLieu', g.taoPhien_(g.doc_('TaiKhoan').filter(x => x.TenDangNhap === cn.TenDangNhap)[0]));
+  const gCN = g.__goi('napDuLieu', g.__phienDai(g.doc_('TaiKhoan').filter(x => x.TenDangNhap === cn.TenDangNhap)[0]));
   ok(gCN.nhansu && gCN.nhansu.some(x => x.MaNV !== cn.MaNV && x.SoCCCD), '(đối chứng) mã gốc gửi CCCD của cả xưởng cho công nhân');
 
   // 10e) Sheets API: kiểm tra khớp từng ô rồi mới bật; bật rồi kết quả giống hệt, ít lượt đọc hơn

@@ -311,6 +311,33 @@ var MUOI = 'KPI@SanXuat#2026$Muoi';
 /* Bảo mật 18/10: mật khẩu mới lưu dạng 'v2$<muối riêng>$<HMAC-SHA256 lặp MK_VONG lần>'.
    Dạng cũ (SHA-256 một vòng, muối chung) vẫn đăng nhập được và tự đổi sang dạng mới ngay khi đăng nhập đúng. */
 var MK_VONG = 400, MK_HAN_TAM_GIO = 48;
+/* ===== AI XEM ĐƯỢC GÌ (bảo mật 18/10) =====
+   Cả nhà máy: ban điều hành (ADMIN/OWNER), trợ lý (TL), nhân sự (HR). Trưởng/phó phòng: xưởng mình.
+   Công nhân: bản ghi của mình (+ ký hiệu chấm công của người cùng xưởng, KHÔNG có lý do nghỉ). Vai trò khác: chỉ số đếm. */
+function xemCaNhaMay_(me) { return !!me && ['ADMIN', 'TL', 'HR'].indexOf(me.vaiTro) >= 0; }
+/* Bản ghi chấm công của người khác: giữ ký hiệu (để tính giờ có mặt / KPI), bỏ lý do nghỉ và người ghi */
+function cheNghi_(r) {
+  return { MaDD: r.MaDD, Ngay: r.Ngay, MaNV: r.MaNV, MaXuong: r.MaXuong, KyHieu: khTuBanGhi_(r), Cong: r.Cong, LyDo: '' };
+}
+function locNapTheoVaiTro_(me, out) {
+  if (xemCaNhaMay_(me)) return out;
+  var cuaToi = function(r) { return !!me.maNV && String(r.MaNV) === String(me.maNV); };
+  var xuongToi = function(r) { return !!me.xuong && String(r.MaXuong) === String(me.xuong); };
+  if (out.chamcong) out.chamcong = out.chamcong
+    .filter(function(r) { return me.vaiTro !== 'CN' || xuongToi(r) || cuaToi(r); })
+    .map(function(r) { return (cuaToi(r) || (me.vaiTro === 'TP' && xuongToi(r))) ? r : cheNghi_(r); });
+  if (out.nghiDaiHan) out.nghiDaiHan = out.nghiDaiHan.filter(function(r) { return cuaToi(r) || (me.vaiTro === 'TP' && xuongToi(r)); });
+  if (me.vaiTro === 'CN') {
+    var cdX = {};
+    doc_('CongDoan').forEach(function(c) { if (c.MaXuong === me.xuong) cdX[c.MaCD] = 1; });
+    if (out.maymoc) out.maymoc = out.maymoc.filter(xuongToi);
+    if (out.dexuat) out.dexuat = [];
+    if (out.kcs) out.kcs = out.kcs.filter(function(k) { return cdX[k.MaCD] || cuaToi(k); });
+  }
+  if (me.vaiTro === 'QC' && out.vipham) out.vipham = [];
+  return out;
+}
+
 function hex_(b) { return b.map(function(x) { return ('0' + (x & 0xFF).toString(16)).slice(-2); }).join(''); }
 function bam2_(mk, muoi) {
   var k = Utilities.newBlob('KPI|' + muoi + '|' + MUOI).getBytes();
@@ -721,7 +748,7 @@ function napDuLieuLoi_(token, phan) {
     out.lydo = doc_('LyDoDung');
   }
   out.log = me.laOwner ? docCuoi_('NhatKyThaoTac', 80).reverse() : [];
-  return sach_(out);
+  return sach_(locNapTheoVaiTro_(me, out));
   } catch (e) {
     return sach_({ ok: false, msg: 'Lỗi khi nạp dữ liệu: ' + (e.message || e) });
   }
@@ -752,8 +779,10 @@ function chotCa(token, rows, boQuaTrung) {
     if (loiN) return sach_({ ok: false, msg: 'Dòng ' + (iN + 1) + ': ' + loiN });
   }
   if (!rows || !rows.length) return sach_({ ok: false, msg: 'Chưa có dòng nào.' });
+  if (rows.length > 300) return sach_({ ok: false, msg: 'Mỗi lần chốt tối đa 300 dòng.' });
 
-  var cd = doc_('CongDoan');
+  var cd = doc_('CongDoan'), nsC = {};
+  nhanSuGomTP_().forEach(function(x) { nsC[String(x.MaNV)] = x; });
   for (var i = 0; i < rows.length; i++) {
     var r = rows[i];
     if (Number(r.SoLuongLamRa) <= 0) return sach_({ ok: false, msg: 'Dòng ' + (i + 1) + ': chưa nhập số lượng.' });
@@ -761,6 +790,10 @@ function chotCa(token, rows, boQuaTrung) {
       var c = cd.filter(function(x) { return x.MaCD === r.MaCD; })[0];
       if (!c || c.MaXuong !== me.xuong) return sach_({ ok: false, msg: 'Dòng ' + (i + 1) + ': công đoạn không thuộc xưởng của bạn.' });
     }
+    var nvC = nsC[String(r.MaNV)];
+    if (!nvC || String(nvC.TrangThai).trim() === 'Nghỉ việc') return sach_({ ok: false, msg: 'Dòng ' + (i + 1) + ': không tìm thấy nhân viên ' + r.MaNV + '.' });
+    if (me.vaiTro === 'TP' && nvC.MaXuong !== me.xuong) return sach_({ ok: false, msg: 'Dòng ' + (i + 1) + ': ' + nvC.HoTen + ' không thuộc xưởng của bạn.' });
+    r.GhiChu = String(r.GhiChu || '').slice(0, GHI_CHU_TOI_DA);
   }
 
   // Cảnh báo (không chặn) nếu nhập trùng NV + ngày + công đoạn đã có trong sổ
@@ -802,6 +835,7 @@ function chotCa(token, rows, boQuaTrung) {
 
 /* ===== CÔNG NHÂN GỬI SẢN LƯỢNG (chờ trưởng phòng duyệt) ===== */
 var SL_TOI_DA_DONG = 30, GHI_CHU_TOI_DA = 300;   // bảo mật 18/10: giới hạn mỗi lần công nhân gửi
+var MA_HOP_LE = /^[A-Za-z0-9_.\-]{1,20}$/;   // mã máy / mã nhân viên (bảo mật 18/10)
 function congNhanGuiSanLuong(token, rows) {
   var me = docPhien_(token);
   if (!me) return sach_({ ok: false, hetHan: true, msg: 'Phiên đăng nhập đã hết hạn.' });
@@ -1351,8 +1385,11 @@ function luuNhanSu(token, o) {
   if (!o.MaNV || !o.HoTen) return sach_({ ok: false, msg: 'Cần mã nhân viên và họ tên.' });
 
   var maNV = String(o.MaNV).trim().toUpperCase();
+  if (!MA_HOP_LE.test(maNV)) return sach_({ ok: false, msg: 'Mã nhân viên chỉ gồm chữ không dấu, số và dấu _ . - (tối đa 20 ký tự).' });
   if (doc_('NhanSu').filter(function(x) { return String(x.MaNV).toUpperCase() === maNV; })[0])
     return sach_({ ok: false, msg: 'Mã nhân viên ' + maNV + ' đã tồn tại.' });
+  if (doc_('TaiKhoan').some(function(x) { return String(x.MaNV).toUpperCase().trim() === maNV && String(x.VaiTro).trim() !== 'CN'; }))
+    return sach_({ ok: false, msg: 'Mã nhân viên ' + maNV + ' đang gắn với một tài khoản quản lý. Dùng mã khác.' });
 
   var full = (me.vaiTro === 'ADMIN' || me.vaiTro === 'HR');
   var xuong = (me.vaiTro === 'TP') ? me.xuong : o.MaXuong;
@@ -1447,7 +1484,7 @@ function ganCongDoanChoNhieu(token, maCD, maNVList, khongGoBot) {
   var me = docPhien_(token);
   if (!me) return sach_({ ok: false, hetHan: true, msg: 'Phiên đăng nhập đã hết hạn.' });
   khoa_();
-  if (['ADMIN', 'HR', 'TP'].indexOf(me.vaiTro) < 0) return sach_({ ok: false, msg: 'Không có quyền.' });
+  if (['ADMIN', 'TP'].indexOf(me.vaiTro) < 0) return sach_({ ok: false, msg: 'Không có quyền.' });
 
   var cd = doc_('CongDoan').filter(function(x){ return x.MaCD === maCD; })[0];
   if (!cd) return sach_({ ok: false, msg: 'Không tìm thấy công đoạn.' });
@@ -1583,7 +1620,7 @@ function suaNhanSu(token, o) {
   // Nếu đổi chức danh sang Phó phòng / Trưởng phòng thì đồng bộ vai trò tài khoản đăng nhập
   var ghiChuVT = '';
   if (doi.indexOf('ChucDanh') >= 0) {
-    ghiChuVT = dongBoVaiTroTaiKhoan_(o.MaNV, o.ChucDanh);
+    ghiChuVT = dongBoVaiTroTaiKhoan_(o.MaNV, o.ChucDanh, me);
   }
 
   ghiLog_(me, 'Sửa hồ sơ nhân sự', o.MaNV + ' — ' + doi.join(', '));
@@ -1621,7 +1658,7 @@ function ngungTKTheoMaNV_(maNV) {
 /* Chạy một lần: sửa lại các TỔ TRƯỞNG bị nâng nhầm thành TP -> trả về CN (công nhân).
    Chỉ hạ người có chức danh chứa "tổ trưởng" mà tài khoản đang là TP. */
 
-function dongBoVaiTroTaiKhoan_(maNV, chucDanh) {
+function dongBoVaiTroTaiKhoan_(maNV, chucDanh, me) {
   if (!maNV) return '';
   var cd = String(chucDanh || '').toLowerCase();
   var vaiTroMoi = '';
@@ -1632,6 +1669,8 @@ function dongBoVaiTroTaiKhoan_(maNV, chucDanh) {
   var tk = doc_('TaiKhoan').filter(function(x) { return String(x.MaNV) === String(maNV); })[0];
   if (!tk) return ' (Nhân viên chưa có tài khoản đăng nhập — chưa đổi được vai trò.)';
   if (String(tk.VaiTro) === vaiTroMoi) return '';   // đã đúng rồi
+  if (['CN', 'TP', 'PP'].indexOf(String(tk.VaiTro).trim()) < 0) return '';   // tài khoản quản trị / nhân sự / trợ lý: không đụng
+  if (!me || !me.laOwner) return ' (Vai trò tài khoản đăng nhập chưa đổi – nhờ chủ sở hữu đổi ở tab Tài khoản.)';
 
   suaO_('TaiKhoan', tk._row, 'VaiTro', vaiTroMoi);
   return ' Đã nâng vai trò tài khoản "' + tk.TenDangNhap + '" thành ' +
@@ -2468,6 +2507,9 @@ function luuMay(token, o) {
   khoa_();
   if (['ADMIN', 'TP'].indexOf(me.vaiTro) < 0) return sach_({ ok: false, msg: 'Không có quyền.' });
   if (!o.MaMay || !o.TenMay) return sach_({ ok: false, msg: 'Cần mã máy và tên máy.' });
+  o.MaMay = String(o.MaMay).trim();
+  if (!MA_HOP_LE.test(o.MaMay)) return sach_({ ok: false, msg: 'Mã máy chỉ gồm chữ không dấu, số và dấu _ . - (tối đa 20 ký tự).' });
+  if (String(o.TenMay).length > 100) return sach_({ ok: false, msg: 'Tên máy tối đa 100 ký tự.' });
   if (doc_('MayMoc').filter(function(x) { return x.MaMay === o.MaMay; })[0])
     return sach_({ ok: false, msg: 'Mã máy đã tồn tại.' });
 
@@ -3210,6 +3252,11 @@ function chotThang(token, kyThang, chiXuong) {
   if (!/^\d{4}-\d{2}$/.test(String(ky))) return sach_({ ok:false, msg:'Kỳ không hợp lệ (cần dạng năm-tháng).' });
   // TP chỉ được chốt xưởng của mình
   var xuongLoc = (me.vaiTro === 'TP') ? me.xuong : (chiXuong || '');
+  if (me.vaiTro === 'TP') {
+    if (ky > kyVN_()) return sach_({ ok:false, msg:'Chưa tới tháng này.' });
+    if (docAnToan_('KPIThang').some(function(r){ return chuanKy_(r.Ky) === ky && r.MaXuong === me.xuong && !laChotTam_(r); }))
+      return sach_({ ok:false, msg:'Tháng ' + ky + ' đã chốt chính thức. Muốn chốt lại, nhờ chủ sở hữu.' });
+  }
 
   var n = chotThangLoi_(ky, xuongLoc, me.ten);
   ghiLog_(me, 'Chốt KPI tháng', 'Kỳ ' + ky + (xuongLoc ? ' — xưởng ' + xuongLoc : ' — toàn nhà máy') + ' — ' + n + ' người');
@@ -3349,6 +3396,8 @@ function CAI_TRIGGER_SNAPSHOT_9H() {
 function layKPIKy(token, kieu, giaTri, maXuong) {
   var me = docPhien_(token);
   if (!me) return sach_({ ok:false, hetHan:true, msg:'Phiên hết hạn.' });
+  if (me.vaiTro === 'CN') { if (!me.xuong) return sach_({ ok:false, msg:'Tài khoản chưa gắn xưởng.' }); maXuong = me.xuong; }
+  else if (!xemCaNhaMay_(me) && me.vaiTro !== 'TP') return sach_({ ok:false, msg:'Không có quyền xem bảng KPI.' });
   return nho_('layKPIKy', [kieu, giaTri, maXuong || ''], function() { return layKPIKyGoc_(token, kieu, giaTri, maXuong); });
 }
 function layKPIKyGoc_(token, kieu, giaTri, maXuong) {
@@ -3495,6 +3544,8 @@ function layLichSuKPIGoc_(token, maNV) {
   var me = docPhien_(token);
   if (!me) return sach_({ ok:false, hetHan:true, msg:'Phiên hết hạn.' });
   // Công nhân / trưởng phòng: chỉ xem chi tiết KPI của người trong xưởng mình
+  if (!xemCaNhaMay_(me) && me.vaiTro !== 'CN' && me.vaiTro !== 'TP' && String(maNV) !== String(me.maNV))
+    return sach_({ ok:false, msg:'Chỉ xem được chi tiết KPI của chính mình.' });
   if ((me.vaiTro === 'CN' || me.vaiTro === 'TP') && String(maNV) !== String(me.maNV)) {
     var nvXem = nhanSuGomTP_().filter(function(x){ return x.MaNV === maNV; })[0];
     if (!nvXem || String(nvXem.MaXuong) !== String(me.xuong))
@@ -3718,6 +3769,7 @@ function layDiemDanh(token, ngay) {
 
   var ns = nhanSuGomTP_();
   if (me.vaiTro === 'TP') ns = ns.filter(function(x){ return x.MaXuong === me.xuong; });
+  else if (!xemCaNhaMay_(me)) ns = ns.filter(function(x){ return !!me.maNV && x.MaNV === me.maNV; });
 
   var nghi = doc_('DiemDanhNghi').filter(function(r){ return ngayVN_(r.Ngay) === ng; });
 
@@ -3763,7 +3815,9 @@ function siSoTatCaXuong(token, ngay) {
   var me = docPhien_(token);
   if (!me) return sach_({ ok:false, hetHan:true, msg:'Phiên hết hạn.' });
   var ng = ngay || ngayVN_(new Date());
-  return sach_({ ok:true, ngay:ng, xuong: siSoTatCaXuongTinh_(ng) });
+  var xs = siSoTatCaXuongTinh_(ng);
+  if (!xemCaNhaMay_(me)) xs.forEach(function(x) { if (!(me.vaiTro === 'TP' && x.MaXuong === me.xuong)) x.dsNghi = []; });
+  return sach_({ ok:true, ngay:ng, xuong: xs });
 }
 
 /* Lõi tính sĩ số theo xưởng cho một ngày (dùng chung cho API và chẩn đoán) */
@@ -3946,7 +4000,7 @@ function layNghiDaiHan(token, maXuong){
   if(!me) return sach_({ ok:false, hetHan:true, msg:'Phiên hết hạn.' });
   var xuongLoc=(me.vaiTro==='TP')?me.xuong:(maXuong||'');
   var ds=docAnToan_('NghiDaiHan').filter(function(r){
-    return !xuongLoc || r.MaXuong===xuongLoc;
+    return (!xuongLoc || r.MaXuong===xuongLoc) && (me.vaiTro==='TP' || xemCaNhaMay_(me) || (!!me.maNV && r.MaNV===me.maNV));
   });
   var nsMap={}; nhanSuGomTP_().forEach(function(x){ nsMap[x.MaNV]=x; });
   ds=ds.map(function(r){
@@ -4046,6 +4100,7 @@ function khTuBanGhi_(r){
 function thongKeNghiThang(token, kyThang, maXuong) {
   var me = docPhien_(token);
   if (!me) return sach_({ ok:false, hetHan:true, msg:'Phiên hết hạn.' });
+  if (!xemCaNhaMay_(me) && me.vaiTro !== 'TP') return sach_({ ok:false, msg:'Không có quyền xem thống kê nghỉ.' });
   return nho_('thongKeNghiThang', [kyThang || kyVN_(), maXuong || '', me.vaiTro, me.xuong], function() { return thongKeNghiThangGoc_(token, kyThang, maXuong); });
 }
 function thongKeNghiThangGoc_(token, kyThang, maXuong) {

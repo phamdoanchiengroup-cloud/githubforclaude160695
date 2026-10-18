@@ -91,6 +91,76 @@ c.__datGio('2026-10-14T11:01:30+07:00');
 r = c.__goi('dangNhap', 'thu.bm', 'sai6'); r = c.__goi('dangNhap', 'thu.bm', 'sai7');
 ok(!r.ok && /Đợi 2 phút/.test(r.msg), 'sai tiếp: thời gian chờ tăng dần', r.msg);
 
+
+console.log('\n5. Lý do nghỉ chỉ hiện đúng phạm vi');
+c.__datGio('2026-10-14T10:00:00+07:00');
+const cnKhac = tk(x => vt('CN')(x) && x.MaXuong && x.MaXuong !== cn.MaXuong && x.MaNV);
+const tCN5 = P(cn), tTP5 = P(tp), tO5 = P(owner);
+const hr = tk(vt('HR'));
+// thêm 1 dòng nghỉ có lý do cho người xưởng khác và 1 cho người cùng xưởng
+const hDD = c.__sheets.DiemDanhNghi.rows[0];
+const dongDD = (nv, ly) => hDD.map(h => ({ MaDD: 'DDBM' + nv.MaNV, Ngay: '2026-10-13', MaNV: nv.MaNV, MaXuong: nv.MaXuong, LyDo: ly, KyHieu: 'Nkl' }[h] ?? ''));
+const cung = tk(x => vt('CN')(x) && x.MaXuong === cn.MaXuong && x.MaNV && x.MaNV !== cn.MaNV);
+c.__sheets.DiemDanhNghi.rows.push(dongDD(cnKhac, 'Khám thai định kỳ'), dongDD(cung, 'Ốm sốt xuất huyết'));
+let d = c.__goi('napDuLieu', tCN5);
+const cc = d.chamcong || [];
+ok(!cc.some(r => r.MaNV === cnKhac.MaNV), 'công nhân: không nhận chấm công của xưởng khác');
+const rCung = cc.find(r => r.MaNV === cung.MaNV && r.Ngay && String(r.Ngay).startsWith('2026-10-13'));
+ok(rCung && !rCung.LyDo && rCung.KyHieu === 'Nkl', 'công nhân: người cùng xưởng chỉ còn ký hiệu, không có lý do', rCung);
+ok(!(d.nghiDaiHan || []).some(r => r.MaNV !== cn.MaNV), 'công nhân: nghỉ dài hạn chỉ của mình');
+ok(!(d.maymoc || []).some(m => m.MaXuong !== cn.MaXuong) && !(d.dexuat || []).length, 'công nhân: máy chỉ của xưởng mình, không có đề xuất định mức');
+d = c.__goi('napDuLieu', tTP5);
+const rTP = (d.chamcong || []).find(r => r.MaNV === cnKhac.MaNV && String(r.Ngay).startsWith('2026-10-13'));
+const rTP2 = (d.chamcong || []).find(r => r.MaNV === cung.MaNV && String(r.Ngay).startsWith('2026-10-13'));
+ok(rTP && !rTP.LyDo && rTP2 && rTP2.LyDo === 'Ốm sốt xuất huyết', 'trưởng phòng: xưởng mình có lý do, xưởng khác thì không', [rTP, rTP2]);
+d = c.__goi('napDuLieu', tO5);
+ok((d.chamcong || []).some(r => r.LyDo === 'Khám thai định kỳ'), 'ban điều hành: thấy đủ');
+r = c.__goi('layDiemDanh', tCN5, '2026-10-13'); ok(r.ok && r.ds.length === 1 && r.ds[0].MaNV === cn.MaNV, 'điểm danh: công nhân chỉ thấy dòng của mình', r.ds && r.ds.length);
+r = c.__goi('siSoTatCaXuong', tCN5, '2026-10-13'); ok(r.ok && r.xuong.every(x => !x.dsNghi.length) && r.xuong.some(x => x.nghi > 0), 'sĩ số: công nhân chỉ thấy số đếm');
+r = c.__goi('siSoTatCaXuong', tTP5, '2026-10-13'); ok(r.ok && r.xuong.every(x => x.MaXuong === tp.MaXuong || !x.dsNghi.length), 'sĩ số: trưởng phòng thấy tên người nghỉ xưởng mình');
+r = c.__goi('siSoTatCaXuong', tO5, '2026-10-13'); ok(r.xuong.some(x => x.dsNghi.some(n => n.LyDo === 'Khám thai định kỳ')), 'sĩ số: ban điều hành thấy đủ');
+if (hr) { r = c.__goi('siSoTatCaXuong', P(hr), '2026-10-13'); ok(r.xuong.some(x => x.dsNghi.length), 'sĩ số: nhân sự thấy đủ'); }
+r = c.__goi('thongKeNghiThang', tCN5, '2026-10', ''); ok(!r.ok, 'thống kê nghỉ tháng: công nhân không gọi được');
+r = c.__goi('layNghiDaiHan', tCN5, ''); ok(r.ok && r.ds.every(x => x.MaNV === cn.MaNV), 'nghỉ dài hạn: công nhân chỉ của mình');
+
+console.log('\n7. Bảng KPI');
+r = c.__goi('layKPIKy', tCN5, 'thang', '2026-09', '');
+const dsK = r.ok ? (r.ds || r.xuong || r.data || []) : [];
+const xuongKPI = JSON.stringify(r).match(/"MaXuong":"([^"]*)"/g) || [];
+ok(r.ok && xuongKPI.length && xuongKPI.every(m => m === '"MaXuong":"' + cn.MaXuong + '"'), 'công nhân: chỉ KPI xưởng mình', r.ok ? [...new Set(xuongKPI)] : r);
+r = c.__goi('layKPIKy', tCN5, 'thang', '2026-09', cnKhac.MaXuong);
+ok(r.ok && !(JSON.stringify(r).match(/"MaXuong":"([^"]*)"/g) || []).some(m => m !== '"MaXuong":"' + cn.MaXuong + '"'), 'công nhân truyền xưởng khác: vẫn chỉ xưởng mình');
+const bepTk = tk(vt('QC'));
+if (bepTk) { r = c.__goi('layKPIKy', P(bepTk), 'thang', '2026-09', ''); ok(!r.ok, 'QC không xem bảng KPI'); r = c.__goi('layLichSuKPI', P(bepTk), cn.MaNV); ok(!r.ok, 'QC không xem KPI chi tiết người khác'); }
+
+console.log('\n8. Chốt ca');
+const cdTP = c.doc_('CongDoan').filter(x => x.MaXuong === tp.MaXuong && x.TrangThai !== 'Ngừng')[0];
+r = c.__goi('chotCa', tTP5, [{ Ngay: '2026-10-13', MaNV: cnKhac.MaNV, MaCD: cdTP.MaCD, GioLam: 8, SoLuongLamRa: 10 }], true);
+ok(!r.ok && /không thuộc xưởng/.test(r.msg), 'trưởng phòng không chốt ca cho người xưởng khác', r.msg);
+r = c.__goi('chotCa', tTP5, [{ Ngay: '2026-10-13', MaNV: 'KHONGCO999', MaCD: cdTP.MaCD, GioLam: 8, SoLuongLamRa: 10 }], true);
+ok(!r.ok && /không tìm thấy/.test(r.msg), 'mã NV không tồn tại bị từ chối', r.msg);
+const cnTP = tk(x => vt('CN')(x) && x.MaXuong === tp.MaXuong && x.MaNV);
+r = c.__goi('chotCa', tTP5, [{ Ngay: '2026-10-13', MaNV: cnTP.MaNV, MaCD: cdTP.MaCD, GioLam: 8, SoLuongLamRa: 10 }], true);
+ok(r.ok, 'chốt ca người trong xưởng vẫn được', r.msg);
+
+console.log('\n9–10. Vai trò, mã NV');
+if (hr) {
+  const tHR = P(hr);
+  const coNS = new Set(c.doc_('NhanSu').map(x => String(x.MaNV).toUpperCase()));
+  const ql = tk(x => ['TP', 'PP', 'ADMIN'].includes(String(x.VaiTro).trim()) && x.MaNV && !coNS.has(String(x.MaNV).toUpperCase()));
+  r = ql ? c.__goi('luuNhanSu', tTP5, { MaNV: ql.MaNV, HoTen: 'Trùng Mã', ChucDanh: 'Công nhân' }) : { ok: false, msg: '(dữ liệu không có tài khoản quản lý thiếu hồ sơ)' };
+  ok(!r.ok, 'không tạo hồ sơ trùng mã NV của tài khoản quản lý', r.msg);
+  r = c.__goi('luuNhanSu', tHR, { MaNV: 'AB C<1>', HoTen: 'Mã Lạ', MaXuong: tp.MaXuong });
+  ok(!r.ok && /chỉ gồm/.test(r.msg), 'mã NV lạ bị từ chối', r.msg);
+  r = c.__goi('luuNhanSu', tHR, { MaNV: 'BM9001', HoTen: 'Người Mới', MaXuong: tp.MaXuong, ChucDanh: 'Công nhân' });
+  ok(r.ok && /^[a-z2-9]{8}$/.test(r.mkTam) && r.tenDN === 'bm9001', 'thêm nhân sự: tài khoản mới có mật khẩu tạm ngẫu nhiên', r);
+  r = c.__goi('suaNhanSu', tHR, { MaNV: 'BM9001', ChucDanh: 'Trưởng phòng' });
+  ok(r.ok && tk(x => x.TenDangNhap === 'bm9001').VaiTro === 'CN' && /chủ sở hữu/.test(r.msg), 'HR đổi chức danh: vai trò tài khoản không tự nâng (cần chủ sở hữu)', r.msg);
+  r = c.__goi('ganCongDoanChoNhieu', tHR, cdTP.MaCD, [], true); ok(!r.ok, 'HR không gán công đoạn hàng loạt (chỉ xem)');
+}
+r = c.__goi('luuMay', tTP5, { MaMay: "x');alert(1);//", TenMay: 'Máy độc' }); ok(!r.ok && /chỉ gồm/.test(r.msg), 'mã máy có ký tự lạ bị từ chối', r.msg);
+r = c.__goi('chotThang', tTP5, '2026-12'); ok(!r.ok, 'trưởng phòng không chốt tháng chưa tới');
+
 module.exports = { c, ok, P, tk, vt, owner, tp, cn };
 if (require.main === module) {
   console.log('\n' + (loi ? '✗ ' + loi + '/' + dem + ' lỗi' : '✓ ' + dem + '/' + dem + ' đạt'));
