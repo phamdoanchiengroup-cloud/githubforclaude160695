@@ -1,5 +1,6 @@
 # Mục 24 của va-index.py (18/10): ÂM THANH + GIỌNG RHINO – chủ dự án chọn bộ tiếng "HUD phi thuyền" + giọng nữ (demo-am-thanh.html).
-#  - Nút "🔇 Tiếng" ở đầu trang (cạnh nút Rhino), mặc định tắt; mã chạy: am-thanh/am-thanh.js (chèn trước </body> cuối).
+#  - Nút "Âm thanh" nằm cuối menu (cột trái trên máy tính, nút Menu trên điện thoại) – không đặt ở đầu trang để không che tên hệ thống
+#    (chủ dự án 18/10); MẶC ĐỊNH BẬT tiếng + giọng (chủ dự án 18/10). Mã chạy: am-thanh/am-thanh.js (chèn trước </body> cuối).
 #  - Tiếng thu sẵn (giong-web.json, sinh bởi tao-giong.py web) ghi ra file mới AmThanh.html, tải bằng taiManh khi bật giọng (mục 19).
 import hashlib as _hl24, json as _json24
 _A24 = os.path.join(D, 'am-thanh')
@@ -9,13 +10,11 @@ def _thay24(cu, moi, dem=1):
     assert s.count(cu) == dem, ('mục 24: không thấy đúng %d chỗ' % dem, cu[:70], s.count(cu))
     s = s.replace(cu, moi)
 
-_thay24('<button class="btn sm hgd" id="btnMai" onclick="maiDoi()" title="Tắt nhân vật Rhino">🦏 Rhino</button>',
-        '<button class="btn sm hgd" id="btnMai" onclick="maiDoi()" title="Tắt nhân vật Rhino">🦏 Rhino</button>\n'
-        '      <button class="btn sm hgd" id="btnAm" onclick="amDoi()" title="Tiếng: đang tắt – bấm để bật tiếng hiệu ứng" aria-label="Tiếng: đang tắt – bấm để bật tiếng hiệu ứng">🔇</button>')
 _k = s.rfind('</body>')
 s = s[:_k] + '''<style>
-/* 24. thêm nút Tiếng: điện thoại hẹp thì tên hệ thống tự cắt "…" để thanh đầu trang không tràn ngang */
-@media (max-width:600px){ header .hl{min-width:0;flex:1 1 auto} header .hl>div:last-child{min-width:0} header .htitle{white-space:nowrap;overflow:hidden;text-overflow:ellipsis} header .hr{gap:6px;flex:none} }
+/* 24. nút Âm thanh cuối menu */
+#nav button.am-nav{margin-top:10px;border:1px solid var(--line)}
+#nav button.am-nav small{display:block;font-size:12px;color:var(--ink3)}
 </style>
 <script>\n''' + io.open(os.path.join(_A24, 'am-thanh.js'), encoding='utf-8').read() + '</script>\n' + s[_k:]
 

@@ -487,12 +487,28 @@ Nếu vẫn thấy giao diện cũ: kiểm tra lại Phần D (đã chọn **Phi
 
 
 ## Âm thanh và giọng nói Rhino (18/10)
-- Đầu trang có thêm nút loa, mặc định **tắt** (🔇). Mỗi người tự bật trên máy mình, máy nhớ lựa chọn:
-  - bấm 1 lần → 🔉 bật tiếng hiệu ứng (bộ "HUD phi thuyền");
-  - bấm lần 2 → 🔊 bật thêm giọng Rhino (giọng nữ);
-  - bấm lần 3 → tắt.
+- **Mặc định BẬT** tiếng hiệu ứng (bộ "HUD phi thuyền") + giọng Rhino (giọng nữ).
+- Nút **Âm thanh** nằm **cuối menu**: máy tính ở cột trái (trên dòng tên người dùng), điện thoại bấm **Menu** ở thanh dưới rồi kéo xuống cuối. Mỗi lần bấm đổi: Tiếng + giọng Rhino → Đang tắt → Chỉ tiếng hiệu ứng → Tiếng + giọng Rhino. Máy nhớ lựa chọn của từng người.
 - Có tiếng ở: gửi / duyệt xong, báo lỗi, vuốt duyệt hoặc xóa dòng, lên hạng, nhắc hạn nhập, nhắc nghỉ giữa ca, mở cửa cuốn, đăng nhập đúng.
 - Rhino nói ở: hộp đọc lại trước khi gửi ("Ngày 18 tháng 10. Bạn gửi 2 công đoạn, tổng cộng 125 cái, 2 lỗi. Đúng chưa?"), gửi xong, nhập sai ô, còn ngày chưa nhập, lên hạng, giờ nghỉ giữa ca, lời chào khi đăng nhập.
-- Giọng nói nằm ở **file MỚI `AmThanh.html`** (khoảng 300 KB), chỉ tải khi ai đó bật giọng, rồi máy nhớ lại.
+- Giọng nói nằm ở **file MỚI `AmThanh.html`** (khoảng 300 KB): tự tải vài giây sau khi đăng nhập (lần đầu), rồi máy nhớ lại. Quên tạo file này thì tiếng hiệu ứng vẫn chạy, chỉ không có giọng nói.
 
-**Khi dán (gộp vào lần dán chung):** ngoài Code.gs và Index.html, tạo thêm file: dấu **+** cạnh "Tệp" → **HTML** → gõ tên **AmThanh** (đúng chữ hoa A, T) → xóa hết nội dung mẫu → dán nội dung file `AmThanh.html` → Ctrl+S. Quên bước này thì tiếng hiệu ứng vẫn chạy, chỉ không có giọng nói.
+
+## LẦN DÁN CHUNG 18/10 (bảo mật + vận hành + âm thanh)
+Gồm 5 file: **Code.gs**, **Index.html**, **SoDo.html**, **HoatAnh.html** và file mới **AmThanh.html**.
+
+1. Sao lưu: Tổng quan → **Tạo bản sao dự án**.
+2. MỞ FILE **Code.gs** → Ctrl+A → Delete → dán bản mới → Ctrl+S.
+3. MỞ FILE **Index.html** → xóa hết → dán bản mới → Ctrl+S.
+4. MỞ FILE **SoDo.html** → xóa hết → dán bản mới → Ctrl+S.
+5. MỞ FILE **HoatAnh.html** → xóa hết → dán bản mới → Ctrl+S.
+6. Tạo file mới: dấu **+** cạnh "Tệp" → **HTML** → gõ tên **AmThanh** (đúng chữ hoa A, T) → xóa hết nội dung mẫu → dán `AmThanh.html` → Ctrl+S.
+7. Chạy hàm (trong trình soạn thảo, ô chọn hàm cạnh nút ▶ Chạy):
+   - **KIEM_TRA_SAU_CAP_NHAT** → lần đầu Google hỏi cấp quyền (thêm quyền đọc email người chạy, để chặn người ngoài gọi các hàm này từ web) → Xem lại quyền → chọn tài khoản → Nâng cao → Đi tới … → Cho phép. Xem kết quả ở Nhật ký thực thi.
+   - **BAT_BUOC_DOI_MAT_KHAU_MAC_DINH** → mọi tài khoản còn mật khẩu 123456 sẽ bị buộc đổi ở lần đăng nhập tới (không đổi mật khẩu của ai).
+   - Nếu KIEM_TRA_SAU_CAP_NHAT báo "THIẾU trigger" → chạy **CAI_LAI_TAT_CA_TRIGGER**.
+8. Triển khai → Quản lý triển khai → ✏️ → Phiên bản mới → Triển khai. Rồi Ctrl+F5.
+9. Sau khi dán:
+   - Có thể một số người phải **đăng nhập lại** 1 lần (do đổi cách lưu phiên) – bình thường.
+   - Anh đổi mật khẩu chủ sở hữu; tài khoản **giamdoc**, **phogd2** đổi mật khẩu (đang là 123456).
+   - Sheet tự thêm khi dùng tới: `LichSuDinhMuc`, `HoiNhap`; cột mới `HanMatKhauTam`, `PhienBan` (TaiKhoan), `SLGoc` (nhật ký), `MucKyNang`. Không cần tạo tay.

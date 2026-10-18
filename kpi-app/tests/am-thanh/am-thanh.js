@@ -1,11 +1,12 @@
 /* ===== 24. ÂM THANH + GIỌNG RHINO (18/10, chủ dự án chọn bộ tiếng "HUD phi thuyền" + giọng nữ) =====
-   - Mặc định TẮT. Nút ở đầu trang đổi vòng: Tắt → Tiếng → Tiếng + giọng (nhớ trên máy, khóa kpi_am).
+   - Mặc định BẬT tiếng + giọng (chủ dự án 18/10). Nút "Âm thanh" cuối menu đổi vòng: Tắt → Chỉ tiếng → Tiếng + giọng
+     (nhớ trên máy, khóa kpi_am).
    - Tiếng hiệu ứng tự tạo bằng Web Audio (không tải file). Giọng nói: các tiếng thu sẵn trong AmThanh.html
      (tải khi bật giọng, nhớ trong máy – xem tests/am-thanh/tao-giong.py), số được ghép từ từng tiếng (amDocSo).
    - Chỉ phát sau khi người dùng đã chạm / gõ phím (trình duyệt không cho tự phát). */
 var AM_GIONG=null;
 var AM={ac:null,ra:null,vang:null,giong:null,on:null,dangPhat:[],boDem:{},lan:0,cuoi:{}};
-function amCheDo(){try{var v=localStorage.getItem('kpi_am');return v==='am'||v==='giong'?v:'tat'}catch(e){return 'tat'}}
+function amCheDo(){try{var v=localStorage.getItem('kpi_am');return v==='am'||v==='tat'?v:'giong'}catch(e){return 'giong'}}
 function amBatTieng(){return amCheDo()!=='tat'}
 function amBatGiong(){return amCheDo()==='giong'}
 function amCtx(){
@@ -91,9 +92,12 @@ function amNoi(ds,tre){
 }
 function amSo(n){return amDocSo(n)}
 /* ---- Nút đầu trang ---- */
+var AM_SVG={tat:'<path d="M11 5 6 9H3v6h3l5 4z"/><path d="m16 9 5 6M21 9l-5 6"/>',am:'<path d="M11 5 6 9H3v6h3l5 4z"/><path d="M15.5 9.5a3.5 3.5 0 0 1 0 5"/>',
+  giong:'<path d="M11 5 6 9H3v6h3l5 4z"/><path d="M15.5 9.5a3.5 3.5 0 0 1 0 5M18.5 6.5a7.5 7.5 0 0 1 0 11"/>'};
 function amNut(){var b=document.getElementById('btnAm');if(!b)return;var c=amCheDo();
-  b.textContent=c==='tat'?'🔇':c==='am'?'🔉':'🔊';
-  b.title=c==='tat'?'Tiếng: đang tắt – bấm để bật tiếng hiệu ứng':c==='am'?'Tiếng: đang bật – bấm để bật thêm giọng Rhino':'Tiếng + giọng Rhino: đang bật – bấm để tắt';
+  var chu={tat:'Đang tắt',am:'Chỉ tiếng hiệu ứng',giong:'Tiếng + giọng Rhino'}[c];
+  b.innerHTML='<svg viewBox="0 0 24 24">'+AM_SVG[c]+'</svg><span class="nl">Âm thanh<small>'+chu+'</small></span>';
+  b.title=c==='tat'?'Âm thanh đang tắt – bấm để bật tiếng hiệu ứng':c==='am'?'Đang bật tiếng hiệu ứng – bấm để bật thêm giọng Rhino':'Đang bật tiếng + giọng Rhino – bấm để tắt';
   b.setAttribute('aria-label',b.title);}
 function amDoi(){
   var c=amCheDo(), moi=c==='tat'?'am':c==='am'?'giong':'tat';
@@ -157,7 +161,12 @@ function amDoi(){
     if(w.id!=='ttHet')return; var c=w.querySelector('.cua'); if(!c)return;
     var mo=new MutationObserver(function(){ if(c.classList.contains('mo')){ mo.disconnect(); am('cua'); } }); mo.observe(c,{attributes:true,attributeFilter:['class']}); }); }); })
     .observe(document.body,{childList:true});
-  amNut();
+  /* nút Âm thanh ở cuối menu (trên dòng tên người dùng) */
+  boc('veNav',function(cu){return function(){ var r=cu.apply(this,arguments);
+    try{ var nav=document.getElementById('nav'), chan=nav&&nav.querySelector('.nav-chan');
+      if(nav&&!document.getElementById('btnAm')){ var b=document.createElement('button'); b.type='button'; b.id='btnAm'; b.className='am-nav';
+        b.onclick=function(){amDoi()}; nav.insertBefore(b,chan||null); amNut(); } }catch(e){}
+    return r;}});
   /* đã bật giọng: tải nền phần giọng nói sau khi vào web (nhớ trong máy, lần sau không tải lại) */
   boc('vaoHeThong',function(cu){return function(){ var r=cu.apply(this,arguments);
     if(amBatGiong()&&!AM_GIONG)setTimeout(function(){ if(typeof taiManh==='function')taiManh('AmThanh',function(){}); },4000);

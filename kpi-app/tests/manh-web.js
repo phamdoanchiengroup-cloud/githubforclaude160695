@@ -17,7 +17,7 @@ ok((idx.match(/data:image\/png;base64/g) || []).length === 1 && (idx.match(/data
   await p.evaluate(() => { try { localStorage.clear(); } catch (e) {} });
   await p.click('#xtGoiY button:has-text("chienpham")'); await p.waitForSelector('#app', { state: 'visible', timeout: 30000 });
   await p.waitForTimeout(4000);
-  let s = await p.evaluate(() => [typeof SD_DATA, !!LT_DATA && Object.keys(LT_DATA).length, Object.keys(localStorage).filter(k => k.indexOf('kpi_manh_') === 0)]);
+  let s = await p.evaluate(() => [typeof SD_DATA, !!LT_DATA && Object.keys(LT_DATA).length, Object.keys(localStorage).filter(k => k.indexOf('kpi_manh_') === 0 && k.indexOf('kpi_manh_AmThanh_') !== 0)]);   // AmThanh (giọng Rhino, mặc định bật) cũng tải nền – xem am-thanh-web.js
   ok(s[0] === 'undefined' && s[1] >= 16 && s[2].length === 1 && /kpi_manh_HoatAnh_/.test(s[2][0]), 'sau khi vào: hoạt ảnh tải nền + nhớ; sơ đồ chưa tải', s);
   await p.evaluate(() => go('sodo')); await p.waitForTimeout(2500);
   s = await p.evaluate(() => [typeof SD_DATA, !!document.getElementById('sdMb'), !!document.getElementById('sdNguon3d'), Object.keys(localStorage).some(k => k.indexOf('kpi_manh_SoDo_' + MANH_VER.SoDo) === 0)]);
