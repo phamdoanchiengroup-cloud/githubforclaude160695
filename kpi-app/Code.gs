@@ -162,6 +162,7 @@ function themNhieu_(name, arr) {
 
 /* Sửa một ô: KHÔNG ghi ngay mà đưa vào bộ đệm; cuối lượt gọi (sach_ -> xong_) ghi một lần theo khối. */
 function suaO_(name, row, col, val) {
+  if (name === 'DinhMuc' && col === 'DinhMucGio') luuLichSuDM_(row, val);
   var head = dauCot_(name);
   var i = head.indexOf(col);
   if (i < 0) return;
@@ -616,7 +617,7 @@ function napDuLieu(token) { return napDuLieuLoi_(token, null); }
 
 /* Các "phần" dữ liệu gửi về trình duyệt. Sau khi lưu, giao diện chỉ xin lại phần bị ảnh hưởng. */
 var PHAN_NAP_ = { nk: 1, cc: 1, ns: 1, cd: 1, mm: 1, vp: 1, ts: 1, tb: 1, dm: 1 };
-var COT_NK_GUI_ = ['MaDong', 'Ngay', 'MaNV', 'MaCD', 'MaMay', 'GioLam', 'SoLuongLamRa', 'GioDung', 'LyDoDung', 'GhiChu', 'TrangThai'];
+var COT_NK_GUI_ = ['MaDong', 'Ngay', 'MaNV', 'MaCD', 'MaMay', 'GioLam', 'SoLuongLamRa', 'GioDung', 'LyDoDung', 'GhiChu', 'TrangThai', 'SLTangCa'];
 function chonCot_(r, cot) { var o = {}; cot.forEach(function(k) { o[k] = r[k]; }); return o; }
 
 function napDuLieuLoi_(token, phan) {
@@ -684,7 +685,7 @@ function napDuLieuLoi_(token, phan) {
     // Nhân sự: ban điều hành / nhân sự thấy đủ; trưởng phòng không thấy CCCD, lương, hợp đồng;
     // công nhân chỉ thấy tên + xưởng + công đoạn của người cùng xưởng (hồ sơ đầy đủ chỉ của chính mình).
     var full = (me.vaiTro === 'ADMIN' || me.vaiTro === 'HR');
-    var coBan = ['MaNV', 'HoTen', 'MaXuong', 'ChucDanh', 'TrangThai', 'NgayVaoLam', 'CongDoanLamDuoc', 'NamSinh', 'laTP'];
+    var coBan = ['MaNV', 'HoTen', 'MaXuong', 'ChucDanh', 'TrangThai', 'NgayVaoLam', 'CongDoanLamDuoc', 'MucKyNang', 'NamSinh', 'laTP'];
     var lienHe = ['DienThoai', 'DiaChi', 'SdtKhanCap'];
     var ns = nhanSuGomTP_();
     if (me.vaiTro === 'TP' || me.vaiTro === 'CN') ns = ns.filter(function(x) { return x.MaXuong === me.xuong || x.MaNV === me.maNV; });
@@ -942,6 +943,10 @@ function duyetSanLuong(token, maDong, dongY, soLoiSua, sua) {
     if (soLoi > slLamRa) return sach_({ ok: false, msg: 'Số lỗi không thể lớn hơn số làm ra (' + slLamRa + ').' });
 
     // Ghi các giá trị đã sửa (nếu có thay đổi)
+    if (slLamRa !== Number(r.SoLuongLamRa) || soLoi !== tach.soLoi)   // A4: lưu số công nhân khai trước khi TP sửa (soát khâu duyệt)
+      ghiCotNeuCo_('NhatKySanXuat', r._row, 'SLGoc', Number(r.SoLuongLamRa) + '/' + tach.soLoi);
+    var tcD = Math.max(0, Math.min(Math.round(Number(sua.tangCa) || 0), slLamRa));   // A7: phần làm trong giờ tăng ca
+    if (tcD || Number(r.SLTangCa)) ghiCotNeuCo_('NhatKySanXuat', r._row, 'SLTangCa', tcD);
     if (slLamRa !== Number(r.SoLuongLamRa)) suaO_('NhatKySanXuat', r._row, 'SoLuongLamRa', slLamRa);
     if (gioLam !== Number(r.GioLam)) suaO_('NhatKySanXuat', r._row, 'GioLam', gioLam);
     // Đã bỏ giờ dừng — luôn ghi 0
@@ -1015,6 +1020,10 @@ function duyetNhomNguoi(token, maDongList, gioDung, lyDo, suaList) {
     if (soLoi < 0) soLoi = 0;
     if (soLoi > slLamRa) soLoi = slLamRa;
 
+    if (slLamRa !== Number(r.SoLuongLamRa) || soLoi !== tach.soLoi)   // A4: lưu số công nhân khai trước khi TP sửa (soát khâu duyệt)
+      ghiCotNeuCo_('NhatKySanXuat', r._row, 'SLGoc', Number(r.SoLuongLamRa) + '/' + tach.soLoi);
+    var tcD = Math.max(0, Math.min(Math.round(Number(sua.tangCa) || 0), slLamRa));   // A7: phần làm trong giờ tăng ca
+    if (tcD || Number(r.SLTangCa)) ghiCotNeuCo_('NhatKySanXuat', r._row, 'SLTangCa', tcD);
     if (slLamRa !== Number(r.SoLuongLamRa)) suaO_('NhatKySanXuat', r._row, 'SoLuongLamRa', slLamRa);
     if (gioLam !== Number(r.GioLam)) suaO_('NhatKySanXuat', r._row, 'GioLam', gioLam);
 
@@ -2331,6 +2340,7 @@ function chayPhatNhapTre() {
       if (daPhat[key] || daNhap[key]) return;                  // đã phạt / đã nhập
       if (!xuongDD[nv.MaXuong+'|'+ng]) return;                 // xưởng không đi làm ngày đó
       if (laNgayLe_(ng, nv.MaXuong)) return;                   // ngày lễ / xưởng được miễn
+      if (dangHocViec_(nv.MaNV, ng)) return;                   // đang học việc (tháng đầu): không phạt (chủ dự án 18/10)
       for (var i=0;i<ndh.length;i++){ if (ndh[i].tu<=ng && ng<=ndh[i].den) return; }   // nghỉ dài hạn
       var kh = dt.idxCC ? dt.idxCC[key] : null;
       if (kh && gioCoMat_(kh) <= 0) return;                    // nghỉ cả ngày theo điểm danh
@@ -3022,6 +3032,27 @@ function taoSheetKPIThang_() {
 }
 
 /* ----- Các hàm tính KPI phía server (port từ frontend) ----- */
+/* ===== LỊCH SỬ ĐỊNH MỨC (18/10) ===== */
+var LSDM_SHEET = 'LichSuDinhMuc', LSDM_COT = ['MaCD', 'DinhMucGio', 'TuNgay', 'DenNgay', 'ThoiDiem'];
+function luuLichSuDM_(row, moi) {
+  try {
+    var cu = doc_('DinhMuc').filter(function(x) { return x._row === row; })[0];
+    if (!cu || soVN_(cu.DinhMucGio) === soVN_(moi) || !(soVN_(cu.DinhMucGio) > 0)) return;
+    var homQua = congNgay_(homNayVN_(), -1), tu = cu.HieuLucTu ? ngayVN_(cu.HieuLucTu) : '';
+    if (tu && tu > homQua) return;                       // định mức cũ mới đặt hôm nay -> chưa áp dụng ngày nào, khỏi lưu
+    var sh = ss_().getSheetByName(LSDM_SHEET);
+    if (!sh) { sh = ss_().insertSheet(LSDM_SHEET); sh.getRange(1, 1, 1, LSDM_COT.length).setValues([LSDM_COT]).setFontWeight('bold'); sh.setFrozenRows(1); }
+    sh.appendRow([cu.MaCD, soVN_(cu.DinhMucGio), tu ? "'" + tu : '', "'" + homQua, new Date()]);
+    xoaCache_(LSDM_SHEET);
+  } catch (e) {}
+}
+/* Định mức của công đoạn maCD áp dụng NGÀY ngay ('yyyy-MM-dd') */
+function dmNgay_(dt, maCD, ngay) {
+  var ls = dt.lsDM && dt.lsDM[maCD];
+  if (ls && ngay) for (var i = 0; i < ls.length; i++) if (ngay <= ls[i].den && (!ls[i].tu || ngay >= ls[i].tu)) return ls[i].gio;
+  return dt.idxDM ? (dt.idxDM[maCD] || 0) : dm_(maCD, dt.dinhmuc);
+}
+
 function dm_(maCD, dinhmuc) {
   var r = dinhmuc.filter(function(x){ return x.MaCD === maCD; })[0];
   return r ? soVN_(r.DinhMucGio) : 0;
@@ -3084,9 +3115,11 @@ function kpiThang_(maNV, kyThang, dt) {
     mauSo += gioMat;                                    // ngày công -> luôn cộng giờ có mặt vào mẫu số
     var rs = theoNgay[ngayR] || [];                     // nếu rỗng: đi làm nhưng không khai -> SL 0
     rs.forEach(function(r){
-      var d = dt.idxDM ? (dt.idxDM[r.MaCD] || 0) : dm_(r.MaCD, dt.dinhmuc);
+      var d = dmNgay_(dt, r.MaCD, ngayR);
       var n = dt.idxLoi ? (dt.idxLoi[maNV+'|'+ngayR+'|'+r.MaCD] || 0) : ngLoi_(r, dt.kcs);
       var dat = Number(r.SoLuongLamRa) - n;
+      var tcR = Math.min(Number(r.SLTangCa) || 0, Number(r.SoLuongLamRa) || 0);   // sản lượng làm trong giờ tăng ca: không tính KPI (chủ dự án 18/10)
+      if (tcR > 0) dat = Math.max(0, dat - tcR);
       if (d > 0) gc += dat / d;
       sl += Number(r.SoLuongLamRa); ng2 += n;
     });
@@ -3104,8 +3137,8 @@ function kpiThang_(maNV, kyThang, dt) {
   // Vi phạm nề nếp/chuyên cần: dùng bản ghi trong tháng (nếu ViPham có cột Ngay)
   var vpNguoi = dt.idxVP ? (dt.idxVP[maNV] || []) : dt.vipham.filter(function(v){ return v.MaNV === maNV; });
   var vpThang = vpNguoi.filter(function(v){
-    var ng = ngayVN_(v.Ngay);
-    return (!ng || ng.slice(0,7) === kyThang);
+    var ng = ngayVN_(v.Ngay) || ngayVN_(v.ThoiDiemGhi);   // A2 (18/10): thiếu ngày thì lấy ngày ghi, không trừ lặp mọi tháng
+    return !!ng && ng.slice(0,7) === kyThang;
   });
   var vtt = diemNeNep_(maNV, 'ChuyenCan', dt.dmvp, vpThang);
   var vat = diemNeNep_(maNV, 'NeNep', dt.dmvp, vpThang);
@@ -3125,6 +3158,31 @@ function trongSoKy_(ds, ky, macDinh) {
     if (!k || !ky || k <= ky) chon = t;
   });
   return chon || (ds && ds[0]) || macDinh || TRONG_SO_MAC_DINH;
+}
+
+/* ===== HỌC VIỆC (18/10): HOC_VIEC_THANG tháng kể từ ngày vào làm ===== */
+var HOC_VIEC_THANG = 1, __NGAY_VAO = null;
+function ngayVaoLam_(maNV) {
+  if (!__NGAY_VAO) { __NGAY_VAO = {}; doc_('NhanSu').forEach(function(x){ if (x.NgayVaoLam) __NGAY_VAO[String(x.MaNV)] = ngayVN_(x.NgayVaoLam); }); }
+  return __NGAY_VAO[String(maNV)] || '';
+}
+/* Ngày hết học việc ('yyyy-MM-dd', '' nếu không rõ ngày vào làm) */
+function hetHocViec_(maNV) {
+  var v = ngayVaoLam_(maNV); if (!v) return '';
+  var p = v.split('-'), y = Number(p[0]), m = Number(p[1]) + HOC_VIEC_THANG, d = Number(p[2]);
+  while (m > 12) { m -= 12; y++; }
+  var cuoi = new Date(Date.UTC(y, m, 0)).getUTCDate();
+  return y + '-' + ('0' + m).slice(-2) + '-' + ('0' + Math.min(d, cuoi)).slice(-2);
+}
+function dangHocViec_(maNV, ngay) { var h = hetHocViec_(maNV); return !!h && ngay < h; }
+/* Tháng ky ('yyyy-MM') tính là học việc nếu tới giữa tháng vẫn còn học việc */
+function laHocViecThang_(maNV, ky) { var h = hetHocViec_(maNV); return !!h && h > ky + '-15' && ngayVaoLam_(maNV) <= ky + '-31'; }
+function loaiCo_(maNV, ky, tong) { return laHocViecThang_(maNV, ky) ? 'Học việc' : loaiKPI_(tong); }
+/* Xếp hạng trong xưởng, bỏ người đang học việc (hạng 0) */
+function sapXepHangHV_(arr, ky) {
+  arr.forEach(function(o){ if (laHocViecThang_(o.MaNV, ky)) o.hang = 0; });
+  sapXepHang_(arr.filter(function(o){ return !laHocViecThang_(o.MaNV, ky); }));
+  return arr;
 }
 
 function loaiKPI_(v) {
@@ -3170,6 +3228,13 @@ function docDuLieuKPI_(canLuuTru) {
   // Định mức: MaCD -> DinhMucGio
   dt.idxDM = {};
   dt.dinhmuc.forEach(function(x){ dt.idxDM[x.MaCD] = soVN_(x.DinhMucGio); });
+  // Định mức cũ đã thay (A1, 18/10): MaCD -> [{tu, den, gio}] xếp theo ngày kết thúc
+  dt.lsDM = {};
+  (ss_().getSheetByName(LSDM_SHEET) ? doc_(LSDM_SHEET) : []).forEach(function(x){
+    var den = ngayVN_(x.DenNgay); if (!den) return;
+    (dt.lsDM[x.MaCD] = dt.lsDM[x.MaCD] || []).push({ tu: x.TuNgay ? ngayVN_(x.TuNgay) : '', den: den, gio: soVN_(x.DinhMucGio) });
+  });
+  Object.keys(dt.lsDM).forEach(function(k){ dt.lsDM[k].sort(function(a, b){ return a.den < b.den ? -1 : 1; }); });
   // Lỗi KCS: "MaNV|ngày|MaCD" -> tổng SoLuongKhongDat
   dt.idxLoi = {};
   dt.kcs.forEach(function(k){
@@ -3286,12 +3351,12 @@ function chotThangLoi_(ky, xuongLoc, nguoiChot) {
   // Xếp hạng TRONG TỪNG XƯỞNG (hạng theo xưởng)
   var theoXuong = {};
   ketqua.forEach(function(o){ (theoXuong[o.MaXuong] = theoXuong[o.MaXuong] || []).push(o); });
-  Object.keys(theoXuong).forEach(function(mx){ sapXepHang_(theoXuong[mx]); });
+  Object.keys(theoXuong).forEach(function(mx){ sapXepHangHV_(theoXuong[mx], ky); });
 
   var now = new Date();
   var rows = ketqua.map(function(o){
     return [ ky, o.MaNV, o.HoTen, o.MaXuong, r2_(o.sl), r2_(o.cl), r2_(o.tt), r2_(o.at),
-             r2_(o.tong), loaiKPI_(o.tong), o.spl, r2_(o.gl), r2_(o.gd), o.hang, now, nguoiChot||'Hệ thống' ];
+             r2_(o.tong), loaiCo_(o.MaNV, ky, o.tong), o.spl, r2_(o.gl), r2_(o.gd), o.hang, now, nguoiChot||'Hệ thống' ];
   });
 
   // Ghi: khóa, rồi thay các dòng cùng kỳ (và cùng xưởng nếu có lọc) bằng dòng mới — một lượt
@@ -3468,8 +3533,9 @@ function layKPIKyGoc_(token, kieu, giaTri, maXuong) {
   // Xếp hạng theo xưởng với tie-break
   var theoXuong = {};
   ds.forEach(function(o){ (theoXuong[o.MaXuong]=theoXuong[o.MaXuong]||[]).push(o); });
-  Object.keys(theoXuong).forEach(function(mx){ sapXepHang_(theoXuong[mx]); });
-  ds.forEach(function(o){ o.loai = loaiKPI_(o.tong); });
+  var kyCuoi = thangCanLay[thangCanLay.length - 1] || kyVN_();
+  Object.keys(theoXuong).forEach(function(mx){ sapXepHangHV_(theoXuong[mx], kyCuoi); });
+  ds.forEach(function(o){ o.loai = loaiCo_(o.MaNV, kyCuoi, o.tong); o.hocViec = laHocViecThang_(o.MaNV, kyCuoi); });
 
   return sach_({ ok:true, kieu:kieu, giaTri:giaTri, tamTinh:tamTinh, ds:ds });
 }
@@ -3527,7 +3593,7 @@ function tinhThangTrucTiep_(thg, xuongLoc) {
     if (k) out.push({
       Ky:thg, MaNV:x.MaNV, HoTen:x.HoTen, MaXuong:x.MaXuong,
       HieuSuatSL:r2_(k.sl), ChatLuong:r2_(k.cl), TuanThu:r2_(k.tt), AnToan:r2_(k.at),
-      TongKPI:r2_(k.tong), Loai:loaiKPI_(k.tong), TongSanLuong:k.spl
+      TongKPI:r2_(k.tong), Loai:loaiCo_(x.MaNV, thg, k.tong), TongSanLuong:k.spl
     });
   });
   return out;
@@ -3599,7 +3665,8 @@ function layLichSuKPIGoc_(token, maNV) {
   dt.nhatky.filter(function(r){ return r.MaNV===maNV && String(r.TrangThai).trim()==='Đã chốt'; })
     .forEach(function(r){
       var day = ngayVN_(r.Ngay);
-      var d = dm_(r.MaCD, dt.dinhmuc), nl = ngLoi_(r, dt.kcs), dat = Number(r.SoLuongLamRa)-nl;
+      var d = dmNgay_(dt, r.MaCD, day), nl = ngLoi_(r, dt.kcs), dat = Number(r.SoLuongLamRa)-nl;
+      if (Number(r.SLTangCa) > 0) dat = Math.max(0, dat - Math.min(Number(r.SLTangCa), Number(r.SoLuongLamRa) || 0));
       var b = byday[day] || (byday[day]={gc:0,gcm:0,sl:0});
       if (d>0) b.gc += dat/d;
       b.sl += Number(r.SoLuongLamRa);
@@ -4696,7 +4763,7 @@ function phanTichDinhMucGoc_(token, kieu, giaTri) {
     if (String(r.TrangThai).trim() !== 'Đã chốt') return;
     var ng = ngayVN_(r.Ngay);
     if (!trongThang(ng)) return;
-    var d = dt.idxDM[r.MaCD] || 0;
+    var d = dmNgay_(dt, r.MaCD, ng);
     if (d <= 0) return;                        // chưa có định mức -> bỏ
     var loi = dt.idxLoi[r.MaNV+'|'+ng+'|'+r.MaCD] || 0;
     var dat = Number(r.SoLuongLamRa) - loi;
@@ -5505,8 +5572,8 @@ function napPhan(token, phan) {
    ===================================================================== */
 var BC_THU_MUC = 'Báo cáo KPI hằng tháng';
 var BC_SHEET_NHAN = 'NguoiNhanBaoCao';
-var BC_LOAI = ['A+','A','B','C','D'];
-var BC_MAU_LOAI = { 'A+':'#1e7f5c', 'A':'#3aa57a', 'B':'#d29b2a', 'C':'#e07b39', 'D':'#c0392b' };
+var BC_LOAI = ['A+','A','B','C','D','Học việc'];
+var BC_MAU_LOAI = { 'A+':'#1e7f5c', 'A':'#3aa57a', 'B':'#d29b2a', 'C':'#e07b39', 'D':'#c0392b', 'Học việc':'#7d868c' };
 
 function bcSo_(v, n) {
   if (v === null || v === undefined || v === '' || isNaN(v)) return '–';
@@ -5543,8 +5610,8 @@ function bcKpiKy_(ky) {
              at:Number(o.AnToan), tong:Number(o.TongKPI), spl:Number(o.TongSanLuong||0) };
   });
   var theoXuong = {};
-  out.forEach(function(o){ o.loai = loaiKPI_(o.tong); (theoXuong[o.MaXuong] = theoXuong[o.MaXuong] || []).push(o); });
-  Object.keys(theoXuong).forEach(function(mx){ sapXepHang_(theoXuong[mx]); });
+  out.forEach(function(o){ o.loai = loaiCo_(o.MaNV, ky, o.tong); (theoXuong[o.MaXuong] = theoXuong[o.MaXuong] || []).push(o); });
+  Object.keys(theoXuong).forEach(function(mx){ sapXepHangHV_(theoXuong[mx], ky); });
   return { ds:out, chinhThuc:chinhThuc };
 }
 
@@ -5592,7 +5659,7 @@ function bcDuLieu_(ky) {
       if (String(r.TrangThai).trim() !== 'Đã chốt') return;
       var ng = ngayVN_(r.Ngay); if (ng.slice(0,7) !== thang) return;
       var mx = xuongCD[r.MaCD] || dt.idxXuongNV[r.MaNV] || ''; dong++;
-      var sl = Number(r.SoLuongLamRa) || 0, d = dt.idxDM[r.MaCD] || 0, gio = soVN_(r.GioLam) || 0;
+      var sl = Number(r.SoLuongLamRa) || 0, d = dmNgay_(dt, r.MaCD, ng), gio = soVN_(r.GioLam) || 0;
       var kl = r.MaNV + '|' + ng + '|' + r.MaCD, loi = daTinhLoi[kl] ? 0 : (dt.idxLoi[kl] || 0); daTinhLoi[kl] = 1;
       var x = X[mx] || (X[mx] = { sl:0, loi:0, gc:0, gio:0, ngay:{}, nguoi:{} });
       x.sl += sl; x.loi += loi; x.ngay[ng] = (x.ngay[ng] || 0) + sl; x.nguoi[r.MaNV] = 1;
@@ -6601,4 +6668,239 @@ function luuBoTriMay(token, json) {
     try { var shLog = ss_().getSheetByName('NhatKyThaoTac'); if (shLog) shLog.appendRow([new Date(), me.tk, 'Lưu bố trí máy 3D', tom, '', '']); } catch (e) {}
     return sach_({ ok: true, luc: luc, nguoi: me.ten || me.tk, tom: tom });
   } finally { lock.releaseLock(); }
+}
+
+/* ================== VẬN HÀNH – NHẮC HẠN, SOÁT DUYỆT, ĐỊNH MỨC LỆCH, HỘI NHẬP, KỸ NĂNG (tư vấn 18/10) ==================
+   Nguồn: kpi-app/tests/van-hanh/van-hanh.gs (nối vào Code.gs bởi tests/van-hanh/va-van-hanh.py). Danh sách: kpi-app/TU-VAN-VAN-HANH.md. */
+
+/* ----- Ngày còn thiếu sản lượng, CHƯA quá hạn (cùng điều kiện với chayPhatNhapTre) -----
+   Trả { MaNV: [{ngay, han}] } – han = ngày làm việc thứ 3 (hạn 17:00). */
+function thieuNhap_(dsNV, homNay) {
+  var gioNay = gioVN_(), maQL = mapQuanLy_();
+  var xuongDD = {}, daNhap = {}, cc = {}, ndh = {}, daPhat = {};
+  docAnToan_('XacNhanDiemDanh').forEach(function(r){ xuongDD[r.MaXuong + '|' + ngayVN_(r.Ngay)] = 1; });
+  doc_('NhatKySanXuat').forEach(function(r){ daNhap[r.MaNV + '|' + ngayVN_(r.Ngay)] = 1; });
+  docAnToan_('DiemDanhNghi').forEach(function(r){ cc[r.MaNV + '|' + ngayVN_(r.Ngay)] = khTuBanGhi_(r); });
+  docAnToan_('NghiDaiHan').forEach(function(r){ (ndh[r.MaNV] = ndh[r.MaNV] || []).push({ tu: ngayVN_(r.TuNgay), den: ngayVN_(r.DenNgay) }); });
+  docAnToan_('PhatNhapTre').forEach(function(p){ daPhat[p.MaNV + '|' + ngayVN_(p.Ngay)] = 1; });
+  var ngays = [];
+  for (var b = 0; b <= 14; b++) { var n0 = congNgay_(homNay, -b); if (thuCua_(n0) !== 0) ngays.push(n0); }
+  var out = {};
+  dsNV.forEach(function(nv){
+    if (!nv || String(nv.TrangThai).trim() === 'Nghỉ việc' || maQL[String(nv.MaNV).trim()]) return;
+    ngays.forEach(function(ng){
+      var k = nv.MaNV + '|' + ng;
+      if (daNhap[k] || daPhat[k] || !xuongDD[nv.MaXuong + '|' + ng] || laNgayLe_(ng, nv.MaXuong)) return;
+      var d = ndh[nv.MaNV] || [];
+      for (var i = 0; i < d.length; i++) if (d[i].tu <= ng && ng <= d[i].den) return;
+      if (cc[k] && gioCoMat_(cc[k]) <= 0) return;
+      var han = themNgayLamViec_(ng, 2);
+      if (homNay > han || (homNay === han && gioNay >= 17)) return;      // đã quá hạn -> việc của chayPhatNhapTre
+      (out[nv.MaNV] = out[nv.MaNV] || []).push({ ngay: ng, han: han });
+    });
+  });
+  Object.keys(out).forEach(function(m){ out[m].sort(function(a, b){ return a.han < b.han ? -1 : a.han > b.han ? 1 : (a.ngay < b.ngay ? -1 : 1); }); });
+  return out;
+}
+
+/* Tỷ lệ nhập đúng hạn của một xưởng trong 7 ngày làm việc gần nhất đã qua hạn (để khen cả xưởng, C6) */
+function tyLeDungHan_(maXuong, homNay) {
+  var ngays = [], d = homNay;
+  for (var i = 0; i < 40 && ngays.length < 7; i++) {
+    d = congNgay_(d, -1);
+    if (thuCua_(d) === 0) continue;
+    var han = themNgayLamViec_(d, 2);
+    if (han < homNay) ngays.push(d);
+  }
+  var coDD = {}; docAnToan_('XacNhanDiemDanh').forEach(function(r){ if (r.MaXuong === maXuong) coDD[ngayVN_(r.Ngay)] = 1; });
+  ngays = ngays.filter(function(n){ return coDD[n] && !laNgayLe_(n, maXuong); });
+  if (!ngays.length) return null;
+  var maQL = mapQuanLy_();
+  var ns = doc_('NhanSu').filter(function(x){ return x.MaXuong === maXuong && String(x.TrangThai).trim() !== 'Nghỉ việc' && !maQL[String(x.MaNV).trim()]; });
+  if (!ns.length) return null;
+  var tre = 0, ngaySet = {};
+  ngays.forEach(function(n){ ngaySet[n] = 1; });
+  docAnToan_('PhatNhapTre').forEach(function(p){ if (p.MaXuong === maXuong && ngaySet[ngayVN_(p.Ngay)]) tre++; });
+  var tong = ns.length * ngays.length;
+  return { tyLe: Math.round(Math.max(0, tong - tre) / tong * 100), soNgay: ngays.length };
+}
+
+/* C1: công nhân xem ngày còn thiếu sản lượng của mình (chỉ những ngày chưa quá hạn) */
+function hanNhapCuaToi(token) {
+  var me = docPhien_(token);
+  if (!me) return sach_({ ok: false, hetHan: true, msg: 'Phiên đăng nhập đã hết hạn.' });
+  if (me.vaiTro !== 'CN' || !me.maNV) return sach_({ ok: true, ds: [] });
+  var homNay = homNayVN_();
+  var nv = nhanSuGomTP_().filter(function(x){ return x.MaNV === me.maNV; })[0];
+  var ds = nv ? (thieuNhap_([nv], homNay)[me.maNV] || []) : [];
+  var tl = me.xuong ? tyLeDungHan_(me.xuong, homNay) : null;
+  return sach_({ ok: true, ds: ds, homNay: homNay, hocViec: dangHocViec_(me.maNV, homNay), hetHocViec: hetHocViec_(me.maNV),
+    xuong: tl ? { ten: tenXuong_(me.xuong), tyLe: tl.tyLe, soNgay: tl.soNgay } : null });
+}
+
+/* C2: trưởng/phó phòng xem người trong xưởng còn thiếu sản lượng, hạn tới trong 1 ngày làm việc tới */
+function canNhacXuong(token) {
+  var me = docPhien_(token);
+  if (!me) return sach_({ ok: false, hetHan: true, msg: 'Phiên đăng nhập đã hết hạn.' });
+  if (me.vaiTro !== 'TP' || !me.xuong) return sach_({ ok: true, ds: [] });
+  var homNay = homNayVN_(), moc = themNgayLamViec_(homNay, 1);
+  var ns = nhanSuGomTP_().filter(function(x){ return x.MaXuong === me.xuong; });
+  var thieu = thieuNhap_(ns, homNay), ten = {};
+  ns.forEach(function(x){ ten[x.MaNV] = x.HoTen; });
+  var ds = [];
+  Object.keys(thieu).forEach(function(m){
+    var gan = thieu[m].filter(function(t){ return t.han <= moc; });
+    if (gan.length) ds.push({ MaNV: m, HoTen: ten[m] || m, ngay: gan.map(function(t){ return t.ngay; }), han: gan[0].han, hocViec: dangHocViec_(m, homNay) });
+  });
+  ds.sort(function(a, b){ return a.han < b.han ? -1 : a.han > b.han ? 1 : String(a.HoTen).localeCompare(String(b.HoTen)); });
+  var tl = tyLeDungHan_(me.xuong, homNay);
+  return sach_({ ok: true, ds: ds, homNay: homNay, xuong: tl ? { ten: tenXuong_(me.xuong), tyLe: tl.tyLe, soNgay: tl.soNgay } : null });
+}
+
+/* A4 + A6: bảng soát khâu duyệt + định mức lệch – ban điều hành, trợ lý */
+function soatDuyet(token) {
+  var me = docPhien_(token);
+  if (!me) return sach_({ ok: false, hetHan: true, msg: 'Phiên đăng nhập đã hết hạn.' });
+  if (me.vaiTro !== 'ADMIN' && me.vaiTro !== 'TL') return sach_({ ok: false, msg: 'Chỉ ban điều hành xem được.' });
+  return nho_('soatDuyet', [], function() { return soatDuyetGoc_(); });
+}
+function soatDuyetGoc_() {
+  var homNay = homNayVN_(), tu30 = congNgay_(homNay, -30), tu7 = congNgay_(homNay, -7), bayGio = new Date().getTime();
+  var kyNay = homNay.slice(0, 7), ky = [kyTruoc_(kyNay)]; ky.unshift(kyTruoc_(ky[0])); ky.unshift(kyTruoc_(ky[0]));
+  var dt = docDuLieuKPI_(canLuuTru_(ky));
+  var cd = {}; doc_('CongDoan').forEach(function(c){ cd[c.MaCD] = c; });
+  var ten = {}; nhanSuGomTP_().forEach(function(x){ ten[x.MaNV] = x.HoTen; });
+  var X = {}, mau = [], hs = {};
+  var x_ = function(mx){ return X[mx] || (X[mx] = { MaXuong: mx, TenXuong: tenXuong_(mx), cho: 0, choLau: 0, duyet: 0, sua: 0, chotCa: 0 }); };
+  dt.nhatky.forEach(function(r){
+    var c = cd[r.MaCD]; if (!c) return;
+    var tt = String(r.TrangThai).trim(), ng = ngayVN_(r.Ngay);
+    if (tt === 'Chờ duyệt') {
+      var x = x_(c.MaXuong); x.cho++;
+      var t = r.ThoiDiemNhap ? new Date(r.ThoiDiemNhap).getTime() : NaN;
+      if ((!isNaN(t) && bayGio - t > 24 * 3600e3) || ng < congNgay_(homNay, -1)) x.choLau++;
+      return;
+    }
+    if (tt !== 'Đã chốt') return;
+    if (ng >= tu30) {
+      var y = x_(c.MaXuong); y.duyet++;
+      if (String(r.SLGoc || '').trim()) y.sua++;
+      if (String(r.NguoiNhap || '').indexOf('→ duyệt') < 0) y.chotCa++;
+      if (ng >= tu7) mau.push(r);
+    }
+    // A6: hiệu suất từng dòng theo định mức ngày đó, gom theo công đoạn + tháng
+    var thg = ng.slice(0, 7), gio = soVN_(r.GioLam) || 0, d = dmNgay_(dt, r.MaCD, ng);
+    if (ky.indexOf(thg) < 0 || !(gio > 0) || !(d > 0)) return;
+    var sl = (Number(r.SoLuongLamRa) || 0) - Math.min(Number(r.SLTangCa) || 0, Number(r.SoLuongLamRa) || 0);
+    ((hs[r.MaCD] = hs[r.MaCD] || {})[thg] = hs[r.MaCD][thg] || []).push(sl / (d * gio) * 100);
+  });
+  // 5 dòng ngẫu nhiên đã duyệt trong 7 ngày để ban điều hành đối chiếu
+  var chon = [];
+  for (var i = 0; i < 5 && mau.length; i++) chon.push(mau.splice(Math.floor(Math.random() * mau.length), 1)[0]);
+  var trungVi = function(a){ a = a.slice().sort(function(p, q){ return p - q; }); var m = Math.floor(a.length / 2); return a.length % 2 ? a[m] : (a[m - 1] + a[m]) / 2; };
+  var lech = [];
+  Object.keys(hs).forEach(function(m){
+    var tv = ky.map(function(k){ var a = hs[m][k] || []; return a.length >= 5 ? Math.round(trungVi(a)) : null; });
+    if (tv.some(function(v){ return v === null; })) return;
+    var cao = tv.every(function(v){ return v > 115; }), thap = tv.every(function(v){ return v < 80; });
+    if (cao || thap) lech.push({ MaCD: m, TenCD: (cd[m] || {}).TenCD || m, MaXuong: (cd[m] || {}).MaXuong || '', TenXuong: tenXuong_((cd[m] || {}).MaXuong || ''),
+      dm: dt.idxDM[m] || 0, ky: ky, trungVi: tv, huong: cao ? 'cao' : 'thap' });
+  });
+  lech.sort(function(a, b){ return Math.abs(b.trungVi[2] - 100) - Math.abs(a.trungVi[2] - 100); });
+  return sach_({ ok: true, homNay: homNay,
+    xuong: Object.keys(X).map(function(k){ return X[k]; }).sort(function(a, b){ return b.choLau - a.choLau || String(a.TenXuong).localeCompare(String(b.TenXuong)); }),
+    mau: chon.map(function(r){ var c = cd[r.MaCD] || {}; var tl = tachLoi_(r.GhiChu);
+      return { ngay: ngayVN_(r.Ngay), MaNV: r.MaNV, HoTen: ten[r.MaNV] || r.MaNV, TenXuong: tenXuong_(c.MaXuong || ''), TenCD: c.TenCD || r.MaCD,
+        SL: Number(r.SoLuongLamRa) || 0, tangCa: Number(r.SLTangCa) || 0, slGoc: String(r.SLGoc || ''), nguoi: String(r.NguoiNhap || '') }; }),
+    lech: lech.slice(0, 15) });
+}
+
+/* ===== D4. ĐÓN NGƯỜI MỚI: danh sách việc cho nhân sự / trưởng phòng =====
+   Mục tự động lấy từ dữ liệu; mục "tay" lưu ở sheet HoiNhap (MaNV, Muc, NguoiDanh, ThoiDiem). */
+var HN_SHEET = 'HoiNhap', HN_COT = ['MaNV', 'Muc', 'NguoiDanh', 'ThoiDiem'], HN_SO_NGAY = 45;
+var HN_MUC = [
+  ['phieu', 'Đã giao phiếu tài khoản (mật khẩu tạm)', 'tay'],
+  ['dangnhap', 'Đã đăng nhập lần đầu', 'tu'],
+  ['doimk', 'Đã đổi mật khẩu riêng', 'tu'],
+  ['congdoan', 'Đã giao công đoạn làm được', 'tu'],
+  ['nhapdau', 'Lần nhập sản lượng đầu đã được duyệt', 'tu'],
+  ['com', 'Đã đăng ký cơm trưa', 'tu'],
+  ['kem', 'Có người kèm cặp 3 ngày đầu', 'tay'],
+  ['ngay30', 'Trưởng phòng xác nhận đã tự nhập được (ngày 30)', 'tay']
+];
+function hnSheet_() {
+  var sh = ss_().getSheetByName(HN_SHEET);
+  if (!sh) { sh = ss_().insertSheet(HN_SHEET); sh.getRange(1, 1, 1, HN_COT.length).setValues([HN_COT]).setFontWeight('bold'); sh.setFrozenRows(1); }
+  return sh;
+}
+function hnDuoc_(me) { return !!me && ['ADMIN', 'HR', 'TP', 'TL'].indexOf(me.vaiTro) >= 0; }
+function layHoiNhap(token) {
+  var me = docPhien_(token);
+  if (!me) return sach_({ ok: false, hetHan: true, msg: 'Phiên đăng nhập đã hết hạn.' });
+  if (!hnDuoc_(me)) return sach_({ ok: true, ds: [] });
+  var homNay = homNayVN_(), tu = congNgay_(homNay, -HN_SO_NGAY);
+  var ns = doc_('NhanSu').filter(function(x){
+    var v = x.NgayVaoLam ? ngayVN_(x.NgayVaoLam) : '';
+    return v && v >= tu && v <= homNay && String(x.TrangThai).trim() !== 'Nghỉ việc' && (me.vaiTro !== 'TP' || x.MaXuong === me.xuong);
+  });
+  if (!ns.length) return sach_({ ok: true, ds: [], muc: HN_MUC });
+  var tk = {}; doc_('TaiKhoan').forEach(function(t){ if (t.MaNV) tk[String(t.MaNV).toUpperCase()] = t; });
+  var nk = {}; doc_('NhatKySanXuat').forEach(function(r){ if (String(r.TrangThai).trim() === 'Đã chốt') nk[r.MaNV] = 1; });
+  var com = {}; docAnToan_('DangKyCom').forEach(function(r){ com[String(r.TenDangNhap).toLowerCase()] = 1; });
+  var tay = {}; (ss_().getSheetByName(HN_SHEET) ? doc_(HN_SHEET) : []).forEach(function(r){ tay[r.MaNV + '|' + r.Muc] = { ai: r.NguoiDanh, luc: r.ThoiDiem }; });
+  var ds = ns.map(function(x){
+    var t = tk[String(x.MaNV).toUpperCase()];
+    var tu_ = {
+      dangnhap: !!(t && String(t.LanDangNhapCuoi || '').trim()),
+      doimk: !!(t && String(t.DoiMatKhauLanDau).trim() === 'Không'),
+      congdoan: !!String(x.CongDoanLamDuoc || '').trim(),
+      nhapdau: !!nk[x.MaNV],
+      com: !!(t && com[String(t.TenDangNhap).toLowerCase()])
+    };
+    var muc = HN_MUC.map(function(m){ var v = m[2] === 'tu' ? tu_[m[0]] : !!tay[x.MaNV + '|' + m[0]]; return { ma: m[0], xong: v, tay: m[2] === 'tay', ai: (tay[x.MaNV + '|' + m[0]] || {}).ai || '' }; });
+    return { MaNV: x.MaNV, HoTen: x.HoTen, MaXuong: x.MaXuong, TenXuong: tenXuong_(x.MaXuong), NgayVaoLam: ngayVN_(x.NgayVaoLam),
+      soNgay: Math.round((new Date(homNay).getTime() - new Date(ngayVN_(x.NgayVaoLam)).getTime()) / 864e5),
+      muc: muc, xong: muc.filter(function(m){ return m.xong; }).length };
+  }).sort(function(a, b){ return a.NgayVaoLam < b.NgayVaoLam ? 1 : -1; });
+  return sach_({ ok: true, ds: ds, muc: HN_MUC, sua: me.vaiTro !== 'TL' });
+}
+function danhDauHoiNhap(token, maNV, muc, co) {
+  var me = docPhien_(token);
+  if (!me) return sach_({ ok: false, hetHan: true, msg: 'Phiên đăng nhập đã hết hạn.' });
+  if (['ADMIN', 'HR', 'TP'].indexOf(me.vaiTro) < 0) return sach_({ ok: false, msg: 'Không có quyền.' });
+  if (!HN_MUC.some(function(m){ return m[0] === muc && m[2] === 'tay'; })) return sach_({ ok: false, msg: 'Mục không đánh dấu tay được.' });
+  var nv = doc_('NhanSu').filter(function(x){ return x.MaNV === maNV; })[0];
+  if (!nv) return sach_({ ok: false, msg: 'Không tìm thấy nhân viên.' });
+  if (me.vaiTro === 'TP' && nv.MaXuong !== me.xuong) return sach_({ ok: false, msg: 'Nhân viên không thuộc xưởng của bạn.' });
+  khoa_();
+  var sh = hnSheet_();
+  var cu = doc_(HN_SHEET).filter(function(r){ return r.MaNV === maNV && r.Muc === muc; });
+  if (co && !cu.length) them_(HN_SHEET, { MaNV: maNV, Muc: muc, NguoiDanh: me.ten, ThoiDiem: new Date() });
+  if (!co && cu.length) xoaNhieuDong_(HN_SHEET, cu.map(function(r){ return r._row; }));
+  return sach_({ ok: true });
+}
+
+/* ===== D5. BẢNG KỸ NĂNG 3 MỨC: Đang học (có người kèm) / Làm được / Kèm được người khác =====
+   CongDoanLamDuoc giữ nguyên cách lưu (danh sách mã công đoạn). Mức nằm ở cột mới MucKyNang = JSON {MaCD: 'hoc'|'kem'};
+   không ghi = 'lam' (làm được). */
+function luuMucKyNang(token, maNV, maCD, muc) {
+  var me = docPhien_(token);
+  if (!me) return sach_({ ok: false, hetHan: true, msg: 'Phiên đăng nhập đã hết hạn.' });
+  if (['ADMIN', 'TP'].indexOf(me.vaiTro) < 0) return sach_({ ok: false, msg: 'Không có quyền.' });
+  if (['hoc', 'lam', 'kem', ''].indexOf(muc) < 0) return sach_({ ok: false, msg: 'Mức không hợp lệ.' });
+  khoa_();
+  var nv = doc_('NhanSu').filter(function(x){ return x.MaNV === maNV; })[0];
+  if (!nv) return sach_({ ok: false, msg: 'Không tìm thấy nhân viên.' });
+  if (me.vaiTro === 'TP' && nv.MaXuong !== me.xuong) return sach_({ ok: false, msg: 'Nhân viên không thuộc xưởng của bạn.' });
+  var c = doc_('CongDoan').filter(function(x){ return x.MaCD === maCD; })[0];
+  if (!c || c.MaXuong !== nv.MaXuong) return sach_({ ok: false, msg: 'Công đoạn không thuộc xưởng của nhân viên.' });
+  var ds = String(nv.CongDoanLamDuoc || '').split(/[,;]\s*/).map(function(x){ return x.trim(); }).filter(Boolean);
+  var mk = {}; try { mk = JSON.parse(nv.MucKyNang || '{}') || {}; } catch (e) { mk = {}; }
+  var co = ds.indexOf(maCD) >= 0;
+  if (muc === '') { ds = ds.filter(function(x){ return x !== maCD; }); delete mk[maCD]; }
+  else { if (!co) ds.push(maCD); if (muc === 'lam') delete mk[maCD]; else mk[maCD] = muc; }
+  suaO_('NhanSu', nv._row, 'CongDoanLamDuoc', ds.join(','));
+  ghiCotNeuCo_('NhanSu', nv._row, 'MucKyNang', Object.keys(mk).length ? JSON.stringify(mk) : '');
+  ghiLog_(me, 'Bảng kỹ năng', maNV + ' — ' + maCD + ': ' + ({ hoc: 'Đang học', lam: 'Làm được', kem: 'Kèm được', '': 'Bỏ' })[muc]);
+  return sach_({ ok: true, CongDoanLamDuoc: ds.join(','), MucKyNang: mk });
 }

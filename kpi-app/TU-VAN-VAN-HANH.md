@@ -31,7 +31,7 @@ Bốn chuyên gia (vai trò trong `.claude/agents/`) đọc mã và đề xuất
   - bỏ số 0 có sẵn, thay bằng placeholder;
   - chạm vào ô thì chọn sẵn cả số.
 - [ ] B3. **Báo lỗi ngay tại ô:** viền đỏ, đưa con trỏ vào ô sai, lời báo nằm dưới ô và không tự tắt. Thêm `aria-live` cho `#toast`.
-- [ ] B4 ⚖ **Cửa cuốn đăng nhập:** máy đã nhớ mã thì bỏ qua, hoặc mỗi ngày chỉ hiện 1 lần. Đổi chữ thành "Chạm để mở".
+- [ ] B4 **Chủ dự án chốt 18/10: cửa cuốn đăng nhập hiện 1 lần mỗi ngày** (trên mỗi máy). Đề xuất cũ – **Cửa cuốn đăng nhập:** máy đã nhớ mã thì bỏ qua, hoặc mỗi ngày chỉ hiện 1 lần. Đổi chữ thành "Chạm để mở".
 - [ ] B5 ⚖ **Đăng nhập nhanh hơn:**
   - tải dữ liệu song song với hoạt cảnh khắc tên;
   - với công nhân, rút ngắn hoặc bỏ phần khắc tên;
@@ -60,8 +60,8 @@ Bốn chuyên gia (vai trò trong `.claude/agents/`) đọc mã và đề xuất
 ## D. Đào tạo, hội nhập
 - [ ] D1. **Phiếu bàn giao tài khoản in được:** họ tên, mã, mật khẩu tạm, mã QR mở web, 4 hình các bước nhập.
   - Đi cùng việc bảo mật số 3 (mật khẩu tạm ngẫu nhiên).
-- [ ] D2 ⚖ **Học việc N ngày (đề xuất 7) không bị phạt nhập trễ.** Vẫn nhắc như bình thường.
-- [ ] D3 ⚖ **30 ngày đầu hiển thị "Học việc – đạt X% định mức"**, không xếp loại, không vào bảng so sánh.
+- [ ] D2 **Chủ dự án chốt 18/10: học việc 1 tháng** – trong tháng đầu (tính từ NgayVaoLam) không bị phạt nhập trễ. Vẫn nhắc như bình thường.
+- [ ] D3 **(học việc 1 tháng, chủ dự án 18/10)** **Tháng đầu hiển thị "Học việc – đạt X% định mức"**, không xếp loại, không vào bảng so sánh.
 - [ ] D4. **Danh sách 8 việc đón người mới cho HR/TP** (sheet `HoiNhap`), mục nào lấy được từ dữ liệu thì tự đánh dấu.
   - Thẻ "Người mới tuần này" ở tab Việc hôm nay.
 - [ ] D5. **Bảng kỹ năng 3 mức** (Đang học / Làm được / Kèm được người khác).

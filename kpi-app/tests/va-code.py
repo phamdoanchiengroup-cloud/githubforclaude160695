@@ -1345,6 +1345,8 @@ s = s.rstrip() + '\n' + io.open(os.path.join(os.path.dirname(__file__), 'bo-tri-
 
 # ---------------------------------------------------------------- bảo mật (rà soát 17/10) – chạy cuối, sửa cả phần đã nối ở trên
 exec(io.open(os.path.join(os.path.dirname(__file__), 'bao-mat', 'va-bao-mat.py'), encoding='utf-8').read())
+# ---------------------------------------------------------------- vận hành / KPI / động viên / hội nhập (tư vấn 18/10)
+exec(io.open(os.path.join(os.path.dirname(__file__), 'van-hanh', 'va-van-hanh.py'), encoding='utf-8').read())
 
 io.open(RA, 'w', encoding='utf-8').write(s)
 print('OK ->', os.path.abspath(RA))
