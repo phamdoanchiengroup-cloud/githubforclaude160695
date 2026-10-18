@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Màn đăng nhập – hiệu ứng động</title>
+<style>
+:root{--nen:#0e1012;--the:#171a1d;--chu:#e9eef0;--phu:#8d989f;--vang:#f7b829}
+*{box-sizing:border-box}
+body{margin:0;background:var(--nen);color:var(--chu);font:15px/1.55 Inter,system-ui,-apple-system,'Segoe UI',sans-serif}
+.vo{max-width:1320px;margin:0 auto;padding:22px 16px 40px}
+h1{font-size:22px;margin:0 0 6px}h2{font-size:16px;margin:26px 0 8px}
+.mo{color:var(--phu);margin:0 0 14px;max-width:960px}.mo b{color:var(--chu)}
+.nhom{font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--vang);margin:14px 0 6px}
+.bang{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:8px;margin:0 0 6px}
+.bang label{display:flex;gap:10px;align-items:flex-start;background:var(--the);border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:10px 12px;cursor:pointer;font-size:13.5px;color:var(--phu)}
+.bang label.vid{border-color:rgba(247,184,41,.35)}
+.bang label b{display:block;color:var(--chu);font-size:14px}
+.bang input{margin-top:4px;accent-color:var(--vang);width:16px;height:16px;flex:none}
+.dk{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:12px 0 14px;font-size:14px;color:var(--phu)}
+.dk button{font:inherit;font-size:14px;padding:8px 12px;border-radius:10px;border:1px solid rgba(255,255,255,.14);background:var(--the);color:var(--chu);cursor:pointer}
+.dk button.chon{border-color:var(--vang);color:var(--vang)}
+.khung{margin:0 auto;border-radius:14px;overflow:hidden;border:1px solid rgba(255,255,255,.12);background:#000;width:100%}
+.khung iframe{display:block;width:100%;height:800px;border:0}
+.khung.dt{width:390px;border-radius:30px;border:9px solid #050607}.khung.dt iframe{height:780px}
+.vd{display:grid;grid-template-columns:minmax(0,2fr) minmax(0,1fr);gap:16px;align-items:start}
+.vd video{width:100%;border-radius:12px;border:1px solid rgba(255,255,255,.12);display:block;background:#000}
+.vd ul{margin:0;padding-left:18px;color:var(--phu);font-size:14px}.vd li{margin:0 0 6px}.vd li b{color:var(--chu)}
+@media(max-width:760px){.vd{grid-template-columns:1fr}.khung iframe{height:720px}}
+</style>
+</head>
+<body>
+<div class="vo">
+  <h1>Màn đăng nhập Khắc laser – hiệu ứng động</h1>
+  <p class="mo">Khung bên dưới là màn đăng nhập <b>đúng như web hiện tại</b> (tê giác Rhino, cửa cuốn, nút né…). Tích chọn hiệu ứng muốn xem, khung tự tải lại. Mật khẩu thử là <b>"demo"</b>. Có thể bật cùng lúc hiệu ứng trên trang và video nền.</p>
+
+  <div class="nhom">Demo 1 · Hiệu ứng động chạy thẳng trên trang (nhẹ, không làm file nặng thêm)</div>
+  <div class="bang">
+    <label><input type="checkbox" data-k="bui" checked><span><b>1. Bụi carbon lấp lánh</b>Hạt bụi bay lên chậm trong luồng sáng, đốm sáng lóe trên lớp hạt carbon.</span></label>
+    <label><input type="checkbox" data-k="quet" checked><span><b>2. Vệt sáng quét qua ngọn cơ</b>Một dải sáng lướt qua 4 ngọn cơ, 7,5 giây một lần.</span></label>
+    <label><input type="checkbox" data-k="nghieng" checked><span><b>3. Nghiêng theo chuột / điện thoại</b>Rê chuột (hoặc nghiêng điện thoại) – nền dịch nhẹ, tạo chiều sâu.</span></label>
+    <label><input type="checkbox" data-k="chu" checked><span><b>4. Tiêu đề khắc dần</b>"Mỗi người một dấu ấn" hiện từng chữ, có đốm laser chạy theo.</span></label>
+    <label><input type="checkbox" data-k="go" checked><span><b>5. Rhino nói từng chữ</b>Lời chú tê giác hiện ra như đang gõ.</span></label>
+    <label><input type="checkbox" data-k="vao" checked><span><b>6. Chuyển cảnh khi vào</b>Đăng nhập đúng: tia laser quét màn hình từ trên xuống, logo Rhino hiện giữa rồi mới vào trang.</span></label>
+  </div>
+  <div class="nhom">Demo 2 · Video nền dựng bằng Remotion</div>
+  <div class="bang">
+    <label class="vid"><input type="checkbox" data-k="video"><span><b>7. Video nền (Remotion)</b>Thay ảnh nền tĩnh bằng video lặp 10 giây: luồng sáng thở, vệt sáng quét, bụi bay, hạt carbon lấp lánh. File chỉ ~300–400 KB.</span></label>
+  </div>
+  <div class="dk">
+    <button class="chon" data-v="pc">🖥 Máy tính</button><button data-v="dt">📱 Điện thoại</button>
+    <button id="lai">↻ Làm lại</button><button id="tat">Tắt hết</button>
+  </div>
+  <div class="khung" id="khung"><iframe id="f" title="Màn đăng nhập"></iframe></div>
+
+  <h2>Video nền xem riêng</h2>
+  <div class="vd">
+    <video autoplay muted loop playsinline controls><source src="{{VWEBM}}" type="video/webm"><source src="{{VMP4}}" type="video/mp4"></video>
+    <ul>
+      <li><b>Dựng bằng Remotion</b> từ ảnh nền khắc laser hiện có; ảnh đứng yên để chữ khắc mã nhân viên vẫn khớp đúng ngọn cơ.</li>
+      <li><b>Lặp liền mạch</b> 10 giây, 1600×900, bản WebM ~290 KB / MP4 ~400 KB (web hiện ~1,5 MB → khoảng 2 MB).</li>
+      <li>Điện thoại bật chế độ tiết kiệm pin / giảm chuyển động thì chỉ hiện ảnh tĩnh như cũ.</li>
+      <li>Khi đã vào web, video tự dừng để không tốn pin.</li>
+    </ul>
+  </div>
+</div>
+<textarea id="goc" hidden>{{GOC}}</textarea>
+<script>
+(function(){
+  var goc=document.getElementById('goc').value, f=document.getElementById('f'), k=document.getElementById('khung');
+  var VID=[].map.call(document.querySelectorAll('.vd video source'),function(x){return [x.getAttribute('src'),x.getAttribute('type')]});
+  function dung(){
+    var o={}; document.querySelectorAll('[data-k]').forEach(function(c){ o[c.dataset.k]=c.checked; });
+    try{ localStorage.removeItem('lk_khoa_den'); }catch(e){}
+    f.srcdoc=goc.replace('/*LKHU*/','window.LK_HU={chay:true,cua:true,mat:true,ket:true,gio:true};')
+                .replace('/*LKHU3*/','window.LK_HU3='+JSON.stringify(o)+';window.LK_VIDEO='+JSON.stringify(VID)+';');
+  }
+  document.querySelectorAll('[data-k]').forEach(function(c){ c.onchange=dung; });
+  document.getElementById('lai').onclick=dung;
+  document.getElementById('tat').onclick=function(){ document.querySelectorAll('[data-k]').forEach(function(c){ c.checked=false; }); dung(); };
+  document.querySelectorAll('[data-v]').forEach(function(b){ b.onclick=function(){
+    document.querySelectorAll('[data-v]').forEach(function(x){x.classList.toggle('chon',x===b)});
+    k.classList.toggle('dt',b.dataset.v==='dt'); dung(); }; });
+  window.__dung=dung; dung();
+})();
+</script>
+</body>
+</html>

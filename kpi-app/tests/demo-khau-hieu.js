@@ -1,0 +1,30 @@
+const { chromium } = require('/opt/node22/lib/node_modules/playwright');
+/** Kiểm tra demo-khau-hieu.html (khẩu hiệu khích lệ do Mai nói):  node tests/demo-khau-hieu.js */
+const F = 'file://' + require('path').resolve(__dirname, '..', 'demo-khau-hieu.html');
+let dem = 0, loi = 0; const ok = (d, t, c) => { dem++; if (d) console.log('  ✓ ' + t); else { loi++; console.log('  ✗ ' + t + (c !== undefined ? ' → ' + JSON.stringify(c).slice(0, 300) : '')); } };
+(async () => {
+  const b = await chromium.launch();
+  const p = await (await b.newContext({ viewport: { width: 1200, height: 900 } })).newPage(); const e = []; p.on('pageerror', x => e.push(x.message));
+  await p.goto(F); await p.waitForTimeout(1200);
+  ok(await p.evaluate(() => document.querySelectorAll('svg.mai .mat-g').length >= 2 * 9), 'Mai xuất hiện ở đủ các chỗ (9 hình)');
+  ok(await p.evaluate(() => document.getElementById('chao').classList.contains('hien') && /Chào buổi sáng/.test(document.getElementById('chaoBuoi').textContent)), 'lời chào khi đăng nhập hiện, đúng buổi sáng');
+  await p.click('[data-gio="21"]'); await p.waitForTimeout(400);
+  ok(/Chào ca tối/.test(await p.textContent('#chaoBuoi')), 'ca tối: đổi lời chào');
+  await p.waitForTimeout(6800); ok(!(await p.evaluate(() => document.getElementById('chao').classList.contains('hien'))), 'lời chào tự ẩn sau khoảng 6 giây');
+  const k = await p.evaluate(() => { const d = new Date(2026, 9, 7); const a = __kh.khNgay(d), b2 = __kh.khNgay(d), c = __kh.khNgay(new Date(2026, 9, 8)); return { a, same: a.cau === b2.cau, khacNgay: a.cau !== c.cau && a.cd !== c.cd }; });
+  ok(k.same && k.khacNgay, 'cùng ngày cùng câu; sang ngày sau đổi chủ đề và câu', k);
+  const vong = await p.evaluate(() => { const s = new Set(); for (let i = 0; i < 6; i++) s.add(__kh.khNgay(new Date(2026, 9, 7 + i)).cd); return s.size; });
+  ok(vong === 6, '6 ngày liên tiếp đi đủ 6 chủ đề', vong);
+  const truoc = await p.textContent('#bkKh'); await p.click('#bkDoi'); ok((await p.textContent('#bkKh')) !== truoc, 'nút "Câu khác" đổi khẩu hiệu');
+  await p.click('#n3'); const k1 = await p.textContent('#ketKh'); await p.click('#n3'); const k2 = await p.textContent('#ketKh');
+  ok(k1 && k2 && k1 !== k2, 'sau khi gửi: mỗi lần một câu khen khác', [k1, k2]);
+  ok(await p.evaluate(() => document.querySelectorAll('#chuoi i.co').length === 6), 'đếm chuỗi ngày gửi đều');
+  ok(await p.evaluate(() => document.querySelectorAll('#kpi4 .the-kpi').length === 4) && !/chê|kém|tệ/i.test(await p.textContent('#kpi4')), 'KPI: 4 hạng, lời không chê trách');
+  ok(await p.evaluate(() => +document.getElementById('demKh').textContent >= 30), 'thư viện có từ 30 câu trở lên');
+  ok(e.length === 0, 'không lỗi JS', e);
+  const m = await (await b.newContext({ viewport: { width: 390, height: 844 }, isMobile: true })).newPage(); await m.goto(F); await m.waitForTimeout(500);
+  ok(await m.evaluate(() => document.documentElement.scrollWidth) <= 391, 'điện thoại: không tràn ngang', await m.evaluate(() => document.documentElement.scrollWidth));
+  const r = await (await b.newContext({ reducedMotion: 'reduce' })).newPage(); await r.goto(F); await r.waitForTimeout(300); await r.click('#n3');
+  ok(await r.evaluate(() => document.querySelectorAll('#phao i').length === 0 && getComputedStyle(document.querySelector('.mai.vay .tay-chi')).animationName === 'none'), 'giảm chuyển động: không pháo giấy, Mai đứng yên');
+  await b.close(); console.log(`\n${dem - loi}/${dem} đạt`); process.exit(loi ? 1 : 0);
+})();

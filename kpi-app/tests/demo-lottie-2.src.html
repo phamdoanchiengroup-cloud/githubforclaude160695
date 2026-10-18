@@ -1,0 +1,202 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Demo Lottie đợt 2</title>
+<!-- Demo Lottie đợt 2 cho web KPI: 6 chỗ khác (chốt tháng, điểm danh, công nhân gửi sản lượng, xuất Excel, kỳ chưa có dữ liệu, hết phiên).
+     Bên trái là cách web đang làm, bên phải có hoạt ảnh Lottie (tự vẽ bằng tests/tao-lottie-2.py, cùng màu với 4 mẫu đã duyệt).
+     Thư viện lottie-web (MIT) và 6 file JSON được nhúng thẳng vào trang. Dựng bằng tests/tao-demo-lottie.py. Tên người trong demo là tên giả. -->
+<style>
+:root{--bg:#121518;--s1:#1a1e22;--s2:#21262b;--s3:#2a3036;--bd:rgba(255,255,255,.07);--bd2:rgba(255,255,255,.13);--t1:#eef2f4;--t2:#aab5bc;--t3:#7b8891;--ac:#2fd3c6;--acr:47,211,198;--am:#f0b04e;--rd:#f26b6b;
+  --f:'Inter',system-ui,-apple-system,'Segoe UI',Roboto,Arial,sans-serif}
+*{box-sizing:border-box;margin:0;padding:0}
+html{background:var(--bg)}
+body{color:var(--t1);font:14px/1.5 var(--f);-webkit-font-smoothing:antialiased;padding:26px 18px 60px}
+button{font:inherit;color:inherit}
+.vo{max-width:1120px;margin:0 auto}
+h1{font-size:22px;font-weight:650;letter-spacing:-.01em}
+.mo{color:var(--t2);font-size:13.5px;margin:4px 0 22px;max-width:820px}
+.muc{margin-bottom:26px}
+.muc h2{font-size:15px;font-weight:600;margin-bottom:4px}
+.muc .gt{font-size:12.5px;color:var(--t3);margin-bottom:10px}
+.doi{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.o{position:relative;border:1px solid var(--bd);border-radius:14px;background:var(--s1);min-height:290px;overflow:hidden;display:flex;flex-direction:column}
+.o .nhan{font-size:10.5px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;padding:9px 14px;border-bottom:1px solid var(--bd);color:var(--t3);display:flex;justify-content:space-between;align-items:center}
+.o.moi .nhan{color:var(--ac)}
+.o .than{flex:1;padding:14px;display:flex;flex-direction:column;gap:10px;position:relative}
+.nut{border:1px solid var(--bd2);background:var(--s2);font-size:12.5px;font-weight:500;padding:6px 12px;border-radius:9px;cursor:pointer;white-space:nowrap}
+.nut:hover{background:var(--s3)}
+.nut.chinh{background:var(--ac);border-color:var(--ac);color:#06201e;font-weight:600}
+.nut:disabled{opacity:.5;cursor:default}
+.vach{position:absolute;left:0;top:0;height:3px;background:var(--am);width:0}
+.vach.chay{animation:vach 2.2s linear infinite}
+@keyframes vach{0%{left:0;width:0}50%{left:20%;width:50%}100%{left:100%;width:0}}
+.toast{align-self:center;margin-top:auto;font-size:12.5px;padding:8px 14px;border-radius:10px;background:#1f3b38;border:1px solid rgba(var(--acr),.45);opacity:0;transition:opacity .2s}
+.toast.hien{opacity:1}.toast.loi{background:#3b1f22;border-color:rgba(242,107,107,.5)}
+.dong{display:flex;align-items:center;gap:10px;padding:9px 10px;border-radius:10px;background:var(--s2);border:1px solid var(--bd);font-size:13px;transition:opacity .25s,transform .25s}
+.dong small{display:block;font-size:11.5px;color:var(--t3)}
+.dong .nut{margin-left:auto}
+.dong.di{opacity:0;transform:translateX(30px)}
+.trong{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:4px;color:var(--t3);font-size:13px}
+.trong b{color:var(--t1);font-size:14.5px}
+.la{width:120px;height:120px}
+.la.nho{width:44px;height:44px;flex:none;margin:-6px 6px -6px auto;display:none}
+.dong.xong .la.nho{display:block}.dong.xong .nut{display:none}
+.loi-the .la{width:96px;height:96px}
+.cho{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;text-align:center}
+.cho b{font-size:14px}.cho small{color:var(--t3);font-size:12px}
+.phu{position:absolute;inset:0;background:rgba(18,21,24,.92);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;text-align:center;opacity:0;pointer-events:none;transition:opacity .2s}
+.phu.hien{opacity:1;pointer-events:auto}
+.loi-the{display:flex;flex-direction:column;align-items:center;gap:6px;text-align:center;margin:auto}
+.loi-the b{font-size:14.5px}.loi-the small{color:var(--t3);font-size:12.5px;max-width:280px}
+.cuoi{font-size:12px;color:var(--t3);margin-top:8px;max-width:820px}
+.the{border:1px solid var(--bd);background:var(--s2);border-radius:12px;padding:12px;display:flex;flex-direction:column;gap:8px}
+.the h4{font-size:13px;font-weight:600}.the .mo2{font-size:12px;color:var(--t3)}
+.bang{width:100%;border-collapse:collapse;font-size:12.5px}.bang td,.bang th{padding:6px 8px;border-bottom:1px solid var(--bd);text-align:left}.bang th{font-size:10.5px;color:var(--t3);letter-spacing:.08em;text-transform:uppercase;font-weight:600}
+.bang td:last-child,.bang th:last-child{text-align:right}
+.chon{display:flex;gap:8px;align-items:center;flex-wrap:wrap;font-size:12.5px;color:var(--t2)}
+select,input{font:inherit;color:var(--t1);background:var(--s2);border:1px solid var(--bd2);border-radius:9px;padding:6px 9px}
+input{width:90px}
+.nghi{color:var(--am);font-size:11.5px}
+.ket{display:flex;align-items:center;gap:12px;padding:8px 10px;border-radius:12px;background:rgba(var(--acr),.07);border:1px solid rgba(var(--acr),.3);opacity:0;transform:translateY(6px);transition:opacity .25s,transform .25s}
+.ket.hien{opacity:1;transform:none}.ket .la{width:96px;height:96px;flex:none;margin:-6px 0}.ket b{display:block;font-size:14px}.ket small{color:var(--t2);font-size:12px}
+.ket.cho-duyet{background:rgba(240,176,78,.07);border-color:rgba(240,176,78,.35)}
+.mo-trang{position:absolute;inset:0;background:#fff;opacity:0;pointer-events:none;transition:opacity .15s}
+.mo-trang.hien{opacity:.9}
+@media(max-width:700px){.doi{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="vo">
+  <h1>Hoạt ảnh Lottie – đợt 2: 6 chỗ khác trong web</h1>
+  <div class="mo">Cùng phong cách 4 mẫu bạn đã duyệt. Mỗi mục: bên trái là <b>cách web đang làm</b>, bên phải là <b>có Lottie</b>. Bấm nút trong từng ô để chạy thử. Hoạt ảnh chỉ hiện đúng lúc có việc rồi tắt.</div>
+
+  <div class="muc">
+    <h2>1. Chốt KPI tháng <span style="color:var(--t3);font-weight:500">· Bảng KPI (ban điều hành, trưởng phòng)</span></h2>
+    <div class="gt">Việc quan trọng nhất tháng – nên có xác nhận rõ ràng là số liệu đã được khóa lại.</div>
+    <div class="doi">
+      <div class="o"><div class="nhan">Hiện tại</div><div class="than"><i class="vach" id="a1Vach"></i>
+        <div class="chon">Tháng 9/2026 <span id="a1Tt" class="nghi">Tạm tính</span><button class="nut chinh" id="a1Nut" style="margin-left:auto">Chốt tháng này</button></div>
+        <table class="bang"><tr><th>Họ tên</th><th>KPI</th></tr><tr><td>Đỗ Thị Hoa</td><td>104,2%</td></tr><tr><td>Ngô Văn Hùng</td><td>97,8%</td></tr><tr><td>Vũ Thị Hà</td><td>91,5%</td></tr></table>
+        <div class="toast" id="a1Toast"></div></div></div>
+      <div class="o moi"><div class="nhan">Có Lottie</div><div class="than">
+        <div class="chon">Tháng 9/2026 <span id="b1Tt" class="nghi">Tạm tính</span><button class="nut chinh" id="b1Nut" style="margin-left:auto">Chốt tháng này</button></div>
+        <table class="bang"><tr><th>Họ tên</th><th>KPI</th></tr><tr><td>Đỗ Thị Hoa</td><td>104,2%</td></tr><tr><td>Ngô Văn Hùng</td><td>97,8%</td></tr><tr><td>Vũ Thị Hà</td><td>91,5%</td></tr></table>
+        <div class="phu" id="b1Phu"><div class="la" id="b1La"></div><b>Đã chốt KPI tháng 9/2026</b><small>144 người · số liệu đã lưu lại để tính thưởng và xếp hạng</small></div></div></div>
+    </div>
+  </div>
+
+  <div class="muc">
+    <h2>2. Lưu điểm danh <span style="color:var(--t3);font-weight:500">· Điểm danh (trưởng phòng)</span></h2>
+    <div class="gt">Làm mỗi sáng – hình nhỏ cho thấy ngay bao nhiêu người đi làm, ai nghỉ.</div>
+    <div class="doi">
+      <div class="o"><div class="nhan">Hiện tại</div><div class="than" id="a2"></div></div>
+      <div class="o moi"><div class="nhan">Có Lottie</div><div class="than" id="b2"></div></div>
+    </div>
+  </div>
+
+  <div class="muc">
+    <h2>3. Công nhân gửi sản lượng <span style="color:var(--t3);font-weight:500">· Nhập sản lượng (công nhân)</span></h2>
+    <div class="gt">Công nhân hay hỏi "gửi được chưa?" – hình phiếu vào khay + đồng hồ nói rõ: đã gửi, đang chờ duyệt.</div>
+    <div class="doi">
+      <div class="o"><div class="nhan">Hiện tại</div><div class="than" id="a3"></div></div>
+      <div class="o moi"><div class="nhan">Có Lottie</div><div class="than" id="b3"></div></div>
+    </div>
+  </div>
+
+  <div class="muc">
+    <h2>4. Xuất Excel <span style="color:var(--t3);font-weight:500">· Thống kê nghỉ, bảng chấm công (nhân sự)</span></h2>
+    <div class="gt">Lần đầu phải tải thư viện Excel nên chờ vài giây mà không có gì báo.</div>
+    <div class="doi">
+      <div class="o"><div class="nhan">Hiện tại</div><div class="than"><i class="vach" id="a4Vach"></i>
+        <div class="chon">Bảng chấm công tháng 9/2026<button class="nut" id="a4Nut" style="margin-left:auto">⤓ Xuất Excel</button></div><div class="toast" id="a4Toast"></div></div></div>
+      <div class="o moi"><div class="nhan">Có Lottie</div><div class="than">
+        <div class="chon">Bảng chấm công tháng 9/2026<button class="nut" id="b4Nut" style="margin-left:auto">⤓ Xuất Excel</button></div>
+        <div class="phu" id="b4Phu"><div class="la" id="b4La"></div><b id="b4Chu">Đang tạo file Excel…</b><small id="b4Phu2">Bảng chấm công tháng 9/2026</small></div></div></div>
+    </div>
+  </div>
+
+  <div class="muc">
+    <h2>5. Kỳ chưa có dữ liệu <span style="color:var(--t3);font-weight:500">· Bảng KPI, Tổng quan, Thống kê</span></h2>
+    <div class="gt">Chọn nhầm tháng chưa có số liệu – trang trống dễ bị tưởng là lỗi.</div>
+    <div class="doi">
+      <div class="o"><div class="nhan">Hiện tại</div><div class="than"><div class="chon">Kỳ <select disabled><option>Tháng 11/2026</option></select></div>
+        <div class="trong" style="justify-content:flex-start"><span style="padding:14px;border:1px dashed var(--bd2);border-radius:10px;width:100%">Chưa có dữ liệu kỳ này</span></div></div></div>
+      <div class="o moi"><div class="nhan">Có Lottie</div><div class="than"><div class="chon">Kỳ <select disabled><option>Tháng 11/2026</option></select></div>
+        <div class="trong"><div class="la" id="b5La"></div><b>Chưa có dữ liệu tháng 11/2026</b>Tháng này chưa có sản lượng nào được duyệt. Chọn tháng khác ở ô Kỳ.</div></div></div>
+    </div>
+  </div>
+
+  <div class="muc">
+    <h2>6. Hết phiên đăng nhập <span style="color:var(--t3);font-weight:500">· mọi trang</span></h2>
+    <div class="gt">Hiện tại trang tự tải lại sau 1,8 giây – số đang nhập dở bị mất mà không kịp làm gì. Bản mới chờ người dùng bấm.</div>
+    <div class="doi">
+      <div class="o"><div class="nhan">Hiện tại</div><div class="than"><div class="chon">Sản lượng <input id="a6So" value="412"><button class="nut chinh" id="a6Nut">Lưu</button></div>
+        <div class="toast loi" id="a6Toast"></div><div class="mo-trang" id="a6Trang"></div></div></div>
+      <div class="o moi"><div class="nhan">Có Lottie</div><div class="than"><div class="chon">Sản lượng <input id="b6So" value="412"><button class="nut chinh" id="b6Nut">Lưu</button></div>
+        <div class="phu" id="b6Phu"><div class="loi-the"><div class="la" id="b6La"></div><b>Phiên đăng nhập đã hết hạn</b><small>Trang không tự tải lại nữa: chép lại số đang nhập nếu cần, rồi bấm Đăng nhập lại.</small>
+          <div style="display:flex;gap:8px;margin-top:4px"><button class="nut" id="b6Sau">Để sau</button><button class="nut chinh" id="b6Lai">Đăng nhập lại</button></div></div></div></div></div>
+    </div>
+  </div>
+
+  <div class="cuoi">6 hoạt ảnh tự vẽ, cùng màu với web và với 4 mẫu đã duyệt; mỗi file 3–12 KB, sửa tiếp được trên lottiefiles.com (Upload file JSON). Máy bật "giảm chuyển động" thì hiện hình tĩnh. Bạn chọn mẫu nào thì tôi gắn mẫu đó vào web thật.</div>
+</div>
+<script>/*LOTTIE_LIB*/</script>
+<script>
+(function(){
+'use strict';
+var LA=/*LOTTIE_DATA*/, GIAM=false; try{GIAM=matchMedia('(prefers-reduced-motion: reduce)').matches}catch(e){}
+function $(i){return document.getElementById(i)}
+function phat(el,ten,lap){ el.innerHTML=''; var a=lottie.loadAnimation({container:el,renderer:'svg',loop:!!lap,autoplay:!GIAM,animationData:JSON.parse(JSON.stringify(LA[ten]))});
+  if(GIAM) a.addEventListener('DOMLoaded',function(){ a.goToAndStop(a.totalFrames-1,true) }); return a; }
+function toast(t,chu,ms){ t.textContent=chu; t.classList.add('hien'); clearTimeout(t._h); t._h=setTimeout(function(){t.classList.remove('hien')},ms||2200); }
+window.__lt={};
+/* 1. chốt tháng */
+$('a1Nut').onclick=function(){ var n=this; n.disabled=true; $('a1Vach').classList.add('chay');
+  setTimeout(function(){ $('a1Vach').classList.remove('chay'); toast($('a1Toast'),'Đã chốt KPI tháng 9/2026: 144 người'); $('a1Tt').textContent='Đã chốt'; setTimeout(function(){ n.disabled=false; $('a1Tt').textContent='Tạm tính'; },3000); },1500); };
+$('b1Nut').onclick=function(){ var n=this; n.disabled=true; var p=$('b1Phu'); p.classList.add('hien'); var a=window.__lt.a1=phat($('b1La'),'chot-thang');
+  setTimeout(function(){ p.classList.remove('hien'); $('b1Tt').textContent='Đã chốt'; $('b1Tt').style.color='var(--ac)'; setTimeout(function(){ a.destroy(); n.disabled=false; $('b1Tt').textContent='Tạm tính'; $('b1Tt').style.color=''; },3000); },2600); };
+/* 2. điểm danh */
+var DD=[['Đỗ Thị Hoa',0],['Ngô Văn Hùng',0],['Vũ Thị Hà',0],['Lê Thị Mai',1],['Phan Văn Tú',0]];
+function veDD(id,coLa){ var el=$(id);
+  el.innerHTML='<div class="chon">Thứ Ba, 06/10<button class="nut chinh" style="margin-left:auto">Lưu điểm danh</button></div>'+
+    '<table class="bang"><tr><th>Họ tên</th><th>Nghỉ</th></tr>'+DD.map(function(x){return '<tr><td>'+x[0]+(x[1]?' <span class="nghi">· có phép</span>':'')+'</td><td><input type="checkbox"'+(x[1]?' checked':'')+' style="width:auto"></td></tr>'}).join('')+'</table>'+
+    (coLa?'<div class="ket"><div class="la"></div><div><b>Đã lưu điểm danh 06/10</b><small>4/5 người đi làm · Lê Thị Mai nghỉ có phép</small></div></div>':'<div class="toast"></div>');
+  var n=el.querySelector('.nut');
+  n.onclick=function(){ n.disabled=true;
+    setTimeout(function(){ n.disabled=false;
+      if(!coLa){ toast(el.querySelector('.toast'),'Đã lưu điểm danh ngày 06/10'); return; }
+      var k=el.querySelector('.ket'); k.classList.add('hien'); window.__lt.a2=phat(k.querySelector('.la'),'diem-danh-xong');
+      clearTimeout(k._h); k._h=setTimeout(function(){ k.classList.remove('hien') },4500); },500); }; }
+veDD('a2',false); veDD('b2',true);
+/* 3. công nhân gửi */
+function veGui(id,coLa){ var el=$(id);
+  el.innerHTML='<div class="the"><h4>Nhập sản lượng hôm nay</h4><div class="chon">Công đoạn <select><option>Mài bóng</option><option>Lắp ráp</option></select> Số lượng <input value="412"></div>'+
+    '<div><button class="nut chinh">Gửi</button></div></div>'+
+    (coLa?'<div class="ket cho-duyet"><div class="la"></div><div><b>Đã gửi 412 sản phẩm – Mài bóng</b><small>Đang chờ trưởng phòng duyệt. Duyệt xong mới tính vào KPI.</small></div></div>':'<div class="toast"></div>');
+  var n=el.querySelector('.nut');
+  n.onclick=function(){ n.disabled=true;
+    setTimeout(function(){ n.disabled=false;
+      if(!coLa){ toast(el.querySelector('.toast'),'Đã gửi, chờ trưởng phòng duyệt'); return; }
+      var k=el.querySelector('.ket'); k.classList.add('hien'); window.__lt.a3=phat(k.querySelector('.la'),'gui-cho-duyet'); },500); }; }
+veGui('a3',false); veGui('b3',true);
+/* 4. xuất Excel */
+$('a4Nut').onclick=function(){ var n=this; n.disabled=true; $('a4Vach').classList.add('chay');
+  setTimeout(function(){ $('a4Vach').classList.remove('chay'); n.disabled=false; toast($('a4Toast'),'(file tải xuống ở góc trình duyệt, web không báo gì)',2600); },2000); };
+$('b4Nut').onclick=function(){ var n=this; n.disabled=true; var p=$('b4Phu'); $('b4Chu').textContent='Đang tạo file Excel…'; $('b4Phu2').textContent='Bảng chấm công tháng 9/2026';
+  p.classList.add('hien'); var a=window.__lt.a4=phat($('b4La'),'xuat-excel');
+  setTimeout(function(){ $('b4Chu').textContent='Đã tải file Excel'; $('b4Phu2').textContent='ChamCong_2026-09.xlsx'; },GIAM?300:1300);
+  setTimeout(function(){ p.classList.remove('hien'); n.disabled=false; setTimeout(function(){a.destroy()},250); },3000); };
+/* 5. chưa có dữ liệu */
+window.__lt.a5=phat($('b5La'),'chua-co-du-lieu',true);
+/* 6. hết phiên */
+$('a6Nut').onclick=function(){ var n=this; n.disabled=true; toast($('a6Toast'),'Phiên đăng nhập đã hết hạn. Đăng nhập lại.',1800);
+  setTimeout(function(){ var t=$('a6Trang'); t.classList.add('hien'); $('a6So').value=''; setTimeout(function(){ t.classList.remove('hien'); n.disabled=false; $('a6Toast').textContent='Trang đã tải lại – số 412 vừa nhập bị mất'; $('a6Toast').classList.add('hien'); setTimeout(function(){ $('a6Toast').classList.remove('hien'); $('a6So').value='412'; },2600); },400); },1800); };
+$('b6Nut').onclick=function(){ $('b6Phu').classList.add('hien'); window.__lt.a6=phat($('b6La'),'het-phien',true); setTimeout(function(){ $('b6Lai').focus() },50); };
+function dong6(){ $('b6Phu').classList.remove('hien'); if(window.__lt.a6) window.__lt.a6.destroy(); }
+$('b6Sau').onclick=dong6; $('b6Lai').onclick=dong6;
+})();
+</script>
+</body>
+</html>

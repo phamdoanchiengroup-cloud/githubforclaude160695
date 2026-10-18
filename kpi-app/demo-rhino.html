@@ -1,0 +1,286 @@
+<!doctype html><html lang="vi"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Demo nhân vật Rhino</title>
+<style>
+:root{--bg:#14181b;--panel:#1f2529;--panel2:#252c31;--ink:#e8eef0;--ink2:#c3ccd0;--ink3:#8b979d;--line:#2f3a40;--cyan:#2fd3c6;--acc-rgb:47,211,198;--amber:#f0b04e;--red:#f26b6b;--vang:#f7b829}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:14px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif}
+.wrap{max-width:1120px;margin:0 auto;padding:22px 16px 60px}
+h1{font-size:22px;margin:0 0 4px}h2{font-size:15px;margin:30px 0 4px;letter-spacing:.02em}.mo{color:var(--ink3);margin:0 0 12px}
+.dk{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0 4px}.dk button{background:var(--panel2);color:var(--ink);border:1px solid var(--line);border-radius:9px;padding:7px 13px;cursor:pointer;font:inherit}
+.dk button[aria-pressed=true]{border-color:var(--vang);color:var(--vang)}
+.cot2{display:grid;grid-template-columns:1fr 1fr;gap:14px}@media(max-width:760px){.cot2{grid-template-columns:1fr}}
+.o{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:12px 14px;position:relative;overflow:hidden}
+.o>.nhan{font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--ink3);margin-bottom:8px}
+.o.moi>.nhan{color:var(--vang)}
+.tt{display:grid;grid-template-columns:repeat(5,1fr);gap:4px;text-align:center}.tt svg{width:100%;max-width:120px;height:auto;aspect-ratio:200/270}
+.tt small{display:block;color:var(--ink3);font-size:11.5px}
+@media(max-width:560px){.tt{grid-template-columns:repeat(3,1fr)}}
+/* góc màn hình: dựng lại #maiGoc ở dạng tĩnh trong khung */
+.goc{display:flex;align-items:flex-end;min-height:150px;padding-top:20px}
+.goc svg{width:92px;height:124px;flex:none;margin-right:-16px;position:relative;z-index:1}
+.goc .bb{flex:1;background:var(--panel2);border:1.5px solid rgba(var(--acc-rgb),.5);border-radius:14px;padding:9px 14px 10px 22px;font-size:13px}
+.moi .goc .bb{border-color:rgba(247,184,41,.55)}
+.goc .bb small{display:block;color:var(--ink3);font-size:11.5px}.goc .bb .kh{font-weight:650;font-size:14px;line-height:1.4;margin:2px 0 4px}.goc .bb .kh b{color:var(--cyan)}
+.moi .goc .bb .kh b,.moi .mai-bang .kh b,.moi .mai-thoai .loi b{color:var(--vang)}
+.moi .mai-bang{background:linear-gradient(100deg,rgba(247,184,41,.12),rgba(247,184,41,.02) 60%);border-color:rgba(247,184,41,.3)}
+.thoai{display:flex;align-items:flex-end;padding-top:14px}.thoai svg{width:120px;height:162px;flex:none;margin-right:-24px;margin-bottom:-6px;position:relative;z-index:1}
+.moi .mai-thoai{border-color:rgba(247,184,41,.6)}.moi .mai-thoai .ten{background:var(--vang);color:#2b2b2b}
+.btn{background:var(--panel2);color:var(--ink);border:1px solid var(--line);border-radius:8px;padding:5px 12px;font:inherit;font-size:13px}.btn.pri{background:var(--cyan);color:#06201e;border:0}.moi .btn.pri{background:var(--vang);color:#2b2b2b}
+/* màn đăng nhập: chân dung tròn cạnh lời chào */
+.dn{display:flex;align-items:center;gap:14px;background:#2b2b2b;border-radius:12px;padding:16px}
+.dn .cd{width:84px;height:84px;border-radius:50%;background:radial-gradient(circle at 50% 35%,#3a3a3a,#1e1e1e);border:2px solid var(--vang);overflow:hidden;flex:none}
+.dn .cd svg{width:100%;height:100%}
+.dn b{font-size:17px}.dn small{display:block;color:#b9b9b9}
+.ghi{color:var(--ink3);font-size:12.5px;margin-top:8px}
+
+/* ===== MAI – nhân vật hướng dẫn / cổ vũ (SVG tự vẽ, tests/mai/mai-chibi.js) ===== */
+.mai .duoi{transform-origin:104px 34px;animation:maiDuoi 2.4s ease-in-out infinite}
+@keyframes maiDuoi{0%,100%{transform:rotate(-8deg)}50%{transform:rotate(10deg)}}
+.mai .than-tren{transform-origin:100px 256px;animation:maiTho 3.2s ease-in-out infinite}
+@keyframes maiTho{50%{transform:translateY(1.6px) scaleY(.995)}}
+.mai .mat-g{transform-box:fill-box;transform-origin:center;animation:maiChop 4.2s infinite}
+@keyframes maiChop{0%,92%,100%{transform:scaleY(1)}95%{transform:scaleY(.08)}}
+.mai .mieng-mo{display:none}
+.mai.noi .mieng-mo{display:inline;animation:maiNoi .28s steps(2) infinite}
+.mai.noi .mieng-cuoi{animation:maiNoi2 .28s steps(2) infinite}
+@keyframes maiNoi{0%{opacity:1}100%{opacity:0}}@keyframes maiNoi2{0%{opacity:0}100%{opacity:1}}
+.mai .mo-hoi,.mai .lap-lanh,.mai .may-lo{display:none}
+.mai.lo .mo-hoi,.mai.lo .may-lo{display:inline}.mai.lo .may-vui{display:none}
+.mai.vui .lap-lanh{display:inline}
+.mai .tay-chi{transform-origin:128px 180px;transition:transform .4s}
+.mai .ngon{display:none}.mai.chi .ngon{display:inline}
+.mai.chi .tay-chi{transform:rotate(-70deg)}
+.mai.covu .tay-chi{transform:rotate(-142deg)}
+.mai.vay .tay-chi{animation:maiVay 1s ease-in-out infinite}
+@keyframes maiVay{0%,100%{transform:rotate(-128deg)}50%{transform:rotate(-156deg)}}
+.mai .lap-lanh path{animation:maiLap 1.2s ease-in-out infinite;transform-box:fill-box;transform-origin:center}
+@keyframes maiLap{50%{transform:scale(.4);opacity:.4}}
+/* lời Mai ở góc màn hình (chào, nhắc nghỉ, khen) */
+#maiGoc{position:fixed;right:16px;bottom:16px;z-index:8500;display:flex;align-items:flex-end;width:min(400px,calc(100vw - 20px));transform:translateY(150%);transition:transform .5s cubic-bezier(.3,1.25,.4,1);pointer-events:none}
+#maiGoc.hien{transform:none}
+#maiGoc svg{width:92px;height:124px;flex:none;margin-right:-16px;position:relative;z-index:1}
+#maiGoc .bb{flex:1;background:var(--panel);border:1.5px solid rgba(var(--acc-rgb),.5);border-radius:14px;padding:9px 28px 10px 22px;box-shadow:0 14px 30px rgba(0,0,0,.35);pointer-events:auto;position:relative;color:var(--ink);font-size:13px}
+#maiGoc .bb small{display:block;color:var(--ink3);font-size:11.5px}
+#maiGoc .bb .kh{font-weight:650;font-size:14px;line-height:1.4;margin:2px 0 4px}
+#maiGoc .bb .kh b{color:var(--cyan)}
+#maiGoc .x{position:absolute;top:3px;right:6px;background:none;border:0;color:var(--ink3);font-size:17px;cursor:pointer;line-height:1}
+.mai-chuoi{display:flex;gap:3px;margin-top:4px}.mai-chuoi i{width:16px;height:16px;border-radius:5px;background:var(--line);font:600 9px/16px sans-serif;text-align:center;font-style:normal;color:var(--ink3)}
+.mai-chuoi i.co{background:rgba(var(--acc-rgb),.25);color:var(--cyan)}
+/* dải khẩu hiệu của ngày */
+.mai-bang{display:flex;align-items:center;gap:10px;padding:4px 12px 0 4px;border-radius:12px;background:linear-gradient(100deg,rgba(var(--acc-rgb),.10),rgba(var(--acc-rgb),.02) 60%);border:1px solid rgba(var(--acc-rgb),.25);overflow:hidden;margin:0 0 14px}
+.mai-bang svg{width:58px;height:72px;flex:none;align-self:flex-end;margin-bottom:-3px}
+.mai-bang .nd{flex:1;padding:4px 0 8px}.mai-bang .kh{font-weight:650;font-size:14px;line-height:1.4}.mai-bang .kh b{color:var(--cyan)}
+.mai-bang small{color:var(--ink3);font-size:11px}
+.mai-chip{display:inline-block;font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:1px 8px;border-radius:99px;margin-right:6px}
+.mc-at{background:rgba(242,107,107,.15);color:#f08a8a}.mc-cl{background:rgba(var(--acc-rgb),.14);color:var(--cyan)}.mc-ns{background:rgba(240,176,78,.15);color:#d99a3a}
+.mc-5s{background:rgba(160,140,255,.15);color:#9a88e6}.mc-dd{background:rgba(74,222,128,.13);color:#3fb36a}.mc-sk{background:rgba(120,190,255,.14);color:#5a9fe0}
+/* hướng dẫn rọi sáng + hộp đọc lại */
+#maiTour{position:fixed;inset:0;z-index:8800;display:none}
+#maiTour.mo{display:block}
+#maiTour .ro{position:fixed;border-radius:10px;box-shadow:0 0 0 3000px rgba(6,8,10,.66);transition:all .4s cubic-bezier(.3,1,.4,1);pointer-events:none}
+#maiTour .ro::after{content:'';position:absolute;inset:-4px;border-radius:12px;border:2px solid var(--cyan);animation:maiRo 1.6s ease-in-out infinite}
+@keyframes maiRo{50%{inset:-9px;opacity:.35}}
+#maiTour .ro.toan{box-shadow:0 0 0 3000px rgba(6,8,10,.55)}#maiTour .ro.toan::after{display:none}
+#maiTour .vn,#maiHop .vn{position:fixed;left:50%;transform:translateX(-50%);bottom:14px;width:min(560px,calc(100vw - 16px));display:flex;align-items:flex-end}
+#maiTour .vn svg,#maiHop .vn svg{width:120px;height:162px;flex:none;margin-right:-24px;margin-bottom:-6px;position:relative;z-index:1}
+.mai-thoai{flex:1;position:relative;background:var(--panel);border:1.5px solid rgba(var(--acc-rgb),.55);border-radius:16px;padding:14px 12px 10px 30px;min-height:126px;box-shadow:0 14px 34px rgba(0,0,0,.5);color:var(--ink)}
+.mai-thoai .ten{position:absolute;top:-11px;left:30px;background:var(--cyan);color:#06201e;font-weight:700;font-size:11px;padding:2px 10px;border-radius:99px}
+.mai-thoai .loi{font-size:14px;line-height:1.5;min-height:60px}
+.mai-thoai .loi b{color:var(--cyan)}.mai-thoai .loi .do{color:var(--red);font-weight:650}.mai-thoai .loi .vang{color:var(--amber);font-weight:650}
+.mai-thoai .dk{display:flex;align-items:center;gap:6px;margin-top:8px}.mai-thoai .dk .buoc{font-size:11px;color:var(--ink3);margin-right:auto}
+.mai-tom{margin:6px 0 2px;font-size:13px;background:rgba(0,0,0,.18);border-radius:10px;padding:6px 9px}
+.mai-tom div{display:flex;justify-content:space-between;gap:10px;padding:2px 0}
+.mai-tom .tong{border-top:1px solid var(--line);margin-top:3px;padding-top:4px;color:var(--ink2)}
+#maiHop{position:fixed;inset:0;z-index:8900;background:rgba(6,8,10,.55);display:none}#maiHop.mo{display:block}
+@media(max-width:900px){#maiGoc{bottom:76px;right:6px}.mai-thoai .dk{flex-wrap:wrap}.mai-thoai .dk .buoc{width:100%;margin:0 0 2px}.mai-thoai .dk .btn{flex:1}.mai-thoai .loi{font-size:13.5px}#maiTour .vn,#maiHop .vn{bottom:72px}#maiTour .vn svg,#maiHop .vn svg{width:96px;height:130px}}
+@media (prefers-reduced-motion:reduce){.mai *,#maiTour .ro::after{animation:none!important}#maiGoc,#maiTour .ro{transition:none!important}}
+
+/* tai tê giác: thỉnh thoảng vẫy */
+.mai .tai-p{transform-origin:142px 82px;animation:rhTai 3.8s ease-in-out infinite}
+@keyframes rhTai{0%,80%,100%{transform:rotate(0)}86%{transform:rotate(14deg)}92%{transform:rotate(-4deg)}}
+@media (prefers-reduced-motion:reduce){.mai *{animation:none!important}}
+</style></head><body><div class="wrap">
+<h1>Nhân vật hướng dẫn: Mai (hiện tại) và chú tê giác Rhino (đề xuất)</h1>
+<p class="mo">Chú tê giác tự vẽ, phong cách anime chibi thân thiện: mắt to màu hổ phách, má hồng, sừng ngà ánh vàng, chỏm lông vàng trên đầu. Chú mặc áo khoác đồng phục than chì viền vàng theo màu thương hiệu Rhino (#2b2b2b, #f7b829). Mọi tư thế và hiệu ứng (chớp mắt, nói, vẫy tay, chỉ tay, cổ vũ, lo lắng) giữ đúng như Mai đang dùng trên web, nên đổi nhân vật không cần sửa lời thoại hay chỗ xuất hiện.</p>
+<div class="dk"><button type="button" id="bNoi" aria-pressed="false">💬 Cho nhân vật nói</button><button type="button" id="bChuyen" aria-pressed="false">⏸ Dừng chuyển động</button></div>
+
+<h2>1. Các tư thế</h2>
+<div class="cot2">
+ <div class="o"><div class="nhan">Mai – hiện tại</div><div class="tt" data-nv="MAI"></div></div>
+ <div class="o moi"><div class="nhan">Tê giác Rhino – đề xuất</div><div class="tt" data-nv="RHINO"></div></div>
+</div>
+
+<h2>2. Lời chào ở góc màn hình (mỗi ngày 1 lần, nhắc nghỉ 10:00 / 15:00, khen khi gửi sản lượng)</h2>
+<div class="cot2">
+ <div class="o"><div class="nhan">Mai</div><div class="goc"><svg class="mai vay noi" viewBox="0 0 200 270" data-nv="MAI"></svg><div class="bb"><small>🌤 Chào buổi sáng, Chiến!</small><div class="kh">Hôm nay hơn hôm qua một chút là <b>đủ giỏi rồi</b>!</div><span class="mai-chip mc-ns">Năng suất</span></div></div></div>
+ <div class="o moi"><div class="nhan">Tê giác Rhino</div><div class="goc"><svg class="mai vay noi" viewBox="0 0 200 270" data-nv="RHINO"></svg><div class="bb"><small>🌤 Chào buổi sáng, Chiến!</small><div class="kh">Hôm nay hơn hôm qua một chút là <b>đủ giỏi rồi</b>!</div><span class="mai-chip mc-ns">Năng suất</span></div></div></div>
+</div>
+
+<h2>3. Dải khẩu hiệu của ngày (trang Việc hôm nay, Nhập sản lượng)</h2>
+<div class="cot2">
+ <div class="o"><div class="nhan">Mai</div><div class="mai-bang"><svg class="mai vui" viewBox="0 0 200 270" data-nv="MAI"></svg><div class="nd"><span class="mai-chip mc-cl">Chất lượng</span><div class="kh">Làm đúng ngay từ đầu – <b>nhanh nhất</b> là không phải làm lại.</div><small>Khẩu hiệu hôm nay</small></div></div></div>
+ <div class="o moi"><div class="nhan">Tê giác Rhino</div><div class="mai-bang"><svg class="mai vui" viewBox="0 0 200 270" data-nv="RHINO"></svg><div class="nd"><span class="mai-chip mc-cl">Chất lượng</span><div class="kh">Làm đúng ngay từ đầu – <b>nhanh nhất</b> là không phải làm lại.</div><small>Khẩu hiệu hôm nay</small></div></div></div>
+</div>
+
+<h2>4. Hướng dẫn công nhân nhập sản lượng (lần đầu đăng nhập) và hộp đọc lại trước khi gửi</h2>
+<div class="cot2">
+ <div class="o"><div class="nhan">Mai</div><div class="thoai"><svg class="mai chi noi" viewBox="0 0 200 270" data-nv="MAI"></svg><div class="mai-thoai"><span class="ten">Mai</span><div class="loi">Bạn chọn <b>công đoạn</b> đã làm hôm nay ở ô này nhé. Không thấy công đoạn của mình thì báo tổ trưởng.</div><div class="dk"><span class="buoc">Bước 2 / 6</span><button class="btn" type="button">Quay lại</button><button class="btn pri" type="button">Tiếp</button></div></div></div></div>
+ <div class="o moi"><div class="nhan">Tê giác Rhino</div><div class="thoai"><svg class="mai chi noi" viewBox="0 0 200 270" data-nv="RHINO"></svg><div class="mai-thoai"><span class="ten" data-ten>Rhino</span><div class="loi">Bạn chọn <b>công đoạn</b> đã làm hôm nay ở ô này nhé. Không thấy công đoạn của mình thì báo tổ trưởng.</div><div class="dk"><span class="buoc">Bước 2 / 6</span><button class="btn" type="button">Quay lại</button><button class="btn pri" type="button">Tiếp</button></div></div></div></div>
+</div>
+<div class="cot2" style="margin-top:14px">
+ <div class="o"><div class="nhan">Mai – số lớn bất thường</div><div class="thoai"><svg class="mai lo" viewBox="0 0 200 270" data-nv="MAI"></svg><div class="mai-thoai"><span class="ten">Mai</span><div class="loi">Tổng hôm nay là <span class="vang">6.200</span> cái – cao hơn mọi ngày nhiều. Bạn xem lại giúp Mai có gõ thừa số 0 không nhé?</div><div class="dk"><span class="buoc"></span><button class="btn" type="button">Sửa lại</button><button class="btn pri" type="button">Đúng rồi, gửi</button></div></div></div></div>
+ <div class="o moi"><div class="nhan">Tê giác Rhino – số lớn bất thường</div><div class="thoai"><svg class="mai lo" viewBox="0 0 200 270" data-nv="RHINO"></svg><div class="mai-thoai"><span class="ten" data-ten>Rhino</span><div class="loi">Tổng hôm nay là <span class="vang">6.200</span> cái – cao hơn mọi ngày nhiều. Bạn xem lại giúp mình có gõ thừa số 0 không nhé?</div><div class="dk"><span class="buoc"></span><button class="btn" type="button">Sửa lại</button><button class="btn pri" type="button">Đúng rồi, gửi</button></div></div></div></div>
+</div>
+
+<h2>5. Màn đăng nhập "Khắc laser": chân dung tròn cạnh lời chào</h2>
+<div class="cot2">
+ <div class="o"><div class="nhan">Mai</div><div class="dn"><div class="cd"><svg class="mai" viewBox="34 26 132 132" data-nv="MAI"></svg></div><div><b>Chào buổi sáng!</b><small>Nhập mã nhân viên để vào ca.</small></div></div></div>
+ <div class="o moi"><div class="nhan">Tê giác Rhino</div><div class="dn"><div class="cd"><svg class="mai" viewBox="34 26 132 132" data-nv="RHINO"></svg></div><div><b>Chào buổi sáng!</b><small>Nhập mã nhân viên để vào ca.</small></div></div></div>
+</div>
+<p class="ghi">Nếu chọn tê giác: thay hình ở đủ 5 chỗ trên, đổi chữ "Mai" trong lời thoại thành tên chú tê giác, màu nhấn của bong bóng lời thoại chuyển sang vàng Rhino. Màn đăng nhập có thêm động tác lấy tay bịt tai khi bật Caps Lock và mắt nhìn theo chữ đang gõ; phần này sẽ vẽ lại cho tê giác khi gắn vào web.</p>
+</div>
+<script>
+var MAI_SVG=''+
+'<defs>'+
+ '<linearGradient id="gToc" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#4a3530"/><stop offset=".6" stop-color="#2a1d1a"/><stop offset="1" stop-color="#1c1312"/></linearGradient>'+
+ '<linearGradient id="gMong" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3b2016"/><stop offset=".5" stop-color="#9a5a32"/><stop offset="1" stop-color="#f2b46a"/></linearGradient>'+
+ '<linearGradient id="gAo" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2f4a5e"/><stop offset="1" stop-color="#1d2f3d"/></linearGradient>'+
+ '<linearGradient id="gDa" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff0e6"/><stop offset="1" stop-color="#ffe0d0"/></linearGradient>'+
+ '<radialGradient id="gMa" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="#ff7d96" stop-opacity=".55"/><stop offset="1" stop-color="#ff7d96" stop-opacity="0"/></radialGradient>'+
+'</defs>'+
+/* sợi tóc "ăng-ten" trên đỉnh đầu – đung đưa */
+'<g class="duoi"><path d="M100 34c-2-14 6-24 18-26-8 6-12 14-10 26z" fill="#2a1d1a"/></g>'+
+'<g class="than-tren">'+
+/* tóc sau (bob ngang cằm) */
+'<path d="M28 120c-6-60 26-94 72-94s78 34 72 94c-2 20-8 34-16 42-8-10-12-24-13-38H57c-1 14-5 28-13 38-8-8-14-22-16-42z" fill="url(#gToc)"/>'+
+/* chân + giày */
+'<rect x="80" y="232" width="15" height="24" rx="7" fill="#22303c"/><rect x="105" y="232" width="15" height="24" rx="7" fill="#22303c"/>'+
+'<path d="M74 256c0-7 6-10 13-10h8v14H77c-2 0-3-2-3-4z" fill="#f4f7f8"/><path d="M126 256c0-7-6-10-13-10h-8v14h18c2 0 3-2 3-4z" fill="#f4f7f8"/>'+
+'<path d="M76 258h19M105 258h19" stroke="#2fd3c6" stroke-width="2.5" stroke-linecap="round"/>'+
+/* thân: áo khoác thể thao, áo thun trắng bên trong */
+'<path d="M66 238c0-38 12-66 34-70 22 4 34 32 34 70z" fill="url(#gAo)"/>'+
+'<path d="M88 168l12 24 12-24z" fill="#f4f7f8"/>'+
+'<path d="M86 168l14 26 14-26" fill="none" stroke="#2fd3c6" stroke-width="4" stroke-linejoin="round"/>'+
+'<path d="M100 194v44" stroke="#14212c" stroke-width="2"/>'+
+'<path d="M68 222h64" stroke="#2fd3c6" stroke-width="2" opacity=".55"/>'+
+'<rect x="106" y="200" width="20" height="11" rx="2.5" fill="#eef2f4"/><rect x="106" y="200" width="20" height="3" rx="1.5" fill="#2fd3c6"/>'+
+'<text x="116" y="209.4" text-anchor="middle" font-size="6.2" font-weight="700" fill="#1d2a33" font-family="Arial,sans-serif">MAI</text>'+
+/* tay trái */
+'<path d="M72 180c-8 10-12 22-12 34" stroke="#2f4a5e" stroke-width="13" fill="none" stroke-linecap="round"/>'+
+'<rect x="53" y="208" width="14" height="6" rx="3" fill="#2fd3c6"/><circle cx="60" cy="219" r="6.5" fill="#ffe6d8"/>'+
+/* tay phải: chỉ / cổ vũ */
+'<g class="tay-chi"><path d="M128 180c8 10 12 22 12 34" stroke="#2f4a5e" stroke-width="13" fill="none" stroke-linecap="round"/>'+
+ '<rect x="133" y="208" width="14" height="6" rx="3" fill="#2fd3c6"/><circle cx="140" cy="219" r="6.5" fill="#ffe6d8"/>'+
+ '<path class="ngon" d="M140 220l1 10" stroke="#ffe6d8" stroke-width="4.5" stroke-linecap="round"/></g>'+
+/* cổ */
+'<path d="M92 156h16v14c-4 3-12 3-16 0z" fill="#f6d2c0"/>'+
+/* mặt chibi tròn, cằm nhọn nhẹ */
+'<path d="M44 108c0-34 24-56 56-56s56 22 56 56c0 26-12 44-30 52-9 4-17 6-26 6s-17-2-26-6c-18-8-30-26-30-52z" fill="url(#gDa)"/>'+
+/* má hồng */
+'<ellipse cx="66" cy="132" rx="12" ry="7" fill="url(#gMa)"/><ellipse cx="134" cy="132" rx="12" ry="7" fill="url(#gMa)"/>'+
+/* mắt trái */
+'<g class="mat-g"><ellipse cx="76" cy="114" rx="14" ry="17" fill="#fff"/><ellipse cx="76" cy="117" rx="12" ry="14.5" fill="url(#gMong)"/>'+
+ '<ellipse cx="76" cy="118" rx="5.5" ry="7.5" fill="#24120c"/><ellipse cx="70.5" cy="109" rx="4.4" ry="5.6" fill="#fff"/><circle cx="81" cy="124" r="2.4" fill="#fff" opacity=".9"/><circle cx="73" cy="126" r="1.2" fill="#fff" opacity=".7"/>'+
+ '<path d="M60 110c2-11 9-17 17-17 8 0 14 4 16 10" stroke="#20140f" stroke-width="3.6" fill="none" stroke-linecap="round"/><path d="M61 108l-6-3M62 112l-5 0" stroke="#20140f" stroke-width="2.2" stroke-linecap="round"/>'+
+ '<path d="M69 132c4 1.5 9 1.5 13 0" stroke="#c48d7a" stroke-width="1.3" fill="none" stroke-linecap="round" opacity=".7"/></g>'+
+/* mắt phải */
+'<g class="mat-g"><ellipse cx="124" cy="114" rx="14" ry="17" fill="#fff"/><ellipse cx="124" cy="117" rx="12" ry="14.5" fill="url(#gMong)"/>'+
+ '<ellipse cx="124" cy="118" rx="5.5" ry="7.5" fill="#24120c"/><ellipse cx="118.5" cy="109" rx="4.4" ry="5.6" fill="#fff"/><circle cx="129" cy="124" r="2.4" fill="#fff" opacity=".9"/><circle cx="121" cy="126" r="1.2" fill="#fff" opacity=".7"/>'+
+ '<path d="M140 110c-2-11-9-17-17-17-8 0-14 4-16 10" stroke="#20140f" stroke-width="3.6" fill="none" stroke-linecap="round"/><path d="M139 108l6-3M138 112l5 0" stroke="#20140f" stroke-width="2.2" stroke-linecap="round"/>'+
+ '<path d="M118 132c4 1.5 9 1.5 13 0" stroke="#c48d7a" stroke-width="1.3" fill="none" stroke-linecap="round" opacity=".7"/></g>'+
+/* mũi + miệng */
+'<path d="M100 128l-1.2 3h2.4" stroke="#e3a690" stroke-width="1.2" fill="none" stroke-linecap="round"/>'+
+'<path class="mieng-cuoi" d="M92 138c3 4 6 4 8 1.5 2 2.5 5 2.5 8-1.5" stroke="#b8405a" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>'+
+'<g class="mieng-mo"><path d="M93 136c1.5 9 12.5 9 14 0z" fill="#8f2a42"/><path d="M96 142c2.5 1.6 5.5 1.6 8 0" stroke="#ff8fa3" stroke-width="2.6" stroke-linecap="round"/></g>'+
+/* tóc mái lệch (giống ảnh: rẽ ngôi, quét sang một bên) */
+'<path d="M38 116C34 64 62 32 102 32c40 0 66 30 60 80Q156 92 150 82Q150 94 144 102Q140 86 130 76Q128 92 120 100Q118 82 106 72Q102 88 92 98Q92 82 84 74Q76 90 62 100Q66 88 64 78Q50 94 38 116z" fill="url(#gToc)"/>'+
+'<path d="M58 62c14-14 36-20 58-14" stroke="#7a5a50" stroke-width="5" fill="none" stroke-linecap="round" opacity=".6"/>'+
+'<path d="M120 46c10 4 18 12 22 22" stroke="#7a5a50" stroke-width="3" fill="none" stroke-linecap="round" opacity=".45"/>'+
+/* tóc hai bên ôm má, ngang cằm */
+'<path d="M42 104c-8 26-6 50 6 64 4-6 6-14 6-24 0-14-4-28-12-40z" fill="url(#gToc)"/><path d="M158 104c8 26 6 50-6 64-4-6-6-14-6-24 0-14 4-28 12-40z" fill="url(#gToc)"/>'+
+/* khuyên tai tròn nhỏ */
+'<circle cx="47" cy="140" r="3.2" fill="none" stroke="#e8c27a" stroke-width="1.6"/><circle cx="153" cy="140" r="3.2" fill="none" stroke="#e8c27a" stroke-width="1.6"/>'+
+/* kẹp tóc cyan */
+'<g transform="rotate(-24 134 66)"><rect x="124" y="62" width="20" height="6" rx="3" fill="#2fd3c6"/><circle cx="127.5" cy="65" r="1.8" fill="#eafffd"/></g>'+
+/* lông mày (vẽ đè lên tóc mái như anime) */
+'<g class="may-vui" stroke="#3a2622" stroke-width="2.2" fill="none" stroke-linecap="round" opacity=".85"><path d="M66 90c5-3 11-3 16-1"/><path d="M118 89c5-2 11-2 16 1"/></g>'+
+'<g class="may-lo" stroke="#3a2622" stroke-width="2.2" fill="none" stroke-linecap="round" opacity=".85"><path d="M66 92c6 0 11-2 16-6"/><path d="M134 92c-6 0-11-2-16-6"/></g>'+
+/* mồ hôi + lấp lánh */
+'<path class="mo-hoi" d="M152 78c4 6 6 10 3 13s-8 0-7-4 2-6 4-9z" fill="#9fe3ff" stroke="#5ab8e0" stroke-width="1"/>'+
+'<g class="lap-lanh" fill="#f0b04e"><path d="M22 70l3 7 7 3-7 3-3 7-3-7-7-3 7-3z"/><path d="M176 40l2 5 5 2-5 2-2 5-2-5-5-2 5-2z" style="animation-delay:.4s"/><path d="M170 150l1.5 4 4 1.5-4 1.5-1.5 4-1.5-4-4-1.5 4-1.5z" style="animation-delay:.8s"/></g>'+
+'</g>';
+var RHINO=''+
+'<defs>'+
+ '<linearGradient id="rDa" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#c3ccd4"/><stop offset=".55" stop-color="#a7b2bc"/><stop offset="1" stop-color="#8e9aa5"/></linearGradient>'+
+ '<linearGradient id="rMom" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#e6eaee"/><stop offset="1" stop-color="#c9d1d8"/></linearGradient>'+
+ '<linearGradient id="rSung" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#f3e3c0"/><stop offset=".7" stop-color="#fff8ea"/><stop offset="1" stop-color="#f7b829"/></linearGradient>'+
+ '<linearGradient id="rMong" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3a2408"/><stop offset=".5" stop-color="#b9781a"/><stop offset="1" stop-color="#ffd36a"/></linearGradient>'+
+ '<linearGradient id="rAo" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3c3c3c"/><stop offset="1" stop-color="#232323"/></linearGradient>'+
+ '<radialGradient id="rMa" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="#ff8aa0" stop-opacity=".6"/><stop offset="1" stop-color="#ff8aa0" stop-opacity="0"/></radialGradient>'+
+'</defs>'+
+/* chỏm lông vàng trên đỉnh đầu (kiểu "ăng-ten" anime) – đung đưa */
+'<g class="duoi"><path d="M101 54c-3-13 3-22 15-25-7 6-10 13-9 24z" fill="#f7b829"/><path d="M104 54c0-9 3-15 9-19" stroke="#fff3cf" stroke-width="1.6" fill="none" stroke-linecap="round" opacity=".7"/></g>'+
+'<g class="than-tren">'+
+/* chân + giày thể thao */
+'<rect x="80" y="232" width="15" height="24" rx="7" fill="#8e9aa5"/><rect x="105" y="232" width="15" height="24" rx="7" fill="#8e9aa5"/>'+
+'<path d="M74 256c0-7 6-10 13-10h8v14H77c-2 0-3-2-3-4z" fill="#f4f7f8"/><path d="M126 256c0-7-6-10-13-10h-8v14h18c2 0 3-2 3-4z" fill="#f4f7f8"/>'+
+'<path d="M76 258h19M105 258h19" stroke="#f7b829" stroke-width="2.5" stroke-linecap="round"/>'+
+/* thân: áo khoác đồng phục than chì, viền vàng Rhino */
+'<path d="M66 238c0-38 12-66 34-70 22 4 34 32 34 70z" fill="url(#rAo)"/>'+
+'<path d="M88 168l12 24 12-24z" fill="#f4f7f8"/>'+
+'<path d="M86 168l14 26 14-26" fill="none" stroke="#f7b829" stroke-width="4" stroke-linejoin="round"/>'+
+'<path d="M100 194v44" stroke="#111" stroke-width="2"/>'+
+'<path d="M68 222h64" stroke="#f7b829" stroke-width="2" opacity=".6"/>'+
+'<rect x="104" y="200" width="24" height="11" rx="2.5" fill="#eef2f4"/><rect x="104" y="200" width="24" height="3" rx="1.5" fill="#f7b829"/>'+
+'<text x="116" y="209.4" text-anchor="middle" font-size="6" font-weight="700" fill="#2b2b2b" font-family="Arial,sans-serif">RHINO</text>'+
+/* tay trái */
+'<path d="M72 180c-8 10-12 22-12 34" stroke="#333" stroke-width="13" fill="none" stroke-linecap="round"/>'+
+'<rect x="53" y="208" width="14" height="6" rx="3" fill="#f7b829"/><circle cx="60" cy="219" r="7" fill="#aab5bf"/>'+
+/* tay phải: chỉ / cổ vũ */
+'<g class="tay-chi"><path d="M128 180c8 10 12 22 12 34" stroke="#333" stroke-width="13" fill="none" stroke-linecap="round"/>'+
+ '<rect x="133" y="208" width="14" height="6" rx="3" fill="#f7b829"/><circle cx="140" cy="219" r="7" fill="#aab5bf"/>'+
+ '<path class="ngon" d="M140 220l1 10" stroke="#aab5bf" stroke-width="4.5" stroke-linecap="round"/></g>'+
+/* cổ */
+'<path d="M90 158h20v12c-5 3-15 3-20 0z" fill="#98a4ae"/>'+
+/* tai (vẽ trước đầu để chân tai nằm dưới) */
+'<g class="tai"><path d="M52 84c-14-12-18-30-10-42 12 4 20 18 22 34z" fill="url(#rDa)"/><path d="M53 76c-8-8-10-18-6-26 6 4 10 12 11 22z" fill="#f2b7c2"/></g>'+
+'<g class="tai tai-p"><path d="M148 84c14-12 18-30 10-42-12 4-20 18-22 34z" fill="url(#rDa)"/><path d="M147 76c8-8 10-18 6-26-6 4-10 12-11 22z" fill="#f2b7c2"/></g>'+
+/* đầu tròn, má phúng phính */
+'<path d="M38 112c0-38 27-62 62-62s62 24 62 62c0 30-14 50-36 58-9 4-17 5-26 5s-17-1-26-5c-22-8-36-28-36-58z" fill="url(#rDa)"/>'+
+/* nếp da trán + đốm sáng */
+'<path d="M80 66c13-5 27-5 40 0" stroke="#8e9aa5" stroke-width="2" fill="none" stroke-linecap="round" opacity=".55"/>'+
+'<path d="M86 74c9-3 19-3 28 0" stroke="#8e9aa5" stroke-width="1.6" fill="none" stroke-linecap="round" opacity=".4"/>'+
+'<ellipse cx="66" cy="72" rx="12" ry="6" fill="#fff" opacity=".22" transform="rotate(-25 66 72)"/>'+
+/* má hồng */
+'<ellipse cx="56" cy="136" rx="12" ry="7" fill="url(#rMa)"/><ellipse cx="144" cy="136" rx="12" ry="7" fill="url(#rMa)"/>'+
+/* mõm sáng màu */
+'<ellipse cx="100" cy="145" rx="35" ry="23" fill="url(#rMom)"/>'+
+'<ellipse cx="89" cy="147" rx="3.4" ry="2.3" fill="#6b7782"/><ellipse cx="111" cy="147" rx="3.4" ry="2.3" fill="#6b7782"/>'+
+/* sừng: sừng lớn trên mõm, đầu sừng ánh vàng */
+'<path d="M89 132C91 116 95 102 104 86c-1 15 2 31 7 46z" fill="url(#rSung)" stroke="#d9c08c" stroke-width="1.2" stroke-linejoin="round"/>'+
+'<path d="M95 126c1-9 3-17 7-26" stroke="#fff" stroke-width="2" fill="none" stroke-linecap="round" opacity=".7"/>'+
+/* mắt trái */
+'<g class="mat-g"><ellipse cx="68" cy="112" rx="14" ry="17" fill="#fff"/><ellipse cx="68" cy="115" rx="12" ry="14.5" fill="url(#rMong)"/>'+
+ '<ellipse cx="68" cy="116" rx="5.5" ry="7.5" fill="#1d1206"/><ellipse cx="62.5" cy="107" rx="4.4" ry="5.6" fill="#fff"/><circle cx="73" cy="122" r="2.4" fill="#fff" opacity=".9"/><circle cx="65" cy="124" r="1.2" fill="#fff" opacity=".7"/>'+
+ '<path d="M52 108c2-11 9-17 17-17 8 0 14 4 16 10" stroke="#2b2b2b" stroke-width="3.4" fill="none" stroke-linecap="round"/><path d="M53 106l-5-3" stroke="#2b2b2b" stroke-width="2" stroke-linecap="round"/></g>'+
+/* mắt phải */
+'<g class="mat-g"><ellipse cx="132" cy="112" rx="14" ry="17" fill="#fff"/><ellipse cx="132" cy="115" rx="12" ry="14.5" fill="url(#rMong)"/>'+
+ '<ellipse cx="132" cy="116" rx="5.5" ry="7.5" fill="#1d1206"/><ellipse cx="126.5" cy="107" rx="4.4" ry="5.6" fill="#fff"/><circle cx="137" cy="122" r="2.4" fill="#fff" opacity=".9"/><circle cx="129" cy="124" r="1.2" fill="#fff" opacity=".7"/>'+
+ '<path d="M148 108c-2-11-9-17-17-17-8 0-14 4-16 10" stroke="#2b2b2b" stroke-width="3.4" fill="none" stroke-linecap="round"/><path d="M147 106l5-3" stroke="#2b2b2b" stroke-width="2" stroke-linecap="round"/></g>'+
+/* miệng */
+'<path class="mieng-cuoi" d="M92 156c3 4 6 4 8 1.5 2 2.5 5 2.5 8-1.5" stroke="#5c6670" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>'+
+'<g class="mieng-mo"><path d="M93 154c1.5 9 12.5 9 14 0z" fill="#8f2a42"/><path d="M96 160c2.5 1.6 5.5 1.6 8 0" stroke="#ff8fa3" stroke-width="2.6" stroke-linecap="round"/></g>'+
+/* lông mày */
+'<g class="may-vui" stroke="#5c6670" stroke-width="2.4" fill="none" stroke-linecap="round" opacity=".9"><path d="M58 86c5-3 11-3 16-1"/><path d="M126 85c5-2 11-2 16 1"/></g>'+
+'<g class="may-lo" stroke="#5c6670" stroke-width="2.4" fill="none" stroke-linecap="round" opacity=".9"><path d="M58 88c6 0 11-2 16-6"/><path d="M142 88c-6 0-11-2-16-6"/></g>'+
+/* mồ hôi + lấp lánh */
+'<path class="mo-hoi" d="M154 78c4 6 6 10 3 13s-8 0-7-4 2-6 4-9z" fill="#9fe3ff" stroke="#5ab8e0" stroke-width="1"/>'+
+'<g class="lap-lanh" fill="#f7b829"><path d="M22 70l3 7 7 3-7 3-3 7-3-7-7-3 7-3z"/><path d="M176 40l2 5 5 2-5 2-2 5-2-5-5-2 5-2z" style="animation-delay:.4s"/><path d="M170 150l1.5 4 4 1.5-4 1.5-1.5 4-1.5-4-4-1.5 4-1.5z" style="animation-delay:.8s"/></g>'+
+'</g>';
+var NV={MAI:MAI_SVG,RHINO:RHINO};
+var TT=[['','Bình thường'],['vay noi','Vẫy chào + nói'],['chi','Chỉ tay'],['covu vui','Cổ vũ'],['lo','Lo lắng']];
+document.querySelectorAll('.tt').forEach(function(o){var k=o.dataset.nv;o.innerHTML=TT.map(function(t){return '<div><svg class="mai '+t[0]+'" viewBox="0 0 200 270">'+NV[k]+'</svg><small>'+t[1]+'</small></div>'}).join('')});
+document.querySelectorAll('svg[data-nv]').forEach(function(s){s.innerHTML=NV[s.dataset.nv]});
+// gradient của 2 nhân vật có id riêng (g* / r*) nên đặt chung 1 trang không lẫn màu
+document.getElementById('bNoi').onclick=function(){var on=this.getAttribute('aria-pressed')!=='true';this.setAttribute('aria-pressed',on);document.querySelectorAll('.tt svg').forEach(function(s){s.classList.toggle('noi',on)})};
+document.getElementById('bChuyen').onclick=function(){var on=this.getAttribute('aria-pressed')!=='true';this.setAttribute('aria-pressed',on);this.textContent=on?'▶ Cho chuyển động':'⏸ Dừng chuyển động';document.querySelectorAll('svg.mai *').forEach(function(e){e.style.animationPlayState=on?'paused':''})};
+</script></body></html>
