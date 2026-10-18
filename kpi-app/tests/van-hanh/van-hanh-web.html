@@ -24,6 +24,23 @@ button.vh-muc{cursor:pointer}
 .vh-nho-it{display:flex;gap:8px;margin-top:8px}
 .vh-nho-it .btn{min-height:40px}
 @media (max-width:700px){ .vh-the{padding:10px} }
+/* B2: điện thoại – mỗi công đoạn là 1 khối: dòng trên chọn công đoạn, dòng dưới số lượng · số lỗi · nút +/− (không tràn ngang) */
+@media (max-width:600px){
+  #cf_grid .tw{overflow:visible}
+  #cf_grid table{min-width:0!important;width:100%}
+  #cf_grid thead{display:none}
+  #cf_grid tbody{display:block}
+  #cf_grid tr{display:grid;grid-template-columns:22px 1fr 1fr auto;grid-template-areas:"so cd cd cd" "so sl loi nut";gap:6px 8px;padding:10px 0;border-bottom:1px solid var(--line)}
+  #cf_grid td{display:block;padding:0!important;border:0!important;text-align:left!important}
+  #cf_grid td:nth-child(1){grid-area:so;padding-top:12px!important}
+  #cf_grid td:nth-child(2){grid-area:cd}
+  #cf_grid td:nth-child(3){grid-area:sl}
+  #cf_grid td:nth-child(4){grid-area:loi}
+  #cf_grid td:nth-child(5){grid-area:nut;display:flex;gap:6px;align-items:flex-end}
+  #cf_grid td:nth-child(3)::before{content:'Số lượng';display:block;font-size:12px;color:var(--ink2);margin-bottom:3px}
+  #cf_grid td:nth-child(4)::before{content:'Số lỗi';display:block;font-size:12px;color:var(--ink2);margin-bottom:3px}
+  #cf_grid .cn-o{width:100%!important;box-sizing:border-box}
+}
 </style>
 <script>
 /* ===== 23. VẬN HÀNH / DỄ DÙNG / ĐỘNG VIÊN / HỘI NHẬP (chủ dự án duyệt 18/10 – kpi-app/TU-VAN-VAN-HANH.md) ===== */
