@@ -710,6 +710,7 @@ function napDuLieuLoi_(token, phan) {
   if (can('cd')) {
     out.congdoan = congdoan;
     out.dinhmuc = doc_('DinhMuc');
+    out.lsDM = ss_().getSheetByName(LSDM_SHEET) ? doc_(LSDM_SHEET).map(function(x){ return { MaCD: x.MaCD, DinhMucGio: soVN_(x.DinhMucGio), TuNgay: x.TuNgay ? ngayVN_(x.TuNgay) : '', DenNgay: ngayVN_(x.DenNgay) }; }) : [];
     var dexuat = doc_('DeXuatDinhMuc');
     if (me.vaiTro === 'TP') dexuat = dexuat.filter(function(x) { return x.MaXuong === me.xuong; });
     out.dexuat = dexuat;

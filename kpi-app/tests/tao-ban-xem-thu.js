@@ -108,7 +108,8 @@ window.__MANH=${anToan(JSON.stringify(MANH))};
       H:x.getUTCHours(),m:x.getUTCMinutes(),u:(x.getUTCDay()||7),Z:'+0700'};
     return f.replace(/yyyy|MM|dd|HH|mm|ss|H|m|u|Z/g,function(t){return m[t]});}
   /* SHA-256 đồng bộ (Utilities.computeDigest) */
-  function sha256(str){var b=unescape(encodeURIComponent(str)),n=b.length,K=[],H=[],i,j;
+  function sha256(str){return sha256Bin(unescape(encodeURIComponent(str)))}
+  function sha256Bin(b){var n=b.length,K=[],H=[],i,j;
     var pr=function(x){for(var f=2;f*f<=x;f++)if(x%f===0)return false;return true};
     for(var c=2,k=0;k<64;c++)if(pr(c)){if(k<8)H[k]=(Math.pow(c,.5)*4294967296)|0;K[k++]=(Math.pow(c,1/3)*4294967296)|0;}
     var w=[];for(i=0;i<n;i++)w[i>>2]|=(b.charCodeAt(i)&255)<<(24-(i%4)*8);w[n>>2]|=0x80<<(24-(n%4)*8);
@@ -169,7 +170,14 @@ window.__MANH=${anToan(JSON.stringify(MANH))};
     Session:{getScriptTimeZone:function(){return 'Asia/Ho_Chi_Minh'},getActiveUser:function(){return {getEmail:function(){return ''}}}},
     Utilities:{DigestAlgorithm:{SHA_256:'sha256',MD5:'md5'},Charset:{UTF_8:'utf8'},
       computeDigest:function(a,s){if(a!=='sha256')throw new Error('không hỗ trợ');return sha256(s)},
-      getUuid:uuid, formatDate:function(dt,tz,f){return dinhDang(dt,f)}, sleep:function(){}},
+      getUuid:uuid, formatDate:function(dt,tz,f){return dinhDang(dt,f)}, sleep:function(){},
+      /* bảo mật 18/10: mật khẩu băm HMAC-SHA256 lặp (Utilities.newBlob / computeHmacSha256Signature) */
+      newBlob:function(d){var bin=typeof d==='string'?unescape(encodeURIComponent(d)):d.map(function(x){return String.fromCharCode(x&255)}).join('');
+        return {getBytes:function(){return bin.split('').map(function(c){var v=c.charCodeAt(0);return v>127?v-256:v})},getDataAsString:function(){return decodeURIComponent(escape(bin))}}},
+      computeHmacSha256Signature:function(v,k){var tb=function(x){return typeof x==='string'?unescape(encodeURIComponent(x)):x.map(function(c){return String.fromCharCode(c&255)}).join('')};
+        var kb=tb(k),mb=tb(v),i,ip='',op='';if(kb.length>64)kb=tb(sha256Bin(kb));while(kb.length<64)kb+='\0';
+        for(i=0;i<64;i++){var c=kb.charCodeAt(i);ip+=String.fromCharCode(c^0x36);op+=String.fromCharCode(c^0x5c)}
+        return sha256Bin(op+tb(sha256Bin(ip+mb)))}},
     PropertiesService:{getScriptProperties:function(){return {getProperty:function(k){return k in props?props[k]:null},setProperty:function(k,v){props[k]=String(v)},
       deleteProperty:function(k){delete props[k]},getProperties:function(){return Object.assign({},props)}}}},
     CacheService:{getScriptCache:function(){return {get:function(k){return k in cache?cache[k]:null},put:function(k,v){cache[k]=v},remove:function(k){delete cache[k]},

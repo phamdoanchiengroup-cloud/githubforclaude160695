@@ -805,6 +805,8 @@ R("""  if(ME.vaiTro==='ADMIN'||ME.vaiTro==='TP') napKPIQuanLyKhoi();
 
 # ---------------------------------------------------------------- 22. Bảo mật phía trình duyệt (18/10): esc đủ ký tự, kiểm tra phần giao diện nhớ trong máy, hộp mật khẩu tạm
 exec(io.open(os.path.join(D, 'bao-mat', 'va-bao-mat-web.py'), encoding='utf-8').read())
+# ---------------------------------------------------------------- 23. Vận hành / dễ dùng / động viên / hội nhập (tư vấn chủ dự án duyệt 18/10)
+exec(io.open(os.path.join(D, 'van-hanh', 'va-van-hanh-web.py'), encoding='utf-8').read())
 
 io.open(os.path.join(D, '..', 'Index.html'), 'w', encoding='utf-8').write(s)
 print('OK Index.html')

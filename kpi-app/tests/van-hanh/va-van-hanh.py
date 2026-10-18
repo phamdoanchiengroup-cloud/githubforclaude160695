@@ -143,3 +143,7 @@ R("""    var coBan = ['MaNV', 'HoTen', 'MaXuong', 'ChucDanh', 'TrangThai', 'Ngay
 R("""var BC_LOAI = ['A+','A','B','C','D'];
 var BC_MAU_LOAI = { 'A+':'#1e7f5c', 'A':'#3aa57a', 'B':'#d29b2a', 'C':'#e07b39', 'D':'#c0392b' };""", """var BC_LOAI = ['A+','A','B','C','D','Học việc'];
 var BC_MAU_LOAI = { 'A+':'#1e7f5c', 'A':'#3aa57a', 'B':'#d29b2a', 'C':'#e07b39', 'D':'#c0392b', 'Học việc':'#7d868c' };""")
+
+# A1: gửi lịch sử định mức về trình duyệt (KPI tạm tính trên web khớp máy chủ)
+R("""    out.dinhmuc = doc_('DinhMuc');""", """    out.dinhmuc = doc_('DinhMuc');
+    out.lsDM = ss_().getSheetByName(LSDM_SHEET) ? doc_(LSDM_SHEET).map(function(x){ return { MaCD: x.MaCD, DinhMucGio: soVN_(x.DinhMucGio), TuNgay: x.TuNgay ? ngayVN_(x.TuNgay) : '', DenNgay: ngayVN_(x.DenNgay) }; }) : [];""")
