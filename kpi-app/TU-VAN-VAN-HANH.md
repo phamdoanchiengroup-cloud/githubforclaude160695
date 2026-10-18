@@ -1,6 +1,6 @@
 # Tư vấn vận hành / dễ dùng / động viên / đào tạo (18/10)
 
-**Đã làm 18/10** (chủ dự án: "Các phần còn lại triển khai luôn"): mọi mục [x]. Máy chủ: tests/van-hanh/va-van-hanh.py + van-hanh.gs; web: va-index.py mục 23 (tests/van-hanh/va-van-hanh-web.py + van-hanh-web.html). Kiểm thử: tests/van-hanh.js (27), tests/van-hanh-web.js (30). **Không làm (chủ dự án 18/10):** A5 (nhà máy chưa có KCS), ẩn "Đặt số dòng" (cứ để). A3 không làm (chủ dự án). A7 tăng ca: đã làm rồi GỠ BỎ (chủ dự án 18/10: "hiện tại không cần"). D6: video do chủ dự án quay, gửi link thì điền vào VIDEO_HD.
+**Đã làm 18/10** (chủ dự án: "Các phần còn lại triển khai luôn"): mọi mục [x]. Máy chủ: tests/van-hanh/va-van-hanh.py + van-hanh.gs; web: va-index.py mục 23 (tests/van-hanh/va-van-hanh-web.py + van-hanh-web.html). Kiểm thử: tests/van-hanh.js (27), tests/van-hanh-web.js (30). **Không làm (chủ dự án 18/10):** A5 (nhà máy chưa có KCS), ẩn "Đặt số dòng" (cứ để). A3 không làm (chủ dự án). A7 tăng ca: đã làm rồi GỠ BỎ (chủ dự án 18/10: "hiện tại không cần").
 
 Bốn chuyên gia (vai trò trong `.claude/agents/`) đọc mã và đề xuất. Các điểm chính đã đối chiếu lại với mã. **Chưa làm mục nào.** Mục có dấu ⚖ là chính sách, chủ dự án phải quyết trước.
 
@@ -68,7 +68,7 @@ Bốn chuyên gia (vai trò trong `.claude/agents/`) đọc mã và đề xuất
   - Thẻ "Người mới tuần này" ở tab Việc hôm nay.
 - [x] D5. **Bảng kỹ năng 3 mức** (Đang học / Làm được / Kèm được người khác).
   - Cảnh báo khi giao người đang học mà không có người kèm.
-- [x] D6. **Video ngắn ≤ 90 giây** (nhập sản lượng, KPI của tôi, đăng ký cơm, khi bị trả lại). Link đặt trong tab Hướng dẫn và gửi lên Zalo xưởng.
+- [ ] ~~D6~~ BỎ (chủ dự án 18/10: không làm video).. **Video ngắn ≤ 90 giây** (nhập sản lượng, KPI của tôi, đăng ký cơm, khi bị trả lại). Link đặt trong tab Hướng dẫn và gửi lên Zalo xưởng.
   - Chủ dự án quay video. Web chỉ gắn link.
 - [x] D7. **Rhino hướng dẫn TP/PP mới:** duyệt sản lượng, chốt ca, điểm danh.
 - [x] D8. **Thẻ định mức của tôi:** "Hôm qua bạn làm 42/50 – còn 8 nữa là đạt" (số thật).

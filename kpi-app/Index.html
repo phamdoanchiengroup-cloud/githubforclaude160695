@@ -8928,16 +8928,6 @@ function vhLuuKN(ma,cdM,muc){
   });
 }
 
-/* ---------- D6. Video hướng dẫn ngắn (chủ dự án quay, gửi link Drive/YouTube; để trống thì không hiện) ---------- */
-var VIDEO_HD={ CN:[], TP:[], ALL:[] };   // mỗi mục: ['Tên video', 'https://…']
-var _vhVHuongDan=vHuongDan;
-vHuongDan=function(){
-  var kq=_vhVHuongDan.apply(this,arguments);
-  var vt=ME.vaiTroGoc||ME.vaiTro, ds=(VIDEO_HD[vt==='PP'?'TP':vt]||[]).concat(VIDEO_HD.ALL||[]);
-  if(ds.length) vhChen('<div class="vh-the"><h3>🎬 Video hướng dẫn ngắn</h3><div class="vh-lap">'+ds.map(function(v){return '<a class="btn" target="_blank" rel="noopener" href="'+esc(v[1])+'">▶ '+esc(v[0])+'</a>'}).join('')+'</div></div>');
-  return kq;
-};
-
 /* ---------- D7. Rhino hướng dẫn trưởng / phó phòng mới (trang Duyệt sản lượng, lần đầu) ---------- */
 function maiTourTP(){
   maiTour([
