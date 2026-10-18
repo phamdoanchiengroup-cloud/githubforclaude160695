@@ -484,3 +484,15 @@ Nếu vẫn thấy giao diện cũ: kiểm tra lại Phần D (đã chọn **Phi
 5. Làm tương tự, tạo file **HoatAnh** → dán nội dung `HoatAnh.html` → Ctrl+S.
 6. Triển khai → Quản lý triển khai → ✏️ → Phiên bản mới → Triển khai. Rồi Ctrl+F5.
 - Nếu quên bước 4–5: tab Sơ đồ báo "Chưa có file SoDo.html…", hoạt ảnh tự dùng hình tĩnh – web vẫn chạy bình thường.
+
+
+## Âm thanh và giọng nói Rhino (18/10)
+- Đầu trang có thêm nút loa, mặc định **tắt** (🔇). Mỗi người tự bật trên máy mình, máy nhớ lựa chọn:
+  - bấm 1 lần → 🔉 bật tiếng hiệu ứng (bộ "HUD phi thuyền");
+  - bấm lần 2 → 🔊 bật thêm giọng Rhino (giọng nữ);
+  - bấm lần 3 → tắt.
+- Có tiếng ở: gửi / duyệt xong, báo lỗi, vuốt duyệt hoặc xóa dòng, lên hạng, nhắc hạn nhập, nhắc nghỉ giữa ca, mở cửa cuốn, đăng nhập đúng.
+- Rhino nói ở: hộp đọc lại trước khi gửi ("Ngày 18 tháng 10. Bạn gửi 2 công đoạn, tổng cộng 125 cái, 2 lỗi. Đúng chưa?"), gửi xong, nhập sai ô, còn ngày chưa nhập, lên hạng, giờ nghỉ giữa ca, lời chào khi đăng nhập.
+- Giọng nói nằm ở **file MỚI `AmThanh.html`** (khoảng 300 KB), chỉ tải khi ai đó bật giọng, rồi máy nhớ lại.
+
+**Khi dán (gộp vào lần dán chung):** ngoài Code.gs và Index.html, tạo thêm file: dấu **+** cạnh "Tệp" → **HTML** → gõ tên **AmThanh** (đúng chữ hoa A, T) → xóa hết nội dung mẫu → dán nội dung file `AmThanh.html` → Ctrl+S. Quên bước này thì tiếng hiệu ứng vẫn chạy, chỉ không có giọng nói.

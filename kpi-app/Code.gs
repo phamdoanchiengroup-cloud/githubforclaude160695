@@ -6566,8 +6566,9 @@ function KIEM_TRA_COM_TRUA() {
    Mỗi phần là 1 file HTML riêng trong dự án Apps Script, chỉ gửi về trình duyệt khi cần:
    - SoDo:    tab "Sơ đồ nhà máy" (mặt bằng 2D + bản 3D) – chỉ các vai trò có tab này.
    - HoatAnh: dữ liệu hoạt ảnh Lottie – tải nền sau khi đăng nhập.
+   - AmThanh: giọng nói Rhino thu sẵn (18/10) – chỉ tải khi người dùng bật giọng.
    Trình duyệt nhớ bản đã tải (localStorage, theo mã phiên bản) nên lần sau không tải lại. */
-var MANH_GD = { SoDo: ['ADMIN', 'TP', 'TL', 'HR'], HoatAnh: null };
+var MANH_GD = { SoDo: ['ADMIN', 'TP', 'TL', 'HR'], HoatAnh: null, AmThanh: null };
 function layManhGiaoDien(token, ten) {
   var me = docPhien_(token);
   if (!me) return sach_({ ok: false, hetHan: true, msg: 'Phiên đăng nhập đã hết hạn.' });

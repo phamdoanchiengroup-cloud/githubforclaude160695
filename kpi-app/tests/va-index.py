@@ -807,6 +807,8 @@ R("""  if(ME.vaiTro==='ADMIN'||ME.vaiTro==='TP') napKPIQuanLyKhoi();
 exec(io.open(os.path.join(D, 'bao-mat', 'va-bao-mat-web.py'), encoding='utf-8').read())
 # ---------------------------------------------------------------- 23. Vận hành / dễ dùng / động viên / hội nhập (tư vấn chủ dự án duyệt 18/10)
 exec(io.open(os.path.join(D, 'van-hanh', 'va-van-hanh-web.py'), encoding='utf-8').read())
+# ---------------------------------------------------------------- 24. Âm thanh + giọng Rhino (18/10, chủ dự án chọn HUD + giọng nữ), mặc định tắt
+exec(io.open(os.path.join(D, 'am-thanh', 'va-am-thanh.py'), encoding='utf-8').read())
 
 io.open(os.path.join(D, '..', 'Index.html'), 'w', encoding='utf-8').write(s)
 print('OK Index.html')
