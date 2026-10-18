@@ -23,7 +23,7 @@ const mauPhong = (p, ten) => p.evaluate(t => { const g = [...document.querySelec
 
   console.log('ADMIN · máy tính');
   let p = await vao(b, 'chienpham');
-  let s = await p.evaluate(() => [...document.querySelectorAll('#nav button')].map(x => x.dataset.k));
+  let s = await p.evaluate(() => [...document.querySelectorAll('#nav button[data-k]')].map(x => x.dataset.k));
   ok(s.indexOf('sodo') === s.indexOf('dash') + 1, 'menu có "Sơ đồ nhà máy" ngay sau Tổng quan', s);
   await p.evaluate(() => go('sodo')); await p.waitForTimeout(1500);
   s = await p.evaluate(() => [document.querySelectorAll('#sdMb .phong').length, document.querySelectorAll('#sdXs button').length, D.phongban.length, document.querySelector('.ptitle').textContent]);

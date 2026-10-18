@@ -25,7 +25,7 @@ const doiNguoi = (p, f) => p.evaluate(f => {
   console.log('Chủ sở hữu · máy tính');
   let p = await moTrang(b);
   ok(await p.evaluate(() => $('combar').classList.contains('hide')), 'chưa có thực đơn: không hiện thanh cơm trưa');
-  let s = await p.evaluate(() => [...document.querySelectorAll('#nav button')].map(x => x.dataset.k));
+  let s = await p.evaluate(() => [...document.querySelectorAll('#nav button[data-k]')].map(x => x.dataset.k));
   ok(s.includes('com'), 'menu có "Cơm trưa"', s);
   await p.evaluate(() => go('com')); await p.waitForTimeout(800);
   ok(await p.evaluate(() => !!$('cmMon') && $('cmNgay').value === '2026-10-13'), 'form báo thực đơn, ngày mặc định = ngày mai 13/10');
@@ -82,7 +82,7 @@ const doiNguoi = (p, f) => p.evaluate(f => {
   console.log('Bếp ăn (vai trò BEP)');
   await p.evaluate(() => { __MAY_CHU.them_('TaiKhoan', { TenDangNhap: 'bep', HoTen: 'Bếp ăn', VaiTro: 'BEP', MaXuong: '', TrangThai: 'Đang dùng', DoiMatKhauLanDau: 'Không' }); });
   await doiNguoi(p, "x.TenDangNhap==='bep'");
-  s = await p.evaluate(() => [[...document.querySelectorAll('#nav button')].map(x => x.dataset.k), tabHienTai, $('hbadge').textContent, !!$('cmMon'), !!document.querySelector('.cm-bang')]);
+  s = await p.evaluate(() => [[...document.querySelectorAll('#nav button[data-k]')].map(x => x.dataset.k), tabHienTai, $('hbadge').textContent, !!$('cmMon'), !!document.querySelector('.cm-bang')]);
   ok(s[0].join() === 'com' && s[1] === 'com' && s[2] === 'BẾP ĂN' && s[3] && s[4], 'bếp chỉ có trang Cơm trưa: nhập thực đơn + xem tổng hợp', s);
   s = await p.evaluate(() => [document.querySelectorAll('.cm-bang details').length, /Danh sách không ăn/.test($('main').textContent), document.querySelector('.cm-so .an b').textContent, document.querySelector('.cm-bang tr.tong:last-child').textContent]);
   ok(s[0] === 0 && !s[1] && /Tổng tất cả/.test(s[3]), 'bếp: chỉ số suất theo xưởng + tổng, không có họ tên', s);
@@ -92,7 +92,7 @@ const doiNguoi = (p, f) => p.evaluate(f => {
   console.log('Trợ lý ban điều hành (vai trò TL)');
   await p.evaluate(() => { __MAY_CHU.them_('TaiKhoan', { TenDangNhap: 'troly', HoTen: 'Trợ lý A', VaiTro: 'TL', MaXuong: '', TrangThai: 'Đang dùng', DoiMatKhauLanDau: 'Không' }); });
   await doiNguoi(p, "x.TenDangNhap==='troly'");
-  s = await p.evaluate(() => [[...document.querySelectorAll('#nav button')].map(x => x.dataset.k).join(), $('hbadge').textContent]);
+  s = await p.evaluate(() => [[...document.querySelectorAll('#nav button[data-k]')].map(x => x.dataset.k).join(), $('hbadge').textContent]);
   ok(s[0].split(',').sort().join() === 'cd,com,dash,dd,kpi,mm,ns,sodo' && s[1] === 'TRỢ LÝ BĐH', 'trợ lý: Tổng quan, Bảng KPI, Sơ đồ, Cơm trưa, Điểm danh, Công đoạn, Nhân sự, Máy móc', s);
   for (const k of ['dash', 'kpi', 'sodo']) { await p.evaluate(k => go(k), k); await p.waitForTimeout(1200); }
   s = await p.evaluate(() => { go('kpi'); return [/Chốt/.test($('main').textContent), $('main').textContent.length]; }); await p.waitForTimeout(800);
@@ -135,7 +135,7 @@ const doiNguoi = (p, f) => p.evaluate(f => {
   await p.evaluate(() => { const t = __MAY_CHU.doc_('TaiKhoan').find(x => x.TenDangNhap === 'nhom.mkt'); __MAY_CHU.suaO_('TaiKhoan', t._row, 'DoiMatKhauLanDau', 'Không'); });
   await doiNguoi(p, "x.TenDangNhap==='nhom.mkt'");
   await p.waitForTimeout(1200);
-  s = await p.evaluate(() => [[...document.querySelectorAll('#nav button')].map(x => x.dataset.k).join(), $('hbadge').textContent, $('combar').className, !!$('combar').querySelector('.cm-so-in'), !$('combar').querySelector('.cm-nut.khong')]);
+  s = await p.evaluate(() => [[...document.querySelectorAll('#nav button[data-k]')].map(x => x.dataset.k).join(), $('hbadge').textContent, $('combar').className, !!$('combar').querySelector('.cm-so-in'), !$('combar').querySelector('.cm-nut.khong')]);
   ok(s[0] === 'com' && s[1] === 'NHÓM BÁO CƠM' && s[2] === '' && s[3] && s[4], 'nhóm: chỉ có Cơm trưa; thanh thực đơn có ô số suất thay nút Ăn / Không ăn', s);
   await p.fill('#combar .cm-so-in', '8'); await p.click('#combar .cm-nut.an'); await p.waitForTimeout(1500);
   s = await p.evaluate(() => { const ng = $('combar').querySelector('.cm-so-in').dataset.ng; return [ng, COM.d.cuaToi[ng], $('combar').querySelector('.cm-so-in').value]; });
