@@ -1397,7 +1397,7 @@ function lanCan(g,x0,y0,x1,y1,h0,h=1.1,mk=OF.rail,mi=PC.inox){const ng=y0===y1,a
   B(a0,a1,c-.015,c+.015,h0+.1,h-.06+h0,mk); B(a0,a1,c-.05,c+.05,h0+h-.06,h0+h,mi); B(a0,a1,c-.03,c+.03,h0+.04,h0+.1,mi);
   const n=Math.max(1,Math.round((a1-a0)/1.2));for(let i=0;i&lt;=n;i++){const u=a0+(a1-a0)*i/n;B(u-.03,u+.03,c-.03,c+.03,h0,h0+h,mi);}}
 { const FX=-14, FH=4.2, L2=4.2, L3=8.1, L4=12.0, MAI=15.9, DINH=19.4; // cao độ theo mặt đứng KT: sàn +4,20 / +8,10 / +12,00, mái +15,90; đỉnh tháp +19,40 theo phối cảnh DELCO (chủ dự án 19/10; bản vẽ ghi +17,30)
-  const W2=[[25.2,1.9,2],[22.2,3.3,3],[18.9,2.0,2]];   // cụm cửa sổ mặt tiền T2, T3 theo phối cảnh (tâm y, rộng, số ô)
+  const W2=[[25.2,1.9,2],[22.2,3.3,3],[17.95,2.0,2]];   // cụm cửa sổ mặt tiền T2, T3 theo phối cảnh (tâm y, rộng, số ô)
   // khối chính 3 tầng
   { const H2=L2+.3, loT=[];
     W2.forEach(([y,w])=&gt;loT.push([y-w/2,y+w/2,L2+.15,L2+2.1],[y-w/2,y+w/2,L3+.9,L3+2.0])); loT.push([14.1,16.1,L3+.1,L3+2.0]);
@@ -1442,15 +1442,15 @@ function lanCan(g,x0,y0,x1,y1,h0,h=1.1,mk=OF.rail,mi=PC.inox){const ng=y0===y1,a
   // lô gia tầng 3: dựng trong nội thất tầng 3 (ofT3) – hiện cùng tòa nhà (17/10)
   [[-8,3],[-3,3]].forEach(([a,w])=&gt;[L2,L3].forEach(h=&gt;win('N',28,a,w,h+1,h+3,office,2)));
   // khối cánh Nam (theo phối cảnh sân hiên): tầng 1 kín; sân hiên tầng 2 có mái che sát tường, giàn thép xanh, lan can kính, bàn cà phê
-  tuongLo('x',FX,FX+.25,6,13,0,L2,[[9.5-.6,9.5+.6,1.6,2.8]],OF.render); tuongLo('y',6,6.25,FX,0,0,L2,[[-5.3-1.0,-5.3+1.0,.05,2.45]],OF.render);
+  tuongLo('x',FX,FX+.25,6,13,0,L2,[[7.9-.6,7.9+.6,1.6,2.8]],OF.render); tuongLo('y',6,6.25,FX,0,0,L2,[[-7.6,-5.6,.05,2.45]],OF.render);
   blk(-.25,0,6,13,0,L2,OF.render); blk(FX,0,12.75,13,0,L2,OF.render); blk(FX,0,6,13,L2-.12,L2-.02,OF.render); blk(FX,0,6,13,L2,L2+.3,OF.render);
-  win('W',FX,9.5,1.2,1.6,2.8,office,1);
+  win('W',FX,7.9,1.2,1.6,2.8,office,1);
   // mặt Nam tầng 1: cửa đôi sẫm có 2 ô kính, lam thông gió phía trên, tấm tôn đục lỗ, cửa kính đôi khung đen
   const PERF=S({color:0x2b3034,roughness:.6,metalness:.4,map:canvasTex(128,(g,s)=&gt;{g.fillStyle='#fff';g.fillRect(0,0,s,s);g.fillStyle='#000';for(let y=4;y&lt;s;y+=8)for(let x=4+(y/8%2)*4;x&lt;s;x+=8){g.beginPath();g.arc(x,y,2.2,0,7);g.fill();}},{rep:1})});
   blk(-11.2,-9.4,5.92,6.0,.05,2.3,OF.frame); [-10.75,-9.85].forEach(x=&gt;blk(x-.17,x+.17,5.9,5.93,1.45,1.8,S({color:0xfff2d6,emissive:0xffe2b0,emissiveIntensity:.3})));
   blk(-11.3,-9.3,5.92,5.99,2.55,3.3,M.louver);
-  {const pf=blk(-9.0,-6.7,5.93,5.99,.05,3.6,PERF);uvWorld(pf.geometry,2.3/1.2,3.6/1.2);}
-  win('S',5.97,-5.3,2.0,.05,2.45,office,2);
+  [[-9.0,-7.6,.05,3.6],[-7.6,-5.6,2.6,3.6],[-5.6,-.3,.05,3.6]].forEach(([a,b,h0,h1])=&gt;{const pf=blk(a,b,5.93,5.99,h0,h1,PERF);uvWorld(pf.geometry,(b-a)/1.2,(h1-h0)/1.2);});
+  cuaDi(office,-6.6,5.95,1.8,.05,2.45);   // 19/10: cửa kính đôi trong mảng tôn đục lỗ (phối cảnh)
   // sân hiên tầng 2: sàn đá xám xanh
   const HT2=L2+.3, TER=S({color:0x86939e,roughness:.5,map:TX.tile});
   blkSan(FX+.6,-2.6,6.6,13,HT2,HT2+.02,TER);
@@ -1459,7 +1459,7 @@ function lanCan(g,x0,y0,x1,y1,h0,h=1.1,mk=OF.rail,mi=PC.inox){const ng=y0===y1,a
   blk(FX,FX+.6,6,13,L3,L3+.7,OF.render); blk(FX,-2.6,6,6.6,L3,L3+.7,OF.render);
   blk(FX,-2.6,6,6.6,L2,HT2+.25,OF.render); blk(FX,FX+.6,6.6,12.4,L2,HT2+.25,OF.render); // gờ chân lan can
   // mái che bê tông sát tường nhà chính (trần trắng + đèn lon), phần ngoài là giàn thép hở
-  blk(-12.4,-2.6,10.6,13,L3-.25,L3+.05,OF.dark); blk(FX+.6,-12.4,10.6,13,L3-.25,L3+.05,OF.render);
+  blk(FX+.6,-2.6,10.6,13,L3-.25,L3+.05,OF.render);
   const LON=S({color:0xffffff,emissive:0xfff1d0,emissiveIntensity:1.2});
   for(let x=-12.4;x&lt;-3;x+=2.2){const d=cyl(.09,.12,M.steel,px(x),L3-.31,pz(11.8),12);office.add(d);office.add(cyl(.07,.02,LON,px(x),L3-.38,pz(11.8),12));}
   const XANH=S({color:0x2f6fd0,metalness:.45,roughness:.32});
@@ -1500,7 +1500,7 @@ function lanCan(g,x0,y0,x1,y1,h0,h=1.1,mk=OF.rail,mi=PC.inox){const ng=y0===y1,a
     blk(-1.25,0,10.9,11.5,h1-.1,h1,mat);                        // sàn nối vào lô gia tầng 3
     [6.95,8.1,10.9].forEach(y=&gt;[-2.55,-.05].forEach(x=&gt;blk(x-.05,x+.05,y-.05,y+.05,h0,h1+1.0,xk)));}
   // hộp thang kính xanh phía sau cánh Nam
-  blk(-2.6,0,6.8,12.3,L2,L4+1.2,OF.bglass);[L2,L3,L4,L4+1.2].forEach(h=&gt;blk(-2.65,.05,6.75,12.35,h-.05,h+.08,OF.blue)); // thang bộ sân vườn T2 → T4 ở góc X7 – D/E (mặt bằng T2–T4)
+  blk(-2.6,0,6.1,12.3,L2,L3+.7,OF.bglass);[L2,L3,L3+.7].forEach(h=&gt;blk(-2.65,.05,6.05,12.35,h-.05,h+.08,OF.blue)); [6.1,8.2,10.2,12.3].forEach(y=&gt;blk(-2.66,-2.54,y-.05,y+.05,L2,L3+.7,OF.blue)); [-1.3,0].forEach(x=&gt;blk(x-.05,x+.05,6.02,6.12,L2,L3+.7,OF.blue));   // 19/10 theo phối cảnh // thang bộ sân vườn T2 → T4 ở góc X7 – D/E (mặt bằng T2–T4)
   // cây cảnh trên sân hiên
   const pot=(x,y,h,s)=&gt;{const g=new THREE.Group();g.add(cyl(.35,.5,S({color:0x55595c,roughness:.8}),0,.25,0,14));g.add(cyl(.06,1.2*s,M.trunk,0,.9,0,6));
     const c=new THREE.Mesh(new THREE.SphereGeometry(.9*s,14,10),leafM[1]);c.scale.y=.6;c.position.y=1.7*s;c.castShadow=true;g.add(c);g.position.set(px(x),h,pz(y));office.add(g);};
@@ -1510,13 +1510,17 @@ function lanCan(g,x0,y0,x1,y1,h0,h=1.1,mk=OF.rail,mi=PC.inox){const ng=y0===y1,a
   blk(-14,-11.8,13,28,L4-.12,L4-.02,OF.tile); // hiên trước + lan can kính LK-03
   const MAI_SANG=S({color:0xc9ccc8,roughness:.85,map:TX.concrete});
   blk(-12.1,0,11.4,28.3,MAI,MAI+.2,OF.dark);blk(-11.9,-.2,11.6,28.1,MAI+.2,MAI+.22,MAI_SANG);
-  // 19/10 theo phối cảnh DELCO: khối ốp tôn đen 2 tầng (T3–T4) trên phần sau sân hiên, ôm lô gia T3 và lô-gia T4 (lùi vào), trần gỗ + đèn lon
-  { const X0=-12.4,X1=-2.6,Y0=10.6,GO=S({color:0xa8754a,roughness:.55,map:TX.wood||null});
-    blk(X0,X0+.35,Y0,13,L3-.25,MAI+.2,OF.dark); blk(X1-.3,X1,Y0,13,L3-.25,MAI+.2,OF.dark);
-    blk(X0,X1,Y0,Y0+.25,L3-.25,L3+.05,OF.dark); blk(X0,X1,Y0,Y0+.25,L4-.45,L4,OF.dark); blk(X0,X1,Y0,Y0+.25,MAI-.4,MAI+.2,OF.dark);
-    blk(X0,X1,Y0,13,MAI,MAI+.2,OF.dark); blk(X0+.35,X1-.3,Y0,11.7,L4-.42,L4-.05,OF.dark);
-    blk(X0+.35,X1-.3,Y0+.25,13,L4-.47,L4-.42,GO); blk(X0+.35,X1-.3,Y0+.25,13,MAI-.45,MAI-.4,GO);
-    for(let x=X0+1.2;x&lt;X1-.6;x+=1.6)[L4-.47,MAI-.45].forEach(h=&gt;office.add(cyl(.07,.02,LON,px(x),h-.01,pz(11.5),12)));
+  // 19/10 theo phối cảnh góc Tây Nam: khối tôn đen tầng 4 vươn ra trên sân hiên cánh Nam (đáy trần có đèn lon),
+  //   mặt Nam có lô-gia lõm sâu 1,5 m: trần gỗ + đèn, vách kính phía trong, lan can kính; đầu phía mặt tiền kín
+  { const X0=-13.0,X1=-3.0,Y0=8.0,XL=-10.6,GO=S({color:0xa8754a,roughness:.55});
+    blk(X0,X1,Y0,13,L4-.45,L4,OF.dark); blk(X0,X1,Y0,13,MAI,MAI+.2,OF.dark);
+    blk(X0,X0+.3,Y0,13,L4,MAI+.2,OF.dark); blk(X1-.3,X1,Y0,13,L4,MAI+.2,OF.dark); blk(X0,XL,Y0,Y0+.3,L4,MAI+.2,OF.dark);
+    blk(XL,X1,Y0,Y0+.3,MAI-.5,MAI+.2,OF.dark); blk(XL,X1-.3,Y0+.3,Y0+1.5,MAI-.56,MAI-.5,GO);
+    blk(XL,X1-.3,Y0+1.48,Y0+1.52,L4,MAI-.5,OFW); for(let x=XL;x&lt;=X1-.29;x+=1.2)blk(x-.04,x+.04,Y0+1.46,Y0+1.54,L4,MAI-.5,OF.frame);
+    blk(XL,X1-.3,Y0+1.46,Y0+1.54,L4,L4+.08,OF.frame); blk(XL,X1-.3,Y0+1.46,Y0+1.54,MAI-.58,MAI-.5,OF.frame);
+    lanCan(office,XL,Y0+.15,X1-.3,Y0+.15,L4,1.1);
+    for(let x=XL+.9;x&lt;X1-.6;x+=1.5)office.add(cyl(.07,.02,LON,px(x),MAI-.57,pz(Y0+.8),12));
+    for(let x=X0+1.0;x&lt;X1-.6;x+=1.8)[9.2,11.4].forEach(y=&gt;office.add(cyl(.07,.02,LON,px(x),L4-.46,pz(y),12)));
   }
   // mái dốc tam giác ốp nhôm sẫm từ đỉnh tháp xuống mái tầng 4 (thấy rõ ở cả 2 phối cảnh)
   { const ps=[[28,MAI+.2],[28,DINH],[25.4,MAI+.2]].map(([y,h])=&gt;new THREE.Vector2(y,h));
@@ -1580,31 +1584,102 @@ function vpBo(G,H,HT=3.1){
 { const H=VPL.t2, G=ofT2, T=vpBo(G,H), {b,nhan,vach,tuong,cua,cot}=T;
   DE2=b(-14,0,13,28,0,H,OF.render); blkSan(-14,0,13,31.35,H,H+.05,T.san,G); blkSan(-15.5,-14,28,31.35,H,H+.05,T.san,G);
   const go=S({color:0x6b4a32,roughness:.5}), banT=S({color:0xeeeeea,roughness:.45}), ghe=S({color:0x1b1c1e,roughness:.6}), vang=S({color:0xf2c230,roughness:.5});
+  // 19/10 (chủ dự án: "hiện đại, chuyên nghiệp"): bộ đồ nội thất văn phòng – bàn khung thép đen mặt trắng/gỗ óc chó, ghế lưới xoay 5 chân,
+  //   màn hình, sofa vải xám, bàn trà đá trắng, tủ sách gỗ khung đen, cây xanh, thảm; mọi món quay theo hướng người ngồi (N/S/E/W)
+  const WAL=S({color:0x5a3b28,roughness:.42}), DEN=S({color:0x17181a,metalness:.55,roughness:.35}), TRANG=S({color:0xf4f4f1,roughness:.35}),
+    DA=S({color:0x24272b,roughness:.6}), LUOI=S({color:0x2e3236,roughness:.8}), VAI=S({color:0x8e959b,roughness:.95}), VAIT=S({color:0xb9b2a6,roughness:.95}),
+    MAN=S({color:0x0d0f12,roughness:.15,emissive:0x1e3a5a,emissiveIntensity:.45}), DAM=S({color:0xeeebe6,roughness:.18}), THAM=S({color:0x5d636a,roughness:.98}),
+    THAMS=S({color:0xa79f93,roughness:.98}), VACH=S({color:0x6f8a7d,roughness:.9}), DEN_LED=S({color:0xffffff,emissive:0xfff3d6,emissiveIntensity:1.4});
+  const HA={N:0,S:Math.PI,E:-Math.PI/2,W:Math.PI/2};
+  const nhom=(x,y,hu,h=H)=&gt;{const g=new THREE.Group();g.position.set(px(x),h,pz(y));g.rotation.y=HA[hu]||0;G.add(g);return g;};
+  // ghế xoay: mặt hướng hu, cao = ghế giám đốc lưng cao bọc da
+  const gheVP=(x,y,hu,cao=false)=&gt;{const g=nhom(x,y,hu),m=cao?DA:LUOI;
+    g.add(box(.52,.09,.5,m,0,.48,0),box(.48,cao?.8:.55,.07,m,0,cao?.98:.82,.26),box(.05,.26,.05,DEN,0,.3,0));
+    if(cao)g.add(box(.3,.16,.07,m,0,1.46,.27));
+    [-1,1].forEach(k=&gt;g.add(box(.05,.05,.32,DEN,k*.28,.66,.02),box(.04,.16,.04,DEN,k*.28,.58,.12)));
+    for(let i=0;i&lt;5;i++){const a=i*Math.PI*2/5,l=box(.045,.035,.34,DEN,Math.sin(a)*.16,.07,Math.cos(a)*.16);l.rotation.y=a;g.add(l);}
+    return g;};
+  // bàn làm việc: người ngồi phía +z cục bộ (quay theo hu), khung chữ nhật thép đen, n màn hình, tấm ngăn
+  const banLV=(x,y,w,d,hu,{mat=TRANG,mh=1,vach=false}={})=&gt;{const g=nhom(x,y,hu);
+    g.add(box(w,.04,d,mat,0,.74,0)); [-1,1].forEach(k=&gt;{g.add(box(.05,.72,.05,DEN,k*(w/2-.05),.36,-d/2+.08),box(.05,.72,.05,DEN,k*(w/2-.05),.36,d/2-.08),box(.05,.05,d-.16,DEN,k*(w/2-.05),.08,0),box(.05,.05,d-.16,DEN,k*(w/2-.05),.7,0));});
+    g.add(box(w-.2,.28,.02,DEN,0,.52,-d/2+.06));
+    for(let i=0;i&lt;mh;i++){const ox=(i-(mh-1)/2)*.6;g.add(box(.56,.34,.025,MAN,ox,1.13,-d/2+.2),box(.04,.3,.04,DEN,ox,.92,-d/2+.22),box(.2,.015,.14,DEN,ox,.77,-d/2+.22));}
+    g.add(box(.42,.02,.14,DEN,0,.77,.05),box(.07,.02,.1,DEN,.32,.77,.06));
+    if(vach)g.add(box(w,.42,.035,VACH,0,.97,-d/2-.02));
+    return g;};
+  // bàn giám đốc: mặt gỗ óc chó dày, 2 đầu tấm gỗ, hộc kéo, 2 màn hình + laptop + đèn bàn + biển tên; bàn phụ chữ L bên phải
+  const banGD=(x,y,hu,w=2.0)=&gt;{const g=nhom(x,y,hu),d=.9;
+    g.add(box(w,.06,d,WAL,0,.75,0)); [-1,1].forEach(k=&gt;g.add(box(.06,.72,d,WAL,k*(w/2-.03),.36,0)));
+    g.add(box(w-.12,.42,.03,WAL,0,.5,-d/2+.06),box(.42,.5,.55,DEN,w/2-.3,.25,-.05));
+    g.add(box(.5,.04,1.0,WAL,w/2+.25,.65,-.25),box(.05,.63,.05,DEN,w/2+.48,.32,.2),box(.05,.63,.05,DEN,w/2+.48,.32,-.7));
+    [-.32,.32].forEach(ox=&gt;g.add(box(.6,.36,.025,MAN,ox,1.16,-d/2+.22),box(.04,.3,.04,DEN,ox,.94,-d/2+.24),box(.2,.015,.14,DEN,ox,.79,-d/2+.24)));
+    g.add(box(.32,.02,.22,DEN,-.75,.79,.05),box(.3,.2,.01,MAN,-.75,.9,-.06));
+    g.add(cyl(.07,.02,DEN,.8,.79,-.3,12),cyl(.012,.4,DEN,.8,.99,-.3,6),box(.16,.05,.1,DEN_LED,.8,1.2,-.24));
+    g.add(box(.26,.06,.04,S({color:0xc9a55a,metalness:.7,roughness:.3}),0,.81,.36));
+    return g;};
+  // sofa vải: mặt hướng hu; w = dài
+  const sofa=(x,y,w,hu,m=VAI)=&gt;{const g=nhom(x,y,hu);
+    g.add(box(w,.22,.86,DEN,0,.14,0),box(w-.3,.2,.68,m,0,.34,-.04),box(w,.5,.2,m,0,.62,.33)); [-1,1].forEach(k=&gt;g.add(box(.16,.42,.86,m,k*(w/2-.08),.45,0)));
+    const n=Math.max(1,Math.round((w-.3)/.65)); for(let i=0;i&lt;n;i++)g.add(box((w-.36)/n-.04,.12,.6,m,-(w-.36)/2+(i+.5)*(w-.36)/n,.5,-.06));
+    return g;};
+  const banTra=(x,y,w=1.0,d=.6)=&gt;{const g=nhom(x,y,'N');g.add(box(w,.04,d,DAM,0,.42,0));[-1,1].forEach(a=&gt;[-1,1].forEach(c=&gt;g.add(box(.03,.4,.03,DEN,a*(w/2-.06),.2,c*(d/2-.06)))));g.add(box(.25,.06,.18,WAL,.15,.47,0));return g;};
+  const tham=(x0,x1,y0,y1,m=THAM)=&gt;b(x0,x1,y0,y1,H+.005,H+.02,m);
+  // tủ sách / tủ hồ sơ khung đen mặt gỗ: mặt mở hướng hu
+  const tuSach=(x,y,w,hu,cao=2.0,sau=.38)=&gt;{const g=nhom(x,y,hu);g.add(box(w,cao,.03,WAL,0,cao/2,sau/2-.02));
+    [-1,1].forEach(k=&gt;g.add(box(.04,cao,sau,DEN,k*(w/2-.02),cao/2,0)));g.add(box(w,.04,sau,DEN,0,cao,0),box(w,.5,sau-.02,WAL,0,.25,0));
+    const M=[0x2f4f6f,0x8a6a3a,0xcfcac0,0x3b3f44,0x7a2e2a,0x56705e];
+    for(let t=1;t&lt;4;t++){const h=.5+t*(cao-.5)/4;g.add(box(w-.06,.025,sau,DEN,0,h,0));
+      let u=-w/2+.08;let r=t*7;while(u&lt;w/2-.25){r=(r*16807)%2147483647;const bw=.03+(r%5)*.01,bh=.2+(r%7)*.02;if((r%9)===0){u+=.18;continue;}
+        g.add(box(bw,bh,.2,S({color:M[r%M.length],roughness:.7}),u+bw/2,h+.013+bh/2,.02));u+=bw+.004;}}
+    return g;};
+  const tuThap=(x,y,w,hu,cao=.75)=&gt;{const g=nhom(x,y,hu);g.add(box(w,cao,.45,WAL,0,cao/2+.06,0),box(w,.06,.4,DEN,0,.03,0));for(let i=1;i&lt;Math.round(w/.6);i++)g.add(box(.01,cao-.06,.01,DEN,-w/2+i*w/Math.round(w/.6),cao/2+.06,-.226));return g;};
+  const cay=(x,y,s=1)=&gt;{G.add(cyl(.2*s,.45*s,S({color:0x2b2d30,roughness:.5}),px(x),H+.225*s,pz(y),16,.15*s));
+    for(let i=0;i&lt;7;i++){const a=i*2.4,r=.18*s,l=new THREE.Mesh(ico,leafM[i%3]);l.scale.set(.2*s,.32*s,.2*s);l.position.set(px(x)+Math.cos(a)*r,H+(.75+i*.12)*s,pz(y)+Math.sin(a)*r);l.castShadow=true;G.add(l);}};
+  const tv=(x,y,hu,w=1.65)=&gt;{const g=nhom(x,y,hu);g.add(box(w,w*.57,.05,MAN,0,1.45,0),box(w+.04,w*.57+.04,.03,DEN,0,1.45,.03));return g;};
+  const tranh=(x,y,hu,w=1.2,h=.8,mau=0x9a7b4f)=&gt;{const g=nhom(x,y,hu);g.add(box(w,h,.03,S({color:mau,roughness:.6}),0,1.6,0),box(w+.06,h+.06,.02,DEN,0,1.6,.015));return g;};
+  const denThang=(x,y0,y1,h=H+2.75)=&gt;{b(x-.04,x+.04,y0,y1,h,h+.05,DEN_LED);[y0+.2,y1-.2].forEach(y=&gt;b(x-.006,x+.006,y-.006,y+.006,h+.05,H+3.1,DEN));};
+  const ban=(x,y,w,d,m=TRANG)=&gt;banLV(x,y,w,d,'N',{mat:m,mh:0}), ngoi=(x,y)=&gt;gheVP(x,y,'N'), mayTinh=()=&gt;{};
   // vỏ: mặt tiền kính khung đen, trục D tường + 3 cửa ra sân vườn, các mặt còn lại tường thấp để nhìn vào
   b(-13.9,-13.84,13,28,H,H+3.1,T.kinh); for(let y=13.3;y&lt;=27.71;y+=1.44)b(-13.92,-13.8,y-.04,y+.04,H,H+3.1,T.den);   // 19/10: lùi vào trong tường (mặt tiền là cửa sổ đục lỗ theo phối cảnh)
   tuong(-14,13,0,13); [[VPX(5.0)],[VPX(6.8)],[VPX(11.4)]].forEach(([x])=&gt;{b(x-.45,x+.45,12.93,13.07,H,H+2.4,T.kinh);b(x-.47,x+.47,12.9,13.1,H+2.38,H+2.45,T.den);});
   tuong(-.06,13,-.06,28);
   const cx=VPX(7.35), cy=VPY(7.17); [[cx,13],[cx,cy],[-14,cy],[0,cy],[cx,28]].forEach(([x,y])=&gt;cot(Math.min(-.25,Math.max(-13.75,x)),Math.min(27.75,Math.max(13.25,y))));
-  // Kế toán – 7 người (X7 → 4,6 m; D → C)
+  // ===== Phòng ban điều hành (X7 → 4,6 m; D → C) – 7 người: bàn trưởng ban + 3 cặp bàn đối diện có vách ngăn nỉ, tủ thấp dọc tường xưởng, TV họp nhanh
   const kx=VPX(4.46), ky=VPY(8.075); vach(kx,13,kx,ky); tuong(0,ky,kx,ky,3.1); nhan('Phòng ban điều hành',-2.2,16.6,'35,2 m² · 7 người');
-  const ban=(x,y,w,d,m=banT)=&gt;{b(x-w/2,x+w/2,y-d/2,y+d/2,H+.72,H+.76,m);[[-1,-1],[1,-1],[-1,1],[1,1]].forEach(([a,c])=&gt;b(x+a*(w/2-.05)-.03,x+a*(w/2-.05)+.03,y+c*(d/2-.05)-.03,y+c*(d/2-.05)+.03,H,H+.72,T.den));};
-  const ngoi=(x,y)=&gt;{G.add(cyl(.24,.08,ghe,px(x),H+.48,pz(y),12));G.add(cyl(.03,.45,C.grey,px(x),H+.24,pz(y),6));G.add(cyl(.25,.03,ghe,px(x),H+.03,pz(y),10));};
-  const mayTinh=(x,y)=&gt;b(x-.25,x+.25,y-.03,y+.03,H+.8,H+1.12,C.dark);
-  ban(-2.6,14.0,1.6,.7,go);ngoi(-2.6,14.6);mayTinh(-2.6,13.8); for(let i=0;i&lt;3;i++){const y=17.0+i*1.25;ban(-1.6,y,.7,1.2);ban(-2.4,y,.7,1.2);ngoi(-.9,y);ngoi(-3.1,y);mayTinh(-1.6,y);mayTinh(-2.4,y);}
-  b(-.15,-.6,18.6,20.2,H,H+1.9,go); cua(kx,15.2,false,1.4);
-  // Phòng họp-2 (X7 → 4,6 m; D+8,1 → D+12,65)
-  const hy0=VPY(8.215), hy1=VPY(12.84); vach(kx,hy0,kx,hy1); tuong(0,hy0,kx,hy0,3.1); tuong(0,hy1,kx,hy1,3.1); cua(kx,22.6,false,1.4);
-  ban(-2.2,(hy0+hy1)/2,1.3,3.0,go); for(let y=hy0+.8;y&lt;hy1-.5;y+=.9){ngoi(-3.1,y);ngoi(-1.3,y);} b(-.1,-.15,hy0+.8,hy1-.8,H+1.0,H+2.2,S({color:0x2a2d30,roughness:.3})); nhan('Phòng họp-2',-2.2,(hy0+hy1)/2,'19,9 m²');
+  tham(-3.7,-.6,15.8,20.0,THAMS);
+  banGD(-2.3,14.35,'N',1.8); gheVP(-2.3,13.75,'N',true); gheVP(-2.75,15.3,'S'); gheVP(-1.85,15.3,'S');
+  [16.75,17.95,19.15].forEach(y=&gt;{banLV(-2.45,y,1.15,.7,'E',{mh:1,vach:true}); gheVP(-3.15,y,'E'); banLV(-1.75,y,1.15,.7,'W',{mh:1}); gheVP(-1.05,y,'W');});
+  tuThap(-.3,17.9,4.0,'W'); tv(-2.2,ky-.08,'S',1.4); cay(-3.85,20.9,1.1); cay(-.45,13.45,1.0); cay(-3.85,13.45,.9);
+  denThang(-2.1,16.3,19.6); denThang(-2.3,13.8,15.0);
+  cua(kx,15.2,false,1.4);
+  // ===== Phòng họp-2 (X7 → 4,6 m; D+8,1 → D+12,65): bàn họp 8 chỗ mặt gỗ, ghế lưới, TV 75" trên tường xưởng, đèn thả thanh LED, tủ thấp
+  const hy0=VPY(8.215), hy1=VPY(12.84), hm=(hy0+hy1)/2; vach(kx,hy0,kx,hy1); tuong(0,hy0,kx,hy0,3.1); tuong(0,hy1,kx,hy1,3.1); cua(kx,22.6,false,1.4);
+  tham(-3.5,-.9,hm-1.9,hm+1.9);
+  {const g=nhom(-2.2,hm,'N');g.add(box(1.15,.05,3.0,WAL,0,.75,0),box(.5,.7,2.2,DEN,0,.37,0),box(.9,.03,2.6,DEN,0,.03,0));}
+  [-1,0,1].forEach(i=&gt;{gheVP(-3.05,hm+i*.85,'E');gheVP(-1.35,hm+i*.85,'W');}); gheVP(-2.2,hm-1.85,'N'); gheVP(-2.2,hm+1.85,'S');
+  tv(-.1,hm,'W',1.7); tuThap(-3.95,hm+.8,1.4,'E',.7); cay(-3.85,hy1-.4,1.0); denThang(-2.2,hm-1.2,hm+1.2); nhan('Phòng họp-2',-2.2,hm,'19,9 m²');
   // bậc lên cửa sang xưởng (+5,30) ở góc trục B – X7
   for(let i=0;i&lt;5;i++)b(-1.2,-2.3,26.4+i*.28,26.68+i*.28,H,H+.22*(i+1),T.gra);
-  // Chủ tịch (X7+5,9 → 10,2 m) và TGĐ (10,3 → 14,6 m), sâu 5,68 m từ trục D; vách kính khung đen phía sảnh
+  // ===== Phòng giám đốc sản xuất (X7+5,9 → 10,2 m) và Tổng giám đốc (10,3 → 14,6 m), sâu 5,68 m từ trục D; vách kính khung đen phía sảnh
+  //   bàn giám đốc quay lưng ra tường sân vườn, 2 ghế khách; góc tiếp khách sofa + bàn trà đá trắng + thảm; tủ sách gỗ, tranh, cây
   const py=VPY(5.8), c0=VPX(5.76), c1=VPX(10.03);
   vach(c0,13,c0,py); vach(c1,13,c1,py); vach(c0,py,-13.8,py); cua(VPX(8.6),py,true,.9); cua(VPX(13.5),py,true,.9);
-  [[c0,c1,'Phòng giám đốc sản xuất','23,9 m²'],[c1,-14,'Tổng giám đốc','25 m²']].forEach(([a,c,t,dt])=&gt;{const m=(a+c)/2;ban(m,15.0,1.8,.8,go);ngoi(m,15.6);mayTinh(m,14.75);
-    b(m-1.0,m+.3,17.2,17.9,H,H+.45,S({color:0xcbb07a,roughness:.8}));b(m-1.0,m+.3,17.75,17.95,H+.45,H+.85,S({color:0xcbb07a,roughness:.8}));b(c+(c&lt;a?.1:-.1),c+(c&lt;a?.5:-.5),13.3,14.6,H,H+1.9,go);nhan(t,m,16.2,dt);});
+  // giám đốc sản xuất (x −9,5 → −5,5)
+  tham(-9.1,-6.0,14.9,16.4); banGD(-7.85,14.75,'N',1.8); gheVP(-7.85,14.1,'N',true); gheVP(-8.3,15.75,'S'); gheVP(-7.4,15.75,'S');
+  tuThap(-8.55,13.35,1.6,'N'); tranh(-8.55,13.07,'N',1.1,.7,0x7d8f9a);
+  tham(-9.35,-6.6,16.7,18.8,THAMS); sofa(-9.05,17.75,1.9,'E'); banTra(-7.9,17.75,.9,.55); sofa(-6.55,17.75,.9,'W',VAIT);
+  tuSach(-5.75,15.0,1.6,'W',2.0); cay(-5.85,18.6,1.1); cay(-9.2,13.45,.9); denThang(-7.85,14.2,15.4);
+  nhan('Phòng giám đốc sản xuất',-7.5,16.2,'23,9 m²');
+  // tổng giám đốc (x −14 → −9,5)
+  tham(-13.3,-10.2,14.9,16.4); banGD(-11.8,14.75,'N',2.1); gheVP(-11.8,14.1,'N',true); gheVP(-12.3,15.75,'S'); gheVP(-11.3,15.75,'S');
+  tuSach(-11.9,13.25,2.2,'N',2.1); tham(-13.6,-10.6,16.7,18.8,THAMS); sofa(-13.3,17.75,2.0,'E'); banTra(-12.1,17.75,1.0,.6); sofa(-10.75,17.75,.9,'W',VAIT);
+  tranh(-9.62,15.0,'W',1.3,.8,0x9a7b4f); cay(-13.55,13.5,1.1); cay(-10.0,18.65,1.0); denThang(-11.8,14.2,15.4);
+  nhan('Tổng giám đốc',-11.8,16.2,'25 m²');
   // không gian mở: Thiết kế (24 người) · Kinh doanh marketing · Hành chính – ổ điện sàn dán băng vàng như ảnh
   for(let x=-5.6;x&gt;=-13;x-=1.7)for(let y=20.2;y&lt;=27;y+=1.9){b(x-.11,x+.11,y-.08,y+.08,H+.05,H+.07,C.grey);b(x+.11,x+.3,y-.09,y+.09,H+.05,H+.065,vang);}
-  [[5.9,9.4],[10.6,14.4]].forEach(([a,c])=&gt;{for(const yy of [7.4,10.4])for(let i=0;i&lt;3;i++){const x=VPX(a+.6+i*(c-a-.6)/3), y0=VPY(yy);[-.35,.35].forEach(o=&gt;{ban(x,y0+o,1.1,.6);ngoi(x,y0+o*2.4);mayTinh(x,y0+o*.4);});}});
+  [[5.9,9.4],[10.6,14.4]].forEach(([a,c])=&gt;{for(const yy of [7.4,10.4])for(let i=0;i&lt;3;i++){const x=VPX(a+.6+i*(c-a-.6)/3), y0=VPY(yy);
+    [-.35,.35].forEach(o=&gt;{const hu=o&lt;0?'N':'S';banLV(x,y0+o,1.1,.6,hu,{mh:1,vach:o&lt;0});gheVP(x,y0+o*2.4,hu);});}});
+  cay(-13.5,19.6,1.0); cay(-5.0,19.6,1.0); cay(-13.5,27.5,1.0); cay(-5.0,27.5,1.0);
   nhan('Kinh doanh – Marketing',-11.8,19.8); nhan('Thiết kế',-7.6,23,'85,3 m² · 24 người'); nhan('Hành chính',-11.8,26.6);
   [[-0.15,24.5]].forEach(([x,y])=&gt;b(x-.25,x,y-.45,y+.45,H+2.5,H+2.8,T.trang));
   T.daiAB([['WC nữ',0,-2.5,'8,1 m²'],['WC nam',-2.5,VPX(5.3),'8,1 m²'],['Kho-2',VPX(5.3),VPX(8.9),'11,4 m²']],VPL.t3);
