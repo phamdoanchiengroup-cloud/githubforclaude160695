@@ -15,6 +15,7 @@ File này được Claude Code tự đọc khi mở repo. Nó thay cho "trí nh�
   - Chủ dự án không phải dân IT, nên hướng dẫn từng bước theo dạng **"MỞ FILE X → xóa hết → dán bản mới"**.
   - Luôn nói rõ **file nào cần dán lại** vào Apps Script, kèm bước **Triển khai → Quản lý triển khai → ✏️ → Phiên bản mới → Triển khai**, rồi Ctrl+F5.
 - Nhắc **sao lưu** (Tổng quan → Tạo bản sao dự án) trước khi dán thay đổi lớn.
+- **Cái gì xong trước thì gửi trước** (chủ dự án nhắc 19/10): khi làm nhiều sản phẩm một lúc (vd. PPT + video), phần nào xong và đã kiểm tra thì gửi ngay, không chờ xong hết mới gửi.
 - Chủ dự án hay gửi file đã tự sửa. Khi nhận:
   - **Gộp 3 chiều** với bản trong repo (`git merge-file`), không ghi đè mất thay đổi của họ.
   - Rồi rà lỗi.
