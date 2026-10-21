@@ -60,7 +60,7 @@ function tao(fileCode, duLieu, gioHienTai) {
   function Range(sh, r, c, nr, nc) { Object.assign(this, { sh, r, c, nr, nc }); }
   Range.prototype = {
     getValues() {
-      thongKe.doc++;
+      thongKe.doc++; thongKe.o = (thongKe.o || 0) + this.nr * this.nc;
       const o = [];
       for (let i = 0; i < this.nr; i++) {
         const row = [];
@@ -150,7 +150,7 @@ function tao(fileCode, duLieu, gioHienTai) {
       createHtmlOutput: html => ({ getContent: () => html, getAs: type => { const b = blob(Buffer.from(html, 'utf8')); b.__html = html; b.__type = type; b.__ten = ''; b.setName = n => { b.__ten = n; return b; }; b.getName = () => b.__ten; return b; } }) },
     MailApp: { sendEmail: o => { (ctx.__mail = ctx.__mail || []).push(o); }, getRemainingDailyQuota: () => 100 },
     // ctx.__trigger: danh sách trigger đã cài [{id, ham}]
-    ScriptApp: { getProjectTriggers: () => (ctx.__trigger || []).map(t => ({ getUniqueId: () => t.id, getHandlerFunction: () => t.ham })), deleteTrigger() {}, newTrigger: () => { const b = { timeBased: () => b, atHour: () => b, everyDays: () => b, onMonthDay: () => b, inTimezone: () => b, create: () => b }; return b; } },
+    ScriptApp: { getProjectTriggers: () => (ctx.__trigger || []).map(t => ({ getUniqueId: () => t.id, getHandlerFunction: () => t.ham })), deleteTrigger() {}, newTrigger: () => { const b = { timeBased: () => b, atHour: () => b, everyDays: () => b, everyMinutes: () => b, everyHours: () => b, onMonthDay: () => b, inTimezone: () => b, create: () => b }; return b; } },
     DriveApp: (() => {   // Drive giả: thư mục + tệp trong bộ nhớ
       const thuMuc = [];
       const it = a => { let i = 0; return { hasNext: () => i < a.length, next: () => a[i++] }; };
@@ -167,6 +167,7 @@ function tao(fileCode, duLieu, gioHienTai) {
   // Sheets API (dịch vụ nâng cao) giả: batchGet trả UNFORMATTED_VALUE, ngày ở dạng số serial như Google
   const sheetsApi = { Spreadsheets: { Values: { batchGet: (id, o) => {
     thongKe.doc++; thongKe.api = (thongKe.api || 0) + 1;
+    o.ranges.forEach(r => { const sh = sheets[r.replace(/^'|'$/g, '').replace(/''/g, "'")]; if (sh) thongKe.o = (thongKe.o || 0) + sh.rows.length * ((sh.rows[0] || []).length); });
     return { valueRanges: o.ranges.map(r => {
       const ten = r.replace(/^'|'$/g, '').replace(/''/g, "'"), sh = sheets[ten];
       const v = sh.rows.map(row => row.map(x => (x instanceof RealDate) ? (x.getTime() + 7 * 3600e3) / 864e5 + 25569 : x));
@@ -180,11 +181,20 @@ function tao(fileCode, duLieu, gioHienTai) {
 
   // Mỗi "lượt gọi" của Apps Script bắt đầu với biến toàn cục mới: xóa bộ nhớ đệm và nhả khóa.
   ctx.__goi = function (ten, ...a) {   // một lượt gọi máy chủ
-    vm.runInContext('__SS_CACHE=null;__DOC_CACHE={};if(typeof __HEAD_CACHE!=="undefined")__HEAD_CACHE={};if(typeof __KHOA!=="undefined")__KHOA=null;if(typeof __NGAY_LE!=="undefined")__NGAY_LE=null;if(typeof __NGAY_VAO!=="undefined")__NGAY_VAO=null;if(typeof __CHO_GHI!=="undefined")__CHO_GHI={};if(typeof __PB!=="undefined")__PB=null;if(typeof __DA_TANG_PB!=="undefined")__DA_TANG_PB=false;if(typeof __DA_GHI!=="undefined")__DA_GHI={};', ctx);
+    vm.runInContext('__SS_CACHE=null;__DOC_CACHE={};if(typeof __HEAD_CACHE!=="undefined")__HEAD_CACHE={};if(typeof __KHOA!=="undefined")__KHOA=null;if(typeof __NGAY_LE!=="undefined")__NGAY_LE=null;if(typeof __NGAY_VAO!=="undefined")__NGAY_VAO=null;if(typeof __CHO_GHI!=="undefined")__CHO_GHI={};if(typeof __PB!=="undefined")__PB=null;if(typeof __DA_TANG_PB!=="undefined")__DA_TANG_PB=false;if(typeof __DA_GHI!=="undefined")__DA_GHI={};if(typeof __PB_KPI!=="undefined")__PB_KPI=null;if(typeof __KPI_KHONG_DOI!=="undefined")__KPI_KHONG_DOI=false;', ctx);
     khoa = false;
-    try { const r = ctx[ten](...a); return r === undefined ? null : JSON.parse(JSON.stringify(r)); }
+    try { const r = ctx[ten](...a); return r === undefined ? null : moGoi(JSON.parse(JSON.stringify(r))); }
     finally { khoa = false; }
   };
+  // napDuLieu / napPhan trả chuỗi JSON gói gọn (tăng tốc 21/10): __goi tự mở gói như trình duyệt (moGoi_ trong Index.html);
+  // __goiTho trả nguyên bản máy chủ gửi về.
+  function moGoi(r) {
+    if (typeof r !== 'string' || r.charAt(0) !== '{') return r;
+    try { r = JSON.parse(r); } catch (e) { return r; }
+    for (const k in r) { const v = r[k]; if (v && v.__b === 1 && v.c && v.h) r[k] = v.h.map(d => { const o = {}; v.c.forEach((c, j) => { if (d[j] !== null) o[c] = d[j]; }); return o; }); }
+    return r;
+  }
+  ctx.__goiTho = function (ten, ...a) { const mo = moGoi; moGoi = x => x; try { return ctx.__goi(ten, ...a); } finally { moGoi = mo; } };
   ctx.__datGio = t => { NOW = new RealDate(t).getTime(); };
   // Phiên dài hạn cho kiểm thử nhảy giờ nhiều ngày (phiên thật hết hạn sau 6 giờ)
   ctx.__phienDai = tk => { const t = ctx.taoPhien_(tk), k = 'P_' + t, o = JSON.parse(props[k]); o.hanDen += 365 * 864e5; cache[k] = props[k] = JSON.stringify(o); return t; };

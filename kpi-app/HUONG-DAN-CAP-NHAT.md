@@ -494,6 +494,17 @@ Nếu vẫn thấy giao diện cũ: kiểm tra lại Phần D (đã chọn **Phi
 - Giọng nói nằm ở **file MỚI `AmThanh.html`** (khoảng 300 KB): tự tải vài giây sau khi đăng nhập (lần đầu), rồi máy nhớ lại. Quên tạo file này thì tiếng hiệu ứng vẫn chạy, chỉ không có giọng nói.
 
 
+## TĂNG TỐC 21/10 (đăng nhập, Bảng KPI, KPI quản lý) – gộp chung với "BẢN SỬA 21/10" ngay dưới
+Cùng 3 file **Code.gs**, **Index.html**, **SoDo.html** của "BẢN SỬA 21/10" (SoDo không đổi thêm). Dán theo mục bên dưới, rồi làm thêm 2 việc chạy một lần:
+
+1. **Bật làm nóng bảng KPI:** ô chọn hàm cạnh nút ▶ Chạy → chọn **CAI_TRIGGER_LAM_NONG_KPI** → ▶ Chạy (lần đầu Google hỏi quyền thì bấm Cho phép). Nhật ký báo "Đã cài trigger làm nóng bảng KPI: 10 phút/lần (chỉ chạy 6h–22h)". Muốn tắt: chạy **TAT_TRIGGER_LAM_NONG_KPI**.
+2. **Kiểm tra đọc nhanh bằng Sheets API** (nếu trước đây chưa làm Phần B4): bên trái bấm **Dịch vụ (+)** → **Google Sheets API** → Thêm. Rồi chạy **KIEM_TRA_SHEETS_API** → phải báo "KHỚP toàn bộ … ĐÃ BẬT đọc gộp". Nếu báo đã có dịch vụ thì chỉ cần chạy lại hàm này một lần để chắc chắn đang bật.
+
+Sau khi dán:
+- **Đăng nhập:** dữ liệu gửi về máy nhẹ hơn khoảng một nửa (ban điều hành ~2,9 MB → ~1,4 MB; trưởng phòng ~1,1 MB → ~0,6 MB) và gửi dạng gọn hơn, nên vào hệ thống nhanh hơn, nhất là trên điện thoại.
+- **Bảng KPI, KPI quản lý:** công nhân gửi sản lượng, đăng ký cơm, lưu thực đơn… không còn xóa bộ nhớ tạm của bảng KPI nữa (trước đây gần như lúc nào cũng phải tính lại từ đầu). Chỉ khi có duyệt sản lượng, điểm danh, vi phạm… (những thứ làm đổi số KPI) mới tính lại. Thêm trigger làm nóng 10 phút/lần tính sẵn bảng KPI tháng này cho toàn nhà máy, từng xưởng và KPI quản lý, nên mở tab thường ra ngay.
+- Số trên bảng KPI **không bị chậm**: có duyệt là bộ nhớ tạm cũ bị bỏ, người mở tab kế tiếp nhận số mới (mất vài giây tính lại); lượt làm nóng sau đó tính sẵn cho những người mở sau.
+
 ## BẢN SỬA 21/10 (4 lỗi KPI + 3D: toàn màn hình, ẩn thanh chi tiết, mặc định bản nhẹ, tầng 4 tòa điều hành)
 3 file: **Code.gs**, **Index.html** và **SoDo.html** (đã gồm mọi thay đổi của lần dán chung 18/10 bên dưới).
 **Nếu chưa dán lần 18/10:** làm theo mục "LẦN DÁN CHUNG 18/10" bên dưới, dùng Code.gs + Index.html bản mới này, là xong cả hai lần.

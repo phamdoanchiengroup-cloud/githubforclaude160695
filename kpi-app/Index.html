@@ -2302,11 +2302,21 @@ function doiMK(){
 }
 
 var inApp=false;
+/* Tăng tốc 21/10: napDuLieu / napPhan trả MỘT chuỗi JSON; mảng lớn gói dạng bảng {__b:1,c:[cột],h:[[giá trị]]} (null = không có khóa) */
+function moGoi_(r){
+  if(typeof r==='string'){ try{ r=JSON.parse(r); }catch(e){ return {ok:false,msg:'Dữ liệu tải về bị lỗi, tải lại trang.'}; } }
+  if(!r||typeof r!=='object') return r;
+  for(var k in r){ var v=r[k];
+    if(v&&v.__b===1&&v.c&&v.h){ var c=v.c, n=c.length, a=new Array(v.h.length);
+      for(var i=0;i<v.h.length;i++){ var d=v.h[i], o={}; for(var j=0;j<n;j++){ if(d[j]!==null) o[c[j]]=d[j]; } a[i]=o; }
+      r[k]=a; } }
+  return r;
+}
 /* B5: nạp dữ liệu song song với hoạt cảnh đăng nhập; vaoHeThong dùng lại kết quả nếu đã có / đang tải */
 var __napT=null;
 function napTruoc_(tk){
   var o=__napT={tk:tk,xong:false,r:null,e:null,cho:null};
-  google.script.run.withSuccessHandler(function(r){o.xong=true;o.r=r;if(o.cho)o.cho();})
+  google.script.run.withSuccessHandler(function(r){o.xong=true;o.r=moGoi_(r);if(o.cho)o.cho();})
     .withFailureHandler(function(e){o.xong=true;o.e=e||{};if(o.cho)o.cho();}).napDuLieu(tk);
 }
 function napCo_(){
@@ -2315,7 +2325,7 @@ function napCo_(){
   c.withFailureHandler=function(f){c.f=f;return c};
   c.napDuLieu=function(tk){
     var o=__napT; __napT=null;
-    if(!o||o.tk!==tk){ google.script.run.withSuccessHandler(c.s).withFailureHandler(c.f).napDuLieu(tk); return; }
+    if(!o||o.tk!==tk){ google.script.run.withSuccessHandler(function(r){ c.s(moGoi_(r)); }).withFailureHandler(c.f).napDuLieu(tk); return; }
     var di=function(){ if(o.e)c.f(o.e); else c.s(o.r); };
     if(o.xong)di(); else o.cho=di;
   };
@@ -2372,7 +2382,7 @@ function reload(cb){
   var tab0=tabHienTai;
   busy(true);
   var g=google.script.run.withSuccessHandler(function(r){
-    busy(false);
+    busy(false); r=moGoi_(r);
     if(r.hetHan){hetHan();return}
     if(r.ok){
       if(phan){ for(var k in r){ if(k!=='ok'&&k!=='phan') D[k]=r[k]; } }
@@ -9227,7 +9237,7 @@ function lmTai(ep){
   LM.dang=true; LM.luc=Date.now();
   var truoc=lmKhoa_();
   google.script.run.withSuccessHandler(function(r){
-    LM.dang=false;
+    LM.dang=false; r=moGoi_(r);
     if(!r||!r.ok)return;                                 // hết phiên / lỗi: để lượt thao tác sau tự báo
     ['nhatky','choDuyet','kcs','canNhapLai','chamcong','xacNhanDD','ngayLe','nghiDaiHan'].forEach(function(k){ if(r[k])D[k]=r[k]; });
     capNhatDem(); capNhatDucBar();

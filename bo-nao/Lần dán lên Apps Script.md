@@ -9,9 +9,13 @@ Liên quan: [[Việc chờ chủ dự án]] · [[KPI Tổng quan và cách dựn
 
 ## Web KPI – chưa dán
 - **Bản sửa 21/10** (4 lỗi chủ dự án báo + rà soát đợt 2): chỉ `Code.gs` + `Index.html`; hướng dẫn ở HUONG-DAN-CAP-NHAT.md mục "BẢN SỬA 21/10". Sau khi dán, có thể chạy tay `KIEM_TRA_DU_LIEU` để soát sheet. – [[KPI Sửa lỗi 21-10 và dữ liệu sheet]]
+- **Tăng tốc 21/10** (đăng nhập nhẹ một nửa, bảng KPI / KPI quản lý giữ bộ nhớ tạm + làm nóng): cùng `Code.gs` + `Index.html` của bản sửa 21/10; sau khi dán chạy một lần `CAI_TRIGGER_LAM_NONG_KPI`, và `KIEM_TRA_SHEETS_API` nếu chưa bật Sheets API. Hướng dẫn: HUONG-DAN-CAP-NHAT.md mục "TĂNG TỐC 21/10". – [[KPI Tăng tốc đợt 2 (21-10)]]
 - **Sơ đồ 3D 21/10** (tầng 4 tòa điều hành, nút Toàn màn hình, Ẩn/Hiện chi tiết, mặc định chế độ Nhẹ): dán `SoDo` **kèm** `Index.html` – mã phiên bản của phần tải sau nằm trong Index.html, chỉ dán SoDo thì vẫn thấy bản cũ. Tên file trong Apps Script phải đúng "SoDo". – [[KPI Sơ đồ nhà máy 3D]], [[KPI Phần giao diện tải sau]]
 - Hàm cần chạy một lần sau lần dán bảo mật (nếu chưa chạy): `KIEM_TRA_SAU_CAP_NHAT` (cấp quyền email), `BAT_BUOC_DOI_MAT_KHAU_MAC_DINH`. – [[KPI Bảo mật và vận hành]]
 
+
+## Cách dán
+- Từ 21/10 có bộ cài clasp (`kpi-app/cai-dat-clasp/`): cài xong thì mỗi lần cập nhật chỉ bấm đúp `2-CAP-NHAT.bat` (tự sao lưu, tự đẩy 5 file, tự triển khai giữ link). Chưa biết chủ dự án đã cài chưa. – [[KPI Cập nhật bằng clasp]]
 
 ## Nhắc khi gửi file cho chủ dự án
 - Nói rõ file nào cần dán, theo dạng "MỞ FILE X → xóa hết → dán bản mới", rồi Triển khai → Quản lý triển khai → ✏️ → Phiên bản mới → Triển khai, Ctrl+F5.

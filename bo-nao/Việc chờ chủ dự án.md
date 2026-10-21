@@ -10,6 +10,10 @@ Liên quan: [[Lần dán lên Apps Script]] · [[Quyết định của chủ d�
 - Xưởng của 3 phòng: "Khu chuốt ráp nước" (T1), "Kho thành phẩm", "Phòng kế toán kho" (T3) – ghi chú 13/10 đã ghép tạm; ô xám chưa rõ máy trên sơ đồ 3D chờ ảnh/giải thích. – [[KPI Sơ đồ nhà máy 3D]]
 - Video giới thiệu từ tư liệu Rhino: tự dựng bằng ffmpeg + hoạt ảnh, hay video AI qua Everygen (tốn credit)? – [[KPI Màn đăng nhập demo chờ duyệt]]
 
+## Chờ chủ dự án làm
+- Cài bộ clasp trên máy Windows (`kpi-app/cai-dat-clasp/HUONG-DAN.md`), lần đầu nên làm cùng Claude. – [[KPI Cập nhật bằng clasp]]
+- Dán bản 21/10 (sửa lỗi + tăng tốc), chạy `CAI_TRIGGER_LAM_NONG_KPI`, kiểm tra Sheets API. – [[KPI Tăng tốc đợt 2 (21-10)]]
+
 ## Dữ liệu trong sheet cần sửa tay (soát 21/10)
 - 29 dòng nhật ký ngày sai: NhatKySanXuat dòng 588–609 (C049, đảo ngày/tháng + 5 ô #VALUE!), 733–735 (C638), 2707–2709 (C075, từ chối), 4324 (C080, ngày trống).
 - DiemDanhNghi dòng 100–120 và XacNhanDiemDanh dòng 88–90 ghi ngày 2001-08-11.

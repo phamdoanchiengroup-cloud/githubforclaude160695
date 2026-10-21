@@ -613,7 +613,7 @@ function ghiLog_(me, hd, ct, cu, moi) {
 }
 
 /* ===== NẠP DỮ LIỆU ===== */
-function napDuLieu(token) { return napDuLieuLoi_(token, null); }
+function napDuLieu(token) { return goiNap_(napDuLieuLoi_(token, null)); }
 
 /* Các "phần" dữ liệu gửi về trình duyệt. Sau khi lưu, giao diện chỉ xin lại phần bị ảnh hưởng. */
 var PHAN_NAP_ = { nk: 1, cc: 1, ns: 1, cd: 1, mm: 1, vp: 1, ts: 1, tb: 1, dm: 1 };
@@ -896,6 +896,7 @@ function congNhanGuiSanLuong(token, rows) {
     };
   });
 
+  __KPI_KHONG_DOI = true;                             // chỉ thêm dòng "Chờ duyệt": không xóa nhớ bảng KPI (21/10)
   themNhieu_('NhatKySanXuat', out);
   ghiLog_(me, 'Công nhân gửi sản lượng', 'Gửi ' + out.length + ' dòng ngày ' + rows[0].Ngay + ' (chờ duyệt)');
   return sach_({ ok: true, msg: 'Đã gửi ' + out.length + ' dòng cho trưởng phòng duyệt.' });
@@ -2128,8 +2129,8 @@ function layKPIQuanLy(token, kyThang) {
   if (!me) return sach_({ ok:false, hetHan:true, msg:'Phiên đăng nhập đã hết hạn.' });
   return nho_('layKPIQuanLy', [kyThang || kyVN_(), me.vaiTro, me.xuong, me.laOwner], function() { return layKPIQuanLyGoc_(token, kyThang); });
 }
-function layKPIQuanLyGoc_(token, kyThang) {
-  var me = docPhien_(token);
+function layKPIQuanLyGoc_(token, kyThang, meSan) {
+  var me = meSan || docPhien_(token);
   if (!me) return sach_({ ok:false, hetHan:true, msg:'Phiên đăng nhập đã hết hạn.' });
   if (['ADMIN','TP'].indexOf(me.vaiTro) < 0)
     return sach_({ ok:false, msg:'Không có quyền xem KPI quản lý.' });
@@ -3498,8 +3499,8 @@ function layKPIKy(token, kieu, giaTri, maXuong) {
   else if (!xemCaNhaMay_(me)) return sach_({ ok:false, msg:'Không có quyền xem bảng KPI.' });
   return nho_('layKPIKy', [kieu, giaTri, maXuong || ''], function() { return layKPIKyGoc_(token, kieu, giaTri, maXuong); });
 }
-function layKPIKyGoc_(token, kieu, giaTri, maXuong) {
-  var me = docPhien_(token);
+function layKPIKyGoc_(token, kieu, giaTri, maXuong, meSan) {
+  var me = meSan || docPhien_(token);
   if (!me) return sach_({ ok:false, hetHan:true, msg:'Phiên hết hạn.' });
 
   // Cho phép mọi vai trò (TP, CN) xem KPI tất cả xưởng, nhóm theo xưởng ở hiển thị.
@@ -5369,7 +5370,7 @@ function xaGhi_(name) {
 /* Kết thúc một lượt có ghi: ghi hết bộ đệm, rồi tăng số phiên bản dữ liệu (để bỏ bộ nhớ tạm cũ). */
 function xong_() {
   xaGhi_();
-  if (__KHOA && !__DA_TANG_PB) { tangPhienBan_(); __DA_TANG_PB = true; }
+  if (__KHOA && !__DA_TANG_PB) { tangPhienBan_(!anhHuongKPI_()); __DA_TANG_PB = true; }
 }
 var __DA_TANG_PB = false;
 
@@ -5402,9 +5403,10 @@ function phienBan_() {
   }
   return __PB;
 }
-function tangPhienBan_() {
+function tangPhienBan_(chiChung) {
   __PB = new Date().getTime() + '.' + Math.floor(Math.random() * 1e6);
   try { PropertiesService.getScriptProperties().setProperty('KPI_PB', __PB); } catch (e) {}
+  if (!chiChung) tangPhienBanKPI_();                  // gọi thẳng (XOA_BO_NHO_TAM, dọn phạt…) thì xóa cả nhớ KPI
 }
 var NHO_GIAY = 600;          // nhớ kết quả tính 10 phút
 var NHO_KHOI = 90000;        // CacheService giới hạn 100KB mỗi khóa -> cắt khối 90KB
@@ -5413,7 +5415,7 @@ var NHO_KHOI = 90000;        // CacheService giới hạn 100KB mỗi khóa -> c
 function nho_(ten, thamSo, fn) {
   var khoa = '';
   try {
-    var raw = ten + '|' + JSON.stringify(thamSo) + '|' + phienBan_() + '|' + homNayVN_() + (gioVN_() >= 17 ? 'c' : 's');
+    var raw = ten + '|' + JSON.stringify(thamSo) + '|' + (NHO_KPI_[ten] ? 'k' + phienBanKPI_() : phienBan_()) + '|' + homNayVN_() + (gioVN_() >= 17 ? 'c' : 's');
     khoa = 'NHO_' + Utilities.base64EncodeWebSafe(Utilities.computeDigest(Utilities.DigestAlgorithm.MD5, raw, Utilities.Charset.UTF_8));
     var c = CacheService.getScriptCache(), dau = c.get(khoa);
     if (dau) {
@@ -5596,7 +5598,7 @@ function CAI_TRIGGER_LUU_TRU() {
 /* ---------- NẠP THEO PHẦN (tải lại nhẹ sau khi lưu) ----------
    Giao diện gọi napPhan(token, ['nk','cc',...]) thay vì napDuLieu -> chỉ đọc và gửi phần đã đổi. */
 function napPhan(token, phan) {
-  return napDuLieuLoi_(token, phan && phan.length ? phan : null);
+  return goiNap_(napDuLieuLoi_(token, phan && phan.length ? phan : null));
 }
 
 /* =====================================================================
@@ -7000,4 +7002,83 @@ function KIEM_TRA_DU_LIEU() {
   sh.getRange(1, 1, 1, 4).setFontWeight('bold'); sh.setFrozenRows(1);
   Logger.log('Soát dữ liệu: ' + L.length + ' mục – xem sheet KiemTraDuLieu.');
   return L.length;
+}
+
+/* ===== TĂNG TỐC ĐỢT 2 (21/10) – gói gọn dữ liệu nạp, bộ nhớ tạm KPI riêng, làm nóng bảng KPI ===== */
+var GOI_TU_DONG = 30;        // mảng từ 30 dòng trở lên thì gói dạng bảng
+function goiNap_(r) {
+  if (!r || typeof r !== 'object' || !r.ok) return r;
+  var o = {};
+  Object.keys(r).forEach(function(k) { o[k] = goiBang_(r[k]); });
+  return JSON.stringify(o);
+}
+function goiBang_(a) {
+  if (Object.prototype.toString.call(a) !== '[object Array]' || a.length < GOI_TU_DONG) return a;
+  for (var i = 0; i < a.length; i++) if (!a[i] || typeof a[i] !== 'object' || Object.prototype.toString.call(a[i]) === '[object Array]') return a;
+  var cot = Object.keys(a[0]), ma = cot.join('\u0001');
+  for (var i2 = 1; i2 < a.length; i2++) if (Object.keys(a[i2]).join('\u0001') !== ma) return a;   // khác thứ tự cột -> giữ nguyên (mở ra phải giống hệt)
+  var h = a.map(function(x) {
+    var d = new Array(cot.length);
+    for (var j = 0; j < cot.length; j++) d[j] = x[cot[j]];
+    return d;
+  });
+  return { __b: 1, c: cot, h: h };
+}
+
+/* Bộ nhớ tạm KPI có số phiên bản riêng: chỉ đổi khi dữ liệu dùng để tính KPI đổi.
+   Không đổi khi: công nhân gửi sản lượng (dòng "Chờ duyệt" không vào KPI), đăng ký cơm, thực đơn, nhật ký thao tác,
+   thông báo, bố trí máy, hội nhập, yêu cầu sửa hồ sơ, báo cáo. Có sheet lạ thì vẫn đổi (an toàn). */
+var NHO_KPI_ = { layKPIKy: 1, layKPIQuanLy: 1, layLichSuKPI: 1 };
+var SHEET_KHONG_KPI_ = { DangKyCom: 1, ThucDon: 1, SuatAnThang: 1, NhatKyThaoTac: 1, ThongBao: 1, BoTriMay: 1, HoiNhap: 1,
+  YeuCauSuaHoSo: 1, KiemTraDuLieu: 1, NguoiNhanBaoCao: 1 };
+var __KPI_KHONG_DOI = false;  // lượt gọi chỉ thêm dòng "Chờ duyệt" (congNhanGuiSanLuong)
+var __PB_KPI = null;
+function phienBanKPI_() {
+  if (__PB_KPI === null) {
+    try { __PB_KPI = PropertiesService.getScriptProperties().getProperty('KPI_PB_KPI') || '0'; } catch (e) { __PB_KPI = '0'; }
+  }
+  return __PB_KPI;
+}
+function tangPhienBanKPI_() {
+  __PB_KPI = new Date().getTime() + '.' + Math.floor(Math.random() * 1e6);
+  try { PropertiesService.getScriptProperties().setProperty('KPI_PB_KPI', __PB_KPI); } catch (e) {}
+}
+function anhHuongKPI_() {
+  if (__KPI_KHONG_DOI) return false;
+  var ten = Object.keys(__DA_GHI);
+  if (!ten.length) return true;                       // không rõ đã ghi gì (vd. XOA_BO_NHO_TAM) -> coi như có
+  return ten.some(function(t) { return t === '*' || !SHEET_KHONG_KPI_[t]; });
+}
+
+/* LÀM NÓNG: trigger 10 phút/lần (6h–22h) tính sẵn bảng KPI tháng này (toàn nhà máy + từng xưởng) và KPI quản lý
+   (ban điều hành + trưởng phòng từng xưởng), để người mở tab lấy ngay từ bộ nhớ tạm. Bản đã nhớ còn mới thì bỏ qua. */
+function LAM_NONG_KPI(e) {
+  if (!noiBo_(e)) return chanWeb_('LAM_NONG_KPI');
+  var gio = gioVN_();
+  if (gio < 6 || gio >= 22) return;
+  var t0 = new Date().getTime(), ky = kyVN_(), ds = ['', ], soX = 0;
+  doc_('PhongBan').forEach(function(p) { if (p.MaXuong) { ds.push(String(p.MaXuong)); soX++; } });
+  ds.forEach(function(mx) {
+    if (new Date().getTime() - t0 > 240000) return;   // chừa thời gian, tránh quá 6 phút
+    nho_('layKPIKy', ['thang', ky, mx], function() { return layKPIKyGoc_(null, 'thang', ky, mx, { vaiTro: 'ADMIN' }); });
+  });
+  var meQL = [{ vaiTro: 'ADMIN', xuong: '', laOwner: true }, { vaiTro: 'ADMIN', xuong: '', laOwner: false }];
+  doc_('PhongBan').forEach(function(p) { if (p.MaXuong) meQL.push({ vaiTro: 'TP', xuong: String(p.MaXuong), laOwner: false }); });
+  meQL.forEach(function(me) {
+    if (new Date().getTime() - t0 > 300000) return;
+    nho_('layKPIQuanLy', [ky, me.vaiTro, me.xuong, me.laOwner], function() { return layKPIQuanLyGoc_(null, ky, me); });
+  });
+  try { Logger.log('Làm nóng KPI ' + ky + ': ' + ds.length + ' bảng KPI, ' + meQL.length + ' KPI quản lý, ' + (new Date().getTime() - t0) + ' ms'); } catch (x) {}
+}
+/* CHẠY TAY 1 LẦN: cài trigger làm nóng 10 phút/lần */
+function CAI_TRIGGER_LAM_NONG_KPI() {
+  if (!noiBo_(arguments[0])) return chanWeb_('CAI_TRIGGER_LAM_NONG_KPI');
+  ScriptApp.getProjectTriggers().forEach(function(t) { if (t.getHandlerFunction() === 'LAM_NONG_KPI') ScriptApp.deleteTrigger(t); });
+  ScriptApp.newTrigger('LAM_NONG_KPI').timeBased().everyMinutes(10).create();
+  Logger.log('Đã cài trigger làm nóng bảng KPI: 10 phút/lần (chỉ chạy 6h–22h).');
+}
+function TAT_TRIGGER_LAM_NONG_KPI() {
+  if (!noiBo_(arguments[0])) return chanWeb_('TAT_TRIGGER_LAM_NONG_KPI');
+  ScriptApp.getProjectTriggers().forEach(function(t) { if (t.getHandlerFunction() === 'LAM_NONG_KPI') ScriptApp.deleteTrigger(t); });
+  Logger.log('Đã tắt trigger làm nóng bảng KPI.');
 }
