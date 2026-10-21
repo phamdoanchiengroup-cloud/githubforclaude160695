@@ -1,6 +1,6 @@
 # 00 Mục lục
 
-Bộ não thứ hai của repo: mỗi ghi chú một chủ đề, nối với nhau bằng `[[liên kết]]`. Mở thư mục `bo-nao/` bằng Obsidian để xem dạng đồ thị, hoặc mở trang bản đồ https://claude.ai/artifact/PXgStqzHKBtykmfvDch6GE (bản trong repo: `bo-nao/ban-do.html`).
+Bộ não thứ hai của **web KPI sản xuất** (nhánh `claude/beautiful-ptolemy-f2j7za`). Thiên Cơ Các có bộ não riêng trên nhánh `claude/happy-brown-lttkz3`. Mỗi ghi chú một chủ đề, nối với nhau bằng `[[liên kết]]`. Mở thư mục `bo-nao/` bằng Obsidian để xem dạng đồ thị, hoặc mở trang bản đồ https://claude.ai/artifact/PXgStqzHKBtykmfvDch6GE (bản trong repo: `bo-nao/ban-do.html`).
 
 ## Bắt đầu từ đây
 - [[Việc chờ chủ dự án]]: demo chờ góp ý, câu hỏi chờ trả lời, dữ liệu cần sửa tay.
@@ -14,11 +14,6 @@ Bộ não thứ hai của repo: mỗi ghi chú một chủ đề, nối với nh
 - An toàn và vận hành: [[KPI Bảo mật và vận hành]] · [[KPI Sửa lỗi 21-10 và dữ liệu sheet]]
 - Giao diện và nhân vật: [[KPI Màn đăng nhập Khắc laser]] · [[KPI Màn đăng nhập demo chờ duyệt]] · [[KPI Thao tác và hiệu ứng bên trong]] · [[KPI Rhino]] · [[KPI Mai]] · [[KPI Âm thanh và giọng Rhino]] · [[KPI Lottie]] · [[KPI Demo giao diện]] · [[KPI Sửa lỗi giao diện]] · [[KPI Demo đã bỏ]]
 
-## Thiên Cơ Các (`tuvi-app/`)
-- [[TCC Tổng quan]] · [[TCC Quy tắc văn luận giải]] (bắt buộc đọc trước khi viết văn luận) · [[TCC Tiến trình]]
-- Lõi: [[TCC Lập lá số và bốn tầng luận]] · [[TCC Sáu hệ]] · [[TCC Văn dễ hiểu và Tổng hợp 6 hệ]] · [[TCC Nghiệm chứng]]
-- Giao diện và bán hàng: [[TCC Giao diện]] · [[TCC PDF]] · [[TCC Bán hàng]]
-- Kỹ thuật: [[TCC Kiểm thử]] · [[TCC Lịch sử lá số]]
 
 ## Chung
 - [[Công cụ Claude]]: skill thiết kế, vai chuyên gia, plugin.

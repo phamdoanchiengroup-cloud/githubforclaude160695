@@ -12,8 +12,6 @@ Liên quan: [[Việc chờ chủ dự án]] · [[KPI Tổng quan và cách dựn
 - **Sơ đồ 3D 21/10** (tầng 4 tòa điều hành, nút Toàn màn hình, Ẩn/Hiện chi tiết, mặc định chế độ Nhẹ): dán `SoDo` **kèm** `Index.html` – mã phiên bản của phần tải sau nằm trong Index.html, chỉ dán SoDo thì vẫn thấy bản cũ. Tên file trong Apps Script phải đúng "SoDo". – [[KPI Sơ đồ nhà máy 3D]], [[KPI Phần giao diện tải sau]]
 - Hàm cần chạy một lần sau lần dán bảo mật (nếu chưa chạy): `KIEM_TRA_SAU_CAP_NHAT` (cấp quyền email), `BAT_BUOC_DOI_MAT_KHAU_MAC_DINH`. – [[KPI Bảo mật và vận hành]]
 
-## Thiên Cơ Các
-- Chưa ghi nhận tình trạng dán gần đây. Hướng dẫn cài đặt: `tuvi-app/HUONG-DAN-CAI-DAT.md`. – [[TCC Tổng quan]]
 
 ## Nhắc khi gửi file cho chủ dự án
 - Nói rõ file nào cần dán, theo dạng "MỞ FILE X → xóa hết → dán bản mới", rồi Triển khai → Quản lý triển khai → ✏️ → Phiên bản mới → Triển khai, Ctrl+F5.

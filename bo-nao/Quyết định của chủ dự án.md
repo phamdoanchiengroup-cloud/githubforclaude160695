@@ -6,10 +6,10 @@ Liên quan: [[Việc chờ chủ dự án]] · [[KPI Demo đã bỏ]] · [[00 M�
 Những điều đã chốt. Đừng đề xuất lại những gì ghi "không cần" / "không làm".
 
 ## Cách làm việc
-- Chỉ dùng **một nhánh** `claude/beautiful-ptolemy-f2j7za` cho mọi việc (21/10).
+- **Mỗi dự án một nhánh** (21/10, thay quyết định "một nhánh" trước đó cùng ngày): web KPI = `claude/beautiful-ptolemy-f2j7za`, Thiên Cơ Các = `claude/happy-brown-lttkz3`. Hai dự án không liên quan nhau, mỗi nhánh có CLAUDE.md và bộ não riêng.
 - Phần nào xong và đã kiểm tra thì gửi trước, không chờ xong hết (19/10).
 - Bản bảo mật + vận hành: đợi sửa xong hết mới dán một lần (18/10).
-- Bộ não thứ hai: thư mục `bo-nao/` + trang bản đồ xem bằng trình duyệt (21/10).
+- Bộ não thứ hai: thư mục `bo-nao/` + trang bản đồ xem bằng trình duyệt (21/10), mỗi nhánh một bộ.
 - Plugin: không bật `claude-mem-cowork` (gửi dữ liệu lên cmem.ai). – [[Công cụ Claude]]
 
 ## Phong cách giao diện web KPI
