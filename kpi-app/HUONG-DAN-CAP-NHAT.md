@@ -494,15 +494,16 @@ Nếu vẫn thấy giao diện cũ: kiểm tra lại Phần D (đã chọn **Phi
 - Giọng nói nằm ở **file MỚI `AmThanh.html`** (khoảng 300 KB): tự tải vài giây sau khi đăng nhập (lần đầu), rồi máy nhớ lại. Quên tạo file này thì tiếng hiệu ứng vẫn chạy, chỉ không có giọng nói.
 
 
-## BẢN SỬA 21/10 (4 lỗi: quyền xem KPI, phạt ngày nghỉ, chờ duyệt bị ẩn, nhắc nhập lại)
-Chỉ 2 file: **Code.gs** và **Index.html** (đã gồm mọi thay đổi của lần dán chung 18/10 bên dưới).
+## BẢN SỬA 21/10 (4 lỗi KPI + 3D: toàn màn hình, ẩn thanh chi tiết, mặc định bản nhẹ, tầng 4 tòa điều hành)
+3 file: **Code.gs**, **Index.html** và **SoDo.html** (đã gồm mọi thay đổi của lần dán chung 18/10 bên dưới).
 **Nếu chưa dán lần 18/10:** làm theo mục "LẦN DÁN CHUNG 18/10" bên dưới, dùng Code.gs + Index.html bản mới này, là xong cả hai lần.
 
 1. Sao lưu: Tổng quan → **Tạo bản sao dự án**.
 2. MỞ FILE **Code.gs** → Ctrl+A → Delete → dán bản mới → Ctrl+S.
 3. MỞ FILE **Index.html** → xóa hết → dán bản mới → Ctrl+S.
-4. Triển khai → Quản lý triển khai → ✏️ → Phiên bản mới → Triển khai. Rồi Ctrl+F5.
-5. Chạy hàm **KIEM_TRA_DU_LIEU** (ô chọn hàm cạnh nút ▶ Chạy). Hàm chỉ đọc, không sửa gì; kết quả nằm ở sheet mới **KiemTraDuLieu** (mỗi dòng: Nhóm · Chi tiết · Dòng sheet · Cách sửa). Sửa tay theo cột "Cách sửa", rồi chạy lại hàm để kiểm.
+4. MỞ FILE **SoDo.html** → xóa hết → dán bản mới → Ctrl+S. (Phải dán cùng Index.html – Index giữ mã phiên bản của sơ đồ.)
+5. Triển khai → Quản lý triển khai → ✏️ → Phiên bản mới → Triển khai. Rồi Ctrl+F5.
+6. Chạy hàm **KIEM_TRA_DU_LIEU** (ô chọn hàm cạnh nút ▶ Chạy). Hàm chỉ đọc, không sửa gì; kết quả nằm ở sheet mới **KiemTraDuLieu** (mỗi dòng: Nhóm · Chi tiết · Dòng sheet · Cách sửa). Sửa tay theo cột "Cách sửa", rồi chạy lại hàm để kiểm.
 
 Sau khi dán:
 - Nhân sự trạng thái **Tạm nghỉ** không bị nhắc, không bị phạt nhập trễ (như Nghỉ việc). Lượt phạt nhập trễ còn sót của trưởng/phó phòng tự gỡ ở lần chạy phạt hằng ngày.
@@ -511,6 +512,7 @@ Sau khi dán:
 - **Tháng đã chốt** (vd. tháng 9) vẫn giữ số cũ: muốn tính lại thì chủ sở hữu vào **Bảng KPI → Xem theo Tháng → chọn tháng 9 → Chốt bù**.
 - **Duyệt sản lượng:** mở tab là tự tải sản lượng mới nhất (trước đây phải tải lại trang); trang của trưởng/phó phòng còn tự cập nhật mỗi 5 phút. Dòng chờ duyệt của công đoạn đã chuyển "Ngừng" nay vẫn hiện để duyệt.
 - **Khung đỏ "Yêu cầu nhập lại":** ngày nào công nhân đã gửi lại thì không báo nữa.
+- **Sơ đồ nhà máy → Xem 3D:** mở ra ở chế độ ⚡ Nhẹ (bấm để chuyển ✦ Đầy đủ); nút **⛶ Toàn màn hình** (Esc để thoát) và **◨ Ẩn chi tiết** (giấu thanh bên phải, bấm lại để hiện). Tầng 4 tòa điều hành sửa theo ảnh phối cảnh: khối tôn đen phía sân hiên chỉ nhô ra ~1,8 m, có ban công lõm trần gỗ.
 
 ## LẦN DÁN CHUNG 18/10 (bảo mật + vận hành + âm thanh)
 Gồm 5 file: **Code.gs**, **Index.html**, **SoDo.html**, **HoatAnh.html** và file mới **AmThanh.html**.

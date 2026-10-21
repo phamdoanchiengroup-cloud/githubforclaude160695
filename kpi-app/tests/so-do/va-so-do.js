@@ -210,7 +210,7 @@ function sdMo3D() {
   // 13/10: bố trí máy đã lưu trên web (sheet BoTriMay) – nạp trước rồi mới dựng 3D; lỗi thì vẫn mở theo bản vẽ
   sdBoTri(function () {
     if (!document.getElementById('sd3d')) return;
-    var f = document.createElement('iframe'); f.title = 'Mô hình 3D nhà máy'; f.srcdoc = document.getElementById('sdNguon3d').value;
+    var f = document.createElement('iframe'); f.title = 'Mô hình 3D nhà máy'; f.allow = 'fullscreen'; f.setAttribute('allowfullscreen', ''); f.srcdoc = document.getElementById('sdNguon3d').value;
     f.onload = function () { var c = k.querySelector('.cho3d'); if (c) c.remove(); };
     k.appendChild(f);
   });
@@ -232,6 +232,8 @@ function sdBoTri(xong) {
     xong1();
   }).withFailureHandler(xong1).layBoTriMay(TOKEN);
 }
+/* Toàn màn hình dự phòng (21/10): trình duyệt không cho Fullscreen API thì bản 3D gọi hàm này để giấu đầu lớp phủ */
+function sdGon3D(on) { var k = document.getElementById('sd3d'); if (k) k.classList.toggle('gon', !!on); }
 function sdEsc3D(e) { if (e.key === 'Escape' && !sdChuaLuu3D()) sdDong3D(); }
 function sdChuaLuu3D() { var f = document.querySelector('#sd3d iframe'); try { return !!(f && f.contentWindow.__btChuaLuu && f.contentWindow.__btChuaLuu()); } catch (e) { return false; } }
 function sdDong3D() {

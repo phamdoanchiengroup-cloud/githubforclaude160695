@@ -58,3 +58,4 @@ details.sd-ghep p{color:var(--ink3);font-size:12.5px;margin:8px 0}
 @media (max-width:899px){#sd3d .sd3d-dau span{display:none}#sd3d .sd3d-dau{padding:6px 10px}}
 #sd3d .cho3d{position:absolute;inset:50px 0 0;display:grid;place-items:center;color:#9ca8b0;text-align:center;padding:20px;pointer-events:none}
 @media (prefers-reduced-motion:reduce){#sdMb .phong rect{transition:none}}
+#sd3d.gon .sd3d-dau{display:none}

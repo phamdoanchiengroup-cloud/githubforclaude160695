@@ -63,4 +63,44 @@ if(window.BTM){btDaLuu=btHienTai=JSON.stringify(luuBT());btDoi(btHienTai);
   else document.getElementById('btnBoTri').style.display='none';}
 if(window.__v3)Object.assign(window.__v3,{btBat:batBoTri,btXoayThu:()=>{const F=floors[0];for(let mi=0;mi<F.mc.length;mi++){const Mc=F.mc[mi];if(Mc.xoa||!Mc.obj)continue;selMc={fi:0,mi};const q=Mc.quay;xoay();if(Mc.quay!==q)return Mc.l;}return '';}});   // cho kiểm thử
 """)
+    # ---- 21/10 (chủ dự án): mặc định chế độ Nhẹ; nút Toàn màn hình; nút ẩn / hiện thanh chi tiết bên phải
+    b = R(b, 'kpi:!!window.SS,hq:!small,sel:null};', 'kpi:!!window.SS,hq:false,sel:null};')
+    b = R(b, '#btnNhe[aria-pressed="true"]{background:var(--ink);color:var(--panel)}', '#btnNhe[aria-pressed="true"]{background:var(--ink);color:var(--panel)}\n' + CSS_TOAN)
+    b = R(b, '⚡ Nhẹ</button>', '⚡ Nhẹ</button>\n      <button id="btnToan" type="button" aria-pressed="false" title="Xem toàn màn hình (Esc để thoát)">⛶ Toàn màn hình</button>'
+             '\n      <button id="btnBen" type="button" aria-pressed="false" aria-controls="benPhai" title="Ẩn / hiện thanh chi tiết bên phải">◨ Ẩn chi tiết</button>')
+    b = R(b, '  <aside>', '  <aside id="benPhai">')
+    b = R(b, "document.getElementById('btnNhe').onclick=", JS_TOAN + "document.getElementById('btnNhe').onclick=")
     return b
+
+
+CSS_TOAN = """#btnToan,#btnBen{font:600 14px/1 var(--f-display);letter-spacing:.04em;text-transform:uppercase;color:var(--ink);background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:9px 12px;min-height:40px;cursor:pointer;box-shadow:0 1px 3px rgba(0,0,0,.12);white-space:nowrap}
+#btnToan[aria-pressed="true"],#btnBen[aria-pressed="true"]{background:var(--ink);color:var(--panel)}
+#btnToan:focus-visible,#btnBen:focus-visible,#btnNhe:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+body.an-ben .app{grid-template-columns:1fr}
+body.an-ben aside{display:none}
+@media (max-width:820px){body.an-ben .app{grid-template-rows:100vh}}"""
+
+# Toàn màn hình: Fullscreen API; trình duyệt / khung nhúng không cho (iPhone, khung chặn) thì báo web thu gọn đầu lớp phủ (sdGon3D)
+JS_TOAN = r"""document.getElementById('tgHq').checked=st.hq;document.getElementById('tgPp').checked=st.pp;
+(function(){
+  const nT=document.getElementById('btnToan'),nB=document.getElementById('btnBen'),goc=document.documentElement;
+  const pa=(window.parent&&window.parent!==window)?window.parent:null;
+  let gia=false;
+  const dangToan=()=>!!(document.fullscreenElement||document.webkitFullscreenElement)||gia;
+  const ve=()=>{const on=dangToan();nT.setAttribute('aria-pressed',String(on));nT.textContent=on?'⛶ Thoát toàn màn hình':'⛶ Toàn màn hình';};
+  const giaLap=on=>{gia=on;try{if(pa&&pa.sdGon3D)pa.sdGon3D(on);}catch(e){}ve();};
+  nT.onclick=()=>{
+    if(dangToan()){if(gia)giaLap(false);else (document.exitFullscreen||document.webkitExitFullscreen).call(document);return;}
+    const vao=goc.requestFullscreen||goc.webkitRequestFullscreen;
+    if(vao&&(document.fullscreenEnabled||document.webkitFullscreenEnabled)){try{const p=vao.call(goc);if(p&&p.catch)p.catch(()=>giaLap(true));}catch(e){giaLap(true);}}
+    else giaLap(true);};
+  document.addEventListener('fullscreenchange',ve);document.addEventListener('webkitfullscreenchange',ve);
+  addEventListener('keydown',e=>{if(e.key==='Escape'&&gia&&!st.boTri)giaLap(false);});
+  const datBen=an=>{document.body.classList.toggle('an-ben',an);nB.setAttribute('aria-pressed',String(an));nB.textContent=an?'◧ Hiện chi tiết':'◨ Ẩn chi tiết';
+    try{localStorage.setItem('kpi_3d_an_ben',an?'1':'');}catch(e){}};
+  nB.onclick=()=>datBen(!document.body.classList.contains('an-ben'));
+  let an0=false;try{an0=localStorage.getItem('kpi_3d_an_ben')==='1';}catch(e){}
+  datBen(an0);ve();
+  if(window.__v3)Object.assign(window.__v3,{toan:()=>nT.click(),ben:()=>nB.click()});   // cho kiểm thử
+})();
+"""

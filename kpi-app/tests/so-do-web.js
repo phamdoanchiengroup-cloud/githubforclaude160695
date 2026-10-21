@@ -102,6 +102,21 @@ const mauPhong = (p, ten) => p.evaluate(t => { const g = [...document.querySelec
     s = await f3.evaluate(() => [!!window.SS, document.querySelector('#segMau button[data-c="kpi"]').textContent, document.getElementById('legend').textContent]);
     ok(s[0] && s[1] === 'KPI tháng này' && /A \/ A\+/.test(s[2]), 'bản 3D dùng chung số liệu thật: nút "KPI tháng này", chú giải KPI', s);
     if (OUT) await p.screenshot({ path: OUT + '/so-do-web-3d.png' });
+    // 21/10: mặc định chế độ Nhẹ; ẩn / hiện thanh chi tiết; toàn màn hình (máy thử không cho Fullscreen API thì thu gọn đầu lớp phủ)
+    s = await f3.evaluate(() => [document.getElementById('btnNhe').getAttribute('aria-pressed'), document.getElementById('tgHq').checked]);
+    ok(s[0] === 'true' && s[1] === false, 'mở 3D: mặc định chế độ ⚡ Nhẹ', s);
+    const beRong = () => f3.evaluate(() => [document.querySelector('#c3d canvas').getBoundingClientRect().width, getComputedStyle(document.getElementById('benPhai')).display, document.getElementById('btnBen').textContent]);
+    const r0 = await beRong(); await f3.evaluate(() => __v3.ben()); await p.waitForTimeout(800); const r1 = await beRong();
+    ok(r1[1] === 'none' && r1[0] > r0[0] + 200 && /Hiện chi tiết/.test(r1[2]), 'nút Ẩn chi tiết: thanh bên phải ẩn, khung 3D rộng ra', [r0, r1]);
+    await f3.evaluate(() => __v3.ben()); await p.waitForTimeout(500);
+    ok((await beRong())[1] !== 'none', 'bấm lại: thanh chi tiết hiện lại');
+    await f3.evaluate(() => __v3.toan()); await p.waitForTimeout(800);
+    s = await f3.evaluate(() => [document.getElementById('btnToan').getAttribute('aria-pressed'), document.getElementById('btnToan').textContent]);
+    const gon = await p.evaluate(() => [!!document.fullscreenElement, document.getElementById('sd3d').classList.contains('gon')]);
+    ok(s[0] === 'true' && /Thoát/.test(s[1]) && (gon[0] || gon[1]), 'nút Toàn màn hình: bật (toàn màn hình thật hoặc giấu đầu lớp phủ)', [s, gon]);
+    await f3.evaluate(() => __v3.toan()); await p.waitForTimeout(800);
+    s = await p.evaluate(() => [!!document.fullscreenElement, document.getElementById('sd3d').classList.contains('gon')]);
+    ok(!s[0] && !s[1], 'bấm lại: thoát toàn màn hình', s);
     const kc = () => f3.evaluate(() => __v3.cam.position.distanceTo(__v3.ctl.target));
     s = [await f3.evaluate(() => __v3.ctl.zoomToCursor), await kc()];
     // máy ảo vẽ 3D chậm: chờ camera bay xong rồi mới đo
