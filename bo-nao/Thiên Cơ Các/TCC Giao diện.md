@@ -30,3 +30,27 @@ Liên quan: [[TCC PDF]] · [[TCC Lá số 3D]] · [[TCC Văn dễ hiểu và T�
     - 4 tiêu chí ✓/✗;
     - 5 chip Dụng / Hỷ / Kỵ / Nhàn thần.
   - PDF nền tối `#120d09`. Phiên bản giao diện 2026.10.14.
+- **Demo giao diện "Hỏa Tinh" (21/10/2026, chờ chủ dự án duyệt):** chủ dự án chê cả 3 phương án Tinh Hà / Giấy Dó / Lục Bảo (`tuvi-app/demo/giao-dien/`) và yêu cầu làm lại cả bố cục.
+  - **Màu hợp mệnh Sơn Đầu Hỏa:**
+    - nền đỏ rượu vang thẫm `#140809` (tránh đen, vì đen thuộc Thủy khắc Hỏa);
+    - dải lửa cam → hồng → tím (màu Hỏa);
+    - xanh ngọc `#3fd69c` cho tín hiệu tốt (Mộc sinh Hỏa);
+    - vàng kim `#f6c76c` chỉ điểm xuyết (Thổ).
+  - **Kiểu chữ:** Cormorant Garamond (tiêu đề), Be Vietnam Pro (nội dung), Chakra Petch (số, nhãn).
+  - **Bố cục mới:**
+    - thanh kính dạng viên thuốc dính trên đầu trang;
+    - hero: chân dung trong viền xoay phát sáng và quỹ đạo, tên lớn chữ dải lửa, tứ trụ, bộ đếm, 2 nút;
+    - lưới bento 12 cột.
+  - **Biểu đồ động** (vẽ tay bằng SVG, chạy khi cuộn tới):
+    - radar 12 cung;
+    - vòng ngũ hành có dụng thần;
+    - đồng hồ vượng – nhược có kim;
+    - 9 lĩnh vực: thanh lửa + chấm từng hệ;
+    - đường vận 0–85 tuổi (tài lộc, quan lộc, rủi ro sức khỏe lấy từ `duDoan.chuDe.*.diem`): dải đại vận, ◆ năm nóng, rê chuột hoặc chạm để xem thẻ từng năm;
+    - cột 12 tháng (`hoSoThang`);
+    - vòng % 6 sự kiện (`hoSoNam`);
+    - lá số 12 cung bấm được: tam hợp viền lửa, xung chiếu viền tím.
+  - **Hiệu ứng:** tàn lửa bay (canvas), quầng sáng trôi, lưới mờ. Tắt khi `prefers-reduced-motion`.
+  - **Bản demo** dùng lá số chủ dự án nên lưu riêng tư: https://claude.ai/artifact/PBz32Cc5qPqNCoesKaJxCK. Trình dựng nằm ngoài repo.
+  - **Khi duyệt:** chuyển vào Styles/Script/Index (tab giữ nguyên dữ liệu; Tổng quan thành bảng bento), giữ `Anh.html`.
+
