@@ -60,3 +60,8 @@ Liên quan: [[TCC PDF]] · [[TCC Lá số 3D]] · [[TCC Văn dễ hiểu và T�
     - màu hành Hỏa trong dữ liệu là `#ff9a6b`.
     - Đường rủi ro sức khỏe và viền xung chiếu dùng hồng phấn. Cùng link demo.
 
+  - **Đổi màu lần 2 theo góp ý về ngũ hành của chủ dự án (21/10; chi tiết lá số chỉ ở artifact riêng), bố cục giữ nguyên.** Bảng màu **"Bạch Kim"** (cùng link demo, phiên bản 3):
+    - Kim: bạch kim, bạc (`#f7f5f0`, `#eef0f2`, `#cfd3d8`); Thổ: sâm panh `#e8cf8f`, `#d9c3a0`; Hỏa: vàng hồng / đồng hồng `#e3a588`, `#b8806a`.
+    - Nền than ấm `#14110e` / `#1c1814` (không dùng đen xanh của Thủy); bỏ xanh lá (Mộc), xanh lá chỉ còn để tô hành Mộc trong dữ liệu (`#7fc79a`); màu xấu `#e48a8a`.
+    - Biểu đồ đời: tài lộc sâm panh, quan lộc vàng hồng, sức khỏe nét đứt bạc. Hạt sáng vàng + bạc.
+    - Kim chỉ là màu nhấn, Hỏa – Thổ vẫn giữ vai trò chính.
