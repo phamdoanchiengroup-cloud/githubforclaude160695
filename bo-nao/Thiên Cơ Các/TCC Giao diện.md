@@ -14,3 +14,19 @@ Liên quan: [[TCC PDF]] · [[TCC Lá số 3D]] · [[TCC Văn dễ hiểu và T�
 - **Khởi động trang:** gắn tab và Lịch sử **trước tiên**, mỗi bước bọc trong `buoc(...)`. Một bước lỗi (vd. Index.html cũ thiếu phần tử) không được làm chết cả trang.
 - **Mã phiên bản giao diện:** `<meta name="tcc-ban">` (Index.html), `--tcc-ban` (đầu Styles.html) và `BAN_GIAO_DIEN` (Script.html) phải **trùng nhau** – mỗi đợt sửa giao diện hãy tăng cả 3. Bước khởi động "kiểm tra phiên bản" chỉ đích danh file cũ; mọi lỗi khởi động hiện trong khung `baoLoiKhoiDong` (ghi tên bước + thông điệp lỗi) để chủ dự án chụp gửi, thay cho câu báo chung chung trước đây.
 - **Lớp phủ:** `.modal` z-index 120 (trên thanh CTA 85 và mục lục 90). `.toast` có `pointer-events: none`.
+- **Giao diện tối sang trọng "Kim Sa Trầm" (21/10/2026, chủ dự án chọn kiểu Tian Qi, làm toàn bộ web):**
+  - **Bảng màu:** nâu khói, vàng kim và son, viết lại ở token `:root` đầu Styles.html.
+    - Bản in (`.theme-light`, `.chart-frame`) chuyển sang tông giấy ngà và nâu vàng.
+    - Mọi màu xanh ngọc, xanh đêm viết thẳng trong Styles/Script đã đổi sang nâu – vàng.
+    - Màu "tốt" là `#6f9f5e`.
+  - **Khối cuối Styles.html "GIAO DIỆN TỐI SANG TRỌNG":**
+    - tiêu đề khung và Phần dùng chữ có chân Cormorant, góc 3–6px, viền vàng mảnh;
+    - nút chính vàng kim chữ nâu, nút phụ viền vàng;
+    - tab vàng; thanh CTA và thanh tab điện thoại nâu.
+  - **Ảnh nhân vật** (`Anh.html` = **ảnh của chủ dự án, bắt buộc giữ**) đặt trong khung vàng hai lớp ở trang chủ (`.wl-anh`).
+  - **Bảng chỉ số đầu tab Bát Tự** (`renderBatTu` › `chiSo`, CSS `.bcs-*`; `veDeHieu` đưa `.bt-chiso` lên trên văn dễ hiểu):
+    - can nhật chủ;
+    - thanh vượng – nhược theo `diem.phe`;
+    - 4 tiêu chí ✓/✗;
+    - 5 chip Dụng / Hỷ / Kỵ / Nhàn thần.
+  - PDF nền tối `#120d09`. Phiên bản giao diện 2026.10.14.

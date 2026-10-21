@@ -8,6 +8,13 @@ Liên quan: [[Việc chờ chủ dự án]] · [[TCC Bán hàng]] · [[00 Mục 
 - Phần nào xong và đã kiểm tra thì gửi trước, không chờ xong hết (19/10).
 - Bộ não thứ hai: thư mục `bo-nao/` + trang bản đồ xem bằng trình duyệt, mỗi nhánh một bộ (21/10).
 
+## Giao diện
+- **Phong cách tối sang trọng** (nâu khói + vàng kim, kiểu Tian Qi), áp cho toàn bộ web (21/10). – [[TCC Giao diện]]
+- **Luôn giữ ảnh nhân vật trên web** (`Anh.html`) – đó là ảnh của chủ dự án (21/10).
+
+## Dữ liệu cá nhân của chủ dự án
+- Lá số và toàn bộ luận giải của chủ dự án lưu ở **trang riêng tư trên Claude**: https://claude.ai/artifact/CE5huyxM4U34dEt4AS7o3N. **Không ghi họ tên, ngày giờ sinh hay lá số của chủ dự án vào repo** (repo công khai) (21/10).
+
 ## Nội dung và luận giải
 - **Phương pháp luận Tử Vi là ưu tiên số 1**, giao diện làm sau (21/10). Học từ nhiều trang/phái nhưng chỉ phần công khai; không đăng nhập tài khoản chủ dự án ở trang khác. – [[TCC Tử Vi đối chiếu các phái]]
 - Bốn tầng luận và văn dễ hiểu 12 cung là thiết kế của chủ dự án. – [[TCC Lập lá số và bốn tầng luận]]

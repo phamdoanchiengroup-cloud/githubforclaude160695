@@ -27,7 +27,7 @@
     });
   }
   /** Mã phiên bản giao diện – phải trùng với Index.html (meta tcc-ban) và Styles.html (--tcc-ban) */
-  var BAN_GIAO_DIEN = '2026.10.13';
+  var BAN_GIAO_DIEN = '2026.10.14';
   function storeGet(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
   function storeSet(k, v) { try { localStorage.setItem(k, v); } catch (e) { /* bỏ qua */ } }
 
@@ -2376,7 +2376,13 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
     var quanHe = '<div class="panel section"><h2 class="panel-title"><span class="han">合沖</span> Hợp – xung – hình – hại</h2><ul class="rel-list">' +
       B.quanHe.map(function (q) { return '<li class="' + q.loai + '">' + esc(q.txt) + '</li>'; }).join('') + '</ul>' +
       (D.hop.length ? '<p class="muted" style="font-size:12.5px">Ngũ hợp thiên can: ' + D.hop.map(function (h) { return esc(h.ly); }).join('; ') + '.</p>' : '') + '</div>';
-    var out = buoc('1–3', 'Lập Tứ Trụ · Tàng can · Thập thần', 'Can chi năm – tháng – ngày – giờ theo tiết khí; tàng can và mười thần so với Nhật can', html + quanHe);
+    // Bảng chỉ số đầu tab (giao diện Kim Sa Trầm): vượng – nhược, 4 tiêu chí, vai trò ngũ hành
+    var nc = cols[2], phe = Math.max(0, Math.min(100, +D.phe || 0));
+    var chiSo = '<div class="panel section bt-chiso"><div class="bcs-dau"><div class="bcs-can h-' + esc(nc.canHanh) + '">' + CAN_HAN[nc.can] + '</div><div class="bcs-ten"><small>Nhật chủ</small><b>' + esc(nc.canTen + ' ' + nc.canHanh) + '</b><span>' + esc(PT.cuong || B.cuong || '') + ' · phe ta ' + String(Math.round(phe * 10) / 10).replace('.', ',') + '%</span></div></div>' +
+      '<div class="bcs-thanh" role="img" aria-label="Sức mạnh bản thân ' + Math.round(phe) + '%"><div class="bcs-ray"><i style="left:' + phe + '%"></i></div><div class="bcs-moc"><span>Rất nhược</span><span>Nhược</span><span>Trung hòa</span><span>Vượng</span><span>Rất vượng</span></div></div>' +
+      '<div class="bcs-tc">' + (PT.tieuChi || []).map(function (t) { return '<div class="bcs-o ' + (t.dat ? 'dat' : 'khong') + '" title="' + esc(t.ly) + '"><b>' + (t.dat ? '✓' : '✗') + '</b><span>' + esc(t.ten.replace(/ \(.*\)/, '')) + '</span></div>'; }).join('') + '</div>' +
+      '<div class="bcs-vt">' + HANH_SINH.map(function (h) { var v = vaiTro(h); return '<div class="bcs-chip ' + v + '"><small>' + VT[v] + ' thần</small><b class="h-' + h + '">' + h + '</b><span>' + esc(nhomCua(h)) + '</span></div>'; }).join('') + '</div></div>';
+    var out = chiSo + buoc('1–3', 'Lập Tứ Trụ · Tàng can · Thập thần', 'Can chi năm – tháng – ngày – giờ theo tiết khí; tàng can và mười thần so với Nhật can', html + quanHe);
 
     // BƯỚC 4: Vượng suy
     var maxPct = Math.max.apply(null, HANH_SINH.map(function (h) { return D.pct[h]; }).concat([1]));
@@ -2494,7 +2500,7 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
     var r = state.result, q = r && r.quyen;
     return toanQuyen() || !!(q && (q.toanQuyen || q.namAll || (q.namMo || {})[String(y)] || (q.dhNam || {})[String(y)]));
   }
-  function th6Mau(d) { return d >= 6.2 ? '#1fa688' : d <= 4.3 ? '#d9503f' : '#c9a23a'; }
+  function th6Mau(d) { return d >= 6.2 ? '#6f9f5e' : d <= 4.3 ? '#d9503f' : '#c9a23a'; }
   /** Bảng nhiệt 9 lĩnh vực × 4 hệ có chấm điểm + cột điểm chung */
   function th6BangNhiet(T) {
     var W = 760, L = 210, cw = (W - L - 90) / TH6_HE.length, rh = 30, H = 34 + T.linhVuc.length * rh + 6;
@@ -2586,7 +2592,7 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
       o += '<circle cx="' + sx.toFixed(1) + '" cy="' + sy.toFixed(1) + '" r="' + sr.toFixed(2) + '" class="vt-sao" style="animation-delay:' + (rnd() * 6).toFixed(1) + 's"/>';
     }
     var svg = '<svg viewBox="0 0 ' + S + ' ' + S + '" class="vt-svg" role="group" aria-label="Vòm trời 9 lĩnh vực – bấm từng vùng để xem luận giải">' +
-      '<defs><radialGradient id="' + id + 'g"><stop offset="0" stop-color="#1b3c55"/><stop offset=".62" stop-color="#0b1d30"/><stop offset="1" stop-color="#050d18" stop-opacity="0"/></radialGradient>' +
+      '<defs><radialGradient id="' + id + 'g"><stop offset="0" stop-color="#3a2b1d"/><stop offset=".62" stop-color="#1c140d"/><stop offset="1" stop-color="#0b0806" stop-opacity="0"/></radialGradient>' +
       '<filter id="' + id + 'f" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="5"/></filter></defs>' +
       '<circle cx="' + c + '" cy="' + c + '" r="316" fill="url(#' + id + 'g)"/>' + o;
     // quỹ đạo hành tinh thật lúc sinh (trang trí, xoay rất chậm)
@@ -2712,6 +2718,9 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
         d.innerHTML = '<summary><span>🔬 Phần chuyên sâu · bảng số, thuật ngữ &amp; lý luận</span><small>' + cu.length + ' mục · bấm để mở</small></summary>';
         pg.appendChild(d); cu.forEach(function (c) { d.appendChild(c); });
       }
+      // Bảng chỉ số Bát Tự nằm ngoài phần chuyên sâu, ngay trên văn dễ hiểu
+      var cs = pg.querySelector('.bt-chiso'), dhp = pg.querySelector('.dh-panel');
+      if (cs && dhp) pg.insertBefore(cs, dhp);
     });
     var tong = $('page-tong');
     if (tong && D.th6 && !D.th6.loi && D.th6.linhVuc) {
@@ -3301,7 +3310,7 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
   /* ---------- Dòng thời gian cuộc đời: thanh 0–90 tuổi, kéo/chạm vào năm nào thì hiện luận năm đó ---------- */
   var CAN10 = ['Giáp', 'Ất', 'Bính', 'Đinh', 'Mậu', 'Kỷ', 'Canh', 'Tân', 'Nhâm', 'Quý'];
   var DT = { ds: {}, so: 0 };
-  var DT_MAU = { r5: '#1fa688', r4: '#4fbf8f', r3: '#c9a23a', r2: '#8a93a8', r1: '#e07b4f', r0: '#d9503f' };
+  var DT_MAU = { r5: '#6f9f5e', r4: '#8fbf7a', r3: '#c9a23a', r2: '#8a93a8', r1: '#e07b4f', r0: '#d9503f' };
   function dtLop(dg, diem) {
     var t = String(dg || '').toLowerCase();
     if (/rất tốt|đại cát/.test(t)) return 'r5'; if (/tốt|cát|thuận/.test(t)) return 'r4'; if (/khá/.test(t)) return 'r3';
@@ -3663,7 +3672,7 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
   }
 
   /* ======================== BIỂU ĐỒ (SVG) ======================== */
-  var C_GOLD = '#b08a2c', C_JADE = '#1fa688', C_VIOLET = '#4f8ff0', C_CORAL = '#d9503f';
+  var C_GOLD = '#b08a2c', C_JADE = '#6f9f5e', C_VIOLET = '#4f8ff0', C_CORAL = '#d9503f';
   function fmt(v) { return (Math.round(v * 10) / 10).toString().replace('.', ','); }
   /** Đường vận trình cả đời (một chuỗi) */
   function lifeChart(chang, tieuDe, phu) {
@@ -3778,7 +3787,7 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
   function gocLuoiSvg(A) {
     var ds = A.hanhTinh.filter(function (p) { return p.key !== 'northNode'; }).concat([A.asc, A.mc]), n = ds.length, c = 30, L = 34, W = L + n * c + 4, H = n * c + 30;
     var M = {}; (A.goc || []).forEach(function (g) { M[g.a + '|' + g.b] = g; M[g.b + '|' + g.a] = g; });
-    var MAU = { tot: '#1fa688', xau: '#d9503f', hop: '#d9a93f' };
+    var MAU = { tot: '#6f9f5e', xau: '#d9503f', hop: '#d9a93f' };
     var o = '<figure class="chart-fig"><figcaption><b>Lưới góc chiếu</b><span>Xanh = hài hòa (lục hợp, tam hợp) · đỏ = căng (vuông, đối, lệch) · vàng = hợp · rê chuột xem độ lệch</span></figcaption><svg viewBox="0 0 ' + W + ' ' + H + '" class="vchart goc-luoi" role="img" aria-label="Lưới góc chiếu">';
     ds.forEach(function (p, i) {
       o += '<text x="' + (L + i * c + c / 2) + '" y="' + (H - 8) + '" text-anchor="middle" class="gl-ky">' + esc(p.ky) + '</text>';
@@ -3928,7 +3937,7 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
     [2.5, 5, 7.5].forEach(function (v) { var y = H - B - v / 10 * (H - B - 14); o += '<line x1="' + L + '" x2="' + (W - 8) + '" y1="' + y + '" y2="' + y + '" class="ch-grid"/>'; });
     items.forEach(function (it, i) {
       var x = L + i * cw + cw * 0.18, w = cw * 0.64, h = it.gt / 10 * (H - B - 14), y = H - B - h;
-      var mau = it.gt >= 7 ? '#1fa688' : it.gt >= 5.5 ? '#b08a2c' : '#8a6fd1';
+      var mau = it.gt >= 7 ? '#6f9f5e' : it.gt >= 5.5 ? '#b08a2c' : '#8a6fd1';
       o += '<g data-tip="' + esc(it.tip || '') + '"><rect x="' + x + '" y="' + y + '" width="' + w + '" height="' + h + '" rx="3" fill="' + mau + '" fill-opacity="' + (it.nay ? 1 : 0.55) + '"' + (it.nay ? ' stroke="#fff1c9" stroke-width="2"' : '') + '/>' +
         '<text x="' + (x + w / 2) + '" y="' + (y - 4) + '" class="ch-ax" text-anchor="middle">' + it.so + '</text></g>' +
         '<text x="' + (x + w / 2) + '" y="' + (H - B + 14) + '" class="ch-ax" text-anchor="middle">' + esc(it.nhan) + '</text>';
@@ -4128,7 +4137,7 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
   function queSvg(q, nd) {
     var o = '<svg viewBox="0 0 120 132" width="120" height="132" class="que-svg" role="img" aria-label="' + esc(q.ten) + '">';
     for (var i = 6; i >= 1; i--) {
-      var y = 6 + (6 - i) * 21, on = i === nd, c = on ? '#ffd88a' : '#bccbe6';
+      var y = 6 + (6 - i) * 21, on = i === nd, c = on ? '#ffd88a' : '#d8c9ad';
       if (q.hao[i - 1]) o += '<rect x="10" y="' + y + '" width="100" height="12" rx="3" fill="' + c + '"/>';
       else o += '<rect x="10" y="' + y + '" width="44" height="12" rx="3" fill="' + c + '"/><rect x="66" y="' + y + '" width="44" height="12" rx="3" fill="' + c + '"/>';
       if (on) o += '<circle cx="4" cy="' + (y + 6) + '" r="3.5" fill="#ffd88a"/>';
@@ -4230,7 +4239,7 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
       '<div class="mm-grid">' + mm.map(function (m) { return '<div class="mm-card"><small>' + esc(m.ten) + '</small><b>' + esc(m.gt) + '</b><p>' + hl(m.y) + '</p></div>'; }).join('') + '</div></div>';
   }
   /* ---------- Biến cố hội tụ ---------- */
-  var HT_MAU = { tot: '#1fa688', xau: '#d9503f', dong: '#b08a2c' };
+  var HT_MAU = { tot: '#6f9f5e', xau: '#d9503f', dong: '#b08a2c' };
   function hoiTuChart(L, vy) {
     if (!L || !L.nam.length) return '';
     var n = L.nam.length, W = 760, LBL = 176, R = 8, T = 24, rowH = 30, H = T + L.dong.length * rowH + 30, cw = (W - LBL - R) / n;
@@ -4250,7 +4259,7 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
         o += '<g data-tip="' + esc(L.nam[i] + ' · ' + d.ten + '\n' + c.so + ' hệ cùng báo: ' + c.he.join(', ')) + '"><circle cx="' + x + '" cy="' + y + '" r="12" fill="transparent"/><circle cx="' + x + '" cy="' + y + '" r="' + rr + '" fill="' + mau + '" fill-opacity="' + op + '"' + (c.so >= 4 ? ' stroke="#fff1c9" stroke-width="1.5"' : '') + '/></g>';
       });
     });
-    o += '</svg><div class="ch-legend"><span><i style="background:#1fa688"></i>Cơ hội</span><span><i style="background:#d9503f"></i>Rủi ro cần phòng</span><span><i style="background:#b08a2c"></i>Bước ngoặt</span><span>Viền sáng = 4–5 hệ</span></div></figure>';
+    o += '</svg><div class="ch-legend"><span><i style="background:#6f9f5e"></i>Cơ hội</span><span><i style="background:#d9503f"></i>Rủi ro cần phòng</span><span><i style="background:#b08a2c"></i>Bước ngoặt</span><span>Viền sáng = 4–5 hệ</span></div></figure>';
     return o;
   }
   /** Biến cố 30 năm – cùng bộ máy 19 sự kiện với Hồ sơ năm (VanSau.gs › vsBienCo_) */
@@ -4535,14 +4544,14 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
     var o = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" width="560" height="560">' +
       '<circle cx="200" cy="200" r="190" fill="none" stroke="#f6b64a" stroke-opacity=".6" stroke-width="1.2"/>' +
       '<circle cx="200" cy="200" r="150" fill="none" stroke="#f6b64a" stroke-opacity=".6" stroke-width="1"/>' +
-      '<circle cx="200" cy="200" r="110" fill="none" stroke="#a5f3fc" stroke-opacity=".45" stroke-dasharray="3 5"/>' +
+      '<circle cx="200" cy="200" r="110" fill="none" stroke="#f3dcaa" stroke-opacity=".45" stroke-dasharray="3 5"/>' +
       '<circle cx="200" cy="200" r="60" fill="none" stroke="#f6b64a" stroke-opacity=".35"/>';
     for (var i = 0; i < 12; i++) {
       var a = (i * 30 - 90) * Math.PI / 180, a2 = (i * 30 - 75) * Math.PI / 180;
       o += '<line x1="' + (200 + 150 * Math.cos(a)).toFixed(1) + '" y1="' + (200 + 150 * Math.sin(a)).toFixed(1) + '" x2="' + (200 + 190 * Math.cos(a)).toFixed(1) + '" y2="' + (200 + 190 * Math.sin(a)).toFixed(1) + '" stroke="#f6b64a" stroke-opacity=".5"/>';
-      o += '<line x1="' + (200 + 60 * Math.cos(a)).toFixed(1) + '" y1="' + (200 + 60 * Math.sin(a)).toFixed(1) + '" x2="' + (200 + 110 * Math.cos(a)).toFixed(1) + '" y2="' + (200 + 110 * Math.sin(a)).toFixed(1) + '" stroke="#a5f3fc" stroke-opacity=".25"/>';
+      o += '<line x1="' + (200 + 60 * Math.cos(a)).toFixed(1) + '" y1="' + (200 + 60 * Math.sin(a)).toFixed(1) + '" x2="' + (200 + 110 * Math.cos(a)).toFixed(1) + '" y2="' + (200 + 110 * Math.sin(a)).toFixed(1) + '" stroke="#f3dcaa" stroke-opacity=".25"/>';
       o += '<text x="' + (200 + 170 * Math.cos(a2)).toFixed(1) + '" y="' + (200 + 170 * Math.sin(a2) + 7).toFixed(1) + '" text-anchor="middle" font-size="20" fill="#ffd88a" font-family="serif">' + SIGN_KY[i] + '\uFE0E</text>';
-      o += '<text x="' + (200 + 130 * Math.cos(a2)).toFixed(1) + '" y="' + (200 + 130 * Math.sin(a2) + 6).toFixed(1) + '" text-anchor="middle" font-size="17" fill="#a5f3fc" font-family="serif">' + CHI_HAN[i] + '</text>';
+      o += '<text x="' + (200 + 130 * Math.cos(a2)).toFixed(1) + '" y="' + (200 + 130 * Math.sin(a2) + 6).toFixed(1) + '" text-anchor="middle" font-size="17" fill="#f3dcaa" font-family="serif">' + CHI_HAN[i] + '</text>';
     }
     o += '</svg>';
     return '<img class="pc-ring" alt="" src="data:image/svg+xml;charset=utf-8,' + encodeURIComponent(o) + '" width="560" height="560">';
@@ -4587,7 +4596,7 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
   function chanTrang(txt, so, tong, sang) {
     var c = document.createElement('canvas'); c.width = 1600; c.height = 44;
     var g = c.getContext('2d');
-    g.font = '500 20px "Be Vietnam Pro", system-ui, sans-serif'; g.fillStyle = sang ? '#8a7a55' : '#9fd8e2'; g.textBaseline = 'middle';
+    g.font = '500 20px "Be Vietnam Pro", system-ui, sans-serif'; g.fillStyle = sang ? '#8a7a55' : '#e8cf98'; g.textBaseline = 'middle';
     g.fillText(txt, 0, 22);
     g.textAlign = 'right'; g.fillText(so + ' / ' + tong, 1600, 22);
     g.strokeStyle = sang ? 'rgba(120,100,60,.35)' : 'rgba(246,182,74,.35)'; g.beginPath(); g.moveTo(0, 2); g.lineTo(1600, 2); g.stroke();
@@ -4621,7 +4630,7 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
     if (!window.jspdf || typeof html2canvas === 'undefined') { toast('Không tải được thư viện PDF – hãy dùng nút In → Lưu dưới dạng PDF.', true); return; }
     var jsPDF = window.jspdf.jsPDF, pdf = new jsPDF({ unit: 'pt', format: 'a4', compress: true });
     var PW = 595.28, PH = 841.89, MX = 30, MT = 32, MB = 40, CW = PW - 2 * MX, CH = PH - MT - MB;
-    var W = 820, pxPt = CW / W, pageHpx = CH / pxPt, NEN = sang ? [247, 251, 252] : [11, 90, 105], NEN_HEX = sang ? '#f7fbfc' : '#0b5a69';
+    var W = 820, pxPt = CW / W, pageHpx = CH / pxPt, NEN = sang ? [247, 251, 252] : [18, 13, 9], NEN_HEX = sang ? '#f7fbfc' : '#120d09';
     var root = document.createElement('div');
     root.id = 'pdfRoot'; root.className = 'pdf-root ' + (sang ? 'theme-light' : 'theme-dark');
     document.body.appendChild(root);
@@ -4936,7 +4945,7 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
       setLoadingText('Đang dựng trang bìa…');
       var cv = root.querySelector('.pdf-page-cover');
       cv.style.height = Math.round(W * PH / CW * (CW / PW)) + 'px';
-      var o = {}; Object.keys(opt).forEach(function (k) { o[k] = opt[k]; }); o.backgroundColor = '#08172e';
+      var o = {}; Object.keys(opt).forEach(function (k) { o[k] = opt[k]; }); o.backgroundColor = '#120d09';
       return html2canvas(cv, o).then(function (c) { trangMoi(); dat(c, true); trangMoi(); /* chỗ cho mục lục */ });
     }).then(function () {
       var secs = root.querySelectorAll('.pdf-sec'), p = Promise.resolve();
@@ -5102,7 +5111,7 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
     $('btnPng').addEventListener('click', function () {
       if (typeof html2canvas === 'undefined') { toast('Không tải được thư viện chụp ảnh – hãy dùng nút In.', true); return; }
       loading(true);
-      chupLaSo({ scale: 2, backgroundColor: getComputedStyle(document.body).backgroundColor || '#0a0c19', useCORS: true }).then(function (canvas) {
+      chupLaSo({ scale: 2, backgroundColor: getComputedStyle(document.body).backgroundColor || '#120d09', useCORS: true }).then(function (canvas) {
         loading(false);
         var a = document.createElement('a');
         a.href = canvas.toDataURL('image/png');
