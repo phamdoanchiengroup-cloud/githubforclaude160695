@@ -1,0 +1,6 @@
+# KPI Phần giao diện tải sau
+
+Nhóm: KPI · Tách từ CLAUDE.md ngày 21/10/2026
+Liên quan: [[KPI Sơ đồ nhà máy 3D]] · [[KPI Âm thanh và giọng Rhino]] · [[KPI Lottie]] · [[00 Mục lục]]
+
+- **Phần giao diện tải sau (12/10, chủ dự án: "tách cho nhẹ")** = va-index.py **mục 19** `tests/manh/va-manh.py` + máy chủ `tests/manh.gs` (`layManhGiaoDien(token, ten)`, `MANH_GD` = SoDo: ADMIN/TP/TL/HR, HoatAnh: mọi tài khoản đã đăng nhập; đọc `HtmlService.createHtmlOutputFromFile(ten).getContent()`). Hai file HTML MỚI trong Apps Script, sinh khi dựng Index: `kpi-app/SoDo.html` (mục 15 ghi ra thay vì nhúng; Index chỉ còn hàm chờ `vSoDo` gọi `taiManh`, bản thật đặt `window.__sdDaNap`) và `kpi-app/HoatAnh.html` (`LT_DATA`; Index để `var LT_DATA=null`, `ltNap` tải trước, chưa có thì hình tĩnh `LT_TINH`; tải nền 2,5 s sau `vaoHeThong`). Trình duyệt: `taiManh(ten, cb)` + `ganManh_` (chèn style/textarea, chạy `<script>`), nhớ localStorage `kpi_manh_<ten>_<MANH_VER>` (md5 10 ký tự lúc dựng). Mục 18 sửa luôn SoDo.html. Đã bỏ base64 trong ghi chú dang-nhap-khac.html, cửa cuốn dùng lại logo `.lk-dau img`, bỏ font LkMic/LkOsw/LkSai khỏi web. Index.html 1.500 → 751 KB. Bản xem thử nhúng 2 file vào `window.__MANH` (tao-ban-xem-thu.js), gia-lap-kpi.js có `createHtmlOutputFromFile`. Kiểm thử `tests/manh-web.js` (8).
