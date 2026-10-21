@@ -649,7 +649,7 @@ function napDuLieuLoi_(token, phan) {
     var kcs = doc_('PhieuKCS');
     if (me.vaiTro === 'TP') {
       var mine = {};
-      congdoan.forEach(function(c) { if (c.MaXuong === me.xuong) mine[c.MaCD] = 1; });
+      doc_('CongDoan').forEach(function(c) { if (c.MaXuong === me.xuong) mine[c.MaCD] = 1; });   // kể cả công đoạn đã Ngừng (21/10)
       nhatkyTat = nhatkyTat.filter(function(r) { return mine[r.MaCD]; });
     }
     if (me.vaiTro === 'CN') {
@@ -671,9 +671,12 @@ function napDuLieuLoi_(token, phan) {
     out.nhatky = nk; out.choDuyet = cho;
     out.kcs = kcs.map(function(r) { var o = chonCot_(r, ['MaPhieu', 'Ngay', 'MaNV', 'MaCD', 'SoLuongKhongDat', 'MaLoi']); o.Ngay = ngayVN_(r.Ngay); return o; })
       .filter(function(r) { return !tuNgay || r.Ngay >= tuNgay; });
-    out.canNhapLai = (me.vaiTro === 'CN' ? doc_('NhatKySanXuat').filter(function(r) {
-      return r.MaNV === me.maNV && String(r.TrangThai).trim() === 'Từ chối';
-    }).map(function(r) { return { Ngay: ngayVN_(r.Ngay), MaCD: r.MaCD, LyDo: r.LyDoTuChoi || r.GhiChu || '' }; }) : []);
+    out.canNhapLai = (me.vaiTro === 'CN' ? (function() {
+      var cuaToi = doc_('NhatKySanXuat').filter(function(r) { return r.MaNV === me.maNV; }), daGuiLai = {};
+      cuaToi.forEach(function(r) { var tt = String(r.TrangThai).trim(); if (tt === 'Chờ duyệt' || tt === 'Đã chốt') daGuiLai[ngayVN_(r.Ngay)] = 1; });
+      return cuaToi.filter(function(r) { return String(r.TrangThai).trim() === 'Từ chối' && !daGuiLai[ngayVN_(r.Ngay)]; })   // đã gửi lại thì thôi nhắc (21/10)
+        .map(function(r) { return { Ngay: ngayVN_(r.Ngay), MaCD: r.MaCD, LyDo: r.LyDoTuChoi || r.GhiChu || '' }; });
+    })() : []);
   }
   if (can('cc')) {
     out.chamcong = sauMoc(ss_().getSheetByName('DiemDanhNghi') ? doc_('DiemDanhNghi') : []);
@@ -709,6 +712,8 @@ function napDuLieuLoi_(token, phan) {
   }
   if (can('cd')) {
     out.congdoan = congdoan;
+    out.cdNgung = doc_('CongDoan').filter(function(x) { return x.TrangThai === 'Ngừng'; })
+      .map(function(x) { return { MaCD: x.MaCD, TenCD: x.TenCD, MaXuong: x.MaXuong, CachCham: x.CachCham, ngung: true }; });
     out.dinhmuc = doc_('DinhMuc');
     out.lsDM = ss_().getSheetByName(LSDM_SHEET) ? doc_(LSDM_SHEET).map(function(x){ return { MaCD: x.MaCD, DinhMucGio: soVN_(x.DinhMucGio), TuNgay: x.TuNgay ? ngayVN_(x.TuNgay) : '', DenNgay: ngayVN_(x.DenNgay) }; }) : [];
     var dexuat = doc_('DeXuatDinhMuc');
@@ -2298,10 +2303,42 @@ function mapQuanLy_() {
   return maQL;
 }
 
+/* Gỡ phạt nhập trễ tự động (PhatNhapTre + vi phạm NHAPTRE do hệ thống ghi) của những ngày hóa ra là ngày nghỉ:
+   nghỉ cả ngày theo chấm công, nghỉ dài hạn, ngày lễ. Trả số lượt đã gỡ. Lỗi thì bỏ qua (không làm hỏng việc lưu). */
+function goPhatNgayNghi_() {
+  try {
+    if (!ss_().getSheetByName('PhatNhapTre')) return 0;
+    var phat = doc_('PhatNhapTre');
+    var vp = ss_().getSheetByName('ViPham') ? doc_('ViPham').filter(function(v) {
+      return v.MaVP === 'NHAPTRE' && (String(v.NguoiGhi || '').indexOf('Hệ thống') === 0 || String(v.GhiChu || '').indexOf('Tự động') === 0);
+    }) : [];
+    if (!phat.length && !vp.length) return 0;
+    var cc = {}, ndh = {}, mx = {};
+    docAnToan_('DiemDanhNghi').forEach(function(r) { cc[r.MaNV + '|' + ngayVN_(r.Ngay)] = khTuBanGhi_(r); });
+    docAnToan_('NghiDaiHan').forEach(function(r) { (ndh[r.MaNV] = ndh[r.MaNV] || []).push({ tu: ngayVN_(r.TuNgay), den: ngayVN_(r.DenNgay) }); });
+    nhanSuGomTP_().forEach(function(x) { mx[x.MaNV] = x.MaXuong; });
+    var laNghi = function(maNV, ng, maXuong) {
+      if (!ng) return false;
+      var kh = cc[maNV + '|' + ng];
+      if (kh && gioCoMat_(kh) <= 0) return true;
+      var d = ndh[maNV] || [];
+      for (var i = 0; i < d.length; i++) if (d[i].tu <= ng && ng <= d[i].den) return true;
+      return laNgayLe_(ng, maXuong || mx[maNV]);
+    };
+    var xoaP = phat.filter(function(p) { return laNghi(p.MaNV, ngayVN_(p.Ngay), p.MaXuong); }).map(function(p) { return p._row; });
+    var xoaV = vp.filter(function(v) { return laNghi(v.MaNV, ngayVN_(v.Ngay)); }).map(function(v) { return v._row; });
+    if (xoaP.length) xoaNhieuDong_('PhatNhapTre', xoaP);
+    if (xoaV.length) xoaNhieuDong_('ViPham', xoaV);
+    if (xoaP.length || xoaV.length) Logger.log('Gỡ phạt nhập trễ ngày nghỉ: ' + xoaP.length + ' lượt phạt, ' + xoaV.length + ' vi phạm.');
+    return xoaP.length;
+  } catch (e) { Logger.log('goPhatNgayNghi_: ' + e); return 0; }
+}
+
 /* Trigger: chạy mỗi ngày. Rà các ngày đã quá hạn, phạt CN chưa nhập. */
 function chayPhatNhapTre() {
   if (!noiBo_(arguments[0])) return chanWeb_('chayPhatNhapTre');
   taoSheetPhatTre_();
+  goPhatNgayNghi_();   // ngày nghỉ chấm muộn sau lần phạt trước -> gỡ (21/10)
   var dt = docDuLieuKPI_();
   var homNay = homNayVN_();
   var gioNay = gioVN_();
@@ -3455,8 +3492,8 @@ function CAI_TRIGGER_SNAPSHOT_9H() {
 function layKPIKy(token, kieu, giaTri, maXuong) {
   var me = docPhien_(token);
   if (!me) return sach_({ ok:false, hetHan:true, msg:'Phiên hết hạn.' });
-  if (me.vaiTro === 'CN') { if (!me.xuong) return sach_({ ok:false, msg:'Tài khoản chưa gắn xưởng.' }); maXuong = me.xuong; }
-  else if (!xemCaNhaMay_(me) && me.vaiTro !== 'TP') return sach_({ ok:false, msg:'Không có quyền xem bảng KPI.' });
+  if (me.vaiTro === 'CN' || me.vaiTro === 'TP') { if (!me.xuong) return sach_({ ok:false, msg:'Tài khoản chưa gắn xưởng.' }); maXuong = me.xuong; }   // TP/PP: chỉ xưởng mình (21/10)
+  else if (!xemCaNhaMay_(me)) return sach_({ ok:false, msg:'Không có quyền xem bảng KPI.' });
   return nho_('layKPIKy', [kieu, giaTri, maXuong || ''], function() { return layKPIKyGoc_(token, kieu, giaTri, maXuong); });
 }
 function layKPIKyGoc_(token, kieu, giaTri, maXuong) {
@@ -3766,6 +3803,7 @@ function luuDiemDanh(token, ngay, nghi) {
   themNhieu_('DiemDanhNghi', moi);
 
   ghiLog_(me, 'Điểm danh', 'Ngày ' + ngay + ' — ' + moi.length + ' người nghỉ');
+  goPhatNgayNghi_();
 
   // Đánh dấu xưởng đã điểm danh hôm nay (để ban điều hành biết xưởng nào đã/chưa làm)
   if (me.vaiTro === 'TP' && me.xuong) {
@@ -4003,6 +4041,7 @@ function luuLichThang(token, ky, rows){
   themNhieu_('DiemDanhNghi', moi);
 
   ghiLog_(me, 'Chấm lịch tháng', 'Kỳ ' + ky + ' — ' + moi.length + ' ô khác thường');
+  goPhatNgayNghi_();
   return sach_({ ok:true, msg:'Đã lưu lịch tháng ' + ky + ' (' + moi.length + ' ô đánh dấu, còn lại là đi làm đủ).' });
 }
 
@@ -4051,6 +4090,7 @@ function dangKyNghiDaiHan(token, maNV, loai, tuNgay, denNgay, ghiChu){
     NguoiGhi: me.ten, ThoiDiem: new Date()
   });
   ghiLog_(me, 'Đăng ký nghỉ dài hạn', maNV+' · '+loai+' · '+tuNgay+' → '+denNgay);
+  goPhatNgayNghi_();
   return sach_({ ok:true, msg:'Đã đăng ký nghỉ dài hạn cho nhân sự ('+loai+', '+tuNgay+' → '+denNgay+').' });
 }
 

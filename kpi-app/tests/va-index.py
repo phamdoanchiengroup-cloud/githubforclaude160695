@@ -809,6 +809,8 @@ exec(io.open(os.path.join(D, 'bao-mat', 'va-bao-mat-web.py'), encoding='utf-8').
 exec(io.open(os.path.join(D, 'van-hanh', 'va-van-hanh-web.py'), encoding='utf-8').read())
 # ---------------------------------------------------------------- 24. Âm thanh + giọng Rhino (18/10, chủ dự án chọn HUD + giọng nữ), mặc định tắt
 exec(io.open(os.path.join(D, 'am-thanh', 'va-am-thanh.py'), encoding='utf-8').read())
+# ---------------------------------------------------------------- 25. 4 lỗi chủ dự án báo 21/10: nhắc nhập bỏ ngày nghỉ/lễ, tên công đoạn đã ngừng, tự tải lại sản lượng khi mở tab
+exec(io.open(os.path.join(D, 'sua-loi-21-10', 'va-sua-web.py'), encoding='utf-8').read())
 
 io.open(os.path.join(D, '..', 'Index.html'), 'w', encoding='utf-8').write(s)
 print('OK Index.html')

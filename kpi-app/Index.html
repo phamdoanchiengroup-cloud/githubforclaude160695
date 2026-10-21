@@ -1337,6 +1337,7 @@ function nguoiChuaNhap(maXuongLoc){
       if(!daDD[x.MaXuong+'|'+nD]) return;             // xưởng chưa điểm danh ngày này -> bỏ qua
       if(daNhap[x.MaNV+'|'+nD]) return;               // đã nhập
       if(gioCoMatNgay(x.MaNV,nD)<=0) return;          // nghỉ cả ngày (theo điểm danh)
+      if(laNgayLeKH(nD,x.MaXuong)) return;            // ngày lễ / xưởng được miễn (21/10)
       (theoXuong[x.MaXuong]=theoXuong[x.MaXuong]||[]).push({maNV:x.MaNV,ten:x.HoTen});
       tong++;
     });
@@ -2565,6 +2566,8 @@ function capNhatDucBar(){
         if(daNhap[nD]) return;                 // đã nhập rồi
         if(!daDD[mx+'|'+nD]) return;           // xưởng chưa điểm danh ngày này -> chưa nhắc
         if(nghiDH(nD)) return;                 // nghỉ dài hạn
+        if(gioCoMatNgay(ME.maNV,nD)<=0) return; // nghỉ cả ngày theo chấm công (21/10)
+        if(laNgayLeKH(nD,mx)) return;          // ngày lễ / xưởng được miễn
         dsChuaNhap.push(nD);
       });
     })();
@@ -2681,7 +2684,9 @@ function gioCoMatNgay(maNV, ngayYMD){
 }
 function dvt(cd){var r=ix_('dm',D.dinhmuc,function(x){return x.MaCD})[cd];return r&&r.DonViTinh?r.DonViTinh:'cái/giờ'}
 function nv(m){var r=ix_('nv',D.nhansu,function(x){return x.MaNV})[m];return r?r:{HoTen:m,MaXuong:''}}
-function cd(m){var r=ix_('cd',D.congdoan,function(x){return x.MaCD})[m];return r?r:{TenCD:m,MaXuong:'',CachCham:'CN'}}
+function cd(m){var r=ix_('cd',D.congdoan,function(x){return x.MaCD})[m];if(r)return r;
+  for(var i=0,n=(D.cdNgung||[]);i<n.length;i++)if(n[i].MaCD===m)return n[i];   // công đoạn đã ngừng (21/10)
+  return {TenCD:m,MaXuong:'',CachCham:'CN'}}
 /* Danh sách <option> máy của MỘT xưởng (bỏ máy đã thanh lý). Dùng cho các dropdown chọn máy. */
 function mayOptions(maXuong, chon){
   var ds=D.maymoc.filter(function(x){return x.MaXuong===maXuong && String(x.TinhTrang||'').trim()!=='Thanh lý'});
@@ -5019,7 +5024,7 @@ function veKPIThongNhat(){
   var laCN=(ME.vaiTro==='CN');
   if(!kpiKy.giaTri) kpiKy.giaTri=kyThangHienTai();
 
-  var h='<div class="ptitle">Bảng KPI</div>'+
+  var h='<div class="ptitle">Bảng KPI'+((ME.vaiTro==='TP'||ME.vaiTro==='CN')&&ME.tenXuong?' – '+esc(ME.tenXuong):'')+'</div>'+
     '<div class="pdesc">Xếp hạng theo tổng điểm KPI · từ cao xuống thấp · chọn kỳ để xem tháng, quý hoặc năm</div>';
 
   // Thanh chọn kỳ + (nếu ADMIN/TP) nút chốt tháng
@@ -9201,6 +9206,45 @@ function amDoi(){
   boc('vaoHeThong',function(cu){return function(){ var r=cu.apply(this,arguments);
     if(amBatGiong()&&!AM_GIONG)setTimeout(function(){ if(typeof taiManh==='function')taiManh('AmThanh',function(){}); },4000);
     return r;}});
+})();
+</script>
+<script>
+/* ===== TỰ TẢI LẠI SẢN LƯỢNG (21/10) =====
+   Trước đây dữ liệu chỉ tải lúc đăng nhập: công nhân gửi sau đó thì trưởng/phó phòng mở "Duyệt sản lượng" không thấy;
+   trưởng phòng duyệt xong thì công nhân vẫn thấy khung "nhập lại". Nay mở các tab dưới đây là lặng lẽ tải lại phần
+   nhật ký + chấm công (tối đa 1 lần / 20 giây); trưởng/phó phòng còn tự tải lại mỗi 5 phút khi đang mở trang. */
+var LM_TAB = { TP: { duyetsl: 1, homnay: 1, dash: 1 }, CN: { cnnhap: 1, kpica: 1 } };
+var LM_CACH = 20000, LM_DINH_KY = 300000, LM = { luc: 0, dang: false };
+function lmKhoa_(){ return (D.choDuyet||[]).map(function(r){return r.MaDong}).sort().join(',')+'#'+
+  (D.canNhapLai||[]).map(function(r){return r.Ngay+r.MaCD}).sort().join(',')+'#'+(D.nhatky||[]).length; }
+function lmDangSua_(){
+  var a=document.activeElement, m=$('main');
+  return (typeof TT_HEN!=='undefined'&&TT_HEN) || !!(a&&m&&m.contains(a)&&/^(INPUT|SELECT|TEXTAREA)$/.test(a.tagName));
+}
+function lmTai(ep){
+  var tab=LM_TAB[ME&&ME.vaiTro]; if(!tab||LM.dang||!TOKEN)return;
+  if(!ep&&Date.now()-LM.luc<LM_CACH)return;
+  LM.dang=true; LM.luc=Date.now();
+  var truoc=lmKhoa_();
+  google.script.run.withSuccessHandler(function(r){
+    LM.dang=false;
+    if(!r||!r.ok)return;                                 // hết phiên / lỗi: để lượt thao tác sau tự báo
+    ['nhatky','choDuyet','kcs','canNhapLai','chamcong','xacNhanDD','ngayLe','nghiDaiHan'].forEach(function(k){ if(r[k])D[k]=r[k]; });
+    capNhatDem(); capNhatDucBar();
+    var t=tabHienTai;                                   // vẽ lại tab ĐANG mở (người dùng có thể đã chuyển tab khi đang tải)
+    if(lmKhoa_()===truoc||!tab[t])return;
+    if(lmDangSua_()){ toast('Có sản lượng mới – vẽ lại khi bạn sửa xong'); LM.luc=0; return; }
+    var y=window.scrollY;
+    ({duyetsl:vDuyetSL,homnay:vHomNay,dash:vDash,cnnhap:vCNNhap,kpica:vKPICaNhanToi}[t])();
+    window.scrollTo(0,y);
+  }).withFailureHandler(function(){ LM.dang=false; }).napPhan(TOKEN,['nk','cc']);
+}
+(function(){
+  var cu=window.go;
+  window.go=function(k){ var r=cu.apply(this,arguments); try{ var t=LM_TAB[ME&&ME.vaiTro]; if(t&&t[k])lmTai(); }catch(e){} return r; };
+  setInterval(function(){
+    if(ME&&ME.vaiTro==='TP'&&document.visibilityState==='visible'&&!lmDangSua_())lmTai(true);
+  },LM_DINH_KY);
 })();
 </script>
 </body>

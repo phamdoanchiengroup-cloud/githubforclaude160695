@@ -1347,6 +1347,8 @@ s = s.rstrip() + '\n' + io.open(os.path.join(os.path.dirname(__file__), 'bo-tri-
 exec(io.open(os.path.join(os.path.dirname(__file__), 'bao-mat', 'va-bao-mat.py'), encoding='utf-8').read())
 # ---------------------------------------------------------------- vận hành / KPI / động viên / hội nhập (tư vấn 18/10)
 exec(io.open(os.path.join(os.path.dirname(__file__), 'van-hanh', 'va-van-hanh.py'), encoding='utf-8').read())
+# ---------------------------------------------------------------- 4 lỗi chủ dự án báo 21/10 (quyền xem KPI của TP, phạt nhập trễ ngày nghỉ, chờ duyệt bị ẩn, nhắc nhập lại)
+exec(io.open(os.path.join(os.path.dirname(__file__), 'sua-loi-21-10', 'va-sua.py'), encoding='utf-8').read())
 
 io.open(RA, 'w', encoding='utf-8').write(s)
 print('OK ->', os.path.abspath(RA))

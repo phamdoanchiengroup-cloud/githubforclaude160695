@@ -494,6 +494,22 @@ Nếu vẫn thấy giao diện cũ: kiểm tra lại Phần D (đã chọn **Phi
 - Giọng nói nằm ở **file MỚI `AmThanh.html`** (khoảng 300 KB): tự tải vài giây sau khi đăng nhập (lần đầu), rồi máy nhớ lại. Quên tạo file này thì tiếng hiệu ứng vẫn chạy, chỉ không có giọng nói.
 
 
+## BẢN SỬA 21/10 (4 lỗi: quyền xem KPI, phạt ngày nghỉ, chờ duyệt bị ẩn, nhắc nhập lại)
+Chỉ 2 file: **Code.gs** và **Index.html** (đã gồm mọi thay đổi của lần dán chung 18/10 bên dưới).
+**Nếu chưa dán lần 18/10:** làm theo mục "LẦN DÁN CHUNG 18/10" bên dưới, dùng Code.gs + Index.html bản mới này, là xong cả hai lần.
+
+1. Sao lưu: Tổng quan → **Tạo bản sao dự án**.
+2. MỞ FILE **Code.gs** → Ctrl+A → Delete → dán bản mới → Ctrl+S.
+3. MỞ FILE **Index.html** → xóa hết → dán bản mới → Ctrl+S.
+4. Triển khai → Quản lý triển khai → ✏️ → Phiên bản mới → Triển khai. Rồi Ctrl+F5.
+
+Sau khi dán:
+- **Trưởng/phó phòng** chỉ thấy bảng KPI xưởng mình (tab "KPI phòng", tiêu đề ghi tên xưởng) và thẻ KPI quản lý của xưởng mình.
+- **Phạt nhập trễ ngày nghỉ:** khi trưởng phòng lưu điểm danh, chấm lịch tháng, đăng ký nghỉ dài hạn, và mỗi lần hệ thống chạy phạt hằng ngày, các lượt phạt nhập trễ + vi phạm "Nhập sản lượng trễ hạn" rơi vào ngày nghỉ cả ngày / nghỉ dài hạn / ngày lễ được tự gỡ. Ngày làm nửa ngày vẫn phải nhập nên vẫn giữ phạt. Công nhân cũng không còn bị nhắc nhập những ngày đã chấm nghỉ.
+- **Tháng đã chốt** (vd. tháng 9) vẫn giữ số cũ: muốn tính lại thì chủ sở hữu vào **Bảng KPI → Xem theo Tháng → chọn tháng 9 → Chốt bù**.
+- **Duyệt sản lượng:** mở tab là tự tải sản lượng mới nhất (trước đây phải tải lại trang); trang của trưởng/phó phòng còn tự cập nhật mỗi 5 phút. Dòng chờ duyệt của công đoạn đã chuyển "Ngừng" nay vẫn hiện để duyệt.
+- **Khung đỏ "Yêu cầu nhập lại":** ngày nào công nhân đã gửi lại thì không báo nữa.
+
 ## LẦN DÁN CHUNG 18/10 (bảo mật + vận hành + âm thanh)
 Gồm 5 file: **Code.gs**, **Index.html**, **SoDo.html**, **HoatAnh.html** và file mới **AmThanh.html**.
 

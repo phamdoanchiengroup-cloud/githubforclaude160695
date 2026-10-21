@@ -225,6 +225,7 @@ console.log('\n7. Giảm tải dữ liệu gửi về trình duyệt');
 console.log('\n8. Phạt nhập trễ & hàm chạy tay');
 {
   const c = G.tao(MOI, duLieu(), BAY_GIO);
+  c.__goi('goPhatNgayNghi_');                      // 21/10: lần chạy phạt tự gỡ trước các lượt phạt rơi vào ngày nghỉ -> gỡ trước để đếm đúng lượt mới
   const vpTruoc = dong(c, 'ViPham').length;
   const n = c.__goi('chayPhatNhapTre');
   const vp = dong(c, 'ViPham');
