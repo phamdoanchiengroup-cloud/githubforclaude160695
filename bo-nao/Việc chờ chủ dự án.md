@@ -13,6 +13,7 @@ Liên quan: [[Lần dán lên Apps Script]] · [[Quyết định của chủ d�
 ## Chờ chủ dự án làm
 - Cài bộ clasp trên máy Windows (`kpi-app/cai-dat-clasp/HUONG-DAN.md`), lần đầu nên làm cùng Claude. – [[KPI Cập nhật bằng clasp]]
 - Dán bản 21/10 (sửa lỗi + tăng tốc), chạy `CAI_TRIGGER_LAM_NONG_KPI`, kiểm tra Sheets API. – [[KPI Tăng tốc đợt 2 (21-10)]]
+- Sau khi dán: chạy một lần `AP_DINH_MUC_CA_THANG`, mở Phân tích định mức tháng 10 → "Áp dụng các dòng đã chọn"; nếu tháng đã chốt thì bấm "Chốt bù tháng này". – [[KPI Phân tích định mức]]
 
 ## Dữ liệu trong sheet cần sửa tay (soát 21/10)
 - 29 dòng nhật ký ngày sai: NhatKySanXuat dòng 588–609 (C049, đảo ngày/tháng + 5 ô #VALUE!), 733–735 (C638), 2707–2709 (C075, từ chối), 4324 (C080, ngày trống).

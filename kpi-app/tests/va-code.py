@@ -1351,6 +1351,8 @@ exec(io.open(os.path.join(os.path.dirname(__file__), 'van-hanh', 'va-van-hanh.py
 exec(io.open(os.path.join(os.path.dirname(__file__), 'sua-loi-21-10', 'va-sua.py'), encoding='utf-8').read())
 # ---------------------------------------------------------------- tăng tốc đợt 2 (21/10): gói gọn dữ liệu nạp, bộ nhớ tạm KPI riêng, làm nóng bảng KPI
 exec(io.open(os.path.join(os.path.dirname(__file__), 'tang-toc-2', 'va-tang-toc.py'), encoding='utf-8').read())
+# ---------------------------------------------------------------- phân tích định mức theo định mức đang dùng + gợi ý mọi công đoạn về 85% + áp từ đầu tháng (21/10)
+exec(io.open(os.path.join(os.path.dirname(__file__), 'dinh-muc', 'va-dinh-muc.py'), encoding='utf-8').read())
 
 io.open(RA, 'w', encoding='utf-8').write(s)
 print('OK ->', os.path.abspath(RA))

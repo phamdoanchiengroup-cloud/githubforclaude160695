@@ -25,7 +25,7 @@ const cd1 = cdX.find(x => c.doc_('DinhMuc').some(d => d.MaCD === x.MaCD && Numbe
 const dmGoc = Number(c.doc_('DinhMuc').find(d => d.MaCD === cd1.MaCD).DinhMucGio);
 const kpi = (ma, ky) => { c.__goi('noiBo_'); return c.kpiThang_(ma, ky, c.docDuLieuKPI_()); };   // __goi trước để xóa bộ nhớ đệm đọc sheet
 
-console.log('\nA1. Định mức theo ngày áp dụng');
+console.log('\nA1. Đổi định mức áp cho cả tháng đang làm (chủ dự án 21/10; bản 18/10 áp theo ngày)');
 // 1 dòng đã chốt ngày 05/10 của công nhân, tính KPI tháng 10 trước khi đổi định mức
 const hNK = c.__sheets.NhatKySanXuat.rows[0];
 const themNK = (ngay, sl, them) => c.__sheets.NhatKySanXuat.rows.push(hNK.map(h => (Object.assign({ MaDong: 'NKT' + Math.random().toString(36).slice(2, 8), Ngay: ngay, MaNV: cn.MaNV, MaCD: cd1.MaCD, GioLam: 8, SoLuongLamRa: sl, TrangThai: 'Đã chốt', NguoiNhap: 'x → duyệt: y' }, them || {}))[h] ?? ''));
@@ -34,11 +34,12 @@ c.__goi('XOA_BO_NHO_TAM');
 const truoc = kpi(cn.MaNV, '2026-10');
 r = c.__goi('banDieuHanhSuaDinhMuc', tO, cd1.MaCD, dmGoc * 2, 'Thử A1');
 ok(r && r.ok, 'ban điều hành đổi định mức (gấp đôi) hôm nay 14/10', r);
-ok(c.__sheets.LichSuDinhMuc && c.__sheets.LichSuDinhMuc.rows.length === 2, 'định mức cũ lưu vào LichSuDinhMuc (đến hết 13/10)', c.__sheets.LichSuDinhMuc && c.__sheets.LichSuDinhMuc.rows);
+const lsA1 = c.doc_('LichSuDinhMuc').filter(x => x.MaCD === cd1.MaCD);
+ok(lsA1.every(x => c.ngayVN_(x.DenNgay) <= '2026-09-30'), 'lịch sử định mức cũ chỉ còn tới hết 30/09', lsA1);
 const sau = kpi(cn.MaNV, '2026-10');
-ok(truoc && sau && Math.abs(truoc.sl - sau.sl) < 0.01, 'KPI tháng 10 (dòng ngày 05/10) không đổi sau khi đổi định mức', [truoc && truoc.sl, sau && sau.sl]);
+ok(truoc && sau && sau.sl < truoc.sl - 0.01, 'KPI tháng 10 (cả dòng ngày 05/10) tính lại theo định mức mới', [truoc && truoc.sl, sau && sau.sl]);
 const d = c.docDuLieuKPI_();
-ok(c.dmNgay_(d, cd1.MaCD, '2026-10-05') === dmGoc && c.dmNgay_(d, cd1.MaCD, '2026-10-14') === dmGoc * 2, 'ngày 05/10 dùng định mức cũ, từ 14/10 dùng định mức mới');
+ok(c.dmNgay_(d, cd1.MaCD, '2026-10-01') === dmGoc * 2 && c.dmNgay_(d, cd1.MaCD, '2026-10-05') === dmGoc * 2, 'từ 01/10 dùng định mức mới');
 
 console.log('\nA2. Vi phạm không có ngày');
 const hVP = c.__sheets.ViPham.rows[0];

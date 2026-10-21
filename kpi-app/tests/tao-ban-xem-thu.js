@@ -228,7 +228,7 @@ html = html.replace('<script>', () =>   // hàm thay thế: tránh $' $& trong m
   `<script type="application/json" id="du-lieu-xem-thu">${JSON.stringify(d).replace(/</g, '\\u003c')}</script>\n` +
   '<script>window.__TAO_MAY_CHU=function(' + THAM.join(',') + '){\n' + anToan(code) + '\n;return {' +
     tenHam.map(t => JSON.stringify(t) + ':(typeof ' + t + '==="function"?' + t + ':null)').join(',') +
-    ',__datLai:function(){__SS_CACHE=null;__DOC_CACHE={};__HEAD_CACHE={};__KHOA=null;__NGAY_LE=null;__CHO_GHI={};__PB=null;__DA_TANG_PB=false;__DA_GHI={};if(typeof __PB_KPI!=="undefined")__PB_KPI=null;if(typeof __KPI_KHONG_DOI!=="undefined")__KPI_KHONG_DOI=false;}};};</script>\n' +
+    ',__datLai:function(){__SS_CACHE=null;__DOC_CACHE={};__HEAD_CACHE={};__KHOA=null;__NGAY_LE=null;__CHO_GHI={};__PB=null;__DA_TANG_PB=false;__DA_GHI={};if(typeof __PB_KPI!=="undefined")__PB_KPI=null;if(typeof __KPI_KHONG_DOI!=="undefined")__KPI_KHONG_DOI=false;if(typeof __DM_TU!=="undefined")__DM_TU=null;}};};</script>\n' +
     MAY + '\n<script>');
 const cuoi = html.lastIndexOf('</body>');   // chữ </body> đầu tiên nằm trong chuỗi JS (in bảng chấm công)
 html = html.slice(0, cuoi) + GOI_Y_HTML + '\n' + html.slice(cuoi);

@@ -494,6 +494,18 @@ Nếu vẫn thấy giao diện cũ: kiểm tra lại Phần D (đã chọn **Phi
 - Giọng nói nằm ở **file MỚI `AmThanh.html`** (khoảng 300 KB): tự tải vài giây sau khi đăng nhập (lần đầu), rồi máy nhớ lại. Quên tạo file này thì tiếng hiệu ứng vẫn chạy, chỉ không có giọng nói.
 
 
+## PHÂN TÍCH ĐỊNH MỨC 21/10 (gợi ý mọi công đoạn về 85%, đổi định mức áp cả tháng) – đổi Code.gs + Index.html
+Dán **Code.gs** và **Index.html** bản mới nhất (đã gồm mọi thay đổi 21/10: sửa lỗi, tăng tốc, chia đôi màn hình). Sao lưu trước (Tổng quan → Tạo bản sao dự án).
+
+Sau khi dán, chạy **một lần** hàm **AP_DINH_MUC_CA_THANG** (ô chọn hàm cạnh nút ▶ Chạy → chọn hàm → ▶ Chạy). Hàm này đưa các lần đổi định mức đã làm trong tháng này (vd. ngày 19/10) về quy tắc mới: **cả tháng tính theo định mức đang dùng**. Nhật ký báo "Đã áp định mức đang dùng cho cả tháng … công đoạn". Tháng trước không đổi.
+
+Thay đổi:
+- **Đổi định mức = áp cho cả tháng đang làm** (từ ngày 1): toàn bộ sản lượng tháng này tính lại theo định mức mới, tháng trước giữ nguyên. Áp cho mọi cách đổi: sửa ở tab Phân tích định mức, sửa hàng loạt, duyệt đề xuất, duyệt tất cả, sửa công đoạn.
+- **Tháng này đã chốt KPI** thì định mức mới vẫn áp cả tháng; lời báo sau khi sửa nhắc vào **Bảng KPI → "Chốt bù tháng này"** để bảng KPI đã chốt tính lại.
+- Tab **Phân tích định mức**: gợi ý định mức mới cho **mọi công đoạn** lệch mốc 85% quá ±3 điểm, cả **nâng** (định mức lỏng) và **hạ** (định mức chặt); cột "Gợi ý định mức" ghi số mới, % chỉnh và **hiệu suất dự kiến** sau khi áp. Gợi ý được chọn sẵn hết, bấm **"Áp dụng các dòng đã chọn"** để áp cùng lúc.
+- Vì sao trước đây áp gợi ý xong phân tích lại vẫn >100%: (1) các ngày trước hôm đổi vẫn tính định mức cũ; (2) giờ có mặt trong ngày chia cho các công đoạn người đó làm, nên công đoạn làm cùng ngày kéo nhau. Bản mới tính gợi ý **chung cho mọi công đoạn** và áp cả tháng, thử trên dữ liệu thật: áp hết gợi ý rồi phân tích lại, các công đoạn có từ 3 người trở lên đều về 79–91%, không còn công đoạn nào trên 100%.
+- Công đoạn ghi **"để nguyên – công đoạn phụ"**: chỉ chiếm ít giờ trong ngày của người làm, hiệu suất do công đoạn chính cùng ngày quyết định – có đổi gấp 4 cũng không về mốc, nên không gợi ý. Công đoạn ghi **"ít người có dữ liệu"** (dưới 3 người): trung vị kém tin, tự cân nhắc (có thể sửa tay ô định mức trước khi áp).
+
 ## CHIA ĐÔI MÀN HÌNH 21/10 (Bảng KPI, Nhân sự, KPI quản lý) – chỉ đổi Index.html
 Dán **Index.html** bản mới nhất (đã gồm mọi thay đổi 21/10). Không có hàm cần chạy.
 

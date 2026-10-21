@@ -10,7 +10,7 @@ Bộ não thứ hai của **web KPI sản xuất** (nhánh `claude/beautiful-pto
 
 ## Web KPI sản xuất (`kpi-app/`)
 - Nền tảng: [[KPI Tổng quan và cách dựng]] · [[KPI Kiểm thử]] · [[KPI Cập nhật bằng clasp]] · [[KPI Phần giao diện tải sau]] · [[KPI Tăng tốc và giao diện 29-09]] · [[KPI Tăng tốc đợt 2 (21-10)]]
-- Chức năng: [[KPI Cơm trưa]] · [[KPI Báo cáo tháng]] · [[KPI Sơ đồ nhà máy 3D]] · [[KPI Bóng đá]] · [[KPI Sửa nhỏ trên web]]
+- Chức năng: [[KPI Cơm trưa]] · [[KPI Báo cáo tháng]] · [[KPI Sơ đồ nhà máy 3D]] · [[KPI Bóng đá]] · [[KPI Phân tích định mức]] · [[KPI Sửa nhỏ trên web]]
 - An toàn và vận hành: [[KPI Bảo mật và vận hành]] · [[KPI Sửa lỗi 21-10 và dữ liệu sheet]]
 - Giao diện và nhân vật: [[KPI Màn đăng nhập Khắc laser]] · [[KPI Màn đăng nhập demo chờ duyệt]] · [[KPI Thao tác và hiệu ứng bên trong]] · [[KPI Chia đôi màn hình]] · [[KPI Rhino]] · [[KPI Mai]] · [[KPI Âm thanh và giọng Rhino]] · [[KPI Lottie]] · [[KPI Demo giao diện]] · [[KPI Sửa lỗi giao diện]] · [[KPI Demo đã bỏ]]
 
