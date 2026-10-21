@@ -502,8 +502,10 @@ Chỉ 2 file: **Code.gs** và **Index.html** (đã gồm mọi thay đổi của
 2. MỞ FILE **Code.gs** → Ctrl+A → Delete → dán bản mới → Ctrl+S.
 3. MỞ FILE **Index.html** → xóa hết → dán bản mới → Ctrl+S.
 4. Triển khai → Quản lý triển khai → ✏️ → Phiên bản mới → Triển khai. Rồi Ctrl+F5.
+5. Chạy hàm **KIEM_TRA_DU_LIEU** (ô chọn hàm cạnh nút ▶ Chạy). Hàm chỉ đọc, không sửa gì; kết quả nằm ở sheet mới **KiemTraDuLieu** (mỗi dòng: Nhóm · Chi tiết · Dòng sheet · Cách sửa). Sửa tay theo cột "Cách sửa", rồi chạy lại hàm để kiểm.
 
 Sau khi dán:
+- Nhân sự trạng thái **Tạm nghỉ** không bị nhắc, không bị phạt nhập trễ (như Nghỉ việc). Lượt phạt nhập trễ còn sót của trưởng/phó phòng tự gỡ ở lần chạy phạt hằng ngày.
 - **Trưởng/phó phòng** chỉ thấy bảng KPI xưởng mình (tab "KPI phòng", tiêu đề ghi tên xưởng) và thẻ KPI quản lý của xưởng mình.
 - **Phạt nhập trễ ngày nghỉ:** khi trưởng phòng lưu điểm danh, chấm lịch tháng, đăng ký nghỉ dài hạn, và mỗi lần hệ thống chạy phạt hằng ngày, các lượt phạt nhập trễ + vi phạm "Nhập sản lượng trễ hạn" rơi vào ngày nghỉ cả ngày / nghỉ dài hạn / ngày lễ được tự gỡ. Ngày làm nửa ngày vẫn phải nhập nên vẫn giữ phạt. Công nhân cũng không còn bị nhắc nhập những ngày đã chấm nghỉ.
 - **Tháng đã chốt** (vd. tháng 9) vẫn giữ số cũ: muốn tính lại thì chủ sở hữu vào **Bảng KPI → Xem theo Tháng → chọn tháng 9 → Chốt bù**.

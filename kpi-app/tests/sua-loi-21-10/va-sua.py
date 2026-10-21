@@ -87,3 +87,22 @@ R("""  ghiLog_(me, 'Chấm lịch tháng', 'Kỳ ' + ky + ' — ' + moi.length +
 R("""  ghiLog_(me, 'Đăng ký nghỉ dài hạn', maNV+' · '+loai+' · '+tuNgay+' → '+denNgay);""",
   """  ghiLog_(me, 'Đăng ký nghỉ dài hạn', maNV+' · '+loai+' · '+tuNgay+' → '+denNgay);
   goPhatNgayNghi_();""")
+
+# ======================================================================= RÀ SOÁT 21/10 (đợt 2)
+# a) Nhân sự "Tạm nghỉ" không phải nhập sản lượng: không phạt nhập trễ, không nhắc (dữ liệu 28/9: C285 tạm nghỉ vẫn bị phạt 6 lần).
+R("""    if (String(nv.TrangThai).trim() === 'Nghỉ việc') return;
+    if (maQL[String(nv.MaNV).trim()]) return;""", """    if (String(nv.TrangThai).trim() === 'Nghỉ việc' || String(nv.TrangThai).trim() === 'Tạm nghỉ') return;   // tạm nghỉ: không phải nhập (21/10)
+    if (maQL[String(nv.MaNV).trim()]) return;""")
+R("""    if (!nv || String(nv.TrangThai).trim() === 'Nghỉ việc' || maQL[String(nv.MaNV).trim()]) return;""",
+  """    if (!nv || String(nv.TrangThai).trim() === 'Nghỉ việc' || String(nv.TrangThai).trim() === 'Tạm nghỉ' || maQL[String(nv.MaNV).trim()]) return;""")
+# b) Lượt phạt nhập trễ còn sót của trưởng/phó phòng (dữ liệu 28/9: C160 – phó phòng In UV – 11 lượt, làm trưởng phòng In UV bị trừ
+#    "không nhắc CN nhập") cũng gỡ tự động cùng lúc với ngày nghỉ.
+R("""    nhanSuGomTP_().forEach(function(x) { mx[x.MaNV] = x.MaXuong; });
+    var laNghi = function(maNV, ng, maXuong) {
+      if (!ng) return false;""", """    nhanSuGomTP_().forEach(function(x) { mx[x.MaNV] = x.MaXuong; });
+    var maQL = mapQuanLy_();
+    var laNghi = function(maNV, ng, maXuong) {
+      if (maQL[String(maNV).trim()]) return true;          // trưởng/phó phòng không phải nhập sản lượng
+      if (!ng) return false;""")
+# c) Hàm chạy tay soát dữ liệu sheet
+s = s.rstrip() + '\n' + io.open(os.path.join(os.path.dirname(__file__), 'sua-loi-21-10', 'kiem-tra-du-lieu.gs'), encoding='utf-8').read()

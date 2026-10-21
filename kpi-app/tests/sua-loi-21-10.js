@@ -47,7 +47,8 @@ r = c.__goi('chayPhatNhapTre', { triggerUid: '1' });
 ok(dsNghi.every(p => !phat(p.MaNV, ngVN(p.Ngay))), 'lần chạy phạt hằng ngày tự gỡ hết các lượt đó', dsNghi.filter(p => phat(p.MaNV, ngVN(p.Ngay))).map(p => p.MaNV + ngVN(p.Ngay)));
 ok(dsNghi.every(p => !vpNT(p.MaNV, ngVN(p.Ngay))), 'vi phạm nề nếp NHAPTRE tự động của các ngày đó cũng gỡ');
 ok(nuaNgay.length > 0 && nuaNgay.every(p => phat(p.MaNV, ngVN(p.Ngay))), 'làm nửa ngày (vẫn phải nhập): giữ phạt', nuaNgay.length);
-ok(c.doc_('PhatNhapTre').length >= tong0 - dsNghi.length, 'không gỡ nhầm lượt phạt khác', [tong0, c.doc_('PhatNhapTre').length]);
+const ptQL = (() => { const q = c.mapQuanLy_(); return du.PhatNhapTre.slice(1).filter(x => q[String(x[0]).trim()]).length; })();   // phạt sót của TP/PP cũng gỡ (rà soát đợt 2)
+ok(c.doc_('PhatNhapTre').length === tong0 - dsNghi.length - ptQL, 'không gỡ nhầm lượt phạt khác (gỡ ' + dsNghi.length + ' ngày nghỉ + ' + ptQL + ' của trưởng/phó phòng)', [tong0, c.doc_('PhatNhapTre').length]);
 
 // Phạt rồi mới điểm danh nghỉ: TP lưu điểm danh là gỡ ngay
 const ngP = '2026-10-08';
@@ -93,6 +94,21 @@ ok(nhapLai() === 0, 'đang chờ duyệt: thôi nhắc nhập lại');
 ids = c.doc_('NhatKySanXuat').filter(x => x.MaNV === cn.MaNV && ngVN(x.Ngay) === ngT && String(x.TrangThai).trim() === 'Chờ duyệt').map(x => x.MaDong);
 r = c.__goi('duyetNhomNguoi', tTP, ids, 0, '', {});
 ok(r.ok && nhapLai() === 0, 'TP duyệt xong: vẫn không nhắc', r.msg);
+
+console.log('\n5. Rà soát đợt 2: tạm nghỉ, phạt sót của trưởng/phó phòng, hàm soát dữ liệu');
+const maQL = c.mapQuanLy_();
+ok(!c.doc_('PhatNhapTre').some(p => maQL[String(p.MaNV).trim()]), 'không còn lượt phạt nhập trễ của trưởng/phó phòng (dữ liệu thật có C160)');
+const tamNghi = c.doc_('NhanSu').filter(n => n.TrangThai === 'Tạm nghỉ').map(n => n.MaNV);
+const ptTruoc = c.doc_('PhatNhapTre').filter(p => tamNghi.includes(p.MaNV)).length;
+c.__goi('chayPhatNhapTre', { triggerUid: '2' });
+ok(tamNghi.length > 0 && c.doc_('PhatNhapTre').filter(p => tamNghi.includes(p.MaNV)).length === ptTruoc, 'nhân sự Tạm nghỉ không bị phạt thêm (' + tamNghi.join(', ') + ')');
+r = c.__goi('KIEM_TRA_DU_LIEU', { triggerUid: '3' });
+const kt = c.doc_('KiemTraDuLieu'), nhom = new Set(kt.map(x => x['Nhóm']));
+ok(r > 0 && kt.length === r, 'KIEM_TRA_DU_LIEU ghi ' + r + ' mục vào sheet KiemTraDuLieu');
+['Nhật ký: ngày không hợp lệ', 'Tài khoản trùng tên đăng nhập', 'Công đoạn đang dùng chưa có định mức (hiệu suất tính 0)', 'DiemDanhNghi: ngày không hợp lệ']
+  .forEach(n => ok(nhom.has(n), 'có nhóm: ' + n));
+c.__nguoiDung = 'nguoi.khac@gmail.com'; r = c.__goi('KIEM_TRA_DU_LIEU'); c.__nguoiDung = undefined;
+ok(r && r.ok === false, 'người khác gọi (từ web) bị chặn');
 
 console.log('\n' + (loi ? '✗ ' + loi + '/' + dem + ' lỗi' : '✓ Đạt cả ' + dem + ' kiểm tra'));
 process.exit(loi ? 1 : 0);

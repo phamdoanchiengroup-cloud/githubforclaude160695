@@ -27,3 +27,7 @@ R("""  var h='<div class="ptitle">Bảng KPI</div>'+
 # ---------------------------------------------------------------- 3 + 4. Tự tải lại sản lượng khi mở tab (dữ liệu trước đây chỉ tải lúc đăng nhập)
 _k25 = s.rfind('</body>')
 s = s[:_k25] + io.open(os.path.join(D, 'sua-loi-21-10', 'lam-moi.html'), encoding='utf-8').read() + s[_k25:]
+
+# ---------------------------------------------------------------- Rà soát 21/10 đợt 2: nhân sự "Tạm nghỉ" không phải nhập sản lượng
+R("""  if(String(x.TrangThai||'').trim()==='Nghỉ việc') return false;""",
+  """  if(String(x.TrangThai||'').trim()==='Nghỉ việc'||String(x.TrangThai||'').trim()==='Tạm nghỉ') return false;   // tạm nghỉ (21/10)""")

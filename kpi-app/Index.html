@@ -1296,7 +1296,7 @@ function ngayChuan_(v){
 }
 /* Ai 'phải nhập': mọi nhân sự đang làm, TRỪ Trưởng phòng / Phó phòng. */
 function phaiNhapSL(x){
-  if(String(x.TrangThai||'').trim()==='Nghỉ việc') return false;
+  if(String(x.TrangThai||'').trim()==='Nghỉ việc'||String(x.TrangThai||'').trim()==='Tạm nghỉ') return false;   // tạm nghỉ (21/10)
   var cd=String(x.ChucDanh||'').toLowerCase();
   if(cd.indexOf('trưởng phòng')>=0 || cd.indexOf('phó phòng')>=0) return false;
   return true;
