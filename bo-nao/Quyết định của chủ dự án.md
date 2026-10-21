@@ -9,6 +9,7 @@ Liên quan: [[Việc chờ chủ dự án]] · [[TCC Bán hàng]] · [[00 Mục 
 - Bộ não thứ hai: thư mục `bo-nao/` + trang bản đồ xem bằng trình duyệt, mỗi nhánh một bộ (21/10).
 
 ## Nội dung và luận giải
+- **Phương pháp luận Tử Vi là ưu tiên số 1**, giao diện làm sau (21/10). Học từ nhiều trang/phái nhưng chỉ phần công khai; không đăng nhập tài khoản chủ dự án ở trang khác. – [[TCC Tử Vi đối chiếu các phái]]
 - Bốn tầng luận và văn dễ hiểu 12 cung là thiết kế của chủ dự án. – [[TCC Lập lá số và bốn tầng luận]]
 - Làm **kỹ từng hệ một** theo quy trình của chủ dự án (đã xong cả 6 hệ). – [[TCC Sáu hệ]]
 - Vận hạn: mỗi hệ chia thời gian theo cách riêng, không ép về một mốc; không luận hệ này theo hệ kia. – [[TCC Vận hạn chuyên sâu và biến cố]]

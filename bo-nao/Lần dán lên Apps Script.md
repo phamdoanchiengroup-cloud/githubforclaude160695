@@ -4,6 +4,7 @@ Nhóm: Bắt đầu · Cập nhật 21/10/2026
 Liên quan: [[Việc chờ chủ dự án]] · [[TCC Kiểm thử]] · [[00 Mục lục]]
 
 ## Tình trạng
+- 21/10: bản "Tử Vi đối chiếu các phái" – cần dán: **TuViTamPhap (file mới)**, LuanGiai, Code, Script, Styles, Index (và ThanhToan nếu chưa dán bản báo cáo ngày). Chưa xác nhận đã dán.
 - Chưa ghi nhận chủ dự án đã dán những bản nào. Lần lưu mới nhất trên nhánh: 09/10 (báo cáo ngày qua email, sửa kiểm tra cài đặt báo nhầm HoiTu.gs, vận hạn gộp phần trùng). Hỏi lại trước khi làm thay đổi mới.
 - Ứng dụng tự báo file nào còn bản cũ: `kiemTraCaiDat` (`HAM_CAN_CO`, `BAN_MOI_CAN_CO`) và mã phiên bản giao diện (`tcc-ban` / `--tcc-ban` / `BAN_GIAO_DIEN` phải trùng nhau). – [[TCC Kiểm thử]], [[TCC Giao diện]]
 - File tùy chọn `LaSo3D.gs` sinh bằng `node tools/demo-3d.js`, không sửa tay. – [[TCC Lá số 3D]]

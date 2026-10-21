@@ -27,7 +27,7 @@
     });
   }
   /** Mã phiên bản giao diện – phải trùng với Index.html (meta tcc-ban) và Styles.html (--tcc-ban) */
-  var BAN_GIAO_DIEN = '2026.10.12';
+  var BAN_GIAO_DIEN = '2026.10.13';
   function storeGet(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
   function storeSet(k, v) { try { localStorage.setItem(k, v); } catch (e) { /* bỏ qua */ } }
 
@@ -2277,6 +2277,27 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
     return '<div class="cung-van-de-hieu"><div class="cv-doan"><h5>' + c.cung + '</h5><p><i>Cung này sẽ được bổ sung ở bản cập nhật tiếp theo. Hiện bạn có thể xem phần "chi tiết chuyên sâu" bên dưới.</i></p></div></div>';
   }
   /** Khối "Phần N" dùng chung cho phần chuyên sâu của mọi hệ (tiêu đề lớn, hiện trong mục lục) */
+  /** Phần "Thế đứng & nguồn cội" (TuViTamPhap.gs): ba vòng nhân sinh + vận Thái Tuế + Phi Tinh. Văn dễ hiểu trước, kỹ thuật thu gọn. */
+  function tamPhapHtml(TP) {
+    var B = TP.baVong, F = TP.phiTinh, V = TP.vanThaiTue || [];
+    var li = function (a) { return a.map(function (x) { return '<li>' + esc(x) + '</li>'; }).join(''); };
+    var h = '<div class="panel section tp-khung"><h2 class="panel-title"><span class="han">三環</span> Thế đứng của bạn – ba vòng nhân sinh</h2>' +
+      '<p class="muted">Cách xem của phái Thiên Lương: một vòng cho cách nghĩ – cách sống, một vòng cho thực lực, một vòng cho nhịp thịnh suy.</p>' +
+      B.de.map(function (d) { return '<h4 class="dd-h">' + esc(d.t) + '</h4><p>' + esc(d.v) + '</p>'; }).join('');
+    if (V.length) h += '<h4 class="dd-h">Những giai đoạn "đắc thời"</h4><p class="muted">★ là giai đoạn vận đi đúng thế chính danh của tuổi – dễ được thừa nhận, có tiếng nói.</p><ul class="th-kl tp-van">' +
+      V.map(function (v) { return '<li' + (v.isNow ? ' class="tp-nay"' : '') + '>' + (v.dacThoi ? '★ ' : '') + '<b>' + esc(v.khoang) + '</b>' + (v.isNow ? ' <em>(đang ở)</em>' : '') + ': ' + esc(v.de) + '</li>'; }).join('') + '</ul>';
+    h += '<details class="cung-chitiet"><summary>Cơ sở kỹ thuật (tên sao, vòng, nhóm)</summary><ul>' + li(B.ky) + V.map(function (v) { return '<li>' + esc(v.khoang + ' – ' + v.ky) + '</li>'; }).join('') + '</ul></details></div>';
+    var phi = [].concat(F.menhPhi, F.nhapMenh, F.kyXung, F.khac);
+    if (F.laiNhan || F.tuHoa.length || phi.length) {
+      h += '<div class="panel section tp-khung"><h2 class="panel-title"><span class="han">飛星</span> Nguồn cội & dòng chảy giữa các cung</h2>' +
+        '<p class="muted">Theo phái Phi Tinh (Tứ Hóa phái, phát triển ở Đài Loan) – một góc nhìn hiện đại để tham khảo, không cộng vào điểm cung.</p>' +
+        (F.laiNhan ? '<h4 class="dd-h">Cung nguồn cội</h4><p>' + esc(F.laiNhan.de) + '</p>' : '') +
+        (F.tuHoa.length ? '<h4 class="dd-h">Những lĩnh vực "tự vận hành"</h4><ul class="th-kl">' + li(F.tuHoa.map(function (x) { return x.de; })) + '</ul>' : '') +
+        (phi.length ? '<h4 class="dd-h">Bạn dồn sức vào đâu – điều gì tìm đến bạn</h4><ul class="th-kl">' + li(phi) + '</ul>' : '') +
+        '<details class="cung-chitiet"><summary>Cơ sở kỹ thuật (can cung, phi hóa)</summary><ul>' + li(F.ky) + '</ul></details></div>';
+    }
+    return h + coSoHtml('Nguồn và cách hiểu', TP.coSo);
+  }
   function khoiPhan(nhom, so, ten, phu, noi) { return '<div class="tg ' + nhom + '" data-g="' + nhom + '-' + so + '"><div class="tg-head"><span>Phần ' + so + '</span><b>' + ten + '</b><em>' + phu + '</em></div>' + noi + '</div>'; }
   function renderLuan(res) {
     var L = res.tuvi.luanGiai, I = res.tuvi.info, CT = res.chiTiet;
@@ -2304,10 +2325,12 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
     var p3 = '<div class="panel section"><h2 class="panel-title"><span class="han">合參</span> Tử Vi × Bát Tự</h2>' + res.ketHop.map(function (x) { return '<p>✦ ' + hl(x) + '</p>'; }).join('') + '</div>';
     var p4 = '<div class="panel section"><h2 class="panel-title"><span class="han">運</span> Đại vận – tiểu vận Tử Vi</h2><p>' + (dvNay ? 'Bạn đang ở đại hạn <b>' + esc(dvNay.khoang) + '</b> (' + esc(String(dvNay.nam)) + ', cung ' + esc(dvNay.cung) + ' – ' + esc(dvNay.danhGia.toLowerCase()) + ').' : '') + ' Toàn bộ đại vận 10 năm, vận năm ' + I.viewYear + ', 12 tháng và lịch từng ngày nằm ở tab <b>Vận hạn</b>.</p>' +
       '<button type="button" class="btn btn-ghost btn-sm" data-den="vh">⏳ Sang tab Vận hạn</button></div>';
+    var tp = CT.tamPhap ? tamPhapHtml(CT.tamPhap) : '';
     var html = khoiPhan('tvp', 1, 'Chân dung lá số', 'Mệnh – Thân, bố cục, cách cục, cung mạnh và cung yếu', p1) +
-      khoiPhan('tvp', 2, 'Luận 12 cung', 'Mỗi cung: văn dễ hiểu trước, thuật ngữ chuyên sâu thu gọn bên dưới', p2) +
-      khoiPhan('tvp', 3, 'Đối chiếu Tử Vi × Bát Tự', 'Hai hệ cùng chiều thì kết luận chắc chắn hơn', p3) +
-      khoiPhan('tvp', 4, 'Vận hạn', 'Đại vận, vận năm, tháng, ngày', p4);
+      (tp ? khoiPhan('tvp', 2, 'Thế đứng & nguồn cội', 'Ba vòng nhân sinh (phái Thiên Lương) · Phi Tinh (tham khảo)', tp) : '') +
+      khoiPhan('tvp', tp ? 3 : 2, 'Luận 12 cung', 'Mỗi cung: văn dễ hiểu trước, thuật ngữ chuyên sâu thu gọn bên dưới', p2) +
+      khoiPhan('tvp', tp ? 4 : 3, 'Đối chiếu Tử Vi × Bát Tự', 'Hai hệ cùng chiều thì kết luận chắc chắn hơn', p3) +
+      khoiPhan('tvp', tp ? 5 : 4, 'Vận hạn', 'Đại vận, vận năm, tháng, ngày', p4);
     $('page-luan').innerHTML = html;
     $('page-luan').querySelectorAll('.strip-item').forEach(function (b) {
       b.addEventListener('click', function () { var el = document.getElementById(b.getAttribute('data-target')); if (el) cuonToi(el); });
@@ -4860,7 +4883,7 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
           if (hh > hMax) { hh = hMax; ww = hh * kichLaSo[0] / kichLaSo[1]; }
           w.innerHTML = '<img class="pdf-chart" src="' + anhLaSo + '" alt="Lá số Tử Vi" width="' + Math.round(ww) + '" height="' + Math.round(hh) + '" style="width:' + Math.round(ww) + 'px;height:' + Math.round(hh) + 'px">';
           sec.appendChild(w); var pd = $('palaceDetail'); if (pd && !pd.querySelector('.pd-goiy')) sec.appendChild(chuanHoa(pd.cloneNode(true)));
-          ['tvp-1', 'tvp-3'].forEach(function (g) { var c = $('page-luan').querySelector('.tg[data-g="' + g + '"]'); if (c) sec.appendChild(chuanHoa(c.cloneNode(true))); });
+          (res.chiTiet && res.chiTiet.tamPhap ? ['tvp-1', 'tvp-2', 'tvp-4'] : ['tvp-1', 'tvp-3']).forEach(function (g) { var c = $('page-luan').querySelector('.tg[data-g="' + g + '"]'); if (c) sec.appendChild(chuanHoa(c.cloneNode(true))); });
           return;
         }
         var page = $('page-' + k);

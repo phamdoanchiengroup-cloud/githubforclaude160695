@@ -1045,10 +1045,12 @@ function luanChiTiet(chart, bt, input) {
     var t = lgTieuVan_(chart, bt, y);
     nhieuNam.push({ nam: y, canChi: t.canChi, tuoi: t.tuoi, cung: t.cung, diem: t.diem, danhGia: t.danhGia });
   }
+  var daiVan = lgDaiVan_(chart, bt);
   return {
     coSo: CO_SO_LY_LUAN,
     cung: lgLuan12Cung_(chart),
-    daiVan: lgDaiVan_(chart, bt),
+    daiVan: daiVan,
+    tamPhap: typeof tpLap_ === 'function' ? tpLap_(chart, daiVan) : null, // TuViTamPhap.gs: ba vòng nhân sinh + Phi Tinh
     tieuVan: tieu,
     tieuVanNhieuNam: nhieuNam,
     nguyetVan: lgNguyetVan_(chart, bt, vy),
