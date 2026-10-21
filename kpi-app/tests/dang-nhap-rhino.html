@@ -1,0 +1,358 @@
+<!--CSS-->
+/* ============================================================
+   MÀN ĐĂNG NHẬP — "RHINO SHOWROOM" (bộ nhận diện rhino-billiards.com của Carbon Billiards Co., Ltd.)
+   Trái: phòng trưng bày – ảnh studio thật các dòng Must / Eclipse II / Retro II (kpi-app/anh/rhino), chuyển chậm, zoom nhẹ.
+   Phải: bảng đăng nhập nền than chì, nhấn vàng Rhino #f7b829, chữ Arimo như trang của hãng. Mai: chân dung tròn nhỏ.
+   Ảnh chèn dạng base64 khi dựng: {{RH_LOGO}} {{RH_1}}..{{RH_4}}.
+   Giữ nguyên API cho login(): bbCho, bbTrung, bbTruot, bbTha, bbXep, bbChu, bbKhoiDong.
+   ============================================================ */
+#gate{--vang:#f7b829;--vang2:#ffd36b;--than:#121212;--than2:#1a1a1a;--than3:#242424;--vien:#2f2f2f;--chu:#f2f2f2;--chu2:#a6a6a6;--chu3:#6f6f6f;--do:#ff6b5b;
+  --sans:'Arimo','Helvetica Neue',Arial,system-ui,sans-serif;
+  position:relative;z-index:2;min-height:100vh;min-height:100dvh;display:grid;grid-template-columns:minmax(0,1.45fr) minmax(400px,1fr);
+  background:var(--than);color:var(--chu);font-family:var(--sans);-webkit-font-smoothing:antialiased}
+
+/* ---------------- Trái: phòng trưng bày ---------------- */
+#gate .rh-show{position:relative;overflow:hidden;background:#050505;isolation:isolate}
+#gate .rh-anh{position:absolute;inset:0;opacity:0;transition:opacity 1.4s ease}
+#gate .rh-anh.hien{opacity:1}
+#gate .rh-anh img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transform:scale(1.02);transform-origin:var(--o,50% 50%)}
+#gate .rh-anh.hien img{animation:rhZoom 9s ease-out forwards}
+@keyframes rhZoom{to{transform:scale(1.1)}}
+#gate .rh-show::after{content:"";position:absolute;inset:0;z-index:1;pointer-events:none;
+  background:linear-gradient(180deg,rgba(0,0,0,.55),transparent 22%,transparent 50%,rgba(0,0,0,.85)),linear-gradient(90deg,rgba(0,0,0,.35),transparent 40%,transparent 82%,rgba(18,18,18,.9))}
+#gate .rh-logo{position:absolute;z-index:2;left:clamp(28px,4vw,60px);top:clamp(24px,4vh,44px);height:clamp(30px,3vw,40px);width:auto;display:block}
+#gate .rh-tieu{position:absolute;z-index:2;left:clamp(28px,4vw,60px);right:clamp(28px,4vw,60px);bottom:clamp(28px,6vh,60px)}
+#gate .rh-dong{display:flex;align-items:center;gap:12px;font:700 11px var(--sans);letter-spacing:.28em;text-transform:uppercase;color:var(--vang)}
+#gate .rh-dong::before{content:"";width:28px;height:2px;background:var(--vang)}
+#gate .rh-ten{font:700 clamp(40px,4.6vw,68px)/1 var(--sans);letter-spacing:.06em;text-transform:uppercase;margin:14px 0 10px;color:#fff;transition:opacity .5s,transform .5s}
+#gate .rh-mo{font:400 16px/1.5 var(--sans);color:rgba(255,255,255,.78);max-width:460px;transition:opacity .5s .08s,transform .5s .08s}
+#gate .rh-tieu.doi .rh-ten,#gate .rh-tieu.doi .rh-mo{opacity:0;transform:translateY(8px)}
+#gate .rh-vach{display:flex;gap:8px;margin-top:26px;max-width:420px}
+#gate .rh-vach button{flex:1;height:18px;padding:8px 0;border:0;background:none;cursor:pointer}
+#gate .rh-vach button i{display:block;height:2px;background:rgba(255,255,255,.22);overflow:hidden;border-radius:2px}
+#gate .rh-vach button i::after{content:"";display:block;height:100%;width:0;background:var(--vang)}
+#gate .rh-vach button.xong i::after{width:100%}
+#gate .rh-vach button.chay i::after{animation:rhVach var(--t,7s) linear forwards}
+#gate.rh-dung .rh-vach button.chay i::after{animation-play-state:paused}
+@keyframes rhVach{to{width:100%}}
+#gate .rh-vach button:focus-visible{outline:2px solid var(--vang);outline-offset:2px}
+
+/* ---------------- Phải: bảng đăng nhập ---------------- */
+#gate .rh-form{position:relative;display:flex;flex-direction:column;padding:clamp(24px,4vh,44px) clamp(28px,4vw,64px);
+  background:linear-gradient(180deg,#191919,#121212 60%);border-left:1px solid #222}
+#gate .rh-dinh{display:flex;justify-content:space-between;align-items:center;font:700 10.5px var(--sans);letter-spacing:.22em;text-transform:uppercase;color:var(--chu3)}
+#gate .rh-an-toan{display:inline-flex;align-items:center;gap:7px;padding:6px 11px;border:1px solid var(--vien);border-radius:99px;font-size:10px;letter-spacing:.14em;color:var(--chu2)}
+#gate .rh-an-toan i{width:6px;height:6px;border-radius:50%;background:#3ccf7a;box-shadow:0 0 0 3px rgba(60,207,122,.15)}
+#gate .rh-giua{flex:1;display:flex;align-items:center;justify-content:center;padding:clamp(20px,4vh,44px) 0}
+#gate .bb-the{width:100%;max-width:380px}
+#gate .rh-mai{display:flex;align-items:center;gap:13px;margin-bottom:22px}
+#gate .rh-mai-anh{position:relative;flex:none;width:50px;height:50px;border-radius:50%;overflow:hidden;background:radial-gradient(circle at 50% 38%,#fffdf8,#ece4d4);
+  box-shadow:0 0 0 2px var(--vang),0 0 0 5px rgba(247,184,41,.14)}
+#gate .rh-mai-anh svg{position:absolute;left:-4px;top:-2px;width:58px;height:58px;display:block}
+#gate .rh-mai-chu{min-width:0}
+#gate #bbChao{font:700 11px var(--sans);letter-spacing:.2em;text-transform:uppercase;color:var(--vang)}
+#gate .rh-mai-noi{font:400 14.5px/1.45 var(--sans);color:var(--chu);margin-top:3px}
+#gate .rh-mai-noi b{color:var(--vang2);font-weight:700}
+#gate .rh-mai-noi.lo{color:#ffb0a6}
+#gate .rh-mai-noi.doi{animation:rhDoi .35s ease}
+@keyframes rhDoi{from{opacity:0;transform:translateY(3px)}}
+#gate .rh-mai.tat .rh-mai-anh,#gate .rh-mai.tat .rh-mai-noi{display:none}
+#gate h1{font:700 clamp(28px,2.6vw,34px)/1.1 var(--sans);letter-spacing:.04em;text-transform:uppercase;margin:0 0 10px;color:#fff}
+#gate h1::after{content:"";display:block;width:36px;height:3px;background:var(--vang);margin-top:14px}
+#gate #gsub{font-size:14.5px;line-height:1.6;color:var(--chu2);margin:0 0 28px}
+#gate .bb-o{margin-bottom:18px}
+#gate label{display:block;font:700 11px var(--sans);letter-spacing:.14em;text-transform:uppercase;color:var(--chu2);margin-bottom:8px}
+#gate .bb-nhap{position:relative}
+#gate input[type=text],#gate input[type=password]{width:100%;height:52px;padding:0 16px;border-radius:10px;font:400 16px var(--sans);color:#fff;
+  background:#0c0c0c;border:1px solid var(--vien);outline:none;transition:border-color .2s,box-shadow .2s}
+#gate #l_mk{padding-right:76px}
+#gate input:hover{border-color:#444}
+#gate input:focus{border-color:var(--vang);box-shadow:0 0 0 4px rgba(247,184,41,.14)}
+#gate input::placeholder{color:#5c5c5c}
+#gate .bb-sai input{border-color:var(--do)!important;box-shadow:0 0 0 4px rgba(255,107,91,.12)!important}
+#gate .bb-hien{position:absolute;right:8px;top:50%;transform:translateY(-50%);height:36px;padding:0 12px;border:0;border-radius:8px;background:transparent;
+  font:700 11px var(--sans);letter-spacing:.12em;text-transform:uppercase;color:var(--chu2);cursor:pointer}
+#gate .bb-hien:hover{background:#1f1f1f;color:#fff}
+#gate .bb-caps{display:none;margin-top:8px;font-size:12.5px;color:var(--vang2)}
+#gate .bb-caps.hien{display:block}
+#gate .bb-dong{display:flex;justify-content:space-between;align-items:center;margin:2px 0 24px;font-size:13.5px}
+#gate .bb-nho{display:flex;align-items:center;gap:9px;margin:0;font:400 13.5px var(--sans);letter-spacing:0;text-transform:none;color:var(--chu2);cursor:pointer;user-select:none}
+#gate .bb-nho input{appearance:none;-webkit-appearance:none;width:18px;height:18px;margin:0;border:1.5px solid #4a4a4a;border-radius:4px;background:#0c0c0c;display:grid;place-items:center;cursor:pointer}
+#gate .bb-nho input:checked{background:var(--vang);border-color:var(--vang)}
+#gate .bb-nho input:checked::after{content:"";width:9px;height:5px;border:2px solid #111;border-top:0;border-right:0;transform:translateY(-1px) rotate(-45deg)}
+#gate .bb-quen{background:none;border:0;padding:0 0 1px;font:400 13.5px var(--sans);color:#fff;cursor:pointer;border-bottom:1px solid var(--vang)}
+#gate .bb-quen:hover{color:var(--vang)}
+#gate .bb-nut{position:relative;overflow:hidden;width:100%;height:54px;border:0;border-radius:10px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:12px;
+  font:700 15px var(--sans);letter-spacing:.16em;text-transform:uppercase;color:#111;background:var(--vang);box-shadow:0 14px 30px -14px rgba(247,184,41,.55);transition:background .2s,transform .12s}
+#gate .bb-nut:hover{background:var(--vang2)}
+#gate .bb-nut:active{transform:translateY(1px)}
+#gate .bb-nut svg{width:18px;height:18px;transition:transform .25s}
+#gate .bb-nut:hover svg{transform:translateX(4px)}
+#gate .bb-nut:disabled{cursor:progress;background:#b88a1f}
+#gate .bb-nut:disabled::after{content:"";position:absolute;inset:0;background:repeating-linear-gradient(-45deg,rgba(0,0,0,.12) 0 12px,transparent 12px 24px);background-size:34px 34px;animation:rhSoc .8s linear infinite}
+@keyframes rhSoc{to{background-position:34px 0}}
+#gate .bb-nut:focus-visible,#gate .bb-hien:focus-visible,#gate .bb-quen:focus-visible,#gate .bb-nho input:focus-visible,#gate .rh-mai-nut:focus-visible{outline:2px solid var(--vang);outline-offset:3px}
+#gate #lerr{display:flex;gap:10px;align-items:flex-start;margin:16px 0 0;padding:12px 14px;border-radius:10px;font-size:13.5px;line-height:1.5;color:#ffd0ca;background:rgba(255,107,91,.08);border:1px solid rgba(255,107,91,.35)}
+#gate #lerr::before{content:"!";flex:none;width:18px;height:18px;margin-top:1px;border-radius:50%;background:var(--do);color:#111;font:700 11px/18px var(--sans);text-align:center}
+#gate #lerr.hide{display:none}
+#gate #lerr.bb-tin{color:#f2e3bd;background:rgba(247,184,41,.07);border-color:rgba(247,184,41,.35)}
+#gate #lerr.bb-tin::before{content:"i";background:var(--vang)}
+#gate #gspin{display:none}
+#gate .bb-the.rung{animation:rhRung .42s cubic-bezier(.36,.07,.19,.97)}
+@keyframes rhRung{20%,60%{transform:translateX(-6px)}40%,80%{transform:translateX(6px)}}
+#gate .rh-chan{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;padding-top:18px;border-top:1px solid #222;font-size:12px;color:var(--chu3)}
+#gate .rh-chan span{display:inline-flex;align-items:center;gap:7px}
+#gate .rh-chan svg{width:14px;height:14px}
+#gate .rh-mai-nut{background:none;border:0;padding:0;font:inherit;color:inherit;cursor:pointer;border-bottom:1px dotted currentColor}
+#gate .rh-mai-nut:hover{color:#fff}
+/* Đăng nhập xong */
+#gate .bb-vao-hop{display:none}
+#gate.bb-vao .bb-the > :not(.bb-vao-hop):not(.rh-mai){display:none}
+#gate.bb-vao .bb-vao-hop{display:block;animation:rhDoi .5s ease}
+#gate .bb-vao-hop .rh-ok{font:700 11px var(--sans);letter-spacing:.22em;text-transform:uppercase;color:var(--vang)}
+#gate .bb-vao-hop h1{margin-top:12px}
+#gate .bb-vao-hop p{font-size:14.5px;line-height:1.6;color:var(--chu2)}
+#gate .bb-vao-hop .rh-tai{height:3px;margin-top:22px;background:#262626;overflow:hidden;border-radius:2px}
+#gate .bb-vao-hop .rh-tai i{display:block;height:100%;width:40%;background:var(--vang);animation:rhChay 1.2s cubic-bezier(.4,0,.2,1) infinite}
+@keyframes rhChay{from{transform:translateX(-100%)}to{transform:translateX(250%)}}
+#gate.bb-vao .rh-anh.hien img{animation:rhVao 1.2s ease-out forwards}
+@keyframes rhVao{from{transform:scale(1.06);filter:brightness(1)}to{transform:scale(1.14);filter:brightness(1.15)}}
+/* Mai (hình chung MAI_SVG) */
+#gate .mai .duoi{transform-origin:104px 34px;animation:rhmDuoi 2.4s ease-in-out infinite}@keyframes rhmDuoi{0%,100%{transform:rotate(-8deg)}50%{transform:rotate(10deg)}}
+#gate .mai .mat-g{transform-box:fill-box;transform-origin:center;animation:rhmChop 4.2s infinite}@keyframes rhmChop{0%,92%,100%{transform:scaleY(1)}95%{transform:scaleY(.08)}}
+#gate .mai .mieng-mo,#gate .mai .mo-hoi,#gate .mai .lap-lanh,#gate .mai .may-lo,#gate .mai .ngon,#gate .mai .che-mat{display:none}
+#gate .mai.noi .mieng-mo{display:inline;animation:rhmNoi .28s steps(2) infinite}#gate .mai.noi .mieng-cuoi{animation:rhmNoi2 .28s steps(2) infinite}
+@keyframes rhmNoi{0%{opacity:1}100%{opacity:0}}@keyframes rhmNoi2{0%{opacity:0}100%{opacity:1}}
+#gate .mai.lo .mo-hoi,#gate .mai.lo .may-lo{display:inline}#gate .mai.lo .may-vui{display:none}
+#gate .mai .tay-chi{transform-origin:128px 180px;transition:transform .4s}
+#gate .mai.covu .tay-chi{transform:rotate(-142deg)}
+#gate .mai.che .che-mat{display:inline}#gate .mai.che .tay-chi{display:none}
+
+/* ---------------- Màn hẹp / điện thoại ---------------- */
+@media (max-width:980px){
+  #gate{grid-template-columns:1fr;grid-template-rows:auto 1fr}
+  #gate .rh-show{height:clamp(220px,34vh,320px)}
+  #gate .rh-show::after{background:linear-gradient(180deg,rgba(0,0,0,.5),transparent 35%,rgba(0,0,0,.8))}
+  #gate .rh-ten{font-size:clamp(28px,8vw,40px);margin:8px 0 0}
+  #gate .rh-mo{display:none}
+  #gate .rh-vach{margin-top:14px}
+  #gate .rh-tieu{bottom:40px}
+  #gate .rh-form{margin-top:-18px;border-radius:20px 20px 0 0;border-left:0;padding:22px 22px 24px;box-shadow:0 -12px 30px rgba(0,0,0,.5)}
+  #gate .rh-dinh{display:none}
+  #gate .rh-giua{padding:4px 0 24px;align-items:flex-start}
+  #gate .rh-chan{font-size:11.5px}
+}
+@media (prefers-reduced-motion:reduce){#gate *,#gate *::after,#gate *::before{animation:none!important;transition:none!important}}
+<!--HTML-->
+<div id="gate">
+  <section class="rh-show" id="bbHero" aria-label="Sản phẩm Rhino Billiards">
+    <div class="rh-anh hien" style="--o:30% 60%"><img src="{{RH_1}}" alt=""></div>
+    <div class="rh-anh" style="--o:70% 60%"><img src="{{RH_2}}" alt=""></div>
+    <div class="rh-anh" style="--o:45% 70%"><img src="{{RH_3}}" alt=""></div>
+    <div class="rh-anh" style="--o:50% 75%"><img src="{{RH_4}}" alt=""></div>
+    <img class="rh-logo" src="{{RH_LOGO}}" alt="Rhino – Made by Vietnam">
+    <div class="rh-tieu" id="rhTieu">
+      <div class="rh-dong">Dòng sản phẩm</div>
+      <div class="rh-ten" id="rhTen">Must</div>
+      <div class="rh-mo" id="rhMo">Ngọn carbon cao cấp, đầu tip Nishiki.</div>
+      <div class="rh-vach" id="rhVach"></div>
+    </div>
+  </section>
+
+  <section class="rh-form">
+    <div class="rh-dinh"><span>Cổng nội bộ · KPI sản xuất</span><span class="rh-an-toan"><i></i>Kết nối bảo mật</span></div>
+    <div class="rh-giua">
+      <div class="bb-the" id="frmLogin">
+        <div class="rh-mai" id="rhMai"><div class="rh-mai-anh" id="rhMaiAnh" aria-hidden="true"></div>
+          <div class="rh-mai-chu"><div id="bbChao">Chào buổi sáng</div><div class="rh-mai-noi" id="rhMaiNoi" aria-live="polite"></div></div></div>
+        <h1>Đăng nhập</h1>
+        <p id="gsub">Dùng mã nhân viên và mật khẩu được cấp để bắt đầu ca làm việc.</p>
+        <div class="bb-o" id="bbOTk"><label for="l_tk">Mã nhân viên</label>
+          <div class="bb-nhap"><input id="l_tk" type="text" autocomplete="username" autocapitalize="none" spellcheck="false" placeholder="VD: c123" onkeydown="if(event.key==='Enter')login()"></div></div>
+        <div class="bb-o" id="bbOMk"><label for="l_mk">Mật khẩu</label>
+          <div class="bb-nhap">
+            <input id="l_mk" type="password" autocomplete="current-password" placeholder="Nhập mật khẩu" onkeydown="if(event.key==='Enter')login()" oninput="bbKhay()">
+            <button type="button" class="bb-hien" onclick="bbHien(this)" aria-label="Hiện mật khẩu">Hiện</button>
+          </div>
+          <div class="bb-caps" id="bbCaps">⇪ Đang bật Caps Lock</div></div>
+        <div class="bb-dong">
+          <label class="bb-nho" for="bbNho"><input type="checkbox" id="bbNho">Ghi nhớ mã nhân viên</label>
+          <button type="button" class="bb-quen" onclick="bbQuen()">Quên mật khẩu?</button>
+        </div>
+        <button class="bb-nut" onclick="login()" id="btnLogin"><span id="bbNutChu">Đăng nhập</span>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h15M13 6l6 6-6 6"/></svg></button>
+        <div id="lerr" class="alert a-bd hide" role="alert"></div>
+        <div class="spin hide" id="gspin"></div>
+        <div class="bb-vao-hop" aria-live="polite">
+          <div class="rh-ok">Xác thực thành công</div>
+          <h1 id="bbVaoTen">Chào mừng trở lại.</h1>
+          <p>Đang chuẩn bị số liệu ca làm việc của bạn…</p>
+          <div class="rh-tai"><i></i></div>
+        </div>
+      </div>
+    </div>
+    <div class="rh-chan">
+      <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>Phiên tự hết hạn sau 6 giờ</span>
+      <span><button type="button" class="rh-mai-nut" id="rhMaiNut" onclick="bbMaiDoi()">Ẩn Mai</button> · © <span id="bbNam">2026</span> Carbon Billiards Co., Ltd.</span>
+    </div>
+  </section>
+</div>
+<!--JS-->
+/* ===== MÀN ĐĂNG NHẬP "RHINO SHOWROOM" =====
+   Các hàm bb* được login() gọi: bbCho (đang chờ máy chủ), bbTrung (đúng), bbTruot (sai), bbTha (mất kết nối). */
+var BB = { ban: false, dang: false, kh: '', i: 0, hen: 0 };
+var RH_DONG = [
+  ['Must', 'Ngọn carbon cao cấp, đầu tip Nishiki.'],
+  ['Eclipse II', 'Thân gỗ vân tự nhiên, tay cầm vân da – hoàn thiện từng chi tiết.'],
+  ['Retro II', 'Tinh thần cổ điển – chính xác vượt thời gian.'],
+  ['Must Pool Cue', 'Gỗ vân quý, chi tiết khảm tinh xảo.']
+];
+var RH_GIAY = 7000;
+function bbE(id) { return document.getElementById(id); }
+function bbG() { return bbE('gate'); }
+function bbGiam() { return window.matchMedia('(prefers-reduced-motion:reduce)').matches; }
+function bbChu(t) { var s = bbE('bbNutChu'); if (s) s.textContent = t; }
+/* ---- Phòng trưng bày ---- */
+function rhChon(i, tay) {
+  var a = document.querySelectorAll('#bbHero .rh-anh'), n = a.length; if (!n) return;
+  i = (i + n) % n; BB.i = i;
+  [].forEach.call(a, function (x, k) { x.classList.toggle('hien', k === i); });
+  var v = bbE('rhVach').children;
+  [].forEach.call(v, function (b, k) { b.className = k < i ? 'xong' : ''; b.setAttribute('aria-current', k === i ? 'true' : 'false'); });
+  var t = bbE('rhTieu'); t.classList.add('doi');
+  setTimeout(function () { bbE('rhTen').textContent = RH_DONG[i][0]; bbE('rhMo').textContent = RH_DONG[i][1]; t.classList.remove('doi'); }, tay ? 150 : 350);
+  clearTimeout(BB.hen);
+  if (bbGiam()) return;
+  void v[i].offsetWidth; v[i].className = 'chay'; v[i].style.setProperty('--t', RH_GIAY + 'ms');
+  BB.hen = setTimeout(function () { if (!BB.dang && !bbG().classList.contains('rh-dung')) rhChon(i + 1); else BB.hen = setTimeout(function () { rhChon(i + 1); }, RH_GIAY); }, RH_GIAY);
+}
+function rhVe() {
+  var v = bbE('rhVach'); if (v.children.length) return;
+  RH_DONG.forEach(function (d, k) { var b = document.createElement('button'); b.type = 'button'; b.setAttribute('aria-label', d[0]); b.innerHTML = '<i></i>'; b.onclick = function () { rhChon(k, 1); }; v.appendChild(b); });
+}
+/* ---- Mai: chân dung tròn (hình chung MAI_SVG ở mục 12) ---- */
+var BB_CHE = '<g class="che-mat"><path d="M58 170c-4-20 2-40 18-52" stroke="#2f4a5e" stroke-width="13" fill="none" stroke-linecap="round"/><path d="M142 170c4-20-2-40-18-52" stroke="#2f4a5e" stroke-width="13" fill="none" stroke-linecap="round"/>' +
+  '<ellipse cx="76" cy="113" rx="17" ry="14" fill="#ffe6d8"/><ellipse cx="124" cy="113" rx="17" ry="14" fill="#ffe6d8"/><path d="M64 108h22M64 114h24M66 120h20M112 108h22M110 114h24M112 120h20" stroke="#f0c2ad" stroke-width="1.4" stroke-linecap="round"/></g>';
+var BB_KH = ['Làm <b>đúng ngay từ đầu</b>, khỏi phải làm lại!', 'An toàn là trên hết – <b>về nhà bình an</b>!', 'Từng cái một, <b>cuối ca thành nghìn</b>!', 'Tổ đồng lòng, <b>việc khó cũng xong</b>.'];
+function bbMaiTat() { try { return localStorage.getItem('kpi_mai') === 'tat'; } catch (e) { return false; } }
+function bbMai(lop, noi, lo) {
+  if (bbMaiTat()) return;
+  var m = document.querySelector('#rhMaiAnh svg'); if (m) m.setAttribute('class', 'mai ' + (lop || ''));
+  var n = bbE('rhMaiNoi'); if (!n || noi == null) return;
+  n.innerHTML = noi; n.className = 'rh-mai-noi' + (lo ? ' lo' : ''); void n.offsetWidth; n.classList.add('doi');
+}
+function bbMaiThuong() { bbMai('', 'Mai chúc bạn một ca tốt lành. ' + BB.kh); }
+function bbMaiVe() {
+  var w = bbE('rhMai'), a = bbE('rhMaiAnh'), nut = bbE('rhMaiNut'), tat = bbMaiTat();
+  w.classList.toggle('tat', tat); if (nut) nut.textContent = tat ? 'Hiện Mai' : 'Ẩn Mai';
+  if (tat || a.firstChild || typeof MAI_SVG === 'undefined') return;
+  /* chỉ lấy phần mặt; đổi id gradient để không trùng hình Mai bên trong web (#gate bị ẩn sau khi vào) */
+  a.innerHTML = '<svg class="mai" viewBox="26 22 148 148">' + MAI_SVG.replace(/(id="|url\(#)g(Toc|Mong|Ao|Da|Ma)\b/g, '$1gbb$2') + BB_CHE + '</svg>';
+}
+/* Trong web, phần Mai (va-mai.py, mục 12) nạp sau màn này: chờ MAI_SVG + khẩu hiệu sẵn sàng */
+function bbMaiNap(lan) {
+  if (typeof MAI_SVG === 'undefined' && lan < 20) { setTimeout(function () { bbMaiNap(lan + 1); }, lan ? 150 : 0); return; }
+  try { BB.kh = (typeof maiKhNgay === 'function') ? maiKhNgay().cau : ''; } catch (e) { BB.kh = ''; }
+  if (!BB.kh) BB.kh = BB_KH[Math.floor(Date.now() / 864e5) % BB_KH.length];
+  bbMaiVe();
+  if (BB.dang) return;
+  if (document.activeElement === bbE('l_mk')) bbMai('che', 'Mai không nhìn đâu – cứ yên tâm gõ mật khẩu nhé.'); else bbMaiThuong();
+}
+function bbMaiDoi() {
+  try { if (bbMaiTat()) localStorage.removeItem('kpi_mai'); else localStorage.setItem('kpi_mai', 'tat'); } catch (e) {}
+  bbMaiVe(); bbMaiThuong();
+}
+/* ---- Biểu mẫu ---- */
+function bbKhay() { var o = bbE('bbOMk'); if (o) o.classList.remove('bb-sai'); }
+function bbHien(b) {
+  var i = bbE('l_mk');
+  i.type = i.type === 'password' ? 'text' : 'password';
+  b.textContent = i.type === 'password' ? 'Hiện' : 'Ẩn';
+  i.focus();
+}
+function bbQuen() {
+  var e = bbE('lerr');
+  e.className = 'alert bb-tin';
+  e.textContent = 'Liên hệ trưởng phòng hoặc chủ sở hữu hệ thống để được cấp mật khẩu tạm. Bạn sẽ đặt lại mật khẩu mới ngay khi đăng nhập.';
+  bbMai('', 'Không sao đâu – nhờ <b>trưởng phòng</b> cấp mật khẩu tạm là vào được ngay.');
+}
+function bbLoiChao() {
+  var h = new Date().getHours();
+  var c = h < 5 ? 'Chúc ca đêm thuận lợi' : h < 11 ? 'Chào buổi sáng' : h < 14 ? 'Chào buổi trưa' : h < 18 ? 'Chào buổi chiều' : 'Chào buổi tối';
+  var s = bbE('bbChao'); if (s) s.textContent = c;
+  var n = bbE('bbNam'); if (n) n.textContent = new Date().getFullYear();
+}
+/* Ghi nhớ mã nhân viên trên máy này (không bao giờ lưu mật khẩu) */
+function bbNhoTk() {
+  try {
+    var c = bbE('bbNho'), tk = bbE('l_tk');
+    if (c.checked && tk.value.trim()) localStorage.setItem('kpi_tk_nho', tk.value.trim());
+    else localStorage.removeItem('kpi_tk_nho');
+  } catch (e) {}
+}
+function bbXep() {   // về trạng thái đầu
+  BB.dang = false;
+  var g = bbG(); if (!g) return;
+  g.classList.remove('bb-vao', 'rh-dung');
+  bbChu('Đăng nhập');
+  bbMaiThuong();
+  rhChon(BB.i);
+}
+function bbCho() {
+  bbNhoTk();
+  bbChu('Đang xác thực');
+  bbE('lerr').className = 'alert a-bd hide';
+  bbG().classList.add('rh-dung');
+  bbMai('noi', 'Đợi Mai kiểm tra một chút nha…');
+}
+function bbTha() {
+  bbG().classList.remove('rh-dung'); bbChu('Đăng nhập');
+  bbMai('lo', 'Mạng đang chập chờn – đợi vài giây rồi thử lại nhé.', 1);
+}
+/* ĐÚNG: ảnh sáng và tiến gần, bảng chuyển sang "Chào mừng"; Mai chúc ca làm */
+function bbTrung(tiep) {
+  BB.dang = true; clearTimeout(BB.hen);
+  var ten = (typeof ME !== 'undefined' && ME && ME.ten) ? String(ME.ten).trim().split(/\s+/).pop() : '';
+  var t = bbE('bbVaoTen'); if (t) t.textContent = ten ? 'Chào mừng, ' + ten + '.' : 'Chào mừng trở lại.';
+  bbMai('covu', 'Chúc ' + (ten ? '<b>' + ten + '</b>' : 'bạn') + ' một ca làm việc thật suôn sẻ!');
+  bbG().classList.add('bb-vao');
+  if (bbGiam()) { tiep(); return; }
+  setTimeout(tiep, 900);
+}
+/* SAI: báo lỗi tại ô, bảng rung nhẹ; Mai lo lắng nhắc Caps Lock / chữ hoa */
+function bbTruot() {
+  bbTha();
+  var o = bbE('bbOMk'), the = bbE('frmLogin');
+  o.classList.add('bb-sai');
+  bbMai('lo', bbE('bbCaps').classList.contains('hien') ? 'Phím <b>Caps Lock</b> đang bật đó – tắt đi rồi gõ lại nhé.' : 'Chưa đúng rồi – gõ lại chậm thôi, để ý chữ hoa/thường nhé.', 1);
+  the.classList.remove('rung'); void the.offsetWidth; the.classList.add('rung');
+  bbE('l_mk').focus();
+}
+function bbKhoiDong() {
+  var g = bbG();
+  if (!g || BB.ban) return;
+  BB.ban = true;
+  bbLoiChao();
+  rhVe(); rhChon(0);
+  try {
+    var nho = localStorage.getItem('kpi_tk_nho');
+    if (nho) { bbE('l_tk').value = nho; bbE('bbNho').checked = true;
+      setTimeout(function () { bbE('l_mk').focus(); }, 350); }
+  } catch (e) {}
+  var mk = bbE('l_mk');
+  var caps = function (e) { if (e.getModifierState) bbE('bbCaps').classList.toggle('hien', e.getModifierState('CapsLock')); };
+  mk.addEventListener('keyup', caps);
+  mk.addEventListener('keydown', caps);
+  /* Mai che mắt khi gõ mật khẩu */
+  mk.addEventListener('focus', function () {
+    if (BB.dang || bbMaiTat()) return;
+    var n = bbE('rhMaiNoi');
+    if (n && n.classList.contains('lo')) { var m = document.querySelector('#rhMaiAnh svg'); if (m) m.setAttribute('class', 'mai lo che'); }
+    else bbMai('che', 'Mai không nhìn đâu – cứ yên tâm gõ mật khẩu nhé.');
+  });
+  mk.addEventListener('blur', function () {
+    if (BB.dang || bbMaiTat()) return;
+    var m = document.querySelector('#rhMaiAnh svg'); if (m) m.setAttribute('class', String(m.getAttribute('class')).replace(/\s*che\b/, ''));
+  });
+  bbMaiNap(0);
+}

@@ -1,0 +1,39 @@
+<script>
+/* ===== TỰ TẢI LẠI SẢN LƯỢNG (21/10) =====
+   Trước đây dữ liệu chỉ tải lúc đăng nhập: công nhân gửi sau đó thì trưởng/phó phòng mở "Duyệt sản lượng" không thấy;
+   trưởng phòng duyệt xong thì công nhân vẫn thấy khung "nhập lại". Nay mở các tab dưới đây là lặng lẽ tải lại phần
+   nhật ký + chấm công (tối đa 1 lần / 20 giây); trưởng/phó phòng còn tự tải lại mỗi 5 phút khi đang mở trang. */
+var LM_TAB = { TP: { duyetsl: 1, homnay: 1, dash: 1 }, CN: { cnnhap: 1, kpica: 1 } };
+var LM_CACH = 20000, LM_DINH_KY = 300000, LM = { luc: 0, dang: false };
+function lmKhoa_(){ return (D.choDuyet||[]).map(function(r){return r.MaDong}).sort().join(',')+'#'+
+  (D.canNhapLai||[]).map(function(r){return r.Ngay+r.MaCD}).sort().join(',')+'#'+(D.nhatky||[]).length; }
+function lmDangSua_(){
+  var a=document.activeElement, m=$('main');
+  return (typeof TT_HEN!=='undefined'&&TT_HEN) || !!(a&&m&&m.contains(a)&&/^(INPUT|SELECT|TEXTAREA)$/.test(a.tagName));
+}
+function lmTai(ep){
+  var tab=LM_TAB[ME&&ME.vaiTro]; if(!tab||LM.dang||!TOKEN)return;
+  if(!ep&&Date.now()-LM.luc<LM_CACH)return;
+  LM.dang=true; LM.luc=Date.now();
+  var truoc=lmKhoa_();
+  google.script.run.withSuccessHandler(function(r){
+    LM.dang=false;
+    if(!r||!r.ok)return;                                 // hết phiên / lỗi: để lượt thao tác sau tự báo
+    ['nhatky','choDuyet','kcs','canNhapLai','chamcong','xacNhanDD','ngayLe','nghiDaiHan'].forEach(function(k){ if(r[k])D[k]=r[k]; });
+    capNhatDem(); capNhatDucBar();
+    var t=tabHienTai;                                   // vẽ lại tab ĐANG mở (người dùng có thể đã chuyển tab khi đang tải)
+    if(lmKhoa_()===truoc||!tab[t])return;
+    if(lmDangSua_()){ toast('Có sản lượng mới – vẽ lại khi bạn sửa xong'); LM.luc=0; return; }
+    var y=window.scrollY;
+    ({duyetsl:vDuyetSL,homnay:vHomNay,dash:vDash,cnnhap:vCNNhap,kpica:vKPICaNhanToi}[t])();
+    window.scrollTo(0,y);
+  }).withFailureHandler(function(){ LM.dang=false; }).napPhan(TOKEN,['nk','cc']);
+}
+(function(){
+  var cu=window.go;
+  window.go=function(k){ var r=cu.apply(this,arguments); try{ var t=LM_TAB[ME&&ME.vaiTro]; if(t&&t[k])lmTai(); }catch(e){} return r; };
+  setInterval(function(){
+    if(ME&&ME.vaiTro==='TP'&&document.visibilityState==='visible'&&!lmDangSua_())lmTai(true);
+  },LM_DINH_KY);
+})();
+</script>
