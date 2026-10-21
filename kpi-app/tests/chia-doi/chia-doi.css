@@ -1,0 +1,42 @@
+/* ===== CHIA ĐÔI MÀN HÌNH (21/10): danh sách bên trái, chi tiết người được chọn bên phải ===== */
+:root{--cd-w:clamp(420px,40vw,580px);--cd-top:58px}
+#cdPanel{position:fixed;top:var(--cd-top);right:0;bottom:0;width:var(--cd-w);z-index:60;display:flex;flex-direction:column;
+  background:var(--panel);border-left:1px solid var(--line);box-shadow:-14px 0 34px rgba(0,0,0,.28);
+  transform:translateX(102%);visibility:hidden;transition:transform .22s cubic-bezier(.22,.61,.36,1),visibility 0s linear .22s}
+body.cd-mo #cdPanel{transform:none;visibility:visible;transition:transform .22s cubic-bezier(.22,.61,.36,1)}
+body.cd-mo #main{margin-right:var(--cd-w)}
+.cd-dau{display:flex;align-items:center;gap:6px;padding:10px 12px 10px 16px;border-bottom:1px solid var(--line);background:var(--panel2)}
+.cd-nhan{flex:1;min-width:0;font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cd-dau button{min-width:34px;height:32px;padding:0 9px;border:1px solid var(--line);border-radius:8px;background:var(--panel);color:var(--ink);cursor:pointer;font:inherit;font-size:13px}
+.cd-dau button:hover{border-color:rgba(var(--acc-rgb),.6)}
+.cd-dau button:focus-visible{outline:2px solid rgba(var(--acc-rgb),.9);outline-offset:1px}
+.cd-dau button[disabled]{opacity:.4;cursor:default}
+.cd-than{flex:1;min-height:0;overflow:auto;padding:16px 18px 28px;overscroll-behavior:contain}
+.cd-than .card{margin-bottom:14px}
+.cd-than .kpis{grid-template-columns:repeat(2,minmax(0,1fr))}
+.cd-goi{font-size:12px;color:var(--ink3);margin:2px 0 12px}
+.cd-ten{font-size:20px;font-weight:700;line-height:1.25;margin:0}
+.cd-tai{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--ink3);padding:8px 10px;border:1px dashed var(--line);border-radius:8px;margin-bottom:12px}
+.cd-tai::before{content:"";width:10px;height:10px;border-radius:50%;border:2px solid rgba(var(--acc-rgb),.85);border-right-color:transparent;animation:cdQuay .8s linear infinite}
+@keyframes cdQuay{to{transform:rotate(360deg)}}
+.cd-so{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-bottom:14px}
+.cd-o{background:var(--panel2);border:1px solid var(--line);border-radius:10px;padding:10px 12px}
+.cd-o b{display:block;font-size:20px;font-variant-numeric:tabular-nums;line-height:1.2}
+.cd-o span{font-size:12px;color:var(--ink3)}
+.cd-tru{display:flex;flex-direction:column;gap:6px}
+.cd-tru div{display:flex;justify-content:space-between;gap:10px;padding:7px 10px;border-radius:8px;background:var(--panel2);font-size:13px}
+.cd-tru div b{font-variant-numeric:tabular-nums;color:var(--red,#f26b6b)}
+.cd-goiy{font-size:12px;color:var(--ink3);margin-top:10px}
+tr[data-cd]{cursor:pointer}
+tr[data-cd]:hover td{background:rgba(var(--acc-rgb),.06)}
+tr.cd-chon td{background:rgba(var(--acc-rgb),.16)!important}
+.cd-kieu{margin-left:8px}
+@media (max-width:1099px){#cdPanel{display:none}body.cd-mo #main{margin-right:0}}
+@media (prefers-reduced-motion:reduce){#cdPanel,body.cd-mo #cdPanel{transition:none}.cd-tai::before{animation:none}}
+/* Khi đang chia đôi: ẩn cột phụ của danh sách (số đó đã có ở khung bên phải), Rhino lùi sang trái khung */
+body.cd-mo #main .cd-an{display:none}
+body.cd-mo #maiGoc{right:calc(var(--cd-w) + 16px)}
+@media (max-width:1099px){body.cd-mo #main .cd-an{display:revert}body.cd-mo #maiGoc{right:16px}}
+#cdPanel .cbtrack{display:none}
+#cdPanel .cellbar{justify-content:flex-end}
+#cdPanel table{font-size:13px}

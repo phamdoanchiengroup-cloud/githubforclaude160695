@@ -15,7 +15,7 @@ DATA=/đường/dẫn/csdl.json OUT=/tmp/xem-thu-kpi.html node kpi-app/tests/tao
 
 ## Số kiểm tra hiện có (theo các ghi chú)
 - Máy chủ: `tang-toc-2.js` 31 · `com-trua.js` 81 · `com-mon-doi.js` 35 · `bao-mat.js` 52 · `van-hanh.js` 26 · `sua-loi-21-10.js` 31 · `bong-da.js` 19 · `bao-cao.js`
-- Web: `com-trua-web.js` 41 · `so-do-web.js` 37 · `mai-web.js` 32 · `thao-tac-web.js` 32 · `van-hanh-web.js` 29 · `lottie-web.js` 53 · `hieu-ung.js` 29 · `cho-chot-ngay.js` 16 · `dang-nhap-web.js` 15 · `am-thanh-web.js` 15 · `sua-loi-21-10-web.js` 9 · `manh-web.js` 8
+- Web: `chia-doi-web.js` 21 · `com-trua-web.js` 41 · `so-do-web.js` 37 · `mai-web.js` 32 · `thao-tac-web.js` 32 · `van-hanh-web.js` 29 · `lottie-web.js` 53 · `hieu-ung.js` 29 · `cho-chot-ngay.js` 16 · `dang-nhap-web.js` 15 · `am-thanh-web.js` 15 · `sua-loi-21-10-web.js` 9 · `manh-web.js` 8
 - Demo: `demo-dang-nhap-khac.js` 60 · `demo-thao-tac.js` 60 · `demo-dang-nhap-rhino.js` 42 · `demo-so-do.js` 23 · `demo-dang-nhap-hieu-ung.js` 22 · `demo-dang-nhap-hieu-ung-2.js` 20
 - Lỗi đã biết: `hieu-ung.js` còn 1 lỗi "khung chờ tải bảng KPI" có từ trước (bản xem thử trả kết quả quá nhanh). – [[KPI Bảo mật và vận hành]]
 

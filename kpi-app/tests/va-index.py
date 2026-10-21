@@ -813,6 +813,8 @@ exec(io.open(os.path.join(D, 'am-thanh', 'va-am-thanh.py'), encoding='utf-8').re
 exec(io.open(os.path.join(D, 'sua-loi-21-10', 'va-sua-web.py'), encoding='utf-8').read())
 # ---------------------------------------------------------------- 26. Tăng tốc đợt 2 (21/10): mở gói dữ liệu nạp (chuỗi JSON + mảng dạng bảng)
 exec(io.open(os.path.join(D, 'tang-toc-2', 'va-tang-toc-web.py'), encoding='utf-8').read())
+# ---------------------------------------------------------------- 27. Chia đôi màn hình (21/10): Bảng KPI, Nhân sự, KPI quản lý – danh sách trái, chi tiết phải (phải là mục cuối)
+exec(io.open(os.path.join(D, 'chia-doi', 'va-chia-doi.py'), encoding='utf-8').read())
 
 io.open(os.path.join(D, '..', 'Index.html'), 'w', encoding='utf-8').write(s)
 print('OK Index.html')

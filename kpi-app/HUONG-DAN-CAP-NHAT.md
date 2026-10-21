@@ -494,6 +494,16 @@ Nếu vẫn thấy giao diện cũ: kiểm tra lại Phần D (đã chọn **Phi
 - Giọng nói nằm ở **file MỚI `AmThanh.html`** (khoảng 300 KB): tự tải vài giây sau khi đăng nhập (lần đầu), rồi máy nhớ lại. Quên tạo file này thì tiếng hiệu ứng vẫn chạy, chỉ không có giọng nói.
 
 
+## CHIA ĐÔI MÀN HÌNH 21/10 (Bảng KPI, Nhân sự, KPI quản lý) – chỉ đổi Index.html
+Dán **Index.html** bản mới nhất (đã gồm mọi thay đổi 21/10). Không có hàm cần chạy.
+
+Trên máy tính màn hình rộng (từ 1100 điểm ảnh trở lên):
+- **Bảng KPI → Chi tiết**, **Nhân sự → Xem hồ sơ**, **KPI quản lý → bấm vào một dòng**: chi tiết mở ở khung bên phải, danh sách vẫn ở bên trái. Bấm người khác là khung đổi theo.
+- Số liệu có sẵn hiện ngay (điểm KPI, nhật ký 2 tháng gần nhất); lịch sử cũ hơn tự tải thêm sau vài giây (dòng "Đang tải…" ở đầu khung).
+- Phím **↑ ↓** chuyển người trên / dưới, **Esc** đóng khung. Khi khung mở, danh sách tạm ẩn các cột phụ (Tuân thủ, An toàn, Chức danh…) cho gọn – số đó có trong khung.
+- Nút **Kiểu cũ** trên khung quay về cách mở cũ (cửa sổ / trang riêng); muốn bật lại bấm **⧉ Chia đôi** trong cửa sổ chi tiết. Lựa chọn nhớ riêng trên từng máy.
+- Điện thoại và màn hình hẹp giữ nguyên cách cũ.
+
 ## TĂNG TỐC 21/10 (đăng nhập, Bảng KPI, KPI quản lý) – gộp chung với "BẢN SỬA 21/10" ngay dưới
 Cùng 3 file **Code.gs**, **Index.html**, **SoDo.html** của "BẢN SỬA 21/10" (SoDo không đổi thêm). Dán theo mục bên dưới, rồi làm thêm 2 việc chạy một lần:
 
