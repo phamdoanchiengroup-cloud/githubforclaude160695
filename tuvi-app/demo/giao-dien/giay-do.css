@@ -1,0 +1,29 @@
+/* PHƯƠNG ÁN 2 – "GIẤY DÓ": nền giấy sáng, mực đen, dấu son đỏ, chữ có chân như sách cổ; thoáng, dễ đọc ban ngày */
+:root {
+  --paper: #f3ede1; --paper-2: #ebe3d3; --card: #fbf8f1; --card-solid: #fbf8f1; --surface: #fffdf8; --surface-2: #f7f2e7; --surface-3: #efe7d6; --surface-glass: rgba(34, 32, 28, .04);
+  --cell: linear-gradient(180deg, #fffdf7, #f7efdc); --cell-hover: linear-gradient(180deg, #fffef9, #f2e7cf); --cell-hi: linear-gradient(180deg, #fbf1df, #f2e2c4); --cell-menh: linear-gradient(180deg, #fbe9d9, #f3d5bd); --cell-center: radial-gradient(circle at 50% 40%, #fffdf6, #f0e6d0 80%);
+  --ink: #23201b; --ink-soft: #6a6255; --head: #8f2a20; --accent: #b5352a; --accent-deep: #8f2a20; --jade: #4f7a4a; --jade-deep: #8f2a20; --jade-mist: #f3e6d8;
+  --gold: #a5741f; --gold-hi: #8f2a20; --gold-soft: #f3e3c4; --gold-deep: #8a5d14; --cinnabar: #b5352a; --lavender: #4b4f9a; --line: rgba(35, 32, 27, .16);
+  --kw: #8f2a20; --kw-star: #7a4f12; --kw-good: #3f6b3a; --kw-bad: #a5332a; --good-bg: #e6efdf; --good-ink: #3f6b3a; --bad-bg: #f6e2dc; --bad-ink: #a5332a; --mid-bg: #f5ead0; --mid-ink: #7a5a14;
+  --kim: #7a7468; --moc: #3f7a46; --thuy: #2c568f; --hoa: #b5352a; --tho: #9a6a1c;
+  --radius: 2px; --pa-r-nho: 2px; --pa-r-nut: 2px; --pa-r-anh: 2px;
+  --pa-f-title: 'Cormorant Garamond', 'Noto Serif', Georgia, serif; --pa-f-body: 'Be Vietnam Pro', system-ui, sans-serif; --pa-f-nhan: 'Be Vietnam Pro', sans-serif;
+  --pa-sky: radial-gradient(1000px 500px at 90% -10%, rgba(181, 53, 42, .07), transparent 60%), radial-gradient(800px 600px at 0% 100%, rgba(165, 116, 31, .08), transparent 60%), #f3ede1;
+  --pa-head: #f3ede1; --pa-line: rgba(35, 32, 27, .16);
+  --pa-seal: #b5352a; --pa-seal-ink: #fbf3e6; --pa-title: #1e1b16;
+  --pa-panel: #fbf8f1; --pa-panel2: #f7f0e2; --pa-shadow: 0 1px 0 rgba(35, 32, 27, .04), 0 8px 24px rgba(80, 60, 30, .08);
+  --pa-han: #b5352a; --pa-eyebrow: #b5352a;
+  --pa-btn: #b5352a; --pa-btn-ink: #fbf3e6; --pa-btn-shadow: 0 2px 0 #7f2219;
+  --pa-ghost: #23201b; --pa-ghost-bg: #fbf8f1; --pa-hover: rgba(181, 53, 42, .06); --pa-input: #fffdf8;
+  --pa-active: rgba(181, 53, 42, .08); --pa-active-ink: #8f2a20; --pa-acc: #b5352a;
+  --pa-frame: 0 0 0 6px #fbf8f1, 0 0 0 7px rgba(35, 32, 27, .25), 0 18px 40px rgba(80, 60, 30, .18); --pa-bullet: '—'; --pa-pad-anh: 0;
+  color-scheme: light;
+}
+body { color: var(--ink); }
+.brand h1 { font-size: 32px; } .panel-title { font-size: 28px; } .tg-head b { font-size: 32px; }
+.welcome .wl-nd h2 { font-size: 48px; font-weight: 600; font-style: italic; }
+.wl-eyebrow { letter-spacing: 4px; }
+.muted, small, .chao-nd p { color: var(--ink-soft); }
+.panel p, .panel li, .panel td { color: var(--ink); }
+.qc-strip b, .qs-nd b, .cb-nd b, .wl-qua b { color: #8f2a20 !important; }
+.tab-cd, .nav-col .tab[data-tab=capdoi] { color: #a5332a !important; }

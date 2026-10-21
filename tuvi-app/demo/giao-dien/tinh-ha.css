@@ -1,0 +1,31 @@
+/* PHƯƠNG ÁN 1 – FUTURISTIC "TINH HÀ": vũ trụ đen tím, neon xanh lơ – tím, kính mờ, lưới tọa độ, chữ kỹ thuật Chakra Petch */
+:root {
+  --paper: #04050d; --paper-2: #070a18; --card: rgba(12, 16, 38, .72); --card-solid: #0b1026; --surface: #0e1430; --surface-2: #121a3c; --surface-3: #1a2350; --surface-glass: rgba(120, 200, 255, .06);
+  --ink: #e6f2ff; --ink-soft: #8ea3c7; --head: #7ff3ff; --accent: #22d3ee; --accent-deep: #6d4bd8; --jade: #5ef2c8; --jade-deep: #7ff3ff; --jade-mist: rgba(34, 211, 238, .08);
+  --gold: #22d3ee; --gold-hi: #9bf6ff; --gold-soft: rgba(34, 211, 238, .14); --gold-deep: #0ea5c4; --cinnabar: #ff4fb8; --lavender: #b69cff; --line: rgba(110, 190, 255, .22);
+  --kw: #9bf6ff; --kw-star: #c4b5fd; --kw-good: #5ef2c8; --kw-bad: #ff7aa8; --good-ink: #5ef2c8; --bad-ink: #ff7aa8; --mid-ink: #9bf6ff;
+  --radius: 12px; --pa-r-nho: 6px; --pa-r-nut: 8px; --pa-r-anh: 14px;
+  --pa-f-title: 'Chakra Petch', 'Be Vietnam Pro', sans-serif; --pa-f-body: 'Be Vietnam Pro', system-ui, sans-serif; --pa-f-nhan: 'Chakra Petch', sans-serif; --pa-f-nut: 'Chakra Petch', sans-serif;
+  --pa-w-title: 600; --pa-ls-title: .4px; --pa-ls-nut: .6px;
+  --pa-sky: radial-gradient(900px 500px at 85% -10%, rgba(139, 92, 246, .35), transparent 60%), radial-gradient(800px 600px at -5% 30%, rgba(34, 211, 238, .18), transparent 60%), radial-gradient(1200px 500px at 50% 120%, rgba(236, 72, 153, .14), transparent 60%),
+    linear-gradient(rgba(110, 190, 255, .05) 1px, transparent 1px) 0 0 / 48px 48px, linear-gradient(90deg, rgba(110, 190, 255, .05) 1px, transparent 1px) 0 0 / 48px 48px, #04050d;
+  --pa-sao: .6;
+  --pa-head: linear-gradient(180deg, rgba(6, 8, 22, .92), rgba(6, 8, 22, .7)); --pa-line: rgba(110, 190, 255, .22);
+  --pa-seal: linear-gradient(135deg, #22d3ee, #8b5cf6); --pa-seal-shadow: 0 0 18px rgba(34, 211, 238, .55); --pa-seal-ink: #04050d;
+  --pa-title: #eaf7ff; --pa-glow-title: 0 0 18px rgba(34, 211, 238, .35);
+  --pa-panel: linear-gradient(180deg, rgba(16, 22, 50, .72), rgba(10, 14, 34, .72)); --pa-panel2: linear-gradient(120deg, rgba(34, 211, 238, .10), rgba(139, 92, 246, .12)), rgba(10, 14, 34, .85);
+  --pa-blur: blur(14px) saturate(140%); --pa-shadow: 0 0 0 1px rgba(110, 190, 255, .06) inset, 0 20px 50px rgba(0, 0, 0, .55), 0 0 40px rgba(34, 211, 238, .05);
+  --pa-han: #7ff3ff; --pa-han-bg: rgba(34, 211, 238, .08); --pa-eyebrow: #ff6fc8;
+  --pa-btn: linear-gradient(90deg, #22d3ee, #8b5cf6); --pa-btn-ink: #04050d; --pa-btn-shadow: 0 0 22px rgba(34, 211, 238, .45), 0 0 40px rgba(139, 92, 246, .25);
+  --pa-ghost: #9bf6ff; --pa-hover: rgba(34, 211, 238, .08); --pa-input: rgba(6, 10, 26, .85);
+  --pa-active: linear-gradient(90deg, rgba(34, 211, 238, .18), rgba(139, 92, 246, .14)); --pa-active-ink: #eaf7ff; --pa-acc: #22d3ee; --pa-glow-acc: 0 0 12px #22d3ee;
+  --pa-frame: 0 0 0 1px rgba(34, 211, 238, .35), 0 0 30px rgba(34, 211, 238, .35), 0 0 70px rgba(139, 92, 246, .25); --pa-bullet: '▸';
+  color-scheme: dark;
+}
+.brand h1 { background: linear-gradient(90deg, #9bf6ff, #c4b5fd 60%, #ff9ad5); -webkit-background-clip: text; background-clip: text; color: transparent; text-transform: uppercase; font-size: 24px; letter-spacing: 3px; }
+.panel { position: relative; }
+.panel::after { content: ''; display: block !important; position: absolute; top: -1px; left: 18px; width: 64px; height: 2px; background: linear-gradient(90deg, #22d3ee, #8b5cf6); box-shadow: 0 0 10px #22d3ee; border-radius: 2px; }
+.panel-title, .tg-head b { text-transform: uppercase; letter-spacing: 1.5px; font-size: 21px; }
+.tg-head b { font-size: 24px; }
+.welcome .wl-nd h2 { text-transform: uppercase; letter-spacing: 1px; background: linear-gradient(90deg, #eaf7ff, #9bf6ff 45%, #c4b5fd); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.tg-head span::before { content: '// '; color: #22d3ee; }

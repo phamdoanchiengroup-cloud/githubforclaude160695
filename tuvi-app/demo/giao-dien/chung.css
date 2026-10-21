@@ -1,0 +1,45 @@
+/* Phần thành phần dùng chung cho 3 phương án – mọi màu lấy từ biến --pa-* của từng phương án */
+body { background: var(--paper); font-family: var(--pa-f-body); color: var(--ink); }
+.sky { background: var(--pa-sky) !important; } .sky::before { opacity: var(--pa-sao, 0) !important; }
+.app-header { background: var(--pa-head); border-bottom: 1px solid var(--pa-line); }
+.seal { background: var(--pa-seal); border-radius: var(--pa-r-nho); box-shadow: var(--pa-seal-shadow, none); color: var(--pa-seal-ink, #fff); }
+.brand h1 { font-family: var(--pa-f-title); color: var(--pa-title); font-weight: var(--pa-w-title, 700); letter-spacing: var(--pa-ls-title, .3px); text-shadow: var(--pa-glow-title, none); }
+.brand p { color: var(--ink-soft); }
+.panel { background: var(--pa-panel); border: 1px solid var(--pa-line); border-radius: var(--radius); box-shadow: var(--pa-shadow); backdrop-filter: var(--pa-blur, none); -webkit-backdrop-filter: var(--pa-blur, none); }
+.panel-title, .tg-head b, .welcome .wl-nd h2, .ho-so-nd b, .cung-van-de-hieu .cvdh-tieude, .bcs-ten b, .brand h1 { font-family: var(--pa-f-title); }
+.panel-title, .tg-head b, .welcome .wl-nd h2, .ho-so-nd b, .cung-van-de-hieu .cvdh-tieude, .bcs-ten b { color: var(--pa-title); text-shadow: var(--pa-glow-title, none); font-weight: var(--pa-w-title, 700); letter-spacing: var(--pa-ls-title, 0); }
+.panel-title .han { color: var(--pa-han); border-color: var(--pa-line); border-radius: var(--pa-r-nho); background: var(--pa-han-bg, none); }
+.tg-head { border-bottom-color: var(--pa-line); }
+.tg-head span, .wl-eyebrow, .bcs-ten small, .dd-h, h4.dd-h { color: var(--pa-eyebrow); font-family: var(--pa-f-nhan, inherit); }
+.tg-head em, .lede { color: var(--ink-soft); }
+.btn { border-radius: var(--pa-r-nut); font-family: var(--pa-f-nut, var(--pa-f-body)); letter-spacing: var(--pa-ls-nut, 0); }
+.btn-primary, .res-top .tab.active { background: var(--pa-btn); color: var(--pa-btn-ink); box-shadow: var(--pa-btn-shadow); border: 0; text-shadow: none; }
+.btn-primary:hover { background: var(--pa-btn); filter: brightness(1.08); box-shadow: var(--pa-btn-shadow); }
+.btn-ghost { border: 1px solid var(--pa-line); color: var(--pa-ghost); background: var(--pa-ghost-bg, transparent); }
+.btn-ghost:hover { background: var(--pa-hover); border-color: var(--pa-acc); }
+input[type=text], input[type=password], input[type=number], input[type=date], input[type=email], input[type=month], select, textarea { background-color: var(--pa-input) !important; border-color: var(--pa-line) !important; color: var(--ink) !important; border-radius: var(--pa-r-nho); }
+.seg, .seg-wrap, .toggle-row, .gioi, .lich { background: var(--pa-input); }
+.tab.active { background: var(--pa-active); color: var(--pa-active-ink); border-color: var(--pa-line); box-shadow: none; }
+.nav-col .tabs, body.co-toc .nav-col .toc, .nav-col .toc { background: var(--pa-panel) !important; border-color: var(--pa-line) !important; border-radius: var(--radius); backdrop-filter: var(--pa-blur, none); }
+.nav-col .tab { color: var(--ink-soft); border-radius: var(--pa-r-nho); }
+.nav-col .tab:hover { background: var(--pa-hover); color: var(--ink); }
+.nav-col .tab.active { background: var(--pa-active) !important; color: var(--pa-active-ink) !important; }
+.nav-col .tab.active::before { background: var(--pa-acc) !important; box-shadow: var(--pa-glow-acc, none); }
+.toc-head b { color: var(--pa-title); font-family: var(--pa-f-title); }
+.res-top { background: var(--pa-head) !important; border-bottom: 1px solid var(--pa-line); }
+.res-top .tab { background: var(--pa-hover); color: var(--ink-soft); }
+.wl-anh { border: 1px solid var(--pa-acc); border-radius: var(--pa-r-anh); background: var(--pa-panel); box-shadow: var(--pa-frame); padding: var(--pa-pad-anh, 7px); }
+.wl-anh img { border-radius: calc(var(--pa-r-anh) - 4px); }
+.wl-loi li::before { color: var(--pa-acc); content: var(--pa-bullet, '◆'); }
+.qc-strip, .cta-bar, .ho-so, .chao-in, .nc-goi { background: var(--pa-panel2) !important; border-color: var(--pa-line) !important; border-radius: var(--radius); }
+.ho-so-av { background: var(--pa-btn); color: var(--pa-btn-ink); }
+.chao-t { color: var(--pa-title); }
+.bcs-can, .bcs-o, .bcs-chip { border-color: var(--pa-line); background: var(--pa-input); border-radius: var(--pa-r-nho); }
+.bcs-can { font-family: var(--pa-f-title); }
+.bcs-chip.dung { border-color: var(--pa-acc); background: var(--pa-active); }
+.bcs-ray i { background: var(--pa-acc); box-shadow: var(--pa-glow-acc, 0 0 0 2px var(--paper)); border-color: var(--paper); }
+.chart-frame { border-color: var(--pa-acc) !important; box-shadow: var(--pa-frame) !important; }
+.cung-van-de-hieu { border-left-color: var(--pa-acc); background: var(--pa-hover); }
+.cv-doan h5 { color: var(--pa-eyebrow); } .cv-doan h5::before { background: var(--pa-acc); }
+details.chuyen-sau, details.cung-chitiet { border-color: var(--pa-line); }
+th { color: var(--pa-eyebrow); }

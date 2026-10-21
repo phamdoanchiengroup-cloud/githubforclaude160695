@@ -1,0 +1,23 @@
+/* PHƯƠNG ÁN 3 – "NGỌC LỤC BẢO": xanh lục bảo sâu + vàng sâm panh, tối giản, bo mềm, chữ Playfair */
+:root {
+  --paper: #061510; --paper-2: #081b15; --card: rgba(11, 33, 26, .96); --card-solid: #0b211a; --surface: #0f2a21; --surface-2: #133329; --surface-3: #1a4033; --surface-glass: rgba(230, 214, 170, .05);
+  --cell: linear-gradient(180deg, #10291f, #0b211a); --cell-menh: linear-gradient(180deg, #2a3a22, #15291f); --cell-center: radial-gradient(circle at 50% 40%, #12302a, #07170f 75%);
+  --ink: #ece6d6; --ink-soft: #a9b4a6; --head: #e6d3a3; --accent: #c9b076; --accent-deep: #8c7642; --jade: #8fd1b0; --jade-deep: #e6d3a3; --jade-mist: rgba(201, 176, 118, .08);
+  --gold: #c9b076; --gold-hi: #ead9a8; --gold-soft: rgba(201, 176, 118, .14); --gold-deep: #9c8550; --cinnabar: #e08a6a; --line: rgba(201, 176, 118, .22);
+  --kw: #ead9a8; --kw-star: #f0e2bd; --kw-good: #9edcb8; --kw-bad: #f0a48a;
+  --radius: 18px; --pa-r-nho: 10px; --pa-r-nut: 999px; --pa-r-anh: 22px;
+  --pa-f-title: 'Playfair Display', 'Noto Serif', Georgia, serif; --pa-f-body: 'Be Vietnam Pro', system-ui, sans-serif;
+  --pa-w-title: 600; --pa-sky: radial-gradient(1000px 520px at 75% -10%, rgba(201, 176, 118, .14), transparent 60%), radial-gradient(900px 700px at -10% 100%, rgba(40, 140, 100, .16), transparent 60%), linear-gradient(180deg, #05120d, #071a13);
+  --pa-head: rgba(5, 18, 13, .85); --pa-line: rgba(201, 176, 118, .22);
+  --pa-seal: linear-gradient(145deg, #1f6b4f, #0e3d2c); --pa-seal-shadow: inset 0 0 0 1px rgba(234, 217, 168, .5); --pa-seal-ink: #ead9a8;
+  --pa-title: #ead9a8;
+  --pa-panel: linear-gradient(180deg, rgba(15, 42, 33, .96), rgba(10, 30, 24, .96)); --pa-panel2: rgba(15, 42, 33, .9); --pa-shadow: 0 18px 44px rgba(0, 0, 0, .45);
+  --pa-han: #ead9a8; --pa-han-bg: rgba(201, 176, 118, .1); --pa-eyebrow: #9edcb8;
+  --pa-btn: linear-gradient(180deg, #ead9a8, #c9b076); --pa-btn-ink: #0b211a; --pa-btn-shadow: 0 8px 22px rgba(0, 0, 0, .4);
+  --pa-ghost: #ead9a8; --pa-hover: rgba(201, 176, 118, .08); --pa-input: rgba(5, 18, 13, .7);
+  --pa-active: rgba(201, 176, 118, .14); --pa-active-ink: #ead9a8; --pa-acc: #c9b076;
+  --pa-frame: 0 0 0 1px rgba(234, 217, 168, .3), 0 30px 60px rgba(0, 0, 0, .55); --pa-bullet: '●';
+  color-scheme: dark;
+}
+.wl-loi li::before { font-size: 7px; top: 8px; }
+.welcome .wl-nd h2 { font-weight: 600; }
