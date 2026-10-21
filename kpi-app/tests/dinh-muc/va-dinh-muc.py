@@ -10,7 +10,7 @@ Nguyên nhân:
     luôn thiếu khi người làm nhiều công đoạn trong ngày.
 Sửa:
  - Phân tích theo ĐỊNH MỨC ĐANG DÙNG cho mọi ngày của kỳ (trungVi); vẫn trả trungViKy = theo định mức từng ngày (như KPI).
- - Gợi ý cho MỌI công đoạn lệch mốc 85% quá ±3 điểm (nâng hoặc hạ), giải cùng lúc mọi công đoạn (lặp, chia đôi khoảng)
+ - Gợi ý cho MỌI công đoạn lệch mốc 85% quá ±3 điểm (CHỈ NÂNG – chủ dự án: định mức chặt thường do người mới đang đào tạo, không hạ), giải cùng lúc mọi công đoạn (lặp, chia đôi khoảng)
    để trung vị sau khi áp gần 85%; trả dmGoiY, trungViSau (dự kiến), itNguoi (< 3 người có dữ liệu).
  - Chủ dự án 21/10: đổi định mức là áp cho CẢ THÁNG đang làm (tháng chưa chốt chính thức): cắt / xóa các đoạn
    LichSuDinhMuc trùng tháng này, HieuLucTu = ngày 1. Kể cả tháng đã chốt chính thức (chủ dự án 21/10) – khi đó

@@ -5,6 +5,7 @@ Liên quan: [[KPI Tổng quan và cách dựng]] · [[KPI Kiểm thử]] · [[Qu
 
 ## Chủ dự án hỏi 21/10
 - "Đưa toàn bộ gợi ý thay đổi để về định mức 85%".
+- **Bỏ gợi ý hạ định mức chặt** – có thể đang đào tạo nhân viên mới (chủ dự án nhắc lại 21/10, đã nói từ trước).
 - "Sửa định mức theo gợi ý, phân tích lại vẫn ra hiệu suất trên 100%, vấn đề là gì?"
 - Chốt: **đổi định mức thì toàn bộ sản lượng tháng đó tính theo định mức mới**, **kể cả tháng đã chốt**.
 
@@ -19,16 +20,18 @@ Liên quan: [[KPI Tổng quan và cách dựng]] · [[KPI Kiểm thử]] · [[Qu
 - `AP_DINH_MUC_CA_THANG()` – chạy tay 1 lần sau khi dán: cắt mọi đoạn LichSuDinhMuc trùng tháng này (34 công đoạn trên dữ liệu thật). Chặn gọi từ web (bao-mat.js: 38 hàm viết hoa).
 - `phanTichDinhMucGoc_` mới (bản cũ đổi tên `phanTichDinhMucCu_`):
   - Hiệu suất tính theo **định mức đang dùng** cho mọi ngày (`trungVi`); vẫn trả `trungViKy` = theo định mức từng ngày như KPI.
+  - **Chỉ nâng, không hạ**: khoảng dò định mức chặn dưới ở định mức đang dùng; giải ra không cần nâng thì giữ đúng số cũ (không làm tròn – lỗi 12,9 → 13).
   - **Giải chung** mọi công đoạn có dữ liệu: lặp, mỗi công đoạn chia đôi trên thang log để trung vị = 85, mỗi bước tối đa ×1,5, nửa bước (giảm dao động), chặn ×4 (`CHAN`).
   - Công đoạn phải đổi gần ×4 (`chamChan`, ≥×3,6) = **phụ thuộc** công đoạn chính cùng ngày → giữ định mức, giải lại phần còn lại; thử nhận lại từng công đoạn, nhận lại thì giải chung lần nữa.
   - Làm tròn `dmLamTron_` (≥20: 1; ≥5: 0,5; ≥2: 0,1; còn lại 0,05). Bỏ gợi ý nếu giữ định mức cũ vẫn trong ±3.
   - Trả mỗi công đoạn: dinhMuc, soCoData, trungVi, trungViKy, nhan (do/vang/nhe/sat/chat), itNguoi (<3 người), dmGoiY, chinh (%), trungViSau (dự kiến), phuThuoc; chung: apTu, daChot.
+- Giao diện chỉ nâng: tóm tắt "N công đoạn nên nâng định mức", lọc mặc định ẩn công đoạn dưới mốc, nhãn "Dưới mốc — giữ" + ghi "không hạ định mức — có thể người mới đang đào tạo".
 - Giao diện (mục 28 `va-dinh-muc-web.py` + `dinh-muc-web.js`, trước mục 27 chia đôi): tóm tắt nâng/hạ, báo áp cả tháng (vàng nếu tháng đã chốt), lọc "có gợi ý / tất cả", cột Gợi ý định mức + dự kiến, ghi chú công đoạn phụ / ít người / KPI đang tính khác; chọn sẵn **mọi** gợi ý (bỏ công đoạn ít người ra làm lệch lời giải chung); ô định mức `step="any"`; lời xác nhận "áp cho CẢ THÁNG …" + nhắc Chốt bù.
 
 ## Kết quả trên dữ liệu thật tháng 10
-- 174 công đoạn: khoảng 105 gợi ý (nâng 34, hạ 71 – gồm cả vài công đoạn đang sát mốc bị công đoạn cùng ngày kéo lệch), khoảng 30 công đoạn phụ để nguyên.
-- Áp hết gợi ý → phân tích lại: 65 công đoạn ≥3 người đã sửa đều 79–91%, không còn công đoạn ≥3 người >100%; KPI tháng 10 khớp số phân tích; KPI tháng 9 không đổi.
+- 174 công đoạn: 19 gợi ý nâng, 2 công đoạn phụ để nguyên (bản đầu có cả hạ: 105 gợi ý – đã bỏ).
+- Áp hết gợi ý → phân tích lại: công đoạn ≥3 người đã nâng đều 79–91%, không còn công đoạn ≥3 người >100%; KPI tháng 10 khớp số phân tích; KPI tháng 9 không đổi.
 
 ## Kiểm thử
-- `tests/dinh-muc.js` 24 (DATA= dữ liệu thật) · `tests/dinh-muc-web.js` 13 (bản xem thử).
+- `tests/dinh-muc.js` 25 (DATA= dữ liệu thật) · `tests/dinh-muc-web.js` 15 (bản xem thử).
 - `tests/van-hanh.js` mục A1 sửa theo quy tắc mới (áp cả tháng).

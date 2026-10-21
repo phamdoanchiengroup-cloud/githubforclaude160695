@@ -7221,7 +7221,8 @@ function phanTichDinhMucGoc_(token, kieu, giaTri) {
       var doiNhat = 0;
       ds.forEach(function(mc) {
         var cu = N[mc], cb = chuanBi(mc, N);
-        var lo = Math.log(Math.max(cu / 1.5, N0[mc] / CHAN)), hi = Math.log(Math.min(cu * 1.5, N0[mc] * CHAN));
+        // CHỈ NÂNG, không hạ (chủ dự án): định mức chặt thường do người mới đang đào tạo -> giữ định mức đang dùng
+        var lo = Math.log(Math.max(cu / 1.5, N0[mc])), hi = Math.log(Math.min(cu * 1.5, N0[mc] * CHAN));
         for (var it = 0; it < 30; it++) {
           var giua = (lo + hi) / 2;
           if (tvTu(cb, Math.exp(giua)) > DM_MOC) lo = giua; else hi = giua;   // định mức cao hơn -> hiệu suất thấp hơn
@@ -7236,7 +7237,7 @@ function phanTichDinhMucGoc_(token, kieu, giaTri) {
   // hiệu suất do công đoạn chính cùng ngày quyết định -> không gợi ý; giữ nguyên định mức của nó rồi giải lại phần còn lại.
   var chamChan = function(mc) {
     var tl = N[mc] / N0[mc];
-    return tl > CHAN * 0.9 || tl < 1 / (CHAN * 0.9);     // phải đổi gần ×4 mới về mốc = công đoạn phụ, không đáng đổi
+    return tl > CHAN * 0.9;     // phải đổi gần ×4 mới về mốc = công đoạn phụ, không đáng đổi
   };
   var phuThuoc = {};
   var tachPhuThuoc = function() {                        // giải; công đoạn chạm chặn -> phụ thuộc, giải lại phần còn lại
@@ -7258,7 +7259,9 @@ function phanTichDinhMucGoc_(token, kieu, giaTri) {
   });
   if (nhanLai) tachPhuThuoc();                           // nhận lại thì giải chung lần nữa (công đoạn khác có thể bị kéo tới chặn)
   var NR = {}; Object.keys(N0).forEach(function(k) { NR[k] = N0[k]; });
-  canChinh.forEach(function(mc) { NR[mc] = dmLamTron_(N[mc]); });
+  canChinh.forEach(function(mc) {                       // không cần nâng (giải ra = định mức đang dùng) thì giữ số cũ, khỏi làm tròn
+    if (N[mc] > N0[mc] * 1.001) NR[mc] = Math.max(N0[mc], dmLamTron_(N[mc]));
+  });
   // Chỉ gợi ý khi cần: nếu giữ định mức cũ (các công đoạn khác vẫn đổi) mà vẫn sát mốc thì thôi
   canChinh.forEach(function(mc) {
     if (NR[mc] === N0[mc]) return;

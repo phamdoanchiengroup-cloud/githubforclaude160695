@@ -5488,9 +5488,9 @@ var ptdmKy={kieu:'thang', giaTri:''};
 var ptdmXuong='';   // lọc xưởng ở phần kết quả phân tích định mức ('' = tất cả)
 function vPTDM(){
   var h='<div class="ptitle">Phân tích định mức</div>'+
-    '<div class="pdesc">Đánh giá định mức theo hiệu suất trung vị (người ở giữa) và gợi ý định mức mới để mọi công đoạn về mốc 85%</div>';
+    '<div class="pdesc">Đánh giá định mức theo hiệu suất trung vị (người ở giữa) và gợi ý nâng định mức lỏng về mốc 85%</div>';
   h+='<div class="alert a-nu">Định mức hợp lý khi <b>hiệu suất trung vị</b> quanh mốc <b>85%</b> (±3 điểm). '+
-    'Trên mốc là định mức <b>lỏng</b> → gợi ý <b>nâng</b>; dưới mốc là định mức <b>chặt</b> → gợi ý <b>hạ</b>. '+
+    'Trên mốc là định mức <b>lỏng</b> → gợi ý <b>nâng</b>. Dưới mốc <b>không gợi ý hạ</b> — thường do người mới đang đào tạo, chưa lên tay. '+
     'Đổi định mức là áp cho <b>cả tháng đang làm</b>: toàn bộ sản lượng tháng này tính lại theo định mức mới, các tháng trước giữ nguyên.</div>';
 
   // Bộ chọn kỳ
@@ -5585,21 +5585,19 @@ function ptdmVe(r){
   if(!dsX.length){ box.innerHTML=h+'<div class="alert a-wn">Xưởng này chưa có dữ liệu để phân tích.</div>'; return; }
 
   var coGY=dsX.filter(function(x){return x.dmGoiY>0});
-  var nang=coGY.filter(function(x){return x.dmGoiY>x.dinhMuc}).length, ha=coGY.length-nang;
   var phu=dsX.filter(function(x){return x.phuThuoc}).length;
   var tu=ptdmKq.apTu||'', th=tu?(+tu.slice(5,7))+'/'+tu.slice(0,4):'';
   if(coGY.length){
-    h+='<div class="alert a-bd"><b>'+coGY.length+' công đoạn nên đổi định mức</b> để về mốc 85%: '+
-       '<b>nâng '+nang+'</b>, <b>hạ '+ha+'</b>.'+
+    h+='<div class="alert a-bd"><b>'+coGY.length+' công đoạn nên nâng định mức</b> để về mốc 85%.'+
        (phu?' '+phu+' công đoạn phụ để nguyên (hiệu suất do công đoạn chính cùng ngày quyết định).':'')+
        '<br>Các gợi ý được tính <b>chung</b> (người làm nhiều công đoạn trong ngày) — nên áp <b>cùng lúc</b> bằng nút "Áp dụng các dòng đã chọn" thì phân tích lại mới về quanh 85%.</div>';
   }else{
-    h+='<div class="alert a-ok">Các công đoạn đã quanh mốc 85% — không cần đổi định mức.</div>';
+    h+='<div class="alert a-ok">Không có công đoạn nào lỏng hơn mốc 85% — không cần nâng định mức.</div>';
   }
   if(th) h+='<div class="alert '+(ptdmKq.daChot?'a-wn':'a-nu')+'">Đổi định mức lúc này sẽ áp cho <b>cả tháng '+th+'</b> (từ ngày 1). '+
     (ptdmKq.daChot?'Tháng '+th+' <b>đã chốt KPI</b> → sửa xong vào Bảng KPI bấm <b>"Chốt bù tháng này"</b> để bảng đã chốt tính lại.':'KPI tháng '+th+' tự tính lại theo định mức mới.')+'</div>';
 
-  var ds=ptdmLoc==='tatca'?dsX:dsX.filter(function(x){return x.dmGoiY>0||x.phuThuoc||(x.nhan!=='sat'&&x.nhan!=='nhe')});
+  var ds=ptdmLoc==='tatca'?dsX:dsX.filter(function(x){return x.dmGoiY>0||x.phuThuoc||x.nhan==='do'||x.nhan==='vang'});
   var tenXuong={}; (D.phongban||[]).forEach(function(p){tenXuong[p.MaXuong]=p.TenXuong;});
   var thuTuX=[], theoX={};
   ds.forEach(function(x){
@@ -5613,7 +5611,7 @@ function ptdmVe(r){
     vang:{pill:'p-wn', chu:'Hơi lỏng (95–110%)'},
     nhe: {pill:'p-nu', chu:'Nhỉnh hơn mốc'},
     sat: {pill:'p-ok', chu:'Sát mốc 85%'},
-    chat:{pill:'p-gr', chu:'Chặt — dưới mốc'}
+    chat:{pill:'p-gr', chu:'Dưới mốc — giữ'}
   };
   var laAdmin=ME.vaiTro==='ADMIN';
   var hangCD=function(x){
@@ -5631,6 +5629,7 @@ function ptdmVe(r){
       gy='<span style="color:var(--ink3)">giữ '+x.dinhMuc+'</span>'+
          (Math.abs(x.trungViSau-x.trungVi)>=0.5?'<div style="font-size:12px;color:var(--ink2)">dự kiến '+f(x.trungViSau,1)+'%</div>':'');
     }
+    if(x.nhan==='chat'&&!(x.dmGoiY>0)) ghi.push('không hạ định mức — có thể người mới đang đào tạo');
     if(x.itNguoi) ghi.push('ít người có dữ liệu — cân nhắc');
     if(Math.abs((x.trungViKy||0)-x.trungVi)>=0.5) ghi.push('KPI tháng đang tính '+f(x.trungViKy,1)+'% (định mức cũ còn áp vài ngày)');
     var cb = laAdmin && x.dmGoiY>0
@@ -5667,6 +5666,7 @@ function ptdmVe(r){
      'không bị lệch bởi vài người xuất sắc. Mốc lý tưởng 85% (±3 điểm). '+
      '"Gợi ý định mức" là định mức mới để trung vị về quanh 85%; "dự kiến" là hiệu suất trung vị sau khi áp <b>tất cả</b> gợi ý. '+
      'Giờ có mặt trong ngày được chia cho các công đoạn người đó làm, nên công đoạn làm cùng ngày ảnh hưởng lẫn nhau — vì vậy gợi ý được tính chung. '+
+     'Công đoạn dưới mốc không gợi ý hạ (thường do người mới chưa lên tay); muốn xem thì chọn "Tất cả công đoạn". '+
      'Công đoạn ít người (dưới 3) thì trung vị kém tin — vẫn chọn sẵn vì bỏ đi sẽ làm lệch các công đoạn làm cùng ngày; có thể sửa tay ô định mức. '+
      'Đổi định mức áp cho <b>cả tháng đang làm</b>; tháng đã chốt thì sửa xong bấm "Chốt bù tháng này" ở Bảng KPI.</div>';
 

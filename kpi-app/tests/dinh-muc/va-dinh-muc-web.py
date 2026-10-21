@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """Vá Index.html – tab Phân tích định mức (21/10, chủ dự án): hiện gợi ý cho MỌI công đoạn để về mốc 85%
-(nâng hoặc hạ), số dự kiến sau khi áp, công đoạn phụ thuộc / ít người; lời xác nhận theo quy tắc mới:
+(chỉ nâng, không gợi ý hạ), số dự kiến sau khi áp, công đoạn phụ thuộc / ít người; lời xác nhận theo quy tắc mới:
 đổi định mức là áp cho CẢ THÁNG đang làm (kể cả tháng đã chốt -> nhắc Chốt bù).
 Chạy bằng exec() trong tests/va-index.py (trước mục chia đôi). Máy chủ: dinh-muc/dinh-muc.gs. Kiểm thử: tests/dinh-muc-web.js."""
 
