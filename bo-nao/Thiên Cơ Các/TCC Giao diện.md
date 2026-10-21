@@ -53,4 +53,10 @@ Liên quan: [[TCC PDF]] · [[TCC Lá số 3D]] · [[TCC Văn dễ hiểu và T�
   - **Hiệu ứng:** tàn lửa bay (canvas), quầng sáng trôi, lưới mờ. Tắt khi `prefers-reduced-motion`.
   - **Bản demo** dùng lá số chủ dự án nên lưu riêng tư: https://claude.ai/artifact/PBz32Cc5qPqNCoesKaJxCK. Trình dựng nằm ngoài repo.
   - **Khi duyệt:** chuyển vào Styles/Script/Index (tab giữ nguyên dữ liệu; Tổng quan thành bảng bento), giữ `Anh.html`.
+  - **Đổi màu theo góp ý "trông máu me quá" (21/10), bố cục giữ nguyên.** Bảng màu mới **"Tử Ngọc"**, vẫn hợp mệnh Hỏa vì tím và hồng là màu Hỏa:
+    - nền tím mận `#120a1c`;
+    - dải sâm panh `#ffd29a` → hồng phấn `#f0a6ca` → tím lan `#c084fc` → tím `#9d6bff`;
+    - xanh ngọc `#46d9a4` cho tín hiệu tốt; vàng `#f3cf8a`;
+    - màu hành Hỏa trong dữ liệu là `#ff9a6b`.
+    - Đường rủi ro sức khỏe và viền xung chiếu dùng hồng phấn. Cùng link demo.
 
