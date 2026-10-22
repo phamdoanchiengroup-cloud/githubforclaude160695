@@ -22,3 +22,9 @@ Liên quan: [[KPI Phân tích định mức]] · [[KPI Tăng tốc đợt 2 (21-
 ## Kiểm thử
 - `tests/kpi-may-web.js` 6 (bản xem thử dữ liệu 22/10): 157/157 người khớp, cột Nhân sự vẽ lại, KPI cá nhân CN = Bảng KPI.
 - `tests/dinh-muc.js` 26 (mục 3 sửa: tháng đã bấm chốt vẫn tính lại ngay, không nhắc Chốt bù).
+
+## Vì sao vẫn có KPI tổng ≥ 90 (chủ dự án hỏi 22/10 chiều, dữ liệu tải lúc đó)
+- 16/157 người ≥ 90. Trọng số T10: SL 70 · CL 20 · TT 5 · AT 5 (trần 500). CL/TT/AT gần như ai cũng 100 → SL 85 cho KPI tổng 89,5; chỉ cần SL ≥ 85,7 là ≥ 90. Mốc 85% là của **hiệu suất sản lượng**, không phải KPI tổng.
+- Trung vị = người ở giữa: định mức "về 85%" nghĩa là một nửa số người làm công đoạn đó trên 85. Người ≥ 90 đều làm nhanh hơn hẳn đồng nghiệp cùng công đoạn (vd. Phủ Bóng Bề Mặt Gậy: 1 người 92 cái/ngày, 5 người còn lại 14–50; Ráp-Máy-Chuôi: 409 vs 257–296).
+- Toàn nhà máy thực ra **thấp hơn** 85: trung vị SL 71,5, KPI tổng 80,1 – vì KPI tính cả ngày đi làm không khai sản lượng (~2.984 giờ, phân tích định mức không tính các ngày này; bỏ ra thì trung vị SL 78,3), công đoạn dưới mốc không hạ, vài người SL 0 cả tháng (152 giờ).
+- Mã tính đúng: tính lại = Bảng KPI. Chưa sửa gì – báo chủ dự án.
