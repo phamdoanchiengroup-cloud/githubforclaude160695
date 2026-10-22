@@ -491,3 +491,158 @@ function caiDatBanTin() {
   ScriptApp.newTrigger('guiBanTinThang').timeBased().onMonthDay(1).atHour(7).create();
   Logger.log('✔ Đã bật gửi bản tin vận tháng: 7 giờ sáng ngày 1 hằng tháng.');
 }
+
+/* ================= 8. LUẬN GIẢI HẰNG NGÀY QUA EMAIL (hôm nay + ngày mai) =================
+ * Chủ sở hữu / VIP đăng ký trên web (Tiện ích › Luận giải hằng ngày) cho lá số đang xem: lá số lưu trong sheet VanNgay,
+ * không ghi vào mã. Chạy caiDatVanNgay() MỘT LẦN trong trình soạn thảo để bật gửi 6 giờ sáng mỗi ngày.
+ * Văn viết cho người đọc: không nêu tên sao, thuật ngữ cổ có giải nghĩa, luôn kèm cách ứng xử. */
+var TI_SH_VAN_NGAY = ['Tài khoản', 'Email', 'Lá số (JSON)', 'Đăng ký lúc', 'Gửi gần nhất', 'Trạng thái'];
+var TI_VN_DG = {
+  'Rất tốt': ['Ngày thuận', '#7d8a97', 'Hôm nay mọi việc có xu hướng trôi chảy hơn thường lệ – hợp để chủ động: gặp gỡ, đề xuất, bắt đầu việc quan trọng.'],
+  'Tốt': ['Ngày khá', '#9a7a55', 'Ngày nhìn chung thuận – việc đã định sẽ suôn sẻ, có thể tiến thêm một bước nhỏ.'],
+  'Bình': ['Ngày bình', '#b8956a', 'Ngày bình ổn – hợp làm việc quen thuộc, theo kế hoạch; chưa nên thử điều mới mạo hiểm.'],
+  'Kém': ['Ngày nên chậm', '#b8806a', 'Ngày dễ vướng chuyện nhỏ – nói chậm lại, kiểm tra kỹ giấy tờ và tiền bạc; việc lớn nên để sang ngày khác.']
+};
+var TI_VN_TT = {
+  'Tỷ Kiên': 'Năng lượng ngày nghiêng về bạn bè, đồng nghiệp ngang hàng – hợp làm việc nhóm; dễ nảy sinh so bì, nên chia việc rõ ràng và nhường một bước.',
+  'Kiếp Tài': 'Dễ phát sinh chi tiêu vì người khác hoặc bị tranh phần – hạn chế cho vay, góp vốn trong ngày; giữ ví chặt một chút.',
+  'Thực Thần': 'Đầu óc thư thái, hợp sáng tạo, chia sẻ ý tưởng, ăn uống và nghỉ ngơi – tận hưởng nhưng đừng để sự lười kéo dài.',
+  'Thương Quan': 'Ý tưởng nhiều, lời nói sắc – dễ va chạm với cấp trên hoặc người lớn tuổi; góp ý nhẹ nhàng, nghĩ hai lần trước khi nói.',
+  'Thiên Tài': 'Có thể gặp cơ hội tiền bạc bất ngờ, giao tiếp rộng – vui nhưng giữ tay chi tiêu, đừng đầu tư theo cảm hứng.',
+  'Chính Tài': 'Hợp việc tiền bạc đều đặn: thu nợ, lập ngân sách, ký hợp đồng nhỏ, chăm lo việc nhà.',
+  'Thất Sát': 'Có thể gặp áp lực, việc gấp hoặc người khó tính – giữ bình tĩnh, làm từng việc một, tránh tranh cãi tay đôi.',
+  'Chính Quan': 'Hợp việc giấy tờ, gặp cấp trên, làm việc với cơ quan – làm đúng quy trình sẽ được ghi nhận.',
+  'Thiên Ấn': 'Hợp học hỏi, nghiên cứu, suy nghĩ một mình; dễ đa nghi – kiểm chứng trước khi kết luận về người khác.',
+  'Chính Ấn': 'Dễ nhận được giúp đỡ, lời khuyên từ người lớn – hợp học tập, chăm sóc sức khỏe, nghỉ ngơi đúng giờ.'
+};
+function tiShVanNgay_() {
+  var ss = laySS_(), sh = ss.getSheetByName('VanNgay');
+  if (!sh) { sh = ss.insertSheet('VanNgay'); sh.appendRow(TI_SH_VAN_NGAY); sh.setFrozenRows(1); }
+  return sh;
+}
+function tiInputSach_(input) {
+  var o = {}; ['name', 'gender', 'calendar', 'day', 'month', 'year', 'leap', 'hour', 'minute', 'place', 'longitude', 'tz', 'tuHoaCanh', 'hoangDao'].forEach(function (k) { if (input[k] != null && input[k] !== '') o[k] = input[k]; });
+  return o;
+}
+function tiNgayStr_(t) { return t.y + '-' + (t.m < 10 ? '0' : '') + t.m + '-' + (t.d < 10 ? '0' : '') + t.d; }
+/** Đăng ký nhận luận giải hằng ngày (chủ sở hữu / VIP) – gửi ngay một bản thử */
+function dangKyVanNgay(input, email, token) {
+  var u = tkCan_(token); email = String(email || '').trim();
+  if (!ttToanQuyen_(u)) throw new Error('Luận giải hằng ngày qua email hiện dành cho chủ sở hữu và thành viên VIP.');
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) throw new Error('Email chưa đúng.');
+  if (!input || !input.year) throw new Error('Hãy lập lá số trước khi đăng ký.');
+  var sh = tiShVanNgay_(), last = sh.getLastRow(), clean = tiInputSach_(input);
+  if (last >= 2) {
+    var rows = sh.getRange(2, 1, last - 1, 2).getDisplayValues();
+    for (var i = rows.length - 1; i >= 0; i--) if (rows[i][0] === u.ten && rows[i][1].toLowerCase() === email.toLowerCase()) sh.deleteRow(i + 2);
+  }
+  sh.appendRow([u.ten, email, JSON.stringify(clean), new Date(), '', 'bật']);
+  var thu = '';
+  try { tiGuiVanNgay_(email, clean, tiGioVN_()); thu = 'đã gửi bản thử'; } catch (e) { thu = 'chưa gửi được bản thử: ' + (e && e.message || e); }
+  return { ok: true, email: email, ten: clean.name || '', thu: thu };
+}
+function huyVanNgay(email, token) {
+  var u = tkCan_(token), sh = tiShVanNgay_(), last = sh.getLastRow(), n = 0; email = String(email || '').trim().toLowerCase();
+  if (last < 2) return { ok: true, n: 0 };
+  var rows = sh.getRange(2, 1, last - 1, 2).getDisplayValues();
+  for (var i = rows.length - 1; i >= 0; i--) if (rows[i][0] === u.ten && (!email || rows[i][1].toLowerCase() === email)) { sh.deleteRow(i + 2); n++; }
+  return { ok: true, n: n };
+}
+function dsVanNgay(token) {
+  var u = tkCan_(token), sh = tiShVanNgay_(), last = sh.getLastRow(); if (last < 2) return [];
+  return sh.getRange(2, 1, last - 1, 6).getDisplayValues().filter(function (r) { return r[0] === u.ten; }).map(function (r) {
+    var i = {}; try { i = JSON.parse(r[2]); } catch (e) {} return { email: r[1], ten: i.name || '', guiGanNhat: r[4], trangThai: r[5] }; });
+}
+/** Luận một ngày của lá số theo văn dễ hiểu (k = 0 hôm nay, 1 ngày mai) */
+function tiVanMotNgay_(r, k) {
+  var nv = r.chiTiet && r.chiTiet.nhatVan && r.chiTiet.nhatVan[k]; if (!nv) return null;
+  var hv = (r.moRong && r.moRong.tongHop && r.moRong.tongHop.ngay || [])[k] || {}, bt = r.battu, I = r.tuvi.info;
+  var m = String(nv.ngay).match(/(\d{1,2})\/(\d{1,2})\/(\d{4})/), jd = jdFromDate(+m[1], +m[2], +m[3]), dc = mod10(jd + 9), dz = mod12(jd + 1);
+  var dg = TI_VN_DG[hv.danhGia] || TI_VN_DG[nv.diem >= 1.5 ? 'Tốt' : nv.diem <= -1.5 ? 'Kém' : 'Bình'];
+  var luu = [], nen = [], tranh = [];
+  var tt = thapThanTen_(bt.nhatChuCan, dc); if (TI_VN_TT[tt]) luu.push(TI_VN_TT[tt]);
+  var linh = LG_LINH_VUC[nv.cung];
+  if (linh) luu.push('Chuyện nổi bật trong ngày thường xoay quanh <b>' + linh + '</b>' + (nv.cung === 'Tật Ách' ? ' – để ý ăn ngủ, đừng làm quá sức.' : '.'));
+  var khi = danhGiaVan_(CAN_HANH[dc], CHI_HANH[dz], bt.goiY.hy, bt.goiY.ky);
+  if (khi === 'Đại cát' || khi === 'Cát') luu.push('Khí của ngày hợp với bạn – sức làm việc và tinh thần đều tốt.');
+  else if (khi === 'Hơi kém' || khi === 'Cẩn trọng') luu.push('Khí của ngày không hợp lắm với bạn – dễ mệt, dễ nóng; giữ nhịp vừa phải, nghỉ đúng giờ.');
+  var q1 = lgQuanHeChi_(dz, I.yChi), q2 = lgQuanHeChi_(dz, bt.pillars[2].chi), xung = q1.indexOf('lục xung') >= 0;
+  if (xung) { luu.push('Ngày <b>xung với tuổi</b> của bạn – tránh quyết định lớn, ký kết, đi xa; nếu buộc phải làm, chọn giờ tốt bên dưới.'); tranh.push('quyết định lớn, ký kết'); }
+  else if (q1.indexOf('tam hợp') >= 0 || q1.indexOf('lục hợp') >= 0) luu.push('Ngày hợp tuổi – thuận nhờ vả, gặp người mới.');
+  if (q2.indexOf('lục xung') >= 0) luu.push('Trong nhà dễ bất đồng ý kiến – nhường nhịn một chút, nói chuyện lúc cả hai bình tĩnh.');
+  if ((HT_QUY_NHAN[bt.nhatChuCan] || []).indexOf(dz) >= 0) luu.push('Hôm nay dễ gặp người sẵn lòng giúp – đừng ngại mở lời nhờ.');
+  var ty = LG_TRUC_Y[nv.truc]; if (ty) { nen.push(ty[0]); tranh.push(ty[1]); }
+  var it = (nv.secs && nv.secs[0] && nv.secs[0].items) || [], trang = '', so = '';
+  it.forEach(function (x) { var a = /^Chiêm tinh: .*dồn vào (.+)\.$/.exec(x); if (a) trang = a[1]; var b = /^Thần số: ngày cá nhân (\d) – (.+)\.$/.exec(x); if (b) so = b[2]; });
+  if (trang) luu.push('Cảm xúc và sự chú ý của bạn dồn vào ' + trang + '.');
+  if (so) nen.unshift(so.replace(/^ngày /, ''));
+  // Ngày xung tuổi hoặc ngày kém: hạ nhãn và bỏ các việc lớn khỏi mục "Nên" để lời khuyên không tự mâu thuẫn
+  var kem = hv.danhGia === 'Kém';
+  if (xung && (dg === TI_VN_DG['Rất tốt'] || dg === TI_VN_DG['Tốt'])) dg = TI_VN_DG['Bình'];
+  if (xung || kem) {
+    var LON = /khởi sự|ký kết|cưới hỏi|khai trương|xuất hành|nhậm chức|đi xa|đàm phán|nhập trạch|cầu tài/;
+    nen = nen.map(function (x) { return x.split(/,\s*/).filter(function (v) { return !LON.test(v); }).join(', '); }).filter(Boolean);
+    if (!nen.length) nen.push('việc quen thuộc, việc nhỏ, nghỉ ngơi');
+  }
+  var gio = []; for (var h = 0; h < 12; h++) if (LG_HOANG_DAO.indexOf(lgThanNgay_(dz, h)) >= 0) gio.push(GIO_CHI[h]);
+  return { ngay: nv.ngay, thu: nv.thu, am: nv.am, canChi: nv.canChi, nhan: dg[0], mau: dg[1], tong: dg[2], hoangDao: nv.hoangDao, luu: luu, nen: nen, tranh: tranh, xung: xung,
+    gio: gio, taiThan: LG_TAI_THAN[dc], hyThan: LG_HY_THAN[dc], sat: LG_SAT_PHUONG[dz % 4] };
+}
+function tiVanNgayDuLieu_(input, t) {
+  var i = JSON.parse(JSON.stringify(input)); i.viewYear = t.y; i.viewDate = tiNgayStr_(t);
+  var r = lapLaSoDayDu_(i), T = r.moRong && r.moRong.tongHop, th = T && T.hoSoThang && T.hoSoThang.thang ? T.hoSoThang.thang.filter(function (x) { return x.nay; })[0] : null;
+  return { ten: input.name || 'bạn', homNay: tiVanMotNgay_(r, 0), ngayMai: tiVanMotNgay_(r, 1),
+    thang: th ? { t: th.thang, tu: th.tu, den: th.den, dg: th.danhGia, tom: (th.tom || [])[0] || '' } : null };
+}
+function tiVanNgayHtml_(D) {
+  function ds(a) { return a.map(function (x) { return '<li style="margin:4px 0">' + x + '</li>'; }).join(''); }
+  function khoi(N, day) {
+    if (!N) return '';
+    var h = '<div style="border:1px solid #eadfcd;border-radius:14px;padding:18px 20px;margin:16px 0;background:#fffdf9">' +
+      '<div style="font-size:12px;letter-spacing:2px;text-transform:uppercase;color:#9a7a55">' + (day ? 'Hôm nay' : 'Ngày mai') + ' · ' + N.thu + ' ' + N.ngay + ' · âm lịch ' + N.am + ' · ngày ' + N.canChi + '</div>' +
+      '<div style="font-size:24px;font-weight:700;margin:6px 0;color:' + N.mau + '">' + N.nhan + (N.xung ? ' <span style="font-size:13px;color:#b8806a">· xung tuổi</span>' : '') + '</div>' +
+      '<p style="margin:0 0 8px">' + N.tong + '</p>';
+    if (day) h += '<p style="margin:10px 0 4px;font-weight:700">Điều cần lưu ý</p><ul style="margin:0;padding-left:20px">' + ds(N.luu) + '</ul>';
+    else if (N.luu.length) h += '<ul style="margin:0;padding-left:20px">' + ds(N.luu.slice(0, 3)) + '</ul>';
+    h += '<p style="margin:10px 0 2px"><b>Nên:</b> ' + N.nen.join('; ') + '.</p><p style="margin:2px 0"><b>Tránh:</b> ' + N.tranh.join('; ') + '.</p>' +
+      '<p style="margin:2px 0"><b>Giờ tốt:</b> ' + N.gio.join(', ') + '</p>';
+    if (day) h += '<p style="margin:2px 0"><b>Hướng tốt:</b> đi gặp đối tác, cầu tài về hướng ' + N.taiThan + '; việc vui về hướng ' + N.hyThan + '; tránh động thổ, xuất hành về hướng ' + N.sat + '.</p>' +
+      '<p style="margin:6px 0 0;font-size:13px;color:#7a6a58">Theo lịch cổ, đây là ngày ' + (N.hoangDao ? '<b>Hoàng đạo</b> (ngày tốt)' : '<b>Hắc đạo</b> (ngày xấu – việc trọng đại nên dời)') + '.</p>';
+    return h + '</div>';
+  }
+  var t = D.thang;
+  return '<div style="font-family:Arial,Helvetica,sans-serif;max-width:640px;margin:auto;color:#2a2118;line-height:1.55">' +
+    '<div style="padding:18px 20px;border-radius:14px;background:linear-gradient(120deg,#f7f5f0,#ecdcc4 45%,#e8b9a0);color:#2a2118">' +
+    '<div style="font-size:12px;letter-spacing:3px;text-transform:uppercase;color:#7a5a40">Thiên Cơ Các · Luận giải hằng ngày</div>' +
+    '<div style="font-size:22px;font-weight:700;margin-top:4px">Chào ' + D.ten + ',</div><div>Đây là những điều nên biết cho hôm nay và ngày mai theo lá số của bạn.</div></div>' +
+    khoi(D.homNay, true) + khoi(D.ngayMai, false) +
+    (t ? '<p style="margin:12px 4px;font-size:14px"><b>Bối cảnh tháng ' + t.t + ' âm lịch</b> (' + t.tu + ' – ' + t.den + '): ' + (t.tom ? t.tom.replace(/^Tháng [^:]*: /, '') : t.dg) + '</p>' : '') +
+    '<p style="margin:16px 4px 0;font-size:12px;color:#8f8576">Tổng hợp từ Tử Vi, Bát Tự, Chiêm tinh, Thần số học và lịch cổ – mang tính tham khảo, giúp bạn chủ động sắp xếp việc trong ngày. Ngừng nhận: vào web › Tiện ích › Luận giải hằng ngày › Ngừng nhận.</p></div>';
+}
+function tiGuiVanNgay_(email, input, t) {
+  var D = tiVanNgayDuLieu_(input, t), N = D.homNay;
+  MailApp.sendEmail({ to: email, subject: 'Thiên Cơ Các · ' + (N ? N.thu + ' ' + N.ngay.replace(/\/\d{4}$/, '') + ': ' + N.nhan + (N.xung ? ' · xung tuổi' : '') : 'Luận giải hằng ngày'), htmlBody: tiVanNgayHtml_(D) });
+  return D;
+}
+/** Trigger 6 giờ sáng gọi: gửi cho mọi người đang bật (mỗi email một lần mỗi ngày) */
+function guiVanNgay() {
+  var sh = tiShVanNgay_(), last = sh.getLastRow(); if (last < 2) return 0;
+  var t = tiGioVN_(), homNay = tiNgayStr_(t), n = 0;
+  sh.getRange(2, 1, last - 1, 6).getDisplayValues().forEach(function (r, i) {
+    if (!r[1] || r[5] === 'tắt' || String(r[4]).replace(/^'/, '').indexOf(homNay) === 0) return;
+    try { tiGuiVanNgay_(r[1], JSON.parse(r[2]), t); sh.getRange(i + 2, 5).setValue("'" + homNay); n++; }
+    catch (e) { sh.getRange(i + 2, 5).setValue('Lỗi ' + homNay + ': ' + String(e && e.message || e).slice(0, 80)); }
+  });
+  return n;
+}
+/** Chủ sở hữu chạy 1 lần trong trình soạn thảo: bật gửi luận giải 6 giờ sáng mỗi ngày */
+function caiDatVanNgay() {
+  ScriptApp.getProjectTriggers().forEach(function (tr) { if (tr.getHandlerFunction() === 'guiVanNgay') ScriptApp.deleteTrigger(tr); });
+  ScriptApp.newTrigger('guiVanNgay').timeBased().everyDays(1).atHour(6).create();
+  var sh = tiShVanNgay_(), co = sh.getLastRow() - 1;
+  Logger.log('✔ Đã bật luận giải hằng ngày lúc 6 giờ sáng. ' + (co > 0 ? 'Đang có ' + co + ' email đăng ký.' : 'Chưa có email nào: vào web, lập lá số của bạn, mở Tiện ích › Luận giải hằng ngày để đăng ký.'));
+}
+function tatVanNgay() {
+  var n = 0; ScriptApp.getProjectTriggers().forEach(function (tr) { if (tr.getHandlerFunction() === 'guiVanNgay') { ScriptApp.deleteTrigger(tr); n++; } });
+  Logger.log(n ? '✔ Đã tắt luận giải hằng ngày.' : 'Luận giải hằng ngày vốn chưa bật.');
+}
