@@ -85,3 +85,16 @@ Liên quan: [[TCC PDF]] · [[TCC Lá số 3D]] · [[TCC Văn dễ hiểu và T�
 - Bảng màu demo: nền #0B0F17, thẻ #1A2332, vàng #D4AF37 / #F7E7B5, nhấn tím #6B5BFF, thông tin #00D1C1; chữ Playfair Display (tiêu đề) / Inter (thân) / Montserrat (nút). Gồm: thanh menu, hero "6 Hệ thống – 1 Bản đồ Bản thân" với quả cầu sao xoay (canvas, tắt chuyển động nếu máy đặt giảm chuyển động), 6 thẻ hệ, ô nhập ngày/giờ/nơi sinh có 3 bước, bảng tổng quan mẫu (điểm tổng, 9 lĩnh vực, tab Luận giải / Vận 12 tháng). Dữ liệu lá số mẫu, không phải người thật.
 - Bản 2 (23/10, sau khi chủ dự án chê bản 1 "rất xấu"): làm lại toàn bộ. Có thiên bàn xoay (vòng độ, 12 cung hoàng đạo, 12 địa chi, 8 quẻ tiên thiên, quả cầu sao có quỹ đạo), nền trời nhiều lớp sao kèm tinh vân và sao băng. Ô nhập nằm ngay đầu trang (dương/âm lịch). 6 thẻ hệ, mỗi thẻ có câu hỏi mà hệ đó trả lời; 3 bước; bảng tổng quan mẫu dạng cửa sổ app (vòng điểm, mạng nhện 9 lĩnh vực, mức đồng thuận 6 hệ, nhịp 12 tháng; tab Luận giải hai tầng + "Nên làm"; tab Vận 2027). Bảng giá theo giá thật (0 / 19 / 49 xu) và phần kết có đường chân trời hành tinh phát sáng.
 - **Lưu ý:** nền xanh đêm + tím/xanh ngọc trái với quyết định Bạch Kim ("không dùng xanh lá, đen xanh, xanh dương để trang trí"). Chờ chủ dự án chọn: giữ Bạch Kim, chuyển hẳn sang Vũ trụ vàng, hay thêm làm chế độ giao diện thứ ba.
+
+## 23/10 – Demo phong cách "Hologram" (chưa áp vào app)
+- Chủ dự án gửi ảnh màn hình kính hologram viền neon xanh lơ nổi giữa không gian, kèm yêu cầu "dùng mọi cách thiết kế theo phong cách này". Trang demo: https://claude.ai/artifact/C6SGBGqAMKYHSFaXhE5KoM
+- Thành phần:
+  - Màn hình kính nghiêng 3D (nghiêng nhẹ theo chuột trên máy tính), có vạch quét và vệt sáng vàng ở mép.
+  - Giữa màn hình: bản đồ sao xoay (12 cung hoàng đạo, 12 địa chi, chòm sao vàng, 3 hành tinh, lõi sáng, tia quét radar).
+  - Cột trái: hồ sơ mẫu, 9 lĩnh vực. Cột phải: vòng đồng thuận 6 hệ, lời nhắn tháng, nhịp 12 tháng.
+  - Hàng nút 7 hệ bấm được (đổi chú thích và lời nhắn theo từng hệ).
+  - Nền: hành tinh, chòm sao, sàn phản chiếu vòng tròn đồng tâm.
+  - Phần dưới: ô nhập giờ sinh, 6 mô-đun hệ, bảng giá 0/19/49 xu.
+- Chữ: Chakra Petch (tiêu đề, nhãn kiểu máy), Be Vietnam Pro (thân bài). Màu: nền #02060F, xanh lơ #3FD8FF / #B4F1FF, điểm vàng #F5C66B.
+- Lá số mẫu 15/08/1990: số chủ đạo 33/6 (tính đúng), năm Canh Ngọ, Mặt Trời Sư Tử.
+- Cũng trái với quy tắc màu của Bạch Kim; chờ chủ dự án chọn giữa Bạch Kim / Vũ trụ vàng / Hologram.
