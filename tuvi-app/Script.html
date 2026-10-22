@@ -27,7 +27,7 @@
     });
   }
   /** Mã phiên bản giao diện – phải trùng với Index.html (meta tcc-ban) và Styles.html (--tcc-ban) */
-  var BAN_GIAO_DIEN = '2026.10.14';
+  var BAN_GIAO_DIEN = '2026.10.22';
   function storeGet(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
   function storeSet(k, v) { try { localStorage.setItem(k, v); } catch (e) { /* bỏ qua */ } }
 
@@ -1156,8 +1156,283 @@
     dungMucLuc(); if (state.result || state.cd) { veCta(); veQc(); }
   }
 
+  /* ------------------------ BẢNG ĐIỀU KHIỂN BẠCH KIM ------------------------ */
+  // Đầu tab Lá số: chân dung số + bento biểu đồ động (radar 12 cung, ngũ hành, vượng–nhược, 9 lĩnh vực, 4 hệ),
+  // đường vận cả đời, nhịp năm nay. Phần nào thiếu dữ liệu (chưa mở khóa) thì bỏ hoặc hiện khung khóa.
+  var BK_IT = (function () { try { return window.matchMedia('(prefers-reduced-motion: reduce)').matches; } catch (e) { return false; } })();
+  var BK_CUNG = ['Mệnh', 'Phụ Mẫu', 'Phúc Đức', 'Điền Trạch', 'Quan Lộc', 'Nô Bộc', 'Thiên Di', 'Tật Ách', 'Tài Bạch', 'Tử Tức', 'Phu Thê', 'Huynh Đệ'];
+  var BK_HANH = { 'Mộc': '#7fc79a', 'Hỏa': '#ff9a6b', 'Thổ': '#e8cf8f', 'Kim': '#efe6d6', 'Thủy': '#8fb4ff' };
+  var BK_DEF = '<defs><linearGradient id="bkGl" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#f7f5f0"/><stop offset=".45" stop-color="#e3a588"/><stop offset="1" stop-color="#b8806a"/></linearGradient>' +
+    '<filter id="bkSang"><feGaussianBlur stdDeviation="4" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>';
+  function bkVn(x) { return String(x).replace('.', ','); }
+  function bkChay(dur, f) { if (BK_IT) { f(1); return; } var t0 = null; function b(t) { if (!t0) t0 = t; var k = Math.min(1, (t - t0) / dur); f(1 - Math.pow(1 - k, 3)); if (k < 1) requestAnimationFrame(b); } requestAnimationFrame(b); }
+  function bkKhiThay(el, f) {
+    if (!el) return;
+    if (BK_IT || !('IntersectionObserver' in window)) { f(); return; }
+    var io = new IntersectionObserver(function (es) { es.forEach(function (e) { if (e.isIntersecting) { io.disconnect(); f(); } }); }, { threshold: .25 });
+    io.observe(el);
+  }
+  function bkO(cls, nhan, lon, noi) { return '<div class="bdk-o ' + cls + '"><h4>' + nhan + '</h4>' + (lon ? '<div class="lon">' + lon + '</div>' : '') + noi + '</div>'; }
+  function bkMuc(nhan, tieuDe, loi, noi) { return '<section class="bdk-muc"><div class="bdk-dau"><div><div class="bdk-nhan">' + nhan + '</div><h3>' + tieuDe + '</h3></div>' + (loi ? '<p>' + esc(loi) + '</p>' : '') + '</div>' + noi + '</section>'; }
+
+  /** Gom dữ liệu cho bảng điều khiển từ kết quả lập lá số */
+  function bkDuLieu(res) {
+    var I = res.tuvi.info, B = res.battu || {}, M = res.moRong || {}, T = M.tongHop || {}, DH = M.deHieu || {};
+    var th6 = (DH.th6 && !DH.th6.loi && DH.th6.linhVuc) ? DH.th6 : res.th6;
+    var tl = T.tomLuoc, C = (res.duDoan && res.duDoan.chuDe) || {}, CT = res.chiTiet || {};
+    var ct = M.chiemTinhLuan && M.chiemTinhLuan.phanTich && M.chiemTinhLuan.phanTich.bigThree;
+    var d = {
+      ten: I.name || '', sinh: I.solar ? I.solar.day + '/' + I.solar.month + '/' + I.solar.year : '', am: I.lunar ? I.lunar.day + '/' + I.lunar.month + ' ' + (I.namCanChi || '') : '',
+      gio: I.gioTen || '', menh: (I.banMenh && I.banMenh.ten) || '', vy: I.viewYear, tuoi: I.tuoi,
+      tru: (B.pillars || []).map(function (p) { return { tru: p.tru, can: p.canTen, chi: p.chiTen, hc: p.canHanh, hh: p.chiHanh, na: p.napAm || '' }; }),
+      nhatChu: B.pillars && B.pillars[2] ? B.pillars[2].canTen + ' ' + B.pillars[2].canHanh : '',
+      nguyenMau: tl && tl.tieuDe ? String(tl.tieuDe).replace(/^Bạn là /, '') : '', phuDe: tl && tl.phuDe ? String(tl.phuDe).split('.')[0] + '.' : '',
+      chiSo: tl && tl.chiSo || null, doTin: DH.th6 && DH.th6.doTin, tomTat: th6 && th6.tomTat || '',
+      cung: (res.tuvi.palaces || []).map(function (p) { return { cung: p.cung, d: p.diem10 }; }),
+      hanh: B.phanTram || null, dung: B.goiY && B.goiY.hy ? B.goiY.hy[0] : '',
+      phe: B.phanTich && B.phanTich.diem ? B.phanTich.diem.phe : null, cuong: B.phanTich ? B.phanTich.cuong : '',
+      tieuChi: B.phanTich && B.phanTich.tieuChi ? B.phanTich.tieuChi.map(function (t) { return { t: String(t.ten).replace(/ \(.*\)/, ''), ok: t.dat }; }) : [],
+      lv: th6 && th6.linhVuc ? th6.linhVuc.map(function (v) { return { ten: v.ten, d: v.diem, h: v.huong, p: (v.phieu || []).map(function (p) { return { he: p.he, d: p.d10 }; }) }; }) : [],
+      b3: ct && ct.ds ? ct.ds.map(function (x) { return x.cung; }).join(' · ') : '',
+      so: M.thanSo ? M.thanSo.duongDoi : '',
+      hd: M.hd && M.hd.loaiTen ? String(M.hd.loaiTen).replace(/ \(.*\)/, '') + ' ' + (M.hd.profile || '') : '',
+      tq: M.hd && M.hd.thamQuyen ? String(M.hd.thamQuyen).replace('Thẩm quyền ', '').replace(/ \(.*\)/, '') : '',
+      que: M.haLac && M.haLac.tien ? M.haLac.tien.ten + (M.haLac.hau ? ' → ' + M.haLac.hau.ten : '') : '',
+      doi: {
+        nam0: res.duDoan ? res.duDoan.namBatDau : (I.solar ? I.solar.year : 0),
+        tai: C.taiLoc && C.taiLoc.diem, quan: C.quanLoc && C.quanLoc.diem, khoe: C.sucKhoe && C.sucKhoe.diem,
+        dv: (CT.daiVan || []).filter(function (v) { return parseInt(v.khoang, 10) <= 85; }).map(function (v) {
+          var a = String(v.khoang).split('–'); return { tu: parseInt(a[0], 10), den: parseInt(a[1], 10), cung: v.cung, d: Math.round(100 / (1 + Math.exp(-(+v.diem || 0) / 3))) / 10, now: v.isNow };
+        }),
+        nong: T.bienCo && T.bienCo.nong ? T.bienCo.nong.map(function (n) { return { nam: n.nam, tuoi: n.tuoi, sk: (n.sk || []).slice(0, 3), loai: n.loai || [] }; }) : []
+      },
+      thang: T.hoSoThang && !T.hoSoThang.loi && T.hoSoThang.thang ? T.hoSoThang.thang.map(function (t) { return { t: t.thang, d: +t.diem || 0, dg: t.danhGia || '', nay: t.nay, cc: t.canChi || '', tom: (t.tom || [])[0] || '' }; }) : [],
+      sk: T.hoSoNam && !T.hoSoNam.loi && T.hoSoNam.suKien ? T.hoSoNam.suKien.filter(function (s) { return !s.ngoai && s.p != null; }).sort(function (a, b) { return b.p - a.p; }).slice(0, 6).map(function (s) { return { ten: s.ngan || s.ten, p: s.p, loai: s.loai, dong: s.dong || '' }; }) : [],
+      skKhoa: !!(T.hoSoNam && T.hoSoNam.khoa), nam: T.hoSoNam && T.hoSoNam.nam || I.viewYear, namTom: T.hoSoNam && T.hoSoNam.tom ? T.hoSoNam.tom[0] : ''
+    };
+    return d;
+  }
+
+  function veBangDieuKhien(res) {
+    var el = $('bdk'); if (!el) return;
+    var D = bkDuLieu(res), h = '';
+    // --- Chân dung số ---
+    var dem = [];
+    if (D.chiSo && D.chiSo[0]) dem.push([D.chiSo[0].gt, 'Giai đoạn vàng · ' + D.chiSo[0].phu]);
+    if (D.chiSo && D.chiSo[1]) dem.push([D.chiSo[1].gt, 'Năm ' + D.vy]);
+    if (D.so) dem.push([String(D.so), 'Số chủ đạo']);
+    if (D.doTin != null) dem.push([D.doTin + '%', 'Đồng thuận 6 hệ']);
+    var chu = (D.ten.trim().split(/\s+/).pop() || '✦').charAt(0).toUpperCase();
+    h += '<div class="bdk-hero"><div class="bdk-an" aria-hidden="true"><div class="quy"><i></i></div><div class="vong"></div><div class="loi"><b>' + esc(chu) + '</b><small>' + esc(D.menh) + '</small></div></div><div>' +
+      '<div class="bdk-nhan">Bản đồ vận mệnh · 6 hệ huyền học</div><h2>' + esc(D.ten || 'Lá số của bạn') + '</h2>' +
+      (D.nguyenMau ? '<div class="bdk-mau">' + esc(D.nguyenMau) + '</div>' : '') + (D.phuDe ? '<p class="bdk-phu">' + esc(D.phuDe) + '</p>' : '') +
+      '<div class="bdk-sinh">' + (D.sinh ? '<span>Sinh <b>' + esc(D.sinh) + '</b></span>' : '') + (D.am ? '<span>Âm lịch <b>' + esc(D.am) + '</b></span>' : '') + (D.gio ? '<span>Giờ <b>' + esc(D.gio) + '</b></span>' : '') + (D.menh ? '<span>Mệnh <b>' + esc(D.menh) + '</b></span>' : '') + '</div>' +
+      (D.tru.length ? '<div class="bdk-tru">' + D.tru.map(function (t) { return '<div class="' + (t.tru === 'Ngày' ? 'ngay' : '') + '"><small>' + esc(t.tru) + '</small><b class="H-' + esc(t.hc) + '">' + esc(t.can) + '</b><b class="H-' + esc(t.hh) + '">' + esc(t.chi) + '</b><i>' + esc(t.na) + '</i></div>'; }).join('') + '</div>' : '') +
+      (dem.length ? '<div class="bdk-dem">' + dem.map(function (x) { return '<div><b data-bk-dem="' + esc(x[0]) + '">' + esc(x[0]) + '</b><small>' + esc(x[1]) + '</small></div>'; }).join('') + '</div>' : '') +
+      '<div class="bdk-nut"><button type="button" class="btn btn-primary" data-bk-den="chartArea">☯ Xem lá số &amp; luận giải</button><button type="button" class="btn btn-ghost" data-bk-den="tong">✧ Tổng quan 6 hệ</button><button type="button" class="btn btn-ghost" data-bk-pdf>⤓ Tải PDF</button></div>' +
+      '</div></div>';
+    // --- Bản đồ con người ---
+    var o = '';
+    if (D.cung.length === 12) o += bkO('s5', '12 cung Tử Vi', 'Cung mạnh – cung yếu', '<svg id="bkRadar" viewBox="0 0 400 380" role="img" aria-label="Biểu đồ radar điểm 12 cung"></svg>');
+    if (D.hanh) o += bkO('s4', 'Ngũ hành Bát Tự', 'Cân bằng năng lượng', '<svg id="bkDonut" viewBox="0 0 300 300" role="img" aria-label="Biểu đồ vòng ngũ hành"></svg><div class="bdk-ghi" id="bkDonutGhi"></div>');
+    if (D.phe != null) o += bkO('s3', 'Sức mạnh bản thân', esc(D.nhatChu), '<svg id="bkGauge" viewBox="0 0 240 190" role="img" aria-label="Đồng hồ vượng nhược"></svg><div class="bdk-tc" id="bkTc"></div>');
+    if (D.lv.length) o += bkO('s7', '9 lĩnh vực · nhiều hệ chấm điểm', 'Điều nhiều hệ cùng nói', '<div class="bdk-lv" id="bkLv"></div><div class="bdk-ghi" style="margin-top:10px">Thanh màu = điểm chung /10' + (D.lv[0].p.length ? ' · chấm trắng = điểm từng hệ' : '') + '</div>');
+    var mini = [['Mặt Trời · Trăng · Mọc', D.b3], ['Human Design', D.hd], ['Thẩm quyền quyết định', D.tq], ['Quẻ Hà Lạc', D.que]].filter(function (m) { return m[1]; });
+    if (mini.length) o += bkO('s5', 'Các hệ còn lại', 'Chân dung qua các lăng kính', '<div class="bdk-mini">' + mini.map(function (m) { return '<div><small>' + esc(m[0]) + '</small><b>' + esc(m[1]) + '</b></div>'; }).join('') + '</div>');
+    if (o) h += bkMuc('Bảng điều khiển', 'Bản đồ con người bạn', D.tomTat, '<div class="bdk-bento">' + o + '</div>');
+    // --- Đường vận cả đời ---
+    var coDoi = D.doi.tai && D.doi.tai.length > 10;
+    if (coDoi || D.doi.dv.length) {
+      var cg = coDoi ? '<span><i style="background:#e8cf8f"></i>Tài lộc</span><span><i style="background:#e3a588"></i>Quan lộc</span><span><i style="background:#cfd3d8"></i>Rủi ro sức khỏe</span>' : '<span><i style="background:#e3a588"></i>Điểm đại vận</span>';
+      cg += '<span><i style="background:#e8cf8f"></i>Đại vận thuận</span><span><i style="background:#e48a8a"></i>Đại vận cần giữ</span>' + (D.doi.nong.length ? '<span>◆ năm nhiều hệ cùng báo</span>' : '');
+      var khoa = coDoi ? '' : '<div class="bdk-khoa"><span>🔒 Đường tài lộc – quan lộc – sức khỏe từng năm và các năm biến cố nằm trong phần <b>Biến cố &amp; dự đoán cả đời</b>.</span><button type="button" class="btn btn-primary btn-sm" data-mua="bien_co">Mở xem</button></div>';
+      h += bkMuc('Vận trình 0 – 85 tuổi', 'Đường vận cả đời', 'Rê chuột hoặc chạm vào biểu đồ để xem từng năm.', '<div class="bdk-bento"><div class="bdk-o s12"><div class="bdk-doi" id="bkDoiWrap"><svg id="bkDoi" viewBox="0 0 1200 380" role="img" aria-label="Đường vận cả đời"></svg><div class="bdk-the" id="bkThe" hidden></div></div><div class="bdk-cg">' + cg + '</div>' + khoa + '</div></div>');
+    }
+    // --- Nhịp năm nay ---
+    var n = '';
+    if (D.thang.length === 12) n += bkO(D.sk.length ? 's7' : 's12', '12 tháng · điểm tổng hợp', 'Tháng nào nên tiến', '<svg id="bkThang" viewBox="0 0 700 300" role="img" aria-label="Biểu đồ 12 tháng"></svg>');
+    if (D.sk.length) n += bkO('s5', 'Khả năng xảy ra trong năm', 'Sự kiện nổi bật', '<div class="bdk-sk" id="bkSk"></div>' + (D.skKhoa ? '<div class="bdk-khoa"><span>🔒 Các sự kiện khác của năm ' + esc(D.nam) + ' nằm trong phần <b>Vận năm</b>.</span><button type="button" class="btn btn-primary btn-sm" data-mua="nam">Mở xem</button></div>' : ''));
+    if (n) h += bkMuc('Năm ' + D.nam + (D.tuoi ? ' · ' + D.tuoi + ' tuổi' : ''), 'Nhịp năm nay', D.namTom, '<div class="bdk-bento">' + n + '</div>');
+
+    el.innerHTML = h; el.hidden = false;
+    el.querySelectorAll('[data-bk-dem]').forEach(function (b) { var m = b.getAttribute('data-bk-dem').match(/^(\d+)(%?)$/); if (!m) return; var v = +m[1]; bkChay(1600, function (k) { b.textContent = Math.round(v * k) + m[2]; }); });
+    [bkRadar, bkDonut, bkGauge, bkLv, bkDoi, bkThang, bkSk].forEach(function (f) { try { f(D); } catch (e) { /* bỏ qua biểu đồ lỗi, không chặn trang */ } });
+    if (!el.dataset.ganNut) {
+      el.dataset.ganNut = '1';
+      el.addEventListener('click', function (e) {
+        var d = e.target.closest('[data-bk-den]'); if (d) { var t = d.getAttribute('data-bk-den'); if (t === 'chartArea') cuonToi($('chartArea')); else showTab(t); }
+        if (e.target.closest('[data-bk-pdf]') && $('btnPdf')) $('btnPdf').click();
+      });
+    }
+  }
+
+  function bkRadar(D) {
+    var s = $('bkRadar'); if (!s) return;
+    var cx = 200, cy = 190, R = 140, ds = BK_CUNG.map(function (k) { return D.cung.filter(function (c) { return c.cung === k; })[0] || { cung: k, d: 0 }; });
+    function diem(i, rr) { var a = -Math.PI / 2 + i * Math.PI / 6; return [(cx + rr * Math.cos(a)).toFixed(1), (cy + rr * Math.sin(a)).toFixed(1)]; }
+    var h = BK_DEF;
+    [2, 4, 6, 8, 10].forEach(function (v) { h += '<polygon points="' + ds.map(function (c, i) { return diem(i, R * v / 10).join(','); }).join(' ') + '" fill="none" stroke="rgba(230,210,170,' + (v === 10 ? .3 : .1) + ')"/>'; });
+    ds.forEach(function (c, i) {
+      var p = diem(i, R), a = -Math.PI / 2 + i * Math.PI / 6;
+      h += '<line x1="' + cx + '" y1="' + cy + '" x2="' + p[0] + '" y2="' + p[1] + '" stroke="rgba(230,210,170,.08)"/>';
+      h += '<text x="' + (cx + (R + 24) * Math.cos(a)).toFixed(1) + '" y="' + (cy + (R + 22) * Math.sin(a) + 4).toFixed(1) + '" text-anchor="middle" font-size="11.5" fill="' + (c.cung === 'Mệnh' ? '#e8cf8f' : '#c9bdad') + '">' + esc(c.cung) + '</text>';
+    });
+    h += '<polygon id="bkRdV" fill="url(#bkGl)" fill-opacity=".28" stroke="url(#bkGl)" stroke-width="2.2" filter="url(#bkSang)"/><g id="bkRdC"></g>';
+    s.innerHTML = h;
+    var poly = $('bkRdV'), g = $('bkRdC');
+    function ve(k) {
+      poly.setAttribute('points', ds.map(function (c, i) { return diem(i, R * (c.d || 0) / 10 * k).join(','); }).join(' '));
+      g.innerHTML = ds.map(function (c, i) { var p = diem(i, R * (c.d || 0) / 10 * k); return '<circle cx="' + p[0] + '" cy="' + p[1] + '" r="3.2" fill="#fff"><title>' + esc(c.cung + ': ' + bkVn(c.d) + '/10') + '</title></circle>'; }).join('');
+    }
+    ve(BK_IT ? 1 : .02); bkKhiThay(s, function () { bkChay(1500, ve); });
+  }
+
+  function bkDonut(D) {
+    var s = $('bkDonut'); if (!s) return;
+    var r = 104, C = 2 * Math.PI * r, ks = Object.keys(D.hanh), off = 0;
+    var h = BK_DEF + '<circle cx="150" cy="150" r="' + r + '" fill="none" stroke="rgba(255,255,255,.05)" stroke-width="26"/>';
+    ks.forEach(function (k) {
+      var p = (+D.hanh[k] || 0) / 100; if (!p) return;
+      h += '<circle class="bk-seg" data-p="' + p + '" data-o="' + off + '" cx="150" cy="150" r="' + r + '" fill="none" stroke="' + (BK_HANH[k] || '#ccc') + '" stroke-width="' + (k === D.dung ? 30 : 24) + '" stroke-dasharray="0 ' + C + '" transform="rotate(-90 150 150)"' + (k === D.dung ? ' filter="url(#bkSang)"' : '') + '><title>' + esc(k + ' ' + bkVn(D.hanh[k]) + '%') + '</title></circle>';
+      off += p;
+    });
+    if (D.dung) h += '<text x="150" y="134" text-anchor="middle" font-size="12" fill="#8f8576" letter-spacing="2">HÀNH CÓ LỢI</text><text x="150" y="174" text-anchor="middle" font-size="40" font-weight="700" fill="' + (BK_HANH[D.dung] || '#e8cf8f') + '" style="font-family:var(--font-title)">' + esc(D.dung) + '</text>';
+    s.innerHTML = h;
+    $('bkDonutGhi').innerHTML = ks.map(function (k) { return '<span style="color:' + (BK_HANH[k] || '#ccc') + '">●</span> ' + esc(k) + ' ' + bkVn(Math.round(+D.hanh[k] || 0)) + '%'; }).join(' &nbsp; ');
+    function ve(k) { s.querySelectorAll('.bk-seg').forEach(function (e) { var p = +e.getAttribute('data-p'), o = +e.getAttribute('data-o'); e.setAttribute('stroke-dasharray', Math.max(0, C * p * k - 2).toFixed(1) + ' ' + C); e.setAttribute('stroke-dashoffset', (-C * o * k).toFixed(1)); }); }
+    ve(BK_IT ? 1 : 0); bkKhiThay(s, function () { bkChay(1400, ve); });
+  }
+
+  function bkGauge(D) {
+    var s = $('bkGauge'); if (!s) return;
+    var cx = 120, cy = 130, r = 92;
+    var h = BK_DEF + '<linearGradient id="bkGg" x1="0" x2="1"><stop offset="0" stop-color="#a9b4bf"/><stop offset=".4" stop-color="#e8cf8f"/><stop offset=".75" stop-color="#e3a588"/><stop offset="1" stop-color="#b8806a"/></linearGradient>';
+    h += '<path d="M' + (cx - r) + ' ' + cy + ' A' + r + ' ' + r + ' 0 0 1 ' + (cx + r) + ' ' + cy + '" fill="none" stroke="url(#bkGg)" stroke-width="14" stroke-linecap="round" opacity=".9"/>';
+    h += '<text x="22" y="152" font-size="10.5" fill="#8f8576">NHƯỢC</text><text x="218" y="152" text-anchor="end" font-size="10.5" fill="#8f8576">VƯỢNG</text>';
+    h += '<g id="bkKim"><line x1="' + cx + '" y1="' + cy + '" x2="' + (cx - 74) + '" y2="' + cy + '" stroke="#d9c3a0" stroke-opacity=".45" stroke-width="9" stroke-linecap="round"/><line x1="' + cx + '" y1="' + cy + '" x2="' + (cx - 74) + '" y2="' + cy + '" stroke="#fff" stroke-width="3" stroke-linecap="round"/><circle cx="' + cx + '" cy="' + cy + '" r="7" fill="#1b1712" stroke="#e8cf8f" stroke-width="2"/></g>';
+    h += '<text x="120" y="180" text-anchor="middle" font-size="28" font-weight="600" fill="#f5f1ea" class="bdk-so" id="bkPct">0%</text>';
+    s.innerHTML = h;
+    $('bkTc').innerHTML = D.tieuChi.map(function (t) { return '<div><span class="' + (t.ok ? 'tot' : 'xau') + '">' + (t.ok ? '✓' : '✗') + '</span> ' + esc(t.t) + '</div>'; }).join('') + (D.cuong ? '<div class="bdk-ghi">' + esc(D.cuong) + '</div>' : '');
+    var phe = Math.max(0, Math.min(100, +D.phe || 0));
+    function ve(k) { $('bkKim').setAttribute('transform', 'rotate(' + (phe / 100 * k * 180).toFixed(1) + ' ' + cx + ' ' + cy + ')'); $('bkPct').textContent = bkVn(Math.round(phe * k * 10) / 10) + '%'; }
+    ve(BK_IT ? 1 : 0); bkKhiThay(s, function () { bkChay(1800, ve); });
+  }
+
+  function bkLv(D) {
+    var el = $('bkLv'); if (!el) return;
+    el.innerHTML = D.lv.map(function (v) {
+      var c = v.h === 'tot' ? 'tot' : v.h === 'xau' || v.h === 'kho' ? 'xau' : 'vua';
+      return '<div><span>' + esc(v.ten) + '</span><span class="bdk-ray"><i data-w="' + Math.max(0, Math.min(100, v.d * 10)) + '"></i>' + v.p.map(function (p) { return '<s style="left:' + Math.max(0, Math.min(100, p.d * 10)) + '%" title="' + esc(p.he + ' ' + bkVn(p.d)) + '"></s>'; }).join('') + '</span><b class="' + c + '">' + bkVn(v.d) + '</b></div>';
+    }).join('');
+    bkKhiThay(el, function () { el.querySelectorAll('.bdk-ray i').forEach(function (i, n) { setTimeout(function () { i.style.width = i.getAttribute('data-w') + '%'; }, BK_IT ? 0 : n * 90); }); });
+  }
+
+  function bkDoi(D) {
+    var s = $('bkDoi'); if (!s) return;
+    var W = 1200, H = 380, L = 40, Rr = 20, Tp = 30, B = 300, N = 86, coDoi = D.doi.tai && D.doi.tai.length > 10;
+    function X(a) { return L + (W - L - Rr) * a / (N - 1); }
+    function lam(arr) { var o = []; for (var i = 0; i < N; i++) { var t = 0, n = 0; for (var j = -2; j <= 2; j++) { var v = arr[i + j]; if (v != null) { t += v; n++; } } o.push(n ? t / n : 0); } return o; }
+    // Không có điểm từng năm: dựng đường bậc thang từ điểm đại vận (thang 10 → thang 12 của biểu đồ)
+    var dvNam = []; for (var a0 = 0; a0 < N; a0++) { var v0 = D.doi.dv.filter(function (v) { return a0 + 1 >= v.tu && a0 + 1 <= v.den; })[0]; dvNam.push(v0 ? v0.d * 1.2 : null); }
+    var tai = coDoi ? lam(D.doi.tai) : null, quan = coDoi ? lam(D.doi.quan || []) : null, khoe = coDoi && D.doi.khoe ? lam(D.doi.khoe) : null, mx = 12;
+    function Y(v) { return B - (B - Tp) * Math.max(0, Math.min(mx, v)) / mx; }
+    function duong(arr) { var p = '', moi = true; arr.forEach(function (v, i) { if (v == null) { moi = true; return; } p += (moi ? 'M' : 'L') + X(i).toFixed(1) + ' ' + Y(v).toFixed(1) + ' '; moi = false; }); return p; }
+    var h = BK_DEF + '<linearGradient id="bkVTai" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#e8cf8f" stop-opacity=".35"/><stop offset="1" stop-color="#e8cf8f" stop-opacity="0"/></linearGradient>' +
+      '<linearGradient id="bkVQuan" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#e3a588" stop-opacity=".28"/><stop offset="1" stop-color="#d9c3a0" stop-opacity="0"/></linearGradient><clipPath id="bkCl"><rect id="bkClR" x="0" y="0" width="0" height="' + H + '"/></clipPath>';
+    for (var a = 0; a <= 80; a += 10) h += '<line x1="' + X(a) + '" y1="' + Tp + '" x2="' + X(a) + '" y2="' + B + '" stroke="rgba(230,210,170,.07)"/><text x="' + X(a) + '" y="' + (B + 16) + '" text-anchor="middle" font-size="11" fill="#8f8576">' + a + ' tuổi</text>';
+    h += '<g clip-path="url(#bkCl)">';
+    if (coDoi) {
+      var day = ' L' + X(N - 1) + ' ' + B + ' L' + X(0) + ' ' + B + 'Z';
+      h += '<path d="' + duong(tai) + day + '" fill="url(#bkVTai)"/><path d="' + duong(quan) + day + '" fill="url(#bkVQuan)"/>' +
+        (khoe ? '<path d="' + duong(khoe) + '" fill="none" stroke="#cfd3d8" stroke-width="1.8" stroke-dasharray="5 5" opacity=".85"/>' : '') +
+        '<path d="' + duong(quan) + '" fill="none" stroke="#e3a588" stroke-width="2.4" filter="url(#bkSang)"/><path d="' + duong(tai) + '" fill="none" stroke="#e8cf8f" stroke-width="2.4" filter="url(#bkSang)"/>';
+    } else h += '<path d="' + duong(dvNam) + '" fill="none" stroke="#e3a588" stroke-width="2.4" filter="url(#bkSang)"/>';
+    h += '</g>';
+    D.doi.dv.forEach(function (v) {
+      var x0 = X(Math.max(0, v.tu)), x1 = X(Math.min(N - 1, v.den + 1)), c = v.d >= 6.2 ? '#e8cf8f' : v.d <= 4.3 ? '#e48a8a' : '#8f8576';
+      h += '<rect x="' + (x0 + 1) + '" y="' + (B + 26) + '" width="' + Math.max(0, x1 - x0 - 2) + '" height="16" rx="5" fill="' + c + '" fill-opacity="' + (v.now ? .85 : .35) + '"' + (v.now ? ' stroke="#fff" stroke-width="1"' : '') + '><title>' + esc(v.tu + '–' + v.den + ' tuổi · ' + v.cung + ' · ' + bkVn(v.d) + '/10') + '</title></rect><text x="' + ((x0 + x1) / 2) + '" y="' + (B + 58) + '" text-anchor="middle" font-size="10.5" fill="#8f8576">' + esc(v.cung) + '</text>';
+    });
+    D.doi.nong.forEach(function (q) {
+      var x = X(q.tuoi), tot = q.loai.filter(function (l) { return l === 'tot'; }).length, xau = q.loai.filter(function (l) { return l === 'xau'; }).length;
+      h += '<path d="M' + x + ' ' + (Tp - 6) + ' l6 6 -6 6 -6 -6z" fill="' + (tot > xau ? '#eef0f2' : xau > tot ? '#e48a8a' : '#e8cf8f') + '"><title>' + esc(q.nam + ': ' + q.sk.join(', ')) + '</title></path>';
+    });
+    if (D.tuoi) { var nay = Math.max(0, Math.min(N - 1, D.tuoi - 1)); h += '<line x1="' + X(nay) + '" y1="' + (Tp - 10) + '" x2="' + X(nay) + '" y2="' + (B + 44) + '" stroke="#fff" stroke-opacity=".5" stroke-dasharray="2 4"/><text x="' + X(nay) + '" y="' + (Tp - 14) + '" text-anchor="middle" font-size="11" fill="#f5f1ea">Bây giờ</text>'; }
+    h += '<g id="bkCon" opacity="0"><line id="bkConL" y1="' + Tp + '" y2="' + B + '" stroke="#fff" stroke-opacity=".6"/><circle id="bkConT" r="5" fill="#e8cf8f" stroke="#1b1712" stroke-width="2"/><circle id="bkConQ" r="5" fill="#e3a588" stroke="#1b1712" stroke-width="2"/></g>';
+    s.innerHTML = h;
+    var clR = $('bkClR'); function ve(k) { clR.setAttribute('width', (W * k).toFixed(0)); } ve(BK_IT ? 1 : 0); bkKhiThay(s, function () { bkChay(2200, ve); });
+    var the = $('bkThe'), wrap = $('bkDoiWrap'), duong1 = coDoi ? tai : dvNam;
+    function chon(ev) {
+      var rc = s.getBoundingClientRect(), cxp = ev.touches ? ev.touches[0].clientX : ev.clientX, px = (cxp - rc.left) / rc.width * W;
+      var a = Math.max(0, Math.min(N - 1, Math.round((px - L) / (W - L - Rr) * (N - 1)))), x = X(a);
+      $('bkCon').setAttribute('opacity', 1); $('bkConL').setAttribute('x1', x); $('bkConL').setAttribute('x2', x);
+      $('bkConT').setAttribute('cx', x); $('bkConT').setAttribute('cy', Y(duong1[a] || 0));
+      if (coDoi) { $('bkConQ').setAttribute('cx', x); $('bkConQ').setAttribute('cy', Y(quan[a])); } else $('bkConQ').setAttribute('cx', -20);
+      var nam = D.doi.nam0 + a, dv = D.doi.dv.filter(function (v) { return a + 1 >= v.tu && a + 1 <= v.den; })[0], q = D.doi.nong.filter(function (z) { return z.nam === nam; })[0];
+      the.hidden = false;
+      the.innerHTML = '<b>' + nam + '</b> · ' + (a + 1) + ' tuổi' +
+        (coDoi ? '<div style="margin-top:4px"><span style="color:#e8cf8f">● Tài lộc ' + bkVn(Math.round(tai[a] * 10) / 10) + '</span> &nbsp;<span style="color:#e3a588">● Quan lộc ' + bkVn(Math.round(quan[a] * 10) / 10) + '</span></div>' : '') +
+        (dv ? '<div style="color:#c9bdad">Đại vận ' + esc(dv.tu + '–' + dv.den) + ' · cung ' + esc(dv.cung) + ' · ' + bkVn(dv.d) + '/10</div>' : '') + (q ? '<div style="margin-top:4px">◆ ' + esc(q.sk.join(', ')) + '</div>' : '');
+      var left = x / W * s.clientWidth + 14; if (left + 260 > wrap.clientWidth + wrap.scrollLeft) left = x / W * s.clientWidth - 274;
+      the.style.left = Math.max(0, left) + 'px';
+    }
+    s.addEventListener('mousemove', chon); s.addEventListener('touchstart', chon, { passive: true }); s.addEventListener('touchmove', chon, { passive: true });
+    s.addEventListener('mouseleave', function () { the.hidden = true; $('bkCon').setAttribute('opacity', 0); });
+  }
+
+  function bkThang(D) {
+    var s = $('bkThang'); if (!s) return;
+    var W = 700, L = 20, B = 240, bw = 38, gap = (W - 2 * L - 12 * bw) / 11, mx = 2;
+    var h = BK_DEF + '<line x1="' + L + '" y1="' + (B - (B - 40) / 3) + '" x2="' + (W - L) + '" y2="' + (B - (B - 40) / 3) + '" stroke="rgba(230,210,170,.12)" stroke-dasharray="3 5"/>';
+    D.thang.forEach(function (t, i) {
+      var x = L + i * (bw + gap), v = Math.max(-1, Math.min(mx, t.d)), hh = Math.max(6, (v + 1) / (mx + 1) * (B - 40)), c = t.d >= 1 ? 'url(#bkGl)' : t.d >= .2 ? '#e8cf8f' : t.d >= -.3 ? 'rgba(232,207,143,.45)' : '#e48a8a';
+      h += '<rect class="bk-cot" data-h="' + hh.toFixed(1) + '" x="' + x.toFixed(1) + '" y="' + B + '" width="' + bw + '" height="0" rx="9" fill="' + c + '"' + (t.nay ? ' filter="url(#bkSang)" stroke="#fff" stroke-width="1.2"' : '') + '><title>' + esc('Tháng ' + t.t + (t.cc ? ' (' + t.cc + ')' : '') + ': ' + t.dg + (t.tom ? ' – ' + t.tom : '')) + '</title></rect>' +
+        '<text x="' + (x + bw / 2).toFixed(1) + '" y="' + (B + 20) + '" text-anchor="middle" font-size="12" fill="' + (t.nay ? '#f5f1ea' : '#8f8576') + '">T' + t.t + '</text>' + (t.dg === 'Tháng vàng' ? '<text x="' + (x + bw / 2).toFixed(1) + '" y="' + (B + 38) + '" text-anchor="middle" font-size="12" fill="#e8cf8f">★</text>' : '');
+    });
+    h += '<text x="' + L + '" y="22" font-size="12" fill="#8f8576">★ tháng vàng · viền sáng = tháng hiện tại · tháng âm lịch</text>';
+    s.innerHTML = h;
+    function ve(k) { s.querySelectorAll('.bk-cot').forEach(function (r, i) { var kk = Math.max(0, Math.min(1, k * 1.6 - i * .05)), hh = +r.getAttribute('data-h') * kk; r.setAttribute('y', (B - hh).toFixed(1)); r.setAttribute('height', hh.toFixed(1)); }); }
+    ve(BK_IT ? 1 : 0); bkKhiThay(s, function () { bkChay(1600, ve); });
+  }
+
+  function bkSk(D) {
+    var el = $('bkSk'); if (!el) return;
+    var r = 40, C = 2 * Math.PI * r;
+    el.innerHTML = D.sk.map(function (x) {
+      var c = x.loai === 'tot' ? '#eef0f2' : x.loai === 'xau' ? '#e48a8a' : '#e8cf8f';
+      return '<div><svg viewBox="0 0 108 108"><circle cx="54" cy="54" r="' + r + '" fill="none" stroke="rgba(255,255,255,.07)" stroke-width="8"/><circle class="bk-vg" data-p="' + (x.p / 100) + '" cx="54" cy="54" r="' + r + '" fill="none" stroke="' + c + '" stroke-width="8" stroke-linecap="round" stroke-dasharray="0 ' + C + '" transform="rotate(-90 54 54)"/><text x="54" y="60" text-anchor="middle" font-size="20" font-weight="600" fill="#f5f1ea" class="bdk-so bk-vt" data-p="' + x.p + '">0%</text></svg><small>' + esc(x.ten) + (x.dong ? '<br><span class="bdk-ghi">' + esc(x.dong) + '</span>' : '') + '</small></div>';
+    }).join('');
+    function ve(k) {
+      el.querySelectorAll('.bk-vg').forEach(function (c) { c.setAttribute('stroke-dasharray', (C * Math.min(1, +c.getAttribute('data-p')) * k).toFixed(1) + ' ' + C); });
+      el.querySelectorAll('.bk-vt').forEach(function (t) { t.textContent = Math.round(+t.getAttribute('data-p') * k) + '%'; });
+    }
+    ve(BK_IT ? 1 : 0); bkKhiThay(el, function () { bkChay(1500, ve); });
+  }
+
+  /** Hạt sáng bạc – vàng bay lên trên nền (canvas #bkHat); tắt khi người dùng chọn giảm chuyển động */
+  function bkHat() {
+    var cv = $('bkHat'); if (!cv || !cv.getContext) return;
+    var g = cv.getContext('2d'), W, H, dpr = Math.min(2, window.devicePixelRatio || 1), ds = [];
+    function co() { W = cv.width = innerWidth * dpr; H = cv.height = innerHeight * dpr; cv.style.width = innerWidth + 'px'; cv.style.height = innerHeight + 'px'; }
+    co(); window.addEventListener('resize', co);
+    var so = innerWidth < 700 ? 34 : 60;
+    for (var i = 0; i < so; i++) ds.push({ x: Math.random(), y: Math.random(), r: Math.random() * 1.6 + .4, v: Math.random() * .0008 + .0003, l: Math.random() * Math.PI * 2, h: Math.random() < .5 ? '243,207,138' : '236,236,234' });
+    function ve() {
+      if (document.hidden) { requestAnimationFrame(ve); return; }
+      g.clearRect(0, 0, W, H);
+      ds.forEach(function (d) {
+        if (!BK_IT) { d.y -= d.v; d.l += .02; if (d.y < -.02) { d.y = 1.02; d.x = Math.random(); } }
+        var x = (d.x + Math.sin(d.l) * .006) * W, y = d.y * H, a = .25 + .5 * Math.max(0, Math.sin(d.l * 1.3));
+        g.beginPath(); g.arc(x, y, d.r * dpr * 2.4, 0, 6.3); g.fillStyle = 'rgba(' + d.h + ',' + (a * .16) + ')'; g.fill();
+        g.beginPath(); g.arc(x, y, d.r * dpr, 0, 6.3); g.fillStyle = 'rgba(' + d.h + ',' + a + ')'; g.fill();
+      });
+      if (!BK_IT) requestAnimationFrame(ve);
+    }
+    ve();
+  }
+
   /* ------------------------ RENDER ------------------------ */
   function render(res) {
+    if ($('bdk')) $('bdk').hidden = true;
     if (res.khach) { renderKhach(res); return; }
     kwInit(res);
     $('welcome').style.display = 'none';
@@ -1175,6 +1450,7 @@
     renderTong(res);
     veDeHieu(res);
     veVanHan(res);
+    try { veBangDieuKhien(res); } catch (e) { if ($('bdk')) $('bdk').hidden = true; }
     $('btnPdfTop').style.display = '';
     ['battu', 'halac', 'astro', 'so', 'hd', 'tong'].forEach(function (k) {
       var pg = $('page-' + k); if (!pg || !PDF_HOOK[k]) return;
@@ -2500,7 +2776,7 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
     var r = state.result, q = r && r.quyen;
     return toanQuyen() || !!(q && (q.toanQuyen || q.namAll || (q.namMo || {})[String(y)] || (q.dhNam || {})[String(y)]));
   }
-  function th6Mau(d) { return d >= 6.2 ? '#6f9f5e' : d <= 4.3 ? '#d9503f' : '#c9a23a'; }
+  function th6Mau(d) { return d >= 6.2 ? '#c3ccd5' : d <= 4.3 ? '#d97a7a' : '#d9b878'; }
   /** Bảng nhiệt 9 lĩnh vực × 4 hệ có chấm điểm + cột điểm chung */
   function th6BangNhiet(T) {
     var W = 760, L = 210, cw = (W - L - 90) / TH6_HE.length, rh = 30, H = 34 + T.linhVuc.length * rh + 6;
@@ -2592,7 +2868,7 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
       o += '<circle cx="' + sx.toFixed(1) + '" cy="' + sy.toFixed(1) + '" r="' + sr.toFixed(2) + '" class="vt-sao" style="animation-delay:' + (rnd() * 6).toFixed(1) + 's"/>';
     }
     var svg = '<svg viewBox="0 0 ' + S + ' ' + S + '" class="vt-svg" role="group" aria-label="Vòm trời 9 lĩnh vực – bấm từng vùng để xem luận giải">' +
-      '<defs><radialGradient id="' + id + 'g"><stop offset="0" stop-color="#3a2b1d"/><stop offset=".62" stop-color="#1c140d"/><stop offset="1" stop-color="#0b0806" stop-opacity="0"/></radialGradient>' +
+      '<defs><radialGradient id="' + id + 'g"><stop offset="0" stop-color="#3a332b"/><stop offset=".62" stop-color="#1d1915"/><stop offset="1" stop-color="#0d0b09" stop-opacity="0"/></radialGradient>' +
       '<filter id="' + id + 'f" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="5"/></filter></defs>' +
       '<circle cx="' + c + '" cy="' + c + '" r="316" fill="url(#' + id + 'g)"/>' + o;
     // quỹ đạo hành tinh thật lúc sinh (trang trí, xoay rất chậm)
@@ -2916,7 +3192,7 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
   function tiQueSvg(hao, dong) {
     var o = '<svg viewBox="0 0 90 96" class="ti-que-svg" aria-hidden="true">';
     for (var i = 5; i >= 0; i--) {
-      var y = 6 + (5 - i) * 15, on = i + 1 === dong, c = on ? '#ff7b6b' : '#ffd88a';
+      var y = 6 + (5 - i) * 15, on = i + 1 === dong, c = on ? '#ff7b6b' : '#f0dcb0';
       o += hao[i] ? '<rect x="5" y="' + y + '" width="80" height="8" rx="2" fill="' + c + '"/>' : '<rect x="5" y="' + y + '" width="34" height="8" rx="2" fill="' + c + '"/><rect x="51" y="' + y + '" width="34" height="8" rx="2" fill="' + c + '"/>';
     }
     return o + '</svg>';
@@ -3310,7 +3586,7 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
   /* ---------- Dòng thời gian cuộc đời: thanh 0–90 tuổi, kéo/chạm vào năm nào thì hiện luận năm đó ---------- */
   var CAN10 = ['Giáp', 'Ất', 'Bính', 'Đinh', 'Mậu', 'Kỷ', 'Canh', 'Tân', 'Nhâm', 'Quý'];
   var DT = { ds: {}, so: 0 };
-  var DT_MAU = { r5: '#6f9f5e', r4: '#8fbf7a', r3: '#c9a23a', r2: '#8a93a8', r1: '#e07b4f', r0: '#d9503f' };
+  var DT_MAU = { r5: '#c3ccd5', r4: '#8fbf7a', r3: '#d9b878', r2: '#8a93a8', r1: '#e07b4f', r0: '#d97a7a' };
   function dtLop(dg, diem) {
     var t = String(dg || '').toLowerCase();
     if (/rất tốt|đại cát/.test(t)) return 'r5'; if (/tốt|cát|thuận/.test(t)) return 'r4'; if (/khá/.test(t)) return 'r3';
@@ -3672,7 +3948,7 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
   }
 
   /* ======================== BIỂU ĐỒ (SVG) ======================== */
-  var C_GOLD = '#b08a2c', C_JADE = '#6f9f5e', C_VIOLET = '#4f8ff0', C_CORAL = '#d9503f';
+  var C_GOLD = '#c9a46a', C_JADE = '#c3ccd5', C_VIOLET = '#a9b4bf', C_CORAL = '#d97a7a';
   function fmt(v) { return (Math.round(v * 10) / 10).toString().replace('.', ','); }
   /** Đường vận trình cả đời (một chuỗi) */
   function lifeChart(chang, tieuDe, phu) {
@@ -3787,7 +4063,7 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
   function gocLuoiSvg(A) {
     var ds = A.hanhTinh.filter(function (p) { return p.key !== 'northNode'; }).concat([A.asc, A.mc]), n = ds.length, c = 30, L = 34, W = L + n * c + 4, H = n * c + 30;
     var M = {}; (A.goc || []).forEach(function (g) { M[g.a + '|' + g.b] = g; M[g.b + '|' + g.a] = g; });
-    var MAU = { tot: '#6f9f5e', xau: '#d9503f', hop: '#d9a93f' };
+    var MAU = { tot: '#c3ccd5', xau: '#d97a7a', hop: '#dcbc86' };
     var o = '<figure class="chart-fig"><figcaption><b>Lưới góc chiếu</b><span>Xanh = hài hòa (lục hợp, tam hợp) · đỏ = căng (vuông, đối, lệch) · vàng = hợp · rê chuột xem độ lệch</span></figcaption><svg viewBox="0 0 ' + W + ' ' + H + '" class="vchart goc-luoi" role="img" aria-label="Lưới góc chiếu">';
     ds.forEach(function (p, i) {
       o += '<text x="' + (L + i * c + c / 2) + '" y="' + (H - 8) + '" text-anchor="middle" class="gl-ky">' + esc(p.ky) + '</text>';
@@ -3937,8 +4213,8 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
     [2.5, 5, 7.5].forEach(function (v) { var y = H - B - v / 10 * (H - B - 14); o += '<line x1="' + L + '" x2="' + (W - 8) + '" y1="' + y + '" y2="' + y + '" class="ch-grid"/>'; });
     items.forEach(function (it, i) {
       var x = L + i * cw + cw * 0.18, w = cw * 0.64, h = it.gt / 10 * (H - B - 14), y = H - B - h;
-      var mau = it.gt >= 7 ? '#6f9f5e' : it.gt >= 5.5 ? '#b08a2c' : '#8a6fd1';
-      o += '<g data-tip="' + esc(it.tip || '') + '"><rect x="' + x + '" y="' + y + '" width="' + w + '" height="' + h + '" rx="3" fill="' + mau + '" fill-opacity="' + (it.nay ? 1 : 0.55) + '"' + (it.nay ? ' stroke="#fff1c9" stroke-width="2"' : '') + '/>' +
+      var mau = it.gt >= 7 ? '#c3ccd5' : it.gt >= 5.5 ? '#c9a46a' : '#8a6fd1';
+      o += '<g data-tip="' + esc(it.tip || '') + '"><rect x="' + x + '" y="' + y + '" width="' + w + '" height="' + h + '" rx="3" fill="' + mau + '" fill-opacity="' + (it.nay ? 1 : 0.55) + '"' + (it.nay ? ' stroke="#f7efdf" stroke-width="2"' : '') + '/>' +
         '<text x="' + (x + w / 2) + '" y="' + (y - 4) + '" class="ch-ax" text-anchor="middle">' + it.so + '</text></g>' +
         '<text x="' + (x + w / 2) + '" y="' + (H - B + 14) + '" class="ch-ax" text-anchor="middle">' + esc(it.nhan) + '</text>';
     });
@@ -3953,7 +4229,7 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
       var w = len[i] / tong * (W - L - R), goc = p.so > 9 ? 8 : p.so, h = 30 + (TS_NL_C[goc] || 5) * 7, yb = 108;
       o += '<g data-tip="' + esc('Đỉnh ' + (i + 1) + ' · số ' + p.so + ' · ' + p.tu + '–' + (p.den >= 99 ? 'cuối đời' : p.den) + ' tuổi\n' + p.y + '\nThử thách ' + p.thuThach + ': ' + p.tt) + '">' +
         (p.nay ? '<rect x="' + (x + 2) + '" y="6" width="' + (w - 4) + '" height="' + (H - 10) + '" rx="8" fill="#ffffff" fill-opacity=".07"/>' : '') +
-        '<polygon points="' + (x + 6) + ',' + yb + ' ' + (x + w / 2) + ',' + (yb - h) + ' ' + (x + w - 6) + ',' + yb + '" fill="' + (p.nay ? '#d9a93f' : '#4a7fb0') + '" fill-opacity=".85"/>' +
+        '<polygon points="' + (x + 6) + ',' + yb + ' ' + (x + w / 2) + ',' + (yb - h) + ' ' + (x + w - 6) + ',' + yb + '" fill="' + (p.nay ? '#dcbc86' : '#4a7fb0') + '" fill-opacity=".85"/>' +
         '<text x="' + (x + w / 2) + '" y="' + (yb - h + 22) + '" text-anchor="middle" class="ts-dc-so">' + p.so + '</text>' +
         '<text x="' + (x + w / 2) + '" y="' + (yb + 16) + '" text-anchor="middle" class="ch-ax">' + p.tu + '–' + (p.den >= 99 ? '…' : p.den) + ' tuổi · ' + p.namTu + '</text>' +
         '<text x="' + (x + w / 2) + '" y="' + (yb + 32) + '" text-anchor="middle" class="ch-ax">thử thách ' + p.thuThach + '</text></g>';
@@ -4137,10 +4413,10 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
   function queSvg(q, nd) {
     var o = '<svg viewBox="0 0 120 132" width="120" height="132" class="que-svg" role="img" aria-label="' + esc(q.ten) + '">';
     for (var i = 6; i >= 1; i--) {
-      var y = 6 + (6 - i) * 21, on = i === nd, c = on ? '#ffd88a' : '#d8c9ad';
+      var y = 6 + (6 - i) * 21, on = i === nd, c = on ? '#f0dcb0' : '#d8c9ad';
       if (q.hao[i - 1]) o += '<rect x="10" y="' + y + '" width="100" height="12" rx="3" fill="' + c + '"/>';
       else o += '<rect x="10" y="' + y + '" width="44" height="12" rx="3" fill="' + c + '"/><rect x="66" y="' + y + '" width="44" height="12" rx="3" fill="' + c + '"/>';
-      if (on) o += '<circle cx="4" cy="' + (y + 6) + '" r="3.5" fill="#ffd88a"/>';
+      if (on) o += '<circle cx="4" cy="' + (y + 6) + '" r="3.5" fill="#f0dcb0"/>';
     }
     return o + '</svg>';
   }
@@ -4239,7 +4515,7 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
       '<div class="mm-grid">' + mm.map(function (m) { return '<div class="mm-card"><small>' + esc(m.ten) + '</small><b>' + esc(m.gt) + '</b><p>' + hl(m.y) + '</p></div>'; }).join('') + '</div></div>';
   }
   /* ---------- Biến cố hội tụ ---------- */
-  var HT_MAU = { tot: '#6f9f5e', xau: '#d9503f', dong: '#b08a2c' };
+  var HT_MAU = { tot: '#c3ccd5', xau: '#d97a7a', dong: '#c9a46a' };
   function hoiTuChart(L, vy) {
     if (!L || !L.nam.length) return '';
     var n = L.nam.length, W = 760, LBL = 176, R = 8, T = 24, rowH = 30, H = T + L.dong.length * rowH + 30, cw = (W - LBL - R) / n;
@@ -4256,10 +4532,10 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
       d.gt.forEach(function (c, i) {
         if (!c.so) return;
         var x = LBL + i * cw + cw / 2, rr = c.so >= 3 ? 4 + c.so * 1.4 : 2 + c.so, op = c.so >= 3 ? 1 : 0.4;
-        o += '<g data-tip="' + esc(L.nam[i] + ' · ' + d.ten + '\n' + c.so + ' hệ cùng báo: ' + c.he.join(', ')) + '"><circle cx="' + x + '" cy="' + y + '" r="12" fill="transparent"/><circle cx="' + x + '" cy="' + y + '" r="' + rr + '" fill="' + mau + '" fill-opacity="' + op + '"' + (c.so >= 4 ? ' stroke="#fff1c9" stroke-width="1.5"' : '') + '/></g>';
+        o += '<g data-tip="' + esc(L.nam[i] + ' · ' + d.ten + '\n' + c.so + ' hệ cùng báo: ' + c.he.join(', ')) + '"><circle cx="' + x + '" cy="' + y + '" r="12" fill="transparent"/><circle cx="' + x + '" cy="' + y + '" r="' + rr + '" fill="' + mau + '" fill-opacity="' + op + '"' + (c.so >= 4 ? ' stroke="#f7efdf" stroke-width="1.5"' : '') + '/></g>';
       });
     });
-    o += '</svg><div class="ch-legend"><span><i style="background:#6f9f5e"></i>Cơ hội</span><span><i style="background:#d9503f"></i>Rủi ro cần phòng</span><span><i style="background:#b08a2c"></i>Bước ngoặt</span><span>Viền sáng = 4–5 hệ</span></div></figure>';
+    o += '</svg><div class="ch-legend"><span><i style="background:#c3ccd5"></i>Cơ hội</span><span><i style="background:#d97a7a"></i>Rủi ro cần phòng</span><span><i style="background:#c9a46a"></i>Bước ngoặt</span><span>Viền sáng = 4–5 hệ</span></div></figure>';
     return o;
   }
   /** Biến cố 30 năm – cùng bộ máy 19 sự kiện với Hồ sơ năm (VanSau.gs › vsBienCo_) */
@@ -4542,16 +4818,16 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
   }
   function vongHoangDao() {
     var o = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" width="560" height="560">' +
-      '<circle cx="200" cy="200" r="190" fill="none" stroke="#f6b64a" stroke-opacity=".6" stroke-width="1.2"/>' +
-      '<circle cx="200" cy="200" r="150" fill="none" stroke="#f6b64a" stroke-opacity=".6" stroke-width="1"/>' +
-      '<circle cx="200" cy="200" r="110" fill="none" stroke="#f3dcaa" stroke-opacity=".45" stroke-dasharray="3 5"/>' +
-      '<circle cx="200" cy="200" r="60" fill="none" stroke="#f6b64a" stroke-opacity=".35"/>';
+      '<circle cx="200" cy="200" r="190" fill="none" stroke="#e3b98a" stroke-opacity=".6" stroke-width="1.2"/>' +
+      '<circle cx="200" cy="200" r="150" fill="none" stroke="#e3b98a" stroke-opacity=".6" stroke-width="1"/>' +
+      '<circle cx="200" cy="200" r="110" fill="none" stroke="#f3e3bf" stroke-opacity=".45" stroke-dasharray="3 5"/>' +
+      '<circle cx="200" cy="200" r="60" fill="none" stroke="#e3b98a" stroke-opacity=".35"/>';
     for (var i = 0; i < 12; i++) {
       var a = (i * 30 - 90) * Math.PI / 180, a2 = (i * 30 - 75) * Math.PI / 180;
-      o += '<line x1="' + (200 + 150 * Math.cos(a)).toFixed(1) + '" y1="' + (200 + 150 * Math.sin(a)).toFixed(1) + '" x2="' + (200 + 190 * Math.cos(a)).toFixed(1) + '" y2="' + (200 + 190 * Math.sin(a)).toFixed(1) + '" stroke="#f6b64a" stroke-opacity=".5"/>';
-      o += '<line x1="' + (200 + 60 * Math.cos(a)).toFixed(1) + '" y1="' + (200 + 60 * Math.sin(a)).toFixed(1) + '" x2="' + (200 + 110 * Math.cos(a)).toFixed(1) + '" y2="' + (200 + 110 * Math.sin(a)).toFixed(1) + '" stroke="#f3dcaa" stroke-opacity=".25"/>';
-      o += '<text x="' + (200 + 170 * Math.cos(a2)).toFixed(1) + '" y="' + (200 + 170 * Math.sin(a2) + 7).toFixed(1) + '" text-anchor="middle" font-size="20" fill="#ffd88a" font-family="serif">' + SIGN_KY[i] + '\uFE0E</text>';
-      o += '<text x="' + (200 + 130 * Math.cos(a2)).toFixed(1) + '" y="' + (200 + 130 * Math.sin(a2) + 6).toFixed(1) + '" text-anchor="middle" font-size="17" fill="#f3dcaa" font-family="serif">' + CHI_HAN[i] + '</text>';
+      o += '<line x1="' + (200 + 150 * Math.cos(a)).toFixed(1) + '" y1="' + (200 + 150 * Math.sin(a)).toFixed(1) + '" x2="' + (200 + 190 * Math.cos(a)).toFixed(1) + '" y2="' + (200 + 190 * Math.sin(a)).toFixed(1) + '" stroke="#e3b98a" stroke-opacity=".5"/>';
+      o += '<line x1="' + (200 + 60 * Math.cos(a)).toFixed(1) + '" y1="' + (200 + 60 * Math.sin(a)).toFixed(1) + '" x2="' + (200 + 110 * Math.cos(a)).toFixed(1) + '" y2="' + (200 + 110 * Math.sin(a)).toFixed(1) + '" stroke="#f3e3bf" stroke-opacity=".25"/>';
+      o += '<text x="' + (200 + 170 * Math.cos(a2)).toFixed(1) + '" y="' + (200 + 170 * Math.sin(a2) + 7).toFixed(1) + '" text-anchor="middle" font-size="20" fill="#f0dcb0" font-family="serif">' + SIGN_KY[i] + '\uFE0E</text>';
+      o += '<text x="' + (200 + 130 * Math.cos(a2)).toFixed(1) + '" y="' + (200 + 130 * Math.sin(a2) + 6).toFixed(1) + '" text-anchor="middle" font-size="17" fill="#f3e3bf" font-family="serif">' + CHI_HAN[i] + '</text>';
     }
     o += '</svg>';
     return '<img class="pc-ring" alt="" src="data:image/svg+xml;charset=utf-8,' + encodeURIComponent(o) + '" width="560" height="560">';
@@ -4596,10 +4872,10 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
   function chanTrang(txt, so, tong, sang) {
     var c = document.createElement('canvas'); c.width = 1600; c.height = 44;
     var g = c.getContext('2d');
-    g.font = '500 20px "Be Vietnam Pro", system-ui, sans-serif'; g.fillStyle = sang ? '#8a7a55' : '#e8cf98'; g.textBaseline = 'middle';
+    g.font = '500 20px "Be Vietnam Pro", system-ui, sans-serif'; g.fillStyle = sang ? '#8a7a55' : '#ecdcb8'; g.textBaseline = 'middle';
     g.fillText(txt, 0, 22);
     g.textAlign = 'right'; g.fillText(so + ' / ' + tong, 1600, 22);
-    g.strokeStyle = sang ? 'rgba(120,100,60,.35)' : 'rgba(246,182,74,.35)'; g.beginPath(); g.moveTo(0, 2); g.lineTo(1600, 2); g.stroke();
+    g.strokeStyle = sang ? 'rgba(120,100,60,.35)' : 'rgba(227, 185, 138,.35)'; g.beginPath(); g.moveTo(0, 2); g.lineTo(1600, 2); g.stroke();
     return c.toDataURL('image/png');
   }
   /* ---------- Bản xem thử (demo): hé lộ vừa đủ để tò mò ---------- */
@@ -4630,7 +4906,7 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
     if (!window.jspdf || typeof html2canvas === 'undefined') { toast('Không tải được thư viện PDF – hãy dùng nút In → Lưu dưới dạng PDF.', true); return; }
     var jsPDF = window.jspdf.jsPDF, pdf = new jsPDF({ unit: 'pt', format: 'a4', compress: true });
     var PW = 595.28, PH = 841.89, MX = 30, MT = 32, MB = 40, CW = PW - 2 * MX, CH = PH - MT - MB;
-    var W = 820, pxPt = CW / W, pageHpx = CH / pxPt, NEN = sang ? [247, 251, 252] : [18, 13, 9], NEN_HEX = sang ? '#f7fbfc' : '#120d09';
+    var W = 820, pxPt = CW / W, pageHpx = CH / pxPt, NEN = sang ? [247, 251, 252] : [18, 13, 9], NEN_HEX = sang ? '#f7fbfc' : '#14110e';
     var root = document.createElement('div');
     root.id = 'pdfRoot'; root.className = 'pdf-root ' + (sang ? 'theme-light' : 'theme-dark');
     document.body.appendChild(root);
@@ -4945,7 +5221,7 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
       setLoadingText('Đang dựng trang bìa…');
       var cv = root.querySelector('.pdf-page-cover');
       cv.style.height = Math.round(W * PH / CW * (CW / PW)) + 'px';
-      var o = {}; Object.keys(opt).forEach(function (k) { o[k] = opt[k]; }); o.backgroundColor = '#120d09';
+      var o = {}; Object.keys(opt).forEach(function (k) { o[k] = opt[k]; }); o.backgroundColor = '#14110e';
       return html2canvas(cv, o).then(function (c) { trangMoi(); dat(c, true); trangMoi(); /* chỗ cho mục lục */ });
     }).then(function () {
       var secs = root.querySelectorAll('.pdf-sec'), p = Promise.resolve();
@@ -5014,10 +5290,10 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
   function baoLoiKhoiDong(ds) {
     var el = document.createElement('div');
     el.setAttribute('role', 'alert');
-    el.style.cssText = 'position:fixed;left:12px;right:12px;bottom:12px;z-index:200;max-width:720px;margin:0 auto;background:#3a1512;color:#ffe9e4;border:1px solid #e8897a;border-radius:12px;padding:12px 14px;font:13.5px/1.5 system-ui,sans-serif;box-shadow:0 8px 24px rgba(0,0,0,.5)';
+    el.style.cssText = 'position:fixed;left:12px;right:12px;bottom:12px;z-index:200;max-width:720px;margin:0 auto;background:#3a2a26;color:#ffe9e4;border:1px solid #e8897a;border-radius:12px;padding:12px 14px;font:13.5px/1.5 system-ui,sans-serif;box-shadow:0 8px 24px rgba(0,0,0,.5)';
     el.innerHTML = '<b>⚠ Có ' + ds.length + ' phần giao diện chưa khởi động được</b> (giao diện bản ' + BAN_GIAO_DIEN + '). Hãy chụp màn hình khung này gửi người hỗ trợ:' +
       '<ol style="margin:6px 0 8px;padding-left:20px">' + ds.map(function (x) { return '<li>' + esc(x) + '</li>'; }).join('') + '</ol>' +
-      '<button type="button" style="font:inherit;background:#e8897a;color:#1a0a08;border:0;border-radius:8px;padding:5px 12px;cursor:pointer">Đóng</button>';
+      '<button type="button" style="font:inherit;background:#e8897a;color:#1a1512;border:0;border-radius:8px;padding:5px 12px;cursor:pointer">Đóng</button>';
     el.querySelector('button').addEventListener('click', function () { el.remove(); });
     document.body.appendChild(el);
   }
@@ -5053,6 +5329,7 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
     buoc('biểu mẫu', initForm);
     buoc('cặp đôi', initCapDoi);
     buoc('chú giải', tipInit);
+    buoc('hiệu ứng nền', bkHat);
     buoc('nút cơ sở', function () {
         // Nút bật/tắt hiện cơ sở phân tích (mặc định: ẩn để gọn)
     (function () {
@@ -5111,7 +5388,7 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
     $('btnPng').addEventListener('click', function () {
       if (typeof html2canvas === 'undefined') { toast('Không tải được thư viện chụp ảnh – hãy dùng nút In.', true); return; }
       loading(true);
-      chupLaSo({ scale: 2, backgroundColor: getComputedStyle(document.body).backgroundColor || '#120d09', useCORS: true }).then(function (canvas) {
+      chupLaSo({ scale: 2, backgroundColor: getComputedStyle(document.body).backgroundColor || '#14110e', useCORS: true }).then(function (canvas) {
         loading(false);
         var a = document.createElement('a');
         a.href = canvas.toDataURL('image/png');

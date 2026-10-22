@@ -3,15 +3,18 @@
 <head>
   <base target="_top">
   <meta charset="utf-8">
-  <meta name="tcc-ban" content="2026.10.14">
+  <meta name="tcc-ban" content="2026.10.22">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Thiên Cơ Các · Lá Số Tử Vi & Bát Tự</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&family=Cormorant+Garamond:wght@600;700&family=Ma+Shan+Zheng&family=Noto+Serif:ital,wght@0,400;0,700;1,400&display=swap&subset=vietnamese" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&family=Chakra+Petch:wght@500;600&family=Cormorant+Garamond:wght@500;600;700&family=Ma+Shan+Zheng&family=Noto+Serif:ital,wght@0,400;0,700;1,400&display=swap&subset=vietnamese" rel="stylesheet">
   <?!= include('Styles'); ?>
 </head>
 <body>
+  <!-- Nền Bạch Kim: khối sáng trôi, lưới mờ, hạt sáng bạc – vàng (Script.html › bkHat) -->
+  <div class="bk-nen" aria-hidden="true"><i class="a"></i><i class="b"></i><i class="c"></i><b></b></div>
+  <canvas id="bkHat" class="bk-hat" aria-hidden="true"></canvas>
   <!-- Bầu trời tiên cảnh -->
   <div class="sky" aria-hidden="true">
     <div class="sun"></div>
@@ -227,6 +230,7 @@
         </div>
 
         <div class="tab-page active" id="page-chart">
+          <div id="bdk" class="bdk" hidden></div>
           <div class="panel welcome" id="welcome">
             <div class="features">
               <div class="feature"><span class="han">紫</span><b>14 Chính tinh</b><small>An theo Cục & ngày sinh, xét Miếu – Vượng – Đắc – Hãm.</small></div>

@@ -65,3 +65,10 @@ Liên quan: [[TCC PDF]] · [[TCC Lá số 3D]] · [[TCC Văn dễ hiểu và T�
     - Nền than ấm `#14110e` / `#1c1814` (không dùng đen xanh của Thủy); bỏ xanh lá (Mộc), xanh lá chỉ còn để tô hành Mộc trong dữ liệu (`#7fc79a`); màu xấu `#e48a8a`.
     - Biểu đồ đời: tài lộc sâm panh, quan lộc vàng hồng, sức khỏe nét đứt bạc. Hạt sáng vàng + bạc.
     - Kim chỉ là màu nhấn, Hỏa – Thổ vẫn giữ vai trò chính.
+- **22/10/2026 – chủ dự án "Duyệt màu" → áp Bạch Kim + bento vào app (mã giao diện `2026.10.22`):**
+  - `Styles.html`: token `:root` đổi sang Bạch Kim (thêm `--bk-grad`, `--bk-bac`, `--bk-sam`, `--bk-hong`, `--bk-dong`, `--bk-xau`). Màu viết thẳng đổi hàng loạt: nền nâu → than ấm, vàng kim → sâm panh, son → đồng hồng; tín hiệu tốt xanh lá → bạc, xấu đỏ → hồng dịu. Không đổi: khối `.theme-light` (bản in), màu Tứ Hóa, màu ngũ hành trong dữ liệu. Khối cuối "BẠCH KIM – HIỆU ỨNG NỀN + BẢNG ĐIỀU KHIỂN BENTO" (`.bk-nen`, `.bk-hat`, `.bdk-*`); nút chính dùng dải `--bk-grad` chạy nhẹ; ẩn mây, núi cũ.
+  - `Index.html`: thêm `.bk-nen` (khối sáng trôi + lưới) và canvas `#bkHat`; `<div id="bdk">` ở đầu `#page-chart`; thêm font Chakra Petch.
+  - `Script.html`: `bkDuLieu`, `veBangDieuKhien` (gọi trong `render`, bọc try/catch; khách chưa đăng nhập thì ẩn), các biểu đồ `bkRadar`, `bkDonut`, `bkGauge`, `bkLv`, `bkDoi`, `bkThang`, `bkSk`; `bkHat` (hạt sáng, chạy ở `init`). Mọi biểu đồ chạy hiệu ứng khi cuộn tới (IntersectionObserver), tắt khi người dùng chọn giảm chuyển động.
+  - **Bản khóa:** chưa mở Biến cố thì đường vận cả đời chỉ vẽ bậc thang điểm đại vận + khung khóa `data-mua="bien_co"`; chưa mở Vận năm thì chỉ hiện sự kiện mồi + khung khóa `data-mua="nam"`; chưa mở Tổng hợp thì 9 lĩnh vực lấy từ `res.th6` (không chấm từng hệ), bỏ nguyên mẫu và bộ đếm từ `tomLuoc`.
+  - Ảnh nhân vật (`Anh.html`) vẫn ở trang chào; bảng điều khiển của khách hàng dùng vòng ấn chữ cái đầu tên, không dùng ảnh chủ dự án.
+  - Đã chụp kiểm tra ở 1366px và 390px, cả chủ sở hữu lẫn tài khoản thường: không lỗi trang, không tràn ngang. Kiểm thử: cai-dat 74/74, tong-hop, ho-so-nam, van-sau, nghiem-chung, lich-su, tien-ich, bao-cao, giai-doan, tai-khoan, thanh-toan đều đạt.

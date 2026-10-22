@@ -9,7 +9,8 @@ Liên quan: [[Việc chờ chủ dự án]] · [[TCC Bán hàng]] · [[00 Mục 
 - Bộ não thứ hai: thư mục `bo-nao/` + trang bản đồ xem bằng trình duyệt, mỗi nhánh một bộ (21/10).
 
 ## Giao diện
-- **Phong cách tối sang trọng** (nâu khói + vàng kim, kiểu Tian Qi), áp cho toàn bộ web (21/10). – [[TCC Giao diện]]
+- **Phong cách tối sang trọng** (kiểu Tian Qi), áp cho toàn bộ web (21/10). – [[TCC Giao diện]]
+- **Bảng màu "Bạch Kim"** (22/10, duyệt sau khi chê đỏ "máu me" và thử tím): than ấm + bạch kim, bạc + sâm panh + vàng hồng; không dùng xanh lá, đen xanh, xanh dương để trang trí. **Bố cục bento + biểu đồ động** của demo đã duyệt. – [[TCC Giao diện]]
 - **Luôn giữ ảnh nhân vật trên web** (`Anh.html`) – đó là ảnh của chủ dự án (21/10).
 
 ## Dữ liệu cá nhân của chủ dự án
