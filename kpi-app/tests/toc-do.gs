@@ -131,7 +131,7 @@ function nho_(ten, thamSo, fn) {
    Sau đó chạy KIEM_TRA_SHEETS_API một lần: hàm so từng ô giữa 2 cách đọc, khớp hết mới bật. */
 var COT_NGAY_ = ['Ngay', 'ThoiDiem', 'ThoiDiemNhap', 'ThoiDiemDuyet', 'ThoiDiemPhat', 'ThoiDiemGhi', 'ThoiDiemChot',
   'NgayTao', 'NgayVaoLam', 'LanDangNhapCuoi', 'TuNgay', 'DenNgay', 'NgayGui', 'NgayDuyet', 'NgayDeXuat',
-  'HieuLucTu', 'BaoTriKeTiep', 'KyApDung', 'Ky'];
+  'HieuLucTu', 'BaoTriKeTiep', 'KyApDung', 'Ky', 'HanMatKhauTam', 'CapNhat'];
 function dungSheetsApi_() {
   try {
     return typeof Sheets !== 'undefined' && PropertiesService.getScriptProperties().getProperty('KPI_SHEETS_API') === '1';

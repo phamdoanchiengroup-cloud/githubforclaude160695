@@ -17,6 +17,7 @@ Liên quan: [[Việc chờ chủ dự án]] · [[KPI Tổng quan và cách dựn
 
 
 ## Cách dán
+- **22/10 chủ dự án đã cài xong clasp** (lần đầu bấm .bat ngay trong ZIP → lỗi "-File không tồn tại"; đã thêm kiểm tra vào .bat). Từ nay cập nhật = bấm đúp `2-CAP-NHAT.bat`, nhớ push lên nhánh trước.
 - Từ 21/10 có bộ cài clasp (`kpi-app/cai-dat-clasp/`): cài xong thì mỗi lần cập nhật chỉ bấm đúp `2-CAP-NHAT.bat` (tự sao lưu, tự đẩy 5 file, tự triển khai giữ link). Chưa biết chủ dự án đã cài chưa. – [[KPI Cập nhật bằng clasp]]
 
 ## Nhắc khi gửi file cho chủ dự án
