@@ -36,6 +36,7 @@ Liên quan: [[Lần dán lên Apps Script]] · [[Quyết định của chủ d�
 - Chi tiết: [[KPI Sửa lỗi 21-10 và dữ liệu sheet]]
 
 ## Demo chờ góp ý
+- **Bốn kiểu giao diện độc đáo (22/10)**: chọn 1 kiểu (hoặc ghép) để làm thật trên web – https://claude.ai/artifact/S35dXvGWZFSHA6UFSh4bb6 – [[KPI Demo giao diện]]
 - Kiểu chia đôi màn hình đã làm thẳng trên web (có nút "Kiểu cũ" để so) – chờ chủ dự án dùng thử, góp ý, và cho biết muốn áp thêm cho tab nào (Duyệt sản lượng, Máy móc…). – [[KPI Chia đôi màn hình]]
 - Màn Duyệt sản lượng làm lại: `kpi-app/demo-duyet-san-luong.html` – [[KPI Demo giao diện]]
 - Giao diện mới bên trong (3 màn × 2 hướng sáng/tối): `kpi-app/demo-giao-dien-moi.html` – [[KPI Demo giao diện]]
