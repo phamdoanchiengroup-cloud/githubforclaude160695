@@ -7485,7 +7485,7 @@ function thongKeHoSoThieu(token) {
   if (!toanBo && me.vaiTro !== 'TP') return sach_({ ok: false, msg: 'Không có quyền.' });
   var coTK = {};
   doc_('TaiKhoan').forEach(function(t) { if (String(t.TrangThai).trim() === 'Đang dùng' && t.MaNV && hsVaiTroPhai_(t.VaiTro)) coTK[String(t.MaNV).trim()] = 1; });
-  var ds = [], theoMuc = {};
+  var ds = [], theoMuc = {}, du = [];                     // du = mã NV đã đủ hồ sơ (ghi chú từng dòng ở tab Nhân sự)
   HS_MUC.forEach(function(m) { theoMuc[m.k] = 0; });
   var soXet = 0;
   doc_('NhanSu').forEach(function(x) {
@@ -7493,7 +7493,7 @@ function thongKeHoSoThieu(token) {
     if (!toanBo && x.MaXuong !== me.xuong) return;
     soXet++;
     var t = hoSoThieu_(x);
-    if (!t.length) return;
+    if (!t.length) { du.push(x.MaNV); return; }
     t.forEach(function(k) { theoMuc[k]++; });
     ds.push({ MaNV: x.MaNV, HoTen: x.HoTen, MaXuong: x.MaXuong, thieu: t });
   });
@@ -7508,7 +7508,7 @@ function thongKeHoSoThieu(token) {
       ds.push({ MaNV: t.TenDangNhap, HoTen: t.HoTen, MaXuong: 'VAN_PHONG', thieu: tt });
     });
   }
-  return sach_({ ok: true, soXet: soXet, soThieu: ds.length, theoMuc: theoMuc, muc: HS_MUC, ds: ds });
+  return sach_({ ok: true, soXet: soXet, soThieu: ds.length, theoMuc: theoMuc, muc: HS_MUC, ds: ds, du: du });
 }
 
 /* CHỈ CHỦ SỞ HỮU: danh sách ban điều hành, trợ lý BĐH, hành chính nhân sự (tài khoản + hồ sơ văn phòng) */
@@ -7531,4 +7531,4 @@ function danhSachVanPhong(token) {
   ds.sort(function(a, b) { return (thuTu[a.vaiTro] - thuTu[b.vaiTro]) || (a.HoTen < b.HoTen ? -1 : 1); });
   return sach_({ ok: true, ds: ds, muc: HS_MUC });
 }
-var KPI_BAN_MAY = '22/10/2026 16:52';   // giờ dựng Code.gs (22/10)
+var KPI_BAN_MAY = '22/10/2026 22:23';   // giờ dựng Code.gs (22/10)

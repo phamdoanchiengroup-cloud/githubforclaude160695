@@ -40,6 +40,8 @@ async function vao(b, tk, rong) {
   await p.waitForFunction(() => { const e = document.getElementById('hsTk'); return e && /Hồ sơ chưa đủ|đã nhập đủ/.test(e.textContent); }, null, { timeout: 20000 }).catch(() => {});
   s = await p.evaluate(() => { const e = document.getElementById('hsTk'); return e ? e.textContent : ''; });
   ok(/Hồ sơ chưa đủ: \d+\/\d+ người/.test(s) && /Số điện thoại/.test(s), 'thẻ "Hồ sơ chưa đủ: x/y người" + số theo từng mục', s.slice(0, 160));
+  s = await p.evaluate(() => { const rs = [...document.querySelectorAll('#main tr.ns-row')]; return { n: rs.length, chua: rs.filter(t => /Chưa đủ thông tin/.test(t.textContent)).length, du: rs.filter(t => /Đủ thông tin/.test(t.textContent) && !/Chưa đủ/.test(t.textContent)).length, tip: (document.querySelector('.hs-note.p-wn') || {}).title || '' }; });
+  ok(s.chua > 50 && s.du > 10 && /Còn thiếu:/.test(s.tip), 'mỗi dòng nhân sự có ghi chú: ' + s.chua + ' "Chưa đủ thông tin", ' + s.du + ' "Đủ thông tin" (rê chuột xem mục thiếu)', s);
   await p.click('#hsTk button'); await p.waitForTimeout(200);
   ok(await p.evaluate(() => document.getElementById('hsDs').style.display === '' && document.getElementById('hsDs').textContent.includes('thiếu')), 'bấm "Xem danh sách": hiện tên theo xưởng và mục còn thiếu');
   await p.waitForFunction(() => { const e = document.getElementById('vpDs'); return e && /chỉ chủ sở hữu/.test(e.textContent); }, null, { timeout: 20000 }).catch(() => {});

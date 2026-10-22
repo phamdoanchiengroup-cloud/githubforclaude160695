@@ -20,7 +20,7 @@ Liên quan: [[KPI Tổng quan và cách dựng]] · [[KPI Kiểm thử]] · [[Qu
 - Theo xưởng: Phôi Thô 27, Phôi Carbon 25, Sơn 21, Đóng gói 20, Hoàn thiện 18, Ngọn Taro 15, CNC 13, In UV 7, Ngọn Tip 2.
 
 ## Kiểm thử
-- `tests/ho-so.js` 28 (DATA=) · `tests/ho-so-web.js` 11 (bản xem thử dữ liệu 22/10).
+- `tests/ho-so.js` 28 (DATA=) · `tests/ho-so-web.js` 12 (bản xem thử dữ liệu 22/10).
 
 ## 22/10 (tối): tài khoản không gắn mã nhân viên + khối "Ban điều hành & Hành chính nhân sự"
 - Nguyên nhân tab Nhân sự thiếu họ: ban điều hành, trợ lý BĐH, nhân sự, bếp, nhóm báo cơm chỉ có dòng TaiKhoan (MaNV trống), không có dòng NhanSu – nên trước đó bảng hồ sơ bắt buộc cũng không áp được cho họ.
@@ -32,3 +32,4 @@ Liên quan: [[KPI Tổng quan và cách dựng]] · [[KPI Kiểm thử]] · [[Qu
 - Chủ dự án 22/10: tài khoản nhóm báo cơm tổng (NHOM, dùng chung) **không cần điền** → `HS_KHONG_BAT_BUOC = ['OWNER','ADMIN','NHOM']`. Còn 154/191 phải điền (7 tài khoản không gắn mã NV).
 - Kiểm thử `ho-so.js` 27, `ho-so-web.js` 11.
 - Chủ dự án 22/10: **bếp cũng không cần** → `HS_KHONG_BAT_BUOC = ['OWNER','ADMIN','NHOM','BEP']`.
+- 22/10: chủ dự án xác nhận web đã lên bản mới (link công ty). Thêm **ghi chú từng dòng** ở danh sách Nhân sự: pill "Đủ thông tin" (xanh) / "Chưa đủ thông tin" (vàng, rê chuột xem mục thiếu) cạnh họ tên – `hsGhiChuDong(r)` dùng kết quả `thongKeHoSoThieu` (thêm trường `du` = mã NV đã đủ). Người không phải điền (nghỉ / tạm nghỉ, không có tài khoản) không có ghi chú. Kiểm thử `ho-so-web.js` 12.

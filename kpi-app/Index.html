@@ -9450,6 +9450,7 @@ function hsThongKe(){
   google.script.run.withSuccessHandler(function(r){
     var e = $('hsTk'); if (!e) return;
     if (!r || !r.ok) { e.remove(); return; }
+    try { hsGhiChuDong(r); } catch (er) {}
     if (!r.soThieu) { e.innerHTML = '<b>Hồ sơ:</b> cả ' + r.soXet + ' người đã nhập đủ thông tin.'; return; }
     var ten = {}; r.muc.forEach(function(x){ ten[x.k] = x.ten; });
     var theoX = {}; r.ds.forEach(function(x){ (theoX[x.MaXuong] = theoX[x.MaXuong] || []).push(x); });
@@ -9486,9 +9487,30 @@ function vpDanhSach(){
       '<div class="note">Mọi tài khoản trừ chủ sở hữu và ban điều hành phải điền hồ sơ khi đăng nhập. Người không gắn mã nhân viên (trợ lý BĐH, nhân sự, bếp…) lưu ở sheet HoSoVanPhong, không vào Bảng KPI.</div>';
   }).withFailureHandler(function(er){ var e = $('vpDs'); if (e) e.innerHTML = '<h3>Ban điều hành &amp; Hành chính nhân sự</h3><div class="alert a-wn">Chưa tải được danh sách: ' + esc((er && er.message) || String(er)) + ' – chụp màn hình gửi Claude.</div>'; }).danhSachVanPhong(TOKEN);
 }
+/* Ghi chú từng dòng ở danh sách Nhân sự (22/10): "Đủ thông tin" / "Chưa đủ thông tin" (rê chuột xem còn thiếu mục nào).
+   Chỉ người phải điền hồ sơ (đang làm, có tài khoản) mới có ghi chú. */
+function hsGhiChuDong(r){
+  var ten = {}; (r.muc || []).forEach(function(x){ ten[x.k] = x.ten; });
+  var thieu = {}; (r.ds || []).forEach(function(x){ thieu[x.MaNV] = x.thieu; });
+  var du = {}; (r.du || []).forEach(function(m){ du[m] = 1; });
+  [].forEach.call(document.querySelectorAll('#main tr.ns-row'), function(tr){
+    var td = tr.querySelectorAll('td'); if (td.length < 2 || td[1].querySelector('.hs-note')) return;
+    var ma = td[0].textContent.trim(), n = null;
+    if (thieu[ma]) {
+      n = document.createElement('span'); n.className = 'hs-note pill p-wn';
+      n.textContent = 'Chưa đủ thông tin';
+      n.title = 'Còn thiếu: ' + thieu[ma].map(function(k){ return ten[k] || k; }).join(', ');
+    } else if (du[ma]) {
+      n = document.createElement('span'); n.className = 'hs-note pill p-ok'; n.textContent = 'Đủ thông tin';
+    }
+    if (!n) return;
+    n.style.cssText = 'margin-left:8px;font-size:11px;padding:1px 7px;vertical-align:middle;white-space:nowrap';
+    td[1].appendChild(n);
+  });
+}
 </script>
 <script>
-var KPI_BAN = '22/10/2026 16:52';
+var KPI_BAN = '22/10/2026 22:23';
 (function(){
   var cu = window.veNav;
   window.veNav = function(){
