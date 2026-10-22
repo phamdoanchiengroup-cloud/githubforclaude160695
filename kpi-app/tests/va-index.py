@@ -823,6 +823,8 @@ exec(io.open(os.path.join(D, 'kpi-may', 'va-kpi-may.py'), encoding='utf-8').read
 exec(io.open(os.path.join(D, 'ho-so', 'va-ho-so-web.py'), encoding='utf-8').read())
 # ---------------------------------------------------------------- 32. Dòng "Bản web" cuối thanh menu (22/10): biết web đang chạy bản nào
 exec(io.open(os.path.join(D, 'phien-ban', 'va-phien-ban.py'), encoding='utf-8').read())
+# ---------------------------------------------------------------- 33. Kỹ năng (22/10): danh mục theo xưởng + duyệt, ma trận 4 cấp, Kỹ năng của tôi
+exec(io.open(os.path.join(D, 'ky-nang', 'va-ky-nang-web.py'), encoding='utf-8').read())
 # ---------------------------------------------------------------- 27. Chia đôi màn hình (21/10): Bảng KPI, Nhân sự, KPI quản lý – danh sách trái, chi tiết phải (phải là mục cuối)
 exec(io.open(os.path.join(D, 'chia-doi', 'va-chia-doi.py'), encoding='utf-8').read())
 

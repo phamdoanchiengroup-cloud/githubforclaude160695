@@ -46,8 +46,9 @@ r = c.__goi('phanTichDinhMuc', TP, 'thang', KY);
 ok(r.ok && r.ds.every(x => x.maXuong === tp.MaXuong), 'trưởng phòng chỉ thấy công đoạn xưởng mình');
 
 console.log('\n2. Áp toàn bộ gợi ý rồi phân tích lại');
+const canCat = new Set(c.doc_('LichSuDinhMuc').filter(x => c.ngayVN_(x.DenNgay) >= '2026-10-01').map(x => x.MaCD)).size;   // dữ liệu từ 22/10 đã được cắt sẵn trên sheet thật -> 0
 const soCat = c.__goi('AP_DINH_MUC_CA_THANG');
-ok(soCat > 0 && c.doc_('LichSuDinhMuc').every(x => c.ngayVN_(x.DenNgay) <= '2026-09-30'), 'AP_DINH_MUC_CA_THANG: ' + soCat + ' công đoạn đổi định mức trong tháng 10 giờ tính theo định mức đang dùng cả tháng');
+ok(soCat === canCat && c.doc_('LichSuDinhMuc').every(x => c.ngayVN_(x.DenNgay) <= '2026-09-30'), 'AP_DINH_MUC_CA_THANG: ' + soCat + ' công đoạn đổi định mức trong tháng 10 giờ tính theo định mức đang dùng cả tháng');
 const truoc = phanTich(c, T);
 const ap = truoc.ds.filter(x => x.dmGoiY > 0).map(x => ({ maCD: x.maCD, dinhMucMoi: x.dmGoiY }));
 r = c.__goi('banDieuHanhSuaDinhMucNhieu', T, ap, 'Thử theo gợi ý');

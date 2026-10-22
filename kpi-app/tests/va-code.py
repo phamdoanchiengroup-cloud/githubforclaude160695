@@ -1357,6 +1357,8 @@ exec(io.open(os.path.join(os.path.dirname(__file__), 'dinh-muc', 'va-dinh-muc.py
 exec(io.open(os.path.join(os.path.dirname(__file__), 'xep-loai', 'va-xep-loai.py'), encoding='utf-8').read())
 # ---------------------------------------------------------------- hồ sơ bắt buộc khi đăng nhập (22/10): thiếu thì phải điền đủ mới dùng tiếp
 exec(io.open(os.path.join(os.path.dirname(__file__), 'ho-so', 'va-ho-so.py'), encoding='utf-8').read())
+# ---------------------------------------------------------------- kỹ năng (22/10): danh mục theo xưởng + duyệt, gán 4 cấp, điểm mô phỏng
+exec(io.open(os.path.join(os.path.dirname(__file__), 'ky-nang', 'va-ky-nang.py'), encoding='utf-8').read())
 
 io.open(RA, 'w', encoding='utf-8').write(s)
 print('OK ->', os.path.abspath(RA))

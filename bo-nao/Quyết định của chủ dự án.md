@@ -26,6 +26,10 @@ Những điều đã chốt. Đừng đề xuất lại những gì ghi "không 
 - Đăng nhập mà hồ sơ thiếu thì phải điền đủ mới dùng tiếp. **Không bắt buộc: chủ sở hữu, ban điều hành, tài khoản nhóm báo cơm tổng (dùng chung), bếp; mọi tài khoản còn lại đều bắt buộc.** – [[KPI Hồ sơ bắt buộc]]
 - Danh sách ban điều hành & hành chính nhân sự ở tab Nhân sự: **chỉ chủ sở hữu xem**. – [[KPI Hồ sơ bắt buộc]]
 
+## Kỹ năng (22/10)
+- Chủ dự án giao: "cứ làm thứ tốt nhất, tham khảo chuyên gia". Đã chốt theo 2 chuyên gia: 4 cấp ILUO, trọng số A/B/C do BĐH đặt, cấp 3–4 BĐH xác nhận, hạn 24 tháng, điểm chỉ mô phỏng – chưa gắn lương. – [[KPI Kỹ năng]]
+- Quy tắc làm việc mới: sau mỗi lần sửa phải rà lại toàn bộ logic code, logic hiển thị và công thức (đã ghi vào CLAUDE.md).
+
 ## Phong cách giao diện web KPI
 - Thích kiểu **thiết bị đo nhà máy**; chê bộ 3D "như đồ chơi", 7 mẫu đầu demo-2, demo-4 (trừ số 5), demo-5, demo tương tác và giao diện nền. Hướng hiện tại: làm lại đúng màn hình đang dùng, đặt bản cũ cạnh bản mới. – [[KPI Demo giao diện]]
 - Bỏ qua demo 3D CSS (08/10). – [[KPI Demo đã bỏ]]

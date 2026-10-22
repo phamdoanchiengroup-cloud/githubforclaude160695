@@ -501,6 +501,13 @@ Bấm đúp **2-CAP-NHAT.bat** (chưa tự triển khai thì Triển khai → Qu
 - Tab **Nhân sự** có thêm khối **"Ban điều hành & Hành chính nhân sự"** – chỉ chủ sở hữu thấy.
 - Tab **Nhân sự** có thẻ "Hồ sơ chưa đủ: x/y người", bấm "Xem danh sách" để thấy tên theo xưởng.
 
+## KỸ NĂNG 22/10 (tab mới "Kỹ năng") – đổi Code.gs + Index.html
+Bấm đúp **2-CAP-NHAT.bat**, rồi Ctrl+F5. Không có hàm cần chạy (2 sheet `KyNang`, `KyNangNhanVien` tự tạo khi có người đề xuất / gán lần đầu).
+- Menu **Danh mục → Kỹ năng**: Ma trận (người × kỹ năng) · Danh mục kỹ năng · Chờ duyệt · Báo cáo. Công nhân thấy "Kỹ năng của tôi".
+- Trưởng / phó phòng: **+ Đề xuất kỹ năng** (tên, mô tả, 2–8 tiêu chí đạt, công đoạn liên quan) → ban điều hành **Duyệt** (chọn trọng số A/B/C) hoặc **Trả lại** (ghi lý do).
+- Bấm ô trong ma trận để ghi kết quả kiểm tra: 1 Đang học · 2 Làm được · 3 Thành thạo · 4 Kèm được. Từ cấp 2 phải tích đủ tiêu chí + ghi bằng chứng. Cấp 3–4 chờ ban điều hành xác nhận.
+- Điểm kỹ năng = trọng số × cấp, **đang chạy thử, chưa tính vào lương**.
+
 ## PHÂN TÍCH ĐỊNH MỨC THEO "NGƯỜI KHÁ = 90%" 22/10 – đổi Code.gs + Index.html
 Bấm đúp **2-CAP-NHAT.bat** (nếu máy chưa tự triển khai thì Triển khai → Quản lý triển khai → ✏️ → Phiên bản mới → Triển khai), rồi Ctrl+F5. Không có hàm cần chạy.
 - Định mức gợi ý để **người khá (top 25% của công đoạn) đạt 90%** – người ở giữa khoảng 85%, người giỏi khoảng 95–100%.

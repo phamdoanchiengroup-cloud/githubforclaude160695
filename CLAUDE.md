@@ -27,6 +27,12 @@ File này được Claude Code tự đọc khi mở repo. Nó giữ **quy tắc 
 ## Quy tắc kỹ thuật không được quên
 - **Web KPI:** `kpi-app/Code.gs`, `kpi-app/Index.html` (và `SoDo.html`, `HoatAnh.html`, `AmThanh.html`) là bản **sinh ra** từ `kpi-app/goc/` bằng `tests/va-code.py` và `tests/va-index.py` (mỗi tính năng là một "mục" vá). Sửa thì sửa script vá rồi dựng lại, đừng sửa tay bản sinh ra. Đổi `SoDo` thì phải gửi kèm `Index.html`. Hướng dẫn cho chủ dự án: `kpi-app/HUONG-DAN-CAP-NHAT.md`. Chi tiết: `bo-nao/KPI/`.
 - Chạy kiểm thử liên quan trước khi commit: `bo-nao/KPI/KPI Kiểm thử.md`.
+- **Sau MỖI lần sửa, luôn rà soát lại toàn bộ** (chủ dự án yêu cầu 22/10):
+  - logic code (máy chủ + web);
+  - logic hiển thị trên web (đúng quyền, đúng số, đúng trạng thái, điện thoại không tràn);
+  - các công thức (KPI, định mức, xếp loại, điểm…).
+  
+  Rà xong mới commit. Báo cho chủ dự án biết đã rà những gì và tìm ra gì.
 
 ## Bộ não thứ hai `bo-nao/` (kiểu Obsidian)
 - Mỗi ghi chú một chủ đề, tên file = tiêu đề, thư mục = nhóm (`KPI/`, `Chung/`; file ở gốc là ghi chú tổng hợp). Liên kết bằng `[[Tên ghi chú]]`, dòng 3 mỗi ghi chú ghi `Liên quan: [[...]]`.

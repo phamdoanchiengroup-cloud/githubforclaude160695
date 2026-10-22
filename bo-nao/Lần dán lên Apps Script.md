@@ -14,6 +14,7 @@ Liên quan: [[Việc chờ chủ dự án]] · [[KPI Tổng quan và cách dựn
 - **Hồ sơ bắt buộc (22/10)**: Code.gs + Index.html (clasp). – [[KPI Hồ sơ bắt buộc]]
 - **Mốc định mức người khá = 90% (22/10 tối)**: Code.gs + Index.html (clasp). – [[KPI Phân tích định mức]]
 - **Trung vị bỏ người học việc 22/10**: Code.gs + Index.html (clasp). – [[KPI Phân tích định mức]]
+- **Kỹ năng 22/10** (tab mới, đợt 1: danh mục + duyệt, ma trận 4 cấp, Kỹ năng của tôi): Code.gs + Index.html (clasp). – [[KPI Kỹ năng]]
 - **Sửa KPI trình duyệt + bỏ nhắc Chốt bù 22/10**: Code.gs + Index.html (clasp: `2-CAP-NHAT.bat`). – [[KPI Soát đổi định mức 22-10]]
 - **Thang xếp loại 22/10** (S/A+/A/B/C/D): đổi cả 5 file (Code, Index, SoDo, AmThanh; HoatAnh không đổi) – chủ dự án đã có clasp nên chỉ cần bấm `2-CAP-NHAT.bat`. – [[KPI Thang xếp loại]]
 - **Chia đôi màn hình 21/10** (Bảng KPI, Nhân sự, KPI quản lý): chỉ `Index.html` bản mới nhất. – [[KPI Chia đôi màn hình]]
