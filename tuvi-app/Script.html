@@ -27,7 +27,7 @@
     });
   }
   /** Mã phiên bản giao diện – phải trùng với Index.html (meta tcc-ban) và Styles.html (--tcc-ban) */
-  var BAN_GIAO_DIEN = '2026.10.22.4';
+  var BAN_GIAO_DIEN = '2026.10.23.1';
   function storeGet(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
   function storeSet(k, v) { try { localStorage.setItem(k, v); } catch (e) { /* bỏ qua */ } }
 
@@ -305,7 +305,7 @@
   }
   function moDangNhap(ghiChu, tab) {
     $('lgErr').textContent = ''; $('rgErr').textContent = ''; $('lgPass').value = '';
-    $('authNote').textContent = ghiChu || 'Chưa đăng nhập bạn vẫn lập được lá số và xem phần hé lộ. Đăng nhập để mở khóa luận giải, lưu lịch sử và tải PDF.';
+    $('authNote').textContent = ghiChu || 'Luận giải 6 hệ đã mở miễn phí. Đăng ký để lưu lá số, nhận luận giải hằng ngày và xu quà để mở Tổng hợp 6 hệ.';
     authTab(tab || 'in');
     var qd = quaDK(), rq = $('rgQua');
     if (rq) { rq.hidden = !qd; rq.innerHTML = qd ? '🎁 Tạo tài khoản nhận ngay <b>' + qd + ' xu</b>' + (state.refMoi ? ' (có ' + ((bgHienTai() || {}).thuongGTDangKy || 0) + ' xu thưởng lời mời)' : '') + ' – đủ mở Tổng hợp 6 hệ (' + fmtXu(giaPhan('co_ban').xu) + ').' : ''; }
@@ -977,8 +977,8 @@
     if (r.khach) {
       if (r.canMo && soVe()) return { tieuDe: 'Bạn còn ' + soVe() + ' lượt gia đình', phan: 've', nut: 'Dùng 1 lượt cho lá số này', moTa: 'Mở Tổng hợp 6 hệ + vận năm ' + r.tuvi.info.viewYear + ' – không trừ xu.', phu: '' };
       var dv = dvHienTai(r);
-      return { tieuDe: 'Bạn đang xem bản giới hạn', phan: 'co_ban', nut: 'Mở khóa · ' + fmtXu(co.xu),
-        moTa: (dv ? 'Bạn đang ở đại vận ' + dv.khoang + ' (' + dv.danhGia.toLowerCase() + '). ' : '') + 'Mở luận giải đầy đủ 6 hệ – chỉ ' + fmtTien(co.xu * 1000) + ', xem vĩnh viễn.', phu: [lanDau, soDu].filter(Boolean).join(' · ') };
+      return { tieuDe: 'Luận giải 6 hệ đã mở miễn phí', phan: 'co_ban', nut: 'Mở Tổng hợp 6 hệ · ' + fmtXu(co.xu),
+        moTa: (dv ? 'Bạn đang ở đại vận ' + dv.khoang + ' (' + dv.danhGia.toLowerCase() + '). ' : '') + 'Phần Tổng hợp ghép 6 hệ thành kết luận 9 lĩnh vực – chỉ ' + fmtTien(co.xu * 1000) + ', xem vĩnh viễn.', phu: [lanDau, soDu].filter(Boolean).join(' · ') };
     }
     var q = r.quyen, v = r.vanTom || {}, vy = r.tuvi.info.viewYear;
     if (!q) return null;
@@ -992,6 +992,8 @@
         phu: [co.goc > co.xu ? 'Giá khai trương (trước ' + fmtXu(co.goc) + ')' : '', lanDau, soDu].filter(Boolean).join(' · ') };
     }
     var dvn = dvHienTai(r);
+    if (dvn && dvn.khoa && qd && qd >= giaDv(dvNamBd(dvn)).xu) return { tieuDe: '🎁 Đăng ký miễn phí – tặng ' + qd + ' xu', phan: 'dai_van|' + dvNamBd(dvn), nut: 'Nhận quà & mở 10 năm này',
+      moTa: 'Đủ mở ngay đại vận ' + dvn.khoang + ' bạn đang sống (' + fmtXu(giaDv(dvNamBd(dvn)).xu) + ') – năm bản lề, cơ hội, rủi ro.', phu: '' };
     if (dvn && dvn.khoa) return { tieuDe: '10 năm bạn đang sống còn khóa', phan: 'dai_van|' + dvNamBd(dvn), nut: 'Mở đại vận · ' + fmtXu(giaDv(dvNamBd(dvn)).xu),
       moTa: 'Đại vận ' + dvn.khoang + ' – ' + dvn.danhGia.toLowerCase() + ': năm bản lề, cơ hội, rủi ro.', phu: soDu };
     if (!v.coNam) return { tieuDe: 'Vận năm ' + vy + ' còn khóa', phan: 'nam|' + vy, nut: 'Mở năm ' + vy + ' · ' + fmtXu(giaPhan('nam').xu),
@@ -1034,7 +1036,7 @@
     bar.hidden = false;
     bar.innerHTML = '<div class="cb-nd"><b>🔓 ' + esc(m.tieuDe) + '</b> – ' + esc(m.moTa) + (m.phu ? '<small>' + esc(m.phu) + '</small>' : '') + '</div>' +
       '<button type="button" class="btn btn-primary btn-sm" ' + attrMua(m) + '>' + esc(m.nut) + '</button>' +
-      (m.phan === 'co_ban' ? '<button type="button" class="btn btn-ghost btn-sm" data-mua="tron_goi">Trọn đời · ' + giaHtml('tron_goi') + '</button>' : '') +
+      (m.phan === 'co_ban' && state.token ? '<button type="button" class="btn btn-ghost btn-sm" data-mua="tron_goi">Trọn đời · ' + giaHtml('tron_goi') + '</button>' : '') +
       '<button type="button" class="cb-x" data-cta-x aria-label="Ẩn">✕</button>';
     capNhatCuon();
   }
@@ -1061,7 +1063,7 @@
     if (m) {
       $('qsMoTa').innerHTML = '<b>' + esc(m.tieuDe) + '.</b> ' + esc(m.moTa) + (m.phu ? '<br>' + esc(m.phu) : '');
       nut = '<button type="button" class="btn btn-sm btn-vang" ' + attrMua(m) + '>🔓 ' + esc(m.nut) + '</button>' +
-        (m.phan === 'co_ban' ? '<button type="button" class="btn btn-ghost btn-sm" data-mua="tron_goi">Trọn đời · ' + giaHtml('tron_goi') + '</button>' : '') +
+        (m.phan === 'co_ban' && state.token ? '<button type="button" class="btn btn-ghost btn-sm" data-mua="tron_goi">Trọn đời · ' + giaHtml('tron_goi') + '</button>' : '') +
         (state.token && !toanQuyen() ? '<button type="button" class="btn btn-ghost btn-sm" data-nap>＋ Nạp xu</button>' : '');
     } else {
       $('qsMoTa').innerHTML = 'Hiểu nhau để thương nhau đúng cách – lập lá số cho <b>người thân, người thương</b>, xem độ hợp tuổi và năm cưới hỏi, năm có con.';
@@ -1085,7 +1087,8 @@
       var y = window.pageYOffset, H = document.documentElement.scrollHeight - window.innerHeight;
       $('docBar').style.width = (H > 0 ? Math.min(100, y / H * 100) : 0) + '%';
       $('lenDau').classList.toggle('hien', y > 700);
-      var bar = $('ctaBar'), hien = !bar.hidden && y > 420;
+      var st = $('qcStrip'), stR = st && !st.hidden ? st.getBoundingClientRect() : null;
+      var bar = $('ctaBar'), hien = !bar.hidden && y > Math.max(900, window.innerHeight * 1.5) && !(stR && stR.bottom > 0);
       bar.classList.toggle('hien', hien); document.body.classList.toggle('co-cta', hien);
       document.documentElement.style.setProperty('--top-h', Math.round(caoThanhTren()) + 'px');
       if (!dh.muc.length) { $('tocHien').textContent = ''; return; }
@@ -1147,7 +1150,11 @@
 
   /* ------------------------ TABS ------------------------ */
   function showTab(name) {
-    document.querySelectorAll('.tab').forEach(function (t) { t.classList.toggle('active', t.getAttribute('data-tab') === name); });
+    document.querySelectorAll('.tab').forEach(function (t) { var on = t.getAttribute('data-tab') === name; t.classList.toggle('active', on); t.setAttribute('aria-selected', on ? 'true' : 'false'); t.tabIndex = on ? 0 : -1; });
+    document.body.setAttribute('data-tab', name);
+    // Điện thoại: cuộn thanh tab ngang để tab đang chọn nằm giữa (không cắt chữ)
+    var tb = $('tabs'), ta = tb && tb.querySelector('.tab.active');
+    if (ta && tb.scrollWidth > tb.clientWidth) tb.scrollLeft = Math.max(0, ta.offsetLeft - tb.offsetLeft - (tb.clientWidth - ta.offsetWidth) / 2);
     document.querySelectorAll('.tab-page').forEach(function (p) { p.classList.toggle('active', p.id === 'page-' + name); });
     if (name === 'hist') loadHistory();
     if (name === 'chart') setTimeout(function () { coLaSo(); drawOverlay(); }, 30);
@@ -1284,7 +1291,7 @@
       poly.setAttribute('points', ds.map(function (c, i) { return diem(i, R * (c.d || 0) / 10 * k).join(','); }).join(' '));
       g.innerHTML = ds.map(function (c, i) { var p = diem(i, R * (c.d || 0) / 10 * k); return '<circle cx="' + p[0] + '" cy="' + p[1] + '" r="3.2" fill="#fff"><title>' + esc(c.cung + ': ' + bkVn(c.d) + '/10') + '</title></circle>'; }).join('');
     }
-    ve(BK_IT ? 1 : .02); bkKhiThay(s, function () { bkChay(1500, ve); });
+    ve(1); bkKhiThay(s, function () { bkChay(1500, ve); });
   }
 
   function bkDonut(D) {
@@ -1300,7 +1307,7 @@
     s.innerHTML = h;
     $('bkDonutGhi').innerHTML = ks.map(function (k) { return '<span style="color:' + (BK_HANH[k] || '#ccc') + '">●</span> ' + esc(k) + ' ' + bkVn(Math.round(+D.hanh[k] || 0)) + '%'; }).join(' &nbsp; ');
     function ve(k) { s.querySelectorAll('.bk-seg').forEach(function (e) { var p = +e.getAttribute('data-p'), o = +e.getAttribute('data-o'); e.setAttribute('stroke-dasharray', Math.max(0, C * p * k - 2).toFixed(1) + ' ' + C); e.setAttribute('stroke-dashoffset', (-C * o * k).toFixed(1)); }); }
-    ve(BK_IT ? 1 : 0); bkKhiThay(s, function () { bkChay(1400, ve); });
+    ve(1); bkKhiThay(s, function () { bkChay(1400, ve); });
   }
 
   function bkGauge(D) {
@@ -1315,16 +1322,16 @@
     $('bkTc').innerHTML = D.tieuChi.map(function (t) { return '<div><span class="' + (t.ok ? 'tot' : 'xau') + '">' + (t.ok ? '✓' : '✗') + '</span> ' + esc(t.t) + '</div>'; }).join('') + (D.cuong ? '<div class="bdk-ghi">' + esc(D.cuong) + '</div>' : '');
     var phe = Math.max(0, Math.min(100, +D.phe || 0));
     function ve(k) { $('bkKim').setAttribute('transform', 'rotate(' + (phe / 100 * k * 180).toFixed(1) + ' ' + cx + ' ' + cy + ')'); $('bkPct').textContent = bkVn(Math.round(phe * k * 10) / 10) + '%'; }
-    ve(BK_IT ? 1 : 0); bkKhiThay(s, function () { bkChay(1800, ve); });
+    ve(1); bkKhiThay(s, function () { bkChay(1800, ve); });
   }
 
   function bkLv(D) {
     var el = $('bkLv'); if (!el) return;
     el.innerHTML = D.lv.map(function (v) {
       var c = v.h === 'tot' ? 'tot' : v.h === 'xau' || v.h === 'kho' ? 'xau' : 'vua';
-      return '<div><span>' + esc(v.ten) + '</span><span class="bdk-ray"><i data-w="' + Math.max(0, Math.min(100, v.d * 10)) + '"></i>' + v.p.map(function (p) { return '<s style="left:' + Math.max(0, Math.min(100, p.d * 10)) + '%" title="' + esc(p.he + ' ' + bkVn(p.d)) + '"></s>'; }).join('') + '</span><b class="' + c + '">' + bkVn(v.d) + '</b></div>';
+      return '<div><span>' + esc(v.ten) + '</span><span class="bdk-ray"><i data-w="' + Math.max(0, Math.min(100, v.d * 10)) + '" style="width:' + Math.max(0, Math.min(100, v.d * 10)) + '%"></i>' + v.p.map(function (p) { return '<s style="left:' + Math.max(0, Math.min(100, p.d * 10)) + '%" title="' + esc(p.he + ' ' + bkVn(p.d)) + '"></s>'; }).join('') + '</span><b class="' + c + '">' + bkVn(v.d) + '</b></div>';
     }).join('');
-    bkKhiThay(el, function () { el.querySelectorAll('.bdk-ray i').forEach(function (i, n) { setTimeout(function () { i.style.width = i.getAttribute('data-w') + '%'; }, BK_IT ? 0 : n * 90); }); });
+    bkKhiThay(el, function () { if (BK_IT) return; el.querySelectorAll('.bdk-ray i').forEach(function (i, n) { i.style.width = '0'; setTimeout(function () { i.style.width = i.getAttribute('data-w') + '%'; }, 60 + n * 90); }); });
   }
 
   function bkDoi(D) {
@@ -1359,7 +1366,7 @@
     if (D.tuoi) { var nay = Math.max(0, Math.min(N - 1, D.tuoi - 1)); h += '<line x1="' + X(nay) + '" y1="' + (Tp - 10) + '" x2="' + X(nay) + '" y2="' + (B + 44) + '" stroke="#fff" stroke-opacity=".5" stroke-dasharray="2 4"/><text x="' + X(nay) + '" y="' + (Tp - 14) + '" text-anchor="middle" font-size="11" fill="#f5f1ea">Bây giờ</text>'; }
     h += '<g id="bkCon" opacity="0"><line id="bkConL" y1="' + Tp + '" y2="' + B + '" stroke="#fff" stroke-opacity=".6"/><circle id="bkConT" r="5" fill="#e8cf8f" stroke="#1b1712" stroke-width="2"/><circle id="bkConQ" r="5" fill="#e3a588" stroke="#1b1712" stroke-width="2"/></g>';
     s.innerHTML = h;
-    var clR = $('bkClR'); function ve(k) { clR.setAttribute('width', (W * k).toFixed(0)); } ve(BK_IT ? 1 : 0); bkKhiThay(s, function () { bkChay(2200, ve); });
+    var clR = $('bkClR'); function ve(k) { clR.setAttribute('width', (W * k).toFixed(0)); } ve(1); bkKhiThay(s, function () { bkChay(2200, ve); });
     var the = $('bkThe'), wrap = $('bkDoiWrap'), duong1 = coDoi ? tai : dvNam;
     function chon(ev) {
       var rc = s.getBoundingClientRect(), cxp = ev.touches ? ev.touches[0].clientX : ev.clientX, px = (cxp - rc.left) / rc.width * W;
@@ -1391,7 +1398,7 @@
     h += '<text x="' + L + '" y="22" font-size="12" fill="#8f8576">★ tháng vàng · viền sáng = tháng hiện tại · tháng âm lịch</text>';
     s.innerHTML = h;
     function ve(k) { s.querySelectorAll('.bk-cot').forEach(function (r, i) { var kk = Math.max(0, Math.min(1, k * 1.6 - i * .05)), hh = +r.getAttribute('data-h') * kk; r.setAttribute('y', (B - hh).toFixed(1)); r.setAttribute('height', hh.toFixed(1)); }); }
-    ve(BK_IT ? 1 : 0); bkKhiThay(s, function () { bkChay(1600, ve); });
+    ve(1); bkKhiThay(s, function () { bkChay(1600, ve); });
   }
 
   function bkSk(D) {
@@ -1405,7 +1412,7 @@
       el.querySelectorAll('.bk-vg').forEach(function (c) { c.setAttribute('stroke-dasharray', (C * Math.min(1, +c.getAttribute('data-p')) * k).toFixed(1) + ' ' + C); });
       el.querySelectorAll('.bk-vt').forEach(function (t) { t.textContent = Math.round(+t.getAttribute('data-p') * k) + '%'; });
     }
-    ve(BK_IT ? 1 : 0); bkKhiThay(el, function () { bkChay(1500, ve); });
+    ve(1); bkKhiThay(el, function () { bkChay(1500, ve); });
   }
 
   /** Hạt sáng bạc – vàng bay lên trên nền (canvas #bkHat); tắt khi người dùng chọn giảm chuyển động */
@@ -5430,6 +5437,13 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
       $('tabs').addEventListener('click', function (e) {
         var t = e.target.closest('.tab');
         if (t) showTab(t.getAttribute('data-tab'));
+      });
+      // Bàn phím: mũi tên trái/phải, Home/End chuyển tab (chuẩn tablist)
+      $('tabs').addEventListener('keydown', function (e) {
+        var ds = Array.prototype.filter.call($('tabs').querySelectorAll('.tab'), function (t) { return t.offsetParent !== null; });
+        var i = ds.indexOf(document.activeElement); if (i < 0) return;
+        var j = e.key === 'ArrowRight' || e.key === 'ArrowDown' ? (i + 1) % ds.length : e.key === 'ArrowLeft' || e.key === 'ArrowUp' ? (i - 1 + ds.length) % ds.length : e.key === 'Home' ? 0 : e.key === 'End' ? ds.length - 1 : -1;
+        if (j < 0) return; e.preventDefault(); ds[j].focus(); showTab(ds[j].getAttribute('data-tab'));
       });
     });
     buoc('lịch sử', function () { $('btnHistoryTop').addEventListener('click', function () { showTab('hist'); }); });

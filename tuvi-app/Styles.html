@@ -1,6 +1,6 @@
 <style>
 /* Mã phiên bản giao diện – phải trùng với Index.html (meta tcc-ban) và Script.html (BAN_GIAO_DIEN) */
-:root { --tcc-ban: "2026.10.22.4"; }
+:root { --tcc-ban: "2026.10.23.1"; }
 /* ================================================================
    THIÊN CƠ CÁC — phong cách tiên hiệp sáng: ngọc bích, kim sa, mây trắng
    ================================================================ */
@@ -2134,4 +2134,65 @@ table td, table th { border-color: rgba(226, 198, 144, .14); }
 .bc-brand b { font-family: "Cormorant Garamond", serif; font-size: 24px; color: var(--bc-dau); }
 .bc-ket .cta-anh { display: block; width: 140px; height: 140px; object-fit: cover; border-radius: 50%; margin: 0 0 14px; }
 .bc-root .pc-tbl td { color: #efe6d6; } .bc-root .pc-foot { color: #bfae92; }
+
+/* ===================== TƯ VẤN CHUYÊN GIA 10/2026 (UI, UX, tiếp cận, tăng trưởng) =====================
+ * Sửa theo báo cáo của các chuyên gia ui-designer, ux-architect, accessibility-auditor, growth-hacker (22/10).
+ * Chỉ chỉnh cỡ chữ, khoảng cách, vùng bấm, độ tương phản trong phạm vi bảng màu Bạch Kim. */
+/* Tab là nút bấm thật (bàn phím, trình đọc màn hình) – giữ kiểu chữ cũ */
+button.tab { font: inherit; color: inherit; cursor: pointer; }
+.tab:focus-visible, .btn:focus-visible, summary:focus-visible, a:focus-visible { outline: 3px solid var(--gold); outline-offset: 2px; }
+/* Viền ô nhập khi đang gõ: rõ ràng (≥ 3:1) */
+input:focus-visible, select:focus-visible, textarea:focus-visible { outline: 3px solid var(--gold); outline-offset: 1px; }
+input::placeholder, textarea::placeholder { color: #a89a88; opacity: 1; }
+/* Nút 3D/2D đang bật: chữ tối trên nền vàng (≈ 11:1) */
+.che-do button[aria-pressed="true"] { color: var(--paper); }
+/* Nhãn điểm /10: màu của giao diện tối (cũ là màu giao diện sáng, chìm trên nền than) */
+.dh-diem { font-size: 14px; }
+.dh-diem.tot { color: var(--good-ink); background: rgba(238, 240, 242, .1); }
+.dh-diem.vua { color: var(--mid-ink); background: rgba(232, 207, 143, .12); }
+.dh-diem.kho { color: var(--bad-ink); background: rgba(228, 138, 138, .12); }
+.theme-light .dh-diem.tot, .pdf-root.theme-light .dh-diem.tot { color: #1e6b3b; } .theme-light .dh-diem.vua { color: #8a6414; } .theme-light .dh-diem.kho { color: #9e2b22; }
+/* Chữ đọc thoải mái cho người lớn tuổi: cỡ lớn hơn, dòng không quá dài */
+.result-wrap .cung-van-de-hieu p, .result-wrap .cung-van-de-hieu li, .result-wrap .dh-panel p, .result-wrap .dh-panel li, .result-wrap .lg-body p, .result-wrap .lg-body li, .result-wrap ul.th-kl > li, .result-wrap .lede { font-size: 16px; line-height: 1.7; }
+.result-wrap .cung-van-de-hieu p, .result-wrap .cung-van-de-hieu li, .result-wrap .dh-panel p, .result-wrap .dh-panel li { max-width: 72ch; }
+.result-wrap h5, .result-wrap summary, .result-wrap .lg-meta, .result-wrap h4.dd-h { font-size: 14.5px; }
+.result-wrap small { font-size: 13px; }
+.btn-sm { font-size: 14px; }
+.bdk-ghi, .bdk-tru small { opacity: 1; color: var(--ink-soft); font-size: 13px; }
+.bdk-nhan, .bdk-o h4 { letter-spacing: 1.5px; }
+.tab.tab-vh::after { font-size: 10px; }
+/* Vùng bấm tối thiểu 44px trên điện thoại */
+@media (max-width: 760px) {
+  .btn, .btn-sm, .tab, summary, .che-do button { min-height: 44px; }
+  .btn-sm { display: inline-flex; align-items: center; justify-content: center; }
+  .chao-x, .cb-x { min-width: 44px; min-height: 44px; }
+  input[type="checkbox"] { width: 22px; height: 22px; }
+  label.check { min-height: 44px; display: flex; align-items: center; gap: 8px; }
+}
+/* Thanh tab trên điện thoại: cuộn ngang mượt, mép phải mờ dần báo còn tab, không cắt chữ */
+@media (max-width: 1080px) {
+  .res-top .tabs { scroll-snap-type: x proximity; -webkit-mask-image: linear-gradient(90deg, #000 88%, transparent); mask-image: linear-gradient(90deg, #000 88%, transparent); padding-right: 24px; }
+  .res-top .tab { flex: none; scroll-snap-align: center; position: relative; }
+  .res-top .tab.tab-vh::after { top: -4px; right: -2px; }
+}
+/* Thanh mời mua nổi: không lệch mép, không che chữ cuối trang; điện thoại chỉ 2 dòng */
+body.co-cta .result-wrap { padding-bottom: 120px; }
+@media (max-width: 640px) {
+  .cta-bar { left: 12px; right: 12px; width: auto; transform: translateY(150%); }
+  .cta-bar.hien { transform: none; }
+  .cta-bar .cb-nd { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; font-size: 13.5px; }
+  .cta-bar .cb-nd small { display: none; }
+  body.co-cta .result-wrap { padding-bottom: 150px; }
+}
+/* Điện thoại: bớt lớp khung lồng nhau để cột chữ rộng hơn */
+@media (max-width: 620px) {
+  .result-wrap .panel { padding-left: 14px; padding-right: 14px; }
+  .result-wrap .panel .panel, .result-wrap .panel .cung-van-de-hieu, .result-wrap .panel .lg-block { padding-left: 10px; padding-right: 4px; margin-left: 0; margin-right: 0; }
+}
+/* Thẻ hồ sơ trên điện thoại: 4 nút thành lưới 2×2, mỗi nút một dòng */
+@media (max-width: 640px) { .ho-so-nut { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; } .ho-so-nut .btn { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-size: 14px; } }
+/* Lời chào chỉ ở tab Lá số – các tab khác vào thẳng nội dung */
+body[data-tab]:not([data-tab="chart"]) #chaoBan { display: none; }
+/* In / chụp: hiện đủ các khung "hiện dần khi cuộn" */
+@media print { .cho-hien { opacity: 1 !important; transform: none !important; } }
 </style>

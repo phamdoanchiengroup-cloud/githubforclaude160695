@@ -4,6 +4,7 @@ Nhóm: Bắt đầu · Cập nhật 22/10/2026
 Liên quan: [[Lần dán lên Apps Script]] · [[TCC Tiến trình]] · [[00 Mục lục]]
 
 ## Việc còn ngỏ
+- (23/10) Giao diện đã sửa theo tư vấn 4 chuyên gia (mã `2026.10.23.1`). Còn 7 đề xuất cần chủ dự án duyệt vì đụng bento/thứ tự bán hàng – danh sách ở [[TCC Giao diện]] mục 23/10.
 - (22/10) Bát Tự Hà Lạc & Tứ Trụ: đã sửa lỗi hào nguyên đường, thêm Tam phúc thần (Địa nguyên khí), 10 thể cách tốt, điều hậu 10 can × 12 tháng. Chờ chủ dự án bấm `2-CAP-NHAT.bat` và chọn cách tính Hóa công (theo mùa hay theo phân – chí). – [[TCC Bát Tự Hà Lạc và Tứ Trụ đối chiếu nguồn]]
 - (22/10) PDF thiết kế lại cho khổ A4 (nền giấy ngà, 55 trang thay vì 97). Chờ chủ dự án bấm `2-CAP-NHAT.bat`, tải thử PDF lá số của mình và góp ý. – [[TCC PDF]]
 - (22/10 khuya) Zalo: chủ dự án (1) xóa trigger `guiBanTinSang` bên dự án Trợ lý KPI, (2) chép `ZALO_TOKEN` + `CHU_CHAT_ID` sang Thuộc tính tập lệnh của Thiên Cơ Các (tên `ZALO_TOKEN`, `ZALO_CHAT_ID`), (3) chạy `thuZaloVanNgay`. Chờ xác nhận tin Zalo đã đến. – [[TCC Luận giải hằng ngày qua email]]

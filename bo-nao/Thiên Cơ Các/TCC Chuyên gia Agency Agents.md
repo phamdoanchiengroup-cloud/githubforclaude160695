@@ -17,6 +17,9 @@ Nhóm: Thiên Cơ Các · Tạo 22/10/2026
 - **Kiểm thử:** `reality-checker` (mặc định "chưa đạt" cho tới khi có bằng chứng) · `evidence-collector` (chụp màn hình làm bằng chứng) · `accessibility-auditor` (dễ dùng cho người lớn tuổi, điện thoại).
 - **Khác:** `legal-compliance-checker` (điều khoản, dữ liệu cá nhân, thanh toán) · `personal-growth-mentor` (giọng văn lời khuyên tầng 2).
 
+## Đã dùng
+- 23/10: ui-designer, ux-architect, accessibility-auditor, growth-hacker (+ offer-lead-gen-strategist) tư vấn thiết kế lại web – xem [[TCC Giao diện]] mục 23/10.
+
 ## Cách dùng
 - Trong phiên Claude Code: nói "dùng chuyên gia `ui-designer` xem lại tab Tổng quan" hoặc "nhờ `reality-checker` kiểm tra bản PDF". Claude sẽ giao việc cho chuyên gia đó (chạy như trợ lý con).
 - Phiên mới đọc lại danh sách ở ghi chú này; muốn thêm chuyên gia khác từ repo gốc thì tải file `.md` tương ứng, đổi `name:`, thêm mục bối cảnh, ghi vào đây.
