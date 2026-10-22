@@ -27,7 +27,7 @@
     });
   }
   /** Mã phiên bản giao diện – phải trùng với Index.html (meta tcc-ban) và Styles.html (--tcc-ban) */
-  var BAN_GIAO_DIEN = '2026.10.22.2';
+  var BAN_GIAO_DIEN = '2026.10.22.3';
   function storeGet(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
   function storeSet(k, v) { try { localStorage.setItem(k, v); } catch (e) { /* bỏ qua */ } }
 
@@ -4787,47 +4787,31 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
     return html;
   }
 
-  /* ======================== XUẤT PDF ======================== */
-  var PDF_TEN = { tom: 'Chân dung hé lộ & mật mã cá nhân', linhvuc: 'Tổng hợp 6 hệ theo 9 lĩnh vực', vh: 'Vận hạn: đại vận – năm – tháng – ngày', nguoi: 'Con người bạn', duyen: 'Tình duyên & người bạn đời', doi: 'Đường đời & sự nghiệp', bien: 'Biến cố hội tụ 6 hệ',
-    van: 'Vận năm – tháng – ngày', chart: 'Lá số Tử Vi & chân dung lá số', battu: 'Bát Tự – Tứ Trụ', halac: 'Bát Tự Hà Lạc', astro: 'Chiêm tinh – Bản đồ sao',
-    so: 'Thần số học', hd: 'Human Design', them: 'Kiểm chứng & bảng may mắn' };
+  /* ======================== XUẤT PDF ========================
+   * Bản 10/2026: báo cáo dựng riêng cho khổ A4 từ dữ liệu luận giải (không chụp lại giao diện web).
+   * Mỗi phần = trang mở đầu chương + các khối chữ/bảng gọn; dàn trang tự động (danTrang) rồi chụp từng trang. */
+  var PDF_TEN = { tom: 'Chân dung tóm lược', linhvuc: '6 hệ nhìn 9 lĩnh vực đời bạn', nguoi: 'Con người bạn', duyen: 'Tình duyên & gia đạo', doi: 'Đường đời & sự nghiệp',
+    vh: 'Vận hạn: đại vận, năm & 12 tháng', bien: 'Những năm bước ngoặt', chart: 'Lá số Tử Vi – 12 cung', battu: 'Bát Tự – Tứ Trụ', halac: 'Bát Tự Hà Lạc',
+    astro: 'Chiêm tinh – Bản đồ sao', so: 'Thần số học', hd: 'Human Design', them: 'Phụ lục: bảng may mắn' };
   var PDF_HOOK = {
-    tom: 'Bạn là ai trong một trang: điểm sáng, điều cần canh chừng, thời điểm vàng – và 10 "mật mã" chỉ lộ ra khi ghép 6 hệ lại với nhau.',
-    nguoi: 'Xuất thân, vóc dáng, dấu hiệu trên cơ thể và tính cách – mỗi nét đều được nhiều hệ cùng bỏ phiếu.',
-    duyen: 'Người ấy trông thế nào, tính ra sao, gặp ở đâu – và năm sinh, tháng sinh nào hợp nhất với bạn (chấm điểm).',
+    tom: 'Bạn là ai trong vài trang: nguyên mẫu, điểm sáng, điều cần canh chừng, thời điểm vàng và 10 mật mã cá nhân.',
+    linhvuc: 'Mỗi lĩnh vực được 6 hệ cùng chấm điểm: điều nhiều hệ cùng thấy là điều đáng tin nhất, kèm lời khuyên và năm nên hành động.',
+    nguoi: 'Xuất thân, vóc dáng, dấu hiệu cơ thể và tính cách – mỗi nét đều được nhiều hệ cùng bỏ phiếu.',
+    duyen: 'Người bạn đời trông thế nào, tính ra sao, năm sinh – tháng sinh hợp, thời điểm kết hôn và con cái.',
     doi: 'Chủ đề cuộc đời, nghề hợp và các chặng lên – xuống của đời bạn.',
-    linhvuc: 'Bảng điểm 9 lĩnh vực theo từng hệ, kết luận đồng thuận, điều cần phát huy – cần lưu ý, lời khuyên và năm nên hành động.',
-    vh: 'Dòng thời gian 12 đại vận và vận năm với 12 tháng tốt – xấu – những giai đoạn bạn đã mở.',
-    bien: 'Những năm mà 3–5 hệ cùng chỉ vào một biến cố: tài lộc, thăng tiến, kết hôn, con cái, sức khỏe, gia đạo – xác suất xảy ra cao.',
-    van: 'Năm nay qua năm lăng kính, 12 tháng tốt – xấu, 7 ngày tới, kèm tiểu vận và nguyệt vận Tử Vi.',
-    chart: 'Tấm bản thiết kế số phận an theo đúng giờ sinh, cùng chân dung lá số: bản mệnh, cách cục, cung mạnh và cung cần lưu ý.',
-    battu: 'Tứ Trụ đo năng lượng ngũ hành của bạn: mạnh ở đâu, thiếu gì, cần bổ sung gì – và vì sao.',
-    halac: 'Tám chữ đổi thành số Hà Đồ – Lạc Thư, lập thành quẻ Dịch: Tiên thiên, Hậu thiên và vận trình theo hào.',
-    astro: 'Bầu trời lúc bạn chào đời: 10 hành tinh, 12 nhà và những góc chiếu định hình tính cách, tình yêu, sự nghiệp.',
-    so: 'Những con số ẩn trong ngày sinh và họ tên – mật mã về tài năng, bài học và các đỉnh cao đời bạn.',
-    hd: 'Bản thiết kế năng lượng: cách bạn ra quyết định đúng, làm việc hiệu quả và sống thuận với chính mình.',
-    them: 'Đối chiếu với những sự kiện bạn đã trải qua để kiểm chứng giờ sinh, cùng bảng màu – số – hướng may mắn.'
+    vh: 'Từng đại vận 10 năm qua năm hệ, năm hiện tại với những việc dễ xảy ra, và nhịp 12 tháng âm lịch.',
+    bien: 'Những năm mà nhiều hệ cùng chỉ vào một biến cố – tài lộc, sự nghiệp, hôn nhân, con cái, sức khỏe.',
+    chart: 'Tấm lá số an theo đúng giờ sinh và lời luận dễ hiểu cho từng cung trong 12 cung.',
+    battu: 'Tứ Trụ đo năng lượng ngũ hành của bạn: mạnh ở đâu, thiếu gì, cần bổ sung gì.',
+    halac: 'Tám chữ đổi thành số Hà Đồ – Lạc Thư, lập thành quẻ Dịch Tiên thiên và Hậu thiên.',
+    astro: 'Bầu trời lúc bạn chào đời: các hành tinh, 12 nhà và những nét định hình tính cách, tình yêu, sự nghiệp.',
+    so: 'Những con số ẩn trong ngày sinh và họ tên – tài năng, bài học và các đỉnh cao đời bạn.',
+    hd: 'Bản thiết kế năng lượng: cách bạn ra quyết định đúng và sống thuận với chính mình.',
+    them: 'Màu sắc, con số, hướng, nghề và những điều hợp với bạn – gom lại trong một bảng.'
   };
-  var PDF_TG = ['nguoi', 'duyen', 'doi', 'bien', 'them'];
-  /** Biểu đồ chính của từng hệ đưa vào PDF (sel = bộ chọn, ten = lọc theo tiêu đề khung/biểu đồ, max = số lượng) */
-  var PDF_CHINH = {
-    battu: [{ sel: '.chuyen-sau .panel', ten: /Tứ Trụ/ }],
-    halac: [{ sel: '.que-row' }, { sel: 'figure.chart-fig', ten: /Vận trình theo hào/ }],
-    astro: [{ sel: '.astro-top' }, { sel: 'figure.chart-fig', ten: /nguyên tố/ }],
-    so: [{ sel: '.ts-luoi-row' }, { sel: 'figure.chart-fig', ten: /đỉnh cao|Chu kỳ 9 năm/, max: 2 }],
-    hd: [{ sel: '.hd-top' }]
-  };
-  /** Phần luận tổng hợp theo lĩnh vực của từng hệ (data-g của khung Phần/Bước) đưa thêm vào PDF */
-  var PDF_LUAN = {
-    battu: ['bt-5', 'bt-7', 'bt-9'],
-    halac: ['hlp-3'],
-    astro: ['ctp-3', 'ctp-6'],
-    so: ['tsp-5', 'tsp-6'],
-    hd: ['hdp-2', 'hdp-3', 'hdp-10']
-  };
-  var PDF_NHOM = { tom: 'A · Tổng quan 6 hệ', linhvuc: 'A · Tổng quan 6 hệ', nguoi: 'A · Tổng quan 6 hệ', duyen: 'A · Tổng quan 6 hệ', doi: 'A · Tổng quan 6 hệ',
-    vh: 'B · Vận hạn', bien: 'B · Vận hạn', them: 'D · Phụ lục' };
-  var PDF_DEMO_KEY = { vh: 'van', linhvuc: 'nguoi' };   // bản xem thử: phần hé lộ tương ứng
+  var PDF_NHOM = { tom: 'I · Tổng quan', linhvuc: 'I · Tổng quan', nguoi: 'I · Tổng quan', duyen: 'I · Tổng quan', doi: 'I · Tổng quan',
+    vh: 'II · Vận hạn', bien: 'II · Vận hạn', them: 'Phụ lục' };
+  var PDF_TEOSER = { vh: 'van', linhvuc: 'nguoi' };   // bản xem thử: khóa hé lộ tương ứng trong res.teaser
   function sleep(ms) { return new Promise(function (r) { setTimeout(r, ms); }); }
   function setLoadingText(t) { var el = $('loadingText'); if (el) el.textContent = t; }
   function moPdf() {
@@ -4850,17 +4834,305 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
       var a = (i * 30 - 90) * Math.PI / 180, a2 = (i * 30 - 75) * Math.PI / 180;
       o += '<line x1="' + (200 + 150 * Math.cos(a)).toFixed(1) + '" y1="' + (200 + 150 * Math.sin(a)).toFixed(1) + '" x2="' + (200 + 190 * Math.cos(a)).toFixed(1) + '" y2="' + (200 + 190 * Math.sin(a)).toFixed(1) + '" stroke="#e3b98a" stroke-opacity=".5"/>';
       o += '<line x1="' + (200 + 60 * Math.cos(a)).toFixed(1) + '" y1="' + (200 + 60 * Math.sin(a)).toFixed(1) + '" x2="' + (200 + 110 * Math.cos(a)).toFixed(1) + '" y2="' + (200 + 110 * Math.sin(a)).toFixed(1) + '" stroke="#f3e3bf" stroke-opacity=".25"/>';
-      o += '<text x="' + (200 + 170 * Math.cos(a2)).toFixed(1) + '" y="' + (200 + 170 * Math.sin(a2) + 7).toFixed(1) + '" text-anchor="middle" font-size="20" fill="#f0dcb0" font-family="serif">' + SIGN_KY[i] + '\uFE0E</text>';
+      o += '<text x="' + (200 + 170 * Math.cos(a2)).toFixed(1) + '" y="' + (200 + 170 * Math.sin(a2) + 7).toFixed(1) + '" text-anchor="middle" font-size="20" fill="#f0dcb0" font-family="serif">' + SIGN_KY[i] + '︎</text>';
       o += '<text x="' + (200 + 130 * Math.cos(a2)).toFixed(1) + '" y="' + (200 + 130 * Math.sin(a2) + 6).toFixed(1) + '" text-anchor="middle" font-size="17" fill="#f3e3bf" font-family="serif">' + CHI_HAN[i] + '</text>';
     }
     o += '</svg>';
     return '<img class="pc-ring" alt="" src="data:image/svg+xml;charset=utf-8,' + encodeURIComponent(o) + '" width="560" height="560">';
   }
+  function chanTrang(txt, so, tong, sang) {
+    var c = document.createElement('canvas'); c.width = 1600; c.height = 44;
+    var g = c.getContext('2d');
+    g.font = '500 19px "Be Vietnam Pro", system-ui, sans-serif'; g.fillStyle = sang ? '#9a8569' : '#cdbb9a'; g.textBaseline = 'middle';
+    g.fillText(txt, 0, 24);
+    g.textAlign = 'right'; g.font = '600 20px "Be Vietnam Pro", system-ui, sans-serif'; g.fillText(String(so), 1600, 24);
+    g.strokeStyle = sang ? 'rgba(154,122,85,.35)' : 'rgba(227,185,138,.3)'; g.beginPath(); g.moveTo(0, 2); g.lineTo(1600, 2); g.stroke();
+    return c.toDataURL('image/png');
+  }
+
+  /* ---------- Khối dựng sẵn của báo cáo (lớp bc-*) ---------- */
+  function bcE(s) { return esc(s == null ? '' : String(s)); }
+  function bcSo(x) { return String(Math.round(x * 10) / 10).replace('.', ','); }
+  function bcMuc(d) { return d >= 6.5 ? 'tot' : d <= 4 ? 'xau' : 'vua'; }
+  function bcLi(x, he) {
+    x = String(x == null ? '' : x); var c = /^✓/.test(x) ? 'tot' : /^✗/.test(x) ? 'xau' : /^◇/.test(x) ? 'vua' : '';
+    return '<li' + (c ? ' class="' + c + '"' : '') + '>' + bcE(x.replace(/^[✓✗◇]\s*/, '')) + (he ? ' <span class="bc-he">' + bcE(he) + '</span>' : '') + '</li>';
+  }
+  function bcDs(a, cls) {
+    a = (a || []).filter(function (x) { return x && (typeof x === 'string' ? x.trim() : (x.t || x.ten)); });
+    if (!a.length) return '';
+    return '<ul class="bc-ul' + (cls ? ' ' + cls : '') + '">' + a.map(function (x) { return typeof x === 'string' ? bcLi(x) : bcLi(x.t || x.ten, x.he); }).join('') + '</ul>';
+  }
+  function bcMo(so, ten, hook, nho) {
+    return '<div class="bc-mo bc-nguyen' + (nho ? ' nho' : '') + '"><div class="bc-so">Phần ' + pad(so) + '</div><h1>' + bcE(ten) + '</h1>' + (hook ? '<p>' + bcE(hook) + '</p>' : '') + '</div>';
+  }
+  function bcH2(t, phu) { return '<h2 class="bc-h2">' + bcE(t) + (phu ? ' <small>' + bcE(phu) + '</small>' : '') + '</h2>'; }
+  function bcH3(t, phu) { return '<h3 class="bc-h3">' + bcE(t) + (phu ? ' <small>' + phu + '</small>' : '') + '</h3>'; }
+  function bcP(t, cls) { return t ? '<p class="bc-p' + (cls ? ' ' + cls : '') + '">' + bcE(t) + '</p>' : ''; }
+  function bcHop(tieu, noi, cls) { return noi ? '<div class="bc-hop bc-nguyen' + (cls ? ' ' + cls : '') + '">' + (tieu ? '<b>' + bcE(tieu) + '</b>' : '') + noi + '</div>' : ''; }
+  /** Thanh tỷ lệ: vẽ bằng dải màu nền (html2canvas bỏ sót khối con rỗng bên trong) */
+  function bcVach(pct, m) {
+    var c = 'var(--bc-' + (m === 'tot' || m === 'xau' ? m : 'vua') + ')', x = Math.round(pct);
+    return '<span class="bc-thanh" style="background:linear-gradient(90deg,' + c + ' ' + x + '%,var(--bc-the2) ' + x + '%)"></span>';
+  }
+  function bcThanh(d) {
+    var m = bcMuc(d); return bcVach(Math.max(4, Math.min(100, d * 10)), m) + '<b class="bc-diem ' + m + '">' + bcSo(d) + '</b>';
+  }
+  function bcBang(dau, dong, cls) {
+    if (!dong || !dong.length) return '';
+    return '<table class="bc-tbl' + (cls ? ' ' + cls : '') + '">' + (dau ? '<thead><tr>' + dau.map(function (h) { return '<th>' + bcE(h) + '</th>'; }).join('') + '</tr></thead>' : '') +
+      '<tbody>' + dong.map(function (r) { return '<tr>' + r.map(function (c) { return '<td>' + c + '</td>'; }).join('') + '</tr>'; }).join('') + '</tbody></table>';
+  }
+  function bcO(ds) {   // các ô số liệu lớn
+    ds = ds.filter(function (x) { return x && x[1] != null && x[1] !== ''; });
+    return ds.length ? '<div class="bc-o bc-nguyen">' + ds.map(function (x) { return '<div><small>' + bcE(x[0]) + '</small><b>' + bcE(x[1]) + '</b>' + (x[2] ? '<em>' + bcE(x[2]) + '</em>' : '') + '</div>'; }).join('') + '</div>' : '';
+  }
+  function bcKhoa(t) { return '<p class="bc-khoa">🔒 ' + bcE(t || 'Phần này chưa mở trong tài khoản – báo cáo chỉ in phần đã mở.') + '</p>'; }
+  function bcDoan(doan) {   // [{tieuDe, text, list}] → đoạn văn dễ hiểu
+    return (doan || []).map(function (d) {
+      return '<div class="bc-doan">' + (d.tieuDe ? '<h4>' + bcE(d.tieuDe) + '</h4>' : '') + bcP(d.text) + (d.list && d.list.length ? bcDs(d.list) : '') + '</div>';
+    }).join('');
+  }
+  function bcT(res) { return res.moRong && res.moRong.tongHop || {}; }
+
+  /* ---------- Nội dung từng phần ---------- */
+  function pdfTom(res) {
+    var T = bcT(res), TL = T.tomLuoc; if (!TL) return '';
+    var h = '<div class="bc-mau bc-nguyen"><small>Nguyên mẫu của bạn</small><h2>' + bcE(TL.tieuDe) + '</h2>' + bcP(TL.phuDe) + '</div>';
+    h += bcO((TL.chiSo || []).map(function (c) { return [c.nhan, c.gt, c.phu]; }));
+    h += '<div class="bc-3">' + [['Điểm sáng', TL.diemSang, 'tot'], ['Cần canh chừng', TL.canhBao, 'xau'], ['Lời khuyên', TL.loiKhuyen, '']].map(function (x) {
+      return x[1] && x[1].length ? '<div class="bc-cot ' + x[2] + '"><b>' + x[0] + '</b>' + bcDs(x[1]) + '</div>' : '';
+    }).join('') + '</div>';
+    if (TL.thoiDiem) h += bcHop('Thời điểm vàng', bcP(TL.thoiDiem));
+    if (T.matMa && T.matMa.length) {
+      h += bcH2('10 mật mã cá nhân', 'ghép từ 6 hệ');
+      h += bcBang(null, T.matMa.map(function (m) { return ['<b>' + bcE(m.ten) + '</b>', '<span class="bc-gt">' + bcE(m.gt) + '</span>', bcE(m.y)]; }), 'bc-mm');
+    }
+    return h;
+  }
+  function pdfLinhVuc(res) {
+    var D = res.moRong && res.moRong.deHieu, S = D && D.th6, h = '';
+    if (S && S.linhVuc) {
+      h += bcHop('Tóm lại', bcP(S.tomTat) + (S.doTin != null ? '<p class="bc-p bc-nho">Độ tin cậy khi ghép các hệ: <b>' + S.doTin + '%</b>. Điểm theo thang 10: 5 là cân bằng, từ 6,5 là thuận, từ 4 trở xuống là cần lưu ý.</p>' : ''));
+      h += bcH2('Bảng điểm 9 lĩnh vực');
+      h += bcBang(['Lĩnh vực', 'Điểm /10', 'Đồng thuận'], S.linhVuc.map(function (l) {
+        return ['<b>' + bcE(l.ten) + '</b>', bcThanh(l.diem), (l.dong != null ? l.dong + '/' + l.soHe + ' hệ' : '')];
+      }), 'bc-diem-tbl');
+      S.linhVuc.forEach(function (l) {
+        h += '<div class="bc-lv">' + bcH3(l.ten, '<span class="bc-chip ' + bcMuc(l.diem) + '">' + bcSo(l.diem) + '/10</span>') + bcP(l.ket);
+        if (l.manh && l.manh.length) h += '<div class="bc-nhan tot">Điều nhiều hệ cùng thấy thuận</div>' + bcDs(l.manh);
+        if (l.yeu && l.yeu.length) h += '<div class="bc-nhan xau">Điều cần lưu ý</div>' + bcDs(l.yeu);
+        if (l.them && l.them.length) h += '<div class="bc-nhan">Góc nhìn thêm</div>' + bcDs(l.them.slice(0, 3));
+        if (l.khuyen && l.khuyen.length) h += bcHop('Lời khuyên', bcDs(l.khuyen));
+        if (l.namToi && l.namToi.length) h += '<p class="bc-p bc-nho"><b>Năm nổi bật sắp tới:</b> ' + l.namToi.slice(0, 4).map(function (y) { return y.nam + ' (' + bcE(y.ten) + ', ' + y.soHe + ' hệ)'; }).join(' · ') + '</p>';
+        h += '</div>';
+      });
+      if (S.namToi && S.namToi.length) {
+        h += bcH2('Năm nên hành động', 'các năm tới nhiều hệ cùng chỉ vào');
+        h += bcBang(['Năm', 'Việc', 'Tính chất', 'Số hệ'], S.namToi.map(function (y) { return ['<b>' + y.nam + '</b>', bcE(y.ten), y.tot ? '<span class="bc-chip tot">nên tận dụng</span>' : '<span class="bc-chip xau">nên phòng</span>', y.soHe + ' hệ']; }));
+      }
+    } else if (D && D.tongHop && D.tongHop.length) {
+      D.tongHop.forEach(function (k) { h += '<div class="bc-lv">' + bcH3(k.ten, '<span class="bc-chip ' + bcMuc(k.diem) + '">' + bcSo(k.diem) + '/10</span>') + bcDoan(k.doan) + '</div>'; });
+    }
+    return h;
+  }
+  function pdfNguoi(res) {
+    var T = bcT(res), h = '';
+    [['xuatThan', 'Xuất thân – gia cảnh'], ['vocDang', 'Vóc dáng – diện mạo'], ['coThe', 'Đặc điểm cơ thể & sức khỏe']].forEach(function (x) {
+      var o = T[x[0]]; if (o && o.ketLuan && o.ketLuan.length) h += bcH2(o.tieuDe || x[1]) + bcDs(o.ketLuan);
+    });
+    var tc = T.tinhCach;
+    if (tc) {
+      h += bcH2('Tính cách', tc.soHe ? tc.soHe + ' hệ cùng góp ý' : '');
+      if (tc.truc && tc.truc.length) h += bcBang(['Trục tính cách', 'Bạn nghiêng về', 'Đồng thuận'], tc.truc.map(function (t) {
+        return ['<b>' + bcE(t.ten) + '</b>', bcE(t.moTa), t.tyLe != null ? t.tyLe + '%' : ''];
+      }));
+      if ((tc.manh && tc.manh.length) || (tc.yeu && tc.yeu.length)) h += '<div class="bc-3 hai">' + (tc.manh && tc.manh.length ? '<div class="bc-cot tot"><b>Thế mạnh</b>' + bcDs(tc.manh) + '</div>' : '') + (tc.yeu && tc.yeu.length ? '<div class="bc-cot xau"><b>Cần rèn</b>' + bcDs(tc.yeu) + '</div>' : '') + '</div>';
+    }
+    return h;
+  }
+  function pdfDuyen(res) {
+    var P = bcT(res).phoiNgau; if (!P) return bcKhoa('Phần tình duyên – phối ngẫu chưa mở trong tài khoản.');
+    var h = bcH2(P.tieuDe || 'Chân dung người bạn đời') + bcDs(P.ketLuan);
+    var H = P.tuoiHop;
+    if (H && H.tot && H.tot.length) {
+      h += bcH2('Năm sinh hợp nhất', 'chấm điểm /10');
+      h += bcBang(['Năm sinh', 'Can chi', 'Nạp âm', 'Điểm'], H.tot.slice(0, 6).map(function (x) { return ['<b>' + x.nam + '</b>', bcE(x.canChi), bcE(x.napAm), bcThanh(x.diem)]; }));
+      if (H.tranh && H.tranh.length) h += '<p class="bc-p bc-nho"><b>Nên cân nhắc kỹ:</b> ' + H.tranh.slice(0, 5).map(function (x) { return x.nam + ' (' + bcE(x.canChi) + ')'; }).join(', ') + '.</p>';
+      var tm = (H.thangAm || []).slice().sort(function (a, b) { return b.diem - a.diem; }).slice(0, 4);
+      if (tm.length) h += '<p class="bc-p bc-nho"><b>Tháng sinh âm lịch hợp:</b> ' + tm.map(function (x) { return 'tháng ' + x.thang + ' (' + bcSo(x.diem) + ')'; }).join(', ') + '.</p>';
+    }
+    var TD = P.thoiDiem;
+    if (TD) ['ketHon', 'sinhCon'].forEach(function (k) {
+      var o = TD[k]; if (!o || !o.nam) return;
+      var ds = o.nam.filter(function (y) { return !y.qua && y.pct >= 10; }).sort(function (a, b) { return b.pct - a.pct; }).slice(0, 5);
+      if (ds.length) h += bcH3('Năm dễ ' + (o.ten || k)) + bcBang(['Năm', 'Tuổi', 'Khả năng', 'Hệ cùng báo'], ds.sort(function (a, b) { return a.nam - b.nam; }).map(function (y) {
+        return ['<b>' + y.nam + '</b>', y.tuoi, '<b>' + bcSo(y.pct) + '%</b> · ' + bcE(y.muc || ''), bcE((y.he || []).join(', '))];
+      }));
+    });
+    var C = P.conCai; if (C && C.ketLuan && C.ketLuan.length) h += bcH2(C.tieuDe || 'Con cái') + bcDs(C.ketLuan);
+    return h;
+  }
+  function pdfDoi(res) {
+    var T = bcT(res), D = T.duongDoi, h = '';
+    if (D) {
+      if (D.ketLuan && D.ketLuan.length) h += bcHop('Nhìn cả cuộc đời', bcDs(D.ketLuan));
+      if (D.chang && D.chang.length) {
+        h += bcH2('Các chặng đời', 'mỗi chặng 10 năm');
+        D.chang.forEach(function (c) {
+          h += '<div class="bc-chang' + (c.isNow ? ' nay' : '') + '">' + bcH3(c.khoang + ' · ' + c.nam, '<span class="bc-chip ' + (/Tốt|Rất/.test(c.danhGia) ? 'tot' : /Kém|Xấu/.test(c.danhGia) ? 'xau' : 'vua') + '">' + bcE(c.danhGia) + (c.isNow ? ' · hiện tại' : '') + '</span>') +
+            bcDs((c.lines || []).filter(function (l) { return /^[✓✗◇]/.test(l); })) + (c.khoa ? bcKhoa('Lời luận chặng này chưa mở.') : '') + '</div>';
+        });
+      }
+    }
+    if (T.nghe && T.nghe.length) {
+      h += bcH2('Nghề hợp', 'theo số hệ cùng gợi ý');
+      h += bcBang(['Ngành nghề', 'Mức hợp', 'Hệ gợi ý'], T.nghe.map(function (n) { return ['<b>' + bcE(n.ten) + '</b>', bcVach(n.pct, 'tot') + '<b class="bc-diem tot">' + n.pct + '%</b>', bcE((n.he || []).join(', '))]; }));
+    }
+    return h;
+  }
+  function pdfVh(res) {
+    var T = bcT(res), h = '', vy = res.tuvi.info.viewYear, DV = T.daiVanSau && T.daiVanSau.ds;
+    if (DV && DV.length) {
+      h += bcH2('Đại vận 10 năm', 'năm hệ cùng nhìn');
+      var HUONG = { tot: '▲ thuận', xau: '▼ thử thách', vua: '● bình' }, soTruoc = 0;
+      DV.forEach(function (d) {
+        var qua = d.den < vy, tot = d.he.filter(function (x) { return x.huong === 'tot'; }).length, xau = d.he.filter(function (x) { return x.huong === 'xau'; }).length;
+        var nhan = tot > xau ? 'tot' : xau > tot ? 'xau' : 'vua';
+        h += '<div class="bc-dv' + (d.isNow ? ' nay' : '') + (qua ? ' qua' : '') + '">' + bcH3(d.khoang + ' · ' + d.nam + '–' + d.den, '<span class="bc-chip ' + nhan + '">' + tot + ' thuận · ' + xau + ' thử thách' + (d.isNow ? ' · hiện tại' : '') + '</span>');
+        if (d.khoa) h += bcKhoa('Lời luận đại vận này chưa mở – chỉ có hướng đánh giá của từng hệ.');
+        else if (!qua && soTruoc++ < 4) h += '<ul class="bc-ul bc-he-ds">' + d.he.map(function (x) { return '<li class="' + x.huong + '"><b>' + bcE(x.he) + '</b> <span class="bc-he">' + HUONG[x.huong] + '</span> – ' + bcE(x.y || '') + '</li>'; }).join('') + '</ul>';
+        h += '</div>';
+      });
+    }
+    var H = T.hoSoNam;
+    if (H && !H.loi) {
+      h += bcH2('Năm ' + H.nam + ' (' + (H.canChi || '') + ')', H.tuoi ? H.tuoi + ' tuổi mụ' : '');
+      h += bcDs(H.tom);
+      if (H.khiaCanh && H.khiaCanh.length) h += bcBang(['Khía cạnh', 'Nhận định', 'Ghi chú'], H.khiaCanh.map(function (x) {
+        return ['<b>' + bcE(x.ten) + '</b>', '<span class="bc-chip ' + (x.huong === 'tot' ? 'tot' : x.huong === 'xau' ? 'xau' : 'vua') + '">' + bcE(x.nhan) + '</span>', bcE(x.cau || '')];
+      }));
+      if (H.hanhDong && H.hanhDong.length) {
+        h += bcH3('Việc dễ xảy ra & nên làm gì');
+        H.hanhDong.forEach(function (a) {
+          h += '<div class="bc-sk ' + (a.loai === 'tot' ? 'tot' : a.loai === 'xau' ? 'xau' : 'vua') + ' bc-nguyen"><div><b>' + bcE(a.ngan) + '</b> <span class="bc-chip ' + (a.loai === 'tot' ? 'tot' : 'xau') + '">' + a.p + '% · ' + bcE(a.dong || '') + '</span></div>' +
+            (a.khi ? '<p class="bc-p bc-nho">' + bcE(a.khi) + '.</p>' : '') + bcP(a.lam) + '</div>';
+        });
+      }
+      if (H.khoa) h += bcKhoa('Vận năm ' + H.nam + ' chưa mở – báo cáo chỉ in phần mồi.');
+    }
+    var M = T.hoSoThang;
+    if (M && M.thang && M.thang.length) {
+      h += bcH2('12 tháng âm lịch năm ' + (M.nam || vy));
+      h += bcBang(['Tháng', 'Thời gian', 'Đánh giá', 'Điều đáng chú ý'], M.thang.map(function (m) {
+        var dg = m.danhGia || '', c = /vàng|Thuận/.test(dg) ? 'tot' : /giữ|Thận/.test(dg) ? 'xau' : 'vua';
+        var y = [].concat((m.noiBat || []).map(function (x) { return x.ngan; }), (m.canPhong || []).map(function (x) { return 'để ý ' + x.ngan; })).slice(0, 3).join('; ');
+        return ['<b>' + m.thang + '</b>' + (m.nay ? ' <span class="bc-he">tháng này</span>' : ''), bcE((m.tu || '') + ' – ' + (m.den || '')), '<span class="bc-chip ' + c + '">' + bcE(dg) + '</span>', m.khoa ? '🔒' : bcE(y)];
+      }), 'bc-thang');
+    }
+    return h;
+  }
+  function pdfBien(res) {
+    var T = bcT(res), B = T.bienCo, H = T.hoiTu;
+    if (!B && !H) return bcKhoa('Phần biến cố chưa mở trong tài khoản.');
+    var h = '';
+    if (B && B.nong && B.nong.length) {
+      h += bcH2('Những năm "nóng" phía trước', 'nhiều biến cố cùng dồn về');
+      h += bcBang(['Năm', 'Tuổi', 'Biến cố dễ gặp'], B.nong.map(function (n) {
+        return ['<b>' + n.nam + '</b>', n.tuoi, n.sk.map(function (s, i) { return '<span class="bc-chip ' + (n.loai[i] === 'tot' ? 'tot' : n.loai[i] === 'xau' ? 'xau' : 'vua') + '">' + bcE(s) + '</span>'; }).join(' ')];
+      }));
+    }
+    if (H && H.chuDe && H.chuDe.length) {
+      h += bcH2('Theo từng chủ đề', 'năm có từ 3 hệ cùng báo');
+      H.chuDe.forEach(function (c) {
+        var ds = (c.nam || []).filter(function (y) { return !y.qua; }).slice(0, 6);
+        if (!ds.length) return;
+        h += '<div class="bc-lv">' + bcH3(c.ten, '<span class="bc-chip ' + (c.loai === 'tot' ? 'tot' : 'xau') + '">' + (c.loai === 'tot' ? 'cơ hội' : 'cần phòng') + '</span>') +
+          bcBang(null, ds.map(function (y) { return ['<b>' + y.nam + '</b>', y.tuoi + ' tuổi', bcE(y.muc || ''), bcE((y.he || []).join(', '))]; }), 'bc-bien') + '</div>';
+      });
+    }
+    return h;
+  }
+  function pdfChart(res, anh, kich) {
+    var h = '';
+    if (anh) { var ww = 760, hh = ww * kich[1] / kich[0]; if (hh > 980) { hh = 980; ww = hh * kich[0] / kich[1]; }
+      h += '<div class="bc-anh bc-nguyen"><img src="' + anh + '" alt="Lá số Tử Vi" style="width:' + Math.round(ww) + 'px;height:' + Math.round(hh) + 'px"></div>'; }
+    var CT = res.chiTiet && res.chiTiet.cung;
+    if (CT && CT.length) {
+      h += bcH2('Luận 12 cung', 'viết bằng ngôn ngữ đời thường');
+      CT.forEach(function (c) {
+        var v = ''; try { v = taoCungDeHieu_(c); } catch (e) { v = ''; }
+        if (!v) return;
+        var tmp = document.createElement('div'); tmp.innerHTML = v;
+        var doan = Array.prototype.map.call(tmp.querySelectorAll('.cv-doan'), function (d) {
+          var t = d.querySelector('h5'), p = d.querySelector('p'), li = d.querySelectorAll('li');
+          return { tieuDe: t ? t.textContent : '', text: p ? p.textContent : '', list: Array.prototype.map.call(li, function (x) { return x.textContent; }) };
+        });
+        h += '<div class="bc-cung">' + bcH3('Cung ' + c.cung, c.diem != null ? '<span class="bc-chip ' + (c.danhGia && /Tốt|Rất|Khá/.test(c.danhGia) ? 'tot' : /Kém|Xấu/.test(c.danhGia || '') ? 'xau' : 'vua') + '">' + bcE(c.danhGia || '') + '</span>' : '') + bcDoan(doan) + '</div>';
+      });
+    }
+    return h;
+  }
+  function pdfHe(res, k) {
+    var M = res.moRong || {}, D = M.deHieu || {}, key = { battu: 'battu', astro: 'chiemTinh', so: 'thanSo', hd: 'hd', halac: 'haLac' }[k], H = D[key], h = '';
+    if (k === 'battu' && res.battu) {
+      var B = res.battu, P = B.pillars || [];
+      h += bcBang(['', 'Năm', 'Tháng', 'Ngày', 'Giờ'], [
+        ['<b>Thiên can</b>'].concat(P.map(function (p) { return '<b class="bc-gt">' + bcE(p.canTen) + '</b> <span class="bc-he">' + bcE(p.canHanh) + '</span>'; })),
+        ['<b>Địa chi</b>'].concat(P.map(function (p) { return '<b class="bc-gt">' + bcE(p.chiTen) + '</b> <span class="bc-he">' + bcE(p.chiHanh) + '</span>'; })),
+        ['<b>Nạp âm</b>'].concat(P.map(function (p) { return bcE(p.napAm); }))
+      ], 'bc-tru');
+      var pt = B.phanTram || {};
+      h += bcBang(['Ngũ hành', 'Tỷ lệ trong lá số'], ['Mộc', 'Hỏa', 'Thổ', 'Kim', 'Thủy'].map(function (x) {
+        return ['<b>' + x + '</b>' + (B.goiY && B.goiY.dung === x ? ' <span class="bc-chip tot">dụng thần</span>' : ''), bcVach(Math.min(100, (pt[x] || 0) * 2), 'vua') + '<b class="bc-diem">' + bcSo(pt[x] || 0) + '%</b>'];
+      }), 'bc-gon');
+    }
+    if (k === 'astro' && M.chiemTinh && M.chiemTinh.hanhTinh) {
+      var C = M.chiemTinh, ht = C.hanhTinh.filter(function (x) { return ['sun', 'moon', 'mercury', 'venus', 'mars', 'jupiter', 'saturn'].indexOf(x.key) >= 0; });
+      if (C.asc) ht.unshift(C.asc);
+      h += bcBang(['Điểm', 'Cung hoàng đạo', 'Nhà'], ht.map(function (x) { return ['<b>' + bcE(x.ten) + '</b>', bcE(x.cungTen) + ' ' + bcE(x.do || ''), x.nha ? 'nhà ' + x.nha : '']; }), 'bc-gon');
+    }
+    if (k === 'so' && M.thanSo) {
+      var S = M.thanSo;
+      h += bcO([['Số chủ đạo', S.duongDoi], ['Số linh hồn', S.linhHon], ['Số sứ mệnh', S.suMenh], ['Số nhân cách', S.nhanCach], ['Số ngày sinh', S.ngaySinh], ['Số thái độ', S.thaiDo]]);
+    }
+    if (k === 'hd' && M.hd) {
+      var X = M.hd; h += bcO([['Loại', X.loaiTen || X.loai], ['Chiến lược', X.chienLuoc], ['Thẩm quyền', X.thamQuyen], ['Hồ sơ', X.profile]]);
+    }
+    if (k === 'halac' && M.haLac && M.haLac.tien) {
+      var L = M.haLac; h += bcO([['Quẻ Tiên thiên', L.tien.ten, L.tien.y], ['Quẻ Hậu thiên', L.hau && L.hau.ten, L.hau && L.hau.y]]);
+      if (L.tien.khuyen) h += bcHop('Lời quẻ', bcP('Tiên thiên: ' + L.tien.khuyen + (L.hau && L.hau.khuyen ? '. Hậu thiên: ' + L.hau.khuyen : '') + '.'));
+    }
+    if (H && H.khoi) H.khoi.forEach(function (b) { h += '<div class="bc-cung">' + (b.ten ? bcH3(b.ten) : '') + bcDoan(b.doan) + '</div>'; });
+    return h;
+  }
+  function pdfThem(res) {
+    var T = bcT(res), h = '';
+    if (T.mayMan && T.mayMan.dong) h += bcBang(null, T.mayMan.dong.map(function (d) { return ['<b>' + bcE(d[0]) + '</b>', bcE(d[1])]; }), 'bc-mm');
+    h += bcHop('Lời bàn', bcP('Tử Vi, Bát Tự, Hà Lạc, Chiêm tinh, Thần số học và Human Design đều là hệ thống tham khảo dựa trên thời điểm sinh. Tâm tính, tu dưỡng và nỗ lực mới là điều quyết định – "Đức năng thắng số".'));
+    return h;
+  }
+  function pdfNoiDung(res, k, anh, kich) {
+    try {
+      if (k === 'tom') return pdfTom(res);
+      if (k === 'linhvuc') return pdfLinhVuc(res);
+      if (k === 'nguoi') return pdfNguoi(res);
+      if (k === 'duyen') return pdfDuyen(res);
+      if (k === 'doi') return pdfDoi(res);
+      if (k === 'vh') return pdfVh(res);
+      if (k === 'bien') return pdfBien(res);
+      if (k === 'chart') return pdfChart(res, anh, kich);
+      if (k === 'them') return pdfThem(res);
+      return pdfHe(res, k);
+    } catch (e) { return bcP('Không dựng được phần này: ' + (e && e.message || e), 'bc-nho'); }
+  }
+
+  /* ---------- Bìa, mục lục, cách đọc, lời kết ---------- */
   function bia(res, brand, demo) {
-    var I = res.tuvi.info, B = res.battu, M = res.moRong, T = M && M.chiemTinh && M.chiemTinh.thoiDiem, TL = M && M.tongHop.tomLuoc;
+    var I = res.tuvi.info, B = res.battu, M = res.moRong, T = M && M.chiemTinh && M.chiemTinh.thoiDiem, TL = M && M.tongHop && M.tongHop.tomLuoc;
     var d = new Date();
     var dong = [
-      ['Ngày sinh', pad(I.solar.day) + '/' + pad(I.solar.month) + '/' + I.solar.year + ' · ' + pad(I.hour) + ':' + pad(I.minute) + ' (ÂL ' + I.lunar.day + '/' + I.lunar.month + (I.lunar.leap ? 'N' : '') + '/' + I.lunar.year + ')'],
+      ['Ngày sinh', pad(I.solar.day) + '/' + pad(I.solar.month) + '/' + I.solar.year + ' · ' + pad(I.hour) + ':' + pad(I.minute) + ' (âm lịch ' + I.lunar.day + '/' + I.lunar.month + (I.lunar.leap ? ' nhuận' : '') + '/' + I.lunar.year + ')'],
       ['Năm – giờ', I.namCanChi + ' · giờ ' + I.gioTen + ' · ' + I.gender],
       ['Nơi sinh', T ? T.noiSinh : '—'],
       ['Tứ trụ', B.pillars.map(function (p) { return p.canTen + ' ' + p.chiTen; }).join(' · ')]
@@ -4876,52 +5148,44 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
   }
   function mucLuc(ds) {
     var nhomCu = '';
-    return '<div class="pdf-toc' + (ds.length > 10 ? ' gon' : '') + '"><div class="pdf-kicker">Mục lục</div><h2>Hành trình khám phá bản thân</h2><ol>' + ds.map(function (x, i) {
-      var nhom = PDF_NHOM[x.k] || 'C · Chi tiết từng hệ';
-      var dau = nhom !== nhomCu ? '<li class="toc-grp">' + nhom + '</li>' : ''; nhomCu = nhom;
+    return '<div class="bc-toc"><div class="bc-so">Mục lục</div><h1>Hành trình khám phá bản thân</h1><ol>' + ds.map(function (x, i) {
+      var nhom = PDF_NHOM[x.k] || 'III · Chi tiết từng hệ';
+      var dau = nhom !== nhomCu ? '<li class="grp">' + nhom + '</li>' : ''; nhomCu = nhom;
       return dau + '<li><span class="n">' + pad(i + 1) + '</span><span class="t"><b>' + esc(x.ten) + '</b><small>' + esc(x.hook) + '</small></span><span class="p">' + (x.trang || '') + '</span></li>';
-    }).join('') + '</ol><p class="pdf-note">Cách đọc: chữ <b class="kw kw-star">tím nhạt</b> là tên sao, chữ <b class="kw kw-kw">vàng</b> là khái niệm then chốt, <b class="kw kw-good">xanh</b> là tín hiệu tốt, <b class="kw kw-bad">đỏ</b> là điều cần lưu ý. ' +
-      'Kết luận ghi "x/6 hệ đồng thuận" càng cao thì càng đáng tin cậy. Mọi điểm số dùng <b>thang 10</b>: 5 là trung bình, từ 7 là tốt, từ 8,5 là rất tốt, dưới 4 là kém.</p></div>';
+    }).join('') + '</ol>' +
+      '<div class="bc-cach"><b>Cách đọc báo cáo</b><ul>' +
+      '<li>Điểm theo <b>thang 10</b>: 5 là cân bằng, từ 6,5 là thuận <span class="bc-chip tot">thuận</span>, từ 4 trở xuống là cần lưu ý <span class="bc-chip xau">cần giữ</span>.</li>' +
+      '<li>"x/y hệ đồng thuận": càng nhiều hệ cùng chỉ một hướng thì kết luận càng đáng tin.</li>' +
+      '<li>Dòng có dấu <b class="bc-tot">●</b> là tín hiệu thuận, <b class="bc-xau">●</b> là điều nên phòng; chữ nhỏ màu nhạt cho biết hệ nào nói điều đó.</li></ul></div></div>';
   }
   function trangKet(brand) {
-    return '<div class="pdf-end"><div class="pdf-kicker">Lời kết</div><h2>Lá số là tấm bản đồ.<br>Bạn là người cầm lái.</h2>' +
-      '<p>Những gì bạn vừa đọc là xu hướng năng lượng được suy ra từ thời điểm sinh qua 6 hệ thống cổ – kim. Chúng cho bạn biết gió thổi hướng nào; còn đi nhanh hay chậm, rẽ trái hay phải, là lựa chọn của bạn.</p>' +
-      '<ul><li><b>Dùng điểm mạnh</b> được nhiều hệ xác nhận làm bệ phóng cho sự nghiệp và các mối quan hệ.</li>' +
-      '<li><b>Chuẩn bị sớm</b> cho các năm được cảnh báo: giữ sức khỏe, quỹ dự phòng và sự bình tĩnh.</li>' +
-      '<li><b>Xem lại báo cáo</b> mỗi đầu năm: vận năm, năm cá nhân và chuyển động hành tinh thay đổi theo từng năm.</li></ul>' +
-      '<p class="pdf-quote">"Đức năng thắng số" – tâm tính, tu dưỡng và nỗ lực mới là yếu tố quyết định.</p>' +
-      '<p class="pdf-disc">Báo cáo mang tính tham khảo, chiêm nghiệm và phát triển bản thân; không thay thế tư vấn y tế, pháp lý hay tài chính chuyên môn.</p>' +
-      (brand.ten || brand.lienHe ? '<div class="pdf-brand"><b>' + esc(brand.ten || '') + '</b><span>' + esc(brand.lienHe || '') + '</span></div>' : '') + '</div>';
+    return '<div class="bc-ket"><div class="bc-so">Lời kết</div><h1>Lá số là tấm bản đồ.<br>Bạn là người cầm lái.</h1>' +
+      '<p>Những gì bạn vừa đọc là xu hướng năng lượng suy ra từ thời điểm sinh qua 6 hệ thống cổ – kim. Chúng cho bạn biết gió thổi hướng nào; còn đi nhanh hay chậm, rẽ trái hay phải là lựa chọn của bạn.</p>' +
+      '<ul class="bc-ul"><li class="tot">Dùng điểm mạnh được nhiều hệ xác nhận làm bệ phóng cho sự nghiệp và các mối quan hệ.</li>' +
+      '<li class="vua">Chuẩn bị sớm cho các năm được cảnh báo: giữ sức khỏe, quỹ dự phòng và sự bình tĩnh.</li>' +
+      '<li>Xem lại báo cáo mỗi đầu năm: vận năm, năm cá nhân và chuyển động hành tinh thay đổi theo từng năm.</li></ul>' +
+      '<p class="bc-quote">"Đức năng thắng số" – tâm tính, tu dưỡng và nỗ lực mới là yếu tố quyết định.</p>' +
+      '<p class="bc-nho">Báo cáo mang tính tham khảo, chiêm nghiệm và phát triển bản thân; không thay thế tư vấn y tế, pháp lý hay tài chính chuyên môn.</p>' +
+      (brand.ten || brand.lienHe ? '<div class="bc-brand"><b>' + esc(brand.ten || '') + '</b><span>' + esc(brand.lienHe || '') + '</span></div>' : '') + '</div>';
   }
-  function chanTrang(txt, so, tong, sang) {
-    var c = document.createElement('canvas'); c.width = 1600; c.height = 44;
-    var g = c.getContext('2d');
-    g.font = '500 20px "Be Vietnam Pro", system-ui, sans-serif'; g.fillStyle = sang ? '#8a7a55' : '#ecdcb8'; g.textBaseline = 'middle';
-    g.fillText(txt, 0, 22);
-    g.textAlign = 'right'; g.fillText(so + ' / ' + tong, 1600, 22);
-    g.strokeStyle = sang ? 'rgba(120,100,60,.35)' : 'rgba(227, 185, 138,.35)'; g.beginPath(); g.moveTo(0, 2); g.lineTo(1600, 2); g.stroke();
-    return c.toDataURL('image/png');
+  /* Bản xem thử: mỗi phần chỉ hé lộ vài ý chính + danh sách nội dung có trong bản đầy đủ */
+  function demoPhan(res, k) {
+    var d = (res.teaser || {})[k] || (res.teaser || {})[PDF_TEOSER[k]];
+    var lo = d && d.lo ? d.lo.filter(Boolean) : [], an = d && d.an && d.an.length ? d.an : ['Toàn bộ lời luận chi tiết của phần này'];
+    return (lo.length ? '<div class="bc-cot tot"><b>✦ Hé lộ</b>' + bcDs(lo.map(function (x) { return String(x).replace(/^[✓✗◇]\s*/, ''); })) + '</div>' : '') +
+      '<div class="bc-cot khoa"><b>🔒 Trong bản đầy đủ</b>' + bcDs(an) + '</div>';
   }
-  /* ---------- Bản xem thử (demo): hé lộ vừa đủ để tò mò ---------- */
-  function demoCard(d) {
-    if (!d) return '';
-    return '<div class="demo-card"><div class="demo-lo"><h4>✦ Hé lộ</h4><ul>' + d.lo.filter(Boolean).map(function (x) { return '<li>' + hl(String(x).replace(/^[✓✗◇]\s*/, '')) + '</li>'; }).join('') + '</ul></div>' +
-      '<div class="demo-an"><h4>🔒 Trong bản đầy đủ</h4><ul>' + d.an.map(function (x) { return '<li>' + esc(x) + '</li>'; }).join('') + '</ul></div></div>' +
-      '<div class="demo-prev"><img alt="Xem trước"><span>🔒 Nội dung chi tiết chỉ có trong bản đầy đủ</span></div>';
-  }
-  function trangMua(brand, soTrangFull) {
-    return '<div class="pdf-end demo-cta">' + (typeof ANH_QC === 'string' && ANH_QC ? '<img class="cta-anh" alt="" src="' + ANH_QC + '">' : '') + '<div class="pdf-kicker">Bản đầy đủ</div><h2>Bạn mới xem khoảng 10% câu chuyện của mình.</h2>' +
+  function trangMua(brand) {
+    return '<div class="bc-ket">' + (typeof ANH_QC === 'string' && ANH_QC ? '<img class="cta-anh" alt="" src="' + ANH_QC + '">' : '') + '<div class="bc-so">Bản đầy đủ</div><h1>Bạn mới xem khoảng 10% câu chuyện của mình.</h1>' +
       '<p>Bản đầy đủ mở khóa toàn bộ những gì bạn vừa thấy bị che:</p>' +
-      '<ul><li><b>Luận chi tiết 12 cung Tử Vi</b> – tiền tài, sự nghiệp, hôn nhân, con cái, sức khỏe, nhà cửa.</li>' +
-      '<li><b>Dự đoán cả đời</b> – năm tài lộc, năm kết hôn, sinh con, thăng tiến và các năm cần phòng.</li>' +
-      '<li><b>Bát Tự & Hà Lạc</b> – dụng thần, cách cục, quẻ Tiên – Hậu thiên, luận quẻ theo từng năm.</li>' +
-      '<li><b>Chiêm tinh, Thần số học, Human Design</b> – bản đồ sao, các con số, cách bạn ra quyết định đúng.</li>' +
-      '<li><b>Chân dung người phối ngẫu</b> – ngoại hình, tính cách, nơi gặp, năm sinh hợp nhất (chấm điểm).</li>' +
-      '<li><b>Tổng luận 6 hệ</b> – kết luận được nhiều hệ cùng xác nhận, kèm lời khuyên hành động.</li>' +
-      '<li><b>Vận hạn theo từng giai đoạn</b> – mở từng đại vận 10 năm, từng năm với 12 tháng tốt – xấu, và lịch từng ngày mỗi tháng.</li></ul>' +
-      (brand.uuDai ? '<div class="demo-offer">' + esc(brand.uuDai) + '</div>' : '') +
-      '<div class="pdf-brand"><b>' + esc(brand.ten || 'Liên hệ để nhận bản đầy đủ') + '</b><span>' + esc(brand.lienHe || '') + '</span></div>' +
-      '<p class="pdf-disc">Báo cáo mang tính tham khảo, chiêm nghiệm và phát triển bản thân.</p></div>';
+      '<ul class="bc-ul"><li><b>Luận dễ hiểu 12 cung Tử Vi</b> – tiền tài, sự nghiệp, hôn nhân, con cái, sức khỏe, nhà cửa.</li>' +
+      '<li><b>6 hệ nhìn 9 lĩnh vực</b> – điểm từng lĩnh vực, điều nhiều hệ cùng xác nhận, lời khuyên và năm nên hành động.</li>' +
+      '<li><b>Chân dung người bạn đời</b> – ngoại hình, tính cách, năm sinh hợp nhất, năm dễ kết hôn.</li>' +
+      '<li><b>Đường đời & vận hạn</b> – từng chặng 10 năm, năm hiện tại và 12 tháng tốt – xấu.</li>' +
+      '<li><b>Bát Tự, Hà Lạc, Chiêm tinh, Thần số học, Human Design</b> – mỗi hệ một chương viết bằng ngôn ngữ đời thường.</li></ul>' +
+      (brand.uuDai ? '<div class="bc-hop"><b>Ưu đãi</b><p class="bc-p">' + esc(brand.uuDai) + '</p></div>' : '') +
+      '<div class="bc-brand"><b>' + esc(brand.ten || 'Liên hệ để nhận bản đầy đủ') + '</b><span>' + esc(brand.lienHe || '') + '</span></div>' +
+      '<p class="bc-nho">Báo cáo mang tính tham khảo, chiêm nghiệm và phát triển bản thân.</p></div>';
   }
 
   function xuatPdf(chon, scale, sang, brand, demo) {
@@ -4929,110 +5193,49 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
     if (tongKhoa(res) && !demo) chon = chon.filter(function (k) { return ['tom', 'linhvuc', 'nguoi', 'duyen', 'doi', 'them'].indexOf(k) < 0; });   // Tổng hợp 6 hệ chưa mở
     if (!window.jspdf || typeof html2canvas === 'undefined') { toast('Không tải được thư viện PDF – hãy dùng nút In → Lưu dưới dạng PDF.', true); return; }
     var jsPDF = window.jspdf.jsPDF, pdf = new jsPDF({ unit: 'pt', format: 'a4', compress: true });
-    var PW = 595.28, PH = 841.89, MX = 30, MT = 32, MB = 40, CW = PW - 2 * MX, CH = PH - MT - MB;
-    var W = 820, pxPt = CW / W, pageHpx = CH / pxPt, NEN = sang ? [247, 251, 252] : [18, 13, 9], NEN_HEX = sang ? '#f7fbfc' : '#14110e';
+    var PW = 595.28, PH = 841.89, MX = 42, MT = 46, MB = 50, CW = PW - 2 * MX, CH = PH - MT - MB;
+    var W = 760, pxPt = CW / W, pageHpx = CH / pxPt, NEN = sang ? [251, 248, 242] : [24, 20, 16], NEN_HEX = sang ? '#fbf8f2' : '#181410';
     var root = document.createElement('div');
-    root.id = 'pdfRoot'; root.className = 'pdf-root ' + (sang ? 'theme-light' : 'theme-dark');
+    root.id = 'pdfRoot'; root.className = 'pdf-root bc-root ' + (sang ? 'bc-sang' : 'bc-toi');
     document.body.appendChild(root);
     var opt = { scale: scale, backgroundColor: NEN_HEX, useCORS: true, logging: false, windowWidth: 1200,
       ignoreElements: function (el) { return el !== document.body && el !== document.documentElement && el.tagName !== 'HEAD' && !root.contains(el) && !el.contains(root) && el.tagName !== 'STYLE' && el.tagName !== 'LINK'; } };
-    var y = 0, soTrang = 0, dauPhan = [];
+    var soTrang = 0;
     function trangMoi() {
       if (soTrang > 0) pdf.addPage();
-      soTrang++; y = 0;
+      soTrang++;
       pdf.setFillColor(NEN[0], NEN[1], NEN[2]); pdf.rect(0, 0, PW, PH, 'F');
     }
-    function dat(c, fullBleed) {
-      var hPt = c.height / scale * pxPt, wPt = c.width / scale * pxPt;
-      if (fullBleed) { pdf.addImage(c.toDataURL('image/jpeg', 0.82), 'JPEG', 0, 0, PW, PH, undefined, 'FAST'); return; }
-      pdf.addImage(c.toDataURL('image/jpeg', 0.76), 'JPEG', MX, MT + y, wPt, hPt, undefined, 'FAST');
-      y += hPt;
-    }
-    function rutGon(node) {
-      node.querySelectorAll('details.chuyen-sau').forEach(function (d) { d.open = true; });
-      node.querySelectorAll('.van-page').forEach(function (x) { if (/Nhật vận|nhật vận/.test((x.querySelector('.panel-title') || { textContent: '' }).textContent)) x.remove(); });
-      // giữ phần "Căn cứ từ từng hệ" (chứng cứ đa hệ), bỏ phần giải thích phương pháp
-      node.querySelectorAll('details.coso, .tab-lede').forEach(function (x) { var sm = x.querySelector('summary'); if (!sm || sm.textContent.indexOf('Căn cứ từ từng hệ') < 0) x.remove(); });
-      node.querySelectorAll('.lg-block').forEach(function (b) {
-        var secs = Array.prototype.slice.call(b.querySelectorAll(':scope > .lg-body > .lg-sec'));
-        secs.forEach(function (x) { var h = x.querySelector('h5'); if (h && /^(cơ sở|căn cứ)/i.test(h.textContent.trim())) x.remove(); });
-        secs = Array.prototype.slice.call(b.querySelectorAll(':scope > .lg-body > .lg-sec'));
-        if (secs.length > 7) secs.slice(6, secs.length - 1).forEach(function (x) { x.remove(); });
-        var t = b.querySelector('.lg-t');
-        if (t && /^Góc chiếu/.test(t.textContent)) b.querySelectorAll('li').forEach(function (li, i) { if (i >= 20) li.remove(); });
-        if (b.classList.contains('qua-khu')) { Array.prototype.forEach.call(b.children, function (x) { if (x.tagName !== 'SUMMARY') x.remove(); }); return; }
-        var m = (b.querySelector('.lg-meta') || { textContent: '' }).textContent.match(/\b(19|20)\d{2}\b/g);
-        if (m) {
-          var ys = m.map(Number), vy = res.tuvi.info.viewYear;
-          if (Math.max.apply(null, ys) < vy) { var bq = b.querySelector('.lg-body'); if (bq && bq.querySelector('.lg-sec')) bq.remove(); else if (bq) bq.querySelectorAll('li').forEach(function (li, i) { if (i >= 3) li.remove(); }); return; } // chặng đã qua: giữ tóm tắt để kiểm chứng
-          if (Math.min.apply(null, ys) > vy + 45) { var bd = b.querySelector('.lg-body'); if (bd) bd.remove(); } // quá xa: chỉ giữ tóm tắt
-        }
-      });
-      node.querySelectorAll('details.yr').forEach(function (y) {
-        var ny = +((y.querySelector('summary b') || { textContent: '' }).textContent.match(/\d{4}/) || [0])[0];
-        if (y.querySelector('.past') || y.closest('.dd-grid') && ny && (ny < res.tuvi.info.viewYear || ny > res.tuvi.info.viewYear + 25)) { y.remove(); return; }
-        y.querySelectorAll('li').forEach(function (li, i) { if (i >= 3) li.remove(); });
-      });
-      return node;
-    }
-    function chuanHoa(node) {
-      rutGon(node);
-      node.removeAttribute('id');
-      node.querySelectorAll('[id]').forEach(function (x) { x.removeAttribute('id'); });
-      node.querySelectorAll('details').forEach(function (d) { d.setAttribute('open', ''); });
-      if (node.tagName === 'DETAILS') node.setAttribute('open', '');
-      node.querySelectorAll('.strip, button, .subtabs').forEach(function (b) { b.remove(); });
-      // PDF là tài liệu đọc: bỏ thẻ khóa, ưu đãi, bảng giá, nút chọn năm, lời mời nghiệm chứng
-      node.querySelectorAll('.khoa-gd, .ud-row, .nam-xem, .gia-bac, .cam-ket, .meo-mua, .khoa-phan, .dv-khoa, .kg-moi, .dv-mo, .khach-bar, .hk-hanh, .lock-cta, .xem3d, [data-ls3d], .vt-the, .vt-dieu, .vt-he').forEach(function (b) { b.remove(); });
-      if (node.classList && (node.classList.contains('khoa-phan') || node.classList.contains('dv-khoa'))) node.innerHTML = '';
-      // Vòm trời: html2canvas cần kích thước SVG cố định, không thì ảnh bị phóng và cắt mép
-      node.querySelectorAll('.vt-svg').forEach(function (v) { v.setAttribute('width', '640'); v.setAttribute('height', '640'); v.style.width = v.style.height = '640px'; v.style.maxWidth = 'none'; v.style.overflow = 'hidden';
-        var g = v.querySelector('.vt-quay'), q = parseFloat(g && g.style.getPropertyValue('--q')) || 0;   // xoay CSS → thuộc tính SVG (ảnh chụp giữ đúng tâm xoay)
-        if (g) { g.removeAttribute('style'); g.setAttribute('class', 'vt-quay-in'); g.setAttribute('transform', 'rotate(' + q + ' 320 320)'); }
-        v.querySelectorAll('.vt-nhan').forEach(function (n) { n.setAttribute('class', 'vt-nhan-in'); n.setAttribute('transform', 'rotate(' + (-q) + ')'); });
-        v.querySelectorAll('.vt-quydao').forEach(function (n) { n.setAttribute('class', 'vt-quydao-in'); });
-      });
-      node.querySelectorAll('.van-page').forEach(function (p) { p.style.display = 'block'; });
-      if (node.classList.contains('van-page')) node.style.display = 'block';
-      return node;
-    }
-    /* ---------- Dàn trang: xếp nội dung vào từng trang A4 cố định, card dài tách thành "(tiếp)" ---------- */
-    var KHONG_TACH = /^(P|LI|FIGURE|IMG|TR|H1|H2|H3|H4|H5|H6|SUMMARY|SVG|CANVAS|SPAN|B|I|EM|SMALL|A|LABEL|STRONG|U|SUP)$/;
-    var LOP_NGUYEN = ['chart-fig', 'stat', 'mm-card', 'tuoi', 'thg', 'nghe', 'gv', 'axis', 'hb', 'meter', 'pillars', 'que-card', 'demo-card', 'demo-prev',
-      'pdf-h', 'pdf-toc', 'pdf-end', 'bodygraph', 'rv-col', 'feature', 'match-sum', 'strip', 'hm-c', 'ht-y', 'pc-ring', 'pdf-tiep'];
+    /* ---------- Dàn trang: xếp khối vào từng trang A4, khối dài (danh sách, bảng, nhóm đoạn) tách sang trang sau ---------- */
+    var KHONG_TACH = /^(P|LI|FIGURE|IMG|TR|H1|H2|H3|H4|H5|H6|SVG|CANVAS|SPAN|B|I|EM|SMALL|A|LABEL|STRONG|U|SUP)$/;
     function coY(n) { return n.nodeType === 1 || n.nodeType === 3 && n.textContent.trim(); }
     function danhSachCon(el) {
       if (el.tagName === 'TABLE') return el.tBodies[0] ? Array.prototype.slice.call(el.tBodies[0].rows) : [];
       return Array.prototype.filter.call(el.childNodes, coY);
     }
     function tachDuoc(el) {
-      if (el.nodeType !== 1 || KHONG_TACH.test(el.tagName.toUpperCase())) return false;
-      for (var i = 0; i < LOP_NGUYEN.length; i++) if (el.classList.contains(LOP_NGUYEN[i])) return false;
+      if (el.nodeType !== 1 || KHONG_TACH.test(el.tagName.toUpperCase()) || el.classList.contains('bc-nguyen')) return false;
       var ds = danhSachCon(el);
       return ds.length >= 2 || ds.length === 1 && tachDuoc(ds[0]);
     }
-    function laTieuDe(n) {
-      if (n.nodeType !== 1) return false;
-      return /^H[1-6]$/.test(n.tagName) || n.tagName === 'SUMMARY' || ['panel-title', 'dd-h', 'lede', 'pdf-tiep', 'meter', 'tg-head'].some(function (c) { return n.classList.contains(c); }) ||
-        n.classList.contains('lg-sec') && n.children.length === 1;
-    }
+    function laTieuDe(n) { return n.nodeType === 1 && (/^H[1-6]$/.test(n.tagName) || n.classList.contains('bc-nhan') || n.classList.contains('bc-tiep')); }
     function voRong(el, tiep) {
       var v = el.cloneNode(false), giu = v;
       if (el.tagName === 'TABLE') {
-        Array.prototype.forEach.call(el.children, function (c) { if (c.tagName !== 'TBODY') v.appendChild(c.cloneNode(true)); });
+        Array.prototype.forEach.call(el.children, function (c) { if (c.tagName !== 'TBODY') v.appendChild(c.cloneNode(true)); });   // lặp lại hàng tiêu đề
         giu = document.createElement('tbody'); v.appendChild(giu);
-      } else if (el.tagName === 'OL' && tiep) v.setAttribute('start', (+el.getAttribute('start') || 1) + el.children.length);
-      if (tiep && el.classList && (el.classList.contains('panel') || el.classList.contains('ht-card') || el.classList.contains('dd-card'))) {
-        var t = el.querySelector('.panel-title, h3');
-        if (t) { var d = document.createElement('div'); d.className = 'pdf-tiep'; d.textContent = '↳ tiếp: ' + t.textContent.trim(); giu.appendChild(d); }
+      }
+      if (tiep && el.classList && /bc-(lv|cung|dv|chang)/.test(el.className)) {
+        var t = el.querySelector('h3');
+        if (t) { var d = document.createElement('div'); d.className = 'bc-tiep'; d.textContent = (t.firstChild ? t.firstChild.textContent : t.textContent).trim() + ' (tiếp)'; giu.appendChild(d); }
       }
       return { v: v, giu: giu };
     }
     function danTrang(sec) {
       var trang = [], pg;
-      function moi() { pg = document.createElement('div'); pg.className = 'pdf-pg'; sec.parentNode.insertBefore(pg, sec); trang.push(pg); }
+      function moi() { pg = document.createElement('div'); pg.className = 'pdf-pg'; pg.style.width = W + 'px'; sec.parentNode.insertBefore(pg, sec); trang.push(pg); }
       function tran() { return pg.scrollHeight > pageHpx + 1; }
-      function datVao(el, cha) {                         // trả về phần còn lại chưa xếp được (hoặc null)
+      function datVao(el, cha) {
         cha.appendChild(el);
         if (!tran()) return null;
         cha.removeChild(el);
@@ -5044,7 +5247,7 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
         for (; i < ds.length; i++) { du = datVao(ds[i], a.giu); if (du) break; }
         if (!du) return null;
         var sau = [du].concat(ds.slice(i + 1)), doi = [];
-        while (a.giu.lastChild && laTieuDe(a.giu.lastChild)) doi.unshift(a.giu.removeChild(a.giu.lastChild)); // không để tiêu đề mồ côi
+        while (a.giu.lastChild && laTieuDe(a.giu.lastChild)) doi.unshift(a.giu.removeChild(a.giu.lastChild));   // không để tiêu đề mồ côi cuối trang
         var coNoi = Array.prototype.some.call(a.giu.childNodes, function (n) { return coY(n) && !laTieuDe(n); });
         var b = voRong(el, coNoi);
         if (!coNoi) { cha.removeChild(a.v); Array.prototype.slice.call(a.giu.childNodes).forEach(function (n) { b.giu.appendChild(n); }); }
@@ -5057,11 +5260,13 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
         while (con) {
           con = datVao(con, pg);
           if (con) {
-            if (!Array.prototype.some.call(pg.childNodes, coY)) { pg.appendChild(con); con = null; } // quá khổ: để riêng 1 trang, thu nhỏ khi in
+            if (!Array.prototype.some.call(pg.childNodes, coY)) { pg.appendChild(con); con = null; }   // quá khổ: để riêng 1 trang, thu nhỏ khi in
             moi();
           }
         }
       });
+      // khoảng trắng đầu trang do tiêu đề bị đẩy xuống: bỏ lề trên của khối đầu tiên
+      trang.forEach(function (p) { var f = p.firstElementChild; if (f) f.style.marginTop = '0'; });
       if (!Array.prototype.some.call(pg.childNodes, coY)) { pg.remove(); trang.pop(); }
       sec.remove();
       return trang;
@@ -5069,7 +5274,7 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
     function chupPhan(sec, trangDau) {
       var ds = danTrang(sec);
       var cao = ds.map(function (pg) { var h = Math.max(pageHpx, pg.scrollHeight); pg.style.height = Math.ceil(h) + 'px'; return Math.ceil(h); });
-      var lo = [], cur = null;                             // gom vài trang một lần chụp cho nhanh
+      var lo = [], cur = null;
       ds.forEach(function (pg, i) {
         if (!cur || cur.h + cao[i] > 5200) { cur = { ds: [], h: 0 }; lo.push(cur); }
         cur.ds.push(i); cur.h += cao[i];
@@ -5077,8 +5282,8 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
       var p = Promise.resolve(), dau = true;
       lo.forEach(function (L) {
         p = p.then(function () {
-          var goc = ds[L.ds[0]], r0 = goc.getBoundingClientRect();
-          var wrap = document.createElement('div'); wrap.className = 'pdf-lo'; goc.parentNode.insertBefore(wrap, goc);
+          var goc = ds[L.ds[0]];
+          var wrap = document.createElement('div'); wrap.className = 'pdf-lo'; wrap.style.width = W + 'px'; goc.parentNode.insertBefore(wrap, goc);
           L.ds.forEach(function (i) { wrap.appendChild(ds[i]); });
           var o = {}; Object.keys(opt).forEach(function (k) { o[k] = opt[k]; });
           return html2canvas(wrap, o).then(function (cv) {
@@ -5091,7 +5296,7 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
               trangMoi();
               if (dau && trangDau) { trangDau(soTrang); dau = false; }
               var k = Math.min(1, pageHpx / cao[i]), wPt = CW * k, hPt = cao[i] * pxPt * k;
-              pdf.addImage(c.toDataURL('image/jpeg', 0.8), 'JPEG', MX + (CW - wPt) / 2, MT, wPt, hPt, undefined, 'FAST');
+              pdf.addImage(c.toDataURL('image/jpeg', 0.86), 'JPEG', MX + (CW - wPt) / 2, MT, wPt, hPt, undefined, 'FAST');
             });
             wrap.remove();
           });
@@ -5106,168 +5311,57 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
       chuoi = chuoi.then(function () { showTab('chart'); return sleep(150); }).then(function () {
         drawOverlay();
         return chupLaSo({ scale: 2, backgroundColor: null, useCORS: true, logging: false });
-      }).then(function (c) { anhLaSo = c.toDataURL('image/png'); kichLaSo = [c.width, c.height]; });
+      }).then(function (c) { anhLaSo = c.toDataURL('image/png'); kichLaSo = [c.width, c.height]; }, function () { anhLaSo = null; });
     }
-    var dsPhan = chon.map(function (k) { return { k: k, ten: PDF_TEN[k], hook: PDF_HOOK[k], trang: 0 }; });
     var coTom = !!(res.moRong && res.moRong.tongHop && res.moRong.tongHop.tomLuoc) || !!(res.teaser && res.teaser.tom);
-    if (coTom) dsPhan.unshift({ k: 'tom', ten: PDF_TEN.tom, hook: PDF_HOOK.tom, trang: 0 });
+    if (coTom && chon.indexOf('tom') < 0) chon = ['tom'].concat(chon);
+    var dsPhan = [];
     return chuoi.then(function () {
-      var html = '<div class="pdf-page-cover">' + bia(res, brand, demo) + '</div>';
-      dsPhan.forEach(function (x, i) {
-        html += '<div class="pdf-sec" data-k="' + x.k + '"><div class="pdf-h"><span class="pdf-no">Phần ' + pad(i + 1) + '</span><b>' + esc(x.ten) + '</b><em>' + esc(x.hook) + '</em></div></div>';
+      chon.forEach(function (k) {
+        var noi = demo ? demoPhan(res, k) : pdfNoiDung(res, k, anhLaSo, kichLaSo);
+        if (demo && k === 'chart' && anhLaSo) noi = pdfChart({ chiTiet: null }, anhLaSo, kichLaSo) + noi;
+        if (noi && noi.replace(/<[^>]+>/g, '').trim().length > 20) dsPhan.push({ k: k, ten: PDF_TEN[k] || k, hook: PDF_HOOK[k] || '', noi: noi, trang: 0 });
       });
+      var html = '<div class="pdf-page-cover">' + bia(res, brand, demo) + '</div>';
+      // Bản đầy đủ: mỗi phần bắt đầu trang mới. Bản xem thử: các phần chạy liền mạch cho gọn
+      if (demo) html += '<div class="pdf-sec" data-k="demo">' + dsPhan.map(function (x, i) { return bcMo(i + 1, x.ten, x.hook, true) + x.noi; }).join('') + '</div>';
+      else dsPhan.forEach(function (x, i) { html += '<div class="pdf-sec" data-k="' + x.k + '">' + bcMo(i + 1, x.ten, x.hook) + x.noi + '</div>'; });
       html += '<div class="pdf-sec" data-k="ket">' + (demo ? trangMua(brand) : trangKet(brand)) + '</div>';
       root.innerHTML = html;
-      var DM = demo ? (res.teaser || {}) : null;
-      root.querySelectorAll('.pdf-sec').forEach(function (sec) {
-        var k = sec.getAttribute('data-k');
-        if (demo && k !== 'ket') {
-          var src = document.createElement('div'); src.className = 'pdf-sec pdf-src'; src.setAttribute('data-src', k); root.appendChild(src);
-          var d = DM[k] || DM[PDF_DEMO_KEY[k]];
-          var card = document.createElement('div'); card.innerHTML = demoCard(d || { lo: [], an: ['Nội dung phần này có trong bản đầy đủ'] }); while (card.firstChild) sec.appendChild(card.firstChild);
-          if (k === 'chart' && anhLaSo) { var im = document.createElement('div'); im.className = 'panel section'; var hh2 = 640, ww2 = Math.min(W - 40, hh2 * kichLaSo[0] / kichLaSo[1]); im.innerHTML = '<img class="pdf-chart" src="' + anhLaSo + '" style="width:' + Math.round(ww2) + 'px;height:' + Math.round(ww2 * kichLaSo[1] / kichLaSo[0]) + 'px">'; sec.insertBefore(im, sec.querySelector('.demo-card')); sec.querySelector('.demo-prev').remove(); return; }
-          sec = src;
-        }
-        if (k === 'tom') {
-          var t = document.createElement('div'); t.innerHTML = tongHopHtml(res, true); if (t.firstChild) sec.appendChild(chuanHoa(t.firstChild));
-          var mm = $('page-tong').querySelector('.tg[data-g="chan"] .mm-wrap'); if (mm) sec.appendChild(chuanHoa(mm.cloneNode(true)));
-          return;
-        }
-        if (k === 'linhvuc') {
-          var lv = $('dh-tonghop');
-          if (lv) { var lc = chuanHoa(lv.cloneNode(true)); var tt = lc.querySelector('.panel-title'); if (tt) tt.remove(); sec.appendChild(lc); }
-          return;
-        }
-        if (k === 'vh') {
-          var vhp = $('page-vh');
-          if (vhp) Array.prototype.forEach.call(vhp.children, function (c) {
-            if (c.matches('.tg[data-g="bien"], .tg[data-g="vh-ngay"], .dt')) return;   // dòng thời gian là phần tương tác – không in   // biến cố có mục riêng; lịch từng ngày quá chi tiết cho báo cáo
-            if (c.classList.contains('vh-hero')) { var hc = chuanHoa(c.cloneNode(true)); if (hc.textContent.trim().length > 40) sec.appendChild(hc); return; }
-            if (c.classList.contains('tg')) {
-              // Bản gọn: đại vận chỉ giữ dòng thời gian + đại vận hiện tại; vận năm chỉ giữ các khung có biểu đồ
-              var g = c.getAttribute('data-g');
-              var con = [];
-              Array.prototype.forEach.call(c.children, function (x) {   // mở lớp bọc không tên để lọc từng khung bên trong
-                if (!x.className && x.tagName === 'DIV') Array.prototype.forEach.call(x.children, function (y) { con.push(y); }); else con.push(x);
-              });
-              con.forEach(function (x) {
-                if (x.classList.contains('tg-head')) return;
-                if (g === 'vh-dai' && x.classList.contains('van-page')) {
-                  var nay = x.querySelector('details.lg-block[open]') || x.querySelector('.dv-now');
-                  if (nay) sec.appendChild(chuanHoa(nay.cloneNode(true)));
-                  return;
-                }
-                if (x.classList.contains('vs-canco') || x.classList.contains('nam-xem')) return;   // căn cứ chi tiết và nút chọn năm không in
-                if (g === 'vh-nam' && !x.classList.contains('hsn') && !x.querySelector('figure')) return;
-                var cx = chuanHoa(x.cloneNode(true));
-                cx.querySelectorAll('.vs-canco, .hsn-ly, .hsn-coso, [data-mo-sk], .hc-goi').forEach(function (e) { e.remove(); });
-                if (cx.textContent.trim()) sec.appendChild(cx);
-              });
-              return;
-            }
-            sec.appendChild(chuanHoa(c.cloneNode(true)));
-          });
-          var tomV = res.vanTom;
-          if (tomV && !demo && (!tomV.coNam || tomV.dv.some(function (d) { return !d.co; }))) {
-            var gc = document.createElement('p'); gc.className = 'muted'; gc.style.fontSize = '13px';
-            gc.textContent = 'Ghi chú: báo cáo gồm các giai đoạn đã mở trong tài khoản. Các đại vận, năm hoặc tháng chưa mở chỉ hiện điểm đánh giá.';
-            sec.appendChild(gc);
-          }
-          return;
-        }
-        if (PDF_TG.indexOf(k) >= 0) {
-          var g = document.querySelector('.tg[data-g="' + k + '"]');
-          if (g) Array.prototype.forEach.call(g.children, function (c) {
-            if (c.classList.contains('tg-head') || c.classList.contains('tg-slot-wrap')) return;
-            var cc = chuanHoa(c.cloneNode(true));
-            // Bản gọn: bỏ bảng lý do từng năm ("Hệ cùng báo") – biểu đồ cột phía trên đã tóm đủ
-            cc.querySelectorAll('table').forEach(function (t) { if (/Hệ cùng báo/.test((t.tHead || t).textContent.slice(0, 200))) { var w = t.closest('.tbl-wrap') || t; w.remove(); } });
-            cc.querySelectorAll('.bc-nhiet-wrap, .hsn-coso').forEach(function (e) { e.remove(); });   // bảng nhiệt 30 cột quá rộng cho trang A4
-            sec.appendChild(cc);
-          });
-          return;
-        }
-        if (k === 'chart') {
-          var w = document.createElement('div'); w.className = 'panel section'; var hMax = 1000, wMax = W - 40, ww = wMax, hh = ww * kichLaSo[1] / kichLaSo[0];
-          if (hh > hMax) { hh = hMax; ww = hh * kichLaSo[0] / kichLaSo[1]; }
-          w.innerHTML = '<img class="pdf-chart" src="' + anhLaSo + '" alt="Lá số Tử Vi" width="' + Math.round(ww) + '" height="' + Math.round(hh) + '" style="width:' + Math.round(ww) + 'px;height:' + Math.round(hh) + 'px">';
-          sec.appendChild(w); var pd = $('palaceDetail'); if (pd && !pd.querySelector('.pd-goiy')) sec.appendChild(chuanHoa(pd.cloneNode(true)));
-          (res.chiTiet && res.chiTiet.tamPhap ? ['tvp-1', 'tvp-2', 'tvp-4'] : ['tvp-1', 'tvp-3']).forEach(function (g) { var c = $('page-luan').querySelector('.tg[data-g="' + g + '"]'); if (c) sec.appendChild(chuanHoa(c.cloneNode(true))); });
-          return;
-        }
-        var page = $('page-' + k);
-        // Bản gọn: mỗi hệ chỉ lấy biểu đồ chính + phần luận tổng hợp dễ hiểu (không chép phần chuyên sâu)
-        if (page && PDF_CHINH[k]) {
-          PDF_CHINH[k].forEach(function (m) {
-            var ds = Array.prototype.filter.call(page.querySelectorAll(m.sel), function (el) {
-              if (!m.ten) return true;
-              var t = el.querySelector(':scope > .panel-title, :scope > figcaption b'); return t && m.ten.test(t.textContent);
-            });
-            ds.slice(0, m.max || 1).forEach(function (el) { sec.appendChild(chuanHoa(el.cloneNode(true))); });
-          });
-          var dh = page.querySelector('.dh-panel'); if (dh) sec.appendChild(chuanHoa(dh.cloneNode(true)));
-          // Bản đầy đủ: thêm các phần luận lĩnh vực / tổng hợp / lời khuyên của hệ (không chép bảng kỹ thuật)
-          (PDF_LUAN[k] || []).forEach(function (g) {
-            var el = page.querySelector('.tg[data-g="' + g + '"]'); if (el) sec.appendChild(chuanHoa(el.cloneNode(true)));
-          });
-          return;
-        }
-        if (page) Array.prototype.forEach.call(page.children, function (c) { if (!c.classList.contains('subtabs') && !c.classList.contains('reveal') && !c.classList.contains('tab-lede')) sec.appendChild(chuanHoa(c.cloneNode(true))); });
-      });
-      return sleep(200);
-    }).then(function () {
-      // html2canvas vẽ SVG như ảnh độc lập → chép style tính toán vào thuộc tính để giữ màu
-      var PROPS = ['fill', 'stroke', 'stroke-width', 'stroke-dasharray', 'opacity', 'fill-opacity', 'stroke-opacity', 'font-size', 'font-family', 'font-weight', 'font-style'];
-      root.querySelectorAll('svg *').forEach(function (el) {
-        var cs = getComputedStyle(el);
-        PROPS.forEach(function (pp) { var v = cs.getPropertyValue(pp); if (v && v !== 'none' || pp === 'fill' || pp === 'stroke') el.setAttribute(pp, v); });
-      });
-      return sleep(50);
-    }).then(function () {
-      if (!demo) return;
-      var srcs = root.querySelectorAll('.pdf-src'), p = Promise.resolve();
-      Array.prototype.forEach.call(srcs, function (src) {
-        p = p.then(function () {
-          var k = src.getAttribute('data-src'), img = root.querySelector('.pdf-sec[data-k="' + k + '"] .demo-prev img');
-          if (!img || src.scrollHeight < 20) { if (img) img.parentNode.remove(); return; }
-          var o = {}; Object.keys(opt).forEach(function (x) { o[x] = opt[x]; }); o.scale = 1; o.y = 0; o.height = Math.min(src.scrollHeight, 640);
-          return html2canvas(src, o).then(function (cv) {
-            var c = document.createElement('canvas'); c.width = cv.width; c.height = cv.height; var g = c.getContext('2d');
-            g.filter = 'blur(5px)'; g.drawImage(cv, 0, 0); g.filter = 'none';
-            var gr = g.createLinearGradient(0, c.height * 0.45, 0, c.height); gr.addColorStop(0, 'rgba(0,0,0,0)'); gr.addColorStop(1, NEN_HEX);
-            g.fillStyle = gr; g.fillRect(0, 0, c.width, c.height);
-            img.src = c.toDataURL('image/jpeg', 0.7); img.style.width = '100%';
-          });
-        });
-      });
-      return p.then(function () { srcs.forEach(function (x) { x.remove(); }); return sleep(120); });
+      return sleep(250);
     }).then(function () {
       setLoadingText('Đang dựng trang bìa…');
       var cv = root.querySelector('.pdf-page-cover');
-      cv.style.height = Math.round(W * PH / CW * (CW / PW)) + 'px';
+      cv.style.width = W + 'px'; cv.style.height = Math.round(W * PH / PW) + 'px';
       var o = {}; Object.keys(opt).forEach(function (k) { o[k] = opt[k]; }); o.backgroundColor = '#14110e';
-      return html2canvas(cv, o).then(function (c) { trangMoi(); dat(c, true); trangMoi(); /* chỗ cho mục lục */ });
+      return html2canvas(cv, o).then(function (c) {
+        trangMoi(); pdf.addImage(c.toDataURL('image/jpeg', 0.86), 'JPEG', 0, 0, PW, PH, undefined, 'FAST');
+        trangMoi();   // chỗ cho mục lục
+        cv.remove();
+      });
     }).then(function () {
       var secs = root.querySelectorAll('.pdf-sec'), p = Promise.resolve();
       Array.prototype.forEach.call(secs, function (sec, i) {
         p = p.then(function () {
           setLoadingText('Đang dựng PDF – phần ' + (i + 1) + '/' + secs.length + '…');
-          return chupPhan(sec, function (so) { if (dsPhan[i]) { dsPhan[i].trang = so; pdf.outline.add(null, dsPhan[i].ten, { pageNumber: so }); } });
+          return chupPhan(sec, function (so) { if (!demo && dsPhan[i]) { dsPhan[i].trang = so; pdf.outline.add(null, dsPhan[i].ten, { pageNumber: so }); } });
         });
       });
       return p;
     }).then(function () {
       setLoadingText('Đang dựng mục lục…');
-      var toc = document.createElement('div'); toc.className = 'pdf-sec'; toc.innerHTML = mucLuc(dsPhan); root.appendChild(toc);
+      var toc = document.createElement('div'); toc.style.width = W + 'px'; toc.innerHTML = mucLuc(dsPhan); root.appendChild(toc);
       return sleep(80).then(function () { return html2canvas(toc, opt); }).then(function (c) {
-        pdf.setPage(2); y = 0; dat(c);
+        pdf.setPage(2);
+        var hPt = c.height / scale * pxPt, k = Math.min(1, CH / hPt);
+        pdf.addImage(c.toDataURL('image/jpeg', 0.86), 'JPEG', MX + CW * (1 - k) / 2, MT, CW * k, hPt * k, undefined, 'FAST');
       });
     }).then(function () {
       var tong = pdf.getNumberOfPages(), ten = res.tuvi.info.name || 'la-so';
       var txt = (demo ? 'BẢN XEM THỬ  ·  ' : '') + (brand.ten || 'Thiên Cơ Các') + '  ·  Bản đồ vận mệnh của ' + ten + (brand.lienHe ? '  ·  ' + brand.lienHe : '');
-      for (var i = 2; i <= tong; i++) { pdf.setPage(i); pdf.addImage(chanTrang(txt, i, tong, sang), 'PNG', MX, PH - 26, CW, CW * 44 / 1600); }
+      for (var i = 2; i <= tong; i++) { pdf.setPage(i); pdf.addImage(chanTrang(txt, i, tong, sang), 'PNG', MX, PH - 30, CW, CW * 44 / 1600); }
       var slug = ten.normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[đĐ]/g, 'd').replace(/\s+/g, '-').toLowerCase();
-      pdf.setProperties({ title: 'Bản đồ vận mệnh – ' + ten, author: brand.ten || 'Thiên Cơ Các', subject: 'Tử Vi · Bát Tự · Chiêm tinh · Thần số học · Human Design' });
+      pdf.setProperties({ title: 'Bản đồ vận mệnh – ' + ten, author: brand.ten || 'Thiên Cơ Các', subject: 'Tử Vi · Bát Tự · Hà Lạc · Chiêm tinh · Thần số học · Human Design' });
       pdf.save((demo ? 'xem-thu-' : '') + 'ban-do-van-menh-' + slug + '.pdf');
       toast('Đã tạo PDF ' + tong + ' trang ✦');
     }).catch(showErr).then(function () {

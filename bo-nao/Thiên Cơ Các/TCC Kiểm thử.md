@@ -30,6 +30,7 @@ cd tests && npm install && node thien-van.mjs && node doi-chieu.js   # đối ch
   - `python3 tools/xem-truoc.py` → `tools/preview.html`. `google.script.run` được thay bằng `window.srv`.
   - `PW=/opt/node22/lib/node_modules/playwright node tools/chup.js` chụp các tab (`W=390` để giả điện thoại).
   - Không chạy `playwright install`; Chromium có sẵn.
+- **Xuất thử PDF:** `tools/xuat-pdf.js` (cần `npm install --no-save html2canvas@1.4.1 jspdf@2.5.1` trong tests/) – xem [[TCC PDF]].
 - **Kiểm tra cú pháp:** `.gs` thì copy ra `.js` rồi `node --check`. `Script.html` thì trích nội dung `<script>` rồi `node --check`.
 - **Giới hạn mạng:** WebFetch bị chặn với một số trang tiếng Việt (vd. lasobattu.com, 4thuman.com); WebSearch dùng được.
 - **Thêm file `.gs` mới:** phải thêm vào `HAM_CAN_CO` trong Code.gs (hàm `kiemTraCaiDat`) và cập nhật số file trong HUONG-DAN-CAI-DAT.md.

@@ -22,4 +22,5 @@ Liên quan: [[TCC Sáu hệ]] · [[Việc chờ chủ dự án]] · [[00 Mục l
 - Cập nhật code: thử GitHub Actions rồi bỏ; dùng bộ bấm đúp clasp `tuvi-app/cai-dat-clasp/` (dự phòng raw + `ds-file.txt`). – [[TCC Tự đẩy code lên Apps Script]]
 - Email luận giải hằng ngày (hôm nay + ngày mai) cho chủ sở hữu / VIP. – [[TCC Luận giải hằng ngày qua email]]
 - 22/10 tối: email luận giải hằng ngày làm dày theo lĩnh vực. – [[TCC Luận giải hằng ngày qua email]]
+- 22/10: PDF thiết kế lại cho khổ A4, dựng từ dữ liệu (55 trang, nền giấy ngà). – [[TCC PDF]]
 - Kiểm thử đều đạt: cai-dat 77, tam-phap 14659, van-ngay 1590, tong-hop 3088, ho-so-nam 3867, van-sau 2924, nghiem-chung 967, tien-ich 55, tai-khoan, thanh-toan.

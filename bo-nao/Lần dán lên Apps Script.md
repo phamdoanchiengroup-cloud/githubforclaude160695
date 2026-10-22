@@ -4,6 +4,7 @@ Nhóm: Bắt đầu · Cập nhật 22/10/2026
 Liên quan: [[Việc chờ chủ dự án]] · [[TCC Kiểm thử]] · [[00 Mục lục]]
 
 ## Tình trạng
+- 22/10: PDF thiết kế lại – đổi **Script, Styles, Index** (mã giao diện `2026.10.22.3`). Bấm `2-CAP-NHAT.bat`, rồi Ctrl+F5.
 - 22/10 (khuya): gửi luận giải hằng ngày qua Zalo – đổi **TienIch, Code**. Bấm `2-CAP-NHAT.bat`, rồi dán `ZALO_TOKEN`, `ZALO_CHAT_ID` vào Thuộc tính tập lệnh và chạy `thuZaloVanNgay`.
 - 22/10 (tối): email luận giải hằng ngày làm dày – chỉ đổi **TienIch.gs** (giao diện không đổi). Bấm `2-CAP-NHAT.bat`, không cần chạy lại `caiDatVanNgay`.
 - **22/10 (cuối phiên): chủ dự án cập nhật xong bằng bộ bấm đúp** (`2-CAP-NHAT.bat`, tải dự phòng qua raw sau lỗi api.github.com). Web đang chạy bản mới nhất trên nhánh, mã giao diện `2026.10.22.2` (gồm TuViTamPhap, Bạch Kim + bento, luận giải hằng ngày). Các dòng 21–22/10 bên dưới là lịch sử. Từ nay: push lên nhánh → nhắc chủ dự án bấm `2-CAP-NHAT.bat`.
