@@ -25,11 +25,12 @@ ok(r.ok && r.ds.length > 50, 'phân tích tháng 10: ' + r.ds.length + ' công �
 ok(r.soHocViecBo > 0, 'không tính sản lượng ngày còn học việc vào trung vị (bỏ ' + r.soHocViecBo + ' người)', r.soHocViecBo);
 ok(r.apTu === '2026-10-01', 'đổi định mức sẽ áp từ 01/10 (tháng chưa chốt)', r.apTu);
 const lech = r.ds.filter(x => x.soCoData > 0 && x.trungVi > 88);
-const khongGY = lech.filter(x => !x.dmGoiY && !x.phuThuoc && Math.abs(x.trungViSau - 85) > 3);
-ok(!khongGY.length, 'công đoạn lỏng (>88%): ' + lech.filter(x => x.dmGoiY).length + ' có gợi ý, ' + lech.filter(x => x.phuThuoc).length + ' phụ thuộc công đoạn chính, còn lại tự về mốc', khongGY.slice(0, 3));
+const khongGY = lech.filter(x => !x.dmGoiY && Math.abs(x.trungViSau - 85) > 3);
+ok(!khongGY.length, 'công đoạn lỏng (>88%): ' + lech.filter(x => x.dmGoiY).length + ' có gợi ý (không còn nhãn "công đoạn phụ" – 22/10), ' + lech.filter(x => x.chamTran).length + ' đã nâng tối đa ×4, còn lại tự về mốc', khongGY.slice(0, 3));
 const satGY = nhieu(r.ds.filter(x => x.nhan === 'sat' && x.dmGoiY));
 ok(satGY.every(x => Math.abs(x.trungViSau - 85) <= 3), 'công đoạn đang sát 85% chỉ gợi ý khi công đoạn làm cùng ngày đổi kéo lệch (' + satGY.length + ' công đoạn), sau khi áp vẫn sát mốc', satGY.filter(x => Math.abs(x.trungViSau - 85) > 3).map(x => [x.tenCD, x.trungViSau]));
-ok(r.ds.every(x => !x.dmGoiY || (x.dmGoiY < x.dinhMuc * 3.7 && x.dmGoiY > x.dinhMuc / 3.7)), 'không gợi ý đổi gần ×4 (công đoạn phụ để nguyên, ghi "phụ thuộc")');
+ok(r.ds.every(x => x.phuThuoc === undefined), 'không còn nhãn "công đoạn phụ" – mọi công đoạn đều được gợi ý (22/10)');
+ok(r.ds.every(x => !x.chamTran || Math.abs(x.dmGoiY / x.dinhMuc - 4) < 0.15), 'công đoạn đã nâng tới chặn ×4 có đánh dấu chamTran (' + r.ds.filter(x => x.chamTran).length + ')');
 ok(r.ds.every(x => !x.dmGoiY || x.dmGoiY > x.dinhMuc), 'chỉ gợi ý NÂNG, không gợi ý hạ (chặt thường do người mới đang đào tạo)', r.ds.filter(x => x.dmGoiY && x.dmGoiY < x.dinhMuc).slice(0, 3).map(x => [x.tenCD, x.dinhMuc, x.dmGoiY]));
 ok(r.ds.filter(x => x.nhan === 'chat').every(x => !x.dmGoiY), 'công đoạn chặt giữ nguyên định mức');
 ok(r.ds.every(x => !x.dmGoiY || (x.dmGoiY <= x.dinhMuc * 4 && x.dmGoiY >= x.dinhMuc / 4)), 'không gợi ý định mức vô lý (trong ×4 định mức đang dùng)');
@@ -49,9 +50,10 @@ const sau = phanTich(c, T);
 const daSua = sau.ds.filter(x => ap.some(a => a.maCD === x.maCD));
 const xa = nhieu(daSua).filter(x => Math.abs(x.trungVi - 85) > 6);
 ok(!xa.length, 'phân tích lại (công đoạn ≥3 người đã sửa): trung vị trong 79–91% (' + nhieu(daSua).length + ' công đoạn)', xa.map(x => [x.tenCD, x.trungVi]));
-const tren100 = sau.ds.filter(x => x.trungVi > 100 && !x.itNguoi && !x.phuThuoc);
+const daTran = {}; truoc.ds.forEach(x => { if (x.chamTran) daTran[x.maCD] = 1; });
+const tren100 = sau.ds.filter(x => x.trungVi > 100 && !x.itNguoi && !daTran[x.maCD]);
 ok(!tren100.length, 'không còn công đoạn nào (≥3 người) trung vị trên 100%', tren100.map(x => [x.tenCD, x.trungVi, x.soCoData]));
-console.log('    (còn ' + sau.ds.filter(x => x.trungVi > 100).length + ' công đoạn >100% nhưng chỉ 1–2 người có dữ liệu hoặc phụ thuộc công đoạn chính)');
+console.log('    (còn ' + sau.ds.filter(x => x.trungVi > 100).length + ' công đoạn >100%: chỉ 1–2 người có dữ liệu hoặc đã nâng tới ×4)');
 ok(daSua.every(x => Math.abs(x.trungViKy - x.trungVi) < 0.5), 'KPI tháng 10 tính theo định mức mới cho cả tháng (khớp số phân tích)', daSua.filter(x => Math.abs(x.trungViKy - x.trungVi) >= 0.5).slice(0, 3).map(x => [x.tenCD, x.trungVi, x.trungViKy]));
 const ls = c.doc_('LichSuDinhMuc').filter(x => ap.some(a => a.maCD === x.MaCD));
 ok(ls.every(x => c.ngayVN_(x.DenNgay) <= '2026-09-30'), 'lịch sử định mức của các công đoạn đã sửa không còn đoạn nào trong tháng 10', ls.filter(x => c.ngayVN_(x.DenNgay) > '2026-09-30').slice(0, 3));
@@ -61,8 +63,8 @@ ok(kpi.ok && kpi.ds.length > 0, 'bảng KPI tháng 10 vẫn tính được sau k
 const sep = c.__goi('layKPIKy', T, 'thang', '2026-09', sau.ds[0].maXuong);
 const sepTruoc = tao(); const sep0 = sepTruoc.c.__goi('layKPIKy', sepTruoc.T, 'thang', '2026-09', sau.ds[0].maXuong);
 ok(JSON.stringify(sep.ds) === JSON.stringify(sep0.ds), 'KPI tháng 9 không đổi');
-const ph = truoc.ds.filter(x => x.phuThuoc).slice(0, 2).map(x => x.tenCD + ' (' + x.trungVi + '%)');
-console.log('    ví dụ công đoạn phụ thuộc: ' + ph.join(', '));
+const ph = truoc.ds.filter(x => x.chamTran).slice(0, 2).map(x => x.tenCD + ' (' + x.trungVi + '% → dự kiến ' + x.trungViSau + '%)');
+console.log('    ví dụ công đoạn nâng tới ×4: ' + ph.join(', '));
 
 
 console.log('\n3. Tháng đang làm đã bấm chốt giữa tháng: định mức mới vẫn áp cả tháng, Bảng KPI tự tính lại, không nhắc Chốt bù (22/10)');

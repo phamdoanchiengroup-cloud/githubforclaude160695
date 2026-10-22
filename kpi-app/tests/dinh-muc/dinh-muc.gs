@@ -147,31 +147,9 @@ function phanTichDinhMucGoc_(token, kieu, giaTri) {
       if (doiNhat < 0.0005) break;
     }
   };
-  // Công đoạn phải đổi tới mức chặn mà vẫn chưa về mốc: phần việc này chỉ chiếm ít giờ trong ngày của người làm,
-  // hiệu suất do công đoạn chính cùng ngày quyết định -> không gợi ý; giữ nguyên định mức của nó rồi giải lại phần còn lại.
-  var chamChan = function(mc) {
-    var tl = N[mc] / N0[mc];
-    return tl > CHAN * 0.9;     // phải đổi gần ×4 mới về mốc = công đoạn phụ, không đáng đổi
-  };
-  var phuThuoc = {};
-  var tachPhuThuoc = function() {                        // giải; công đoạn chạm chặn -> phụ thuộc, giải lại phần còn lại
-    for (var lan = 0; lan < 8; lan++) {
-      giai(canChinh);
-      var moi = canChinh.filter(chamChan);
-      if (!moi.length) return;
-      moi.forEach(function(mc) { phuThuoc[mc] = 1; N[mc] = N0[mc]; });   // giữ định mức đang dùng
-      canChinh = canChinh.filter(function(mc) { return !phuThuoc[mc]; });
-    }
-  };
-  tachPhuThuoc();
-  // Thử lại từng công đoạn phụ thuộc khi các công đoạn khác đã ổn: về được mốc trong giới hạn thì nhận lại
-  var nhanLai = 0;
-  Object.keys(phuThuoc).forEach(function(mc) {
-    giai([mc]);
-    if (chamChan(mc) || Math.abs(tvCD(mc, N) - DM_MOC) > DM_SAT) N[mc] = N0[mc];
-    else { delete phuThuoc[mc]; canChinh.push(mc); nhanLai++; }
-  });
-  if (nhanLai) tachPhuThuoc();                           // nhận lại thì giải chung lần nữa (công đoạn khác có thể bị kéo tới chặn)
+  // 22/10 chủ dự án: KHÔNG phân "công đoạn chính / phụ" – công đoạn nào cũng là công đoạn chính, giải chung tất cả.
+  // Chỉ giữ chặn an toàn: không gợi ý quá ×CHAN định mức đang dùng (chamTran = đã nâng tới chặn mà chưa về mốc).
+  giai(canChinh);
   var NR = {}; Object.keys(N0).forEach(function(k) { NR[k] = N0[k]; });
   canChinh.forEach(function(mc) {                       // không cần nâng (giải ra = định mức đang dùng) thì giữ số cũ, khỏi làm tròn
     if (N[mc] > N0[mc] * 1.001) NR[mc] = Math.max(N0[mc], dmLamTron_(N[mc]));
@@ -196,7 +174,7 @@ function phanTichDinhMucGoc_(token, kieu, giaTri) {
       maCD: mc, tenCD: c.TenCD || mc, maXuong: c.MaXuong || '', dinhMuc: N0[mc], soCoData: so,
       trungVi: r2_(tv), trungViKy: r2_(tvKy(mc)), nhan: nhan, itNguoi: so < DM_IT_NGUOI,
       dmGoiY: goiY, chinh: goiY ? Math.round((goiY / N0[mc] - 1) * 100) : 0,
-      trungViSau: r2_(tvCD(mc, NR)), phuThuoc: !!phuThuoc[mc]
+      trungViSau: r2_(tvCD(mc, NR)), chamTran: !!goiY && N[mc] >= N0[mc] * CHAN * 0.999
     };
   });
 

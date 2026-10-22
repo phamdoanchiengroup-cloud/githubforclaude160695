@@ -98,11 +98,9 @@ function ptdmVe(r){
   if(!dsX.length){ box.innerHTML=h+'<div class="alert a-wn">Xưởng này chưa có dữ liệu để phân tích.</div>'; return; }
 
   var coGY=dsX.filter(function(x){return x.dmGoiY>0});
-  var phu=dsX.filter(function(x){return x.phuThuoc}).length;
   var tu=ptdmKq.apTu||'', th=tu?(+tu.slice(5,7))+'/'+tu.slice(0,4):'';
   if(coGY.length){
     h+='<div class="alert a-bd"><b>'+coGY.length+' công đoạn nên nâng định mức</b> để về mốc 85%.'+
-       (phu?' '+phu+' công đoạn phụ để nguyên (hiệu suất do công đoạn chính cùng ngày quyết định).':'')+
        '<br>Các gợi ý được tính <b>chung</b> (người làm nhiều công đoạn trong ngày) — nên áp <b>cùng lúc</b> bằng nút "Áp dụng các dòng đã chọn" thì phân tích lại mới về quanh 85%.</div>';
   }else{
     h+='<div class="alert a-ok">Không có công đoạn nào lỏng hơn mốc 85% — không cần nâng định mức.</div>';
@@ -111,7 +109,7 @@ function ptdmVe(r){
   if(th) h+='<div class="alert a-nu">Đổi định mức lúc này sẽ áp cho <b>cả tháng '+th+'</b> (từ ngày 1). '+
     'Bảng KPI tháng '+th+' tự tính lại theo định mức mới — <b>không cần bấm chốt</b>.</div>';
 
-  var ds=ptdmLoc==='tatca'?dsX:dsX.filter(function(x){return x.dmGoiY>0||x.phuThuoc||x.nhan==='do'||x.nhan==='vang'});
+  var ds=ptdmLoc==='tatca'?dsX:dsX.filter(function(x){return x.dmGoiY>0||x.nhan==='do'||x.nhan==='vang'});
   var tenXuong={}; (D.phongban||[]).forEach(function(p){tenXuong[p.MaXuong]=p.TenXuong;});
   var thuTuX=[], theoX={};
   ds.forEach(function(x){
@@ -136,9 +134,7 @@ function ptdmVe(r){
       gy='<b>'+x.dmGoiY+'</b> <span style="color:var(--ink3);font-size:12px">('+dau+x.chinh+'%)</span>'+
          '<div style="font-size:12px;color:var(--ink2)">dự kiến '+f(x.trungViSau,1)+'%</div>';
       if(x.nhan==='sat') ghi.push('chỉnh nhẹ vì công đoạn làm cùng ngày đổi');
-    }else if(x.phuThuoc){
-      gy='<span style="color:var(--ink3)">để nguyên</span>';
-      ghi.push('công đoạn phụ — hiệu suất do công đoạn chính cùng ngày quyết định');
+      if(x.chamTran) ghi.push('đã nâng tối đa ×4 mà chưa về 85% — người làm chỉ dành ít thời gian cho công đoạn này, cân nhắc trước khi áp');
     }else{
       gy='<span style="color:var(--ink3)">giữ '+x.dinhMuc+'</span>'+
          (Math.abs(x.trungViSau-x.trungVi)>=0.5?'<div style="font-size:12px;color:var(--ink2)">dự kiến '+f(x.trungViSau,1)+'%</div>':'');

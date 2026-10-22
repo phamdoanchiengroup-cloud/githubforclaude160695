@@ -31,7 +31,7 @@ let dem = 0, loi = 0; const ok = (d, t, c) => { dem++; if (d) console.log('  ✓
     buoc: [...document.querySelectorAll('#ptdm_kq input[type=number]')].every(i => i.step === 'any'),
     giaTri: ptdmKq.ds.filter(x => x.dmGoiY > 0).every(x => { const i = document.getElementById('dm_' + x.maCD); return i && Number(i.value) === x.dmGoiY; }),
     pill: [...new Set([...document.querySelectorAll('#ptdm_kq .pill')].map(x => x.textContent))],
-    phu: [...document.querySelectorAll('#ptdm_kq tbody td')].some(td => /công đoạn phụ/.test(td.textContent)),
+    phu: ![...document.querySelectorAll('#ptdm_kq tbody td')].some(td => /công đoạn phụ|để nguyên/.test(td.textContent)),
     du: [...document.querySelectorAll('#ptdm_kq tbody td')].some(td => /dự kiến \d/.test(td.textContent))
   }));
   ok(/cả tháng đang làm/.test(s.nen) && /không gợi ý hạ/.test(s.nen) && /người mới/.test(s.nen), 'hướng dẫn: mốc 85%, chỉ nâng (không hạ vì người mới), áp cả tháng', s.nen);
@@ -42,7 +42,7 @@ let dem = 0, loi = 0; const ok = (d, t, c) => { dem++; if (d) console.log('  ✓
   ok(s.ckChon === s.goiY, 'chọn sẵn tất cả gợi ý (kể cả ' + s.itNguoiGY + ' công đoạn ít người – bỏ ra sẽ lệch lời giải chung)', s);
   ok(s.giaTri && s.buoc, 'ô sửa điền sẵn đúng định mức gợi ý, nhập được số lẻ (step any)');
   ok(!s.pill.some(x => /Dưới mốc/.test(x)) && s.pill.some(x => /Lỏng/.test(x)), 'mặc định chỉ hiện công đoạn lỏng / cần nâng (ẩn dưới mốc)', s.pill);
-  ok(s.phu && s.du, 'có ghi chú công đoạn phụ và hiệu suất dự kiến');
+  ok(s.phu && s.du, 'không còn nhãn "công đoạn phụ / để nguyên"; có hiệu suất dự kiến');
   s = await p.evaluate(() => { document.getElementById('ptdm_loc').value = 'tatca'; document.getElementById('ptdm_loc').onchange(); return document.querySelectorAll('#ptdm_kq tbody tr').length; });
   ok(s >= (await p.evaluate(() => ptdmKq.ds.length)), 'bộ lọc "Tất cả công đoạn" hiện đủ ' + s + ' dòng');
   ok(await p.evaluate(() => [...document.querySelectorAll('#ptdm_kq tbody td')].some(td => /không hạ định mức — có thể người mới/.test(td.textContent))), 'công đoạn dưới mốc ghi "không hạ – có thể người mới đang đào tạo"');
@@ -55,7 +55,7 @@ let dem = 0, loi = 0; const ok = (d, t, c) => { dem++; if (d) console.log('  ✓
   const xn = hop.filter(x => /^confirm/.test(x)).join(' ');
   ok(/CẢ THÁNG 10\/2026/.test(xn) && !/CHƯA CHỐT/.test(xn), 'lời xác nhận: áp cho cả tháng 10/2026 (bỏ câu "các tháng chưa chốt")', xn);
   s = await p.evaluate(ma => { const ds = ptdmKq.ds.filter(x => ma.includes(x.maCD) && x.soCoData >= 3);
-    return { n: ds.length, xa: ds.filter(x => Math.abs(x.trungVi - 85) > 6).map(x => [x.tenCD, x.trungVi]), tren: ptdmKq.ds.filter(x => x.trungVi > 100 && !x.itNguoi && !x.phuThuoc).length }; }, truoc);
+    return { n: ds.length, xa: ds.filter(x => Math.abs(x.trungVi - 85) > 6).map(x => [x.tenCD, x.trungVi]), tren: ptdmKq.ds.filter(x => x.trungVi > 100 && !x.itNguoi && !x.chamTran).length }; }, truoc);
   ok(s.n > 3 && !s.xa.length, 'phân tích lại: ' + s.n + ' công đoạn (≥3 người) đã sửa nằm trong 79–91%', s);
   ok(s.tren === 0, 'không còn công đoạn ≥3 người trên 100%', s);
   ok(!jsLoi.length, 'không lỗi JS', jsLoi);

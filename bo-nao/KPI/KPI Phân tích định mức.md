@@ -41,3 +41,8 @@ Liên quan: [[KPI Tổng quan và cách dựng]] · [[KPI Kiểm thử]] · [[Qu
 - Dữ liệu 22/10: bỏ 19 người, 27 công đoạn đổi trung vị (đa số tăng vì người mới làm chậm); thêm 2 gợi ý nâng: Nhập Nguyên Vật Liệu 1,05 → 1,1, Quấn Cao Để Đúc Ren 98 → 108; "Tiện Rà Tròn Chuôi 1 Máy" chỉ có người học việc làm nên ra khỏi phân tích.
 - Lỗi dữ liệu thấy khi soát: Trương Thị Thùy Linh NgayVaoLam 2026-11-08 (tương lai – gõ nhầm?); Hà Thị Hải có 2 dòng NhanSu; người thiếu NgayVaoLam không được coi là học việc.
 - Kiểm thử `dinh-muc.js` 27.
+
+## 22/10: bỏ nhãn "công đoạn phụ" (chủ dự án: công đoạn nào cũng là công đoạn chính)
+- Bỏ `chamChan` / `phuThuoc` / thử nhận lại: chỉ `giai(canChinh)` cho mọi công đoạn có dữ liệu, giữ chặn an toàn ×4 (`CHAN`). Trả `chamTran` khi gợi ý chạm ×4; giao diện ghi "đã nâng tối đa ×4 mà chưa về 85% – cân nhắc trước khi áp".
+- Dữ liệu 22/10: Cân Phôi 350 → 1399 (dự kiến 92%), Cắt Nối 80 → 320 (dự kiến 112%, 1 người) – đều chạm ×4.
+- Kiểm thử `dinh-muc.js` 28, `dinh-muc-web.js` 15.
