@@ -54,7 +54,8 @@ try {
       GhiCauHinh $ch
       Tot '  Đủ điều kiện – từ nay tự triển khai.'
     } elseif (-not $idTk) {
-      Write-Host '  Chưa tự triển khai được: không tìm thấy bản triển khai web nào của dự án (lệnh "clasp deployments").' -ForegroundColor Yellow
+      Write-Host '  CẢNH BÁO: dự án clasp đang nối CHƯA có bản triển khai web nào – có thể đang nối nhầm BẢN SAO, không phải dự án chạy web công ty.' -ForegroundColor Red
+      Write-Host '  Đừng bấm "Triển khai mới" (sẽ ra đường link khác). Chạy lại 1-CAI-DAT.bat với Mã tập lệnh của dự án có link web công nhân đang dùng.' -ForegroundColor Yellow
     } else {
       Write-Host '  Chưa tự triển khai được: file appsscript.json của dự án chưa có mục "webapp" (tự triển khai lúc này có thể làm web mất quyền truy cập).' -ForegroundColor Yellow
       Write-Host '  Sau khi bạn triển khai tay một lần, lần cập nhật sau máy sẽ tự kiểm tra lại.' -ForegroundColor Yellow

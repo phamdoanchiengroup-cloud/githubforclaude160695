@@ -56,6 +56,16 @@ try {
   $dich = SaoLuuBanTrenMang
 
   $trienKhai = ChonTrienKhai
+  if (-not $trienKhai) {
+    # Dự án chưa có bản triển khai web nào: rất có thể đã dán Mã tập lệnh của BẢN SAO (Tạo bản sao dự án) chứ không phải dự án đang chạy web (22/10)
+    Write-Host ''
+    Write-Host '  CẢNH BÁO: dự án này CHƯA có bản triển khai web nào.' -ForegroundColor Red
+    Write-Host '  Dự án đang chạy web của công ty luôn có ít nhất 1 bản triển khai. Có thể bạn đã chép Mã tập lệnh của BẢN SAO.' -ForegroundColor Red
+    Write-Host '  Kiểm tra: mở dự án có đường link web công nhân đang dùng -> Triển khai -> Quản lý triển khai phải thấy đúng link đó,' -ForegroundColor Yellow
+    Write-Host '  rồi lấy Mã tập lệnh của CHÍNH dự án đó.' -ForegroundColor Yellow
+    $tl = Hoi '  Gõ C rồi Enter nếu chắc chắn đúng dự án (dự án mới, chưa từng triển khai); chỉ Enter để dừng và làm lại'
+    if ($tl -notmatch '^[cC]') { throw 'Đã dừng để kiểm tra lại Mã tập lệnh. Chạy lại 1-CAI-DAT.bat với Mã tập lệnh của dự án đang chạy web.' }
+  }
   $manifest = Get-Content (Join-Path $ThuMucMa 'appsscript.json') -Raw -Encoding UTF8
   $tuTrienKhai = [bool]($trienKhai -and ($manifest -match '"webapp"'))
   GhiCauHinh ([pscustomobject]@{ scriptId = $id; deployId = $trienKhai; tuTrienKhai = $tuTrienKhai; ngayCai = (Get-Date -Format 'yyyy-MM-dd HH:mm') })

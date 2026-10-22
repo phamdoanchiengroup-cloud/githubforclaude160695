@@ -12,7 +12,7 @@ Bộ này dùng **clasp**, công cụ chính thức của Google, để đẩy m
 2. Máy tự cài Node.js (có thể hỏi quyền quản trị → bấm **Có**) và clasp.
 3. Trình duyệt mở trang cài đặt Apps Script → gạt **Google Apps Script API** sang **Bật** → quay lại cửa sổ đen, bấm Enter.
 4. Trình duyệt mở trang đăng nhập Google → chọn **đúng tài khoản** sở hữu web KPI → bấm **Cho phép**.
-5. Cửa sổ đen hỏi **Mã tập lệnh**: mở dự án Apps Script của web KPI → bánh răng **Cài đặt dự án** (cột trái) → chép dòng **Mã tập lệnh** → dán vào cửa sổ đen (chuột phải để dán) → Enter.
+5. Cửa sổ đen hỏi **Mã tập lệnh**: mở **đúng dự án đang chạy web công ty** (không phải bản sao "Bản sao của …" – kiểm tra: Triển khai → Quản lý triển khai phải thấy đúng link công nhân đang dùng) của web KPI → bánh răng **Cài đặt dự án** (cột trái) → chép dòng **Mã tập lệnh** → dán vào cửa sổ đen (chuột phải để dán) → Enter.
 6. Nếu dự án có nhiều bản triển khai, cửa sổ hỏi chọn bản nào là web đang dùng → gõ số → Enter.
 7. Thấy **CÀI ĐẶT XONG** là xong. Bản mã đang chạy được sao lưu vào `C:\Users\<tên bạn>\KPI-AppsScript\sao-luu\`.
 
