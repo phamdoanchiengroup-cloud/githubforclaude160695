@@ -5,7 +5,7 @@ Liên quan: [[Lần dán lên Apps Script]] · [[Quyết định của chủ d�
 
 ## Câu hỏi đang chờ trả lời
 - Phạt nhập trễ trước 15/09 (349 lượt) không có vi phạm NHAPTRE nên công nhân không bị trừ nề nếp, nhưng trưởng phòng vẫn bị trừ "không nhắc". Giữ hay gỡ? – [[KPI Sửa lỗi 21-10 và dữ liệu sheet]]
-- Trần KPI `TranKPI` = 500 (500%) trong TrongSoKPI – có đúng ý không? – [[KPI Sửa lỗi 21-10 và dữ liệu sheet]]
+- (Đã rõ 22/10: giữ `TranKPI` = 500, không dùng trần.) – [[KPI Sửa lỗi 21-10 và dữ liệu sheet]]
 - Dòng "Tổng" trong thẻ "Chờ chốt" có muốn cộng SL/Lỗi không (đang "–")? – [[KPI Sửa nhỏ trên web]]
 - Xưởng của 3 phòng: "Khu chuốt ráp nước" (T1), "Kho thành phẩm", "Phòng kế toán kho" (T3) – ghi chú 13/10 đã ghép tạm; ô xám chưa rõ máy trên sơ đồ 3D chờ ảnh/giải thích. – [[KPI Sơ đồ nhà máy 3D]]
 - Video giới thiệu từ tư liệu Rhino: tự dựng bằng ffmpeg + hoạt ảnh, hay video AI qua Everygen (tốn credit)? – [[KPI Màn đăng nhập demo chờ duyệt]]
@@ -15,6 +15,8 @@ Liên quan: [[Lần dán lên Apps Script]] · [[Quyết định của chủ d�
 
 - Sửa NhanSu: Trương Thị Thùy Linh NgayVaoLam 08/11/2026 (tương lai); Hà Thị Hải có 2 dòng. – [[KPI Phân tích định mức]]
 - Có loại người SL 0 cả tháng (Bùi Hoàng Anh, Trần Thị Thuỳ Dung, Tống Thị Mỹ Duyên, Nguyễn Thị Mai Nga…) khỏi bảng KPI công nhân không? Có muốn đổi trọng số (SL 70/CL 20/TT 5/AT 5) để KPI tổng bám 85% hơn không? – [[KPI Soát đổi định mức 22-10]]
+
+- Chọn cách đặt định mức: mốc "người khá (top 25%) = 90%" hay "trung bình 2 người cao nhất = 93–95%"? – [[KPI Phân tích định mức]]
 
 ## Chờ chủ dự án làm
 - Dán bản 21/10 (sửa lỗi + tăng tốc), chạy `CAI_TRIGGER_LAM_NONG_KPI`, kiểm tra Sheets API. – [[KPI Tăng tốc đợt 2 (21-10)]]
