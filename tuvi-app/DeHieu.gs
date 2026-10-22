@@ -183,6 +183,14 @@ function dhBatTu_(bt, btct) {
     dhDoan_('Yếu tố giúp bạn cân bằng (dụng thần)', 'Hành ' + dung + ' – tượng trưng cho ' + DH_BT_HANH[dung].ban + ' – là "vị thuốc" lá số của bạn cần nhất. Cách bổ sung trong đời sống: ' + DH_BT_HANH[dung].lam + '.' +
       (info.mau ? ' Màu hợp: ' + info.mau + '.' : '') + (info.huong ? ' Hướng tốt: ' + info.huong + '.' : '') + (hy.length > 1 ? ' Ngoài ra các hành ' + hy.filter(function (h) { return h !== dung; }).join(', ') + ' cũng hỗ trợ bạn.' : '')),
     dhDoan_('Điều nên tiết chế', ky.length ? 'Hành ' + ky.join(', ') + ' đang dư hoặc gây áp lực cho lá số – không phải điều xấu, chỉ là nên tiết chế: ' + ky.map(function (h) { return DH_BT_HANH[h].lam.split(';')[0]; }).join('; ') + ' ở mức vừa phải thôi.' : 'Lá số không có hành nào quá lấn át.')];
+  // Khí hậu của lá số (điều hậu theo Cùng Thông Bảo Giám): mùa sinh cần thêm hành nào
+  var DHB = bt.phanTich && bt.phanTich.dungThan && bt.phanTich.dungThan.dieuHauBang;
+  if (DHB && DHB.chu && DH_BT_HANH[DHB.chu.hanh]) {
+    var mc = bt.pillars[1].chi, mua = [11, 0, 1].indexOf(mc) >= 0 ? 'mùa đông' : [2, 3, 4].indexOf(mc) >= 0 ? 'mùa xuân' : [5, 6, 7].indexOf(mc) >= 0 ? 'mùa hè' : 'mùa thu';
+    var hc = DHB.chu.hanh, coMat = DHB.chu.thau.length || DHB.chu.tang.length, coRoi = coMat && pt[hc] >= 8;   // cùng ngưỡng 8% với "Cán cân ngũ hành"
+    nl.push(dhDoan_('Khí hậu của lá số', 'Bạn sinh vào ' + mua + '. Sách cổ xem lá số như một khu vườn cần đúng "thời tiết": với người sinh như bạn, năng lượng hành ' + hc + ' – tượng trưng cho ' + DH_BT_HANH[hc].ban + ' – giúp lá số được điều hòa. ' +
+      (coRoi ? 'Lá số của bạn đã có sẵn yếu tố này, nên chỉ cần giữ nhịp sống cân bằng.' : (coMat ? 'Lá số của bạn có yếu tố này nhưng còn mỏng, nên chủ động bồi thêm: ' : 'Lá số của bạn chưa có sẵn yếu tố này, nên chủ động bổ sung: ') + DH_BT_HANH[hc].lam) + (hc === dung ? '' : ' Đây là điều bổ trợ, đi cùng với yếu tố cân bằng chính ở trên.')));
+  }
   khoi.push({ ten: 'Năng lượng & cách cân bằng', doan: nl });
   top.forEach(function (x) { facts.push(taoFact_(he, 'Menh', 'tinh_cach', 'manh', DH_BT_TT[x.k].manh, 1.0, { nguon: 'Thập thần ' + x.k })); });
   facts.push(taoFact_(he, 'ALL', 'suc_khoe', thieu.length ? 'yeu' : 'trung', thieu.length ? 'Hành ' + thieu.join(', ') + ' yếu – nên bồi đắp để cơ thể và tinh thần cân bằng.' : 'Ngũ hành khá cân bằng.', 0.8, { nguon: 'Ngũ hành' }));
@@ -439,7 +447,8 @@ function dhHaLac_(hl) {
     hl.tien.diem > hl.hau.diem ? 'Đời bạn có xu hướng "tiền thuận – hậu giữ": tuổi trẻ nhiều cơ hội, về sau nên giữ gìn và tích lũy.' : 'Đời bạn khá đều tay – ổn định qua các giai đoạn.'));
   if (now) doan.push(dhDoan_('Giai đoạn bạn đang đi qua', 'Từ ' + now.khoang + ' (' + now.nam + '): giai đoạn được đánh giá "' + now.danhGia + '". ' + DH_HL_MUC[dhHaLacMuc_(now.diem)]));
   if (nn) doan.push(dhDoan_('Năm ' + nn.nam, 'Quẻ năm nay là ' + nn.que + ' – ' + String(nn.y || '').toLowerCase() + '. ' + DH_HL_MUC[dhHaLacMuc_(nn.diem)] + (nn.khuyen ? ' Lời khuyên: ' + nn.khuyen + '.' : '')));
-  if (L.thoiVi) doan.push(dhDoan_('Thời vận bẩm sinh', L.thoiVi.ketLuan.replace(/^Mệnh "([^"]+)": /, 'Lá số của bạn thuộc dạng "$1": ')));
+  if (L.thoiVi) doan.push(dhDoan_('Thời vận bẩm sinh', L.thoiVi.ketLuan.replace(/^Mệnh "([^"]+)": /, 'Lá số của bạn thuộc dạng "$1": ').replace(' (có Hóa công)', '').replace('có gốc từ cả can và chi năm sinh', 'được năm sinh nâng đỡ').replace('chỉ có một nguyên khí', 'chỉ được năm sinh nâng đỡ một phần').replace(', không có nguyên khí', '')));
+  if (L.thapCat) doan.push(dhDoan_('Nền mệnh bẩm sinh', 'Sách cổ đếm 10 điều kiện tốt bẩm sinh của một lá số (quẻ đẹp, sinh đúng mùa, có chỗ dựa…). Lá số của bạn có ' + L.thapCat.so + '/10, ở mức ' + L.thapCat.bac + '. ' + L.thapCat.ketLuan.replace(/^Đạt [^.]*\. /, '')));
   khoi.push({ ten: 'Hai nửa cuộc đời theo Kinh Dịch', doan: doan });
   // Luận lục thân theo 6 hào → văn đời thường cho từng mặt đời sống
   if (L.linhVuc && L.linhVuc.length) {

@@ -44,6 +44,20 @@ function btpR_(x) { return Math.round(x * 10) / 10; }
 /* ============================================================
  *  HÀM CHÍNH
  * ============================================================ */
+/** Điều hậu dụng thần theo Cùng Thông Bảo Giám (Dư Xuân Đài): [can ngày 0 Giáp..9 Quý][chi tháng 0 Tý..11 Hợi] → chuỗi chỉ số can
+ *  theo thứ tự ưu tiên (can đầu là chủ, các can sau phụ trợ). Đối chiếu 2 bản chép (suanzhun.net, blog Vương Minh trên Sina). */
+var BTP_DIEU_HAU = [
+  ["362", "362", "29", "62345", "638", "963", "963", "963", "638", "632", "60389", "6324"],
+  ["2", "2", "29", "29", "924", "9", "92", "92", "295", "923", "97", "24"],
+  ["845", "80", "86", "85", "80", "896", "86", "86", "84", "89", "08", "0468"],
+  ["06", "06", "06", "60", "06", "06", "869", "086", "0624", "0624", "064", "06"],
+  ["20", "20", "209", "209", "029", "029", "802", "920", "290", "29", "029", "02"],
+  ["204", "204", "260", "092", "290", "92", "92", "92", "29", "29", "029", "204"],
+  ["302", "230", "40823", "3062", "0389", "8423", "89", "30", "30", "302", "08", "32"],
+  ["2480", "2845", "586", "80", "80", "809", "859", "860", "804", "80", "80", "82"],
+  ["42", "230", "624", "476", "06", "769", "967", "70", "43", "06", "02", "426"],
+  ["27", "23", "72", "67", "270", "7", "6789", "6789", "3", "72", "7089", "6743"]
+];
 function btPhanTich_(bt, input) {
   var P = bt.pillars, dCan = bt.nhatChuCan, dm = CAN_HANH[dCan];
   var mChi = P[1].chi, lenh = CAN_HANH[TANG_CAN[mChi][0]];
@@ -162,6 +176,20 @@ function btPhanTich_(bt, input) {
       if (ky.indexOf(dieuHau.can) < 0 && dung !== dieuHau.can && hy.indexOf(dieuHau.can) < 0) hy.push(dieuHau.can);
     }
   } else phuongPhap.push({ ten: 'Điều hậu (Cùng Thông Bảo Giám)', ket: 'Sinh mùa ' + (['Dần', 'Mão', 'Thìn'].indexOf(P[1].chiTen) >= 0 ? 'xuân' : 'thu') + ' – khí hậu ôn hòa, xét sinh khắc thông thường (không cần điều hậu).', ly: '' });
+
+  // Điều hậu theo bảng 10 can × 12 tháng (tham khảo, không đổi dụng thần ức phù): can nào đã có trong tứ trụ
+  var dhB = BTP_DIEU_HAU[P[2].can][mChi].split('').map(Number), dhCo = dhB.map(function (c) {
+    var thau = P.filter(function (p, i) { return i !== 2 && p.can === c; }).map(function (p) { return p.tru; });
+    var tang = P.filter(function (p) { return (p.tangCan || []).some(function (t) { return t.can === c; }); }).map(function (p) { return p.tru; });
+    return { can: CAN[c], hanh: CAN_HANH[c], thau: thau, tang: tang };
+  });
+  var dhThieu = dhCo.filter(function (x) { return !x.thau.length && !x.tang.length; });
+  phuongPhap.push({ ten: 'Điều hậu theo bảng 10 can × 12 tháng', ket: 'Nhật chủ ' + CAN[P[2].can] + ' sinh tháng ' + P[1].chiTen + ': sách lấy ' + dhCo[0].can + ' (' + dhCo[0].hanh + ') làm chủ' +
+    (dhCo.length > 1 ? ', ' + dhCo.slice(1).map(function (x) { return x.can + ' (' + x.hanh + ')'; }).join(', ') + ' phụ trợ' : '') + '. Trong tứ trụ: ' +
+    dhCo.map(function (x) { return x.can + (x.thau.length ? ' thấu can trụ ' + x.thau.join('/') : x.tang.length ? ' tàng trong chi trụ ' + x.tang.join('/') : ' chưa có'); }).join('; ') + '.' +
+    (dhThieu.length ? ' Phần thiếu (' + dhThieu.map(function (x) { return x.can; }).join(', ') + ') nên bổ sung qua đại vận – lưu niên, nghề nghiệp, màu sắc, phương hướng.' : ' Các can điều hậu đều đã có – khí hậu lá số được điều hòa tốt.'),
+    ly: 'Cùng Thông Bảo Giám xét "khí hậu" của lá số theo can ngày và tháng sinh: mùa lạnh cần ấm, mùa nóng cần mát, khô cần ẩm, ẩm cần khô.' });
+  var dieuHauBang = { chu: dhCo[0], ds: dhCo, thieu: dhThieu.map(function (x) { return x.can; }) };
 
   // Thông quan
   var thongQuan = null;
@@ -322,7 +350,7 @@ function btPhanTich_(bt, input) {
     tieuChi: tieuChi, soTieuChi: soTieuChi,
     diem: { dong: dong, tongHanh: tongHanh, pct: pct, tong: btpR_(tong), phe: phe, nhomPct: nhomPct, hop: hop, lenh: lenh, trangThaiNC: ttNC },
     vuong: vuong, cuong: cuong, ketLuanVS: ketLuanVS,
-    dungThan: { dung: dung, hy: hy, ky: ky, nhan: nhan, phuongPhap: phuongPhap, dieuHau: dieuHau, thongQuan: thongQuan, ducPhu: ducPhu, nhomHanh: H, tenNhom: TEN_NHOM },
+    dungThan: { dung: dung, hy: hy, ky: ky, nhan: nhan, phuongPhap: phuongPhap, dieuHau: dieuHau, dieuHauBang: dieuHauBang, thongQuan: thongQuan, ducPhu: ducPhu, nhomHanh: H, tenNhom: TEN_NHOM },
     cachCuc: cachCuc, catHung: catHung, phuongDien: phuongDien, daiVan: daiVan, dacBiet: dacBiet, loiKhuyen: loiKhuyen
   };
 }

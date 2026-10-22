@@ -68,7 +68,8 @@ var HAM_CAN_CO = {
 var BAN_MOI_CAN_CO = {
   'BatTu.gs': ['batTuLap', 'btPhanTich_'],
   'Code.gs': ['lapLaSoDayDu_', 'btpLuuNienDacBiet_'],
-  'HaLac.gs': ['haLacLap', 'hlLucHao_'],
+  'HaLac.gs': ['haLacLap', 'hlNguyenDuong_'],
+  'BatTuPhanTich.gs': ['btPhanTich_', 'BTP_DIEU_HAU'],
   'ThanSoHoc.gs': ['thanSoHocLap', 'tsPhanTich_'],
   'DeHieu.gs': ['deHieuLap_', 'th6Lap_'],
   'TaiKhoan.gs': ['dangKy', 'ttQuaDangKy_'],

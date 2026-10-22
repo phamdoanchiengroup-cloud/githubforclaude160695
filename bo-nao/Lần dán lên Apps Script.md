@@ -4,6 +4,7 @@ Nhóm: Bắt đầu · Cập nhật 22/10/2026
 Liên quan: [[Việc chờ chủ dự án]] · [[TCC Kiểm thử]] · [[00 Mục lục]]
 
 ## Tình trạng
+- 22/10: Hà Lạc & Tứ Trụ – đổi **HaLac, BatTuPhanTich, DeHieu, Code, Script, Styles, Index** (mã giao diện `2026.10.22.4`). Bấm `2-CAP-NHAT.bat`, Ctrl+F5.
 - 22/10: PDF thiết kế lại – đổi **Script, Styles, Index** (mã giao diện `2026.10.22.3`). Bấm `2-CAP-NHAT.bat`, rồi Ctrl+F5.
 - 22/10 (khuya): gửi luận giải hằng ngày qua Zalo – đổi **TienIch, Code**. Bấm `2-CAP-NHAT.bat`, rồi dán `ZALO_TOKEN`, `ZALO_CHAT_ID` vào Thuộc tính tập lệnh và chạy `thuZaloVanNgay`.
 - 22/10 (tối): email luận giải hằng ngày làm dày – chỉ đổi **TienIch.gs** (giao diện không đổi). Bấm `2-CAP-NHAT.bat`, không cần chạy lại `caiDatVanNgay`.

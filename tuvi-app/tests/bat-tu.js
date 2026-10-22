@@ -26,6 +26,11 @@ kt(dem.dacBiet < 32, 'ngoại cách hiếm (' + dem.dacBiet + '/400)');
 const M = ctx.batTuLap({ name: 'A', gender: 'nam', calendar: 'duong', day: 15, month: 8, year: 1990, hour: 10, minute: 30, viewYear: 2026 }).phanTich;
 kt(M.vuong && M.dungThan.ducPhu.cuc === 'Ấn nhiều' && M.dungThan.dung === 'Hỏa', 'lá số mẫu: thân vượng Ấn nhiều → dụng Hỏa');
 kt(M.cachCuc.ten === 'Thiên Ấn cách', 'lá số mẫu: Thiên Ấn cách');
+// Điều hậu theo bảng Cùng Thông Bảo Giám: đủ 10 can × 12 tháng; mẫu sách: Giáp tháng Dần → Bính, Quý; Bính tháng Hợi → Giáp, Mậu, Canh, Nhâm
+kt(ctx.BTP_DIEU_HAU.length === 10 && ctx.BTP_DIEU_HAU.every(r => r.length === 12 && r.every(x => /^[0-9]+$/.test(x))), 'bảng điều hậu đủ 10 × 12');
+kt(ctx.BTP_DIEU_HAU[0][2] === '29' && ctx.BTP_DIEU_HAU[2][11] === '0468', 'bảng điều hậu khớp sách (Giáp–Dần, Bính–Hợi)');
+{ const B = ctx.batTuLap({ name: 'A', gender: 'nam', calendar: 'duong', day: 15, month: 8, year: 1990, hour: 10, minute: 30, viewYear: 2026 }), D = B.phanTich.dungThan;
+  kt(D.dieuHauBang && D.dieuHauBang.chu && D.dieuHauBang.chu.can === 'Mậu' && D.phuongPhap.some(x => /bảng 10 can × 12 tháng/.test(x.ten)), 'Nhâm sinh tháng Thân → điều hậu Mậu (Đinh phụ)'); }
 const L = ctx.btpLuuNienDacBiet_(ctx.batTuLap({ name: 'A', gender: 'nam', calendar: 'duong', day: 15, month: 8, year: 1990, hour: 10, minute: 30, viewYear: 2026 }), 2032, null);
 kt(Array.isArray(L), 'hàm lưu niên đặc biệt chạy');
 console.log('Bát Tự 9 bước: đạt ' + ok + '/' + (ok + sai) + ' · thân vượng ' + dem.vuong + '/400 · ngoại cách ' + dem.dacBiet + '/400');

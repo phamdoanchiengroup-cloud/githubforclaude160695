@@ -144,6 +144,16 @@ function hlDiemHao_(q, p) {
   return { diem: Math.round(d * 10) / 10, duong: duong, dacVi: dv, trung: trung, ung: ung };
 }
 
+/** Hào nguyên đường (元堂爻位式): giờ dương (Tý → Tỵ) đi trên hào dương, giờ âm (Ngọ → Hợi) đi trên hào âm, đếm từ dưới lên.
+ *  Có 1–3 hào cùng loại thì đi hai lượt; 4–5 hào thì đi một lượt; giờ còn lại "ký cung" sang hào khác loại, cũng từ dưới lên.
+ *  k = thứ tự giờ trong nửa ngày (1..6). Đối chiếu: Khiêm giờ Tỵ → hào 5, Đại Hữu giờ Thân → hào 1, Đại Quá giờ Dậu → hào 6, Thăng giờ Thìn → hào 1. */
+function hlNguyenDuong_(hao, gioDuong, k) {
+  var cung = [], khac = [], i;
+  for (i = 1; i <= 6; i++) (hao[i - 1] === (gioDuong ? 1 : 0) ? cung : khac).push(i);
+  var thu = cung.length && cung.length <= 3 ? cung.concat(cung) : cung.slice();
+  thu = thu.slice(0, 6).concat(khac);
+  return thu[k - 1];
+}
 function haLacLap(bt, tv) {
   var male = tv.info.male, namAm = tv.info.lunar.year, duongNam = tv.info.yCan % 2 === 0;
   var thien = 0, dia = 0, ct = [];
@@ -160,10 +170,8 @@ function haLacLap(bt, tv) {
   var tren = thuan ? qT : qD, duoi = thuan ? qD : qT;
   var hao = hlHaoCua_(tren, duoi), tien = hlTuHao_(hao);
   // Hào nguyên đường
-  var chiGio = bt.pillars[3].chi, gioDuong = chiGio <= 5, k = gioDuong ? chiGio + 1 : chiGio - 5;
-  var vt = []; for (var i = 1; i <= 6; i++) if (hao[i - 1] === (gioDuong ? 1 : 0)) vt.push(i);
-  if (!vt.length) for (i = 1; i <= 6; i++) vt.push(i);
-  var nd = vt[(k - 1) % vt.length];
+  var chiGio = bt.pillars[3].chi, gioDuong = chiGio <= 5;
+  var nd = hlNguyenDuong_(hao, gioDuong, gioDuong ? chiGio + 1 : chiGio - 5);
   tien.nguyenDuong = nd;
   // Hậu thiên
   var bien = hlBien_(hao, nd), hauHao = bien.slice(3, 6).concat(bien.slice(0, 3));
@@ -191,7 +199,7 @@ function haLacLap(bt, tv) {
     }
   });
   return { thien: thien, dia: dia, thienN: tN, diaN: dN, quaiThien: qT, quaiDia: qD, chiTiet: ct, thuan: thuan,
-    tien: tien, hau: hau, hoTien: hoTien, hoHau: hoHau, daiVan: dv, gioDuong: gioDuong, male: male, lucHao: lucHao, tuoiHau: dv[6].tuoiTu, nguyen: namAm < 1924 ? 'Thượng nguyên' : namAm < 1984 ? 'Trung nguyên' : 'Hạ nguyên' };
+    tien: tien, hau: hau, hoTien: hoTien, hoHau: hoHau, daiVan: dv, gioDuong: gioDuong, male: male, lucHao: lucHao, tuoiHau: dv[6].tuoiTu, menh: tv.info.banMenh && tv.info.banMenh.hanh, nguyen: namAm < 1924 ? 'Thượng nguyên' : namAm < 1984 ? 'Trung nguyên' : 'Hạ nguyên' };
 }
 
 function hlQuaiHanh_(q) { return [HL_QUAI[q.tren].hanh, HL_QUAI[q.duoi].hanh]; }
@@ -254,7 +262,8 @@ function haLacLuan(hl, bt, viewYear) {
   if (nayN) tq.push('Năm ' + viewYear + ' (' + nayN.tuoi + ' tuổi): quẻ ' + nayN.que + ', hào động ' + nayN.hao + ' – ' + nayN.danhGia + '. ' + nayN.y + '; nên ' + nayN.khuyen + '.');
   tq.push('10 năm tới – năm sáng nhất theo quẻ: ' + tot.map(function (n) { return n.nam + ' (' + n.que + ')'; }).join(', ') + '; năm cần thận trọng: ' + xau.map(function (n) { return n.nam + ' (' + n.que + ')'; }).join(', ') + '.');
   var lv = hlLinhVuc_(hl), tv = hlThoiVi_(hl, bt);
-  return { secs: secs, daiVan: dvL, namNay: nayN, tongQuan: tq, nam: tatCa, linhVuc: lv, thoiVi: tv, queKhac: hlQueKhac_(hl), tuoiHau: hl.tuoiHau,
+  var tc = null; try { tc = hlThapCat_(hl, bt); } catch (e) { tc = null; }
+  return { secs: secs, daiVan: dvL, namNay: nayN, tongQuan: tq, nam: tatCa, linhVuc: lv, thoiVi: tv, thapCat: tc, queKhac: hlQueKhac_(hl), tuoiHau: hl.tuoiHau,
     coSo: [
       'Can: Giáp, Nhâm = 6; Ất, Quý = 2; Bính = 8; Đinh = 7; Mậu = 1; Kỷ = 9; Canh = 3; Tân = 4. Chi: Tý, Hợi = 1·6; Dần, Mão = 3·8; Tỵ, Ngọ = 2·7; Thân, Dậu = 4·9; Thìn, Tuất, Sửu, Mùi = 5·10 (Hà Đồ).',
       'Thiên số trừ 25, Địa số trừ 30 (nếu vượt), còn quá 10 thì bỏ hàng chục; số → quái theo Lạc Thư hậu thiên. Số 5: Thượng nguyên nam Cấn nữ Khôn; Trung nguyên dương nam/âm nữ Cấn, âm nam/dương nữ Khôn; Hạ nguyên nam Ly nữ Đoài.',
@@ -575,18 +584,57 @@ function hlLinhVuc_(hl) {
 /** Hóa công (quái hợp mùa sinh) & nguyên khí (quái nạp can năm) – hai điều kiện "được thời" của Hà Lạc */
 var HL_HOA_CONG = { 2: ['Chấn', 'Tốn'], 3: ['Chấn', 'Tốn'], 5: ['Ly'], 6: ['Ly'], 8: ['Càn', 'Đoài'], 9: ['Càn', 'Đoài'], 11: ['Khảm'], 0: ['Khảm'], 1: ['Khôn', 'Cấn'], 4: ['Khôn', 'Cấn'], 7: ['Khôn', 'Cấn'], 10: ['Khôn', 'Cấn'] };
 var HL_CAN_QUAI = ['Càn', 'Khôn', 'Cấn', 'Đoài', 'Khảm', 'Ly', 'Chấn', 'Tốn', 'Càn', 'Khôn'];
+// Địa nguyên khí: chi năm sinh theo phương vị Hậu thiên (Tý Khảm, Sửu Dần Cấn, Mão Chấn, Thìn Tỵ Tốn, Ngọ Ly, Mùi Thân Khôn, Dậu Đoài, Tuất Hợi Càn)
+var HL_CHI_QUAI = ['Khảm', 'Cấn', 'Cấn', 'Chấn', 'Tốn', 'Tốn', 'Ly', 'Khôn', 'Khôn', 'Đoài', 'Càn', 'Càn'];
+/** Tam phúc thần: Hóa công (tháng sinh), Thiên nguyên khí (can năm), Địa nguyên khí (chi năm).
+ *  Bậc (sách Hà Lạc, lyso.vn): đủ ba – rất tốt; có Hóa công – tốt; thiếu Hóa công mà đủ hai nguyên khí – tốt;
+ *  chỉ một nguyên khí – trung bình; không có gì – kém (thành công nhờ bền bỉ). Xét quẻ Tiên thiên làm chính. */
 function hlThoiVi_(hl, bt) {
-  var mChi = bt.pillars[1].chi, yCan = bt.pillars[0].can, hc = HL_HOA_CONG[mChi], nk = HL_CAN_QUAI[yCan], out = [];
+  var mChi = bt.pillars[1].chi, yCan = bt.pillars[0].can, yChi = bt.pillars[0].chi, hc = HL_HOA_CONG[mChi], tnk = HL_CAN_QUAI[yCan], dnk = HL_CHI_QUAI[yChi], out = [];
   [['Tiên thiên', hl.tien], ['Hậu thiên', hl.hau]].forEach(function (x) {
-    var q = x[1], co = [q.tren, q.duoi], dHC = co.some(function (k) { return hc.indexOf(k) >= 0; }), dNK = co.indexOf(nk) >= 0;
-    out.push({ que: x[0] + ' ' + q.ten, hoaCong: dHC, nguyenKhi: dNK,
-      t: (dHC && dNK ? '✓ ' : dHC || dNK ? '◇ ' : '✗ ') + x[0] + ' ' + q.ten + ': ' + (dHC ? 'được hóa công (có quái ' + hc.join('/') + ' hợp mùa tháng ' + CHI[mChi] + ')' : 'không được hóa công (mùa tháng ' + CHI[mChi] + ' cần quái ' + hc.join('/') + ')') +
-        '; ' + (dNK ? 'được nguyên khí (can năm ' + CAN[yCan] + ' nạp vào quái ' + nk + ')' : 'không có nguyên khí (quái ' + nk + ' của can năm ' + CAN[yCan] + ' vắng)') + '.' });
+    var q = x[1], co = [q.tren, q.duoi], dHC = co.some(function (k) { return hc.indexOf(k) >= 0; }), dT = co.indexOf(tnk) >= 0, dD = co.indexOf(dnk) >= 0, n = dHC + dT + dD;
+    out.push({ que: x[0] + ' ' + q.ten, hoaCong: dHC, nguyenKhi: dT, diaNguyenKhi: dD, so: n,
+      t: (n >= 2 ? '✓ ' : n === 1 ? '◇ ' : '✗ ') + x[0] + ' ' + q.ten + ': ' + (dHC ? 'được Hóa công (có quái ' + hc.join('/') + ' hợp mùa tháng ' + CHI[mChi] + ')' : 'không được Hóa công (mùa tháng ' + CHI[mChi] + ' cần quái ' + hc.join('/') + ')') +
+        '; ' + (dT ? 'có Thiên nguyên khí (can năm ' + CAN[yCan] + ' nạp vào quái ' + tnk + ')' : 'không có Thiên nguyên khí (quái ' + tnk + ' của can năm ' + CAN[yCan] + ' vắng)') +
+        '; ' + (dD ? 'có Địa nguyên khí (chi năm ' + CHI[yChi] + ' thuộc quái ' + dnk + ')' : 'không có Địa nguyên khí (quái ' + dnk + ' của chi năm ' + CHI[yChi] + ' vắng)') + '.' });
   });
-  var tong = out.filter(function (x) { return x.hoaCong; }).length + out.filter(function (x) { return x.nguyenKhi; }).length;
-  return { ds: out, diem: tong, ketLuan: tong >= 3 ? 'Mệnh "được thời": quẻ hợp mùa sinh và có gốc từ năm sinh – sức vươn lên mạnh, gặp thời thì phát nhanh.' :
-    tong >= 1 ? 'Mệnh "được thời một phần": có chỗ dựa từ thời điểm sinh nhưng chưa trọn – thành công cần thêm nỗ lực và chọn đúng lúc.' :
-    'Mệnh "chưa gặp thời": quẻ không hợp mùa sinh – thành công đến từ bền bỉ và tích lũy, không nên trông vào may mắn.' };
+  var T = out[0], H = out[1], tong = out.reduce(function (s, x) { return s + x.hoaCong + x.nguyenKhi + x.diaNguyenKhi; }, 0);
+  var bac = T.so === 3 ? 4 : T.hoaCong || (T.nguyenKhi && T.diaNguyenKhi) ? 3 : T.so === 1 ? 2 : 1;
+  var ket = bac === 4 ? 'Mệnh "đủ tam phúc": quẻ mệnh vừa hợp mùa sinh, vừa có gốc từ cả can lẫn chi năm sinh – thiên thời, địa lợi, nhân hòa đều có, gặp thời thì phát nhanh và bền.' :
+    bac === 3 ? 'Mệnh "được thời": quẻ mệnh ' + (T.hoaCong ? 'hợp mùa sinh (có Hóa công)' : 'có gốc từ cả can và chi năm sinh') + ' – sức vươn lên mạnh, chọn đúng lúc thì dễ thành.' :
+    bac === 2 ? 'Mệnh "được thời một phần": quẻ mệnh chỉ có một nguyên khí – có chỗ dựa nhưng chưa trọn, thành công cần thêm nỗ lực và chọn đúng lúc.' :
+    'Mệnh "chưa gặp thời": quẻ mệnh không hợp mùa sinh, không có nguyên khí – thành công đến từ bền bỉ và tích lũy, không nên trông vào may mắn.';
+  if (bac <= 2 && H.so >= 2) ket += ' Riêng quẻ Hậu thiên có ' + H.so + '/3 phúc thần – nửa sau đời thuận hơn.';
+  return { ds: out, diem: tong, bac: bac, ketLuan: ket };
+}
+// 12 quẻ tiêu tức (bích quái) theo chi tháng sinh: Tý Phục, Sửu Lâm, Dần Thái, Mão Đại Tráng, Thìn Quải, Tỵ Thuần Càn, Ngọ Cấu, Mùi Độn, Thân Bĩ, Dậu Quan, Tuất Bác, Hợi Thuần Khôn
+var HL_BICH_QUAI = ['Địa Lôi Phục', 'Địa Trạch Lâm', 'Địa Thiên Thái', 'Lôi Thiên Đại Tráng', 'Trạch Thiên Quải', 'Thuần Càn', 'Thiên Phong Cấu', 'Thiên Sơn Độn', 'Thiên Địa Bĩ', 'Phong Địa Quan', 'Sơn Địa Bác', 'Thuần Khôn'];
+var HL_MUA_HANH = ['Thủy', 'Thổ', 'Mộc', 'Mộc', 'Thổ', 'Hỏa', 'Hỏa', 'Thổ', 'Kim', 'Kim', 'Thổ', 'Thủy'];
+/** "Quý mệnh thập cát thể" – 10 thể cách tốt của mệnh Hà Lạc, xét trên quẻ Tiên thiên và hào nguyên đường.
+ *  Sách cổ xếp hạng theo số cách đạt (3–4, 5–6, 7–8, 9–10); điều 3 (lời hào nguyên đường) chưa có kho 384 lời hào nên chấm theo quẻ và vị hào. */
+function hlThapCat_(hl, bt) {
+  var T = hl.tien, nd = T.nguyenDuong, h = hlDiemHao_(T, nd), mChi = bt.pillars[1].chi, thangDuong = mChi <= 5;
+  var quaiNd = nd <= 3 ? T.duoi : T.tren, hanhNd = HL_QUAI[quaiNd].hanh, menh = hl.menh || HL_QUAI[T.tren].hanh, mua = HL_MUA_HANH[mChi];
+  var tnk = HL_CAN_QUAI[bt.pillars[0].can], coTnk = [T.tren, T.duoi].indexOf(tnk) >= 0, hanhTnk = HL_QUAI[tnk].hanh;
+  var soDuong = T.hao.filter(function (x) { return x; }).length, mot = soDuong === 1 ? 1 : soDuong === 5 ? 0 : -1;
+  var tyThien = hl.thien / 25, tyDia = hl.dia / 30;
+  var ds = [
+    ['Tên quẻ tốt', T.diem >= 1, 'Quẻ ' + T.ten + (T.diem >= 1 ? ' thuộc nhóm quẻ cát.' : T.diem <= -1 ? ' thuộc nhóm quẻ khó.' : ' thuộc nhóm quẻ bình.')],
+    ['Hào vị tốt', h.dacVi, 'Hào nguyên đường ' + nd + ' là hào ' + (h.duong ? 'dương' : 'âm') + (h.dacVi ? ' ở đúng vị (đắc vị).' : ' ở sai vị (thất vị).')],
+    ['Hào nguyên đường tốt', h.diem >= 1, 'Hào nguyên đường được chấm ' + h.diem + ' (cát – hung của quẻ cộng vị hào, trung, ứng).'],
+    ['Đắc thời', HL_BICH_QUAI[mChi] === T.ten || HL_BICH_QUAI[mChi] === hl.hau.ten, 'Quẻ tiêu tức của tháng ' + CHI[mChi] + ' là ' + HL_BICH_QUAI[mChi] + (HL_BICH_QUAI[mChi] === T.ten || HL_BICH_QUAI[mChi] === hl.hau.ten ? ' – trùng quẻ mệnh.' : ' – quẻ mệnh không trùng.')],
+    ['Hữu viện', h.ung, 'Hào nguyên đường ' + (h.ung ? 'có hào ứng khác âm dương hỗ trợ.' : 'không được hào ứng hỗ trợ.')],
+    ['Số thuận thời', thangDuong ? tyThien >= tyDia : tyDia >= tyThien, 'Sinh tháng ' + (thangDuong ? 'dương' : 'âm') + ' (' + CHI[mChi] + '); Thiên số ' + hl.thien + '/25, Địa số ' + hl.dia + '/30 – ' + (tyThien >= tyDia ? 'số dương' : 'số âm') + ' trội.'],
+    ['Đắc thể', hanhNd === menh || btpSinh_(hanhNd, menh), 'Quái chứa nguyên đường là ' + quaiNd + ' (' + hanhNd + '), mạng ' + menh + (hanhNd === menh ? ': đồng hành.' : btpSinh_(hanhNd, menh) ? ': quái sinh mạng.' : ': không sinh mạng.')],
+    ['Đáng vị', thangDuong === h.duong, 'Tháng ' + (thangDuong ? 'dương' : 'âm') + ' gặp nguyên đường hào ' + (h.duong ? 'dương' : 'âm') + '.'],
+    ['Hợp lý', coTnk && (hanhTnk === mua || btpSinh_(hanhTnk, mua)), 'Quái ' + tnk + ' của can năm ' + (coTnk ? 'có trong quẻ' : 'không có trong quẻ') + (coTnk ? ', hành ' + hanhTnk + (hanhTnk === mua || btpSinh_(hanhTnk, mua) ? ' hợp mùa ' + mua + '.' : ' không hợp mùa ' + mua + '.') : '.')],
+    ['Chúng tông', mot >= 0 && T.hao[nd - 1] === mot, mot >= 0 ? 'Quẻ chỉ có một hào ' + (mot ? 'dương' : 'âm') + (T.hao[nd - 1] === mot ? ', nguyên đường ngồi đúng hào ấy – "một hào làm chủ, năm hào theo".' : ', nhưng nguyên đường không ngồi hào ấy.') : 'Quẻ không có thế một hào làm chủ.']
+  ].map(function (x) { return { ten: x[0], dat: !!x[1], ly: x[2] }; });
+  var n = ds.filter(function (x) { return x.dat; }).length;
+  var bac = n >= 9 ? 'hiếm có' : n >= 7 ? 'rất tốt' : n >= 5 ? 'tốt' : n >= 3 ? 'khá' : 'bình thường';
+  return { ds: ds, so: n, bac: bac,
+    ketLuan: 'Đạt ' + n + '/10 thể cách tốt – mệnh ở mức ' + bac + '. ' + (n >= 5 ? 'Nền mệnh vững: có sẵn nhiều điều kiện thuận, nên mạnh dạn theo đuổi việc lớn.' : n >= 3 ? 'Có vài điểm tựa rõ ràng: phát huy đúng điểm mạnh và chọn thời điểm sẽ đi xa.' : 'Ít điều kiện có sẵn: thành quả đến từ nỗ lực, học hỏi và sự kiên trì – cũng là lợi thế vì bạn không ỷ lại.'),
+    coSo: 'Sách cổ xếp bậc theo số thể cách đạt: 3–4 cách, 5–6 cách, 7–8 cách, 9–10 cách (càng nhiều càng quý). Lời hào nguyên đường được chấm theo cát – hung của quẻ và vị hào vì chưa có kho 384 lời hào.' };
 }
 /** Quẻ Biến (nguyên đường động), Thác (đảo âm dương), Tổng (lật ngược) của Tiên thiên */
 function hlQueKhac_(hl) {

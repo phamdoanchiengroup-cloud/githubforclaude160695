@@ -4,7 +4,7 @@
  */
 const path = require('path');
 const { ctx } = require(path.join(__dirname, '..', 'tools', 'gia-lap.js'));
-let ok = 0, sai = 0;
+let ok = 0, sai = 0; const phanBoCat = {};
 function kt(dk, msg) { if (dk) ok++; else { sai++; if (sai < 20) console.log('✗', msg); } }
 // 1. Bát cung: 64 quẻ, mỗi cung 8 quẻ
 const M = ctx.hlCungMap_(), dem = {};
@@ -49,7 +49,18 @@ for (let k = 0; k < 200; k++) {
   });
   kt(Lu.daiVan.every(d => d.lucThan), 'đại vận có lục thân');
   kt(Lu.queKhac.length === 3 && Lu.thoiVi.ds.length === 2, 'quẻ Biến/Thác/Tổng & thời vị');
+  const TV = Lu.thoiVi, TC = Lu.thapCat;
+  kt(TV.ds.every(x => typeof x.diaNguyenKhi === 'boolean') && TV.bac >= 1 && TV.bac <= 4 && /^Mệnh "/.test(TV.ketLuan), 'tam phúc thần có Địa nguyên khí + bậc');
+  kt((TV.bac === 4) === (TV.ds[0].so === 3), 'bậc 4 khi đủ tam phúc ở Tiên thiên');
+  kt(TC && TC.ds.length === 10 && TC.so === TC.ds.filter(x => x.dat).length && TC.ds.every(x => x.ly && !/undefined|NaN/.test(x.ly)), 'thập cát thể đủ 10 mục, đếm đúng');
+  phanBoCat[TC.so] = (phanBoCat[TC.so] || 0) + 1;
 }
+kt(Object.keys(phanBoCat).length >= 5, 'thập cát thể có phân bố rộng: ' + JSON.stringify(phanBoCat));
+// Hào nguyên đường (元堂爻位式) – ví dụ sách: Khiêm giờ Tỵ → 5, Đại Hữu giờ Thân → 1, Đại Quá giờ Dậu → 6, Thăng giờ Thìn → 1, Tụy giờ Dần → 4
+[[[0,0,1,0,0,0], true, 6, 5], [[1,1,1,1,0,1], false, 3, 1], [[0,1,1,1,1,0], false, 4, 6], [[0,1,1,0,0,0], true, 5, 1], [[0,0,0,1,1,0], true, 3, 4], [[1,1,1,1,1,1], false, 6, 6], [[1,0,1,1,1,1], true, 6, 2]].forEach(x =>
+  kt(ctx.hlNguyenDuong_(x[0], x[1], x[2]) === x[3], 'nguyên đường ' + x[0].join('') + ' giờ thứ ' + x[2] + ' = hào ' + x[3] + ' (được ' + ctx.hlNguyenDuong_(x[0], x[1], x[2]) + ')'));
+// Mọi quẻ × mọi giờ: nguyên đường luôn là hào 1..6
+for (let n = 0; n < 64; n++) { const h = [0,1,2,3,4,5].map(i => (n >> i) & 1); for (let k = 1; k <= 6; k++) [true, false].forEach(d => { const v = ctx.hlNguyenDuong_(h, d, k); kt(v >= 1 && v <= 6, 'nguyên đường hợp lệ'); }); }
 kt(bac.tot > 200 && bac.kho > 200 && bac.vua > 200, 'phân bố tốt/vừa/khó không lệch: ' + JSON.stringify(bac));
 console.log('Hà Lạc lục hào: đạt ' + ok + '/' + (ok + sai) + ' · ' + JSON.stringify(bac));
 process.exit(sai ? 1 : 0);

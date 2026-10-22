@@ -3,14 +3,14 @@ Astro.gs	12722
 BatTu.gs	28078
 BatTuChiTiet.gs	39982
 BatTuLuan.gs	46448
-BatTuPhanTich.gs	35863
+BatTuPhanTich.gs	38898
 CapDoi.gs	49852
 ChiemTinh.gs	100499
-Code.gs	20701
-DeHieu.gs	88621
+Code.gs	20761
+DeHieu.gs	90574
 DuDoan.gs	37804
 Facts.gs	11809
-HaLac.gs	56495
+HaLac.gs	63978
 HoiTu.gs	61443
 HumanDesign.gs	44890
 Index.html	46665
@@ -20,7 +20,7 @@ Lunar.gs	9228
 NghiemChung.gs	27198
 NghiemChungUI.html	11072
 PhoiNgau.gs	50201
-Script.html	567397
+Script.html	568118
 Styles.html	191804
 TaiKhoan.gs	20569
 ThanSoHoc.gs	49984

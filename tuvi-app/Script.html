@@ -27,7 +27,7 @@
     });
   }
   /** Mã phiên bản giao diện – phải trùng với Index.html (meta tcc-ban) và Styles.html (--tcc-ban) */
-  var BAN_GIAO_DIEN = '2026.10.22.3';
+  var BAN_GIAO_DIEN = '2026.10.22.4';
   function storeGet(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
   function storeSet(k, v) { try { localStorage.setItem(k, v); } catch (e) { /* bỏ qua */ } }
 
@@ -4494,8 +4494,10 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
       '<ul class="th-kl">' + L.tongQuan.map(itemHtml).join('') + '</ul></div>';
     if (L.queKhac) p1 += '<div class="panel section"><h2 class="panel-title"><span class="han">變</span> Quẻ Biến · Thác · Tổng</h2><p class="lede">Ba quẻ phụ nhìn quẻ Tiên thiên từ ba góc: đi về đâu, thiếu điều gì, người khác thấy mình ra sao.</p>' +
       '<div class="que-row hl-3">' + L.queKhac.map(function (x) { return queCard(x.nhan + ' · ' + x.vai, x.q, 0); }).join('') + '</div></div>';
-    if (L.thoiVi) p1 += '<div class="panel section"><h2 class="panel-title"><span class="han">時</span> Được thời hay chưa</h2><p class="lede">Sách Hà Lạc xét quẻ có hợp mùa tháng sinh (<b>hóa công</b>) và có gốc từ can năm sinh (<b>nguyên khí</b>) hay không – quẻ tốt mà không được thời thì phát chậm, quẻ vừa mà được thời vẫn nổi.</p>' +
+    if (L.thoiVi) p1 += '<div class="panel section"><h2 class="panel-title"><span class="han">時</span> Được thời hay chưa</h2><p class="lede">Sách Hà Lạc xét "tam phúc thần": quẻ có hợp mùa tháng sinh (<b>Hóa công</b>), có gốc từ can năm sinh (<b>Thiên nguyên khí</b>) và chi năm sinh (<b>Địa nguyên khí</b>) hay không – quẻ tốt mà không được thời thì phát chậm, quẻ vừa mà được thời vẫn nổi.</p>' +
       '<ul class="th-kl">' + L.thoiVi.ds.map(function (x) { return itemHtml(x.t); }).join('') + '<li><b>' + esc(L.thoiVi.ketLuan) + '</b></li></ul></div>';
+    if (L.thapCat) p1 += '<div class="panel section"><h2 class="panel-title"><span class="han">格</span> Mười thể cách tốt của mệnh</h2><p class="lede">Sách Hà Lạc ("Quý mệnh thập cát thể") đếm 10 điều kiện tốt bẩm sinh trên quẻ Tiên thiên và hào nguyên đường – càng đạt nhiều cách, nền mệnh càng vững.</p>' +
+      '<ul class="th-kl">' + L.thapCat.ds.map(function (x) { return itemHtml((x.dat ? '✓ ' : '◇ ') + x.ten + ': ' + x.ly); }).join('') + '<li><b>' + esc(L.thapCat.ketLuan) + '</b></li></ul><p class="muted" style="font-size:12.5px">' + esc(L.thapCat.coSo) + '</p></div>';
     p1 += '<div class="panel section">' + coSoHtml('Cơ sở lập quẻ & luận', L.coSo) + '</div>';
     // Phần 2 – Lục hào
     var p2 = '';
