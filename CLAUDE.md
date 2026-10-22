@@ -30,6 +30,7 @@ File này được Claude Code tự đọc khi mở repo. Nó giữ **quy tắc 
 ## Quy tắc kỹ thuật không được quên
 - Thêm file `.gs` mới: thêm vào `HAM_CAN_CO` trong Code.gs (hàm `kiemTraCaiDat`) và cập nhật số file trong `tuvi-app/HUONG-DAN-CAI-DAT.md`. `BAN_MOI_CAN_CO` phải trỏ đúng hàm chứa lời gọi.
 - Mỗi đợt sửa giao diện tăng cả 3 mã phiên bản (`tcc-ban` trong Index.html, `--tcc-ban` trong Styles.html, `BAN_GIAO_DIEN` trong Script.html).
+- **Tự đẩy lên Apps Script** (`.github/workflows/day-len-apps-script.yml`, cài theo `tuvi-app/HUONG-DAN-CLASP.md`): khi chủ dự án đã cài secret, mỗi push đổi `tuvi-app/*.gs|*.html` lên nhánh sẽ tự đẩy lên web thật và triển khai, nên chỉ push mã đã qua kiểm thử. Xem `bo-nao/Thiên Cơ Các/TCC Tự đẩy code lên Apps Script.md`.
 - `LaSo3D.gs` là bản sinh ra (`node tools/demo-3d.js`), không sửa tay.
 - Chạy kiểm thử liên quan trước khi commit: `bo-nao/Thiên Cơ Các/TCC Kiểm thử.md`.
 
