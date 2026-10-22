@@ -4,7 +4,7 @@ Nhóm: Bắt đầu · Cập nhật 22/10/2026
 Liên quan: [[Việc chờ chủ dự án]] · [[TCC Kiểm thử]] · [[00 Mục lục]]
 
 ## Tình trạng
-- 22/10: đã có bộ tự đẩy (clasp + GitHub Actions) – **chưa cài secret**, nên vẫn dán tay. Khi cài xong, mỗi push đổi `.gs/.html` tự dán và tự triển khai. – [[TCC Tự đẩy code lên Apps Script]]
+- 22/10: đã có **bộ bấm đúp** `tuvi-app/cai-dat-clasp/` (GitHub Actions đã tắt theo yêu cầu). Chưa ghi nhận chủ dự án cài. Cài xong thì mỗi lần có bản mới chỉ cần bấm `2-CAP-NHAT.bat`. – [[TCC Tự đẩy code lên Apps Script]]
 - 22/10: giao diện **Bạch Kim** + bảng điều khiển bento, biểu đồ động (mã giao diện `2026.10.22`) – cần dán **Styles, Script, Index**. Thay cho bản 21/10 (sau) nếu chưa dán. Giữ nguyên `Anh.html`.
 - 21/10 (sau): giao diện tối sang trọng – cần dán **Styles, Script, Index** (cùng đợt với TuViTamPhap, LuanGiai, Code nếu chưa dán). Giữ nguyên file `Anh.html`.
 - 21/10: bản "Tử Vi đối chiếu các phái" – cần dán: **TuViTamPhap (file mới)**, LuanGiai, Code, Script, Styles, Index (và ThanhToan nếu chưa dán bản báo cáo ngày). Chưa xác nhận đã dán.

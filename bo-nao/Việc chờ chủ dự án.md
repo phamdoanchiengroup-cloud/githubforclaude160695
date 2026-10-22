@@ -4,7 +4,7 @@ Nhóm: Bắt đầu · Cập nhật 22/10/2026
 Liên quan: [[Lần dán lên Apps Script]] · [[TCC Tiến trình]] · [[00 Mục lục]]
 
 ## Việc còn ngỏ
-- (22/10) Cài tự đẩy code (clasp) theo `tuvi-app/HUONG-DAN-CLASP.md`: bật Apps Script API, `clasp login` trên máy, thêm 3 secret `CLASPRC_JSON`, `SCRIPT_ID`, `DEPLOYMENT_ID`, chạy thử Actions. Báo lại khi xong để ghi nhận. – [[TCC Tự đẩy code lên Apps Script]]
+- (22/10) Cài bộ bấm đúp `tuvi-app/cai-dat-clasp/` (bấm `1-CAI-DAT.bat` một lần, sau đó `2-CAP-NHAT.bat` mỗi khi có bản mới). Báo lại khi xong để ghi nhận. – [[TCC Tự đẩy code lên Apps Script]]
 - (22/10) Dán **Styles, Script, Index** bản Bạch Kim + bảng điều khiển bento (đã duyệt màu), rồi xem trên máy tính và điện thoại, góp ý. – [[TCC Giao diện]]
 - (21/10) Dán bản Tử Vi đối chiếu các phái (file mới `TuViTamPhap.gs` + LuanGiai, Code, Script, Styles, Index) rồi góp ý văn Phần 2. Các ý tưởng học từ aituvi / Tian Qi (trình tự tổng quan, radar điểm, chuyên đề, trợ lý AI, mồi năm 2027) chờ chủ dự án chọn. – [[TCC Tử Vi đối chiếu các phái]]
 

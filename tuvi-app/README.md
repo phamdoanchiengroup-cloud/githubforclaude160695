@@ -38,7 +38,7 @@ Web app lập lá số **Tử Vi Đẩu Số 12 cung** (phái Việt Nam) kết 
 
 Hướng dẫn cài đặt từng bước, kèm cách nhận tiền: xem `HUONG-DAN-CAI-DAT.md`.
 
-Tự đẩy code từ GitHub lên Apps Script (clasp + GitHub Actions, khỏi dán tay): xem `HUONG-DAN-CLASP.md` (`tools/day-len-apps-script.sh`, `.github/workflows/day-len-apps-script.yml`).
+Cập nhật không cần chép – dán (máy Windows, clasp): thư mục `cai-dat-clasp/`, xem `cai-dat-clasp/HUONG-DAN.md`.
 
 Thư mục `quang-cao/` chứa bộ ảnh quảng cáo (feed 4:5, story 9:16, ngang 1.91:1), mã HTML dựng ảnh và nội dung chữ gợi ý. Thư mục này **không** dán vào Apps Script.
 

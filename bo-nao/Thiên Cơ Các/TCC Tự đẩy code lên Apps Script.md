@@ -4,29 +4,29 @@ Liên quan: [[Lần dán lên Apps Script]] · [[TCC Kiểm thử]] · [[Việc 
 
 Nhóm: Thiên Cơ Các · Tạo 22/10/2026
 
-## Mục đích
-Chủ dự án yêu cầu (22/10) "tạo file cài đặt clasp để tự đẩy code từ github lên script", để khỏi phải dán tay từng file.
+## Lịch sử
+- 22/10: làm bản GitHub Actions (workflow + secret). Chủ dự án so sánh với bộ bấm đúp của web KPI, chọn **bộ bấm đúp** và yêu cầu **tắt GitHub Actions**. Đã xóa `.github/workflows/day-len-apps-script.yml`, `tools/day-len-apps-script.sh`, `HUONG-DAN-CLASP.md`.
+- 22/10: làm bộ bấm đúp `tuvi-app/cai-dat-clasp/`, dựa trên `kpi-app/cai-dat-clasp/` ở nhánh KPI.
 
-## Thành phần
-- `.github/workflows/day-len-apps-script.yml`:
-  - Chạy khi push lên `claude/happy-brown-lttkz3` có đổi `tuvi-app/*.gs`, `*.html` hoặc `appsscript.json`; chạy tay được bằng Run workflow.
-  - Trước khi đẩy chạy `node tests/cai-dat.js`; trượt thì dừng.
-  - Không chạy theo PR từ fork. Quyền `contents: read`.
-- `tuvi-app/tools/day-len-apps-script.sh` (clasp 2.4.2):
-  1. `clasp pull` bản đang chạy về thư mục tạm.
-  2. Gom `*.gs`, `*.html` của repo. **Giữ** file chỉ có trên Apps Script, không để clasp xóa. Manifest lấy theo bản đang chạy, nếu không có thì dùng `appsscript.json` của repo.
-  3. `clasp push -f`.
-  4. Có `DEPLOYMENT_ID` thì chạy `clasp deploy -i` để tạo phiên bản mới và cập nhật triển khai; link web giữ nguyên.
-  - `fileExtension: gs` để pull/push dùng đuôi `.gs`.
-  - Đã chạy thử với clasp giả: đúng thứ tự, giữ được file riêng, đủ 36 file.
-- `tuvi-app/HUONG-DAN-CLASP.md`: hướng dẫn chủ dự án cài từng bước (bật API, `clasp login`, lấy Script ID / Deployment ID, thêm secret, chạy thử, tắt, xử lý lỗi).
-
-## Secret (chỉ chủ dự án nhập trên GitHub, không qua chat)
-- `CLASPRC_JSON`: nội dung `~/.clasprc.json` sau `clasp login`.
-- `SCRIPT_ID`.
-- `DEPLOYMENT_ID` (tùy chọn).
+## Bộ bấm đúp (Windows, clasp 2.4.2)
+- `1-CAI-DAT.bat` → `cai-dat.ps1`:
+  - Cài Node (winget) và clasp, bật API, đăng nhập. Nếu máy đã có `.clasprc.json` từ bộ KPI thì hỏi dùng lại.
+  - Nhập Script ID, `clasp pull`, gọi `KiemTraDungDuAn` (chặn dự án có `function napDuLieu` của KPI; dự án chưa có `lapLaSo` thì hỏi xác nhận).
+  - Sao lưu, chọn bản triển khai, ghi `cau-hinh.json`.
+- `2-CAP-NHAT.bat` → `cap-nhat.ps1`: sao lưu, `KiemTraDungDuAn`, `TaiBanMoi`, `ChepVaoThuMucMa`, `push -f`, `deploy --deploymentId`.
+  - `TaiBanMoi` lấy sha mới nhất của nhánh qua GitHub API, liệt kê `tuvi-app/*.gs|*.html`, tải raw theo sha, so dung lượng từng file.
+  - Kiểm tra `Code.gs` có `kiemTraCaiDat` và 3 mã phiên bản giao diện trùng nhau.
+  - `ChepVaoThuMucMa` giữ `Anh.html` đang có trên Apps Script (`$KhongDe`) và giữ file chỉ có trên Apps Script.
+- `3-KHOI-PHUC.bat` → `khoi-phuc.ps1`: chọn bản sao lưu, đẩy lại, triển khai.
+- `chung.ps1`: thư mục `%USERPROFILE%\ThienCoCac-AppsScript` (`ma`, `sao-luu`, `cau-hinh.json`), nhánh `claude/happy-brown-lttkz3`.
+- File `.ps1` lưu UTF-8 có BOM + CRLF để PowerShell 5 đọc đúng tiếng Việt.
+- Đã chạy thử bằng PowerShell 7 trên Linux với clasp giả, kết quả:
+  - cài đặt đạt;
+  - cập nhật đạt: tải 33 file thật từ GitHub, giữ Anh và file riêng, triển khai đúng mã;
+  - khôi phục đạt;
+  - chặn nhầm dự án KPI đạt.
+- Hướng dẫn cho chủ dự án: `tuvi-app/cai-dat-clasp/HUONG-DAN.md`. File ZIP gửi trong chat.
 
 ## Lưu ý
-- Khi đã bật, sửa trực tiếp trên Apps Script sẽ bị lần đẩy sau ghi đè. Chủ dự án gửi file để gộp 3 chiều như cũ.
-- Mỗi push đổi mã lên nhánh = lên web thật, nên chỉ push sau khi kiểm thử đạt.
-- Tình trạng 22/10: chưa cài secret.
+- Mỗi push đổi mã lên nhánh có thể lên web thật khi chủ dự án bấm cập nhật, nên chỉ push sau khi kiểm thử đạt.
+- Nếu web KPI và Thiên Cơ Các ở hai tài khoản Google khác nhau, phải đăng nhập lại clasp khi chuyển dự án.
