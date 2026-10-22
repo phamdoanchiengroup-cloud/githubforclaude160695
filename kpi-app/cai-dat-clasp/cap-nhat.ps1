@@ -43,6 +43,23 @@ try {
 
   # 5. Triển khai phiên bản mới (giữ nguyên link web)
   $moTa = 'Cập nhật ' + (Get-Date -Format 'dd/MM/yyyy HH:mm') + ' bằng clasp'
+  if (-not ($ch.tuTrienKhai -and $ch.deployId)) {
+    # Lúc cài chưa tự triển khai được (22/10): kiểm tra lại mỗi lần – triển khai tay xong Apps Script thường ghi thêm
+    # mục "webapp" vào appsscript.json, khi đó bật tự triển khai luôn. Chỉ bật khi đủ cả 2 điều kiện (an toàn cho link web).
+    Bao 'Kiểm tra lại có tự triển khai được không...'
+    $idTk = if ($ch.deployId) { $ch.deployId } else { ChonTrienKhai }
+    $mf = Get-Content (Join-Path $ThuMucMa 'appsscript.json') -Raw -Encoding UTF8
+    if ($idTk -and ($mf -match '"webapp"')) {
+      $ch = [pscustomobject]@{ scriptId = $ch.scriptId; deployId = $idTk; tuTrienKhai = $true; ngayCai = $ch.ngayCai }
+      GhiCauHinh $ch
+      Tot '  Đủ điều kiện – từ nay tự triển khai.'
+    } elseif (-not $idTk) {
+      Write-Host '  Chưa tự triển khai được: không tìm thấy bản triển khai web nào của dự án (lệnh "clasp deployments").' -ForegroundColor Yellow
+    } else {
+      Write-Host '  Chưa tự triển khai được: file appsscript.json của dự án chưa có mục "webapp" (tự triển khai lúc này có thể làm web mất quyền truy cập).' -ForegroundColor Yellow
+      Write-Host '  Sau khi bạn triển khai tay một lần, lần cập nhật sau máy sẽ tự kiểm tra lại.' -ForegroundColor Yellow
+    }
+  }
   if ($ch.tuTrienKhai -and $ch.deployId) {
     Bao 'Đang triển khai phiên bản mới...'
     GoiClasp -ThamSo @('deploy', '--deploymentId', $ch.deployId, '--description', $moTa) | Out-Host
