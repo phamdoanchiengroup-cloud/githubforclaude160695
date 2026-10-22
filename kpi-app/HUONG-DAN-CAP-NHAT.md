@@ -494,6 +494,11 @@ Nếu vẫn thấy giao diện cũ: kiểm tra lại Phần D (đã chọn **Phi
 - Giọng nói nằm ở **file MỚI `AmThanh.html`** (khoảng 300 KB): tự tải vài giây sau khi đăng nhập (lần đầu), rồi máy nhớ lại. Quên tạo file này thì tiếng hiệu ứng vẫn chạy, chỉ không có giọng nói.
 
 
+## SỬA KPI CÁ NHÂN / NHÂN SỰ KHỚP BẢNG KPI 22/10 – đổi Code.gs + Index.html
+Đã cài clasp: bấm đúp **2-CAP-NHAT.bat**, rồi Ctrl+F5. Không có hàm cần chạy.
+- KPI ở **KPI cá nhân**, cột KPI tab **Nhân sự**, **hồ sơ**, danh sách "dưới 80%" ở **Tổng quan**, lời Rhino: nay lấy đúng số của **Bảng KPI tháng này** (trước đây trình duyệt tự tính gộp cả tháng trước nên lệch). Mở tab xong vài giây số tự cập nhật.
+- Bỏ lời nhắc "Chốt bù tháng này" sau khi đổi định mức: Bảng KPI tháng đang làm luôn tự tính lại, **không cần bấm chốt**.
+
 ## THANG XẾP LOẠI 22/10 (S, A+, A, B, C, D) – đổi Code.gs, Index.html, SoDo.html, AmThanh.html
 Đã cài clasp: bấm đúp **2-CAP-NHAT.bat** là đủ (tự đẩy cả 5 file). Chép – dán tay thì dán lại 4 file Code.gs, Index.html, SoDo, AmThanh. Không có hàm cần chạy.
 - Thang mới: **S ≥ 95 · A+ 90–94 · A 85–89 · B 80–84 · C 70–79 · D dưới 70** – áp cho bảng KPI, KPI cá nhân, KPI quản lý, báo cáo tháng, sơ đồ nhà máy, lời Rhino, pháo giấy + giọng "lên loại S".

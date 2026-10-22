@@ -13,7 +13,7 @@ Những điều đã chốt. Đừng đề xuất lại những gì ghi "không 
 - Plugin: không bật `claude-mem-cowork` (gửi dữ liệu lên cmem.ai). – [[Công cụ Claude]]
 
 ## Định mức (21/10)
-- **Đổi định mức là áp cho cả tháng đang làm**: toàn bộ sản lượng tháng đó tính theo định mức mới (thay cách áp theo ngày của bản 18/10). **Kể cả tháng đã chốt** – khi đó bấm "Chốt bù tháng này". – [[KPI Phân tích định mức]]
+- **Đổi định mức là áp cho cả tháng đang làm**: toàn bộ sản lượng tháng đó tính theo định mức mới (thay cách áp theo ngày của bản 18/10). **Kể cả tháng đã chốt**. (22/10: Bảng KPI tháng đang làm luôn tính trực tiếp nên không cần Chốt bù.) – [[KPI Phân tích định mức]]
 - Phân tích định mức chỉ gợi ý **nâng** định mức lỏng về mốc 85%. **Không gợi ý hạ** định mức chặt – có thể đang đào tạo nhân viên mới (chủ dự án đã nói từ trước, nhắc lại 21/10). – [[KPI Phân tích định mức]]
 
 ## Xếp loại (22/10)

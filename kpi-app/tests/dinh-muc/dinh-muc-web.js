@@ -47,11 +47,11 @@ function ptdmDoiGiaTri(){ ptdmKy.giaTri=$('ptdm_giatri').value; }
 
 var ptdmKq=null;      // kết quả phân tích gần nhất (apTu, daChot, ds) – lọc xưởng không phải chạy lại máy chủ
 var ptdmLoc='goiy';   // 'goiy' = chỉ công đoạn có gợi ý / cần xem; 'tatca'
-/* Câu nhắc khi đổi định mức: áp cả tháng; tháng đã chốt thì nhắc Chốt bù (chủ dự án 21/10) */
+/* Câu nhắc khi đổi định mức: áp cả tháng (chủ dự án 21/10); Bảng KPI tháng đang làm tự tính lại – không cần chốt (22/10) */
 function ptdmNhacAp(){
   var tu=(ptdmKq&&ptdmKq.apTu)||'', th=tu?(+tu.slice(5,7))+'/'+tu.slice(0,4):'này';
   return 'Định mức mới áp cho CẢ THÁNG '+th+': toàn bộ sản lượng tháng '+th+' tính lại theo định mức mới (các tháng trước giữ nguyên).'+
-    (ptdmKq&&ptdmKq.daChot?'\nTháng này đã chốt KPI → sửa xong vào Bảng KPI bấm "Chốt bù tháng này" để bảng đã chốt tính lại.':'');
+    '\nBảng KPI tháng này tự tính lại, không cần bấm chốt.';
 }
 
 /* Ban điều hành sửa định mức ngay tại bảng phân tích */
@@ -106,8 +106,8 @@ function ptdmVe(r){
   }else{
     h+='<div class="alert a-ok">Không có công đoạn nào lỏng hơn mốc 85% — không cần nâng định mức.</div>';
   }
-  if(th) h+='<div class="alert '+(ptdmKq.daChot?'a-wn':'a-nu')+'">Đổi định mức lúc này sẽ áp cho <b>cả tháng '+th+'</b> (từ ngày 1). '+
-    (ptdmKq.daChot?'Tháng '+th+' <b>đã chốt KPI</b> → sửa xong vào Bảng KPI bấm <b>"Chốt bù tháng này"</b> để bảng đã chốt tính lại.':'KPI tháng '+th+' tự tính lại theo định mức mới.')+'</div>';
+  if(th) h+='<div class="alert a-nu">Đổi định mức lúc này sẽ áp cho <b>cả tháng '+th+'</b> (từ ngày 1). '+
+    'Bảng KPI tháng '+th+' tự tính lại theo định mức mới — <b>không cần bấm chốt</b>.</div>';
 
   var ds=ptdmLoc==='tatca'?dsX:dsX.filter(function(x){return x.dmGoiY>0||x.phuThuoc||x.nhan==='do'||x.nhan==='vang'});
   var tenXuong={}; (D.phongban||[]).forEach(function(p){tenXuong[p.MaXuong]=p.TenXuong;});
@@ -180,7 +180,7 @@ function ptdmVe(r){
      'Giờ có mặt trong ngày được chia cho các công đoạn người đó làm, nên công đoạn làm cùng ngày ảnh hưởng lẫn nhau — vì vậy gợi ý được tính chung. '+
      'Công đoạn dưới mốc không gợi ý hạ (thường do người mới chưa lên tay); muốn xem thì chọn "Tất cả công đoạn". '+
      'Công đoạn ít người (dưới 3) thì trung vị kém tin — vẫn chọn sẵn vì bỏ đi sẽ làm lệch các công đoạn làm cùng ngày; có thể sửa tay ô định mức. '+
-     'Đổi định mức áp cho <b>cả tháng đang làm</b>; tháng đã chốt thì sửa xong bấm "Chốt bù tháng này" ở Bảng KPI.</div>';
+     'Đổi định mức áp cho <b>cả tháng đang làm</b>; Bảng KPI tháng này tự tính lại, không cần bấm chốt.</div>';
 
   if(laAdmin && coGY.length){
     h+='<div id="ptdmBar" style="position:sticky;bottom:0;margin-top:14px;padding:12px 14px;'+

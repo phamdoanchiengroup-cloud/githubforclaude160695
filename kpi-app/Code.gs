@@ -7116,10 +7116,9 @@ function ngayApDM_() {
   return __DM_TU;
 }
 /* Tháng này đã có bản KPI chốt (KPIThang) -> sau khi đổi định mức cần "Chốt bù" để bản đã lưu khớp số mới */
-function nhacChotBuDM_(msg) {
-  try { if (daChotChinhThuc_(kyVN_())) msg += ' Tháng này đã chốt KPI – vào Bảng KPI bấm "Chốt bù tháng này" để bảng KPI đã lưu tính lại theo định mức mới.'; } catch (e) {}
-  return msg;
-}
+// 22/10: bỏ lời nhắc "Chốt bù" – Bảng KPI của THÁNG ĐANG LÀM luôn tính trực tiếp (không đọc bản đã chốt), mà đổi định mức
+// chỉ áp cho tháng đang làm, nên không bao giờ cần chốt bù vì đổi định mức. (Lời nhắc cũ làm chủ dự án bấm chốt tháng 10 giữa tháng.)
+function nhacChotBuDM_(msg) { return msg + ' Bảng KPI tháng này tự tính lại theo định mức mới.'; }
 /* Bỏ phần lịch sử định mức của maCD từ ngày tu trở đi (để định mức mới áp được cho các ngày đó) */
 function catLichSuDM_(maCD, tu) {
   if (!ss_().getSheetByName(LSDM_SHEET)) return;

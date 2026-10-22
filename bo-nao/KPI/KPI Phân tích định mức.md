@@ -16,7 +16,7 @@ Liên quan: [[KPI Tổng quan và cách dựng]] · [[KPI Kiểm thử]] · [[Qu
 ## Đã làm (máy chủ: mục vá `kpi-app/tests/dinh-muc/va-dinh-muc.py` + `dinh-muc.gs`, cuối `va-code.py`)
 - `ngayApDM_()` = ngày 1 tháng hiện tại, luôn luôn (kể cả tháng đã chốt).
 - `luuLichSuDM_` (hook `suaO_('DinhMuc','DinhMucGio')`): `catLichSuDM_(maCD, ngày 1)` cắt / xóa đoạn lịch sử trùng tháng này; định mức cũ chỉ lưu tới hết ngày cuối tháng trước. Cả 12 chỗ ghi `HieuLucTu` (6 hàm × 2 dạng) dùng `ngayApDM_()`.
-- `nhacChotBuDM_(msg)`: tháng này đã chốt chính thức (`daChotChinhThuc_`) thì thêm câu nhắc bấm "Chốt bù tháng này". Gắn vào lời báo của duyetDeXuat, duyetTatCaDeXuat, luuDinhMuc, suaCongDoan (khi có đổi định mức), banDieuHanhSuaDinhMuc, banDieuHanhSuaDinhMucNhieu.
+- (22/10 bỏ – xem [[KPI Soát đổi định mức 22-10]]) `nhacChotBuDM_(msg)`: tháng này đã chốt chính thức (`daChotChinhThuc_`) thì thêm câu nhắc bấm "Chốt bù tháng này". Gắn vào lời báo của duyetDeXuat, duyetTatCaDeXuat, luuDinhMuc, suaCongDoan (khi có đổi định mức), banDieuHanhSuaDinhMuc, banDieuHanhSuaDinhMucNhieu.
 - `AP_DINH_MUC_CA_THANG()` – chạy tay 1 lần sau khi dán: cắt mọi đoạn LichSuDinhMuc trùng tháng này (34 công đoạn trên dữ liệu thật). Chặn gọi từ web (bao-mat.js: 38 hàm viết hoa).
 - `phanTichDinhMucGoc_` mới (bản cũ đổi tên `phanTichDinhMucCu_`):
   - Hiệu suất tính theo **định mức đang dùng** cho mọi ngày (`trungVi`); vẫn trả `trungViKy` = theo định mức từng ngày như KPI.

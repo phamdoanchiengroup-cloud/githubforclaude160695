@@ -64,7 +64,7 @@ const ph = truoc.ds.filter(x => x.phuThuoc).slice(0, 2).map(x => x.tenCD + ' (' 
 console.log('    ví dụ công đoạn phụ thuộc: ' + ph.join(', '));
 
 
-console.log('\n3. Tháng đã chốt chính thức: định mức mới vẫn áp cả tháng, lời báo nhắc Chốt bù');
+console.log('\n3. Tháng đang làm đã bấm chốt giữa tháng: định mức mới vẫn áp cả tháng, Bảng KPI tự tính lại, không nhắc Chốt bù (22/10)');
 ({ c, T } = tao());
 c.__goi('AP_DINH_MUC_CA_THANG');
 c.them_('KPIThang', { Ky: KY, MaNV: 'NV_THU', HoTen: 'Thử', TongKPI: 80, ThoiDiemChot: new Date(), NguoiChot: 'Ban điều hành' });
@@ -72,11 +72,17 @@ ok(c.daChotChinhThuc_(KY), 'đã giả lập chốt chính thức tháng 10');
 r = phanTich(c, T);
 ok(r.apTu === '2026-10-01', 'tháng đã chốt: đổi định mức vẫn áp từ 01/10', r.apTu);
 const mot = r.ds.filter(x => x.dmGoiY > 0 && x.soCoData >= 3)[0];
+const nvMot = c.doc_('NhatKySanXuat').find(x => x.MaCD === mot.maCD && String(x.TrangThai).trim() === 'Đã chốt' && c.ngayVN_(x.Ngay) >= '2026-10-01').MaNV;
+const xMot = c.doc_('NhanSu').find(n => n.MaNV === nvMot).MaXuong;
+const kpiMot = () => c.__goi('layKPIKy', T, 'thang', KY, xMot).ds.find(o => o.MaNV === nvMot);
+const k0 = kpiMot();
 const kq1 = c.__goi('banDieuHanhSuaDinhMuc', T, mot.maCD, mot.dmGoiY, 'Thử tháng đã chốt');
-ok(kq1.ok && /Chốt bù tháng này/.test(kq1.msg), 'sửa 1 định mức: lời báo nhắc "Chốt bù tháng này"', kq1.msg);
+const k1 = kpiMot();
+ok(k0 && k1 && k1.sl < k0.sl - 0.01, 'tháng đang làm dù đã bấm chốt: Bảng KPI tính lại ngay theo định mức mới', [k0 && k0.sl, k1 && k1.sl]);
+ok(kq1.ok && !/Chốt bù/.test(kq1.msg) && /tự tính lại/.test(kq1.msg), 'sửa 1 định mức: lời báo "tự tính lại", không bảo bấm Chốt bù', kq1.msg);
 const hai = r.ds.filter(x => x.dmGoiY > 0 && x.maCD !== mot.maCD).slice(0, 3).map(x => ({ maCD: x.maCD, dinhMucMoi: x.dmGoiY }));
 const kq2 = c.__goi('banDieuHanhSuaDinhMucNhieu', T, hai, 'Thử');
-ok(kq2.ok && /Chốt bù tháng này/.test(kq2.msg), 'sửa nhiều định mức: lời báo nhắc Chốt bù', kq2.msg);
+ok(kq2.ok && !/Chốt bù/.test(kq2.msg), 'sửa nhiều định mức: không nhắc Chốt bù', kq2.msg);
 const sau3 = phanTich(c, T), x3 = sau3.ds.filter(x => x.maCD === mot.maCD)[0];
 ok(Math.abs(x3.trungViKy - x3.trungVi) < 0.5 && c.doc_('LichSuDinhMuc').every(x => c.ngayVN_(x.DenNgay) <= '2026-09-30'), 'tháng đã chốt: KPI tháng 10 tính theo định mức mới cho cả tháng', [x3.trungVi, x3.trungViKy]);
 ({ c, T } = tao());

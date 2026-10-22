@@ -5537,11 +5537,11 @@ function ptdmDoiGiaTri(){ ptdmKy.giaTri=$('ptdm_giatri').value; }
 
 var ptdmKq=null;      // kết quả phân tích gần nhất (apTu, daChot, ds) – lọc xưởng không phải chạy lại máy chủ
 var ptdmLoc='goiy';   // 'goiy' = chỉ công đoạn có gợi ý / cần xem; 'tatca'
-/* Câu nhắc khi đổi định mức: áp cả tháng; tháng đã chốt thì nhắc Chốt bù (chủ dự án 21/10) */
+/* Câu nhắc khi đổi định mức: áp cả tháng (chủ dự án 21/10); Bảng KPI tháng đang làm tự tính lại – không cần chốt (22/10) */
 function ptdmNhacAp(){
   var tu=(ptdmKq&&ptdmKq.apTu)||'', th=tu?(+tu.slice(5,7))+'/'+tu.slice(0,4):'này';
   return 'Định mức mới áp cho CẢ THÁNG '+th+': toàn bộ sản lượng tháng '+th+' tính lại theo định mức mới (các tháng trước giữ nguyên).'+
-    (ptdmKq&&ptdmKq.daChot?'\nTháng này đã chốt KPI → sửa xong vào Bảng KPI bấm "Chốt bù tháng này" để bảng đã chốt tính lại.':'');
+    '\nBảng KPI tháng này tự tính lại, không cần bấm chốt.';
 }
 
 /* Ban điều hành sửa định mức ngay tại bảng phân tích */
@@ -5596,8 +5596,8 @@ function ptdmVe(r){
   }else{
     h+='<div class="alert a-ok">Không có công đoạn nào lỏng hơn mốc 85% — không cần nâng định mức.</div>';
   }
-  if(th) h+='<div class="alert '+(ptdmKq.daChot?'a-wn':'a-nu')+'">Đổi định mức lúc này sẽ áp cho <b>cả tháng '+th+'</b> (từ ngày 1). '+
-    (ptdmKq.daChot?'Tháng '+th+' <b>đã chốt KPI</b> → sửa xong vào Bảng KPI bấm <b>"Chốt bù tháng này"</b> để bảng đã chốt tính lại.':'KPI tháng '+th+' tự tính lại theo định mức mới.')+'</div>';
+  if(th) h+='<div class="alert a-nu">Đổi định mức lúc này sẽ áp cho <b>cả tháng '+th+'</b> (từ ngày 1). '+
+    'Bảng KPI tháng '+th+' tự tính lại theo định mức mới — <b>không cần bấm chốt</b>.</div>';
 
   var ds=ptdmLoc==='tatca'?dsX:dsX.filter(function(x){return x.dmGoiY>0||x.phuThuoc||x.nhan==='do'||x.nhan==='vang'});
   var tenXuong={}; (D.phongban||[]).forEach(function(p){tenXuong[p.MaXuong]=p.TenXuong;});
@@ -5670,7 +5670,7 @@ function ptdmVe(r){
      'Giờ có mặt trong ngày được chia cho các công đoạn người đó làm, nên công đoạn làm cùng ngày ảnh hưởng lẫn nhau — vì vậy gợi ý được tính chung. '+
      'Công đoạn dưới mốc không gợi ý hạ (thường do người mới chưa lên tay); muốn xem thì chọn "Tất cả công đoạn". '+
      'Công đoạn ít người (dưới 3) thì trung vị kém tin — vẫn chọn sẵn vì bỏ đi sẽ làm lệch các công đoạn làm cùng ngày; có thể sửa tay ô định mức. '+
-     'Đổi định mức áp cho <b>cả tháng đang làm</b>; tháng đã chốt thì sửa xong bấm "Chốt bù tháng này" ở Bảng KPI.</div>';
+     'Đổi định mức áp cho <b>cả tháng đang làm</b>; Bảng KPI tháng này tự tính lại, không cần bấm chốt.</div>';
 
   if(laAdmin && coGY.length){
     h+='<div id="ptdmBar" style="position:sticky;bottom:0;margin-top:14px;padding:12px 14px;'+
@@ -9290,6 +9290,59 @@ function lmTai(ep){
   setInterval(function(){
     if(ME&&ME.vaiTro==='TP'&&document.visibilityState==='visible'&&!lmDangSua_())lmTai(true);
   },LM_DINH_KY);
+})();
+</script>
+<script>
+/* ===== KPI TRÊN TRÌNH DUYỆT LẤY ĐÚNG SỐ MÁY CHỦ (22/10) =====
+   Chủ dự án báo đổi định mức xong "KPI có vẻ không đúng": hàm kpi() phía trình duyệt cộng dồn MỌI nhật ký đang có
+   trong máy (từ đầu tháng trước) và thiếu các quy tắc của máy chủ (ngày đi làm không khai, nghỉ dài hạn, lỗi KCS,
+   vi phạm theo tháng, trọng số theo kỳ) -> KPI cá nhân, cột KPI ở Nhân sự, hồ sơ, "dưới 80%" ở Tổng quan, Rhino
+   lệch với Bảng KPI. Nay: lặng lẽ tải bảng KPI tháng này của máy chủ (layKPIKy – có bộ nhớ tạm + làm nóng nên nhanh),
+   kpi(maNV) trả đúng số đó; chưa tải xong / người không có trong bảng thì tính tạm chỉ với nhật ký THÁNG NÀY. */
+var KPI_MAY = { th: '', m: null, luc: 0, dang: false };
+var KPI_MAY_CACH = 300000;   // tải lại tối đa 5 phút / lần (đổi dữ liệu thì tải lại ngay)
+var KPI_MAY_TAB = { dash: 1, ns: 1, kpica: 1 };
+var _kpiTho = kpi;
+function kpiThangNay_(maNV) {           // tính tạm: chỉ nhật ký tháng này (như Bảng KPI)
+  var th = today().slice(0, 7), c = kpiThangNay_.c, a = D.nhatky || [];
+  if (!c || c.a !== a || c.n !== a.length || c.th !== th)
+    c = kpiThangNay_.c = { a: a, n: a.length, th: th, loc: a.filter(function (r) { return ngay(r.Ngay).slice(0, 7) === th; }) };
+  var luu = D.nhatky; D.nhatky = c.loc;
+  try { return _kpiTho(maNV); } finally { D.nhatky = luu; }
+}
+kpi = function (maNV) {
+  var o = (KPI_MAY.m && KPI_MAY.th === today().slice(0, 7)) ? KPI_MAY.m[maNV] : null;
+  if (o && isFinite(Number(o.tong)))
+    return { sl: Number(o.sl) || 0, cl: Number(o.cl) || 0, tt: Number(o.tt) || 0, at: Number(o.at) || 0, tong: Number(o.tong) || 0, spl: Number(o.spl) || 0, may: true };
+  return kpiThangNay_(maNV);
+};
+function kpiMayVeLai_() {
+  var t = tabHienTai; if (!KPI_MAY_TAB[t]) return;
+  if (t === 'ns' && document.body.classList.contains('cd-mo')) return;   // đang xem hồ sơ ở khung bên phải: không vẽ lại
+  if (typeof lmDangSua_ === 'function' && lmDangSua_()) return;
+  var y = window.scrollY;
+  try { ({ dash: vDash, ns: vNS, kpica: vKPICaNhanToi }[t])(); } catch (e) {}
+  window.scrollTo(0, y);
+}
+function taiKPIMay(ep) {
+  if (!ME || !TOKEN || KPI_MAY.dang) return;
+  var th = today().slice(0, 7);
+  if (!ep && KPI_MAY.th === th && Date.now() - KPI_MAY.luc < KPI_MAY_CACH) return;
+  KPI_MAY.dang = true;
+  google.script.run.withSuccessHandler(function (r) {
+    KPI_MAY.dang = false;
+    if (!r || !r.ok) { KPI_MAY.luc = Date.now(); return; }          // không có quyền xem bảng / lỗi: dùng cách tính tạm
+    var m = {}, cu = KPI_MAY.m, doi = !cu || KPI_MAY.th !== th;
+    (r.ds || []).forEach(function (o) { m[o.MaNV] = o; if (!doi && (!cu[o.MaNV] || cu[o.MaNV].tong !== o.tong)) doi = true; });
+    KPI_MAY.m = m; KPI_MAY.th = th; KPI_MAY.luc = Date.now();
+    if (doi) kpiMayVeLai_();
+  }).withFailureHandler(function () { KPI_MAY.dang = false; }).layKPIKy(TOKEN, 'thang', th, '');
+}
+(function () {
+  var cu = window.go;
+  window.go = function (k) { var r = cu.apply(this, arguments); try { if (KPI_MAY_TAB[k]) taiKPIMay(); } catch (e) {} return r; };
+  var cuR = window.reload;                 // dữ liệu vừa đổi (duyệt, sửa định mức...) -> lần sau mở tab lấy số mới
+  window.reload = function () { KPI_MAY.luc = 0; return cuR.apply(this, arguments); };
 })();
 </script>
 <style>

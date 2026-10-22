@@ -10,6 +10,9 @@ Liên quan: [[Lần dán lên Apps Script]] · [[Quyết định của chủ d�
 - Xưởng của 3 phòng: "Khu chuốt ráp nước" (T1), "Kho thành phẩm", "Phòng kế toán kho" (T3) – ghi chú 13/10 đã ghép tạm; ô xám chưa rõ máy trên sơ đồ 3D chờ ảnh/giải thích. – [[KPI Sơ đồ nhà máy 3D]]
 - Video giới thiệu từ tư liệu Rhino: tự dựng bằng ffmpeg + hoạt ảnh, hay video AI qua Everygen (tốn credit)? – [[KPI Màn đăng nhập demo chờ duyệt]]
 
+## Câu hỏi 22/10
+- Cân Phôi – Phân Loại Phôi đã nâng 180 → 350 mà vẫn ~102% (công đoạn phụ, 2 người chỉ dành 9–12% thời gian) – có trả về 180 không? – [[KPI Soát đổi định mức 22-10]]
+
 ## Chờ chủ dự án làm
 - Dán bản 21/10 (sửa lỗi + tăng tốc), chạy `CAI_TRIGGER_LAM_NONG_KPI`, kiểm tra Sheets API. – [[KPI Tăng tốc đợt 2 (21-10)]]
 - Sau khi dán: chạy một lần `AP_DINH_MUC_CA_THANG`, mở Phân tích định mức tháng 10 → "Áp dụng các dòng đã chọn"; nếu tháng đã chốt thì bấm "Chốt bù tháng này". – [[KPI Phân tích định mức]]

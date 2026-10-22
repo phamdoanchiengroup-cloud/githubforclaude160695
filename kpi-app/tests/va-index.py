@@ -817,6 +817,8 @@ exec(io.open(os.path.join(D, 'tang-toc-2', 'va-tang-toc-web.py'), encoding='utf-
 exec(io.open(os.path.join(D, 'dinh-muc', 'va-dinh-muc-web.py'), encoding='utf-8').read())
 # ---------------------------------------------------------------- 29. Thang xếp loại mới (22/10): S ≥ 95, A+ ≥ 90, A ≥ 85, B ≥ 80, C ≥ 70, D < 70
 exec(io.open(os.path.join(D, 'xep-loai', 'va-xep-loai-web.py'), encoding='utf-8').read())
+# ---------------------------------------------------------------- 30. KPI trên trình duyệt lấy đúng số máy chủ (22/10): KPI cá nhân, Nhân sự, hồ sơ, Tổng quan khớp Bảng KPI
+exec(io.open(os.path.join(D, 'kpi-may', 'va-kpi-may.py'), encoding='utf-8').read())
 # ---------------------------------------------------------------- 27. Chia đôi màn hình (21/10): Bảng KPI, Nhân sự, KPI quản lý – danh sách trái, chi tiết phải (phải là mục cuối)
 exec(io.open(os.path.join(D, 'chia-doi', 'va-chia-doi.py'), encoding='utf-8').read())
 
