@@ -494,6 +494,12 @@ Nếu vẫn thấy giao diện cũ: kiểm tra lại Phần D (đã chọn **Phi
 - Giọng nói nằm ở **file MỚI `AmThanh.html`** (khoảng 300 KB): tự tải vài giây sau khi đăng nhập (lần đầu), rồi máy nhớ lại. Quên tạo file này thì tiếng hiệu ứng vẫn chạy, chỉ không có giọng nói.
 
 
+## PHÂN TÍCH ĐỊNH MỨC THEO "NGƯỜI KHÁ = 90%" 22/10 – đổi Code.gs + Index.html
+Bấm đúp **2-CAP-NHAT.bat** (nếu máy chưa tự triển khai thì Triển khai → Quản lý triển khai → ✏️ → Phiên bản mới → Triển khai), rồi Ctrl+F5. Không có hàm cần chạy.
+- Định mức gợi ý để **người khá (top 25% của công đoạn) đạt 90%** – người ở giữa khoảng 85%, người giỏi khoảng 95–100%.
+- Tính gộp **3 tháng gần nhất**; không tính người mới (tài khoản tạo hoặc vào làm trong 2 tháng), ngày học việc, và người **đột biến** (vượt 1,5 lần người khá của những người còn lại – tab ghi tên để nhờ trưởng phòng xác nhận).
+- Bảng có cột **Thấp · Giữa · Khá · Cao**, số dự kiến sau khi áp, và dòng "áp hết thì bao nhiêu người đổi hạng". Bỏ nhãn "công đoạn phụ"; dòng nào phải nâng tới ×4 thì không chọn sẵn.
+
 ## SỬA KPI CÁ NHÂN / NHÂN SỰ KHỚP BẢNG KPI 22/10 – đổi Code.gs + Index.html
 Đã cài clasp: bấm đúp **2-CAP-NHAT.bat**, rồi Ctrl+F5. Không có hàm cần chạy.
 - KPI ở **KPI cá nhân**, cột KPI tab **Nhân sự**, **hồ sơ**, danh sách "dưới 80%" ở **Tổng quan**, lời Rhino: nay lấy đúng số của **Bảng KPI tháng này** (trước đây trình duyệt tự tính gộp cả tháng trước nên lệch). Mở tab xong vài giây số tự cập nhật.

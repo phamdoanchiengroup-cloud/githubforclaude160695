@@ -14,7 +14,7 @@ Những điều đã chốt. Đừng đề xuất lại những gì ghi "không 
 
 ## Định mức (21/10)
 - **Đổi định mức là áp cho cả tháng đang làm**: toàn bộ sản lượng tháng đó tính theo định mức mới (thay cách áp theo ngày của bản 18/10). **Kể cả tháng đã chốt**. (22/10: Bảng KPI tháng đang làm luôn tính trực tiếp nên không cần Chốt bù.) – [[KPI Phân tích định mức]]
-- Trung vị của phân tích định mức **không tính sản lượng người đang học việc** (22/10). Không phân công đoạn "chính / phụ" – công đoạn nào cũng là chính (22/10). – [[KPI Phân tích định mức]]
+- **Mốc định mức (22/10 tối): người khá (top 25%) đạt 90%**, gộp 3 tháng gần nhất, bỏ người đột biến (> 1,5 × người khá) và người mới (tài khoản / vào làm trong 2 tháng). Công đoạn 2–3 người vẫn gợi ý (không dùng ngưỡng 5 người). Không thêm mã "giờ không sản xuất". Trước đó: trung vị 85%, không tính người học việc (22/10). Không phân công đoạn "chính / phụ" – công đoạn nào cũng là chính (22/10). – [[KPI Phân tích định mức]]
 - Phân tích định mức chỉ gợi ý **nâng** định mức lỏng về mốc 85%. **Không gợi ý hạ** định mức chặt – có thể đang đào tạo nhân viên mới (chủ dự án đã nói từ trước, nhắc lại 21/10). – [[KPI Phân tích định mức]]
 
 ## Xếp loại (22/10)

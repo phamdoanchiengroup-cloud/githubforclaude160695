@@ -16,7 +16,7 @@ Liên quan: [[Lần dán lên Apps Script]] · [[Quyết định của chủ d�
 - Sửa NhanSu: Trương Thị Thùy Linh NgayVaoLam 08/11/2026 (tương lai); Hà Thị Hải có 2 dòng. – [[KPI Phân tích định mức]]
 - Có loại người SL 0 cả tháng (Bùi Hoàng Anh, Trần Thị Thuỳ Dung, Tống Thị Mỹ Duyên, Nguyễn Thị Mai Nga…) khỏi bảng KPI công nhân không? Có muốn đổi trọng số (SL 70/CL 20/TT 5/AT 5) để KPI tổng bám 85% hơn không? – [[KPI Soát đổi định mức 22-10]]
 
-- Chọn cách đặt định mức: mốc "người khá (top 25%) = 90%" hay "trung bình 2 người cao nhất = 93–95%"? – [[KPI Phân tích định mức]]
+- Có giới hạn mỗi lần nâng định mức tối đa 10% không (chuyên gia đề xuất, chưa trả lời)? Xác nhận số liệu người đột biến (tab phân tích ghi tên). – [[KPI Phân tích định mức]]
 
 ## Chờ chủ dự án làm
 - Dán bản 21/10 (sửa lỗi + tăng tốc), chạy `CAI_TRIGGER_LAM_NONG_KPI`, kiểm tra Sheets API. – [[KPI Tăng tốc đợt 2 (21-10)]]

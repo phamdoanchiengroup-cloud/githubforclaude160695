@@ -46,3 +46,13 @@ Liên quan: [[KPI Tổng quan và cách dựng]] · [[KPI Kiểm thử]] · [[Qu
 - Bỏ `chamChan` / `phuThuoc` / thử nhận lại: chỉ `giai(canChinh)` cho mọi công đoạn có dữ liệu, giữ chặn an toàn ×4 (`CHAN`). Trả `chamTran` khi gợi ý chạm ×4; giao diện ghi "đã nâng tối đa ×4 mà chưa về 85% – cân nhắc trước khi áp".
 - Dữ liệu 22/10: Cân Phôi 350 → 1399 (dự kiến 92%), Cắt Nối 80 → 320 (dự kiến 112%, 1 người) – đều chạm ×4.
 - Kiểm thử `dinh-muc.js` 28, `dinh-muc-web.js` 15.
+
+## 22/10 (tối): mốc mới "người khá = 90%" (chủ dự án duyệt theo tư vấn chuyên gia vận hành `quan-ly-van-hanh`)
+- Chuyên gia: không lấy người cao nhất làm chuẩn (dao động, phạt tập thể; thông lệ 100% = người đạt chuẩn, người giỏi 115–130%); đề xuất định mức = tốc độ P75 (3 tháng, bỏ đột biến) ÷ 0,90. Chủ dự án chọn: dùng P75 = 90%, gộp 3 tháng, bỏ người đột biến + người mới (tài khoản/vào làm trong 2 tháng); KHÔNG áp ngưỡng 5 người (nhiều công đoạn 2–3 người); giữ quy tắc áp cả tháng đang làm; không thêm mã "giờ không sản xuất". (Giới hạn nâng 10%/lần: chủ dự án chưa trả lời – chưa làm.)
+- Mã: hằng số `DM_MOC=90`, `DM_PV=0.75`, `DM_DOT_BIEN=1.5`, `DM_MOI_THANG=2`, `DM_SO_THANG=3`. `pv()` phân vị nội suy; `hsTu` hiệu suất từng người; giải chung mọi công đoạn cho P75 = 90 (chỉ nâng, chặn ×4).
+- Người mới: ngày muộn hơn giữa NgayVaoLam (NhanSu) và NgayTao (TaiKhoan) > cuối kỳ − 2 tháng → bỏ cả người; người cũ thì vẫn bỏ ngày còn học việc (`dangHocViec_`).
+- Đột biến: hiệu suất > 1,5 × P75 của **những người còn lại** (bỏ chính họ – bản đầu tính cả họ làm Sơn-Máy-Tự-Động nhảy 99 → 73 sau khi áp), chỉ xét công đoạn ≥ 4 người; tách khỏi thống kê công đoạn đó, hiện tên + % để xác nhận.
+- Trả mỗi công đoạn: thap/trungVi/kha/caoNhat (P25/P50/P75/max), dotBien[], dmGoiY, khaSau/trungViSau/caoNhatSau (khi áp TẤT CẢ gợi ý), chamTran. Chung: thang[3], nguoiMoi[], soHocViecBo, doiHang {soNguoi, soDoi, chuyen} (KPI tháng đang làm trước/sau khi áp hết, đổi tạm `dt.idxDM`).
+- Giao diện: cột "Thấp · Giữa · Khá · Cao", "sau: giữa · khá · cao", ghi chú người đột biến, dòng "Dữ liệu 8–10/2026 · không tính N người mới (xem tên)", "Áp hết: x/157 người đổi hạng (A → C: 1 …)"; dòng chạm ×4 không chọn sẵn.
+- Dữ liệu 22/10: 191 công đoạn, 12 gợi ý nâng (3 chạm ×4: Cân Phôi, Cắt Nối, Laser Tag Giá Bé – 1–2 người), 13 công đoạn có người đột biến, 41 người mới bị bỏ; áp hết thì 6/157 người đổi hạng.
+- Kiểm thử `dinh-muc.js` 32, `dinh-muc-web.js` 15.

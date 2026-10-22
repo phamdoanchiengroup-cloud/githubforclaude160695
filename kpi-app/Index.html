@@ -5490,11 +5490,12 @@ var ptdmKy={kieu:'thang', giaTri:''};
 var ptdmXuong='';   // lọc xưởng ở phần kết quả phân tích định mức ('' = tất cả)
 function vPTDM(){
   var h='<div class="ptitle">Phân tích định mức</div>'+
-    '<div class="pdesc">Đánh giá định mức theo hiệu suất trung vị (người ở giữa) và gợi ý nâng định mức lỏng về mốc 85%</div>';
-  h+='<div class="alert a-nu">Định mức hợp lý khi <b>hiệu suất trung vị</b> quanh mốc <b>85%</b> (±3 điểm). '+
-    'Trên mốc là định mức <b>lỏng</b> → gợi ý <b>nâng</b>. Dưới mốc <b>không gợi ý hạ</b> — thường do người mới đang đào tạo, chưa lên tay. '+
-    'Đổi định mức là áp cho <b>cả tháng đang làm</b>: toàn bộ sản lượng tháng này tính lại theo định mức mới, các tháng trước giữ nguyên. '+
-    'Sản lượng của người <b>đang học việc</b> (tháng đầu kể từ ngày vào làm) <b>không tính</b> vào trung vị.</div>';
+    '<div class="pdesc">Đặt định mức theo <b>người khá</b> (top 25% của công đoạn) đạt 90% — người ở giữa khoảng 85%, người giỏi khoảng 95–100%</div>';
+  h+='<div class="alert a-nu">Định mức hợp lý khi <b>người khá</b> (đứng ở mốc top 25% của công đoạn) đạt quanh <b>90%</b> (±3 điểm). '+
+    'Tính gộp <b>3 tháng gần nhất</b>; <b>không tính</b> người mới (tài khoản tạo hoặc vào làm trong 2 tháng gần đây), ngày còn học việc, '+
+    'và người <b>đột biến</b> (vượt 1,5 lần người khá của những người còn lại, công đoạn từ 4 người — nên nhờ trưởng phòng xác nhận số liệu). '+
+    'Trên mốc là định mức <b>lỏng</b> → gợi ý <b>nâng</b>; dưới mốc <b>không hạ</b>. '+
+    'Đổi định mức áp cho <b>cả tháng đang làm</b>, các tháng trước giữ nguyên.</div>';
 
   // Bộ chọn kỳ
   if(!ptdmKy.giaTri){var d=new Date(); ptdmKy.giaTri=d.getFullYear()+'-'+('0'+(d.getMonth()+1)).slice(-2);}
@@ -5551,7 +5552,7 @@ function ptdmSua(maCD, tenCD, dinhMucCu){
   var moi=Number(e.value);
   if(!isFinite(moi)||moi<=0){toast('Nhập định mức hợp lệ');return}
   if(moi===Number(dinhMucCu)){toast('Định mức mới trùng định mức cũ');return}
-  var lyDo=prompt('Sửa định mức "'+tenCD+'": '+dinhMucCu+' → '+moi+'\nLý do (có thể bỏ trống):','Theo phân tích định mức – về mốc 85%');
+  var lyDo=prompt('Sửa định mức "'+tenCD+'": '+dinhMucCu+' → '+moi+'\nLý do (có thể bỏ trống):','Theo phân tích định mức – người khá về 90%');
   if(lyDo===null)return;
   if(!confirm('Áp dụng định mức mới '+moi+' cho "'+tenCD+'"?\n'+ptdmNhacAp()+
     '\n\nLưu ý: gợi ý được tính chung cho các công đoạn làm cùng ngày – sửa lẻ một dòng thì hiệu suất dự kiến có thể lệch, nên dùng "Áp dụng các dòng đã chọn".'))return;
@@ -5590,16 +5591,24 @@ function ptdmVe(r){
   var coGY=dsX.filter(function(x){return x.dmGoiY>0});
   var tu=ptdmKq.apTu||'', th=tu?(+tu.slice(5,7))+'/'+tu.slice(0,4):'';
   if(coGY.length){
-    h+='<div class="alert a-bd"><b>'+coGY.length+' công đoạn nên nâng định mức</b> để về mốc 85%.'+
-       '<br>Các gợi ý được tính <b>chung</b> (người làm nhiều công đoạn trong ngày) — nên áp <b>cùng lúc</b> bằng nút "Áp dụng các dòng đã chọn" thì phân tích lại mới về quanh 85%.</div>';
+    var dh=ptdmKq.doiHang;
+    h+='<div class="alert a-bd"><b>'+coGY.length+' công đoạn nên nâng định mức</b> để người khá về quanh 90%.'+
+       '<br>Các gợi ý được tính <b>chung</b> (người làm nhiều công đoạn trong ngày) — nên áp <b>cùng lúc</b> bằng nút "Áp dụng các dòng đã chọn".'+
+       (dh?'<br>Áp hết các gợi ý: <b>'+dh.soDoi+'/'+dh.soNguoi+' người đổi hạng</b> trên Bảng KPI tháng này'+
+         (dh.soDoi?' ('+Object.keys(dh.chuyen).map(function(k){return esc(k)+': '+dh.chuyen[k];}).join(' · ')+')':'')+'.':'')+'</div>';
   }else{
-    h+='<div class="alert a-ok">Không có công đoạn nào lỏng hơn mốc 85% — không cần nâng định mức.</div>';
+    h+='<div class="alert a-ok">Không có công đoạn nào lỏng hơn mốc — không cần nâng định mức.</div>';
   }
-  if(ptdmKq.soHocViecBo) h+='<div class="pdesc" style="margin:-4px 0 10px">Không tính sản lượng những ngày còn học việc của <b>'+ptdmKq.soHocViecBo+' người</b>.</div>';
+  var thg=(ptdmKq.thang||[]).map(function(t){return (+t.slice(5,7))+'/'+t.slice(0,4);});
+  h+='<div class="pdesc" style="margin:-4px 0 10px">Dữ liệu: '+esc(thg.join(', '))+
+    (ptdmKq.nguoiMoi&&ptdmKq.nguoiMoi.length?' · Không tính <b>'+ptdmKq.nguoiMoi.length+' người mới</b> <a href="#" onclick="var e=document.getElementById(\'ptdm_moi\');e.style.display=e.style.display?\'\':\'none\';return false">(xem tên)</a>':'')+
+    (ptdmKq.soHocViecBo?' · bỏ ngày học việc của '+ptdmKq.soHocViecBo+' người':'')+'</div>'+
+    (ptdmKq.nguoiMoi&&ptdmKq.nguoiMoi.length?'<div id="ptdm_moi" class="pdesc" style="display:none;margin:-6px 0 10px">'+
+      ptdmKq.nguoiMoi.map(function(x){return esc(x.ten)+(x.tu?' ('+esc(dmy(x.tu))+')':'');}).join(', ')+'</div>':'');
   if(th) h+='<div class="alert a-nu">Đổi định mức lúc này sẽ áp cho <b>cả tháng '+th+'</b> (từ ngày 1). '+
     'Bảng KPI tháng '+th+' tự tính lại theo định mức mới — <b>không cần bấm chốt</b>.</div>';
 
-  var ds=ptdmLoc==='tatca'?dsX:dsX.filter(function(x){return x.dmGoiY>0||x.nhan==='do'||x.nhan==='vang'});
+  var ds=ptdmLoc==='tatca'?dsX:dsX.filter(function(x){return x.dmGoiY>0||x.nhan==='do'||x.nhan==='vang'||(x.dotBien&&x.dotBien.length)});
   var tenXuong={}; (D.phongban||[]).forEach(function(p){tenXuong[p.MaXuong]=p.TenXuong;});
   var thuTuX=[], theoX={};
   ds.forEach(function(x){
@@ -5612,7 +5621,7 @@ function ptdmVe(r){
     do:  {pill:'p-bd', chu:'Lỏng rõ (>110%)'},
     vang:{pill:'p-wn', chu:'Hơi lỏng (95–110%)'},
     nhe: {pill:'p-nu', chu:'Nhỉnh hơn mốc'},
-    sat: {pill:'p-ok', chu:'Sát mốc 85%'},
+    sat: {pill:'p-ok', chu:'Sát mốc 90%'},
     chat:{pill:'p-gr', chu:'Dưới mốc — giữ'}
   };
   var laAdmin=ME.vaiTro==='ADMIN';
@@ -5622,24 +5631,23 @@ function ptdmVe(r){
     if(x.dmGoiY>0){
       var dau=x.chinh>0?'+':'';
       gy='<b>'+x.dmGoiY+'</b> <span style="color:var(--ink3);font-size:12px">('+dau+x.chinh+'%)</span>'+
-         '<div style="font-size:12px;color:var(--ink2)">dự kiến '+f(x.trungViSau,1)+'%</div>';
+         '<div style="font-size:12px;color:var(--ink2)">sau: giữa '+f(x.trungViSau,0)+' · khá '+f(x.khaSau,0)+' · cao '+f(x.caoNhatSau,0)+'</div>';
       if(x.nhan==='sat') ghi.push('chỉnh nhẹ vì công đoạn làm cùng ngày đổi');
-      if(x.chamTran) ghi.push('đã nâng tối đa ×4 mà chưa về 85% — người làm chỉ dành ít thời gian cho công đoạn này, cân nhắc trước khi áp');
+      if(x.chamTran) ghi.push('đã nâng tối đa ×4 mà chưa về 90% — người làm chỉ dành ít thời gian cho công đoạn này, cân nhắc trước khi áp');
     }else{
-      gy='<span style="color:var(--ink3)">giữ '+x.dinhMuc+'</span>'+
-         (Math.abs(x.trungViSau-x.trungVi)>=0.5?'<div style="font-size:12px;color:var(--ink2)">dự kiến '+f(x.trungViSau,1)+'%</div>':'');
+      gy='<span style="color:var(--ink3)">giữ '+x.dinhMuc+'</span>';
     }
+    if(x.dotBien&&x.dotBien.length) ghi.push('không tính người đột biến: '+x.dotBien.map(function(d){return d.ten+' '+f(d.hs,0)+'%';}).join(', ')+' — nên xác nhận số liệu');
     if(x.nhan==='chat'&&!(x.dmGoiY>0)) ghi.push('không hạ định mức — có thể người mới đang đào tạo');
     if(x.itNguoi) ghi.push('ít người có dữ liệu — cân nhắc');
-    if(Math.abs((x.trungViKy||0)-x.trungVi)>=0.5) ghi.push('KPI tháng đang tính '+f(x.trungViKy,1)+'% (định mức cũ còn áp vài ngày)');
     var cb = laAdmin && x.dmGoiY>0
-      ? '<input type="checkbox" class="ptdm-ck" data-macd="'+esc(x.maCD)+'" checked onchange="ptdmDemChon()">'
+      ? '<input type="checkbox" class="ptdm-ck" data-macd="'+esc(x.maCD)+'"'+(x.chamTran?'':' checked')+' onchange="ptdmDemChon()">'
       : '';
     return '<tr><td style="text-align:center;width:34px">'+cb+'</td>'+
        '<td>'+esc(x.tenCD)+(ghi.length?'<div style="font-size:12px;color:var(--ink3)">'+esc(ghi.join(' · '))+'</div>':'')+'</td>'+
        '<td class="n">'+x.dinhMuc+'</td>'+
        '<td class="n">'+x.soCoData+'</td>'+
-       '<td class="n" style="font-weight:600">'+f(x.trungVi)+'%</td>'+
+       '<td class="n" style="white-space:nowrap;font-size:13px">'+f(x.thap,0)+' · '+f(x.trungVi,0)+' · <b>'+f(x.kha,0)+'</b> · '+f(x.caoNhat,0)+'</td>'+
        '<td><span class="pill '+info.pill+'">'+info.chu+'</span></td>'+
        '<td class="n">'+gy+'</td>'+
        (laAdmin?'<td><div style="display:flex;gap:6px;align-items:center">'+
@@ -5656,18 +5664,18 @@ function ptdmVe(r){
        '<span style="width:6px;height:6px;border-radius:50%;background:var(--cyan);box-shadow:0 0 8px var(--cyan)"></span>'+
        esc(tenXuong[k]||k)+' <span style="color:var(--ink3);font-weight:400;font-size:12px">('+arr.length+' công đoạn)</span></h3>'+
        '<table><thead><tr><th style="width:34px"></th><th>Công đoạn</th><th class="n">Định mức</th>'+
-       '<th class="n">Số người có SL</th><th class="n">Hiệu suất trung vị</th>'+
+       '<th class="n">Số người có SL</th><th class="n" title="Hiệu suất (%) người thấp (top 75%) · người ở giữa · người khá (top 25%) · người cao nhất">Thấp · Giữa · <b>Khá</b> · Cao (%)</th>'+
        '<th>Đánh giá</th><th class="n">Gợi ý định mức</th>'+(laAdmin?'<th>Sửa định mức</th>':'')+'</tr></thead><tbody>'+
        arr.map(hangCD).join('')+
        '</tbody></table></div>';
   });
 
-  h+='<div class="pdesc" style="margin-top:10px"><b>Cách đọc:</b> "Hiệu suất trung vị" là mức người ở giữa đạt được — '+
-     'không bị lệch bởi vài người xuất sắc. Mốc lý tưởng 85% (±3 điểm). '+
-     '"Gợi ý định mức" là định mức mới để trung vị về quanh 85%; "dự kiến" là hiệu suất trung vị sau khi áp <b>tất cả</b> gợi ý. '+
+  h+='<div class="pdesc" style="margin-top:10px"><b>Cách đọc:</b> cột "Thấp · Giữa · Khá · Cao" là hiệu suất của người thấp (dưới họ còn 25% số người), '+
+     'người ở giữa, <b>người khá</b> (trên họ còn 25% số người) và người cao nhất của công đoạn. Mốc: người khá 90% (±3 điểm). '+
+     '"Gợi ý định mức" là định mức mới để người khá về quanh 90%; "sau" là hiệu suất dự kiến khi áp <b>tất cả</b> gợi ý. '+
      'Giờ có mặt trong ngày được chia cho các công đoạn người đó làm, nên công đoạn làm cùng ngày ảnh hưởng lẫn nhau — vì vậy gợi ý được tính chung. '+
      'Công đoạn dưới mốc không gợi ý hạ (thường do người mới chưa lên tay); muốn xem thì chọn "Tất cả công đoạn". '+
-     'Công đoạn ít người (dưới 3) thì trung vị kém tin — vẫn chọn sẵn vì bỏ đi sẽ làm lệch các công đoạn làm cùng ngày; có thể sửa tay ô định mức. '+
+     'Công đoạn ít người (dưới 3) thì số liệu kém tin — vẫn chọn sẵn vì bỏ đi sẽ làm lệch các công đoạn làm cùng ngày; có thể sửa tay ô định mức. '+
      'Đổi định mức áp cho <b>cả tháng đang làm</b>; Bảng KPI tháng này tự tính lại, không cần bấm chốt.</div>';
 
   if(laAdmin && coGY.length){
@@ -5708,7 +5716,7 @@ function ptdmSuaNhieu(){
   }
   if(!ds.length){ toast('Không có định mức hợp lệ để sửa'); return; }
   if(loi.length){ if(!confirm(loi.length+' dòng có định mức không hợp lệ sẽ bị bỏ qua. Tiếp tục?')) return; }
-  var lyDo=prompt('Lý do sửa '+ds.length+' định mức (áp dụng chung, có thể bỏ trống):','Điều chỉnh theo phân tích định mức – về mốc 85%');
+  var lyDo=prompt('Lý do sửa '+ds.length+' định mức (áp dụng chung, có thể bỏ trống):','Điều chỉnh theo phân tích định mức – người khá về 90%');
   if(lyDo===null) return;
   if(!confirm('Áp dụng '+ds.length+' định mức mới?\n'+ptdmNhacAp())) return;
   call('banDieuHanhSuaDinhMucNhieu',[ds,lyDo],function(r){
