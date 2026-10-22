@@ -494,6 +494,12 @@ Nếu vẫn thấy giao diện cũ: kiểm tra lại Phần D (đã chọn **Phi
 - Giọng nói nằm ở **file MỚI `AmThanh.html`** (khoảng 300 KB): tự tải vài giây sau khi đăng nhập (lần đầu), rồi máy nhớ lại. Quên tạo file này thì tiếng hiệu ứng vẫn chạy, chỉ không có giọng nói.
 
 
+## HỒ SƠ BẮT BUỘC KHI ĐĂNG NHẬP 22/10 – đổi Code.gs + Index.html
+Bấm đúp **2-CAP-NHAT.bat** (chưa tự triển khai thì Triển khai → Quản lý triển khai → ✏️ → Phiên bản mới → Triển khai), rồi Ctrl+F5. Không có hàm cần chạy.
+- Ai hồ sơ còn thiếu (SĐT, CCCD, địa chỉ, SĐT người thân, năm sinh, ngày vào làm) thì đăng nhập sẽ hiện bảng **"Bổ sung thông tin cá nhân"**, điền đủ mới dùng tiếp. Chỉ hỏi mục còn thiếu; mục đã có giữ nguyên.
+- Không bắt buộc: chủ sở hữu, ban điều hành. Bắt buộc: trợ lý ban điều hành, nhân sự, trưởng / phó phòng, công nhân, tổ trưởng, chuyên viên kỹ thuật.
+- Tab **Nhân sự** có thẻ "Hồ sơ chưa đủ: x/y người", bấm "Xem danh sách" để thấy tên theo xưởng.
+
 ## PHÂN TÍCH ĐỊNH MỨC THEO "NGƯỜI KHÁ = 90%" 22/10 – đổi Code.gs + Index.html
 Bấm đúp **2-CAP-NHAT.bat** (nếu máy chưa tự triển khai thì Triển khai → Quản lý triển khai → ✏️ → Phiên bản mới → Triển khai), rồi Ctrl+F5. Không có hàm cần chạy.
 - Định mức gợi ý để **người khá (top 25% của công đoạn) đạt 90%** – người ở giữa khoảng 85%, người giỏi khoảng 95–100%.

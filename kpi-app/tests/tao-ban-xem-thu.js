@@ -232,5 +232,7 @@ html = html.replace('<script>', () =>   // hàm thay thế: tránh $' $& trong m
     MAY + '\n<script>');
 const cuoi = html.lastIndexOf('</body>');   // chữ </body> đầu tiên nằm trong chuỗi JS (in bảng chấm công)
 html = html.slice(0, cuoi) + GOI_Y_HTML + '\n' + html.slice(cuoi);
+// BO_HO_SO=1: tắt bảng "Bổ sung thông tin cá nhân" (mục 31, 22/10) – cho các kiểm thử cũ đăng nhập bằng tài khoản còn thiếu hồ sơ
+if (process.env.BO_HO_SO) { const k = html.lastIndexOf('</body>'); html = html.slice(0, k) + '<script>if(typeof hsMo==="function")hsMo=function(){};</script>\n' + html.slice(k); }
 fs.writeFileSync(OUT, html);
 console.log('OK ->', OUT, Math.round(html.length / 1024) + ' KB;', Object.keys(doiTen).length, 'tên đã thay; tài khoản gợi ý:', GOI_Y.map(g => g.tk).join(', '));

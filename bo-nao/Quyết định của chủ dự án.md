@@ -22,6 +22,9 @@ Những điều đã chốt. Đừng đề xuất lại những gì ghi "không 
 
 - **Không dùng trần hiệu suất sản lượng** để ép người giỏi về 90–95% (22/10: "người ta làm được nhiều thật thì phải được ghi nhận"). Giữ `TranKPI` = 500; muốn người giỏi nhất quanh 90–95% thì chỉnh bằng định mức. – [[KPI Phân tích định mức]]
 
+## Hồ sơ nhân viên (22/10)
+- Đăng nhập mà hồ sơ thiếu thì phải điền đủ mới dùng tiếp. Không bắt buộc: chủ sở hữu, ban điều hành. Bắt buộc: trợ lý BĐH, nhân sự, trưởng / phó phòng trở xuống. – [[KPI Hồ sơ bắt buộc]]
+
 ## Phong cách giao diện web KPI
 - Thích kiểu **thiết bị đo nhà máy**; chê bộ 3D "như đồ chơi", 7 mẫu đầu demo-2, demo-4 (trừ số 5), demo-5, demo tương tác và giao diện nền. Hướng hiện tại: làm lại đúng màn hình đang dùng, đặt bản cũ cạnh bản mới. – [[KPI Demo giao diện]]
 - Bỏ qua demo 3D CSS (08/10). – [[KPI Demo đã bỏ]]
