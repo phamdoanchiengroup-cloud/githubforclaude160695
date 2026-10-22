@@ -31,3 +31,4 @@ Liên quan: [[KPI Tổng quan và cách dựng]] · [[KPI Kiểm thử]] · [[Qu
 - Số liệu: 160/197 phải điền (gồm 13 tài khoản không gắn mã NV). Khối BĐH & HCNS: 10 người (1 chủ sở hữu, 3 BĐH, 3 trợ lý, 3 nhân sự).
 - Chủ dự án 22/10: tài khoản nhóm báo cơm tổng (NHOM, dùng chung) **không cần điền** → `HS_KHONG_BAT_BUOC = ['OWNER','ADMIN','NHOM']`. Còn 154/191 phải điền (7 tài khoản không gắn mã NV).
 - Kiểm thử `ho-so.js` 27, `ho-so-web.js` 11.
+- Chủ dự án 22/10: **bếp cũng không cần** → `HS_KHONG_BAT_BUOC = ['OWNER','ADMIN','NHOM','BEP']`.
