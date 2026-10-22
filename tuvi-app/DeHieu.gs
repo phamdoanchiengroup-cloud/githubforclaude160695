@@ -292,6 +292,8 @@ function dhChiemTinh_(ct, ctl) {
     dhDoan_('Lời khuyên cụ thể', '', ['Sống đúng "Mặt Trời": ' + DH_CT_SUN[sun.cung].split(':')[1].trim().replace(/\.$/, '') + ' – đó là nơi bạn tỏa sáng.',
       'Chăm sóc "Mặt Trăng": cho mình những điều khiến bạn thấy an toàn, như đã nói ở trên.', 'Nhớ rằng người khác thường gặp "cung Mọc" của bạn trước – hãy để họ có thời gian biết con người thật bên trong.'])
   ] });
+  var PL = ctl && ctl.phanTich && ctl.phanTich.phucLoc;
+  if (PL) khoi.push({ ten: 'Nguồn may mắn và chí hướng', doan: [dhDoan_('Thế mạnh tự nhiên', PL.tronSect), dhDoan_('Nơi phúc lộc đến', PL.tronF), dhDoan_('Điều bạn thấy ý nghĩa', PL.tronS)] });
   facts.push(taoFact_(he, 'Menh', 'tinh_cach', 'manh', DH_CT_SUN[sun.cung], 1.3, { nguon: 'Mặt Trời ' + sun.cungTen }));
   facts.push(taoFact_(he, 'Menh', 'tinh_cach', 'trung', DH_CT_MOON[moon.cung], 1.0, { nguon: 'Mặt Trăng ' + moon.cungTen }));
   // Tình yêu
@@ -355,7 +357,7 @@ function dhThanSo_(ts, tsl) {
     var gon = function (t) { return dhSach_(t).replace(/\s*\((Đường Đời|Nhân Cách|Linh Hồn|Ngày Sinh|Định Mệnh|Thái Độ|Thách Thức|Nợ nghiệp|Đỉnh Cao|số vắng)[^)]*\)/gi, '').replace(/\s+([,.;:])/g, '$1'); };
     khoi.push({ ten: 'Con người bạn qua các con số', doan: [doan[0]].concat(P.luan.filter(function (x) { return x.k !== 'vanTrinh'; }).map(function (x) { return dhDoan_(x.ten, '', x.items.map(gon)); })) });
     var vt = P.luan.filter(function (x) { return x.k === 'vanTrinh'; })[0];
-    if (vt) khoi.push({ ten: 'Năm nay và chặng đời hiện tại', doan: [dhDoan_('Nhịp thời gian', '', vt.items.map(gon))] });
+    if (vt) khoi.push({ ten: 'Năm nay và chặng đời hiện tại', doan: [dhDoan_('Nhịp thời gian', '', vt.items.map(gon))].concat(P.chuyenTiep ? [dhDoan_('Chủ đề năm theo tên của bạn', P.chuyenTiep.tron)] : []) });
     khoi.push({ ten: 'Lời khuyên theo thần số', doan: P.loiKhuyen.map(function (x) { return dhDoan_(x.ten, gon(x.t)); }) });
   } else {
     khoi.push({ ten: 'Con số chủ đạo của bạn', doan: doan });
@@ -408,6 +410,7 @@ function dhHD_(hd) {
     dhDoan_('Cách ra quyết định đúng với bạn', (tqKey ? DH_HD_TQ[tqKey] + ' ' : '') + (sTq.items[0] ? dhSach_(sTq.items[0]) : '')),
     p.length === 2 && p[0] ? dhDoan_('Vai trò của bạn trong cuộc đời', 'Hồ sơ ' + hd.profile + ': bạn vừa là ' + DH_HD_HAO[p[0]] + ', vừa là ' + DH_HD_HAO[p[1]] + '.') : null,
     mo.length ? dhDoan_('Nơi bạn dễ bị người khác ảnh hưởng', 'Những vùng "mở" dưới đây giúp bạn hiểu người khác rất sâu, nhưng cũng dễ khiến bạn nhận nhầm năng lượng của người khác là của mình:', mo.map(function (c) { return DH_HD_MO[c]; })) : null,
+    mo.length && typeof HD_CENTER_HOI === 'object' ? dhDoan_('Câu hỏi giúp bạn sống đúng mình', 'Khi thấy mệt mỏi hay lạc hướng, hãy dừng lại và tự hỏi:', mo.map(function (c) { return HD_CENTER_HOI[c][0]; })) : null,
     dhDoan_('Lời khuyên cụ thể', '', L.loi.slice())
   ].filter(function (d) { return d && (d.text || d.list); }) });
   facts.push(taoFact_(he, 'Menh', 'tinh_cach', 'manh', L.tomTat, 1.0, { nguon: 'Loại ' + hd.loai }));

@@ -24,4 +24,5 @@ Liên quan: [[TCC Sáu hệ]] · [[Việc chờ chủ dự án]] · [[00 Mục l
 - 22/10 tối: email luận giải hằng ngày làm dày theo lĩnh vực. – [[TCC Luận giải hằng ngày qua email]]
 - 22/10: PDF thiết kế lại cho khổ A4, dựng từ dữ liệu (55 trang, nền giấy ngà). – [[TCC PDF]]
 - 22/10: Hà Lạc sửa hào nguyên đường + tam phúc thần + 10 thể cách; Tứ Trụ thêm điều hậu 10 can × 12 tháng. – [[TCC Bát Tự Hà Lạc và Tứ Trụ đối chiếu nguồn]]
-- Kiểm thử đều đạt: cai-dat 79, ha-lac 8401, bat-tu 4008, tam-phap 14659, van-ngay 1590, tong-hop 3088, ho-so-nam 3867, van-sau 2924, nghiem-chung 967, tien-ich 55, tai-khoan, thanh-toan.
+- 23/10: giao diện theo 4 chuyên gia; Chiêm tinh sect + Fortune/Spirit, Thần số chữ chuyển tiếp, HD câu tự hỏi. – [[TCC Chiêm tinh Thần số HD nâng cấp chuyên sâu]]
+- Kiểm thử đều đạt: cai-dat 83, chiem-tinh 1820, than-so 2651, human-design 2100, ha-lac 8401, bat-tu 4008, tam-phap 14659, van-ngay 1590, tong-hop 3088, ho-so-nam 3867, van-sau 2924, nghiem-chung 967, tien-ich 55, tai-khoan, thanh-toan.

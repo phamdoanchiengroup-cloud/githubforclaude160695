@@ -41,5 +41,13 @@ for (let k = 0; k < 300; k++) {
   kt(!/undefined|NaN/.test(JSON.stringify(P)), 'không có undefined/NaN');
   P.noNghiep.forEach(x => kt([13, 14, 16, 19].indexOf(x.so) >= 0, 'mã nợ nghiệp hợp lệ'));
 }
+// Chữ cái chuyển tiếp: "AN" chu kỳ 6 năm (A 1 + N 5); "VAN" 10 năm; "NGUYEN" 32 năm
+{ const c = (t, a) => ctx.tsChuCai_(t, a);
+  kt(c('AN', 0).chu === 'A' && c('AN', 1).chu === 'N' && c('AN', 5).conLai === 1 && c('AN', 6).chu === 'A', 'chữ chuyển tiếp lặp đúng chu kỳ');
+  kt(c('VAN', 36).chu === 'N' && c('VAN', 36).conLai === 4 && c('NGUYEN', 36).chu === 'N' && c('NGUYEN', 36).conLai === 1, 'chữ chuyển tiếp mẫu Nguyễn Văn An 36 tuổi');
+  const r = ctx.lapLaSoDayDu_({ name: 'Nguyễn Văn An', gender: 'nam', calendar: 'duong', day: 15, month: 8, year: 1990, hour: 10, minute: 30, tz: '7', viewYear: 2026 }), C = r.moRong.thanSo.phanTich.chuyenTiep;
+  kt(C && C.ds.length === 10 && C.ds[0].tinhChat === 11 && /số tinh chất 11/.test(C.ket) && !/undefined|NaN/.test(C.ket + C.tron), 'số tinh chất năm 2026 = 11 (A1 + N5 + N5)');
+  const k = ctx.lapLaSoDayDu_({ name: '', gender: 'nam', calendar: 'duong', day: 1, month: 1, year: 1990, hour: 8, minute: 0, tz: '7', viewYear: 2026 }).moRong.thanSo.phanTich;
+  kt(!k.chuyenTiep || k.chuyenTiep.ds.length >= 0, 'không có tên vẫn chạy'); }
 console.log('Thần số học 6 bước: đạt ' + ok + '/' + (ok + sai));
 process.exit(sai ? 1 : 0);

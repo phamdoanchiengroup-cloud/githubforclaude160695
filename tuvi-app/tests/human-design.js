@@ -42,6 +42,7 @@ const loai = {}, mau = [];
   }
   if (mau.length) { const khop = mau.filter(Boolean).length; kt(khop / mau.length >= 0.9, 'màu Mặt Trời khớp hd-chart-engine ' + khop + '/' + mau.length); console.log('Màu Mặt Trời khớp hd-chart-engine: ' + khop + '/' + mau.length); }
   kt(Object.keys(loai).length >= 4, 'đủ các loại: ' + JSON.stringify(loai));
+  kt(Object.keys(ctx.HD_CENTER_HOI).length === 9 && Object.keys(ctx.HD_CENTERS).every(c => ctx.HD_CENTER_HOI[c] && /\?$/.test(ctx.HD_CENTER_HOI[c][0])), 'đủ câu tự hỏi cho 9 trung tâm');
   console.log('Human Design 11 bước: đạt ' + ok + '/' + (ok + sai) + ' · ' + JSON.stringify(loai));
   process.exit(sai ? 1 : 0);
 })();

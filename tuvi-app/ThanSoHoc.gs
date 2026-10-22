@@ -249,6 +249,30 @@ function tsChuoi_(n) { var a = [n]; while (n > 9) { n = tsTongChuSo_(n); a.push(
 function tsNhom_(n) { var g = tsGoc_(n); for (var i = 0; i < 3; i++) if (TS_NHOM[i].indexOf(g) >= 0) return i; return -1; }
 function tsNgan_(s, k) { return String(s).split(',').slice(0, k || 2).join(',').trim(); }
 
+function tsChuCai_(tu, tuoi) {
+  var ds = String(tu || '').split('').filter(function (c) { return TS_CHU[c]; }); if (!ds.length) return null;
+  var L = ds.reduce(function (s, c) { return s + TS_CHU[c]; }, 0), p = tuoi % L, i = 0;
+  while (p >= TS_CHU[ds[i]]) { p -= TS_CHU[ds[i]]; i = (i + 1) % ds.length; }
+  return { chu: ds[i], so: TS_CHU[ds[i]], conLai: TS_CHU[ds[i]] - p };
+}
+function tsChuyenTiep_(T, viewYear, chuKy) {
+  var tu = (T.tenTu || []).map(function (w) { return w.tu; }); if (!tu.length) return null;
+  var ten = tu[tu.length - 1], dem = tu.length > 2 ? tu.slice(1, -1).join('') : '', ho = tu.length > 1 ? tu[0] : '';
+  var ds = [];
+  for (var y = viewYear; y < viewYear + 10; y++) {
+    var a = y - T.y; if (a < 0) continue;
+    var th = tsChuCai_(ten, a), tr = dem ? tsChuCai_(dem, a) : null, li = ho ? tsChuCai_(ho, a) : null;
+    var tong = [th, tr, li].reduce(function (s, x) { return s + (x ? x.so : 0); }, 0), e = tsRutGon_(tong, true);
+    var pn = (chuKy || []).filter(function (c) { return c.nam === y; })[0];
+    ds.push({ nam: y, tuoi: a, the: th, tri: tr, linh: li, tinhChat: e, trung: !!pn && tsGoc_(e) === pn.so });
+  }
+  var N = ds[0], S = TS_SO, g = tsGoc_;
+  var chu = function (x, vai) { return x ? 'chữ ' + x.chu + ' (' + vai + ', còn ' + x.conLai + ' năm)' : ''; };
+  return { ds: ds, ten: ten, dem: dem, ho: ho,
+    ket: 'Năm ' + N.nam + ' (tròn ' + N.tuoi + ' tuổi): ' + [chu(N.the, 'thể chất – tên ' + ten), chu(N.tri, 'trí tuệ – đệm'), chu(N.linh, 'tâm linh – họ')].filter(Boolean).join(', ') +
+      ' → số tinh chất ' + N.tinhChat + ': ' + S[g(N.tinhChat)].tk + '.' + (N.trung ? ' Trùng số năm cá nhân – chủ đề năm được nhân đôi, rất rõ nét.' : ''),
+    tron: 'Năm nay bạn có xu hướng tập trung vào ' + S[g(N.tinhChat)].tk + '.' + (N.trung ? ' Chủ đề này trùng với nhịp năm cá nhân nên sẽ thể hiện rất rõ – hãy chủ động đón nhận.' : '') };
+}
 function tsPhanTich_(ts, viewYear, input) {
   var S = TS_SO, T = ts.tho, ld = ts.duongDoi, g = tsGoc_, out = {};
   // ---- B1: dữ liệu
@@ -288,6 +312,10 @@ function tsPhanTich_(ts, viewYear, input) {
   out.dinhCao = ts.dinhCao.map(function (p, i) { return { so: p.so, tu: p.tu, den: p.den, namTu: T.y + p.tu, namDen: p.den >= 99 ? null : T.y + p.den, thuThach: p.thuThach, nay: i === dcNay, y: S[p.so].tk, tt: TS_THU_THACH[p.thuThach] }; });
   out.chuKy = [];
   for (var yy = viewYear - 4; yy <= viewYear + 13; yy++) { var pn = tsRutGon_(T.rd + T.rm + tsRutGon_(tsTongChuSo_(yy), false), false); out.chuKy.push({ nam: yy, so: pn, diem: TS_NANG_LUONG[pn], nay: yy === viewYear, y: TS_NAM[pn] }); }
+  // Chữ cái chuyển tiếp & số tinh chất (Transit letters / Essence – trường phái Pythagoras, Decoz): mỗi phần tên chạy
+  // lần lượt từng chữ, chữ kéo dài số năm bằng giá trị của nó (A = 1 năm … I, R = 9 năm), hết tên thì lặp lại.
+  // Tên Việt "Họ – Đệm – Tên": Tên (gọi hằng ngày) = thể chất, Đệm = trí tuệ, Họ = tâm linh. Tinh chất = tổng ba chữ (giữ 11, 22).
+  out.chuyenTiep = tsChuyenTiep_(T, viewYear, out.chuKy);
   out.thang = ts.thangNay.map(function (m) { return { thang: m.thang, so: m.so, diem: TS_NANG_LUONG[m.so], y: TS_THANG[m.so] }; });
   var hom = new Date(), ngay = [];
   if (hom.getFullYear() !== viewYear) hom = new Date(viewYear, 0, 1);

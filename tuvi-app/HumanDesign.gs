@@ -111,6 +111,19 @@ var HD_CENTER_Y = {
   root: ['Xử lý áp lực đều đặn, có nhịp làm việc riêng.', 'Dễ bị thúc ép, vội vàng để thoát áp lực; học cách không vội.']
 };
 
+/** Câu hỏi tự soi cho trung tâm mở (chủ đề "bản ngã giả" kinh điển của Human Design) và trí tuệ khi sống đúng */
+var HD_CENTER_HOI = {
+  head: ['Mình có đang bận tâm những câu hỏi không thật sự quan trọng với mình?', 'nhận ra câu hỏi nào đáng để nghĩ'],
+  ajna: ['Mình có đang cố tỏ ra chắc chắn về điều mình chưa chắc?', 'nhìn một vấn đề từ nhiều góc độ'],
+  throat: ['Mình có đang cố nói để được chú ý?', 'nói đúng lúc, khi được mời, lời có sức nặng'],
+  g: ['Mình có đang đi tìm tình yêu và phương hướng ở bên ngoài?', 'cảm nhận đúng nơi chốn, đúng người'],
+  heart: ['Mình có đang cố chứng minh giá trị bản thân?', 'biết giá trị của người khác, không hứa quá sức'],
+  sacral: ['Mình có biết khi nào là đủ?', 'nhận ra ai đang làm việc đúng sức và ai đang kiệt sức'],
+  solar: ['Mình có đang né tránh xung đột và sự thật?', 'thấu cảm sâu sắc mà không bị cuốn theo cảm xúc người khác'],
+  spleen: ['Mình có đang níu giữ điều không còn tốt cho mình?', 'nhận ra điều gì lành mạnh cho mình và cho người khác'],
+  root: ['Mình có đang vội vàng làm cho xong để thoát áp lực?', 'giữ bình tĩnh dưới áp lực, chọn việc thật sự cần gấp']
+};
+
 var HD_BODIES = ['sun', 'earth', 'northNode', 'southNode', 'moon', 'mercury', 'venus', 'mars', 'jupiter', 'saturn', 'uranus', 'neptune', 'pluto'];
 var HD_BODY_TEN = { sun: 'Mặt Trời', earth: 'Trái Đất', northNode: 'Nút Bắc', southNode: 'Nút Nam', moon: 'Mặt Trăng', mercury: 'Sao Thủy',
   venus: 'Sao Kim', mars: 'Sao Hỏa', jupiter: 'Sao Mộc', saturn: 'Sao Thổ', uranus: 'Sao Thiên Vương', neptune: 'Sao Hải Vương', pluto: 'Sao Diêm Vương' };
@@ -323,7 +336,8 @@ function hdPhanTich_(hd, T, viewYear) {
   out.trungTam = Object.keys(HD_CENTERS).map(function (c) {
     var cong = HD_CENTERS[c].gates.filter(function (g) { return hd.gates[g]; });
     return { k: c, ten: HD_CENTERS[c].ten, dinh: !!hd.dinh[c], moHoanToan: !hd.dinh[c] && !cong.length, cong: cong, sinhHoc: HD_CENTER_BIO[c],
-      t: hd.dinh[c] ? 'Sức mạnh: ' + HD_CENTER_Y[c][0] : 'Bài học: ' + HD_CENTER_Y[c][1] + (cong.length ? '' : ' (Mở hoàn toàn – không có cổng nào, bạn học được nhiều nhất và dễ bị ảnh hưởng nhất ở đây.)') };
+      hoi: hd.dinh[c] ? '' : HD_CENTER_HOI[c][0], triTue: hd.dinh[c] ? '' : HD_CENTER_HOI[c][1],
+      t: hd.dinh[c] ? 'Sức mạnh: ' + HD_CENTER_Y[c][0] : 'Bài học: ' + HD_CENTER_Y[c][1] + (cong.length ? '' : ' (Mở hoàn toàn – không có cổng nào, bạn học được nhiều nhất và dễ bị ảnh hưởng nhất ở đây.)') + ' Câu tự hỏi: "' + HD_CENTER_HOI[c][0] + '" Khi sống đúng, đây là nơi bạn có trí tuệ ' + HD_CENTER_HOI[c][1] + '.' };
   });
   // ---- B8: 36 kênh theo mạch
   var machCua = function (a, b) { for (var m in HD_MACH) if (HD_MACH[m].some(function (x) { return (x[0] === a && x[1] === b) || (x[0] === b && x[1] === a); })) return m; return ''; };

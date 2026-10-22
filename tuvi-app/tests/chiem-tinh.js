@@ -20,6 +20,12 @@ const bac = { tot: 0, vua: 0, kho: 0 }, ch = {};
 for (let k = 0; k < 60; k++) {
   const inp = { name: 'A', gender: k % 2 ? 'nu' : 'nam', calendar: 'duong', day: 1 + Math.floor(rnd() * 28), month: 1 + Math.floor(rnd() * 12), year: 1945 + Math.floor(rnd() * 75), hour: Math.floor(rnd() * 24), minute: Math.floor(rnd() * 60), viewYear: 2026 };
   const ct = ctx.chiemTinhLap(inp), L = ctx.chiemTinhLuan(ct, 2026), P = L.phanTich;
+  { // Phe ngày/đêm + Phần may mắn/tinh thần: ngày = Mọc + Trăng − Trời, đêm đảo; Spirit ngược Fortune
+    const ng = ct.by.sun.nha >= 7, n = x => ((x % 360) + 360) % 360, A0 = ct.asc.lon, S0 = ct.by.sun.lon, M0 = ct.by.moon.lon;
+    const fE = n(ng ? A0 + M0 - S0 : A0 + S0 - M0), sE = n(ng ? A0 + S0 - M0 : A0 + M0 - S0);
+    kt(ct.sect.ngay === ng && kc(ct.lot.fortune.lon, fE) < 1e-6 && kc(ct.lot.spirit.lon, sE) < 1e-6, 'công thức Fortune/Spirit theo phe');
+    kt(ct.lot.fortune.nha >= 1 && ct.lot.fortune.nha <= 12 && P.phucLoc && /nhà \d+/.test(P.phucLoc.fortune) && !/undefined|NaN/.test(P.phucLoc.fortune + P.phucLoc.spirit + P.phucLoc.tronF), 'văn phần phúc đủ, không lỗi chữ');
+  }
   kt(P && !L.phanTichLoi, 'có phân tích: ' + L.phanTichLoi);
   if (!P) continue;
   const by = ct.by;

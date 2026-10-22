@@ -325,13 +325,19 @@ function chiemTinhLap(input) {
   // Chủ tinh lá số (theo chủ tinh cổ điển của cung Mọc)
   var chuKey = CT_CUNG[diem.cung].chuCo, chuMoi = CT_CUNG[diem.cung].chu;
 
+  // Phe ngày/đêm (sect) và hai "phần" Hy Lạp cổ: Phần may mắn (Fortune) – Phần tinh thần (Spirit).
+  // Lá số ngày khi Mặt Trời ở trên đường chân trời (nhà 7–12). Fortune ngày = Mọc + Trăng − Trời, đêm đảo lại; Spirit ngược với Fortune.
+  var ngay = by.sun.nha >= 7;
+  function phan(a, b) { var lon = astNorm_(diem.lon + a - b), c = ctCung_(lon); return { lon: lon, cung: c, cungTen: CT_CUNG[c].ten, do: ctFmtDo_(lon), nha: ctNhaCua_(lon, H.cusp) }; }
+  var lot = { fortune: ngay ? phan(by.moon.lon, by.sun.lon) : phan(by.sun.lon, by.moon.lon), spirit: ngay ? phan(by.sun.lon, by.moon.lon) : phan(by.moon.lon, by.sun.lon) };
+
   // Nhà trọng điểm
   var demNha = {}; ht.forEach(function (p) { if (p.key !== 'northNode') demNha[p.nha] = (demNha[p.nha] || 0) + 1; });
 
   return { thoiDiem: T, heNha: H.he, cusp: H.cusp.map(function (c) { return { lon: c, cung: ctCung_(c), cungTen: CT_CUNG[ctCung_(c)].ten, do: ctFmtDo_(c) }; }),
     hanhTinh: ht, asc: diem, mc: mc, by: by, goc: goc, nguyenTo: nt, tinhChat: tc, banCau: ban,
     phaTrang: { idx: pha, ten: CT_PHA_TRANG[pha][0], y: CT_PHA_TRANG[pha][1], goc: Math.round(goc2) },
-    chuTinh: chuKey, chuTinhMoi: chuMoi, demNha: demNha, chuKy: ctChuKy_(jd, pos, T), nhap: { gender: input.gender } };
+    chuTinh: chuKey, chuTinhMoi: chuMoi, demNha: demNha, sect: { ngay: ngay }, lot: lot, chuKy: ctChuKy_(jd, pos, T), nhap: { gender: input.gender } };
 }
 
 /** Chu kỳ đời người: tìm ngày quá cảnh chính xác */
@@ -800,6 +806,21 @@ function ctPhanTich_(ct, viewYear, input) {
     pham: pham.map(function (p) { return { ten: p.ten, cung: p.cungTen, pham: CT_PHAM_TEN[p.pham], tot: p.pham === 'Vượng' || p.pham === 'Miếu' }; }),
     cauHinh: ch, nhaTrong: trong.map(function (h) { return { nha: h.nha, y: h.y, chu: h.chu, chuO: h.chuO }; })
   };
+  // ---- Phe ngày/đêm & hai phần phúc (Hy Lạp cổ – Vettius Valens): nguồn may mắn vật chất và chí hướng tinh thần
+  if (ct.lot && ct.sect) {
+    var ngay = ct.sect.ngay, F = ct.lot.fortune, Sp = ct.lot.spirit, chuF = CT_CUNG[F.cung].chuCo, chuS = CT_CUNG[Sp.cung].chuCo;
+    out.phucLoc = {
+      ngay: ngay,
+      sect: ngay ? 'Lá số ngày (Mặt Trời trên đường chân trời): Sao Mộc là cát tinh cùng phe – may mắn đến qua học hỏi, người thầy, sự rộng lượng; Sao Thổ cùng phe nên thử thách của nó dễ chịu hơn; Sao Hỏa trái phe – cần tiết chế nóng vội, va chạm.' :
+        'Lá số đêm (Mặt Trời dưới đường chân trời): Sao Kim là cát tinh cùng phe – may mắn đến qua tình cảm, cái đẹp, sự hòa giải; Sao Hỏa cùng phe nên năng lượng mạnh mà dễ kiểm soát hơn; Sao Thổ trái phe – dễ có cảm giác bó buộc, cần kiên nhẫn.',
+      fortune: 'Phần may mắn (Fortune) ở ' + F.cungTen + ' ' + F.do + ', nhà ' + F.nha + ': phúc lộc, sức khỏe và thuận lợi vật chất gắn với ' + CT_NHA_NGAN[F.nha - 1] + '. Chủ tinh ' + CT_HT[chuF].ten + ' ở nhà ' + by[chuF].nha + (by[chuF].nha === F.nha ? ' – cùng nhà, may mắn tập trung rõ ở lĩnh vực này.' : ' – may mắn được "mở" qua ' + CT_NHA_NGAN[by[chuF].nha - 1] + '.'),
+      spirit: 'Phần tinh thần (Spirit) ở ' + Sp.cungTen + ' ' + Sp.do + ', nhà ' + Sp.nha + ': chí hướng, điều bạn chủ động theo đuổi và nghề "đúng mình" gắn với ' + CT_NHA_NGAN[Sp.nha - 1] + '. Chủ tinh ' + CT_HT[chuS].ten + ' ở nhà ' + by[chuS].nha + '.',
+      tronF: 'Nguồn phúc lộc và sự thuận lợi của bạn thường đến qua ' + CT_NHA_NGAN[F.nha - 1] + (by[chuF].nha === F.nha ? ' – đây là nơi bạn nên đầu tư công sức nhiều nhất.' : '; chìa khóa để "mở" nó nằm ở ' + CT_NHA_NGAN[by[chuF].nha - 1] + '.'),
+      tronS: 'Điều bạn chủ động theo đuổi và thấy ý nghĩa nhất thường gắn với ' + CT_NHA_NGAN[Sp.nha - 1] + '.',
+      tronSect: ngay ? 'Bạn có xu hướng tỏa sáng ở nơi công khai, hành động có mục tiêu rõ; may mắn đến khi bạn học hỏi và rộng lượng, còn điều cần giữ là sự nóng vội.' :
+        'Bạn có xu hướng mạnh ở đời sống nội tâm và các mối quan hệ gần; may mắn đến qua sự hòa nhã và cái đẹp, còn điều cần rèn là kiên nhẫn khi thấy mọi việc chậm.'
+    };
+  }
   // ---- Ứng dụng: tên bổ sung năng lượng thiếu
   var ntT = 0; Object.keys(ct.nguyenTo).forEach(function (x) { ntT += ct.nguyenTo[x]; });
   var thieu = Object.keys(ct.nguyenTo).filter(function (x) { return ct.nguyenTo[x] / ntT < 0.14; });
