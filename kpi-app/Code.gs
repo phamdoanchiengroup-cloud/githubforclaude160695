@@ -5519,24 +5519,37 @@ function KIEM_TRA_SHEETS_API() {
     return;
   }
   var ten = SHEET_NAP_.filter(function(t) { return ss_().getSheetByName(t); });
-  var gop = docGopApi_(ten), lech = 0, vd = [];
-  ten.forEach(function(t) {
-    var a = ss_().getSheetByName(t).getDataRange().getValues(), b = gop[t] || [];
-    // bỏ dòng trống cuối cho công bằng
-    var cat = function(x) { while (x.length && x[x.length - 1].join('') === '') x.pop(); return x; };
-    a = cat(a); b = cat(b);
-    var n = Math.max(a.length, b.length);
-    for (var i = 0; i < n; i++) {
-      var ra = a[i] || [], rb = b[i] || [], m = Math.max(ra.length, rb.length);
-      for (var j = 0; j < m; j++) {
-        var x = ra[j] === undefined ? '' : ra[j], y = rb[j] === undefined ? '' : rb[j];
-        var giong = (x instanceof Date || y instanceof Date)
-          ? (x instanceof Date && y instanceof Date && Math.abs(x.getTime() - y.getTime()) < 1000)
-          : String(x) === String(y);
-        if (!giong) { lech++; if (vd.length < 15) vd.push(t + '!' + (i + 1) + ':' + (j + 1) + ' [' + x + '] ≠ [' + y + ']'); }
+  // Đọc 2 cách trong lúc giữ khóa ghi: có người duyệt / nhập đúng lúc kiểm tra thì 2 lần đọc lệch nhau (22/10).
+  // Vẫn lệch thì thử lại tối đa 3 lần.
+  var lech = 0, vd = [];
+  for (var lan = 0; lan < 3; lan++) {
+    var kh = LockService.getScriptLock(), a0 = {}, gop;
+    kh.waitLock(30000);
+    try {
+      gop = docGopApi_(ten);
+      ten.forEach(function(t) { a0[t] = ss_().getSheetByName(t).getDataRange().getValues(); });
+    } finally { kh.releaseLock(); }
+    lech = 0; vd = [];
+    ten.forEach(function(t) {
+      var a = a0[t], b = gop[t] || [];
+      // bỏ dòng trống cuối cho công bằng
+      var cat = function(x) { while (x.length && x[x.length - 1].join('') === '') x.pop(); return x; };
+      a = cat(a); b = cat(b);
+      var n = Math.max(a.length, b.length);
+      for (var i = 0; i < n; i++) {
+        var ra = a[i] || [], rb = b[i] || [], m = Math.max(ra.length, rb.length);
+        for (var j = 0; j < m; j++) {
+          var x = ra[j] === undefined ? '' : ra[j], y = rb[j] === undefined ? '' : rb[j];
+          var giong = (x instanceof Date || y instanceof Date)
+            ? (x instanceof Date && y instanceof Date && Math.abs(x.getTime() - y.getTime()) < 1000)
+            : String(x) === String(y);
+          if (!giong) { lech++; if (vd.length < 15) vd.push(t + '!' + (i + 1) + ':' + (j + 1) + ' [' + x + '] ≠ [' + y + ']'); }
+        }
       }
-    }
-  });
+    });
+    if (lech === 0) break;
+    Utilities.sleep(3000);
+  }
   var p = PropertiesService.getScriptProperties();
   if (lech === 0) { p.setProperty('KPI_SHEETS_API', '1'); Logger.log('KHỚP toàn bộ ' + ten.length + ' trang tính. ĐÃ BẬT đọc gộp bằng Sheets API.'); }
   else { p.setProperty('KPI_SHEETS_API', '0'); Logger.log('Có ' + lech + ' ô lệch -> CHƯA bật. Ví dụ:\n' + vd.join('\n')); }

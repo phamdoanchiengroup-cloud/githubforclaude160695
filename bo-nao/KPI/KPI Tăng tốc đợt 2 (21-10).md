@@ -24,3 +24,4 @@ Chủ dự án báo 21/10: đăng nhập vẫn lâu; tab Bảng KPI và KPI qu�
 - `nhatky` gửi từ đầu tháng trước (`SO_THANG_GUI_VE` = 2); có thể giảm nếu giao diện không cần tháng trước.
 - Index.html ~0,83 MB tải mỗi lần mở trang (ảnh nền đăng nhập 131 KB base64).
 - 22/10: chủ dự án chạy `KIEM_TRA_SHEETS_API` báo 2 ô lệch ở TaiKhoan cột 11 `HanMatKhauTam` (ngày giờ trả về số serial) → thêm `HanMatKhauTam`, `CapNhat` vào `COT_NGAY_` (`tests/toc-do.gs`). Thử trên dữ liệu thật: KHỚP 24 trang tính.
+- 22/10 (lần 2): lệch 3 ô NhatKySanXuat dòng 14364 vì trưởng phòng duyệt đúng lúc kiểm tra → `KIEM_TRA_SHEETS_API` giữ khóa ghi (LockService) trong lúc đọc 2 cách, lệch thì thử lại tối đa 3 lần.
