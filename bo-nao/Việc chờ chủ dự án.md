@@ -18,6 +18,8 @@ Liên quan: [[Lần dán lên Apps Script]] · [[Quyết định của chủ d�
 
 - Có giới hạn mỗi lần nâng định mức tối đa 10% không (chuyên gia đề xuất, chưa trả lời)? Xác nhận số liệu người đột biến (tab phân tích ghi tên). – [[KPI Phân tích định mức]]
 
+- Tài khoản nhóm báo cơm (NHOM, vd. "Bếp + Lái xe + Bảo vệ") là tài khoản chung – có bỏ khỏi hồ sơ bắt buộc không? – [[KPI Hồ sơ bắt buộc]]
+
 ## Chờ chủ dự án làm
 - Dán bản 21/10 (sửa lỗi + tăng tốc), chạy `CAI_TRIGGER_LAM_NONG_KPI`, kiểm tra Sheets API. – [[KPI Tăng tốc đợt 2 (21-10)]]
 - Sau khi dán: chạy một lần `AP_DINH_MUC_CA_THANG`, mở Phân tích định mức tháng 10 → "Áp dụng các dòng đã chọn"; nếu tháng đã chốt thì bấm "Chốt bù tháng này". – [[KPI Phân tích định mức]]

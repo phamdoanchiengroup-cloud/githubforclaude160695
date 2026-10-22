@@ -42,7 +42,17 @@ async function vao(b, tk, rong) {
   ok(/Hồ sơ chưa đủ: \d+\/\d+ người/.test(s) && /Số điện thoại/.test(s), 'thẻ "Hồ sơ chưa đủ: x/y người" + số theo từng mục', s.slice(0, 160));
   await p.click('#hsTk button'); await p.waitForTimeout(200);
   ok(await p.evaluate(() => document.getElementById('hsDs').style.display === '' && document.getElementById('hsDs').textContent.includes('thiếu')), 'bấm "Xem danh sách": hiện tên theo xưởng và mục còn thiếu');
+  await p.waitForFunction(() => { const e = document.getElementById('vpDs'); return e && /chỉ chủ sở hữu/.test(e.textContent); }, null, { timeout: 20000 }).catch(() => {});
+  s = await p.evaluate(() => { const e = document.getElementById('vpDs'); return e ? { t: e.textContent, n: e.querySelectorAll('tbody tr').length } : null; });
+  ok(s && s.n >= 5 && /Ban điều hành/.test(s.t) && /Hành chính nhân sự/.test(s.t) && /Trợ lý/.test(s.t), 'khối "Ban điều hành & Hành chính nhân sự" (' + (s && s.n) + ' người) ở tab Nhân sự', s && s.t.slice(0, 160));
   ok(!p.jsLoi.length, 'không lỗi JS', p.jsLoi);
+  await p.context().close();
+
+  console.log('\n3. Ban điều hành (giamdoc): không thấy khối này, không phải điền hồ sơ');
+  p = await vao(b, 'giamdoc');
+  await p.evaluate(() => go('ns')); await p.waitForTimeout(2500);
+  s = await p.evaluate(() => ({ vp: !!document.getElementById('vpDs'), hs: !!document.getElementById('hsBox') }));
+  ok(!s.vp && !s.hs, 'không có khối danh sách BĐH, không hiện bảng hồ sơ', s);
   await b.close();
   console.log('\n' + (loi ? '✗ ' + loi + '/' + dem + ' kiểm tra lỗi' : '✓ Đạt cả ' + dem + ' kiểm tra'));
   process.exit(loi ? 1 : 0);

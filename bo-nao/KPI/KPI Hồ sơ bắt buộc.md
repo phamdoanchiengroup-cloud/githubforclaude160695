@@ -5,7 +5,8 @@ Liên quan: [[KPI Tổng quan và cách dựng]] · [[KPI Kiểm thử]] · [[Qu
 
 ## Chủ dự án yêu cầu 22/10
 - Đăng nhập mà hồ sơ còn thiếu thì hiện bảng điền, điền đủ mới dùng tiếp; ai đủ rồi thì thôi; thống kê số người chưa đủ.
-- Không bắt buộc với **chủ sở hữu và ban điều hành**; **trợ lý BĐH và nhân sự VẪN bắt buộc**; trưởng / phó phòng trở xuống (công nhân, tổ trưởng, chuyên viên kỹ thuật) bắt buộc.
+- Chốt cuối 22/10: **chỉ tài khoản admin (chủ sở hữu, ban điều hành) không phải điền; mọi tài khoản còn lại đều phải điền** (trợ lý BĐH, nhân sự, bếp, nhóm báo cơm, trưởng / phó phòng, công nhân…).
+- Tab Nhân sự thiếu người ban điều hành / hành chính nhân sự → thêm khối liệt kê, **chỉ chủ sở hữu xem**.
 
 ## Làm (máy chủ `kpi-app/tests/ho-so/ho-so.gs` + `va-ho-so.py`, cuối va-code.py; web mục 31 `ho-so-web.js` + `va-ho-so-web.py`)
 - 6 mục `HS_MUC`: DienThoai (10 số, đầu 0), SoCCCD (12 số), DiaChi (≥ 5 ký tự), SdtKhanCap (khác SĐT của mình), NamSinh (1950 … 15 tuổi), NgayVaoLam (≤ hôm nay). Giá trị đang có trong sheet được dễ dãi: SĐT 9 số / CCCD 11 số (mất số 0 đầu do lưu dạng số) vẫn coi là đủ.
@@ -19,4 +20,14 @@ Liên quan: [[KPI Tổng quan và cách dựng]] · [[KPI Kiểm thử]] · [[Qu
 - Theo xưởng: Phôi Thô 27, Phôi Carbon 25, Sơn 21, Đóng gói 20, Hoàn thiện 18, Ngọn Taro 15, CNC 13, In UV 7, Ngọn Tip 2.
 
 ## Kiểm thử
-- `tests/ho-so.js` 18 (DATA=) · `tests/ho-so-web.js` 9 (bản xem thử dữ liệu 22/10).
+- `tests/ho-so.js` 27 (DATA=) · `tests/ho-so-web.js` 11 (bản xem thử dữ liệu 22/10).
+
+## 22/10 (tối): tài khoản không gắn mã nhân viên + khối "Ban điều hành & Hành chính nhân sự"
+- Nguyên nhân tab Nhân sự thiếu họ: ban điều hành, trợ lý BĐH, nhân sự, bếp, nhóm báo cơm chỉ có dòng TaiKhoan (MaNV trống), không có dòng NhanSu – nên trước đó bảng hồ sơ bắt buộc cũng không áp được cho họ.
+- Sheet mới `HoSoVanPhong` (`VP_COT`: TenDangNhap, HoTen, VaiTro, DienThoai, SoCCCD, DiaChi, SdtKhanCap, NamSinh, NgayVaoLam, CapNhat; SĐT/CCCD dạng chữ), tự tạo khi lưu lần đầu (`vpSheet_`). Không thêm vào NhanSu để khỏi lọt Bảng KPI công nhân.
+- `hsCuaToi_`: có MaNV → NhanSu; không có → `vpHoSo_(tk, vaiTro, ten)` (bản trống `_moi` nếu chưa có dòng). `hsVaiTroPhai_`: mọi vai trò trừ `HS_KHONG_BAT_BUOC = ['OWNER','ADMIN']`. `me.hoSoThieu` tính ngay sau kiểm tra đổi mật khẩu trong `napDuLieu` (cả nhánh rút gọn của BEP / NHOM / NV / TBP).
+- `danhSachVanPhong(token)` (chỉ `laOwner`): tài khoản OWNER/ADMIN/TL/HR đang dùng + hồ sơ + số mục thiếu + lần đăng nhập cuối. Web `vpDanhSach()` – khối ở tab Nhân sự, trên khung "Gán công đoạn".
+- `thongKeHoSoThieu`: chủ sở hữu thấy thêm nhóm "Tài khoản không gắn mã nhân viên" (`MaXuong: 'VAN_PHONG'`); ban điều hành / nhân sự / TP không thấy nhóm này.
+- Số liệu: 160/197 phải điền (gồm 13 tài khoản không gắn mã NV). Khối BĐH & HCNS: 10 người (1 chủ sở hữu, 3 BĐH, 3 trợ lý, 3 nhân sự).
+- Lưu ý: tài khoản NHOM là tài khoản chung của cả nhóm (vd. "Bếp + Lái xe + Bảo vệ") – theo yêu cầu vẫn phải điền; hỏi chủ dự án có muốn bỏ không.
+- Kiểm thử `ho-so.js` 27, `ho-so-web.js` 11.

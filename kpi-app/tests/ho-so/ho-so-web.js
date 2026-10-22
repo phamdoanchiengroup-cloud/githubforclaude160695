@@ -84,6 +84,7 @@ function hsLuu(){
   window.vNS = function(){
     var r = cuNS.apply(this, arguments);
     try { if (['ADMIN', 'HR', 'TL', 'TP'].indexOf(ME.vaiTro) >= 0) hsThongKe(); } catch (e) {}
+    try { if (ME.laOwner) vpDanhSach(); } catch (e) {}
     return r;
   };
 })();
@@ -104,8 +105,30 @@ function hsThongKe(){
       '<button class="btn sm" onclick="var l=document.getElementById(\'hsDs\');l.style.display=l.style.display?\'\':\'none\'">Xem danh sách</button></div>' +
       '<div id="hsDs" style="display:none;margin-top:10px;font-size:13px">' +
       Object.keys(theoX).map(function(mx){
-        return '<div style="margin-top:8px"><b>' + esc(pbTen(mx) || mx || '(chưa gán xưởng)') + '</b> (' + theoX[mx].length + ')<div style="color:var(--ink2)">' +
+        return '<div style="margin-top:8px"><b>' + esc(mx === 'VAN_PHONG' ? 'Tài khoản không gắn mã nhân viên (trợ lý BĐH, nhân sự, bếp…)' : (pbTen(mx) || mx || '(chưa gán xưởng)')) + '</b> (' + theoX[mx].length + ')<div style="color:var(--ink2)">' +
           theoX[mx].map(function(x){ return esc(x.HoTen) + ' <span style="color:var(--ink3)">(' + esc(x.MaNV) + ': thiếu ' + x.thieu.map(function(k){ return esc(ten[k]); }).join(', ') + ')</span>'; }).join('<br>') + '</div></div>';
       }).join('') + '</div>';
   }).withFailureHandler(function(){ var e = $('hsTk'); if (e) e.remove(); }).thongKeHoSoThieu(TOKEN);
+}
+/* CHỈ CHỦ SỞ HỮU (22/10): ban điều hành, trợ lý BĐH, hành chính nhân sự – họ chỉ có tài khoản, không có trong NhanSu */
+function vpDanhSach(){
+  var m = $('main'); if (!m || $('vpDs')) return;
+  var d = document.createElement('div'); d.id = 'vpDs'; d.className = 'card';
+  d.innerHTML = '<h3>Ban điều hành &amp; Hành chính nhân sự<span>đang tải…</span></h3>';
+  var kn = $('knbox'); if (kn && kn.parentNode === m) m.insertBefore(d, kn); else m.appendChild(d);
+  google.script.run.withSuccessHandler(function(r){
+    var e = $('vpDs'); if (!e) return;
+    if (!r || !r.ok) { e.remove(); return; }
+    var sdt = function(v){ return v ? esc(v) : '<span style="color:var(--ink3)">–</span>'; };
+    e.innerHTML = '<h3>Ban điều hành &amp; Hành chính nhân sự<span>' + r.ds.length + ' người · chỉ chủ sở hữu xem được</span></h3>' +
+      '<div class="tw"><table><thead><tr><th>Họ tên</th><th>Vai trò</th><th>Tài khoản</th><th>Điện thoại</th><th>Năm sinh</th><th>Ngày vào làm</th><th>Hồ sơ</th><th>Đăng nhập gần nhất</th></tr></thead><tbody>' +
+      r.ds.map(function(x){
+        var hs = !x.thieu.length ? '<span class="pill p-ok">Đủ</span>'
+          : '<span class="pill ' + (x.batBuoc ? 'p-wn' : 'p-nu') + '" title="' + esc(x.thieu.map(function(k){ return HS_TEN[k]; }).join(', ')) + '">Thiếu ' + x.thieu.length + ' mục</span>' +
+            (x.batBuoc ? '' : ' <span style="font-size:11px;color:var(--ink3)">(không bắt buộc)</span>');
+        return '<tr><td>' + esc(x.HoTen) + '</td><td>' + esc(x.tenVaiTro) + '</td><td class="mono">' + esc(x.tk) + '</td><td class="mono">' + sdt(x.DienThoai) + '</td>' +
+          '<td>' + sdt(x.NamSinh) + '</td><td>' + (x.NgayVaoLam ? esc(dmy(x.NgayVaoLam)) : sdt('')) + '</td><td>' + hs + '</td><td>' + (x.lanCuoi ? esc(dmy(x.lanCuoi)) : sdt('')) + '</td></tr>';
+      }).join('') + '</tbody></table></div>' +
+      '<div class="note">Mọi tài khoản trừ chủ sở hữu và ban điều hành phải điền hồ sơ khi đăng nhập. Người không gắn mã nhân viên (trợ lý BĐH, nhân sự, bếp…) lưu ở sheet HoSoVanPhong, không vào Bảng KPI.</div>';
+  }).withFailureHandler(function(){ var e = $('vpDs'); if (e) e.remove(); }).danhSachVanPhong(TOKEN);
 }

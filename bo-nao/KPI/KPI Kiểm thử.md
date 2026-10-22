@@ -14,8 +14,8 @@ DATA=/đường/dẫn/csdl.json OUT=/tmp/xem-thu-kpi.html node kpi-app/tests/tao
 - Giả lập Apps Script: `kpi-app/tests/gia-lap-kpi.js`. Kiểm thử web chạy trên bản xem thử (`F=<bản xem thử>`).
 
 ## Số kiểm tra hiện có (theo các ghi chú)
-- Máy chủ: `ho-so.js` 18 · `xep-loai.js` 10 · `dinh-muc.js` 32 · `tang-toc-2.js` 31 · `com-trua.js` 81 · `com-mon-doi.js` 35 · `bao-mat.js` 52 · `van-hanh.js` 26 · `sua-loi-21-10.js` 31 · `bong-da.js` 19 · `bao-cao.js`
-- Web: `ho-so-web.js` 9 · `kpi-may-web.js` 6 · `dinh-muc-web.js` 15 · `chia-doi-web.js` 21 · `com-trua-web.js` 41 · `so-do-web.js` 37 · `mai-web.js` 32 · `thao-tac-web.js` 32 · `van-hanh-web.js` 29 · `lottie-web.js` 53 · `hieu-ung.js` 29 · `cho-chot-ngay.js` 16 · `dang-nhap-web.js` 15 · `am-thanh-web.js` 15 · `sua-loi-21-10-web.js` 9 · `manh-web.js` 8
+- Máy chủ: `ho-so.js` 27 · `xep-loai.js` 10 · `dinh-muc.js` 32 · `tang-toc-2.js` 31 · `com-trua.js` 81 · `com-mon-doi.js` 35 · `bao-mat.js` 52 · `van-hanh.js` 26 · `sua-loi-21-10.js` 31 · `bong-da.js` 19 · `bao-cao.js`
+- Web: `ho-so-web.js` 11 · `kpi-may-web.js` 6 · `dinh-muc-web.js` 15 · `chia-doi-web.js` 21 · `com-trua-web.js` 41 · `so-do-web.js` 37 · `mai-web.js` 32 · `thao-tac-web.js` 32 · `van-hanh-web.js` 29 · `lottie-web.js` 53 · `hieu-ung.js` 29 · `cho-chot-ngay.js` 16 · `dang-nhap-web.js` 15 · `am-thanh-web.js` 15 · `sua-loi-21-10-web.js` 9 · `manh-web.js` 8
 - Demo: `demo-dang-nhap-khac.js` 60 · `demo-thao-tac.js` 60 · `demo-dang-nhap-rhino.js` 42 · `demo-so-do.js` 23 · `demo-dang-nhap-hieu-ung.js` 22 · `demo-dang-nhap-hieu-ung-2.js` 20
 - Rà 21/10 (dữ liệu thật mới): `sua-loi-21-10.js` 12/31, `sua-loi-21-10-web.js` 1/9, `bao-mat.js` 2/50 lỗi, `van-hanh.js` (A4 trở đi), `com-trua.js`, `kiem-tra.js` dừng giữa chừng – `bao-cao.js` (tài khoản giamdoc không còn là chủ sở hữu) – **bản trước đó (commit 1f03051) cũng y hệt**, do kiểm thử viết cho bộ dữ liệu cũ, không phải lỗi mới.
 - Lỗi đã biết: `hieu-ung.js` còn 1 lỗi "khung chờ tải bảng KPI" có từ trước (bản xem thử trả kết quả quá nhanh). – [[KPI Bảo mật và vận hành]]
