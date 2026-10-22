@@ -20,3 +20,8 @@ Chủ dự án 21/10: bấm "Chi tiết" một công nhân ở Bảng KPI và "X
 ## Có thể mở rộng (chưa làm)
 - Các tab khác dạng danh sách → chi tiết: Duyệt sản lượng (từng công nhân), Máy móc, Nhật ký, Công đoạn của người (`xemCongDoan`).
 - Máy chủ: chỉ mục nhật ký theo người để lần tải đầy đủ cũng nhanh (hiện vẫn đọc cả sheet).
+
+## 22/10: Nhân sự → nút "Công đoạn" mở khung "Công đoạn đã gán" (chủ dự án)
+- `cdKN(ma)` (chia-doi.js mục 2b): khung bên phải chỉ liệt kê công đoạn đã gán (tên, xưởng nếu khác, định mức + đơn vị, mức kỹ năng Đang học / Làm được / Kèm được, nhãn "đã ngừng"), nút "✎ Sửa / gán công đoạn" đóng khung rồi mở bảng gán cũ (`goc_edKN_`). Ghi đè `edKN` và `xemCongDoan` (nút "x công đoạn ▸") khi `cdDuoc()`; màn hẹp giữ cách cũ.
+- Loại khung `kn` dùng chung dòng `data-cd="hs|…"` (`the(loai)`), phím ↑/↓ chuyển người vẫn ở khung công đoạn; "Kiểu cũ" → `edKN`.
+- Kiểm thử `chia-doi-web.js` 27 (thêm mục 4b, 6 kiểm tra).

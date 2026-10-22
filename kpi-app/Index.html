@@ -9510,7 +9510,7 @@ function hsGhiChuDong(r){
 }
 </script>
 <script>
-var KPI_BAN = '22/10/2026 22:23';
+var KPI_BAN = '22/10/2026 22:25';
 (function(){
   var cu = window.veNav;
   window.veNav = function(){
@@ -9583,7 +9583,8 @@ body.cd-mo #maiGoc{right:calc(var(--cd-w) + 16px)}
 (function(){
   var CD_MIN=1100, CHO_TAI=350;
   var CD={loai:'',ma:'',hen:0,lan:0};
-  var NHAN={kpi:'Chi tiết KPI',hs:'Hồ sơ nhân viên',ql:'KPI quản lý'};
+  var NHAN={kpi:'Chi tiết KPI',hs:'Hồ sơ nhân viên',ql:'KPI quản lý',kn:'Công đoạn đã gán'};
+  function the(l){ return l==='kn'?'hs':l; }   // khung "Công đoạn đã gán" (22/10) dùng chung dòng của Nhân sự (data-cd="hs|…")
 
   window.cdBat=function(){ try{ return localStorage.getItem('kpi_chia_doi')!=='tat'; }catch(e){ return true; } };
   window.cdDuoc=function(){ return cdBat() && window.innerWidth>=CD_MIN; };
@@ -9605,7 +9606,7 @@ body.cd-mo #maiGoc{right:calc(var(--cd-w) + 16px)}
     document.getElementById('cdDong').onclick=function(){ cdDong(); };
     document.getElementById('cdCu').onclick=function(){
       var l=CD.loai, m=CD.ma; cdDatKieu(false); cdDong();
-      if(l==='kpi') xemChiTietKPI(m); else if(l==='hs') xemHS(m);
+      if(l==='kpi') xemChiTietKPI(m); else if(l==='hs') xemHS(m); else if(l==='kn') edKN(m);
       toast('Đã về kiểu cũ. Bật lại: nút "⧉ Chia đôi" trong cửa sổ chi tiết.',true);
     };
     return p;
@@ -9615,13 +9616,13 @@ body.cd-mo #maiGoc{right:calc(var(--cd-w) + 16px)}
     if(h){ var b=h.getBoundingClientRect().bottom; document.documentElement.style.setProperty('--cd-top', Math.max(0,Math.round(b))+'px'); }
   }
   function hangCua(loai){
-    return Array.prototype.filter.call(document.querySelectorAll('#main tr[data-cd^="'+loai+'|"]'), function(tr){ return tr.offsetParent!==null; });
+    return Array.prototype.filter.call(document.querySelectorAll('#main tr[data-cd^="'+the(loai)+'|"]'), function(tr){ return tr.offsetParent!==null; });
   }
   function danhDau(){
     Array.prototype.forEach.call(document.querySelectorAll('#main tr.cd-chon'), function(tr){ tr.classList.remove('cd-chon'); });
     if(!CD.loai) return;
     var ds=hangCua(CD.loai), i=-1;
-    ds.forEach(function(tr,k){ if(tr.getAttribute('data-cd')===CD.loai+'|'+CD.ma){ tr.classList.add('cd-chon'); i=k; } });
+    ds.forEach(function(tr,k){ if(tr.getAttribute('data-cd')===the(CD.loai)+'|'+CD.ma){ tr.classList.add('cd-chon'); i=k; } });
     if(i>=0) try{ ds[i].scrollIntoView({block:'nearest'}); }catch(e){}
     var len=document.getElementById('cdLen'), xu=document.getElementById('cdXuong');
     if(len) len.disabled=i<=0; if(xu) xu.disabled=(i<0||i>=ds.length-1);
@@ -9646,8 +9647,9 @@ body.cd-mo #maiGoc{right:calc(var(--cd-w) + 16px)}
   window.cdBuoc=function(d){
     if(!CD.loai) return;
     var ds=hangCua(CD.loai), i=-1;
-    ds.forEach(function(tr,k){ if(tr.getAttribute('data-cd')===CD.loai+'|'+CD.ma) i=k; });
-    var tr=ds[i+d]; if(tr) moHang(tr);
+    ds.forEach(function(tr,k){ if(tr.getAttribute('data-cd')===the(CD.loai)+'|'+CD.ma) i=k; });
+    var tr=ds[i+d]; if(!tr) return;
+    if(CD.loai==='kn') cdKN(tr.getAttribute('data-cd').split('|').slice(1).join('|')); else moHang(tr);
   };
   function moHang(tr){
     var p=(tr.getAttribute('data-cd')||'').split('|'), loai=p[0], ma=p.slice(1).join('|');
@@ -9768,6 +9770,32 @@ body.cd-mo #maiGoc{right:calc(var(--cd-w) + 16px)}
     }, CHO_TAI);
   };
   if(window.edHS){ var goc_edHS=window.edHS; window.edHS=function(){ cdDong(); return goc_edHS.apply(this, arguments); }; }
+
+  /* ---------- 2b. NHÂN SỰ → NÚT "CÔNG ĐOẠN" (22/10, chủ dự án): khung bên phải CHỈ liệt kê công đoạn đã gán ---------- */
+  var MUC_KN={hoc:'Đang học',lam:'Làm được',kem:'Kèm được người khác'};
+  window.cdKN=function(ma){
+    var x=nv(ma)||{}, mucKN={}; try{ mucKN=JSON.parse(x.MucKyNang||'{}')||{}; }catch(e){}
+    var kn=String(x.CongDoanLamDuoc||'').split(/[,;]\s*/).map(function(s){return s.trim();}).filter(Boolean);
+    var dong=kn.map(function(m){
+      var c=cd(m)||{}, d=(D.dinhmuc||[]).filter(function(z){return z.MaCD===m;})[0]||{}, muc=MUC_KN[mucKN[m]||'lam']||'';
+      return '<tr><td>'+esc(c.TenCD||m)+(String(c.TrangThai||'').trim()==='Ngừng'?' <span class="pill p-gr" style="font-size:11px">đã ngừng</span>':'')+
+        (c.MaXuong&&c.MaXuong!==x.MaXuong?'<div style="font-size:12px;color:var(--ink3)">'+esc(pbTen(c.MaXuong)||c.MaXuong)+'</div>':'')+'</td>'+
+        '<td class="n">'+(d.DinhMucGio?esc(d.DinhMucGio)+' <span style="color:var(--ink3);font-size:12px">'+esc(d.DonViTinh||'')+'</span>':'–')+'</td>'+
+        '<td>'+esc(muc)+'</td></tr>';
+    }).join('');
+    var h='<p class="cd-goi">'+esc(ma)+' · '+esc(pbTen(x.MaXuong)||x.MaXuong||'')+' · '+esc(x.ChucDanh||'')+'</p>'+
+      '<h2 class="cd-ten">'+esc(x.HoTen||ma)+'</h2>'+
+      '<div style="margin:10px 0 12px;color:var(--ink2)"><b>'+kn.length+'</b> công đoạn đã gán</div>'+
+      (kn.length?'<div class="tw"><table><thead><tr><th>Công đoạn</th><th class="n">Định mức</th><th>Mức</th></tr></thead><tbody>'+dong+'</tbody></table></div>'
+        :'<div class="empty">Chưa gán công đoạn nào.</div>')+
+      '<div class="acts" style="margin-top:14px"><button class="btn" onclick="var m=\''+esc(ma).replace(/'/g,"\\'")+'\';cdDong();goc_edKN_(m)">✎ Sửa / gán công đoạn</button></div>';
+    cdMo('kn', ma, h);
+  };
+  var goc_edKN=window.edKN;
+  window.goc_edKN_=function(){ return goc_edKN.apply(this, arguments); };
+  window.edKN=function(ma){ if(!cdDuoc()) return goc_edKN.apply(this, arguments); cdKN(ma); };
+  var goc_xemCongDoan=window.xemCongDoan;
+  if(goc_xemCongDoan) window.xemCongDoan=function(ma){ if(!cdDuoc()) return goc_xemCongDoan.apply(this, arguments); cdKN(ma); };
 
   /* ---------- 3. KPI QUẢN LÝ → BẤM DÒNG ---------- */
   window.cdQL=function(ma){

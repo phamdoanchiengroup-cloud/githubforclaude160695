@@ -85,6 +85,29 @@ const chon = p => p.evaluate(() => { const tr = document.querySelector('#main tr
   ok(s.luu === 'bat' && s.mo && !s.modal, 'bấm "⧉ Chia đôi": quay lại kiểu chia đôi', s);
   ok(!p.jsLoi.length, 'không có lỗi JavaScript', p.jsLoi);
 
+  console.log('\n4b. Nhân sự → nút "Công đoạn": khung bên phải chỉ liệt kê công đoạn đã gán (22/10)');
+  await p.evaluate(() => { cdDong(); go('ns'); }); await p.waitForTimeout(800);
+  s = await p.evaluate(() => {
+    const bt = [...document.querySelectorAll('#main button[onclick^="edKN("]')].find(b => { const m = b.getAttribute('onclick').match(/'(.*)'/)[1]; return String(nv(m).CongDoanLamDuoc || '').split(',').filter(Boolean).length >= 2; });
+    const ma = bt.getAttribute('onclick').match(/'(.*)'/)[1]; bt.click();
+    const kn = String(nv(ma).CongDoanLamDuoc || '').split(',').map(x => x.trim()).filter(Boolean);
+    return { ma, can: kn.length, mo: document.body.classList.contains('cd-mo'), nhan: document.getElementById('cdNhan').textContent,
+      dong: document.querySelectorAll('#cdThan tbody tr').length, bang: !document.getElementById('knbox').classList.contains('hide'), chon: (document.querySelector('#main tr.cd-chon') || {}).getAttribute && document.querySelector('#main tr.cd-chon').getAttribute('data-cd') };
+  });
+  ok(s.mo && s.nhan === 'Công đoạn đã gán' && s.dong === s.can && !s.bang, 'mở khung "Công đoạn đã gán" với đúng ' + s.can + ' công đoạn, không mở bảng gán cả trăm ô', s);
+  ok(s.chon === 'hs|' + s.ma, 'dòng người đó được tô sáng', s.chon);
+  const t0 = await p.evaluate(() => document.querySelector('#cdThan .cd-ten').textContent);
+  await p.keyboard.press('ArrowDown'); await p.waitForTimeout(200);
+  s = await p.evaluate(() => ({ ten: document.querySelector('#cdThan .cd-ten').textContent, nhan: document.getElementById('cdNhan').textContent }));
+  ok(s.ten !== t0 && s.nhan === 'Công đoạn đã gán', 'phím ↓: xem công đoạn của người kế tiếp', [t0, s]);
+  await p.evaluate(() => document.querySelector('#cdThan .acts button').click()); await p.waitForTimeout(300);
+  s = await p.evaluate(() => ({ mo: document.body.classList.contains('cd-mo'), bang: !document.getElementById('knbox').classList.contains('hide') }));
+  ok(!s.mo && s.bang, 'nút "Sửa / gán công đoạn": đóng khung, mở bảng gán như cũ', s);
+  await p.evaluate(() => { const b = [...document.querySelectorAll('#main button[onclick^="xemCongDoan("]')][0]; if (b) b.click(); }); await p.waitForTimeout(200);
+  ok(await p.evaluate(() => document.getElementById('cdNhan').textContent === 'Công đoạn đã gán' && !document.getElementById('cd_ovl')), 'nút "x công đoạn ▸" cũng mở khung bên phải (không bật cửa sổ che)');
+  ok(!p.jsLoi.length, 'không có lỗi JavaScript', p.jsLoi);
+  await p.evaluate(() => cdDong());
+
   console.log('\n5. Điện thoại (390px): giữ cách cũ');
   const q = await moTrang(b, 390);
   await moKPI(q);
