@@ -13,4 +13,8 @@ Liên quan: [[Việc chờ chủ dự án]] · [[KPI Sửa lỗi giao diện]] �
     3. **Bảng Andon**: kế hoạch / thực tế / chênh + 8 ô giờ, gồm xanh = đạt (≥ 97%), vàng = hơi chậm, đỏ = chậm (< 85%), ô viền = giờ đang chạy. Hợp TV treo xưởng.
     4. **Bản vẽ kỹ thuật**: đường kích thước từ mốc 85, khung tên, chuỗi kích thước SL + CL + (TT + AT) = KPI, thước du xích sản lượng hôm nay.
   - Lưu ý kỹ thuật: file mở trực tiếp không có `<!doctype>` → chế độ quirks, bảng không kế thừa màu/font → `.k3 table{color:var(--c);font:inherit}`. Mỗi màn dùng container query nên tự co khi khung hẹp.
+  - **23/10 – thêm kiểu 5 "Hologram vũ trụ"** theo ảnh chủ dự án gửi (bảng hologram xanh phát sáng giữa nền sao, vòng tròn lớn giữa, bảng phụ hai bên). Trang mở sẵn ở kiểu 5; khóa nhớ kiểu đổi thành `kpi_kieu_gd2`.
+    - Tổng quan: "Đài quan sát KPI", với chòm sao KPI ở giữa. Mỗi xưởng là 1 sao, khoảng cách tới tâm = KPI (60–100). Vòng đồng tâm là ngưỡng C/B/A/A+/S, vòng 80 đỏ đứt. Sao vàng ≥ 90, sao hồng < 80. Hai bên là danh sách xưởng, vòng sản lượng ca và người dưới 80%.
+    - Điện thoại: vòng KPI tổng màu vàng có mốc hạng, bên trong là 4 vòng thành phần (SL, CL, TT, AT). Thêm vòng sản lượng hôm nay và chòm sao 12 ngày.
+    - Nền sao vẽ bằng canvas (`veSao`), nhấp nháy khoảng 16 hình/giây. Tắt khi người dùng bật giảm chuyển động. Đổi kiểu thì dừng (`SAO_RAF`). Font tiêu đề Exo 2 (có tiếng Việt).
 
