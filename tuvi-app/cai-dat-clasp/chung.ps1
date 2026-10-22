@@ -85,7 +85,7 @@ function TaiTep($url, $ra) {
 }
 function LoiMang($e) {
   $m = [string]$e.Exception.Message
-  if ($m -match 'could not be resolved|không thể phân giải|No such host|Unable to connect|timed out|actively refused') {
+  if ($m -match 'could not be resolved|không thể phân giải|No such host|Unable to connect|timed out|actively refused|proxy|502|503') {
     return 'Máy không kết nối được tới GitHub (' + $m + '). Kiểm tra mạng: mở thử https://github.com trên trình duyệt; tắt VPN / phần mềm chặn web nếu có; hoặc thử mạng khác (phát Wi-Fi từ điện thoại) rồi chạy lại.'
   }
   return $m
