@@ -65,6 +65,8 @@ ok(r.ok && r.ds.length >= 5 && r.ds.some(x => x.vaiTro === 'ADMIN') && r.ds.some
 ok(r.ds.filter(x => x.vaiTro === 'ADMIN' || x.vaiTro === 'OWNER').every(x => !x.batBuoc) && r.ds.filter(x => x.vaiTro === 'TL' || x.vaiTro === 'HR').every(x => x.batBuoc), 'BĐH / chủ sở hữu không bắt buộc, trợ lý / nhân sự bắt buộc');
 const bep = c.doc_('TaiKhoan').find(x => String(x.VaiTro).trim() === 'BEP' && x.TrangThai === 'Đang dùng' && !x.MaNV);
 if (bep) ok(c.__goi('napDuLieu', c.__phienDai(bep)).me.hoSoThieu.length === 6, 'tài khoản bếp (không gắn mã NV): cũng phải điền');
+const nhom = c.doc_('TaiKhoan').find(x => String(x.VaiTro).trim() === 'NHOM' && x.TrangThai === 'Đang dùng');
+if (nhom) ok(c.__goi('napDuLieu', c.__phienDai(nhom)).me.hoSoThieu.length === 0 && !c.hsVaiTroPhai_('NHOM'), 'tài khoản nhóm báo cơm (dùng chung): không phải điền');
 const adm = c.doc_('TaiKhoan').find(x => String(x.VaiTro).trim() === 'ADMIN' && x.TrangThai === 'Đang dùng' && !x.MaNV);
 ok(!c.__goi('danhSachVanPhong', c.__phienDai(adm)).ok, 'ban điều hành không xem được danh sách này');
 const hr = c.doc_('TaiKhoan').find(x => String(x.VaiTro).trim() === 'HR' && x.TrangThai === 'Đang dùng' && !x.MaNV), Thr = c.__phienDai(hr);

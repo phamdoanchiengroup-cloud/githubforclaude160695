@@ -20,7 +20,7 @@ Liên quan: [[KPI Tổng quan và cách dựng]] · [[KPI Kiểm thử]] · [[Qu
 - Theo xưởng: Phôi Thô 27, Phôi Carbon 25, Sơn 21, Đóng gói 20, Hoàn thiện 18, Ngọn Taro 15, CNC 13, In UV 7, Ngọn Tip 2.
 
 ## Kiểm thử
-- `tests/ho-so.js` 27 (DATA=) · `tests/ho-so-web.js` 11 (bản xem thử dữ liệu 22/10).
+- `tests/ho-so.js` 28 (DATA=) · `tests/ho-so-web.js` 11 (bản xem thử dữ liệu 22/10).
 
 ## 22/10 (tối): tài khoản không gắn mã nhân viên + khối "Ban điều hành & Hành chính nhân sự"
 - Nguyên nhân tab Nhân sự thiếu họ: ban điều hành, trợ lý BĐH, nhân sự, bếp, nhóm báo cơm chỉ có dòng TaiKhoan (MaNV trống), không có dòng NhanSu – nên trước đó bảng hồ sơ bắt buộc cũng không áp được cho họ.
@@ -29,5 +29,5 @@ Liên quan: [[KPI Tổng quan và cách dựng]] · [[KPI Kiểm thử]] · [[Qu
 - `danhSachVanPhong(token)` (chỉ `laOwner`): tài khoản OWNER/ADMIN/TL/HR đang dùng + hồ sơ + số mục thiếu + lần đăng nhập cuối. Web `vpDanhSach()` – khối ở tab Nhân sự, trên khung "Gán công đoạn".
 - `thongKeHoSoThieu`: chủ sở hữu thấy thêm nhóm "Tài khoản không gắn mã nhân viên" (`MaXuong: 'VAN_PHONG'`); ban điều hành / nhân sự / TP không thấy nhóm này.
 - Số liệu: 160/197 phải điền (gồm 13 tài khoản không gắn mã NV). Khối BĐH & HCNS: 10 người (1 chủ sở hữu, 3 BĐH, 3 trợ lý, 3 nhân sự).
-- Lưu ý: tài khoản NHOM là tài khoản chung của cả nhóm (vd. "Bếp + Lái xe + Bảo vệ") – theo yêu cầu vẫn phải điền; hỏi chủ dự án có muốn bỏ không.
+- Chủ dự án 22/10: tài khoản nhóm báo cơm tổng (NHOM, dùng chung) **không cần điền** → `HS_KHONG_BAT_BUOC = ['OWNER','ADMIN','NHOM']`. Còn 154/191 phải điền (7 tài khoản không gắn mã NV).
 - Kiểm thử `ho-so.js` 27, `ho-so-web.js` 11.

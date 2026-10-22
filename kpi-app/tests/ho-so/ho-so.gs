@@ -5,7 +5,7 @@
    - 6 mục: SĐT, CCCD, địa chỉ, SĐT khẩn cấp, năm sinh, ngày vào làm. Chỉ hỏi mục đang TRỐNG / SAI định dạng;
      điền vào mục trống thì ghi thẳng NhanSu (không cần duyệt – không đè dữ liệu cũ). Sửa mục đã có vẫn qua "Hồ sơ của tôi" (duyệt).
    ===================================================================== */
-var HS_KHONG_BAT_BUOC = ['OWNER', 'ADMIN'];             // chủ sở hữu, ban điều hành: không bắt buộc điền hồ sơ
+var HS_KHONG_BAT_BUOC = ['OWNER', 'ADMIN', 'NHOM'];     // chủ sở hữu, ban điều hành, tài khoản nhóm báo cơm (dùng chung): không bắt buộc
 function hsVaiTroPhai_(vt) { vt = String(vt || '').trim(); return !!vt && HS_KHONG_BAT_BUOC.indexOf(vt) < 0; }
 var HS_MUC = [
   { k: 'DienThoai',  ten: 'Số điện thoại' },
