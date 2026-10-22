@@ -29,7 +29,9 @@ function GoiClasp {
   Push-Location $ThuMucMa
   $truoc = $ErrorActionPreference; $ErrorActionPreference = 'Continue'   # PowerShell 5 coi chữ in ra stderr là lỗi -> tạm tắt
   try {
-    $kq = & $ClaspLenh @ThamSo 2>&1 | Out-String
+    # clasp in tiến trình ("Deploying project…") ra stderr; PowerShell 5 hiện thành chữ đỏ NativeCommandError dù không lỗi (22/10)
+    # -> đổi mỗi dòng về chữ thường; lỗi thật vẫn nhận ra qua mã thoát $LASTEXITCODE bên dưới
+    $kq = & $ClaspLenh @ThamSo 2>&1 | ForEach-Object { if ($_ -is [System.Management.Automation.ErrorRecord]) { $_.Exception.Message } else { "$_" } } | Out-String
     $ma = $LASTEXITCODE
   } finally { $ErrorActionPreference = $truoc; Pop-Location }
   if ($ma -ne 0 -and -not $KhongDung) {
