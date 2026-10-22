@@ -20,7 +20,7 @@ Liên quan: [[Lần dán lên Apps Script]] · [[Quyết định của chủ d�
 
 
 ## Chờ chủ dự án làm
-- **Web công ty vẫn chạy bản cũ (22/10)**: đối chiếu link web công nhân dùng với "Quản lý triển khai" của dự án clasp đang cập nhật, và Mã tập lệnh trong `C:\Users\Admin\KPI-AppsScript\cau-hinh.json`; sai thì chạy lại 1-CAI-DAT.bat với đúng Mã tập lệnh. Kiểm tra bằng dòng "Bản web" cuối menu. – [[KPI Cập nhật bằng clasp]]
+- Chạy lại 1-CAI-DAT.bat (bộ cài mới), chọn link `AKfycbzeCiG2…` (link công ty); lưu trữ 2 link thừa `AKfycbyQ…`, `AKfycbz2…`. Kiểm tra dòng "Bản web" cuối menu. – [[KPI Cập nhật bằng clasp]]
 - Dán bản 21/10 (sửa lỗi + tăng tốc), chạy `CAI_TRIGGER_LAM_NONG_KPI`, kiểm tra Sheets API. – [[KPI Tăng tốc đợt 2 (21-10)]]
 - Sau khi dán: chạy một lần `AP_DINH_MUC_CA_THANG`, mở Phân tích định mức tháng 10 → "Áp dụng các dòng đã chọn"; nếu tháng đã chốt thì bấm "Chốt bù tháng này". – [[KPI Phân tích định mức]]
 

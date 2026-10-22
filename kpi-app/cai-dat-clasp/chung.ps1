@@ -72,8 +72,16 @@ function ChonTrienKhai {
   }
   if ($ds.Count -eq 0) { return '' }
   if ($ds.Count -eq 1) { return $ds[0].Id }
-  Bao 'Dự án có nhiều bản triển khai. Chọn bản đang dùng làm web cho công ty:'
-  for ($i = 0; $i -lt $ds.Count; $i++) { Write-Host ('  ' + ($i + 1) + ') phiên bản ' + $ds[$i].BanSo + '  ' + $ds[$i].MoTa + '  [' + $ds[$i].Id.Substring(0, 12) + '...]') }
-  $so = [int](Hoi 'Gõ số rồi bấm Enter')
-  return $ds[$so - 1].Id
+  Bao 'Dự án có nhiều bản triển khai. Chọn bản có ĐƯỜNG LINK công ty đang dùng (so phần AKfy… trong link web với cột bên phải):'
+  for ($i = 0; $i -lt $ds.Count; $i++) { Write-Host ('  ' + ($i + 1) + ') link …/s/' + $ds[$i].Id.Substring(0, 14) + '…   (phiên bản ' + $ds[$i].BanSo + ($(if ($ds[$i].MoTa) { ' · ' + $ds[$i].MoTa } else { '' })) + ')') }
+  # 22/10: chủ dự án gõ số PHIÊN BẢN (227) thay vì số thứ tự -> trước đây ra rỗng. Nay nhận số thứ tự, số phiên bản hoặc vài ký tự đầu của mã; sai thì hỏi lại.
+  while ($true) {
+    $go = Hoi ('Gõ số thứ tự (1-' + $ds.Count + ') rồi bấm Enter')
+    $chon = $null
+    if ($go -match '^\d+$' -and [int]$go -ge 1 -and [int]$go -le $ds.Count) { $chon = $ds[[int]$go - 1] }
+    elseif ($go -match '^\d+$') { $chon = $ds | Where-Object { $_.BanSo -eq $go } | Select-Object -First 1 }
+    elseif ($go.Length -ge 6) { $chon = $ds | Where-Object { $_.Id.StartsWith($go) -or $_.Id.StartsWith('AKfy' + $go) } | Select-Object -First 1 }
+    if ($chon) { Tot ('  Đã chọn link …/s/' + $chon.Id.Substring(0, 14) + '…'); return $chon.Id }
+    Write-Host '  Chưa đúng – gõ số thứ tự ở đầu dòng (1, 2, 3…).' -ForegroundColor Yellow
+  }
 }
