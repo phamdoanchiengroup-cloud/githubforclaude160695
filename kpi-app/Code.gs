@@ -3222,9 +3222,10 @@ function sapXepHangHV_(arr, ky) {
   return arr;
 }
 
-function loaiKPI_(v) {
-  if (v >= 100) return 'A+';
-  if (v >= 90) return 'A';
+function loaiKPI_(v) {             // thang 22/10: S ≥ 95, A+ ≥ 90, A ≥ 85, B ≥ 80, C ≥ 70, D < 70
+  if (v >= 95) return 'S';
+  if (v >= 90) return 'A+';
+  if (v >= 85) return 'A';
   if (v >= 80) return 'B';
   if (v >= 70) return 'C';
   return 'D';
@@ -5625,8 +5626,8 @@ function napPhan(token, phan) {
    ===================================================================== */
 var BC_THU_MUC = 'Báo cáo KPI hằng tháng';
 var BC_SHEET_NHAN = 'NguoiNhanBaoCao';
-var BC_LOAI = ['A+','A','B','C','D','Học việc'];
-var BC_MAU_LOAI = { 'A+':'#1e7f5c', 'A':'#3aa57a', 'B':'#d29b2a', 'C':'#e07b39', 'D':'#c0392b', 'Học việc':'#7d868c' };
+var BC_LOAI = ['S','A+','A','B','C','D','Học việc'];
+var BC_MAU_LOAI = { 'S':'#5b3fa8', 'A+':'#1e7f5c', 'A':'#3aa57a', 'B':'#d29b2a', 'C':'#e07b39', 'D':'#c0392b', 'Học việc':'#7d868c' };
 
 function bcSo_(v, n) {
   if (v === null || v === undefined || v === '' || isNaN(v)) return '–';
@@ -5801,7 +5802,7 @@ function bcTomTat_(du, mx) {
   Object.keys(du.sl.X).filter(function(m){ return !mx || m === mx; }).forEach(function(m){ var n = du.sl.X[m].ngay; Object.keys(n).forEach(function(d){ ngay[d] = (ngay[d]||0) + n[d]; }); });
   var r = {
     soNguoi:kp.length, kpiTB:bcTB_(kp,'tong'), kpiTBT:bcTB_(kpT,'tong'), hsTB:bcTB_(kp,'sl'), clTB:bcTB_(kp,'cl'), ttTB:bcTB_(kp,'tt'), atTB:bcTB_(kp,'at'),
-    phanLoai:phanLoai, tlTot: kp.length ? (phanLoai['A+'] + phanLoai['A']) / kp.length * 100 : null,
+    phanLoai:phanLoai, tlTot: kp.length ? (phanLoai['S'] + phanLoai['A+'] + phanLoai['A']) / kp.length * 100 : null,
     tlTotT: kpT.length ? kpT.filter(function(o){ return o.tong >= 90; }).length / kpT.length * 100 : null,
     sl:sl, slT:slT, tlLoi: sl ? loi/sl*100 : null, tlLoiT: slT ? loiT/slT*100 : null,
     cc:tlCC(du.cc), ccT:tlCC(du.ccT), vp:loc(du.vp).length, vpT:loc(du.vpT).length, tre:loc(du.tre).length, ngay:ngay
@@ -5858,7 +5859,7 @@ function bcThanh_(pt, mau, cao) {            // thanh ngang: bảng 2 ô theo %
   return '<table style="width:100%;height:' + (cao||8) + 'px"><tr>' + (pt > 0 ? '<td style="width:' + pt.toFixed(1) + '%;background:' + mau + ';padding:0;height:' + (cao||8) + 'px"></td>' : '') +
     (pt < 100 ? '<td style="background:#e8edf0;padding:0"></td>' : '') + '</tr></table>';
 }
-function bcChongLoai_(pl, tong) {             // thanh xếp chồng phân loại A+..D
+function bcChongLoai_(pl, tong) {             // thanh xếp chồng phân loại S..D
   if (!tong) return '';
   var h = '<table style="width:100%;height:14px"><tr>';
   BC_LOAI.forEach(function(l){ var p = pl[l] / tong * 100; if (p > 0) h += '<td style="width:' + p.toFixed(1) + '%;background:' + BC_MAU_LOAI[l] + ';padding:0;color:#fff;font-size:7.5pt;text-align:center">' + (p >= 7 ? l : '') + '</td>'; });
@@ -5897,7 +5898,7 @@ function bcTomTatHtml_(t, du) {
   return '<table><tr>' +
     bcO_('KPI trung bình công nhân', t.kpiTB === null ? '–' : bcSo_(t.kpiTB,1), bcLech_(t.kpiTB, t.kpiTBT, 1, ' điểm') + ' · ' + t.soNguoi + ' người', t.kpiTB >= 90 ? '#1e7f5c' : t.kpiTB >= 80 ? '#d29b2a' : '#c0392b') +
     bcO_('Tổng sản lượng (sp)', bcSo_(t.sl), t.slT ? bcLech_(t.sl / t.slT * 100, 100, 1, '%') + ' so với tháng trước' : 'chưa có tháng trước') +
-    bcO_('Tỷ lệ xếp loại A+/A', t.tlTot === null ? '–' : bcSo_(t.tlTot,1) + '%', bcLech_(t.tlTot, t.tlTotT, 1, ' điểm %')) + '</tr><tr>' +
+    bcO_('Tỷ lệ xếp loại S/A+/A', t.tlTot === null ? '–' : bcSo_(t.tlTot,1) + '%', bcLech_(t.tlTot, t.tlTotT, 1, ' điểm %')) + '</tr><tr>' +
     bcO_('Tỷ lệ hàng không đạt (KCS)', t.tlLoi === null ? '–' : bcSo_(t.tlLoi,2) + '%', bcLech_(t.tlLoi, t.tlLoiT, 2, ' điểm %', true), t.tlLoi >= 3 ? '#c0392b' : '#127c74') +
     bcO_('Tỷ lệ chuyên cần', t.cc === null ? '–' : bcSo_(t.cc,1) + '%', bcLech_(t.cc, t.ccT, 1, ' điểm %')) +
     bcO_('Vi phạm nề nếp / nhập trễ', t.vp + ' / ' + t.tre, bcLech_(t.vp, t.vpT, 0, ' lượt', true)) + '</tr></table>';
@@ -5925,7 +5926,7 @@ function bcBangCD_(dsCD, du, coXuong) {
 function bcPhuongPhap_(du) {
   return '<h2>Ghi chú cách tính</h2><p class="nho" style="line-height:1.5">KPI công nhân lấy đúng như bảng KPI trên web: ' +
     (du.chinhThuc ? 'bản chốt chính thức của tháng.' : 'có xưởng chưa chốt chính thức nên đang tính trực tiếp từ dữ liệu hiện có; số có thể đổi đến khi chốt.') +
-    ' KPI = Sản lượng × trọng số + Chất lượng × trọng số + Tuân thủ × trọng số + An toàn × trọng số (trọng số theo đúng kỳ). Xếp loại: A+ ≥ 100, A ≥ 90, B ≥ 80, C ≥ 70, D &lt; 70. ' +
+    ' KPI = Sản lượng × trọng số + Chất lượng × trọng số + Tuân thủ × trọng số + An toàn × trọng số (trọng số theo đúng kỳ). Xếp loại: S ≥ 95, A+ ≥ 90, A ≥ 85, B ≥ 80, C ≥ 70, D &lt; 70. ' +
     'Sản lượng chỉ gồm dòng đã duyệt. Tỷ lệ chuyên cần = 1 − (ngày vắng có phép + không phép) ÷ (số người × số ngày đã điểm danh). Không gồm trưởng/phó phòng trong bảng KPI công nhân (có bảng KPI quản lý riêng).</p>';
 }
 
@@ -5938,13 +5939,13 @@ function bcHtmlTong_(du) {
   // So sánh xưởng
   var bx = du.dsX.map(function(mx){ var x = bcTomTat_(du, mx); x.mx = mx; x.ql = du.ql.filter(function(q){ return q.MaXuong === mx && q.vaiTro === 'TP'; })[0]; return x; })
     .filter(function(x){ return x.soNguoi || x.sl; }).sort(function(a,b){ return (b.kpiTB||0) - (a.kpiTB||0); });
-  h += '<h2>3. So sánh các xưởng</h2><table class="bang"><tr><th class="c">#</th><th>Xưởng</th><th class="r">Người</th><th class="r">KPI TB</th><th style="width:15%">Phân loại A+ → D</th>' + (du.duSo ? '<th class="r">So tháng trước</th>' : '') + '<th class="r">Sản lượng</th><th class="r">Lỗi KCS</th><th class="r">Chuyên cần</th><th class="r">Vi phạm</th><th class="r">KPI trưởng phòng</th></tr>';
+  h += '<h2>3. So sánh các xưởng</h2><table class="bang"><tr><th class="c">#</th><th>Xưởng</th><th class="r">Người</th><th class="r">KPI TB</th><th style="width:15%">Phân loại S → D</th>' + (du.duSo ? '<th class="r">So tháng trước</th>' : '') + '<th class="r">Sản lượng</th><th class="r">Lỗi KCS</th><th class="r">Chuyên cần</th><th class="r">Vi phạm</th><th class="r">KPI trưởng phòng</th></tr>';
   bx.forEach(function(x, i){
     h += '<tr' + (i % 2 ? ' class="chan"' : '') + '><td class="c">' + (i+1) + '</td><td><b>' + bcE_(du.tenX[x.mx] || x.mx) + '</b></td><td class="r">' + x.soNguoi + '</td>' +
       '<td class="r"><b style="color:' + (x.kpiTB >= 90 ? '#1e7f5c' : x.kpiTB >= 80 ? '#b7791f' : '#c0392b') + '">' + bcSo_(x.kpiTB,1) + '</b></td><td>' + bcChongLoai_(x.phanLoai, x.soNguoi) + '</td>' +
       (du.duSo ? '<td class="r">' + bcLech_(x.kpiTB, x.kpiTBT, 1, '') + '</td>' : '') + '<td class="r">' + bcSo_(x.sl) + '</td><td class="r">' + (x.tlLoi === null ? '–' : bcSo_(x.tlLoi,2) + '%') + '</td>' +
       '<td class="r">' + (x.cc === null ? '–' : bcSo_(x.cc,1) + '%') + '</td><td class="r">' + x.vp + '</td><td class="r">' + (x.ql ? bcSo_(x.ql.tong,1) : '–') + '</td></tr>'; });
-  h += '</table><p class="nho">Thanh phân loại: <span style="color:' + BC_MAU_LOAI['A+'] + '">■</span> A+ <span style="color:' + BC_MAU_LOAI.A + '">■</span> A <span style="color:' + BC_MAU_LOAI.B + '">■</span> B <span style="color:' + BC_MAU_LOAI.C + '">■</span> C <span style="color:' + BC_MAU_LOAI.D + '">■</span> D. Xếp theo KPI trung bình.</p>';
+  h += '</table><p class="nho">Thanh phân loại: <span style="color:' + BC_MAU_LOAI.S + '">■</span> S <span style="color:' + BC_MAU_LOAI['A+'] + '">■</span> A+ <span style="color:' + BC_MAU_LOAI.A + '">■</span> A <span style="color:' + BC_MAU_LOAI.B + '">■</span> B <span style="color:' + BC_MAU_LOAI.C + '">■</span> C <span style="color:' + BC_MAU_LOAI.D + '">■</span> D. Xếp theo KPI trung bình.</p>';
   // Phân loại toàn nhà máy
   h += '<h2>4. Phân bố xếp loại toàn nhà máy</h2><table class="bang"><tr>' + BC_LOAI.map(function(l){ return '<th class="c" style="background:' + BC_MAU_LOAI[l] + ';border-color:' + BC_MAU_LOAI[l] + '">' + l + '</th>'; }).join('') + '</tr><tr>' +
     BC_LOAI.map(function(l){ return '<td class="c"><b style="font-size:13pt">' + t.phanLoai[l] + '</b><br><span class="nho">' + (t.soNguoi ? bcSo_(t.phanLoai[l]/t.soNguoi*100,1) : '0') + '%</span></td>'; }).join('') + '</tr></table>';
@@ -6070,7 +6071,7 @@ function guiBaoCaoThang_(ky) {
   }
   var t = bcTomTat_(du, ''), nd = bcNhanDinh_(du, '').slice(0, 5);
   var than = '<div style="font-family:Arial,sans-serif;font-size:14px;color:#1d2a33"><p>Kính gửi Ban lãnh đạo,</p><p>Hệ thống KPI gửi báo cáo sản xuất &amp; KPI <b>' + bcThang_(ky) + '</b>' + (du.chinhThuc ? ' (đã chốt chính thức)' : ' (tạm tính)') + '.</p>' +
-    '<p>KPI trung bình công nhân: <b>' + bcSo_(t.kpiTB,1) + '</b> · Tổng sản lượng: <b>' + bcSo_(t.sl) + '</b> sp · Tỷ lệ A+/A: <b>' + bcSo_(t.tlTot,1) + '%</b></p><ul>' +
+    '<p>KPI trung bình công nhân: <b>' + bcSo_(t.kpiTB,1) + '</b> · Tổng sản lượng: <b>' + bcSo_(t.sl) + '</b> sp · Tỷ lệ S/A+/A: <b>' + bcSo_(t.tlTot,1) + '%</b></p><ul>' +
     nd.map(function(x){ return '<li style="margin:4px 0">' + x.s + '</li>'; }).join('') + '</ul><p>Chi tiết trong tệp PDF đính kèm' + (thuMuc ? ' và trên Google Drive: <a href="' + thuMuc.getUrl() + '">' + BC_THU_MUC + ' / ' + ky + '</a>' : '') + '.</p>' +
     '<p style="color:#8a949c;font-size:12px">Email tự động từ web KPI sản xuất.</p></div>';
   if (nhan.tong.length) {

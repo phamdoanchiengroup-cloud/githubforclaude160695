@@ -494,6 +494,11 @@ Nếu vẫn thấy giao diện cũ: kiểm tra lại Phần D (đã chọn **Phi
 - Giọng nói nằm ở **file MỚI `AmThanh.html`** (khoảng 300 KB): tự tải vài giây sau khi đăng nhập (lần đầu), rồi máy nhớ lại. Quên tạo file này thì tiếng hiệu ứng vẫn chạy, chỉ không có giọng nói.
 
 
+## THANG XẾP LOẠI 22/10 (S, A+, A, B, C, D) – đổi Code.gs, Index.html, SoDo.html, AmThanh.html
+Đã cài clasp: bấm đúp **2-CAP-NHAT.bat** là đủ (tự đẩy cả 5 file). Chép – dán tay thì dán lại 4 file Code.gs, Index.html, SoDo, AmThanh. Không có hàm cần chạy.
+- Thang mới: **S ≥ 95 · A+ 90–94 · A 85–89 · B 80–84 · C 70–79 · D dưới 70** – áp cho bảng KPI, KPI cá nhân, KPI quản lý, báo cáo tháng, sơ đồ nhà máy, lời Rhino, pháo giấy + giọng "lên loại S".
+- Tháng **đã chốt** giữ loại đã lưu (thang cũ). Muốn tháng đó hiện theo thang mới thì Chốt bù tháng đó.
+
 ## PHÂN TÍCH ĐỊNH MỨC 21/10 (gợi ý nâng định mức lỏng về 85%, đổi định mức áp cả tháng) – đổi Code.gs + Index.html
 Dán **Code.gs** và **Index.html** bản mới nhất (đã gồm mọi thay đổi 21/10: sửa lỗi, tăng tốc, chia đôi màn hình). Sao lưu trước (Tổng quan → Tạo bản sao dự án).
 

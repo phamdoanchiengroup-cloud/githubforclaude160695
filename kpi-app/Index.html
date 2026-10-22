@@ -2798,7 +2798,7 @@ function ngLoi(r){
     .reduce(function(a,k){return a+Number(k.SoLuongKhongDat||0)},0);
 }
 function loai(v){
-  if(v>=100)return['A+','p-ok'];if(v>=90)return['A','p-ok'];
+  if(v>=95)return['S','p-ok'];if(v>=90)return['A+','p-ok'];if(v>=85)return['A','p-ok'];   // thang 22/10
   if(v>=80)return['B','p-wn'];if(v>=70)return['C','p-wn'];return['D','p-bd'];
 }
 function cls(v){return v>=90?'':(v>=80?'wn':'bd')}
@@ -3067,9 +3067,10 @@ function camNangChiTiet(vt){
         '<p>Giờ có mặt là mẫu số khi tính hiệu suất — đi làm đều giúp hiệu suất ổn định.</p>'],
       ['Thang xếp loại',
         '<table><tr><th>Loại</th><th>Điểm</th><th>Ý nghĩa</th></tr>'+
-        '<tr><td><span class="cn-pill g">A+</span></td><td>≥ 100</td><td>Xuất sắc</td></tr>'+
-        '<tr><td><span class="cn-pill g">A</span></td><td>90–99</td><td>Tốt</td></tr>'+
-        '<tr><td><span class="cn-pill c">B</span></td><td>80–89</td><td>Đạt</td></tr>'+
+        '<tr><td><span class="cn-pill g">S</span></td><td>≥ 95</td><td>Xuất sắc</td></tr>'+
+        '<tr><td><span class="cn-pill g">A+</span></td><td>90–94</td><td>Rất tốt</td></tr>'+
+        '<tr><td><span class="cn-pill g">A</span></td><td>85–89</td><td>Tốt</td></tr>'+
+        '<tr><td><span class="cn-pill c">B</span></td><td>80–84</td><td>Đạt</td></tr>'+
         '<tr><td><span class="cn-pill a">C</span></td><td>70–79</td><td>Cần cố gắng</td></tr>'+
         '<tr><td><span class="cn-pill r">D</span></td><td>&lt; 70</td><td>Yếu</td></tr></table>'],
       ['Cập nhật thông tin cá nhân',
@@ -3138,7 +3139,7 @@ function camNangChiTiet(vt){
         '<p>Trụ Vận hành bắt đầu 100, trừ dần: điểm danh muộn −5/ngày, quên điểm danh −10/ngày, duyệt trễ −2/CN, duyệt ẩu −2/dòng, không nhắc CN nhập −2/CN.</p>'+
         '<div class="cn-note o"><b>Phó phòng tính giống Trưởng phòng</b>Thuần KPI quản lý; sản lượng kèm CN mới không tính điểm.</div>'],
       ['Thang xếp loại & chốt tháng',
-        '<p>Xếp loại: <span class="cn-pill g">A+ ≥100</span> <span class="cn-pill g">A 90–99</span> <span class="cn-pill c">B 80–89</span> <span class="cn-pill a">C 70–79</span> <span class="cn-pill r">D &lt;70</span></p>'+
+        '<p>Xếp loại: <span class="cn-pill g">S ≥95</span> <span class="cn-pill g">A+ 90–94</span> <span class="cn-pill g">A 85–89</span> <span class="cn-pill c">B 80–84</span> <span class="cn-pill a">C 70–79</span> <span class="cn-pill r">D &lt;70</span></p>'+
         '<ul><li>Tháng hiện tại: tính trực tiếp.</li>'+
         '<li>Snapshot tạm tự động 9h mỗi ngày.</li>'+
         '<li>Tháng trước được chốt chính thức lúc 23h ngày làm việc thứ 3 của tháng sau (để kịp duyệt sản lượng cuối tháng).</li>'+
@@ -3184,7 +3185,7 @@ function napChaoKPIQuanLy(){
     if(!r||!r.ok){ box.style.display='none'; return; }
     var toi=(r.ds||[]).filter(function(o){return o.maNV===ME.maNV})[0];
     if(!toi){ box.style.display='none'; return; }
-    var lo=(toi.tong>=100?'A+':(toi.tong>=90?'A':(toi.tong>=80?'B':(toi.tong>=70?'C':'D'))));
+    var lo=loai(toi.tong)[0];
     box.innerHTML='KPI của bạn hiện tại là <b>'+(Number(toi.tong)||0).toFixed(1)+'%</b>, '+
       'xếp loại <b>'+lo+'</b> — xem thông tin chi tiết bên tab <b>KPI phòng</b>.';
   });
@@ -3395,7 +3396,7 @@ function vKPIQuanLy(){
     '• <b>Vận hành (40%)</b>: bắt đầu 100 điểm, trừ dần — điểm danh muộn −5/ngày, quên điểm danh −10/ngày, duyệt trễ −2/công nhân (quá 2 ngày làm việc), duyệt ẩu −2/dòng bị BĐH từ chối, không nhắc CN nhập −2/công nhân quá hạn.<br>'+
     '• <b>Nề nếp (10%)</b>: chuyên cần của chính quản lý.<br>'+
     '• <b>Phó phòng</b> tính giống Trưởng phòng (thuần KPI quản lý); sản lượng ghi nhận khi kèm CN mới không tính vào điểm.<br>'+
-    'Xếp loại: A+ (≥100), A (90–99), B (80–89), C (70–79), D (&lt;70).'+
+    'Xếp loại: S (≥95), A+ (90–94), A (85–89), B (80–84), C (70–79), D (&lt;70).'+
     '</div></div>';
   h+='<div id="qlBody"><div class="empty">Đang tải…</div></div>';
   $('main').innerHTML=h;
@@ -3448,7 +3449,7 @@ function vKPIQuanLy(){
     $('qlBody').innerHTML=b;
   });
 }
-function loaiFE(v){ return v>=100?'A+':(v>=90?'A':(v>=80?'B':(v>=70?'C':'D'))); }
+function loaiFE(v){ return v>=95?'S':(v>=90?'A+':(v>=85?'A':(v>=80?'B':(v>=70?'C':'D')))); }
 function mauKPI(v){ var s=document.documentElement.getAttribute('data-gd')==='sang';
   return v>=90?(s?'#1f7a48':'#66d49a'):(v>=80?(s?'#0b7a73':'#2fd3c6'):(v>=70?(s?'#a86400':'#f0b04e'):(s?'#c0302b':'#f47272'))); }
 function f1(n){ return (Number(n)||0).toFixed(1); }
@@ -4434,9 +4435,10 @@ function maiDoi(){maiNho('kpi_mai',maiTat()?'bat':'tat');maiNut();maiGocDong();t
 /* Động viên theo hạng KPI (số liệu thật) */
 function maiKPI(hang,tong){
   if(maiTat())return '';
-  var t={'A+':['vui covu','Bạn đang <b>dẫn đầu</b>! Giữ nhịp này và chỉ mẹo cho đồng đội nhé.'],
-    'A':['vui','Rất tốt! Còn <b>'+f(Math.max(0,100-tong))+'%</b> nữa là lên hạng A+.'],
-    'B':['','Ổn định đó! Còn <b>'+f(Math.max(0,90-tong))+'%</b> nữa là lên hạng A. Thử <b>giảm hàng lỗi</b> – bớt một cái lỗi là điểm tăng lên.'],
+  var t={'S':['vui covu','Hạng <b>S</b> – xuất sắc! Bạn đang <b>dẫn đầu</b>, giữ nhịp này và chỉ mẹo cho đồng đội nhé.'],
+    'A+':['vui covu','Rất giỏi! Còn <b>'+f(Math.max(0,95-tong))+'%</b> nữa là lên hạng S.'],
+    'A':['vui','Rất tốt! Còn <b>'+f(Math.max(0,90-tong))+'%</b> nữa là lên hạng A+.'],
+    'B':['','Ổn định đó! Còn <b>'+f(Math.max(0,85-tong))+'%</b> nữa là lên hạng A. Thử <b>giảm hàng lỗi</b> – bớt một cái lỗi là điểm tăng lên.'],
     'C':['lo','Tháng này hơi vất vả. Rhino tin bạn làm được hơn! <b>Hỏi trưởng phòng</b> mẹo của công đoạn khó nhé.'],
     'D':['lo','Đừng nản nhé! Nhập <b>đủ sản lượng mỗi ngày</b> và hỏi trưởng phòng cách làm nhanh hơn – Rhino cổ vũ bạn!']}[hang]||['','Cố lên nhé!'];
   return '<div class="mai-bang" style="margin-top:12px">'+maiHinh(t[0])+'<div class="nd"><small>Rhino nói về KPI của bạn · hạng '+esc(hang)+'</small><div class="kh" style="font-weight:500">'+t[1]+'</div></div></div>';
@@ -7749,7 +7751,7 @@ tr.tt-keo.ve{transition:transform .3s cubic-bezier(.3,1.3,.5,1)}
    12 Chờ chốt: vuốt trái để xóa dòng (điện thoại) + "Hoàn tác" 5 giây (cả nút Xóa)
    13 Kéo xuống ở đầu trang để làm mới (điện thoại; trừ trang công nhân nhập sản lượng và điểm danh)
    14 Nhập sai: ô rung (đã có) + Rhino đứng cạnh chỉ vào ô và nói lỗi (trừ trang công nhân nhập sản lượng)
-   15 Pháo giấy khi mở KPI cá nhân đạt hạng A/A+ hoặc gửi đều 7 ngày liền – mỗi ngày tối đa 1 lần
+   15 Pháo giấy khi mở KPI cá nhân đạt hạng A/A+/S hoặc gửi đều 7 ngày liền – mỗi ngày tối đa 1 lần
    16 Hết phiên: màn tối, dây thả xuống; kéo dây là đèn sáng + hộp đăng nhập lại tại chỗ (không mất trang đang xem)
    Phần công nhân nhập sản lượng và điểm danh GIỮ NGUYÊN như cũ (theo yêu cầu chủ dự án). */
 var TT_MS = 4000;            // thời gian còn "Hoàn tác" trước khi gửi duyệt / từ chối lên máy chủ
@@ -7994,7 +7996,7 @@ vKPICaNhanToi=function(){
   var kq=_ttVKPICaNhanToi.apply(this,arguments);
   try{
     var k=kpi(ME.maNV), hang=k?loai(k.tong)[0]:'', chuoi=maiChuoi(), khoa='kpi_phao_'+ME.tk;
-    var hangCu=maiNho('kpi_hang_'+ME.tk)||'', thu=['D','C','B','A','A+'], lenHang=hang&&hangCu&&thu.indexOf(hang)>thu.indexOf(hangCu);
+    var hangCu=maiNho('kpi_hang_'+ME.tk)||'', thu=['D','C','B','A','A+','S'], lenHang=hang&&hangCu&&thu.indexOf(hang)>thu.indexOf(hangCu);
     if(hang&&!vhHocViec())maiNho('kpi_hang_'+ME.tk,hang);
     if(lenHang&&!vhHocViec()&&maiNho(khoa)!==today()){   // C7: pháo giấy chỉ khi LÊN HẠNG (giữ giá trị phần thưởng)
       maiNho(khoa,today());
@@ -8552,7 +8554,7 @@ function chiXemDon(){
 </script>
 <script>
 /* ===== 19. PHẦN GIAO DIỆN TẢI SAU (12/10) – SoDo.html, HoatAnh.html: chỉ tải khi cần, nhớ lại theo phiên bản ===== */
-var MANH_VER={"SoDo": "d2be086ce5de226d", "HoatAnh": "b23cbe69d6aae56e", "AmThanh": "3c0ca68684478dc0"};
+var MANH_VER={"SoDo": "2409ca7c2d104f11", "HoatAnh": "b23cbe69d6aae56e", "AmThanh": "c690fabe4419160c"};
 var __manh={da:{},cho:{}};
 function ganManh_(nd){
   var js=[], ngoai=String(nd).replace(/<script>([\s\S]*?)<\/script>/g,function(_,x){js.push(x);return ''});
@@ -9214,7 +9216,7 @@ function amDoi(){
   /* lên hạng (pháo giấy) */
   boc('ttPhao',function(cu){return function(){
     am('hang');
-    try{ var k=kpi(ME.maNV), h=k?loai(k.tong)[0]:'', ma={'D':'lD','C':'lC','B':'lB','A':'lA','A+':'lAp'}[h];
+    try{ var k=kpi(ME.maNV), h=k?loai(k.tong)[0]:'', ma={'D':'lD','C':'lC','B':'lB','A':'lA','A+':'lAp','S':'lS'}[h];
       if(ma)amNoi(['chuc_mung',ma],1200); }catch(e){}
     return cu.apply(this,arguments);}});
   /* nhắc giữa ca 10:00 / 15:00 (chỉ khi Rhino thật sự hiện lời nhắc) */

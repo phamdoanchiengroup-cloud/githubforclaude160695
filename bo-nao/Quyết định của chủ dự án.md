@@ -16,6 +16,9 @@ Những điều đã chốt. Đừng đề xuất lại những gì ghi "không 
 - **Đổi định mức là áp cho cả tháng đang làm**: toàn bộ sản lượng tháng đó tính theo định mức mới (thay cách áp theo ngày của bản 18/10). **Kể cả tháng đã chốt** – khi đó bấm "Chốt bù tháng này". – [[KPI Phân tích định mức]]
 - Phân tích định mức chỉ gợi ý **nâng** định mức lỏng về mốc 85%. **Không gợi ý hạ** định mức chặt – có thể đang đào tạo nhân viên mới (chủ dự án đã nói từ trước, nhắc lại 21/10). – [[KPI Phân tích định mức]]
 
+## Xếp loại (22/10)
+- Thang mới: **S ≥ 95, A+ ≥ 90, A ≥ 85, B ≥ 80, C ≥ 70, D < 70**. – [[KPI Thang xếp loại]]
+
 ## Phong cách giao diện web KPI
 - Thích kiểu **thiết bị đo nhà máy**; chê bộ 3D "như đồ chơi", 7 mẫu đầu demo-2, demo-4 (trừ số 5), demo-5, demo tương tác và giao diện nền. Hướng hiện tại: làm lại đúng màn hình đang dùng, đặt bản cũ cạnh bản mới. – [[KPI Demo giao diện]]
 - Bỏ qua demo 3D CSS (08/10). – [[KPI Demo đã bỏ]]

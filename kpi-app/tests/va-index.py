@@ -815,6 +815,8 @@ exec(io.open(os.path.join(D, 'sua-loi-21-10', 'va-sua-web.py'), encoding='utf-8'
 exec(io.open(os.path.join(D, 'tang-toc-2', 'va-tang-toc-web.py'), encoding='utf-8').read())
 # ---------------------------------------------------------------- 28. Phân tích định mức (21/10): gợi ý mọi công đoạn về 85%, đổi định mức áp cả tháng (kể cả tháng đã chốt)
 exec(io.open(os.path.join(D, 'dinh-muc', 'va-dinh-muc-web.py'), encoding='utf-8').read())
+# ---------------------------------------------------------------- 29. Thang xếp loại mới (22/10): S ≥ 95, A+ ≥ 90, A ≥ 85, B ≥ 80, C ≥ 70, D < 70
+exec(io.open(os.path.join(D, 'xep-loai', 'va-xep-loai-web.py'), encoding='utf-8').read())
 # ---------------------------------------------------------------- 27. Chia đôi màn hình (21/10): Bảng KPI, Nhân sự, KPI quản lý – danh sách trái, chi tiết phải (phải là mục cuối)
 exec(io.open(os.path.join(D, 'chia-doi', 'va-chia-doi.py'), encoding='utf-8').read())
 

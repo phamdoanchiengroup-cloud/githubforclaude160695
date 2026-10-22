@@ -2444,7 +2444,7 @@ var SS = (function () {
   o.datCheDo = function (c) { o.cheDo = c; o.bao(); };
   o.bao = function () { o.nghe.forEach(function (f) { try { f(); } catch (e) {} }); };
   o.tyLe = function (s) { return s && s.dinhBien ? s.coMat / s.dinhBien * 100 : 0; };
-  o.hang = function (v) { return v >= 100 ? 'A+' : v >= 90 ? 'A' : v >= 80 ? 'B' : v >= 70 ? 'C' : 'D'; };
+  o.hang = function (v) { return v >= 95 ? 'S' : v >= 90 ? 'A+' : v >= 85 ? 'A' : v >= 80 ? 'B' : v >= 70 ? 'C' : 'D'; };   // thang 22/10
   // cùng màu với web (mauKPI ở nền tối)
   o.mauKPI = function (v) { return v >= 90 ? '#66d49a' : v >= 80 ? '#2fd3c6' : v >= 70 ? '#f0b04e' : '#f47272'; };
   o.mauSiSo = function (p) { return p >= 95 ? '#66d49a' : p >= 85 ? '#f0b04e' : '#f47272'; };
@@ -2474,7 +2474,7 @@ var SS = (function () {
   o.chuGiai = function () {
     var ds = o.cheDo === 'siso'
       ? [['#66d49a', 'Đủ người (≥ 95%)'], ['#f0b04e', 'Thiếu ít (85–95%)'], ['#f47272', 'Thiếu nhiều (< 85%)']]
-      : [['#66d49a', 'A / A+ (≥ 90%)'], ['#2fd3c6', 'B (80–90%)'], ['#f0b04e', 'C (70–80%)'], ['#f47272', 'D (< 70%)']];
+      : [['#66d49a', 'S / A+ (≥ 90%)'], ['#2fd3c6', 'A / B (80–90%)'], ['#f0b04e', 'C (70–80%)'], ['#f47272', 'D (< 70%)']];
     var them = [];
     if (o.XUONG.some(function (x) { var s = o.SO[x[0]]; return s && !o.coSo(s); })) them.push([o.MAU_TRONG, 'Chưa có số']);
     them.push(['#8b9196', 'Chưa ghép xưởng']);

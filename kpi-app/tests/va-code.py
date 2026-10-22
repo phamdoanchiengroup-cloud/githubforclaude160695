@@ -1353,6 +1353,8 @@ exec(io.open(os.path.join(os.path.dirname(__file__), 'sua-loi-21-10', 'va-sua.py
 exec(io.open(os.path.join(os.path.dirname(__file__), 'tang-toc-2', 'va-tang-toc.py'), encoding='utf-8').read())
 # ---------------------------------------------------------------- phân tích định mức theo định mức đang dùng + gợi ý mọi công đoạn về 85% + áp từ đầu tháng (21/10)
 exec(io.open(os.path.join(os.path.dirname(__file__), 'dinh-muc', 'va-dinh-muc.py'), encoding='utf-8').read())
+# ---------------------------------------------------------------- thang xếp loại mới (22/10): S ≥ 95, A+ ≥ 90, A ≥ 85, B ≥ 80, C ≥ 70, D < 70
+exec(io.open(os.path.join(os.path.dirname(__file__), 'xep-loai', 'va-xep-loai.py'), encoding='utf-8').read())
 
 io.open(RA, 'w', encoding='utf-8').write(s)
 print('OK ->', os.path.abspath(RA))

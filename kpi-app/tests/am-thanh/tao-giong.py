@@ -35,7 +35,7 @@ WEB = dict(SO, **{
     'da_gui': 'Đã gửi xong. Cảm ơn bạn!', 'chuoi1': 'Bạn đã gửi đều', 'chuoi2': 'ngày liền. Giỏi lắm!',
     'sai': 'Có ô nhập chưa đúng. Bạn xem lại nhé.',
     'con_ngay': 'Còn ngày', 'chua_nhap': 'chưa nhập sản lượng. Nhớ nhập trước hạn nhé.',
-    'chuc_mung': 'Chúc mừng! Tháng này bạn đã lên', 'lD': 'loại D.', 'lC': 'loại C.', 'lB': 'loại B.', 'lA': 'loại A.', 'lAp': 'loại A cộng.',
+    'chuc_mung': 'Chúc mừng! Tháng này bạn đã lên', 'lD': 'loại D.', 'lC': 'loại C.', 'lB': 'loại B.', 'lA': 'loại A.', 'lAp': 'loại A cộng.', 'lS': 'loại S.',
     'nghi': 'Đã đến giờ nghỉ giữa ca. Uống chút nước nhé.',
     'chao_sang': 'Chào buổi sáng! Chúc một ngày làm việc tốt.', 'chao_chieu': 'Chào buổi chiều! Chúc ca làm việc suôn sẻ.', 'chao_dem': 'Chào bạn! Chúc ca đêm thuận lợi.',
     'bat': 'Đã bật giọng nói của Rhino.',
