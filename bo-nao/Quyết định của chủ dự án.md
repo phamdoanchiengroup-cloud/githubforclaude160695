@@ -4,6 +4,7 @@ Nhóm: Bắt đầu · Cập nhật 21/10/2026
 Liên quan: [[Việc chờ chủ dự án]] · [[TCC Bán hàng]] · [[00 Mục lục]]
 
 ## Cách làm việc
+- Dùng chuyên gia từ repo **agency-agents** (22/10): đã chọn 25 người hợp dự án, đặt ở `.claude/agents/`. – [[TCC Chuyên gia Agency Agents]]
 - **Mỗi dự án một nhánh** (21/10): Thiên Cơ Các = `claude/happy-brown-lttkz3`; web KPI sản xuất (không liên quan) = `claude/beautiful-ptolemy-f2j7za`.
 - Phần nào xong và đã kiểm tra thì gửi trước, không chờ xong hết (19/10).
 - Bộ não thứ hai: thư mục `bo-nao/` + trang bản đồ xem bằng trình duyệt, mỗi nhánh một bộ (21/10).

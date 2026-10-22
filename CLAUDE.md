@@ -33,6 +33,7 @@ File này được Claude Code tự đọc khi mở repo. Nó giữ **quy tắc 
 - **Cập nhật bằng bộ bấm đúp** (`tuvi-app/cai-dat-clasp/`, clasp chạy trên máy Windows của chủ dự án): `2-CAP-NHAT.bat` tải mã mới nhất trên nhánh này rồi đẩy lên Apps Script, nên chỉ push mã đã qua kiểm thử; thêm/sửa file .gs/.html thì chạy `python3 tuvi-app/tools/tao-ds-file.py` (danh sách dự phòng `cai-dat-clasp/ds-file.txt`). Không dùng GitHub Actions (chủ dự án tắt 22/10). Xem `bo-nao/Thiên Cơ Các/TCC Tự đẩy code lên Apps Script.md`.
 - `LaSo3D.gs` là bản sinh ra (`node tools/demo-3d.js`), không sửa tay.
 - Chạy kiểm thử liên quan trước khi commit: `bo-nao/Thiên Cơ Các/TCC Kiểm thử.md`.
+- 25 chuyên gia (subagent, từ repo agency-agents) ở `.claude/agents/` – danh sách và cách gọi: `bo-nao/Thiên Cơ Các/TCC Chuyên gia Agency Agents.md`.
 
 ## Bộ não thứ hai `bo-nao/` (kiểu Obsidian)
 - Mỗi ghi chú một chủ đề, tên file = tiêu đề, thư mục `Thiên Cơ Các/`; file ở gốc là ghi chú tổng hợp: [[00 Mục lục]], [[Việc chờ chủ dự án]], [[Lần dán lên Apps Script]], [[Quyết định của chủ dự án]]. Liên kết bằng `[[Tên ghi chú]]`, dòng 3 mỗi ghi chú ghi `Liên quan: [[...]]`.
