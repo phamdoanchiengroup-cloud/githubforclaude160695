@@ -1,10 +1,11 @@
-# Cập nhật web KPI không cần chép – dán (máy tính Windows)
+﻿# Cập nhật web KPI không cần chép – dán (máy tính Windows)
 
 Bộ này dùng **clasp**, công cụ chính thức của Google, để đẩy mã từ GitHub thẳng lên Apps Script. Cài một lần; về sau mỗi lần có bản mới chỉ cần bấm đúp một file.
 
 ## Cần chuẩn bị
 - Máy tính Windows 10/11, có mạng, đăng nhập được tài khoản Google **đang sở hữu dự án Apps Script của web KPI**.
 - Tải thư mục này về máy: mở https://github.com/phamdoanchiengroup-cloud/githubforclaude160695/tree/claude/beautiful-ptolemy-f2j7za → nút xanh **Code** → **Download ZIP** → giải nén → mở thư mục `kpi-app\cai-dat-clasp`. (Hoặc dùng file ZIP Claude gửi trong cuộc trò chuyện.)
+- **Phải giải nén trước** (chuột phải file ZIP → **Giải nén tất cả** → **Giải nén**). Bấm đúp file .bat ngay trong ZIP thì máy không thấy các file đi kèm và báo "CHUA GIAI NEN THU MUC".
 
 ## Cài đặt (một lần, khoảng 10–15 phút)
 1. Bấm đúp **1-CAI-DAT.bat**. Nếu Windows hiện "Windows đã bảo vệ PC của bạn" → bấm **Thông tin thêm** → **Vẫn chạy**.
