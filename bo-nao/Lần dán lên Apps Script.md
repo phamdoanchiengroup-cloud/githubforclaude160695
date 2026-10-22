@@ -4,6 +4,7 @@ Nhóm: Bắt đầu · Cập nhật 22/10/2026
 Liên quan: [[Việc chờ chủ dự án]] · [[TCC Kiểm thử]] · [[00 Mục lục]]
 
 ## Tình trạng
+- **22/10 (cuối phiên): chủ dự án cập nhật xong bằng bộ bấm đúp** (`2-CAP-NHAT.bat`, tải dự phòng qua raw sau lỗi api.github.com). Web đang chạy bản mới nhất trên nhánh, mã giao diện `2026.10.22.2` (gồm TuViTamPhap, Bạch Kim + bento, luận giải hằng ngày). Các dòng 21–22/10 bên dưới là lịch sử. Từ nay: push lên nhánh → nhắc chủ dự án bấm `2-CAP-NHAT.bat`.
 - 22/10 (sau): luận giải hằng ngày qua email – cần cập nhật **TienIch, Code, Script, Styles, Index** (mã giao diện `2026.10.22.2`), rồi chạy `caiDatVanNgay` một lần. Dùng bộ bấm đúp `2-CAP-NHAT.bat` nếu đã cài.
 - 22/10: đã có **bộ bấm đúp** `tuvi-app/cai-dat-clasp/` (GitHub Actions đã tắt theo yêu cầu). Chưa ghi nhận chủ dự án cài. Cài xong thì mỗi lần có bản mới chỉ cần bấm `2-CAP-NHAT.bat`. – [[TCC Tự đẩy code lên Apps Script]]
 - 22/10: giao diện **Bạch Kim** + bảng điều khiển bento, biểu đồ động (mã giao diện `2026.10.22`) – cần dán **Styles, Script, Index**. Thay cho bản 21/10 (sau) nếu chưa dán. Giữ nguyên `Anh.html`.
