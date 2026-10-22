@@ -625,6 +625,7 @@ function napDuLieuLoi_(token, phan) {
   var me = docPhien_(token, true);
   if (!me) return sach_({ ok: false, hetHan: true, msg: 'Phiên đăng nhập đã hết hạn. Đăng nhập lại.' });
   if (me.phaiDoiMK) return sach_({ ok: false, phaiDoiMK: true, me: me, msg: 'Cần đổi mật khẩu lần đầu trước khi dùng hệ thống.' });
+  me.banMay = KPI_BAN_MAY;
   try { me.hoSoThieu = hsVaiTroPhai_(me.vaiTroGoc || me.vaiTro) ? hoSoThieu_(hsCuaToi_(me)) : []; } catch (e) { me.hoSoThieu = []; }   // hồ sơ bắt buộc (22/10) – mọi nhánh, kể cả bếp / nhóm báo cơm
   if (me.vaiTro === 'BEP' || me.vaiTro === 'NHOM' || me.vaiTro === 'NV' || me.vaiTro === 'TBP') {
     var rong = { ok: true, me: me, phan: phan || 'tat', phongban: doc_('PhongBan').map(function(p) { return { MaXuong: p.MaXuong, TenXuong: p.TenXuong }; }) };
@@ -7530,3 +7531,4 @@ function danhSachVanPhong(token) {
   ds.sort(function(a, b) { return (thuTu[a.vaiTro] - thuTu[b.vaiTro]) || (a.HoTen < b.HoTen ? -1 : 1); });
   return sach_({ ok: true, ds: ds, muc: HS_MUC });
 }
+var KPI_BAN_MAY = '22/10/2026 16:52';   // giờ dựng Code.gs (22/10)

@@ -9487,6 +9487,26 @@ function vpDanhSach(){
   }).withFailureHandler(function(er){ var e = $('vpDs'); if (e) e.innerHTML = '<h3>Ban điều hành &amp; Hành chính nhân sự</h3><div class="alert a-wn">Chưa tải được danh sách: ' + esc((er && er.message) || String(er)) + ' – chụp màn hình gửi Claude.</div>'; }).danhSachVanPhong(TOKEN);
 }
 </script>
+<script>
+var KPI_BAN = '22/10/2026 16:52';
+(function(){
+  var cu = window.veNav;
+  window.veNav = function(){
+    var r = cu.apply(this, arguments);
+    try {
+      var n = $('nav'); if (n && !$('kpiBan')) {
+        var d = document.createElement('div'); d.id = 'kpiBan';
+        d.style.cssText = 'font-size:11px;line-height:1.5;color:var(--ink3);padding:10px 14px 4px';
+        var may = (ME && ME.banMay) || '?';
+        d.textContent = 'Bản web: ' + KPI_BAN + (may !== KPI_BAN ? ' · máy chủ: ' + may : '');
+        d.title = 'Giờ dựng bản đang chạy. Sau khi cập nhật mà dòng này không đổi = web vẫn chạy bản cũ.';
+        n.appendChild(d);
+      }
+    } catch (e) {}
+    return r;
+  };
+})();
+</script>
 <style>
 /* ===== CHIA ĐÔI MÀN HÌNH (21/10): danh sách bên trái, chi tiết người được chọn bên phải ===== */
 :root{--cd-w:clamp(420px,40vw,580px);--cd-top:58px}

@@ -821,6 +821,8 @@ exec(io.open(os.path.join(D, 'xep-loai', 'va-xep-loai-web.py'), encoding='utf-8'
 exec(io.open(os.path.join(D, 'kpi-may', 'va-kpi-may.py'), encoding='utf-8').read())
 # ---------------------------------------------------------------- 31. Hồ sơ bắt buộc khi đăng nhập + thống kê ở tab Nhân sự (22/10)
 exec(io.open(os.path.join(D, 'ho-so', 'va-ho-so-web.py'), encoding='utf-8').read())
+# ---------------------------------------------------------------- 32. Dòng "Bản web" cuối thanh menu (22/10): biết web đang chạy bản nào
+exec(io.open(os.path.join(D, 'phien-ban', 'va-phien-ban.py'), encoding='utf-8').read())
 # ---------------------------------------------------------------- 27. Chia đôi màn hình (21/10): Bảng KPI, Nhân sự, KPI quản lý – danh sách trái, chi tiết phải (phải là mục cuối)
 exec(io.open(os.path.join(D, 'chia-doi', 'va-chia-doi.py'), encoding='utf-8').read())
 
