@@ -19,9 +19,22 @@ let ngayXung = 0, ngay = 0;
       kt(!SAO.test(van), 'văn dễ hiểu không nêu tên sao / thuật ngữ ' + ten + ': ' + (van.match(SAO) || [''])[0]);
       if (N.xung) { ngayXung++; kt(N.nhan !== 'Ngày thuận' && N.nhan !== 'Ngày khá', 'ngày xung tuổi không gắn nhãn thuận ' + ten); kt(!N.nen.some(x => LON.test(x)), 'ngày xung tuổi không khuyên việc lớn ' + ten); }
       if (N.nhan === 'Ngày nên chậm') kt(!N.nen.some(x => LON.test(x)), 'ngày kém không khuyên việc lớn ' + ten);
+      // Bản đầy đủ: 4 lĩnh vực, 4 hệ, 3 buổi, điều kiêng lịch cổ
+      kt(N.linhVuc.length === 4 && N.linhVuc.every(L => L.van.length && /^(thuận|bình|cần giữ)$/.test(L.muc)), 'đủ 4 lĩnh vực ' + ten);
+      kt(N.linhVuc.filter(L => L.noi).length <= 1 && N.he.length === 4 && N.buoi.length === 3 && N.ky.length === 2 && N.viecNho, 'đủ 4 hệ, 3 buổi, lời kiêng ' + ten);
+      kt(!SAO.test(N.linhVuc.map(L => L.van.join(' ')).join(' ')), 'văn lĩnh vực không nêu tên sao ' + ten);
+      if (N.xung) kt(N.linhVuc[0].muc !== 'thuận', 'ngày xung tuổi: công việc không gắn "thuận" ' + ten);
+      if (!N.hoangDao) kt(!N.nen.some(x => /cưới hỏi|khai trương|nhập trạch/.test(x)), 'ngày Hắc đạo không khuyên lễ lớn ' + ten);
+      if (/Hợi/.test(N.canChi)) kt(!N.nen.some(x => /cưới hỏi/.test(x)), 'ngày Hợi (kiêng cưới gả) không khuyên cưới hỏi ' + ten);
+      if (/Tỵ/.test(N.canChi)) kt(!N.nen.some(x => /xuất hành|đi xa/.test(x)), 'ngày Tỵ (kiêng đi xa) không khuyên xuất hành ' + ten);
     });
+    kt(!/hôm nay/i.test(D.ngayMai.luu.concat(D.ngayMai.linhVuc.map(L => L.van.join(' '))).join(' ') + D.ngayMai.tong), 'ngày mai không viết nhầm "hôm nay" ' + ten);
+    kt(ctx.tiVanChuanBi_(D.ngayMai).length >= 1, 'có lời dặn chuẩn bị cho ngày mai ' + ten);
     kt(D.homNay.ngay === t.d + '/' + t.m + '/' + t.y, 'đúng ngày hôm nay ' + ten);
     const h = ctx.tiVanNgayHtml_(D); kt(!/undefined|NaN|null/.test(h) && h.indexOf('Ngày mai') > 0, 'email không lỗi chữ ' + ten);
+    const chu = h.replace(/<[^>]+>/g, ' ').replace(/Thiên Cơ Các/g, '').replace(/Tử Vi(?=\s*·|, Bát Tự)/g, '');
+    kt(!SAO.test(chu), 'toàn bộ email không nêu tên sao ' + ten + ': ' + (chu.match(SAO) || [''])[0]);
+    kt(/Theo từng lĩnh vực/.test(h) && /Lịch trong ngày/.test(h) && /Chuẩn bị từ tối nay/.test(h) && /Điều kiêng theo lịch cổ/.test(h), 'email có đủ các mục mới ' + ten);
   }
 });
 kt(ngayXung > 10, 'có gặp ngày xung tuổi trong mẫu (' + ngayXung + '/' + ngay + ')');

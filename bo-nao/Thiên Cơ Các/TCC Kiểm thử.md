@@ -19,7 +19,7 @@ node tests/ha-lac.js                           # Hà Lạc lục hào nạp giá
 node tests/than-so.js                          # Thần số học 6 bước (nợ nghiệp, số 0, số bậc thầy…) trên 300 lá số
 node tests/chiem-tinh.js                       # Chiêm tinh 7 bước: Chiron/Lilith, cấu hình, 8 lĩnh vực, chu kỳ, so sánh (~40 giây)
 node tests/human-design.js                     # Human Design 11 bước; đối chiếu màu Mặt Trời với hd-chart-engine nếu đã npm install trong tests/
-node tests/van-ngay.js                         # luận giải hằng ngày qua email: 7 lá số × 12 ngày, không tên sao, ngày xung không khuyên việc lớn, quyền, trigger (628 kiểm tra; TK_PASS cho phần chủ sở hữu)
+node tests/van-ngay.js                         # luận giải hằng ngày qua email: 7 lá số × 12 ngày, không tên sao, ngày xung không khuyên việc lớn, đủ 4 lĩnh vực/4 hệ/3 buổi, không mâu thuẫn lịch cổ, ngày mai không viết "hôm nay", quyền, trigger (1590 kiểm tra; TK_PASS cho phần chủ sở hữu)
 node tests/tien-ich.js                         # 7 tiện ích bán lẻ: công thức, miễn phí/trả phí, mua, gieo quẻ, bản tin (55 kiểm tra)
 TK_PASS='<mật khẩu chủ>' node tests/tai-khoan.js   # cần mật khẩu chủ sở hữu – hỏi chủ dự án hoặc đặt biến môi trường TK_PASS
 TK_PASS='<mật khẩu chủ>' node tests/thanh-toan.js
