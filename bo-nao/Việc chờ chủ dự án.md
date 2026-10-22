@@ -13,6 +13,9 @@ Liên quan: [[Lần dán lên Apps Script]] · [[Quyết định của chủ d�
 ## Câu hỏi 22/10
 - Cân Phôi – Phân Loại Phôi đã nâng 180 → 350 mà vẫn ~102% (công đoạn phụ, 2 người chỉ dành 9–12% thời gian) – có trả về 180 không? – [[KPI Soát đổi định mức 22-10]]
 
+- Sửa NhanSu: Trương Thị Thùy Linh NgayVaoLam 08/11/2026 (tương lai); Hà Thị Hải có 2 dòng. – [[KPI Phân tích định mức]]
+- Có loại người SL 0 cả tháng (Bùi Hoàng Anh, Trần Thị Thuỳ Dung, Tống Thị Mỹ Duyên, Nguyễn Thị Mai Nga…) khỏi bảng KPI công nhân không? Có muốn đổi trọng số (SL 70/CL 20/TT 5/AT 5) để KPI tổng bám 85% hơn không? – [[KPI Soát đổi định mức 22-10]]
+
 ## Chờ chủ dự án làm
 - Dán bản 21/10 (sửa lỗi + tăng tốc), chạy `CAI_TRIGGER_LAM_NONG_KPI`, kiểm tra Sheets API. – [[KPI Tăng tốc đợt 2 (21-10)]]
 - Sau khi dán: chạy một lần `AP_DINH_MUC_CA_THANG`, mở Phân tích định mức tháng 10 → "Áp dụng các dòng đã chọn"; nếu tháng đã chốt thì bấm "Chốt bù tháng này". – [[KPI Phân tích định mức]]

@@ -7159,7 +7159,7 @@ function phanTichDinhMucGoc_(token, kieu, giaTri) {
   doc_('DinhMuc').forEach(function(x) { var v = soVN_(x.DinhMucGio); if (v > 0) dmHT[x.MaCD] = v; });
 
   // (người, ngày) -> giờ có mặt + sản lượng đạt từng công đoạn (+ giờ chuẩn theo định mức từng ngày, để so với KPI)
-  var nd = {};
+  var nd = {}, boHV = {};
   dt.nhatky.forEach(function(r) {
     if (String(r.TrangThai).trim() !== 'Đã chốt') return;
     var ng = ngayVN_(r.Ngay);
@@ -7167,6 +7167,7 @@ function phanTichDinhMucGoc_(token, kieu, giaTri) {
     if (!(dmHT[r.MaCD] > 0)) return;                     // chưa có định mức -> bỏ (như KPI)
     var dat = Number(r.SoLuongLamRa) - (dt.idxLoi[r.MaNV + '|' + ng + '|' + r.MaCD] || 0);
     if (!(dat > 0)) return;
+    if (dangHocViec_(r.MaNV, ng)) { boHV[r.MaNV] = 1; return; }   // 22/10 chủ dự án: sản lượng ngày còn học việc không tính vào trung vị
     var dk = dmNgay_(dt, r.MaCD, ng);
     var k = r.MaNV + '|' + ng;
     var o = nd[k] || (nd[k] = { nv: r.MaNV, ng: ng, dat: {}, gcKy: {} });
@@ -7308,7 +7309,7 @@ function phanTichDinhMucGoc_(token, kieu, giaTri) {
     return Math.abs(b.trungVi - DM_MOC) - Math.abs(a.trungVi - DM_MOC);
   });
   if (me.vaiTro === 'TP') ketqua = ketqua.filter(function(k) { return k.maXuong === me.xuong; });
-  return sach_({ ok:true, kieu:kieu, giaTri:giaTri, moc:DM_MOC, sat:DM_SAT, itNguoi:DM_IT_NGUOI, ds:ketqua, apTu: ngayApDM_(), daChot: (function() { try { return daChotChinhThuc_(kyVN_()); } catch (e) { return false; } })() });
+  return sach_({ ok:true, kieu:kieu, giaTri:giaTri, moc:DM_MOC, sat:DM_SAT, itNguoi:DM_IT_NGUOI, ds:ketqua, soHocViecBo: Object.keys(boHV).length, apTu: ngayApDM_(), daChot: (function() { try { return daChotChinhThuc_(kyVN_()); } catch (e) { return false; } })() });
 }
 
 /* CHẠY TAY 1 LẦN (21/10): đưa các lần đổi định mức trong tháng này về quy tắc mới – cả tháng tính theo định mức đang dùng.

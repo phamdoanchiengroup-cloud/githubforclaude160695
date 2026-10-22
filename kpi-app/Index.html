@@ -5493,7 +5493,8 @@ function vPTDM(){
     '<div class="pdesc">Đánh giá định mức theo hiệu suất trung vị (người ở giữa) và gợi ý nâng định mức lỏng về mốc 85%</div>';
   h+='<div class="alert a-nu">Định mức hợp lý khi <b>hiệu suất trung vị</b> quanh mốc <b>85%</b> (±3 điểm). '+
     'Trên mốc là định mức <b>lỏng</b> → gợi ý <b>nâng</b>. Dưới mốc <b>không gợi ý hạ</b> — thường do người mới đang đào tạo, chưa lên tay. '+
-    'Đổi định mức là áp cho <b>cả tháng đang làm</b>: toàn bộ sản lượng tháng này tính lại theo định mức mới, các tháng trước giữ nguyên.</div>';
+    'Đổi định mức là áp cho <b>cả tháng đang làm</b>: toàn bộ sản lượng tháng này tính lại theo định mức mới, các tháng trước giữ nguyên. '+
+    'Sản lượng của người <b>đang học việc</b> (tháng đầu kể từ ngày vào làm) <b>không tính</b> vào trung vị.</div>';
 
   // Bộ chọn kỳ
   if(!ptdmKy.giaTri){var d=new Date(); ptdmKy.giaTri=d.getFullYear()+'-'+('0'+(d.getMonth()+1)).slice(-2);}
@@ -5596,6 +5597,7 @@ function ptdmVe(r){
   }else{
     h+='<div class="alert a-ok">Không có công đoạn nào lỏng hơn mốc 85% — không cần nâng định mức.</div>';
   }
+  if(ptdmKq.soHocViecBo) h+='<div class="pdesc" style="margin:-4px 0 10px">Không tính sản lượng những ngày còn học việc của <b>'+ptdmKq.soHocViecBo+' người</b>.</div>';
   if(th) h+='<div class="alert a-nu">Đổi định mức lúc này sẽ áp cho <b>cả tháng '+th+'</b> (từ ngày 1). '+
     'Bảng KPI tháng '+th+' tự tính lại theo định mức mới — <b>không cần bấm chốt</b>.</div>';
 

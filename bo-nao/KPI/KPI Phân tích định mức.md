@@ -35,3 +35,9 @@ Liên quan: [[KPI Tổng quan và cách dựng]] · [[KPI Kiểm thử]] · [[Qu
 ## Kiểm thử
 - `tests/dinh-muc.js` 25 (DATA= dữ liệu thật) · `tests/dinh-muc-web.js` 15 (bản xem thử).
 - `tests/van-hanh.js` mục A1 sửa theo quy tắc mới (áp cả tháng).
+
+## 22/10: bỏ người học việc khỏi trung vị (chủ dự án)
+- `phanTichDinhMucGoc_` bỏ dòng nhật ký của ngày người đó còn học việc (`dangHocViec_(MaNV, ngày)`, 1 tháng kể từ NgayVaoLam); trả `soHocViecBo`, giao diện ghi "Không tính sản lượng những ngày còn học việc của N người".
+- Dữ liệu 22/10: bỏ 19 người, 27 công đoạn đổi trung vị (đa số tăng vì người mới làm chậm); thêm 2 gợi ý nâng: Nhập Nguyên Vật Liệu 1,05 → 1,1, Quấn Cao Để Đúc Ren 98 → 108; "Tiện Rà Tròn Chuôi 1 Máy" chỉ có người học việc làm nên ra khỏi phân tích.
+- Lỗi dữ liệu thấy khi soát: Trương Thị Thùy Linh NgayVaoLam 2026-11-08 (tương lai – gõ nhầm?); Hà Thị Hải có 2 dòng NhanSu; người thiếu NgayVaoLam không được coi là học việc.
+- Kiểm thử `dinh-muc.js` 27.

@@ -11,6 +11,7 @@ Liên quan: [[Việc chờ chủ dự án]] · [[KPI Tổng quan và cách dựn
 - **Bản sửa 21/10** (4 lỗi chủ dự án báo + rà soát đợt 2): chỉ `Code.gs` + `Index.html`; hướng dẫn ở HUONG-DAN-CAP-NHAT.md mục "BẢN SỬA 21/10". Sau khi dán, có thể chạy tay `KIEM_TRA_DU_LIEU` để soát sheet. – [[KPI Sửa lỗi 21-10 và dữ liệu sheet]]
 - **Tăng tốc 21/10** (đăng nhập nhẹ một nửa, bảng KPI / KPI quản lý giữ bộ nhớ tạm + làm nóng): cùng `Code.gs` + `Index.html` của bản sửa 21/10; sau khi dán chạy một lần `CAI_TRIGGER_LAM_NONG_KPI`, và `KIEM_TRA_SHEETS_API` nếu chưa bật Sheets API. Hướng dẫn: HUONG-DAN-CAP-NHAT.md mục "TĂNG TỐC 21/10". – [[KPI Tăng tốc đợt 2 (21-10)]]
 - **Phân tích định mức 21/10** (gợi ý nâng định mức lỏng về 85%, không hạ, đổi định mức áp cả tháng kể cả tháng đã chốt): `Code.gs` + `Index.html` bản mới nhất; sau khi dán chạy một lần `AP_DINH_MUC_CA_THANG`. Hướng dẫn: HUONG-DAN-CAP-NHAT.md mục "PHÂN TÍCH ĐỊNH MỨC 21/10". – [[KPI Phân tích định mức]]
+- **Trung vị bỏ người học việc 22/10**: Code.gs + Index.html (clasp). – [[KPI Phân tích định mức]]
 - **Sửa KPI trình duyệt + bỏ nhắc Chốt bù 22/10**: Code.gs + Index.html (clasp: `2-CAP-NHAT.bat`). – [[KPI Soát đổi định mức 22-10]]
 - **Thang xếp loại 22/10** (S/A+/A/B/C/D): đổi cả 5 file (Code, Index, SoDo, AmThanh; HoatAnh không đổi) – chủ dự án đã có clasp nên chỉ cần bấm `2-CAP-NHAT.bat`. – [[KPI Thang xếp loại]]
 - **Chia đôi màn hình 21/10** (Bảng KPI, Nhân sự, KPI quản lý): chỉ `Index.html` bản mới nhất. – [[KPI Chia đôi màn hình]]

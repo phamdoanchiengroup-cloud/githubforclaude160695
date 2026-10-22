@@ -22,6 +22,7 @@ console.log('\n1. Phân tích theo định mức đang dùng + gợi ý mọi c�
 let { c, T, TP, tp } = tao();
 r = phanTich(c, T);
 ok(r.ok && r.ds.length > 50, 'phân tích tháng 10: ' + r.ds.length + ' công đoạn (' + r.ms + ' ms trên máy giả lập)');
+ok(r.soHocViecBo > 0, 'không tính sản lượng ngày còn học việc vào trung vị (bỏ ' + r.soHocViecBo + ' người)', r.soHocViecBo);
 ok(r.apTu === '2026-10-01', 'đổi định mức sẽ áp từ 01/10 (tháng chưa chốt)', r.apTu);
 const lech = r.ds.filter(x => x.soCoData > 0 && x.trungVi > 88);
 const khongGY = lech.filter(x => !x.dmGoiY && !x.phuThuoc && Math.abs(x.trungViSau - 85) > 3);
