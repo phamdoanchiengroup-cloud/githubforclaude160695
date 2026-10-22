@@ -118,7 +118,7 @@ function vpDanhSach(){
   var kn = $('knbox'); if (kn && kn.parentNode === m) m.insertBefore(d, kn); else m.appendChild(d);
   google.script.run.withSuccessHandler(function(r){
     var e = $('vpDs'); if (!e) return;
-    if (!r || !r.ok) { e.remove(); return; }
+    if (!r || !r.ok) { e.innerHTML = '<h3>Ban điều hành &amp; Hành chính nhân sự</h3><div class="alert a-wn">Chưa tải được danh sách: ' + esc((r && r.msg) || 'lỗi không rõ') + '</div>'; return; }
     var sdt = function(v){ return v ? esc(v) : '<span style="color:var(--ink3)">–</span>'; };
     e.innerHTML = '<h3>Ban điều hành &amp; Hành chính nhân sự<span>' + r.ds.length + ' người · chỉ chủ sở hữu xem được</span></h3>' +
       '<div class="tw"><table><thead><tr><th>Họ tên</th><th>Vai trò</th><th>Tài khoản</th><th>Điện thoại</th><th>Năm sinh</th><th>Ngày vào làm</th><th>Hồ sơ</th><th>Đăng nhập gần nhất</th></tr></thead><tbody>' +
@@ -130,5 +130,5 @@ function vpDanhSach(){
           '<td>' + sdt(x.NamSinh) + '</td><td>' + (x.NgayVaoLam ? esc(dmy(x.NgayVaoLam)) : sdt('')) + '</td><td>' + hs + '</td><td>' + (x.lanCuoi ? esc(dmy(x.lanCuoi)) : sdt('')) + '</td></tr>';
       }).join('') + '</tbody></table></div>' +
       '<div class="note">Mọi tài khoản trừ chủ sở hữu và ban điều hành phải điền hồ sơ khi đăng nhập. Người không gắn mã nhân viên (trợ lý BĐH, nhân sự, bếp…) lưu ở sheet HoSoVanPhong, không vào Bảng KPI.</div>';
-  }).withFailureHandler(function(){ var e = $('vpDs'); if (e) e.remove(); }).danhSachVanPhong(TOKEN);
+  }).withFailureHandler(function(er){ var e = $('vpDs'); if (e) e.innerHTML = '<h3>Ban điều hành &amp; Hành chính nhân sự</h3><div class="alert a-wn">Chưa tải được danh sách: ' + esc((er && er.message) || String(er)) + ' – chụp màn hình gửi Claude.</div>'; }).danhSachVanPhong(TOKEN);
 }
