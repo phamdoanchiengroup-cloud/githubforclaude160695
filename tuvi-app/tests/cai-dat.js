@@ -22,5 +22,9 @@ Object.keys(ctx.BAN_MOI_CAN_CO).forEach(f => {
   kt(typeof h === 'function' && String(h).indexOf(m[1]) >= 0, f + ': hàm ' + m[0] + ' phải chứa "' + m[1] + '" (nếu không, kiemTraCaiDat sẽ báo nhầm là bản cũ)');
 });
 const m = code.match(/đủ (\d+) file \.gs/); kt(m && +m[1] === soGs, 'câu báo "đủ N file .gs" khớp số file thật (' + soGs + ')');
+// Danh sách file cho bộ bấm đúp (cai-dat-clasp/ds-file.txt) phải khớp file thật – chạy python3 tools/tao-ds-file.py
+const dsTxt = path.join(__dirname, '..', 'cai-dat-clasp', 'ds-file.txt');
+const dsMoi = fs.readdirSync(path.join(__dirname, '..')).filter(f => /\.(gs|html)$/.test(f)).sort().map(f => f + '\t' + fs.statSync(path.join(__dirname, '..', f)).size).join('\n') + '\n';
+kt(fs.existsSync(dsTxt) && fs.readFileSync(dsTxt, 'utf8') === dsMoi, 'cai-dat-clasp/ds-file.txt khớp file thật (chạy: python3 tools/tao-ds-file.py)');
 console.log('Kiểm tra cài đặt: đạt ' + ok + '/' + (ok + sai));
 process.exit(sai ? 1 : 0);

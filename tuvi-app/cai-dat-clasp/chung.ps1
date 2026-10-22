@@ -73,23 +73,50 @@ function KiemTraDungDuAn {
   return [bool]($gs | Where-Object { Select-String -Path $_.FullName -Pattern 'function lapLaSo\b' -Quiet })
 }
 
-# Tải toàn bộ file .gs / .html của Thiên Cơ Các ở bản mới nhất trên GitHub về thư mục $dich.
-# Lấy danh sách qua GitHub API theo đúng mã commit (không bị bản cũ trong bộ nhớ đệm), kiểm tra đủ dung lượng từng file.
+# Tải toàn bộ file .gs / .html của Thiên Cơ Các ở bản mới nhất trên GitHub về thư mục $dich, kiểm tra đủ dung lượng từng file.
+# Cách 1: GitHub API (api.github.com) lấy đúng mã commit mới nhất. Cách 2 (máy không vào được api.github.com):
+# chỉ dùng raw.githubusercontent.com với danh sách cai-dat-clasp/ds-file.txt (tên file + dung lượng).
+function TaiTep($url, $ra) {
+  $lan = 0
+  while ($true) {
+    try { Invoke-WebRequest -UseBasicParsing -Uri $url -OutFile $ra; return }
+    catch { $lan++; if ($lan -ge 3) { throw }; Start-Sleep -Seconds (2 * $lan) }
+  }
+}
+function LoiMang($e) {
+  $m = [string]$e.Exception.Message
+  if ($m -match 'could not be resolved|không thể phân giải|No such host|Unable to connect|timed out|actively refused') {
+    return 'Máy không kết nối được tới GitHub (' + $m + '). Kiểm tra mạng: mở thử https://github.com trên trình duyệt; tắt VPN / phần mềm chặn web nếu có; hoặc thử mạng khác (phát Wi-Fi từ điện thoại) rồi chạy lại.'
+  }
+  return $m
+}
 function TaiBanMoi($dich) {
   [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
-  $tieuDe = @{ 'User-Agent' = 'ThienCoCac-clasp'; 'Accept' = 'application/vnd.github+json' }
-  $commit = Invoke-RestMethod -UseBasicParsing -Headers $tieuDe -Uri ('https://api.github.com/repos/' + $Repo + '/commits/' + $Nhanh)
-  $sha = $commit.sha
-  $ds = Invoke-RestMethod -UseBasicParsing -Headers $tieuDe -Uri ('https://api.github.com/repos/' + $Repo + '/contents/' + $ThuMucRepo + '?ref=' + $sha)
-  $tep = @($ds | Where-Object { $_.type -eq 'file' -and $_.name -match '\.(gs|html)$' })
-  if ($tep.Count -lt 20) { throw ('Danh sách file trên GitHub chỉ có ' + $tep.Count + ' file – bất thường, dừng lại.') }
   if (Test-Path $dich) { Remove-Item $dich -Recurse -Force }
   New-Item -ItemType Directory -Force -Path $dich | Out-Null
+  $tep = @(); $goc = ''; $ma = ''
+  try {
+    $tieuDe = @{ 'User-Agent' = 'ThienCoCac-clasp'; 'Accept' = 'application/vnd.github+json' }
+    $commit = Invoke-RestMethod -UseBasicParsing -Headers $tieuDe -Uri ('https://api.github.com/repos/' + $Repo + '/commits/' + $Nhanh)
+    $ds = Invoke-RestMethod -UseBasicParsing -Headers $tieuDe -Uri ('https://api.github.com/repos/' + $Repo + '/contents/' + $ThuMucRepo + '?ref=' + $commit.sha)
+    $tep = @($ds | Where-Object { $_.type -eq 'file' -and $_.name -match '\.(gs|html)$' } | ForEach-Object { [pscustomobject]@{ Ten = $_.name; Co = [int64]$_.size } })
+    $goc = 'https://raw.githubusercontent.com/' + $Repo + '/' + $commit.sha + '/' + $ThuMucRepo + '/'
+    $ma = $commit.sha.Substring(0, 7)
+  } catch {
+    Write-Host '  Không vào được api.github.com – chuyển sang tải trực tiếp (raw.githubusercontent.com).' -ForegroundColor Yellow
+    $goc = 'https://raw.githubusercontent.com/' + $Repo + '/' + $Nhanh + '/' + $ThuMucRepo + '/'
+    $dsTxt = Join-Path $dich 'ds-file.txt'
+    try { TaiTep ($goc + 'cai-dat-clasp/ds-file.txt?t=' + (Get-Date -Format 'yyyyMMddHHmmss')) $dsTxt } catch { throw (LoiMang $_) }
+    $tep = @(Get-Content $dsTxt -Encoding UTF8 | Where-Object { $_ -match '\t' } | ForEach-Object { $c = $_ -split "`t"; [pscustomobject]@{ Ten = $c[0].Trim(); Co = [int64]$c[1] } })
+    Remove-Item $dsTxt -Force
+    $ma = 'nhánh mới nhất'
+  }
+  if ($tep.Count -lt 20) { throw ('Danh sách file trên GitHub chỉ có ' + $tep.Count + ' file – bất thường, dừng lại.') }
   foreach ($f in $tep) {
-    $ra = Join-Path $dich $f.name
-    Invoke-WebRequest -UseBasicParsing -Uri ('https://raw.githubusercontent.com/' + $Repo + '/' + $sha + '/' + $ThuMucRepo + '/' + $f.name) -OutFile $ra
+    $ra = Join-Path $dich $f.Ten
+    try { TaiTep ($goc + $f.Ten + '?t=' + (Get-Date -Format 'yyyyMMddHHmmss')) $ra } catch { throw (LoiMang $_) }
     $co = (Get-Item $ra).Length
-    if ($co -ne [int64]$f.size) { throw ('File ' + $f.name + ' tải về chưa đủ (' + $co + '/' + $f.size + ' byte) – mạng chập chờn? Chạy lại.') }
+    if ($co -ne $f.Co) { throw ('File ' + $f.Ten + ' tải về chưa khớp (' + $co + '/' + $f.Co + ' byte). Nếu Claude vừa đẩy bản mới, chờ 5 phút cho GitHub cập nhật rồi chạy lại.') }
   }
   # Kiểm tra nhanh trước khi đẩy: đủ hàm chính, 3 mã phiên bản giao diện trùng nhau
   if (-not (Select-String -Path (Join-Path $dich 'Code.gs') -Pattern 'function kiemTraCaiDat' -Quiet)) { throw 'Code.gs tải về không đúng – dừng, chưa đổi gì.' }
@@ -97,7 +124,7 @@ function TaiBanMoi($dich) {
   $b2 = [regex]::Match((Get-Content (Join-Path $dich 'Styles.html') -Raw -Encoding UTF8), '--tcc-ban:\s*"([^"]+)"').Groups[1].Value
   $b3 = [regex]::Match((Get-Content (Join-Path $dich 'Script.html') -Raw -Encoding UTF8), "BAN_GIAO_DIEN = '([^']+)'").Groups[1].Value
   if (-not $b1 -or $b1 -ne $b2 -or $b1 -ne $b3) { throw ('Mã phiên bản giao diện không khớp (Index ' + $b1 + ', Styles ' + $b2 + ', Script ' + $b3 + ') – báo Claude, chưa đổi gì.') }
-  return [pscustomobject]@{ Sha = $sha.Substring(0, 7); SoFile = $tep.Count; BanGiaoDien = $b1; Ngay = $commit.commit.committer.date }
+  return [pscustomobject]@{ Sha = $ma; SoFile = $tep.Count; BanGiaoDien = $b1 }
 }
 
 # Chép bản mới vào thư mục mã: ghi đè file cùng tên, giữ file chỉ có trên Apps Script, giữ Anh.html đang có
