@@ -538,7 +538,8 @@ function dangKyVanNgay(input, email, token) {
   }
   sh.appendRow([u.ten, email, JSON.stringify(clean), new Date(), '', 'bật']);
   var thu = '';
-  try { tiGuiVanNgay_(email, clean, tiGioVN_()); thu = 'đã gửi bản thử'; } catch (e) { thu = 'chưa gửi được bản thử: ' + (e && e.message || e); }
+  var zalo = u.vaiTro === 'chu' && tiZaloCo_();
+  try { tiGuiVanNgay_(email, clean, tiGioVN_(), zalo); thu = 'đã gửi bản thử' + (zalo ? ' (email và Zalo)' : ''); } catch (e) { thu = 'chưa gửi được bản thử: ' + (e && e.message || e); }
   return { ok: true, email: email, ten: clean.name || '', thu: thu };
 }
 function huyVanNgay(email, token) {
@@ -753,21 +754,74 @@ function tiVanNgayHtml_(D) {
     khoi(D.homNay, true) + khoi(D.ngayMai, false) + th +
     '<p style="margin:16px 4px 0;font-size:12px;color:#8f8576">Tổng hợp từ Tử Vi, Bát Tự, Chiêm tinh, Thần số học và lịch cổ – mang tính tham khảo, giúp bạn chủ động sắp xếp việc trong ngày. Ngừng nhận: vào web › Tiện ích › Luận giải hằng ngày › Ngừng nhận.</p></div>';
 }
-function tiGuiVanNgay_(email, input, t) {
+/* Zalo: dùng chung bot của Trợ lý KPI. Thuộc tính tập lệnh ZALO_TOKEN (token bot) và ZALO_CHAT_ID (= CHU_CHAT_ID bên dự án Trợ lý KPI)
+ * do chủ sở hữu tự dán – không ghi vào mã. Chỉ gửi Zalo cho các lá số chủ sở hữu đăng ký. Zalo chỉ nhận chữ thường, ≤2000 ký tự mỗi tin. */
+var TI_ZALO_API = 'https://bot-api.zaloplatforms.com/bot';
+function tiZaloCo_() { var P = PropertiesService.getScriptProperties(); return !!(P.getProperty('ZALO_TOKEN') && P.getProperty('ZALO_CHAT_ID')); }
+function tiZaloGui_(text) {
+  var P = PropertiesService.getScriptProperties(), token = P.getProperty('ZALO_TOKEN'), chat = P.getProperty('ZALO_CHAT_ID');
+  if (!token || !chat) throw new Error('Chưa nhập ZALO_TOKEN và ZALO_CHAT_ID trong Thuộc tính tập lệnh.');
+  var khuc = [], cur = '';
+  String(text).split('\n').forEach(function (d) { if ((cur + '\n' + d).length > 1900 && cur) { khuc.push(cur); cur = d; } else cur = cur ? cur + '\n' + d : d; });
+  if (cur) khuc.push(cur);
+  khuc.forEach(function (k) {
+    var res = UrlFetchApp.fetch(TI_ZALO_API + token + '/sendMessage', { method: 'post', contentType: 'application/json', payload: JSON.stringify({ chat_id: chat, text: k }), muteHttpExceptions: true });
+    var j = {}; try { j = JSON.parse(res.getContentText()); } catch (e) { j = { ok: false, description: res.getContentText() }; }
+    if (!j.ok) throw new Error('Zalo từ chối: ' + (j.description || res.getResponseCode()));
+  });
+  return khuc.length;
+}
+/** Bản Zalo: chữ thường, gọn – tin 1 hôm nay, tin 2 ngày mai + tháng */
+function tiVanNgayZalo_(D) {
+  function tron(x) { return String(x).replace(/<[^>]+>/g, ''); }
+  var DAU = { 'thuận': '🟢', 'bình': '🟡', 'cần giữ': '🟠' }, out = [];
+  function ngay(N, day) {
+    if (!N) return '';
+    var a = [(day ? '🌅 HÔM NAY' : '🌙 NGÀY MAI') + ' – ' + N.thu + ' ' + N.ngay + ' (âm ' + N.am + ')', '✦ ' + N.nhan.toUpperCase() + (N.xung ? ' · xung tuổi' : ''), tron(N.tong), ''];
+    if (day) { N.luu.forEach(function (x) { a.push('• ' + tron(x)); }); a.push(''); }
+    N.linhVuc.forEach(function (L) { a.push(DAU[L.muc] + ' ' + L.ten + (L.noi ? ' ★' : '') + ': ' + L.muc + (day ? ' – ' + tron(L.van[0]) : '')); });
+    a.push('');
+    if (N.gioDep) a.push('⭐ Giờ đẹp nhất: ' + N.gioDep);
+    if (day) a.push('🕒 Giờ tốt: ' + N.buoi.map(function (b) { return b.ten.toLowerCase() + ' ' + (b.tot.join(', ') || 'không có'); }).join('; '));
+    a.push('✅ Nên: ' + N.nen.join('; '), '⛔ Tránh: ' + N.tranh.join('; '));
+    if (day) a.push('🧭 Cầu tài hướng ' + N.taiThan + '; tránh xuất hành hướng ' + N.sat + '.', '📜 Lịch cổ kiêng: ' + N.ky.join('; ') + '.', '🌱 Việc nhỏ nên làm: ' + N.viecNho);
+    else tiVanChuanBi_(N).forEach(function (x) { a.push('🌙 ' + tron(x)); });
+    return a.join('\n');
+  }
+  out.push('Thiên Cơ Các · Chào ' + D.ten + '\n\n' + ngay(D.homNay, true));
+  var t = D.thang, b = ngay(D.ngayMai, false);
+  if (t) b += '\n\n🗓 Tháng ' + t.t + ' âm lịch: ' + (t.loi || 'một tháng bình thường') + '.' + (t.canDe.length ? ' Nên để ý: ' + t.canDe.join(', ') + '.' : '') +
+    (t.moc.length ? '\n' + t.moc.map(function (x) { return '• ' + x; }).join('\n') : '');
+  out.push(b + '\n\n(Mang tính tham khảo. Bản đầy đủ ở email.)');
+  return out;
+}
+function tiGuiVanNgay_(email, input, t, zalo) {
   var D = tiVanNgayDuLieu_(input, t), N = D.homNay;
-  MailApp.sendEmail({ to: email, subject: 'Thiên Cơ Các · ' + (N ? N.thu + ' ' + N.ngay.replace(/\/\d{4}$/, '') + ': ' + N.nhan + (N.xung ? ' · xung tuổi' : '') : 'Luận giải hằng ngày'), htmlBody: tiVanNgayHtml_(D) });
+  if (email) MailApp.sendEmail({ to: email, subject: 'Thiên Cơ Các · ' + (N ? N.thu + ' ' + N.ngay.replace(/\/\d{4}$/, '') + ': ' + N.nhan + (N.xung ? ' · xung tuổi' : '') : 'Luận giải hằng ngày'), htmlBody: tiVanNgayHtml_(D) });
+  if (zalo) tiVanNgayZalo_(D).forEach(tiZaloGui_);
   return D;
 }
-/** Trigger 6 giờ sáng gọi: gửi cho mọi người đang bật (mỗi email một lần mỗi ngày) */
+/** Trigger 6 giờ sáng gọi: gửi cho mọi người đang bật (mỗi email một lần mỗi ngày); lá số của chủ sở hữu gửi thêm qua Zalo nếu đã nhập token */
 function guiVanNgay() {
   var sh = tiShVanNgay_(), last = sh.getLastRow(); if (last < 2) return 0;
-  var t = tiGioVN_(), homNay = tiNgayStr_(t), n = 0;
+  var t = tiGioVN_(), homNay = tiNgayStr_(t), n = 0, zaloCo = tiZaloCo_(), daZalo = {};
   sh.getRange(2, 1, last - 1, 6).getDisplayValues().forEach(function (r, i) {
     if (!r[1] || r[5] === 'tắt' || String(r[4]).replace(/^'/, '').indexOf(homNay) === 0) return;
-    try { tiGuiVanNgay_(r[1], JSON.parse(r[2]), t); sh.getRange(i + 2, 5).setValue("'" + homNay); n++; }
-    catch (e) { sh.getRange(i + 2, 5).setValue('Lỗi ' + homNay + ': ' + String(e && e.message || e).slice(0, 80)); }
+    var zalo = zaloCo && r[0] === TK_CHU && !daZalo[r[2]];
+    try {
+      tiGuiVanNgay_(r[1], JSON.parse(r[2]), t, false); sh.getRange(i + 2, 5).setValue("'" + homNay); n++;
+      if (zalo) { daZalo[r[2]] = 1; try { tiGuiVanNgay_('', JSON.parse(r[2]), t, true); } catch (e) { console.error('Zalo: ' + (e && e.message || e)); } }
+    } catch (e) { sh.getRange(i + 2, 5).setValue('Lỗi ' + homNay + ': ' + String(e && e.message || e).slice(0, 80)); }
   });
   return n;
+}
+/** Chủ sở hữu chạy trong trình soạn thảo để thử gửi Zalo ngay (lấy lá số đăng ký đầu tiên của chủ sở hữu) */
+function thuZaloVanNgay() {
+  if (!tiZaloCo_()) throw new Error('Chưa nhập ZALO_TOKEN và ZALO_CHAT_ID: Cài đặt dự án › Thuộc tính tập lệnh.');
+  var sh = tiShVanNgay_(), last = sh.getLastRow(), r = last >= 2 ? sh.getRange(2, 1, last - 1, 3).getDisplayValues().filter(function (x) { return x[0] === TK_CHU; })[0] : null;
+  if (!r) throw new Error('Chủ sở hữu chưa đăng ký lá số nào: vào web › Tiện ích › Luận giải hằng ngày để đăng ký.');
+  tiGuiVanNgay_('', JSON.parse(r[2]), tiGioVN_(), true);
+  Logger.log('✔ Đã gửi luận giải hôm nay qua Zalo. Từ mai bot tự gửi lúc 6 giờ sáng cùng với email.');
 }
 /** Chủ sở hữu chạy 1 lần trong trình soạn thảo: bật gửi luận giải 6 giờ sáng mỗi ngày */
 function caiDatVanNgay() {

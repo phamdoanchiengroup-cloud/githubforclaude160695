@@ -76,7 +76,7 @@ var BAN_MOI_CAN_CO = {
   'HoiTu.gs': ['htTinHieu_', 'htBtTin_'],
   'TongHop.gs': ['tongHopLuan', 'vsHieuChinh_'],
   'LuanGiai.gs': ['luanChiTiet', 'tpLap_'],
-  'TienIch.gs': ['guiVanNgay', 'tiGuiVanNgay_']
+  'TienIch.gs': ['guiVanNgay', 'tiZaloCo_']
 };
 function kiemTraCaiDat_() {
   var loi = [];

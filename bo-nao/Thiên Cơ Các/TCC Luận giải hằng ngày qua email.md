@@ -42,8 +42,15 @@ Chủ dự án thấy email sơ sài → làm lại theo đề xuất (chỉ s�
 - Bối cảnh tháng viết lại bằng lời đời thường (`TI_VN_THANG`, việc dễ đến, nên để ý, nhịp tháng) + mốc đang hiệu lực hoặc trong 7 ngày tới (`tiVanMocGan_`).
 - Sửa lỗi chữ: ngày mai không còn mở đầu bằng "Hôm nay mọi việc…".
 
+## Gửi thêm qua Zalo (22/10, tối)
+Chủ dự án chốt: **dùng chung bot Zalo của Trợ lý KPI, bỏ bản tin sản xuất 7 giờ của KPI** (chủ dự án tự xóa trigger `guiBanTinSang` bên dự án Trợ lý KPI – không sửa mã nhánh KPI).
+- Thuộc tính tập lệnh của Thiên Cơ Các: `ZALO_TOKEN` (cùng token bot KPI) và `ZALO_CHAT_ID` (chép giá trị `CHU_CHAT_ID` bên dự án Trợ lý KPI). Chủ dự án tự dán, không ghi vào mã. Không cần webhook: chỉ gọi `sendMessage`.
+- `tiZaloCo_`, `tiZaloGui_` (chia khúc ≤1900 ký tự, báo lỗi nếu Zalo từ chối), `tiVanNgayZalo_` (2 tin chữ thường: hôm nay đầy đủ gọn, ngày mai + tháng).
+- `guiVanNgay`: email như cũ; dòng của chủ sở hữu (`TK_CHU`) gửi thêm Zalo, mỗi lá số một lần/ngày; lỗi Zalo không làm hỏng email. `dangKyVanNgay` của chủ sở hữu gửi thử cả Zalo. `thuZaloVanNgay()` chạy trong trình soạn thảo để thử ngay.
+- `BAN_MOI_CAN_CO` TienIch đổi thành `['guiVanNgay', 'tiZaloCo_']`.
+
 ## Kiểm thử
-- `tests/van-ngay.js` đạt 1590/1590 (22/10 sau khi làm dày; trước đó 628).
+- `tests/van-ngay.js` đạt 1599/1599 (thêm phần Zalo; 1590 sau khi làm dày; trước đó 628).
 - Đã chụp thử email cho lá số chủ dự án: chỉ giữ trong scratchpad và gửi trong chat, không vào repo.
 
 ## Mở rộng sau (chưa làm)

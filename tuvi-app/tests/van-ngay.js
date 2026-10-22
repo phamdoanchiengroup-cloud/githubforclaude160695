@@ -1,7 +1,7 @@
 /** Luận giải hằng ngày qua email (TienIch.gs › mục 8). Chạy: node tests/van-ngay.js  (TK_PASS = mật khẩu chủ sở hữu để thử đăng ký) */
 const { ctx } = require('../tools/gia-lap.js');
 let ok = 0, sai = 0; function kt(dk, ten) { if (dk) ok++; else { sai++; console.log('  ✘', ten); } }
-const thu = []; ctx.MailApp = { sendEmail: o => thu.push(o) };
+const thu = []; ctx.MailApp = { sendEmail: o => thu.push(o) }; ctx.Logger = ctx.Logger || { log: () => {} };
 const SAO = /Tử Vi|Thiên Cơ|Thái Dương|Vũ Khúc|Thiên Đồng|Liêm Trinh|Thiên Phủ|Thái Âm|Tham Lang|Cự Môn|Thiên Tướng|Thiên Lương|Thất Sát|Phá Quân|Hóa Kỵ|Hóa Lộc|lưu tinh|Nhật chủ|Tỷ Kiên|Kiếp Tài|Thương Quan|Chính Quan|Thiên Ấn|Chính Ấn|Thực Thần|Thiên Tài|Chính Tài/;
 const LON = /khởi sự|ký kết|cưới hỏi|khai trương|xuất hành|nhậm chức|đi xa|đàm phán/;
 let ngayXung = 0, ngay = 0;
@@ -52,5 +52,29 @@ if (process.env.TK_PASS) {
   kt(n1 === 1 && n2 === 0, 'trigger gửi mỗi email một lần mỗi ngày (' + n1 + ', ' + n2 + ')');
   kt(ctx.huyVanNgay('thu@example.com', tok).n === 1 && ctx.dsVanNgay(tok).length === 0, 'ngừng nhận');
 } else console.log('  (bỏ qua phần đăng ký của chủ sở hữu – chưa có TK_PASS)');
+// Zalo (dùng chung bot Trợ lý KPI): bản chữ thường ≤1900 ký tự/tin, chỉ gửi cho lá số của chủ sở hữu, mỗi lá số một lần mỗi ngày
+{
+  const inp = { name: 'Lá số Zalo', gender: 'nam', calendar: 'duong', day: 15, month: 8, year: 1990, hour: 10, minute: 30 };
+  const D = ctx.tiVanNgayDuLieu_(inp, { y: 2026, m: 10, d: 22 }), Z = ctx.tiVanNgayZalo_(D), chu = Z.join('\n');
+  kt(Z.length === 2 && Z.every(x => x.length <= 1900), 'bản Zalo 2 tin, mỗi tin ≤1900 ký tự (' + Z.map(x => x.length) + ')');
+  kt(!/<[a-z\/]/i.test(chu) && !/undefined|NaN|null/.test(chu), 'bản Zalo không còn thẻ HTML, không lỗi chữ');
+  kt(!SAO.test(chu.replace(/Thiên Cơ Các/g, '')), 'bản Zalo không nêu tên sao');
+  kt(/HÔM NAY/.test(Z[0]) && /NGÀY MAI/.test(Z[1]) && /Giờ đẹp nhất/.test(Z[0]), 'bản Zalo đủ hôm nay, ngày mai, giờ đẹp');
+  const zl = []; ctx.UrlFetchApp = { fetch: (url, o) => { zl.push({ url, body: JSON.parse(o.payload) }); return { getContentText: () => '{"ok":true}', getResponseCode: () => 200 }; } };
+  const sh = ctx.tiShVanNgay_(), P = ctx.PropertiesService.getScriptProperties();
+  kt(!ctx.tiZaloCo_(), 'chưa nhập token thì không gửi Zalo');
+  sh.appendRow([ctx.TK_CHU, 'chu@example.com', JSON.stringify(inp), new Date(), '', 'bật']);
+  sh.appendRow([ctx.TK_CHU, 'chu2@example.com', JSON.stringify(inp), new Date(), '', 'bật']);
+  sh.appendRow(['khachvip', 'vip@example.com', JSON.stringify(inp), new Date(), '', 'bật']);
+  P.setProperty('ZALO_TOKEN', 'tok-thu'); P.setProperty('ZALO_CHAT_ID', 'chat-thu');
+  const e0 = thu.length, n = ctx.guiVanNgay();
+  kt(n === 3 && thu.length - e0 === 3, 'email vẫn gửi đủ 3 dòng (' + n + ')');
+  kt(zl.length === 2 && zl.every(x => x.body.chat_id === 'chat-thu' && /bottok-thu\/sendMessage$/.test(x.url)), 'Zalo chỉ gửi 1 lần cho lá số chủ sở hữu (2 tin), không gửi cho VIP (' + zl.length + ')');
+  ctx.thuZaloVanNgay(); kt(zl.length === 4, 'thuZaloVanNgay gửi ngay');
+  ctx.UrlFetchApp = { fetch: () => ({ getContentText: () => '{"ok":false,"description":"Unauthorized"}', getResponseCode: () => 401 }) };
+  let lz = ''; try { ctx.thuZaloVanNgay(); } catch (e) { lz = e.message; } kt(/Unauthorized/.test(lz), 'báo rõ khi Zalo từ chối');
+  P.deleteProperty('ZALO_TOKEN'); P.deleteProperty('ZALO_CHAT_ID');
+  const SAMPLE = Z; if (process.env.XEM_ZALO) console.log(SAMPLE.join('\n\n------\n\n'));
+}
 console.log('Luận giải hằng ngày: đạt ' + ok + '/' + (ok + sai));
 process.exit(sai ? 1 : 0);

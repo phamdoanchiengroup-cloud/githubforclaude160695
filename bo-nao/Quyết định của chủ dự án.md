@@ -8,6 +8,9 @@ Liên quan: [[Việc chờ chủ dự án]] · [[TCC Bán hàng]] · [[00 Mục 
 - Phần nào xong và đã kiểm tra thì gửi trước, không chờ xong hết (19/10).
 - Bộ não thứ hai: thư mục `bo-nao/` + trang bản đồ xem bằng trình duyệt, mỗi nhánh một bộ (21/10).
 
+## Thông báo hằng ngày
+- **Luận giải hằng ngày gửi thêm qua Zalo, dùng chung bot của Trợ lý KPI; bỏ bản tin sản xuất 7 giờ của KPI** (22/10). Email vẫn là bản đầy đủ. – [[TCC Luận giải hằng ngày qua email]]
+
 ## Giao diện
 - **Phong cách tối sang trọng** (kiểu Tian Qi), áp cho toàn bộ web (21/10). – [[TCC Giao diện]]
 - **Bảng màu "Bạch Kim"** (22/10, duyệt sau khi chê đỏ "máu me" và thử tím): than ấm + bạch kim, bạc + sâm panh + vàng hồng; không dùng xanh lá, đen xanh, xanh dương để trang trí. **Bố cục bento + biểu đồ động** của demo đã duyệt. – [[TCC Giao diện]]
