@@ -4996,7 +4996,7 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
   /* ---------- Nội dung từng phần ---------- */
   function pdfTom(res) {
     var T = bcT(res), TL = T.tomLuoc; if (!TL) return '';
-    var h = '<div class="bc-mau bc-nguyen"><small>Nguyên mẫu của bạn</small><h2>' + bcE(TL.tieuDe) + '</h2>' + bcP(TL.phuDe) + '</div>';
+    var h = '<div class="bc-mau bc-nguyen"><small>THIÊN CƠ CÁC · BÁO CÁO THAM KHẢO</small><h2>' + bcE(TL.tieuDe) + '</h2>' + bcP(TL.phuDe) + '</div>';
     h += bcO((TL.chiSo || []).map(function (c) { return [c.nhan, c.gt, c.phu]; }));
     h += '<div class="bc-3">' + [['Điểm sáng', TL.diemSang, 'tot'], ['Cần canh chừng', TL.canhBao, 'xau'], ['Lời khuyên', TL.loiKhuyen, '']].map(function (x) {
       return x[1] && x[1].length ? '<div class="bc-cot ' + x[2] + '"><b>' + x[0] + '</b>' + bcDs(x[1]) + '</div>' : '';
@@ -5011,7 +5011,7 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
   function pdfLinhVuc(res) {
     var D = res.moRong && res.moRong.deHieu, S = D && D.th6, h = '';
     if (S && S.linhVuc) {
-      h += bcHop('Tóm lại', bcP(S.tomTat) + '<p class="bc-p bc-nho">Điểm 0–10 là thang quy ước nội bộ của ứng dụng, không phải xác suất hoặc mức độ chính xác đã được kiểm chứng. Mốc 5 biểu thị trung tính trong cách chấm hiện tại.</p>');
+      h += bcHop('Tóm lại', bcP(S.tomTat) + '<p class="bc-p bc-nho">Điểm 0–10 là thang quy ước nội bộ của ứng dụng, không phải xác suất hoặc mức độ chính xác đã được kiểm chứng. Mốc 5 biểu thị trung tính trong cách chấm hiện tại. Các hệ huyền học là khung diễn giải truyền thống, không thay thế tư vấn chuyên môn.</p>');
       h += bcH2('Bảng điểm 9 lĩnh vực');
       h += bcBang(['Lĩnh vực', 'Điểm /10', 'Đồng thuận'], S.linhVuc.map(function (l) {
         return ['<b>' + bcE(l.ten) + '</b>', bcThanh(l.diem), (l.dong != null ? l.dong + '/' + l.soHe + ' hệ' : '')];
@@ -5036,7 +5036,7 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
   }
   function pdfNguoi(res) {
     var T = bcT(res), h = '';
-    [['xuatThan', 'Xuất thân – gia cảnh'], ['vocDang', 'Vóc dáng – diện mạo'], ['coThe', 'Đặc điểm cơ thể & sức khỏe']].forEach(function (x) {
+    [['xuatThan', 'Xuất thân – gia cảnh'], ['vocDang', 'Biểu tượng ngoại hình theo trường phái'], ['coThe', 'Giới hạn diễn giải về cơ thể và sức khỏe']].forEach(function (x) {
       var o = T[x[0]]; if (o && o.ketLuan && o.ketLuan.length) h += bcH2(o.tieuDe || x[1]) + bcDs(o.ketLuan);
     });
     var tc = T.tinhCach;
@@ -5064,7 +5064,7 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
     if (TD) ['ketHon', 'sinhCon'].forEach(function (k) {
       var o = TD[k]; if (!o || !o.nam) return;
       var ds = o.nam.filter(function (y) { return !y.qua && y.pct >= 10; }).sort(function (a, b) { return b.pct - a.pct; }).slice(0, 5);
-      if (ds.length) h += bcH3('Năm dễ ' + (o.ten || k)) + bcBang(['Năm', 'Tuổi', 'Khả năng', 'Hệ cùng báo'], ds.sort(function (a, b) { return a.nam - b.nam; }).map(function (y) {
+      if (ds.length) h += bcH3('Điểm tín hiệu nội bộ về ' + (o.ten || (k === 'ketHon' ? 'kết hôn' : 'con cái')) + ' theo năm') + bcP('Điểm do quy tắc truyền thống trong ứng dụng tạo ra để xếp hạng tương đối; không phải xác suất sự kiện sẽ xảy ra.') + bcBang(['Năm', 'Tuổi', 'Điểm nội bộ', 'Hệ cùng báo'], ds.sort(function (a, b) { return a.nam - b.nam; }).map(function (y) {
         return ['<b>' + y.nam + '</b>', y.tuoi, '<b>' + bcSo(y.pct) + '%</b> · ' + bcE(y.muc || ''), bcE((y.he || []).join(', '))];
       }));
     });
