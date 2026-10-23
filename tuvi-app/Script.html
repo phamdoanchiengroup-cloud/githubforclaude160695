@@ -2973,85 +2973,25 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
   function vtHaiDong(t) { var m = /^(.+?)\s+[–&]\s+(.+)$/.exec(t); return m ? [m[1], m[2]] : [t, '']; }
   /** Dựng vòm trời. khach = bản miễn phí (chỉ có điểm chung, 1 lĩnh vực được mở) */
   function vuTruHtml(T, khach) {
-    var id = 'vt' + (++VT.so), n = T.linhVuc.length, buoc = 360 / n, S = 640, c = S / 2;
-    var chon = 0; T.linhVuc.forEach(function (x, i) { if (khach ? x.lo : x.diem > T.linhVuc[chon].diem) chon = i; });
-    VT.ds[id] = { T: T, khach: khach, chon: chon, q: -chon * buoc, buoc: buoc };
-    var tb = T.linhVuc.reduce(function (s, x) { return s + x.diem; }, 0) / n, soTot = T.linhVuc.filter(function (x) { return x.huong === 'tot'; }).length;
-    // nền sao: giả ngẫu nhiên cố định theo dữ liệu → mỗi lá số một bầu trời riêng, vẽ lại không nhảy
-    var seed = Math.round(tb * 997 + n * 31), o = '';
-    function rnd() { seed = (seed * 9301 + 49297) % 233280; return seed / 233280; }
-    for (var s = 0; s < 70; s++) {
-      var sx = rnd() * S, sy = rnd() * S, sr = rnd() * 1.4 + 0.3;
-      o += '<circle cx="' + sx.toFixed(1) + '" cy="' + sy.toFixed(1) + '" r="' + sr.toFixed(2) + '" class="vt-sao" style="animation-delay:' + (rnd() * 6).toFixed(1) + 's"/>';
-    }
-    var svg = '<svg viewBox="0 0 ' + S + ' ' + S + '" class="vt-svg" role="group" aria-label="Vòm trời 9 lĩnh vực – bấm từng vùng để xem luận giải">' +
-      '<defs><radialGradient id="' + id + 'g"><stop offset="0" stop-color="#23466b"/><stop offset=".48" stop-color="#0a1930"/><stop offset="1" stop-color="#020712" stop-opacity="0"/></radialGradient>' + '<linearGradient id="' + id + 'gold" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#fff0bd"/><stop offset=".48" stop-color="#c79a5d"/><stop offset="1" stop-color="#fff0bd"/></linearGradient>' + '<linearGradient id="' + id + 'fire" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#ff9c8e"/><stop offset="1" stop-color="#8c3547"/></linearGradient>' + '<linearGradient id="' + id + 'earth" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#e8d4a8"/><stop offset="1" stop-color="#71634d"/></linearGradient>' + '<linearGradient id="' + id + 'wood" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#8ce0c5"/><stop offset="1" stop-color="#176c68"/></linearGradient>' + '<linearGradient id="' + id + 'water" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#8bcaff"/><stop offset="1" stop-color="#234b91"/></linearGradient>' + '<linearGradient id="' + id + 'metal" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#f6f2df"/><stop offset="1" stop-color="#777e91"/></linearGradient>' +
-      '<filter id="' + id + 'f" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="5"/></filter></defs>' +
-      '<circle cx="' + c + '" cy="' + c + '" r="316" fill="url(#' + id + 'g)"/>' +
-      '<circle cx="' + c + '" cy="' + c + '" r="306" fill="none" stroke="url(#' + id + 'gold)" stroke-opacity=".85" stroke-width="1.7"/>' +
-      '<circle cx="' + c + '" cy="' + c + '" r="286" fill="none" stroke="#7fb7d8" stroke-opacity=".2" stroke-dasharray="2 7"/>' + o;
-    // quỹ đạo hành tinh thật lúc sinh (trang trí, xoay rất chậm)
-    var A = state.result && state.result.moRong && state.result.moRong.chiemTinh;
-    svg += '<g class="vt-quydao"><circle cx="' + c + '" cy="' + c + '" r="312" class="vt-vien"/>';
-    if (A && A.hanhTinh && A.asc) A.hanhTinh.slice(0, 10).forEach(function (p) {
-      var q = vtDiem(c, 312, (p.lon - A.asc.lon + 360) % 360);
-      svg += '<g class="vt-ht"><circle cx="' + q[0].toFixed(1) + '" cy="' + q[1].toFixed(1) + '" r="7"/><text x="' + q[0].toFixed(1) + '" y="' + q[1].toFixed(1) + '" text-anchor="middle" dominant-baseline="central">' + p.ky + '</text><title>' + esc(p.ten + ' – ' + p.cungTen) + '</title></g>';
+    var id = 'vt' + (++VT.so), n = T.linhVuc.length;
+    var chon = 0;
+    T.linhVuc.forEach(function (x, i) { if (khach ? x.lo : x.diem > T.linhVuc[chon].diem) chon = i; });
+    VT.ds[id] = { T: T, khach: khach, chon: chon, q: 0, buoc: 1 };
+    var x = T.linhVuc[chon];
+    var o = '<div class="vt-wrap vt-2d" id="' + id + '" aria-label="Biểu đồ 2D điểm tổng hợp 9 lĩnh vực">' +
+      '<div class="vt-2d-head"><div><span class="vt-kicker">TỔNG HỢP 6 HỆ</span><h3>9 lĩnh vực cuộc sống</h3><p>Chọn một lĩnh vực để xem điểm, các hệ cùng chiều và phần luận giải.</p></div>' +
+      '<span class="vt-scale">Thang điểm nội bộ · 0–10</span></div>' +
+      '<div class="vt-2d-grid"><div class="vt-2d-list" role="group" aria-label="Chọn lĩnh vực">';
+    T.linhVuc.forEach(function (v, i) {
+      var pct = Math.max(0, Math.min(100, Number(v.diem) * 10));
+      o += '<button type="button" class="vt-lv vt-2d-row' + (i === chon ? ' on' : '') + '" data-vt="' + id + '|' + i + '" aria-pressed="' + (i === chon ? 'true' : 'false') + '">' +
+        '<span class="vt-2d-name"><span class="vt-2d-icon">' + esc(v.icon || '◇') + '</span><b>' + esc(v.ten) + '</b></span>' +
+        '<span class="vt-2d-track"><i style="width:' + pct + '%;background:' + th6Mau(v.diem) + '"></i></span>' +
+        '<strong>' + vtSo(v.diem) + '<small>/10</small></strong></button>';
     });
-    svg += '</g>';
-    // bánh xe lĩnh vực (xoay bằng biến --q)
-    svg += '<g class="vt-quay" style="--q:' + VT.ds[id].q + 'deg">';
-    var R0 = 132, RW = 34, RL = R0 + VT_HE.length * RW;
-    T.linhVuc.forEach(function (x, i) {
-      var a1 = i * buoc - buoc / 2 + 0.8, a2 = i * buoc + buoc / 2 - 0.8, mo = !khach || !!x.lo;
-      var dong = x.soHe >= 3 && x.dong / x.soHe >= 0.75;
-      svg += '<g class="vt-lv' + (i === chon ? ' on' : '') + (mo ? '' : ' khoa') + (dong ? ' dong' : '') + '" data-vt="' + id + '|' + i + '" tabindex="0" role="button" aria-label="' +
-        esc(x.ten + ': ' + vtSo(x.diem) + ' trên 10' + (x.soHe ? ', ' + x.dong + ' trên ' + x.soHe + ' hệ cùng chiều' : '')) + '">';
-      if (dong) svg += '<path d="' + vtCung(c, R0 - 2, RL + 2, a1, a2) + '" class="vt-hao" filter="url(#' + id + 'f)"/>';
-      if (khach) svg += '<path d="' + vtCung(c, R0, RL, a1, a2) + '" class="vt-o" style="fill:' + (x.diem >= 6.5 ? 'url(#' + id + 'wood)' : x.diem <= 4 ? 'url(#' + id + 'fire)' : 'url(#' + id + 'earth)') + ';fill-opacity:' + (mo ? .9 : .22) + ';stroke:url(#' + id + 'gold);stroke-width:1.1"/>';
-      else VT_HE.forEach(function (he, j) {
-        var p = x.phieu.filter(function (z) { return z.he === he; })[0];
-        svg += '<path d="' + vtCung(c, R0 + j * RW + 1, R0 + (j + 1) * RW - 1, a1, a2) + '" class="vt-o vt-h' + j + (p ? '' : ' trong') + '"' +
-          (p ? ' style="fill:' + (p.d10 >= 6.5 ? 'url(#' + id + 'wood)' : p.d10 <= 4 ? 'url(#' + id + 'fire)' : 'url(#' + id + 'earth)') + ';fill-opacity:' + (0.5 + Math.abs(p.d10 - 5) / 12).toFixed(2) + ';stroke:url(#' + id + 'gold);stroke-opacity:.38;stroke-width:.8"' : '') + '><title>' + esc(x.ten + ' · ' + he + (p ? ': ' + vtSo(p.d10) + '/10' : ': chưa chấm')) + '</title></path>';
-      });
-      svg += '<path d="' + vtCung(c, R0, RL, a1, a2) + '" class="vt-vien-lv" style="stroke:#e9c987;stroke-opacity:.65"/>';
-      var m = vtDiem(c, RL + 30, i * buoc);
-      svg += '<g transform="translate(' + m[0].toFixed(1) + ' ' + m[1].toFixed(1) + ')"><g class="vt-nhan"><text y="-6" text-anchor="middle" class="vt-ic">' + x.icon + '</text>' +
-        '<text y="17" text-anchor="middle" class="vt-d" style="fill:' + th6Mau(x.diem) + '">' + (mo ? '' : '🔒') + vtSo(x.diem) + '</text></g></g>';
-      svg += '</g>';
-    });
-    svg += '</g>';
-    // Lõi Ngũ Hành theo phong cách thiên thể: 5 cung màu + quả cầu Thái Cực.
-    var X = T.linhVuc[chon], nguHanh = [
-      { ten: '火', mau: '#f47a65', x: c, y: c - 91 },
-      { ten: '土', mau: '#e8c17c', x: c + 86, y: c - 28 },
-      { ten: '金', mau: '#e7e4d7', x: c + 53, y: c + 73 },
-      { ten: '水', mau: '#70b7ed', x: c - 53, y: c + 73 },
-      { ten: '木', mau: '#73d0b0', x: c - 86, y: c - 28 }
-    ];
-    svg += '<defs><radialGradient id="' + id + 'globe"><stop offset="0" stop-color="#e6d5b5"/><stop offset=".42" stop-color="#647b9c"/><stop offset=".72" stop-color="#14263f"/><stop offset="1" stop-color="#050b19"/></radialGradient>' +
-      '<linearGradient id="' + id + 'gold" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#fff0bd"/><stop offset=".5" stop-color="#c89d60"/><stop offset="1" stop-color="#fff0bd"/></linearGradient></defs>';
-    svg += '<circle cx="' + c + '" cy="' + c + '" r="125" fill="#071426" stroke="url(#' + id + 'gold)" stroke-width="2"/>';
-    nguHanh.forEach(function (h, i) {
-      var a1 = i * 72 - 90, a2 = a1 + 72;
-      svg += '<path d="' + vtCung(c, 67, 119, a1 + 1.5, a2 - 1.5) + '" fill="' + h.mau + '" fill-opacity=".16" stroke="' + h.mau + '" stroke-opacity=".75" stroke-width="1.5"/>' +
-        '<text x="' + h.x + '" y="' + (h.y + 8) + '" text-anchor="middle" class="vt-hanh" fill="' + h.mau + '">' + h.ten + '</text>';
-    });
-    svg += '<circle cx="' + c + '" cy="' + c + '" r="57" fill="url(#' + id + 'globe)" stroke="url(#' + id + 'gold)" stroke-width="2"/>' +
-      '<ellipse cx="' + (c - 12) + '" cy="' + c + '" rx="16" ry="27" fill="#f4e6c5" fill-opacity=".85"/>' +
-      '<ellipse cx="' + (c + 12) + '" cy="' + c + '" rx="16" ry="27" fill="#09182d" fill-opacity=".9"/>' +
-      '<circle cx="' + (c - 12) + '" cy="' + (c - 14) + '" r="5" fill="#09182d"/><circle cx="' + (c + 12) + '" cy="' + (c + 14) + '" r="5" fill="#f4e6c5"/>' +
-      '<circle cx="' + c + '" cy="' + c + '" r="61" fill="none" stroke="#f4d9a2" stroke-opacity=".65"/>' +
-      '<path d="M' + (c - 9) + ' ' + (c - R0 - VT_HE.length * RW - 35) + 'l9 12l9 -12z" class="vt-kim"/></svg>';
-    var he = khach ? '' : '<div class="vt-he" role="group" aria-label="Làm nổi một hệ">' + VT_HE.slice().reverse().map(function (h) {
-      var j = VT_HE.indexOf(h); return '<button type="button" data-vt-he="' + id + '|' + j + '"><i class="vt-hc' + j + '"></i>' + esc(h) + '<small>' + ['vòng trong cùng', 'vòng thứ 2', 'vòng thứ 3', 'vòng ngoài cùng'][j] + '</small></button>';
-    }).join('') + '</div>';
-    return '<div class="vt" id="' + id + '"><div class="vt-tr"><div class="vt-khung">' + svg + '<div class="vt-dieu"><button type="button" data-vt-di="' + id + '|-1" aria-label="Lĩnh vực trước">‹</button>' +
-      '<span>Chạm vào một vùng · ' + soTot + '/' + n + ' lĩnh vực thuận · điểm trung bình ' + vtSo(Math.round(tb * 10) / 10) + '</span><button type="button" data-vt-di="' + id + '|1" aria-label="Lĩnh vực sau">›</button></div></div>' +
-      '<div class="vt-the" aria-live="polite">' + vtThe(id) + '</div></div>' + he +
-      '<p class="vt-chu">Mỗi nan quạt là một lĩnh vực đời sống. ' + (khach ? 'Màu càng xanh càng thuận, đỏ là nơi cần chăm chút.' : 'Bốn vòng từ trong ra ngoài là Hà Lạc, Chiêm tinh, Bát Tự, Tử Vi; xanh = thuận, vàng = vừa, đỏ = cần lưu ý.') +
-      ' Vùng <b class="vt-sang">phát sáng</b> là nơi ít nhất 3/4 số hệ cùng chiều – kết luận chắc chắn nhất.</p></div>';
+    o += '</div><aside class="vt-the vt-2d-card">' + vtThe(id) + '</aside></div></div>';
+    return o;
   }
-  /** Thẻ luận giải cạnh bánh xe cho lĩnh vực đang chọn */
   function vtThe(id) {
     var V = VT.ds[id], x = V.T.linhVuc[V.chon];
     var tag = x.huong === 'tot' ? 'Thuận' : x.huong === 'xau' ? 'Cần chăm chút' : 'Vừa';
@@ -3073,14 +3013,13 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
   }
   function vtChon(id, i) {
     var V = VT.ds[id], box = $(id); if (!V || !box) return;
-    var n = V.T.linhVuc.length; i = (i % n + n) % n;
-    var lech = ((-(i * V.buoc) - V.q) % 360 + 540) % 360 - 180;   // xoay theo đường ngắn nhất
-    V.q += lech; V.chon = i;
-    box.querySelector('.vt-quay').style.setProperty('--q', V.q + 'deg');
-    box.querySelectorAll('.vt-lv').forEach(function (g, k) { g.classList.toggle('on', k === i); });
-    var X = V.T.linhVuc[i], t = box.querySelectorAll('.vt-loi-ic, .vt-loi-t, .vt-loi-d');
-    var hd = vtHaiDong(X.ten); t[0].textContent = X.icon; t[1].children[0].textContent = hd[0]; t[1].children[1].textContent = hd[1]; t[2].textContent = vtSo(X.diem); t[2].style.fill = th6Mau(X.diem);
-    var the = box.querySelector('.vt-the'); the.classList.remove('moi'); void the.offsetWidth; the.innerHTML = vtThe(id); the.classList.add('moi');
+    var n = V.T.linhVuc.length; i = (i % n + n) % n; V.chon = i;
+    box.querySelectorAll('.vt-2d-row').forEach(function (g, k) {
+      g.classList.toggle('on', k === i);
+      g.setAttribute('aria-pressed', k === i ? 'true' : 'false');
+    });
+    var the = box.querySelector('.vt-the');
+    if (the) the.innerHTML = vtThe(id);
   }
   (function ganVuTru() {
     document.addEventListener('click', function (e) {
