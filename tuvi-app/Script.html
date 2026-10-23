@@ -2925,7 +2925,7 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
     svg += '</g>';
     // bánh xe lĩnh vực (xoay bằng biến --q)
     svg += '<g class="vt-quay" style="--q:' + VT.ds[id].q + 'deg">';
-    var R0 = 92, RW = 40, RL = R0 + VT_HE.length * RW;
+    var R0 = 132, RW = 34, RL = R0 + VT_HE.length * RW;
     T.linhVuc.forEach(function (x, i) {
       var a1 = i * buoc - buoc / 2 + 0.8, a2 = i * buoc + buoc / 2 - 0.8, mo = !khach || !!x.lo;
       var dong = x.soHe >= 3 && x.dong / x.soHe >= 0.75;
@@ -2945,13 +2945,28 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
       svg += '</g>';
     });
     svg += '</g>';
-    // lõi giữa: tên lĩnh vực đang chọn
-    var X = T.linhVuc[chon];
-    svg += '<circle cx="' + c + '" cy="' + c + '" r="' + (R0 - 6) + '" class="vt-loi"/>' +
-      '<text x="' + c + '" y="' + (c - 34) + '" text-anchor="middle" class="vt-loi-ic">' + X.icon + '</text>' +
-      '<text x="' + c + '" y="' + (c - 2) + '" text-anchor="middle" class="vt-loi-t"><tspan x="' + c + '">' + esc(vtHaiDong(X.ten)[0]) + '</tspan><tspan x="' + c + '" dy="19">' + esc(vtHaiDong(X.ten)[1]) + '</tspan></text>' +
-      '<text x="' + c + '" y="' + (c + 50) + '" text-anchor="middle" class="vt-loi-d" style="fill:' + th6Mau(X.diem) + '">' + vtSo(X.diem) + '</text>' +
-      '<path d="M' + (c - 9) + ' ' + (c - R0 - VT_HE.length * RW - 52) + 'l9 12l9 -12z" class="vt-kim"/></svg>';
+    // Lõi Ngũ Hành theo phong cách thiên thể: 5 cung màu + quả cầu Thái Cực.
+    var X = T.linhVuc[chon], nguHanh = [
+      { ten: '火', mau: '#f47a65', x: c, y: c - 91 },
+      { ten: '土', mau: '#e8c17c', x: c + 86, y: c - 28 },
+      { ten: '金', mau: '#e7e4d7', x: c + 53, y: c + 73 },
+      { ten: '水', mau: '#70b7ed', x: c - 53, y: c + 73 },
+      { ten: '木', mau: '#73d0b0', x: c - 86, y: c - 28 }
+    ];
+    svg += '<defs><radialGradient id="' + id + 'globe"><stop offset="0" stop-color="#e6d5b5"/><stop offset=".42" stop-color="#647b9c"/><stop offset=".72" stop-color="#14263f"/><stop offset="1" stop-color="#050b19"/></radialGradient>' +
+      '<linearGradient id="' + id + 'gold" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#fff0bd"/><stop offset=".5" stop-color="#c89d60"/><stop offset="1" stop-color="#fff0bd"/></linearGradient></defs>';
+    svg += '<circle cx="' + c + '" cy="' + c + '" r="125" fill="#071426" stroke="url(#' + id + 'gold)" stroke-width="2"/>';
+    nguHanh.forEach(function (h, i) {
+      var a1 = i * 72 - 90, a2 = a1 + 72;
+      svg += '<path d="' + vtCung(c, 67, 119, a1 + 1.5, a2 - 1.5) + '" fill="' + h.mau + '" fill-opacity=".16" stroke="' + h.mau + '" stroke-opacity=".75" stroke-width="1.5"/>' +
+        '<text x="' + h.x + '" y="' + (h.y + 8) + '" text-anchor="middle" class="vt-hanh" fill="' + h.mau + '">' + h.ten + '</text>';
+    });
+    svg += '<circle cx="' + c + '" cy="' + c + '" r="57" fill="url(#' + id + 'globe)" stroke="url(#' + id + 'gold)" stroke-width="2"/>' +
+      '<ellipse cx="' + (c - 12) + '" cy="' + c + '" rx="16" ry="27" fill="#f4e6c5" fill-opacity=".85"/>' +
+      '<ellipse cx="' + (c + 12) + '" cy="' + c + '" rx="16" ry="27" fill="#09182d" fill-opacity=".9"/>' +
+      '<circle cx="' + (c - 12) + '" cy="' + (c - 14) + '" r="5" fill="#09182d"/><circle cx="' + (c + 12) + '" cy="' + (c + 14) + '" r="5" fill="#f4e6c5"/>' +
+      '<circle cx="' + c + '" cy="' + c + '" r="61" fill="none" stroke="#f4d9a2" stroke-opacity=".65"/>' +
+      '<path d="M' + (c - 9) + ' ' + (c - R0 - VT_HE.length * RW - 35) + 'l9 12l9 -12z" class="vt-kim"/></svg>';
     var he = khach ? '' : '<div class="vt-he" role="group" aria-label="Làm nổi một hệ">' + VT_HE.slice().reverse().map(function (h) {
       var j = VT_HE.indexOf(h); return '<button type="button" data-vt-he="' + id + '|' + j + '"><i class="vt-hc' + j + '"></i>' + esc(h) + '<small>' + ['vòng trong cùng', 'vòng thứ 2', 'vòng thứ 3', 'vòng ngoài cùng'][j] + '</small></button>';
     }).join('') + '</div>';
