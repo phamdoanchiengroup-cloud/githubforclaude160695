@@ -220,26 +220,81 @@ function doiLich(input) {
 
 /** Chiêm tinh + Thần số học + Human Design + Tổng hợp đa hệ */
 function lapMoRong_(input, result) {
-  var tv = result.tuvi, vy = tv.info.viewYear;
-  var ct = chiemTinhLap(input);
-  var ctL = chiemTinhLuan(ct, vy);
-  var ts = thanSoHocLap(input, tv.info.solar, vy);
-  var hd = hdLap(ct.thoiDiem.jd);
-  var hl = haLacLap(result.battu, tv), hlL = haLacLuan(hl, result.battu, vy);
-  var th = tongHopLuan({ tv: tv, bt: result.battu, btct: result.battuChiTiet, ct: ct, ctL: ctL, ts: ts, hd: hd, hl: hl, hlL: hlL, chiTiet: result.chiTiet,
-    duDoan: result.duDoan, daiVanTV: result.chiTiet.daiVan, input: input });
-  // Gọn dữ liệu trả về trình duyệt
-  var ctOut = { thoiDiem: ct.thoiDiem, heNha: ct.heNha, cusp: ct.cusp, hanhTinh: ct.hanhTinh, asc: ct.asc, mc: ct.mc, goc: ct.goc,
-    nguyenTo: ct.nguyenTo, tinhChat: ct.tinhChat, phaTrang: ct.phaTrang, chuTinh: ct.chuTinh };
-  var hdOut = { act: hd.act, gates: hd.gates, kenh: hd.kenh, dinh: hd.dinh, loai: hd.loai, loaiTen: HD_TYPES[hd.loai].ten, thamQuyen: HD_AUTH[hd.thamQuyen].ten,
-    chienLuoc: HD_TYPES[hd.loai].chienLuoc, profile: hd.profile, dinhNghia: hd.dinhNghia, cross: hd.cross, goc: hd.goc, luan: hdLuan(hd) };
-  try { hdOut.phanTich = hdPhanTich_(hd, ct.thoiDiem, vy); } catch (e) { hdOut.phanTichLoi = String(e && e.message || e); }
-  var hlOut = { tien: hl.tien, hau: hl.hau, hoTien: hl.hoTien, hoHau: hl.hoHau, lucHao: hl.lucHao, male: hl.male, luan: hlL };
-  var tsL = thanSoHocLuan(ts);
-  var dh = null;
-  try { dh = deHieuLap_({ tv: tv, chiTiet: result.chiTiet, bt: result.battu, btct: result.battuChiTiet, ct: ctOut, ctl: ctL, th: th, ts: ts, tsl: tsL, hdOut: hdOut, hl: hlOut }); }
-  catch (e) { dh = { loi: String(e && e.message || e) }; }
-  return { haLac: hlOut, chiemTinh: ctOut, chiemTinhLuan: ctL, thanSo: ts, thanSoLuan: tsL, hd: hdOut, tongHop: th, deHieu: dh };
+  // Mỗi hệ được tính độc lập: lỗi ở một hệ không làm mất dữ liệu của các hệ còn lại.
+  var tv = result.tuvi, vy = tv.info.viewYear, loi = {};
+  var ct = null, ctL = null, ts = null, hd = null, hl = null, hlL = null;
+  var ctOut = null, hdOut = null, hlOut = null, tsL = null, th = null, dh = null;
+
+  try { ct = chiemTinhLap(input); }
+  catch (e) { loi.chiemTinh = String(e && e.message || e); }
+  if (ct) {
+    try { ctL = chiemTinhLuan(ct, vy); }
+    catch (e) { loi.chiemTinhLuan = String(e && e.message || e); }
+    try {
+      ctOut = { thoiDiem: ct.thoiDiem, heNha: ct.heNha, cusp: ct.cusp, hanhTinh: ct.hanhTinh, asc: ct.asc, mc: ct.mc, goc: ct.goc,
+        nguyenTo: ct.nguyenTo, tinhChat: ct.tinhChat, phaTrang: ct.phaTrang, chuTinh: ct.chuTinh };
+    } catch (e) { loi.chiemTinhRutGon = String(e && e.message || e); }
+  }
+
+  try { ts = thanSoHocLap(input, tv.info.solar, vy); }
+  catch (e) { loi.thanSo = String(e && e.message || e); }
+  if (ts) {
+    try { tsL = thanSoHocLuan(ts); }
+    catch (e) { loi.thanSoLuan = String(e && e.message || e); }
+  }
+
+  if (ct && ct.thoiDiem) {
+    try { hd = hdLap(ct.thoiDiem.jd); }
+    catch (e) { loi.hd = String(e && e.message || e); }
+  } else {
+    loi.hd = 'Không thể lập Human Design vì dữ liệu thời điểm Chiêm Tinh không có.';
+  }
+  if (hd) {
+    try {
+      hdOut = { act: hd.act, gates: hd.gates, kenh: hd.kenh, dinh: hd.dinh, loai: hd.loai,
+        loaiTen: HD_TYPES[hd.loai].ten, thamQuyen: HD_AUTH[hd.thamQuyen].ten,
+        chienLuoc: HD_TYPES[hd.loai].chienLuoc, profile: hd.profile, dinhNghia: hd.dinhNghia,
+        cross: hd.cross, goc: hd.goc, luan: hdLuan(hd) };
+    } catch (e) { loi.hdRutGon = String(e && e.message || e); hdOut = null; }
+    if (hdOut) {
+      try { hdOut.phanTich = hdPhanTich_(hd, ct.thoiDiem, vy); }
+      catch (e) { hdOut.phanTichLoi = String(e && e.message || e); }
+    }
+  }
+
+  try { hl = haLacLap(result.battu, tv); }
+  catch (e) { loi.haLac = String(e && e.message || e); }
+  if (hl) {
+    try { hlL = haLacLuan(hl, result.battu, vy); }
+    catch (e) { loi.haLacLuan = String(e && e.message || e); }
+    hlOut = { tien: hl.tien, hau: hl.hau, hoTien: hl.hoTien, hoHau: hl.hoHau, lucHao: hl.lucHao, male: hl.male, luan: hlL };
+  }
+
+  // Chỉ tạo luận giải tổng hợp khi đủ dữ liệu đầu vào; các hệ riêng lẻ vẫn hoạt động nếu thiếu một hệ.
+  if (ct && ctL && ts && hd && hl && hlL) {
+    try {
+      th = tongHopLuan({ tv: tv, bt: result.battu, btct: result.battuChiTiet, ct: ct, ctL: ctL, ts: ts, hd: hd, hl: hl, hlL: hlL, chiTiet: result.chiTiet,
+        duDoan: result.duDoan, daiVanTV: result.chiTiet.daiVan, input: input });
+    } catch (e) { loi.tongHop = String(e && e.message || e); }
+  } else {
+    loi.tongHop = 'Chưa đủ dữ liệu từ tất cả các hệ để tạo luận giải tổng hợp.';
+  }
+
+  try {
+    if (tv && result.chiTiet && result.battu && ctOut && ctL && th && ts && tsL && hdOut && hlOut) {
+      dh = deHieuLap_({ tv: tv, chiTiet: result.chiTiet, bt: result.battu, btct: result.battuChiTiet, ct: ctOut, ctl: ctL, th: th, ts: ts, tsl: tsL, hdOut: hdOut, hl: hlOut });
+    }
+  } catch (e) { dh = { loi: String(e && e.message || e) }; }
+
+  var out = { tongHop: th, deHieu: dh };
+  if (hlOut) out.haLac = hlOut;
+  if (ctOut) out.chiemTinh = ctOut;
+  if (ctL) out.chiemTinhLuan = ctL;
+  if (ts) out.thanSo = ts;
+  if (tsL) out.thanSoLuan = tsL;
+  if (hdOut) out.hd = hdOut;
+  if (Object.keys(loi).length) out.loiTungHe = loi;
+  return out;
 }
 
 /* ---------------------- Lưu trữ Google Sheet ---------------------- */
