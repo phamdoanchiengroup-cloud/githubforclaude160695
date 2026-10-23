@@ -1644,8 +1644,7 @@
   }
   /** Chụp lá số ở kích thước gốc (bỏ thu nhỏ tạm thời) */
   function chupLaSo(opt) {
-    var fr = $('chartFrame'), sc = fr.parentNode, tf = fr.style.transform, h = sc.style.height, ca = $('chartArea'), la3d = ca && (ca.classList.contains('xem-3d') ? 'xem-3d' : ca.classList.contains('xem-holo') ? 'xem-holo' : '');
-    if (la3d) ca.classList.remove(la3d);           // đang xem 3D: hiện tạm lá số 2D để chụp
+    var fr = $('chartFrame'), sc = fr.parentNode, tf = fr.style.transform, h = sc.style.height;
     fr.style.transform = ''; sc.style.height = '';
     function tra() { fr.style.transform = tf; sc.style.height = h; if (la3d) ca.classList.add(la3d); }
     return html2canvas(fr, opt).then(function (c) { tra(); return c; }, function (e) { tra(); throw e; });
@@ -3422,7 +3421,7 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
     el.innerHTML = '<div class="ho-so-av" aria-hidden="true">' + esc((String(f.name || '?').trim().split(/\s+/).pop() || '?').charAt(0).toUpperCase()) + '</div>' +
       '<div class="ho-so-nd"><b>' + esc(f.name || 'Chưa có tên') + '</b><span>' + (f.gender === 'nu' ? 'Nữ' : 'Nam') + ' · ' + ngay + (f.calendar === 'am' ? ' (nhập âm lịch)' : '') +
       ' · ' + pad(f.hour) + ':' + pad(f.minute) + (noi ? ' · ' + esc(noi) : '') + (I && I.namCanChi ? ' · tuổi ' + esc(I.namCanChi) : '') + '</span></div>' +
-      '<div class="ho-so-nut"><button type="button" class="btn btn-ghost btn-sm" data-sua-form>✎ Sửa thông tin</button><button type="button" class="btn btn-ghost btn-sm" data-la-so-moi>＋ Lá số mới</button><button type="button" class="btn btn-ghost btn-sm" data-ls3d>✦ Lá số 3D</button><button type="button" class="btn btn-ghost btn-sm" data-chia-se>↗ Mời bạn bè</button></div>';
+      '<div class="ho-so-nut"><button type="button" class="btn btn-ghost btn-sm" data-sua-form>✎ Sửa thông tin</button><button type="button" class="btn btn-ghost btn-sm" data-la-so-moi>＋ Lá số mới</button><button type="button" class="btn btn-ghost btn-sm" data-chia-se>↗ Mời bạn bè</button></div>';
   }
   function moForm(moi) {
     document.body.classList.add('mo-form');
@@ -5046,7 +5045,7 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
   }
   function pdfDuyen(res) {
     var P = bcT(res).phoiNgau; if (!P) return bcKhoa('Phần tình duyên – phối ngẫu chưa mở trong tài khoản.');
-    var h = bcH2(P.tieuDe || 'Chân dung người bạn đời') + bcDs(P.ketLuan);
+    var h = bcH2(P.tieuDe || 'Chân dung người bạn đời') + bcDs(P.ketLuan) + bcP('Các diễn giải hợp tuổi và thời điểm chỉ là tham khảo theo quy tắc truyền thống của ứng dụng; không quyết định chất lượng mối quan hệ hay dự báo chắc chắn tương lai.', 'bc-nho');
     var H = P.tuoiHop;
     if (H && H.tot && H.tot.length) {
       h += bcH2('Năm sinh hợp nhất', 'chấm điểm /10');
