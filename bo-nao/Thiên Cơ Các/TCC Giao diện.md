@@ -98,3 +98,21 @@ Liên quan: [[TCC PDF]] · [[TCC Lá số 3D]] · [[TCC Văn dễ hiểu và T�
 - Chữ: Chakra Petch (tiêu đề, nhãn kiểu máy), Be Vietnam Pro (thân bài). Màu: nền #02060F, xanh lơ #3FD8FF / #B4F1FF, điểm vàng #F5C66B.
 - Lá số mẫu 15/08/1990: số chủ đạo 33/6 (tính đúng), năm Canh Ngọ, Mặt Trời Sư Tử.
 - Cũng trái với quy tắc màu của Bạch Kim; chờ chủ dự án chọn giữa Bạch Kim / Vũ trụ vàng / Hologram.
+
+## 23/10 – Hologram 3D + 2 tài liệu hướng dẫn của chủ dự án
+- Bản demo Hologram (cùng link C6SGBGqAMKYHSFaXhE5KoM) nay có quả cầu 3D thật bằng three.js r128 (cdnjs). Gồm:
+  - Lưới cầu và chòm sao vàng trên mặt cầu; vòng hoàng đạo nghiêng 23,4°, vòng 12 địa chi, 2 vòng kinh tuyến vàng; 3 hành tinh; bụi sao.
+  - Đế chiếu có cột sáng (shader). Kéo ngang để xoay quả cầu.
+  - Màn hình kính nghiêng tới 20° và dựng thẳng dần khi cuộn; các bảng nổi lên bằng translateZ; thẻ phía dưới nghiêng theo chuột.
+  - Không có WebGL thì quay về bản vẽ 2D.
+- Chủ dự án gửi 2 file docx + README_ASSETS ("Hologram Claude Code Visual Guide", "Interaction UX Guide"). Ý chính:
+  - Chart phải vẽ từ dữ liệu thật, không dùng ảnh. Tử Vi giữ lưới 4×4. Hà Lạc là quẻ Dịch.
+  - WebGL chỉ dùng cho hero. Hạt nền 25–45 (desktop) / 8–16 (mobile), dừng khi tab bị ẩn. Có giảm chuyển động.
+  - Phải có đủ 4 trạng thái loading/empty/error/success. PDF dùng nền sáng.
+  - Token màu: #060B16, #0A1426, cyan #5CEBFF, xanh #6D8CFF, tím #B38CFF, vàng champagne #E8C77A, chữ #EAF4FF / #A8B8CC.
+  - Lộ trình: giai đoạn 0 khảo sát và báo kế hoạch, chờ duyệt rồi mới sửa.
+- Ảnh tham khảo trong docx có **dữ liệu lá số thật của chủ dự án** (tên, ngày giờ sinh) → tuyệt đối không đưa vào repo hay demo; chỉ dùng lá số mẫu.
+- Đã đề xuất thiết kế lại 3 sơ đồ (chờ chủ dự án chốt):
+  - Tử Vi: lưới 4×4 kính, ô giữa là thông tin lá số; bấm cung thì hiện tam phương tứ chính.
+  - Bát Tự: một bảng hợp nhất gồm thập thần, can, chi, tàng can + thập thần, nạp âm, trường sinh, thần sát, không vong, đường hợp/xung, có thể thêm cột đại vận/lưu niên.
+  - Human Design: vẽ bodygraph chuẩn gồm 64 cổng có số, kênh nửa màu ý thức/vô thức (dữ liệu `gates[g]` = 'p'/'d' có sẵn), cột hành tinh Design | Personality.
