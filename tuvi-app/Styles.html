@@ -1,6 +1,6 @@
 <style>
 /* Mã phiên bản giao diện – phải trùng với Index.html (meta tcc-ban) và Script.html (BAN_GIAO_DIEN) */
-:root { --tcc-ban: "2026.10.24.01"; }
+:root { --tcc-ban: "2026.10.24.02"; }
 /* ================================================================
    THIÊN CƠ CÁC — phong cách tiên hiệp sáng: ngọc bích, kim sa, mây trắng
    ================================================================ */
@@ -1770,23 +1770,6 @@ table { border-collapse: collapse; } th { font-weight: 600; }
 .moi-ban .mb-nd span { font-size: 13.5px; color: var(--ink-soft); line-height: 1.5; }
 .moi-ban .mb-nut { display: flex; gap: 8px; flex-wrap: wrap; }
 
-/* ======== XEM 3D (mã dựng nằm trong LaSo3D.html) ======== */
-/* Lá số 3D là chế độ xem mặc định của tab Lá số (nhúng trong trang); ▦ 2D hiện lại lá số giấy */
-.ls3d-khung { border-radius: 14px; overflow: hidden; margin: 8px 0 12px; background: #1b1713; border: 1px solid rgba(226,192,120,.45); }
-.ls3d-cho { padding: 60px 16px; text-align: center; color: #e8c778; font-weight: 600; letter-spacing: .04em; }
-#chartArea:not(.xem-3d) .ls3d-khung { display: none; }
-#chartArea.xem-3d .chart-scroll, #chartArea.xem-3d .palace-detail, #chartArea.xem-3d .toolbar .check, #chartArea.xem-3d .toolbar .legend, #chartArea.xem-3d #btnPrint { display: none; }
-.che-do { display: inline-flex; border: 1px solid var(--line); border-radius: 999px; overflow: hidden; }
-.che-do button { font: 600 12.5px/1 inherit; font-family: inherit; padding: 7px 12px; border: 0; background: transparent; color: var(--ink); cursor: pointer; }
-.che-do button[aria-pressed="true"] { background: var(--gold); color: #fff; }
-.che-do button:focus-visible { outline: 2px solid var(--gold); outline-offset: -2px; }
-.xem3d { padding: 14px 16px; display: flex; gap: 14px; align-items: center; flex-wrap: wrap; border: 1px solid rgba(226,192,120,.45); background: linear-gradient(120deg, rgba(226, 198, 144,.10), rgba(226,192,120,.08)); }
-.xem3d .x3-ic { display: flex; gap: 5px; align-items: flex-end; height: 44px; flex: none; }
-.xem3d .x3-ic i { display: block; width: 9px; border-radius: 2px 2px 0 0; background: linear-gradient(#f3d99c, #a8762c); }
-.xem3d .x3-ic i:nth-child(1) { height: 60%; } .xem3d .x3-ic i:nth-child(2) { height: 80%; } .xem3d .x3-ic i:nth-child(3) { height: 100%; box-shadow: 0 0 10px rgba(243,217,156,.7); } .xem3d .x3-ic i:nth-child(4) { height: 70%; }
-.xem3d .x3-nd { flex: 1 1 260px; min-width: 0; display: flex; flex-direction: column; gap: 3px; }
-.xem3d .btn { width: auto; flex: none; }
-.xem3d .x3-nd span { font-size: 13.5px; color: var(--ink-soft, #a3b8c7); line-height: 1.5; }
 /* ===== HỒ SƠ BIẾN CỐ NĂM (Script.html › hsnHtml) ===== */
 .hsn-tom p { margin: 4px 0; line-height: 1.6; }
 .hsn-qua { display: inline-block; font-size: 12px; padding: 2px 10px; border-radius: 999px; background: var(--surface-3); color: var(--ink-soft); margin-bottom: 4px; }
@@ -2395,17 +2378,19 @@ body.co-ket-qua.mo-form .form-panel, .ls3d-khung, .wl-anh { background: #0A1426;
     scroll-behavior: auto !important;
   }
 }
-</style>
+
 
 
 /* ===== Hiệu năng di động: giảm nền động, bóng đổ và hiệu ứng chuyển cảnh ===== */
 @media (max-width: 768px) {
+  /* Điện thoại: nền tĩnh, không tải/giữ ảnh ghim ở góc màn hình. */
+  .tcc-goc-anh { display: none !important; }
   .sky::before, .sky::after, .sky .sun, .mountains, .cloud { display: none !important; animation: none !important; }
   .panel, .card, .btn, .tab-page, .reveal, .stat, .nghe, .bc-cot { animation: none !important; transition: none !important; }
   .panel, .card, .reveal { box-shadow: none !important; backdrop-filter: none !important; -webkit-backdrop-filter: none !important; }
   .app-header { padding-top: 12px; }
   .tab-page.active { animation: none !important; }
-  .hu-tia, .hu-mung, .ls3d-khung, .xem3d { display: none !important; }
+  .hu-tia, .hu-mung { display: none !important; }
 }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; scroll-behavior: auto !important; }
@@ -2502,3 +2487,4 @@ body.co-ket-qua.mo-form .form-panel, .ls3d-khung, .wl-anh { background: #0A1426;
 .pdf-root .bc-lv { padding:10px 0 12px; border-bottom:1px solid var(--bc-line); break-inside:avoid; }
 .pdf-root .bc-cot,.pdf-root .bc-hop { box-shadow:none !important; }
 .pdf-root .bc-nho { font-size:11px; }
+</style>
