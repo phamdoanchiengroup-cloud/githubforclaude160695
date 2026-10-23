@@ -170,3 +170,11 @@ Liên quan: [[TCC PDF]] · [[TCC Lá số 3D]] · [[TCC Văn dễ hiểu và T�
   - Ô Tử Vi trên điện thoại còn chữ nhỏ (ẩn phụ tinh); các bảng Bát Tự cuộn ngang.
   - Phần luận giải bên dưới các tab vẫn theo khung cũ (đã đổi màu).
   - Trang chủ/đầu trang chưa có quả cầu 3D như demo.
+
+## 23/10 (khuya) – Tử Vi: giữ nguyên lá số cũ, chỉ thay nền (mã `2026.10.23.5`)
+- Chủ dự án báo bảng Tử Vi kiểu mới **sai, thiếu sao, trình bày sao không hợp lý**, yêu cầu giữ nguyên cấu trúc cũ và chỉ thay hình nền.
+- Đã bỏ bảng `#holoTV` (Holo.html không gọi `veTuVi` nữa). Chế độ `holo` nay là **lá số 2D cũ** (`#chart`, đủ sao, phụ tinh, lưu tinh, vòng Bác Sĩ – Thái Tuế, Tuần/Triệt, đường tam hợp), chỉ đổi phần trình bày:
+  - Nền `#chart` dùng tranh `HoloAnhTuVi`: `background-size: 125.55% 113.11%`, `background-position: 50.56% 33.1%`, để vùng lưới trong tranh (x 135–1180, y 46–1106) khớp đúng 4×4 ô.
+  - Hàng đều nhau (`repeat(4, minmax(208px, 1fr))`); ô kính tối trong suốt; token màu tối riêng cho `.chart-frame`; ô giữa để lộ thái cực.
+  - Ảnh PNG/PDF vẫn xuất bản nền sáng.
+- **Bài học: không tự dựng lại lá số Tử Vi.** Giao diện mới chỉ được đổi nền và màu, giữ nguyên cách app xếp sao.

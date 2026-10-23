@@ -27,7 +27,7 @@
     });
   }
   /** Mã phiên bản giao diện – phải trùng với Index.html (meta tcc-ban) và Styles.html (--tcc-ban) */
-  var BAN_GIAO_DIEN = '2026.10.23.4';
+  var BAN_GIAO_DIEN = '2026.10.23.5';
   function storeGet(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
   function storeSet(k, v) { try { localStorage.setItem(k, v); } catch (e) { /* bỏ qua */ } }
 
@@ -3339,9 +3339,9 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
     var ca = $('chartArea'); if (!ca) return;
     ca.classList.toggle('xem-3d', cd === '3d');
     ca.classList.toggle('xem-holo', cd === 'holo');
-    if (cd === 'holo' && window.TCCHolo) setTimeout(TCCHolo.veDuong, 30);
     [].forEach.call(document.querySelectorAll('[data-che-do]'), function (b) { b.setAttribute('aria-pressed', b.getAttribute('data-che-do') === cd ? 'true' : 'false'); });
-    if (cd === '2d') { coLaSo(); drawOverlay(); }
+    if (cd === '2d' || cd === 'holo') { coLaSo(); drawOverlay(); }
+    if (cd === 'holo' && window.TCCHolo && $('chart')) TCCHolo.anh('TuVi', $('chart'));   // giữ nguyên lá số 2D, chỉ thay nền bằng tranh
   }
   function napMa3D(ok, loi) {
     if (window.nhung3D) { ok(); return; }

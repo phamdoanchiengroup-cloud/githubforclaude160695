@@ -1,6 +1,6 @@
 <style>
 /* Mã phiên bản giao diện – phải trùng với Index.html (meta tcc-ban) và Script.html (BAN_GIAO_DIEN) */
-:root { --tcc-ban: "2026.10.23.4"; }
+:root { --tcc-ban: "2026.10.23.5"; }
 /* ================================================================
    THIÊN CƠ CÁC — phong cách tiên hiệp sáng: ngọc bích, kim sa, mây trắng
    ================================================================ */
@@ -2247,9 +2247,35 @@ body.co-ket-qua.mo-form .form-panel, .ls3d-khung, .wl-anh { background: #0A1426;
 .bdk-an .vong::after { background: radial-gradient(circle at 50% 35%, #13254A, #060B16 72%); }
 .vt-khung { background: radial-gradient(circle at 50% 45%, #13254A 0%, #060B16 70%); }
 .bdk { --bk-kinh: rgba(14, 30, 54, .78); --bk-vien: rgba(110, 220, 255, .2); --bk-vien2: rgba(232, 199, 122, .4); }
-/* Lá số Tử Vi: chế độ Hologram (bảng trên tranh, Holo.html) */
-#chartArea:not(.xem-holo) #holoTV { display: none; }
-#chartArea.xem-holo .chart-scroll, #chartArea.xem-holo .ls3d-khung, #chartArea.xem-holo .toolbar .check, #chartArea.xem-holo #btnPrint { display: none; }
+/* Lá số Tử Vi – chế độ Hologram: GIỮ NGUYÊN lá số 2D (đủ sao, bố cục cũ), chỉ thay nền bằng tranh lưới 4×4 (HoloAnhTuVi).
+   Vùng lưới trong tranh: x 135–1180 / 1312, y 46–1106 / 1199 → kéo tranh cho khớp đúng 4×4 ô của #chart. */
+#holoTV { display: none; }
+#chartArea.xem-holo .ls3d-khung { display: none; }
+#chartArea.xem-holo .chart-frame {
+  --paper: #060B16; --card: rgba(13, 27, 48, .86); --card-solid: #0A1426; --surface: #0A1426;
+  --ink: #EAF4FF; --ink-soft: #A8C0D8; --head: #FFE6A8; --accent: #5CEBFF; --jade: #5CEBFF; --cinnabar: #FF9B8A; --lavender: #C9B2FF;
+  --gold: #E8C77A; --gold-hi: #FFE6A8; --line: rgba(110, 220, 255, .22);
+  --kim: #E3E8F2; --moc: #6EEBA4; --thuy: #7DB8FF; --hoa: #FF8A7A; --tho: #F0CF85;
+  color-scheme: dark; color: var(--ink);
+  background: linear-gradient(#060B16, #060B16) padding-box, linear-gradient(135deg, #FFE6A8, #B8954A 30%, #5CEBFF 50%, #B8954A 70%, #FFE6A8) border-box; }
+#chartArea.xem-holo .chart {
+  grid-template-rows: repeat(4, minmax(208px, 1fr)); border-color: transparent;
+  background: #060B16 var(--img, radial-gradient(circle at 50% 50%, #13254A, #060B16 70%)) no-repeat;
+  background-size: 125.55% 113.11%; background-position: 50.56% 33.1%; }
+#chartArea.xem-holo .cung { border-color: transparent; padding: 13px 14px 32px; background: rgba(4, 10, 26, .58); text-shadow: 0 1px 3px rgba(0, 0, 0, .9); }
+#chartArea.xem-holo .cung:hover { background: rgba(14, 34, 70, .66); }
+#chartArea.xem-holo .cung.sel { background: rgba(10, 40, 70, .72); box-shadow: inset 0 0 0 2px #5CEBFF, 0 0 22px rgba(92, 235, 255, .45); }
+#chartArea.xem-holo .cung.tamhop { background: rgba(40, 32, 10, .62); box-shadow: inset 0 0 0 1.5px rgba(232, 199, 122, .8); }
+#chartArea.xem-holo .cung.xungchieu { box-shadow: inset 0 0 0 1.5px rgba(92, 235, 255, .7); }
+#chartArea.xem-holo .cung.is-menh { background: rgba(48, 38, 12, .62); }
+#chartArea.xem-holo .c-head { border-bottom-color: rgba(232, 199, 122, .35); }
+#chartArea.xem-holo .c-foot { left: 10px; right: 10px; bottom: 8px; border-top-color: rgba(232, 199, 122, .3); background: rgba(4, 10, 26, .55); }
+#chartArea.xem-holo .c-chinh .vcd { color: #8FA6C2; }
+#chartArea.xem-holo .center { border-color: transparent; background: radial-gradient(circle at 50% 50%, rgba(4, 9, 20, .25), rgba(4, 9, 20, .72) 70%); text-shadow: 0 1px 4px #000, 0 0 10px #040914; }
+#chartArea.xem-holo .center .bg-han { display: none; }
+#chartArea.xem-holo .flag.dh { background: #FFE6A8; color: #3A2A00; }
+#chartArea.xem-holo .chart-lines line { opacity: .8; }
+#chartArea.xem-holo .ct-pillars > div { background: rgba(10, 22, 42, .78); border-color: rgba(232, 199, 122, .45); color: #A8C0D8; box-shadow: none; }
 #page-hd.co-holo .hd-graph { display: none; }
 
 /* ---------- Poster quà tạo tài khoản (trang chủ, chỉ khách chưa đăng nhập) ---------- */
