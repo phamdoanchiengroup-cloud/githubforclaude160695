@@ -56,7 +56,7 @@
     });
   }
   /** Mã phiên bản giao diện – phải trùng với Index.html (meta tcc-ban) và Styles.html (--tcc-ban) */
-  var BAN_GIAO_DIEN = '2026.10.23.15';
+  var BAN_GIAO_DIEN = '2026.10.23.16';
   function storeGet(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
   function storeSet(k, v) { try { localStorage.setItem(k, v); } catch (e) { /* bỏ qua */ } }
 
@@ -4782,9 +4782,9 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
     return html;
   }
 
-  /* ---------- Nghề nghiệp kèm % phù hợp ---------- */
+  /* ---------- Nghề nghiệp: điểm xếp hạng tương đối, không phải xác suất ---------- */
   function ngheHtml(n) {
-    return '<div class="nghe"><b>' + esc(n.ten) + '</b>' + (n.pct ? '<div class="nghe-pct"><i style="width:' + n.pct + '%"></i></div><em>' + n.pct + '% phù hợp · ' + n.he.length + '/6 hệ</em>' : '') +
+    return '<div class="nghe"><b>' + esc(n.ten) + '</b>' + (n.pct ? '<div class="nghe-pct"><i style="width:' + n.pct + '%"></i></div><em>Điểm tương đối ' + n.pct + '/100 · ' + n.he.length + '/6 hệ gợi ý</em>' : '') +
       '<span>' + n.he.map(heChip).join(' ') + '</span></div>';
   }
   /* ---------- Thời điểm kết hôn / sinh con (xác suất theo năm) ---------- */
@@ -5153,8 +5153,8 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
       }
     }
     if (T.nghe && T.nghe.length) {
-      h += bcH2('Nghề hợp', 'theo số hệ cùng gợi ý');
-      h += bcBang(['Ngành nghề', 'Mức hợp', 'Hệ gợi ý'], T.nghe.map(function (n) { return ['<b>' + bcE(n.ten) + '</b>', bcVach(n.pct, 'tot') + '<b class="bc-diem tot">' + n.pct + '%</b>', bcE((n.he || []).join(', '))]; }));
+      h += bcH2('Nghề gợi ý', 'điểm xếp hạng tương đối, không phải xác suất');
+      h += bcBang(['Ngành nghề', 'Mức hợp', 'Hệ gợi ý'], T.nghe.map(function (n) { return ['<b>' + bcE(n.ten) + '</b>', bcVach(n.pct, 'tot') + '<b class="bc-diem tot">' + n.pct + '/100</b>', bcE((n.he || []).join(', '))]; }));
     }
     return h;
   }
