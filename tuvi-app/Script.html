@@ -4828,7 +4828,7 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
    * Bản 10/2026: báo cáo dựng riêng cho khổ A4 từ dữ liệu luận giải (không chụp lại giao diện web).
    * Mỗi phần = trang mở đầu chương + các khối chữ/bảng gọn; dàn trang tự động (danTrang) rồi chụp từng trang. */
   var PDF_TEN = { tom: 'Chân dung tóm lược', linhvuc: '6 hệ nhìn 9 lĩnh vực đời bạn', nguoi: 'Con người bạn', duyen: 'Tình duyên & gia đạo', doi: 'Đường đời & sự nghiệp',
-    vh: 'Vận hạn: đại vận, năm & 12 tháng', bien: 'Những năm bước ngoặt', chart: 'Lá số Tử Vi – 12 cung', battu: 'Bát Tự – Tứ Trụ', halac: 'Bát Tự Hà Lạc',
+    vh: 'Vận hạn: đại vận, năm & 12 tháng', bien: 'Năm có nhiều tín hiệu hội tụ', chart: 'Lá số Tử Vi – 12 cung', battu: 'Bát Tự – Tứ Trụ', halac: 'Bát Tự Hà Lạc',
     astro: 'Chiêm tinh – Bản đồ sao', so: 'Thần số học', hd: 'Human Design', them: 'Phụ lục: bảng may mắn' };
   var PDF_HOOK = {
     tom: 'Tóm lược nguyên mẫu, điểm sáng, điều cần lưu ý, lời khuyên và các chỉ số cá nhân.',
@@ -5074,13 +5074,13 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
     if (!B && !H) return bcKhoa('Phần biến cố chưa mở trong tài khoản.');
     var h = '';
     if (B && B.nong && B.nong.length) {
-      h += bcH2('Những năm "nóng" phía trước', 'nhiều biến cố cùng dồn về');
-      h += bcBang(['Năm', 'Tuổi', 'Biến cố dễ gặp'], B.nong.map(function (n) {
+      h += bcH2('Những năm có nhiều tín hiệu hội tụ', 'các quy tắc trong ứng dụng cùng nêu chủ đề cần lưu ý');
+      h += bcBang(['Năm', 'Tuổi', 'Chủ đề nên lưu ý'], B.nong.map(function (n) {
         return ['<b>' + n.nam + '</b>', n.tuoi, n.sk.map(function (s, i) { return '<span class="bc-chip ' + (n.loai[i] === 'tot' ? 'tot' : n.loai[i] === 'xau' ? 'xau' : 'vua') + '">' + bcE(s) + '</span>'; }).join(' ')];
       }));
     }
     if (H && H.chuDe && H.chuDe.length) {
-      h += bcH2('Theo từng chủ đề', 'năm có từ 3 hệ cùng báo');
+      h += bcH2('Theo từng chủ đề', 'năm có từ 3 hệ cùng báo theo quy tắc ứng dụng');
       H.chuDe.forEach(function (c) {
         var ds = (c.nam || []).filter(function (y) { return !y.qua; }).slice(0, 6);
         if (!ds.length) return;
