@@ -130,3 +130,20 @@ Liên quan: [[TCC PDF]] · [[TCC Lá số 3D]] · [[TCC Văn dễ hiểu và T�
   - 3 tranh tiên cảnh không chữ.
   - Một số ảnh có dấu ✦ của Gemini ở góc phải dưới, phải cắt bỏ trước khi dùng.
   - Ảnh nhúng vào app theo kiểu `Anh.html` (base64 WebP).
+
+## 23/10 – Demo 6 lá số đặt trên tranh của chủ dự án (cùng link DpFkFghKhTBxgip1xMxzGh, bản 2)
+- **Tử Vi:** ảnh lưới 4×4 (1312×1199). Đo khung bằng pixel: cột x = 135/396/655/916/1180, hàng y = 46/318/582/835/1106. Ô cung đặt đúng 12 khung; tên và thông tin lá số nằm trên và dưới vòng thái cực; đường tam hợp và xung chiếu bị kẹp trong vùng giữa.
+- **Bát Tự:** ảnh 4 trụ + 5 cầu + 10 ô (1536×1024).
+  - 4 khung trụ: can chi trong vòng tròn, thập thần, tàng can, nạp âm và trường sinh.
+  - 5 quả cầu: % ngũ hành và vai trò; dụng thần có vòng sáng.
+  - Bánh xe trái là đại vận, bánh xe phải là năm đang xem.
+  - 10 ô đại vận: chặng hiện tại sáng vàng. Dữ liệu chỉ có 8 vận, nên 2 vận sau được nối thêm theo chiều thuận/nghịch.
+  - Bảng chi tiết vẫn giữ bên dưới.
+- **Hà Lạc:** ảnh bát quái (767×1024). 8 quẻ đơn: quẻ của tiên thiên sáng vàng, của hậu thiên sáng xanh. Hai quẻ kép có chấm đỏ ở hào nguyên đường; 2 bảng 5 dòng; kèm bảng lục hào bên cạnh.
+- **Chiêm tinh:** ảnh vòng hoàng đạo (1254², Bạch Dương ở đỉnh, đi ngược chiều kim đồng hồ). Phủ đĩa tối r = 334, tâm (627, 580); hành tinh đặt đúng độ số; có 4 ô góc (Mặt Trời, Mặt Trăng, Cung Mọc, Nguyên tố).
+- **Thần số:** ảnh 9 quả cầu (1024×1536).
+  - Giữa là đường đời 33/6; 8 cầu quanh là các chỉ số chính.
+  - Cột trái: năm/tháng cá nhân; cột phải: bài học, đam mê, mũi tên.
+  - Hàng dưới: 4 đỉnh cao + thử thách.
+- **HD:** ảnh bodygraph (1024×1536). Bodygraph SVG phủ lên hình người; 2 cột hành tinh đặt vào 2 khung ảnh.
+- Ảnh lưu WebP (150–380 KB mỗi ảnh). Khi đưa vào app: nhúng base64 như `Anh.html`; một số ảnh có dấu ✦ Gemini cần cắt bỏ.
