@@ -88,6 +88,6 @@ test('PDF uses internal-score wording instead of unsupported probability labels'
   const script = read('Script.html');
   assert.match(html, /Biến cố hội tụ 6 hệ \(điểm tín hiệu nội bộ, không phải xác suất\)/);
   assert.match(script, /Điểm tín hiệu nội bộ về/);
-  assert.match(script, /bcSo\(y\.pct\) \+ '\/100<\\/b>'/);
+  assert.match(script, /bcSo\(y\.pct\) \+ '\/100<\/b>'/);
   assert.match(script, /không xác minh tính cách hay dự đoán chắc chắn sự kiện tương lai/);
 });
