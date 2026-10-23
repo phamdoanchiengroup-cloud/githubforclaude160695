@@ -4850,20 +4850,20 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
     vh: 'Vận hạn: đại vận, năm & 12 tháng', bien: 'Những năm bước ngoặt', chart: 'Lá số Tử Vi – 12 cung', battu: 'Bát Tự – Tứ Trụ', halac: 'Bát Tự Hà Lạc',
     astro: 'Chiêm tinh – Bản đồ sao', so: 'Thần số học', hd: 'Human Design', them: 'Phụ lục: bảng may mắn' };
   var PDF_HOOK = {
-    tom: 'Bạn là ai trong vài trang: nguyên mẫu, điểm sáng, điều cần canh chừng, thời điểm vàng và 10 mật mã cá nhân.',
-    linhvuc: 'Mỗi lĩnh vực được 6 hệ cùng chấm điểm: điều nhiều hệ cùng thấy là điều đáng tin nhất, kèm lời khuyên và năm nên hành động.',
-    nguoi: 'Xuất thân, vóc dáng, dấu hiệu cơ thể và tính cách – mỗi nét đều được nhiều hệ cùng bỏ phiếu.',
-    duyen: 'Người bạn đời trông thế nào, tính ra sao, năm sinh – tháng sinh hợp, thời điểm kết hôn và con cái.',
-    doi: 'Chủ đề cuộc đời, nghề hợp và các chặng lên – xuống của đời bạn.',
-    vh: 'Từng đại vận 10 năm qua năm hệ, năm hiện tại với những việc dễ xảy ra, và nhịp 12 tháng âm lịch.',
-    bien: 'Những năm mà nhiều hệ cùng chỉ vào một biến cố – tài lộc, sự nghiệp, hôn nhân, con cái, sức khỏe.',
-    chart: 'Tấm lá số an theo đúng giờ sinh và lời luận dễ hiểu cho từng cung trong 12 cung.',
-    battu: 'Tứ Trụ đo năng lượng ngũ hành của bạn: mạnh ở đâu, thiếu gì, cần bổ sung gì.',
-    halac: 'Tám chữ đổi thành số Hà Đồ – Lạc Thư, lập thành quẻ Dịch Tiên thiên và Hậu thiên.',
-    astro: 'Bầu trời lúc bạn chào đời: các hành tinh, 12 nhà và những nét định hình tính cách, tình yêu, sự nghiệp.',
-    so: 'Những con số ẩn trong ngày sinh và họ tên – tài năng, bài học và các đỉnh cao đời bạn.',
-    hd: 'Bản thiết kế năng lượng: cách bạn ra quyết định đúng và sống thuận với chính mình.',
-    them: 'Màu sắc, con số, hướng, nghề và những điều hợp với bạn – gom lại trong một bảng.'
+    tom: 'Tóm lược nguyên mẫu, điểm sáng, điều cần lưu ý, lời khuyên và các chỉ số cá nhân.',
+    linhvuc: 'Mỗi lĩnh vực tổng hợp các góc nhìn của 6 hệ, nêu điểm số quy ước, căn cứ, điểm khác chiều và gợi ý thực hành.',
+    nguoi: 'Xuất thân, hình tượng truyền thống, các trục tính cách và giới hạn khi diễn giải cơ thể/sức khỏe.',
+    duyen: 'Các quan niệm truyền thống về phối ngẫu, hợp tuổi và thời điểm; những điểm số này không quyết định chất lượng mối quan hệ.',
+    doi: 'Các chặng đời và nghề nghiệp gợi ý theo quy tắc nội bộ; hãy đối chiếu với trải nghiệm, sở thích và kỹ năng thực tế.',
+    vh: 'Các trường phái truyền thống diễn giải đại vận, vận năm và 12 tháng; điểm/tín hiệu không phải xác suất đã được kiểm chứng.',
+    bien: 'Năm có nhiều quy tắc cùng phát tín hiệu được trình bày như gợi ý tham khảo, không phải dự báo chắc chắn sự kiện.',
+    chart: 'Hình lá số Tử Vi và lời luận từng cung, kèm lưu ý rằng diễn giải thuộc hệ thống truyền thống.',
+    battu: 'Tứ trụ can chi, tỷ lệ ngũ hành và dụng thần theo quy tắc của trường phái được chọn.',
+    halac: 'Cách lập quẻ Tiên thiên/Hậu thiên và diễn giải hào theo trường phái Hà Lạc.',
+    astro: 'Bản đồ sao gồm vị trí thiên thể, nhà và góc chiếu cùng cách diễn giải chiêm tinh truyền thống.',
+    so: 'Các chỉ số từ ngày sinh và họ tên, được diễn giải theo quy tắc Thần số học.',
+    hd: 'Type, Strategy, Authority và Profile theo hệ thống Human Design; dùng như khung tự suy ngẫm, không phải chẩn đoán.',
+    them: 'Bảng tổng hợp màu sắc, con số, hướng và các chỉ số khác theo quy ước của ứng dụng.'
   };
   var PDF_NHOM = { tom: 'I · Tổng quan', linhvuc: 'I · Tổng quan', nguoi: 'I · Tổng quan', duyen: 'I · Tổng quan', doi: 'I · Tổng quan',
     vh: 'II · Vận hạn', bien: 'II · Vận hạn', them: 'Phụ lục' };
@@ -5023,7 +5023,7 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
       var o = TD[k]; if (!o || !o.nam) return;
       var ds = o.nam.filter(function (y) { return !y.qua && y.pct >= 10; }).sort(function (a, b) { return b.pct - a.pct; }).slice(0, 5);
       if (ds.length) h += bcH3('Điểm tín hiệu nội bộ về ' + (o.ten || (k === 'ketHon' ? 'kết hôn' : 'con cái')) + ' theo năm') + bcP('Điểm do quy tắc truyền thống trong ứng dụng tạo ra để xếp hạng tương đối; không phải xác suất sự kiện sẽ xảy ra.') + bcBang(['Năm', 'Tuổi', 'Điểm nội bộ', 'Hệ cùng báo'], ds.sort(function (a, b) { return a.nam - b.nam; }).map(function (y) {
-        return ['<b>' + y.nam + '</b>', y.tuoi, '<b>' + bcSo(y.pct) + '%</b> · ' + bcE(y.muc || ''), bcE((y.he || []).join(', '))];
+        return ['<b>' + y.nam + '</b>', y.tuoi, '<b>' + bcSo(y.pct) + '/100</b>', bcE((y.he || []).join(', '))];
       }));
     });
     var C = P.conCai; if (C && C.ketLuan && C.ketLuan.length) h += bcH2(C.tieuDe || 'Con cái') + bcDs(C.ketLuan);
@@ -5069,9 +5069,9 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
         return ['<b>' + bcE(x.ten) + '</b>', '<span class="bc-chip ' + (x.huong === 'tot' ? 'tot' : x.huong === 'xau' ? 'xau' : 'vua') + '">' + bcE(x.nhan) + '</span>', bcE(x.cau || '')];
       }));
       if (H.hanhDong && H.hanhDong.length) {
-        h += bcH3('Việc dễ xảy ra & nên làm gì');
+        h += bcH3('Tín hiệu theo quy tắc ứng dụng & gợi ý thực hành') + bcP('Điểm dưới đây là chỉ số nội bộ để sắp xếp tín hiệu của các trường phái, không phải xác suất sự kiện sẽ xảy ra.');
         H.hanhDong.forEach(function (a) {
-          h += '<div class="bc-sk ' + (a.loai === 'tot' ? 'tot' : a.loai === 'xau' ? 'xau' : 'vua') + ' bc-nguyen"><div><b>' + bcE(a.ngan) + '</b> <span class="bc-chip ' + (a.loai === 'tot' ? 'tot' : 'xau') + '">' + a.p + '% · ' + bcE(a.dong || '') + '</span></div>' +
+          h += '<div class="bc-sk ' + (a.loai === 'tot' ? 'tot' : a.loai === 'xau' ? 'xau' : 'vua') + ' bc-nguyen"><div><b>' + bcE(a.ngan) + '</b> <span class="bc-chip ' + (a.loai === 'tot' ? 'tot' : 'xau') + '">Điểm ' + bcSo(a.p) + '/100 · ' + bcE(a.dong || '') + '</span></div>' +
             (a.khi ? '<p class="bc-p bc-nho">' + bcE(a.khi) + '.</p>' : '') + bcP(a.lam) + '</div>';
         });
       }
@@ -5217,9 +5217,9 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
   function trangKet(brand) {
     return '<div class="bc-ket"><div class="bc-so">Lời kết</div><h1>Lá số là tấm bản đồ.<br>Bạn là người cầm lái.</h1>' +
       '<p>Những gì bạn vừa đọc là xu hướng năng lượng suy ra từ thời điểm sinh qua 6 hệ thống cổ – kim. Chúng cho bạn biết gió thổi hướng nào; còn đi nhanh hay chậm, rẽ trái hay phải là lựa chọn của bạn.</p>' +
-      '<ul class="bc-ul"><li class="tot">Dùng điểm mạnh được nhiều hệ xác nhận làm bệ phóng cho sự nghiệp và các mối quan hệ.</li>' +
-      '<li class="vua">Chuẩn bị sớm cho các năm được cảnh báo: giữ sức khỏe, quỹ dự phòng và sự bình tĩnh.</li>' +
-      '<li>Xem lại báo cáo mỗi đầu năm: vận năm, năm cá nhân và chuyển động hành tinh thay đổi theo từng năm.</li></ul>' +
+      '<ul class="bc-ul"><li class="tot">Xem những điểm thuận như gợi ý để cân nhắc; hãy đối chiếu với năng lực, sở thích và hoàn cảnh thực tế.</li>' +
+      '<li class="vua">Với các năm được đánh dấu, có thể dùng như lời nhắc lập kế hoạch chung — không phải lời tiên đoán về bệnh tật, tai nạn hay biến cố.</li>' +
+      '<li>Hãy kiểm tra lại thông tin đầu vào và đọc phần căn cứ từng hệ trước khi tự đưa ra quyết định.</li></ul>' +
       '<p class="bc-quote">"Đức năng thắng số" – tâm tính, tu dưỡng và nỗ lực mới là yếu tố quyết định.</p>' +
       '<p class="bc-nho">Báo cáo mang tính tham khảo, chiêm nghiệm và phát triển bản thân; không thay thế tư vấn y tế, pháp lý hay tài chính chuyên môn.</p>' +
       (brand.ten || brand.lienHe ? '<div class="bc-brand"><b>' + esc(brand.ten || '') + '</b><span>' + esc(brand.lienHe || '') + '</span></div>' : '') + '</div>';
