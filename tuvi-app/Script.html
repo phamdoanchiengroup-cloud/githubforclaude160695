@@ -5,6 +5,35 @@
 (function () {
   'use strict';
 
+  // Chẩn đoán hiệu năng chỉ bật khi chủ dự án mở URL với ?tccPerf=1.
+  // Số liệu chỉ ghi vào Console của trình duyệt; không gửi ra máy chủ.
+  var TCC_PERF = false;
+  try { TCC_PERF = new URLSearchParams(window.location.search).get('tccPerf') === '1'; } catch (e) {}
+  function tccPerfLog(label, start) {
+    if (!TCC_PERF || !window.performance) return;
+    var ms = Math.max(0, performance.now() - start);
+    console.info('[TCC perf] ' + label + ': ' + ms.toFixed(1) + ' ms');
+  }
+  if (TCC_PERF && window.performance) {
+    window.addEventListener('load', function () {
+      setTimeout(function () {
+        var nav = performance.getEntriesByType && performance.getEntriesByType('navigation')[0];
+        if (nav) console.table({
+          'Phản hồi máy chủ (ms)': Math.round(nav.responseStart),
+          'DOM interactive (ms)': Math.round(nav.domInteractive),
+          'DOM ready (ms)': Math.round(nav.domContentLoadedEventEnd),
+          'Tải trang hoàn tất (ms)': Math.round(nav.loadEventEnd),
+          'Dung lượng tài liệu (byte)': nav.transferSize || 'trình duyệt không cung cấp'
+        });
+        var res = performance.getEntriesByType ? performance.getEntriesByType('resource') : [];
+        var slow = res.filter(function (x) { return x.duration > 0; }).sort(function (a, b) { return b.duration - a.duration; }).slice(0, 8).map(function (x) {
+          return { loai: x.initiatorType, taiNguyen: String(x.name || '').split('?')[0].split('/').slice(-2).join('/'), thoiGianMs: Math.round(x.duration), dungLuongByte: x.transferSize || 0 };
+        });
+        if (slow.length && console.table) { console.info('[TCC perf] 8 tài nguyên tải lâu nhất (không gồm query URL):'); console.table(slow); }
+      }, 0);
+    });
+  }
+
   var CAN_HAN = '甲乙丙丁戊己庚辛壬癸';
   var CHI_HAN = '子丑寅卯辰巳午未申酉戌亥';
   var CHI = ['Tý', 'Sửu', 'Dần', 'Mão', 'Thìn', 'Tỵ', 'Ngọ', 'Mùi', 'Thân', 'Dậu', 'Tuất', 'Hợi'];
@@ -27,7 +56,7 @@
     });
   }
   /** Mã phiên bản giao diện – phải trùng với Index.html (meta tcc-ban) và Styles.html (--tcc-ban) */
-  var BAN_GIAO_DIEN = '2026.10.23.10';
+  var BAN_GIAO_DIEN = '2026.10.23.11';
   function storeGet(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
   function storeSet(k, v) { try { localStorage.setItem(k, v); } catch (e) { /* bỏ qua */ } }
 
@@ -266,6 +295,7 @@
   }
 
   function submit() {
+    var perfSubmitStart = TCC_PERF && window.performance ? performance.now() : 0;
     var f = getForm();
     document.body.classList.remove('mo-form');
     if (!(f.year >= 1800 && f.year <= 2200)) { toast('Năm sinh cần trong khoảng 1800 – 2200.', true); return; }
@@ -277,6 +307,7 @@
       state.result = res;
       if (res.soDu != null) { state.soDu = res.soDu; capNhatUser(); }
       render(res);
+      if (TCC_PERF) tccPerfLog('Lập lá số + dựng giao diện', perfSubmitStart);
       if (HT.cho) { HT.cho = false; htKetQua(res); }
       if (res.khach) toast(res.canMo ? 'Đã lập lá số – lá số này chưa mở khóa, bạn đang xem phần hé lộ ✦' : 'Đã lập lá số (bản xem giới hạn – đăng nhập để xem đầy đủ) ✦');
       else if (res.saved) toast('Đã lập lá số và lưu vào Google Sheet ✦');
@@ -1160,6 +1191,7 @@
 
   /* ------------------------ TABS ------------------------ */
   function showTab(name) {
+    var perfTabStart = TCC_PERF && window.performance ? performance.now() : 0;
     document.querySelectorAll('.tab').forEach(function (t) { var on = t.getAttribute('data-tab') === name; t.classList.toggle('active', on); t.setAttribute('aria-selected', on ? 'true' : 'false'); t.tabIndex = on ? 0 : -1; });
     document.body.setAttribute('data-tab', name);
     if (window.TCCHolo && TCCHolo.nenTab) try { TCCHolo.nenTab(name); } catch (e) {}   // nền card theo tab (Holo.html)
@@ -1172,6 +1204,7 @@
     if (name === 'capdoi') cdNguoi1();
     if (name === 'ti') { veTienIch(); if (state.token) tiDsQue(); }
     dungMucLuc(); if (state.result || state.cd) { veCta(); veQc(); }
+    if (TCC_PERF) tccPerfLog('Chuyển tab ' + name, perfTabStart);
   }
 
   /* ------------------------ BẢNG ĐIỀU KHIỂN BẠCH KIM ------------------------ */
