@@ -2502,3 +2502,11 @@ body.co-ket-qua.mo-form .form-panel, .ls3d-khung, .wl-anh { background: #0A1426;
 }
 
 </style>
+
+/* Poster trang chủ mới: vùng bấm trong suốt khớp nút Khám phá ngay in sẵn trên ảnh. */
+.wl-anh { position:relative; display:block; padding:0; border:1px solid rgba(239,205,139,.82); border-radius:18px; overflow:hidden; width:100%; max-width:440px; justify-self:center; cursor:default; }
+.wl-anh img { display:block; width:100%; height:auto; aspect-ratio:9 / 16; object-fit:cover; }
+.poster-hotspot { position:absolute; left:22%; top:80.5%; width:56%; height:8%; padding:0; border:0; border-radius:50px; background:transparent; cursor:pointer; }
+.poster-hotspot:focus-visible { outline:3px solid #ffe2a0; outline-offset:2px; }
+#wlGo { display:none !important; }
+@media(max-width:760px){ .wl-anh { max-width:440px; width:100%; } }
