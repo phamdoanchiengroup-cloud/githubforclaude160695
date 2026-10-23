@@ -40,8 +40,13 @@ let ngayXung = 0, ngay = 0;
 kt(ngayXung > 10, 'có gặp ngày xung tuổi trong mẫu (' + ngayXung + '/' + ngay + ')');
 // Quyền: tài khoản thường không đăng ký được
 const dk = ctx.dangKy('khachvn', 'matkhau123', 'Khách VN', '0912000222', '');
-let loi = ''; try { ctx.dangKyVanNgay({ name: 'A', gender: 'nam', calendar: 'duong', day: 1, month: 1, year: 1990, hour: 8 }, 'a@example.com', dk.token); } catch (e) { loi = e.message; }
-kt(/chủ sở hữu/.test(loi), 'tài khoản thường bị từ chối');
+// 23/10: tài khoản thường mua theo 30 ngày (giá 'van_ngay'), hết xu thì báo thiếu
+const giaVN = ctx.ttBangGia_().phan.van_ngay.xu, du0 = ctx.ttSoDu_('khachvn');
+const vn1 = ctx.dangKyVanNgay({ name: 'A', gender: 'nam', calendar: 'duong', day: 1, month: 1, year: 1990, hour: 8 }, 'a@example.com', dk.token);
+kt(vn1.ok && /^\d{4}-\d{2}-\d{2}$/.test(vn1.hanDen) && ctx.ttSoDu_('khachvn') === du0 - giaVN, 'tài khoản thường: trừ ' + giaVN + ' xu, hạn 30 ngày (' + vn1.hanDen + ')');
+const vn2 = ctx.dangKyVanNgay({ name: 'A', gender: 'nam', calendar: 'duong', day: 1, month: 1, year: 1990, hour: 8 }, 'a@example.com', dk.token);
+kt(vn2.ok === false && vn2.thieu === giaVN - (du0 - giaVN), 'không đủ xu thì báo thiếu, không đăng ký');
+kt(ctx.dsVanNgay(dk.token).length === 1 && ctx.dsVanNgay(dk.token)[0].hanDen === vn1.hanDen, 'danh sách giữ một dòng, đúng hạn');
 if (process.env.TK_PASS) {
   const tok = ctx.dangNhap('chienpham', process.env.TK_PASS).token, inp = { name: 'Lá số thử', gender: 'nam', calendar: 'duong', day: 15, month: 8, year: 1990, hour: 10, minute: 30 };
   const r = ctx.dangKyVanNgay(inp, 'thu@example.com', tok);
@@ -68,7 +73,7 @@ if (process.env.TK_PASS) {
   sh.appendRow(['khachvip', 'vip@example.com', JSON.stringify(inp), new Date(), '', 'bật']);
   P.setProperty('ZALO_TOKEN', 'tok-thu'); P.setProperty('ZALO_CHAT_ID', 'chat-thu');
   const e0 = thu.length, n = ctx.guiVanNgay();
-  kt(n === 3 && thu.length - e0 === 3, 'email vẫn gửi đủ 3 dòng (' + n + ')');
+  kt(n === 4 && thu.length - e0 === 4, 'email gửi đủ 4 dòng (3 dòng mới + tài khoản thường còn hạn) (' + n + ')');
   kt(zl.length === 2 && zl.every(x => x.body.chat_id === 'chat-thu' && /bottok-thu\/sendMessage$/.test(x.url)), 'Zalo chỉ gửi 1 lần cho lá số chủ sở hữu (2 tin), không gửi cho VIP (' + zl.length + ')');
   ctx.thuZaloVanNgay(); kt(zl.length === 4, 'thuZaloVanNgay gửi ngay');
   ctx.UrlFetchApp = { fetch: () => ({ getContentText: () => '{"ok":false,"description":"Unauthorized"}', getResponseCode: () => 401 }) };

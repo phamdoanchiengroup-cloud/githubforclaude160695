@@ -37,10 +37,14 @@ var TT_PHAN_MAC_DINH = {
   dat_ten: { ten: 'Đặt tên con – chấm tên & gợi ý theo ngũ hành', xu: 29, goc: 49 },   // mở theo lá số của bé
   gieo_que: { ten: 'Gieo quẻ hỏi việc – 1 câu hỏi', xu: 9 },         // trừ theo từng câu (gieoQue)
   ban_tin: { ten: 'Bản tin vận tháng qua email – 12 tháng', xu: 39, goc: 99 }, // đăng ký theo năm (dangKyBanTin)
+  van_ngay: { ten: 'Luận giải hằng ngày qua email – 30 ngày', xu: 29, goc: 59 }, // đăng ký theo 30 ngày (dangKyVanNgay)
   gia_dinh_3: { ten: 'Gói gia đình 3 người', xu: 39, goc: 129, luot: 3 },
   gia_dinh_5: { ten: 'Gói gia đình 5 người', xu: 49, goc: 199, luot: 5 },
   luu_nien: { ten: 'Lưu niên nhiều năm (gói cũ)', xu: 19, an: true }   // gói cũ: người đã mua được xem mọi năm/tháng
 };
+/** 23/10/2026 (chủ dự án): Tiện ích miễn phí hết, chỉ hai phần báo cáo qua email (ban_tin, van_ngay) còn tính phí.
+ *  Giá các phần này luôn về 0, kể cả khi Quản trị đã lưu giá khác. */
+var TT_MIEN_PHI = ['xem_tuoi', 'phong_thuy', 'chon_ngay', 'hop_tac', 'dat_ten', 'gieo_que'];
 /** Phần thuộc Trọn đời (không gồm vận năm/tháng – bán theo từng năm) */
 var TT_TRON_GOI = ['co_ban', 'tron_dai_van', 'bien_co', 'phoi_ngau', 'pdf', 'do_gio', 'xem_tuoi', 'phong_thuy'];
 var TT_GOI_MAC_DINH = [{ tien: 20000, xu: 20 }, { tien: 50000, xu: 55 }, { tien: 100000, xu: 120 }, { tien: 200000, xu: 260 }];
@@ -110,6 +114,7 @@ function ttBangGia_() {
       if (o.thuongGTDangKy != null) km.gtDangKy = Math.max(0, Math.min(100, +o.thuongGTDangKy || 0));
     }
   } catch (e) { /* dùng mặc định */ }
+  TT_MIEN_PHI.forEach(function (k) { if (phan[k]) { phan[k].xu = 0; phan[k].mienPhi = true; delete phan[k].goc; } });
   Object.keys(phan).forEach(function (k) { if (!(phan[k].goc > phan[k].xu)) delete phan[k].goc; });
   return { phan: phan, goi: goi, xuVnd: 1000, thuongLanDau: km.lanDau, thuongGioiThieu: km.gioiThieu,
     thuongDangKy: km.dangKy, thuongGTDangKy: km.gtDangKy, gtToiDa: km.gtToiDa };

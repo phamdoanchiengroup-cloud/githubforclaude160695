@@ -409,7 +409,8 @@ function tiDatTen_(inputCon, ho, dsTen, mo) {
 /* ================= API CHUNG ================= */
 function tienIch(input, loai, thamSo, token) {
   var u = tkPhien_(token), toan = !!(u && ttToanQuyen_(u)), ts = thamSo || {};
-  function co(khoa, ma) { if (toan) return true; if (!u) return false; var q = ttQuyen_(u, khoa); return !!(q[ma] || (q.tron_goi && TT_TRON_GOI.indexOf(ma) >= 0)); }
+  /* 23/10: tiện ích xem đều miễn phí (TT_MIEN_PHI) */
+  function co(khoa, ma) { if (toan || TT_MIEN_PHI.indexOf(loai) >= 0) return true; if (!u) return false; var q = ttQuyen_(u, khoa); return !!(q[ma] || (q.tron_goi && TT_TRON_GOI.indexOf(ma) >= 0)); }
   var r;
   if (loai === 'xem_tuoi') r = tiXemTuoi_(tiCoBan_(input), co(ttKhoaLaSo_(input), 'xem_tuoi'), ts.muon);
   else if (loai === 'phong_thuy') r = tiPhongThuy_(tiCoBan_(input), co(ttKhoaLaSo_(input), 'phong_thuy'));
@@ -496,7 +497,7 @@ function caiDatBanTin() {
  * Chủ sở hữu / VIP đăng ký trên web (Tiện ích › Luận giải hằng ngày) cho lá số đang xem: lá số lưu trong sheet VanNgay,
  * không ghi vào mã. Chạy caiDatVanNgay() MỘT LẦN trong trình soạn thảo để bật gửi 6 giờ sáng mỗi ngày.
  * Văn viết cho người đọc: không nêu tên sao, thuật ngữ cổ có giải nghĩa, luôn kèm cách ứng xử. */
-var TI_SH_VAN_NGAY = ['Tài khoản', 'Email', 'Lá số (JSON)', 'Đăng ký lúc', 'Gửi gần nhất', 'Trạng thái'];
+var TI_SH_VAN_NGAY = ['Tài khoản', 'Email', 'Lá số (JSON)', 'Đăng ký lúc', 'Gửi gần nhất', 'Trạng thái', 'Hạn đến'];   // Hạn đến trống = không hạn (chủ sở hữu / VIP)
 var TI_VN_DG = {
   'Rất tốt': ['Ngày thuận', '#7d8a97', 'Mọi việc có xu hướng trôi chảy hơn thường lệ – hợp để chủ động: gặp gỡ, đề xuất, bắt đầu việc quan trọng.'],
   'Tốt': ['Ngày khá', '#9a7a55', 'Ngày nhìn chung thuận – việc đã định sẽ suôn sẻ, có thể tiến thêm một bước nhỏ.'],
@@ -518,6 +519,7 @@ var TI_VN_TT = {
 function tiShVanNgay_() {
   var ss = laySS_(), sh = ss.getSheetByName('VanNgay');
   if (!sh) { sh = ss.insertSheet('VanNgay'); sh.appendRow(TI_SH_VAN_NGAY); sh.setFrozenRows(1); }
+  else if (sh.getRange(1, 7).getValue() !== 'Hạn đến') sh.getRange(1, 7).setValue('Hạn đến');
   return sh;
 }
 function tiInputSach_(input) {
@@ -525,22 +527,32 @@ function tiInputSach_(input) {
   return o;
 }
 function tiNgayStr_(t) { return t.y + '-' + (t.m < 10 ? '0' : '') + t.m + '-' + (t.d < 10 ? '0' : '') + t.d; }
-/** Đăng ký nhận luận giải hằng ngày (chủ sở hữu / VIP) – gửi ngay một bản thử */
+/** Đăng ký nhận luận giải hằng ngày – gửi ngay một bản thử.
+ *  Chủ sở hữu / VIP: không hạn, không trừ xu. Tài khoản thường: trừ giá 'van_ngay' cho 30 ngày (còn hạn thì cộng nối tiếp). */
 function dangKyVanNgay(input, email, token) {
-  var u = tkCan_(token); email = String(email || '').trim();
-  if (!ttToanQuyen_(u)) throw new Error('Luận giải hằng ngày qua email hiện dành cho chủ sở hữu và thành viên VIP.');
+  var u = tkCan_(token), toan = ttToanQuyen_(u); email = String(email || '').trim();
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) throw new Error('Email chưa đúng.');
   if (!input || !input.year) throw new Error('Hãy lập lá số trước khi đăng ký.');
-  var sh = tiShVanNgay_(), last = sh.getLastRow(), clean = tiInputSach_(input);
-  if (last >= 2) {
-    var rows = sh.getRange(2, 1, last - 1, 2).getDisplayValues();
-    for (var i = rows.length - 1; i >= 0; i--) if (rows[i][0] === u.ten && rows[i][1].toLowerCase() === email.toLowerCase()) sh.deleteRow(i + 2);
-  }
-  sh.appendRow([u.ten, email, JSON.stringify(clean), new Date(), '', 'bật']);
+  var bg = ttBangGia_(), gia = toan ? 0 : (bg.phan.van_ngay ? bg.phan.van_ngay.xu : 29);
+  var sh = tiShVanNgay_(), last = sh.getLastRow(), clean = tiInputSach_(input), homNay = tiNgayStr_(tiGioVN_()), hanCu = '';
+  var kq = ttKhoa_(function () {
+    var du = toan ? 0 : ttSoDu_(u.ten);
+    if (du < gia) return { ok: false, thieu: gia - du, gia: gia, soDu: du };
+    if (last >= 2) {
+      var rows = sh.getRange(2, 1, last - 1, 7).getDisplayValues();
+      for (var i = rows.length - 1; i >= 0; i--) if (rows[i][0] === u.ten && rows[i][1].toLowerCase() === email.toLowerCase()) { if (rows[i][6] > hanCu) hanCu = rows[i][6]; sh.deleteRow(i + 2); }
+    }
+    var han = '';
+    if (!toan) { var d0 = hanCu > homNay ? hanCu : homNay, p = d0.split('-'), d = new Date(+p[0], +p[1] - 1, +p[2] + 30); han = tiNgayStr_({ y: d.getFullYear(), m: d.getMonth() + 1, d: d.getDate() }); }
+    var moi = gia ? ttCong_(u.ten, -gia, 'Luận giải hằng ngày 30 ngày – ' + email, 'van_ngay') : null;
+    sh.appendRow([u.ten, email, JSON.stringify(clean), new Date(), '', 'bật', han ? "'" + han : '']);
+    return { ok: true, han: han, soDu: moi };
+  });
+  if (!kq.ok) return kq;
   var thu = '';
   var zalo = u.vaiTro === 'chu' && tiZaloCo_();
   try { tiGuiVanNgay_(email, clean, tiGioVN_(), zalo); thu = 'đã gửi bản thử' + (zalo ? ' (email và Zalo)' : ''); } catch (e) { thu = 'chưa gửi được bản thử: ' + (e && e.message || e); }
-  return { ok: true, email: email, ten: clean.name || '', thu: thu };
+  return { ok: true, email: email, ten: clean.name || '', thu: thu, hanDen: kq.han, soDu: kq.soDu, gia: gia };
 }
 function huyVanNgay(email, token) {
   var u = tkCan_(token), sh = tiShVanNgay_(), last = sh.getLastRow(), n = 0; email = String(email || '').trim().toLowerCase();
@@ -551,8 +563,8 @@ function huyVanNgay(email, token) {
 }
 function dsVanNgay(token) {
   var u = tkCan_(token), sh = tiShVanNgay_(), last = sh.getLastRow(); if (last < 2) return [];
-  return sh.getRange(2, 1, last - 1, 6).getDisplayValues().filter(function (r) { return r[0] === u.ten; }).map(function (r) {
-    var i = {}; try { i = JSON.parse(r[2]); } catch (e) {} return { email: r[1], ten: i.name || '', guiGanNhat: r[4], trangThai: r[5] }; });
+  return sh.getRange(2, 1, last - 1, 7).getDisplayValues().filter(function (r) { return r[0] === u.ten; }).map(function (r) {
+    var i = {}; try { i = JSON.parse(r[2]); } catch (e) {} return { email: r[1], ten: i.name || '', guiGanNhat: r[4], trangThai: r[5], hanDen: String(r[6] || '').replace(/^'/, '') }; });
 }
 // Văn theo lĩnh vực: nhóm quan hệ can ngày với bạn → [câu, mức] cho Công việc, Tiền bạc, Tình cảm – gia đình, Sức khỏe
 var TI_VN_NHOM = { 'Tỷ Kiên': 'ban', 'Kiếp Tài': 'ban', 'Thực Thần': 'xuat', 'Thương Quan': 'xuat', 'Thiên Tài': 'tai', 'Chính Tài': 'tai', 'Thất Sát': 'quan', 'Chính Quan': 'quan', 'Thiên Ấn': 'an', 'Chính Ấn': 'an' };
@@ -805,8 +817,9 @@ function tiGuiVanNgay_(email, input, t, zalo) {
 function guiVanNgay() {
   var sh = tiShVanNgay_(), last = sh.getLastRow(); if (last < 2) return 0;
   var t = tiGioVN_(), homNay = tiNgayStr_(t), n = 0, zaloCo = tiZaloCo_(), daZalo = {};
-  sh.getRange(2, 1, last - 1, 6).getDisplayValues().forEach(function (r, i) {
+  sh.getRange(2, 1, last - 1, 7).getDisplayValues().forEach(function (r, i) {
     if (!r[1] || r[5] === 'tắt' || String(r[4]).replace(/^'/, '').indexOf(homNay) === 0) return;
+    var han = String(r[6] || '').replace(/^'/, ''); if (han && han < homNay) return;   // hết hạn 30 ngày
     var zalo = zaloCo && r[0] === TK_CHU && !daZalo[r[2]];
     try {
       tiGuiVanNgay_(r[1], JSON.parse(r[2]), t, false); sh.getRange(i + 2, 5).setValue("'" + homNay); n++;

@@ -27,7 +27,7 @@
     });
   }
   /** Mã phiên bản giao diện – phải trùng với Index.html (meta tcc-ban) và Styles.html (--tcc-ban) */
-  var BAN_GIAO_DIEN = '2026.10.23.5';
+  var BAN_GIAO_DIEN = '2026.10.23.6';
   function storeGet(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
   function storeSet(k, v) { try { localStorage.setItem(k, v); } catch (e) { /* bỏ qua */ } }
 
@@ -3079,7 +3079,7 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
     { k: 'hop_tac', ic: '🤝', ten: 'Hợp tác làm ăn', mo: 'Ghép lá số của bạn với đối tác, cộng sự: điểm hợp, chỗ bổ trợ, nên phân vai thế nào.', laSo: 1 },
     { k: 'dat_ten', ic: '👶', ten: 'Đặt tên cho con', mo: 'Chấm tên theo ngũ hành bổ khuyết, thần số học, thanh điệu – và gợi ý những tên hợp với bé.' },
     { k: 'ban_tin', ic: '✉️', ten: 'Bản tin vận tháng qua email', mo: 'Sáng ngày 1 mỗi tháng: tổng quan tháng, ngày tốt ký kết – đi xa, ngày xung tuổi cần tránh.', laSo: 1 },
-    { k: 'van_ngay', ic: '🌅', ten: 'Luận giải hằng ngày qua email', mo: '6 giờ sáng mỗi ngày: điều cần lưu ý hôm nay và ngày mai theo lá số đang xem – nên, tránh, giờ tốt, hướng tốt.', laSo: 1, toanQuyen: 1 }
+    { k: 'van_ngay', ic: '🌅', ten: 'Luận giải hằng ngày qua email', mo: '6 giờ sáng mỗi ngày: điều cần lưu ý hôm nay và ngày mai theo lá số đang xem – nên, tránh, giờ tốt, hướng tốt.', laSo: 1 }
   ];
   function tiNgayChon(id) { var v = ($(id) || {}).value || ''; var m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(v); return m ? { day: +m[3], month: +m[2], year: +m[1] } : null; }
   function tiGioOpts(sel) { var o = ''; for (var h = 0; h < 24; h++) o += '<option value="' + h + '"' + (h === sel ? ' selected' : '') + '>' + pad(h) + ' giờ · ' + CHI[Math.floor((h + 1) / 2) % 12] + '</option>'; return o; }
@@ -3104,13 +3104,13 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
   function veTienIch() {
     var pg = $('page-ti'); if (!pg || (pg._xong && pg._toan === toanQuyen())) return; pg._xong = 1;
     pg._toan = toanQuyen();
-    pg.innerHTML = '<div class="panel section"><h2 class="panel-title"><span class="han">用</span> Tiện ích xem thêm</h2><p class="lede">Những việc người Việt hay xem trước các quyết định lớn. Mỗi công cụ đều có phần xem miễn phí; phần chi tiết mở theo từng việc. Mọi kết quả ghi rõ cơ sở tính và chỉ mang tính tham khảo.</p></div>' +
+    pg.innerHTML = '<div class="panel section"><h2 class="panel-title"><span class="han">用</span> Tiện ích xem thêm</h2><p class="lede">Những việc người Việt hay xem trước các quyết định lớn. Các công cụ xem đều <b>miễn phí</b>; chỉ hai dịch vụ gửi báo cáo qua email (bản tin tháng, luận giải hằng ngày) tính phí. Mọi kết quả ghi rõ cơ sở tính và chỉ mang tính tham khảo.</p></div>' +
       '<div class="ti-luoi">' + TI_THE.filter(function (t) { return !t.toanQuyen || toanQuyen(); }).map(function (t) {
-        if (t.k === 'van_ngay') return '<details class="panel ti-the" data-ti="van_ngay"><summary><span class="ti-ic">' + t.ic + '</span><span class="ti-tt"><b>' + esc(t.ten) + '</b><small>' + esc(t.mo) + '</small></span><em class="ti-gia">Dành cho bạn</em></summary>' +
-          '<div class="ti-than">' + tiForm(t.k) + '<button type="button" class="btn btn-primary btn-sm ti-chay" data-ti-chay="van_ngay">Đăng ký · gửi thử ngay</button><div class="ti-kq" id="tiKq-van_ngay"></div></div></details>';
-        var gia = t.k === 'ban_tin' ? giaPhan('ban_tin') : t.k === 'gieo_que' ? giaPhan('gieo_que') : giaPhan(t.k);
+        if (t.k === 'van_ngay') { var gv = giaPhan('van_ngay'); return '<details class="panel ti-the" data-ti="van_ngay"><summary><span class="ti-ic">' + t.ic + '</span><span class="ti-tt"><b>' + esc(t.ten) + '</b><small>' + esc(t.mo) + '</small></span><em class="ti-gia">' + (toanQuyen() ? 'Dành cho bạn' : (gv.goc > gv.xu ? '<s class="gia-goc">' + fmtXu(gv.goc) + '</s> ' : '') + fmtXu(gv.xu) + '/30 ngày') + '</em></summary>' +
+          '<div class="ti-than">' + tiForm(t.k) + '<button type="button" class="btn btn-primary btn-sm ti-chay" data-ti-chay="van_ngay">Đăng ký · gửi thử ngay</button><div class="ti-kq" id="tiKq-van_ngay"></div></div></details>'; }
+        var gia = t.k === 'ban_tin' ? giaPhan('ban_tin') : t.k === 'gieo_que' ? giaPhan('gieo_que') : giaPhan(t.k), mien = !!gia.mienPhi;
         return '<details class="panel ti-the" data-ti="' + t.k + '"><summary><span class="ti-ic">' + t.ic + '</span><span class="ti-tt"><b>' + esc(t.ten) + '</b><small>' + esc(t.mo) + '</small></span>' +
-          '<em class="ti-gia">' + (gia.goc > gia.xu ? '<s class="gia-goc">' + fmtXu(gia.goc) + '</s> ' : '') + (t.k === 'gieo_que' ? fmtXu(gia.xu) + '/câu' : t.k === 'chon_ngay' ? fmtXu(gia.xu) + '/tháng' : t.k === 'ban_tin' ? fmtXu(gia.xu) + '/năm' : 'từ ' + fmtXu(gia.xu)) + '</em></summary>' +
+          '<em class="ti-gia">' + (mien ? '<b class="ti-mien">Miễn phí</b>' : (gia.goc > gia.xu ? '<s class="gia-goc">' + fmtXu(gia.goc) + '</s> ' : '') + (t.k === 'gieo_que' ? fmtXu(gia.xu) + '/câu' : t.k === 'chon_ngay' ? fmtXu(gia.xu) + '/tháng' : t.k === 'ban_tin' ? fmtXu(gia.xu) + '/năm' : 'từ ' + fmtXu(gia.xu))) + '</em></summary>' +
           '<div class="ti-than">' + tiForm(t.k) + '<button type="button" class="btn btn-primary btn-sm ti-chay" data-ti-chay="' + t.k + '">' +
           (({ gieo_que: '☯ Gieo quẻ', ban_tin: 'Đăng ký · ' + fmtXu(gia.xu), dat_ten: 'Chấm tên' })[t.k] || 'Xem miễn phí') + '</button><div class="ti-kq" id="tiKq-' + t.k + '"></div></div></details>';
       }).join('') + '</div>' + moiBanHtml();
@@ -3254,11 +3254,15 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
   function tiVanNgay() {
     var box = $('tiKq-van_ngay'), email = ($('tiEmailNgay').value || '').trim();
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { toast('Email chưa đúng.', true); return; }
-    if (!state.token) { moDangNhap('Đăng nhập để đăng ký luận giải hằng ngày.'); return; }
+    if (!state.token) { state.sauDangNhap = function () { tiVanNgay(); }; moDangNhap('Đăng nhập để đăng ký luận giải hằng ngày.', 'up'); return; }
+    var g = giaPhan('van_ngay');
+    if (!toanQuyen() && !window.confirm('Đăng ký luận giải hằng ngày 30 ngày cho lá số của ' + (state.input.name || 'bạn') + ', gửi tới ' + email + '?\nGiá: ' + fmtXu(g.xu))) return;
     box.innerHTML = '<span class="muted">Đang đăng ký và gửi bản thử…</span>';
     call('dangKyVanNgay', [state.input, email], function (r) {
-      box.innerHTML = '<p class="ti-ket">🌅 Đã đăng ký cho lá số <b>' + esc(r.ten || 'đang xem') + '</b>. Mỗi sáng khoảng 6–7 giờ, luận giải hôm nay và ngày mai sẽ gửi tới <b>' + esc(r.email) + '</b> (' + esc(r.thu) + ' – xem cả mục Thư rác).</p>' +
-        '<p class="muted">Nếu chưa nhận thư buổi sáng: chủ sở hữu vào Apps Script chạy hàm <code>caiDatVanNgay</code> một lần.</p>' +
+      if (!r.ok) { box.innerHTML = ''; state.sauNap = function () { tiVanNgay(); }; moNap('Bạn cần thêm ' + fmtXu(r.thieu) + ' để đăng ký luận giải hằng ngày. Chọn gói nạp:', r.thieu); return; }
+      if (r.soDu != null) { state.soDu = r.soDu; capNhatUser(); }
+      box.innerHTML = '<p class="ti-ket">🌅 Đã đăng ký cho lá số <b>' + esc(r.ten || 'đang xem') + '</b>. Mỗi sáng khoảng 6–7 giờ, luận giải hôm nay và ngày mai sẽ gửi tới <b>' + esc(r.email) + '</b>' + (r.hanDen ? ' – đến hết ngày ' + esc(r.hanDen) : '') + ' (' + esc(r.thu) + ' – xem cả mục Thư rác).</p>' +
+        (toanQuyen() ? '<p class="muted">Nếu chưa nhận thư buổi sáng: chủ sở hữu vào Apps Script chạy hàm <code>caiDatVanNgay</code> một lần.</p>' : '') +
         '<button type="button" class="btn btn-ghost btn-sm" data-huy-van-ngay="' + esc(r.email) + '">Ngừng nhận</button>';
     }, function (e) { box.innerHTML = '<p class="ti-ket">' + esc((e && e.message) || String(e)) + '</p>'; });
   }
@@ -4487,10 +4491,9 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
   function queSvg(q, nd) {
     var o = '<svg viewBox="0 0 120 132" width="120" height="132" class="que-svg" role="img" aria-label="' + esc(q.ten) + '">';
     for (var i = 6; i >= 1; i--) {
-      var y = 6 + (6 - i) * 21, on = i === nd, c = on ? '#f0dcb0' : '#d8c9ad';
+      var y = 6 + (6 - i) * 21, on = i === nd, c = on ? '#ff3b4f' : '#d8c9ad';   // hào động (nguyên đường) tô đỏ cả vạch
       if (q.hao[i - 1]) o += '<rect x="10" y="' + y + '" width="100" height="12" rx="3" fill="' + c + '"/>';
       else o += '<rect x="10" y="' + y + '" width="44" height="12" rx="3" fill="' + c + '"/><rect x="66" y="' + y + '" width="44" height="12" rx="3" fill="' + c + '"/>';
-      if (on) o += '<circle cx="4" cy="' + (y + 6) + '" r="3.5" fill="#f0dcb0"/>';
     }
     return o + '</svg>';
   }

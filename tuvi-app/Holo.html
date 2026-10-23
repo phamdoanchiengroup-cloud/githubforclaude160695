@@ -249,10 +249,12 @@ table.holo-bt{width:100%;min-width:720px;border-collapse:separate;border-spacing
   }
 
   /* ================= HÀ LẠC ================= */
+  /** Tên ngắn của quẻ: bỏ hai chữ tượng quái đầu (Phong Hỏa Gia Nhân → Gia Nhân; Thuần Càn → Càn) */
+  function tenNgan(t) { var w = String(t || '').split(' '); return w[0] === 'Thuần' ? w.slice(1).join(' ') : w.length > 2 ? w.slice(2).join(' ') : t; }
   var QD = { 'Càn': [1, 1, 1], 'Đoài': [1, 1, 0], 'Ly': [1, 0, 1], 'Chấn': [1, 0, 0], 'Tốn': [0, 1, 1], 'Khảm': [0, 1, 0], 'Cấn': [0, 0, 1], 'Khôn': [0, 0, 0] };
   function veHaLac(res) {
     var HL = res.moRong && res.moRong.haLac; if (!HL || !HL.tien || !HL.hau) return;
-    var k = khung('holoHL', 'hl-board', 'HaLac', '<b>Vòng bát quái</b><span>Vàng: tiên thiên · xanh: hậu thiên · chấm đỏ: hào nguyên đường</span>', '560px', '340px'), bd = k.bd, W = 767, H = 1024;
+    var k = khung('holoHL', 'hl-board', 'HaLac', '<b>Vòng bát quái</b><span>Vàng: tiên thiên · xanh: hậu thiên · vạch đỏ: hào động (nguyên đường)</span>', '560px', '340px'), bd = k.bd, W = 767, H = 1024;
     var POSQ = [['Càn', 383, 262], ['Tốn', 497, 307], ['Khảm', 545, 420], ['Cấn', 497, 532], ['Khôn', 383, 578], ['Chấn', 270, 532], ['Ly', 230, 420], ['Đoài', 270, 307]];
     function tri(bits, w, col) { var o = '<svg viewBox="0 0 40 30" style="width:' + w + ';height:auto;filter:drop-shadow(0 0 4px ' + col + ')">'; bits.forEach(function (b, i) { var y = 24 - i * 10; o += b ? '<rect x="2" y="' + y + '" width="36" height="5" rx="1.5" fill="' + col + '"/>' : '<rect x="2" y="' + y + '" width="15" height="5" rx="1.5" fill="' + col + '"/><rect x="23" y="' + y + '" width="15" height="5" rx="1.5" fill="' + col + '"/>'; }); return o + '</svg>'; }
     POSQ.forEach(function (q) {
@@ -260,17 +262,17 @@ table.holo-bt{width:100%;min-width:720px;border-collapse:separate;border-spacing
       putC(bd, W, H, q[1], q[2], 86, 86, tri(QD[q[0]], '50%', col) + '<span style="--fs:11.5;color:' + col + '">' + q[0] + '</span>', 'plate' + (a && b ? ' ring gc' : a ? ' ring' : b ? ' ring c' : ''), 'border-radius:50%;background:rgba(4,10,24,.94)');
     });
     put(bd, W, H, 140, 30, 490, 60, '<small style="--fs-s:11">Quẻ Hà Lạc</small><b style="--fs-b:21"><em>' + esc(HL.tien.ten) + '</em> <span style="--fs:21;color:#E8C77A">⟶</span> <span style="--fs:21;color:#9FF3FF">' + esc(HL.hau.ten) + '</span></b>');
-    [[22, HL.tien, 'Tiên thiên', '#FFE6A8'], [633, HL.hau, 'Hậu thiên', '#9FF3FF']].forEach(function (b) { put(bd, W, H, b[0] + 4, 80, 104, 76, '<small style="--fs-s:9.5;color:' + b[3] + '">' + b[2] + '</small><b style="--fs-b:22;color:' + b[3] + '">' + esc(String(b[1].ten).split(' ').pop()) + '</b><span style="--fs:10">Quẻ số ' + b[1].so + '</span>'); });
+    [[22, HL.tien, 'Tiên thiên', '#FFE6A8'], [633, HL.hau, 'Hậu thiên', '#9FF3FF']].forEach(function (b) { put(bd, W, H, b[0] + 4, 80, 104, 76, '<small style="--fs-s:9.5;color:' + b[3] + '">' + b[2] + '</small><b style="--fs-b:' + (tenNgan(b[1].ten).length > 6 ? 17 : 22) + ';color:' + b[3] + ';white-space:nowrap">' + esc(tenNgan(b[1].ten)) + '</b><span style="--fs:10">Quẻ số ' + b[1].so + '</span>'); });
     function hex(q, col) {
       var o = '<svg viewBox="0 0 60 76" style="width:58%;height:auto;filter:drop-shadow(0 0 6px ' + col + ')">';
-      q.hao.forEach(function (b, i) { var y = 66 - i * 12, nd = (i + 1) === q.nguyenDuong; o += b ? '<rect x="4" y="' + y + '" width="52" height="7" rx="2" fill="' + col + '"/>' : '<rect x="4" y="' + y + '" width="22" height="7" rx="2" fill="' + col + '"/><rect x="34" y="' + y + '" width="22" height="7" rx="2" fill="' + col + '"/>'; if (nd) o += '<circle cx="30" cy="' + (y + 3.5) + '" r="4.2" fill="#FF6B7A" stroke="#fff" stroke-width="1"/>'; });
+      q.hao.forEach(function (b, i) { var y = 66 - i * 12, nd = (i + 1) === q.nguyenDuong, c = nd ? '#FF3B4F' : col, f = nd ? ' style="filter:drop-shadow(0 0 3px #FF3B4F)"' : ''; o += b ? '<rect x="4" y="' + y + '" width="52" height="7" rx="2" fill="' + c + '"' + f + '/>' : '<rect x="4" y="' + y + '" width="22" height="7" rx="2" fill="' + c + '"' + f + '/><rect x="34" y="' + y + '" width="22" height="7" rx="2" fill="' + c + '"' + f + '/>'; });
       return o + '</svg>';
     }
     // Hai quẻ 6 hào nằm trong hai khung dưới của tranh
     [[34, HL.tien, HL.hoTien, 'Tiên thiên', '#FFE6A8'], [535, HL.hau, HL.hoHau, 'Hậu thiên', '#9FF3FF']].forEach(function (b) {
       var q = b[1];
       put(bd, W, H, b[0], 694, 198, 200, '<small style="--fs-s:10.5;color:' + b[4] + '">' + b[3] + ' · quẻ ' + q.so + '</small>' + hex(q, b[4]) +
-        '<b style="--fs-b:15;color:' + b[4] + '">' + esc(q.ten) + '</b><span style="--fs:10.5;color:#A8B8CC">Nguyên đường hào ' + q.nguyenDuong + (b[2] ? ' · hỗ ' + esc(b[2].ten) : '') + '</span>', 'plate', 'background:rgba(4,10,24,.92);padding:2%');
+        '<b style="--fs-b:15;color:' + b[4] + '">' + esc(q.ten) + '</b><span style="--fs:10.5;color:#A8B8CC"><b style="--fs-b:10.5;color:#FF6B7A">Hào động ' + q.nguyenDuong + '</b>' + (b[2] ? ' · hỗ ' + esc(b[2].ten) : '') + '</span>', 'plate', 'background:rgba(4,10,24,.92);padding:2%');
     });
     chen('page-halac', k);
   }
