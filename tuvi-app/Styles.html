@@ -2484,4 +2484,21 @@ body.co-ket-qua.mo-form .form-panel, .ls3d-khung, .wl-anh { background: #0A1426;
 .pdf-root .bc-lv { padding:10px 0 12px; border-bottom:1px solid var(--bc-line); break-inside:avoid; }
 .pdf-root .bc-cot,.pdf-root .bc-hop { box-shadow:none !important; }
 .pdf-root .bc-nho { font-size:11px; }
+
+/* Lá số Tử Vi: hologram là giao diện duy nhất; giữ chart 2D ngoài khung nhìn để tương thích xuất PDF. */
+#chartArea.holo-only { position:relative; }
+#chartArea.holo-only > .chart-scroll {
+  position:absolute !important; left:-12000px !important; top:0 !important;
+  width:1200px !important; max-width:none !important; height:auto !important;
+  overflow:visible !important; pointer-events:none !important;
+}
+#chartArea.holo-only > .chart-scroll .chart-frame { transform:none !important; }
+#chartArea.holo-only > .chart-scroll .chart { visibility:visible !important; }
+#chartArea > #holoTV { display:block; width:100%; max-width:100%; }
+@media (max-width:760px) {
+  #chartArea.holo-only > .chart-scroll { left:-12000px !important; width:1200px !important; }
+  #chartArea > #holoTV .board { border-radius:10px; }
+  #chartArea > #holoTV .holo-cuon { overflow-x:visible; }
+}
+
 </style>
