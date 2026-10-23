@@ -124,6 +124,10 @@
     var p = (typeof INITIAL_PARAMS === 'object' && INITIAL_PARAMS) || {};
     if (p.year) saved = p;
     if (saved) setForm(saved);
+    // Không khôi phục ngày nhật vận cũ từ lần lập lá số trước; mặc định luôn lấy ngày hiện tại.
+    // Chỉ giữ ngày được truyền tường minh qua URL.
+    if (p.viewDate) $('viewDate').value = p.viewDate;
+    else $('viewDate').value = td.getFullYear() + '-' + pad(td.getMonth() + 1) + '-' + pad(td.getDate());
 
     document.querySelectorAll('input[name=calendar]').forEach(function (r) { r.addEventListener('change', onCalendarChange); });
     ['day', 'month', 'year', 'leap', 'hour', 'minute'].forEach(function (id) {
@@ -131,6 +135,12 @@
       $(id).addEventListener('input', schedulePreview);
     });
     $('place').addEventListener('change', onPlaceChange);
+    $('chartViewYear').addEventListener('change', function () {
+      var y = parseInt($('chartViewYear').value, 10);
+      if (!(y >= 1800 && y <= 2300)) { toast('Năm xem cần trong khoảng 1800 – 2300.', true); return; }
+      $('viewYear').value = y;
+      lapLai();
+    });
     $('form').addEventListener('submit', function (e) { e.preventDefault(); submit(); });
     $('addEvent').addEventListener('click', function () { addEventRow(); });
     onCalendarChange();
@@ -1518,6 +1528,8 @@
   }
   function renderChart(res) {
     var tv = res.tuvi, I = tv.info, P = tv.palaces;
+    var chartYearPicker = $('chartViewYear');
+    if (chartYearPicker) chartYearPicker.value = I.viewYear;
     var html = '';
     P.forEach(function (p) {
       var g = GRID[p.chi];
