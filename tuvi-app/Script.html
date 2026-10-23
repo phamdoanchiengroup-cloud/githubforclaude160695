@@ -1499,7 +1499,6 @@
     $('welcome').style.display = 'none';
     $('chartArea').style.display = '';
     renderChart(res);
-    try { ve3DMacDinh(); } catch (e) { datCheDo('2d'); }
     renderLuan(res);
     renderVan(res);
     renderDuDoan(res);
@@ -3335,28 +3334,6 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
       '<div class="pq-nut"><button type="button" class="btn btn-primary pq-go" data-dang-ky>🎁 Tạo tài khoản – nhận ' + qd + ' xu</button>' +
       '<span>Luận giải 6 hệ vẫn đọc miễn phí.' + (bg.thuongGTDangKy ? ' Mời bạn bè: mỗi người đăng ký, bạn được thêm ' + fmtXu(bg.thuongGTDangKy) + '.' : '') + '</span></div></div>';
   }
-  function mo3D(loai) {
-    var r = state.result;
-    if (!r) { toast('Hãy lập lá số trước.', true); return; }
-    function chay() {
-      var fn = loai === 'bt' ? window.moBatTu3D : window.moLaSo3D;
-      if (!fn) { toast('Không chạy được phần 3D – hãy dán lại file LaSo3D.gs cho đủ.', true); return; }
-      if (!fn(r, state.input)) toast('Lá số này chưa đủ dữ liệu để dựng 3D.', true);
-    }
-    if (window.moLaSo3D) { chay(); return; }
-    // Mã 3D nằm ở LaSo3D.gs (file Tập lệnh tùy chọn) – tải về lần đầu rồi chạy
-    toast('Đang tải phần xem 3D…');
-    call('layMa3D', [], function (ma) {
-      try { var s = document.createElement('script'); s.textContent = ma; document.head.appendChild(s); } catch (e) { if (window.console) console.error('[3D]', e); }
-      chay();
-    }, function (e) {
-      var m = String((e && e.message) || e || '');
-      toast(e && e.thieuHam ? 'Chưa cài phần xem 3D: tạo file Tập lệnh tên LaSo3D, dán nội dung LaSo3D.gs, rồi Triển khai phiên bản mới.' : /layMa3D|not found|không tìm thấy|is not defined/i.test(m) ? 'Chưa cài phần xem 3D: tạo file Tập lệnh tên LaSo3D, dán nội dung LaSo3D.gs, rồi Triển khai phiên bản mới.' : 'Không tải được phần 3D: ' + m, true);
-    });
-  }
-  /* Chế độ xem mặc định của tab Lá số là 3D, nhúng ngay trong trang (nút ✦ 3D / ▦ 2D để đổi, ghi nhớ trên máy người xem).
-     Chưa cài LaSo3D.gs, máy không có WebGL hoặc tải lỗi thì tự về lá số 2D. Lá số 2D vẫn được dựng sẵn để tải ảnh / PDF. */
-  // 10/2026: mặc định là bảng Hologram (Holo.html); khóa nhớ mới 'tccCheDo2' để mọi người thấy giao diện mới
   function cheDoLaSo() { return '2d'; }
   function coWebGL() { return false; }
   function datCheDo(cd) {
