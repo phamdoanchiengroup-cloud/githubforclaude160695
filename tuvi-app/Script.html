@@ -3357,13 +3357,9 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
       '<span>Luận giải 6 hệ vẫn đọc miễn phí.' + (bg.thuongGTDangKy ? ' Mời bạn bè: mỗi người đăng ký, bạn được thêm ' + fmtXu(bg.thuongGTDangKy) + '.' : '') + '</span></div></div>';
   }
   function cheDoLaSo() {
-    // Hologram chỉ trên desktop; điện thoại, màn hình cảm ứng và chế độ giảm chuyển động dùng lá số 2D nhẹ.
-    if (window.innerWidth <= 760 || !window.TCCHolo) return '2d';
-    try {
-      if (window.matchMedia('(pointer: coarse)').matches ||
-          window.matchMedia('(prefers-reduced-motion: reduce)').matches) return '2d';
-    } catch (e) { return '2d'; }
-    return 'holo';
+    // Hologram là giao diện mặc định trên cả điện thoại và máy tính.
+    // Hiệu ứng nặng trên màn hình nhỏ được giảm bằng CSS; không tự chuyển người dùng về lá số 2D.
+    return window.TCCHolo ? 'holo' : '2d';
   }
   function datCheDo(mode) {
     var ca = $('chartArea'); if (!ca) return;
