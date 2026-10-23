@@ -2397,3 +2397,17 @@ body.co-ket-qua.mo-form .form-panel, .ls3d-khung, .wl-anh { background: #0A1426;
   }
 }
 </style>
+
+
+/* ===== Hiệu năng di động: giảm nền động, bóng đổ và hiệu ứng chuyển cảnh ===== */
+@media (max-width: 768px) {
+  .sky::before, .sky::after, .sky .sun, .mountains, .cloud { display: none !important; animation: none !important; }
+  .panel, .card, .btn, .tab-page, .reveal, .stat, .nghe, .bc-cot { animation: none !important; transition: none !important; }
+  .panel, .card, .reveal { box-shadow: none !important; backdrop-filter: none !important; -webkit-backdrop-filter: none !important; }
+  .app-header { padding-top: 12px; }
+  .tab-page.active { animation: none !important; }
+  .hu-tia, .hu-mung, .ls3d-khung, .xem3d { display: none !important; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; scroll-behavior: auto !important; }
+}
