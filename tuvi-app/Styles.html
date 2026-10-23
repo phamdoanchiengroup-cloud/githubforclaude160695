@@ -1,6 +1,6 @@
 <style>
 /* Mã phiên bản giao diện – phải trùng với Index.html (meta tcc-ban) và Script.html (BAN_GIAO_DIEN) */
-:root { --tcc-ban: "2026.10.23.9"; }
+:root { --tcc-ban: "2026.10.23.10"; }
 /* ================================================================
    THIÊN CƠ CÁC — phong cách tiên hiệp sáng: ngọc bích, kim sa, mây trắng
    ================================================================ */
@@ -321,25 +321,27 @@ body.gon-coso details.coso-ly-luan { display: none; }   /* chỉ ẩn khung "cơ
 .cung.is-menh { background: var(--cell-menh); }
 
 .c-head { display: flex; align-items: baseline; gap: 4px; justify-content: space-between; border-bottom: 1px dotted rgba(154, 115, 36, .4); padding-bottom: 3px; margin-bottom: 4px; }
-.c-canchi { font-size: 11px; color: var(--ink-soft); white-space: nowrap; }
+.c-canchi { font-size: 11px; font-weight: 600; white-space: nowrap; }
 .c-name {
-  font-family: var(--font-serif); font-weight: 700; font-size: 12.5px; color: var(--head); text-transform: uppercase; letter-spacing: .4px;
+  font-family: var(--font-body); font-weight: 700; font-size: 11.5px; color: var(--head); text-transform: uppercase; letter-spacing: .3px;
   text-align: center; flex: 1; white-space: nowrap;
 }
 .cung.is-menh .c-name { color: var(--cinnabar); }
 .c-than { display: inline-block; font-size: 10px; background: var(--cinnabar); color: #fff; padding: 0 5px; border-radius: 6px; margin-left: 3px; vertical-align: 1px; }
-.c-dh { font-weight: 700; font-size: 12px; color: var(--gold-hi); }
+.c-dh { font-weight: 600; font-size: 11.5px; color: var(--ink); }
 
-.c-chinh { text-align: center; min-height: 20px; margin: 2px 0 4px; }
-.c-chinh .star { display: inline-block; font-family: var(--font-serif); font-weight: 700; font-size: 13.5px; margin: 0 3px; white-space: nowrap; text-transform: uppercase; }
+.c-chinh { text-align: center; min-height: 20px; margin: 4px 0 8px; display: flex; flex-direction: column; align-items: center; gap: 1px; }
+.c-chinh .star { display: block; font-family: var(--font-body); font-weight: 600; font-size: 13.5px; white-space: nowrap; }
+.c-chinh .star small { font-size: inherit; font-weight: inherit; }
 .c-chinh .vcd { color: #aa9b7a; font-style: italic; font-weight: 400; font-size: 11.5px; }
 .star sup { font-size: 9px; font-weight: 600; margin-left: 1px; opacity: .85; text-transform: none; }
 .hoa-tag { display: inline-block; font-size: 9.5px; font-weight: 700; color: #fff; border-radius: 4px; padding: 0 3px; margin-left: 2px; vertical-align: 2px; text-transform: none; font-family: var(--font-body); }
 .hoa-Lộc { background: #2d8a4e; } .hoa-Quyền { background: #c8372d; } .hoa-Khoa { background: #1f4f99; } .hoa-Kỵ { background: #333; }
 
-.c-phu { display: grid; grid-template-columns: 1fr 1fr; gap: 0 6px; }
-.c-phu .col div { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-size: 11.5px; }
-.c-phu .hung { text-align: right; }
+.c-phu { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 0 6px; }
+.c-phu .col div { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-size: 11px; line-height: 1.38; letter-spacing: -.1px; }
+.c-phu .col div.dam { font-weight: 700; }
+.c-phu .hung { text-align: left; padding-left: 4px; }
 .c-phu .hung div { font-style: normal; }
 .c-luu { margin-top: 3px; font-size: 10.5px; font-style: italic; color: var(--lavender); line-height: 1.25; }
 .c-luu span { display: inline-block; margin-right: 4px; }
@@ -348,14 +350,15 @@ body.gon-coso details.coso-ly-luan { display: none; }   /* chỉ ẩn khung "cơ
 
 .c-foot {
   position: absolute; left: 0; right: 0; bottom: 0; padding: 3px 6px;
-  display: flex; justify-content: space-between; gap: 4px;
+  display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 4px;
   font-size: 10.5px; color: var(--ink-soft);
   border-top: 1px dotted rgba(154, 115, 36, .35);
   background: rgba(138, 100, 36, .07);
 }
-.c-foot .ts { color: var(--head); font-weight: 600; }
+.c-foot .ts { color: var(--gold-hi); font-weight: 700; font-size: 12px; text-align: center; }
 .c-phu .vg { font-size: 11px; opacity: .92; }
-.c-foot .th { color: var(--gold-hi); font-weight: 600; }
+.c-foot .th { color: var(--ink); }
+.c-foot .cf-co { text-align: right; white-space: nowrap; }
 
 .h-Kim { color: var(--kim); } .h-Mộc { color: var(--moc); } .h-Thủy { color: var(--thuy); } .h-Hỏa { color: var(--hoa); } .h-Thổ { color: var(--tho); }
 
@@ -384,14 +387,15 @@ body.gon-coso details.coso-ly-luan { display: none; }   /* chỉ ẩn khung "cơ
   position: absolute; font-family: var(--font-han); font-size: 150px; line-height: 1; color: rgba(226, 198, 144, .09);
   top: 50%; left: 50%; transform: translate(-50%, -50%); white-space: nowrap; pointer-events: none;
 }
-.center .ct-title { font-family: var(--font-title); font-weight: 700; font-size: 25px; color: var(--head); margin: 0; line-height: 1.1; }
+.center .ct-title { font-family: var(--font-body); font-weight: 700; font-size: 18px; letter-spacing: .5px; text-transform: uppercase; color: var(--head); margin: 0; line-height: 1.1; padding-bottom: 8px; border-bottom: 1px solid var(--line); }
 .center .ct-name { font-family: var(--font-serif); font-size: 19px; font-weight: 700; color: var(--cinnabar); margin: 4px 0 8px; }
-.ct-grid { display: grid; grid-template-columns: auto 1fr; gap: 3px 12px; text-align: left; font-size: 12.8px; width: 100%; max-width: 380px; position: relative; }
-.ct-grid dt { color: var(--ink-soft); white-space: nowrap; }
-.ct-grid dd { margin: 0; font-weight: 600; }
-.ct-pillars { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin-top: 10px; width: 100%; max-width: 330px; position: relative; }
-.ct-pillars div { background: var(--surface-glass); border: 1px solid var(--line); border-radius: 10px; padding: 4px 2px; font-size: 11px; color: var(--ink-soft); }
-.ct-pillars b { display: block; font-family: var(--font-han); font-size: 22px; font-weight: 400; line-height: 1.1; }
+/* bảng Thiên Bàn kiểu aituvi: nhãn – dương lịch – (âm lịch) – can chi */
+.ct-bang { border-collapse: collapse; font-size: 13px; text-align: left; width: 100%; max-width: 360px; position: relative; margin-top: 8px; }
+.ct-bang th { font-weight: 400; color: var(--ink-soft); padding: 4px 14px 4px 0; vertical-align: top; white-space: nowrap; }
+.ct-bang td { font-weight: 600; padding: 4px 6px 4px 0; vertical-align: top; color: var(--ink); }
+.ct-bang td.am { color: var(--ink-soft); white-space: nowrap; }
+.ct-bang td.cc { white-space: nowrap; }
+.ct-bang .ct-ten { font-weight: 700; color: var(--cinnabar); }
 .ct-note { font-size: 11px; color: var(--ink-soft); margin-top: 8px; font-style: italic; position: relative; }
 
 /* ---------- Chi tiết cung ---------- */
@@ -2275,7 +2279,7 @@ body.co-ket-qua.mo-form .form-panel, .ls3d-khung, .wl-anh { background: #0A1426;
 #chartArea.xem-holo .center .bg-han { display: none; }
 #chartArea.xem-holo .flag.dh { background: #FFE6A8; color: #3A2A00; }
 #chartArea.xem-holo .chart-lines line { opacity: .8; }
-#chartArea.xem-holo .ct-pillars > div { background: rgba(10, 22, 42, .78); border-color: rgba(232, 199, 122, .45); color: #A8C0D8; box-shadow: none; }
+#chartArea.xem-holo .ct-bang .ct-ten { color: #FFE6A8; }
 #page-hd.co-holo .hd-graph { display: none; }
 
 /* ---------- Poster quà tạo tài khoản (trang chủ, chỉ khách chưa đăng nhập) ---------- */

@@ -27,7 +27,7 @@
     });
   }
   /** Mã phiên bản giao diện – phải trùng với Index.html (meta tcc-ban) và Styles.html (--tcc-ban) */
-  var BAN_GIAO_DIEN = '2026.10.23.9';
+  var BAN_GIAO_DIEN = '2026.10.23.10';
   function storeGet(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
   function storeSet(k, v) { try { localStorage.setItem(k, v); } catch (e) { /* bỏ qua */ } }
 
@@ -1475,24 +1475,25 @@
     sauHienThi();
   }
 
+  /* Cách bày sao theo kiểu lá số aituvi.com: chính tinh giữa ô (độ sáng trong ngoặc), phụ tinh chia 2 cột
+     (trái: cát tinh, Hóa Lộc/Quyền/Khoa; phải: hung tinh, Hóa Kỵ), chân ô: tiểu hạn – tràng sinh – cờ hạn. */
+  function doSang(s) { return s.b ? ' (' + s.b + ')' : ''; }
+  function tenHoa(s) {
+    if (!s.hoa) return '';
+    return ' – Hóa ' + s.hoa;
+  }
   function starHtml(s, cls) {
-    var sup = s.b ? '<sup>' + s.b + '</sup>' : '';
-    var hoa = s.hoa ? '<span class="hoa-tag hoa-' + s.hoa + '">' + s.hoa.charAt(0) + '</span>' : '';
     var info = (state.result.saoInfo && state.result.saoInfo[s.n]) || [];
-    return '<span class="star h-' + s.h + (cls ? ' ' + cls : '') + '" title="' + esc(s.n + (info[2] ? ' – ' + info[2] : '')) + '">' + esc(s.n) + sup + hoa + '</span>';
+    return '<span class="star h-' + s.h + (cls ? ' ' + cls : '') + '" title="' + esc(s.n + tenHoa(s) + (info[2] ? ' – ' + info[2] : '')) + '">' + esc(s.n) + '<small>' + doSang(s) + '</small></span>';
   }
   function phuList(arr) {
-    return arr.filter(function (s) { return !s.hoaOf; })
-      .sort(function (a, b) {
-        var ia = MAJOR.indexOf(a.n), ib = MAJOR.indexOf(b.n);
-        return (ia < 0 ? 99 : ia) - (ib < 0 ? 99 : ib);
-      })
+    function hang(x) { var i = MAJOR.indexOf(x.n); return x.hoaOf ? -1 : (i < 0 ? 99 : i); }
+    return arr.slice().sort(function (a, b) { return hang(a) - hang(b); })
       .map(function (s) {
-        var minor = MAJOR.indexOf(s.n) < 0 ? ' minor' : '';
-        var sup = s.b ? '<sup>' + s.b + '</sup>' : '';
-        var hoa = s.hoa ? '<span class="hoa-tag hoa-' + s.hoa + '">' + s.hoa.charAt(0) + '</span>' : '';
-        var weight = MAJOR.indexOf(s.n) >= 0 && MAJOR.indexOf(s.n) < 18 ? 'font-weight:600' : '';
-        return '<div class="h-' + s.h + minor + '" style="' + weight + '">' + esc(s.n) + sup + hoa + '</div>';
+        var i = MAJOR.indexOf(s.n);
+        var cls = 'h-' + s.h + (i < 0 ? ' minor' : '') + (s.hoaOf || (i >= 0 && i < 18) ? ' dam' : '') + (s.hoaOf ? ' sao-hoa' : '');
+        var tt = s.hoaOf ? ' title="' + esc(s.n + ' của ' + s.hoaOf) + '"' : '';
+        return '<div class="' + cls + '"' + tt + '>' + esc(s.n) + doSang(s) + '</div>';
       }).join('');
   }
 
@@ -1502,6 +1503,18 @@
     return ds.filter(function (s) { return (s.t === 'hung') === hung; }).map(function (s) {
       return '<div class="vg h-' + s.h + '">' + esc(s.n) + '</div>';
     }).join('');
+  }
+  /** "Đinh Tỵ" → "Đ.Tỵ" như lá số aituvi */
+  function canChiTat(canTen, chiTen) { return String(canTen || '').charAt(0).replace('Ấ', 'Á') + '.' + chiTen; }
+  var SINH_H = { 'Mộc': 'Hỏa', 'Hỏa': 'Thổ', 'Thổ': 'Kim', 'Kim': 'Thủy', 'Thủy': 'Mộc' };
+  var KHAC_H = { 'Mộc': 'Thổ', 'Thổ': 'Thủy', 'Thủy': 'Hỏa', 'Hỏa': 'Kim', 'Kim': 'Mộc' };
+  function cucVaMenh(m, c) {
+    if (!m || !c) return '';
+    if (m === c) return 'Cục Mệnh bình hòa';
+    if (SINH_H[m] === c) return 'Bản Mệnh sinh Cục';
+    if (SINH_H[c] === m) return 'Cục sinh Bản Mệnh';
+    if (KHAC_H[m] === c) return 'Bản Mệnh khắc Cục';
+    return 'Cục khắc Bản Mệnh';
   }
   function renderChart(res) {
     var tv = res.tuvi, I = tv.info, P = tv.palaces;
@@ -1513,36 +1526,42 @@
       var chinh = p.chinh.length ? p.chinh.map(function (s) { return starHtml(s); }).join('')
         : '<span class="vcd">Vô chính diệu</span>';
       html += '<div class="' + cls + '" data-chi="' + p.chi + '" style="grid-row:' + g[0] + ';grid-column:' + g[1] + '">' +
-        '<div class="c-head"><span class="c-canchi">' + esc(p.canTen + ' ' + p.chiTen) + '</span>' +
+        '<div class="c-head"><span class="c-canchi h-' + CHI_HANH[p.chi] + '" title="' + esc(p.canTen + ' ' + p.chiTen) + '">' + esc(canChiTat(p.canTen, p.chiTen)) + '</span>' +
         '<span class="c-name">' + esc(p.cung) + (p.isThan ? '<span class="c-than">Thân</span>' : '') + '</span>' +
-        '<span class="c-dh">' + p.daiHan + flags + '</span></div>' +
+        '<span class="c-dh">' + p.daiHan + '</span></div>' +
         '<div class="c-chinh">' + chinh + '</div>' +
         '<div class="c-phu"><div class="col cat">' + phuList(p.cat.concat(p.tieu)) + vongList(p, false) + '</div><div class="col hung">' + phuList(p.hung) + vongList(p, true) + '</div></div>' +
         (p.luu.length ? '<div class="c-luu">' + p.luu.map(function (x) { return '<span>' + esc(x) + '</span>'; }).join('') + '</div>' : '') +
-        '<div class="c-foot"><span class="ts">' + esc(p.trangSinh || '') + '</span><span class="th">' + esc(p.tieuHan || '') + '</span></div>' +
+        '<div class="c-foot"><span class="th" title="Tiểu hạn">' + esc(p.tieuHan || '') + '</span><span class="ts" title="Vòng Tràng Sinh">' + esc(p.trangSinh || '') + '</span><span class="cf-co">' + flags + '</span></div>' +
         '</div>';
     });
 
     var B = res.battu;
     var l = I.lunar, s = I.solar;
-    var pill = B.pillars.map(function (x) {
-      return '<div>' + x.tru + '<b><span class="h-' + x.canHanh + '">' + CAN_HAN[x.can] + '</span><span class="h-' + x.chiHanh + '">' + CHI_HAN[x.chi] + '</span></b>' + esc(x.canTen + ' ' + x.chiTen) + '</div>';
-    }).join('');
+    var tru = {};
+    B.pillars.forEach(function (x) { tru[x.tru] = x; });
+    var namDuong = tru['Năm'] ? tru['Năm'].can % 2 === 0 : true;
+    var ly = (I.menh % 2 === 0) === namDuong ? 'Âm dương thuận lý' : 'Âm dương nghịch lý';
+    function hang(ten, v, am, cc) {
+      return '<tr><th>' + ten + '</th><td>' + v + '</td><td class="am">' + (am == null ? '' : '(' + am + ')') + '</td><td class="cc">' + cc + '</td></tr>';
+    }
+    function dong(ten, v, cls) { return '<tr><th>' + ten + '</th><td colspan="3"' + (cls ? ' class="' + cls + '"' : '') + '>' + v + '</td></tr>'; }
     html += '<div class="center">' +
       '<svg class="chart-lines" id="chartLines"></svg><div class="bg-han">紫微</div>' +
-      '<p class="ct-title">Thiên Bàn</p>' +
-      '<div class="ct-name">' + esc(I.name) + '</div>' +
-      '<dl class="ct-grid">' +
-      '<dt>Dương lịch</dt><dd>' + pad(I.hour) + ':' + pad(I.minute) + ' · ' + s.day + '/' + s.month + '/' + s.year + '</dd>' +
-      '<dt>Âm lịch</dt><dd>' + l.day + '/' + l.month + (l.leap ? ' nhuận' : '') + '/' + l.year + ' · giờ ' + esc(I.gioTen) + '</dd>' +
-      '<dt>Can chi</dt><dd>Năm ' + esc(I.namCanChi) + ' · Tháng ' + esc(I.thangCanChi) + '<br>Ngày ' + esc(I.ngayCanChi) + ' · Giờ ' + esc(I.gioCanChi) + '</dd>' +
-      '<dt>Âm dương</dt><dd>' + esc(I.amDuong) + ' · ' + (I.thuan ? 'đi thuận' : 'đi nghịch') + '</dd>' +
-      '<dt>Bản mệnh</dt><dd class="h-' + I.banMenh.hanh + '">' + esc(I.banMenh.ten) + '</dd>' +
-      '<dt>Cục</dt><dd class="h-' + I.cucHanh + '">' + esc(I.cuc) + '</dd>' +
-      '<dt>Mệnh chủ</dt><dd>' + esc(I.menhChu) + ' · Thân chủ: ' + esc(I.thanChu) + '</dd>' +
-      '<dt>Năm xem</dt><dd>' + I.viewYear + ' (' + esc(I.viewCanChi) + ') · ' + I.tuoi + ' tuổi</dd>' +
-      '</dl>' +
-      '<div class="ct-pillars">' + pill + '</div>' +
+      '<p class="ct-title">Lá số Tử Vi</p>' +
+      '<table class="ct-bang">' +
+      dong('Họ tên', '<b class="ct-ten">' + esc(I.name) + '</b>') +
+      hang('Năm', s.year, l.year !== s.year ? l.year : null, esc(I.namCanChi)) +
+      hang('Tháng', s.month, l.month + (l.leap ? ' nhuận' : ''), esc(I.thangCanChi)) +
+      hang('Ngày', s.day, l.day, esc(I.ngayCanChi)) +
+      hang('Giờ', pad(I.hour) + ':' + pad(I.minute), null, esc(I.gioCanChi)) +
+      hang('Năm xem', I.viewYear, null, esc(I.viewCanChi) + '<br>' + I.tuoi + ' tuổi') +
+      dong('Âm Dương', esc(I.amDuong) + '<br>' + ly) +
+      dong('Mệnh', '<span class="h-' + I.banMenh.hanh + '">' + esc(I.banMenh.ten) + '</span>') +
+      dong('Cục', '<span class="h-' + I.cucHanh + '">' + esc(I.cuc) + '</span><br>' + cucVaMenh(I.banMenh.hanh, I.cucHanh)) +
+      dong('Mệnh chủ', esc(I.menhChu)) +
+      dong('Thân chủ', esc(I.thanChu)) +
+      '</table>' +
       (I.notes && I.notes.length ? '<div class="ct-note">' + I.notes.map(esc).join('<br>') + '</div>' : '') +
       '</div>';
     var chart = $('chart');
