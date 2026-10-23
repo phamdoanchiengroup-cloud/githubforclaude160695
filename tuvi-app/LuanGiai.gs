@@ -978,7 +978,11 @@ function lgNhatVan_(chart, bt, dateStr, soNgay, hdTheoTiet) {
   var m = /^(\d{4})-(\d{1,2})-(\d{1,2})$/.exec(String(dateStr || ''));
   var jd0;
   if (m) jd0 = jdFromDate(parseInt(m[3], 10), parseInt(m[2], 10), parseInt(m[1], 10));
-  else { var now = new Date(); jd0 = jdFromDate(now.getDate(), now.getMonth() + 1, now.getFullYear()); }
+  else {
+    // Apps Script có thể chạy theo UTC; ngày mặc định phải theo múi giờ Việt Nam của ứng dụng.
+    var todayParts = Utilities.formatDate(new Date(), 'Asia/Ho_Chi_Minh', 'yyyy-MM-dd').split('-');
+    jd0 = jdFromDate(parseInt(todayParts[2], 10), parseInt(todayParts[1], 10), parseInt(todayParts[0], 10));
+  }
   var out = [];
   for (var k = 0; k < (soNgay || 7); k++) {
     var jd = jd0 + k;
