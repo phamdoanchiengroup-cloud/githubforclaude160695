@@ -225,13 +225,12 @@ function thXuatThan_(C) {
  * 2. VÓC DÁNG – DIỆN MẠO
  * ========================================================= */
 function thVocDang_(C) {
-  // An toàn diễn giải: các trường phái huyền học không thể xác định đáng tin cậy ngoại hình thực tế.
-  // Giữ cấu trúc dữ liệu để UI/PDF tương thích, nhưng không tạo dự đoán vóc dáng/màu da.
+  // Không suy đoán chiều cao, cân nặng, màu da hoặc nét mặt từ lá số.
   return {
     tieuDe: 'Biểu tượng ngoại hình theo trường phái',
     ketLuan: [
       'Tử Vi, Bát Tự, Chiêm tinh và Hà Lạc có các mô tả hình tượng truyền thống; đây không phải phương pháp đã được kiểm chứng để suy ra chiều cao, cân nặng, màu da hay nét mặt của một người.',
-      'Không dùng mục này để đánh giá cơ thể hoặc đối chiếu giờ sinh. Có thể xem phần căn cứ từng hệ như tư liệu văn hóa, không phải kết luận về ngoại hình thực tế.'
+      'Không dùng mục này để đánh giá cơ thể hoặc đối chiếu giờ sinh. Hãy xem các liên hệ như tư liệu văn hóa, không phải kết luận về ngoại hình thực tế.'
     ],
     nguon: [
       { he: 'Tử Vi', items: ['Hình tượng sao/cung theo truyền thống; không suy ra ngoại hình thực tế.'] },
@@ -241,82 +240,6 @@ function thVocDang_(C) {
     ],
     chiSo: { cao: null, beo: null, mat: 'Không suy đoán', da: 'Không suy đoán' }
   };
-  var tv = C.tv, bt = C.bt, ct = C.ct, he = [], phieu = [];
-  function add(he, v, w) { phieu.push({ he: he, v: v, w: w }); }
-
-  // Tử Vi – Mệnh (trọng số 2) và Thân (1)
-  var tvi = [], menh = tv.palaces[tv.info.menh], than = tv.palaces[tv.info.than];
-  [[menh, 'Mệnh', 2], [than, 'Thân', 1]].forEach(function (x) {
-    if (x[1] === 'Thân' && tv.info.than === tv.info.menh) return;
-    thChinhTinh_(tv, x[0]).forEach(function (s) {
-      var S = TH_SAO[s.n]; if (!S) return;
-      var ham = s.b === 'H', w = x[2] * (s.muon ? 0.5 : 1);
-      var v = { cao: S.v.cao - (ham ? 0.5 : 0), beo: S.v.beo - (ham ? 0.5 : 0), mat: S.v.mat, da: S.v.da };
-      add('Tử Vi', v, w / Math.max(1, x[0].chinh.length || 2));
-      tvi.push(s.n + (s.b ? ' (' + s.b + ')' : '') + ' ở ' + x[1] + (s.muon ? ' (mượn cung đối vì vô chính diệu)' : '') + ': ' + S.hinh + (ham ? '; hãm địa nên dáng gầy/nhỏ hơn, kém tươi' : '') + '.');
-    });
-  });
-  if (menh.tuan || menh.triet) tvi.push('Mệnh gặp ' + (menh.triet ? 'Triệt' : 'Tuần') + ': thân hình thường gọn/nhỏ hơn mô tả của chính tinh, thuở nhỏ dễ ốm.');
-  if (thCoSao_(menh, 'Lộc Tồn') || thCoSao_(menh, 'Thiên Phủ')) add('Tử Vi', { beo: 0.5 }, 0.5);
-  he.push({ he: 'Tử Vi', items: tvi });
-
-  // Bát Tự – hình tướng ngũ hành
-  var bti = [], nh = bt.nhatChuHanh, tro = Object.keys(bt.phanTram).sort(function (a, b) { return bt.phanTram[b] - bt.phanTram[a]; })[0];
-  bti.push('Nhật chủ ' + bt.nhatChu + ' – ' + TH_NGU_HANH_HINH[nh].hinh + '.');
-  add('Bát Tự', TH_NGU_HANH_HINH[nh].v, 1.5);
-  if (tro !== nh) { bti.push('Ngũ hành vượng nhất trong tứ trụ là ' + tro + ' (' + bt.phanTram[tro] + '%) pha thêm nét ' + TH_NGU_HANH_HINH[tro].hinh + '.'); add('Bát Tự', TH_NGU_HANH_HINH[tro].v, 1); }
-  bti.push(thVuong_(bt) > 0 ? 'Thân vượng: thể chất khỏe, xương cốt chắc, sức bền tốt.' : thVuong_(bt) < 0 ? 'Thân nhược: thể chất mảnh, dễ mệt khi làm quá sức; cần bồi bổ theo dụng thần ' + bt.goiY.dung + '.' : 'Thân trung hòa: thể chất cân đối.');
-  if (thVuong_(bt) < 0) add('Bát Tự', { beo: -0.5 }, 0.7); else if (thVuong_(bt) > 0) add('Bát Tự', { beo: 0.3 }, 0.7);
-  he.push({ he: 'Bát Tự', items: bti });
-
-  // Chiêm tinh
-  var S = CT_CUNG[ct.asc.cung];
-  add('Chiêm tinh', S.hinh, 2);
-  var chu = ct.by[ct.chuTinh]; add('Chiêm tinh', CT_CUNG[chu.cung].hinh, 0.8);
-  ct.hanhTinh.forEach(function (p) {
-    if (p.nha !== 1) return;
-    if (p.key === 'jupiter') add('Chiêm tinh', { cao: 0.5, beo: 1 }, 1);
-    if (p.key === 'saturn') add('Chiêm tinh', { beo: -1, da: 'ngăm' }, 1);
-    if (p.key === 'moon') add('Chiêm tinh', { beo: 0.5, mat: 'tròn' }, 0.7);
-    if (p.key === 'mars') add('Chiêm tinh', { da: 'hồng', beo: -0.3 }, 0.7);
-    if (p.key === 'venus') add('Chiêm tinh', { da: 'sáng' }, 0.5);
-  });
-  he.push({ he: 'Chiêm tinh', items: C.ctL.ngoaiHinh });
-  if (C.hl) {
-    var QH = TH_QUAI_HINH[C.hl.tien.duoi], QN = TH_QUAI_HINH[C.hl.tien.tren];
-    add('Hà Lạc', QH.v, 1.2); add('Hà Lạc', QN.v, 0.5);
-    he.push({ he: 'Hà Lạc', items: ['Nội quái ' + C.hl.tien.duoi + ' (bản thân): ' + QH.hinh + '.', 'Ngoại quái ' + C.hl.tien.tren + ' (dáng vẻ bên ngoài): ' + QN.hinh + '.'] });
-  }
-  he.push({ he: 'Thần số học & Human Design', items: ['Hai hệ này không mô tả hình thể. Số thái độ ' + C.ts.thaiDo + ' (' + TS_SO[C.ts.thaiDo].tk + ') cho biết "thần thái" người khác cảm nhận lần đầu; Human Design loại ' + HD_TYPES[C.hd.loai].ten + ' có hào quang ' +
-    ({ 'Generator': 'cởi mở, ấm, cuốn hút', 'Manifesting Generator': 'cởi mở, năng động, nhanh', 'Manifestor': 'khép kín, mạnh, gây ấn tượng', 'Projector': 'tập trung, "nhìn thấu" người đối diện', 'Reflector': 'nhẹ, phản chiếu, khó nắm bắt' }[C.hd.loai]) + '.'] });
-
-  // Tổng hợp phiếu
-  var tong = { cao: 0, beo: 0, wc: 0, wb: 0 }, mat = {}, da = {};
-  phieu.forEach(function (p) {
-    if (p.v.cao != null) { tong.cao += p.v.cao * p.w; tong.wc += p.w; }
-    if (p.v.beo != null) { tong.beo += p.v.beo * p.w; tong.wb += p.w; }
-    if (p.v.mat) mat[p.v.mat] = (mat[p.v.mat] || 0) + p.w;
-    if (p.v.da) da[p.v.da] = (da[p.v.da] || 0) + p.w;
-  });
-  var cao = tong.wc ? tong.cao / tong.wc : 0, beo = tong.wb ? tong.beo / tong.wb : 0;
-  function top(o) { return Object.keys(o).sort(function (a, b) { return o[b] - o[a]; }); }
-  function pct(o, k) { var t = 0; Object.keys(o).forEach(function (x) { t += o[x]; }); return t ? Math.round(o[k] / t * 100) : 0; }
-  function dongHe(key, sg) { // số hệ cùng chiều
-    var hs = {}; phieu.forEach(function (p) { if (p.v[key] != null) { hs[p.he] = (hs[p.he] || 0) + p.v[key] * p.w; } });
-    var n = 0, t = 0; Object.keys(hs).forEach(function (h) { if (Math.abs(hs[h]) > 0.1) { t++; if (hs[h] * sg > 0) n++; } });
-    return t ? n + '/' + t + ' hệ' : '';
-  }
-  var gioi = C.tv.info.male;
-  var tCao = cao > 0.45 ? 'Dáng cao hơn trung bình' : cao > 0.1 ? 'Chiều cao trung bình khá' : cao > -0.3 ? 'Chiều cao trung bình' : 'Dáng nhỏ nhắn, thấp hơn trung bình';
-  var tBeo = beo > 0.55 ? 'thân hình đầy đặn, chắc thịt (dễ tăng cân khi trung niên)' : beo > 0.15 ? 'thân hình cân đối hơi đầy, săn chắc' : beo > -0.3 ? 'thân hình cân đối, gọn' : 'thân hình thon gầy, xương rõ';
-  var m = top(mat), d = top(da);
-  var kl = [
-    tCao + ' (' + dongHe('cao', cao >= 0 ? 1 : -1) + ' cùng chiều), ' + tBeo + ' (' + dongHe('beo', beo >= 0 ? 1 : -1) + ' cùng chiều).',
-    'Khuôn mặt: thiên về ' + m[0] + ' (' + pct(mat, m[0]) + '% phiếu)' + (m[1] ? ', có nét ' + m[1] : '') + '. Nước da: ' + ({ 'sáng': 'sáng/trắng', 'hồng': 'hồng hào', 'ngăm': 'ngăm/bánh mật' }[d[0]] || d[0]) + ' (' + pct(da, d[0]) + '% phiếu).',
-    'Thần thái: ' + CT_CUNG[ct.asc.cung].asc.split(':')[1].split('.')[0].trim() + '; ' + (TH_SAO[(thChinhTinh_(tv, menh)[0] || {}).n] ? 'khí chất ' + (thChinhTinh_(tv, menh)[0].n) + ' – ' + TH_SAO[thChinhTinh_(tv, menh)[0].n].hinh.split(',').slice(-1)[0].trim() : 'khí chất hòa nhã') + '.',
-    (gioi ? 'Với nam giới, ' : 'Với nữ giới, ') + 'các mô tả trên thể hiện rõ nhất ở độ tuổi 25–45; trước đó dáng thường gọn hơn, sau đó chịu ảnh hưởng thói quen sống.'
-  ];
-  return { tieuDe: 'Vóc dáng – diện mạo', ketLuan: kl, nguon: he, chiSo: { cao: Math.round(cao * 100) / 100, beo: Math.round(beo * 100) / 100, mat: m[0], da: d[0] } };
 }
 
 /* =========================================================
@@ -324,7 +247,6 @@ function thVocDang_(C) {
  * ========================================================= */
 function thCoThe_(C) {
   // Không chẩn đoán sức khỏe, dự đoán bệnh, sẹo hay thương tích từ lá số.
-  // Trả đúng cấu trúc dữ liệu cũ để các màn hình vẫn hoạt động.
   return {
     tieuDe: 'Giới hạn diễn giải về cơ thể và sức khỏe',
     ketLuan: [
@@ -341,78 +263,6 @@ function thCoThe_(C) {
     ],
     vung: []
   };
-  var tv = C.tv, bt = C.bt, ct = C.ct, hd = C.hd, he = [], dem = {};
-  function tag(vung, h) { if (!vung) return; (dem[vung] = dem[vung] || {})[h] = true; }
-
-  var tvi = [], menh = tv.palaces[tv.info.menh], tat = thCungTheoTen_(tv, 'Tật Ách'), than = tv.palaces[tv.info.than];
-  [[menh, 'Mệnh'], [than, 'Thân'], [tat, 'Tật Ách']].forEach(function (x, i) {
-    if (i === 1 && tv.info.than === tv.info.menh) return;
-    thSaoCung_(x[0]).forEach(function (s) {
-      var D = TH_DAU_HIEU[s.n]; if (!D || !D[0]) return;
-      if (x[1] === 'Tật Ách' && ['Đào Hoa', 'Hồng Loan', 'Văn Xương', 'Văn Khúc', 'Tả Phù', 'Hữu Bật', 'Thiên Mã', 'Lực Sĩ'].indexOf(s.n) >= 0) return;
-      tvi.push((x[1] === 'Tật Ách' ? '◇ ' : '') + s.n + ' ở ' + x[1] + ': ' + D[0] + '.'); tag(D[1], 'Tử Vi');
-    });
-    thSaoCung_(x[0]).forEach(function (s) { if (s.hoa === 'Kỵ' && TH_SAO[s.n]) { tvi.push('✗ ' + s.n + ' hóa Kỵ ở ' + x[1] + ': chú ý vùng ' + TH_SAO[s.n].bp.map(function (b) { return TH_VUNG[b]; }).join(', ') + '.'); TH_SAO[s.n].bp.forEach(function (b) { tag(b, 'Tử Vi'); }); } });
-  });
-  thChinhTinh_(tv, tat).forEach(function (s) { var S = TH_SAO[s.n]; if (!S) return; tvi.push('Chính tinh cung Tật Ách ' + s.n + (s.muon ? ' (mượn)' : '') + ' → bộ phận cần giữ: ' + S.bp.map(function (b) { return TH_VUNG[b]; }).join(', ') + '.'); S.bp.forEach(function (b) { tag(b, 'Tử Vi'); }); });
-  if (!tvi.length) tvi.push('Mệnh – Tật không có sát tinh đánh dấu: cơ thể ít tì vết nổi bật.');
-  he.push({ he: 'Tử Vi', items: tvi });
-
-  // Bát Tự: ngũ hành thái quá / bất cập
-  var bti = [], pt = bt.phanTram, HB = { 'Mộc': ['gan', 'mat'], 'Hỏa': ['tim', 'mau'], 'Thổ': ['daDay'], 'Kim': ['phoi', 'da'], 'Thủy': ['than', 'tai', 'xuong'] };
-  var TEN_BP = { 'Mộc': 'gan – mật, gân, mắt', 'Hỏa': 'tim, mạch máu, lưỡi, huyết áp', 'Thổ': 'tỳ vị (dạ dày – tiêu hóa), cơ bắp, miệng', 'Kim': 'phổi, đại tràng, da, mũi', 'Thủy': 'thận – bàng quang, tai, xương, tóc' };
-  Object.keys(pt).forEach(function (h) {
-    if (pt[h] >= 32) { bti.push('✗ ' + h + ' thái quá (' + pt[h] + '%): ' + TEN_BP[h] + ' dễ "nóng" – viêm, cường, quá tải.'); HB[h].forEach(function (b) { tag(b, 'Bát Tự'); }); }
-    if (pt[h] <= 8) { bti.push('✗ ' + h + ' bất cập (' + pt[h] + '%): ' + TEN_BP[h] + ' là điểm yếu bẩm sinh.'); HB[h].forEach(function (b) { tag(b, 'Bát Tự'); }); }
-  });
-  (C.btct.sucKhoe || []).slice(0, 3).forEach(function (x) { if (!/thái quá|bất cập/.test(String(x))) bti.push(String(x)); });
-  he.push({ he: 'Bát Tự', items: bti });
-
-  // Chiêm tinh
-  var ci = C.ctL.coThe.slice();
-  CT_CUNG[ct.by.mars.cung].vung.forEach(function (v) { tag(v, 'Chiêm tinh'); });
-  CT_CUNG[ct.by.saturn.cung].vung.forEach(function (v) { tag(v, 'Chiêm tinh'); });
-  CT_CUNG[ct.asc.cung].vung.forEach(function (v) { tag(v, 'Chiêm tinh'); });
-  CT_CUNG[ct.cusp[5].cung].vung.forEach(function (v) { tag(v, 'Chiêm tinh'); });
-  he.push({ he: 'Chiêm tinh', items: ci });
-
-  // Human Design
-  // chỉ Lá lách (miễn dịch) và Gốc (tuyến thượng thận) được tính phiếu – các trung tâm khác mở rất phổ biến nên chỉ ghi chú
-  var hi = [], HM = { spleen: ['mienDich'], root: ['than'] };
-  ['spleen', 'sacral', 'solar', 'heart', 'root'].forEach(function (c) {
-    if (!hd.dinh[c]) { hi.push('□ ' + HD_CENTERS[c].ten + ' mở ↔ ' + HD_CENTER_BIO[c] + ': ' + HD_CENTER_Y[c][1]); (HM[c] || []).forEach(function (b) { tag(b, 'Human Design'); }); }
-  });
-  if (!hi.length) hi.push('Các trung tâm động cơ và lá lách đều xác định – thể chất vận hành ổn định theo HD.');
-  he.push({ he: 'Human Design', items: hi });
-
-  // Hà Lạc – Thuyết quái: Càn đầu, Khôn bụng, Chấn chân, Tốn đùi, Khảm tai, Ly mắt, Cấn tay, Đoài miệng
-  if (C.hl) {
-    var hq = C.hl.tien.nguyenDuong <= 3 ? C.hl.tien.duoi : C.hl.tien.tren, bq = C.hl.hau.nguyenDuong <= 3 ? C.hl.hau.duoi : C.hl.hau.tren;
-    var hli = ['Quái chứa hào nguyên đường Tiên thiên là ' + hq + ' → vùng ' + TH_QUAI_HINH[hq].bp + ' là nơi dễ có dấu vết/nhạy cảm (Thuyết quái).',
-      'Quái chứa hào nguyên đường Hậu thiên là ' + bq + ' → nửa sau đời chú ý ' + TH_QUAI_HINH[bq].bp + '.'];
-    TH_QUAI_HINH[hq].vung.forEach(function (x) { tag(x, 'Hà Lạc'); }); TH_QUAI_HINH[bq].vung.forEach(function (x) { tag(x, 'Hà Lạc'); });
-    he.push({ he: 'Hà Lạc', items: hli });
-  }
-  // Thần số học
-  var ti = [];
-  if (C.ts.bieuDo[5] === 0) ti.push('Thiếu số 5 (trung tâm biểu đồ): dễ mất cân bằng năng lượng, cần vận động đều.');
-  if (C.ts.bieuDo[2] >= 3) { ti.push('Nhiều số 2: hệ thần kinh nhạy, dễ mất ngủ khi căng thẳng.'); tag('thanKinh', 'Thần số học'); }
-  if (C.ts.bieuDo[3] >= 3) { ti.push('Nhiều số 3: đầu óc hoạt động liên tục, dễ đau đầu/căng thẳng.'); tag('thanKinh', 'Thần số học'); }
-  if (C.ts.bieuDo[4] === 0 && C.ts.bieuDo[1] && C.ts.bieuDo[7] === 0) ti.push('Mũi tên trống 1-4-7: cơ thể dễ "lộn xộn" nhịp sinh hoạt.');
-  if (ti.length) he.push({ he: 'Thần số học', items: ti });
-
-  var xep = Object.keys(dem).map(function (k) { return { k: k, n: Object.keys(dem[k]).length, he: Object.keys(dem[k]) }; }).sort(function (a, b) { return b.n - a.n; });
-  var kl = [];
-  var nhieu = xep.filter(function (x) { return x.n >= 2; });
-  if (nhieu.length) nhieu.slice(0, 5).forEach(function (x) { kl.push('✗ ' + TH_VUNG[x.k] + ' – được ' + x.n + ' hệ cùng chỉ ra (' + x.he.join(', ') + '): vùng dễ có dấu vết (sẹo, nốt ruồi, bớt) hoặc cần chăm sóc sức khỏe lâu dài.'); });
-  else kl.push('Không có vùng cơ thể nào được từ hai hệ trở lên cùng chỉ ra – thể chất tương đối cân bằng.');
-  var dauHieu = [];
-  thSaoCung_(menh).forEach(function (s) { if (TH_DAU_HIEU[s.n] && TH_DAU_HIEU[s.n][0] && ['Kình Dương', 'Đà La', 'Hỏa Tinh', 'Linh Tinh', 'Thiên Hình', 'Hóa Kỵ', 'Văn Xương', 'Văn Khúc', 'Đào Hoa'].indexOf(s.n) >= 0) dauHieu.push(TH_DAU_HIEU[s.n][0]); });
-  if (ct.by.mars.nha === 1 || ctKhoang_(ct.by.mars.lon, ct.asc.lon) < 8) dauHieu.push('sẹo/vết đỏ vùng đầu – mặt (Sao Hỏa sát cung Mọc)');
-  if (ct.by.saturn.nha === 1) dauHieu.push('nốt ruồi/đốm sẫm hoặc xương hàm – gò má rõ (Sao Thổ nhà 1)');
-  kl.push(dauHieu.length ? 'Dấu hiệu dễ nhận ra: ' + dauHieu.join('; ') + '.' : 'Không có dấu hiệu tì vết mạnh trên Mệnh; nét nổi bật là vùng ' + CT_CUNG[ct.asc.cung].bp + ' (theo cung Mọc).');
-  kl.push('Sẹo/vết thương dễ gặp ở vùng ' + CT_CUNG[ct.by.mars.cung].bp + ' (Sao Hỏa ' + ct.by.mars.cungTen + '); điểm yếu mạn tính ở ' + CT_CUNG[ct.by.saturn.cung].bp + ' (Sao Thổ ' + ct.by.saturn.cungTen + ').');
-  return { tieuDe: 'Đặc điểm cơ thể & sức khỏe', ketLuan: kl, nguon: he, vung: xep.slice(0, 8).map(function (x) { return { ten: TH_VUNG[x.k], n: x.n, he: x.he }; }) };
 }
 
 /* =========================================================
