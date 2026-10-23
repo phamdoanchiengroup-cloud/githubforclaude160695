@@ -56,7 +56,7 @@
     });
   }
   /** Mã phiên bản giao diện – phải trùng với Index.html (meta tcc-ban) và Styles.html (--tcc-ban) */
-  var BAN_GIAO_DIEN = '2026.10.23.16';
+  var BAN_GIAO_DIEN = '2026.10.23.17';
   function storeGet(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
   function storeSet(k, v) { try { localStorage.setItem(k, v); } catch (e) { /* bỏ qua */ } }
 
@@ -1091,7 +1091,7 @@
     dungMucLuc(); veCta(); veQc();
         if (window._danhDauCoso) window._danhDauCoso();
     try { veHoSo(); } catch (e) { if (window.console) console.error('[Hồ sơ]', e); }
-    try { veMoi3D(); } catch (e) { if (window.console) console.error('[3D]', e); }
+    /* Đã tắt các thành phần 3D để giao diện nhẹ và nhất quán. */
     try { veChao(); setTimeout(hieuUng, 80); } catch (e) { if (window.console) console.error('[Sinh động]', e); }
   }
   /** Banner đầu trang: trước khi lập lá số là khung giới thiệu; sau đó là dải quảng cáo gọn, hiện ở mọi tab */
@@ -1200,7 +1200,7 @@
     if (ta && tb.scrollWidth > tb.clientWidth) tb.scrollLeft = Math.max(0, ta.offsetLeft - tb.offsetLeft - (tb.clientWidth - ta.offsetWidth) / 2);
     document.querySelectorAll('.tab-page').forEach(function (p) { p.classList.toggle('active', p.id === 'page-' + name); });
     if (name === 'hist') loadHistory();
-    if (name === 'chart') setTimeout(function () { coLaSo(); drawOverlay(); if (window.TCCHolo) TCCHolo.veDuong(); }, 30);
+    if (name === 'chart') setTimeout(function () { coLaSo(); drawOverlay(); /* Không dựng lớp hiệu ứng hologram trên di động. */ }, 30);
     if (name === 'capdoi') cdNguoi1();
     if (name === 'ti') { veTienIch(); if (state.token) tiDsQue(); }
     dungMucLuc(); if (state.result || state.cd) { veCta(); veQc(); }
@@ -1371,11 +1371,20 @@
 
   function bkLv(D) {
     var el = $('bkLv'); if (!el) return;
-    el.innerHTML = D.lv.map(function (v) {
+    var ds = D.lv || [];
+    el.innerHTML = '<div class="bdk-lv-layout"><div class="bdk-lv-grid">' + ds.map(function (v, n) {
       var c = v.h === 'tot' ? 'tot' : v.h === 'xau' || v.h === 'kho' ? 'xau' : 'vua';
-      return '<div><span>' + esc(v.ten) + '</span><span class="bdk-ray"><i data-w="' + Math.max(0, Math.min(100, v.d * 10)) + '" style="width:' + Math.max(0, Math.min(100, v.d * 10)) + '%"></i>' + v.p.map(function (p) { return '<s style="left:' + Math.max(0, Math.min(100, p.d * 10)) + '%" title="' + esc(p.he + ' ' + bkVn(p.d)) + '"></s>'; }).join('') + '</span><b class="' + c + '">' + bkVn(v.d) + '</b></div>';
-    }).join('');
-    bkKhiThay(el, function () { if (BK_IT) return; el.querySelectorAll('.bdk-ray i').forEach(function (i, n) { i.style.width = '0'; setTimeout(function () { i.style.width = i.getAttribute('data-w') + '%'; }, 60 + n * 90); }); });
+      return '<button type="button" class="bdk-lv-item ' + c + (n === 0 ? ' active' : '') + '" data-lv-index="' + n + '" aria-pressed="' + (n === 0 ? 'true' : 'false') + '"><span class="bdk-lv-name">' + esc(v.ten) + '</span><span class="bdk-lv-track"><i style="width:' + Math.max(0, Math.min(100, v.d * 10)) + '%"></i></span><b>' + bkVn(v.d) + '<small>/10</small></b></button>';
+    }).join('') + '</div><aside class="bdk-lv-detail" id="bkLvDetail" aria-live="polite"></aside></div>';
+    function chon(n) {
+      var v = ds[n]; if (!v) return;
+      el.querySelectorAll('[data-lv-index]').forEach(function (b) { var on = Number(b.getAttribute('data-lv-index')) === n; b.classList.toggle('active', on); b.setAttribute('aria-pressed', on ? 'true' : 'false'); });
+      var c = v.h === 'tot' ? 'Thuận theo thang điểm nội bộ' : v.h === 'xau' || v.h === 'kho' ? 'Cần xem kỹ các chỉ báo' : 'Tín hiệu ở mức trung tính';
+      var he = (v.p || []).slice().sort(function (a,b) { return b.d-a.d; });
+      $('bkLvDetail').innerHTML = '<small>LĨNH VỰC ĐANG CHỌN</small><h4>' + esc(v.ten) + '</h4><strong>' + bkVn(v.d) + '<span>/10</span></strong><p>' + c + '. Đây là điểm tổng hợp theo quy tắc của ứng dụng, không phải xác suất kết quả ngoài đời.</p>' + (he.length ? '<div class="bdk-lv-systems"><b>Điểm từng hệ</b>' + he.map(function(p){return '<div><span>' + esc(p.he) + '</span><b>' + bkVn(p.d) + '/10</b></div>';}).join('') + '</div>' : '<p>Chưa có điểm từng hệ để đối chiếu.</p>');
+    }
+    el.querySelectorAll('[data-lv-index]').forEach(function(b){b.addEventListener('click',function(){chon(Number(b.getAttribute('data-lv-index'));});});
+    if (ds.length) chon(0);
   }
 
   function bkDoi(D) {
@@ -3479,10 +3488,7 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
     }, function () { khung.innerHTML = ''; datCheDo('2d'); });
   }
   /** Khung mời xem Tứ Trụ 3D ở đầu tab Bát Tự */
-  function veMoi3D() {
-    var pg = $('page-battu'); if (!pg || !state.result || !state.result.battu || !state.result.battu.pillars || pg.querySelector('.xem3d')) return;
-    pg.insertAdjacentHTML('afterbegin', '<div class="panel xem3d"><div class="x3-ic" aria-hidden="true"><i></i><i></i><i></i><i></i></div><div class="x3-nd"><b>Tứ Trụ 3D – bốn cột đời bạn</b><span>Bốn trụ Năm, Tháng, Ngày, Giờ dựng thành không gian ba chiều cùng bánh xe ngũ hành và con đường đại vận. Đi qua 11 chặng luận giải dễ hiểu.</span></div><button type="button" class="btn btn-primary btn-sm" data-bt3d>✦ Mở Tứ Trụ 3D</button></div>');
-  }
+  function veMoi3D() { var pg = $('page-battu'); if (pg) pg.querySelectorAll('.xem3d').forEach(function (el) { el.remove(); }); }
   function veHoSo() {
     var r = state.result, f = state.input, top = $('resTop');
     document.body.classList.toggle('co-ket-qua', !!r);
@@ -4890,7 +4896,7 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
       return html;
     }
     html += '<div class="tg" data-g="chan"><div class="panel section th-intro"><h2 class="panel-title"><span class="han">五術合參</span> Luận tổng hợp 6 hệ</h2>' +
-      '<p>Kết hợp ' + ['Tử Vi', 'Bát Tự', 'Hà Lạc', 'Chiêm tinh', 'Thần số học', 'Human Design'].map(heChip).join(' ') + ' – mỗi hệ "bỏ phiếu" độc lập, kết luận nào nhiều hệ cùng chỉ ra thì đáng tin cậy hơn.</p>' +
+      '<p>Kết hợp ' + ['Tử Vi', 'Bát Tự', 'Hà Lạc', 'Chiêm tinh', 'Thần số học', 'Human Design'].map(heChip).join(' ') + ' – các hệ được đối chiếu theo quy tắc riêng; đồng thuận là tín hiệu tham khảo, không phải bằng chứng độc lập rằng kết luận đúng.</p>' +
       coSoHtml('Phương pháp tổng hợp', T.coSo) + coSoHtml('Cách chấm điểm (thang 10)', CACH_CHAM) + '</div>' + matMaHtml(T.matMa) + '</div>';
     var MO_DAU = {
       'Xuất thân – gia cảnh': 'Nơi bạn bắt đầu định hình cách bạn bước đi. Đây là điều 6 hệ cùng nói về gia đình và cội nguồn của bạn.',
@@ -5080,7 +5086,7 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
   function pdfLinhVuc(res) {
     var D = res.moRong && res.moRong.deHieu, S = D && D.th6, h = '';
     if (S && S.linhVuc) {
-      h += bcHop('Tóm lại', bcP(S.tomTat) + (S.doTin != null ? '<p class="bc-p bc-nho">Độ tin cậy khi ghép các hệ: <b>' + S.doTin + '%</b>. Điểm theo thang 10: 5 là cân bằng, từ 6,5 là thuận, từ 4 trở xuống là cần lưu ý.</p>' : ''));
+      h += bcHop('Tóm lại', bcP(S.tomTat) + '<p class="bc-p bc-nho">Điểm 0–10 là thang quy ước nội bộ của ứng dụng, không phải xác suất hoặc mức độ chính xác đã được kiểm chứng. Mốc 5 biểu thị trung tính trong cách chấm hiện tại.</p>');
       h += bcH2('Bảng điểm 9 lĩnh vực');
       h += bcBang(['Lĩnh vực', 'Điểm /10', 'Đồng thuận'], S.linhVuc.map(function (l) {
         return ['<b>' + bcE(l.ten) + '</b>', bcThanh(l.diem), (l.dong != null ? l.dong + '/' + l.soHe + ' hệ' : '')];
