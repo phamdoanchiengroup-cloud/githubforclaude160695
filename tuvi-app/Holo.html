@@ -237,7 +237,7 @@ table.holo-bt{width:100%;min-width:720px;border-collapse:separate;border-spacing
     function ln(p, q, col, dash, w) { el('line', { x1: p[0], y1: p[1], x2: q[0], y2: q[1], stroke: col, 'stroke-width': w, 'stroke-linecap': 'round', 'stroke-opacity': .9, 'stroke-dasharray': dash || '', style: 'filter:drop-shadow(0 0 4px ' + col + ')' }, svg); }
     ln(a, t1, '#FFE6A8', '', 2); ln(t1, t2, '#FFE6A8', '', 2); ln(t2, a, '#FFE6A8', '', 2); ln(a, x, '#5CEBFF', '7 6', 1.8);
     [a, t1, t2, x].forEach(function (p, i) { el('circle', { cx: p[0], cy: p[1], r: i === 0 ? 5 : 3.5, fill: i === 3 ? '#5CEBFF' : '#FFE6A8' }, svg); });
-    requestAnimationFrame(veTuanTriet);
+    // Không lặp requestAnimationFrame ở mỗi khung hình: tránh vòng lặp vĩnh viễn gây giật trên điện thoại.
   }
 
   /* ================= BÁT TỰ ================= */
@@ -522,7 +522,7 @@ table.holo-bt{width:100%;min-width:720px;border-collapse:separate;border-spacing
     var gan = { style: { setProperty: function (k, v) { pg.style.setProperty('--nen-tab', v); pg.classList.add('co-nen'); } } };
     anh(ten, gan);
   }
-  var rt; window.addEventListener('resize', function () { clearTimeout(rt); rt = setTimeout(function () { if (nenDuocTai()) veDuongTV(); }, 150); });
+  var rt; window.addEventListener('resize', function () { clearTimeout(rt); rt = setTimeout(function () { if (tvBd) { veTuanTriet(); veDuongTV(); } if (nenDuocTai()) veDuongTV(); }, 150); });
   function nen() { if (!nenDuocTai()) return; var n = document.getElementById('holoNen'); if (n) anh('Nen', n); }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', nen); else nen();
   window.TCCHolo = { nenTab: nenTab, ve: ve, veTuVi: veTuVi, chonCung: chonCung, veDuong: veDuongTV, anh: anh };
