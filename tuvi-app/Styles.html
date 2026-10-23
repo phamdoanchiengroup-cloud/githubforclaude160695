@@ -1374,10 +1374,7 @@ details.dh-lv .cung-van-de-hieu { margin-bottom: 12px; }
 .th6-filter small { width:100%; color:var(--ink-soft); font-size:11.5px; }
 .th6-lv[hidden] { display:none !important; }
 @media (max-width:640px) { .th6-filter { gap:6px; padding:8px; } .th6-filter > span { width:100%; } .th6-filter button { flex:1 1 calc(50% - 6px); } }
-@media (prefers-reduced-motion: reduce) {
-  .vt-sao, .vt-quydao, .vt-hao, .vt-the.moi { animation:none !important; }
-  .vt-quay, .vt-nhan, .vt-o, .vt-vien-lv, .vt-the { transition:none !important; }
-}
+
 /* Tổng hợp 6 hệ (bản 2) */
 .th6-chip { display: flex; flex-wrap: wrap; gap: 6px; margin: 0 0 10px; }
 .th6-chip span { font-size: 13px; padding: 4px 10px; border-radius: 999px; border: 1px solid var(--line); }
@@ -1477,7 +1474,7 @@ body:has(#page-chart.active) .tcc-goc-anh { opacity:.55; }
 }
 /* Điện thoại: nền tĩnh, không chạy hạt sáng/mây hoặc hiệu ứng chuyển động nặng. */
 @media (max-width:760px), (pointer:coarse) {
-  .bk-nen,.bk-hat,.sky::before,.sky::after,.sky .holo-nen,.sky .sun,.sky .cloud,.mountains { display:none !important; animation:none !important; filter:none !important; }
+  .bk-nen,.bk-hat,.sky::before,.sky::after,.sky .holo-nen,.sky .sun,.sky .cloud,.mountains,.tcc-goc-anh { display:none !important; animation:none !important; filter:none !important; }
   .sky { background:linear-gradient(180deg,#15120f 0%,#1a1713 58%,#21190f 100%) !important; }
   .btn-primary,.res-top .tab.active,.qs-nut .btn-vang { animation:none !important; background-position:0 0 !important; }
   .panel { backdrop-filter:none !important; -webkit-backdrop-filter:none !important; box-shadow:0 2px 10px rgba(0,0,0,.10) !important; }
@@ -2283,7 +2280,7 @@ body.co-ket-qua.mo-form .form-panel, .ls3d-khung, .wl-anh { background: #0A1426;
 .tip { background: #0A1426; color: #EAF4FF; }
 .chart-fig { background: linear-gradient(180deg, #0F1F38, #0A1426); }
 .bdk-an .vong::after { background: radial-gradient(circle at 50% 35%, #13254A, #060B16 72%); }
-.vt-khung { background: radial-gradient(circle at 50% 45%, #13254A 0%, #060B16 70%); }
+
 .bdk { --bk-kinh: rgba(14, 30, 54, .78); --bk-vien: rgba(110, 220, 255, .2); --bk-vien2: rgba(232, 199, 122, .4); }
 /* Lá số Tử Vi – chế độ Hologram: GIỮ NGUYÊN lá số 2D (đủ sao, bố cục cũ), chỉ thay nền bằng tranh lưới 4×4 (HoloAnhTuVi).
    Vùng lưới trong tranh: x 135–1180 / 1312, y 46–1106 / 1199 → kéo tranh cho khớp đúng 4×4 ô của #chart. */
