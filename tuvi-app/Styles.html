@@ -1,6 +1,6 @@
 <style>
 /* Mã phiên bản giao diện – phải trùng với Index.html (meta tcc-ban) và Script.html (BAN_GIAO_DIEN) */
-:root { --tcc-ban: "2026.10.23.6"; }
+:root { --tcc-ban: "2026.10.23.7"; }
 /* ================================================================
    THIÊN CƠ CÁC — phong cách tiên hiệp sáng: ngọc bích, kim sa, mây trắng
    ================================================================ */
@@ -2192,7 +2192,7 @@ body.co-cta .result-wrap { padding-bottom: 120px; }
 /* Thẻ hồ sơ trên điện thoại: 4 nút thành lưới 2×2, mỗi nút một dòng */
 @media (max-width: 640px) { .ho-so-nut { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; } .ho-so-nut .btn { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-size: 14px; } }
 /* Lời chào chỉ ở tab Lá số – các tab khác vào thẳng nội dung */
-body[data-tab]:not([data-tab="chart"]) #chaoBan { display: none; }
+body[data-tab]:not([data-tab="chart"]):not([data-tab="tong"]) #chaoBan { display: none; }
 /* In / chụp: hiện đủ các khung "hiện dần khi cuộn" */
 @media print { .cho-hien { opacity: 1 !important; transform: none !important; } }
 

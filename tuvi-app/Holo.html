@@ -8,7 +8,8 @@
 .holo-cuon > .board{min-width:var(--hmin,0)}
 .holo-cap{display:flex;align-items:baseline;justify-content:space-between;gap:12px;flex-wrap:wrap;margin:0 2px 10px}
 .holo-cap b{font:700 13px/1.2 'Chakra Petch',var(--font-body);letter-spacing:.2em;text-transform:uppercase;color:#5CEBFF}
-.holo-cap span{font-size:13px;color:#A8B8CC}
+.holo-cap span{font-size:13px;color:#A8B8CC;flex:1;min-width:0}
+.holo-cap .holo-tai{flex:none;min-height:34px}
 .board{position:relative;width:100%;container-type:inline-size;border-radius:16px;overflow:hidden;
   background:#060B16 var(--img,radial-gradient(70% 60% at 50% 45%,#13254a,#060B16)) center/100% 100% no-repeat;
   box-shadow:0 30px 70px -30px rgba(0,0,0,.95),0 0 50px -20px rgba(232,199,122,.45),inset 0 0 0 1px rgba(232,199,122,.22);color:#EAF4FF}
@@ -135,9 +136,11 @@ table.holo-bt{width:100%;min-width:720px;border-collapse:separate;border-spacing
       (CHO[ten] || []).forEach(function (n) { n.style.setProperty('--img', 'url(' + d + ')'); }); CHO[ten] = [];
     }).withFailureHandler(function () { CHO[ten] = []; }).layAnhHolo(ten);
   }
+  var TEN_FILE = { BatTu: 'bat-tu', HaLac: 'ha-lac', ChiemTinh: 'chiem-tinh', ThanSo: 'than-so-hoc', HD: 'human-design' };
   function khung(id, cls, ten, cap, hw, hmin) {
     var w = document.createElement('div'); w.className = 'holo-wrap'; w.id = id; if (hw) w.style.setProperty('--hw', hw);
-    w.innerHTML = (cap ? '<div class="holo-cap">' + cap + '</div>' : '') + '<div class="holo-cuon"><div class="board ' + cls + '"></div></div>';
+    var nut = TEN_FILE[ten] ? '<button type="button" class="btn btn-ghost btn-sm holo-tai" data-holo-tai="' + TEN_FILE[ten] + '">⤓ Tải ảnh</button>' : '';
+    w.innerHTML = (cap ? '<div class="holo-cap">' + cap + nut + '</div>' : '') + '<div class="holo-cuon"><div class="board ' + cls + '"></div></div>';
     if (hmin) w.style.setProperty('--hmin', hmin);
     var bd = w.querySelector('.board'); anh(ten, bd); return { w: w, bd: bd };
   }
@@ -427,11 +430,35 @@ table.holo-bt{width:100%;min-width:720px;border-collapse:separate;border-spacing
   }
 
   function ve(res, api) {
-    api = api || {};
+    api = api || {}; tenNguoi = (res.tuvi && res.tuvi.info && res.tuvi.info.name) || '';
     [['bt', veBatTu], ['hl', veHaLac], ['ct', veChiemTinh], ['ts', veThanSo], ['hd', veHD]].forEach(function (x) {
       try { x[1](res, api); } catch (e) { if (window.console) console.error('[Holo ' + x[0] + ']', e); }
     });
   }
+  /* Tải ảnh riêng của từng hệ: chụp bảng trên tranh (Bát Tự chụp cả bảng gộp bên dưới) */
+  var tenNguoi = '';
+  document.addEventListener('click', function (e) {
+    var b = e.target.closest && e.target.closest('[data-holo-tai]'); if (!b) return;
+    if (typeof html2canvas === 'undefined') { alert('Không tải được thư viện chụp ảnh – hãy thử lại sau.'); return; }
+    var w = b.closest('.holo-wrap'), nut = w.querySelector('.board'), ten = b.getAttribute('data-holo-tai');
+    var cu = b.textContent; b.disabled = true; b.textContent = 'Đang chụp…';
+    var chup = w.querySelector('.holo-bt') ? w : nut, an = [].slice.call(w.querySelectorAll('.holo-tai'));
+    an.forEach(function (x) { x.style.visibility = 'hidden'; });
+    // html2canvas đặt sai vị trí SVG nằm tuyệt đối → tạm thay mỗi SVG bằng ảnh <img> cùng kích thước, chụp xong trả lại
+    var svgs = [].slice.call(chup.querySelectorAll('svg')).map(function (sv) {
+      var r = sv.getBoundingClientRect(), pr = sv.parentNode.getBoundingClientRect(), cs = getComputedStyle(sv), c = sv.cloneNode(true);
+      c.setAttribute('xmlns', 'http://www.w3.org/2000/svg'); c.setAttribute('width', Math.round(r.width)); c.setAttribute('height', Math.round(r.height));
+      var im = document.createElement('img'); im.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(new XMLSerializer().serializeToString(c));
+      im.style.cssText = 'display:block;width:' + r.width + 'px;height:' + r.height + 'px;' + (cs.position === 'absolute' ? 'position:absolute;left:' + (r.left - pr.left) + 'px;top:' + (r.top - pr.top) + 'px;z-index:' + cs.zIndex + ';' : '');
+      sv.parentNode.insertBefore(im, sv); sv.style.display = 'none'; return [sv, im];
+    });
+    new Promise(function (ok) { setTimeout(ok, 120); }).then(function () { return html2canvas(chup, { scale: 2, backgroundColor: '#060B16', useCORS: true, logging: false }); }).then(function (cv) {
+      var a = document.createElement('a'); a.href = cv.toDataURL('image/png');
+      a.download = ten + '-' + (tenNguoi || 'thien-co-cac').replace(/\s+/g, '-') + '.png';
+      document.body.appendChild(a); a.click(); a.remove();
+    }).catch(function (err) { alert('Chưa chụp được ảnh: ' + (err && err.message || err)); })
+      .then(function () { svgs.forEach(function (o) { o[1].remove(); o[0].style.display = ''; }); an.forEach(function (x) { x.style.visibility = ''; }); b.disabled = false; b.textContent = cu; });
+  });
   var rt; window.addEventListener('resize', function () { clearTimeout(rt); rt = setTimeout(veDuongTV, 150); });
   function nen() { var n = document.getElementById('holoNen'); if (n) anh('Nen', n); }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', nen); else nen();

@@ -12,7 +12,7 @@ DuDoan.gs	37804
 Facts.gs	11809
 HaLac.gs	63978
 HoiTu.gs	61443
-Holo.html	53600
+Holo.html	56557
 HoloAnhBatTu.html	188135
 HoloAnhChiemTinh.html	316631
 HoloAnhHD.html	245263
@@ -21,15 +21,15 @@ HoloAnhNen.html	279875
 HoloAnhThanSo.html	253095
 HoloAnhTuVi.html	262583
 HumanDesign.gs	46573
-Index.html	47597
+Index.html	47576
 LaSo3D.gs	242969
 LuanGiai.gs	97323
 Lunar.gs	9228
 NghiemChung.gs	27198
 NghiemChungUI.html	11072
 PhoiNgau.gs	50201
-Script.html	576650
-Styles.html	210184
+Script.html	577070
+Styles.html	210207
 TaiKhoan.gs	20569
 ThanSoHoc.gs	52496
 ThanhToan.gs	49402

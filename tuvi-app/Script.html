@@ -27,7 +27,7 @@
     });
   }
   /** Mã phiên bản giao diện – phải trùng với Index.html (meta tcc-ban) và Styles.html (--tcc-ban) */
-  var BAN_GIAO_DIEN = '2026.10.23.6';
+  var BAN_GIAO_DIEN = '2026.10.23.7';
   function storeGet(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
   function storeSet(k, v) { try { localStorage.setItem(k, v); } catch (e) { /* bỏ qua */ } }
 
@@ -1454,10 +1454,13 @@
     renderThanSo(res);
     renderHD(res);
     renderHaLac(res);
+    if ($('bdk') && $('page-chart')) $('page-chart').insertBefore($('bdk'), $('page-chart').firstChild);   // đưa bảng điều khiển về chỗ cũ trước khi dựng lại tab Tổng quan
     renderTong(res);
     veDeHieu(res);
     veVanHan(res);
     try { veBangDieuKhien(res); } catch (e) { if ($('bdk')) $('bdk').hidden = true; }
+    // 23/10: tab đầu là Tổng quan 6 hệ – bảng điều khiển (tổng quan miễn phí) nằm đầu tab này
+    if ($('bdk') && $('page-tong')) $('page-tong').insertBefore($('bdk'), $('page-tong').firstChild);
     if (window.TCCHolo) TCCHolo.ve(res, { chonCung: function (chi) { selectPalace(chi); }, sel: res.tuvi.info.menh });   // giao diện Hologram (Holo.html)
     $('btnPdfTop').style.display = '';
     ['battu', 'halac', 'astro', 'so', 'hd', 'tong'].forEach(function (k) {
@@ -1465,7 +1468,7 @@
       var d = document.createElement('p'); d.className = 'lede tab-lede'; d.textContent = PDF_HOOK[k]; pg.insertBefore(d, pg.firstChild);
     });
     chenKhoa(res);
-    showTab('chart');
+    showTab('tong');
     selectPalace(res.tuvi.info.menh, true);
     if (window.innerWidth < 1080) document.querySelector('.result-wrap').scrollIntoView({ behavior: 'smooth', block: 'start' });
     sauHienThi();
