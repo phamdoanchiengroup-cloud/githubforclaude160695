@@ -5497,7 +5497,7 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
     buoc('lịch sử', function () { $('btnHistoryTop').addEventListener('click', function () { showTab('hist'); }); });
     buoc('ảnh quảng bá', function () {
       // Ảnh quảng bá (Anh.html – tùy chọn)
-      if (typeof ANH_QC === 'string' && ANH_QC && $('anhQC')) $('anhQC').src = ANH_QC; else if ($('wlHero')) $('wlHero').classList.add('no-anh');
+      if (typeof ANH_QC === 'string' && ANH_QC && $('anhQC')) { var poster = $('anhQC'); poster.loading = 'eager'; poster.decoding = 'async'; poster.onerror = function () { poster.style.display = 'none'; if ($('posterHotspot')) $('posterHotspot').style.display = 'none'; console.error('[TCC] Không tải được poster:', poster.currentSrc || poster.src); }; poster.src = ANH_QC; } else if ($('wlHero')) $('wlHero').classList.add('no-anh');
       if (typeof ANH_QC === 'string' && ANH_QC && $('tccGocAnhImg') && window.innerWidth > 760) $('tccGocAnhImg').src = ANH_QC;
       function khamPha() {
         if (window.innerWidth < 1080) document.querySelector('.form-panel').scrollIntoView({ behavior: 'smooth', block: 'start' });
