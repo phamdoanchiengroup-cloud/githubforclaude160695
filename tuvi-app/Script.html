@@ -1383,7 +1383,7 @@
       var he = (v.p || []).slice().sort(function (a,b) { return b.d-a.d; });
       $('bkLvDetail').innerHTML = '<small>LĨNH VỰC ĐANG CHỌN</small><h4>' + esc(v.ten) + '</h4><strong>' + bkVn(v.d) + '<span>/10</span></strong><p>' + c + '. Đây là điểm tổng hợp theo quy tắc của ứng dụng, không phải xác suất kết quả ngoài đời.</p>' + (he.length ? '<div class="bdk-lv-systems"><b>Điểm từng hệ</b>' + he.map(function(p){return '<div><span>' + esc(p.he) + '</span><b>' + bkVn(p.d) + '/10</b></div>';}).join('') + '</div>' : '<p>Chưa có điểm từng hệ để đối chiếu.</p>');
     }
-    el.querySelectorAll('[data-lv-index]').forEach(function(b){b.addEventListener('click',function(){chon(Number(b.getAttribute('data-lv-index'));});});
+    el.querySelectorAll('[data-lv-index]').forEach(function(b){b.addEventListener('click',function(){chon(Number(b.getAttribute('data-lv-index')));});});
     if (ds.length) chon(0);
   }
 
