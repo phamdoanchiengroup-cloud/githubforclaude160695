@@ -5505,7 +5505,7 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
         submit();
       }
       if ($('wlGo')) $('wlGo').addEventListener('click', function () { if ($('htModal')) htMo(); else khamPha(); });
-      if ($('wlAnh')) $('wlAnh').addEventListener('click', khamPha);
+      if ($('posterHotspot')) $('posterHotspot').addEventListener('click', function (e) { e.stopPropagation(); if ($('htModal')) htMo(); else khamPha(); });
     });
     buoc('điều hướng', initDieuHuong);
     buoc('tài khoản', initTaiKhoan);
