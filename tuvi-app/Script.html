@@ -797,7 +797,6 @@
     $('welcome').style.display = 'none';
     $('chartArea').style.display = '';
     renderChart(res);
-    try { ve3DMacDinh(); } catch (e) { datCheDo('2d'); }
     var CTA ='<div class="panel section"><h2 class="panel-title"><span class="han">價</span> Chọn cách mở</h2>' + bangGiaHtml(res) + camKetHtml() +
       (res.canMo ? '' : '<p class="muted" style="font-size:12.5px;margin-bottom:0">Tạo tài khoản miễn phí để mua. ' + (res.bangGia && res.bangGia.thuongLanDau ? '🎉 Lần nạp đầu tặng thêm ' + res.bangGia.thuongLanDau + '% xu.' : '') + ' <a data-login href="javascript:void 0">Đăng nhập</a></p>') + '</div>';
     function trang(id, html) { var el = $(id); if (el) el.innerHTML = '<div class="khach-page">' + html + '</div>'; }
@@ -1516,7 +1515,7 @@
     try { veBangDieuKhien(res); } catch (e) { if ($('bdk')) $('bdk').hidden = true; }
     // 23/10: tab đầu là Tổng quan 6 hệ – bảng điều khiển (tổng quan miễn phí) nằm đầu tab này
     if ($('bdk') && $('page-tong')) $('page-tong').insertBefore($('bdk'), $('page-tong').firstChild);
-    if (window.TCCHolo) TCCHolo.ve(res, { chonCung: function (chi) { selectPalace(chi); }, sel: res.tuvi.info.menh });   // giao diện Hologram (Holo.html)
+    if (window.innerWidth > 760 && window.TCCHolo) TCCHolo.ve(res, { chonCung: function (chi) { selectPalace(chi); }, sel: res.tuvi.info.menh });   // Hologram chỉ bật trên desktop
     $('btnPdfTop').style.display = '';
     ['battu', 'halac', 'astro', 'so', 'hd', 'tong'].forEach(function (k) {
       var pg = $('page-' + k); if (!pg || !PDF_HOOK[k]) return;
@@ -1671,7 +1670,7 @@
       el.classList.toggle('xungchieu', c === xung);
     });
     drawOverlay();
-    if (window.TCCHolo) TCCHolo.chonCung(chi);
+    if (window.innerWidth > 760 && window.TCCHolo) TCCHolo.chonCung(chi);
     if (chiToMau) { $('palaceDetail').innerHTML = '<div class="pd-goiy">👆 Bấm vào một cung trên lá số để xem nhanh các sao và lời luận của cung đó. Luận đầy đủ Mệnh, Thân và 12 cung ở ngay bên dưới.</div>'; return; }
     renderPalaceDetail(chi);
   }
@@ -3336,7 +3335,6 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
       '<div class="pq-nut"><button type="button" class="btn btn-primary pq-go" data-dang-ky>🎁 Tạo tài khoản – nhận ' + qd + ' xu</button>' +
       '<span>Luận giải 6 hệ vẫn đọc miễn phí.' + (bg.thuongGTDangKy ? ' Mời bạn bè: mỗi người đăng ký, bạn được thêm ' + fmtXu(bg.thuongGTDangKy) + '.' : '') + '</span></div></div>';
   }
-  /** Mở lá số Tử Vi 3D ('tv') hoặc Tứ Trụ 3D ('bt') – mã nằm trong file tùy chọn LaSo3D.html */
   function mo3D(loai) {
     var r = state.result;
     if (!r) { toast('Hãy lập lá số trước.', true); return; }
@@ -3369,10 +3367,6 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
     [].forEach.call(document.querySelectorAll('[data-che-do]'), function (btn) { btn.setAttribute('aria-pressed', 'true'); });
     coLaSo(); drawOverlay();
   }
-  function napMa3D(ok, loi) { if (typeof loi === 'function') loi(); }
-  function ve3DMacDinh() { datCheDo('2d'); }
-  /** Khung mời xem Tứ Trụ 3D ở đầu tab Bát Tự */
-  function veMoi3D() { var pg = $('page-battu'); if (pg) pg.querySelectorAll('.xem3d').forEach(function (el) { el.remove(); }); }
   function veHoSo() {
     var r = state.result, f = state.input, top = $('resTop');
     document.body.classList.toggle('co-ket-qua', !!r);
@@ -3403,8 +3397,7 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
       if (t.closest('[data-la-so-moi]')) { moForm(true); return; }
       if (t.closest('[data-chia-se]')) { chiaSe(); return; }
       var cd = t.closest('[data-che-do]');
-      if (cd) { var v = cd.getAttribute('data-che-do'); try { localStorage.setItem('tccCheDo2', v); } catch (e2) {} if (v === '3d') ve3DMacDinh(); else datCheDo(v === 'holo' && window.TCCHolo ? 'holo' : '2d'); return; }
-      if (t.closest('[data-ls3d]') || t.closest('[data-bt3d]')) { return; }
+      if (cd) { var v = cd.getAttribute('data-che-do'); try { localStorage.setItem('tccCheDo2', v); } catch (e2) {} datCheDo('2d'); return; }
       if (t.closest('[data-dang-ky]')) { moDangNhap('', 'up'); return; }
       if (t.closest('[data-dong-form]') || t.id === 'formNen') { dongForm(); return; }
     });
