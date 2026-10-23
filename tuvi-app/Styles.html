@@ -1,6 +1,6 @@
 <style>
 /* Mã phiên bản giao diện – phải trùng với Index.html (meta tcc-ban) và Script.html (BAN_GIAO_DIEN) */
-:root { --tcc-ban: "2026.10.23.11"; }
+:root { --tcc-ban: "2026.10.23.12"; }
 /* ================================================================
    THIÊN CƠ CÁC — phong cách tiên hiệp sáng: ngọc bích, kim sa, mây trắng
    ================================================================ */
@@ -1364,6 +1364,18 @@ details.dh-lv .cung-van-de-hieu { margin-bottom: 12px; }
 .hd-g.den { background: #1c2230; color: #fff; border-color: #6d7a92; }
 .hd-g.do { background: #b7473b; color: #fff; border-color: #b7473b; }
 .hd-g.ca { background: repeating-linear-gradient(135deg, #1c2230 0 6px, #b7473b 6px 12px); color: #fff; }
+/* Bộ lọc 9 lĩnh vực – điều hướng nhanh, không tác động điểm số */
+.th6-filter { display:flex; align-items:center; flex-wrap:wrap; gap:7px; margin:12px 0 14px; padding:10px; border:1px solid var(--line); border-radius:14px; background:var(--surface-2); }
+.th6-filter > span { font-weight:700; font-size:13px; color:var(--head); margin-right:4px; }
+.th6-filter button { min-height:34px; padding:6px 11px; border:1px solid var(--line); border-radius:999px; background:var(--surface); color:var(--ink); cursor:pointer; font:inherit; font-size:12.5px; }
+.th6-filter button[aria-pressed="true"] { border-color:var(--gold); background:var(--gold-soft); box-shadow:inset 0 0 0 1px var(--gold); }
+.th6-filter small { width:100%; color:var(--ink-soft); font-size:11.5px; }
+.th6-lv[hidden] { display:none !important; }
+@media (max-width:640px) { .th6-filter { gap:6px; padding:8px; } .th6-filter > span { width:100%; } .th6-filter button { flex:1 1 calc(50% - 6px); } }
+@media (prefers-reduced-motion: reduce) {
+  .vt-sao, .vt-quydao, .vt-hao, .vt-the.moi { animation:none !important; }
+  .vt-quay, .vt-nhan, .vt-o, .vt-vien-lv, .vt-the { transition:none !important; }
+}
 /* Tổng hợp 6 hệ (bản 2) */
 .th6-chip { display: flex; flex-wrap: wrap; gap: 6px; margin: 0 0 10px; }
 .th6-chip span { font-size: 13px; padding: 4px 10px; border-radius: 999px; border: 1px solid var(--line); }
