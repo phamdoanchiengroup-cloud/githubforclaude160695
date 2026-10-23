@@ -18,6 +18,8 @@ if os.environ.get('NOAUTO'): tham = tham.replace('"auto":"1"', '"auto":"0"').rep
 idx = idx.replace("<script>var INITIAL_PARAMS = <?!= initialParams ?>;</script>", mock + '<script>var INITIAL_PARAMS = ' + tham + ';</script>')
 anh = D + 'Anh.html'
 idx = idx.replace("<?!= includeTuyChon('Anh'); ?>", open(anh).read() if os.path.exists(anh) else '')
+holo = D + 'Holo.html'
+idx = idx.replace("<?!= includeTuyChon('Holo'); ?>", open(holo).read() if os.path.exists(holo) else '')
 idx = idx.replace("<?!= include('Script'); ?>", open(D + 'Script.html').read())
 # Thư viện PDF: dùng bản cài cục bộ nếu có (tests/node_modules), không thì giữ CDN
 R = D + 'tests/node_modules'

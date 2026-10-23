@@ -54,6 +54,13 @@ function includeTuyChon(filename) {
   try { return HtmlService.createHtmlOutputFromFile(filename).getContent(); } catch (e) { return ''; }
 }
 
+/** Tranh nền giao diện Hologram (file HoloAnh*.html chứa sẵn data:image/webp;base64). Client tải chậm từng tranh khi mở tab. */
+var HOLO_ANH_ = ['TuVi', 'BatTu', 'HaLac', 'ChiemTinh', 'ThanSo', 'HD', 'Nen'];
+function layAnhHolo(ten) {
+  if (HOLO_ANH_.indexOf(ten) < 0) return '';
+  try { return HtmlService.createHtmlOutputFromFile('HoloAnh' + ten).getContent(); } catch (e) { return ''; }
+}
+
 /* ---------------------- Tự kiểm tra cài đặt ---------------------- */
 var FILE_HTML_CAN_CO = { 'Index': '<!DOCTYPE html>', 'Styles': '<style>', 'Script': '<script>' };
 var HAM_CAN_CO = {

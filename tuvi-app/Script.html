@@ -27,7 +27,7 @@
     });
   }
   /** Mã phiên bản giao diện – phải trùng với Index.html (meta tcc-ban) và Styles.html (--tcc-ban) */
-  var BAN_GIAO_DIEN = '2026.10.23.2';
+  var BAN_GIAO_DIEN = '2026.10.23.3';
   function storeGet(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
   function storeSet(k, v) { try { localStorage.setItem(k, v); } catch (e) { /* bỏ qua */ } }
 
@@ -1157,7 +1157,7 @@
     if (ta && tb.scrollWidth > tb.clientWidth) tb.scrollLeft = Math.max(0, ta.offsetLeft - tb.offsetLeft - (tb.clientWidth - ta.offsetWidth) / 2);
     document.querySelectorAll('.tab-page').forEach(function (p) { p.classList.toggle('active', p.id === 'page-' + name); });
     if (name === 'hist') loadHistory();
-    if (name === 'chart') setTimeout(function () { coLaSo(); drawOverlay(); }, 30);
+    if (name === 'chart') setTimeout(function () { coLaSo(); drawOverlay(); if (window.TCCHolo) TCCHolo.veDuong(); }, 30);
     if (name === 'capdoi') cdNguoi1();
     if (name === 'ti') { veTienIch(); if (state.token) tiDsQue(); }
     dungMucLuc(); if (state.result || state.cd) { veCta(); veQc(); }
@@ -1458,6 +1458,7 @@
     veDeHieu(res);
     veVanHan(res);
     try { veBangDieuKhien(res); } catch (e) { if ($('bdk')) $('bdk').hidden = true; }
+    if (window.TCCHolo) TCCHolo.ve(res, { chonCung: function (chi) { selectPalace(chi); }, sel: res.tuvi.info.menh });   // giao diện Hologram (Holo.html)
     $('btnPdfTop').style.display = '';
     ['battu', 'halac', 'astro', 'so', 'hd', 'tong'].forEach(function (k) {
       var pg = $('page-' + k); if (!pg || !PDF_HOOK[k]) return;
@@ -1566,10 +1567,10 @@
   }
   /** Chụp lá số ở kích thước gốc (bỏ thu nhỏ tạm thời) */
   function chupLaSo(opt) {
-    var fr = $('chartFrame'), sc = fr.parentNode, tf = fr.style.transform, h = sc.style.height, ca = $('chartArea'), la3d = ca && ca.classList.contains('xem-3d');
-    if (la3d) ca.classList.remove('xem-3d');           // đang xem 3D: hiện tạm lá số 2D để chụp
+    var fr = $('chartFrame'), sc = fr.parentNode, tf = fr.style.transform, h = sc.style.height, ca = $('chartArea'), la3d = ca && (ca.classList.contains('xem-3d') ? 'xem-3d' : ca.classList.contains('xem-holo') ? 'xem-holo' : '');
+    if (la3d) ca.classList.remove(la3d);           // đang xem 3D: hiện tạm lá số 2D để chụp
     fr.style.transform = ''; sc.style.height = '';
-    function tra() { fr.style.transform = tf; sc.style.height = h; if (la3d) ca.classList.add('xem-3d'); }
+    function tra() { fr.style.transform = tf; sc.style.height = h; if (la3d) ca.classList.add(la3d); }
     return html2canvas(fr, opt).then(function (c) { tra(); return c; }, function (e) { tra(); throw e; });
   }
   function applyOptions() {
@@ -1592,6 +1593,7 @@
       el.classList.toggle('xungchieu', c === xung);
     });
     drawOverlay();
+    if (window.TCCHolo) TCCHolo.chonCung(chi);
     if (chiToMau) { $('palaceDetail').innerHTML = '<div class="pd-goiy">👆 Bấm vào một cung trên lá số để xem nhanh các sao và lời luận của cung đó. Luận đầy đủ Mệnh, Thân và 12 cung ở ngay bên dưới.</div>'; return; }
     renderPalaceDetail(chi);
   }
@@ -3297,11 +3299,14 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
   }
   /* Chế độ xem mặc định của tab Lá số là 3D, nhúng ngay trong trang (nút ✦ 3D / ▦ 2D để đổi, ghi nhớ trên máy người xem).
      Chưa cài LaSo3D.gs, máy không có WebGL hoặc tải lỗi thì tự về lá số 2D. Lá số 2D vẫn được dựng sẵn để tải ảnh / PDF. */
-  function cheDoLaSo() { try { return localStorage.getItem('tccCheDo') || '3d'; } catch (e) { return '3d'; } }
+  // 10/2026: mặc định là bảng Hologram (Holo.html); khóa nhớ mới 'tccCheDo2' để mọi người thấy giao diện mới
+  function cheDoLaSo() { var d = window.TCCHolo ? 'holo' : '3d'; try { return localStorage.getItem('tccCheDo2') || d; } catch (e) { return d; } }
   function coWebGL() { try { var c = document.createElement('canvas'); return !!(c.getContext('webgl2') || c.getContext('webgl')); } catch (e) { return false; } }
   function datCheDo(cd) {
     var ca = $('chartArea'); if (!ca) return;
     ca.classList.toggle('xem-3d', cd === '3d');
+    ca.classList.toggle('xem-holo', cd === 'holo');
+    if (cd === 'holo' && window.TCCHolo) setTimeout(TCCHolo.veDuong, 30);
     [].forEach.call(document.querySelectorAll('[data-che-do]'), function (b) { b.setAttribute('aria-pressed', b.getAttribute('data-che-do') === cd ? 'true' : 'false'); });
     if (cd === '2d') { coLaSo(); drawOverlay(); }
   }
@@ -3316,6 +3321,7 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
     var ca = $('chartArea'), r = state.result; if (!ca || !r) return;
     var khung = $('ls3dKhung');
     if (!khung) { khung = document.createElement('div'); khung.id = 'ls3dKhung'; khung.className = 'ls3d-khung'; var sc = ca.querySelector('.chart-scroll'); sc.parentNode.insertBefore(khung, sc); }
+    if (cheDoLaSo() === 'holo' && window.TCCHolo) { datCheDo('holo'); return; }
     if (cheDoLaSo() !== '3d' || !coWebGL()) { datCheDo('2d'); return; }
     datCheDo('3d');
     if (!khung.querySelector('iframe')) khung.innerHTML = '<div class="ls3d-cho">✦ Đang dựng lá số 3D…</div>';
@@ -3358,7 +3364,7 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
       if (t.closest('[data-la-so-moi]')) { moForm(true); return; }
       if (t.closest('[data-chia-se]')) { chiaSe(); return; }
       var cd = t.closest('[data-che-do]');
-      if (cd) { var v = cd.getAttribute('data-che-do'); try { localStorage.setItem('tccCheDo', v); } catch (e2) {} if (v === '3d') ve3DMacDinh(); else datCheDo('2d'); return; }
+      if (cd) { var v = cd.getAttribute('data-che-do'); try { localStorage.setItem('tccCheDo2', v); } catch (e2) {} if (v === '3d') ve3DMacDinh(); else datCheDo(v === 'holo' && window.TCCHolo ? 'holo' : '2d'); return; }
       if (t.closest('[data-ls3d]')) { mo3D('tv'); return; }
       if (t.closest('[data-bt3d]')) { mo3D('bt'); return; }
       if (t.closest('[data-dang-ky]')) { moDangNhap('', 'up'); return; }

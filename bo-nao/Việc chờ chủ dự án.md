@@ -4,6 +4,7 @@ Nhóm: Bắt đầu · Cập nhật 22/10/2026
 Liên quan: [[Lần dán lên Apps Script]] · [[TCC Tiến trình]] · [[00 Mục lục]]
 
 ## Việc còn ngỏ
+- (23/10) **Giao diện Hologram đã vào app (mã 2026.10.23.3).** Chủ dự án bấm `2-CAP-NHAT.bat` (có 8 file .html mới: Holo + 7 HoloAnh*), Ctrl+F5 rồi đánh giá. – [[TCC Giao diện]]
 - (23/10) Demo 4 sơ đồ Hologram (https://claude.ai/artifact/DpFkFghKhTBxgip1xMxzGh). Chủ dự án đã chốt Hologram thay hẳn Bạch Kim. Chờ góp ý demo rồi bắt đầu áp vào app theo từng giai đoạn. – [[TCC Giao diện]]
 - (23/10) Demo giao diện "Hologram" theo ảnh mẫu thứ tư (https://claude.ai/artifact/C6SGBGqAMKYHSFaXhE5KoM). Chờ chủ dự án so với bản Vũ trụ vàng và chọn hướng. – [[TCC Giao diện]]
 - (23/10) Demo giao diện "Vũ trụ vàng" theo 3 ảnh mẫu (https://claude.ai/artifact/GarfMYuDq6bsT7biUfxBMZ). Chờ chủ dự án xem và chọn: giữ Bạch Kim / chuyển hẳn / thêm làm chế độ thứ ba. – [[TCC Giao diện]]

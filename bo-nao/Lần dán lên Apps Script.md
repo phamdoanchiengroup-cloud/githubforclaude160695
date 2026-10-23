@@ -4,6 +4,7 @@ Nhóm: Bắt đầu · Cập nhật 22/10/2026
 Liên quan: [[Việc chờ chủ dự án]] · [[TCC Kiểm thử]] · [[00 Mục lục]]
 
 ## Tình trạng
+- 23/10 (tối): **giao diện Hologram thay Bạch Kim** – đổi **Code, Script, Styles, Index** + thêm 8 file mới **Holo, HoloAnhTuVi, HoloAnhBatTu, HoloAnhHaLac, HoloAnhChiemTinh, HoloAnhThanSo, HoloAnhHD, HoloAnhNen** (mã `2026.10.23.3`). Sao lưu trước, bấm `2-CAP-NHAT.bat`, Ctrl+F5.
 - 23/10 (sau): nâng cấp Chiêm tinh, Thần số, HD – đổi **ChiemTinh, ThanSoHoc, HumanDesign, DeHieu, Code, Script, Styles, Index** (mã `2026.10.23.2`). Bấm `2-CAP-NHAT.bat`, Ctrl+F5.
 - 23/10: giao diện theo tư vấn chuyên gia – đổi **Script, Styles, Index** (mã `2026.10.23.1`). Bấm `2-CAP-NHAT.bat`, Ctrl+F5.
 - 22/10: Hà Lạc & Tứ Trụ – đổi **HaLac, BatTuPhanTich, DeHieu, Code, Script, Styles, Index** (mã giao diện `2026.10.22.4`). Bấm `2-CAP-NHAT.bat`, Ctrl+F5.

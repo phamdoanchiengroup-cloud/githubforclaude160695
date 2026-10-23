@@ -147,3 +147,26 @@ Liên quan: [[TCC PDF]] · [[TCC Lá số 3D]] · [[TCC Văn dễ hiểu và T�
   - Hàng dưới: 4 đỉnh cao + thử thách.
 - **HD:** ảnh bodygraph (1024×1536). Bodygraph SVG phủ lên hình người; 2 cột hành tinh đặt vào 2 khung ảnh.
 - Ảnh lưu WebP (150–380 KB mỗi ảnh). Khi đưa vào app: nhúng base64 như `Anh.html`; một số ảnh có dấu ✦ Gemini cần cắt bỏ.
+
+## 23/10 – ĐƯA HOLOGRAM VÀO APP THẬT (mã `2026.10.23.3`)
+- Chủ dự án yêu cầu: sửa Hà Lạc (2 quẻ 6 hào nằm trong 2 khung dưới), rồi đưa tất cả lên web trong một lượt.
+- **File mới `Holo.html`** (nạp bằng `includeTuyChon('Holo')` trong Index.html, đặt trước Script):
+  - CSS các bảng + `window.TCCHolo = { ve, chonCung, veDuong, anh }`.
+  - `ve(res, api)` dựng 6 bảng từ dữ liệu `res`:
+    - `#holoTV`: chèn trong `#chartArea`, trước `.chart-scroll`.
+    - Các bảng còn lại chèn đầu tab: `#holoBT` + bảng gộp tứ trụ, đại vận, năm xem (`page-battu`); `#holoHL` (`page-halac`); `#holoCT` (`page-astro`); `#holoTS` (`page-so`); `#holoHD` (`page-hd`, có class `co-holo` để ẩn `.hd-graph` cũ).
+  - Tự tính thập thần, tàng can, nạp âm, trường sinh cho cột đại vận và năm (bảng `TANG`, `NAP` sao chép từ BatTu.gs và TuVi.gs). Đại vận nối thêm cho đủ 10 ô.
+- **7 tranh `HoloAnh{TuVi,BatTu,HaLac,ChiemTinh,ThanSo,HD,Nen}.html`** (data:image/webp;base64, tổng ~1,6 MB):
+  - Server trả từng tranh qua `layAnhHolo(ten)` trong Code.gs (danh sách trắng `HOLO_ANH_`).
+  - Client tải chậm, nhớ trong `sessionStorage` (khóa `holo:<tên>`). Tranh `Nen` đặt ở `.sky #holoNen`.
+- **Script.html:**
+  - `render()` gọi `TCCHolo.ve` sau `veBangDieuKhien`; `selectPalace` gọi `TCCHolo.chonCung`.
+  - Chế độ lá số thêm `holo`, là mặc định (khóa nhớ mới `tccCheDo2`). `datCheDo` đặt class `xem-holo`; ảnh PNG/PDF lá số tạm bỏ `xem-holo` để chụp bản 2D.
+  - Index.html có thêm nút "✦ Hologram" trước "◈ 3D".
+- **Styles.html:** khối cuối "GIAO DIỆN HOLOGRAM" đổi token màu sang navy/cyan/tím/vàng champagne, kèm sky, panel, tab, nút, `.bdk` (bento) và các nền nâu cũ. Bản in `.theme-light` giữ nguyên.
+- **Công cụ:** `tools/gia-lap.js` có `HtmlService` + `layAnhHolo`; `tools/xem-truoc.py` nạp Holo.html.
+- **Kiểm thử đạt hết:** cài đặt 83, Bát Tự 4008, Hà Lạc 8401, Chiêm tinh 1820, Thần số 2651, HD 2100, Tổng hợp 3098, Báo cáo 13, Luận ngày 1599. Xuất thử PDF không lỗi. Chụp 6 bảng ở 1366 và 390 px: không lỗi trang, không tràn ngang.
+- **Còn có thể làm tiếp:**
+  - Ô Tử Vi trên điện thoại còn chữ nhỏ (ẩn phụ tinh); các bảng Bát Tự cuộn ngang.
+  - Phần luận giải bên dưới các tab vẫn theo khung cũ (đã đổi màu).
+  - Trang chủ/đầu trang chưa có quả cầu 3D như demo.

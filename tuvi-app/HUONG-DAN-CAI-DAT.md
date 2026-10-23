@@ -49,6 +49,8 @@ Bấm **＋ → HTML**, gõ tên **không có đuôi .html**:
 | `Script` | Mã chạy trên trình duyệt (file dài, chép bằng Raw cho đủ) |
 | `NghiemChungUI` | Trang nghiệm chứng (mở bằng `?page=nghiemchung`) |
 | `Anh` | Ảnh quảng bá (khoảng 118 KB, là một dòng base64 rất dài). Không bắt buộc, thiếu file này web vẫn chạy |
+| `Holo` | Giao diện Hologram: 6 bảng lá số vẽ trên tranh (Tử Vi, Bát Tự, Hà Lạc, Chiêm tinh, Thần số, Human Design). Thiếu file này web quay về lá số 3D/2D cũ |
+| `HoloAnhTuVi`, `HoloAnhBatTu`, `HoloAnhHaLac`, `HoloAnhChiemTinh`, `HoloAnhThanSo`, `HoloAnhHD`, `HoloAnhNen` | 7 tranh nền Hologram (mỗi file một dòng base64 150–320 KB, tải chậm khi mở tab). Thiếu tranh thì bảng vẫn hiện trên nền tối |
 | `LaSo3D` (loại **Tập lệnh**, dán nội dung `LaSo3D.gs`) | Xem lá số Tử Vi 3D và Tứ Trụ 3D (khoảng 180 KB). Không bắt buộc: thiếu file này web vẫn chạy, chỉ là bấm nút 3D sẽ báo chưa cài. Kiểm tra: chọn hàm `kiemTra3D` → Chạy |
 
 ### B3. File cấu hình (nên làm)

@@ -1,6 +1,6 @@
 <style>
 /* Mã phiên bản giao diện – phải trùng với Index.html (meta tcc-ban) và Script.html (BAN_GIAO_DIEN) */
-:root { --tcc-ban: "2026.10.23.2"; }
+:root { --tcc-ban: "2026.10.23.3"; }
 /* ================================================================
    THIÊN CƠ CÁC — phong cách tiên hiệp sáng: ngọc bích, kim sa, mây trắng
    ================================================================ */
@@ -2195,4 +2195,60 @@ body.co-cta .result-wrap { padding-bottom: 120px; }
 body[data-tab]:not([data-tab="chart"]) #chaoBan { display: none; }
 /* In / chụp: hiện đủ các khung "hiện dần khi cuộn" */
 @media print { .cho-hien { opacity: 1 !important; transform: none !important; } }
+
+/* ================================================================
+   GIAO DIỆN HOLOGRAM (23/10/2026 – chủ dự án chốt thay hẳn Bạch Kim)
+   Nền xanh đen #060B16 · cyan #5CEBFF · tím #B38CFF · vàng champagne #E8C77A.
+   Chỉ đổi token + vài lớp chính; bản in / PDF (.theme-light) giữ nền sáng.
+   ================================================================ */
+:root, .theme-dark {
+  --paper: #060B16; --paper-2: #0A1426;
+  --card: rgba(13, 27, 48, .86); --card-solid: #0D1B30;
+  --surface: #0F1F38; --surface-2: #132644; --surface-3: #1A3152; --surface-glass: rgba(92, 235, 255, .05);
+  --cell: linear-gradient(180deg, #102340, #0B1830); --cell-hover: linear-gradient(180deg, #14305A, #0E1F3C);
+  --cell-hi: linear-gradient(180deg, #1A3A66, #10264A); --cell-menh: linear-gradient(180deg, #3A3418, #1A2238);
+  --cell-center: radial-gradient(circle at 50% 40%, #13254A, #060B16 75%);
+  --cover-bg: radial-gradient(900px 600px at 80% 0%, rgba(109, 140, 255, .25), transparent 60%), radial-gradient(700px 500px at 0% 100%, rgba(179, 140, 255, .18), transparent 60%), linear-gradient(180deg, #0A1426, #060B16);
+  --ink: #EAF4FF; --ink-soft: #A8B8CC; --head: #FFE6A8;
+  --accent: #5CEBFF; --accent-deep: #1F8FB8;
+  --jade: #5CEBFF; --jade-deep: #FFE6A8; --jade-mist: rgba(92, 235, 255, .08);
+  --gold: #E8C77A; --gold-hi: #FFE6A8; --gold-soft: rgba(232, 199, 122, .16); --gold-deep: #B8954A;
+  --cinnabar: #FF8A8A; --lavender: #B38CFF;
+  --line: rgba(110, 220, 255, .22); --vien-kim: rgba(232, 199, 122, .35);
+  --shadow: 0 18px 40px rgba(0, 0, 0, .6), 0 0 0 1px rgba(110, 220, 255, .10);
+  --good-bg: rgba(94, 227, 154, .12); --good-ink: #8EF0B8; --bad-bg: rgba(255, 138, 138, .16); --bad-ink: #FFB3B3; --mid-bg: rgba(232, 199, 122, .14); --mid-ink: #FFE6A8;
+  --kw: #FFE6A8; --kw-star: #CFF8FF; --kw-good: #8EF0B8; --kw-bad: #FFB3B3;
+  --kim: #E3E8F2; --moc: #5EE39A; --thuy: #62A8FF; --hoa: #FF7A7A; --tho: #E8C77A;
+  --bk-grad: linear-gradient(120deg, #CFF8FF 0%, #5CEBFF 30%, #B38CFF 65%, #E8C77A 100%);
+  --bk-bac: #CFF8FF; --bk-sam: #E8C77A; --bk-hong: #B38CFF; --bk-dong: #6D8CFF; --bk-xau: #FF8A8A;
+  --font-title: 'Chakra Petch', 'Be Vietnam Pro', system-ui, sans-serif;
+  color-scheme: dark;
+}
+body { background: #060B16; }
+.sky { background:
+    radial-gradient(1100px 700px at 82% -10%, rgba(109, 140, 255, .28), transparent 60%),
+    radial-gradient(900px 600px at 5% 25%, rgba(179, 140, 255, .18), transparent 60%),
+    radial-gradient(1400px 600px at 50% 120%, rgba(92, 235, 255, .16), transparent 62%),
+    linear-gradient(180deg, #060B16 0%, #081226 50%, #0A1426 100%); }
+.sky .sun { background: radial-gradient(circle at 35% 35%, rgba(230, 250, 255, .9), rgba(92, 235, 255, .45) 35%, rgba(109, 140, 255, .15) 62%, transparent 72%); box-shadow: 0 0 90px 24px rgba(92, 235, 255, .12); }
+.sky .holo-nen { position: absolute; inset: 0 0 auto 0; height: 70vh; background: var(--img, none) center 30%/cover no-repeat; opacity: .38;
+  -webkit-mask-image: linear-gradient(180deg, #000 20%, transparent); mask-image: linear-gradient(180deg, #000 20%, transparent); }
+.mountains { opacity: .35; filter: hue-rotate(180deg) saturate(.6); }
+.panel { background: linear-gradient(180deg, rgba(14, 30, 54, .88), rgba(8, 17, 34, .9)); border: 1px solid rgba(110, 220, 255, .18); box-shadow: 0 18px 40px rgba(0, 0, 0, .55), inset 0 1px 0 rgba(207, 248, 255, .06); }
+.tab { border-color: rgba(110, 220, 255, .2); }
+.tab.active, .res-top .tab.active { background: linear-gradient(180deg, #FFF1C9, #E8C77A); color: #1A1406; border-color: transparent; box-shadow: 0 0 18px rgba(232, 199, 122, .45); }
+.btn-primary { background: linear-gradient(180deg, #C9F6FF, #5CEBFF 55%, #1AA6D6); color: #021018; border-color: transparent; box-shadow: 0 0 18px rgba(92, 235, 255, .35); }
+.panel-title, h2.panel-title { color: var(--gold-hi); }
+.nav-col .tabs, body.co-toc .nav-col .toc, .ho-so, .chao-in { background: rgba(10, 22, 42, .88); border-color: rgba(110, 220, 255, .18); }
+.qc-strip { background: linear-gradient(120deg, rgba(92, 235, 255, .10), rgba(179, 140, 255, .08)), rgba(10, 22, 42, .95); border-color: rgba(110, 220, 255, .22); }
+body.co-ket-qua.mo-form .form-panel, .ls3d-khung, .wl-anh { background: #0A1426; }
+.tip { background: #0A1426; color: #EAF4FF; }
+.chart-fig { background: linear-gradient(180deg, #0F1F38, #0A1426); }
+.bdk-an .vong::after { background: radial-gradient(circle at 50% 35%, #13254A, #060B16 72%); }
+.vt-khung { background: radial-gradient(circle at 50% 45%, #13254A 0%, #060B16 70%); }
+.bdk { --bk-kinh: rgba(14, 30, 54, .78); --bk-vien: rgba(110, 220, 255, .2); --bk-vien2: rgba(232, 199, 122, .4); }
+/* Lá số Tử Vi: chế độ Hologram (bảng trên tranh, Holo.html) */
+#chartArea:not(.xem-holo) #holoTV { display: none; }
+#chartArea.xem-holo .chart-scroll, #chartArea.xem-holo .ls3d-khung, #chartArea.xem-holo .toolbar .check, #chartArea.xem-holo #btnPrint { display: none; }
+#page-hd.co-holo .hd-graph { display: none; }
 </style>

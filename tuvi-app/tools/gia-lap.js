@@ -56,4 +56,7 @@ vm.createContext(ctx);
 fs.readdirSync(D).filter(f => f.endsWith('.gs') && f !== 'Code.gs').forEach(f => vm.runInContext(fs.readFileSync(path.join(D, f), 'utf8'), ctx, { filename: f }));
 const code = fs.readFileSync(path.join(D, 'Code.gs'), 'utf8');
 vm.runInContext(code.slice(code.indexOf('function lapLaSoDayDu_'), code.indexOf('/* ---------------------- Lưu trữ')), ctx);
+// Tranh Hologram: HtmlService đọc file .html thật
+ctx.HtmlService = ctx.HtmlService || { createHtmlOutputFromFile: f => ({ getContent: () => fs.readFileSync(path.join(D, f + '.html'), 'utf8') }) };
+vm.runInContext(code.slice(code.indexOf('var HOLO_ANH_'), code.indexOf('/* ---------------------- Tự kiểm tra')), ctx);
 module.exports = { ctx, payos };
