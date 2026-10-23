@@ -116,3 +116,17 @@ Liên quan: [[TCC PDF]] · [[TCC Lá số 3D]] · [[TCC Văn dễ hiểu và T�
   - Tử Vi: lưới 4×4 kính, ô giữa là thông tin lá số; bấm cung thì hiện tam phương tứ chính.
   - Bát Tự: một bảng hợp nhất gồm thập thần, can, chi, tàng can + thập thần, nạp âm, trường sinh, thần sát, không vong, đường hợp/xung, có thể thêm cột đại vận/lưu niên.
   - Human Design: vẽ bodygraph chuẩn gồm 64 cổng có số, kênh nửa màu ý thức/vô thức (dữ liệu `gates[g]` = 'p'/'d' có sẵn), cột hành tinh Design | Personality.
+
+## 23/10 – Demo 4 sơ đồ Hologram (chủ dự án chốt "thay hẳn" Bạch Kim)
+- Trang demo: https://claude.ai/artifact/DpFkFghKhTBxgip1xMxzGh, vẽ từ **dữ liệu thật** của lá số mẫu Nguyễn Văn An 15/08/1990 10:30 Hà Nội. Dữ liệu được tính bằng `tools/gia-lap.js` → `ctx.lapLaSo`; script xuất dữ liệu ở scratchpad (`xuat.js`) chưa đưa vào repo.
+- **Tử Vi:** lưới 4×4 (GRID giống Script.html) gồm ô kính, nút sáng ở giao điểm, hoa văn mây vàng ở góc ô, Hóa Lộc/Quyền/Khoa/Kỵ thành nhãn màu, vạch Tuần/Triệt, thanh điểm cung. Ô giữa là thái cực xoay + thông tin lá số. Bấm cung → đường tam hợp (vàng) + xung chiếu (xanh, nét đứt), chi tiết hiện ở cột phải.
+- **Bát Tự một bảng:** cột Giờ | Ngày (nhật chủ) | Tháng | Năm | Đại vận | Năm xem; hàng thập thần, can, chi, tàng can + thập thần, nạp âm, trường sinh, tự tọa, thần sát theo trụ (`battuChiTiet.thanSat`), không vong. Đường cong hợp/xung giữa các trụ; 5 quả cầu ngũ hành quanh thái cực (kèm vai trò Dụng/Hỷ/Kỵ); thước sức mạnh nhật chủ; hàng thẻ đại vận 10 năm.
+- **Chiêm tinh:** vòng sao SVG (ASC bên trái), 12 cung, nhà Placidus, hành tinh giãn khi trùng, góc chiếu theo loại; rê hành tinh để làm sáng góc chiếu; 4 thẻ nguyên tố.
+- **Human Design:** bodygraph đặt **cổng theo vị trí chuẩn trên cạnh từng trung tâm** (bảng `GO`); kênh tô nửa theo cổng (ý thức / vô thức / cả hai); hai cột 13 hành tinh Thiết kế | Tính cách; bấm trung tâm để xem có định nghĩa hay mở.
+- Nền sao ≤40 hạt (14 trên điện thoại), dừng khi tab bị ẩn; có giảm chuyển động.
+- Chủ dự án gửi thêm khoảng 20 ảnh artwork:
+  - Khung trống cho Tử Vi 4×4, HD, Chiêm tinh, Hà Lạc bát quái, Bát Tự (4 trụ + 5 cầu ngũ hành + 10 ô đại vận).
+  - 4 thẻ nguyên tố, người trong bầu cầu, số 9, cổng vũ trụ.
+  - 3 tranh tiên cảnh không chữ.
+  - Một số ảnh có dấu ✦ của Gemini ở góc phải dưới, phải cắt bỏ trước khi dùng.
+  - Ảnh nhúng vào app theo kiểu `Anh.html` (base64 WebP).

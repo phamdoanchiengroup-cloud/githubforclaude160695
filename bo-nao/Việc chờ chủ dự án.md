@@ -4,7 +4,7 @@ Nhóm: Bắt đầu · Cập nhật 22/10/2026
 Liên quan: [[Lần dán lên Apps Script]] · [[TCC Tiến trình]] · [[00 Mục lục]]
 
 ## Việc còn ngỏ
-- (23/10) Bàn thiết kế lại lá số Tử Vi / Bát Tự (1 bảng có thập thần) / bodygraph HD theo phong cách Hologram. Chờ chủ dự án trả lời 5 câu hỏi (bố cục Tử Vi, cột đại vận/lưu niên, màu kênh HD, thay Bạch Kim hay thêm chế độ, gói ảnh ZIP). – [[TCC Giao diện]]
+- (23/10) Demo 4 sơ đồ Hologram (https://claude.ai/artifact/DpFkFghKhTBxgip1xMxzGh). Chủ dự án đã chốt Hologram thay hẳn Bạch Kim. Chờ góp ý demo rồi bắt đầu áp vào app theo từng giai đoạn. – [[TCC Giao diện]]
 - (23/10) Demo giao diện "Hologram" theo ảnh mẫu thứ tư (https://claude.ai/artifact/C6SGBGqAMKYHSFaXhE5KoM). Chờ chủ dự án so với bản Vũ trụ vàng và chọn hướng. – [[TCC Giao diện]]
 - (23/10) Demo giao diện "Vũ trụ vàng" theo 3 ảnh mẫu (https://claude.ai/artifact/GarfMYuDq6bsT7biUfxBMZ). Chờ chủ dự án xem và chọn: giữ Bạch Kim / chuyển hẳn / thêm làm chế độ thứ ba. – [[TCC Giao diện]]
 - (23/10) Chiêm tinh thêm phe ngày/đêm + Phần may mắn/tinh thần; Thần số thêm chữ cái chuyển tiếp & số tinh chất; HD thêm câu tự hỏi trung tâm mở. Chờ chủ dự án cập nhật và góp ý. – [[TCC Chiêm tinh Thần số HD nâng cấp chuyên sâu]]

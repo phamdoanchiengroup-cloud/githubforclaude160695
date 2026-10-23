@@ -14,7 +14,8 @@ Liên quan: [[Việc chờ chủ dự án]] · [[TCC Bán hàng]] · [[00 Mục 
 
 ## Giao diện
 - **Phong cách tối sang trọng** (kiểu Tian Qi), áp cho toàn bộ web (21/10). – [[TCC Giao diện]]
-- **Bảng màu "Bạch Kim"** (22/10, duyệt sau khi chê đỏ "máu me" và thử tím): than ấm + bạch kim, bạc + sâm panh + vàng hồng; không dùng xanh lá, đen xanh, xanh dương để trang trí. **Bố cục bento + biểu đồ động** của demo đã duyệt. – [[TCC Giao diện]]
+- **(23/10) Giao diện Hologram THAY HẲN Bạch Kim** (chủ dự án chốt "thay hẳn"): nền xanh đen #060B16, cyan #5CEBFF, tím #B38CFF, vàng champagne #E8C77A (token theo tài liệu Hologram của chủ dự án); quy tắc cũ "không dùng xanh dương" hết hiệu lực. Tử Vi giữ lưới 4×4; bảng Bát Tự có thêm cột Đại vận + Năm đang xem; màu kênh HD do Claude chọn (ý thức = trắng xanh #CFF8FF, vô thức = đỏ hồng #FF6B7A, cả hai = sọc). Ảnh tiên cảnh không chữ được phép làm nền (phủ tối); ảnh có khung trống/chữ chỉ để tham khảo. – [[TCC Giao diện]]
+- *(cũ, đã thay)* **Bảng màu "Bạch Kim"** (22/10, duyệt sau khi chê đỏ "máu me" và thử tím): than ấm + bạch kim, bạc + sâm panh + vàng hồng; không dùng xanh lá, đen xanh, xanh dương để trang trí. **Bố cục bento + biểu đồ động** của demo đã duyệt. – [[TCC Giao diện]]
 - **Luôn giữ ảnh nhân vật trên web** (`Anh.html`) – đó là ảnh của chủ dự án (21/10).
 
 ## Dữ liệu cá nhân của chủ dự án
