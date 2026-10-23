@@ -62,7 +62,7 @@
 
   function hasServer() { return typeof google !== 'undefined' && google.script && google.script.run; }
   /** Hàm máy chủ mới thêm gần đây → file .gs chứa nó (để báo đúng file khi còn bản cũ) */
-  var FILE_HAM = { bangGiaCongKhai: 'ThanhToan.gs', muaPhan: 'ThanhToan.gs', viCuaToi: 'ThanhToan.gs', dangKy: 'TaiKhoan.gs', lapLaSo: 'TaiKhoan.gs', layMa3D: 'LaSo3D.gs',
+  var FILE_HAM = { bangGiaCongKhai: 'ThanhToan.gs', muaPhan: 'ThanhToan.gs', viCuaToi: 'ThanhToan.gs', dangKy: 'TaiKhoan.gs', lapLaSo: 'TaiKhoan.gs',
     tienIch: 'TienIch.gs', gieoQue: 'TienIch.gs', dsGieoQue: 'TienIch.gs', dangKyBanTin: 'TienIch.gs', dsBanTin: 'TienIch.gs', dangKyVanNgay: 'TienIch.gs', huyVanNgay: 'TienIch.gs', dsVanNgay: 'TienIch.gs', donLichSu: 'Code.gs', getLichSu: 'Code.gs', lapCapDoi: 'CapDoi.gs' };
   function call(fn, args, ok, fail) {
     if (!hasServer()) { (fail || showErr)({ message: 'Không tìm thấy máy chủ Apps Script. Hãy mở ứng dụng qua URL Web App.' }); return; }
@@ -2915,7 +2915,7 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
       if (X.yeu && X.yeu.length) h += '<section><b class="xau">Điểm cần lưu ý</b><ul>' + X.yeu.slice(0, 3).map(function (m) { return '<li>' + esc(m.t) + '</li>'; }).join('') + '</ul></section>';
       h += '</div>';
     }
-    if (X.khuyen && X.khuyen.length) h += '<div class="th6-bd-advice"><b>Gợi ý thực hành</b><p>' + X.khuyen.slice(0, 2).map(esc).join(' ') + '</p></div>';
+    if (X.khuyen && X.khuyen.length) h += '<div class="th6-bd-advice"><b>Gợi ý thực hành</b><p>' + X.khuyen.slice(0, 2).map(function (k) { return typeof k === 'string' ? esc(k) : esc(k.t || k.text || '') + (k.he ? ' <small>— ' + esc(k.he) + '</small>' : ''); }).join(' ') + '</p></div>';
     if (X.them && X.them.length) h += '<details class="th6-bd-extra"><summary>Góc nhìn khác từ các hệ</summary><ul>' + X.them.slice(0, 4).map(function (m) { return '<li><b>' + esc(m.he) + ':</b> ' + esc(m.t) + '</li>'; }).join('') + '</ul></details>';
     if (X.namToi && X.namToi.length) h += '<p class="th6-bd-note"><b>Năm nổi bật theo quy tắc ứng dụng:</b> ' + X.namToi.slice(0, 3).map(function (y) { return y.nam + ' (' + esc(y.ten) + ', ' + y.soHe + ' hệ)'; }).join(' · ') + '. Đây không phải dự báo xác suất.</p>';
     return h;
