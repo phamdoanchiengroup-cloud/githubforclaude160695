@@ -55,7 +55,8 @@ function includeTuyChon(filename) {
 }
 
 /** Tranh nền giao diện Hologram (file HoloAnh*.html chứa sẵn data:image/webp;base64). Client tải chậm từng tranh khi mở tab. */
-var HOLO_ANH_ = ['TuVi', 'BatTu', 'HaLac', 'ChiemTinh', 'ThanSo', 'HD', 'Nen'];
+var HOLO_ANH_ = ['TuVi', 'BatTu', 'HaLac', 'ChiemTinh', 'ThanSo', 'HD', 'Nen',
+  'TabTong', 'TabTuVi', 'TabBatTu', 'TabHaLac', 'TabChiemTinh', 'TabThanSo', 'TabHD', 'TabVanHan', 'TabCapDoi'];   // Tab*: nền card từng tab
 function layAnhHolo(ten) {
   if (HOLO_ANH_.indexOf(ten) < 0) return '';
   try { return HtmlService.createHtmlOutputFromFile('HoloAnh' + ten).getContent(); } catch (e) { return ''; }

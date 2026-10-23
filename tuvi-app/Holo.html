@@ -95,6 +95,11 @@ table.holo-bt{width:100%;min-width:720px;border-collapse:separate;border-spacing
 .holo-tip{margin-top:10px;padding:12px 14px;border-radius:12px;background:rgba(10,20,40,.72);box-shadow:inset 0 0 0 1px rgba(110,220,255,.22);font-size:14px;color:#EAF4FF}
 .holo-key{display:flex;flex-wrap:wrap;gap:14px;margin-top:10px;font-size:12.5px;color:#A8B8CC}
 .holo-key i{display:inline-block;width:22px;height:5px;border-radius:3px;margin-right:6px;vertical-align:middle}
+/* Nền card theo tab: ảnh của chủ dự án, gắn cố định theo màn hình – các card như những ô cửa nhìn ra cùng một bức tranh */
+.tab-page.co-nen .panel:not(.panel .panel), .tab-page.co-nen .bdk-o {
+  background: linear-gradient(180deg, rgba(6, 11, 22, .6), rgba(6, 11, 22, .8)), var(--nen-tab) center/cover fixed !important; text-shadow: 0 1px 3px rgba(0, 0, 0, .7); }
+@media (max-width: 760px) { .tab-page.co-nen .panel:not(.panel .panel), .tab-page.co-nen .bdk-o { background: linear-gradient(180deg, rgba(6, 11, 22, .82), rgba(6, 11, 22, .9)), var(--nen-tab) center/cover scroll !important; } }
+@media print { .tab-page.co-nen .panel, .tab-page.co-nen .bdk-o { background: none !important; } }
 @media (prefers-reduced-motion:reduce){.board *{transition:none!important}}
 @media print{.holo-wrap{display:none}}
 </style>
@@ -459,9 +464,18 @@ table.holo-bt{width:100%;min-width:720px;border-collapse:separate;border-spacing
     }).catch(function (err) { alert('Chưa chụp được ảnh: ' + (err && err.message || err)); })
       .then(function () { svgs.forEach(function (o) { o[1].remove(); o[0].style.display = ''; }); an.forEach(function (x) { x.style.visibility = ''; }); b.disabled = false; b.textContent = cu; });
   });
+  /* Nền card từng tab (tải chậm khi mở tab) */
+  var NEN_TAB = { tong: 'TabTong', chart: 'TabTuVi', battu: 'TabBatTu', halac: 'TabHaLac', astro: 'TabChiemTinh', so: 'TabThanSo', hd: 'TabHD', vh: 'TabVanHan', capdoi: 'TabCapDoi', ti: 'Nen', hist: 'Nen', que64: 'TabHaLac' };
+  var NEN_DA = {};
+  function nenTab(name) {
+    var pg = document.getElementById('page-' + name), ten = NEN_TAB[name]; if (!pg || !ten) return;
+    if (pg._nen) return; pg._nen = 1;
+    var gan = { style: { setProperty: function (k, v) { pg.style.setProperty('--nen-tab', v); pg.classList.add('co-nen'); } } };
+    anh(ten, gan);
+  }
   var rt; window.addEventListener('resize', function () { clearTimeout(rt); rt = setTimeout(veDuongTV, 150); });
   function nen() { var n = document.getElementById('holoNen'); if (n) anh('Nen', n); }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', nen); else nen();
-  window.TCCHolo = { ve: ve, chonCung: chonCung, veDuong: veDuongTV, anh: anh };
+  window.TCCHolo = { nenTab: nenTab, ve: ve, chonCung: chonCung, veDuong: veDuongTV, anh: anh };
 })();
 </script>

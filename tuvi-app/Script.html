@@ -27,7 +27,7 @@
     });
   }
   /** Mã phiên bản giao diện – phải trùng với Index.html (meta tcc-ban) và Styles.html (--tcc-ban) */
-  var BAN_GIAO_DIEN = '2026.10.23.7';
+  var BAN_GIAO_DIEN = '2026.10.23.8';
   function storeGet(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
   function storeSet(k, v) { try { localStorage.setItem(k, v); } catch (e) { /* bỏ qua */ } }
 
@@ -1152,6 +1152,7 @@
   function showTab(name) {
     document.querySelectorAll('.tab').forEach(function (t) { var on = t.getAttribute('data-tab') === name; t.classList.toggle('active', on); t.setAttribute('aria-selected', on ? 'true' : 'false'); t.tabIndex = on ? 0 : -1; });
     document.body.setAttribute('data-tab', name);
+    if (window.TCCHolo && TCCHolo.nenTab) try { TCCHolo.nenTab(name); } catch (e) {}   // nền card theo tab (Holo.html)
     // Điện thoại: cuộn thanh tab ngang để tab đang chọn nằm giữa (không cắt chữ)
     var tb = $('tabs'), ta = tb && tb.querySelector('.tab.active');
     if (ta && tb.scrollWidth > tb.clientWidth) tb.scrollLeft = Math.max(0, ta.offsetLeft - tb.offsetLeft - (tb.clientWidth - ta.offsetWidth) / 2);
