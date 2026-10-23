@@ -43,7 +43,7 @@ TaiKhoan.gs	20569
 ThanhToan.gs	49402
 ThanSoHoc.gs	52496
 TienIch.gs	87249
-TongHop.gs	81283
+TongHop.gs	67060
 TuVi.gs	57467
 TuViHeThong.gs	375919
 TuViTamPhap.gs	22819
