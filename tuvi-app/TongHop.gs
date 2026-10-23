@@ -1,8 +1,8 @@
 /**
  * ============================================================
  *  TongHop.gs — LUẬN GIẢI TỔNG HỢP ĐA HỆ THỐNG
- *  Kết hợp 5 hệ: Tử Vi Đẩu Số · Bát Tự (Tứ Trụ) · Chiêm tinh phương Tây ·
- *  Thần số học Pythagoras · Human Design để mô tả đương số qua:
+ *  Tổng hợp 6 hệ: Tử Vi · Bát Tự · Hà Lạc · Chiêm tinh · Thần số học · Human Design.
+ *  Các kết luận là diễn giải theo trường phái truyền thống, không phải dự báo đã được kiểm chứng. Phần tổng hợp gồm:
  *    1. Xuất thân – gia cảnh      2. Vóc dáng – diện mạo
  *    3. Đặc điểm nổi bật trên cơ thể & vùng sức khỏe cần giữ
  *    4. Tính cách (5 trục, đo mức đồng thuận giữa các hệ)
@@ -691,14 +691,14 @@ function tongHopLuan(C) {
       T.phoiNgau.conCai = pnConCai_(C, T.phoiNgau.thoiDiem);
       var kh = T.phoiNgau.thoiDiem.ketHon, sc = T.phoiNgau.thoiDiem.sinhCon;
       function top3(x) { return x && x.nam ? x.nam.slice().sort(function (a, b) { return b.pct - a.pct; }).slice(0, 3).map(function (n) { return n.nam + ' (' + n.pct + '%)'; }).join(', ') : ''; }
-      if (top3(kh)) T.phoiNgau.ketLuan.push('Xác suất cưới hỏi theo năm (tổng hợp 5 hệ + độ tuổi): ' + top3(kh) + '.');
-      if (top3(sc)) T.phoiNgau.ketLuan.push('Xác suất có tin vui con cái theo năm: ' + top3(sc) + '.');
+      if (top3(kh)) T.phoiNgau.ketLuan.push('Điểm tín hiệu nội bộ về chủ đề kết hôn (không phải xác suất): ' + top3(kh) + '.');
+      if (top3(sc)) T.phoiNgau.ketLuan.push('Điểm tín hiệu nội bộ về chủ đề con cái (không phải xác suất): ' + top3(sc) + '.');
       function quaKhu(x, ten) {
         if (!x) return;
         if (x.doiChieu && x.doiChieu.length) x.doiChieu.forEach(function (d) {
-          T.phoiNgau.ketLuan.push('Bạn đã ' + ten + ' năm ' + d.nam + (d.ngoai ? '.' : ': lá số xếp năm này hạng ' + d.hang + '/' + d.tong + ' trong giai đoạn ' + x.quaKhu.tu + '–' + x.quaKhu.den + ' (' + d.pct + '%, ' + d.soHe + ' hệ cùng báo).'));
+          T.phoiNgau.ketLuan.push('Bạn đã ' + ten + ' năm ' + d.nam + (d.ngoai ? '.' : ': ứng dụng xếp năm này hạng ' + d.hang + '/' + d.tong + ' trong giai đoạn ' + x.quaKhu.tu + '–' + x.quaKhu.den + ' (điểm nội bộ ' + d.pct + '/100, ' + d.soHe + ' hệ cùng báo; không phải xác suất).'));
         });
-        else if (x.quaKhu && x.quaKhu.nam.length) T.phoiNgau.ketLuan.push('Nếu bạn đã ' + ten + ' (khả năng việc này đã diễn ra trước năm nay ≈ ' + x.pDaQua + '%), năm khả năng nhất giai đoạn ' + x.quaKhu.tu + '–' + x.quaKhu.den + ': ' + top3(x.quaKhu) + '.');
+        else if (x.quaKhu && x.quaKhu.nam.length) T.phoiNgau.ketLuan.push('Nếu bạn đã ' + ten + ', đây là bảng xếp hạng hồi cứu theo quy tắc ứng dụng (không phải xác suất đã xảy ra). Giai đoạn ' + x.quaKhu.tu + '–' + x.quaKhu.den + ': ' + top3(x.quaKhu) + '.');
       }
       quaKhu(kh, 'kết hôn'); quaKhu(sc, 'có con');
     } catch (e) { T.phoiNgau.loiThem = String(e && e.message || e); }
