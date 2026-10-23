@@ -2411,3 +2411,40 @@ body.co-ket-qua.mo-form .form-panel, .ls3d-khung, .wl-anh { background: #0A1426;
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; scroll-behavior: auto !important; }
 }
+
+
+/* ===== Tổng hợp 9 lĩnh vực: bảng chọn tương tác, dễ đọc trên điện thoại ===== */
+.bdk-lv-layout { display:grid; grid-template-columns:minmax(0,1.15fr) minmax(220px,.85fr); gap:14px; align-items:stretch; }
+.bdk-lv-grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:8px; }
+.bdk-lv-item { min-width:0; text-align:left; display:flex; flex-direction:column; gap:8px; border:1px solid var(--line); border-radius:12px; padding:10px; background:var(--surface); color:var(--ink); cursor:pointer; }
+.bdk-lv-item.active { border-color:var(--gold); box-shadow:inset 0 0 0 1px var(--gold); background:var(--gold-soft); }
+.bdk-lv-name { font-size:12px; line-height:1.35; font-weight:700; min-height:32px; }
+.bdk-lv-track { display:block; height:6px; border-radius:6px; background:var(--surface-3); overflow:hidden; }
+.bdk-lv-track i { display:block; height:100%; border-radius:6px; background:var(--gold); }
+.bdk-lv-item.tot .bdk-lv-track i { background:#56806c; }
+.bdk-lv-item.xau .bdk-lv-track i { background:#b85c52; }
+.bdk-lv-item > b { font-size:17px; font-variant-numeric:tabular-nums; }
+.bdk-lv-item > b small { font-size:10px; color:var(--ink-soft); margin-left:2px; }
+.bdk-lv-detail { border:1px solid var(--line); border-radius:14px; padding:16px; background:var(--surface-2); min-width:0; }
+.bdk-lv-detail > small { font-size:10px; letter-spacing:1px; color:var(--ink-soft); }
+.bdk-lv-detail h4 { margin:7px 0; font-size:17px; }
+.bdk-lv-detail > strong { display:block; font-size:34px; color:var(--gold-hi); }
+.bdk-lv-detail > strong span { font-size:13px; color:var(--ink-soft); }
+.bdk-lv-detail p { font-size:12.5px; line-height:1.55; }
+.bdk-lv-systems { border-top:1px solid var(--line); padding-top:9px; margin-top:12px; }
+.bdk-lv-systems > b { font-size:12px; }
+.bdk-lv-systems > div { display:flex; justify-content:space-between; gap:8px; font-size:12px; padding:5px 0; border-bottom:1px solid var(--line); }
+.bdk-lv-systems > div b { white-space:nowrap; }
+@media(max-width:640px) { .bdk-lv-layout { grid-template-columns:1fr; } .bdk-lv-grid { grid-template-columns:repeat(3,minmax(0,1fr)); gap:6px; } .bdk-lv-item { padding:8px 7px; } .bdk-lv-name { font-size:11px; min-height:30px; } .bdk-lv-detail { padding:12px; } }
+
+/* ===== PDF: bố cục in sạch, nhất quán và hạn chế khối bị chia đôi ===== */
+.pdf-root { width:760px; font-size:13px; line-height:1.55; }
+.pdf-root .bc-root { width:100%; }
+.pdf-root .bc-h2 { margin:22px 0 9px; padding-bottom:6px; border-bottom:1px solid #d7c7a4; break-after:avoid; }
+.pdf-root .bc-lv, .pdf-root .bc-hop, .pdf-root .bc-mau, .pdf-root .bc-cot { break-inside:avoid; page-break-inside:avoid; }
+.pdf-root .bc-p { line-height:1.65; }
+.pdf-root table { border-collapse:collapse; width:100%; }
+.pdf-root th { background:#efe5d0; color:#4c3a20; text-align:left; padding:7px; }
+.pdf-root td { padding:7px; border-bottom:1px solid #e8dfcf; vertical-align:top; }
+.pdf-root .bc-nho { font-size:10.5px; color:#655b4b; }
+@media(max-width:768px) { .pdf-root { font-size:13px; } }
