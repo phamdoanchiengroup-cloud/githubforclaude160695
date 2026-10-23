@@ -917,7 +917,7 @@
       var g = giaPhan('cap_doi');
       h += '<div class="panel section khoa-phan"><h2 class="panel-title"><span class="han">秘</span> Luận hợp đôi đầy đủ <span class="chip neutral">🔒 ' + fmtXu(g.xu) + '</span></h2><div class="demo-card">' +
         '<div class="demo-lo"><h4>✦ Hé lộ</h4><ul>' + r.hoaHop.map(function (x) { return '<li>' + hl(x) + '</li>'; }).join('') + '</ul></div>' +
-        '<div class="demo-an"><h4>🔒 Khi mở khóa</h4><ul>' + r.heLo.concat(['Điểm 4 tiêu chí còn lại và lý do chi tiết', 'Tài chính, công danh, gia đạo: ai vượng cho ai, năm cùng thuận – cùng khó', 'Năm cưới & năm sinh con kèm xác suất % từng năm (tránh Kim Lâu, xung tuổi)', 'Lời khuyên riêng cho cặp đôi']).map(function (x) { return '<li>' + esc(x) + '</li>'; }).join('') + '</ul></div></div>' +
+        '<div class="demo-an"><h4>🔒 Khi mở khóa</h4><ul>' + r.heLo.concat(['Điểm 4 tiêu chí còn lại và lý do chi tiết', 'Tài chính, công danh, gia đạo: ai vượng cho ai, năm cùng thuận – cùng khó', 'Điểm tín hiệu truyền thống theo năm (không phải xác suất sự kiện)', 'Lời khuyên riêng cho cặp đôi']).map(function (x) { return '<li>' + esc(x) + '</li>'; }).join('') + '</ul></div></div>' +
         '<div class="lock-cta"><p>Mở <b>' + esc(g.ten) + '</b> cho cặp ' + esc(T[0].ten) + ' & ' + esc(T[1].ten) + ' – xem vĩnh viễn.' + (r.dangNhap ? '' : ' Cần đăng nhập (tạo tài khoản miễn phí).') + '</p>' +
         '<button type="button" class="btn btn-primary" data-mua="cap_doi">💞 Mở khóa · ' + fmtXu(g.xu) + '</button></div></div>';
       return h;
@@ -970,7 +970,7 @@
           var top = C.goiYTop.some(function (t) { return t.nam === x.nam; });
           return { ten: (top ? '★ ' : '') + x.nam + ' · ' + x.canChi, v: x.tong, mau: top ? C_JADE : cdMau(x.tong), tip: x.nam + ' ' + x.canChi + ' (' + x.napAm + ') · hợp tuổi ' + fmt(x.hopTuoi) + '/10 · xác suất ' + fmt(x.pct) + '%' + (x.anhEm.length ? '\n' + x.anhEm.join('; ') : '') };
         }), 10) +
-        '<div class="tbl-wrap"><table class="gio-tbl"><thead><tr><th>Năm</th><th>Mệnh con</th><th>Hợp ' + esc(r.ten[0]) + '</th><th>Hợp ' + esc(r.ten[1]) + '</th>' + (daCo.length ? '<th>Với anh chị</th>' : '') + '<th>Xác suất</th><th>Điểm chọn</th></tr></thead><tbody>' +
+        '<div class="tbl-wrap"><table class="gio-tbl"><thead><tr><th>Năm</th><th>Mệnh con</th><th>Hợp ' + esc(r.ten[0]) + '</th><th>Hợp ' + esc(r.ten[1]) + '</th>' + (daCo.length ? '<th>Với anh chị</th>' : '') + '<th>Điểm nội bộ</th><th>Điểm chọn</th></tr></thead><tbody>' +
         C.goiYTop.map(function (x) {
           return '<tr><td><b>' + x.nam + '</b><br><small>' + esc(x.canChi) + '</small></td><td>' + esc(x.napAm) + '</td>' + x.voi.map(function (v) { return '<td><span class="rate ' + cdXep(v.diem) + '">' + fmt(v.diem) + '</span></td>'; }).join('') +
             (daCo.length ? '<td><small>' + esc(x.anhEm.join('; ') || 'bình hòa') + '</small></td>' : '') + '<td>' + fmt(x.pct) + '%</td><td><b>' + fmt(x.tong) + '/10</b></td></tr>';
@@ -3458,35 +3458,18 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
   /* Chế độ xem mặc định của tab Lá số là 3D, nhúng ngay trong trang (nút ✦ 3D / ▦ 2D để đổi, ghi nhớ trên máy người xem).
      Chưa cài LaSo3D.gs, máy không có WebGL hoặc tải lỗi thì tự về lá số 2D. Lá số 2D vẫn được dựng sẵn để tải ảnh / PDF. */
   // 10/2026: mặc định là bảng Hologram (Holo.html); khóa nhớ mới 'tccCheDo2' để mọi người thấy giao diện mới
-  function cheDoLaSo() { var d = window.TCCHolo ? 'holo' : '3d'; try { return localStorage.getItem('tccCheDo2') || d; } catch (e) { return d; } }
-  function coWebGL() { try { var c = document.createElement('canvas'); return !!(c.getContext('webgl2') || c.getContext('webgl')); } catch (e) { return false; } }
+  function cheDoLaSo() { return '2d'; }
+  function coWebGL() { return false; }
   function datCheDo(cd) {
+    // Chỉ giữ lá số 2D để giảm tải, tránh khởi tạo WebGL/hologram.
+    cd = '2d';
     var ca = $('chartArea'); if (!ca) return;
-    ca.classList.toggle('xem-3d', cd === '3d');
-    ca.classList.toggle('xem-holo', cd === 'holo');
-    [].forEach.call(document.querySelectorAll('[data-che-do]'), function (b) { b.setAttribute('aria-pressed', b.getAttribute('data-che-do') === cd ? 'true' : 'false'); });
-    if (cd === '2d' || cd === 'holo') { coLaSo(); drawOverlay(); }
-    if (cd === 'holo' && window.TCCHolo && $('chart')) TCCHolo.anh('TuVi', $('chart'));   // giữ nguyên lá số 2D, chỉ thay nền bằng tranh
+    ca.classList.remove('xem-3d', 'xem-holo');
+    [].forEach.call(document.querySelectorAll('[data-che-do]'), function (btn) { btn.setAttribute('aria-pressed', 'true'); });
+    coLaSo(); drawOverlay();
   }
-  function napMa3D(ok, loi) {
-    if (window.nhung3D) { ok(); return; }
-    call('layMa3D', [], function (ma) {
-      try { var s = document.createElement('script'); s.textContent = ma; document.head.appendChild(s); } catch (e) { if (window.console) console.error('[3D]', e); }
-      if (window.nhung3D) ok(); else loi();
-    }, loi);
-  }
-  function ve3DMacDinh() {
-    var ca = $('chartArea'), r = state.result; if (!ca || !r) return;
-    var khung = $('ls3dKhung');
-    if (!khung) { khung = document.createElement('div'); khung.id = 'ls3dKhung'; khung.className = 'ls3d-khung'; var sc = ca.querySelector('.chart-scroll'); sc.parentNode.insertBefore(khung, sc); }
-    if (cheDoLaSo() === 'holo' && window.TCCHolo) { datCheDo('holo'); return; }
-    if (cheDoLaSo() !== '3d' || !coWebGL()) { datCheDo('2d'); return; }
-    datCheDo('3d');
-    if (!khung.querySelector('iframe')) khung.innerHTML = '<div class="ls3d-cho">✦ Đang dựng lá số 3D…</div>';
-    napMa3D(function () {
-      if (!window.nhung3D(khung, 'tv', state.result, state.input)) { khung.innerHTML = ''; datCheDo('2d'); }
-    }, function () { khung.innerHTML = ''; datCheDo('2d'); });
-  }
+  function napMa3D(ok, loi) { if (typeof loi === 'function') loi(); }
+  function ve3DMacDinh() { datCheDo('2d'); }
   /** Khung mời xem Tứ Trụ 3D ở đầu tab Bát Tự */
   function veMoi3D() { var pg = $('page-battu'); if (pg) pg.querySelectorAll('.xem3d').forEach(function (el) { el.remove(); }); }
   function veHoSo() {
@@ -4842,7 +4825,7 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
       return h + '</div>';
     }
     return khoi('ketHon', '婚期', 'Năm kết hôn – điểm tín hiệu nội bộ', 'Chia hai trường hợp: nếu bạn đã kết hôn, năm nào trong 10 năm qua (người lớn tuổi: cả giai đoạn 18–45 tuổi) khả năng nhất; nếu chưa, khả năng việc cưới hỏi rơi vào từng năm phía trước (đến 45 tuổi). Kết quả ghép từ độ tuổi thường gặp (dịch theo xu hướng sớm/muộn của lá số) và số hệ cùng báo trong năm.', 'kết hôn') +
-      khoi('sinhCon', '添丁', 'Năm có con – xác suất theo năm', 'Khả năng tin vui con cái rơi vào từng năm – nhìn lại 10 năm qua và các năm phía trước (con đầu hoặc thêm con), dựa trên cung Tử Tức, sao con cái Bát Tự, Sao Mộc – nhà 5, quẻ lưu niên và năm cá nhân.', 'có con') +
+      khoi('sinhCon', '添丁', 'Năm có con – điểm tín hiệu nội bộ', 'Khả năng tin vui con cái rơi vào từng năm – nhìn lại 10 năm qua và các năm phía trước (con đầu hoặc thêm con), dựa trên cung Tử Tức, sao con cái Bát Tự, Sao Mộc – nhà 5, quẻ lưu niên và năm cá nhân.', 'có con') +
       (td.coSo ? coSoHtml('Cách tính xác suất', [td.coSo]) : '');
   }
   function conCaiHtml(cc) {
