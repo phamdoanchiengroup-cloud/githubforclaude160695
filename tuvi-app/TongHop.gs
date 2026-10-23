@@ -225,6 +225,22 @@ function thXuatThan_(C) {
  * 2. VÓC DÁNG – DIỆN MẠO
  * ========================================================= */
 function thVocDang_(C) {
+  // An toàn diễn giải: các trường phái huyền học không thể xác định đáng tin cậy ngoại hình thực tế.
+  // Giữ cấu trúc dữ liệu để UI/PDF tương thích, nhưng không tạo dự đoán vóc dáng/màu da.
+  return {
+    tieuDe: 'Biểu tượng ngoại hình theo trường phái',
+    ketLuan: [
+      'Tử Vi, Bát Tự, Chiêm tinh và Hà Lạc có các mô tả hình tượng truyền thống; đây không phải phương pháp đã được kiểm chứng để suy ra chiều cao, cân nặng, màu da hay nét mặt của một người.',
+      'Không dùng mục này để đánh giá cơ thể hoặc đối chiếu giờ sinh. Có thể xem phần căn cứ từng hệ như tư liệu văn hóa, không phải kết luận về ngoại hình thực tế.'
+    ],
+    nguon: [
+      { he: 'Tử Vi', items: ['Hình tượng sao/cung theo truyền thống; không suy ra ngoại hình thực tế.'] },
+      { he: 'Bát Tự', items: ['Liên hệ ngũ hành – hình tượng là quy ước của trường phái, không phải dự đoán nhân trắc học.'] },
+      { he: 'Chiêm tinh', items: ['Cung Mọc và hành tinh được diễn giải theo biểu tượng truyền thống, không xác định diện mạo thực tế.'] },
+      { he: 'Hà Lạc', items: ['Liên hệ quái tượng – hình thể chỉ mang ý nghĩa biểu tượng.'] }
+    ],
+    chiSo: { cao: null, beo: null, mat: 'Không suy đoán', da: 'Không suy đoán' }
+  };
   var tv = C.tv, bt = C.bt, ct = C.ct, he = [], phieu = [];
   function add(he, v, w) { phieu.push({ he: he, v: v, w: w }); }
 
@@ -307,6 +323,24 @@ function thVocDang_(C) {
  * 3. ĐẶC ĐIỂM TRÊN CƠ THỂ & VÙNG CẦN GIỮ GÌN
  * ========================================================= */
 function thCoThe_(C) {
+  // Không chẩn đoán sức khỏe, dự đoán bệnh, sẹo hay thương tích từ lá số.
+  // Trả đúng cấu trúc dữ liệu cũ để các màn hình vẫn hoạt động.
+  return {
+    tieuDe: 'Giới hạn diễn giải về cơ thể và sức khỏe',
+    ketLuan: [
+      'Các liên hệ giữa sao, ngũ hành, cung hoặc trung tâm Human Design với cơ quan cơ thể là quan niệm truyền thống, chưa phải công cụ y khoa đáng tin cậy.',
+      'Không thể suy ra bệnh, nguy cơ bệnh, sẹo, thương tích hoặc “điểm yếu bẩm sinh” từ lá số. Mục này không thay thế tư vấn y tế; hãy dựa vào triệu chứng và chuyên gia y tế khi có lo ngại.',
+      'Để tránh gây lo lắng hoặc tạo cảm giác chẩn đoán, hệ thống không đưa ra dự đoán cá nhân về bộ phận cơ thể hay sức khỏe.'
+    ],
+    nguon: [
+      { he: 'Tử Vi', items: ['Một số sao/cung được gán ý nghĩa tượng trưng trong cổ thư; không phải bằng chứng y khoa.'] },
+      { he: 'Bát Tự', items: ['Ngũ hành và tạng phủ là mô hình truyền thống, không dùng để chẩn đoán.'] },
+      { he: 'Chiêm tinh', items: ['Liên hệ hành tinh – bộ phận cơ thể là biểu tượng lịch sử, không dự báo thương tích hay bệnh.'] },
+      { he: 'Human Design', items: ['Trung tâm và tuyến cơ thể theo hệ thống này không phải chỉ dấu y tế đã được xác nhận.'] },
+      { he: 'Hà Lạc / Thần số học', items: ['Các liên hệ tương ứng chỉ nên đọc như tư liệu văn hóa hoặc gợi ý tự suy ngẫm.'] }
+    ],
+    vung: []
+  };
   var tv = C.tv, bt = C.bt, ct = C.ct, hd = C.hd, he = [], dem = {};
   function tag(vung, h) { if (!vung) return; (dem[vung] = dem[vung] || {})[h] = true; }
 
@@ -501,8 +535,9 @@ function thNghe_(C) {
   hd.kenh.forEach(function (k) { add(TH_NGHE_KENH[[k.a, k.b].sort(function (x, y) { return x - y; }).join('-')], 'Human Design', 0.8); });
   var ds = Object.keys(dem).map(function (k) { return { k: k, ten: TH_NGHE[k], diem: Math.round(dem[k].d * 10) / 10, he: Object.keys(dem[k].he) }; });
   var mx = Math.max.apply(null, ds.map(function (x) { return x.diem; }).concat([0.1]));
-  // % phù hợp: 55% theo số hệ cùng gợi ý (trên 6), 45% theo tổng trọng số so với nghề mạnh nhất
-  ds.forEach(function (x) { x.pct = Math.max(30, Math.min(97, Math.round(100 * (0.55 * x.he.length / 6 + 0.45 * x.diem / mx)))); });
+  // Điểm xếp hạng tương đối trong danh sách này; không phải xác suất hay phần trăm phù hợp.
+  // Chuẩn hóa theo ứng viên có tổng trọng số cao nhất để so sánh tương đối, không gán sàn/trần giả tạo.
+  ds.forEach(function (x) { x.pct = Math.round(100 * x.diem / mx); });
   return ds.sort(function (a, b) { return b.pct - a.pct || b.he.length - a.he.length; });
 }
 
@@ -640,13 +675,13 @@ function tongHopLuan(C) {
     duongDoi: dd,
     nghe: nghe.slice(0, 6),
     coSo: [
-      'Sáu hệ: Tử Vi, Bát Tự, Bát Tự Hà Lạc, Chiêm tinh, Thần số học, Human Design. Mỗi hệ luận "bỏ phiếu" độc lập trên cùng một thang đo (ví dụ trục Hướng ngoại ↔ Hướng nội từ −2 đến +2); kết quả chung là trung bình các hệ, độ đồng thuận là tỷ lệ hệ cùng chiều.',
+      'Sáu hệ: Tử Vi, Bát Tự, Bát Tự Hà Lạc, Chiêm tinh, Thần số học, Human Design. Điểm và số hệ cùng chiều là chỉ số nội bộ dựa trên quy tắc của ứng dụng, không phải xác suất hay độ chính xác đã được kiểm chứng. Các hệ không độc lập hoàn toàn và có thể dùng chung dữ liệu đầu vào; vì vậy đồng thuận không tự động đồng nghĩa với sự thật.',
       'Xuất thân: Tử Vi (Phụ Mẫu – Phúc Đức – Điền Trạch, Tuần/Triệt ở Mệnh, Thiên Mã), Bát Tự (niên trụ = tổ nghiệp, nguyệt trụ = cha mẹ; Ấn/Tài/Kiếp ở trụ năm – tháng, Dịch Mã), Chiêm tinh (nhà 4/IC, Mặt Trăng, Sao Thổ, Sao Mộc), Thần số học (số 4, 6, đỉnh cao thứ nhất).',
       'Vóc dáng: hình tướng chính tinh Mệnh – Thân (cổ thư Tử Vi), hình tướng ngũ hành của nhật chủ và hành vượng (Bát Tự – "Ngũ hành hình tướng"), cung Mọc – chủ tinh lá số – hành tinh nhà 1 (chiêm tinh cổ điển, Ptolemy/Alan Leo).',
       'Đặc điểm cơ thể: sát tinh/Hóa Kỵ/Xương Khúc ở Mệnh – Thân – Tật (Tử Vi), ngũ hành thái quá/bất cập ↔ tạng phủ (Hoàng Đế Nội Kinh), Sao Hỏa – Sao Thổ – cung Mọc – nhà 6 ↔ bộ phận theo cung (Melothesia), trung tâm mở ↔ tuyến nội tiết (Human Design).',
       'Phối ngẫu: cung Phu Thê (Tử Vi), nhật chi & sao phối ngẫu – Tài tinh với nam, Quan tinh với nữ (Bát Tự), cung Lặn/nhà 7, Sao Kim – Sao Hỏa (chiêm tinh), nhóm số chủ đạo (Thần số), trung tâm mở – cổng treo (Human Design); năm sinh phù hợp chấm thang 10 theo 5 tiêu chí xem tuổi truyền thống.',
       'Đường đời: chồng lớp đại hạn Tử Vi, đại vận Bát Tự, 4 đỉnh cao Thần số, chu kỳ Sao Thổ/Thiên Vương/Nút (chiêm tinh) và ba giai đoạn của Human Design; năm nổi bật lấy từ tab Dự Đoán.',
-      'Kết luận chỉ mang tính tham khảo – xu hướng, không phải định mệnh; điểm càng nhiều hệ đồng thuận thì càng đáng lưu tâm.'
+      'Kết luận chỉ mang tính tham khảo theo các trường phái truyền thống, không phải định mệnh. Đồng thuận giữa nhiều hệ chỉ cho biết các quy tắc trong ứng dụng đang cùng chiều, không chứng minh dự đoán đúng.'
     ]
   };
   T.hoiTu = htHoiTu_(C);
