@@ -456,9 +456,11 @@ function tuviLapLaSo(input) {
   }
 
   // --- Tuần, Triệt ---
+  // Đánh dấu hai cung chịu ảnh hưởng để phần luận giải giữ nguyên logic;
+  // huy hiệu hiển thị được đặt giữa hai cung ở drawOverlay() trong Script.html.
   var trietStart = [8, 6, 4, 2, 0][yCan % 5];
   palaces[trietStart].triet = true;
-  palaces[trietStart + 1].triet = true;
+  palaces[mod12(trietStart + 1)].triet = true;
   var tuanStart = mod12(yChi - yCan);
   palaces[mod12(tuanStart - 2)].tuan = true;
   palaces[mod12(tuanStart - 1)].tuan = true;
