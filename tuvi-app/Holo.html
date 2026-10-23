@@ -436,7 +436,7 @@ table.holo-bt{width:100%;min-width:720px;border-collapse:separate;border-spacing
 
   function ve(res, api) {
     api = api || {}; tenNguoi = (res.tuvi && res.tuvi.info && res.tuvi.info.name) || '';
-    [['bt', veBatTu], ['hl', veHaLac], ['ct', veChiemTinh], ['ts', veThanSo], ['hd', veHD]].forEach(function (x) {
+    [['tv', veTuVi], ['bt', veBatTu], ['hl', veHaLac], ['ct', veChiemTinh], ['ts', veThanSo], ['hd', veHD]].forEach(function (x) {
       try { x[1](res, api); } catch (e) { if (window.console) console.error('[Holo ' + x[0] + ']', e); }
     });
   }
@@ -476,6 +476,6 @@ table.holo-bt{width:100%;min-width:720px;border-collapse:separate;border-spacing
   var rt; window.addEventListener('resize', function () { clearTimeout(rt); rt = setTimeout(veDuongTV, 150); });
   function nen() { var n = document.getElementById('holoNen'); if (n) anh('Nen', n); }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', nen); else nen();
-  window.TCCHolo = { nenTab: nenTab, ve: ve, chonCung: chonCung, veDuong: veDuongTV, anh: anh };
+  window.TCCHolo = { nenTab: nenTab, ve: ve, veTuVi: veTuVi, chonCung: chonCung, veDuong: veDuongTV, anh: anh };
 })();
 </script>
