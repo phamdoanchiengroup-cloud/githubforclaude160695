@@ -13,6 +13,9 @@
 .board{position:relative;width:100%;container-type:inline-size;border-radius:16px;overflow:hidden;
   background:#060B16 var(--img,radial-gradient(70% 60% at 50% 45%,#13254a,#060B16)) center/100% 100% no-repeat;
   box-shadow:0 30px 70px -30px rgba(0,0,0,.95),0 0 50px -20px rgba(232,199,122,.45),inset 0 0 0 1px rgba(232,199,122,.22);color:#EAF4FF}
+/* Tuần/Triệt: dấu huy hiệu nằm chính giữa ranh giới chung hai cung */
+.holo-tt-badge{position:absolute;z-index:8;transform:translate(-50%,-50%);display:inline-flex;align-items:center;justify-content:center;min-height:18px;padding:3px 7px;white-space:nowrap;pointer-events:none;border-radius:999px;border:1px solid rgba(255,255,255,.85);font:700 10px/1 'Chakra Petch',sans-serif;letter-spacing:.06em;color:#101a2a;background:linear-gradient(135deg,#fff4d2,#d8b05f);box-shadow:0 0 0 2px rgba(5,12,28,.92),0 0 12px rgba(232,199,122,.68)}
+.holo-tt-badge.triet{background:linear-gradient(135deg,#e9fcff,#62d5e7);box-shadow:0 0 0 2px rgba(5,12,28,.92),0 0 12px rgba(92,235,255,.6)}
 .board .ov{position:absolute;z-index:3;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:calc(var(--u)*3);text-align:center;color:#EAF4FF;text-shadow:0 0 6px #040914,0 0 14px #040914;line-height:1.2;pointer-events:none;overflow:hidden}
 .board .ov.l{align-items:flex-start;text-align:left}
 .board .ov small{font:600 max(7px,calc(var(--u)*var(--fs-s,13)))/1.1 'Chakra Petch',sans-serif;letter-spacing:.14em;text-transform:uppercase;color:#5CEBFF}
