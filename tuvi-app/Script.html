@@ -4865,9 +4865,9 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
     }
     return '<div class="tg" data-g="mien"><div class="tg-head"><span>Xem miễn phí</span><b>Chân dung của bạn</b><em>Xuất thân · vóc dáng · tính cách · nghề hợp – thấy đúng thì mở khóa phần còn lại</em></div>' +
       khoi(M.xuatThan, '出身', 'Nơi bạn bắt đầu định hình cách bạn bước đi – điều 6 hệ cùng nói về gia đình và cội nguồn của bạn.') +
-      khoi(M.vocDang, '形貌', 'Trước khi bạn mở lời, người khác đã "đọc" bạn qua dáng vẻ. Nét nào nhiều hệ cùng bỏ phiếu nhất là nét rõ nhất.') +
+      khoi(M.vocDang, '形貌', 'Các trường phái có hình tượng truyền thống về ngoại hình, nhưng không thể xác định đáng tin cậy dáng vẻ thực tế. Hãy đọc phần này như tư liệu văn hóa, không phải mô tả cơ thể của bạn.') +
       (M.tinhCach ? tinhCachHtml(M.tinhCach) : '') +
-      (M.nghe && M.nghe.length ? '<div class="panel section"><h2 class="panel-title"><span class="han">職業</span> Nghề nghiệp phù hợp</h2><p class="lede">% phù hợp = số hệ cùng gợi ý (trên 6) và sức nặng của gợi ý so với nghề mạnh nhất.</p><div class="nghe-list">' + M.nghe.map(ngheHtml).join('') + '</div></div>' : '') + '</div>';
+      (M.nghe && M.nghe.length ? '<div class="panel section"><h2 class="panel-title"><span class="han">職業</span> Nghề nghiệp gợi ý</h2><p class="lede">Điểm 0–100 chỉ dùng để xếp hạng tương đối các gợi ý trong lá số này; không phải xác suất thành công hay thước đo năng lực thực tế. Hãy đối chiếu với sở thích, kỹ năng và trải nghiệm của bạn.</p><div class="nghe-list">' + M.nghe.map(ngheHtml).join('') + '</div></div>' : '') + '</div>';
   }
   /* ---------- Tổng hợp đa hệ ---------- */
   function heChip(h) { return '<span class="sys s-' + ({ 'Tử Vi': 'tv', 'Bát Tự': 'bt', 'Chiêm tinh': 'ct', 'Thần số học': 'ts', 'Human Design': 'hd', 'Hà Lạc': 'hl' }[h] || 'x') + '">' + esc(h) + '</span>'; }
@@ -4894,8 +4894,8 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
       coSoHtml('Phương pháp tổng hợp', T.coSo) + coSoHtml('Cách chấm điểm (thang 10)', CACH_CHAM) + '</div>' + matMaHtml(T.matMa) + '</div>';
     var MO_DAU = {
       'Xuất thân – gia cảnh': 'Nơi bạn bắt đầu định hình cách bạn bước đi. Đây là điều 6 hệ cùng nói về gia đình và cội nguồn của bạn.',
-      'Vóc dáng – diện mạo': 'Trước khi bạn mở lời, người khác đã "đọc" bạn qua dáng vẻ. Mỗi hệ bỏ phiếu độc lập – nét nào nhiều phiếu nhất là nét rõ nhất.',
-      'Đặc điểm cơ thể & sức khỏe': 'Cơ thể mang dấu ấn của lá số. Vùng được nhiều hệ cùng chỉ ra là nơi đáng để bạn chăm chút sớm nhất.'
+      'Biểu tượng ngoại hình theo trường phái': 'Các mô tả ngoại hình trong trường phái huyền học chỉ là biểu tượng truyền thống, không phải dự đoán nhân trắc học đã được kiểm chứng.',
+      'Giới hạn diễn giải về cơ thể và sức khỏe': 'Lá số không thể chẩn đoán bệnh, dự đoán thương tích hoặc xác định bộ phận cơ thể yếu. Mục này chỉ giải thích giới hạn của các liên hệ truyền thống.'
     };
     function khoi(S, han) {
       return '<div class="panel section"><h2 class="panel-title"><span class="han">' + han + '</span> ' + esc(S.tieuDe) + '</h2>' + (MO_DAU[S.tieuDe] ? '<p class="lede">' + esc(MO_DAU[S.tieuDe]) + '</p>' : '') + '<ul class="th-kl">' + S.ketLuan.map(itemHtml).join('') + '</ul>' + nguonHtml(S.nguon) + '</div>';
