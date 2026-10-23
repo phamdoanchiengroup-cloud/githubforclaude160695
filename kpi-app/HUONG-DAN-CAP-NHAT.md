@@ -501,6 +501,12 @@ Bấm đúp **2-CAP-NHAT.bat** (chưa tự triển khai thì Triển khai → Qu
 - Tab **Nhân sự** có thêm khối **"Ban điều hành & Hành chính nhân sự"** – chỉ chủ sở hữu thấy.
 - Tab **Nhân sự** có thẻ "Hồ sơ chưa đủ: x/y người", bấm "Xem danh sách" để thấy tên theo xưởng.
 
+## HOLOGRAM CHO CHỦ SỞ HỮU 23/10 – chỉ đổi Index.html
+Bấm đúp **2-CAP-NHAT.bat**, rồi Ctrl+F5. Không có hàm cần chạy.
+- Chỉ tài khoản chủ sở hữu thấy: nền vũ trụ, khung kính phát sáng, và khối **Đài quan sát KPI** ở đầu Tổng quan (mỗi xưởng là một ngôi sao, càng xa tâm KPI càng cao; bấm vào sao để mở Bảng KPI xưởng đó).
+- Nút **🌌 Hologram** ở cuối menu: bấm lần lượt Bật có chuyển động → Bật nền tĩnh → Tắt. Máy nhớ lựa chọn.
+- Ban điều hành, trưởng phòng, công nhân: giao diện không đổi.
+
 ## KỸ NĂNG 22/10 (tab mới "Kỹ năng") – đổi Code.gs + Index.html
 Bấm đúp **2-CAP-NHAT.bat**, rồi Ctrl+F5. Không có hàm cần chạy (2 sheet `KyNang`, `KyNangNhanVien` tự tạo khi có người đề xuất / gán lần đầu).
 - Menu **Danh mục → Kỹ năng**: Ma trận (người × kỹ năng) · Danh mục kỹ năng · Chờ duyệt · Báo cáo. Công nhân thấy "Kỹ năng của tôi".

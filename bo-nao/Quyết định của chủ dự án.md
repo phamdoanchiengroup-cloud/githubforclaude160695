@@ -31,6 +31,7 @@ Những điều đã chốt. Đừng đề xuất lại những gì ghi "không 
 - Quy tắc làm việc mới: sau mỗi lần sửa phải rà lại toàn bộ logic code, logic hiển thị và công thức (đã ghi vào CLAUDE.md).
 
 ## Phong cách giao diện web KPI
+- Hologram vũ trụ **chỉ cho tài khoản chủ sở hữu**, cả web + Tổng quan "Đài quan sát KPI", chuyển động mặc định bật, có nút tắt (23/10). Các tài khoản khác giữ giao diện cũ. – [[KPI Hologram chủ sở hữu]]
 - Thích kiểu **thiết bị đo nhà máy**; chê bộ 3D "như đồ chơi", 7 mẫu đầu demo-2, demo-4 (trừ số 5), demo-5, demo tương tác và giao diện nền. Hướng hiện tại: làm lại đúng màn hình đang dùng, đặt bản cũ cạnh bản mới. – [[KPI Demo giao diện]]
 - Bỏ qua demo 3D CSS (08/10). – [[KPI Demo đã bỏ]]
 - Màn đăng nhập: chọn **Khắc laser** (09/10); hiệu ứng đợt 2 chọn A1, 2, 4, 5, 6 (bỏ "giữ để vào ca") + toàn bộ B; mọi hiệu ứng phải chạy trên điện thoại. – [[KPI Màn đăng nhập Khắc laser]]
