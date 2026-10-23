@@ -4,6 +4,7 @@ Nhóm: Bắt đầu · Cập nhật 22/10/2026
 Liên quan: [[Việc chờ chủ dự án]] · [[TCC Kiểm thử]] · [[00 Mục lục]]
 
 ## Tình trạng
+- 23/10 (khuya): quà đăng ký 50 xu + poster trang chủ – đổi **ThanhToan, Script, Styles, Index** (mã `2026.10.23.4`). Bấm `2-CAP-NHAT.bat`, Ctrl+F5. Nếu từng chỉnh "quà đăng ký" trong Quản trị thì giá trị cũ bị bỏ qua, nay là 50 xu (muốn đổi thì lưu lại trong Quản trị).
 - 23/10 (tối): **giao diện Hologram thay Bạch Kim** – đổi **Code, Script, Styles, Index** + thêm 8 file mới **Holo, HoloAnhTuVi, HoloAnhBatTu, HoloAnhHaLac, HoloAnhChiemTinh, HoloAnhThanSo, HoloAnhHD, HoloAnhNen** (mã `2026.10.23.3`). Sao lưu trước, bấm `2-CAP-NHAT.bat`, Ctrl+F5.
 - 23/10 (sau): nâng cấp Chiêm tinh, Thần số, HD – đổi **ChiemTinh, ThanSoHoc, HumanDesign, DeHieu, Code, Script, Styles, Index** (mã `2026.10.23.2`). Bấm `2-CAP-NHAT.bat`, Ctrl+F5.
 - 23/10: giao diện theo tư vấn chuyên gia – đổi **Script, Styles, Index** (mã `2026.10.23.1`). Bấm `2-CAP-NHAT.bat`, Ctrl+F5.

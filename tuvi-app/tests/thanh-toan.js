@@ -66,7 +66,7 @@ const L = { name: 'Nguyễn Văn An', gender: 'nam', calendar: 'duong', day: 15,
 const chu = ctx.dangNhap('chienpham', PASS).token;
 // Phần đầu kiểm tra cơ chế với bảng giá cũ (ghim cố định) và tắt quà đăng ký; phần cuối kiểm tra bảng giá mặc định mới + quà
 const GIA_CU = { co_ban: 49, tron_goi: 149, cap_doi: 29, dai_van: 19, nam: 29, dong_hanh: 79, bien_co: 29, phoi_ngau: 19, pdf: 29, do_gio: 19, tron_dai_van: 99 };
-store.TT_BANG_GIA = JSON.stringify({ phien: ctx.TT_GIA_PHIEN, phan: GIA_CU, goi: [{ tien: 50000, xu: 50 }, { tien: 100000, xu: 110 }, { tien: 200000, xu: 240 }, { tien: 500000, xu: 650 }], thuongDangKy: 0, thuongGTDangKy: 0 });
+store.TT_BANG_GIA = JSON.stringify({ phien: ctx.TT_GIA_PHIEN, phan: GIA_CU, goi: [{ tien: 50000, xu: 50 }, { tien: 100000, xu: 110 }, { tien: 200000, xu: 240 }, { tien: 500000, xu: 650 }], thuongDangKy: 0, thuongGTDangKy: 0, kmPhien: ctx.TT_KM_PHIEN });
 ok(nem(() => ctx.dangKy('ab', 'matkhau123', 'A', '0912345678')) !== null, 'Đăng ký: chặn tên quá ngắn');
 ok(nem(() => ctx.dangKy('khachmoi', 'matkhau123', 'Khách', 'abc')) !== null, 'Đăng ký: bắt buộc SĐT/email hợp lệ');
 const dk = ctx.dangKy('khachmoi', 'matkhau123', 'Khách Mới', '0912 345 678');
@@ -160,13 +160,15 @@ ok(ctx.muaPhan(T, { a: L2, b: L }, 'cap_doi').daCo, 'Mua lại cặp đã mở �
 ok(ctx.lapCapDoi(L, Object.assign({}, L2, { day: 4 }), T).biKhoa, 'Cặp khác → chưa mở');
 ok(ctx.lapCapDoi(L, L2, chu).moKhoa, 'Chủ sở hữu xem cặp đôi không cần mua');
 // ---- Bảng giá mới & kéo người dùng ----
-store.TT_BANG_GIA = JSON.stringify({ phan: { co_ban: 99 }, thuongDangKy: 0 });   // bảng giá lưu từ phiên cũ (không có "phien")
+store.TT_BANG_GIA = JSON.stringify({ phan: { co_ban: 99 }, thuongDangKy: 0, kmPhien: ctx.TT_KM_PHIEN });   // bảng giá lưu từ phiên cũ (không có "phien")
 ok(ctx.ttBangGia_().phan.co_ban.xu === ctx.TT_PHAN_MAC_DINH.co_ban.xu && ctx.ttBangGia_().thuongDangKy === 0, 'Bảng giá phiên cũ bị bỏ qua, giữ mức thưởng đã chỉnh');
 delete store.TT_BANG_GIA;
 const bgM = ctx.ttBangGia_();
 ok(Object.keys(bgM.phan).filter(k => !bgM.phan[k].an).every(k => bgM.phan[k].xu <= 49), 'Mọi phần mở khóa ≤ 49 xu');
 ok(bgM.phan.co_ban.goc === 49 && bgM.phan.thang.goc === undefined, 'Giá cũ (gạch ngang) chỉ có khi cao hơn giá mới');
 ok(bgM.thuongDangKy >= bgM.phan.co_ban.xu, 'Quà đăng ký đủ mở Tổng hợp 6 hệ');
+ok(bgM.thuongDangKy === 50 && bgM.thuongDangKy >= bgM.phan.tron_goi.xu, 'Quà đăng ký 50 xu – đủ mở Trọn đời');
+{ const cu = store.TT_BANG_GIA; store.TT_BANG_GIA = JSON.stringify({ phien: ctx.TT_GIA_PHIEN, thuongDangKy: 19 }); ok(ctx.ttBangGia_().thuongDangKy === 50, 'Quà đăng ký 19 xu lưu ở phiên cũ bị bỏ qua → 50 xu'); store.TT_BANG_GIA = cu; }
 const ck = ctx.bangGiaCongKhai(); ok(ck.phan && ck.thuongDangKy === bgM.thuongDangKy, 'Bảng giá công khai cho khách');
 const n1 = ctx.dangKy('nguoimoi1', 'matkhau123', 'Người Mới', 'moi1@x.vn', '');
 ok(n1.qua.xu === bgM.thuongDangKy && ctx.viCuaToi(n1.token).soDu === bgM.thuongDangKy, 'Đăng ký nhận quà chào mừng');

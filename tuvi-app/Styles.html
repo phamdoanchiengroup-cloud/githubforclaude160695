@@ -1,6 +1,6 @@
 <style>
 /* Mã phiên bản giao diện – phải trùng với Index.html (meta tcc-ban) và Script.html (BAN_GIAO_DIEN) */
-:root { --tcc-ban: "2026.10.23.3"; }
+:root { --tcc-ban: "2026.10.23.4"; }
 /* ================================================================
    THIÊN CƠ CÁC — phong cách tiên hiệp sáng: ngọc bích, kim sa, mây trắng
    ================================================================ */
@@ -2251,4 +2251,52 @@ body.co-ket-qua.mo-form .form-panel, .ls3d-khung, .wl-anh { background: #0A1426;
 #chartArea:not(.xem-holo) #holoTV { display: none; }
 #chartArea.xem-holo .chart-scroll, #chartArea.xem-holo .ls3d-khung, #chartArea.xem-holo .toolbar .check, #chartArea.xem-holo #btnPrint { display: none; }
 #page-hd.co-holo .hd-graph { display: none; }
+
+/* ---------- Poster quà tạo tài khoản (trang chủ, chỉ khách chưa đăng nhập) ---------- */
+.poster-qua { position: relative; display: grid; grid-template-columns: 220px minmax(0, 1fr); gap: 26px; align-items: center; margin: 0 0 16px; padding: 26px 28px; border-radius: 22px; overflow: hidden; isolation: isolate;
+  background: radial-gradient(520px 320px at 12% 50%, rgba(232, 199, 122, .22), transparent 70%), radial-gradient(600px 360px at 100% 0%, rgba(179, 140, 255, .22), transparent 65%), linear-gradient(135deg, #0B1A34, #060B16 70%);
+  box-shadow: inset 0 0 0 1px rgba(232, 199, 122, .5), 0 0 0 1px rgba(0, 0, 0, .4), 0 24px 60px -24px rgba(0, 0, 0, .9), 0 0 60px -24px rgba(232, 199, 122, .6); }
+.poster-qua[hidden] { display: none; }
+.qc-top .poster-qua:not([hidden]) ~ .qc-strip { display: none; }
+.pq-nen { position: absolute; inset: 0; z-index: -1; pointer-events: none; opacity: .5;
+  background-image: radial-gradient(1px 1px at 30px 40px, #fff, transparent 60%), radial-gradient(1.5px 1.5px at 160px 90px, #FFE6A8, transparent 60%), radial-gradient(1px 1px at 260px 20px, #CFF8FF, transparent 60%), radial-gradient(1px 1px at 90px 150px, #fff, transparent 60%);
+  background-size: 300px 180px; }
+.pq-trai { position: relative; display: grid; justify-items: center; gap: 10px; }
+.pq-vong { position: relative; width: 200px; height: 200px; }
+.pq-vong i { position: absolute; inset: 0; border-radius: 50%; border: 1px solid rgba(232, 199, 122, .7); }
+.pq-vong i:nth-child(1) { box-shadow: 0 0 40px rgba(232, 199, 122, .45), inset 0 0 40px rgba(232, 199, 122, .25); background: radial-gradient(circle at 40% 35%, rgba(255, 241, 201, .35), rgba(232, 199, 122, .08) 55%, transparent 70%); }
+.pq-vong i:nth-child(2) { inset: -12px; border-color: rgba(92, 235, 255, .55); border-style: dashed; animation: pqXoay 40s linear infinite; }
+.pq-vong i:nth-child(3) { inset: 18px; border-color: rgba(179, 140, 255, .6); transform: rotateX(70deg); animation: pqXoay2 18s linear infinite; }
+@keyframes pqXoay { to { transform: rotate(360deg); } }
+@keyframes pqXoay2 { to { transform: rotateX(70deg) rotateZ(360deg); } }
+.pq-so { position: absolute; top: 0; left: 0; right: 0; height: 200px; display: grid; place-content: center; text-align: center; }
+.pq-so b { font: 700 84px/0.9 'Chakra Petch', var(--font-body); background: linear-gradient(180deg, #FFF6DA, #E8C77A 55%, #B8954A); -webkit-background-clip: text; background-clip: text; color: transparent; filter: drop-shadow(0 0 18px rgba(232, 199, 122, .55)); }
+.pq-so span { font: 700 18px/1.2 'Chakra Petch', sans-serif; letter-spacing: .5em; color: #FFE6A8; margin-left: .5em; }
+.pq-trai small { font: 600 11px/1.3 'Chakra Petch', sans-serif; letter-spacing: .2em; text-transform: uppercase; color: #5CEBFF; text-align: center; }
+.pq-giua { min-width: 0; display: grid; gap: 10px; }
+.pq-may { font: 600 11.5px/1 'Chakra Petch', sans-serif; letter-spacing: .24em; text-transform: uppercase; color: #5CEBFF; }
+.poster-qua h2 { margin: 0; font: 700 clamp(22px, 2.6vw, 32px)/1.15 'Chakra Petch', var(--font-body); color: #EAF4FF; text-wrap: balance; }
+.poster-qua h2 em { font-style: normal; color: #FFE6A8; text-shadow: 0 0 18px rgba(232, 199, 122, .6); }
+.pq-giua > p { margin: 0; color: #A8B8CC; font-size: 14.5px; max-width: 62ch; }
+.pq-giua > p b { color: #EAF4FF; }
+.pq-the { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin-top: 4px; }
+.pq-c { position: relative; display: grid; grid-template-rows: auto 1fr auto; gap: 8px; padding: 14px 14px 12px; border-radius: 14px; background: rgba(10, 22, 42, .82); box-shadow: inset 0 0 0 1px rgba(110, 220, 255, .22); }
+.pq-c.noi { background: linear-gradient(180deg, rgba(232, 199, 122, .16), rgba(10, 22, 42, .9) 60%); box-shadow: inset 0 0 0 1.5px #E8C77A, 0 0 26px -8px rgba(232, 199, 122, .7); }
+.pq-nhan { position: absolute; top: -9px; right: 12px; font: 700 10px/1 'Chakra Petch', sans-serif; letter-spacing: .12em; text-transform: uppercase; padding: 5px 8px; border-radius: 999px; color: #1A1406; background: linear-gradient(180deg, #FFF1C9, #E8C77A); }
+.pq-ct { display: flex; align-items: center; gap: 8px; }
+.pq-ct b { font: 700 16px/1.2 'Chakra Petch', sans-serif; color: #EAF4FF; }
+.pq-ic { width: 30px; height: 30px; flex: none; border-radius: 50%; display: grid; place-items: center; font-size: 15px; color: #FFE6A8; box-shadow: inset 0 0 0 1px rgba(232, 199, 122, .6), 0 0 12px rgba(232, 199, 122, .35); }
+.pq-c ul { margin: 0; padding: 0; list-style: none; display: grid; gap: 4px; font-size: 13px; color: #CFE2F2; }
+.pq-c li { display: grid; grid-template-columns: 12px 1fr; gap: 6px; }
+.pq-c li::before { content: ''; width: 6px; height: 6px; margin-top: 7px; transform: rotate(45deg); background: #5CEBFF; box-shadow: 0 0 6px #5CEBFF; }
+.pq-gia { display: flex; align-items: baseline; flex-wrap: wrap; gap: 6px 8px; padding-top: 8px; border-top: 1px dashed rgba(110, 220, 255, .22); font-size: 13px; }
+.pq-gia s { color: #7F97B5; } .pq-gia b { font: 700 18px/1 'Chakra Petch', sans-serif; color: #FFE6A8; } .pq-gia span { margin-left: auto; color: #8EF0B8; font-size: 12px; }
+.pq-nut { display: flex; align-items: center; flex-wrap: wrap; gap: 10px 16px; margin-top: 6px; }
+.pq-go { min-height: 48px; padding: 0 24px; font-size: 15px; font-weight: 700; border-radius: 999px; animation: pqTho 3.2s ease-in-out infinite; }
+@keyframes pqTho { 50% { box-shadow: 0 0 30px rgba(92, 235, 255, .65); } }
+.pq-nut span { font-size: 12.5px; color: #A8B8CC; }
+@media (max-width: 900px) { .pq-the { grid-template-columns: minmax(0, 1fr); } }
+@media (max-width: 640px) { .poster-qua { grid-template-columns: minmax(0, 1fr); padding: 20px 16px; gap: 14px; text-align: left; } .pq-vong { width: 150px; height: 150px; } .pq-so { height: 150px; } .pq-so b { font-size: 64px; } .pq-go { width: 100%; } }
+@media (prefers-reduced-motion: reduce) { .pq-vong i, .pq-go { animation: none; } }
+@media print { .poster-qua { display: none !important; } }
 </style>

@@ -45,7 +45,9 @@ var TT_PHAN_MAC_DINH = {
 var TT_TRON_GOI = ['co_ban', 'tron_dai_van', 'bien_co', 'phoi_ngau', 'pdf', 'do_gio', 'xem_tuoi', 'phong_thuy'];
 var TT_GOI_MAC_DINH = [{ tien: 20000, xu: 20 }, { tien: 50000, xu: 55 }, { tien: 100000, xu: 120 }, { tien: 200000, xu: 260 }];
 /** Thưởng kéo người dùng: quà đăng ký, thưởng giới thiệu khi bạn bè đăng ký (xu), trần số lượt thưởng giới thiệu mỗi người */
-var TT_KM_MAC_DINH = { lanDau: 100, gioiThieu: 20, dangKy: 19, gtDangKy: 9, gtToiDa: 30 };
+var TT_KM_MAC_DINH = { lanDau: 100, gioiThieu: 20, dangKy: 50, gtDangKy: 9, gtToiDa: 30 };
+/** Phiên mức quà đăng ký: 23/10/2026 nâng quà lên 50 xu (đủ mở Trọn đời 49 xu). Quà đăng ký lưu trong Quản trị ở phiên cũ bị bỏ qua. */
+var TT_KM_PHIEN = 2;
 var TT_SH = {
   Vi: ['Tài khoản', 'Số dư (xu)', 'Cập nhật'],
   SoCai: ['Thời gian', 'Tài khoản', 'Thay đổi (xu)', 'Số dư sau', 'Lý do', 'Tham chiếu'],
@@ -104,7 +106,7 @@ function ttBangGia_() {
       }
       if (o.thuongLanDau != null) km.lanDau = Math.max(0, Math.min(500, +o.thuongLanDau || 0));
       if (o.thuongGioiThieu != null) km.gioiThieu = Math.max(0, Math.min(100, +o.thuongGioiThieu || 0));
-      if (o.thuongDangKy != null) km.dangKy = Math.max(0, Math.min(200, +o.thuongDangKy || 0));
+      if (o.thuongDangKy != null && +o.kmPhien === TT_KM_PHIEN) km.dangKy = Math.max(0, Math.min(200, +o.thuongDangKy || 0));
       if (o.thuongGTDangKy != null) km.gtDangKy = Math.max(0, Math.min(100, +o.thuongGTDangKy || 0));
     }
   } catch (e) { /* dùng mặc định */ }
@@ -504,7 +506,7 @@ function qtLuuBangGia(token, bg) {
   if (!goi.length) throw new Error('Cần ít nhất một gói nạp (số tiền ≥ 2.000đ).');
   var cu = ttBangGia_();
   function pct(v, mac, tran) { return v == null || v === '' || isNaN(+v) ? mac : Math.max(0, Math.min(tran, Math.round(+v))); }
-  PropertiesService.getScriptProperties().setProperty('TT_BANG_GIA', JSON.stringify({ phien: TT_GIA_PHIEN, phan: phan, goi: goi,
+  PropertiesService.getScriptProperties().setProperty('TT_BANG_GIA', JSON.stringify({ phien: TT_GIA_PHIEN, kmPhien: TT_KM_PHIEN, phan: phan, goi: goi,
     thuongLanDau: pct(bg && bg.thuongLanDau, cu.thuongLanDau, 500), thuongGioiThieu: pct(bg && bg.thuongGioiThieu, cu.thuongGioiThieu, 100),
     thuongDangKy: pct(bg && bg.thuongDangKy, cu.thuongDangKy, 200), thuongGTDangKy: pct(bg && bg.thuongGTDangKy, cu.thuongGTDangKy, 100) }));
   return ttBangGia_();

@@ -29,5 +29,5 @@ Liên quan: [[Việc chờ chủ dự án]] · [[TCC Bán hàng]] · [[00 Mục 
 
 ## Bán hàng (chiến lược 10/2026: kéo người dùng)
 - Luận giải 6 hệ mở miễn phí cho mọi người; khóa Tổng hợp 6 hệ (`co_ban` 19 xu), vận hạn, biến cố, phối ngẫu.
-- Mọi phần 9–49 xu, hiện giá cũ gạch ngang; quà đăng ký 19 xu; mời bạn cả hai +9 xu. – [[TCC Bán hàng]]
+- Mọi phần 9–49 xu, hiện giá cũ gạch ngang; quà đăng ký ~~19~~ **50 xu** (23/10: chủ dự án nâng lên 50, đủ mở Trọn đời 49 xu); mời bạn cả hai +9 xu. – [[TCC Bán hàng]]
 - Gói Trọn đời không gồm vận năm/tháng (giữ nguồn thu định kỳ).

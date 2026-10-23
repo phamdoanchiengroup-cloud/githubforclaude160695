@@ -21,3 +21,13 @@ Liên quan: [[TCC Tiện ích bán lẻ]] · [[TCC Nghiệm chứng]] · [[Quy�
 - **Phía trình duyệt:** `data-mua="phan|id"` → `muaGo`; `tinhTrangMua` quyết định thanh kêu gọi mua; `chenKhoa` chèn thẻ khóa; `bangGiaHtml` là bảng giá 3 bậc.
 - **Bản miễn phí:** `renderKhach` có câu mở, nút nghiệm chứng, dòng thời gian đại vận bị che, bảng giá và cam kết minh bạch.
 - Giá bán là mức khởi đầu, chưa qua thử nghiệm; nên xem doanh thu trong Quản trị rồi điều chỉnh.
+
+## 23/10 – Quà đăng ký 50 xu + poster trang chủ (mã `2026.10.23.4`)
+- `TT_KM_MAC_DINH.dangKy` đổi 19 → **50**. Thêm `TT_KM_PHIEN = 2`: quà đăng ký lưu trong Quản trị chỉ có hiệu lực khi `kmPhien` trùng phiên này (bản lưu cũ 19 xu bị bỏ qua). `qtLuuBangGia` ghi thêm `kmPhien`.
+- Poster `#posterQua` nằm đầu `qc-top`, chỉ hiện cho khách chưa đăng nhập; khi poster hiện thì ẩn `qc-strip`. Hàm `vePosterQua(qd)` trong Script.html: số xu lớn trong vòng sáng, 3 cách dùng tính giá từ bảng giá thật, mỗi cách ghi "còn dư":
+  - **Trọn đời** 49 xu (gốc 149).
+  - **Năm nay**: Tổng hợp + vận năm + nhật vận 1 tháng = 47 xu.
+  - **Tình duyên**: Tổng hợp + cặp đôi + phối ngẫu = 47 xu.
+  - Nút "Tạo tài khoản – nhận 50 xu" (`data-dang-ky`).
+- `duMo(qd)` thay câu cũ "đủ mở Tổng hợp 6 hệ" ở trang chủ, hộp đăng ký và thanh CTA.
+- Kiểm thử: `thanh-toan.js` thêm kiểm tra quà 50 và bỏ bản lưu phiên cũ (cần `TK_PASS` mới chạy được; đã kiểm tra riêng bằng gia-lap: mặc định 50, bản lưu cũ 19 → 50, bản lưu mới 30 → 30, đăng ký nhận 50). Các bộ cai-dat 83, tai-khoan, tien-ich 55, tong-hop, giai-doan, ho-so-nam, van-sau đều đạt.

@@ -27,7 +27,7 @@
     });
   }
   /** Mã phiên bản giao diện – phải trùng với Index.html (meta tcc-ban) và Styles.html (--tcc-ban) */
-  var BAN_GIAO_DIEN = '2026.10.23.3';
+  var BAN_GIAO_DIEN = '2026.10.23.4';
   function storeGet(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
   function storeSet(k, v) { try { localStorage.setItem(k, v); } catch (e) { /* bỏ qua */ } }
 
@@ -308,7 +308,7 @@
     $('authNote').textContent = ghiChu || 'Luận giải 6 hệ đã mở miễn phí. Đăng ký để lưu lá số, nhận luận giải hằng ngày và xu quà để mở Tổng hợp 6 hệ.';
     authTab(tab || 'in');
     var qd = quaDK(), rq = $('rgQua');
-    if (rq) { rq.hidden = !qd; rq.innerHTML = qd ? '🎁 Tạo tài khoản nhận ngay <b>' + qd + ' xu</b>' + (state.refMoi ? ' (có ' + ((bgHienTai() || {}).thuongGTDangKy || 0) + ' xu thưởng lời mời)' : '') + ' – đủ mở Tổng hợp 6 hệ (' + fmtXu(giaPhan('co_ban').xu) + ').' : ''; }
+    if (rq) { rq.hidden = !qd; rq.innerHTML = qd ? '🎁 Tạo tài khoản nhận ngay <b>' + qd + ' xu</b>' + (state.refMoi ? ' (có ' + ((bgHienTai() || {}).thuongGTDangKy || 0) + ' xu thưởng lời mời)' : '') + ' – ' + duMo(qd) + '.' : ''; }
     $('loginModal').classList.add('show');
     setTimeout(function () { $(tab === 'up' ? 'rgUser' : 'lgUser').focus(); }, 50);
   }
@@ -983,8 +983,8 @@
     var q = r.quyen, v = r.vanTom || {}, vy = r.tuvi.info.viewYear;
     if (!q) return null;
     var qd = quaDK();
-    if (tongKhoa(r) && !(pg && pg.id === 'page-vh') && qd) return { tieuDe: '🎁 Đăng ký miễn phí – tặng ' + qd + ' xu', phan: 'co_ban', nut: 'Nhận quà & mở Tổng hợp 6 hệ',
-      moTa: 'Tạo tài khoản 30 giây, nhận ' + qd + ' xu' + (qd >= co.xu ? ' – đủ mở ngay Tổng hợp 6 hệ (' + fmtXu(co.xu) + '), không cần nạp tiền.' : '.'), phu: co.goc > co.xu ? 'Giá khai trương ' + fmtXu(co.xu) + ' (trước ' + fmtXu(co.goc) + ')' : '' };
+    if (tongKhoa(r) && !(pg && pg.id === 'page-vh') && qd) return { tieuDe: '🎁 Đăng ký miễn phí – tặng ' + qd + ' xu', phan: 'co_ban', nut: 'Nhận ' + qd + ' xu & mở Tổng hợp 6 hệ',
+      moTa: 'Tạo tài khoản 30 giây, nhận ' + qd + ' xu' + (qd >= co.xu ? ' – ' + duMo(qd) + ', không cần nạp tiền.' : '.'), phu: co.goc > co.xu ? 'Giá khai trương ' + fmtXu(co.xu) + ' (trước ' + fmtXu(co.goc) + ')' : '' };
     if (tongKhoa(r) && !(pg && pg.id === 'page-vh')) {
       if (r.canMo && soVe()) return { tieuDe: 'Bạn còn ' + soVe() + ' lượt gia đình', phan: 've', nut: 'Dùng 1 lượt cho lá số này', moTa: 'Mở Tổng hợp 6 hệ + vận năm ' + vy + ' – không trừ xu.', phu: '' };
       return { tieuDe: 'Tổng hợp 6 hệ còn khóa', phan: 'co_ban', nut: 'Mở Tổng hợp · ' + fmtXu(co.xu),
@@ -3272,10 +3272,43 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
   })();
   /* ---------- Bố cục chuyên nghiệp: khi đã có kết quả, ô nhập thu vào ngăn kéo; đầu kết quả là thẻ hồ sơ gọn ---------- */
   /** Dòng quà đăng ký ở khung giới thiệu trang chủ */
+  /** Quà đăng ký đủ mở gì (theo bảng giá hiện tại) */
+  function duMo(qd) {
+    var tg = giaPhan('tron_goi'), co = giaPhan('co_ban');
+    if (tg.xu && qd >= tg.xu) return 'đủ mở cả gói Trọn đời (' + fmtXu(tg.xu) + (tg.goc > tg.xu ? ', giá gốc ' + fmtXu(tg.goc) : '') + ')';
+    return 'đủ mở Tổng hợp 6 hệ (' + fmtXu(co.xu) + ')';
+  }
   function veQuaTrangChu() {
     var el = $('wlQua'), qd = quaDK(); if (!el) return;
     el.hidden = !qd;
-    if (qd) el.innerHTML = '🎁 <b>Đăng ký miễn phí nhận ' + qd + ' xu</b> – đủ mở Tổng hợp 6 hệ' + (giaPhan('co_ban').goc ? ' (giá khai trương ' + giaHtml('co_ban') + ')' : '') + '. <a href="javascript:void 0" data-dang-ky>Đăng ký ngay</a>';
+    if (qd) el.innerHTML = '🎁 <b>Đăng ký miễn phí nhận ' + qd + ' xu</b> – ' + duMo(qd) + '. <a href="javascript:void 0" data-dang-ky>Đăng ký ngay</a>';
+    vePosterQua(qd);
+  }
+  /** Poster trang chủ: tạo tài khoản nhận xu – gợi ý 3 cách dùng số xu được tặng (giá lấy từ bảng giá thật) */
+  function vePosterQua(qd) {
+    var el = $('posterQua'); if (!el) return;
+    el.hidden = !qd; if (!qd) { el.innerHTML = ''; return; }
+    var bg = bgHienTai() || {}, vy = new Date().getFullYear(), th = new Date().getMonth() + 1;
+    function g(k) { return giaPhan(k); }
+    var tg = g('tron_goi'), CACH = [
+      { ic: '♾', ten: 'Trọn đời', nhan: 'Đáng giá nhất', phan: ['tron_goi'], ds: ['Tổng hợp 6 hệ – kết luận 9 lĩnh vực', '12 đại vận – cả cuộc đời', 'Biến cố hội tụ 30 năm', 'Chân dung người bạn đời', 'PDF bản đầy đủ', 'Dò chính xác giờ sinh'] },
+      { ic: '☀', ten: 'Năm ' + vy + ' của tôi', phan: ['co_ban', 'nam', 'thang'], ds: ['Tổng hợp 6 hệ – kết luận 9 lĩnh vực', 'Vận năm ' + vy + ': 12 tháng, lưu niên', 'Nhật vận từng ngày tháng ' + th] },
+      { ic: '♡', ten: 'Tình duyên', phan: ['co_ban', 'cap_doi', 'phoi_ngau'], ds: ['Tổng hợp 6 hệ – kết luận 9 lĩnh vực', 'Xem cặp đôi – độ hợp, năm cưới', 'Chân dung người phối ngẫu & tuổi hợp'] }
+    ].map(function (c) { c.tong = c.phan.reduce(function (t, k) { return t + (g(k).xu || 0); }, 0); c.goc = c.phan.reduce(function (t, k) { var x = g(k); return t + (x.goc || x.xu || 0); }, 0); return c; })
+      .filter(function (c) { return c.tong > 0 && c.tong <= qd; });
+    el.innerHTML = '<div class="pq-nen" aria-hidden="true"></div>' +
+      '<div class="pq-trai"><div class="pq-vong" aria-hidden="true"><i></i><i></i><i></i></div><div class="pq-so"><b>' + qd + '</b><span>XU</span></div><small>Tặng khi tạo tài khoản</small></div>' +
+      '<div class="pq-giua"><div class="pq-may">✦ Quà chào mừng · miễn phí</div>' +
+      '<h2>Tạo tài khoản – nhận ngay <em>' + qd + ' xu</em></h2>' +
+      '<p>30 giây, không cần nạp tiền. ' + (tg.xu && qd >= tg.xu ? 'Đủ mở <b>cả gói Trọn đời</b>' + (tg.goc > tg.xu ? ' (giá gốc ' + fmtXu(tg.goc) + ')' : '') + ', hoặc chọn một cách dùng bên dưới.' : 'Dùng xu để mở các phần luận giải chuyên sâu.') + '</p>' +
+      '<div class="pq-the">' + CACH.map(function (c, i) {
+        return '<div class="pq-c' + (i === 0 ? ' noi' : '') + '">' + (c.nhan ? '<span class="pq-nhan">' + c.nhan + '</span>' : '') +
+          '<div class="pq-ct"><span class="pq-ic" aria-hidden="true">' + c.ic + '</span><b>' + esc(c.ten) + '</b></div>' +
+          '<ul>' + c.ds.map(function (x) { return '<li>' + esc(x) + '</li>'; }).join('') + '</ul>' +
+          '<div class="pq-gia">' + (c.goc > c.tong ? '<s>' + fmtXu(c.goc) + '</s> ' : '') + '<b>' + fmtXu(c.tong) + '</b>' + (qd - c.tong > 0 ? '<span>còn dư ' + fmtXu(qd - c.tong) + '</span>' : '') + '</div></div>';
+      }).join('') + '</div>' +
+      '<div class="pq-nut"><button type="button" class="btn btn-primary pq-go" data-dang-ky>🎁 Tạo tài khoản – nhận ' + qd + ' xu</button>' +
+      '<span>Luận giải 6 hệ vẫn đọc miễn phí.' + (bg.thuongGTDangKy ? ' Mời bạn bè: mỗi người đăng ký, bạn được thêm ' + fmtXu(bg.thuongGTDangKy) + '.' : '') + '</span></div></div>';
   }
   /** Mở lá số Tử Vi 3D ('tv') hoặc Tứ Trụ 3D ('bt') – mã nằm trong file tùy chọn LaSo3D.html */
   function mo3D(loai) {
