@@ -944,10 +944,10 @@
     }
     if (TD.ketHon && TD.ketHon.nam.length) {
       var K = TD.ketHon;
-      h += cdPanel('婚期', 'Năm kết hôn – xác suất theo năm', '<div class="stat-row">' + [['Trong năm ' + vy, K.tichLuy.n1], ['Trong 3 năm tới', K.tichLuy.n3], ['Trong 5 năm tới', K.tichLuy.n5]].map(function (t) {
+      h += cdPanel('婚期', 'Năm kết hôn – điểm tín hiệu nội bộ', '<div class="stat-row">' + [['Trong năm ' + vy, K.tichLuy.n1], ['Trong 3 năm tới', K.tichLuy.n3], ['Trong 5 năm tới', K.tichLuy.n5]].map(function (t) {
         return '<div class="stat"><small>' + t[0] + '</small><b>' + t[1] + '%</b><span>khả năng rơi vào</span></div>'; }).join('') + '</div>' +
-        bieuDo(K.nam.filter(function (x) { return x.nam <= vy + 10; }), 'Xác suất cưới theo từng năm') + bangNam(K.top, true),
-        'Nếu hai bạn cưới trong 15 năm tới, khả năng rơi vào từng năm là bao nhiêu? Năm cả hai lá số cùng báo hỷ sự được đẩy lên; năm cô dâu' + (TD.coDau ? ' (' + esc(TD.coDau) + ')' : '') + ' phạm Kim Lâu hoặc năm xung tuổi bị giảm (cột đỏ).');
+        bieuDo(K.nam.filter(function (x) { return x.nam <= vy + 10; }), 'Điểm tín hiệu nội bộ về chủ đề kết hôn theo năm') + bangNam(K.top, true),
+        'Biểu đồ xếp hạng tương đối các năm theo quy tắc của ứng dụng, không phải dự báo xác suất kết hôn. Năm cả hai lá số cùng báo hỷ sự được đẩy lên; năm cô dâu' + (TD.coDau ? ' (' + esc(TD.coDau) + ')' : '') + ' phạm Kim Lâu hoặc năm xung tuổi bị giảm (cột đỏ).');
     } else if (TD.namCuoi) h += cdPanel('婚期', 'Năm kết hôn', '<p>Hai bạn đã kết hôn năm <b>' + TD.namCuoi + '</b> – năm sinh con bên dưới tính từ sau năm cưới.</p>');
     else if (TD.daCoCon) h += cdPanel('婚期', 'Năm kết hôn', '<p>Hai bạn đã có con nên không tính năm cưới. Nếu đã cưới, hãy nhập <b>năm kết hôn</b> để phần đối chiếu chính xác hơn.</p>');
     if (r.conCai || TD.sinhCon.nam.length) {
@@ -977,7 +977,7 @@
         }).join('') + '</tbody></table></div>' +
         '<details class="coso"><summary>Lý do từng năm gợi ý</summary>' + C.goiYTop.map(function (x) { return '<p><b>' + x.nam + ' ' + esc(x.canChi) + ':</b></p>' + listHtml(x.ly.concat(x.anhEm.length ? ['Với anh chị: ' + x.anhEm.join('; ') + '.'] : [])); }).join('') + '</details>' : '';
       h += cdPanel('子女', 'Con cái – số con, năm sinh con & tuổi hợp', stat + the +
-        (TD.sinhCon.nam.length ? '<h4 class="dd-h">📈 Xác suất có tin vui con cái theo năm</h4>' + bieuDo(TD.sinhCon.nam.filter(function (x) { return x.nam <= (vy || TD.sinhCon.nam[0].nam) + 12; }), 'Xác suất có tin vui con cái theo năm') + bangNam(TD.sinhCon.top, false) : '') + goi,
+        (TD.sinhCon.nam.length ? '<h4 class="dd-h">📈 Xác suất có tin vui con cái theo năm</h4>' + bieuDo(TD.sinhCon.nam.filter(function (x) { return x.nam <= (vy || TD.sinhCon.nam[0].nam) + 12; }), 'Điểm tín hiệu nội bộ về chủ đề con cái theo năm') + bangNam(TD.sinhCon.top, false) : '') + goi,
         'Ghép cung Tử Tức, sao con cái Bát Tự, nhà 5 chiêm tinh của cả hai; năm sinh con = tích xác suất hai lá số × khả năng đã cưới' + (daCo.length ? ', giãn cách với con trước' : '') + '. Tuổi con xét theo mệnh nạp âm, thiên can, địa chi và hỷ/kỵ thần Bát Tự của bố mẹ.');
     }
     h += cdPanel('言', 'Lời khuyên cho hai bạn', '<ul class="th-kl">' + r.loiKhuyen.map(function (x) { return '<li>' + hl(x) + '</li>'; }).join('') + '</ul>');
@@ -4787,7 +4787,7 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
     return '<div class="nghe"><b>' + esc(n.ten) + '</b>' + (n.pct ? '<div class="nghe-pct"><i style="width:' + n.pct + '%"></i></div><em>Điểm tương đối ' + n.pct + '/100 · ' + n.he.length + '/6 hệ gợi ý</em>' : '') +
       '<span>' + n.he.map(heChip).join(' ') + '</span></div>';
   }
-  /* ---------- Thời điểm kết hôn / sinh con (xác suất theo năm) ---------- */
+  /* ---------- Thời điểm kết hôn / sinh con (điểm nội bộ, không phải xác suất) ---------- */
   function thoiDiemHtml(td, res) {
     if (!td) return '';
     var vy = res.tuvi.info.viewYear;
@@ -4835,7 +4835,7 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
       if (!biet.length) h += '<p class="muted" style="font-size:12.5px">Mẹo: khai năm ' + dong + ' thật ở mục <b>Sự kiện đã biết</b> trong form để lá số đối chiếu và tính chính xác hơn.</p>';
       return h + '</div>';
     }
-    return khoi('ketHon', '婚期', 'Năm kết hôn – xác suất theo năm', 'Chia hai trường hợp: nếu bạn đã kết hôn, năm nào trong 10 năm qua (người lớn tuổi: cả giai đoạn 18–45 tuổi) khả năng nhất; nếu chưa, khả năng việc cưới hỏi rơi vào từng năm phía trước (đến 45 tuổi). Kết quả ghép từ độ tuổi thường gặp (dịch theo xu hướng sớm/muộn của lá số) và số hệ cùng báo trong năm.', 'kết hôn') +
+    return khoi('ketHon', '婚期', 'Năm kết hôn – điểm tín hiệu nội bộ', 'Chia hai trường hợp: nếu bạn đã kết hôn, năm nào trong 10 năm qua (người lớn tuổi: cả giai đoạn 18–45 tuổi) khả năng nhất; nếu chưa, khả năng việc cưới hỏi rơi vào từng năm phía trước (đến 45 tuổi). Kết quả ghép từ độ tuổi thường gặp (dịch theo xu hướng sớm/muộn của lá số) và số hệ cùng báo trong năm.', 'kết hôn') +
       khoi('sinhCon', '添丁', 'Năm có con – xác suất theo năm', 'Khả năng tin vui con cái rơi vào từng năm – nhìn lại 10 năm qua và các năm phía trước (con đầu hoặc thêm con), dựa trên cung Tử Tức, sao con cái Bát Tự, Sao Mộc – nhà 5, quẻ lưu niên và năm cá nhân.', 'có con') +
       (td.coSo ? coSoHtml('Cách tính xác suất', [td.coSo]) : '');
   }
