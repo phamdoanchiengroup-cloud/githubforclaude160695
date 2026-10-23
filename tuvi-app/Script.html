@@ -3347,16 +3347,14 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
       '<div class="pq-nut"><button type="button" class="btn btn-primary pq-go" data-dang-ky>🎁 Tạo tài khoản – nhận ' + qd + ' xu</button>' +
       '<span>Luận giải 6 hệ vẫn đọc miễn phí.' + (bg.thuongGTDangKy ? ' Mời bạn bè: mỗi người đăng ký, bạn được thêm ' + fmtXu(bg.thuongGTDangKy) + '.' : '') + '</span></div></div>';
   }
-  function cheDoLaSo() { try { return window.innerWidth > 760 && localStorage.getItem('tccCheDo2') === 'holo' ? 'holo' : '2d'; } catch (e) { return '2d'; } }
+  function cheDoLaSo() { return '2d'; }
   function coWebGL() { return false; }
-  function datCheDo(cd) {
-    // Chỉ có lá số 2D thường hoặc 2D phong cách hologram; chế độ 3D đã bỏ.
-    cd = cd === 'holo' && window.innerWidth > 760 && window.TCCHolo ? 'holo' : '2d';
+  function datCheDo() {
+    // Lá số Tử Vi dùng giao diện 2D chuẩn; không khởi tạo WebGL hoặc chế độ 3D.
     var ca = $('chartArea'); if (!ca) return;
-    ca.classList.remove('xem-3d');
-    ca.classList.toggle('xem-holo', cd === 'holo');
+    ca.classList.remove('xem-3d', 'xem-holo');
     [].forEach.call(document.querySelectorAll('[data-che-do]'), function (btn) {
-      btn.setAttribute('aria-pressed', btn.getAttribute('data-che-do') === cd ? 'true' : 'false');
+      btn.setAttribute('aria-pressed', btn.getAttribute('data-che-do') === '2d' ? 'true' : 'false');
     });
     coLaSo(); drawOverlay();
   }
@@ -5483,7 +5481,7 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
     buoc('ảnh quảng bá', function () {
       // Ảnh quảng bá (Anh.html – tùy chọn)
       if (typeof ANH_QC === 'string' && ANH_QC && $('anhQC')) $('anhQC').src = ANH_QC; else if ($('wlHero')) $('wlHero').classList.add('no-anh');
-      if (typeof ANH_QC === 'string' && ANH_QC && $('tccGocAnhImg')) $('tccGocAnhImg').src = ANH_QC;
+      if (typeof ANH_QC === 'string' && ANH_QC && $('tccGocAnhImg') && window.innerWidth > 760) $('tccGocAnhImg').src = ANH_QC;
       function khamPha() {
         if (window.innerWidth < 1080) document.querySelector('.form-panel').scrollIntoView({ behavior: 'smooth', block: 'start' });
         if (!$('name').value.trim()) { $('name').focus(); toast('Nhập họ tên và ngày giờ sinh, rồi bấm "Lập Lá Số" để bắt đầu ✦'); return; }
