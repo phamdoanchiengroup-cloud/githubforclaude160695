@@ -9,7 +9,7 @@ const read = (name) => fs.readFileSync(path.join(root, name), 'utf8');
 test('synthesis does not infer physical appearance from a birth chart', () => {
   const source = read('TongHop.gs');
   const fn = source.slice(source.indexOf('function thVocDang_(C)'), source.indexOf('function thCoThe_(C)'));
-  assert.match(fn, /không thể xác định đáng tin cậy ngoại hình thực tế/i);
+  assert.match(fn, /không phải phương pháp đã được kiểm chứng để suy ra chiều cao/i);
   assert.match(fn, /chiSo: \{ cao: null, beo: null/);
 });
 
