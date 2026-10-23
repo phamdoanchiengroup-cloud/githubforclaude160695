@@ -1,6 +1,6 @@
 <style>
 /* Mã phiên bản giao diện – phải trùng với Index.html (meta tcc-ban) và Script.html (BAN_GIAO_DIEN) */
-:root { --tcc-ban: "2026.10.23.12"; }
+:root { --tcc-ban: "2026.10.23.13"; }
 /* ================================================================
    THIÊN CƠ CÁC — phong cách tiên hiệp sáng: ngọc bích, kim sa, mây trắng
    ================================================================ */
@@ -1455,6 +1455,21 @@ details.dh-lv .cung-van-de-hieu { margin-bottom: 12px; }
 .vt-sang { color: var(--gold-hi); text-shadow: 0 0 8px rgba(240, 220, 176, .8); }
 .vt-bang > summary { cursor: pointer; color: var(--accent, var(--jade)); font-size: 14px; margin: 6px 0; }
 @media (prefers-reduced-motion: reduce) { .vt-sao, .vt-quydao, .vt-hao, .vt-the.moi { animation: none; } .vt-quay, .vt-nhan { transition: none; } }
+/* Vòm trời 6 hệ — phong cách thiên thể vàng, xanh lam và ngũ hành */
+.vt-khung { border-radius:24px; padding:8px; background:radial-gradient(ellipse at 50% 45%, #173354 0%, #09172c 46%, #020610 100%); border:1px solid rgba(239,205,139,.72); box-shadow:inset 0 0 55px rgba(0,0,0,.65),0 0 0 1px rgba(255,222,164,.08),0 16px 42px rgba(0,0,0,.38); }
+.vt-khung:after { content:''; position:absolute; inset:14px; border:1px solid rgba(231,193,122,.14); border-radius:18px; pointer-events:none; }
+.vt-svg { max-width:620px; filter:drop-shadow(0 0 12px rgba(81,156,207,.08)); }
+.vt-lv { cursor:pointer; }
+.vt-o { stroke:rgba(255,224,169,.48); stroke-width:1.15; transition:fill-opacity .25s, opacity .25s, filter .25s; }
+.vt-lv:hover .vt-o,.vt-lv:focus-visible .vt-o { fill-opacity:.95 !important; filter:drop-shadow(0 0 4px rgba(255,220,153,.6)); }
+.vt-lv.on .vt-vien-lv { stroke:#fff0bd; stroke-width:3.5; filter:drop-shadow(0 0 7px rgba(255,211,127,.9)); }
+.vt-vien-lv { fill:transparent; stroke:rgba(255,230,182,.45); stroke-width:1.1; }
+.vt-ic { font-size:25px; paint-order:stroke; stroke:#071326; stroke-width:2px; }
+.vt-d { font-size:19px; font-weight:800; paint-order:stroke; stroke:#06101f; stroke-width:3.5px; }
+.vt-loi { fill:#07182b; stroke:rgba(255,224,165,.8); stroke-width:1.8; }
+.vt-the { background:linear-gradient(145deg,rgba(17,48,77,.97),rgba(7,22,42,.98)); border-color:rgba(100,174,217,.38); box-shadow:inset 0 0 28px rgba(38,105,149,.12); }
+.vt-dieu button { background:linear-gradient(145deg,rgba(213,171,104,.16),rgba(213,171,104,.04)); border-color:rgba(240,208,151,.72); box-shadow:0 0 12px rgba(227,185,138,.08); }
+@media (max-width:640px) { .vt-khung { padding:4px; border-radius:18px; } .vt-d { font-size:18px; } .vt-ic { font-size:23px; } .vt-the { padding:13px; border-radius:15px; } }
 /* ---------- Dòng thời gian cuộc đời ---------- */
 .dt-cuon { overflow-x: auto; margin: 6px -4px 0; padding: 0 4px; scrollbar-width: thin; }
 .dt-svg { display: block; width: 100%; min-width: 720px; height: auto; }
