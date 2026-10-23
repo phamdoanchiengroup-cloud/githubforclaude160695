@@ -12,26 +12,8 @@
   <?!= include('Styles'); ?>
 </head>
 <body>
-  <!-- Nền Bạch Kim: khối sáng trôi, lưới mờ, hạt sáng bạc – vàng (Script.html › bkHat) -->
-  <div class="bk-nen" aria-hidden="true"><i class="a"></i><i class="b"></i><i class="c"></i><b></b></div>
-  <canvas id="bkHat" class="bk-hat" aria-hidden="true"></canvas>
-  <!-- Bầu trời tiên cảnh -->
-  <div class="sky" aria-hidden="true"><div class="holo-nen" id="holoNen"></div>
-    <div class="sun"></div>
-    <div class="cloud c1"><svg width="340" height="90" viewBox="0 0 340 90"><path d="M20 70c-12 0-20-8-20-18s9-18 21-18c3-14 16-24 31-24 12 0 22 6 27 15 5-4 12-7 20-7 15 0 27 10 29 24h2c9 0 17 6 19 14h150c9 0 16 6 16 14H20z" fill="#fff" opacity=".9"/><path d="M60 78h210" stroke="#e7d7ae" stroke-width="2" stroke-linecap="round"/></svg></div>
-    <div class="cloud c2"><svg width="260" height="70" viewBox="0 0 260 70"><path d="M14 56c-8 0-14-6-14-13s6-13 14-13c2-11 12-19 24-19 10 0 18 5 22 13 4-3 9-5 15-5 12 0 21 8 23 19h140c8 0 14 6 14 12H14z" fill="#fff"/></svg></div>
-    <div class="cloud c3"><svg width="300" height="80" viewBox="0 0 300 80"><path d="M18 64c-10 0-18-7-18-16s8-16 18-16c3-13 14-22 28-22 11 0 20 6 25 14 4-4 11-6 18-6 13 0 24 9 26 21h160c9 0 16 7 16 14H18z" fill="#fff"/></svg></div>
-  </div>
-  <div class="mountains" aria-hidden="true">
-    <svg viewBox="0 0 1440 260" preserveAspectRatio="none">
-      <defs>
-        <linearGradient id="m1" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#0d6b7a"/><stop offset="1" stop-color="#11878f" stop-opacity="0"/></linearGradient>
-        <linearGradient id="m2" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#0a5563"/><stop offset="1" stop-color="#11878f" stop-opacity="0"/></linearGradient>
-      </defs>
-      <path d="M0 180 L90 120 L150 150 L240 70 L330 140 L420 100 L520 160 L610 60 L700 130 L790 90 L880 150 L980 80 L1080 140 L1170 100 L1260 150 L1350 90 L1440 130 L1440 260 L0 260Z" fill="url(#m1)" opacity=".7"/>
-      <path d="M0 220 L120 160 L210 200 L330 130 L450 210 L560 150 L690 210 L820 140 L940 205 L1060 150 L1190 215 L1310 160 L1440 200 L1440 260 L0 260Z" fill="url(#m2)" opacity=".6"/>
-    </svg>
-  </div>
+  <!-- Nền tĩnh nhẹ; không nạp canvas hạt, mây SVG hay núi trang trí. -->
+  <div class="sky" aria-hidden="true"><div class="holo-nen" id="holoNen"></div></div>
 
   <header class="app-header">
     <div class="seal" title="Thiên Cơ">天機</div>
@@ -425,12 +407,12 @@
   <div class="modal" id="pdfModal" role="dialog" aria-modal="true" aria-labelledby="pdfTitle">
     <div class="modal-box panel">
       <h2 class="panel-title" id="pdfTitle"><span class="han">書</span> Tải báo cáo PDF</h2>
-      <p class="muted" style="margin-top:0">Báo cáo A4 gồm bìa, trang tóm lược, mục lục có số trang, các phần bạn chọn và lời kết. Bản đầy đủ khoảng 85 trang, mất 40–90 giây – giữ nguyên trang trong lúc chờ.</p>
+      <p class="muted" style="margin-top:0">Báo cáo A4 gồm bìa, mục lục có số trang, phần tóm lược và các nội dung bạn chọn. Số trang tùy dữ liệu và lựa chọn; hãy giữ trang mở tới khi tải xong.</p>
       <div class="pdf-opts" id="pdfOpts">
         <div class="pdf-grp">Tổng quan 6 hệ</div>
         <label class="check"><input type="checkbox" value="linhvuc" checked> Tổng hợp 6 hệ theo 9 lĩnh vực (bảng điểm, kết luận, năm nên hành động)</label>
-        <label class="check"><input type="checkbox" value="nguoi" checked> Con người bạn (xuất thân, vóc dáng, cơ thể, tính cách)</label>
-        <label class="check"><input type="checkbox" value="duyen" checked> Tình duyên &amp; người bạn đời (tuổi, tháng sinh hợp)</label>
+        <label class="check"><input type="checkbox" value="nguoi" checked> Con người bạn (xuất thân, hình tượng truyền thống, tính cách và giới hạn diễn giải sức khỏe)</label>
+        <label class="check"><input type="checkbox" value="duyen" checked> Tình duyên &amp; người bạn đời (góc nhìn truyền thống, điểm hợp tuổi nội bộ)</label>
         <label class="check"><input type="checkbox" value="doi" checked> Đường đời, nghề nghiệp &amp; các chặng đời</label>
         <div class="pdf-grp">Vận hạn</div>
         <label class="check"><input type="checkbox" value="vh" checked> Đại vận, vận năm &amp; 12 tháng (phần đã mở)</label>
