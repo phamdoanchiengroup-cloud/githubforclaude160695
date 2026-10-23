@@ -56,7 +56,7 @@
     });
   }
   /** Mã phiên bản giao diện – phải trùng với Index.html (meta tcc-ban) và Styles.html (--tcc-ban) */
-  var BAN_GIAO_DIEN = '2026.10.23.12';
+  var BAN_GIAO_DIEN = '2026.10.23.13';
   function storeGet(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
   function storeSet(k, v) { try { localStorage.setItem(k, v); } catch (e) { /* bỏ qua */ } }
 
@@ -2972,9 +2972,11 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
       o += '<circle cx="' + sx.toFixed(1) + '" cy="' + sy.toFixed(1) + '" r="' + sr.toFixed(2) + '" class="vt-sao" style="animation-delay:' + (rnd() * 6).toFixed(1) + 's"/>';
     }
     var svg = '<svg viewBox="0 0 ' + S + ' ' + S + '" class="vt-svg" role="group" aria-label="Vòm trời 9 lĩnh vực – bấm từng vùng để xem luận giải">' +
-      '<defs><radialGradient id="' + id + 'g"><stop offset="0" stop-color="#3a332b"/><stop offset=".62" stop-color="#1d1915"/><stop offset="1" stop-color="#0d0b09" stop-opacity="0"/></radialGradient>' +
+      '<defs><radialGradient id="' + id + 'g"><stop offset="0" stop-color="#152d4d"/><stop offset=".48" stop-color="#0a1930"/><stop offset="1" stop-color="#020712" stop-opacity="0"/></radialGradient>' +
       '<filter id="' + id + 'f" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="5"/></filter></defs>' +
-      '<circle cx="' + c + '" cy="' + c + '" r="316" fill="url(#' + id + 'g)"/>' + o;
+      '<circle cx="' + c + '" cy="' + c + '" r="316" fill="url(#' + id + 'g)"/>' +
+      '<circle cx="' + c + '" cy="' + c + '" r="306" fill="none" stroke="#f0d7a2" stroke-opacity=".72" stroke-width="1.4"/>' +
+      '<circle cx="' + c + '" cy="' + c + '" r="286" fill="none" stroke="#7fb7d8" stroke-opacity=".2" stroke-dasharray="2 7"/>' + o;
     // quỹ đạo hành tinh thật lúc sinh (trang trí, xoay rất chậm)
     var A = state.result && state.result.moRong && state.result.moRong.chiemTinh;
     svg += '<g class="vt-quydao"><circle cx="' + c + '" cy="' + c + '" r="312" class="vt-vien"/>';
@@ -2998,7 +3000,7 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
         svg += '<path d="' + vtCung(c, R0 + j * RW + 1, R0 + (j + 1) * RW - 1, a1, a2) + '" class="vt-o vt-h' + j + (p ? '' : ' trong') + '"' +
           (p ? ' style="fill:' + th6Mau(p.d10) + ';fill-opacity:' + (0.3 + Math.abs(p.d10 - 5) / 8).toFixed(2) + '"' : '') + '><title>' + esc(x.ten + ' · ' + he + (p ? ': ' + vtSo(p.d10) + '/10' : ': chưa chấm')) + '</title></path>';
       });
-      svg += '<path d="' + vtCung(c, R0, RL, a1, a2) + '" class="vt-vien-lv"/>';
+      svg += '<path d="' + vtCung(c, R0, RL, a1, a2) + '" class="vt-vien-lv" style="stroke:#e9c987;stroke-opacity:.65"/>';
       var m = vtDiem(c, RL + 30, i * buoc);
       svg += '<g transform="translate(' + m[0].toFixed(1) + ' ' + m[1].toFixed(1) + ')"><g class="vt-nhan"><text y="-6" text-anchor="middle" class="vt-ic">' + x.icon + '</text>' +
         '<text y="17" text-anchor="middle" class="vt-d" style="fill:' + th6Mau(x.diem) + '">' + (mo ? '' : '🔒') + vtSo(x.diem) + '</text></g></g>';
