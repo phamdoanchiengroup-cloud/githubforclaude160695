@@ -1521,7 +1521,11 @@
     try { veBangDieuKhien(res); } catch (e) { if ($('bdk')) $('bdk').hidden = true; }
     // 23/10: tab đầu là Tổng quan 6 hệ – bảng điều khiển (tổng quan miễn phí) nằm đầu tab này
     if ($('bdk') && $('page-tong')) $('page-tong').insertBefore($('bdk'), $('page-tong').firstChild);
-    if (cheDoLaSo() === 'holo' && window.TCCHolo) TCCHolo.ve(res, { chonCung: function (chi) { selectPalace(chi); }, sel: res.tuvi.info.menh });
+    // Dựng đủ các lá số Hologram theo dữ liệu của từng lá số; không phụ thuộc chế độ nền Hologram của riêng Tử Vi.
+    if (window.TCCHolo && typeof TCCHolo.ve === 'function') {
+      try { TCCHolo.ve(res, { chonCung: function (chi) { selectPalace(chi); }, sel: res.tuvi.info.menh }); }
+      catch (e) { if (window.console) console.error('[TCC Hologram] Không dựng được các hệ:', e); }
+    }
     $('btnPdfTop').style.display = '';
     ['battu', 'halac', 'astro', 'so', 'hd', 'tong'].forEach(function (k) {
       var pg = $('page-' + k); if (!pg || !PDF_HOOK[k]) return;
