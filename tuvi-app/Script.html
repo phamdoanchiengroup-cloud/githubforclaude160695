@@ -3507,8 +3507,7 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
       if (t.closest('[data-chia-se]')) { chiaSe(); return; }
       var cd = t.closest('[data-che-do]');
       if (cd) { var v = cd.getAttribute('data-che-do'); try { localStorage.setItem('tccCheDo2', v); } catch (e2) {} if (v === '3d') ve3DMacDinh(); else datCheDo(v === 'holo' && window.TCCHolo ? 'holo' : '2d'); return; }
-      if (t.closest('[data-ls3d]')) { mo3D('tv'); return; }
-      if (t.closest('[data-bt3d]')) { mo3D('bt'); return; }
+      if (t.closest('[data-ls3d]') || t.closest('[data-bt3d]')) { return; }
       if (t.closest('[data-dang-ky]')) { moDangNhap('', 'up'); return; }
       if (t.closest('[data-dong-form]') || t.id === 'formNen') { dongForm(); return; }
     });
