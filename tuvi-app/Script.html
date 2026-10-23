@@ -798,7 +798,7 @@
     $('chartArea').style.display = '';
     renderChart(res);
     datCheDo(cheDoLaSo());
-    if (window.TCCHolo && TCCHolo.veTuVi) TCCHolo.veTuVi(res, { chonCung: function (chi) { selectPalace(chi); }, sel: res.tuvi.info.menh });
+    if (cheDoLaSo() === 'holo' && window.TCCHolo && TCCHolo.veTuVi) TCCHolo.veTuVi(res, { chonCung: function (chi) { selectPalace(chi); }, sel: res.tuvi.info.menh });
     var CTA ='<div class="panel section"><h2 class="panel-title"><span class="han">價</span> Chọn cách mở</h2>' + bangGiaHtml(res) + camKetHtml() +
       (res.canMo ? '' : '<p class="muted" style="font-size:12.5px;margin-bottom:0">Tạo tài khoản miễn phí để mua. ' + (res.bangGia && res.bangGia.thuongLanDau ? '🎉 Lần nạp đầu tặng thêm ' + res.bangGia.thuongLanDau + '% xu.' : '') + ' <a data-login href="javascript:void 0">Đăng nhập</a></p>') + '</div>';
     function trang(id, html) { var el = $(id); if (el) el.innerHTML = '<div class="khach-page">' + html + '</div>'; }
@@ -1521,7 +1521,7 @@
     try { veBangDieuKhien(res); } catch (e) { if ($('bdk')) $('bdk').hidden = true; }
     // 23/10: tab đầu là Tổng quan 6 hệ – bảng điều khiển (tổng quan miễn phí) nằm đầu tab này
     if ($('bdk') && $('page-tong')) $('page-tong').insertBefore($('bdk'), $('page-tong').firstChild);
-    if (window.TCCHolo) TCCHolo.ve(res, { chonCung: function (chi) { selectPalace(chi); }, sel: res.tuvi.info.menh });
+    if (cheDoLaSo() === 'holo' && window.TCCHolo) TCCHolo.ve(res, { chonCung: function (chi) { selectPalace(chi); }, sel: res.tuvi.info.menh });
     $('btnPdfTop').style.display = '';
     ['battu', 'halac', 'astro', 'so', 'hd', 'tong'].forEach(function (k) {
       var pg = $('page-' + k); if (!pg || !PDF_HOOK[k]) return;
@@ -3352,13 +3352,30 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
       '<div class="pq-nut"><button type="button" class="btn btn-primary pq-go" data-dang-ky>🎁 Tạo tài khoản – nhận ' + qd + ' xu</button>' +
       '<span>Luận giải 6 hệ vẫn đọc miễn phí.' + (bg.thuongGTDangKy ? ' Mời bạn bè: mỗi người đăng ký, bạn được thêm ' + fmtXu(bg.thuongGTDangKy) + '.' : '') + '</span></div></div>';
   }
-  function cheDoLaSo() { return 'holo'; }
-  function datCheDo() {
+  function cheDoLaSo() {
+    // Hologram chỉ trên desktop; điện thoại, màn hình cảm ứng và chế độ giảm chuyển động dùng lá số 2D nhẹ.
+    if (window.innerWidth <= 760 || !window.TCCHolo) return '2d';
+    try {
+      if (window.matchMedia('(pointer: coarse)').matches ||
+          window.matchMedia('(prefers-reduced-motion: reduce)').matches) return '2d';
+    } catch (e) { return '2d'; }
+    return 'holo';
+  }
+  function datCheDo(mode) {
     var ca = $('chartArea'); if (!ca) return;
-    ca.classList.add('holo-only');
+    var holo = mode === 'holo' && cheDoLaSo() === 'holo';
+    ca.classList.toggle('holo-only', holo);
     ca.classList.remove('xem-3d', 'xem-holo');
     var sc = ca.querySelector('.chart-scroll');
-    if (sc) sc.setAttribute('aria-hidden', 'true');
+    if (sc) {
+      if (holo) sc.setAttribute('aria-hidden', 'true');
+      else sc.removeAttribute('aria-hidden');
+    }
+    // Không giữ bảng hologram cũ ở DOM khi chuyển sang chế độ nhẹ.
+    if (!holo) {
+      var board = $('holoTV');
+      if (board) board.remove();
+    }
   }
   function veHoSo() {
     var r = state.result, f = state.input, top = $('resTop');
