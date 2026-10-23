@@ -478,7 +478,8 @@ table.holo-bt{width:100%;min-width:720px;border-collapse:separate;border-spacing
     } catch (e) { return window.innerWidth > 760; }
   }
   function ve(res, api) {
-    if (!nenDuocTai()) return;
+    // Luôn dựng sơ đồ Hologram cho đủ 6 hệ trên cả điện thoại và máy tính.
+    // Điều kiện nenDuocTai() chỉ dùng để giới hạn ảnh nền/hiệu ứng nền, không chặn bản thân lá số.
     api = api || {}; tenNguoi = (res.tuvi && res.tuvi.info && res.tuvi.info.name) || '';
     [['tv', veTuVi], ['bt', veBatTu], ['hl', veHaLac], ['ct', veChiemTinh], ['ts', veThanSo], ['hd', veHD]].forEach(function (x) {
       try { x[1](res, api); } catch (e) { if (window.console) console.error('[Holo ' + x[0] + ']', e); }
