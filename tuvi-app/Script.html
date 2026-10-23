@@ -797,6 +797,7 @@
     $('welcome').style.display = 'none';
     $('chartArea').style.display = '';
     renderChart(res);
+    datCheDo(cheDoLaSo());
     var CTA ='<div class="panel section"><h2 class="panel-title"><span class="han">價</span> Chọn cách mở</h2>' + bangGiaHtml(res) + camKetHtml() +
       (res.canMo ? '' : '<p class="muted" style="font-size:12.5px;margin-bottom:0">Tạo tài khoản miễn phí để mua. ' + (res.bangGia && res.bangGia.thuongLanDau ? '🎉 Lần nạp đầu tặng thêm ' + res.bangGia.thuongLanDau + '% xu.' : '') + ' <a data-login href="javascript:void 0">Đăng nhập</a></p>') + '</div>';
     function trang(id, html) { var el = $(id); if (el) el.innerHTML = '<div class="khach-page">' + html + '</div>'; }
@@ -1499,6 +1500,7 @@
     $('welcome').style.display = 'none';
     $('chartArea').style.display = '';
     renderChart(res);
+    datCheDo(cheDoLaSo());
     renderLuan(res);
     renderVan(res);
     renderDuDoan(res);
@@ -3345,14 +3347,17 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
       '<div class="pq-nut"><button type="button" class="btn btn-primary pq-go" data-dang-ky>🎁 Tạo tài khoản – nhận ' + qd + ' xu</button>' +
       '<span>Luận giải 6 hệ vẫn đọc miễn phí.' + (bg.thuongGTDangKy ? ' Mời bạn bè: mỗi người đăng ký, bạn được thêm ' + fmtXu(bg.thuongGTDangKy) + '.' : '') + '</span></div></div>';
   }
-  function cheDoLaSo() { return '2d'; }
+  function cheDoLaSo() { try { return window.innerWidth > 760 && localStorage.getItem('tccCheDo2') === 'holo' ? 'holo' : '2d'; } catch (e) { return '2d'; } }
   function coWebGL() { return false; }
   function datCheDo(cd) {
-    // Chỉ giữ lá số 2D để giảm tải, tránh khởi tạo WebGL/hologram.
-    cd = '2d';
+    // Chỉ có lá số 2D thường hoặc 2D phong cách hologram; chế độ 3D đã bỏ.
+    cd = cd === 'holo' && window.innerWidth > 760 && window.TCCHolo ? 'holo' : '2d';
     var ca = $('chartArea'); if (!ca) return;
-    ca.classList.remove('xem-3d', 'xem-holo');
-    [].forEach.call(document.querySelectorAll('[data-che-do]'), function (btn) { btn.setAttribute('aria-pressed', 'true'); });
+    ca.classList.remove('xem-3d');
+    ca.classList.toggle('xem-holo', cd === 'holo');
+    [].forEach.call(document.querySelectorAll('[data-che-do]'), function (btn) {
+      btn.setAttribute('aria-pressed', btn.getAttribute('data-che-do') === cd ? 'true' : 'false');
+    });
     coLaSo(); drawOverlay();
   }
   function veHoSo() {
@@ -3385,7 +3390,7 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
       if (t.closest('[data-la-so-moi]')) { moForm(true); return; }
       if (t.closest('[data-chia-se]')) { chiaSe(); return; }
       var cd = t.closest('[data-che-do]');
-      if (cd) { var v = cd.getAttribute('data-che-do'); try { localStorage.setItem('tccCheDo2', v); } catch (e2) {} datCheDo('2d'); return; }
+      if (cd) { var v = cd.getAttribute('data-che-do'); try { localStorage.setItem('tccCheDo2', v); } catch (e2) {} datCheDo(v); return; }
       if (t.closest('[data-dang-ky]')) { moDangNhap('', 'up'); return; }
       if (t.closest('[data-dong-form]') || t.id === 'formNen') { dongForm(); return; }
     });
