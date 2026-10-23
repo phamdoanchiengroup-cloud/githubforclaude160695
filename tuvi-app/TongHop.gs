@@ -527,10 +527,10 @@ function tongHopLuan(C) {
     coSo: [
       'Sáu hệ: Tử Vi, Bát Tự, Bát Tự Hà Lạc, Chiêm tinh, Thần số học, Human Design. Điểm và số hệ cùng chiều là chỉ số nội bộ dựa trên quy tắc của ứng dụng, không phải xác suất hay độ chính xác đã được kiểm chứng. Các hệ không độc lập hoàn toàn và có thể dùng chung dữ liệu đầu vào; vì vậy đồng thuận không tự động đồng nghĩa với sự thật.',
       'Xuất thân: Tử Vi (Phụ Mẫu – Phúc Đức – Điền Trạch, Tuần/Triệt ở Mệnh, Thiên Mã), Bát Tự (niên trụ = tổ nghiệp, nguyệt trụ = cha mẹ; Ấn/Tài/Kiếp ở trụ năm – tháng, Dịch Mã), Chiêm tinh (nhà 4/IC, Mặt Trăng, Sao Thổ, Sao Mộc), Thần số học (số 4, 6, đỉnh cao thứ nhất).',
-      'Vóc dáng: hình tướng chính tinh Mệnh – Thân (cổ thư Tử Vi), hình tướng ngũ hành của nhật chủ và hành vượng (Bát Tự – "Ngũ hành hình tướng"), cung Mọc – chủ tinh lá số – hành tinh nhà 1 (chiêm tinh cổ điển, Ptolemy/Alan Leo).',
-      'Đặc điểm cơ thể: sát tinh/Hóa Kỵ/Xương Khúc ở Mệnh – Thân – Tật (Tử Vi), ngũ hành thái quá/bất cập ↔ tạng phủ (Hoàng Đế Nội Kinh), Sao Hỏa – Sao Thổ – cung Mọc – nhà 6 ↔ bộ phận theo cung (Melothesia), trung tâm mở ↔ tuyến nội tiết (Human Design).',
-      'Phối ngẫu: cung Phu Thê (Tử Vi), nhật chi & sao phối ngẫu – Tài tinh với nam, Quan tinh với nữ (Bát Tự), cung Lặn/nhà 7, Sao Kim – Sao Hỏa (chiêm tinh), nhóm số chủ đạo (Thần số), trung tâm mở – cổng treo (Human Design); năm sinh phù hợp chấm thang 10 theo 5 tiêu chí xem tuổi truyền thống.',
-      'Đường đời: chồng lớp đại hạn Tử Vi, đại vận Bát Tự, 4 đỉnh cao Thần số, chu kỳ Sao Thổ/Thiên Vương/Nút (chiêm tinh) và ba giai đoạn của Human Design; năm nổi bật lấy từ tab Dự Đoán.',
+      'Ngoại hình: không suy đoán chiều cao, cân nặng, màu da hoặc nét mặt thực tế. Các liên hệ sao/ngũ hành/cung Mọc chỉ được giữ như mô tả biểu tượng truyền thống, không phải dự đoán nhân trắc học.',
+      'Cơ thể và sức khỏe: không suy ra bệnh, nguy cơ bệnh, sẹo hoặc thương tích từ lá số. Liên hệ sao/ngũ hành/cơ quan và trung tâm cơ thể là quan niệm lịch sử, không phải công cụ chẩn đoán.',
+      'Phối ngẫu: các trường phái truyền thống xem cung Phu Thê, nhật chi, nhà 7, Sao Kim – Sao Hỏa, số chủ đạo và Human Design. Điểm hợp tuổi là thang quy ước của ứng dụng, không chứng minh mức độ phù hợp thực tế hay chất lượng một mối quan hệ.',
+      'Đường đời: chồng lớp đại hạn Tử Vi, đại vận Bát Tự, 4 đỉnh cao Thần số, chu kỳ chiêm tinh và các giai đoạn Human Design. Điểm/năm nổi bật là thứ hạng theo quy tắc nội bộ; không phải xác suất sự kiện sẽ xảy ra.',
       'Kết luận chỉ mang tính tham khảo theo các trường phái truyền thống, không phải định mệnh. Đồng thuận giữa nhiều hệ chỉ cho biết các quy tắc trong ứng dụng đang cùng chiều, không chứng minh dự đoán đúng.'
     ]
   };
@@ -540,7 +540,7 @@ function tongHopLuan(C) {
       T.phoiNgau.thoiDiem = pnThoiDiem_(C, T.hoiTu.namTin, T.phoiNgau.chiSo.tuoi || 0);
       T.phoiNgau.conCai = pnConCai_(C, T.phoiNgau.thoiDiem);
       var kh = T.phoiNgau.thoiDiem.ketHon, sc = T.phoiNgau.thoiDiem.sinhCon;
-      function top3(x) { return x && x.nam ? x.nam.slice().sort(function (a, b) { return b.pct - a.pct; }).slice(0, 3).map(function (n) { return n.nam + ' (' + n.pct + '%)'; }).join(', ') : ''; }
+      function top3(x) { return x && x.nam ? x.nam.slice().sort(function (a, b) { return b.pct - a.pct; }).slice(0, 3).map(function (n) { return n.nam + ' (điểm ' + n.pct + '/100)'; }).join(', ') : ''; }
       if (top3(kh)) T.phoiNgau.ketLuan.push('Điểm tín hiệu nội bộ về chủ đề kết hôn (không phải xác suất): ' + top3(kh) + '.');
       if (top3(sc)) T.phoiNgau.ketLuan.push('Điểm tín hiệu nội bộ về chủ đề con cái (không phải xác suất): ' + top3(sc) + '.');
       function quaKhu(x, ten) {
