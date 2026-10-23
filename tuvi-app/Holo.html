@@ -156,10 +156,11 @@ table.holo-bt{width:100%;min-width:720px;border-collapse:separate;border-spacing
      nền tranh đặt lên #chart trong Script.html (datCheDo 'holo') + CSS #chartArea.xem-holo trong Styles.html. */
   var XS = [135, 396, 655, 916, 1180], YS = [46, 318, 582, 835, 1106], IW = 1312, IH = 1199;
   var GRID = { 5: [1, 1], 6: [1, 2], 7: [1, 3], 8: [1, 4], 4: [2, 1], 9: [2, 4], 3: [3, 1], 10: [3, 4], 2: [4, 1], 1: [4, 2], 0: [4, 3], 11: [4, 4] };
-  var tvBd = null, tvSel = 0;
+  var tvBd = null, tvSel = 0, tvPalaces = [];
   function veTuVi(res, api) {
     var host = document.getElementById('chartArea'); if (!host || !res.tuvi) return;
     var I = res.tuvi.info, P = res.tuvi.palaces, L = I.lunar, S = I.solar;
+    tvPalaces = P;
     var k = khung('holoTV', 'tv-board', 'TuVi', '', '', '');
     var sc = host.querySelector('.chart-scroll'), cu = document.getElementById('holoTV'); if (cu) cu.parentNode.removeChild(cu);
     host.insertBefore(k.w, sc);
@@ -172,7 +173,6 @@ table.holo-bt{width:100%;min-width:720px;border-collapse:separate;border-spacing
       var hoaPhu = (p.cat || []).concat(p.hung || []).filter(function (s) { return s.hoaOf && !p.chinh.some(function (c) { return c.n === s.hoaOf; }); })
         .map(function (s) { var h = s.n.replace('Hóa ', ''); return '<span class="sao" style="font-size:.8em"><b class="hoa ' + esc(h) + '">' + esc(h) + '</b> ' + esc(s.hoaOf) + '</span>'; }).join('');
       html += '<button type="button" class="hc' + (p.chi === I.menh ? ' menh' : '') + '" data-chi="' + p.chi + '" aria-label="Cung ' + esc(p.cung) + '" style="left:' + ((XS[g[1] - 1] + 19) / IW * 100) + '%;top:' + ((YS[g[0] - 1] + 19) / IH * 100) + '%;width:' + ((XS[g[1]] - XS[g[1] - 1] - 33) / IW * 100) + '%;height:' + ((YS[g[0]] - YS[g[0] - 1] - 31) / IH * 100) + '%">' +
-        (p.tuan || p.triet ? '<span class="ttr">' + (p.tuan ? 'TUẦN' : '') + (p.tuan && p.triet ? '·' : '') + (p.triet ? 'TRIỆT' : '') + '</span>' : '') +
         '<span class="c-t"><span class="cc">' + esc(p.canTen + ' ' + p.chiTen) + '</span><span class="dh">' + p.daiHan + (dhNow ? '<b>ĐH</b>' : '') + '</span></span>' +
         '<span class="c-n">' + esc(p.cung) + (p.isThan ? '<i>Thân</i>' : '') + '</span>' +
         '<span class="c-s">' + chinh + hoaPhu + '</span>' +
@@ -185,6 +185,40 @@ table.holo-bt{width:100%;min-width:720px;border-collapse:separate;border-spacing
     k.bd.innerHTML = html; tvBd = k.bd;
     k.bd.addEventListener('click', function (e) { var c = e.target.closest('.hc'); if (c) { var chi = +c.getAttribute('data-chi'); if (api && api.chonCung) api.chonCung(chi); else chonCung(chi); } });
     chonCung(typeof api.sel === 'number' ? api.sel : I.menh);
+    requestAnimationFrame(veTuanTriet);
+  }
+  // Đặt huy hiệu tại chính mép chung giữa hai cung bị Tuần/Triệt án ngữ, không đặt trong lòng mỗi ô.
+  function veTuanTriet() {
+    if (!tvBd || !tvBd.getBoundingClientRect().width) return;
+    tvBd.querySelectorAll('.holo-tt-badge').forEach(function (el) { el.remove(); });
+    var br = tvBd.getBoundingClientRect();
+    ['tuan', 'triet'].forEach(function (kind) {
+      var ds = tvPalaces.filter(function (p) { return !!p[kind]; });
+      if (ds.length !== 2) return;
+      var a = tvBd.querySelector('.hc[data-chi="' + ds[0].chi + '"]');
+      var b = tvBd.querySelector('.hc[data-chi="' + ds[1].chi + '"]');
+      if (!a || !b) return;
+      var ra = a.getBoundingClientRect(), rb = b.getBoundingClientRect();
+      var ax = ra.left + ra.width / 2, ay = ra.top + ra.height / 2;
+      var bx = rb.left + rb.width / 2, by = rb.top + rb.height / 2;
+      var x, y;
+      if (Math.abs(ax - bx) >= Math.abs(ay - by)) {
+        var left = ra.left < rb.left ? ra : rb, right = ra.left < rb.left ? rb : ra;
+        x = (left.right + right.left) / 2 - br.left;
+        y = (ay + by) / 2 - br.top;
+      } else {
+        var top = ra.top < rb.top ? ra : rb, bottom = ra.top < rb.top ? rb : ra;
+        x = (ax + bx) / 2 - br.left;
+        y = (top.bottom + bottom.top) / 2 - br.top;
+      }
+      var badge = document.createElement('span');
+      badge.className = 'holo-tt-badge ' + kind;
+      badge.textContent = kind === 'tuan' ? 'TUẦN' : 'TRIỆT';
+      badge.setAttribute('aria-label', kind === 'tuan' ? 'Tuần nằm giữa hai cung' : 'Triệt nằm giữa hai cung');
+      badge.style.left = (x / br.width * 100) + '%';
+      badge.style.top = (y / br.height * 100) + '%';
+      tvBd.appendChild(badge);
+    });
   }
   function chonCung(chi) {
     if (!tvBd) return; tvSel = chi;
@@ -200,6 +234,7 @@ table.holo-bt{width:100%;min-width:720px;border-collapse:separate;border-spacing
     function ln(p, q, col, dash, w) { el('line', { x1: p[0], y1: p[1], x2: q[0], y2: q[1], stroke: col, 'stroke-width': w, 'stroke-linecap': 'round', 'stroke-opacity': .9, 'stroke-dasharray': dash || '', style: 'filter:drop-shadow(0 0 4px ' + col + ')' }, svg); }
     ln(a, t1, '#FFE6A8', '', 2); ln(t1, t2, '#FFE6A8', '', 2); ln(t2, a, '#FFE6A8', '', 2); ln(a, x, '#5CEBFF', '7 6', 1.8);
     [a, t1, t2, x].forEach(function (p, i) { el('circle', { cx: p[0], cy: p[1], r: i === 0 ? 5 : 3.5, fill: i === 3 ? '#5CEBFF' : '#FFE6A8' }, svg); });
+    requestAnimationFrame(veTuanTriet);
   }
 
   /* ================= BÁT TỰ ================= */
