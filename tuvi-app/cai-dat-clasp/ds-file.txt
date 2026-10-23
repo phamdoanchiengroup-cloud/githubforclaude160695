@@ -31,7 +31,7 @@ HoloAnhThanSo.html	253095
 HoloAnhTuVi.html	262583
 HumanDesign.gs	46573
 Index.html	47576
-LaSo3D.gs	242969
+LaSo3D.gs	243309
 LuanGiai.gs	97323
 Lunar.gs	9228
 NghiemChung.gs	27198
