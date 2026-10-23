@@ -1,0 +1,2992 @@
+/**
+ * GIẢI BÓNG ĐÁ CÔNG TY — Code.gs v5
+ * Dark Neon · 5 vị trí · 2 hạt giống · Sự kiện trận đấu
+ */
+
+var HAN_PHIEN = 6 * 60 * 60;
+
+function doGet() {
+  return HtmlService.createTemplateFromFile('Index')
+    .evaluate()
+    .setTitle('Giải bóng đá Carbon Biliards')
+    .addMetaTag('viewport', 'width=980')   // ⭐ Ép viewport 980px giống "xem bản máy tính"
+    .setXFrameOptionsMode(HtmlService.XFrameOptionsMode.ALLOWALL);
+}
+
+/* ===== TIỆN ÍCH SHEET ===== */
+var __SS = null, __DOC = {};
+function ss_() { if (!__SS) __SS = SpreadsheetApp.getActiveSpreadsheet(); return __SS; }
+function xoaCache_(n) { if (n) delete __DOC[n]; else __DOC = {}; }
+
+function doc_(name) {
+  if (__DOC.hasOwnProperty(name)) return __DOC[name];
+  var sh = ss_().getSheetByName(name);
+  if (!sh) { __DOC[name] = []; return []; }
+  var v = sh.getDataRange().getValues();
+  if (v.length < 2) { __DOC[name] = []; return []; }
+  var head = v[0], out = [];
+  for (var i = 1; i < v.length; i++) {
+    if (v[i].join('') === '') continue;
+    var o = { _row: i + 1 };
+    for (var j = 0; j < head.length; j++) o[head[j]] = v[i][j];
+    out.push(o);
+  }
+  __DOC[name] = out;
+  return out;
+}
+function them_(name, obj) {
+  var sh = ss_().getSheetByName(name);
+  var head = sh.getRange(1, 1, 1, sh.getLastColumn()).getValues()[0];
+  sh.appendRow(head.map(function(h) { return obj[h] !== undefined ? obj[h] : ''; }));
+  xoaCache_(name);
+}
+function themNhieu_(name, arr) {
+  if (!arr.length) return;
+  var sh = ss_().getSheetByName(name);
+  var head = sh.getRange(1, 1, 1, sh.getLastColumn()).getValues()[0];
+  var rows = arr.map(function(o) { return head.map(function(h) { return o[h] !== undefined ? o[h] : ''; }); });
+  sh.getRange(sh.getLastRow() + 1, 1, rows.length, head.length).setValues(rows);
+  xoaCache_(name);
+}
+function suaO_(name, row, col, val) {
+  var sh = ss_().getSheetByName(name);
+  var head = sh.getRange(1, 1, 1, sh.getLastColumn()).getValues()[0];
+  var i = head.indexOf(col);
+  if (i >= 0) sh.getRange(row, i + 1).setValue(val);
+  xoaCache_(name);
+}
+function xoaDong_(name, row) {
+  var sh = ss_().getSheetByName(name);
+  if (sh && row >= 2) sh.deleteRow(row);
+  xoaCache_(name);
+}
+function ma_(p) { return p + Utilities.getUuid().replace(/-/g, '').slice(0, 8).toUpperCase(); }
+
+function sach_(v) {
+  if (v === null || v === undefined) return '';
+  var t = typeof v;
+  if (t === 'number') return isFinite(v) ? v : 0;
+  if (t === 'boolean') return v;
+  if (t === 'string') return v;
+  if (Object.prototype.toString.call(v) === '[object Date]')
+    return isNaN(v.getTime()) ? '' : Utilities.formatDate(v, 'GMT+7', 'yyyy-MM-dd HH:mm:ss');
+  if (Object.prototype.toString.call(v) === '[object Array]') return v.map(sach_);
+  if (t === 'object') {
+    var o = {};
+    for (var k in v) { if (!v.hasOwnProperty(k) || k === '_row') continue; o[k] = sach_(v[k]); }
+    return o;
+  }
+  return String(v);
+}
+function cauHinh_(khoa, macDinh) {
+  var c = doc_('CauHinh').filter(function(x) { return x.Khoa === khoa; })[0];
+  return c ? String(c.GiaTri) : (macDinh === undefined ? '' : macDinh);
+}
+function ghiLog_(hd, ct) {
+  try { them_('NhatKy', { ThoiDiem: new Date(), HanhDong: hd, ChiTiet: ct || '' }); } catch (e) {}
+}
+function tenXuong_(m) {
+  var p = doc_('PhongBan').filter(function(x) { return x.MaXuong === m; })[0];
+  return p ? p.TenXuong : m;
+}
+
+/* ===== PHIÊN ADMIN ===== */
+function taoPhien_() {
+  var token = Utilities.getUuid();
+  var ttl = Math.min(HAN_PHIEN, 21600);
+  var data = JSON.stringify({ admin: true, hanDen: new Date().getTime() + ttl * 1000 });
+  try { CacheService.getScriptCache().put('BD_' + token, data, ttl); } catch (e) {}
+  try { PropertiesService.getScriptProperties().setProperty('BD_' + token, data); } catch (e) {}
+  return token;
+}
+function docPhien_(token) {
+  if (!token) return null;
+  var s = null;
+  try { s = CacheService.getScriptCache().get('BD_' + token); } catch (e) {}
+  if (!s) { try { s = PropertiesService.getScriptProperties().getProperty('BD_' + token); } catch (e) {} }
+  if (!s) return null;
+  var o; try { o = JSON.parse(s); } catch (e) { return null; }
+  if (o.hanDen && new Date().getTime() > o.hanDen) {
+    try { PropertiesService.getScriptProperties().deleteProperty('BD_' + token); } catch (e) {}
+    return null;
+  }
+  return o;
+}
+function laAdmin_(token) { var o = docPhien_(token); return !!(o && o.admin); }
+
+function dangNhapAdmin(matKhau) {
+  try {
+    var mk = cauHinh_('MAT_KHAU_ADMIN', 'bandochuc2026');
+    if (String(matKhau) !== mk) return sach_({ ok: false, msg: 'Sai mật khẩu.' });
+    var token = taoPhien_();
+    ghiLog_('BTC đăng nhập', '');
+    return sach_({ ok: true, token: token });
+  } catch (e) { return sach_({ ok: false, msg: 'Lỗi: ' + (e.message || e) }); }
+}
+function dangXuat(token) {
+  if (token) {
+    try { CacheService.getScriptCache().remove('BD_' + token); } catch (e) {}
+    try { PropertiesService.getScriptProperties().deleteProperty('BD_' + token); } catch (e) {}
+  }
+  return { ok: true };
+}
+function guard_(token) {
+  return laAdmin_(token) ? null : sach_({ ok: false, hetHan: true, msg: 'Cần đăng nhập BTC.' });
+}
+
+/* ===== NẠP DỮ LIỆU ===== */
+function napDuLieu(token) {
+  try {
+    var admin = laAdmin_(token);
+    var doi = doc_('Doi').map(function(d) {
+      return { maDoi: d.MaDoi, tenDoi: d.TenDoi, bang: d.Bang || '',
+               doiTruong: d.DoiTruongMaCT || '', mauAo: d.MauAo || '',
+               logoUrl: d.LogoUrl || '',
+               ghiChu: d.GhiChu || '',
+               loaiDoi: String(d.LoaiDoi || '').toUpperCase(),
+               khungThe: d.KhungThe || '',
+               thuTuBoc: Number(d.ThuTuBocTham) || 0 };
+    });
+        // ⭐ Sinh rating cho ai chưa có (lần đầu load)
+    sinhRatingNeuCan_();
+
+    // ⭐ Sinh chỉ số cho ai chưa có (lần đầu load)
+sinhChiSoNeuCan_();
+
+  var cauthu = doc_('CauThu').map(function(c) {
+  var daCongBo = (c.CongBo === 'x' || c.CongBo === true || c.CongBo === 'TRUE');
+  return { maCT: c.MaCT, hoTen: c.HoTen, tenThat: c.TenThat || '', maNV: c.MaNV || '', maXuong: c.MaXuong || '',
+           tenXuong: c.MaXuong ? tenXuong_(c.MaXuong) : '',
+           tenAo: c.TenAo || '', soAo: c.SoAo || '',
+           sizeAo: c.SizeAo || '',
+           viTriList: c.ViTriList || '',
+           hatGiong: c.HatGiong || '',
+           rating: (function(){ var n = Number(c.Rating); return (isFinite(n) && n > 0) ? n : 80; })(),
+           loaiThe: String(c.LoaiThe || '').toLowerCase() || (String(c.HatGiong||'').toUpperCase()==='BIET'?'vang':'bac'),
+           anhUrl: c.AnhUrl || '',
+           anhTheoDoi: (function(){
+             try { return c.AnhTheoDoi ? JSON.parse(c.AnhTheoDoi) : {}; }
+             catch(e) { return {}; }
+           })(),
+           anhScale: Number(c.AnhScale) || 1,
+           anhY: Number(c.AnhY) || 0,
+           chiSo: {
+             PAC: Number(c.PAC) || 75,
+             SHO: Number(c.SHO) || 75,
+             PAS: Number(c.PAS) || 75,
+             DRI: Number(c.DRI) || 75,
+             DEF: Number(c.DEF) || 75,
+             PHY: Number(c.PHY) || 75
+           },
+           maDoi: (admin || daCongBo) ? (c.MaDoi || '') : '',
+           maDoiGoc: (admin || daCongBo) ? (c.MaDoiGoc || '') : '',
+           daCongBo: daCongBo,
+           ghiChu: c.GhiChu || '' };
+});
+    var tran = doc_('TranDau').map(function(t) {
+      return { maTran: t.MaTran, vongDau: t.VongDau || '', bang: t.Bang || '',
+               maDoiA: t.MaDoiA || '', maDoiB: t.MaDoiB || '',
+               banThangA: (t.BanThangA === '' || t.BanThangA == null) ? '' : Number(t.BanThangA),
+               banThangB: (t.BanThangB === '' || t.BanThangB == null) ? '' : Number(t.BanThangB),
+               trangThai: t.TrangThai || 'Chưa đá', thuTuKO: t.ThuTuKO || '',
+               sanDau: t.SanDau || '', gioThiDau: t.GioThiDau ? sach_(t.GioThiDau) : '',
+               ghiChu: t.GhiChu || '' };
+    });
+    var suKien = doc_('SuKien').map(function(s) {
+      return { maSK: s.MaSK, maTran: s.MaTran, loai: s.Loai || '',
+               phut: Number(s.Phut) || 0, maCT: s.MaCT, maDoi: s.MaDoi,
+               ghiChu: s.GhiChu || '' };
+    });
+    var phongban = doc_('PhongBan').map(function(p) {
+      return { maXuong: p.MaXuong, tenXuong: p.TenXuong };
+    });
+    var luotBoc = doc_('LuotBoc').map(function(l) {
+      return { maDot: l.MaDot, luot: Number(l.Luot) || 0, maDoi: l.MaDoi,
+               maCT: l.MaCT, thoiDiem: l.ThoiDiem ? sach_(l.ThoiDiem) : '' };
+    });
+    // ⭐ Nạp đội hình
+    var doiHinh = {};
+    doc_('DoiHinh').forEach(function(r){
+      var slots = {};
+      try {
+        var parsed = JSON.parse(r.DanhSachSlot || '{}');
+        if (parsed && typeof parsed === 'object') slots = parsed;
+      } catch (e) { slots = {}; }
+      // Khôi phục sơ đồ bị Google Sheets đổi thành ngày ("3-1-2002" → "3-1-2")
+      var sd = String(r.SoDo || '2-3-1').trim();
+      var mm = sd.match(/^(\d+)-(\d+)-(\d{4})$/);
+      if (mm) sd = mm[1] + '-' + mm[2] + '-' + (parseInt(mm[3], 10) - 2000);
+      doiHinh[r.MaDoi] = { soDo: sd, slots: slots };
+    });
+    // ⭐ Nạp media (ảnh + video giải đấu)
+var media = doc_('Media').map(function(m){
+  return {
+    maMedia: m.MaMedia || '',
+    loai: String(m.Loai || 'ANH').toUpperCase(),
+    url: m.Url || '',
+    tieuDe: m.TieuDe || '',
+    moTa: m.MoTa || '',
+    thuTu: Number(m.ThuTu) || 0,
+    maTran: m.MaTran || '',
+    thoiDiemTao: m.ThoiDiemTao ? sach_(m.ThoiDiemTao) : ''
+  };
+}).sort(function(a,b){ return a.thuTu - b.thuTu; });
+     // Nạp cấu hình 4 mẫu áo
+    var mauAoConfig = [];
+    try {
+      var rawMau = cauHinh_('MAU_AO_CONFIG', '');
+      if (rawMau) {
+        var parsedMau = JSON.parse(rawMau);
+        if (Array.isArray(parsedMau)) mauAoConfig = parsedMau;
+      }
+    } catch (e) { mauAoConfig = []; }
+
+    return sach_({
+      ok: true, admin: admin, tenGiai: cauHinh_('TEN_GIAI', 'Giải bóng đá công ty'),
+      soQua: Number(cauHinh_('SO_DOI_QUA_VONG_BANG', '2')) || 2,
+      maDotBoc: cauHinh_('DOT_BOC_HIEN_TAI', 'DOT1'),
+      bannerUrl: cauHinh_('BANNER_URL', ''),
+      giaiThuong: cauHinh_('GIAI_THUONG', ''),
+      doi: doi, cauThu: cauthu, tranDau: tran, suKien: suKien, phongBan: phongban,
+      luotBoc: luotBoc,
+      doiHinh: doiHinh,
+      media: media,
+      bxh: tinhBXH_(doi, tran)
+    });
+  } catch (e) { return sach_({ ok: false, msg: 'Lỗi máy chủ: ' + (e.message || e) }); }
+}
+
+/* ===== QUẢN TRỊ ĐỘI ===== */
+function themDoi(token, tenDoi, bang, mauAo, logoUrl) {
+  var g = guard_(token); if (g) return g;
+  tenDoi = String(tenDoi || '').trim();
+  if (!tenDoi) return sach_({ ok: false, msg: 'Nhập tên đội.' });
+  var soDoiHienTai = doc_('Doi').length;
+  them_('Doi', { MaDoi: ma_('D'), TenDoi: tenDoi, Bang: String(bang || '').trim().toUpperCase(),
+                 DoiTruongMaCT: '', MauAo: String(mauAo || ''),
+                 LogoUrl: String(logoUrl || ''),
+                 GhiChu: '', ThuTuBocTham: soDoiHienTai + 1, ThoiDiemTao: new Date() });
+  ghiLog_('Tạo đội', tenDoi);
+  return sach_({ ok: true, msg: 'Đã tạo đội "' + tenDoi + '".' });
+}
+/* Chạy 1 lần để tạo sheet DoiHinh nếu chưa có (không mất dữ liệu) */
+function THEM_SHEET_DOI_HINH() {
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var sh = ss.getSheetByName('DoiHinh');
+  if (sh) {
+    SpreadsheetApp.getUi().alert('Sheet DoiHinh đã tồn tại — không cần tạo lại.');
+    return;
+  }
+  sh = ss.insertSheet('DoiHinh');
+  var head = ['MaDoi','SoDo','DanhSachSlot','ThoiDiemCapNhat'];
+  sh.getRange(1, 1, 1, head.length).setValues([head])
+    .setFontWeight('bold').setBackground('#16a34a').setFontColor('#ffffff')
+    .setVerticalAlignment('middle');
+  sh.setFrozenRows(1);
+  sh.setRowHeight(1, 34);
+  for (var c = 1; c <= head.length; c++) sh.autoResizeColumn(c);
+  SpreadsheetApp.getUi().alert('✅ Đã tạo sheet DoiHinh.\nBây giờ có thể lưu đội hình từ web.');
+}
+function suaDoi(token, maDoi, tenDoi, bang, mauAo, doiTruongMaCT, logoUrl) {
+  var g = guard_(token); if (g) return g;
+  var d = doc_('Doi').filter(function(x) { return x.MaDoi === maDoi; })[0];
+  if (!d) return sach_({ ok: false, msg: 'Không tìm thấy đội.' });
+  
+  // Chỉ cập nhật khi có giá trị (undefined = bỏ qua)
+  if (tenDoi !== undefined && tenDoi !== null && String(tenDoi).trim())
+    suaO_('Doi', d._row, 'TenDoi', String(tenDoi).trim());
+  if (bang !== undefined && bang !== null)
+    suaO_('Doi', d._row, 'Bang', String(bang).trim().toUpperCase());
+  if (mauAo !== undefined && mauAo !== null)
+    suaO_('Doi', d._row, 'MauAo', String(mauAo));
+  if (logoUrl !== undefined && logoUrl !== null)
+    suaO_('Doi', d._row, 'LogoUrl', String(logoUrl));
+  if (doiTruongMaCT !== undefined && doiTruongMaCT !== null)
+    suaO_('Doi', d._row, 'DoiTruongMaCT', String(doiTruongMaCT));
+  
+  ghiLog_('Sửa đội', d.MaDoi);
+  return sach_({ ok: true, msg: 'Đã cập nhật đội.' });
+}
+function xoaDoi(token, maDoi) {
+  var g = guard_(token); if (g) return g;
+  var d = doc_('Doi').filter(function(x) { return x.MaDoi === maDoi; })[0];
+  if (!d) return sach_({ ok: false, msg: 'Không tìm thấy đội.' });
+  doc_('CauThu').filter(function(c) { return c.MaDoi === maDoi; }).forEach(function(c) {
+    suaO_('CauThu', c._row, 'MaDoi', '');
+  });
+  xoaDong_('Doi', d._row);
+  ghiLog_('Xóa đội', maDoi);
+  return sach_({ ok: true, msg: 'Đã xóa đội và gỡ cầu thủ khỏi đội.' });
+}
+
+function ganCauThuVaoDoi(token, maCT, maDoi) {
+  var g = guard_(token); if (g) return g;
+  var c = doc_('CauThu').filter(function(x) { return x.MaCT === maCT; })[0];
+  if (!c) return sach_({ ok: false, msg: 'Không tìm thấy cầu thủ.' });
+
+  var maDoiMoi = maDoi || '';
+  var maDoiCu = String(c.MaDoi || '').trim();
+  var maDoiGoc = String(c.MaDoiGoc || '').trim();
+
+  // Nếu đang ở đội chính (không phải GH) và sắp chuyển sang GH → lưu đội gốc
+  if (maDoiMoi && maDoiCu && maDoiCu !== maDoiMoi) {
+    var doiMoi = doc_('Doi').filter(function(x){ return x.MaDoi === maDoiMoi; })[0];
+    var doiCu = doc_('Doi').filter(function(x){ return x.MaDoi === maDoiCu; })[0];
+    var laGHMoi = doiMoi && String(doiMoi.LoaiDoi || '').toUpperCase() === 'GH';
+    var laGHCu = doiCu && String(doiCu.LoaiDoi || '').toUpperCase() === 'GH';
+
+    // Chuyển từ đội chính sang GH → lưu đội gốc (nếu chưa có)
+    if (laGHMoi && !laGHCu && !maDoiGoc) {
+      suaO_('CauThu', c._row, 'MaDoiGoc', maDoiCu);
+    }
+    // Chuyển từ GH về đội chính → xóa đội gốc
+    if (!laGHMoi && laGHCu) {
+      suaO_('CauThu', c._row, 'MaDoiGoc', '');
+    }
+  }
+
+  suaO_('CauThu', c._row, 'MaDoi', maDoiMoi);
+  ghiLog_('Gán cầu thủ vào đội', c.HoTen + ' -> ' + (maDoiMoi || '(gỡ)'));
+  return sach_({ ok: true, msg: 'Đã cập nhật đội cho ' + c.HoTen + '.' });
+}
+/* Trả về danh sách cầu thủ thuộc đội (kể cả đang mượn ở GH) */
+function dsCauThuThuocDoi(maDoi) {
+  var cauthu = doc_('CauThu');
+  return cauthu.filter(function(c) {
+    var md = String(c.MaDoi || '').trim();
+    var mdg = String(c.MaDoiGoc || '').trim();
+    return md === maDoi || mdg === maDoi;
+  });
+}
+function datDoiTruong(token, maDoi, maCT) {
+  var g = guard_(token); if (g) return g;
+  var d = doc_('Doi').filter(function(x) { return x.MaDoi === maDoi; })[0];
+  if (!d) return sach_({ ok: false, msg: 'Không tìm thấy đội.' });
+  suaO_('Doi', d._row, 'DoiTruongMaCT', maCT || '');
+  if (maCT) {
+    var c = doc_('CauThu').filter(function(x) { return x.MaCT === maCT; })[0];
+    if (c && c.MaDoi !== maDoi) suaO_('CauThu', c._row, 'MaDoi', maDoi);
+  }
+  ghiLog_('Đặt đội trưởng', maDoi);
+  return sach_({ ok: true, msg: 'Đã đặt đội trưởng.' });
+}
+function xoaCauThu(token, maCT) {
+  var g = guard_(token); if (g) return g;
+  var c = doc_('CauThu').filter(function(x) { return x.MaCT === maCT; })[0];
+  if (!c) return sach_({ ok: false, msg: 'Không tìm thấy cầu thủ.' });
+  xoaDong_('CauThu', c._row);
+  ghiLog_('Xóa cầu thủ', c.HoTen);
+  return sach_({ ok: true, msg: 'Đã xóa ' + c.HoTen + '.' });
+}
+
+/* ===== CẬP NHẬT THÔNG TIN CẦU THỦ (BTC + ĐT) ===== */
+function capNhatCauThu(token, maCT, fields) {
+  var g = guard_(token); if (g) return g;
+  var c = doc_('CauThu').filter(function(x) { return x.MaCT === maCT; })[0];
+  if (!c) return sach_({ ok: false, msg: 'Không tìm thấy cầu thủ.' });
+  var f = fields || {};
+  if (f.viTriList !== undefined) {
+    var vl = Array.isArray(f.viTriList)
+      ? f.viTriList.filter(function(v){return v;}).join(',').toUpperCase()
+      : String(f.viTriList || '').toUpperCase();
+    suaO_('CauThu', c._row, 'ViTriList', vl);
+  }
+  if (f.hatGiong !== undefined) {
+    suaO_('CauThu', c._row, 'HatGiong', String(f.hatGiong || '').toUpperCase());
+  }
+  if (f.soAo !== undefined) suaO_('CauThu', c._row, 'SoAo', String(f.soAo || ''));
+  if (f.tenAo !== undefined) suaO_('CauThu', c._row, 'TenAo', String(f.tenAo || '').toUpperCase());
+  if (f.sizeAo !== undefined) suaO_('CauThu', c._row, 'SizeAo', String(f.sizeAo || '').toUpperCase());
+  if (f.ghiChu !== undefined) suaO_('CauThu', c._row, 'GhiChu', String(f.ghiChu || ''));
+  ghiLog_('Cập nhật cầu thủ', c.HoTen);
+  return sach_({ ok: true, msg: 'Đã cập nhật ' + c.HoTen + '.' });
+}
+
+/* Cập nhật số áo + tên áo hàng loạt (ĐT gán 1 lượt cho cả đội) */
+function capNhatSoAoHangLoat(token, updates) {
+  var g = guard_(token); if (g) return g;
+  if (!updates || !updates.length) return sach_({ ok: false, msg: 'Không có gì để cập nhật.' });
+  var dem = 0;
+  updates.forEach(function(u) {
+    var c = doc_('CauThu').filter(function(x) { return x.MaCT === u.maCT; })[0];
+    if (c) {
+      if (u.soAo !== undefined) suaO_('CauThu', c._row, 'SoAo', String(u.soAo || ''));
+      if (u.tenAo !== undefined) suaO_('CauThu', c._row, 'TenAo', String(u.tenAo || '').toUpperCase());
+      dem++;
+    }
+  });
+  ghiLog_('Cập nhật số áo hàng loạt', dem + ' cầu thủ');
+  return sach_({ ok: true, msg: 'Đã cập nhật ' + dem + ' cầu thủ.' });
+}
+
+function datThuTuBocTham(token, maDoi, thuTu) {
+  var g = guard_(token); if (g) return g;
+  var d = doc_('Doi').filter(function(x) { return x.MaDoi === maDoi; })[0];
+  if (!d) return sach_({ ok: false, msg: 'Không tìm thấy đội.' });
+  suaO_('Doi', d._row, 'ThuTuBocTham', Number(thuTu) || 0);
+  return sach_({ ok: true, msg: 'OK' });
+}
+/* ===== ĐỘI HÌNH THI ĐẤU ===== */
+function luuDoiHinh(token, maDoi, soDo, danhSachSlot) {
+  var g = guard_(token); if (g) return g;
+  maDoi = String(maDoi || '').trim();
+  if (!maDoi) return sach_({ ok: false, msg: 'Thiếu mã đội.' });
+
+  var soDoSach = String(soDo || '4-3-3').trim();
+  // danhSachSlot là object { "0": "CTxxx", "1": "CTyyy", ... }
+  // Hoặc mảng rỗng/null cho slot trống
+  var slotSach = {};
+  if (danhSachSlot && typeof danhSachSlot === 'object') {
+    Object.keys(danhSachSlot).forEach(function(k){
+      var v = danhSachSlot[k];
+      if (v) slotSach[String(k)] = String(v);
+    });
+  }
+  var json = JSON.stringify(slotSach);
+
+  // ⭐ Ghi SoDo dạng TEXT để Google Sheets KHÔNG tự đổi "3-1-2" thành ngày "3-1-2002"
+  var shDH = ss_().getSheetByName('DoiHinh');
+  var headDH = shDH.getRange(1, 1, 1, shDH.getLastColumn()).getValues()[0];
+  var iSoDo = headDH.indexOf('SoDo');
+  function ghiSoDoText_(dong){
+    if (iSoDo >= 0) shDH.getRange(dong, iSoDo + 1).setNumberFormat('@').setValue(soDoSach);
+  }
+
+  var row = doc_('DoiHinh').filter(function(x){ return x.MaDoi === maDoi; })[0];
+  if (row) {
+    ghiSoDoText_(row._row);
+    suaO_('DoiHinh', row._row, 'DanhSachSlot', json);
+    suaO_('DoiHinh', row._row, 'ThoiDiemCapNhat', new Date());
+  } else {
+    them_('DoiHinh', {
+      MaDoi: maDoi,
+      SoDo: soDoSach,
+      DanhSachSlot: json,
+      ThoiDiemCapNhat: new Date()
+    });
+    ghiSoDoText_(shDH.getLastRow());   // sửa lại ô SoDo của dòng mới thành text
+  }
+  xoaCache_('DoiHinh');
+  ghiLog_('Lưu đội hình', maDoi + ' · ' + soDoSach);
+  return sach_({ ok: true, msg: 'Đã lưu đội hình.' });
+}
+
+function napDoiHinh() {
+  try {
+    var rows = doc_('DoiHinh');
+    var out = {};
+    rows.forEach(function(r){
+      var slots = {};
+      try {
+        var parsed = JSON.parse(r.DanhSachSlot || '{}');
+        if (parsed && typeof parsed === 'object') slots = parsed;
+      } catch (e) { slots = {}; }
+      out[r.MaDoi] = {
+        soDo: r.SoDo || '4-3-3',
+        slots: slots
+      };
+    });
+    return sach_({ ok: true, data: out });
+  } catch (e) {
+    return sach_({ ok: false, msg: 'Lỗi: ' + (e.message || e) });
+  }
+}
+
+/* ============================================================
+   ===== BỐC THĂM 3 BƯỚC =====
+   Bước 1: Bốc chọn N đội trưởng từ ứng viên -> để RIÊNG (chưa vào đội).
+   Bước 2: Chia cầu thủ (2 pha) vào các đội — KHÔNG tính đội trưởng chờ.
+           BTC được quyền chuyển cầu thủ giữa các đội để cân chỉnh.
+   Bước 3: Từng đội trưởng lên bốc ngẫu nhiên đội mình sẽ dẫn dắt.
+   ------------------------------------------------------------
+   Đội trưởng "đang chờ" (đã bốc ở B1, chưa bốc đội ở B3) được lưu
+   danh sách maCT trong CauHinh khóa DT_CHO_BOC. Họ có MaDoi='' và
+   bị loại khỏi pool chia ở Bước 2.
+   ============================================================ */
+
+/* --- Tiện ích chung --- */
+function _shuffle(arr) {
+  var a = arr.slice();
+  for (var i = a.length - 1; i > 0; i--) {
+    var j = Math.floor(Math.random() * (i + 1));
+    var t = a[i]; a[i] = a[j]; a[j] = t;
+  }
+  return a;
+}
+function _demTheoHat_(cauthu, maDoi, hat) {
+  return cauthu.filter(function(c) {
+    return c.MaDoi === maDoi && String(c.HatGiong||'').toUpperCase() === hat;
+  }).length;
+}
+function _demTong_(cauthu, maDoi) {
+  return cauthu.filter(function(c){ return c.MaDoi === maDoi; }).length;
+}
+
+/* --- Danh sách đội trưởng ĐANG CHỜ bốc đội (lưu ở CauHinh) --- */
+function getDTCho_() {
+  var raw = cauHinh_('DT_CHO_BOC', '');
+  if (!raw) return [];
+  try { var a = JSON.parse(raw); return Array.isArray(a) ? a : []; }
+  catch (e) { return []; }
+}
+function setDTCho_(arr) {
+  var val = JSON.stringify(arr || []);
+  var v = doc_('CauHinh').filter(function(x){ return x.Khoa === 'DT_CHO_BOC'; })[0];
+  if (v) suaO_('CauHinh', v._row, 'GiaTri', val);
+  else them_('CauHinh', { Khoa: 'DT_CHO_BOC', GiaTri: val });
+}
+
+/* Pool cầu thủ được chia ở Bước 2: chưa có đội & KHÔNG phải ĐT chờ */
+function _poolChuaDoi_(cauthu, dtCho) {
+  return cauthu.filter(function(c){
+    return !c.MaDoi && dtCho.indexOf(c.MaCT) < 0;
+  });
+}
+
+/* ============================================================
+   BƯỚC 1 — BỐC CHỌN ĐỘI TRƯỞNG (chưa xếp đội)
+   ============================================================ */
+function chonDoiTruongCho(token, dsUngVien) {
+  var g = guard_(token); if (g) return g;
+  var doi = doc_('Doi');
+  if (!doi.length) return sach_({ ok: false, msg: 'Chưa có đội nào.' });
+  var soDoi = doi.length;
+
+  var cauthu = doc_('CauThu');
+  var uv = (dsUngVien || []).filter(function(x){ return x; });
+  var hopLe = uv.filter(function(m){ return cauthu.some(function(c){ return c.MaCT === m; }); });
+  if (hopLe.length < soDoi)
+    return sach_({ ok: false, msg: 'Cần ít nhất ' + soDoi + ' ứng viên hợp lệ (mỗi đội 1 người). Đang có ' + hopLe.length + '.' });
+
+  // Xóa mọi đội trưởng CHÍNH THỨC hiện có (gỡ họ khỏi đội) và danh sách chờ cũ
+  doi.forEach(function(d){
+    if (d.DoiTruongMaCT) {
+      var c = cauthu.filter(function(x){ return x.MaCT === d.DoiTruongMaCT; })[0];
+      if (c) suaO_('CauThu', c._row, 'MaDoi', '');
+      suaO_('Doi', d._row, 'DoiTruongMaCT', '');
+    }
+  });
+
+  // Bốc ngẫu nhiên soDoi người
+  var chon = _shuffle(hopLe).slice(0, soDoi);
+
+  // Đưa các ĐT chờ ra khỏi đội (nếu lỡ đang có đội)
+  chon.forEach(function(m){
+    var c = doc_('CauThu').filter(function(x){ return x.MaCT === m; })[0];
+    if (c && c.MaDoi) suaO_('CauThu', c._row, 'MaDoi', '');
+  });
+
+  setDTCho_(chon);
+  xoaCache_('CauThu'); xoaCache_('Doi');
+
+  var dsTen = chon.map(function(m){
+    var c = doc_('CauThu').filter(function(x){ return x.MaCT === m; })[0];
+    return { maCT: m, hoTen: c ? c.HoTen : '(?)' };
+  });
+  ghiLog_('Bốc chọn đội trưởng (chờ)', chon.length + ' người');
+  return sach_({ ok: true, msg: 'Đã bốc ' + chon.length + ' đội trưởng. Họ sẽ bốc đội ở Bước 3.', ketQua: dsTen });
+}
+
+/* Hủy danh sách đội trưởng chờ (không đụng ĐT đã chính thức) */
+function huyDoiTruongCho(token) {
+  var g = guard_(token); if (g) return g;
+  setDTCho_([]);
+  ghiLog_('Hủy danh sách ĐT chờ', '');
+  return sach_({ ok: true, msg: 'Đã hủy danh sách đội trưởng chờ.' });
+}
+
+/* Gỡ TẤT CẢ đội trưởng: chính thức (gỡ khỏi đội) + xóa danh sách chờ */
+function goToanBoDoiTruong(token) {
+  var g = guard_(token); if (g) return g;
+  var doi = doc_('Doi');
+  var cauthu = doc_('CauThu');
+  var dem = 0;
+  doi.forEach(function(d){
+    if (d.DoiTruongMaCT) {
+      var c = cauthu.filter(function(x){ return x.MaCT === d.DoiTruongMaCT; })[0];
+      if (c) suaO_('CauThu', c._row, 'MaDoi', '');
+      suaO_('Doi', d._row, 'DoiTruongMaCT', '');
+      dem++;
+    }
+  });
+  setDTCho_([]);
+  xoaCache_('CauThu'); xoaCache_('Doi');
+  ghiLog_('Gỡ toàn bộ ĐT', dem + ' đội');
+  return sach_({ ok: true, msg: 'Đã gỡ ' + dem + ' đội trưởng và xóa danh sách chờ.' });
+}
+
+/* ============================================================
+   TRẠNG THÁI (cho UI)
+   ============================================================ */
+function trangThaiChiaDoi(token) {
+  var g = guard_(token); if (g) return g;
+  var doi = doc_('Doi');
+  var cauthu = doc_('CauThu');
+  var dtCho = getDTCho_();
+
+  var chuaDoi = _poolChuaDoi_(cauthu, dtCho);
+  var bietChua = chuaDoi.filter(function(c){ return String(c.HatGiong||'').toUpperCase() === 'BIET'; });
+  var ptChua   = chuaDoi.filter(function(c){ return String(c.HatGiong||'').toUpperCase() !== 'BIET'; });
+
+  var thongKeDoi = doi.map(function(d){
+    return {
+      maDoi: d.MaDoi, tenDoi: d.TenDoi,
+      coDT: !!d.DoiTruongMaCT,
+      tong: _demTong_(cauthu, d.MaDoi),
+      biet: _demTheoHat_(cauthu, d.MaDoi, 'BIET')
+    };
+  });
+
+  var dtChoList = dtCho.map(function(m){
+    var c = cauthu.filter(function(x){ return x.MaCT === m; })[0];
+    return { maCT: m, hoTen: c ? c.HoTen : '(?)',
+             tenXuong: (c && c.MaXuong) ? tenXuong_(c.MaXuong) : '',
+             hatGiong: c ? String(c.HatGiong||'').toUpperCase() : '' };
+  });
+
+  var soDoiChuaCoDT = doi.filter(function(d){ return !d.DoiTruongMaCT; }).length;
+
+  return sach_({
+    ok: true,
+    soDoi: doi.length,
+    soDTCho: dtCho.length,
+    dtCho: dtChoList,
+    soDoiChuaCoDT: soDoiChuaCoDT,
+    coDTDu: soDoiChuaCoDT === 0,
+    soDTDaCo: doi.length - soDoiChuaCoDT,
+    chuaChia: chuaDoi.length,
+    bietChuaChia: bietChua.length,
+    ptChuaChia: ptChua.length,
+    daChia: cauthu.length - chuaDoi.length - dtCho.length,
+    tongCauThu: cauthu.length,
+    thongKeDoi: thongKeDoi
+  });
+}
+
+/* ============================================================
+   BƯỚC 2 — CHIA CẦU THỦ 2 PHA (loại trừ ĐT chờ)
+   ============================================================ */
+/* Chia 1 pha theo tiêu chí đếm: gán người (đã shuffle) cho đội
+   có 'điểm đếm' nhỏ nhất hiện tại. */
+function _chiaMotPha_(nguoi, doi, countFn) {
+  var cnt = {};
+  doi.forEach(function(d){ cnt[d.MaDoi] = countFn(d.MaDoi); });
+
+  var ketQua = [];
+  var pool = _shuffle(nguoi);
+  var maDot = cauHinh_('DOT_BOC_HIEN_TAI', 'DOT1');
+  var soLuot = doc_('LuotBoc').filter(function(l){ return l.MaDot === maDot; }).length;
+
+  pool.forEach(function(c){
+    var dsDoi = _shuffle(doi);
+    var chon = null, min = Infinity;
+    dsDoi.forEach(function(d){
+      if (cnt[d.MaDoi] < min) { min = cnt[d.MaDoi]; chon = d; }
+    });
+    if (!chon) return;
+    suaO_('CauThu', c._row, 'MaDoi', chon.MaDoi);
+    cnt[chon.MaDoi]++;
+    soLuot++;
+    them_('LuotBoc', { MaDot: maDot, Luot: soLuot, MaDoi: chon.MaDoi, MaCT: c.MaCT, ThoiDiem: new Date() });
+    ketQua.push({ hoTen: c.HoTen, maDoi: chon.MaDoi, tenDoi: chon.TenDoi });
+  });
+  xoaCache_('CauThu');
+  return ketQua;
+}
+
+/* Bốc 1 lượt: mỗi lượt chia 1 người cho mỗi đội (số người = số đội).
+   Không đủ số đội -> chia ngẫu nhiên số còn lại cho các đội ít người nhất. */
+function bocMotLuot(token) {
+  var g = guard_(token); if (g) return g;
+  var doi = doc_('Doi');
+  if (!doi.length) return sach_({ ok: false, msg: 'Chưa có đội nào.' });
+  var soDoi = doi.length;
+
+  var cauthu = doc_('CauThu');
+  var dtCho = getDTCho_();
+  var chuaDoi = _poolChuaDoi_(cauthu, dtCho);
+  if (!chuaDoi.length) return sach_({ ok: true, xong: true, msg: 'Đã chia hết cầu thủ (chưa tính đội trưởng).' });
+
+  var biet = chuaDoi.filter(function(c){ return String(c.HatGiong||'').toUpperCase() === 'BIET'; });
+
+  var pha, pool, countFn;
+  if (biet.length) {
+    pha = 'BIET'; pool = biet;
+    countFn = function(maDoi){ return _demTheoHat_(cauthu, maDoi, 'BIET'); };
+  } else {
+    pha = 'PT'; pool = chuaDoi;
+    countFn = function(maDoi){ return _demTong_(cauthu, maDoi); };
+  }
+
+  var poolSh = _shuffle(pool);
+  var soChia = Math.min(soDoi, poolSh.length);
+  var chon = poolSh.slice(0, soChia);
+  var day = poolSh.length >= soDoi;
+
+  var doiSap = _shuffle(doi).map(function(d){ return { d: d, c: countFn(d.MaDoi) }; });
+  doiSap.sort(function(a, b){ return a.c - b.c; });
+
+  var maDot = cauHinh_('DOT_BOC_HIEN_TAI', 'DOT1');
+  var soLuot = doc_('LuotBoc').filter(function(l){ return l.MaDot === maDot; }).length;
+  var ketQua = [];
+  for (var k = 0; k < chon.length; k++) {
+    var c = chon[k];
+    var d = doiSap[k].d;
+    suaO_('CauThu', c._row, 'MaDoi', d.MaDoi);
+    soLuot++;
+    them_('LuotBoc', { MaDot: maDot, Luot: soLuot, MaDoi: d.MaDoi, MaCT: c.MaCT, ThoiDiem: new Date() });
+    ketQua.push({ hoTen: c.HoTen, maDoi: d.MaDoi, tenDoi: d.TenDoi });
+  }
+  xoaCache_('CauThu');
+
+  var conLai = chuaDoi.length - ketQua.length;
+  var phaTxt = (pha === 'BIET') ? 'biết đá' : 'phong trào';
+  ghiLog_('Bốc 1 lượt (' + pha + ')', ketQua.length + ' người');
+  return sach_({
+    ok: true, pha: pha, phaTxt: phaTxt, day: day,
+    ketQua: ketQua, conLai: conLai, xong: conLai === 0,
+    msg: (day ? 'Đã bốc 1 lượt: ' : 'Chia nốt (lượt lẻ): ') + ketQua.length + ' người ' + phaTxt + '.'
+  });
+}
+
+/* Chia hết còn lại trong 1 lần (2 pha) */
+function chiaDoiTatCa(token) {
+  var g = guard_(token); if (g) return g;
+  var doi = doc_('Doi');
+  if (!doi.length) return sach_({ ok: false, msg: 'Chưa có đội nào.' });
+
+  var cauthu = doc_('CauThu');
+  var dtCho = getDTCho_();
+  var chuaDoi = _poolChuaDoi_(cauthu, dtCho);
+  if (!chuaDoi.length) return sach_({ ok: false, msg: 'Không còn ai chưa có đội để chia.' });
+
+  var biet = chuaDoi.filter(function(c){ return String(c.HatGiong||'').toUpperCase() === 'BIET'; });
+  var pt   = chuaDoi.filter(function(c){ return String(c.HatGiong||'').toUpperCase() !== 'BIET'; });
+
+  var kq1 = _chiaMotPha_(biet, doi, function(maDoi){ return _demTheoHat_(doc_('CauThu'), maDoi, 'BIET'); });
+  var kq2 = _chiaMotPha_(pt, doi, function(maDoi){ return _demTong_(doc_('CauThu'), maDoi); });
+
+  ghiLog_('Chia đội 2 pha', 'Biết: ' + kq1.length + ', PT: ' + kq2.length);
+  return sach_({ ok: true, msg: 'Đã chia: ' + kq1.length + ' biết đá + ' + kq2.length + ' phong trào.',
+                 soBiet: kq1.length, soPT: kq2.length });
+}
+
+/* Reset chia đội: gỡ cầu thủ (KHÔNG phải ĐT chính thức, KHÔNG phải ĐT chờ)
+   về chưa-đội. Giữ nguyên đội trưởng chính thức và danh sách ĐT chờ. */
+function resetChiaDoi(token) {
+  var g = guard_(token); if (g) return g;
+  var doi = doc_('Doi');
+  var dtCho = getDTCho_();
+  var dtSet = {};
+  doi.forEach(function(d){ if (d.DoiTruongMaCT) dtSet[d.DoiTruongMaCT] = true; });
+
+  var cauthu = doc_('CauThu');
+  var dem = 0;
+  cauthu.forEach(function(c){
+    if (c.MaDoi && !dtSet[c.MaCT] && dtCho.indexOf(c.MaCT) < 0) {
+      suaO_('CauThu', c._row, 'MaDoi', ''); dem++;
+    }
+  });
+  doc_('LuotBoc').slice().sort(function(a,b){ return b._row - a._row; }).forEach(function(l){
+    xoaDong_('LuotBoc', l._row);
+  });
+  xoaCache_('CauThu');
+  ghiLog_('Reset chia đội', dem + ' cầu thủ (giữ ĐT)');
+  return sach_({ ok: true, msg: 'Đã gỡ ' + dem + ' cầu thủ về chưa chia (giữ đội trưởng).' });
+}
+
+/* Chuyển 1 cầu thủ sang đội khác (BTC cân chỉnh thủ công ở Bước 2).
+   Không cho chuyển đội trưởng chính thức (giữ ràng buộc ĐT gắn với đội). */
+function chuyenCauThu(token, maCT, maDoiMoi) {
+  var g = guard_(token); if (g) return g;
+  var c = doc_('CauThu').filter(function(x){ return x.MaCT === maCT; })[0];
+  if (!c) return sach_({ ok: false, msg: 'Không tìm thấy cầu thủ.' });
+  var laDT = doc_('Doi').some(function(d){ return d.DoiTruongMaCT === maCT; });
+  if (laDT) return sach_({ ok: false, msg: 'Đây là đội trưởng — không thể chuyển đội. Hãy gỡ chức ĐT trước nếu muốn.' });
+  if (maDoiMoi) {
+    var d = doc_('Doi').filter(function(x){ return x.MaDoi === maDoiMoi; })[0];
+    if (!d) return sach_({ ok: false, msg: 'Không tìm thấy đội đích.' });
+  }
+  suaO_('CauThu', c._row, 'MaDoi', maDoiMoi || '');
+  ghiLog_('Chuyển cầu thủ', c.HoTen + ' -> ' + (maDoiMoi || '(gỡ)'));
+  return sach_({ ok: true, msg: 'Đã chuyển ' + c.HoTen + '.' });
+}
+
+/* ============================================================
+   BƯỚC 3 — ĐỘI TRƯỞNG BỐC ĐỘI
+   ============================================================ */
+/* 1 đội trưởng (maCT trong danh sách chờ) bốc ngẫu nhiên 1 đội chưa có ĐT */
+function dtBocDoi(token, maCT) {
+  var g = guard_(token); if (g) return g;
+  var dtCho = getDTCho_();
+  if (dtCho.indexOf(maCT) < 0)
+    return sach_({ ok: false, msg: 'Người này không trong danh sách đội trưởng chờ.' });
+
+  var doiTrong = doc_('Doi').filter(function(d){ return !d.DoiTruongMaCT; });
+  if (!doiTrong.length) return sach_({ ok: false, msg: 'Tất cả đội đã có đội trưởng.' });
+
+  var d = _shuffle(doiTrong)[0];
+  var c = doc_('CauThu').filter(function(x){ return x.MaCT === maCT; })[0];
+  suaO_('Doi', d._row, 'DoiTruongMaCT', maCT);
+  if (c) suaO_('CauThu', c._row, 'MaDoi', d.MaDoi);
+
+  var conLai = dtCho.filter(function(m){ return m !== maCT; });
+  setDTCho_(conLai);
+  xoaCache_('CauThu'); xoaCache_('Doi');
+
+  ghiLog_('ĐT bốc đội', (c?c.HoTen:'(?)') + ' -> ' + d.TenDoi);
+  return sach_({ ok: true, maDoi: d.MaDoi, tenDoi: d.TenDoi, hoTen: c ? c.HoTen : '(?)',
+                 conLai: conLai.length,
+                 msg: (c?c.HoTen:'(?)') + ' sẽ dẫn dắt ' + d.TenDoi + '!' });
+}
+
+/* Bốc hết đội trưởng còn lại trong 1 lần */
+function dtBocHet(token) {
+  var g = guard_(token); if (g) return g;
+  var dtCho = getDTCho_();
+  if (!dtCho.length) return sach_({ ok: false, msg: 'Không còn đội trưởng nào chờ bốc.' });
+
+  var ketQua = [];
+  var choShuffle = _shuffle(dtCho);
+  choShuffle.forEach(function(maCT){
+    var doiTrong = doc_('Doi').filter(function(d){ return !d.DoiTruongMaCT; });
+    if (!doiTrong.length) return;
+    var d = _shuffle(doiTrong)[0];
+    var c = doc_('CauThu').filter(function(x){ return x.MaCT === maCT; })[0];
+    suaO_('Doi', d._row, 'DoiTruongMaCT', maCT);
+    if (c) suaO_('CauThu', c._row, 'MaDoi', d.MaDoi);
+    ketQua.push({ hoTen: c ? c.HoTen : '(?)', tenDoi: d.TenDoi });
+  });
+  setDTCho_([]);
+  xoaCache_('CauThu'); xoaCache_('Doi');
+  ghiLog_('ĐT bốc hết', ketQua.length + ' người');
+  return sach_({ ok: true, msg: 'Đã gán ' + ketQua.length + ' đội trưởng vào đội.', ketQua: ketQua });
+}
+
+/* ===== SỰ KIỆN TRẬN ĐẤU ===== */
+function themSuKien(token, maTran, loai, phut, maCT) {
+  var g = guard_(token); if (g) return g;
+  var t = doc_('TranDau').filter(function(x){return x.MaTran === maTran;})[0];
+  if (!t) return sach_({ ok: false, msg: 'Không tìm thấy trận.' });
+  var c = doc_('CauThu').filter(function(x){return x.MaCT === maCT;})[0];
+  if (!c) return sach_({ ok: false, msg: 'Không tìm thấy cầu thủ.' });
+
+  var loaiUp = String(loai||'').toUpperCase();
+  if (['BAN','VANG','DO'].indexOf(loaiUp) < 0)
+    return sach_({ ok: false, msg: 'Loại sự kiện không hợp lệ.' });
+
+  them_('SuKien', {
+    MaSK: ma_('SK'), MaTran: maTran, Loai: loaiUp,
+    Phut: Number(phut) || 0, MaCT: maCT, MaDoi: c.MaDoi || '',
+    GhiChu: ''
+  });
+  ghiLog_('Thêm sự kiện', loaiUp + ' phút ' + phut + ' - ' + c.HoTen);
+  return sach_({ ok: true, msg: 'Đã thêm ' + loaiUp + ' phút ' + phut + ': ' + c.HoTen });
+}
+function xoaSuKien(token, maSK) {
+  var g = guard_(token); if (g) return g;
+  var s = doc_('SuKien').filter(function(x){return x.MaSK === maSK;})[0];
+  if (!s) return sach_({ ok: false, msg: 'Không tìm thấy sự kiện.' });
+  xoaDong_('SuKien', s._row);
+  return sach_({ ok: true, msg: 'Đã xóa sự kiện.' });
+}
+
+/* ===== THỐNG KÊ ===== */
+function thongKe(token) {
+  try {
+    var cauthu = doc_('CauThu');
+    var suKien = doc_('SuKien');
+    var tenCT = {};
+    cauthu.forEach(function(c) {
+      tenCT[c.MaCT] = {
+        hoTen: c.HoTen, maNV: c.MaNV || '',
+        tenXuong: c.MaXuong ? tenXuong_(c.MaXuong) : '',
+        maDoi: c.MaDoi || ''
+      };
+    });
+
+    var banThang = {}, theVang = {}, theDo = {};
+    suKien.forEach(function(s) {
+      var m = s.MaCT;
+      if (!m) return;
+      if (s.Loai === 'BAN') banThang[m] = (banThang[m]||0) + 1;
+      else if (s.Loai === 'VANG') theVang[m] = (theVang[m]||0) + 1;
+      else if (s.Loai === 'DO') theDo[m] = (theDo[m]||0) + 1;
+    });
+
+    function toList(obj) {
+      return Object.keys(obj).map(function(m) {
+        var info = tenCT[m] || {hoTen:'(?)', maNV:'', tenXuong:'', maDoi:''};
+        return { maCT: m, hoTen: info.hoTen, maNV: info.maNV,
+                 tenXuong: info.tenXuong, maDoi: info.maDoi, soLuong: obj[m] };
+      }).sort(function(a,b){ return b.soLuong - a.soLuong; });
+    }
+
+    return sach_({
+      ok: true,
+      vuaPhaLuoi: toList(banThang),
+      theVang: toList(theVang),
+      theDo: toList(theDo),
+      tongBanThang: suKien.filter(function(s){return s.Loai==='BAN';}).length,
+      tongTheVang: suKien.filter(function(s){return s.Loai==='VANG';}).length,
+      tongTheDo: suKien.filter(function(s){return s.Loai==='DO';}).length
+    });
+  } catch(e) { return sach_({ ok: false, msg: 'Lỗi: ' + e.message }); }
+}
+/* ===== VÒNG TRÒN 1 LƯỢT (tất cả đội, không chia bảng) ===== */
+function taoLichVongBang(token) {
+  var g = guard_(token); if (g) return g;
+  // Xóa các trận vòng tròn cũ (VongDau bắt đầu bằng "Vòng" hoặc có Bang cũ)
+  doc_('TranDau').slice().sort(function(a,b){return b._row-a._row;}).forEach(function(t){
+    var v = String(t.VongDau||'');
+    if (t.Bang || v.indexOf('Bảng') === 0 || v.indexOf('Vòng ') === 0 || v === 'Vòng tròn') {
+      xoaDong_('TranDau', t._row);
+    }
+  });
+
+  var doi = doc_('Doi').filter(function(d){ return String(d.LoaiDoi||'').toUpperCase() !== 'GH'; });
+  if (doi.length < 2) return sach_({ ok: false, msg: 'Cần ít nhất 2 đội (giải chung) để tạo lịch.' });
+
+  // Sắp theo thứ tự bốc thăm để lịch ổn định
+  var ds = doi.slice().sort(function(a,b){
+    return (Number(a.ThuTuBocTham)||0) - (Number(b.ThuTuBocTham)||0);
+  });
+
+  // Vòng tròn 1 lượt: mọi cặp gặp nhau đúng 1 lần
+  var moi = [];
+  var stt = 0;
+  for (var i = 0; i < ds.length; i++) {
+    for (var j = i + 1; j < ds.length; j++) {
+      stt++;
+      moi.push({
+        MaTran: ma_('T'), VongDau: 'Vòng tròn', Bang: '',
+        MaDoiA: ds[i].MaDoi, MaDoiB: ds[j].MaDoi,
+        BanThangA: '', BanThangB: '', TrangThai: 'Chưa đá',
+        ThuTuKO: stt, SanDau: '', GioThiDau: '', GhiChu: '', ThoiDiemCapNhat: new Date()
+      });
+    }
+  }
+  themNhieu_('TranDau', moi);
+  ghiLog_('Tạo lịch vòng tròn', moi.length + ' trận / ' + ds.length + ' đội');
+  return sach_({ ok: true, msg: 'Đã tạo ' + moi.length + ' trận vòng tròn cho ' + ds.length + ' đội.' });
+}
+
+function capNhatTySo(token, maTran, banA, banB) {
+  var g = guard_(token); if (g) return g;
+  var t = doc_('TranDau').filter(function(x) { return x.MaTran === maTran; })[0];
+  if (!t) return sach_({ ok: false, msg: 'Không tìm thấy trận.' });
+  var a = Number(banA), b = Number(banB);
+  if (!isFinite(a) || !isFinite(b) || a < 0 || b < 0)
+    return sach_({ ok: false, msg: 'Tỷ số phải là số không âm.' });
+  suaO_('TranDau', t._row, 'BanThangA', a);
+  suaO_('TranDau', t._row, 'BanThangB', b);
+  suaO_('TranDau', t._row, 'TrangThai', 'Đã đá');
+  suaO_('TranDau', t._row, 'ThoiDiemCapNhat', new Date());
+  ghiLog_('Cập nhật tỷ số', maTran + ': ' + a + '-' + b);
+  return sach_({ ok: true, msg: 'Đã lưu tỷ số ' + a + ' - ' + b + '.' });
+}
+function datThongTinTran(token, maTran, sanDau, gioThiDau) {
+  var g = guard_(token); if (g) return g;
+  var t = doc_('TranDau').filter(function(x) { return x.MaTran === maTran; })[0];
+  if (!t) return sach_({ ok: false, msg: 'Không tìm thấy trận.' });
+  suaO_('TranDau', t._row, 'SanDau', String(sanDau || ''));
+  suaO_('TranDau', t._row, 'GioThiDau', String(gioThiDau || ''));
+  return sach_({ ok: true, msg: 'Đã lưu thông tin trận.' });
+}
+
+/* ===== BXH ===== */
+function tinhBXH_(doi, tran) {
+  var tenDoi = {}; doi.forEach(function(d) { tenDoi[d.maDoi] = d.tenDoi; });
+  // Một bảng xếp hạng chung cho mọi đội (không chia bảng)
+  var bang = {};
+  doi.forEach(function(d) {
+    // Bỏ qua đội giao hữu (không tính vào BXH giải chung)
+    if (String(d.loaiDoi || '').toUpperCase() === 'GH') return;
+    bang[d.maDoi] = {
+      maDoi: d.maDoi, tenDoi: d.tenDoi, bang: '',
+      st: 0, t: 0, h: 0, b_: 0, bt: 0, bb: 0, hs: 0, diem: 0
+    };
+  });
+
+  // Ghi nhận đối đầu trực tiếp giữa các cặp
+  var doiDau = {}; // key: "maDoiA|maDoiB" -> {thangA, thangB}
+
+  tran.forEach(function(m) {
+    // Chỉ tính trận vòng tròn đã đá (bỏ qua các trận knock-out/chung kết)
+    if (m.vongDau && m.vongDau !== 'Vòng tròn') return;
+    if (m.trangThai !== 'Đã đá') return;
+    if (m.banThangA === '' || m.banThangB === '') return;
+    var A = bang[m.maDoiA], B = bang[m.maDoiB]; if (!A || !B) return;
+    var ga = Number(m.banThangA), gb = Number(m.banThangB);
+    A.st++; B.st++; A.bt += ga; A.bb += gb; B.bt += gb; B.bb += ga;
+    if (ga > gb) { A.t++; B.b_++; A.diem += 3; }
+    else if (ga < gb) { B.t++; A.b_++; B.diem += 3; }
+    else { A.h++; B.h++; A.diem += 1; B.diem += 1; }
+
+    var key = m.maDoiA + '|' + m.maDoiB;
+    doiDau[key] = { maA: m.maDoiA, maB: m.maDoiB, ga: ga, gb: gb };
+  });
+
+  // Hàm so sánh đối đầu giữa 2 đội (chỉ tính khi 2 đội đã gặp nhau)
+  function soSanhDoiDau(maX, maY) {
+    var k1 = maX + '|' + maY;
+    var k2 = maY + '|' + maX;
+    var m = doiDau[k1] || doiDau[k2];
+    if (!m) return 0;
+    var gaX = (m.maA === maX) ? m.ga : m.gb;
+    var gaY = (m.maA === maY) ? m.ga : m.gb;
+    if (gaX > gaY) return -1;
+    if (gaX < gaY) return 1;
+    return 0;
+  }
+
+  var arr = Object.keys(bang).map(function(k) {
+    var o = bang[k]; o.hs = o.bt - o.bb; return o;
+  });
+  arr.sort(function(x, y) {
+    if (y.diem !== x.diem) return y.diem - x.diem;      // 1. Điểm
+    if (y.hs !== x.hs) return y.hs - x.hs;               // 2. Hiệu số
+    var h2h = soSanhDoiDau(x.maDoi, y.maDoi);            // 3. Đối đầu
+    if (h2h !== 0) return h2h;
+    if (y.bt !== x.bt) return y.bt - x.bt;               // 4. Ghi nhiều hơn
+    return x.tenDoi.localeCompare(y.tenDoi);             // 5. Tên
+  });
+  arr.forEach(function(o, i) { o.hang = i + 1; });
+
+  // Trả về cùng cấu trúc cũ {khoaBang: [...]} để UI tái dùng, dùng 1 khóa 'TatCa'
+  return { 'TatCa': arr };
+}
+
+/* ===== KNOCK-OUT ===== */
+function sinhVongKnockOut(token) {
+  var g = guard_(token); if (g) return g;
+  var doi = doc_('Doi').filter(function(d){ return String(d.LoaiDoi||'').toUpperCase() !== 'GH'; })
+                       .map(function(d){return {maDoi:d.MaDoi,tenDoi:d.TenDoi,bang:''};});
+  var tranAll = doc_('TranDau').map(function(t){
+    return { maTran:t.MaTran, vongDau:t.VongDau||'', bang:t.Bang||'', maDoiA:t.MaDoiA, maDoiB:t.MaDoiB,
+             banThangA:(t.BanThangA===''||t.BanThangA==null)?'':Number(t.BanThangA),
+             banThangB:(t.BanThangB===''||t.BanThangB==null)?'':Number(t.BanThangB),
+             trangThai:t.TrangThai||'Chưa đá' };
+  });
+  var bxh = tinhBXH_(doi, tranAll);
+  var bxhArr = bxh['TatCa'] || [];
+  if (bxhArr.length < 2) return sach_({ ok: false, msg: 'Cần ít nhất 2 đội.' });
+
+  // Còn trận vòng tròn nào chưa đá?
+  var conThieu = tranAll.filter(function(t){
+    return (t.vongDau === 'Vòng tròn' || (!t.vongDau && t.bang==='')) === false ? false
+      : (t.vongDau === 'Vòng tròn' && t.trangThai !== 'Đã đá');
+  }).length;
+  if (conThieu > 0) return sach_({ ok: false, msg: 'Còn ' + conThieu + ' trận vòng tròn chưa có tỷ số.' });
+
+  // Xóa trận chung kết cũ
+  doc_('TranDau').slice().sort(function(a,b){return b._row-a._row;}).forEach(function(t){
+    if (String(t.VongDau) === 'Chung kết') xoaDong_('TranDau', t._row);
+  });
+
+  // Top 2 bảng chung -> chung kết
+  var nhat = bxhArr[0], nhi = bxhArr[1];
+  var moi = [{
+    MaTran: ma_('CK'), VongDau: 'Chung kết', Bang: '',
+    MaDoiA: nhat.maDoi, MaDoiB: nhi.maDoi,
+    BanThangA: '', BanThangB: '', TrangThai: 'Chưa đá',
+    ThuTuKO: 1, SanDau: '', GioThiDau: '',
+    GhiChu: 'Nhất vs Nhì vòng tròn', ThoiDiemCapNhat: new Date()
+  }];
+  themNhieu_('TranDau', moi);
+  ghiLog_('Tạo chung kết', nhat.tenDoi + ' vs ' + nhi.tenDoi);
+  return sach_({ ok: true, msg: 'Đã tạo trận chung kết: ' + nhat.tenDoi + ' vs ' + nhi.tenDoi });
+}
+/* (đã đơn giản hóa cho thể thức 4 đội vòng tròn -> chung kết) */
+function luuCauHinh(token, tenGiai, soQua, bannerUrl, giaiThuong) {
+  var g = guard_(token); if (g) return g;
+  var set = function(khoa, val) {
+    var v = doc_('CauHinh').filter(function(x){return x.Khoa===khoa;})[0];
+    if (v) suaO_('CauHinh', v._row, 'GiaTri', val);
+    else them_('CauHinh', { Khoa: khoa, GiaTri: val });
+  };
+  if (tenGiai !== undefined) set('TEN_GIAI', String(tenGiai));
+  if (soQua !== undefined) {
+    var n = Number(soQua); if (!isFinite(n) || n < 1) n = 2;
+    set('SO_DOI_QUA_VONG_BANG', String(Math.floor(n)));
+  }
+  if (bannerUrl !== undefined) set('BANNER_URL', String(bannerUrl));
+  if (giaiThuong !== undefined) set('GIAI_THUONG', String(giaiThuong));
+  return sach_({ ok: true, msg: 'Đã lưu cấu hình.' });
+}
+
+
+/* ============================================================
+   ===== KHỞI TẠO =====
+   ============================================================ */
+var COLS = {
+  CauThu: ['MaCT','HoTen','MaNV','MaXuong','TenAo','SoAo','SizeAo','ViTriList','HatGiong','GhiChu','MaDoi','MaDoiGoc','NguoiTao','ThoiDiemDangKy','DaBoc','ThoiDiemBoc','CongBo','LaDoiTruong','Rating','LoaiThe','AnhUrl','PAC','SHO','PAS','DRI','DEF','PHY'],
+  Doi:      ['MaDoi','TenDoi','Bang','DoiTruongMaCT','MauAo','LogoUrl','GhiChu','ThuTuBocTham','ThoiDiemTao','LoaiDoi','KhungThe'],
+  TranDau:  ['MaTran','VongDau','Bang','MaDoiA','MaDoiB','BanThangA','BanThangB','TrangThai','ThuTuKO','SanDau','GioThiDau','GhiChu','ThoiDiemCapNhat'],
+  SuKien:   ['MaSK','MaTran','Loai','Phut','MaCT','MaDoi','GhiChu'],
+  PhongBan: ['MaXuong','TenXuong'],
+  CauHinh:  ['Khoa','GiaTri'],
+  Media: ['MaMedia','Loai','Url','TieuDe','MoTa','ThuTu','ThoiDiemTao','MaTran'],
+  NhatKy:   ['ThoiDiem','HanhDong','ChiTiet'],
+  LuotBoc:  ['MaDot','Luot','MaDoi','MaCT','ThoiDiem'],
+  DoiHinh:  ['MaDoi','SoDo','DanhSachSlot','ThoiDiemCapNhat']
+};
+function THEM_COT_MA_DOI_GOC() {
+  var sh = ss_().getSheetByName('CauThu');
+  if (!sh) {
+    Logger.log('❌ Không thấy sheet CauThu.');
+    return 'ERROR: Không thấy sheet CauThu';
+  }
+  var head = sh.getRange(1, 1, 1, sh.getLastColumn()).getValues()[0];
+  if (head.indexOf('MaDoiGoc') < 0) {
+    sh.getRange(1, sh.getLastColumn() + 1).setValue('MaDoiGoc')
+      .setFontWeight('bold').setBackground('#16a34a').setFontColor('#ffffff');
+    xoaCache_('CauThu');
+    __DOC = {};
+    Logger.log('✅ Đã thêm cột MaDoiGoc vào sheet CauThu.');
+    return 'OK: Đã thêm cột MaDoiGoc';
+  } else {
+    Logger.log('ℹ️ Cột MaDoiGoc đã tồn tại — không cần thêm.');
+    return 'OK: Cột MaDoiGoc đã tồn tại';
+  }
+}
+function KHOI_TAO_GIAI() {
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  Object.keys(COLS).forEach(function(name) {
+    var sh = ss.getSheetByName(name);
+    if (!sh) sh = ss.insertSheet(name);
+    sh.clear();
+    var head = COLS[name];
+    sh.getRange(1, 1, 1, head.length).setValues([head])
+      .setFontWeight('bold').setBackground('#16a34a').setFontColor('#ffffff')
+      .setVerticalAlignment('middle');
+    sh.setFrozenRows(1);
+    sh.setRowHeight(1, 34);
+    for (var c = 1; c <= head.length; c++) sh.autoResizeColumn(c);
+  });
+
+    set_(ss, 'PhongBan', [
+    ['PHOICB','Xưởng Phôi Carbon'],
+    ['PHOITHO','Xưởng Phôi Thô'],
+    ['CNC','Xưởng CNC'],
+    ['SON','Xưởng Sơn'],
+    ['INUV','Xưởng In UV'],
+    ['HT','Xưởng Hoàn thiện'],
+    ['DG','Xưởng Đóng gói'],
+    ['NGONTARO','Xưởng Ngọn Taro'],
+    ['NGONTIP','Xưởng Ngọn Tip'],
+    ['VP','Văn phòng'],
+    ['SR','Showroom'],
+    ['BDH','Ban Điều Hành']
+  ]);
+
+    set_(ss, 'CauHinh', [
+    ['MAT_KHAU_ADMIN', 'bandochuc2026'],
+    ['MAT_KHAU_LIVE', 'footballfactory'],
+    ['TEN_GIAI', 'Giải Bóng Đá Carbon Billiards 2026'],
+    ['SO_DOI_QUA_VONG_BANG', '2'],
+    ['DOT_BOC_HIEN_TAI', 'DOT1'],
+    ['LIVE_KHOA', '0']
+  ]);
+
+  var d = ss.getSheetByName('Sheet1') || ss.getSheetByName('Trang tính1');
+  if (d && ss.getSheets().length > 1) ss.deleteSheet(d);
+
+  SpreadsheetApp.getUi().alert(
+    '✅ Khởi tạo xong!\n\n' +
+    'Đã tạo 8 sheet + 11 bộ phận + cấu hình.\n\n' +
+    'Mật khẩu BTC: bantochuc2026\n\n' +
+    'Bước tiếp: Triển khai → Ứng dụng web.'
+  );
+}
+
+function set_(ss, name, rows) {
+  if (!rows.length) return;
+  ss.getSheetByName(name).getRange(2, 1, rows.length, rows[0].length).setValues(rows);
+}
+
+function DOI_MAT_KHAU_ADMIN() {
+  var ui = SpreadsheetApp.getUi();
+  var r = ui.prompt('Đổi mật khẩu BTC', 'Nhập mật khẩu mới:', ui.ButtonSet.OK_CANCEL);
+  if (r.getSelectedButton() !== ui.Button.OK) return;
+  var mk = String(r.getResponseText()).trim();
+  if (!mk) { ui.alert('Mật khẩu trống.'); return; }
+  var sh = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('CauHinh');
+  var v = sh.getDataRange().getValues();
+  for (var i = 1; i < v.length; i++) {
+    if (v[i][0] === 'MAT_KHAU_ADMIN') { sh.getRange(i + 1, 2).setValue(mk); ui.alert('Đã đổi.'); return; }
+  }
+  sh.appendRow(['MAT_KHAU_ADMIN', mk]);
+  ui.alert('Đã đặt mật khẩu.');
+}
+
+function onOpen() {
+  SpreadsheetApp.getUi()
+    .createMenu('Giải bóng đá')
+    .addItem('Khởi tạo giải (chạy 1 lần)', 'KHOI_TAO_GIAI')
+    .addSeparator()
+    .addItem('Đổi mật khẩu BTC', 'DOI_MAT_KHAU_ADMIN')
+    .addSeparator()
+    .addItem('🔄 Sắp xếp cầu thủ theo đội', 'SAP_XEP_CAU_THU_THEO_DOI')
+    .addToUi();
+}
+/* Thêm bộ phận mới — chạy 1 lần */
+function THEM_BO_PHAN_MOI() {
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var sh = ss.getSheetByName('PhongBan');
+  if (!sh) { SpreadsheetApp.getUi().alert('Không tìm thấy sheet PhongBan.'); return; }
+  
+  var v = sh.getDataRange().getValues();
+  var daCo = {};
+  for (var i = 1; i < v.length; i++) {
+    daCo[String(v[i][0]).trim()] = true;
+  }
+  
+  var them = 0;
+  if (!daCo['BDH']) { sh.appendRow(['BDH', 'Ban Điều Hành']); them++; }
+  
+  SpreadsheetApp.getUi().alert('Đã thêm ' + them + ' bộ phận mới.');
+}
+/* ============================================================
+   ===== LIVE BỐC THĂM =====
+   ============================================================ */
+
+/* Xác thực mật khẩu Live, trả về token Live */
+function liveDangNhap(matKhau) {
+  try {
+    var mk = cauHinh_('MAT_KHAU_LIVE', 'footballfactory');
+    if (String(matKhau) !== mk) return sach_({ ok: false, msg: 'Sai mật khẩu Live.' });
+    var token = 'LIVE_' + Utilities.getUuid();
+    var ttl = 6 * 60 * 60; // 6 giờ
+    var data = JSON.stringify({ live: true, hanDen: new Date().getTime() + ttl * 1000 });
+    try { CacheService.getScriptCache().put(token, data, ttl); } catch (e) {}
+    try { PropertiesService.getScriptProperties().setProperty(token, data); } catch (e) {}
+    return sach_({ ok: true, token: token });
+  } catch (e) { return sach_({ ok: false, msg: 'Lỗi: ' + (e.message || e) }); }
+}
+function liveKiemTra_(token) {
+  if (!token) return false;
+  var s = null;
+  try { s = CacheService.getScriptCache().get(token); } catch (e) {}
+  if (!s) { try { s = PropertiesService.getScriptProperties().getProperty(token); } catch (e) {} }
+  if (!s) return false;
+  try {
+    var o = JSON.parse(s);
+    if (o.hanDen && new Date().getTime() > o.hanDen) return false;
+    return !!o.live;
+  } catch (e) { return false; }
+}
+
+/* Trạng thái tổng của Live */
+function liveTrangThai() {
+  try {
+    var cauthu = doc_('CauThu');
+    var daBoc = cauthu.filter(function(c){ return c.DaBoc === 'x' || c.DaBoc === true || c.DaBoc === 'TRUE'; }).length;
+    var tong = cauthu.length;
+    var khoa = cauHinh_('LIVE_KHOA', '0') === '1';
+    return sach_({ ok: true, tong: tong, daBoc: daBoc, conLai: tong - daBoc, khoa: khoa });
+  } catch(e) { return sach_({ ok: false, msg: 'Lỗi: ' + e.message }); }
+}
+
+/* Tra cứu 1 mã NV để hiển thị tên + trạng thái */
+function liveTraMaNV(token, maNV) {
+  if (!liveKiemTra_(token)) return sach_({ ok: false, msg: 'Hết phiên Live. Nhập lại mật khẩu.' });
+  maNV = String(maNV || '').trim().toUpperCase();
+  if (!maNV) return sach_({ ok: false, msg: 'Nhập mã NV.' });
+  var c = doc_('CauThu').filter(function(x){
+    return String(x.MaNV || '').toUpperCase() === maNV;
+  })[0];
+  if (!c) return sach_({ ok: false, msg: 'Không tìm thấy mã ' + maNV + '.' });
+  var daBoc = (c.DaBoc === 'x' || c.DaBoc === true || c.DaBoc === 'TRUE');
+  var doi = doc_('Doi').filter(function(d){ return d.MaDoi === c.MaDoi; })[0];
+  return sach_({
+    ok: true, maNV: maNV, hoTen: c.HoTen,
+    daBoc: daBoc,
+    maDoi: c.MaDoi || '',
+    tenDoi: doi ? doi.TenDoi : '',
+    logoUrl: doi ? (doi.LogoUrl || '') : ''
+  });
+}
+
+/* Bốc cho 1 mã NV (đã có sẵn đội do BTC chia) */
+function liveBocCaNhan(token, maNV) {
+  if (!liveKiemTra_(token)) return sach_({ ok: false, msg: 'Hết phiên Live. Nhập lại mật khẩu.' });
+  if (cauHinh_('LIVE_KHOA', '0') === '1')
+    return sach_({ ok: false, msg: 'Đã bốc xong toàn bộ. Liên hệ BTC để mở lại.' });
+
+  maNV = String(maNV || '').trim().toUpperCase();
+  var c = doc_('CauThu').filter(function(x){
+    return String(x.MaNV || '').toUpperCase() === maNV;
+  })[0];
+  if (!c) return sach_({ ok: false, msg: 'Không tìm thấy mã ' + maNV + '.' });
+
+  var daBoc = (c.DaBoc === 'x' || c.DaBoc === true || c.DaBoc === 'TRUE');
+  var doi = doc_('Doi').filter(function(d){ return d.MaDoi === c.MaDoi; })[0];
+
+  if (daBoc) {
+    return sach_({
+      ok: false, daBoc: true,
+      msg: c.HoTen + ' đã bốc rồi — thuộc ' + (doi ? doi.TenDoi : '(?)'),
+      hoTen: c.HoTen, tenDoi: doi ? doi.TenDoi : '', logoUrl: doi ? (doi.LogoUrl || '') : ''
+    });
+  }
+  if (!doi) {
+    return sach_({ ok: false, msg: c.HoTen + ' chưa được BTC chia vào đội.' });
+  }
+
+  // Đánh dấu đã bốc
+    // Đánh dấu đã bốc + công bố cho mọi người thấy
+  suaO_('CauThu', c._row, 'DaBoc', 'x');
+  suaO_('CauThu', c._row, 'ThoiDiemBoc', new Date());
+  suaO_('CauThu', c._row, 'CongBo', 'x');
+  ghiLog_('Live bốc', c.HoTen + ' → ' + doi.TenDoi);
+
+  // Tự động khóa nếu đã bốc hết
+  var cauthu = doc_('CauThu');
+  var soDaBoc = cauthu.filter(function(x){
+    var d = (x.DaBoc === 'x' || x.DaBoc === true || x.DaBoc === 'TRUE');
+    // cầu thủ vừa bốc giờ đã có DaBoc = x
+    return d;
+  }).length;
+  if (soDaBoc >= cauthu.length) {
+    var v = doc_('CauHinh').filter(function(x){ return x.Khoa === 'LIVE_KHOA'; })[0];
+    if (v) suaO_('CauHinh', v._row, 'GiaTri', '1');
+    else them_('CauHinh', { Khoa: 'LIVE_KHOA', GiaTri: '1' });
+  }
+
+  return sach_({
+    ok: true,
+    hoTen: c.HoTen,
+    maDoi: doi.MaDoi,
+    tenDoi: doi.TenDoi,
+    logoUrl: doi.LogoUrl || '',
+    mauAo: doi.MauAo || '',
+    daBoc: true
+  });
+}
+
+/* BTC mở lại Live */
+function liveMoLai(token) {
+  var g = guard_(token); if (g) return g;
+  var v = doc_('CauHinh').filter(function(x){ return x.Khoa === 'LIVE_KHOA'; })[0];
+  if (v) suaO_('CauHinh', v._row, 'GiaTri', '0');
+  else them_('CauHinh', { Khoa: 'LIVE_KHOA', GiaTri: '0' });
+  return sach_({ ok: true, msg: 'Đã mở lại Live.' });
+}
+
+/* BTC reset Live (xóa cờ Đã Bốc của tất cả) */
+function liveReset(token) {
+  var g = guard_(token); if (g) return g;
+  var cauthu = doc_('CauThu');
+  var dem = 0;
+  cauthu.forEach(function(c){
+    if (c.DaBoc || c.CongBo) {
+      suaO_('CauThu', c._row, 'DaBoc', '');
+      suaO_('CauThu', c._row, 'ThoiDiemBoc', '');
+      suaO_('CauThu', c._row, 'CongBo', '');
+      dem++;
+    }
+  });
+  liveMoLai(token);
+  return sach_({ ok: true, msg: 'Đã reset ' + dem + ' cầu thủ về chưa bốc.' });
+}
+
+/* BTC đổi mật khẩu Live */
+function liveDoiMatKhau(token, mkMoi) {
+  var g = guard_(token); if (g) return g;
+  mkMoi = String(mkMoi || '').trim();
+  if (!mkMoi) return sach_({ ok: false, msg: 'Mật khẩu trống.' });
+  var v = doc_('CauHinh').filter(function(x){ return x.Khoa === 'MAT_KHAU_LIVE'; })[0];
+  if (v) suaO_('CauHinh', v._row, 'GiaTri', mkMoi);
+  else them_('CauHinh', { Khoa: 'MAT_KHAU_LIVE', GiaTri: mkMoi });
+  return sach_({ ok: true, msg: 'Đã đổi mật khẩu Live.' });
+}
+/* Nâng cấp Live — chạy 1 lần (không mất dữ liệu) */
+function NANG_CAP_LIVE() {
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var sh = ss.getSheetByName('CauThu');
+  var head = sh.getRange(1,1,1,sh.getLastColumn()).getValues()[0];
+  var them = [];
+  if (head.indexOf('DaBoc') < 0) {
+    sh.getRange(1, sh.getLastColumn()+1).setValue('DaBoc');
+    them.push('DaBoc');
+  }
+  if (head.indexOf('ThoiDiemBoc') < 0) {
+    sh.getRange(1, sh.getLastColumn()+1).setValue('ThoiDiemBoc');
+    them.push('ThoiDiemBoc');
+  }
+  if (head.indexOf('CongBo') < 0) {
+    sh.getRange(1, sh.getLastColumn()+1).setValue('CongBo');
+    them.push('CongBo');
+  }
+  if (head.indexOf('LaDoiTruong') < 0) {
+    sh.getRange(1, sh.getLastColumn()+1).setValue('LaDoiTruong');
+    them.push('LaDoiTruong');
+  }
+  var cauHinh = ss.getSheetByName('CauHinh');
+  var v = cauHinh.getDataRange().getValues();
+  var daCo = {};
+  for (var i = 1; i < v.length; i++) daCo[String(v[i][0]).trim()] = true;
+  var set = function(k, val){ cauHinh.appendRow([k, val]); };
+  if (!daCo['MAT_KHAU_LIVE']) set('MAT_KHAU_LIVE', 'footballfactory');
+  if (!daCo['LIVE_KHOA']) set('LIVE_KHOA', '0');
+  if (!daCo['DS_UNG_VIEN_DT']) set('DS_UNG_VIEN_DT', '[]');
+
+  Logger.log('Đã nâng cấp Live. Cột thêm: ' + (them.join(', ') || 'không có'));
+  return 'OK: ' + (them.join(', ') || 'không có cột mới');
+}
+/* Lịch sử bốc — 20 người mới nhất */
+function liveLichSu() {
+  try {
+    var cauthu = doc_('CauThu');
+    var doi = doc_('Doi');
+    var tenDoi = {};
+    doi.forEach(function(d){ tenDoi[d.MaDoi] = { ten: d.TenDoi, logo: d.LogoUrl || '' }; });
+
+    var daBoc = cauthu.filter(function(c){
+      return c.DaBoc === 'x' || c.DaBoc === true || c.DaBoc === 'TRUE';
+    });
+
+    daBoc.sort(function(a, b){
+      var ta = a.ThoiDiemBoc ? new Date(a.ThoiDiemBoc).getTime() : 0;
+      var tb = b.ThoiDiemBoc ? new Date(b.ThoiDiemBoc).getTime() : 0;
+      return tb - ta;
+    });
+
+    var items = daBoc.slice(0, 20).map(function(c){
+      var d = tenDoi[c.MaDoi] || { ten: '(?)', logo: '' };
+      return {
+        hoTen: c.HoTen,
+        tenDoi: d.ten,
+        logoUrl: d.logo,
+        thoiDiem: c.ThoiDiemBoc ? sach_(c.ThoiDiemBoc) : ''
+      };
+    });
+
+    return sach_({ ok: true, items: items });
+  } catch(e) { return sach_({ ok: false, msg: 'Lỗi: ' + e.message }); }
+}
+/* ============================================================
+   ===== LIVE 3 BƯỚC =====
+   ============================================================ */
+
+/* -------- DANH SÁCH ỨNG VIÊN ĐỘI TRƯỞNG -------- */
+function getUngVienDT_() {
+  var raw = cauHinh_('DS_UNG_VIEN_DT', '');
+  if (!raw) return [];
+  try { var a = JSON.parse(raw); return Array.isArray(a) ? a : []; }
+  catch (e) { return []; }
+}
+function setUngVienDT_(arr) {
+  var val = JSON.stringify(arr || []);
+  var v = doc_('CauHinh').filter(function(x){ return x.Khoa === 'DS_UNG_VIEN_DT'; })[0];
+  if (v) suaO_('CauHinh', v._row, 'GiaTri', val);
+  else them_('CauHinh', { Khoa: 'DS_UNG_VIEN_DT', GiaTri: val });
+}
+
+/* BTC lưu danh sách ứng viên */
+function luuUngVienDT(token, dsMaCT) {
+  var g = guard_(token); if (g) return g;
+  var ds = (dsMaCT || []).filter(function(x){ return x; });
+  // ⭐ Loại trùng mã CT
+  var daCo = {};
+  var dsSach = [];
+  ds.forEach(function(m){
+    if (!daCo[m]) { daCo[m] = true; dsSach.push(m); }
+  });
+  setUngVienDT_(dsSach);
+  return sach_({ ok: true, msg: 'Đã lưu ' + dsSach.length + ' ứng viên.' });
+}
+
+/* BTC hoặc Live đều đọc được danh sách ứng viên */
+function dsUngVienDT(token) {
+  var ok = laAdmin_(token) || liveKiemTra_(token);
+  if (!ok) return sach_({ ok: false, hetHan: true, msg: 'Cần đăng nhập BTC hoặc Live.' });
+  var ds = getUngVienDT_();
+  var cauthu = doc_('CauThu');
+  var items = ds.map(function(m){
+    var c = cauthu.filter(function(x){ return x.MaCT === m; })[0];
+    return c ? { maCT: c.MaCT, hoTen: c.HoTen, maNV: c.MaNV || '',
+                 tenXuong: c.MaXuong ? tenXuong_(c.MaXuong) : '',
+                 hatGiong: String(c.HatGiong||'').toUpperCase() } : null;
+  }).filter(function(x){ return x; });
+  return sach_({ ok: true, items: items });
+}
+/* -------- BƯỚC 1: LIVE BỐC ĐỘI TRƯỞNG -------- */
+
+/* Trạng thái bước 1 */
+function liveBuoc1TrangThai() {
+  try {
+    // ⭐ XÓA CACHE để luôn thấy dữ liệu mới nhất
+    xoaCache_('CauThu');
+    __DOC = {};
+
+    // ⭐ Đọc TRỰC TIẾP từ sheet, không dùng cache
+    var sh = ss_().getSheetByName('CauThu');
+    var v = sh.getDataRange().getValues();
+    var head = v[0];
+    var iMaCT = head.indexOf('MaCT');
+    var iHoTen = head.indexOf('HoTen');
+    var iMaNV = head.indexOf('MaNV');
+    var iMaXuong = head.indexOf('MaXuong');
+    var iLaDT = head.indexOf('LaDoiTruong');
+
+    var cauthuMap = {};
+    for (var i = 1; i < v.length; i++) {
+      var row = v[i];
+      if (row.join('') === '') continue;
+      var maCT = row[iMaCT];
+      if (!maCT) continue;
+      cauthuMap[maCT] = {
+        MaCT: maCT,
+        HoTen: row[iHoTen],
+        MaNV: row[iMaNV],
+        MaXuong: row[iMaXuong],
+        LaDoiTruong: String(row[iLaDT] || '').toUpperCase()
+      };
+    }
+
+    var dsUV = getUngVienDT_();
+    var dtCho = getDTCho_();
+    var doi = doc_('Doi');
+    var soDoi = doi.length;
+
+    var dsDayDu = [];
+    dsUV.forEach(function(m){
+      var c = cauthuMap[m];
+      if (!c) return;
+      var laDTChon = dtCho.indexOf(m) >= 0;
+      var daCongBo = (c.LaDoiTruong === 'X' || c.LaDoiTruong === 'TRUE');
+      dsDayDu.push({
+        maCT: c.MaCT,
+        hoTen: c.HoTen,
+        maNV: c.MaNV || '',
+        tenXuong: c.MaXuong ? tenXuong_(c.MaXuong) : '',
+        laDTChon: laDTChon,
+        daCongBo: daCongBo
+      });
+    });
+
+    var daCongBo = dsDayDu.filter(function(x){ return x.daCongBo; }).length;
+
+    return sach_({
+      ok: true,
+      soDoi: soDoi,
+      tongUV: dsDayDu.length,
+      soDTChon: dtCho.length,
+      daBoc: daCongBo,
+      conLai: dtCho.length - daCongBo,
+      hoanTat: daCongBo >= dtCho.length && dtCho.length > 0,
+      dsUV: dsDayDu
+    });
+  } catch(e) { return sach_({ ok: false, msg: 'Lỗi: ' + e.message }); }
+}
+
+/* Bốc random 1 ĐT từ danh sách ứng viên chưa bốc */
+function liveBoc1DoiTruong(token) {
+  if (!liveKiemTra_(token)) return sach_({ ok:false, msg:'Hết phiên Live.' });
+  var dtCho = getDTCho_();
+  if (!dtCho.length) return sach_({ ok: false, msg: 'BTC chưa bốc đội trưởng. Vào tab 🎲 Bốc thăm → Bước 1.' });
+
+  // ⭐ Đọc TRỰC TIẾP từ sheet
+  var sh = ss_().getSheetByName('CauThu');
+  var v = sh.getDataRange().getValues();
+  var head = v[0];
+  var iMaCT = head.indexOf('MaCT');
+  var iHoTen = head.indexOf('HoTen');
+  var iMaNV = head.indexOf('MaNV');
+  var iMaXuong = head.indexOf('MaXuong');
+  var iLaDT = head.indexOf('LaDoiTruong');
+
+  var cauthuMap = {};  // maCT -> { row, obj }
+  for (var i = 1; i < v.length; i++) {
+    var row = v[i];
+    if (row.join('') === '') continue;
+    var maCT = row[iMaCT];
+    if (!maCT) continue;
+    cauthuMap[maCT] = {
+      _row: i + 1,  // ⭐ dòng THẬT trong sheet
+      MaCT: maCT,
+      HoTen: row[iHoTen],
+      MaNV: row[iMaNV],
+      MaXuong: row[iMaXuong],
+      LaDoiTruong: String(row[iLaDT] || '').toUpperCase()
+    };
+  }
+
+  // Người chưa công bố
+  var chua = dtCho.filter(function(m){
+    var c = cauthuMap[m];
+    if (!c) return false;
+    return !(c.LaDoiTruong === 'X' || c.LaDoiTruong === 'TRUE');
+  });
+  if (!chua.length) return sach_({ ok: false, msg: 'Đã công bố hết đội trưởng.' });
+
+  // Lấy người đầu tiên
+  var chon = chua[0];
+  var c = cauthuMap[chon];
+
+  // ⭐ Ghi trực tiếp vào sheet bằng dòng THẬT
+  sh.getRange(c._row, iLaDT + 1).setValue('x');
+
+  // ⭐ XÓA CACHE để lần đọc sau thấy dữ liệu mới
+  xoaCache_('CauThu');
+  __DOC = {};
+
+  // Đếm lại từ sheet vừa ghi
+  var v2 = sh.getDataRange().getValues();
+  var soDaBoc = 0;
+  var iLaDT2 = v2[0].indexOf('LaDoiTruong');
+  var iMaCT2 = v2[0].indexOf('MaCT');
+  var dtSet = {};
+  dtCho.forEach(function(m){ dtSet[m] = true; });
+  for (var j = 1; j < v2.length; j++) {
+    var r2 = v2[j];
+    if (r2.join('') === '') continue;
+    var m2 = r2[iMaCT2];
+    if (!dtSet[m2]) continue;
+    var val = String(r2[iLaDT2] || '').toUpperCase();
+    if (val === 'X' || val === 'TRUE') soDaBoc++;
+  }
+
+  ghiLog_('Live công bố ĐT', c.HoTen + ' (NV: ' + (c.MaNV||'') + ')');
+
+  return sach_({
+    ok: true,
+    maCT: c.MaCT,
+    hoTen: c.HoTen,
+    maNV: c.MaNV || '',
+    tenXuong: c.MaXuong ? tenXuong_(c.MaXuong) : '',
+    soDaBoc: soDaBoc,
+    conLai: dtCho.length - soDaBoc
+  });
+}
+
+/* Reset bước 1 */
+function liveResetBuoc1(token) {
+  if (!liveKiemTra_(token)) return sach_({ ok:false, msg:'Hết phiên Live.' });
+
+  var sh = ss_().getSheetByName('CauThu');
+  var v = sh.getDataRange().getValues();
+  var head = v[0];
+  var iMaCT = head.indexOf('MaCT');
+  var iLaDT = head.indexOf('LaDoiTruong');
+
+  var dtCho = getDTCho_();
+  var dtSet = {};
+  dtCho.forEach(function(m){ dtSet[m] = true; });
+
+  var dem = 0;
+  // Duyệt từ dưới lên để an toàn nếu có xóa
+  for (var i = v.length - 1; i >= 1; i--) {
+    var maCT = v[i][iMaCT];
+    if (!dtSet[maCT]) continue;
+    var val = String(v[i][iLaDT] || '').toUpperCase();
+    if (val === 'X' || val === 'TRUE') {
+      sh.getRange(i + 1, iLaDT + 1).setValue('');
+      dem++;
+    }
+  }
+
+  // ⭐ XÓA CACHE để lần đọc sau thấy dữ liệu mới
+  xoaCache_('CauThu');
+  __DOC = {};
+
+  return sach_({ ok: true, msg: 'Đã reset công bố ' + dem + ' đội trưởng.' });
+}
+
+/* -------- BƯỚC 3: ĐỘI TRƯỞNG BỐC ĐỘI -------- */
+
+/* Trạng thái bước 3 */
+function liveBuoc3TrangThai() {
+  try {
+    var cauthu = doc_('CauThu');
+    var doi = doc_('Doi');
+    var dtList = cauthu.filter(function(c){
+      return c.LaDoiTruong === 'x' || c.LaDoiTruong === true || c.LaDoiTruong === 'TRUE';
+    }).map(function(c){
+      var team = doi.filter(function(d){ return d.DoiTruongMaCT === c.MaCT; })[0];
+      return {
+        maCT: c.MaCT, hoTen: c.HoTen, maNV: c.MaNV || '',
+        tenXuong: c.MaXuong ? tenXuong_(c.MaXuong) : '',
+        daCoDoi: !!team,
+        maDoi: team ? team.MaDoi : '',
+        tenDoi: team ? team.TenDoi : '',
+        logoUrl: team ? (team.LogoUrl || '') : ''
+      };
+    });
+
+    var daBocDoi = dtList.filter(function(x){ return x.daCoDoi; }).length;
+    var soDoiCoDT = doi.filter(function(d){ return d.DoiTruongMaCT; }).length;
+    var doiTrong = doi.filter(function(d){ return !d.DoiTruongMaCT; });
+
+    return sach_({
+      ok: true,
+      soDoi: doi.length,
+      soDT: dtList.length,
+      daBocDoi: daBocDoi,
+      conLai: doi.length - daBocDoi,
+      hoanTat: daBocDoi >= doi.length && doi.length > 0,
+      dtList: dtList,
+      doiTrong: doiTrong.map(function(d){
+        return { maDoi: d.MaDoi, tenDoi: d.TenDoi, logoUrl: d.LogoUrl || '', mauAo: d.MauAo || '' };
+      })
+    });
+  } catch(e) { return sach_({ ok: false, msg: 'Lỗi: ' + e.message }); }
+}
+
+/* ĐT bốc đội — RANDOM THẬT */
+function liveDTBocDoiRandom(token, maNV) {
+   if (!liveKiemTra_(token)) return sach_({ ok:false, msg:'Hết phiên Live.' });
+  maNV = String(maNV||'').trim().toUpperCase();
+  if (!maNV) return sach_({ ok: false, msg: 'Nhập mã NV.' });
+
+  var cauthu = doc_('CauThu');
+  var c = cauthu.filter(function(x){
+    return String(x.MaNV||'').toUpperCase() === maNV;
+  })[0];
+  if (!c) return sach_({ ok: false, msg: 'Không tìm thấy mã ' + maNV + '.' });
+
+  // Kiểm tra có phải ĐT không
+  var laDT = (c.LaDoiTruong === 'x' || c.LaDoiTruong === true || c.LaDoiTruong === 'TRUE');
+  if (!laDT) return sach_({ ok: false, msg: c.HoTen + ' không phải đội trưởng.' });
+
+  // Kiểm tra đã bốc đội chưa
+  var doi = doc_('Doi');
+  var doiHienTai = doi.filter(function(d){ return d.DoiTruongMaCT === c.MaCT; })[0];
+  if (doiHienTai) {
+    return sach_({ ok: false, daCoDoi: true,
+      msg: c.HoTen + ' đã bốc rồi — đội ' + doiHienTai.TenDoi,
+      hoTen: c.HoTen, tenDoi: doiHienTai.TenDoi, logoUrl: doiHienTai.LogoUrl || '' });
+  }
+
+  // Pool đội chưa có ĐT
+  var doiTrong = doi.filter(function(d){ return !d.DoiTruongMaCT; });
+  if (!doiTrong.length) return sach_({ ok: false, msg: 'Không còn đội nào để bốc.' });
+
+  // RANDOM THẬT
+  var chon = _shuffle(doiTrong)[0];
+
+  // Gán ĐT vào đội
+  suaO_('Doi', chon._row, 'DoiTruongMaCT', c.MaCT);
+  // Gán cầu thủ vào đội (để đội hình đủ)
+  suaO_('CauThu', c._row, 'MaDoi', chon.MaDoi);
+  // Công bố cho mọi người thấy
+  suaO_('CauThu', c._row, 'CongBo', 'x');
+  suaO_('CauThu', c._row, 'DaBoc', 'x');
+  suaO_('CauThu', c._row, 'ThoiDiemBoc', new Date());
+
+  xoaCache_('CauThu'); xoaCache_('Doi');
+
+  // Đếm còn lại
+  var doiConLai = doc_('Doi').filter(function(d){ return !d.DoiTruongMaCT; });
+  var soConLai = doiConLai.length;
+
+  // Nếu còn đúng 1 đội → tự động gán cho ĐT cuối cùng
+  var tuDong = null;
+  if (soConLai === 1) {
+    var dtChuaBoc = cauthu.filter(function(x){
+      var laDT2 = (x.LaDoiTruong === 'x' || x.LaDoiTruong === true);
+      var daCoDoi = doc_('Doi').some(function(d2){ return d2.DoiTruongMaCT === x.MaCT; });
+      return laDT2 && !daCoDoi && x.MaCT !== c.MaCT;
+    });
+    if (dtChuaBoc.length === 1) {
+      var dtCuoi = dtChuaBoc[0];
+      var doiCuoi = doiConLai[0];
+      suaO_('Doi', doiCuoi._row, 'DoiTruongMaCT', dtCuoi.MaCT);
+      suaO_('CauThu', dtCuoi._row, 'MaDoi', doiCuoi.MaDoi);
+      suaO_('CauThu', dtCuoi._row, 'CongBo', 'x');
+      suaO_('CauThu', dtCuoi._row, 'DaBoc', 'x');
+      suaO_('CauThu', dtCuoi._row, 'ThoiDiemBoc', new Date());
+      xoaCache_('CauThu'); xoaCache_('Doi');
+      tuDong = { maCT: dtCuoi.MaCT, hoTen: dtCuoi.HoTen,
+                 maDoi: doiCuoi.MaDoi, tenDoi: doiCuoi.TenDoi,
+                 logoUrl: doiCuoi.LogoUrl || '' };
+      ghiLog_('Live ĐT bốc đội (tự động cuối)', dtCuoi.HoTen + ' → ' + doiCuoi.TenDoi);
+    }
+  }
+
+  ghiLog_('Live ĐT bốc đội', c.HoTen + ' → ' + chon.TenDoi);
+
+  return sach_({
+    ok: true,
+    hoTen: c.HoTen,
+    maDoi: chon.MaDoi,
+    tenDoi: chon.TenDoi,
+    logoUrl: chon.LogoUrl || '',
+    mauAo: chon.MauAo || '',
+    conLai: doiConLai.length,
+    tuDongGan: tuDong
+  });
+}
+
+/* Reset bước 3 */
+function liveResetBuoc3(token) {
+    if (!liveKiemTra_(token)) return sach_({ ok:false, msg:'Hết phiên Live.' });
+  var doi = doc_('Doi');
+  var cauthu = doc_('CauThu');
+  var dem = 0;
+  doi.forEach(function(d){
+    if (d.DoiTruongMaCT) {
+      suaO_('Doi', d._row, 'DoiTruongMaCT', '');
+      dem++;
+    }
+  });
+  // Gỡ MaDoi của đội trưởng (để họ chưa thuộc đội nào)
+  cauthu.forEach(function(c){
+    if (c.LaDoiTruong === 'x' || c.LaDoiTruong === true) {
+      suaO_('CauThu', c._row, 'MaDoi', '');
+      suaO_('CauThu', c._row, 'CongBo', '');
+      suaO_('CauThu', c._row, 'DaBoc', '');
+    }
+  });
+  xoaCache_('CauThu'); xoaCache_('Doi');
+  ghiLog_('Reset bước 3', dem + ' đội');
+  return sach_({ ok: true, msg: 'Đã reset ' + dem + ' đội trưởng khỏi đội.' });
+}
+
+/* -------- LỊCH SỬ LIVE -------- */
+function liveLichSuAll() {
+  try {
+    var doi = doc_('Doi');
+    var tenDoi = {};
+    doi.forEach(function(d){ tenDoi[d.MaDoi] = { ten: d.TenDoi, logo: d.LogoUrl||'' }; });
+
+    var cauthu = doc_('CauThu');
+    var items = [];
+    cauthu.forEach(function(c){
+      var laDT = (c.LaDoiTruong === 'x' || c.LaDoiTruong === true);
+      var d = tenDoi[c.MaDoi] || null;
+      if (laDT && d) {
+        items.push({
+          loai: 'DT_BOC_DOI',
+          hoTen: c.HoTen, maNV: c.MaNV||'',
+          tenDoi: d.ten, logoUrl: d.logo,
+          thoiDiem: c.ThoiDiemBoc ? sach_(c.ThoiDiemBoc) : ''
+        });
+      } else if (c.DaBoc && d && !laDT) {
+        items.push({
+          loai: 'CT_BOC_DOI',
+          hoTen: c.HoTen, maNV: c.MaNV||'',
+          tenDoi: d.ten, logoUrl: d.logo,
+          thoiDiem: c.ThoiDiemBoc ? sach_(c.ThoiDiemBoc) : ''
+        });
+      }
+    });
+    items.sort(function(a, b){
+      return String(b.thoiDiem).localeCompare(String(a.thoiDiem));
+    });
+    return sach_({ ok: true, items: items.slice(0, 30) });
+  } catch(e) { return sach_({ ok: false, msg: 'Lỗi: ' + e.message }); }
+}
+/* ===== ĐĂNG KÝ CẦU THỦ ===== */
+function dangKyCauThu(payload) {
+  try {
+    payload = payload || {};
+    var maNV = String(payload.maNV || '').trim().toUpperCase();
+    var hoTen = String(payload.hoTen || '').trim();
+    var maXuong = String(payload.maXuong || '').trim();
+    var sizeAo = String(payload.sizeAo || '').trim().toUpperCase();
+    var tenAo = String(payload.tenAo || '').trim().toUpperCase();
+    var hatGiong = String(payload.hatGiong || '').trim().toUpperCase();
+    var ghiChu = String(payload.ghiChu || '').trim();
+    var viTriList = Array.isArray(payload.viTriList)
+      ? payload.viTriList.filter(function(v){return v;}).join(',').toUpperCase()
+      : String(payload.viTriList || '').toUpperCase();
+
+    if (!maNV) return sach_({ ok: false, msg: 'Nhập mã NV.' });
+    if (!hoTen) return sach_({ ok: false, msg: 'Nhập họ tên.' });
+    if (!maXuong) return sach_({ ok: false, msg: 'Chọn xưởng.' });
+    if (!viTriList) return sach_({ ok: false, msg: 'Chọn ít nhất 1 vị trí.' });
+    if (!hatGiong) return sach_({ ok: false, msg: 'Chọn mức tự đánh giá.' });
+
+    // Kiểm tra trùng mã NV
+    var cauthu = doc_('CauThu');
+    var trungNV = cauthu.filter(function(c){
+      return String(c.MaNV || '').toUpperCase() === maNV;
+    })[0];
+    if (trungNV) {
+      return sach_({ ok: false, msg: 'Mã NV ' + maNV + ' đã được đăng ký (' + trungNV.HoTen + ').' });
+    }
+
+    // Kiểm tra trùng họ tên (chỉ cảnh báo nhẹ, không chặn)
+    var maCT = ma_('CT');
+    them_('CauThu', {
+      MaCT: maCT,
+      HoTen: hoTen,
+      MaNV: maNV,
+      MaXuong: maXuong,
+      TenAo: tenAo,
+      SoAo: '',
+      SizeAo: sizeAo,
+      ViTriList: viTriList,
+      HatGiong: hatGiong,
+      GhiChu: ghiChu,
+      MaDoi: '',
+      NguoiTao: 'self',
+      ThoiDiemDangKy: new Date(),
+      DaBoc: '',
+      ThoiDiemBoc: '',
+      CongBo: ''
+    });
+    ghiLog_('Đăng ký cầu thủ', hoTen + ' (' + maNV + ')');
+    return sach_({ ok: true, msg: 'Đã đăng ký ' + hoTen + '.' });
+  } catch (e) {
+    return sach_({ ok: false, msg: 'Lỗi: ' + (e.message || e) });
+  }
+}
+/* ===== SINH RATING CHO CẦU THỦ (tự động, lưu cố định) ===== */
+function sinhRatingNeuCan_() {
+  var sh = ss_().getSheetByName('CauThu');
+  if (!sh) return;
+  var v = sh.getDataRange().getValues();
+  if (v.length < 2) return;
+  var head = v[0];
+  var iRating = head.indexOf('Rating');
+  var iHatGiong = head.indexOf('HatGiong');
+  if (iRating < 0) return; // chưa có cột Rating -> bỏ qua
+
+  var canGhi = false;
+  for (var i = 1; i < v.length; i++) {
+    var row = v[i];
+    if (row.join('') === '') continue;
+    var r = row[iRating];
+    if (r === '' || r === null || r === undefined || isNaN(Number(r))) {
+      var hg = String(row[iHatGiong] || '').toUpperCase();
+      var rating;
+      if (hg === 'BIET') {
+        rating = 90 + Math.floor(Math.random() * 10); // 90-99
+      } else {
+        rating = 80 + Math.floor(Math.random() * 6);  // 80-85
+      }
+      sh.getRange(i + 1, iRating + 1).setValue(rating);
+      canGhi = true;
+    }
+  }
+  if (canGhi) {
+    xoaCache_('CauThu');
+    __DOC = {};
+  }
+}
+/* ===== SINH CHỈ SỐ CẦU THỦ (tự động lần đầu, lưu cố định) ===== */
+function sinhChiSoNeuCan_() {
+  var sh = ss_().getSheetByName('CauThu');
+  if (!sh) return;
+  var v = sh.getDataRange().getValues();
+  if (v.length < 2) return;
+  var head = v[0];
+  var i = {};
+  ['Rating','LoaiThe','PAC','SHO','PAS','DRI','DEF','PHY','HatGiong'].forEach(function(k){
+    i[k] = head.indexOf(k);
+  });
+  if (i.PAC < 0) return;
+  
+  var canGhi = false;
+  for (var r = 1; r < v.length; r++) {
+    var row = v[r];
+    if (row.join('') === '') continue;
+    var hg = String(row[i.HatGiong] || '').toUpperCase();
+    
+    // Rating
+    if (row[i.Rating] === '' || row[i.Rating] === null || isNaN(Number(row[i.Rating]))) {
+      var rating = (hg === 'BIET') 
+        ? 90 + Math.floor(Math.random() * 10)
+        : 80 + Math.floor(Math.random() * 6);
+      sh.getRange(r+1, i.Rating+1).setValue(rating);
+      canGhi = true;
+    }
+    
+    // Loại thẻ
+    if (!row[i.LoaiThe] || String(row[i.LoaiThe]).trim() === '') {
+      var loai = (hg === 'BIET') ? 'vang' : 'bac';
+      sh.getRange(r+1, i.LoaiThe+1).setValue(loai);
+      canGhi = true;
+    }
+    
+    // 6 chỉ số
+    ['PAC','SHO','PAS','DRI','DEF','PHY'].forEach(function(k){
+      if (row[i[k]] === '' || row[i[k]] === null || isNaN(Number(row[i[k]]))) {
+        var val = 75 + Math.floor(Math.random() * 25);
+        sh.getRange(r+1, i[k]+1).setValue(val);
+        canGhi = true;
+      }
+    });
+  }
+  if (canGhi) { xoaCache_('CauThu'); __DOC = {}; }
+}
+
+/* BTC random lại 6 chỉ số cho tất cả */
+function randomLaiChiSoAll(token) {
+  var g = guard_(token); if (g) return g;
+  var sh = ss_().getSheetByName('CauThu');
+  var v = sh.getDataRange().getValues();
+  var head = v[0];
+  var i = {};
+  ['Rating','PAC','SHO','PAS','DRI','DEF','PHY','HatGiong'].forEach(function(k){
+    i[k] = head.indexOf(k);
+  });
+  if (i.PAC < 0) return sach_({ok:false, msg:'Chưa có cột chỉ số.'});
+  
+  for (var r = 1; r < v.length; r++) {
+    if (v[r].join('') === '') continue;
+    var hg = String(v[r][i.HatGiong] || '').toUpperCase();
+    // Random lại rating theo hạt giống
+    var rating = (hg === 'BIET') 
+      ? 90 + Math.floor(Math.random() * 10)
+      : 80 + Math.floor(Math.random() * 6);
+    sh.getRange(r+1, i.Rating+1).setValue(rating);
+    // Random 6 chỉ số
+    ['PAC','SHO','PAS','DRI','DEF','PHY'].forEach(function(k){
+      sh.getRange(r+1, i[k]+1).setValue(75 + Math.floor(Math.random() * 25));
+    });
+  }
+  xoaCache_('CauThu'); __DOC = {};
+  return sach_({ok:true, msg:'Đã random lại ' + (v.length-1) + ' cầu thủ.'});
+}
+
+/* BTC đổi loại thẻ cho 1 cầu thủ */
+function doiLoaiThe(token, maCT, loaiThe) {
+  var g = guard_(token); if (g) return g;
+  loaiThe = String(loaiThe || '').toLowerCase();
+  if (['bac','vang','kimcuong'].indexOf(loaiThe) < 0)
+    return sach_({ok:false, msg:'Loại thẻ không hợp lệ.'});
+  var c = doc_('CauThu').filter(function(x){ return x.MaCT === maCT; })[0];
+  if (!c) return sach_({ok:false, msg:'Không tìm thấy cầu thủ.'});
+  suaO_('CauThu', c._row, 'LoaiThe', loaiThe);
+  return sach_({ok:true, msg:'Đã đổi loại thẻ.'});
+}
+
+/* Cập nhật ảnh + rating + chỉ số cho 1 cầu thủ */
+function capNhatThe(token, maCT, fields) {
+  var g = guard_(token); if (g) return g;
+  var c = doc_('CauThu').filter(function(x){ return x.MaCT === maCT; })[0];
+  if (!c) return sach_({ok:false, msg:'Không tìm thấy cầu thủ.'});
+  var f = fields || {};
+  ['Rating','AnhUrl','PAC','SHO','PAS','DRI','DEF','PHY','LoaiThe','AnhScale','AnhY'].forEach(function(k){
+    if (f[k] !== undefined) suaO_('CauThu', c._row, k, f[k]);
+  });
+  return sach_({ok:true, msg:'Đã cập nhật ' + c.HoTen + '.'});
+}
+/* ============================================================
+   ĐỊNH DẠNG LẠI TÊN CẦU THỦ — Kiểu A
+   Chạy: chọn hàm DINH_DANG_TEN_KIEU_A → Run
+   Không dùng UI — chạy được ở mọi môi trường
+   ============================================================ */
+function DINH_DANG_TEN_KIEU_A() {
+  var sh = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('CauThu');
+  if (!sh) {
+    Logger.log('❌ Không tìm thấy sheet CauThu.');
+    return 'ERROR: Không tìm thấy sheet CauThu';
+  }
+  
+  var v = sh.getDataRange().getValues();
+  var head = v[0];
+  var iHoTen = head.indexOf('HoTen');
+  if (iHoTen < 0) {
+    Logger.log('❌ Không tìm thấy cột HoTen.');
+    return 'ERROR: Không tìm thấy cột HoTen';
+  }
+  
+  var soDoi = 0;
+  var dsDoi = [];
+  
+  for (var r = 1; r < v.length; r++) {
+    var tenGoc = v[r][iHoTen];
+    var ten = String(tenGoc || '').trim().replace(/\s+/g, ' ');
+    if (!ten) continue;
+    var tenMoi = chuanHoaTen_(ten);
+    if (tenMoi !== tenGoc) {
+      sh.getRange(r + 1, iHoTen + 1).setValue(tenMoi);
+      soDoi++;
+      if (dsDoi.length < 20) {
+        dsDoi.push('  ' + tenGoc + '  →  ' + tenMoi);
+      }
+    }
+  }
+  
+  var kq = '✅ Đã chuẩn hóa ' + soDoi + ' cầu thủ.';
+  Logger.log(kq);
+  if (dsDoi.length) {
+    Logger.log('Ví dụ:\n' + dsDoi.join('\n'));
+  }
+  return kq;
+}
+
+/* Chuẩn hóa 1 tên: viết hoa chữ cái đầu mỗi từ */
+function chuanHoaTen_(ten) {
+  ten = String(ten || '').trim().replace(/\s+/g, ' ');
+  if (!ten) return '';
+  return ten.split(' ').map(function(t) {
+    t = String(t).toLowerCase();
+    if (!t) return '';
+    return t.charAt(0).toUpperCase() + t.slice(1);
+  }).join(' ');
+}
+function THEM_COT_CONG_BO_MAU() {
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var sh = ss.getSheetByName('Doi');
+  if (!sh) { Logger.log('❌ Không tìm thấy sheet Doi.'); return; }
+  var head = sh.getRange(1, 1, 1, sh.getLastColumn()).getValues()[0];
+  var them = [];
+  if (head.indexOf('MauAo') < 0) {
+    sh.getRange(1, sh.getLastColumn() + 1).setValue('MauAo');
+    them.push('MauAo');
+  }
+  if (head.indexOf('CongBoMau') < 0) {
+    sh.getRange(1, sh.getLastColumn() + 1).setValue('CongBoMau');
+    them.push('CongBoMau');
+  }
+  Logger.log('✅ Đã thêm cột: ' + (them.join(', ') || 'không có gì mới'));
+}
+function THEM_CAU_HINH_LIVE_MAU() {
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var sh = ss.getSheetByName('CauHinh');
+  var v = sh.getDataRange().getValues();
+  var daCo = {};
+  for (var i = 1; i < v.length; i++) daCo[String(v[i][0]).trim()] = true;
+  var them = [];
+  if (!daCo['MAT_KHAU_LIVE_MAU']) { sh.appendRow(['MAT_KHAU_LIVE_MAU', 'mauao2026']); them.push('MAT_KHAU_LIVE_MAU'); }
+  if (!daCo['LIVE_MAU_KHOA']) { sh.appendRow(['LIVE_MAU_KHOA', '0']); them.push('LIVE_MAU_KHOA'); }
+  Logger.log('✅ Đã thêm cấu hình: ' + (them.join(', ') || 'không có gì mới'));
+}
+/* ============================================================
+   ===== LIVE BỐC MÀU ÁO =====
+   ============================================================ */
+
+/* --- Đảm bảo cột CongBoMau tồn tại --- */
+function _baoDamCotMau_() {
+  var sh = ss_().getSheetByName('Doi');
+  if (!sh) return;
+  var head = sh.getRange(1, 1, 1, sh.getLastColumn()).getValues()[0];
+  var canThem = [];
+  if (head.indexOf('MauAo') < 0) canThem.push('MauAo');
+  if (head.indexOf('CongBoMau') < 0) canThem.push('CongBoMau');
+  canThem.forEach(function(c) {
+    sh.getRange(1, sh.getLastColumn() + 1).setValue(c);
+  });
+  if (canThem.length) { xoaCache_('Doi'); __DOC = {}; }
+}
+
+/* --- BTC gán màu cho từng đội (âm thầm) --- */
+function ganMauChoDoi(token, maDoi, mauAo) {
+  var g = guard_(token); if (g) return g;
+  _baoDamCotMau_();
+
+  var d = doc_('Doi').filter(function(x) { return x.MaDoi === maDoi; })[0];
+  if (!d) return sach_({ ok: false, msg: 'Không tìm thấy đội.' });
+
+  suaO_('Doi', d._row, 'MauAo', String(mauAo || ''));
+  suaO_('Doi', d._row, 'CongBoMau', '');  // Reset công bố
+  ghiLog_('Gán màu áo', d.TenDoi + ' → ' + mauAo);
+  return sach_({ ok: true, msg: 'Đã gán màu ' + mauAo + ' cho ' + d.TenDoi });
+}
+
+/* --- BTC reset công bố màu (để live lại) --- */
+function resetCongBoMau(token) {
+  var g = guard_(token); if (g) return g;
+  _baoDamCotMau_();
+  var doi = doc_('Doi');
+  var dem = 0;
+  doi.forEach(function(d) {
+    if (d.CongBoMau === 'x' || d.CongBoMau === true || d.CongBoMau === 'TRUE') {
+      suaO_('Doi', d._row, 'CongBoMau', '');
+      dem++;
+    }
+  });
+  // Mở khóa live
+  var v = doc_('CauHinh').filter(function(x) { return x.Khoa === 'LIVE_MAU_KHOA'; })[0];
+  if (v) suaO_('CauHinh', v._row, 'GiaTri', '0');
+  else them_('CauHinh', { Khoa: 'LIVE_MAU_KHOA', GiaTri: '0' });
+
+  ghiLog_('Reset công bố màu', dem + ' đội');
+  return sach_({ ok: true, msg: 'Đã reset ' + dem + ' đội về chưa bốc màu.' });
+}
+
+/* --- Đăng nhập Live màu --- */
+function liveMauDangNhap(matKhau) {
+  try {
+    var mk = cauHinh_('MAT_KHAU_LIVE_MAU', 'mauao2026');
+    if (String(matKhau) !== mk) return sach_({ ok: false, msg: 'Sai mật khẩu Live màu.' });
+    var token = 'LIVEMAU_' + Utilities.getUuid();
+    var ttl = 6 * 60 * 60;
+    var data = JSON.stringify({ liveMau: true, hanDen: new Date().getTime() + ttl * 1000 });
+    try { CacheService.getScriptCache().put(token, data, ttl); } catch (e) {}
+    try { PropertiesService.getScriptProperties().setProperty(token, data); } catch (e) {}
+    return sach_({ ok: true, token: token });
+  } catch (e) { return sach_({ ok: false, msg: 'Lỗi: ' + (e.message || e) }); }
+}
+
+function liveMauKiemTra_(token) {
+  if (!token) return false;
+  var s = null;
+  try { s = CacheService.getScriptCache().get(token); } catch (e) {}
+  if (!s) { try { s = PropertiesService.getScriptProperties().getProperty(token); } catch (e) {} }
+  if (!s) return false;
+  try {
+    var o = JSON.parse(s);
+    if (o.hanDen && new Date().getTime() > o.hanDen) return false;
+    return !!o.liveMau;
+  } catch (e) { return false; }
+}
+
+/* --- Trạng thái Live màu --- */
+function liveMauTrangThai() {
+  try {
+    _baoDamCotMau_();
+    var doi = doc_('Doi');
+    var khoa = cauHinh_('LIVE_MAU_KHOA', '0') === '1';
+
+    var daBoc = 0, chuaBoc = 0, chuaCoMau = 0;
+    var ds = doi.map(function(d) {
+      var mau = String(d.MauAo || '').trim();
+      var cb = (d.CongBoMau === 'x' || d.CongBoMau === true || d.CongBoMau === 'TRUE');
+      if (!mau) chuaCoMau++;
+      else if (cb) daBoc++;
+      else chuaBoc++;
+      return {
+        maDoi: d.MaDoi,
+        tenDoi: d.TenDoi,
+        logoUrl: d.LogoUrl || '',
+        coMau: !!mau,
+        daCongBo: cb
+      };
+    });
+
+    return sach_({
+      ok: true,
+      tong: doi.length,
+      daBoc: daBoc,
+      chuaBoc: chuaBoc,
+      chuaCoMau: chuaCoMau,
+      khoa: khoa,
+      ds: ds
+    });
+  } catch (e) { return sach_({ ok: false, msg: 'Lỗi: ' + e.message }); }
+}
+
+/* --- Tra mã NV đội trưởng → tìm đội của họ --- */
+function liveMauTraMaNV(token, maNV) {
+  if (!liveMauKiemTra_(token)) return sach_({ ok: false, msg: 'Hết phiên Live màu.' });
+  maNV = String(maNV || '').trim().toUpperCase();
+  if (!maNV) return sach_({ ok: false, msg: 'Nhập mã NV.' });
+
+  var cauthu = doc_('CauThu');
+  var c = cauthu.filter(function(x) {
+    return String(x.MaNV || '').toUpperCase() === maNV;
+  })[0];
+  if (!c) return sach_({ ok: false, msg: 'Không tìm thấy mã ' + maNV });
+
+  // Tìm đội mà cầu thủ này là đội trưởng
+  var doi = doc_('Doi');
+  var team = doi.filter(function(d) { return d.DoiTruongMaCT === c.MaCT; })[0];
+  if (!team) return sach_({
+    ok: false,
+    msg: c.HoTen + ' không phải đội trưởng.'
+  });
+
+  var mau = String(team.MauAo || '').trim();
+  var cb = (team.CongBoMau === 'x' || team.CongBoMau === true || team.CongBoMau === 'TRUE');
+
+  return sach_({
+    ok: true,
+    maNV: maNV,
+    hoTen: c.HoTen,
+    maDoi: team.MaDoi,
+    tenDoi: team.TenDoi,
+    logoUrl: team.LogoUrl || '',
+    coMau: !!mau,
+    daCongBo: cb
+  });
+}
+
+/* --- Đội trưởng bốc màu --- */
+function liveMauBoc(token, maNV) {
+  if (!liveMauKiemTra_(token)) return sach_({ ok: false, msg: 'Hết phiên Live màu.' });
+  if (cauHinh_('LIVE_MAU_KHOA', '0') === '1')
+    return sach_({ ok: false, msg: 'Live màu đã khóa. Liên hệ BTC.' });
+
+  maNV = String(maNV || '').trim().toUpperCase();
+  var cauthu = doc_('CauThu');
+  var c = cauthu.filter(function(x) {
+    return String(x.MaNV || '').toUpperCase() === maNV;
+  })[0];
+  if (!c) return sach_({ ok: false, msg: 'Không tìm thấy mã NV.' });
+
+  var doi = doc_('Doi');
+  var team = doi.filter(function(d) { return d.DoiTruongMaCT === c.MaCT; })[0];
+  if (!team) return sach_({ ok: false, msg: c.HoTen + ' không phải đội trưởng.' });
+
+  // Đã bốc chưa?
+  var daCB = (team.CongBoMau === 'x' || team.CongBoMau === true || team.CongBoMau === 'TRUE');
+  if (daCB) {
+    return sach_({
+      ok: false, daCongBo: true,
+      msg: 'Đội ' + team.TenDoi + ' đã bốc màu rồi!',
+      hoTen: c.HoTen, tenDoi: team.TenDoi,
+      mauAo: team.MauAo || '', logoUrl: team.LogoUrl || ''
+    });
+  }
+
+  // Chưa có màu?
+  var mau = String(team.MauAo || '').trim();
+  if (!mau) {
+    return sach_({
+      ok: false,
+      msg: 'BTC chưa gán màu cho đội ' + team.TenDoi + '.',
+      hoTen: c.HoTen, tenDoi: team.TenDoi
+    });
+  }
+
+  // Công bố màu
+  suaO_('Doi', team._row, 'CongBoMau', 'x');
+  xoaCache_('Doi'); __DOC = {};
+
+  ghiLog_('Live bốc màu', c.HoTen + ' (' + team.TenDoi + ') → ' + mau);
+
+  // Kiểm tra đã bốc hết chưa → tự khóa
+  var doiMoi = doc_('Doi');
+  var soChuaBoc = doiMoi.filter(function(d) {
+    var m = String(d.MauAo || '').trim();
+    var cb = (d.CongBoMau === 'x' || d.CongBoMau === true);
+    return m && !cb;
+  }).length;
+  if (soChuaBoc === 0) {
+    var v = doc_('CauHinh').filter(function(x) { return x.Khoa === 'LIVE_MAU_KHOA'; })[0];
+    if (v) suaO_('CauHinh', v._row, 'GiaTri', '1');
+    else them_('CauHinh', { Khoa: 'LIVE_MAU_KHOA', GiaTri: '1' });
+  }
+
+  return sach_({
+    ok: true,
+    hoTen: c.HoTen,
+    maDoi: team.MaDoi,
+    tenDoi: team.TenDoi,
+    mauAo: mau,
+    logoUrl: team.LogoUrl || ''
+  });
+}
+
+/* --- Lịch sử bốc màu --- */
+function liveMauLichSu() {
+  try {
+    var doi = doc_('Doi');
+    var items = doi.filter(function(d) {
+      var cb = (d.CongBoMau === 'x' || d.CongBoMau === true);
+      return cb && String(d.MauAo || '').trim();
+    }).map(function(d) {
+      return {
+        tenDoi: d.TenDoi,
+        logoUrl: d.LogoUrl || '',
+        mauAo: String(d.MauAo || '').trim()
+      };
+    });
+    return sach_({ ok: true, items: items });
+  } catch (e) { return sach_({ ok: false, msg: 'Lỗi: ' + e.message }); }
+}
+
+/* --- BTC mở lại Live màu --- */
+function liveMauMoLai(token) {
+  var g = guard_(token); if (g) return g;
+  var v = doc_('CauHinh').filter(function(x) { return x.Khoa === 'LIVE_MAU_KHOA'; })[0];
+  if (v) suaO_('CauHinh', v._row, 'GiaTri', '0');
+  else them_('CauHinh', { Khoa: 'LIVE_MAU_KHOA', GiaTri: '0' });
+  return sach_({ ok: true, msg: 'Đã mở lại Live màu.' });
+}
+
+/* --- Lấy danh sách màu đã gán (cho BTC xem trước khi live) --- */
+function dsMauDaGan(token) {
+  var g = guard_(token); if (g) return g;
+  _baoDamCotMau_();
+  var doi = doc_('Doi');
+  var items = doi.map(function(d) {
+    return {
+      maDoi: d.MaDoi,
+      tenDoi: d.TenDoi,
+      logoUrl: d.LogoUrl || '',
+      mauAo: String(d.MauAo || '').trim(),
+      daCongBo: (d.CongBoMau === 'x' || d.CongBoMau === true)
+    };
+  });
+  return sach_({ ok: true, items: items });
+}
+/* ============================================================
+   CẤU HÌNH 4 MẪU ÁO (dùng cho Live bốc màu)
+   ============================================================ */
+
+/* BTC lưu 4 mẫu áo (JSON vào CauHinh) */
+function luuMauAoConfig(token, arrMau) {
+  var g = guard_(token); if (g) return g;
+  if (!Array.isArray(arrMau) || !arrMau.length)
+    return sach_({ ok: false, msg: 'Dữ liệu màu không hợp lệ.' });
+
+  // Chuẩn hóa
+  var sach = arrMau.map(function(m) {
+    return {
+      ten: String(m.ten || '').trim(),
+      ma: String(m.ma || '').trim().toUpperCase(),
+      url: String(m.url || '').trim()
+    };
+  }).filter(function(m){ return m.ten; });
+
+  var val = JSON.stringify(sach);
+  var v = doc_('CauHinh').filter(function(x){ return x.Khoa === 'MAU_AO_CONFIG'; })[0];
+  if (v) suaO_('CauHinh', v._row, 'GiaTri', val);
+  else them_('CauHinh', { Khoa: 'MAU_AO_CONFIG', GiaTri: val });
+
+  ghiLog_('Lưu cấu hình màu áo', sach.length + ' màu');
+  return sach_({ ok: true, msg: 'Đã lưu ' + sach.length + ' mẫu áo.' });
+}
+
+/* Nạp cấu hình 4 mẫu áo */
+function napMauAoConfig() {
+  try {
+    var raw = cauHinh_('MAU_AO_CONFIG', '');
+    if (!raw) {
+      // Mặc định
+      return sach_({
+        ok: true,
+        items: [
+          { ten: 'Be',        ma: 'BE',   url: '' },
+          { ten: 'Xanh Real', ma: 'REAL', url: '' },
+          { ten: 'Xám',       ma: 'XAM',  url: '' },
+          { ten: 'Đỏ',        ma: 'DO',   url: '' }
+        ]
+      });
+    }
+    var arr;
+    try { arr = JSON.parse(raw); } catch(e) { arr = []; }
+    if (!Array.isArray(arr)) arr = [];
+    return sach_({ ok: true, items: arr });
+  } catch(e) {
+    return sach_({ ok: false, msg: 'Lỗi: ' + e.message });
+  }
+}
+/* ============================================================
+   SẮP XẾP LẠI SHEET CAUTHU THEO ĐỘI ĐÃ BỐC
+   Chạy 1 lần: menu "Giải bóng đá" → "Sắp xếp cầu thủ theo đội"
+   ============================================================ */
+function SAP_XEP_CAU_THU_THEO_DOI() {
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var shCT = ss.getSheetByName('CauThu');
+  var shDoi = ss.getSheetByName('Doi');
+  
+  if (!shCT) {
+    SpreadsheetApp.getUi().alert('Không tìm thấy sheet CauThu.');
+    return;
+  }
+  
+  // Đọc toàn bộ dữ liệu
+  var data = shCT.getDataRange().getValues();
+  if (data.length < 2) {
+    SpreadsheetApp.getUi().alert('Sheet CauThu trống.');
+    return;
+  }
+  
+  var head = data[0];
+  var iMaDoi = head.indexOf('MaDoi');
+  var iSoAo = head.indexOf('SoAo');
+  var iHoTen = head.indexOf('HoTen');
+  
+  if (iMaDoi < 0) {
+    SpreadsheetApp.getUi().alert('Không tìm thấy cột MaDoi.');
+    return;
+  }
+  
+  // Đọc thứ tự đội (ThuTuBocTham)
+  var thuTuDoi = {};
+  if (shDoi) {
+    var dataDoi = shDoi.getDataRange().getValues();
+    var headDoi = dataDoi[0];
+    var iMaDoi_Doi = headDoi.indexOf('MaDoi');
+    var iThuTu = headDoi.indexOf('ThuTuBocTham');
+    
+    for (var i = 1; i < dataDoi.length; i++) {
+      var row = dataDoi[i];
+      if (row.join('') === '') continue;
+      var maDoi = row[iMaDoi_Doi];
+      if (maDoi) {
+        thuTuDoi[String(maDoi)] = Number(row[iThuTu]) || 999;
+      }
+    }
+  }
+  
+  // Tách dữ liệu (bỏ header)
+  var rows = data.slice(1).filter(function(r) {
+    return r.join('') !== '';
+  });
+  
+  // ⭐ Sắp xếp
+  rows.sort(function(a, b) {
+    var maDoiA = String(a[iMaDoi] || '').trim();
+    var maDoiB = String(b[iMaDoi] || '').trim();
+    
+    // 1. Có đội trước, chưa có đội sau
+    var coDoiA = maDoiA ? 1 : 0;
+    var coDoiB = maDoiB ? 1 : 0;
+    if (coDoiA !== coDoiB) return coDoiB - coDoiA;
+    
+    // 2. Cùng chưa có đội → giữ nguyên (hoặc sắp theo tên)
+    if (!coDoiA && !coDoiB) {
+      return String(a[iHoTen] || '').localeCompare(String(b[iHoTen] || ''));
+    }
+    
+    // 3. Khác đội → sắp theo thứ tự bốc thăm
+    if (maDoiA !== maDoiB) {
+      var ttA = thuTuDoi[maDoiA] || 999;
+      var ttB = thuTuDoi[maDoiB] || 999;
+      if (ttA !== ttB) return ttA - ttB;
+      return maDoiA.localeCompare(maDoiB);
+    }
+    
+    // 4. Cùng đội → sắp theo số áo
+    var soAoA = Number(a[iSoAo]) || 999;
+    var soAoB = Number(b[iSoAo]) || 999;
+    if (soAoA !== soAoB) return soAoA - soAoB;
+    
+    // 5. Cùng số áo → sắp theo tên
+    return String(a[iHoTen] || '').localeCompare(String(b[iHoTen] || ''));
+  });
+  
+  // Ghi lại vào sheet
+  var output = [head].concat(rows);
+  
+  // Xóa toàn bộ dữ liệu cũ
+  shCT.clearContents();
+  
+  // Ghi lại
+  shCT.getRange(1, 1, output.length, head.length).setValues(output);
+  
+  // Format header lại
+  shCT.getRange(1, 1, 1, head.length)
+    .setFontWeight('bold')
+    .setBackground('#16a34a')
+    .setFontColor('#ffffff')
+    .setVerticalAlignment('middle');
+  shCT.setFrozenRows(1);
+  shCT.setRowHeight(1, 34);
+  
+  // Đếm số cầu thủ theo đội
+  var demDoi = {};
+  rows.forEach(function(r) {
+    var maDoi = String(r[iMaDoi] || '').trim();
+    var key = maDoi || '(chưa có đội)';
+    demDoi[key] = (demDoi[key] || 0) + 1;
+  });
+  
+  var msg = '✅ Đã sắp xếp ' + rows.length + ' cầu thủ.\n\n';
+  Object.keys(demDoi).forEach(function(k) {
+    msg += '• ' + k + ': ' + demDoi[k] + ' cầu thủ\n';
+  });
+  
+  SpreadsheetApp.getUi().alert(msg);
+}
+
+/* ===== TỰ XẾP CẶP ĐẤU THỦ CÔNG ===== */
+
+/* Tạo 1 trận thủ công */
+function themTranThuCong(token, maDoiA, maDoiB, vongDau, gioThiDau, sanDau) {
+  var g = guard_(token); if (g) return g;
+  if (!maDoiA || !maDoiB) return sach_({ ok: false, msg: 'Chọn đủ 2 đội.' });
+  if (maDoiA === maDoiB) return sach_({ ok: false, msg: 'Không thể cho đội tự đá với mình.' });
+
+  var dA = doc_('Doi').filter(function(x){ return x.MaDoi === maDoiA; })[0];
+  var dB = doc_('Doi').filter(function(x){ return x.MaDoi === maDoiB; })[0];
+  if (!dA || !dB) return sach_({ ok: false, msg: 'Không tìm thấy đội.' });
+
+  var soTran = doc_('TranDau').length;
+  them_('TranDau', {
+    MaTran: ma_('T'),
+    VongDau: String(vongDau || 'Vòng tròn'),
+    Bang: '',
+    MaDoiA: maDoiA,
+    MaDoiB: maDoiB,
+    BanThangA: '', BanThangB: '',
+    TrangThai: 'Chưa đá',
+    ThuTuKO: soTran + 1,
+    SanDau: String(sanDau || ''),
+    GioThiDau: String(gioThiDau || ''),
+    GhiChu: '',
+    ThoiDiemCapNhat: new Date()
+  });
+  ghiLog_('Thêm trận thủ công', dA.TenDoi + ' vs ' + dB.TenDoi);
+  return sach_({ ok: true, msg: 'Đã thêm trận: ' + dA.TenDoi + ' vs ' + dB.TenDoi });
+}
+
+/* Xóa 1 trận */
+function xoaTran(token, maTran) {
+  var g = guard_(token); if (g) return g;
+  var t = doc_('TranDau').filter(function(x){ return x.MaTran === maTran; })[0];
+  if (!t) return sach_({ ok: false, msg: 'Không tìm thấy trận.' });
+  xoaDong_('TranDau', t._row);
+  ghiLog_('Xóa trận', maTran);
+  return sach_({ ok: true, msg: 'Đã xóa trận.' });
+}
+
+/* Sửa trận (đổi cặp đấu, vòng, giờ, sân) */
+function suaTran(token, maTran, maDoiA, maDoiB, vongDau, gioThiDau, sanDau) {
+  var g = guard_(token); if (g) return g;
+  var t = doc_('TranDau').filter(function(x){ return x.MaTran === maTran; })[0];
+  if (!t) return sach_({ ok: false, msg: 'Không tìm thấy trận.' });
+
+  if (maDoiA !== undefined) suaO_('TranDau', t._row, 'MaDoiA', maDoiA);
+  if (maDoiB !== undefined) suaO_('TranDau', t._row, 'MaDoiB', maDoiB);
+  if (vongDau !== undefined) suaO_('TranDau', t._row, 'VongDau', String(vongDau));
+  if (gioThiDau !== undefined) suaO_('TranDau', t._row, 'GioThiDau', String(gioThiDau));
+  if (sanDau !== undefined) suaO_('TranDau', t._row, 'SanDau', String(sanDau));
+  suaO_('TranDau', t._row, 'ThoiDiemCapNhat', new Date());
+
+  ghiLog_('Sửa trận', maTran);
+  return sach_({ ok: true, msg: 'Đã cập nhật trận.' });
+}
+/* Cập nhật hàm napDuLieu để trả về màu áo config cho client */
+// (Sửa hàm napDuLieu — thêm 1 dòng vào object return)
+/* ============================================================
+   ⭐ TRẬN GIAO HỮU / KHAI MẠC + SẮP LỊCH THỦ CÔNG (thêm mới)
+   ============================================================ */
+
+/* Chạy 1 lần từ trình chỉnh sửa: thêm cột LoaiDoi vào sheet Doi (không mất dữ liệu) */
+function NANG_CAP_GIAO_HUU() {
+  var sh = ss_().getSheetByName('Doi');
+  if (!sh) { SpreadsheetApp.getUi().alert('Không thấy sheet Doi.'); return; }
+  var head = sh.getRange(1, 1, 1, sh.getLastColumn()).getValues()[0];
+  if (head.indexOf('LoaiDoi') < 0) {
+    sh.getRange(1, sh.getLastColumn() + 1).setValue('LoaiDoi')
+      .setFontWeight('bold').setBackground('#16a34a').setFontColor('#ffffff');
+    head = sh.getRange(1, 1, 1, sh.getLastColumn()).getValues()[0];
+  }
+  if (head.indexOf('KhungThe') < 0) {
+    sh.getRange(1, sh.getLastColumn() + 1).setValue('KhungThe')
+      .setFontWeight('bold').setBackground('#16a34a').setFontColor('#ffffff');
+  }
+  xoaCache_('Doi');
+  SpreadsheetApp.getUi().alert('✅ Đã sẵn sàng cho đội giao hữu.\nĐã có cột "LoaiDoi" và "KhungThe" trong sheet Doi.');
+}
+
+/* Tạo đội giao hữu (LoaiDoi=GH) — không tính vào giải chung. khungThe = link khung viền thẻ riêng */
+function themDoiGiaoHuu(token, tenDoi, mauAo, logoUrl, khungThe) {
+  var g = guard_(token); if (g) return g;
+  tenDoi = String(tenDoi || '').trim();
+  if (!tenDoi) return sach_({ ok: false, msg: 'Nhập tên đội.' });
+  var soDoiHienTai = doc_('Doi').length;
+  var maDoi = ma_('D');
+  them_('Doi', { MaDoi: maDoi, TenDoi: tenDoi, Bang: '', DoiTruongMaCT: '',
+                 MauAo: String(mauAo || ''), LogoUrl: String(logoUrl || ''), GhiChu: '',
+                 ThuTuBocTham: soDoiHienTai + 1, ThoiDiemTao: new Date(), LoaiDoi: 'GH',
+                 KhungThe: String(khungThe || '') });
+  ghiLog_('Tạo đội giao hữu', tenDoi);
+  return sach_({ ok: true, msg: 'Đã tạo đội giao hữu "' + tenDoi + '".', maDoi: maDoi });
+}
+
+/* Đổi loại 1 đội: '' (giải chung) hoặc 'GH' (giao hữu) */
+function datLoaiDoi(token, maDoi, loaiDoi) {
+  var g = guard_(token); if (g) return g;
+  var d = doc_('Doi').filter(function(x) { return x.MaDoi === maDoi; })[0];
+  if (!d) return sach_({ ok: false, msg: 'Không tìm thấy đội.' });
+  suaO_('Doi', d._row, 'LoaiDoi', String(loaiDoi || '').toUpperCase());
+  return sach_({ ok: true, msg: 'Đã cập nhật loại đội.' });
+}
+
+/* Đặt link khung viền thẻ riêng cho 1 đội (dùng cho đội giao hữu) */
+function datKhungThe(token, maDoi, url) {
+  var g = guard_(token); if (g) return g;
+  var d = doc_('Doi').filter(function(x) { return x.MaDoi === maDoi; })[0];
+  if (!d) return sach_({ ok: false, msg: 'Không tìm thấy đội.' });
+  suaO_('Doi', d._row, 'KhungThe', String(url || ''));
+  return sach_({ ok: true, msg: 'Đã cập nhật khung viền thẻ.' });
+}
+
+/* Thêm cầu thủ trực tiếp vào 1 đội (ban lãnh đạo đội giao hữu — chưa đăng ký sẵn) */
+function themCauThuVaoDoi(token, payload, maDoi) {
+  var g = guard_(token); if (g) return g;
+  payload = payload || {};
+  var hoTen = String(payload.hoTen || '').trim();
+  if (!hoTen) return sach_({ ok: false, msg: 'Nhập họ tên.' });
+  var maNV = String(payload.maNV || '').trim().toUpperCase();
+  if (maNV) {
+    var trung = doc_('CauThu').filter(function(c) { return String(c.MaNV || '').toUpperCase() === maNV; })[0];
+    if (trung) return sach_({ ok: false, msg: 'Mã NV ' + maNV + ' đã có (' + trung.HoTen + ').' });
+  } else {
+    maNV = 'GH' + Utilities.getUuid().replace(/-/g, '').slice(0, 5).toUpperCase();
+  }
+  var viTriList = Array.isArray(payload.viTriList)
+    ? payload.viTriList.filter(function(v) { return v; }).join(',').toUpperCase()
+    : String(payload.viTriList || 'TD').toUpperCase();
+  var maCT = ma_('CT');
+  them_('CauThu', {
+    MaCT: maCT, HoTen: hoTen, MaNV: maNV,
+    MaXuong: String(payload.maXuong || ''),
+    TenAo: String(payload.tenAo || '').trim().toUpperCase(),
+    SoAo: String(payload.soAo || '').trim(),
+    SizeAo: String(payload.sizeAo || '').trim().toUpperCase(),
+    ViTriList: viTriList || 'TD',
+    HatGiong: String(payload.hatGiong || 'PT').toUpperCase(),
+    GhiChu: String(payload.ghiChu || ''),
+    MaDoi: maDoi || '', NguoiTao: 'btc', ThoiDiemDangKy: new Date(),
+    DaBoc: 'x', ThoiDiemBoc: new Date(), CongBo: 'x',
+    LoaiThe: 'huyenthoai'
+  });
+  ghiLog_('Thêm CT vào đội', hoTen + ' -> ' + (maDoi || ''));
+  return sach_({ ok: true, msg: 'Đã thêm ' + hoTen + '.', maCT: maCT });
+}
+
+/* Tạo 1 trận thủ công. vongDau rỗng => 'Vòng tròn' (giải chung) */
+function taoTranThuCong(token, maDoiA, maDoiB, vongDau, gio, san) {
+  var g = guard_(token); if (g) return g;
+  if (!maDoiA || !maDoiB) return sach_({ ok: false, msg: 'Chọn đủ 2 đội.' });
+  if (maDoiA === maDoiB) return sach_({ ok: false, msg: '2 đội phải khác nhau.' });
+  var v = String(vongDau || '').trim() || 'Vòng tròn';
+  var cung = doc_('TranDau').filter(function(t) { return String(t.VongDau || '') === v; });
+  var maxTt = 0; cung.forEach(function(t) { var n = Number(t.ThuTuKO) || 0; if (n > maxTt) maxTt = n; });
+  them_('TranDau', {
+    MaTran: ma_('T'), VongDau: v, Bang: '', MaDoiA: maDoiA, MaDoiB: maDoiB,
+    BanThangA: '', BanThangB: '', TrangThai: 'Chưa đá', ThuTuKO: maxTt + 1,
+    SanDau: String(san || ''), GioThiDau: String(gio || ''), GhiChu: '', ThoiDiemCapNhat: new Date()
+  });
+  ghiLog_('Tạo trận thủ công', v);
+  return sach_({ ok: true, msg: 'Đã tạo trận.' });
+}
+
+/* Tạo trận khai mạc / giao hữu (nhãn riêng => không tính giải chung) */
+function taoTranGiaoHuu(token, maDoiA, maDoiB, tenTran, gio, san) {
+  var nhan = String(tenTran || '').trim() || '🎉 Khai mạc';
+  if (nhan === 'Vòng tròn') nhan = '🎉 Khai mạc';
+  return taoTranThuCong(token, maDoiA, maDoiB, nhan, gio, san);
+}
+
+/* Đổi thứ tự 1 trận trong cùng nhóm VongDau (huong: <0 lên, >0 xuống) — đánh số lại 1..n */
+function doiThuTuTran(token, maTran, huong) {
+  var g = guard_(token); if (g) return g;
+  var all = doc_('TranDau');
+  var t = all.filter(function(x) { return x.MaTran === maTran; })[0];
+  if (!t) return sach_({ ok: false, msg: 'Không tìm thấy trận.' });
+  var nhom = all.filter(function(x) { return String(x.VongDau || '') === String(t.VongDau || ''); })
+                .sort(function(a, b) { return (Number(a.ThuTuKO) || 0) - (Number(b.ThuTuKO) || 0); });
+  var idx = -1; for (var i = 0; i < nhom.length; i++) { if (nhom[i].MaTran === maTran) { idx = i; break; } }
+  var j = idx + (Number(huong) < 0 ? -1 : 1);
+  if (idx < 0 || j < 0 || j >= nhom.length) return sach_({ ok: false, msg: 'Không thể di chuyển thêm.' });
+  var tmp = nhom[idx]; nhom[idx] = nhom[j]; nhom[j] = tmp;
+  nhom.forEach(function(m, k) { suaO_('TranDau', m._row, 'ThuTuKO', k + 1); });
+  return sach_({ ok: true, msg: 'Đã đổi thứ tự.' });
+}
+
+/* Xóa 1 trận + sự kiện của trận đó */
+function xoaTran(token, maTran) {
+  var g = guard_(token); if (g) return g;
+  var t = doc_('TranDau').filter(function(x) { return x.MaTran === maTran; })[0];
+  if (!t) return sach_({ ok: false, msg: 'Không tìm thấy trận.' });
+  doc_('SuKien').slice().sort(function(a, b) { return b._row - a._row; }).forEach(function(s) {
+    if (s.MaTran === maTran) xoaDong_('SuKien', s._row);
+  });
+  xoaDong_('TranDau', t._row);
+  ghiLog_('Xóa trận', maTran);
+  return sach_({ ok: true, msg: 'Đã xóa trận.' });
+}
+/* ============================================================
+   ===== MEDIA — ảnh & video giải đấu =====
+   ============================================================ */
+function themMedia(token, payload) {
+  var g = guard_(token); if (g) return g;
+  payload = payload || {};
+  var loai = String(payload.loai || 'ANH').toUpperCase();
+  if (['ANH','VIDEO'].indexOf(loai) < 0) return sach_({ ok: false, msg: 'Loại không hợp lệ.' });
+  var url = String(payload.url || '').trim();
+  if (!url) return sach_({ ok: false, msg: 'Nhập link ảnh/video.' });
+
+  // Đếm để tự tăng ThuTu
+  var maxTt = 0;
+  doc_('Media').forEach(function(m){ var n = Number(m.ThuTu)||0; if (n > maxTt) maxTt = n; });
+
+  _baoDamCot_('Media', 'MaTran');
+  them_('Media', {
+    MaTran: String(payload.maTran || '').trim(),
+    MaMedia: ma_('M'),
+    Loai: loai,
+    Url: url,
+    TieuDe: String(payload.tieuDe || '').trim(),
+    MoTa: String(payload.moTa || '').trim(),
+    ThuTu: maxTt + 1,
+    ThoiDiemTao: new Date()
+  });
+  ghiLog_('Thêm media', loai + ' · ' + (payload.tieuDe || url));
+  return sach_({ ok: true, msg: 'Đã thêm ' + (loai==='VIDEO'?'video':'ảnh') + '.' });
+}
+
+/* Thêm cột vào sheet nếu chưa có (dùng khi nâng cấp, không cần chạy hàm tay) */
+function _baoDamCot_(tenSheet, cot) {
+  var sh = ss_().getSheetByName(tenSheet);
+  if (!sh) return;
+  var head = sh.getRange(1, 1, 1, sh.getLastColumn()).getValues()[0];
+  if (head.indexOf(cot) < 0) { sh.getRange(1, sh.getLastColumn() + 1).setValue(cot); xoaCache_(tenSheet); }
+}
+
+/* Gắn (hoặc bỏ gắn khi maTran rỗng) một video vào trận đấu */
+function ganVideoTran(token, maMedia, maTran) {
+  var g = guard_(token); if (g) return g;
+  _baoDamCot_('Media', 'MaTran');
+  var m = doc_('Media').filter(function(x){ return x.MaMedia === maMedia; })[0];
+  if (!m) return sach_({ ok: false, msg: 'Không tìm thấy video.' });
+  maTran = String(maTran || '').trim();
+  if (maTran && !doc_('TranDau').some(function(t){ return t.MaTran === maTran; })) return sach_({ ok: false, msg: 'Không tìm thấy trận.' });
+  suaO_('Media', m._row, 'MaTran', maTran);
+  ghiLog_('Gắn video trận', maMedia + ' → ' + (maTran || '(bỏ gắn)'));
+  return sach_({ ok: true, msg: maTran ? 'Đã gắn video vào trận.' : 'Đã bỏ gắn video.' });
+}
+
+function xoaMedia(token, maMedia) {
+  var g = guard_(token); if (g) return g;
+  var m = doc_('Media').filter(function(x){ return x.MaMedia === maMedia; })[0];
+  if (!m) return sach_({ ok: false, msg: 'Không tìm thấy.' });
+  xoaDong_('Media', m._row);
+  ghiLog_('Xóa media', maMedia);
+  return sach_({ ok: true, msg: 'Đã xóa.' });
+}
+
+function doiThuTuMedia(token, maMedia, huong) {
+  var g = guard_(token); if (g) return g;
+  var all = doc_('Media');
+  var m = all.filter(function(x){ return x.MaMedia === maMedia; })[0];
+  if (!m) return sach_({ ok: false, msg: 'Không tìm thấy.' });
+  var arr = all.slice().sort(function(a,b){ return (Number(a.ThuTu)||0) - (Number(b.ThuTu)||0); });
+  var i = -1; for (var k=0;k<arr.length;k++){ if (arr[k].MaMedia === maMedia){ i = k; break; } }
+  var j = i + (Number(huong) < 0 ? -1 : 1);
+  if (i < 0 || j < 0 || j >= arr.length) return sach_({ ok: false, msg: 'Không thể di chuyển.' });
+  var t = arr[i]; arr[i] = arr[j]; arr[j] = t;
+  arr.forEach(function(x, k){ suaO_('Media', x._row, 'ThuTu', k + 1); });
+  return sach_({ ok: true, msg: 'Đã đổi thứ tự.' });
+}
+function THEM_COT_ANH_SCALE_Y() {
+  var sh = ss_().getSheetByName('CauThu');
+  if(!sh) { Logger.log('Không thấy sheet CauThu'); return; }
+  var head = sh.getRange(1, 1, 1, sh.getLastColumn()).getValues()[0];
+  var them = [];
+  if(head.indexOf('AnhScale') < 0){
+    sh.getRange(1, sh.getLastColumn() + 1).setValue('AnhScale')
+      .setFontWeight('bold').setBackground('#16a34a').setFontColor('#ffffff');
+    them.push('AnhScale');
+  }
+  if(head.indexOf('AnhY') < 0){
+    sh.getRange(1, sh.getLastColumn() + 1).setValue('AnhY')
+      .setFontWeight('bold').setBackground('#16a34a').setFontColor('#ffffff');
+    them.push('AnhY');
+  }
+  Logger.log('✅ Đã thêm cột: ' + (them.join(', ') || 'không có gì mới'));
+}
+/* ⭐ Lấy ảnh Drive → base64 để chụp html-to-image không bị CORS */
+function layAnhBase64(url) {
+  try {
+    url = String(url || '').trim();
+    if (!url) return { ok: false, msg: 'URL trống' };
+    if (url.indexOf('data:') === 0) return { ok: true, data: url };
+
+    // Chuẩn hóa link Drive
+    var id = '';
+    var m = url.match(/\/file\/d\/([A-Za-z0-9_-]+)/) ||
+            url.match(/[?&]id=([A-Za-z0-9_-]+)/) ||
+            url.match(/\/d\/([A-Za-z0-9_-]+)/);
+    if (m) id = m[1];
+
+    var fetchUrl = id
+      ? 'https://drive.google.com/thumbnail?id=' + id + '&sz=w800'
+      : url;
+
+    var resp = UrlFetchApp.fetch(fetchUrl, {
+      muteHttpExceptions: true,
+      followRedirects: true
+    });
+    if (resp.getResponseCode() !== 200)
+      return { ok: false, msg: 'HTTP ' + resp.getResponseCode() };
+
+    var blob = resp.getBlob();
+    var ct = blob.getContentType() || 'image/jpeg';
+    var b64 = Utilities.base64Encode(blob.getBytes());
+    return { ok: true, data: 'data:' + ct + ';base64,' + b64 };
+  } catch(e) {
+    return { ok: false, msg: 'Lỗi: ' + (e.message || e) };
+  }
+}
+/**
+ * Tải ảnh từ URL (đặc biệt là Google Drive) và chuyển thành chuỗi base64.
+ * Giúp client tránh lỗi CORS khi dùng thư viện html-to-image.
+ */
+function getImageBase64FromUrl(url) {
+  try {
+    if (!url || typeof url !== 'string') {
+      return { ok: false, msg: 'URL không hợp lệ.' };
+    }
+    // Nếu đã là data URI thì trả về luôn
+    if (url.startsWith('data:')) {
+      return { ok: true, data: url };
+    }
+
+    // Chuẩn hóa link Google Drive
+    let fileId = '';
+    const driveIdMatch = url.match(/\/file\/d\/([^/]+)/) ||
+                         url.match(/[?&]id=([^&]+)/) ||
+                         url.match(/\/d\/([^/]+)/);
+    if (driveIdMatch) {
+      fileId = driveIdMatch[1];
+    }
+
+    const fetchUrl = fileId
+      ? `https://drive.google.com/thumbnail?id=${fileId}&sz=w1600`
+      : url;
+
+    const response = UrlFetchApp.fetch(fetchUrl, {
+      muteHttpExceptions: true,
+      followRedirects: true
+    });
+
+    if (response.getResponseCode() !== 200) {
+      return { ok: false, msg: `Lỗi HTTP ${response.getResponseCode()} khi tải ảnh.` };
+    }
+
+    const blob = response.getBlob();
+    const contentType = blob.getContentType() || 'image/jpeg';
+    const base64Data = Utilities.base64Encode(blob.getBytes());
+
+    return {
+      ok: true,
+      data: `data:${contentType};base64,${base64Data}`
+    };
+
+  } catch (error) {
+    return { ok: false, msg: `Lỗi server: ${error.message}` };
+  }
+}
+/* ⭐ Hàm test — chạy hàm này trong editor để force cấp quyền */
+function TEST_CAP_QUYEN() {
+  var kq = getImageBase64FromUrl('https://drive.google.com/thumbnail?id=149ByNMnkk91bYP3PmWVphhxYdXkvVKgw&sz=w1600');
+  Logger.log(JSON.stringify(kq).slice(0, 200));
+  return kq;
+}
+function THEM_COT_ANH_THEO_DOI() {
+  var sh = ss_().getSheetByName('CauThu');
+  if(!sh) { Logger.log('Không thấy sheet CauThu'); return; }
+  var head = sh.getRange(1, 1, 1, sh.getLastColumn()).getValues()[0];
+  if(head.indexOf('AnhTheoDoi') < 0){
+    sh.getRange(1, sh.getLastColumn() + 1).setValue('AnhTheoDoi')
+      .setFontWeight('bold').setBackground('#16a34a').setFontColor('#ffffff');
+    Logger.log('✅ Đã thêm cột AnhTheoDoi');
+  } else {
+    Logger.log('ℹ️ Cột AnhTheoDoi đã tồn tại');
+  }
+}
+function capNhatAnhTheoDoi(token, maCT, maDoi, url) {
+  var g = guard_(token); if (g) return g;
+  var c = doc_('CauThu').filter(function(x){ return x.MaCT === maCT; })[0];
+  if (!c) return sach_({ok:false, msg:'Không tìm thấy cầu thủ.'});
+  if (!maDoi) return sach_({ok:false, msg:'Thiếu mã đội.'});
+
+  var map = {};
+  try {
+    if (c.AnhTheoDoi) map = JSON.parse(c.AnhTheoDoi) || {};
+  } catch(e) { map = {}; }
+
+  if (url) map[maDoi] = String(url).trim();
+  else delete map[maDoi];
+
+  suaO_('CauThu', c._row, 'AnhTheoDoi', JSON.stringify(map));
+  xoaCache_('CauThu'); __DOC = {};
+  ghiLog_('Cập nhật ảnh theo đội', c.HoTen + ' → ' + maDoi + ' (' + (url?'set':'xóa') + ')');
+  return sach_({ok:true, msg:'Đã cập nhật ảnh riêng cho đội.'});
+}
