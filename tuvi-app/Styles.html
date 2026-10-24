@@ -1,6 +1,6 @@
 <style>
 /* Mã phiên bản giao diện – phải trùng với Index.html (meta tcc-ban) và Script.html (BAN_GIAO_DIEN) */
-:root { --tcc-ban: "2026.10.24.1"; }
+:root { --tcc-ban: "2026.10.24.2"; }
 /* ================================================================
    THIÊN CƠ CÁC — phong cách tiên hiệp sáng: ngọc bích, kim sa, mây trắng
    ================================================================ */
@@ -2332,7 +2332,7 @@ body.co-ket-qua.mo-form .form-panel, .ls3d-khung, .wl-anh { background: #0A1426;
 /* Poster trang chủ (ảnh dọc 9:16 có nút bấm trong ảnh) + ảnh nhỏ góc màn hình */
 .wl-anh { position:relative; display:block; padding:0; border:1px solid rgba(239,205,139,.82); border-radius:18px; overflow:hidden; width:100%; max-width:440px; justify-self:center; cursor:default; }
 .wl-anh img { display:block; width:100%; height:auto; aspect-ratio:9 / 16; object-fit:cover; }
-.poster-hotspot { position:absolute; left:22%; top:80.5%; width:56%; height:8%; padding:0; border:0; border-radius:50px; background:transparent; cursor:pointer; }
+.poster-hotspot { position:absolute; left:27%; top:81.6%; width:46%; height:6.2%; padding:0; border:0; border-radius:50px; background:transparent; cursor:pointer; }
 .poster-hotspot:focus-visible { outline:3px solid #ffe2a0; outline-offset:2px; }
 #wlGo { display:none !important; }
 @media(max-width:760px){ .wl-anh { max-width:440px; width:100%; } }
@@ -2350,4 +2350,35 @@ body:has(#page-chart.active) .tcc-goc-anh { opacity:.55; }
 .nam-luu input::-webkit-outer-spin-button, .nam-luu input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
 .nam-luu button { width: 30px; height: 30px; border-radius: 8px; border: 1px solid var(--line); background: transparent; color: var(--gold-hi, var(--ink)); font-size: 18px; line-height: 1; cursor: pointer; }
 .nam-luu button:hover { background: rgba(255, 255, 255, .08); }
+/* ===== BÁO CÁO PDF – bản sáng tông Hologram (24/10/2026, chủ dự án chê bản cũ "hơi tối") =====
+   Nền trắng xanh nhạt, chữ xanh than, nhấn vàng kim + xanh lơ; dải mở chương sáng; bìa xanh lam rực có bánh xe ngũ hành. */
+.bc-root.bc-sang { --bc-nen: #FBFCFF; --bc-chu: #1C2540; --bc-nhat: #5B6787; --bc-dau: #1E3A8A; --bc-nhan: #B07A1C; --bc-vien: #DCE4F3; --bc-the: #FFFFFF; --bc-the2: #EEF4FF;
+  --bc-tot: #0F8A6A; --bc-tot-nen: #DDF5EC; --bc-xau: #C2410C; --bc-xau-nen: #FDE8DD; --bc-vua: #A16207; --bc-vua-nen: #FDF3D7; --bc-vang: #D4A23A; --bc-soc: #F5F8FE; }
+.bc-root.bc-toi { --bc-nen: #0B1430; --bc-chu: #E6EEFF; --bc-nhat: #A9BCDA; --bc-dau: #FFE6A8; --bc-nhan: #7FE3F2; --bc-vien: #24365F; --bc-the: #101C3E; --bc-the2: #142553; --bc-soc: #0F1A3A; }
+.bc-sang .bc-mo { background: linear-gradient(115deg, #E8F1FF 0%, #F4F0FF 45%, #FFF5DE 100%); color: var(--bc-chu); border: 1px solid #D6E2F7; border-left: 5px solid var(--bc-vang); }
+.bc-sang .bc-mo::after { border-color: rgba(8, 145, 178, .35); box-shadow: 0 0 0 26px rgba(8, 145, 178, .06), 0 0 0 60px rgba(212, 162, 58, .07); }
+.bc-sang .bc-mo h1 { color: #1E3A8A; } .bc-sang .bc-mo p { color: #4B5878; } .bc-sang .bc-mo .bc-so { color: #B07A1C; }
+.bc-toi .bc-mo { background: linear-gradient(120deg, #0F1E4A, #1E3A8A 60%, #3B2E7A); }
+.bc-sang .bc-h2 { border-bottom: 2px solid transparent; border-image: linear-gradient(90deg, #D4A23A, #06B6D4 60%, transparent) 1; }
+.bc-sang .bc-hop { border-left-color: #06B6D4; background: linear-gradient(90deg, #EAF8FC, #F5F9FF); }
+.bc-sang .bc-tbl th { border-bottom-color: #06B6D4; }
+.bc-holo { margin: 4px 0 18px; } .bc-holo img { border-radius: 14px; box-shadow: 0 0 0 2px #E8C77A, 0 10px 28px rgba(30, 58, 138, .25); }
+.pdf-cover { background: radial-gradient(620px 520px at 88% 10%, rgba(255, 214, 140, .45), transparent 60%), radial-gradient(700px 500px at 0% 100%, rgba(6, 182, 212, .35), transparent 62%),
+  linear-gradient(165deg, #2E56C9 0%, #1E3A8A 45%, #16296B 100%) !important; }
+.pc-dia { position: absolute; width: 400px; height: 400px; right: -90px; top: 470px; border-radius: 50%; opacity: .85; box-shadow: 0 0 0 3px rgba(255, 214, 140, .85), 0 0 60px rgba(255, 214, 140, .45); }
+.bc-root .pc-tbl td { color: #EEF4FF; } .bc-root .pc-foot { color: #CFE0F5; }
+/* Luận Tử Vi theo trình tự 26 bước */
+.tt26-nhom { margin: 18px 0 8px; font-size: 13px; letter-spacing: .14em; text-transform: uppercase; color: var(--gold-hi, var(--head)); }
+.tt26-b { border: 1px solid var(--line); border-left: 4px solid var(--gold, #E8C77A); border-radius: 12px; margin: 0 0 8px; background: rgba(255, 255, 255, .03); }
+.tt26-b.tot { border-left-color: #6FE3B4; } .tt26-b.xau { border-left-color: #FF8A7A; }
+.tt26-b > summary { display: flex; align-items: center; gap: 10px; padding: 10px 14px; cursor: pointer; list-style: none; }
+.tt26-b > summary::-webkit-details-marker { display: none; }
+.tt26-so { flex: none; width: 28px; height: 28px; border-radius: 50%; display: grid; place-items: center; font-weight: 800; font-size: 13px; background: rgba(232, 199, 122, .18); color: var(--gold-hi, var(--head)); }
+.tt26-b > summary b { flex: 1; } .tt26-b > summary i { font-style: normal; color: var(--gold-hi, var(--head)); }
+.tt26-b.tot > summary i { color: #6FE3B4; } .tt26-b.xau > summary i { color: #FF8A7A; }
+.tt26-b, .tt26-b > summary b, .tt26-nd p { color: var(--ink); }
+.tt26-nd { padding: 0 16px 12px 52px; } .tt26-nd p { margin: 0 0 8px; }
+.tt26-ky { font-size: 13.5px; color: var(--ink-soft); } .tt26-ky summary { cursor: pointer; color: var(--accent, var(--jade)); }
+.tt26-ky ul { margin: 6px 0 0; padding-left: 18px; }
+@media (max-width: 640px) { .tt26-nd { padding-left: 16px; } }
 </style>

@@ -1,4 +1,4 @@
-Anh.html	301
+Anh.html	300
 Astro.gs	12722
 BatTu.gs	28078
 BatTuChiTiet.gs	39982
@@ -6,13 +6,13 @@ BatTuLuan.gs	46448
 BatTuPhanTich.gs	38898
 CapDoi.gs	49852
 ChiemTinh.gs	103846
-Code.gs	23240
+Code.gs	23458
 DeHieu.gs	91204
 DuDoan.gs	37804
 Facts.gs	11809
 HaLac.gs	63978
 HoiTu.gs	61443
-Holo.html	57921
+Holo.html	58790
 HoloAnhBatTu.html	188135
 HoloAnhChiemTinh.html	316631
 HoloAnhHD.html	245263
@@ -31,14 +31,14 @@ HoloAnhThanSo.html	253095
 HoloAnhTongHop.html	208379
 HoloAnhTuVi.html	262583
 HumanDesign.gs	46573
-Index.html	47976
+Index.html	47730
 LuanGiai.gs	97560
 Lunar.gs	9228
 NghiemChung.gs	27198
 NghiemChungUI.html	11072
 PhoiNgau.gs	50201
-Script.html	575548
-Styles.html	212971
+Script.html	581557
+Styles.html	216722
 TaiKhoan.gs	20569
 ThanSoHoc.gs	52496
 ThanhToan.gs	49402
@@ -47,4 +47,5 @@ TongHop.gs	71827
 TuVi.gs	57669
 TuViHeThong.gs	375919
 TuViTamPhap.gs	22819
+TuViTrinhTu.gs	28326
 VanSau.gs	59448

@@ -27,7 +27,7 @@
     });
   }
   /** Mã phiên bản giao diện – phải trùng với Index.html (meta tcc-ban) và Styles.html (--tcc-ban) */
-  var BAN_GIAO_DIEN = '2026.10.24.1';
+  var BAN_GIAO_DIEN = '2026.10.24.2';
   function storeGet(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
   function storeSet(k, v) { try { localStorage.setItem(k, v); } catch (e) { /* bỏ qua */ } }
 
@@ -1616,11 +1616,19 @@
   }
   /** Chụp lá số ở kích thước gốc (bỏ thu nhỏ tạm thời) */
   function chupLaSo(opt) {
-    var fr = $('chartFrame'), sc = fr.parentNode, tf = fr.style.transform, h = sc.style.height, ca = $('chartArea'), la3d = ca && ca.classList.contains('xem-holo') ? 'xem-holo' : '';
-    if (la3d) ca.classList.remove(la3d);           // đang xem Hologram: chụp lá số nền sáng
-    fr.style.transform = ''; sc.style.height = '';
-    function tra() { fr.style.transform = tf; sc.style.height = h; if (la3d) ca.classList.add(la3d); }
-    return html2canvas(fr, opt).then(function (c) { tra(); return c; }, function (e) { tra(); throw e; });
+    // 24/10: chụp đúng lá số Hologram (nền tranh). html2canvas đặt lệch SVG tuyệt đối → tạm thay đường tam hợp bằng ảnh
+    var fr = $('chartFrame'), sc = fr.parentNode, tf = fr.style.transform, h = sc.style.height, doi = [];
+    fr.style.transform = ''; sc.style.height = ''; drawOverlay();
+    [].forEach.call(fr.querySelectorAll('svg.chart-lines'), function (sv) {
+      var r = sv.getBoundingClientRect(), im = new Image(), cl = sv.cloneNode(true), goc = sv.querySelectorAll('*');
+      [].forEach.call(cl.querySelectorAll('*'), function (n, i) { var cs = getComputedStyle(goc[i]); ['stroke', 'stroke-width', 'stroke-dasharray', 'opacity', 'fill'].forEach(function (k) { n.setAttribute(k, cs.getPropertyValue(k)); }); });
+      cl.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
+      im.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(new XMLSerializer().serializeToString(cl));
+      im.style.cssText = 'position:absolute;left:0;top:0;width:' + r.width + 'px;height:' + r.height + 'px;pointer-events:none;z-index:0';
+      sv.parentNode.insertBefore(im, sv); sv.style.display = 'none'; doi.push([sv, im]);
+    });
+    function tra() { fr.style.transform = tf; sc.style.height = h; doi.forEach(function (x) { x[1].remove(); x[0].style.display = ''; }); }
+    return new Promise(function (ok) { setTimeout(ok, 60); }).then(function () { return html2canvas(fr, opt); }).then(function (c) { tra(); return c; }, function (e) { tra(); throw e; });
   }
   function applyOptions() {
     var frame = $('chartFrame');
@@ -2629,6 +2637,20 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
     }
     return h + coSoHtml('Nguồn và cách hiểu', TP.coSo);
   }
+  /** Luận Tử Vi theo trình tự 26 bước (TuViTrinhTu.gs): 6 nhóm, mỗi bước một thẻ gập – lời dễ hiểu trước, căn cứ thuật ngữ thu gọn */
+  function trinhTuHtml(T) {
+    var DAU = { tot: '✦', vua: '◇', xau: '☾' };
+    return '<div class="panel section tt26"><h2 class="panel-title"><span class="han">序</span> Luận theo trình tự</h2>' +
+      '<p class="lede">Đi từ gốc rễ (can chi năm sinh, mệnh – cục – mùa sinh) tới cốt cách lá số, ba vòng sao, các nhóm sao, từng chủ đề đời sống và vận hạn năm nay. ✦ thuận · ◇ vừa · ☾ cần lưu ý.</p>' +
+      T.nhom.map(function (g) {
+        var ds = T.buoc.filter(function (b) { return b.so >= g.tu && b.so <= g.den; });
+        return '<h3 class="tt26-nhom">' + esc(g.ten) + '</h3>' + ds.map(function (b) {
+          return '<details class="tt26-b ' + b.huong + '"' + (b.so <= 4 ? ' open' : '') + '><summary><span class="tt26-so">' + b.so + '</span><b>' + esc(b.ten) + '</b><i aria-hidden="true">' + (DAU[b.huong] || '') + '</i></summary>' +
+            '<div class="tt26-nd">' + b.de.map(function (x) { return '<p>' + esc(x) + '</p>'; }).join('') +
+            (b.ky && b.ky.length ? '<details class="tt26-ky"><summary>Căn cứ (thuật ngữ Tử Vi)</summary><ul>' + b.ky.map(function (x) { return '<li>' + esc(x) + '</li>'; }).join('') + '</ul></details>' : '') + '</div></details>';
+        }).join('');
+      }).join('') + '</div>';
+  }
   function khoiPhan(nhom, so, ten, phu, noi) { return '<div class="tg ' + nhom + '" data-g="' + nhom + '-' + so + '"><div class="tg-head"><span>Phần ' + so + '</span><b>' + ten + '</b><em>' + phu + '</em></div>' + noi + '</div>'; }
   function renderLuan(res) {
     var L = res.tuvi.luanGiai, I = res.tuvi.info, CT = res.chiTiet;
@@ -2657,11 +2679,13 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
     var p4 = '<div class="panel section"><h2 class="panel-title"><span class="han">運</span> Đại vận – tiểu vận Tử Vi</h2><p>' + (dvNay ? 'Bạn đang ở đại hạn <b>' + esc(dvNay.khoang) + '</b> (' + esc(String(dvNay.nam)) + ', cung ' + esc(dvNay.cung) + ' – ' + esc(dvNay.danhGia.toLowerCase()) + ').' : '') + ' Toàn bộ đại vận 10 năm, vận năm ' + I.viewYear + ', 12 tháng và lịch từng ngày nằm ở tab <b>Vận hạn</b>.</p>' +
       '<button type="button" class="btn btn-ghost btn-sm" data-den="vh">⏳ Sang tab Vận hạn</button></div>';
     var tp = CT.tamPhap ? tamPhapHtml(CT.tamPhap) : '';
-    var html = khoiPhan('tvp', 1, 'Chân dung lá số', 'Mệnh – Thân, bố cục, cách cục, cung mạnh và cung yếu', p1) +
-      (tp ? khoiPhan('tvp', 2, 'Thế đứng & nguồn cội', 'Ba vòng nhân sinh (phái Thiên Lương) · Phi Tinh (tham khảo)', tp) : '') +
-      khoiPhan('tvp', tp ? 3 : 2, 'Luận 12 cung', 'Mỗi cung: văn dễ hiểu trước, thuật ngữ chuyên sâu thu gọn bên dưới', p2) +
-      khoiPhan('tvp', tp ? 4 : 3, 'Đối chiếu Tử Vi × Bát Tự', 'Hai hệ cùng chiều thì kết luận chắc chắn hơn', p3) +
-      khoiPhan('tvp', tp ? 5 : 4, 'Vận hạn', 'Đại vận, vận năm, tháng, ngày', p4);
+    var t26 = CT.trinhTu && CT.trinhTu.buoc ? trinhTuHtml(CT.trinhTu) : '', so = 1;
+    var html = khoiPhan('tvp', so++, 'Chân dung lá số', 'Mệnh – Thân, bố cục, cách cục, cung mạnh và cung yếu', p1) +
+      (t26 ? khoiPhan('tvp', so++, 'Luận theo trình tự 26 bước', 'Từ gốc can chi năm sinh đến vận hạn năm nay – đọc lần lượt như một thầy luận', t26) : '') +
+      (tp ? khoiPhan('tvp', so++, 'Thế đứng & nguồn cội', 'Ba vòng nhân sinh (phái Thiên Lương) · Phi Tinh (tham khảo)', tp) : '') +
+      khoiPhan('tvp', so++, 'Luận 12 cung', 'Mỗi cung: văn dễ hiểu trước, thuật ngữ chuyên sâu thu gọn bên dưới', p2) +
+      khoiPhan('tvp', so++, 'Đối chiếu Tử Vi × Bát Tự', 'Hai hệ cùng chiều thì kết luận chắc chắn hơn', p3) +
+      khoiPhan('tvp', so++, 'Vận hạn', 'Đại vận, vận năm, tháng, ngày', p4);
     $('page-luan').innerHTML = html;
     $('page-luan').querySelectorAll('.strip-item').forEach(function (b) {
       b.addEventListener('click', function () { var el = document.getElementById(b.getAttribute('data-target')); if (el) cuonToi(el); });
@@ -3347,7 +3371,7 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
   }
   /* Lá số Tử Vi: Hologram (lá số 2D đủ sao trên nền tranh – mặc định) hoặc 2D nền sáng; nhớ lựa chọn trên máy người xem.
      10/2026: bỏ hẳn chế độ 3D theo yêu cầu chủ dự án. */
-  function cheDoLaSo() { var d = window.TCCHolo ? 'holo' : '2d', v = d; try { v = localStorage.getItem('tccCheDo2') || d; } catch (e) { v = d; } return v === '2d' || !window.TCCHolo ? '2d' : 'holo'; }
+  function cheDoLaSo() { return window.TCCHolo ? 'holo' : '2d'; }   // 24/10: chỉ còn lá số Hologram (2D nền sáng chỉ khi thiếu Holo.html)
   function datCheDo(cd) {
     var ca = $('chartArea'); if (!ca) return;
     ca.classList.toggle('xem-holo', cd === 'holo');
@@ -4880,10 +4904,10 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
   function chanTrang(txt, so, tong, sang) {
     var c = document.createElement('canvas'); c.width = 1600; c.height = 44;
     var g = c.getContext('2d');
-    g.font = '500 19px "Be Vietnam Pro", system-ui, sans-serif'; g.fillStyle = sang ? '#9a8569' : '#cdbb9a'; g.textBaseline = 'middle';
+    g.font = '500 19px "Be Vietnam Pro", system-ui, sans-serif'; g.fillStyle = sang ? '#5B6787' : '#A9BCDA'; g.textBaseline = 'middle';
     g.fillText(txt, 0, 24);
     g.textAlign = 'right'; g.font = '600 20px "Be Vietnam Pro", system-ui, sans-serif'; g.fillText(String(so), 1600, 24);
-    g.strokeStyle = sang ? 'rgba(154,122,85,.35)' : 'rgba(227,185,138,.3)'; g.beginPath(); g.moveTo(0, 2); g.lineTo(1600, 2); g.stroke();
+    g.strokeStyle = sang ? 'rgba(6,182,212,.45)' : 'rgba(255,214,140,.35)'; g.beginPath(); g.moveTo(0, 2); g.lineTo(1600, 2); g.stroke();
     return c.toDataURL('image/png');
   }
 
@@ -5090,10 +5114,24 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
     }
     return h;
   }
+  /** Ảnh bảng Hologram trong báo cáo: vừa khổ A4 (rộng 760px, cao tối đa 980px), khung viền vàng */
+  function bcAnhHolo(anh, kich, ten) {
+    if (!anh) return '';
+    var ww = 760, hh = ww * kich[1] / kich[0]; if (hh > 980) { hh = 980; ww = hh * kich[0] / kich[1]; }
+    return '<div class="bc-anh bc-nguyen bc-holo"><img src="' + anh + '" alt="' + bcE(ten || '') + '" style="width:' + Math.round(ww) + 'px;height:' + Math.round(hh) + 'px"></div>';
+  }
   function pdfChart(res, anh, kich) {
-    var h = '';
-    if (anh) { var ww = 760, hh = ww * kich[1] / kich[0]; if (hh > 980) { hh = 980; ww = hh * kich[0] / kich[1]; }
-      h += '<div class="bc-anh bc-nguyen"><img src="' + anh + '" alt="Lá số Tử Vi" style="width:' + Math.round(ww) + 'px;height:' + Math.round(hh) + 'px"></div>'; }
+    var h = bcAnhHolo(anh, kich, 'Lá số Tử Vi');
+    var T26 = res.chiTiet && res.chiTiet.trinhTu;
+    if (T26 && T26.buoc) {
+      h += bcH2('Luận theo trình tự 26 bước', 'từ gốc can chi năm sinh tới vận hạn năm nay');
+      T26.nhom.forEach(function (g) {
+        h += '<div class="bc-cung">' + bcH3(g.ten) + T26.buoc.filter(function (b) { return b.so >= g.tu && b.so <= g.den; }).map(function (b) {
+          return '<div class="bc-nhan ' + (b.huong === 'tot' ? 'tot' : b.huong === 'xau' ? 'xau' : '') + '">' + b.so + '. ' + bcE(b.ten) + '</div>' + b.de.map(function (x) { return bcP(x); }).join('') +
+            (b.ky && b.ky.length ? bcP(b.ky.join(' '), 'bc-nho') : '');
+        }).join('') + '</div>';
+      });
+    }
     var CT = res.chiTiet && res.chiTiet.cung;
     if (CT && CT.length) {
       h += bcH2('Luận 12 cung', 'viết bằng ngôn ngữ đời thường');
@@ -5149,6 +5187,8 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
     h += bcHop('Lời bàn', bcP('Tử Vi, Bát Tự, Hà Lạc, Chiêm tinh, Thần số học và Human Design đều là hệ thống tham khảo dựa trên thời điểm sinh. Tâm tính, tu dưỡng và nỗ lực mới là điều quyết định – "Đức năng thắng số".'));
     return h;
   }
+  var PDF_ANH_HE = {}, PDF_ANH_BIA = '';   // ảnh bảng Hologram từng hệ + tranh bánh xe cho bìa, chụp lúc xuất PDF
+  var PDF_BANG = { battu: ['battu', 'holoBT'], halac: ['halac', 'holoHL'], astro: ['astro', 'holoCT'], so: ['so', 'holoTS'], hd: ['hd', 'holoHD'] };
   function pdfNoiDung(res, k, anh, kich) {
     try {
       if (k === 'tom') return pdfTom(res);
@@ -5160,7 +5200,8 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
       if (k === 'bien') return pdfBien(res);
       if (k === 'chart') return pdfChart(res, anh, kich);
       if (k === 'them') return pdfThem(res);
-      return pdfHe(res, k);
+      var A = PDF_ANH_HE[k];
+      return (A ? bcAnhHolo(A.src, A.kich, PDF_TEN[k] || k) : '') + pdfHe(res, k);
     } catch (e) { return bcP('Không dựng được phần này: ' + (e && e.message || e), 'bc-nho'); }
   }
 
@@ -5174,7 +5215,7 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
       ['Nơi sinh', T ? T.noiSinh : '—'],
       ['Tứ trụ', B.pillars.map(function (p) { return p.canTen + ' ' + p.chiTen; }).join(' · ')]
     ];
-    return '<div class="pdf-cover"><div class="pc-stars"></div>' + vongHoangDao() +
+    return '<div class="pdf-cover"><div class="pc-stars"></div>' + (PDF_ANH_BIA ? '<img class="pc-dia" alt="" src="' + PDF_ANH_BIA + '">' : vongHoangDao()) +
       '<div class="pc-top"><span class="pc-eyebrow">' + esc(brand.ten || 'Thiên Cơ Các') + ' · Báo cáo vận mệnh cá nhân</span>' + (demo ? '<span class="pc-demo">Bản xem thử</span>' : '') + '</div>' +
       '<div class="pc-mid"><div class="pc-kicker">Bản Đồ Vận Mệnh</div><h1>' + esc(I.name) + '</h1>' +
       (TL ? '<p class="pc-arch">' + esc(TL.tieuDe) + '</p>' : '') +
@@ -5231,7 +5272,7 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
     if (!window.jspdf || typeof html2canvas === 'undefined') { toast('Không tải được thư viện PDF – hãy dùng nút In → Lưu dưới dạng PDF.', true); return; }
     var jsPDF = window.jspdf.jsPDF, pdf = new jsPDF({ unit: 'pt', format: 'a4', compress: true });
     var PW = 595.28, PH = 841.89, MX = 42, MT = 46, MB = 50, CW = PW - 2 * MX, CH = PH - MT - MB;
-    var W = 760, pxPt = CW / W, pageHpx = CH / pxPt, NEN = sang ? [251, 248, 242] : [24, 20, 16], NEN_HEX = sang ? '#fbf8f2' : '#181410';
+    var W = 760, pxPt = CW / W, pageHpx = CH / pxPt, NEN = sang ? [251, 252, 255] : [11, 20, 48], NEN_HEX = sang ? '#fbfcff' : '#0b1430';
     var root = document.createElement('div');
     root.id = 'pdfRoot'; root.className = 'pdf-root bc-root ' + (sang ? 'bc-sang' : 'bc-toi');
     document.body.appendChild(root);
@@ -5348,8 +5389,21 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
       chuoi = chuoi.then(function () { showTab('chart'); return sleep(150); }).then(function () {
         drawOverlay();
         return chupLaSo({ scale: 2, backgroundColor: null, useCORS: true, logging: false });
-      }).then(function (c) { anhLaSo = c.toDataURL('image/png'); kichLaSo = [c.width, c.height]; }, function () { anhLaSo = null; });
+      }).then(function (c) { anhLaSo = c.toDataURL('image/jpeg', 0.9); kichLaSo = [c.width, c.height]; }, function () { anhLaSo = null; });
     }
+    // Bảng Hologram của Bát Tự, Hà Lạc, Chiêm tinh, Thần số, Human Design (chụp đúng như trên web)
+    PDF_ANH_HE = {}; PDF_ANH_BIA = '';
+    if (window.TCCHolo && TCCHolo.layAnh) chuoi = chuoi.then(function () { return TCCHolo.layAnh('TongHop'); }).then(function (u) { PDF_ANH_BIA = u || ''; });
+    if (window.TCCHolo && TCCHolo.chup && chon.indexOf('linhvuc') >= 0) chuoi = chuoi.then(function () { showTab('tong'); return sleep(400); }).then(function () {
+      var vk = document.querySelector('#page-tong .vt-khung') || document.querySelector('.vt-khung'); if (!vk || !vk.offsetParent) return null;
+      napAnhHolo(); return sleep(300).then(function () { return TCCHolo.chup(vk, 1.6); });
+    }).then(function (c) { if (c) PDF_ANH_HE.linhvuc = { src: c.toDataURL('image/jpeg', 0.9), kich: [c.width, c.height] }; }, function () {});
+    if (window.TCCHolo && TCCHolo.chup) chon.forEach(function (k) {
+      var B = PDF_BANG[k]; if (!B) return;
+      chuoi = chuoi.then(function () { setLoadingText('Đang chụp bảng ' + (PDF_TEN[k] || k) + '…'); showTab(B[0]); return sleep(250); })
+        .then(function () { return $(B[1]) ? TCCHolo.chup(B[1], 1.6) : null; })
+        .then(function (c) { if (c) PDF_ANH_HE[k] = { src: c.toDataURL('image/jpeg', 0.9), kich: [c.width, c.height] }; }, function () {});
+    });
     var coTom = !!(res.moRong && res.moRong.tongHop && res.moRong.tongHop.tomLuoc) || !!(res.teaser && res.teaser.tom);
     if (coTom && chon.indexOf('tom') < 0) chon = ['tom'].concat(chon);
     var dsPhan = [];
@@ -5357,6 +5411,8 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
       chon.forEach(function (k) {
         var noi = demo ? demoPhan(res, k) : pdfNoiDung(res, k, anhLaSo, kichLaSo);
         if (demo && k === 'chart' && anhLaSo) noi = pdfChart({ chiTiet: null }, anhLaSo, kichLaSo) + noi;
+        if (demo && PDF_ANH_HE[k]) noi = bcAnhHolo(PDF_ANH_HE[k].src, PDF_ANH_HE[k].kich, PDF_TEN[k] || k) + noi;
+        if (!demo && k === 'linhvuc' && PDF_ANH_HE.linhvuc) noi = bcAnhHolo(PDF_ANH_HE.linhvuc.src, PDF_ANH_HE.linhvuc.kich, 'Bánh xe 9 lĩnh vực') + noi;
         if (noi && noi.replace(/<[^>]+>/g, '').trim().length > 20) dsPhan.push({ k: k, ten: PDF_TEN[k] || k, hook: PDF_HOOK[k] || '', noi: noi, trang: 0 });
       });
       var html = '<div class="pdf-page-cover">' + bia(res, brand, demo) + '</div>';
@@ -5477,6 +5533,8 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
     buoc('lịch sử', function () { $('btnHistoryTop').addEventListener('click', function () { showTab('hist'); }); });
     buoc('ảnh quảng bá', function () {
       // Ảnh quảng bá (Anh.html – tùy chọn)
+      // Poster trang chủ: luôn lấy ảnh mới nhất trên nhánh (Anh.html trên Apps Script được bộ bấm đúp giữ nguyên nên không đổi được từ đây)
+      window.ANH_QC = 'https://raw.githubusercontent.com/phamdoanchiengroup-cloud/githubforclaude160695/claude/happy-brown-lttkz3/tuvi-app/poster-trang-chu.webp?v=20261024b';
       if (typeof ANH_QC === 'string' && ANH_QC && $('anhQC')) { var poster = $('anhQC'); poster.decoding = 'async'; poster.onerror = function () { if ($('wlHero')) $('wlHero').classList.add('no-anh'); }; poster.src = ANH_QC; } else if ($('wlHero')) $('wlHero').classList.add('no-anh');
       if (typeof ANH_QC === 'string' && ANH_QC && $('tccGocAnhImg') && window.innerWidth > 760) $('tccGocAnhImg').src = ANH_QC;
       function khamPha() {

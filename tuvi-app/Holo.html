@@ -447,7 +447,18 @@ table.holo-bt{width:100%;min-width:720px;border-collapse:separate;border-spacing
     if (typeof html2canvas === 'undefined') { alert('Không tải được thư viện chụp ảnh – hãy thử lại sau.'); return; }
     var w = b.closest('.holo-wrap'), nut = w.querySelector('.board'), ten = b.getAttribute('data-holo-tai');
     var cu = b.textContent; b.disabled = true; b.textContent = 'Đang chụp…';
-    var chup = w.querySelector('.holo-bt') ? w : nut, an = [].slice.call(w.querySelectorAll('.holo-tai'));
+    chupBang(w).then(function (cv) {
+      var a = document.createElement('a'); a.href = cv.toDataURL('image/png');
+      a.download = ten + '-' + (tenNguoi || 'thien-co-cac').replace(/\s+/g, '-') + '.png';
+      document.body.appendChild(a); a.click(); a.remove();
+    }).catch(function (err) { alert('Chưa chụp được ảnh: ' + (err && err.message || err)); })
+      .then(function () { b.disabled = false; b.textContent = cu; });
+  });
+  /** Chụp một bảng Hologram (khung .holo-wrap) thành canvas – dùng cho nút Tải ảnh và báo cáo PDF */
+  function chupBang(w, scale) {
+    if (typeof w === 'string') w = document.getElementById(w);
+    if (!w || typeof html2canvas === 'undefined') return Promise.reject(new Error('Không có bảng hoặc thư viện chụp ảnh'));
+    var nut = w.querySelector('.board'), chup = w.querySelector('.holo-bt') ? w : (nut || w), an = [].slice.call(w.querySelectorAll('.holo-tai'));
     an.forEach(function (x) { x.style.visibility = 'hidden'; });
     // html2canvas đặt sai vị trí SVG nằm tuyệt đối → tạm thay mỗi SVG bằng ảnh <img> cùng kích thước, chụp xong trả lại
     var svgs = [].slice.call(chup.querySelectorAll('svg')).map(function (sv) {
@@ -457,13 +468,17 @@ table.holo-bt{width:100%;min-width:720px;border-collapse:separate;border-spacing
       im.style.cssText = 'display:block;width:' + r.width + 'px;height:' + r.height + 'px;' + (cs.position === 'absolute' ? 'position:absolute;left:' + (r.left - pr.left) + 'px;top:' + (r.top - pr.top) + 'px;z-index:' + cs.zIndex + ';' : '');
       sv.parentNode.insertBefore(im, sv); sv.style.display = 'none'; return [sv, im];
     });
-    new Promise(function (ok) { setTimeout(ok, 120); }).then(function () { return html2canvas(chup, { scale: 2, backgroundColor: '#060B16', useCORS: true, logging: false }); }).then(function (cv) {
-      var a = document.createElement('a'); a.href = cv.toDataURL('image/png');
-      a.download = ten + '-' + (tenNguoi || 'thien-co-cac').replace(/\s+/g, '-') + '.png';
-      document.body.appendChild(a); a.click(); a.remove();
-    }).catch(function (err) { alert('Chưa chụp được ảnh: ' + (err && err.message || err)); })
-      .then(function () { svgs.forEach(function (o) { o[1].remove(); o[0].style.display = ''; }); an.forEach(function (x) { x.style.visibility = ''; }); b.disabled = false; b.textContent = cu; });
-  });
+    function tra() { svgs.forEach(function (o) { o[1].remove(); o[0].style.display = ''; }); an.forEach(function (x) { x.style.visibility = ''; }); }
+    return new Promise(function (ok) { setTimeout(ok, 120); }).then(function () { return html2canvas(chup, { scale: scale || 2, backgroundColor: '#060B16', useCORS: true, logging: false }); })
+      .then(function (cv) { tra(); return cv; }, function (e) { tra(); throw e; });
+  }
+  /** Lấy tranh (data URL) theo tên – Promise */
+  function layAnh(ten) {
+    return new Promise(function (ok) {
+      var gia = { style: { setProperty: function (k, v) { ok(String(v).replace(/^url\(|\)$/g, '')); } } };
+      anh(ten, gia); setTimeout(function () { ok(''); }, 15000);
+    });
+  }
   /* Nền card từng tab (tải chậm khi mở tab) */
   var NEN_TAB = { tong: 'TabTong', chart: 'TabTuVi', battu: 'TabBatTu', halac: 'TabHaLac', astro: 'TabChiemTinh', so: 'TabThanSo', hd: 'TabHD', vh: 'TabVanHan', capdoi: 'TabCapDoi', ti: 'Nen', hist: 'Nen', que64: 'TabHaLac' };
   var NEN_DA = {};
@@ -476,6 +491,6 @@ table.holo-bt{width:100%;min-width:720px;border-collapse:separate;border-spacing
   var rt; window.addEventListener('resize', function () { clearTimeout(rt); rt = setTimeout(veDuongTV, 150); });
   function nen() { var n = document.getElementById('holoNen'); if (n) anh('Nen', n); }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', nen); else nen();
-  window.TCCHolo = { nenTab: nenTab, ve: ve, chonCung: chonCung, veDuong: veDuongTV, anh: anh };
+  window.TCCHolo = { nenTab: nenTab, ve: ve, chonCung: chonCung, veDuong: veDuongTV, anh: anh, chup: chupBang, layAnh: layAnh };
 })();
 </script>
