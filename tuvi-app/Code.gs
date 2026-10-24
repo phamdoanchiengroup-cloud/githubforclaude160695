@@ -140,6 +140,51 @@ function kiemTraCaiDat() {
  * API chính: lập lá số Tử Vi + Bát Tự + tổng luận
  * @param {Object} input dữ liệu từ form
  */
+/**
+ * Khung kiểm toán phương pháp luận Tử Vi.
+ * Mục đích: ghi rõ lớp căn cứ hiện có và giới hạn; không chấm xác suất/độ đúng giả tạo.
+ */
+function tuviDanhGiaPhuongPhap_(tv, chiTiet, input) {
+  tv = tv || {};
+  chiTiet = chiTiet || {};
+  var info = tv.info || {};
+  var palaces = Array.isArray(tv.palaces) ? tv.palaces : [];
+  var cung = Array.isArray(chiTiet.cung) ? chiTiet.cung : [];
+  var coSoCung = chiTiet.coSo && chiTiet.coSo.cung;
+  var daiVan = Array.isArray(chiTiet.daiVan) ? chiTiet.daiVan : [];
+  var hasMenh = info.menh !== undefined && info.menh !== null;
+  var hasThan = info.thanCu !== undefined && info.thanCu !== null;
+  var layers = [
+    { id: 'duLieu', ten: 'Dữ liệu và cấu trúc lá số', trangThai: info.solar && info.hour !== undefined ? 'co' : 'motPhan',
+      chiTiet: 'Ngày giờ sinh, thông tin lịch và cấu trúc lá số là đầu vào của các bước luận giải. Sai lệch đầu vào có thể làm thay đổi kết quả an sao.' },
+    { id: 'menhThan', ten: 'Mệnh, Thân và bố cục 12 cung', trangThai: palaces.length === 12 && hasMenh && hasThan ? 'co' : 'motPhan',
+      chiTiet: 'Dùng vị trí Mệnh, Thân và các cung làm khung định vị chủ đề; không suy kết luận chỉ từ một sao đơn lẻ.' },
+    { id: 'cung', ten: 'Luận cung và căn cứ liên quan', trangThai: cung.length ? 'co' : (coSoCung ? 'motPhan' : 'chuaCo'),
+      chiTiet: coSoCung ? 'Có phần cơ sở luận cung được trả về từ bộ máy hiện tại. Cần đối chiếu từng luận điểm với sao, cung và quy tắc cụ thể.' :
+        'Cần bổ sung căn cứ có cấu trúc cho từng luận điểm để người đọc có thể truy vết.' },
+    { id: 'cachCuc', ten: 'Cách cục và tổ hợp sao', trangThai: tv.luanGiai && Array.isArray(tv.luanGiai.cachCuc) && tv.luanGiai.cachCuc.length ? 'co' : 'motPhan',
+      chiTiet: 'Chỉ áp dụng cách cục khi đủ điều kiện của quy tắc đã chọn; ghi nhận phá cách và yếu tố trái chiều thay vì chỉ chọn dấu hiệu thuận.' },
+    { id: 'vanHan', ten: 'Đại vận và thời điểm', trangThai: daiVan.length ? 'co' : 'motPhan',
+      chiTiet: 'Vận hạn là lớp diễn giải theo thời gian. Mọi dự đoán cần xác định trước khoảng thời gian và tiêu chí kiểm chứng.' },
+    { id: 'doiChieu', ten: 'Đối chiếu hệ khác', trangThai: 'tachRieng',
+      chiTiet: 'Bát Tự hoặc các hệ khác có thể cung cấp góc nhìn bổ sung, nhưng sự đồng thuận không tự động chứng minh kết luận đúng và không được xem là các bằng chứng độc lập nếu phụ thuộc cùng giả định.' }
+  ];
+  return {
+    phienBan: 'TCC-TUVI-METHOD-1.0',
+    ten: 'Khung kiểm toán phương pháp luận',
+    layers: layers,
+    nguyenTac: [
+      'Không kết luận từ một sao đơn lẻ khi quy tắc yêu cầu xét cả cung và quan hệ liên cung.',
+      'Giữ lại cả dấu hiệu thuận lẫn dấu hiệu nghịch; ghi rõ mâu thuẫn và điều kiện áp dụng.',
+      'Không cộng số quy tắc cùng chiều thành xác suất xảy ra sự kiện.',
+      'Tách độ đúng của phép tính, độ đồng thuận giữa người luận và độ chính xác dự báo thực tế.'
+    ],
+    danhGiaKiemDinh: 'Chưa được xác lập bằng kiểm định thực nghiệm độc lập cho phương pháp Tử Vi Đẩu Số này.',
+    gioiHan: 'Đây là bản đồ căn cứ và giới hạn của quy trình, không phải chứng nhận lá số đúng hoặc dự báo đã được khoa học xác nhận.',
+    duLieuDauVao: { soCung: palaces.length, soCungCoLuan: cung.length, soDaiVan: daiVan.length }
+  };
+}
+
 function lapLaSoDayDu_(input) {
   input = input || {};
   var tv = tuviLapLaSo(input);
@@ -153,6 +198,7 @@ function lapLaSoDayDu_(input) {
     createdAt: new Date().toISOString()
   };
   result.chiTiet = luanChiTiet(tv, bt, input);
+  result.tuvi.danhGiaPhuongPhap = tuviDanhGiaPhuongPhap_(tv, result.chiTiet, input);
   result.duDoan = duDoanCuocDoi(tv, bt, input, result.chiTiet.daiVan);
   result.battuChiTiet = batTuChiTiet(bt, input, tv);
   // Trường hợp đặc biệt từng lưu niên (BatTuPhanTich.gs): tuế vận tịnh lâm, thiên khắc địa xung, tam hình, Thiên La Địa Võng
