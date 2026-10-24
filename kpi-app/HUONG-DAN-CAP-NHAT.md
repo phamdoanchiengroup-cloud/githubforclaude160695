@@ -501,6 +501,12 @@ Bấm đúp **2-CAP-NHAT.bat** (chưa tự triển khai thì Triển khai → Qu
 - Tab **Nhân sự** có thêm khối **"Ban điều hành & Hành chính nhân sự"** – chỉ chủ sở hữu thấy.
 - Tab **Nhân sự** có thẻ "Hồ sơ chưa đủ: x/y người", bấm "Xem danh sách" để thấy tên theo xưởng.
 
+## ĐỢT 24/10 (LẦN 2) – đổi Index.html + SoDo.html
+Bấm đúp **2-CAP-NHAT.bat**, rồi Ctrl+F5. Không có hàm cần chạy.
+- **Màn đăng nhập:** nền là ảnh nhà máy RHINO ban đêm. Bên trái có **thẻ nhân viên vân carbon**: gõ mã nhân viên thì tia laser khắc mã lên thẻ; đăng nhập đúng thì thẻ sáng viền vàng và laser khắc tên thật.
+- **Sơ đồ nhà máy:** không còn tô màu KPI / sĩ số (cả 2D và 3D). Nền 2D là 3 ảnh mặt bằng bạn gửi, mỗi khu ghi tên khu + **xưởng làm việc** (chữ vàng). Nút mới **Tách tầng**: ảnh minh họa 3 tầng kèm chú thích các xưởng từng tầng, bấm vào thẻ tầng để mở tầng đó.
+- **Ảnh để trên Google Drive** của bạn (thư mục **"KPI – Ảnh web"**), nên web nhẹ hơn nhiều: phần sơ đồ từ khoảng 1,46 MB còn 0,54 MB. **Đừng xóa, đổi chỗ ảnh hay tắt chia sẻ "Bất kỳ ai có đường liên kết"** của thư mục này, nếu không web sẽ mất ảnh. Muốn thay ảnh thì tải ảnh mới lên rồi báo Claude.
+
 ## ĐỢT 24/10 – đổi Index.html + SoDo.html
 Bấm đúp **2-CAP-NHAT.bat**, rồi Ctrl+F5. Không có hàm cần chạy.
 - Trưởng / phó phòng: thanh cơm trưa ở đầu trang báo **số người trong xưởng chưa báo cơm** khi bếp có thực đơn mới; tự tắt lúc chốt 22:00. Bấm "Xem tên / báo hộ" để báo hộ.

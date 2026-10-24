@@ -47,6 +47,11 @@ Những điều đã chốt. Đừng đề xuất lại những gì ghi "không 
 - **Không cần** (13/10): đối chiếu điểm danh, suất phát sinh sau khóa, suất khách/người chưa có tài khoản, "không ăn cho cả xưởng", cá nhân đổi nơi ăn, cảnh báo bếp sửa món, giới hạn món thay, suất chay.
 - Chỉ trưởng phòng ăn cùng ban điều hành; HR và QC không tính suất; phạm vi đăng ký hộ: TP/PP xưởng mình, ADMIN + TL khối văn phòng (11/10). – [[KPI Cơm trưa]]
 
+## Ảnh và giao diện (24/10)
+- Ảnh nặng để trên Google Drive (thư mục "KPI – Ảnh web", chia sẻ bằng link), không nhúng vào file. – [[KPI Ảnh trên Google Drive]]
+- Tab Sơ đồ nhà máy không hiện KPI / sĩ số (xem ở tab khác); 2D dùng ảnh mặt bằng chủ dự án gửi + ảnh tách tầng. – [[KPI Sơ đồ nhà máy 3D]]
+- Màn đăng nhập: nền ảnh tòa nhà ban đêm + thẻ nhân viên vân carbon được laser khắc mã. Ghép ảnh ngọn cơ chụp lên nền đêm: chê xấu, không dùng. – [[KPI Màn đăng nhập Khắc laser]]
+
 ## Bóng đá
 - Không làm tab riêng, chỉ dải thông báo; hiện từ 7 ngày trước trận (13/10). – [[KPI Bóng đá]]
 

@@ -10,7 +10,8 @@ const idx = fs.readFileSync(path.join(__dirname, '..', 'Index.html'), 'utf8');
 ok(!idx.includes('sdNguon3d" hidden') && !idx.includes('var SD_DATA') && idx.includes('var LT_DATA=null;') && !/"dang-tong-hop-bao-cao":\{"v"/.test(idx), 'Index.html không còn sơ đồ + dữ liệu hoạt ảnh');
 // 24/10: nâng ngân sách 900 -> 1000 KB (Kỹ năng +35 KB, hologram chủ sở hữu +24 KB; bộ clasp chỉ đẩy 5 file cố định nên chưa tách thêm file)
 ok(fs.statSync(path.join(__dirname, '..', 'Index.html')).size < 1000 * 1024, 'Index.html dưới 1000 KB', fs.statSync(path.join(__dirname, '..', 'Index.html')).size);
-ok((idx.match(/data:image\/png;base64/g) || []).length === 1 && (idx.match(/data:image\/jpeg;base64/g) || []).length === 1, 'logo và ảnh nền khắc laser chỉ nhúng 1 lần');
+// 24/10: nền đăng nhập = ảnh tòa nhà trên Google Drive (link lh3), không nhúng; thẻ nhân viên lấy lại logo đầu trang
+ok((idx.match(/data:image\/png;base64/g) || []).length === 1 && !/data:image\/jpeg;base64/.test(idx) && /<image class="anh" href="https:\/\/lh3\.googleusercontent\.com\/d\/[\w-]+=w1920-rj-l80"/.test(idx), 'logo chỉ nhúng 1 lần, ảnh nền đăng nhập lấy từ Google Drive (không nhúng)');
 (async () => {
   const b = await chromium.launch(); const p = await (await b.newContext({ viewport: { width: 1440, height: 900 } })).newPage(); const loiJS = [];
   p.on('pageerror', e => loiJS.push(e.message));

@@ -15,21 +15,24 @@ let dem = 0, loi = 0; const ok = (d, t, c) => { dem++; if (d) console.log('  ✓
     let m = await mai();
     ok(/mai/.test(m[0]) && /Chào buổi|Chúc ca đêm/.test(m[2]) && /Mai chúc bạn/.test(m[2]), 'Mai: chân dung tròn + lời chào + khẩu hiệu ngày', m);
     ok(await moi.evaluate(() => !document.querySelector('#gate [id="gToc"]') && !!document.querySelector('#gate [id="gbbToc"]')), 'hình Mai ở màn đăng nhập đổi id gradient (không trùng Mai trong web)');
-    const nen = await moi.evaluate(() => { const im = document.querySelector('#lkNen image.anh'); return [/^data:image\/jpeg;base64,/.test(im.getAttribute('href')), document.querySelector('.lk-dau img').naturalWidth > 100]; });
-    ok(nen[0] && nen[1], 'ảnh nền khắc laser + logo Rhino nhúng sẵn', nen);
+    const nen = await moi.evaluate(() => { const im = document.querySelector('#lkNen image.anh'), co = document.querySelector('#lkTheLogo'), h = im.getAttribute('href');
+      return [h === '' || /^https:\/\/lh3\.googleusercontent\.com\/d\/[\w-]+=w1920-rj-l80$/.test(h), !!co && /^data:image\/png;base64,/.test(co.getAttribute('href')), document.querySelector('.lk-dau img').naturalWidth > 100, !!document.querySelector('#lkNhom #lkChu') && !document.querySelector('#lkNhom #lkTia')]; });
+    ok(nen.every(Boolean), 'nền tòa nhà lấy từ Google Drive (hoặc để trống), thẻ nhân viên carbon có logo Rhino (lấy lại từ logo đầu trang), chữ khắc nằm trên thẻ', nen);
     ok(await moi.evaluate(() => getComputedStyle(document.getElementById('btnLogin')).backgroundColor === 'rgb(247, 184, 41)'), 'nút Đăng nhập màu vàng Rhino #f7b829');
     await moi.click('#l_tk'); await moi.type('#l_tk', 'c068', { delay: 40 }); await p.waitForTimeout(500);
     let k = await moi.evaluate(() => [document.getElementById('lkChu').textContent, document.getElementById('lkMa').textContent, document.querySelectorAll('#lkChu tspan').length]);
-    ok(k[0] === 'C068' && k[1] === 'C068' && k[2] === 4, 'gõ mã nhân viên: laser khắc "C068" lên ngọn cơ (4 ký tự)', k);
-    const truc = await moi.evaluate(() => { const g = document.getElementById('lkChu').parentNode.getAttribute('transform'); const m = /rotate\((-?[\d.]+)\)/.exec(g); return [parseFloat(m[1]), document.fonts.check("700 62px LkOrb"), getComputedStyle(document.getElementById('lkChu')).fontFamily]; });
-    // trục đo từ ảnh: tâm x = 0.1464·y + 616.2 → đi lên thì lệch TRÁI 8,33° → góc chữ phải là −98,33° (không phải −81,67°)
-    ok(Math.abs(truc[0] + 98.33) < 0.05 && truc[1] && /LkOrb/.test(truc[2]), 'chữ khắc nghiêng cùng chiều thân ngọn cơ (−98,33°), font khắc Orbitron đã nạp', truc);
+    ok(k[0] === 'C068' && k[1] === 'C068' && k[2] === 4, 'gõ mã nhân viên: laser khắc "C068" lên thẻ (4 ký tự)', k);
+    const truc = await moi.evaluate(() => {   // 24/10: khắc lên thẻ nhân viên carbon (nhóm #lkNhom xoay theo LK.tf); đầu khắc phải nằm trên thẻ
+      const the = document.getElementById('lkNhom').getAttribute('transform'), p = lkDauBut(), c = Math.cos(-LK.tf.goc), s = Math.sin(-LK.tf.goc), dx = p.x - LK.tf.x, dy = p.y - LK.tf.y;
+      const tx = dx * c - dy * s, ty = dx * s + dy * c;   // đổi ngược về tọa độ thẻ 380x240
+      return [the, tx, ty, document.fonts.check("700 50px LkOrb"), getComputedStyle(document.getElementById('lkChu')).fontFamily]; });
+    ok(/rotate\(-7\)/.test(truc[0]) && truc[1] > 24 && truc[1] < 370 && Math.abs(truc[2] - 152) < 1 && truc[3] && /LkOrb/.test(truc[4]), 'đầu khắc laser nằm đúng dòng chữ trên thẻ (thẻ nghiêng −7°), font khắc Orbitron đã nạp', truc);
     await moi.press('#l_tk', 'Backspace'); await p.waitForTimeout(100);
     ok(await moi.evaluate(() => document.getElementById('lkChu').textContent === 'C06'), 'xóa ký tự thì chữ khắc cũng bớt');
     await moi.type('#l_tk', '8'); await moi.click('#l_mk'); await p.waitForTimeout(150);
     m = await mai(); ok(/\bche\b/.test(m[0]) && /không nhìn/.test(m[2]), 'bấm vào ô mật khẩu: Mai che mắt', m);
     await moi.type('#l_mk', 'abcdef');
-    ok(await moi.evaluate(() => document.getElementById('lkChu').textContent === 'C068' && !/abcdef/i.test(document.getElementById('lkNen').textContent)), 'gõ mật khẩu: không khắc gì, mật khẩu không hiện trên ngọn cơ');
+    ok(await moi.evaluate(() => document.getElementById('lkChu').textContent === 'C068' && !/abcdef/i.test(document.getElementById('lkNen').textContent)), 'gõ mật khẩu: không khắc gì, mật khẩu không hiện trên thẻ');
     await moi.press('#l_mk', 'Enter'); await p.waitForTimeout(1400);
     ok(await moi.evaluate(() => /\bmo\b/.test(document.getElementById('lkChu').getAttribute('class'))), 'sai mật khẩu: chữ khắc mờ đi một nhịp');
     const sai = await moi.evaluate(() => [document.getElementById('bbOMk').classList.contains('bb-sai'), !document.getElementById('lerr').classList.contains('hide'), document.getElementById('gate').classList.contains('bb-vao')]);

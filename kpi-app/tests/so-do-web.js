@@ -87,7 +87,7 @@ const mauPhong = (p, ten) => p.evaluate(t => { const g = [...document.querySelec
   if (OUT) await p.screenshot({ path: OUT + '/so-do-web.png', fullPage: true });
   if (THREE) {
     await p.click('#sdNut3d');
-    const f3 = await (await p.waitForSelector('#sd3d iframe')).contentFrame();
+    const f3 = await (await p.waitForSelector('#sd3d iframe', { state: 'attached', timeout: 120000 })).contentFrame();
     await f3.waitForSelector('#c3d canvas', { state: 'attached', timeout: 180000 });   // máy thử vẽ 3D bằng phần mềm rất chậm (bản 13/10 nặng hơn)
     await f3.evaluate(() => { const t = document.getElementById('tgDi'); if (t && t.checked) t.click(); }); await p.waitForTimeout(4000);
     s = await f3.evaluate(() => [!!window.SS, !!document.getElementById('segMau'), document.getElementById('legend').textContent]);
@@ -135,7 +135,7 @@ const mauPhong = (p, ten) => p.evaluate(t => { const g = [...document.querySelec
     await p.keyboard.press('Escape'); await p.waitForTimeout(200);
     ok(await p.evaluate(() => !document.getElementById('sd3d') && SS.nghe.length === 1), 'Esc đóng 3D, gỡ phần nghe của bản 3D');
     await p.click('#sdNut3d');
-    const f4 = await (await p.waitForSelector('#sd3d iframe')).contentFrame();
+    const f4 = await (await p.waitForSelector('#sd3d iframe', { state: 'attached', timeout: 120000 })).contentFrame();
     await f4.waitForSelector('#c3d canvas', { state: 'attached', timeout: 180000 });
     s = await f4.evaluate(() => [document.getElementById('btSo').textContent, document.getElementById('btLuuTT').textContent]);
     ok(s[0] === soLuu && /dời \d+ máy/.test(s[0]) && /Đã lưu lên web/.test(s[1]), 'mở lại 3D: máy vẫn ở chỗ mới đã lưu', [s, soLuu]);

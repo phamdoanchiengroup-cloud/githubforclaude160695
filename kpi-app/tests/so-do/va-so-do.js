@@ -1,6 +1,6 @@
 /* ===== SƠ ĐỒ NHÀ MÁY (mục 15, gắn 10/10) =====
-   Tab "sodo" cho ADMIN + TP: mặt bằng 2D 3 tầng (lấy từ bản 3D của chủ dự án) tô màu theo KPI tháng này / sĩ số hôm nay,
-   bản 3D mở bằng nút "Xem 3D" trên máy tính. Số liệu thật:
+   Tab "sodo" cho ADMIN + TP: mặt bằng 2D 3 tầng (lấy từ bản 3D của chủ dự án) + ảnh tách tầng, bản 3D mở bằng nút "Xem 3D" trên máy tính.
+   24/10: bỏ tô màu KPI / sĩ số (chủ dự án: "cái đó xem ở tab khác"); SS.SO vẫn dùng cho số máy bảo trì của xưởng. Số liệu thật:
    - KPI: sản lượng ĐÃ CHỐT từ đầu tháng (D.nhatky), tính như "So sánh hiệu suất giữa các xưởng" ở Tổng quan.
    - Sĩ số: siSoTatCaXuong(hôm nay) – TP chỉ thấy xưởng mình.
    - Chờ duyệt: D.choDuyet theo xưởng của công đoạn; máy bảo trì: D.maymoc TinhTrang 'Bảo trì' (chưa có vị trí trên bản vẽ).
@@ -8,10 +8,10 @@
 {{SS}}
 window.__sdDaNap = true;   // đã tải phần sơ đồ (SoDo.html) – vSoDo dưới đây thay hàm chờ trong Index.html
 var SD_DATA = {{DATA}};
-var SD_ANH = {{ANH}};
+var SD_ANH = {{ANH}};   // 24/10: ảnh mặt bằng chủ dự án gửi (đã nắn), khung = SD.vb ban đầu (−0,5…45,25 × −0,5…34,75 m); link Google Drive hoặc nhúng
 var SD_TACH = {{TACH}};   // 24/10: ảnh minh họa tách 3 tầng (chủ dự án gửi) + chú thích xưởng từng tầng
 // chú thích: f = tầng (0..2), o = góc trên trái thẻ (% ảnh), d = điểm chỉ vào sàn tầng đó (% ảnh)
-var SD_TACH_NHAN = [{ f: 2, o: [1.5, 3], d: [36, 22] }, { f: 1, o: [80, 34], d: [80, 47] }, { f: 0, o: [73, 66], d: [58, 74] }];   // 24/10: ảnh mặt bằng chụp từ mô hình 3D, khung = SD.vb ban đầu (−0,5…45,25 × −0,5…34,75 m)
+var SD_TACH_NHAN = [{ f: 2, o: [1.5, 3], d: [36, 22] }, { f: 1, o: [80, 34], d: [80, 47] }, { f: 0, o: [73, 66], d: [58, 74] }];
 var SD = { tang: 0, loc: '', chon: null, siso: null, sisoNgay: '', vb: [-0.5, -0.5, 45.75, 35.25] };
 var SD_VB0 = SD.vb.slice(), SD_ZMAX = 6;
 var SD_TANG = ['Tầng 1', 'Tầng 2', 'Tầng 3'], SD_W = 44.75, SD_D = 34.25, SD_NS = 'http://www.w3.org/2000/svg';

@@ -1,15 +1,17 @@
 <!--CSS-->
 /* ============================================================
    MÀN ĐĂNG NHẬP — "KHẮC LASER" (Rhino / Carbon Billiards Co., Ltd.)
-   Nền: khung hình đầu video khắc laser của hãng (4 ngọn carbon cắm trong cát đen, đã xóa logo in sẵn, chỉnh tông tối) –
-   kpi-app/anh/rhino/khac-laser.jpg, chèn base64 qua chỗ giữ RH_KHAC; logo qua RH_LOGO (chỉ nhúng 1 lần, cửa cuốn lấy lại từ .lk-dau img).
-   Ý tưởng riêng: gõ MÃ NHÂN VIÊN thì tia laser khắc từng ký tự lên ngọn cơ thứ 3 (trục đo từ ảnh: tâm x = 0.1464·y + 616.2, nghiêng 8.33°, thân rộng ~139px) (chữ nóng sáng rồi nguội màu vàng đồng).
+   Nền (24/10): ảnh tòa nhà nhà máy ban đêm, để trên Google Drive (chỗ giữ NEN_DN, mã file ở kpi-app/anh-drive.json; ảnh lỗi thì còn nền xanh đêm).
+   Phía trước: THẺ NHÂN VIÊN vân carbon (vẽ bằng SVG, chủ dự án chọn 24/10 thay cho ảnh ngọn cơ ghép lên nền bị lệch tông), nhóm #lkNhom
+   đặt theo LK.tf (dời + xoay); chữ khắc nằm trên thẻ, tia laser vẽ ngoài thẻ nên luôn thẳng đứng (lkDauBut đổi tọa độ thẻ -> ảnh).
+   Logo qua RH_LOGO (chỉ nhúng 1 lần: logo trên thẻ và cửa cuốn lấy lại từ .lk-dau img).
+   Ý tưởng riêng: gõ MÃ NHÂN VIÊN thì tia laser khắc từng ký tự lên thẻ nhân viên carbon (chữ nóng sáng rồi nguội màu vàng đồng).
    Gõ mật khẩu: laser chỉ lóe tia, không khắc gì. Đúng: vệt sáng chạy dọc ngọn cơ. Sai: tia đỏ, chữ khắc mờ đi.
    Bảng đăng nhập là tấm kính tối nổi trên khoảng tường trống. Giữ nguyên API cho login(): bbCho, bbTrung, bbTruot, bbTha, bbXep, bbChu, bbKhoiDong.
    ============================================================ */
 #gate{--vang:#f7b829;--vang2:#ffd36b;--than:#0a0a0a;--vien:rgba(255,255,255,.12);--chu:#f2f2f2;--chu2:#a9a9a9;--chu3:#707070;--do:#ff6b5b;--dong:#cdb08a;
   --sans:'Arimo','Helvetica Neue',Arial,system-ui,sans-serif;
-  position:relative;z-index:2;min-height:100vh;min-height:100dvh;overflow:hidden;background:#070707;color:var(--chu);font-family:var(--sans);-webkit-font-smoothing:antialiased}
+  position:relative;z-index:2;min-height:100vh;min-height:100dvh;overflow:hidden;background:#070707 radial-gradient(120% 90% at 50% 20%,#14284d,#070b16 70%);color:var(--chu);font-family:var(--sans);-webkit-font-smoothing:antialiased}
 #gate .lk-nen{position:absolute;inset:0;width:100%;height:100%;display:block}
 #gate .lk-nen image.anh{animation:lkTho 18s ease-in-out infinite alternate;transform-origin:800px 450px}
 @keyframes lkTho{to{transform:scale(1.04)}}
@@ -35,9 +37,12 @@
 #gate .lk-lua .tl circle{fill:#ffb347;opacity:0}
 #gate .lk-lua.bat .tl circle{animation:lkTia .45s ease-out forwards}
 @keyframes lkTia{0%{opacity:1;transform:translate(0,0)}100%{opacity:0;transform:translate(var(--x),var(--y))}}
+#gate .lk-the-vien{fill:none;stroke:rgba(255,255,255,.2);stroke-width:1.2}
+#gate .lk-the-nhan{font:700 11px var(--sans);letter-spacing:.22em;fill:#9aa3ad}
+#gate .lk-the.sang .lk-the-vien{stroke:var(--vang);stroke-opacity:.75;filter:url(#lkNong)}
 #gate .lk-quet{opacity:0}
 #gate .lk-quet.chay{animation:lkQuet 1.3s cubic-bezier(.3,.6,.3,1) forwards}
-@keyframes lkQuet{0%{opacity:0;transform:translateX(-160px)}15%{opacity:1}85%{opacity:1}100%{opacity:0;transform:translateX(620px)}}
+@keyframes lkQuet{0%{opacity:0;transform:translateX(-160px)}15%{opacity:1}85%{opacity:1}100%{opacity:0;transform:translateX(420px)}}
 /* chữ trên nền */
 #gate .lk-dau{position:absolute;z-index:2;left:clamp(24px,4vw,56px);top:clamp(22px,4vh,40px);display:flex;align-items:center;gap:16px}
 #gate .lk-dau img{height:34px;width:auto;display:block}
@@ -225,12 +230,30 @@
       <radialGradient id="lkHoa"><stop offset="0" stop-color="#fff"/><stop offset=".25" stop-color="#d6ecff" stop-opacity=".9"/><stop offset=".6" stop-color="#5aa6ff" stop-opacity=".25"/><stop offset="1" stop-color="#5aa6ff" stop-opacity="0"/></radialGradient>
       <radialGradient id="lkHoaDo"><stop offset="0" stop-color="#fff"/><stop offset=".3" stop-color="#ffb4a8" stop-opacity=".9"/><stop offset="1" stop-color="#ff3b2b" stop-opacity="0"/></radialGradient>
       <linearGradient id="lkTru" gradientUnits="userSpaceOnUse" x1="0" y1="-40" x2="0" y2="40"><stop offset="0" stop-color="#8a7352"/><stop offset=".42" stop-color="#e0c79f"/><stop offset=".55" stop-color="#d4b88c"/><stop offset="1" stop-color="#6e5a3f"/></linearGradient>
+      <pattern id="lkVai" width="10" height="10" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="10" height="10" fill="#0d0f12"/><rect width="5" height="5" fill="#1c1f25"/><rect x="5" y="5" width="5" height="5" fill="#1c1f25"/><rect width="5" height="1" fill="#2a2e36" opacity=".6"/><rect x="5" y="5" width="5" height="1" fill="#2a2e36" opacity=".6"/></pattern>
+      <linearGradient id="lkTheSang" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#9cc4ff" stop-opacity=".35"/><stop offset=".15" stop-color="#fff" stop-opacity=".06"/><stop offset=".5" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".45"/></linearGradient>
+      <linearGradient id="lkTheLoe" x1="0" x2="1"><stop offset="0" stop-color="#fff" stop-opacity="0"/><stop offset=".5" stop-color="#fff" stop-opacity=".12"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient>
+      <filter id="lkTheBong" x="-20%" y="-20%" width="140%" height="160%"><feGaussianBlur stdDeviation="14"/></filter>
+      <clipPath id="lkTheCat"><rect width="380" height="240" rx="22"/></clipPath>
       <linearGradient id="lkVet" x1="0" x2="1"><stop offset="0" stop-color="#fff" stop-opacity="0"/><stop offset=".5" stop-color="#fff2cf" stop-opacity=".55"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient>
     </defs>
-    <image class="anh" href="{{RH_KHAC}}" x="0" y="0" width="1600" height="900" preserveAspectRatio="xMidYMid slice"/>
-    <g transform="translate(682.4 452) rotate(-98.33)">
-      <rect class="lk-quet" id="lkQuet" x="-60" y="-80" width="180" height="120" fill="url(#lkVet)" style="mix-blend-mode:screen"/>
-      <text class="lk-chu" id="lkChu" x="0" y="0" dominant-baseline="central"></text>
+    <image class="anh" href="{{NEN_DN}}" x="0" y="0" width="1600" height="900" preserveAspectRatio="xMidYMid slice"/>
+    <g id="lkNhom" class="lk-the" transform="translate(150 300) rotate(-7)">
+      <rect x="10" y="24" width="380" height="240" rx="22" fill="#000" opacity=".6" filter="url(#lkTheBong)"/>
+      <g clip-path="url(#lkTheCat)">
+        <rect width="380" height="240" fill="url(#lkVai)"/>
+        <rect width="380" height="240" fill="url(#lkTheSang)"/>
+        <rect x="-60" width="200" height="240" fill="url(#lkTheLoe)" transform="skewX(-20)"/>
+        <image id="lkTheLogo" x="24" y="22" width="120" height="30"/>
+        <text class="lk-the-nhan" x="356" y="41" text-anchor="end">THẺ NHÂN VIÊN</text>
+        <rect x="24" y="74" width="46" height="36" rx="6" fill="#c9a24a" opacity=".9"/><path d="M24 92h46M47 74v36M36 74v36M58 74v36" stroke="#8a6a22" stroke-width="1.2"/>
+        <text class="lk-the-nhan" x="24" y="214">CARBON BILLIARDS · KPI SẢN XUẤT</text>
+        <g transform="translate(24 152)">
+          <rect class="lk-quet" id="lkQuet" x="-60" y="-80" width="180" height="120" fill="url(#lkVet)" style="mix-blend-mode:screen"/>
+          <text class="lk-chu" id="lkChu" x="0" y="0" dominant-baseline="central"></text>
+        </g>
+      </g>
+      <rect class="lk-the-vien" x=".6" y=".6" width="378.8" height="238.8" rx="21.4"/>
     </g>
     <g class="lk-lua" id="lkLua">
       <line id="lkTia" x1="0" y1="0" x2="0" y2="0"/>
@@ -242,7 +265,7 @@
   <div class="lk-dau"><img src="{{RH_LOGO}}" alt="Rhino – Made by Vietnam"><span>Cổng nội bộ · KPI sản xuất</span></div>
   <div class="lk-goc">
     <div class="lk-cau">Mỗi người<br>một <em>dấu ấn.</em></div>
-    <p>Gõ mã nhân viên – tia laser sẽ khắc mã của bạn lên ngọn cơ, như cách xưởng mình khắc tên cho từng khách hàng.</p>
+    <p>Gõ mã nhân viên – tia laser sẽ khắc mã của bạn lên thẻ nhân viên vân carbon, như cách xưởng mình khắc tên lên từng cây cơ cho khách.</p>
     <div class="lk-may" id="lkMay"><i></i>Khắc laser <b id="lkMa">—</b></div>
   </div>
 
@@ -286,7 +309,8 @@
 /* ===== MÀN ĐĂNG NHẬP "KHẮC LASER" =====
    Các hàm bb* được login() gọi: bbCho (đang chờ máy chủ), bbTrung (đúng), bbTruot (sai), bbTha (mất kết nối). */
 var BB = { ban: false, dang: false, kh: '' };
-var LK = { x0: 682.4, y0: 452, goc: -98.33 * Math.PI / 180, cu: '', hen: 0, dai: 410, co: 62, lech: 0, tenLech: 125 };   // tenLech: tên thật khắc thấp hơn mã, sát mặt cát (chủ dự án 13/10)
+var LK = { tf: { x: 150, y: 300, goc: -7 * Math.PI / 180 },   // vị trí + góc xoay thẻ #lkNhom (đổi thì sửa cả transform trong HTML)
+  x0: 24, y0: 152, goc: 0, cu: '', hen: 0, dai: 332, co: 50, lech: 0, tenLech: 0 };   // điểm đầu chữ trên thẻ; tên thật khắc cùng dòng thay cho mã
 function bbE(id) { return document.getElementById(id); }
 function bbG() { return bbE('gate'); }
 function bbGiam() { return window.matchMedia('(prefers-reduced-motion:reduce)').matches; }
@@ -297,7 +321,8 @@ function lkDauBut() {   // vị trí đầu khắc (cuối chữ) trên ảnh 16
   var t = bbE('lkChu'), d = 0;
   try { d = t.textContent ? t.getComputedTextLength() + 6 : 0; } catch (e) {}
   d -= LK.lech;
-  return { x: LK.x0 + d * Math.cos(LK.goc), y: LK.y0 + d * Math.sin(LK.goc) };
+  var x = LK.x0 + d * Math.cos(LK.goc), y = LK.y0 + d * Math.sin(LK.goc), c = Math.cos(LK.tf.goc), s = Math.sin(LK.tf.goc);
+  return { x: LK.tf.x + x * c - y * s, y: LK.tf.y + x * s + y * c };   // tọa độ trên thẻ -> tọa độ ảnh 1600x900
 }
 function lkLua(loi) {   // tia laser lóe tại đầu khắc
   if (bbGiam()) return;
@@ -324,7 +349,7 @@ function lkCo(min) {   // thu nhỏ chữ khi mã dài để nằm gọn trên t
 function lkKhacTen(ten, xong) {
   var t = bbE('lkChu'), s = String(ten || '').trim().split(/\s+/).slice(-2).join(' ').toUpperCase(), k = 0;   // 2 chữ cuối của họ tên (theo chủ dự án)
   LK.ten = []; if (!s) { xong(); return; }
-  LK.lech = LK.tenLech; t.setAttribute('x', -LK.lech);   // dời điểm bắt đầu xuống dọc thân cơ
+  LK.lech = LK.tenLech; t.setAttribute('x', -LK.lech);   // (bản ngọn cơ cũ dời điểm đầu xuống dọc thân; thẻ khắc cùng chỗ)
   t.setAttribute('class', 'lk-chu ten'); t.textContent = s; lkCo(18);   // chốt cỡ chữ theo cả tên trước khi khắc
   if (bbGiam()) { t.setAttribute('class', 'lk-chu ten vang'); xong(); return; }
   t.textContent = '';
@@ -343,11 +368,12 @@ function lkFont(ten) { bbG().style.setProperty('--lkf', "'" + ten + "'"); lkCo()
 function lkXep() {
   var t = bbE('lkChu'); (LK.ten || []).forEach(clearTimeout); LK.ten = [];
   if (/\bten\b/.test(t.getAttribute('class') || '')) { LK.lech = 0; t.setAttribute('x', 0); LK.cu = lkMa(); t.textContent = LK.cu; t.style.fontSize = ''; lkCo(); }   // đang hiện tên thật -> về lại mã
-  t.setAttribute('class', 'lk-chu'); bbE('lkQuet').setAttribute('class', 'lk-quet');
+  t.setAttribute('class', 'lk-chu'); bbE('lkQuet').setAttribute('class', 'lk-quet'); bbE('lkNhom').classList.remove('sang');
 }
 function lkKhung() { var n = bbE('lkNen'); if (n) n.setAttribute('preserveAspectRatio', (window.matchMedia('(max-width:760px)').matches ? 'xMinYMid' : 'xMidYMid') + ' slice'); }
 function lkKhoiDong() {
   lkKhung(); window.addEventListener('resize', lkKhung);
+  var lg = document.querySelector('#gate .lk-dau img'); if (lg) bbE('lkTheLogo').setAttribute('href', lg.getAttribute('src'));
   bbE('l_tk').addEventListener('input', lkVe);
   bbE('l_mk').addEventListener('input', function () { if (bbE('l_mk').value) lkLua(); });
   LK.cu = ''; lkVe();
@@ -450,10 +476,10 @@ function bbTrung(tiep) {
   var t = bbE('bbVaoTen'); if (t) t.textContent = ten ? 'Chào mừng, ' + ten + '.' : 'Chào mừng trở lại.';
   bbMai('covu', 'Chúc ' + (ten ? '<b>' + ten + '</b>' : 'bạn') + ' một ca làm việc thật suôn sẻ!');
   bbG().classList.add('bb-vao');
-  bbE('lkChu').setAttribute('class', 'lk-chu vang');
+  bbE('lkChu').setAttribute('class', 'lk-chu vang'); bbE('lkNhom').classList.add('sang');   // viền thẻ sáng vàng
   var hoTen = (typeof ME !== 'undefined' && ME && ME.ten) ? ME.ten : '';
   if (bbGiam()) { lkKhacTen(hoTen, tiep); return; }
-  /* mã sáng vàng một nhịp -> laser khắc họ tên thật -> vệt sáng chạy dọc ngọn rồi mới vào */
+  /* mã sáng vàng một nhịp -> laser khắc họ tên thật -> vệt sáng lướt qua thẻ rồi mới vào */
   LK.ten = [setTimeout(function () {
     lkKhacTen(hoTen, function () {
       bbE('lkQuet').setAttribute('class', 'lk-quet chay');
