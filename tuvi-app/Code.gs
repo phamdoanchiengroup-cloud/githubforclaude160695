@@ -301,6 +301,28 @@ function hlDanhGiaPhuongPhap_(h) {
   };
 }
 
+/**
+ * Kiểm thử hồi quy cho hồ sơ truy vết phương pháp.
+ * Chạy thủ công trong Apps Script: tccKiemThuTrangThaiPhuongPhap_()
+ * Không kiểm chứng tính đúng của trường phái; chỉ bảo đảm UI/API không gắn nhãn
+ * “đã xác minh nguồn” khi hồ sơ chưa có bằng chứng nguồn trực tiếp.
+ */
+function tccKiemThuTrangThaiPhuongPhap_() {
+  var bt = btDanhGiaPhuongPhap_({pillars:[{},{},{},{}], nhatChu:'Giáp', goiY:{dung:'Mộc'}, daiVan:[{}]}, {});
+  var hl = hlDanhGiaPhuongPhap_({tien:{hao:1,nguyenDuong:2},hau:{hao:3,nguyenDuong:4},hoTien:{},hoHau:{},luan:'mẫu'});
+  var checks = [];
+  function check(id, ok, detail) { checks.push({id:id, pass:!!ok, detail:detail||''}); }
+  check('battu-version', bt.phienBan === 'TCC-BAT-TU-METHOD-1.1', bt.phienBan);
+  check('halac-version', hl.phienBan === 'TCC-HA-LAC-METHOD-1.1', hl.phienBan);
+  check('battu-layers-not-verified', bt.layers.length === 6 && bt.layers.every(function(x){return x.trangThai === 'motPhan';}), 'Mọi lớp cần đối chiếu nguồn');
+  check('halac-layers-not-verified', hl.layers.length === 4 && hl.layers.every(function(x){return x.trangThai === 'motPhan';}), 'Mọi lớp cần đối chiếu nguồn');
+  check('battu-source-ledger', Array.isArray(bt.nguonCanDoiChieu) && bt.nguonCanDoiChieu.length >= 3, 'Có danh mục nguồn cần xác minh');
+  check('halac-source-ledger', Array.isArray(hl.nguonCanDoiChieu) && hl.nguonCanDoiChieu.length >= 2, 'Có danh mục nguồn cần xác minh');
+  check('no-empirical-claim', /Chưa được xác lập/.test(bt.danhGiaKiemDinh) && /Chưa được xác lập/.test(hl.danhGiaKiemDinh), 'Không tuyên bố đã kiểm định độc lập');
+  var failed = checks.filter(function(x){return !x.pass;});
+  return {pass:failed.length===0, total:checks.length, passed:checks.length-failed.length, failed:failed, checks:checks};
+}
+
 function lapLaSoDayDu_(input) {
   input = input || {};
   var tv = tuviLapLaSo(input);
