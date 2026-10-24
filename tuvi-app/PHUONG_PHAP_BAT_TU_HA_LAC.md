@@ -125,3 +125,12 @@ Các kiểm tra trên xác nhận cú pháp và một số bất biến của h�
 Các thay đổi này cải thiện khả năng truy vết và ngăn giao diện hiểu nhầm “có dữ liệu” thành “đã xác minh”. Chúng **không** thay đổi công thức lập lá số cốt lõi và không xác nhận thuật toán là chính thống.
 
 Danh mục Uyên Hải Tử Bình, Tam Mệnh Thông Hội, Tích Thiên Tủy, Tử Bình Chân Thuyên, Cùng Thông Bảo Giám, Chu Dịch và Hoàng Cực Kinh Thế hiện vẫn là **đầu mối nghiên cứu**. Trong lượt này chưa có bằng chứng đối chiếu bản văn/ấn bản, chương/trang và ví dụ độc lập; vì vậy không đánh dấu `VERIFIED_SOURCE`. Đặc biệt, nguồn chuyên biệt xác nhận bảng số và thuật toán Hà Lạc đang dùng vẫn là khoảng trống cần giải quyết trước khi thay đổi phép tính.
+
+
+## Nghiên cứu bổ sung trong lượt tiếp theo
+
+Đã lập thêm ma trận nguồn và dị bản tại `tuvi-app/NGUON_VA_DOI_CHIEU_BAT_TU_HA_LAC.md`. Ma trận này bổ sung các đường dẫn công khai đến văn bản 《穷通宝鉴》, 《子平真诠》, 《滴天髓》, 《三命通会》, 《神峰通考》 và kho dữ liệu có phân tầng provenance `zaoxu001/tianzhi-classics`. Kho đó phân biệt rõ dữ liệu trích xuất từ văn bản với dữ liệu kế thừa, dữ liệu suy ra từ hằng số và luật được mô hình hóa; các ngưỡng kỹ thuật do phần mềm đặt không được gán ngược thành quy tắc cổ thư.
+
+Đối chiếu thêm triển khai Hà Lạc thứ cấp `Horace-Maxwell/Horosa-Web-App-comprehensively-improved-MacOS` đã phát hiện một dị bản cần rà soát: triển khai đó có xử lý riêng quẻ thuần Càn/Khôn cho hào nguyên đường theo giới tính và nửa năm tiết khí; mã Thiên Cơ Các hiện chưa có nhánh riêng tương ứng. Đây là **khác biệt triển khai**, chưa phải phán quyết bên nào đúng. Chưa thay công thức vì vẫn thiếu đối chiếu trực tiếp với nguồn Hà Lạc sơ cấp.
+
+Đã thêm hàm `tccKiemThuBatTuHaLac_()` để kiểm thử bất biến cấu trúc (100 cặp thập thần, 120 tổ hợp trường sinh, 64 quẻ round-trip, 384 phép biến hào, 768 trường hợp nguyên đường và các điểm biên rút gọn số). Hàm mới chưa được chạy trong runtime Apps Script ở lượt này; kết quả thực thi vẫn cần ghi nhận riêng.
