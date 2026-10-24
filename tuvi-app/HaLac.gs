@@ -1,20 +1,17 @@
 /**
  * ============================================================
- *  HaLac.gs — BÁT TỰ HÀ LẠC (Hà Lạc lý số – tương truyền Trần Đoàn, Thiệu Khang Tiết)
- *  1. Đổi 8 chữ can chi (tứ trụ theo tiết khí) ra số Hà Đồ – Lạc Thư,
- *     cộng số lẻ = Thiên số, số chẵn = Địa số; rút gọn (trừ 25 / 30, bỏ hàng chục).
- *  2. Số → quái theo Hậu thiên Lạc Thư (1 Khảm, 2 Khôn, 3 Chấn, 4 Tốn, 6 Càn,
- *     7 Đoài, 8 Cấn, 9 Ly; số 5 ký cung theo Tam nguyên & giới tính).
- *  3. Ghép thượng/hạ quái → quẻ Tiên thiên; hào nguyên đường theo giờ sinh
- *     (giờ dương Tý→Tỵ lấy hào dương, giờ âm Ngọ→Hợi lấy hào âm).
- *  4. Quẻ Hậu thiên: biến hào nguyên đường rồi đảo thượng – hạ quái; nguyên đường
- *     dời 3 hào. Quẻ Hỗ: hào 2-3-4 làm hạ quái, 3-4-5 làm thượng quái.
- *  5. Đại vận theo hào: từ hào nguyên đường đi lên, hết hào 6 vòng về hào 1, đủ
- *     6 hào; hào dương 9 năm, hào âm 6 năm. Hết Tiên thiên chuyển sang Hậu thiên.
- *  6. Lưu niên: năm đầu của vận hào lấy quẻ biến tại hào đó, mỗi năm sau biến
- *     tiếp hào kế trên của quẻ năm trước (vòng tròn 6 hào).
- *  Đánh giá: cát – hung của quẻ (Chu Dịch), vị hào (đắc vị, đắc trung, có ứng),
- *  ngũ hành quái so với dụng thần Bát Tự.
+ *  HaLac.gs — IMPLEMENTATION HÀ LẠC ĐANG DÙNG TRONG ỨNG DỤNG
+ *  LƯU Ý NGUỒN: cách gán truyền thống/nguồn gốc và các quy tắc lập số dưới đây
+ *  chưa được đối chiếu với bản văn, ấn bản, chương/trang và ví dụ độc lập.
+ *  Xem tuvi-app/PHUONG_PHAP_BAT_TU_HA_LAC.md trước khi gọi các quy tắc là chuẩn.
+ *  1. Hiện trạng mã: đổi 8 chữ can chi ra số; tách lẻ/chẵn; rút gọn theo logic hiện có.
+ *  2. Ánh xạ số → quái và xử lý số 5/ký cung là quy ước đang dùng, cần truy nguồn.
+ *  3. Quy tắc hào nguyên đường theo giờ sinh là quy ước đang dùng, cần truy nguồn.
+ *  4. Quy tắc quẻ Hậu thiên, quẻ hỗ và vị trí hào là thuật toán triển khai hiện tại.
+ *  5. Chu kỳ đại vận 6/9 năm và phép lập lưu niên chưa được xác minh nguồn trực tiếp.
+ *  6. Điểm cát-hung, diễn giải tượng và so ngũ hành với dụng thần là lớp diễn giải
+ *     phần mềm; mọi trọng số chưa có nguồn trực tiếp phải coi là heuristic.
+ *  Không suy ra tính đúng của trường phái chỉ từ việc hàm chạy hoặc vượt unit test.
  * ============================================================
  */
 
