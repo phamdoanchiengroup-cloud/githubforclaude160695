@@ -18,6 +18,11 @@ let dem = 0, loi = 0; const ok = (d, t, c) => { dem++; if (d) console.log('  ✓
   await p.waitForSelector('#app', { state: 'visible', timeout: 30000 }); await p.waitForTimeout(1500);
   await p.evaluate(() => { try { maiGocDong(); } catch (e) {} });
 
+  console.log('0. Mở tab là phân tích luôn tháng hiện tại (24/10)');
+  await p.evaluate(() => { ptdmKy = { kieu: 'thang', giaTri: '' }; go('ptdm'); });
+  await p.waitForFunction(() => document.querySelectorAll('#ptdm_kq tbody tr').length > 5, null, { timeout: 60000 }).catch(() => {});
+  let s0 = await p.evaluate(() => { const d = new Date(); return { ky: document.getElementById('ptdm_giatri').value, nay: d.getFullYear() + '-' + ('0' + (d.getMonth() + 1)).slice(-2), dong: document.querySelectorAll('#ptdm_kq tbody tr').length }; });
+  ok(s0.ky === s0.nay && s0.dong > 5, 'không bấm "Phân tích": tự hiện kết quả tháng ' + s0.nay + ' (' + s0.dong + ' dòng)', s0);
   console.log('1. Phân tích tháng 10');
   await p.evaluate(() => { go('ptdm'); ptdmKy = { kieu: 'thang', giaTri: '2026-10' }; ptdmChay(); });
   await p.waitForFunction(() => document.querySelectorAll('#ptdm_kq tbody tr').length > 5, null, { timeout: 60000 });

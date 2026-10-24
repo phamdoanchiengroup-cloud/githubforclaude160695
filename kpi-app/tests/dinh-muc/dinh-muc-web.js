@@ -16,8 +16,9 @@ function vPTDM(){
      '<div><label>Kỳ</label><select id="ptdm_giatri" onchange="ptdmDoiGiaTri()">'+ptdmOptKy()+'</select></div>'+
      '<button class="btn pri" onclick="ptdmChay()">Phân tích</button>'+
      '</div></div>';
-  h+='<div id="ptdm_kq" style="margin-top:14px"><div class="pdesc">Bấm "Phân tích" để xem kết quả.</div></div>';
+  h+='<div id="ptdm_kq" style="margin-top:14px"><div class="pdesc">Đang phân tích…</div></div>';
   $('main').innerHTML=h;
+  ptdmChay();   // 24/10 (chủ dự án): mở tab là phân tích luôn kỳ đang chọn (mặc định tháng hiện tại)
 }
 function ptdmOptKy(){
   var now=new Date(), y=now.getFullYear(), out='';
