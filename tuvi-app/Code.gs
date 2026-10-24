@@ -181,8 +181,41 @@ function tuviDanhGiaPhuongPhap_(tv, chiTiet, input) {
     ],
     danhGiaKiemDinh: 'Chưa được xác lập bằng kiểm định thực nghiệm độc lập cho phương pháp Tử Vi Đẩu Số này.',
     gioiHan: 'Đây là bản đồ căn cứ và giới hạn của quy trình, không phải chứng nhận lá số đúng hoặc dự báo đã được khoa học xác nhận.',
-    duLieuDauVao: { soCung: palaces.length, soCungCoLuan: cung.length, soDaiVan: daiVan.length }
+    duLieuDauVao: { soCung: palaces.length, soCungCoLuan: cung.length, soDaiVan: daiVan.length },
+    maTran12Cung: [
+      { ten: 'Mệnh', trongTam: 'Khí chất và cách cá nhân thể hiện bản thân theo ngôn ngữ truyền thống.', doiChieu: 'Thân, tam phương tứ chính, chính tinh, phụ tinh và điều kiện cách cục.', tranh: 'Không suy ra toàn bộ tính cách hay số phận từ một sao hoặc một cung.' },
+      { ten: 'Huynh Đệ', trongTam: 'Quan hệ anh chị em và nguồn lực ngang hàng trong cách luận truyền thống.', doiChieu: 'Cấu trúc cung, sao liên quan và các cung có quan hệ theo trường phái đã chọn.', tranh: 'Không mặc định gia đình nào cũng có anh chị em hoặc quan hệ theo cùng một khuôn.' },
+      { ten: 'Phu Thê', trongTam: 'Quan hệ đôi lứa và cách nhìn về sự gắn kết.', doiChieu: 'Cung Phu Thê, Mệnh/Thân, tam phương tứ chính và dấu hiệu thuận nghịch.', tranh: 'Không kết luận chắc chắn về hôn nhân, ly hôn hay phẩm chất của một người khác.' },
+      { ten: 'Tử Tức', trongTam: 'Chủ đề con cái và việc chăm sóc, tiếp nối trong quan niệm truyền thống.', doiChieu: 'Cung Tử Tức cùng các quan hệ cung và điều kiện cụ thể của quy tắc.', tranh: 'Không dùng để kết luận khả năng sinh sản, số con hoặc sức khỏe của trẻ.' },
+      { ten: 'Tài Bạch', trongTam: 'Cách tạo lập, quản lý và sử dụng nguồn lực tài chính theo diễn giải truyền thống.', doiChieu: 'Tài Bạch với Quan Lộc, Điền Trạch, Mệnh và vận hạn liên quan.', tranh: 'Không dùng làm dự báo chắc chắn về thu nhập, đầu tư hay lợi nhuận.' },
+      { ten: 'Tật Ách', trongTam: 'Chủ đề sức khỏe và điểm cần chăm sóc trong văn bản truyền thống.', doiChieu: 'Cung Tật Ách và cấu trúc lá số theo quy tắc đã chọn.', tranh: 'Không chẩn đoán bệnh, dự báo tử vong hoặc thay thế đánh giá y tế.' },
+      { ten: 'Thiên Di', trongTam: 'Hoàn cảnh bên ngoài, thay đổi môi trường và cách tương tác ngoài gia đình.', doiChieu: 'Thiên Di với Mệnh, Quan Lộc, Nô Bộc và tầng vận đang xét.', tranh: 'Không khẳng định chắc chắn việc xuất ngoại, tai nạn hay một biến cố cụ thể.' },
+      { ten: 'Nô Bộc', trongTam: 'Quan hệ bạn bè, cộng sự và mạng lưới hỗ trợ theo hệ quy chiếu truyền thống.', doiChieu: 'Nô Bộc, Quan Lộc, Thiên Di và các dấu hiệu thuận nghịch.', tranh: 'Không gán nhãn người khác là phản bội hoặc đáng tin chỉ từ lá số.' },
+      { ten: 'Quan Lộc', trongTam: 'Công việc, vai trò và định hướng nghề nghiệp theo cách luận truyền thống.', doiChieu: 'Quan Lộc với Mệnh, Tài Bạch, Thiên Di và vận hạn.', tranh: 'Không khẳng định chắc chắn chức vụ, thăng chức, thất nghiệp hoặc thành công.' },
+      { ten: 'Điền Trạch', trongTam: 'Nhà ở, không gian sống và tài sản cố định trong quan niệm truyền thống.', doiChieu: 'Điền Trạch với Tài Bạch, Phúc Đức, Mệnh và vận hạn.', tranh: 'Không dùng để bảo đảm mua bán bất động sản hoặc dự báo tranh chấp cụ thể.' },
+      { ten: 'Phúc Đức', trongTam: 'Nền tảng gia tộc, đời sống tinh thần và cảm nhận về sự nâng đỡ.', doiChieu: 'Phúc Đức với Mệnh, Phu Thê, Điền Trạch và cấu trúc liên cung.', tranh: 'Không xem đây là bằng chứng về nghiệp, đạo đức hay giá trị của một gia đình.' },
+      { ten: 'Phụ Mẫu', trongTam: 'Quan hệ với cha mẹ, người nuôi dưỡng và nguồn hỗ trợ thế hệ trước.', doiChieu: 'Phụ Mẫu với Mệnh, Phúc Đức và các dấu hiệu liên quan.', tranh: 'Không kết luận chắc chắn về tuổi thọ, bệnh tật hoặc biến cố của cha mẹ.' }
+    ]
   };
+}
+
+/** Kiểm thử tự chứa cho khung kiểm toán phương pháp luận; có thể chạy thủ công trong Apps Script. */
+function tuviKiemThuPhuongPhap_() {
+  var mau = {
+    info: { solar: { year: 1990 }, hour: 8, menh: 0, thanCu: 'Quan Lộc' },
+    palaces: Array.from({ length: 12 }, function (_, i) { return { cung: i }; }),
+    luanGiai: { cachCuc: [{ ten: 'Mẫu kiểm thử' }] }
+  };
+  var ct = { cung: Array.from({ length: 12 }, function (_, i) { return { cung: i }; }), coSo: { cung: ['mẫu'] }, daiVan: [{ nam: 2020 }] };
+  var a = tuviDanhGiaPhuongPhap_(mau, ct, {});
+  var checks = [
+    { ten: 'Có đủ 12 chủ đề cung', ok: a.maTran12Cung.length === 12 },
+    { ten: 'Giữ riêng lớp đối chiếu hệ khác', ok: a.layers.some(function (x) { return x.id === 'doiChieu' && x.trangThai === 'tachRieng'; }) },
+    { ten: 'Không tự gán phần trăm chính xác', ok: !/%/.test(a.danhGiaKiemDinh) && !/\b\d+\s*%/.test(JSON.stringify(a)) },
+    { ten: 'Ghi rõ trạng thái kiểm định', ok: /Chưa được xác lập/.test(a.danhGiaKiemDinh) },
+    { ten: 'Có nguyên tắc xử lý mâu thuẫn', ok: a.nguyenTac.length >= 4 }
+  ];
+  return { ok: checks.every(function (x) { return x.ok; }), checks: checks, phienBan: a.phienBan };
 }
 
 function lapLaSoDayDu_(input) {
