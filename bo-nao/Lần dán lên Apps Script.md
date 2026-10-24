@@ -15,6 +15,7 @@ Liên quan: [[Việc chờ chủ dự án]] · [[KPI Tổng quan và cách dựn
 - **Mốc định mức người khá = 90% (22/10 tối)**: Code.gs + Index.html (clasp). – [[KPI Phân tích định mức]]
 - **Trung vị bỏ người học việc 22/10**: Code.gs + Index.html (clasp). – [[KPI Phân tích định mức]]
 - **Đợt 24/10** (nhắc chưa báo cơm cho TP/PP, thẻ Đón người mới xuống cuối tab Nhân sự, Bảng KPI tải tất cả xưởng, Phân tích định mức tự chạy, sơ đồ 2D dùng ảnh 3D): Index.html + SoDo.html (clasp). – [[KPI Bảng KPI tất cả xưởng]] · [[KPI Sơ đồ nhà máy 3D]]
+- **Sơ đồ 2D bản dọc 25/10**: SoDo.html + Index.html (clasp). – [[KPI Sơ đồ nhà máy 3D]]
 - **Đợt 24/10 (lần 2)** (sơ đồ bỏ KPI / sĩ số, ảnh mặt bằng 3 tầng + tách tầng; màn đăng nhập nền tòa nhà + thẻ nhân viên carbon; ảnh để trên Google Drive): Index.html + SoDo.html (clasp). – [[KPI Sơ đồ nhà máy 3D]] · [[KPI Màn đăng nhập Khắc laser]] · [[KPI Ảnh trên Google Drive]]
 - **Đèn xưởng ban đêm trong sơ đồ 3D 23/10**: SoDo.html + Index.html (clasp, đẩy cùng lúc). – [[KPI Sơ đồ nhà máy 3D]]
 - **Hologram cho chủ sở hữu 23/10**: chỉ Index.html (clasp). – [[KPI Hologram chủ sở hữu]]

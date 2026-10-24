@@ -67,7 +67,7 @@ const mauPhong = (p, ten) => p.evaluate(t => { const g = [...document.querySelec
   const bx = await p.locator('#sdMb').boundingBox(), vb = () => p.evaluate(() => document.getElementById('sdMb').getAttribute('viewBox').split(' ').map(Number));
   const y0 = await p.evaluate(() => scrollY);
   await p.mouse.move(bx.x + bx.width * .8, bx.y + bx.height * .3); await p.mouse.wheel(0, 300); await p.waitForTimeout(150);
-  ok((await vb())[2] === 45.75 && (await p.evaluate(() => scrollY)) >= y0, 'đang toàn cảnh mà cuộn ra: sơ đồ giữ nguyên, trang cuộn bình thường');
+  ok((await vb())[2] === 35.25 && bx.height > bx.width * 1.2 && (await p.evaluate(() => scrollY)) >= y0, 'sơ đồ bản dọc (cao hơn rộng); đang toàn cảnh mà cuộn ra: sơ đồ giữ nguyên, trang cuộn bình thường');
   await p.evaluate(() => scrollTo(0, 0)); const bx2 = await p.locator('#sdMb').boundingBox();
   const px = bx2.x + bx2.width * .8, py = bx2.y + bx2.height * .3;
   const truoc = await p.evaluate(([x, y]) => sdDiem(document.getElementById('sdMb'), x, y), [px, py]);
@@ -80,9 +80,10 @@ const mauPhong = (p, ten) => p.evaluate(t => { const g = [...document.querySelec
   await p.click('.sd-zoom button[data-z="in"]'); await p.waitForTimeout(80);
   ok((await vb())[2] < v2[2] - 1, 'nút + phóng to thêm');
   await p.click('.sd-zoom button[data-z="fit"]'); await p.waitForTimeout(80);
-  ok(JSON.stringify(await vb()) === JSON.stringify([-0.5, -0.5, 45.75, 35.25]), 'nút ⌂ về toàn cảnh');
-  await p.mouse.dblclick(px, py); await p.waitForTimeout(80);
-  ok((await vb())[2] < 25, 'nhấp đúp: phóng nhanh vào chỗ đó');
+  ok(JSON.stringify(await vb()) === JSON.stringify([-0.5, -0.5, 35.25, 45.75]), 'nút ⌂ về toàn cảnh');
+  await p.evaluate(() => scrollTo(0, 0)); const bx3 = await p.locator('#sdMb').boundingBox();   // bản dọc cao hơn màn hình: bấm nút ⌂ làm trang cuộn, cuộn lên rồi đo lại
+  await p.mouse.dblclick(bx3.x + bx3.width * .8, bx3.y + Math.min(bx3.height * .3, 400)); await p.waitForTimeout(80);
+  ok((await vb())[2] < 25, 'nhấp đúp: phóng nhanh vào chỗ đó', await vb());
   await p.click('.sd-zoom button[data-z="fit"]');
   if (OUT) await p.screenshot({ path: OUT + '/so-do-web.png', fullPage: true });
   if (THREE) {

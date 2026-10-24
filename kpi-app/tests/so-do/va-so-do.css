@@ -14,7 +14,7 @@
 .sd-zoom button{width:40px;height:40px;border-radius:10px;border:1px solid #3e464e;background:rgba(24,27,31,.92);color:#eef2f4;font:600 20px/1 inherit;font-family:inherit;cursor:pointer}
 .sd-zoom button:hover{background:#2b3035}
 #sdMb.to{touch-action:none;cursor:grab}#sdMb.keo{cursor:grabbing}
-#sdMb{display:block;width:100%;height:auto;touch-action:manipulation}
+#sdMb{display:block;width:min(100%, calc((100vh - 150px) * 35.25 / 45.75));aspect-ratio:35.25/45.75;height:auto;margin:0 auto;touch-action:manipulation}   /* 25/10: bản dọc, máy tính không cao quá màn hình */
 #sdMb .phong{cursor:pointer;outline:none}
 #sdMb .phong rect{stroke:#0c0d0f;stroke-width:.14;transition:opacity .25s,fill .3s}
 #sdMb.co-anh .phong rect{stroke:rgba(255,255,255,.4);stroke-width:.07}

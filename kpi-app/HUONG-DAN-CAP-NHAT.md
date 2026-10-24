@@ -501,6 +501,10 @@ Bấm đúp **2-CAP-NHAT.bat** (chưa tự triển khai thì Triển khai → Qu
 - Tab **Nhân sự** có thêm khối **"Ban điều hành & Hành chính nhân sự"** – chỉ chủ sở hữu thấy.
 - Tab **Nhân sự** có thẻ "Hồ sơ chưa đủ: x/y người", bấm "Xem danh sách" để thấy tên theo xưởng.
 
+## SƠ ĐỒ 2D BẢN DỌC 25/10 – đổi Index.html + SoDo.html
+Bấm đúp **2-CAP-NHAT.bat**, rồi Ctrl+F5. Không có hàm cần chạy.
+- Tab Sơ đồ nhà máy: mặt bằng 2D nay là **bản dọc**, mặt tiền / cổng chính ở **bên phải**. Chữ tên khu, tên xưởng vẫn đứng thẳng; phóng to, kéo, chạm khu như cũ.
+
 ## ĐỢT 24/10 (LẦN 2) – đổi Index.html + SoDo.html
 Bấm đúp **2-CAP-NHAT.bat**, rồi Ctrl+F5. Không có hàm cần chạy.
 - **Màn đăng nhập:** nền là ảnh nhà máy RHINO ban đêm. Bên trái có **thẻ nhân viên vân carbon**: gõ mã nhân viên thì tia laser khắc mã lên thẻ; đăng nhập đúng thì thẻ sáng viền vàng và laser khắc tên thật.
