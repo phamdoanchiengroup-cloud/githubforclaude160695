@@ -27,7 +27,7 @@
     });
   }
   /** Mã phiên bản giao diện – phải trùng với Index.html (meta tcc-ban) và Styles.html (--tcc-ban) */
-  var BAN_GIAO_DIEN = '2026.10.24.4';
+  var BAN_GIAO_DIEN = '2026.10.24.5';
   function storeGet(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
   function storeSet(k, v) { try { localStorage.setItem(k, v); } catch (e) { /* bỏ qua */ } }
 
@@ -5459,10 +5459,7 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
     // Bảng Hologram của Bát Tự, Hà Lạc, Chiêm tinh, Thần số, Human Design (chụp đúng như trên web)
     PDF_ANH_HE = {}; PDF_ANH_BIA = '';
     if (window.TCCHolo && TCCHolo.layAnh) chuoi = chuoi.then(function () { return TCCHolo.layAnh('TongHop'); }).then(function (u) { PDF_ANH_BIA = u || ''; });
-    if (window.TCCHolo && TCCHolo.chup && chon.indexOf('linhvuc') >= 0) chuoi = chuoi.then(function () { showTab('tong'); return sleep(400); }).then(function () {
-      var vk = document.querySelector('#page-tong .vt-khung') || document.querySelector('.vt-khung'); if (!vk || !vk.offsetParent) return null;
-      napAnhHolo(); return sleep(300).then(function () { return TCCHolo.chup(vk, 1.6); });
-    }).then(function (c) { if (c) PDF_ANH_HE.linhvuc = { src: c.toDataURL('image/jpeg', 0.9), kich: [c.width, c.height] }; }, function () {});
+    // 24/10: chủ dự án bỏ ảnh bánh xe 9 lĩnh vực khỏi PDF (chỉ giữ bảng điểm chữ)
     if (window.TCCHolo && TCCHolo.chup) chon.forEach(function (k) {
       var B = PDF_BANG[k]; if (!B) return;
       chuoi = chuoi.then(function () { setLoadingText('Đang chụp bảng ' + (PDF_TEN[k] || k) + '…'); showTab(B[0]); return sleep(250); })
