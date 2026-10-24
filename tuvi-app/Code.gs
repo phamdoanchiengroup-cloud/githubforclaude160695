@@ -315,6 +315,18 @@ function getSheet_() {
   return sh;
 }
 
+/** Tự đối chiếu (24/10/2026): người đọc bấm Đúng / Một phần / Không đúng ở các phần đoán chuyện đã qua
+ *  (gia cảnh, cha mẹ, anh em, dáng vẻ). Ghi ẨN DANH vào sheet DoiChieu – chỉ mục, câu trả lời, năm sinh, giới tính – để biết phần nào hay lệch. */
+function ghiDoiChieu(muc, traLoi, them) {
+  muc = String(muc || '').slice(0, 60); traLoi = String(traLoi || '');
+  if (!muc || ['dung', 'mot', 'sai'].indexOf(traLoi) < 0) return false;
+  them = them || {};
+  var ss = laySS_(), sh = ss.getSheetByName('DoiChieu');
+  if (!sh) { sh = ss.insertSheet('DoiChieu'); sh.appendRow(['Thời gian', 'Mục', 'Trả lời', 'Năm sinh', 'Giới tính']); sh.getRange(1, 1, 1, 5).setFontWeight('bold'); sh.setFrozenRows(1); }
+  sh.appendRow([new Date(), muc, { dung: 'Đúng', mot: 'Một phần', sai: 'Không đúng' }[traLoi], parseInt(them.nam, 10) || '', String(them.gioi || '').slice(0, 10)]);
+  return true;
+}
+
 /** Khóa nhận diện "cùng một lá số": tài khoản + họ tên + giới tính + ngày dương + giờ + phút.
  *  (Lập lại cùng người để xem năm khác, nơi sinh khác… vẫn tính là trùng – chỉ giữ lần mới nhất.) */
 function lsKhoa_(chu, ten, gioi, duong, gio, phut) {

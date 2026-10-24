@@ -40,22 +40,22 @@ var TH_SAO = {
 
 /** Dấu hiệu trên cơ thể theo phụ tinh/sát tinh tại Mệnh – Thân – Tật */
 var TH_DAU_HIEU = {
-  'Kình Dương': ['sẹo hoặc vết thương do vật sắc/kim khí, thường ở đầu – mặt – tay', 'dau'],
-  'Đà La': ['răng khểnh/răng lệch hoặc sẹo ở tay chân, dễ đau lưng – xương', 'xuong'],
-  'Hỏa Tinh': ['vết bớt, sẹo bỏng hoặc da dễ nổi mụn, nóng trong', 'da'],
-  'Linh Tinh': ['vết bớt, tì vết sẫm màu, dễ bỏng/giật mình', 'da'],
-  'Thiên Hình': ['vết sẹo do dao kéo – phẫu thuật, hoặc có dấu vết tai nạn', 'da'],
-  'Địa Không': ['tì vết nhỏ, cơ thể có chỗ "khuyết" hoặc hay hao tổn khí lực', 'da'],
-  'Địa Kiếp': ['tì vết, vết thâm hoặc sẹo nhỏ khó giải thích', 'da'],
+  'Kình Dương': ['theo cổ thư gắn với tì vết nhỏ; nên cẩn thận khi dùng vật sắc', 'dau'],
+  'Đà La': ['theo cổ thư gắn với nét răng hoặc tì vết nhỏ; nên giữ tư thế đúng khi làm việc', 'xuong'],
+  'Hỏa Tinh': ['theo cổ thư gắn với vết bớt hoặc làn da nhạy; nên giữ nếp ăn uống thanh đạm', 'da'],
+  'Linh Tinh': ['theo cổ thư gắn với vết bớt, tì vết sẫm màu; nên giữ tinh thần thư thái', 'da'],
+  'Thiên Hình': ['theo cổ thư gắn với tì vết trên da; nên cẩn thận khi vận động mạnh', 'da'],
+  'Địa Không': ['theo cổ thư gắn với tì vết nhỏ; nên nghỉ ngơi đủ để giữ sức', 'da'],
+  'Địa Kiếp': ['theo cổ thư gắn với tì vết hoặc vết thâm nhỏ', 'da'],
   'Hóa Kỵ': ['nốt ruồi hoặc tì vết rõ trên mặt/cơ thể (đặc biệt vùng bộ phận của chính tinh bị Kỵ)', 'da'],
   'Văn Xương': ['nốt ruồi ẩn (ở chỗ kín hoặc khó thấy), nét mặt thanh', 'da'],
   'Văn Khúc': ['nốt ruồi ẩn, giọng nói hay, mắt sáng', 'da'],
   'Đào Hoa': ['mắt đẹp, môi tươi, nét duyên thu hút người khác phái', 'mat'],
   'Hồng Loan': ['má hồng, tóc đẹp, nét mặt tươi tắn', 'dau'],
   'Thiên Riêu': ['nét mặt đa tình, có thể có nốt ruồi duyên', 'da'],
-  'Thiên Khốc': ['dễ bệnh hô hấp – mũi họng, giọng trầm', 'phoi'],
-  'Thiên Hư': ['dễ hư hao khí lực, bệnh hô hấp', 'phoi'],
-  'Thiên Mã': ['chân tay nhanh nhẹn, dáng đi nhanh; dễ chấn thương khi di chuyển', 'chan'],
+  'Thiên Khốc': ['giọng trầm; nên giữ ấm khi trời chuyển mùa', 'phoi'],
+  'Thiên Hư': ['nên giữ nếp nghỉ ngơi điều độ để giữ sức', 'phoi'],
+  'Thiên Mã': ['chân tay nhanh nhẹn, dáng đi nhanh; nên cẩn thận khi di chuyển', 'chan'],
   'Lực Sĩ': ['cơ bắp khỏe, sức lực tốt', 'xuong'],
   'Tả Phù': ['dáng người đôn hậu, dễ nhìn', ''],
   'Hữu Bật': ['dáng người đôn hậu, dễ nhìn', '']
@@ -144,17 +144,17 @@ function thXuatThan_(C) {
   tvi.push('Cung Phụ Mẫu (cha mẹ) ' + pm.canTen + ' ' + pm.chiTen + ' – ' + diem10_(dPM) + '/10: ' + (pm.chinh.map(function (s) { return s.n + (s.b ? '(' + s.b + ')' : ''); }).join(', ') || 'vô chính diệu') + '.');
   tvi.push('Cung Phúc Đức (dòng họ, phúc ấm) – ' + diem10_(dPD) + '/10; cung Điền Trạch (nhà cửa, tài sản gia đình) – ' + diem10_(dDT) + '/10.');
   var dGiau = (dDT * 0.5 + dPD * 0.3 + dPM * 0.2) / 3;
-  if (thCoSao_(dt, 'Lộc Tồn') || thCoSao_(dt, 'Hóa Lộc')) { dGiau += 0.8; tvi.push('✓ Lộc tinh ở Điền Trạch: gia đình có của để, nhà cửa ổn định từ nhỏ.'); }
-  if (thCoSao_(dt, 'Địa Không') || thCoSao_(dt, 'Địa Kiếp')) { dGiau -= 0.8; tvi.push('✗ Không/Kiếp ở Điền Trạch: tài sản gia đình hao hụt, nhiều khả năng tự tay gây dựng nhà cửa.'); }
-  ['Tử Vi', 'Thiên Phủ'].forEach(function (s) { if (thCoSao_(menh, s) || thCoSao_(pm, s)) { dGiau += 0.4; tvi.push('✓ ' + s + ' ở Mệnh/Phụ Mẫu: gia đình có nền nếp, vị thế trong họ hàng.'); } });
+  if (thCoSao_(dt, 'Lộc Tồn') || thCoSao_(dt, 'Hóa Lộc')) { dGiau += 0.8; tvi.push('✓ Lộc tinh ở Điền Trạch: theo cách luận truyền thống, gợi ý gia đình có của để, nhà cửa tương đối ổn định.'); }
+  if (thCoSao_(dt, 'Địa Không') || thCoSao_(dt, 'Địa Kiếp')) { dGiau -= 0.8; tvi.push('✗ Không/Kiếp ở Điền Trạch: gợi ý tài sản gia đình có lúc hao hụt; bạn có xu hướng tự tay gây dựng nhà cửa.'); }
+  ['Tử Vi', 'Thiên Phủ'].forEach(function (s) { if (thCoSao_(menh, s) || thCoSao_(pm, s)) { dGiau += 0.4; tvi.push('✓ ' + s + ' ở Mệnh/Phụ Mẫu: gợi ý gia đình có nền nếp, có vị thế trong họ hàng.'); } });
   vote(giau, 'Tử Vi', Math.max(-2, Math.min(2, dGiau)));
   var dAm = dPM / 3;
-  ['Kình Dương', 'Đà La', 'Hóa Kỵ', 'Thiên Hình', 'Hỏa Tinh', 'Linh Tinh'].forEach(function (s) { if (thCoSao_(pm, s)) { dAm -= 0.5; tvi.push('✗ ' + s + ' ở Phụ Mẫu: cha mẹ nghiêm khắc hoặc bất đồng, dễ có khoảng cách thế hệ.'); } });
+  ['Kình Dương', 'Đà La', 'Hóa Kỵ', 'Thiên Hình', 'Hỏa Tinh', 'Linh Tinh'].forEach(function (s) { if (thCoSao_(pm, s)) { dAm -= 0.5; tvi.push('✗ ' + s + ' ở Phụ Mẫu: gợi ý cha mẹ nghiêm khắc hoặc có lúc khác quan điểm với bạn; khoảng cách thế hệ thu hẹp khi hai bên chủ động trò chuyện.'); } });
   ['Thiên Khôi', 'Thiên Việt', 'Tả Phù', 'Hữu Bật', 'Thiên Quan', 'Thiên Phúc', 'Hóa Khoa', 'Thiên Đức', 'Nguyệt Đức'].forEach(function (s) { if (thCoSao_(pm, s)) { dAm += 0.3; } });
   vote(am, 'Tử Vi', Math.max(-2, Math.min(2, dAm)));
   var dTL = 0;
-  if (menh.tuan || menh.triet) { dTL += 1; tvi.push('◇ Mệnh gặp ' + (menh.triet ? 'Triệt' : 'Tuần') + ': thuở nhỏ gặp trắc trở/ thiếu thốn, sớm phải tự lo – càng về sau càng khá.'); }
-  if (thCoSao_(menh, 'Thiên Mã') || thCoSao_(thCungTheoTen_(tv, 'Thiên Di'), 'Thiên Mã')) { dTL += 0.8; tvi.push('◇ Thiên Mã chiếu Mệnh/Di: hay xa quê, thay đổi chỗ ở.'); }
+  if (menh.tuan || menh.triet) { dTL += 1; tvi.push('◇ Mệnh gặp ' + (menh.triet ? 'Triệt' : 'Tuần') + ': gợi ý thuở nhỏ có thể gặp trắc trở, sớm tập tự lo – càng về sau càng khá.'); }
+  if (thCoSao_(menh, 'Thiên Mã') || thCoSao_(thCungTheoTen_(tv, 'Thiên Di'), 'Thiên Mã')) { dTL += 0.8; tvi.push('◇ Thiên Mã chiếu Mệnh/Di: có xu hướng xa quê, thay đổi chỗ ở.'); }
   if (thCoSao_(menh, 'Cô Thần') || thCoSao_(menh, 'Quả Tú') || thCoSao_(pm, 'Cô Thần') || thCoSao_(pm, 'Quả Tú')) { dTL += 0.5; tvi.push('◇ Cô/Quả ở Mệnh hoặc Phụ Mẫu: tính tự lập, ít nhờ cậy gia đình.'); }
   if (dPM < -1) dTL += 0.5;
   vote(tuLap, 'Tử Vi', Math.min(2, dTL));
@@ -166,12 +166,12 @@ function thXuatThan_(C) {
   bti.push('Nguyệt trụ ' + nguyet.canChi + ' (cha mẹ, anh chị em, 17–32 tuổi) – ' + nguyet.danhGia + ' (' + diem10_(nguyet.diem * 1.6) + '/10).');
   var hy = bt.goiY.hy, gB = (nien.diem * 0.6 + nguyet.diem * 0.4) / 2.5;
   var ttNam = bt.pillars[0].thapThan, ttThang = bt.pillars[1].thapThan;
-  if (/Ấn/.test(ttNam) || /Ấn/.test(ttThang)) bti.push('Ấn tinh ở trụ năm/tháng: gia đình coi trọng học hành, được cha mẹ (nhất là mẹ) bao bọc' + (hy.indexOf(bt.pillars[/Ấn/.test(ttNam) ? 0 : 1].canHanh) >= 0 ? ' – là hỷ dụng nên được hưởng nhiều.' : ' – nhưng là kỵ thần nên sự bao bọc có khi thành ràng buộc.'));
-  if (/Tài/.test(ttNam) || /Tài/.test(ttThang)) { bti.push('Tài tinh ở trụ năm/tháng: gia đình có nền kinh tế hoặc truyền thống buôn bán; cha có vai trò lớn.'); gB += hy.indexOf(bt.pillars[/Tài/.test(ttNam) ? 0 : 1].canHanh) >= 0 ? 0.6 : 0.2; }
-  if (/Kiếp|Thương/.test(ttThang)) { bti.push('◇ Kiếp Tài/Thương Quan ở trụ tháng: sớm độc lập, có cạnh tranh trong anh em hoặc bất đồng với khuôn phép gia đình.'); vote(tuLap, 'Bát Tự', 1); }
+  if (/Ấn/.test(ttNam) || /Ấn/.test(ttThang)) bti.push('Ấn tinh ở trụ năm/tháng: gợi ý gia đình coi trọng học hành, bạn được cha mẹ (nhất là mẹ) bao bọc' + (hy.indexOf(bt.pillars[/Ấn/.test(ttNam) ? 0 : 1].canHanh) >= 0 ? ' – là hỷ dụng nên được hưởng nhiều.' : ' – nhưng là kỵ thần nên sự bao bọc có khi thành ràng buộc.'));
+  if (/Tài/.test(ttNam) || /Tài/.test(ttThang)) { bti.push('Tài tinh ở trụ năm/tháng: gợi ý gia đình có nền kinh tế hoặc truyền thống buôn bán; cha có thể giữ vai trò lớn.'); gB += hy.indexOf(bt.pillars[/Tài/.test(ttNam) ? 0 : 1].canHanh) >= 0 ? 0.6 : 0.2; }
+  if (/Kiếp|Thương/.test(ttThang)) { bti.push('◇ Kiếp Tài/Thương Quan ở trụ tháng: có xu hướng sớm độc lập, có thể có cạnh tranh trong anh em hoặc khác ý với khuôn phép gia đình.'); vote(tuLap, 'Bát Tự', 1); }
   else vote(tuLap, 'Bát Tự', 0);
-  if (/Quan|Sát/.test(ttNam)) bti.push('Quan/Sát ở trụ năm: gia đình nề nếp, có người làm việc nhà nước hoặc gia phong nghiêm.');
-  (bt.thanSat || []).forEach(function (t) { if (t.ten === 'Dịch Mã') { bti.push('◇ Dịch Mã (' + t.o + '): hay di chuyển, dễ rời quê lập nghiệp.'); tuLap[tuLap.length - 1].v += 0.8; } });
+  if (/Quan|Sát/.test(ttNam)) bti.push('Quan/Sát ở trụ năm: gợi ý gia đình nề nếp, có thể có người làm việc nhà nước hoặc gia phong nghiêm.');
+  (bt.thanSat || []).forEach(function (t) { if (t.ten === 'Dịch Mã') { bti.push('◇ Dịch Mã (' + t.o + '): có xu hướng hay di chuyển, rời quê lập nghiệp.'); tuLap[tuLap.length - 1].v += 0.8; } });
   vote(giau, 'Bát Tự', Math.max(-2, Math.min(2, gB)));
   vote(am, 'Bát Tự', Math.max(-2, Math.min(2, nguyet.diem / 3)));
   he.push({ he: 'Bát Tự', items: bti });
@@ -198,7 +198,7 @@ function thXuatThan_(C) {
   // Thần số học
   var tsi = [], d6 = ts.bieuDo[6], d4 = ts.bieuDo[4], aT = 0, tT = 0;
   if (d6 >= 1) { aT += 0.5; tsi.push('Có số 6 trên biểu đồ: gắn bó, có trách nhiệm với gia đình.'); } else { tT += 0.5; tsi.push('Thiếu số 6: ít phụ thuộc gia đình, có xu hướng rời nhà sớm hoặc sống theo cách riêng.'); }
-  if (d6 >= 3) { aT -= 0.5; tsi.push('◇ Nhiều số 6: lo toan gia đình quá mức, dễ căng thẳng với người thân.'); }
+  if (d6 >= 3) { aT -= 0.5; tsi.push('◇ Nhiều số 6: có xu hướng ôm nhiều lo toan gia đình; chia sẻ bớt việc sẽ giúp bạn và người thân nhẹ nhõm hơn.'); }
   if (d4 >= 1) tsi.push('Có số 4: được dạy nề nếp, trật tự từ nhỏ.');
   if (ts.duongDoi === 5 || ts.dinhCao[0].so === 5) { tT += 0.8; tsi.push('Số 5 ở chủ đạo/đỉnh 1: tuổi trẻ nhiều thay đổi, di chuyển, thích tự do khỏi khuôn khổ gia đình.'); }
   if (ts.dinhCao[0].thuThach === 6 || ts.dinhCao[0].thuThach === 4) { aT -= 0.3; tsi.push('◇ Thử thách tuổi trẻ ' + ts.dinhCao[0].thuThach + ': ' + TS_THU_THACH[ts.dinhCao[0].thuThach] + '.'); }
@@ -215,9 +215,9 @@ function thXuatThan_(C) {
   function dong(arr, sg) { if (!sg) return 0; var n = 0, t = 0; arr.forEach(function (x) { if (Math.abs(x.v) > 0.2) { t++; if (thSign_(x.v) === sg || (sg && x.v * sg > 0)) n++; } }); return t ? Math.round(n / t * 100) : 0; }
   var G = tb(giau), A = tb(am), T = tb(tuLap);
   var kl = [];
-  kl.push((G > 0.6 ? 'Gia cảnh khá giả, có nền tảng vật chất và nề nếp; được thừa hưởng điều kiện học hành tốt.' : G > 0.15 ? 'Gia cảnh trung bình khá, đủ đầy nhưng không dư dả; cha mẹ chịu khó vun vén.' : G > -0.4 ? 'Gia cảnh bình thường, có giai đoạn chật vật; phần lớn thành quả về sau do tự thân gây dựng.' : 'Xuất thân khó khăn hoặc gia đình biến động về kinh tế khi còn nhỏ; tuổi thơ sớm biết lo toan.') + ' (đồng thuận ' + dong(giau, thSign_(G)) + '%)');
-  kl.push((A > 0.5 ? 'Tình cảm gia đình ấm áp, cha mẹ hòa thuận và quan tâm; là chỗ dựa tinh thần vững.' : A > 0 ? 'Gia đình tình cảm nhưng có khoảng cách thế hệ hoặc cha mẹ nghiêm; hiểu nhau hơn khi trưởng thành.' : A > -0.5 ? 'Quan hệ với cha mẹ có va chạm, khác quan điểm; cần chủ động hàn gắn.' : 'Tuổi nhỏ thiếu hơi ấm hoặc gia đình có biến cố (xa cách, bất hòa, mất mát); đây là vết thương cần chữa lành để trưởng thành.') + ' (đồng thuận ' + dong(am, thSign_(A)) + '%)');
-  kl.push((T > 0.7 ? 'Dấu hiệu tự lập sớm/ly hương rất rõ: nhiều khả năng rời quê hoặc tự lo liệu từ trẻ, thành công ở nơi xa.' : T > 0.3 ? 'Có xu hướng tự lập, thay đổi chỗ ở vài lần; không phụ thuộc gia đình.' : 'Gắn bó quê hương – gia đình, dễ phát triển gần nơi sinh ra.'));
+  kl.push((G > 0.6 ? 'Lá số gợi ý gia cảnh khá giả, có nền tảng vật chất và nề nếp, thuận cho việc học hành.' : G > 0.15 ? 'Lá số gợi ý gia cảnh trung bình khá, đủ đầy nhưng không dư dả; cha mẹ chịu khó vun vén.' : G > -0.4 ? 'Lá số gợi ý gia cảnh bình thường, có thể có giai đoạn chật vật; thành quả về sau phần lớn đến từ sức tự thân.' : 'Lá số gợi ý thuở nhỏ gia đình có thể gặp khó khăn hoặc thay đổi về kinh tế, nên bạn sớm biết lo toan.') + ' Đây là cách luận truyền thống – bạn hãy đối chiếu với trải nghiệm thật của mình.');
+  kl.push((A > 0.5 ? 'Lá số gợi ý tình cảm gia đình ấm áp, cha mẹ quan tâm và là chỗ dựa tinh thần cho bạn.' : A > 0 ? 'Lá số gợi ý gia đình tình cảm nhưng có thể có khoảng cách thế hệ hoặc nếp dạy nghiêm; hai bên thường hiểu nhau hơn khi bạn trưởng thành.' : A > -0.5 ? 'Lá số gợi ý giữa bạn và cha mẹ có thể có lúc khác quan điểm; chủ động trò chuyện sẽ giúp hai bên gần nhau hơn.' : 'Lá số gợi ý tuổi nhỏ có thể từng thiếu sự gần gũi hoặc gia đình trải qua thay đổi lớn; nếu điều này đúng với bạn, đó là phần đáng được lắng nghe và chữa lành dần.'));
+  kl.push((T > 0.7 ? 'Dấu hiệu tự lập sớm khá rõ: bạn có xu hướng rời quê hoặc tự lo liệu từ trẻ, và thuận phát triển ở nơi xa.' : T > 0.3 ? 'Bạn có xu hướng tự lập, có thể thay đổi chỗ ở vài lần; không phụ thuộc gia đình.' : 'Bạn có xu hướng gắn bó quê hương – gia đình, thuận phát triển gần nơi sinh ra.'));
   return { tieuDe: 'Xuất thân – gia cảnh', diem: G + A, ketLuan: kl, nguon: he, chiSo: { giaCanh: G, tinhCam: A, tuLap: T } };
 }
 
@@ -237,10 +237,10 @@ function thVocDang_(C) {
       var ham = s.b === 'H', w = x[2] * (s.muon ? 0.5 : 1);
       var v = { cao: S.v.cao - (ham ? 0.5 : 0), beo: S.v.beo - (ham ? 0.5 : 0), mat: S.v.mat, da: S.v.da };
       add('Tử Vi', v, w / Math.max(1, x[0].chinh.length || 2));
-      tvi.push(s.n + (s.b ? ' (' + s.b + ')' : '') + ' ở ' + x[1] + (s.muon ? ' (mượn cung đối vì vô chính diệu)' : '') + ': ' + S.hinh + (ham ? '; hãm địa nên dáng gầy/nhỏ hơn, kém tươi' : '') + '.');
+      tvi.push(s.n + (s.b ? ' (' + s.b + ')' : '') + ' ở ' + x[1] + (s.muon ? ' (mượn cung đối vì vô chính diệu)' : '') + ': ' + S.hinh + (ham ? '; hãm địa nên theo cổ thư dáng có thể gọn/nhỏ hơn' : '') + '.');
     });
   });
-  if (menh.tuan || menh.triet) tvi.push('Mệnh gặp ' + (menh.triet ? 'Triệt' : 'Tuần') + ': thân hình thường gọn/nhỏ hơn mô tả của chính tinh, thuở nhỏ dễ ốm.');
+  if (menh.tuan || menh.triet) tvi.push('Mệnh gặp ' + (menh.triet ? 'Triệt' : 'Tuần') + ': theo cổ thư, thân hình có thể gọn/nhỏ hơn mô tả của chính tinh.');
   if (thCoSao_(menh, 'Lộc Tồn') || thCoSao_(menh, 'Thiên Phủ')) add('Tử Vi', { beo: 0.5 }, 0.5);
   he.push({ he: 'Tử Vi', items: tvi });
 
@@ -249,7 +249,7 @@ function thVocDang_(C) {
   bti.push('Nhật chủ ' + bt.nhatChu + ' – ' + TH_NGU_HANH_HINH[nh].hinh + '.');
   add('Bát Tự', TH_NGU_HANH_HINH[nh].v, 1.5);
   if (tro !== nh) { bti.push('Ngũ hành vượng nhất trong tứ trụ là ' + tro + ' (' + bt.phanTram[tro] + '%) pha thêm nét ' + TH_NGU_HANH_HINH[tro].hinh + '.'); add('Bát Tự', TH_NGU_HANH_HINH[tro].v, 1); }
-  bti.push(thVuong_(bt) > 0 ? 'Thân vượng: thể chất khỏe, xương cốt chắc, sức bền tốt.' : thVuong_(bt) < 0 ? 'Thân nhược: thể chất mảnh, dễ mệt khi làm quá sức; cần bồi bổ theo dụng thần ' + bt.goiY.dung + '.' : 'Thân trung hòa: thể chất cân đối.');
+  bti.push(thVuong_(bt) > 0 ? 'Thân vượng: theo cách luận truyền thống, thể chất thường dẻo dai, sức bền tốt.' : thVuong_(bt) < 0 ? 'Thân nhược: theo cách luận truyền thống, thể chất thường mảnh; nên giữ nếp sinh hoạt điều độ, nghỉ ngơi đủ (dụng thần ' + bt.goiY.dung + ').' : 'Thân trung hòa: thể chất thường cân đối.');
   if (thVuong_(bt) < 0) add('Bát Tự', { beo: -0.5 }, 0.7); else if (thVuong_(bt) > 0) add('Bát Tự', { beo: 0.3 }, 0.7);
   he.push({ he: 'Bát Tự', items: bti });
 
@@ -291,14 +291,14 @@ function thVocDang_(C) {
     return t ? n + '/' + t + ' hệ' : '';
   }
   var gioi = C.tv.info.male;
-  var tCao = cao > 0.45 ? 'Dáng cao hơn trung bình' : cao > 0.1 ? 'Chiều cao trung bình khá' : cao > -0.3 ? 'Chiều cao trung bình' : 'Dáng nhỏ nhắn, thấp hơn trung bình';
-  var tBeo = beo > 0.55 ? 'thân hình đầy đặn, chắc thịt (dễ tăng cân khi trung niên)' : beo > 0.15 ? 'thân hình cân đối hơi đầy, săn chắc' : beo > -0.3 ? 'thân hình cân đối, gọn' : 'thân hình thon gầy, xương rõ';
+  var tCao = cao > 0.45 ? 'Lá số gợi ý dáng cao' : cao > 0.1 ? 'Lá số gợi ý chiều cao trung bình khá' : cao > -0.3 ? 'Lá số gợi ý chiều cao trung bình' : 'Lá số gợi ý dáng nhỏ nhắn';
+  var tBeo = beo > 0.55 ? 'thân hình đầy đặn, chắc thịt (nên duy trì vận động đều)' : beo > 0.15 ? 'thân hình cân đối hơi đầy, săn chắc' : beo > -0.3 ? 'thân hình cân đối, gọn' : 'thân hình thon gọn';
   var m = top(mat), d = top(da);
   var kl = [
     tCao + ' (' + dongHe('cao', cao >= 0 ? 1 : -1) + ' cùng chiều), ' + tBeo + ' (' + dongHe('beo', beo >= 0 ? 1 : -1) + ' cùng chiều).',
-    'Khuôn mặt: thiên về ' + m[0] + ' (' + pct(mat, m[0]) + '% phiếu)' + (m[1] ? ', có nét ' + m[1] : '') + '. Nước da: ' + ({ 'sáng': 'sáng/trắng', 'hồng': 'hồng hào', 'ngăm': 'ngăm/bánh mật' }[d[0]] || d[0]) + ' (' + pct(da, d[0]) + '% phiếu).',
+    'Khuôn mặt: theo cổ học thiên về ' + m[0] + (m[1] ? ', có nét ' + m[1] : '') + '. Nước da: gợi ý ' + ({ 'sáng': 'sáng/trắng', 'hồng': 'hồng hào', 'ngăm': 'ngăm/bánh mật' }[d[0]] || d[0]) + '.',
     'Thần thái: ' + CT_CUNG[ct.asc.cung].asc.split(':')[1].split('.')[0].trim() + '; ' + (TH_SAO[(thChinhTinh_(tv, menh)[0] || {}).n] ? 'khí chất ' + (thChinhTinh_(tv, menh)[0].n) + ' – ' + TH_SAO[thChinhTinh_(tv, menh)[0].n].hinh.split(',').slice(-1)[0].trim() : 'khí chất hòa nhã') + '.',
-    (gioi ? 'Với nam giới, ' : 'Với nữ giới, ') + 'các mô tả trên thể hiện rõ nhất ở độ tuổi 25–45; trước đó dáng thường gọn hơn, sau đó chịu ảnh hưởng thói quen sống.'
+    (gioi ? 'Với nam giới, ' : 'Với nữ giới, ') + 'các mô tả trên theo cách luận truyền thống thường được đối chiếu ở độ tuổi 25–45; vóc dáng thật còn phụ thuộc di truyền và thói quen sống – bạn hãy tự đối chiếu với chính mình.'
   ];
   return { tieuDe: 'Vóc dáng – diện mạo', ketLuan: kl, nguon: he, chiSo: { cao: Math.round(cao * 100) / 100, beo: Math.round(beo * 100) / 100, mat: m[0], da: d[0] } };
 }
@@ -415,7 +415,7 @@ function thTinhCach_(C) {
   var kl = truc.filter(function (t) { return Math.abs(t.gt) > 0.35; }).sort(function (a, b) { return b.tyLe - a.tyLe || Math.abs(b.gt) - Math.abs(a.gt); }).map(function (t) {
     return (t.tyLe >= 60 ? '✓ ' : '◇ ') + t.moTa + ' – ' + t.dong.length + '/' + hs.length + ' hệ đồng thuận (' + t.dong.join(', ') + ')' + (t.nguoc.length ? '; riêng ' + t.nguoc.join(', ') + ' cho thấy mặt ngược lại – đây là chiều sâu/mâu thuẫn nội tâm.' : '.');
   });
-  truc.forEach(function (t) { if (Math.abs(t.gt) <= 0.35 && t.nguoc.length >= 2) kl.push('◇ ' + t.ten + ': các hệ chia đôi (' + t.chiTiet + ') – con người hai mặt ở trục này: biểu hiện ra ngoài và cảm nhận bên trong có thể khác nhau.'); });
+  truc.forEach(function (t) { if (Math.abs(t.gt) <= 0.35 && t.nguoc.length >= 2) kl.push('◇ ' + t.ten + ': các hệ chia đôi (' + t.chiTiet + ') – ở trục này bạn có cả hai mặt: biểu hiện ra ngoài và cảm nhận bên trong có thể khác nhau.'); });
   // Chân dung
   var menhSao = thChinhTinh_(tv, menh).map(function (s) { return s.n; }).join(' – ') || 'vô chính diệu';
   var chanDung = 'Chân dung: mang Mệnh ' + menhSao + ', nhật chủ ' + bt.nhatChu + ', Mặt Trời ' + ct.by.sun.cungTen + ' – Mặt Trăng ' + ct.by.moon.cungTen + ' – Mọc ' + ct.asc.cungTen +
@@ -494,7 +494,7 @@ function thDuongDoi_(C) {
   var tot3 = chang.slice().sort(function (a, b) { return b.diem - a.diem; }).slice(0, 3), xau2 = chang.slice().sort(function (a, b) { return a.diem - b.diem; }).slice(0, 2);
   var kl = [
     'Giai đoạn rực rỡ nhất (các hệ cùng xác nhận): ' + tot3.map(function (c) { return c.khoang + ' (' + c.nam + ')'; }).join(', ') + '.',
-    'Giai đoạn nhiều thử thách: ' + xau2.map(function (c) { return c.khoang + ' (' + c.nam + ')'; }).join(', ') + ' – nên giữ an toàn tài chính – sức khỏe, học hỏi và chuẩn bị.',
+    'Giai đoạn nhiều thử thách: ' + xau2.map(function (c) { return c.khoang + ' (' + c.nam + ')'; }).join(', ') + ' – nên đi chậm, quản lý tài chính chặt, giữ nếp sinh hoạt điều độ, học hỏi và chuẩn bị.',
     'Bước ngoặt trưởng thành: Sao Thổ hồi quy ' + ((C.ct.chuKy.filter(function (c) { return c.ten === 'Sao Thổ hồi quy'; })[0] || {}).nam || '~' + (y0 + 29)) + '; khủng hoảng – thức tỉnh giữa đời (Thiên Vương đối) ' + ((C.ct.chuKy.filter(function (c) { return /Thiên Vương đối/.test(c.ten); })[0] || {}).nam || '~' + (y0 + 42)) + '; đỉnh cao thần số thứ 2 bắt đầu ' + (y0 + ts.dinhCao[1].tu) + '.'
   ];
   return { tieuDe: 'Đường đời', chuDe: chuDe, chang: chang, ketLuan: kl };
@@ -600,15 +600,15 @@ function tongHopLuan(C) {
       T.phoiNgau.thoiDiem = pnThoiDiem_(C, T.hoiTu.namTin, T.phoiNgau.chiSo.tuoi || 0);
       T.phoiNgau.conCai = pnConCai_(C, T.phoiNgau.thoiDiem);
       var kh = T.phoiNgau.thoiDiem.ketHon, sc = T.phoiNgau.thoiDiem.sinhCon;
-      function top3(x) { return x && x.nam ? x.nam.slice().sort(function (a, b) { return b.pct - a.pct; }).slice(0, 3).map(function (n) { return n.nam + ' (' + n.pct + '%)'; }).join(', ') : ''; }
-      if (top3(kh)) T.phoiNgau.ketLuan.push('Xác suất cưới hỏi theo năm (tổng hợp 5 hệ + độ tuổi): ' + top3(kh) + '.');
-      if (top3(sc)) T.phoiNgau.ketLuan.push('Xác suất có tin vui con cái theo năm: ' + top3(sc) + '.');
+      function top3(x) { return x && x.nam ? x.nam.slice().sort(function (a, b) { return b.pct - a.pct; }).slice(0, 3).map(function (n) { return String(n.nam); }).join(', ') : ''; }
+      if (top3(kh)) T.phoiNgau.ketLuan.push('Những năm thuận cho chuyện cưới hỏi (tổng hợp 5 hệ + độ tuổi): ' + top3(kh) + '.');
+      if (top3(sc)) T.phoiNgau.ketLuan.push('Những năm đáng chú ý cho tin vui con cái: ' + top3(sc) + ' – con cái là chuyện cần thời gian và sự vun đắp.');
       function quaKhu(x, ten) {
         if (!x) return;
         if (x.doiChieu && x.doiChieu.length) x.doiChieu.forEach(function (d) {
-          T.phoiNgau.ketLuan.push('Bạn đã ' + ten + ' năm ' + d.nam + (d.ngoai ? '.' : ': lá số xếp năm này hạng ' + d.hang + '/' + d.tong + ' trong giai đoạn ' + x.quaKhu.tu + '–' + x.quaKhu.den + ' (' + d.pct + '%, ' + d.soHe + ' hệ cùng báo).'));
+          T.phoiNgau.ketLuan.push('Bạn đã ' + ten + ' năm ' + d.nam + (d.ngoai ? '.' : ': lá số xếp năm này hạng ' + d.hang + '/' + d.tong + ' trong giai đoạn ' + x.quaKhu.tu + '–' + x.quaKhu.den + ' (' + d.soHe + ' hệ cùng báo).'));
         });
-        else if (x.quaKhu && x.quaKhu.nam.length) T.phoiNgau.ketLuan.push('Nếu bạn đã ' + ten + ' (khả năng việc này đã diễn ra trước năm nay ≈ ' + x.pDaQua + '%), năm khả năng nhất giai đoạn ' + x.quaKhu.tu + '–' + x.quaKhu.den + ': ' + top3(x.quaKhu) + '.');
+        else if (x.quaKhu && x.quaKhu.nam.length) T.phoiNgau.ketLuan.push('Nếu bạn đã ' + ten + ', những năm lá số nổi bật trong giai đoạn ' + x.quaKhu.tu + '–' + x.quaKhu.den + ': ' + top3(x.quaKhu) + ' – bạn có thể đối chiếu với thực tế.');
       }
       quaKhu(kh, 'kết hôn'); quaKhu(sc, 'có con');
     } catch (e) { T.phoiNgau.loiThem = String(e && e.message || e); }

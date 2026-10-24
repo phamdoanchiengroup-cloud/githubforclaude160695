@@ -4,6 +4,7 @@ Nhóm: Bắt đầu · Cập nhật 21/10/2026
 Liên quan: [[Việc chờ chủ dự án]] · [[TCC Bán hàng]] · [[00 Mục lục]]
 
 ## Cách làm việc
+- **24/10 (khuya): 4 hướng sửa nội dung nhạy cảm, áp cho cả 6 hệ** – (1) chuyện đã qua kiểm chứng được (gia cảnh, cha mẹ, anh em, ngoại hình) viết thành gợi ý + nút hỏi lại "Đúng / Đúng một phần / Không đúng" (ghi ẩn danh vào sheet `DoiChieu`); (2) bỏ con số giả chính xác (%, xác suất, số con, tỷ lệ trai/gái) – chỉ hiện mức tín hiệu, so sánh tương đối; (3) bỏ chẩn đoán sức khỏe, viết lại chủ đề con cái, hôn nhân, tiền bạc, năm hạn theo giọng chủ động, không phán xét; (4) dòng lưu ý đầu kết quả và trong PDF: "Đây là góc nhìn theo cổ học để tham khảo và tự suy ngẫm, không phải kết luận về đời bạn." Không xóa ồ ạt, không chèn lời từ chối dày đặc kiểu Codex. Tab 64 quẻ chuyển xuống cuối thành mục **"📚 Tham khảo · 64 quẻ"**.
 - 24/10: ảnh nặng (tranh Hologram, poster, bìa/nền PDF) và dữ liệu 64 quẻ phục vụ qua **jsDelivr** theo mã lần lưu cố định (không dùng Google Drive vì không chụp được vào PDF). PDF theo phong cách tranh thủy mặc, bìa và nền trang ruột là tranh của chủ dự án; bỏ ảnh bánh xe 9 lĩnh vực khỏi PDF.
 - 24/10: Tử Vi **chỉ còn lá số Hologram** (bỏ nút 2D); PDF phải sáng sủa và có các bảng Hologram; poster trang chủ dùng ảnh chân dung mới của chủ dự án.
 - **24/10: sau đợt Codex sửa** – chủ dự án chọn: khôi phục Vóc dáng – diện mạo và tỷ lệ % như trước, **bỏ khối "Đặc điểm cơ thể & sức khỏe"**; bỏ bảng "kiểm toán phương pháp"; giữ thư mục `webbongda/` (web bóng đá chủ dự án tự tải lên) trên nhánh này.

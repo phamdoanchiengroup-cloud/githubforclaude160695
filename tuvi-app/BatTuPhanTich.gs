@@ -29,7 +29,7 @@ var BTP_TINH_CACH = {
   'Kim': 'Cương trực, quyết đoán, trọng nghĩa, đôi khi cứng rắn',
   'Thủy': 'Thông minh, linh hoạt, giỏi xoay xở, dễ thay đổi'
 };
-var BTP_TANG_PHU = { 'Mộc': 'gan, mật, gân cốt', 'Hỏa': 'tim, ruột non, mạch máu', 'Thổ': 'tỳ, vị, dạ dày', 'Kim': 'phổi, ruột già, da', 'Thủy': 'thận, bàng quang, hệ sinh dục' };
+var BTP_TANG_PHU = { 'Mộc': 'nhịp vận động, sự thư giãn', 'Hỏa': 'nhịp làm việc – nghỉ ngơi', 'Thổ': 'nếp ăn uống điều độ', 'Kim': 'hít thở, không khí trong lành', 'Thủy': 'giấc ngủ, uống đủ nước, giữ ấm' };
 var BTP_MUA_CHUYEN = { 'Mộc': [2, 3, 4], 'Hỏa': [5, 6, 7], 'Thổ': [4, 10, 1, 7], 'Kim': [8, 9, 10], 'Thủy': [11, 0, 1] };
 var BTP_TEN_CHUYEN = { 'Mộc': 'Khúc Trực cách', 'Hỏa': 'Viêm Thượng cách', 'Thổ': 'Gia Tường (Giá Sắc) cách', 'Kim': 'Tòng Cách (Kim)', 'Thủy': 'Nhuận Hạ cách' };
 
@@ -278,7 +278,7 @@ function btPhanTich_(bt, input) {
       dk(HANH_SINH.every(function (h) { return pct[h] > 0; }) && Math.max.apply(null, HANH_SINH.map(function (h) { return pct[h]; })) < 40, 'Đủ ngũ hành, không hành nào quá 40% – lưu thông, trung hòa.')] },
     { ten: 'Hung hiểm – cần phòng', dau: '✗', ds: [dk(pct[khacDung] >= 30, 'Dụng thần bị khắc phá (' + khacDung + ' ' + pct[khacDung] + '%).'),
       dk(ky.length && pct[ky[0]] >= 35 && pct[btpHanhSau_(ky[0], -2)] < 10, 'Kỵ thần ' + ky[0] + ' vượng (' + pct[ky[0]] + '%) mà không bị chế ngự.'),
-      dk(xung >= 3, 'Nhiều hình xung khắc hại (' + xung + ') – đời nhiều biến động.')] }
+      dk(xung >= 3, 'Nhiều hình xung khắc hại (' + xung + ') – cuộc sống có nhiều thay đổi; nên đi từng bước chắc.')] }
   ].map(function (x) { x.ds = x.ds.filter(Boolean); return x; });
 
   var saoPhoi = male ? 'tai' : 'quanSat', pc = P[2].tangCan[0];
@@ -302,13 +302,13 @@ function btPhanTich_(bt, input) {
       'Cung phu thê (chi ngày ' + P[2].chiTen + ') tàng ' + pc.ten + ' – ' + pc.thapThan + ', hành ' + pc.hanh + ' là ' + vaiTro(pc.hanh).toLowerCase() + ' thần' + (chiNgayQH.length ? '; ' + chiNgayQH.join('; ') : '; không bị xung hình') + '.'] },
     { ten: 'Con cái', ds: [
       (male ? 'Nam xem Quan Sát (Thất Sát – con trai, Chính Quan – con gái); không có thì xem Thực Thương' : 'Nữ xem Thực Thương (Thương Quan – con trai, Thực Thần – con gái)') + ': ' +
-        conSao.map(function (c) { var n = P.filter(function (p, k) { return k !== 2 && p.thapThan === c[0]; }).length + P.filter(function (p) { return p.tangCan.some(function (t) { return t.thapThan === c[0]; }); }).length * 0.5; return c[0] + ' (' + c[1] + ') ×' + n; }).join(', ') + '.',
+        conSao.map(function (c) { var n = P.filter(function (p, k) { return k !== 2 && p.thapThan === c[0]; }).length + P.filter(function (p) { return p.tangCan.some(function (t) { return t.thapThan === c[0]; }); }).length * 0.5; return c[0] + ' (' + c[1] + ') – độ hiện diện ' + n; }).join(', ') + ' (chỉ là mức hiện diện của sao, không phải số con).',
       'Cung tử tức (trụ giờ ' + gio.canTen + ' ' + gio.chiTen + '): can giờ là ' + gioTT + ', hành ' + gio.canHanh + ' là ' + vaiTro(gio.canHanh).toLowerCase() + ' thần → ' +
         (vaiTro(gio.canHanh) === 'Dụng' || vaiTro(gio.canHanh) === 'Hỷ' ? 'con cái hiếu thuận, về già được nhờ.' : vaiTro(gio.canHanh) === 'Kỵ' ? 'con cái tự lập sớm, cha mẹ cần kiên nhẫn.' : 'con cái bình ổn.') +
         (Math.abs(gio.chi - P[2].chi) === 6 ? ' Chi giờ xung chi ngày – quan điểm hai thế hệ dễ khác biệt.' : '')] },
     { ten: 'Sức khỏe', ds: HANH_SINH.filter(function (h) { return pct[h] >= 35 || pct[h] < 5; }).map(function (h) {
       return h + (pct[h] >= 35 ? ' thái quá (' + pct[h] + '%)' : ' bất cập (' + pct[h] + '%)') + ' → chú ý ' + BTP_TANG_PHU[h] + '.'; })
-      .concat(['Kỵ thần ' + (ky[0] || '—') + ' vượng lên (vận/năm ' + (ky[0] || '') + ') thì ' + (ky[0] ? BTP_TANG_PHU[ky[0]] : '') + ' dễ bị ảnh hưởng.']) }
+      .concat(['Kỵ thần ' + (ky[0] || '—') + ' vượng lên (vận/năm ' + (ky[0] || '') + ') thì nên chú ý ' + (ky[0] ? BTP_TANG_PHU[ky[0]] : '') + ', nghỉ ngơi đủ và khám sức khỏe định kỳ.']) }
   ];
 
   /* ---------- BƯỚC 8: Đại vận ---------- */
@@ -318,7 +318,7 @@ function btPhanTich_(bt, input) {
     var sCan = diemHanh(d.hanhCan), sChi = diemHanh(d.hanhChi), gc = [];
     if (Math.abs(d.can - dCan) === 5) gc.push('Can vận hợp Nhật can – duyên phận, hợp tác, có thể bị ràng buộc.');
     if (btpKhac_(d.hanhCan, dm)) gc.push('Can vận khắc Nhật can – áp lực, trách nhiệm tăng.');
-    if (Math.abs(d.chi - P[2].chi) === 6) { sChi -= 0.5; gc.push('Chi vận xung chi ngày (cung phu thê) – biến động gia đạo, chỗ ở.'); }
+    if (Math.abs(d.chi - P[2].chi) === 6) { sChi -= 0.5; gc.push('Chi vận xung chi ngày (cung phu thê) – gia đạo cần thêm thấu hiểu, có thể đổi chỗ ở.'); }
     if (Math.abs(d.chi - mChi) === 6) { sChi -= 0.5; gc.push('Chi vận xung nguyệt lệnh (đề cương) – bước ngoặt lớn về môi trường, công việc.'); }
     if (d.can === P[2].can && d.chi === P[2].chi) gc.push('Vận phục ngâm trụ ngày – chuyện cũ lặp lại.');
     var dau = sCan * 0.7 + sChi * 0.3, cuoi = sCan * 0.3 + sChi * 0.7;
@@ -332,12 +332,12 @@ function btPhanTich_(bt, input) {
   if (!hienDung) dacBiet.push({ ten: 'Mệnh vô dụng thần (dụng thần ẩn)', y: 'Dụng thần ' + dung + ' không thấu can, không làm bản khí – phải chờ đại vận/lưu niên mang ' + dung + ' mới phát; ' + (hy[0] ? 'trong lúc chờ, dựa vào hỷ thần ' + hy[0] + '.' : '') });
   var khuyet = HANH_SINH.filter(function (h) { return !P.some(function (p) { return p.canHanh === h || p.tangCan.some(function (t) { return t.hanh === h; }); }); });
   if (khuyet.length) dacBiet.push({ ten: 'Mệnh cục khuyết hành', y: 'Thiếu hẳn ' + khuyet.join(', ') + ' – bổ sung qua tên, màu sắc, phương hướng, nghề nghiệp mang hành này (nếu không phải kỵ thần).' });
-  if (xung >= 3) dacBiet.push({ ten: 'Mệnh cục xung khắc nhiều', y: xung + ' quan hệ hình – xung – hại: cuộc đời nhiều biến động, vất vả; nên chọn môi trường ổn định.' });
+  if (xung >= 3) dacBiet.push({ ten: 'Mệnh cục xung khắc nhiều', y: xung + ' quan hệ hình – xung – hại: cuộc sống có nhiều thay đổi; nên chọn môi trường ổn định, đi từng bước chắc.' });
   var vy = parseInt(input && input.viewYear, 10) || new Date().getFullYear();
   var dvNay = daiVan.filter(function (d) { return vy >= d.nam && vy < d.nam + 10; })[0];
   if (phe >= 62 && dvNay && (dvNay.hanhCan === H.tyKiep || dvNay.hanhCan === H.an || dvNay.hanhChi === H.tyKiep || dvNay.hanhChi === H.an))
     dacBiet.push({ ten: 'Thân cường địa vượng', y: 'Nhật chủ đã vượng lại đang gặp đại vận ' + dvNay.canChi + ' sinh phù – dễ kiêu ngạo, độc đoán; nên tiết chế, san sẻ.' });
-  if (!vuong && nhomPct.tai >= 30) dacBiet.push({ ten: 'Thân nhược tài vượng', y: 'Tài chiếm ' + nhomPct.tai + '% khi thân nhược – dễ gặp rắc rối vì tiền bạc; hợp làm công hưởng lương, tránh đầu cơ.' });
+  if (!vuong && nhomPct.tai >= 30) dacBiet.push({ ten: 'Thân nhược tài vượng', y: 'Tài chiếm ' + nhomPct.tai + '% khi thân nhược – tài chính cần quản lý chặt, tích lũy đều; hợp làm công hưởng lương, tránh đầu cơ.' });
 
   var loiKhuyen = [
     'Sống gần hành ' + dung + ' (dụng thần): màu ' + HANH_INFO[dung].mau.toLowerCase() + ', hướng ' + HANH_INFO[dung].huong + ', nghề ' + HANH_INFO[dung].nghe + '.',
@@ -361,19 +361,19 @@ function btPhanTich_(bt, input) {
  */
 function btpLuuNienDacBiet_(bt, nam, dv) {
   var can = ((nam - 4) % 10 + 10) % 10, chi = ((nam - 4) % 12 + 12) % 12, P = bt.pillars, o = [];
-  if (dv && dv.can === can && dv.chi === chi) o.push('Tuế vận tịnh lâm – năm trùng can chi đại vận: biến động lớn.');
+  if (dv && dv.can === can && dv.chi === chi) o.push('Tuế vận tịnh lâm – năm trùng can chi đại vận: năm nên đi chậm, cân nhắc việc lớn.');
   P.forEach(function (p) {
-    if (btpKhac_(CAN_HANH[can], p.canHanh) && Math.abs(chi - p.chi) === 6) o.push('Thiên khắc địa xung trụ ' + p.tru.toLowerCase() + ' (' + p.canTen + ' ' + p.chiTen + ') – hung, việc thuộc trụ này dễ đổ vỡ.');
+    if (btpKhac_(CAN_HANH[can], p.canHanh) && Math.abs(chi - p.chi) === 6) o.push('Thiên khắc địa xung trụ ' + p.tru.toLowerCase() + ' (' + p.canTen + ' ' + p.chiTen + ') – năm nên đi chậm, cân nhắc kỹ việc thuộc trụ này.');
   });
   if (dv && btpKhac_(CAN_HANH[can], CAN_HANH[dv.can]) && Math.abs(chi - dv.chi) === 6) o.push('Thiên khắc địa xung đại vận – năm chuyển mình gấp.');
   var chis = P.map(function (p) { return p.chi; }).concat([chi]);
   [[[2, 5, 8], 'Dần – Tỵ – Thân (vô ân chi hình)'], [[1, 10, 7], 'Sửu – Tuất – Mùi (trì thế chi hình)']].forEach(function (th) {
-    if (th[0].indexOf(chi) >= 0 && th[0].every(function (x) { return chis.indexOf(x) >= 0; })) o.push('Năm hoàn thành tam hình ' + th[1] + ' – đề phòng tai họa, kiện tụng, phẫu thuật.');
+    if (th[0].indexOf(chi) >= 0 && th[0].every(function (x) { return chis.indexOf(x) >= 0; })) o.push('Năm hoàn thành tam hình ' + th[1] + ' – năm nên đi chậm; cẩn trọng giấy tờ, hợp đồng và giữ nếp sinh hoạt điều độ.');
   });
   if ((chi === 0 && P.some(function (p) { return p.chi === 3; })) || (chi === 3 && P.some(function (p) { return p.chi === 0; }))) o.push('Tý – Mão tương hình (vô lễ chi hình) – dễ bất hòa, thị phi.');
   if ([4, 6, 9, 11].indexOf(chi) >= 0 && P.some(function (p) { return p.chi === chi; })) o.push('Tự hình ' + CHI[chi] + ' – tự làm khó mình, dễ buồn phiền.');
   var naYear = P[0].napAmHanh;
-  if (naYear === 'Hỏa' && ((chi === 10 && chis.indexOf(11) >= 0) || (chi === 11 && chis.indexOf(10) >= 0))) o.push('Thiên La (Tuất – Hợi) với mệnh nạp âm Hỏa – dễ vướng rắc rối, tai nạn, pháp lý.');
-  if ((naYear === 'Thủy' || naYear === 'Thổ') && ((chi === 4 && chis.indexOf(5) >= 0) || (chi === 5 && chis.indexOf(4) >= 0))) o.push('Địa Võng (Thìn – Tỵ) với mệnh nạp âm ' + naYear + ' – dễ vướng rắc rối, tai nạn, pháp lý.');
+  if (naYear === 'Hỏa' && ((chi === 10 && chis.indexOf(11) >= 0) || (chi === 11 && chis.indexOf(10) >= 0))) o.push('Thiên La (Tuất – Hợi) với mệnh nạp âm Hỏa – nên cẩn trọng giấy tờ, hợp đồng và khi di chuyển.');
+  if ((naYear === 'Thủy' || naYear === 'Thổ') && ((chi === 4 && chis.indexOf(5) >= 0) || (chi === 5 && chis.indexOf(4) >= 0))) o.push('Địa Võng (Thìn – Tỵ) với mệnh nạp âm ' + naYear + ' – nên cẩn trọng giấy tờ, hợp đồng và khi di chuyển.');
   return o;
 }

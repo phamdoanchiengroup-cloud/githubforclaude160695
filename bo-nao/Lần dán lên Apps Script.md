@@ -4,6 +4,7 @@ Nhóm: Bắt đầu · Cập nhật 22/10/2026
 Liên quan: [[Việc chờ chủ dự án]] · [[TCC Kiểm thử]] · [[00 Mục lục]]
 
 ## Tình trạng
+- **24/10 (khuya): mã `2026.10.24.9`** – sửa nội dung nhạy cảm cả 6 hệ: đổi **Script, Styles, Index, Code** và nhiều file .gs (LuanGiai, TuViHeThong, TuViTrinhTu, TuViTamPhap, DuDoan, NghiemChung, TongHop, PhoiNgau, CapDoi, HoiTu, VanSau, BatTu*, DeHieu, ChiemTinh, HaLac, TuVi). Bấm `2-CAP-NHAT.bat`, Ctrl+F5. Sheet `DoiChieu` tự tạo khi có người bấm nút đối chiếu.
 - **24/10 (tối): mã `2026.10.24.8`** – đổi **Script, Styles, Index, Holo, Code** (+ TuViTrinhTu nếu chưa có). Ảnh và dữ liệu 64 quẻ lấy từ jsDelivr nên không cần dán thêm gì; các file HoloAnh* cũ trên Apps Script giữ hay xóa đều được (chỉ còn dự phòng). Bấm `2-CAP-NHAT.bat`, Ctrl+F5.
 - **24/10 (chiều): mã `2026.10.24.2`** – đổi **Code, Script, Styles, Index, Holo, Anh** + file mới **TuViTrinhTu** + ảnh `poster-trang-chu.webp`. Bấm `2-CAP-NHAT.bat`, Ctrl+F5. Lưu ý: bộ bấm đúp giữ Anh.html cũ – không sao, Script tự lấy poster mới.
 - **24/10: rà lại toàn bộ sửa đổi của Codex (23–24/10, 160 commit)** – mã `2026.10.24.1`. Đổi **Code, TongHop, HaLac, Script, Styles, Index, Holo** + file mới **HoloAnhTongHop**; **xóa LaSo3D** trên Apps Script (bộ bấm đúp không tự xóa – vào trình soạn thảo xóa tay file `LaSo3D`). Bấm `2-CAP-NHAT.bat`, Ctrl+F5.

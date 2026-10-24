@@ -521,10 +521,10 @@ var HL_LV = [
       'Đây không phải là "không có sự nghiệp" – chỉ là con đường chuyên môn, tự do, kinh doanh nhỏ hợp bạn hơn con đường chức vụ.'] },
   { k: 'sucKhoe', ten: 'Sức khỏe', icon: '🌿', nhom: 'suc_khoe', dung: 'SK', giai: 'hào Quan Quỷ là bệnh, hào Tử Tôn là thuốc; thêm sức của hào Thế',
     van: ['Bạn có xu hướng thể trạng tốt, ốm vặt nhanh khỏi.',
-      'Sức khỏe của bạn ở mức bình thường, cần để ý một vài điểm yếu.',
-      'Bạn có xu hướng dễ mệt, hay lo âu hoặc có bệnh dai dẳng cần theo dõi.'],
+      'Thể trạng của bạn ở mức bình thường, nên giữ nếp sinh hoạt điều độ.',
+      'Bạn có xu hướng dễ mệt, hay lo âu – nên dành nhiều thời gian nghỉ ngơi hơn.'],
     khuyen: ['Giữ nếp ngủ và vận động đều – thể trạng tốt cũng cần được bảo dưỡng.',
-      'Khám định kỳ mỗi năm và để ý những vùng dưới đây.',
+      'Khám định kỳ mỗi năm, ngủ đủ và vận động đều.',
       'Đừng lo lắng quá – phát hiện sớm là chữa được. Khám định kỳ, ngủ đủ, giảm áp lực là "thuốc" tốt nhất.'] }
 ];
 function hlBac_(d) { return d >= 0.8 ? 0 : d >= -0.6 ? 1 : 2; }

@@ -134,12 +134,12 @@ var DH_BT_TT_NHOM = { 'Tỷ Kiên': 'Tỷ Kiếp', 'Kiếp Tài': 'Tỷ Kiếp',
 /** 12 lĩnh vực theo Tứ Trụ – văn tầng 2 theo 5 mức (rất thuận → cần đặc biệt lưu tâm) */
 var DH_BT_LV = {
   'Mệnh': ['Bản mệnh', ['Bản thân vững vàng, được trời phú nhiều thuận lợi – hãy dùng nó để đi xa.', 'Bản thân khá vững, có nền tảng tốt để phát triển.', 'Bản thân ở mức cân bằng – thành bại phụ thuộc nhiều vào nỗ lực và lựa chọn.', 'Bản thân gặp nhiều thử thách, nhưng đó là "lò rèn" giúp bạn trưởng thành.', 'Bản thân cần được bồi đắp nhiều – chăm sóc sức khỏe, tinh thần và chọn môi trường phù hợp là ưu tiên.']],
-  'Phụ Mẫu': ['Cha mẹ – bề trên', ['Cha mẹ, người lớn là chỗ dựa lớn, nâng đỡ bạn nhiều.', 'Được cha mẹ, người lớn quan tâm và giúp đỡ vừa phải.', 'Quan hệ với cha mẹ ở mức bình thường, có lúc gần lúc xa.', 'Cha mẹ có giai đoạn vất vả, hoặc hai bên có khoảng cách quan điểm – cần kiên nhẫn thấu hiểu.', 'Tuổi nhỏ có thể thiếu sự che chở; bạn sớm tự lập – hãy trân trọng những gì còn có và chăm sóc cha mẹ khi có thể.']],
-  'Huynh Đệ': ['Anh chị em – bạn bè', ['Anh chị em, bạn bè gắn bó, hay giúp đỡ nhau.', 'Có anh em, bạn bè tốt, qua lại hòa thuận.', 'Anh em mỗi người một hướng, ít nhờ cậy nhưng không xung khắc.', 'Dễ có cạnh tranh hoặc hiểu lầm với anh em, bạn bè – rõ ràng trong tiền bạc sẽ giữ được tình.', 'Anh em, bạn bè khó nương tựa; nên tự lực và chọn bạn thật kỹ.']],
-  'Phu Thê': ['Hôn nhân', ['Hôn nhân là nguồn hạnh phúc và trợ lực lớn của bạn.', 'Duyên vợ chồng khá tốt, biết vun đắp thì bền lâu.', 'Hôn nhân ở mức bình thường – có ngọt có mặn, cần cả hai cùng góp sức.', 'Tình duyên có thử thách: dễ bất đồng hoặc đến muộn – lắng nghe và nhường nhịn là chìa khóa.', 'Đường tình cảm nhiều sóng gió – nên tìm hiểu kỹ, không vội vàng, và giữ không gian riêng cho nhau.']],
-  'Tử Tức': ['Con cái', ['Có duyên với con, con cái ngoan và mang lại niềm vui lớn.', 'Con cái khá thuận, quan hệ cha mẹ – con gắn bó.', 'Con cái ở mức bình thường, cần dành thời gian đồng hành.', 'Con cái có thể đến muộn hoặc cần nhiều công dạy dỗ – kiên nhẫn sẽ được đền đáp.', 'Chuyện con cái cần đặc biệt quan tâm: sức khỏe sinh sản, thời điểm có con và cách nuôi dạy.']],
+  'Phụ Mẫu': ['Cha mẹ – bề trên', ['Lá số gợi ý cha mẹ, người lớn là chỗ dựa lớn, nâng đỡ bạn nhiều – bạn hãy đối chiếu với trải nghiệm thật.', 'Lá số gợi ý bạn được cha mẹ, người lớn quan tâm và giúp đỡ vừa phải – bạn hãy tự đối chiếu.', 'Lá số gợi ý quan hệ với cha mẹ ở mức bình thường, có lúc gần lúc xa – bạn hãy tự đối chiếu.', 'Lá số gợi ý cha mẹ có giai đoạn nhiều lo toan, hoặc hai bên có khoảng cách quan điểm – bạn hãy tự đối chiếu; kiên nhẫn thấu hiểu sẽ giúp hai bên gần nhau hơn.', 'Lá số gợi ý bạn có xu hướng sớm tự lập – bạn hãy đối chiếu với trải nghiệm thật; trân trọng tình thân và chăm sóc cha mẹ khi có thể.']],
+  'Huynh Đệ': ['Anh chị em – bạn bè', ['Lá số gợi ý anh chị em, bạn bè gắn bó, hay giúp đỡ nhau – bạn hãy đối chiếu với thực tế.', 'Lá số gợi ý anh em, bạn bè qua lại hòa thuận – bạn hãy đối chiếu với thực tế.', 'Lá số gợi ý anh em mỗi người một hướng, ít nhờ cậy nhưng không xung khắc.', 'Dễ có cạnh tranh hoặc hiểu lầm với anh em, bạn bè – rõ ràng trong tiền bạc sẽ giữ được tình.', 'Lá số gợi ý bạn nên tự lực nhiều hơn, chọn bạn thật kỹ và chủ động vun đắp tình anh em.']],
+  'Phu Thê': ['Hôn nhân', ['Hôn nhân là nguồn hạnh phúc và trợ lực lớn của bạn.', 'Duyên vợ chồng khá tốt, biết vun đắp thì bền lâu.', 'Hôn nhân ở mức bình thường – có ngọt có mặn, cần cả hai cùng góp sức.', 'Tình duyên có thử thách: dễ bất đồng hoặc đến muộn – lắng nghe và nhường nhịn là chìa khóa.', 'Đường tình cảm cần nhiều thấu hiểu – nên tìm hiểu kỹ, không vội vàng, nói chuyện thẳng thắn và giữ không gian riêng cho nhau.']],
+  'Tử Tức': ['Con cái', ['Có duyên với con, con cái ngoan và mang lại niềm vui lớn.', 'Con cái khá thuận, quan hệ cha mẹ – con gắn bó.', 'Con cái ở mức bình thường, cần dành thời gian đồng hành.', 'Con cái là chuyện cần thời gian và sự vun đắp – kiên nhẫn dạy dỗ sẽ được đền đáp.', 'Con cái là chuyện cần thời gian và sự vun đắp: chủ động chăm sóc sức khỏe hai vợ chồng, dành thời gian đồng hành và nuôi dạy.']],
   'Tài Bạch': ['Tiền bạc', ['Tiền bạc hanh thông, có khả năng tích lũy tốt.', 'Tài chính khá ổn, kiếm được và giữ được.', 'Tiền bạc ở mức đủ dùng – tăng hay giảm tùy cách quản lý.', 'Tiền vào dễ ra nhanh – cần kế hoạch chi tiêu và tránh đầu tư mạo hiểm.', 'Tài chính cần thận trọng cao: không vay mượn lớn, không bảo lãnh, ưu tiên tích lũy từng bước.']],
-  'Tật Ách': ['Sức khỏe', ['Thể chất tốt, ít ốm vặt, phục hồi nhanh.', 'Sức khỏe khá, chỉ cần giữ nếp sống điều độ.', 'Sức khỏe trung bình – có vài điểm yếu cần theo dõi.', 'Có điểm yếu sức khỏe rõ – nên khám định kỳ và chăm sóc cơ quan dễ tổn thương.', 'Sức khỏe cần ưu tiên hàng đầu: nghỉ ngơi đủ, tránh làm quá sức, khám sớm khi có dấu hiệu lạ.']],
+  'Tật Ách': ['Sức khỏe', ['Nền tảng thể chất có xu hướng vững – giữ nếp sinh hoạt điều độ để duy trì.', 'Sức khỏe khá, chỉ cần giữ nếp sống điều độ.', 'Sức khỏe ở mức vừa – nên giữ nếp sinh hoạt điều độ và khám định kỳ.', 'Nên dành nhiều quan tâm hơn cho sức khỏe: giữ nếp sinh hoạt điều độ, nghỉ ngơi đủ và khám định kỳ.', 'Sức khỏe nên được ưu tiên: nghỉ ngơi đủ, tránh làm quá sức, khám sức khỏe định kỳ.']],
   'Thiên Di': ['Ra ngoài – đi xa', ['Ra ngoài gặp nhiều may mắn, đi xa phát triển tốt.', 'Đi xa, môi trường mới khá thuận.', 'Đi xa hay ở gần đều được, không có gì đặc biệt.', 'Ra ngoài dễ gặp trở ngại hoặc thị phi – chuẩn bị kỹ trước mỗi chuyến đi, mỗi môi trường mới.', 'Nên thận trọng khi đi xa, đổi môi trường – ổn định gốc rễ trước rồi hãy mở rộng.']],
   'Nô Bộc': ['Bạn bè – đồng nghiệp – cộng sự', ['Có nhiều người giúp, cộng sự đáng tin.', 'Quan hệ đồng nghiệp, cấp dưới khá tốt.', 'Các mối quan hệ xã hội bình thường, được chăng hay chớ.', 'Dễ gặp người không hợp hoặc bị phụ lòng – chọn cộng sự kỹ, rõ ràng quyền lợi.', 'Nên dè dặt trong hợp tác, không giao phó hết cho người khác.']],
   'Quan Lộc': ['Sự nghiệp', ['Sự nghiệp có tiềm năng lớn, dễ thăng tiến hoặc tự làm chủ.', 'Công việc khá thuận, có cơ hội phát triển.', 'Sự nghiệp ổn định ở mức vừa – thăng tiến nhờ kiên trì.', 'Công việc nhiều áp lực, dễ thay đổi – nên chọn một hướng và tích lũy chuyên môn.', 'Con đường sự nghiệp gập ghềnh – đi chậm mà chắc, lấy kỹ năng làm vốn.']],
@@ -236,18 +236,18 @@ var DH_CT_MOON = [
   'Bạn tiếp cận cảm xúc bằng lý trí; cần tự do và sự khác biệt, đôi khi ngại những đòi hỏi tình cảm dồn dập.',
   'Bạn thấm cảm xúc của môi trường rất nhanh; cần không gian sáng tạo hoặc tâm linh để "lọc" lại năng lượng.'];
 var DH_CT_ASC = [
-  'Người khác thấy bạn năng động, nhanh nhẹn, thẳng thắn – dáng đi nhanh, ánh mắt quyết đoán.',
-  'Người khác thấy bạn điềm tĩnh, dễ chịu, đáng tin – dáng vẻ chắc chắn, thích sự thoải mái.',
-  'Người khác thấy bạn lanh lợi, hoạt ngôn, trẻ trung – thường trông trẻ hơn tuổi.',
-  'Người khác thấy bạn hiền hòa, gần gũi, biết quan tâm – gương mặt thân thiện, dễ tạo cảm giác an toàn.',
-  'Người khác thấy bạn nổi bật, tự tin, có khí chất – dễ gây ấn tượng ngay lần đầu.',
-  'Người khác thấy bạn chỉn chu, khiêm tốn, gọn gàng – nhìn là biết người cẩn thận.',
-  'Người khác thấy bạn duyên dáng, lịch sự, dễ mến – nụ cười thu hút, biết cách cư xử.',
-  'Người khác thấy bạn bí ẩn, sâu sắc, có sức hút – ánh mắt có "lực", khó đoán.',
-  'Người khác thấy bạn vui vẻ, cởi mở, phóng khoáng – thích đi đây đó, dễ bắt chuyện.',
-  'Người khác thấy bạn chín chắn, nghiêm túc, có trách nhiệm – trông "người lớn" từ sớm.',
-  'Người khác thấy bạn độc đáo, thân thiện nhưng có khoảng cách – phong cách riêng, khó lẫn.',
-  'Người khác thấy bạn mơ mộng, dịu dàng, nhạy cảm – ánh mắt hiền, dễ khiến người khác muốn che chở.'];
+  'Người khác thường thấy bạn năng động, nhanh nhẹn, thẳng thắn – theo cách luận truyền thống, dáng vẻ hay toát lên sự quyết đoán; bạn hãy tự đối chiếu.',
+  'Người khác thường thấy bạn điềm tĩnh, dễ chịu, đáng tin – theo cách luận truyền thống, dáng vẻ hay toát lên sự chắc chắn, thích thoải mái; bạn hãy tự đối chiếu.',
+  'Người khác thường thấy bạn lanh lợi, hoạt ngôn, trẻ trung – theo cách luận truyền thống, phong thái hay trẻ hơn tuổi; bạn hãy tự đối chiếu.',
+  'Người khác thường thấy bạn hiền hòa, gần gũi, biết quan tâm – dễ tạo cảm giác an toàn cho người đối diện.',
+  'Người khác thường thấy bạn nổi bật, tự tin, có khí chất – dễ gây ấn tượng ngay lần đầu.',
+  'Người khác thường thấy bạn chỉn chu, khiêm tốn, gọn gàng – nhìn là biết người cẩn thận.',
+  'Người khác thường thấy bạn duyên dáng, lịch sự, dễ mến – biết cách cư xử, dễ tạo thiện cảm.',
+  'Người khác thường thấy bạn bí ẩn, sâu sắc, có sức hút – khó đoán, khiến người khác tò mò.',
+  'Người khác thường thấy bạn vui vẻ, cởi mở, phóng khoáng – thích đi đây đó, dễ bắt chuyện.',
+  'Người khác thường thấy bạn chín chắn, nghiêm túc, có trách nhiệm – phong thái "người lớn" từ sớm.',
+  'Người khác thường thấy bạn độc đáo, thân thiện nhưng có khoảng cách – phong cách riêng, khó lẫn.',
+  'Người khác thường thấy bạn mơ mộng, dịu dàng, nhạy cảm – dễ khiến người khác muốn che chở.'];
 var DH_CT_NT_TEN = { 'Lửa': 'Lửa (nhiệt huyết, hành động)', 'Đất': 'Đất (thực tế, bền bỉ)', 'Khí': 'Khí (tư duy, giao tiếp)', 'Nước': 'Nước (cảm xúc, trực giác)' };
 var DH_CT_NT_THIEU = { 'Lửa': 'thêm nhiệt huyết và sự chủ động – hãy tập vận động, bắt đầu việc nhỏ ngay thay vì chờ cảm hứng',
   'Đất': 'thêm tính thực tế – hãy lập kế hoạch, quản lý tiền bạc và hoàn thành việc đến cùng',
@@ -272,7 +272,7 @@ var DH_CT_MOC = { 1: 'bạn lạc quan, rộng lượng và dễ được quý m
   5: 'sáng tạo, tình yêu và con cái mang lại niềm vui lớn', 6: 'bạn có tài chăm sóc, chữa lành và làm việc chăm chỉ được đền đáp', 7: 'hôn nhân, đối tác giúp bạn mở rộng cơ hội', 8: 'bạn có lộc từ tài sản chung, thừa kế hoặc hợp tác',
   9: 'may mắn đến khi bạn học cao, đi xa, mở rộng tầm nhìn', 10: 'bạn có vận may trong sự nghiệp và danh tiếng', 11: 'bạn bè, cộng đồng là nguồn may mắn lớn', 12: 'may mắn đến qua đời sống nội tâm, lòng tốt và sự giúp đỡ âm thầm' };
 var DH_CT_THO = { 1: 'bạn nghiêm khắc với bản thân, trưởng thành sớm; hãy nhẹ nhàng với chính mình hơn', 2: 'tiền bạc đến chậm nhưng chắc; hãy tích lũy kiên nhẫn, tránh lo âu về vật chất', 3: 'việc học và giao tiếp cần nỗ lực nhiều; bù lại bạn nói điều gì cũng chắc chắn',
-  4: 'gia đình, tuổi thơ có thể nhiều trách nhiệm; bạn xây dựng tổ ấm của mình rất vững', 5: 'niềm vui, tình yêu, con cái đến muộn hoặc cần vun đắp; đừng quá nghiêm túc với bản thân', 6: 'công việc hằng ngày và sức khỏe cần kỷ luật; nếp sống điều độ là "thuốc bổ" của bạn',
+  4: 'gia đình, tuổi thơ có thể nhiều trách nhiệm; bạn xây dựng tổ ấm của mình rất vững', 5: 'niềm vui, tình yêu, con cái là chuyện cần thời gian và sự vun đắp; đừng quá nghiêm túc với bản thân', 6: 'công việc hằng ngày và sức khỏe cần kỷ luật; nếp sống điều độ là "thuốc bổ" của bạn',
   7: 'hôn nhân đến muộn hoặc đòi hỏi nhiều cam kết; khi đã vững thì rất bền', 8: 'chuyện tài sản chung, nợ nần cần rõ ràng; bạn học được cách quản lý rủi ro', 9: 'niềm tin và học vấn cao đòi hỏi nhiều công sức; bạn trở thành người hiểu biết sâu',
   10: 'sự nghiệp đi lên từng bậc bằng nỗ lực thật; danh tiếng đến muộn nhưng bền', 11: 'bạn bè ít nhưng chất; hãy chủ động kết nối cộng đồng', 12: 'bài học nằm ở thế giới nội tâm; thiền, tĩnh lặng giúp bạn mạnh mẽ' };
 
@@ -373,11 +373,11 @@ function dhThanSo_(ts, tsl) {
  *  4. HUMAN DESIGN
  * ============================================================ */
 var DH_HD_LOAI = {
-  'Generator': { tomTat: 'Bạn thuộc nhóm "Người Kiến Tạo" – khoảng 37% dân số, những người có nguồn sinh lực bền bỉ để xây dựng thế giới.', loi: ['Đừng ép mình khởi xướng mọi thứ – hãy để cơ hội đến và lắng nghe cảm giác "có/không" từ bụng.', 'Làm điều bạn thật sự thích: khi đó sinh lực gần như không cạn.', 'Thấy bực bội kéo dài là dấu hiệu bạn đang làm sai việc hoặc sai cách.'] },
+  'Generator': { tomTat: 'Bạn thuộc nhóm "Người Kiến Tạo" – nhóm đông nhất, những người có nguồn sinh lực bền bỉ để xây dựng thế giới.', loi: ['Đừng ép mình khởi xướng mọi thứ – hãy để cơ hội đến và lắng nghe cảm giác "có/không" từ bụng.', 'Làm điều bạn thật sự thích: khi đó sinh lực gần như không cạn.', 'Thấy bực bội kéo dài là dấu hiệu bạn đang làm sai việc hoặc sai cách.'] },
   'Manifesting Generator': { tomTat: 'Bạn thuộc nhóm "Người Kiến Tạo Biểu Hiện" – nhanh, đa năng, có thể làm nhiều việc cùng lúc và tìm ra đường tắt.', loi: ['Phản hồi trước, rồi thông báo cho người liên quan trước khi hành động.', 'Bỏ qua bước thừa là tài năng, nhưng hãy quay lại kiểm tra bước bị sót.', 'Cho phép mình thay đổi hướng – đó là cách bạn tìm ra điều đúng.'] },
-  'Manifestor': { tomTat: 'Bạn thuộc nhóm "Người Khởi Xướng" – khoảng 9% dân số, những người mở đường và tạo tác động.', loi: ['Thông báo trước khi hành động để người xung quanh không bị bất ngờ.', 'Làm việc theo từng đợt năng lượng, nghỉ ngơi xen kẽ.', 'Cảm giác tức giận thường xuyên là dấu hiệu bạn đang bị cản trở – hãy tìm không gian tự do hơn.'] },
-  'Projector': { tomTat: 'Bạn thuộc nhóm "Người Dẫn Dắt" – khoảng 20% dân số, những người nhìn thấu con người và hệ thống.', loi: ['Chờ được mời hoặc được công nhận cho những việc lớn (công việc, tình yêu, nơi ở).', 'Học sâu một hệ thống/lĩnh vực – đó là "tấm vé" để người khác mời bạn.', 'Nghỉ ngơi trước khi thấy mệt; cảm giác cay đắng là dấu hiệu bạn đang cho đi mà không được nhìn nhận.'] },
-  'Reflector': { tomTat: 'Bạn thuộc nhóm "Người Phản Chiếu" – khoảng 1% dân số, tấm gương phản chiếu sức khỏe của cộng đồng quanh mình.', loi: ['Cho mình khoảng một tháng (một chu kỳ trăng) trước những quyết định lớn.', 'Chọn nơi sống và làm việc thật kỹ – môi trường quyết định bạn cảm thấy thế nào.', 'Cảm giác thất vọng là dấu hiệu bạn đang ở sai môi trường.'] }
+  'Manifestor': { tomTat: 'Bạn thuộc nhóm "Người Khởi Xướng" – nhóm khá hiếm, những người mở đường và tạo tác động.', loi: ['Thông báo trước khi hành động để người xung quanh không bị bất ngờ.', 'Làm việc theo từng đợt năng lượng, nghỉ ngơi xen kẽ.', 'Cảm giác tức giận thường xuyên là dấu hiệu bạn đang bị cản trở – hãy tìm không gian tự do hơn.'] },
+  'Projector': { tomTat: 'Bạn thuộc nhóm "Người Dẫn Dắt" – nhóm không nhiều, những người nhìn thấu con người và hệ thống.', loi: ['Chờ được mời hoặc được công nhận cho những việc lớn (công việc, tình yêu, nơi ở).', 'Học sâu một hệ thống/lĩnh vực – đó là "tấm vé" để người khác mời bạn.', 'Nghỉ ngơi trước khi thấy mệt; cảm giác cay đắng là dấu hiệu bạn đang cho đi mà không được nhìn nhận.'] },
+  'Reflector': { tomTat: 'Bạn thuộc nhóm "Người Phản Chiếu" – nhóm rất hiếm, tấm gương phản chiếu bầu không khí của cộng đồng quanh mình.', loi: ['Cho mình khoảng một tháng (một chu kỳ trăng) trước những quyết định lớn.', 'Chọn nơi sống và làm việc thật kỹ – môi trường quyết định bạn cảm thấy thế nào.', 'Cảm giác thất vọng là dấu hiệu bạn đang ở sai môi trường.'] }
 };
 var DH_HD_MO = {
   head: 'Đầu (cảm hứng): dễ bị áp lực phải trả lời mọi câu hỏi – hãy chọn lọc câu hỏi nào thật sự đáng nghĩ.',
@@ -423,7 +423,7 @@ function dhHD_(hd) {
       dhDoan_('Điều thúc đẩy bạn', 'Bạn có xu hướng hành động vì ' + bs[0].y.replace(/^động lực từ /, '') + '.'),
       dhDoan_('Cách bạn nhìn cuộc sống', 'Bạn thường ' + bs[1].y + '.'),
       dhDoan_('Môi trường hợp với bạn', 'Bạn làm việc và sống tốt nhất ở ' + bs[2].y + ' (kiểu "' + gon(bs[2].gt).toLowerCase() + '").'),
-      dhDoan_('Cách ăn uống hợp cơ thể', 'Cơ thể bạn tiêu hóa tốt khi ' + bs[3].y + '.'),
+      dhDoan_('Cách ăn uống hợp cơ thể', 'Bạn có thể thử để ý xem mình có thấy dễ chịu hơn khi ' + bs[3].y + ' – đây là gợi ý để tự quan sát, không phải chỉ dẫn y khoa.'),
       P.dinhNghia && P.dinhNghia.cau && P.dinhNghia.cau.length ? dhDoan_('Người giúp bạn thấy trọn vẹn', 'Bạn có hai "vùng" năng lượng tách rời; ở gần những người bổ sung được phần nối giữa hai vùng này, bạn thấy mình trọn vẹn và quyết định dễ hơn. Hãy để ý ai khiến bạn thấy "liền mạch" khi ở cạnh.') : null,
       c7 ? dhDoan_('Giai đoạn đời hiện tại', 'Bạn đang ở chu kỳ 7 năm ' + c7.tu + '–' + c7.den + ' tuổi: ' + c7.y + '.') : null,
       dhDoan_('Lời khuyên', '', P.loiKhuyen.slice(0, 2).map(function (x) { return x.ten + ': ' + x.t.replace(/\s*\([^)]*\)/g, ''); }))
@@ -492,7 +492,7 @@ var DH_TH_NHOM = [
   { k: 'tai_chinh', ten: 'Tiền bạc – tài sản', loi: ['Lập quỹ dự phòng trước khi đầu tư.', 'Năm thuận thì tích lũy, năm khó thì giữ.'] },
   { k: 'tinh_duyen', ten: 'Tình duyên – hôn nhân', loi: ['Nói rõ nhu cầu tình cảm của mình cho người ấy.', 'Chọn người bù được điểm yếu của mình thay vì giống hệt mình.'] },
   { k: 'con_cai', ten: 'Con cái', loi: ['Dành thời gian chất lượng thay vì chỉ lo vật chất.', 'Quan sát tính cách riêng của con để dạy cho phù hợp.'] },
-  { k: 'suc_khoe', ten: 'Sức khỏe', loi: ['Khám định kỳ những cơ quan được nhiều hệ nhắc tới.', 'Ngủ đủ, vận động đều – nền tảng của mọi vận may.'] },
+  { k: 'suc_khoe', ten: 'Sức khỏe', loi: ['Giữ nếp sinh hoạt điều độ và khám sức khỏe định kỳ.', 'Ngủ đủ, vận động đều – nền tảng của mọi vận may.'] },
   { k: 'gia_dao', ten: 'Gia đình – cha mẹ – anh em', loi: ['Giữ kết nối đều đặn với người thân.', 'Rõ ràng chuyện tiền bạc trong gia đình để giữ tình.'] },
   { k: 'xa_hoi', ten: 'Bạn bè – quan hệ xã hội – đi xa', loi: ['Chọn bạn đồng hành kỹ; một người đúng hơn mười người quen.'] },
   { k: 'tam_linh', ten: 'Đời sống tinh thần', loi: ['Dành thời gian tĩnh lặng mỗi ngày.', 'Làm việc thiện nhỏ đều đặn.'] }
@@ -614,11 +614,11 @@ var TH6_TV_CAU = {
   'Quan Lộc': ['Đường công danh thuận, dễ có vị trí và được ghi nhận.', 'Công việc lên xuống theo giai đoạn, cần kiên trì và chọn đúng thời điểm.', 'Công danh nhiều thử thách, dễ phải đổi hướng vài lần trước khi ổn định.'],
   'Tài Bạch': ['Tiền bạc đến tương đối thuận, có khả năng tích lũy.', 'Tài chính đủ dùng; muốn dư dả cần có kế hoạch.', 'Tiền bạc dễ vào ra thất thường, cần giữ kỷ luật chi tiêu.'],
   'Điền Trạch': ['Có phúc về nhà cửa, đất đai.', 'Nhà cửa có được nhờ tích lũy dần.', 'Nhà cửa, tài sản cố định đến muộn hoặc hay thay đổi chỗ ở.'],
-  'Phu Thê': ['Duyên vợ chồng thuận, người bạn đời là chỗ dựa.', 'Hôn nhân có thuận có nghịch, cần vun đắp từ cả hai phía.', 'Chuyện tình cảm nhiều trắc trở, nên tìm hiểu kỹ và kiên nhẫn.'],
-  'Tử Tức': ['Có phúc về con cái, con là niềm vui và chỗ dựa.', 'Chuyện con cái bình thường, có vui có lo.', 'Con cái đến muộn hoặc cần nhiều tâm sức chăm lo.'],
-  'Tật Ách': ['Thể trạng tương đối tốt, ít bệnh nặng.', 'Sức khỏe bình thường, cần để ý vài điểm yếu.', 'Sức khỏe có điểm yếu cần theo dõi định kỳ.'],
-  'Phụ Mẫu': ['Được cha mẹ che chở, nâng đỡ.', 'Quan hệ với cha mẹ ở mức bình thường, có lúc phải tự lo.', 'Duyên với cha mẹ mỏng hoặc sớm phải tự lập.'],
-  'Huynh Đệ': ['Anh chị em hòa thuận, có lúc nâng đỡ nhau.', 'Anh chị em mỗi người tự lo, qua lại vừa phải.', 'Anh chị em ít nhờ cậy được, dễ có khoảng cách.'],
+  'Phu Thê': ['Duyên vợ chồng thuận, người bạn đời là chỗ dựa.', 'Hôn nhân có thuận có nghịch, cần vun đắp từ cả hai phía.', 'Chuyện tình cảm cần nhiều thấu hiểu, nên tìm hiểu kỹ, nói chuyện thẳng thắn và kiên nhẫn.'],
+  'Tử Tức': ['Có phúc về con cái, con là niềm vui và chỗ dựa.', 'Chuyện con cái bình thường, có vui có lo.', 'Con cái là chuyện cần thời gian và sự vun đắp, nên dành nhiều tâm sức chăm lo.'],
+  'Tật Ách': ['Nền tảng sức khỏe có xu hướng vững, nên giữ nếp sinh hoạt điều độ.', 'Sức khỏe ở mức vừa, nên nghỉ ngơi đủ và khám định kỳ.', 'Nên dành nhiều quan tâm cho sức khỏe: sinh hoạt điều độ, nghỉ ngơi và khám định kỳ.'],
+  'Phụ Mẫu': ['Lá số gợi ý được cha mẹ che chở, nâng đỡ – bạn hãy tự đối chiếu.', 'Lá số gợi ý quan hệ với cha mẹ ở mức bình thường, có lúc phải tự lo – bạn hãy tự đối chiếu.', 'Lá số gợi ý bạn sớm tự lập – bạn hãy tự đối chiếu và chủ động vun đắp tình thân.'],
+  'Huynh Đệ': ['Lá số gợi ý anh chị em hòa thuận, có lúc nâng đỡ nhau.', 'Lá số gợi ý anh chị em mỗi người tự lo, qua lại vừa phải.', 'Lá số gợi ý anh chị em dễ có khoảng cách – chủ động giữ liên lạc sẽ gắn bó hơn.'],
   'Nô Bộc': ['Có bạn bè, cộng sự tốt giúp đỡ.', 'Bạn bè ở mức vừa phải, nên chọn lọc.', 'Dễ gặp bạn bè, cộng sự không như ý – nên cẩn trọng khi hợp tác.'],
   'Thiên Di': ['Ra ngoài, đi xa dễ gặp may và quý nhân.', 'Đi xa có lợi có hại tùy giai đoạn.', 'Ra ngoài hay gặp trở ngại, nên chuẩn bị kỹ khi đi xa.'],
   'Phúc Đức': ['Có phúc phần, đời sống tinh thần an ổn.', 'Phúc phần ở mức vừa; tự tu dưỡng thì tăng thêm.', 'Đời sống tinh thần nhiều lo nghĩ, nên dành thời gian tĩnh tâm.']

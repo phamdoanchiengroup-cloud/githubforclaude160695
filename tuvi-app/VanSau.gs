@@ -222,7 +222,7 @@ function vsHoSoThang_(C, luoi, W, thangTH) {
   });
   return { nam: vy, thang: out, suKien: suKien.filter(function (x) { return !x.ngoai; }).map(function (x) { return { k: x.k, ngan: x.ngan, loai: x.loai, pNam: x.pNam, p: x.thang.map(function (t) { return t.p; }), rel: x.thang.map(function (t) { return t.rel; }) }; }),
     coSo: 'Mỗi tháng âm lịch, 4 hệ có lịch tháng cùng bỏ phiếu: Tử Vi (cung nguyệt hạn tính từ tiểu hạn – đếm nghịch tháng sinh, thuận giờ sinh; Tứ Hóa lưu nguyệt theo can tháng; lưu tinh năm ở cung tháng), Bát Tự (can chi tháng so với tứ trụ: thập thần, hỷ – kỵ, xung – hợp – hình, phục ngâm – phản ngâm), Chiêm tinh (quá cảnh Mặt Trời, Sao Kim, Sao Hỏa qua 12 nhà; các đợt nghịch hành; trăng non, trăng tròn, nhật – nguyệt thực) và Thần số học (tháng cá nhân). ' +
-      'Hà Lạc dùng một quẻ cho cả năm nên không chia tháng. Xác suất tháng lấy từ xác suất cả năm của Hồ sơ năm rồi chia cho 12 tháng theo sức mạnh tín hiệu từng tháng; "×2" là gấp đôi một tháng bình thường trong năm đó.' };
+      'Hà Lạc dùng một quẻ cho cả năm nên không chia tháng. Mức tín hiệu tháng lấy từ mức cả năm của Hồ sơ năm rồi chia cho 12 tháng theo sức mạnh tín hiệu từng tháng; "×2" là gấp đôi một tháng bình thường trong năm đó.' };
 }
 
 /* =================== 2. HIỆU CHỈNH THEO NGƯỜI XEM =================== */
@@ -252,7 +252,7 @@ function vsHieuChinh_(C, namTin) {
   return { W: W, ap: ev.length >= 2, soSk: ev.length, bang: bang, suKien: ev.map(function (e) { return { nam: e.nam, ten: TEN[e.k] }; }),
     tom: 'Đối chiếu ' + ev.length + ' sự kiện bạn đã khai: ' + tot[0].he + ' báo trúng nhất (' + tot[0].trung + '/' + ev.length + ' sự kiện rơi vào nhóm 25% năm mạnh nhất của hệ này)' +
       (tot[tot.length - 1].pctTB < 50 ? ', ' + tot[tot.length - 1].he + ' ít khớp nhất' : '') + '. ' +
-      (ev.length >= 2 ? 'Trọng số các hệ đã được điều chỉnh riêng cho lá số của bạn – xác suất năm, tháng và đại vận bên dưới dùng trọng số này.' : 'Khai thêm ít nhất một sự kiện nữa để bắt đầu hiệu chỉnh (cần từ 2 sự kiện).'),
+      (ev.length >= 2 ? 'Trọng số các hệ đã được điều chỉnh riêng cho lá số của bạn – mức tín hiệu năm, tháng và đại vận bên dưới dùng trọng số này.' : 'Khai thêm ít nhất một sự kiện nữa để bắt đầu hiệu chỉnh (cần từ 2 sự kiện).'),
     coSo: 'Với mỗi sự kiện bạn khai, xét tín hiệu của từng hệ ở năm đó đứng thứ mấy so với mọi năm khác trong đời (phân vị). Hệ có phân vị trung bình cao (báo đúng năm đã xảy ra) được tăng trọng số, hệ báo sai bị giảm; mức điều chỉnh tăng dần theo số sự kiện (co lại khi ít dữ liệu) và giới hạn trong khoảng ×0,6 – ×1,7.' };
 }
 

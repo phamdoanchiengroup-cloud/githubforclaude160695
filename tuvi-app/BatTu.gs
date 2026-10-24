@@ -208,7 +208,7 @@ function batTuLap(input) {
   if (lc.length) thanSat.push({ ten: 'Lộc Thần', o: lc.join(', '), moTa: 'Có lộc ăn, tài chính vững.' });
   if (BAZI_DUONG_NHAN[dCan] >= 0) {
     var dn = coChi(BAZI_DUONG_NHAN[dCan]);
-    if (dn.length) thanSat.push({ ten: 'Dương Nhận', o: dn.join(', '), moTa: 'Cương mãnh, quyết liệt; cần tránh nóng nảy, tai nạn.' });
+    if (dn.length) thanSat.push({ ten: 'Dương Nhận', o: dn.join(', '), moTa: 'Cương mãnh, quyết liệt; nên tránh nóng nảy, làm việc gì cũng giữ an toàn.' });
   }
   [yChi, dChi].forEach(function (base, bi) {
     var nh = base % 4;

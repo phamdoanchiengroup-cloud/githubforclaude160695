@@ -27,7 +27,7 @@
     });
   }
   /** Mã phiên bản giao diện – phải trùng với Index.html (meta tcc-ban) và Styles.html (--tcc-ban) */
-  var BAN_GIAO_DIEN = '2026.10.24.8';
+  var BAN_GIAO_DIEN = '2026.10.24.9';
   function storeGet(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
   function storeSet(k, v) { try { localStorage.setItem(k, v); } catch (e) { /* bỏ qua */ } }
 
@@ -882,7 +882,7 @@
   function cdHtml(r) {
     var T = r.thongTin, h = '';
     h += '<div class="panel section cd-hero"><div class="cd-doi">' + cdNguoiCard(T[0]) +
-      '<div class="cd-diem"><div class="cd-vong" style="--p:' + r.pct + '"><b>' + r.pct + '%</b><small>' + fmt(r.tong) + '/10</small></div><span class="rate ' + cdXep(r.tong) + '">' + esc(r.xep) + '</span></div>' + cdNguoiCard(T[1]) + '</div></div>';
+      '<div class="cd-diem"><div class="cd-vong" style="--p:' + r.pct + '"><b>' + fmt(r.tong) + '</b><small>điểm hợp /10</small></div><span class="rate ' + cdXep(r.tong) + '">' + esc(r.xep) + '</span></div>' + cdNguoiCard(T[1]) + '</div></div>';
     h += cdPanel('合', 'Mức độ hợp theo 6 tiêu chí', barsChart('Điểm từng tiêu chí (thang 10)', 'Trọng số trong điểm tổng ghi cạnh tên · rê chuột xem hệ', r.tieuChi.map(function (t) {
       return { ten: t.ten + ' · ' + t.trongSo + '%', v: t.diem == null ? 0 : t.diem, an: t.diem == null, mau: cdMau(t.diem), tip: t.diem == null ? '🔒 Mở khóa để xem điểm' : t.he + ': ' + fmt(t.diem) + '/10' };
     }), 10) + r.tieuChi.filter(function (t) { return t.chiTiet.length; }).map(function (t) {
@@ -892,7 +892,7 @@
       var g = giaPhan('cap_doi');
       h += '<div class="panel section khoa-phan"><h2 class="panel-title"><span class="han">秘</span> Luận hợp đôi đầy đủ <span class="chip neutral">🔒 ' + fmtXu(g.xu) + '</span></h2><div class="demo-card">' +
         '<div class="demo-lo"><h4>✦ Hé lộ</h4><ul>' + r.hoaHop.map(function (x) { return '<li>' + hl(x) + '</li>'; }).join('') + '</ul></div>' +
-        '<div class="demo-an"><h4>🔒 Khi mở khóa</h4><ul>' + r.heLo.concat(['Điểm 4 tiêu chí còn lại và lý do chi tiết', 'Tài chính, công danh, gia đạo: ai vượng cho ai, năm cùng thuận – cùng khó', 'Năm cưới & năm sinh con kèm xác suất % từng năm (tránh Kim Lâu, xung tuổi)', 'Lời khuyên riêng cho cặp đôi']).map(function (x) { return '<li>' + esc(x) + '</li>'; }).join('') + '</ul></div></div>' +
+        '<div class="demo-an"><h4>🔒 Khi mở khóa</h4><ul>' + r.heLo.concat(['Điểm 4 tiêu chí còn lại và lý do chi tiết', 'Tài chính, công danh, gia đạo: ai vượng cho ai, năm cùng thuận – cùng khó', 'Những năm thuận cho cưới hỏi và con cái (tránh Kim Lâu, xung tuổi)', 'Lời khuyên riêng cho cặp đôi']).map(function (x) { return '<li>' + esc(x) + '</li>'; }).join('') + '</ul></div></div>' +
         '<div class="lock-cta"><p>Mở <b>' + esc(g.ten) + '</b> cho cặp ' + esc(T[0].ten) + ' & ' + esc(T[1].ten) + ' – xem vĩnh viễn.' + (r.dangNhap ? '' : ' Cần đăng nhập (tạo tài khoản miễn phí).') + '</p>' +
         '<button type="button" class="btn btn-primary" data-mua="cap_doi">💞 Mở khóa · ' + fmtXu(g.xu) + '</button></div></div>';
       return h;
@@ -905,31 +905,29 @@
     }).join('') + '</div>', 'Mỗi lĩnh vực ghép từ cả hai lá số: cung tương ứng trong Tử Vi, ngũ hành Bát Tự "ai vượng cho ai", góc chiếu chiêm tinh và những năm cả hai cùng có tín hiệu (Biến cố hội tụ ≥3 hệ mỗi người).');
     var TD = r.thoiDiem, vy = TD.ketHon && TD.ketHon.nam.length ? TD.ketHon.nam[0].nam : null;
     function bangNam(ds, coCanh) {
-      return '<div class="tbl-wrap"><table class="gio-tbl"><thead><tr><th>Năm</th><th>Tuổi mụ (' + esc(r.ten[0]) + ' / ' + esc(r.ten[1]) + ')</th><th>Xác suất</th><th>Mức</th><th>Số hệ báo</th>' + (coCanh ? '<th>Lưu ý</th>' : '') + '</tr></thead><tbody>' + ds.map(function (x) {
-        return '<tr><td><b>' + x.nam + '</b><br><small>' + esc(x.canChi) + '</small></td><td>' + x.tuoi[0] + ' / ' + x.tuoi[1] + '</td><td><b>' + fmt(x.pct) + '%</b></td><td><span class="rate ' + CD_MUC[x.muc] + '">' + esc(x.muc) + '</span></td><td>' + x.heA + ' / ' + x.heB + '</td>' +
+      return '<div class="tbl-wrap"><table class="gio-tbl"><thead><tr><th>Năm</th><th>Tuổi mụ (' + esc(r.ten[0]) + ' / ' + esc(r.ten[1]) + ')</th><th>Mức tín hiệu</th><th>Số hệ báo</th>' + (coCanh ? '<th>Lưu ý</th>' : '') + '</tr></thead><tbody>' + ds.map(function (x) {
+        return '<tr><td><b>' + x.nam + '</b><br><small>' + esc(x.canChi) + '</small></td><td>' + x.tuoi[0] + ' / ' + x.tuoi[1] + '</td><td><span class="rate ' + CD_MUC[x.muc] + '">' + esc(x.muc) + '</span></td><td>' + x.heA + ' / ' + x.heB + '</td>' +
           (coCanh ? '<td>' + (x.canhBao && x.canhBao.length ? '<small class="bad-ink">⚠ ' + esc(x.canhBao.join('; ')) + '</small>' : '<small class="muted">—</small>') + '</td>' : '') + '</tr>';
       }).join('') + '</tbody></table></div>';
     }
     function bieuDo(ds, tieuDe) {
       var mx = Math.max.apply(null, ds.map(function (x) { return x.pct; }).concat([1]));
-      return barsChart(tieuDe, 'Tích xác suất của hai lá số – năm cả hai cùng báo mới nổi bật · rê chuột xem lưu ý', ds.map(function (x) {
-        return { ten: x.nam + ' · ' + x.canChi, v: x.pct, mau: x.canhBao && x.canhBao.length ? C_CORAL : x.pct >= mx * 0.6 ? C_JADE : x.pct >= mx * 0.3 ? C_GOLD : C_VIOLET,
-          tip: x.nam + ': ' + fmt(x.pct) + '% · số hệ báo ' + x.heA + '/' + x.heB + (x.canhBao && x.canhBao.length ? '\n⚠ ' + x.canhBao.join('; ') : '') };
-      }), mx, '%');
+      // 24/10: không hiện %, chỉ so tương đối giữa các năm (thang 10, năm mạnh nhất = 10)
+      return barsChart(tieuDe, 'So sánh tương đối giữa các năm theo cổ học – năm cả hai lá số cùng báo mới nổi bật · không phải xác suất', ds.map(function (x) {
+        return { ten: x.nam + ' · ' + x.canChi, v: Math.round(x.pct / mx * 100) / 10, mau: x.canhBao && x.canhBao.length ? C_CORAL : x.pct >= mx * 0.6 ? C_JADE : x.pct >= mx * 0.3 ? C_GOLD : C_VIOLET,
+          tip: x.nam + ' · số hệ báo ' + x.heA + '/' + x.heB + (x.canhBao && x.canhBao.length ? '\n⚠ ' + x.canhBao.join('; ') : '') };
+      }), 10);
     }
     if (TD.ketHon && TD.ketHon.nam.length) {
       var K = TD.ketHon;
-      h += cdPanel('婚期', 'Năm kết hôn – xác suất theo năm', '<div class="stat-row">' + [['Trong năm ' + vy, K.tichLuy.n1], ['Trong 3 năm tới', K.tichLuy.n3], ['Trong 5 năm tới', K.tichLuy.n5]].map(function (t) {
-        return '<div class="stat"><small>' + t[0] + '</small><b>' + t[1] + '%</b><span>khả năng rơi vào</span></div>'; }).join('') + '</div>' +
-        bieuDo(K.nam.filter(function (x) { return x.nam <= vy + 10; }), 'Xác suất cưới theo từng năm') + bangNam(K.top, true),
-        'Nếu hai bạn cưới trong 15 năm tới, khả năng rơi vào từng năm là bao nhiêu? Năm cả hai lá số cùng báo hỷ sự được đẩy lên; năm cô dâu' + (TD.coDau ? ' (' + esc(TD.coDau) + ')' : '') + ' phạm Kim Lâu hoặc năm xung tuổi bị giảm (cột đỏ).');
+      h += cdPanel('婚期', 'Những năm thuận cho hôn nhân', bieuDo(K.nam.filter(function (x) { return x.nam <= vy + 10; }), 'Tín hiệu hôn nhân theo năm') + bangNam(K.top, true),
+        'Theo cách luận cổ học, năm nào cả hai lá số cùng báo hỷ sự được đẩy lên; năm cô dâu' + (TD.coDau ? ' (' + esc(TD.coDau) + ')' : '') + ' phạm Kim Lâu hoặc năm xung tuổi bị giảm (cột đỏ).');
     } else if (TD.namCuoi) h += cdPanel('婚期', 'Năm kết hôn', '<p>Hai bạn đã kết hôn năm <b>' + TD.namCuoi + '</b> – năm sinh con bên dưới tính từ sau năm cưới.</p>');
     else if (TD.daCoCon) h += cdPanel('婚期', 'Năm kết hôn', '<p>Hai bạn đã có con nên không tính năm cưới. Nếu đã cưới, hãy nhập <b>năm kết hôn</b> để phần đối chiếu chính xác hơn.</p>');
     if (r.conCai || TD.sinhCon.nam.length) {
       var C = r.conCai, daCo = C && C.daCo || [];
       var stat = C ? '<div class="stat-row">' + (daCo.length ? '<div class="stat"><small>Đã có</small><b>' + daCo.length + ' con</b><span>' + esc(daCo.map(function (c) { return c.nam; }).join(', ')) + '</span></div>' : '') +
-        '<div class="stat"><small>Số con xu hướng</small><b class="cd-socon">' + esc(C.soCon) + '</b></div><div class="stat"><small>' + (daCo.length ? 'Con tiếp theo là trai' : 'Con đầu là trai') + '</small><b>' + C.pTrai + '%</b><span>tham khảo</span></div>' +
-        '<div class="stat"><small>' + (daCo.length ? 'Con tiếp theo là gái' : 'Con đầu là gái') + '</small><b>' + (100 - C.pTrai) + '%</b><span>tham khảo</span></div></div>' +
+        '</div>' +   // 24/10: bỏ "số con xu hướng" và % trai/gái (không có cơ sở, dễ gây áp lực)
         '<ul class="th-kl">' + C.ketLuan.map(function (x) { return '<li>' + hl(x) + '</li>'; }).join('') + '</ul>' : '';
       var the = daCo.length ? '<h4 class="dd-h">👶 Con đã có – tuổi con với bố mẹ & đối chiếu lá số</h4><div class="cd-con-the">' + daCo.map(function (c) {
         var hop = c.voi.slice().sort(function (x, y) { return y.diem - x.diem; });
@@ -941,19 +939,19 @@
           '<ul class="th-kl">' + [c.doiChieu, c.anhEm, c.ghiChu].filter(Boolean).map(function (x) { return '<li>' + hl(x) + '</li>'; }).join('') + '</ul></div>';
       }).join('') + '</div>' : '';
       var goi = C && C.goiY.length ? '<h4 class="dd-h">🌱 Gợi ý năm sinh ' + (daCo.length ? 'thêm con' : 'con') + ' hợp tuổi bố mẹ</h4>' +
-        barsChart('Điểm chọn năm sinh con (thang 10)', '65% hợp tuổi với bố mẹ' + (daCo.length ? ' & anh chị' : '') + ' + 35% xác suất theo hai lá số · tính theo năm âm lịch (sinh sau Tết)', C.goiY.filter(function (x) { return x.nam <= (TD.sinhCon.nam[0] ? TD.sinhCon.nam[0].nam : 0) + 12; }).map(function (x) {
+        barsChart('Điểm chọn năm sinh con (thang 10)', 'Chủ yếu theo hợp tuổi với bố mẹ' + (daCo.length ? ' & anh chị' : '') + ', có tham khảo tín hiệu hai lá số · tính theo năm âm lịch (sinh sau Tết)', C.goiY.filter(function (x) { return x.nam <= (TD.sinhCon.nam[0] ? TD.sinhCon.nam[0].nam : 0) + 12; }).map(function (x) {
           var top = C.goiYTop.some(function (t) { return t.nam === x.nam; });
-          return { ten: (top ? '★ ' : '') + x.nam + ' · ' + x.canChi, v: x.tong, mau: top ? C_JADE : cdMau(x.tong), tip: x.nam + ' ' + x.canChi + ' (' + x.napAm + ') · hợp tuổi ' + fmt(x.hopTuoi) + '/10 · xác suất ' + fmt(x.pct) + '%' + (x.anhEm.length ? '\n' + x.anhEm.join('; ') : '') };
+          return { ten: (top ? '★ ' : '') + x.nam + ' · ' + x.canChi, v: x.tong, mau: top ? C_JADE : cdMau(x.tong), tip: x.nam + ' ' + x.canChi + ' (' + x.napAm + ') · hợp tuổi ' + fmt(x.hopTuoi) + '/10' + (x.anhEm.length ? '\n' + x.anhEm.join('; ') : '') };
         }), 10) +
-        '<div class="tbl-wrap"><table class="gio-tbl"><thead><tr><th>Năm</th><th>Mệnh con</th><th>Hợp ' + esc(r.ten[0]) + '</th><th>Hợp ' + esc(r.ten[1]) + '</th>' + (daCo.length ? '<th>Với anh chị</th>' : '') + '<th>Xác suất</th><th>Điểm chọn</th></tr></thead><tbody>' +
+        '<div class="tbl-wrap"><table class="gio-tbl"><thead><tr><th>Năm</th><th>Mệnh con</th><th>Hợp ' + esc(r.ten[0]) + '</th><th>Hợp ' + esc(r.ten[1]) + '</th>' + (daCo.length ? '<th>Với anh chị</th>' : '') + '<th>Điểm chọn</th></tr></thead><tbody>' +
         C.goiYTop.map(function (x) {
           return '<tr><td><b>' + x.nam + '</b><br><small>' + esc(x.canChi) + '</small></td><td>' + esc(x.napAm) + '</td>' + x.voi.map(function (v) { return '<td><span class="rate ' + cdXep(v.diem) + '">' + fmt(v.diem) + '</span></td>'; }).join('') +
-            (daCo.length ? '<td><small>' + esc(x.anhEm.join('; ') || 'bình hòa') + '</small></td>' : '') + '<td>' + fmt(x.pct) + '%</td><td><b>' + fmt(x.tong) + '/10</b></td></tr>';
+            (daCo.length ? '<td><small>' + esc(x.anhEm.join('; ') || 'bình hòa') + '</small></td>' : '') + '<td><b>' + fmt(x.tong) + '/10</b></td></tr>';
         }).join('') + '</tbody></table></div>' +
         '<details class="coso"><summary>Lý do từng năm gợi ý</summary>' + C.goiYTop.map(function (x) { return '<p><b>' + x.nam + ' ' + esc(x.canChi) + ':</b></p>' + listHtml(x.ly.concat(x.anhEm.length ? ['Với anh chị: ' + x.anhEm.join('; ') + '.'] : [])); }).join('') + '</details>' : '';
-      h += cdPanel('子女', 'Con cái – số con, năm sinh con & tuổi hợp', stat + the +
-        (TD.sinhCon.nam.length ? '<h4 class="dd-h">📈 Xác suất có tin vui con cái theo năm</h4>' + bieuDo(TD.sinhCon.nam.filter(function (x) { return x.nam <= (vy || TD.sinhCon.nam[0].nam) + 12; }), 'Xác suất có tin vui con cái theo năm') + bangNam(TD.sinhCon.top, false) : '') + goi,
-        'Ghép cung Tử Tức, sao con cái Bát Tự, nhà 5 chiêm tinh của cả hai; năm sinh con = tích xác suất hai lá số × khả năng đã cưới' + (daCo.length ? ', giãn cách với con trước' : '') + '. Tuổi con xét theo mệnh nạp âm, thiên can, địa chi và hỷ/kỵ thần Bát Tự của bố mẹ.');
+      h += cdPanel('子女', 'Con cái – năm thuận và tuổi hợp', stat + the +
+        (TD.sinhCon.nam.length ? '<h4 class="dd-h">📈 Những năm thuận cho tin vui con cái</h4>' + bieuDo(TD.sinhCon.nam.filter(function (x) { return x.nam <= (vy || TD.sinhCon.nam[0].nam) + 12; }), 'Tín hiệu con cái theo năm') + bangNam(TD.sinhCon.top, false) : '') + goi,
+        'Ghép cung Tử Tức, sao con cái Bát Tự, nhà 5 chiêm tinh của cả hai theo cách luận cổ học – con cái là chuyện của sức khỏe và kế hoạch hai vợ chồng, lá số chỉ để tham khảo' + (daCo.length ? ', giãn cách với con trước' : '') + '. Tuổi con xét theo mệnh nạp âm, thiên can, địa chi và hỷ/kỵ thần Bát Tự của bố mẹ.');
     }
     h += cdPanel('言', 'Lời khuyên cho hai bạn', '<ul class="th-kl">' + r.loiKhuyen.map(function (x) { return '<li>' + hl(x) + '</li>'; }).join('') + '</ul>');
     h += '<div class="panel section">' + coSoHtml('Phương pháp luận giải hợp đôi', r.coSo) + '</div>';
@@ -1370,7 +1368,7 @@
     // --- Đường vận cả đời ---
     var coDoi = D.doi.tai && D.doi.tai.length > 10;
     if (coDoi || D.doi.dv.length) {
-      var cg = coDoi ? '<span><i style="background:#e8cf8f"></i>Tài lộc</span><span><i style="background:#e3a588"></i>Quan lộc</span><span><i style="background:#cfd3d8"></i>Rủi ro sức khỏe</span>' : '<span><i style="background:#e3a588"></i>Điểm đại vận</span>';
+      var cg = coDoi ? '<span><i style="background:#e8cf8f"></i>Tài lộc</span><span><i style="background:#e3a588"></i>Quan lộc</span><span><i style="background:#cfd3d8"></i>Năm nên giữ sức</span>' : '<span><i style="background:#e3a588"></i>Điểm đại vận</span>';
       cg += '<span><i style="background:#e8cf8f"></i>Đại vận thuận</span><span><i style="background:#e48a8a"></i>Đại vận cần giữ</span>' + (D.doi.nong.length ? '<span>◆ năm nhiều hệ cùng báo</span>' : '');
       var khoa = coDoi ? '' : '<div class="bdk-khoa"><span>🔒 Đường tài lộc – quan lộc – sức khỏe từng năm và các năm biến cố nằm trong phần <b>Biến cố &amp; dự đoán cả đời</b>.</span><button type="button" class="btn btn-primary btn-sm" data-mua="bien_co">Mở xem</button></div>';
       h += bkMuc('Vận trình 0 – 85 tuổi', 'Đường vận cả đời', 'Rê chuột hoặc chạm vào biểu đồ để xem từng năm.', '<div class="bdk-bento"><div class="bdk-o s12"><div class="bdk-doi" id="bkDoiWrap"><svg id="bkDoi" viewBox="0 0 1200 380" role="img" aria-label="Đường vận cả đời"></svg><div class="bdk-the" id="bkThe" hidden></div></div><div class="bdk-cg">' + cg + '</div>' + khoa + '</div></div>');
@@ -2118,7 +2116,7 @@
     'Quan Lộc': 'Đại vận rơi vào cung Quan Lộc — sự nghiệp là trọng tâm. Đây là 10 năm để thăng tiến, chuyển việc, hoặc khởi nghiệp. Công danh đi lên hay đi xuống đều do giai đoạn này.',
     'Nô Bộc': 'Đại vận rơi vào cung Nô Bộc — câu chuyện xoay quanh bạn bè, đồng nghiệp, cấp dưới. Có thể có người bạn tri kỷ xuất hiện, hoặc có người thân thiết trở mặt.',
     'Thiên Di': 'Đại vận rơi vào cung Thiên Di — 10 năm của di chuyển và mở rộng. Bạn có thể đi xa, ra nước ngoài, hoặc tiếp xúc với nhiều môi trường văn hoá mới.',
-    'Tật Ách': 'Đại vận rơi vào cung Tật Ách — sức khoẻ là điều cần quan tâm hàng đầu. Có thể có bệnh cần chữa, hoặc cơ thể bắt đầu "xuống" rõ rệt — cần chăm sóc kỹ hơn.',
+    'Tật Ách': 'Đại vận rơi vào cung Tật Ách — mười năm nên chú trọng nếp sống điều độ: ngủ đủ, vận động đều, khám sức khỏe định kỳ và biết nghỉ ngơi khi mệt.',
     'Tài Bạch': 'Đại vận rơi vào cung Tài Bạch — tiền bạc là câu chuyện chính. Có thể bạn phát tài, hoặc ngược lại, có giai đoạn hao tổn tài chính. Quản lý tiền bạc là ưu tiên.',
     'Tử Tức': 'Đại vận rơi vào cung Tử Tức — con cái và thế hệ sau là trọng tâm. Có thể bạn sinh con, con lớn lên và có chuyện vui buồn, hoặc bạn dành nhiều tâm sức cho thế hệ trẻ.',
     'Phu Thê': 'Đại vận rơi vào cung Phu Thê — tình cảm vợ chồng, người bạn đời là câu chuyện chính. Có thể là 10 năm mặn nồng, hoặc có sóng gió cần vượt qua. Cũng có thể đây là giai đoạn bạn kết hôn.',
@@ -2664,6 +2662,25 @@
   }
 
   // Dispatcher: cung Mệnh dùng kho văn mới, các cung khác tạm để trống
+  /* ---------- Tự đối chiếu: phần đoán chuyện đã qua (gia cảnh, cha mẹ, anh em, dáng vẻ) không khẳng định – hỏi lại người đọc.
+     Trả lời lưu trên máy (localStorage) và gửi ẩn danh về sheet DoiChieu (Code.gs › ghiDoiChieu) để biết phần nào hay lệch. ---------- */
+  var HDC_TL = [['dung', '✓ Đúng'], ['mot', '◐ Đúng một phần'], ['sai', '✗ Không đúng']];
+  function hdcKhoa(muc) { var I = state.result && state.result.tuvi && state.result.tuvi.info; return 'tcc_dc:' + (I ? [I.solar.day, I.solar.month, I.solar.year, I.hour, I.gender].join('-') : '') + ':' + muc; }
+  function hoiDoiChieu(muc, cau) {
+    var da = ''; try { da = localStorage.getItem(hdcKhoa(muc)) || ''; } catch (e) {}
+    return '<div class="hdc" data-hdc="' + esc(muc) + '"><span>' + esc(cau || 'Phần này đoán chuyện đã qua – có đúng với bạn không?') + '</span><span class="hdc-nut">' +
+      HDC_TL.map(function (x) { return '<button type="button" data-hdc-tl="' + x[0] + '" aria-pressed="' + (da === x[0]) + '">' + x[1] + '</button>'; }).join('') + '</span>' +
+      '<small class="hdc-cam"' + (da ? '' : ' hidden') + '>' + (da === 'sai' ? 'Cảm ơn bạn – lá số chỉ là một góc nhìn theo cổ học, trải nghiệm thật của bạn mới là điều đúng nhất.' : 'Cảm ơn bạn đã đối chiếu.') + '</small></div>';
+  }
+  document.addEventListener('click', function (e) {
+    var b = e.target.closest && e.target.closest('[data-hdc-tl]'); if (!b) return;
+    var box = b.closest('[data-hdc]'), muc = box.getAttribute('data-hdc'), tl = b.getAttribute('data-hdc-tl');
+    try { localStorage.setItem(hdcKhoa(muc), tl); } catch (e2) {}
+    [].forEach.call(box.querySelectorAll('[data-hdc-tl]'), function (x) { x.setAttribute('aria-pressed', x === b ? 'true' : 'false'); });
+    var cam = box.querySelector('.hdc-cam'); if (cam) { cam.hidden = false; cam.textContent = tl === 'sai' ? 'Cảm ơn bạn – lá số chỉ là một góc nhìn theo cổ học, trải nghiệm thật của bạn mới là điều đúng nhất.' : 'Cảm ơn bạn đã đối chiếu.'; }
+    var I = state.result && state.result.tuvi && state.result.tuvi.info;
+    if (hasServer()) try { google.script.run.withFailureHandler(function () {}).ghiDoiChieu(muc, tl, I ? { nam: I.solar.year, gioi: I.gender } : {}); } catch (e3) {}
+  });
   function taoCungDeHieu_(c) {
     var res = state.result;
     if (!res || !res.tuvi) return '';
@@ -2768,7 +2785,7 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
       stripHtml(CT.cung.map(function (c) { return { diem: c.diem, danhGia: c.danhGia, cung: c.cung, canChi: c.canChi }; }), function (c) { return c.cung; }, function (c) { return c.canChi; }, function (c, i) { return i === 0; }, 'tvc-') +
       '<div class="lg-list">' + CT.cung.map(function (c, i) {
         var blockGoc = blockHtml(voiTuTru(res, c), 'Cung ' + c.cung + (c.isThan ? ' · Thân cư' : ''), c.canChi, i === 0);
-        return '<div id="tvc-' + i + '" class="tv-cung">' + taoCungDeHieu_(c) + '<details class="cung-chitiet"><summary>Xem chi tiết chuyên sâu (thuật ngữ Tử Vi)</summary>' + blockGoc + '</details></div>';
+        return '<div id="tvc-' + i + '" class="tv-cung">' + taoCungDeHieu_(c) + (/^(Phụ Mẫu|Huynh Đệ|Điền Trạch)$/.test(c.cung) ? hoiDoiChieu('tuvi-' + c.cung, 'Cung ' + c.cung + ' nói về chuyện gia đình, đã có sẵn trong đời bạn – lời luận này có đúng không?') : '') + '<details class="cung-chitiet"><summary>Xem chi tiết chuyên sâu (thuật ngữ Tử Vi)</summary>' + blockGoc + '</details></div>';
       }).join('') + '</div></div>';
     var p3 = '<div class="panel section"><h2 class="panel-title"><span class="han">合參</span> Tử Vi × Bát Tự</h2>' + res.ketHop.map(function (x) { return '<p>✦ ' + hl(x) + '</p>'; }).join('') + '</div>';
     var p4 = '<div class="panel section"><h2 class="panel-title"><span class="han">運</span> Đại vận – tiểu vận Tử Vi</h2><p>' + (dvNay ? 'Bạn đang ở đại hạn <b>' + esc(dvNay.khoang) + '</b> (' + esc(String(dvNay.nam)) + ', cung ' + esc(dvNay.cung) + ' – ' + esc(dvNay.danhGia.toLowerCase()) + ').' : '') + ' Toàn bộ đại vận 10 năm, vận năm ' + I.viewYear + ', 12 tháng và lịch từng ngày nằm ở tab <b>Vận hạn</b>.</p>' +
@@ -3870,11 +3887,11 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
   function relTxt(r) { return r >= 5 ? '×5+' : '×' + String(r).replace('.', ','); }
   function hsnDongCls(d) { return d === 'Đồng thuận' ? 'dt' : d === 'Đối lập' ? 'dl' : d === 'Nghiêng về' ? 'ng' : 'it'; }
   function hsnSk(x) {
-    if (x.khoa) return '<div class="hsn-sk hsn-l-' + x.loai + ' khoa"><div class="hsn-sk-h"><b>' + esc(x.ten) + '</b><span class="hsn-mo">🔒 ••%</span></div></div>';
+    if (x.khoa) return '<div class="hsn-sk hsn-l-' + x.loai + ' khoa"><div class="hsn-sk-h"><b>' + esc(x.ten) + '</b><span class="hsn-mo">🔒 ••</span></div></div>';
     if (x.ngoai) return '<div class="hsn-sk hsn-l-' + x.loai + ' ngoai"><div class="hsn-sk-h"><b>' + esc(x.ten) + '</b><span class="muted">ngoài độ tuổi</span></div></div>';
     var ly = Object.keys(x.ly || {}).map(function (h) { return '<li><b>' + esc(h) + (x.ung.indexOf(h) >= 0 ? ' · ủng hộ' : x.nghich.indexOf(h) >= 0 ? ' · ngược chiều' : '') + ':</b> ' + esc(x.ly[h].map(function (t) { return t.replace(/^[^:]+:\s*/, ''); }).join('; ')) + '</li>'; }).join('');
     return '<div class="hsn-sk hsn-l-' + x.loai + '"><div class="hsn-sk-h"><b>' + esc(x.ten) + '</b><span class="hsn-loai">' + HSN_LOAI[x.loai] + '</span></div>' +
-      '<div class="hsn-p"><div class="hsn-bar"><i style="width:' + Math.max(3, x.p) + '%"></i></div><b>' + x.p + '%</b><span class="hsn-muc m-' + esc(x.muc.replace(/\s/g, '')) + '">' + esc(x.muc) + '</span>' +
+      '<div class="hsn-p"><div class="hsn-bar"><i style="width:' + Math.max(3, x.p) + '%"></i></div><span class="hsn-muc m-' + esc(x.muc.replace(/\s/g, '')) + '">' + esc(x.muc) + '</span>' +
         (x.rel >= 1.3 ? '<span class="hsn-rel" title="So với mức thường của chính bạn ở độ tuổi này">' + relTxt(x.rel) + '</span>' : '') + '</div>' +
       '<div class="hsn-dong"><span class="hsn-d ' + hsnDongCls(x.dong) + '">' + esc(x.dong) + '</span>' +
         x.ung.map(function (h) { return '<span class="hsn-he up">✓ ' + esc(h) + '</span>'; }).join('') + x.nghich.map(function (h) { return '<span class="hsn-he dn">✗ ' + esc(h) + '</span>'; }).join('') + '</div>' +
@@ -3887,12 +3904,12 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
     var H = res.moRong && res.moRong.tongHop && res.moRong.tongHop.hoSoNam;
     if (!H || H.loi || !H.khiaCanh) return '';
     var SK = {}; (H.suKien || []).forEach(function (x) { SK[x.k] = x; });
-    var dau = '<div class="tg" data-g="vh-hsn"><div class="tg-head"><span>1 năm</span><b>Hồ sơ biến cố năm ' + H.nam + '</b><em>19 sự kiện · 8 khía cạnh · xác suất và độ đồng thuận của 5 hệ</em></div><div class="panel section hsn">';
+    var dau = '<div class="tg" data-g="vh-hsn"><div class="tg-head"><span>1 năm</span><b>Hồ sơ biến cố năm ' + H.nam + '</b><em>19 sự kiện · 8 khía cạnh · mức tín hiệu và độ đồng thuận của 5 hệ</em></div><div class="panel section hsn">';
     var hc = res.moRong.tongHop.hieuChinh, hcH = '';
     if (hc && !hc.loi && hc.soSk) hcH = '<div class="hc-box"><b>' + (hc.ap ? '✓ Đã hiệu chỉnh theo đời bạn' : 'Đối chiếu sự kiện đã khai') + '</b><p>' + esc(hc.tom) + '</p><div class="hc-he">' + hc.bang.map(function (x) {
       return '<span class="hc-h ' + (x.heSo >= 1.08 ? 'len' : x.heSo <= 0.92 ? 'xuong' : '') + '"><b>' + esc(x.he) + '</b>' + x.trung + '/' + x.tong + ' trúng · ×' + String(x.heSo).replace('.', ',') + '</span>'; }).join('') +
       '</div><details class="hsn-coso"><summary>Cách hiệu chỉnh</summary><p>' + esc(hc.coSo) + '</p></details></div>';
-    else if (hc && !hc.loi) hcH = '<div class="hc-box hc-goi"><b>Muốn xác suất sát với bạn hơn?</b><p>Khai 2–5 việc đã xảy ra (năm cưới, đổi việc, chuyển nhà, ốm nặng…) ở mục "Sự kiện đã biết". App sẽ xem hệ nào báo trúng đời bạn nhất và tăng trọng số hệ đó.</p><button type="button" class="btn btn-ghost btn-sm" data-mo-sk>＋ Khai sự kiện đã biết</button></div>';
+    else if (hc && !hc.loi) hcH = '<div class="hc-box hc-goi"><b>Muốn kết quả sát với bạn hơn?</b><p>Khai 2–5 việc đã xảy ra (năm cưới, đổi việc, chuyển nhà, ốm nặng…) ở mục "Sự kiện đã biết". App sẽ xem hệ nào báo trúng đời bạn nhất và tăng trọng số hệ đó.</p><button type="button" class="btn btn-ghost btn-sm" data-mo-sk>＋ Khai sự kiện đã biết</button></div>';
     var tom = '<div class="hsn-tom">' + (H.qua ? '<span class="hsn-qua">Năm đã qua – dùng để kiểm chứng</span>' : '') + H.tom.map(function (t) { return '<p>' + esc(t) + '</p>'; }).join('') + '</div>';
     var he = '<div class="hsn-hes"><small>Mỗi hệ nói gì về năm này</small><div>' + H.he.map(function (x) {
       return '<span class="hsn-h ' + x.huong + '" title="' + esc(x.nguon) + '"><b>' + esc(x.he) + '</b>' + esc(x.nhan) + '</span>'; }).join('') + '</div></div>';
@@ -3903,9 +3920,9 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
       return '<details class="hsn-khoi" id="hsn-' + k.k + '"' + (!H.khoa && i < 2 ? ' open' : '') + '><summary><i>' + k.icon + '</i> ' + esc(k.ten) + ' <span class="hsn-nhan ' + k.huong + '">' + esc(k.nhan) + '</span>' + (k.doiLap ? ' <span class="hsn-d dl">Đối lập</span>' : '') + '</summary>' +
         (k.cau ? '<p class="muted">' + esc(k.cau) + '</p>' : '') + ds.map(hsnSk).join('') + '</details>';
     }).join('');
-    var khoa = H.khoa ? theKhoa('Hồ sơ biến cố năm ' + H.nam + ' chưa mở', 'Đủ 19 sự kiện với xác suất từng việc, hệ nào ủng hộ – hệ nào ngược chiều, vì sao, tháng nào cần để ý và nên làm gì. Đã gồm trong vận năm ' + H.nam + '.',
+    var khoa = H.khoa ? theKhoa('Hồ sơ biến cố năm ' + H.nam + ' chưa mở', 'Đủ 19 sự kiện với mức tín hiệu từng việc, hệ nào ủng hộ – hệ nào ngược chiều, vì sao, tháng nào cần để ý và nên làm gì. Đã gồm trong vận năm ' + H.nam + '.',
       nutNam(H.nam) + nutDongHanh(H.nam), 'Mở một lần, xem lại bao nhiêu lần cũng được.') : '';
-    var coSo = H.coSo ? '<details class="hsn-coso"><summary>Cách tính xác suất và đồng thuận</summary><p>' + esc(H.coSo) + '</p></details>' : '';
+    var coSo = H.coSo ? '<details class="hsn-coso"><summary>Cách tính mức tín hiệu và đồng thuận</summary><p>' + esc(H.coSo) + '</p></details>' : '';
     // Mỗi hệ góp phần mạnh nhất (không luận hệ này theo hệ kia)
     var gn = H.gocNhin && H.gocNhin.length ? '<div class="gn"><h4 class="hsn-h4">Mỗi hệ góp phần mình giỏi nhất</h4><div class="gn-luoi">' + H.gocNhin.map(function (x) {
       return '<div class="gn-the"><b>' + esc(x.he) + '</b><small>' + esc(x.vai) + '</small>' + (x.y ? '<p>' + esc(x.y) + '</p>' : '<p class="muted">🔒 Mở vận năm để xem.</p>') + '</div>'; }).join('') + '</div></div>' : '';
@@ -4293,8 +4310,7 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
       return '<div class="hl-lv-i ' + x.bac + '"><h3><span>' + x.icon + '</span> ' + esc(x.ten) + '<span class="rate ' + ctBac(x.bac) + '">' + (x.bac === 'tot' ? 'Thuận' : x.bac === 'kho' ? 'Cần rèn' : 'Vừa') + '</span></h3>' +
         '<p>' + esc(x.tron) + '</p><p class="hl-khuyen">💡 ' + esc(x.khuyen) + '</p><details class="hl-cancu"><summary>Căn cứ · ' + esc(x.dua) + '</summary>' + ds(x.ky) + '</details></div>';
     }).join('') + '</div></div>' +
-      '<div class="bt-grid"><div class="panel section"><h2 class="panel-title"><span class="han">相</span> Ngoại hình (cung Mọc)</h2>' + listHtml(L.ngoaiHinh) + '</div>' +
-      '<div class="panel section"><h2 class="panel-title"><span class="han">體</span> Dấu hiệu cơ thể</h2>' + listHtml(L.coThe) + '</div></div>' +
+      '<div class="panel section"><h2 class="panel-title"><span class="han">相</span> Dáng vẻ theo cung Mọc (gợi ý truyền thống)</h2>' + listHtml(L.ngoaiHinh) + hoiDoiChieu('chiemtinh-ngoaihinh') + '</div>' +   // 24/10: bỏ "Dấu hiệu cơ thể" (sức khỏe)
       '<div class="bt-grid"><div class="panel section"><h2 class="panel-title"><span class="han">根</span> Gốc gác – gia đình</h2>' + listHtml(L.gocGac) + '</div>' +
       '<div class="panel section"><h2 class="panel-title"><span class="han">業</span> Nghề nghiệp</h2>' + listHtml(L.nghe.items) + '</div></div>';
     // Phần 4 – chu kỳ thời gian
@@ -4699,7 +4715,7 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
   function hoiTuChart(L, vy) {
     if (!L || !L.nam.length) return '';
     var n = L.nam.length, W = 760, LBL = 176, R = 8, T = 24, rowH = 30, H = T + L.dong.length * rowH + 30, cw = (W - LBL - R) / n;
-    var o = '<figure class="chart-fig"><figcaption><b>Bản đồ hội tụ 30 năm</b><span>Mỗi chấm là số hệ cùng báo trong năm đó · chấm lớn, đậm = từ 3 hệ trở lên (xác suất cao) · rê chuột xem các hệ</span></figcaption><svg viewBox="0 0 ' + W + ' ' + H + '" class="vchart" role="img" aria-label="Bản đồ hội tụ biến cố">';
+    var o = '<figure class="chart-fig"><figcaption><b>Bản đồ hội tụ 30 năm</b><span>Mỗi chấm là số hệ cùng báo trong năm đó · chấm lớn, đậm = từ 3 hệ trở lên (tín hiệu rõ) · rê chuột xem các hệ</span></figcaption><svg viewBox="0 0 ' + W + ' ' + H + '" class="vchart" role="img" aria-label="Bản đồ hội tụ biến cố">';
     L.nam.forEach(function (y, i) {
       var x = LBL + i * cw + cw / 2;
       if (y === vy) o += '<rect x="' + (x - cw / 2) + '" y="' + (T - 14) + '" width="' + cw + '" height="' + (L.dong.length * rowH + 16) + '" rx="4" fill="#ffffff" fill-opacity=".08"/>';
@@ -4740,9 +4756,9 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
   function hoiTuHtml(H) {
     if (!H) return '';
     var vy = state.result.tuvi.info.viewYear;
-    var html = '<div class="tg" data-g="bien"><div class="tg-head"><span>Phần IV</span><b>Biến cố hội tụ 6 hệ</b><em>Những năm nhiều hệ cùng lên tiếng – xác suất xảy ra cao</em></div>' +
+    var html = '<div class="tg" data-g="bien"><div class="tg-head"><span>Phần IV</span><b>Biến cố hội tụ 6 hệ</b><em>Những năm nhiều hệ cùng lên tiếng – đáng để ý và chuẩn bị</em></div>' +
       '<div class="panel section"><h2 class="panel-title"><span class="han">會</span> Khi nhiều hệ cùng lên tiếng</h2><p class="lede">Một hệ báo – có thể là trùng hợp. Ba hệ trở lên cùng chỉ vào một năm – đó là tín hiệu đáng chuẩn bị.</p>' +
-      coSoHtml('Cách tính xác suất hội tụ', [H.coSo]) + hoiTuChart(H.luoi, vy);
+      coSoHtml('Cách tính mức hội tụ', [H.coSo]) + hoiTuChart(H.luoi, vy);
     if (H.cuaSo.length) html += '<h4 class="dd-h">Những năm "nóng" phía trước (nhiều chủ đề cùng hội tụ)</h4><div class="giao-van">' + H.cuaSo.map(function (c) {
       return '<span class="gv ' + (c.loai.indexOf('xau') >= 0 && c.loai.indexOf('tot') < 0 ? 'r1' : c.loai.indexOf('xau') < 0 ? 'r4' : 'r3') + (c.nam === vy ? ' now' : '') + '"><b>' + c.nam + '</b> · ' + c.tuoi + ' tuổi<br><small>' + esc(c.cd.join(' · ')) + '</small></span>';
     }).join('') + '</div>';
@@ -4771,19 +4787,19 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
     return html;
   }
 
-  /* ---------- Nghề nghiệp kèm % phù hợp ---------- */
+  /* ---------- Nghề nghiệp kèm mức phù hợp (số hệ gợi ý) ---------- */
   function ngheHtml(n) {
-    return '<div class="nghe"><b>' + esc(n.ten) + '</b>' + (n.pct ? '<div class="nghe-pct"><i style="width:' + n.pct + '%"></i></div><em>' + n.pct + '% phù hợp · ' + n.he.length + '/6 hệ</em>' : '') +
+    return '<div class="nghe"><b>' + esc(n.ten) + '</b>' + (n.pct ? '<div class="nghe-pct"><i style="width:' + n.pct + '%"></i></div><em>' + n.he.length + '/6 hệ cùng gợi ý</em>' : '') +
       '<span>' + n.he.map(heChip).join(' ') + '</span></div>';
   }
-  /* ---------- Thời điểm kết hôn / sinh con (xác suất theo năm) ---------- */
+  /* ---------- Thời điểm kết hôn / sinh con (mức tín hiệu theo năm, không hiện %) ---------- */
   function thoiDiemHtml(td, res) {
     if (!td) return '';
     var vy = res.tuvi.info.viewYear;
     var MUC_CL = { 'Rất cao': 'r5', 'Cao': 'r4', 'Trung bình': 'r3', 'Thấp': 'r1' };
     function bang(ds) {
-      return '<div class="tbl-wrap"><table class="gio-tbl"><thead><tr><th>Năm</th><th>Xác suất</th><th>Mức</th><th>Hệ cùng báo</th></tr></thead><tbody>' + ds.map(function (n) {
-        return '<tr><td><b>' + n.nam + '</b> · ' + n.tuoi + 't<br><small>' + esc(n.canChi) + '</small></td><td><b>' + fmt(n.pct) + '%</b></td><td><span class="rate ' + MUC_CL[n.muc] + '">' + esc(n.muc) + '</span></td>' +
+      return '<div class="tbl-wrap"><table class="gio-tbl"><thead><tr><th>Năm</th><th>Mức</th><th>Hệ cùng báo</th></tr></thead><tbody>' + ds.map(function (n) {
+        return '<tr><td><b>' + n.nam + '</b> · ' + n.tuoi + 't<br><small>' + esc(n.canChi) + '</small></td><td><span class="rate ' + MUC_CL[n.muc] + '">' + esc(n.muc) + '</span></td>' +
           '<td>' + (n.he.length ? n.he.map(heChip).join(' ') : '<small class="muted">chỉ theo độ tuổi</small>') + (n.ly && n.ly.length ? '<details class="ht-y"><summary><small>Lý do</small></summary>' + listHtml(n.ly) + '</details>' : '') + '</td></tr>';
       }).join('') + '</tbody></table></div>';
     }
@@ -4791,9 +4807,9 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
       var mx = Math.max.apply(null, bd.map(function (b) { return b.pct; }).concat([1]));
       return barsChart(tieuDe, sub, bd.map(function (b) {
         var n = chiTiet.filter(function (y) { return y.nam === b.nam; })[0] || b, daKhai = biet.indexOf(b.nam) >= 0;
-        return { ten: (daKhai ? '✔ ' : '') + b.nam + ' · ' + b.tuoi + ' tuổi', v: b.pct, mau: daKhai ? C_CORAL : b.pct >= mx * 0.6 ? C_JADE : b.pct >= mx * 0.3 ? C_GOLD : C_VIOLET,
-          tip: b.nam + ': ' + fmt(b.pct) + '%' + (daKhai ? ' (năm bạn đã khai)' : '') + (n.he && n.he.length ? '\n' + n.soHe + ' hệ cùng báo: ' + n.he.join(', ') : '') };
-      }), mx, '%');
+        return { ten: (daKhai ? '✔ ' : '') + b.nam + ' · ' + b.tuoi + ' tuổi', v: Math.round(b.pct / mx * 100) / 10, mau: daKhai ? C_CORAL : b.pct >= mx * 0.6 ? C_JADE : b.pct >= mx * 0.3 ? C_GOLD : C_VIOLET,
+          tip: b.nam + ': ' + (b.pct >= mx * 0.6 ? 'tín hiệu rõ' : b.pct >= mx * 0.3 ? 'tín hiệu vừa' : 'tín hiệu nhẹ') + (daKhai ? ' (năm bạn đã khai)' : '') + (n.he && n.he.length ? '\n' + n.soHe + ' hệ cùng báo: ' + n.he.join(', ') : '') };
+      }), 10, '');
     }
     function khoi(k, han, tieuDe, loiMo, dong) {
       var x = td[k];
@@ -4802,36 +4818,30 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
       /* Năm đã khai → đối chiếu */
       if (x.doiChieu && x.doiChieu.length) h += '<div class="km-banner" style="margin-bottom:12px">' + x.doiChieu.map(function (d) {
         return d.ngoai ? '✔ Bạn đã khai ' + dong + ' năm <b>' + d.nam + '</b> (ngoài giai đoạn đối chiếu nên không xếp hạng).' :
-          '✔ Bạn đã khai ' + dong + ' năm <b>' + d.nam + '</b> (' + d.tuoi + ' tuổi): lá số xếp năm này <b>hạng ' + d.hang + '/' + d.tong + '</b> trong giai đoạn ' + x.quaKhu.tu + '–' + x.quaKhu.den + ' – ' + fmt(d.pct) + '%, mức ' + esc(d.muc) + (d.he.length ? ', ' + d.soHe + ' hệ cùng báo (' + d.he.join(', ') + ')' : '') + '.' +
+          '✔ Bạn đã khai ' + dong + ' năm <b>' + d.nam + '</b> (' + d.tuoi + ' tuổi): lá số xếp năm này <b>hạng ' + d.hang + '/' + d.tong + '</b> trong giai đoạn ' + x.quaKhu.tu + '–' + x.quaKhu.den + ' – mức ' + esc(d.muc) + (d.he.length ? ', ' + d.soHe + ' hệ cùng báo (' + d.he.join(', ') + ')' : '') + '.' +
           (d.hang <= 3 ? ' Khớp tốt – độ tin cậy của lá số cao.' : ' Chưa khớp nhiều – hãy kiểm tra lại giờ sinh (tab Dò giờ sinh).');
       }).join('<br>') + '</div>';
       /* Ô số liệu */
-      var o = [];
-      if (!biet.length && x.pDaQua != null && x.quaKhu && x.quaKhu.nam.length) o.push(['Đã diễn ra trước ' + vy, x.pDaQua, 'theo độ tuổi & tín hiệu']);
-      var nhan = biet.length ? 'nếu có thêm con · đến 45t' : 'nếu chưa ' + dong + ' · đến 45t';
-      if (x.tichLuy) o.push(['Trong 3 năm tới', x.tichLuy.n3, nhan], ['Trong 5 năm tới', x.tichLuy.n5, nhan], ['Trong 10 năm tới', x.tichLuy.n10, nhan]);
-      if (o.length) h += '<div class="stat-row">' + o.map(function (t) { return '<div class="stat"><small>' + t[0] + '</small><b>' + t[1] + '%</b><span>' + t[2] + '</span></div>'; }).join('') +
-        '<div class="stat"><small>Tuổi đỉnh theo lá số</small><b>' + x.tuoiDinh + '</b><span>tuổi</span></div></div>';
+      if (x.tuoiDinh) h += '<div class="stat-row"><div class="stat"><small>Quãng tuổi lá số nhấn mạnh</small><b>quanh ' + x.tuoiDinh + '</b><span>tuổi · chỉ là xu hướng</span></div></div>';
       /* Nhánh 1: nhìn lại các năm đã qua */
       var Q = x.quaKhu;
       if (Q && Q.bieuDo.length) h += '<h4 class="dd-h">↺ ' + (biet.length ? 'Đối chiếu' : 'Nếu bạn đã ' + dong + ' – nhìn lại') + ' ' + Q.tu + '–' + Q.den + '</h4>' +
-        bieuDo('Năm nào khả năng nhất trong giai đoạn đã qua', 'Các cột cộng lại = 100% · cột đỏ ✔ là năm bạn đã khai', Q.bieuDo, Q.nam, biet) + (biet.length ? '' : bang(Q.nam));
+        bieuDo('Năm nào tín hiệu rõ nhất trong giai đoạn đã qua', 'So sánh tương đối giữa các năm (thang 10) · cột đỏ ✔ là năm bạn đã khai', Q.bieuDo, Q.nam, biet) + (biet.length ? '' : bang(Q.nam));
       /* Nhánh 2: phía trước */
       if (k === 'ketHon' && biet.length) h += '<p class="muted">Bạn đã khai năm kết hôn nên không tính năm cưới phía trước. Năm có con bên dưới được tính từ sau năm cưới.</p>';
-      else if (x.hetCuaSo) h += '<p class="muted">Đã qua độ tuổi thường gặp (đến 45 tuổi) nên không tính xác suất các năm phía trước.</p>';
+      else if (x.hetCuaSo) h += '<p class="muted">Đã qua độ tuổi thường gặp (đến 45 tuổi) nên không tính các năm phía trước.</p>';
       else h += '<h4 class="dd-h">→ ' + (biet.length ? 'Các năm phía trước (thêm con)' : 'Nếu chưa ' + dong + ' – các năm phía trước') + '</h4>' +
-        bieuDo('Xác suất theo từng năm', 'Chiều dài = % khả năng sự việc rơi vào năm đó · rê chuột xem các hệ cùng báo', x.bieuDo.filter(function (b) { return b.nam <= vy + 14; }), x.nam, biet) + bang(x.nam);
+        bieuDo('Tín hiệu theo từng năm', 'So sánh tương đối giữa các năm theo cổ học (thang 10), không phải xác suất · rê chuột xem các hệ cùng báo', x.bieuDo.filter(function (b) { return b.nam <= vy + 14; }), x.nam, biet) + bang(x.nam);
       if (!biet.length) h += '<p class="muted" style="font-size:12.5px">Mẹo: khai năm ' + dong + ' thật ở mục <b>Sự kiện đã biết</b> trong form để lá số đối chiếu và tính chính xác hơn.</p>';
       return h + '</div>';
     }
-    return khoi('ketHon', '婚期', 'Năm kết hôn – xác suất theo năm', 'Chia hai trường hợp: nếu bạn đã kết hôn, năm nào trong 10 năm qua (người lớn tuổi: cả giai đoạn 18–45 tuổi) khả năng nhất; nếu chưa, khả năng việc cưới hỏi rơi vào từng năm phía trước (đến 45 tuổi). Kết quả ghép từ độ tuổi thường gặp (dịch theo xu hướng sớm/muộn của lá số) và số hệ cùng báo trong năm.', 'kết hôn') +
-      khoi('sinhCon', '添丁', 'Năm có con – xác suất theo năm', 'Khả năng tin vui con cái rơi vào từng năm – nhìn lại 10 năm qua và các năm phía trước (con đầu hoặc thêm con), dựa trên cung Tử Tức, sao con cái Bát Tự, Sao Mộc – nhà 5, quẻ lưu niên và năm cá nhân.', 'có con') +
-      (td.coSo ? coSoHtml('Cách tính xác suất', [td.coSo]) : '');
+    return khoi('ketHon', '婚期', 'Những năm thuận cho hôn nhân', 'Chia hai trường hợp: nếu bạn đã kết hôn, năm nào trong 10 năm qua (người lớn tuổi: cả giai đoạn 18–45 tuổi) có tín hiệu rõ nhất; nếu chưa, những năm phía trước (đến 45 tuổi) thuận cho việc cưới hỏi. Hôn nhân là lựa chọn của bạn – đây chỉ là gợi ý thời điểm thuận. Kết quả ghép từ độ tuổi thường gặp (dịch theo xu hướng sớm/muộn của lá số) và số hệ cùng báo trong năm.', 'kết hôn') +
+      khoi('sinhCon', '添丁', 'Những năm thuận cho con cái', 'Những năm có tín hiệu tin vui con cái – nhìn lại 10 năm qua và các năm phía trước (con đầu hoặc thêm con), dựa trên cung Tử Tức, sao con cái Bát Tự, Sao Mộc – nhà 5, quẻ lưu niên và năm cá nhân.', 'có con') +
+      (td.coSo ? coSoHtml('Cách tính mức tín hiệu', [td.coSo]) : '');
   }
   function conCaiHtml(cc) {
     if (!cc) return '';
-    return '<div class="panel section"><h2 class="panel-title"><span class="han">子女</span> ' + esc(cc.tieuDe) + '</h2><p class="lede">Con cái giống ai, tính ra sao, trai hay gái, bao nhiêu con – nhìn từ cung Tử Tức, sao con cái Bát Tự, nhà 5 chiêm tinh và thần số.</p>' +
-      '<div class="stat-row"><div class="stat"><small>Con đầu là trai</small><b>' + cc.chiSo.pTrai + '%</b><span>tham khảo</span></div><div class="stat"><small>Con đầu là gái</small><b>' + (100 - cc.chiSo.pTrai) + '%</b><span>tham khảo</span></div></div>' +
+    return '<div class="panel section"><h2 class="panel-title"><span class="han">子女</span> ' + esc(cc.tieuDe) + '</h2><p class="lede">Tính cách con, mối gắn kết cha mẹ – con cái nhìn từ cung Tử Tức, sao con cái Bát Tự, nhà 5 chiêm tinh và thần số. Con cái là chuyện cần thời gian và sự vun đắp – đây chỉ là gợi ý để tham khảo.</p>' +
       '<ul class="th-kl">' + cc.ketLuan.map(itemHtml).join('') + '</ul>' + nguonHtml(cc.nguon) + '</div>';
   }
 
@@ -4848,15 +4858,15 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
   function mienPhiHtml(res) {
     var M = res.mien;
     if (!M) return '';
-    function khoi(S, han, moDau) {
+    function khoi(S, han, moDau, muc) {
       if (!S) return '';
-      return '<div class="panel section"><h2 class="panel-title"><span class="han">' + han + '</span> ' + esc(S.tieuDe) + '</h2><p class="lede">' + esc(moDau) + '</p><ul class="th-kl">' + S.ketLuan.map(itemHtml).join('') + '</ul>' + nguonHtml(S.nguon) + '</div>';
+      return '<div class="panel section"><h2 class="panel-title"><span class="han">' + han + '</span> ' + esc(S.tieuDe) + '</h2><p class="lede">' + esc(moDau) + '</p>' + (muc ? hoiDoiChieu(muc) : '') + '<ul class="th-kl">' + S.ketLuan.map(itemHtml).join('') + '</ul>' + nguonHtml(S.nguon) + '</div>';
     }
     return '<div class="tg" data-g="mien"><div class="tg-head"><span>Xem miễn phí</span><b>Chân dung của bạn</b><em>Xuất thân · vóc dáng · tính cách · nghề hợp – thấy đúng thì mở khóa phần còn lại</em></div>' +
-      khoi(M.xuatThan, '出身', 'Nơi bạn bắt đầu định hình cách bạn bước đi – điều 6 hệ cùng nói về gia đình và cội nguồn của bạn.') +
-      khoi(M.vocDang, '形貌', 'Trước khi bạn mở lời, người khác đã "đọc" bạn qua dáng vẻ. Nét nào nhiều hệ cùng bỏ phiếu nhất là nét rõ nhất.') +
+      khoi(M.xuatThan, '出身', 'Đây là cách các hệ cổ học "đọc" gia đình và cội nguồn qua lá số – hoàn cảnh thật có thể khác. Hãy đối chiếu với trải nghiệm của bạn.', 'tonghop-xuatthan') +
+      khoi(M.vocDang, '形貌', 'Các hệ cổ học có những mô tả dáng vẻ truyền thống – đây là gợi ý để bạn tự đối chiếu, không phải kết luận về ngoại hình.', 'tonghop-vocdang') +
       (M.tinhCach ? tinhCachHtml(M.tinhCach) : '') +
-      (M.nghe && M.nghe.length ? '<div class="panel section"><h2 class="panel-title"><span class="han">職業</span> Nghề nghiệp phù hợp</h2><p class="lede">% phù hợp = số hệ cùng gợi ý (trên 6) và sức nặng của gợi ý so với nghề mạnh nhất.</p><div class="nghe-list">' + M.nghe.map(ngheHtml).join('') + '</div></div>' : '') + '</div>';
+      (M.nghe && M.nghe.length ? '<div class="panel section"><h2 class="panel-title"><span class="han">職業</span> Nghề nghiệp phù hợp</h2><p class="lede">Thanh dài hơn = nhiều hệ cùng gợi ý và gợi ý rõ hơn. Đây là hướng tham khảo, sở thích và kỹ năng thật của bạn mới là điều quyết định.</p><div class="nghe-list">' + M.nghe.map(ngheHtml).join('') + '</div></div>' : '') + '</div>';
   }
   /* ---------- Tổng hợp đa hệ ---------- */
   function heChip(h) { return '<span class="sys s-' + ({ 'Tử Vi': 'tv', 'Bát Tự': 'bt', 'Chiêm tinh': 'ct', 'Thần số học': 'ts', 'Human Design': 'hd', 'Hà Lạc': 'hl' }[h] || 'x') + '">' + esc(h) + '</span>'; }
@@ -4882,15 +4892,15 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
       '<p>Kết hợp ' + ['Tử Vi', 'Bát Tự', 'Hà Lạc', 'Chiêm tinh', 'Thần số học', 'Human Design'].map(heChip).join(' ') + ' – mỗi hệ "bỏ phiếu" độc lập, kết luận nào nhiều hệ cùng chỉ ra thì đáng tin cậy hơn.</p>' +
       coSoHtml('Phương pháp tổng hợp', T.coSo) + coSoHtml('Cách chấm điểm (thang 10)', CACH_CHAM) + '</div>' + matMaHtml(T.matMa) + '</div>';
     var MO_DAU = {
-      'Xuất thân – gia cảnh': 'Nơi bạn bắt đầu định hình cách bạn bước đi. Đây là điều 6 hệ cùng nói về gia đình và cội nguồn của bạn.',
-      'Vóc dáng – diện mạo': 'Trước khi bạn mở lời, người khác đã "đọc" bạn qua dáng vẻ. Mỗi hệ bỏ phiếu độc lập – nét nào nhiều phiếu nhất là nét rõ nhất.',
+      'Xuất thân – gia cảnh': 'Đây là cách các hệ cổ học "đọc" gia đình và cội nguồn qua lá số – hoàn cảnh thật có thể khác. Hãy đối chiếu với trải nghiệm của bạn.',
+      'Vóc dáng – diện mạo': 'Các hệ cổ học có những mô tả dáng vẻ truyền thống. Đây là gợi ý để bạn tự đối chiếu, không phải kết luận về ngoại hình của bạn.',
       'Đặc điểm cơ thể & sức khỏe': 'Cơ thể mang dấu ấn của lá số. Vùng được nhiều hệ cùng chỉ ra là nơi đáng để bạn chăm chút sớm nhất.'
     };
-    function khoi(S, han) {
-      return '<div class="panel section"><h2 class="panel-title"><span class="han">' + han + '</span> ' + esc(S.tieuDe) + '</h2>' + (MO_DAU[S.tieuDe] ? '<p class="lede">' + esc(MO_DAU[S.tieuDe]) + '</p>' : '') + '<ul class="th-kl">' + S.ketLuan.map(itemHtml).join('') + '</ul>' + nguonHtml(S.nguon) + '</div>';
+    function khoi(S, han, muc) {
+      return '<div class="panel section"><h2 class="panel-title"><span class="han">' + han + '</span> ' + esc(S.tieuDe) + '</h2>' + (MO_DAU[S.tieuDe] ? '<p class="lede">' + esc(MO_DAU[S.tieuDe]) + '</p>' : '') + (muc ? hoiDoiChieu(muc) : '') + '<ul class="th-kl">' + S.ketLuan.map(itemHtml).join('') + '</ul>' + nguonHtml(S.nguon) + '</div>';
     }
-    html += '<div class="tg" data-g="nguoi"><div class="tg-head"><span>Phần I</span><b>Con người bạn</b><em>Xuất thân · vóc dáng · tính cách</em></div>' + khoi(T.xuatThan, '出身');
-    html += khoi(T.vocDang, '形貌');   // 10/2026: bỏ khối 'Đặc điểm cơ thể & sức khỏe' (chủ dự án chốt)
+    html += '<div class="tg" data-g="nguoi"><div class="tg-head"><span>Phần I</span><b>Con người bạn</b><em>Xuất thân · vóc dáng · tính cách</em></div>' + khoi(T.xuatThan, '出身', 'tonghop-xuatthan');
+    html += khoi(T.vocDang, '形貌', 'tonghop-vocdang');   // 10/2026: bỏ khối 'Đặc điểm cơ thể & sức khỏe' (chủ dự án chốt)
     html += tinhCachHtml(T.tinhCach);
     html += '</div>';
     var P = T.phoiNgau;
@@ -4952,7 +4962,7 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
   var PDF_HOOK = {
     tom: 'Bạn là ai trong vài trang: nguyên mẫu, điểm sáng, điều cần canh chừng, thời điểm vàng và 10 mật mã cá nhân.',
     linhvuc: 'Mỗi lĩnh vực được 6 hệ cùng chấm điểm: điều nhiều hệ cùng thấy là điều đáng tin nhất, kèm lời khuyên và năm nên hành động.',
-    nguoi: 'Xuất thân, vóc dáng, dấu hiệu cơ thể và tính cách – mỗi nét đều được nhiều hệ cùng bỏ phiếu.',
+    nguoi: 'Xuất thân, vóc dáng và tính cách – mỗi nét đều được nhiều hệ cùng bỏ phiếu.',
     duyen: 'Người bạn đời trông thế nào, tính ra sao, năm sinh – tháng sinh hợp, thời điểm kết hôn và con cái.',
     doi: 'Chủ đề cuộc đời, nghề hợp và các chặng lên – xuống của đời bạn.',
     vh: 'Từng đại vận 10 năm qua năm hệ, năm hiện tại với những việc dễ xảy ra, và nhịp 12 tháng âm lịch.',
@@ -5156,8 +5166,8 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
     if (TD) ['ketHon', 'sinhCon'].forEach(function (k) {
       var o = TD[k]; if (!o || !o.nam) return;
       var ds = o.nam.filter(function (y) { return !y.qua && y.pct >= 10; }).sort(function (a, b) { return b.pct - a.pct; }).slice(0, 5);
-      if (ds.length) h += bcH3('Năm dễ ' + (o.ten || k)) + bcBang(['Năm', 'Tuổi', 'Khả năng', 'Hệ cùng báo'], ds.sort(function (a, b) { return a.nam - b.nam; }).map(function (y) {
-        return ['<b>' + y.nam + '</b>', y.tuoi, '<b>' + bcSo(y.pct) + '%</b> · ' + bcE(y.muc || ''), bcE((y.he || []).join(', '))];
+      if (ds.length) h += bcH3('Năm dễ ' + (o.ten || k)) + bcBang(['Năm', 'Tuổi', 'Mức tín hiệu', 'Hệ cùng báo'], ds.sort(function (a, b) { return a.nam - b.nam; }).map(function (y) {
+        return ['<b>' + y.nam + '</b>', y.tuoi, '<b>' + bcE(y.muc || '') + '</b>', bcE((y.he || []).join(', '))];
       }));
     });
     var C = P.conCai; if (C && C.ketLuan && C.ketLuan.length) h += bcH2(C.tieuDe || 'Con cái') + bcDs(C.ketLuan);
@@ -5177,7 +5187,7 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
     }
     if (T.nghe && T.nghe.length) {
       h += bcH2('Nghề hợp', 'theo số hệ cùng gợi ý');
-      h += bcBang(['Ngành nghề', 'Mức hợp', 'Hệ gợi ý'], T.nghe.map(function (n) { return ['<b>' + bcE(n.ten) + '</b>', bcVach(n.pct, 'tot') + '<b class="bc-diem tot">' + n.pct + '%</b>', bcE((n.he || []).join(', '))]; }));
+      h += bcBang(['Ngành nghề', 'Mức hợp', 'Hệ gợi ý'], T.nghe.map(function (n) { return ['<b>' + bcE(n.ten) + '</b>', bcVach(n.pct, 'tot') + '<b class="bc-diem tot">' + (n.he || []).length + '/6 hệ</b>', bcE((n.he || []).join(', '))]; }));
     }
     return h;
   }
@@ -5371,6 +5381,7 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
       return dau + '<li><span class="n">' + pad(i + 1) + '</span><span class="t"><b>' + esc(x.ten) + '</b><small>' + esc(x.hook) + '</small></span><span class="p">' + (x.trang || '') + '</span></li>';
     }).join('') + '</ol>' +
       '<div class="bc-cach"><b>Cách đọc báo cáo</b><ul>' +
+      '<li><b>Đây là góc nhìn theo cổ học để tham khảo và tự suy ngẫm, không phải kết luận về đời bạn.</b></li>' +
       '<li>Điểm theo <b>thang 10</b>: 5 là cân bằng, từ 6,5 là thuận <span class="bc-chip tot">thuận</span>, từ 4 trở xuống là cần lưu ý <span class="bc-chip xau">cần giữ</span>.</li>' +
       '<li>"x/y hệ đồng thuận": càng nhiều hệ cùng chỉ một hướng thì kết luận càng đáng tin.</li>' +
       '<li>Dòng có dấu <b class="bc-tot">●</b> là tín hiệu thuận, <b class="bc-xau">●</b> là điều nên phòng; chữ nhỏ màu nhạt cho biết hệ nào nói điều đó.</li></ul></div></div>';
@@ -5379,7 +5390,7 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
     return '<div class="bc-ket"><div class="bc-so">Lời kết</div><h1>Lá số là tấm bản đồ.<br>Bạn là người cầm lái.</h1>' +
       '<p>Những gì bạn vừa đọc là xu hướng năng lượng suy ra từ thời điểm sinh qua 6 hệ thống cổ – kim. Chúng cho bạn biết gió thổi hướng nào; còn đi nhanh hay chậm, rẽ trái hay phải là lựa chọn của bạn.</p>' +
       '<ul class="bc-ul"><li class="tot">Dùng điểm mạnh được nhiều hệ xác nhận làm bệ phóng cho sự nghiệp và các mối quan hệ.</li>' +
-      '<li class="vua">Chuẩn bị sớm cho các năm được cảnh báo: giữ sức khỏe, quỹ dự phòng và sự bình tĩnh.</li>' +
+      '<li class="vua">Với những năm nên đi chậm: giữ nếp sống điều độ, có quỹ dự phòng và sự bình tĩnh.</li>' +
       '<li>Xem lại báo cáo mỗi đầu năm: vận năm, năm cá nhân và chuyển động hành tinh thay đổi theo từng năm.</li></ul>' +
       '<p class="bc-quote">"Đức năng thắng số" – tâm tính, tu dưỡng và nỗ lực mới là yếu tố quyết định.</p>' +
       '<p class="bc-nho">Báo cáo mang tính tham khảo, chiêm nghiệm và phát triển bản thân; không thay thế tư vấn y tế, pháp lý hay tài chính chuyên môn.</p>' +

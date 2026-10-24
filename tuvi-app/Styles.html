@@ -1,6 +1,6 @@
 <style>
 /* Mã phiên bản giao diện – phải trùng với Index.html (meta tcc-ban) và Script.html (BAN_GIAO_DIEN) */
-:root { --tcc-ban: "2026.10.24.8"; }
+:root { --tcc-ban: "2026.10.24.9"; }
 /* ================================================================
    THIÊN CƠ CÁC — phong cách tiên hiệp sáng: ngọc bích, kim sa, mây trắng
    ================================================================ */
@@ -2482,4 +2482,14 @@ body:has(#page-chart.active) .tcc-goc-anh { opacity:.55; }
 .kd-lq:hover { border-color: #5CEBFF; }
 .kd-ghi { margin-top: 14px !important; font-size: 13px; color: var(--ink-soft); }
 @media (max-width: 640px) { .kd-hao-nd { padding-left: 14px; } .kd-dau h3 { font-size: 24px; } .kd-dau .kd-hinh { width: 64px; height: auto; } }
+.tab.tab-tk { opacity: .85; font-style: italic; }   /* mục Tham khảo (64 quẻ) cuối danh sách tab */
+/* 24/10: hỏi đối chiếu chuyện đã qua + dòng lưu ý tham khảo */
+.hdc { margin: 12px 0 4px; padding: 10px 12px; border: 1px dashed rgba(201,169,97,.45); border-radius: 12px; background: rgba(201,169,97,.06); display: flex; flex-wrap: wrap; gap: 8px 12px; align-items: center; font-size: 13.5px; }
+.hdc > span:first-child { flex: 1 1 220px; color: var(--ink-soft); }
+.hdc-nut { display: flex; flex-wrap: wrap; gap: 6px; }
+.hdc-nut button { font: inherit; font-size: 13px; padding: 5px 12px; border-radius: 999px; border: 1px solid rgba(201,169,97,.5); background: transparent; color: inherit; cursor: pointer; }
+.hdc-nut button:hover { background: rgba(201,169,97,.14); }
+.hdc-nut button[aria-pressed="true"] { background: #C9A961; border-color: #C9A961; color: #1a1408; font-weight: 600; }
+.hdc-cam { flex-basis: 100%; color: var(--ink-soft); font-style: italic; }
+.tcc-luu-y { margin: 0 0 10px; padding: 8px 14px; border-radius: 10px; background: rgba(201,169,97,.08); border-left: 3px solid #C9A961; font-size: 13.5px; color: var(--ink-soft); }
 </style>

@@ -854,7 +854,7 @@ function tuviLuanGiai_(chart) {
   if (pos['Hóa Kỵ'] === menh)
     cc.push({ ten: 'Hóa Kỵ thủ Mệnh', tot: false, moTa: 'Hay ưu tư, gặp nhiều cản trở, dễ bị hiểu lầm; kiên trì sẽ vượt qua.' });
   if (pos['Kình Dương'] === menh && (menh === 6))
-    cc.push({ ten: 'Mã đầu đới kiếm', tot: null, moTa: 'Kình Dương cư Ngọ – uy dũng trấn biên, nhưng cần đề phòng tai nạn.' });
+    cc.push({ ten: 'Mã đầu đới kiếm', tot: null, moTa: 'Kình Dương cư Ngọ – uy dũng trấn biên, nên điềm tĩnh và cẩn trọng khi hành động.' });
   if (!cc.length) cc.push({ ten: 'Không có cách cục đặc biệt', tot: null, moTa: 'Lá số bình ổn – thành bại chủ yếu do nỗ lực và vận hạn.' });
 
   // 4. Luận 12 cung

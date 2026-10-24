@@ -144,9 +144,9 @@ var TUVI_FACT_PHUTINH = {
   'Địa Kiếp':   { yNghia: 'Cuộc đời bạn có những lúc thăng trầm, đôi khi gặp mất mát đột ngột.', loai: 'yeu', trongSo: 1.3, tags: ['thang_tram', 'mat_mat'] },
   'Hóa Kỵ':     { yNghia: 'Bạn dễ bị hiểu lầm và đôi khi gặp chuyện không như ý — quan trọng là giữ được sự kiên nhẫn.', loai: 'yeu', trongSo: 1.5, tags: ['hieu_lam', 'tro_ngai'] },
   'Thiên Hình': { yNghia: 'Bạn là người nghiêm khắc với chính mình và đôi khi cả với người khác.', loai: 'yeu', trongSo: 1.0, tags: ['nghiem_khac'] },
-  'Thiên Riêu': { yNghia: 'Bạn dễ vướng vào những chuyện tình cảm phức tạp.', loai: 'yeu', trongSo: 0.9, tags: ['tinh_cam', 'phuc_tap'] },
+  'Thiên Riêu': { yNghia: 'Bạn có sức hút trong tình cảm — nên sống rõ ràng, chung thủy để tránh những chuyện phức tạp.', loai: 'yeu', trongSo: 0.9, tags: ['tinh_cam', 'phuc_tap'] },
   'Tang Môn':   { yNghia: 'Bạn nhạy cảm và đôi khi hay buồn phiền về những chuyện nhỏ.', loai: 'yeu', trongSo: 0.9, tags: ['buon_phien'] },
-  'Bạch Hổ':    { yNghia: 'Bạn nên cẩn thận với những chuyện bất ngờ — đề phòng tai nạn nhỏ khi đi lại.', loai: 'yeu', trongSo: 1.0, tags: ['tai_nan', 'bat_ngo'] },
+  'Bạch Hổ':    { yNghia: 'Bạn nên cẩn thận với những chuyện bất ngờ — đi lại, làm việc gì cũng nên thong thả, chắc chắn.', loai: 'yeu', trongSo: 1.0, tags: ['tai_nan', 'bat_ngo'] },
   'Thiên Khốc': { yNghia: 'Bạn là người nhạy cảm, dễ xúc động và hay lo lắng.', loai: 'yeu', trongSo: 0.9, tags: ['nhao_cam'] },
   'Thiên Hư':   { yNghia: 'Bạn có thể gặp những lúc hao tổn hoặc hụt hẫng không rõ lý do.', loai: 'yeu', trongSo: 0.9, tags: ['hao_ton'] },
   'Cô Thần':    { yNghia: 'Bạn thích sống độc lập và đôi khi cảm thấy cô đơn — nhưng bạn không yếu đuối, chỉ là không muốn phụ thuộc ai.', loai: 'yeu', trongSo: 0.8, tags: ['doc_lap', 'co_don'] },
@@ -170,7 +170,7 @@ var TUVI_FACT_DOSANG_HE_SO = {
  */
 var TUVI_FACT_TUAN_TRIET = {
   'tuan':  'Cung này có Tuần đóng — bạn sẽ gặp một số trở ngại trong giai đoạn đầu, nhưng sau đó mọi việc hanh thông dần.',
-  'triet': 'Cung này có Triệt đóng — tuổi trẻ thường gặp khó khăn ở lĩnh vực này, sau 30 tuổi mới ổn định rõ.',
+  'triet': 'Cung này có Triệt đóng — tuổi trẻ có xu hướng gặp khó khăn ở lĩnh vực này, càng về sau càng ổn định rõ.',
   'ca_hai':'Cung này bị cả Tuần và Triệt — đây là điểm "mờ" của bạn: càng lớn tuổi càng sáng rõ, nhưng cần kiên nhẫn vượt qua giai đoạn đầu.'
 };
 
@@ -220,10 +220,10 @@ var TUVI_FACT_BAC_SI = {
   'Tấu Thư':    { yNghia: 'Tấu Thư (văn thư, ăn nói): có duyên với giấy tờ, văn thư, ăn nói.', loai: 'manh', trongSo: 0.5 },
   'Phi Liêm':   { yNghia: 'Phi Liêm (thị phi, nhanh nhẹn): dễ có thị phi, chuyện ong bướm.', loai: 'yeu', trongSo: 0.5 },
   'Hỷ Thần':    { yNghia: 'Hỷ Thần (vui vẻ, hỷ sự): có niềm vui, có hỷ sự ở lĩnh vực này.', loai: 'manh', trongSo: 0.7 },
-  'Bệnh Phù':   { yNghia: 'Bệnh Phù (bệnh tật): sức khỏe ở lĩnh vực này cần chú ý.', loai: 'yeu', trongSo: 0.7 },
-  'Đại Hao':    { yNghia: 'Đại Hao (hao tán lớn): dễ có hao tán lớn, mất mát đáng kể.', loai: 'yeu', trongSo: 0.9 },
+  'Bệnh Phù':   { yNghia: 'Bệnh Phù (mệt mỏi, trì trệ): nên giữ nếp sinh hoạt điều độ, nghỉ ngơi đủ.', loai: 'yeu', trongSo: 0.7 },
+  'Đại Hao':    { yNghia: 'Đại Hao (hao tán lớn): chi tiêu dễ vượt dự tính — tài chính cần quản lý chặt, tích lũy đều.', loai: 'yeu', trongSo: 0.9 },
   'Phục Binh':  { yNghia: 'Phục Binh (tiểu nhân ngầm): cần đề phòng tiểu nhân ngầm phá.', loai: 'yeu', trongSo: 0.8 },
-  'Quan Phủ':   { yNghia: 'Quan Phủ (kiện tụng, giấy tờ): dễ dính vào giấy tờ, kiện tụng, tranh chấp.', loai: 'yeu', trongSo: 0.8 }
+  'Quan Phủ':   { yNghia: 'Quan Phủ (giấy tờ, tranh chấp): nên cẩn trọng giấy tờ, hợp đồng để tránh tranh chấp.', loai: 'yeu', trongSo: 0.8 }
 };
 
 /**
@@ -232,13 +232,13 @@ var TUVI_FACT_BAC_SI = {
 var TUVI_FACT_THAI_TUE = {
   'Thái Tuế':    { yNghia: 'Thái Tuế (uy nghi, thị phi): có uy nghi, có tiếng nói, nhưng cũng dễ có thị phi.', loai: 'trung', trongSo: 0.6 },
   'Thiếu Dương': { yNghia: 'Thiếu Dương (thông minh, vui vẻ): có sự thông minh, có niềm vui trong lĩnh vực này.', loai: 'manh', trongSo: 0.7 },
-  'Tang Môn':    { yNghia: 'Tang Môn (tang thương, buồn phiền): dễ có buồn phiền, chuyện không vui.', loai: 'yeu', trongSo: 0.8 },
+  'Tang Môn':    { yNghia: 'Tang Môn (buồn phiền): dễ có lúc buồn phiền — nên giữ tinh thần thư thái, chia sẻ với người thân.', loai: 'yeu', trongSo: 0.8 },
   'Thiếu Âm':    { yNghia: 'Thiếu Âm (hiền hòa, phúc nhẹ): có sự hiền hòa, có chút phúc nhẹ.', loai: 'manh', trongSo: 0.6 },
-  'Quan Phù':    { yNghia: 'Quan Phù (kiện cáo, giấy tờ): dễ dính đến giấy tờ, kiện cáo.', loai: 'yeu', trongSo: 0.7 },
+  'Quan Phù':    { yNghia: 'Quan Phù (giấy tờ, tranh chấp): nên cẩn trọng giấy tờ, hợp đồng.', loai: 'yeu', trongSo: 0.7 },
   'Tử Phù':      { yNghia: 'Tử Phù (buồn thương, trở ngại): dễ có chuyện buồn thương, trở ngại.', loai: 'yeu', trongSo: 0.8 },
   'Tuế Phá':     { yNghia: 'Tuế Phá (phá tán, bướng bỉnh): có xu hướng phá tán, bướng bỉnh.', loai: 'yeu', trongSo: 0.7 },
   'Long Đức':    { yNghia: 'Long Đức (phúc đức, giải hung): được phúc đức che chở, gặp dữ hóa lành.', loai: 'manh', trongSo: 0.9 },
-  'Bạch Hổ':     { yNghia: 'Bạch Hổ (tai nạn, tang sự): đề phòng tai nạn, tang sự, kiện tụng.', loai: 'yeu', trongSo: 0.9 },
+  'Bạch Hổ':     { yNghia: 'Bạch Hổ (bất ngờ, va chạm): nên đi lại cẩn thận, cẩn trọng giấy tờ, hợp đồng.', loai: 'yeu', trongSo: 0.9 },
   'Phúc Đức':    { yNghia: 'Phúc Đức (phúc đức, giải hung): được phúc đức che chở, gặp khó có người giúp.', loai: 'manh', trongSo: 0.9 },
   'Điếu Khách':  { yNghia: 'Điếu Khách (tin buồn, khoác lác): dễ có tin buồn, chuyện không như ý.', loai: 'yeu', trongSo: 0.6 },
   'Trực Phù':    { yNghia: 'Trực Phù (buồn phiền, trở ngại): dễ có buồn phiền, trở ngại.', loai: 'yeu', trongSo: 0.6 }
@@ -319,7 +319,7 @@ var TUVI_FACT_PHUTHE_PHUTINH = {
   'Đào Hoa':    { yNghia: 'Bạn đời của bạn duyên dáng, được nhiều người yêu mến. Tình cảm đến sớm và nồng nàn.', loai: 'manh', trongSo: 1.0, tags: ['phoi_ngau_duyen_dang', 'tinh_cam_som'] },
   'Hồng Loan':  { yNghia: 'Hôn nhân có duyên — bạn dễ lập gia đình, bạn đời ưa nhìn và được lòng người.', loai: 'manh', trongSo: 1.1, tags: ['hon_nhan_co_duyen'] },
   'Thiên Hỷ':   { yNghia: 'Hôn nhân có nhiều niềm vui, hỷ sự — vợ chồng biết cách mang lại tiếng cười cho nhau.', loai: 'manh', trongSo: 1.0, tags: ['hon_nhan_vui_ve'] },
-  'Tả Phù':     { yNghia: 'Bạn đời của bạn giúp đỡ bạn nhiều — nhưng cũng là dấu hiệu cần đề phòng người thứ ba xuất hiện.', loai: 'manh', trongSo: 0.9, tags: ['phoi_ngau_ho_tro', 'canh_bao_nguoi_thu_ba'] },
+  'Tả Phù':     { yNghia: 'Bạn đời của bạn giúp đỡ bạn nhiều — hai bạn nên giữ ranh giới rõ ràng với người ngoài để hôn nhân thêm vững.', loai: 'manh', trongSo: 0.9, tags: ['phoi_ngau_ho_tro', 'canh_bao_nguoi_thu_ba'] },
   'Hữu Bật':    { yNghia: 'Bạn đời của bạn hỗ trợ bạn trong cuộc sống — nhưng cần cẩn thận chuyện tình cảm phức tạp.', loai: 'manh', trongSo: 0.9, tags: ['phoi_ngau_ho_tro', 'canh_bao_nguoi_thu_ba'] },
   'Văn Xương':  { yNghia: 'Bạn đời của bạn có học thức, ăn nói nhã nhặn, có khiếu văn nghệ.', loai: 'manh', trongSo: 1.0, tags: ['phoi_ngau_hoc_thuc'] },
   'Văn Khúc':   { yNghia: 'Bạn đời của bạn khéo ăn nói, có duyên giao tiếp và có khiếu nghệ thuật.', loai: 'manh', trongSo: 1.0, tags: ['phoi_ngau_kheo_an_noi'] },
@@ -333,18 +333,18 @@ var TUVI_FACT_PHUTHE_PHUTINH = {
   'Phượng Các': { yNghia: 'Bạn đời của bạn có khí chất cao quý, biết cách cư xử.', loai: 'manh', trongSo: 0.8, tags: ['phoi_ngau_thanh_nha'] },
 
   // Hung tinh — hôn nhân có thử thách
-  'Kình Dương': { yNghia: 'Bạn đời của bạn cá tính mạnh — có thể có va chạm trong hôn nhân. Đề phòng tai nạn cho bạn đời.', loai: 'yeu', trongSo: 1.3, tags: ['phoi_ngau_ca_tinh', 'hon_nhan_va_cham'] },
+  'Kình Dương': { yNghia: 'Bạn đời của bạn cá tính mạnh — có thể có va chạm trong hôn nhân. Hai bạn nên nhường nhịn và nhắc nhau sống điều độ, cẩn thận.', loai: 'yeu', trongSo: 1.3, tags: ['phoi_ngau_ca_tinh', 'hon_nhan_va_cham'] },
   'Đà La':      { yNghia: 'Duyên tình đến chậm, dây dưa — có thể trải qua vài mối tình trước khi ổn định.', loai: 'yeu', trongSo: 1.2, tags: ['hon_nhan_muon', 'duyen_cham'] },
   'Hỏa Tinh':   { yNghia: 'Hôn nhân có thể bùng nổ cãi vã — vợ chồng nóng nảy, dễ to tiếng.', loai: 'yeu', trongSo: 1.2, tags: ['hon_nhan_nong_nay'] },
   'Linh Tinh':  { yNghia: 'Hôn nhân có những lúc âm ỉ, khó chịu — cần học cách buông bỏ.', loai: 'yeu', trongSo: 1.1, tags: ['hon_nhan_am_i'] },
   'Địa Không':  { yNghia: 'Tình cảm có lúc hụt hẫng, cảm giác trống vắng — dù bên nhau vẫn thấy cô đơn.', loai: 'yeu', trongSo: 1.2, tags: ['hon_nhan_hut_hang'] },
-  'Địa Kiếp':   { yNghia: 'Hôn nhân có thể gặp biến cố, mất mát — cần kiên nhẫn vượt qua.', loai: 'yeu', trongSo: 1.3, tags: ['hon_nhan_bien_co'] },
+  'Địa Kiếp':   { yNghia: 'Hôn nhân có thể có giai đoạn thử thách — cần kiên nhẫn, nói chuyện thẳng thắn để cùng vượt qua.', loai: 'yeu', trongSo: 1.3, tags: ['hon_nhan_bien_co'] },
   'Hóa Kỵ':     { yNghia: 'Vợ chồng dễ hiểu lầm, ghen tuông — nên kết hôn muộn và nói rõ ràng với nhau.', loai: 'yeu', trongSo: 1.5, tags: ['hon_nhan_hieu_lam', 'can_ket_hon_muon'] },
-  'Thiên Riêu': { yNghia: 'Bạn đời của bạn đa tình — dễ có người thứ ba, cần giữ gìn hôn nhân.', loai: 'yeu', trongSo: 1.1, tags: ['phoi_ngau_da_tinh'] },
+  'Thiên Riêu': { yNghia: 'Bạn đời của bạn có sức hút — hai bạn nên rõ ràng, chung thủy để giữ gìn hôn nhân.', loai: 'yeu', trongSo: 1.1, tags: ['phoi_ngau_da_tinh'] },
   'Cô Thần':    { yNghia: 'Có những lúc bạn cảm thấy cô đơn ngay trong hôn nhân — cần chủ động chia sẻ.', loai: 'yeu', trongSo: 1.0, tags: ['hon_nhan_co_don'] },
-  'Quả Tú':     { yNghia: 'Dễ xa cách, đơn chiếc — có thể có giai đoạn vợ chồng ở xa nhau.', loai: 'yeu', trongSo: 1.0, tags: ['hon_nhan_xa_cach'] },
+  'Quả Tú':     { yNghia: 'Dễ có lúc xa cách — có thể có giai đoạn vợ chồng ở xa nhau; nên giữ liên lạc và chia sẻ đều đặn.', loai: 'yeu', trongSo: 1.0, tags: ['hon_nhan_xa_cach'] },
   'Tang Môn':   { yNghia: 'Hôn nhân có thể gặp chuyện buồn — cần kiên nhẫn và thấu hiểu nhau.', loai: 'yeu', trongSo: 0.9, tags: ['hon_nhan_buon'] },
-  'Bạch Hổ':    { yNghia: 'Đề phòng tai nạn cho bạn đời — cần quan tâm sức khỏe của nhau hơn.', loai: 'yeu', trongSo: 1.0, tags: ['suc_khoe_phoi_ngau'] },
+  'Bạch Hổ':    { yNghia: 'Hai bạn nên quan tâm sức khỏe của nhau hơn — giữ nếp sinh hoạt điều độ, khám định kỳ.', loai: 'yeu', trongSo: 1.0, tags: ['suc_khoe_phoi_ngau'] },
   'Thiên Hình': { yNghia: 'Bạn đời của bạn nghiêm khắc, kỷ luật — có thể làm ngành luật, y, quân đội.', loai: 'trung', trongSo: 0.8, tags: ['phoi_ngau_nghiem_khac'] }
 };
 
@@ -357,7 +357,7 @@ var TUVI_VAN_PHUTHE = {
   // NHÓM A — Uy quyền (Tử Vi, Thái Dương, Thiên Tướng)
   'A': {
     tomTat: 'Hôn nhân của bạn thuộc nhóm "uy quyền" — bạn đời thuộc mẫu người có uy, tự trọng cao, sống nguyên tắc. Hôn nhân có xu hướng ổn định nếu cả hai biết tôn trọng nhau.',
-    nguoiBanDoi: 'Bạn đời của bạn có khí chất của người đứng đầu — tự trọng cao, chững chạc, thích được tôn trọng. Họ thường giữ vai trò chủ động trong gia đình, có trách nhiệm với vợ/chồng và con cái. Về ngoại hình, người này thường toát lên vẻ đàng hoàng, đường bệ.',
+    nguoiBanDoi: 'Bạn đời của bạn có khí chất của người đứng đầu — tự trọng cao, chững chạc, thích được tôn trọng. Họ thường giữ vai trò chủ động trong gia đình, có trách nhiệm với vợ/chồng và con cái. Theo cách luận truyền thống, người này thường toát lên vẻ đàng hoàng, đường bệ — bạn hãy đối chiếu với thực tế.',
     kieuHonNhan: 'Hôn nhân của bạn có xu hướng ổn định — hai người dễ thống nhất về mục tiêu gia đình. Tuy nhiên, bạn đời có thể hơi gia trưởng — bạn cần học cách nhường nhịn và nói lên quan điểm của mình.',
     dieuLuuY: 'Sự tự trọng cao của bạn đời đôi khi khiến họ khó nhận sai hoặc khó nói lời xin lỗi. Bạn cần khéo léo để không biến những chuyện nhỏ thành xung đột lớn.',
     loiKhuyen: [
@@ -370,7 +370,7 @@ var TUVI_VAN_PHUTHE = {
   // NHÓM B — Trí tuệ (Thiên Cơ, Cự Môn, Thái Âm)
   'B': {
     tomTat: 'Hôn nhân của bạn thuộc nhóm "trí tuệ" — bạn đời là người thông minh, nhạy cảm, hôn nhân thường có nhiều trao đổi sâu sắc nhưng cũng cần lắng nghe nhiều.',
-    nguoiBanDoi: 'Bạn đời của bạn có đầu óc nhạy bén, thích tìm hiểu và có trực giác tốt. Họ quan sát tinh tế, biết cách an ủi người khác bằng lời nói. Về ngoại hình, người này thường thanh tú, ánh mắt sáng, dáng vẻ tri thức.',
+    nguoiBanDoi: 'Bạn đời của bạn có đầu óc nhạy bén, thích tìm hiểu và có trực giác tốt. Họ quan sát tinh tế, biết cách an ủi người khác bằng lời nói. Theo cách luận truyền thống, người này thường có dáng vẻ thanh tú, tri thức — bạn hãy đối chiếu với thực tế.',
     kieuHonNhan: 'Hôn nhân của bạn thiên về trò chuyện và chia sẻ suy nghĩ hơn là những cử chỉ lãng mạn. Hai người dễ hiểu nhau khi trò chuyện thẳng thắn, nhưng đôi khi bạn đời nói quá nhiều hoặc suy nghĩ quá nhiều khiến bạn thấy mệt. Hôn nhân thường bền nếu bạn biết cách trò chuyện cùng nhau.',
     dieuLuuY: 'Bạn đời của bạn dễ bị ảnh hưởng bởi cảm xúc và lời nói của người khác. Cần tránh để người ngoài can thiệp vào chuyện gia đình. Đôi khi bạn đời ăn nói sắc sảo quá mức khiến bạn hoặc người xung quanh tổn thương.',
     loiKhuyen: [
@@ -383,7 +383,7 @@ var TUVI_VAN_PHUTHE = {
   // NHÓM C — Thực tế (Vũ Khúc, Thiên Phủ, Thiên Đồng, Liêm Trinh)
   'C': {
     tomTat: 'Hôn nhân của bạn thuộc nhóm "thực tế" — bạn đời thuộc mẫu người đáng tin, giỏi lo liệu. Hôn nhân có xu hướng vững vàng về vật chất và tình cảm.',
-    nguoiBanDoi: 'Bạn đời của bạn là người thực tế, chín chắn, không thích viển vông. Họ coi trọng sự ổn định, biết quản lý tiền bạc, và làm gì cũng có kế hoạch. Về ngoại hình, người này thường đầy đặn, điềm tĩnh, hoặc có vẻ nghiêm túc. Họ có thể hơi ít nói về chuyện tình cảm, nhưng thể hiện tình yêu bằng hành động thiết thực.',
+    nguoiBanDoi: 'Bạn đời của bạn là người thực tế, chín chắn, không thích viển vông. Họ coi trọng sự ổn định, biết quản lý tiền bạc, và làm gì cũng có kế hoạch. Theo cách luận truyền thống, người này thường có vẻ điềm tĩnh, nghiêm túc. Họ có thể hơi ít nói về chuyện tình cảm, nhưng thể hiện tình yêu bằng hành động thiết thực.',
     kieuHonNhan: 'Hôn nhân của bạn vững vàng và ổn định — hai người cùng nhau xây dựng tài chính, con cái, nhà cửa. Ít sóng gió lớn, nhưng cũng ít những bất ngờ lãng mạn. Đây là kiểu hôn nhân "cơm sôi, canh ngọt" — bền bỉ và ấm áp nhưng không ồn ào.',
     dieuLuuY: 'Bạn đời của bạn có xu hướng coi trọng vật chất, đôi khi đánh giá mọi việc bằng giá trị hữu hình. Bạn cần chú ý để hôn nhân không trở thành sự "hợp tác kinh doanh" mà thiếu đi tình cảm lãng mạn. Ngoài ra, nếu bạn đời có Liêm Trinh thì có thể hơi cứng nhắc, khó tính.',
     loiKhuyen: [
@@ -398,9 +398,9 @@ var TUVI_VAN_PHUTHE = {
   // NHÓM D — Quyết liệt (Thất Sát, Phá Quân)
   'D': {
     tomTat: 'Hôn nhân của bạn thuộc nhóm "quyết liệt" — bạn đời thuộc mẫu người cá tính mạnh. Hôn nhân có xu hướng nhiều biến động nhưng cũng đầy đam mê.',
-    nguoiBanDoi: 'Bạn đời của bạn là người mạnh mẽ, quyết đoán, không chịu khuất phục. Họ sống mãnh liệt, yêu ghét rõ ràng, và sẵn sàng đương đầu với khó khăn. Về ngoại hình, người này thường rắn chắc, ánh mắt sắc, có uy tự nhiên. Họ có thể hơi nóng tính, nhưng cũng rất trung thành với người họ đã chọn.',
+    nguoiBanDoi: 'Bạn đời của bạn là người mạnh mẽ, quyết đoán, không chịu khuất phục. Họ sống mãnh liệt, yêu ghét rõ ràng, và sẵn sàng đương đầu với khó khăn. Theo cách luận truyền thống, người này thường toát lên vẻ mạnh mẽ, có uy tự nhiên. Họ có thể hơi nóng tính, nhưng cũng rất trung thành với người họ đã chọn.',
     kieuHonNhan: 'Hôn nhân của bạn có nhiều sóng gió nhưng cũng đầy cảm xúc — không nhàm chán, không tẻ nhạt. Hai người dễ cãi vã to tiếng nhưng cũng nhanh làm lành. Nếu biết kiềm chế cái tôi và học cách nhường nhịn, đây có thể là kiểu hôn nhân bền bỉ nhất — vì hai người đã cùng nhau vượt qua nhiều thử thách.',
-    dieuLuuY: 'Cả hai đều có xu hướng nóng nảy và muốn mình đúng — dễ dẫn đến những cuộc cãi vã không đáng có. Bạn đời có thể có giai đoạn thay đổi lớn trong sự nghiệp hoặc cuộc sống, khiến hôn nhân bị ảnh hưởng. Cần đặc biệt chú ý sức khỏe và tai nạn của bạn đời.',
+    dieuLuuY: 'Cả hai đều có xu hướng nóng nảy và muốn mình đúng — dễ dẫn đến những cuộc cãi vã không đáng có. Bạn đời có thể có giai đoạn thay đổi lớn trong sự nghiệp hoặc cuộc sống, khiến hôn nhân bị ảnh hưởng. Hai bạn nên nhắc nhau giữ nếp sinh hoạt điều độ, nghỉ ngơi đủ.',
     loiKhuyen: [
       'Học cách hạ giọng trước khi nói — chỉ cần 1 câu nhẹ nhàng có thể tránh cả cuộc cãi vã.',
       'Đừng bao giờ dùng lời nói để làm tổn thương nhau — dù tức giận đến đâu.',
@@ -411,7 +411,7 @@ var TUVI_VAN_PHUTHE = {
   // NHÓM E — Đa tài (Tham Lang, Thiên Lương)
   'E': {
     tomTat: 'Hôn nhân của bạn thuộc nhóm "đa tài" — bạn đời thuộc mẫu người phong phú, thú vị. Hôn nhân có nhiều trải nghiệm nhưng cần sự chung thủy từ cả hai phía.',
-    nguoiBanDoi: 'Bạn đời của bạn là người đa tài, có sức hút tự nhiên, dễ được người khác yêu mến. Họ ham học hỏi, thích trải nghiệm và có nhiều mối quan tâm khác nhau. Về ngoại hình, người này thường có sức hút — ánh mắt linh hoạt, nụ cười duyên, hoặc có phong cách riêng. Họ có thể vừa dịu dàng, vừa khó đoán.',
+    nguoiBanDoi: 'Bạn đời của bạn là người đa tài, có sức hút tự nhiên, dễ được người khác yêu mến. Họ ham học hỏi, thích trải nghiệm và có nhiều mối quan tâm khác nhau. Theo cách luận truyền thống, người này thường có sức hút hoặc phong cách riêng. Họ có thể vừa dịu dàng, vừa khó đoán.',
     kieuHonNhan: 'Hôn nhân của bạn phong phú và thú vị — không bao giờ nhàm chán vì bạn đời luôn có điều mới để chia sẻ. Hai người dễ dàng hòa hợp về mặt cảm xúc và trải nghiệm. Tuy nhiên, vì bạn đời có sức hút và nhiều mối quan hệ, hôn nhân cần sự tin tưởng và chung thủy cao từ cả hai phía.',
     dieuLuuY: 'Bạn đời của bạn dễ bị phân tán vì thích nhiều thứ cùng lúc — đôi khi không dành đủ thời gian cho gia đình. Cần chú ý chuyện "đào hoa" — không phải vì họ không chung thủy, mà vì có nhiều người theo đuổi. Ngoài ra, nếu bạn đời là Thiên Lương, họ có thể có xu hướng che chở người ngoài nhiều hơn vợ/chồng.',
     loiKhuyen: [
@@ -424,7 +424,7 @@ var TUVI_VAN_PHUTHE = {
   // NHÓM F — Vô chính diệu
   'F': {
     tomTat: 'Hôn nhân của bạn thuộc nhóm đặc biệt — cung Phu Thê không có chính tinh. Hôn nhân phụ thuộc nhiều vào hoàn cảnh và chính bản thân bạn.',
-    nguoiBanDoi: 'Bạn đời của bạn là người khó đoán — họ có thể thay đổi tùy hoàn cảnh, không có một bản chất cố định nào. Điều này vừa thú vị vừa thách thức: bạn sẽ liên tục khám phá con người thật của họ. Về ngoại hình, người này thường không có nét đặc trưng nào nổi bật, nhưng toát lên vẻ dễ chịu, dễ gần.',
+    nguoiBanDoi: 'Bạn đời của bạn là người khó đoán — họ có thể thay đổi tùy hoàn cảnh, không có một bản chất cố định nào. Điều này vừa thú vị vừa thách thức: bạn sẽ liên tục khám phá con người thật của họ. Theo cách luận truyền thống, người này thường toát lên vẻ dễ chịu, dễ gần.',
     kieuHonNhan: 'Hôn nhân của bạn phụ thuộc rất nhiều vào hoàn cảnh bên ngoài — nếu môi trường tốt, hôn nhân sẽ tốt; nếu có biến động, hôn nhân dễ bị ảnh hưởng theo. Đây không phải là kiểu hôn nhân "định mệnh cố định" mà là kiểu cần hai người cùng nhau vun đắp. Nếu bạn kiên định, bạn đời cũng sẽ kiên định.',
     dieuLuuY: 'Vì cung Phu Thê VCD, bạn dễ bị cuốn theo cảm xúc của bạn đời — khi họ vui bạn vui, khi họ buồn bạn buồn. Cần giữ được "cái tôi" của mình trong hôn nhân. Ngoài ra, bạn cần đặc biệt chú ý việc chọn bạn đời — vì không có chính tinh định hướng, bạn cần dựa vào quan sát thực tế nhiều hơn.',
     loiKhuyen: [
@@ -474,7 +474,7 @@ var TUVI_FACT_TAIBACH_CHINHTINH = {
     trongSo: 1.6, tags: ['tai_chinh_kho_loc', 'tich_luy_dao_dao']
   },
   'Thái Âm': {
-    yNghia: 'Bạn giàu nhờ tích góp và các tài sản cố định (nhà đất, vàng bạc). Tài chính thường đến từ nguồn thu nhập phụ ổn định, hoặc từ tài sản thừa hưởng.',
+    yNghia: 'Bạn giàu nhờ tích góp và các tài sản cố định (nhà đất, vàng bạc). Tài chính thường đến từ nguồn thu nhập phụ ổn định, hoặc có thể từ tài sản gia đình.',
     trongSo: 1.5, tags: ['tai_chinh_dien_san', 'tich_gop']
   },
   'Tham Lang': {
@@ -527,8 +527,8 @@ var TUVI_FACT_TAIBACH_PHUTINH = {
   'Hỏa Tinh':   { yNghia: 'Có Hỏa Tinh — tài chính có thể bùng nổ bất ngờ theo cả hai hướng: thắng lớn hoặc thua đậm. Cần thận trọng với quyết định nhanh.', loai: 'yeu', trongSo: 1.1, tags: ['tai_chinh_bung_no'] },
   'Linh Tinh':  { yNghia: 'Có Linh Tinh — tài chính âm ỉ, khó khăn kéo dài. Cần kiên nhẫn và không nên đầu tư dài hạn khi chưa chắc chắn.', loai: 'yeu', trongSo: 1.1, tags: ['tai_chinh_kho_khan'] },
   'Địa Không':  { yNghia: 'Có Địa Không — tiền đến rồi đi, tránh đầu cơ, tránh cho vay. Nên tập trung vào thu nhập ổn định thay vì làm giàu nhanh.', loai: 'yeu', trongSo: 1.2, tags: ['tien_den_roi_di', 'tranh_dau_co'] },
-  'Địa Kiếp':   { yNghia: 'Có Địa Kiếp — dễ mất tiền đột ngột, cẩn thận cho vay hoặc đầu tư rủi ro cao. Cần có quỹ dự phòng.', loai: 'yeu', trongSo: 1.3, tags: ['mat_tien_dot_ngot'] },
-  'Hóa Kỵ':     { yNghia: 'Có Hóa Kỵ — tiền bạc dây dưa, dễ nợ nần hoặc bị hiểu lầm về tài chính. Cẩn trọng giấy tờ, hợp đồng liên quan đến tiền.', loai: 'yeu', trongSo: 1.5, tags: ['no_nan', 'giay_to_tien'] }
+  'Địa Kiếp':   { yNghia: 'Có Địa Kiếp — dễ có khoản chi bất ngờ, cẩn thận cho vay hoặc đầu tư rủi ro cao. Cần có quỹ dự phòng.', loai: 'yeu', trongSo: 1.3, tags: ['mat_tien_dot_ngot'] },
+  'Hóa Kỵ':     { yNghia: 'Có Hóa Kỵ — tiền bạc dễ dây dưa hoặc bị hiểu lầm về tài chính; nên quản lý chặt, tích lũy đều. Cẩn trọng giấy tờ, hợp đồng liên quan đến tiền.', loai: 'yeu', trongSo: 1.5, tags: ['no_nan', 'giay_to_tien'] }
 };
 
 /**
@@ -576,7 +576,7 @@ var TUVI_VAN_TAIBACH = {
     loiKhuyen: [
       'Chủ động tìm kiếm cơ hội thay vì chờ đợi — uy tín của bạn xứng đáng được đền đáp.',
       'Học cách nói "không" với những lời vay mượn không chính đáng — bảo vệ tài chính của mình trước.',
-      'Đầu tư sớm cho tương lai (bảo hiểm, quỹ hưu trí) — vì bạn sống thọ và cần chuẩn bị dài hạn.'
+      'Đầu tư sớm cho tương lai (bảo hiểm, quỹ hưu trí) — vì bạn hợp với lối tích lũy đường dài.'
     ]
   }
 
@@ -671,7 +671,7 @@ var TUVI_FACT_QUANLOC_CHINHTINH = {
     trongSo: 1.5, tags: ['nghe_y_te_giao_duc', 'uy_tin_tich_luy', 'phat_muon']
   },
   'Thất Sát': {
-    yNghia: 'Bạn phù hợp với quân sự, kỹ thuật nặng, khởi nghiệp, hoặc các lĩnh vực cạnh tranh cao. Sự nghiệp thường trải qua nhiều thử thách và biến động — nhưng nếu kiên trì thì đạt được thành tựu lớn. Cần cẩn trọng tránh va chạm và tai nạn nghề nghiệp.',
+    yNghia: 'Bạn phù hợp với quân sự, kỹ thuật nặng, khởi nghiệp, hoặc các lĩnh vực cạnh tranh cao. Sự nghiệp thường trải qua nhiều thử thách và biến động — nhưng nếu kiên trì thì đạt được thành tựu lớn. Cần tránh va chạm và giữ an toàn khi làm việc.',
     trongSo: 1.5, tags: ['nghe_mao_hiem', 'khoi_nghiep', 'trai_qua_thu_thach']
   },
   'Phá Quân': {
@@ -703,15 +703,15 @@ var TUVI_FACT_QUANLOC_PHUTINH = {
 
   // Hung tinh — khó khăn trong sự nghiệp
   'Hóa Kỵ':     { yNghia: 'Có Hóa Kỵ — công việc trắc trở, dễ bị đố kỵ hoặc gặp thị phi. Cần kiên nhẫn và cẩn trọng giấy tờ.', loai: 'yeu', trongSo: 1.6, tags: ['cong_viec_trac_tro', 'thi_phi'] },
-  'Kình Dương': { yNghia: 'Có Kình Dương — công việc cạnh tranh gay gắt, hoặc hợp với võ nghiệp, kỹ thuật. Cẩn trọng tai nạn nghề nghiệp.', loai: 'yeu', trongSo: 1.3, tags: ['canh_tranh', 'vo_nghiep'] },
+  'Kình Dương': { yNghia: 'Có Kình Dương — công việc cạnh tranh gay gắt, hoặc hợp với võ nghiệp, kỹ thuật. Nên giữ an toàn khi làm việc.', loai: 'yeu', trongSo: 1.3, tags: ['canh_tranh', 'vo_nghiep'] },
   'Đà La':      { yNghia: 'Có Đà La — công việc trì trệ, dễ bị chậm trễ trong thăng tiến. Cần kiên nhẫn và không nên nóng vội.', loai: 'yeu', trongSo: 1.2, tags: ['tri_tre', 'cham_thang_tien'] },
   'Hỏa Tinh':   { yNghia: 'Có Hỏa Tinh — công việc có thể bùng nổ bất ngờ theo cả hai hướng: cơ hội lớn hoặc biến cố. Cần thận trọng với quyết định nhanh.', loai: 'yeu', trongSo: 1.2, tags: ['bung_no'] },
   'Linh Tinh':  { yNghia: 'Có Linh Tinh — công việc âm ỉ khó khăn, cần kiên nhẫn vượt qua. Tránh đầu tư dài hạn khi chưa chắc chắn.', loai: 'yeu', trongSo: 1.1, tags: ['kho_khan_am_i'] },
   'Địa Không':  { yNghia: 'Có Địa Không — sự nghiệp có thể thay đổi bất ngờ, không theo kế hoạch. Đôi khi hợp với nghề tự do, sáng tạo.', loai: 'yeu', trongSo: 1.2, tags: ['thay_doi_bat_ngo'] },
-  'Địa Kiếp':   { yNghia: 'Có Địa Kiếp — dễ gặp biến cố trong sự nghiệp, có thể mất việc hoặc chuyển hướng đột ngột. Cần quỹ dự phòng.', loai: 'yeu', trongSo: 1.3, tags: ['bien_co_su_nghiep'] },
+  'Địa Kiếp':   { yNghia: 'Có Địa Kiếp — sự nghiệp có thể có biến động, chuyển hướng đột ngột. Cần quỹ dự phòng.', loai: 'yeu', trongSo: 1.3, tags: ['bien_co_su_nghiep'] },
   'Thiên Hình': { yNghia: 'Có Thiên Hình — công việc nghiêm khắc, kỷ luật. Hợp với ngành luật, y, quân đội, hoặc công việc có tính pháp lý cao.', loai: 'trung', trongSo: 1.0, tags: ['ky_luat_cao', 'nghe_phap_ly'] },
-  'Tang Môn':   { yNghia: 'Có Tang Môn — công việc có thể gặp chuyện buồn, hoặc liên quan đến tang sự, hiếu hỷ.', loai: 'yeu', trongSo: 0.9, tags: ['buon_cong_viec'] },
-  'Bạch Hổ':    { yNghia: 'Có Bạch Hổ — cẩn trọng tai nạn nghề nghiệp, đặc biệt nếu làm việc trong môi trường nguy hiểm.', loai: 'yeu', trongSo: 1.0, tags: ['tai_nan_nghe'] }
+  'Tang Môn':   { yNghia: 'Có Tang Môn — công việc có lúc gặp chuyện buồn phiền — nên giữ tinh thần vững vàng, chia sẻ với người tin cậy.', loai: 'yeu', trongSo: 0.9, tags: ['buon_cong_viec'] },
+  'Bạch Hổ':    { yNghia: 'Có Bạch Hổ — nên tuân thủ an toàn lao động, nhất là khi làm việc trong môi trường nhiều rủi ro.', loai: 'yeu', trongSo: 1.0, tags: ['tai_nan_nghe'] }
 };
 
 /**
@@ -815,19 +815,19 @@ var TUVI_VAN_QUANLOC = {
 
 var TUVI_FACT_TUTUC_CHINHTINH = {
   'Tử Vi':      { yNghia: 'Con của bạn thuộc mẫu người có khí chất, tự tin từ nhỏ. Con thường có tố chất nổi bật trong tập thể và có xu hướng vươn tới vị trí dẫn dắt.', trongSo: 1.5, tags: ['con_co_khi_chat', 'tu_tin', 'co_to_chat_lanh_dao'] },
-  'Thiên Cơ':   { yNghia: 'Con của bạn thuộc mẫu người thông minh, lanh lợi, hiếu động và thích khám phá. Nếu sinh con muộn (sau 30 tuổi), con cái thường ổn định và dễ nuôi hơn.', trongSo: 1.4, tags: ['con_thong_minh', 'hieu_dong', 'sinh_muon_tot_hon'] },
+  'Thiên Cơ':   { yNghia: 'Con của bạn thuộc mẫu người thông minh, lanh lợi, hiếu động và thích khám phá. Theo cổ học, khi cha mẹ đã vững vàng thì việc nuôi dạy con thường thuận lợi hơn.', trongSo: 1.4, tags: ['con_thong_minh', 'hieu_dong', 'sinh_muon_tot_hon'] },
   'Thái Dương': { yNghia: 'Con của bạn thuộc mẫu người nhiệt tình, hướng ngoại, có tố chất lãnh đạo. Con trai thường bộc lộ rõ nét này hơn con gái.', trongSo: 1.5, tags: ['con_nhiet_tinh', 'huong_ngoai', 'con_trai_noi_bat'] },
   'Vũ Khúc':    { yNghia: 'Con của bạn thuộc mẫu người cứng rắn, thực tế, có xu hướng tự lập sớm. Con không thích dựa dẫm cha mẹ và thường có chí hướng riêng từ nhỏ.', trongSo: 1.4, tags: ['con_cung_ran', 'thuc_te', 'tu_lap_som'] },
   'Thiên Đồng': { yNghia: 'Con của bạn thuộc mẫu người hiền hòa, vui vẻ, dễ gần, thích cuộc sống nhẹ nhàng. Con thường hòa đồng với mọi người và biết cách tận hưởng cuộc sống.', trongSo: 1.4, tags: ['con_hien_hoa', 'vui_ve', 'de_gan'] },
   'Liêm Trinh': { yNghia: 'Con của bạn thuộc mẫu người có nguyên tắc, cá tính mạnh. Lúc nhỏ con có thể khó dạy vì bướng bỉnh — cha mẹ cần nhiều kiên nhẫn. Khi lớn, con có xu hướng sống có kỷ luật và rõ ràng.', trongSo: 1.3, tags: ['con_nguyen_tac', 'ca_tinh', 'can_kien_nhan'] },
   'Thiên Phủ':  { yNghia: 'Con của bạn thuộc mẫu người hiếu thảo, biết lo toan. Con thường sống ổn định, biết giữ gìn và có xu hướng quan tâm đến gia đình nhiều hơn bạn bè cùng trang lứa.', trongSo: 1.5, tags: ['con_hieu_thao', 'biet_lo_toan', 'quan_tam_gia_dinh'] },
   'Thái Âm':    { yNghia: 'Con của bạn thuộc mẫu người hiền lành, tinh tế, giàu cảm xúc. Con gái thường bộc lộ rõ nét này hơn con trai. Con cái có xu hướng gắn bó với mẹ nhiều hơn.', trongSo: 1.4, tags: ['con_hien_lanh', 'tinh_te', 'gan_bo_voi_me'] },
-  'Tham Lang':  { yNghia: 'Con của bạn thuộc mẫu người đa tài, giao tiếp rộng. Lúc nhỏ con có thể khó hòa hợp với anh chị em trong nhà. Nếu sinh con muộn, con cái thường ổn định và dễ dạy hơn.', trongSo: 1.4, tags: ['con_da_tai', 'giao_te_rong', 'sinh_muon_tot_hon'] },
+  'Tham Lang':  { yNghia: 'Con của bạn thuộc mẫu người đa tài, giao tiếp rộng. Lúc nhỏ con có thể cần cha mẹ giúp học cách hòa hợp với anh chị em. Khi cha mẹ đã vững vàng, việc dạy con thường thuận hơn.', trongSo: 1.4, tags: ['con_da_tai', 'giao_te_rong', 'sinh_muon_tot_hon'] },
   'Cự Môn':     { yNghia: 'Con của bạn thuộc mẫu người khẩu tài sắc sảo, thích lý luận. Con có thể hay cãi và đặt câu hỏi ngược lại cha mẹ — cần dạy bằng lý lẽ thay vì áp đặt.', trongSo: 1.3, tags: ['con_khau_tai', 'hay_cai', 'day_bang_ly_le'] },
   'Thiên Tướng':{ yNghia: 'Con của bạn thuộc mẫu người ngoan ngoãn, nghĩa khí, sống ngay thẳng. Con có xu hướng bênh vực kẻ yếu và coi trọng công bằng từ nhỏ.', trongSo: 1.4, tags: ['con_ngoan', 'nghia_khi', 'trong_cong_bang'] },
   'Thiên Lương':{ yNghia: 'Con của bạn thuộc mẫu người hiếu thảo, sống đạo đức, có xu hướng quan tâm cha mẹ khi về già. Con có thiên hướng về tôn giáo, triết lý, hoặc những lĩnh vực mang tính nhân văn.', trongSo: 1.4, tags: ['con_hieu_thao', 'song_dao_duc', 'thien_huong_tam_linh'] },
-  'Thất Sát':   { yNghia: 'Con của bạn thuộc mẫu người có cá tính mạnh, độc lập sớm, không thích gò bó. Việc sinh nở có thể gặp chút trở ngại — nên chuẩn bị tốt về sức khỏe sinh sản. Cha mẹ cần tôn trọng sự tự do của con.', trongSo: 1.3, tags: ['con_ca_tinh', 'doc_lap_som', 'can_chuan_bi_sinh_no'] },
-  'Phá Quân':   { yNghia: 'Con của bạn thuộc mẫu người độc lập, có xu hướng thay đổi. Con đầu lòng có thể khó nuôi khi nhỏ. Khi lớn, con thường thay đổi nghề nghiệp hoặc chỗ ở nhiều lần.', trongSo: 1.3, tags: ['con_doc_lap', 'hay_thay_doi', 'con_dau_kho_nuoi'] }
+  'Thất Sát':   { yNghia: 'Con của bạn thuộc mẫu người có cá tính mạnh, độc lập sớm, không thích gò bó. Con cái là chuyện cần thời gian và sự vun đắp — hai vợ chồng nên chủ động chăm sóc sức khỏe. Cha mẹ cần tôn trọng sự tự do của con.', trongSo: 1.3, tags: ['con_ca_tinh', 'doc_lap_som', 'can_chuan_bi_sinh_no'] },
+  'Phá Quân':   { yNghia: 'Con của bạn thuộc mẫu người độc lập, có xu hướng thay đổi. Lúc nhỏ con có thể cần cha mẹ chăm chút nhiều hơn. Khi lớn, con thường thay đổi nghề nghiệp hoặc chỗ ở nhiều lần.', trongSo: 1.3, tags: ['con_doc_lap', 'hay_thay_doi', 'con_dau_kho_nuoi'] }
 };
 
 var TUVI_FACT_TUTUC_PHUTINH = {
@@ -836,7 +836,7 @@ var TUVI_FACT_TUTUC_PHUTINH = {
   'Hữu Bật':    { yNghia: 'Con cái được nhiều người yêu mến, có anh chị em hỗ trợ lẫn nhau.', loai: 'manh', trongSo: 1.1, tags: ['con_duoc_yeu'] },
   'Thiên Khôi': { yNghia: 'Con cái có quý nhân nâng đỡ, dễ gặp cơ hội tốt trong học tập và sự nghiệp.', loai: 'manh', trongSo: 1.2, tags: ['con_quy_nhan'] },
   'Thiên Việt': { yNghia: 'Con cái có cơ hội thăng tiến, được người bên ngoài giúp.', loai: 'manh', trongSo: 1.2, tags: ['con_co_hoi'] },
-  'Thai':       { yNghia: 'Con cái sớm — dễ có thai, dễ sinh. Đây là dấu hiệu tốt cho duyên con.', loai: 'manh', trongSo: 1.3, tags: ['con_som', 'de_sinh'] },
+  'Thai':       { yNghia: 'Theo cổ học, đây là dấu hiệu thuận cho duyên con — tin vui có thể đến sớm.', loai: 'manh', trongSo: 1.3, tags: ['con_som', 'de_sinh'] },
   'Hồng Loan':  { yNghia: 'Con cái xinh xắn, dễ thương, được nhiều người yêu mến.', loai: 'manh', trongSo: 1.0, tags: ['con_dep'] },
   'Thiên Hỷ':   { yNghia: 'Có tin vui con cái sớm — con cái đem lại niềm vui cho gia đình.', loai: 'manh', trongSo: 1.1, tags: ['con_tin_vui'] },
   'Long Trì':   { yNghia: 'Con cái có khí chất thanh nhã, thông minh, dễ học.', loai: 'manh', trongSo: 1.0, tags: ['con_thong_minh'] },
@@ -849,51 +849,51 @@ var TUVI_FACT_TUTUC_PHUTINH = {
 
   // Hung tinh — khó khăn về con
   'Kình Dương': { yNghia: 'Con cái có cá tính mạnh, dễ va chạm với cha mẹ khi lớn. Cần dạy con bằng sự tôn trọng thay vì áp đặt.', loai: 'yeu', trongSo: 1.3, tags: ['con_ca_tinh'] },
-  'Đà La':      { yNghia: 'Duyên con đến chậm — có thể khó có con hoặc sinh con muộn. Cần kiên nhẫn.', loai: 'yeu', trongSo: 1.2, tags: ['con_muon'] },
+  'Đà La':      { yNghia: 'Duyên con có thể đến chậm — con cái là chuyện cần thời gian và sự vun đắp, cần kiên nhẫn.', loai: 'yeu', trongSo: 1.2, tags: ['con_muon'] },
   'Hỏa Tinh':   { yNghia: 'Con cái có thể nóng tính, hiếu động — cần dạy con kiểm soát cảm xúc.', loai: 'yeu', trongSo: 1.1, tags: ['con_nong_tinh'] },
-  'Linh Tinh':  { yNghia: 'Con cái có giai đoạn khó nuôi, dễ ốm khi nhỏ. Cần chú ý sức khỏe con.', loai: 'yeu', trongSo: 1.1, tags: ['con_kho_nuoi'] },
-  'Địa Không':  { yNghia: 'Duyên con mỏng — có thể hiếm muộn hoặc có con muộn. Nên chủ động chăm sóc sức khỏe sinh sản.', loai: 'yeu', trongSo: 1.3, tags: ['hiem_muon'] },
-  'Địa Kiếp':   { yNghia: 'Sinh nở có thể trắc trở — cần chú ý sức khỏe khi mang thai và sinh.', loai: 'yeu', trongSo: 1.3, tags: ['sinh_no_trac_tro'] },
-  'Hóa Kỵ':     { yNghia: 'Cha mẹ lo lắng nhiều về con — có thể con ốm đau hoặc gặp khó khăn trong học tập. Cần kiên nhẫn đồng hành.', loai: 'yeu', trongSo: 1.5, tags: ['lo_lang_ve_con'] },
+  'Linh Tinh':  { yNghia: 'Lúc nhỏ con có thể cần chăm chút nhiều hơn — cha mẹ nên tạo cho con nếp sinh hoạt điều độ, đưa con khám định kỳ.', loai: 'yeu', trongSo: 1.1, tags: ['con_kho_nuoi'] },
+  'Địa Không':  { yNghia: 'Duyên con có thể đến muộn hơn mong đợi — con cái là chuyện cần thời gian và sự vun đắp; hai vợ chồng nên chủ động chăm sóc sức khỏe.', loai: 'yeu', trongSo: 1.3, tags: ['hiem_muon'] },
+  'Địa Kiếp':   { yNghia: 'Hai vợ chồng nên chủ động chăm sóc sức khỏe, chuẩn bị chu đáo khi đón con.', loai: 'yeu', trongSo: 1.3, tags: ['sinh_no_trac_tro'] },
+  'Hóa Kỵ':     { yNghia: 'Cha mẹ có xu hướng lo nghĩ nhiều về con, nhất là chuyện học tập — cần kiên nhẫn đồng hành.', loai: 'yeu', trongSo: 1.5, tags: ['lo_lang_ve_con'] },
   'Cô Thần':    { yNghia: 'Con cái có thể sống xa cha mẹ hoặc ít gần gũi. Cần chủ động kết nối tình cảm.', loai: 'yeu', trongSo: 1.0, tags: ['con_xa_cach'] },
-  'Quả Tú':     { yNghia: 'Duyên con mỏng — có thể ít con hoặc con cái ở xa. Cần vun đắp tình cảm gia đình từ sớm.', loai: 'yeu', trongSo: 1.0, tags: ['it_con'] },
+  'Quả Tú':     { yNghia: 'Con cái có thể sống xa cha mẹ — cần vun đắp tình cảm gia đình từ sớm.', loai: 'yeu', trongSo: 1.0, tags: ['it_con'] },
   'Thiên Hình': { yNghia: 'Con cái có thể cứng tính — cần dạy bằng kỷ luật mềm mỏng, tránh roi vọt.', loai: 'yeu', trongSo: 1.0, tags: ['con_cung_tinh'] },
-  'Thiên Riêu': { yNghia: 'Con cái đa tình — cần uốn nắn sớm để tránh sa đà chuyện tình cảm.', loai: 'yeu', trongSo: 0.9, tags: ['con_da_tinh'] }
+  'Thiên Riêu': { yNghia: 'Con cái có sức hút — nên dạy con sống rõ ràng, chân thành trong tình cảm.', loai: 'yeu', trongSo: 0.9, tags: ['con_da_tinh'] }
 };
 
 /* KHO VĂN CHO CUNG TỬ TỨC — 5 nhóm A-E */
 var TUVI_VAN_TUTUC = {
   'A': { // Uy quyền: Tử Vi, Thiên Phủ, Thiên Tướng, Thái Dương
     tomTat: 'Con cái của bạn thuộc nhóm "quý hiển" — con có khí chất tự tin, có tố chất nổi bật. Con cái có xu hướng thành đạt nếu được nuôi dạy đúng cách.',
-    duyenCon: 'Duyên con của bạn khá tốt — có thể có con sớm và thuận lợi. Con đầu lòng thường dễ nuôi, ít ốm đau.',
+    duyenCon: 'Duyên con của bạn có xu hướng thuận — con cái thường dễ nuôi dạy.',
     conCai: 'Con của bạn thường có khí chất tự tin từ nhỏ, có tố chất lãnh đạo hoặc nổi bật trong tập thể. Con học hành tử tế và có xu hướng thành đạt trong xã hội. Về già, bạn được nhờ con nhiều.',
     nuoiDay: 'Bạn nên dạy con bằng cách nêu gương và tôn trọng — không nên áp đặt. Con cần được khuyến khích phát huy cá tính nhưng cũng cần học cách khiêm tốn.',
     loiKhuyen: ['Dành thời gian chất lượng cho con mỗi ngày — 30 phút trò chuyện thật sự tốt hơn 3 giờ ngồi cạnh nhưng không tương tác.', 'Dạy con bằng cách làm gương — con học từ hành động của bạn nhiều hơn từ lời nói.', 'Khuyến khích con theo đuổi đam mê, kể cả khi đam mê đó khác với kỳ vọng của bạn.']
   },
   'B': { // Trí tuệ: Thiên Cơ, Cự Môn, Thái Âm
     tomTat: 'Con cái của bạn thuộc nhóm "trí tuệ" — con có đầu óc nhạy bén, thích tìm tòi và đặt câu hỏi. Nếu được khuyến khích, con cái thường học hành tốt.',
-    duyenCon: 'Duyên con của bạn có thể đến muộn — nên sinh con sau 30 tuổi để thuận lợi hơn. Con đầu lòng có thể hơi khó nuôi khi nhỏ nhưng lớn lên khỏe mạnh.',
+    duyenCon: 'Duyên con của bạn có thể đến muộn — con cái là chuyện cần thời gian và sự vun đắp, không cần vội. Lúc nhỏ con có thể cần chăm chút nhiều hơn nhưng lớn lên thường cứng cáp.',
     conCai: 'Con của bạn nhạy bén, thích khám phá và đặt câu hỏi từ nhỏ. Con có xu hướng học giỏi, đặc biệt với các môn cần tư duy. Con cũng khá độc lập — có thể sớm rời nhà đi học xa.',
     nuoiDay: 'Bạn nên nuôi dạy con bằng cách khuyến khích tò mò và sáng tạo. Tránh gò bó con theo khuôn khổ cứng — con cần không gian tự do để phát triển. Đặc biệt, hãy trò chuyện với con như người lớn, không coi con là trẻ con.',
     loiKhuyen: ['Đọc sách cùng con mỗi tối — nuôi dưỡng tình yêu tri thức từ nhỏ.', 'Cho con tham gia nhiều hoạt động khám phá — không chỉ học kiến thức, mà còn học kỹ năng sống.', 'Khi con đặt câu hỏi khó, hãy công nhận sự thông minh của con — đừng trả lời qua loa.']
   },
   'C': { // Thực tế: Vũ Khúc, Thiên Đồng, Liêm Trinh
     tomTat: 'Con cái của bạn thuộc nhóm "thực tế - hiếu thuận" — con thuộc mẫu người chăm chỉ, biết lo toan. Khi lớn lên, con cái thường quan tâm đến gia đình.',
-    duyenCon: 'Duyên con của bạn ổn định — có thể có con ở độ tuổi trung bình (25-30). Con cái thường thuận lợi khi sinh, ít biến chứng.',
+    duyenCon: 'Duyên con của bạn có xu hướng ổn định — việc đón con thường thuận lợi khi hai vợ chồng chuẩn bị chu đáo.',
     conCai: 'Con của bạn thực tế, chăm chỉ và biết nghe lời từ nhỏ. Con quan tâm đến gia đình, thích giúp đỡ cha mẹ. Khi lớn lên, con thường chọn nghề ổn định và sống gần cha mẹ — đây là phúc lớn của bạn.',
     nuoiDay: 'Bạn nên nuôi dạy con bằng kỷ luật mềm mỏng và khuyến khích tính tự lập. Đừng bao bọc quá mức — con cần học cách tự xoay xở để trưởng thành. Đặc biệt, hãy để con tự chọn con đường của mình thay vì ép theo kỳ vọng của cha mẹ.',
     loiKhuyen: ['Giao cho con việc nhà từ nhỏ — dạy con tinh thần trách nhiệm thay vì chỉ chăm sóc.', 'Khen ngợi khi con làm việc tốt — nhưng đừng thưởng vật chất mọi lúc, hãy để con biết giá trị của nỗ lực.', 'Giữ kết nối với con khi con trưởng thành — đừng để khoảng cách làm mất đi sự gần gũi.']
   },
   'D': { // Cá tính: Thất Sát, Phá Quân
     tomTat: 'Con cái của bạn thuộc nhóm "cá tính mạnh" — con có xu hướng độc lập, có chí hướng riêng. Cha mẹ cần nhiều kiên nhẫn, nhưng nếu nuôi dạy đúng cách, con sẽ thành đạt.',
-    duyenCon: 'Duyên con của bạn có thể gặp trở ngại — con đầu lòng có thể khó nuôi hoặc sinh nở có chút trắc trở. Nên sinh con muộn (sau 30) để thuận lợi hơn.',
+    duyenCon: 'Duyên con của bạn cần thêm thời gian và sự vun đắp — hai vợ chồng nên chủ động chăm sóc sức khỏe, chuẩn bị chu đáo trước khi đón con.',
     conCai: 'Con của bạn có cá tính mạnh từ nhỏ — không thích bị sai khiến, có suy nghĩ riêng, có thể hơi bướng bỉnh. Khi lớn lên, con độc lập sớm, có thể đi xa lập nghiệp. Đây là mẫu con cái mà cha mẹ cần nhiều kiên nhẫn, nhưng nếu nuôi dạy đúng cách, con sẽ thành đạt.',
     nuoiDay: 'Bạn nên nuôi dạy con bằng cách tôn trọng sự độc lập của con. Đừng áp đặt, đừng roi vọt — con càng bị ép càng phản kháng. Hãy cho con quyền quyết định trong những việc phù hợp với tuổi, và hướng dẫn thay vì ra lệnh.',
     loiKhuyen: ['Cho con tham gia thể thao hoặc hoạt động mạnh — giải phóng năng lượng và học kỷ luật.', 'Trò chuyện với con như bạn bè khi con ở tuổi teen — đừng chỉ làm cha mẹ nghiêm khắc.', 'Chấp nhận rằng con sẽ có con đường riêng — đừng ép con theo khuôn mẫu của bạn.']
   },
   'E': { // Đa tài: Tham Lang, Thiên Lương
     tomTat: 'Con cái của bạn thuộc nhóm "đa tài - sáng tạo" — con có năng khiếu và thích khám phá nhiều lĩnh vực. Nếu được định hướng tốt, con cái có triển vọng về nghệ thuật hoặc tri thức.',
-    duyenCon: 'Duyên con của bạn có thể khá tốt — nhưng con cái dễ đến muộn hoặc có khoảng cách tuổi với cha mẹ. Con đầu lòng thường khỏe mạnh.',
+    duyenCon: 'Duyên con của bạn có thể khá tốt — dù đôi khi đến muộn hơn dự tính. Con cái thường mang lại nhiều niềm vui cho gia đình.',
     conCai: 'Con của bạn đa tài từ nhỏ — có thể giỏi nhiều thứ nhưng không chuyên sâu một thứ. Con cũng nhân hậu, biết quan tâm đến người khác. Khi lớn lên, con có thể theo con đường nghệ thuật, giáo dục, y tế, hoặc các lĩnh vực cần sự sáng tạo và tình cảm.',
     nuoiDay: 'Bạn nên nuôi dạy con bằng cách khuyến khích sự đa dạng nhưng cũng dạy con tính kiên trì. Đừng để con bỏ dở giữa chừng khi gặp khó khăn — hãy dạy con rằng "đi đến cùng một việc" quan trọng hơn "làm nhiều việc dở dang".',
     loiKhuyen: ['Cho con thử nhiều môn năng khiếu — nhưng mỗi môn hãy học ít nhất 1 năm trước khi quyết định bỏ.', 'Dạy con lòng biết ơn và sự sẻ chia — đây là nền tảng đạo đức quan trọng của nhóm "đa tài".', 'Hãy là người bạn đồng hành, không chỉ là người giám sát — con cái nhóm này cần được thấu hiểu.']
@@ -905,61 +905,61 @@ var TUVI_VAN_TUTUC = {
  * ============================================================ */
 
 var TUVI_FACT_TATACH_CHINHTINH = {
-  'Tử Vi':      { yNghia: 'Bạn thuộc mẫu người có thể chất khá vững vàng, nhìn chung ít bệnh nặng. Cần chú ý hệ tiêu hóa và tỳ vị, đặc biệt khi ăn uống thất thường.', trongSo: 1.4, tags: ['the_chat_vung_vang', 'it_benh_nang', 'tieu_hoa'] },
-  'Thiên Cơ':   { yNghia: 'Bạn thuộc mẫu người nhạy cảm với căng thẳng — dễ bị ảnh hưởng đến gan, thần kinh và chân tay khi lo nghĩ nhiều. Cần chú ý nghỉ ngơi hợp lý và giữ tinh thần thoải mái.', trongSo: 1.4, tags: ['nhao_cam_cang_thang', 'gan_than_kinh', 'can_nghi_ngoi'] },
-  'Thái Dương': { yNghia: 'Bạn thuộc mẫu người có xu hướng cần chú ý đến mắt, tim, huyết áp và đầu. Có thể bị đau nửa đầu hoặc các vấn đề về mắt khi lớn tuổi. Nên kiểm tra sức khỏe định kỳ.', trongSo: 1.5, tags: ['can_chu_y_mat_tim', 'co_the_dau_nua_dau', 'can_kiem_tra_dinh_ky'] },
-  'Vũ Khúc':    { yNghia: 'Bạn thuộc mẫu người có xu hướng gặp các vấn đề về phổi, hô hấp, răng và xương. Có thể bị đau lưng hoặc các vấn đề về khớp khi có tuổi.', trongSo: 1.4, tags: ['can_chu_y_ho_hap', 'co_the_dau_lung', 'xuong_khop'] },
-  'Thiên Đồng': { yNghia: 'Bạn thuộc mẫu người cần chú ý đến thận, bàng quang và tai. Có thể gặp các vấn đề tiết niệu hoặc nghe kém khi lớn tuổi.', trongSo: 1.3, tags: ['can_chu_y_than_tai', 'tiet_nieu', 'nghe_kem_khi_gia'] },
-  'Liêm Trinh': { yNghia: 'Bạn thuộc mẫu người cần chú ý đến máu huyết, các vấn đề về da, và hệ sinh dục. Nên tránh rượu bia và các chất kích thích để bảo vệ sức khỏe.', trongSo: 1.4, tags: ['can_chu_y_mau_huyet', 'can_tranh_ruou_bia', 'he_sinh_duc'] },
-  'Thiên Phủ':  { yNghia: 'Bạn thuộc mẫu người có thể chất khá vững vàng, nhìn chung ít bệnh nặng. Cần chú ý dạ dày và tỳ vị — ăn uống điều độ là chìa khóa giữ gìn sức khỏe.', trongSo: 1.4, tags: ['the_chat_vung_vang', 'can_chu_y_da_day', 'an_uong_dieu_do'] },
-  'Thái Âm':    { yNghia: 'Bạn thuộc mẫu người cần chú ý đến thận, mắt và hệ nội tiết. Có thể bị mất ngủ hoặc rối loạn nội tiết tố khi căng thẳng kéo dài.', trongSo: 1.4, tags: ['can_chu_y_than_mat', 'co_the_mat_ngu', 'noi_tiet_to'] },
-  'Tham Lang':  { yNghia: 'Bạn thuộc mẫu người cần đặc biệt chú ý đến gan, thận và hệ sinh dục — nhất là khi lạm dụng rượu bia hoặc sinh hoạt thất thường. Sống điều độ là cách bảo vệ sức khỏe tốt nhất.', trongSo: 1.5, tags: ['can_chu_y_gan_than', 'can_song_dieu_do', 'he_sinh_duc'] },
-  'Cự Môn':     { yNghia: 'Bạn thuộc mẫu người cần chú ý đến miệng, họng và dạ dày. Có thể bị viêm họng tái phát hoặc các vấn đề tiêu hóa khi căng thẳng kéo dài.', trongSo: 1.3, tags: ['can_chu_y_mieng_hong', 'co_the_viem_hong', 'tieu_hoa_khi_stress'] },
-  'Thiên Tướng':{ yNghia: 'Bạn thuộc mẫu người cần chú ý đến da và bàng quang. Có thể gặp dị ứng da hoặc các vấn đề tiết niệu nhẹ khi cơ thể suy nhược.', trongSo: 1.3, tags: ['can_chu_y_da', 'bang_quang', 'de_di_ung'] },
-  'Thiên Lương':{ yNghia: 'Bạn thuộc mẫu người có xu hướng ít bệnh và sống thọ. Cần chú ý dạ dày và ăn uống điều độ. Có duyên với y dược — dễ tìm được thầy thuốc tốt khi cần.', trongSo: 1.4, tags: ['it_benh_tho', 'can_chu_y_da_day', 'co_duyen_y_duoc'] },
-  'Thất Sát':   { yNghia: 'Bạn thuộc mẫu người cần chú ý đến phổi, đại tràng và đề phòng tai nạn liên quan đến kim khí. Nên cẩn thận khi làm việc với máy móc hoặc dao kéo.', trongSo: 1.4, tags: ['can_chu_y_phoi', 'can_de_phong_tai_nan', 'can_than_voi_kim_khi'] },
-  'Phá Quân':   { yNghia: 'Bạn thuộc mẫu người cần chú ý đến thận, khí huyết và đề phòng tai nạn cần phẫu thuật. Nên kiểm tra sức khỏe định kỳ và tránh các hoạt động nguy hiểm.', trongSo: 1.4, tags: ['can_chu_y_than', 'can_de_phong_tai_nan', 'kiem_tra_dinh_ky'] }
+  'Tử Vi':      { yNghia: 'Bạn thuộc mẫu người có nền tảng thể chất khá vững vàng. Theo cổ học, bạn nên giữ nếp ăn uống đều đặn, nghỉ ngơi hợp lý và khám sức khỏe định kỳ.', trongSo: 1.4, tags: ['the_chat_vung_vang', 'it_benh_nang', 'tieu_hoa'] },
+  'Thiên Cơ':   { yNghia: 'Bạn thuộc mẫu người nhạy cảm với căng thẳng — khi lo nghĩ nhiều, cơ thể dễ mệt mỏi. Cần chú ý nghỉ ngơi hợp lý và giữ tinh thần thoải mái.', trongSo: 1.4, tags: ['nhao_cam_cang_thang', 'gan_than_kinh', 'can_nghi_ngoi'] },
+  'Thái Dương': { yNghia: 'Bạn thuộc mẫu người năng động, hay dốc sức cho công việc — nên biết dừng nghỉ đúng lúc, giữ nếp sinh hoạt điều độ và kiểm tra sức khỏe định kỳ.', trongSo: 1.5, tags: ['can_chu_y_mat_tim', 'co_the_dau_nua_dau', 'can_kiem_tra_dinh_ky'] },
+  'Vũ Khúc':    { yNghia: 'Bạn thuộc mẫu người làm việc bền bỉ, đôi khi quên chăm sóc bản thân. Nên vận động đều đặn, nghỉ ngơi hợp lý và khám sức khỏe định kỳ.', trongSo: 1.4, tags: ['can_chu_y_ho_hap', 'co_the_dau_lung', 'xuong_khop'] },
+  'Thiên Đồng': { yNghia: 'Bạn thuộc mẫu người thích thoải mái, đôi khi dễ chủ quan với sức khỏe. Nên uống đủ nước, ngủ đủ giấc và khám sức khỏe định kỳ.', trongSo: 1.3, tags: ['can_chu_y_than_tai', 'tiet_nieu', 'nghe_kem_khi_gia'] },
+  'Liêm Trinh': { yNghia: 'Bạn thuộc mẫu người sống mạnh mẽ, hay chịu áp lực. Nên giữ nếp sinh hoạt điều độ, tránh rượu bia và các chất kích thích để bảo vệ sức khỏe.', trongSo: 1.4, tags: ['can_chu_y_mau_huyet', 'can_tranh_ruou_bia', 'he_sinh_duc'] },
+  'Thiên Phủ':  { yNghia: 'Bạn thuộc mẫu người có nền tảng thể chất khá vững vàng. Ăn uống điều độ, nghỉ ngơi hợp lý là chìa khóa giữ gìn sức khỏe.', trongSo: 1.4, tags: ['the_chat_vung_vang', 'can_chu_y_da_day', 'an_uong_dieu_do'] },
+  'Thái Âm':    { yNghia: 'Bạn thuộc mẫu người giàu cảm xúc — khi căng thẳng kéo dài, giấc ngủ dễ bị ảnh hưởng. Nên giữ giờ giấc đều đặn và tinh thần thư thái.', trongSo: 1.4, tags: ['can_chu_y_than_mat', 'co_the_mat_ngu', 'noi_tiet_to'] },
+  'Tham Lang':  { yNghia: 'Bạn thuộc mẫu người ham vui, nhiều mối giao tiếp — sức khỏe dễ bị ảnh hưởng khi dùng nhiều rượu bia hoặc sinh hoạt thất thường. Sống điều độ là cách bảo vệ sức khỏe tốt nhất.', trongSo: 1.5, tags: ['can_chu_y_gan_than', 'can_song_dieu_do', 'he_sinh_duc'] },
+  'Cự Môn':     { yNghia: 'Bạn thuộc mẫu người hay suy nghĩ, nói nhiều — khi căng thẳng kéo dài, cơ thể dễ mệt. Nên ăn uống đúng giờ và giữ tinh thần thoải mái.', trongSo: 1.3, tags: ['can_chu_y_mieng_hong', 'co_the_viem_hong', 'tieu_hoa_khi_stress'] },
+  'Thiên Tướng':{ yNghia: 'Bạn thuộc mẫu người chỉn chu, hay lo cho người khác hơn bản thân. Nên nghỉ ngơi đủ khi thấy mệt và khám sức khỏe định kỳ.', trongSo: 1.3, tags: ['can_chu_y_da', 'bang_quang', 'de_di_ung'] },
+  'Thiên Lương':{ yNghia: 'Theo cổ học, bạn thuộc mẫu người có nền tảng sức khỏe khá tốt. Nên giữ nếp ăn uống điều độ. Có duyên với y dược — dễ tìm được thầy thuốc tốt khi cần.', trongSo: 1.4, tags: ['it_benh_tho', 'can_chu_y_da_day', 'co_duyen_y_duoc'] },
+  'Thất Sát':   { yNghia: 'Bạn thuộc mẫu người hành động nhanh, mạnh — nên cẩn thận khi làm việc với máy móc, dụng cụ sắc và giữ an toàn khi đi lại.', trongSo: 1.4, tags: ['can_chu_y_phoi', 'can_de_phong_tai_nan', 'can_than_voi_kim_khi'] },
+  'Phá Quân':   { yNghia: 'Bạn thuộc mẫu người thích thử thách, đôi khi liều lĩnh — nên tránh các hoạt động nguy hiểm, giữ nếp sinh hoạt điều độ và kiểm tra sức khỏe định kỳ.', trongSo: 1.4, tags: ['can_chu_y_than', 'can_de_phong_tai_nan', 'kiem_tra_dinh_ky'] }
 };
 
 var TUVI_FACT_TATACH_PHUTINH = {
   // Cát tinh — sức khỏe tốt hơn
   'Thiên Y':     { yNghia: 'Có Thiên Y — gặp thầy gặp thuốc, có duyên với y dược. Khi ốm dễ tìm được thầy thuốc giỏi và thuốc hiệu nghiệm.', loai: 'manh', trongSo: 1.3, tags: ['thay_thuoc_tot'] },
-  'Giải Thần':   { yNghia: 'Có Giải Thần — tai ách, bệnh tật dễ được hóa giải. Bệnh nặng có thể chuyển thành nhẹ.', loai: 'manh', trongSo: 1.3, tags: ['giai_tai_ach'] },
-  'Thiên Giải':  { yNghia: 'Có Thiên Giải — gặp hung hóa cát, bệnh tật dễ qua. Đặc biệt tốt cho các ca bệnh cấp tính.', loai: 'manh', trongSo: 1.2, tags: ['giai_benh'] },
-  'Địa Giải':    { yNghia: 'Có Địa Giải — bệnh mãn tính có cơ hội thuyên giảm. Cần kiên trì điều trị.', loai: 'manh', trongSo: 1.2, tags: ['giai_benh_man'] },
-  'Hóa Khoa':    { yNghia: 'Có Hóa Khoa — gặp nạn có người giúp, bệnh tật có thầy giỏi chữa. Tinh thần lạc quan hỗ trợ quá trình hồi phục.', loai: 'manh', trongSo: 1.4, tags: ['quy_nhan_y_te'] },
-  'Long Trì':    { yNghia: 'Có Long Trì — thể chất thanh tao, ít bệnh nặng. Sức đề kháng khá tốt.', loai: 'manh', trongSo: 0.8, tags: ['the_chat_tot'] },
-  'Phượng Các':  { yNghia: 'Có Phượng Các — thể chất thanh tao, da dẻ hồng hào. Sức khỏe tổng quát tốt.', loai: 'manh', trongSo: 0.8, tags: ['the_chat_tot'] },
+  'Giải Thần':   { yNghia: 'Có Giải Thần — theo cổ học, gặp khó khăn dễ được hóa giải, mọi việc có xu hướng nhẹ đi.', loai: 'manh', trongSo: 1.3, tags: ['giai_tai_ach'] },
+  'Thiên Giải':  { yNghia: 'Có Thiên Giải — gặp hung hóa cát (chuyện xấu chuyển thành tốt), khi mệt mỏi thường mau hồi phục.', loai: 'manh', trongSo: 1.2, tags: ['giai_benh'] },
+  'Địa Giải':    { yNghia: 'Có Địa Giải — sức khỏe có xu hướng cải thiện dần nếu bạn kiên trì chăm sóc bản thân.', loai: 'manh', trongSo: 1.2, tags: ['giai_benh_man'] },
+  'Hóa Khoa':    { yNghia: 'Có Hóa Khoa — gặp khó có người giúp, khi cần chăm sóc sức khỏe dễ gặp thầy giỏi. Tinh thần lạc quan hỗ trợ quá trình hồi phục.', loai: 'manh', trongSo: 1.4, tags: ['quy_nhan_y_te'] },
+  'Long Trì':    { yNghia: 'Có Long Trì — thể chất thanh tao, nền tảng sức khỏe khá tốt.', loai: 'manh', trongSo: 0.8, tags: ['the_chat_tot'] },
+  'Phượng Các':  { yNghia: 'Có Phượng Các — thể chất thanh tao, sức khỏe tổng quát có xu hướng tốt.', loai: 'manh', trongSo: 0.8, tags: ['the_chat_tot'] },
   'Thiên Đức':   { yNghia: 'Có Thiên Đức — được phù hộ, tai ách dễ qua. Sức khỏe tinh thần ổn định.', loai: 'manh', trongSo: 1.0, tags: ['phu_ho'] },
-  'Nguyệt Đức':  { yNghia: 'Có Nguyệt Đức — nhân hậu, phúc dày, bệnh tật dễ qua. Tinh thần an nhiên hỗ trợ chữa bệnh.', loai: 'manh', trongSo: 1.0, tags: ['phuc_duc'] },
+  'Nguyệt Đức':  { yNghia: 'Có Nguyệt Đức — nhân hậu, phúc dày, khó khăn dễ qua. Tinh thần an nhiên giúp bạn mau hồi phục.', loai: 'manh', trongSo: 1.0, tags: ['phuc_duc'] },
   'Hóa Lộc':     { yNghia: 'Có Hóa Lộc — sức khỏe tốt nhờ điều kiện sống đầy đủ. Có tiền chăm sóc sức khỏe và dinh dưỡng.', loai: 'manh', trongSo: 1.2, tags: ['suc_khoe_tot'] },
 
   // Hung tinh — sức khỏe cần chú ý
-  'Kình Dương':  { yNghia: 'Có Kình Dương — đề phòng thương tích, tai nạn, phẫu thuật. Đặc biệt cẩn thận khi làm việc với kim khí.', loai: 'yeu', trongSo: 1.5, tags: ['thuong_tich_phau_thuat'] },
-  'Đà La':       { yNghia: 'Có Đà La — bệnh dai dẳng, khó dứt. Cần chú ý răng, xương và các bệnh mãn tính.', loai: 'yeu', trongSo: 1.4, tags: ['benh_man'] },
-  'Hỏa Tinh':    { yNghia: 'Có Hỏa Tinh — đề phòng sốt cao, viêm nhiễm, bỏng. Cơ thể dễ bị "nóng trong".', loai: 'yeu', trongSo: 1.3, tags: ['sot_viem'] },
-  'Linh Tinh':   { yNghia: 'Có Linh Tinh — bệnh âm ỉ, dễ tái phát, đặc biệt về thần kinh. Cần kiểm tra sức khỏe định kỳ.', loai: 'yeu', trongSo: 1.3, tags: ['benh_than_kinh'] },
-  'Địa Không':   { yNghia: 'Có Địa Không — sức khỏe có thể biến động bất ngờ. Cần chú ý các bệnh liên quan đến khí huyết và tinh thần.', loai: 'yeu', trongSo: 1.3, tags: ['bien_dong_suc_khoe'] },
-  'Địa Kiếp':    { yNghia: 'Có Địa Kiếp — đề phòng tai nạn và các bệnh cấp tính. Nên có bảo hiểm y tế và quỹ dự phòng.', loai: 'yeu', trongSo: 1.4, tags: ['tai_nan_benh_cap'] },
-  'Hóa Kỵ':      { yNghia: 'Có Hóa Kỵ — bệnh kinh niên, khó dứt, dễ tái phát. Cần kiên trì điều trị và chú ý sức khỏe tinh thần.', loai: 'yeu', trongSo: 1.6, tags: ['benh_kinh_nien'] },
-  'Bệnh Phù':    { yNghia: 'Có Bệnh Phù — sức đề kháng yếu, dễ mắc bệnh. Cần tăng cường dinh dưỡng và tập thể dục.', loai: 'yeu', trongSo: 1.3, tags: ['de_khang_yeu'] },
-  'Thiên Hình':  { yNghia: 'Có Thiên Hình — có thể phải phẫu thuật hoặc điều trị xâm lấn. Cần chú ý sức khỏe định kỳ.', loai: 'yeu', trongSo: 1.2, tags: ['phau_thuat'] },
-  'Lưu Hà':      { yNghia: 'Có Lưu Hà — cẩn thận tai nạn sông nước và các vấn đề về máu huyết. Không nên bơi ở nơi nguy hiểm.', loai: 'yeu', trongSo: 1.2, tags: ['tai_nan_song_nuoc'] },
+  'Kình Dương':  { yNghia: 'Có Kình Dương — nên cẩn thận khi làm việc với máy móc, dụng cụ sắc và giữ an toàn khi vận động.', loai: 'yeu', trongSo: 1.5, tags: ['thuong_tich_phau_thuat'] },
+  'Đà La':       { yNghia: 'Có Đà La — khi mệt mỏi dễ kéo dài; nên nghỉ ngơi đủ, giữ nếp sinh hoạt điều độ và khám định kỳ.', loai: 'yeu', trongSo: 1.4, tags: ['benh_man'] },
+  'Hỏa Tinh':    { yNghia: 'Có Hỏa Tinh — theo cách nói dân gian, cơ thể dễ bị "nóng trong"; nên uống đủ nước, cẩn thận với lửa và đồ nóng.', loai: 'yeu', trongSo: 1.3, tags: ['sot_viem'] },
+  'Linh Tinh':   { yNghia: 'Có Linh Tinh — dễ căng thẳng, lo nghĩ âm ỉ. Nên giữ tinh thần thư thái và kiểm tra sức khỏe định kỳ.', loai: 'yeu', trongSo: 1.3, tags: ['benh_than_kinh'] },
+  'Địa Không':   { yNghia: 'Có Địa Không — sức khỏe có thể biến động bất ngờ. Nên chú ý tinh thần và nghỉ ngơi đủ.', loai: 'yeu', trongSo: 1.3, tags: ['bien_dong_suc_khoe'] },
+  'Địa Kiếp':    { yNghia: 'Có Địa Kiếp — nên giữ an toàn khi đi lại, có bảo hiểm y tế và quỹ dự phòng.', loai: 'yeu', trongSo: 1.4, tags: ['tai_nan_benh_cap'] },
+  'Hóa Kỵ':      { yNghia: 'Có Hóa Kỵ — khi mệt mỏi dễ kéo dài; cần kiên trì chăm sóc bản thân và chú ý sức khỏe tinh thần.', loai: 'yeu', trongSo: 1.6, tags: ['benh_kinh_nien'] },
+  'Bệnh Phù':    { yNghia: 'Có Bệnh Phù — nên tăng cường dinh dưỡng, tập thể dục đều và khám định kỳ.', loai: 'yeu', trongSo: 1.3, tags: ['de_khang_yeu'] },
+  'Thiên Hình':  { yNghia: 'Có Thiên Hình — nên nghiêm túc với lịch khám sức khỏe định kỳ, không chủ quan.', loai: 'yeu', trongSo: 1.2, tags: ['phau_thuat'] },
+  'Lưu Hà':      { yNghia: 'Có Lưu Hà — nên cẩn thận khi ở gần sông nước, không bơi ở nơi nguy hiểm.', loai: 'yeu', trongSo: 1.2, tags: ['tai_nan_song_nuoc'] },
   'Tang Môn':    { yNghia: 'Có Tang Môn — tinh thần dễ buồn phiền, ảnh hưởng đến sức khỏe. Cần chú ý sức khỏe tinh thần.', loai: 'yeu', trongSo: 1.0, tags: ['tinh_than'] },
-  'Bạch Hổ':     { yNghia: 'Có Bạch Hổ — đề phòng tai nạn, thương tích, đặc biệt liên quan đến máu huyết. Cẩn thận khi đi lại.', loai: 'yeu', trongSo: 1.3, tags: ['tai_nan_mau'] },
-  'Thiên Khốc':  { yNghia: 'Có Thiên Khốc — nhạy cảm, dễ xúc động, ảnh hưởng đến tim mạch và hô hấp. Cần giữ tinh thần thoải mái.', loai: 'yeu', trongSo: 1.0, tags: ['tim_mach'] },
-  'Thiên Hư':    { yNghia: 'Có Thiên Hư — sức khỏe có thể suy nhược. Cần chú ý dinh dưỡng và nghỉ ngơi.', loai: 'yeu', trongSo: 1.0, tags: ['suy_nhuoc'] },
-  'Kiếp Sát':    { yNghia: 'Có Kiếp Sát — đề phòng tai nạn bất ngờ. Cẩn thận khi tham gia giao thông hoặc làm việc nguy hiểm.', loai: 'yeu', trongSo: 1.2, tags: ['tai_nan'] },
-  'Phá Toái':    { yNghia: 'Có Phá Toái — đề phòng hao tổn sức khỏe. Cần chú ý các bệnh liên quan đến xương khớp.', loai: 'yeu', trongSo: 1.0, tags: ['xuong_khop'] }
+  'Bạch Hổ':     { yNghia: 'Có Bạch Hổ — nên cẩn thận khi đi lại và vận động mạnh.', loai: 'yeu', trongSo: 1.3, tags: ['tai_nan_mau'] },
+  'Thiên Khốc':  { yNghia: 'Có Thiên Khốc — nhạy cảm, dễ xúc động. Cần giữ tinh thần thoải mái.', loai: 'yeu', trongSo: 1.0, tags: ['tim_mach'] },
+  'Thiên Hư':    { yNghia: 'Có Thiên Hư — sức khỏe có lúc giảm sút. Cần chú ý dinh dưỡng và nghỉ ngơi.', loai: 'yeu', trongSo: 1.0, tags: ['suy_nhuoc'] },
+  'Kiếp Sát':    { yNghia: 'Có Kiếp Sát — nên cẩn thận khi tham gia giao thông hoặc làm việc nhiều rủi ro.', loai: 'yeu', trongSo: 1.2, tags: ['tai_nan'] },
+  'Phá Toái':    { yNghia: 'Có Phá Toái — đề phòng hao tổn sức khỏe. Nên vận động vừa sức, không làm việc quá độ.', loai: 'yeu', trongSo: 1.0, tags: ['xuong_khop'] }
 };
 
 /* KHO VĂN CHO CUNG TẬT ÁCH — 6 nhóm A-F */
 var TUVI_VAN_TATACH = {
   'A': { // Thể chất tốt: Tử Vi, Thiên Phủ, Thiên Tướng, Thái Dương
-    tomTat: 'Sức khỏe của bạn nhìn chung khá tốt — thể chất ổn định, ít bệnh nặng. Cần chú ý các bệnh liên quan đến tiêu hóa và huyết áp khi lớn tuổi.',
-    theChat: 'Bạn có thể chất khá vững vàng, sức đề kháng tốt. Cơ thể thường cân đối, dễ hồi phục sau bệnh. Tuy nhiên, khi căng thẳng kéo dài, bạn dễ bị ảnh hưởng đến hệ tiêu hóa và tim mạch.',
-    coQuan: 'Các cơ quan bạn cần chú ý: dạ dày – tỳ vị (liên quan đến ăn uống), tim – huyết áp (liên quan đến căng thẳng), và mắt (liên quan đến tuổi tác).',
-    phongBenh: 'Cách phòng bệnh hiệu quả cho bạn: ăn uống điều độ (tránh bỏ bữa, tránh ăn khuya), kiểm tra huyết áp định kỳ sau tuổi 40, và dành thời gian thư giãn mỗi ngày để giảm căng thẳng.',
+    tomTat: 'Sức khỏe của bạn có xu hướng khá tốt — nền tảng thể chất ổn định. Theo cổ học, bạn nên giữ nếp ăn uống, nghỉ ngơi điều độ và khám định kỳ khi lớn tuổi.',
+    theChat: 'Bạn có thể chất khá vững vàng, dễ hồi phục khi mệt. Tuy nhiên, khi căng thẳng kéo dài, cơ thể bạn dễ xuống sức.',
+    coQuan: 'Những điều bạn cần chú ý: nếp ăn uống (tránh bỏ bữa, ăn khuya), mức độ căng thẳng trong công việc, và lịch khám sức khỏe định kỳ khi có tuổi.',
+    phongBenh: 'Cách giữ gìn sức khỏe hiệu quả cho bạn: ăn uống điều độ (tránh bỏ bữa, tránh ăn khuya), khám sức khỏe định kỳ, và dành thời gian thư giãn mỗi ngày để giảm căng thẳng.',
     loiKhuyen: [
       'Khám sức khỏe tổng quát mỗi năm một lần — phòng bệnh hơn chữa bệnh.',
       'Duy trì thói quen ăn uống điều độ — không bỏ bữa sáng, hạn chế ăn khuya.',
@@ -967,54 +967,54 @@ var TUVI_VAN_TATACH = {
     ]
   },
   'B': { // Căng thẳng: Thiên Cơ, Cự Môn, Thái Âm
-    tomTat: 'Sức khỏe của bạn chịu ảnh hưởng nhiều từ tinh thần — khi căng thẳng, cơ thể dễ phản ứng. Cần chú ý gan, thần kinh và giấc ngủ.',
-    theChat: 'Bạn có thể chất nhạy cảm, dễ bị ảnh hưởng bởi môi trường và cảm xúc. Khi lo lắng, bạn dễ mất ngủ, đau đầu, và mệt mỏi. Ngược lại, khi tinh thần thoải mái, sức khỏe của bạn rất tốt.',
-    coQuan: 'Các cơ quan bạn cần chú ý: gan (do căng thẳng và lo nghĩ nhiều), thần kinh (dễ đau đầu, mất ngủ), và hệ tiêu hóa (dễ bị đau dạ dày khi stress).',
-    phongBenh: 'Cách phòng bệnh cho bạn: giữ tinh thần thoải mái (thiền, viết nhật ký, trò chuyện với người tin cậy), đảm bảo ngủ đủ 7-8 tiếng, và hạn chế cà phê – rượu bia.',
+    tomTat: 'Sức khỏe của bạn chịu ảnh hưởng nhiều từ tinh thần — khi căng thẳng, cơ thể dễ phản ứng. Cần chú ý giấc ngủ và tinh thần.',
+    theChat: 'Bạn có thể chất nhạy cảm, dễ bị ảnh hưởng bởi môi trường và cảm xúc. Khi lo lắng, bạn dễ ngủ không ngon và mệt mỏi. Ngược lại, khi tinh thần thoải mái, sức khỏe của bạn rất tốt.',
+    coQuan: 'Những điều bạn cần chú ý: mức độ lo nghĩ, chất lượng giấc ngủ, và nếp ăn uống khi căng thẳng.',
+    phongBenh: 'Cách giữ gìn sức khỏe cho bạn: giữ tinh thần thoải mái (thiền, viết nhật ký, trò chuyện với người tin cậy), đảm bảo ngủ đủ 7-8 tiếng, và hạn chế cà phê – rượu bia.',
     loiKhuyen: [
       'Thực hành thiền hoặc hít thở sâu 10 phút mỗi ngày — giảm căng thẳng hiệu quả.',
-      'Đi ngủ trước 23h và duy trì giờ ngủ cố định — giấc ngủ tốt giúp gan hồi phục.',
+      'Đi ngủ trước 23h và duy trì giờ ngủ cố định — giấc ngủ tốt giúp cơ thể hồi phục.',
       'Học cách nói "không" với những việc không cần thiết — đừng ôm đồm quá nhiều.'
     ]
   },
   'C': { // Vững chắc: Vũ Khúc, Thiên Đồng, Liêm Trinh
-    tomTat: 'Sức khỏe của bạn thuộc nhóm "vững chắc" — thể chất ổn định, ít bệnh nặng. Cần chú ý hô hấp, xương khớp và da khi lớn tuổi.',
-    theChat: 'Bạn có thể chất rắn chắc, sức bền tốt. Cơ thể thường chịu được áp lực công việc. Tuy nhiên, khi làm việc quá sức, bạn dễ bị các vấn đề về xương khớp và hô hấp.',
-    coQuan: 'Các cơ quan bạn cần chú ý: phổi – hô hấp (nhất là khi sống ở thành phố lớn), xương – khớp (do làm việc nhiều), và da (dễ bị dị ứng hoặc nổi mẩn).',
-    phongBenh: 'Cách phòng bệnh cho bạn: tập thể dục đều đặn để duy trì khớp (bơi lội, đi bộ), hạn chế hút thuốc và môi trường ô nhiễm, và chăm sóc da đúng cách.',
+    tomTat: 'Sức khỏe của bạn thuộc nhóm "vững chắc" — thể chất có xu hướng ổn định. Nên vận động đều và khám định kỳ khi lớn tuổi.',
+    theChat: 'Bạn có thể chất rắn chắc, sức bền tốt. Cơ thể thường chịu được áp lực công việc. Tuy nhiên, khi làm việc quá sức, cơ thể bạn dễ xuống sức.',
+    coQuan: 'Những điều bạn cần chú ý: không làm việc quá sức, hạn chế môi trường ô nhiễm, và chăm sóc bản thân đều đặn.',
+    phongBenh: 'Cách giữ gìn sức khỏe cho bạn: tập thể dục đều đặn (bơi lội, đi bộ), hạn chế hút thuốc và môi trường ô nhiễm, và khám sức khỏe định kỳ.',
     loiKhuyen: [
-      'Bơi lội hoặc yoga 2-3 lần mỗi tuần — tốt cho cả xương khớp và hô hấp.',
-      'Uống đủ 2 lít nước mỗi ngày — giúp da khỏe và thận hoạt động tốt.',
-      'Khám răng định kỳ 6 tháng một lần — răng tốt là nền tảng sức khỏe.'
+      'Bơi lội hoặc yoga 2-3 lần mỗi tuần — tốt cho sức khỏe tổng quát.',
+      'Uống đủ nước mỗi ngày — giúp cơ thể khỏe khoắn.',
+      'Khám sức khỏe định kỳ — biết sớm để yên tâm hơn.'
     ]
   },
   'D': { // Cần chú ý: Thất Sát, Phá Quân
-    tomTat: 'Sức khỏe của bạn cần chú ý nhiều hơn — thể chất khá nhưng dễ gặp tai nạn hoặc bệnh cấp tính. Cần đặc biệt cẩn trọng.',
-    theChat: 'Bạn có thể chất mạnh mẽ nhưng dễ bị tổn thương do tai nạn hoặc bệnh cấp tính. Cơ thể bạn phản ứng nhanh nhưng cũng dễ kiệt sức khi làm việc quá độ. Cần chú ý cân bằng giữa làm việc và nghỉ ngơi.',
-    coQuan: 'Các cơ quan bạn cần chú ý: phổi – đại tràng (do căng thẳng), thận – khí huyết (do làm việc nhiều), và xương khớp (dễ gặp chấn thương).',
-    phongBenh: 'Cách phòng bệnh cho bạn: tránh làm việc quá sức, cẩn thận khi tham gia giao thông và làm việc nguy hiểm, kiểm tra sức khỏe định kỳ 6 tháng một lần.',
+    tomTat: 'Sức khỏe của bạn cần được chăm chút nhiều hơn — thể chất khá nhưng bạn hay dốc sức, dễ chủ quan. Nên đi chậm, cẩn trọng.',
+    theChat: 'Bạn có thể chất mạnh mẽ nhưng hay hoạt động mạnh, dễ chủ quan. Cơ thể bạn phản ứng nhanh nhưng cũng dễ kiệt sức khi làm việc quá độ. Cần chú ý cân bằng giữa làm việc và nghỉ ngơi.',
+    coQuan: 'Những điều bạn cần chú ý: an toàn khi đi lại và vận động, nhịp làm việc – nghỉ ngơi, và lịch khám định kỳ.',
+    phongBenh: 'Cách giữ gìn sức khỏe cho bạn: tránh làm việc quá sức, cẩn thận khi tham gia giao thông và làm việc nguy hiểm, kiểm tra sức khỏe định kỳ 6 tháng một lần.',
     loiKhuyen: [
-      'Luôn chú ý an toàn khi đi lại và làm việc — tai nạn là rủi ro chính của bạn.',
+      'Luôn chú ý an toàn khi đi lại và làm việc — cẩn thận một chút giúp bạn yên tâm hơn nhiều.',
       'Ngủ đủ giấc và nghỉ ngơi hợp lý — đừng ép cơ thể làm việc quá sức.',
       'Duy trì bảo hiểm y tế và quỹ dự phòng — đề phòng chi phí điều trị bất ngờ.'
     ]
   },
   'E': { // Nhạy cảm: Tham Lang, Thiên Lương
-    tomTat: 'Sức khỏe của bạn thuộc nhóm "nhạy cảm" — thể chất khá nhưng dễ bị ảnh hưởng bởi lối sống. Cần chú ý gan, thận và hệ sinh dục.',
+    tomTat: 'Sức khỏe của bạn thuộc nhóm "nhạy cảm" — thể chất khá nhưng dễ bị ảnh hưởng bởi lối sống. Cần giữ nếp sinh hoạt điều độ.',
     theChat: 'Bạn có thể chất khá tốt nhưng dễ bị ảnh hưởng bởi lối sống không điều độ. Khi sinh hoạt thất thường (ăn uống, ngủ nghỉ, quan hệ), sức khỏe của bạn dễ suy giảm. Ngược lại, khi sống điều độ, bạn rất khỏe mạnh.',
-    coQuan: 'Các cơ quan bạn cần chú ý: gan – mật (do ăn uống), thận – tiết niệu (do sinh hoạt), và hệ sinh dục (do quan hệ).',
-    phongBenh: 'Cách phòng bệnh cho bạn: sống điều độ (ăn uống, ngủ nghỉ, sinh hoạt), tránh rượu bia và các chất kích thích, và kiểm tra sức khỏe định kỳ (đặc biệt gan và thận).',
+    coQuan: 'Những điều bạn cần chú ý: nếp ăn uống, giờ giấc ngủ nghỉ, và sự điều độ trong sinh hoạt.',
+    phongBenh: 'Cách giữ gìn sức khỏe cho bạn: sống điều độ (ăn uống, ngủ nghỉ, sinh hoạt), tránh rượu bia và các chất kích thích, và kiểm tra sức khỏe định kỳ.',
     loiKhuyen: [
-      'Hạn chế tối đa rượu bia và các chất kích thích — gan và thận của bạn dễ bị tổn thương.',
+      'Hạn chế tối đa rượu bia và các chất kích thích — đây là thói quen bảo vệ sức khỏe tốt nhất cho bạn.',
       'Duy trì lối sống điều độ: ăn uống cân bằng, ngủ đủ giấc, sinh hoạt đều đặn.',
-      'Kiểm tra chức năng gan – thận mỗi 6 tháng một lần nếu thường xuyên tiếp xúc với rượu bia.'
+      'Khám sức khỏe định kỳ, nhất là nếu thường xuyên tiếp xúc với rượu bia.'
     ]
   },
   'F': { // VCD
     tomTat: 'Sức khỏe của bạn thuộc nhóm đặc biệt — cung Tật Ách không có chính tinh. Sức khỏe phụ thuộc nhiều vào cung xung chiếu và lối sống.',
     theChat: 'Bạn có thể chất linh hoạt, dễ thích nghi với môi trường. Sức khỏe thường khá ổn định nhưng có thể bị ảnh hưởng bởi tinh thần và chế độ sinh hoạt. Cần chú ý lắng nghe cơ thể mình.',
-    coQuan: 'Các cơ quan cần chú ý phụ thuộc vào cung xung chiếu — cần kiểm tra định kỳ để phát hiện sớm vấn đề. Cần chú ý các bệnh liên quan đến tinh thần và tiêu hóa.',
-    phongBenh: 'Cách phòng bệnh cho bạn: duy trì lối sống lành mạnh (ăn uống, ngủ nghỉ, tập thể dục), chú ý lắng nghe cơ thể, và khám sức khỏe định kỳ 1-2 lần mỗi năm.',
+    coQuan: 'Những điều cần chú ý phụ thuộc vào cung xung chiếu — nên khám định kỳ để yên tâm, đồng thời chú ý tinh thần và nếp ăn uống.',
+    phongBenh: 'Cách giữ gìn sức khỏe cho bạn: duy trì lối sống lành mạnh (ăn uống, ngủ nghỉ, tập thể dục), chú ý lắng nghe cơ thể, và khám sức khỏe định kỳ 1-2 lần mỗi năm.',
     loiKhuyen: [
       'Lắng nghe cơ thể mình — bạn dễ bỏ qua các dấu hiệu cảnh báo của cơ thể.',
       'Xây dựng thói quen sinh hoạt điều độ — đây là nền tảng sức khỏe của bạn.',
@@ -1033,14 +1033,14 @@ var TUVI_FACT_DIENTRACH_CHINHTINH = {
   'Thái Dương': { yNghia: 'Bạn thuộc mẫu người coi trọng không gian sáng sủa, thoáng đãng. Nhà cửa có xu hướng ở nơi nhiều ánh sáng tự nhiên. Có thể được thừa hưởng nhà đất từ gia đình nếu sao đắc địa.', trongSo: 1.5, tags: ['nha_sang_sua', 'co_the_huong_to_nghiep', 'thoang_dang'] },
   'Vũ Khúc':    { yNghia: 'Bạn thuộc mẫu người tự gây dựng nhà cửa bằng sức mình hơn là dựa vào thừa hưởng. Nhà cửa có xu hướng vững chắc và có giá trị tài chính cao theo thời gian.', trongSo: 1.5, tags: ['tu_tao_nha', 'khong_dua_thua_huong', 'gia_tri_tai_chinh_cao'] },
   'Thiên Đồng': { yNghia: 'Nhà cửa của bạn có xu hướng thay đổi theo chiều hướng tích cực — ban đầu có thể chật vật nhưng về sau càng ổn định. Bạn thường tự lập trong việc nhà cửa, ít nhờ vả.', trongSo: 1.3, tags: ['tien_kho_hau_kha', 'tu_lap_trong_nha_cua', 'on_dinh_dan_ve_sau'] },
-  'Liêm Trinh': { yNghia: 'Nhà đất của bạn cần đặc biệt cẩn thận về giấy tờ pháp lý — dễ có tranh chấp với anh em hoặc họ hàng về quyền thừa kế. Nên rõ ràng pháp lý ngay từ đầu.', trongSo: 1.4, tags: ['can_ro_rang_phap_ly', 'de_tranh_chap', 'can_kiem_tra_giay_to'] },
+  'Liêm Trinh': { yNghia: 'Nhà đất của bạn cần đặc biệt cẩn thận về giấy tờ pháp lý — nhất là chuyện thừa kế trong gia đình. Nên rõ ràng pháp lý ngay từ đầu để giữ hòa khí.', trongSo: 1.4, tags: ['can_ro_rang_phap_ly', 'de_tranh_chap', 'can_kiem_tra_giay_to'] },
   'Thiên Phủ':  { yNghia: 'Bạn thuộc mẫu người có khả năng giữ và phát triển tài sản nhà đất tốt. Nhà cửa có xu hướng mang tính "kho tàng" — càng ở lâu càng có giá trị.', trongSo: 1.6, tags: ['giu_tai_san_tot', 'co_kha_nang_phat_trien', 'cang_o_lau_cang_co_gia'] },
   'Thái Âm':    { yNghia: 'Bạn thuộc mẫu người có duyên lớn với nhà đất — bất động sản có xu hướng là kênh tích lũy tài sản chủ lực. Nhà cửa thường ở nơi yên tĩnh, có không gian xanh.', trongSo: 1.6, tags: ['co_duyen_nha_dat', 'dien_san_chu_luc', 'thich_khong_gian_yen_tinh'] },
   'Tham Lang':  { yNghia: 'Nhà cửa của bạn có xu hướng lúc thịnh lúc suy — trung niên mới ổn định. Không nên đầu tư bất động sản khi còn trẻ, nên tích lũy và đợi thời điểm phù hợp.', trongSo: 1.3, tags: ['luc_thinh_luc_suy', 'trung_nien_on_dinh', 'nen_doi_thoi_diem'] },
   'Cự Môn':     { yNghia: 'Nhà đất của bạn cần cẩn thận về ranh giới và giấy tờ — có thể xảy ra tranh chấp với hàng xóm. Nên kiểm tra kỹ pháp lý trước khi mua và giữ hòa khí với hàng xóm.', trongSo: 1.3, tags: ['can_hoa_khi_hang_xom', 'can_kiem_tra_phap_ly', 'de_tranh_chap'] },
   'Thiên Tướng':{ yNghia: 'Nhà cửa của bạn thuộc mẫu người coi trọng sự ngăn nắp, chỉn chu. Không gian sống thường có gu thẩm mỹ và dễ có người giúp trong việc mua sắm, sửa sang.', trongSo: 1.4, tags: ['coi_trong_ngan_nap', 'co_gu_tham_my', 'duoc_giup_nha_cua'] },
   'Thiên Lương':{ yNghia: 'Bạn thuộc mẫu người có duyên với nhà cửa tổ nghiệp. Nhà ở thường ở nơi gần thiên nhiên, yên tĩnh — phù hợp với người thích cuộc sống thanh bình.', trongSo: 1.4, tags: ['co_duyen_to_nghiep', 'thich_gan_thien_nhien', 'song_thanh_binh'] },
-  'Thất Sát':   { yNghia: 'Tổ nghiệp khó giữ — bạn thuộc mẫu người phải tự lập mới có nhà cửa vững chắc. Nhà đất của bạn có thể phải đổi chủ vài lần trước khi ổn định.', trongSo: 1.3, tags: ['kho_giu_to_nghiep', 'phai_tu_lap', 'doi_chu_nhieu_lan'] },
+  'Thất Sát':   { yNghia: 'Theo cổ học, bạn thuộc mẫu người tự lập mới có nhà cửa vững chắc. Nhà đất của bạn có thể phải đổi chủ vài lần trước khi ổn định.', trongSo: 1.3, tags: ['kho_giu_to_nghiep', 'phai_tu_lap', 'doi_chu_nhieu_lan'] },
   'Phá Quân':   { yNghia: 'Bạn thuộc mẫu người phá cũ xây mới — hay mua bán nhà đất, đổi chỗ ở. Nhà cửa có xu hướng thay đổi nhiều lần trong đời, không cố định một chỗ.', trongSo: 1.3, tags: ['phá_cu_xay_moi', 'hay_mua_ban_nha', 'thay_doi_nhieu'] }
 };
 
@@ -1057,7 +1057,7 @@ var TUVI_FACT_DIENTRACH_PHUTINH = {
 
   // Hung tinh — nhà cửa cần chú ý
   'Địa Không': { yNghia: 'Có Địa Không — nhà cửa dễ hao hụt, không nên đầu tư bất động sản quy mô lớn.', loai: 'yeu', trongSo: 1.4, tags: ['hao_hut_nha'] },
-  'Địa Kiếp':  { yNghia: 'Có Địa Kiếp — đề phòng mất nhà đất hoặc tranh chấp. Cần rõ ràng giấy tờ pháp lý.', loai: 'yeu', trongSo: 1.5, tags: ['mat_nha_dat', 'tranh_chap'] },
+  'Địa Kiếp':  { yNghia: 'Có Địa Kiếp — cần rõ ràng giấy tờ, hợp đồng để tránh tranh chấp nhà đất.', loai: 'yeu', trongSo: 1.5, tags: ['mat_nha_dat', 'tranh_chap'] },
   'Hỏa Tinh':  { yNghia: 'Có Hỏa Tinh — đề phòng hỏa hoạn. Cần kiểm tra hệ thống điện, bếp gas định kỳ.', loai: 'yeu', trongSo: 1.4, tags: ['hoa_hoan'] },
   'Linh Tinh': { yNghia: 'Có Linh Tinh — nhà cửa có thể có vấn đề ngầm (ẩm mốc, dột, nứt). Cần bảo trì thường xuyên.', loai: 'yeu', trongSo: 1.2, tags: ['nha_hu_hong'] },
   'Kình Dương':{ yNghia: 'Có Kình Dương — nhà cửa có thể có tranh chấp với hàng xóm. Cần giữ hòa khí và rõ ràng ranh giới.', loai: 'yeu', trongSo: 1.3, tags: ['tranh_chap_hang_xom'] },
@@ -1080,7 +1080,7 @@ var TUVI_VAN_DIENTRACH = {
   },
   'B': { // Tự tạo: Vũ Khúc, Tham Lang, Thiên Đồng
     tomTat: 'Nhà cửa của bạn thuộc nhóm "tự tạo" — bạn tự gây dựng nhà đất bằng sức mình, không ỷ lại vào thừa hưởng.',
-    nhaCua: 'Bạn có xu hướng tự lập trong việc nhà cửa — ít được thừa hưởng, phải tự tay gây dựng. Ban đầu có thể khó khăn, phải thuê nhà hoặc ở nhờ, nhưng càng về sau càng ổn định. Nhà cửa của bạn có giá trị tài chính cao.',
+    nhaCua: 'Bạn có xu hướng tự lập trong việc nhà cửa — theo cách luận truyền thống, bạn ít dựa vào thừa hưởng mà tự tay gây dựng (bạn hãy đối chiếu với thực tế). Ban đầu có thể khó khăn, nhưng càng về sau càng ổn định. Nhà cửa của bạn có giá trị tài chính cao.',
     moiTruong: 'Môi trường sống lý tưởng của bạn là nơi có không gian làm việc, gần trung tâm thương mại hoặc khu công nghiệp. Bạn hợp với nhà phố, căn hộ tiện nghi hơn là nhà vườn yên tĩnh. Không hợp nơi quá xa trung tâm, khó di chuyển.',
     tichLuy: 'Cách tích lũy của bạn là vừa làm vừa mua — không chờ đủ tiền mới mua, mà mua trả góp hoặc vay ngân hàng. Bạn cũng có thể đầu tư nhiều bất động sản nhỏ rồi bán lại. Đây là cách tích lũy nhanh nhưng cần quản lý rủi ro tốt.',
     loiKhuyen: [
@@ -1091,7 +1091,7 @@ var TUVI_VAN_DIENTRACH = {
   },
   'C': { // Hưởng tổ nghiệp: Thái Dương, Thiên Lương, Thiên Tướng
     tomTat: 'Nhà cửa của bạn thuộc nhóm "hưởng tổ nghiệp" — bạn có duyên được thừa hưởng nhà đất từ gia đình, hoặc sống ở nơi có truyền thống lâu đời.',
-    nhaCua: 'Bạn có thể được thừa hưởng nhà đất từ ông bà, cha mẹ. Nhà cửa của bạn thường ở nơi có truyền thống, gần họ hàng. Bạn cũng có khả năng giữ gìn và phát triển tài sản thừa hưởng thành tài sản lớn hơn.',
+    nhaCua: 'Lá số gợi ý bạn có duyên được thừa hưởng nhà đất từ ông bà, cha mẹ — bạn hãy đối chiếu với thực tế gia đình mình. Nhà cửa của bạn có xu hướng ở nơi có truyền thống, gần họ hàng. Bạn cũng có khả năng giữ gìn và phát triển tài sản thừa hưởng thành tài sản lớn hơn.',
     moiTruong: 'Môi trường sống lý tưởng của bạn là nơi gần gia đình, họ hàng, có không gian sinh hoạt chung. Bạn hợp với nhà có sân vườn, gần chùa hoặc đình làng. Không hợp nơi quá xa quê hương, xa gia đình.',
     tichLuy: 'Cách tích lũy của bạn là giữ gìn và phát triển tài sản thừa hưởng — cải tạo nhà cũ, mua thêm đất liền kề. Bạn cũng có thể đầu tư vào nhà đất ở quê để giữ gìn cội nguồn. Đây là cách tích lũy mang tính truyền thống.',
     loiKhuyen: [
@@ -1102,7 +1102,7 @@ var TUVI_VAN_DIENTRACH = {
   },
   'D': { // Biến động: Thất Sát, Phá Quân, Thiên Cơ, Cự Môn, Liêm Trinh
     tomTat: 'Nhà cửa của bạn thuộc nhóm "biến động" — nhà đất thay đổi nhiều lần trong đời, có thể gặp tranh chấp hoặc biến động.',
-    nhaCua: 'Bạn có xu hướng thay đổi chỗ ở nhiều lần — mua bán, chuyển nhà, hoặc đổi thành phố sinh sống. Nhà cửa của bạn ít khi cố định một chỗ lâu dài. Có thể gặp tranh chấp với anh em về tài sản thừa kế, hoặc với hàng xóm về ranh giới.',
+    nhaCua: 'Bạn có xu hướng thay đổi chỗ ở nhiều lần — mua bán, chuyển nhà, hoặc đổi thành phố sinh sống. Nhà cửa của bạn ít khi cố định một chỗ lâu dài. Nên rõ ràng giấy tờ chuyện thừa kế trong gia đình và ranh giới với hàng xóm để giữ hòa khí.',
     moiTruong: 'Môi trường sống lý tưởng của bạn là nơi có nhiều cơ hội thay đổi — gần trung tâm kinh tế, có thể di chuyển linh hoạt. Bạn hợp với căn hộ hơn là nhà cố định. Không hợp nơi quá yên tĩnh, ít biến động.',
     tichLuy: 'Cách tích lũy của bạn là mua đi bán lại — kiếm lời từ chênh lệch giá bất động sản. Bạn cũng có thể đầu tư vào đất nền chờ tăng giá. Đây là cách tích lũy nhanh nhưng rủi ro cao, cần kiểm tra pháp lý kỹ.',
     loiKhuyen: [
@@ -1129,49 +1129,49 @@ var TUVI_VAN_DIENTRACH = {
  * ============================================================ */
 
 var TUVI_FACT_PHUCDUC_CHINHTINH = {
-  'Tử Vi':      { yNghia: 'Dòng họ của bạn thuộc mẫu người coi trọng uy tín và nền nếp. Bạn được hưởng phúc ấm từ tổ tiên — cuộc đời có xu hướng có quý nhân nâng đỡ khi khó khăn.', linhHon: 'Linh hồn mang ký ức của một bậc lãnh đạo hoặc người đứng đầu trong quá khứ. Bạn sinh ra đã có khí chất khác biệt và khao khát được công nhận.', trongSo: 1.6, tags: ['phuc_day', 'dong_ho_co_uy_tin', 'co_quy_nhan'] },
+  'Tử Vi':      { yNghia: 'Lá số gợi ý dòng họ của bạn coi trọng uy tín và nền nếp (bạn hãy đối chiếu với gia đình mình). Bạn có xu hướng được hưởng phúc ấm từ tổ tiên — cuộc đời có xu hướng có quý nhân nâng đỡ khi khó khăn.', linhHon: 'Linh hồn mang ký ức của một bậc lãnh đạo hoặc người đứng đầu trong quá khứ. Bạn sinh ra đã có khí chất khác biệt và khao khát được công nhận.', trongSo: 1.6, tags: ['phuc_day', 'dong_ho_co_uy_tin', 'co_quy_nhan'] },
   'Thiên Cơ':   { yNghia: 'Tinh thần của bạn thuộc mẫu người hay lo nghĩ, suy tư nhiều. Bạn dễ tìm thấy bình an qua học hỏi, nghiên cứu. Phúc phần ở mức trung bình — cần tu tâm tích đức để tăng phúc.', linhHon: 'Linh hồn từng là một học giả hoặc người luôn tìm tòi chân lý. Bạn mang theo nỗi băn khoăn về sự vô thường của vạn vật.', trongSo: 1.3, tags: ['lo_nghi', 'can_tu_tam', 'thich_hoc_hoi'] },
-  'Thái Dương': { yNghia: 'Bạn thuộc mẫu người hưởng phúc từ bên nội, tinh thần lạc quan, hào sảng. Dòng họ bên cha có xu hướng có người thành đạt, bạn có thể được thừa hưởng uy tín và mối quan hệ.', linhHon: 'Linh hồn từng là người mang ánh sáng — có thể là một nhà lãnh đạo tinh thần hoặc người phụng sự cộng đồng.', trongSo: 1.5, tags: ['phuc_ben_noi', 'lac_quan', 'co_the_thua_huong_uy_tin'] },
+  'Thái Dương': { yNghia: 'Bạn thuộc mẫu người hưởng phúc từ bên nội, tinh thần lạc quan, hào sảng. Theo cách luận truyền thống, bên cha có thể có người thành đạt, bạn có thể được thừa hưởng uy tín và mối quan hệ — bạn hãy đối chiếu với thực tế.', linhHon: 'Linh hồn từng là người mang ánh sáng — có thể là một nhà lãnh đạo tinh thần hoặc người phụng sự cộng đồng.', trongSo: 1.5, tags: ['phuc_ben_noi', 'lac_quan', 'co_the_thua_huong_uy_tin'] },
   'Vũ Khúc':    { yNghia: 'Phúc của bạn gắn với tài chính — bạn có xu hướng có duyên kiếm tiền và giữ của. Tinh thần thực tế, không viển vông, sống tự lập từ sớm.', linhHon: 'Linh hồn của một người thợ cả hoặc một chiến binh. Bạn tin vào sức mạnh của hành động và sự kiên trì.', trongSo: 1.4, tags: ['phuc_tai', 'thuc_te', 'tu_lap'] },
   'Thiên Đồng': { yNghia: 'Bạn thuộc mẫu người hưởng phúc an nhàn, tinh thần thoải mái. Cuộc sống có xu hướng ít sóng gió, dễ tìm thấy niềm vui trong những điều giản dị. Về già càng an nhàn.', linhHon: 'Linh hồn của một người từng trải qua nhiều biến cố và giờ tìm kiếm sự bình yên.', trongSo: 1.5, tags: ['phuc_an_nhan', 'tinh_than_nhe', 'de_tim_niem_vui'] },
-  'Liêm Trinh': { yNghia: 'Dòng họ của bạn có thể ít gắn kết, có xu hướng ly tán. Tinh thần dễ căng thẳng — cần tu tâm tích đức để hóa giải. Bạn thuộc mẫu người sống nguyên tắc, đôi khi khắt khe với chính mình.', linhHon: 'Linh hồn từng là một quan chức hoặc người sống rất nguyên tắc. Bạn mang theo bài học về sự cân bằng giữa lý trí và cảm xúc.', trongSo: 1.3, tags: ['dong_ho_it_gan_ket', 'can_tu_tam', 'song_nguyen_tac'] },
-  'Thiên Phủ':  { yNghia: 'Bạn thuộc mẫu người có phúc phần khá dày — dòng họ có xu hướng đông đúc và biết lo toan. Bạn được thừa hưởng nền tảng tinh thần vững vàng từ gia đình, sống điềm đạm và an nhiên.', linhHon: 'Linh hồn từng là người quản lý hoặc người bảo tồn văn hóa. Bạn mang theo năng khiếu về quản lý và giữ gìn.', trongSo: 1.6, tags: ['phuc_day', 'dong_ho_dong_duc', 'diem_dam'] },
+  'Liêm Trinh': { yNghia: 'Theo cách luận truyền thống, tình thân trong họ cần được vun đắp nhiều hơn — bạn hãy đối chiếu với trải nghiệm thật. Tinh thần dễ căng thẳng — cần tu tâm tích đức để hóa giải. Bạn thuộc mẫu người sống nguyên tắc, đôi khi khắt khe với chính mình.', linhHon: 'Linh hồn từng là một quan chức hoặc người sống rất nguyên tắc. Bạn mang theo bài học về sự cân bằng giữa lý trí và cảm xúc.', trongSo: 1.3, tags: ['dong_ho_it_gan_ket', 'can_tu_tam', 'song_nguyen_tac'] },
+  'Thiên Phủ':  { yNghia: 'Bạn thuộc mẫu người có phúc phần khá dày — lá số gợi ý dòng họ đông đúc và biết lo toan (bạn hãy đối chiếu thực tế). Bạn có xu hướng được thừa hưởng nền tảng tinh thần vững vàng từ gia đình, sống điềm đạm và an nhiên.', linhHon: 'Linh hồn từng là người quản lý hoặc người bảo tồn văn hóa. Bạn mang theo năng khiếu về quản lý và giữ gìn.', trongSo: 1.6, tags: ['phuc_day', 'dong_ho_dong_duc', 'diem_dam'] },
   'Thái Âm':    { yNghia: 'Bạn thuộc mẫu người hưởng phúc từ bên ngoại, đời sống tinh thần phong phú. Có duyên với nghệ thuật, tâm linh và những điều tinh tế. Về già tinh thần càng sâu sắc.', linhHon: 'Linh hồn của một nghệ sĩ hoặc người có đời sống nội tâm phong phú. Bạn mang theo nỗi nhớ về một vẻ đẹp đã mất.', trongSo: 1.5, tags: ['phuc_ben_ngoai', 'tinh_than_phong_phu', 'co_duyen_nghe_thuat'] },
   'Tham Lang':  { yNghia: 'Bạn thuộc mẫu người ham vui, dễ bị cuốn theo thú vui vật chất. Cần tu dưỡng để giữ phúc — nếu chỉ chạy theo ham muốn, phúc sẽ mỏng dần. Nếu biết tiết chế, phúc về già có xu hướng dày lên.', linhHon: 'Linh hồn của một người đam mê khám phá hoặc nghệ sĩ đa tài. Bạn mang theo khao khát trải nghiệm mọi hương vị của cuộc sống.', trongSo: 1.3, tags: ['ham_vui', 'can_tu_duong', 'can_tiet_che'] },
-  'Cự Môn':     { yNghia: 'Dòng họ của bạn có thể có thị phi, bất hòa. Tinh thần của bạn dễ bất an, hay lo lắng chuyện không đâu. Cần học cách buông bỏ và giữ tâm tĩnh.', linhHon: 'Linh hồn từng là một nhà hùng biện hoặc người hay hoài nghi. Bạn mang theo bài học về việc sử dụng ngôn ngữ và sự thật.', trongSo: 1.3, tags: ['dong_ho_thi_phi', 'tam_bat_an', 'can_buong_bo'] },
+  'Cự Môn':     { yNghia: 'Theo cách luận truyền thống, trong họ có thể có lúc bất đồng — bạn hãy đối chiếu thực tế. Tinh thần của bạn dễ bất an, hay lo lắng chuyện không đâu. Cần học cách buông bỏ và giữ tâm tĩnh.', linhHon: 'Linh hồn từng là một nhà hùng biện hoặc người hay hoài nghi. Bạn mang theo bài học về việc sử dụng ngôn ngữ và sự thật.', trongSo: 1.3, tags: ['dong_ho_thi_phi', 'tam_bat_an', 'can_buong_bo'] },
   'Thiên Tướng':{ yNghia: 'Bạn thuộc mẫu người được tổ tiên che chở, phúc hậu và đàng hoàng. Tinh thần vững vàng, sống có nguyên tắc, ít khi làm điều trái với lương tâm.', linhHon: 'Linh hồn của một vị quan hoặc người phò tá trung thành. Bạn mang theo tinh thần phụng sự và bảo vệ.', trongSo: 1.5, tags: ['to_tien_che_cho', 'tinh_than_vung', 'song_nguyen_tac'] },
-  'Thiên Lương':{ yNghia: 'Bạn thuộc mẫu người có phúc thọ, được âm đức phù hộ. Tinh thần an nhiên, sống nhân hậu và thích giúp đỡ người khác. Càng lớn tuổi càng được kính trọng.', linhHon: 'Linh hồn của một bậc trưởng lão hoặc người tu hành. Bạn mang theo sự từng trải và lòng từ bi.', trongSo: 1.6, tags: ['phuc_tho', 'nhan_hau', 'duoc_am_duc_phu_ho'] },
+  'Thiên Lương':{ yNghia: 'Bạn thuộc mẫu người có phúc phần dày, được âm đức phù hộ. Tinh thần an nhiên, sống nhân hậu và thích giúp đỡ người khác. Càng lớn tuổi càng được kính trọng.', linhHon: 'Linh hồn của một bậc trưởng lão hoặc người tu hành. Bạn mang theo sự từng trải và lòng từ bi.', trongSo: 1.6, tags: ['phuc_tho', 'nhan_hau', 'duoc_am_duc_phu_ho'] },
   'Thất Sát':   { yNghia: 'Tinh thần của bạn có xu hướng vất vả, ít khi được an nhàn. Phúc phần phải tự tạo — không ỷ lại tổ tiên. Nếu biết tu dưỡng và làm việc thiện, về già có xu hướng an ổn.', linhHon: 'Linh hồn của một chiến binh hoặc người luôn đấu tranh cho lý tưởng. Bạn mang theo sự quyết liệt và tinh thần bất khuất.', trongSo: 1.3, tags: ['tinh_than_vat_va', 'tu_tao_phuc', 'co_the_an_on_ve_gia'] },
-  'Phá Quân':   { yNghia: 'Dòng họ của bạn có xu hướng biến động, ít gắn kết lâu dài. Tinh thần dễ bôn ba, hay thay đổi. Cần học cách ổn định nội tâm trước khi tìm kiếm sự bình an bên ngoài.', linhHon: 'Linh hồn của một nhà cải cách hoặc người tiên phong. Bạn mang theo sự bất an và khát vọng đổi mới.', trongSo: 1.3, tags: ['dong_ho_bien_dong', 'tinh_than_bon_ba', 'can_on_dinh_noi_tam'] }
+  'Phá Quân':   { yNghia: 'Lá số gợi ý dòng họ có nhiều thay đổi qua các thế hệ — bạn hãy đối chiếu thực tế. Tinh thần dễ bôn ba, hay thay đổi. Cần học cách ổn định nội tâm trước khi tìm kiếm sự bình an bên ngoài.', linhHon: 'Linh hồn của một nhà cải cách hoặc người tiên phong. Bạn mang theo sự bất an và khát vọng đổi mới.', trongSo: 1.3, tags: ['dong_ho_bien_dong', 'tinh_than_bon_ba', 'can_on_dinh_noi_tam'] }
 };
 
 var TUVI_FACT_PHUCDUC_PHUTINH = {
   'Thiên Đức':   { yNghia: 'Có Thiên Đức — được âm đức phù hộ, tâm thiện, gặp dữ hóa lành. Đây là sao tốt bậc nhất cho Phúc Đức.', loai: 'manh', trongSo: 1.6, tags: ['am_duc_phu_ho'] },
-  'Nguyệt Đức':  { yNghia: 'Có Nguyệt Đức — tâm thiện, phúc hậu, dòng họ có người tu hành hoặc làm việc thiện. Gặp nạn có người giúp.', loai: 'manh', trongSo: 1.6, tags: ['tam_thien', 'phuc_hau'] },
+  'Nguyệt Đức':  { yNghia: 'Có Nguyệt Đức — tâm thiện, phúc hậu, lá số gợi ý trong họ có người hướng thiện. Gặp nạn có người giúp.', loai: 'manh', trongSo: 1.6, tags: ['tam_thien', 'phuc_hau'] },
   'Hoa Cái':     { yNghia: 'Có Hoa Cái — thiên hướng tâm linh, tôn giáo, triết học. Bạn dễ tìm thấy bình an qua thiền định. Đôi khi có xu hướng sống cô độc.', loai: 'manh', trongSo: 1.3, tags: ['tam_linh', 'chiem_nghiem'] },
   'Tả Phù':      { yNghia: 'Có Tả Phù — được người khác giúp đỡ, dòng họ có người đỡ đầu. Tinh thần vững vàng nhờ có hậu thuẫn.', loai: 'manh', trongSo: 1.1, tags: ['duoc_giup_do'] },
-  'Hữu Bật':     { yNghia: 'Có Hữu Bật — anh em họ hàng gắn kết, giúp đỡ lẫn nhau. Dòng họ đông vui, tình thân bền chặt.', loai: 'manh', trongSo: 1.1, tags: ['dong_ho_gan_ket'] },
-  'Long Trì':    { yNghia: 'Có Long Trì — tinh thần thanh cao, có gu thẩm mỹ. Dòng họ có truyền thống văn hóa.', loai: 'manh', trongSo: 1.0, tags: ['thanh_cao'] },
-  'Phượng Các':  { yNghia: 'Có Phượng Các — tinh thần thanh lịch, sống có phong cách. Dòng họ có người làm nghệ thuật hoặc văn hóa.', loai: 'manh', trongSo: 1.0, tags: ['thanh_lich'] },
-  'Hóa Khoa':    { yNghia: 'Có Hóa Khoa — tinh thần sáng suốt, học vấn cao. Dòng họ có truyền thống học hành. Gặp khó có người giải giúp.', loai: 'manh', trongSo: 1.4, tags: ['hoc_van_cao'] },
-  'Hóa Lộc':     { yNghia: 'Có Hóa Lộc — phúc lộc dồi dào, đời sống tinh thần và vật chất đều đủ đầy. Dòng họ khá giả.', loai: 'manh', trongSo: 1.4, tags: ['phuc_loc'] },
-  'Thiên Quan':  { yNghia: 'Có Thiên Quan — dòng họ có người làm quan hoặc có địa vị. Bạn được thừa hưởng uy tín từ tổ tiên.', loai: 'manh', trongSo: 1.1, tags: ['dong_ho_uy_tin'] },
+  'Hữu Bật':     { yNghia: 'Có Hữu Bật — anh em họ hàng có xu hướng gắn kết, giúp đỡ lẫn nhau, tình thân bền chặt.', loai: 'manh', trongSo: 1.1, tags: ['dong_ho_gan_ket'] },
+  'Long Trì':    { yNghia: 'Có Long Trì — tinh thần thanh cao, có gu thẩm mỹ. Lá số gợi ý dòng họ coi trọng văn hóa.', loai: 'manh', trongSo: 1.0, tags: ['thanh_cao'] },
+  'Phượng Các':  { yNghia: 'Có Phượng Các — tinh thần thanh lịch, sống có phong cách. Lá số gợi ý trong họ có thể có người theo nghệ thuật hoặc văn hóa.', loai: 'manh', trongSo: 1.0, tags: ['thanh_lich'] },
+  'Hóa Khoa':    { yNghia: 'Có Hóa Khoa — tinh thần sáng suốt, học vấn cao. Lá số gợi ý dòng họ coi trọng học hành. Gặp khó có người giải giúp.', loai: 'manh', trongSo: 1.4, tags: ['hoc_van_cao'] },
+  'Hóa Lộc':     { yNghia: 'Có Hóa Lộc — phúc lộc dồi dào, đời sống tinh thần và vật chất có xu hướng đủ đầy.', loai: 'manh', trongSo: 1.4, tags: ['phuc_loc'] },
+  'Thiên Quan':  { yNghia: 'Có Thiên Quan — lá số gợi ý trong họ có người có địa vị, uy tín — bạn hãy đối chiếu với gia đình mình.', loai: 'manh', trongSo: 1.1, tags: ['dong_ho_uy_tin'] },
   'Thiên Phúc':  { yNghia: 'Có Thiên Phúc — phúc thiện, may mắn. Bạn thường gặp được người tốt giúp đỡ trong cuộc sống.', loai: 'manh', trongSo: 1.2, tags: ['phuc_thien'] },
   'Địa Không':   { yNghia: 'Có Địa Không — tinh thần hay trống trải, dễ cảm thấy hư vô. Cần tu tâm và tìm ý nghĩa sống để lấp đầy khoảng trống.', loai: 'yeu', trongSo: 1.4, tags: ['tinh_than_trong_trai'] },
-  'Địa Kiếp':    { yNghia: 'Có Địa Kiếp — phúc mỏng, cần tu tâm tích đức để bồi đắp. Dòng họ có thể có nghiệp chướng cần hóa giải.', loai: 'yeu', trongSo: 1.4, tags: ['phuc_mong', 'can_tu_tam'] },
+  'Địa Kiếp':    { yNghia: 'Có Địa Kiếp — cần tu tâm tích đức để bồi đắp phúc phần; sống tử tế, làm việc thiện là cách vun phúc tốt nhất.', loai: 'yeu', trongSo: 1.4, tags: ['phuc_mong', 'can_tu_tam'] },
   'Thiên Hư':    { yNghia: 'Có Thiên Hư — tinh thần hay lo âu, dễ bất an. Cần học cách sống chậm và buông bỏ.', loai: 'yeu', trongSo: 1.1, tags: ['lo_au'] },
   'Thiên Khốc':  { yNghia: 'Có Thiên Khốc — tinh thần nhạy cảm, dễ buồn phiền. Cần học cách chuyển hóa cảm xúc, không nên giữ trong lòng.', loai: 'yeu', trongSo: 1.1, tags: ['nhao_cam_buon'] },
-  'Hóa Kỵ':      { yNghia: 'Có Hóa Kỵ — nội tâm nặng nề, dễ mang cảm xúc tiêu cực. Dòng họ có thể có thị phi. Cần tu tâm để hóa giải.', loai: 'yeu', trongSo: 1.5, tags: ['noi_tam_nang', 'dong_ho_thi_phi'] },
+  'Hóa Kỵ':      { yNghia: 'Có Hóa Kỵ — nội tâm nặng nề, dễ mang cảm xúc tiêu cực. Cần tu tâm, chia sẻ cảm xúc để nhẹ lòng hơn.', loai: 'yeu', trongSo: 1.5, tags: ['noi_tam_nang', 'dong_ho_thi_phi'] },
   'Tang Môn':    { yNghia: 'Có Tang Môn — tinh thần dễ buồn thương, dễ nhớ chuyện cũ. Cần học cách buông bỏ quá khứ.', loai: 'yeu', trongSo: 1.1, tags: ['buon_qua_khu'] },
-  'Bạch Hổ':     { yNghia: 'Có Bạch Hổ — tinh thần có thể bị ảnh hưởng bởi tang sự trong họ. Cần giữ tâm bình thản.', loai: 'yeu', trongSo: 1.0, tags: ['anh_huong_tang_su'] },
+  'Bạch Hổ':     { yNghia: 'Có Bạch Hổ — tinh thần có lúc chịu áp lực từ chuyện gia đình, họ hàng. Cần giữ tâm bình thản.', loai: 'yeu', trongSo: 1.0, tags: ['anh_huong_tang_su'] },
   'Cô Thần':     { yNghia: 'Có Cô Thần — tinh thần dễ cô đơn, ít chia sẻ với người khác. Cần chủ động kết nối để không bị cô lập.', loai: 'yeu', trongSo: 1.0, tags: ['co_don_tinh_than'] },
   'Quả Tú':      { yNghia: 'Có Quả Tú — tinh thần đơn chiếc, dễ cảm thấy lạc lõng. Nên tham gia cộng đồng, hoạt động thiện nguyện.', loai: 'yeu', trongSo: 1.0, tags: ['don_chiec'] }
 };
 
 var TUVI_VAN_PHUCDUC = {
   'A': {
-    tomTat: 'Phúc phần của bạn thuộc nhóm "phúc dày" — dòng họ có nền tảng tốt, đời sống tinh thần phong phú, cuộc đời nhiều may mắn và được che chở.',
-    dongHo: 'Dòng họ của bạn có truyền thống tốt — ông bà, cha mẹ thường là người có đức, có uy tín trong làng xóm hoặc cộng đồng. Bạn được thừa hưởng không chỉ vật chất mà còn cả uy tín và các mối quan hệ quý giá. Trong họ có người thành đạt, có thể là người làm quan, giáo viên, hoặc người có vị trí trong xã hội.',
+    tomTat: 'Phúc phần của bạn thuộc nhóm "phúc dày" — lá số gợi ý nền tảng gia đình tốt, đời sống tinh thần phong phú, cuộc đời nhiều may mắn và được che chở.',
+    dongHo: 'Lá số gợi ý dòng họ của bạn có truyền thống tốt — ông bà, cha mẹ thường là người có đức, có uy tín trong làng xóm hoặc cộng đồng; bạn có xu hướng được thừa hưởng không chỉ vật chất mà còn cả uy tín và các mối quan hệ quý giá. Trong họ có thể có người thành đạt, có vị trí trong xã hội — bạn hãy đối chiếu với thực tế gia đình mình.',
     linhHon: 'Nhìn sâu vào cung Phúc Đức, có thể thấy dấu vết của một tiền kiếp tốt đẹp. Bạn có thể từng là người có địa vị, một bậc trưởng bối được kính trọng, hoặc người sống có đạo đức và được nhiều người quý mến. Những phẩm chất tốt đẹp đó vẫn còn lưu lại trong tâm thức bạn ngày nay — thể hiện qua trực giác về những điều đúng đắn và sự an nhiên tự tại trong tâm hồn. Đây là món quà quý từ kiếp trước, nên tiếp tục vun đắp để phúc ngày càng dày.',
     tinhThan: 'Đời sống tinh thần của bạn phong phú, ít khi cảm thấy trống trải. Bạn có xu hướng lạc quan, biết tận hưởng những điều giản dị, và dễ tìm thấy bình an trong nội tâm. Bạn cũng có duyên với nghệ thuật, tâm linh, hoặc các hoạt động văn hóa.',
     motMinh: 'Những lúc một mình, bạn thường cảm thấy bình yên chứ không cô đơn. Bạn có thể ngồi hàng giờ đọc sách, thiền, hoặc suy ngẫm mà không cảm thấy bứt rứt. Đây là món quà lớn — vì nội tâm an nhiên là nền tảng của hạnh phúc bền vững.',
@@ -1182,8 +1182,8 @@ var TUVI_VAN_PHUCDUC = {
     ]
   },
   'B': {
-    tomTat: 'Phúc phần của bạn thuộc nhóm "trung bình" — dòng họ có nền tảng khá, đời sống tinh thần ổn định nhưng đôi khi lo nghĩ nhiều.',
-    dongHo: 'Dòng họ của bạn ở mức khá — không quá giàu sang nhưng cũng không thiếu thốn. Ông bà, cha mẹ là người sống đức độ, được hàng xóm quý mến. Bạn được thừa hưởng nền nếp gia đình và sự giáo dục cẩn thận.',
+    tomTat: 'Phúc phần của bạn thuộc nhóm "trung bình" — lá số gợi ý nền tảng gia đình ở mức khá, đời sống tinh thần ổn định nhưng đôi khi lo nghĩ nhiều.',
+    dongHo: 'Theo cách luận truyền thống, dòng họ của bạn ở mức khá — không quá giàu sang nhưng cũng không thiếu thốn; ông bà, cha mẹ sống đức độ, được hàng xóm quý mến. Bạn có xu hướng được thừa hưởng nền nếp gia đình và sự giáo dục cẩn thận — hãy đối chiếu với trải nghiệm thật của mình.',
     linhHon: 'Cung Phúc Đức cho thấy tiền kiếp của bạn có nhiều trăn trở — có thể từng là người hay suy nghĩ, tìm tòi, hoặc có tâm hồn nghệ sĩ. Bạn mang theo nỗi băn khoăn về ý nghĩa cuộc sống, và kiếp này là cơ hội để tìm ra câu trả lời. Đây không phải nghiệp xấu — mà là bài học về sự cân bằng giữa lý trí và trực giác.',
     tinhThan: 'Đời sống tinh thần của bạn khá ổn định, nhưng đôi khi bị chi phối bởi lo lắng và suy nghĩ quá nhiều. Bạn là người hay tư duy, thích tìm hiểu sâu về mọi vấn đề. Khi buồn, bạn có xu hướng thu mình lại thay vì chia sẻ.',
     motMinh: 'Những lúc một mình, tâm trí bạn thường không yên — hay suy nghĩ về quá khứ, lo lắng cho tương lai. Cần học cách sống trong hiện tại và buông bỏ những điều không thể kiểm soát. Khi đã học được điều này, bạn sẽ thấy bình an hơn rất nhiều.',
@@ -1194,8 +1194,8 @@ var TUVI_VAN_PHUCDUC = {
     ]
   },
   'C': {
-    tomTat: 'Phúc phần của bạn thuộc nhóm "phúc mỏng" — dòng họ ít nền tảng, cuộc đời phải tự lực nhiều. Nhưng đây cũng là cơ hội để tự tạo phúc cho chính mình và con cháu.',
-    dongHo: 'Dòng họ của bạn có thể ít nền tảng, hoặc có biến cố trong quá khứ. Ông bà, cha mẹ vất vả gây dựng. Bạn thừa hưởng ít hơn về vật chất, nhưng lại học được tinh thần tự lực và chịu khó — đây là tài sản vô giá.',
+    tomTat: 'Phúc phần của bạn thuộc nhóm "phúc mỏng" — theo cổ học, cuộc đời bạn có xu hướng phải tự lực nhiều. Nhưng đây cũng là cơ hội để tự tạo phúc cho chính mình và con cháu.',
+    dongHo: 'Lá số gợi ý dòng họ của bạn có thể ít nền tảng, hoặc từng trải qua thăng trầm; ông bà, cha mẹ có thể đã vất vả gây dựng — bạn hãy đối chiếu với thực tế. Dù thừa hưởng nhiều hay ít về vật chất, bạn học được tinh thần tự lực và chịu khó — đây là tài sản vô giá.',
     linhHon: 'Cung Phúc Đức cho thấy tiền kiếp của bạn có thể đã trải qua nhiều thử thách, hoặc chưa tích đủ phúc. Kiếp này là cơ hội để bắt đầu lại — bằng cách tu tâm, làm việc thiện, và tự xây dựng phúc đức. Đừng buồn vì phúc mỏng; hãy xem đây là bài học quý để rèn luyện bản thân.',
     tinhThan: 'Đời sống tinh thần của bạn không mấy phong phú, đôi khi cảm thấy trống trải. Bạn thường bận rộn với cuộc sống vật chất, ít có thời gian chăm sóc đời sống nội tâm. Đây là điểm cần cân bằng — vì tinh thần không vững sẽ khó đi đường dài.',
     motMinh: 'Những lúc một mình, bạn có thể cảm thấy trống vắng hoặc lo lắng về tương lai. Đây là dấu hiệu cho thấy bạn cần xây dựng đời sống tinh thần — qua đọc sách, học hỏi, hoặc kết nối với người tích cực. Đừng để cuộc sống vật chất lấn át tâm hồn.',
@@ -1206,10 +1206,10 @@ var TUVI_VAN_PHUCDUC = {
     ]
   },
   'D': {
-    tomTat: 'Phúc phần của bạn thuộc nhóm "biến động" — dòng họ có thăng trầm, đời sống tinh thần cần nhiều công phu tu dưỡng. Nếu biết tu tâm, về già sẽ an ổn.',
-    dongHo: 'Dòng họ của bạn có thể có nhiều biến động — thịnh rồi suy, hợp rồi ly. Không có truyền thống ổn định. Bạn thừa hưởng ít hơn về nề nếp, nhưng đổi lại bạn có bản lĩnh và khả năng tự lực cao — đây là tài sản đáng quý.',
+    tomTat: 'Phúc phần của bạn thuộc nhóm "biến động" — lá số gợi ý gia đình có thăng trầm, đời sống tinh thần cần nhiều công phu tu dưỡng. Nếu biết tu tâm, về già sẽ an ổn.',
+    dongHo: 'Lá số gợi ý dòng họ của bạn có thể trải qua nhiều thay đổi qua các thế hệ — bạn hãy đối chiếu với thực tế gia đình mình. Dù vậy, bạn có xu hướng mang bản lĩnh và khả năng tự lực cao — đây là tài sản đáng quý.',
     linhHon: 'Cung Phúc Đức cho thấy tiền kiếp của bạn có thể đã trải qua những biến cố lớn — có thể từng là chiến binh, người cải cách, hoặc người sống mãnh liệt. Bạn mang theo sự bất an và khát vọng đổi mới. Kiếp này là cơ hội để học cách ổn định nội tâm — đây là bài học quan trọng nhất của bạn.',
-    tinhThan: 'Đời sống tinh thần của bạn thăng trầm theo cảm xúc — khi vui thì rất sôi nổi, khi buồn thì trầm uất. Bạn dễ bị cuốn theo ham muốn và thú vui vật chất. Cần tu dưỡng để giữ tâm ổn định — thiền, yoga, hoặc các hoạt động tâm linh sẽ giúp bạn nhiều.',
+    tinhThan: 'Đời sống tinh thần của bạn thăng trầm theo cảm xúc — khi vui thì rất sôi nổi, khi buồn thì dễ chùng xuống. Bạn dễ bị cuốn theo ham muốn và thú vui vật chất. Cần tu dưỡng để giữ tâm ổn định — thiền, yoga, hoặc các hoạt động tâm linh sẽ giúp bạn nhiều.',
     motMinh: 'Những lúc một mình, bạn dễ cảm thấy bứt rứt, muốn làm gì đó thay vì ngồi yên. Đây là dấu hiệu tâm chưa tĩnh. Cần học cách ngồi yên với chính mình — đây là bài học quan trọng nhất để chuyển hóa phúc phần về già.',
     loiKhuyen: [
       'Học cách ngồi yên 15 phút mỗi ngày — không điện thoại, không suy nghĩ — chỉ để tâm nghỉ ngơi.',
@@ -1219,7 +1219,7 @@ var TUVI_VAN_PHUCDUC = {
   },
   'F': {
     tomTat: 'Phúc phần của bạn thuộc nhóm đặc biệt — cung Phúc Đức không có chính tinh. Đời sống tinh thần phụ thuộc nhiều vào cung xung chiếu và sự tu dưỡng của bản thân.',
-    dongHo: 'Dòng họ của bạn không có nền tảng nổi bật — không quá giàu cũng không quá nghèo. Bạn thừa hưởng ít về cả vật chất lẫn tinh thần, nhưng đổi lại bạn có sự tự do — không bị ràng buộc bởi truyền thống dòng họ.',
+    dongHo: 'Lá số không cho thấy nét nổi bật về dòng họ — bạn hãy đối chiếu với thực tế gia đình mình. Điểm hay là bạn có sự tự do — không bị ràng buộc bởi truyền thống dòng họ.',
     linhHon: 'Cung Phúc Đức không có chính tinh là dấu hiệu đặc biệt — có thể tiền kiếp của bạn chưa định hình rõ, hoặc đang trong giai đoạn chuyển hóa. Bạn có nhiều tự do để tự tạo phúc cho chính mình — không bị trói buộc bởi nghiệp cũ. Đây là cơ hội lớn để bắt đầu lại từ đầu.',
     tinhThan: 'Đời sống tinh thần của bạn linh hoạt — dễ thay đổi tùy môi trường và người xung quanh. Khi gần người tích cực, bạn thấy vui vẻ; khi gần người tiêu cực, bạn dễ bị cuốn theo. Cần chủ động chọn môi trường sống và bạn bè để nuôi dưỡng tinh thần.',
     motMinh: 'Những lúc một mình, tâm trạng của bạn phụ thuộc vào cung xung chiếu (Tật Ách). Nếu Tật Ách tốt, bạn thấy bình an; nếu không, bạn dễ lo lắng. Cần học cách tĩnh tâm bằng các phương pháp cụ thể — thiền, viết nhật ký, hoặc đi dạo trong thiên nhiên.',
@@ -1242,15 +1242,15 @@ var TUVI_FACT_THIENDI_CHINHTINH = {
   'Thái Dương': { yNghia: 'Khi ra ngoài, bạn thuộc mẫu người hướng ngoại, nhiệt tình, thích giao tiếp. Bạn có xu hướng giao du rộng và được nhiều người biết đến.', trongSo: 1.5, tags: ['huong_ngoai', 'nhiet_tinh', 'giao_tiep_rong'] },
   'Vũ Khúc':    { yNghia: 'Khi ra ngoài, bạn thuộc mẫu người thực tế, quyết đoán, tập trung vào mục tiêu cụ thể. Bạn đi xa thường vì mục đích rõ ràng — công việc, mưu sinh, hoặc phát triển bản thân.', trongSo: 1.5, tags: ['thuc_te', 'quyet_doan', 'co_muc_tieu'] },
   'Thiên Đồng': { yNghia: 'Khi ra ngoài, bạn thuộc mẫu người dễ được lòng người khác. Bạn có xu hướng làm quen nhanh và được quý mến, nhưng thành công khi đi xa thường đến muộn hơn so với người khác.', trongSo: 1.3, tags: ['duoc_long_nguoi', 'de_lam_quen', 'thanh_cong_muon'] },
-  'Liêm Trinh': { yNghia: 'Khi ra ngoài, bạn thuộc mẫu người có nguyên tắc, đôi khi cứng nhắc. Bạn có xu hướng va chạm nhiều hơn với người khác vì tính cách nguyên tắc. Cần cẩn trọng về pháp lý và giao thông khi đi xa.', trongSo: 1.4, tags: ['nguyen_tac', 'de_va_cham', 'can_phap_ly'] },
+  'Liêm Trinh': { yNghia: 'Khi ra ngoài, bạn thuộc mẫu người có nguyên tắc, đôi khi cứng nhắc. Bạn có xu hướng va chạm nhiều hơn với người khác vì tính cách nguyên tắc. Khi đi xa nên cẩn trọng giấy tờ, hợp đồng và đi lại cẩn thận.', trongSo: 1.4, tags: ['nguyen_tac', 'de_va_cham', 'can_phap_ly'] },
   'Thiên Phủ':  { yNghia: 'Khi ra ngoài, bạn thuộc mẫu người điềm đạm, đáng tin cậy. Bạn có xu hướng tạo dựng mối quan hệ bền vững với người khác và thường có người đỡ đầu khi đi xa.', trongSo: 1.5, tags: ['diem_dam', 'dang_tin', 'co_nguoi_do_dau'] },
   'Thái Âm':    { yNghia: 'Khi ra ngoài, bạn thuộc mẫu người nhạy cảm với môi trường mới và có khả năng thích nghi tốt. Bạn có duyên với việc đi xa, đặc biệt là xuất ngoại, nhưng đôi khi nhớ nhà và dễ u sầu khi ở nơi xa.', trongSo: 1.4, tags: ['nhao_cam', 'thich_nghi_tot', 'co_duyen_xuat_ngoai'] },
   'Tham Lang':  { yNghia: 'Khi ra ngoài, bạn thuộc mẫu người giao du rộng, có sức hút tự nhiên. Bạn có xu hướng gặp nhiều cám dỗ bên ngoài — cần giữ mình để không sa đà vào những thú vui không lành mạnh.', trongSo: 1.4, tags: ['giao_du_rong', 'co_suc_hut', 'can_giu_minh'] },
   'Cự Môn':     { yNghia: 'Khi ra ngoài, bạn thuộc mẫu người sắc sảo, hay lý luận. Bạn có xu hướng gặp thị phi, lời ra tiếng vào nhiều hơn người khác. Cần uốn lưỡi bảy lần trước khi nói khi ra ngoài xã hội.', trongSo: 1.3, tags: ['sac_sao', 'hay_ly_luan', 'de_thi_phi'] },
   'Thiên Tướng':{ yNghia: 'Khi ra ngoài, bạn thuộc mẫu người đàng hoàng, chỉn chu, dễ tạo thiện cảm. Bạn có xu hướng được người khác nể trọng vì tác phong đáng tin cậy của mình.', trongSo: 1.5, tags: ['dang_hoang', 'chin_chu', 'duoc_ne_trong'] },
   'Thiên Lương':{ yNghia: 'Khi ra ngoài, bạn thuộc mẫu người nhân hậu, có xu hướng được người lớn tuổi che chở. Bạn có duyên với công tác xã hội, giúp đỡ cộng đồng, hoặc những hoạt động có tính nhân văn.', trongSo: 1.5, tags: ['nhan_hau', 'duoc_che_cho', 'co_duyen_cong_tac_xa_hoi'] },
-  'Thất Sát':   { yNghia: 'Khi ra ngoài, bạn thuộc mẫu người dám dấn thân, không ngại thử thách. Bạn có xu hướng bôn ba, vất vả mới thành công, nhưng bù lại bạn có bản lĩnh hơn người. Cần đề phòng tai nạn khi đi lại.', trongSo: 1.5, tags: ['dam_dan_than', 'bon_ba', 'can_tai_nan'] },
-  'Phá Quân':   { yNghia: 'Khi ra ngoài, bạn thuộc mẫu người không thích an phận, thích thay đổi môi trường. Bạn có xu hướng đổi chỗ ở, công việc nhiều lần trong đời. Cần học cách ổn định trước khi quá muộn.', trongSo: 1.4, tags: ['khong_an_phan', 'thich_thay_doi', 'can_on_dinh'] }
+  'Thất Sát':   { yNghia: 'Khi ra ngoài, bạn thuộc mẫu người dám dấn thân, không ngại thử thách. Bạn có xu hướng bôn ba, vất vả mới thành công, nhưng bù lại bạn có bản lĩnh hơn người. Nên đi lại cẩn thận, thong thả.', trongSo: 1.5, tags: ['dam_dan_than', 'bon_ba', 'can_tai_nan'] },
+  'Phá Quân':   { yNghia: 'Khi ra ngoài, bạn thuộc mẫu người không thích an phận, thích thay đổi môi trường. Bạn có xu hướng đổi chỗ ở, công việc nhiều lần trong đời. Nên dần tìm cho mình một điểm tựa ổn định.', trongSo: 1.4, tags: ['khong_an_phan', 'thich_thay_doi', 'can_on_dinh'] }
 };
 
 var TUVI_FACT_THIENDI_PHUTINH = {
@@ -1266,12 +1266,12 @@ var TUVI_FACT_THIENDI_PHUTINH = {
   'Phượng Các': { yNghia: 'Có Phượng Các — ra ngoài có phong thái cao quý, giao tiếp lịch sự. Đi xa dễ gây ấn tượng tốt với người mới.', loai: 'manh', trongSo: 1.0, tags: ['phong_thai_cao_quy'] },
 
   // Hung tinh — ra ngoài cần chú ý
-  'Kình Dương': { yNghia: 'Có Kình Dương — ra ngoài dễ va chạm, cần đề phòng tai nạn giao thông khi đi xa. Tính cách cương mãnh khi ra xã hội dễ gây xung đột.', loai: 'yeu', trongSo: 1.4, tags: ['tai_nan_giao_thong', 'de_va_cham'] },
+  'Kình Dương': { yNghia: 'Có Kình Dương — ra ngoài dễ va chạm, nên đi lại cẩn thận khi đi xa. Tính cách cương mãnh khi ra xã hội dễ gây xung đột.', loai: 'yeu', trongSo: 1.4, tags: ['tai_nan_giao_thong', 'de_va_cham'] },
   'Đà La':      { yNghia: 'Có Đà La — đi lại trắc trở, dễ bị trì hoãn, dây dưa. Ra ngoài cần kiên nhẫn, không nên nóng vội vì dễ gặp trở ngại.', loai: 'yeu', trongSo: 1.3, tags: ['di_lai_trac_tro', 'tri_hoan'] },
   'Hỏa Tinh':   { yNghia: 'Có Hỏa Tinh — ra ngoài dễ gặp chuyện bất ngờ, nóng nảy. Đi xa cần giữ bình tĩnh, tránh quyết định vội vàng khi gặp sự cố.', loai: 'yeu', trongSo: 1.2, tags: ['bat_ngo', 'nong_nay'] },
   'Linh Tinh':  { yNghia: 'Có Linh Tinh — ra ngoài dễ gặp chuyện âm ỉ, khó chịu. Đi xa cần chú ý sức khỏe, tránh làm việc quá sức ở môi trường mới.', loai: 'yeu', trongSo: 1.2, tags: ['am_i', 'suc_khoe'] },
   'Địa Không':  { yNghia: 'Có Địa Không — ra ngoài dễ gặp hụt hẫng, mất mát. Cẩn thận bị lừa đảo khi đi xa, không nên tin người quá dễ dàng ở nơi mới.', loai: 'yeu', trongSo: 1.3, tags: ['hut_hang', 'can_lua_dao'] },
-  'Địa Kiếp':   { yNghia: 'Có Địa Kiếp — ra ngoài dễ gặp biến cố bất ngờ, mất mát tài sản. Đi xa cần cẩn trọng hành lý, giấy tờ, tránh mang theo nhiều tiền mặt.', loai: 'yeu', trongSo: 1.4, tags: ['bien_co', 'mat_mat'] },
+  'Địa Kiếp':   { yNghia: 'Có Địa Kiếp — ra ngoài dễ gặp chuyện bất ngờ về tiền bạc, đồ đạc. Đi xa cần cẩn trọng hành lý, giấy tờ, tránh mang theo nhiều tiền mặt.', loai: 'yeu', trongSo: 1.4, tags: ['bien_co', 'mat_mat'] },
   'Hóa Kỵ':     { yNghia: 'Có Hóa Kỵ — ra ngoài dễ bị hiểu lầm, thị phi. Đi xa cần giữ lời ăn tiếng nói, tránh tranh cãi với người lạ. Giấy tờ, hợp đồng cần kiểm tra kỹ.', loai: 'yeu', trongSo: 1.5, tags: ['hieu_lam', 'thi_phi', 'giay_to'] }
 };
 
@@ -1317,9 +1317,9 @@ var TUVI_VAN_THIENDI = {
     raNgoai: 'Khi ra ngoài, bạn thuộc mẫu người dám nghĩ dám làm, không ngại khó khăn. Bạn có xu hướng lao vào những thử thách mới, thích khám phá vùng đất mới, không chịu ngồi yên một chỗ. Tuy nhiên, bạn cũng dễ gặp tai nạn hoặc biến cố bất ngờ khi đi lại, nên cần cẩn trọng.',
     moiTruong: 'Môi trường bên ngoài lý tưởng của bạn là nơi có nhiều thử thách, cạnh tranh, hoặc đang trong giai đoạn phát triển mạnh. Bạn hợp với việc đi xa để khởi nghiệp, đầu tư, hoặc làm những việc chưa ai làm.',
     coHoi: 'Cơ hội của bạn thường đến từ những bước ngoặt lớn — đi xa có thể là bước ngoặt thay đổi cả cuộc đời. Bạn dễ thành công trong các lĩnh vực mạo hiểm, kinh doanh, hoặc những ngành nghề đòi hỏi sự dấn thân.',
-    luuY: 'Bạn nên đặc biệt cẩn thận về tai nạn giao thông và sức khỏe khi đi xa. Nên mua bảo hiểm, chuẩn bị thuốc men, và luôn có phương án dự phòng. Tránh đi xa một mình vào những nơi nguy hiểm.',
+    luuY: 'Khi đi xa, bạn nên chuẩn bị kỹ: lịch trình rõ ràng, bảo hiểm, đồ dùng cần thiết và luôn có phương án dự phòng.',
     loiKhuyen: [
-      'Đi xa cần có "kế hoạch B" — bạn dễ gặp biến cố bất ngờ.',
+      'Đi xa nên có "kế hoạch B" — chuẩn bị kỹ giúp bạn vững tâm hơn.',
       'Ra ngoài nhớ giữ bình tĩnh trước mọi tình huống — sự nóng nảy có thể khiến bạn trả giá.',
       'Xây dựng một mạng lưới hỗ trợ ở nơi mới — đừng dấn thân một mình.'
     ]
@@ -1433,7 +1433,7 @@ function taoDoanCanhBaoThienDi_(chart, pi) {
   var canhBao = [];
 
   if (dsSao.indexOf('Kình Dương') >= 0 || dsSao.indexOf('Đà La') >= 0) {
-    canhBao.push('Có Kình Dương hoặc Đà La — đề phòng tai nạn giao thông khi đi xa. Nên cẩn thận khi tham gia giao thông, tránh đi đêm ở nơi xa lạ.');
+    canhBao.push('Có Kình Dương hoặc Đà La — khi đi xa nên đi chậm, tuân thủ an toàn giao thông, hạn chế đi đêm ở nơi xa lạ.');
   }
   if (dsSao.indexOf('Địa Không') >= 0 || dsSao.indexOf('Địa Kiếp') >= 0) {
     canhBao.push('Có Địa Không hoặc Địa Kiếp — ra ngoài dễ gặp hụt hẫng, mất mát. Cẩn thận bị lừa đảo khi đi xa, không nên tin người quá dễ dàng ở nơi mới. Mang theo ít tiền mặt và giấy tờ tùy thân cẩn thận.');
@@ -3604,7 +3604,7 @@ function tuviTinhSoConGioiTinh_(chart, palace, pi) {
   else if (diemSoCon >= 6.5) soCon = '3-4 con';
   else if (diemSoCon >= 5) soCon = '2-3 con';
   else if (diemSoCon >= 3.5) soCon = '1-2 con';
-  else soCon = 'ít con (1 con hoặc hiếm muộn)';
+  else soCon = 'ít con';
 
   // Kết luận giới tính
   var gioiTinh;
@@ -3672,13 +3672,7 @@ function sinhVanCungTuTuc_(chart, pi) {
   }
   doan.push({ tieuDe: 'Duyên con cái', text: textDuyen });
 
-  // === ĐOẠN 3: SỐ CON & GIỚI TÍNH ===
-  var sg = tuviTinhSoConGioiTinh_(chart, palace, pi);
-  var textSG = 'Theo phân tích kết hợp Tử Vi và Bát Tự: xu hướng <b>' + sg.soCon + '</b>, ' + sg.gioiTinh + ' (tỷ lệ khoảng ' + sg.pTrai + '% trai / ' + (100 - sg.pTrai) + '% gái). ';
-  if (sg.batiKet) textSG += sg.batiKet + ' ';
-  textSG += '<i>Cơ sở: ' + sg.chiTiet + '</i>';
-  textSG += ' <b>Lưu ý:</b> Đây chỉ là xu hướng tham khảo — thực tế còn phụ thuộc vào kế hoạch gia đình, sức khỏe sinh sản, và nguyện vọng của cả hai vợ chồng.';
-  doan.push({ tieuDe: 'Số con & giới tính (tham khảo)', text: textSG });
+  // 24/10: bỏ đoạn 'Số con & giới tính' (số con cụ thể, % trai/gái – không có cơ sở, dễ gây áp lực)
 
   // === ĐOẠN 4: CON CÁI CỦA BẠN ===
   // Chỉ lấy facts chính tinh, sắp xếp theo trọng số, lấy 2 câu mạnh nhất
@@ -3792,7 +3786,7 @@ function sinhVanCungTatAch_(chart, pi) {
   var doan = [];
 
   doan.push({ tieuDe: 'Tóm tắt', text: van.tomTat });
-  doan.push({ tieuDe: 'Thể chất tổng quát', text: van.theChat });
+  doan.push({ tieuDe: 'Nếp sống tổng quát', text: van.theChat });
 
   // Đoạn 3: Cơ quan cần chú ý
   var textCoQuan = van.coQuan;
@@ -3802,7 +3796,7 @@ function sinhVanCungTatAch_(chart, pi) {
   if (factsCoQuan.length) {
     textCoQuan += ' Cụ thể: ' + factsCoQuan.map(function(f){ return f.yNghia; }).join(' ');
   }
-  doan.push({ tieuDe: 'Cơ quan cần chú ý', text: textCoQuan });
+  doan.push({ tieuDe: 'Điều nên để ý', text: textCoQuan });
 
   // Đoạn 4: Cách phòng bệnh
   var textPhong = van.phongBenh;
@@ -3813,7 +3807,7 @@ function sinhVanCungTatAch_(chart, pi) {
   if (factsGiai.length) {
     textPhong += ' Điểm sáng: ' + factsGiai.map(function(f){ return f.yNghia; }).join(' ');
   }
-  doan.push({ tieuDe: 'Cách phòng bệnh', text: textPhong });
+  doan.push({ tieuDe: 'Cách giữ gìn sức khỏe', text: textPhong });
 
   doan.push({ tieuDe: 'Lời khuyên cụ thể', text: '', list: van.loiKhuyen.slice() });
 

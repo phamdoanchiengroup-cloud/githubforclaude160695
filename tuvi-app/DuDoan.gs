@@ -17,15 +17,15 @@
  */
 
 var DD_CHU_DE = {
-  sucKhoe: { ten: 'Biến cố sức khỏe', icon: '✚', loai: 'xau',
+  sucKhoe: { ten: 'Năm nên giữ sức, sống chậm', icon: '✚', loai: 'xau',
     coSo: 'Xét cung Tật Ách của năm (cung thứ 6 tính từ tiểu hạn) và bản thân cung tiểu hạn: lưu Kình Dương, Đà La, Hóa Kỵ, Tang Môn, Bạch Hổ nhập vào; hiện tượng "trùng phùng" (lưu sát tinh gặp sát tinh gốc); tiểu hạn đi vào cung Tật Ách gốc hoặc gặp Thiên Thương – Thiên Sứ; năm xung/trùng Thái Tuế. Bát Tự: năm mang hành Kỵ thần khắc Nhật chủ, chi năm xung chi ngày. Các sao giải (Thiên Giải, Địa Giải, Giải Thần, Nhị Đức, Hóa Khoa) làm giảm mức độ.' },
-  taiChinh: { ten: 'Biến cố tài chính', icon: '⚠', loai: 'xau',
+  taiChinh: { ten: 'Năm cần quản lý tài chính chặt', icon: '⚠', loai: 'xau',
     coSo: 'Xét cung Tài Bạch của năm (cung thứ 5 tính từ tiểu hạn): lưu Hóa Kỵ, lưu Kình – Đà, Địa Không – Địa Kiếp gốc, Đại Hao – Tiểu Hao; Hóa Kỵ đại vận nhập Tài. Bát Tự: năm Tỷ Kiên – Kiếp Tài ("Tỷ Kiếp đoạt Tài"), năm mang hành Kỵ thần. Lưu Lộc tại cung Tài làm giảm rủi ro.' },
-  giaDao: { ten: 'Biến động gia đạo', icon: '⌂', loai: 'xau',
+  giaDao: { ten: 'Năm gia đình cần vun đắp', icon: '⌂', loai: 'xau',
     coSo: 'Xét các cung gia đình của năm: Phu Thê (thứ 3), Điền Trạch (thứ 10), Phụ Mẫu (thứ 12 tính từ tiểu hạn): lưu Tang Môn, Bạch Hổ, Khốc – Hư, Hóa Kỵ, Kình – Đà; Cô Thần – Quả Tú tại hạn. Bát Tự: chi năm xung – hình – hại chi ngày (cung phu thê) và chi năm sinh (tổ nghiệp).' },
-  ketHon: { ten: 'Khả năng kết hôn', icon: '❤', loai: 'tot',
+  ketHon: { ten: 'Năm thuận duyên cưới hỏi', icon: '❤', loai: 'tot',
     coSo: 'Xét hỷ tinh: lưu Hồng Loan – Thiên Hỷ và Hồng Loan – Thiên Hỷ – Đào Hoa gốc gặp tiểu hạn hoặc cung Phu Thê của năm; tiểu hạn/Lưu Thái Tuế đi vào cung Phu Thê gốc; Hóa Lộc – Hóa Khoa nhập Phu Thê. Bát Tự: năm xuất hiện "phối ngẫu tinh" (nam: Chính Tài – Thiên Tài; nữ: Chính Quan – Thất Sát), chi năm lục hợp/tam hợp chi ngày, năm Đào Hoa. Điều chỉnh theo độ tuổi thường kết hôn.' },
-  sinhCon: { ten: 'Khả năng sinh con', icon: '✿', loai: 'tot',
+  sinhCon: { ten: 'Năm thuận tin vui con cái', icon: '✿', loai: 'tot',
     coSo: 'Xét cung Tử Tức của năm (thứ 4 tính từ tiểu hạn) và cung Tử Tức gốc: tiểu hạn nhập Tử Tức, lưu Thiên Hỷ – Hồng Loan, sao Thai, Hóa Lộc – Khoa nhập Tử Tức. Bát Tự: năm "tử tức tinh" (nữ: Thực Thần – Thương Quan; nam: Chính Quan – Thất Sát), chi năm hợp chi giờ (cung tử tức). Trừ điểm khi Không Kiếp, Hóa Kỵ ở Tử Tức. Điều chỉnh theo độ tuổi sinh nở.' },
   taiLoc: { ten: 'Tài lộc sáng', icon: '✦', loai: 'tot',
     coSo: 'Xét cung tiểu hạn và cung Tài Bạch của năm: lưu Lộc Tồn, lưu Hóa Lộc, Song Lộc (lưu Lộc gặp Lộc gốc), Lộc Mã giao trì, Hóa Lộc đại vận; chất lượng cung Tài gốc. Bát Tự: năm Tài tinh khi Nhật chủ đủ vượng để "gánh tài", năm mang hành Dụng/Hỷ thần. Trừ điểm khi Kỵ, Không Kiếp nhập Tài.' },
@@ -100,10 +100,10 @@ function ddPhanTichNam_(chart, bt, Y, dvCache) {
       if (luu(gp, n) && (gp === th || gp === yTat)) s.add(1.5, 'Trùng phùng: lưu ' + n + ' gặp ' + m + ' gốc tại ' + (gp === th ? 'cung tiểu hạn' : 'Tật Ách năm'));
     });
   });
-  if (luu(yTat, 'Hóa Kỵ')) s.add(2, 'Lưu Hóa Kỵ nhập Tật Ách năm – bệnh dai dẳng, khó dứt');
+  if (luu(yTat, 'Hóa Kỵ')) s.add(2, 'Lưu Hóa Kỵ nhập Tật Ách năm – nên giữ nếp sinh hoạt điều độ, khám định kỳ');
   else if (luu(th, 'Hóa Kỵ')) s.add(1.2, 'Lưu Hóa Kỵ tại cung tiểu hạn');
-  if (luu(th, 'Tang Môn') || luu(yTat, 'Tang Môn')) s.add(1.3, 'Lưu Tang Môn nhập hạn/Tật – buồn phiền, hao tổn sức');
-  if (luu(th, 'Bạch Hổ') || luu(yTat, 'Bạch Hổ')) s.add(1.5, 'Lưu Bạch Hổ nhập hạn/Tật – đề phòng tai nạn, phẫu thuật');
+  if (luu(th, 'Tang Môn') || luu(yTat, 'Tang Môn')) s.add(1.3, 'Lưu Tang Môn nhập hạn/Tật – dễ buồn phiền, nên nghỉ ngơi đủ');
+  if (luu(th, 'Bạch Hổ') || luu(yTat, 'Bạch Hổ')) s.add(1.5, 'Lưu Bạch Hổ nhập hạn/Tật – nên đi chậm, giữ an toàn khi đi lại và làm việc');
   if (th === chart.pos['Thiên Sứ'] || th === chart.pos['Thiên Thương']) s.add(1.3, 'Tiểu hạn gặp ' + (th === chart.pos['Thiên Sứ'] ? 'Thiên Sứ' : 'Thiên Thương') + ' – "hạn gặp Thương Sứ"');
   if (P[th].cung === 'Tật Ách') s.add(1.2, 'Tiểu hạn đi vào cung Tật Ách gốc');
   if (dvh(yTat, 'Hóa Kỵ')) s.add(1.2, 'Hóa Kỵ đại vận nhập Tật Ách năm');
@@ -120,11 +120,11 @@ function ddPhanTichNam_(chart, bt, Y, dvCache) {
 
   /* ---------- TÀI CHÍNH ---------- */
   s = ddBo_();
-  if (luu(yTai, 'Hóa Kỵ')) s.add(2.5, 'Lưu Hóa Kỵ nhập Tài Bạch năm (' + ten(yTai) + ') – tiền bạc vướng mắc, nợ nần');
+  if (luu(yTai, 'Hóa Kỵ')) s.add(2.5, 'Lưu Hóa Kỵ nhập Tài Bạch năm (' + ten(yTai) + ') – tiền bạc dễ vướng mắc, hạn chế vay mượn');
   else if (luuTP('Hóa Kỵ')) s.add(1, 'Lưu Hóa Kỵ trong tam phương tiểu hạn');
   ['Kình Dương', 'Đà La'].forEach(function (n) { if (luu(yTai, n)) s.add(1.4, 'Lưu ' + n + ' nhập Tài Bạch năm – tranh chấp tiền bạc'); });
   ['Địa Không', 'Địa Kiếp'].forEach(function (n) {
-    if (goc(yTai, n)) s.add(1.3, n + ' gốc tại Tài Bạch năm – dễ mất tiền đột ngột');
+    if (goc(yTai, n)) s.add(1.3, n + ' gốc tại Tài Bạch năm – dễ có khoản chi bất ngờ, nên có quỹ dự phòng');
     else if (goc(th, n)) s.add(1, n + ' gốc tại cung tiểu hạn');
   });
   if (P[yTai].bacSi === 'Đại Hao' || P[th].bacSi === 'Đại Hao') s.add(1, 'Đại Hao tại ' + (P[th].bacSi === 'Đại Hao' ? 'tiểu hạn' : 'Tài năm') + ' – chi tiêu lớn');
@@ -141,13 +141,13 @@ function ddPhanTichNam_(chart, bt, Y, dvCache) {
     var p = x[0];
     if (luu(p, 'Tang Môn')) s.add(1.4, 'Lưu Tang Môn nhập ' + x[1] + ' năm (' + ten(p) + ')');
     if (luu(p, 'Bạch Hổ')) s.add(1.4, 'Lưu Bạch Hổ nhập ' + x[1] + ' năm (' + ten(p) + ')');
-    if (luu(p, 'Hóa Kỵ')) s.add(1.8, 'Lưu Hóa Kỵ nhập ' + x[1] + ' năm – bất hòa, lo lắng');
+    if (luu(p, 'Hóa Kỵ')) s.add(1.8, 'Lưu Hóa Kỵ nhập ' + x[1] + ' năm – dễ hiểu lầm, lo lắng; nên lắng nghe nhau');
     if (luu(p, 'Thiên Khốc') || luu(p, 'Thiên Hư')) s.add(0.6, 'Lưu Khốc/Hư nhập ' + x[1] + ' năm');
     if (luu(p, 'Kình Dương') || luu(p, 'Đà La')) s.add(0.8, 'Lưu Kình/Đà nhập ' + x[1] + ' năm');
     if (dvh(p, 'Hóa Kỵ')) s.add(0.8, 'Hóa Kỵ đại vận nhập ' + x[1] + ' năm');
   });
   if (goc(th, 'Cô Thần') || goc(th, 'Quả Tú')) s.add(0.6, 'Cô Thần/Quả Tú tại tiểu hạn');
-  if (qhNgay.indexOf('lục xung') >= 0) s.add(1.5, 'Bát Tự: chi năm xung chi ngày (cung phu thê) – dễ bất hòa, thay đổi chỗ ở');
+  if (qhNgay.indexOf('lục xung') >= 0) s.add(1.5, 'Bát Tự: chi năm xung chi ngày (cung phu thê) – dễ khác ý, thay đổi chỗ ở; nên nói chuyện thẳng thắn');
   if (qhNgay.indexOf('lục hại') >= 0 || qhNgay.indexOf('tương hình') >= 0) s.add(0.7, 'Bát Tự: chi năm ' + qhNgay.join('/') + ' chi ngày');
   if (qhNam.indexOf('lục xung') >= 0) s.add(0.8, 'Bát Tự: chi năm xung chi năm sinh (tổ nghiệp, cha mẹ)');
   if (ttCan === 'Kiếp Tài' && male) s.add(0.6, 'Bát Tự: Kiếp Tài khắc Chính Tài (thê tinh của nam)');
@@ -174,8 +174,8 @@ function ddPhanTichNam_(chart, bt, Y, dvCache) {
   if (phoi.indexOf(ttCan) >= 0) s.add(ttCan === phoi[0] ? 1.8 : 1.3, 'Bát Tự: phối ngẫu tinh xuất hiện (' + ttCan + ' – ' + (male ? 'thê tinh' : 'phu tinh') + ')');
   else if (phoi.indexOf(ttChi) >= 0) s.add(0.8, 'Bát Tự: phối ngẫu tinh ẩn trong chi năm (' + ttChi + ')');
   if ([9, 6, 3, 0][chiNamSinh % 4] === L.chi || [9, 6, 3, 0][chiNgay % 4] === L.chi) s.add(0.8, 'Năm Đào Hoa theo tuổi/ngày sinh');
-  if (luu(yPT, 'Hóa Kỵ')) s.add(-1.4, 'Lưu Hóa Kỵ ở Phu Thê năm – duyên trắc trở');
-  if (goc(th, 'Cô Thần') || goc(th, 'Quả Tú')) s.add(-0.7, 'Cô/Quả tại hạn – khó thành đôi');
+  if (luu(yPT, 'Hóa Kỵ')) s.add(-1.4, 'Lưu Hóa Kỵ ở Phu Thê năm – duyên cần thêm thời gian, nói chuyện thẳng thắn');
+  if (goc(th, 'Cô Thần') || goc(th, 'Quả Tú')) s.add(-0.7, 'Cô/Quả tại hạn – nên chủ động mở lòng hơn');
   R.ketHon = s;
 
   /* ---------- SINH CON ---------- */
@@ -289,7 +289,7 @@ function ddPhanTichNam_(chart, bt, Y, dvCache) {
   // Lưu Xương Khúc, Khôi Việt, Đào Hoa
   var xk = ['Văn Xương', 'Văn Khúc', 'Thiên Khôi', 'Thiên Việt'].filter(function (n) { return luu(yQuan, n) || luu(th, n); });
   if (xk.length) R.quanLoc.add(Math.min(1.6, xk.length * 0.8), 'Lưu ' + xk.join(', ') + ' tại hạn/Quan năm – thi cử, văn thư, quý nhân', 'tot');
-  if (luu(th, 'Thiên Khôi') || luu(th, 'Thiên Việt')) R.sucKhoe.add(-0.4, 'Lưu Khôi/Việt (quý nhân) tại hạn – gặp thầy gặp thuốc');
+  if (luu(th, 'Thiên Khôi') || luu(th, 'Thiên Việt')) R.sucKhoe.add(-0.4, 'Lưu Khôi/Việt (quý nhân) tại hạn – dễ gặp người giúp đỡ, tư vấn tốt');
   if (luu(th, 'Đào Hoa') || luu(yPT, 'Đào Hoa')) R.ketHon.add(0.8, 'Lưu Đào Hoa tại hạn/Phu Thê năm');
   var hyT = ['Hỷ Thần', 'Thanh Long', 'Long Đức', 'Nguyệt Đức'].filter(function (n) { return goc(th, n); });
   if (hyT.length) R.ketHon.add(Math.min(1, hyT.length * 0.4), 'Cát tinh hỷ sự tại tiểu hạn: ' + hyT.join(', '));
@@ -301,7 +301,7 @@ function ddPhanTichNam_(chart, bt, Y, dvCache) {
     var diaXung = mod12(L.chi - pl.chi) === 6;
     if (thienKhac && diaXung) {
       var tx = 'Bát Tự: lưu niên ' + CAN[L.can] + ' ' + CHI[L.chi] + ' thiên khắc địa xung trụ ' + tenTru[i] + ' (' + pl.canTen + ' ' + pl.chiTen + ')';
-      if (i === 2) { R.sucKhoe.add(1.8, tx + ' – bản thân, sức khỏe'); R.giaDao.add(1.4, tx + ' – phu thê'); }
+      if (i === 2) { R.sucKhoe.add(1.8, tx + ' – bản thân, nên giữ sức'); R.giaDao.add(1.4, tx + ' – phu thê'); }
       if (i === 0) R.giaDao.add(1.2, tx + ' – cha mẹ, tổ nghiệp');
       if (i === 1) R.quanLoc.add(1.2, tx + ' – môi trường công việc đảo lộn', 'xau');
       if (i === 3) { R.giaDao.add(0.5, tx + ' – con cái'); R.sinhCon.add(-0.6, tx); }
@@ -311,7 +311,7 @@ function ddPhanTichNam_(chart, bt, Y, dvCache) {
   var dvBT = (bt.daiVan || []).filter(function (v) { return Y >= v.nam && Y < v.nam + 10; })[0];
   if (dvBT) {
     if (dvBT.can === L.can && dvBT.chi === L.chi) {
-      var tv = 'Bát Tự: tuế vận tịnh lâm (lưu niên trùng đại vận ' + dvBT.canChi + ') – năm biến cố lớn';
+      var tv = 'Bát Tự: tuế vận tịnh lâm (lưu niên trùng đại vận ' + dvBT.canChi + ') – năm nên đi chậm, cân nhắc việc lớn';
       R.sucKhoe.add(1.5, tv); R.taiChinh.add(0.8, tv); R.quanLoc.add(1, tv);
     } else if (mod12(L.chi - dvBT.chi) === 6) {
       R.quanLoc.add(0.6, 'Bát Tự: tuế vận tương xung (chi năm xung chi đại vận ' + dvBT.canChi + ')', 'xau'); R.giaDao.add(0.5, 'Bát Tự: tuế vận tương xung');
@@ -330,13 +330,13 @@ function ddPhanTichNam_(chart, bt, Y, dvCache) {
   var coKho = bt.pillars.some(function (pl) { return pl.chi === kho; });
   if (coKho && mod12(L.chi - kho) === 6) {
     if (bt.vuong) R.taiLoc.add(1.8, 'Bát Tự: xung khai tài khố ' + CHI[kho] + ' (khố của Tài ' + taiHanh + ') khi thân vượng – dễ có khoản tiền lớn');
-    else R.taiChinh.add(1, 'Bát Tự: tài khố ' + CHI[kho] + ' bị xung khi thân nhược – dễ hao tài lớn');
+    else R.taiChinh.add(1, 'Bát Tự: tài khố ' + CHI[kho] + ' bị xung khi thân nhược – chi tiêu dễ lớn, cần quản lý chặt');
   }
   // thương quan kiến quan
   var coChinhQuan = bt.pillars.some(function (pl, i) { return i !== 2 && pl.thapThan === 'Chính Quan'; });
   if (ttCan === 'Thương Quan' && coChinhQuan) {
-    R.quanLoc.add(1.5, 'Bát Tự: thương quan kiến quan – thị phi, va chạm cấp trên, kiện tụng', 'xau');
-    if (!male) R.giaDao.add(1, 'Bát Tự: thương quan kiến quan (nữ mệnh) – bất hòa với chồng');
+    R.quanLoc.add(1.5, 'Bát Tự: thương quan kiến quan – thị phi, va chạm cấp trên; cẩn trọng giấy tờ, hợp đồng', 'xau');
+    if (!male) R.giaDao.add(1, 'Bát Tự: thương quan kiến quan (nữ mệnh) – vợ chồng cần nhiều thấu hiểu, nói chuyện thẳng thắn');
   }
   // dịch mã
   var MA4 = [2, 11, 8, 5];
@@ -345,7 +345,7 @@ function ddPhanTichNam_(chart, bt, Y, dvCache) {
     R.quanLoc.add(0.8, 'Bát Tự: dịch mã bị động (năm ' + CHI[L.chi] + ') – di chuyển, đổi việc, công tác xa');
   // kiêu thần đoạt thực (nữ – sinh nở)
   var coThuc = bt.pillars.some(function (pl, i) { return i !== 2 && pl.thapThan === 'Thực Thần'; });
-  if (!male && ttCan === 'Thiên Ấn' && coThuc) R.sinhCon.add(-0.8, 'Bát Tự: kiêu thần đoạt thực – sinh nở khó khăn hơn');
+  if (!male && ttCan === 'Thiên Ấn' && coThuc) R.sinhCon.add(-0.8, 'Bát Tự: kiêu thần đoạt thực – chuyện con cái cần thêm thời gian, chủ động chăm sóc sức khỏe');
   // năm khắc Dụng thần
   var khacDung = HANH_SINH[(HANH_SINH.indexOf(bt.goiY.dung) + 3) % 5];
   if (hanhCan === khacDung && hanhChi === khacDung) R.sucKhoe.add(0.6, 'Bát Tự: can chi năm cùng khắc Dụng thần ' + bt.goiY.dung);

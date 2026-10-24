@@ -25,7 +25,7 @@ var TP_TT_NHOM = [
     luu: 'Dễ muốn phần hơn hoặc quá tin vào sự khôn ngoan của mình. Giữ lòng tốt và sự ngay thẳng thì thành quả mới bền, tuổi già mới yên.' },
   { ten: 'Tang – Phá – Điếu', sao: 'Tang Môn, Tuế Phá, Điếu Khách', the: 'đấu tranh',
     de: 'Bạn có xu hướng nhạy cảm với điều bất công, hay thấy chưa vừa ý với hoàn cảnh và muốn thay đổi cái cũ; có năng lượng, tháo vát, ăn nói có sức thuyết phục.',
-    luu: 'Bất mãn kéo dài dễ dẫn tới tranh cãi, kiện tụng hoặc làm việc trái ý mình. Thành công đến khi bạn biến sự không hài lòng thành quyết tâm có kế hoạch, thay vì phàn nàn.' },
+    luu: 'Bất mãn kéo dài dễ dẫn tới tranh cãi, rắc rối giấy tờ hoặc làm việc trái ý mình. Thành công đến khi bạn biến sự không hài lòng thành quyết tâm có kế hoạch, thay vì phàn nàn.' },
   { ten: 'Âm – Long – Trực', sao: 'Thiếu Âm, Long Đức, Trực Phù', the: 'nhẫn nại',
     de: 'Bạn thuộc mẫu người khiêm nhường, chân thành, nhẫn nại, biết tiến biết lui và làm tròn bổn phận.',
     luu: 'Hiền quá dễ bị lấn át, công sức bị người khác nhận phần, hoặc cả tin. Hãy nói rõ đóng góp của mình và thận trọng trước lời hứa hẹn; biết đủ thì an vui.' }
@@ -53,11 +53,11 @@ var TP_TS_NHOM = [
     de: 'Sức sống bền: từ lúc khởi đầu tới khi chín muồi đều có người nâng đỡ, qua khó khăn thường gặp quý nhân.',
     luu: 'Thuận lợi dễ làm chủ quan; giữ nhịp đều đặn thì phúc dày thêm.' },
   { ten: 'Dục – Suy – Tuyệt', sao: 'Mộc Dục, Suy, Tuyệt',
-    de: 'Tuổi trẻ dễ chao đảo, cần gia đình làm chỗ dựa; gặp vận kém dễ hụt hơi.',
+    de: 'Theo cách luận truyền thống, giai đoạn trẻ dễ chao đảo và cần chỗ dựa – bạn hãy đối chiếu với trải nghiệm thật; gặp vận kém dễ hụt hơi.',
     luu: 'Xây nền ổn định sớm (nghề vững, quỹ dự phòng) và tránh liều lĩnh khi vận chưa thuận.' },
   { ten: 'Đới – Bệnh – Thai', sao: 'Quan Đới, Bệnh, Thai',
     de: 'Rủi ro thường nhiều hơn may; việc lớn cần tìm hiểu kỹ và hỏi người có kinh nghiệm.',
-    luu: 'Tham vọng quá sức dễ ảnh hưởng sức khỏe; biết đủ là phúc.' },
+    luu: 'Tham vọng quá sức dễ khiến bạn kiệt sức; biết đủ, nghỉ ngơi điều độ là phúc.' },
   { ten: 'Quan – Tử – Dưỡng', sao: 'Lâm Quan, Tử, Dưỡng',
     de: 'Có những lúc thành đạt rõ rệt, nhưng thịnh rồi dễ chững lại.',
     luu: 'Thành công chớ khoe khoang; giữ khiêm tốn thì sau mỗi lần chững lại sẽ hồi phục mạnh hơn.' }
@@ -69,7 +69,7 @@ var TP_HANH_TAM_HOP = ['Thủy', 'Kim', 'Hỏa', 'Mộc'];
 // Lĩnh vực đời thường của 12 cung (dùng cho văn dễ hiểu Phi Tinh)
 var TP_LV = {
   'Mệnh': 'chính mình', 'Huynh Đệ': 'anh chị em, cộng sự gần', 'Phu Thê': 'hôn nhân, người bạn đời',
-  'Tử Tức': 'con cái, sự sáng tạo', 'Tài Bạch': 'tiền bạc, nguồn lực', 'Tật Ách': 'sức khỏe, thân thể',
+  'Tử Tức': 'con cái, sự sáng tạo', 'Tài Bạch': 'tiền bạc, nguồn lực', 'Tật Ách': 'nếp sống, sự chăm sóc bản thân',
   'Thiên Di': 'môi trường bên ngoài, đi xa', 'Nô Bộc': 'bạn bè, đồng nghiệp, khách hàng',
   'Quan Lộc': 'công việc, sự nghiệp', 'Điền Trạch': 'nhà cửa, gia đình, tài sản tích lũy',
   'Phúc Đức': 'đời sống tinh thần, phúc phần dòng họ', 'Phụ Mẫu': 'cha mẹ, cấp trên, giấy tờ, học vấn'
@@ -128,7 +128,7 @@ var TP_MENH_DI = [
 var TP_VAN_TT = [
   null, // nhóm Tuế – Hổ – Phù: xử lý riêng theo sao
   'vận thuận nhờ lanh lợi, cơ hội đến sớm; giữ sự ngay thẳng để tránh "được rồi lại mất".',
-  'vận dễ bất mãn, va chạm, muốn thay đổi; nên kiên trì theo kế hoạch, tránh kiện tụng, tranh cãi.',
+  'vận dễ bất mãn, va chạm, muốn thay đổi; nên kiên trì theo kế hoạch, cẩn trọng giấy tờ, hợp đồng và tránh tranh cãi.',
   'vận cần mẫn, ít được ghi nhận; nên tích lũy lặng lẽ và biết đủ.'
 ];
 var TP_VAN_TUE = {

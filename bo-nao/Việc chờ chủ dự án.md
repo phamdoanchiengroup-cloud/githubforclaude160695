@@ -4,6 +4,7 @@ Nhóm: Bắt đầu · Cập nhật 22/10/2026
 Liên quan: [[Lần dán lên Apps Script]] · [[TCC Tiến trình]] · [[00 Mục lục]]
 
 ## Việc còn ngỏ
+- 24/10 (khuya): bấm `2-CAP-NHAT.bat` lấy mã `2026.10.24.9` (sửa nội dung nhạy cảm). Đọc thử vài lá số, báo câu nào còn "nặng" để sửa tiếp. Còn sót có thể: một số câu trong Bát Tự / Tổng hợp / Tử Vi hệ thống (đợt chuyên gia nội dung bị ngắt giữa chừng vì hết hạn mức).
 - (24/10) Bản `2026.10.24.2`: cập nhật rồi xem PDF mới (sáng, có Hologram), poster mới, phần "Luận theo trình tự 26 bước" ở tab Tử Vi. Card "tạo tài khoản nhận 50 xu" chỉ hiện với khách **chưa đăng nhập** – muốn xem thì mở cửa sổ ẩn danh. – [[TCC Giao diện]]
 - (24/10) Bản rà Codex `2026.10.24.1`: bấm `2-CAP-NHAT.bat`, **xóa file LaSo3D** trong trình soạn thảo Apps Script, Ctrl+F5; kiểm tra nhật vận 7 ngày đúng ngày, ô chọn năm lưu niên ‹ ›, bánh xe 9 lĩnh vực, bảng Hologram các hệ. – [[TCC Giao diện]]
 - (24/10) **Tab 64 quẻ Kinh Dịch đã xong** (mã 2026.10.24.8) – chờ chủ dự án cập nhật và đọc thử, góp ý lời giảng. – [[TCC Sáu hệ]]

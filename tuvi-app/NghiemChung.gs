@@ -17,7 +17,7 @@
 
 var NC_MUC_DIEM = { 'dung_het': 1.0, 'dung_phan_lon': 0.75, 'dung_mot_nua': 0.5, 'sai_phan_lon': 0.25, 'sai_hoan_toan': 0 };
 var NC_MUC_TEN = { 'dung_het': '✓ Đúng hết', 'dung_phan_lon': '◐ Đúng phần lớn', 'dung_mot_nua': '◑ Đúng một nửa', 'sai_phan_lon': '◒ Sai phần lớn', 'sai_hoan_toan': '✗ Sai hoàn toàn', 'khong_ap_dung': '— Không áp dụng' };
-var NC_TEN_NHOM = { 'A': 'Vóc dáng & dấu hiệu cơ thể', 'B': 'Tính cách', 'C': 'Anh chị em', 'D': 'Cha mẹ & xuất thân', 'E': 'Sức khỏe & giai đoạn khó đã qua',
+var NC_TEN_NHOM = { 'A': 'Vóc dáng & nét bên ngoài', 'B': 'Tính cách', 'C': 'Anh chị em', 'D': 'Cha mẹ & xuất thân', 'E': 'Nếp sống & giai đoạn khó đã qua',
   'F': 'Hôn nhân & người bạn đời', 'G': 'Con cái', 'H': 'Sự nghiệp & giai đoạn thuận đã qua' };
 var NC_HE6 = ['Tử Vi', 'Bát Tự', 'Chiêm tinh', 'Thần số học', 'Human Design', 'Hà Lạc'];
 
@@ -118,7 +118,7 @@ function ncLv_(X, g, k, toiDa) {
 var NC_NAM_MAU = {
   taiLoc: 'tiền bạc hoặc thu nhập khởi sắc rõ', quanLoc: 'công việc có chuyển động lớn (thăng tiến, đổi việc hoặc nhận trách nhiệm mới)',
   ketHon: 'có chuyện tình cảm quan trọng (bắt đầu yêu, cưới hỏi hoặc thay đổi lớn trong quan hệ)', sinhCon: 'có tin vui hoặc chuyện nổi bật về con cái',
-  sucKhoe: 'sức khỏe đi xuống, mệt mỏi kéo dài hoặc phải chữa trị', taiChinh: 'hao tài – tiền bạc thất thoát hoặc chi lớn ngoài dự tính',
+  sucKhoe: 'thấy mệt, cần nghỉ ngơi và chăm sóc bản thân nhiều hơn', taiChinh: 'chi tiêu lớn ngoài dự tính, phải thắt chặt tài chính',
   giaDao: 'gia đình, nhà cửa có biến động (chuyển nhà, sửa nhà hoặc chuyện người thân)', buocNgoat: 'có bước ngoặt – đổi môi trường sống hoặc làm việc'
 };
 /** Năm đã qua mà từ 3 hệ cùng báo – bằng chứng kiểm chứng bằng ký ức (bỏ năm trước 16 tuổi) */
@@ -169,15 +169,14 @@ function ncKhoang_(u) { return u.lo === u.hi ? String(u.hi) : u.lo + '–' + u.h
 /* ============================================================
  *  8 NHÓM – MỖI CÂU LÀ KẾT LUẬN ĐỒNG THUẬN NHIỀU HỆ
  * ============================================================ */
-/** A. Vóc dáng & dấu hiệu cơ thể: TongHop.vocDang (bỏ phiếu 6 hệ, gồm cung Mọc) + dấu vết cơ thể được nhiều hệ chỉ ra */
+/** A. Vóc dáng & nét bên ngoài: TongHop.vocDang (bỏ phiếu 6 hệ, gồm cung Mọc) */
 function ncNhomA_(X, g) {
   var V = X.T.vocDang, C = X.T.coThe;
   (V && V.ketLuan || []).forEach(function (s) {
     var t = ncSach_(s); if (/^Với (nam|nữ) giới/.test(t)) return;
     g.dong.push(ncDong_(ncGon_(t), ncMucDong_(t)));
   });
-  var dau = (C && C.ketLuan || []).map(ncSach_).filter(function (t) { return /được \d hệ cùng chỉ ra/.test(t); })[0];
-  if (dau) { var m = dau.match(/^(.+?) – được (\d) hệ cùng chỉ ra \(([^)]+)\)/); if (m) g.dong.push(ncDong_('Vùng ' + m[1].toLowerCase() + ' dễ có dấu vết (sẹo, nốt ruồi, bớt) hoặc hay gặp vấn đề nhỏ.', Math.min(1, +m[2] / 4), m[2] + ' hệ: ' + m[3])); }
+  // 24/10: không đưa vùng cơ thể vào câu đối chiếu (nội dung sức khỏe đã bỏ)
   var nhan = (C && C.ketLuan || []).map(ncSach_).filter(function (t) { return /^Dấu hiệu dễ nhận ra/.test(t); })[0];
   if (nhan) g.dong.push(ncDong_(nhan, 0.5, 'Tử Vi'));
 }
@@ -203,23 +202,23 @@ function ncNhomC_(X, g) {
   if (u) {
     var tvNhieu = u.hi >= 3 ? 1 : u.hi <= 1 ? -1 : 0, btNhieu = tk >= 2.5 ? 1 : tk < 1 ? -1 : 0;
     var dongY = tvNhieu && tvNhieu === btNhieu;
-    var muc = (dongY ? tvNhieu : tvNhieu || btNhieu) > 0 ? 'đông anh chị em (từ 3 người trở lên)' : (dongY ? tvNhieu : tvNhieu || btNhieu) < 0 ? 'ít anh chị em (1–2 người, hoặc là con một)' : 'số anh chị em vừa phải (khoảng 2–3 người)';
-    g.dong.push(ncDong_('Gia đình thuộc dạng ' + muc + '.', dongY ? 1 : tvNhieu === -btNhieu && tvNhieu ? 0.3 : 0.6, dongY ? '2/2 hệ: Tử Vi, Bát Tự' : 'Tử Vi' + (btNhieu ? ', Bát Tự khác chiều' : '')));
+    var muc = (dongY ? tvNhieu : tvNhieu || btNhieu) > 0 ? 'đông anh chị em' : (dongY ? tvNhieu : tvNhieu || btNhieu) < 0 ? 'ít anh chị em (hoặc là con một)' : 'số anh chị em vừa phải';
+    g.dong.push(ncDong_('Lá số gợi ý gia đình thuộc dạng ' + muc + '.', dongY ? 1 : tvNhieu === -btNhieu && tvNhieu ? 0.3 : 0.6, dongY ? '2/2 hệ: Tử Vi, Bát Tự' : 'Tử Vi' + (btNhieu ? ', Bát Tự khác chiều' : '')));
   }
   var b3 = ncBaHe_(X, 'Huynh Đệ', 'Huynh Đệ', 'anhEm');
-  if (b3.chieu > 0) g.dong.push(ncDong_('Anh chị em hòa thuận, có lúc nâng đỡ nhau về công việc hoặc tiền bạc.', b3.so, b3.nhan));
-  else if (b3.chieu < 0) g.dong.push(ncDong_('Anh chị em mỗi người một ngả, có khoảng cách hoặc bất đồng; ít nhờ cậy được nhau.', b3.so, b3.nhan));
-  else g.dong.push(ncDong_('Quan hệ anh em có lúc gần lúc xa: thân thiết giai đoạn nhỏ, trưởng thành thì mỗi người tự lo.', b3.so == null ? 0.4 : Math.max(0.4, b3.so), 'các hệ chưa thống nhất'));
-  if (tk >= 2.5) g.dong.push(ncDong_('Có sự cạnh tranh ngầm giữa anh em (so sánh, chuyện tài sản chung).', 0.5, 'Bát Tự'));
+  if (b3.chieu > 0) g.dong.push(ncDong_('Lá số gợi ý anh chị em hòa thuận, có lúc nâng đỡ nhau về công việc hoặc tiền bạc.', b3.so, b3.nhan));
+  else if (b3.chieu < 0) g.dong.push(ncDong_('Lá số gợi ý anh chị em mỗi người một hướng, có khoảng cách hoặc khác ý; thường tự lo phần mình.', b3.so, b3.nhan));
+  else g.dong.push(ncDong_('Lá số gợi ý quan hệ anh em có lúc gần lúc xa: thân thiết giai đoạn nhỏ, trưởng thành thì mỗi người tự lo.', b3.so == null ? 0.4 : Math.max(0.4, b3.so), 'các hệ chưa thống nhất'));
+  if (tk >= 2.5) g.dong.push(ncDong_('Lá số gợi ý giữa anh em có sự so bì ngầm (so sánh, chuyện tài sản chung).', 0.5, 'Bát Tự'));
 }
 /** D. Cha mẹ & xuất thân: TongHop.xuatThan (bỏ phiếu nhiều hệ) + chênh lệch duyên cha – mẹ khi Tử Vi và Bát Tự cùng chỉ ra */
 function ncNhomD_(X, g) {
   (X.T.xuatThan && X.T.xuatThan.ketLuan || []).slice(0, 2).forEach(function (s) { var t = ncSach_(s); g.dong.push(ncDong_(ncGon_(t), ncMucDong_(t))); });
   var b3 = ncBaHe_(X, 'Phụ Mẫu', 'Phụ Mẫu', 'chaMe');
-  if (b3.chieu > 0) g.dong.push(ncDong_('Được cha mẹ che chở, nâng đỡ; việc học hành, nhà cửa lúc trẻ có gia đình hỗ trợ.', b3.so, b3.nhan));
+  if (b3.chieu > 0) g.dong.push(ncDong_('Lá số gợi ý bạn được cha mẹ che chở, nâng đỡ; việc học hành, nhà cửa lúc trẻ có gia đình hỗ trợ.', b3.so, b3.nhan));
   else if (b3.chieu < 0) {
     var khaGia = g.dong.some(function (d) { return /khá giả|nền tảng vật chất|điều kiện/.test(d.t); });
-    g.dong.push(ncDong_((khaGia ? 'Dù gia đình có nền tảng, bạn vẫn sớm phải tự lập, ít dựa vào cha mẹ' : 'Sớm phải tự lập, ít dựa được vào cha mẹ') + '; học hành, nhà cửa chủ yếu tự gây dựng.', b3.so, b3.nhan));
+    g.dong.push(ncDong_((khaGia ? 'Lá số gợi ý dù gia đình có nền tảng, bạn vẫn sớm tự lập' : 'Lá số gợi ý bạn sớm tự lập') + '; học hành, nhà cửa phần nhiều tự gây dựng.', b3.so, b3.nhan));
   }
   var lt = (X.r.battuChiTiet && X.r.battuChiTiet.lucThan) || [];
   var cha = lt.filter(function (x) { return x.ten === 'Cha'; })[0], me = lt.filter(function (x) { return x.ten === 'Mẹ'; })[0];
@@ -228,19 +227,15 @@ function ncNhomD_(X, g) {
     function doSang(ten) { var c = pos[ten] != null ? P[pos[ten]].chinh.filter(function (s) { return s.n === ten; })[0] : null; return c ? (ncSang_(c) ? 1 : c.b === 'H' ? -1 : 0) : 0; }
     var tvCha = doSang('Thái Dương'), tvMe = doSang('Thái Âm'), btCha = cha.diem > me.diem;
     var tvCung = (tvCha - tvMe) !== 0 && ((tvCha > tvMe) === btCha);
-    g.dong.push(ncDong_('Duyên với ' + (btCha ? 'cha' : 'mẹ') + ' sâu hơn; với ' + (btCha ? 'mẹ' : 'cha') + ' có giai đoạn xa cách hoặc khác quan điểm.', tvCung ? 1 : 0.5, tvCung ? '2/2 hệ: Bát Tự, Tử Vi (Nhật – Nguyệt)' : 'Bát Tự'));
+    g.dong.push(ncDong_('Lá số gợi ý bạn gắn bó với ' + (btCha ? 'cha' : 'mẹ') + ' nhiều hơn; với ' + (btCha ? 'mẹ' : 'cha') + ' có thể có giai đoạn xa cách hoặc khác quan điểm.', tvCung ? 1 : 0.5, tvCung ? '2/2 hệ: Bát Tự, Tử Vi (Nhật – Nguyệt)' : 'Bát Tự'));
   }
 }
-/** E. Sức khỏe & giai đoạn khó đã qua: vùng cơ thể được nhiều hệ chỉ ra + chặng đời đã qua có điểm thấp */
+/** E. Nếp sống & giai đoạn khó đã qua: lĩnh vực sức khỏe theo năm + chặng đời đã qua có điểm thấp */
 function ncNhomE_(X, g) {
-  (X.T.coThe && X.T.coThe.ketLuan || []).map(ncSach_).filter(function (t) { return /được \d hệ cùng chỉ ra/.test(t); }).slice(0, 3).forEach(function (t) {
-    var m = t.match(/^(.+?) – được (\d) hệ cùng chỉ ra \(([^)]+)\)/); if (!m) return;
-    g.dong.push(ncDong_('Hay gặp vấn đề ở ' + m[1].toLowerCase() + ' (mệt, đau, bệnh vặt tái lại).', Math.min(1, +m[2] / 4), m[2] + ' hệ: ' + m[3]));
-  });
   ncLv_(X, g, 'suc_khoe', 1);
   ncNamQua_(X, g, ['sucKhoe', 'taiChinh', 'giaDao'], 2);
   var qua = ncChangQua_(X).slice().sort(function (a, b) { return a.diem - b.diem; })[0];
-  if (qua && qua.diem < 2) g.dong.push(ncDong_('Giai đoạn ' + qua.khoang + ' (' + qua.nam + ') từng vất vả hơn các chặng khác: áp lực tiền bạc, sức khỏe hoặc chuyện gia đình.', qua.dongThuan ? 1 : 0.5, qua.dongThuan ? 'Tử Vi & Bát Tự cùng chiều' : 'Tử Vi'));
+  if (qua && qua.diem < 2) g.dong.push(ncDong_('Lá số gợi ý giai đoạn ' + qua.khoang + ' (' + qua.nam + ') từng vất vả hơn các chặng khác: áp lực công việc, tiền bạc hoặc chuyện gia đình.', qua.dongThuan ? 1 : 0.5, qua.dongThuan ? 'Tử Vi & Bát Tự cùng chiều' : 'Tử Vi'));
 }
 /** F. Hôn nhân: chân dung người phối ngẫu + năm cưới đã qua (TongHop.phoiNgau – ghép 5 hệ) */
 function ncNhomF_(X, g) {
@@ -255,7 +250,7 @@ function ncNhomF_(X, g) {
   if (cl) g.dong.push(ncDong_(ncGon_(cl), ncMucDong_(cl), (cl.match(/\((\d\/\d dấu hiệu) cùng chiều\)/) || [])[1]));
   lay(/^Nơi\/cách gặp/, 0.5, 'Tử Vi, Chiêm tinh');
   var da = L.filter(function (x) { return /^Nếu bạn đã kết hôn/.test(x); })[0];
-  if (da) g.dong.push(ncDong_(da.replace(/^Nếu bạn đã kết hôn \(khả năng việc này đã diễn ra trước năm nay ≈ \d+%\), /, 'Nếu đã kết hôn: '), 0.7, 'xác suất tổng hợp 5 hệ'));
+  if (da) g.dong.push(ncDong_(da.replace(/^Nếu bạn đã kết hôn \(khả năng việc này đã diễn ra trước năm nay ≈ \d+%\), /, 'Nếu đã kết hôn: '), 0.7, 'tổng hợp 5 hệ'));
 }
 /** G. Con cái: TongHop.phoiNgau.conCai + năm có con đã qua */
 function ncNhomG_(X, g) {
@@ -269,7 +264,7 @@ function ncNhomG_(X, g) {
     else if (/^Quan hệ cha mẹ – con/.test(t)) g.dong.push(ncDong_(t, 0.5, ''));
   });
   var L = (X.T.phoiNgau && X.T.phoiNgau.ketLuan || []).map(ncSach_), co = L.filter(function (x) { return /^Nếu bạn đã có con/.test(x); })[0];
-  if (co) g.dong.push(ncDong_(co.replace(/^Nếu bạn đã có con \(khả năng việc này đã diễn ra trước năm nay ≈ \d+%\), /, 'Nếu đã có con: '), 0.7, 'xác suất tổng hợp 5 hệ'));
+  if (co) g.dong.push(ncDong_(co.replace(/^Nếu bạn đã có con \(khả năng việc này đã diễn ra trước năm nay ≈ \d+%\), /, 'Nếu đã có con: '), 0.7, 'tổng hợp 5 hệ'));
 }
 /** H. Sự nghiệp: nghề được nhiều hệ cùng gợi ý + chặng đời đã qua thuận lợi nhất */
 function ncNhomH_(X, g) {
@@ -278,7 +273,7 @@ function ncNhomH_(X, g) {
   var N = (X.T.nghe || []).slice(0, 3);
   if (N.length) g.dong.push(ncDong_('Hợp nhất với: ' + N.map(function (n) { return n.ten.toLowerCase() + ' (' + n.he.length + '/6 hệ)'; }).join('; ') + '.', N[0].he.length / 6, ''));
   var qua = ncChangQua_(X).slice().sort(function (a, b) { return b.diem - a.diem; })[0];
-  if (qua && qua.diem >= 3) g.dong.push(ncDong_('Giai đoạn ' + qua.khoang + ' (' + qua.nam + ') là thời kỳ thuận lợi nổi bật: học hành, công việc hoặc thu nhập lên rõ.', qua.dongThuan ? 1 : 0.5, qua.dongThuan ? 'Tử Vi & Bát Tự cùng chiều' : 'Tử Vi'));
+  if (qua && qua.diem >= 3) g.dong.push(ncDong_('Lá số gợi ý giai đoạn ' + qua.khoang + ' (' + qua.nam + ') là thời kỳ thuận lợi nổi bật: học hành, công việc hoặc thu nhập lên rõ.', qua.dongThuan ? 1 : 0.5, qua.dongThuan ? 'Tử Vi & Bát Tự cùng chiều' : 'Tử Vi'));
 
 }
 
