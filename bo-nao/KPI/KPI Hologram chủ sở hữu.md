@@ -31,3 +31,13 @@ Liên quan: [[KPI Demo giao diện]] · [[KPI Kiểm thử]] · [[Quyết địn
   - Không tràn ở 1360 và 390px.
   - giamdoc / tpphoicb / c360 không có hologram.
 - **24/10 sửa:** bấm sao mở Bảng KPI trước đây chỉ đặt `xuongLoc`, nhưng Bảng KPI lọc theo `kpiXuong`, nên không lọc đúng xưởng. Nay đặt cả hai. Kiểm thử nay kiểm `kpiXuong` và chỉ còn 1 bảng.
+
+## Sửa lỗi 25/10 – menu điện thoại không bấm được tab
+- Chủ dự án báo: trên điện thoại, chế độ hologram, bấm nút menu thì menu hiện ra nhưng không chọn được tab.
+- Nguyên nhân: `html.holo #app{position:relative;z-index:1}` biến #app thành một lớp riêng (để nằm trên nền sao). Menu `#nav` (z-index 160) nằm trong lớp đó, nên lớp nền tối `body.mo-nav::after` (z-index 155, ngoài #app) che lên menu.
+- Sửa trong `holo-web.js` (HOLO_CSS):
+  - `html.holo body.mo-nav #app{z-index:156}`;
+  - `::after` trong suốt;
+  - phần tối làm bằng bóng của menu (`box-shadow:0 0 0 100vmax`);
+  - nền menu đặc hơn (.97) để chữ phía sau không lẫn vào.
+- Kiểm thử `holo-web.js` 20 (thêm: mở menu, bấm Bảng KPI → sang tab và menu đóng; bấm ra ngoài thì đóng).

@@ -20,6 +20,9 @@ var HOLO_CSS =
   'html.holo body{background:#020617 radial-gradient(ellipse at 50% 0%,#0b1f45 0%,#020617 65%) fixed}' +
   'html.holo #holoSao{position:fixed;inset:0;width:100vw;height:100vh;z-index:0;pointer-events:none}' +
   'html.holo #app{position:relative;z-index:1}' +
+  // 25/10 sửa lỗi: #app thành lớp riêng (z-index 1) nên lớp nền tối body.mo-nav::after (z-index 155, ngoài #app) che mất menu trên điện thoại –
+  // đưa cả #app lên trên lớp nền khi mở menu, phần tối làm bằng bóng của chính menu
+  'html.holo body.mo-nav #app{z-index:156}html.holo body.mo-nav::after{background:transparent}html.holo body.mo-nav #nav{background:rgba(2,8,23,.97)!important;box-shadow:0 0 0 100vmax rgba(0,0,0,.55)!important}' +
   'html.holo .card{background:var(--panel)!important;border:1px solid rgba(125,211,252,.32)!important;box-shadow:0 0 18px rgba(56,189,248,.16),inset 0 0 22px rgba(56,189,248,.06)!important;backdrop-filter:blur(3px)!important;-webkit-backdrop-filter:blur(3px)!important}' +
   'html.holo header{background:var(--head-bg)!important;border-bottom:1px solid rgba(125,211,252,.35)!important;box-shadow:0 1px 18px rgba(56,189,248,.18);backdrop-filter:blur(6px)!important;-webkit-backdrop-filter:blur(6px)!important}' +
   'html.holo #nav{background:var(--nav-bg)!important;border-right:1px solid rgba(125,211,252,.25)!important;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}' +

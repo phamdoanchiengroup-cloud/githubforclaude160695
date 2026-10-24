@@ -66,6 +66,13 @@ const chup = async (p, ten) => { if (ANH) await p.screenshot({ path: ANH + '/' +
   ok(s.dai && s.tran <= 1 && s.rong <= 390, 'Đài quan sát co về 1 cột, không tràn ngang (390px)', s);
   await p.evaluate(() => document.getElementById('hlDai').scrollIntoView());
   await chup(p, 'holo-dien-thoai');
+  // 25/10: lỗi chủ dự án báo – mở menu trên điện thoại thì lớp nền tối che mất menu, không bấm được tab
+  await p.evaluate(() => scrollTo(0, 0)); await p.click('header .hnut'); await p.waitForTimeout(400);
+  s = await p.evaluate(() => { const b = [...document.querySelectorAll('#nav button')].find(x => /Bảng KPI/.test(x.textContent)); const q = b.getBoundingClientRect(); return b.contains(document.elementFromPoint(q.left + q.width / 2, q.top + q.height / 2)); });
+  await p.click('#nav button[data-k="kpi"]'); await p.waitForTimeout(500);
+  const s2 = await p.evaluate(() => [tabHienTai, document.body.classList.contains('mo-nav')]);
+  await p.click('header .hnut'); await p.waitForTimeout(400); await p.mouse.click(370, 600); await p.waitForTimeout(400);
+  ok(s && s2[0] === 'kpi' && !s2[1] && !(await p.evaluate(() => document.body.classList.contains('mo-nav'))), 'mở menu: bấm được tab (Bảng KPI), menu tự đóng; bấm ra ngoài thì đóng menu', [s, s2]);
   ok(!p.jsLoi.length, 'không lỗi JS', p.jsLoi);
   await p.context().close();
 

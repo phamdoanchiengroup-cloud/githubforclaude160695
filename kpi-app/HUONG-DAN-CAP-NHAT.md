@@ -501,6 +501,10 @@ Bấm đúp **2-CAP-NHAT.bat** (chưa tự triển khai thì Triển khai → Qu
 - Tab **Nhân sự** có thêm khối **"Ban điều hành & Hành chính nhân sự"** – chỉ chủ sở hữu thấy.
 - Tab **Nhân sự** có thẻ "Hồ sơ chưa đủ: x/y người", bấm "Xem danh sách" để thấy tên theo xưởng.
 
+## SỬA MENU ĐIỆN THOẠI Ở CHẾ ĐỘ HOLOGRAM 25/10 – đổi Index.html
+Bấm đúp **2-CAP-NHAT.bat**, rồi Ctrl+F5. Không có hàm cần chạy.
+- Chủ sở hữu dùng điện thoại, bật hologram: bấm nút menu ☰ rồi chọn tab được bình thường (trước đây lớp nền tối che mất menu).
+
 ## SƠ ĐỒ 2D BẢN DỌC 25/10 – đổi Index.html + SoDo.html
 Bấm đúp **2-CAP-NHAT.bat**, rồi Ctrl+F5. Không có hàm cần chạy.
 - Tab Sơ đồ nhà máy: mặt bằng 2D nay là **bản dọc**, mặt tiền / cổng chính ở **bên phải**. Chữ tên khu, tên xưởng vẫn đứng thẳng; phóng to, kéo, chạm khu như cũ.
