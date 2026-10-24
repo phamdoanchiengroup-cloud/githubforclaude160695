@@ -1,4 +1,4 @@
-Anh.html	232386
+Anh.html	301
 Astro.gs	12722
 BatTu.gs	28078
 BatTuChiTiet.gs	39982
