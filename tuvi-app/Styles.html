@@ -2564,3 +2564,16 @@ body.co-ket-qua.mo-form .form-panel, .ls3d-khung, .wl-anh { background: #0A1426;
 @media (prefers-reduced-motion: reduce) {
   .th6-bd *, .th6-bd *::before, .th6-bd *::after { animation-duration:.01ms !important; animation-iteration-count:1 !important; transition-duration:.01ms !important; scroll-behavior:auto !important; }
 }
+
+
+/* ---------- Minh bạch phương pháp luận Tử Vi ---------- */
+.tv-audit { border-color:var(--line); }
+.tv-audit-intro { color:var(--ink-soft); font-size:13px; line-height:1.65; }
+.tv-audit-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px; margin:14px 0; }
+.tv-audit-item { min-width:0; padding:12px; border:1px solid var(--line); border-radius:12px; background:var(--surface-2); }
+.tv-audit-item>div { display:flex; align-items:flex-start; justify-content:space-between; gap:8px; }
+.tv-audit-item b { color:var(--head); font-size:13px; line-height:1.45; }
+.tv-audit-state { flex:none; max-width:45%; padding:3px 7px; border-radius:999px; background:var(--gold-soft); color:var(--ink-soft); font-size:10px; line-height:1.35; text-align:center; }
+.tv-audit-item p { margin:8px 0 0; color:var(--ink-soft); font-size:12px; line-height:1.6; }
+.tv-audit-limit { margin:14px 0 0; padding:12px; border-left:3px solid var(--gold); border-radius:0 8px 8px 0; background:var(--surface-2); font-size:12px; line-height:1.65; }
+@media (max-width:760px), (pointer:coarse) { .tv-audit-grid { grid-template-columns:minmax(0,1fr); } .tv-audit-item>div { flex-wrap:wrap; } .tv-audit-state { max-width:100%; } }
