@@ -73,6 +73,10 @@ if(window.__v3)Object.assign(window.__v3,{btBat:batBoTri,btXoayThu:()=>{const F=
     # ---- 23/10 (chủ dự án): chọn giờ tối thì trong xưởng tối đen, rất khó nhìn -> bật đèn xưởng; thanh giờ tới 22:00 (ca tối)
     b = R(b, 'id="hour" min="5.5" max="19"', 'id="hour" min="5.5" max="22"')
     b = R(b, 'M.lampHead.emissiveIntensity=0.2+night*3;', 'M.lampHead.emissiveIntensity=0.2+night*3;denDem(night);')
+    # ---- 24/10 (chủ dự án): tab Sơ đồ không cần KPI / sĩ số (xem ở tab khác) – bỏ nút tô màu, luôn màu thật; thẻ phòng chỉ ghi xưởng
+    b = R(b, 'kpi:!!window.SS,hq:false,sel:null};', 'kpi:false,hq:false,sel:null};')
+    b = R(b, 'if(!window.SS)segMau.remove();', 'segMau.remove();if(0);')
+    b = R(b, "</dl>${window.SS?SS.the(u.fi,R):''}", r'''</dl>${window.SS&&SS.xuong(u.fi,R)?'<div class="ss-the"><div class="ss-dong"><span>Xưởng làm việc</span><b>'+SS.TEN[SS.xuong(u.fi,R)]+'</b></div></div>':''}''')
     b = R(b, 'setHour(+hourEl.value); legend(); size(); apply(); select(null);', JS_DEN_DEM + 'setHour(+hourEl.value); legend(); size(); apply(); select(null);')
     return b
 

@@ -8,7 +8,10 @@
 {{SS}}
 window.__sdDaNap = true;   // đã tải phần sơ đồ (SoDo.html) – vSoDo dưới đây thay hàm chờ trong Index.html
 var SD_DATA = {{DATA}};
-var SD_ANH = {{ANH}};   // 24/10: ảnh mặt bằng chụp từ mô hình 3D, khung = SD.vb ban đầu (−0,5…45,25 × −0,5…34,75 m)
+var SD_ANH = {{ANH}};
+var SD_TACH = {{TACH}};   // 24/10: ảnh minh họa tách 3 tầng (chủ dự án gửi) + chú thích xưởng từng tầng
+// chú thích: f = tầng (0..2), o = góc trên trái thẻ (% ảnh), d = điểm chỉ vào sàn tầng đó (% ảnh)
+var SD_TACH_NHAN = [{ f: 2, o: [1.5, 3], d: [36, 22] }, { f: 1, o: [80, 34], d: [80, 47] }, { f: 0, o: [73, 66], d: [58, 74] }];   // 24/10: ảnh mặt bằng chụp từ mô hình 3D, khung = SD.vb ban đầu (−0,5…45,25 × −0,5…34,75 m)
 var SD = { tang: 0, loc: '', chon: null, siso: null, sisoNgay: '', vb: [-0.5, -0.5, 45.75, 35.25] };
 var SD_VB0 = SD.vb.slice(), SD_ZMAX = 6;
 var SD_TANG = ['Tầng 1', 'Tầng 2', 'Tầng 3'], SD_W = 44.75, SD_D = 34.25, SD_NS = 'http://www.w3.org/2000/svg';
@@ -55,7 +58,7 @@ function sdNen(R) { return R.c === 'hl' ? '#2b3035' : R.c === 'thang' || R.c ===
 function sdChu(hex) { var n = parseInt(hex.slice(1), 16), r = n >> 16, g = n >> 8 & 255, b = n & 255; return (r * 299 + g * 587 + b * 114) / 1000 > 140 ? '#0c0d0f' : '#eef2f4'; }
 
 function sdVe() {
-  var svg = document.getElementById('sdMb'); if (!svg) return;
+  var svg = document.getElementById('sdMb'); if (!svg || SD.tang === 3) return;
   var tang = SD.tang, loc = SD.loc, chon = SD.chon, D2 = SD_D;
   svg.innerHTML = ''; svg.classList.toggle('loc', !!loc);
   svg.setAttribute('aria-label', 'Mặt bằng ' + SD_TANG[tang]);
@@ -64,9 +67,9 @@ function sdVe() {
   if (anh) sdEl('image', { href: anh, x: -.5, y: -.5, width: 45.75, height: 35.25, preserveAspectRatio: 'none', 'aria-hidden': 'true' }, svg);
   var F = SD_DATA[tang], lp = sdEl('g', {}, svg), lm = sdEl('g', {}, svg), lt = sdEl('g', { 'aria-hidden': 'true' }, svg);
   F.rooms.forEach(function (R, ri) {
-    var ma = SS.xuong(tang, R), mauSo = SS.mau(tang, R), mau = mauSo || sdNen(R);
+    var ma = SS.xuong(tang, R), mauSo = null, mau = sdNen(R);   // 24/10: bỏ tô màu KPI / sĩ số
     var g = sdEl('g', { 'class': 'phong' + (loc && ma === loc ? ' sang' : '') + (chon && chon.ri === ri ? ' chon' : ''), tabindex: 0, role: 'button' }, lp);
-    g.setAttribute('aria-label', R.n + (ma && SS.SO[ma] ? ', xưởng ' + SS.TEN[ma] + ', ' + (SS.cheDo === 'siso' ? 'có mặt ' : 'KPI ') + SS.chuSo(ma) : ''));
+    g.setAttribute('aria-label', R.n + (ma ? ', xưởng ' + (SS.TEN[ma] || ma) : ''));
     R.r.forEach(function (r) { var a = sdRc(r); sdEl('rect', anh   // có ảnh nền: chỉ phủ mờ màu KPI / sĩ số, khu không có số để trong suốt (vẫn bấm được)
       ? { x: a.x0, y: D2 - a.y1, width: a.x1 - a.x0, height: a.y1 - a.y0, fill: mauSo || 'transparent', 'fill-opacity': mauSo ? .42 : 0 }
       : { x: a.x0, y: D2 - a.y1, width: a.x1 - a.x0, height: a.y1 - a.y0, fill: mau }, g); });
@@ -74,13 +77,13 @@ function sdVe() {
     var w = big.x1 - big.x0, h = big.y1 - big.y0, cx = (big.x0 + big.x1) / 2, cy = D2 - (big.y0 + big.y1) / 2;
     if (w * h > 8 && R.c !== 'hl') {
       // chữ vừa khung: phòng hẹp mà cao thì xoay dọc; vẫn không vừa thì cắt bớt chữ
-      var doc = h > w * 1.3 && w < 6, dai = (doc ? h : w) - .7, cao = doc ? w : h, ten = R.n, mc = anh ? '#fff' : sdChu(mau), so = ma ? SS.chuSo(ma) : '';
+      var doc = h > w * 1.3 && w < 6, dai = (doc ? h : w) - .7, cao = doc ? w : h, ten = R.n, mc = anh ? '#fff' : sdChu(mau), so = ma ? String(SS.TEN[ma] || ma).replace(/^Xưởng\s+/i, '') : '';
       var co = Math.min(1, dai / (ten.length * .56), cao * .32);
       if (co < .55) { co = .55; var n = Math.max(3, Math.floor(dai / (.55 * .56)) - 1); if (ten.length > n) ten = ten.slice(0, n) + '…'; }
       var gt = sdEl('g', { 'class': 'nhan' + (loc && ma === loc ? ' sang' : ''), transform: doc ? 'rotate(-90 ' + cx + ' ' + cy + ')' : '' }, lt);
-      var coSo = Math.min(co * 1.45, cao * .42, dai / (so.length * .62 || 1)), coSoTen = so && cao > co + coSo + .4;
+      var coSo = Math.min(co * .9, cao * .3, dai / (so.length * .62 || 1)), coSoTen = so && cao > co + coSo + .4;
       var t = sdEl('text', { x: cx, y: cy + (coSoTen ? -coSo * .25 : co * .35), 'font-size': co, fill: mc, 'font-weight': 600 }, gt); t.textContent = ten;
-      if (coSoTen) { var t2 = sdEl('text', { x: cx, y: cy + co * .3 + coSo * .85, 'font-size': coSo, fill: mc, 'font-weight': 800, 'font-family': 'JetBrains Mono,monospace' }, gt); t2.textContent = so; }
+      if (coSoTen) { var t2 = sdEl('text', { x: cx, y: cy + co * .3 + coSo * .85, 'font-size': coSo, fill: anh ? '#ffd27a' : mc, 'font-weight': 700 }, gt); t2.textContent = so; }
     }
     g.addEventListener('click', function () { sdChonPhong(ri); });
     g.addEventListener('keydown', function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); sdChonPhong(ri); } });
@@ -89,38 +92,60 @@ function sdVe() {
     var a = sdRc(Mc.r);
     sdEl('rect', { x: a.x0, y: D2 - a.y1, width: Math.max(.25, a.x1 - a.x0), height: Math.max(.25, a.y1 - a.y0), 'class': 'may', rx: .08 }, lm);
   });
-  document.getElementById('sdCgiai').innerHTML = SS.chuGiai();
+  document.getElementById('sdCgiai').innerHTML = '<span class="sd-huong">Chữ vàng dưới tên khu = xưởng làm việc ở đó</span>';
 }
 function sdVeCT() {
   var c = document.getElementById('sdCt'); if (!c) return;
-  if (!SD.chon) { c.innerHTML = '<h3>Chi tiết</h3><p class="goi">Chạm vào một khu trên sơ đồ để xem KPI, sĩ số, dòng chờ duyệt và máy đang bảo trì của xưởng đó.</p>'; return; }
+  if (SD.tang === 3) { c.innerHTML = '<h3>Tách tầng</h3><p class="goi">Ảnh minh họa 3 tầng xếp chồng, mỗi tầng ghi các xưởng làm việc ở đó. Chọn Tầng 1, 2 hoặc 3 để xem mặt bằng chi tiết và bấm vào từng khu.</p>'; return; }
+  if (!SD.chon) { c.innerHTML = '<h3>Chi tiết</h3><p class="goi">Chạm vào một khu trên sơ đồ để xem tên khu, xưởng làm việc ở đó, diện tích và máy móc trong khu.</p>'; return; }
   var F = SD_DATA[SD.tang], R = F.rooms[SD.chon.ri], eq = {};
   F.mc.forEach(function (Mc) {
     var a = sdRc(Mc.r), x = (a.x0 + a.x1) / 2, y = (a.y0 + a.y1) / 2;
     if (R.r.some(function (r) { var b = sdRc(r); return x >= b.x0 && x <= b.x1 && y >= b.y0 && y <= b.y1; })) { var k = Mc.l.replace(/\s*\d+$/, ''); eq[k] = (eq[k] || 0) + 1; }
   });
   var ma = SS.xuong(SD.tang, R), s = SS.SO[ma];
-  c.innerHTML = '<div class="tang">' + SD_TANG[SD.tang] + (R.a ? ' · ' + String(R.a).replace('.', ',') + ' m²' : '') + (R.p ? ' · bản vẽ ghi ' + R.p + ' người' : '') + '</div><h4>' + esc(R.n) + '</h4>' + SS.the(SD.tang, R) +
+  c.innerHTML = '<div class="tang">' + SD_TANG[SD.tang] + (R.a ? ' · ' + String(R.a).replace('.', ',') + ' m²' : '') + (R.p ? ' · bản vẽ ghi ' + R.p + ' người' : '') + '</div><h4>' + esc(R.n) + '</h4>' + (ma ? '<div class="ss-the"><div class="ss-dong"><span>Xưởng làm việc</span><b>' + esc(SS.TEN[ma] || ma) + '</b></div></div>' : '') +
     (Object.keys(eq).length ? '<div class="eq">' + Object.keys(eq).map(function (k) { return '<span>' + esc(k) + ' × ' + eq[k] + '</span>'; }).join('') + '</div>' : '') +
-    (s ? '<button class="btn pri" type="button" onclick="go(\'kpi\')">Mở Bảng KPI</button>' + (s.bt ? '<button class="btn" type="button" onclick="go(\'mm\')">Mở trang Máy móc</button>' : '') : '');
+    (s && s.bt ? '<button class="btn" type="button" onclick="go(\'mm\')">Mở trang Máy móc</button>' : '');
 }
 function sdChonPhong(ri) {
   SD.chon = { ri: ri }; sdVe(); sdVeCT();
   if (matchMedia('(max-width:1080px)').matches) document.getElementById('sdCt').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 }
+/* Tách tầng (24/10): ảnh minh họa + thẻ chú thích xưởng từng tầng (tên xưởng lấy theo bảng ghép khu ↔ xưởng) */
+function sdXuongTang(fi) {
+  var co = {}, ds = [];
+  SD_DATA[fi].rooms.forEach(function (R) { var ma = SS.xuong(fi, R); if (ma && !co[ma]) { co[ma] = 1; ds.push(String(SS.TEN[ma] || ma)); } });
+  return ds;
+}
+function sdVeTach() {
+  var b = document.getElementById('sdTach'); if (!b) return;
+  b.innerHTML = '<img src="' + SD_TACH + '" alt="Minh họa nhà máy tách 3 tầng">' +
+    '<svg class="sd-tach-day" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">' + SD_TACH_NHAN.map(function (n) {
+      return '<line x1="' + (n.o[0] + 9) + '" y1="' + (n.o[1] + 6) + '" x2="' + n.d[0] + '" y2="' + n.d[1] + '"/>';
+    }).join('') + '</svg>' + SD_TACH_NHAN.map(function (n) {
+      return '<span class="sd-tach-cham" style="left:' + n.d[0] + '%;top:' + n.d[1] + '%"></span>';
+    }).join('') + '<div class="sd-tach-the">' + SD_TACH_NHAN.map(function (n) {
+      var ds = sdXuongTang(n.f);
+      return '<button type="button" class="sd-tach-nhan" style="left:' + n.o[0] + '%;top:' + n.o[1] + '%" onclick="sdDatTang(' + n.f + ')" title="Xem mặt bằng ' + SD_TANG[n.f] + '">' +
+        '<b>' + SD_TANG[n.f] + '</b>' + (ds.length ? ds.map(function (t) { return '<span>' + esc(t) + '</span>'; }).join('') : '<span class="nho">Văn phòng, kho, phụ trợ</span>') + '</button>';
+    }).join('') + '</div>';
+}
 function sdDatTang(f) {
   SD.tang = f; SD.chon = null;
   [].forEach.call(document.querySelectorAll('#sdTang button'), function (b) { b.setAttribute('aria-pressed', String(+b.dataset.f === f)); });
+  var kh = document.querySelector('.sd-khung'); if (kh) kh.classList.toggle('tach', f === 3);
+  if (f === 3) { sdVeTach(); sdVeCT(); return; }
   sdVe(); sdVeCT();
 }
 function sdVeXs() {
   var ul = document.getElementById('sdXs'); if (!ul) return;
   if (!SS.XUONG.length) { ul.innerHTML = '<li class="ss-trong">Chưa có xưởng.</li>'; return; }
   ul.innerHTML = SS.XUONG.map(function (x) {
-    var s = SS.SO[x[0]], v = SS.cheDo === 'siso' ? SS.tyLe(s) : (s.kpi || 0), mau = SS.mauXuong(x[0]);
+    var s = SS.SO[x[0]] || {}, tg = [];
+    SD_DATA.forEach(function (F, fi) { if (F.rooms.some(function (R) { return SS.xuong(fi, R) === x[0]; })) tg.push(fi + 1); });
     return '<li><button type="button" data-x="' + esc(x[0]) + '" aria-pressed="' + (SD.loc === x[0]) + '"><b>' + x[1] + (s.bt ? '<span class="bt">⚠ ' + s.bt + ' máy BT</span>' : '') + '</b>' +
-      '<span class="so" style="color:' + mau + '">' + SS.chuSo(x[0]) + '</span>' +
-      '<span class="thanh"><i style="width:' + Math.min(100, v / (SS.cheDo === 'siso' ? 100 : 120) * 100) + '%;background:' + mau + '"></i></span></button></li>';
+      '<span class="so">' + (tg.length ? 'Tầng ' + tg.join(', ') : 'chưa ghép khu') + '</span></button></li>';
   }).join('');
   [].forEach.call(ul.querySelectorAll('button'), function (b) {
     b.onclick = function () {
@@ -162,29 +187,23 @@ function vSoDo() {
   sdTinh();
   var ad = ME.vaiTro === 'ADMIN';
   var h = '<div class="ptitle">Sơ đồ nhà máy</div>' +
-    '<div class="pdesc">' + (ad ? 'Toàn nhà máy' : esc(ME.tenXuong || '')) + ' · mỗi khu tô màu theo KPI tháng này hoặc sĩ số hôm nay của xưởng làm việc ở đó. Chạm vào khu để xem chi tiết.</div>' +
+    '<div class="pdesc">' + (ad ? 'Toàn nhà máy' : esc(ME.tenXuong || '')) + ' · mặt bằng từng tầng, mỗi khu ghi tên xưởng làm việc ở đó. Chạm vào khu để xem chi tiết.</div>' +
     '<div class="sd-luoi"><div class="card">' +
-    '<div class="sd-cong"><div class="sd-seg" id="sdTang" role="group" aria-label="Chọn tầng">' + SD_TANG.map(function (t, i) { return '<button type="button" data-f="' + i + '" aria-pressed="' + (i === SD.tang) + '">' + t + '</button>'; }).join('') + '</div>' +
-    '<div class="sd-seg" id="sdMau" role="group" aria-label="Tô màu theo"><button type="button" data-c="kpi" aria-pressed="' + (SS.cheDo === 'kpi') + '">KPI tháng này</button><button type="button" data-c="siso" aria-pressed="' + (SS.cheDo === 'siso') + '">Sĩ số hôm nay</button></div>' +
+    '<div class="sd-cong"><div class="sd-seg" id="sdTang" role="group" aria-label="Chọn tầng">' + SD_TANG.map(function (t, i) { return '<button type="button" data-f="' + i + '" aria-pressed="' + (i === SD.tang) + '">' + t + '</button>'; }).join('') +
+      (SD_TACH ? '<button type="button" data-f="3" aria-pressed="' + (SD.tang === 3) + '">Tách tầng</button>' : '') + '</div>' +
     (window.matchMedia && window.matchMedia('(max-width: 899px)').matches ? '' : '<button class="btn" type="button" id="sdNut3d">Xem 3D</button>') + '</div>' +   // chủ dự án 13/10: điện thoại không xem 3D
-    '<div class="sd-khung"><svg id="sdMb" viewBox="' + SD.vb.join(' ') + '" role="img" aria-label="Mặt bằng tầng"></svg>' +
+    '<div class="sd-khung"><svg id="sdMb" viewBox="' + SD.vb.join(' ') + '" role="img" aria-label="Mặt bằng tầng"></svg><div class="sd-tach" id="sdTach"></div>' +
     '<div class="sd-zoom" role="group" aria-label="Phóng to thu nhỏ"><button type="button" data-z="in" aria-label="Phóng to" title="Phóng to">+</button><button type="button" data-z="out" aria-label="Thu nhỏ" title="Thu nhỏ">−</button><button type="button" data-z="fit" aria-label="Xem cả tầng" title="Xem cả tầng">⌂</button></div></div>' +
     '<div class="sd-huong">↓ Phía dưới sơ đồ là mặt tiền, cổng chính · ' + (sdLaMayTinh() ? 'cuộn chuột để phóng to đúng chỗ, kéo để dời, nhấp đúp để phóng nhanh' : 'nút + − để phóng to, chạm đúp vào chỗ cần xem, phóng to rồi kéo một ngón để dời') + '</div><div class="sd-cgiai" id="sdCgiai"></div></div>' +
     '<div class="sd-ben"><div class="card" id="sdCt" aria-live="polite"></div>' +
-    '<div class="card"><h3>Theo xưởng<span>bấm để soi trên sơ đồ</span></h3><ul class="sd-xs" id="sdXs"></ul><div id="sdSiSoGhi" class="sd-huong"></div></div>' +
+    '<div class="card"><h3>Khu vực các xưởng<span>bấm để soi trên sơ đồ</span></h3><ul class="sd-xs" id="sdXs"></ul></div>' +
     (ad ? '<div class="card"><details class="sd-ghep"><summary>Bảng ghép khu ↔ xưởng</summary><p>Ghép tạm theo tên khu trên bản vẽ. Chỗ nào chưa đúng anh/chị chọn lại – sơ đồ (cả 3D) đổi màu ngay. Lựa chọn được lưu trên trình duyệt của máy này.</p><div class="sd-bg" id="sdBg"></div></details></div>' : '') +
     '</div></div>';
   $('main').innerHTML = h;
   document.getElementById('sdTang').onclick = function (e) { var b = e.target.closest('button'); if (b) sdDatTang(+b.dataset.f); };
-  document.getElementById('sdMau').onclick = function (e) {
-    var b = e.target.closest('button'); if (!b) return;
-    [].forEach.call(this.querySelectorAll('button'), function (x) { x.setAttribute('aria-pressed', String(x === b)); });
-    SS.datCheDo(b.dataset.c);
-  };
   var n3 = document.getElementById('sdNut3d'); if (n3) n3.onclick = sdMo3D;
   sdGanZoom();
-  sdDatTang(SD.tang); sdVeXs(); sdVeBg(); sdGhiSiSo();
-  if (SD.sisoNgay !== today()) sdTaiSiSo();
+  sdDatTang(SD.tang); sdVeXs(); sdVeBg();
 }
 function sdGhiSiSo() {
   var g = document.getElementById('sdSiSoGhi'); if (!g) return;
@@ -209,7 +228,7 @@ SS.nghe.push(function () { if (tabHienTai !== 'sodo' || !document.getElementById
 function sdMo3D() {
   if (document.getElementById('sd3d')) return;
   var k = document.createElement('div'); k.id = 'sd3d'; k.setAttribute('role', 'dialog'); k.setAttribute('aria-label', 'Mô hình 3D nhà máy');
-  k.innerHTML = '<div class="sd3d-dau"><b>Mô hình 3D nhà máy</b><span style="color:#9ca8b0;font-size:12.5px">Cùng màu KPI / sĩ số với sơ đồ</span><button class="btn" type="button" id="sd3dDong">✕ Đóng</button></div>' +
+  k.innerHTML = '<div class="sd3d-dau"><b>Mô hình 3D nhà máy</b><span style="color:#9ca8b0;font-size:12.5px">Kéo để xoay · cuộn để phóng to</span><button class="btn" type="button" id="sd3dDong">✕ Đóng</button></div>' +
     '<div class="cho3d">Đang tải mô hình 3D… (cần mạng để tải thư viện Three.js)' + (sdLaMayTinh() ? '' : '<br><small>Điện thoại tự dùng chế độ ⚡ Nhẹ cho mượt – bấm nút đó để đổi sang Đầy đủ.</small>') + '</div>';
   document.body.appendChild(k);
   // 13/10: bố trí máy đã lưu trên web (sheet BoTriMay) – nạp trước rồi mới dựng 3D; lỗi thì vẫn mở theo bản vẽ

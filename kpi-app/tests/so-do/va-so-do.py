@@ -21,10 +21,12 @@ _js = _doc(os.path.join(_sd, 'va-so-do.js')).replace('{{SS}}', _ss).replace('{{D
 # 24/10 (chủ dự án): nền sơ đồ 2D = ảnh chụp mặt bằng từ mô hình 3D (tests/so-do/chup-mat-bang.js -> so-do/anh-tang-{0,1,2}.jpg)
 import base64 as _b64
 _anh = []
-for _i in range(3):
-    _pa = os.path.join(D, '..', 'so-do', 'anh-tang-%d.jpg' % _i)
-    _anh.append('data:image/jpeg;base64,' + _b64.b64encode(open(_pa, 'rb').read()).decode() if os.path.exists(_pa) else '')
+for _i in range(3):   # 24/10: ảnh chủ dự án gửi, đã nắn khớp khung tọa độ (so-do/anh-goc-tang-*.webp là bản gốc)
+    _pa = os.path.join(D, '..', 'so-do', 'anh-tang-%d.webp' % _i)
+    _anh.append('data:image/webp;base64,' + _b64.b64encode(open(_pa, 'rb').read()).decode() if os.path.exists(_pa) else '')
 _js = _js.replace('{{ANH}}', _json.dumps(_anh))
+_pt = os.path.join(D, '..', 'so-do', 'anh-tach-tang.webp')
+_js = _js.replace('{{TACH}}', _json.dumps('data:image/webp;base64,' + _b64.b64encode(open(_pt, 'rb').read()).decode() if os.path.exists(_pt) else ''))
 _css = _doc(os.path.join(_sd, 'va-so-do.css'))
 _b3 = _va_ba(_ba, 'KPI tháng này')   # không đổi </textarea: nội dung đã html.escape khi nhúng; đổi sẽ làm hỏng ô textarea riêng của bản 3D (btXuat, 13/10)
 assert 'sdMb' not in s

@@ -62,3 +62,22 @@ details.sd-ghep p{color:var(--ink3);font-size:12.5px;margin:8px 0}
 #sd3d .cho3d{position:absolute;inset:50px 0 0;display:grid;place-items:center;color:#9ca8b0;text-align:center;padding:20px;pointer-events:none}
 @media (prefers-reduced-motion:reduce){#sdMb .phong rect{transition:none}}
 #sd3d.gon .sd3d-dau{display:none}
+/* 24/10: Tách tầng – ảnh minh họa + thẻ chú thích xưởng từng tầng */
+.sd-tach{display:none;position:relative}
+.sd-khung.tach #sdMb,.sd-khung.tach .sd-zoom{display:none}
+.sd-khung.tach .sd-tach{display:block}
+.sd-tach img{display:block;width:100%;height:auto;border-radius:8px}
+.sd-tach-day{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+.sd-tach-day line{stroke:#ffd27a;stroke-width:.25;vector-effect:non-scaling-stroke;stroke-width:1.5}
+.sd-tach-cham{position:absolute;width:12px;height:12px;margin:-6px 0 0 -6px;border-radius:50%;background:#ffd27a;box-shadow:0 0 0 4px rgba(255,210,122,.3)}
+.sd-tach-nhan{position:absolute;display:flex;flex-direction:column;gap:2px;min-width:150px;max-width:230px;text-align:left;padding:8px 10px;border-radius:8px;border:1px solid rgba(255,210,122,.7);
+  background:rgba(12,13,15,.82);color:#f1ede4;font:12.5px/1.35 inherit;cursor:pointer;backdrop-filter:blur(3px)}
+.sd-tach-nhan b{font-size:14px;color:#ffd27a}
+.sd-tach-nhan:hover,.sd-tach-nhan:focus-visible{border-color:#fff;outline:none}
+@media (max-width:760px){
+  .sd-tach-day,.sd-tach-cham{display:none}
+  .sd-tach-the{display:grid;gap:8px;margin-top:10px}
+  .sd-tach-nhan{position:static;max-width:none;min-width:0}
+}
+
+.sd-khung.tach ~ .sd-huong,.sd-khung.tach ~ .sd-cgiai{display:none}

@@ -28,32 +28,23 @@ const mauPhong = (p, ten) => p.evaluate(t => { const g = [...document.querySelec
   await p.evaluate(() => go('sodo')); await p.waitForTimeout(1500);
   s = await p.evaluate(() => [document.querySelectorAll('#sdMb .phong').length, document.querySelectorAll('#sdXs button').length, D.phongban.length, document.querySelector('.ptitle').textContent]);
   ok(s[0] === 22 && s[1] === s[2] && s[3] === 'Sơ đồ nhà máy', 'Tầng 1 vẽ 22 khu (bản 3D 13/10); danh sách đủ mọi xưởng', s);
-  // KPI xưởng tính lại độc lập từ dữ liệu (đã chốt, từ đầu tháng)
-  const kt = await p.evaluate(() => {
-    const dau = today().slice(0, 8) + '01', ra = {};
-    D.phongban.forEach(pb => {
-      const cds = D.congdoan.filter(c => c.MaXuong === pb.MaXuong).map(c => c.MaCD);
-      const pn = {}; D.nhatky.filter(r => cds.includes(r.MaCD) && ngay(r.Ngay) >= dau).forEach(r => { const k = r.MaNV + '|' + ngay(r.Ngay); (pn[k] = pn[k] || []).push(r); });
-      let a = 0, ms = 0; Object.keys(pn).forEach(k => { const [nv, nd] = k.split('|'), g = gioCoMatNgay(nv, nd); if (g <= 0) return; ms += g; pn[k].forEach(r => { const d = dm(r.MaCD); if (d > 0) a += (Number(r.SoLuongLamRa) - ngLoi(r)) / d; }); });
-      ra[pb.MaXuong] = ms > 0 ? Math.round(a / ms * 100) : null;
-    });
-    return [ra, Object.fromEntries(Object.keys(SS.SO).map(k => [k, SS.SO[k].kpi]))];
-  });
-  ok(JSON.stringify(kt[0]) === JSON.stringify(kt[1]), 'KPI tháng này của từng xưởng khớp cách tính "So sánh hiệu suất giữa các xưởng"', kt);
-  s = await p.evaluate(() => { const R = SD_DATA[0].rooms.find(r => SS.xuong(0, r) && SS.SO[SS.xuong(0, r)] && SS.SO[SS.xuong(0, r)].kpi !== null); if (!R) return null;
-    const ma = SS.xuong(0, R); return [R.n, SS.mauKPI(SS.SO[ma].kpi), SS.SO[ma].kpi]; });
-  if (s) ok(await mauPhong(p, s[0]) === s[1], 'khu "' + s[0] + '" tô đúng màu theo KPI ' + s[2] + '%', [await mauPhong(p, s[0]), s]);
-  if (s) { await p.click(`#sdMb .phong[aria-label^="${s[0]}"]`); await p.waitForTimeout(200);
-    const ct = await p.textContent('#sdCt'); ok(ct.includes(s[0]) && ct.includes(s[2] + '% · hạng') && /Mở Bảng KPI/.test(ct), 'chạm khu: thẻ chi tiết có KPI + hạng + nút mở Bảng KPI', ct.slice(0, 200)); }
-  s = await p.evaluate(() => { const cho = {}; D.choDuyet.forEach(r => { const m = cd(r.MaCD).MaXuong; cho[m] = (cho[m] || 0) + 1; }); return Object.keys(SS.SO).every(k => SS.SO[k].cho === (cho[k] || 0)); });
-  ok(s, 'số dòng chờ duyệt theo xưởng khớp D.choDuyet');
-  // sĩ số: lấy từ siSoTatCaXuong, không giữ lý do nghỉ
-  s = await p.evaluate(() => [SD.sisoNgay === today() || laChuNhat(today()), JSON.stringify(SD.siso || []).includes('dsNghi')]);
-  ok(s[0] && !s[1], 'đã tải sĩ số hôm nay; chỉ giữ số đếm, không giữ danh sách / lý do nghỉ', s);
-  await p.click('#sdMau button[data-c="siso"]'); await p.waitForTimeout(200);
-  s = await p.evaluate(() => [SS.cheDo, document.querySelector('#sdXs .so').textContent, document.getElementById('sdCgiai').textContent]);
-  ok(s[0] === 'siso' && /^(\d+\/\d+|–)$/.test(s[1]) && /Đủ người/.test(s[2]), 'đổi "Sĩ số hôm nay": số dạng có mặt/định biên, chú giải đổi theo', s);
-  await p.click('#sdMau button[data-c="kpi"]');
+  // 24/10 (chủ dự án): tab Sơ đồ bỏ KPI / sĩ số – sơ đồ không tô màu, nhãn khu ghi tên xưởng, thẻ chi tiết ghi xưởng
+  s = await p.evaluate(() => ({ mau: !!document.getElementById('sdMau'), chu: /KPI|sĩ số|Sĩ số/.test(document.getElementById('main').textContent), anh: !!document.querySelector('#sdMb image'),
+    to: [...document.querySelectorAll('#sdMb .phong rect')].filter(r => r.getAttribute('fill') !== 'transparent').length }));
+  ok(!s.mau && !s.chu && s.anh && s.to === 0, 'không còn nút / chữ KPI, sĩ số; nền là ảnh mặt bằng, khu không tô màu', s);
+  s = await p.evaluate(() => { const R = SD_DATA[0].rooms.find(r => SS.xuong(0, r) && r.r.length && (r.a || 0) > 40); return R ? [R.n, SS.TEN[SS.xuong(0, R)]] : null; });
+  if (s) { const nhan = await p.evaluate(t => [...document.querySelectorAll('#sdMb .nhan')].map(g => g.textContent).find(x => x.startsWith(t)) || '', s[0]);
+    ok(nhan.includes(s[1].replace(/^Xưởng\s+/i, '')), 'nhãn khu "' + s[0] + '" ghi kèm xưởng làm việc', [nhan, s[1]]);
+    await p.click(`#sdMb .phong[aria-label^="${s[0]}"]`); await p.waitForTimeout(200);
+    const ct = await p.textContent('#sdCt'); ok(ct.includes(s[0]) && ct.includes('Xưởng làm việc') && ct.includes(s[1]) && !/KPI/.test(ct), 'chạm khu: thẻ chi tiết ghi xưởng làm việc, không có KPI', ct.slice(0, 200)); }
+  // Tách tầng: ảnh minh họa + 3 thẻ chú thích xưởng từng tầng
+  await p.click('#sdTang button[data-f="3"]'); await p.waitForTimeout(300);
+  s = await p.evaluate(() => ({ an: getComputedStyle(document.getElementById('sdMb')).display, img: !!document.querySelector('#sdTach img'), the: [...document.querySelectorAll('.sd-tach-nhan')].map(b => b.textContent),
+    t1: [...new Set(SD_DATA[0].rooms.map(r => SS.xuong(0, r)).filter(Boolean))].map(m => SS.TEN[m]) }));
+  ok(s.an === 'none' && s.img && s.the.length === 3 && s.t1.every(t => s.the[2].includes(t)), 'Tách tầng: ảnh minh họa + 3 thẻ, thẻ Tầng 1 đủ các xưởng ở tầng 1', s);
+  await p.click('.sd-tach-nhan >> nth=1'); await p.waitForTimeout(300);
+  ok(await p.evaluate(() => SD.tang === 1 && getComputedStyle(document.getElementById('sdMb')).display !== 'none'), 'bấm thẻ "Tầng 2" trên ảnh tách tầng: sang mặt bằng Tầng 2');
+  await p.evaluate(() => sdDatTang(0));
   // máy bảo trì thật
   s = await p.evaluate(() => { const m = D.maymoc.find(x => String(x.TinhTrang).trim() === 'Hoạt động' && SS.SO[x.MaXuong]); if (!m) return null; m.TinhTrang = 'Bảo trì'; go('sodo'); return [m.MaMay, m.MaXuong]; });
   await p.waitForTimeout(400);
@@ -99,8 +90,8 @@ const mauPhong = (p, ten) => p.evaluate(t => { const g = [...document.querySelec
     const f3 = await (await p.waitForSelector('#sd3d iframe')).contentFrame();
     await f3.waitForSelector('#c3d canvas', { state: 'attached', timeout: 180000 });   // máy thử vẽ 3D bằng phần mềm rất chậm (bản 13/10 nặng hơn)
     await f3.evaluate(() => { const t = document.getElementById('tgDi'); if (t && t.checked) t.click(); }); await p.waitForTimeout(4000);
-    s = await f3.evaluate(() => [!!window.SS, document.querySelector('#segMau button[data-c="kpi"]').textContent, document.getElementById('legend').textContent]);
-    ok(s[0] && s[1] === 'KPI tháng này' && /S \/ A\+/.test(s[2]), 'bản 3D dùng chung số liệu thật: nút "KPI tháng này", chú giải KPI', s);
+    s = await f3.evaluate(() => [!!window.SS, !!document.getElementById('segMau'), document.getElementById('legend').textContent]);
+    ok(s[0] && !s[1] && !/A \/ A\+|KPI/.test(s[2]), 'bản 3D: không còn nút tô màu KPI / sĩ số, chú giải là vật liệu sàn (24/10)', s);
     if (OUT) await p.screenshot({ path: OUT + '/so-do-web-3d.png' });
     // 21/10: mặc định chế độ Nhẹ; ẩn / hiện thanh chi tiết; toàn màn hình (máy thử không cho Fullscreen API thì thu gọn đầu lớp phủ)
     s = await f3.evaluate(() => [document.getElementById('btnNhe').getAttribute('aria-pressed'), document.getElementById('tgHq').checked]);
@@ -160,8 +151,8 @@ const mauPhong = (p, ten) => p.evaluate(t => { const g = [...document.querySelec
   console.log('TP · chỉ xưởng mình');
   p = await vao(b, 'tpdg');
   await p.evaluate(() => go('sodo')); await p.waitForTimeout(1500);
-  s = await p.evaluate(() => [Object.keys(SS.SO), ME.xuong, !!document.getElementById('sdBg'), (SD.siso || []).map(x => x.MaXuong)]);
-  ok(s[0].length === 1 && s[0][0] === s[1] && !s[2] && s[3].every(x => x === s[1]), 'TP chỉ thấy số liệu xưởng mình, không có bảng ghép, sĩ số chỉ xưởng mình', s);
+  s = await p.evaluate(() => [Object.keys(SS.SO), ME.xuong, !!document.getElementById('sdBg'), !!document.querySelector('.sd-khung')]);
+  ok(s[0].length === 1 && s[0][0] === s[1] && !s[2] && s[3], 'TP chỉ thấy số liệu xưởng mình, không có bảng ghép, vẫn xem được sơ đồ', s);
   s = await p.evaluate(() => Promise.all([new Promise(k => google.script.run.withSuccessHandler(k).layBoTriMay(TOKEN)), new Promise(k => google.script.run.withSuccessHandler(k).luuBoTriMay(TOKEN, '{"d":{}}'))]));
   ok(s[0].ok && !s[0].sua && !s[1].ok, 'TP: xem được bố trí máy, không lưu được (chỉ ADMIN)', s);
   ok(!p.loi.length, 'không lỗi JS', p.loi);
