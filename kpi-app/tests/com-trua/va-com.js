@@ -128,9 +128,22 @@ function veComBar(){
   bar.innerHTML='<span class="cb-ico" aria-hidden="true">🍱</span><div class="cb-nd" onclick="go(\'com\')" title="Xem thực đơn và đăng ký">'+
     '<div class="cb-tieu">Cơm trưa '+(t.ngay===d.homNay?'hôm nay':comNgayTen(t.ngay))+'</div>'+
     '<div class="cb-mon">'+esc(mon.join(' · '))+'</div>'+
-    '<div class="cb-han">'+comNhac(t)+'</div></div>'+
+    '<div class="cb-han">'+comNhac(t)+'</div>'+comNhacTP(t)+'</div>'+
     '<div class="cb-nut">'+comNut(t.ngay,comMo(t))+'</div>';
 }
+/* 24/10 (chủ dự án): trưởng / phó phòng thấy số người TRONG XƯỞNG chưa báo cơm của ngày bếp vừa ra thực đơn;
+   tự tắt khi chốt 22:00 (comMo = false) hoặc khi cả xưởng đã báo. Người nghỉ dài hạn tính là đã báo (hoDK có sẵn). */
+function comChuaXuong(ng){
+  var d=COM.d; if(!d||!d.hoNguoi||!d.hoDK||!d.hoDK[ng])return null;
+  var dk=d.hoDK[ng]; return d.hoNguoi.filter(function(p){return !dk[p.tk]});
+}
+function comNhacTP(t){
+  if(typeof ME==='undefined'||!ME||ME.vaiTro!=='TP'||!t||!comMo(t))return '';
+  var ds=comChuaXuong(t.ngay); if(!ds||!ds.length)return '';
+  return '<div class="cb-tp" role="status"><b>⚠ Xưởng còn '+ds.length+' / '+COM.d.hoNguoi.length+' người chưa báo cơm '+esc(comNgayTen(t.ngay))+'</b> – chốt lúc '+esc(comHanChu(t,'khoa'))+'. '+
+    '<a href="#" onclick="event.stopPropagation();comMoBaoHo(\''+t.ngay+'\');return false">Xem tên / báo hộ</a></div>';
+}
+function comMoBaoHo(ng){ COM.hoNgay=ng; COM.hoLoc='chua'; go('com'); setTimeout(function(){var c=$('cmHo'); if(c)c.scrollIntoView({behavior:'smooth',block:'start'});},400); }
 function comDangKy(ng,an){
   call('dangKyCom',[ng,!!an],function(r){
     if(!r||!r.ok){toast((r&&r.msg)||'Không đăng ký được');comTai();return}

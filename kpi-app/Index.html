@@ -8168,6 +8168,11 @@ function vSoDo(){
 .cm-md{display:grid;gap:6px}.cm-md-dong{display:flex;gap:6px;align-items:center;flex-wrap:wrap}.cm-md-dong input{flex:1 1 160px;min-width:0}
 .cm-cuon{overflow-x:auto;max-width:100%;-webkit-overflow-scrolling:touch}   /* bảng tổng hợp cuộn ngang trên điện thoại, không đẩy cả trang */
 .cm-bo>span,.cm-nhom-mon .cm-so-o>span{text-transform:none;letter-spacing:0;font-size:13px;color:inherit}
+/* 24/10: dòng nhắc trưởng / phó phòng số người trong xưởng chưa báo cơm */
+#combar .cb-tp{margin-top:4px;font-size:12.5px;color:var(--amber)}
+#combar .cb-tp b{font-weight:600}
+#combar .cb-tp a{color:var(--cyan);text-decoration:underline;margin-left:2px}
+
 
 /* Rhino (mục 17): ảnh tĩnh thay cho Mai */
 svg.mai .rh-anh{transform-box:fill-box;transform-origin:50% 100%;animation:rhNhun 3.4s ease-in-out infinite;filter:drop-shadow(0 0 1.2px rgba(255,255,255,.55)) drop-shadow(0 3px 5px rgba(0,0,0,.35))}
@@ -8306,9 +8311,22 @@ function veComBar(){
   bar.innerHTML='<span class="cb-ico" aria-hidden="true">🍱</span><div class="cb-nd" onclick="go(\'com\')" title="Xem thực đơn và đăng ký">'+
     '<div class="cb-tieu">Cơm trưa '+(t.ngay===d.homNay?'hôm nay':comNgayTen(t.ngay))+'</div>'+
     '<div class="cb-mon">'+esc(mon.join(' · '))+'</div>'+
-    '<div class="cb-han">'+comNhac(t)+'</div></div>'+
+    '<div class="cb-han">'+comNhac(t)+'</div>'+comNhacTP(t)+'</div>'+
     '<div class="cb-nut">'+comNut(t.ngay,comMo(t))+'</div>';
 }
+/* 24/10 (chủ dự án): trưởng / phó phòng thấy số người TRONG XƯỞNG chưa báo cơm của ngày bếp vừa ra thực đơn;
+   tự tắt khi chốt 22:00 (comMo = false) hoặc khi cả xưởng đã báo. Người nghỉ dài hạn tính là đã báo (hoDK có sẵn). */
+function comChuaXuong(ng){
+  var d=COM.d; if(!d||!d.hoNguoi||!d.hoDK||!d.hoDK[ng])return null;
+  var dk=d.hoDK[ng]; return d.hoNguoi.filter(function(p){return !dk[p.tk]});
+}
+function comNhacTP(t){
+  if(typeof ME==='undefined'||!ME||ME.vaiTro!=='TP'||!t||!comMo(t))return '';
+  var ds=comChuaXuong(t.ngay); if(!ds||!ds.length)return '';
+  return '<div class="cb-tp" role="status"><b>⚠ Xưởng còn '+ds.length+' / '+COM.d.hoNguoi.length+' người chưa báo cơm '+esc(comNgayTen(t.ngay))+'</b> – chốt lúc '+esc(comHanChu(t,'khoa'))+'. '+
+    '<a href="#" onclick="event.stopPropagation();comMoBaoHo(\''+t.ngay+'\');return false">Xem tên / báo hộ</a></div>';
+}
+function comMoBaoHo(ng){ COM.hoNgay=ng; COM.hoLoc='chua'; go('com'); setTimeout(function(){var c=$('cmHo'); if(c)c.scrollIntoView({behavior:'smooth',block:'start'});},400); }
 function comDangKy(ng,an){
   call('dangKyCom',[ng,!!an],function(r){
     if(!r||!r.ok){toast((r&&r.msg)||'Không đăng ký được');comTai();return}
@@ -9511,7 +9529,7 @@ function hsGhiChuDong(r){
 }
 </script>
 <script>
-var KPI_BAN = '23/10/2026 10:24';
+var KPI_BAN = '24/10/2026 11:15';
 (function(){
   var cu = window.veNav;
   window.veNav = function(){

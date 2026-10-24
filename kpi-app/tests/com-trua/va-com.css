@@ -90,3 +90,8 @@
 .cm-md{display:grid;gap:6px}.cm-md-dong{display:flex;gap:6px;align-items:center;flex-wrap:wrap}.cm-md-dong input{flex:1 1 160px;min-width:0}
 .cm-cuon{overflow-x:auto;max-width:100%;-webkit-overflow-scrolling:touch}   /* bảng tổng hợp cuộn ngang trên điện thoại, không đẩy cả trang */
 .cm-bo>span,.cm-nhom-mon .cm-so-o>span{text-transform:none;letter-spacing:0;font-size:13px;color:inherit}
+/* 24/10: dòng nhắc trưởng / phó phòng số người trong xưởng chưa báo cơm */
+#combar .cb-tp{margin-top:4px;font-size:12.5px;color:var(--amber)}
+#combar .cb-tp b{font-weight:600}
+#combar .cb-tp a{color:var(--cyan);text-decoration:underline;margin-left:2px}
+
