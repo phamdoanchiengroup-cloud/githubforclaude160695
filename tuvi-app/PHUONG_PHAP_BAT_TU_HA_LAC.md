@@ -100,3 +100,13 @@ Mỗi quy tắc khi được chuẩn hóa cần có: mã quy tắc, phiên bản
 - Các trọng số ngũ hành, điểm hào và một số kết luận quy tắc trong Bát Tự/Hà Lạc hiện phải coi là **heuristic hoặc cần rà soát**, cho tới khi có tham chiếu trực tiếp.
 - Chưa ghi nhận số trang, trích dẫn nguyên văn hoặc tuyên bố đã xác minh nguồn khi chưa thực hiện được bước tra cứu văn bản trực tiếp.
 - Bước tiếp theo có giá trị cao nhất: lấy các bản văn/ấn bản có thể kiểm tra, tạo bộ ví dụ chuẩn cho từng quy tắc, rồi mới sửa công thức cốt lõi theo kết quả đối chiếu.
+
+## Kết quả kiểm tra kỹ thuật trong lượt này
+
+Kiểm tra tĩnh trên nội dung nhánh sau khi đọc mã:
+
+- Cú pháp `Code.gs`, `BatTu.gs`, `BatTuChiTiet.gs`, `BatTuLuan.gs`, `HaLac.gs`: đạt.
+- JavaScript nhúng trong `Script.html`: đạt.
+- Các kiểm thử hàm thuần của Hà Lạc: `hlRutGon_` giữ số hợp lệ, 10 quy về 1 theo logic hiện có, `hlBien_` chỉ đảo đúng một hào, và `hlNguyenDuong_` trả vị trí 1–6 cho toàn bộ 64 mẫu quẻ × 2 loại giờ × 6 vị trí giờ: đạt.
+
+Các kiểm tra trên xác nhận cú pháp và một số bất biến của hàm, **không** xác nhận các bảng số hoặc quy tắc Hà Lạc trùng khớp cổ thư, không kiểm tra mọi ranh giới lịch Bát Tự, và không chứng minh khả năng dự đoán. Những việc đó cần bộ ví dụ tham chiếu độc lập có nguồn.
