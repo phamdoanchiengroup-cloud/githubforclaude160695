@@ -43,9 +43,9 @@ const chup = async (p, ten) => { if (ANH) await p.screenshot({ path: ANH + '/' +
   await chup(p, 'holo-may-tinh');
   const ma = await p.evaluate(() => document.querySelector('#hlDai .hl-sao').getAttribute('data-x'));
   await p.click('#hlDai .hl-sao circle.vong'); await p.waitForTimeout(600);
-  s = await p.evaluate(() => ({ tab: tabHienTai, x: xuongLoc }));
+  s = await p.evaluate(() => ({ tab: tabHienTai, x: kpiXuong }));
   ok(s.tab === 'kpi' && s.x === ma, 'bấm 1 ngôi sao: mở Bảng KPI lọc đúng xưởng ' + ma, s);
-  await p.evaluate(() => { xuongLoc = ''; });
+  await p.evaluate(() => { xuongLoc = ''; kpiXuong = ''; });
   console.log('\n2. Nút đổi chế độ');
   await moDash(p);
   await p.click('#btnHolo'); await p.waitForTimeout(500);

@@ -199,7 +199,7 @@ function holoDaiQuanSat() {
   h += '</div><div class="hl-chan"><span>SẢN LƯỢNG CHỜ DUYỆT <b>' + sl.choSL + '</b></span><span>ĐỀ XUẤT ĐỊNH MỨC CHỜ <b>' + sl.choDM + '</b></span><span>XƯỞNG ĐẠT A TRỞ LÊN <b>' + sl.xs.filter(function (x) { return x.k >= 85; }).length + '/' + sl.xs.length + '</b></span><span>NGƯỜI CÓ KPI THÁNG NÀY <b>' + sl.soNguoi + '</b></span></div></section>';
   return h;
 }
-function holoMoXuong(ma) { try { xuongLoc = ma || ''; } catch (e) {} go('kpi'); }
+function holoMoXuong(ma) { try { kpiXuong = ma || ''; xuongLoc = ma || ''; } catch (e) {} go('kpi'); }   // Bảng KPI lọc theo kpiXuong (24/10 sửa: trước chỉ đặt xuongLoc)
 function holoGanDai() {
   if (!holoBat() || tabHienTai !== 'dash') return;
   var m = document.getElementById('main'); if (!m || document.getElementById('hlDai')) return;
