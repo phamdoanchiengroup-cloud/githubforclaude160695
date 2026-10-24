@@ -110,3 +110,18 @@ Kiểm tra tĩnh trên nội dung nhánh sau khi đọc mã:
 - Các kiểm thử hàm thuần của Hà Lạc: `hlRutGon_` giữ số hợp lệ, 10 quy về 1 theo logic hiện có, `hlBien_` chỉ đảo đúng một hào, và `hlNguyenDuong_` trả vị trí 1–6 cho toàn bộ 64 mẫu quẻ × 2 loại giờ × 6 vị trí giờ: đạt.
 
 Các kiểm tra trên xác nhận cú pháp và một số bất biến của hàm, **không** xác nhận các bảng số hoặc quy tắc Hà Lạc trùng khớp cổ thư, không kiểm tra mọi ranh giới lịch Bát Tự, và không chứng minh khả năng dự đoán. Những việc đó cần bộ ví dụ tham chiếu độc lập có nguồn.
+
+
+## Cập nhật triển khai sau kiểm toán — 2026-10-24
+
+### Thay đổi mã nguồn
+- `Code.gs`: phiên bản hồ sơ Bát Tự/Hà Lạc tăng lên `TCC-BAT-TU-METHOD-1.1` và `TCC-HA-LAC-METHOD-1.1`.
+- Các lớp trong giao diện kiểm toán hiện dùng trạng thái **Cần đối chiếu thêm** cho tới khi có bằng chứng nguồn trực tiếp; không nâng trạng thái chỉ vì đối tượng dữ liệu hoặc hàm tính toán đang tồn tại.
+- Thêm `nguonCanDoiChieu` để ghi rõ đầu mối tài liệu, phạm vi cần đối chiếu và trạng thái nguồn.
+- Thêm hàm kiểm thử thủ công `tccKiemThuTrangThaiPhuongPhap_()`, kiểm tra phiên bản hồ sơ, trạng thái các lớp, danh mục nguồn và tuyên bố kiểm định.
+- `HaLac.gs`: sửa phần đầu tệp để mô tả các quy tắc là cách triển khai hiện có; nguồn gốc, phép lập số, chu kỳ 6/9 năm và điểm cát-hung chưa được xác minh trực tiếp.
+
+### Kết quả và giới hạn
+Các thay đổi này cải thiện khả năng truy vết và ngăn giao diện hiểu nhầm “có dữ liệu” thành “đã xác minh”. Chúng **không** thay đổi công thức lập lá số cốt lõi và không xác nhận thuật toán là chính thống.
+
+Danh mục Uyên Hải Tử Bình, Tam Mệnh Thông Hội, Tích Thiên Tủy, Tử Bình Chân Thuyên, Cùng Thông Bảo Giám, Chu Dịch và Hoàng Cực Kinh Thế hiện vẫn là **đầu mối nghiên cứu**. Trong lượt này chưa có bằng chứng đối chiếu bản văn/ấn bản, chương/trang và ví dụ độc lập; vì vậy không đánh dấu `VERIFIED_SOURCE`. Đặc biệt, nguồn chuyên biệt xác nhận bảng số và thuật toán Hà Lạc đang dùng vẫn là khoảng trống cần giải quyết trước khi thay đổi phép tính.
