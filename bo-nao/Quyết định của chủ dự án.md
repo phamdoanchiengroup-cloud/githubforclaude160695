@@ -4,6 +4,9 @@ Nhóm: Bắt đầu · Cập nhật 21/10/2026
 Liên quan: [[Việc chờ chủ dự án]] · [[TCC Bán hàng]] · [[00 Mục lục]]
 
 ## Cách làm việc
+- **24/10: sau đợt Codex sửa** – chủ dự án chọn: khôi phục Vóc dáng – diện mạo và tỷ lệ % như trước, **bỏ khối "Đặc điểm cơ thể & sức khỏe"**; bỏ bảng "kiểm toán phương pháp"; giữ thư mục `webbongda/` (web bóng đá chủ dự án tự tải lên) trên nhánh này.
+- **24/10: bỏ hẳn phần 3D** (Tử Vi 3D, Tứ Trụ 3D) khỏi web – "không cần thiết". Giữ bảng Hologram cho cả 6 hệ trên mọi máy.
+- 24/10: Tổng hợp 9 lĩnh vực vẽ theo tranh mẫu bánh xe ngũ hành của chủ dự án.
 - Dùng chuyên gia từ repo **agency-agents** (22/10): đã chọn 25 người hợp dự án, đặt ở `.claude/agents/`. – [[TCC Chuyên gia Agency Agents]]
 - **Mỗi dự án một nhánh** (21/10): Thiên Cơ Các = `claude/happy-brown-lttkz3`; web KPI sản xuất (không liên quan) = `claude/beautiful-ptolemy-f2j7za`.
 - Phần nào xong và đã kiểm tra thì gửi trước, không chờ xong hết (19/10).

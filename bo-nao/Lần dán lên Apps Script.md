@@ -4,6 +4,8 @@ Nhóm: Bắt đầu · Cập nhật 22/10/2026
 Liên quan: [[Việc chờ chủ dự án]] · [[TCC Kiểm thử]] · [[00 Mục lục]]
 
 ## Tình trạng
+- **24/10: rà lại toàn bộ sửa đổi của Codex (23–24/10, 160 commit)** – mã `2026.10.24.1`. Đổi **Code, TongHop, HaLac, Script, Styles, Index, Holo** + file mới **HoloAnhTongHop**; **xóa LaSo3D** trên Apps Script (bộ bấm đúp không tự xóa – vào trình soạn thảo xóa tay file `LaSo3D`). Bấm `2-CAP-NHAT.bat`, Ctrl+F5.
+- 24/10 (sáng): lá số Tử Vi bày sao kiểu aituvi (mã `2026.10.23.10`) – đã đẩy trước khi Codex sửa.
 - 23/10 (khuya): Tử Vi về lại lá số cũ, chỉ thay nền tranh – đổi **Script, Styles, Index, Holo** (mã `2026.10.23.5`). Bấm `2-CAP-NHAT.bat`, Ctrl+F5.
 - 23/10 (khuya): quà đăng ký 50 xu + poster trang chủ – đổi **ThanhToan, Script, Styles, Index** (mã `2026.10.23.4`). Bấm `2-CAP-NHAT.bat`, Ctrl+F5. Nếu từng chỉnh "quà đăng ký" trong Quản trị thì giá trị cũ bị bỏ qua, nay là 50 xu (muốn đổi thì lưu lại trong Quản trị).
 - 23/10 (tối): **giao diện Hologram thay Bạch Kim** – đổi **Code, Script, Styles, Index** + thêm 8 file mới **Holo, HoloAnhTuVi, HoloAnhBatTu, HoloAnhHaLac, HoloAnhChiemTinh, HoloAnhThanSo, HoloAnhHD, HoloAnhNen** (mã `2026.10.23.3`). Sao lưu trước, bấm `2-CAP-NHAT.bat`, Ctrl+F5.
