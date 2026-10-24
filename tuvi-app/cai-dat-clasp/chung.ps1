@@ -136,7 +136,10 @@ function TaiBanMoi($dich) {
   $b1 = [regex]::Match((Get-Content (Join-Path $dich 'Index.html') -Raw -Encoding UTF8), 'name="tcc-ban" content="([^"]+)"').Groups[1].Value
   $b2 = [regex]::Match((Get-Content (Join-Path $dich 'Styles.html') -Raw -Encoding UTF8), '--tcc-ban:\s*"([^"]+)"').Groups[1].Value
   $b3 = [regex]::Match((Get-Content (Join-Path $dich 'Script.html') -Raw -Encoding UTF8), "BAN_GIAO_DIEN = '([^']+)'").Groups[1].Value
-  if (-not $b1 -or $b1 -ne $b2 -or $b1 -ne $b3) { throw ('Mã phiên bản giao diện không khớp (Index ' + $b1 + ', Styles ' + $b2 + ', Script ' + $b3 + ') – báo Claude, chưa đổi gì.') }
+  # Index.html có mã build riêng cho trang chủ; Styles và Script mới cần cùng mã giao diện.
+  if (-not $b1 -or -not $b2 -or -not $b3 -or $b2 -ne $b3) {
+    throw ('Mã phiên bản không hợp lệ hoặc Styles/Script không khớp (Index ' + $b1 + ', Styles ' + $b2 + ', Script ' + $b3 + ') – báo Claude, chưa đổi gì.')
+  }
   return [pscustomobject]@{ Sha = $ma; SoFile = $tep.Count; BanGiaoDien = $b1 }
 }
 
