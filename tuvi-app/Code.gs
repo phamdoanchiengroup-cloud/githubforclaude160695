@@ -323,6 +323,76 @@ function tccKiemThuTrangThaiPhuongPhap_() {
   return {pass:failed.length===0, total:checks.length, passed:checks.length-failed.length, failed:failed, checks:checks};
 }
 
+/**
+ * Bộ kiểm thử bất biến cho các phép tính cấu trúc Bát Tự/Hà Lạc.
+ * Chạy thủ công trong Apps Script: tccKiemThuBatTuHaLac_()
+ * Chỉ kiểm tra hợp đồng tính toán và cấu trúc, KHÔNG chứng minh quy tắc là chính thống.
+ */
+function tccKiemThuBatTuHaLac_() {
+  var checks = [];
+  function check(id, ok, detail) { checks.push({id:id, pass:!!ok, detail:detail||''}); }
+  function sameArray(a,b) { return a.length===b.length && a.every(function(v,i){return v===b[i];}); }
+
+  // Ten Gods: kiểm tra miền đầu vào, nhật chủ và năm quan hệ/ngũ hành × hai cực tính.
+  var ttNames = ['Tỷ Kiên','Kiếp Tài','Thực Thần','Thương Quan','Thiên Tài','Chính Tài','Thất Sát','Chính Quan','Thiên Ấn','Chính Ấn'];
+  var ttOK = true, ttCases = 0;
+  for (var d=0; d<10; d++) for (var x=0; x<10; x++) {
+    var got = thapThan(d,x); ttCases++;
+    if (d===x ? got!=='Nhật Chủ' : ttNames.indexOf(got)<0) ttOK=false;
+  }
+  check('bazi-ten-gods-domain-100', ttOK && ttCases===100, '100 cặp can; nhật chủ tự đồng nhất');
+
+  // Twelve stages: toàn bộ 10 thiên can × 12 địa chi phải trả một nhãn hợp lệ.
+  var tsOK = true, tsCases = 0;
+  for (var can=0; can<10; can++) for (var chi=0; chi<12; chi++) {
+    var stage = truongSinhBazi(can,chi); tsCases++;
+    if (TRUONG_SINH_BAZI.indexOf(stage)<0) tsOK=false;
+  }
+  check('bazi-twelve-stages-domain-120', tsOK && tsCases===120, '120 tổ hợp can-chi');
+
+  // Hà Lạc: 64 quẻ phải ánh xạ hai chiều và bảo toàn đúng 6 hào dưới lên.
+  var qOK = true, qCases = 0;
+  for (var qi=0; qi<64; qi++) {
+    var row = HL_QUE[qi], lines = hlHaoCua_(row[0],row[1]), back = hlTuHao_(lines);
+    qCases++;
+    if (back.idx!==qi || back.ten!==row[2] || !sameArray(back.hao,lines)) qOK=false;
+  }
+  check('halac-64-hexagram-roundtrip', qOK && qCases===64, 'Thứ tự quẻ và thứ tự hào dưới lên');
+
+  var flipOK = true, flipCases = 0;
+  for (var fi=0; fi<64; fi++) {
+    var original = hlHaoCua_(HL_QUE[fi][0],HL_QUE[fi][1]);
+    for (var pos=1; pos<=6; pos++) {
+      var flipped = hlBien_(original,pos); flipCases++;
+      for (var bit=0; bit<6; bit++) if (flipped[bit] !== (bit===pos-1 ? 1-original[bit] : original[bit])) flipOK=false;
+    }
+  }
+  check('halac-flip-exactly-one-line-384', flipOK && flipCases===384, '64 quẻ × 6 vị trí hào');
+
+  var ndOK = true, ndCases = 0;
+  for (var ni=0; ni<64; ni++) {
+    var h = hlHaoCua_(HL_QUE[ni][0],HL_QUE[ni][1]);
+    for (var yang=0; yang<2; yang++) for (var k=1; k<=6; k++) {
+      var p = hlNguyenDuong_(h,!!yang,k); ndCases++;
+      if (!(p>=1 && p<=6 && Math.floor(p)===p)) ndOK=false;
+    }
+  }
+  check('halac-nguyenduong-range-768', ndOK && ndCases===768, '64 quẻ × 2 loại giờ × 6 vị trí giờ');
+
+  var reduceOK = [
+    [10,25,1],[20,25,2],[25,25,5],[50,25,5],
+    [10,30,1],[20,30,2],[30,30,3],[60,30,3]
+  ].every(function(t){return hlRutGon_(t[0],t[1])===t[2];});
+  check('halac-reduction-boundaries', reduceOK, 'Các điểm biên 10/20/25/30/50/60');
+
+  // Kiểm tra trạng thái bằng chứng tách biệt với tính đúng cấu trúc.
+  var audit = tccKiemThuTrangThaiPhuongPhap_();
+  check('method-audit-regression', audit.pass, audit.passed+'/'+audit.total+' checks');
+  var failed = checks.filter(function(x){return !x.pass;});
+  return {pass:failed.length===0,total:checks.length,passed:checks.length-failed.length,failed:failed,checks:checks,
+    scope:'Structural invariants only; not source verification or predictive validation.'};
+}
+
 function lapLaSoDayDu_(input) {
   input = input || {};
   var tv = tuviLapLaSo(input);
