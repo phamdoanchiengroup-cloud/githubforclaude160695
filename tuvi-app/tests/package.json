@@ -3,7 +3,7 @@
   "private": true,
   "description": "Đối chiếu bộ máy an sao / Bát Tự / thiên văn / Human Design của Thiên Cơ Các với các thư viện mã nguồn mở",
   "scripts": {
-    "test": "node doi-chieu.js && node thien-van.mjs"
+    "test": "node bat-tu.js && node ha-lac.js && node doi-chieu.js && node thien-van.mjs"
   },
   "devDependencies": {
     "iztro": "^2.6.1",
