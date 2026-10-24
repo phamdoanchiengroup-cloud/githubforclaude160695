@@ -218,6 +218,32 @@ function tuviKiemThuPhuongPhap_() {
   return { ok: checks.every(function (x) { return x.ok; }), checks: checks, phienBan: a.phienBan };
 }
 
+
+/** Chuẩn hóa căn cứ luận Bát Tự; không tự tạo xác suất. */
+function btDanhGiaPhuongPhap_(bt, ct) {
+ bt=bt||{};ct=ct||{};var p=Array.isArray(bt.pillars)?bt.pillars:[];
+ return {phienBan:'TCC-BAT-TU-METHOD-1.0',layers:[
+ {id:'tuTru',ten:'Tứ trụ và tiết khí',trangThai:p.length===4?'co':'motPhan',chiTiet:'Kiểm tra đủ trụ năm, tháng, ngày, giờ; trụ tháng cần nhất quán với quy ước tiết khí và mốc đổi năm.'},
+ {id:'nhatChu',ten:'Nhật chủ và nguyệt lệnh',trangThai:bt.nhatChu&&p.length===4?'co':'motPhan',chiTiet:'Xét Nhật chủ, nguyệt lệnh, thông căn, sinh trợ và khắc tiết hao; không dùng một tỷ lệ đơn lẻ thay toàn bộ phép cân nhắc.'},
+ {id:'cachCuc',ten:'Cách cục và vượng suy',trangThai:bt.cuong&&bt.trangThai?'co':'motPhan',chiTiet:'Xét điều kiện thành cách, phá cách và ngoại cách theo bộ quy tắc được chọn; ghi nhận dấu hiệu phản chứng.'},
+ {id:'dungThan',ten:'Dụng thần, hỷ thần, kỵ thần',trangThai:bt.goiY&&bt.goiY.dung?'co':'motPhan',chiTiet:'Ghi rõ lý do chọn dụng thần theo nguyệt lệnh, toàn cục và điều hậu; không mặc định một thuật toán là duy nhất.'},
+ {id:'thanSat',ten:'Thập thần, hợp xung hình hại và thần sát',trangThai:ct?'motPhan':'chuaCo',chiTiet:'Dùng làm lớp bổ sung sau cấu trúc chính; kiểm tra điều kiện, vị trí và tác động, không để thần sát đơn lẻ lấn át toàn cục.'},
+ {id:'daiVan',ten:'Đại vận và lưu niên',trangThai:Array.isArray(bt.daiVan)&&bt.daiVan.length?'co':'motPhan',chiTiet:'Xem vận như lớp thời gian chồng lên mệnh cục; dự đoán phải ghi rõ khoảng thời gian và tiêu chí kiểm chứng.'}],
+ nguyenTac:['Luận Nhật chủ cùng nguyệt lệnh, căn khí và toàn cục trước khi kết luận dụng thần.','Tách các quy tắc Tử Bình khác nhau thành phiên bản riêng, không âm thầm trộn quy tắc.','Ghi nhận cả dấu hiệu thuận và nghịch; không đếm trùng một căn cứ qua nhiều tên gọi.','Không suy ra xác suất thành công, bệnh tật hoặc sự kiện từ điểm số nội bộ.','Tách độ đúng phép tính, mức đồng thuận và độ chính xác dự báo.'],
+ danhGiaKiemDinh:'Chưa được xác lập bằng kiểm định thực nghiệm độc lập cho Bát Tự.',gioiHan:'Khung truy vết phương pháp truyền thống, không phải chứng nhận dự đoán đã được khoa học xác nhận.'};
+}
+/** Chuẩn hóa căn cứ Hà Lạc, tách phép lập quẻ khỏi diễn giải. */
+function hlDanhGiaPhuongPhap_(h) {
+ h=h||{};var t=h.tien||{},a=h.hau||{};
+ return {phienBan:'TCC-HA-LAC-METHOD-1.0',layers:[
+ {id:'lapQue',ten:'Lập quẻ Tiên thiên và Hậu thiên',trangThai:t.hao&&a.hao?'co':'motPhan',chiTiet:'Lưu rõ cách tính số, quy tắc đổi quái, thứ tự hào và quy ước âm dương; đối chiếu với phiên bản nguồn đã chọn.'},
+ {id:'nguyenDuong',ten:'Hào nguyên đường',trangThai:t.nguyenDuong!==undefined&&a.nguyenDuong!==undefined?'co':'motPhan',chiTiet:'Ghi lại đầu vào và từng bước chọn hào nguyên đường để kết quả có thể tái lập.'},
+ {id:'quePhu',ten:'Quẻ hỗ, quẻ biến và các quẻ phụ',trangThai:h.hoTien&&h.hoHau?'co':'motPhan',chiTiet:'Mỗi quẻ phụ cần có quy tắc biến đổi và vai trò diễn giải riêng; không gộp chúng thành nhiều bằng chứng độc lập.'},
+ {id:'luanGiai',ten:'Luận tượng và thời vị',trangThai:h.luan?'co':'motPhan',chiTiet:'Nêu rõ hào/quái làm căn cứ, nghĩa tượng được chọn, điều kiện và dấu hiệu trái chiều.'}],
+ nguyenTac:['Tách kiểm tra phép lập quẻ khỏi diễn giải tượng số.','Ghi lại phép tính trung gian để tái lập kết quả.','Giữ đúng cấu trúc quẻ và hào; không đồng nhất Hà Lạc với bố cục Hà Đồ/Lạc Thư.','Giữ các diễn giải mâu thuẫn để đối chiếu, không chỉ chọn phần khớp hậu nghiệm.','Không tuyên bố xác suất hoặc độ chính xác khi chưa kiểm định độc lập.'],
+ danhGiaKiemDinh:'Chưa được xác lập bằng kiểm định thực nghiệm độc lập cho Hà Lạc.',gioiHan:'Khung kiểm tra tính minh bạch của quy trình truyền thống, không phải chứng nhận dự báo thực tế.'};
+}
+
 function lapLaSoDayDu_(input) {
   input = input || {};
   var tv = tuviLapLaSo(input);
@@ -246,6 +272,8 @@ function lapLaSoDayDu_(input) {
   } catch (err) {
     result.moRongLoi = String(err && err.message || err);
   }
+  result.battu.danhGiaPhuongPhap = btDanhGiaPhuongPhap_(result.battu, result.battuChiTiet);
+  if (result.moRong && result.moRong.haLac) result.moRong.haLac.danhGiaPhuongPhap = hlDanhGiaPhuongPhap_(result.moRong.haLac);
   if (input.save) {
     try { luuLichSu_(input, result); result.saved = true; } catch (err) { result.saveError = String(err && err.message || err); }
   }
