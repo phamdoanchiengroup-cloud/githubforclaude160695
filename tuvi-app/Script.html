@@ -27,7 +27,7 @@
     });
   }
   /** Mã phiên bản giao diện – phải trùng với Index.html (meta tcc-ban) và Styles.html (--tcc-ban) */
-  var BAN_GIAO_DIEN = '2026.10.24.3';
+  var BAN_GIAO_DIEN = '2026.10.24.4';
   function storeGet(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
   function storeSet(k, v) { try { localStorage.setItem(k, v); } catch (e) { /* bỏ qua */ } }
 
@@ -5251,10 +5251,7 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
     ];
     if (sang) {   // bìa kiểu tranh thủy mặc: trời đêm, trăng, núi mực, mái chùa, ô thông tin viền vàng, ấn son
       var W = 760, H = 1075;
-      return '<div class="pdf-cover thuy"><div class="pc-trang"></div>' +
-        '<svg class="pc-nui" viewBox="0 0 ' + W + ' 520" width="' + W + '" height="520" preserveAspectRatio="none">' +
-        sonSvg(W, 520, [[5, 250, 150, '#3A4A62'], [11, 320, 140, '#2A3850'], [23, 400, 120, '#1B2639'], [41, 470, 80, '#111A29']]) +
-        '<g transform="translate(560 228)" fill="#111A29"><path d="M-44 0 Q0 -30 44 0 L30 5 L-30 5Z"/><rect x="-22" y="5" width="44" height="16"/><path d="M-36 21 Q0 3 36 21 L24 25 L-24 25Z"/><rect x="-18" y="25" width="36" height="26"/><circle cx="-10" cy="36" r="3" fill="#E6C98A"/><circle cx="10" cy="36" r="3" fill="#E6C98A"/></g></svg>' +
+      return '<div class="pdf-cover thuy"><img class="pc-tranh" alt="" crossorigin="anonymous" src="https://raw.githubusercontent.com/phamdoanchiengroup-cloud/githubforclaude160695/claude/happy-brown-lttkz3/tuvi-app/pdf-bia.webp?v=1"><div class="pc-phu"></div>' +
         '<div class="pc-top"><span class="pc-logo">' + esc(brand.ten || 'Thiên Cơ Các') + '</span>' + (demo ? '<span class="pc-demo">Bản xem thử</span>' : '') + '</div>' +
         '<div class="pc-mid"><div class="pc-kicker">Hồ sơ</div><h1>Vận Mệnh<br>Trọn Đời</h1>' +
         '<div class="pc-gach"></div><p class="pc-sub">Luận giải toàn diện 6 hệ</p><p class="pc-sys">Tử Vi · Bát Tự · Hà Lạc · Chiêm Tinh · Thần Số · Human Design</p></div>' +

@@ -1,6 +1,6 @@
 <style>
 /* Mã phiên bản giao diện – phải trùng với Index.html (meta tcc-ban) và Script.html (BAN_GIAO_DIEN) */
-:root { --tcc-ban: "2026.10.24.3"; }
+:root { --tcc-ban: "2026.10.24.4"; }
 /* ================================================================
    THIÊN CƠ CÁC — phong cách tiên hiệp sáng: ngọc bích, kim sa, mây trắng
    ================================================================ */
@@ -2423,4 +2423,21 @@ body:has(#page-chart.active) .tcc-goc-anh { opacity:.55; }
 .pdf-cover.thuy .pc-tbl td { color: #F3E9D2; border-bottom: 1px solid rgba(201, 164, 92, .25); }
 .pdf-cover.thuy .pc-an { position: absolute; right: -78px; bottom: 6px; width: 56px; height: 56px; display: grid; place-items: center; background: #A63A2B; color: #F7E9D8; border-radius: 6px; font: 400 22px/1 var(--font-han); writing-mode: vertical-rl; }
 .pdf-cover.thuy .pc-foot { justify-content: center; font-size: 12px; letter-spacing: 3px; text-transform: uppercase; color: #CDB98F; margin-top: 16px; }
+/* Bìa PDF: tranh thủy mặc của chủ dự án (pdf-bia.webp, lấy từ GitHub) – chữ mực xanh than + vàng đậm trên nền giấy */
+.bc-sang .pdf-cover.thuy { background: #EFE8D8 !important; color: #1C2A3F; }
+.pdf-cover.thuy .pc-tranh { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: center 40%; }
+.pdf-cover.thuy .pc-phu { position: absolute; inset: 0; background: linear-gradient(180deg, rgba(244, 239, 228, .94) 0%, rgba(244, 239, 228, .82) 30%, rgba(244, 239, 228, 0) 52%, rgba(244, 239, 228, 0) 70%, rgba(244, 239, 228, .55) 100%); }
+.pdf-cover.thuy .pc-top, .pdf-cover.thuy .pc-mid, .pdf-cover.thuy .pc-hop, .pdf-cover.thuy .pc-foot { position: relative; }
+.pdf-cover.thuy .pc-mid { margin-top: 40px; }
+.pdf-cover.thuy .pc-logo { color: #7A5A1E; border-color: rgba(122, 90, 30, .6); background: rgba(244, 239, 228, .7); }
+.pdf-cover.thuy .pc-kicker { color: #7A5A1E; }
+.bc-root .pdf-cover.thuy h1 { color: #1C2A3F !important; }
+.pdf-cover.thuy .pc-gach { background: #A9853D; }
+.pdf-cover.thuy .pc-sub { color: #1C2A3F; font-weight: 600; }
+.pdf-cover.thuy .pc-sys { color: #5A4E3A; }
+.pdf-cover.thuy .pc-hop { margin-left: auto; background: rgba(244, 239, 228, .88); border-color: #A9853D; }
+.pdf-cover.thuy .pc-tbl th { color: #7A5A1E; border-bottom-color: rgba(122, 90, 30, .25); }
+.pdf-cover.thuy .pc-tbl td { color: #1C2A3F; border-bottom-color: rgba(122, 90, 30, .25); }
+.pdf-cover.thuy .pc-an { right: auto; left: -78px; }
+.pdf-cover.thuy .pc-foot { color: #3A3326; }
 </style>
