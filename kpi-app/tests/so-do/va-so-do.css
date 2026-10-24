@@ -17,6 +17,9 @@
 #sdMb{display:block;width:100%;height:auto;touch-action:manipulation}
 #sdMb .phong{cursor:pointer;outline:none}
 #sdMb .phong rect{stroke:#0c0d0f;stroke-width:.14;transition:opacity .25s,fill .3s}
+#sdMb.co-anh .phong rect{stroke:rgba(255,255,255,.4);stroke-width:.07}
+#sdMb.co-anh .nhan text{paint-order:stroke;stroke:#0b0d10;stroke-width:.16;stroke-linejoin:round}
+#sdMb.co-anh.loc .phong:not(.sang) rect{opacity:1;fill:#0b0d10;fill-opacity:.55}
 #sdMb .phong.chon rect{stroke:#fff;stroke-width:.32}
 #sdMb .phong:focus-visible rect{stroke:#2fd3c6;stroke-width:.32}
 #sdMb.loc .phong:not(.sang) rect{opacity:.22}

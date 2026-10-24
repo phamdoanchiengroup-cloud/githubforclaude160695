@@ -30,3 +30,4 @@ Liên quan: [[KPI Demo giao diện]] · [[KPI Kiểm thử]] · [[Quyết địn
   - Nút qua 3 chế độ đúng.
   - Không tràn ở 1360 và 390px.
   - giamdoc / tpphoicb / c360 không có hologram.
+- **24/10 sửa:** bấm sao mở Bảng KPI trước đây chỉ đặt `xuongLoc`, nhưng Bảng KPI lọc theo `kpiXuong`, nên không lọc đúng xưởng. Nay đặt cả hai. Kiểm thử nay kiểm `kpiXuong` và chỉ còn 1 bảng.

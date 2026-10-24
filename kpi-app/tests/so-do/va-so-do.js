@@ -8,6 +8,7 @@
 {{SS}}
 window.__sdDaNap = true;   // đã tải phần sơ đồ (SoDo.html) – vSoDo dưới đây thay hàm chờ trong Index.html
 var SD_DATA = {{DATA}};
+var SD_ANH = {{ANH}};   // 24/10: ảnh mặt bằng chụp từ mô hình 3D, khung = SD.vb ban đầu (−0,5…45,25 × −0,5…34,75 m)
 var SD = { tang: 0, loc: '', chon: null, siso: null, sisoNgay: '', vb: [-0.5, -0.5, 45.75, 35.25] };
 var SD_VB0 = SD.vb.slice(), SD_ZMAX = 6;
 var SD_TANG = ['Tầng 1', 'Tầng 2', 'Tầng 3'], SD_W = 44.75, SD_D = 34.25, SD_NS = 'http://www.w3.org/2000/svg';
@@ -59,17 +60,21 @@ function sdVe() {
   svg.innerHTML = ''; svg.classList.toggle('loc', !!loc);
   svg.setAttribute('aria-label', 'Mặt bằng ' + SD_TANG[tang]);
   sdEl('rect', { x: 0, y: 0, width: SD_W, height: D2, fill: '#181b1f', stroke: '#3e464e', 'stroke-width': .2 }, svg);
+  var anh = SD_ANH[tang]; svg.classList.toggle('co-anh', !!anh);
+  if (anh) sdEl('image', { href: anh, x: -.5, y: -.5, width: 45.75, height: 35.25, preserveAspectRatio: 'none', 'aria-hidden': 'true' }, svg);
   var F = SD_DATA[tang], lp = sdEl('g', {}, svg), lm = sdEl('g', {}, svg), lt = sdEl('g', { 'aria-hidden': 'true' }, svg);
   F.rooms.forEach(function (R, ri) {
-    var ma = SS.xuong(tang, R), mau = SS.mau(tang, R) || sdNen(R);
+    var ma = SS.xuong(tang, R), mauSo = SS.mau(tang, R), mau = mauSo || sdNen(R);
     var g = sdEl('g', { 'class': 'phong' + (loc && ma === loc ? ' sang' : '') + (chon && chon.ri === ri ? ' chon' : ''), tabindex: 0, role: 'button' }, lp);
     g.setAttribute('aria-label', R.n + (ma && SS.SO[ma] ? ', xưởng ' + SS.TEN[ma] + ', ' + (SS.cheDo === 'siso' ? 'có mặt ' : 'KPI ') + SS.chuSo(ma) : ''));
-    R.r.forEach(function (r) { var a = sdRc(r); sdEl('rect', { x: a.x0, y: D2 - a.y1, width: a.x1 - a.x0, height: a.y1 - a.y0, fill: mau }, g); });
+    R.r.forEach(function (r) { var a = sdRc(r); sdEl('rect', anh   // có ảnh nền: chỉ phủ mờ màu KPI / sĩ số, khu không có số để trong suốt (vẫn bấm được)
+      ? { x: a.x0, y: D2 - a.y1, width: a.x1 - a.x0, height: a.y1 - a.y0, fill: mauSo || 'transparent', 'fill-opacity': mauSo ? .42 : 0 }
+      : { x: a.x0, y: D2 - a.y1, width: a.x1 - a.x0, height: a.y1 - a.y0, fill: mau }, g); });
     var big = R.r.map(sdRc).sort(function (p, q) { return (q.x1 - q.x0) * (q.y1 - q.y0) - (p.x1 - p.x0) * (p.y1 - p.y0); })[0];
     var w = big.x1 - big.x0, h = big.y1 - big.y0, cx = (big.x0 + big.x1) / 2, cy = D2 - (big.y0 + big.y1) / 2;
     if (w * h > 8 && R.c !== 'hl') {
       // chữ vừa khung: phòng hẹp mà cao thì xoay dọc; vẫn không vừa thì cắt bớt chữ
-      var doc = h > w * 1.3 && w < 6, dai = (doc ? h : w) - .7, cao = doc ? w : h, ten = R.n, mc = sdChu(mau), so = ma ? SS.chuSo(ma) : '';
+      var doc = h > w * 1.3 && w < 6, dai = (doc ? h : w) - .7, cao = doc ? w : h, ten = R.n, mc = anh ? '#fff' : sdChu(mau), so = ma ? SS.chuSo(ma) : '';
       var co = Math.min(1, dai / (ten.length * .56), cao * .32);
       if (co < .55) { co = .55; var n = Math.max(3, Math.floor(dai / (.55 * .56)) - 1); if (ten.length > n) ten = ten.slice(0, n) + '…'; }
       var gt = sdEl('g', { 'class': 'nhan' + (loc && ma === loc ? ' sang' : ''), transform: doc ? 'rotate(-90 ' + cx + ' ' + cy + ')' : '' }, lt);
@@ -80,7 +85,7 @@ function sdVe() {
     g.addEventListener('click', function () { sdChonPhong(ri); });
     g.addEventListener('keydown', function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); sdChonPhong(ri); } });
   });
-  F.mc.forEach(function (Mc) {
+  if (!anh) F.mc.forEach(function (Mc) {   // có ảnh nền thì ảnh đã có máy thật
     var a = sdRc(Mc.r);
     sdEl('rect', { x: a.x0, y: D2 - a.y1, width: Math.max(.25, a.x1 - a.x0), height: Math.max(.25, a.y1 - a.y0), 'class': 'may', rx: .08 }, lm);
   });

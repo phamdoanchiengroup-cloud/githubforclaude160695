@@ -23,4 +23,13 @@ Liên quan: [[KPI Phần giao diện tải sau]] · [[Lần dán lên Apps Scrip
   - Trả lời: làm được phần "giao diện" của ảnh (thẻ nhãn xưởng có %, viền khu phát sáng theo trạng thái, khung chi tiết bên phải, thanh giờ) trên mô hình hiện có, gần như không nặng thêm.
   - Mức chi tiết như ảnh (hàng trăm máy, xe, cây có ánh sáng thật) sẽ nặng, điện thoại không chạy nổi.
   - Chờ chủ dự án chọn.
-
+- **24/10 (chủ dự án): sơ đồ 2D dùng ảnh chụp từ mô hình 3D.**
+  - `tests/so-do/chup-mat-bang.js` chụp 3 tầng nhìn thẳng từ trên xuống: camera trực giao, khung = SD.vb (−0,5…45,25 × −0,5…34,75 m, 30 px/m), 12:00, màu thật, không đổ bóng. Kết quả: `kpi-app/so-do/anh-tang-{0,1,2}.jpg`, khoảng 150 KB mỗi ảnh.
+  - Đổi mô hình 3D thì chụp lại bằng script này.
+  - `va-so-do.py` nhúng ảnh (`{{ANH}}` → `SD_ANH`). `sdVe`:
+    - Thêm `<image>` nền và lớp `co-anh`.
+    - Ô phòng trong suốt (vẫn bấm được); màu KPI / sĩ số phủ mờ với fill-opacity .42.
+    - Bỏ khối máy vẽ tay; chữ trắng viền tối.
+    - Chế độ lọc xưởng: phòng khác phủ tối.
+  - SoDo.html khoảng 1,17 MB (tải khi mở tab, máy nhớ lại).
+  - Kiểm thử: `so-do-web.js` phần 2D 28/28; chạy đủ có 3D 42/42 (lần chạy trước bị ngắt do máy thử vẽ chậm, chạy lại đạt).

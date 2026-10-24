@@ -8,7 +8,8 @@ const F = 'file://' + process.env.F;
 let dem = 0, loi = 0; const ok = (d, t, c) => { dem++; if (d) console.log('  ✓ ' + t); else { loi++; console.log('  ✗ ' + t + (c !== undefined ? ' → ' + JSON.stringify(c).slice(0, 300) : '')); } };
 const idx = fs.readFileSync(path.join(__dirname, '..', 'Index.html'), 'utf8');
 ok(!idx.includes('sdNguon3d" hidden') && !idx.includes('var SD_DATA') && idx.includes('var LT_DATA=null;') && !/"dang-tong-hop-bao-cao":\{"v"/.test(idx), 'Index.html không còn sơ đồ + dữ liệu hoạt ảnh');
-ok(fs.statSync(path.join(__dirname, '..', 'Index.html')).size < 900 * 1024, 'Index.html dưới 900 KB', fs.statSync(path.join(__dirname, '..', 'Index.html')).size);
+// 24/10: nâng ngân sách 900 -> 1000 KB (Kỹ năng +35 KB, hologram chủ sở hữu +24 KB; bộ clasp chỉ đẩy 5 file cố định nên chưa tách thêm file)
+ok(fs.statSync(path.join(__dirname, '..', 'Index.html')).size < 1000 * 1024, 'Index.html dưới 1000 KB', fs.statSync(path.join(__dirname, '..', 'Index.html')).size);
 ok((idx.match(/data:image\/png;base64/g) || []).length === 1 && (idx.match(/data:image\/jpeg;base64/g) || []).length === 1, 'logo và ảnh nền khắc laser chỉ nhúng 1 lần');
 (async () => {
   const b = await chromium.launch(); const p = await (await b.newContext({ viewport: { width: 1440, height: 900 } })).newPage(); const loiJS = [];

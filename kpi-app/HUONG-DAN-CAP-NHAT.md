@@ -501,6 +501,14 @@ Bấm đúp **2-CAP-NHAT.bat** (chưa tự triển khai thì Triển khai → Qu
 - Tab **Nhân sự** có thêm khối **"Ban điều hành & Hành chính nhân sự"** – chỉ chủ sở hữu thấy.
 - Tab **Nhân sự** có thẻ "Hồ sơ chưa đủ: x/y người", bấm "Xem danh sách" để thấy tên theo xưởng.
 
+## ĐỢT 24/10 – đổi Index.html + SoDo.html
+Bấm đúp **2-CAP-NHAT.bat**, rồi Ctrl+F5. Không có hàm cần chạy.
+- Trưởng / phó phòng: thanh cơm trưa ở đầu trang báo **số người trong xưởng chưa báo cơm** khi bếp có thực đơn mới; tự tắt lúc chốt 22:00. Bấm "Xem tên / báo hộ" để báo hộ.
+- Tab Nhân sự: thẻ **Đón người mới** chuyển xuống cuối tab.
+- Bảng KPI (ban điều hành, chủ sở hữu): tự tải **tất cả xưởng**, xưởng nào xong hiện trước; vẫn chọn được 1 xưởng.
+- Phân tích định mức: mở tab là tự phân tích **tháng hiện tại**.
+- Sơ đồ nhà máy bản 2D: nền là **ảnh chụp từ mô hình 3D**, vẫn bấm vào từng khu và tô màu KPI / sĩ số như cũ.
+
 ## ĐÈN XƯỞNG BAN ĐÊM TRONG SƠ ĐỒ 3D 23/10 – đổi SoDo.html + Index.html
 Bấm đúp **2-CAP-NHAT.bat**, rồi Ctrl+F5. Không có hàm cần chạy.
 - Kéo thanh **Giờ** về tối: trong các phân xưởng bật đèn trần, nhìn rõ máy và người. Thanh giờ nay kéo được tới 22:00.

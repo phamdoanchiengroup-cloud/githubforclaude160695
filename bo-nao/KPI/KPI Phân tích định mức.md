@@ -56,3 +56,4 @@ Liên quan: [[KPI Tổng quan và cách dựng]] · [[KPI Kiểm thử]] · [[Qu
 - Giao diện: cột "Thấp · Giữa · Khá · Cao", "sau: giữa · khá · cao", ghi chú người đột biến, dòng "Dữ liệu 8–10/2026 · không tính N người mới (xem tên)", "Áp hết: x/157 người đổi hạng (A → C: 1 …)"; dòng chạm ×4 không chọn sẵn.
 - Dữ liệu 22/10: 191 công đoạn, 12 gợi ý nâng (3 chạm ×4: Cân Phôi, Cắt Nối, Laser Tag Giá Bé – 1–2 người), 13 công đoạn có người đột biến, 41 người mới bị bỏ; áp hết thì 6/157 người đổi hạng.
 - Kiểm thử `dinh-muc.js` 32, `dinh-muc-web.js` 15.
+- **24/10 (chủ dự án):** mở tab là tự phân tích luôn kỳ đang chọn, mặc định tháng hiện tại (`vPTDM` gọi `ptdmChay()`). `dinh-muc-web.js` 16/16.
