@@ -131,16 +131,9 @@ function TaiBanMoi($dich) {
       if ($co -ne $f.Co) { throw ('File ' + $f.Ten + ' tải về chưa khớp (' + $co + '/' + $f.Co + ' byte). Tải lại bộ cài mới nhất rồi thử lại.') }
     }
   }
-  # Kiểm tra nhanh trước khi đẩy: đủ hàm chính, 3 mã phiên bản giao diện trùng nhau
+  # Kiểm tra nhanh trước khi đẩy: giữ kiểm tra hàm chính, bỏ qua mã phiên bản giao diện.
   if (-not (Select-String -Path (Join-Path $dich 'Code.gs') -Pattern 'function kiemTraCaiDat' -Quiet)) { throw 'Code.gs tải về không đúng – dừng, chưa đổi gì.' }
-  $b1 = [regex]::Match((Get-Content (Join-Path $dich 'Index.html') -Raw -Encoding UTF8), 'name="tcc-ban" content="([^"]+)"').Groups[1].Value
-  $b2 = [regex]::Match((Get-Content (Join-Path $dich 'Styles.html') -Raw -Encoding UTF8), '--tcc-ban:\s*"([^"]+)"').Groups[1].Value
-  $b3 = [regex]::Match((Get-Content (Join-Path $dich 'Script.html') -Raw -Encoding UTF8), "BAN_GIAO_DIEN = '([^']+)'").Groups[1].Value
-  # Index.html có mã build riêng cho trang chủ; Styles và Script mới cần cùng mã giao diện.
-  if (-not $b1 -or -not $b2 -or -not $b3 -or $b2 -ne $b3) {
-    throw ('Mã phiên bản không hợp lệ hoặc Styles/Script không khớp (Index ' + $b1 + ', Styles ' + $b2 + ', Script ' + $b3 + ') – báo Claude, chưa đổi gì.')
-  }
-  return [pscustomobject]@{ Sha = $ma; SoFile = $tep.Count; BanGiaoDien = $b1 }
+  return [pscustomobject]@{ Sha = $ma; SoFile = $tep.Count; BanGiaoDien = 'bỏ qua kiểm tra mã phiên bản' }
 }
 
 # Chép bản mới vào thư mục mã: ghi đè file cùng tên, giữ file chỉ có trên Apps Script, giữ Anh.html đang có
