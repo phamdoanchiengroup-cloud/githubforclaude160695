@@ -1,6 +1,6 @@
 <style>
 /* Mã phiên bản giao diện – phải trùng với Index.html (meta tcc-ban) và Script.html (BAN_GIAO_DIEN) */
-:root { --tcc-ban: "2026.10.24.7"; }
+:root { --tcc-ban: "2026.10.24.8"; }
 /* ================================================================
    THIÊN CƠ CÁC — phong cách tiên hiệp sáng: ngọc bích, kim sa, mây trắng
    ================================================================ */
@@ -2441,4 +2441,45 @@ body:has(#page-chart.active) .tcc-goc-anh { opacity:.55; }
 .pdf-cover.thuy .pc-an { right: auto; left: -78px; }
 .pdf-cover.thuy .pc-foot { color: #3A3326; }
 .bc-root.co-nen-anh, .bc-root.co-nen-anh .pdf-pg, .bc-root.co-nen-anh .pdf-lo { background: transparent !important; }   /* PDF: chữ chụp nền trong để lộ ảnh nền mờ */
+/* ===== Tab 64 quẻ Kinh Dịch (Script › kdVeTab, kdLuoi, kdChiTiet) ===== */
+.kd-cuaban { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin: 0 0 12px; font-size: 13.5px; color: var(--ink-soft); }
+.kd-loc { display: flex; flex-wrap: wrap; gap: 8px; margin: 0 0 14px; }
+.kd-loc input, .kd-loc select { flex: 1 1 200px; padding: 9px 12px; border-radius: 10px; border: 1px solid var(--line); background: rgba(6, 11, 22, .55); color: var(--ink); font: inherit; }
+.kd-bo { display: grid; grid-template-columns: 1fr; gap: 16px; }
+@media (min-width: 1081px) { .kd-bo { grid-template-columns: minmax(300px, 380px) minmax(0, 1fr); align-items: start; } .kd-luoi { position: sticky; top: 12px; max-height: calc(100vh - 40px); overflow-y: auto; } }
+.kd-luoi { display: grid; grid-template-columns: repeat(auto-fill, minmax(82px, 1fr)); gap: 8px; padding-right: 4px; }
+.kd-o { position: relative; display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 10px 4px 8px; border-radius: 12px; border: 1px solid var(--line); background: rgba(10, 22, 42, .6); color: #FFE6A8; cursor: pointer; font: inherit; }
+.kd-o small { position: absolute; left: 6px; top: 4px; font-size: 10.5px; color: var(--ink-soft); }
+.kd-o b { font-size: 11.5px; font-weight: 600; color: var(--ink); text-align: center; line-height: 1.25; }
+.kd-o.tot { color: #8FF0C4; } .kd-o.xau { color: #FF9B8A; }
+.kd-o:hover { border-color: rgba(92, 235, 255, .55); } .kd-o.on { border-color: #5CEBFF; box-shadow: 0 0 0 1px #5CEBFF, 0 0 18px -4px #5CEBFF; }
+.kd-ct { min-width: 0; padding: 18px; border-radius: 16px; border: 1px solid var(--line); background: rgba(6, 11, 22, .62); }
+.kd-ct h4 { margin: 20px 0 6px; font-size: 13px; letter-spacing: .12em; text-transform: uppercase; color: var(--gold-hi, var(--head)); }
+.kd-ct h4 small { text-transform: none; letter-spacing: 0; color: var(--ink-soft); font-weight: 400; margin-left: 6px; }
+.kd-ct p { margin: 0 0 8px; }
+.kd-dau { display: flex; gap: 18px; align-items: center; color: #FFE6A8; }
+.kd-dau h3 { margin: 2px 0 4px; font: 700 30px/1.15 var(--font-title, serif); color: #FFE6A8; }
+.kd-so { font-size: 12.5px; letter-spacing: .1em; text-transform: uppercase; color: var(--ink-soft); } .kd-so i { font-style: normal; font-weight: 700; }
+.kd-so i.tot { color: #8FF0C4; } .kd-so i.xau { color: #FF9B8A; } .kd-so i.vua { color: #FFE6A8; }
+.kd-tk { margin: 0 0 8px; color: #CFE0F5; font-style: italic; }
+.kd-chip { display: flex; flex-wrap: wrap; gap: 6px; } .kd-chip span { font-size: 12.5px; padding: 3px 10px; border-radius: 99px; border: 1px solid rgba(232, 199, 122, .45); color: var(--ink); }
+.kd-y { margin-top: 12px !important; padding: 10px 14px; border-left: 3px solid #E8C77A; background: rgba(232, 199, 122, .08); border-radius: 0 10px 10px 0; }
+.kd-pa { font-style: italic; color: #FFE6A8; }
+.kd-haos { display: grid; gap: 6px; }
+.kd-hao { border: 1px solid var(--line); border-radius: 12px; background: rgba(10, 22, 42, .5); }
+.kd-hao > summary { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; padding: 9px 12px; cursor: pointer; list-style: none; }
+.kd-hao > summary::-webkit-details-marker { display: none; }
+.kd-vach { display: inline-flex; gap: 4px; width: 44px; } .kd-vach i { flex: 1; height: 7px; border-radius: 2px; background: #FFE6A8; }
+.kd-vach.duong i:last-child { display: none; }
+.kd-nap { font-size: 12.5px; color: var(--ink-soft); flex: 1; }
+.kd-the, .kd-ung { font-size: 11px; font-weight: 800; padding: 2px 8px; border-radius: 99px; } .kd-the { background: #5CEBFF; color: #04101f; } .kd-ung { background: #B38CFF; color: #10051f; }
+.kd-hao-nd { padding: 0 14px 10px 66px; } .kd-tt { color: #CFE0F5; font-size: 14px; } .kd-dt { color: #B9FFE0; font-size: 14px; }
+.kd-lv { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 8px; margin: 8px 0; }
+.kd-lv div { padding: 10px 12px; border-radius: 10px; border: 1px solid var(--line); background: rgba(10, 22, 42, .5); font-size: 14px; } .kd-lv b { display: block; color: #FFE6A8; font-size: 12.5px; letter-spacing: .08em; text-transform: uppercase; }
+.kd-lqs { display: flex; flex-wrap: wrap; gap: 8px; }
+.kd-lq { display: inline-flex; align-items: center; gap: 10px; padding: 8px 12px; border-radius: 12px; border: 1px solid var(--line); background: rgba(10, 22, 42, .55); color: #FFE6A8; cursor: pointer; font: inherit; text-align: left; }
+.kd-lq small { display: block; font-size: 11px; color: var(--ink-soft); } .kd-lq b { color: var(--ink); font-size: 13.5px; }
+.kd-lq:hover { border-color: #5CEBFF; }
+.kd-ghi { margin-top: 14px !important; font-size: 13px; color: var(--ink-soft); }
+@media (max-width: 640px) { .kd-hao-nd { padding-left: 14px; } .kd-dau h3 { font-size: 24px; } .kd-dau .kd-hinh { width: 64px; height: auto; } }
 </style>

@@ -27,7 +27,7 @@
     });
   }
   /** Mã phiên bản giao diện – phải trùng với Index.html (meta tcc-ban) và Styles.html (--tcc-ban) */
-  var BAN_GIAO_DIEN = '2026.10.24.7';
+  var BAN_GIAO_DIEN = '2026.10.24.8';
   function storeGet(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
   function storeSet(k, v) { try { localStorage.setItem(k, v); } catch (e) { /* bỏ qua */ } }
 
@@ -1184,10 +1184,105 @@
     if (name === 'hist') loadHistory();
     if (name === 'chart') setTimeout(function () { coLaSo(); drawOverlay(); if (window.TCCHolo) TCCHolo.veDuong(); }, 30);
     if (name === 'capdoi') cdNguoi1();
+    if (name === 'que64') kdVeTab();
     if (name === 'ti') { veTienIch(); if (state.token) tiDsQue(); }
     dungMucLuc(); if (state.result || state.cd) { veCta(); veQc(); }
   }
 
+  /* ------------------------ TAB 64 QUẺ KINH DỊCH ------------------------
+     Dữ liệu tĩnh tuvi-app/kinh-dich/kd64.json (lời quẻ, Thoán, Đại tượng, 384 hào + Tiểu tượng, Văn ngôn, Tự quái, Tạp quái,
+     nạp giáp – lục thân – thế ứng, hỗ/thác/tống) – tải qua jsDelivr khi mở tab lần đầu, lỗi thì lấy raw GitHub. Không cần lá số. */
+  var KD = { ds: null, dang: false, chon: 1, loc: '', quai: '' };
+  var KD_URL = ['https://cdn.jsdelivr.net/gh/phamdoanchiengroup-cloud/githubforclaude160695@c23cec1236ca96712781973bf6f35308f513d205/tuvi-app/kinh-dich/kd64.json',
+    'https://raw.githubusercontent.com/phamdoanchiengroup-cloud/githubforclaude160695/claude/happy-brown-lttkz3/tuvi-app/kinh-dich/kd64.json'];
+  var KD_QUAI_Y = { 'Càn': 'trời', 'Đoài': 'đầm', 'Ly': 'lửa', 'Chấn': 'sấm', 'Tốn': 'gió', 'Khảm': 'nước', 'Cấn': 'núi', 'Khôn': 'đất' };
+  var KD_VI = ['Sơ', 'Nhị', 'Tam', 'Tứ', 'Ngũ', 'Thượng'];
+  function kdNap(ok, loi) {
+    if (KD.ds) { ok(); return; }
+    (function thu(i) {
+      if (i >= KD_URL.length) { loi(); return; }
+      fetch(KD_URL[i]).then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); })
+        .then(function (d) { KD.ds = d; ok(); }, function () { thu(i + 1); });
+    })(0);
+  }
+  /** Hình quẻ: 6 vạch, hào 1 ở dưới; hao6 = mảng 0/1 dưới lên */
+  function kdHinh(h, w, nhan) {
+    var W = w || 64, H = Math.round(W * 0.95), g = H / 6, o = '<svg class="kd-hinh" viewBox="0 0 ' + W + ' ' + H + '" width="' + W + '" height="' + H + '" aria-hidden="true">';
+    for (var i = 0; i < 6; i++) {
+      var y = H - (i + 1) * g + g * 0.22, hh = g * 0.56, c = nhan && nhan[i] ? nhan[i] : 'currentColor';
+      o += h[i] ? '<rect x="0" y="' + y.toFixed(1) + '" width="' + W + '" height="' + hh.toFixed(1) + '" rx="2" fill="' + c + '"/>'
+        : '<rect x="0" y="' + y.toFixed(1) + '" width="' + (W * 0.42).toFixed(1) + '" height="' + hh.toFixed(1) + '" rx="2" fill="' + c + '"/><rect x="' + (W * 0.58).toFixed(1) + '" y="' + y.toFixed(1) + '" width="' + (W * 0.42).toFixed(1) + '" height="' + hh.toFixed(1) + '" rx="2" fill="' + c + '"/>';
+    }
+    return o + '</svg>';
+  }
+  function kdTenVi(q, i) { var cl = q.hao6[i] ? 'Cửu' : 'Lục'; return i === 0 ? 'Sơ ' + cl : i === 5 ? 'Thượng ' + cl : cl + ' ' + KD_VI[i]; }
+  function kdCatHung(d) { return d >= 1 ? ['tot', 'Cát'] : d >= 0 ? ['vua', 'Bình'] : ['xau', 'Cần thận trọng']; }
+  function kdVeTab() {
+    var pg = $('page-que64'); if (!pg) return;
+    if (!KD.ds) {
+      pg.innerHTML = '<div class="panel section"><p class="muted">Đang tải 64 quẻ Kinh Dịch…</p></div>';
+      kdNap(kdVeTab, function () { pg.innerHTML = '<div class="panel section"><p class="muted">Chưa tải được dữ liệu 64 quẻ – hãy kiểm tra mạng rồi mở lại tab.</p></div>'; });
+      return;
+    }
+    var hl = state.result && state.result.moRong && state.result.moRong.haLac, cuaBan = '';
+    if (hl && hl.tien && hl.hau) cuaBan = '<div class="kd-cuaban"><span>Quẻ Hà Lạc của bạn:</span><button type="button" class="btn btn-ghost btn-sm" data-kd-so="' + hl.tien.so + '">Tiên thiên · ' + esc(hl.tien.ten) + '</button><button type="button" class="btn btn-ghost btn-sm" data-kd-so="' + hl.hau.so + '">Hậu thiên · ' + esc(hl.hau.ten) + '</button></div>';
+    pg.innerHTML = '<div class="panel section kd"><h2 class="panel-title"><span class="han">易</span> 64 quẻ Kinh Dịch</h2>' +
+      '<p class="lede">Đủ lời quẻ, Thoán truyện, Đại tượng, lời 6 hào kèm Tiểu tượng, Tự quái, Tạp quái (Thập Dực) và phép nạp giáp – lục thân – thế ứng. Lời giảng viết bằng ngôn ngữ đời thường, phiên âm Hán Việt để đối chiếu.</p>' + cuaBan +
+      '<div class="kd-loc"><input type="search" id="kdTim" placeholder="Tìm tên quẻ, số quẻ, từ khóa…" value="' + esc(KD.loc) + '" aria-label="Tìm quẻ">' +
+      '<select id="kdQuai" aria-label="Lọc theo quái"><option value="">Mọi quái</option>' + Object.keys(KD_QUAI_Y).map(function (k) { return '<option value="' + k + '"' + (KD.quai === k ? ' selected' : '') + '>Có quái ' + k + ' (' + KD_QUAI_Y[k] + ')</option>'; }).join('') + '</select></div>' +
+      '<div class="kd-bo"><div class="kd-luoi" id="kdLuoi"></div><div class="kd-ct" id="kdCT" aria-live="polite"></div></div></div>';
+    kdLuoi(); kdChiTiet(KD.chon, true);
+    $('kdTim').addEventListener('input', function () { KD.loc = this.value; kdLuoi(); });
+    $('kdQuai').addEventListener('change', function () { KD.quai = this.value; kdLuoi(); });
+  }
+  function kdLuoi() {
+    var el = $('kdLuoi'); if (!el) return;
+    var t = KD.loc.trim().toLowerCase();
+    var ds = KD.ds.filter(function (q) {
+      if (KD.quai && q.tren !== KD.quai && q.duoi !== KD.quai) return false;
+      return !t || String(q.so) === t || (q.ten + ' ' + (q.tuKhoa || '')).toLowerCase().indexOf(t) >= 0;
+    });
+    el.innerHTML = ds.length ? ds.map(function (q) {
+      var ch = kdCatHung(q.diem);
+      return '<button type="button" class="kd-o ' + ch[0] + (q.so === KD.chon ? ' on' : '') + '" data-kd-so="' + q.so + '" title="' + esc(q.ten) + '"><small>' + q.so + '</small>' + kdHinh(q.hao6, 34) + '<b>' + esc(q.ten.replace(/^(Thuần|Bát thuần) /, '')) + '</b></button>';
+    }).join('') : '<p class="muted">Không có quẻ phù hợp.</p>';
+  }
+  function kdChiTiet(so, khongCuon) {
+    var q = KD.ds[so - 1], el = $('kdCT'); if (!q || !el) return;
+    KD.chon = so;
+    [].forEach.call(document.querySelectorAll('.kd-o'), function (b) { b.classList.toggle('on', +b.getAttribute('data-kd-so') === so); });
+    var ch = kdCatHung(q.diem), lq = function (n, nhan) { var x = KD.ds[n - 1]; return x ? '<button type="button" class="kd-lq" data-kd-so="' + n + '">' + kdHinh(x.hao6, 26) + '<span><small>' + nhan + '</small><b>' + n + '. ' + esc(x.ten) + '</b></span></button>' : ''; };
+    var hao = '';
+    for (var i = 5; i >= 0; i--) {
+      var h = q.hao[i] || {}, n = q.nap[i] || {}, the = q.theVi === i + 1 ? '<span class="kd-the">Thế</span>' : q.ungVi === i + 1 ? '<span class="kd-ung">Ứng</span>' : '';
+      hao += '<details class="kd-hao"' + (i === 5 ? ' open' : '') + '><summary><span class="kd-vach' + (q.hao6[i] ? ' duong' : ' am') + '"><i></i><i></i></span><b>' + kdTenVi(q, i) + '</b>' +
+        '<span class="kd-nap">' + esc(n.can + ' ' + n.chi) + ' · ' + esc(n.hanh) + ' · ' + esc(n.lt) + '</span>' + the + '</summary>' +
+        '<div class="kd-hao-nd">' + (h.pa ? '<p class="kd-pa">' + esc(h.pa) + '</p>' : '') + '<p>' + esc(h.nghia || '') + '</p>' +
+        (h.tieuTuong ? '<p class="kd-tt"><b>Tiểu tượng:</b> ' + esc(h.tieuTuong) + '</p>' : '') + (h.doiThuong ? '<p class="kd-dt">💡 ' + esc(h.doiThuong) + '</p>' : '') + '</div></details>';
+    }
+    var LV = [['congViec', 'Công việc'], ['tinhCam', 'Tình cảm'], ['taiLoc', 'Tài lộc'], ['sucKhoe', 'Sức khỏe'], ['kienTung', 'Kiện tụng'], ['xuatHanh', 'Xuất hành']];
+    el.innerHTML = '<div class="kd-dau">' + kdHinh(q.hao6, 92) + '<div><span class="kd-so">Quẻ số ' + q.so + ' · <i class="' + ch[0] + '">' + ch[1] + '</i></span><h3>' + esc(q.ten) + '</h3>' +
+      (q.tuKhoa ? '<p class="kd-tk">' + esc(q.tuKhoa) + '</p>' : '') +
+      '<div class="kd-chip"><span>Trên: ' + esc(q.tren) + ' – ' + esc(KD_QUAI_Y[q.tren] || '') + ' (' + esc(q.hanhTren) + ')</span><span>Dưới: ' + esc(q.duoi) + ' – ' + esc(KD_QUAI_Y[q.duoi] || '') + ' (' + esc(q.hanhDuoi) + ')</span><span>Cung ' + esc(q.cung) + ' (' + esc(q.cungHanh) + ') · ' + esc(q.the) + '</span></div></div></div>' +
+      '<p class="kd-y">' + esc(q.y) + '. <b>Lời khuyên:</b> ' + esc(q.khuyen) + '.</p>' +
+      '<h4>Lời quẻ</h4>' + (q.queTu.pa ? '<p class="kd-pa">' + esc(q.queTu.pa) + '</p>' : '') + '<p>' + esc(q.queTu.nghia) + '</p>' +
+      '<h4>Thoán truyện</h4><p>' + esc(q.thoan) + '</p>' +
+      '<h4>Đại tượng</h4>' + (q.daiTuong.pa ? '<p class="kd-pa">' + esc(q.daiTuong.pa) + '</p>' : '') + '<p>' + esc(q.daiTuong.nghia) + '</p>' +
+      '<h4>Sáu hào <small>từ trên xuống · nạp giáp – ngũ hành – lục thân</small></h4><div class="kd-haos">' + hao + '</div>' +
+      (q.dung ? '<h4>' + (q.so === 1 ? 'Dụng Cửu' : 'Dụng Lục') + '</h4>' + (q.dung.pa ? '<p class="kd-pa">' + esc(q.dung.pa) + '</p>' : '') + '<p>' + esc(q.dung.nghia || '') + '</p>' + (q.dung.tieuTuong ? '<p class="kd-tt"><b>Tiểu tượng:</b> ' + esc(q.dung.tieuTuong) + '</p>' : '') : '') +
+      (q.vanNgon ? '<h4>Văn Ngôn truyện</h4><p>' + esc(q.vanNgon) + '</p>' : '') +
+      '<h4>Luận chung</h4><p>' + esc(q.tongLuan) + '</p>' +
+      '<div class="kd-lv">' + LV.map(function (x) { return q.linhVuc && q.linhVuc[x[0]] ? '<div><b>' + x[1] + '</b><span>' + esc(q.linhVuc[x[0]]) + '</span></div>' : ''; }).join('') + '</div>' +
+      '<h4>Tự quái truyện</h4><p>' + esc(q.tuQuai) + '</p><h4>Tạp quái truyện</h4><p>' + esc(q.tapQuai) + '</p>' +
+      '<h4>Quẻ liên quan</h4><div class="kd-lqs">' + lq(q.ho, 'Quẻ hỗ (bên trong)') + lq(q.thac, 'Quẻ thác (đối nghịch)') + lq(q.tong, 'Quẻ tống (lật ngược)') + '</div>' +
+      '<p class="kd-ghi">Nạp giáp theo phép Kinh Phòng: quẻ thuộc cung ' + esc(q.cung) + ' (hành ' + esc(q.cungHanh) + '), thế ở hào ' + q.theVi + ', ứng ở hào ' + q.ungVi + '. Lục thân tính theo hành của cung so với hành từng hào.</p>';
+    if (!khongCuon && window.innerWidth < 1080) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+  document.addEventListener('click', function (e) {
+    var b = e.target.closest && e.target.closest('[data-kd-so]'); if (!b || !KD.ds) return;
+    if (!$('kdCT')) { KD.chon = +b.getAttribute('data-kd-so'); showTab('que64'); return; }
+    kdChiTiet(+b.getAttribute('data-kd-so'));
+  });
   /* ------------------------ BẢNG ĐIỀU KHIỂN BẠCH KIM ------------------------ */
   // Đầu tab Lá số: chân dung số + bento biểu đồ động (radar 12 cung, ngũ hành, vượng–nhược, 9 lĩnh vực, 4 hệ),
   // đường vận cả đời, nhịp năm nay. Phần nào thiếu dữ liệu (chưa mở khóa) thì bỏ hoặc hiện khung khóa.
