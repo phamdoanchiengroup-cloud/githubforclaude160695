@@ -1502,7 +1502,20 @@
 function tccRenderAuditHe(res, he, tieuDe) {
  var a=he&&he.danhGiaPhuongPhap;if(!a||!Array.isArray(a.layers))return '';
  var status={co:'Có dữ liệu',motPhan:'Cần đối chiếu',chuaCo:'Chưa đủ dữ liệu'};
- return '<div class="panel section tv-audit"><h2 class="panel-title">'+esc(tieuDe)+'</h2><p class="tv-audit-intro">Trạng thái thể hiện mức độ có dữ liệu và khả năng truy vết quy tắc, không phải độ chính xác đã được kiểm chứng.</p><div class="tv-audit-grid">'+a.layers.map(function(x){return '<article class="tv-audit-item"><div><b>'+esc(x.ten||'')+'</b><span class="tv-audit-state">'+esc(status[x.trangThai]||'Lớp tham khảo')+'</span></div><p>'+esc(x.chiTiet||'')+'</p></article>';}).join('')+'</div><h4 class="dd-h">Nguyên tắc</h4><ul>'+(a.nguyenTac||[]).map(function(x){return '<li>'+esc(x)+'</li>';}).join('')+'</ul><p class="tv-audit-limit"><b>Kiểm định:</b> '+esc(a.danhGiaKiemDinh||'Chưa đánh giá')+'<br>'+esc(a.gioiHan||'')+'</p></div>';
+ var sourceStatus={
+  NEEDS_PRIMARY_TEXT_VERIFICATION:'Chưa đối chiếu bản gốc',
+  FOUNDATIONAL_TEXT_NOT_SUFFICIENT_TO_VERIFY_HA_LAC_NUMBERING:'Nguồn nền tảng; chưa xác minh phép lập số',
+  RELATED_SOURCE_REQUIRES_SCOPE_VERIFICATION:'Nguồn liên quan; cần xác minh phạm vi',
+  SECONDARY_SOURCE_WITH_PROVENANCE:'Nguồn thứ cấp có ghi nguồn',
+  SECONDARY_IMPLEMENTATION_NOT_AUTHORITATIVE:'Mã tham chiếu thứ cấp; không phải nguồn cổ thư'
+ };
+ var sources=Array.isArray(a.nguonCanDoiChieu)?a.nguonCanDoiChieu:[];
+ var sourceHtml=sources.length?'<h4 class="dd-h">Nguồn cần đối chiếu</h4><div class="tv-audit-grid">'+sources.map(function(x){
+  var name=esc(x.ten||'Nguồn chưa đặt tên'), url=typeof x.url==='string'&&/^https:\/\//i.test(x.url)?x.url:'';
+  var title=url?'<a href="'+esc(url)+'" target="_blank" rel="noopener noreferrer">'+name+'</a>':name;
+  return '<article class="tv-audit-item"><div><b>'+title+'</b><span class="tv-audit-state">'+esc(sourceStatus[x.trangThai]||x.trangThai||'Chưa phân loại')+'</span></div><p>'+esc(x.phamVi||'')+'</p></article>';
+ }).join('')+'</div>':'';
+ return '<div class="panel section tv-audit"><h2 class="panel-title">'+esc(tieuDe)+'</h2><p class="tv-audit-intro">Trạng thái thể hiện mức độ có dữ liệu và khả năng truy vết quy tắc, không phải độ chính xác đã được kiểm chứng.</p><div class="tv-audit-grid">'+a.layers.map(function(x){return '<article class="tv-audit-item"><div><b>'+esc(x.ten||'')+'</b><span class="tv-audit-state">'+esc(status[x.trangThai]||'Lớp tham khảo')+'</span></div><p>'+esc(x.chiTiet||'')+'</p></article>';}).join('')+'</div>'+sourceHtml+'<h4 class="dd-h">Nguyên tắc</h4><ul>'+(a.nguyenTac||[]).map(function(x){return '<li>'+esc(x)+'</li>';}).join('')+'</ul><p class="tv-audit-limit"><b>Kiểm định:</b> '+esc(a.danhGiaKiemDinh||'Chưa đánh giá')+'<br>'+esc(a.gioiHan||'')+'</p></div>';
 }
 
 function render(res) {
