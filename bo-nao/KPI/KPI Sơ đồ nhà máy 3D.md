@@ -40,7 +40,8 @@ Liên quan: [[KPI Phần giao diện tải sau]] · [[Lần dán lên Apps Scrip
   - Bỏ: chọn màu KPI / sĩ số (#sdMau), tải sĩ số, tô màu KPI (`mauSo = null`). Nhãn khu = tên khu + tên xưởng (chữ vàng `#ffd27a`). Thẻ chi tiết ghi "Xưởng làm việc", bỏ nút Mở Bảng KPI; khung "Khu vực các xưởng" ghi các tầng có khu của xưởng.
   - 3D (`va_3d.py`): `kpi:false`, bỏ nút chọn màu, thẻ phòng chỉ ghi xưởng.
   - Kiểm thử `so-do-web.js` viết lại phần KPI / sĩ số: không còn KPI, nhãn có tên xưởng, Tách tầng có 3 thẻ, bấm thẻ Tầng 2 sang tầng 2; TP chỉ thấy xưởng mình. Chạy đủ có 3D: 41/41.
-- **25/10 (chủ dự án): sơ đồ 2D bản DỌC.** Lần đầu xoay theo chiều kim đồng hồ, chủ dự án xem ảnh rồi bảo "xoay lại 180 độ", nên nay xoay 90° ngược chiều kim đồng hồ.
+- **25/10 (sau đó): chủ dự án bảo "xoay lại bản sơ đồ 2D ngang" → ĐÃ BỎ bản dọc** (lấy lại `va-so-do.js`, `va-so-do.css`, `so-do-web.js` của commit trước e426070; kiểm thử 2D 27/27). Ghi lại cách làm bên dưới để dùng nếu cần lại.
+- **25/10 (chủ dự án): sơ đồ 2D bản DỌC (đã bỏ).** Lần đầu xoay theo chiều kim đồng hồ, chủ dự án xem ảnh rồi bảo "xoay lại 180 độ", nên nay xoay 90° ngược chiều kim đồng hồ.
   - `sdVe`: nội dung vẽ theo toạ độ mặt bằng cũ, bọc trong nhóm `matrix(0 -1 1 0 0 44.75)`, tức (x, y) → (y, 44,75 − x). `SD.vb` / `SD_VB0` = [−0,5, −0,5, 35,25, 45,75] theo khung đã xoay, nên phóng to / kéo / nhấp đúp không phải sửa.
   - Nhãn: tính vừa khung theo kích thước sau khi xoay (rộng = h, cao = w). Nhóm chữ xoay `rotate(90)` để bù cho chữ đứng thẳng; phòng hẹp mà cao (sau xoay) thì `rotate(0)`, chữ đọc từ dưới lên.
   - Mặt tiền / cổng chính nay ở **bên phải** sơ đồ (dòng hướng dẫn đã sửa).

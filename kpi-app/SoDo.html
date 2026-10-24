@@ -16,7 +16,7 @@
 .sd-zoom button{width:40px;height:40px;border-radius:10px;border:1px solid #3e464e;background:rgba(24,27,31,.92);color:#eef2f4;font:600 20px/1 inherit;font-family:inherit;cursor:pointer}
 .sd-zoom button:hover{background:#2b3035}
 #sdMb.to{touch-action:none;cursor:grab}#sdMb.keo{cursor:grabbing}
-#sdMb{display:block;width:min(100%, calc((100vh - 150px) * 35.25 / 45.75));aspect-ratio:35.25/45.75;height:auto;margin:0 auto;touch-action:manipulation}   /* 25/10: bản dọc, máy tính không cao quá màn hình */
+#sdMb{display:block;width:100%;height:auto;touch-action:manipulation}
 #sdMb .phong{cursor:pointer;outline:none}
 #sdMb .phong rect{stroke:#0c0d0f;stroke-width:.14;transition:opacity .25s,fill .3s}
 #sdMb.co-anh .phong rect{stroke:rgba(255,255,255,.4);stroke-width:.07}
@@ -2534,7 +2534,7 @@ var SD_ANH = ["https://lh3.googleusercontent.com/d/1ueINGmmw0EqqtQotQlEP_cjDz2GG
 var SD_TACH = "https://lh3.googleusercontent.com/d/1pSnrOurNozXOXNsPipbymTsP_aktLnu0=s0-rw-l80";   // 24/10: ảnh minh họa tách 3 tầng (chủ dự án gửi) + chú thích xưởng từng tầng
 // chú thích: f = tầng (0..2), o = góc trên trái thẻ (% ảnh), d = điểm chỉ vào sàn tầng đó (% ảnh)
 var SD_TACH_NHAN = [{ f: 2, o: [1.5, 3], d: [36, 22] }, { f: 1, o: [80, 34], d: [80, 47] }, { f: 0, o: [73, 66], d: [58, 74] }];
-var SD = { tang: 0, loc: '', chon: null, siso: null, sisoNgay: '', vb: [-0.5, -0.5, 35.25, 45.75] };   // 25/10: sơ đồ 2D bản DỌC – vb theo khung đã xoay
+var SD = { tang: 0, loc: '', chon: null, siso: null, sisoNgay: '', vb: [-0.5, -0.5, 45.75, 35.25] };
 var SD_VB0 = SD.vb.slice(), SD_ZMAX = 6;
 var SD_TANG = ['Tầng 1', 'Tầng 2', 'Tầng 3'], SD_W = 44.75, SD_D = 34.25, SD_NS = 'http://www.w3.org/2000/svg';
 SS.nhanKPI = 'Hiệu suất KPI tháng này';
@@ -2584,12 +2584,10 @@ function sdVe() {
   var tang = SD.tang, loc = SD.loc, chon = SD.chon, D2 = SD_D;
   svg.innerHTML = ''; svg.classList.toggle('loc', !!loc);
   svg.setAttribute('aria-label', 'Mặt bằng ' + SD_TANG[tang]);
-  // 25/10 (chủ dự án): bản dọc – vẽ theo toạ độ mặt bằng như cũ rồi xoay cả nhóm 90° ngược chiều kim đồng hồ: (x, y) -> (y, 44,75 − x)
-  var xoay = sdEl('g', { transform: 'matrix(0 -1 1 0 0 ' + SD_W + ')' }, svg);
-  sdEl('rect', { x: 0, y: 0, width: SD_W, height: D2, fill: '#181b1f', stroke: '#3e464e', 'stroke-width': .2 }, xoay);
+  sdEl('rect', { x: 0, y: 0, width: SD_W, height: D2, fill: '#181b1f', stroke: '#3e464e', 'stroke-width': .2 }, svg);
   var anh = SD_ANH[tang]; svg.classList.toggle('co-anh', !!anh);
-  if (anh) sdEl('image', { href: anh, x: -.5, y: -.5, width: 45.75, height: 35.25, preserveAspectRatio: 'none', 'aria-hidden': 'true' }, xoay);
-  var F = SD_DATA[tang], lp = sdEl('g', {}, xoay), lm = sdEl('g', {}, xoay), lt = sdEl('g', { 'aria-hidden': 'true' }, xoay);
+  if (anh) sdEl('image', { href: anh, x: -.5, y: -.5, width: 45.75, height: 35.25, preserveAspectRatio: 'none', 'aria-hidden': 'true' }, svg);
+  var F = SD_DATA[tang], lp = sdEl('g', {}, svg), lm = sdEl('g', {}, svg), lt = sdEl('g', { 'aria-hidden': 'true' }, svg);
   F.rooms.forEach(function (R, ri) {
     var ma = SS.xuong(tang, R), mauSo = null, mau = sdNen(R);   // 24/10: bỏ tô màu KPI / sĩ số
     var g = sdEl('g', { 'class': 'phong' + (loc && ma === loc ? ' sang' : '') + (chon && chon.ri === ri ? ' chon' : ''), tabindex: 0, role: 'button' }, lp);
@@ -2600,11 +2598,11 @@ function sdVe() {
     var big = R.r.map(sdRc).sort(function (p, q) { return (q.x1 - q.x0) * (q.y1 - q.y0) - (p.x1 - p.x0) * (p.y1 - p.y0); })[0];
     var w = big.x1 - big.x0, h = big.y1 - big.y0, cx = (big.x0 + big.x1) / 2, cy = D2 - (big.y0 + big.y1) / 2;
     if (w * h > 8 && R.c !== 'hl') {
-      // chữ vừa khung (tính theo khung đã xoay: rộng = h, cao = w): phòng hẹp mà cao thì chữ dọc; vẫn không vừa thì cắt bớt chữ
-      var doc = w > h * 1.3 && h < 6, dai = (doc ? w : h) - .7, cao = doc ? h : w, ten = R.n, mc = anh ? '#fff' : sdChu(mau), so = ma ? String(SS.TEN[ma] || ma).replace(/^Xưởng\s+/i, '') : '';
+      // chữ vừa khung: phòng hẹp mà cao thì xoay dọc; vẫn không vừa thì cắt bớt chữ
+      var doc = h > w * 1.3 && w < 6, dai = (doc ? h : w) - .7, cao = doc ? w : h, ten = R.n, mc = anh ? '#fff' : sdChu(mau), so = ma ? String(SS.TEN[ma] || ma).replace(/^Xưởng\s+/i, '') : '';
       var co = Math.min(1, dai / (ten.length * .56), cao * .32);
       if (co < .55) { co = .55; var n = Math.max(3, Math.floor(dai / (.55 * .56)) - 1); if (ten.length > n) ten = ten.slice(0, n) + '…'; }
-      var gt = sdEl('g', { 'class': 'nhan' + (loc && ma === loc ? ' sang' : ''), transform: 'rotate(' + (doc ? 0 : 90) + ' ' + cx + ' ' + cy + ')' }, lt);   // bù lại góc xoay của cả nhóm để chữ đứng thẳng
+      var gt = sdEl('g', { 'class': 'nhan' + (loc && ma === loc ? ' sang' : ''), transform: doc ? 'rotate(-90 ' + cx + ' ' + cy + ')' : '' }, lt);
       var coSo = Math.min(co * .9, cao * .3, dai / (so.length * .62 || 1)), coSoTen = so && cao > co + coSo + .4;
       var t = sdEl('text', { x: cx, y: cy + (coSoTen ? -coSo * .25 : co * .35), 'font-size': co, fill: mc, 'font-weight': 600 }, gt); t.textContent = ten;
       if (coSoTen) { var t2 = sdEl('text', { x: cx, y: cy + co * .3 + coSo * .85, 'font-size': coSo, fill: anh ? '#ffd27a' : mc, 'font-weight': 700 }, gt); t2.textContent = so; }
@@ -2718,7 +2716,7 @@ function vSoDo() {
     (window.matchMedia && window.matchMedia('(max-width: 899px)').matches ? '' : '<button class="btn" type="button" id="sdNut3d">Xem 3D</button>') + '</div>' +   // chủ dự án 13/10: điện thoại không xem 3D
     '<div class="sd-khung"><svg id="sdMb" viewBox="' + SD.vb.join(' ') + '" role="img" aria-label="Mặt bằng tầng"></svg><div class="sd-tach" id="sdTach"></div>' +
     '<div class="sd-zoom" role="group" aria-label="Phóng to thu nhỏ"><button type="button" data-z="in" aria-label="Phóng to" title="Phóng to">+</button><button type="button" data-z="out" aria-label="Thu nhỏ" title="Thu nhỏ">−</button><button type="button" data-z="fit" aria-label="Xem cả tầng" title="Xem cả tầng">⌂</button></div></div>' +
-    '<div class="sd-huong">→ Bên phải sơ đồ là mặt tiền, cổng chính · ' + (sdLaMayTinh() ? 'cuộn chuột để phóng to đúng chỗ, kéo để dời, nhấp đúp để phóng nhanh' : 'nút + − để phóng to, chạm đúp vào chỗ cần xem, phóng to rồi kéo một ngón để dời') + '</div><div class="sd-cgiai" id="sdCgiai"></div></div>' +
+    '<div class="sd-huong">↓ Phía dưới sơ đồ là mặt tiền, cổng chính · ' + (sdLaMayTinh() ? 'cuộn chuột để phóng to đúng chỗ, kéo để dời, nhấp đúp để phóng nhanh' : 'nút + − để phóng to, chạm đúp vào chỗ cần xem, phóng to rồi kéo một ngón để dời') + '</div><div class="sd-cgiai" id="sdCgiai"></div></div>' +
     '<div class="sd-ben"><div class="card" id="sdCt" aria-live="polite"></div>' +
     '<div class="card"><h3>Khu vực các xưởng<span>bấm để soi trên sơ đồ</span></h3><ul class="sd-xs" id="sdXs"></ul></div>' +
     (ad ? '<div class="card"><details class="sd-ghep"><summary>Bảng ghép khu ↔ xưởng</summary><p>Ghép tạm theo tên khu trên bản vẽ. Chỗ nào chưa đúng anh/chị chọn lại – sơ đồ (cả 3D) đổi màu ngay. Lựa chọn được lưu trên trình duyệt của máy này.</p><div class="sd-bg" id="sdBg"></div></details></div>' : '') +
