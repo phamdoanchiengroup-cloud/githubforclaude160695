@@ -22,6 +22,8 @@ Liên quan: [[Lần dán lên Apps Script]] · [[Quyết định của chủ d�
 ## Kỹ năng (22/10)
 - Dùng thử tab Kỹ năng: nhờ 1–2 xưởng đề xuất 8–15 kỹ năng trước, BĐH duyệt và đặt trọng số, rồi mới mở cho các xưởng khác. Chạy thử 3–6 tháng rồi mới bàn quy đổi điểm → phụ cấp kỹ năng (nhờ nhân sự rà pháp lý). – [[KPI Kỹ năng]]
 
+- Sơ đồ 3D đẹp như ảnh mẫu (23/10): chọn làm lớp giao diện kiểu ảnh (nhãn phát sáng + khung bên phải, nhẹ) hay không. – [[KPI Sơ đồ nhà máy 3D]]
+
 ## Chờ chủ dự án làm
 - Lưu trữ 2 link thừa `AKfycbyQ…`, `AKfycbz2…` trong Quản lý triển khai (clasp đã tự triển khai đúng link công ty từ 22/10). – [[KPI Cập nhật bằng clasp]]
 - Dán bản 21/10 (sửa lỗi + tăng tốc), chạy `CAI_TRIGGER_LAM_NONG_KPI`, kiểm tra Sheets API. – [[KPI Tăng tốc đợt 2 (21-10)]]

@@ -501,6 +501,10 @@ Bấm đúp **2-CAP-NHAT.bat** (chưa tự triển khai thì Triển khai → Qu
 - Tab **Nhân sự** có thêm khối **"Ban điều hành & Hành chính nhân sự"** – chỉ chủ sở hữu thấy.
 - Tab **Nhân sự** có thẻ "Hồ sơ chưa đủ: x/y người", bấm "Xem danh sách" để thấy tên theo xưởng.
 
+## ĐÈN XƯỞNG BAN ĐÊM TRONG SƠ ĐỒ 3D 23/10 – đổi SoDo.html + Index.html
+Bấm đúp **2-CAP-NHAT.bat**, rồi Ctrl+F5. Không có hàm cần chạy.
+- Kéo thanh **Giờ** về tối: trong các phân xưởng bật đèn trần, nhìn rõ máy và người. Thanh giờ nay kéo được tới 22:00.
+
 ## HOLOGRAM CHO CHỦ SỞ HỮU 23/10 – chỉ đổi Index.html
 Bấm đúp **2-CAP-NHAT.bat**, rồi Ctrl+F5. Không có hàm cần chạy.
 - Chỉ tài khoản chủ sở hữu thấy: nền vũ trụ, khung kính phát sáng, và khối **Đài quan sát KPI** ở đầu Tổng quan (mỗi xưởng là một ngôi sao, càng xa tâm KPI càng cao; bấm vào sao để mở Bảng KPI xưởng đó).

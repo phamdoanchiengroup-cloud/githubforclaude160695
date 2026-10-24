@@ -100,7 +100,7 @@ const mauPhong = (p, ten) => p.evaluate(t => { const g = [...document.querySelec
     await f3.waitForSelector('#c3d canvas', { state: 'attached', timeout: 180000 });   // máy thử vẽ 3D bằng phần mềm rất chậm (bản 13/10 nặng hơn)
     await f3.evaluate(() => { const t = document.getElementById('tgDi'); if (t && t.checked) t.click(); }); await p.waitForTimeout(4000);
     s = await f3.evaluate(() => [!!window.SS, document.querySelector('#segMau button[data-c="kpi"]').textContent, document.getElementById('legend').textContent]);
-    ok(s[0] && s[1] === 'KPI tháng này' && /A \/ A\+/.test(s[2]), 'bản 3D dùng chung số liệu thật: nút "KPI tháng này", chú giải KPI', s);
+    ok(s[0] && s[1] === 'KPI tháng này' && /S \/ A\+/.test(s[2]), 'bản 3D dùng chung số liệu thật: nút "KPI tháng này", chú giải KPI', s);
     if (OUT) await p.screenshot({ path: OUT + '/so-do-web-3d.png' });
     // 21/10: mặc định chế độ Nhẹ; ẩn / hiện thanh chi tiết; toàn màn hình (máy thử không cho Fullscreen API thì thu gọn đầu lớp phủ)
     s = await f3.evaluate(() => [document.getElementById('btnNhe').getAttribute('aria-pressed'), document.getElementById('tgHq').checked]);
@@ -139,6 +139,7 @@ const mauPhong = (p, ten) => p.evaluate(t => { const g = [...document.querySelec
     await f3.evaluate(() => document.getElementById('btLuu').click());
     await f3.waitForFunction(() => !/Đang lưu/.test(document.getElementById('btLuuTT').textContent), null, { timeout: 90000 }).catch(() => {});   // vẽ 3D bằng phần mềm làm chậm cả trang
     s = await f3.evaluate(() => [document.getElementById('btLuuTT').textContent, document.getElementById('btLuu').disabled]);
+    const soLuu = await f3.evaluate(() => document.getElementById('btSo').textContent);   // 23/10: sheet thật đã có bố trí lưu sẵn -> so với lúc vừa lưu, không cứng "dời 1 máy"
     ok(/Đã lưu lên web/.test(s[0]) && s[1], 'bấm Lưu: "✓ Đã lưu lên web lúc …"', s);
     await p.keyboard.press('Escape'); await p.waitForTimeout(200);
     ok(await p.evaluate(() => !document.getElementById('sd3d') && SS.nghe.length === 1), 'Esc đóng 3D, gỡ phần nghe của bản 3D');
@@ -146,7 +147,7 @@ const mauPhong = (p, ten) => p.evaluate(t => { const g = [...document.querySelec
     const f4 = await (await p.waitForSelector('#sd3d iframe')).contentFrame();
     await f4.waitForSelector('#c3d canvas', { state: 'attached', timeout: 180000 });
     s = await f4.evaluate(() => [document.getElementById('btSo').textContent, document.getElementById('btLuuTT').textContent]);
-    ok(/dời 1 máy/.test(s[0]) && /Đã lưu lên web/.test(s[1]), 'mở lại 3D: máy vẫn ở chỗ mới đã lưu', s);
+    ok(s[0] === soLuu && /dời \d+ máy/.test(s[0]) && /Đã lưu lên web/.test(s[1]), 'mở lại 3D: máy vẫn ở chỗ mới đã lưu', [s, soLuu]);
     // đổi mà chưa lưu, bấm Đóng: tự lưu rồi mới đóng
     await f4.evaluate(() => { __v3.btBat(true); __v3.btXoayThu(); });
     await p.evaluate(() => document.getElementById('sd3dDong').click()); await p.waitForFunction(() => !document.getElementById('sd3d'), null, { timeout: 90000 }).catch(() => {});

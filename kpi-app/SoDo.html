@@ -199,7 +199,7 @@ body.an-ben aside{display:none}
       &lt;button id="btnToan" type="button" aria-pressed="false" title="Xem toàn màn hình (Esc để thoát)"&gt;⛶ Toàn màn hình&lt;/button&gt;
       &lt;button id="btnBen" type="button" aria-pressed="false" aria-controls="benPhai" title="Ẩn / hiện thanh chi tiết bên phải"&gt;◨ Ẩn chi tiết&lt;/button&gt;
       &lt;div class="seg" id="segMau" role="group" aria-label="Tô màu"&gt;&lt;button data-c="" aria-pressed="false"&gt;Màu thật&lt;/button&gt;&lt;button data-c="kpi" aria-pressed="true"&gt;KPI tháng này&lt;/button&gt;&lt;button data-c="siso" aria-pressed="false"&gt;Sĩ số&lt;/button&gt;&lt;/div&gt;
-      &lt;label class="sun" for="hour"&gt;Giờ &lt;input type="range" id="hour" min="5.5" max="19" step="0.25" value="15"&gt;&lt;output id="hourOut"&gt;15:00&lt;/output&gt;&lt;/label&gt;
+      &lt;label class="sun" for="hour"&gt;Giờ &lt;input type="range" id="hour" min="5.5" max="22" step="0.25" value="15"&gt;&lt;output id="hourOut"&gt;15:00&lt;/output&gt;&lt;/label&gt;
     &lt;/div&gt;
     &lt;div class="tip" id="tip" hidden&gt;&lt;/div&gt;
     &lt;div class="thongBao" id="thongBao" role="status" hidden&gt;&lt;/div&gt;
@@ -324,7 +324,7 @@ function setHour(h){
   sun.position.copy(sunDir).multiplyScalar(220).add(new THREE.Vector3(20,0,0)); sun.target.position.set(20,0,0);
   renderer.toneMappingExposure=0.58+0.25*(1-day);
   const night=1-THREE.MathUtils.clamp((elev+4)/10,0,1);
-  M.glass.emissiveIntensity=night*1.4;M.slot.emissiveIntensity=night*.9;OFW.emissiveIntensity=night*1.6+.05; M.lampHead.emissiveIntensity=0.2+night*3;
+  M.glass.emissiveIntensity=night*1.4;M.slot.emissiveIntensity=night*.9;OFW.emissiveIntensity=night*1.6+.05; M.lampHead.emissiveIntensity=0.2+night*3;denDem(night);
   if(envRT)envRT.dispose(); envRT=pmrem.fromScene(envScene,0.02);
   scene.environment=envRT.texture; scene.environmentIntensity=0.25+0.5*THREE.MathUtils.clamp((elev+4)/14,0,1);
   const hh=Math.floor(h),mm=Math.round((h-hh)*60);
@@ -2220,6 +2220,27 @@ hourEl.oninput=()=&gt;{clearTimeout(hourT);hourT=setTimeout(()=&gt;setHour(+hour
 function size(){const w=host.clientWidth,h=host.clientHeight;if(!w||!h)return;renderer.setSize(w,h);composer.setSize(w,h);ao.setSize(w*renderer.getPixelRatio(),h*renderer.getPixelRatio());lr.setSize(w,h);cam.aspect=w/h;cam.updateProjectionMatrix();}
 let rsT;new ResizeObserver(()=&gt;{size();clearTimeout(rsT);rsT=setTimeout(apply,150);}).observe(host);
 
+/* 23/10: đèn xưởng ban đêm – đèn trần treo trên các khu sản xuất lớn (không đổ bóng cho nhẹ), ánh sáng ấm trong nhà,
+   ánh trăng xanh nhạt ngoài trời, bật các bóng đèn trần đã vẽ (userData.den). n = 0 ban ngày … 1 ban đêm. */
+const denAmXuong=new THREE.AmbientLight(0xffe2b8,0); scene.add(denAmXuong);
+const denTran=[];
+floors.forEach(F=&gt;{
+  const ds=[];
+  F.rooms.forEach(R=&gt;{ if(/^(Thang|WC|Hành lang|Lối đi)/.test(R.n||''))return;
+    R.r.forEach(r=&gt;{const a=rc(r),s=(a.x1-a.x0)*(a.y1-a.y0); if(s&gt;=40)ds.push({a,s});}); });
+  ds.sort((p,q)=&gt;q.s-p.s).slice(0,5).forEach(o=&gt;{
+    const L=new THREE.PointLight(0xffdcae,0,Math.max(14,Math.sqrt(o.s)*1.7),1.6); L.castShadow=false;
+    L.position.set(px((o.a.x0+o.a.x1)/2),3.1,pz((o.a.y0+o.a.y1)/2)); L.userData.s=o.s; F.g.add(L); denTran.push(L); });
+});
+const bongTran=[]; scene.traverse(o=&gt;{ if(o.userData&amp;&amp;o.userData.den&amp;&amp;o.userData.den.material)bongTran.push(o.userData.den.material); });
+const mauTroi=new THREE.Color(0xcfe2ff), mauTrang=new THREE.Color(0x9db7e6);
+function denDem(n){
+  denAmXuong.intensity=0.55*n;
+  denTran.forEach(L=&gt;{L.intensity=n*(12+Math.min(18,L.userData.s/16));});
+  bongTran.forEach(m=&gt;{m.emissiveIntensity=2.2*n;});
+  hemi.color.copy(mauTroi).lerp(mauTrang,n); hemi.intensity=Math.max(hemi.intensity,0.12+0.28*n);
+  if(typeof canVe!=='undefined')canVe=30;
+}
 setHour(+hourEl.value); legend(); size(); apply(); select(null);
 floors.forEach(F=&gt;{F.yNow=F.ty;F.g.position.y=F.yNow;});
 cam.position.set(...VIEWS.g34[1]); ctl.target.set(...VIEWS.g34[0]);

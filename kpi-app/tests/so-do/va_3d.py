@@ -70,7 +70,34 @@ if(window.__v3)Object.assign(window.__v3,{btBat:batBoTri,btXoayThu:()=>{const F=
              '\n      <button id="btnBen" type="button" aria-pressed="false" aria-controls="benPhai" title="Ẩn / hiện thanh chi tiết bên phải">◨ Ẩn chi tiết</button>')
     b = R(b, '  <aside>', '  <aside id="benPhai">')
     b = R(b, "document.getElementById('btnNhe').onclick=", JS_TOAN + "document.getElementById('btnNhe').onclick=")
+    # ---- 23/10 (chủ dự án): chọn giờ tối thì trong xưởng tối đen, rất khó nhìn -> bật đèn xưởng; thanh giờ tới 22:00 (ca tối)
+    b = R(b, 'id="hour" min="5.5" max="19"', 'id="hour" min="5.5" max="22"')
+    b = R(b, 'M.lampHead.emissiveIntensity=0.2+night*3;', 'M.lampHead.emissiveIntensity=0.2+night*3;denDem(night);')
+    b = R(b, 'setHour(+hourEl.value); legend(); size(); apply(); select(null);', JS_DEN_DEM + 'setHour(+hourEl.value); legend(); size(); apply(); select(null);')
     return b
+
+JS_DEN_DEM = r'''/* 23/10: đèn xưởng ban đêm – đèn trần treo trên các khu sản xuất lớn (không đổ bóng cho nhẹ), ánh sáng ấm trong nhà,
+   ánh trăng xanh nhạt ngoài trời, bật các bóng đèn trần đã vẽ (userData.den). n = 0 ban ngày … 1 ban đêm. */
+const denAmXuong=new THREE.AmbientLight(0xffe2b8,0); scene.add(denAmXuong);
+const denTran=[];
+floors.forEach(F=>{
+  const ds=[];
+  F.rooms.forEach(R=>{ if(/^(Thang|WC|Hành lang|Lối đi)/.test(R.n||''))return;
+    R.r.forEach(r=>{const a=rc(r),s=(a.x1-a.x0)*(a.y1-a.y0); if(s>=40)ds.push({a,s});}); });
+  ds.sort((p,q)=>q.s-p.s).slice(0,5).forEach(o=>{
+    const L=new THREE.PointLight(0xffdcae,0,Math.max(14,Math.sqrt(o.s)*1.7),1.6); L.castShadow=false;
+    L.position.set(px((o.a.x0+o.a.x1)/2),3.1,pz((o.a.y0+o.a.y1)/2)); L.userData.s=o.s; F.g.add(L); denTran.push(L); });
+});
+const bongTran=[]; scene.traverse(o=>{ if(o.userData&&o.userData.den&&o.userData.den.material)bongTran.push(o.userData.den.material); });
+const mauTroi=new THREE.Color(0xcfe2ff), mauTrang=new THREE.Color(0x9db7e6);
+function denDem(n){
+  denAmXuong.intensity=0.55*n;
+  denTran.forEach(L=>{L.intensity=n*(12+Math.min(18,L.userData.s/16));});
+  bongTran.forEach(m=>{m.emissiveIntensity=2.2*n;});
+  hemi.color.copy(mauTroi).lerp(mauTrang,n); hemi.intensity=Math.max(hemi.intensity,0.12+0.28*n);
+  if(typeof canVe!=='undefined')canVe=30;
+}
+'''
 
 
 CSS_TOAN = """#btnToan,#btnBen{font:600 14px/1 var(--f-display);letter-spacing:.04em;text-transform:uppercase;color:var(--ink);background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:9px 12px;min-height:40px;cursor:pointer;box-shadow:0 1px 3px rgba(0,0,0,.12);white-space:nowrap}
