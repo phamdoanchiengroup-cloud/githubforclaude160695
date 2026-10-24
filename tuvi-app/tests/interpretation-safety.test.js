@@ -91,3 +91,15 @@ test('PDF uses internal-score wording instead of unsupported probability labels'
   assert.match(script, /bcSo\(y\.pct\) \+ '\/100<\/b>'/);
   assert.match(script, /không xác minh tính cách hay dự đoán chắc chắn sự kiện tương lai/);
 });
+
+
+test('Bazi and Ha Lac audit panels expose linked source provenance', () => {
+  const code = read('Code.gs');
+  const script = read('Script.html');
+  assert.match(code, /nguonCanDoiChieu/);
+  assert.match(code, /https:\/\/github\.com\/zaoxu001\/tianzhi-classics/);
+  assert.match(script, /Nguồn cần đối chiếu/);
+  assert.match(script, /sourceStatus/);
+  assert.match(script, /noopener noreferrer/);
+  assert.match(script, /SECONDARY_IMPLEMENTATION_NOT_AUTHORITATIVE/);
+});
