@@ -6,7 +6,7 @@ Liên quan: [[Lần dán lên Apps Script]] · [[TCC Tiến trình]] · [[00 M�
 ## Việc còn ngỏ
 - (24/10) Bản `2026.10.24.2`: cập nhật rồi xem PDF mới (sáng, có Hologram), poster mới, phần "Luận theo trình tự 26 bước" ở tab Tử Vi. Card "tạo tài khoản nhận 50 xu" chỉ hiện với khách **chưa đăng nhập** – muốn xem thì mở cửa sổ ẩn danh. – [[TCC Giao diện]]
 - (24/10) Bản rà Codex `2026.10.24.1`: bấm `2-CAP-NHAT.bat`, **xóa file LaSo3D** trong trình soạn thảo Apps Script, Ctrl+F5; kiểm tra nhật vận 7 ngày đúng ngày, ô chọn năm lưu niên ‹ ›, bánh xe 9 lĩnh vực, bảng Hologram các hệ. – [[TCC Giao diện]]
-- (24/10) Tab **64 quẻ Kinh Dịch** chưa làm xong: 4 nhóm biên soạn nội dung bị dừng vì hết hạn mức tuần; làm tiếp khi có hạn mức. Đề bài ở scratchpad phiên (kd/DE-BAI.md). – [[TCC Sáu hệ]]
+- (24/10) **Tab 64 quẻ Kinh Dịch đã xong** (mã 2026.10.24.8) – chờ chủ dự án cập nhật và đọc thử, góp ý lời giảng. – [[TCC Sáu hệ]]
 - (23/10) Quà đăng ký 50 xu + poster trang chủ (mã 2026.10.23.4). Chờ chủ dự án cập nhật, xem poster và theo dõi số đăng ký mới. – [[TCC Bán hàng]]
 - (23/10) **Giao diện Hologram đã vào app (mã 2026.10.23.3).** Chủ dự án bấm `2-CAP-NHAT.bat` (có 8 file .html mới: Holo + 7 HoloAnh*), Ctrl+F5 rồi đánh giá. – [[TCC Giao diện]]
 - (23/10) Demo 4 sơ đồ Hologram (https://claude.ai/artifact/DpFkFghKhTBxgip1xMxzGh). Chủ dự án đã chốt Hologram thay hẳn Bạch Kim. Chờ góp ý demo rồi bắt đầu áp vào app theo từng giai đoạn. – [[TCC Giao diện]]

@@ -3,6 +3,9 @@
 Nhóm: Thiên Cơ Các · Tách từ CLAUDE.md ngày 21/10/2026
 Liên quan: [[TCC PDF]] · [[TCC Lá số 3D]] · [[TCC Văn dễ hiểu và Tổng hợp 6 hệ]] · [[00 Mục lục]]
 
+- **24/10 – Ảnh qua jsDelivr:** 17 tranh ở `tuvi-app/anh/*.webp`; Holo.html › `TCC_CDN` = `cdn.jsdelivr.net/gh/…@87e4618…/tuvi-app/anh/`, `anh()` tải ảnh từ CDN, lỗi thì `anhGas()` gọi `layAnhHolo`. Poster, `pdf-bia.webp`, `pdf-nen.webp` cũng qua CDN cùng mã. Đổi ảnh: đẩy ảnh mới → lấy mã lần lưu → sửa mã trong Holo.html/Script.html (link jsDelivr theo mã không bao giờ đổi nội dung).
+- **24/10 – Tab 64 quẻ (`data-tab="que64"`, Script › `kdVeTab`, `kdLuoi`, `kdChiTiet`, `kdHinh`; CSS `.kd-*`):** dữ liệu `tuvi-app/kinh-dich/kd64.json` (364 KB: nội dung 4 nhóm biên soạn + cấu trúc tính bằng HaLac.gs: cung, thế/ứng, nạp giáp, lục thân, hỗ/thác/tống) tải qua jsDelivr `@c23cec1…`, dự phòng raw GitHub. Không cần lá số; có lá số thì hiện nút quẻ Tiên/Hậu thiên Hà Lạc của người xem.
+
 - **24/10 – Bánh xe ngũ hành 9 lĩnh vực (thay vòm trời cũ, Script.html › `vuTruHtml`, `vtThe`, `vtChon`, `vtThapThan`, `napAnhHolo`; CSS `.vt-*`):** đĩa giữa là tranh `HoloAnhTongHop.html` (cắt từ tranh mẫu, nạp qua `layAnhHolo('TongHop')` khi khối hiện); vành trong vẽ đè ghi nhóm Thập Thần của từng hành so với Nhật chủ + % ngũ hành Bát Tự (viền xanh = dụng thần); 9 quả cầu lĩnh vực trên vòng r=430 (khung SVG -190..1190 × 0..1000), bấm → thẻ `vtThe` bên cạnh; điện thoại ẩn tên, chỉ hiện điểm.
 - **24/10 – Rà Codex:** lấy lại Index/Styles/Script/Holo bản 39ec55a rồi gắn lại: nhật vận không nạp ngày cũ từ Lịch sử (`setForm` bỏ `viewDate`/`viewYear`), ô năm lưu niên `#chartViewYear` + nút `[data-nam-luu]` (chờ 650 ms rồi lập lại), Tuần/Triệt đặt giữa hai mép cung (`drawOverlay`), poster `poster-trang-chu.webp` (Anh.html trỏ raw GitHub) + `#posterHotspot` + ảnh góc `.tcc-goc-anh` (góc trái dưới, ẩn trên điện thoại), PDF lib `defer`. Chế độ xem Tử Vi chỉ còn Hologram / 2D.
 

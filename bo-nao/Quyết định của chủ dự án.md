@@ -4,6 +4,7 @@ Nhóm: Bắt đầu · Cập nhật 21/10/2026
 Liên quan: [[Việc chờ chủ dự án]] · [[TCC Bán hàng]] · [[00 Mục lục]]
 
 ## Cách làm việc
+- 24/10: ảnh nặng (tranh Hologram, poster, bìa/nền PDF) và dữ liệu 64 quẻ phục vụ qua **jsDelivr** theo mã lần lưu cố định (không dùng Google Drive vì không chụp được vào PDF). PDF theo phong cách tranh thủy mặc, bìa và nền trang ruột là tranh của chủ dự án; bỏ ảnh bánh xe 9 lĩnh vực khỏi PDF.
 - 24/10: Tử Vi **chỉ còn lá số Hologram** (bỏ nút 2D); PDF phải sáng sủa và có các bảng Hologram; poster trang chủ dùng ảnh chân dung mới của chủ dự án.
 - **24/10: sau đợt Codex sửa** – chủ dự án chọn: khôi phục Vóc dáng – diện mạo và tỷ lệ % như trước, **bỏ khối "Đặc điểm cơ thể & sức khỏe"**; bỏ bảng "kiểm toán phương pháp"; giữ thư mục `webbongda/` (web bóng đá chủ dự án tự tải lên) trên nhánh này.
 - **24/10: bỏ hẳn phần 3D** (Tử Vi 3D, Tứ Trụ 3D) khỏi web – "không cần thiết". Giữ bảng Hologram cho cả 6 hệ trên mọi máy.
