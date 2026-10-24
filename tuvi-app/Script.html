@@ -5320,6 +5320,7 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
     var root = document.createElement('div');
     root.id = 'pdfRoot'; root.className = 'pdf-root bc-root ' + (sang ? 'bc-sang' : 'bc-toi');
     document.body.appendChild(root);
+    var NEN_ANH = null;   // ảnh nền mờ trang ruột (pdf-nen.webp) – nạp trước khi dựng
     var opt = { scale: scale, backgroundColor: NEN_HEX, useCORS: true, logging: false, windowWidth: 1200,
       ignoreElements: function (el) { return el !== document.body && el !== document.documentElement && el.tagName !== 'HEAD' && !root.contains(el) && !el.contains(root) && el.tagName !== 'STYLE' && el.tagName !== 'LINK'; } };
     var soTrang = 0;
@@ -5423,7 +5424,16 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
               trangMoi();
               if (dau && trangDau) { trangDau(soTrang); dau = false; }
               var k = Math.min(1, pageHpx / cao[i]), wPt = CW * k, hPt = cao[i] * pxPt * k;
-              pdf.addImage(c.toDataURL('image/jpeg', 0.86), 'JPEG', MX + (CW - wPt) / 2, MT, wPt, hPt, undefined, 'FAST');
+              if (sang && NEN_ANH) {   // ghép ảnh nền mờ + chữ thành một ảnh cho vùng giấy (11pt trong khung)
+                var ppt = c.width / CW, x0 = 11, y0 = 11, wg = PW - 22, hg = PH - 22, T = document.createElement('canvas');
+                T.width = Math.round(wg * ppt); T.height = Math.round(hg * ppt); var g = T.getContext('2d');
+                g.fillStyle = NEN_HEX; g.fillRect(0, 0, T.width, T.height);
+                var ir = NEN_ANH.width / NEN_ANH.height, tw = T.width, th = tw / ir; if (th < T.height * 0.62) { th = T.height * 0.62; tw = th * ir; }
+                g.globalAlpha = 0.5; g.drawImage(NEN_ANH, (T.width - tw) / 2, T.height - th, tw, th); g.globalAlpha = 1;
+                g.drawImage(c, 0, 0, c.width, c.height, (MX + (CW - wPt) / 2 - x0) * ppt, (MT - y0) * ppt, wPt * ppt, hPt * ppt);
+                pdf.addImage(T.toDataURL('image/jpeg', 0.84), 'JPEG', x0, y0, wg, hg, undefined, 'FAST');
+                pdf.setDrawColor(201, 164, 92); pdf.setLineWidth(0.7); pdf.roundedRect(16, 16, PW - 32, PH - 32, 6, 6, 'S');
+              } else pdf.addImage(c.toDataURL('image/jpeg', 0.86), 'JPEG', MX + (CW - wPt) / 2, MT, wPt, hPt, undefined, 'FAST');
             });
             wrap.remove();
           });
@@ -5434,6 +5444,12 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
     loading(true); setLoadingText('Đang chuẩn bị báo cáo PDF…');
     var tabCu = document.querySelector('.tab.active') ? document.querySelector('.tab.active').getAttribute('data-tab') : 'chart';
     var chuoi = Promise.resolve(), anhLaSo = null, kichLaSo = [1, 1];
+    if (sang) chuoi = new Promise(function (ok) {   // ảnh nền mờ trang ruột – không có thì dùng núi mực chân trang
+      var im = new Image(); im.crossOrigin = 'anonymous';
+      im.onload = function () { NEN_ANH = im; opt.backgroundColor = null; root.classList.add('co-nen-anh'); ok(); };
+      im.onerror = function () { ok(); }; setTimeout(ok, 8000);
+      im.src = 'https://raw.githubusercontent.com/phamdoanchiengroup-cloud/githubforclaude160695/claude/happy-brown-lttkz3/tuvi-app/pdf-nen.webp?v=1';
+    });
     if (chon.indexOf('chart') >= 0) {
       chuoi = chuoi.then(function () { showTab('chart'); return sleep(150); }).then(function () {
         drawOverlay();
@@ -5501,7 +5517,7 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
     }).then(function () {
       var tong = pdf.getNumberOfPages(), ten = res.tuvi.info.name || 'la-so';
       var txt = (demo ? 'BẢN XEM THỬ  ·  ' : '') + (brand.ten || 'Thiên Cơ Các') + '  ·  Bản đồ vận mệnh của ' + ten + (brand.lienHe ? '  ·  ' + brand.lienHe : '');
-      for (var i = 2; i <= tong; i++) { pdf.setPage(i); if (sang) pdf.addImage(nuiMuc(), 'PNG', 16, PH - 16 - 62, PW - 32, 62, 'nuimuc', 'FAST'); pdf.addImage(chanTrang(txt, i, tong, sang), 'PNG', MX, sang ? PH - 84 : PH - 30, CW, CW * 44 / 1600); }
+      for (var i = 2; i <= tong; i++) { pdf.setPage(i); if (sang && !NEN_ANH) pdf.addImage(nuiMuc(), 'PNG', 16, PH - 16 - 62, PW - 32, 62, 'nuimuc', 'FAST'); pdf.addImage(chanTrang(txt, i, tong, sang), 'PNG', MX, sang ? PH - 84 : PH - 30, CW, CW * 44 / 1600); }
       var slug = ten.normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[đĐ]/g, 'd').replace(/\s+/g, '-').toLowerCase();
       pdf.setProperties({ title: 'Bản đồ vận mệnh – ' + ten, author: brand.ten || 'Thiên Cơ Các', subject: 'Tử Vi · Bát Tự · Hà Lạc · Chiêm tinh · Thần số học · Human Design' });
       pdf.save((demo ? 'xem-thu-' : '') + 'ban-do-van-menh-' + slug + '.pdf');
