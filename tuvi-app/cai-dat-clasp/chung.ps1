@@ -116,7 +116,20 @@ function TaiBanMoi($dich) {
     $ra = Join-Path $dich $f.Ten
     try { TaiTep ($goc + $f.Ten + '?t=' + (Get-Date -Format 'yyyyMMddHHmmss')) $ra } catch { throw (LoiMang $_) }
     $co = (Get-Item $ra).Length
-    if ($co -ne $f.Co) { throw ('File ' + $f.Ten + ' tải về chưa khớp (' + $co + '/' + $f.Co + ' byte). Nếu Claude vừa đẩy bản mới, chờ 5 phút cho GitHub cập nhật rồi chạy lại.') }
+    if ($co -ne $f.Co) {
+      # raw.githubusercontent.com có thể trả ds-file.txt cũ dù mã nguồn đã mới.
+      # Chỉ chấp nhận kích thước khác khi danh sách đi kèm bộ cài xác nhận đúng kích thước tải được.
+      $dsTrongGoi = Join-Path $PSScriptRoot 'ds-file.txt'
+      $dongGoi = if (Test-Path $dsTrongGoi) { Get-Content $dsTrongGoi -Encoding UTF8 | Where-Object { $_ -match ('^' + [regex]::Escape($f.Ten) + "`t") } | Select-Object -First 1 } else { $null }
+      if ($dongGoi) {
+        $coTrongGoi = [int64](($dongGoi -split "`t")[1])
+        if ($co -eq $coTrongGoi) {
+          Write-Host ('  Danh sách GitHub cũ; đã đối chiếu ' + $f.Ten + ' theo bộ cài (' + $co + ' byte).' ) -ForegroundColor Yellow
+          $f.Co = $co
+        }
+      }
+      if ($co -ne $f.Co) { throw ('File ' + $f.Ten + ' tải về chưa khớp (' + $co + '/' + $f.Co + ' byte). Tải lại bộ cài mới nhất rồi thử lại.') }
+    }
   }
   # Kiểm tra nhanh trước khi đẩy: đủ hàm chính, 3 mã phiên bản giao diện trùng nhau
   if (-not (Select-String -Path (Join-Path $dich 'Code.gs') -Pattern 'function kiemTraCaiDat' -Quiet)) { throw 'Code.gs tải về không đúng – dừng, chưa đổi gì.' }
