@@ -1498,7 +1498,14 @@
   }
 
   /* ------------------------ RENDER ------------------------ */
-  function render(res) {
+  
+function tccRenderAuditHe(res, he, tieuDe) {
+ var a=he&&he.danhGiaPhuongPhap;if(!a||!Array.isArray(a.layers))return '';
+ var status={co:'Có dữ liệu',motPhan:'Cần đối chiếu',chuaCo:'Chưa đủ dữ liệu'};
+ return '<div class="panel section tv-audit"><h2 class="panel-title">'+esc(tieuDe)+'</h2><p class="tv-audit-intro">Trạng thái thể hiện mức độ có dữ liệu và khả năng truy vết quy tắc, không phải độ chính xác đã được kiểm chứng.</p><div class="tv-audit-grid">'+a.layers.map(function(x){return '<article class="tv-audit-item"><div><b>'+esc(x.ten||'')+'</b><span class="tv-audit-state">'+esc(status[x.trangThai]||'Lớp tham khảo')+'</span></div><p>'+esc(x.chiTiet||'')+'</p></article>';}).join('')+'</div><h4 class="dd-h">Nguyên tắc</h4><ul>'+(a.nguyenTac||[]).map(function(x){return '<li>'+esc(x)+'</li>';}).join('')+'</ul><p class="tv-audit-limit"><b>Kiểm định:</b> '+esc(a.danhGiaKiemDinh||'Chưa đánh giá')+'<br>'+esc(a.gioiHan||'')+'</p></div>';
+}
+
+function render(res) {
     if ($('bdk')) $('bdk').hidden = true;
     if (res.khach) { renderKhach(res); return; }
     kwInit(res);
@@ -1510,10 +1517,12 @@
     renderVan(res);
     renderDuDoan(res);
     renderBatTu(res);
+    var _btAudit = tccRenderAuditHe(res, res.battu, 'Phương pháp & căn cứ Bát Tự'); if (_btAudit) $('page-battu').insertAdjacentHTML('beforeend', _btAudit);
     renderAstro(res);
     renderThanSo(res);
     renderHD(res);
     renderHaLac(res);
+    var _hlAudit = tccRenderAuditHe(res, res.moRong && res.moRong.haLac, 'Phương pháp & căn cứ Hà Lạc'); if (_hlAudit) $('page-halac').insertAdjacentHTML('beforeend', _hlAudit);
     if ($('bdk') && $('page-chart')) $('page-chart').insertBefore($('bdk'), $('page-chart').firstChild);   // đưa bảng điều khiển về chỗ cũ trước khi dựng lại tab Tổng quan
     renderTong(res);
     veDeHieu(res);
