@@ -219,29 +219,86 @@ function tuviKiemThuPhuongPhap_() {
 }
 
 
-/** Chuẩn hóa căn cứ luận Bát Tự; không tự tạo xác suất. */
+/**
+ * Hồ sơ truy vết Bát Tự/Hà Lạc.
+ * LƯU Ý: sự hiện diện của dữ liệu/thuật toán không đồng nghĩa nguồn cổ thư đã được xác minh.
+ * Trạng thái nguồn chỉ được nâng lên VERIFIED_SOURCE khi có bản văn, ấn bản/chương/trang
+ * và ví dụ độc lập tái lập được. Các trọng số nội bộ vẫn là heuristic cho đến lúc đó.
+ */
 function btDanhGiaPhuongPhap_(bt, ct) {
- bt=bt||{};ct=ct||{};var p=Array.isArray(bt.pillars)?bt.pillars:[];
- return {phienBan:'TCC-BAT-TU-METHOD-1.0',layers:[
- {id:'tuTru',ten:'Tứ trụ và tiết khí',trangThai:p.length===4?'co':'motPhan',chiTiet:'Kiểm tra đủ trụ năm, tháng, ngày, giờ; trụ tháng cần nhất quán với quy ước tiết khí và mốc đổi năm.'},
- {id:'nhatChu',ten:'Nhật chủ và nguyệt lệnh',trangThai:bt.nhatChu&&p.length===4?'co':'motPhan',chiTiet:'Xét Nhật chủ, nguyệt lệnh, thông căn, sinh trợ và khắc tiết hao; không dùng một tỷ lệ đơn lẻ thay toàn bộ phép cân nhắc.'},
- {id:'cachCuc',ten:'Cách cục và vượng suy',trangThai:bt.cuong&&bt.trangThai?'co':'motPhan',chiTiet:'Xét điều kiện thành cách, phá cách và ngoại cách theo bộ quy tắc được chọn; ghi nhận dấu hiệu phản chứng.'},
- {id:'dungThan',ten:'Dụng thần, hỷ thần, kỵ thần',trangThai:bt.goiY&&bt.goiY.dung?'co':'motPhan',chiTiet:'Ghi rõ lý do chọn dụng thần theo nguyệt lệnh, toàn cục và điều hậu; không mặc định một thuật toán là duy nhất.'},
- {id:'thanSat',ten:'Thập thần, hợp xung hình hại và thần sát',trangThai:ct?'motPhan':'chuaCo',chiTiet:'Dùng làm lớp bổ sung sau cấu trúc chính; kiểm tra điều kiện, vị trí và tác động, không để thần sát đơn lẻ lấn át toàn cục.'},
- {id:'daiVan',ten:'Đại vận và lưu niên',trangThai:Array.isArray(bt.daiVan)&&bt.daiVan.length?'co':'motPhan',chiTiet:'Xem vận như lớp thời gian chồng lên mệnh cục; dự đoán phải ghi rõ khoảng thời gian và tiêu chí kiểm chứng.'}],
- nguyenTac:['Luận Nhật chủ cùng nguyệt lệnh, căn khí và toàn cục trước khi kết luận dụng thần.','Tách các quy tắc Tử Bình khác nhau thành phiên bản riêng, không âm thầm trộn quy tắc.','Ghi nhận cả dấu hiệu thuận và nghịch; không đếm trùng một căn cứ qua nhiều tên gọi.','Không suy ra xác suất thành công, bệnh tật hoặc sự kiện từ điểm số nội bộ.','Tách độ đúng phép tính, mức đồng thuận và độ chính xác dự báo.'],
- danhGiaKiemDinh:'Chưa được xác lập bằng kiểm định thực nghiệm độc lập cho Bát Tự.',gioiHan:'Khung truy vết phương pháp truyền thống, không phải chứng nhận dự đoán đã được khoa học xác nhận.'};
+  bt = bt || {}; ct = ct || {};
+  var p = Array.isArray(bt.pillars) ? bt.pillars : [];
+  var layers = [
+    {id:'tuTru', ten:'Tứ trụ và tiết khí', duLieuCoMat:p.length===4,
+      chiTiet:'Dữ liệu tứ trụ ' + (p.length===4?'đã có':'chưa đủ') + '. Quy tắc đổi năm Lập Xuân, ranh giới tiết khí, múi giờ và quy ước giờ Tý vẫn cần bộ ví dụ tham chiếu độc lập; chưa đánh dấu nguồn là đã xác minh.'},
+    {id:'nhatChu', ten:'Nhật chủ và nguyệt lệnh', duLieuCoMat:!!(bt.nhatChu && p.length===4),
+      chiTiet:'Có dữ liệu Nhật chủ/nguyệt lệnh: ' + (!!(bt.nhatChu && p.length===4) ? 'có' : 'chưa đủ') + '. Vượng suy, căn khí, sinh trợ và khắc tiết hao phải tách khỏi điểm số heuristic; cần đối chiếu từng quy tắc với bộ Tử Bình đã chọn.'},
+    {id:'cachCuc', ten:'Cách cục và vượng suy', duLieuCoMat:!!(bt.cuong && bt.trangThai),
+      chiTiet:'Có trường dữ liệu phân tích: ' + (!!(bt.cuong && bt.trangThai) ? 'có' : 'chưa đủ') + '. Điều kiện thành cách, phá cách, điều hậu và ngoại cách chưa được coi là đã xác minh nếu chưa có nguồn/chương và ví dụ giải mẫu.'},
+    {id:'dungThan', ten:'Dụng thần, hỷ thần, kỵ thần', duLieuCoMat:!!(bt.goiY && bt.goiY.dung),
+      chiTiet:'Có kết quả dụng thần: ' + (!!(bt.goiY && bt.goiY.dung) ? 'có' : 'chưa đủ') + '. Cần ghi riêng lý do theo cách cục, vượng suy và điều hậu; không mặc định một phương pháp duy nhất hoặc xem trọng số phần mềm là quy tắc cổ điển.'},
+    {id:'thanSat', ten:'Thập thần, hợp xung hình hại và thần sát', duLieuCoMat:!!ct,
+      chiTiet:'Lớp bổ trợ; cần truy nguồn riêng cho từng quy tắc và kiểm tra không đếm trùng một quan hệ qua nhiều lớp. Dữ liệu hiện có không tự chứng minh diễn giải đã được xác minh.'},
+    {id:'daiVan', ten:'Đại vận và lưu niên', duLieuCoMat:Array.isArray(bt.daiVan)&&bt.daiVan.length>0,
+      chiTiet:'Có dữ liệu đại vận: ' + (Array.isArray(bt.daiVan)&&bt.daiVan.length ? 'có' : 'chưa đủ') + '. Chiều vận, thời điểm khởi vận và xử lý tiết khí cần test ranh giới có kết quả tham chiếu.'}
+  ];
+  layers.forEach(function(x){ x.trangThai = 'motPhan'; });
+  return {
+    phienBan:'TCC-BAT-TU-METHOD-1.1',
+    layers:layers,
+    nguonCanDoiChieu:[
+      {ten:'《子平真诠》 Tử Bình Chân Thuyên',phamVi:'Nguyệt lệnh, chính cách, thành cách/phá cách và cứu ứng',trangThai:'NEEDS_PRIMARY_TEXT_VERIFICATION'},
+      {ten:'《滴天髓》 Tích Thiên Tủy',phamVi:'Khí thế toàn cục, sinh khắc và vượng suy',trangThai:'NEEDS_PRIMARY_TEXT_VERIFICATION'},
+      {ten:'《穷通宝鉴》 Cùng Thông Bảo Giám',phamVi:'Điều hậu theo mùa sinh',trangThai:'NEEDS_PRIMARY_TEXT_VERIFICATION'},
+      {ten:'《渊海子平》 Uyên Hải Tử Bình và 《三命通会》 Tam Mệnh Thông Hội',phamVi:'Quy tắc nền tảng và các dị bản cần so sánh',trangThai:'NEEDS_PRIMARY_TEXT_VERIFICATION'}
+    ],
+    nguyenTac:[
+      'Luận Nhật chủ cùng nguyệt lệnh, căn khí và toàn cục trước khi kết luận dụng thần.',
+      'Tách các quy tắc Tử Bình khác nhau thành phiên bản riêng, không âm thầm trộn quy tắc.',
+      'Ghi nhận cả dấu hiệu thuận và nghịch; không đếm trùng một căn cứ qua nhiều tên gọi.',
+      'Không suy ra xác suất thành công, bệnh tật hoặc sự kiện từ điểm số nội bộ.',
+      'Tách độ đúng phép tính, mức đồng thuận và độ chính xác dự báo.',
+      'Các nguồn liệt kê là đầu mối cần đối chiếu, chưa phải bằng chứng đã đọc/xác minh bản văn.'
+    ],
+    danhGiaKiemDinh:'Chưa được xác lập bằng kiểm định thực nghiệm độc lập cho Bát Tự.',
+    gioiHan:'Trạng thái “Cần đối chiếu thêm” phản ánh tình trạng bằng chứng nguồn, không phủ nhận việc mã có tính toán; không phải chứng nhận dự đoán đã được khoa học xác nhận.'
+  };
 }
+
 /** Chuẩn hóa căn cứ Hà Lạc, tách phép lập quẻ khỏi diễn giải. */
 function hlDanhGiaPhuongPhap_(h) {
- h=h||{};var t=h.tien||{},a=h.hau||{};
- return {phienBan:'TCC-HA-LAC-METHOD-1.0',layers:[
- {id:'lapQue',ten:'Lập quẻ Tiên thiên và Hậu thiên',trangThai:t.hao&&a.hao?'co':'motPhan',chiTiet:'Lưu rõ cách tính số, quy tắc đổi quái, thứ tự hào và quy ước âm dương; đối chiếu với phiên bản nguồn đã chọn.'},
- {id:'nguyenDuong',ten:'Hào nguyên đường',trangThai:t.nguyenDuong!==undefined&&a.nguyenDuong!==undefined?'co':'motPhan',chiTiet:'Ghi lại đầu vào và từng bước chọn hào nguyên đường để kết quả có thể tái lập.'},
- {id:'quePhu',ten:'Quẻ hỗ, quẻ biến và các quẻ phụ',trangThai:h.hoTien&&h.hoHau?'co':'motPhan',chiTiet:'Mỗi quẻ phụ cần có quy tắc biến đổi và vai trò diễn giải riêng; không gộp chúng thành nhiều bằng chứng độc lập.'},
- {id:'luanGiai',ten:'Luận tượng và thời vị',trangThai:h.luan?'co':'motPhan',chiTiet:'Nêu rõ hào/quái làm căn cứ, nghĩa tượng được chọn, điều kiện và dấu hiệu trái chiều.'}],
- nguyenTac:['Tách kiểm tra phép lập quẻ khỏi diễn giải tượng số.','Ghi lại phép tính trung gian để tái lập kết quả.','Giữ đúng cấu trúc quẻ và hào; không đồng nhất Hà Lạc với bố cục Hà Đồ/Lạc Thư.','Giữ các diễn giải mâu thuẫn để đối chiếu, không chỉ chọn phần khớp hậu nghiệm.','Không tuyên bố xác suất hoặc độ chính xác khi chưa kiểm định độc lập.'],
- danhGiaKiemDinh:'Chưa được xác lập bằng kiểm định thực nghiệm độc lập cho Hà Lạc.',gioiHan:'Khung kiểm tra tính minh bạch của quy trình truyền thống, không phải chứng nhận dự báo thực tế.'};
+  h = h || {};
+  var t = h.tien || {}, a = h.hau || {};
+  var layers = [
+    {id:'lapQue',ten:'Lập quẻ Tiên thiên và Hậu thiên',duLieuCoMat:!!(t.hao&&a.hao),
+      chiTiet:'Có dữ liệu quẻ Tiên/Hậu thiên: ' + (!!(t.hao&&a.hao)?'có':'chưa đủ') + '. Bảng số can chi, phép quy số, số 5/ký cung và quy tắc chọn thượng/hạ quái chưa được xác minh với một bản văn/ấn bản cụ thể.'},
+    {id:'nguyenDuong',ten:'Hào nguyên đường',duLieuCoMat:t.nguyenDuong!==undefined&&a.nguyenDuong!==undefined,
+      chiTiet:'Có dữ liệu hào nguyên đường: ' + (t.nguyenDuong!==undefined&&a.nguyenDuong!==undefined?'có':'chưa đủ') + '. Cần đối chiếu độc lập quy tắc chọn hào và ví dụ nguồn; chú thích trong mã không tự thân là bằng chứng.'},
+    {id:'quePhu',ten:'Quẻ hỗ, quẻ biến và các quẻ phụ',duLieuCoMat:!!(h.hoTien&&h.hoHau),
+      chiTiet:'Có dữ liệu quẻ phụ: ' + (!!(h.hoTien&&h.hoHau)?'có':'chưa đủ') + '. Phép biến đổi cấu trúc có thể kiểm thử bằng tính chất toán học; cách diễn giải và quy tắc lập số vẫn cần nguồn riêng.'},
+    {id:'luanGiai',ten:'Luận tượng và thời vị',duLieuCoMat:!!h.luan,
+      chiTiet:'Có dữ liệu luận giải: ' + (!!h.luan?'có':'chưa đủ') + '. Mọi điểm số hào, chu kỳ 6/9 năm và kết luận cát-hung chưa có nguồn trực tiếp phải được coi là heuristic/thử nghiệm, không phải quy tắc cổ thư đã xác minh.'}
+  ];
+  layers.forEach(function(x){ x.trangThai = 'motPhan'; });
+  return {
+    phienBan:'TCC-HA-LAC-METHOD-1.1',
+    layers:layers,
+    nguonCanDoiChieu:[
+      {ten:'Tài liệu chuyên biệt về 河洛理数 (Hà Lạc lý số)',phamVi:'Bảng số can chi, thiên/địa số, quy nguyên, ký cung và hào nguyên đường',trangThai:'NEEDS_PRIMARY_TEXT_VERIFICATION'},
+      {ten:'《周易》 Chu Dịch / Kinh Dịch',phamVi:'Cấu trúc quẻ, thứ tự hào, tượng quái và hào từ',trangThai:'FOUNDATIONAL_TEXT_NOT_SUFFICIENT_TO_VERIFY_HA_LAC_NUMBERING'},
+      {ten:'《皇极经世》 Hoàng Cực Kinh Thế',phamVi:'Đầu mối khảo sát tư tưởng tượng số; không mặc định là nguồn trực tiếp cho toàn bộ thuật toán',trangThai:'RELATED_SOURCE_REQUIRES_SCOPE_VERIFICATION'}
+    ],
+    nguyenTac:[
+      'Tách kiểm tra phép lập quẻ khỏi diễn giải tượng số.',
+      'Ghi lại phép tính trung gian để tái lập kết quả.',
+      'Giữ đúng cấu trúc quẻ và hào; không đồng nhất Hà Lạc với bố cục Hà Đồ/Lạc Thư.',
+      'Giữ các diễn giải mâu thuẫn để đối chiếu, không chỉ chọn phần khớp hậu nghiệm.',
+      'Không tuyên bố xác suất hoặc độ chính xác khi chưa kiểm định độc lập.',
+      'Các nguồn liệt kê là đầu mối nghiên cứu; chưa xác minh bản văn/ấn bản và ví dụ trực tiếp.'
+    ],
+    danhGiaKiemDinh:'Chưa được xác lập bằng kiểm định thực nghiệm độc lập cho Hà Lạc.',
+    gioiHan:'Phép tính cấu trúc có thể vượt qua unit test mà vẫn chưa xác minh nguồn lập số; điểm số và kết luận không có nguồn trực tiếp phải được đánh dấu heuristic.'
+  };
 }
 
 function lapLaSoDayDu_(input) {
