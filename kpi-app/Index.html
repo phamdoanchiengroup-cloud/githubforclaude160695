@@ -8947,7 +8947,9 @@ vNS=function(){
   return kq;
 };
 function vhHoiNhap(){
-  vhChen('<div id="vhHN"></div>');
+  // 24/10 (chủ dự án): thẻ Đón người mới đặt ở CUỐI tab Nhân sự
+  var mHN=$('main'); if(!mHN)return; var cuHN=$('vhHN'); if(cuHN)cuHN.remove();
+  var dHN=document.createElement('div'); dHN.id='vhHN'; mHN.appendChild(dHN);
   vhGoi('layHoiNhap',[],function(r){
     var b=$('vhHN'); if(!b||!r.ok||!r.ds||!r.ds.length){ if(b)b.innerHTML=''; return; }
     var ten={}; (r.muc||[]).forEach(function(m){ten[m[0]]=m[1]});
@@ -9489,7 +9491,7 @@ function vpDanhSach(){
   var m = $('main'); if (!m || $('vpDs')) return;
   var d = document.createElement('div'); d.id = 'vpDs'; d.className = 'card';
   d.innerHTML = '<h3>Ban điều hành &amp; Hành chính nhân sự<span>đang tải…</span></h3>';
-  var kn = $('knbox'); if (kn && kn.parentNode === m) m.insertBefore(d, kn); else m.appendChild(d);
+  var kn = $('vhHN') || $('knbox'); if (kn && kn.parentNode === m) m.insertBefore(d, kn); else m.appendChild(d);   // thẻ Đón người mới luôn ở cuối (24/10)
   google.script.run.withSuccessHandler(function(r){
     var e = $('vpDs'); if (!e) return;
     if (!r || !r.ok) { e.innerHTML = '<h3>Ban điều hành &amp; Hành chính nhân sự</h3><div class="alert a-wn">Chưa tải được danh sách: ' + esc((r && r.msg) || 'lỗi không rõ') + '</div>'; return; }
@@ -9529,7 +9531,7 @@ function hsGhiChuDong(r){
 }
 </script>
 <script>
-var KPI_BAN = '24/10/2026 11:15';
+var KPI_BAN = '24/10/2026 11:19';
 (function(){
   var cu = window.veNav;
   window.veNav = function(){

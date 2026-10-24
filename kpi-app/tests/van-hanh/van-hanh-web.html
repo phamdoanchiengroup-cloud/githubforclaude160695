@@ -221,7 +221,9 @@ vNS=function(){
   return kq;
 };
 function vhHoiNhap(){
-  vhChen('<div id="vhHN"></div>');
+  // 24/10 (chủ dự án): thẻ Đón người mới đặt ở CUỐI tab Nhân sự
+  var mHN=$('main'); if(!mHN)return; var cuHN=$('vhHN'); if(cuHN)cuHN.remove();
+  var dHN=document.createElement('div'); dHN.id='vhHN'; mHN.appendChild(dHN);
   vhGoi('layHoiNhap',[],function(r){
     var b=$('vhHN'); if(!b||!r.ok||!r.ds||!r.ds.length){ if(b)b.innerHTML=''; return; }
     var ten={}; (r.muc||[]).forEach(function(m){ten[m[0]]=m[1]});

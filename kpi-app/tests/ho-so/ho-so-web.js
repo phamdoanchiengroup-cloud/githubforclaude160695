@@ -116,7 +116,7 @@ function vpDanhSach(){
   var m = $('main'); if (!m || $('vpDs')) return;
   var d = document.createElement('div'); d.id = 'vpDs'; d.className = 'card';
   d.innerHTML = '<h3>Ban điều hành &amp; Hành chính nhân sự<span>đang tải…</span></h3>';
-  var kn = $('knbox'); if (kn && kn.parentNode === m) m.insertBefore(d, kn); else m.appendChild(d);
+  var kn = $('vhHN') || $('knbox'); if (kn && kn.parentNode === m) m.insertBefore(d, kn); else m.appendChild(d);   // thẻ Đón người mới luôn ở cuối (24/10)
   google.script.run.withSuccessHandler(function(r){
     var e = $('vpDs'); if (!e) return;
     if (!r || !r.ok) { e.innerHTML = '<h3>Ban điều hành &amp; Hành chính nhân sự</h3><div class="alert a-wn">Chưa tải được danh sách: ' + esc((r && r.msg) || 'lỗi không rõ') + '</div>'; return; }
