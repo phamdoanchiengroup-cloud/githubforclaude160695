@@ -247,10 +247,12 @@ function btDanhGiaPhuongPhap_(bt, ct) {
     phienBan:'TCC-BAT-TU-METHOD-1.1',
     layers:layers,
     nguonCanDoiChieu:[
-      {ten:'《子平真诠》 Tử Bình Chân Thuyên',phamVi:'Nguyệt lệnh, chính cách, thành cách/phá cách và cứu ứng',trangThai:'NEEDS_PRIMARY_TEXT_VERIFICATION'},
-      {ten:'《滴天髓》 Tích Thiên Tủy',phamVi:'Khí thế toàn cục, sinh khắc và vượng suy',trangThai:'NEEDS_PRIMARY_TEXT_VERIFICATION'},
-      {ten:'《穷通宝鉴》 Cùng Thông Bảo Giám',phamVi:'Điều hậu theo mùa sinh',trangThai:'NEEDS_PRIMARY_TEXT_VERIFICATION'},
-      {ten:'《渊海子平》 Uyên Hải Tử Bình và 《三命通会》 Tam Mệnh Thông Hội',phamVi:'Quy tắc nền tảng và các dị bản cần so sánh',trangThai:'NEEDS_PRIMARY_TEXT_VERIFICATION'}
+      {ten:'《子平真诠》 Tử Bình Chân Thuyên',phamVi:'Nguyệt lệnh, chính cách, thành cách/phá cách và cứu ứng',url:'https://zh.wikisource.org/wiki/子平真詮',trangThai:'NEEDS_PRIMARY_TEXT_VERIFICATION'},
+      {ten:'《滴天髓》 Tích Thiên Tủy',phamVi:'Khí thế toàn cục, sinh khắc và vượng suy',url:'https://zh.wikisource.org/wiki/滴天髓',trangThai:'NEEDS_PRIMARY_TEXT_VERIFICATION'},
+      {ten:'《穷通宝鉴》 Cùng Thông Bảo Giám',phamVi:'Điều hậu theo mùa sinh',url:'https://zh.wikisource.org/wiki/穷通宝鑑',trangThai:'NEEDS_PRIMARY_TEXT_VERIFICATION'},
+      {ten:'《渊海子平》 Uyên Hải Tử Bình',phamVi:'Quy tắc nền tảng cần đối chiếu theo đúng bản',url:'https://zh.wikisource.org/wiki/淵海子平',trangThai:'NEEDS_PRIMARY_TEXT_VERIFICATION'},
+      {ten:'《三命通会》 Tam Mệnh Thông Hội',phamVi:'Quy tắc nền tảng và dị bản; liên kết hiện tại là quyển 3',url:'https://zh.wikisource.org/wiki/三命通會_(四庫全書本)/卷03',trangThai:'NEEDS_PRIMARY_TEXT_VERIFICATION'},
+      {ten:'Kho tham chiếu có provenance — tianzhi-classics',phamVi:'Dữ liệu trích xuất / kế thừa / suy ra / mô hình hóa; dùng làm checklist, không thay nguồn sơ cấp',url:'https://github.com/zaoxu001/tianzhi-classics',trangThai:'SECONDARY_SOURCE_WITH_PROVENANCE'}
     ],
     nguyenTac:[
       'Luận Nhật chủ cùng nguyệt lệnh, căn khí và toàn cục trước khi kết luận dụng thần.',
@@ -284,9 +286,9 @@ function hlDanhGiaPhuongPhap_(h) {
     phienBan:'TCC-HA-LAC-METHOD-1.1',
     layers:layers,
     nguonCanDoiChieu:[
-      {ten:'Tài liệu chuyên biệt về 河洛理数 (Hà Lạc lý số)',phamVi:'Bảng số can chi, thiên/địa số, quy nguyên, ký cung và hào nguyên đường',trangThai:'NEEDS_PRIMARY_TEXT_VERIFICATION'},
-      {ten:'《周易》 Chu Dịch / Kinh Dịch',phamVi:'Cấu trúc quẻ, thứ tự hào, tượng quái và hào từ',trangThai:'FOUNDATIONAL_TEXT_NOT_SUFFICIENT_TO_VERIFY_HA_LAC_NUMBERING'},
-      {ten:'《皇极经世》 Hoàng Cực Kinh Thế',phamVi:'Đầu mối khảo sát tư tưởng tượng số; không mặc định là nguồn trực tiếp cho toàn bộ thuật toán',trangThai:'RELATED_SOURCE_REQUIRES_SCOPE_VERIFICATION'}
+      {ten:'Tài liệu chuyên biệt về 河洛理数 (Hà Lạc lý số)',phamVi:'Bảng số can chi, thiên/địa số, quy nguyên, ký cung và hào nguyên đường; chưa tìm được bản sơ cấp đủ để xác nhận toàn thuật toán',trangThai:'NEEDS_PRIMARY_TEXT_VERIFICATION'},
+      {ten:'《周易》 Chu Dịch / Kinh Dịch',phamVi:'Cấu trúc quẻ, thứ tự hào, tượng quái và hào từ; không tự xác minh phép lập số Hà Lạc',url:'https://zh.wikisource.org/wiki/周易',trangThai:'FOUNDATIONAL_TEXT_NOT_SUFFICIENT_TO_VERIFY_HA_LAC_NUMBERING'},
+      {ten:'Triển khai đối chiếu — Horosa heluoLocal.js',phamVi:'Một triển khai thứ cấp có ca mẫu và các biến thể; dùng để tìm khác biệt, không phải nguồn cổ thư',url:'https://github.com/Horace-Maxwell/Horosa-Web-App-comprehensively-improved-MacOS/blob/07df9799790e7ef1e05996abfb051e1542b12171/Horosa-Web/astrostudyui/src/utils/heluoLocal.js',trangThai:'SECONDARY_IMPLEMENTATION_NOT_AUTHORITATIVE'}
     ],
     nguyenTac:[
       'Tách kiểm tra phép lập quẻ khỏi diễn giải tượng số.',
