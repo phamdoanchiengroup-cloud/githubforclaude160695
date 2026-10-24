@@ -54,3 +54,10 @@ Liên quan: [[TCC Sáu hệ]] · [[TCC Lập lá số và bốn tầng luận]] 
 - **Trợ lý AI hỏi đáp về lá số:** cần khóa API và chi phí – hỏi chủ dự án.
 - **Mồi "Năm 2027 của bạn"** không cần giờ sinh.
 - Phái Trung Châu (tinh hệ, sát diệu) và Kỳ Môn: chưa nghiên cứu sâu.
+
+
+## Luận theo trình tự 26 bước (24/10/2026)
+- Chủ dự án gửi trình tự luận 26 bước (can chi năm → mệnh/cục/mùa/mệnh tinh → khí chất → tinh hệ Tử Vi → chính tinh → cung Thân → tứ sinh/mộ/chính → Phúc → vòng Thái Tuế/Lộc Tồn/Tràng Sinh → lục cát/sát/quý → tứ đức → Tuần Triệt → không vong → 7 chủ đề đời sống → đại/tiểu vận, năm xung, tam tai).
+- Làm ở file mới `TuViTrinhTu.gs` › `tuviTrinhTu(tv, chiTiet)` → `chiTiet.trinhTu = { nhom, buoc[26] {so, ten, de, ky, huong} }` (gọi trong `lapLaSoDayDu_`). Giao diện: Script › `trinhTuHtml`, Phần 2 tab Tử Vi; PDF chương Tử Vi. CSS `.tt26-*`.
+- Chỉ đọc sao đã an, không an lại. Văn `de` không nêu tên sao; `ky` ghi căn cứ. Đã thử 40 lá số: đủ 26 bước, không lỗi.
+- Tránh chữ nặng nề của bản gốc ("dâm đãng", "tuyệt tự", "nghèo hèn") → "đa tình/muộn duyên", "muộn hay ít con", "lúc thiếu hụt"; bước sức khỏe luôn kèm "lá số không thay lời bác sĩ".

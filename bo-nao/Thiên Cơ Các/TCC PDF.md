@@ -3,6 +3,8 @@
 Nhóm: Thiên Cơ Các · Tách từ CLAUDE.md ngày 21/10/2026
 Liên quan: [[TCC Giao diện]] · [[TCC Kiểm thử]] · [[00 Mục lục]]
 
+- **24/10 – PDF sáng tông Hologram (mã 2026.10.24.2):** khối CSS cuối Styles "BÁO CÁO PDF – bản sáng tông Hologram" (bc-sang nền #FBFCFF, chữ xanh than, nhấn vàng + xanh lơ; bc-toi đổi sang xanh đêm); bìa xanh lam + tranh bánh xe (`PDF_ANH_BIA` qua `TCCHolo.layAnh('TongHop')`). `xuatPdf` chụp trước: lá số Tử Vi (`chupLaSo` giữ Hologram, thay SVG đường tam hợp bằng ảnh), bánh xe 9 lĩnh vực (`.vt-khung`) và bảng `holoBT/HL/CT/TS/HD` (`PDF_BANG`, `TCCHolo.chup`) → `bcAnhHolo` chèn đầu mỗi chương. Chương Tử Vi có phần 26 bước. Thử: bản đầy đủ 64 trang, không lỗi.
+
 - **PDF bản đầy đủ (~82 trang, ~70 giây):** mỗi hệ lấy biểu đồ chính (`PDF_CHINH`) + văn dễ hiểu + các phần luận lĩnh vực/tổng hợp/lời khuyên (`PDF_LUAN`, theo `data-g` của khung Phần/Bước); Tử Vi lấy ảnh lá số + Phần 1 chân dung + Phần 3 Tử Vi × Bát Tự; vận hạn bỏ lịch ngày. Không chép bảng kỹ thuật. `tg-head` được coi là tiêu đề để không mồ côi cuối trang.
 - **PDF:** `xuatPdf` trong Script.html dựng từ nội dung đang hiển thị.
   - `chuanHoa` bỏ giao diện bán hàng (thẻ khóa, ưu đãi, bảng giá).
