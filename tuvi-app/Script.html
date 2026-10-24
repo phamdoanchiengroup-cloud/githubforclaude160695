@@ -27,7 +27,7 @@
     });
   }
   /** Mã phiên bản giao diện – phải trùng với Index.html (meta tcc-ban) và Styles.html (--tcc-ban) */
-  var BAN_GIAO_DIEN = '2026.10.24.2';
+  var BAN_GIAO_DIEN = '2026.10.24.3';
   function storeGet(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
   function storeSet(k, v) { try { localStorage.setItem(k, v); } catch (e) { /* bỏ qua */ } }
 
@@ -4901,13 +4901,47 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
     o += '</svg>';
     return '<img class="pc-ring" alt="" src="data:image/svg+xml;charset=utf-8,' + encodeURIComponent(o) + '" width="560" height="560">';
   }
+  /** Dãy núi kiểu tranh thủy mặc: trả mảng điểm [x, y] (giả ngẫu nhiên cố định theo seed) */
+  function daySon(seed, w, h, day, bien) {
+    var r = seed, ds = [], x = 0;
+    function rnd() { r = (r * 9301 + 49297) % 233280; return r / 233280; }
+    ds.push([0, h]);
+    while (x <= w) { ds.push([x, day - bien * (0.35 + 0.65 * rnd()) * (0.6 + 0.4 * Math.sin(x / w * Math.PI * 2 + seed))]); x += w / (10 + Math.floor(rnd() * 8)); }
+    ds.push([w, day - bien * 0.4]); ds.push([w, h]);
+    return ds;
+  }
+  function sonSvg(w, h, lop) {
+    return lop.map(function (L) {
+      var ds = daySon(L[0], w, h, L[1], L[2]), d = 'M' + ds[0][0] + ' ' + ds[0][1];
+      for (var i = 1; i < ds.length - 2; i++) { var a = ds[i], b = ds[i + 1]; d += ' Q' + a[0].toFixed(1) + ' ' + a[1].toFixed(1) + ' ' + ((a[0] + b[0]) / 2).toFixed(1) + ' ' + ((a[1] + b[1]) / 2).toFixed(1); }
+      d += ' L' + w + ' ' + h + ' Z';
+      return '<path d="' + d + '" fill="' + L[3] + '"/>';
+    }).join('');
+  }
+  /** Ảnh chân trang: núi mực mờ + mái chùa nhỏ (PNG nền trong) */
+  var NUI_MUC = null;
+  function nuiMuc() {
+    if (NUI_MUC) return NUI_MUC;
+    var W = 1600, H = 170, c = document.createElement('canvas'); c.width = W; c.height = H; var g = c.getContext('2d');
+    [[7, 120, 70, 'rgba(28,42,63,.10)'], [13, 140, 60, 'rgba(28,42,63,.16)'], [29, 160, 45, 'rgba(28,42,63,.24)']].forEach(function (L) {
+      var ds = daySon(L[0], W, H, L[1], L[2]); g.beginPath(); g.moveTo(ds[0][0], ds[0][1]);
+      for (var i = 1; i < ds.length - 2; i++) { var a = ds[i], b = ds[i + 1]; g.quadraticCurveTo(a[0], a[1], (a[0] + b[0]) / 2, (a[1] + b[1]) / 2); }
+      g.lineTo(W, H); g.closePath(); g.fillStyle = L[3]; g.fill();
+    });
+    // mái chùa nhỏ bên phải
+    g.fillStyle = 'rgba(28,42,63,.32)'; var px = 1390, py = 92;
+    g.beginPath(); g.moveTo(px - 46, py); g.quadraticCurveTo(px, py - 26, px + 46, py); g.lineTo(px + 30, py + 4); g.lineTo(px - 30, py + 4); g.fill();
+    g.fillRect(px - 22, py + 4, 44, 16);
+    g.beginPath(); g.moveTo(px - 36, py + 20); g.quadraticCurveTo(px, py + 4, px + 36, py + 20); g.fill(); g.fillRect(px - 18, py + 20, 36, 22);
+    return (NUI_MUC = c.toDataURL('image/png'));
+  }
   function chanTrang(txt, so, tong, sang) {
     var c = document.createElement('canvas'); c.width = 1600; c.height = 44;
     var g = c.getContext('2d');
-    g.font = '500 19px "Be Vietnam Pro", system-ui, sans-serif'; g.fillStyle = sang ? '#5B6787' : '#A9BCDA'; g.textBaseline = 'middle';
+    g.font = '500 19px "Be Vietnam Pro", system-ui, sans-serif'; g.fillStyle = sang ? '#6E6455' : '#A9BCDA'; g.textBaseline = 'middle';
     g.fillText(txt, 0, 24);
     g.textAlign = 'right'; g.font = '600 20px "Be Vietnam Pro", system-ui, sans-serif'; g.fillText(String(so), 1600, 24);
-    g.strokeStyle = sang ? 'rgba(6,182,212,.45)' : 'rgba(255,214,140,.35)'; g.beginPath(); g.moveTo(0, 2); g.lineTo(1600, 2); g.stroke();
+    g.strokeStyle = sang ? 'rgba(201,164,92,.6)' : 'rgba(255,214,140,.35)'; g.beginPath(); g.moveTo(0, 2); g.lineTo(1600, 2); g.stroke();
     return c.toDataURL('image/png');
   }
 
@@ -4925,7 +4959,7 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
     return '<ul class="bc-ul' + (cls ? ' ' + cls : '') + '">' + a.map(function (x) { return typeof x === 'string' ? bcLi(x) : bcLi(x.t || x.ten, x.he); }).join('') + '</ul>';
   }
   function bcMo(so, ten, hook, nho) {
-    return '<div class="bc-mo bc-nguyen' + (nho ? ' nho' : '') + '"><div class="bc-so">Phần ' + pad(so) + '</div><h1>' + bcE(ten) + '</h1>' + (hook ? '<p>' + bcE(hook) + '</p>' : '') + '</div>';
+    return '<div class="bc-mo bc-nguyen' + (nho ? ' nho' : '') + '"><span class="bc-mo-so">' + pad(so) + '</span><div class="bc-mo-nd"><div class="bc-so">Phần ' + pad(so) + '</div><h1>' + bcE(ten) + '</h1>' + (hook ? '<p>' + bcE(hook) + '</p>' : '') + '</div></div>';
   }
   function bcH2(t, phu) { return '<h2 class="bc-h2">' + bcE(t) + (phu ? ' <small>' + bcE(phu) + '</small>' : '') + '</h2>'; }
   function bcH3(t, phu) { return '<h3 class="bc-h3">' + bcE(t) + (phu ? ' <small>' + phu + '</small>' : '') + '</h3>'; }
@@ -5206,7 +5240,7 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
   }
 
   /* ---------- Bìa, mục lục, cách đọc, lời kết ---------- */
-  function bia(res, brand, demo) {
+  function bia(res, brand, demo, sang) {
     var I = res.tuvi.info, B = res.battu, M = res.moRong, T = M && M.chiemTinh && M.chiemTinh.thoiDiem, TL = M && M.tongHop && M.tongHop.tomLuoc;
     var d = new Date();
     var dong = [
@@ -5215,6 +5249,19 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
       ['Nơi sinh', T ? T.noiSinh : '—'],
       ['Tứ trụ', B.pillars.map(function (p) { return p.canTen + ' ' + p.chiTen; }).join(' · ')]
     ];
+    if (sang) {   // bìa kiểu tranh thủy mặc: trời đêm, trăng, núi mực, mái chùa, ô thông tin viền vàng, ấn son
+      var W = 760, H = 1075;
+      return '<div class="pdf-cover thuy"><div class="pc-trang"></div>' +
+        '<svg class="pc-nui" viewBox="0 0 ' + W + ' 520" width="' + W + '" height="520" preserveAspectRatio="none">' +
+        sonSvg(W, 520, [[5, 250, 150, '#3A4A62'], [11, 320, 140, '#2A3850'], [23, 400, 120, '#1B2639'], [41, 470, 80, '#111A29']]) +
+        '<g transform="translate(560 228)" fill="#111A29"><path d="M-44 0 Q0 -30 44 0 L30 5 L-30 5Z"/><rect x="-22" y="5" width="44" height="16"/><path d="M-36 21 Q0 3 36 21 L24 25 L-24 25Z"/><rect x="-18" y="25" width="36" height="26"/><circle cx="-10" cy="36" r="3" fill="#E6C98A"/><circle cx="10" cy="36" r="3" fill="#E6C98A"/></g></svg>' +
+        '<div class="pc-top"><span class="pc-logo">' + esc(brand.ten || 'Thiên Cơ Các') + '</span>' + (demo ? '<span class="pc-demo">Bản xem thử</span>' : '') + '</div>' +
+        '<div class="pc-mid"><div class="pc-kicker">Hồ sơ</div><h1>Vận Mệnh<br>Trọn Đời</h1>' +
+        '<div class="pc-gach"></div><p class="pc-sub">Luận giải toàn diện 6 hệ</p><p class="pc-sys">Tử Vi · Bát Tự · Hà Lạc · Chiêm Tinh · Thần Số · Human Design</p></div>' +
+        '<div class="pc-hop"><table class="pc-tbl"><tr><th>Họ tên</th><td>' + esc(I.name) + '</td></tr>' + dong.map(function (r) { return '<tr><th>' + esc(r[0]) + '</th><td>' + esc(r[1]) + '</td></tr>'; }).join('') +
+        '<tr><th>Ngày lập</th><td>' + pad(d.getDate()) + '/' + pad(d.getMonth() + 1) + '/' + d.getFullYear() + ' · năm xem ' + I.viewYear + '</td></tr></table><div class="pc-an">天機</div></div>' +
+        '<div class="pc-foot">Trí tuệ cổ học · Ứng dụng hiện đại' + (brand.lienHe ? ' · ' + esc(brand.lienHe) : '') + '</div></div>';
+    }
     return '<div class="pdf-cover"><div class="pc-stars"></div>' + (PDF_ANH_BIA ? '<img class="pc-dia" alt="" src="' + PDF_ANH_BIA + '">' : vongHoangDao()) +
       '<div class="pc-top"><span class="pc-eyebrow">' + esc(brand.ten || 'Thiên Cơ Các') + ' · Báo cáo vận mệnh cá nhân</span>' + (demo ? '<span class="pc-demo">Bản xem thử</span>' : '') + '</div>' +
       '<div class="pc-mid"><div class="pc-kicker">Bản Đồ Vận Mệnh</div><h1>' + esc(I.name) + '</h1>' +
@@ -5271,8 +5318,8 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
     if (tongKhoa(res) && !demo) chon = chon.filter(function (k) { return ['tom', 'linhvuc', 'nguoi', 'duyen', 'doi', 'them'].indexOf(k) < 0; });   // Tổng hợp 6 hệ chưa mở
     if (!window.jspdf || typeof html2canvas === 'undefined') { toast('Không tải được thư viện PDF – hãy dùng nút In → Lưu dưới dạng PDF.', true); return; }
     var jsPDF = window.jspdf.jsPDF, pdf = new jsPDF({ unit: 'pt', format: 'a4', compress: true });
-    var PW = 595.28, PH = 841.89, MX = 42, MT = 46, MB = 50, CW = PW - 2 * MX, CH = PH - MT - MB;
-    var W = 760, pxPt = CW / W, pageHpx = CH / pxPt, NEN = sang ? [251, 252, 255] : [11, 20, 48], NEN_HEX = sang ? '#fbfcff' : '#0b1430';
+    var PW = 595.28, PH = 841.89, MX = 42, MT = 46, MB = sang ? 92 : 50, CW = PW - 2 * MX, CH = PH - MT - MB;
+    var W = 760, pxPt = CW / W, pageHpx = CH / pxPt, NEN = sang ? [244, 239, 228] : [11, 20, 48], NEN_HEX = sang ? '#f4efe4' : '#0b1430';
     var root = document.createElement('div');
     root.id = 'pdfRoot'; root.className = 'pdf-root bc-root ' + (sang ? 'bc-sang' : 'bc-toi');
     document.body.appendChild(root);
@@ -5283,6 +5330,11 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
       if (soTrang > 0) pdf.addPage();
       soTrang++;
       pdf.setFillColor(NEN[0], NEN[1], NEN[2]); pdf.rect(0, 0, PW, PH, 'F');
+      if (sang) {   // khung kiểu thủy mặc: viền xanh than, giấy ngà bo góc, chỉ vàng
+        pdf.setFillColor(28, 42, 63); pdf.rect(0, 0, PW, PH, 'F');
+        pdf.setFillColor(NEN[0], NEN[1], NEN[2]); pdf.roundedRect(11, 11, PW - 22, PH - 22, 9, 9, 'F');
+        pdf.setDrawColor(201, 164, 92); pdf.setLineWidth(0.7); pdf.roundedRect(16, 16, PW - 32, PH - 32, 6, 6, 'S');
+      }
     }
     /* ---------- Dàn trang: xếp khối vào từng trang A4, khối dài (danh sách, bảng, nhóm đoạn) tách sang trang sau ---------- */
     var KHONG_TACH = /^(P|LI|FIGURE|IMG|TR|H1|H2|H3|H4|H5|H6|SVG|CANVAS|SPAN|B|I|EM|SMALL|A|LABEL|STRONG|U|SUP)$/;
@@ -5415,7 +5467,7 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
         if (!demo && k === 'linhvuc' && PDF_ANH_HE.linhvuc) noi = bcAnhHolo(PDF_ANH_HE.linhvuc.src, PDF_ANH_HE.linhvuc.kich, 'Bánh xe 9 lĩnh vực') + noi;
         if (noi && noi.replace(/<[^>]+>/g, '').trim().length > 20) dsPhan.push({ k: k, ten: PDF_TEN[k] || k, hook: PDF_HOOK[k] || '', noi: noi, trang: 0 });
       });
-      var html = '<div class="pdf-page-cover">' + bia(res, brand, demo) + '</div>';
+      var html = '<div class="pdf-page-cover">' + bia(res, brand, demo, sang) + '</div>';
       // Bản đầy đủ: mỗi phần bắt đầu trang mới. Bản xem thử: các phần chạy liền mạch cho gọn
       if (demo) html += '<div class="pdf-sec" data-k="demo">' + dsPhan.map(function (x, i) { return bcMo(i + 1, x.ten, x.hook, true) + x.noi; }).join('') + '</div>';
       else dsPhan.forEach(function (x, i) { html += '<div class="pdf-sec" data-k="' + x.k + '">' + bcMo(i + 1, x.ten, x.hook) + x.noi + '</div>'; });
@@ -5452,7 +5504,7 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
     }).then(function () {
       var tong = pdf.getNumberOfPages(), ten = res.tuvi.info.name || 'la-so';
       var txt = (demo ? 'BẢN XEM THỬ  ·  ' : '') + (brand.ten || 'Thiên Cơ Các') + '  ·  Bản đồ vận mệnh của ' + ten + (brand.lienHe ? '  ·  ' + brand.lienHe : '');
-      for (var i = 2; i <= tong; i++) { pdf.setPage(i); pdf.addImage(chanTrang(txt, i, tong, sang), 'PNG', MX, PH - 30, CW, CW * 44 / 1600); }
+      for (var i = 2; i <= tong; i++) { pdf.setPage(i); if (sang) pdf.addImage(nuiMuc(), 'PNG', 16, PH - 16 - 62, PW - 32, 62, 'nuimuc', 'FAST'); pdf.addImage(chanTrang(txt, i, tong, sang), 'PNG', MX, sang ? PH - 84 : PH - 30, CW, CW * 44 / 1600); }
       var slug = ten.normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[đĐ]/g, 'd').replace(/\s+/g, '-').toLowerCase();
       pdf.setProperties({ title: 'Bản đồ vận mệnh – ' + ten, author: brand.ten || 'Thiên Cơ Các', subject: 'Tử Vi · Bát Tự · Hà Lạc · Chiêm tinh · Thần số học · Human Design' });
       pdf.save((demo ? 'xem-thu-' : '') + 'ban-do-van-menh-' + slug + '.pdf');
