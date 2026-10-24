@@ -27,7 +27,7 @@
     });
   }
   /** Mã phiên bản giao diện – phải trùng với Index.html (meta tcc-ban) và Styles.html (--tcc-ban) */
-  var BAN_GIAO_DIEN = '2026.10.24.5';
+  var BAN_GIAO_DIEN = '2026.10.24.6';
   function storeGet(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
   function storeSet(k, v) { try { localStorage.setItem(k, v); } catch (e) { /* bỏ qua */ } }
 
@@ -5399,6 +5399,18 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
       sec.remove();
       return trang;
     }
+    /** Đặt ảnh nội dung lên trang hiện tại: có ảnh nền mờ thì ghép nền + chữ (chữ chụp nền trong) thành một ảnh vùng giấy */
+    function datNoiDung(c, x, y, wPt, hPt) {
+      if (!(sang && NEN_ANH)) { pdf.addImage(c.toDataURL('image/jpeg', 0.86), 'JPEG', x, y, wPt, hPt, undefined, 'FAST'); return; }
+      var ppt = c.width / wPt, x0 = 11, y0 = 11, wg = PW - 22, hg = PH - 22, T = document.createElement('canvas');
+      T.width = Math.round(wg * ppt); T.height = Math.round(hg * ppt); var g = T.getContext('2d');
+      g.fillStyle = NEN_HEX; g.fillRect(0, 0, T.width, T.height);
+      var ir = NEN_ANH.width / NEN_ANH.height, tw = T.width, th = tw / ir; if (th < T.height * 0.62) { th = T.height * 0.62; tw = th * ir; }
+      g.globalAlpha = 0.5; g.drawImage(NEN_ANH, (T.width - tw) / 2, T.height - th, tw, th); g.globalAlpha = 1;
+      g.drawImage(c, 0, 0, c.width, c.height, (x - x0) * ppt, (y - y0) * ppt, wPt * ppt, hPt * ppt);
+      pdf.addImage(T.toDataURL('image/jpeg', 0.84), 'JPEG', x0, y0, wg, hg, undefined, 'FAST');
+      pdf.setDrawColor(201, 164, 92); pdf.setLineWidth(0.7); pdf.roundedRect(16, 16, PW - 32, PH - 32, 6, 6, 'S');
+    }
     function chupPhan(sec, trangDau) {
       var ds = danTrang(sec);
       var cao = ds.map(function (pg) { var h = Math.max(pageHpx, pg.scrollHeight); pg.style.height = Math.ceil(h) + 'px'; return Math.ceil(h); });
@@ -5424,16 +5436,7 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
               trangMoi();
               if (dau && trangDau) { trangDau(soTrang); dau = false; }
               var k = Math.min(1, pageHpx / cao[i]), wPt = CW * k, hPt = cao[i] * pxPt * k;
-              if (sang && NEN_ANH) {   // ghép ảnh nền mờ + chữ thành một ảnh cho vùng giấy (11pt trong khung)
-                var ppt = c.width / CW, x0 = 11, y0 = 11, wg = PW - 22, hg = PH - 22, T = document.createElement('canvas');
-                T.width = Math.round(wg * ppt); T.height = Math.round(hg * ppt); var g = T.getContext('2d');
-                g.fillStyle = NEN_HEX; g.fillRect(0, 0, T.width, T.height);
-                var ir = NEN_ANH.width / NEN_ANH.height, tw = T.width, th = tw / ir; if (th < T.height * 0.62) { th = T.height * 0.62; tw = th * ir; }
-                g.globalAlpha = 0.5; g.drawImage(NEN_ANH, (T.width - tw) / 2, T.height - th, tw, th); g.globalAlpha = 1;
-                g.drawImage(c, 0, 0, c.width, c.height, (MX + (CW - wPt) / 2 - x0) * ppt, (MT - y0) * ppt, wPt * ppt, hPt * ppt);
-                pdf.addImage(T.toDataURL('image/jpeg', 0.84), 'JPEG', x0, y0, wg, hg, undefined, 'FAST');
-                pdf.setDrawColor(201, 164, 92); pdf.setLineWidth(0.7); pdf.roundedRect(16, 16, PW - 32, PH - 32, 6, 6, 'S');
-              } else pdf.addImage(c.toDataURL('image/jpeg', 0.86), 'JPEG', MX + (CW - wPt) / 2, MT, wPt, hPt, undefined, 'FAST');
+              datNoiDung(c, MX + (CW - wPt) / 2, MT, wPt, hPt);
             });
             wrap.remove();
           });
@@ -5509,7 +5512,7 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
       return sleep(80).then(function () { return html2canvas(toc, opt); }).then(function (c) {
         pdf.setPage(2);
         var hPt = c.height / scale * pxPt, k = Math.min(1, CH / hPt);
-        pdf.addImage(c.toDataURL('image/jpeg', 0.86), 'JPEG', MX + CW * (1 - k) / 2, MT, CW * k, hPt * k, undefined, 'FAST');
+        datNoiDung(c, MX + CW * (1 - k) / 2, MT, CW * k, hPt * k);
       });
     }).then(function () {
       var tong = pdf.getNumberOfPages(), ten = res.tuvi.info.name || 'la-so';
