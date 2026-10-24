@@ -2715,6 +2715,9 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
         return '<article class="tv-audit-item"><div><b>' + esc(x.ten || '') + '</b><span class="tv-audit-state">' + esc(auditStatus[x.trangThai] || 'Chưa đánh giá') + '</span></div><p>' + esc(x.chiTiet || '') + '</p></article>';
       }).join('') + '</div>' +
       '<h4 class="dd-h">Nguyên tắc xử lý mâu thuẫn</h4><ul>' + (audit.nguyenTac || []).map(function (x) { return '<li>' + esc(x) + '</li>'; }).join('') + '</ul>' +
+      '<details class="tv-audit-matrix"><summary>Ma trận tham chiếu 12 cung · mở rộng</summary><div class="tv-audit-grid">' + (audit.maTran12Cung || []).map(function (x) {
+        return '<article class="tv-audit-item"><b>' + esc(x.ten) + '</b><p><strong>Trọng tâm:</strong> ' + esc(x.trongTam) + '</p><p><strong>Đối chiếu:</strong> ' + esc(x.doiChieu) + '</p><p><strong>Tránh kết luận:</strong> ' + esc(x.tranh) + '</p></article>';
+      }).join('') + '</div></details>' +
       '<p class="tv-audit-limit"><b>Trạng thái kiểm định:</b> ' + esc(audit.danhGiaKiemDinh || 'Chưa có đánh giá') + '<br>' + esc(audit.gioiHan || '') + '</p></div>';
     var html = auditHtml + khoiPhan('tvp', 1, 'Chân dung lá số', 'Mệnh – Thân, bố cục, cách cục, cung mạnh và cung yếu', p1) +
       (tp ? khoiPhan('tvp', 2, 'Thế đứng & nguồn cội', 'Ba vòng nhân sinh (phái Thiên Lương) · Phi Tinh (tham khảo)', tp) : '') +
