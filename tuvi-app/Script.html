@@ -2706,10 +2706,20 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
     var p4 = '<div class="panel section"><h2 class="panel-title"><span class="han">運</span> Đại vận – tiểu vận Tử Vi</h2><p>' + (dvNay ? 'Bạn đang ở đại hạn <b>' + esc(dvNay.khoang) + '</b> (' + esc(String(dvNay.nam)) + ', cung ' + esc(dvNay.cung) + ' – ' + esc(dvNay.danhGia.toLowerCase()) + ').' : '') + ' Toàn bộ đại vận 10 năm, vận năm ' + I.viewYear + ', 12 tháng và lịch từng ngày nằm ở tab <b>Vận hạn</b>.</p>' +
       '<button type="button" class="btn btn-ghost btn-sm" data-den="vh">⏳ Sang tab Vận hạn</button></div>';
     var tp = CT.tamPhap ? tamPhapHtml(CT.tamPhap) : '';
-    var html = khoiPhan('tvp', 1, 'Chân dung lá số', 'Mệnh – Thân, bố cục, cách cục, cung mạnh và cung yếu', p1) +
+    // Khung kiểm toán căn cứ: phân biệt lớp quy tắc với bằng chứng thực nghiệm.
+    var audit = res.tuvi.danhGiaPhuongPhap || {};
+    var auditStatus = { co: 'Có dữ liệu', motPhan: 'Cần đối chiếu thêm', chuaCo: 'Chưa có đủ dữ liệu', tachRieng: 'Lớp tham khảo riêng' };
+    var auditHtml = '<div class="panel section tv-audit"><h2 class="panel-title"><span class="han">考</span> Phương pháp & căn cứ luận giải</h2>' +
+      '<p class="tv-audit-intro">Bảng này cho biết các lớp phương pháp có trong lần lập lá số hiện tại. Trạng thái có dữ liệu không đồng nghĩa với kết luận đã được kiểm chứng là đúng.</p>' +
+      '<div class="tv-audit-grid">' + (audit.layers || []).map(function (x) {
+        return '<article class="tv-audit-item"><div><b>' + esc(x.ten || '') + '</b><span class="tv-audit-state">' + esc(auditStatus[x.trangThai] || 'Chưa đánh giá') + '</span></div><p>' + esc(x.chiTiet || '') + '</p></article>';
+      }).join('') + '</div>' +
+      '<h4 class="dd-h">Nguyên tắc xử lý mâu thuẫn</h4><ul>' + (audit.nguyenTac || []).map(function (x) { return '<li>' + esc(x) + '</li>'; }).join('') + '</ul>' +
+      '<p class="tv-audit-limit"><b>Trạng thái kiểm định:</b> ' + esc(audit.danhGiaKiemDinh || 'Chưa có đánh giá') + '<br>' + esc(audit.gioiHan || '') + '</p></div>';
+    var html = auditHtml + khoiPhan('tvp', 1, 'Chân dung lá số', 'Mệnh – Thân, bố cục, cách cục, cung mạnh và cung yếu', p1) +
       (tp ? khoiPhan('tvp', 2, 'Thế đứng & nguồn cội', 'Ba vòng nhân sinh (phái Thiên Lương) · Phi Tinh (tham khảo)', tp) : '') +
       khoiPhan('tvp', tp ? 3 : 2, 'Luận 12 cung', 'Mỗi cung: văn dễ hiểu trước, thuật ngữ chuyên sâu thu gọn bên dưới', p2) +
-      khoiPhan('tvp', tp ? 4 : 3, 'Đối chiếu Tử Vi × Bát Tự', 'Hai hệ cùng chiều thì kết luận chắc chắn hơn', p3) +
+      khoiPhan('tvp', tp ? 4 : 3, 'Đối chiếu Tử Vi × Bát Tự', 'Đối chiếu góc nhìn giữa hai hệ; đồng thuận không tự động chứng minh kết luận đúng', p3) +
       khoiPhan('tvp', tp ? 5 : 4, 'Vận hạn', 'Đại vận, vận năm, tháng, ngày', p4);
     $('page-luan').innerHTML = html;
     $('page-luan').querySelectorAll('.strip-item').forEach(function (b) {
