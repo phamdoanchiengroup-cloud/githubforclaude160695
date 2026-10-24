@@ -56,7 +56,7 @@ function includeTuyChon(filename) {
 
 /** Tranh nền giao diện Hologram (file HoloAnh*.html chứa sẵn data:image/webp;base64). Client tải chậm từng tranh khi mở tab. */
 var HOLO_ANH_ = ['TuVi', 'BatTu', 'HaLac', 'ChiemTinh', 'ThanSo', 'HD', 'Nen',
-  'TabTong', 'TabTuVi', 'TabBatTu', 'TabHaLac', 'TabChiemTinh', 'TabThanSo', 'TabHD', 'TabVanHan', 'TabCapDoi'];   // Tab*: nền card từng tab
+  'TongHop', 'TabTong', 'TabTuVi', 'TabBatTu', 'TabHaLac', 'TabChiemTinh', 'TabThanSo', 'TabHD', 'TabVanHan', 'TabCapDoi'];   // Tab*: nền card từng tab
 function layAnhHolo(ten) {
   if (HOLO_ANH_.indexOf(ten) < 0) return '';
   try { return HtmlService.createHtmlOutputFromFile('HoloAnh' + ten).getContent(); } catch (e) { return ''; }
@@ -140,261 +140,6 @@ function kiemTraCaiDat() {
  * API chính: lập lá số Tử Vi + Bát Tự + tổng luận
  * @param {Object} input dữ liệu từ form
  */
-/**
- * Khung kiểm toán phương pháp luận Tử Vi.
- * Mục đích: ghi rõ lớp căn cứ hiện có và giới hạn; không chấm xác suất/độ đúng giả tạo.
- */
-function tuviDanhGiaPhuongPhap_(tv, chiTiet, input) {
-  tv = tv || {};
-  chiTiet = chiTiet || {};
-  var info = tv.info || {};
-  var palaces = Array.isArray(tv.palaces) ? tv.palaces : [];
-  var cung = Array.isArray(chiTiet.cung) ? chiTiet.cung : [];
-  var coSoCung = chiTiet.coSo && chiTiet.coSo.cung;
-  var daiVan = Array.isArray(chiTiet.daiVan) ? chiTiet.daiVan : [];
-  var hasMenh = info.menh !== undefined && info.menh !== null;
-  var hasThan = info.thanCu !== undefined && info.thanCu !== null;
-  var layers = [
-    { id: 'duLieu', ten: 'Dữ liệu và cấu trúc lá số', trangThai: info.solar && info.hour !== undefined ? 'co' : 'motPhan',
-      chiTiet: 'Ngày giờ sinh, thông tin lịch và cấu trúc lá số là đầu vào của các bước luận giải. Sai lệch đầu vào có thể làm thay đổi kết quả an sao.' },
-    { id: 'menhThan', ten: 'Mệnh, Thân và bố cục 12 cung', trangThai: palaces.length === 12 && hasMenh && hasThan ? 'co' : 'motPhan',
-      chiTiet: 'Dùng vị trí Mệnh, Thân và các cung làm khung định vị chủ đề; không suy kết luận chỉ từ một sao đơn lẻ.' },
-    { id: 'cung', ten: 'Luận cung và căn cứ liên quan', trangThai: cung.length ? 'co' : (coSoCung ? 'motPhan' : 'chuaCo'),
-      chiTiet: coSoCung ? 'Có phần cơ sở luận cung được trả về từ bộ máy hiện tại. Cần đối chiếu từng luận điểm với sao, cung và quy tắc cụ thể.' :
-        'Cần bổ sung căn cứ có cấu trúc cho từng luận điểm để người đọc có thể truy vết.' },
-    { id: 'cachCuc', ten: 'Cách cục và tổ hợp sao', trangThai: tv.luanGiai && Array.isArray(tv.luanGiai.cachCuc) && tv.luanGiai.cachCuc.length ? 'co' : 'motPhan',
-      chiTiet: 'Chỉ áp dụng cách cục khi đủ điều kiện của quy tắc đã chọn; ghi nhận phá cách và yếu tố trái chiều thay vì chỉ chọn dấu hiệu thuận.' },
-    { id: 'vanHan', ten: 'Đại vận và thời điểm', trangThai: daiVan.length ? 'co' : 'motPhan',
-      chiTiet: 'Vận hạn là lớp diễn giải theo thời gian. Mọi dự đoán cần xác định trước khoảng thời gian và tiêu chí kiểm chứng.' },
-    { id: 'doiChieu', ten: 'Đối chiếu hệ khác', trangThai: 'tachRieng',
-      chiTiet: 'Bát Tự hoặc các hệ khác có thể cung cấp góc nhìn bổ sung, nhưng sự đồng thuận không tự động chứng minh kết luận đúng và không được xem là các bằng chứng độc lập nếu phụ thuộc cùng giả định.' }
-  ];
-  return {
-    phienBan: 'TCC-TUVI-METHOD-1.0',
-    ten: 'Khung kiểm toán phương pháp luận',
-    layers: layers,
-    nguyenTac: [
-      'Không kết luận từ một sao đơn lẻ khi quy tắc yêu cầu xét cả cung và quan hệ liên cung.',
-      'Giữ lại cả dấu hiệu thuận lẫn dấu hiệu nghịch; ghi rõ mâu thuẫn và điều kiện áp dụng.',
-      'Không cộng số quy tắc cùng chiều thành xác suất xảy ra sự kiện.',
-      'Tách độ đúng của phép tính, độ đồng thuận giữa người luận và độ chính xác dự báo thực tế.'
-    ],
-    danhGiaKiemDinh: 'Chưa được xác lập bằng kiểm định thực nghiệm độc lập cho phương pháp Tử Vi Đẩu Số này.',
-    gioiHan: 'Đây là bản đồ căn cứ và giới hạn của quy trình, không phải chứng nhận lá số đúng hoặc dự báo đã được khoa học xác nhận.',
-    duLieuDauVao: { soCung: palaces.length, soCungCoLuan: cung.length, soDaiVan: daiVan.length },
-    maTran12Cung: [
-      { ten: 'Mệnh', trongTam: 'Khí chất và cách cá nhân thể hiện bản thân theo ngôn ngữ truyền thống.', doiChieu: 'Thân, tam phương tứ chính, chính tinh, phụ tinh và điều kiện cách cục.', tranh: 'Không suy ra toàn bộ tính cách hay số phận từ một sao hoặc một cung.' },
-      { ten: 'Huynh Đệ', trongTam: 'Quan hệ anh chị em và nguồn lực ngang hàng trong cách luận truyền thống.', doiChieu: 'Cấu trúc cung, sao liên quan và các cung có quan hệ theo trường phái đã chọn.', tranh: 'Không mặc định gia đình nào cũng có anh chị em hoặc quan hệ theo cùng một khuôn.' },
-      { ten: 'Phu Thê', trongTam: 'Quan hệ đôi lứa và cách nhìn về sự gắn kết.', doiChieu: 'Cung Phu Thê, Mệnh/Thân, tam phương tứ chính và dấu hiệu thuận nghịch.', tranh: 'Không kết luận chắc chắn về hôn nhân, ly hôn hay phẩm chất của một người khác.' },
-      { ten: 'Tử Tức', trongTam: 'Chủ đề con cái và việc chăm sóc, tiếp nối trong quan niệm truyền thống.', doiChieu: 'Cung Tử Tức cùng các quan hệ cung và điều kiện cụ thể của quy tắc.', tranh: 'Không dùng để kết luận khả năng sinh sản, số con hoặc sức khỏe của trẻ.' },
-      { ten: 'Tài Bạch', trongTam: 'Cách tạo lập, quản lý và sử dụng nguồn lực tài chính theo diễn giải truyền thống.', doiChieu: 'Tài Bạch với Quan Lộc, Điền Trạch, Mệnh và vận hạn liên quan.', tranh: 'Không dùng làm dự báo chắc chắn về thu nhập, đầu tư hay lợi nhuận.' },
-      { ten: 'Tật Ách', trongTam: 'Chủ đề sức khỏe và điểm cần chăm sóc trong văn bản truyền thống.', doiChieu: 'Cung Tật Ách và cấu trúc lá số theo quy tắc đã chọn.', tranh: 'Không chẩn đoán bệnh, dự báo tử vong hoặc thay thế đánh giá y tế.' },
-      { ten: 'Thiên Di', trongTam: 'Hoàn cảnh bên ngoài, thay đổi môi trường và cách tương tác ngoài gia đình.', doiChieu: 'Thiên Di với Mệnh, Quan Lộc, Nô Bộc và tầng vận đang xét.', tranh: 'Không khẳng định chắc chắn việc xuất ngoại, tai nạn hay một biến cố cụ thể.' },
-      { ten: 'Nô Bộc', trongTam: 'Quan hệ bạn bè, cộng sự và mạng lưới hỗ trợ theo hệ quy chiếu truyền thống.', doiChieu: 'Nô Bộc, Quan Lộc, Thiên Di và các dấu hiệu thuận nghịch.', tranh: 'Không gán nhãn người khác là phản bội hoặc đáng tin chỉ từ lá số.' },
-      { ten: 'Quan Lộc', trongTam: 'Công việc, vai trò và định hướng nghề nghiệp theo cách luận truyền thống.', doiChieu: 'Quan Lộc với Mệnh, Tài Bạch, Thiên Di và vận hạn.', tranh: 'Không khẳng định chắc chắn chức vụ, thăng chức, thất nghiệp hoặc thành công.' },
-      { ten: 'Điền Trạch', trongTam: 'Nhà ở, không gian sống và tài sản cố định trong quan niệm truyền thống.', doiChieu: 'Điền Trạch với Tài Bạch, Phúc Đức, Mệnh và vận hạn.', tranh: 'Không dùng để bảo đảm mua bán bất động sản hoặc dự báo tranh chấp cụ thể.' },
-      { ten: 'Phúc Đức', trongTam: 'Nền tảng gia tộc, đời sống tinh thần và cảm nhận về sự nâng đỡ.', doiChieu: 'Phúc Đức với Mệnh, Phu Thê, Điền Trạch và cấu trúc liên cung.', tranh: 'Không xem đây là bằng chứng về nghiệp, đạo đức hay giá trị của một gia đình.' },
-      { ten: 'Phụ Mẫu', trongTam: 'Quan hệ với cha mẹ, người nuôi dưỡng và nguồn hỗ trợ thế hệ trước.', doiChieu: 'Phụ Mẫu với Mệnh, Phúc Đức và các dấu hiệu liên quan.', tranh: 'Không kết luận chắc chắn về tuổi thọ, bệnh tật hoặc biến cố của cha mẹ.' }
-    ]
-  };
-}
-
-/** Kiểm thử tự chứa cho khung kiểm toán phương pháp luận; có thể chạy thủ công trong Apps Script. */
-function tuviKiemThuPhuongPhap_() {
-  var mau = {
-    info: { solar: { year: 1990 }, hour: 8, menh: 0, thanCu: 'Quan Lộc' },
-    palaces: Array.from({ length: 12 }, function (_, i) { return { cung: i }; }),
-    luanGiai: { cachCuc: [{ ten: 'Mẫu kiểm thử' }] }
-  };
-  var ct = { cung: Array.from({ length: 12 }, function (_, i) { return { cung: i }; }), coSo: { cung: ['mẫu'] }, daiVan: [{ nam: 2020 }] };
-  var a = tuviDanhGiaPhuongPhap_(mau, ct, {});
-  var checks = [
-    { ten: 'Có đủ 12 chủ đề cung', ok: a.maTran12Cung.length === 12 },
-    { ten: 'Giữ riêng lớp đối chiếu hệ khác', ok: a.layers.some(function (x) { return x.id === 'doiChieu' && x.trangThai === 'tachRieng'; }) },
-    { ten: 'Không tự gán phần trăm chính xác', ok: !/%/.test(a.danhGiaKiemDinh) && !/\b\d+\s*%/.test(JSON.stringify(a)) },
-    { ten: 'Ghi rõ trạng thái kiểm định', ok: /Chưa được xác lập/.test(a.danhGiaKiemDinh) },
-    { ten: 'Có nguyên tắc xử lý mâu thuẫn', ok: a.nguyenTac.length >= 4 }
-  ];
-  return { ok: checks.every(function (x) { return x.ok; }), checks: checks, phienBan: a.phienBan };
-}
-
-
-/**
- * Hồ sơ truy vết Bát Tự/Hà Lạc.
- * LƯU Ý: sự hiện diện của dữ liệu/thuật toán không đồng nghĩa nguồn cổ thư đã được xác minh.
- * Trạng thái nguồn chỉ được nâng lên VERIFIED_SOURCE khi có bản văn, ấn bản/chương/trang
- * và ví dụ độc lập tái lập được. Các trọng số nội bộ vẫn là heuristic cho đến lúc đó.
- */
-function btDanhGiaPhuongPhap_(bt, ct) {
-  bt = bt || {}; ct = ct || {};
-  var p = Array.isArray(bt.pillars) ? bt.pillars : [];
-  var layers = [
-    {id:'tuTru', ten:'Tứ trụ và tiết khí', duLieuCoMat:p.length===4,
-      chiTiet:'Dữ liệu tứ trụ ' + (p.length===4?'đã có':'chưa đủ') + '. Quy tắc đổi năm Lập Xuân, ranh giới tiết khí, múi giờ và quy ước giờ Tý vẫn cần bộ ví dụ tham chiếu độc lập; chưa đánh dấu nguồn là đã xác minh.'},
-    {id:'nhatChu', ten:'Nhật chủ và nguyệt lệnh', duLieuCoMat:!!(bt.nhatChu && p.length===4),
-      chiTiet:'Có dữ liệu Nhật chủ/nguyệt lệnh: ' + (!!(bt.nhatChu && p.length===4) ? 'có' : 'chưa đủ') + '. Vượng suy, căn khí, sinh trợ và khắc tiết hao phải tách khỏi điểm số heuristic; cần đối chiếu từng quy tắc với bộ Tử Bình đã chọn.'},
-    {id:'cachCuc', ten:'Cách cục và vượng suy', duLieuCoMat:!!(bt.cuong && bt.trangThai),
-      chiTiet:'Có trường dữ liệu phân tích: ' + (!!(bt.cuong && bt.trangThai) ? 'có' : 'chưa đủ') + '. Điều kiện thành cách, phá cách, điều hậu và ngoại cách chưa được coi là đã xác minh nếu chưa có nguồn/chương và ví dụ giải mẫu.'},
-    {id:'dungThan', ten:'Dụng thần, hỷ thần, kỵ thần', duLieuCoMat:!!(bt.goiY && bt.goiY.dung),
-      chiTiet:'Có kết quả dụng thần: ' + (!!(bt.goiY && bt.goiY.dung) ? 'có' : 'chưa đủ') + '. Cần ghi riêng lý do theo cách cục, vượng suy và điều hậu; không mặc định một phương pháp duy nhất hoặc xem trọng số phần mềm là quy tắc cổ điển.'},
-    {id:'thanSat', ten:'Thập thần, hợp xung hình hại và thần sát', duLieuCoMat:!!ct,
-      chiTiet:'Lớp bổ trợ; cần truy nguồn riêng cho từng quy tắc và kiểm tra không đếm trùng một quan hệ qua nhiều lớp. Dữ liệu hiện có không tự chứng minh diễn giải đã được xác minh.'},
-    {id:'daiVan', ten:'Đại vận và lưu niên', duLieuCoMat:Array.isArray(bt.daiVan)&&bt.daiVan.length>0,
-      chiTiet:'Có dữ liệu đại vận: ' + (Array.isArray(bt.daiVan)&&bt.daiVan.length ? 'có' : 'chưa đủ') + '. Chiều vận, thời điểm khởi vận và xử lý tiết khí cần test ranh giới có kết quả tham chiếu.'}
-  ];
-  layers.forEach(function(x){ x.trangThai = 'motPhan'; });
-  return {
-    phienBan:'TCC-BAT-TU-METHOD-1.1',
-    layers:layers,
-    nguonCanDoiChieu:[
-      {ten:'《子平真诠》 Tử Bình Chân Thuyên',phamVi:'Nguyệt lệnh, chính cách, thành cách/phá cách và cứu ứng',url:'https://zh.wikisource.org/wiki/子平真詮',trangThai:'NEEDS_PRIMARY_TEXT_VERIFICATION'},
-      {ten:'《滴天髓》 Tích Thiên Tủy',phamVi:'Khí thế toàn cục, sinh khắc và vượng suy',url:'https://zh.wikisource.org/wiki/滴天髓',trangThai:'NEEDS_PRIMARY_TEXT_VERIFICATION'},
-      {ten:'《穷通宝鉴》 Cùng Thông Bảo Giám',phamVi:'Điều hậu theo mùa sinh',url:'https://zh.wikisource.org/wiki/穷通宝鑑',trangThai:'NEEDS_PRIMARY_TEXT_VERIFICATION'},
-      {ten:'《渊海子平》 Uyên Hải Tử Bình',phamVi:'Quy tắc nền tảng cần đối chiếu theo đúng bản',url:'https://zh.wikisource.org/wiki/淵海子平',trangThai:'NEEDS_PRIMARY_TEXT_VERIFICATION'},
-      {ten:'《三命通会》 Tam Mệnh Thông Hội',phamVi:'Quy tắc nền tảng và dị bản; liên kết hiện tại là quyển 3',url:'https://zh.wikisource.org/wiki/三命通會_(四庫全書本)/卷03',trangThai:'NEEDS_PRIMARY_TEXT_VERIFICATION'},
-      {ten:'Kho tham chiếu có provenance — tianzhi-classics',phamVi:'Dữ liệu trích xuất / kế thừa / suy ra / mô hình hóa; dùng làm checklist, không thay nguồn sơ cấp',url:'https://github.com/zaoxu001/tianzhi-classics',trangThai:'SECONDARY_SOURCE_WITH_PROVENANCE'}
-    ],
-    nguyenTac:[
-      'Luận Nhật chủ cùng nguyệt lệnh, căn khí và toàn cục trước khi kết luận dụng thần.',
-      'Tách các quy tắc Tử Bình khác nhau thành phiên bản riêng, không âm thầm trộn quy tắc.',
-      'Ghi nhận cả dấu hiệu thuận và nghịch; không đếm trùng một căn cứ qua nhiều tên gọi.',
-      'Không suy ra xác suất thành công, bệnh tật hoặc sự kiện từ điểm số nội bộ.',
-      'Tách độ đúng phép tính, mức đồng thuận và độ chính xác dự báo.',
-      'Các nguồn liệt kê là đầu mối cần đối chiếu, chưa phải bằng chứng đã đọc/xác minh bản văn.'
-    ],
-    danhGiaKiemDinh:'Chưa được xác lập bằng kiểm định thực nghiệm độc lập cho Bát Tự.',
-    gioiHan:'Trạng thái “Cần đối chiếu thêm” phản ánh tình trạng bằng chứng nguồn, không phủ nhận việc mã có tính toán; không phải chứng nhận dự đoán đã được khoa học xác nhận.'
-  };
-}
-
-/** Chuẩn hóa căn cứ Hà Lạc, tách phép lập quẻ khỏi diễn giải. */
-function hlDanhGiaPhuongPhap_(h) {
-  h = h || {};
-  var t = h.tien || {}, a = h.hau || {};
-  var layers = [
-    {id:'lapQue',ten:'Lập quẻ Tiên thiên và Hậu thiên',duLieuCoMat:!!(t.hao&&a.hao),
-      chiTiet:'Có dữ liệu quẻ Tiên/Hậu thiên: ' + (!!(t.hao&&a.hao)?'có':'chưa đủ') + '. Bảng số can chi, phép quy số, số 5/ký cung và quy tắc chọn thượng/hạ quái chưa được xác minh với một bản văn/ấn bản cụ thể.'},
-    {id:'nguyenDuong',ten:'Hào nguyên đường',duLieuCoMat:t.nguyenDuong!==undefined&&a.nguyenDuong!==undefined,
-      chiTiet:'Có dữ liệu hào nguyên đường: ' + (t.nguyenDuong!==undefined&&a.nguyenDuong!==undefined?'có':'chưa đủ') + '. Cần đối chiếu độc lập quy tắc chọn hào và ví dụ nguồn; chú thích trong mã không tự thân là bằng chứng.'},
-    {id:'quePhu',ten:'Quẻ hỗ, quẻ biến và các quẻ phụ',duLieuCoMat:!!(h.hoTien&&h.hoHau),
-      chiTiet:'Có dữ liệu quẻ phụ: ' + (!!(h.hoTien&&h.hoHau)?'có':'chưa đủ') + '. Phép biến đổi cấu trúc có thể kiểm thử bằng tính chất toán học; cách diễn giải và quy tắc lập số vẫn cần nguồn riêng.'},
-    {id:'luanGiai',ten:'Luận tượng và thời vị',duLieuCoMat:!!h.luan,
-      chiTiet:'Có dữ liệu luận giải: ' + (!!h.luan?'có':'chưa đủ') + '. Mọi điểm số hào, chu kỳ 6/9 năm và kết luận cát-hung chưa có nguồn trực tiếp phải được coi là heuristic/thử nghiệm, không phải quy tắc cổ thư đã xác minh.'}
-  ];
-  layers.forEach(function(x){ x.trangThai = 'motPhan'; });
-  return {
-    phienBan:'TCC-HA-LAC-METHOD-1.1',
-    layers:layers,
-    nguonCanDoiChieu:[
-      {ten:'Tài liệu chuyên biệt về 河洛理数 (Hà Lạc lý số)',phamVi:'Bảng số can chi, thiên/địa số, quy nguyên, ký cung và hào nguyên đường; chưa tìm được bản sơ cấp đủ để xác nhận toàn thuật toán',trangThai:'NEEDS_PRIMARY_TEXT_VERIFICATION'},
-      {ten:'《周易》 Chu Dịch / Kinh Dịch',phamVi:'Cấu trúc quẻ, thứ tự hào, tượng quái và hào từ; không tự xác minh phép lập số Hà Lạc',url:'https://zh.wikisource.org/wiki/周易',trangThai:'FOUNDATIONAL_TEXT_NOT_SUFFICIENT_TO_VERIFY_HA_LAC_NUMBERING'},
-      {ten:'Triển khai đối chiếu — Horosa heluoLocal.js',phamVi:'Một triển khai thứ cấp có ca mẫu và các biến thể; dùng để tìm khác biệt, không phải nguồn cổ thư',url:'https://github.com/Horace-Maxwell/Horosa-Web-App-comprehensively-improved-MacOS/blob/07df9799790e7ef1e05996abfb051e1542b12171/Horosa-Web/astrostudyui/src/utils/heluoLocal.js',trangThai:'SECONDARY_IMPLEMENTATION_NOT_AUTHORITATIVE'}
-    ],
-    nguyenTac:[
-      'Tách kiểm tra phép lập quẻ khỏi diễn giải tượng số.',
-      'Ghi lại phép tính trung gian để tái lập kết quả.',
-      'Giữ đúng cấu trúc quẻ và hào; không đồng nhất Hà Lạc với bố cục Hà Đồ/Lạc Thư.',
-      'Giữ các diễn giải mâu thuẫn để đối chiếu, không chỉ chọn phần khớp hậu nghiệm.',
-      'Không tuyên bố xác suất hoặc độ chính xác khi chưa kiểm định độc lập.',
-      'Các nguồn liệt kê là đầu mối nghiên cứu; chưa xác minh bản văn/ấn bản và ví dụ trực tiếp.'
-    ],
-    danhGiaKiemDinh:'Chưa được xác lập bằng kiểm định thực nghiệm độc lập cho Hà Lạc.',
-    gioiHan:'Phép tính cấu trúc có thể vượt qua unit test mà vẫn chưa xác minh nguồn lập số; điểm số và kết luận không có nguồn trực tiếp phải được đánh dấu heuristic.'
-  };
-}
-
-/**
- * Kiểm thử hồi quy cho hồ sơ truy vết phương pháp.
- * Chạy thủ công trong Apps Script: tccKiemThuTrangThaiPhuongPhap_()
- * Không kiểm chứng tính đúng của trường phái; chỉ bảo đảm UI/API không gắn nhãn
- * “đã xác minh nguồn” khi hồ sơ chưa có bằng chứng nguồn trực tiếp.
- */
-function tccKiemThuTrangThaiPhuongPhap_() {
-  var bt = btDanhGiaPhuongPhap_({pillars:[{},{},{},{}], nhatChu:'Giáp', goiY:{dung:'Mộc'}, daiVan:[{}]}, {});
-  var hl = hlDanhGiaPhuongPhap_({tien:{hao:1,nguyenDuong:2},hau:{hao:3,nguyenDuong:4},hoTien:{},hoHau:{},luan:'mẫu'});
-  var checks = [];
-  function check(id, ok, detail) { checks.push({id:id, pass:!!ok, detail:detail||''}); }
-  check('battu-version', bt.phienBan === 'TCC-BAT-TU-METHOD-1.1', bt.phienBan);
-  check('halac-version', hl.phienBan === 'TCC-HA-LAC-METHOD-1.1', hl.phienBan);
-  check('battu-layers-not-verified', bt.layers.length === 6 && bt.layers.every(function(x){return x.trangThai === 'motPhan';}), 'Mọi lớp cần đối chiếu nguồn');
-  check('halac-layers-not-verified', hl.layers.length === 4 && hl.layers.every(function(x){return x.trangThai === 'motPhan';}), 'Mọi lớp cần đối chiếu nguồn');
-  check('battu-source-ledger', Array.isArray(bt.nguonCanDoiChieu) && bt.nguonCanDoiChieu.length >= 3, 'Có danh mục nguồn cần xác minh');
-  check('halac-source-ledger', Array.isArray(hl.nguonCanDoiChieu) && hl.nguonCanDoiChieu.length >= 2, 'Có danh mục nguồn cần xác minh');
-  check('no-empirical-claim', /Chưa được xác lập/.test(bt.danhGiaKiemDinh) && /Chưa được xác lập/.test(hl.danhGiaKiemDinh), 'Không tuyên bố đã kiểm định độc lập');
-  var failed = checks.filter(function(x){return !x.pass;});
-  return {pass:failed.length===0, total:checks.length, passed:checks.length-failed.length, failed:failed, checks:checks};
-}
-
-/**
- * Bộ kiểm thử bất biến cho các phép tính cấu trúc Bát Tự/Hà Lạc.
- * Chạy thủ công trong Apps Script: tccKiemThuBatTuHaLac_()
- * Chỉ kiểm tra hợp đồng tính toán và cấu trúc, KHÔNG chứng minh quy tắc là chính thống.
- */
-function tccKiemThuBatTuHaLac_() {
-  var checks = [];
-  function check(id, ok, detail) { checks.push({id:id, pass:!!ok, detail:detail||''}); }
-  function sameArray(a,b) { return a.length===b.length && a.every(function(v,i){return v===b[i];}); }
-
-  // Ten Gods: kiểm tra miền đầu vào, nhật chủ và năm quan hệ/ngũ hành × hai cực tính.
-  var ttNames = ['Tỷ Kiên','Kiếp Tài','Thực Thần','Thương Quan','Thiên Tài','Chính Tài','Thất Sát','Chính Quan','Thiên Ấn','Chính Ấn'];
-  var ttOK = true, ttCases = 0;
-  for (var d=0; d<10; d++) for (var x=0; x<10; x++) {
-    var got = thapThan(d,x); ttCases++;
-    if (d===x ? got!=='Nhật Chủ' : ttNames.indexOf(got)<0) ttOK=false;
-  }
-  check('bazi-ten-gods-domain-100', ttOK && ttCases===100, '100 cặp can; nhật chủ tự đồng nhất');
-
-  // Twelve stages: toàn bộ 10 thiên can × 12 địa chi phải trả một nhãn hợp lệ.
-  var tsOK = true, tsCases = 0;
-  for (var can=0; can<10; can++) for (var chi=0; chi<12; chi++) {
-    var stage = truongSinhBazi(can,chi); tsCases++;
-    if (TRUONG_SINH_BAZI.indexOf(stage)<0) tsOK=false;
-  }
-  check('bazi-twelve-stages-domain-120', tsOK && tsCases===120, '120 tổ hợp can-chi');
-
-  // Hà Lạc: 64 quẻ phải ánh xạ hai chiều và bảo toàn đúng 6 hào dưới lên.
-  var qOK = true, qCases = 0;
-  for (var qi=0; qi<64; qi++) {
-    var row = HL_QUE[qi], lines = hlHaoCua_(row[0],row[1]), back = hlTuHao_(lines);
-    qCases++;
-    if (back.idx!==qi || back.ten!==row[2] || !sameArray(back.hao,lines)) qOK=false;
-  }
-  check('halac-64-hexagram-roundtrip', qOK && qCases===64, 'Thứ tự quẻ và thứ tự hào dưới lên');
-
-  var flipOK = true, flipCases = 0;
-  for (var fi=0; fi<64; fi++) {
-    var original = hlHaoCua_(HL_QUE[fi][0],HL_QUE[fi][1]);
-    for (var pos=1; pos<=6; pos++) {
-      var flipped = hlBien_(original,pos); flipCases++;
-      for (var bit=0; bit<6; bit++) if (flipped[bit] !== (bit===pos-1 ? 1-original[bit] : original[bit])) flipOK=false;
-    }
-  }
-  check('halac-flip-exactly-one-line-384', flipOK && flipCases===384, '64 quẻ × 6 vị trí hào');
-
-  var ndOK = true, ndCases = 0;
-  for (var ni=0; ni<64; ni++) {
-    var h = hlHaoCua_(HL_QUE[ni][0],HL_QUE[ni][1]);
-    for (var yang=0; yang<2; yang++) for (var k=1; k<=6; k++) {
-      var p = hlNguyenDuong_(h,!!yang,k); ndCases++;
-      if (!(p>=1 && p<=6 && Math.floor(p)===p)) ndOK=false;
-    }
-  }
-  check('halac-nguyenduong-range-768', ndOK && ndCases===768, '64 quẻ × 2 loại giờ × 6 vị trí giờ');
-
-  var reduceOK = [
-    [10,25,1],[20,25,2],[25,25,5],[50,25,5],
-    [10,30,1],[20,30,2],[30,30,3],[60,30,3]
-  ].every(function(t){return hlRutGon_(t[0],t[1])===t[2];});
-  check('halac-reduction-boundaries', reduceOK, 'Các điểm biên 10/20/25/30/50/60');
-
-  // Kiểm tra trạng thái bằng chứng tách biệt với tính đúng cấu trúc.
-  var audit = tccKiemThuTrangThaiPhuongPhap_();
-  check('method-audit-regression', audit.pass, audit.passed+'/'+audit.total+' checks');
-  var failed = checks.filter(function(x){return !x.pass;});
-  return {pass:failed.length===0,total:checks.length,passed:checks.length-failed.length,failed:failed,checks:checks,
-    scope:'Structural invariants only; not source verification or predictive validation.'};
-}
-
 function lapLaSoDayDu_(input) {
   input = input || {};
   var tv = tuviLapLaSo(input);
@@ -408,7 +153,6 @@ function lapLaSoDayDu_(input) {
     createdAt: new Date().toISOString()
   };
   result.chiTiet = luanChiTiet(tv, bt, input);
-  result.tuvi.danhGiaPhuongPhap = tuviDanhGiaPhuongPhap_(tv, result.chiTiet, input);
   result.duDoan = duDoanCuocDoi(tv, bt, input, result.chiTiet.daiVan);
   result.battuChiTiet = batTuChiTiet(bt, input, tv);
   // Trường hợp đặc biệt từng lưu niên (BatTuPhanTich.gs): tuế vận tịnh lâm, thiên khắc địa xung, tam hình, Thiên La Địa Võng
@@ -423,8 +167,6 @@ function lapLaSoDayDu_(input) {
   } catch (err) {
     result.moRongLoi = String(err && err.message || err);
   }
-  result.battu.danhGiaPhuongPhap = btDanhGiaPhuongPhap_(result.battu, result.battuChiTiet);
-  if (result.moRong && result.moRong.haLac) result.moRong.haLac.danhGiaPhuongPhap = hlDanhGiaPhuongPhap_(result.moRong.haLac);
   if (input.save) {
     try { luuLichSu_(input, result); result.saved = true; } catch (err) { result.saveError = String(err && err.message || err); }
   }

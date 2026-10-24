@@ -10,8 +10,8 @@ const code = fs.readFileSync(path.join(__dirname, '..', 'Code.gs'), 'utf8');
 vm.runInContext(code, ctx, { filename: 'Code.gs' });
 let ok = 0, sai = 0;
 function kt(dk, msg) { if (dk) ok++; else { sai++; console.log('✗', msg); } }
-const soGs = fs.readdirSync(path.join(__dirname, '..')).filter(f => f.endsWith('.gs') && f !== 'LaSo3D.gs').length;
-kt(Object.keys(ctx.HAM_CAN_CO).length + 1 === soGs, 'HAM_CAN_CO liệt kê đủ ' + (soGs - 1) + ' file .gs (trừ Code.gs, LaSo3D.gs tùy chọn): đang có ' + Object.keys(ctx.HAM_CAN_CO).length);
+const soGs = fs.readdirSync(path.join(__dirname, '..')).filter(f => f.endsWith('.gs')).length;
+kt(Object.keys(ctx.HAM_CAN_CO).length + 1 === soGs, 'HAM_CAN_CO liệt kê đủ ' + (soGs - 1) + ' file .gs (trừ Code.gs): đang có ' + Object.keys(ctx.HAM_CAN_CO).length);
 Object.keys(ctx.HAM_CAN_CO).forEach(f => {
   kt(fs.existsSync(path.join(__dirname, '..', f)), 'file ' + f + ' tồn tại');
   kt(typeof ctx[ctx.HAM_CAN_CO[f]] === 'function', f + ' có hàm ' + ctx.HAM_CAN_CO[f]);

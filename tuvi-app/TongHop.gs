@@ -1,8 +1,8 @@
 /**
  * ============================================================
  *  TongHop.gs — LUẬN GIẢI TỔNG HỢP ĐA HỆ THỐNG
- *  Tổng hợp 6 hệ: Tử Vi · Bát Tự · Hà Lạc · Chiêm tinh · Thần số học · Human Design.
- *  Các kết luận là diễn giải theo trường phái truyền thống, không phải dự báo đã được kiểm chứng. Phần tổng hợp gồm:
+ *  Kết hợp 5 hệ: Tử Vi Đẩu Số · Bát Tự (Tứ Trụ) · Chiêm tinh phương Tây ·
+ *  Thần số học Pythagoras · Human Design để mô tả đương số qua:
  *    1. Xuất thân – gia cảnh      2. Vóc dáng – diện mạo
  *    3. Đặc điểm nổi bật trên cơ thể & vùng sức khỏe cần giữ
  *    4. Tính cách (5 trục, đo mức đồng thuận giữa các hệ)
@@ -225,21 +225,82 @@ function thXuatThan_(C) {
  * 2. VÓC DÁNG – DIỆN MẠO
  * ========================================================= */
 function thVocDang_(C) {
-  // Không suy đoán chiều cao, cân nặng, màu da hoặc nét mặt từ lá số.
-  return {
-    tieuDe: 'Biểu tượng ngoại hình theo trường phái',
-    ketLuan: [
-      'Tử Vi, Bát Tự, Chiêm tinh và Hà Lạc có các mô tả hình tượng truyền thống; đây không phải phương pháp đã được kiểm chứng để suy ra chiều cao, cân nặng, màu da hay nét mặt của một người.',
-      'Không dùng mục này để đánh giá cơ thể hoặc đối chiếu giờ sinh. Hãy xem các liên hệ như tư liệu văn hóa, không phải kết luận về ngoại hình thực tế.'
-    ],
-    nguon: [
-      { he: 'Tử Vi', items: ['Hình tượng sao/cung theo truyền thống; không suy ra ngoại hình thực tế.'] },
-      { he: 'Bát Tự', items: ['Liên hệ ngũ hành – hình tượng là quy ước của trường phái, không phải dự đoán nhân trắc học.'] },
-      { he: 'Chiêm tinh', items: ['Cung Mọc và hành tinh được diễn giải theo biểu tượng truyền thống, không xác định diện mạo thực tế.'] },
-      { he: 'Hà Lạc', items: ['Liên hệ quái tượng – hình thể chỉ mang ý nghĩa biểu tượng.'] }
-    ],
-    chiSo: { cao: null, beo: null, mat: 'Không suy đoán', da: 'Không suy đoán' }
-  };
+  var tv = C.tv, bt = C.bt, ct = C.ct, he = [], phieu = [];
+  function add(he, v, w) { phieu.push({ he: he, v: v, w: w }); }
+
+  // Tử Vi – Mệnh (trọng số 2) và Thân (1)
+  var tvi = [], menh = tv.palaces[tv.info.menh], than = tv.palaces[tv.info.than];
+  [[menh, 'Mệnh', 2], [than, 'Thân', 1]].forEach(function (x) {
+    if (x[1] === 'Thân' && tv.info.than === tv.info.menh) return;
+    thChinhTinh_(tv, x[0]).forEach(function (s) {
+      var S = TH_SAO[s.n]; if (!S) return;
+      var ham = s.b === 'H', w = x[2] * (s.muon ? 0.5 : 1);
+      var v = { cao: S.v.cao - (ham ? 0.5 : 0), beo: S.v.beo - (ham ? 0.5 : 0), mat: S.v.mat, da: S.v.da };
+      add('Tử Vi', v, w / Math.max(1, x[0].chinh.length || 2));
+      tvi.push(s.n + (s.b ? ' (' + s.b + ')' : '') + ' ở ' + x[1] + (s.muon ? ' (mượn cung đối vì vô chính diệu)' : '') + ': ' + S.hinh + (ham ? '; hãm địa nên dáng gầy/nhỏ hơn, kém tươi' : '') + '.');
+    });
+  });
+  if (menh.tuan || menh.triet) tvi.push('Mệnh gặp ' + (menh.triet ? 'Triệt' : 'Tuần') + ': thân hình thường gọn/nhỏ hơn mô tả của chính tinh, thuở nhỏ dễ ốm.');
+  if (thCoSao_(menh, 'Lộc Tồn') || thCoSao_(menh, 'Thiên Phủ')) add('Tử Vi', { beo: 0.5 }, 0.5);
+  he.push({ he: 'Tử Vi', items: tvi });
+
+  // Bát Tự – hình tướng ngũ hành
+  var bti = [], nh = bt.nhatChuHanh, tro = Object.keys(bt.phanTram).sort(function (a, b) { return bt.phanTram[b] - bt.phanTram[a]; })[0];
+  bti.push('Nhật chủ ' + bt.nhatChu + ' – ' + TH_NGU_HANH_HINH[nh].hinh + '.');
+  add('Bát Tự', TH_NGU_HANH_HINH[nh].v, 1.5);
+  if (tro !== nh) { bti.push('Ngũ hành vượng nhất trong tứ trụ là ' + tro + ' (' + bt.phanTram[tro] + '%) pha thêm nét ' + TH_NGU_HANH_HINH[tro].hinh + '.'); add('Bát Tự', TH_NGU_HANH_HINH[tro].v, 1); }
+  bti.push(thVuong_(bt) > 0 ? 'Thân vượng: thể chất khỏe, xương cốt chắc, sức bền tốt.' : thVuong_(bt) < 0 ? 'Thân nhược: thể chất mảnh, dễ mệt khi làm quá sức; cần bồi bổ theo dụng thần ' + bt.goiY.dung + '.' : 'Thân trung hòa: thể chất cân đối.');
+  if (thVuong_(bt) < 0) add('Bát Tự', { beo: -0.5 }, 0.7); else if (thVuong_(bt) > 0) add('Bát Tự', { beo: 0.3 }, 0.7);
+  he.push({ he: 'Bát Tự', items: bti });
+
+  // Chiêm tinh
+  var S = CT_CUNG[ct.asc.cung];
+  add('Chiêm tinh', S.hinh, 2);
+  var chu = ct.by[ct.chuTinh]; add('Chiêm tinh', CT_CUNG[chu.cung].hinh, 0.8);
+  ct.hanhTinh.forEach(function (p) {
+    if (p.nha !== 1) return;
+    if (p.key === 'jupiter') add('Chiêm tinh', { cao: 0.5, beo: 1 }, 1);
+    if (p.key === 'saturn') add('Chiêm tinh', { beo: -1, da: 'ngăm' }, 1);
+    if (p.key === 'moon') add('Chiêm tinh', { beo: 0.5, mat: 'tròn' }, 0.7);
+    if (p.key === 'mars') add('Chiêm tinh', { da: 'hồng', beo: -0.3 }, 0.7);
+    if (p.key === 'venus') add('Chiêm tinh', { da: 'sáng' }, 0.5);
+  });
+  he.push({ he: 'Chiêm tinh', items: C.ctL.ngoaiHinh });
+  if (C.hl) {
+    var QH = TH_QUAI_HINH[C.hl.tien.duoi], QN = TH_QUAI_HINH[C.hl.tien.tren];
+    add('Hà Lạc', QH.v, 1.2); add('Hà Lạc', QN.v, 0.5);
+    he.push({ he: 'Hà Lạc', items: ['Nội quái ' + C.hl.tien.duoi + ' (bản thân): ' + QH.hinh + '.', 'Ngoại quái ' + C.hl.tien.tren + ' (dáng vẻ bên ngoài): ' + QN.hinh + '.'] });
+  }
+  he.push({ he: 'Thần số học & Human Design', items: ['Hai hệ này không mô tả hình thể. Số thái độ ' + C.ts.thaiDo + ' (' + TS_SO[C.ts.thaiDo].tk + ') cho biết "thần thái" người khác cảm nhận lần đầu; Human Design loại ' + HD_TYPES[C.hd.loai].ten + ' có hào quang ' +
+    ({ 'Generator': 'cởi mở, ấm, cuốn hút', 'Manifesting Generator': 'cởi mở, năng động, nhanh', 'Manifestor': 'khép kín, mạnh, gây ấn tượng', 'Projector': 'tập trung, "nhìn thấu" người đối diện', 'Reflector': 'nhẹ, phản chiếu, khó nắm bắt' }[C.hd.loai]) + '.'] });
+
+  // Tổng hợp phiếu
+  var tong = { cao: 0, beo: 0, wc: 0, wb: 0 }, mat = {}, da = {};
+  phieu.forEach(function (p) {
+    if (p.v.cao != null) { tong.cao += p.v.cao * p.w; tong.wc += p.w; }
+    if (p.v.beo != null) { tong.beo += p.v.beo * p.w; tong.wb += p.w; }
+    if (p.v.mat) mat[p.v.mat] = (mat[p.v.mat] || 0) + p.w;
+    if (p.v.da) da[p.v.da] = (da[p.v.da] || 0) + p.w;
+  });
+  var cao = tong.wc ? tong.cao / tong.wc : 0, beo = tong.wb ? tong.beo / tong.wb : 0;
+  function top(o) { return Object.keys(o).sort(function (a, b) { return o[b] - o[a]; }); }
+  function pct(o, k) { var t = 0; Object.keys(o).forEach(function (x) { t += o[x]; }); return t ? Math.round(o[k] / t * 100) : 0; }
+  function dongHe(key, sg) { // số hệ cùng chiều
+    var hs = {}; phieu.forEach(function (p) { if (p.v[key] != null) { hs[p.he] = (hs[p.he] || 0) + p.v[key] * p.w; } });
+    var n = 0, t = 0; Object.keys(hs).forEach(function (h) { if (Math.abs(hs[h]) > 0.1) { t++; if (hs[h] * sg > 0) n++; } });
+    return t ? n + '/' + t + ' hệ' : '';
+  }
+  var gioi = C.tv.info.male;
+  var tCao = cao > 0.45 ? 'Dáng cao hơn trung bình' : cao > 0.1 ? 'Chiều cao trung bình khá' : cao > -0.3 ? 'Chiều cao trung bình' : 'Dáng nhỏ nhắn, thấp hơn trung bình';
+  var tBeo = beo > 0.55 ? 'thân hình đầy đặn, chắc thịt (dễ tăng cân khi trung niên)' : beo > 0.15 ? 'thân hình cân đối hơi đầy, săn chắc' : beo > -0.3 ? 'thân hình cân đối, gọn' : 'thân hình thon gầy, xương rõ';
+  var m = top(mat), d = top(da);
+  var kl = [
+    tCao + ' (' + dongHe('cao', cao >= 0 ? 1 : -1) + ' cùng chiều), ' + tBeo + ' (' + dongHe('beo', beo >= 0 ? 1 : -1) + ' cùng chiều).',
+    'Khuôn mặt: thiên về ' + m[0] + ' (' + pct(mat, m[0]) + '% phiếu)' + (m[1] ? ', có nét ' + m[1] : '') + '. Nước da: ' + ({ 'sáng': 'sáng/trắng', 'hồng': 'hồng hào', 'ngăm': 'ngăm/bánh mật' }[d[0]] || d[0]) + ' (' + pct(da, d[0]) + '% phiếu).',
+    'Thần thái: ' + CT_CUNG[ct.asc.cung].asc.split(':')[1].split('.')[0].trim() + '; ' + (TH_SAO[(thChinhTinh_(tv, menh)[0] || {}).n] ? 'khí chất ' + (thChinhTinh_(tv, menh)[0].n) + ' – ' + TH_SAO[thChinhTinh_(tv, menh)[0].n].hinh.split(',').slice(-1)[0].trim() : 'khí chất hòa nhã') + '.',
+    (gioi ? 'Với nam giới, ' : 'Với nữ giới, ') + 'các mô tả trên thể hiện rõ nhất ở độ tuổi 25–45; trước đó dáng thường gọn hơn, sau đó chịu ảnh hưởng thói quen sống.'
+  ];
+  return { tieuDe: 'Vóc dáng – diện mạo', ketLuan: kl, nguon: he, chiSo: { cao: Math.round(cao * 100) / 100, beo: Math.round(beo * 100) / 100, mat: m[0], da: d[0] } };
 }
 
 /* =========================================================
@@ -385,9 +446,8 @@ function thNghe_(C) {
   hd.kenh.forEach(function (k) { add(TH_NGHE_KENH[[k.a, k.b].sort(function (x, y) { return x - y; }).join('-')], 'Human Design', 0.8); });
   var ds = Object.keys(dem).map(function (k) { return { k: k, ten: TH_NGHE[k], diem: Math.round(dem[k].d * 10) / 10, he: Object.keys(dem[k].he) }; });
   var mx = Math.max.apply(null, ds.map(function (x) { return x.diem; }).concat([0.1]));
-  // Điểm xếp hạng tương đối trong danh sách này; không phải xác suất hay phần trăm phù hợp.
-  // Chuẩn hóa theo ứng viên có tổng trọng số cao nhất để so sánh tương đối, không gán sàn/trần giả tạo.
-  ds.forEach(function (x) { x.pct = Math.round(100 * x.diem / mx); });
+  // % phù hợp: 55% theo số hệ cùng gợi ý (trên 6), 45% theo tổng trọng số so với nghề mạnh nhất
+  ds.forEach(function (x) { x.pct = Math.max(30, Math.min(97, Math.round(100 * (0.55 * x.he.length / 6 + 0.45 * x.diem / mx)))); });
   return ds.sort(function (a, b) { return b.pct - a.pct || b.he.length - a.he.length; });
 }
 
@@ -525,13 +585,13 @@ function tongHopLuan(C) {
     duongDoi: dd,
     nghe: nghe.slice(0, 6),
     coSo: [
-      'Sáu hệ: Tử Vi, Bát Tự, Bát Tự Hà Lạc, Chiêm tinh, Thần số học, Human Design. Điểm và số hệ cùng chiều là chỉ số nội bộ dựa trên quy tắc của ứng dụng, không phải xác suất hay độ chính xác đã được kiểm chứng. Các hệ không độc lập hoàn toàn và có thể dùng chung dữ liệu đầu vào; vì vậy đồng thuận không tự động đồng nghĩa với sự thật.',
+      'Sáu hệ: Tử Vi, Bát Tự, Bát Tự Hà Lạc, Chiêm tinh, Thần số học, Human Design. Mỗi hệ luận "bỏ phiếu" độc lập trên cùng một thang đo (ví dụ trục Hướng ngoại ↔ Hướng nội từ −2 đến +2); kết quả chung là trung bình các hệ, độ đồng thuận là tỷ lệ hệ cùng chiều.',
       'Xuất thân: Tử Vi (Phụ Mẫu – Phúc Đức – Điền Trạch, Tuần/Triệt ở Mệnh, Thiên Mã), Bát Tự (niên trụ = tổ nghiệp, nguyệt trụ = cha mẹ; Ấn/Tài/Kiếp ở trụ năm – tháng, Dịch Mã), Chiêm tinh (nhà 4/IC, Mặt Trăng, Sao Thổ, Sao Mộc), Thần số học (số 4, 6, đỉnh cao thứ nhất).',
-      'Ngoại hình: không suy đoán chiều cao, cân nặng, màu da hoặc nét mặt thực tế. Các liên hệ sao/ngũ hành/cung Mọc chỉ được giữ như mô tả biểu tượng truyền thống, không phải dự đoán nhân trắc học.',
+      'Vóc dáng: hình tướng chính tinh Mệnh – Thân (cổ thư Tử Vi), hình tướng ngũ hành của nhật chủ và hành vượng (Bát Tự – "Ngũ hành hình tướng"), cung Mọc – chủ tinh lá số – hành tinh nhà 1 (chiêm tinh cổ điển, Ptolemy/Alan Leo).',
       'Cơ thể và sức khỏe: không suy ra bệnh, nguy cơ bệnh, sẹo hoặc thương tích từ lá số. Liên hệ sao/ngũ hành/cơ quan và trung tâm cơ thể là quan niệm lịch sử, không phải công cụ chẩn đoán.',
-      'Phối ngẫu: các trường phái truyền thống xem cung Phu Thê, nhật chi, nhà 7, Sao Kim – Sao Hỏa, số chủ đạo và Human Design. Điểm hợp tuổi là thang quy ước của ứng dụng, không chứng minh mức độ phù hợp thực tế hay chất lượng một mối quan hệ.',
-      'Đường đời: chồng lớp đại hạn Tử Vi, đại vận Bát Tự, 4 đỉnh cao Thần số, chu kỳ chiêm tinh và các giai đoạn Human Design. Điểm/năm nổi bật là thứ hạng theo quy tắc nội bộ; không phải xác suất sự kiện sẽ xảy ra.',
-      'Kết luận chỉ mang tính tham khảo theo các trường phái truyền thống, không phải định mệnh. Đồng thuận giữa nhiều hệ chỉ cho biết các quy tắc trong ứng dụng đang cùng chiều, không chứng minh dự đoán đúng.'
+      'Phối ngẫu: cung Phu Thê (Tử Vi), nhật chi & sao phối ngẫu – Tài tinh với nam, Quan tinh với nữ (Bát Tự), cung Lặn/nhà 7, Sao Kim – Sao Hỏa (chiêm tinh), nhóm số chủ đạo (Thần số), trung tâm mở – cổng treo (Human Design); năm sinh phù hợp chấm thang 10 theo 5 tiêu chí xem tuổi truyền thống.',
+      'Đường đời: chồng lớp đại hạn Tử Vi, đại vận Bát Tự, 4 đỉnh cao Thần số, chu kỳ Sao Thổ/Thiên Vương/Nút (chiêm tinh) và ba giai đoạn của Human Design; năm nổi bật lấy từ tab Dự Đoán.',
+      'Kết luận chỉ mang tính tham khảo – xu hướng, không phải định mệnh; điểm càng nhiều hệ đồng thuận thì càng đáng lưu tâm.'
     ]
   };
   T.hoiTu = htHoiTu_(C);
@@ -540,15 +600,15 @@ function tongHopLuan(C) {
       T.phoiNgau.thoiDiem = pnThoiDiem_(C, T.hoiTu.namTin, T.phoiNgau.chiSo.tuoi || 0);
       T.phoiNgau.conCai = pnConCai_(C, T.phoiNgau.thoiDiem);
       var kh = T.phoiNgau.thoiDiem.ketHon, sc = T.phoiNgau.thoiDiem.sinhCon;
-      function top3(x) { return x && x.nam ? x.nam.slice().sort(function (a, b) { return b.pct - a.pct; }).slice(0, 3).map(function (n) { return n.nam + ' (điểm ' + n.pct + '/100)'; }).join(', ') : ''; }
-      if (top3(kh)) T.phoiNgau.ketLuan.push('Điểm tín hiệu nội bộ về chủ đề kết hôn (không phải xác suất): ' + top3(kh) + '.');
-      if (top3(sc)) T.phoiNgau.ketLuan.push('Điểm tín hiệu nội bộ về chủ đề con cái (không phải xác suất): ' + top3(sc) + '.');
+      function top3(x) { return x && x.nam ? x.nam.slice().sort(function (a, b) { return b.pct - a.pct; }).slice(0, 3).map(function (n) { return n.nam + ' (' + n.pct + '%)'; }).join(', ') : ''; }
+      if (top3(kh)) T.phoiNgau.ketLuan.push('Xác suất cưới hỏi theo năm (tổng hợp 5 hệ + độ tuổi): ' + top3(kh) + '.');
+      if (top3(sc)) T.phoiNgau.ketLuan.push('Xác suất có tin vui con cái theo năm: ' + top3(sc) + '.');
       function quaKhu(x, ten) {
         if (!x) return;
         if (x.doiChieu && x.doiChieu.length) x.doiChieu.forEach(function (d) {
-          T.phoiNgau.ketLuan.push('Bạn đã ' + ten + ' năm ' + d.nam + (d.ngoai ? '.' : ': ứng dụng xếp năm này hạng ' + d.hang + '/' + d.tong + ' trong giai đoạn ' + x.quaKhu.tu + '–' + x.quaKhu.den + ' (điểm nội bộ ' + d.pct + '/100, ' + d.soHe + ' hệ cùng báo; không phải xác suất).'));
+          T.phoiNgau.ketLuan.push('Bạn đã ' + ten + ' năm ' + d.nam + (d.ngoai ? '.' : ': lá số xếp năm này hạng ' + d.hang + '/' + d.tong + ' trong giai đoạn ' + x.quaKhu.tu + '–' + x.quaKhu.den + ' (' + d.pct + '%, ' + d.soHe + ' hệ cùng báo).'));
         });
-        else if (x.quaKhu && x.quaKhu.nam.length) T.phoiNgau.ketLuan.push('Nếu bạn đã ' + ten + ', đây là bảng xếp hạng hồi cứu theo quy tắc ứng dụng (không phải xác suất đã xảy ra). Giai đoạn ' + x.quaKhu.tu + '–' + x.quaKhu.den + ': ' + top3(x.quaKhu) + '.');
+        else if (x.quaKhu && x.quaKhu.nam.length) T.phoiNgau.ketLuan.push('Nếu bạn đã ' + ten + ' (khả năng việc này đã diễn ra trước năm nay ≈ ' + x.pDaQua + '%), năm khả năng nhất giai đoạn ' + x.quaKhu.tu + '–' + x.quaKhu.den + ': ' + top3(x.quaKhu) + '.');
       }
       quaKhu(kh, 'kết hôn'); quaKhu(sc, 'có con');
     } catch (e) { T.phoiNgau.loiThem = String(e && e.message || e); }
