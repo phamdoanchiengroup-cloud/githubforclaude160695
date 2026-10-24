@@ -50,7 +50,7 @@ Bấm **＋ → HTML**, gõ tên **không có đuôi .html**:
 | `NghiemChungUI` | Trang nghiệm chứng (mở bằng `?page=nghiemchung`) |
 | `Anh` | Ảnh quảng bá (khoảng 118 KB, là một dòng base64 rất dài). Không bắt buộc, thiếu file này web vẫn chạy |
 | `Holo` | Giao diện Hologram: 6 bảng lá số vẽ trên tranh (Tử Vi, Bát Tự, Hà Lạc, Chiêm tinh, Thần số, Human Design). Thiếu file này web quay về lá số 2D nền sáng |
-| `HoloAnhTuVi`, `HoloAnhBatTu`, `HoloAnhHaLac`, `HoloAnhChiemTinh`, `HoloAnhThanSo`, `HoloAnhHD`, `HoloAnhNen` | 7 tranh nền Hologram (mỗi file một dòng base64 150–320 KB, tải chậm khi mở tab). Thiếu tranh thì bảng vẫn hiện trên nền tối |
+| `anh/*.webp` (không cần dán) | Tranh nền Hologram, bìa và nền PDF, poster – trình duyệt tải thẳng từ jsDelivr (CDN của GitHub). Các file `HoloAnh*` cũ trên Apps Script (nếu có) chỉ còn là dự phòng, xóa hay giữ đều được |
 
 ### B3. File cấu hình (nên làm)
 

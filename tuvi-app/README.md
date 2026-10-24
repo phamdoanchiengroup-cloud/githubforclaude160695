@@ -34,7 +34,7 @@ Web app lập lá số **Tử Vi Đẩu Số 12 cung** (phái Việt Nam) kết 
 | `Styles.html` | CSS |
 | `Anh.html` | *(Tùy chọn)* Ảnh quảng bá nhúng base64, hiện ở màn chào và trang cuối PDF xem thử; không có file này web vẫn chạy |
 | `Holo.html` | *(Tùy chọn)* Giao diện Hologram: `TCCHolo.ve(res)` dựng 6 bảng lá số trên tranh; Script.html gọi sau khi dựng các tab; chế độ xem lá số mặc định `holo` |
-| `HoloAnh*.html` | 7 tranh nền (data:image/webp;base64), server trả qua `layAnhHolo(ten)` trong Code.gs |
+| `anh/*.webp` | Tranh nền Hologram (17 tranh) phục vụ qua jsDelivr `@<mã lần lưu>` (Holo.html › `TCC_CDN`); tải lỗi thì dùng `layAnhHolo(ten)` (file HoloAnh*.html cũ trên Apps Script nếu còn) |
 | `Script.html` | JS trình duyệt: form, vẽ lá số 4×4, tam hợp–xung chiếu, bánh xe bản đồ sao, bodygraph, tab luận giải, xuất PNG / **PDF (A4, có bìa, chọn phần)** / in |
 | `appsscript.json` | Manifest (V8, múi giờ Asia/Ho_Chi_Minh, cấu hình web app) |
 

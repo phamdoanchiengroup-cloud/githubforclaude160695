@@ -130,11 +130,21 @@ table.holo-bt{width:100%;min-width:720px;border-collapse:separate;border-spacing
 
   /* ---------- Tranh nền: tải chậm từng tranh, nhớ trong phiên ---------- */
   var ANH = {}, CHO = {};
+  /* 10/2026: tranh lấy từ jsDelivr (CDN, trình duyệt nhớ lâu, cho phép chụp vào PDF) theo một lần lưu cố định trên GitHub;
+     tải lỗi thì quay về file HoloAnh*.html trên Apps Script như trước. */
+  var TCC_CDN = 'https://cdn.jsdelivr.net/gh/phamdoanchiengroup-cloud/githubforclaude160695@87e4618d1f02c73e96908754d03858f52c54d941/tuvi-app/anh/';
   function anh(ten, nut) {
     if (ANH[ten]) { nut.style.setProperty('--img', 'url(' + ANH[ten] + ')'); return; }
-    try { var s = sessionStorage.getItem('holo:' + ten); if (s) { ANH[ten] = s; nut.style.setProperty('--img', 'url(' + s + ')'); return; } } catch (e) {}
     (CHO[ten] = CHO[ten] || []).push(nut);
-    if (CHO[ten].length > 1 || !(window.google && google.script && google.script.run)) return;
+    if (CHO[ten].length > 1) return;
+    var u = TCC_CDN + ten + '.webp', im = new Image(); im.crossOrigin = 'anonymous';
+    im.onload = function () { ANH[ten] = u; (CHO[ten] || []).forEach(function (n) { n.style.setProperty('--img', 'url(' + u + ')'); }); CHO[ten] = []; };
+    im.onerror = function () { anhGas(ten); };
+    im.src = u;
+  }
+  function anhGas(ten) {
+    try { var s = sessionStorage.getItem('holo:' + ten); if (s) { ANH[ten] = s; (CHO[ten] || []).forEach(function (n) { n.style.setProperty('--img', 'url(' + s + ')'); }); CHO[ten] = []; return; } } catch (e) {}
+    if (!(window.google && google.script && google.script.run)) { CHO[ten] = []; return; }
     google.script.run.withSuccessHandler(function (d) {
       if (!d || d.indexOf('data:image') !== 0) return;
       ANH[ten] = d; try { sessionStorage.setItem('holo:' + ten, d); } catch (e) {}

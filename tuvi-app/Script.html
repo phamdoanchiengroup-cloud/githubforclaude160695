@@ -27,7 +27,7 @@
     });
   }
   /** Mã phiên bản giao diện – phải trùng với Index.html (meta tcc-ban) và Styles.html (--tcc-ban) */
-  var BAN_GIAO_DIEN = '2026.10.24.6';
+  var BAN_GIAO_DIEN = '2026.10.24.7';
   function storeGet(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
   function storeSet(k, v) { try { localStorage.setItem(k, v); } catch (e) { /* bỏ qua */ } }
 
@@ -5251,7 +5251,7 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
     ];
     if (sang) {   // bìa kiểu tranh thủy mặc: trời đêm, trăng, núi mực, mái chùa, ô thông tin viền vàng, ấn son
       var W = 760, H = 1075;
-      return '<div class="pdf-cover thuy"><img class="pc-tranh" alt="" crossorigin="anonymous" src="https://raw.githubusercontent.com/phamdoanchiengroup-cloud/githubforclaude160695/claude/happy-brown-lttkz3/tuvi-app/pdf-bia.webp?v=1"><div class="pc-phu"></div>' +
+      return '<div class="pdf-cover thuy"><img class="pc-tranh" alt="" crossorigin="anonymous" src="https://cdn.jsdelivr.net/gh/phamdoanchiengroup-cloud/githubforclaude160695@87e4618d1f02c73e96908754d03858f52c54d941/tuvi-app/pdf-bia.webp"><div class="pc-phu"></div>' +
         '<div class="pc-top"><span class="pc-logo">' + esc(brand.ten || 'Thiên Cơ Các') + '</span>' + (demo ? '<span class="pc-demo">Bản xem thử</span>' : '') + '</div>' +
         '<div class="pc-mid"><div class="pc-kicker">Hồ sơ</div><h1>Vận Mệnh<br>Trọn Đời</h1>' +
         '<div class="pc-gach"></div><p class="pc-sub">Luận giải toàn diện 6 hệ</p><p class="pc-sys">Tử Vi · Bát Tự · Hà Lạc · Chiêm Tinh · Thần Số · Human Design</p></div>' +
@@ -5451,7 +5451,7 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
       var im = new Image(); im.crossOrigin = 'anonymous';
       im.onload = function () { NEN_ANH = im; opt.backgroundColor = null; root.classList.add('co-nen-anh'); ok(); };
       im.onerror = function () { ok(); }; setTimeout(ok, 8000);
-      im.src = 'https://raw.githubusercontent.com/phamdoanchiengroup-cloud/githubforclaude160695/claude/happy-brown-lttkz3/tuvi-app/pdf-nen.webp?v=1';
+      im.src = 'https://cdn.jsdelivr.net/gh/phamdoanchiengroup-cloud/githubforclaude160695@87e4618d1f02c73e96908754d03858f52c54d941/tuvi-app/pdf-nen.webp';
     });
     if (chon.indexOf('chart') >= 0) {
       chuoi = chuoi.then(function () { showTab('chart'); return sleep(150); }).then(function () {
@@ -5599,7 +5599,7 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
     buoc('ảnh quảng bá', function () {
       // Ảnh quảng bá (Anh.html – tùy chọn)
       // Poster trang chủ: luôn lấy ảnh mới nhất trên nhánh (Anh.html trên Apps Script được bộ bấm đúp giữ nguyên nên không đổi được từ đây)
-      window.ANH_QC = 'https://raw.githubusercontent.com/phamdoanchiengroup-cloud/githubforclaude160695/claude/happy-brown-lttkz3/tuvi-app/poster-trang-chu.webp?v=20261024b';
+      window.ANH_QC = 'https://cdn.jsdelivr.net/gh/phamdoanchiengroup-cloud/githubforclaude160695@87e4618d1f02c73e96908754d03858f52c54d941/tuvi-app/poster-trang-chu.webp';
       if (typeof ANH_QC === 'string' && ANH_QC && $('anhQC')) { var poster = $('anhQC'); poster.decoding = 'async'; poster.onerror = function () { if ($('wlHero')) $('wlHero').classList.add('no-anh'); }; poster.src = ANH_QC; } else if ($('wlHero')) $('wlHero').classList.add('no-anh');
       if (typeof ANH_QC === 'string' && ANH_QC && $('tccGocAnhImg') && window.innerWidth > 760) $('tccGocAnhImg').src = ANH_QC;
       function khamPha() {
