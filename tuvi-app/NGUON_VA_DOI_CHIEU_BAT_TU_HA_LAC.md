@@ -89,3 +89,22 @@ Hàm `tccKiemThuBatTuHaLac_()` trong `Code.gs` chạy thủ công trong Apps Scr
 - Không đổi công thức lõi ở lượt này khi chưa đủ căn cứ sơ cấp.
 - Không nhập/copy bảng hoặc lời đoán từ kho bên ngoài vào sản phẩm.
 - Giữ các dị bản ở trạng thái `NEEDS_REVIEW`, tiếp tục với fixture có nguồn.
+
+
+## 7. Ghi nhận chi tiết từ kho dữ liệu Bát Tự đối chiếu
+
+README của `zaoxu001/tianzhi-classics` (đọc trong lượt này) tự ghi rằng bảng 120 trường hợp 《穷通宝鉴》 đã được đối chiếu với văn bản: 65 trường hợp `agree`, 50 `data_ok`, 4 `text_wins` và 1 `suspect`. Đây là tuyên bố của kho tham chiếu, **chưa phải kết quả kiểm lại độc lập của Thiên Cơ Các**. Giá trị thực tiễn là cho thấy không nên coi một bảng phổ biến là chuẩn tuyệt đối hoặc nhập bảng mà không kiểm thứ tự ưu tiên.
+
+Cùng README phân loại nguồn dữ liệu:
+- `extracted`: trích xuất và đánh dấu vị trí từ văn bản;
+- `packaged`: dữ liệu đi kèm nhưng quy trình trích xuất/hiệu đính chưa rõ;
+- `derived`: hằng số suy ra từ triển khai, có thể kèm chú thích nguồn;
+- `modeled`: điều kiện/ngưỡng được tác giả cấu trúc hóa từ cách hiểu, không đồng nhất với nguyên văn cổ thư.
+
+Quy tắc của Thiên Cơ Các nên lưu phân loại tương tự ở cấp từng quy tắc. Với những ngưỡng như tỷ lệ tòng cách hoặc trọng số ngũ hành, nếu cổ thư không đưa ra con số cụ thể, phải giữ nguồn của phần ý niệm và nguồn riêng của con số kỹ thuật.
+
+## 8. Tự động hóa kiểm thử
+
+Đã sửa `tuvi-app/tests/package.json` để `npm test` chạy cả `bat-tu.js` và `ha-lac.js` trước các bài đối chiếu hiện có; thêm workflow `.github/workflows/bazi-halac-regression.yml` để chạy bộ kiểm thử trên GitHub Actions khi mã nguồn Bát Tự/Hà Lạc hoặc test thay đổi.
+
+Trạng thái sau commit: workflow đã được đẩy lên nhánh; **chưa xác nhận được trạng thái run CI từ giao diện Actions trong lượt này**. Vì vậy không báo cáo pass/fail cho tới khi có log chạy thực tế.
