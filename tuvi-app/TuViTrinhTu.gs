@@ -226,7 +226,7 @@ var TT_GOP = {
   'Chính tinh thủ Mệnh': { cung: ['Mệnh'] },
   'Cung an Thân': { than: 1, tp: ['Nửa sau cuộc đời', 'Lời nói và việc làm'] },
   'Cung Phúc Đức': { cung: ['Phúc Đức', 'Phụ Mẫu', 'Huynh Đệ'] },
-  'Vòng Thái Tuế': { tp: ['Thế đứng (cách nghĩ, cách sống)'] },
+  'Vòng Thái Tuế': { tp: ['Thế đứng (cách nghĩ, cách sống)'], tpKy: 1 },
   'Vòng Lộc Tồn': { tp: ['Thực lực (của cải, phương tiện)', 'Lộc thực'] },
   'Vòng Tràng Sinh': { tp: ['Nhịp sức sống'] },
   'Công việc – nguy cơ gián đoạn': { cung: ['Quan Lộc'] },

@@ -4,7 +4,7 @@ Nhóm: Bắt đầu · Cập nhật 22/10/2026
 Liên quan: [[Việc chờ chủ dự án]] · [[TCC Kiểm thử]] · [[00 Mục lục]]
 
 ## Tình trạng
-- **25/10 (đêm): mã `2026.10.25.6`** – tab Tử Vi lấy 26 bước làm bài luận chính (gộp 12 cung, ba vòng, cách cục, bộ sao, sao hạn đại vận). Đổi **Code, ThanhToan, TuViTrinhTu, TuViChuyenSau, Script, Styles, Index**. Bấm `2-CAP-NHAT.bat`, Ctrl+F5.
+- **25/10 (đêm): mã `2026.10.25.7`** – tab Tử Vi lấy 26 bước làm bài luận chính (gộp 12 cung, ba vòng, cách cục, bộ sao, sao hạn đại vận). Đổi **Code, ThanhToan, TuViTrinhTu, TuViChuyenSau, Script, Styles, Index**. Bấm `2-CAP-NHAT.bat`, Ctrl+F5.
 - **25/10 (khuya): mã `2026.10.25.5`** – tab "📚 Tham khảo" có 3 mục (64 quẻ · Nghề nghiệp & sao · Thư viện bộ sao), card luận giải phủ tối 88–93% + chữ 16px giãn dòng 1,7. Đổi **TuViChuyenSau, Script, Styles, Index, Holo** (gộp luôn bản `2026.10.25.2`/`.3` nếu chưa cập nhật). Bấm `2-CAP-NHAT.bat`, Ctrl+F5.
 - **25/10 (tối): mã `2026.10.25.2`** – tab "👑 Lá số chủ sở hữu": file mới **TuViChuyenSau** + đổi **Code, Script, Styles, Index**. Bấm `2-CAP-NHAT.bat`, Ctrl+F5, đăng nhập chủ sở hữu rồi lập lá số. Chạy `kiemTraCaiDat` sẽ báo đủ 29 file .gs.
 - **25/10: mã `2026.10.25.1`** – bố cục 5 hệ, bỏ ẩn phần chuyên sâu, thêm hồ sơ nhanh và bảng mới: chỉ đổi **Script, Styles, Index**. Bấm `2-CAP-NHAT.bat`, Ctrl+F5.

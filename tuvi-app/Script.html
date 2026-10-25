@@ -27,7 +27,7 @@
     });
   }
   /** Mã phiên bản giao diện – phải trùng với Index.html (meta tcc-ban) và Styles.html (--tcc-ban) */
-  var BAN_GIAO_DIEN = '2026.10.25.6';
+  var BAN_GIAO_DIEN = '2026.10.25.7';
   function storeGet(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
   function storeSet(k, v) { try { localStorage.setItem(k, v); } catch (e) { /* bỏ qua */ } }
 
@@ -2947,9 +2947,10 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
         ky = ky.concat(ttBoSaoKy(BS[ten], ten));
         try { sau += '<details class="cung-chitiet"><summary>Chi tiết chuyên sâu cung ' + esc(ten) + '</summary>' + blockHtml(voiTuTru(res, c), 'Cung ' + ten + (c.isThan ? ' · Thân cư' : ''), c.canChi, false) + '</details>'; } catch (e) {}
       });
-      if (G.than && I && I.thanCu !== 'Mệnh') { h += ttBoSaoHtml(BS[I.thanCu]); ky = ky.concat(ttBoSaoKy(BS[I.thanCu], I.thanCu)); }
+      if (G.than && I && I.thanCu !== 'Mệnh') h += '<p class="muted">Cung an Thân là cung ' + esc(I.thanCu) + ' – phần luận chi tiết và các tổ hợp sao của cung này nằm ở bước nói về mảng đó.</p>';
       if (G.cung && G.cung.indexOf('Mệnh') >= 0 && L && L.menh) ky = ky.concat(L.menh);
       (G.tp || []).forEach(function (t) { h += tpMuc(t); });
+      if (G.tpKy && TP && TP.baVong && TP.baVong.ky) ky = ky.concat(TP.baVong.ky);
       if (G.tongQuan && L) ky = ky.concat(L.tongQuan);
       if (G.cachCuc && L && L.cachCuc && L.cachCuc.length) sau = '<details class="cung-chitiet" open><summary>Cách cục của lá số (' + L.cachCuc.length + ')</summary><div class="cc-list">' + L.cachCuc.map(function (c) {
         return '<div class="cc-item ' + (c.tot === true ? 'good' : c.tot === false ? 'bad' : 'mid') + '"><b>' + esc(c.ten) + '</b><small>' + esc(c.moTa) + '</small></div>'; }).join('') + '</div></details>' + sau;
@@ -3001,15 +3002,17 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
     var chiSo = [['Mệnh', chinhMenh], ['Thân cư', I.thanCu], ['Cục', I.cuc], ['Bản mệnh (nạp âm năm)', I.banMenh && I.banMenh.ten || ''], ['Nạp âm cung Mệnh', I.menhNapAm && I.menhNapAm.ten || ''], ['Mệnh chủ · Thân chủ', I.menhChu + ' · ' + I.thanChu], ['Âm dương', I.amDuong]];
     var dvNay = (CT.daiVan || []).filter(function (d) { return d.isNow; })[0];
     // PHẦN 1 – Chân dung lá số: gộp Tổng quan + Mệnh & Thân + Cách cục + Cung mạnh / cung yếu (trước đây tách 5 khung, trùng ý)
+    var co26 = !!(CT.trinhTu && CT.trinhTu.buoc);
     var p1 = '<div class="panel section tv-chandung"><h2 class="panel-title"><span class="han">命</span> Chân dung lá số</h2>' +
       '<div class="stat-row tv-chiso">' + chiSo.map(function (c) { return '<div class="stat"><small>' + esc(c[0]) + '</small><b>' + esc(c[1]) + '</b></div>'; }).join('') + '</div>' +
-      '<h4 class="dd-h">Điểm 12 cung <small class="muted">(bấm một cung để tới phần luận của cung đó trong 26 bước)</small></h4>' +
-      stripHtml(CT.cung.map(function (c) { return { diem: c.diem, danhGia: c.danhGia, cung: c.cung, canChi: c.canChi }; }), function (c) { return c.cung; }, function (c) { return c.canChi; }, function (c, i) { return i === 0; }, 'tvc-') +
+      (co26 ? '<h4 class="dd-h">Điểm 12 cung <small class="muted">(bấm một cung để tới phần luận của cung đó trong 26 bước)</small></h4>' +
+        stripHtml(CT.cung.map(function (c) { return { diem: c.diem, danhGia: c.danhGia, cung: c.cung, canChi: c.canChi }; }), function (c) { return c.cung; }, function (c) { return c.canChi; }, function (c, i) { return i === 0; }, 'tvc-') : '') +
       '<div class="bt-grid"><div><h4 class="dd-h good">☀ Cung mạnh</h4><ul class="th-kl">' + tops.slice(0, 4).map(function (c) { return '<li>' + hl(c.cung + ' (' + c.danhGia + '): ' + c.yNghia) + '</li>'; }).join('') + '</ul></div>' +
       '<div><h4 class="dd-h bad">☾ Cung cần lưu ý</h4><ul class="th-kl">' + tops.slice(-4).reverse().map(function (c) { return '<li>' + hl(c.cung + ' (' + c.danhGia + '): ' + c.yNghia) + '</li>'; }).join('') + '</ul></div></div>' +
       coSoHtml('Cách chấm điểm (thang 10)', CACH_CHAM.slice(0, 2)) + '</div>';
     // PHẦN 2 – Luận 12 cung (văn dễ hiểu + chi tiết chuyên sâu thu gọn)
-    var p2 = '<div class="panel section"><h2 class="panel-title"><span class="han">宮</span> Luận 12 cung</h2>' + coSoHtml('Cơ sở lý luận luận cung', CT.coSo.cung) +
+    // Chỉ dựng khi bản máy chủ cũ chưa có 26 bước (26 bước đã gộp 12 cung)
+    var p2 = co26 ? '' : '<div class="panel section"><h2 class="panel-title"><span class="han">宮</span> Luận 12 cung</h2>' + (CT.coSo && CT.coSo.cung ? coSoHtml('Cơ sở lý luận luận cung', CT.coSo.cung) : '') +
       stripHtml(CT.cung.map(function (c) { return { diem: c.diem, danhGia: c.danhGia, cung: c.cung, canChi: c.canChi }; }), function (c) { return c.cung; }, function (c) { return c.canChi; }, function (c, i) { return i === 0; }, 'tvc-') +
       '<div class="lg-list">' + CT.cung.map(function (c, i) {
         var blockGoc = blockHtml(voiTuTru(res, c), 'Cung ' + c.cung + (c.isThan ? ' · Thân cư' : ''), c.canChi, i === 0);
