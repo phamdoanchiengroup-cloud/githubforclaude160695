@@ -4480,14 +4480,15 @@ nav.tabs button{
   --ff:'Be Vietnam Pro',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
   --ff-title:'Barlow Condensed','Oswald','Be Vietnam Pro',sans-serif;
   --ff-hud:'Chakra Petch','Be Vietnam Pro',sans-serif;
-  --nen-san:url('https://cdn.jsdelivr.net/gh/phamdoanchiengroup-cloud/githubforclaude160695@82e47cd7fec884acd71e01c6e2487bca29058719/webbongda/anh/nen-san-van-dong.webp');
+  --nen-san:url('https://cdn.jsdelivr.net/gh/phamdoanchiengroup-cloud/githubforclaude160695@13fa9d8fbabd500fcc93793ce0fa97c96e8fffd3/webbongda/anh/nen-duoi.webp');
+  --nen-dau:url('https://cdn.jsdelivr.net/gh/phamdoanchiengroup-cloud/githubforclaude160695@13fa9d8fbabd500fcc93793ce0fa97c96e8fffd3/webbongda/anh/nen-dau-trang.webp');
 }
 body{background:#07060a !important;background-image:none !important}
-/* Ảnh sân vận động đứng yên phía sau, càng xuống càng tối để chữ dễ đọc */
+/* Nền phía dưới: ảnh sân vận động đứng yên, chỉ phủ tối nhẹ (các tấm kính đã đủ đậm để đọc chữ) */
+html,body{overflow-x:clip}
 body::before{
   background:
-    radial-gradient(45% 35% at 18% 8%,rgba(255,159,46,.10),transparent 70%),
-    linear-gradient(180deg,rgba(7,6,10,.10) 0%,rgba(7,6,10,.38) 45%,rgba(7,6,10,.74) 100%),
+    linear-gradient(180deg,rgba(7,6,10,.18) 0%,rgba(7,6,10,.32) 50%,rgba(7,6,10,.45) 100%),
     var(--nen-san) center top/cover no-repeat,#07060a !important;
   -webkit-mask-image:none !important;mask-image:none !important;opacity:1 !important}
 body::after{
@@ -4507,7 +4508,8 @@ header h1{font-family:var(--ff-title) !important;font-weight:800 !important;font
 
 /* Tấm kính */
 .card{
-  background:linear-gradient(160deg,rgba(255,214,140,.085),rgba(255,214,140,.045) 45%,rgba(7,6,10,.35)),rgba(9,8,13,.68) !important;
+  background:linear-gradient(160deg,rgba(255,214,140,.085),rgba(255,214,140,.04) 45%,rgba(7,6,10,.2)),rgba(9,8,13,.42) !important;
+  backdrop-filter:blur(10px) saturate(1.1) !important;-webkit-backdrop-filter:blur(10px) saturate(1.1) !important;
   border:1px solid var(--vien) !important;border-radius:6px !important;
   box-shadow:0 20px 50px rgba(0,0,0,.55),inset 0 1px 0 rgba(255,231,163,.06) !important}
 .card::after{content:'';position:absolute;left:14px;right:14px;top:-1px;height:1px;pointer-events:none;opacity:.85;
@@ -4517,7 +4519,7 @@ header h1{font-family:var(--ff-title) !important;font-weight:800 !important;font
 .card h2::before{background:var(--kim-loai) !important;box-shadow:0 0 10px rgba(255,159,46,.45) !important;border-radius:1px !important}
 
 /* Thanh tab */
-nav.tabs{background:linear-gradient(160deg,rgba(255,214,140,.07),rgba(7,6,10,.4)),rgba(9,8,13,.7) !important;
+nav.tabs{background:linear-gradient(160deg,rgba(255,214,140,.07),rgba(7,6,10,.3)),rgba(9,8,13,.5) !important;backdrop-filter:blur(10px) !important;
   border:1px solid var(--vien) !important;border-radius:6px !important}
 nav.tabs button{font-family:var(--ff-title);font-weight:700;letter-spacing:.03em}
 nav.tabs button:hover{background:rgba(246,196,83,.08) !important;color:var(--chu) !important}
@@ -4531,7 +4533,7 @@ nav.tabs button.on{background:var(--kim-loai) !important;color:#1a1206 !importan
 .btn.outline:hover:not(:disabled),.btn.ghost:hover:not(:disabled){border-color:var(--neon) !important;color:var(--neon) !important}
 
 /* Số liệu nhanh */
-.hero .stat{background:linear-gradient(160deg,rgba(255,214,140,.085),rgba(7,6,10,.35)),rgba(9,8,13,.6) !important;border-color:var(--vien) !important}
+.hero .stat{background:linear-gradient(160deg,rgba(255,214,140,.085),rgba(7,6,10,.2)),rgba(9,8,13,.35) !important;border-color:var(--vien) !important}
 .hero .stat .n{font-family:var(--ff-title);font-weight:800;font-size:44px;background:var(--kim-loai) !important;
   -webkit-background-clip:text !important;background-clip:text !important;padding-top:.06em}
 
@@ -4545,6 +4547,10 @@ nav.tabs button.on{background:var(--kim-loai) !important;color:#1a1206 !importan
 
 /* ================= KHUNG MATCH DAY TRANG CHỦ (md-) ================= */
 .md-wrap{margin-bottom:18px}
+/* Nền đầu trang: băng ảnh giải tràn hết bề ngang, mờ dần vào nền phía dưới */
+.nen-dau{position:relative;width:100vw;margin:-20px calc(50% - 50vw) -60px;aspect-ratio:1672/941;max-height:720px;
+  background:var(--nen-dau) center top/cover no-repeat;pointer-events:none;
+  -webkit-mask-image:linear-gradient(180deg,#000 72%,transparent 100%);mask-image:linear-gradient(180deg,#000 72%,transparent 100%)}
 .md-hero{position:relative;display:grid;grid-template-columns:minmax(0,.92fr) minmax(0,1.08fr);gap:36px;align-items:center;padding:26px 6px 34px}
 .md-may{position:relative;perspective:1200px;justify-self:center;width:min(100%,420px)}
 .md-goc{position:absolute;width:26px;height:26px;border:2px solid var(--neon);z-index:3}
@@ -4612,7 +4618,7 @@ nav.tabs button.on{background:var(--kim-loai) !important;color:#1a1206 !importan
 .md-video{margin-top:4px;justify-self:start}
 @media (prefers-reduced-motion:reduce){.md-poster,.md-poster::after,.md-ray{animation:none !important}}
 /* Ô trận đấu, tỷ số, nhãn — đổi sang tông kính vàng */
-.match{background:linear-gradient(160deg,rgba(255,214,140,.06),rgba(7,6,10,.45)),rgba(9,8,13,.55) !important;border-color:var(--vien) !important;box-shadow:none !important}
+.match{background:linear-gradient(160deg,rgba(255,214,140,.06),rgba(7,6,10,.25)),rgba(9,8,13,.32) !important;border-color:var(--vien) !important;box-shadow:none !important}
 .match:hover{border-color:var(--vien2) !important}
 .match .score{font-family:var(--ff-title) !important;font-weight:800;font-size:34px !important;background:rgba(7,6,10,.7) !important;border-color:var(--vien2) !important;color:var(--neon) !important}
 .pill.ok{background:rgba(246,196,83,.15) !important;color:var(--neon) !important;border-color:rgba(246,196,83,.35) !important}
@@ -5176,6 +5182,9 @@ function render(){
   var bannerWrap=document.createElement('div');
   bannerWrap.id='bannerWrap';
   appEl.insertBefore(bannerWrap, appEl.firstChild);
+  var oldNen=document.getElementById('nenDau'); if(oldNen) oldNen.remove();
+  var nenDau=document.createElement('div'); nenDau.id='nenDau'; nenDau.className='nen-dau';
+  appEl.insertBefore(nenDau, bannerWrap);
   try { if(!(STATE.tab==='home' && veMatchDay_(bannerWrap))) veBannerDong(bannerWrap); }
   catch(e){   // lỗi gì thì quay về ảnh banner cũ, không làm hỏng trang
     var bannerUrl_ = d.bannerUrl || BANNER_HEP_ID || '';
