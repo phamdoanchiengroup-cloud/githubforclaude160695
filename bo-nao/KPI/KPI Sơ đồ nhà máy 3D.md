@@ -35,7 +35,7 @@ Liên quan: [[KPI Phần giao diện tải sau]] · [[Lần dán lên Apps Scrip
   - Kiểm thử: `so-do-web.js` phần 2D 28/28; chạy đủ có 3D 42/42 (lần chạy trước bị ngắt do máy thử vẽ chậm, chạy lại đạt).
 - **24/10 (chủ dự án, lần 2): bỏ KPI và sĩ số khỏi tab Sơ đồ (cả 2D và 3D) – "cái đó xem ở tab khác"; dùng 3 ảnh mặt bằng chủ dự án gửi + 1 ảnh tách tầng có chú thích khu vực xưởng.**
   - Ảnh mặt bằng chủ dự án gửi được nắn bằng mốc tay + bình phương tối thiểu về khung 1372×1057 (30 px/m) = SD.vb. Hệ số (ảnh = s·c + t): tầng 1 x 0.927c+70.7, y 0.884c+54.3; tầng 2 x 0.940c+51.0, y 0.936c+14.5; tầng 3 x 0.950c+50.9, y 0.934c+26.4. Kết quả `so-do/anh-tang-{0,1,2}.webp`, bản gốc `anh-goc-tang-*.webp`; ảnh chụp từ 3D cũ đổi tên `chup-3d-tang-*.jpg`.
-  - Ảnh để trên Google Drive (xem [[KPI Ảnh trên Google Drive]]); chưa có mã file thì nhúng như cũ. SoDo.html còn khoảng 0,54 MB.
+  - Ảnh lấy từ repo qua jsDelivr ghim commit (25/10, trước đó Google Drive; xem [[KPI Ảnh web qua jsDelivr]]). SoDo.html khoảng 0,54 MB.
   - `va-so-do.js`: nút **Tách tầng** (`data-f="3"`, `sdDatTang(3)`, `sdVeTach`): ảnh minh họa + 3 thẻ chú thích Tầng 3/2/1 nối đường kẻ (`SD_TACH_NHAN`), mỗi thẻ ghi các khu + xưởng (`sdXuongTang`); bấm thẻ thì sang tầng đó. Dưới 760 px thẻ xếp dưới ảnh.
   - Bỏ: chọn màu KPI / sĩ số (#sdMau), tải sĩ số, tô màu KPI (`mauSo = null`). Nhãn khu = tên khu + tên xưởng (chữ vàng `#ffd27a`). Thẻ chi tiết ghi "Xưởng làm việc", bỏ nút Mở Bảng KPI; khung "Khu vực các xưởng" ghi các tầng có khu của xưởng.
   - 3D (`va_3d.py`): `kpi:false`, bỏ nút chọn màu, thẻ phòng chỉ ghi xưởng.

@@ -8,6 +8,7 @@ Liên quan: [[Việc chờ chủ dự án]] · [[KPI Tổng quan và cách dựn
 - Lần dán chung 18/10: chủ dự án đã nhận đủ 5 file + hướng dẫn (HUONG-DAN-CAP-NHAT.md mục "LẦN DÁN CHUNG 18/10"). – [[KPI Bảo mật và vận hành]], [[KPI Âm thanh và giọng Rhino]]
 
 ## Web KPI – chưa dán
+- **Ảnh qua jsDelivr 25/10** (nền đăng nhập + mặt bằng sơ đồ lấy từ repo thay Google Drive): Index.html + SoDo.html (clasp). – [[KPI Ảnh web qua jsDelivr]]
 - **Bỏ trừ "không nhắc" khi CN không bị trừ 25/10**: chỉ Code.gs (clasp). – [[KPI Sửa lỗi 21-10 và dữ liệu sheet]]
 - **Bản sửa 21/10** (4 lỗi chủ dự án báo + rà soát đợt 2): chỉ `Code.gs` + `Index.html`; hướng dẫn ở HUONG-DAN-CAP-NHAT.md mục "BẢN SỬA 21/10". Sau khi dán, có thể chạy tay `KIEM_TRA_DU_LIEU` để soát sheet. – [[KPI Sửa lỗi 21-10 và dữ liệu sheet]]
 - **Tăng tốc 21/10** (đăng nhập nhẹ một nửa, bảng KPI / KPI quản lý giữ bộ nhớ tạm + làm nóng): cùng `Code.gs` + `Index.html` của bản sửa 21/10; sau khi dán chạy một lần `CAI_TRIGGER_LAM_NONG_KPI`, và `KIEM_TRA_SHEETS_API` nếu chưa bật Sheets API. Hướng dẫn: HUONG-DAN-CAP-NHAT.md mục "TĂNG TỐC 21/10". – [[KPI Tăng tốc đợt 2 (21-10)]]
@@ -18,7 +19,7 @@ Liên quan: [[Việc chờ chủ dự án]] · [[KPI Tổng quan và cách dựn
 - **Đợt 24/10** (nhắc chưa báo cơm cho TP/PP, thẻ Đón người mới xuống cuối tab Nhân sự, Bảng KPI tải tất cả xưởng, Phân tích định mức tự chạy, sơ đồ 2D dùng ảnh 3D): Index.html + SoDo.html (clasp). – [[KPI Bảng KPI tất cả xưởng]] · [[KPI Sơ đồ nhà máy 3D]]
 - **Sửa menu điện thoại ở chế độ hologram 25/10**: chỉ Index.html (clasp). – [[KPI Hologram chủ sở hữu]]
 - **Sơ đồ 2D về lại bản ngang 25/10** (bỏ bản dọc): SoDo.html + Index.html (clasp). – [[KPI Sơ đồ nhà máy 3D]]
-- **Đợt 24/10 (lần 2)** (sơ đồ bỏ KPI / sĩ số, ảnh mặt bằng 3 tầng + tách tầng; màn đăng nhập nền tòa nhà + thẻ nhân viên carbon; ảnh để trên Google Drive): Index.html + SoDo.html (clasp). – [[KPI Sơ đồ nhà máy 3D]] · [[KPI Màn đăng nhập Khắc laser]] · [[KPI Ảnh trên Google Drive]]
+- **Đợt 24/10 (lần 2)** (sơ đồ bỏ KPI / sĩ số, ảnh mặt bằng 3 tầng + tách tầng; màn đăng nhập nền tòa nhà + thẻ nhân viên carbon; ảnh để trên Google Drive): Index.html + SoDo.html (clasp). – [[KPI Sơ đồ nhà máy 3D]] · [[KPI Màn đăng nhập Khắc laser]] · [[KPI Ảnh web qua jsDelivr]]
 - **Đèn xưởng ban đêm trong sơ đồ 3D 23/10**: SoDo.html + Index.html (clasp, đẩy cùng lúc). – [[KPI Sơ đồ nhà máy 3D]]
 - **Hologram cho chủ sở hữu 23/10**: chỉ Index.html (clasp). – [[KPI Hologram chủ sở hữu]]
 - **Kỹ năng 22/10** (tab mới, đợt 1: danh mục + duyệt, ma trận 4 cấp, Kỹ năng của tôi): Code.gs + Index.html (clasp). – [[KPI Kỹ năng]]

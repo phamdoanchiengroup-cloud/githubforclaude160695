@@ -7,7 +7,7 @@ Liên quan: [[KPI Màn đăng nhập demo chờ duyệt]] · [[KPI Thao tác và
 - **24/10 – nền ảnh tòa nhà + thẻ nhân viên carbon (ĐÃ GẮN VÀO WEB).** Chủ dự án gửi ảnh mặt tiền nhà máy ban đêm, muốn làm nền đăng nhập "nhưng vẫn giữ hình ngọn carbon và hiệu ứng laser".
   - Thử 1: tách 3 ngọn cơ khỏi tường của `khac-laser.jpg` (đo mép thân cơ từng hàng, đa giác + mặt nạ cát) rồi ghép lên nền. Chủ dự án chê "xấu quá" vì ảnh chụp ánh ấm trên nền xám bị lệch tông với ảnh đêm xanh.
   - Đưa 2 mẫu vẽ bằng SVG (thẻ nhân viên vân carbon / ngọn cơ vẽ chéo). Chủ dự án **chọn thẻ nhân viên carbon**.
-  - Nền: `<image class="anh" href="{{NEN_DN}}">` lấy từ Google Drive (`anh_drive('nen-dang-nhap','w1920-rj-l80')`, xem [[KPI Ảnh trên Google Drive]]). Không có ảnh thì còn gradient xanh đêm trên `#gate`.
+  - Nền: `<image class="anh" href="{{NEN_DN}}">` lấy từ repo qua jsDelivr (`anh_cdn('anh/web/nen-dang-nhap.jpg')`, 25/10, xem [[KPI Ảnh web qua jsDelivr]]). Không có ảnh thì còn gradient xanh đêm trên `#gate`.
   - Thẻ `#lkNhom.lk-the` (380×240, `translate(150 300) rotate(-7)` = `LK.tf`): vân carbon `#lkVai`, ánh sáng `#lkTheSang`, vệt lóe, logo `#lkTheLogo` lấy lại từ `.lk-dau img` (không nhúng 2 lần), chip vàng, chữ "THẺ NHÂN VIÊN" / "CARBON BILLIARDS · KPI SẢN XUẤT". Chữ khắc `#lkChu` tại (24,152) trên thẻ, `LK.co` 50, `LK.dai` 332, `tenLech` 0 (tên khắc cùng dòng thay mã).
   - Tia laser `#lkLua` vẽ ngoài thẻ nên luôn thẳng đứng từ mép trên: `lkDauBut` đổi tọa độ thẻ → ảnh 1600×900. Đăng nhập đúng: chữ vàng, viền thẻ sáng (`.sang`), khắc 2 chữ cuối họ tên, vệt sáng lướt qua thẻ. `lkXep` trả về như cũ.
   - Index.html khoảng 823 KB (bỏ `khac-laser.jpg` 100 KB khỏi web; ảnh này vẫn dùng cho các bản demo).

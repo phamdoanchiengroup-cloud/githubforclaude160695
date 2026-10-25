@@ -19,7 +19,6 @@ Liên quan: [[Lần dán lên Apps Script]] · [[Quyết định của chủ d�
 ## Kỹ năng (22/10)
 - Dùng thử tab Kỹ năng: nhờ 1–2 xưởng đề xuất 8–15 kỹ năng trước, BĐH duyệt và đặt trọng số, rồi mới mở cho các xưởng khác. Chạy thử 3–6 tháng rồi mới bàn quy đổi điểm → phụ cấp kỹ năng (nhờ nhân sự rà pháp lý). – [[KPI Kỹ năng]]
 
-- Ảnh web trên Drive (24/10): giữ nguyên thư mục "KPI – Ảnh web" và chế độ chia sẻ bằng link, không xóa / chuyển ảnh. – [[KPI Ảnh trên Google Drive]]
 - Sơ đồ 3D đẹp như ảnh mẫu (23/10): chọn làm lớp giao diện kiểu ảnh (nhãn phát sáng + khung bên phải, nhẹ) hay không. – [[KPI Sơ đồ nhà máy 3D]]
 
 ## Chờ chủ dự án làm

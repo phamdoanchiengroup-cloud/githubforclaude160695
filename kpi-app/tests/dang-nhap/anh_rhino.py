@@ -8,15 +8,25 @@ RH = {'{{RH_LOGO}}': ('logo-rhino.png', 'image/png'), '{{RH_1}}': ('must-shaft.j
       '{{RH_F_ORB}}': ('font/orbitron.woff2', 'font/woff2'), '{{RH_F_MIC}}': ('font/michroma.woff2', 'font/woff2'),
       '{{RH_F_OSW}}': ('font/oswald.woff2', 'font/woff2'), '{{RH_F_SAI}}': ('font/saira-condensed.woff2', 'font/woff2')}
 
-import json
-def anh_drive(ten, tuy_chon='s0-rw-l80'):
-    """Đường dẫn ảnh trên Google Drive theo kpi-app/anh-drive.json ('' nếu chưa có mã file).
-       tuy_chon: máy chủ ảnh Google tự thu nhỏ/nén (w1920 = rộng tối đa 1920px, s0 = giữ cỡ; rj = JPEG, rw = WebP; l80 = chất lượng 80)."""
-    ma = json.load(open(os.path.join(GOC, '..', '..', 'anh-drive.json'), encoding='utf-8')).get(ten, '')
-    return 'https://lh3.googleusercontent.com/d/%s=%s' % (ma, tuy_chon) if ma else ''
+import subprocess
+KPI = os.path.normpath(os.path.join(GOC, '..', '..'))
+CDN = 'https://cdn.jsdelivr.net/gh/phamdoanchiengroup-cloud/githubforclaude160695@%s/kpi-app/%s'
+def anh_cdn(duong):
+    """Link jsDelivr của ảnh trong repo (công khai), ghim theo commit cuối cùng đổi ảnh đó (25/10, thay Google Drive):
+       link không đổi khi ảnh không đổi -> trình duyệt / jsDelivr nhớ lâu; thay ảnh thì commit mới -> link mới.
+       duong: đường dẫn tính từ kpi-app/ (vd. 'anh/web/nen-dang-nhap.jpg'). '' nếu không có file.
+       Ảnh phải commit (và push) trước khi dựng, nếu không jsDelivr không thấy file."""
+    p = os.path.join(KPI, duong)
+    if not os.path.exists(p):
+        return ''
+    git = lambda *a: subprocess.run(['git', '-C', KPI] + list(a), capture_output=True, text=True).stdout.strip()
+    sha = git('log', '-1', '--format=%H', '--', duong)
+    if not sha or git('status', '--porcelain', '--', duong):
+        raise SystemExit('Ảnh %s chưa commit: commit (và push) ảnh trước rồi mới dựng – link jsDelivr ghim theo commit.' % duong)
+    return CDN % (sha, duong)
 
 def anh_rhino(s):
-    s = s.replace('{{NEN_DN}}', anh_drive('nen-dang-nhap', 'w1920-rj-l80'))   # ảnh gốc PNG 2,7 MB -> JPEG ~280 KB
+    s = s.replace('{{NEN_DN}}', anh_cdn('anh/web/nen-dang-nhap.jpg'))   # ảnh gốc PNG 2,7 MB -> JPEG 1920px ~300 KB
     for k, (f, loai) in RH.items():
         if k in s:
             s = s.replace(k, 'data:%s;base64,' % loai + base64.b64encode(open(os.path.join(GOC, f), 'rb').read()).decode())

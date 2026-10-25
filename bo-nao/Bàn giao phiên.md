@@ -6,7 +6,7 @@ Liên quan: [[00 Mục lục]] · [[Liên kết và công cụ]] · [[Việc ch�
 Ghi chú này để phiên Claude Code mới nắm bối cảnh ngay. Đọc `CLAUDE.md`, rồi ghi chú này, rồi [[Liên kết và công cụ]] (mọi link Drive, repo, artifact, công cụ), rồi [[00 Mục lục]].
 
 ## Trạng thái nhánh (25/10)
-- Mọi việc đã commit và push lên `claude/beautiful-ptolemy-f2j7za`. Commit cuối: "khoản Không nhắc CN nhập chỉ tính lượt CN có vi phạm NHAPTRE" (25/10).
+- Mọi việc đã commit và push lên `claude/beautiful-ptolemy-f2j7za`. Commit cuối: "ảnh web lấy từ repo qua jsDelivr" (25/10).
 - Nhánh tạm `claude/beautiful-ptolemy-f2j7za-dang-lam` đã gộp hết vào nhánh chính, không còn dùng.
 - Chủ dự án cập nhật web bằng bộ cài clasp: bấm đúp `2-CAP-NHAT.bat` rồi Ctrl+F5. Bộ cài nằm ở `kpi-app/cai-dat-clasp/`; lần gần nhất đã gửi lại bản zip ngày 24/10. Chưa biết chủ dự án đã cập nhật các đợt 24–25/10 lên web hay chưa.
 
@@ -19,10 +19,7 @@ Ghi chú này để phiên Claude Code mới nắm bối cảnh ngay. Đọc `CL
   - 2D dùng 3 ảnh mặt bằng chủ dự án gửi (đã nắn), thêm nút "Tách tầng" có chú thích xưởng, có đèn ban đêm.
   - Bản dọc đã thử rồi bỏ: chủ dự án muốn giữ bản ngang.
 - [[KPI Màn đăng nhập Khắc laser]]: nền ảnh nhà máy ban đêm, thẻ nhân viên vân carbon được laser khắc mã và tên.
-- [[KPI Ảnh trên Google Drive]]:
-  - Ảnh nặng để trên Drive của chủ dự án (thư mục "KPI – Ảnh web"), mã file ghi ở `kpi-app/anh-drive.json`.
-  - Web lấy ảnh qua link `lh3.googleusercontent.com/d/<mã>=<tùy chọn>`.
-  - Claude không tự tải ảnh lên Drive được: nhờ chủ dự án kéo ảnh vào thư mục.
+- [[KPI Ảnh web qua jsDelivr]]: 25/10 ảnh nền đăng nhập + mặt bằng sơ đồ lấy từ repo (công khai) qua jsDelivr, ghim commit; Claude tự làm, không cần Drive.
 
 ## Còn chờ / gợi ý
 - 25/10: chủ dự án trả lời 4 câu (xem [[Quyết định của chủ dự án]] mục "KPI và định mức (25/10)"); đã sửa khoản "không nhắc" (chỉ Code.gs, chưa dán). Còn chờ: chủ dự án tự sửa Cân Phôi về 180 trên web; nội dung video giới thiệu.
@@ -37,5 +34,5 @@ Ghi chú này để phiên Claude Code mới nắm bối cảnh ngay. Đọc `CL
 - Bản xem thử:
   - Dựng: `DATA=$S/dl4/csdl.json OUT=$S/xt-v.html GIO=2026-10-22T17:00:00+07:00 BO_HO_SO=1 TZ=Asia/Ho_Chi_Minh node tests/tao-ban-xem-thu.js`.
   - `$S` là scratchpad. Phiên mới tự lấy lại `csdl.json` từ Sheet CSDL KPI qua kết nối Google Drive (cách làm ở [[Liên kết và công cụ]]). Dữ liệu này **không commit**.
-- Chromium trong sandbox không mở được link Drive: khi chụp thử thì thay link bằng ảnh nhúng.
+- Chromium trong sandbox không tin CA của proxy nên ảnh ngoài (jsDelivr) không hiện khi chụp thử: thay link bằng ảnh nhúng nếu cần chụp.
 - Đừng chạy `pkill -f <tên>` trong cùng lệnh có chứa tên đó: nó tự giết chính shell của lệnh.

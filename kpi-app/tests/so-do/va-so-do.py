@@ -19,18 +19,11 @@ for _k in _re.findall(r"'(\d\|[^']+)': '", _ss):
     assert _k in _ten, 'khu không có trên bản vẽ: ' + _k
 _js = _doc(os.path.join(_sd, 'va-so-do.js')).replace('{{SS}}', _ss).replace('{{DATA}}', _json.dumps(_DATA, ensure_ascii=False, separators=(',', ':')))
 # 24/10 (chủ dự án): nền sơ đồ 2D = ảnh mặt bằng chủ dự án gửi, đã nắn khớp khung tọa độ (so-do/anh-goc-tang-*.webp là bản gốc)
-#   + ảnh minh họa tách tầng. Ảnh để trên Google Drive (mã file ở kpi-app/anh-drive.json) cho SoDo.html nhẹ;
-#   chưa có mã file thì nhúng thẳng ảnh trong so-do/ như cũ.
-import base64 as _b64
-from anh_rhino import anh_drive as _drive
-def _anh1(ten, tep):
-    u = _drive(ten)
-    if u:
-        return u
-    _p = os.path.join(D, '..', 'so-do', tep)
-    return 'data:image/webp;base64,' + _b64.b64encode(open(_p, 'rb').read()).decode() if os.path.exists(_p) else ''
-_js = _js.replace('{{ANH}}', _json.dumps([_anh1('so-do-tang-%d' % (i + 1), 'anh-tang-%d.webp' % i) for i in range(3)]))
-_js = _js.replace('{{TACH}}', _json.dumps(_anh1('so-do-tach-tang', 'anh-tach-tang.webp')))
+#   + ảnh minh họa tách tầng. 25/10: ảnh lấy từ repo qua jsDelivr (link ghim theo commit, anh_cdn) cho SoDo.html nhẹ
+#   (trước đó để trên Google Drive, chủ dự án phải tự kéo ảnh lên).
+from anh_rhino import anh_cdn as _cdn
+_js = _js.replace('{{ANH}}', _json.dumps([_cdn('so-do/anh-tang-%d.webp' % i) for i in range(3)]))
+_js = _js.replace('{{TACH}}', _json.dumps(_cdn('so-do/anh-tach-tang.webp')))
 _css = _doc(os.path.join(_sd, 'va-so-do.css'))
 _b3 = _va_ba(_ba, 'KPI tháng này')   # không đổi </textarea: nội dung đã html.escape khi nhúng; đổi sẽ làm hỏng ô textarea riêng của bản 3D (btXuat, 13/10)
 assert 'sdMb' not in s

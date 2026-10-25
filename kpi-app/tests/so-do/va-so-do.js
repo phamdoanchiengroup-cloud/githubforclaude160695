@@ -8,7 +8,7 @@
 {{SS}}
 window.__sdDaNap = true;   // đã tải phần sơ đồ (SoDo.html) – vSoDo dưới đây thay hàm chờ trong Index.html
 var SD_DATA = {{DATA}};
-var SD_ANH = {{ANH}};   // 24/10: ảnh mặt bằng chủ dự án gửi (đã nắn), khung = SD.vb ban đầu (−0,5…45,25 × −0,5…34,75 m); link Google Drive hoặc nhúng
+var SD_ANH = {{ANH}};   // 24/10: ảnh mặt bằng chủ dự án gửi (đã nắn), khung = SD.vb ban đầu (−0,5…45,25 × −0,5…34,75 m); link jsDelivr ghim commit (25/10)
 var SD_TACH = {{TACH}};   // 24/10: ảnh minh họa tách 3 tầng (chủ dự án gửi) + chú thích xưởng từng tầng
 // chú thích: f = tầng (0..2), o = góc trên trái thẻ (% ảnh), d = điểm chỉ vào sàn tầng đó (% ảnh)
 var SD_TACH_NHAN = [{ f: 2, o: [1.5, 3], d: [36, 22] }, { f: 1, o: [80, 34], d: [80, 47] }, { f: 0, o: [73, 66], d: [58, 74] }];

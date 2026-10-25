@@ -16,7 +16,7 @@ let dem = 0, loi = 0; const ok = (d, t, c) => { dem++; if (d) console.log('  ✓
     ok(/mai/.test(m[0]) && /Chào buổi|Chúc ca đêm/.test(m[2]) && /Mai chúc bạn/.test(m[2]), 'Mai: chân dung tròn + lời chào + khẩu hiệu ngày', m);
     ok(await moi.evaluate(() => !document.querySelector('#gate [id="gToc"]') && !!document.querySelector('#gate [id="gbbToc"]')), 'hình Mai ở màn đăng nhập đổi id gradient (không trùng Mai trong web)');
     const nen = await moi.evaluate(() => { const im = document.querySelector('#lkNen image.anh'), co = document.querySelector('#lkTheLogo'), h = im.getAttribute('href');
-      return [h === '' || /^https:\/\/lh3\.googleusercontent\.com\/d\/[\w-]+=w1920-rj-l80$/.test(h), !!co && /^data:image\/png;base64,/.test(co.getAttribute('href')), document.querySelector('.lk-dau img').naturalWidth > 100, !!document.querySelector('#lkNhom #lkChu') && !document.querySelector('#lkNhom #lkTia')]; });
+      return [h === '' || /^https:\/\/cdn\.jsdelivr\.net\/gh\/phamdoanchiengroup-cloud\/githubforclaude160695@[0-9a-f]{40}\/kpi-app\/anh\/web\/nen-dang-nhap\.jpg$/.test(h), !!co && /^data:image\/png;base64,/.test(co.getAttribute('href')), document.querySelector('.lk-dau img').naturalWidth > 100, !!document.querySelector('#lkNhom #lkChu') && !document.querySelector('#lkNhom #lkTia')]; });
     ok(nen.every(Boolean), 'nền tòa nhà lấy từ Google Drive (hoặc để trống), thẻ nhân viên carbon có logo Rhino (lấy lại từ logo đầu trang), chữ khắc nằm trên thẻ', nen);
     ok(await moi.evaluate(() => getComputedStyle(document.getElementById('btnLogin')).backgroundColor === 'rgb(247, 184, 41)'), 'nút Đăng nhập màu vàng Rhino #f7b829');
     await moi.click('#l_tk'); await moi.type('#l_tk', 'c068', { delay: 40 }); await p.waitForTimeout(500);

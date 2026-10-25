@@ -50,7 +50,7 @@ Những điều đã chốt. Đừng đề xuất lại những gì ghi "không 
 - Chỉ trưởng phòng ăn cùng ban điều hành; HR và QC không tính suất; phạm vi đăng ký hộ: TP/PP xưởng mình, ADMIN + TL khối văn phòng (11/10). – [[KPI Cơm trưa]]
 
 ## Ảnh và giao diện (24/10)
-- Ảnh nặng để trên Google Drive (thư mục "KPI – Ảnh web", chia sẻ bằng link), không nhúng vào file. – [[KPI Ảnh trên Google Drive]]
+- Ảnh nặng không nhúng vào file. 25/10: **lấy từ repo qua jsDelivr** (thay Google Drive – Claude tự làm, chủ dự án không phải kéo ảnh). **Giữ repo GitHub công khai**; không xóa các dòng ghi chú về tài khoản dùng mật khẩu mặc định (chủ dự án 25/10). – [[KPI Ảnh web qua jsDelivr]]
 - Tab Sơ đồ nhà máy không hiện KPI / sĩ số (xem ở tab khác); 2D dùng ảnh mặt bằng chủ dự án gửi + ảnh tách tầng. – [[KPI Sơ đồ nhà máy 3D]]
 - Màn đăng nhập: nền ảnh tòa nhà ban đêm + thẻ nhân viên vân carbon được laser khắc mã. Ghép ảnh ngọn cơ chụp lên nền đêm: chê xấu, không dùng. – [[KPI Màn đăng nhập Khắc laser]]
 

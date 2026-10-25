@@ -1,12 +1,12 @@
 # Liên kết và công cụ
 
 Nhóm: Chung · Tạo 25/10/2026
-Liên quan: [[00 Mục lục]] · [[Bàn giao phiên]] · [[Công cụ Claude]] · [[KPI Ảnh trên Google Drive]] · [[KPI Cập nhật bằng clasp]] · [[KPI Kiểm thử]]
+Liên quan: [[00 Mục lục]] · [[Bàn giao phiên]] · [[Công cụ Claude]] · [[KPI Ảnh web qua jsDelivr]] · [[KPI Cập nhật bằng clasp]] · [[KPI Kiểm thử]]
 
 Một chỗ gom mọi đường dẫn, mã file, kết nối và công cụ phiên trước đã dùng, để phiên sau không phải đi tìm. **Không ghi mật khẩu ở đây.**
 
 ## Repo GitHub
-- https://github.com/phamdoanchiengroup-cloud/githubforclaude160695 (riêng tư). Công cụ GitHub là MCP `mcp__github__*`, không có `gh` CLI.
+- https://github.com/phamdoanchiengroup-cloud/githubforclaude160695 (**công khai** – kiểm 25/10 bằng API `private=false`; chủ dự án chọn giữ công khai). Công cụ GitHub là MCP `mcp__github__*`, không có `gh` CLI.
 - Mỗi dự án một nhánh:
   - **Web KPI**: `claude/beautiful-ptolemy-f2j7za` (nhánh này).
   - Thiên Cơ Các (`tuvi-app/`): `claude/happy-brown-lttkz3`.
@@ -19,13 +19,7 @@ Một chỗ gom mọi đường dẫn, mã file, kết nối và công cụ phi�
     1. Gọi `download_file_content` với `fileId` = mã trên, `exportMimeType` = `application/vnd.openxmlformats-officedocument.spreadsheetml.sheet`.
     2. Chạy `python3 -I kpi-app/tests/csdl-tu-drive.py <file kết quả công cụ> $S/dl/csdl.json`.
   - Có thông tin cá nhân: chỉ để ở scratchpad, **không commit**.
-- **Thư mục "KPI – Ảnh web"**: https://drive.google.com/drive/folders/1_CBq5LU4HZuBFaemZakQMV4mW1Ewl54O (chia sẻ "Bất kỳ ai có đường liên kết – Người xem").
-  - Mã từng ảnh ghi ở `kpi-app/anh-drive.json`; cách dùng ở [[KPI Ảnh trên Google Drive]].
-  - Nền đăng nhập: https://drive.google.com/file/d/1kyQ2lVx5w7FBqmJhq8FGNbwMPPk-u9Ce/view
-  - Sơ đồ tầng 1: https://drive.google.com/file/d/1ueINGmmw0EqqtQotQlEP_cjDz2GGCrLu/view
-  - Sơ đồ tầng 2: https://drive.google.com/file/d/1yJwT-KX65mX0K2BduvEugLM6ZaJ4FJsX/view
-  - Sơ đồ tầng 3: https://drive.google.com/file/d/1Ag2X2OXFdfZI2cvyYtX9M0JcOQNfUofr/view
-  - Tách tầng: https://drive.google.com/file/d/1pSnrOurNozXOXNsPipbymTsP_aktLnu0/view
+- **Ảnh web: lấy từ repo qua jsDelivr** (25/10), link `https://cdn.jsdelivr.net/gh/phamdoanchiengroup-cloud/githubforclaude160695@<commit>/kpi-app/<đường dẫn>` – cách làm ở [[KPI Ảnh web qua jsDelivr]]. Thư mục Drive "KPI – Ảnh web" (`1_CBq5LU4HZuBFaemZakQMV4mW1Ewl54O`) không còn dùng.
 - Giới hạn công cụ Drive:
   - `share_file` chỉ chia sẻ cho từng email, không bật được "ai có link": chủ dự án tự bật.
   - `create_file` cần base64 trong lời gọi, nên không tải được ảnh vài trăm KB: gửi ảnh cho chủ dự án tự kéo vào.
