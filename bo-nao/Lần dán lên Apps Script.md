@@ -4,6 +4,7 @@ Nhóm: Bắt đầu · Cập nhật 22/10/2026
 Liên quan: [[Việc chờ chủ dự án]] · [[TCC Kiểm thử]] · [[00 Mục lục]]
 
 ## Tình trạng
+- **25/10 (khuya): mã `2026.10.25.10`** – ảnh ngũ hành/con giáp trên web (Bát Tự, thẻ hồ sơ, vận năm) + PDF chép theo web, bìa mới, trang Tuổi và Ngũ hành, chương 👑 cho chủ sở hữu. Đổi **Script, Styles, Index** (ảnh qua jsDelivr, không cần dán). Bấm `2-CAP-NHAT.bat`, Ctrl+F5.
 - **25/10 (đêm): mã `2026.10.25.9`** – thanh mời đăng ký nổi ở đáy không còn lệch mép phải (nút × khuất); chân trang chừa chỗ để thanh mời và nút 🔍 ↑ không che. Chỉ đổi **Styles, Index, Script**.
 - **25/10 (đêm): mã `2026.10.25.8`** – dòng lưu ý "góc nhìn theo cổ học…" chuyển xuống chân trang (trước che mục lục). Đổi **Index, Styles, Script**.
 - **25/10 (đêm): mã `2026.10.25.7`** – tab Tử Vi lấy 26 bước làm bài luận chính (gộp 12 cung, ba vòng, cách cục, bộ sao, sao hạn đại vận). Đổi **Code, ThanhToan, TuViTrinhTu, TuViChuyenSau, Script, Styles, Index**. Bấm `2-CAP-NHAT.bat`, Ctrl+F5.

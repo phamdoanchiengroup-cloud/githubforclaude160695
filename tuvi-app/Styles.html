@@ -1,6 +1,6 @@
 <style>
 /* Mã phiên bản giao diện – phải trùng với Index.html (meta tcc-ban) và Script.html (BAN_GIAO_DIEN) */
-:root { --tcc-ban: "2026.10.25.9"; }
+:root { --tcc-ban: "2026.10.25.10"; }
 /* ================================================================
    THIÊN CƠ CÁC — phong cách tiên hiệp sáng: ngọc bích, kim sa, mây trắng
    ================================================================ */
@@ -2552,4 +2552,51 @@ body:has(#page-chart.active) .tcc-goc-anh { opacity:.55; }
 /* 25/10: văn luận giải dễ đọc hơn – chữ to thêm ~1px, giãn dòng 1,7. Chỉ áp cho đoạn văn/danh sách nằm thẳng trong panel
    (các khối chữ nhỏ đặt cỡ ở thẻ cha như .cung-card ul, .coso ol, .hsn-ly ul… giữ nguyên) */
 :where(.result-wrap .tab-page .panel > p, .result-wrap .tab-page .panel > ul > li, .result-wrap .tab-page .panel > ol > li) { font-size: 16px; line-height: 1.7; }
+/* 25/10: ảnh ngũ hành (Bát Tự), con giáp (thẻ hồ sơ, vận năm) */
+.bcs-banner { height: 150px; margin: -4px 0 14px; border-radius: 10px; background: center/cover no-repeat; position: relative; overflow: hidden; border: 1px solid var(--vien-kim, rgba(226,198,144,.3)); }
+.bcs-banner::after { content: ''; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(6, 11, 22, 0) 40%, rgba(6, 11, 22, .85)); }
+.bcs-banner span { position: absolute; left: 14px; bottom: 10px; z-index: 1; font-size: 13px; letter-spacing: .08em; color: #f3e3bf; text-shadow: 0 1px 3px rgba(0,0,0,.8); }
+.bcs-anh { display: block; height: 46px; margin: -4px -2px 6px; border-radius: 2px; background: center/cover no-repeat; opacity: .9; }
+.bcs-chip.dung .bcs-anh { opacity: 1; box-shadow: 0 0 0 1px var(--gold); }
+.ho-so-av.co-anh { overflow: hidden; padding: 0; background: #0b1430; }
+.ho-so-av.co-anh img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 30%; display: block; }
+.vh-giap { display: flex; align-items: center; gap: 14px; margin: 0 0 12px; padding: 10px 14px; border: 1px solid var(--line); border-radius: 12px; background: rgba(255, 255, 255, .03); }
+.vh-giap img { width: 72px; height: 108px; object-fit: cover; border-radius: 8px; flex: none; }
+.vh-giap small { display: block; font-size: 12px; opacity: .75; } .vh-giap b { display: block; font-size: 17px; color: var(--gold-hi, var(--head)); } .vh-giap span { font-size: 13px; opacity: .8; }
+@media (max-width: 640px) { .bcs-banner { height: 110px; } .bcs-anh { height: 34px; } }
+/* 25/10: PDF chép nội dung tab web (.pdf-web) – đổi màu cho nền giấy ngà, bỏ hiệu ứng; trang Tuổi và Ngũ hành */
+.pdf-web { font-size: 14px; }
+.pdf-web .panel { margin: 0 0 10px; backdrop-filter: none !important; }
+.pdf-web .tg-head { margin-top: 6px; }
+.pdf-web details > summary { list-style: none; } .pdf-web details > summary::-webkit-details-marker { display: none; }
+.pdf-web .bcs-banner { height: 120px; }
+.bc-sang .pdf-web { color: var(--bc-chu); }
+.bc-sang .pdf-web * { text-shadow: none !important; box-shadow: none !important; }
+.bc-sang .pdf-web :is(p, li, td, th, span, small, em, div, summary, dd, dt, label) { color: var(--bc-chu); }
+.bc-sang .pdf-web :is(h2, h3, h4, h5, b, strong, .panel-title, .tg-head b, .tt26-tc, .tt26-h5, .dd-h) { color: #1C2A3F; }
+.bc-sang .pdf-web :is(.muted, small, .tg-head em, .lede) { color: var(--bc-nhat) !important; }
+.bc-sang .pdf-web :is(.panel, .tg-head, .tt26-b, .cc-item, .stat, .hsnh-o, .tt26-bo, .tt26-shv, .tt26-cung, .cv-doan, .lg-sec, .cung-card, .gb, .bcs-chip, .bcs-o, .ho-so-nhanh, .lg-block, table, .tbl-wrap, .tp-van li, .th-kl li) {
+  background: var(--bc-the) !important; border-color: var(--bc-vien) !important; }
+.bc-sang .pdf-web :is(th, thead td) { background: #EDE5D4 !important; }
+.bc-sang .pdf-web .tt26-b.tot, .bc-sang .pdf-web .cc-item.good { border-left-color: #2E8B57 !important; }
+.bc-sang .pdf-web .tt26-b.xau, .bc-sang .pdf-web .cc-item.bad { border-left-color: #B8322B !important; }
+.bc-sang .pdf-web .tt26-b, .bc-sang .pdf-web .cc-item { border-left-color: #C9A45C; }
+.bc-sang .pdf-web :is(.h-Mộc) { color: #2d8a4e !important; } .bc-sang .pdf-web :is(.h-Hỏa) { color: #c8372d !important; } .bc-sang .pdf-web :is(.h-Thổ) { color: #b0761a !important; }
+.bc-sang .pdf-web :is(.h-Kim) { color: #6d7480 !important; } .bc-sang .pdf-web :is(.h-Thủy) { color: #1f4f99 !important; }
+.bc-sang .pdf-web .tt26-khuyen, .bc-sang .pdf-web .chu-huong { color: #1e6b3b !important; }
+.bc-sang .pdf-web .chu-cau { color: #8a5a12 !important; }
+.bc-sang .pdf-web .bcs-banner span { color: #f3e3bf !important; }
+.bc-tuoi { display: flex; gap: 22px; align-items: flex-start; }
+.bc-tuoi > img { width: 300px; height: 450px; object-fit: cover; border-radius: 12px; border: 2px solid #C9A45C; flex: none; }
+.bc-tuoi-nd { flex: 1; } .bc-tuoi-nd h2 { font-size: 34px; margin: 4px 0; } .bc-tuoi-giap { font-size: 17px; margin: 0 0 12px; }
+.bc-tuoi-hanh { margin-top: 12px; position: relative; } .bc-tuoi-hanh img { width: 100%; height: 130px; object-fit: cover; border-radius: 10px; display: block; }
+.bc-tuoi-hanh span { position: absolute; left: 12px; bottom: 8px; color: #f3e3bf; font-weight: 700; text-shadow: 0 1px 3px #000; }
+.bc-nh-banner { position: relative; margin: 0 0 14px; } .bc-nh-banner img { width: 100%; height: 260px; object-fit: cover; border-radius: 12px; display: block; }
+.bc-nh-banner div { position: absolute; left: 0; right: 0; bottom: 0; padding: 14px 18px; border-radius: 0 0 12px 12px; background: linear-gradient(180deg, rgba(6,11,22,0), rgba(6,11,22,.88)); }
+.bc-nh-banner small, .bc-nh-banner span { display: block; color: #e8dcc0; font-size: 13px; } .bc-nh-banner b { display: block; color: #fff6dd; font-size: 24px; }
+.bc-nh-luoi { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 8px; margin: 0 0 14px; }
+.bc-nh-o { border: 1px solid var(--bc-vien, #ddd3c0); border-radius: 10px; padding: 6px; text-align: center; background: var(--bc-the, #fbf8f1); }
+.bc-nh-o img { width: 100%; height: 70px; object-fit: cover; border-radius: 6px; display: block; margin-bottom: 6px; }
+.bc-nh-o b { display: block; font-size: 14px; } .bc-nh-o small { display: block; font-size: 11.5px; opacity: .8; margin-top: 4px; }
+.bc-nh-o.dung { border: 2px solid #C9A45C; }
 </style>

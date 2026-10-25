@@ -25,6 +25,7 @@ Mọi liên kết, kho mã, công cụ, plugin và skill mà các phiên trướ
 - Mẫu đường dẫn: `https://cdn.jsdelivr.net/gh/phamdoanchiengroup-cloud/githubforclaude160695@<SHA>/tuvi-app/...`
   - Ảnh (`tuvi-app/anh/*.webp`: tranh Hologram, poster, bìa và nền PDF): SHA `87e4618d1f02c73e96908754d03858f52c54d941` – biến `TCC_CDN` trong Holo.html, `PDF_ANH_BIA` và `NEN_ANH` trong Script.html.
   - Dữ liệu 64 quẻ `tuvi-app/kinh-dich/kd64.json`: SHA `c23cec1236ca96712781973bf6f35308f513d205` – biến `KD_URL` trong Script.html (có dự phòng raw.githubusercontent).
+  - Ảnh ngũ hành, 12 con giáp, bìa PDF mới (25/10): SHA `19203fbd20433f395336269a411f8aebcf990086` – biến `TCC_ANH_CDN` trong Script.html.
   - Thêm hoặc đổi ảnh: commit ảnh → lấy SHA mới → sửa các biến trên.
 
 ## Trang Artifact trên Claude (riêng tư của chủ dự án)

@@ -6,7 +6,7 @@ Liên quan: [[00 Mục lục]] · [[Tài nguyên và công cụ]] · [[Việc ch
 Phiên mới đọc ghi chú này ngay sau `CLAUDE.md`, rồi [[Tài nguyên và công cụ]] (liên kết, repo, công cụ) và [[00 Mục lục]]. Mỗi lần chủ dự án yêu cầu "nén phiên / chuyển phiên mới", viết đè mục "Trạng thái hiện tại" bên dưới.
 
 ## Trạng thái hiện tại (25/10/2026)
-- Nhánh `claude/happy-brown-lttkz3`, mã giao diện **`2026.10.25.9`** (25/10 đêm: dòng lưu ý xuống chân trang; 25/10 đêm: 26 bước thành bài luận chính; 25/10 khuya: tab Tham khảo 3 mục + card dễ đọc; 25/10 tối: thêm tab "👑 Lá số chủ sở hữu", file .gs thứ 29 `TuViChuyenSau.gs` – xem [[TCC Tử Vi đối chiếu các phái]]; trước đó `2026.10.25.1`) (3 chỗ: `tcc-ban` Index, `--tcc-ban` Styles, `BAN_GIAO_DIEN` Script). Mọi thay đổi đã push; chủ dự án chỉ cần bấm `2-CAP-NHAT.bat` + Ctrl+F5.
+- Nhánh `claude/happy-brown-lttkz3`, mã giao diện **`2026.10.25.10`** (25/10 khuya: ảnh ngũ hành – con giáp, PDF theo web; 25/10 đêm: dòng lưu ý xuống chân trang; 25/10 đêm: 26 bước thành bài luận chính; 25/10 khuya: tab Tham khảo 3 mục + card dễ đọc; 25/10 tối: thêm tab "👑 Lá số chủ sở hữu", file .gs thứ 29 `TuViChuyenSau.gs` – xem [[TCC Tử Vi đối chiếu các phái]]; trước đó `2026.10.25.1`) (3 chỗ: `tcc-ban` Index, `--tcc-ban` Styles, `BAN_GIAO_DIEN` Script). Mọi thay đổi đã push; chủ dự án chỉ cần bấm `2-CAP-NHAT.bat` + Ctrl+F5.
 - Kiểm thử gần nhất đều đạt: cai-dat 85/85, tong-hop, ha-lac, bat-tu, tien-ich, than-so, van-ngay, van-sau, giai-doan, ho-so-nam, nghiem-chung 852/852, chiem-tinh, human-design, bao-cao.
 - Có thư mục `webbongda/` (web bóng đá chủ dự án tự đưa lên, commit 8e735a6) – chủ dự án chọn để nguyên, không đụng.
 
