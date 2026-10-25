@@ -104,7 +104,8 @@ Tóm tắt phiên làm việc 10–25/10/2026. Đọc hết trước khi làm. *
 
 ### Link web
 - Web giải: https://script.google.com/macros/s/AKfycbyU0HwrkHWv_cBug5SJYhN_Vo2SZd9R5j_RXlGBeAozoTIZmapdraymm7VWCUJz73PCJA/exec
-- Link ngắn (Bitly, tạo 25/10): **https://bit.ly/rhinofootball** → trỏ về link trên. Đổi đích bằng tool Bitly `bitly_update_short_link`.
+- Link ngắn (Bitly, tạo 25/10): **https://bit.ly/rhinofootball** → trỏ về link trên.
+- QR code: `anh/qr-rhinofootball.png` (QR mức H, logo RHINO giữa) và thẻ in `anh/the-qr-rhinofootball.png`; cả hai mã hóa https://bit.ly/rhinofootball (đã quét thử bằng zxing). Đổi đích bằng tool Bitly `bitly_update_short_link`.
 
 ### Connector / plugin đã dùng
 - **Google Drive** (bắt buộc – đọc sheet, tải ảnh cầu thủ/logo).
