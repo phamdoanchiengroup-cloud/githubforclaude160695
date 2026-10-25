@@ -12,6 +12,7 @@ node tests/lich-su.js                          # lịch sử: lá số trùng ch
 node tests/nghiem-chung.js                     # nghiệm chứng dựa trên tổng hợp 6 hệ
 node tests/tong-hop.js                         # Tổng hợp 6 hệ bản 2: nhãn khớp điểm, không tên sao, bản miễn phí chỉ lộ 1 lĩnh vực
 node tests/ho-so-nam.js                        # Hồ sơ biến cố năm: 19 sự kiện, xác suất, đồng thuận/đối lập, bản khóa
+node tests/chuyen-sau.js                       # tab Lá số chủ sở hữu: bộ sao đúng sao/địa chi/cung, Thương ở Nô – Sứ ở Tật – kẹp Thiên Di, 12 đại vận, năm hệ trọng, thọ khí không đoán tuổi mất, chặn người không phải chủ (32.770 kiểm tra trên 300 lá số)
 node tests/tam-phap.js                        # Tử Vi đối chiếu các phái: ba vòng nhân sinh, 8 thế Mệnh – Thân, vận Thái Tuế, Lai Nhân (đối chiếu iztro), tự hóa, phi hóa
 node tests/van-sau.js                          # Vận hạn chuyên sâu: 12 tháng, hiệu chỉnh, đại vận 5 hệ, 12 cung lưu niên, nhật vận, ứng kỳ Mai Hoa
 node tests/bat-tu.js                           # Bát Tự 9 bước trên 400 lá số
