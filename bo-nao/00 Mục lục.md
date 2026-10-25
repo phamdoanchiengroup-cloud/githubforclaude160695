@@ -3,6 +3,7 @@
 Bộ não thứ hai của **Thiên Cơ Các** (nhánh `claude/happy-brown-lttkz3`). Web KPI sản xuất có bộ não riêng trên nhánh `claude/beautiful-ptolemy-f2j7za`. Mỗi ghi chú một chủ đề, nối với nhau bằng `[[liên kết]]`. Mở thư mục `bo-nao/` bằng Obsidian để xem dạng đồ thị, hoặc mở trang bản đồ https://claude.ai/artifact/ATmkGiUrZzEGjhRTxjyFjW (bản trong repo: `bo-nao/ban-do.html`).
 
 ## Bắt đầu từ đây
+- [[Bàn giao phiên]]: trạng thái mới nhất và việc dở – đọc đầu tiên khi mở phiên mới.
 - [[Việc chờ chủ dự án]]: việc còn ngỏ, câu hỏi chờ trả lời.
 - [[Lần dán lên Apps Script]]: bản nào đã dán, bản nào chưa.
 - [[Quyết định của chủ dự án]]: những gì đã chốt – đừng đề xuất ngược lại.
