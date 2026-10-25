@@ -27,7 +27,7 @@
     });
   }
   /** Mã phiên bản giao diện – phải trùng với Index.html (meta tcc-ban) và Styles.html (--tcc-ban) */
-  var BAN_GIAO_DIEN = '2026.10.25.3';
+  var BAN_GIAO_DIEN = '2026.10.25.4';
   function storeGet(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
   function storeSet(k, v) { try { localStorage.setItem(k, v); } catch (e) { /* bỏ qua */ } }
 
@@ -1242,7 +1242,7 @@
       var xep = D.map(function (n) { var k = tkKhop(n, S); return { n: n, k: k }; }).filter(function (x) { return x.k.trung.length >= 2; })
         .sort(function (a, b) { return b.k.diem - a.k.diem || b.k.trung.length - a.k.trung.length; }).slice(0, 8);
       top = '<div class="panel section tk-hop"><h2 class="panel-title"><span class="han">業</span> Lá số đang mở hợp với nghề nào?</h2>' +
-        '<p class="lede">So sao ở cung Mệnh, Quan Lộc, Tài Bạch (và Thiên Di, Phúc Đức nếu bảng có ghi) của ' + esc((state.input && state.input.name) || tv.info.name || 'lá số này') + ' với bảng bên dưới. Đây là gợi ý hướng nghề theo cổ học, nên đặt cạnh sở thích, năng lực và cơ hội thật.</p>' +
+        '<p class="lede">So sao ở cung Mệnh, Quan Lộc, Tài Bạch (và Thiên Di, Phúc Đức nếu bảng có ghi) của ' + esc((state.input && state.input.name) || tv.info.name || 'lá số này') + ' với bảng bên dưới. Đây là gợi ý hướng nghề theo cổ học: chấm theo nhiều sao cùng lúc (một sao lẻ chưa nói được gì), nên đặt cạnh sở thích, năng lực và cơ hội thật.</p>' +
         (xep.length ? '<div class="cc-list">' + xep.map(function (x) {
           var muc = x.k.diem >= 0.6 ? 'Rất khớp' : x.k.diem >= 0.35 ? 'Khớp' : 'Khớp một phần';
           return '<div class="cc-item ' + (x.k.diem >= 0.6 ? 'good' : x.k.diem >= 0.35 ? 'mid' : '') + '"><b>' + esc(x.n.nghe) + ' <small class="tk-muc">' + muc + '</small></b><small>' + esc(x.n.nhom) + '</small><small>Sao trùng: ' + esc(x.k.trung.join(', ')) + '</small></div>';
@@ -1251,7 +1251,7 @@
     var nhom = []; D.forEach(function (n) { if (nhom.indexOf(n.nhom) < 0) nhom.push(n.nhom); });
     var CUNG = ['Mệnh', 'Quan Lộc', 'Tài Bạch', 'Thiên Di', 'Phúc Đức'];
     return top + '<div class="panel section tk-nghe"><h2 class="panel-title"><span class="han">職</span> Nghề nghiệp hiện nay và các sao thường gặp</h2>' +
-      '<p class="lede">Mỗi nghề ghi những sao hay đóng ở cung Mệnh (tính cách), Quan Lộc (cách làm việc) và Tài Bạch (cách kiếm tiền) của người làm nghề đó. ★★★ sao chủ đạo · ★★ hay gặp · ★ phụ trợ.</p>' +
+      '<p class="lede">Mỗi nghề ghi những sao hay đóng ở cung Mệnh (tính cách), Quan Lộc (cách làm việc) và Tài Bạch (cách kiếm tiền) của người làm nghề đó. ★★★ sao chủ đạo · ★★ hay gặp · ★ phụ trợ. Các sách không hoàn toàn thống nhất – bảng chỉ mang tính tham khảo.</p>' +
       '<div class="kd-loc"><input type="search" id="tkTim" placeholder="Tìm nghề hoặc tên sao…" value="' + esc(TK.loc) + '" aria-label="Tìm nghề"><select id="tkNhom" aria-label="Lọc nhóm nghề"><option value="">Mọi nhóm</option>' +
       nhom.map(function (g) { return '<option' + (TK.nhom === g ? ' selected' : '') + '>' + esc(g) + '</option>'; }).join('') + '</select></div>' +
       '<div class="tk-ds">' + D.map(function (n) {

@@ -1,6 +1,6 @@
 <style>
 /* Mã phiên bản giao diện – phải trùng với Index.html (meta tcc-ban) và Script.html (BAN_GIAO_DIEN) */
-:root { --tcc-ban: "2026.10.25.3"; }
+:root { --tcc-ban: "2026.10.25.4"; }
 /* ================================================================
    THIÊN CƠ CÁC — phong cách tiên hiệp sáng: ngọc bích, kim sa, mây trắng
    ================================================================ */
@@ -2533,4 +2533,6 @@ body:has(#page-chart.active) .tcc-goc-anh { opacity:.55; }
 .gio-tbl.nt-tc .pl-ky { font-size: 20px; margin: 0 3px; }
 @media (max-width: 520px) { .ho-so-nhanh .hsnh { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; } .hsnh-o b { font-size: 15px; } }
 @media print { .muc-he { display: none; } }
+/* 25/10: văn luận giải dễ đọc hơn – chữ to thêm ~1px, giãn dòng 1,7 (độ ưu tiên thấp để không đè các khối chữ nhỏ có class riêng) */
+:where(.result-wrap .tab-page .panel) :where(p, li) { font-size: 16px; line-height: 1.7; }
 </style>
