@@ -47,6 +47,15 @@ Tóm tắt phiên làm việc 10–25/10/2026. Đọc hết trước khi làm. *
   - Kiểm cú pháp: trích `<script>` → `node --check`.
 - **Chờ chủ dự án:** dán bản mới lên Apps Script (2-CAP-NHAT.bat hoặc dán tay Index), rồi Triển khai → Quản lý triển khai → ✏️ → Phiên bản mới → Ctrl+F5.
 
+## Giao diện 2026 – hologram vàng kim (25/10, đã đẩy lên nhánh)
+- Chủ dự án chốt phong cách **hologram + futuristic** phối theo poster Match Day: nền đen ấm, **vàng kim là màu chính**, xanh dương chỉ làm viền phụ, đỏ cho EVO/thua. Bảng màu do chuyên gia `ui-designer` (agency agents) đề xuất. Phông: Barlow Condensed (tiêu đề), Chakra Petch (nhãn HUD), Be Vietnam Pro (chữ thường).
+- Mã: khối CSS "GIAO DIỆN 2026" cuối `<style>` trong Index.html (ghi đè biến màu cũ, tấm kính `.card`, tab, nút, `.match`); khung Match Day trang chủ `veMatchDay_` (+ `MATCH_DAY_POSTER`, `mdMauDoi_`, `moAnhLon_`), gọi trong `render()` khi ở tab home, không có trận sắp tới thì về banner động `veBannerDong`.
+- Ảnh tải qua **jsDelivr** từ `webbongda/anh/` (link gắn mã commit, vì tên nhánh có "/"): poster Match Day lượt 2 (`ab52d91…`), nền sân vận động (`82e47cd…`), sân đội hình + cơ cấu giải thưởng (`7b77aca…`). Thêm poster ngày khác: đẩy ảnh lên `anh/`, thêm dòng vào `MATCH_DAY_POSTER` với khóa "dd/mm/yyyy".
+- Đội hình 2 đội: nền `san-doi-hinh.webp` (ảnh sân nhìn từ trên, không xoay), `slotPos` trong `xemDoiHinhTran` map theo vạch vôi đo từ ảnh (biên dọc 20.5–81.9%, khung thành 12.3%/87.7%); thẻ trên sân `--S:84px`, chiều sâu chia 4 tuyến bằng bảng `TUYEN` (thủ môn 14% · hậu vệ 23.5–24.5% · tiền vệ 35% · tiền đạo 45%).
+- Giờ thi đấu lấy từ sheet (TranDau.GioThiDau); chủ dự án đã đổi lượt 2–3 sang 15:30, lượt 1 giữ 15:00.
+- Chạy thử không cần Apps Script: `webbongda/tools/thu-web/` (README trong đó).
+- **Lưu ý bảo mật:** sheet đang để "ai có link cũng xem" nên tab CauHinh (có mật khẩu) đọc công khai được – đã nhắc chủ dự án.
+
 ## Video / poster – đã giao (file nằm ở máy phiên cũ, chủ dự án đã nhận)
 - **Video kết quả vòng 1 (ngang, 41 s):** engine pdoom-video (github.com/mexicat/pdoom-video, three.js + bun). Scene `media-src/pdoom-kq/kq.ts`.
 - **Video giới thiệu lượt 2, dọc 9:16, 47 s:**
