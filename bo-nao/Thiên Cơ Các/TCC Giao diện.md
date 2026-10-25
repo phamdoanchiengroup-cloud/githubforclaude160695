@@ -184,3 +184,10 @@ Liên quan: [[TCC PDF]] · [[TCC Lá số 3D]] · [[TCC Văn dễ hiểu và T�
   - Hàng đều nhau (`repeat(4, minmax(208px, 1fr))`); ô kính tối trong suốt; token màu tối riêng cho `.chart-frame`; ô giữa để lộ thái cực.
   - Ảnh PNG/PDF vẫn xuất bản nền sáng.
 - **Bài học: không tự dựng lại lá số Tử Vi.** Giao diện mới chỉ được đổi nền và màu, giữ nguyên cách app xếp sao.
+
+## 25/10 – Bố cục 5 hệ, bỏ ẩn phần chuyên sâu
+- `veDeHieu` không còn gom các Phần vào `details.chuyen-sau`; chèn khối luận dễ hiểu ngay sau Phần 1, gọi `moChiTiet(pg)` (mở mọi `details` trừ `.coso` lý luận, `.qua-khu`, `.hsn-coso`) và `mucLucTab(pg)` (thanh `.muc-he` gồm nút `[data-nhay]` nhảy tới từng phần).
+- Hàm mới `hoSoNhanh(tieuDe, [[nhãn, giá trị, ghi chú]])`, `bangHtml(cot, hang, cls)`. Hồ sơ nhanh cho Bát Tự, Chiêm tinh, Thần số, HD, Hà Lạc.
+- Bảng mới: Bát Tự – Bảng ngũ hành (can lộ/chi/tàng can/lực/vai trò), Bảng thập thần theo nhóm; Chiêm tinh – Nguyên tố × tính chất, Bảng góc chiếu (sắp theo độ lệch); Thần số – Bảng tổng hợp các chỉ số, Bảng 4 đỉnh cao – thử thách.
+- Mã `2026.10.25.1`. Kiểm tra bằng Playwright 1366 và 390 px: không lỗi, không tràn ngang.
+

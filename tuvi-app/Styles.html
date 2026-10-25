@@ -1,6 +1,6 @@
 <style>
 /* Mã phiên bản giao diện – phải trùng với Index.html (meta tcc-ban) và Script.html (BAN_GIAO_DIEN) */
-:root { --tcc-ban: "2026.10.24.9"; }
+:root { --tcc-ban: "2026.10.25.1"; }
 /* ================================================================
    THIÊN CƠ CÁC — phong cách tiên hiệp sáng: ngọc bích, kim sa, mây trắng
    ================================================================ */
@@ -2492,4 +2492,19 @@ body:has(#page-chart.active) .tcc-goc-anh { opacity:.55; }
 .hdc-nut button[aria-pressed="true"] { background: #C9A961; border-color: #C9A961; color: #1a1408; font-weight: 600; }
 .hdc-cam { flex-basis: 100%; color: var(--ink-soft); font-style: italic; }
 .tcc-luu-y { margin: 0 0 10px; padding: 8px 14px; border-radius: 10px; background: rgba(201,169,97,.08); border-left: 3px solid #C9A961; font-size: 13.5px; color: var(--ink-soft); }
+/* 25/10: hồ sơ nhanh + mục lục trong tab 5 hệ */
+.ho-so-nhanh .hsnh { display: grid; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: 10px; }
+.hsnh-o { padding: 10px 12px; border-radius: 12px; border: 1px solid rgba(92,235,255,.18); background: rgba(92,235,255,.04); display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.hsnh-o small { font-size: 11.5px; letter-spacing: .04em; text-transform: uppercase; color: var(--ink-soft); }
+.hsnh-o b { font-size: 16px; color: #E8C77A; overflow-wrap: anywhere; }
+.hsnh-o span { font-size: 12.5px; color: var(--ink-soft); }
+.muc-he { display: flex; gap: 8px; overflow-x: auto; padding: 4px 2px 8px; margin: 0 0 14px; scrollbar-width: thin; }
+.mh-chip { flex: 0 0 auto; display: flex; flex-direction: column; align-items: flex-start; gap: 1px; font: inherit; font-size: 13px; padding: 6px 12px; border-radius: 10px; border: 1px solid rgba(232,199,122,.35); background: rgba(232,199,122,.06); color: inherit; cursor: pointer; white-space: nowrap; }
+.mh-chip small { font-size: 10.5px; color: var(--ink-soft); text-transform: uppercase; letter-spacing: .05em; }
+.mh-chip:hover, .mh-chip:focus-visible { background: rgba(232,199,122,.16); }
+.gio-tbl.nt-tc td { text-align: center; } .gio-tbl.nt-tc td:first-child { text-align: left; }
+.ts-o-so { font-size: 18px; color: #E8C77A; }
+.gio-tbl.nt-tc .pl-ky { font-size: 20px; margin: 0 3px; }
+@media (max-width: 520px) { .ho-so-nhanh .hsnh { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; } .hsnh-o b { font-size: 15px; } }
+@media print { .muc-he { display: none; } }
 </style>
