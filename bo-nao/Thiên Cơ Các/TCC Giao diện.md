@@ -196,3 +196,5 @@ Liên quan: [[TCC PDF]] · [[TCC Lá số 3D]] · [[TCC Văn dễ hiểu và T�
 - Nguyên nhân chữ khó đọc: `Holo.html` phủ tranh tab sau mỗi `.panel` chỉ 60–80%. Chủ dự án chọn "chỉ tăng độ tối chung": máy tính .88/.9, điện thoại .9/.93 (vẫn thấy tranh).
 - Chữ: `Styles.html` cuối file `:where(.result-wrap .tab-page .panel) :where(p, li) { font-size: 16px; line-height: 1.7 }` (độ ưu tiên 0 để các khối chữ nhỏ có class riêng giữ nguyên).
 - Tab "👑 Lá số chủ sở hữu" (`.tab-chu`, chỉ hiện với chủ sở hữu) và tab "📚 Tham khảo" 3 mục – xem [[TCC Tử Vi đối chiếu các phái]].
+- 25/10 (đêm, mã 2026.10.25.8): `.tcc-luu-y` chuyển từ `.res-top` (Index.html) vào `<footer class="footer">`, CSS gọn (12,5px, không nền/viền).
+- 25/10 (đêm, mã 2026.10.25.9): `.cta-bar` bị lệch ra mép phải vì hiệu ứng chung `.hien { animation: huLen }` đè `transform: translate(-50%)` → thêm `.cta-bar.hien { animation: none }`. Chân trang: `body.co-cta .footer { padding-bottom: 120px }`, điện thoại padding ngang 64px tránh nút tròn nổi. Kiểm tra bằng chuyên gia evidence-collector.
