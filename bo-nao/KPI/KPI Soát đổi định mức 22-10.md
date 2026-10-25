@@ -28,3 +28,7 @@ Liên quan: [[KPI Phân tích định mức]] · [[KPI Tăng tốc đợt 2 (21-
 - Trung vị = người ở giữa: định mức "về 85%" nghĩa là một nửa số người làm công đoạn đó trên 85. Người ≥ 90 đều làm nhanh hơn hẳn đồng nghiệp cùng công đoạn (vd. Phủ Bóng Bề Mặt Gậy: 1 người 92 cái/ngày, 5 người còn lại 14–50; Ráp-Máy-Chuôi: 409 vs 257–296).
 - Toàn nhà máy thực ra **thấp hơn** 85: trung vị SL 71,5, KPI tổng 80,1 – vì KPI tính cả ngày đi làm không khai sản lượng (~2.984 giờ, phân tích định mức không tính các ngày này; bỏ ra thì trung vị SL 78,3), công đoạn dưới mốc không hạ, vài người SL 0 cả tháng (152 giờ).
 - Mã tính đúng: tính lại = Bảng KPI. Chưa sửa gì – báo chủ dự án.
+
+## 25/10: chủ dự án trả lời
+- Cân Phôi – Phân Loại Phôi: trả về 180 (chủ dự án sửa trên web: Định mức → 180; áp cả tháng 10). Sheet tải 25/10: DinhMuc XPT-CB-PLP = 350. Phân tích định mức sẽ vẫn gợi ý nâng (chạm ×4, không chọn sẵn) – bỏ qua dòng đó.
+- Người SL 0 cả tháng là nhân viên mới (vào làm 29/09–05/10, còn học việc). Nguyễn Thị Mai Nga (C996) chưa có NgayVaoLam nên hệ thống chưa coi là học việc. Giữ trọng số SL 70 / CL 20 / TT 5 / AT 5.

@@ -2080,11 +2080,14 @@ function kpiQuanLy_(maNV, maXuong, kyThang, dt) {
       themKhoan('duyetAu', ng, r.MaNV + '~' + r.MaCD, 'Duyệt ẩu (' + tenNV_(r.MaNV, dt) + ')', 2);
   });
 
-  // (d) Không nhắc CN nhập: -2/lượt CN bị phạt trễ trong xưởng
+  // (d) Không nhắc CN nhập: -2/lượt CN bị phạt trễ trong xưởng – chỉ lượt CN có vi phạm NHAPTRE cùng ngày (25/10)
+  var coNhapTre = {};
+  (dt.vipham || []).forEach(function(v){ if (String(v.MaVP).trim() === 'NHAPTRE') coNhapTre[v.MaNV + '|' + ngayVN_(v.Ngay)] = 1; });
   (dt.phatTre || []).forEach(function(p){
     if (String(p.MaXuong) !== String(maXuong)) return;
     var ng = ngayVN_(p.Ngay);
     if (ng.slice(0,7) !== kyThang) return;
+    if (!coNhapTre[p.MaNV + '|' + ng]) return;
     themKhoan('khongNhac', ng, p.MaNV, 'Không nhắc CN nhập (' + tenNV_(p.MaNV, dt) + ')', 2);
   });
 
@@ -7531,7 +7534,7 @@ function danhSachVanPhong(token) {
   ds.sort(function(a, b) { return (thuTu[a.vaiTro] - thuTu[b.vaiTro]) || (a.HoTen < b.HoTen ? -1 : 1); });
   return sach_({ ok: true, ds: ds, muc: HS_MUC });
 }
-var KPI_BAN_MAY = '22/10/2026 23:14';   // giờ dựng Code.gs (22/10)
+var KPI_BAN_MAY = '25/10/2026 07:32';   // giờ dựng Code.gs (22/10)
 /* =====================================================================
    KỸ NĂNG (22/10, chủ dự án nhờ thiết kế + tham khảo chuyên gia nhân sự / đào tạo)
    - Danh mục: trưởng / phó phòng đề xuất kỹ năng của xưởng (tên, mô tả, tiêu chí đạt, công đoạn liên quan)

@@ -1359,6 +1359,8 @@ exec(io.open(os.path.join(os.path.dirname(__file__), 'xep-loai', 'va-xep-loai.py
 exec(io.open(os.path.join(os.path.dirname(__file__), 'ho-so', 'va-ho-so.py'), encoding='utf-8').read())
 # ---------------------------------------------------------------- kỹ năng (22/10): danh mục theo xưởng + duyệt, gán 4 cấp, điểm mô phỏng
 exec(io.open(os.path.join(os.path.dirname(__file__), 'ky-nang', 'va-ky-nang.py'), encoding='utf-8').read())
+# ---------------------------------------------------------------- KPI quản lý (25/10): "không nhắc CN nhập" chỉ tính lượt CN có vi phạm NHAPTRE
+exec(io.open(os.path.join(os.path.dirname(__file__), 'khong-nhac', 'va-khong-nhac.py'), encoding='utf-8').read())
 
 io.open(RA, 'w', encoding='utf-8').write(s)
 print('OK ->', os.path.abspath(RA))

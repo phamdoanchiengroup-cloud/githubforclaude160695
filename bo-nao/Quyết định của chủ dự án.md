@@ -57,3 +57,9 @@ Những điều đã chốt. Đừng đề xuất lại những gì ghi "không 
 
 ## Bảo mật và vận hành (18/10)
 - Không làm A5 (chưa có KCS), giữ ô "Đặt số dòng", không làm A3 giờ dừng, không cần video hướng dẫn; phần tăng ca đã gỡ. – [[KPI Bảo mật và vận hành]]
+
+## KPI và định mức (25/10)
+- Bỏ khoản "Không nhắc CN nhập" của TP/PP với lượt phạt trễ không có vi phạm NHAPTRE (phạt trước 15/09): chỉ trừ khi công nhân thật sự bị trừ. – [[KPI Sửa lỗi 21-10 và dữ liệu sheet]]
+- Cân Phôi – Phân Loại Phôi trả về 180 (chủ dự án tự sửa trên web). **Không giới hạn** mức nâng định mức mỗi lần (bỏ đề xuất 10%/lần). – [[KPI Phân tích định mức]]
+- Người SL 0 cả tháng (Bùi Hoàng Anh, Trần Thị Thuỳ Dung, Tống Thị Mỹ Duyên, Nguyễn Thị Mai Nga) là nhân viên mới; **giữ trọng số** SL 70 / CL 20 / TT 5 / AT 5. – [[KPI Soát đổi định mức 22-10]]
+- Video giới thiệu từ tư liệu Rhino: **tự dựng** (ffmpeg + hoạt ảnh), không dùng video AI tốn credit. – [[KPI Màn đăng nhập demo chờ duyệt]]

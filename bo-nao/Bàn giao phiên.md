@@ -6,7 +6,7 @@ Liên quan: [[00 Mục lục]] · [[Liên kết và công cụ]] · [[Việc ch�
 Ghi chú này để phiên Claude Code mới nắm bối cảnh ngay. Đọc `CLAUDE.md`, rồi ghi chú này, rồi [[Liên kết và công cụ]] (mọi link Drive, repo, artifact, công cụ), rồi [[00 Mục lục]].
 
 ## Trạng thái nhánh (25/10)
-- Mọi việc đã commit và push lên `claude/beautiful-ptolemy-f2j7za`. Commit cuối: "sơ đồ nhà máy 2D về lại bản ngang".
+- Mọi việc đã commit và push lên `claude/beautiful-ptolemy-f2j7za`. Commit cuối: "khoản Không nhắc CN nhập chỉ tính lượt CN có vi phạm NHAPTRE" (25/10).
 - Nhánh tạm `claude/beautiful-ptolemy-f2j7za-dang-lam` đã gộp hết vào nhánh chính, không còn dùng.
 - Chủ dự án cập nhật web bằng bộ cài clasp: bấm đúp `2-CAP-NHAT.bat` rồi Ctrl+F5. Bộ cài nằm ở `kpi-app/cai-dat-clasp/`; lần gần nhất đã gửi lại bản zip ngày 24/10. Chưa biết chủ dự án đã cập nhật các đợt 24–25/10 lên web hay chưa.
 
@@ -25,6 +25,7 @@ Ghi chú này để phiên Claude Code mới nắm bối cảnh ngay. Đọc `CL
   - Claude không tự tải ảnh lên Drive được: nhờ chủ dự án kéo ảnh vào thư mục.
 
 ## Còn chờ / gợi ý
+- 25/10: chủ dự án trả lời 4 câu (xem [[Quyết định của chủ dự án]] mục "KPI và định mức (25/10)"); đã sửa khoản "không nhắc" (chỉ Code.gs, chưa dán). Còn chờ: chủ dự án tự sửa Cân Phôi về 180 trên web; nội dung video giới thiệu.
 - Hỏi chủ dự án: có cho chú tê giác Rhino và khung lời chào tự ẩn khi mở menu trên điện thoại không (hiện chúng đè lên cuối menu)? Chưa trả lời.
 - Sơ đồ 3D đẹp như ảnh mẫu: chưa chọn. Xem [[Việc chờ chủ dự án]].
 - Lỗi kiểm thử có từ trước, không phải do các lần sửa gần đây:
