@@ -14,13 +14,13 @@ HaLac.gs	63987
 HoiTu.gs	61732
 Holo.html	59597
 HumanDesign.gs	46573
-Index.html	48351
+Index.html	48575
 LuanGiai.gs	101399
 Lunar.gs	9228
 NghiemChung.gs	26413
 NghiemChungUI.html	11072
 PhoiNgau.gs	51165
-Script.html	650459
+Script.html	654271
 Styles.html	240780
 TaiKhoan.gs	20569
 ThanSoHoc.gs	52496

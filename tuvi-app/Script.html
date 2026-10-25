@@ -5330,9 +5330,10 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
     if (!state.result) { toast('Hãy lập lá số trước.', true); return; }
     var R = state.result, khoaPdf = !!R.khach || !!(R.quyen && !R.quyen.pdf);
     $('pdfType').querySelector('option[value="full"]').disabled = khoaPdf;
+    if ($('pdfType').querySelector('option[value="gon"]')) $('pdfType').querySelector('option[value="gon"]').disabled = khoaPdf;   // bản gọn cùng quyền với bản đầy đủ; bản tóm tắt mở cho mọi người
     $('pdfLock').innerHTML = khoaPdf ? '🔒 PDF bản đầy đủ cần mở khóa – ' + fmtXu(giaPhan('pdf').xu) + (state.token ? '. ' : ' (đăng nhập để mua). ') +
       '<button type="button" class="btn btn-ghost btn-sm" data-mua="pdf">Mở khóa</button>' : '';
-    if (khoaPdf) $('pdfType').value = 'demo';
+    if (khoaPdf && ($('pdfType').value === 'full' || $('pdfType').value === 'gon')) $('pdfType').value = 'tomtat';
     try { $('pdfBrand').value = storeGet('tcc_pdf_brand') || ''; $('pdfContact').value = storeGet('tcc_pdf_contact') || ''; $('pdfOffer').value = storeGet('tcc_pdf_offer') || ''; } catch (e) {}
     $('pdfModal').classList.add('show');
   }
@@ -5697,11 +5698,56 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
     Array.prototype.forEach.call(el.querySelectorAll('.cho-hien, .hien'), function (x) { x.classList.remove('cho-hien'); x.classList.remove('hien'); });
     return el;
   }
-  function pdfTuWeb(pageId) {
+  function pdfTuWeb(pageId, RUT, k) {
     var goc = $(pageId); if (!goc || goc.textContent.replace(/\s+/g, ' ').length < 200) return '';
     var c = pdfLamSach(goc.cloneNode(true), goc.querySelectorAll('canvas'));
+    if (RUT) pdfCatTheoQuyTac(c, RUT, k);
     return '<div class="pdf-web">' + c.innerHTML + '</div>';
   }
+  /* ---------- Bản gọn / bản tóm tắt: cắt nội dung tab theo quy tắc PDF_RUT (chuyên gia content-creator chọn lọc, 25/10) ---------- */
+  var PDF_RUT_DANG = null, PDF_KIEU = 'full';
+  function pdfTenKhoi(el) {
+    var t = el.querySelector(':scope > .tg-head b') || el.querySelector(':scope > .panel-title') || el.querySelector('.panel-title');
+    return t ? t.textContent.replace(/^[^A-Za-zÀ-ỹ0-9]+/, '').replace(/\s+/g, ' ').trim() : '';
+  }
+  function pdfKhop(ten, ds) { ten = ten.toLowerCase(); return ds.some(function (x) { x = String(x).toLowerCase().replace(/^[^a-zà-ỹ0-9]+/, '').trim(); return x && (ten === x || ten.indexOf(x) === 0 || x.indexOf(ten) === 0 && ten.length > 6); }); }
+  function pdfCatTheoQuyTac(c, RUT, k) {
+    var ch = (RUT.chuong || {})[k];
+    if (k === 'chart') { pdfCatTuVi(c, RUT.tuVi || {}); }
+    if (!ch || typeof ch !== 'object') return;
+    var giu = ch.giuKhoi, bo = ch.boKhoi;
+    Array.prototype.slice.call(c.children).forEach(function (el) {
+      var ten = pdfTenKhoi(el);
+      if (bo && ten && pdfKhop(ten, bo)) { el.remove(); return; }
+      if (giu) {
+        if (ten && pdfKhop(ten, giu)) return;
+        var panels = el.querySelectorAll('.panel'), con = 0;
+        Array.prototype.forEach.call(panels, function (p) { var t = pdfTenKhoi(p); if (t && pdfKhop(t, giu)) con++; else p.remove(); });
+        if (!con) el.remove();
+      } else if (bo) {
+        Array.prototype.forEach.call(el.querySelectorAll('.panel'), function (p) { var t = pdfTenKhoi(p); if (t && pdfKhop(t, bo)) p.remove(); });
+      }
+    });
+  }
+  function pdfCatTuVi(c, R) {
+    if (R.buocGiu && R.buocGiu !== 'tat_ca') Array.prototype.forEach.call(c.querySelectorAll('.tt26-b'), function (d) {
+      var so = d.querySelector('.tt26-so'); if (so && /^\d+$/.test(so.textContent.trim()) && R.buocGiu.indexOf(+so.textContent.trim()) < 0) d.remove();
+    });
+    if (R.cungMucGiu && R.cungMucGiu !== 'tat_ca') Array.prototype.forEach.call(c.querySelectorAll('.tt26-cung .cv-doan'), function (dv) {
+      var h = dv.querySelector('h5'); if (h && !pdfKhop(h.textContent.trim(), R.cungMucGiu)) dv.remove();
+    });
+    if (R.toHop === false) Array.prototype.forEach.call(c.querySelectorAll('.tt26-bo'), function (x) { x.remove(); });
+    function boKhoiCoTieuDe(sel) {
+      Array.prototype.forEach.call(c.querySelectorAll(sel), function (x) {
+        var t = x.previousElementSibling; while (t && (t.tagName === 'P' && t.classList.contains('muted') || t.tagName === 'H5')) { var tr = t.previousElementSibling; var la5 = t.tagName === 'H5'; t.remove(); if (la5) break; t = tr; }
+        var n = x.nextElementSibling; if (n && n.tagName === 'P' && n.classList.contains('muted')) n.remove();
+        x.remove();
+      });
+    }
+    if (R.saoHan === false) boKhoiCoTieuDe('.tt26-sh');
+    if (R.daiVanDacThoi === false) boKhoiCoTieuDe('.tp-van');
+  }
+  var PDF_RUT = { gon: null, tomtat: null };   // điền từ ban-rut-gon.json của chuyên gia
   /** Nền sáng: mọi ô còn nền tối (màu cứng của giao diện Hologram) đổi sang nền giấy, chữ sáng đổi sang chữ đậm – đo bằng màu thật trên trang */
   function pdfSangHoa(root) {
     function rgb(s) { var m = String(s).match(/rgba?\(([^)]+)\)/); if (!m) return null; var a = m[1].split(',').map(parseFloat); return { r: a[0], g: a[1], b: a[2], a: a.length > 3 ? a[3] : 1 }; }
@@ -5840,8 +5886,11 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
       '<p class="bc-nho">Báo cáo mang tính tham khảo, chiêm nghiệm và phát triển bản thân.</p></div>';
   }
 
-  function xuatPdf(chon, scale, sang, brand, demo) {
-    var res = state.result;
+  function xuatPdf(chon, scale, sang, brand, demo, kieu) {
+    if ((kieu === 'gon' || kieu === 'tomtat') && !PDF_RUT[kieu]) { toast('Bản gọn / tóm tắt đang hoàn thiện – hãy chọn bản đầy đủ hoặc bản xem thử.', true); return; }
+    var res = state.result, RUT = (kieu === 'gon' || kieu === 'tomtat') && PDF_RUT[kieu] ? PDF_RUT[kieu] : null;
+    PDF_RUT_DANG = RUT; PDF_KIEU = kieu || (demo ? 'demo' : 'full');
+    if (RUT) chon = chon.filter(function (k) { return (RUT.chuong || {})[k] !== 'bo'; });
     if (tongKhoa(res) && !demo) chon = chon.filter(function (k) { return ['tom', 'linhvuc', 'nguoi', 'duyen', 'doi', 'them'].indexOf(k) < 0; });   // Tổng hợp 6 hệ chưa mở
     if (!window.jspdf || typeof html2canvas === 'undefined') { toast('Không tải được thư viện PDF – hãy dùng nút In → Lưu dưới dạng PDF.', true); return; }
     var jsPDF = window.jspdf.jsPDF, pdf = new jsPDF({ unit: 'pt', format: 'a4', compress: true });
@@ -5994,10 +6043,10 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
     if (!demo) ['chart', 'battu', 'halac', 'astro', 'so', 'hd'].forEach(function (k) {
       if (chon.indexOf(k) < 0) return;
       chuoi = chuoi.then(function () { setLoadingText('Đang chép nội dung ' + (PDF_TEN[k] || k) + '…'); showTab(k); return sleep(300); })
-        .then(function () { try { PDF_WEB[k] = pdfTuWeb(k === 'chart' ? 'page-luan' : 'page-' + k); } catch (e) { PDF_WEB[k] = ''; } });
+        .then(function () { try { PDF_WEB[k] = pdfTuWeb(k === 'chart' ? 'page-luan' : 'page-' + k, RUT, k); } catch (e) { PDF_WEB[k] = ''; } });
     });
     // Chương riêng của chủ sở hữu (chỉ khi tài khoản chủ sở hữu xuất bản đầy đủ)
-    if (!demo && laChu()) {
+    if (!demo && !RUT && laChu()) {
       chuoi = chuoi.then(function () {
         var key = JSON.stringify(state.input);
         if (CHU.key === key && CHU.data) return CHU.data;
@@ -6217,7 +6266,7 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
       var brand = { ten: $('pdfBrand').value.trim(), lienHe: $('pdfContact').value.trim() };
       storeSet('tcc_pdf_brand', brand.ten); storeSet('tcc_pdf_contact', brand.lienHe);
       brand.uuDai = $('pdfOffer').value.trim(); storeSet('tcc_pdf_offer', brand.uuDai);
-      xuatPdf(chon, parseFloat($('pdfQuality').value) || 1.5, $('pdfTheme').value === 'light', brand, $('pdfType').value === 'demo');
+      xuatPdf(chon, parseFloat($('pdfQuality').value) || 1.5, $('pdfTheme').value === 'light', brand, $('pdfType').value === 'demo', $('pdfType').value);
     });
     $('btnPng').addEventListener('click', function () {
       if (typeof html2canvas === 'undefined') { toast('Không tải được thư viện chụp ảnh – hãy dùng nút In.', true); return; }
