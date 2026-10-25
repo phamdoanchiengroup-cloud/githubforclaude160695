@@ -1,6 +1,6 @@
 <style>
 /* Mã phiên bản giao diện – phải trùng với Index.html (meta tcc-ban) và Script.html (BAN_GIAO_DIEN) */
-:root { --tcc-ban: "2026.10.25.8"; }
+:root { --tcc-ban: "2026.10.25.9"; }
 /* ================================================================
    THIÊN CƠ CÁC — phong cách tiên hiệp sáng: ngọc bích, kim sa, mây trắng
    ================================================================ */
@@ -2181,6 +2181,11 @@ input::placeholder, textarea::placeholder { color: #a89a88; opacity: 1; }
 }
 /* Thanh mời mua nổi: không lệch mép, không che chữ cuối trang; điện thoại chỉ 2 dòng */
 body.co-cta .result-wrap { padding-bottom: 120px; }
+/* 25/10: hiệu ứng chung .hien (animation huLen → transform: none) làm mất translate(-50%) – thanh lệch ra mép phải, nút × khuất */
+.cta-bar.hien { animation: none; }
+/* Chân trang (có dòng lưu ý) không bị thanh mời và hai nút tròn nổi 🔍 ↑ che */
+body.co-cta .footer { padding-bottom: 120px; }
+@media (max-width: 640px) { .footer { padding-left: 64px; padding-right: 64px; padding-bottom: 80px; } body.co-cta .footer { padding-bottom: 150px; } }
 @media (max-width: 640px) {
   .cta-bar { left: 12px; right: 12px; width: auto; transform: translateY(150%); }
   .cta-bar.hien { transform: none; }
