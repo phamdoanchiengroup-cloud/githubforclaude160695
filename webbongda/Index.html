@@ -4541,7 +4541,7 @@ nav.tabs button.on{background:var(--kim-loai) !important;color:#1a1206 !importan
 .thv-vs{background:var(--kim-loai) !important;color:#1a1206 !important;box-shadow:0 6px 20px rgba(255,159,46,.40) !important}
 .thv-team-name{font-family:var(--ff-title) !important;font-style:italic}
 /* Sân mới có khán đài nên thẻ nhỏ lại một chút để không chồng nhau */
-.thv-pitch .thv-card{--S:74px}
+.thv-pitch .thv-card{--S:84px}
 
 /* ================= KHUNG MATCH DAY TRANG CHỦ (md-) ================= */
 .md-wrap{margin-bottom:18px}
@@ -6318,11 +6318,20 @@ function xemDoiHinhTran(maTran){
 
   /* Map toạ độ sơ đồ dọc → sân ngang theo vạch vôi của ảnh san-doi-hinh.webp (tính theo % khung ảnh):
      đường biên dọc 20.5% → 81.9% (giữa 51.2%), khung thành trái 12.3% / phải 87.7%, giữa sân 50%.
-     Thủ môn (sl.y=102) cách khung thành ~4%, tiền đạo (sl.y=15) sát vạch giữa sân (45% / 55%). */
-  var GIUA_DOC = 51.2, NUA_DOC = 30, X_TM = 16, HE_SO = 0.333;
+     Chiều sâu chia đều 4 tuyến (thủ môn · hậu vệ · tiền vệ · tiền đạo) cách nhau ~10.5% để thẻ không chạm nhau. */
+  var GIUA_DOC = 51.2, NUA_DOC = 35;
+  var TUYEN = [[15,45],[44,35],[70,24.5],[86,23.5],[102,14]];   // [sl.y, % tính từ khung thành đội mình]; hậu vệ (sl.y 70–86) đứng cùng một tuyến
+  function sauTuyen_(y){
+    if(y <= TUYEN[0][0]) return TUYEN[0][1];
+    for(var i=1;i<TUYEN.length;i++){
+      var a=TUYEN[i-1], b=TUYEN[i];
+      if(y <= b[0]) return a[1] + (y - a[0]) * (b[1] - a[1]) / (b[0] - a[0]);
+    }
+    return TUYEN[TUYEN.length-1][1];
+  }
   function slotPos(sl, isDoiA) {
     var y_view = GIUA_DOC + (sl.x - 50) / 50 * NUA_DOC;
-    var tien = X_TM + (102 - sl.y) * HE_SO;
+    var tien = sauTuyen_(sl.y);
     return { x: isDoiA ? tien : 100 - tien, y: y_view };
   }
 
