@@ -1,0 +1,101 @@
+diff --git a/webbongda/Index.html b/webbongda/Index.html
+index 4845d9f..b3d09c6 100644
+--- a/webbongda/Index.html
++++ b/webbongda/Index.html
+@@ -4615,6 +4615,51 @@ nav.tabs button.on{background:var(--kim-loai) !important;color:#1a1206 !importan
+ @keyframes md-chay{to{transform:translateX(-50%)}}
+ .md-nut{grid-column:1/-1;display:flex;justify-content:center;flex-wrap:wrap;gap:10px;margin-top:4px;position:relative;z-index:1}
+ @media (prefers-reduced-motion:reduce){.md-poster,.md-poster::after,.md-ray{animation:none !important}}
++/* ================= BẢNG XẾP HẠNG KIỂU TRUYỀN HÌNH ================= */
++.tv-bxh{display:grid;gap:6px;--cot:44px 56px minmax(0,1fr) 56px 56px 56px 64px 88px}
++.tv-bxh.gon{--cot:26px 34px minmax(0,1fr) 30px 38px 54px;gap:5px}
++.tv-dau,.tv-hang{display:grid;grid-template-columns:var(--cot);column-gap:8px;align-items:center;padding-left:12px}
++.tv-dau{height:28px;font-family:var(--ff-hud);font-weight:600;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--mo);text-align:center;
++  border-bottom:1px solid transparent;border-image:linear-gradient(90deg,transparent,var(--vien-sang),transparent) 1}
++.tv-dau span:nth-child(3){text-align:left}
++.tv-dau .d{color:var(--neon)}
++.tv-hang{position:relative;height:64px;cursor:pointer;color:var(--chu2);
++  background:linear-gradient(90deg,rgba(14,12,8,.78),rgba(14,12,8,.55));border:1px solid var(--vien);
++  -webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);
++  clip-path:polygon(14px 0,100% 0,100% calc(100% - 14px),calc(100% - 14px) 100%,0 100%,0 14px);
++  transition:transform .18s ease,border-color .18s ease}
++.tv-hang::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:rgba(255,255,255,.12)}
++.tv-hang:hover{transform:translateX(4px);border-color:var(--vien-sang)}
++.tv-hang.dau::before{background:var(--neon);box-shadow:0 0 10px rgba(255,190,60,.6)}
++.tv-hang.dau{background:linear-gradient(90deg,rgba(246,196,83,.12),rgba(14,12,8,.62) 40%,rgba(14,12,8,.5));border:2px solid rgba(246,196,83,.85);box-shadow:inset 0 1px 0 rgba(255,240,200,.18),inset 0 0 30px rgba(246,196,83,.10)}
++.tv-so{font-family:var(--ff-title);font-weight:800;font-style:italic;font-size:30px;line-height:1;text-align:center;color:rgba(255,255,255,.45);transform:skewX(-8deg)}
++.tv-hang.dau .tv-so{background:var(--kim-loai);-webkit-background-clip:text;background-clip:text;color:transparent;padding-right:.08em}
++.tv-logo{position:relative;display:grid;place-items:center}
++.tv-logo img,.tv-logo>div{border-radius:50% !important;border:1px solid var(--vien2) !important;object-fit:contain !important;background:rgba(0,0,0,.35)}
++.tv-vm{position:absolute;right:-4px;top:-9px;width:18px;height:12px;background:var(--kim-loai);transform:rotate(18deg);filter:drop-shadow(0 0 5px rgba(255,190,60,.9));
++  -webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 13'%3E%3Cpath d='M0 3l5 4 5-7 5 7 5-4-2 10H2z'/%3E%3C/svg%3E") center/contain no-repeat;
++  mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 13'%3E%3Cpath d='M0 3l5 4 5-7 5 7 5-4-2 10H2z'/%3E%3C/svg%3E") center/contain no-repeat}
++.tv-ten{font-family:var(--ff-title);font-weight:800;font-size:22px;letter-spacing:.02em;text-transform:uppercase;color:var(--chu);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
++.tv-c{font-family:var(--ff-hud);font-weight:600;font-size:17px;text-align:center;font-variant-numeric:tabular-nums}
++.tv-hs.duong{color:rgba(246,196,83,.95)}.tv-hs.am{color:var(--mo)}
++.tv-diem{position:relative;align-self:stretch;display:grid;place-items:center;overflow:hidden;margin-block:-1px;
++  background:rgba(246,196,83,.18);clip-path:polygon(10px 0,100% 0,100% 100%,0 100%)}
++.tv-diem b{font-family:var(--ff-title);font-weight:800;font-size:34px;line-height:1;color:var(--neon);font-variant-numeric:tabular-nums}
++.tv-hang.dau .tv-diem{background:var(--kim-loai)}
++.tv-hang.dau .tv-diem b{color:#1a1206;text-shadow:0 1px 0 rgba(255,255,255,.35)}
++.tv-hang.dau .tv-diem::after{content:'';position:absolute;inset:0;background:linear-gradient(100deg,transparent 30%,rgba(255,240,200,.55) 50%,transparent 70%);
++  background-size:300% 100%;background-position:150% 0;animation:tv-loe 6s ease-in-out infinite}
++@keyframes tv-loe{0%,77%{background-position:150% 0}100%{background-position:-50% 0}}
++.tv-bxh.gon .tv-hang{height:48px;padding-left:8px;column-gap:6px}
++.tv-bxh.gon .tv-dau{padding-left:8px;column-gap:6px;font-size:10px;letter-spacing:.1em}
++.tv-bxh.gon .tv-so{font-size:20px}
++.tv-bxh.gon .tv-ten{font-size:16px}
++.tv-bxh.gon .tv-c{font-size:14px}
++.tv-bxh.gon .tv-diem b{font-size:24px}
++.tv-bxh.gon .tv-vm{width:13px;height:9px;top:-6px;right:-3px}
++.tv-card .bxh-chu{display:flex;flex-wrap:wrap;gap:6px 18px;margin-top:12px}
++.tv-card.gon .bxh-chu span:last-child{display:none}
++@media (prefers-reduced-motion:reduce){.tv-hang.dau .tv-diem::after{animation:none}}
+ /* ================= HIỆU ỨNG 2026 (phương án B – chạy liên tục, không chớp, không rung) ================= */
+ @property --goc{syntax:"<angle>";inherits:false;initial-value:0deg}
+ @keyframes fx-vong{to{--goc:360deg}}
+@@ -6943,28 +6988,23 @@ function bxhCardHtml_(compact){
+     h+='<div class="card"><h2>🏆 Bảng xếp hạng</h2><div class="empty">Chưa có dữ liệu xếp hạng.'+
+       (isAdmin()?' Tạo đội và lịch thi đấu trước.':'')+'</div></div>';
+   } else {
+-    var soQua=Number(STATE.data.soQua)||2;
+-    var cols = compact
+-      ? '<th class="num">#</th><th>Đội</th><th class="num">Tr</th><th class="num">HS</th><th class="num">Đ</th>'
+-      : '<th class="num">#</th><th>Đội</th><th class="num">Tr</th><th class="num">T</th><th class="num">H</th><th class="num">B</th><th class="num">BT</th><th class="num">BB</th><th class="num">HS</th><th class="num">Đ</th><th>Phong độ</th>';
+-    h+='<div class="card"><h2>🏆 Bảng xếp hạng</h2><table class="bxh-table bxh-moi'+(compact?' compact':'')+'"><thead><tr>'
+-      +cols+'</tr></thead><tbody>';
+-    arr.forEach(function(o){
+-      var qua=o.hang<=soQua;
+-      var cell=(compact
+-        ? '<td class="num">'+o.st+'</td>'
+-        : '<td class="num">'+o.st+'</td><td class="num">'+o.t+'</td><td class="num">'+o.h+'</td><td class="num">'+o.b_+'</td><td class="num">'+o.bt+'</td><td class="num">'+o.bb+'</td>')
+-        +'<td class="num bxh-hs">'+(o.hs>0?'+':'')+o.hs+'</td>'
+-        +'<td class="num"><span class="bxh-diem">'+o.diem+'</span></td>'
+-        +(compact?'':'<td>'+phongDoHtml_(o.maDoi)+'</td>');
+-      h+='<tr class="'+(qua?'qua':'')+(o.hang===soQua?' ranh':'')+'">'
+-        +'<td class="num"><span class="bxh-hang">'+o.hang+'</span></td>'
+-        +'<td><span class="bxh-doi">'+logoDoiHtml(o.maDoi,compact?28:38)+'<b>'+esc(compact?tenDoiNgan_(o.tenDoi):o.tenDoi)+'</b></span></td>'+cell+'</tr>';
++    // Bảng kiểu truyền hình: mỗi đội một thanh kính, khối điểm bên phải; chỉ đội đứng đầu một mình (hơn điểm hoặc hiệu số) mới nổi bật
++    var hs=function(v){ return '<span class="tv-c tv-hs'+(v>0?' duong':v<0?' am':'')+'">'+(v>0?'+':'')+v+'</span>'; };
++    h+='<div class="card tv-card'+(compact?' gon':'')+'"><h2>🏆 Bảng xếp hạng</h2><div class="tv-bxh'+(compact?' gon':'')+'">'
++      +'<div class="tv-dau"><span>#</span><span></span><span>Đội</span><span>Trận</span>'+(compact?'':'<span>BT</span><span>BB</span>')+'<span>HS</span><span class="d">Điểm</span></div>';
++    var dauBang=arr.length && (!arr[1] || arr[0].diem>arr[1].diem || (arr[0].diem===arr[1].diem && arr[0].hs>arr[1].hs));
++    arr.forEach(function(o, i){
++      var dau=dauBang && i===0;
++      h+='<div class="tv-hang'+(dau?' dau':'')+'" style="--i:'+i+'" onclick="modalDoiCauThu(\''+o.maDoi+'\')" title="Xem cầu thủ '+esc(o.tenDoi)+'">'
++        +'<span class="tv-so">'+o.hang+'</span>'
++        +'<span class="tv-logo">'+logoDoiHtml(o.maDoi,compact?30:44)+(dau?'<i class="tv-vm" aria-hidden="true"></i>':'')+'</span>'
++        +'<b class="tv-ten">'+esc(compact?tenDoiNgan_(o.tenDoi):o.tenDoi)+'</b>'
++        +'<span class="tv-c">'+o.st+'</span>'
++        +(compact?'':'<span class="tv-c">'+o.bt+'</span><span class="tv-c">'+o.bb+'</span>')
++        +hs(o.hs)
++        +'<span class="tv-diem"><b>'+o.diem+'</b></span></div>';
+     });
+-    h+='</tbody></table><div class="bxh-chu">'
+-      +'<span><i class="bxh-vach"></i>Top '+soQua+' vào <b>Chung kết</b></span><span>Thắng 3đ · Hòa 1đ</span>'
+-      +(compact?'':'<span><span class="pd t">T</span>Thắng <span class="pd h">H</span>Hòa <span class="pd b">B</span>Thua</span>')
+-      +'</div></div>';
++    h+='</div><div class="bxh-chu"><span>Thắng 3đ · Hòa 1đ · Thua 0đ</span><span>BT bàn thắng · BB bàn bại · HS hiệu số</span></div></div>';
+   }
+   return h;
+ }
