@@ -1,0 +1,26 @@
+{
+  "name": "rm",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@react-three/fiber": "^8.17.10",
+    "@remotion/bundler": "^4.0.300",
+    "@remotion/cli": "^4.0.300",
+    "@remotion/google-fonts": "^4.0.300",
+    "@remotion/renderer": "^4.0.300",
+    "@remotion/three": "^4.0.300",
+    "@remotion/transitions": "^4.0.300",
+    "@types/three": "^0.171.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "remotion": "^4.0.300",
+    "three": "^0.171.0"
+  }
+}

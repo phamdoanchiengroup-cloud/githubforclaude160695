@@ -1,0 +1,78 @@
+{
+ "luot": 3,
+ "date": "15:00 · THỨ BA · 03/11/2026",
+ "teams": [
+  {
+   "key": "rhino",
+   "name": "RHINO FC",
+   "color": "#f0c86e",
+   "sodo": "3-2-1",
+   "players": [
+    {
+     "img": "c_CT9F785673_rhino.png",
+     "name": "Hiếude Gea"
+    },
+    {
+     "img": "c_CT45E49CAB_rhino.png",
+     "name": "Dũngego Costa"
+    },
+    {
+     "img": "c_CT1927A8A3_rhino.png",
+     "name": "Lamine YaHưng"
+    },
+    {
+     "img": "c_CTCF3038CB_rhino.png",
+     "name": "Linhtaro Martínez"
+    },
+    {
+     "img": "c_CT14A76921_rhino.png",
+     "name": "Thịnhago Motta"
+    },
+    {
+     "img": "c_CTEC25A607_rhino.png",
+     "name": "Ricardo Quânresma"
+    },
+    {
+     "img": "c_CTF4C60022_rhino.png",
+     "name": "Aymeric Longporte"
+    }
+   ]
+  },
+  {
+   "key": "cuebots",
+   "name": "CUEBOTS FC",
+   "color": "#d7dcf0",
+   "sodo": "1-3-2",
+   "players": [
+    {
+     "img": "c_CT257A2248_cuebots.png",
+     "name": "Xuyênvi Hernández"
+    },
+    {
+     "img": "c_CT803BABE5_cuebots.png",
+     "name": "Ousmane Đôngbélé"
+    },
+    {
+     "img": "c_CT22E50D00_cuebots.png",
+     "name": "N'Golo Khoa.té"
+    },
+    {
+     "img": "c_CT6FADD0C5_cuebots.png",
+     "name": "Class-Jan HữuAnhlaar"
+    },
+    {
+     "img": "c_CTCDB327EA_cuebots.png",
+     "name": "Achraf Hòakimi"
+    },
+    {
+     "img": "c_CT8EB83F73_cuebots.png",
+     "name": "Zinedine ZiĐức"
+    },
+    {
+     "img": "c_CT9D08DAF9_cuebots.png",
+     "name": "Phil Phốden"
+    }
+   ]
+  }
+ ]
+}
