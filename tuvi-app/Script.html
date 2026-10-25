@@ -3026,7 +3026,7 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
         return '<div id="tvc-' + i + '" class="tv-cung">' + taoCungDeHieu_(c) + (/^(Phụ Mẫu|Huynh Đệ|Điền Trạch)$/.test(c.cung) ? hoiDoiChieu('tuvi-' + c.cung, 'Cung ' + c.cung + ' nói về chuyện gia đình, đã có sẵn trong đời bạn – lời luận này có đúng không?') : '') + '<details class="cung-chitiet"><summary>Xem chi tiết chuyên sâu (thuật ngữ Tử Vi)</summary>' + blockGoc + '</details></div>';
       }).join('') + '</div></div>';
     var p3 = '<div class="panel section"><h2 class="panel-title"><span class="han">合參</span> Tử Vi × Bát Tự</h2>' + res.ketHop.map(function (x) { return '<p>✦ ' + hl(x) + '</p>'; }).join('') + '</div>';
-    var p4 = '<div class="panel section"><h2 class="panel-title"><span class="han">運</span> Đại vận – tiểu vận Tử Vi</h2><p>' + (dvNay ? 'Bạn đang ở đại hạn <b>' + esc(dvNay.khoang) + '</b> (' + esc(String(dvNay.nam)) + ', cung ' + esc(dvNay.cung) + ' – ' + esc(dvNay.danhGia.toLowerCase()) + ').' : '') + ' Toàn bộ đại vận 10 năm, vận năm ' + I.viewYear + ', 12 tháng và lịch từng ngày nằm ở tab <b>Vận hạn</b>.</p>' +
+    var p4 = '<div class="panel section tv-vh-tro"><h2 class="panel-title"><span class="han">運</span> Đại vận – tiểu vận Tử Vi</h2><p>' + (dvNay ? 'Bạn đang ở đại hạn <b>' + esc(dvNay.khoang) + '</b> (' + esc(String(dvNay.nam)) + ', cung ' + esc(dvNay.cung) + ' – ' + esc(dvNay.danhGia.toLowerCase()) + ').' : '') + ' Toàn bộ đại vận 10 năm, vận năm ' + I.viewYear + ', 12 tháng và lịch từng ngày nằm ở tab <b>Vận hạn</b>.</p>' +
       '<button type="button" class="btn btn-ghost btn-sm" data-den="vh">⏳ Sang tab Vận hạn</button></div>';
     // 25/10: 26 bước là bài luận chính – đã gộp Luận 12 cung, Thế đứng & nguồn cội, cách cục, bộ sao, sao hạn đại vận.
     // Bản cũ (thiếu chiTiet.trinhTu) vẫn hiện Luận 12 cung + Thế đứng như trước.
@@ -5683,7 +5683,14 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
       var g = canvasGoc && canvasGoc[i];
       try { if (!g || !g.width) throw 0; var im = document.createElement('img'); im.src = g.toDataURL('image/png'); im.style.width = (g.clientWidth || g.width) + 'px'; im.style.maxWidth = '100%'; c.parentNode.replaceChild(im, c); } catch (e) { c.parentNode.removeChild(c); }
     });
+    // Khối chỉ đường sang tab khác (vô nghĩa trong PDF): bỏ cả phần chứa nó
+    Array.prototype.forEach.call(el.querySelectorAll('.tv-vh-tro'), function (x) { var g = x.closest('.tg') || x; if (g.parentNode) g.parentNode.removeChild(g); });
     Array.prototype.forEach.call(el.querySelectorAll(PDF_BO_WEB), function (x) { if (x.parentNode) x.parentNode.removeChild(x); });
+    Array.prototype.forEach.call(el.querySelectorAll('h4.dd-h'), function (h) { if (/^Điểm 12 cung/.test(h.textContent.trim())) h.parentNode.removeChild(h); });   // dải điểm bấm được đã bỏ
+    // Câu hướng dẫn thao tác trên web
+    Array.prototype.forEach.call(el.querySelectorAll('.lede, p.muted'), function (p) {
+      p.innerHTML = p.innerHTML.replace(/\s*Bấm từng bước để mở\.?/g, '').replace(/Tab riêng, chỉ tài khoản chủ sở hữu thấy\.\s*/g, 'Chương riêng của chủ sở hữu. ');
+    });
     Array.prototype.forEach.call(el.querySelectorAll('details'), function (d) { d.open = true; d.setAttribute('open', ''); });
     Array.prototype.forEach.call(el.querySelectorAll('[id]'), function (x) { x.removeAttribute('id'); });
     Array.prototype.forEach.call(el.querySelectorAll('img'), function (x) { x.setAttribute('crossorigin', 'anonymous'); x.removeAttribute('loading'); });
