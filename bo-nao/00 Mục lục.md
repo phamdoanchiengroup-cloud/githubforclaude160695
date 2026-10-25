@@ -4,6 +4,7 @@ Bộ não thứ hai của **web KPI sản xuất** (nhánh `claude/beautiful-pto
 
 ## Bắt đầu từ đây
 - [[Bàn giao phiên]]: trạng thái mới nhất và việc dở dang – phiên mới đọc trước.
+- [[Liên kết và công cụ]]: repo, nhánh, link Google Drive (Sheet CSDL KPI, ảnh web), artifact, kết nối MCP, skill, plugin, công cụ máy ảo.
 - [[Việc chờ chủ dự án]]: demo chờ góp ý, câu hỏi chờ trả lời, dữ liệu cần sửa tay.
 - [[Lần dán lên Apps Script]]: bản nào đã dán, bản nào chưa, dán kèm file gì.
 - [[Quyết định của chủ dự án]]: những gì đã chốt hoặc đã nói "không cần" – đừng đề xuất lại.

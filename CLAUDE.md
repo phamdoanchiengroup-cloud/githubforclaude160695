@@ -36,10 +36,10 @@ File này được Claude Code tự đọc khi mở repo. Nó giữ **quy tắc 
 
 ## Bộ não thứ hai `bo-nao/` (kiểu Obsidian)
 - Mỗi ghi chú một chủ đề, tên file = tiêu đề, thư mục = nhóm (`KPI/`, `Chung/`; file ở gốc là ghi chú tổng hợp). Liên kết bằng `[[Tên ghi chú]]`, dòng 3 mỗi ghi chú ghi `Liên quan: [[...]]`.
-- Ghi chú tổng hợp: [[00 Mục lục]], [[Việc chờ chủ dự án]], [[Lần dán lên Apps Script]], [[Quyết định của chủ dự án]] (file `.md` cùng tên ở gốc `bo-nao/`).
+- Ghi chú tổng hợp: [[00 Mục lục]], [[Bàn giao phiên]], [[Liên kết và công cụ]] (repo, link Drive, artifact, kết nối, skill, plugin), [[Việc chờ chủ dự án]], [[Lần dán lên Apps Script]], [[Quyết định của chủ dự án]] (file `.md` cùng tên ở gốc `bo-nao/`).
 - **Cuối mỗi việc, cập nhật bộ não** (không dồn chi tiết vào CLAUDE.md):
   1. Sửa ghi chú chủ đề: ngày, việc đã làm, tên hàm/file, số kiểm thử. Chủ đề mới → ghi chú mới + thêm vào `00 Mục lục.md`.
-  2. Cập nhật `Việc chờ chủ dự án.md`, `Lần dán lên Apps Script.md`, `Quyết định của chủ dự án.md` nếu có thay đổi.
+  2. Cập nhật `Việc chờ chủ dự án.md`, `Lần dán lên Apps Script.md`, `Quyết định của chủ dự án.md`, `Liên kết và công cụ.md` (link / mã file / công cụ mới) nếu có thay đổi.
   3. `python3 bo-nao/tao-ban-do.py` (báo lỗi nếu có liên kết hỏng) → dựng `bo-nao/ban-do.html`.
   4. Đăng lại trang bản đồ lên cùng link Artifact: Artifact publish với `url` = link dưới đây, `file_path` = `bo-nao/ban-do.html` (đọc artifact trước nếu phiên này chưa đọc).
 - **Trang bản đồ bộ não web KPI (Artifact riêng tư của chủ dự án):** https://claude.ai/artifact/PXgStqzHKBtykmfvDch6GE
