@@ -266,6 +266,47 @@ function tvcsCtx_(tv, pi) {
   return c;
 }
 
+/** Điều kiện thêm (hàm kc) viết thành lời – cho thư viện bộ sao ở tab Tham khảo */
+var TVCS_DK_THEM = {
+  'Tử Vi cô quân': 'tam phương không có Tả Phù, Hữu Bật mà có từ 2 sát tinh',
+  'Không khố – lộ khố': 'trong cung có Địa Không, Địa Kiếp hoặc Tuần, Triệt',
+  'Phủ Tướng triều viên': 'cung không chứa Thiên Phủ, Thiên Tướng mà được hai sao chầu từ tam phương',
+  'Cự Cơ ở Mão Dậu': 'không có Hóa Kỵ trong cung',
+  'Hình tù giáp ấn': 'có thêm Kình Dương trong cung',
+  'Liêm Trinh gặp Hình – Kình': 'không có Thiên Tướng đồng cung',
+  'Nhật hãm gặp Kỵ': 'Thái Dương hãm địa và có Hóa Kỵ',
+  'Nguyệt hãm gặp Kỵ': 'Thái Âm hãm địa và có Hóa Kỵ',
+  'Thất Sát triều Đẩu': 'trong cung không có sát tinh',
+  'Phá Quân gặp sát': 'trong cung có Kình Dương, Đà La, Hỏa Tinh hoặc Linh Tinh',
+  'Hỏa Tham / Linh Tham': 'Tham Lang không hãm',
+  'Cự Môn hóa Kỵ': 'Cự Môn mang Hóa Kỵ',
+  'Tài ấm giáp ấn': 'hai cung kề là Hóa Lộc và Thiên Lương',
+  'Hình Kỵ giáp ấn': 'hai cung kề là Kình Dương và Hóa Kỵ',
+  'Xương Khúc gặp Kỵ': 'Văn Xương hoặc Văn Khúc mang Hóa Kỵ',
+  'Lộc phùng lưỡng sát': 'trong cung có Địa Không hoặc Địa Kiếp',
+  'Lộc Kỵ đồng cung': 'trong cung có Hóa Kỵ',
+  'Lộc Mã giao trì': 'Thiên Mã và Lộc cùng một cung trong tam phương',
+  'Mã ngộ Không vong': 'cung có Tuần, Triệt, Thiên Không hoặc Địa Không',
+  'Khoa Quyền Lộc giáp': 'hai cung kề là hai trong ba Hóa Lộc, Hóa Quyền, Hóa Khoa',
+  'Dương Đà giáp Kỵ': 'hai cung kề là Kình Dương và Đà La',
+  'Lục sát hội tụ': 'tam phương tứ chính có từ 4 sát tinh (Kình, Đà, Hỏa, Linh, Không, Kiếp)',
+  'Khốc Hư': 'cung không ở Tý, Ngọ',
+  'Tang Hổ': 'Tang Môn hoặc Bạch Hổ nằm ngay trong cung'
+};
+/** Mô tả điều kiện thành bộ bằng lời */
+function tvcsDieuKien_(r) {
+  var CHI_T = ['Tý', 'Sửu', 'Dần', 'Mão', 'Thìn', 'Tỵ', 'Ngọ', 'Mùi', 'Thân', 'Dậu', 'Tuất', 'Hợi'], ds = [];
+  if (r.d) ds.push('cùng cung: ' + r.d.join(' + '));
+  if (r.mot) ds.push('trong cung có một trong: ' + r.mot.join(', '));
+  if (r.h) ds.push('tam phương tứ chính có: ' + r.h.join(', '));
+  if (r.motH) ds.push('tam phương có một trong: ' + r.motH.join(', '));
+  if (r.g) ds.push('hai cung kề hai bên là ' + r.g.join(' và '));
+  if (r.chi) ds.push('cung an tại ' + r.chi.map(function (c) { return CHI_T[c]; }).join(', '));
+  if (TVCS_DK_THEM[r.ten]) ds.push(TVCS_DK_THEM[r.ten]);
+  if (r.o) ds.push('xét ở cung ' + r.o.join(', '));
+  return ds.join('; ');
+}
+
 /** Bộ sao khớp ở một cung */
 function tvcsBoSaoCung_(tv, pi) {
   var c = tvcsCtx_(tv, pi), out = [];
@@ -418,6 +459,15 @@ function tvcsLap_(tv) {
   var dv = tvcsDaiVan_(tv);
   return { ten: tv.info.name, gioi: tv.info.gender, namSinh: tv.info.lunar.year, namCanChi: tv.info.namCanChi, cuc: tv.info.cuc, banMenh: tv.info.banMenh.ten,
     boSao: tvcsBoSao_(tv), daiVan: dv, tho: tvcsTho_(tv, dv), nguon: TVCS_NGUON };
+}
+
+/** API công khai cho tab Tham khảo: thư viện bộ sao (không cần lá số) + bảng nghề nghiệp */
+function thamKhaoTuVi() {
+  return {
+    boSao: TVCS_BO_SAO.map(function (r) { return { ten: r.ten, loai: r.loai, cau: r.cau || '', y: r.y, huong: r.huong || '', dk: tvcsDieuKien_(r) }; }),
+    nghe: typeof TVCS_NGHE !== 'undefined' ? TVCS_NGHE : [],
+    nguon: TVCS_NGUON
+  };
 }
 
 /** API cho giao diện: chỉ chủ sở hữu */
