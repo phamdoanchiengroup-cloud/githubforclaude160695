@@ -76,6 +76,38 @@ Tóm tắt phiên làm việc 10–25/10/2026. Đọc hết trước khi làm. *
 - Cái gì xong trước thì gửi trước. Không hỏi API key trong chat. Hỏi trước khi tiêu credit trả phí. Canva được dùng tự động.
 - Không bịa số liệu: mọi tỷ số, phút, tên đều lấy từ sheet.
 
+## Tài nguyên & liên kết (để phiên sau không phải đi tìm)
+### Google Drive / Sheet (đọc bằng connector **Google Drive** – `search_files`, `read_file_content`, `download_file_content`)
+- Sheet dữ liệu giải "Web đá bóng 2026": https://docs.google.com/spreadsheets/d/1k8zaZhkRM88Oye0zcKvD6q7PHv9KetTvNmY9xCYR6bE/edit
+  - Tab: Doi (logo `LogoUrl`, khung thẻ `KhungThe`, đội trưởng `DoiTruongMaCT`), CauThu (ảnh `AnhUrl`, ảnh theo đội `AnhTheoDoi` JSON, chỉ số thẻ), DoiHinh, TranDau, SuKien, Media (link YouTube từng trận), CauHinh (TEN_GIAI, BANNER_URL, GIAI_THUONG… – **bỏ qua các dòng mật khẩu**).
+- Logo đội (Drive, cột LogoUrl tab Doi):
+  - EVO FC https://drive.google.com/file/d/1EYq-r_pJc3decdsj31VMrp35_20s81Wk/view
+  - RHINO FC https://drive.google.com/file/d/1SLpOl3msDE7MvZ1skVjY66chAi8AHQPT/view
+  - CUEBOTS FC https://drive.google.com/file/d/1JQ2FRA9U-86arCjDk8A0q7OfSq-SngPx/view
+  - TIME-TIP FC https://drive.google.com/file/d/1vouOUZSzQVg0hnlHWv1wFvozhmx09Q_i/view
+  - (FC RETRO, JUNIORS FC: xem tab Doi)
+- Banner web (BANNER_URL): https://drive.google.com/file/d/18jGkWFsQR5Od4nNA2LP4WGanzVqURFxJ/view · ảnh trong mã Index.html: `BANNER_HEP_ID` 1RbTWbhEL38WiZYu36A-ewZ3_1ELyiyFC, `GIAI_THUONG_IMG` 1YjHCGAWx7pRRPO8TXJDIvyR61u4nZmhz
+- Video giới thiệu trên web (`VIDEO_GIOI_THIEU`): https://youtu.be/lhtLebUcmPQ ; video từng trận nằm ở tab Media (RHINO VS EVO https://youtu.be/KWTYpemQC0w, CUEBOTS VS TIME-TIP https://youtu.be/P0Yn7JW_C8o, RHINO VS TIME-TIP https://youtu.be/RZ_rEyMYZDc, EVO VS CUEBOTS https://youtu.be/c3ZVNEOhCTA, RHINO VS CUEBOTS https://youtu.be/SBW57rj11KA, EVO VS TIME-TIP https://youtu.be/hrDLSi7hrP8, RETRO VS JUNIORS https://youtu.be/4KlPUyciylw)
+- Chuyển link Drive thành ảnh tải được: `https://drive.google.com/thumbnail?id=<ID>&sz=w2000` (hoặc connector `download_file_content`).
+
+### Connector / plugin đã dùng
+- **Google Drive** (bắt buộc – đọc sheet, tải ảnh cầu thủ/logo).
+- **Canva** – chủ dự án cho phép dùng tự động không cần hỏi (generate-image, export-design, upload). Hạn mức Canva có giới hạn.
+- **ProJect (Everygen) generate_image** – có tốn credit: hỏi trước khi dùng.
+- Gemini / Hugging Face tạo ảnh: chưa dùng được (thiếu HF_TOKEN; không xin key trong chat).
+- GitHub: repo `phamdoanchiengroup-cloud/githubforclaude160695` (nhánh `claude/happy-brown-lttkz3`, thư mục `webbongda/`). Không có `gh` CLI – dùng git + tool GitHub MCP nếu cần.
+
+### Repo / công cụ ngoài
+- **pdoom-video** (engine video three.js, beat-sync): https://github.com/mexicat/pdoom-video – cần **bun** (`curl -fsSL https://bun.sh/install | bash`, PATH `/root/.bun/bin`). Sửa `scripts/render.ts` cho Chromium có sẵn: `executablePath: '/opt/pw-browsers/chromium'`, args `--use-angle=swiftshader --enable-unsafe-swiftshader`; đổi đường dẫn nhạc `audio/pdoom.mp3` → nhạc của mình; dữ liệu nhịp `data/audio.json` tạo bằng `media-src/scripts/phan_tich_nhac.py`; `data/lyrics.json` = `{"lines":[]}`. Render CPU ~0,7 khung/giây (41 s ≈ 28 phút).
+- **Remotion 4** (`media-src/remotion/package.json`: remotion/@remotion/cli 4.0.300+, react 18, three 0.171) – `npm install` trong thư mục remotion, `public/` tự dựng lại (xem trên).
+- **rembg 2.0.86** (venv Python: `pip install rembg onnxruntime opencv-python-headless scipy pillow`), mô hình `birefnet-portrait` (tách người – tốt nhất), `birefnet-general` (logo, 2 người); chạy từng ảnh một (chạy song song dễ bị kill). Ví dụ: `media-src/scripts/tach_nen_rembg.py`.
+- **ffmpeg** có sẵn; **Playwright + Chromium** có sẵn (`/opt/pw-browsers/...`, không chạy `playwright install`).
+- Phông: Oswald 700 (`OSW`), Be Vietnam Pro 800 (`VIE`) – file .ttf trong `public/`, tải từ Google Fonts.
+- Nhạc: incompetech.com (Kevin MacLeod, CC BY 4.0 – luôn ghi công cuối video).
+
+### Skill
+- Không dùng skill riêng cho dự án này. Video làm bằng Remotion/pdoom tự viết (không dùng HyperFrames).
+
 ## Việc có thể làm tiếp
 - Video kết quả lượt 2 sau ngày 29/10: lấy tỷ số và sự kiện từ sheet, dùng phong cách poster (HypeLuot2PS).
 - Poster lượt 3 (03/11).
