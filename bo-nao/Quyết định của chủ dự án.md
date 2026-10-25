@@ -4,6 +4,7 @@ Nhóm: Bắt đầu · Cập nhật 21/10/2026
 Liên quan: [[Việc chờ chủ dự án]] · [[TCC Bán hàng]] · [[00 Mục lục]]
 
 ## Cách làm việc
+- **25/10 (khuya): PDF có 4 loại** – đầy đủ, **bản gọn ~100 trang** (cùng quyền với bản đầy đủ), **bản tóm tắt ~50 trang** (mở cho mọi người, chỉ in phần đã mở), bản xem thử. Nội dung bản gọn/tóm tắt chọn lọc từ luận giải có sẵn theo quy tắc chuyên gia content-creator soạn.
 - **25/10 (khuya): ảnh mới của chủ dự án** – 5 ngũ hành dùng ở tab Bát Tự (banner Nhật chủ, thẻ dụng/hỷ/kỵ thần) và trang PDF "Ngũ hành của bạn"; 12 con giáp (tuổi Mão là Mèo) ở thẻ hồ sơ, đầu vận năm (tab Vận hạn), trang PDF "Tuổi của bạn"; ảnh tiên cảnh cắt giữa phủ kín bìa PDF (cả nền sáng và tối). **PDF đi theo đúng nội dung web cả 6 hệ, đầy đủ, bỏ phần căn cứ; chủ sở hữu xuất thì thêm chương 👑.**
 - **25/10 (đêm): dòng lưu ý "Đây là góc nhìn theo cổ học…" đưa xuống chân trang web** (chữ nhỏ, không khung) vì che mục lục; PDF vẫn giữ trong "Cách đọc báo cáo".
 - **25/10 (đêm): 26 bước là bài luận chính của tab Tử Vi** – gộp Luận 12 cung, Thế đứng & nguồn cội, cách cục vào đúng bước rồi bỏ các phần trùng; bộ sao (thư viện) áp vào từng bước liên quan (lời dễ hiểu không tên sao, tên bộ + câu phú ở Căn cứ); mỗi bước dài, đầy đủ như sách; bước 26 dùng sao hạn đại vận viết nhẹ nhàng cho mọi người (thọ khí vẫn chỉ ở tab 👑). – [[TCC Tử Vi đối chiếu các phái]]
