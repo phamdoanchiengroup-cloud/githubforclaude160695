@@ -27,7 +27,7 @@
     });
   }
   /** Mã phiên bản giao diện – phải trùng với Index.html (meta tcc-ban) và Styles.html (--tcc-ban) */
-  var BAN_GIAO_DIEN = '2026.10.25.5';
+  var BAN_GIAO_DIEN = '2026.10.25.7';
   function storeGet(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
   function storeSet(k, v) { try { localStorage.setItem(k, v); } catch (e) { /* bỏ qua */ } }
 
@@ -2920,18 +2920,79 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
     return h + coSoHtml('Nguồn và cách hiểu', TP.coSo);
   }
   /** Luận Tử Vi theo trình tự 26 bước (TuViTrinhTu.gs): 6 nhóm, mỗi bước một thẻ gập – lời dễ hiểu trước, căn cứ thuật ngữ thu gọn */
-  function trinhTuHtml(T) {
-    var DAU = { tot: '✦', vua: '◇', xau: '☾' };
+  /* 25/10: 26 bước là bài luận chính của tab Tử Vi – mỗi bước gộp thêm (theo trường gop từ TuViTrinhTu.gs › TT_GOP):
+     văn dễ hiểu của cung (taoCungDeHieu_), bộ sao ở cung (chiTiet.boSao), ba vòng nhân sinh (chiTiet.tamPhap), cách cục,
+     sao hạn đại vận (chiTiet.saoHan). Lời dễ hiểu không tên sao; tên sao, câu phú, chi tiết chuyên sâu nằm trong "Căn cứ". */
+  function ttBoSaoHtml(ds) {
+    if (!ds || !ds.length) return '';
+    var DAU = { cat: '✦', hung: '☾', trung: '◇' };
+    return '<div class="tt26-bo"><h5 class="tt26-h5">Những tổ hợp đáng chú ý ở mảng này</h5>' + ds.map(function (b) {
+      return '<p class="tt26-bo-' + b.loai + '"><b aria-hidden="true">' + (DAU[b.loai] || '◇') + '</b> ' + esc(b.de) + (b.khuyen ? ' <span class="tt26-khuyen">' + esc(b.khuyen) + '</span>' : '') + '</p>';
+    }).join('') + '</div>';
+  }
+  function ttBoSaoKy(ds, cung) { return (ds || []).map(function (b) { return 'Bộ "' + b.ten + '" ở cung ' + cung + (b.cau ? ' – “' + b.cau + '”' : ''); }); }
+  function trinhTuHtml(T, res) {
+    var DAU = { tot: '✦', vua: '◇', xau: '☾' }, CT = (res && res.chiTiet) || {}, L = res && res.tuvi && res.tuvi.luanGiai, I = res && res.tuvi && res.tuvi.info;
+    var TP = CT.tamPhap, BS = CT.boSao || {}, dsCung = CT.cung || [];
+    function tpMuc(t) { var x = TP && TP.baVong && (TP.baVong.de || []).filter(function (d) { return d.t === t; })[0]; return x ? '<h5 class="tt26-h5">' + esc(x.t) + '</h5><p>' + esc(x.v) + '</p>' : ''; }
+    function gopHtml(b) {
+      var G = b.gop || {}, h = '', ky = [], sau = '';
+      (G.cung || []).forEach(function (ten) {
+        var i = -1; dsCung.forEach(function (c, k) { if (c.cung === ten) i = k; });
+        if (i < 0) return;
+        var c = dsCung[i], vt = ''; try { vt = taoCungDeHieu_(c); } catch (e) { vt = ''; }
+        h += '<div id="tvc-' + i + '" class="tt26-cung"><h4 class="tt26-tc">Cung ' + esc(ten) + (c.isThan ? ' · Thân cư' : '') + ' <small>' + esc(c.danhGia || '') + '</small></h4>' + vt +
+          (/^(Phụ Mẫu|Huynh Đệ|Điền Trạch)$/.test(ten) ? hoiDoiChieu('tuvi-' + ten, 'Cung ' + ten + ' nói về chuyện gia đình, đã có sẵn trong đời bạn – lời luận này có đúng không?') : '') +
+          ttBoSaoHtml(BS[ten]) + '</div>';
+        ky = ky.concat(ttBoSaoKy(BS[ten], ten));
+        try { sau += '<details class="cung-chitiet"><summary>Chi tiết chuyên sâu cung ' + esc(ten) + '</summary>' + blockHtml(voiTuTru(res, c), 'Cung ' + ten + (c.isThan ? ' · Thân cư' : ''), c.canChi, false) + '</details>'; } catch (e) {}
+      });
+      if (G.than && I && I.thanCu !== 'Mệnh') h += '<p class="muted">Cung an Thân là cung ' + esc(I.thanCu) + ' – phần luận chi tiết và các tổ hợp sao của cung này nằm ở bước nói về mảng đó.</p>';
+      if (G.cung && G.cung.indexOf('Mệnh') >= 0 && L && L.menh) ky = ky.concat(L.menh);
+      (G.tp || []).forEach(function (t) { h += tpMuc(t); });
+      if (G.tpKy && TP && TP.baVong && TP.baVong.ky) ky = ky.concat(TP.baVong.ky);
+      if (G.tongQuan && L) ky = ky.concat(L.tongQuan);
+      if (G.cachCuc && L && L.cachCuc && L.cachCuc.length) sau = '<details class="cung-chitiet" open><summary>Cách cục của lá số (' + L.cachCuc.length + ')</summary><div class="cc-list">' + L.cachCuc.map(function (c) {
+        return '<div class="cc-item ' + (c.tot === true ? 'good' : c.tot === false ? 'bad' : 'mid') + '"><b>' + esc(c.ten) + '</b><small>' + esc(c.moTa) + '</small></div>'; }).join('') + '</div></details>' + sau;
+      if (G.vanThaiTue && TP && TP.vanThaiTue && TP.vanThaiTue.length) {
+        h += '<h5 class="tt26-h5">Những giai đoạn "đắc thời"</h5><p class="muted">★ là giai đoạn vận đi đúng thế chính danh của tuổi – dễ được thừa nhận, có tiếng nói.</p><ul class="th-kl tp-van">' +
+          TP.vanThaiTue.map(function (v) { return '<li' + (v.isNow ? ' class="tp-nay"' : '') + '>' + (v.dacThoi ? '★ ' : '') + '<b>' + esc(v.khoang) + '</b>' + (v.isNow ? ' <em>(đang ở)</em>' : '') + ': ' + esc(v.de) + '</li>'; }).join('') + '</ul>';
+        ky = ky.concat(TP.vanThaiTue.map(function (v) { return v.khoang + ' – ' + v.ky; }));
+      }
+      if (G.saoHan && CT.saoHan && CT.saoHan.length) {
+        h += '<h5 class="tt26-h5">Các đại vận – những điều cần phòng</h5><p class="muted">Khác với mức tốt – xấu chung của vận ở trên: một vận tốt vẫn có thể có vài điều nên phòng, và ngược lại.</p><div class="tt26-sh">' + CT.saoHan.map(function (v) {
+          return '<div class="tt26-shv ' + v.huong + (v.hienTai ? ' nay' : '') + '"><b>' + v.tu + '–' + v.den + ' tuổi <small>(' + v.tuNam + '–' + v.denNam + ')' + (v.hienTai ? ' · đang đi' : '') + '</small></b><i>' + esc(v.muc) + '</i>' +
+            (v.khoa ? '<p class="muted">🔒 Lời luận giai đoạn này nằm trong phần đại vận chưa mở – xem ở tab Vận hạn.</p>' : '<p>' + esc(v.de) + (v.nam && v.nam.length ? ' Những năm nên chậm lại: ' + v.nam.join(', ') + '.' : '') + '</p>') + '</div>';
+        }).join('') + '</div><p class="muted">Cách xem: soi các yếu tố cổ thư hay để ý ở từng vận (lúc hụt kỳ vọng, lúc hao tổn, lúc việc cũ đến hồi kết…), trừ bớt khi có yếu tố nâng đỡ. Chỉ để chủ động sắp xếp, không phải lời phán.</p>' +
+          '<button type="button" class="btn btn-ghost btn-sm" data-den="vh">⏳ Đại vận 5 hệ, vận năm, tháng, ngày ở tab Vận hạn</button>';
+        ky = ky.concat(CT.saoHan.filter(function (v) { return v.ky; }).map(function (v) { return v.tu + '–' + v.den + ' tuổi: ' + v.ky; }));
+      }
+      return { h: h, ky: ky, sau: sau };
+    }
     return '<div class="panel section tt26"><h2 class="panel-title"><span class="han">序</span> Luận theo trình tự</h2>' +
-      '<p class="lede">Đi từ gốc rễ (can chi năm sinh, mệnh – cục – mùa sinh) tới cốt cách lá số, ba vòng sao, các nhóm sao, từng chủ đề đời sống và vận hạn năm nay. ✦ thuận · ◇ vừa · ☾ cần lưu ý.</p>' +
+      '<p class="lede">Bài luận chính của lá số: đi từ gốc rễ (can chi năm sinh, mệnh – cục – mùa sinh) tới cốt cách, ba vòng sao, các nhóm sao, từng mảng đời sống (mỗi mảng gồm luận cung và những tổ hợp sao đáng chú ý) và vận hạn. ✦ thuận · ◇ vừa · ☾ cần lưu ý. Bấm từng bước để mở.</p>' +
       T.nhom.map(function (g) {
         var ds = T.buoc.filter(function (b) { return b.so >= g.tu && b.so <= g.den; });
         return '<h3 class="tt26-nhom">' + esc(g.ten) + '</h3>' + ds.map(function (b) {
+          var G = gopHtml(b), ky = (b.ky || []).concat(G.ky);
           return '<details class="tt26-b ' + b.huong + '"' + (b.so <= 4 ? ' open' : '') + '><summary><span class="tt26-so">' + b.so + '</span><b>' + esc(b.ten) + '</b><i aria-hidden="true">' + (DAU[b.huong] || '') + '</i></summary>' +
-            '<div class="tt26-nd">' + b.de.map(function (x) { return '<p>' + esc(x) + '</p>'; }).join('') +
-            (b.ky && b.ky.length ? '<details class="tt26-ky"><summary>Căn cứ (thuật ngữ Tử Vi)</summary><ul>' + b.ky.map(function (x) { return '<li>' + esc(x) + '</li>'; }).join('') + '</ul></details>' : '') + '</div></details>';
+            '<div class="tt26-nd">' + b.de.map(function (x) { return '<p>' + esc(x) + '</p>'; }).join('') + G.h +
+            (ky.length || G.sau ? '<details class="tt26-ky"><summary>Căn cứ (thuật ngữ Tử Vi)</summary>' + (ky.length ? '<ul>' + ky.map(function (x) { return '<li>' + hl(x) + '</li>'; }).join('') + '</ul>' : '') + G.sau + '</details>' : '') + '</div></details>';
         }).join('');
-      }).join('') + '</div>';
+      }).join('') + (TP ? phiTinhHtml(TP) : '') + (CT.coSo && CT.coSo.cung ? coSoHtml('Cơ sở lý luận luận cung', CT.coSo.cung) : '') + (TP && TP.coSo ? coSoHtml('Ba vòng nhân sinh – nguồn và cách hiểu', TP.coSo) : '') + '</div>';
+  }
+  /** Phi Tinh (tham khảo) – phụ lục cuối 26 bước */
+  function phiTinhHtml(TP) {
+    var F = TP.phiTinh; if (!F) return '';
+    var li = function (a) { return a.map(function (x) { return '<li>' + esc(x) + '</li>'; }).join(''); };
+    var phi = [].concat(F.menhPhi || [], F.nhapMenh || [], F.kyXung || [], F.khac || []);
+    if (!F.laiNhan && !(F.tuHoa || []).length && !phi.length) return '';
+    return '<details class="tt26-b tt26-phu"><summary><span class="tt26-so">+</span><b>Tham khảo thêm: nguồn cội & dòng chảy giữa các cung (Phi Tinh)</b><i>◇</i></summary><div class="tt26-nd">' +
+      '<p class="muted">Theo phái Phi Tinh (Tứ Hóa phái, phát triển ở Đài Loan) – một góc nhìn hiện đại để tham khảo, không cộng vào điểm cung.</p>' +
+      (F.laiNhan ? '<h5 class="tt26-h5">Cung nguồn cội</h5><p>' + esc(F.laiNhan.de) + '</p>' : '') +
+      ((F.tuHoa || []).length ? '<h5 class="tt26-h5">Những lĩnh vực "tự vận hành"</h5><ul class="th-kl">' + li(F.tuHoa.map(function (x) { return x.de; })) + '</ul>' : '') +
+      (phi.length ? '<h5 class="tt26-h5">Bạn dồn sức vào đâu – điều gì tìm đến bạn</h5><ul class="th-kl">' + li(phi) + '</ul>' : '') +
+      '<details class="tt26-ky"><summary>Căn cứ (can cung, phi hóa)</summary><ul>' + li(F.ky || []) + '</ul></details></div></details>';
   }
   function khoiPhan(nhom, so, ten, phu, noi) { return '<div class="tg ' + nhom + '" data-g="' + nhom + '-' + so + '"><div class="tg-head"><span>Phần ' + so + '</span><b>' + ten + '</b><em>' + phu + '</em></div>' + noi + '</div>'; }
   function renderLuan(res) {
@@ -2941,17 +3002,17 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
     var chiSo = [['Mệnh', chinhMenh], ['Thân cư', I.thanCu], ['Cục', I.cuc], ['Bản mệnh (nạp âm năm)', I.banMenh && I.banMenh.ten || ''], ['Nạp âm cung Mệnh', I.menhNapAm && I.menhNapAm.ten || ''], ['Mệnh chủ · Thân chủ', I.menhChu + ' · ' + I.thanChu], ['Âm dương', I.amDuong]];
     var dvNay = (CT.daiVan || []).filter(function (d) { return d.isNow; })[0];
     // PHẦN 1 – Chân dung lá số: gộp Tổng quan + Mệnh & Thân + Cách cục + Cung mạnh / cung yếu (trước đây tách 5 khung, trùng ý)
+    var co26 = !!(CT.trinhTu && CT.trinhTu.buoc);
     var p1 = '<div class="panel section tv-chandung"><h2 class="panel-title"><span class="han">命</span> Chân dung lá số</h2>' +
       '<div class="stat-row tv-chiso">' + chiSo.map(function (c) { return '<div class="stat"><small>' + esc(c[0]) + '</small><b>' + esc(c[1]) + '</b></div>'; }).join('') + '</div>' +
-      '<h4 class="dd-h">Cung Mệnh & Thân</h4>' + L.menh.map(function (x) { return '<p>' + hl(x) + '</p>'; }).join('') +
-      '<h4 class="dd-h">Bố cục lá số</h4><ul>' + L.tongQuan.map(function (x) { return '<li>' + hl(x) + '</li>'; }).join('') + '</ul>' +
-      (L.cachCuc.length ? '<h4 class="dd-h">Cách cục</h4><div class="cc-list">' + L.cachCuc.map(function (c) {
-        return '<div class="cc-item ' + (c.tot === true ? 'good' : c.tot === false ? 'bad' : 'mid') + '"><b>' + esc(c.ten) + '</b><small>' + esc(c.moTa) + '</small></div>'; }).join('') + '</div>' : '') +
+      (co26 ? '<h4 class="dd-h">Điểm 12 cung <small class="muted">(bấm một cung để tới phần luận của cung đó trong 26 bước)</small></h4>' +
+        stripHtml(CT.cung.map(function (c) { return { diem: c.diem, danhGia: c.danhGia, cung: c.cung, canChi: c.canChi }; }), function (c) { return c.cung; }, function (c) { return c.canChi; }, function (c, i) { return i === 0; }, 'tvc-') : '') +
       '<div class="bt-grid"><div><h4 class="dd-h good">☀ Cung mạnh</h4><ul class="th-kl">' + tops.slice(0, 4).map(function (c) { return '<li>' + hl(c.cung + ' (' + c.danhGia + '): ' + c.yNghia) + '</li>'; }).join('') + '</ul></div>' +
       '<div><h4 class="dd-h bad">☾ Cung cần lưu ý</h4><ul class="th-kl">' + tops.slice(-4).reverse().map(function (c) { return '<li>' + hl(c.cung + ' (' + c.danhGia + '): ' + c.yNghia) + '</li>'; }).join('') + '</ul></div></div>' +
       coSoHtml('Cách chấm điểm (thang 10)', CACH_CHAM.slice(0, 2)) + '</div>';
     // PHẦN 2 – Luận 12 cung (văn dễ hiểu + chi tiết chuyên sâu thu gọn)
-    var p2 = '<div class="panel section"><h2 class="panel-title"><span class="han">宮</span> Luận 12 cung</h2>' + coSoHtml('Cơ sở lý luận luận cung', CT.coSo.cung) +
+    // Chỉ dựng khi bản máy chủ cũ chưa có 26 bước (26 bước đã gộp 12 cung)
+    var p2 = co26 ? '' : '<div class="panel section"><h2 class="panel-title"><span class="han">宮</span> Luận 12 cung</h2>' + (CT.coSo && CT.coSo.cung ? coSoHtml('Cơ sở lý luận luận cung', CT.coSo.cung) : '') +
       stripHtml(CT.cung.map(function (c) { return { diem: c.diem, danhGia: c.danhGia, cung: c.cung, canChi: c.canChi }; }), function (c) { return c.cung; }, function (c) { return c.canChi; }, function (c, i) { return i === 0; }, 'tvc-') +
       '<div class="lg-list">' + CT.cung.map(function (c, i) {
         var blockGoc = blockHtml(voiTuTru(res, c), 'Cung ' + c.cung + (c.isThan ? ' · Thân cư' : ''), c.canChi, i === 0);
@@ -2960,12 +3021,14 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
     var p3 = '<div class="panel section"><h2 class="panel-title"><span class="han">合參</span> Tử Vi × Bát Tự</h2>' + res.ketHop.map(function (x) { return '<p>✦ ' + hl(x) + '</p>'; }).join('') + '</div>';
     var p4 = '<div class="panel section"><h2 class="panel-title"><span class="han">運</span> Đại vận – tiểu vận Tử Vi</h2><p>' + (dvNay ? 'Bạn đang ở đại hạn <b>' + esc(dvNay.khoang) + '</b> (' + esc(String(dvNay.nam)) + ', cung ' + esc(dvNay.cung) + ' – ' + esc(dvNay.danhGia.toLowerCase()) + ').' : '') + ' Toàn bộ đại vận 10 năm, vận năm ' + I.viewYear + ', 12 tháng và lịch từng ngày nằm ở tab <b>Vận hạn</b>.</p>' +
       '<button type="button" class="btn btn-ghost btn-sm" data-den="vh">⏳ Sang tab Vận hạn</button></div>';
-    var tp = CT.tamPhap ? tamPhapHtml(CT.tamPhap) : '';
-    var t26 = CT.trinhTu && CT.trinhTu.buoc ? trinhTuHtml(CT.trinhTu) : '', so = 1;
-    var html = khoiPhan('tvp', so++, 'Chân dung lá số', 'Mệnh – Thân, bố cục, cách cục, cung mạnh và cung yếu', p1) +
-      (t26 ? khoiPhan('tvp', so++, 'Luận theo trình tự 26 bước', 'Từ gốc can chi năm sinh đến vận hạn năm nay – đọc lần lượt như một thầy luận', t26) : '') +
+    // 25/10: 26 bước là bài luận chính – đã gộp Luận 12 cung, Thế đứng & nguồn cội, cách cục, bộ sao, sao hạn đại vận.
+    // Bản cũ (thiếu chiTiet.trinhTu) vẫn hiện Luận 12 cung + Thế đứng như trước.
+    var t26 = CT.trinhTu && CT.trinhTu.buoc ? trinhTuHtml(CT.trinhTu, res) : '', so = 1;
+    var tp = !t26 && CT.tamPhap ? tamPhapHtml(CT.tamPhap) : '';
+    var html = khoiPhan('tvp', so++, 'Chân dung lá số', 'Chỉ số chính, điểm 12 cung, cung mạnh và cung yếu', p1) +
+      (t26 ? khoiPhan('tvp', so++, 'Luận theo trình tự 26 bước', 'Bài luận chính: gốc rễ → cốt cách → ba vòng sao → các mảng đời sống → vận hạn', t26) : '') +
       (tp ? khoiPhan('tvp', so++, 'Thế đứng & nguồn cội', 'Ba vòng nhân sinh (phái Thiên Lương) · Phi Tinh (tham khảo)', tp) : '') +
-      khoiPhan('tvp', so++, 'Luận 12 cung', 'Mỗi cung: văn dễ hiểu trước, thuật ngữ chuyên sâu thu gọn bên dưới', p2) +
+      (t26 ? '' : khoiPhan('tvp', so++, 'Luận 12 cung', 'Mỗi cung: văn dễ hiểu trước, thuật ngữ chuyên sâu thu gọn bên dưới', p2)) +
       khoiPhan('tvp', so++, 'Đối chiếu Tử Vi × Bát Tự', 'Hai hệ cùng chiều thì kết luận chắc chắn hơn', p3) +
       khoiPhan('tvp', so++, 'Vận hạn', 'Đại vận, vận năm, tháng, ngày', p4);
     $('page-luan').innerHTML = html;
