@@ -198,3 +198,4 @@ Liên quan: [[TCC PDF]] · [[TCC Lá số 3D]] · [[TCC Văn dễ hiểu và T�
 - Tab "👑 Lá số chủ sở hữu" (`.tab-chu`, chỉ hiện với chủ sở hữu) và tab "📚 Tham khảo" 3 mục – xem [[TCC Tử Vi đối chiếu các phái]].
 - 25/10 (đêm, mã 2026.10.25.8): `.tcc-luu-y` chuyển từ `.res-top` (Index.html) vào `<footer class="footer">`, CSS gọn (12,5px, không nền/viền).
 - 25/10 (đêm, mã 2026.10.25.9): `.cta-bar` bị lệch ra mép phải vì hiệu ứng chung `.hien { animation: huLen }` đè `transform: translate(-50%)` → thêm `.cta-bar.hien { animation: none }`. Chân trang: `body.co-cta .footer { padding-bottom: 120px }`, điện thoại padding ngang 64px tránh nút tròn nổi. Kiểm tra bằng chuyên gia evidence-collector.
+- 25/10 (khuya, mã 2026.10.25.10): ảnh ngũ hành (`.bcs-banner` Nhật chủ, `.bcs-anh` trong 5 thẻ dụng/hỷ/kỵ/nhàn thần – tab Bát Tự), ảnh con giáp ở thẻ hồ sơ (`.ho-so-av.co-anh`, `veHoSo`) và đầu vận năm (`.vh-giap`, tab Vận hạn). Xem [[TCC PDF]].

@@ -18,3 +18,11 @@ Bản cũ chụp lại các thẻ giao diện web (97 trang, 23 MB, nhiều chip
 - Giao diện: CSS khối "BÁO CÁO PDF (bc-*)" cuối Styles.html; nền giấy ngà `bc-sang` (mặc định) hoặc than ấm `bc-toi`; lề trang 42/46/50 pt, nội dung rộng 760 px; mục lục có số trang + ô "Cách đọc báo cáo"; chân trang số trang. Bìa giữ kiểu cũ (tối, vòng hoàng đạo).
 - Kết quả với lá số mẫu: đầy đủ 55 trang ~13 MB, xem thử 11 trang ~2 MB. Mã giao diện `2026.10.22.3`.
 - Xuất thử trong phiên đám mây: `cd tests && npm install --no-save html2canvas@1.4.1 jspdf@2.5.1`, rồi `python3 tools/xem-truoc.py && PW=/opt/node22/lib/node_modules/playwright node tools/xuat-pdf.js /đường/dẫn.pdf` (`TYPE=demo`, `THEME=dark`). Xem trang bằng `pdftoppm`.
+
+## 25/10 (khuya) – PDF đi theo web (mã 2026.10.25.10)
+- Chủ dự án chọn: cả 6 hệ theo bố cục web, đầy đủ, bỏ "Căn cứ"; chương 👑 chỉ khi chủ sở hữu xuất.
+- `Script.html`: `PDF_WEB` – lúc xuất, mỗi tab (chart → `#page-luan`, battu, halac, astro, so, hd) được hiện rồi chép bằng `pdfTuWeb` → `pdfLamSach` (mở mọi `details`, bỏ `PDF_BO_WEB`: holo-wrap, mục lục tab, tt26-ky, cung-chitiet, coso, vs-canco, hdc, nút, thẻ khóa…, canvas → ảnh, bỏ id). `pdfNoiDung` dùng PDF_WEB nếu có, không thì bản cũ (`pdfChart`, `pdfHe`). Nền sáng: `pdfSangHoa` đo màu thật, ô nền tối → giấy #FBF8F1, chữ sáng → #2B2A2E. CSS `.pdf-web`, `.bc-sang .pdf-web …`.
+- Trang mới: `mo` "Tuổi của bạn" (`pdfTuoi`, ảnh con giáp + bảng năm sinh, bản mệnh, cục, Mệnh – Thân, ảnh hành bản mệnh) đứng đầu; `nguhanh` "Ngũ hành của bạn" (`pdfNguHanh`, banner hành Nhật chủ, 5 ô hành có ảnh + % + vai dụng/hỷ/kỵ, `NGU_HANH_Y`) ngay sau Bát Tự. Chương `chu` (`chuHtml` qua `pdfTuHtml`) khi `laChu()`.
+- Bìa: `bia()` dùng `PdfBia2.webp` cho cả hai nền (bỏ bánh xe/holo và pdf-bia cũ).
+- Ảnh qua jsDelivr SHA `19203fbd20433f395336269a411f8aebcf990086` (`TCC_ANH_CDN`, `anhHanh`, `anhGiap`): `anh/NguHanh{Moc,Hoa,Tho,Kim,Thuy}.webp`, `anh/ConGiap00..11.webp` (Tý → Hợi, 03 = Mèo), `anh/PdfBia2.webp`.
+- Thử (lá số mẫu, nền sáng, đầy đủ): 183 trang, ~46 MB (trước ~55 trang) – vì gộp đủ 26 bước + 5 hệ như web. Có thể làm "bản gọn" nếu chủ dự án thấy nặng.
