@@ -5715,6 +5715,13 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
     var ch = (RUT.chuong || {})[k];
     if (k === 'chart') { pdfCatTuVi(c, RUT.tuVi || {}); }
     if (!ch || typeof ch !== 'object') return;
+    if (ch.deHieuDoan) Array.prototype.forEach.call(c.querySelectorAll('.dh-panel .cung-van-de-hieu'), function (kh) {   // phần "Luận giải dễ hiểu": giữ N đoạn đầu hoặc các đoạn có tiêu đề trong danh sách
+      Array.prototype.forEach.call(kh.querySelectorAll('.cv-doan'), function (dv, i) {
+        var h = dv.querySelector('h5'), t = h ? h.textContent.trim() : '';
+        if (typeof ch.deHieuDoan === 'number' ? i >= ch.deHieuDoan : !pdfKhop(t, ch.deHieuDoan)) dv.remove();
+      });
+      if (!kh.querySelector('.cv-doan')) kh.remove();
+    });
     var giu = ch.giuKhoi, bo = ch.boKhoi;
     Array.prototype.slice.call(c.children).forEach(function (el) {
       var ten = pdfTenKhoi(el);
@@ -5744,10 +5751,277 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
         x.remove();
       });
     }
+    if (R.phiTinh === false) Array.prototype.forEach.call(c.querySelectorAll('.tt26-phu'), function (x) { x.remove(); });
+    if (R.toHopBoTrung) { var da = {}; Array.prototype.forEach.call(c.querySelectorAll('.tt26-bo p'), function (p) { var t = p.textContent.trim(); if (da[t]) p.remove(); else da[t] = 1; }); }
+    Array.prototype.forEach.call(c.querySelectorAll('.tt26-bo'), function (b) { if (!b.querySelector('p')) b.remove(); });
+    pdfLocTenSao(c);
     if (R.saoHan === false) boKhoiCoTieuDe('.tt26-sh');
+    else if (R.saoHanSoVan) Array.prototype.forEach.call(c.querySelectorAll('.tt26-sh'), function (sh) {   // chỉ giữ N vận tính từ vận đang đi
+      var ds = Array.prototype.slice.call(sh.querySelectorAll('.tt26-shv')), i0 = Math.max(0, ds.findIndex(function (x) { return x.classList.contains('nay'); }));
+      ds.forEach(function (x, i) { if (i < i0 || i >= i0 + R.saoHanSoVan) x.remove(); });
+    });
+    if (R.chanDung === false) Array.prototype.slice.call(c.children).forEach(function (el) { if (/^Chân dung lá số/.test(pdfTenKhoi(el))) el.remove(); });
     if (R.daiVanDacThoi === false) boKhoiCoTieuDe('.tp-van');
   }
-  var PDF_RUT = { gon: null, tomtat: null };   // điền từ ban-rut-gon.json của chuyên gia
+  // Quy tắc chọn lọc do chuyên gia content-creator soạn 25/10 (bản gọn ≈100 trang, bản tóm tắt ≈50 trang) + câu dẫn chương
+  var PDF_RUT = {
+ "gon": {
+  "chuong": {
+   "mo": "giu",
+   "tom": "giu",
+   "linhvuc": "giu",
+   "nguoi": "giu",
+   "duyen": "giu",
+   "doi": "giu",
+   "vh": "giu",
+   "bien": "giu",
+   "chart": {
+    "giuKhoi": [
+     "Chân dung lá số",
+     "Luận theo trình tự 26 bước",
+     "Đối chiếu Tử Vi × Bát Tự"
+    ]
+   },
+   "battu": {
+    "giuKhoi": [
+     "要 Hồ sơ Bát Tự",
+     "Luận giải dễ hiểu theo Bát Tự",
+     "論 Luận các phương diện",
+     "十神 Thập thần – tính cách, nghề nghiệp",
+     "大運 Đại vận 10 năm",
+     "總 Tổng hợp & lời khuyên"
+    ]
+   },
+   "nguhanh": "giu",
+   "halac": {
+    "giuKhoi": [
+     "要 Hồ sơ Hà Lạc",
+     "Luận giải dễ hiểu theo Hà Lạc",
+     "時 Được thời hay chưa",
+     "卦 Luận quẻ"
+    ]
+   },
+   "astro": {
+    "giuKhoi": [
+     "要 Hồ sơ Chiêm tinh",
+     "Luận giải dễ hiểu theo Chiêm tinh",
+     "三 Big Three",
+     "總 Luận giải tổng hợp",
+     "策 Lời khuyên",
+     "用 Ứng dụng thực tế"
+    ]
+   },
+   "so": {
+    "giuKhoi": [
+     "要 Hồ sơ Thần số học",
+     "Luận giải dễ hiểu theo Thần số học",
+     "論 Luận giải tổng hợp",
+     "策 Lời khuyên",
+     "用 Ứng dụng thực tế"
+    ]
+   },
+   "hd": {
+    "giuKhoi": [
+     "要 Hồ sơ Human Design",
+     "Luận giải dễ hiểu theo Human Design",
+     "型 5 loại năng lượng",
+     "權 Thẩm quyền nội tâm",
+     "相 Hồ sơ (Profile)",
+     "總 Luận giải tổng hợp",
+     "策 Lời khuyên",
+     "用 Ứng dụng thực tế"
+    ]
+   },
+   "them": "giu"
+  },
+  "tuVi": {
+   "buocGiu": "tat_ca",
+   "cungMucGiu": [
+    "Tóm tắt",
+    "Bản chất con người bạn",
+    "Điểm mạnh nổi bật",
+    "Điểm cần lưu ý",
+    "Điều cần lưu ý",
+    "Khí chất bề ngoài và nội tâm",
+    "Đầu đời và hậu vận",
+    "Đời sống tinh thần của bạn",
+    "Những lúc một mình",
+    "Cha mẹ của bạn",
+    "Mối quan hệ cha mẹ – con cái",
+    "Anh chị em của bạn",
+    "Nghề nghiệp phù hợp",
+    "Môi trường làm việc lý tưởng",
+    "Con đường thăng tiến",
+    "Cách bạn kiếm tiền",
+    "Cách bạn giữ tiền",
+    "Nhà cửa, tài sản",
+    "Người bạn đời của bạn",
+    "Kiểu hôn nhân bạn sẽ có",
+    "Điều cần lưu ý trong tình cảm",
+    "Con cái của bạn",
+    "Cách nuôi dạy phù hợp",
+    "Cách giữ gìn sức khỏe",
+    "Khi bạn bước ra ngoài",
+    "Bên trong và bên ngoài",
+    "Quan hệ bạn bè & đồng nghiệp",
+    "Lời khuyên cụ thể"
+   ],
+   "toHop": true,
+   "toHopBoTrung": true,
+   "saoHan": true,
+   "daiVanDacThoi": true,
+   "canCu": false,
+   "chiTietChuyenSau": false,
+   "phiTinh": false
+  },
+  "uocTrang": 100
+ },
+ "tomtat": {
+  "chuong": {
+   "mo": "giu",
+   "tom": "giu",
+   "linhvuc": {
+    "rutGon": "ngan"
+   },
+   "nguoi": {
+    "rutGon": "ngan"
+   },
+   "duyen": {
+    "rutGon": "ngan"
+   },
+   "doi": {
+    "rutGon": "ngan"
+   },
+   "vh": {
+    "rutGon": "ngan"
+   },
+   "bien": "giu",
+   "chart": {
+    "giuKhoi": [
+     "Chân dung lá số",
+     "Luận theo trình tự 26 bước"
+    ]
+   },
+   "battu": {
+    "giuKhoi": [
+     "要 Hồ sơ Bát Tự",
+     "Luận giải dễ hiểu theo Bát Tự",
+     "總 Tổng hợp & lời khuyên"
+    ]
+   },
+   "nguhanh": "giu",
+   "halac": {
+    "giuKhoi": [
+     "要 Hồ sơ Hà Lạc",
+     "Luận giải dễ hiểu theo Hà Lạc"
+    ]
+   },
+   "astro": {
+    "giuKhoi": [
+     "要 Hồ sơ Chiêm tinh",
+     "Luận giải dễ hiểu theo Chiêm tinh",
+     "策 Lời khuyên"
+    ]
+   },
+   "so": {
+    "giuKhoi": [
+     "要 Hồ sơ Thần số học",
+     "Luận giải dễ hiểu theo Thần số học",
+     "策 Lời khuyên"
+    ]
+   },
+   "hd": {
+    "giuKhoi": [
+     "要 Hồ sơ Human Design",
+     "Luận giải dễ hiểu theo Human Design",
+     "策 Lời khuyên"
+    ]
+   },
+   "them": "giu"
+  },
+  "tuVi": {
+   "buocGiu": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    9,
+    13,
+    14,
+    19,
+    20,
+    21,
+    22,
+    23,
+    24,
+    25,
+    26
+   ],
+   "cungMucGiu": [
+    "Tóm tắt",
+    "Lời khuyên cụ thể"
+   ],
+   "toHop": false,
+   "saoHan": true,
+   "daiVanDacThoi": true,
+   "canCu": false,
+   "chiTietChuyenSau": false,
+   "phiTinh": false
+  },
+  "uocTrang": 50
+ },
+ "loiMo": {
+  "gon": "Đây là bản gọn của Hồ sơ vận mệnh: giữ lại phần luận dễ hiểu và lời khuyên của cả sáu hệ, lược bớt bảng tính và chi tiết kỹ thuật. Khi muốn xem đầy đủ căn cứ, bạn có thể mở bản đầy đủ hoặc xem trực tiếp trên web.",
+  "tomtat": "Bản tóm tắt này đọc trong khoảng hai mươi phút: bạn sẽ thấy chân dung chung, điểm mạnh, những điều nên giữ gìn, lời khuyên và các mốc thời gian đáng để ý. Mọi nhận định chỉ là xu hướng để bạn tham khảo và chủ động sắp xếp, không phải lời phán định.",
+  "chuong": {
+   "mo": "Vài nét về năm sinh của bạn – điểm xuất phát cho mọi phần phía sau.",
+   "tom": "Nếu chỉ đọc một chương, hãy đọc chương này: chân dung của bạn gói trong vài trang.",
+   "linhvuc": "Sáu hệ cùng nhìn vào chín mảng đời sống – chỗ nào nhiều hệ cùng nói một ý, chỗ đó đáng tin hơn.",
+   "nguoi": "Bạn là ai khi không ai nhìn: tính cách, điểm mạnh và điều nên để ý.",
+   "duyen": "Chuyện tình cảm, người bạn đời và con cái – kèm cách vun đắp cho êm ấm.",
+   "doi": "Đường đời và công việc: hướng nào hợp sức bạn, giai đoạn nào nên tăng tốc.",
+   "vh": "Những giai đoạn thuận và những quãng nên đi chậm, để bạn chủ động sắp xếp trước.",
+   "bien": "Các năm có thể thay đổi lớn – biết trước để chuẩn bị, không phải để lo lắng.",
+   "chart": "Góc nhìn Tử Vi: đi lần lượt từ gốc rễ tới từng mảng đời sống, mỗi mảng kèm lời khuyên ngắn.",
+   "battu": "Góc nhìn Bát Tự: sức mạnh bẩm sinh của bạn và điều giúp bạn cân bằng.",
+   "nguhanh": "Năm yếu tố trong bạn đang mạnh, yếu ra sao – và cách bồi đắp phần còn thiếu.",
+   "halac": "Góc nhìn Hà Lạc: quẻ đời của bạn và lúc nào là đúng thời để hành động.",
+   "astro": "Góc nhìn Chiêm tinh: bản đồ bầu trời lúc bạn chào đời nói gì về tính cách và hướng đi.",
+   "so": "Góc nhìn Thần số học: những con số từ ngày sinh và tên gọi phác họa con người bạn.",
+   "hd": "Góc nhìn Human Design: cách bạn dùng năng lượng và ra quyết định sao cho đỡ mệt.",
+   "them": "Màu, hướng, con số hợp với bạn – một trang để tra nhanh khi cần."
+  }
+ }
+};
+  /** Bỏ câu có tên sao trong văn dễ hiểu của cung (văn cũ còn lọt "Cụ thể: …") – chỉ dùng cho bản gọn/tóm tắt */
+  function pdfLocTenSao(c) {
+    var S = (state.result && state.result.saoInfo) || {}, BO = { 'Phúc Đức': 1, 'Long Đức': 1, 'Thái Tuế': 1, 'Tràng Sinh': 1, 'Mộc Dục': 1, 'Quan Đới': 1, 'Lâm Quan': 1, 'Đế Vượng': 1, 'Bác Sĩ': 1, 'Lực Sĩ': 1, 'Tướng Quân': 1, 'Hỷ Thần': 1, 'Quan Phủ': 1, 'Quan Phù': 1, 'Tử Phù': 1, 'Trực Phù': 1, 'Thiếu Dương': 1, 'Thiếu Âm': 1, 'Thiên Tài': 1, 'Thiên Phúc': 1, 'Thiên Quan': 1 };
+    var ten = Object.keys(S).filter(function (n) { return n.split(' ').length >= 2 && !BO[n]; });
+    if (!ten.length) return;
+    var re = new RegExp(ten.map(function (n) { return n.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); }).join('|'));
+    Array.prototype.forEach.call(c.querySelectorAll('.tt26-cung p, .tt26-cung li'), function (p) {
+      if (!re.test(p.textContent)) return;
+      var cau = p.textContent.split(/(?<=[.!?…])\s+/).filter(function (x) { return !re.test(x); });
+      if (cau.length) p.textContent = cau.join(' '); else p.remove();
+    });
+  }
+  /** Bản ngắn cho các chương máy dựng (rutGon: 'ngan') */
+  function pdfRutNgan(k, html) {
+    var d = document.createElement('div'); d.innerHTML = html;
+    function bo(sel) { Array.prototype.forEach.call(d.querySelectorAll(sel), function (x) { x.remove(); }); }
+    if (k === 'linhvuc') Array.prototype.forEach.call(d.querySelectorAll('.bc-lv'), function (lv) {
+      var p = lv.querySelector('.bc-p'), giu = false;
+      Array.prototype.slice.call(lv.children).forEach(function (x) { if (x === p) { giu = true; return; } if (giu && !x.classList.contains('bc-hop')) x.remove(); });
+    });
+    if (k === 'nguoi') bo('.bc-tbl, table');
+    if (k === 'duyen') { bo('table'); bo('.bc-nho'); }
+    if (k === 'doi') { bo('.bc-chang:not(.nay) ul'); bo('table'); }
+    if (k === 'vh') { bo('.bc-dv:not(.nay)'); Array.prototype.slice.call(d.querySelectorAll('.bc-sk')).slice(3).forEach(function (x) { x.remove(); }); }
+    return d.innerHTML;
+  }
   /** Nền sáng: mọi ô còn nền tối (màu cứng của giao diện Hologram) đổi sang nền giấy, chữ sáng đổi sang chữ đậm – đo bằng màu thật trên trang */
   function pdfSangHoa(root) {
     function rgb(s) { var m = String(s).match(/rgba?\(([^)]+)\)/); if (!m) return null; var a = m[1].split(',').map(parseFloat); return { r: a[0], g: a[1], b: a[2], a: a.length > 3 ? a[3] : 1 }; }
@@ -5828,7 +6102,7 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
       var W = 760, H = 1075;
       return '<div class="pdf-cover thuy"><img class="pc-tranh" alt="" crossorigin="anonymous" src="' + TCC_ANH_CDN + 'PdfBia2.webp"><div class="pc-phu"></div>' +
         '<div class="pc-top"><span class="pc-logo">' + esc(brand.ten || 'Thiên Cơ Các') + '</span>' + (demo ? '<span class="pc-demo">Bản xem thử</span>' : '') + '</div>' +
-        '<div class="pc-mid"><div class="pc-kicker">Hồ sơ</div><h1>Vận Mệnh<br>Trọn Đời</h1>' +
+        '<div class="pc-mid"><div class="pc-kicker">Hồ sơ' + (PDF_KIEU === 'gon' ? ' · bản gọn' : PDF_KIEU === 'tomtat' ? ' · bản tóm tắt' : '') + '</div><h1>Vận Mệnh<br>Trọn Đời</h1>' +
         '<div class="pc-gach"></div><p class="pc-sub">Luận giải toàn diện 6 hệ</p><p class="pc-sys">Tử Vi · Bát Tự · Hà Lạc · Chiêm Tinh · Thần Số · Human Design</p></div>' +
         '<div class="pc-hop"><table class="pc-tbl"><tr><th>Họ tên</th><td>' + esc(I.name) + '</td></tr>' + dong.map(function (r) { return '<tr><th>' + esc(r[0]) + '</th><td>' + esc(r[1]) + '</td></tr>'; }).join('') +
         '<tr><th>Ngày lập</th><td>' + pad(d.getDate()) + '/' + pad(d.getMonth() + 1) + '/' + d.getFullYear() + ' · năm xem ' + I.viewYear + '</td></tr></table><div class="pc-an">天機</div></div>' +
@@ -5851,6 +6125,7 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
       return dau + '<li><span class="n">' + pad(i + 1) + '</span><span class="t"><b>' + esc(x.ten) + '</b><small>' + esc(x.hook) + '</small></span><span class="p">' + (x.trang || '') + '</span></li>';
     }).join('') + '</ol>' +
       '<div class="bc-cach"><b>Cách đọc báo cáo</b><ul>' +
+      ((PDF_KIEU === 'gon' || PDF_KIEU === 'tomtat') && PDF_RUT.loiMo && PDF_RUT.loiMo[PDF_KIEU] ? '<li>' + esc(PDF_RUT.loiMo[PDF_KIEU]) + '</li>' : '') +
       '<li><b>Đây là góc nhìn theo cổ học để tham khảo và tự suy ngẫm, không phải kết luận về đời bạn.</b></li>' +
       '<li>Điểm theo <b>thang 10</b>: 5 là cân bằng, từ 6,5 là thuận <span class="bc-chip tot">thuận</span>, từ 4 trở xuống là cần lưu ý <span class="bc-chip xau">cần giữ</span>.</li>' +
       '<li>"x/y hệ đồng thuận": càng nhiều hệ cùng chỉ một hướng thì kết luận càng đáng tin.</li>' +
@@ -6071,6 +6346,12 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
     return chuoi.then(function () {
       chon.forEach(function (k) {
         var noi = demo ? demoPhan(res, k) : pdfNoiDung(res, k, anhLaSo, kichLaSo);
+        if (RUT && noi) {
+          var qk = (RUT.chuong || {})[k];
+          if (qk && qk.rutGon === 'ngan') noi = pdfRutNgan(k, noi);
+          var dan = kieu === 'tomtat' && PDF_RUT.loiMo && PDF_RUT.loiMo.chuong && PDF_RUT.loiMo.chuong[k];
+          if (dan) noi = '<p class="bc-p bc-dan">' + bcE(dan) + '</p>' + noi;
+        }
         if (demo && k === 'chart' && anhLaSo) noi = pdfChart({ chiTiet: null }, anhLaSo, kichLaSo) + noi;
         if (demo && PDF_ANH_HE[k]) noi = bcAnhHolo(PDF_ANH_HE[k].src, PDF_ANH_HE[k].kich, PDF_TEN[k] || k) + noi;
         if (!demo && k === 'linhvuc' && PDF_ANH_HE.linhvuc) noi = bcAnhHolo(PDF_ANH_HE.linhvuc.src, PDF_ANH_HE.linhvuc.kich, 'Bánh xe 9 lĩnh vực') + noi;
