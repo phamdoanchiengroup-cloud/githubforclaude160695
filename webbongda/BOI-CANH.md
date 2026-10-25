@@ -106,7 +106,7 @@ Tóm tắt phiên làm việc 10–25/10/2026. Đọc hết trước khi làm. *
   - TIME-TIP FC https://drive.google.com/file/d/1vouOUZSzQVg0hnlHWv1wFvozhmx09Q_i/view
   - (FC RETRO, JUNIORS FC: xem tab Doi)
 - Banner web (BANNER_URL): https://drive.google.com/file/d/18jGkWFsQR5Od4nNA2LP4WGanzVqURFxJ/view · ảnh trong mã Index.html: `BANNER_HEP_ID` 1RbTWbhEL38WiZYu36A-ewZ3_1ELyiyFC, `GIAI_THUONG_IMG` 1YjHCGAWx7pRRPO8TXJDIvyR61u4nZmhz
-- Video giới thiệu trên web (`VIDEO_GIOI_THIEU`): https://youtu.be/lhtLebUcmPQ ; video từng trận nằm ở tab Media (RHINO VS EVO https://youtu.be/KWTYpemQC0w, CUEBOTS VS TIME-TIP https://youtu.be/P0Yn7JW_C8o, RHINO VS TIME-TIP https://youtu.be/RZ_rEyMYZDc, EVO VS CUEBOTS https://youtu.be/c3ZVNEOhCTA, RHINO VS CUEBOTS https://youtu.be/SBW57rj11KA, EVO VS TIME-TIP https://youtu.be/hrDLSi7hrP8, RETRO VS JUNIORS https://youtu.be/4KlPUyciylw)
+- Video giới thiệu giải https://youtu.be/lhtLebUcmPQ — ĐÃ BỎ khỏi web (25/10, chủ giải yêu cầu). Mỗi thẻ trận ở Match Day giờ có 2 nút: `▶ Video giới thiệu trận` (lấy từ tab Media theo MaTran, hàm `videoCuaTran_`; trận chưa có video thì ẩn nút) và `⚔️ Sơ đồ đội hình` (`xemDoiHinhTran`). Video từng trận nằm ở tab Media (RHINO VS EVO https://youtu.be/KWTYpemQC0w, CUEBOTS VS TIME-TIP https://youtu.be/P0Yn7JW_C8o, RHINO VS TIME-TIP https://youtu.be/RZ_rEyMYZDc, EVO VS CUEBOTS https://youtu.be/c3ZVNEOhCTA, RHINO VS CUEBOTS https://youtu.be/SBW57rj11KA, EVO VS TIME-TIP https://youtu.be/hrDLSi7hrP8, RETRO VS JUNIORS https://youtu.be/4KlPUyciylw)
 - Chuyển link Drive thành ảnh tải được: `https://drive.google.com/thumbnail?id=<ID>&sz=w2000` (hoặc connector `download_file_content`).
 
 ### Link web
