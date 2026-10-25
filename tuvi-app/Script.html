@@ -27,7 +27,7 @@
     });
   }
   /** Mã phiên bản giao diện – phải trùng với Index.html (meta tcc-ban) và Styles.html (--tcc-ban) */
-  var BAN_GIAO_DIEN = '2026.10.25.10';
+  var BAN_GIAO_DIEN = '2026.10.25.11';
   /* 25/10: ảnh ngũ hành + 12 con giáp + bìa PDF mới của chủ dự án (tuvi-app/anh/*.webp) qua jsDelivr, ghim theo mã lần lưu */
   var TCC_ANH_CDN = 'https://cdn.jsdelivr.net/gh/phamdoanchiengroup-cloud/githubforclaude160695@19203fbd20433f395336269a411f8aebcf990086/tuvi-app/anh/';
   var ANH_HANH = { 'Mộc': 'NguHanhMoc', 'Hỏa': 'NguHanhHoa', 'Thổ': 'NguHanhTho', 'Kim': 'NguHanhKim', 'Thủy': 'NguHanhThuy' };
@@ -5715,12 +5715,9 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
     var ch = (RUT.chuong || {})[k];
     if (k === 'chart') { pdfCatTuVi(c, RUT.tuVi || {}); }
     if (!ch || typeof ch !== 'object') return;
-    if (ch.deHieuDoan) Array.prototype.forEach.call(c.querySelectorAll('.dh-panel .cung-van-de-hieu'), function (kh) {   // phần "Luận giải dễ hiểu": giữ N đoạn đầu hoặc các đoạn có tiêu đề trong danh sách
-      Array.prototype.forEach.call(kh.querySelectorAll('.cv-doan'), function (dv, i) {
-        var h = dv.querySelector('h5'), t = h ? h.textContent.trim() : '';
-        if (typeof ch.deHieuDoan === 'number' ? i >= ch.deHieuDoan : !pdfKhop(t, ch.deHieuDoan)) dv.remove();
-      });
-      if (!kh.querySelector('.cv-doan')) kh.remove();
+    if (ch.deHieuDoan) Array.prototype.forEach.call(c.querySelectorAll('.dh-panel .cung-van-de-hieu'), function (kh, i) {   // phần "Luận giải dễ hiểu": giữ N khối đầu hoặc các khối có tiêu đề trong danh sách
+      var t = kh.querySelector('.cvdh-tieude'), ten = t ? t.textContent.replace(/\s*\d+[,.]?\d*\/10\s*$/, '').trim() : '';
+      if (typeof ch.deHieuDoan === 'number' ? i >= ch.deHieuDoan : !pdfKhop(ten, ch.deHieuDoan)) kh.remove();
     });
     var giu = ch.giuKhoi, bo = ch.boKhoi;
     Array.prototype.slice.call(c.children).forEach(function (el) {
@@ -5898,15 +5895,16 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
    "bien": "giu",
    "chart": {
     "giuKhoi": [
-     "Chân dung lá số",
      "Luận theo trình tự 26 bước"
     ]
    },
    "battu": {
     "giuKhoi": [
      "要 Hồ sơ Bát Tự",
-     "Luận giải dễ hiểu theo Bát Tự",
-     "總 Tổng hợp & lời khuyên"
+     "Luận giải dễ hiểu theo Bát Tự"
+    ],
+    "deHieuDoan": [
+     "Bản mệnh theo Bát Tự"
     ]
    },
    "nguhanh": "giu",
@@ -5914,27 +5912,38 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
     "giuKhoi": [
      "要 Hồ sơ Hà Lạc",
      "Luận giải dễ hiểu theo Hà Lạc"
+    ],
+    "deHieuDoan": [
+     "Hai nửa cuộc đời theo Kinh Dịch"
     ]
    },
    "astro": {
     "giuKhoi": [
      "要 Hồ sơ Chiêm tinh",
-     "Luận giải dễ hiểu theo Chiêm tinh",
-     "策 Lời khuyên"
+     "Luận giải dễ hiểu theo Chiêm tinh"
+    ],
+    "deHieuDoan": [
+     "Con người bạn qua bản đồ sao",
+     "Điểm mạnh, bài học và năm nay"
     ]
    },
    "so": {
     "giuKhoi": [
      "要 Hồ sơ Thần số học",
-     "Luận giải dễ hiểu theo Thần số học",
-     "策 Lời khuyên"
+     "Luận giải dễ hiểu theo Thần số học"
+    ],
+    "deHieuDoan": [
+     "Con người bạn qua các con số",
+     "Lời khuyên theo thần số"
     ]
    },
    "hd": {
     "giuKhoi": [
      "要 Hồ sơ Human Design",
-     "Luận giải dễ hiểu theo Human Design",
-     "策 Lời khuyên"
+     "Luận giải dễ hiểu theo Human Design"
+    ],
+    "deHieuDoan": [
+     "Thiết kế con người bạn"
     ]
    },
    "them": "giu"
@@ -5943,14 +5952,8 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
    "buocGiu": [
     1,
     2,
-    3,
-    4,
-    5,
     6,
-    7,
     9,
-    13,
-    14,
     19,
     20,
     21,
@@ -5965,8 +5968,10 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
     "Lời khuyên cụ thể"
    ],
    "toHop": false,
+   "chanDung": false,
    "saoHan": true,
-   "daiVanDacThoi": true,
+   "saoHanSoVan": 3,
+   "daiVanDacThoi": false,
    "canCu": false,
    "chiTietChuyenSau": false,
    "phiTinh": false
