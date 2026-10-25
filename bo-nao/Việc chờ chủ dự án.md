@@ -4,7 +4,7 @@ Nhóm: Bắt đầu · Cập nhật 22/10/2026
 Liên quan: [[Lần dán lên Apps Script]] · [[TCC Tiến trình]] · [[00 Mục lục]]
 
 ## Việc còn ngỏ
-- 25/10 (khuya): bấm `2-CAP-NHAT.bat` lấy mã `2026.10.25.4` – xem tab "📚 Tham khảo" mục Nghề nghiệp (47 nghề, đối chiếu lá số đang mở) và Thư viện bộ sao; xem card luận giải đã dễ đọc chưa (nếu vẫn chưa đủ: cách khác là bỏ tranh sau card chữ). – [[TCC Giao diện]]
+- 25/10 (khuya): bấm `2-CAP-NHAT.bat` lấy mã `2026.10.25.5` – xem tab "📚 Tham khảo" mục Nghề nghiệp (47 nghề, đối chiếu lá số đang mở) và Thư viện bộ sao; xem card luận giải đã dễ đọc chưa (nếu vẫn chưa đủ: cách khác là bỏ tranh sau card chữ). – [[TCC Giao diện]]
 - 25/10 (tối): bấm `2-CAP-NHAT.bat` lấy mã `2026.10.25.2` – tab **"👑 Lá số chủ sở hữu"** (chỉ chủ sở hữu thấy, cạnh tab Tử Vi): bộ sao từng cung, 12 đại vận soi Thiên Không / Thiên Thương – Thiên Sứ / Không Kiếp, thọ khí. Đọc thử trên lá số của mình, báo bộ sao hay mức vận nào thấy chưa khớp để chỉnh trọng số. – [[TCC Tử Vi đối chiếu các phái]]
 - 25/10: bấm `2-CAP-NHAT.bat` lấy mã `2026.10.25.1` (bố cục 5 hệ, hiện sẵn phần chuyên sâu). Xem thử và cho biết trang có dài quá không – có thể thu gọn lại một số khối dài như "Luận giải cát hung" Bát Tự.
 - 24/10 (khuya): bấm `2-CAP-NHAT.bat` lấy mã `2026.10.24.9` (sửa nội dung nhạy cảm). Đọc thử vài lá số, báo câu nào còn "nặng" để sửa tiếp. Còn sót có thể: một số câu trong Bát Tự / Tổng hợp / Tử Vi hệ thống (đợt chuyên gia nội dung bị ngắt giữa chừng vì hết hạn mức).

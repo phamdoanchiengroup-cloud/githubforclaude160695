@@ -73,7 +73,7 @@ Liên quan: [[TCC Sáu hệ]] · [[TCC Lập lá số và bốn tầng luận]] 
 - Giao diện: nút tab `data-tab="chu"` (ẩn, `capNhatUser` chỉ hiện khi `vaiTro === 'chu'`), trang `#page-chu`; Script › `veChu`, `chuHtml`, bộ nhớ `CHU` theo `state.input`; CSS `.tab-chu`, `.chu-*`. `HAM_CAN_CO` thêm `TuViChuyenSau.gs: tuViChuSoHuu`. Kiểm thử `tests/chuyen-sau.js`.
 - Có thể làm tiếp: lưu niên từng năm (lưu Kình Đà, lưu Kỵ) cho tab này; cho chủ sở hữu chỉnh trọng số; đưa tab vào PDF riêng.
 
-## Tab "📚 Tham khảo" – Nghề nghiệp & Thư viện bộ sao (25/10 khuya, mã 2026.10.25.4)
+## Tab "📚 Tham khảo" – Nghề nghiệp & Thư viện bộ sao (25/10 khuya, mã 2026.10.25.5)
 - Chủ dự án chọn (hỏi bằng câu hỏi lựa chọn): đặt trong tab Tham khảo chung, bảng tra + đối chiếu lá số, mở cho mọi người, thêm thư viện bộ sao.
 - Dữ liệu: `TuViChuyenSau.gs › TVCS_NGHE` (47 nghề, 10 nhóm; mỗi nghề 5–8 sao {ten, cung[Mệnh|Quan Lộc|Tài Bạch|Thiên Di|Phúc Đức], w 1–3}, câu `y` không tên sao, `nguon`). Chuyên gia `content-creator` soạn từ muaban.net (14 chính tinh ở Quan Lộc), mytour.vn (phụ tinh gắn nghề), masterseanchan.com (tính chất 14 chính tinh), toutiao. Nghề suy từ tính chất sao (không nguồn nói thẳng): lập trình, dữ liệu – AI, KOL, chứng khoán, nhân sự, tâm lý trị liệu, nông nghiệp (yếu nhất).
 - Nguồn lệch nhau: Tử Vi ở Quan Lộc (muaban: việc độc lập; các nguồn khác: lãnh đạo) – theo số đông; Thất Sát (không gán giáo dục); Thái Dương, Cự Môn, Thiên Lương, Thái Âm mỗi nguồn nhấn một hướng; nhiều nguồn chỉ nói nghề theo tổ hợp → chấm cộng dồn nhiều sao.

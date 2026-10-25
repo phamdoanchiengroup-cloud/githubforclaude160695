@@ -27,7 +27,7 @@
     });
   }
   /** Mã phiên bản giao diện – phải trùng với Index.html (meta tcc-ban) và Styles.html (--tcc-ban) */
-  var BAN_GIAO_DIEN = '2026.10.25.4';
+  var BAN_GIAO_DIEN = '2026.10.25.5';
   function storeGet(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
   function storeSet(k, v) { try { localStorage.setItem(k, v); } catch (e) { /* bỏ qua */ } }
 
@@ -1207,8 +1207,8 @@
     if (!TK.data) {
       noi.innerHTML = '<div class="panel section"><p class="muted">Đang tải dữ liệu tham khảo…</p></div>';
       if (TK.dang) return; TK.dang = true;
-      call('thamKhaoTuVi', [], function (d) { TK.dang = false; TK.data = d; if (document.body.getAttribute('data-tab') === 'que64') tkVe(); },
-        function (e) { TK.dang = false; noi.innerHTML = '<div class="panel section"><p class="muted">' + esc((e && e.message) || String(e)) + '</p></div>'; });
+      call('thamKhaoTuVi', [], function (d) { TK.dang = false; TK.data = d; if (document.body.getAttribute('data-tab') === 'que64' && TK.muc !== '64') tkVe(); },
+        function (e) { TK.dang = false; if (TK.muc !== '64' && $('tkNoi')) $('tkNoi').innerHTML = '<div class="panel section"><p class="muted">' + esc((e && e.message) || String(e)) + '</p></div>'; });
       return;
     }
     noi.innerHTML = TK.muc === 'nghe' ? tkNgheHtml() : tkBoHtml();
@@ -1386,7 +1386,10 @@
     var pg = $('tkNoi') || $('page-que64'); if (!pg) return;
     if (!KD.ds) {
       pg.innerHTML = '<div class="panel section"><p class="muted">Đang tải 64 quẻ Kinh Dịch…</p></div>';
-      kdNap(kdVeTab, function () { pg.innerHTML = '<div class="panel section"><p class="muted">Chưa tải được dữ liệu 64 quẻ – hãy kiểm tra mạng rồi mở lại tab.</p></div>'; });
+      if (KD.dang) return; KD.dang = true;                // chỉ tải một lần; khi về chỉ vẽ nếu người xem vẫn ở mục 64 quẻ
+      var o64 = function () { return TK.muc === '64' && document.body.getAttribute('data-tab') === 'que64'; };
+      kdNap(function () { KD.dang = false; if (o64()) kdVeTab(); },
+        function () { KD.dang = false; var el = $('tkNoi') || $('page-que64'); if (o64() && el) el.innerHTML = '<div class="panel section"><p class="muted">Chưa tải được dữ liệu 64 quẻ – hãy kiểm tra mạng rồi mở lại tab.</p></div>'; });
       return;
     }
     var hl = state.result && state.result.moRong && state.result.moRong.haLac, cuaBan = '';
