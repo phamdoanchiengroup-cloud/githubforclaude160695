@@ -79,6 +79,11 @@ Tóm tắt phiên làm việc 10–25/10/2026. Đọc hết trước khi làm. *
   - nhạc Kevin MacLeod (CC BY 4.0, luôn ghi công): "Mega Hyper Ultrastorm", "Heroic Age", "Volatile Reaction";
   - sfx `whoosh/boom/scan/tick`.
 
+## Video giao diện 2026 (26/10)
+- `media-src/remotion/src/VideoMoi.tsx` (điểm vào riêng `src/moi.ts`, root `RootMoi.tsx`): `KetQuaLuot1Moi` (43 s) và `GioiThieuLuot2Moi` (44 s), dọc 1080×1920, phong cách vàng kim hologram như web (đèn sân quét, hạt vàng, viền năng lượng, VS đối đầu, mở thẻ FIFA, đội hình trên sân dọc 3D). Dữ liệu `src/vdmoi_data.json` dựng từ sheet.
+- Tài nguyên `public/vm/` (không commit): ảnh cầu thủ `ct/<MaCT>.jpg` (thumbnail Drive w700), `logo_<doi>.png`, `nen-dau.jpg`, `nen-duoi.jpg`, `nen-san.jpg`, `san.jpg`, `poster-l2.jpg`, `qr.png`, phông TTF trong `font/` (máy dựng không tải được Google Fonts), nhạc `nhac/Mega_Hyper_Ultrastorm.mp3`, `nhac/Heroic_Age.mp3`.
+- Dựng: `npx remotion bundle src/moi.ts --out-dir=out/bundle` rồi `npx remotion render out/bundle <id> out/<id>.mp4 --browser-executable=/opt/pw-browsers/chromium_headless_shell-1243/chrome-headless-shell-linux64/chrome-headless-shell --concurrency=4 --crf=20`. Mã cũ `src/index.ts` thiếu file `om/` nên không bundle được.
+
 ## Quy tắc của chủ dự án (đã chốt)
 - Không dùng mặt cầu thủ do AI tạo; luôn dùng ảnh thật.
 - Không chớp sáng hoặc rung mạnh (mỏi mắt).
