@@ -5121,8 +5121,12 @@ function moVideoGioiThieu(){
 /* ================= KHUNG MATCH DAY TRANG CHỦ (giao diện 2026) =================
    Poster từng ngày thi đấu (khóa "dd/mm/yyyy"), tải qua jsDelivr. Ngày không có poster thì dùng ảnh banner giải. */
 var MATCH_DAY_POSTER = {
-  '29/10/2026': 'https://cdn.jsdelivr.net/gh/phamdoanchiengroup-cloud/githubforclaude160695@ab52d91c762b8cd1ffca4ef90aa0d77fd7b95512/webbongda/anh/match-day-luot2.webp'
+  '29/10/2026': 'https://cdn.jsdelivr.net/gh/phamdoanchiengroup-cloud/githubforclaude160695@7f041990c275b15e321238e7a5ca1f4a3bb41ab1/webbongda/anh/match-day-luot2-v2.webp',
+  '03/11/2026': 'https://cdn.jsdelivr.net/gh/phamdoanchiengroup-cloud/githubforclaude160695@7f041990c275b15e321238e7a5ca1f4a3bb41ab1/webbongda/anh/match-day-luot3.webp'
 };
+/* Một ngày thi đấu được coi là KẾT THÚC khi mọi trận đã nhập tỷ số (Đã đá),
+   hoặc đã quá giờ bóng lăn MD_HET_SAU_MS mà BTC chưa kịp nhập → web tự chuyển sang ngày (poster) kế tiếp. */
+var MD_HET_SAU_MS = 3 * 60 * 60 * 1000;
 var MD = { timer: null };
 /* Màu ánh sáng của đội theo màu áo (Doi.MauAo) */
 function mdMauDoi_(maDoi){
@@ -5140,7 +5144,7 @@ function mdDuLieu_(){
     .filter(function(t){ return t._d && t.maDoiB; })
     .sort(function(a, b){ return a._d - b._d || (Number(a.thuTuKO) || 0) - (Number(b.thuTuKO) || 0); });
   var now = new Date();
-  var sap = tran.filter(function(t){ return !bdDaDa_(t) && t._d > now; })[0];
+  var sap = tran.filter(function(t){ return !bdDaDa_(t) && t._d.getTime() + MD_HET_SAU_MS > now.getTime(); })[0];
   if (!sap) return null;
   var luot = nhanLuot_(sap), so = luot.match(/(\d+)/);
   var ngayTxt = bdP2_(sap._d.getDate()) + '/' + bdP2_(sap._d.getMonth() + 1) + '/' + sap._d.getFullYear();
