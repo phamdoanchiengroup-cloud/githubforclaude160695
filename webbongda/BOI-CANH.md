@@ -102,6 +102,10 @@ Tóm tắt phiên làm việc 10–25/10/2026. Đọc hết trước khi làm. *
 - Video giới thiệu trên web (`VIDEO_GIOI_THIEU`): https://youtu.be/lhtLebUcmPQ ; video từng trận nằm ở tab Media (RHINO VS EVO https://youtu.be/KWTYpemQC0w, CUEBOTS VS TIME-TIP https://youtu.be/P0Yn7JW_C8o, RHINO VS TIME-TIP https://youtu.be/RZ_rEyMYZDc, EVO VS CUEBOTS https://youtu.be/c3ZVNEOhCTA, RHINO VS CUEBOTS https://youtu.be/SBW57rj11KA, EVO VS TIME-TIP https://youtu.be/hrDLSi7hrP8, RETRO VS JUNIORS https://youtu.be/4KlPUyciylw)
 - Chuyển link Drive thành ảnh tải được: `https://drive.google.com/thumbnail?id=<ID>&sz=w2000` (hoặc connector `download_file_content`).
 
+### Link web
+- Web giải: https://script.google.com/macros/s/AKfycbyU0HwrkHWv_cBug5SJYhN_Vo2SZd9R5j_RXlGBeAozoTIZmapdraymm7VWCUJz73PCJA/exec
+- Link ngắn (Bitly, tạo 25/10): **https://bit.ly/rhinofootball** → trỏ về link trên. Đổi đích bằng tool Bitly `bitly_update_short_link`.
+
 ### Connector / plugin đã dùng
 - **Google Drive** (bắt buộc – đọc sheet, tải ảnh cầu thủ/logo).
 - **Canva** – chủ dự án cho phép dùng tự động không cần hỏi (generate-image, export-design, upload). Hạn mức Canva có giới hạn.
