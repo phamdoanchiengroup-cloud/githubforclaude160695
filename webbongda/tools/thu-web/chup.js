@@ -9,8 +9,6 @@ const {chromium}=require('/opt/node22/lib/node_modules/playwright');const fs=req
  px=new Proxy(p,{get:function(t,k){if(k in t)return t[k];return function(){setTimeout(function(){ok(k==='napDuLieu'?JSON.parse(JSON.stringify(window.__DATA)):{ok:true,vuaPhaLuoi:[],theVang:[],theDo:[]});},30);};}});return px;}
  window.google={script:{run:new Proxy({},{get:function(t,k){return runner()[k];}})}};})();</script>`;
  html=html.replace('<head>','<head>'+mock);
- // CSS/JS tách ra web/ (tải qua jsDelivr): khi chạy thử thì dùng bản trong máy
- html=html.replace(/https:\/\/(cdn|fastly)\.jsdelivr\.net\/gh\/[^"']*?\/webbongda\/web\//g,'file://'+require('path').resolve(__dirname,'../../web')+'/');
  const b=await chromium.launch();const p=await b.newPage({viewport:{width:+w,height:900}});
  p.on('pageerror',e=>console.log('PAGEERR',e.message));p.on('console',m=>{if(m.type()==='error')console.log('CONSOLE',m.text().slice(0,200))});
  fs.writeFileSync(__dirname+'/_tmp.html',html);
