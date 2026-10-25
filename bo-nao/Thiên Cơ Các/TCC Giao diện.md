@@ -191,3 +191,8 @@ Liên quan: [[TCC PDF]] · [[TCC Lá số 3D]] · [[TCC Văn dễ hiểu và T�
 - Bảng mới: Bát Tự – Bảng ngũ hành (can lộ/chi/tàng can/lực/vai trò), Bảng thập thần theo nhóm; Chiêm tinh – Nguyên tố × tính chất, Bảng góc chiếu (sắp theo độ lệch); Thần số – Bảng tổng hợp các chỉ số, Bảng 4 đỉnh cao – thử thách.
 - Mã `2026.10.25.1`. Kiểm tra bằng Playwright 1366 và 390 px: không lỗi, không tràn ngang.
 
+
+## 25/10 (khuya) – card luận giải dễ đọc hơn (mã 2026.10.25.4)
+- Nguyên nhân chữ khó đọc: `Holo.html` phủ tranh tab sau mỗi `.panel` chỉ 60–80%. Chủ dự án chọn "chỉ tăng độ tối chung": máy tính .88/.9, điện thoại .9/.93 (vẫn thấy tranh).
+- Chữ: `Styles.html` cuối file `:where(.result-wrap .tab-page .panel) :where(p, li) { font-size: 16px; line-height: 1.7 }` (độ ưu tiên 0 để các khối chữ nhỏ có class riêng giữ nguyên).
+- Tab "👑 Lá số chủ sở hữu" (`.tab-chu`, chỉ hiện với chủ sở hữu) và tab "📚 Tham khảo" 3 mục – xem [[TCC Tử Vi đối chiếu các phái]].

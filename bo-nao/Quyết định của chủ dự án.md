@@ -4,6 +4,7 @@ Nhóm: Bắt đầu · Cập nhật 21/10/2026
 Liên quan: [[Việc chờ chủ dự án]] · [[TCC Bán hàng]] · [[00 Mục lục]]
 
 ## Cách làm việc
+- **25/10 (khuya): tab "📚 Tham khảo" mở cho mọi người, 3 mục: 64 quẻ, Nghề nghiệp & sao (bảng nghề → sao ở Mệnh/Quan/Tài + đối chiếu lá số đang mở, ghi mức khớp bằng chữ), Thư viện bộ sao. Card luận giải: chủ dự án chọn "chỉ tăng độ tối chung" (giữ tranh, phủ ~88–93%) + chữ to nhẹ.** – [[TCC Giao diện]]
 - **25/10 (tối): hai quy tắc làm việc mới (đã ghi vào CLAUDE.md)** – (1) luôn hỏi lại để làm rõ yêu cầu trước khi hành động; (2) luôn dùng chuyên gia Agency Agents mỗi lần làm việc. – [[TCC Chuyên gia Agency Agents]]
 - **25/10 (tối): phần Tử Vi chuyên sâu (bộ sao chính – phụ tinh, sao hạn đại vận Thiên Không / Thiên Thương – Thiên Sứ, cách xem dương thọ) đặt ở tab riêng "👑 Lá số chủ sở hữu", chỉ chủ sở hữu thấy** (máy chủ cũng chặn người khác). Tab này được dùng tên sao, thuật ngữ gốc; phần thọ chỉ nêu mức thọ khí và giai đoạn cần giữ gìn, không đoán tuổi mất. – [[TCC Tử Vi đối chiếu các phái]]
 - **25/10: 5 hệ (Bát Tự, Hà Lạc, Chiêm tinh, Thần số, HD) bỏ khối "Phần chuyên sâu" thu gọn – mọi bảng và phân tích hiện sẵn.** Bố cục mỗi tab: bảng Hologram → Hồ sơ nhanh → thanh mục lục → Phần 1 (lá số, bảng số) → Luận giải dễ hiểu → các phần còn lại. Tham khảo cách trình bày phổ biến: bảng nguyên tố × tính chất và bảng góc chiếu (chiêm tinh), bảng tổng hợp chỉ số (thần số), cột Tính cách/Thiết kế (HD), bảng ngũ hành – thập thần (Bát Tự).
