@@ -138,9 +138,7 @@ Tóm tắt phiên làm việc 10–25/10/2026. Đọc hết trước khi làm. *
 - Poster lượt 3 (03/11).
 - Có thể tách web bóng đá ra nhánh riêng: CLAUDE.md của repo nói mỗi dự án một nhánh. Muốn tách thì sửa `$Nhanh` trong `cai-dat-clasp/chung.ps1`.
 
-### Demo chờ duyệt (25/10) – CHƯA đưa lên web
-- Trang demo: https://claude.ai/artifact/683GwZnizMd8z9B6TPHzCN (Index.html thật + dữ liệu sheet + ảnh nhúng).
-- `demo/bxh-truyen-hinh.patch`: BXH kiểu truyền hình (`bxhCardHtml_` + CSS `.tv-*`), cột Trận/BT/BB/HS/Điểm, bảng gọn Trận/HS/Điểm; KHÔNG có vạch "vào chung kết" (chủ giải bỏ vì 2 đội có thể bằng điểm, bằng hiệu số); xếp hạng theo Điểm → Hiệu số → Đối đầu → Bàn thắng (chủ giải chốt 25/10); bằng hết 4 chỉ số thì đồng hạng (`hangHT` thêm trong `tinhBXH` Code.gs), đội hạng 1 (kể cả đồng hạng 1) cùng nổi bật. Patch gồm Index.html + Code.gs. Áp: `git apply webbongda/demo/bxh-truyen-hinh.patch`.
-- `demo/hieu-ung-dot2.html`: hiệu ứng đợt 2 (CSS+JS, kèm bảng điều khiển demo): `FX_TOC` chỉnh tốc độ hiệu ứng cũ (playbackRate; hạt vàng trong `fxHat_` cũng nhân FX_TOC), BXH/ghi bàn (trượt vào, số chạy, vệt sáng), chuyển tab (thanh vàng trượt, vệt quét, khối nổi lên) + cuộn trang (khối hiện khi tới). Khi đưa lên web: bỏ bảng điều khiển, gắn cố định lớp `fx2-bxh fx2-tab`.
-- Phần "khối hiện khi cuộn tới" chưa kiểm xong (lần thử tab Lịch chưa thấy khối nào chờ).
-- `demo/dung-demo.py`: dựng trang demo (cần harness `tools/thu-web`).
+### BXH kiểu truyền hình + hiệu ứng đợt 2 (25/10, chủ giải duyệt, đã đưa vào Index.html)
+- BXH (`bxhCardHtml_`, CSS `.tv-*`): mỗi đội một thanh kính, logo tròn, cột Trận/BT/BB/HS/Điểm (bảng gọn: Trận/HS/Điểm), khối điểm bên phải; bấm thanh → `modalDoiCauThu`. KHÔNG có vạch "vào chung kết" (chủ giải bỏ). Xếp theo Điểm → Hiệu số → Đối đầu → Bàn thắng; bằng hết thì đồng hạng: `hangHT` tính trong `tinhBXH_` (Code.gs), nhóm đồng hạng phải hòa đối đầu với mọi đội trong nhóm. Hạng 1 (kể cả đồng hạng 1) có viền vàng, vương miện, khối điểm vàng.
+- Hiệu ứng đợt 2 (sau `fxGhiBan_`): `FX_TOC = 0.35` ("rất chậm") đặt playbackRate cho hiệu ứng trang trí tên `fx-`/`md-`/`tv-` (trừ `FX_TOC_TRU`: sóng bấm nút `fx-gon` và màn mở đội hình `fx-laoTrai/laoPhai/dap/song/raSan` vì đã căn giờ với hạt vàng và nút tải PNG); gọi `fx2Toc_` ngay sau mỗi render để áp cả hiệu ứng còn đang trễ, hạt vàng `fxHat_` cũng nhân FX_TOC; `fx2Bxh_` (thanh BXH trượt vào, số điểm/bàn chạy từ 0, vệt sáng quét, thanh vàng tỉ lệ bàn ở Ghi bàn); `fx2Tab_` (thanh vàng trượt giữa tab, vệt quét ngang, khối nổi lên lần lượt; khối dưới màn hình >200px chờ cuộn tới mới hiện + kẻ viền). Gắn bằng cách bọc `renderView`. Lớp `fx2-bxh fx2-tab` trên <html>.
+- Trang demo (Artifact, có bảng điều khiển bật/tắt): https://claude.ai/artifact/683GwZnizMd8z9B6TPHzCN

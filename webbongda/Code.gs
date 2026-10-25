@@ -1052,6 +1052,14 @@ function tinhBXH_(doi, tran) {
     return x.tenDoi.localeCompare(y.tenDoi);             // 5. Tên
   });
   arr.forEach(function(o, i) { o.hang = i + 1; });
+  // Hạng hiển thị: bằng hết Điểm, Hiệu số, Đối đầu, Bàn thắng thì đồng hạng (chỉ khác tên đội)
+  var nhom = [];   // nhóm đang đồng hạng: phải bằng điểm/hiệu số/bàn thắng và hòa đối đầu với MỌI đội trong nhóm
+  arr.forEach(function(o) {
+    var t = nhom[0];
+    var bang = t && t.diem === o.diem && t.hs === o.hs && t.bt === o.bt &&
+      nhom.every(function(x) { return soSanhDoiDau(x.maDoi, o.maDoi) === 0; });
+    if (bang) { o.hangHT = t.hangHT; nhom.push(o); } else { o.hangHT = o.hang; nhom = [o]; }
+  });
 
   // Trả về cùng cấu trúc cũ {khoaBang: [...]} để UI tái dùng, dùng 1 khóa 'TatCa'
   return { 'TatCa': arr };
