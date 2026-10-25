@@ -140,7 +140,7 @@ Tóm tắt phiên làm việc 10–25/10/2026. Đọc hết trước khi làm. *
 
 ### Demo chờ duyệt (25/10) – CHƯA đưa lên web
 - Trang demo: https://claude.ai/artifact/683GwZnizMd8z9B6TPHzCN (Index.html thật + dữ liệu sheet + ảnh nhúng).
-- `demo/bxh-truyen-hinh.patch`: BXH kiểu truyền hình (`bxhCardHtml_` + CSS `.tv-*`), cột Trận/BT/BB/HS/Điểm, bảng gọn Trận/HS/Điểm; KHÔNG có vạch "vào chung kết" (chủ giải bỏ vì 2 đội có thể bằng điểm, bằng hiệu số); chỉ đội đứng đầu một mình mới nổi bật. Áp: `git apply webbongda/demo/bxh-truyen-hinh.patch`.
+- `demo/bxh-truyen-hinh.patch`: BXH kiểu truyền hình (`bxhCardHtml_` + CSS `.tv-*`), cột Trận/BT/BB/HS/Điểm, bảng gọn Trận/HS/Điểm; KHÔNG có vạch "vào chung kết" (chủ giải bỏ vì 2 đội có thể bằng điểm, bằng hiệu số); xếp hạng theo Điểm → Hiệu số → Đối đầu → Bàn thắng (chủ giải chốt 25/10); bằng hết 4 chỉ số thì đồng hạng (`hangHT` thêm trong `tinhBXH` Code.gs), đội hạng 1 (kể cả đồng hạng 1) cùng nổi bật. Patch gồm Index.html + Code.gs. Áp: `git apply webbongda/demo/bxh-truyen-hinh.patch`.
 - `demo/hieu-ung-dot2.html`: hiệu ứng đợt 2 (CSS+JS, kèm bảng điều khiển demo): `FX_TOC` chỉnh tốc độ hiệu ứng cũ (playbackRate; hạt vàng trong `fxHat_` cũng nhân FX_TOC), BXH/ghi bàn (trượt vào, số chạy, vệt sáng), chuyển tab (thanh vàng trượt, vệt quét, khối nổi lên) + cuộn trang (khối hiện khi tới). Khi đưa lên web: bỏ bảng điều khiển, gắn cố định lớp `fx2-bxh fx2-tab`.
 - Phần "khối hiện khi cuộn tới" chưa kiểm xong (lần thử tab Lịch chưa thấy khối nào chờ).
 - `demo/dung-demo.py`: dựng trang demo (cần harness `tools/thu-web`).
