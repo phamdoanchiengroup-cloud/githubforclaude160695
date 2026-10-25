@@ -3812,7 +3812,7 @@ input:focus,select:focus,textarea:focus{
 }
 
 .thv-pitch {
-  position:relative; width:100%; aspect-ratio:1501/1048;   /* ⭐ khớp ảnh sân nhìn từ trên (san-doi-hinh.webp) */
+  position:relative; width:100%; aspect-ratio:1221/693;   /* ⭐ khớp ảnh sân đã cắt bỏ khán đài (san-doi-hinh-cat.webp) */
   border-radius:14px; overflow:hidden;
   container-type:size;
   box-shadow: 0 24px 60px rgba(0,0,0,.75),
@@ -3821,9 +3821,9 @@ input:focus,select:focus,textarea:focus{
   isolation:isolate; background:#0c5c2b;
 }
 .thv-pitch-bg {
-  /* Ảnh sân ngang có khán đài, KHÔNG xoay/cắt: vạch vôi nằm đúng tọa độ trong slotPos (xemDoiHinhTran) */
+  /* Ảnh sân nhìn từ trên, đã cắt bỏ khán đài: vạch vôi nằm đúng tọa độ trong slotPos (xemDoiHinhTran) */
   position:absolute; inset:0;
-  background:url('https://cdn.jsdelivr.net/gh/phamdoanchiengroup-cloud/githubforclaude160695@7b77aca7639f41d86f19304a1e8730a25489350a/webbongda/anh/san-doi-hinh.webp') center/100% 100% no-repeat;
+  background:url('https://cdn.jsdelivr.net/gh/phamdoanchiengroup-cloud/githubforclaude160695@c2a8b56ba88f0f9f8db40002ef2422437b94e296/webbongda/anh/san-doi-hinh-cat.webp') center/100% 100% no-repeat;
   z-index:0;
 }
 .thv-pitch::after {
@@ -4540,8 +4540,8 @@ nav.tabs button.on{background:var(--kim-loai) !important;color:#1a1206 !importan
 .thv-team-sodo select{color:var(--neon) !important}
 .thv-vs{background:var(--kim-loai) !important;color:#1a1206 !important;box-shadow:0 6px 20px rgba(255,159,46,.40) !important}
 .thv-team-name{font-family:var(--ff-title) !important;font-style:italic}
-/* Sân mới có khán đài nên thẻ nhỏ lại một chút để không chồng nhau */
-.thv-pitch .thv-card{--S:84px}
+/* Sân đã bỏ khán đài nên thẻ to, vẫn không chồng nhau */
+.thv-pitch .thv-card{--S:92px}
 
 /* ================= KHUNG MATCH DAY TRANG CHỦ (md-) ================= */
 .md-wrap{margin-bottom:18px}
@@ -6316,11 +6316,11 @@ function xemDoiHinhTran(maTran){
   }
   function soDoCua(side){ var k=(side==='A')?MATCH_VIEW.soDoA:MATCH_VIEW.soDoB; return SO_DO_LIST[k]?k:chuanSoDo_(k); }
 
-  /* Map toạ độ sơ đồ dọc → sân ngang theo vạch vôi của ảnh san-doi-hinh.webp (tính theo % khung ảnh):
-     đường biên dọc 20.5% → 81.9% (giữa 51.2%), khung thành trái 12.3% / phải 87.7%, giữa sân 50%.
-     Chiều sâu chia đều 4 tuyến (thủ môn · hậu vệ · tiền vệ · tiền đạo) cách nhau ~10.5% để thẻ không chạm nhau. */
-  var GIUA_DOC = 51.2, NUA_DOC = 35;
-  var TUYEN = [[15,45],[44,35],[70,24.5],[86,23.5],[102,14]];   // [sl.y, % tính từ khung thành đội mình]; hậu vệ (sl.y 70–86) đứng cùng một tuyến
+  /* Map toạ độ sơ đồ dọc → sân ngang theo vạch vôi của ảnh san-doi-hinh-cat.webp (tính theo % khung ảnh):
+     đường biên dọc 3.6% → 96.4% (giữa 50%), khung thành trái 3.7% / phải 96.3%, giữa sân 50%.
+     Chiều sâu chia 4 tuyến (thủ môn · hậu vệ · tiền vệ · tiền đạo) cách nhau ~12.5% để thẻ không chạm nhau. */
+  var GIUA_DOC = 50, NUA_DOC = 46;
+  var TUYEN = [[15,44],[44,32],[70,20],[86,19],[102,7]];   // [sl.y, % tính từ khung thành đội mình]; hậu vệ (sl.y 70–86) đứng cùng một tuyến
   function sauTuyen_(y){
     if(y <= TUYEN[0][0]) return TUYEN[0][1];
     for(var i=1;i<TUYEN.length;i++){
