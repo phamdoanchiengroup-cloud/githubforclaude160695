@@ -1,9 +1,9 @@
 # Bàn giao phiên
 
 Nhóm: Bắt đầu · Cập nhật 25/10/2026
-Liên quan: [[00 Mục lục]] · [[Việc chờ chủ dự án]] · [[Lần dán lên Apps Script]] · [[Quyết định của chủ dự án]]
+Liên quan: [[00 Mục lục]] · [[Tài nguyên và công cụ]] · [[Việc chờ chủ dự án]] · [[Lần dán lên Apps Script]] · [[Quyết định của chủ dự án]]
 
-Phiên mới đọc ghi chú này ngay sau `CLAUDE.md` và [[00 Mục lục]]. Mỗi lần chủ dự án yêu cầu "nén phiên / chuyển phiên mới", viết đè mục "Trạng thái hiện tại" bên dưới.
+Phiên mới đọc ghi chú này ngay sau `CLAUDE.md`, rồi [[Tài nguyên và công cụ]] (liên kết, repo, công cụ) và [[00 Mục lục]]. Mỗi lần chủ dự án yêu cầu "nén phiên / chuyển phiên mới", viết đè mục "Trạng thái hiện tại" bên dưới.
 
 ## Trạng thái hiện tại (25/10/2026)
 - Nhánh `claude/happy-brown-lttkz3`, commit mới nhất `f55efd2`, mã giao diện **`2026.10.25.1`** (3 chỗ: `tcc-ban` Index, `--tcc-ban` Styles, `BAN_GIAO_DIEN` Script). Mọi thay đổi đã push; chủ dự án chỉ cần bấm `2-CAP-NHAT.bat` + Ctrl+F5.

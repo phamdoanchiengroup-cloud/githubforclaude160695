@@ -1,6 +1,6 @@
 # Thiên Cơ Các – bối cảnh cho phiên Claude Code mới
 
-File này được Claude Code tự đọc khi mở repo. Nó giữ **quy tắc bắt buộc** và chỉ đường vào **bộ não thứ hai** `bo-nao/`, nơi chứa toàn bộ "trí nhớ" chi tiết của các phiên trước. Đọc hết file này, rồi đọc `bo-nao/Bàn giao phiên.md` (trạng thái mới nhất) và `bo-nao/00 Mục lục.md` trước khi làm việc.
+File này được Claude Code tự đọc khi mở repo. Nó giữ **quy tắc bắt buộc** và chỉ đường vào **bộ não thứ hai** `bo-nao/`, nơi chứa toàn bộ "trí nhớ" chi tiết của các phiên trước. Đọc hết file này, rồi đọc `bo-nao/Bàn giao phiên.md` (trạng thái mới nhất), `bo-nao/Tài nguyên và công cụ.md` (liên kết web/Artifact, repo, jsDelivr, công cụ, plugin) và `bo-nao/00 Mục lục.md` trước khi làm việc.
 
 ## Dự án
 - Web app **Google Apps Script** luận vận mệnh 6 hệ: Tử Vi, Bát Tự, Hà Lạc, Chiêm tinh, Thần số học, Human Design. Có bán nội dung bằng **xu**. Mã trong `tuvi-app/` (bảng vai trò từng file: `tuvi-app/README.md`; hướng dẫn cài đặt: `tuvi-app/HUONG-DAN-CAI-DAT.md`). Chi tiết: `bo-nao/Thiên Cơ Các/`.

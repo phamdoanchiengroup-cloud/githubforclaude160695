@@ -4,6 +4,7 @@ Bộ não thứ hai của **Thiên Cơ Các** (nhánh `claude/happy-brown-lttkz3
 
 ## Bắt đầu từ đây
 - [[Bàn giao phiên]]: trạng thái mới nhất và việc dở – đọc đầu tiên khi mở phiên mới.
+- [[Tài nguyên và công cụ]]: liên kết web, Artifact, repo, jsDelivr, công cụ, plugin/skill/kết nối.
 - [[Việc chờ chủ dự án]]: việc còn ngỏ, câu hỏi chờ trả lời.
 - [[Lần dán lên Apps Script]]: bản nào đã dán, bản nào chưa.
 - [[Quyết định của chủ dự án]]: những gì đã chốt – đừng đề xuất ngược lại.
