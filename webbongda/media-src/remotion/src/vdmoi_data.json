@@ -1,0 +1,834 @@
+{
+ "tenDoi": {
+  "rhino": "RHINO FC",
+  "evo": "EVO FC",
+  "cuebots": "CUEBOTS FC",
+  "timetip": "TIME-TIP FC"
+ },
+ "kq": [
+  {
+   "a": "rhino",
+   "b": "evo",
+   "ga": 2,
+   "gb": 3,
+   "ngay": "23/10/2026",
+   "su": [
+    {
+     "loai": "BAN",
+     "phut": 5,
+     "ct": {
+      "ma": "CT5C278C3F",
+      "ten": "Kieran Trườngppier",
+      "so": "10",
+      "rt": "93",
+      "loai": "vang",
+      "cs": {
+       "PAC": "77",
+       "SHO": "91",
+       "PAS": "80",
+       "DRI": "80",
+       "DEF": "96",
+       "PHY": "98"
+      },
+      "vt": "TD"
+     },
+     "doi": "evo"
+    },
+    {
+     "loai": "BAN",
+     "phut": 10,
+     "ct": {
+      "ma": "CT5C278C3F",
+      "ten": "Kieran Trườngppier",
+      "so": "10",
+      "rt": "93",
+      "loai": "vang",
+      "cs": {
+       "PAC": "77",
+       "SHO": "91",
+       "PAS": "80",
+       "DRI": "80",
+       "DEF": "96",
+       "PHY": "98"
+      },
+      "vt": "TD"
+     },
+     "doi": "evo"
+    },
+    {
+     "loai": "VANG",
+     "phut": 16,
+     "ct": {
+      "ma": "CT5C278C3F",
+      "ten": "Kieran Trườngppier",
+      "so": "10",
+      "rt": "93",
+      "loai": "vang",
+      "cs": {
+       "PAC": "77",
+       "SHO": "91",
+       "PAS": "80",
+       "DRI": "80",
+       "DEF": "96",
+       "PHY": "98"
+      },
+      "vt": "TD"
+     },
+     "doi": "evo"
+    },
+    {
+     "loai": "BAN",
+     "phut": 20,
+     "ct": {
+      "ma": "CT1927A8A3",
+      "ten": "Lamine YaHưng",
+      "so": "19",
+      "rt": "99",
+      "loai": "huyenthoai",
+      "cs": {
+       "PAC": "99",
+       "SHO": "99",
+       "PAS": "99",
+       "DRI": "99",
+       "DEF": "99",
+       "PHY": "99"
+      },
+      "vt": "TV"
+     },
+     "doi": "rhino"
+    },
+    {
+     "loai": "BAN",
+     "phut": 23,
+     "ct": {
+      "ma": "CTF4C60022",
+      "ten": "Aymeric Longporte",
+      "so": "11",
+      "rt": "92",
+      "loai": "huyenthoai",
+      "cs": {
+       "PAC": "98",
+       "SHO": "98",
+       "PAS": "92",
+       "DRI": "90",
+       "DEF": "88",
+       "PHY": "95"
+      },
+      "vt": "TD"
+     },
+     "doi": "rhino"
+    },
+    {
+     "loai": "BAN",
+     "phut": 32,
+     "ct": {
+      "ma": "CTCB3567FC",
+      "ten": "Đạtvid Silva",
+      "so": "18",
+      "rt": "89",
+      "loai": "vang",
+      "cs": {
+       "PAC": "97",
+       "SHO": "84",
+       "PAS": "91",
+       "DRI": "91",
+       "DEF": "86",
+       "PHY": "94"
+      },
+      "vt": "HVCT"
+     },
+     "doi": "evo"
+    }
+   ]
+  },
+  {
+   "a": "cuebots",
+   "b": "timetip",
+   "ga": 2,
+   "gb": 2,
+   "ngay": "23/10/2026",
+   "su": [
+    {
+     "loai": "BAN",
+     "phut": 1,
+     "ct": {
+      "ma": "CT8EB83F73",
+      "ten": "Zinedine ZiĐức",
+      "so": "09",
+      "rt": "91",
+      "loai": "bac",
+      "cs": {
+       "PAC": "84",
+       "SHO": "80",
+       "PAS": "81",
+       "DRI": "90",
+       "DEF": "78",
+       "PHY": "77"
+      },
+      "vt": "TV"
+     },
+     "doi": "cuebots"
+    },
+    {
+     "loai": "BAN",
+     "phut": 10,
+     "ct": {
+      "ma": "CTAF341436",
+      "ten": "Mario Mạnhdžukić",
+      "so": "21",
+      "rt": "91",
+      "loai": "kimcuong",
+      "cs": {
+       "PAC": "88",
+       "SHO": "82",
+       "PAS": "99",
+       "DRI": "92",
+       "DEF": "92",
+       "PHY": "97"
+      },
+      "vt": "TM"
+     },
+     "doi": "timetip"
+    },
+    {
+     "loai": "BAN",
+     "phut": 18,
+     "ct": {
+      "ma": "CT164C0111",
+      "ten": "Kai Hàvertz",
+      "so": "18",
+      "rt": "92",
+      "loai": "kimcuong",
+      "cs": {
+       "PAC": "91",
+       "SHO": "98",
+       "PAS": "82",
+       "DRI": "88",
+       "DEF": "91",
+       "PHY": "95"
+      },
+      "vt": "TM"
+     },
+     "doi": "timetip"
+    },
+    {
+     "loai": "BAN",
+     "phut": 30,
+     "ct": {
+      "ma": "CT6FADD0C5",
+      "ten": "Class-Jan HữuAnhlaar",
+      "so": "31",
+      "rt": "95",
+      "loai": "bac",
+      "cs": {
+       "PAC": "76",
+       "SHO": "88",
+       "PAS": "97",
+       "DRI": "80",
+       "DEF": "91",
+       "PHY": "98"
+      },
+      "vt": "TV"
+     },
+     "doi": "cuebots"
+    }
+   ]
+  }
+ ],
+ "bxh": [
+  {
+   "doi": "evo",
+   "tr": 1,
+   "t": 1,
+   "h": 0,
+   "b": 0,
+   "bt": 3,
+   "bb": 2,
+   "d": 3
+  },
+  {
+   "doi": "cuebots",
+   "tr": 1,
+   "t": 0,
+   "h": 1,
+   "b": 0,
+   "bt": 2,
+   "bb": 2,
+   "d": 1
+  },
+  {
+   "doi": "timetip",
+   "tr": 1,
+   "t": 0,
+   "h": 1,
+   "b": 0,
+   "bt": 2,
+   "bb": 2,
+   "d": 1
+  },
+  {
+   "doi": "rhino",
+   "tr": 1,
+   "t": 0,
+   "h": 0,
+   "b": 1,
+   "bt": 2,
+   "bb": 3,
+   "d": 0
+  }
+ ],
+ "l2": [
+  {
+   "gio": "15:30",
+   "ngay": "29/10/2026",
+   "doi": [
+    {
+     "key": "rhino",
+     "ten": "RHINO FC",
+     "sodo": "3-2-1",
+     "dt": {
+      "ma": "CTCF3038CB",
+      "ten": "Linhtaro Martínez",
+      "so": "6",
+      "rt": "98",
+      "loai": "huyenthoai",
+      "cs": {
+       "PAC": "83",
+       "SHO": "87",
+       "PAS": "90",
+       "DRI": "94",
+       "DEF": "91",
+       "PHY": "81"
+      },
+      "vt": "HVCT"
+     },
+     "xi": [
+      {
+       "ma": "CT9F785673",
+       "ten": "Hiếude Gea",
+       "so": "12",
+       "rt": "99",
+       "loai": "huyenthoai",
+       "cs": {
+        "PAC": "87",
+        "SHO": "90",
+        "PAS": "97",
+        "DRI": "81",
+        "DEF": "95",
+        "PHY": "89"
+       },
+       "vt": "TM"
+      },
+      {
+       "ma": "CT45E49CAB",
+       "ten": "Dũngego Costa",
+       "so": "26",
+       "rt": "97",
+       "loai": "huyenthoai",
+       "cs": {
+        "PAC": "81",
+        "SHO": "75",
+        "PAS": "80",
+        "DRI": "77",
+        "DEF": "75",
+        "PHY": "76"
+       },
+       "vt": "HVTT"
+      },
+      {
+       "ma": "CT2773BB6B",
+       "ten": "Corentin Tuyếnlisso",
+       "so": "4",
+       "rt": "92",
+       "loai": "huyenthoai",
+       "cs": {
+        "PAC": "89",
+        "SHO": "94",
+        "PAS": "78",
+        "DRI": "85",
+        "DEF": "95",
+        "PHY": "92"
+       },
+       "vt": "HVTT"
+      },
+      {
+       "ma": "CTCF3038CB",
+       "ten": "Linhtaro Martínez",
+       "so": "6",
+       "rt": "98",
+       "loai": "huyenthoai",
+       "cs": {
+        "PAC": "83",
+        "SHO": "87",
+        "PAS": "90",
+        "DRI": "94",
+        "DEF": "91",
+        "PHY": "81"
+       },
+       "vt": "HVCT"
+      },
+      {
+       "ma": "CTEC25A607",
+       "ten": "Ricardo Quânresma",
+       "so": "25",
+       "rt": "93",
+       "loai": "huyenthoai",
+       "cs": {
+        "PAC": "78",
+        "SHO": "91",
+        "PAS": "98",
+        "DRI": "95",
+        "DEF": "79",
+        "PHY": "85"
+       },
+       "vt": "TV"
+      },
+      {
+       "ma": "CT14A76921",
+       "ten": "Thịnhago Motta",
+       "so": "23",
+       "rt": "92",
+       "loai": "huyenthoai",
+       "cs": {
+        "PAC": "82",
+        "SHO": "76",
+        "PAS": "79",
+        "DRI": "82",
+        "DEF": "79",
+        "PHY": "79"
+       },
+       "vt": "HVCT"
+      },
+      {
+       "ma": "CTF4C60022",
+       "ten": "Aymeric Longporte",
+       "so": "11",
+       "rt": "92",
+       "loai": "huyenthoai",
+       "cs": {
+        "PAC": "98",
+        "SHO": "98",
+        "PAS": "92",
+        "DRI": "90",
+        "DEF": "88",
+        "PHY": "95"
+       },
+       "vt": "TD"
+      }
+     ]
+    },
+    {
+     "key": "timetip",
+     "ten": "TIME-TIP FC",
+     "sodo": "1-3-2",
+     "dt": {
+      "ma": "CTBE7CF0D3",
+      "ten": "Memphis Điệppay",
+      "so": "06",
+      "rt": "98",
+      "loai": "kimcuong",
+      "cs": {
+       "PAC": "94",
+       "SHO": "98",
+       "PAS": "78",
+       "DRI": "94",
+       "DEF": "78",
+       "PHY": "81"
+      },
+      "vt": "TV"
+     },
+     "xi": [
+      {
+       "ma": "CT164C0111",
+       "ten": "Kai Hàvertz",
+       "so": "18",
+       "rt": "92",
+       "loai": "kimcuong",
+       "cs": {
+        "PAC": "91",
+        "SHO": "98",
+        "PAS": "82",
+        "DRI": "88",
+        "DEF": "91",
+        "PHY": "95"
+       },
+       "vt": "TM"
+      },
+      {
+       "ma": "CTBE7CF0D3",
+       "ten": "Memphis Điệppay",
+       "so": "06",
+       "rt": "98",
+       "loai": "kimcuong",
+       "cs": {
+        "PAC": "94",
+        "SHO": "98",
+        "PAS": "78",
+        "DRI": "94",
+        "DEF": "78",
+        "PHY": "81"
+       },
+       "vt": "TV"
+      },
+      {
+       "ma": "CTAF341436",
+       "ten": "Mario Mạnhdžukić",
+       "so": "21",
+       "rt": "91",
+       "loai": "kimcuong",
+       "cs": {
+        "PAC": "88",
+        "SHO": "82",
+        "PAS": "99",
+        "DRI": "92",
+        "DEF": "92",
+        "PHY": "97"
+       },
+       "vt": "TM"
+      },
+      {
+       "ma": "CTCFC7C972",
+       "ten": "Kylian Minhbappé",
+       "so": "26",
+       "rt": "91",
+       "loai": "kimcuong",
+       "cs": {
+        "PAC": "79",
+        "SHO": "91",
+        "PAS": "84",
+        "DRI": "99",
+        "DEF": "99",
+        "PHY": "87"
+       },
+       "vt": "TV"
+      },
+      {
+       "ma": "CT7BA2015D",
+       "ten": "Kevin De Duyne",
+       "so": "09",
+       "rt": "95",
+       "loai": "kimcuong",
+       "cs": {
+        "PAC": "92",
+        "SHO": "98",
+        "PAS": "89",
+        "DRI": "87",
+        "DEF": "80",
+        "PHY": "99"
+       },
+       "vt": "HVTT"
+      },
+      {
+       "ma": "CT1F76BAC0",
+       "ten": "Gonzalo Hưnguaín",
+       "so": "30",
+       "rt": "95",
+       "loai": "kimcuong",
+       "cs": {
+        "PAC": "80",
+        "SHO": "76",
+        "PAS": "84",
+        "DRI": "85",
+        "DEF": "86",
+        "PHY": "88"
+       },
+       "vt": "HVTT"
+      },
+      {
+       "ma": "CT74F69799",
+       "ten": "Tịnh Howard",
+       "so": "A83",
+       "rt": "97",
+       "loai": "kimcuong",
+       "cs": {
+        "PAC": "94",
+        "SHO": "75",
+        "PAS": "91",
+        "DRI": "96",
+        "DEF": "90",
+        "PHY": "77"
+       },
+       "vt": "TM"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "gio": "15:30",
+   "ngay": "29/10/2026",
+   "doi": [
+    {
+     "key": "evo",
+     "ten": "EVO FC",
+     "sodo": "3-1-2",
+     "dt": {
+      "ma": "CT7CE12C78",
+      "ten": "Marcus Thànhram",
+      "so": "24",
+      "rt": "90",
+      "loai": "vang",
+      "cs": {
+       "PAC": "79",
+       "SHO": "82",
+       "PAS": "75",
+       "DRI": "90",
+       "DEF": "84",
+       "PHY": "83"
+      },
+      "vt": "HVCT"
+     },
+     "xi": [
+      {
+       "ma": "CT8C023191",
+       "ten": "Sami Khảidira",
+       "so": "5",
+       "rt": "94",
+       "loai": "vang",
+       "cs": {
+        "PAC": "75",
+        "SHO": "77",
+        "PAS": "78",
+        "DRI": "92",
+        "DEF": "78",
+        "PHY": "83"
+       },
+       "vt": "TM"
+      },
+      {
+       "ma": "CT7CE12C78",
+       "ten": "Marcus Thànhram",
+       "so": "24",
+       "rt": "90",
+       "loai": "vang",
+       "cs": {
+        "PAC": "79",
+        "SHO": "82",
+        "PAS": "75",
+        "DRI": "90",
+        "DEF": "84",
+        "PHY": "83"
+       },
+       "vt": "HVCT"
+      },
+      {
+       "ma": "CTCB3567FC",
+       "ten": "Đạtvid Silva",
+       "so": "18",
+       "rt": "89",
+       "loai": "vang",
+       "cs": {
+        "PAC": "97",
+        "SHO": "84",
+        "PAS": "91",
+        "DRI": "91",
+        "DEF": "86",
+        "PHY": "94"
+       },
+       "vt": "HVCT"
+      },
+      {
+       "ma": "CTF7C852FE",
+       "ten": "Thorgan HaiAnhzard",
+       "so": "16",
+       "rt": "90",
+       "loai": "vang",
+       "cs": {
+        "PAC": "92",
+        "SHO": "94",
+        "PAS": "80",
+        "DRI": "92",
+        "DEF": "89",
+        "PHY": "82"
+       },
+       "vt": "HVCT"
+      },
+      {
+       "ma": "CT08D0F86B",
+       "ten": "Angel ĐôngMaría",
+       "so": "21",
+       "rt": "94",
+       "loai": "vang",
+       "cs": {
+        "PAC": "75",
+        "SHO": "78",
+        "PAS": "77",
+        "DRI": "96",
+        "DEF": "92",
+        "PHY": "77"
+       },
+       "vt": "HVTT"
+      },
+      {
+       "ma": "CTA426831D",
+       "ten": "Thườngry Henry",
+       "so": "22",
+       "rt": "96",
+       "loai": "vang",
+       "cs": {
+        "PAC": "90",
+        "SHO": "84",
+        "PAS": "88",
+        "DRI": "84",
+        "DEF": "82",
+        "PHY": "87"
+       },
+       "vt": "TD"
+      },
+      {
+       "ma": "CT5C278C3F",
+       "ten": "Kieran Trườngppier",
+       "so": "10",
+       "rt": "93",
+       "loai": "vang",
+       "cs": {
+        "PAC": "77",
+        "SHO": "91",
+        "PAS": "80",
+        "DRI": "80",
+        "DEF": "96",
+        "PHY": "98"
+       },
+       "vt": "TD"
+      }
+     ]
+    },
+    {
+     "key": "cuebots",
+     "ten": "CUEBOTS FC",
+     "sodo": "1-3-2",
+     "dt": {
+      "ma": "CT6FADD0C5",
+      "ten": "Class-Jan HữuAnhlaar",
+      "so": "31",
+      "rt": "95",
+      "loai": "bac",
+      "cs": {
+       "PAC": "76",
+       "SHO": "88",
+       "PAS": "97",
+       "DRI": "80",
+       "DEF": "91",
+       "PHY": "98"
+      },
+      "vt": "TV"
+     },
+     "xi": [
+      {
+       "ma": "CT257A2248",
+       "ten": "Xuyênvi Hernández",
+       "so": "69",
+       "rt": "91",
+       "loai": "bac",
+       "cs": {
+        "PAC": "87",
+        "SHO": "99",
+        "PAS": "79",
+        "DRI": "92",
+        "DEF": "78",
+        "PHY": "99"
+       },
+       "vt": "HVTT"
+      },
+      {
+       "ma": "CT803BABE5",
+       "ten": "Ousmane Đôngbélé",
+       "so": "80B",
+       "rt": "99",
+       "loai": "bac",
+       "cs": {
+        "PAC": "88",
+        "SHO": "94",
+        "PAS": "79",
+        "DRI": "98",
+        "DEF": "78",
+        "PHY": "75"
+       },
+       "vt": "TV"
+      },
+      {
+       "ma": "CT22E50D00",
+       "ten": "N'Golo Khoa.té",
+       "so": "80A",
+       "rt": "91",
+       "loai": "bac",
+       "cs": {
+        "PAC": "81",
+        "SHO": "80",
+        "PAS": "89",
+        "DRI": "84",
+        "DEF": "91",
+        "PHY": "90"
+       },
+       "vt": "TD"
+      },
+      {
+       "ma": "CT6FADD0C5",
+       "ten": "Class-Jan HữuAnhlaar",
+       "so": "31",
+       "rt": "95",
+       "loai": "bac",
+       "cs": {
+        "PAC": "76",
+        "SHO": "88",
+        "PAS": "97",
+        "DRI": "80",
+        "DEF": "91",
+        "PHY": "98"
+       },
+       "vt": "TV"
+      },
+      {
+       "ma": "CTCDB327EA",
+       "ten": "Achraf Hòakimi",
+       "so": "97",
+       "rt": "95",
+       "loai": "bac",
+       "cs": {
+        "PAC": "80",
+        "SHO": "78",
+        "PAS": "89",
+        "DRI": "98",
+        "DEF": "98",
+        "PHY": "84"
+       },
+       "vt": "HVCT"
+      },
+      {
+       "ma": "CT8EB83F73",
+       "ten": "Zinedine ZiĐức",
+       "so": "09",
+       "rt": "91",
+       "loai": "bac",
+       "cs": {
+        "PAC": "84",
+        "SHO": "80",
+        "PAS": "81",
+        "DRI": "90",
+        "DEF": "78",
+        "PHY": "77"
+       },
+       "vt": "TV"
+      },
+      {
+       "ma": "CT9D08DAF9",
+       "ten": "Phil Phốden",
+       "so": "17",
+       "rt": "91",
+       "loai": "bac",
+       "cs": {
+        "PAC": "97",
+        "SHO": "77",
+        "PAS": "85",
+        "DRI": "86",
+        "DEF": "91",
+        "PHY": "76"
+       },
+       "vt": "TD"
+      }
+     ]
+    }
+   ]
+  }
+ ]
+}
