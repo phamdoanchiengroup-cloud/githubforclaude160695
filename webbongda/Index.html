@@ -4623,6 +4623,75 @@ nav.tabs button.on{background:var(--kim-loai) !important;color:#1a1206 !importan
 .match .score{font-family:var(--ff-title) !important;font-weight:800;font-size:34px !important;background:rgba(7,6,10,.7) !important;border-color:var(--vien2) !important;color:var(--neon) !important}
 .pill.ok{background:rgba(246,196,83,.15) !important;color:var(--neon) !important;border-color:rgba(246,196,83,.35) !important}
 .bxh-table tr:first-child td{background:rgba(246,196,83,.07)}
+/* Icon tab */
+nav.tabs button .tab-ic{width:1.05em;height:1.05em;flex:0 0 auto;color:var(--neon);filter:drop-shadow(0 0 6px rgba(255,159,46,.25))}
+nav.tabs button.on .tab-ic{color:#1a1206;filter:none}
+/* Poster trang chủ to hơn (~55% bề ngang) */
+.md-hero{grid-template-columns:minmax(0,1.2fr) minmax(0,1fr) !important;gap:30px !important}
+.md-may{width:min(100%,520px) !important}
+.md-tieu{font-size:80px !important}
+.md-gio{font-size:34px !important}
+.md-logo{width:48px !important;height:48px !important}.md-logo img{width:46px !important;height:46px !important}
+.md-doi{gap:8px !important}
+.md-doi b{font-size:15px !important;white-space:nowrap;min-width:0}
+.md-doi small{font-size:11px !important;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:110px}
+.md-doi.phai small{margin-left:auto}
+.md-dem b{font-size:38px !important}
+.md-tran{padding:16px 12px 12px !important;gap:8px !important}
+/* Thanh Match Day gọn (các tab khác) */
+.mdb{display:grid;grid-template-columns:auto auto minmax(0,1fr) 230px;align-items:center;gap:18px;padding:12px 16px 12px 12px;margin-bottom:6px}
+.mdb-poster{height:96px;width:auto;display:block;cursor:zoom-in;box-shadow:0 0 0 1px rgba(255,231,163,.45),0 0 18px rgba(255,159,46,.25)}
+.mdb-tieu{display:grid;gap:4px;min-width:0}
+.mdb-tieu b{font-family:var(--ff-title);font-style:italic;font-weight:800;font-size:30px;line-height:1.1;white-space:nowrap;padding-top:.08em;filter:drop-shadow(0 0 12px rgba(255,159,46,.25))}
+.mdb-luot{margin-left:6px}
+.mdb-tran{display:grid;gap:8px}
+.mdb-cap{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:10px;padding:6px 10px;border:1px solid var(--vien);background:rgba(7,6,10,.45);cursor:pointer;transition:border-color .2s}
+.mdb-cap:hover{border-color:var(--vien2)}
+.mdb-doi{display:flex;align-items:center;gap:8px;min-width:0}
+.mdb-doi:last-child{flex-direction:row-reverse}
+.mdb-doi img{width:34px;height:34px;object-fit:contain}
+.mdb-doi i{font-style:normal;font-family:var(--ff-hud);font-weight:700;font-size:14px;letter-spacing:.05em;white-space:nowrap}
+.mdb-gio{font-family:var(--ff-title);font-weight:800;font-size:24px}
+.mdb .md-dem{gap:6px}
+.mdb .md-dem .md-kinh{padding:6px 4px 8px}
+.mdb .md-dem b{font-size:26px !important}
+.mdb .md-dem span{font-size:9.5px;letter-spacing:.12em}
+/* Ghi bàn: thẻ người dẫn đầu */
+.gbd{display:flex;flex-direction:column;align-items:center;text-align:center;gap:8px;padding:12px 10px;margin:0 0 12px;border:1px solid var(--vien2);
+  background:radial-gradient(80% 100% at 15% 100%,rgba(255,159,46,.22),transparent 70%),rgba(7,6,10,.45)}
+.gbd-the{flex:0 0 auto;width:150px}
+.gbd-info{justify-items:center}
+.gbd-dong{display:flex;align-items:baseline;gap:10px}
+.gbd-the .fifa-card{transform:none}
+.gbd-info{display:grid;gap:4px;min-width:0}
+.gbd-nhan{font-family:var(--ff-hud);font-weight:600;font-size:11.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--neon)}
+.gbd-so{font-family:var(--ff-title);font-weight:800;font-size:52px;line-height:.9;background:var(--kim-loai);-webkit-background-clip:text;background-clip:text;color:transparent;padding-top:.06em}
+.gbd-so small{font-family:var(--ff-hud);font-size:15px;letter-spacing:.12em;margin-left:6px;-webkit-text-fill-color:var(--neon)}
+.gbd-ten{font-family:var(--ff-title);font-weight:800;font-size:19px;line-height:1.1;color:var(--chu2)}
+.gbd-phu{display:flex;align-items:center;gap:6px;font-size:12.5px;color:var(--mo)}
+/* Bảng xếp hạng mới */
+.bxh-moi{border-collapse:separate !important;border-spacing:0 6px !important;width:100%}
+.bxh-moi th{font-family:var(--ff-hud);font-weight:600;font-size:11.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--mo);border:0 !important;padding:2px 6px !important}
+.bxh-moi td{background:rgba(7,6,10,.42) !important;border-top:1px solid var(--vien) !important;border-bottom:1px solid var(--vien) !important;padding:9px 6px !important;font-variant-numeric:tabular-nums}
+.bxh-moi td:first-child{border-left:1px solid var(--vien) !important}
+.bxh-moi td:last-child{border-right:1px solid var(--vien) !important}
+.bxh-moi tr.qua td{background:linear-gradient(90deg,rgba(246,196,83,.16),rgba(246,196,83,.05)) !important;border-color:var(--vien2) !important}
+.bxh-moi tr.qua td:first-child{box-shadow:inset 4px 0 0 var(--neon)}
+.bxh-moi tr.ranh td{border-bottom:2px dashed rgba(246,196,83,.7) !important}
+.bxh-hang{font-family:var(--ff-title);font-weight:800;font-size:24px;color:var(--mo)}
+.bxh-moi tr.qua .bxh-hang{background:var(--kim-loai);-webkit-background-clip:text;background-clip:text;color:transparent}
+.bxh-doi{display:flex;align-items:center;gap:10px;min-width:0}
+.bxh-doi img,.bxh-doi > div{border:0 !important;border-radius:0 !important;object-fit:contain !important;filter:drop-shadow(0 2px 6px rgba(0,0,0,.6))}
+.bxh-doi b{font-family:var(--ff-hud);font-weight:700;font-size:15px;letter-spacing:.04em;white-space:nowrap;color:var(--chu2)}
+.bxh-diem{font-family:var(--ff-title);font-weight:800;font-size:28px;line-height:1;color:var(--neon)}
+.bxh-hs{color:var(--mo)}
+.bxh-pd{display:inline-flex;gap:3px}
+.pd{display:inline-grid;place-items:center;width:22px;height:22px;font-family:var(--ff-hud);font-weight:700;font-size:12px;border-radius:2px;vertical-align:middle}
+.pd.t{background:#f6c453;color:#1a1206}.pd.h{background:#c3cad6;color:#14161a}.pd.b{background:#e5484d;color:#fff}
+.bxh-chu{display:flex;flex-wrap:wrap;gap:6px 18px;margin-top:8px;font-size:12.5px;color:var(--mo);align-items:center}
+.bxh-chu > span{display:inline-flex;align-items:center;gap:5px}
+.bxh-vach{display:inline-block;width:18px;border-top:2px dashed rgba(246,196,83,.8)}
+.bxh-moi.compact .bxh-diem{font-size:22px}.bxh-moi.compact .bxh-hang{font-size:19px}.bxh-moi.compact .bxh-doi b{font-size:13px}
 
 </style>
 </head>
@@ -5064,23 +5133,70 @@ function mdMauDoi_(maDoi){
   return '#f6c453';
 }
 /* Vẽ khung Match Day cho ngày thi đấu sắp tới. Không có trận sắp tới → trả false để dùng banner động. */
-function veMatchDay_(el){
+/* Dữ liệu ngày thi đấu sắp tới (dùng chung cho khung trang chủ và thanh gọn ở các tab khác). Không có → null */
+function mdDuLieu_(){
   var d = STATE.data;
   var tran = (d.tranDau || []).map(function(t){ var o = {}; for (var k in t) o[k] = t[k]; o._d = bdGio_(t.gioThiDau); return o; })
     .filter(function(t){ return t._d && t.maDoiB; })
     .sort(function(a, b){ return a._d - b._d || (Number(a.thuTuKO) || 0) - (Number(b.thuTuKO) || 0); });
   var now = new Date();
   var sap = tran.filter(function(t){ return !bdDaDa_(t) && t._d > now; })[0];
-  if (!sap) return false;
-  var ngay = tran.filter(function(t){ return t._d.toDateString() === sap._d.toDateString() && !bdDaDa_(t); }).slice(0, 2);
-  var giai = tran.filter(function(t){ return !laTranGiaoHuu_(t); });
+  if (!sap) return null;
+  var luot = nhanLuot_(sap), so = luot.match(/(\d+)/);
+  var ngayTxt = bdP2_(sap._d.getDate()) + '/' + bdP2_(sap._d.getMonth() + 1) + '/' + sap._d.getFullYear();
+  return {
+    tran: tran, sap: sap, luot: luot, ngayTxt: ngayTxt,
+    ngay: tran.filter(function(t){ return t._d.toDateString() === sap._d.toDateString() && !bdDaDa_(t); }).slice(0, 2),
+    giai: tran.filter(function(t){ return !laTranGiaoHuu_(t); }),
+    luotTo: so ? 'LƯỢT ' + bdP2_(+so[1]) : String(luot).toUpperCase(),
+    poster: MATCH_DAY_POSTER[ngayTxt] || driveImg(d.bannerUrl || BANNER_HEP_ID || '')
+  };
+}
+/* Đồng hồ đếm ngược trong khung .md-dem[data-den] (1 đồng hồ mỗi trang) */
+function mdChayDem_(dem){
+  var chay = function(){
+    if (!document.body.contains(dem)) { clearInterval(MD.timer); return; }
+    var s = Math.max(0, Math.floor((+dem.getAttribute('data-den') - Date.now()) / 1000));
+    dem.querySelector('[data-k=d]').textContent = bdP2_(Math.floor(s / 86400));
+    dem.querySelector('[data-k=h]').textContent = bdP2_(Math.floor(s % 86400 / 3600));
+    dem.querySelector('[data-k=m]').textContent = bdP2_(Math.floor(s % 3600 / 60));
+    dem.querySelector('[data-k=s]').textContent = bdP2_(s % 60);
+  };
+  clearInterval(MD.timer); chay(); MD.timer = setInterval(chay, 1000);
+}
+function mdDemHtml_(sap){
+  return '<div class="md-dem" data-den="' + sap._d.getTime() + '">'
+    + '<div class="md-kinh"><b data-k="d">--</b><span>Ngày</span></div><div class="md-kinh"><b data-k="h">--</b><span>Giờ</span></div>'
+    + '<div class="md-kinh"><b data-k="m">--</b><span>Phút</span></div><div class="md-kinh"><b data-k="s">--</b><span>Giây</span></div></div>';
+}
+/* Thanh Match Day gọn cho các tab không phải trang chủ */
+function veThanhMatchDay_(el){
+  var D = mdDuLieu_(); if (!D) return false;
+  var lg = function(id){ var x = doiObj(id); return x && x.logoUrl ? '<img alt="" src="' + esc(driveImg(x.logoUrl)) + '">' : ''; };
+  var ten = function(id){ var x = doiObj(id); return x ? tenDoiNgan_(x.tenDoi) : '?'; };
+  el.className = 'md-wrap';
+  el.innerHTML = '<div class="md-kinh mdb">'
+    + (D.poster ? '<img class="mdb-poster" alt="Poster" src="' + esc(D.poster) + '" onclick="moAnhLon_(\'' + esc(D.poster) + '\')">' : '')
+    + '<div class="mdb-tieu"><span class="md-hud-nhan">◇ Ngày thi đấu tiếp theo</span>'
+    +   '<b><span class="md-bac">MATCH</span> <span class="md-kim">DAY</span> <span class="mdb-luot md-kim">' + esc(D.luotTo) + '</span></b>'
+    +   '<span class="md-hud-nhan mo">' + BD_THU[D.sap._d.getDay()] + ' · ' + D.ngayTxt + '</span></div>'
+    + '<div class="mdb-tran">' + D.ngay.map(function(t){
+        return '<div class="mdb-cap" onclick="xemDoiHinhTran(\'' + t.maTran + '\')" title="Xem đội hình 2 đội">'
+          + '<span class="mdb-doi">' + lg(t.maDoiA) + '<i>' + esc(ten(t.maDoiA)) + '</i></span>'
+          + '<span class="mdb-gio md-kim">' + bdGioTxt_(t._d) + '</span>'
+          + '<span class="mdb-doi">' + lg(t.maDoiB) + '<i>' + esc(ten(t.maDoiB)) + '</i></span></div>';
+      }).join('') + '</div>'
+    + mdDemHtml_(D.sap) + '</div>';
+  mdChayDem_(el.querySelector('.md-dem'));
+  return true;
+}
+function veMatchDay_(el){
+  var D = mdDuLieu_(); if (!D) return false;
+  var d = STATE.data, tran = D.tran, sap = D.sap, ngay = D.ngay, giai = D.giai;
+  var luot = D.luot, luotTo = D.luotTo, ngayTxt = D.ngayTxt, poster = D.poster;
   var ten = function(id){ var x = doiObj(id); return x ? x.tenDoi : '?'; };
   var lg = function(id){ var x = doiObj(id); return x && x.logoUrl ? esc(driveImg(x.logoUrl)) : ''; };
   var dt = function(id){ var x = doiObj(id), c = x && x.doiTruong ? cauThuObj(x.doiTruong) : null; return c ? 'ĐT ' + c.hoTen : ''; };
-  var luot = nhanLuot_(sap), so = luot.match(/(\d+)/);
-  var luotTo = so ? 'LƯỢT ' + bdP2_(+so[1]) : String(luot).toUpperCase();
-  var ngayTxt = bdP2_(sap._d.getDate()) + '/' + bdP2_(sap._d.getMonth() + 1) + '/' + sap._d.getFullYear();
-  var poster = MATCH_DAY_POSTER[ngayTxt] || driveImg(d.bannerUrl || BANNER_HEP_ID || '');
   var gioChung = ngay.every(function(t){ return bdGioTxt_(t._d) === bdGioTxt_(sap._d); });
 
   var doiHtml = function(id, phai){
@@ -5129,23 +5245,12 @@ function veMatchDay_(el){
     +   '<div class="md-chips"><span class="md-chip dam">' + BD_THU[sap._d.getDay()] + ' · ' + ngayTxt + '</span>'
     +     '<span class="md-chip">' + ngay.length + ' trận' + (gioChung ? ' · ' + bdGioTxt_(sap._d) : '') + (sap.sanDau ? ' · ' + esc(sap.sanDau) : '') + '</span></div>'
     +   ngay.map(tranHtml).join('')
-    +   '<div class="md-dem" data-den="' + sap._d.getTime() + '">'
-    +     '<div class="md-kinh"><b data-k="d">--</b><span>Ngày</span></div><div class="md-kinh"><b data-k="h">--</b><span>Giờ</span></div>'
-    +     '<div class="md-kinh"><b data-k="m">--</b><span>Phút</span></div><div class="md-kinh"><b data-k="s">--</b><span>Giây</span></div></div>'
+    +   mdDemHtml_(sap)
     +   (VIDEO_GIOI_THIEU ? '<button type="button" class="btn neon md-video" onclick="moVideoGioiThieu()">▶ Xem video giới thiệu</button>' : '')
     + '</div></div>'
     + (tin.length ? '<div class="md-chay"><div class="md-ray">' + tinHtml + tinHtml + tinHtml + tinHtml + '</div></div>' : '');
 
-  var dem = el.querySelector('.md-dem');
-  var chay = function(){
-    if (!document.body.contains(dem)) { clearInterval(MD.timer); return; }
-    var s = Math.max(0, Math.floor((+dem.getAttribute('data-den') - Date.now()) / 1000));
-    dem.querySelector('[data-k=d]').textContent = bdP2_(Math.floor(s / 86400));
-    dem.querySelector('[data-k=h]').textContent = bdP2_(Math.floor(s % 86400 / 3600));
-    dem.querySelector('[data-k=m]').textContent = bdP2_(Math.floor(s % 3600 / 60));
-    dem.querySelector('[data-k=s]').textContent = bdP2_(s % 60);
-  };
-  clearInterval(MD.timer); chay(); MD.timer = setInterval(chay, 1000);
+  mdChayDem_(el.querySelector('.md-dem'));
   return true;
 }
 /* Xem ảnh lớn (poster) trong khung xem của thư viện media */
@@ -5161,6 +5266,25 @@ function moAnhLon_(url){
   lb.classList.add('show');
   document.addEventListener('keydown', escListenerLB_);
 }
+
+/* Icon khối đặc cho thanh tab (SVG 24×24, màu theo chữ) */
+var ICON_TAB = {
+  home:'<path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>',
+  lich:'<path fill-rule="evenodd" d="M7 2h2v2h6V2h2v2h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2V2zM5 9v11h14V9H5zm2 2h4v4H7v-4z"/>',
+  hinh:'<circle cx="12" cy="7" r="3.2"/><circle cx="4.8" cy="9.2" r="2.3"/><circle cx="19.2" cy="9.2" r="2.3"/><path d="M5.5 20c0-3.6 2.9-6.5 6.5-6.5s6.5 2.9 6.5 6.5z"/><path d="M.5 19c0-2.6 2-4.7 4.5-4.7.8 0 1.5.2 2.1.5A8 8 0 0 0 4.4 19z"/><path d="M23.5 19c0-2.6-2-4.7-4.5-4.7-.8 0-1.5.2-2.1.5a8 8 0 0 1 2.7 4.2z"/>',
+  the:'<path fill-rule="evenodd" d="M4 3h16a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2zm4.5 4a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5zM4.5 17h8c0-2-1.8-3.2-4-3.2s-4 1.2-4 3.2zM14 8h6v2h-6zm0 4h6v2h-6z"/>',
+  media:'<path d="M21 19V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2zM8.5 13.5l2.5 3 3.5-4.5 4.5 6H5l3.5-4.5z"/>',
+  dsdk:'<path d="M3 13h2v-2H3v2zm0 4h2v-2H3v2zm0-8h2V7H3v2zm4 4h14v-2H7v2zm0 4h14v-2H7v2zM7 7v2h14V7H7z"/>',
+  tran:'<path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/>',
+  dangky:'<path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a1 1 0 0 0 0-1.41l-2.34-2.34a1 1 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/>',
+  live:'<path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20zm-2 14.5v-9l6 4.5-6 4.5z"/>',
+  boc:'<path fill-rule="evenodd" d="M5 3h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2zm2.5 3a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3zm9 0a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3zM12 10.5a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3zM7.5 15a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3zm9 0a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3z"/>',
+  caumau:'<path d="M16 3l5 3-2 4.5-2-1V21H7V9.5l-2 1L3 6l5-3c.5 1.5 2 2.5 4 2.5S15.5 4.5 16 3z"/>',
+  mauao:'<path fill-rule="evenodd" d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c1 0 1.7-.8 1.7-1.7 0-.4-.2-.8-.4-1.1-.3-.3-.4-.7-.4-1.1 0-.9.8-1.7 1.7-1.7h1.9c3 0 5.5-2.5 5.5-5.5C22 6 17.5 2 12 2zM6.5 13a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm3-4a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm3 4a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3z"/>',
+  livemau:'<path d="M17 10.5V7a1 1 0 0 0-1-1H4a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-3.5l4 4v-11l-4 4z"/>',
+  ql:'<path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58a.49.49 0 0 0 .12-.61l-1.92-3.32a.49.49 0 0 0-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54a.48.48 0 0 0-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96a.49.49 0 0 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58a.49.49 0 0 0-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6a3.6 3.6 0 1 1 0-7.2 3.6 3.6 0 0 1 0 7.2z"/>'
+};
+function iconTab_(k){ return ICON_TAB[k] ? '<svg class="tab-ic" viewBox="0 0 24 24" aria-hidden="true" fill="currentColor">' + ICON_TAB[k] + '</svg>' : ''; }
 
 /* ================= RENDER KHUNG ================= */
 function isAdmin(){return STATE.data&&STATE.data.admin;}
@@ -5185,7 +5309,11 @@ function render(){
   var oldNen=document.getElementById('nenDau'); if(oldNen) oldNen.remove();
   var nenDau=document.createElement('div'); nenDau.id='nenDau'; nenDau.className='nen-dau';
   appEl.insertBefore(nenDau, bannerWrap);
-  try { if(!(STATE.tab==='home' && veMatchDay_(bannerWrap))) veBannerDong(bannerWrap); }
+  try {
+    // Trang chủ: khung Match Day lớn · tab khác: thanh Match Day gọn. Hết trận sắp tới: trang chủ về banner động, tab khác không hiện gì.
+    var coMD = STATE.tab==='home' ? veMatchDay_(bannerWrap) : veThanhMatchDay_(bannerWrap);
+    if(!coMD){ if(STATE.tab==='home') veBannerDong(bannerWrap); else { bannerWrap.className=''; bannerWrap.innerHTML=''; } }
+  }
   catch(e){   // lỗi gì thì quay về ảnh banner cũ, không làm hỏng trang
     var bannerUrl_ = d.bannerUrl || BANNER_HEP_ID || '';
     bannerWrap.className='banner-hep';
@@ -5202,25 +5330,25 @@ function render(){
     : '';
 
  var tabs=[
-    ['home','🏠 Trang chủ'],
-    ['lich','📅 Lịch & KQ'],
-    ['hinh','⚽ Đội hình'],
-    ['the','🎴 Thẻ cầu thủ'],
-    ['media','📸 Hình ảnh'],
-    ['dsdk','📋 Danh sách ĐK']
+    ['home','Trang chủ'],
+    ['lich','Lịch & KQ'],
+    ['hinh','Đội hình'],
+    ['the','Thẻ cầu thủ'],
+    ['media','Hình ảnh'],
+    ['dsdk','Danh sách ĐK']
   ];
     if(isAdmin()){
-    tabs.push(['tran','🎌 Trận đặc biệt']);
-    tabs.push(['dangky','📝 Đăng ký']);
-    tabs.push(['live','🎬 Live bốc thăm']);
-    tabs.push(['boc','🎲 Bốc thăm']);
-    tabs.push(['caumau','👕 Cấu hình áo']);
-    tabs.push(['mauao','🎨 Gán màu áo']);
-    tabs.push(['livemau','🎬 Live bốc màu']);
-    tabs.push(['ql','⚙️ Quản lý']);
+    tabs.push(['tran','Trận đặc biệt']);
+    tabs.push(['dangky','Đăng ký']);
+    tabs.push(['live','Live bốc thăm']);
+    tabs.push(['boc','Bốc thăm']);
+    tabs.push(['caumau','Cấu hình áo']);
+    tabs.push(['mauao','Gán màu áo']);
+    tabs.push(['livemau','Live bốc màu']);
+    tabs.push(['ql','Quản lý']);
   }
   $('tabs').innerHTML=tabs.map(function(t){
-    return '<button class="'+(STATE.tab===t[0]?'on':'')+'" onclick="setTab(\''+t[0]+'\')">'+t[1]+'</button>';
+    return '<button class="'+(STATE.tab===t[0]?'on':'')+'" onclick="setTab(\''+t[0]+'\')">'+iconTab_(t[0])+'<span>'+t[1]+'</span></button>';
   }).join('');
 
   renderView();
@@ -6265,6 +6393,17 @@ function homeGhiBanHtml_(){
   var h='<div class="card ds-gon"><h2>⚽ Ghi bàn</h2>';
   if(!ds.length) return h+'<div class="empty">Chưa có bàn thắng.</div></div>';
   h+='<div class="muted ds-tong">'+tong+' bàn thắng · giải chung</div>';
+  // Người dẫn đầu (một mình nhiều bàn nhất): thẻ cầu thủ FIFA cỡ lớn
+  var dau=ds[0], cDau=cauThuObj(dau.maCT);
+  if(cDau && (!ds[1] || dau.ban.length>ds[1].ban.length)){
+    var phutDau=dau.ban.filter(function(x){return x.s.phut;}).map(function(x){return x.s.phut+"'";}).join(' · ');
+    h+='<div class="gbd">'
+      +'<div class="gbd-the">'+renderTheFifa(cDau, true)+'</div>'
+      +'<div class="gbd-info"><span class="gbd-nhan">Dẫn đầu ghi bàn</span>'
+      +'<div class="gbd-dong"><div class="gbd-so">'+dau.ban.length+'<small>bàn</small></div>'
+      +'<div class="gbd-ten">'+esc(cDau.hoTen||'')+'</div></div>'
+      +'<div class="gbd-phu">'+logoDoiHtml(dau.maDoi,22)+'<span>'+esc(tenDoi(dau.maDoi))+(phutDau?' · '+phutDau:'')+'</span></div></div></div>';
+  }
   var hang=0, truoc=-1;
   ds.forEach(function(p,i){
     if(p.ban.length!==truoc){ hang=i+1; truoc=p.ban.length; }
@@ -6688,25 +6827,43 @@ function bxhCardHtml_(compact){
     h+='<div class="card"><h2>🏆 Bảng xếp hạng</h2><div class="empty">Chưa có dữ liệu xếp hạng.'+
       (isAdmin()?' Tạo đội và lịch thi đấu trước.':'')+'</div></div>';
   } else {
+    var soQua=Number(STATE.data.soQua)||2;
     var cols = compact
-      ? '<th>#</th><th>Đội</th><th class="num">Tr</th><th class="num">HS</th><th class="num">Đ</th>'
-      : '<th>#</th><th>Đội</th><th class="num">Tr</th><th class="num">T</th><th class="num">H</th><th class="num">B</th><th class="num">BT</th><th class="num">BB</th><th class="num">HS</th><th class="num">Đ</th>';
-    h+='<div class="card"><h2>🏆 Bảng xếp hạng</h2><table class="bxh-table'+(compact?' compact':'')+'"><thead><tr>'
+      ? '<th class="num">#</th><th>Đội</th><th class="num">Tr</th><th class="num">HS</th><th class="num">Đ</th>'
+      : '<th class="num">#</th><th>Đội</th><th class="num">Tr</th><th class="num">T</th><th class="num">H</th><th class="num">B</th><th class="num">BT</th><th class="num">BB</th><th class="num">HS</th><th class="num">Đ</th><th>Phong độ</th>';
+    h+='<div class="card"><h2>🏆 Bảng xếp hạng</h2><table class="bxh-table bxh-moi'+(compact?' compact':'')+'"><thead><tr>'
       +cols+'</tr></thead><tbody>';
     arr.forEach(function(o){
-      var qua=o.hang<=2;
+      var qua=o.hang<=soQua;
       var cell=(compact
         ? '<td class="num">'+o.st+'</td>'
         : '<td class="num">'+o.st+'</td><td class="num">'+o.t+'</td><td class="num">'+o.h+'</td><td class="num">'+o.b_+'</td><td class="num">'+o.bt+'</td><td class="num">'+o.bb+'</td>')
-        +'<td class="num">'+(o.hs>0?'+':'')+o.hs+'</td>'
-        +'<td class="num"><b style="color:var(--neon)">'+o.diem+'</b></td>';
-      h+='<tr>'
-        +'<td class="num">'+(qua?'<span class="pill ok">'+o.hang+'</span>':o.hang)+'</td>'
-        +'<td><b>'+esc(o.tenDoi)+'</b></td>'+cell+'</tr>';
+        +'<td class="num bxh-hs">'+(o.hs>0?'+':'')+o.hs+'</td>'
+        +'<td class="num"><span class="bxh-diem">'+o.diem+'</span></td>'
+        +(compact?'':'<td>'+phongDoHtml_(o.maDoi)+'</td>');
+      h+='<tr class="'+(qua?'qua':'')+(o.hang===soQua?' ranh':'')+'">'
+        +'<td class="num"><span class="bxh-hang">'+o.hang+'</span></td>'
+        +'<td><span class="bxh-doi">'+logoDoiHtml(o.maDoi,compact?28:38)+'<b>'+esc(compact?tenDoiNgan_(o.tenDoi):o.tenDoi)+'</b></span></td>'+cell+'</tr>';
     });
-    h+='</tbody></table><div class="muted" style="margin-top:12px;font-size:12px">Ô sáng = Top 2 vào <b>Chung kết</b>. Thắng 3đ · Hòa 1đ.</div></div>';
+    h+='</tbody></table><div class="bxh-chu">'
+      +'<span><i class="bxh-vach"></i>Top '+soQua+' vào <b>Chung kết</b></span><span>Thắng 3đ · Hòa 1đ</span>'
+      +(compact?'':'<span><span class="pd t">T</span>Thắng <span class="pd h">H</span>Hòa <span class="pd b">B</span>Thua</span>')
+      +'</div></div>';
   }
   return h;
+}
+
+/* Phong độ: kết quả các trận giải chung đã đá của đội (cũ → mới, tối đa 5 trận) */
+function phongDoHtml_(maDoi){
+  var ds=(STATE.data.tranDau||[]).filter(function(m){ return tranDaDa_(m) && !laTranGiaoHuu_(m) && (m.maDoiA===maDoi || m.maDoiB===maDoi); })
+    .sort(function(a,b){ var x=bdGio_(a.gioThiDau), y=bdGio_(b.gioThiDau); return (x?x.getTime():0)-(y?y.getTime():0) || (Number(a.thuTuKO)||0)-(Number(b.thuTuKO)||0); })
+    .slice(-5);
+  if(!ds.length) return '<span class="muted">—</span>';
+  return '<span class="bxh-pd">'+ds.map(function(m){
+    var ta=m.maDoiA===maDoi, mine=ta?m.banThangA:m.banThangB, opp=ta?m.banThangB:m.banThangA;
+    var k=mine>opp?'t':mine<opp?'b':'h', ch={t:'T',h:'H',b:'B'}[k];
+    return '<span class="pd '+k+'" title="'+esc(tenDoi(ta?m.maDoiB:m.maDoiA))+' '+mine+'–'+opp+'">'+ch+'</span>';
+  }).join('')+'</span>';
 }
 
 /* ================= VIEW: BXH (giữ lại, không còn tab) ================= */
