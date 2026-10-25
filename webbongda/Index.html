@@ -4480,8 +4480,8 @@ nav.tabs button{
   --ff:'Be Vietnam Pro',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
   --ff-title:'Barlow Condensed','Oswald','Be Vietnam Pro',sans-serif;
   --ff-hud:'Chakra Petch','Be Vietnam Pro',sans-serif;
-  --nen-san:url('https://cdn.jsdelivr.net/gh/phamdoanchiengroup-cloud/githubforclaude160695@13fa9d8fbabd500fcc93793ce0fa97c96e8fffd3/webbongda/anh/nen-duoi.webp');
-  --nen-dau:url('https://cdn.jsdelivr.net/gh/phamdoanchiengroup-cloud/githubforclaude160695@13fa9d8fbabd500fcc93793ce0fa97c96e8fffd3/webbongda/anh/nen-dau-trang.webp');
+  --nen-san:url('https://cdn.jsdelivr.net/gh/phamdoanchiengroup-cloud/githubforclaude160695@c833aa220e53b38de4f026b699e832bb74b2ed85/webbongda/anh/nen-duoi.webp');
+  --nen-dau:url('https://cdn.jsdelivr.net/gh/phamdoanchiengroup-cloud/githubforclaude160695@c833aa220e53b38de4f026b699e832bb74b2ed85/webbongda/anh/nen-dau-trang.webp');
 }
 body{background:#07060a !important;background-image:none !important}
 /* Nền phía dưới: ảnh sân vận động đứng yên, chỉ phủ tối nhẹ (các tấm kính đã đủ đậm để đọc chữ) */
@@ -4743,7 +4743,7 @@ nav.tabs button.on .tab-ic{color:#1a1206;filter:none}
 <script>
 /* ================= STATE ================= */
 var BANNER_HEP_ID='1RbTWbhEL38WiZYu36A-ewZ3_1ELyiyFC';
-var GIAI_THUONG_IMG='https://cdn.jsdelivr.net/gh/phamdoanchiengroup-cloud/githubforclaude160695@7b77aca7639f41d86f19304a1e8730a25489350a/webbongda/anh/co-cau-giai-thuong.webp';
+var GIAI_THUONG_IMG='https://cdn.jsdelivr.net/gh/phamdoanchiengroup-cloud/githubforclaude160695@c833aa220e53b38de4f026b699e832bb74b2ed85/webbongda/anh/co-cau-giai-thuong.webp';
 var KHUNG_LEGEND_URL='https://drive.google.com/thumbnail?id=1eRrSr1Mwy61ZT07KwFSMFOymIn9iMSV2&sz=w1000';
 var STATE = {
   token: localStorage.getItem('bd_token') || '',
@@ -4756,11 +4756,14 @@ var STATE = {
 function $(id){return document.getElementById(id);}
 function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){
   return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
-function driveImg(u){
+/* Ảnh Drive → link ảnh thu nhỏ. w: bề rộng tải về (mặc định w600 – đủ nét cho logo/ảnh thẻ, nhẹ hơn w1600 khoảng 5–10 lần).
+   Chỉ ảnh xem toàn khung (banner, ảnh thư viện mở lớn) mới truyền 'w1600'. */
+function driveImg(u, w){
+  w=w||'w600';
   u=String(u||'').trim();
   if(!u) return '';
   if(u.indexOf('drive.google.com')<0 && u.indexOf('docs.google.com')<0){
-    if(/^[A-Za-z0-9_-]{25,}$/.test(u)) return 'https://drive.google.com/thumbnail?id='+u+'&sz=w1600';
+    if(/^[A-Za-z0-9_-]{25,}$/.test(u)) return 'https://drive.google.com/thumbnail?id='+u+'&sz='+w;
     return u;
   }
   var id='';
@@ -4769,7 +4772,7 @@ function driveImg(u){
         u.match(/\/d\/([A-Za-z0-9_-]+)/);
   if(m) id=m[1];
   if(!id) return u;
-  return 'https://drive.google.com/thumbnail?id='+id+'&sz=w1600';
+  return 'https://drive.google.com/thumbnail?id='+id+'&sz='+w;
 }
 
 /* ===== ẢNH SÂN THẬT (top-down) cho màn xếp đội hình =====
@@ -4993,7 +4996,7 @@ function veBannerDong(el){
 
   // 1. Banner giải
   var bn = d.bannerUrl || BANNER_HEP_ID || '';
-  if (bn) canh.push('<div class="bdx-canh bdx-hero"><div class="bdx-anh" style="background-image:url(\'' + esc(driveImg(bn)) + '\')"></div>'
+  if (bn) canh.push('<div class="bdx-canh bdx-hero"><div class="bdx-anh" style="background-image:url(\'' + esc(driveImg(bn, 'w1600')) + '\')"></div>'
     + (km ? '<div class="bdx-day"><span>Khai mạc</span><b>' + bdGioTxt_(km._d) + ' · ' + BD_THU[km._d.getDay()] + ' · ' + bdNgay_(km._d) + '/' + km._d.getFullYear() + '</b><span>Công ty TNHH Carbon Billiards</span></div>' : '') + '</div>');
 
   // Các trận cùng ngày với trận t (để hiện 2 trận trên 1 khung)
@@ -5121,8 +5124,8 @@ function moVideoGioiThieu(){
 /* ================= KHUNG MATCH DAY TRANG CHỦ (giao diện 2026) =================
    Poster từng ngày thi đấu (khóa "dd/mm/yyyy"), tải qua jsDelivr. Ngày không có poster thì dùng ảnh banner giải. */
 var MATCH_DAY_POSTER = {
-  '29/10/2026': 'https://cdn.jsdelivr.net/gh/phamdoanchiengroup-cloud/githubforclaude160695@7f041990c275b15e321238e7a5ca1f4a3bb41ab1/webbongda/anh/match-day-luot2-v2.webp',
-  '03/11/2026': 'https://cdn.jsdelivr.net/gh/phamdoanchiengroup-cloud/githubforclaude160695@7f041990c275b15e321238e7a5ca1f4a3bb41ab1/webbongda/anh/match-day-luot3.webp'
+  '29/10/2026': 'https://cdn.jsdelivr.net/gh/phamdoanchiengroup-cloud/githubforclaude160695@c833aa220e53b38de4f026b699e832bb74b2ed85/webbongda/anh/match-day-luot2-v2.webp',
+  '03/11/2026': 'https://cdn.jsdelivr.net/gh/phamdoanchiengroup-cloud/githubforclaude160695@c833aa220e53b38de4f026b699e832bb74b2ed85/webbongda/anh/match-day-luot3.webp'
 };
 /* Một ngày thi đấu được coi là KẾT THÚC khi mọi trận đã nhập tỷ số (Đã đá),
    hoặc đã quá giờ bóng lăn MD_HET_SAU_MS mà BTC chưa kịp nhập → web tự chuyển sang ngày (poster) kế tiếp. */
@@ -5153,7 +5156,7 @@ function mdDuLieu_(){
     ngay: tran.filter(function(t){ return t._d.toDateString() === sap._d.toDateString() && !bdDaDa_(t); }).slice(0, 2),
     giai: tran.filter(function(t){ return !laTranGiaoHuu_(t); }),
     luotTo: so ? 'LƯỢT ' + bdP2_(+so[1]) : String(luot).toUpperCase(),
-    poster: MATCH_DAY_POSTER[ngayTxt] || driveImg(d.bannerUrl || BANNER_HEP_ID || '')
+    poster: MATCH_DAY_POSTER[ngayTxt] || driveImg(d.bannerUrl || BANNER_HEP_ID || '', 'w1600')
   };
 }
 /* Đồng hồ đếm ngược trong khung .md-dem[data-den] (1 đồng hồ mỗi trang) */
@@ -5321,7 +5324,7 @@ function render(){
   catch(e){   // lỗi gì thì quay về ảnh banner cũ, không làm hỏng trang
     var bannerUrl_ = d.bannerUrl || BANNER_HEP_ID || '';
     bannerWrap.className='banner-hep';
-    bannerWrap.innerHTML = bannerUrl_ ? '<img src="'+driveImg(bannerUrl_)+'" onerror="this.parentNode.style.display=\'none\'">' : '';
+    bannerWrap.innerHTML = bannerUrl_ ? '<img src="'+driveImg(bannerUrl_, 'w1600')+'" onerror="this.parentNode.style.display=\'none\'">' : '';
   }
 }
 
@@ -10525,7 +10528,7 @@ function moLightboxMedia(maMedia){
       }
     }
   } else {
-    inner = '<img src="'+esc(driveImg(m.url))+'" alt="">';
+    inner = '<img src="'+esc(driveImg(m.url, 'w1600'))+'" alt="">';
   }
 
   var lb = document.getElementById('mediaLightbox');

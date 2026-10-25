@@ -105,6 +105,7 @@ Tóm tắt phiên làm việc 10–25/10/2026. Đọc hết trước khi làm. *
 ### Link web
 - Web giải: https://script.google.com/macros/s/AKfycbyU0HwrkHWv_cBug5SJYhN_Vo2SZd9R5j_RXlGBeAozoTIZmapdraymm7VWCUJz73PCJA/exec
 - Link ngắn (Bitly, tạo 25/10): **https://bit.ly/rhinofootball** → trỏ về link trên.
+- Tải nhanh (25/10): `driveImg(u, w)` mặc định w600 (trước w1600), chỉ banner/ảnh thư viện mở lớn dùng w1600; ảnh jsDelivr nén lại (commit `c833aa2…`). Trang chủ 11,7 MB → 6,4 MB. Chậm khi mở bit.ly trong Zalo/Messenger chủ yếu do trình duyệt trong app + bước kiểm tra link.
 - QR code: `anh/qr-rhinofootball.png` (QR mức H, logo RHINO giữa) và thẻ in `anh/the-qr-rhinofootball.png`; cả hai mã hóa https://bit.ly/rhinofootball (đã quét thử bằng zxing). Đổi đích bằng tool Bitly `bitly_update_short_link`.
 
 ### Connector / plugin đã dùng
