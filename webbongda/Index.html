@@ -5314,9 +5314,9 @@ function render(){
   var nenDau=document.createElement('div'); nenDau.id='nenDau'; nenDau.className='nen-dau';
   appEl.insertBefore(nenDau, bannerWrap);
   try {
-    // Trang chủ: khung Match Day lớn · tab khác: thanh Match Day gọn. Hết trận sắp tới: trang chủ về banner động, tab khác không hiện gì.
-    var coMD = STATE.tab==='home' ? veMatchDay_(bannerWrap) : veThanhMatchDay_(bannerWrap);
-    if(!coMD){ if(STATE.tab==='home') veBannerDong(bannerWrap); else { bannerWrap.className=''; bannerWrap.innerHTML=''; } }
+    // Mọi tab: khung Match Day lớn (poster + 2 trận + đếm ngược) giống trang chủ. Hết trận sắp tới: về banner động.
+    // (Thanh gọn veThanhMatchDay_ vẫn giữ trong mã nếu sau này muốn dùng lại.)
+    if(!veMatchDay_(bannerWrap)) veBannerDong(bannerWrap);
   }
   catch(e){   // lỗi gì thì quay về ảnh banner cũ, không làm hỏng trang
     var bannerUrl_ = d.bannerUrl || BANNER_HEP_ID || '';
