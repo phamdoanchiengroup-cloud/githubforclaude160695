@@ -8,6 +8,7 @@ Những điều đã chốt. Đừng đề xuất lại những gì ghi "không 
 ## Cách làm việc
 - **Mỗi dự án một nhánh** (21/10, thay quyết định "một nhánh" trước đó cùng ngày): web KPI = `claude/beautiful-ptolemy-f2j7za`, Thiên Cơ Các = `claude/happy-brown-lttkz3`. Hai dự án không liên quan nhau, mỗi nhánh có CLAUDE.md và bộ não riêng.
 - Phần nào xong và đã kiểm tra thì gửi trước, không chờ xong hết (19/10).
+- **Luôn hỏi để làm rõ yêu cầu trước khi hành động** và **luôn dùng vai chuyên gia Agency Agents** cho mỗi việc (25/10, đã ghi vào CLAUDE.md). – [[Công cụ Claude]]
 - Bản bảo mật + vận hành: đợi sửa xong hết mới dán một lần (18/10).
 - Bộ não thứ hai: thư mục `bo-nao/` + trang bản đồ xem bằng trình duyệt (21/10), mỗi nhánh một bộ.
 - Plugin: không bật `claude-mem-cowork` (gửi dữ liệu lên cmem.ai). – [[Công cụ Claude]]
