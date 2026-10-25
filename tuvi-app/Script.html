@@ -19,7 +19,7 @@
 
   var $ = function (id) { return document.getElementById(id); };
   var state = { result: null, sel: null, token: '', nguoiDung: null };
-  var CAN_TOKEN = { lapLaSo: 1, doGioSinh: 1, getLichSu: 1, xoaLichSu: 1, donLichSu: 1, lapCapDoi: 1, tienIch: 1, gieoQue: 1, dsGieoQue: 1, dangKyBanTin: 1, dsBanTin: 1, dangKyVanNgay: 1, huyVanNgay: 1, dsVanNgay: 1 };
+  var CAN_TOKEN = { lapLaSo: 1, doGioSinh: 1, getLichSu: 1, xoaLichSu: 1, donLichSu: 1, lapCapDoi: 1, tienIch: 1, gieoQue: 1, dsGieoQue: 1, dangKyBanTin: 1, dsBanTin: 1, dangKyVanNgay: 1, huyVanNgay: 1, dsVanNgay: 1, tuViChuSoHuu: 1 };
 
   function esc(s) {
     return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) {
@@ -27,14 +27,14 @@
     });
   }
   /** Mã phiên bản giao diện – phải trùng với Index.html (meta tcc-ban) và Styles.html (--tcc-ban) */
-  var BAN_GIAO_DIEN = '2026.10.25.1';
+  var BAN_GIAO_DIEN = '2026.10.25.3';
   function storeGet(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
   function storeSet(k, v) { try { localStorage.setItem(k, v); } catch (e) { /* bỏ qua */ } }
 
   function hasServer() { return typeof google !== 'undefined' && google.script && google.script.run; }
   /** Hàm máy chủ mới thêm gần đây → file .gs chứa nó (để báo đúng file khi còn bản cũ) */
   var FILE_HAM = { bangGiaCongKhai: 'ThanhToan.gs', muaPhan: 'ThanhToan.gs', viCuaToi: 'ThanhToan.gs', dangKy: 'TaiKhoan.gs', lapLaSo: 'TaiKhoan.gs',
-    tienIch: 'TienIch.gs', gieoQue: 'TienIch.gs', dsGieoQue: 'TienIch.gs', dangKyBanTin: 'TienIch.gs', dsBanTin: 'TienIch.gs', dangKyVanNgay: 'TienIch.gs', huyVanNgay: 'TienIch.gs', dsVanNgay: 'TienIch.gs', donLichSu: 'Code.gs', getLichSu: 'Code.gs', lapCapDoi: 'CapDoi.gs' };
+    tienIch: 'TienIch.gs', gieoQue: 'TienIch.gs', dsGieoQue: 'TienIch.gs', dangKyBanTin: 'TienIch.gs', dsBanTin: 'TienIch.gs', dangKyVanNgay: 'TienIch.gs', huyVanNgay: 'TienIch.gs', dsVanNgay: 'TienIch.gs', thamKhaoTuVi: 'TuViChuyenSau.gs', donLichSu: 'Code.gs', getLichSu: 'Code.gs', lapCapDoi: 'CapDoi.gs', tuViChuSoHuu: 'TuViChuyenSau.gs' };
   function call(fn, args, ok, fail) {
     if (!hasServer()) { (fail || showErr)({ message: 'Không tìm thấy máy chủ Apps Script. Hãy mở ứng dụng qua URL Web App.' }); return; }
     var r = google.script.run.withSuccessHandler(ok).withFailureHandler(fail || showErr), a = (args || []).slice();
@@ -304,6 +304,11 @@
     if (u) $('btnUser').textContent = (u.vaiTro === 'chu' ? '👑 ' : u.vaiTro === 'vip' ? '⭐ ' : '👤 ') + (u.hienThi || u.ten) +
       (!toanQuyen() && state.soDu != null ? ' · ' + fmtXu(state.soDu) : '');
     $('btnNapTop').style.display = u && !toanQuyen() ? '' : 'none';
+    var tChu = document.querySelector('#tabs [data-tab="chu"]');      // tab "Lá số chủ sở hữu": chỉ chủ sở hữu thấy
+    if (tChu) {
+      tChu.style.display = laChu() ? '' : 'none';
+      if (!laChu()) { CHU.key = null; CHU.data = null; if ($('page-chu')) $('page-chu').innerHTML = '<div class="panel section muted">Hãy lập lá số trước.</div>'; if (tChu.classList.contains('active')) showTab('tong'); }
+    }
     if (state.result) { dungMucLuc(); veCta(); veQc(); }
   }
   function datPhien(token, u) {
@@ -1182,9 +1187,171 @@
     if (name === 'hist') loadHistory();
     if (name === 'chart') setTimeout(function () { coLaSo(); drawOverlay(); if (window.TCCHolo) TCCHolo.veDuong(); }, 30);
     if (name === 'capdoi') cdNguoi1();
-    if (name === 'que64') kdVeTab();
+    if (name === 'que64') tkVe();
+    if (name === 'chu') veChu();
     if (name === 'ti') { veTienIch(); if (state.token) tiDsQue(); }
     dungMucLuc(); if (state.result || state.cd) { veCta(); veQc(); }
+  }
+
+  /* ------------------------ TAB THAM KHẢO (mở cho mọi người) ------------------------
+     Ba mục con: 64 quẻ (kdVeTab), Nghề nghiệp (bảng nghề → sao ở Mệnh/Quan/Tài + đối chiếu lá số đang mở),
+     Bộ sao (thư viện ~80 bộ chính tinh – phụ tinh). Dữ liệu nghề và bộ sao lấy một lần qua thamKhaoTuVi (TuViChuyenSau.gs). */
+  var TK = { muc: '64', data: null, dang: false, loc: '', nhom: '', loai: '' };
+  var TK_MUC = [['64', '☯ 64 quẻ Kinh Dịch'], ['nghe', '💼 Nghề nghiệp & sao'], ['bo', '✦ Thư viện bộ sao']];
+  function tkVe() {
+    var pg = $('page-que64'); if (!pg) return;
+    if (!$('tkNoi')) pg.innerHTML = '<div class="tk-sub" id="tkTabs" role="tablist">' + TK_MUC.map(function (m) { return '<button type="button" class="subtab" data-tk="' + m[0] + '">' + m[1] + '</button>'; }).join('') + '</div><div id="tkNoi"></div>';
+    document.querySelectorAll('#tkTabs .subtab').forEach(function (b) { b.classList.toggle('active', b.getAttribute('data-tk') === TK.muc); });
+    if (TK.muc === '64') { kdVeTab(); return; }
+    var noi = $('tkNoi');
+    if (!TK.data) {
+      noi.innerHTML = '<div class="panel section"><p class="muted">Đang tải dữ liệu tham khảo…</p></div>';
+      if (TK.dang) return; TK.dang = true;
+      call('thamKhaoTuVi', [], function (d) { TK.dang = false; TK.data = d; if (document.body.getAttribute('data-tab') === 'que64') tkVe(); },
+        function (e) { TK.dang = false; noi.innerHTML = '<div class="panel section"><p class="muted">' + esc((e && e.message) || String(e)) + '</p></div>'; });
+      return;
+    }
+    noi.innerHTML = TK.muc === 'nghe' ? tkNgheHtml() : tkBoHtml();
+    tkLoc();
+  }
+  /** Sao theo tên cung của lá số đang mở; cung vô chính diệu mượn chính tinh cung xung chiếu */
+  function tkSaoCung(tv) {
+    var P = tv.palaces, out = {};
+    P.forEach(function (p, i) {
+      var s = {}, ref = p.chinh.length ? p.chinh : P[(i + 6) % 12].chinh;
+      ref.forEach(function (x) { s[x.n] = 1; });
+      [p.cat || [], p.hung || [], p.tieu || [], p.vong || []].forEach(function (ds) { ds.forEach(function (x) { s[x.n] = 1; }); });
+      out[p.cung] = s;
+    });
+    return out;
+  }
+  function tkKhop(n, S) {
+    var tong = 0, duoc = 0, trung = [];
+    n.sao.forEach(function (x) {
+      tong += x.w;
+      var o = x.cung.filter(function (c) { return S[c] && S[c][x.ten]; });
+      if (o.length) { duoc += x.w; trung.push(x.ten + ' (' + o.join(', ') + ')'); }
+    });
+    return { diem: tong ? duoc / tong : 0, trung: trung };
+  }
+  function tkNgheHtml() {
+    var D = TK.data.nghe || [], r = state.result, tv = r && r.tuvi, top = '';
+    if (!D.length) return '<div class="panel section"><p class="muted">Bảng nghề nghiệp đang được cập nhật.</p></div>';
+    if (tv && tv.palaces) {
+      var S = tkSaoCung(tv);
+      var xep = D.map(function (n) { var k = tkKhop(n, S); return { n: n, k: k }; }).filter(function (x) { return x.k.trung.length >= 2; })
+        .sort(function (a, b) { return b.k.diem - a.k.diem || b.k.trung.length - a.k.trung.length; }).slice(0, 8);
+      top = '<div class="panel section tk-hop"><h2 class="panel-title"><span class="han">業</span> Lá số đang mở hợp với nghề nào?</h2>' +
+        '<p class="lede">So sao ở cung Mệnh, Quan Lộc, Tài Bạch (và Thiên Di, Phúc Đức nếu bảng có ghi) của ' + esc((state.input && state.input.name) || tv.info.name || 'lá số này') + ' với bảng bên dưới. Đây là gợi ý hướng nghề theo cổ học, nên đặt cạnh sở thích, năng lực và cơ hội thật.</p>' +
+        (xep.length ? '<div class="cc-list">' + xep.map(function (x) {
+          var muc = x.k.diem >= 0.6 ? 'Rất khớp' : x.k.diem >= 0.35 ? 'Khớp' : 'Khớp một phần';
+          return '<div class="cc-item ' + (x.k.diem >= 0.6 ? 'good' : x.k.diem >= 0.35 ? 'mid' : '') + '"><b>' + esc(x.n.nghe) + ' <small class="tk-muc">' + muc + '</small></b><small>' + esc(x.n.nhom) + '</small><small>Sao trùng: ' + esc(x.k.trung.join(', ')) + '</small></div>';
+        }).join('') + '</div>' : '<p class="muted">Lá số chưa trùng rõ với nghề nào trong bảng – xem bảng đầy đủ bên dưới.</p>') + '</div>';
+    } else top = '<div class="panel section"><p class="muted">Lập lá số để xem lá số của bạn hợp với những nghề nào trong bảng.</p></div>';
+    var nhom = []; D.forEach(function (n) { if (nhom.indexOf(n.nhom) < 0) nhom.push(n.nhom); });
+    var CUNG = ['Mệnh', 'Quan Lộc', 'Tài Bạch', 'Thiên Di', 'Phúc Đức'];
+    return top + '<div class="panel section tk-nghe"><h2 class="panel-title"><span class="han">職</span> Nghề nghiệp hiện nay và các sao thường gặp</h2>' +
+      '<p class="lede">Mỗi nghề ghi những sao hay đóng ở cung Mệnh (tính cách), Quan Lộc (cách làm việc) và Tài Bạch (cách kiếm tiền) của người làm nghề đó. ★★★ sao chủ đạo · ★★ hay gặp · ★ phụ trợ.</p>' +
+      '<div class="kd-loc"><input type="search" id="tkTim" placeholder="Tìm nghề hoặc tên sao…" value="' + esc(TK.loc) + '" aria-label="Tìm nghề"><select id="tkNhom" aria-label="Lọc nhóm nghề"><option value="">Mọi nhóm</option>' +
+      nhom.map(function (g) { return '<option' + (TK.nhom === g ? ' selected' : '') + '>' + esc(g) + '</option>'; }).join('') + '</select></div>' +
+      '<div class="tk-ds">' + D.map(function (n) {
+        var theoCung = CUNG.map(function (c) {
+          var ds = n.sao.filter(function (x) { return x.cung.indexOf(c) >= 0; });
+          return ds.length ? '<div class="tk-cung"><span>' + c + '</span>' + ds.map(function (x) { return '<i class="tk-sao w' + x.w + '">' + esc(x.ten) + ' ' + '★★★'.slice(0, x.w) + '</i>'; }).join('') + '</div>' : '';
+        }).join('');
+        return '<div class="tk-the" data-loc="' + esc((n.nghe + ' ' + n.nhom + ' ' + n.sao.map(function (x) { return x.ten; }).join(' ')).toLowerCase()) + '" data-nhom="' + esc(n.nhom) + '"><b>' + esc(n.nghe) + '</b> <small class="muted">' + esc(n.nhom) + '</small>' + theoCung +
+          '<p>' + esc(n.y) + '</p>' + (n.nguon && n.nguon.length ? '<small class="tk-nguon">Nguồn: ' + n.nguon.map(function (u, i) { return '<a href="' + esc(u) + '" target="_blank" rel="noopener">[' + (i + 1) + ']</a>'; }).join(' ') + '</small>' : '') + '</div>';
+      }).join('') + '</div></div>';
+  }
+  function tkBoHtml() {
+    var B = TK.data.boSao || [], LOAI = { cat: ['good', 'Bộ tốt'], hung: ['bad', 'Cần để ý'], trung: ['mid', 'Hai mặt'] };
+    return '<div class="panel section tk-bo"><h2 class="panel-title"><span class="han">組</span> Thư viện bộ sao (chính tinh – phụ tinh)</h2>' +
+      '<p class="lede">' + B.length + ' bộ sao thường gặp trong cổ thư: điều kiện thành bộ, câu phú, ý nghĩa và cách ứng xử. Cách tốt gặp sát tinh thì giảm, cách xấu gặp cát tinh thì nhẹ đi – luôn xét cả lá số.</p>' +
+      '<div class="kd-loc"><input type="search" id="tkTim" placeholder="Tìm bộ sao, tên sao…" value="' + esc(TK.loc) + '" aria-label="Tìm bộ sao"><select id="tkLoai" aria-label="Lọc loại"><option value="">Mọi loại</option>' +
+      Object.keys(LOAI).map(function (k) { return '<option value="' + k + '"' + (TK.loai === k ? ' selected' : '') + '>' + LOAI[k][1] + '</option>'; }).join('') + '</select></div>' +
+      '<div class="cc-list tk-ds">' + B.map(function (b) {
+        return '<div class="cc-item tk-the ' + LOAI[b.loai][0] + '" data-loai="' + b.loai + '" data-loc="' + esc((b.ten + ' ' + b.cau + ' ' + b.dk).toLowerCase()) + '"><b>' + esc(b.ten) + '</b>' + (b.cau ? '<small class="chu-cau">“' + esc(b.cau) + '”</small>' : '') +
+          '<small><u>Điều kiện:</u> ' + esc(b.dk) + '</small><small>' + esc(b.y) + '</small>' + (b.huong ? '<small class="chu-huong">→ ' + esc(b.huong) + '</small>' : '') + '</div>';
+      }).join('') + '</div>' +
+      '<details class="tk-ng"><summary>Nguồn tham khảo</summary><ul class="chu-nguon">' + (TK.data.nguon || []).map(function (n) { return '<li><a href="' + esc(n.url) + '" target="_blank" rel="noopener">' + esc(n.ten) + '</a><br><small>' + esc(n.y) + '</small></li>'; }).join('') + '</ul></details></div>';
+  }
+  function tkLoc() {
+    var t = (TK.loc || '').trim().toLowerCase();
+    document.querySelectorAll('#tkNoi .tk-the').forEach(function (el) {
+      var an = (t && el.getAttribute('data-loc').indexOf(t) < 0) || (TK.muc === 'nghe' && TK.nhom && el.getAttribute('data-nhom') !== TK.nhom) || (TK.muc === 'bo' && TK.loai && el.getAttribute('data-loai') !== TK.loai);
+      el.style.display = an ? 'none' : '';
+    });
+  }
+  document.addEventListener('click', function (e) {
+    var b = e.target.closest('#tkTabs [data-tk]'); if (!b) return;
+    TK.muc = b.getAttribute('data-tk'); TK.loc = ''; tkVe();
+  });
+  document.addEventListener('input', function (e) {
+    if (e.target.id === 'tkTim') { TK.loc = e.target.value; tkLoc(); }
+    if (e.target.id === 'tkNhom') { TK.nhom = e.target.value; tkLoc(); }
+    if (e.target.id === 'tkLoai') { TK.loai = e.target.value; tkLoc(); }
+  });
+
+  /* ------------------------ TAB LÁ SỐ CHỦ SỞ HỮU ------------------------
+     Chỉ tài khoản chủ sở hữu thấy (máy chủ tuViChuSoHuu cũng chặn người khác – TuViChuyenSau.gs):
+     bộ sao từng cung, 12 đại vận soi sao hạn (Thiên Không, Thương – Sứ, Không Kiếp…), thọ khí. Được dùng tên sao. */
+  var CHU = { key: null, data: null, dang: false };
+  function laChu() { var u = state.nguoiDung; return !!u && u.vaiTro === 'chu'; }
+  function veChu() {
+    var pg = $('page-chu'); if (!pg) return;
+    if (!laChu()) { pg.innerHTML = '<div class="panel section muted">Tab này chỉ dành cho chủ sở hữu.</div>'; return; }
+    if (!state.input || !state.result || state.result.khach) { pg.innerHTML = '<div class="panel section muted">Hãy lập lá số trước.</div>'; return; }
+    var key = JSON.stringify(state.input);
+    if (CHU.key === key && CHU.data) { pg.innerHTML = chuHtml(CHU.data); return; }
+    if (CHU.dang === key) return;
+    CHU.dang = key;
+    pg.innerHTML = '<div class="panel section muted">Đang luận chuyên sâu…</div>';
+    call('tuViChuSoHuu', [state.input], function (d) {
+      CHU.dang = false; CHU.key = key; CHU.data = d;
+      if (document.body.getAttribute('data-tab') === 'chu') { pg.innerHTML = chuHtml(d); dungMucLuc(); }
+    }, function (e) { CHU.dang = false; pg.innerHTML = '<div class="panel section muted">' + esc((e && e.message) || String(e)) + '</div>'; });
+  }
+  var CHU_MUC = { 'Êm': 'em', 'Cần để ý': 'de', 'Nặng': 'nang', 'Rất nặng': 'rn' };
+  function chuHtml(D) {
+    var LOAI = { cat: 'good', hung: 'bad', trung: 'mid' };
+    function boHtml(b) {
+      return '<div class="cc-item ' + LOAI[b.loai] + '"><b>' + esc(b.ten) + (b.muon ? ' <small>(mượn chính tinh xung chiếu)</small>' : '') + '</b>' +
+        (b.cau ? '<small class="chu-cau">“' + esc(b.cau) + '”</small>' : '') + '<small>' + esc(b.y) + '</small>' + (b.huong ? '<small class="chu-huong">→ ' + esc(b.huong) + '</small>' : '') + '</div>';
+    }
+    var p1 = '<div class="panel section chu"><h2 class="panel-title"><span class="han">組</span> Phần 1 · Bộ sao từng cung</h2>' +
+      '<p class="lede">Ghép chính tinh với phụ tinh: cùng cung, tam phương tứ chính và hai cung kẹp hai bên. Xanh là bộ tốt, đỏ là bộ cần để ý, vàng là bộ hai mặt. Cung vô chính diệu mượn chính tinh cung đối diện.</p>' +
+      D.boSao.map(function (c, i) {
+        var nT = c.bo.filter(function (b) { return b.loai === 'cat'; }).length, nX = c.bo.filter(function (b) { return b.loai === 'hung'; }).length;
+        return '<details class="tt26-b ' + (nT > nX ? 'tot' : nX > nT ? 'xau' : '') + '"' + (i === 0 || c.than ? ' open' : '') + '><summary><span class="tt26-so">' + esc(c.chi) + '</span><b>' + esc(c.cung) + (c.than ? ' · Thân' : '') +
+          ' <small class="chu-nho">' + esc(c.chinh) + '</small></b><i>' + (c.bo.length ? c.bo.length + ' bộ' : '—') + '</i></summary><div class="tt26-nd">' +
+          (c.bo.length ? '<div class="cc-list">' + c.bo.map(boHtml).join('') + '</div>' : '<p class="muted">Không có bộ sao đáng kể – cung này luận theo từng sao.</p>') +
+          (c.phu.length ? '<p class="chu-nho">Phụ tinh trong cung: ' + esc(c.phu.join(', ')) + '</p>' : '') + '</div></details>';
+      }).join('') + '</div>';
+    var p2 = '<div class="panel section chu"><h2 class="panel-title"><span class="han">限</span> Phần 2 · Mười hai đại vận – sao hạn</h2>' +
+      '<p class="lede">Mỗi vận soi các sao người xưa hay để ý: Thiên Không, Thiên Thương – Thiên Sứ (luôn kẹp cung Thiên Di), Địa Không – Địa Kiếp, tứ sát, Hóa Kỵ gốc và Hóa Kỵ theo can của vận, Tang Môn – Bạch Hổ; trừ bớt khi có sao giải (Tử Vi, Thiên Phủ, Thiên Lương, Thiên Đồng, Khoa, Lộc, Tả Hữu, Giải Thần, Thiên/Nguyệt Đức…). Mức: Êm · Cần để ý · Nặng · Rất nặng.</p>' +
+      D.daiVan.map(function (v) {
+        var m = CHU_MUC[v.muc] || 'de';
+        return '<details class="tt26-b chu-dv ' + (m === 'em' ? 'tot' : m === 'nang' || m === 'rn' ? 'xau' : '') + (v.hienTai ? ' chu-nay' : '') + '"' + (v.hienTai || m === 'rn' ? ' open' : '') + '><summary><span class="tt26-so">' + v.stt + '</span><b>' + v.tu + '–' + v.den + ' tuổi <small class="chu-nho">(' + v.tuNam + '–' + v.denNam + ') · ' + esc(v.cung) + ' · ' + esc(v.canChi) + (v.hienTai ? ' · đang đi' : '') + '</small></b><i class="chu-muc ' + m + '">' + esc(v.muc) + '</i></summary><div class="tt26-nd">' +
+          '<p><b>Chính tinh:</b> ' + esc(v.chinh) + '</p>' +
+          (v.han.length ? '<h5 class="ti-h">Sao hạn</h5><ul>' + v.han.map(function (h) { return '<li><b>' + esc(h.sao) + '</b> <small>(' + esc(h.o) + ')</small>: ' + esc(h.y) + '.</li>'; }).join('') + '</ul>' : '<p class="muted">Không có sao hạn lớn trong cung vận.</p>') +
+          (v.dau.length ? '<h5 class="ti-h">Dấu hiệu đặc biệt</h5><ul>' + v.dau.map(function (x) { return '<li>' + esc(x) + '</li>'; }).join('') + '</ul>' : '') +
+          '<h5 class="ti-h">Tứ Hóa của vận</h5><ul>' + (v.dvKy ? '<li>☾ ' + esc(v.dvKy.sao) + ' hóa Kỵ → ' + esc(v.dvKy.y) + '</li>' : '') + (v.dvLoc ? '<li>✦ ' + esc(v.dvLoc.sao) + ' hóa Lộc → ' + esc(v.dvLoc.y) + '</li>' : '') + '</ul>' +
+          (v.giai.length ? '<p><b>Sao giải trong cung:</b> ' + esc(v.giai.join(', ')) + '</p>' : '') +
+          (v.nam.length ? '<h5 class="ti-h">Năm hệ trọng trong vận</h5><ul>' + v.nam.map(function (n) { return '<li><b>' + n.nam + '</b> (' + esc(n.canChi) + ', ' + n.tuoi + ' tuổi' + (n.tieuHan ? ', tiểu hạn ' + esc(n.tieuHan) : '') + '): ' + esc(n.ly.join('; ')) + '.</li>'; }).join('') + '</ul>' : '') +
+          '</div></details>';
+      }).join('') + '</div>';
+    var T = D.tho;
+    var p3 = '<div class="panel section chu"><h2 class="panel-title"><span class="han">壽</span> Phần 3 · Thọ khí (cách cổ thư xem dương thọ)</h2>' +
+      '<div class="stat-row"><div class="stat"><small>Thọ khí</small><b>' + esc(T.muc) + '</b></div><div class="stat"><small>Điểm cộng – trừ</small><b>' + T.diem + '</b></div><div class="stat"><small>Giai đoạn cần giữ gìn</small><b>' + T.moc.length + ' vận</b></div></div>' +
+      '<p>' + esc(T.cach) + '</p>' +
+      '<div class="bt-grid"><div><h4 class="dd-h good">✦ Điểm nâng đỡ</h4><ul class="th-kl">' + (T.cong.map(function (x) { return '<li>' + esc(x.y) + ' <small>(+' + x.d + ')</small></li>'; }).join('') || '<li>—</li>') + '</ul></div>' +
+      '<div><h4 class="dd-h bad">☾ Điểm hao tổn</h4><ul class="th-kl">' + (T.tru.map(function (x) { return '<li>' + esc(x.y) + ' <small>(' + x.d + ')</small></li>'; }).join('') || '<li>—</li>') + '</ul></div></div>' +
+      (T.moc.length ? '<h4 class="dd-h">Các giai đoạn nên chăm lo sức khỏe kỹ hơn</h4><ul>' + T.moc.map(function (m) { return '<li><b>' + m.tu + '–' + m.den + ' tuổi</b> (' + m.tuNam + '–' + m.denNam + ', cung ' + esc(m.cung) + ', ' + esc(m.muc) + ')' + (m.nam.length ? ' – năm hệ trọng: ' + m.nam.join(', ') : '') + '</li>'; }).join('') + '</ul>' : '') +
+      '<p class="hl-khuyen">💡 ' + esc(T.luuY) + '</p></div>';
+    var p4 = '<div class="panel section chu"><h2 class="panel-title"><span class="han">書</span> Nguồn tham khảo</h2><ul class="chu-nguon">' +
+      D.nguon.map(function (n) { return '<li><a href="' + esc(n.url) + '" target="_blank" rel="noopener">' + esc(n.ten) + '</a><br><small>' + esc(n.y) + '</small></li>'; }).join('') + '</ul></div>';
+    return '<div class="panel section chu-dau"><h2 class="panel-title"><span class="han">主</span> 👑 Lá số chủ sở hữu · ' + esc(D.ten || '') + '</h2>' +
+      '<p class="lede">Tab riêng, chỉ tài khoản chủ sở hữu thấy. Luận Tử Vi chuyên sâu cho lá số đang mở (' + esc(D.namCanChi) + ' · ' + esc(D.cuc) + ' · ' + esc(D.banMenh) + '), dùng tên sao và thuật ngữ gốc.</p></div>' + p1 + p2 + p3 + p4;
   }
 
   /* ------------------------ TAB 64 QUẺ KINH DỊCH ------------------------
@@ -1216,7 +1383,7 @@
   function kdTenVi(q, i) { var cl = q.hao6[i] ? 'Cửu' : 'Lục'; return i === 0 ? 'Sơ ' + cl : i === 5 ? 'Thượng ' + cl : cl + ' ' + KD_VI[i]; }
   function kdCatHung(d) { return d >= 1 ? ['tot', 'Cát'] : d >= 0 ? ['vua', 'Bình'] : ['xau', 'Cần thận trọng']; }
   function kdVeTab() {
-    var pg = $('page-que64'); if (!pg) return;
+    var pg = $('tkNoi') || $('page-que64'); if (!pg) return;
     if (!KD.ds) {
       pg.innerHTML = '<div class="panel section"><p class="muted">Đang tải 64 quẻ Kinh Dịch…</p></div>';
       kdNap(kdVeTab, function () { pg.innerHTML = '<div class="panel section"><p class="muted">Chưa tải được dữ liệu 64 quẻ – hãy kiểm tra mạng rồi mở lại tab.</p></div>'; });
@@ -1278,7 +1445,7 @@
   }
   document.addEventListener('click', function (e) {
     var b = e.target.closest && e.target.closest('[data-kd-so]'); if (!b || !KD.ds) return;
-    if (!$('kdCT')) { KD.chon = +b.getAttribute('data-kd-so'); showTab('que64'); return; }
+    if (!$('kdCT')) { KD.chon = +b.getAttribute('data-kd-so'); TK.muc = '64'; showTab('que64'); return; }
     kdChiTiet(+b.getAttribute('data-kd-so'));
   });
   /* ------------------------ BẢNG ĐIỀU KHIỂN BẠCH KIM ------------------------ */

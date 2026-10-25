@@ -8,6 +8,8 @@ File này được Claude Code tự đọc khi mở repo. Nó giữ **quy tắc 
 - Dự án khác của chủ dự án, không liên quan, nằm ở nhánh riêng – đừng đưa vào nhánh này: **web KPI sản xuất** (`kpi-app/`) ở `claude/beautiful-ptolemy-f2j7za`; **Trợ lý KPI qua Zalo** (`tro-ly-kpi/`) ở `claude/awesome-heisenberg-iulbd6`.
 
 ## Chủ dự án – cách làm việc (bắt buộc)
+- **Luôn hỏi lại để làm rõ yêu cầu trước khi hành động** (chủ dự án chốt 25/10): nhận việc mới thì nêu cách hiểu + câu hỏi (dùng công cụ hỏi có lựa chọn), chờ trả lời rồi mới sửa mã.
+- **Luôn dùng chuyên gia Agency Agents mỗi lần làm việc** (chủ dự án chốt 25/10): mỗi việc gọi ít nhất một chuyên gia phù hợp trong `.claude/agents/` (vd. `content-creator` cho văn luận, `ui-designer`/`frontend-developer` cho giao diện, `code-reviewer`/`reality-checker` để rà trước khi đẩy mã) – danh sách ở `bo-nao/Thiên Cơ Các/TCC Chuyên gia Agency Agents.md`.
 - **Trả lời bằng tiếng Việt.**
   - Chủ dự án không phải dân IT, nên hướng dẫn từng bước theo dạng **"MỞ FILE X → xóa hết → dán bản mới"**.
   - Luôn nói rõ **file nào cần dán lại** vào Apps Script, kèm bước **Triển khai → Quản lý triển khai → ✏️ → Phiên bản mới → Triển khai**, rồi Ctrl+F5.

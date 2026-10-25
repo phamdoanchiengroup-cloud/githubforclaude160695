@@ -6,11 +6,12 @@ Liên quan: [[00 Mục lục]] · [[Tài nguyên và công cụ]] · [[Việc ch
 Phiên mới đọc ghi chú này ngay sau `CLAUDE.md`, rồi [[Tài nguyên và công cụ]] (liên kết, repo, công cụ) và [[00 Mục lục]]. Mỗi lần chủ dự án yêu cầu "nén phiên / chuyển phiên mới", viết đè mục "Trạng thái hiện tại" bên dưới.
 
 ## Trạng thái hiện tại (25/10/2026)
-- Nhánh `claude/happy-brown-lttkz3`, commit mới nhất `f55efd2`, mã giao diện **`2026.10.25.1`** (3 chỗ: `tcc-ban` Index, `--tcc-ban` Styles, `BAN_GIAO_DIEN` Script). Mọi thay đổi đã push; chủ dự án chỉ cần bấm `2-CAP-NHAT.bat` + Ctrl+F5.
+- Nhánh `claude/happy-brown-lttkz3`, mã giao diện **`2026.10.25.2`** (25/10 tối: thêm tab "👑 Lá số chủ sở hữu", file .gs thứ 29 `TuViChuyenSau.gs` – xem [[TCC Tử Vi đối chiếu các phái]]; trước đó `2026.10.25.1`) (3 chỗ: `tcc-ban` Index, `--tcc-ban` Styles, `BAN_GIAO_DIEN` Script). Mọi thay đổi đã push; chủ dự án chỉ cần bấm `2-CAP-NHAT.bat` + Ctrl+F5.
 - Kiểm thử gần nhất đều đạt: cai-dat 85/85, tong-hop, ha-lac, bat-tu, tien-ich, than-so, van-ngay, van-sau, giai-doan, ho-so-nam, nghiem-chung 852/852, chiem-tinh, human-design, bao-cao.
 - Có thư mục `webbongda/` (web bóng đá chủ dự án tự đưa lên, commit 8e735a6) – chủ dự án chọn để nguyên, không đụng.
 
 ## Các đợt việc gần nhất (24–25/10)
+0. **Tab "👑 Lá số chủ sở hữu" (25/10 tối, mã 2026.10.25.2)** – bộ sao chính – phụ tinh từng cung, 12 đại vận soi Thiên Không / Thiên Thương – Thiên Sứ / Không Kiếp, thọ khí; chỉ chủ sở hữu thấy. Kiểm thử `tests/chuyen-sau.js`.
 1. **Nội dung nhạy cảm (24/10, mã 2026.10.24.9)** – 4 hướng áp cho cả 6 hệ, xem [[Quyết định của chủ dự án]] và [[TCC Văn dễ hiểu và Tổng hợp 6 hệ]]:
    - Chuyện đã qua → gợi ý + nút "Đúng / Một phần / Không đúng" (`hoiDoiChieu` trong Script, `ghiDoiChieu` trong Code.gs → sheet `DoiChieu` ẩn danh).
    - Bỏ %/xác suất/số con/tỷ lệ trai–gái (giữ % đồng thuận, độ khớp dò giờ, % ngũ hành).
