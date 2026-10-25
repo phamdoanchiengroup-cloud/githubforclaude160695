@@ -1,0 +1,232 @@
+{
+ "title": "VÒNG TRÒN · LƯỢT 3",
+ "date": "15:00 · THỨ BA · 03/11/2026",
+ "teams": [
+  {
+   "key": "rhino",
+   "name": "RHINO FC",
+   "color": "#f0c86e",
+   "sodo": "3-2-1",
+   "xi": [
+    {
+     "img": "c_CT9F785673_rhino.png",
+     "name": "Hiếude Gea",
+     "rating": 99,
+     "so": "12",
+     "pos": "GK"
+    },
+    {
+     "img": "c_CT45E49CAB_rhino.png",
+     "name": "Dũngego Costa",
+     "rating": 97,
+     "so": "26",
+     "pos": "LB"
+    },
+    {
+     "img": "c_CT1927A8A3_rhino.png",
+     "name": "Lamine YaHưng",
+     "rating": 99,
+     "so": "19",
+     "pos": "CB"
+    },
+    {
+     "img": "c_CTCF3038CB_rhino.png",
+     "name": "Linhtaro Martínez",
+     "rating": 98,
+     "so": "6",
+     "pos": "RB"
+    },
+    {
+     "img": "c_CT14A76921_rhino.png",
+     "name": "Thịnhago Motta",
+     "rating": 92,
+     "so": "23",
+     "pos": "LM"
+    },
+    {
+     "img": "c_CTEC25A607_rhino.png",
+     "name": "Ricardo Quânresma",
+     "rating": 93,
+     "so": "25",
+     "pos": "RM"
+    },
+    {
+     "img": "c_CTF4C60022_rhino.png",
+     "name": "Aymeric Longporte",
+     "rating": 92,
+     "so": "11",
+     "pos": "ST"
+    }
+   ],
+   "bench": [
+    {
+     "img": "c_CT1CA9B55A_rhino.png",
+     "name": "Alexis SanChiến",
+     "rating": 98,
+     "so": "16"
+    },
+    {
+     "img": "c_CT0F976772_rhino.png",
+     "name": "Virgil van Đức",
+     "rating": 97,
+     "so": "91"
+    },
+    {
+     "img": "c_CT7BF36526_rhino.png",
+     "name": "Edinson Côngvani",
+     "rating": 95,
+     "so": "07"
+    },
+    {
+     "img": "c_CT47FC675A_rhino.png",
+     "name": "Didier Đứcba",
+     "rating": 95,
+     "so": "35"
+    },
+    {
+     "img": "c_CT52BBAF9B_rhino.png",
+     "name": "Gianluigi Doanhnarumma",
+     "rating": 94,
+     "so": "94"
+    },
+    {
+     "img": "c_CT2773BB6B_rhino.png",
+     "name": "Corentin Tuyếnlisso",
+     "rating": 92,
+     "so": "4"
+    },
+    {
+     "img": "c_CT8355E3F7_rhino.png",
+     "name": "Sơn Heung-min",
+     "rating": 91,
+     "so": "97"
+    },
+    {
+     "img": "c_CT6B20302B_rhino.png",
+     "name": "Bastian SchweinsThắnger",
+     "rating": 91,
+     "so": "31"
+    },
+    {
+     "img": "c_CTE2BDDB7A_rhino.png",
+     "name": "Thiago Ancantara",
+     "rating": 90,
+     "so": "09"
+    }
+   ]
+  },
+  {
+   "key": "cuebots",
+   "name": "CUEBOTS FC",
+   "color": "#d7dcf0",
+   "sodo": "1-3-2",
+   "xi": [
+    {
+     "img": "c_CT257A2248_cuebots.png",
+     "name": "Xuyênvi Hernández",
+     "rating": 91,
+     "so": "69",
+     "pos": "GK"
+    },
+    {
+     "img": "c_CT803BABE5_cuebots.png",
+     "name": "Ousmane Đôngbélé",
+     "rating": 99,
+     "so": "80B",
+     "pos": "CB"
+    },
+    {
+     "img": "c_CT22E50D00_cuebots.png",
+     "name": "N'Golo Khoa.té",
+     "rating": 91,
+     "so": "80A",
+     "pos": "LM"
+    },
+    {
+     "img": "c_CT6FADD0C5_cuebots.png",
+     "name": "Class-Jan HữuAnhlaar",
+     "rating": 95,
+     "so": "31",
+     "pos": "CM"
+    },
+    {
+     "img": "c_CTCDB327EA_cuebots.png",
+     "name": "Achraf Hòakimi",
+     "rating": 95,
+     "so": "97",
+     "pos": "RM"
+    },
+    {
+     "img": "c_CT8EB83F73_cuebots.png",
+     "name": "Zinedine ZiĐức",
+     "rating": 91,
+     "so": "09",
+     "pos": "LS"
+    },
+    {
+     "img": "c_CT9D08DAF9_cuebots.png",
+     "name": "Phil Phốden",
+     "rating": 91,
+     "so": "17",
+     "pos": "RS"
+    }
+   ],
+   "bench": [
+    {
+     "img": "c_CT530C0CEB_cuebots.png",
+     "name": "Eric Chươngpo-Moting",
+     "rating": 94,
+     "so": "29"
+    },
+    {
+     "img": "c_CT12CA0771_cuebots.png",
+     "name": "Robert LewanĐứcski",
+     "rating": 92,
+     "so": "06"
+    },
+    {
+     "img": "c_CTA456C59F_cuebots.png",
+     "name": "Hưng Cuncut",
+     "rating": 90,
+     "so": "51"
+    },
+    {
+     "img": "c_CTEE6F7BFE_cuebots.png",
+     "name": "Mats Huymels",
+     "rating": 89,
+     "so": "27"
+    },
+    {
+     "img": "c_CT96D15A3C_cuebots.png",
+     "name": "Paulo Đạtbala",
+     "rating": 83,
+     "so": "02"
+    },
+    {
+     "img": "c_CT705EC7D9_cuebots.png",
+     "name": "Tùngni Kroos",
+     "rating": 83,
+     "so": "96"
+    },
+    {
+     "img": "c_CT30355AF3_cuebots.png",
+     "name": "RonaldiNhật",
+     "rating": 82,
+     "so": "93"
+    },
+    {
+     "img": "c_CT4ECFA564_cuebots.png",
+     "name": "Philippe CuThịnho",
+     "rating": 82,
+     "so": "03"
+    },
+    {
+     "img": "c_CT0FFF1370_cuebots.png",
+     "name": "KaDuy Benzema",
+     "rating": 82,
+     "so": "23"
+    }
+   ]
+  }
+ ]
+}

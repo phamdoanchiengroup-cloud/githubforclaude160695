@@ -1,0 +1,102 @@
+[
+ {
+  "src": "vo/v00.mp3",
+  "from": 4,
+  "dur": 101
+ },
+ {
+  "src": "vo/v01.mp3",
+  "from": 104,
+  "dur": 27
+ },
+ {
+  "src": "vo/v02.mp3",
+  "from": 139,
+  "dur": 38
+ },
+ {
+  "src": "vo/v03.mp3",
+  "from": 193,
+  "dur": 34
+ },
+ {
+  "src": "vo/v04.mp3",
+  "from": 247,
+  "dur": 33
+ },
+ {
+  "src": "vo/v05.mp3",
+  "from": 301,
+  "dur": 37
+ },
+ {
+  "src": "vo/v06.mp3",
+  "from": 355,
+  "dur": 32
+ },
+ {
+  "src": "vo/v07.mp3",
+  "from": 409,
+  "dur": 27
+ },
+ {
+  "src": "vo/v08.mp3",
+  "from": 463,
+  "dur": 24
+ },
+ {
+  "src": "vo/v09.mp3",
+  "from": 522,
+  "dur": 28
+ },
+ {
+  "src": "vo/v10.mp3",
+  "from": 557,
+  "dur": 19
+ },
+ {
+  "src": "vo/v11.mp3",
+  "from": 611,
+  "dur": 32
+ },
+ {
+  "src": "vo/v12.mp3",
+  "from": 665,
+  "dur": 35
+ },
+ {
+  "src": "vo/v13.mp3",
+  "from": 719,
+  "dur": 33
+ },
+ {
+  "src": "vo/v14.mp3",
+  "from": 773,
+  "dur": 27
+ },
+ {
+  "src": "vo/v15.mp3",
+  "from": 827,
+  "dur": 40
+ },
+ {
+  "src": "vo/v16.mp3",
+  "from": 881,
+  "dur": 17
+ },
+ {
+  "src": "vo/v17.mp3",
+  "from": 937,
+  "dur": 49
+ },
+ {
+  "src": "vo/v18.mp3",
+  "from": 1415,
+  "dur": 170
+ },
+ {
+  "src": "vo/v19.mp3",
+  "from": 2133,
+  "dur": 127
+ }
+]

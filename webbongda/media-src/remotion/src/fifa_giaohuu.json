@@ -1,0 +1,231 @@
+{
+ "date": "15:00 · THỨ BA · 20/10/2026",
+ "teams": [
+  {
+   "key": "retro",
+   "name": "FC RETRO",
+   "color": "#f0c46c",
+   "sodo": "2-1-2-1",
+   "xi": [
+    {
+     "img": "c_CT9F785673.png",
+     "name": "Hiếude Gea",
+     "rating": 99,
+     "so": "12",
+     "pos": "GK"
+    },
+    {
+     "img": "c_CT45E49CAB.png",
+     "name": "Dũngego Costa",
+     "rating": 97,
+     "so": "26",
+     "pos": "LB"
+    },
+    {
+     "img": "c_CT803BABE5.png",
+     "name": "Ousmane Đôngbélé",
+     "rating": 99,
+     "so": "80B",
+     "pos": "RB"
+    },
+    {
+     "img": "c_CT1927A8A3.png",
+     "name": "Lamine YaHưng",
+     "rating": 99,
+     "so": "19",
+     "pos": "CDM"
+    },
+    {
+     "img": "c_CTAD7DBB03.png",
+     "name": "Cường Tổng",
+     "rating": 100,
+     "so": "10",
+     "pos": "LM"
+    },
+    {
+     "img": "c_CTEE56CA19.png",
+     "name": "Thiago Thiênva",
+     "rating": 100,
+     "so": "8",
+     "pos": "RM"
+    },
+    {
+     "img": "c_CT89D5FA22.png",
+     "name": "Boss TuấnAnh",
+     "rating": 100,
+     "so": "9",
+     "pos": "ST"
+    }
+   ],
+   "bench": [
+    {
+     "img": "c_CT1CA9B55A.png",
+     "name": "Alexis SanChiến",
+     "rating": 98,
+     "so": "16"
+    },
+    {
+     "img": "c_CT0F976772.png",
+     "name": "Virgil van Đức",
+     "rating": 97,
+     "so": "91"
+    },
+    {
+     "img": "c_CT74F69799.png",
+     "name": "Tịnh Howard",
+     "rating": 97,
+     "so": "A83"
+    },
+    {
+     "img": "c_CTA426831D.png",
+     "name": "Thườngry Henry",
+     "rating": 96,
+     "so": "22"
+    },
+    {
+     "img": "c_CT6FADD0C5.png",
+     "name": "Class-Jan HữuAnhlaar",
+     "rating": 95,
+     "so": "31"
+    },
+    {
+     "img": "c_CT08D0F86B.png",
+     "name": "Angel ĐôngMaría",
+     "rating": 94,
+     "so": "21"
+    },
+    {
+     "img": "c_CTEC25A607.png",
+     "name": "Ricardo Quânresma",
+     "rating": 93,
+     "so": "25"
+    },
+    {
+     "img": "c_CT22E50D00.png",
+     "name": "N'Golo Khoa.té",
+     "rating": 91,
+     "so": "80A"
+    },
+    {
+     "img": "c_CT9D08DAF9.png",
+     "name": "Phil Phốden",
+     "rating": 91,
+     "so": "17"
+    },
+    {
+     "img": "c_CT5A03E837.png",
+     "name": "Thôngmas Tuchel",
+     "rating": 90,
+     "so": "6"
+    },
+    {
+     "img": "c_CTA456C59F.png",
+     "name": "Hưng Cuncut",
+     "rating": 90,
+     "so": "51"
+    }
+   ]
+  },
+  {
+   "key": "juni",
+   "name": "JUNIORS FC",
+   "color": "#46dcff",
+   "sodo": "3-1-2",
+   "xi": [
+    {
+     "img": "c_CT47FC675A.png",
+     "name": "Didier Đứcba",
+     "rating": 95,
+     "so": "35",
+     "pos": "GK"
+    },
+    {
+     "img": "c_CT7CE12C78.png",
+     "name": "Marcus Thànhram",
+     "rating": 90,
+     "so": "24",
+     "pos": "LB"
+    },
+    {
+     "img": "c_CTBE7CF0D3.png",
+     "name": "Memphis Điệppay",
+     "rating": 98,
+     "so": "06",
+     "pos": "CB"
+    },
+    {
+     "img": "c_CTCFC7C972.png",
+     "name": "Kylian Minhbappé",
+     "rating": 91,
+     "so": "26",
+     "pos": "RB"
+    },
+    {
+     "img": "c_CTCF3038CB.png",
+     "name": "Linhtaro Martínez",
+     "rating": 98,
+     "so": "6",
+     "pos": "CM"
+    },
+    {
+     "img": "c_CTAF341436.png",
+     "name": "Mario Mạnhdžukić",
+     "rating": 91,
+     "so": "21",
+     "pos": "LS"
+    },
+    {
+     "img": "c_CT8EB83F73.png",
+     "name": "Zinedine ZiĐức",
+     "rating": 91,
+     "so": "09",
+     "pos": "RS"
+    }
+   ],
+   "bench": [
+    {
+     "img": "c_CT7BF36526.png",
+     "name": "Edinson Côngvani",
+     "rating": 95,
+     "so": "07"
+    },
+    {
+     "img": "c_CT7BA2015D.png",
+     "name": "Kevin De Duyne",
+     "rating": 95,
+     "so": "09"
+    },
+    {
+     "img": "c_CT52BBAF9B.png",
+     "name": "Gianluigi Doanhnarumma",
+     "rating": 94,
+     "so": "94"
+    },
+    {
+     "img": "c_CT8C023191.png",
+     "name": "Sami Khảidira",
+     "rating": 94,
+     "so": "5"
+    },
+    {
+     "img": "c_CT14A76921.png",
+     "name": "Thịnhago Motta",
+     "rating": 92,
+     "so": "23"
+    },
+    {
+     "img": "c_CT705EC7D9.png",
+     "name": "Tùngni Kroos",
+     "rating": 83,
+     "so": "96"
+    },
+    {
+     "img": "c_CT4ECFA564.png",
+     "name": "Philippe CuThịnho",
+     "rating": 82,
+     "so": "03"
+    }
+   ]
+  }
+ ]
+}

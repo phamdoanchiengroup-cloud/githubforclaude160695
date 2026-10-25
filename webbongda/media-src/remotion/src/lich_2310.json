@@ -1,0 +1,166 @@
+{
+ "ngay": "THỨ SÁU 23/10/2026",
+ "vong": "VÒNG TRÒN",
+ "tran": [
+  [
+   "rhino",
+   "evo",
+   "15:00"
+  ],
+  [
+   "cuebots",
+   "timetip",
+   "15:00"
+  ]
+ ],
+ "doi": {
+  "rhino": {
+   "name": "RHINO FC",
+   "color": "#f0c86e",
+   "dt": {
+    "img": "c_CTCF3038CB_rhino.png",
+    "name": "Linhtaro Martínez",
+    "so": "6"
+   },
+   "ds": [
+    "c_CT1927A8A3_rhino.png",
+    "c_CT9F785673_rhino.png",
+    "c_CTCF3038CB_rhino.png",
+    "c_CT1CA9B55A_rhino.png",
+    "c_CT0F976772_rhino.png",
+    "c_CT45E49CAB_rhino.png",
+    "c_CT7BF36526_rhino.png",
+    "c_CT47FC675A_rhino.png",
+    "c_CT52BBAF9B_rhino.png",
+    "c_CTEC25A607_rhino.png",
+    "c_CT2773BB6B_rhino.png",
+    "c_CT14A76921_rhino.png",
+    "c_CTF4C60022_rhino.png",
+    "c_CT8355E3F7_rhino.png",
+    "c_CT6B20302B_rhino.png",
+    "c_CTE2BDDB7A_rhino.png"
+   ],
+   "xi": [
+    "c_CT9F785673_rhino.png",
+    "c_CT45E49CAB_rhino.png",
+    "c_CT1927A8A3_rhino.png",
+    "c_CTCF3038CB_rhino.png",
+    "c_CT14A76921_rhino.png",
+    "c_CTEC25A607_rhino.png",
+    "c_CTF4C60022_rhino.png"
+   ],
+   "sodo": "3-2-1"
+  },
+  "evo": {
+   "name": "EVO FC",
+   "color": "#ff6e5f",
+   "dt": {
+    "img": "c_CT7CE12C78_evo.png",
+    "name": "Marcus Thànhram",
+    "so": "24"
+   },
+   "ds": [
+    "c_CTA426831D_evo.png",
+    "c_CT08D0F86B_evo.png",
+    "c_CT8C023191_evo.png",
+    "c_CT54820824_evo.png",
+    "c_CT5C278C3F_evo.png",
+    "c_CTC5109FF0_evo.png",
+    "c_CT5A03E837_evo.png",
+    "c_CTF7C852FE_evo.png",
+    "c_CT7CE12C78_evo.png",
+    "c_CTCB3567FC_evo.png",
+    "c_CT96C60ADD_evo.png",
+    "c_CT3593EAC5_evo.png",
+    "c_CT03552155_evo.png",
+    "c_CTD5EC4B7D_evo.png",
+    "c_CT5E9B8E06_evo.png",
+    "c_CT52F23696_evo.png"
+   ],
+   "xi": [
+    "c_CT8C023191_evo.png",
+    "c_CT7CE12C78_evo.png",
+    "c_CTCB3567FC_evo.png",
+    "c_CTF7C852FE_evo.png",
+    "c_CT08D0F86B_evo.png",
+    "c_CTA426831D_evo.png",
+    "c_CT5C278C3F_evo.png"
+   ],
+   "sodo": "3-1-2"
+  },
+  "cuebots": {
+   "name": "CUEBOTS FC",
+   "color": "#d7dcf0",
+   "dt": {
+    "img": "c_CT6FADD0C5_cuebots.png",
+    "name": "Class-Jan HữuAnhlaar",
+    "so": "31"
+   },
+   "ds": [
+    "c_CT803BABE5_cuebots.png",
+    "c_CTCDB327EA_cuebots.png",
+    "c_CT6FADD0C5_cuebots.png",
+    "c_CT530C0CEB_cuebots.png",
+    "c_CT12CA0771_cuebots.png",
+    "c_CT257A2248_cuebots.png",
+    "c_CT22E50D00_cuebots.png",
+    "c_CT8EB83F73_cuebots.png",
+    "c_CT9D08DAF9_cuebots.png",
+    "c_CTA456C59F_cuebots.png",
+    "c_CTEE6F7BFE_cuebots.png",
+    "c_CT96D15A3C_cuebots.png",
+    "c_CT705EC7D9_cuebots.png",
+    "c_CT30355AF3_cuebots.png",
+    "c_CT4ECFA564_cuebots.png",
+    "c_CT0FFF1370_cuebots.png"
+   ],
+   "xi": [
+    "c_CT257A2248_cuebots.png",
+    "c_CT803BABE5_cuebots.png",
+    "c_CT22E50D00_cuebots.png",
+    "c_CT6FADD0C5_cuebots.png",
+    "c_CTCDB327EA_cuebots.png",
+    "c_CT8EB83F73_cuebots.png",
+    "c_CT9D08DAF9_cuebots.png"
+   ],
+   "sodo": "1-3-2"
+  },
+  "timetip": {
+   "name": "TIME-TIP FC",
+   "color": "#5acdff",
+   "dt": {
+    "img": "c_CTBE7CF0D3_timetip.png",
+    "name": "Memphis Điệppay",
+    "so": "06"
+   },
+   "ds": [
+    "c_CTBE7CF0D3_timetip.png",
+    "c_CT74F69799_timetip.png",
+    "c_CTD1285960_timetip.png",
+    "c_CT1F76BAC0_timetip.png",
+    "c_CT7BA2015D_timetip.png",
+    "c_CT164C0111_timetip.png",
+    "c_CTAF341436_timetip.png",
+    "c_CTCFC7C972_timetip.png",
+    "c_CT2704AE47_timetip.png",
+    "c_CT2F5058DC_timetip.png",
+    "c_CT37B850FC_timetip.png",
+    "c_CT10DF1A1A_timetip.png",
+    "c_CT2C649256_timetip.png",
+    "c_CT51294168_timetip.png",
+    "c_CT8382475C_timetip.png",
+    "c_CT613CD1C4_timetip.png"
+   ],
+   "xi": [
+    "c_CT164C0111_timetip.png",
+    "c_CTBE7CF0D3_timetip.png",
+    "c_CTAF341436_timetip.png",
+    "c_CTCFC7C972_timetip.png",
+    "c_CT7BA2015D_timetip.png",
+    "c_CT1F76BAC0_timetip.png",
+    "c_CT74F69799_timetip.png"
+   ],
+   "sodo": "1-3-2"
+  }
+ }
+}
