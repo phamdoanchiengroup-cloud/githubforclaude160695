@@ -75,7 +75,9 @@ var HAM_CAN_CO = {
 /** Dấu hiệu bản mới: [hàm trong file, đoạn mã mà bản mới phải có] */
 var BAN_MOI_CAN_CO = {
   'BatTu.gs': ['batTuLap', 'btPhanTich_'],
-  'Code.gs': ['lapLaSoDayDu_', 'btpLuuNienDacBiet_'],
+  'Code.gs': ['lapLaSoDayDu_', 'tvcsBoSaoCong_'],
+  'TuViTrinhTu.gs': ['tuviTrinhTu', 'TT_GOP'],
+  'TuViChuyenSau.gs': ['thamKhaoTuVi', 'TVCS_NGHE'],
   'HaLac.gs': ['haLacLap', 'hlNguyenDuong_'],
   'BatTuPhanTich.gs': ['btPhanTich_', 'BTP_DIEU_HAU'],
   'ThanSoHoc.gs': ['tsPhanTich_', 'tsChuyenTiep_'],
@@ -154,6 +156,8 @@ function lapLaSoDayDu_(input) {
   };
   result.chiTiet = luanChiTiet(tv, bt, input);
   try { result.chiTiet.trinhTu = tuviTrinhTu(tv, result.chiTiet); } catch (e) { result.chiTiet.trinhTu = { loi: String(e && e.message || e) }; }   // luận theo trình tự 26 bước
+  // Bộ sao từng cung + sao hạn đại vận (bản công khai, TuViChuyenSau.gs) – gộp vào 26 bước; vận chưa mở bị ttCatPhan_ cắt
+  if (typeof tvcsBoSaoCong_ === 'function') try { result.chiTiet.boSao = tvcsBoSaoCong_(tv); result.chiTiet.saoHan = tvcsSaoHanCong_(tv); } catch (e) { result.chiTiet.boSaoLoi = String(e && e.message || e); }
   result.duDoan = duDoanCuocDoi(tv, bt, input, result.chiTiet.daiVan);
   result.battuChiTiet = batTuChiTiet(bt, input, tv);
   // Trường hợp đặc biệt từng lưu niên (BatTuPhanTich.gs): tuế vận tịnh lâm, thiên khắc địa xung, tam hình, Thiên La Địa Võng

@@ -4,6 +4,7 @@ Nhóm: Bắt đầu · Cập nhật 22/10/2026
 Liên quan: [[Lần dán lên Apps Script]] · [[TCC Tiến trình]] · [[00 Mục lục]]
 
 ## Việc còn ngỏ
+- 25/10 (đêm): bấm `2-CAP-NHAT.bat` lấy mã `2026.10.25.6` – đọc tab Tử Vi: 26 bước nay là bài luận chính (mỗi mảng đời sống gồm luận cung + tổ hợp sao đáng chú ý; bước 26 có các đại vận "những điều cần phòng"). Góp ý độ dài, thứ tự. Lưu ý: văn 12 cung cũ (TuViHeThong) còn vài chỗ nêu tên sao trong phần dễ hiểu (vd. "Sao Vũ Khúc Hóa Quyền", "Bạch Hổ") – chờ chủ dự án đồng ý thì rà sửa. – [[TCC Tử Vi đối chiếu các phái]]
 - 25/10 (khuya): bấm `2-CAP-NHAT.bat` lấy mã `2026.10.25.5` – xem tab "📚 Tham khảo" mục Nghề nghiệp (47 nghề, đối chiếu lá số đang mở) và Thư viện bộ sao; xem card luận giải đã dễ đọc chưa (nếu vẫn chưa đủ: cách khác là bỏ tranh sau card chữ). – [[TCC Giao diện]]
 - 25/10 (tối): bấm `2-CAP-NHAT.bat` lấy mã `2026.10.25.2` – tab **"👑 Lá số chủ sở hữu"** (chỉ chủ sở hữu thấy, cạnh tab Tử Vi): bộ sao từng cung, 12 đại vận soi Thiên Không / Thiên Thương – Thiên Sứ / Không Kiếp, thọ khí. Đọc thử trên lá số của mình, báo bộ sao hay mức vận nào thấy chưa khớp để chỉnh trọng số. – [[TCC Tử Vi đối chiếu các phái]]
 - 25/10: bấm `2-CAP-NHAT.bat` lấy mã `2026.10.25.1` (bố cục 5 hệ, hiện sẵn phần chuyên sâu). Xem thử và cho biết trang có dài quá không – có thể thu gọn lại một số khối dài như "Luận giải cát hung" Bát Tự.

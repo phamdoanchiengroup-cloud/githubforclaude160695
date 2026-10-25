@@ -215,5 +215,26 @@ function tuviTrinhTu(tv, ct) {
     'Năm xung: ' + (xung ? 'có (' + CHI[chiNam] + ' xung ' + CHI[I.yChi] + ')' : 'không') + ' · Tam tai tuổi ' + CHI[I.yChi] + ': các năm ' + (TT_TAM_TAI[I.yChi] || []).map(function (c) { return CHI[c]; }).join(', ') + (tamTai ? ' – năm nay phạm' : '') + '.'
   ].filter(Boolean), xung || tamTai ? 'xau' : DH && DH.diem10 >= 6 ? 'tot' : 'vua');
 
+  // Gộp các phần luận khác vào đúng bước (25/10 – chủ dự án chọn "26 bước là bài luận chính"): giao diện đọc trường gop
+  // để chèn văn dễ hiểu của cung (chiTiet.cung), bộ sao (chiTiet.boSao), ba vòng nhân sinh (chiTiet.tamPhap), cách cục, sao hạn đại vận.
+  out.forEach(function (b) { if (TT_GOP[b.ten]) b.gop = TT_GOP[b.ten]; });
   return { nhom: TT_NHOM_BUOC, buoc: out };
 }
+var TT_GOP = {
+  'Tương quan Mệnh – Cục – mùa – sao – tam hợp': { tongQuan: 1 },
+  'Tinh hệ Tử Vi': { cachCuc: 1 },
+  'Chính tinh thủ Mệnh': { cung: ['Mệnh'] },
+  'Cung an Thân': { than: 1, tp: ['Nửa sau cuộc đời', 'Lời nói và việc làm'] },
+  'Cung Phúc Đức': { cung: ['Phúc Đức', 'Phụ Mẫu', 'Huynh Đệ'] },
+  'Vòng Thái Tuế': { tp: ['Thế đứng (cách nghĩ, cách sống)'] },
+  'Vòng Lộc Tồn': { tp: ['Thực lực (của cải, phương tiện)', 'Lộc thực'] },
+  'Vòng Tràng Sinh': { tp: ['Nhịp sức sống'] },
+  'Công việc – nguy cơ gián đoạn': { cung: ['Quan Lộc'] },
+  'Tiền tài – lúc thiếu hụt': { cung: ['Tài Bạch', 'Điền Trạch'] },
+  'Tình duyên – đa tình hay muộn duyên': { cung: ['Phu Thê'] },
+  'Con cái – muộn hay ít con': { cung: ['Tử Tức'] },
+  'Sức khỏe và nghiệp quả': { cung: ['Tật Ách'] },
+  'Xa quê lập nghiệp': { cung: ['Thiên Di'], tp: ['Bên trong và bên ngoài'] },
+  'Quan hệ xã hội (Di – Nô)': { cung: ['Nô Bộc'] },
+  'Đại vận và tiểu vận': { vanThaiTue: 1, saoHan: 1 }
+};

@@ -50,6 +50,24 @@ for (let i = 0; i < 300; i++) {
 const tong = Object.values(demMuc).reduce((a, b) => a + b, 0);
 kt((demMuc['Rất nặng'] || 0) / tong < 0.08, 'Rất nặng < 8% số vận (' + JSON.stringify(demMuc) + ')');
 kt((demMuc['Êm'] || 0) / tong > 0.15, 'Êm > 15% số vận');
+// Bản công khai gộp vào 26 bước: lời dễ hiểu không tên sao, vận chưa mở bị cắt
+const TEN_SAO = Object.keys(ctx.SAO).filter(n => n.split(' ').length >= 2 && !['Phúc Đức', 'Long Đức', 'Thái Tuế', 'Tràng Sinh', 'Mộc Dục', 'Quan Đới', 'Lâm Quan', 'Đế Vượng', 'Bác Sĩ', 'Lực Sĩ', 'Tướng Quân', 'Hỷ Thần', 'Quan Phủ', 'Quan Phù', 'Tử Phù', 'Trực Phù', 'Thiếu Dương', 'Thiếu Âm', 'Thiên Tài', 'Thiên Phúc', 'Thiên Quan'].includes(n));
+const coTenSao = t => TEN_SAO.filter(n => t.indexOf(n) >= 0);
+for (let i = 0; i < 60; i++) {
+  const inp = { name: 'C' + i, gender: i % 2 ? 'nu' : 'nam', calendar: 'duong', day: 1 + (i * 13) % 28, month: 1 + (i * 7) % 12, year: 1950 + (i * 9) % 60, hour: (i * 5) % 24, minute: 0, viewYear: 2026 };
+  const r = ctx.lapLaSoDayDu_(inp), CT = r.chiTiet;
+  kt(CT.boSao && Object.keys(CT.boSao).length === 12 && CT.saoHan && CT.saoHan.length >= 9, '#C' + i + ' có boSao 12 cung và saoHan');
+  Object.values(CT.boSao).forEach(ds => ds.forEach(b => { const s = coTenSao(b.de + ' ' + b.khuyen); kt(!s.length && b.de, '#C' + i + ' bộ ' + b.ten + ' lời dễ hiểu có tên sao: ' + s); }));
+  CT.saoHan.forEach(v => { const s = coTenSao(v.de); kt(!s.length, '#C' + i + ' sao hạn công khai có tên sao: ' + s + ' | ' + v.de); kt(!/Rất nặng|chết|tử vong/.test(v.de + v.muc), '#C' + i + ' sao hạn công khai dùng chữ nặng'); });
+  kt(CT.trinhTu.buoc.length === 26 && CT.trinhTu.buoc.filter(b => b.gop).length === 16, '#C' + i + ' 26 bước, 16 bước có gộp');
+  const cungGop = [].concat(...CT.trinhTu.buoc.map(b => (b.gop && b.gop.cung) || []));
+  kt(cungGop.length === 12 && new Set(cungGop).size === 12, '#C' + i + ' 12 cung đều được gộp đúng một lần: ' + cungGop);
+  if (i < 10) {   // khách chưa đăng nhập: vận chưa mở chỉ còn khung
+    const k = ctx.lapLaSo(inp, '');
+    const sh = (k.chiTiet && k.chiTiet.saoHan) || [];
+    kt(sh.length && sh.every(v => v.khoa && !v.de && !v.ky), '#C' + i + ' khách: saoHan bị cắt');
+  }
+}
 // Chặn người không phải chủ sở hữu
 let chan = false;
 try { ctx.tuViChuSoHuu({ day: 1, month: 1, year: 1990, hour: 8, calendar: 'duong' }, ''); } catch (e) { chan = /đăng nhập|chủ sở hữu/.test(e.message); }

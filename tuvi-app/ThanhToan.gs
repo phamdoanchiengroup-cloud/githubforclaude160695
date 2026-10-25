@@ -216,6 +216,10 @@ function ttCatPhan_(r, q) {
     tomTat.dv.push({ nam: bd, co: co });
     if (!co) { d.secs = []; d.khoa = true; }
   });
+  // Sao hạn đại vận trong bước 26 (TuViChuyenSau.gs › tvcsSaoHanCong_): vận chưa mở chỉ giữ khung + mức
+  if (CT.saoHan) CT.saoHan = CT.saoHan.map(function (v) {
+    return ttCoDv_(q, v.tuNam) ? v : { tu: v.tu, den: v.den, tuNam: v.tuNam, denNam: v.denNam, cung: v.cung, hienTai: v.hienTai, muc: v.muc, huong: v.huong, khoa: true };
+  });
   if (T && T.daiVanSau && T.daiVanSau.ds) T.daiVanSau.ds = T.daiVanSau.ds.map(function (d) {
     return ttCoDv_(q, d.nam) ? d : { nam: d.nam, den: d.den, khoang: d.khoang, isNow: d.isNow, nhan: d.nhan, huong: d.huong, he: d.he.map(function (x) { return { he: x.he, huong: x.huong }; }), khoa: true };
   });
