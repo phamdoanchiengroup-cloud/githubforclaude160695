@@ -58,6 +58,7 @@ Những điều đã chốt. Đừng đề xuất lại những gì ghi "không 
 - Không làm tab riêng, chỉ dải thông báo; hiện từ 7 ngày trước trận (13/10). – [[KPI Bóng đá]]
 
 ## Bảo mật và vận hành (18/10)
+- 25/10: chủ dự án nói **"kệ 2 tài khoản đó"** – không đổi mật khẩu `giamdoc`, `phogd2`, đừng nhắc lại (đã biết repo công khai + 2 tài khoản vào được bằng mật khẩu mặc định).
 - Không làm A5 (chưa có KCS), giữ ô "Đặt số dòng", không làm A3 giờ dừng, không cần video hướng dẫn; phần tăng ca đã gỡ. – [[KPI Bảo mật và vận hành]]
 
 ## KPI và định mức (25/10)

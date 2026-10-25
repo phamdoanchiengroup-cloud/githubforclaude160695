@@ -32,7 +32,6 @@ Liên quan: [[Lần dán lên Apps Script]] · [[Quyết định của chủ d�
 - 29 dòng nhật ký ngày sai: NhatKySanXuat dòng 588–609 (C049, đảo ngày/tháng + 5 ô #VALUE!), 733–735 (C638), 2707–2709 (C075, từ chối), 4324 (C080, ngày trống).
 - DiemDanhNghi dòng 100–120 và XacNhanDiemDanh dòng 88–90 ghi ngày 2001-08-11.
 - 10 người mới thiếu NgayVaoLam.
-- `giamdoc`, `phogd2` (ADMIN) vẫn dùng mật khẩu mặc định chung.
 - C285 tạm nghỉ bị phạt 7 lượt; 21 lượt phạt + 16 vi phạm rơi vào ngày nghỉ sẽ tự gỡ khi dán bản 21/10.
 - Chi tiết: [[KPI Sửa lỗi 21-10 và dữ liệu sheet]]
 
