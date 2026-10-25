@@ -1,6 +1,6 @@
 <style>
 /* Mã phiên bản giao diện – phải trùng với Index.html (meta tcc-ban) và Script.html (BAN_GIAO_DIEN) */
-:root { --tcc-ban: "2026.10.25.7"; }
+:root { --tcc-ban: "2026.10.25.8"; }
 /* ================================================================
    THIÊN CƠ CÁC — phong cách tiên hiệp sáng: ngọc bích, kim sa, mây trắng
    ================================================================ */
@@ -2527,7 +2527,8 @@ body:has(#page-chart.active) .tcc-goc-anh { opacity:.55; }
 .hdc-nut button:hover { background: rgba(201,169,97,.14); }
 .hdc-nut button[aria-pressed="true"] { background: #C9A961; border-color: #C9A961; color: #1a1408; font-weight: 600; }
 .hdc-cam { flex-basis: 100%; color: var(--ink-soft); font-style: italic; }
-.tcc-luu-y { margin: 0 0 10px; padding: 8px 14px; border-radius: 10px; background: rgba(201,169,97,.08); border-left: 3px solid #C9A961; font-size: 13.5px; color: var(--ink-soft); }
+/* 25/10: dòng lưu ý chuyển xuống chân trang (trước ở đầu kết quả, che mục lục) */
+.tcc-luu-y { margin: 0 auto 6px; max-width: 720px; font-size: 12.5px; color: var(--ink-soft); opacity: .85; }
 /* 25/10: hồ sơ nhanh + mục lục trong tab 5 hệ */
 .ho-so-nhanh .hsnh { display: grid; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: 10px; }
 .hsnh-o { padding: 10px 12px; border-radius: 12px; border: 1px solid rgba(92,235,255,.18); background: rgba(92,235,255,.04); display: flex; flex-direction: column; gap: 2px; min-width: 0; }

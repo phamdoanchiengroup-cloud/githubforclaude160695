@@ -4,6 +4,7 @@ Nhóm: Bắt đầu · Cập nhật 21/10/2026
 Liên quan: [[Việc chờ chủ dự án]] · [[TCC Bán hàng]] · [[00 Mục lục]]
 
 ## Cách làm việc
+- **25/10 (đêm): dòng lưu ý "Đây là góc nhìn theo cổ học…" đưa xuống chân trang web** (chữ nhỏ, không khung) vì che mục lục; PDF vẫn giữ trong "Cách đọc báo cáo".
 - **25/10 (đêm): 26 bước là bài luận chính của tab Tử Vi** – gộp Luận 12 cung, Thế đứng & nguồn cội, cách cục vào đúng bước rồi bỏ các phần trùng; bộ sao (thư viện) áp vào từng bước liên quan (lời dễ hiểu không tên sao, tên bộ + câu phú ở Căn cứ); mỗi bước dài, đầy đủ như sách; bước 26 dùng sao hạn đại vận viết nhẹ nhàng cho mọi người (thọ khí vẫn chỉ ở tab 👑). – [[TCC Tử Vi đối chiếu các phái]]
 - **25/10 (khuya): tab "📚 Tham khảo" mở cho mọi người, 3 mục: 64 quẻ, Nghề nghiệp & sao (bảng nghề → sao ở Mệnh/Quan/Tài + đối chiếu lá số đang mở, ghi mức khớp bằng chữ), Thư viện bộ sao. Card luận giải: chủ dự án chọn "chỉ tăng độ tối chung" (giữ tranh, phủ ~88–93%) + chữ to nhẹ.** – [[TCC Giao diện]]
 - **25/10 (tối): hai quy tắc làm việc mới (đã ghi vào CLAUDE.md)** – (1) luôn hỏi lại để làm rõ yêu cầu trước khi hành động; (2) luôn dùng chuyên gia Agency Agents mỗi lần làm việc. – [[TCC Chuyên gia Agency Agents]]
