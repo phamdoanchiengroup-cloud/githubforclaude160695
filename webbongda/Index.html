@@ -4615,6 +4615,97 @@ nav.tabs button.on{background:var(--kim-loai) !important;color:#1a1206 !importan
 @keyframes md-chay{to{transform:translateX(-50%)}}
 .md-nut{grid-column:1/-1;display:flex;justify-content:center;flex-wrap:wrap;gap:10px;margin-top:4px;position:relative;z-index:1}
 @media (prefers-reduced-motion:reduce){.md-poster,.md-poster::after,.md-ray{animation:none !important}}
+/* ================= HIỆU ỨNG ĐỢT 2: BXH & ghi bàn · chuyển tab & cuộn trang ================= */
+@keyframes fx2-hang{from{opacity:0;transform:translateX(-46px)}to{opacity:1;transform:none}}
+@keyframes fx2-phai{from{opacity:0;transform:translateX(46px)}to{opacity:1;transform:none}}
+@keyframes fx2-bat{0%{opacity:0;transform:scale(.3)}70%{opacity:1;transform:scale(1.15)}100%{transform:scale(1)}}
+@keyframes fx2-thanh{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+@keyframes fx2-len{from{opacity:0;transform:perspective(1100px) translateY(34px) rotateX(9deg)}to{opacity:1;transform:none}}
+@keyframes fx2-quet{0%{transform:translateX(-120%) skewX(-18deg);opacity:0}15%{opacity:1}85%{opacity:1}100%{transform:translateX(120vw) skewX(-18deg);opacity:0}}
+@keyframes fx2-ke{0%{transform:scaleX(0);opacity:1}70%{transform:scaleX(1);opacity:1}100%{transform:scaleX(1);opacity:.35}}
+
+/* BXH: thanh từng đội trượt vào lần lượt, vệt sáng vàng quét qua cả bảng */
+html.fx2-bxh .tv-bxh.fx2-chay .tv-hang{animation:fx2-hang .7s cubic-bezier(.22,1,.36,1) backwards;animation-delay:calc(var(--i,0)*110ms)}
+html.fx2-bxh .tv-bxh{position:relative}
+.fx2-loe{position:absolute;pointer-events:none;z-index:4;overflow:hidden}
+.fx2-loe::after{content:'';position:absolute;top:0;bottom:0;left:0;width:28%;mix-blend-mode:screen;
+  background:linear-gradient(100deg,transparent,rgba(255,214,102,.14) 35%,rgba(255,240,200,.32) 50%,rgba(255,214,102,.14) 65%,transparent);
+  transform:translateX(-110%) skewX(-16deg);animation:fx2-loeChay 1.6s cubic-bezier(.45,0,.2,1) .5s forwards}
+@keyframes fx2-loeChay{to{transform:translateX(420%) skewX(-16deg)}}
+/* Ghi bàn: dòng trượt từ phải + thanh vàng tỉ lệ số bàn */
+html.fx2-bxh .ds-dong{position:relative;overflow:hidden;isolation:isolate}
+html.fx2-bxh .ds-gon.fx2-chay .ds-dong{animation:fx2-phai .7s cubic-bezier(.22,1,.36,1) backwards;animation-delay:calc(var(--i,0)*90ms + .2s)}
+html.fx2-bxh .fx2-thanh{position:absolute;left:0;top:0;bottom:0;width:var(--w,0%);z-index:-1;transform-origin:left;
+  background:linear-gradient(90deg,rgba(246,196,83,0),rgba(246,196,83,.10) 60%,rgba(255,214,102,.26));
+  -webkit-mask:linear-gradient(90deg,#000 85%,transparent);mask:linear-gradient(90deg,#000 85%,transparent)}
+html.fx2-bxh .ds-gon.fx2-chay .fx2-thanh{animation:fx2-thanh 1.2s cubic-bezier(.22,1,.36,1) both;animation-delay:calc(var(--i,0)*90ms + .55s)}
+
+/* Chuyển tab: thanh vàng trượt giữa các tab, vệt sáng quét ngang, khối nội dung nổi lên lần lượt */
+html.fx2-tab nav.tabs{position:relative}
+html.fx2-tab nav.tabs button.on{background:transparent !important;box-shadow:none !important}
+html.fx2-tab .fx2-gach{position:absolute;z-index:0;border-radius:10px;pointer-events:none;background:var(--kim-loai);
+  box-shadow:0 0 22px rgba(255,159,46,.45);transition:left .55s cubic-bezier(.65,0,.35,1),width .55s cubic-bezier(.65,0,.35,1),top .3s}
+html.fx2-tab nav.tabs button{z-index:1}
+.fx2-quet{position:fixed;top:0;bottom:0;left:0;width:34vw;z-index:60;pointer-events:none;mix-blend-mode:screen;
+  background:linear-gradient(90deg,transparent,rgba(255,214,102,.10) 30%,rgba(255,236,190,.26) 50%,rgba(255,214,102,.10) 70%,transparent);
+  animation:fx2-quet 1.1s cubic-bezier(.45,0,.2,1) forwards}
+html.fx2-tab .fx2-len{animation:fx2-len .8s cubic-bezier(.22,1,.36,1) backwards;animation-delay:calc(var(--i,0)*90ms + .15s)}
+/* Cuộn trang: khối ngoài màn hình chờ sẵn, cuộn tới thì nổi lên + kẻ viền vàng */
+html.fx2-tab .fx2-cho{opacity:0;transform:perspective(1100px) translateY(48px) rotateX(10deg)}
+html.fx2-tab .fx2-hien{opacity:1;transform:none;transition:opacity .8s ease-out,transform 1s cubic-bezier(.22,1,.36,1)}
+.fx2-ke{position:absolute;left:0;right:0;top:0;height:2px;z-index:3;pointer-events:none;transform-origin:left;
+  background:linear-gradient(90deg,transparent,var(--neon) 20%,#fff3c4 50%,var(--neon) 80%,transparent);animation:fx2-ke 1.3s ease-out forwards}
+
+@media (prefers-reduced-motion:reduce){
+  .fx2-quet,.fx2-ke{display:none}
+  html.fx2-bxh *,html.fx2-tab *{animation-duration:.01s !important;animation-iteration-count:1 !important}
+  html.fx2-tab .fx2-cho{opacity:1;transform:none}
+}
+/* ================= BẢNG XẾP HẠNG KIỂU TRUYỀN HÌNH ================= */
+.tv-bxh{display:grid;gap:6px;--cot:44px 56px minmax(0,1fr) 56px 56px 56px 64px 88px}
+.tv-bxh.gon{--cot:26px 34px minmax(0,1fr) 30px 38px 54px;gap:5px}
+.tv-dau,.tv-hang{display:grid;grid-template-columns:var(--cot);column-gap:8px;align-items:center;padding-left:12px}
+.tv-dau{height:28px;font-family:var(--ff-hud);font-weight:600;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--mo);text-align:center;
+  border-bottom:1px solid transparent;border-image:linear-gradient(90deg,transparent,var(--vien-sang),transparent) 1}
+.tv-dau span:nth-child(3){text-align:left}
+.tv-dau .d{color:var(--neon)}
+.tv-hang{position:relative;height:64px;cursor:pointer;color:var(--chu2);
+  background:linear-gradient(90deg,rgba(14,12,8,.78),rgba(14,12,8,.55));border:1px solid var(--vien);
+  -webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);
+  clip-path:polygon(14px 0,100% 0,100% calc(100% - 14px),calc(100% - 14px) 100%,0 100%,0 14px);
+  transition:transform .18s ease,border-color .18s ease}
+.tv-hang::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:rgba(255,255,255,.12)}
+.tv-hang:hover{transform:translateX(4px);border-color:var(--vien-sang)}
+.tv-hang.dau::before{background:var(--neon);box-shadow:0 0 10px rgba(255,190,60,.6)}
+.tv-hang.dau{background:linear-gradient(90deg,rgba(246,196,83,.12),rgba(14,12,8,.62) 40%,rgba(14,12,8,.5));border:2px solid rgba(246,196,83,.85);box-shadow:inset 0 1px 0 rgba(255,240,200,.18),inset 0 0 30px rgba(246,196,83,.10)}
+.tv-so{font-family:var(--ff-title);font-weight:800;font-style:italic;font-size:30px;line-height:1;text-align:center;color:rgba(255,255,255,.45);transform:skewX(-8deg)}
+.tv-hang.dau .tv-so{background:var(--kim-loai);-webkit-background-clip:text;background-clip:text;color:transparent;padding-right:.08em}
+.tv-logo{position:relative;display:grid;place-items:center}
+.tv-logo img,.tv-logo>div{border-radius:50% !important;border:1px solid var(--vien2) !important;object-fit:contain !important;background:rgba(0,0,0,.35)}
+.tv-vm{position:absolute;right:-4px;top:-9px;width:18px;height:12px;background:var(--kim-loai);transform:rotate(18deg);filter:drop-shadow(0 0 5px rgba(255,190,60,.9));
+  -webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 13'%3E%3Cpath d='M0 3l5 4 5-7 5 7 5-4-2 10H2z'/%3E%3C/svg%3E") center/contain no-repeat;
+  mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 13'%3E%3Cpath d='M0 3l5 4 5-7 5 7 5-4-2 10H2z'/%3E%3C/svg%3E") center/contain no-repeat}
+.tv-ten{font-family:var(--ff-title);font-weight:800;font-size:22px;letter-spacing:.02em;text-transform:uppercase;color:var(--chu);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
+.tv-c{font-family:var(--ff-hud);font-weight:600;font-size:17px;text-align:center;font-variant-numeric:tabular-nums}
+.tv-hs.duong{color:rgba(246,196,83,.95)}.tv-hs.am{color:var(--mo)}
+.tv-diem{position:relative;align-self:stretch;display:grid;place-items:center;overflow:hidden;margin-block:-1px;
+  background:rgba(246,196,83,.18);clip-path:polygon(10px 0,100% 0,100% 100%,0 100%)}
+.tv-diem b{font-family:var(--ff-title);font-weight:800;font-size:34px;line-height:1;color:var(--neon);font-variant-numeric:tabular-nums}
+.tv-hang.dau .tv-diem{background:var(--kim-loai)}
+.tv-hang.dau .tv-diem b{color:#1a1206;text-shadow:0 1px 0 rgba(255,255,255,.35)}
+.tv-hang.dau .tv-diem::after{content:'';position:absolute;inset:0;background:linear-gradient(100deg,transparent 30%,rgba(255,240,200,.55) 50%,transparent 70%);
+  background-size:300% 100%;background-position:150% 0;animation:tv-loe 6s ease-in-out infinite}
+@keyframes tv-loe{0%,77%{background-position:150% 0}100%{background-position:-50% 0}}
+.tv-bxh.gon .tv-hang{height:48px;padding-left:8px;column-gap:6px}
+.tv-bxh.gon .tv-dau{padding-left:8px;column-gap:6px;font-size:10px;letter-spacing:.1em}
+.tv-bxh.gon .tv-so{font-size:20px}
+.tv-bxh.gon .tv-ten{font-size:16px}
+.tv-bxh.gon .tv-c{font-size:14px}
+.tv-bxh.gon .tv-diem b{font-size:24px}
+.tv-bxh.gon .tv-vm{width:13px;height:9px;top:-6px;right:-3px}
+.tv-card .bxh-chu{display:flex;flex-wrap:wrap;gap:6px 18px;margin-top:12px}
+.tv-card.gon .bxh-chu span:last-child{display:none}
+@media (prefers-reduced-motion:reduce){.tv-hang.dau .tv-diem::after{animation:none}}
 /* ================= HIỆU ỨNG 2026 (phương án B – chạy liên tục, không chớp, không rung) ================= */
 @property --goc{syntax:"<angle>";inherits:false;initial-value:0deg}
 @keyframes fx-vong{to{--goc:360deg}}
@@ -5327,8 +5418,8 @@ function fxHat_(cv, nen){
     if(thay && !document.hidden){
       var r=cv.getBoundingClientRect(); if(Math.abs(r.width-W)>2 || Math.abs(r.height-H)>2) co();
       ctx.clearRect(0,0,W,H);
-      for(var k=0;k<nen;k++) if(Math.random()<.5) them(Math.random()*W,H+4,(Math.random()-.5)*.3,-(.4+Math.random()*.9),1+Math.random()*2,240+Math.random()*200);
-      for(var i=ds.length-1;i>=0;i--){ var p=ds[i]; p.t++; p.x+=p.vx+Math.sin((p.t+i)*.03)*.25; p.y+=p.vy; p.vy+=p.g; var a=1-p.t/p.song;
+      for(var k=0;k<nen;k++) if(Math.random()<.5*FX_TOC) them(Math.random()*W,H+4,(Math.random()-.5)*.3,-(.4+Math.random()*.9),1+Math.random()*2,240+Math.random()*200);
+      for(var i=ds.length-1;i>=0;i--){ var p=ds[i]; var R=FX_TOC; p.t+=R; p.x+=(p.vx+Math.sin((p.t+i)*.03)*.25)*R; p.y+=p.vy*R; p.vy+=p.g*R; var a=1-p.t/p.song;
         if(a<=0||p.y<-10){ ds.splice(i,1); continue; }
         ctx.beginPath(); ctx.fillStyle='rgba('+p.mau+','+(a*.9)+')'; ctx.shadowColor='rgba(255,180,60,.9)'; ctx.shadowBlur=8; ctx.arc(p.x,p.y,p.s,0,6.283); ctx.fill(); }
     }
@@ -5368,6 +5459,110 @@ function fxGhiBan_(){
   var the = document.querySelector('.gbd-the'); if(!the) return;
   if(!FX_GBD_DA_MO && !FX_GIAM){ FX_GBD_DA_MO = true; the.classList.add('mo'); }
 }
+
+/* ===== Hiệu ứng đợt 2: tốc độ chậm · BXH & ghi bàn · chuyển tab & cuộn trang ===== */
+var FX_TOC = 0.35;   // tốc độ hiệu ứng có sẵn: 1 = như cũ, nhỏ hơn = chậm hơn (chủ giải chọn "rất chậm" 25/10)
+var FX2_TAB_TRUOC = null, FX2_GACH = null;
+/* Áp tốc độ cho các hiệu ứng trang trí (tên fx-, md-, tv-); không đụng sóng bấm nút, màn mở đội hình (đã căn giờ với hạt vàng, nút tải PNG), hiệu ứng fx2- và hoạt ảnh bốc thăm */
+var FX_TOC_TRU = {'fx-gon':1,'fx-laoTrai':1,'fx-laoPhai':1,'fx-dap':1,'fx-song':1,'fx-raSan':1};
+function fx2Toc_(){
+  if(!document.getAnimations) return;
+  document.getAnimations().forEach(function(a){
+    if(typeof CSSAnimation!=='undefined' && a instanceof CSSAnimation && /^(fx-|md-|tv-)/.test(a.animationName) && !FX_TOC_TRU[a.animationName] && a.playbackRate!==FX_TOC) a.playbackRate=FX_TOC;
+  });
+}
+document.addEventListener('animationstart', fx2Toc_, true);
+setInterval(fx2Toc_, 400);
+/* Số chạy từ 0 lên */
+function fx2Dem_(el, tre){
+  if(FX_GIAM) return;
+  var goc=el.textContent, phan=goc.match(/-?\d+/g); if(!phan) return;
+  var nut=el.firstChild && el.firstChild.nodeType===3 ? el.firstChild : null;
+  if(!nut){ for(var k=0;k<el.childNodes.length;k++) if(el.childNodes[k].nodeType===3 && /\d/.test(el.childNodes[k].nodeValue)){ nut=el.childNodes[k]; break; } }
+  if(!nut) return;
+  var mau=nut.nodeValue, t0=null, dai=1300;
+  function buoc(t){
+    if(t0===null) t0=t; var x=Math.min(1,(t-t0)/dai), e=1-Math.pow(1-x,3);
+    nut.nodeValue=mau.replace(/-?\d+/g,function(s){ var v=Number(s); return String(Math.round(v*e)); });
+    if(x<1) requestAnimationFrame(buoc); else nut.nodeValue=mau;
+  }
+  nut.nodeValue=mau.replace(/-?\d+/g,'0');
+  setTimeout(function(){ requestAnimationFrame(buoc); }, tre||0);
+}
+function fx2Bxh_(goc){
+  var on=document.documentElement.classList.contains('fx2-bxh');
+  if(on) goc.querySelectorAll('.tv-bxh').forEach(function(tb){
+    fx2KhiThay_(tb,function(){
+      tb.classList.add('fx2-chay');
+      tb.querySelectorAll('.tv-hang').forEach(function(r,i){ var d=r.querySelector('.tv-diem b'); if(d) fx2Dem_(d, i*110+300); });
+      var card=tb.closest('.card'); if(card && !FX_GIAM){
+        var l=document.createElement('div'); l.className='fx2-loe'; l.style.left=tb.offsetLeft+'px'; l.style.top=tb.offsetTop+'px'; l.style.width=tb.offsetWidth+'px'; l.style.height=tb.offsetHeight+'px';
+        card.appendChild(l); setTimeout(function(){ l.remove(); },2600); }
+    });
+  });
+  goc.querySelectorAll('.ds-gon').forEach(function(box){
+    var dong=box.querySelectorAll('.ds-dong'), max=0;
+    dong.forEach(function(d){ var n=Number((d.querySelector('.ds-so')||{}).textContent)||0; if(n>max) max=n; });
+    dong.forEach(function(d,i){
+      d.style.setProperty('--i',i);
+      if(on && !d.querySelector('.fx2-thanh')){ var n=Number((d.querySelector('.ds-so')||{}).textContent)||0; d.insertAdjacentHTML('afterbegin','<span class="fx2-thanh" style="--w:'+(max?Math.round(n/max*100):0)+'%"></span>'); }
+    });
+    if(!on) return;
+    fx2KhiThay_(box,function(){
+      box.classList.add('fx2-chay');
+      dong.forEach(function(d,i){ var s=d.querySelector('.ds-so'); if(s) fx2Dem_(s, i*90+400); });
+      var so=box.querySelector('.gbd-so'); if(so) fx2Dem_(so, 900);
+    });
+  });
+  if(on) goc.querySelectorAll('.home-solieu .stat .n').forEach(function(n,i){ fx2KhiThay_(n,function(){ fx2Dem_(n, i*120); }); });
+}
+/* Chạy hàm khi phần tử lọt vào màn hình (một lần) */
+function fx2KhiThay_(el, f, nguong){
+  if(!('IntersectionObserver' in window)){ f(); return; }
+  var io=new IntersectionObserver(function(es){ if(es[0].isIntersecting){ io.disconnect(); f(); } },{threshold:nguong==null?.25:nguong});
+  io.observe(el);
+}
+function fx2Tab_(doiTab){
+  if(!document.documentElement.classList.contains('fx2-tab')) return;
+  var nav=document.getElementById('tabs'), on=nav && nav.querySelector('button.on');
+  if(nav && on){
+    var g=document.createElement('span'); g.className='fx2-gach'; nav.insertBefore(g, nav.firstChild);
+    var dat=function(r){ g.style.left=r.l+'px'; g.style.top=r.t+'px'; g.style.width=r.w+'px'; g.style.height=r.h+'px'; };
+    var moi={l:on.offsetLeft,t:on.offsetTop,w:on.offsetWidth,h:on.offsetHeight};
+    if(FX2_GACH && doiTab){ g.style.transition='none'; dat(FX2_GACH); g.offsetWidth; g.style.transition=''; }
+    dat(moi); FX2_GACH=moi;
+  }
+  if(FX_GIAM) return;
+  var view=document.getElementById('view'); if(!view) return;
+  var khoi=view.querySelectorAll('.card,.banner-left,.team-logo-row');
+  var cao=window.innerHeight, i=0;
+  khoi.forEach(function(k){
+    if(k.parentNode.closest && k.parentNode.closest('.card')) return;
+    // Ảnh tải sau chỉ đẩy khối xuống thấp hơn, nên lấy dư 200px: khối ở hẳn dưới màn hình mới chờ cuộn tới
+    var r=k.getBoundingClientRect();
+    if(r.top < cao + 200){
+      if(doiTab){ k.style.setProperty('--i',i++); k.classList.add('fx2-len'); }
+    } else {
+      k.classList.add('fx2-cho');
+      fx2KhiThay_(k,function(){ k.classList.add('fx2-hien'); k.classList.remove('fx2-cho');
+        if(getComputedStyle(k).position==='static') k.style.position='relative';
+        var ke=document.createElement('span'); ke.className='fx2-ke'; k.appendChild(ke); }, 0);
+    }
+  });
+  if(doiTab){ var q=document.createElement('div'); q.className='fx2-quet'; document.body.appendChild(q); setTimeout(function(){ q.remove(); },1200); }
+}
+(function(){
+  var goc=renderView;
+  renderView=function(){
+    goc.apply(this, arguments);
+    fx2Toc_();   // áp tốc độ ngay cả cho hiệu ứng còn đang chờ trễ (animationstart chỉ báo sau khi hết trễ)
+    var doiTab = FX2_TAB_TRUOC!==null && FX2_TAB_TRUOC!==STATE.tab;
+    FX2_TAB_TRUOC = STATE.tab;
+    try{ fx2Bxh_(document.getElementById('view')); }catch(e){}
+    try{ fx2Tab_(doiTab); }catch(e){}
+  };
+})();
+document.documentElement.classList.add('fx2-bxh','fx2-tab');
 
 /* Icon khối đặc cho thanh tab (SVG 24×24, màu theo chữ) */
 var ICON_TAB = {
@@ -5515,8 +5710,8 @@ function viewHome(){
       +'onclick="setTab(\'dangky\')">📝 MỞ FORM ĐĂNG KÝ (BTC)</button>';
   }
   h+=homeSoLieuHtml_(doiGiai);
-  h+=homeKetQuaHtml_();
   h+=bxhCardHtml_(false);
+  h+=homeKetQuaHtml_();
 
   // Các đội (bấm logo xem danh sách cầu thủ)
   if(ghTeamsHome.length || doiGiai.length){
@@ -6943,28 +7138,23 @@ function bxhCardHtml_(compact){
     h+='<div class="card"><h2>🏆 Bảng xếp hạng</h2><div class="empty">Chưa có dữ liệu xếp hạng.'+
       (isAdmin()?' Tạo đội và lịch thi đấu trước.':'')+'</div></div>';
   } else {
-    var soQua=Number(STATE.data.soQua)||2;
-    var cols = compact
-      ? '<th class="num">#</th><th>Đội</th><th class="num">Tr</th><th class="num">HS</th><th class="num">Đ</th>'
-      : '<th class="num">#</th><th>Đội</th><th class="num">Tr</th><th class="num">T</th><th class="num">H</th><th class="num">B</th><th class="num">BT</th><th class="num">BB</th><th class="num">HS</th><th class="num">Đ</th><th>Phong độ</th>';
-    h+='<div class="card"><h2>🏆 Bảng xếp hạng</h2><table class="bxh-table bxh-moi'+(compact?' compact':'')+'"><thead><tr>'
-      +cols+'</tr></thead><tbody>';
-    arr.forEach(function(o){
-      var qua=o.hang<=soQua;
-      var cell=(compact
-        ? '<td class="num">'+o.st+'</td>'
-        : '<td class="num">'+o.st+'</td><td class="num">'+o.t+'</td><td class="num">'+o.h+'</td><td class="num">'+o.b_+'</td><td class="num">'+o.bt+'</td><td class="num">'+o.bb+'</td>')
-        +'<td class="num bxh-hs">'+(o.hs>0?'+':'')+o.hs+'</td>'
-        +'<td class="num"><span class="bxh-diem">'+o.diem+'</span></td>'
-        +(compact?'':'<td>'+phongDoHtml_(o.maDoi)+'</td>');
-      h+='<tr class="'+(qua?'qua':'')+(o.hang===soQua?' ranh':'')+'">'
-        +'<td class="num"><span class="bxh-hang">'+o.hang+'</span></td>'
-        +'<td><span class="bxh-doi">'+logoDoiHtml(o.maDoi,compact?28:38)+'<b>'+esc(compact?tenDoiNgan_(o.tenDoi):o.tenDoi)+'</b></span></td>'+cell+'</tr>';
+    // Bảng kiểu truyền hình: mỗi đội một thanh kính, khối điểm bên phải; đội hạng 1 nổi bật
+    // (xếp theo Điểm → Hiệu số → Đối đầu → Bàn thắng; bằng hết thì đồng hạng 1, cùng nổi bật – hangHT từ Code.gs)
+    var hs=function(v){ return '<span class="tv-c tv-hs'+(v>0?' duong':v<0?' am':'')+'">'+(v>0?'+':'')+v+'</span>'; };
+    h+='<div class="card tv-card'+(compact?' gon':'')+'"><h2>🏆 Bảng xếp hạng</h2><div class="tv-bxh'+(compact?' gon':'')+'">'
+      +'<div class="tv-dau"><span>#</span><span></span><span>Đội</span><span>Trận</span>'+(compact?'':'<span>BT</span><span>BB</span>')+'<span>HS</span><span class="d">Điểm</span></div>';
+    arr.forEach(function(o, i){
+      var hang=o.hangHT||o.hang, dau=hang===1;
+      h+='<div class="tv-hang'+(dau?' dau':'')+'" style="--i:'+i+'" onclick="modalDoiCauThu(\''+o.maDoi+'\')" title="Xem cầu thủ '+esc(o.tenDoi)+'">'
+        +'<span class="tv-so">'+hang+'</span>'
+        +'<span class="tv-logo">'+logoDoiHtml(o.maDoi,compact?30:44)+(dau?'<i class="tv-vm" aria-hidden="true"></i>':'')+'</span>'
+        +'<b class="tv-ten">'+esc(compact?tenDoiNgan_(o.tenDoi):o.tenDoi)+'</b>'
+        +'<span class="tv-c">'+o.st+'</span>'
+        +(compact?'':'<span class="tv-c">'+o.bt+'</span><span class="tv-c">'+o.bb+'</span>')
+        +hs(o.hs)
+        +'<span class="tv-diem"><b>'+o.diem+'</b></span></div>';
     });
-    h+='</tbody></table><div class="bxh-chu">'
-      +'<span><i class="bxh-vach"></i>Top '+soQua+' vào <b>Chung kết</b></span><span>Thắng 3đ · Hòa 1đ</span>'
-      +(compact?'':'<span><span class="pd t">T</span>Thắng <span class="pd h">H</span>Hòa <span class="pd b">B</span>Thua</span>')
-      +'</div></div>';
+    h+='</div><div class="bxh-chu"><span>Thắng 3đ · Hòa 1đ · Thua 0đ</span><span>BT bàn thắng · BB bàn bại · HS hiệu số</span></div></div>';
   }
   return h;
 }
