@@ -1,6 +1,6 @@
 <style>
 /* Mã phiên bản giao diện – phải trùng với Index.html (meta tcc-ban) và Script.html (BAN_GIAO_DIEN) */
-:root { --tcc-ban: "2026.10.25.11"; }
+:root { --tcc-ban: "2026.10.26.1"; }
 /* ================================================================
    THIÊN CƠ CÁC — phong cách tiên hiệp sáng: ngọc bích, kim sa, mây trắng
    ================================================================ */
@@ -733,6 +733,29 @@ details.yr summary em { font-style: normal; font-weight: 700; font-size: 12.5px;
 .pdf-lo { width: 820px; }
 .pdf-tiep { font-size: 11.5px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--gold); font-weight: 700; margin: 0 0 8px; opacity: .85; }
 .pdf-root, .pdf-root * { animation: none !important; transition: none !important; }
+/* Dựng PDF chạy nền (26/10): tab cần chép/chụp được hiện tạm ngoài màn hình, không đổi tab người dùng đang xem */
+.tab-page.pdf-ngam:not(.active) { display: block !important; position: absolute; left: -20000px; top: 0; width: var(--pdf-w, 900px); animation: none; pointer-events: none; }
+.tab-page.pdf-ngam .cho-hien { opacity: 1 !important; transform: none !important; }
+/* Thẻ tiến trình PDF nhỏ góc dưới phải */
+.pdf-tt { position: fixed; right: 16px; bottom: 16px; z-index: 120; width: min(300px, calc(100vw - 32px)); padding: 12px 14px; border-radius: 14px;
+  background: rgba(10,16,32,.96); border: 1px solid rgba(227,185,138,.45); box-shadow: 0 10px 30px rgba(0,0,0,.45); color: #f3e3bf; font-size: 13px;
+  opacity: 0; transform: translateY(16px); pointer-events: none; transition: opacity .25s, transform .25s; }
+.pdf-tt.hien { opacity: 1; transform: none; pointer-events: auto; }
+.pdf-tt-dau { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; margin-bottom: 8px; }
+.pdf-tt-ten { font-size: 14px; color: #f7e7c4; }
+.pdf-tt-pt { font-variant-numeric: tabular-nums; color: #e3b98a; font-weight: 600; }
+.pdf-tt-thanh { height: 6px; border-radius: 99px; background: rgba(255,255,255,.12); overflow: hidden; }
+.pdf-tt-thanh i { display: block; height: 100%; width: 0; border-radius: inherit; background: linear-gradient(90deg, #c9a45c, #f3d38f); transition: width .4s ease; }
+.pdf-tt-duoi { display: flex; justify-content: space-between; align-items: center; gap: 10px; margin-top: 8px; }
+.pdf-tt-chu { color: rgba(243,227,191,.8); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; }
+.pdf-tt-huy { flex: none; background: transparent; color: #f3e3bf; border: 1px solid rgba(227,185,138,.5); border-radius: 8px; padding: 4px 12px; font: inherit; cursor: pointer; }
+.pdf-tt-huy:hover, .pdf-tt-huy:focus-visible { background: rgba(227,185,138,.15); }
+.pdf-tt.tt-xong .pdf-tt-huy, .pdf-tt.tt-huy .pdf-tt-huy { display: none; }
+.pdf-tt.tt-xong .pdf-tt-thanh i { background: linear-gradient(90deg, #6fbf8f, #a8e0b8); }
+.pdf-tt.tt-huy .pdf-tt-thanh i { background: rgba(255,255,255,.35); }
+body.co-cta .pdf-tt { bottom: 96px; }
+@media (max-width: 640px) { .pdf-tt { right: 12px; bottom: 12px; width: calc(100vw - 24px); } body.co-cta .pdf-tt { bottom: 128px; } }
+@media print { .pdf-tt { display: none !important; } }
 .pdf-root .lg-grid, .pdf-root .nghe-list { grid-template-columns: 1fr 1fr; }
 .pdf-root .astro-top { grid-template-columns: 380px 1fr; }
 .pdf-root .tuoi-grid { grid-template-columns: repeat(6, 1fr); }

@@ -28,6 +28,13 @@ Bản cũ chụp lại các thẻ giao diện web (97 trang, 23 MB, nhiều chip
 - Thử (lá số mẫu, nền sáng, đầy đủ): 183 trang, ~46 MB (trước ~55 trang) – vì gộp đủ 26 bước + 5 hệ như web. Có thể làm "bản gọn" nếu chủ dự án thấy nặng.
 - Kiểm tra (evidence-collector, 3 lần): chủ sở hữu nền sáng 194 trang (có chương 👑 ở cuối, mục lục đúng), VIP nền tối 174 trang (không có chương 👑), bản xem thử 19 trang – không lỗi trang. Đã sửa: chữ/thanh tỷ lệ ở trang Ngũ hành; bỏ khối "Đại vận – tiểu vận Tử Vi" chỉ đường sang tab, câu "Bấm từng bước để mở", tiêu đề "Điểm 12 cung (bấm…)". Còn để ngỏ: biểu tượng chữ Hán trang trí ở tiêu đề khung (có từ trước trên web), vài trang gần trống do khối không tách được, bản xem thử có tiêu đề chương mồ côi (có từ trước).
 
+## 26/10 – Dựng PDF chạy nền, thẻ tiến trình nhỏ (mã 2026.10.26.1)
+- Chủ dự án yêu cầu: tải PDF không che kín màn hình, vẫn dùng web được. Chọn "thẻ nhỏ góc dưới phải" + "hỏi rồi hủy PDF đang dựng" khi lập lá số mới / đổi năm.
+- `xuatPdf` (vỏ bọc dọn dẹp lỗi đồng bộ) → `xuatPdfLam`. Bỏ `loading(true)` và `showTab`: tab cần chép/chụp hiện tạm ngoài màn hình bằng `pdfMoNgam(name)` (lớp `.pdf-ngam`, biến `--pdf-w`, CSS `.tab-page.pdf-ngam:not(.active)` ở left:-20000px).
+- Thẻ `#pdfTienTrinh` (`pdfThe(kieu, chu, %)`, kieu chay/xong/huy/loi): 0–20% chép + chụp, 20–92% từng phần, mục lục 93%, lưu 97%, "✦ PDF đã tải về" rồi tự ẩn 4,5 giây. Nút Hủy đặt `PDF_DANG.huy`; `kiemHuy()` ném `HUY_PDF` giữa các bước và giữa các lô ảnh.
+- Một lúc chỉ một bản (`PDF_DANG`); `submit(epHuyPdf)` hỏi `confirm('PDF đang dựng sẽ bị hủy – tiếp tục?')`, bấm Không thì trả form về lá số đang mở; sau mua xu / đăng nhập / đăng xuất (`lapLai(true)`) hủy luôn không hỏi. Cờ `phien.chupLS` để `showTab('chart')` không căn lại khung giữa lúc chụp lá số.
+- Kiểm thử: full sáng 182 trang (như trước, lá số + 5 bảng Holo đủ, tab giữ "tong", không lớp phủ), tóm tắt tối 52 trang, kịch bản Hủy / mở bản thứ hai / lập lá số mới (từ chối, đồng ý) không lỗi trang. Chuyên gia code-reviewer rà, 5 góp ý đã sửa hết.
+
 ## 25/10 (khuya) – Bản gọn và bản tóm tắt (mã 2026.10.25.11)
 - Hộp tải PDF: `#pdfType` thêm `gon`, `tomtat`. `moPdf`: `gon` khóa như `full`; `tomtat` mở cho mọi người (khách thiếu quyền mặc định chọn tóm tắt). `xuatPdf(chon, scale, sang, brand, demo, kieu)`; chương 👑 chỉ ở bản đầy đủ.
 - Quy tắc `PDF_RUT` (từ `scratchpad/ban-rut-gon.json` của chuyên gia content-creator): `chuong[k]` = giu / bo / {giuKhoi, boKhoi, deHieuDoan (tiêu đề khối lớn `.cvdh-tieude` trong "Luận giải dễ hiểu")} / {rutGon:'ngan'}; `tuVi` = {buocGiu, cungMucGiu (tiêu đề h5 mục con cung), toHop, toHopBoTrung, saoHan, saoHanSoVan, daiVanDacThoi, chanDung, phiTinh}; `loiMo` = câu mở bản + câu dẫn từng chương (chỉ in ở bản tóm tắt, `.bc-dan`).

@@ -4,6 +4,7 @@ Nhóm: Bắt đầu · Cập nhật 22/10/2026
 Liên quan: [[Việc chờ chủ dự án]] · [[TCC Kiểm thử]] · [[00 Mục lục]]
 
 ## Tình trạng
+- **26/10: mã `2026.10.26.1`** – tải PDF chạy nền: thẻ tiến trình nhỏ góc dưới phải (%, nút Hủy), web vẫn dùng được; lập lá số mới khi đang dựng thì hỏi trước. Đổi **Script, Styles, Index**. Bấm `2-CAP-NHAT.bat`, Ctrl+F5.
 - **25/10 (khuya): mã `2026.10.25.11`** – PDF thêm "Bản gọn" (~100 trang) và "Bản tóm tắt" (~54 trang, mở cho mọi người). Đổi **Script, Styles, Index**.
 - **25/10 (khuya): mã `2026.10.25.10`** – ảnh ngũ hành/con giáp trên web (Bát Tự, thẻ hồ sơ, vận năm) + PDF chép theo web, bìa mới, trang Tuổi và Ngũ hành, chương 👑 cho chủ sở hữu. Đổi **Script, Styles, Index** (ảnh qua jsDelivr, không cần dán). Bấm `2-CAP-NHAT.bat`, Ctrl+F5.
 - **25/10 (đêm): mã `2026.10.25.9`** – thanh mời đăng ký nổi ở đáy không còn lệch mép phải (nút × khuất); chân trang chừa chỗ để thanh mời và nút 🔍 ↑ không che. Chỉ đổi **Styles, Index, Script**.

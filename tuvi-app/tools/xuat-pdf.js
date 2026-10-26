@@ -18,7 +18,7 @@ const OUT = process.argv[2] || __dirname + '/thu.pdf';
   await p.goto('file://' + __dirname + '/preview.html'); await p.waitForTimeout(9000);
   await p.click('#btnPdfTop'); await p.waitForTimeout(500);
   await p.selectOption('#pdfType', process.env.TYPE || 'full'); await p.selectOption('#pdfTheme', process.env.THEME || 'light');
-  const iv = setInterval(async () => { try { console.log('…', await p.evaluate(() => (document.getElementById('loadingText') || {}).textContent + ' | ' + ((document.querySelector('.toast') || {}).textContent || ''))); } catch (e) {} }, 20000);
+  const iv = setInterval(async () => { try { console.log('…', await p.evaluate(() => ((document.getElementById('pdfTienTrinh') || {}).textContent || '') + ' | tab: ' + document.body.getAttribute('data-tab') + ' | che màn hình: ' + document.getElementById('loading').classList.contains('show'))); } catch (e) {} }, 20000);
   const [dl] = await Promise.all([p.waitForEvent('download', { timeout: 600000 }), p.click('#pdfGo')]);
   clearInterval(iv); await dl.saveAs(OUT);
   console.log('Đã lưu', OUT, '· lỗi trang:', errs); await b.close();
