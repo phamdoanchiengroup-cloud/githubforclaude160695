@@ -5633,13 +5633,13 @@ function veMatchDay_(el){
     } else if (capDoi.indexOf('EVO') !== -1 && capDoi.indexOf('CUEBOTS') !== -1) {
       anhSoDo = 'https://cdn.jsdelivr.net/gh/phamdoanchiengroup-cloud/githubforclaude160695@ed7fd34343374253df74ebccd339b034b17241ca/webbongda/anh/lineup-evo-cuebots-mobile.webp';
     }
-    var card = '<div class="md-kinh md-tran" onclick="xemDoiHinhTran(\\'' + t.maTran + '\\')" title="Xem đội hình 2 đội">'
+    var card = '<div class="md-kinh md-tran" onclick="xemDoiHinhTran(\'' + t.maTran + '\')" title="Xem đội hình 2 đội">'
       + '<span class="md-so-tran md-hud-nhan">' + esc(nhan) + '</span>'
       + doiHtml(t.maDoiA, false)
       + '<div class="md-giua"><span class="md-gio md-kim">' + bdGioTxt_(t._d) + '</span><span class="md-vs">VS</span></div>'
       + doiHtml(t.maDoiB, true)
-      + '<div class="md-nut">' + (vd ? '<button type="button" class="btn vang sm" onclick="event.stopPropagation();moLightboxMedia(\\'' + vd.maMedia + '\\')">▶ Video giới thiệu trận</button>' : '')
-      +   '<button type="button" class="btn neon sm" onclick="event.stopPropagation();xemDoiHinhTran(\\'' + t.maTran + '\\')">⚔️ Sơ đồ đội hình</button></div></div>';
+      + '<div class="md-nut">' + (vd ? '<button type="button" class="btn vang sm" onclick="event.stopPropagation();moLightboxMedia(\'' + vd.maMedia + '\')">▶ Video giới thiệu trận</button>' : '')
+      +   '<button type="button" class="btn neon sm" onclick="event.stopPropagation();xemDoiHinhTran(\'' + t.maTran + '\')">⚔️ Sơ đồ đội hình</button></div></div>';
     var anhHtml = anhSoDo
       ? '<picture class="md-lineup-desktop"><source media="(min-width:1024px)" type="image/webp" srcset="' + esc(anhSoDo) + '"><img width="1574" height="999" alt="Sơ đồ đội hình ' + esc(tenA) + ' và ' + esc(tenB) + '" loading="lazy"></picture>'
       : '';
