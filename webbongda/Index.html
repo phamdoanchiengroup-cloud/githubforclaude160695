@@ -5108,7 +5108,7 @@ nav.tabs button.on{
 .md-tran{position:relative;isolation:isolate;border-color:rgba(255,209,90,.62) !important}
 .md-tran::after{
   content:'';position:absolute;inset:0;padding:2px;box-sizing:border-box;pointer-events:none;z-index:5;
-  background:conic-gradient(from var(--md-gold-angle),transparent 0deg 278deg,#8f5a13 292deg,#fff2b7 304deg,#ffd15a 314deg,#fff8dc 322deg,#a36511 332deg,transparent 346deg 360deg);
+  background:conic-gradient(from var(--md-gold-angle,0deg),transparent 0deg 278deg,#8f5a13 292deg,#fff2b7 304deg,#ffd15a 314deg,#fff8dc 322deg,#a36511 332deg,transparent 346deg 360deg);
   -webkit-mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);
   -webkit-mask-composite:xor;mask-composite:exclude;
   animation:md-gold-orbit 3.6s linear infinite;
