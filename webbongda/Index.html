@@ -5297,7 +5297,7 @@ function logoDoiHtml(maDoi,size){
   var st='width:'+size+'px;height:'+size+'px;border-radius:'+Math.round(size*0.28)+'px;flex:0 0 auto;';
   if(d&&d.logoUrl){
     return '<img src="'+esc(driveImg(d.logoUrl))+'" style="'+st+'object-fit:cover;border:1px solid var(--vien)" '
-      +'onerror="this.outerHTML=\'<div style=&quot;'+st+'background:linear-gradient(135deg,var(--neon),var(--cam));display:flex;align-items:center;justify-content:center;font-family:\\\'Oswald\\\';color:#04122b;font-size:'+Math.round(size*0.42)+'px&quot;>'+esc((d.tenDoi||'?').slice(0,2).toUpperCase())+'</div>\'">';
+      +'onerror="this.outerHTML=\'<div style=&quot;'+st+'background:linear-gradient(135deg,var(--neon),var(--cam));display:flex;align-items:center;justify-content:center;font-family:\\'Oswald\\';color:#04122b;font-size:'+Math.round(size*0.42)+'px&quot;>'+esc((d.tenDoi||'?').slice(0,2).toUpperCase())+'</div>\'">';
   }
   var ten=d?d.tenDoi:'?';
   return '<div style="'+st+'background:linear-gradient(135deg,var(--neon),var(--cam));display:flex;align-items:center;justify-content:center;font-family:\'Oswald\';color:#04122b;font-size:'+Math.round(size*0.42)+'px">'+esc((ten||'?').slice(0,2).toUpperCase())+'</div>';
@@ -5622,7 +5622,7 @@ function veMatchDay_(el){
     var tenB = String(ten(t.maDoiB) || '?');
     var capDoi = (tenA + ' ' + tenB).toUpperCase();
     var anhSoDo = '';
-    if (capDoi.indexOf('RHINO') !== -1 && /TIME[\\s-]*TIP/.test(capDoi)) {
+    if (capDoi.indexOf('RHINO') !== -1 && /TIME[\s-]*TIP/.test(capDoi)) {
       anhSoDo = 'https://cdn.jsdelivr.net/gh/phamdoanchiengroup-cloud/githubforclaude160695@ed7fd34343374253df74ebccd339b034b17241ca/webbongda/anh/lineup-rhino-timetip-mobile.webp';
     } else if (capDoi.indexOf('EVO') !== -1 && capDoi.indexOf('CUEBOTS') !== -1) {
       anhSoDo = 'https://cdn.jsdelivr.net/gh/phamdoanchiengroup-cloud/githubforclaude160695@ed7fd34343374253df74ebccd339b034b17241ca/webbongda/anh/lineup-evo-cuebots-mobile.webp';
@@ -5631,7 +5631,7 @@ function veMatchDay_(el){
       ? '<picture class="md-lineup-desktop"><source media="(min-width:1024px)" type="image/webp" srcset="' + esc(anhSoDo) + '"><img width="1574" height="999" alt="Sơ đồ đội hình ' + esc(tenA) + ' và ' + esc(tenB) + '" loading="lazy"></picture>'
       : '';
     var videoHtml = vd
-      ? '<div class="md-video-intro"><button type="button" class="btn vang sm" onclick="moLightboxMedia(\\'' + vd.maMedia + '\\')">▶ Video giới thiệu trận</button></div>'
+      ? '<div class="md-video-intro"><button type="button" class="btn vang sm" onclick="moLightboxMedia(\'' + vd.maMedia + '\')">▶ Video giới thiệu trận</button></div>'
       : '';
     return anhHtml + videoHtml;
   };
@@ -8912,7 +8912,7 @@ function renderLiveBuoc3(tt){
     h+='<div style="text-align:center">';
     if(d.logoUrl){
       h+='<img src="'+esc(driveImg(d.logoUrl))+'" style="width:52px;height:52px;border-radius:12px;object-fit:cover;border:2px solid var(--vien2)" '
-        +'onerror="this.outerHTML=\'<div style=&quot;width:52px;height:52px;border-radius:12px;background:linear-gradient(135deg,var(--neon),var(--cam));display:flex;align-items:center;justify-content:center;font-family:\\\'Oswald\\\';color:#04122b;font-size:20px&quot;>'
+        +'onerror="this.outerHTML=\'<div style=&quot;width:52px;height:52px;border-radius:12px;background:linear-gradient(135deg,var(--neon),var(--cam));display:flex;align-items:center;justify-content:center;font-family:\\'Oswald\\';color:#04122b;font-size:20px&quot;>'
         +esc((d.tenDoi||'?').slice(0,2).toUpperCase())+'</div>\'">';
     } else {
       h+='<div style="width:52px;height:52px;border-radius:12px;background:linear-gradient(135deg,var(--neon),var(--cam));display:flex;align-items:center;justify-content:center;font-family:\'Oswald\';color:#04122b;font-size:20px">'
