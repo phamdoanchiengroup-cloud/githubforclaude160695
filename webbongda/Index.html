@@ -5921,14 +5921,23 @@ function render(){
   var nenDau=document.createElement('div'); nenDau.id='nenDau'; nenDau.className='nen-dau';
   appEl.insertBefore(nenDau, bannerWrap);
   try {
-    // Mọi tab: khung Match Day lớn (poster + 2 trận + đếm ngược) giống trang chủ. Hết trận sắp tới: về banner động.
-    // (Thanh gọn veThanhMatchDay_ vẫn giữ trong mã nếu sau này muốn dùng lại.)
-    if(!veMatchDay_(bannerWrap)) veBannerDong(bannerWrap);
+    // Khi có trận sắp tới, ưu tiên Match Day. Chỉ dùng banner động khi lịch không còn trận phù hợp.
+    // Tránh chồng banner cũ lên ảnh nền đầu trang nếu Match Day gặp lỗi dựng giao diện.
+    var mdCoTranSap_ = !!mdDuLieu_();
+    if(!veMatchDay_(bannerWrap) && !mdCoTranSap_) veBannerDong(bannerWrap);
   }
-  catch(e){   // lỗi gì thì quay về ảnh banner cũ, không làm hỏng trang
-    var bannerUrl_ = d.bannerUrl || BANNER_HEP_ID || '';
-    bannerWrap.className='banner-hep';
-    bannerWrap.innerHTML = bannerUrl_ ? '<img src="'+driveImg(bannerUrl_, 'w1600')+'" onerror="this.parentNode.style.display=\'none\'">' : '';
+  catch(e){
+    console.error('Không dựng được khung Match Day:', e);
+    var mdCoTranSapLoi_ = false;
+    try { mdCoTranSapLoi_ = !!mdDuLieu_(); } catch(e2) {}
+    if(mdCoTranSapLoi_){
+      bannerWrap.className='md-wrap';
+      bannerWrap.innerHTML='';
+    } else {
+      var bannerUrl_ = d.bannerUrl || BANNER_HEP_ID || '';
+      bannerWrap.className='banner-hep';
+      bannerWrap.innerHTML = bannerUrl_ ? '<img src="'+driveImg(bannerUrl_, 'w1600')+'" onerror="this.parentNode.style.display=\\'none\\'">' : '';
+    }
   }
 }
 
