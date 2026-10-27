@@ -5543,6 +5543,7 @@ var MATCH_DAY_POSTER = {
 /* Một ngày thi đấu được coi là KẾT THÚC khi mọi trận đã nhập tỷ số (Đã đá),
    hoặc đã quá giờ bóng lăn MD_HET_SAU_MS mà BTC chưa kịp nhập → web tự chuyển sang ngày (poster) kế tiếp. */
 var MD_HET_SAU_MS = 3 * 60 * 60 * 1000;
+var MD_LUOT3_AT = Date.parse('2026-10-29T10:00:00Z'); // 17:00 ngày 29/10/2026, giờ Việt Nam
 var MD = { timer: null };
 /* Màu ánh sáng của đội theo màu áo (Doi.MauAo) */
 function mdMauDoi_(maDoi){
@@ -5560,7 +5561,11 @@ function mdDuLieu_(){
     .filter(function(t){ return t._d && t.maDoiB; })
     .sort(function(a, b){ return a._d - b._d || (Number(a.thuTuKO) || 0) - (Number(b.thuTuKO) || 0); });
   var now = new Date();
-  var sap = tran.filter(function(t){ return !bdDaDa_(t) && t._d.getTime() + MD_HET_SAU_MS > now.getTime(); })[0];
+  var sap = tran.filter(function(t){
+    var soLuot = Number((nhanLuot_(t).match(/(\\d+)/) || [])[0]);
+    var boLuot2SauGio = now.getTime() >= MD_LUOT3_AT && soLuot === 2;
+    return !bdDaDa_(t) && t._d.getTime() + MD_HET_SAU_MS > now.getTime() && !boLuot2SauGio;
+  })[0];
   if (!sap) return null;
   var luot = nhanLuot_(sap), so = luot.match(/(\d+)/);
   var ngayTxt = bdP2_(sap._d.getDate()) + '/' + bdP2_(sap._d.getMonth() + 1) + '/' + sap._d.getFullYear();
@@ -5594,24 +5599,6 @@ function veThanhMatchDay_(el){
   var D = mdDuLieu_(); if (!D) return false;
   var lg = function(id){ var x = doiObj(id); return x && x.logoUrl ? '<img alt="" src="' + esc(driveImg(x.logoUrl)) + '">' : ''; };
   var ten = function(id){ var x = doiObj(id); return x ? tenDoiNgan_(x.tenDoi) : '?'; };
-  var mdLuot3At = Date.parse('2026-10-29T10:00:00Z'); // 17:00 ngày 29/10/2026, giờ Việt Nam
-  var mdRoundNow = Date.now() >= mdLuot3At ? 3 : 2;
-  var mdRoundData = Number((String(luotTo || '').match(/(\d+)/) || [])[0]);
-  var mdRound2Img = 'https://cdn.jsdelivr.net/gh/phamdoanchiengroup-cloud/githubforclaude160695@4859d2c3ed42ac9aac333c40c4452e43c3df05c7/webbongda/anh/match-day-luot-02.png';
-  var mdRound3Img = 'https://cdn.jsdelivr.net/gh/phamdoanchiengroup-cloud/githubforclaude160695@d7cfd15dd3d247c2061fb9a5edb88da85837a7e5/webbongda/anh/match-day-luot-03.png';
-  var mdDungAnh = mdRoundData === mdRoundNow || (mdRoundNow === 3 && mdRoundData === 2);
-  var tieuDeHtml = mdDungAnh
-    ? '<h2 class="md-tieu md-tieu-anh"><img id="md-title-artwork" src="' + (mdRoundNow === 3 ? mdRound3Img : mdRound2Img) + '" alt="' + (mdRoundNow === 3 ? 'MATCH DAY Lượt 3' : 'MATCH DAY Lượt 02') + '" width="1905" height="828"></h2>'
-    : '<h2 class="md-tieu"><span><span class="md-bac">MATCH</span> <span class="md-kim">DAY</span></span><span class="md-vien" data-chu="' + esc(luotTo) + '">' + esc(luotTo) + '</span></h2>';
-  if (mdRoundNow === 2 && mdRoundData === 2) {
-    window.setTimeout(function(){
-      if (!document.body.contains(el)) return;
-      var img = el.querySelector('#md-title-artwork');
-      if (!img) return;
-      img.src = mdRound3Img;
-      img.alt = 'MATCH DAY Lượt 3';
-    }, Math.max(0, mdLuot3At - Date.now()));
-  }
   el.className = 'md-wrap';
   el.innerHTML = '<div class="md-kinh mdb">'
     + (D.poster ? '<img class="mdb-poster" alt="Poster" src="' + esc(D.poster) + '" onclick="moAnhLon_(\'' + esc(D.poster) + '\')">' : '')
@@ -5641,10 +5628,18 @@ function veMatchDay_(el){
     var tenB = String(ten(t.maDoiB) || '?');
     var capDoi = (tenA + ' ' + tenB).toUpperCase();
     var anhSoDo = '';
-    if (capDoi.indexOf('RHINO') !== -1 && /TIME[\s-]*TIP/.test(capDoi)) {
-      anhSoDo = 'https://cdn.jsdelivr.net/gh/phamdoanchiengroup-cloud/githubforclaude160695@ed7fd34343374253df74ebccd339b034b17241ca/webbongda/anh/lineup-rhino-timetip-mobile.webp';
-    } else if (capDoi.indexOf('EVO') !== -1 && capDoi.indexOf('CUEBOTS') !== -1) {
-      anhSoDo = 'https://cdn.jsdelivr.net/gh/phamdoanchiengroup-cloud/githubforclaude160695@ed7fd34343374253df74ebccd339b034b17241ca/webbongda/anh/lineup-evo-cuebots-mobile.webp';
+    if (mdDungAnh && mdRoundNow === 3) {
+      if (capDoi.indexOf('RHINO') !== -1 && capDoi.indexOf('CUEBOTS') !== -1) {
+        anhSoDo = 'https://cdn.jsdelivr.net/gh/phamdoanchiengroup-cloud/githubforclaude160695@e31b4772616c69a176ed0535059e21f2b570c8bc/webbongda/anh/lineup-rhino-cuebots-luot-03.webp';
+      } else if (capDoi.indexOf('EVO') !== -1 && /TIME[\s-]*TIP/.test(capDoi)) {
+        anhSoDo = 'https://cdn.jsdelivr.net/gh/phamdoanchiengroup-cloud/githubforclaude160695@e31b4772616c69a176ed0535059e21f2b570c8bc/webbongda/anh/lineup-evo-timetip-luot-03.webp';
+      }
+    } else if (mdDungAnh) {
+      if (capDoi.indexOf('RHINO') !== -1 && /TIME[\s-]*TIP/.test(capDoi)) {
+        anhSoDo = 'https://cdn.jsdelivr.net/gh/phamdoanchiengroup-cloud/githubforclaude160695@ed7fd34343374253df74ebccd339b034b17241ca/webbongda/anh/lineup-rhino-timetip-mobile.webp';
+      } else if (capDoi.indexOf('EVO') !== -1 && capDoi.indexOf('CUEBOTS') !== -1) {
+        anhSoDo = 'https://cdn.jsdelivr.net/gh/phamdoanchiengroup-cloud/githubforclaude160695@ed7fd34343374253df74ebccd339b034b17241ca/webbongda/anh/lineup-evo-cuebots-mobile.webp';
+      }
     }
     var anhHtml = anhSoDo
       ? '<div class="md-lineup-desktop"><img src="' + esc(anhSoDo) + '" width="1574" height="999" alt="Sơ đồ đội hình ' + esc(tenA) + ' và ' + esc(tenB) + '" loading="lazy"></div>'
@@ -5674,6 +5669,25 @@ function veMatchDay_(el){
   var bxh = (d.bxh && d.bxh.TatCa) || [];
   if (bxh.length && bxh[0].st > 0 && (!bxh[1] || bxh[0].diem > bxh[1].diem)) tin.push(bxh[0].tenDoi + ' dẫn đầu bảng xếp hạng · ' + bxh[0].diem + ' điểm');
   var tinHtml = tin.map(function(s){ return '<span>' + esc(s) + '</span>'; }).join('');
+  var mdRoundNow = Date.now() >= MD_LUOT3_AT ? 3 : 2;
+  var mdRoundData = Number((String(luotTo || '').match(/(\d+)/) || [])[0]);
+  var mdRound2Img = 'https://cdn.jsdelivr.net/gh/phamdoanchiengroup-cloud/githubforclaude160695@4859d2c3ed42ac9aac333c40c4452e43c3df05c7/webbongda/anh/match-day-luot-02.png';
+  var mdRound3Img = 'https://cdn.jsdelivr.net/gh/phamdoanchiengroup-cloud/githubforclaude160695@d7cfd15dd3d247c2061fb9a5edb88da85837a7e5/webbongda/anh/match-day-luot-03.png';
+  var mdDungAnh = mdRoundData === mdRoundNow || (mdRoundNow === 3 && mdRoundData === 2);
+  var tieuDeHtml = mdDungAnh
+    ? '<h2 class="md-tieu md-tieu-anh"><img id="md-title-artwork" src="' + (mdRoundNow === 3 ? mdRound3Img : mdRound2Img) + '" alt="' + (mdRoundNow === 3 ? 'MATCH DAY Lượt 3' : 'MATCH DAY Lượt 02') + '" width="1905" height="828"></h2>'
+    : '<h2 class="md-tieu"><span><span class="md-bac">MATCH</span> <span class="md-kim">DAY</span></span><span class="md-vien" data-chu="' + esc(luotTo) + '">' + esc(luotTo) + '</span></h2>';
+  if (mdRoundNow === 2 && mdRoundData === 2) {
+    window.setTimeout(function(){
+      if (!document.body.contains(el)) return;
+      var img = el.querySelector('#md-title-artwork');
+      if (!img) return;
+      img.src = mdRound3Img;
+      img.alt = 'MATCH DAY Lượt 3';
+      tai();
+    }, Math.max(0, MD_LUOT3_AT - Date.now()));
+  }
+
 
   el.className = 'md-wrap';
   el.innerHTML = '<div class="md-hero">'
