@@ -5562,7 +5562,7 @@ function mdDuLieu_(){
     .sort(function(a, b){ return a._d - b._d || (Number(a.thuTuKO) || 0) - (Number(b.thuTuKO) || 0); });
   var now = new Date();
   var sap = tran.filter(function(t){
-    var soLuot = Number((nhanLuot_(t).match(/(\\d+)/) || [])[0]);
+    var soLuot = Number((nhanLuot_(t).match(/(\d+)/) || [])[0]);
     var boLuot2SauGio = now.getTime() >= MD_LUOT3_AT && soLuot === 2;
     return !bdDaDa_(t) && t._d.getTime() + MD_HET_SAU_MS > now.getTime() && !boLuot2SauGio;
   })[0];
