@@ -5015,6 +5015,31 @@ nav.tabs button.on{
   .md-gio{font-size:48px !important}
 }
 
+/* Match Day title refresh: one-line athletic headline and metallic round badge */
+.md-tieu{
+  display:flex;flex-direction:column;align-items:flex-start;gap:10px;
+  font-size:clamp(46px,6vw,84px) !important;
+  line-height:.92 !important;letter-spacing:.015em !important;
+}
+.md-tieu > span:first-child{
+  display:flex;align-items:baseline;gap:.14em;
+  white-space:nowrap;
+}
+.md-vien{
+  position:relative;display:inline-flex;align-items:center;width:max-content;
+  margin:2px 0 0;padding:5px 20px 7px;
+  font-family:'Chakra Petch','Barlow Condensed',sans-serif !important;
+  font-size:clamp(25px,3.2vw,42px) !important;
+  font-weight:700 !important;font-style:italic !important;
+  line-height:1.05 !important;letter-spacing:.14em !important;
+  color:#101827 !important;-webkit-text-fill-color:#101827 !important;
+  -webkit-text-stroke:0 !important;
+  background:var(--kim-loai) !important;
+  clip-path:polygon(10px 0,100% 0,100% calc(100% - 10px),calc(100% - 10px) 100%,0 100%,0 10px);
+  filter:drop-shadow(0 4px 0 rgba(0,0,0,.55)) drop-shadow(0 0 13px rgba(255,190,49,.34)) !important;
+}
+.md-vien::before{display:none !important;content:none !important}
+
 </style>
 </head>
 <body>
@@ -5554,7 +5579,6 @@ function veMatchDay_(el){
     +   (poster ? '<div class="md-poster" onclick="moAnhLon_(\'' + esc(poster) + '\')"><img alt="Poster ' + esc(luot) + '" src="' + esc(poster) + '"></div>' : '')
     +   '<div class="md-den"></div><div class="md-chu-anh md-hud-nhan mo">' + (MATCH_DAY_POSTER[ngayTxt] ? 'Poster chính thức · ' + esc(luot) : esc(d.tenGiai || '')) + '</div></div>'
     + '<div class="md-bang">'
-    +   '<span class="md-hud-nhan">◇ ' + esc(d.tenGiai || '') + ' · ' + esc(String(sap.vongDau || '').toUpperCase()) + '</span>'
     +   '<h2 class="md-tieu"><span><span class="md-bac">MATCH</span> <span class="md-kim">DAY</span></span><span class="md-vien" data-chu="' + esc(luotTo) + '">' + esc(luotTo) + '</span></h2>'
     +   '<div class="md-chips"><span class="md-chip dam">' + BD_THU[sap._d.getDay()] + ' · ' + ngayTxt + '</span>'
     +     '<span class="md-chip">' + ngay.length + ' trận' + (gioChung ? ' · ' + bdGioTxt_(sap._d) : '') + (sap.sanDau ? ' · ' + esc(sap.sanDau) : '') + '</span></div>'
