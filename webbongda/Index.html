@@ -2405,11 +2405,19 @@ input:focus,select:focus,textarea:focus{
   }
 }
 /* ============================================================
-   RỘNG GIAO DIỆN DESKTOP — 95vw
+   GIAO DIỆN DESKTOP — giới hạn chiều rộng, căn giữa
    ============================================================ */
 @media(min-width:1024px){
-  main{max-width:95vw !important;padding:20px 24px 60px !important}
-  header .row{max-width:95vw !important}
+  main{
+    width:100%;max-width:1440px !important;
+    margin-left:auto !important;margin-right:auto !important;
+    padding:20px 24px 60px !important;box-sizing:border-box;
+  }
+  header .row{
+    width:100%;max-width:1440px !important;
+    margin-left:auto !important;margin-right:auto !important;
+    box-sizing:border-box;
+  }
 }
 
 /* Banner phá khung — full viewport width */
