@@ -4838,6 +4838,118 @@ nav.tabs button.on .tab-ic{color:#1a1206;filter:none}
 .bxh-vach{display:inline-block;width:18px;border-top:2px dashed rgba(246,196,83,.8)}
 .bxh-moi.compact .bxh-diem{font-size:22px}.bxh-moi.compact .bxh-hang{font-size:19px}.bxh-moi.compact .bxh-doi b{font-size:13px}
 
+
+/* ================= TRANG CHỦ — SÂN VẬN ĐỘNG XANH & KIM LOẠI =================
+   Giữ nguyên cấu trúc và hành vi; chỉ tăng chiều sâu xanh, viền vàng và ánh sáng.
+*/
+:root{
+  --nen:#050a14; --nen2:#07162a; --nen3:#0c2037;
+  --the:rgba(5,13,29,.84); --the-solid:#08162a;
+  --vien:rgba(94,163,224,.34); --vien2:rgba(255,211,91,.72);
+  --chu:#f3f7ff; --chu2:#fff9e9; --mo:#b8c7d9; --mo2:#8496ad;
+  --neon:#ffd15a; --neon2:#bd7d18; --neon-glow:rgba(255,190,49,.46);
+  --cam:#e0313f; --cam2:#ff6b5e; --cam-glow:rgba(224,49,63,.40);
+  --vang:#ffd15a; --xanh:#48aaff;
+  --bg-0:#050a14; --bg-1:#07162a; --bg-2:#0c2037; --bg-card:rgba(5,13,29,.78);
+  --line-glow:rgba(63,157,255,.34); --line-glow-2:rgba(255,190,49,.30); --grid-color:rgba(94,163,224,.055);
+  --gold:#ffd15a; --gold-2:#ff9f2e; --gold-glow:rgba(255,190,49,.48);
+  --kim-loai:linear-gradient(180deg,#fff4c4 0%,#ffda70 34%,#f2ae32 58%,#a96816 84%,#ffe69a 100%);
+  --anh-holo:linear-gradient(115deg,transparent 28%,rgba(93,185,255,.15) 43%,rgba(255,239,190,.20) 51%,rgba(255,170,45,.13) 60%,transparent 73%);
+  --vien-sang:rgba(255,230,156,.78);
+}
+body{background:#050a14 !important;color:var(--chu) !important}
+body::before{
+  background:
+    linear-gradient(180deg,rgba(3,14,34,.20) 0%,rgba(3,12,29,.34) 48%,rgba(3,10,23,.48) 100%),
+    var(--nen-san) center top/cover no-repeat,#050a14 !important;
+}
+header{
+  background:linear-gradient(100deg,rgba(4,16,37,.94),rgba(5,10,20,.84)) !important;
+  border-bottom:1px solid rgba(255,209,90,.58) !important;
+  box-shadow:0 5px 28px rgba(0,0,0,.55),0 1px 18px rgba(39,145,255,.16) !important;
+}
+header::after{
+  background:linear-gradient(90deg,transparent,#4ab0ff 24%,#fff0bd 42%,#ffd15a 52%,#4ab0ff 76%,transparent) !important;
+  box-shadow:0 0 14px rgba(72,170,255,.38) !important;
+}
+header h1{
+  background:linear-gradient(90deg,#fff 0%,#dbeaff 34%,#ffd15a 67%,#fff0bd 100%) !important;
+  -webkit-background-clip:text !important;background-clip:text !important;
+}
+.card{
+  background:
+    radial-gradient(ellipse at 8% 0%,rgba(44,132,220,.15),transparent 48%),
+    linear-gradient(155deg,rgba(28,78,126,.26),rgba(5,14,30,.78) 46%,rgba(4,10,22,.84)) !important;
+  border-color:rgba(100,170,225,.42) !important;
+  box-shadow:0 18px 42px rgba(0,0,0,.55),inset 0 1px 0 rgba(210,235,255,.10),0 0 18px rgba(31,126,220,.08) !important;
+}
+.card::after{
+  background:linear-gradient(90deg,transparent,rgba(87,176,255,.72) 23%,rgba(255,233,166,.92) 50%,rgba(87,176,255,.72) 77%,transparent) !important;
+  height:1.5px;opacity:.9;
+}
+.card:hover{
+  border-color:rgba(255,209,90,.78) !important;
+  box-shadow:0 20px 48px rgba(0,0,0,.62),0 0 22px rgba(55,154,255,.17),0 0 14px rgba(255,190,49,.10) !important;
+}
+.card h2{color:#fff7df !important;text-shadow:0 1px 12px rgba(69,158,255,.22)}
+.card h2::before{background:var(--kim-loai) !important;box-shadow:0 0 10px rgba(255,190,49,.52),0 0 8px rgba(72,170,255,.28) !important}
+nav.tabs{
+  background:linear-gradient(120deg,rgba(15,48,83,.66),rgba(4,13,29,.87)) !important;
+  border-color:rgba(100,170,225,.42) !important;
+}
+nav.tabs button.on{
+  background:var(--kim-loai) !important;color:#15100a !important;
+  box-shadow:0 0 0 1px rgba(255,239,190,.72),0 0 18px rgba(255,190,49,.34),0 0 12px rgba(72,170,255,.20) !important;
+}
+.btn.neon{
+  background:var(--kim-loai) !important;color:#171006 !important;
+  box-shadow:0 4px 18px rgba(255,190,49,.28),0 0 12px rgba(72,170,255,.14) !important;
+}
+.btn.neon:hover:not(:disabled){box-shadow:0 6px 24px rgba(255,190,49,.46),0 0 18px rgba(72,170,255,.23) !important}
+.trang-chu .card{
+  border-color:rgba(255,209,90,.48) !important;
+  background:
+    radial-gradient(ellipse at 8% 0%,rgba(34,119,204,.19),transparent 52%),
+    linear-gradient(155deg,rgba(16,49,82,.58),rgba(5,14,30,.86) 48%,rgba(3,9,21,.90)) !important;
+}
+.trang-chu .card:hover{border-color:rgba(255,224,128,.86) !important}
+.trang-chu .home-solieu .stat{
+  background:linear-gradient(145deg,rgba(34,111,182,.32),rgba(4,13,29,.82)) !important;
+  border-color:rgba(99,179,255,.48) !important;
+  box-shadow:inset 0 1px 0 rgba(218,239,255,.10),0 6px 18px rgba(0,0,0,.26) !important;
+}
+.trang-chu .home-solieu .stat .n{
+  background:linear-gradient(180deg,#fff4c4 0%,#ffd15a 48%,#f09c22 100%) !important;
+  -webkit-background-clip:text !important;background-clip:text !important;
+  filter:drop-shadow(0 0 9px rgba(255,190,49,.24));
+}
+.trang-chu .bxh-moi th{color:#c6d8ec !important}
+.trang-chu .bxh-moi td{background:rgba(4,15,34,.76) !important;border-color:rgba(83,153,213,.36) !important}
+.trang-chu .bxh-moi tr.qua td{
+  background:linear-gradient(90deg,rgba(255,193,55,.24),rgba(36,114,190,.18)) !important;
+  border-top-color:rgba(255,209,90,.62) !important;border-bottom-color:rgba(255,209,90,.62) !important;
+}
+.trang-chu .lg-tran,.trang-chu .ds-dong,.trang-chu .team-logo-item{
+  background:linear-gradient(145deg,rgba(13,43,75,.66),rgba(4,13,29,.82)) !important;
+  border-color:rgba(92,164,224,.40) !important;
+  box-shadow:inset 0 1px 0 rgba(220,239,255,.06),0 5px 16px rgba(0,0,0,.24);
+}
+.trang-chu .lg-tran:hover,.trang-chu .ds-dong:hover,.trang-chu .team-logo-item:hover{
+  border-color:rgba(255,209,90,.82) !important;
+  box-shadow:0 0 18px rgba(49,145,235,.20),0 0 12px rgba(255,190,49,.12) !important;
+}
+.trang-chu .kq-ngay{border-bottom-color:rgba(105,174,228,.48) !important}
+.trang-chu .kq-luot{
+  color:#151006 !important;
+  background:linear-gradient(135deg,#fff0a8,#ffd15a 55%,#e99a24) !important;
+  box-shadow:0 2px 12px rgba(255,190,49,.24);
+}
+.trang-chu .lg-gio,.trang-chu .bxh-diem{color:#ffd15a !important;text-shadow:0 0 12px rgba(255,190,49,.22)}
+.trang-chu .muted,.trang-chu .ds-tong{color:#bdcde0 !important}
+@media (prefers-reduced-motion:reduce){
+  .trang-chu .card,.trang-chu .lg-tran,.trang-chu .ds-dong,.trang-chu .team-logo-item{transition:none !important}
+}
+
 </style>
 </head>
 <body>
