@@ -5177,6 +5177,35 @@ nav.tabs button.on{
   .md-motion-ready .md-poster::before{display:none!important;animation:none!important}
   .md-poster,.md-poster::after{animation:none!important}
 }
+
+
+/* Desktop Match Day: let the details column fill the poster height */
+@media(min-width:1024px){
+  .md-hero{align-items:stretch !important}
+  .md-may{
+    display:flex;flex-direction:column;align-self:stretch;min-height:0;
+    aspect-ratio:941 / 1672;
+  }
+  .md-poster{display:flex;flex:1 1 auto;min-height:0;overflow:hidden}
+  .md-poster img{width:100%;height:100%;object-fit:contain}
+  .md-bang{
+    align-self:stretch;min-height:0;
+    grid-template-rows:auto auto repeat(2,minmax(0,1fr));
+    gap:12px;
+  }
+  .md-match-presentation{
+    display:flex;flex-direction:column;justify-content:center;gap:8px;
+    min-height:0;overflow:hidden;
+  }
+  .md-lineup-desktop{
+    display:flex;flex:1 1 auto;align-items:center;justify-content:center;
+    min-height:0;max-height:27vh;margin:0;overflow:hidden;
+  }
+  .md-lineup-desktop img{
+    display:block;width:100%;height:100%;max-height:27vh;object-fit:contain;
+  }
+  .md-video-intro{flex:0 0 auto;margin:0}
+}
 </style>
 </head>
 <body>
@@ -5696,12 +5725,16 @@ function veMatchDay_(el){
       }
     }
     var anhHtml = anhSoDo
-      ? '<div class="md-lineup-desktop" style="--md-start-x:' + ((idx || 0) % 2 ? '44px' : '-44px') + ';--md-delay:' + (0.68 + (idx || 0) * 0.22).toFixed(2) + 's"><img src="' + esc(anhSoDo) + '" width="1574" height="999" alt="Sơ đồ đội hình ' + esc(tenA) + ' và ' + esc(tenB) + '" loading="lazy"></div>'
+      ? '<div class="md-lineup-desktop"><img src="' + esc(anhSoDo) + '" width="1574" height="999" alt="Sơ đồ đội hình ' + esc(tenA) + ' và ' + esc(tenB) + '" loading="lazy"></div>'
       : '';
     var videoHtml = vd
       ? '<div class="md-video-intro"><button type="button" class="btn vang sm" onclick="moLightboxMedia(\'' + vd.maMedia + '\')">▶ Video giới thiệu trận</button></div>'
       : '';
-    return anhHtml + videoHtml;
+    var mdDelay = (0.68 + (idx || 0) * 0.22).toFixed(2);
+    var mdFromX = (idx || 0) % 2 ? '44px' : '-44px';
+    return (anhHtml || videoHtml)
+      ? '<div class="md-match-presentation" style="--md-start-x:' + mdFromX + ';--md-delay:' + mdDelay + 's">' + anhHtml + videoHtml + '</div>'
+      : '';
   };
 
   // Băng chạy: kết quả ngày đá gần nhất, vua phá lưới, đội dẫn đầu (lấy từ sheet)
