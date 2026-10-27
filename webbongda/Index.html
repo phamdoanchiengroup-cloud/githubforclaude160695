@@ -4950,6 +4950,19 @@ nav.tabs button.on{
   .trang-chu .card,.trang-chu .lg-tran,.trang-chu .ds-dong,.trang-chu .team-logo-item{transition:none !important}
 }
 
+/* Banner chữ Match Day được thay bằng ảnh theo lượt đấu; ảnh tự co theo cột */
+.md-tieu.md-tieu-img{
+  width:100%;max-width:620px;font-size:initial;line-height:1;filter:none;
+  padding:0;aspect-ratio:1080/470;display:block;
+}
+.md-tieu-img>img{display:block;width:100%;height:100%;object-fit:contain;filter:drop-shadow(0 0 15px rgba(72,170,255,.24)) drop-shadow(0 3px 10px rgba(0,0,0,.45))}
+.md-tieu-fallback{display:none}
+.md-tieu-fallback:not([hidden]){display:block}
+.md-tieu-fallback>span{display:block}
+@media(max-width:760px){
+  .md-tieu.md-tieu-img{max-width:100%;aspect-ratio:1080/470}
+}
+
 </style>
 </head>
 <body>
@@ -5367,6 +5380,10 @@ var MATCH_DAY_POSTER = {
   '29/10/2026': 'https://cdn.jsdelivr.net/gh/phamdoanchiengroup-cloud/githubforclaude160695@c833aa220e53b38de4f026b699e832bb74b2ed85/webbongda/anh/match-day-luot2-v2.webp',
   '03/11/2026': 'https://cdn.jsdelivr.net/gh/phamdoanchiengroup-cloud/githubforclaude160695@c833aa220e53b38de4f026b699e832bb74b2ed85/webbongda/anh/match-day-luot3.webp'
 };
+var MATCH_DAY_TITLE_IMAGE = {
+  'LƯỢT 02': 'https://cdn.jsdelivr.net/gh/phamdoanchiengroup-cloud/githubforclaude160695@dbf9b225fca186339ad67b4ecbdf12f647fef99e/webbongda/anh/match-day-luot2-banner.webp',
+  'LƯỢT 03': 'https://cdn.jsdelivr.net/gh/phamdoanchiengroup-cloud/githubforclaude160695@dbf9b225fca186339ad67b4ecbdf12f647fef99e/webbongda/anh/match-day-luot3-banner.webp'
+};
 /* Một ngày thi đấu được coi là KẾT THÚC khi mọi trận đã nhập tỷ số (Đã đá),
    hoặc đã quá giờ bóng lăn MD_HET_SAU_MS mà BTC chưa kịp nhập → web tự chuyển sang ngày (poster) kế tiếp. */
 var MD_HET_SAU_MS = 3 * 60 * 60 * 1000;
@@ -5441,6 +5458,7 @@ function veMatchDay_(el){
   var D = mdDuLieu_(); if (!D) return false;
   var d = STATE.data, tran = D.tran, sap = D.sap, ngay = D.ngay, giai = D.giai;
   var luot = D.luot, luotTo = D.luotTo, ngayTxt = D.ngayTxt, poster = D.poster;
+  var titleImage = MATCH_DAY_TITLE_IMAGE[luotTo] || '';
   var ten = function(id){ var x = doiObj(id); return x ? x.tenDoi : '?'; };
   var lg = function(id){ var x = doiObj(id); return x && x.logoUrl ? esc(driveImg(x.logoUrl)) : ''; };
   var dt = function(id){ var x = doiObj(id), c = x && x.doiTruong ? cauThuObj(x.doiTruong) : null; return c ? 'ĐT ' + c.hoTen : ''; };
@@ -5491,7 +5509,9 @@ function veMatchDay_(el){
     +   '<div class="md-den"></div><div class="md-chu-anh md-hud-nhan mo">' + (MATCH_DAY_POSTER[ngayTxt] ? 'Poster chính thức · ' + esc(luot) : esc(d.tenGiai || '')) + '</div></div>'
     + '<div class="md-bang">'
     +   '<span class="md-hud-nhan">◇ ' + esc(d.tenGiai || '') + ' · ' + esc(String(sap.vongDau || '').toUpperCase()) + '</span>'
-    +   '<h2 class="md-tieu"><span><span class="md-bac">MATCH</span> <span class="md-kim">DAY</span></span><span class="md-vien" data-chu="' + esc(luotTo) + '">' + esc(luotTo) + '</span></h2>'
+    +   (titleImage
+      ? '<h2 class="md-tieu md-tieu-img" aria-label="MATCH DAY ' + esc(luotTo) + '"><img src="' + esc(titleImage) + '" alt="MATCH DAY ' + esc(luotTo) + '" onerror="this.hidden=true;this.nextElementSibling.hidden=false"><span class="md-tieu-fallback" hidden><span><span class="md-bac">MATCH</span> <span class="md-kim">DAY</span></span><span class="md-vien" data-chu="' + esc(luotTo) + '">' + esc(luotTo) + '</span></span></h2>'
+      : '<h2 class="md-tieu"><span><span class="md-bac">MATCH</span> <span class="md-kim">DAY</span></span><span class="md-vien" data-chu="' + esc(luotTo) + '">' + esc(luotTo) + '</span></h2>')
     +   '<div class="md-chips"><span class="md-chip dam">' + BD_THU[sap._d.getDay()] + ' · ' + ngayTxt + '</span>'
     +     '<span class="md-chip">' + ngay.length + ' trận' + (gioChung ? ' · ' + bdGioTxt_(sap._d) : '') + (sap.sanDau ? ' · ' + esc(sap.sanDau) : '') + '</span></div>'
     +   ngay.map(tranHtml).join('')
