@@ -5118,11 +5118,10 @@ nav.tabs button.on{
 @keyframes md-gold-orbit{to{--md-gold-angle:360deg}}
 @media(prefers-reduced-motion:reduce){.md-tran::after{animation:none !important}}
 
-/* Desktop-only lineup artwork, placed immediately below its matching card */
-.md-lineup-desktop{display:none;margin:0 0 12px;overflow:hidden;border:1px solid rgba(255,209,90,.56);border-radius:12px;background:rgba(4,12,25,.82);box-shadow:0 8px 24px rgba(0,0,0,.38),0 0 14px rgba(255,190,49,.12)}
+/* Lineup artwork, visible on desktop and mobile */
+.md-lineup-desktop{display:block;width:100%;margin:0 0 12px;overflow:hidden;border:1px solid rgba(255,209,90,.56);border-radius:12px;background:rgba(4,12,25,.82);box-shadow:0 8px 24px rgba(0,0,0,.38),0 0 14px rgba(255,190,49,.12)}
 .md-lineup-desktop img{display:block;width:100%;height:auto;object-fit:contain}
 .md-video-intro{display:flex;justify-content:center;margin:0 0 16px}
-@media(hover:hover) and (pointer:fine){.md-lineup-desktop{display:block}}
 
 </style>
 </head>
@@ -5648,7 +5647,7 @@ function veMatchDay_(el){
       anhSoDo = 'https://cdn.jsdelivr.net/gh/phamdoanchiengroup-cloud/githubforclaude160695@ed7fd34343374253df74ebccd339b034b17241ca/webbongda/anh/lineup-evo-cuebots-mobile.webp';
     }
     var anhHtml = anhSoDo
-      ? '<picture class="md-lineup-desktop"><source media="(hover: hover) and (pointer: fine)" type="image/webp" srcset="' + esc(anhSoDo) + '"><img width="1574" height="999" alt="Sơ đồ đội hình ' + esc(tenA) + ' và ' + esc(tenB) + '" loading="lazy"></picture>'
+      ? '<div class="md-lineup-desktop"><img src="' + esc(anhSoDo) + '" width="1574" height="999" alt="Sơ đồ đội hình ' + esc(tenA) + ' và ' + esc(tenB) + '" loading="lazy"></div>'
       : '';
     var videoHtml = vd
       ? '<div class="md-video-intro"><button type="button" class="btn vang sm" onclick="moLightboxMedia(\'' + vd.maMedia + '\')">▶ Video giới thiệu trận</button></div>'
