@@ -5206,6 +5206,20 @@ nav.tabs button.on{
   }
   .md-video-intro{flex:0 0 auto;margin:0}
 }
+
+
+/* Desktop Match Day refinements: original diagram scale, smaller title, no date/count row */
+@media(min-width:1024px){
+  .md-bang{grid-template-rows:auto repeat(2,minmax(0,1fr))}
+  .md-tieu{font-size:clamp(40px,4.6vw,62px) !important}
+  .md-tieu-anh img{width:82%;max-height:24vh;margin:0 auto}
+  .md-match-presentation{overflow:visible}
+  .md-lineup-desktop{
+    display:block;flex:0 0 auto;min-height:auto;max-height:none;
+    margin:0 0 12px;overflow:hidden;
+  }
+  .md-lineup-desktop img{display:block;width:100%;height:auto;max-height:none;object-fit:contain}
+}
 </style>
 </head>
 <body>
@@ -5703,7 +5717,6 @@ function veMatchDay_(el){
   var luot = D.luot, luotTo = D.luotTo, ngayTxt = D.ngayTxt, poster = D.poster;
   var ten = function(id){ var x = doiObj(id); return x ? x.tenDoi : '?'; };
   var lg = function(id){ var x = doiObj(id); return x && x.logoUrl ? esc(driveImg(x.logoUrl)) : ''; };
-  var gioChung = ngay.every(function(t){ return bdGioTxt_(t._d) === bdGioTxt_(sap._d); });
 
   var tranHtml = function(t, idx){
     var vd = videoCuaTran_(t.maTran);
@@ -5783,8 +5796,6 @@ function veMatchDay_(el){
     +   '<div class="md-den"></div><div class="md-chu-anh md-hud-nhan mo">' + (MATCH_DAY_POSTER[ngayTxt] ? 'Poster chính thức · ' + esc(luot) : esc(d.tenGiai || '')) + '</div></div>'
     + '<div class="md-bang">'
     +   tieuDeHtml
-    +   '<div class="md-chips"><span class="md-chip dam">' + BD_THU[sap._d.getDay()] + ' · ' + ngayTxt + '</span>'
-    +     '<span class="md-chip">' + ngay.length + ' trận' + (gioChung ? ' · ' + bdGioTxt_(sap._d) : '') + (sap.sanDau ? ' · ' + esc(sap.sanDau) : '') + '</span></div>'
     +   ngay.map(tranHtml).join('')
     + '</div></div>'
     + (tin.length ? '<div class="md-chay"><div class="md-ray">' + tinHtml + tinHtml + tinHtml + tinHtml + '</div></div>' : '');
