@@ -5001,6 +5001,20 @@ nav.tabs button.on{
   }
 }
 
+/* Match Day desktop: larger matchup cards and team crests */
+@media(min-width:1024px){
+  .md-tran{
+    min-height:166px;padding:28px 22px 22px !important;gap:18px !important;
+  }
+  .md-doi{gap:14px !important}
+  .md-logo{
+    width:84px !important;height:84px !important;flex:0 0 84px !important;
+  }
+  .md-logo img{width:80px !important;height:80px !important}
+  .md-doi b{font-size:21px !important;line-height:1.15 !important}
+  .md-gio{font-size:48px !important}
+}
+
 </style>
 </head>
 <body>
@@ -5494,13 +5508,12 @@ function veMatchDay_(el){
   var luot = D.luot, luotTo = D.luotTo, ngayTxt = D.ngayTxt, poster = D.poster;
   var ten = function(id){ var x = doiObj(id); return x ? x.tenDoi : '?'; };
   var lg = function(id){ var x = doiObj(id); return x && x.logoUrl ? esc(driveImg(x.logoUrl)) : ''; };
-  var dt = function(id){ var x = doiObj(id), c = x && x.doiTruong ? cauThuObj(x.doiTruong) : null; return c ? 'ĐT ' + c.hoTen : ''; };
   var gioChung = ngay.every(function(t){ return bdGioTxt_(t._d) === bdGioTxt_(sap._d); });
 
   var doiHtml = function(id, phai){
     return '<div class="md-doi' + (phai ? ' phai' : '') + '"><span class="md-logo" style="--beam:' + mdMauDoi_(id) + '">'
       + (lg(id) ? '<img alt="" src="' + lg(id) + '">' : '') + '</span>'
-      + '<b>' + esc(ten(id)) + '<small>' + esc(dt(id)) + '</small></b></div>';
+      + '<b>' + esc(ten(id)) + '</b></div>';
   };
   var tranHtml = function(t){
     var i = giai.indexOf(t);
