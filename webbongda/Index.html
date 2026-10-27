@@ -5873,7 +5873,6 @@ function renderView(){
 function viewHome(){
   var d=STATE.data;
   var doiGiai = d.doi.filter(function(t){ return String(t.loaiDoi||'').toUpperCase()!=='GH'; });
-  var ghTeamsHome = d.doi.filter(function(t){ return String(t.loaiDoi||'').toUpperCase()==='GH'; });
   var h='';
 
   // ⭐ Bố cục 2 cột: trái 70% (kết quả · BXH · các đội) — phải 30% (lịch sắp tới · ghi bàn · thẻ)
@@ -5888,26 +5887,6 @@ function viewHome(){
   h+=homeSoLieuHtml_(doiGiai);
   h+=bxhCardHtml_(false);
   h+=homeKetQuaHtml_();
-
-  // Các đội (bấm logo xem danh sách cầu thủ)
-  if(ghTeamsHome.length || doiGiai.length){
-    h+='<div class="card home-doi"><h2>👥 Các đội</h2>'
-      +'<p class="muted" style="font-size:12.5px;margin:-8px 0 14px">'
-      +  'Bấm vào <b style="color:var(--neon)">logo đội</b> để xem danh sách cầu thủ.'
-      +'</p>'
-      +'<div class="team-logo-row">';
-    doiGiai.concat(ghTeamsHome).forEach(function(team){
-      var gh=String(team.loaiDoi||'').toUpperCase()==='GH';
-      var n=cauThuTrongDoi(team.maDoi, !gh).length;
-      h+='<div class="team-logo-item" onclick="modalDoiCauThu(\''+team.maDoi+'\')">'
-        +logoDoiHtml(team.maDoi,84)
-        +'<div class="tl-name">'+esc(team.tenDoi)+'</div>'
-        +'<div class="tl-count">'+n+' cầu thủ</div>'
-        +(gh?'<span class="gh-badge" style="position:absolute;top:8px;right:8px;font-size:9px;padding:2px 7px">GH</span>':'')
-        +'</div>';
-    });
-    h+='</div></div>';
-  }
 
   // Cơ cấu giải thưởng (ảnh BTC thiết kế) — cuối cột trái
   if(GIAI_THUONG_IMG){
