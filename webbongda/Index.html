@@ -5084,6 +5084,43 @@ nav.tabs button.on{
   .md-gio{font-size:46px !important}
 }
 
+/* Match Day lettering: custom metallic sports title */
+.md-tieu > span:first-child{
+  position:relative;transform:skewX(-5deg);
+  filter:drop-shadow(0 2px 0 rgba(7,12,22,.92)) drop-shadow(0 0 16px rgba(64,158,255,.34));
+}
+.md-tieu > span:first-child::after{
+  content:'';position:absolute;left:1%;right:4%;bottom:-7px;height:3px;
+  background:linear-gradient(90deg,#46aaff 0%,#e8f3ff 26%,#ffd15a 58%,#e39822 82%,transparent 100%);
+  transform:skewX(-24deg);box-shadow:0 0 12px rgba(255,190,49,.46);
+}
+.md-bac{-webkit-text-stroke:.7px rgba(255,255,255,.75);filter:drop-shadow(0 2px 0 rgba(51,66,84,.9))}
+.md-kim{-webkit-text-stroke:.7px rgba(255,239,184,.75);filter:drop-shadow(0 2px 0 rgba(111,61,5,.88)) drop-shadow(0 0 11px rgba(255,184,49,.25))}
+.md-vien{
+  outline:1px solid rgba(70,170,255,.58);outline-offset:3px;
+  filter:drop-shadow(0 4px 0 rgba(0,0,0,.6)) drop-shadow(0 0 15px rgba(255,190,49,.48)) !important;
+}
+
+/* Running metallic-gold perimeter on every Match Day matchup card */
+@property --md-gold-angle{
+  syntax:'<angle>';inherits:false;initial-value:0deg;
+}
+.md-tran{position:relative;isolation:isolate;border-color:rgba(255,209,90,.62) !important}
+.md-tran::after{
+  content:'';position:absolute;inset:0;padding:2px;box-sizing:border-box;pointer-events:none;z-index:5;
+  background:conic-gradient(from var(--md-gold-angle),transparent 0deg 278deg,#8f5a13 292deg,#fff2b7 304deg,#ffd15a 314deg,#fff8dc 322deg,#a36511 332deg,transparent 346deg 360deg);
+  -webkit-mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);
+  -webkit-mask-composite:xor;mask-composite:exclude;
+  animation:md-gold-orbit 3.6s linear infinite;
+}
+@keyframes md-gold-orbit{to{--md-gold-angle:360deg}}
+@media(prefers-reduced-motion:reduce){.md-tran::after{animation:none !important}}
+
+/* Desktop-only lineup artwork, placed immediately below its matching card */
+.md-lineup-desktop{display:none;margin:-8px 0 18px;overflow:hidden;border:1px solid rgba(255,209,90,.56);border-radius:12px;background:rgba(4,12,25,.82);box-shadow:0 8px 24px rgba(0,0,0,.38),0 0 14px rgba(255,190,49,.12)}
+.md-lineup-desktop img{display:block;width:100%;height:auto;object-fit:contain}
+@media(min-width:1024px){.md-lineup-desktop{display:block}}
+
 </style>
 </head>
 <body>
@@ -5567,8 +5604,7 @@ function veThanhMatchDay_(el){
           + '<span class="mdb-gio md-kim">' + bdGioTxt_(t._d) + '</span>'
           + '<span class="mdb-doi">' + lg(t.maDoiB) + '<i>' + esc(ten(t.maDoiB)) + '</i></span></div>';
       }).join('') + '</div>'
-    + mdDemHtml_(D.sap) + '</div>';
-  mdChayDem_(el.querySelector('.md-dem'));
+    + '</div></div>';
   return true;
 }
 function veMatchDay_(el){
@@ -5588,13 +5624,26 @@ function veMatchDay_(el){
     var i = giai.indexOf(t);
     var nhan = t.vongDau === 'Chung kết' ? 'Chung kết' : laTranGiaoHuu_(t) ? 'Giao hữu' : 'Trận ' + bdP2_(i + 1);
     var vd = videoCuaTran_(t.maTran);
-    return '<div class="md-kinh md-tran" onclick="xemDoiHinhTran(\'' + t.maTran + '\')" title="Xem đội hình 2 đội">'
+    var tenA = String(ten(t.maDoiA) || '?');
+    var tenB = String(ten(t.maDoiB) || '?');
+    var capDoi = (tenA + ' ' + tenB).toUpperCase();
+    var anhSoDo = '';
+    if (capDoi.indexOf('RHINO') !== -1 && /TIME[\s-]*TIP/.test(capDoi)) {
+      anhSoDo = 'https://cdn.jsdelivr.net/gh/phamdoanchiengroup-cloud/githubforclaude160695@ed7fd34343374253df74ebccd339b034b17241ca/webbongda/anh/lineup-rhino-timetip-mobile.webp';
+    } else if (capDoi.indexOf('EVO') !== -1 && capDoi.indexOf('CUEBOTS') !== -1) {
+      anhSoDo = 'https://cdn.jsdelivr.net/gh/phamdoanchiengroup-cloud/githubforclaude160695@ed7fd34343374253df74ebccd339b034b17241ca/webbongda/anh/lineup-evo-cuebots-mobile.webp';
+    }
+    var card = '<div class="md-kinh md-tran" onclick="xemDoiHinhTran(\\'' + t.maTran + '\\')" title="Xem đội hình 2 đội">'
       + '<span class="md-so-tran md-hud-nhan">' + esc(nhan) + '</span>'
       + doiHtml(t.maDoiA, false)
       + '<div class="md-giua"><span class="md-gio md-kim">' + bdGioTxt_(t._d) + '</span><span class="md-vs">VS</span></div>'
       + doiHtml(t.maDoiB, true)
-      + '<div class="md-nut">' + (vd ? '<button type="button" class="btn vang sm" onclick="event.stopPropagation();moLightboxMedia(\'' + vd.maMedia + '\')">▶ Video giới thiệu trận</button>' : '')
-      +   '<button type="button" class="btn neon sm" onclick="event.stopPropagation();xemDoiHinhTran(\'' + t.maTran + '\')">⚔️ Sơ đồ đội hình</button></div></div>';
+      + '<div class="md-nut">' + (vd ? '<button type="button" class="btn vang sm" onclick="event.stopPropagation();moLightboxMedia(\\'' + vd.maMedia + '\\')">▶ Video giới thiệu trận</button>' : '')
+      +   '<button type="button" class="btn neon sm" onclick="event.stopPropagation();xemDoiHinhTran(\\'' + t.maTran + '\\')">⚔️ Sơ đồ đội hình</button></div></div>';
+    var anhHtml = anhSoDo
+      ? '<picture class="md-lineup-desktop"><source media="(min-width:1024px)" type="image/webp" srcset="' + esc(anhSoDo) + '"><img width="1574" height="999" alt="Sơ đồ đội hình ' + esc(tenA) + ' và ' + esc(tenB) + '" loading="lazy"></picture>'
+      : '';
+    return card + anhHtml;
   };
 
   // Băng chạy: kết quả ngày đá gần nhất, vua phá lưới, đội dẫn đầu (lấy từ sheet)
@@ -5627,11 +5676,9 @@ function veMatchDay_(el){
     +   '<div class="md-chips"><span class="md-chip dam">' + BD_THU[sap._d.getDay()] + ' · ' + ngayTxt + '</span>'
     +     '<span class="md-chip">' + ngay.length + ' trận' + (gioChung ? ' · ' + bdGioTxt_(sap._d) : '') + (sap.sanDau ? ' · ' + esc(sap.sanDau) : '') + '</span></div>'
     +   ngay.map(tranHtml).join('')
-    +   mdDemHtml_(sap)
     + '</div></div>'
     + (tin.length ? '<div class="md-chay"><div class="md-ray">' + tinHtml + tinHtml + tinHtml + tinHtml + '</div></div>' : '');
 
-  mdChayDem_(el.querySelector('.md-dem'));
   try { fxMatchDay_(el); } catch(e) {}
   return true;
 }
