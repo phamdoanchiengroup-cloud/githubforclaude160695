@@ -5117,8 +5117,9 @@ nav.tabs button.on{
 @media(prefers-reduced-motion:reduce){.md-tran::after{animation:none !important}}
 
 /* Desktop-only lineup artwork, placed immediately below its matching card */
-.md-lineup-desktop{display:none;margin:-8px 0 18px;overflow:hidden;border:1px solid rgba(255,209,90,.56);border-radius:12px;background:rgba(4,12,25,.82);box-shadow:0 8px 24px rgba(0,0,0,.38),0 0 14px rgba(255,190,49,.12)}
+.md-lineup-desktop{display:none;margin:0 0 12px;overflow:hidden;border:1px solid rgba(255,209,90,.56);border-radius:12px;background:rgba(4,12,25,.82);box-shadow:0 8px 24px rgba(0,0,0,.38),0 0 14px rgba(255,190,49,.12)}
 .md-lineup-desktop img{display:block;width:100%;height:auto;object-fit:contain}
+.md-video-intro{display:flex;justify-content:center;margin:0 0 16px}
 @media(min-width:1024px){.md-lineup-desktop{display:block}}
 
 </style>
@@ -5615,35 +5616,24 @@ function veMatchDay_(el){
   var lg = function(id){ var x = doiObj(id); return x && x.logoUrl ? esc(driveImg(x.logoUrl)) : ''; };
   var gioChung = ngay.every(function(t){ return bdGioTxt_(t._d) === bdGioTxt_(sap._d); });
 
-  var doiHtml = function(id, phai){
-    return '<div class="md-doi' + (phai ? ' phai' : '') + '"><span class="md-logo" style="--beam:' + mdMauDoi_(id) + '">'
-      + (lg(id) ? '<img alt="" src="' + lg(id) + '">' : '') + '</span>'
-      + '<b>' + esc(ten(id)) + '</b></div>';
-  };
   var tranHtml = function(t){
-    var i = giai.indexOf(t);
-    var nhan = t.vongDau === 'Chung kết' ? 'Chung kết' : laTranGiaoHuu_(t) ? 'Giao hữu' : 'Trận ' + bdP2_(i + 1);
     var vd = videoCuaTran_(t.maTran);
     var tenA = String(ten(t.maDoiA) || '?');
     var tenB = String(ten(t.maDoiB) || '?');
     var capDoi = (tenA + ' ' + tenB).toUpperCase();
     var anhSoDo = '';
-    if (capDoi.indexOf('RHINO') !== -1 && /TIME[\s-]*TIP/.test(capDoi)) {
+    if (capDoi.indexOf('RHINO') !== -1 && /TIME[\\s-]*TIP/.test(capDoi)) {
       anhSoDo = 'https://cdn.jsdelivr.net/gh/phamdoanchiengroup-cloud/githubforclaude160695@ed7fd34343374253df74ebccd339b034b17241ca/webbongda/anh/lineup-rhino-timetip-mobile.webp';
     } else if (capDoi.indexOf('EVO') !== -1 && capDoi.indexOf('CUEBOTS') !== -1) {
       anhSoDo = 'https://cdn.jsdelivr.net/gh/phamdoanchiengroup-cloud/githubforclaude160695@ed7fd34343374253df74ebccd339b034b17241ca/webbongda/anh/lineup-evo-cuebots-mobile.webp';
     }
-    var card = '<div class="md-kinh md-tran" onclick="xemDoiHinhTran(\'' + t.maTran + '\')" title="Xem đội hình 2 đội">'
-      + '<span class="md-so-tran md-hud-nhan">' + esc(nhan) + '</span>'
-      + doiHtml(t.maDoiA, false)
-      + '<div class="md-giua"><span class="md-gio md-kim">' + bdGioTxt_(t._d) + '</span><span class="md-vs">VS</span></div>'
-      + doiHtml(t.maDoiB, true)
-      + '<div class="md-nut">' + (vd ? '<button type="button" class="btn vang sm" onclick="event.stopPropagation();moLightboxMedia(\'' + vd.maMedia + '\')">▶ Video giới thiệu trận</button>' : '')
-      +   '<button type="button" class="btn neon sm" onclick="event.stopPropagation();xemDoiHinhTran(\'' + t.maTran + '\')">⚔️ Sơ đồ đội hình</button></div></div>';
     var anhHtml = anhSoDo
       ? '<picture class="md-lineup-desktop"><source media="(min-width:1024px)" type="image/webp" srcset="' + esc(anhSoDo) + '"><img width="1574" height="999" alt="Sơ đồ đội hình ' + esc(tenA) + ' và ' + esc(tenB) + '" loading="lazy"></picture>'
       : '';
-    return card + anhHtml;
+    var videoHtml = vd
+      ? '<div class="md-video-intro"><button type="button" class="btn vang sm" onclick="moLightboxMedia(\\'' + vd.maMedia + '\\')">▶ Video giới thiệu trận</button></div>'
+      : '';
+    return anhHtml + videoHtml;
   };
 
   // Băng chạy: kết quả ngày đá gần nhất, vua phá lưới, đội dẫn đầu (lấy từ sheet)
