@@ -5123,6 +5123,60 @@ nav.tabs button.on{
 .md-lineup-desktop img{display:block;width:100%;height:auto;object-fit:contain}
 .md-video-intro{display:flex;justify-content:center;margin:0 0 16px}
 
+
+
+/* Match Day entrance: slow athletic slides plus a cinematic poster reveal */
+@keyframes md-slide-in-left{
+  0%{opacity:0;transform:translate3d(-48px,0,0);filter:blur(7px)}
+  72%{opacity:1;filter:blur(0)}
+  100%{opacity:1;transform:translate3d(0,0,0);filter:none}
+}
+@keyframes md-lineup-slide{
+  0%{opacity:0;transform:translate3d(var(--md-start-x,44px),0,0) scale(.985);filter:blur(6px)}
+  72%{opacity:1;filter:blur(0)}
+  100%{opacity:1;transform:translate3d(0,0,0) scale(1);filter:none}
+}
+@keyframes md-video-rise{
+  0%{opacity:0;transform:translate3d(0,18px,0);filter:blur(4px)}
+  100%{opacity:1;transform:translate3d(0,0,0);filter:none}
+}
+@keyframes md-poster-reveal{
+  0%{opacity:0;clip-path:inset(0 0 92% 0);filter:blur(12px) brightness(1.7) saturate(1.15)}
+  58%{opacity:1;clip-path:inset(0);filter:blur(0) brightness(1.18) saturate(1.08)}
+  100%{opacity:1;clip-path:inset(0);filter:none}
+}
+@keyframes md-poster-zoom{from{transform:scale(1.1)}to{transform:scale(1)}}
+@keyframes md-poster-glint{
+  0%{left:-42%;opacity:0}
+  18%{opacity:.92}
+  78%{opacity:.58}
+  100%{left:135%;opacity:0}
+}
+.md-motion-ready .md-vao-cho{opacity:0;}
+.md-motion-ready .md-poster.md-vao-cho{animation:none;clip-path:inset(0)}
+.md-motion-ready .md-tieu.md-vao-cho{animation:none}
+.md-motion-ready .md-lineup-desktop.md-vao-cho,
+.md-motion-ready .md-video-intro.md-vao-cho{animation:none;transform:translate3d(var(--md-start-x,0),0,0)}
+.md-motion-ready .md-poster.md-vao-xong{
+  animation:md-poster-reveal 1.55s cubic-bezier(.19,.75,.22,1) both,md-noi 6s ease-in-out 1.55s infinite;
+}
+.md-motion-ready .md-poster.md-vao-xong img{animation:md-poster-zoom 1.85s cubic-bezier(.18,.72,.22,1) both}
+.md-motion-ready .md-poster.md-vao-xong::before{
+  content:'';position:absolute;z-index:3;top:-20%;bottom:-20%;left:-42%;width:30%;pointer-events:none;
+  transform:skewX(-18deg);
+  background:linear-gradient(90deg,transparent,rgba(255,240,190,.08) 20%,rgba(255,248,215,.82) 50%,rgba(255,185,55,.22) 72%,transparent);
+  filter:blur(2px);animation:md-poster-glint 1.55s cubic-bezier(.2,.7,.25,1) .3s both;
+}
+.md-motion-ready .md-tieu.md-vao-xong{animation:md-slide-in-left 1.25s cubic-bezier(.2,.78,.22,1) .12s both}
+.md-motion-ready .md-chips.md-vao-xong{animation:md-slide-in-left .95s cubic-bezier(.2,.78,.22,1) .26s both}
+.md-motion-ready .md-lineup-desktop.md-vao-xong{animation:md-lineup-slide 1.5s cubic-bezier(.2,.78,.22,1) var(--md-delay,.68s) both}
+.md-motion-ready .md-video-intro.md-vao-xong{animation:md-video-rise .85s cubic-bezier(.2,.78,.22,1) 1.05s both}
+@media(prefers-reduced-motion:reduce){
+  .md-motion-ready .md-vao-cho{opacity:1!important;transform:none!important;filter:none!important}
+  .md-motion-ready .md-vao-xong,.md-motion-ready .md-vao-xong img{animation:none!important;opacity:1!important;transform:none!important;filter:none!important;clip-path:none!important}
+  .md-motion-ready .md-poster::before{display:none!important;animation:none!important}
+  .md-poster,.md-poster::after{animation:none!important}
+}
 </style>
 </head>
 <body>
@@ -5622,7 +5676,7 @@ function veMatchDay_(el){
   var lg = function(id){ var x = doiObj(id); return x && x.logoUrl ? esc(driveImg(x.logoUrl)) : ''; };
   var gioChung = ngay.every(function(t){ return bdGioTxt_(t._d) === bdGioTxt_(sap._d); });
 
-  var tranHtml = function(t){
+  var tranHtml = function(t, idx){
     var vd = videoCuaTran_(t.maTran);
     var tenA = String(ten(t.maDoiA) || '?');
     var tenB = String(ten(t.maDoiB) || '?');
@@ -5642,7 +5696,7 @@ function veMatchDay_(el){
       }
     }
     var anhHtml = anhSoDo
-      ? '<div class="md-lineup-desktop"><img src="' + esc(anhSoDo) + '" width="1574" height="999" alt="Sơ đồ đội hình ' + esc(tenA) + ' và ' + esc(tenB) + '" loading="lazy"></div>'
+      ? '<div class="md-lineup-desktop" style="--md-start-x:' + ((idx || 0) % 2 ? '44px' : '-44px') + ';--md-delay:' + (0.68 + (idx || 0) * 0.22).toFixed(2) + 's"><img src="' + esc(anhSoDo) + '" width="1574" height="999" alt="Sơ đồ đội hình ' + esc(tenA) + ' và ' + esc(tenB) + '" loading="lazy"></div>'
       : '';
     var videoHtml = vd
       ? '<div class="md-video-intro"><button type="button" class="btn vang sm" onclick="moLightboxMedia(\'' + vd.maMedia + '\')">▶ Video giới thiệu trận</button></div>'
@@ -5753,6 +5807,26 @@ document.addEventListener('click', function(e){
 /* Gắn đèn sân, hạt vàng, poster nghiêng theo chuột vào khung Match Day vừa vẽ */
 function fxMatchDay_(el){
   var hero = el.querySelector('.md-hero'); if(!hero) return;
+  if (!FX_GIAM) {
+    var vao = Array.prototype.slice.call(hero.querySelectorAll('.md-poster,.md-tieu,.md-chips,.md-lineup-desktop,.md-video-intro'));
+    if (vao.length) {
+      hero.classList.add('md-motion-ready');
+      var hienDan = function(node){ node.classList.remove('md-vao-cho'); node.classList.add('md-vao-xong'); };
+      if ('IntersectionObserver' in window) {
+        var mdRevealObserver = new IntersectionObserver(function(entries){
+          entries.forEach(function(entry){
+            if (entry.isIntersecting) {
+              hienDan(entry.target);
+              mdRevealObserver.unobserve(entry.target);
+            }
+          });
+        }, { threshold: 0.12, rootMargin: '0px 0px -5% 0px' });
+        vao.forEach(function(node){ node.classList.add('md-vao-cho'); mdRevealObserver.observe(node); });
+      } else {
+        vao.forEach(hienDan);
+      }
+    }
+  }
   hero.insertAdjacentHTML('afterbegin','<canvas class="fx-hat"></canvas><span class="md-chum t"></span><span class="md-chum p"></span>');
   fxHat_(hero.querySelector('canvas'), 2);
   var po = hero.querySelector('.md-poster'), img = po && po.querySelector('img');
