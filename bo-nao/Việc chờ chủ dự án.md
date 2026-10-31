@@ -23,7 +23,7 @@ Liên quan: [[Lần dán lên Apps Script]] · [[Quyết định của chủ d�
   
   (Đã chốt: phương án C, chỉ chủ sở hữu xem.) – [[KPI Quy trình sản xuất]]
 
-- App Qoder: gộp vào web KPI hay giữ riêng (nếu giữ thì phải vá 3 lỗi bảo mật cao trước khi giao tài khoản TP)? Số kế hoạch 13.000/tháng lấy từ đâu? 20.557 là tồn đơn hay 1 tháng? Ai nhập trọng số w? – [[KPI Quy trình sản xuất]]
+- (31/10: Qoder chỉ tham khảo; đã làm "Đơn hàng → xưởng".) Việc của chủ dự án: thay bộ cài, cập nhật, mở **Quy trình sản xuất → Đơn hàng → xưởng**, duyệt 29 tên hàng vàng ở "Kiểm phân loại". Câu hỏi: có muốn các bộ phận ghi số "đã qua" vào Sheet đơn đều hơn không? – [[KPI Quy trình sản xuất]]
 
 ## Câu hỏi 22/10
 

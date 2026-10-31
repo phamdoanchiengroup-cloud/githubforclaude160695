@@ -293,6 +293,54 @@ File gốc chỉ để ở scratchpad phiên (`scratchpad/qt/`), **không commit
   - Khoảng 20 họ phôi ngọn và khoảng 25 họ phôi chuôi. Ghép lại được khoảng 45–55 cấu hình BOM ở cấp phôi.
   - Danh mục mã thật: phôi 60 có 107 mã chuôi + 90 mã ngọn; S… 105 mã chuôi; Ngọn (đã taro) 343 mã; UV… 513 mã; HT… 620 mã; CNCTip 119 mã, CNCPhip 98 mã.
 
+## Đơn hàng → xưởng: đã làm 31/10
+- **Chủ dự án chốt:**
+  - Lấy dữ liệu theo cách A: đọc thẳng Sheet đơn, chỉ đọc.
+  - Phân loại theo cách Claude cho là tốt nhất, chú trọng **4 thông số: loại chuôi, loại ngọn, loại tip, loại ren**.
+  - **Ngọn bán lẻ đi thẳng Ngọn Tip → Đóng gói.**
+- **Máy chủ** `tests/quy-trinh/don-hang.gs`, nối bằng `va-don-hang.py` sau `va-quy-trinh.py`:
+  - `layDonHangXuong(token, lamMoi)`:
+    - mở `SpreadsheetApp.openById(DH_SHEET_ID)` đọc 7 tab;
+    - dò cột theo tiêu đề, chỉ đọc tới cột cần dùng;
+    - đọc cột "đã qua" của 7 bộ phận (Phôi / Sơn / Taro / Làm đầu / UV / Hoàn thiện / Tổng ĐG) và cột "Hỏng cần làm bù" đứng ngay sau. **Ô trống = chưa ghi**, khác với số 0;
+    - deadline dd/mm, sửa lại ngày Sheet bị đảo;
+    - nhớ tạm 5 phút trong CacheService, chia mảnh 30.000 ký tự.
+  - `luuPhanLoaiSKU(token, o)`: sửa tay, lưu vào sheet `PhanLoaiSKU`, khóa `K:<tên chuẩn>`. Có "Về tự động". Chỉ chủ sở hữu.
+- **Bộ phân loại** `plPhanLoai_`:
+  1. Loại hàng (gậy / ngọn lẻ / chuôi lẻ / nối / phụ kiện). Ghi chú "chỉ đặt nối", "chỉ gửi chuôi" được ưu tiên.
+  2. Dòng gậy theo bảng `PL_DONG` (~50 dòng, lấy từ THÔNG SỐ GẬY). **Tên gọi dài nhất thắng**; hai dòng hòa nhau thì để đỏ.
+  3. 4 thông số = mặc định của dòng + đọc từ tên và ghi chú đơn:
+     - ren: `_Joint:`, /388/, /10/, /18/, /U/, Q-loc, Radial, PSJ, VQR…;
+     - tip: Nishiki / Zan / Time / da lợn;
+     - đầu (đường kính);
+     - tay: sport → chuôi vách 2.5.
+  - Độ tin cậy: xanh / vàng / đỏ.
+  - **Kết quả trên 392 tên hàng thật:** 363 xanh, 29 vàng, 0 đỏ. Các ca Qoder gán sai đều đúng.
+- **Giao diện:** tab con thứ 5 "Đơn hàng → xưởng" trong `QuyTrinh.html` (~47 KB). Index không đổi kích thước.
+  - Thẻ 9 xưởng, mỗi thẻ có số còn làm và số quá hạn.
+  - Bảng theo nhóm 4 thông số:
+    - Phôi: chuôi / ngọn;
+    - Sơn: chuôi × ren;
+    - Taro: ngọn × ren;
+    - Tip: ngọn × tip × đầu;
+    - CNC: tip;
+    - UV / HT / ĐG: dòng gậy (SKU).
+  - Bấm vào nhóm để xem SKU trong nhóm.
+  - "Kiểm phân loại": dòng đỏ / vàng lên đầu, sửa tay.
+- **Cách tính còn làm** = (đặt − đã qua chặng đó **hoặc chặng sau**) giới hạn trong "còn thiếu", cộng hỏng làm bù. Chuỗi chặng:
+  - chuôi: Phôi → Sơn → UV → HT → ĐG;
+  - ngọn: Phôi → Taro → Tip → HT → ĐG;
+  - ngọn lẻ: Phôi → Taro → Tip → ĐG.
+- **Phát hiện:** với đơn đang mở, Sheet đơn **gần như không ghi số "đã qua" bộ phận** (Phôi 0/446 dòng, Taro 5/411, UV 55/344, Tip / HT / ĐG 0). Vì vậy "còn làm" ≈ "còn thiếu". Web có báo tỷ lệ dòng đơn có ghi số.
+  - Còn thiếu 10.996 sản phẩm (không tính nối / phụ kiện), khoảng 1,2 tháng sản lượng (9.000/tháng).
+- **Kiểm thử:**
+  - `tests/don-hang.js` 43 (`DATA=`, thêm `DH=` để chạy trên toàn bộ đơn thật);
+  - `quy-trinh-web.js` 39;
+  - `tao-ban-xem-thu.js` nhận thêm `DH=`;
+  - `gia-lap-kpi.js` có thêm `openById` (`ctx.__ngoai`).
+- **`bao-mat-ung-dung`:** không có lỗi nặng. Đã sửa 3 lỗi nhỏ: gom tên theo tên chuẩn như máy chủ, khóa `K:`, mảnh cache 30.000 ký tự.
+
 ## Việc tiếp theo
-- Chủ dự án xem bản thật, chỉnh nháp (thứ tự, nhánh) rồi Lưu.
+- Chủ dự án xem bản thật, chỉnh nháp (thứ tự, nhánh) rồi Lưu. Duyệt 29 tên hàng vàng ở "Kiểm phân loại".
+- Đợt 2 đơn hàng: quy việc còn làm ra giờ chuẩn theo định mức → tải từng xưởng theo đơn; bung mã bán thành phẩm 60… / S… / Ngọn…; đề xuất ghi số "đã qua" bộ phận vào Sheet đơn (hoặc lấy từ nhật ký KPI).
 - Giai đoạn 2: gắn máy với công đoạn để tính giới hạn máy; theo dõi tồn bán thành phẩm; mở cho TP/PP xem / sửa xưởng mình (hỏi lại quyền).
