@@ -1,6 +1,6 @@
 # Lần dán lên Apps Script
 
-Nhóm: Chung · Cập nhật 21/10/2026
+Nhóm: Chung · Cập nhật 31/10/2026
 Liên quan: [[Việc chờ chủ dự án]] · [[KPI Tổng quan và cách dựng]] · [[00 Mục lục]]
 
 ## Web KPI – đã dán (theo sheet thật đọc ngày 21/10)
@@ -8,6 +8,7 @@ Liên quan: [[Việc chờ chủ dự án]] · [[KPI Tổng quan và cách dựn
 - Lần dán chung 18/10: chủ dự án đã nhận đủ 5 file + hướng dẫn (HUONG-DAN-CAP-NHAT.md mục "LẦN DÁN CHUNG 18/10"). – [[KPI Bảo mật và vận hành]], [[KPI Âm thanh và giọng Rhino]]
 
 ## Web KPI – chưa dán
+- **Quy trình sản xuất 31/10** (tab mới chỉ chủ sở hữu): Code.gs + Index.html + **file mới QuyTrinh.html**. Phải thay bộ cài clasp một lần bằng zip gửi 31/10, rồi 2-CAP-NHAT.bat. – [[KPI Quy trình sản xuất]]
 - **Ảnh qua jsDelivr 25/10** (nền đăng nhập + mặt bằng sơ đồ lấy từ repo thay Google Drive): Index.html + SoDo.html (clasp). – [[KPI Ảnh web qua jsDelivr]]
 - **Bỏ trừ "không nhắc" khi CN không bị trừ 25/10**: chỉ Code.gs (clasp). – [[KPI Sửa lỗi 21-10 và dữ liệu sheet]]
 - **Bản sửa 21/10** (4 lỗi chủ dự án báo + rà soát đợt 2): chỉ `Code.gs` + `Index.html`; hướng dẫn ở HUONG-DAN-CAP-NHAT.md mục "BẢN SỬA 21/10". Sau khi dán, có thể chạy tay `KIEM_TRA_DU_LIEU` để soát sheet. – [[KPI Sửa lỗi 21-10 và dữ liệu sheet]]

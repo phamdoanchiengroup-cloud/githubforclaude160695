@@ -25,7 +25,7 @@ Ghi chú này để phiên Claude Code mới nắm bối cảnh ngay. Đọc `CL
 - [[KPI Quy trình sản xuất]]: tab mới gộp Kỹ năng.
   - Đã chốt phương án C, chỉ chủ sở hữu xem.
   - Đã đọc 2 file chủ dự án gửi (danh mục mã hàng, trạng thái đơn hàng). Tiền tố mã cho biết chặng BTP; hàng còn thiếu ~12.000, giao ~250/ngày.
-  - Chưa code. Chờ chủ dự án xác nhận bảng tiền tố và các con số còn thiếu.
+  - 31/10 đã làm bản đầu (commit "Tab Quy trình sản xuất…"), chưa dán. Bộ cài clasp mới đọc `danh-sach-file.txt`, đã gửi zip.
 
 ## Còn chờ / gợi ý
 - 25/10: chủ dự án trả lời 4 câu (xem [[Quyết định của chủ dự án]] mục "KPI và định mức (25/10)"); đã sửa khoản "không nhắc" (chỉ Code.gs, chưa dán). Còn chờ: chủ dự án tự sửa Cân Phôi về 180 trên web; nội dung video giới thiệu.

@@ -3,7 +3,7 @@
 Nhóm: KPI · Cập nhật 31/10/2026
 Liên quan: [[KPI Kỹ năng]] · [[KPI Phân tích định mức]] · [[Quyết định của chủ dự án]] · [[Việc chờ chủ dự án]] · [[Liên kết và công cụ]]
 
-Trạng thái: **đang thiết kế, chưa viết code**.
+Trạng thái: **bản đầu đã làm 31/10** (chưa dán lên web thật).
 
 ## Chủ dự án yêu cầu (25/10)
 - Thêm tab "Quy trình sản xuất" và gộp tab Kỹ năng vào đó.
@@ -161,6 +161,42 @@ File gốc chỉ để ở scratchpad phiên (`scratchpad/qt/`), **không commit
   - Lưu có kiểm từng ô, chặn công thức (ô bắt đầu bằng `=`), dùng `LockService`, ghi nhật ký.
 - Bộ cài clasp đẩy danh sách file cố định (`chung.ps1` nằm trên máy chủ dự án). Thêm file mới thì phải gửi lại bộ cài **một lần**. Định sửa để bộ cài tự đọc danh sách file từ repo, sau này thêm file không phải gửi lại.
 
+## Đã làm 31/10: bản đầu (chủ dự án chọn B + "do your best")
+- **Kiến trúc:** mảnh tải sau `kpi-app/QuyTrinh.html`, nguồn ở `tests/quy-trinh/quy-trinh-web.html`, được chép ra bởi `tests/quy-trinh/va-quy-trinh-web.py` (mục 36 của va-index).
+  - Index chỉ thêm tab `qt` (nhóm Sản xuất, nằm trong `tabChiOwner`), hàm `vQT()`, `MANH_VER.QuyTrinh`. Index ~825 KB, tăng ~1 KB.
+  - Mảnh `QuyTrinh.html` ~30 KB, chỉ tải khi chủ sở hữu mở tab.
+- **Máy chủ** `tests/quy-trinh/quy-trinh.gs` (nối bằng `va-quy-trinh.py`, kèm `MANH_GD.QuyTrinh = ['OWNER']`):
+  - `layQuyTrinh(token, soNgay)` trả về:
+    - quy trình (đã lưu hoặc nháp `QT_NHAP`), luồng xưởng (`QT_XUONG_NHAP`), cài đặt;
+    - thống kê nhật ký trong kỳ (sản lượng + người làm cho từng công đoạn, bỏ dòng "Từ chối");
+    - nhân sự đang làm (không gửi CCCD / điện thoại), máy theo xưởng, kỹ năng cấp ≥ 2 còn hạn.
+  - `luuQuyTrinh(token, o)`: khóa ghi, kiểm từng ô, chặn công đoạn trước khác xưởng, chặn vòng lặp (`qtCoVong_`), chặn công thức (`dongAnToan_`). Ghi đè sheet `QuyTrinh` (tự tạo, cột Loai CD / XUONG / CAIDAT) và ghi nhật ký thao tác.
+  - `qtCanh_`: suy công đoạn trước từ nhánh + bước. Trình duyệt dùng bản giống hệt `qtCanh`. Mọi hàm kiểm `me.laOwner`.
+- **Nhánh:** Chung, Ngọn, Chuôi, Gậy 1 khúc, Nối, Típ, Phíp, POM, Phụ kiện, Đơn lẻ, Làm lại / sửa, Hỗ trợ, Chưa xếp.
+  - Ngọn / Chuôi / Gậy 1 khúc tách ra từ "Chung" và gộp lại ở bước "Chung" sau.
+  - Làm lại và Hỗ trợ không nằm trên dòng chảy nhưng vẫn tính tải.
+- **Công thức (trình duyệt `qtTinh`):**
+  - Giờ chuẩn = sản lượng ÷ định mức (quy mọi đơn vị về giờ-người).
+  - CN cần = giờ chuẩn/ngày × mục tiêu ÷ (giờ có mặt 8 × hiệu suất 85%).
+  - CN có = nhân sự Đang làm, trừ Trưởng / Phó phòng (tổ trưởng vẫn tính).
+  - Tải = cần ÷ có. Làm tối đa = mục tiêu ÷ tải. LBR = Σ tải ÷ (số xưởng × tải max).
+  - Công đoạn: tải = cần ÷ số người biết làm (đã làm trong kỳ hoặc có kỹ năng cấp 2+). Có cờ "1 người" / "2 người".
+  - Dùng cơ cấu hàng thực tế nên **không cần khai hệ số khúc / gậy**.
+- **Phát hiện:** cột GioLam trong nhật ký không phải giờ thật (chỉ Phôi Thô ghi ~8 giờ/người-ngày; các xưởng khác ~1,4–2,3). Vì vậy tính theo giờ chuẩn, không theo giờ ghi.
+- **Số liệu thật 25/9–24/10:**
+  - Tải các xưởng 62–86%. Sơn cao nhất (86%), Phôi Carbon 81%, Ngọn Tip 81%.
+  - Theo định mức, nhà máy làm được tối đa ~116% sản lượng hiện nay; cân bằng giữa xưởng ~88%.
+  - Kết luận: **không xưởng nào thiếu người theo định mức**. Hàng còn thiếu tăng do máy / mẻ, chờ bán thành phẩm, làm lại, hoặc giờ không ghi nhật ký, chứ không do thiếu người.
+- **Giao diện:** 4 khung nhìn.
+  - **Toàn nhà máy:** câu kết luận, luồng bán thành phẩm, bảng cân bằng.
+  - **Từng xưởng:** sơ đồ SVG dọc tự xếp tầng (viền đỏ = nút thắt hoặc chỉ 1 người biết) và bảng công đoạn.
+  - **Con người:** quy tắc 3 người, kèm tên người biết làm.
+  - **Sửa quy trình:** chọn nhánh / bước, "Chọn tay" công đoạn trước, chặn vòng lặp; sửa luồng giữa xưởng; thanh Lưu dính đáy, trên điện thoại nằm trên thanh menu.
+  - Ô cài đặt: kỳ 14/30/60/90 ngày, mục tiêu %, giờ, hiệu suất.
+- **Tab Kỹ năng vẫn giữ** cho các vai trò khác. Phần "gộp" giai đoạn này = khung nhìn "Con người" đọc dữ liệu kỹ năng. Gộp hẳn khi mở tab cho TP/PP.
+- **Bộ cài clasp:** `cap-nhat.ps1` đọc `kpi-app/danh-sach-file.txt` trên GitHub (lỗi thì dùng danh sách trong `chung.ps1`, đã thêm QuyTrinh). Phải gửi zip mới **một lần** (đã gửi 31/10).
+- **Kiểm thử:** `tests/quy-trinh.js` 45 (cần `DATA=`), `tests/quy-trinh-web.js` 31 (`F=` bản xem thử; `CHUP=` để chụp ảnh). `tao-ban-xem-thu.js` đã nạp thêm QuyTrinh.html.
+
 ## Việc tiếp theo
-- Chờ chủ dự án xác nhận bảng tiền tố, và trả lời các câu hỏi còn lại: hệ số khúc, giờ ca, số máy, ai sửa quy trình.
-- Sau đó Claude soạn quy trình nháp, rồi bản xem thử tab (chỉ tài khoản chủ sở hữu).
+- Chủ dự án xem bản thật, chỉnh nháp (thứ tự, nhánh) rồi Lưu.
+- Giai đoạn 2: gắn máy với công đoạn để tính giới hạn máy; theo dõi tồn bán thành phẩm; mở cho TP/PP xem / sửa xưởng mình (hỏi lại quyền).
