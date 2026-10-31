@@ -253,6 +253,32 @@ File gốc chỉ để ở scratchpad phiên (`scratchpad/qt/`), **không commit
   - 20.557 là tồn đơn hay đơn 1 tháng.
   - Ai nhập w.
 
+## Phân loại cấu hình gậy cho SKU (31/10, đang làm rõ)
+- **Chủ dự án chốt:** app Qoder chỉ làm tạm khi Claude hết token, **không sửa gì trên đó**. Lấy phần tốt nhất đưa vào web KPI, ưu tiên **phân loại cấu hình gậy cho SKU**.
+- **Ý tưởng của chủ dự án:**
+  - Phôi Carbon, Phôi Thô, Sơn, CNC, Ngọn Taro, Ngọn Tip làm việc trên **mã bán thành phẩm**.
+  - In UV, Hoàn thiện, Đóng gói làm việc trên **SKU**.
+  - Phân loại cấu hình → khi nhận đơn thì chia việc về từng xưởng.
+- **Sản lượng thật ~9.000 sản phẩm/tháng** (không tính tay nối). Kế hoạch 30.000/tháng của Qoder là sai.
+- **Sheet "Trạng thái đơn hàng"** (của tài khoản khác, đã chia sẻ cho chủ dự án, có quyền sửa): id `1FKrF_wyQcl0SpDhvoRBg7VoaBzgzhSJ7zZ5U2A5ReMU`.
+  - Script theo dõi đơn gắn với Sheet này (project `19Do2R…`): đọc 7 tab, chụp `_SNAPSHOT` lúc 4h, gửi email 8h. Chủ dự án đã gửi mã nguồn.
+- **Rà luật phân loại của Qoder** (28 regex → 31 cấu hình, chạy trên 393 dòng hàng):
+  - 3 dòng không khớp luật nào; 170 dòng khớp nhiều luật, luật đứng trước thắng.
+  - Gán sai:
+    - Evo Luna "Malachite Eclipse" → Eclipse; đúng là EVO4.
+    - Evo Meg → EVO1/2; đúng là EVO5. Evo Crown → EVO1/2; đúng là EVO2 (CRO).
+    - "NGỌN NHẢY HORNET" (chỉ ngọn) → gậy nhảy đủ bộ.
+    - RHI2-C30PT (ngọn carbon 30") → Carom.
+    - Gậy TK (Aplus SAM TK-PRO) → EVO.
+    - Ngọn lẻ bị gán cứng 12.5 ren 3/8-8.
+    - Bia Hơi → RH-25; theo Thông số gậy thì cấu hình giống Retro.
+- **Tư vấn `quan-ly-van-hanh`:** 3 lớp, lưu bằng bảng trong Sheet, không viết cứng trong code.
+  - **A:** loại hàng (gậy / ngọn lẻ / chuôi lẻ / phụ kiện) + bảng bí danh dòng / mẫu. Bí danh dài nhất thắng; hòa thì vào hàng chờ duyệt.
+  - **B:** thuộc tính đọc từ tên (ren, đầu, tay, vật liệu) ưu tiên hơn mặc định của dòng.
+  - **C:** bung BOM ra mã bán thành phẩm theo Thông số gậy.
+  - Độ tin cậy xanh / vàng / đỏ; hàng chờ duyệt; học từ lần duyệt; bộ kiểm thử 393 dòng.
+  - Giai đoạn 1: chỉ đọc; báo cáo "còn thiếu theo xưởng × dòng gậy × tuần deadline".
+
 ## Việc tiếp theo
 - Chủ dự án xem bản thật, chỉnh nháp (thứ tự, nhánh) rồi Lưu.
 - Giai đoạn 2: gắn máy với công đoạn để tính giới hạn máy; theo dõi tồn bán thành phẩm; mở cho TP/PP xem / sửa xưởng mình (hỏi lại quyền).

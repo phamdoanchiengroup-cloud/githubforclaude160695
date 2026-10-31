@@ -64,6 +64,8 @@ Những điều đã chốt. Đừng đề xuất lại những gì ghi "không 
 ## Quy trình sản xuất (31/10)
 - Tab "Quy trình sản xuất" (gộp Kỹ năng): làm theo **phương án C**. Giai đoạn 1 cân bằng 9 xưởng; Claude soạn quy trình nháp, TP/PP chỉ sửa. **Tab chỉ mở cho tài khoản chủ sở hữu** cho tới khi chỉnh xong. Kiến trúc **B**: mảnh tải sau `QuyTrinh.html` trong web hiện tại (không làm web riêng). Câu hỏi giờ ca / số máy / ai sửa: chủ dự án thấy khó → Claude tự lấy (giờ = ô chỉnh trên màn hình, máy từ sheet MayMoc, quyền = chỉ chủ sở hữu). – [[KPI Quy trình sản xuất]]
 
+- App Qoder (31/10): chỉ làm tạm khi Claude hết token, **không sửa gì trên đó**; lấy phần tốt nhất đưa vào web KPI, ưu tiên phân loại cấu hình gậy cho SKU. Sản lượng thật ~9.000 sản phẩm/tháng (không tính tay nối). – [[KPI Quy trình sản xuất]]
+
 ## KPI và định mức (25/10)
 - Bỏ khoản "Không nhắc CN nhập" của TP/PP với lượt phạt trễ không có vi phạm NHAPTRE (phạt trước 15/09): chỉ trừ khi công nhân thật sự bị trừ. – [[KPI Sửa lỗi 21-10 và dữ liệu sheet]]
 - Cân Phôi – Phân Loại Phôi trả về 180 (chủ dự án tự sửa trên web). **Không giới hạn** mức nâng định mức mỗi lần (bỏ đề xuất 10%/lần). – [[KPI Phân tích định mức]]

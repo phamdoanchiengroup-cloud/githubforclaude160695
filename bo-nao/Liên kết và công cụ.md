@@ -25,6 +25,7 @@ Một chỗ gom mọi đường dẫn, mã file, kết nối và công cụ phi�
   - `create_file` cần base64 trong lời gọi, nên không tải được ảnh vài trăm KB: gửi ảnh cho chủ dự án tự kéo vào.
   - `download_file_content` chỉ tải file **dưới 10 MB**. File lớn hơn thì dùng `read_file_content` để đọc phần chữ (31/10, file 36 MB đọc được).
   - Chủ dự án tải lên Claude tối đa 30 MB; file to hơn thì chủ dự án đưa lên Drive rồi gửi link.
+- **Sheet "Trạng thái đơn hàng"** (theo dõi đơn, của tài khoản khác chia sẻ cho chủ dự án): `1FKrF_wyQcl0SpDhvoRBg7VoaBzgzhSJ7zZ5U2A5ReMU`. Script gắn kèm (project `19Do2R9xW9GjJZ_PHTFhKLDJvvasZTifEcg3MUP4EPQj9fBZkW64YB3Oq`) không mở được qua Drive; chủ dự án đã gửi mã nguồn.
 - **File dữ liệu cho [[KPI Quy trình sản xuất]]** (31/10): "THÔNG SỐ GẬY.xlsx" `1wM3DydKenFuPo4PWTirgr2WzE15yBNqB`. Hai file danh mục mã và trạng thái đơn hàng được tải lên trực tiếp vào phiên, không có trên Drive.
 - Thư mục Drive "Báo cáo KPI hằng tháng" do web tự tạo khi chốt tháng: xem [[KPI Báo cáo tháng]].
 
