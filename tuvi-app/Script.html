@@ -27,7 +27,7 @@
     });
   }
   /** Mã phiên bản giao diện – phải trùng với Index.html (meta tcc-ban) và Styles.html (--tcc-ban) */
-  var BAN_GIAO_DIEN = '2026.10.31.3';
+  var BAN_GIAO_DIEN = '2026.10.31.4';
   /* 25/10: ảnh ngũ hành + 12 con giáp + bìa PDF mới của chủ dự án (tuvi-app/anh/*.webp) qua jsDelivr, ghim theo mã lần lưu */
   var TCC_ANH_CDN = 'https://cdn.jsdelivr.net/gh/phamdoanchiengroup-cloud/githubforclaude160695@19203fbd20433f395336269a411f8aebcf990086/tuvi-app/anh/';
   var ANH_HANH = { 'Mộc': 'NguHanhMoc', 'Hỏa': 'NguHanhHoa', 'Thổ': 'NguHanhTho', 'Kim': 'NguHanhKim', 'Thủy': 'NguHanhThuy' };
@@ -1366,14 +1366,18 @@
     PT.dang = key;
     pg.innerHTML = '<div class="panel section muted">Đang an phi hóa 12 cung…</div>';
     call('phiTinhLuan', [state.input], function (d) {
+      if (PT.dang !== key) return;                                   // phản hồi của lá số cũ
       PT.dang = false; PT.key = key; PT.data = d;
       if (document.body.getAttribute('data-tab') === 'pt' && JSON.stringify(state.input) === key) { pg.innerHTML = ptHtml(d); dungMucLuc(); }
-    }, function (e) { PT.dang = false; pg.innerHTML = '<div class="panel section muted">' + esc((e && e.message) || String(e)) + '</div>'; });
+    }, function (e) {
+      if (PT.dang !== key) return; PT.dang = false;
+      if (JSON.stringify(state.input) === key) pg.innerHTML = '<div class="panel section muted">' + esc((e && e.message) || String(e)) + '</div>';
+    });
   }
   function ptHtml(D) {
     var MAU_H = { 'Lộc': 'pt-loc', 'Quyền': 'pt-quyen', 'Khoa': 'pt-khoa', 'Kỵ': 'pt-ky' };
     function deList(ds) { return ds && ds.length ? '<ul class="pt-de">' + ds.map(function (x) { return '<li>' + esc(x) + '</li>'; }).join('') + '</ul>' : ''; }
-    function canCu(ds, mo) { return ds && ds.length ? '<details class="pt-cc"' + (mo ? ' open' : '') + '><summary>Căn cứ Phi Tinh</summary><ul>' + ds.filter(Boolean).map(function (x) { return '<li>' + esc(x) + '</li>'; }).join('') + '</ul></details>' : ''; }
+    function canCu(ds, mo) { ds = (ds || []).filter(Boolean); return ds.length ? '<details class="pt-cc"' + (mo ? ' open' : '') + '><summary>Căn cứ Phi Tinh</summary><ul>' + ds.map(function (x) { return '<li>' + esc(x) + '</li>'; }).join('') + '</ul></details>' : ''; }
     var B = D.coBan || {}, g = D.gioiThieu || {};
     var phiCua = {}; (D.cung || []).forEach(function (c) { phiCua[c.cung] = c; });
     var tuHoaCua = {}; (D.tuHoa || []).forEach(function (t) { (tuHoaCua[t.cung] = tuHoaCua[t.cung] || []).push(t); });

@@ -13,8 +13,11 @@ kt(T[8][2] === 'Tả Phù' && T[4][2] === 'Hữu Bật' && T[6].join() === 'Thá
 const LAI = [10, 9, 8, 7, 6, 5, 4, 3, 2, 11];   // Giáp→Tuất … Nhâm→Dần, Quý→Hợi
 const SAO = new Set(); T.forEach(r => r.forEach(s => SAO.add(s)));
 ['Thiên Phủ', 'Thiên Tướng', 'Thất Sát', 'Thiên Khôi', 'Thiên Việt', 'Lộc Tồn', 'Kình Dương', 'Đà La', 'Hỏa Tinh', 'Linh Tinh', 'Địa Không', 'Địa Kiếp'].forEach(s => SAO.add(s));
-const TU_CAM = ['Hóa Kỵ', 'Hóa Lộc', 'Tuyệt mệnh'];
+const TU_CAM = ['Hóa ', 'Kỵ', 'Lai Nhân', 'tự hóa', 'Tứ Hóa', ' phi ', 'Tuyệt mệnh', '{', 'undefined', 'null'];
 let soMau = 0;
+// Năm chưa vào đại vận đầu tiên: lưu niên không được có Phản cung (lỗi chuyên gia rà mã tìm ra 31/10)
+{ const tv = ctx.tuviLapLaSo({ name: 'Nho', gender: 'nam', calendar: 'duong', day: 27, month: 3, year: 2024, hour: 10, minute: 0, viewYear: 2026 }), R = ctx.ptLap_(tv, 2026, 3);
+  kt(R.luuNien.every(l => !l.mau.some(m => m.k === 'phanCung')), 'trẻ chưa vào đại vận: không Phản cung ở lưu niên'); }
 for (let i = 0; i < 250; i++) {
   const inp = { name: 'T' + i, gender: i % 2 ? 'nu' : 'nam', calendar: 'duong', day: 1 + (i * 11) % 28, month: 1 + (i * 5) % 12, year: 1940 + (i * 7) % 80, hour: (i * 3) % 24, minute: 0, viewYear: 2026 };
   const tv = ctx.tuviLapLaSo(inp), N = ctx.ptNguyenCuc_(tv), id = '#' + i + ' ';
@@ -32,9 +35,12 @@ for (let i = 0; i < 250; i++) {
   kt(R.luuNien.every(l => l.can === ctx.CAN[((l.nam + 6) % 10 + 10) % 10]), id + 'can lưu niên = can năm');
   soMau += R.mau.length;
   // Văn dễ hiểu: không tên sao, không thuật ngữ Hóa…, không "Tuyệt mệnh"
-  const deAll = [].concat(R.coBan.laiNhan ? [R.coBan.laiNhan.de] : [], ...R.cung.map(c => c.de), ...R.mau.map(m => m.de), ...R.daiVan.map(d => d.de.concat(d.mau.map(m => m.de))), ...R.luuNien.map(d => d.de));
+  const deAll = [].concat(R.coBan.laiNhan ? [R.coBan.laiNhan.de] : [], ...R.cung.map(c => c.de), ...R.mau.map(m => m.de), ...R.daiVan.map(d => d.de.concat(d.mau.map(m => m.de))), ...R.luuNien.map(d => d.de.concat(d.mau.map(m => m.de))), R.gioiThieu.de || '');
   deAll.forEach(x => { SAO.forEach(s => kt(x.indexOf(s) < 0, id + 'câu dễ hiểu nêu tên sao ' + s + ': ' + x.slice(0, 60))); TU_CAM.forEach(w => kt(x.indexOf(w) < 0, id + 'câu dễ hiểu có "' + w + '"')); });
   kt(JSON.stringify(R).indexOf('Tuyệt mệnh') < 0, id + 'không hiển thị Tuyệt mệnh Kỵ');
+  [].concat(...R.cung.map(c => c.ky), ...R.mau.map(m => m.ky), ...R.daiVan.map(d => d.ky), ...R.luuNien.map(d => d.ky)).forEach(x => kt(!/\{|undefined/.test(x), id + 'căn cứ còn chỗ trống: ' + x.slice(0, 60)));
+  kt(R.luuNien.every(l => !l.mau.some(m => m.k === 'phanCung')), id + 'phản cung chỉ ở đại vận');
+  kt(R.luuNien.every(l => l.ky.every(x => x.indexOf('của vận') < 0)), id + 'lưu niên ghi "của năm"');
 }
 kt(soMau > 250, 'các mẫu Kỵ có tên xuất hiện (' + soMau + ')');
 // Chỉ chủ sở hữu

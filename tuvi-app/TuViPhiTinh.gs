@@ -1088,30 +1088,33 @@ function ptCung_(N, i) {
 }
 
 /** Một tầng vận (đại vận hoặc lưu niên): Tứ Hóa của tầng đọc chồng lên nguyên cục */
-function ptTang_(N, tv, menhTang, canTang, dvMenh) {
-  var hoa = ptHoa_(tv, canTang), ten = N.ten, snKy = N.sn[3].toi, snLoc = N.sn[0].toi, van = PT_VAN || {};
+function ptTang_(N, tv, menhTang, canTang, dvMenh, laDaiVan) {
+  var hoa = ptHoa_(tv, canTang), ten = N.ten, snKy = N.sn[3].toi, snLoc = N.sn[0].toi, snQuyen = N.sn[1].toi, van = PT_VAN || {}, nhan = laDaiVan ? 'vận' : 'năm';
+  function vv(x) { return laDaiVan || !x ? x : x.replace(/của vận/g, 'của năm').replace(/Của vận/g, 'Của năm'); }   // văn đại vận dùng lại cho lưu niên
   var ky = [], de = [], diem = 0, co = {};
   hoa.forEach(function (f) {
     if (f.toi == null) return;
     var nc = ten[f.toi], tang = ptTenTu_(menhTang, f.toi), dvTen = dvMenh != null ? ptTenTu_(dvMenh, f.toi) : null;
-    ky.push('Hóa ' + PT_H[f.h] + ' (' + f.sao + ') nhập ' + nc + ' nguyên cục' + (tang !== nc ? ' – là ' + tang + ' của vận' : '') + (dvTen ? ' – ' + dvTen + ' của đại vận' : '') + '.');
+    ky.push('Hóa ' + PT_H[f.h] + ' (' + f.sao + ') nhập ' + nc + ' nguyên cục' + (tang !== nc ? ' – là ' + tang + ' của ' + nhan : '') + (dvTen ? ' – ' + dvTen + ' của đại vận' : '') + '.');
     if (f.h === 0) {
-      var v = (van.dvLoc || {})[nc] || {}; if (v.ky) ky.push(v.ky); if (v.de) de.push(v.de);
+      var v = (van.dvLoc || {})[nc] || {}; if (v.ky) ky.push(vv(v.ky)); if (v.de) de.push(v.de);
       diem += N.tamHop.indexOf(f.toi) >= 0 ? 1 : 0.5;
-      if (snKy === f.toi) { co.trungDiepCat = { A: nc }; diem += 0.5; }
+      if (snKy === f.toi) { ky.push('Lộc của ' + nhan + ' rơi đúng chỗ có Kỵ năm sinh (' + nc + ') – làm dịu Kỵ.'); diem += 0.5; }
     }
+    if ((f.h === 0 || f.h === 1) && (f.toi === snLoc || f.toi === snQuyen)) { co.trungDiepCat = { A: nc }; diem += 0.5; }   // tốt chồng tốt
     if (f.h === 3) {
       var x = ptD_(f.toi), vk = (van.dvKy || {})[nc] || {}, vx = (van.dvKyXung || {})[ten[x]] || {};
-      ky.push('Hóa Kỵ của vận xung ' + ten[x] + ' nguyên cục.'); if (vk.ky) ky.push(vk.ky); if (vx.ky) ky.push(vx.ky);
+      ky.push('Hóa Kỵ của ' + nhan + ' xung ' + ten[x] + ' nguyên cục.'); if (vk.ky) ky.push(vv(vk.ky)); if (vx.ky) ky.push(vv(vx.ky));
       if (vk.de) de.push(vk.de); if (vx.de) de.push(vx.de);
       if (N.tamHop.indexOf(f.toi) >= 0) co.kyNhapTamHop = { A: nc };
-      if (N.tamHop.indexOf(x) >= 0) { co.kyXungTamHop = { A: ten[x] }; diem -= 1; }
+      var phan = laDaiVan && N.tamHop.indexOf(menhTang) >= 0 && ['Phu Thê', 'Thiên Di', 'Phúc Đức'].indexOf(nc) >= 0;
+      if (N.tamHop.indexOf(x) >= 0) { co.kyXungTamHop = { A: ten[x] }; if (!phan) diem -= 1; }   // phản cung đã tính sức nặng – không trừ hai lần
       if (snKy != null && (f.toi === snKy || f.toi === ptD_(snKy))) { co.songKy = { A: nc }; diem -= 1; }
       if (snLoc === f.toi) { co.trungDiepKy = { A: nc }; diem -= 0.5; }
-      if (dvMenh == null && N.tamHop.indexOf(menhTang) >= 0 && ['Phu Thê', 'Thiên Di', 'Phúc Đức'].indexOf(nc) >= 0) { co.phanCung = { A: nc, B: ten[x] }; diem -= 1; }
+      if (phan) { co.phanCung = { A: nc, B: ten[x] }; diem -= 1.5; }
     }
   });
-  var mau = Object.keys(co).map(function (k) { var m = (van.mau || {})[k] || {}; return { k: k, ten: m.ten || k, ky: ptThay_(m.ky, { A: co[k].A, B: co[k].B }), de: ptThay_(m.de, { A: ptLv_(co[k].A || ''), B: ptLv_(co[k].B || '') }) }; });
+  var mau = Object.keys(co).map(function (k) { var m = (van.mau || {})[k] || {}; return { k: k, ten: m.ten || k, ky: vv(ptThay_(m.ky, { A: co[k].A, B: co[k].B })), de: ptThay_(m.de, { A: ptLv_(co[k].A || ''), B: ptLv_(co[k].B || '') }) }; });
   var gop = {}; de = de.filter(function (x) { if (gop[x]) return false; gop[x] = 1; return true; });
   var muc = diem >= 1.5 ? 'Thuận' : diem >= 0 ? 'Bình' : diem >= -1.5 ? 'Cần giữ nhịp' : 'Nên thận trọng';
   return { menh: ten[menhTang], chi: CHI[menhTang], can: CAN[canTang], hoa: hoa.map(function (f) { return { h: PT_H[f.h], sao: f.sao, cung: f.toi == null ? null : ten[f.toi] }; }), ky: ky, de: de, mau: mau, diem: diem, muc: muc };
@@ -1128,7 +1131,7 @@ function ptLap_(tv, vy, soNam) {
   var lnV = N.ln >= 0 ? ((van.laiNhan || {})[ten[N.ln]] || {}) : {};
   var dv = [];
   for (var i = 0; i < 12; i++) if (P[i].daiHan != null) {
-    var t = ptTang_(N, tv, i, P[i].can, null);
+    var t = ptTang_(N, tv, i, P[i].can, null, true);
     t.tuoi = P[i].daiHan; t.den = P[i].daiHan + 9; t.nam = I.lunar.year + P[i].daiHan - 1; t.nay = I.tuoi >= t.tuoi && I.tuoi <= t.den;
     dv.push(t);
   }
@@ -1138,7 +1141,7 @@ function ptLap_(tv, vy, soNam) {
     var tuoi = y - I.lunar.year + 1, dvO = -1;
     for (var k = 0; k < 12; k++) if (P[k].daiHan != null && tuoi >= P[k].daiHan && tuoi <= P[k].daiHan + 9) dvO = k;
     var m = ((y + 8) % 12 + 12) % 12, c = ((y + 6) % 10 + 10) % 10;
-    var tl = ptTang_(N, tv, m, c, dvO >= 0 ? dvO : null);
+    var tl = ptTang_(N, tv, m, c, dvO >= 0 ? dvO : null, false);
     tl.nam = y; tl.tuoi = tuoi; tl.dvMenh = dvO >= 0 ? ten[dvO] : null;
     ln.push(tl);
   }

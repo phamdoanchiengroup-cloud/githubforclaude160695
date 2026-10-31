@@ -20,6 +20,13 @@ Chủ dự án thử bài luận "Bắc phái" (Tứ Hóa Phi Tinh) của tuvi.c
 - **Giao diện**: tab "✶ Phi Tinh" (`data-tab="pt"`, ẩn với người không phải chủ), `vePt`/`ptHtml`: bảng can – hóa năm sinh – tự hóa 12 cung, Tổng quan (Lai Nhân + mẫu Kỵ), Luận 12 cung, Đại vận 12 vận, Lưu niên 5 năm; mỗi mục lời dễ hiểu + "Căn cứ Phi Tinh".
 - Kiểm thử `tests/phi-tinh.js` 784.984 kiểm tra (bảng Tứ Hóa, can cung Ngũ Hổ Độn, Lai Nhân, phi hóa đúng sao/vị trí, 12 cung/12 vận/5 năm, văn dễ hiểu không tên sao – không "Hóa Kỵ", không Tuyệt mệnh, chặn người không phải chủ).
 
+## Rà chuyên gia code-reviewer → mã 2026.10.31.4
+- "Trùng điệp cát" nay đúng nghĩa: Lộc/Quyền của vận rơi vào chỗ có Lộc/Quyền năm sinh (trước bắt nhầm Lộc gặp Kỵ năm sinh – nay chỉ ghi "làm dịu Kỵ" ở căn cứ).
+- Phản cung Kỵ chỉ xét ở đại vận (tham số `laDaiVan`; trước lọt vào lưu niên của trẻ chưa vào vận đầu); không trừ điểm hai lần khi vừa phản cung vừa xung tam hợp.
+- Lưu niên ghi "của năm"; `vePt` bỏ qua phản hồi của lá số cũ; khung căn cứ trống không hiện.
+- Kiểm thử mở rộng: cấm thêm "Hóa ", "Kỵ", "Lai Nhân", "tự hóa", " phi ", chỗ trống "{", "undefined" trong văn dễ hiểu; quét cả lưu niên và giới thiệu (1.114.018 kiểm tra).
+- Giữ định nghĩa "hướng tâm" theo nguồn nghiên cứu (cung A hóa sao ở cung đối diện → A có tự hóa hướng tâm).
+
 ## Còn ngỏ
 - Chủ dự án đọc thử, so với cảm nhận từ bài cohoc/NotebookLM; rồi quyết định mở cho khách (giá xu, phần nào miễn phí), có đưa vào PDF không.
 - Có thể thêm: lưu nguyệt (Mệnh tháng theo Đẩu quân), lựa chọn biến thể can Canh, đọc lục thân theo chuyển cung sâu hơn.
