@@ -1363,6 +1363,7 @@ exec(io.open(os.path.join(os.path.dirname(__file__), 'ky-nang', 'va-ky-nang.py')
 exec(io.open(os.path.join(os.path.dirname(__file__), 'khong-nhac', 'va-khong-nhac.py'), encoding='utf-8').read())
 # ---------------------------------------------------------------- Quy trình sản xuất (31/10): quy trình công đoạn + cân bằng xưởng, chỉ chủ sở hữu
 exec(io.open(os.path.join(os.path.dirname(__file__), 'quy-trinh', 'va-quy-trinh.py'), encoding='utf-8').read())
+exec(io.open(os.path.join(os.path.dirname(__file__), 'quy-trinh', 'va-don-hang.py'), encoding='utf-8').read())   # đơn hàng → xưởng (31/10)
 
 io.open(RA, 'w', encoding='utf-8').write(s)
 print('OK ->', os.path.abspath(RA))

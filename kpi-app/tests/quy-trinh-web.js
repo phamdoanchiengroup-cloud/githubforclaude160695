@@ -63,6 +63,19 @@ const vao = async (p, tk) => { await p.goto(F); await p.waitForSelector('#xtGoiY
     await p.click('.qt-luu button:has-text("Lưu quy trình")'); await p.waitForTimeout(2500);
     s = await p.evaluate(() => [QT.nhap, (QTD.find(q => q.Ma === 'VS-LAP-POM') || {}).Buoc, __MAY_CHU.doc_('QuyTrinh').length, QTDoi]);
     ok(s[0] === false && s[1] === 8 && s[2] > 190 && !s[3], 'Lưu: ghi sheet QuyTrinh, tải lại không còn nháp', s);
+    // Đơn hàng → xưởng (31/10) – bản xem thử dựng với DH=<các tab Sheet đơn>
+    if (await p.evaluate(() => !!__MAY_CHU.doc_('KHO').length)) {
+      await p.click('.qt-tabs button:has-text("Đơn hàng")'); await p.waitForSelector('.dh-the', { timeout: 30000 });
+      s = await p.evaluate(() => { const K = dhTinh(); return [document.querySelectorAll('.dh-the button').length, K.tongThieu, K.X.SON.tong, K.X.NGONTARO.tong, K.X.PHOICB.chuoi + K.X.PHOICB.ngon === K.X.PHOICB.tong, document.querySelectorAll('.card table tbody tr').length]; });
+      ok(s[0] === 9 && s[1] > 5000 && s[2] > 0 && s[3] > 0 && s[4] && s[5] > 3, 'Đơn hàng → xưởng: 9 xưởng, việc còn lại theo 4 thông số', s);
+      s = await p.evaluate(() => { const o = { thieu: 10, sl: 30, qua: { UV: 25 }, hong: { SON: 2 } }; return [dhCon(o, 'PHOI', dhChuoi('GAY', 'chuoi')), dhCon(o, 'SON', dhChuoi('GAY', 'chuoi')), dhCon(o, 'TARO', dhChuoi('GAY', 'ngon')), dhCon({ thieu: 4, sl: 4, qua: {} }, 'DG', dhChuoi('NGON', 'ngon'))]; });
+      ok(s.join() === '5,7,10,4', 'còn làm: đã qua chặng sau thì chặng trước xong; cộng hỏng làm bù; ngọn không tính theo In UV', s);
+      await p.click('.qt-tabs button:has-text("Kiểm phân loại")'); await p.waitForTimeout(300);
+      s = await p.evaluate(() => [document.querySelectorAll('.card table tbody tr').length, document.querySelectorAll('.dh-tin.vang').length]);
+      ok(s[0] > 300 && s[1] > 0, 'Kiểm phân loại: liệt kê tên hàng, vàng / đỏ lên đầu', s);
+      await p.evaluate(() => { DHMo = 'k|' + document.querySelector('.card table tbody tr td').textContent.trim(); });
+      if (CHUP) await p.screenshot({ path: CHUP + '/dh-' + w + '.png', fullPage: true });
+    }
     ok(await p.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1), 'không tràn ngang');
     ok(!e.length, 'không lỗi JS', e);
     await p.close();

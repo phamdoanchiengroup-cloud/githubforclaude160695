@@ -14,6 +14,8 @@ const GIO = process.env.GIO || '2026-09-28T10:00:00+07:00';
 const CHU = 'chienpham';   // chủ sở hữu: giữ tên thật (người xem bản thử)
 
 const d = JSON.parse(fs.readFileSync(DATA, 'utf8'));
+// 31/10: DH=<dh.json> nạp thêm các tab của Sheet "Trạng thái đơn hàng" (openById trong bản xem thử trả chung bảng tính)
+if (process.env.DH) Object.assign(d, JSON.parse(fs.readFileSync(process.env.DH, 'utf8')));
 
 // ---------- 1) Ẩn danh ----------
 let hat = 20260929;
