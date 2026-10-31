@@ -27,6 +27,12 @@ Chủ dự án thử bài luận "Bắc phái" (Tứ Hóa Phi Tinh) của tuvi.c
 - Kiểm thử mở rộng: cấm thêm "Hóa ", "Kỵ", "Lai Nhân", "tự hóa", " phi ", chỗ trống "{", "undefined" trong văn dễ hiểu; quét cả lưu niên và giới thiệu (1.114.018 kiểm tra).
 - Giữ định nghĩa "hướng tâm" theo nguồn nghiên cứu (cung A hóa sao ở cung đối diện → A có tự hóa hướng tâm).
 
+## Lá số Phi Tinh 4×4 nền Hologram → mã 2026.10.31.5
+- Chủ dự án yêu cầu dùng lá số 4×4 nền Hologram như Tử Vi. Chốt: ô gọn (cung, can chi, chính tinh + Tả Hữu Xương Khúc, dấu hóa năm sinh, ↑/↓ tự hóa, Lai Nhân) · bấm cung → 4 mũi tên Lộc (xanh lá) / Quyền (cam) / Khoa (xanh dương, nét đứt) / Kỵ (đỏ) + lời luận cung hiện dưới lá số · nút Nguyên cục / Đại vận / Lưu niên (ô ghi "ĐV …"/"LN …", chọn vận/năm; Lưu niên chọn Mệnh năm thì vẽ Tứ Hóa theo can năm) · giữ bảng 12 cung bên dưới.
+- Máy chủ: `ptLap_` trả thêm `banDo` (theo ô địa chi), `menhO`, `laiNhanO`; tầng vận/năm có `menhO`, `hoa[].o`.
+- Giao diện: `ptBanDoHtml`, `ptVe` (SVG đường cong cắt tại mép ô, viền tối, đầu mũi tên), `ptGan` (nền `TCCHolo.anh('TuVi', #ptLuoi)` – cùng tranh và cách căn với lá số Tử Vi). CSS `.pt-khung/.pt-luoi/.pt-o/.pt-giua/.pt-svg`.
+- Chuyên gia ui-designer rà ảnh: chữ nổi trên mũi tên, mũi tên dừng ở mép ô, đường cong tránh chồng, chú giải màu ra ngoài lưới, chữ điện thoại ≥10px, viền focus, aria-label/aria-pressed.
+
 ## Còn ngỏ
 - Chủ dự án đọc thử, so với cảm nhận từ bài cohoc/NotebookLM; rồi quyết định mở cho khách (giá xu, phần nào miễn phí), có đưa vào PDF không.
 - Có thể thêm: lưu nguyệt (Mệnh tháng theo Đẩu quân), lựa chọn biến thể can Canh, đọc lục thân theo chuyển cung sâu hơn.

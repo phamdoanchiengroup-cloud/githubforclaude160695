@@ -4,6 +4,7 @@ Nhóm: Bắt đầu · Cập nhật 22/10/2026
 Liên quan: [[Việc chờ chủ dự án]] · [[TCC Kiểm thử]] · [[00 Mục lục]]
 
 ## Tình trạng
+- **31/10: mã `2026.10.31.5`** – lá số Phi Tinh 4×4 nền Hologram (bấm cung → 4 mũi tên; lớp Nguyên cục/Đại vận/Lưu niên). Đổi **TuViPhiTinh, Script, Styles, Index**. Bấm `2-CAP-NHAT.bat`, Ctrl+F5.
 - **31/10: mã `2026.10.31.4`** – sửa sau rà chuyên gia cho tab Phi Tinh (trùng điệp, phản cung, lưu niên). Đổi **TuViPhiTinh, Script, Styles, Index**. Bấm `2-CAP-NHAT.bat`, Ctrl+F5.
 - **31/10: mã `2026.10.31.3`** – tab "✶ Phi Tinh" (Tứ Hóa Phi Tinh Bắc phái, chỉ chủ sở hữu): file mới **TuViPhiTinh** (đủ 31 file .gs), đổi **Code, Script, Styles, Index**. Bấm `2-CAP-NHAT.bat`, Ctrl+F5, đăng nhập chủ sở hữu, lập lá số → tab ✶ Phi Tinh.
 - **31/10: mã `2026.10.31.2`** – sửa sau rà chuyên gia: Cung vị/lưu niên cùng vị trí thần sát mới, Đức Tú, Thái Tuế, PDF bản gọn, tra từ điển. Đổi **BatTuThanSat, BatTuChiTiet, BatTuLuan, Script, Styles, Index**. Bấm `2-CAP-NHAT.bat`, Ctrl+F5.

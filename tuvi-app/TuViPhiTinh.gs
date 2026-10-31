@@ -1117,7 +1117,7 @@ function ptTang_(N, tv, menhTang, canTang, dvMenh, laDaiVan) {
   var mau = Object.keys(co).map(function (k) { var m = (van.mau || {})[k] || {}; return { k: k, ten: m.ten || k, ky: vv(ptThay_(m.ky, { A: co[k].A, B: co[k].B })), de: ptThay_(m.de, { A: ptLv_(co[k].A || ''), B: ptLv_(co[k].B || '') }) }; });
   var gop = {}; de = de.filter(function (x) { if (gop[x]) return false; gop[x] = 1; return true; });
   var muc = diem >= 1.5 ? 'Thuận' : diem >= 0 ? 'Bình' : diem >= -1.5 ? 'Cần giữ nhịp' : 'Nên thận trọng';
-  return { menh: ten[menhTang], chi: CHI[menhTang], can: CAN[canTang], hoa: hoa.map(function (f) { return { h: PT_H[f.h], sao: f.sao, cung: f.toi == null ? null : ten[f.toi] }; }), ky: ky, de: de, mau: mau, diem: diem, muc: muc };
+  return { menh: ten[menhTang], menhO: menhTang, chi: CHI[menhTang], can: CAN[canTang], hoa: hoa.map(function (f) { return { h: PT_H[f.h], sao: f.sao, cung: f.toi == null ? null : ten[f.toi], o: f.toi }; }), ky: ky, de: de, mau: mau, diem: diem, muc: muc };
 }
 
 /** Hàm chính: luận Tứ Hóa Phi Tinh. vy = năm xem; soNam = số lưu niên tính từ vy */
@@ -1145,8 +1145,18 @@ function ptLap_(tv, vy, soNam) {
     tl.nam = y; tl.tuoi = tuoi; tl.dvMenh = dvO >= 0 ? ten[dvO] : null;
     ln.push(tl);
   }
+  // Dữ liệu vẽ lá số 4×4 (chỉ số theo ô địa chi 0 = Tý): sao chính + 4 phụ tinh có Tứ Hóa, hóa năm sinh, tự hóa, phi hóa
+  var PHU = ['Tả Phù', 'Hữu Bật', 'Văn Xương', 'Văn Khúc'], snSao = {};
+  N.sn.forEach(function (f) { snSao[f.sao] = PT_H[f.h]; });
+  var banDo = P.map(function (p, i) {
+    var sao = (p.chinh || []).map(function (x) { return x.n; }).concat(PHU.filter(function (s) { return tv.pos[s] === i; }));
+    return { cung: p.cung, chi: CHI[i], can: CAN[p.can],
+      sao: sao.map(function (s) { return { n: s, sn: snSao[s] || '' }; }),
+      tu: N.tuHoa.filter(function (t) { return t.o === i; }).map(function (t) { return { h: PT_H[t.h], loai: t.loai }; }),
+      phi: N.phi[i].map(function (f) { return { h: PT_H[f.h], sao: f.sao, o: f.toi }; }) };
+  });
   return {
-    gioiThieu: van.gioiThieu || {},
+    gioiThieu: van.gioiThieu || {}, banDo: banDo, menhO: I.menh, laiNhanO: N.ln,
     coBan: {
       canCung: P.map(function (p, i) { return { cung: p.cung, chi: CHI[i], can: CAN[p.can] }; }),
       sinhNien: N.sn.map(function (f) { return { h: PT_H[f.h], sao: f.sao, cung: f.toi == null ? null : ten[f.toi] }; }),

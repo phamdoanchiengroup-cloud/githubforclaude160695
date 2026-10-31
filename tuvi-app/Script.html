@@ -27,7 +27,7 @@
     });
   }
   /** Mã phiên bản giao diện – phải trùng với Index.html (meta tcc-ban) và Styles.html (--tcc-ban) */
-  var BAN_GIAO_DIEN = '2026.10.31.4';
+  var BAN_GIAO_DIEN = '2026.10.31.5';
   /* 25/10: ảnh ngũ hành + 12 con giáp + bìa PDF mới của chủ dự án (tuvi-app/anh/*.webp) qua jsDelivr, ghim theo mã lần lưu */
   var TCC_ANH_CDN = 'https://cdn.jsdelivr.net/gh/phamdoanchiengroup-cloud/githubforclaude160695@19203fbd20433f395336269a411f8aebcf990086/tuvi-app/anh/';
   var ANH_HANH = { 'Mộc': 'NguHanhMoc', 'Hỏa': 'NguHanhHoa', 'Thổ': 'NguHanhTho', 'Kim': 'NguHanhKim', 'Thủy': 'NguHanhThuy' };
@@ -1361,19 +1361,107 @@
     if (!laChu()) { pg.innerHTML = '<div class="panel section muted">Tab này hiện chỉ dành cho chủ sở hữu.</div>'; return; }
     if (!state.input || !state.result || state.result.khach) { pg.innerHTML = '<div class="panel section muted">Hãy lập lá số trước.</div>'; return; }
     var key = JSON.stringify(state.input);
-    if (PT.key === key && PT.data) { pg.innerHTML = ptHtml(PT.data); dungMucLuc(); return; }
+    if (PT.key === key && PT.data) { pg.innerHTML = ptHtml(PT.data); ptGan(); dungMucLuc(); return; }
     if (PT.dang === key) return;
     PT.dang = key;
     pg.innerHTML = '<div class="panel section muted">Đang an phi hóa 12 cung…</div>';
     call('phiTinhLuan', [state.input], function (d) {
       if (PT.dang !== key) return;                                   // phản hồi của lá số cũ
       PT.dang = false; PT.key = key; PT.data = d;
-      if (document.body.getAttribute('data-tab') === 'pt' && JSON.stringify(state.input) === key) { pg.innerHTML = ptHtml(d); dungMucLuc(); }
+      if (document.body.getAttribute('data-tab') === 'pt' && JSON.stringify(state.input) === key) { pg.innerHTML = ptHtml(d); ptGan(); dungMucLuc(); }
     }, function (e) {
       if (PT.dang !== key) return; PT.dang = false;
       if (JSON.stringify(state.input) === key) pg.innerHTML = '<div class="panel section muted">' + esc((e && e.message) || String(e)) + '</div>';
     });
   }
+  /* ---------- Lá số Phi Tinh 4×4 nền Hologram (31/10): bấm cung → 4 mũi tên Lộc/Quyền/Khoa/Kỵ; lớp Nguyên cục / Đại vận / Lưu niên ---------- */
+  var PT_O = { 5: [1, 1], 6: [1, 2], 7: [1, 3], 8: [1, 4], 4: [2, 1], 9: [2, 4], 3: [3, 1], 10: [3, 4], 2: [4, 1], 1: [4, 2], 0: [4, 3], 11: [4, 4] };
+  var PT_MAU = { 'Lộc': '#6EEBA4', 'Quyền': '#F0B46A', 'Khoa': '#7DB8FF', 'Kỵ': '#FF7A6A' };
+  var PT_GON = { 'Mệnh': 'Mệnh', 'Huynh Đệ': 'Huynh', 'Phu Thê': 'Phu', 'Tử Tức': 'Tử', 'Tài Bạch': 'Tài', 'Tật Ách': 'Tật', 'Thiên Di': 'Di', 'Nô Bộc': 'Nô', 'Quan Lộc': 'Quan', 'Điền Trạch': 'Điền', 'Phúc Đức': 'Phúc', 'Phụ Mẫu': 'Phụ' };
+  function ptTenTu(g, x) { return PT_CUNG_THU[((g - x) % 12 + 12) % 12]; }
+  function ptBanDoHtml(D) {
+    if (!D.banDo) return '';
+    var dvNay = 0; (D.daiVan || []).forEach(function (d, i) { if (d.nay) dvNay = i; });
+    if (PT.dvI == null || !(D.daiVan || [])[PT.dvI]) PT.dvI = dvNay;
+    if (PT.lnI == null || !(D.luuNien || [])[PT.lnI]) PT.lnI = 0;
+    PT.lop = PT.lop || 'nc';
+    var o = D.banDo.map(function (c, i) {
+      var g = PT_O[i];
+      return '<button type="button" class="pt-o' + (i === D.menhO ? ' menh' : '') + '" data-pt-o="' + i + '" aria-label="' + esc('Cung ' + c.cung + ', ' + c.can + ' ' + c.chi + (c.sao.length ? ', ' + c.sao.map(function (x) { return x.n + (x.sn ? ' Hóa ' + x.sn : ''); }).join(', ') : '') + (c.tu.length ? ', tự hóa ' + c.tu.map(function (t) { return t.h + (t.loai === 'lyTam' ? ' ly tâm' : ' hướng tâm'); }).join(', ') : '') + (i === D.laiNhanO ? ', Lai Nhân cung' : '')) + '" style="grid-row:' + g[0] + ';grid-column:' + g[1] + '">' +
+        '<span class="pt-o-dau"><b>' + esc(c.cung) + '</b><small>' + esc(c.can + ' ' + c.chi) + '</small></span><span class="pt-o-lop"></span>' +
+        '<span class="pt-o-sao">' + c.sao.map(function (x) { return '<span>' + esc(x.n) + (x.sn ? ' <i class="pt-h ' + { 'Lộc': 'pt-loc', 'Quyền': 'pt-quyen', 'Khoa': 'pt-khoa', 'Kỵ': 'pt-ky' }[x.sn] + '">' + esc(x.sn) + '</i>' : '') + '</span>'; }).join('') + '</span>' +
+        '<span class="pt-o-duoi">' + (i === D.laiNhanO ? '<em class="pt-ln">Lai Nhân</em>' : '') + c.tu.map(function (t) { return '<i class="pt-h ' + { 'Lộc': 'pt-loc', 'Quyền': 'pt-quyen', 'Khoa': 'pt-khoa', 'Kỵ': 'pt-ky' }[t.h] + '" title="Tự hóa ' + (t.loai === 'lyTam' ? 'ly tâm' : 'hướng tâm') + '">' + (t.loai === 'lyTam' ? '↑' : '↓') + esc(t.h) + '</i>'; }).join('') + '</span></button>';
+    }).join('');
+    var dvOpt = (D.daiVan || []).map(function (d, i) { return '<option value="' + i + '"' + (i === PT.dvI ? ' selected' : '') + '>' + d.tuoi + '–' + d.den + ' tuổi' + (d.nay ? ' ★' : '') + '</option>'; }).join('');
+    var lnOpt = (D.luuNien || []).map(function (d, i) { return '<option value="' + i + '"' + (i === PT.lnI ? ' selected' : '') + '>Năm ' + d.nam + '</option>'; }).join('');
+    var giua = '<div class="pt-giua"><div class="pt-giua-ten">Lá số Tứ Hóa Phi Tinh</div>' +
+      '<div class="pt-lop" role="group" aria-label="Lớp xem"><button type="button" data-pt-lop="nc">Nguyên cục</button><button type="button" data-pt-lop="dv">Đại vận</button><button type="button" data-pt-lop="ln">Lưu niên</button></div>' +
+      '<div class="pt-chon"><select id="ptDv" aria-label="Chọn đại vận">' + dvOpt + '</select><select id="ptLn" aria-label="Chọn năm">' + lnOpt + '</select></div>' +
+      '<div class="pt-mota" id="ptMoTa"></div></div>';
+    var chu = '<div class="pt-chu">' + ['Lộc', 'Quyền', 'Khoa', 'Kỵ'].map(function (h) { return '<span><i style="background:' + PT_MAU[h] + '"></i>' + h + '</span>'; }).join('') + '</div>';
+    return '<div class="panel section pt"><h2 class="panel-title"><span class="han">盤</span> Lá số Phi Tinh</h2><p class="lede">Bấm vào một cung để thấy cung đó "phi" Lộc – Quyền – Khoa – Kỵ đi đâu; lời luận của cung hiện ngay bên dưới. ↑ tự hóa ly tâm · ↓ tự hóa hướng tâm.</p>' +
+      '<div class="pt-khung"><div class="pt-luoi" id="ptLuoi">' + o + giua + '<svg class="pt-svg" id="ptSvg" aria-hidden="true"></svg></div>' + chu + '</div><div id="ptChiTiet" class="pt-chitiet" aria-live="polite"></div></div>';
+  }
+  /** Vẽ lại theo lớp + cung đang chọn */
+  function ptVe() {
+    var D = PT.data, L = $('ptLuoi'), svg = $('ptSvg'); if (!D || !L || !svg) return;
+    var lop = PT.lop, dv = (D.daiVan || [])[PT.dvI], ln = (D.luuNien || [])[PT.lnI];
+    var goc = lop === 'dv' && dv ? dv.menhO : lop === 'ln' && ln ? ln.menhO : null;
+    if (PT.chon == null) PT.chon = goc != null ? goc : D.menhO;
+    Array.prototype.forEach.call(document.querySelectorAll('#ptLuoi [data-pt-lop]'), function (b) { var on = b.getAttribute('data-pt-lop') === lop; b.classList.toggle('on', on); b.setAttribute('aria-pressed', on ? 'true' : 'false'); });
+    if ($('ptDv')) $('ptDv').hidden = lop !== 'dv'; if ($('ptLn')) $('ptLn').hidden = lop !== 'ln';
+    Array.prototype.forEach.call(L.querySelectorAll('.pt-o'), function (el) {
+      var i = +el.getAttribute('data-pt-o');
+      el.classList.toggle('chon', i === PT.chon); el.classList.toggle('goc', goc === i); el.setAttribute('aria-pressed', i === PT.chon ? 'true' : 'false');
+      el.querySelector('.pt-o-lop').textContent = goc != null ? (lop === 'dv' ? 'ĐV ' : 'LN ') + PT_GON[ptTenTu(goc, i)] : '';
+    });
+    // Mũi tên: lớp lưu niên + đang chọn Mệnh năm → Tứ Hóa theo can năm; còn lại → phi hóa theo can của cung được chọn
+    var dsHoa, nhan;
+    if (lop === 'ln' && ln && PT.chon === ln.menhO) { dsHoa = ln.hoa; nhan = 'Tứ Hóa năm ' + ln.nam + ' (can ' + ln.can + ')'; }
+    else { var c = D.banDo[PT.chon]; dsHoa = c.phi; nhan = c.cung + ' (can ' + c.can + ') phi'; }
+    var lr = L.getBoundingClientRect();
+    function tam(i) { var e = L.querySelector('[data-pt-o="' + i + '"]').getBoundingClientRect(); return [e.left - lr.left + e.width / 2, e.top - lr.top + e.height / 2, e.width, e.height]; }
+    svg.setAttribute('viewBox', '0 0 ' + lr.width + ' ' + lr.height); svg.setAttribute('width', lr.width); svg.setAttribute('height', lr.height);
+    var a = tam(PT.chon), out = '<defs>' + ['Lộc', 'Quyền', 'Khoa', 'Kỵ'].map(function (h, k) { return '<marker id="ptM' + k + '" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="' + PT_MAU[h] + '"/></marker>'; }).join('') + '</defs>';
+    function mep(c, dx, dy) { var t = Math.min((c[2] / 2 - 6) / (Math.abs(dx) || 1e-6), (c[3] / 2 - 6) / (Math.abs(dy) || 1e-6)); return [dx * t, dy * t]; }   // cắt tại mép ô
+    var mong = window.innerWidth <= 640;
+    dsHoa.forEach(function (f, k) {
+      if (f.o == null) return;
+      if (f.o === PT.chon) { out += '<circle cx="' + (a[0] - a[2] / 2 + 14 + k * 12) + '" cy="' + (a[1] - a[3] / 2 + 10) + '" r="4.5" fill="' + PT_MAU[f.h] + '" stroke="#000" stroke-opacity=".5"/>'; return; }
+      var b = tam(f.o), dx = b[0] - a[0], dy = b[1] - a[1], d = Math.sqrt(dx * dx + dy * dy) || 1, nx = -dy / d, ny = dx / d, lech = (k - 1.5) * 10;
+      var m1 = mep(a, dx, dy), m2 = mep(b, dx, dy), x1 = a[0] + m1[0] + nx * lech, y1 = a[1] + m1[1] + ny * lech, x2 = b[0] - m2[0] + nx * lech, y2 = b[1] - m2[1] + ny * lech;
+      var cx = (x1 + x2) / 2 + nx * lech * 4, cy = (y1 + y2) / 2 + ny * lech * 4, dd = 'M' + x1.toFixed(1) + ' ' + y1.toFixed(1) + ' Q' + cx.toFixed(1) + ' ' + cy.toFixed(1) + ' ' + x2.toFixed(1) + ' ' + y2.toFixed(1);
+      var w = (f.h === 'Kỵ' ? 3 : 2.6) * (mong ? 0.8 : 1);
+      out += '<path d="' + dd + '" fill="none" stroke="#000" stroke-opacity=".55" stroke-width="' + (w + 3) + '"/>' +
+        '<path d="' + dd + '" fill="none" stroke="' + PT_MAU[f.h] + '" stroke-width="' + w + '"' + (f.h === 'Khoa' ? ' stroke-dasharray="8 5"' : '') + ' marker-end="url(#ptM' + k + ')"/>';
+    });
+    svg.innerHTML = out;
+    var moTa = '<b>' + esc(nhan) + '</b>: ' + dsHoa.map(function (f) { return '<span style="color:' + PT_MAU[f.h] + '">' + esc(f.h) + '</span> → ' + esc(f.o == null ? '—' : f.o === PT.chon ? 'tự hóa' : D.banDo[f.o].cung); }).join(' · ');
+    if (lop !== 'nc') { var t = lop === 'dv' ? dv : ln; if (t) moTa += '<br><small>' + (lop === 'dv' ? 'Đại vận ' + t.tuoi + '–' + t.den + ' tuổi' : 'Năm ' + t.nam) + ' · Mệnh ' + (lop === 'dv' ? 'vận' : 'năm') + ' ở ' + esc(t.menh) + ' · <b>' + esc(t.muc) + '</b></small>'; }
+    $('ptMoTa').innerHTML = moTa;
+    // Lời luận dưới lá số: cung được chọn (+ tóm tắt lớp vận/năm)
+    var cungTen = D.banDo[PT.chon].cung, C = (D.cung || []).filter(function (x) { return x.cung === cungTen; })[0], ct = '';
+    if (lop !== 'nc') { var T = lop === 'dv' ? dv : ln; if (T && T.de && T.de.length) ct += '<div class="pt-ct-lop"><b>' + (lop === 'dv' ? 'Giai đoạn ' + T.tuoi + '–' + T.den + ' tuổi' : 'Năm ' + T.nam) + ' – ' + esc(T.muc) + '</b><ul class="pt-de">' + T.de.map(function (x) { return '<li>' + esc(x) + '</li>'; }).join('') + '</ul></div>'; }
+    if (C) ct += '<div class="pt-ct-cung"><b>Cung ' + esc(C.cung) + ' (' + esc(C.can + ' ' + C.chi) + ')</b>' + (C.de.length ? '<ul class="pt-de">' + C.de.map(function (x) { return '<li>' + esc(x) + '</li>'; }).join('') + '</ul>' : '<p class="muted">Cung này không có phi hóa nổi bật.</p>') +
+      '<details class="pt-cc"><summary>Căn cứ Phi Tinh</summary><ul>' + C.ky.filter(Boolean).map(function (x) { return '<li>' + esc(x) + '</li>'; }).join('') + '</ul></details></div>';
+    $('ptChiTiet').innerHTML = ct;
+  }
+  function ptGan() {
+    var L = $('ptLuoi'); if (!L) return;
+    if (window.TCCHolo && TCCHolo.anh) try { TCCHolo.anh('TuVi', L); } catch (e) {}   // cùng tranh nền lá số Tử Vi
+    PT.chon = null; setTimeout(ptVe, 30);
+  }
+  document.addEventListener('click', function (e) {
+    var o = e.target.closest && e.target.closest('#ptLuoi [data-pt-o]');
+    if (o) { PT.chon = +o.getAttribute('data-pt-o'); ptVe(); return; }
+    var l = e.target.closest && e.target.closest('#ptLuoi [data-pt-lop]');
+    if (l) { PT.lop = l.getAttribute('data-pt-lop'); PT.chon = null; ptVe(); }
+  });
+  document.addEventListener('change', function (e) {
+    if (e.target.id === 'ptDv') { PT.dvI = +e.target.value; PT.chon = null; ptVe(); }
+    if (e.target.id === 'ptLn') { PT.lnI = +e.target.value; PT.chon = null; ptVe(); }
+  });
+  window.addEventListener('resize', function () { if (document.body.getAttribute('data-tab') === 'pt') ptVe(); });
   function ptHtml(D) {
     var MAU_H = { 'Lộc': 'pt-loc', 'Quyền': 'pt-quyen', 'Khoa': 'pt-khoa', 'Kỵ': 'pt-ky' };
     function deList(ds) { return ds && ds.length ? '<ul class="pt-de">' + ds.map(function (x) { return '<li>' + esc(x) + '</li>'; }).join('') + '</ul>' : ''; }
@@ -1406,7 +1494,7 @@
     var p4 = '<div class="panel section pt"><h2 class="panel-title"><span class="han">流年</span> Lưu niên theo phi hóa</h2><div class="lg-list">' +
       (D.luuNien || []).map(function (t, i) { return tangHtml(t, 'Năm ' + t.nam, esc(t.tuoi + ' tuổi · Mệnh năm ở ' + t.menh + (t.dvMenh ? ' · trong vận ' + t.dvMenh : '')), i === 0); }).join('') + '</div></div>';
     var nguon = '<details class="tk-ng"><summary>Nguồn tham khảo Phi Tinh</summary><ul class="chu-nguon">' + (D.nguon || []).map(function (n) { return '<li>' + (n.url ? '<a href="' + esc(n.url) + '" target="_blank" rel="noopener">' + esc(n.ten) + '</a>' : esc(n.ten)) + '</li>'; }).join('') + '</ul></details>';
-    return p0 + p1 + p2 + p3 + p4 + '<div class="panel section muted" style="font-size:13px">Tứ Hóa Phi Tinh là trường phái hiện đại (Đài Loan, từ thập niên 1980); đọc như một góc nhìn bổ sung cho lá số Tử Vi, không thay cho cách luận chính. ' + nguon + '</div>';
+    return ptBanDoHtml(D) + p0 + p1 + p2 + p3 + p4 + '<div class="panel section muted" style="font-size:13px">Tứ Hóa Phi Tinh là trường phái hiện đại (Đài Loan, từ thập niên 1980); đọc như một góc nhìn bổ sung cho lá số Tử Vi, không thay cho cách luận chính. ' + nguon + '</div>';
   }
   var CHU = { key: null, data: null, dang: false };
   function laChu() { var u = state.nguoiDung; return !!u && u.vaiTro === 'chu'; }
