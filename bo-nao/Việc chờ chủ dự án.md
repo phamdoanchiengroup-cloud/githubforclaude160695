@@ -10,7 +10,7 @@ Liên quan: [[Lần dán lên Apps Script]] · [[Quyết định của chủ d�
 - Video giới thiệu (25/10 chọn tự dựng): nội dung, độ dài, dùng ở đâu, tư liệu nào? – [[KPI Màn đăng nhập demo chờ duyệt]]
 
 ## Quy trình sản xuất (31/10)
-- Xác nhận bảng tiền tố mã BTP (60 / S / UV / HT / Ngọn / CNC / ETip) và luồng giữa các xưởng. – [[KPI Quy trình sản xuất]]
+- (Đã xác nhận 31/10: bảng tiền tố mã BTP và 5 quy tắc BOM.) Chờ chọn kiến trúc: mảnh tải sau trong web hiện tại (khuyến nghị) hay web riêng. – [[KPI Quy trình sản xuất]]
 - Còn chờ trả lời các câu hỏi gửi 25/10:
   - 1 gậy mỗi loại cần những khúc / BTP nào;
   - tỷ lệ các dòng sản phẩm;

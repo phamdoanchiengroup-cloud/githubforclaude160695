@@ -55,7 +55,7 @@ File gốc chỉ để ở scratchpad phiên (`scratchpad/qt/`), **không commit
   - Cơ Nhảy 59 · Phá 55 · Phá-Nhảy 18 · Libre 10
 - **Tiền tố mã cho biết BTP đang ở chặng nào.** Đây là chìa khóa của luồng giữa các xưởng:
 
-| Tiền tố | Nghĩa (Claude suy ra, **chờ chủ dự án xác nhận**) | Xưởng làm ra | Ví dụ |
+| Tiền tố | Nghĩa (chủ dự án **xác nhận đúng 31/10**) | Xưởng làm ra | Ví dụ |
 |---|---|---|---|
 | `60…` | Phôi / BTP thô (bộ phận phôi "BP60") | PHOICB / PHOITHO | `60CGF736_21.5_3/8-8 Đánh phá_1E1P` = chuôi glassfiber 736, ren 3/8-8, 1 EX 1 POM |
 | `S…` | Đã sơn (có màu) | SON | `SCGF100+390…/Bạc` |
@@ -103,7 +103,7 @@ File gốc chỉ để ở scratchpad phiên (`scratchpad/qt/`), **không commit
   - Rhino 2025, Rhino-New: Nebula, Retro, Luminax, Voyager, Komet, Việt Nam, Carom, Parkour, Eclipse II, Beer, IRC.
   - Omega (ren Uniloc), Raptor, Cuebots (Z-Pure / Z-SP / Z-Luk / ZW / CHS / CHL / CG).
   - Khách OEM / sỉ: X-Billiards / Allin, Dragon + Aileex, HSG, Aplus.
-- **Quy tắc BOM rút ra** (cần chủ dự án xác nhận):
+- **Quy tắc BOM rút ra** (chủ dự án **xác nhận đúng cả 5 điểm 31/10**):
   - Gậy 2 khúc = **1 phôi ngọn + 1 phôi chuôi**. Nối 4/6/8 inch là món riêng, có mã riêng, đi kèm một số dòng (EVO, Retro, Legend).
   - Gậy nhảy "3 khúc" (PEG): chuôi chia 280-150 → 1 ngọn + chuôi 2 đoạn.
   - Phá-nhảy 350-385, nhảy 330-130 / 300-120 / 305-205: chuôi 2 đoạn.
@@ -141,6 +141,25 @@ File gốc chỉ để ở scratchpad phiên (`scratchpad/qt/`), **không commit
 - Các sheet bố trí cột không giống nhau.
 - Mã đơn không khớp mã trong danh mục (đơn ghi tên tự do).
 - Bảng đơn **không ghi theo công đoạn**, chỉ theo bộ phận lớn. Muốn xuống cấp công đoạn thì vẫn dùng nhật ký sản xuất trên web.
+
+## Giờ ca, máy, quyền sửa (31/10)
+- Chủ dự án thấy câu hỏi "giờ ca / số máy / ai sửa" khó trả lời. Claude tự lo:
+  - **Số máy:** lấy từ sheet MayMoc. Có 154 máy "Hoạt động", ghi theo xưởng và chủng loại, vd. INUV 19 máy in UV, PHOITHO 20 máy tiện, CNC 12 CNC bàn, PHOICB 6 máy cuốn + 3 lò nướng, SON 1 buồng sơn.
+  - Nhật ký sản xuất hầu như không ghi mã máy (98/15.597 dòng), nên chưa đo được năng lực máy từ nhật ký.
+  - **Giờ ca:** dùng một ô "giờ hiệu dụng/ngày" có số mặc định, chủ sở hữu tự chỉnh trên màn hình.
+  - **Quyền sửa:** giai đoạn đầu chỉ chủ sở hữu, nên chưa cần quyết định.
+
+## Kiến trúc (tư vấn 31/10, chờ chủ dự án chọn)
+- Hỏi chuyên gia `bao-mat-ung-dung`, khuyến nghị **B**: làm **mảnh tải sau `QuyTrinh.html`** trong web hiện tại, giống SoDo.
+  - Index giữ ~824 KB; chỉ tài khoản được quyền mới tải thêm ~100–150 KB.
+- Đã loại 2 cách:
+  - **A. Web riêng:** phải làm đăng nhập thứ hai, hai bộ quyền dễ lệch nhau, phải chép trùng code định mức.
+  - **C. Nhét thẳng vào Index:** Index lên ~975 KB, mọi người kể cả công nhân đều phải tải.
+- Phải làm đúng về bảo mật:
+  - Mọi hàm máy chủ của quy trình tự kiểm token và quyền ngay dòng đầu; quyền lấy theo phiên, không tin trình duyệt.
+  - Mảnh chỉ chứa giao diện, không chứa số liệu.
+  - Lưu có kiểm từng ô, chặn công thức (ô bắt đầu bằng `=`), dùng `LockService`, ghi nhật ký.
+- Bộ cài clasp đẩy danh sách file cố định (`chung.ps1` nằm trên máy chủ dự án). Thêm file mới thì phải gửi lại bộ cài **một lần**. Định sửa để bộ cài tự đọc danh sách file từ repo, sau này thêm file không phải gửi lại.
 
 ## Việc tiếp theo
 - Chờ chủ dự án xác nhận bảng tiền tố, và trả lời các câu hỏi còn lại: hệ số khúc, giờ ca, số máy, ai sửa quy trình.
