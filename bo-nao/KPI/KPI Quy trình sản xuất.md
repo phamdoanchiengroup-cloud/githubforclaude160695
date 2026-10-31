@@ -217,6 +217,42 @@ File gốc chỉ để ở scratchpad phiên (`scratchpad/qt/`), **không commit
   2. Đo năng lực máy / mẻ ở Sơn (sấy), CNC, In UV.
   3. Làm sạch đo lường: tỷ lệ đạt / làm lại, chuẩn hóa ghi giờ (Phôi Thô làm mẫu), bấm giờ lại định mức 2–3 xưởng tải cao.
 
+## So sánh với app Qoder của chủ dự án (31/10)
+- Chủ dự án tự làm **app riêng bằng Qoder**: Apps Script riêng, sheet riêng gồm 17 sheet `QT_*` và `QT_TaiKhoan`, đăng nhập riêng (chủ + `tp.<xưởng>`), bản v8. Gồm 5 file Code / Index / App (~160 KB) / HuongDan / Seed (~116 KB, dữ liệu mẫu 30/10).
+  - File gửi vào phiên, **không commit**: có hash mật khẩu chủ và tên 181 nhân sự.
+- **Cách tính của Qoder là theo kế hoạch / BOM:**
+  - 7 kiểu đơn có kế hoạch tháng: G2K 13.000, G1K 800, GTN 1.300, Ngọn lẻ 10.000, Chuôi lẻ 250, Nối lẻ 700, Tip lẻ 4.000.
+  - Mỗi kiểu đơn có thành phần NGON / CHUOI / NOI / TIP / P1K.
+  - 393 dòng hàng (tổng 20.557, khớp với số đặt đang mở trong file đơn) được gán vào 31 cấu hình bằng 28 luật regex.
+  - Mỗi linh kiện có luồng riêng với trọng số w nhập tay.
+  - Giờ có sẵn = 26 × 8 × (1 − 12%), **không có hiệu suất**.
+  - Nhân lực xưởng nhập tay, cố định.
+- **Phần mạnh của Qoder:**
+  - Trình dựng quy trình cho trưởng phòng: kéo-thả, có điểm vào từ xưởng khác, xuôi / ngược, nối chuỗi, khung kiểm tra lỗi.
+  - Tab Tuyến sản phẩm.
+  - Sổ tay hướng dẫn trưởng phòng, có bản in PDF.
+  - Hộp hướng dẫn lần đầu.
+- **`quan-ly-van-hanh`:**
+  - Bản web KPI (dựa trên thực tế) đáng tin hơn cho câu hỏi "cần bao nhiêu người, nút thắt ở đâu".
+  - Qoder mạnh ở mô phỏng khi cơ cấu đơn đổi, nhưng nhân 4–5 giả định chưa kiểm.
+  - Khuyến nghị lấy web KPI làm gốc và đưa 3 phần của Qoder vào: (1) nhu cầu theo cơ cấu sản phẩm (đơn → kiểu → thành phần) thay hệ số 137% chung; (2) luồng có w nhưng **w đo từ nhật ký**, kèm đối chiếu lệch quá 15%; (3) trình dựng quy trình cho trưởng phòng + sổ tay.
+  - Không nên chạy hai app song song.
+- **`bao-mat-ung-dung` rà app Qoder** (Claude đã kiểm chứng các lỗi chính):
+  - **Cao:**
+    1. `saveAll` của trưởng phòng tin danh sách `kn` do trình duyệt gửi, nên ghi được bước mang mã khối của xưởng khác.
+    2. XSS lưu trữ qua id bước: `onclick="moSua('${b.id}')"`, và `esc` không thoát dấu `'`. Có thể lấy token chủ sở hữu.
+    3. Ô bắt đầu bằng `=` có thể thành công thức, đọc được ô tài khoản.
+  - **Trung bình:**
+    - `nangCap` / `include` / `chanDoan` gọi được mà không cần đăng nhập.
+    - SHA-256 một vòng, hash của chủ ghi cứng trong code.
+    - Khóa tài khoản không hủy phiên cũ.
+    - Không có `LockService`; ghi bằng `clear` rồi mới ghi lại.
+- **Chờ chủ dự án:**
+  - Chọn: gộp vào web KPI, hay giữ app Qoder (phải vá 3 lỗi cao trước khi giao tài khoản trưởng phòng).
+  - Nguồn số kế hoạch 13.000 / tháng.
+  - 20.557 là tồn đơn hay đơn 1 tháng.
+  - Ai nhập w.
+
 ## Việc tiếp theo
 - Chủ dự án xem bản thật, chỉnh nháp (thứ tự, nhánh) rồi Lưu.
 - Giai đoạn 2: gắn máy với công đoạn để tính giới hạn máy; theo dõi tồn bán thành phẩm; mở cho TP/PP xem / sửa xưởng mình (hỏi lại quyền).

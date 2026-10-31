@@ -23,6 +23,8 @@ Liên quan: [[Lần dán lên Apps Script]] · [[Quyết định của chủ d�
   
   (Đã chốt: phương án C, chỉ chủ sở hữu xem.) – [[KPI Quy trình sản xuất]]
 
+- App Qoder: gộp vào web KPI hay giữ riêng (nếu giữ thì phải vá 3 lỗi bảo mật cao trước khi giao tài khoản TP)? Số kế hoạch 13.000/tháng lấy từ đâu? 20.557 là tồn đơn hay 1 tháng? Ai nhập trọng số w? – [[KPI Quy trình sản xuất]]
+
 ## Câu hỏi 22/10
 
 - Sửa NhanSu: Trương Thị Thùy Linh NgayVaoLam 08/11/2026 (tương lai); Hà Thị Hải có 2 dòng. – [[KPI Phân tích định mức]]
