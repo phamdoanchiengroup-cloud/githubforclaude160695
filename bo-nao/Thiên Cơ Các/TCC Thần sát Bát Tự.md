@@ -17,5 +17,11 @@ Chủ dự án gửi ảnh lá số trang huyencobattu.com ("từ điển 128 sa
 - **PDF**: bản đầy đủ chép theo web; bản gọn giữ thêm "八字 Tứ Trụ" và "神煞 Thần sát theo từng trụ".
 - Kiểm thử `tests/than-sat.js` 47690/47690 (dữ liệu, câu dễ hiểu không tên sao, đối chiếu khẩu quyết Thiên Ất/Lộc/Dương Nhẫn/Thái Tuế/Kiến/Không Vong trên 600 bộ trụ, gắn batTuLap, từ điển).
 
+## Rà chuyên gia code-reviewer → mã 2026.10.31.2
+- **Một nguồn sự thật**: `btctThanSat_` (Cung vị "Thần sát tại trụ", 12 lĩnh vực, lưu niên từng năm) nay lấy vị trí từ `bt.thanSatTru` (nhóm tb + tt), giữ tên/lời cũ qua `BTCT_TEN_MOI`; cách cũ còn ở `btctThanSatCu_` làm dự phòng. Lưu niên: Dương Nhẫn = Lộc tiến 1 cả can âm. Kiểm thử đối chiếu hai chiều trong `tests/than-sat.js` (49.754 kiểm tra).
+- Đức Tú phải có hai trụ khác nhau (một can Đức, một can Tú); Thái Tuế chỉ xét các trụ khác trụ năm.
+- PDF: nhãn sao đổi thành chữ trước khi bỏ nút (`pdfLamSach`), bảng Tứ Trụ `bc-nguyen` không tách trang, bảng in chỉ sao Tử Bình + Thái Tuế; tên bước đổi để quy tắc bản gọn (khớp tiền tố) không giữ nguyên cả bước: "Mười thần", "Cát thần – hung sát", "Vận 10 năm"; panel "流年 Năm đang xem – năm" thêm vào bản gọn (104 trang).
+- "Tra từ điển →" lọc đúng một thẻ (`TK.chinh` + `data-ths-the`) và cuộn tới; màu nhãn cho giao diện sáng; thẻ khóa lưu niên vào bước "Lưu niên".
+
 ## Còn ngỏ
 - Mỗi trụ trung bình ~15 sao (nhóm chọn ngày chiếm nhiều) – nếu chủ dự án thấy rối, có thể ẩn hẳn nhóm Ngọc Hạp.

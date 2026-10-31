@@ -39,7 +39,7 @@ for (let i = 0; i < 600; i++) {
     kt(co(k, 'Thiên Ất Quý Nhân') === qn, id + 'Thiên Ất trụ ' + k);
     kt(co(k, 'Lộc Thần (Kiến Lộc)') === (LOC[P[2].can] === P[k].chi), id + 'Lộc Thần trụ ' + k);
     kt(co(k, 'Dương Nhẫn') === ((LOC[P[2].can] + 1) % 12 === P[k].chi), id + 'Dương Nhẫn trụ ' + k);
-    kt(co(k, 'Thái Tuế') === (P[k].chi === P[0].chi), id + 'Thái Tuế trụ ' + k);
+    kt(co(k, 'Thái Tuế') === (k > 0 && P[k].chi === P[0].chi), id + 'Thái Tuế trụ ' + k);
     kt(co(k, 'Kiến') === (k === 2 && P[2].chi === P[1].chi), id + 'trực Kiến trụ ' + k);
     kt(!co(k, 'Khôi Cương') || k === 2, id + 'Khôi Cương chỉ ở trụ ngày');
   });
@@ -50,12 +50,19 @@ for (let i = 0; i < 600; i++) {
 }
 kt(soSao / 2400 > 5 && soSao / 2400 < 30, 'trung bình mỗi trụ 5–30 sao (' + (soSao / 2400).toFixed(1) + ')');
 
+// Đức Tú: một can vừa Đức vừa Tú không tự thành sao
+{ const T = ctx.thsTheoTru_([{ can: 5, chi: 1 }, { can: 1, chi: 0 }, { can: 6, chi: 2 }, { can: 3, chi: 4 }], true);   // Kỷ Sửu | Ất Tý | Canh Dần | Đinh Thìn
+  kt(!T.some(d => d.some(x => x.t === 'Đức Tú Quý Nhân')), 'Đức Tú cần hai trụ khác nhau'); }
+
 // 3. Gắn vào batTuLap + từ điển
 for (let i = 0; i < 40; i++) {
   const inp = { name: 'T' + i, gender: i % 2 ? 'nu' : 'nam', calendar: 'duong', day: 1 + (i * 11) % 28, month: 1 + (i * 5) % 12, year: 1950 + (i * 7) % 70, hour: (i * 3) % 24, minute: 0, viewYear: 2026 };
   const B = ctx.batTuLap(inp);
   kt(!B.thanSatLoi && B.thanSatTru && B.thanSatTru.length === 4, '#' + i + ' batTuLap có thần sát theo trụ');
   B.thanSatTru.forEach(d => d.forEach(x => kt(B.thanSatNghia[x.t] && B.thanSatNghia[x.t].y, '#' + i + ' có nghĩa cho ' + x.t)));
+  // Cung vị / 12 lĩnh vực / lưu niên (btctThanSat_) phải cùng vị trí với bảng thần sát mới – bài luận không tự mâu thuẫn
+  ctx.btctThanSat_(B, null).forEach(t => t.tru.forEach(k => kt(B.thanSatTru[k].some(x => (ctx.BTCT_TEN_MOI[x.t] || x.t) === t.ten), '#' + i + ' ' + t.ten + ' ở trụ ' + k + ' khớp bảng mới')));
+  B.thanSatTru.forEach((d, k) => d.filter(x => x.n === 'tb' || x.n === 'tt').forEach(x => kt(ctx.btctThanSat_(B, null).some(t => t.ten === (ctx.BTCT_TEN_MOI[x.t] || x.t) && t.tru.includes(k)), '#' + i + ' ' + x.t + ' có trong luận cung vị')));
 }
 const TD = ctx.thamKhaoThanSat();
 kt(TD.ds.length === DS.length && TD.ds.every(x => x.t && x.an && x.y), 'từ điển đủ sao, có cách an');

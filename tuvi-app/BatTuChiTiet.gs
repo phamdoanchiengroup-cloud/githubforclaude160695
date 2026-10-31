@@ -390,7 +390,31 @@ function btctDieuKienCach_(cach, co, bt) {
 }
 
 /** Thần sát mở rộng: trả về [{ten, tru:[i], moTa, tot}] */
+/**
+ * Thần sát theo trụ cho Cung vị, 12 lĩnh vực, lưu niên. 31/10: vị trí lấy từ BatTuThanSat.gs (bt.thanSatTru) để mọi phần của bài
+ * luận nói cùng một điều; giữ tên gọi và lời cũ (btlNen_ tra theo tiền tố tên). Thiếu dữ liệu mới thì dùng cách an cũ.
+ */
+var BTCT_TEN_MOI = { 'Thiên Đức Quý Nhân': 'Thiên Đức quý nhân', 'Nguyệt Đức Quý Nhân': 'Nguyệt Đức quý nhân', 'Thiên Ất Quý Nhân': 'Thiên Ất quý nhân',
+  'Thái Cực Quý Nhân': 'Thái Cực quý nhân', 'Lộc Thần (Kiến Lộc)': 'Lộc Thần', 'Dương Nhẫn': 'Dương Nhận', 'Âm Dương Sai Thố': 'Âm Dương sai thác',
+  'Thập Ác Đại Bại': 'Thập ác đại bại', 'Cô Loan Sát': 'Cô Loan sát', 'Đào Hoa (Hàm Trì)': 'Đào Hoa' };
 function btctThanSat_(bt, tv) {
+  var cu = btctThanSatCu_(bt, tv);
+  if (!bt.thanSatTru || !bt.thanSatNghia) return cu;
+  var loiCu = {}, gom = {}, thu = [];
+  cu.forEach(function (t) { var k = t.ten.replace(/ \(theo (năm|ngày)\)$/, ''); if (!loiCu[k]) loiCu[k] = t.moTa; });
+  bt.thanSatTru.forEach(function (ds, i) {
+    ds.forEach(function (x) {
+      if (x.n !== 'tb' && x.n !== 'tt') return;                       // nhóm sao chọn ngày không đưa vào luận cung vị / lĩnh vực
+      if (!gom[x.t]) { gom[x.t] = { t: x.t, l: x.l, tru: [] }; thu.push(gom[x.t]); }
+      if (gom[x.t].tru.indexOf(i) < 0) gom[x.t].tru.push(i);
+    });
+  });
+  return thu.map(function (g) {
+    var ten = BTCT_TEN_MOI[g.t] || g.t, y = bt.thanSatNghia[g.t] || {};
+    return { ten: ten, tru: g.tru, moTa: loiCu[ten] || y.y || '', tot: g.l !== 'hung' };
+  });
+}
+function btctThanSatCu_(bt, tv) {
   var P = bt.pillars, dCan = bt.nhatChuCan, mc = P[1].chi, yc = P[0].chi, dc = P[2].chi;
   var res = [];
   function push(ten, tru, moTa, tot) { if (tru.length) res.push({ ten: ten, tru: tru, moTa: moTa, tot: tot }); }

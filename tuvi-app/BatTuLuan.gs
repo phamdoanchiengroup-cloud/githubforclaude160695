@@ -373,7 +373,8 @@ function btlMotNam_(N, bt, y, namSinh, cachTot) {
   if (qn.indexOf(z) >= 0) { d += 0.6; thanSat.push('✓ Thiên Ất quý nhân lâm năm – gặp người giúp, gỡ khó.'); }
   if (BAZI_VAN_XUONG[dCan] === z) { d += 0.3; thanSat.push('✓ Văn Xương – thuận thi cử, giấy tờ, học tập.'); su.hoc.push('✓ Văn Xương năm – thi cử, bằng cấp, viết lách thuận.'); }
   if (BAZI_LOC[dCan] === z) { d += 0.4; thanSat.push('✓ Lộc thần – có lộc ăn, thu nhập ổn.'); su.tai.push('✓ Lộc năm – thu nhập đều, có lộc.'); }
-  if (BAZI_DUONG_NHAN[dCan] === z) { d -= 0.5; thanSat.push('✗ Dương Nhận – dễ nóng vội, hao tài; nên chậm lại một nhịp.'); su.khoe.push('✗ Dương Nhận năm – giữ bình tĩnh, cẩn trọng khi di chuyển và làm việc nặng.'); }
+  // Dương Nhẫn = Lộc tiến 1 cả can âm (Tam Mệnh Thông Hội), cùng cách với BatTuThanSat.gs
+  if ((typeof thsTheoTru_ === 'function' ? mod12(BAZI_LOC[dCan] + 1) : BAZI_DUONG_NHAN[dCan]) === z) { d -= 0.5; thanSat.push('✗ Dương Nhận – dễ nóng vội, hao tài; nên chậm lại một nhịp.'); su.khoe.push('✗ Dương Nhận năm – giữ bình tĩnh, cẩn trọng khi di chuyển và làm việc nặng.'); }
   [[P[0].chi, 'năm'], [P[2].chi, 'ngày']].forEach(function (b) {
     if ([9, 6, 3, 0][b[0] % 4] === z) { thanSat.push('◇ Đào Hoa (theo ' + b[1] + ') – duyên tình cảm, được chú ý.'); su.tinh.push('✓ Đào Hoa năm (theo ' + b[1] + ') – dễ có mối quan hệ mới, được yêu mến.'); }
     if ([2, 11, 8, 5][b[0] % 4] === z) { thanSat.push('◇ Dịch Mã (theo ' + b[1] + ') – di chuyển, đổi môi trường.'); su.di.push('◇ Dịch Mã năm – đi xa, công tác, chuyển chỗ.'); }
