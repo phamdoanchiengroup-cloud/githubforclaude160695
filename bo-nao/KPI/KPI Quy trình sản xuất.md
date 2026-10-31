@@ -185,7 +185,7 @@ File gốc chỉ để ở scratchpad phiên (`scratchpad/qt/`), **không commit
 - **Phát hiện:** cột GioLam trong nhật ký không phải giờ thật (chỉ Phôi Thô ghi ~8 giờ/người-ngày; các xưởng khác ~1,4–2,3). Vì vậy tính theo giờ chuẩn, không theo giờ ghi.
 - **Số liệu thật 25/9–24/10:**
   - Tải các xưởng 62–86%. Sơn cao nhất (86%), Phôi Carbon 81%, Ngọn Tip 81%.
-  - Theo định mức, nhà máy làm được tối đa ~116% sản lượng hiện nay; cân bằng giữa xưởng ~88%.
+  - Theo định mức, nhà máy làm được tối đa ~116% sản lượng hiện nay; cân bằng giữa xưởng ~86%.
   - Kết luận: **không xưởng nào thiếu người theo định mức**. Hàng còn thiếu tăng do máy / mẻ, chờ bán thành phẩm, làm lại, hoặc giờ không ghi nhật ký, chứ không do thiếu người.
 - **Giao diện:** 4 khung nhìn.
   - **Toàn nhà máy:** câu kết luận, luồng bán thành phẩm, bảng cân bằng.
