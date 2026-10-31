@@ -1,0 +1,327 @@
+<!-- Tab "Quy trình sản xuất" (31/10) – mảnh tải sau QuyTrinh.html, chỉ tài khoản chủ sở hữu tải được (máy chủ: MANH_GD.QuyTrinh).
+     Nguồn: kpi-app/tests/quy-trinh/quy-trinh-web.html (va-quy-trinh-web.py chép ra kpi-app/QuyTrinh.html). Kiểm thử: tests/quy-trinh-web.js -->
+<style>
+.qt-bar{display:flex;flex-wrap:wrap;gap:10px 14px;align-items:flex-end;margin-bottom:14px}
+.qt-bar label{display:block;font-size:12px;color:var(--ink3);margin-bottom:3px}
+.qt-bar input,.qt-bar select{width:96px;min-height:38px}
+.qt-tabs{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px}
+.qt-tabs .btn.on{border-color:var(--cyan,#2fd3c6);color:var(--cyan,#2fd3c6)}
+.qt-ket{font-size:15px;line-height:1.55;margin-bottom:6px}
+.qt-ket b.bd{color:var(--red)} .qt-ket b.wn{color:var(--amber)} .qt-ket b.ok{color:var(--green)}
+.qt-luong{display:flex;flex-direction:column;gap:6px}
+.qt-luong .ln{display:flex;flex-wrap:wrap;align-items:center;gap:6px;font-size:13.5px}
+.qt-x{display:inline-block;padding:3px 9px;border-radius:7px;border:1px solid var(--line);background:var(--panel2);font-weight:600;white-space:nowrap}
+.qt-x.bd{border-color:var(--red);color:var(--red)} .qt-x.wn{border-color:var(--amber);color:var(--amber)}
+.qt-btp{color:var(--ink3);font-size:12.5px;flex:1 1 180px;min-width:0}
+.qt-tai{display:inline-block;min-width:54px;text-align:right;font-variant-numeric:tabular-nums}
+.qt-tai.bd{color:var(--red);font-weight:700} .qt-tai.wn{color:var(--amber);font-weight:600}
+.qt-thanh{height:8px;background:var(--panel2);border-radius:5px;overflow:hidden;min-width:60px}
+.qt-thanh i{display:block;height:100%;background:var(--green)} .qt-thanh i.wn{background:var(--amber)} .qt-thanh i.bd{background:var(--red)}
+.qt-so{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+.qt-tag{display:inline-block;font-size:11px;font-weight:700;padding:1px 6px;border-radius:5px;margin-left:4px;white-space:nowrap}
+.qt-tag.bd{background:rgba(229,72,77,.15);color:var(--red)} .qt-tag.wn{background:rgba(227,163,62,.15);color:var(--amber)} .qt-tag.mo{background:var(--panel2);color:var(--ink3)}
+.qt-sodo{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:0 -6px;padding:4px 6px}
+.qt-sodo svg{display:block;margin:0 auto}
+.qt-sodo text{fill:var(--ink);font-family:inherit}
+.qt-sodo .nut rect{fill:var(--panel2);stroke:var(--line);stroke-width:1.2}
+.qt-sodo .nut.wn rect{stroke:var(--amber);stroke-width:2}
+.qt-sodo .nut.bd rect{stroke:var(--red);stroke-width:3}
+.qt-sodo .nut .phu{fill:var(--ink3);font-size:11px}
+.qt-sodo .nut .the{fill:var(--red);font-size:10.5px;font-weight:700}
+.qt-sodo path.canh{fill:none;stroke:var(--ink3);stroke-width:1.3;opacity:.75}
+.qt-sodo .nhan{fill:var(--ink3);font-size:11px;font-weight:600;letter-spacing:.3px}
+.qt-sua .dong{display:grid;grid-template-columns:minmax(150px,1.6fr) 118px 64px minmax(140px,1.4fr);gap:6px 8px;align-items:center;padding:8px 0;border-bottom:1px solid var(--line)}
+.qt-sua .dong select,.qt-sua .dong input{width:100%;min-height:36px}
+.qt-sua .ten{font-size:13.5px;min-width:0}
+.qt-sua .ten small{display:block;color:var(--ink3);font-size:11.5px}
+.qt-sua .truoc{font-size:12.5px;color:var(--ink2);min-width:0}
+.qt-sua .truoc button{margin-top:3px}
+.qt-sua .chon{grid-column:1/-1;display:flex;flex-wrap:wrap;gap:4px 12px;background:var(--panel2);border-radius:8px;padding:8px 10px;font-size:12.5px}
+.qt-sua .chon label{display:flex;gap:5px;align-items:center;min-height:30px}
+.qt-xl .dong{display:grid;grid-template-columns:1fr 1fr 2fr auto;gap:6px;align-items:center;margin-bottom:6px}
+.qt-xl select,.qt-xl input{width:100%;min-height:36px}
+.qt-luu{position:sticky;bottom:0;background:var(--panel);border-top:1px solid var(--line);padding:10px 0;display:flex;gap:10px;align-items:center;flex-wrap:wrap;z-index:2}
+@media (max-width:900px){ .qt-luu{bottom:calc(64px + env(safe-area-inset-bottom))} }   /* trên thanh menu dưới của điện thoại */
+@media (max-width:640px){
+  .qt-sua .dong{grid-template-columns:1fr 1fr 70px}
+  .qt-sua .ten,.qt-sua .truoc{grid-column:1/-1}
+  .qt-xl .dong{grid-template-columns:1fr 1fr auto}
+  .qt-xl .dong input{grid-column:1/-1;order:5}
+  .qt-bar input,.qt-bar select{width:84px}
+}
+</style>
+<script>
+/* ===== Quy trình sản xuất (31/10) ===== */
+var QT=null, QTV='nm', QTX='', QTS=null, QTSoNgay=0, QTD=null, QTDoi=false, QTMo='';
+var QT_NHANH_DONG={NGON:1,CHUOI:1,GAY1K:1}, QT_NHANH_NGOAI={LAMLAI:1,HOTRO:1,CHUAXEP:1};
+var QT_THU_NHANH=['CHUNG','NGON','CHUOI','GAY1K','NOI','TIP','PHIP','POM','PK','DONLE','LAMLAI','HOTRO','CHUAXEP'];
+function qtSo(v,k){ k=k==null?1:k; return Number(v||0).toLocaleString('vi-VN',{maximumFractionDigits:k,minimumFractionDigits:0}); }
+function qtPt(v){ return Math.round(v*100)+'%'; }
+function qtMuc(t){ return t>1?'bd':(t>0.85?'wn':''); }
+function qtTenX(x){ var p=(QT.xuong||[]).filter(function(a){return a.MaXuong===x})[0]; return p?String(p.TenXuong).replace(/^Xưởng\s+/,''):x; }
+
+/* Công đoạn trước – giống hệt qtCanh_ ở máy chủ (tests/quy-trinh/quy-trinh.gs) */
+function qtCanh(ds){
+  var theoX={}, out={};
+  ds.forEach(function(c){ (theoX[c.MaXuong]=theoX[c.MaXuong]||[]).push(c); });
+  Object.keys(theoX).forEach(function(x){
+    var cs=theoX[x];
+    var lonNhat=function(nh,s){ var b=0; cs.forEach(function(c){ if(c.Nhanh===nh&&c.Buoc<s&&c.Buoc>b)b=c.Buoc; }); return b; };
+    var o=function(nh,b){ return cs.filter(function(c){return c.Nhanh===nh&&c.Buoc===b}).map(function(c){return c.Ma}); };
+    cs.forEach(function(c){
+      if(c.Truoc&&c.Truoc.length){ out[c.Ma]=c.Truoc.slice(); return; }
+      var r=[];
+      if(QT_NHANH_NGOAI[c.Nhanh]) r=[];
+      else if(c.Nhanh==='CHUNG'){
+        var sc=lonNhat('CHUNG',c.Buoc);
+        Object.keys(QT_NHANH_DONG).forEach(function(nh){ var b=lonNhat(nh,c.Buoc); if(b&&b>sc) r=r.concat(o(nh,b)); });
+        if(!r.length&&sc) r=o('CHUNG',sc);
+      } else {
+        var sb=lonNhat(c.Nhanh,c.Buoc), sc2=QT_NHANH_DONG[c.Nhanh]?lonNhat('CHUNG',c.Buoc):0;
+        if(sc2>sb) r=o('CHUNG',sc2); else if(sb) r=o(c.Nhanh,sb);
+      }
+      out[c.Ma]=r;
+    });
+  });
+  return out;
+}
+
+/* Tính tải: giờ chuẩn = sản lượng ÷ định mức (quy mọi đơn vị về giờ-người) */
+function qtTinh(){
+  var N=Math.max(1,QT.soNgaySX||1), mt=QTS.mucTieu/100, gioNguoi=QTS.gioCoMat*QTS.hieuSuat;
+  var cd={}, x={};
+  (QT.xuong||[]).forEach(function(p){ x[p.MaXuong]={ma:p.MaXuong,gio:0,can:0,co:0,ql:0,cd:[],khongDM:0}; });
+  (QT.nhanSu||[]).forEach(function(n){ var o=x[n.MaXuong]; if(!o)return; if(/^\s*(trưởng phòng|phó phòng|quản lý|giám đốc)/i.test(n.ChucDanh)) o.ql++; else o.co++; /* tổ trưởng vẫn tính là người làm */ });
+  var ten={}; (QT.nhanSu||[]).forEach(function(n){ ten[n.MaNV]=n.HoTen; });
+  QTD.forEach(function(q){
+    var c=(QT.cdMap[q.Ma]||{}), t=QT.thongKe[q.Ma]||{sl:0,nguoi:{}}, kn=(QT.kyNang||{})[q.Ma]||{};
+    var biet={}; Object.keys(t.nguoi||{}).forEach(function(m){ biet[m]='nk'; }); Object.keys(kn).forEach(function(m){ biet[m]=biet[m]?'ca':'kn'; });
+    var slN=t.sl/N, gio=c.DM>0?slN/c.DM:0, can=gio*mt/gioNguoi, nb=Object.keys(biet).length;
+    var o={ma:q.Ma,ten:c.TenCD||q.Ma,x:q.MaXuong,nhanh:q.Nhanh,buoc:q.Buoc,dm:c.DM||0,dvt:c.DVT||'',slN:slN,gio:gio,can:can,biet:biet,nb:nb,
+      tai:nb?can/nb:(can>0.05?9:0), khongDM:!(c.DM>0)&&t.sl>0, tenNguoi:Object.keys(biet).map(function(m){return ten[m]||m}) };
+    o.mot = can>0.05 && nb<=1; o.hai = can>0.05 && nb===2;
+    cd[q.Ma]=o;
+    var xo=x[q.MaXuong]; if(!xo)return;
+    xo.gio+=gio; xo.can+=can; xo.cd.push(o); if(o.khongDM)xo.khongDM++;
+  });
+  var ds=Object.keys(x).map(function(k){ var o=x[k]; o.tai=o.co?o.can/o.co:(o.can>0?9:0); o.toiDa=o.tai>0?QTS.mucTieu/o.tai:0; o.thieu=Math.max(0,Math.ceil(o.can-o.co-1e-9)); return o; });
+  var co=ds.filter(function(o){return o.can>0});
+  var max=co.reduce(function(a,o){return o.tai>a.tai?o:a},{tai:0});
+  var lbr=co.length&&max.tai?co.reduce(function(a,o){return a+o.tai},0)/(co.length*max.tai):0;
+  return {cd:cd,x:x,ds:ds,nut:max,lbr:lbr,N:N};
+}
+
+function vQTTai(){
+  $('main').innerHTML='<div class="ptitle">Quy trình sản xuất</div><div class="pdesc">Đang tính từ nhật ký sản xuất…</div>';
+  call('layQuyTrinh',[QTSoNgay||0],function(r){
+    if(!r||!r.ok){ $('main').innerHTML='<div class="ptitle">Quy trình sản xuất</div><div class="alert a-wn">'+esc((r&&r.msg)||'Không tải được.')+'</div>'; return; }
+    QT=r; QTSoNgay=r.soNgay; QT.cdMap={}; (r.congDoan||[]).forEach(function(c){ QT.cdMap[c.MaCD]=c; });
+    QTS={gioCoMat:r.caiDat.gioCoMat,hieuSuat:r.caiDat.hieuSuat,mucTieu:r.caiDat.mucTieu};
+    QTD=r.quyTrinh.map(function(q){ return {Ma:q.Ma,MaXuong:q.MaXuong,Nhanh:q.Nhanh,Buoc:Number(q.Buoc)||1,Truoc:(q.Truoc||[]).slice(),GhiChu:q.GhiChu||'',moi:!!q.moi}; });
+    QT.luong=(r.xuongLuong||[]).map(function(a){return {Tu:a.Tu,Den:a.Den,BTP:a.BTP,GhiChu:a.GhiChu||''}});
+    QTDoi=false;
+    if(!QTX){ var t=qtTinh(); QTX=t.nut.ma||((r.xuong[0]||{}).MaXuong); }
+    qtVe();
+  });
+}
+function qtVe(){
+  if(!QT){ vQTTai(); return; }
+  var T=qtTinh();
+  var h='<div class="ptitle">Quy trình sản xuất</div><div class="pdesc">Bản thử – chỉ tài khoản chủ sở hữu thấy. Số liệu từ nhật ký sản xuất '+esc(QT.tu)+' → '+esc(QT.den)+' ('+QT.soNgaySX+' ngày có sản xuất).</div>';
+  if(QT.nhap) h+='<div class="alert a-wn">Đây là <b>quy trình nháp</b> Claude soạn từ tên công đoạn và các file anh/chị gửi. Xem ở "Từng xưởng", sửa ở "Sửa quy trình", bấm <b>Lưu</b> để chốt.</div>';
+  var moi=QTD.filter(function(q){return q.moi}).length;
+  if(moi) h+='<div class="alert a-wn">'+moi+' công đoạn mới chưa có trong quy trình đã lưu – xem ở "Sửa quy trình".</div>';
+  h+='<div class="qt-bar">'+
+    '<div><label for="qtKy">Kỳ dữ liệu</label><select id="qtKy" onchange="QTSoNgay=+this.value;vQTTai()">'+[14,30,60,90].map(function(n){return '<option value="'+n+'"'+(n===QTSoNgay?' selected':'')+'>'+n+' ngày</option>'}).join('')+'</select></div>'+
+    '<div><label for="qtMt">Sản lượng mục tiêu</label><input id="qtMt" type="number" inputmode="numeric" min="10" max="500" step="5" value="'+QTS.mucTieu+'" onchange="qtDoiCD(\'mucTieu\',this.value,10,500)"> %</div>'+
+    '<div><label for="qtGio">Giờ có mặt / ngày</label><input id="qtGio" type="number" inputmode="decimal" min="1" max="24" step="0.5" value="'+QTS.gioCoMat+'" onchange="qtDoiCD(\'gioCoMat\',this.value,1,24)"></div>'+
+    '<div><label for="qtHs">Hiệu suất</label><input id="qtHs" type="number" inputmode="numeric" min="30" max="120" step="5" value="'+Math.round(QTS.hieuSuat*100)+'" onchange="qtDoiCD(\'hieuSuat\',this.value/100,0.3,1.2)"> %</div>'+
+  '</div>';
+  h+='<div class="qt-tabs">'+[['nm','Toàn nhà máy'],['x','Từng xưởng'],['ng','Con người'],['sua','Sửa quy trình'+(QTDoi?' •':'')]].map(function(t){
+    return '<button class="btn'+(QTV===t[0]?' on':'')+'" type="button" onclick="QTV=\''+t[0]+'\';qtVe()">'+t[1]+'</button>'; }).join('')+'</div>';
+  if(QTV!=='nm') h+='<div style="margin-bottom:12px"><label for="qtChonX">Xưởng</label> <select id="qtChonX" onchange="QTX=this.value;QTMo=\'\';qtVe()">'+(QT.xuong||[]).map(function(p){
+    return '<option value="'+esc(p.MaXuong)+'"'+(p.MaXuong===QTX?' selected':'')+'>'+esc(p.TenXuong)+'</option>'; }).join('')+'</select></div>';
+  h+=({nm:qtVeNM,x:qtVeX,ng:qtVeNguoi,sua:qtVeSua}[QTV]||qtVeNM)(T);
+  $('main').innerHTML=h;
+}
+function qtDoiCD(k,v,a,b){ v=Number(v); if(!isFinite(v)||v<a||v>b){ toast('Giá trị phải trong khoảng '+a+'–'+b+'.'); qtVe(); return; } QTS[k]=v; QTDoi=true; qtVe(); }
+
+/* --- Toàn nhà máy --- */
+function qtThuTuX(){
+  var vao={}, ra={}, xs=(QT.xuong||[]).map(function(p){return p.MaXuong}), kq=[], da={};
+  QT.luong.forEach(function(a){ (vao[a.Den]=vao[a.Den]||[]).push(a.Tu); (ra[a.Tu]=ra[a.Tu]||[]).push(a.Den); });
+  var conLai=xs.slice();
+  while(conLai.length){
+    var san=conLai.filter(function(x){ return (vao[x]||[]).every(function(t){return da[t]||xs.indexOf(t)<0}); });
+    if(!san.length) san=[conLai[0]];
+    san.forEach(function(x){ da[x]=1; kq.push(x); });
+    conLai=conLai.filter(function(x){return !da[x]});
+  }
+  return kq;
+}
+function qtVeNM(T){
+  var n=T.nut, h='<div class="card"><div class="qt-ket">';
+  var tongCo=T.ds.reduce(function(a,o){return a+o.co},0);
+  if(!n.ma) h+='Chưa có sản lượng trong kỳ này để tính.';
+  else if(n.tai>1){
+    h+='Với <b>'+tongCo+'</b> công nhân hiện có, để đạt <b>'+QTS.mucTieu+'%</b> sản lượng của kỳ này thì xưởng <b class="bd">'+esc(qtTenX(n.ma))+'</b> là nút thắt: cần <b>'+qtSo(n.can)+'</b> người, đang có <b>'+n.co+'</b> (tải <b class="bd">'+qtPt(n.tai)+'</b>), thiếu khoảng <b class="bd">'+n.thieu+' người</b>. ';
+    h+='Nhà máy chỉ ra được tối đa khoảng <b>'+Math.round(n.toiDa)+'%</b> nếu không bổ sung.';
+  } else {
+    h+='Với <b>'+tongCo+'</b> công nhân hiện có, nếu ai cũng làm đạt định mức thì nhà máy làm được tối đa khoảng <b class="ok">'+Math.round(n.toiDa)+'%</b> sản lượng của kỳ này. ';
+    h+='Xưởng sát giới hạn nhất: <b class="'+(qtMuc(n.tai)||'ok')+'">'+esc(qtTenX(n.ma))+'</b> (tải '+qtPt(n.tai)+').';
+    h+='<div style="font-size:13px;color:var(--ink2);margin-top:6px">Không xưởng nào thiếu người <i>theo định mức</i>. Nếu đơn hàng vẫn trễ thì nút thắt nằm ở chỗ khác: máy / mẻ (sơn, sấy, in UV, CNC), chờ bán thành phẩm giữa các xưởng, làm lại hàng lỗi, hoặc giờ làm không ghi vào nhật ký. Xem "Từng xưởng" để tìm công đoạn yếu.</div>';
+  }
+  h+='</div><div style="font-size:12.5px;color:var(--ink3)">Độ cân bằng giữa các xưởng: <b>'+qtPt(T.lbr)+'</b> (dưới 85% là lệch nhiều – xưởng nhàn, xưởng căng).</div></div>';
+  // luồng bán thành phẩm
+  h+='<div class="card"><div style="font-weight:600;margin-bottom:8px">Luồng bán thành phẩm giữa các xưởng</div><div class="qt-luong">';
+  var thu=qtThuTuX(), vt={}; thu.forEach(function(x,i){vt[x]=i});
+  QT.luong.slice().sort(function(a,b){return (vt[a.Tu]-vt[b.Tu])||(vt[a.Den]-vt[b.Den])}).forEach(function(a){
+    var t1=T.x[a.Tu]||{tai:0}, t2=T.x[a.Den]||{tai:0};
+    h+='<div class="ln"><span class="qt-x '+qtMuc(t1.tai)+'">'+esc(qtTenX(a.Tu))+' · '+qtPt(t1.tai)+'</span> → <span class="qt-x '+qtMuc(t2.tai)+'">'+esc(qtTenX(a.Den))+' · '+qtPt(t2.tai)+'</span><span class="qt-btp">'+esc(a.BTP)+'</span></div>';
+  });
+  h+='</div><div style="font-size:12px;color:var(--ink3);margin-top:8px">Số % là tải của xưởng (người cần ÷ người có). Đỏ: quá 100%, vàng: trên 85%.</div></div>';
+  // bảng xưởng
+  h+='<div class="card"><div style="font-weight:600;margin-bottom:8px">Cân bằng các xưởng</div><div class="tw"><table><thead><tr><th>Xưởng</th><th class="qt-so">Giờ chuẩn/ngày</th><th class="qt-so">CN cần</th><th class="qt-so">CN có</th><th>Tải</th><th class="qt-so">Làm tối đa</th><th>Máy</th></tr></thead><tbody>';
+  thu.forEach(function(k){ var o=T.x[k]; if(!o)return;
+    var may=(QT.may||{})[k]||{}, tm=Object.keys(may).reduce(function(a,b){return a+may[b]},0);
+    h+='<tr><td><a href="#" data-x="'+esc(k)+'" onclick="QTX=this.dataset.x;QTV=\'x\';qtVe();return false">'+esc(qtTenX(k))+'</a>'+(o===T.nut&&o.tai>0?'<span class="qt-tag bd">NÚT THẮT</span>':'')+(o.khongDM?'<span class="qt-tag mo">'+o.khongDM+' CĐ chưa có ĐM</span>':'')+'</td>'+
+      '<td class="qt-so">'+qtSo(o.gio)+'</td><td class="qt-so">'+qtSo(o.can)+'</td><td class="qt-so">'+o.co+(o.ql?' <small style="color:var(--ink3)">+'+o.ql+' QL</small>':'')+'</td>'+
+      '<td><div style="display:flex;gap:6px;align-items:center"><div class="qt-thanh" style="flex:1"><i class="'+qtMuc(o.tai)+'" style="width:'+Math.min(100,o.tai*100)+'%"></i></div><span class="qt-tai '+qtMuc(o.tai)+'">'+qtPt(o.tai)+'</span></div></td>'+
+      '<td class="qt-so">'+(o.toiDa?Math.round(o.toiDa)+'%':'–')+'</td><td title="'+esc(Object.keys(may).map(function(l){return may[l]+' '+l}).join(', '))+'">'+tm+'</td></tr>';
+  });
+  h+='</tbody></table></div></div>';
+  h+='<details class="card"><summary style="cursor:pointer;font-weight:600">Cách tính (bấm để xem)</summary><div style="font-size:13px;color:var(--ink2);line-height:1.6;margin-top:8px">'+
+    '<p><b>Giờ chuẩn</b> = sản lượng ÷ định mức của từng công đoạn, nên phôi, cây, cái, bộ… đều quy về giờ-người và cộng được với nhau.</p>'+
+    '<p><b>CN cần</b> = giờ chuẩn mỗi ngày × mục tiêu ÷ (giờ có mặt × hiệu suất). Hiệu suất mặc định 85% vì định mức đang đặt ở mức 90% người làm được (P75), không phải mức trung bình.</p>'+
+    '<p><b>CN có</b> = nhân sự "Đang làm" của xưởng (công nhân, tổ trưởng, kỹ thuật), không tính trưởng / phó phòng (ghi riêng "QL"). <b>Tải</b> = cần ÷ có. Xưởng tải cao nhất là nút thắt; <b>làm tối đa</b> = mục tiêu ÷ tải.</p>'+
+    '<p>Sản lượng lấy theo cơ cấu hàng thực tế đã làm trong kỳ (không cần khai từng gậy cần bao nhiêu khúc). Nhật ký chưa ghi máy nên chưa tính giới hạn máy; cột Máy chỉ để tham khảo.</p></div></details>';
+  return h;
+}
+
+/* --- Sơ đồ công đoạn của 1 xưởng (dọc, tự xếp tầng) --- */
+function qtSoDo(x,T){
+  var cs=QTD.filter(function(q){return q.MaXuong===x&&!QT_NHANH_NGOAI[q.Nhanh]});
+  if(!cs.length) return '<div class="pdesc">Xưởng chưa có công đoạn trên dòng chảy.</div>';
+  var canh=qtCanh(QTD.filter(function(q){return q.MaXuong===x})), tang={}, co={};
+  cs.forEach(function(q){co[q.Ma]=1});
+  var tinh=function(m,d){ if(tang[m]!=null)return tang[m]; if(d>200)return 0; var t=0; (canh[m]||[]).forEach(function(p){ if(co[p]) t=Math.max(t,tinh(p,d+1)+1); }); return tang[m]=t; };
+  cs.forEach(function(q){tinh(q.Ma,0)});
+  var hang=[]; cs.forEach(function(q){ (hang[tang[q.Ma]]=hang[tang[q.Ma]]||[]).push(q); });
+  hang.forEach(function(r){ r.sort(function(a,b){return (QT_THU_NHANH.indexOf(a.Nhanh)-QT_THU_NHANH.indexOf(b.Nhanh))||(a.Ma<b.Ma?-1:1)}); });
+  var W=158, H=58, gx=14, gy=34, rong=0; hang.forEach(function(r){ if(r) rong=Math.max(rong,r.length); });
+  var Wt=Math.max(320,rong*(W+gx)+gx), Ht=hang.length*(H+gy)+gy, vi={}, nut=T.x[x]?T.x[x].cd.filter(function(o){return !QT_NHANH_NGOAI[o.nhanh]}).reduce(function(a,o){return o.tai>a.tai?o:a},{tai:0}):{};
+  hang.forEach(function(r,i){ if(!r)return; var off=(Wt-r.length*(W+gx)+gx)/2; r.forEach(function(q,j){ vi[q.Ma]={x:off+j*(W+gx),y:gy/2+i*(H+gy)}; }); });
+  var s='<svg width="'+Wt+'" height="'+Ht+'" viewBox="0 0 '+Wt+' '+Ht+'" role="img" aria-label="Sơ đồ công đoạn '+esc(qtTenX(x))+'">';
+  cs.forEach(function(q){ var b=vi[q.Ma]; (canh[q.Ma]||[]).forEach(function(p){ var a=vi[p]; if(!a)return;
+    var x1=a.x+W/2,y1=a.y+H,x2=b.x+W/2,y2=b.y,my=(y1+y2)/2;
+    s+='<path class="canh" d="M'+x1+' '+y1+' C'+x1+' '+my+' '+x2+' '+my+' '+x2+' '+(y2-4)+'"/><path class="canh" d="M'+(x2-4)+' '+(y2-8)+' L'+x2+' '+(y2-2)+' L'+(x2+4)+' '+(y2-8)+'"/>'; }); });
+  cs.forEach(function(q){ var b=vi[q.Ma], o=T.cd[q.Ma]||{}, m=qtMuc(o.tai||0), laNut=nut.ma===q.Ma&&o.tai>0.5, ten=String(o.ten||q.Ma);
+    if(laNut) m='bd';
+    if(ten.length>24) ten=ten.slice(0,23)+'…';
+    s+='<g class="nut '+m+'"><title>'+esc((o.ten||q.Ma)+' – '+(QT.nhanh[q.Nhanh]||q.Nhanh)+' bước '+q.Buoc)+'</title><rect x="'+b.x+'" y="'+b.y+'" width="'+W+'" height="'+H+'" rx="9"/>'+
+      '<text x="'+(b.x+8)+'" y="'+(b.y+18)+'" font-size="12.5" font-weight="600">'+esc(ten)+'</text>'+
+      '<text class="phu" x="'+(b.x+8)+'" y="'+(b.y+34)+'">'+esc((QT.nhanh[q.Nhanh]||'')+' · cần '+qtSo(o.can||0)+' · biết '+(o.nb||0))+'</text>'+
+      (laNut?'<text class="the" x="'+(b.x+8)+'" y="'+(b.y+50)+'">NÚT THẮT</text>':(o.mot?'<text class="the" x="'+(b.x+8)+'" y="'+(b.y+50)+'">CHỈ 1 NGƯỜI BIẾT</text>':(o.khongDM?'<text class="phu" x="'+(b.x+8)+'" y="'+(b.y+50)+'">chưa có định mức</text>':'')))+'</g>';
+  });
+  return '<div class="qt-sodo">'+s+'</svg></div>';
+}
+
+/* --- Từng xưởng --- */
+function qtVeX(T){
+  var o=T.x[QTX]; if(!o) return '<div class="pdesc">Chưa chọn xưởng.</div>';
+  var cds=o.cd.slice().sort(function(a,b){return (QT_THU_NHANH.indexOf(a.nhanh)-QT_THU_NHANH.indexOf(b.nhanh))||(a.buoc-b.buoc)});
+  var yeu=o.cd.filter(function(c){return c.can>0.05&&!QT_NHANH_NGOAI[c.nhanh]}).sort(function(a,b){return b.tai-a.tai}).slice(0,3);
+  var h='<div class="card"><div class="qt-ket">'+esc(qtTenX(QTX))+': cần <b>'+qtSo(o.can)+'</b> người, có <b>'+o.co+'</b> → tải <b class="'+(qtMuc(o.tai)||'ok')+'">'+qtPt(o.tai)+'</b>'+(o.thieu?', thiếu khoảng <b class="bd">'+o.thieu+' người</b>':'')+'.</div>';
+  if(yeu.length) h+='<div style="font-size:13px">Công đoạn căng nhất (cần ÷ số người biết làm): '+yeu.map(function(c,i){return (i+1)+'. <b>'+esc(c.ten)+'</b> '+qtPt(c.tai)+(c.mot?' <span class="qt-tag bd">1 người</span>':'')}).join(' · ')+'</div>';
+  h+='</div><div class="card"><div style="font-weight:600;margin-bottom:6px">Sơ đồ công đoạn</div><div style="font-size:12px;color:var(--ink3);margin-bottom:6px">Đi từ trên xuống. Viền đỏ: nút thắt hoặc cần nhiều hơn số người biết làm; vàng: trên 85%. "biết" = số người đã làm công đoạn trong kỳ hoặc có kỹ năng cấp 2+.</div>'+qtSoDo(QTX,T)+'</div>';
+  h+='<div class="card"><div class="tw"><table><thead><tr><th>Nhánh · bước</th><th>Công đoạn</th><th class="qt-so">SL/ngày</th><th class="qt-so">Định mức</th><th class="qt-so">Giờ chuẩn</th><th class="qt-so">CN cần</th><th class="qt-so">Biết làm</th><th class="qt-so">Tải</th></tr></thead><tbody>';
+  cds.forEach(function(c){
+    h+='<tr><td style="white-space:nowrap">'+esc(QT.nhanh[c.nhanh]||c.nhanh)+' · '+c.buoc+'</td><td>'+esc(c.ten)+(c.mot?'<span class="qt-tag bd">1 người</span>':(c.hai?'<span class="qt-tag wn">2 người</span>':''))+(c.khongDM?'<span class="qt-tag mo">chưa có ĐM</span>':'')+'</td>'+
+      '<td class="qt-so">'+qtSo(c.slN)+'</td><td class="qt-so">'+(c.dm?qtSo(c.dm)+' <small style="color:var(--ink3)">'+esc(c.dvt)+'</small>':'–')+'</td><td class="qt-so">'+qtSo(c.gio)+'</td><td class="qt-so">'+qtSo(c.can,2)+'</td><td class="qt-so">'+c.nb+'</td><td class="qt-so"><span class="qt-tai '+qtMuc(c.tai)+'">'+(c.can>0.005?qtPt(c.tai):'–')+'</span></td></tr>';
+  });
+  h+='</tbody></table></div></div>';
+  return h;
+}
+
+/* --- Con người: quy tắc 3 người --- */
+function qtVeNguoi(T){
+  var o=T.x[QTX]; if(!o) return '';
+  var cds=o.cd.filter(function(c){return c.can>0.05}).sort(function(a,b){return a.nb-b.nb||b.can-a.can});
+  var d1=cds.filter(function(c){return c.mot}).length, d2=cds.filter(function(c){return c.hai}).length;
+  var h='<div class="card"><div class="qt-ket">'+esc(qtTenX(QTX))+': <b class="bd">'+d1+'</b> công đoạn chỉ 1 người biết làm, <b class="wn">'+d2+'</b> công đoạn có 2 người.</div>'+
+    '<div style="font-size:12.5px;color:var(--ink3)">Quy tắc 3 người: mỗi công đoạn nên có ít nhất 3 người làm được, để người nghỉ / chuyển việc không làm dừng chuyền. "Biết làm" = đã làm công đoạn trong kỳ (nhật ký) hoặc có kỹ năng cấp 2+ còn hạn (tab Kỹ năng). Chỉ để lập kế hoạch đào tạo, không dùng để trừ KPI.</div></div>';
+  h+='<div class="card"><div class="tw"><table><thead><tr><th>Công đoạn</th><th class="qt-so">CN cần</th><th class="qt-so">Biết làm</th><th>Những người biết làm</th></tr></thead><tbody>';
+  cds.forEach(function(c){
+    h+='<tr><td>'+esc(c.ten)+(c.mot?'<span class="qt-tag bd">1 người</span>':(c.hai?'<span class="qt-tag wn">2 người</span>':''))+'</td><td class="qt-so">'+qtSo(c.can,2)+'</td><td class="qt-so">'+c.nb+'</td><td style="font-size:12.5px">'+esc(c.tenNguoi.join(', '))+'</td></tr>';
+  });
+  h+='</tbody></table></div></div>';
+  return h;
+}
+
+/* --- Sửa quy trình --- */
+function qtVeSua(T){
+  var cs=QTD.filter(function(q){return q.MaXuong===QTX}).sort(function(a,b){return (QT_THU_NHANH.indexOf(a.Nhanh)-QT_THU_NHANH.indexOf(b.Nhanh))||(a.Buoc-b.Buoc)||(a.Ma<b.Ma?-1:1)});
+  var canh=qtCanh(QTD.filter(function(q){return q.MaXuong===QTX})), ten=function(m){return (QT.cdMap[m]||{}).TenCD||m};
+  var h='<div class="card qt-sua"><div style="font-size:13px;color:var(--ink2);margin-bottom:8px">Mỗi công đoạn chọn <b>nhánh</b> và <b>bước</b>. Công đoạn trước tự nối: cùng nhánh bước liền trước; nhánh Ngọn / Chuôi / Gậy 1 khúc tách ra từ "Chung" và gộp lại ở bước "Chung" sau. Cần nối khác thì bấm "Chọn tay". Hỗ trợ / Làm lại không nằm trên dòng chảy nhưng vẫn tính tải.</div>';
+  cs.forEach(function(q){
+    var tr=canh[q.Ma]||[], tay=q.Truoc&&q.Truoc.length;
+    h+='<div class="dong"><div class="ten">'+esc(ten(q.Ma))+(q.moi?'<span class="qt-tag wn">mới</span>':'')+'<small>'+esc(q.Ma)+'</small></div>'+
+      '<select aria-label="Nhánh" data-ma="'+esc(q.Ma)+'" onchange="qtSuaO(this.dataset.ma,\'Nhanh\',this.value)">'+QT_THU_NHANH.map(function(k){return '<option value="'+k+'"'+(k===q.Nhanh?' selected':'')+'>'+esc(QT.nhanh[k]||k)+'</option>'}).join('')+'</select>'+
+      '<input aria-label="Bước" type="number" inputmode="numeric" min="1" max="99" value="'+q.Buoc+'" data-ma="'+esc(q.Ma)+'" onchange="qtSuaO(this.dataset.ma,\'Buoc\',this.value)">'+
+      '<div class="truoc">'+(QT_NHANH_NGOAI[q.Nhanh]?'<i>ngoài dòng chảy</i>':'← '+(tr.length?esc(tr.map(ten).join(', ')):'<i>đầu dòng</i>')+(tay?' <span class="qt-tag wn">tay</span>':''))+
+      '<br><button class="btn sm" type="button" data-ma="'+esc(q.Ma)+'" onclick="QTMo=QTMo===this.dataset.ma?\'\':this.dataset.ma;qtVe()">'+(QTMo===q.Ma?'Đóng':'Chọn tay')+'</button>'+(tay?' <button class="btn sm" type="button" data-ma="'+esc(q.Ma)+'" onclick="qtSuaO(this.dataset.ma,\'Truoc\',[])">Về tự động</button>':'')+'</div>';
+    if(QTMo===q.Ma){
+      h+='<div class="chon">'+cs.filter(function(c){return c.Ma!==q.Ma}).map(function(c){
+        return '<label><input type="checkbox" data-ma="'+esc(q.Ma)+'" data-t="'+esc(c.Ma)+'"'+(tr.indexOf(c.Ma)>=0?' checked':'')+' onchange="qtChonTay(this)">'+esc(ten(c.Ma))+'</label>'; }).join('')+'</div>';
+    }
+    h+='</div>';
+  });
+  h+='</div>';
+  // luồng giữa xưởng
+  var xs=(QT.xuong||[]);
+  var opt=function(v){ return xs.map(function(p){return '<option value="'+esc(p.MaXuong)+'"'+(p.MaXuong===v?' selected':'')+'>'+esc(qtTenX(p.MaXuong))+'</option>'}).join(''); };
+  h+='<div class="card qt-xl"><div style="font-weight:600;margin-bottom:8px">Luồng giữa các xưởng</div>';
+  QT.luong.forEach(function(a,i){
+    h+='<div class="dong"><select aria-label="Từ xưởng" onchange="qtSuaL('+i+',\'Tu\',this.value)">'+opt(a.Tu)+'</select><select aria-label="Đến xưởng" onchange="qtSuaL('+i+',\'Den\',this.value)">'+opt(a.Den)+'</select>'+
+      '<input aria-label="Bán thành phẩm" maxlength="120" value="'+esc(a.BTP)+'" onchange="qtSuaL('+i+',\'BTP\',this.value)"><button class="btn sm dg" type="button" onclick="QT.luong.splice('+i+',1);QTDoi=true;qtVe()" aria-label="Xóa luồng">✕</button></div>';
+  });
+  h+='<button class="btn sm" type="button" onclick="QT.luong.push({Tu:QTX,Den:QTX===\'DG\'?\'HT\':\'DG\',BTP:\'\',GhiChu:\'\'});QTDoi=true;qtVe()">+ Thêm luồng</button></div>';
+  h+='<div class="qt-luu"><button class="btn" type="button" onclick="qtLuu()"'+(QTDoi||QT.nhap?'':' disabled')+'>Lưu quy trình</button><span style="font-size:12.5px;color:var(--ink3)">'+(QTDoi?'Có thay đổi chưa lưu (cả cài đặt mục tiêu / giờ / hiệu suất).':(QT.nhap?'Đang là nháp – lưu để chốt.':'Đã lưu.'))+'</span>'+
+    (QTDoi?'<button class="btn sm" type="button" onclick="vQTTai()">Bỏ thay đổi</button>':'')+'</div>';
+  return h;
+}
+function qtTim(m){ return QTD.filter(function(q){return q.Ma===m})[0]; }
+function qtSuaO(m,k,v){
+  var q=qtTim(m); if(!q)return;
+  if(k==='Buoc'){ v=Math.round(Number(v)); if(!(v>=1&&v<=99)){ toast('Bước là số 1–99.'); qtVe(); return; } }
+  q[k]=v; q.moi=false; QTDoi=true; qtVe();
+}
+function qtChonTay(el){
+  var q=qtTim(el.dataset.ma); if(!q)return;
+  var cur=(q.Truoc&&q.Truoc.length)?q.Truoc.slice():(qtCanh(QTD.filter(function(c){return c.MaXuong===q.MaXuong}))[q.Ma]||[]).slice();
+  var t=el.dataset.t, i=cur.indexOf(t);
+  if(el.checked&&i<0) cur.push(t); if(!el.checked&&i>=0) cur.splice(i,1);
+  var thu={}; QTD.filter(function(c){return c.MaXuong===q.MaXuong}).forEach(function(c){ thu[c.Ma]=c; });
+  var ds=QTD.filter(function(c){return c.MaXuong===q.MaXuong}).map(function(c){ return c===q?{Ma:c.Ma,MaXuong:c.MaXuong,Nhanh:c.Nhanh,Buoc:c.Buoc,Truoc:cur}:c; });
+  if(qtVong(qtCanh(ds))){ toast('Nối như vậy sẽ thành vòng lặp.'); qtVe(); return; }
+  q.Truoc=cur.length?cur:[]; if(!cur.length) toast('Bỏ hết thì công đoạn trở về nối tự động.');
+  QTDoi=true; qtVe();
+}
+function qtVong(canh){
+  var mau={}, vong=false;
+  var di=function(m){ if(vong)return; mau[m]=1; (canh[m]||[]).forEach(function(t){ if(vong)return; if(mau[t]===1)vong=true; else if(!mau[t]&&canh[t])di(t); }); mau[m]=2; };
+  Object.keys(canh).forEach(function(m){ if(!mau[m])di(m); });
+  return vong;
+}
+function qtSuaL(i,k,v){ var a=QT.luong[i]; if(!a)return; a[k]=k==='BTP'?String(v).slice(0,120):v; QTDoi=true; qtVe(); }
+function qtLuu(){
+  var o={ cd:QTD.map(function(q){return {Ma:q.Ma,Nhanh:q.Nhanh,Buoc:q.Buoc,Truoc:q.Truoc||[],GhiChu:q.GhiChu||''}}),
+    xuong:QT.luong.map(function(a){return {Tu:a.Tu,Den:a.Den,BTP:a.BTP,GhiChu:a.GhiChu||''}}),
+    caiDat:{gioCoMat:QTS.gioCoMat,hieuSuat:QTS.hieuSuat,mucTieu:QTS.mucTieu,soNgay:QTSoNgay} };
+  call('luuQuyTrinh',[o],function(r){
+    if(!r||!r.ok){ toast((r&&r.msg)||'Không lưu được.'); return; }
+    toast(r.msg,true); vQTTai();
+  });
+}
+window.__qtDaNap=true;
+</script>

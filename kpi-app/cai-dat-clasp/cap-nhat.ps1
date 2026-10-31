@@ -1,5 +1,5 @@
 ﻿# Cập nhật web KPI lên bản mới nhất trên GitHub (bấm đúp 2-CAP-NHAT.bat).
-# Thứ tự: sao lưu bản đang chạy -> tải 5 file mới -> đẩy lên Apps Script -> triển khai phiên bản mới (giữ nguyên link).
+# Thứ tự: sao lưu bản đang chạy -> tải các file mới (Code.gs + danh sách HTML trong danh-sach-file.txt) -> đẩy lên Apps Script -> triển khai phiên bản mới (giữ nguyên link).
 . (Join-Path $PSScriptRoot 'chung.ps1')
 
 try {
@@ -16,6 +16,12 @@ try {
   if (Test-Path $tam) { Remove-Item $tam -Recurse -Force }
   New-Item -ItemType Directory -Force -Path $tam | Out-Null
   [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
+  # Danh sách file HTML lấy từ GitHub (31/10): web thêm file mới thì không phải gửi lại bộ cài. Lỗi thì dùng danh sách sẵn trong chung.ps1.
+  try {
+    $dsMoi = (Invoke-WebRequest -UseBasicParsing -Uri ($NguonWeb + 'danh-sach-file.txt?t=' + (Get-Date -Format 'yyyyMMddHHmmss'))).Content -split "`r?`n" |
+      ForEach-Object { $_.Trim() } | Where-Object { $_ -match '^[A-Za-z][A-Za-z0-9]{1,40}$' }
+    if ($dsMoi -and ($dsMoi -contains 'Index')) { $CacFileHtml = @($dsMoi) }
+  } catch { Write-Host '  (Không đọc được danh sách file mới – dùng danh sách có sẵn.)' -ForegroundColor Yellow }
   $ds = @('Code.gs') + ($CacFileHtml | ForEach-Object { $_ + '.html' })
   foreach ($f in $ds) {
     Invoke-WebRequest -UseBasicParsing -Uri ($NguonWeb + $f + '?t=' + (Get-Date -Format 'yyyyMMddHHmmss')) -OutFile (Join-Path $tam $f)

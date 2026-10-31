@@ -80,7 +80,7 @@ const GOI_Y = [[tk.filter(r => String(r[cotTK('TenDangNhap')]).toLowerCase() ===
 const code = fs.readFileSync(path.join(__dirname, '..', 'Code.gs'), 'utf8');
 let html = fs.readFileSync(path.join(__dirname, '..', 'Index.html'), 'utf8');
 // phần giao diện tải sau (SoDo.html, HoatAnh.html – mục 19): nhúng vào máy chủ giả để layManhGiaoDien trả được
-const MANH = {}; ['SoDo', 'HoatAnh', 'AmThanh'].forEach(f => { const p = path.join(__dirname, '..', f + '.html'); if (fs.existsSync(p)) MANH[f] = fs.readFileSync(p, 'utf8'); });
+const MANH = {}; ['SoDo', 'HoatAnh', 'AmThanh', 'QuyTrinh'].forEach(f => { const p = path.join(__dirname, '..', f + '.html'); if (fs.existsSync(p)) MANH[f] = fs.readFileSync(p, 'utf8'); });
 // GIAO_DIEN=toi|sang: bộ màu mở đầu của bản xem thử (mỗi bản nhớ lựa chọn ☀/☾ riêng)
 const GD = process.env.GIAO_DIEN;
 if (GD) {

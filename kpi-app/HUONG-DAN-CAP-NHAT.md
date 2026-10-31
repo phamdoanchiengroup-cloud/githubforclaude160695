@@ -627,3 +627,14 @@ Gồm 5 file: **Code.gs**, **Index.html**, **SoDo.html**, **HoatAnh.html** và f
    - Có thể một số người phải **đăng nhập lại** 1 lần (do đổi cách lưu phiên) – bình thường.
    - Anh đổi mật khẩu chủ sở hữu; tài khoản **giamdoc**, **phogd2** đổi mật khẩu (đang là 123456).
    - Sheet tự thêm khi dùng tới: `LichSuDinhMuc`, `HoiNhap`; cột mới `HanMatKhauTam`, `PhienBan` (TaiKhoan), `SLGoc` (nhật ký), `MucKyNang`. Không cần tạo tay.
+
+## QUY TRÌNH SẢN XUẤT 31/10 – tab mới, chỉ tài khoản chủ sở hữu – đổi Code.gs, Index.html + file MỚI QuyTrinh.html
+**Lần này phải thay bộ cài clasp một lần** (bộ cũ chỉ biết 5 file cố định, chưa biết file mới QuyTrinh.html):
+1. Tải file `cai-dat-clasp.zip` Claude gửi → giải nén → chép đè thư mục `cai-dat-clasp` cũ (chọn "Thay thế").
+2. Bấm đúp **2-CAP-NHAT.bat** như mọi lần → mở web, Ctrl+F5.
+3. Đăng nhập tài khoản chủ sở hữu → menu **Sản xuất → Quy trình sản xuất**.
+
+Từ lần này bộ cài tự đọc danh sách file trên GitHub (`kpi-app/danh-sach-file.txt`), sau này web thêm file mới không phải thay bộ cài nữa.
+Chép – dán tay (không dùng clasp): dán lại Code.gs, Index.html; tạo file HTML mới tên **QuyTrinh** (đúng chữ hoa Q, T) → dán `QuyTrinh.html` → Ctrl+S → Triển khai → Quản lý triển khai → ✏️ → Phiên bản mới → Triển khai.
+Không có hàm cần chạy. Sheet `QuyTrinh` tự tạo khi bấm "Lưu quy trình" lần đầu.
+

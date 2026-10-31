@@ -1361,6 +1361,8 @@ exec(io.open(os.path.join(os.path.dirname(__file__), 'ho-so', 'va-ho-so.py'), en
 exec(io.open(os.path.join(os.path.dirname(__file__), 'ky-nang', 'va-ky-nang.py'), encoding='utf-8').read())
 # ---------------------------------------------------------------- KPI quản lý (25/10): "không nhắc CN nhập" chỉ tính lượt CN có vi phạm NHAPTRE
 exec(io.open(os.path.join(os.path.dirname(__file__), 'khong-nhac', 'va-khong-nhac.py'), encoding='utf-8').read())
+# ---------------------------------------------------------------- Quy trình sản xuất (31/10): quy trình công đoạn + cân bằng xưởng, chỉ chủ sở hữu
+exec(io.open(os.path.join(os.path.dirname(__file__), 'quy-trinh', 'va-quy-trinh.py'), encoding='utf-8').read())
 
 io.open(RA, 'w', encoding='utf-8').write(s)
 print('OK ->', os.path.abspath(RA))

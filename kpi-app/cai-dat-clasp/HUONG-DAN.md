@@ -17,7 +17,7 @@ Bộ này dùng **clasp**, công cụ chính thức của Google, để đẩy m
 7. Thấy **CÀI ĐẶT XONG** là xong. Bản mã đang chạy được sao lưu vào `C:\Users\<tên bạn>\KPI-AppsScript\sao-luu\`.
 
 ## Mỗi lần có bản mới
-- Bấm đúp **2-CAP-NHAT.bat**. Máy tự: sao lưu bản đang chạy → tải 5 file mới (Code, Index, SoDo, HoatAnh, AmThanh) → đẩy lên Apps Script → triển khai phiên bản mới, **giữ nguyên đường link web**. Xong mở web bấm Ctrl+F5.
+- Bấm đúp **2-CAP-NHAT.bat**. Máy tự: sao lưu bản đang chạy → tải các file mới (Code và các file HTML ghi trong `danh-sach-file.txt` trên GitHub – hiện là Index, SoDo, HoatAnh, AmThanh, QuyTrinh; web thêm file mới thì máy tự biết, không phải cài lại) → đẩy lên Apps Script → triển khai phiên bản mới, **giữ nguyên đường link web**. Xong mở web bấm Ctrl+F5.
 - Các hàm "chạy một lần" (nếu bản mới có) vẫn chạy trong Apps Script như cũ – Claude sẽ ghi rõ.
 - Nếu lúc cài đặt máy báo không tự triển khai được, sau khi chạy 2-CAP-NHAT.bat bạn vẫn bấm **Triển khai → Quản lý triển khai → ✏️ → Phiên bản mới → Triển khai** như trước.
 
@@ -25,6 +25,6 @@ Bộ này dùng **clasp**, công cụ chính thức của Google, để đẩy m
 - Bấm đúp **3-KHOI-PHUC.bat** → chọn **1** (bản ngay trước lần cập nhật) → web quay về bản cũ.
 
 ## Lưu ý quan trọng
-- Mỗi lần cập nhật, toàn bộ file Code / Index / SoDo / HoatAnh / AmThanh trên Apps Script được **thay bằng bản trên GitHub**. Nếu bạn tự sửa trực tiếp trong Apps Script, hãy báo Claude trước để gộp vào, nếu không phần sửa sẽ bị thay (vẫn còn trong thư mục sao lưu).
+- Mỗi lần cập nhật, toàn bộ file Code và các file HTML trong danh sách trên Apps Script được **thay bằng bản trên GitHub**. Nếu bạn tự sửa trực tiếp trong Apps Script, hãy báo Claude trước để gộp vào, nếu không phần sửa sẽ bị thay (vẫn còn trong thư mục sao lưu).
 - File khác bạn tự thêm vào dự án (nếu có) được giữ nguyên.
 - Không chia sẻ thư mục `KPI-AppsScript` và file `.clasprc.json` trong thư mục người dùng – đó là chìa khóa đăng nhập Google của clasp.

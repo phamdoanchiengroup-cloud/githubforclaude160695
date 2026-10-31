@@ -10,7 +10,7 @@ $CauHinh  = Join-Path $Goc 'cau-hinh.json'
 $Nhanh    = 'claude/beautiful-ptolemy-f2j7za'
 $NguonWeb = 'https://raw.githubusercontent.com/phamdoanchiengroup-cloud/githubforclaude160695/' + $Nhanh + '/kpi-app/'
 $ClaspLenh = if ($IsLinux -or $IsMacOS) { 'clasp' } else { 'clasp.cmd' }   # Windows: gọi thẳng clasp.cmd của npm
-$CacFileHtml = @('Index', 'SoDo', 'HoatAnh', 'AmThanh')       # tên phải đúng từng chữ hoa / thường
+$CacFileHtml = @('Index', 'SoDo', 'HoatAnh', 'AmThanh', 'QuyTrinh')   # dự phòng – lúc cập nhật đọc danh sách mới từ kpi-app/danh-sach-file.txt trên GitHub (31/10)
 
 function Bao($chu)  { Write-Host ''; Write-Host $chu -ForegroundColor Cyan }
 function Tot($chu)  { Write-Host $chu -ForegroundColor Green }

@@ -829,6 +829,8 @@ exec(io.open(os.path.join(D, 'ky-nang', 'va-ky-nang-web.py'), encoding='utf-8').
 exec(io.open(os.path.join(D, 'holo', 'va-holo-web.py'), encoding='utf-8').read())
 # ---------------------------------------------------------------- 35. Bảng KPI ban điều hành: mặc định tải tất cả xưởng, xưởng nào xong hiện trước (24/10)
 exec(io.open(os.path.join(D, 'kpi-tat-ca', 'va-kpi-tat-ca.py'), encoding='utf-8').read())
+# ---------------------------------------------------------------- 36. Quy trình sản xuất (31/10): tab chỉ chủ sở hữu, giao diện ở mảnh QuyTrinh.html
+exec(io.open(os.path.join(D, 'quy-trinh', 'va-quy-trinh-web.py'), encoding='utf-8').read())
 # ---------------------------------------------------------------- 27. Chia đôi màn hình (21/10): Bảng KPI, Nhân sự, KPI quản lý – danh sách trái, chi tiết phải (phải là mục cuối)
 exec(io.open(os.path.join(D, 'chia-doi', 'va-chia-doi.py'), encoding='utf-8').read())
 
