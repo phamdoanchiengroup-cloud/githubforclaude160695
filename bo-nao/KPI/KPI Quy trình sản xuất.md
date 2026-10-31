@@ -20,7 +20,7 @@ Trạng thái: **đang thiết kế, chưa viết code**.
   - Giai đoạn 2: đi sâu cấp công đoạn ở các xưởng nút thắt, gắn kỹ năng ILUO.
   - Giai đoạn 3: kế hoạch sản lượng và tồn BTP.
 - **Tab chỉ mở cho tài khoản chủ sở hữu**, vì còn phải chỉnh nhiều mới chính xác.
-- Bộ 13 câu hỏi làm rõ ngày 25/10 (xem [[Việc chờ chủ dự án]]) **chưa được trả lời từng câu**. Chủ dự án gửi trước 2 file dữ liệu (dưới đây) để Claude rút thông tin.
+- Bộ 13 câu hỏi làm rõ ngày 25/10 (xem [[Việc chờ chủ dự án]]) **chưa được trả lời từng câu**. Chủ dự án gửi trước 3 file dữ liệu (dưới đây) để Claude rút thông tin.
 
 ## Góp ý chuyên gia (25/10)
 - **`quan-ly-van-hanh`**
@@ -45,7 +45,7 @@ Trạng thái: **đang thiết kế, chưa viết code**.
   - Nút thắt: viền đỏ kèm chữ "NÚT THẮT", có một câu kết luận ở đầu.
   - Luồng giữa các xưởng hiện bằng danh sách mũi tên.
 
-## Dữ liệu từ 2 file chủ dự án gửi (31/10)
+## Dữ liệu từ 3 file chủ dự án gửi (31/10)
 File gốc chỉ để ở scratchpad phiên (`scratchpad/qt/`), **không commit**: có tên khách và tên người. Phiên sau cần thì nhờ chủ dự án gửi lại, hoặc lấy trên Drive nếu đã có.
 
 ### 1. "Carbon Billiards – Danh mục từng tab" (danh mục mã hàng, ~9.600 mã)
@@ -92,6 +92,40 @@ File gốc chỉ để ở scratchpad phiên (`scratchpad/qt/`), **không commit
   - Từ 9/10 mức ổn định là 250–500/ngày.
   - Đơn vị lẫn lộn: gậy, ngọn, chuôi chưa tách riêng.
 - **Thứ tự bộ phận trong bảng khớp với luồng tiền tố mã ở trên.** Văn phòng đang theo dõi WIP bằng tay theo đúng luồng này.
+
+### 3. "THÔNG SỐ GẬY.xlsx" (31/10, trên Drive, id `1wM3DydKenFuPo4PWTirgr2WzE15yBNqB`)
+- File 36 MB, vượt giới hạn tải lên Claude (30 MB) nên chủ dự án đưa lên Drive. Phần nặng là ảnh.
+- Công cụ `download_file_content` chỉ tải được file dưới 10 MB. **`read_file_content` đọc được phần chữ.** Ảnh không đọc được, và nội dung có thể bị cắt nếu file quá dài.
+- **Nội dung:** bảng "thông số kỹ thuật" theo dòng gậy. Mỗi mã gậy ghi **thông số phôi ngọn** và **loại phôi chuôi**, kèm ghi chú trọng lượng. Đây là **BOM cấp BTP** (gậy cần những bán thành phẩm nào).
+- **Các sheet / nhóm:**
+  - Rhino 2024: VF, Nhảy Never, Nebula, Komet, Rhino EVO, Đánh / Phá / Nhảy Mỹ, Retro, GMK, GW, Nối.
+  - EVO: EVO1 / 2 / 4 / 5, Phá X, Nhảy PEG (3 khúc) / IG (2 khúc), Phá-Nhảy VAL, Nối EVO.
+  - Rhino 2025, Rhino-New: Nebula, Retro, Luminax, Voyager, Komet, Việt Nam, Carom, Parkour, Eclipse II, Beer, IRC.
+  - Omega (ren Uniloc), Raptor, Cuebots (Z-Pure / Z-SP / Z-Luk / ZW / CHS / CHL / CG).
+  - Khách OEM / sỉ: X-Billiards / Allin, Dragon + Aileex, HSG, Aplus.
+- **Quy tắc BOM rút ra** (cần chủ dự án xác nhận):
+  - Gậy 2 khúc = **1 phôi ngọn + 1 phôi chuôi**. Nối 4/6/8 inch là món riêng, có mã riêng, đi kèm một số dòng (EVO, Retro, Legend).
+  - Gậy nhảy "3 khúc" (PEG): chuôi chia 280-150 → 1 ngọn + chuôi 2 đoạn.
+  - Phá-nhảy 350-385, nhảy 330-130 / 300-120 / 305-205: chuôi 2 đoạn.
+  - **"1480/2", "1450 chặt đôi"**: 1 phôi glassfiber 1480 / 1450 chặt ra 2 đoạn (ngọn và chuôi) → hệ số 1 phôi = 1 gậy.
+  - "Chặt từ chuôi GF 736": nhảy Allin Pro dùng lại phôi chuôi 736.
+  - Gậy 1 khúc (GMK 1450 / 1480) = 1 phôi.
+- **Thông số phôi:**
+  - Chiều dài: 707 / 725 / 736 / 747 / 750, 29" / 30".
+  - Đường kính đầu: 10.5–13.9.
+  - Vật liệu: full carbon T700 / mix / GF lõi carbon / GF vỏ carbon.
+  - Chỉ foam / full foam, có đạn hay không.
+  - Ren: 3/8-8, 3/8-10, 5/16-18, Uniloc, Radial.
+  - Típ: Time 3, 9 xanh 1 đen, đen 7 lớp, bakelite, Kamui, Nishiki.
+  - Phíp: mika 5/7, bakelite.
+  - Chuôi: khuôn 21.3/30.8 (Rhino) hoặc 21.3/31.3 (chuôi cũ + OEM), vách 2.0 / 2.5, lót bạc / trắng / Camay, hạ khấc / đánh phá.
+  - Tay da: sport vân carbon 1.4, vân rắn 1.6.
+- **Ghi chú quan trọng:**
+  - Ngọn 11.8 / 12.5 CYCO dùng cho Rhino và Z; 11.8 / 12.5 COCO chỉ dùng cho dòng Must.
+  - Trọng lượng hoàn thiện 18.5–19.5 oz tùy dòng.
+- **Dùng cho tab:**
+  - Mỗi dòng gậy biết cần 1 ngọn (qua Phôi → Taro → Tip / CNC phíp → HT) và 1 chuôi (qua Phôi → Sơn → UV → HT). Đây là điểm **quy tụ** ở khâu Hoàn thiện / Đóng gói.
+  - Biết phôi nào dùng chung giữa các dòng (vd. chuôi 736 hạ khấc bạc dùng cho nhiều dòng), nên gom nhu cầu phôi được.
 
 ### Dùng được gì cho tab Quy trình sản xuất
 1. **Khung luồng giữa các xưởng (giai đoạn 1):** Phôi → (Sơn, Taro ngọn, Tip/CNC song song) → UV → HT → ĐG. Lấy theo cột bảng đơn và tiền tố mã, nên không cần TP vẽ từ đầu.
