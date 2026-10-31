@@ -86,7 +86,8 @@ var PL_DONG = [
   ['THUE', 'Gậy thuê (chưa có thông số)', 'GAY', ['GAY THUE'], 'GF736DP', 'GFCB', 'DALON', 'R388', 0],
   // Ngọn bán lẻ (đi Phôi → Taro → Tip → thẳng Đóng gói)
   ['NG-RHINO', 'Ngọn carbon Rhino (single shaft)', 'NGON', ['SINGLE SHAFT', 'SNOOKER & ENGLISH POOL SHAFT', 'C30PT', 'NGON DANH CARBON RHINO', 'MUST SHAFT', 'SHAFT ONLY'], 'KHONG', 'FC', 'TIME3', '', 1],
-  ['NG-BREAK', 'Ngọn phá carbon', 'NGON', ['BREAK SHAFT', 'KOMET BREAK SHAFT', 'KOMET II'], 'KHONG', 'FCPHA', 'BAK', 'R388', 1],
+  ['NG-BREAK', 'Ngọn phá carbon', 'NGON', ['BREAK SHAFT'], 'KHONG', 'FCPHA', 'BAK', 'R388', 1],
+  ['NG-KOMET', 'Ngọn Komet 2 (phá, 13.0, ren 3/8-8)', 'NGON', ['KOMET BREAK SHAFT', 'KOMET II', 'KOMET'], 'KHONG', 'FCPHA', 'BAK', 'R388', 1],
   ['NG-CAROM', 'Ngọn carom carbon', 'NGON', ['CAROM SINGLE SHAFT'], 'KHONG', 'CAROM', 'TIME4', '', 1],
   ['NG-ZWAVE', 'Ngọn Z-Wave', 'NGON', ['Z-WAVE CARBON SINGLE SHAFT', 'NGON DANH ZWAVE'], 'KHONG', 'G750CB', 'DEN7', '', 1],
   ['NG-ZNITRO', 'Ngọn Cuebots Z-Nitro', 'NGON', ['Z NITRO', 'Z-NITRO'], 'KHONG', 'FC', 'CB8', 'R388', 1],
@@ -95,11 +96,13 @@ var PL_DONG = [
   ['NG-CHUNG', 'Ngọn lẻ (chưa rõ dòng)', 'NGON', [], 'KHONG', 'FC', 'TIME3', '', 0],
   // Chuôi bán lẻ
   ['CH-LUMINAX', 'Chuôi Luminax / Racing', 'CHUOI', ['LUMINAX CUE BUTT', 'RACING CUE BUTT'], 'GFCBFOAM', 'KHONG', 'KHONG', 'R388', 1],
-  ['CH-RHINO', 'Chuôi Rhino (Must / Retro)', 'CHUOI', ['MUST CUE BUTT', 'RETRO POOL CUE BUTT', 'CUE BUTT'], 'MIXCB', 'KHONG', 'KHONG', 'R388', 0],
+  ['CH-RETRO', 'Chuôi Retro (mix vỏ carbon, hạ khấc bạc)', 'CHUOI', ['RETRO POOL CUE BUTT', 'RETRO CUE BUTT'], 'MIXCB', 'KHONG', 'KHONG', 'R388', 1],
+  ['CH-RHINO', 'Chuôi Rhino (chưa rõ dòng, vd. Must)', 'CHUOI', ['MUST CUE BUTT', 'CUE BUTT'], 'MIXCB', 'KHONG', 'KHONG', 'R388', 0],
   ['NOI', 'Tay nối (extension)', 'NOI', [], 'KHONG', 'KHONG', 'KHONG', 'KHONG', 1],
   ['PK', 'Phụ kiện', 'PK', [], 'KHONG', 'KHONG', 'KHONG', 'KHONG', 1]
 ];
 
+var PL_DAU_MD = { 'NG-ZWAVE': '12.5', 'NG-KOMET': '13.0', 'KOMET': '13.0', 'CBZW': '12.5', 'CBZ': '12.5', 'CBZLUK': '12.5' };   // đầu mặc định theo Thông số gậy
 function plChuan_(s) {   // HOA, bỏ dấu, gộp khoảng trắng – để so tên gọi
   return String(s || '').toUpperCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/Đ/g, 'D').replace(/[–—]/g, '-')
     .replace(/[“”"″]/g, '"').replace(/\s+/g, ' ').trim();
@@ -209,7 +212,8 @@ function plPhanLoai_(ten, ghiChu, sua) {
   else { o.ren = ''; if (o.tin !== 'do') { o.tin = 'vang'; o.lyDo.push('chưa đọc được ren'); } }
   var tip = plTip_(t, g);
   if (tip) o.tip = tip;
-  if (o.loai === 'NGON' && !o.dau && o.tin === 'xanh') { o.tin = 'vang'; o.lyDo.push('chưa đọc được đường kính đầu'); }
+  if (!o.dau && PL_DAU_MD[d[0]]) o.dau = PL_DAU_MD[d[0]];
+  if (o.loai === 'NGON' && !o.dau && o.tin === 'xanh' && o.ngon !== 'FCPHA' && o.ngon !== 'NHAY139' && o.ngon !== 'FCNHAY') { o.tin = 'vang'; o.lyDo.push('chưa đọc được đường kính đầu'); }
   return o;
 }
 

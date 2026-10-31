@@ -23,7 +23,7 @@ Liên quan: [[Lần dán lên Apps Script]] · [[Quyết định của chủ d�
   
   (Đã chốt: phương án C, chỉ chủ sở hữu xem.) – [[KPI Quy trình sản xuất]]
 
-- (31/10: Qoder chỉ tham khảo; đã làm "Đơn hàng → xưởng".) Việc của chủ dự án: thay bộ cài, cập nhật, mở **Quy trình sản xuất → Đơn hàng → xưởng**, duyệt 29 tên hàng vàng ở "Kiểm phân loại". Câu hỏi: có muốn các bộ phận ghi số "đã qua" vào Sheet đơn đều hơn không? – [[KPI Quy trình sản xuất]]
+- (31/10: Qoder chỉ tham khảo; đã làm "Đơn hàng → xưởng".) Việc của chủ dự án: thay bộ cài, cập nhật, mở **Quy trình sản xuất → Đơn hàng → xưởng**, cho thông số 22 tên hàng còn vàng (Must, Hornet, Crest, Lửa Việt, phá nhảy chia 2 màu, gậy thuê, KOMET Break Shaft) hoặc sửa tay ở "Kiểm phân loại"; nếu muốn bung mã BTP 60… / S… / Ngọn… thì gửi bảng ánh xạ. Câu hỏi: có muốn các bộ phận ghi số "đã qua" vào Sheet đơn đều hơn không? – [[KPI Quy trình sản xuất]]
 
 ## Câu hỏi 22/10
 

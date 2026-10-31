@@ -348,7 +348,7 @@ function qtLuu(){
   });
 }
 /* ===== Đơn hàng → xưởng (31/10): đọc Sheet "Trạng thái đơn hàng", phân loại 4 thông số, việc còn lại theo xưởng ===== */
-var DH=null, DHX='', DHXem='xuong', DHMo='', DHTai=false, DH_THANG=9000;
+var DH=null, DHX='', DHXem='xuong', DHMo='', DHTai=false, DH_THANG=9000, DH_NGAY=26;
 /* Chặng: [mã xưởng, tên, cột đã qua trong Sheet đơn, các loại hàng đi qua, phần (chuoi / ngon / ca / sku)] */
 var DH_TUYEN=[['PHOICB','Phôi Carbon','PHOI',{GAY:1,NGON:1,CHUOI:1},'phoi'],['PHOITHO','Phôi Thô','PHOI',{GAY:1,NGON:1,CHUOI:1,NOI:1},'phoi'],
   ['SON','Sơn','SON',{GAY:1,CHUOI:1,NOI:1},'chuoi'],['INUV','In UV','UV',{GAY:1,CHUOI:1,NOI:1},'uv'],['NGONTARO','Ngọn Taro','TARO',{GAY:1,NGON:1},'ngon'],
@@ -375,7 +375,7 @@ function dhCon(o,cot,chuoi){
 function dhChuoi(loai,phan){ if(phan==='ngon') return loai==='NGON'?DH_CHUOI_CHANG.ngonLe:DH_CHUOI_CHANG.ngon; return DH_CHUOI_CHANG.chuoi; }
 function dhTinh(){
   var X={};
-  DH_TUYEN.forEach(function(t){ X[t[0]]={t:t,tong:0,tre:0,gan:0,chuoi:0,ngon:0,nhom:{},dong:0,coGhi:0}; });
+  DH_TUYEN.forEach(function(t){ X[t[0]]={t:t,tong:0,goc:0,tre:0,gan:0,chuoi:0,ngon:0,nhom:{},dong:0,coGhi:0}; });
   var tongThieu=0, chuaChac=0;
   DH.don.forEach(function(o){
     if(!(o.thieu>0)) return;
@@ -384,6 +384,8 @@ function dhTinh(){
     if(p.tin!=='xanh'&&p.loai!=='PK') chuaChac+=o.thieu;
     DH_TUYEN.forEach(function(t){
       if(!t[3][p.loai]) return;
+      /* goc = số đơn vị qua xưởng này nếu chưa làm gì (để tính mỗi sản phẩm cần mấy đơn vị ở xưởng này) */
+      X[t[0]].goc+=t[4]==='phoi'?((p.loai!=='NGON'?o.thieu:0)+((p.loai==='GAY'||p.loai==='NGON')?o.thieu:0)):o.thieu;
       var phan=({ngon:'ngon',tip:'ngon',cnc:'ngon'})[t[4]]||(p.loai==='NGON'?'ngon':'chuoi');
       var c=dhCon(o,t[2],dhChuoi(p.loai,phan));
       var x=X[t[0]], k, nhan;
@@ -410,6 +412,30 @@ function dhTinh(){
   });
   return {X:X,tongThieu:tongThieu,chuaChac:chuaChac};
 }
+/* Thời gian làm hết phần đơn còn lại (31/10): nhịp nay = sản lượng tháng ÷ số ngày; nhanh nhất = theo "tối đa" của xưởng (tab Toàn nhà máy) */
+function dhThoiGian(K,T){
+  var P=DH_THANG/DH_NGAY, gioNguoi=QTS.gioCoMat*QTS.hieuSuat, ds=[];
+  DH_TUYEN.forEach(function(t){ var x=K.X[t[0]], q=(T.x||{})[t[0]]||{};
+    var f=K.tongThieu>0?x.goc/K.tongThieu:0, nay=(f>0&&P>0)?x.tong/(P*f):0;
+    var max=(q.toiDa>0)?nay*100/q.toiDa:null, gio=nay*(q.gio||0);
+    ds.push({ma:t[0],ten:t[1],con:x.tong,f:f,nay:nay,max:max,gio:gio,cong:gioNguoi>0?gio/gioNguoi:0,coGhi:x.coGhi,dong:x.dong}); });
+  var nut=ds.reduce(function(a,o){ return (o.max!=null&&o.con>0&&(!a||o.max>a.max))?o:a; },null);
+  return {ds:ds,nut:nut,P:P};
+}
+function dhDoiNL(k,v,mi,ma){ v=Math.round(Number(v)); if(!(v>=mi&&v<=ma)){ toast('Nhập từ '+mi+' đến '+ma+'.'); qtVe(); return; } if(k==='thang')DH_THANG=v; else DH_NGAY=v; qtVe(); }
+function dhVeThoiGian(K){
+  var T=qtTinh(), G=dhThoiGian(K,T), h='<div class="card"><div style="font-weight:600;margin-bottom:6px">Thời gian làm hết phần đơn còn lại</div>';
+  h+='<div class="qt-bar" style="margin-bottom:8px"><div><label for="dhThang">Sản lượng / tháng</label><input id="dhThang" type="number" inputmode="numeric" min="1000" max="50000" step="500" value="'+DH_THANG+'" onchange="dhDoiNL(\'thang\',this.value,1000,50000)"></div>'+
+    '<div><label for="dhNgay">Ngày làm / tháng</label><input id="dhNgay" type="number" inputmode="numeric" min="20" max="31" step="1" value="'+DH_NGAY+'" onchange="dhDoiNL(\'ngay\',this.value,20,31)"></div></div>';
+  if(G.nut) h+='<div class="qt-ket">Theo đơn đang mở, xưởng làm lâu nhất là <b class="bd">'+esc(G.nut.ten)+'</b>: cần khoảng <b>'+qtSo(G.nut.nay,0)+' ngày</b> nếu giữ nhịp ~'+qtSo(G.P,0)+' sản phẩm/ngày, theo năng lực xưởng (số người có mặt như nay, làm đạt '+Math.round(QTS.hieuSuat*100)+'% định mức) khoảng <b>'+qtSo(G.nut.max,0)+' ngày</b>'+(G.nut.dong&&G.nut.coGhi/G.nut.dong<0.5?' – <span class="wn">số này có thể cao hơn thực tế vì Sheet đơn ít ghi số "đã qua" xưởng này</span>':'')+'. Xưởng sau (Hoàn thiện, Đóng gói) không xong sớm hơn xưởng trước trên cùng chuyền, nên đơn chỉ xong khi xưởng chậm nhất xong.</div>';
+  h+='<div class="tw"><table><thead><tr><th>Xưởng</th><th class="qt-so">Còn làm</th><th class="qt-so">Ngày (nhịp nay)</th><th class="qt-so">Ngày (năng lực xưởng)</th><th class="qt-so">Giờ chuẩn cần</th><th class="qt-so">Công cần</th></tr></thead><tbody>';
+  G.ds.forEach(function(o){ var it=o.dong&&o.coGhi/o.dong<0.5;
+    h+='<tr><td>'+esc(o.ten)+(o===G.nut?'<span class="qt-tag bd">NÚT THẮT</span>':'')+(it?'<span class="qt-tag mo" title="Sheet đơn ít ghi số đã qua xưởng này – số còn làm có thể cao hơn thực tế">ít số ghi</span>':'')+'</td>'+
+      '<td class="qt-so">'+qtSo(o.con,0)+'</td><td class="qt-so">'+(o.nay?qtSo(o.nay,0):'–')+'</td><td class="qt-so'+(o===G.nut?' bad':'')+'">'+(o.max!=null&&o.nay?qtSo(o.max,0):'–')+'</td>'+
+      '<td class="qt-so">'+(o.gio?qtSo(o.gio,0):'–')+'</td><td class="qt-so">'+(o.cong?qtSo(o.cong,0):'–')+'</td></tr>'; });
+  h+='</tbody></table></div><div style="font-size:12px;color:var(--ink3);margin-top:6px">Ngày (nhịp nay) = còn làm ÷ số đơn vị xưởng đó phải làm mỗi ngày khi nhà máy ra ~'+qtSo(G.P,0)+' sản phẩm/ngày (theo cơ cấu đơn đang mở). Ngày (năng lực xưởng) = ngày nhịp nay ÷ mức "tối đa" của xưởng ở tab Toàn nhà máy (người có mặt như nay, làm đạt '+Math.round(QTS.hieuSuat*100)+'% định mức) – xưởng đang làm vượt mức này thì số ngày năng lực có thể lớn hơn nhịp nay. Giờ chuẩn cần = theo định mức, từ nhật ký sản xuất; Công cần = giờ chuẩn ÷ ('+QTS.gioCoMat+' giờ × '+Math.round(QTS.hieuSuat*100)+'%). Xưởng ghi "ít số ghi": cột "đã qua" trong Sheet đơn ít được điền nên số ngày có thể cao hơn thực tế. <b>Ghi đủ cột "đã qua bộ phận" trong Sheet đơn thì các số này mới chính xác.</b></div></div>';
+  return h;
+}
 function PL_LOAI_TEN(l){ return (DH&&DH.nhan.loai[l])||l||'(chưa rõ)'; }
 function dhVe(){
   if(!DH&&!DHTai){ dhTai(false); return '<div class="pdesc">Đang đọc Sheet "Trạng thái đơn hàng"…</div>'; }
@@ -425,6 +451,7 @@ function dhVe(){
   DH_TUYEN.forEach(function(t){ var x=K.X[t[0]];
     h+='<button type="button" data-x="'+t[0]+'" class="'+(DHX===t[0]?'on':'')+'" onclick="DHX=this.dataset.x;qtVe()">'+esc(t[1])+'<b>'+qtSo(x.tong,0)+'</b><small>'+(t[4]==='phoi'?'phôi':(t[4]==='sku'||t[4]==='uv'?'SKU':'cái'))+' · '+x.dong+' dòng đơn</small>'+(x.tre?'<div class="tre">'+qtSo(x.tre,0)+' quá hạn</div>':'')+'</button>'; });
   h+='</div><div style="font-size:12px;color:var(--ink3);margin-bottom:12px">Chuôi: Phôi Carbon → Phôi Thô → Sơn → In UV (nhận mã bán thành phẩm, giao Hoàn thiện theo SKU). Ngọn: Phôi Carbon → Phôi Thô → Ngọn Taro → Ngọn Tip (ngọn bán lẻ đi thẳng Đóng gói). Còn lại ở mỗi xưởng = đặt − đã qua bộ phận đó (theo cột trong Sheet đơn), không vượt "còn thiếu", cộng hỏng cần làm bù.</div>';
+  h+=dhVeThoiGian(K);
   if(!DHX||!K.X[DHX]) DHX='PHOICB';
   var x=K.X[DHX], ds=Object.keys(x.nhom).map(function(k){return x.nhom[k]}).sort(function(a,b){return b.sl-a.sl});
   h+='<div class="card"><div style="font-weight:600;margin-bottom:8px">'+esc(x.t[1])+': còn <b>'+qtSo(x.tong,0)+'</b>'+(x.t[4]==='phoi'?' phôi (chuôi '+qtSo(x.chuoi,0)+' · ngọn '+qtSo(x.ngon,0)+')':'')+' – quá hạn '+qtSo(x.tre,0)+', 7 ngày tới '+qtSo(x.gan,0)+'</div>'+

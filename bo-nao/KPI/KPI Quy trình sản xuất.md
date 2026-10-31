@@ -340,7 +340,25 @@ File gốc chỉ để ở scratchpad phiên (`scratchpad/qt/`), **không commit
   - `gia-lap-kpi.js` có thêm `openById` (`ctx.__ngoai`).
 - **`bao-mat-ung-dung`:** không có lỗi nặng. Đã sửa 3 lỗi nhỏ: gom tên theo tên chuẩn như máy chủ, khóa `K:`, mảnh cache 30.000 ký tự.
 
+## Phần 1 + 2 (31/10, chủ dự án "Làm tiếp phần 1 phần 2")
+- **Phần 1 – rà tên vàng** (`don-hang.gs`):
+  - thêm dòng `NG-KOMET` (ngọn phá KOMET lẻ, FCPHA, tip BAK, R388) và thu `NG-BREAK` còn `BREAK SHAFT`;
+  - thêm `CH-RETRO` (chuôi Retro lẻ, MIXCB) và thu `CH-RHINO` còn `MUST CUE BUTT`, `CUE BUTT`;
+  - `PL_DAU_MD`: cỡ đầu mặc định theo dòng (ZW 12.5, KOMET 13.0…); thiếu cỡ đầu chỉ báo vàng khi ngọn không phải phá / nhảy.
+  - Kết quả trên đơn thật: **370 xanh, 22 vàng, 0 đỏ** (trước 363/29/0).
+  - 22 tên còn vàng **cần chủ dự án cho thông số**: dòng Must (14 tên, chưa rõ cấu hình chuôi), Must Cue Butt, ngọn Hornet, ngọn Crest, "Gậy Đánh Evo Lửa Việt", "Gậy phá nhảy chia 2 màu", "Gậy thuê 12.5 tip da lợn", 2 tên KOMET Break Shaft (ren lấy theo mặc định dòng).
+- **Phần 2 – thẻ "Thời gian làm hết phần đơn còn lại"** (`quy-trinh-web.html`: `dhThoiGian`, `dhVeThoiGian`, `dhDoiNL`; `dhTinh` thêm `goc`):
+  - P = sản lượng/tháng ÷ ngày làm/tháng (mặc định 9.000 ÷ 26, sửa được trên web, chỉ trong phiên);
+  - f = đơn vị qua xưởng / 1 sản phẩm, từ cơ cấu "còn thiếu" của đơn mở (`goc`);
+  - Ngày (nhịp nay) = còn làm ÷ (P × f); Ngày (năng lực xưởng) = nhịp nay × 100 ÷ `toiDa` của xưởng (= còn làm × giờ chuẩn/đơn vị ÷ (người có mặt × 8 × 85%));
+  - Giờ chuẩn cần = nhịp nay × giờ chuẩn/ngày (nhật ký); Công = giờ ÷ (8 × 85%);
+  - Nút thắt = xưởng có ngày năng lực lớn nhất; xưởng có < 50% dòng đơn ghi số "đã qua" → nhãn "ít số ghi".
+  - Số thật (đơn 31/10, nhật ký 29 ngày): nút thắt **Ngọn Tip ~32 ngày nhịp nay / ~35 ngày năng lực**; Phôi Carbon / Phôi Thô ~24–25; Sơn ~17. Gần như mọi xưởng "ít số ghi" nên số ngày là trần trên.
+- **Chuyên gia `quan-ly-van-hanh`:** cảnh báo f lấy từ cơ cấu đơn làm số ngày nhịp nay gần bằng nhau (chênh chủ yếu do số "đã qua"); khuyên dùng sản lượng thực từng xưởng (nhật ký không có số "đơn vị/xưởng" sạch vì mỗi xưởng nhiều công đoạn → chưa làm), tính giờ trực tiếp (cột năng lực đã tương đương), nói rõ xưởng sau không xong trước xưởng trước, và nhắc ghi cột "đã qua". Đã thêm 2 câu nhắc + nhãn "ít số ghi".
+- **Bung mã BTP chính xác (60… / S… / Ngọn…): chưa làm** – chưa có bảng ánh xạ 4 thông số → mã BTP; hiện nhóm theo loại chuôi / ngọn / tip / ren. Chuyên gia đồng ý giữ.
+- **Kiểm thử:** `don-hang.js` 46, `quy-trinh-web.js` 43 (tự tính lại công thức bảng, sửa sản lượng gấp đôi → ngày giảm nửa), `quy-trinh.js` 50, `manh-web.js` 8, `ky-nang.js` 49; `bao-mat.js` 2 lỗi cũ (ngày đã duyệt, không liên quan).
+
 ## Việc tiếp theo
-- Chủ dự án xem bản thật, chỉnh nháp (thứ tự, nhánh) rồi Lưu. Duyệt 29 tên hàng vàng ở "Kiểm phân loại".
-- Đợt 2 đơn hàng: quy việc còn làm ra giờ chuẩn theo định mức → tải từng xưởng theo đơn; bung mã bán thành phẩm 60… / S… / Ngọn…; đề xuất ghi số "đã qua" bộ phận vào Sheet đơn (hoặc lấy từ nhật ký KPI).
+- Chủ dự án xem bản thật, chỉnh nháp (thứ tự, nhánh) rồi Lưu. Cho thông số 22 tên hàng vàng (hoặc sửa tay ở "Kiểm phân loại").
+- Nếu chủ dự án gửi bảng ánh xạ → bung mã BTP 60… / S… / Ngọn…; đề xuất các bộ phận ghi số "đã qua" vào Sheet đơn (hoặc lấy từ nhật ký KPI).
 - Giai đoạn 2: gắn máy với công đoạn để tính giới hạn máy; theo dõi tồn bán thành phẩm; mở cho TP/PP xem / sửa xưởng mình (hỏi lại quyền).

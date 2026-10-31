@@ -40,7 +40,10 @@ p = PL('CB-ZW/ZW1/29C/NW/388/12.5'); ok(p.dong === 'CBZW' && p.tin === 'xanh', '
 p = PL('RHI2-KOMET2/BRE/BLUE/13.0/388'); ok(p.dong === 'KOMET' && p.ngon === 'FCPHA', 'RHI2-KOMET2 (số liền sau tên gọi)', p);
 p = PL('PHÁ NHẢY EVO VAL1'); ok(p.dong === 'EVOVAL', '"VAL1" vẫn nhận ra dòng VAL', p);
 p = PL('Gậy Đánh Evo Lửa Việt - Ngọn Carbon'); ok(p.dong === 'VIETNAM' && p.tin === 'vang', 'tên gọi dài nhất thắng ("Lửa Việt" hơn "EVO"); dòng chưa chắc → vàng', p);
-p = PL('Gậy ABC hoàn toàn lạ'); ok(p.tin === 'do' && !p.dong, 'tên lạ → đỏ, không đoán', p);
+p = PL('KOMET BREAK SHAFT - 13.0 3/8-8'); ok(p.loai === 'NGON' && p.dong === 'NG-KOMET' && p.ngon === 'FCPHA' && p.dau === '13.0', 'ngọn phá KOMET lẻ → dòng NG-KOMET, đầu 13.0', p);
+p = PL('Rhino Retro Pool Cue Butt - Black'); ok(p.loai === 'CHUOI' && p.dong === 'CH-RETRO' && p.chuoi === 'MIXCB', 'chuôi Retro lẻ → CH-RETRO (không lẫn chuôi Must)', p);
+p = PL('CB-ZW/ZW1/29C/NW/388'); ok(p.dau === '12.5', 'thiếu cỡ đầu → lấy cỡ mặc định của dòng (ZW 12.5)', p);
+p = PL('Gậy ABC hoàn toàn lạ'); ok(p.tin === 'do' && !p.dong,'tên lạ → đỏ, không đoán', p);
 p = PL('Rhino Soft Cue Case 1X2 - Black'); ok(p.loai === 'PK', 'bao cơ → phụ kiện (không sản xuất)', p);
 p = PL('RHINO RETRÔ BOCOTE Extension - 8-Inch'); ok(p.loai === 'NOI', 'tay nối', p);
 p = PL('LUMINAX Cue Butt - JET BLACK (wrapless)', '_Joint Type: 3/8-10 chỉ gửi chuôi'); ok(p.loai === 'CHUOI' && p.ren === 'R3810' && p.ngon === 'KHONG', 'chuôi bán lẻ: không có ngọn, ren theo ghi chú', p);

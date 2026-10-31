@@ -70,6 +70,18 @@ const vao = async (p, tk) => { await p.goto(F); await p.waitForSelector('#xtGoiY
       ok(s[0] === 9 && s[1] > 5000 && s[2] > 0 && s[3] > 0 && s[4] && s[5] > 3, 'Đơn hàng → xưởng: 9 xưởng, việc còn lại theo 4 thông số', s);
       s = await p.evaluate(() => { const o = { thieu: 10, sl: 30, qua: { UV: 25 }, hong: { SON: 2 } }; return [dhCon(o, 'PHOI', dhChuoi('GAY', 'chuoi')), dhCon(o, 'SON', dhChuoi('GAY', 'chuoi')), dhCon(o, 'TARO', dhChuoi('GAY', 'ngon')), dhCon({ thieu: 4, sl: 4, qua: {} }, 'DG', dhChuoi('NGON', 'ngon'))]; });
       ok(s.join() === '5,7,10,4', 'còn làm: đã qua chặng sau thì chặng trước xong; cộng hỏng làm bù; ngọn không tính theo In UV', s);
+      // Thời gian làm hết phần đơn còn lại: tự tính lại từ dhTinh + qtTinh, so với bảng
+      s = await p.evaluate(() => { const K = dhTinh(), T = qtTinh(), G = dhThoiGian(K, T), P = DH_THANG / DH_NGAY, sai = [];
+        G.ds.forEach(o => { const x = K.X[o.ma], q = T.x[o.ma] || {}, nay = x.goc ? x.tong * K.tongThieu / (P * x.goc) : 0;
+          if (Math.abs(nay - o.nay) > 1e-6) sai.push(o.ma + ' nay'); if (q.toiDa > 0 && Math.abs(o.max - nay * 100 / q.toiDa) > 1e-6) sai.push(o.ma + ' max');
+          if (Math.abs(o.gio - nay * (q.gio || 0)) > 1e-6) sai.push(o.ma + ' gio'); if (Math.abs(o.cong * QTS.gioCoMat * QTS.hieuSuat - o.gio) > 1e-6) sai.push(o.ma + ' cong'); });
+        const lon = Math.max.apply(null, G.ds.filter(o => o.max != null && o.con > 0).map(o => o.max));
+        const the = [...document.querySelectorAll('.card')].find(c => /Thời gian làm hết/.test(c.textContent));
+        return [sai, G.nut && G.nut.max === lon, !!the, the && the.querySelectorAll('tbody tr').length, the && the.querySelectorAll('.qt-tag.bd').length]; });
+      ok(!s[0].length && s[1] && s[2] && s[3] === 9 && s[4] === 1, 'thời gian làm hết đơn: ngày nhịp nay / hết sức / giờ chuẩn / công đúng công thức, 1 nút thắt = xưởng lâu nhất', s);
+      s = await p.evaluate(() => { const a = dhThoiGian(dhTinh(), qtTinh()).nut.nay; dhDoiNL('thang', 18000, 1000, 50000); const b = dhThoiGian(dhTinh(), qtTinh()).nut.nay; dhDoiNL('thang', 5, 1000, 50000); const c = DH_THANG; dhDoiNL('thang', 9000, 1000, 50000); return [Math.abs(a / b - 2) < 1e-9, c]; });
+      ok(s[0] && s[1] === 18000, 'sửa sản lượng/tháng: gấp đôi sản lượng → số ngày giảm một nửa; số ngoài khoảng bị chặn', s);
+      if (CHUP) await p.screenshot({ path: CHUP + '/dh-tg-' + w + '.png', fullPage: true });
       await p.click('.qt-tabs button:has-text("Kiểm phân loại")'); await p.waitForTimeout(300);
       s = await p.evaluate(() => [document.querySelectorAll('.card table tbody tr').length, document.querySelectorAll('.dh-tin.vang').length]);
       ok(s[0] > 300 && s[1] > 0, 'Kiểm phân loại: liệt kê tên hàng, vàng / đỏ lên đầu', s);
