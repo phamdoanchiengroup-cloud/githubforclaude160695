@@ -1,6 +1,6 @@
 # Việc chờ chủ dự án
 
-Nhóm: Chung · Cập nhật 25/10/2026
+Nhóm: Chung · Cập nhật 31/10/2026
 Liên quan: [[Lần dán lên Apps Script]] · [[Quyết định của chủ dự án]] · [[00 Mục lục]]
 
 ## Câu hỏi đang chờ trả lời
@@ -8,6 +8,20 @@ Liên quan: [[Lần dán lên Apps Script]] · [[Quyết định của chủ d�
 - Dòng "Tổng" trong thẻ "Chờ chốt" có muốn cộng SL/Lỗi không (đang "–")? – [[KPI Sửa nhỏ trên web]]
 - Xưởng của 3 phòng: "Khu chuốt ráp nước" (T1), "Kho thành phẩm", "Phòng kế toán kho" (T3) – ghi chú 13/10 đã ghép tạm; ô xám chưa rõ máy trên sơ đồ 3D chờ ảnh/giải thích. – [[KPI Sơ đồ nhà máy 3D]]
 - Video giới thiệu (25/10 chọn tự dựng): nội dung, độ dài, dùng ở đâu, tư liệu nào? – [[KPI Màn đăng nhập demo chờ duyệt]]
+
+## Quy trình sản xuất (31/10)
+- Xác nhận bảng tiền tố mã BTP (60 / S / UV / HT / Ngọn / CNC / ETip) và luồng giữa các xưởng. – [[KPI Quy trình sản xuất]]
+- Còn chờ trả lời các câu hỏi gửi 25/10:
+  - 1 gậy mỗi loại cần những khúc / BTP nào;
+  - tỷ lệ các dòng sản phẩm;
+  - giờ ca hiệu dụng;
+  - khâu nào giới hạn bởi máy, có mấy máy;
+  - tỷ lệ hỏng làm bù lấy từ đâu;
+  - ai sửa / duyệt quy trình;
+  - có điều người giữa các xưởng không;
+  - người cấp 1 tính bao nhiêu.
+  
+  (Đã chốt: phương án C, chỉ chủ sở hữu xem.) – [[KPI Quy trình sản xuất]]
 
 ## Câu hỏi 22/10
 

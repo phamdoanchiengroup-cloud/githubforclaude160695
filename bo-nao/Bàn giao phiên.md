@@ -1,6 +1,6 @@
 # Bàn giao phiên
 
-Nhóm: Chung · Cập nhật 25/10/2026
+Nhóm: Chung · Cập nhật 31/10/2026
 Liên quan: [[00 Mục lục]] · [[Liên kết và công cụ]] · [[Việc chờ chủ dự án]] · [[Lần dán lên Apps Script]] · [[Quyết định của chủ dự án]] · [[KPI Kiểm thử]]
 
 Ghi chú này để phiên Claude Code mới nắm bối cảnh ngay. Đọc `CLAUDE.md`, rồi ghi chú này, rồi [[Liên kết và công cụ]] (mọi link Drive, repo, artifact, công cụ), rồi [[00 Mục lục]].
@@ -20,6 +20,12 @@ Ghi chú này để phiên Claude Code mới nắm bối cảnh ngay. Đọc `CL
   - Bản dọc đã thử rồi bỏ: chủ dự án muốn giữ bản ngang.
 - [[KPI Màn đăng nhập Khắc laser]]: nền ảnh nhà máy ban đêm, thẻ nhân viên vân carbon được laser khắc mã và tên.
 - [[KPI Ảnh web qua jsDelivr]]: 25/10 ảnh nền đăng nhập + mặt bằng sơ đồ lấy từ repo (công khai) qua jsDelivr, ghim commit; Claude tự làm, không cần Drive.
+
+## Đang làm (31/10)
+- [[KPI Quy trình sản xuất]]: tab mới gộp Kỹ năng.
+  - Đã chốt phương án C, chỉ chủ sở hữu xem.
+  - Đã đọc 2 file chủ dự án gửi (danh mục mã hàng, trạng thái đơn hàng). Tiền tố mã cho biết chặng BTP; hàng còn thiếu ~12.000, giao ~250/ngày.
+  - Chưa code. Chờ chủ dự án xác nhận bảng tiền tố và các con số còn thiếu.
 
 ## Còn chờ / gợi ý
 - 25/10: chủ dự án trả lời 4 câu (xem [[Quyết định của chủ dự án]] mục "KPI và định mức (25/10)"); đã sửa khoản "không nhắc" (chỉ Code.gs, chưa dán). Còn chờ: chủ dự án tự sửa Cân Phôi về 180 trên web; nội dung video giới thiệu.

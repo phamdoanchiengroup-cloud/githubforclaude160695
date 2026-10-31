@@ -1,6 +1,6 @@
 # Quyết định của chủ dự án
 
-Nhóm: Chung · Cập nhật 21/10/2026
+Nhóm: Chung · Cập nhật 31/10/2026
 Liên quan: [[Việc chờ chủ dự án]] · [[KPI Demo đã bỏ]] · [[00 Mục lục]]
 
 Những điều đã chốt. Đừng đề xuất lại những gì ghi "không cần" / "không làm".
@@ -60,6 +60,9 @@ Những điều đã chốt. Đừng đề xuất lại những gì ghi "không 
 ## Bảo mật và vận hành (18/10)
 - 25/10: chủ dự án nói **"kệ 2 tài khoản đó"** – không đổi mật khẩu `giamdoc`, `phogd2`, đừng nhắc lại (đã biết repo công khai + 2 tài khoản vào được bằng mật khẩu mặc định).
 - Không làm A5 (chưa có KCS), giữ ô "Đặt số dòng", không làm A3 giờ dừng, không cần video hướng dẫn; phần tăng ca đã gỡ. – [[KPI Bảo mật và vận hành]]
+
+## Quy trình sản xuất (31/10)
+- Tab "Quy trình sản xuất" (gộp Kỹ năng): làm theo **phương án C**. Giai đoạn 1 cân bằng 9 xưởng; Claude soạn quy trình nháp, TP/PP chỉ sửa. **Tab chỉ mở cho tài khoản chủ sở hữu** cho tới khi chỉnh xong. – [[KPI Quy trình sản xuất]]
 
 ## KPI và định mức (25/10)
 - Bỏ khoản "Không nhắc CN nhập" của TP/PP với lượt phạt trễ không có vi phạm NHAPTRE (phạt trước 15/09): chỉ trừ khi công nhân thật sự bị trừ. – [[KPI Sửa lỗi 21-10 và dữ liệu sheet]]
