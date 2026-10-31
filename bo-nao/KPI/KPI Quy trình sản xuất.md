@@ -183,7 +183,7 @@ File gốc chỉ để ở scratchpad phiên (`scratchpad/qt/`), **không commit
   - Công đoạn: tải = cần ÷ số người biết làm (đã làm trong kỳ hoặc có kỹ năng cấp 2+). Có cờ "1 người" / "2 người".
   - Dùng cơ cấu hàng thực tế nên **không cần khai hệ số khúc / gậy**.
 - **Phát hiện:** cột GioLam trong nhật ký không phải giờ thật (chỉ Phôi Thô ghi ~8 giờ/người-ngày; các xưởng khác ~1,4–2,3). Vì vậy tính theo giờ chuẩn, không theo giờ ghi.
-- **Số liệu thật 25/9–24/10:**
+- **Số liệu thật 25/9–24/10 (bản đầu, mục tiêu 100%, CN có = danh sách – đã thay, xem mục rà soát):**
   - Tải các xưởng 62–86%. Sơn cao nhất (86%), Phôi Carbon 81%, Ngọn Tip 81%.
   - Theo định mức, nhà máy làm được tối đa ~116% sản lượng hiện nay; cân bằng giữa xưởng ~86%.
   - Kết luận: **không xưởng nào thiếu người theo định mức**. Hàng còn thiếu tăng do máy / mẻ, chờ bán thành phẩm, làm lại, hoặc giờ không ghi nhật ký, chứ không do thiếu người.
@@ -195,7 +195,27 @@ File gốc chỉ để ở scratchpad phiên (`scratchpad/qt/`), **không commit
   - Ô cài đặt: kỳ 14/30/60/90 ngày, mục tiêu %, giờ, hiệu suất.
 - **Tab Kỹ năng vẫn giữ** cho các vai trò khác. Phần "gộp" giai đoạn này = khung nhìn "Con người" đọc dữ liệu kỹ năng. Gộp hẳn khi mở tab cho TP/PP.
 - **Bộ cài clasp:** `cap-nhat.ps1` đọc `kpi-app/danh-sach-file.txt` trên GitHub (lỗi thì dùng danh sách trong `chung.ps1`, đã thêm QuyTrinh). Phải gửi zip mới **một lần** (đã gửi 31/10).
-- **Kiểm thử:** `tests/quy-trinh.js` 45 (cần `DATA=`), `tests/quy-trinh-web.js` 31 (`F=` bản xem thử; `CHUP=` để chụp ảnh). `tao-ban-xem-thu.js` đã nạp thêm QuyTrinh.html.
+- **Kiểm thử:** `tests/quy-trinh.js` (cần `DATA=`), `tests/quy-trinh-web.js` (`F=` bản xem thử; `CHUP=` để chụp ảnh). `tao-ban-xem-thu.js` đã nạp thêm QuyTrinh.html.
+
+## Rà soát chuyên gia 31/10 (sau bản đầu) – đã sửa
+- **`quan-ly-van-hanh`:** kết luận "không thiếu người" chưa đủ căn cứ, vì mục tiêu 100% so với chính sản lượng đã bị nút thắt kìm lại. Đã sửa:
+  - **Mục tiêu mặc định 137%** = nhu cầu theo đơn tháng 10 (đóng gói ~250/ngày + hàng thiếu tăng ~92/ngày). Lưu ở `QT_CAI_DAT.mucTieu`; 100% = giữ nhịp hiện nay.
+  - **CN có = người có mặt thực**: ngày-người có dòng nhật ký ÷ số ngày SX (`ngayCong` từ máy chủ). Danh sách chỉ để tham khảo ("/ N").
+  - **Năng suất thực** = giờ chuẩn ÷ (có mặt × 8). Câu kết luận nêu xưởng "chạy gần hết sức" (năng suất ≥ hiệu suất − 2%).
+  - **Tải công đoạn chia thời gian từng người** theo phần giờ chuẩn họ làm × tỷ lệ có mặt (cột "Đang làm (quy đổi)"). Không đếm 1 người đủ ở mọi công đoạn; "biết làm" vẫn đếm đủ cho cờ 1 người.
+- **Số liệu thật sau sửa (mục tiêu 137%):**
+  - 154 người trong danh sách, có mặt TB 123/ngày. Làm tối đa ~98% sản lượng hiện nay ở hiệu suất 85%, tức **chưa đủ cho 137%**.
+  - Mọi xưởng tải 111–139%. Phôi Thô 139% (thiếu ~7), Phôi Carbon 138% (~10), Sơn 135% (~6), Ngọn Tip 134%.
+  - Chạy gần hết sức: Phôi Thô 86%, Phôi Carbon 86%, Sơn 83%, Ngọn Tip 83% định mức. Các xưởng khác 69–81%, còn dư thời gian.
+- **`bao-mat-ung-dung`:** không có lỗi nặng; 3 lỗi thấp đã sửa:
+  1. Lưu: ghi trước rồi mới xóa dòng thừa, thêm dòng khi sheet thiếu (không mất bản cũ nếu ghi lỗi).
+  2. Kiểm tên bằng `qtCo_` (hasOwnProperty), chặn `__proto__`.
+  3. Kiểm độ dài / kiểu (Truoc ≤ 20, ghi chú ≤ 400…) **trước** khi giữ khóa.
+- **Kiểm thử:** `quy-trinh.js` 50, `quy-trinh-web.js` 33.
+- **Chuyên gia đề xuất 3 ưu tiên giai đoạn 2:**
+  1. Đếm hàng chờ (WIP) trước mỗi xưởng mỗi sáng; ghép với dòng đơn trễ hạn.
+  2. Đo năng lực máy / mẻ ở Sơn (sấy), CNC, In UV.
+  3. Làm sạch đo lường: tỷ lệ đạt / làm lại, chuẩn hóa ghi giờ (Phôi Thô làm mẫu), bấm giờ lại định mức 2–3 xưởng tải cao.
 
 ## Việc tiếp theo
 - Chủ dự án xem bản thật, chỉnh nháp (thứ tự, nhánh) rồi Lưu.
