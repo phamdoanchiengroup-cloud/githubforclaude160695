@@ -279,6 +279,20 @@ File gốc chỉ để ở scratchpad phiên (`scratchpad/qt/`), **không commit
   - Độ tin cậy xanh / vàng / đỏ; hàng chờ duyệt; học từ lần duyệt; bộ kiểm thử 393 dòng.
   - Giai đoạn 1: chỉ đọc; báo cáo "còn thiếu theo xưởng × dòng gậy × tuần deadline".
 
+## Tuyến bán thành phẩm theo chủ dự án (31/10)
+- **Chuôi** đi qua Phôi Carbon → Phôi Thô → Sơn.
+- **Ngọn** đi qua Phôi Carbon → Phôi Thô → Ngọn Taro → Ngọn Tip. CNC cấp típ / phíp cho Ngọn Tip.
+- **In UV:** nhận phôi theo mã bán thành phẩm, giao sang Hoàn thiện theo **SKU**. Hoàn thiện và Đóng gói làm theo SKU.
+- **Kết nối dữ liệu đơn:** Claude đề xuất web KPI **đọc thẳng Sheet "Trạng thái đơn hàng"** bằng `openById`, chỉ đọc.
+  - Lý do: web KPI chạy dưới tài khoản chủ dự án, tài khoản này có quyền vào Sheet. Web app đơn hàng chạy theo tài khoản người xem nên không gọi được từ máy chủ.
+  - Lưu tạm 5 phút, có nút "Làm mới".
+  - Dò cột theo tên tiêu đề, như script đơn hàng đang làm.
+  - Lần đầu chủ dự án phải bấm cấp quyền thêm một lần.
+- **Đếm cấu hình BOM (ước lượng từ Thông số gậy + danh mục mã):**
+  - ~110–120 dòng mẫu gậy trong file Thông số.
+  - Khoảng 20 họ phôi ngọn và khoảng 25 họ phôi chuôi. Ghép lại được khoảng 45–55 cấu hình BOM ở cấp phôi.
+  - Danh mục mã thật: phôi 60 có 107 mã chuôi + 90 mã ngọn; S… 105 mã chuôi; Ngọn (đã taro) 343 mã; UV… 513 mã; HT… 620 mã; CNCTip 119 mã, CNCPhip 98 mã.
+
 ## Việc tiếp theo
 - Chủ dự án xem bản thật, chỉnh nháp (thứ tự, nhánh) rồi Lưu.
 - Giai đoạn 2: gắn máy với công đoạn để tính giới hạn máy; theo dõi tồn bán thành phẩm; mở cho TP/PP xem / sửa xưởng mình (hỏi lại quyền).
