@@ -38,6 +38,9 @@ const m0 = Object.keys(r.thongKe)[0];
 ok(Object.values(r.thongKe[m0].nguoi).reduce((a, b) => a + b, 0) === r.thongKe[m0].sl, 'sản lượng theo người cộng lại bằng tổng công đoạn');
 ok(r.nhanSu.length === c.doc_('NhanSu').filter(n => n.TrangThai === 'Đang làm').length && r.nhanSu.every(n => !('SoCCCD' in n) && !('DienThoai' in n)), 'nhân sự: chỉ người đang làm, không gửi CCCD / điện thoại');
 ok(r.may.INUV && Object.values(r.may.INUV).reduce((a, b) => a + b, 0) >= 10, 'máy móc theo xưởng (bỏ máy thanh lý)', r.may.INUV);
+ok(r.caiDat.mucTieu === 137, 'mục tiêu mặc định 137% (theo nhu cầu đơn hàng)');
+const ncong = r.ngayCong, ng1 = Object.keys(ncong)[0];
+ok(ng1 && Object.values(ncong).every(d => d >= 1 && d <= r.soNgaySX) && new Set(nk.filter(x => x.MaNV === ng1).map(x => c.ngayVN_(x.Ngay))).size <= ncong[ng1], 'ngày công từng người ≤ số ngày có sản xuất', [ng1, ncong[ng1]]);
 ok(c.__goi('layQuyTrinh', Town, 999).soNgay === 30 && c.__goi('layQuyTrinh', Town, 60).soNgay === 60, 'số ngày lạ → mặc định 30; 60 dùng được');
 
 console.log('\n3. Suy công đoạn trước (nhánh + bước)');
@@ -67,6 +70,9 @@ r = thu(q => q.Ma === X0.Ma ? { Truoc: [X1.Ma] } : 0); ok(!r.ok && /vòng lặp/
 r = c.__goi('luuQuyTrinh', Town, { cd: ds.concat([{ Ma: 'KHONG-CO', Nhanh: 'NGON', Buoc: 1 }]), xuong: R0.xuongLuong }); ok(!r.ok, 'mã công đoạn lạ: chặn', r);
 r = thu(() => 0, [{ Tu: 'SON', Den: 'INUV' }, { Tu: 'INUV', Den: 'SON' }]); ok(!r.ok && /vòng/.test(r.msg), 'luồng xưởng vòng lặp: chặn', r);
 r = c.__goi('luuQuyTrinh', Town, { cd: ds, xuong: [], caiDat: { gioCoMat: 30 } }); ok(!r.ok, 'cài đặt ngoài khoảng: chặn', r);
+r = thu(() => 0, [{ Tu: '__proto__', Den: 'DG' }]); ok(!r.ok, 'xưởng tên đặc biệt (__proto__): chặn', r);
+r = thu(q => q.Ma === X0.Ma ? { Truoc: Array(5000).fill('x') } : 0); ok(!r.ok && /quá dài|quá nhiều/.test(r.msg), 'danh sách công đoạn trước quá dài: chặn trước khi xử lý', r);
+r = thu(q => q.Ma === X0.Ma ? { GhiChu: 'x'.repeat(500) } : 0); ok(!r.ok, 'ghi chú quá dài: chặn', r);
 r = thu(q => q.Ma === X0.Ma ? { GhiChu: '=HYPERLINK("x")' } : 0);
 ok(r.ok && r.doi === ds.length, 'lưu lần đầu: mọi công đoạn ghi', r);
 const sh = c.doc_('QuyTrinh');

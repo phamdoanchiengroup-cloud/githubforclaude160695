@@ -17,11 +17,17 @@ const vao = async (p, tk) => { await p.goto(F); await p.waitForSelector('#xtGoiY
     ok(await p.evaluate(() => typeof qtVe === 'undefined' && !window.__qtDaNap), 'chưa mở tab: chưa tải giao diện quy trình (Index nhẹ)');
     await p.evaluate(() => go('qt')); await p.waitForFunction(() => document.querySelector('.qt-ket'), null, { timeout: 30000 });
     let s = await p.evaluate(() => [document.querySelector('.ptitle').textContent, document.querySelector('.qt-ket').textContent, !!document.querySelector('.alert.a-wn'), document.querySelectorAll('.qt-luong .ln').length, document.querySelectorAll('.card table tbody tr').length]);
-    ok(/Quy trình sản xuất/.test(s[0]) && /công nhân hiện có/.test(s[1]) && s[2] && s[3] === 9 && s[4] === 9, 'Toàn nhà máy: câu kết luận, báo nháp, 9 luồng, bảng 9 xưởng', s);
+    ok(/Quy trình sản xuất/.test(s[0]) && /công nhân trong danh sách/.test(s[1]) && /mục tiêu 137%/.test(s[1]) && s[2] && s[3] === 9 && s[4] === 9, 'Toàn nhà máy: câu kết luận, báo nháp, 9 luồng, bảng 9 xưởng', s);
     const T = await p.evaluate(() => { const t = qtTinh(); return { nut: t.nut.ma, tai: t.nut.tai, ds: t.ds.map(o => [o.ma, +o.can.toFixed(2), o.co, +o.tai.toFixed(3)]) }; });
     ok(T.nut && T.ds.every(o => o[1] >= 0 && o[2] > 0) && T.ds.every(o => o[3] <= T.tai + 1e-3), 'nút thắt = xưởng tải cao nhất', T);
+    // mỗi người: tổng phần thời gian chia cho các công đoạn = tỷ lệ ngày có mặt (không đếm trùng); xưởng: có mặt ≤ danh sách
+    s = await p.evaluate(() => { const t = qtTinh(), N = QT.soNgaySX, fte = Object.values(t.cd).reduce((a, c) => a + c.fte, 0);
+      const coMat = Object.values(QT.ngayCong).reduce((a, d) => a + Math.min(1, d / N), 0);
+      return [fte, coMat, t.ds.every(o => o.coMat <= o.co + 1e-9), t.ds.every(o => o.nangSuat >= 0 && o.nangSuat < 2)]; });
+    ok(s[0] > 10 && s[0] <= s[1] + 1e-6 && s[2] && s[3], 'chia thời gian người cho công đoạn không vượt ngày có mặt; có mặt ≤ danh sách', s);
     // công thức: thay mục tiêu 100 -> 200 thì CN cần gấp đôi
-    const can1 = T.ds.map(o => o[1]);
+    await p.fill('#qtMt', '100'); await p.dispatchEvent('#qtMt', 'change'); await p.waitForTimeout(200);
+    const can1 = await p.evaluate(() => qtTinh().ds.map(o => +o.can.toFixed(2)));
     await p.fill('#qtMt', '200'); await p.dispatchEvent('#qtMt', 'change'); await p.waitForTimeout(200);
     const can2 = await p.evaluate(() => qtTinh().ds.map(o => +o.can.toFixed(2)));
     ok(can2.every((v, i) => Math.abs(v - 2 * can1[i]) < 0.02), 'mục tiêu 200% → CN cần gấp đôi', [can1, can2]);

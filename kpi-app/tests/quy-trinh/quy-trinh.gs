@@ -12,7 +12,8 @@ var QT_NHANH = { CHUNG: 'Chung', NGON: 'Ngọn', CHUOI: 'Chuôi', GAY1K: 'Gậy 
   PK: 'Phụ kiện', DONLE: 'Đơn lẻ', LAMLAI: 'Làm lại / sửa', HOTRO: 'Hỗ trợ', CHUAXEP: 'Chưa xếp' };
 var QT_NHANH_DONG = { NGON: 1, CHUOI: 1, GAY1K: 1 };          // nhánh chảy qua / gộp vào "Chung"
 var QT_NHANH_NGOAI = { LAMLAI: 1, HOTRO: 1, CHUAXEP: 1 };      // không nằm trên dòng chảy (vẫn tính tải)
-var QT_CAI_DAT = { gioCoMat: 8, hieuSuat: 0.85, mucTieu: 100, soNgay: 30 };
+var QT_CAI_DAT = { gioCoMat: 8, hieuSuat: 0.85, mucTieu: 137, soNgay: 30 };   // mục tiêu 137% = nhu cầu theo đơn tháng 10 (đóng gói ~250/ngày + hàng thiếu tăng ~92/ngày) – chuyên gia vận hành 31/10
+var qtCo_ = function(o, k) { return Object.prototype.hasOwnProperty.call(o, k); };   // không nhận tên đặc biệt (__proto__, constructor…)
 var QT_XUONG_NHAP = [
   ['PHOICB', 'PHOITHO', 'Phôi 60 (ngọn + chuôi)'], ['PHOITHO', 'NGONTARO', 'Phôi ngọn'], ['PHOITHO', 'SON', 'Phôi chuôi, nối, gậy 1 khúc (60…)'],
   ['NGONTARO', 'NGONTIP', 'Ngọn đã taro ren (Ngọn…)'], ['CNC', 'NGONTIP', 'Típ, phíp (CNCTip, CNCPhip)'], ['SON', 'INUV', 'Chuôi / nối đã sơn (S…)'],
@@ -142,7 +143,7 @@ function qtDocQT_(cds) {
   for (k in QT_CAI_DAT) cai[k] = QT_CAI_DAT[k];
   dong.forEach(function(r) {
     var l = String(r.Loai).trim(), ma = String(r.Ma).trim();
-    if (l === 'CD' && ma) cd[ma] = { Ma: ma, MaXuong: String(r.MaXuong), Nhanh: String(r.Nhanh) in QT_NHANH ? String(r.Nhanh) : 'CHUAXEP',
+    if (l === 'CD' && ma) cd[ma] = { Ma: ma, MaXuong: String(r.MaXuong), Nhanh: qtCo_(QT_NHANH, String(r.Nhanh)) ? String(r.Nhanh) : 'CHUAXEP',
       Buoc: Number(r.Buoc) || 1, Truoc: String(r.Truoc || '').split(',').map(function(x) { return x.trim(); }).filter(Boolean),
       GhiChu: String(r.GhiChu || ''), NguoiSua: String(r.NguoiSua || ''), ThoiDiem: r.ThoiDiem ? String(r.ThoiDiem) : '' };
     else if (l === 'XUONG' && ma.indexOf('>') > 0) xuong.push({ Tu: ma.split('>')[0], Den: ma.split('>')[1], BTP: String(r.Nhanh || ''), GhiChu: String(r.GhiChu || '') });
@@ -170,15 +171,17 @@ function layQuyTrinh(token, soNgay) {
   var den = homNayVN_(), d0 = new Date(den + 'T12:00:00Z'); d0.setUTCDate(d0.getUTCDate() - soNgay + 1);
   var tu = Utilities.formatDate(d0, 'GMT', 'yyyy-MM-dd');
   var dmRow = {}; doc_('DinhMuc').forEach(function(r) { dmRow[String(r.MaCD)] = r; });
-  var tk = {}, ngaySX = {};
+  var tk = {}, ngaySX = {}, cong = {};
   doc_('NhatKySanXuat').forEach(function(r) {
     if (String(r.TrangThai).trim() === 'Từ chối') return;
     var ng = ngayVN_(r.Ngay); if (ng < tu || ng > den) return;
+    (cong[String(r.MaNV)] = cong[String(r.MaNV)] || {})[ng] = 1;   // có dòng nhật ký = có mặt làm hàng ngày đó
     var sl = Number(r.SoLuongLamRa) || 0; if (sl <= 0) return;
     var m = String(r.MaCD), t = tk[m] || (tk[m] = { sl: 0, nguoi: {}, ngay: {} });
     t.sl += sl; t.nguoi[String(r.MaNV)] = (t.nguoi[String(r.MaNV)] || 0) + sl; t.ngay[ng] = 1; ngaySX[ng] = 1;
   });
   Object.keys(tk).forEach(function(m) { var t = tk[m]; t.soNgay = Object.keys(t.ngay).length; delete t.ngay; });
+  var ngayCong = {}; Object.keys(cong).forEach(function(m) { ngayCong[m] = Object.keys(cong[m]).length; });
   var ns = doc_('NhanSu').filter(function(n) { return String(n.TrangThai).trim() === 'Đang làm'; })
     .map(function(n) { return { MaNV: String(n.MaNV), HoTen: String(n.HoTen), MaXuong: String(n.MaXuong), ChucDanh: String(n.ChucDanh || '') }; });
   var may = {};
@@ -201,7 +204,7 @@ function layQuyTrinh(token, soNgay) {
     congDoan: cds.map(function(c) { var d = dmRow[String(c.MaCD)] || {};
       return { MaCD: String(c.MaCD), TenCD: String(c.TenCD), MaXuong: String(c.MaXuong), DM: Number(d.DinhMucGio) || 0, DVT: String(d.DonViTinh || '') }; }),
     xuong: doc_('PhongBan').filter(function(p) { return String(p.TrangThai || 'Đang dùng').trim() !== 'Ngừng'; }).map(function(p) { return { MaXuong: String(p.MaXuong), TenXuong: String(p.TenXuong) }; }),
-    thongKe: tk, nhanSu: ns, may: may, kyNang: kn });
+    thongKe: tk, ngayCong: ngayCong, nhanSu: ns, may: may, kyNang: kn });
 }
 
 /* Lưu quy trình (ghi đè toàn bộ sheet QuyTrinh trong khóa). o = { cd: [{Ma, Nhanh, Buoc, Truoc[], GhiChu}], xuong: [{Tu, Den, BTP, GhiChu}], caiDat: {} } */
@@ -209,6 +212,10 @@ function luuQuyTrinh(token, o) {
   var q = qtQuyen_(token); if (q.loi) return q.loi;
   var me = q.me; o = o || {};
   if (!Array.isArray(o.cd) || o.cd.length > 2000 || !Array.isArray(o.xuong || []) || (o.xuong || []).length > 100) return sach_({ ok: false, msg: 'Dữ liệu quy trình không hợp lệ.' });
+  var thoDai = function(v, n) { return v != null && (typeof v !== 'string' && typeof v !== 'number' || String(v).length > n); };   // kiểm độ dài TRƯỚC khi xử lý / giữ khóa
+  if (o.cd.some(function(c) { return !c || typeof c !== 'object' || thoDai(c.Ma, 60) || thoDai(c.Nhanh, 20) || thoDai(c.GhiChu, 400) || (c.Truoc != null && (!Array.isArray(c.Truoc) || c.Truoc.length > 20 || c.Truoc.some(function(t) { return thoDai(t, 60); }))); }) ||
+      (o.xuong || []).some(function(x) { return !x || typeof x !== 'object' || thoDai(x.Tu, 30) || thoDai(x.Den, 30) || thoDai(x.BTP, 240) || thoDai(x.GhiChu, 400); }))
+    return sach_({ ok: false, msg: 'Dữ liệu quy trình không hợp lệ (ô quá dài hoặc quá nhiều công đoạn trước).' });
   khoa_();
   var cds = doc_('CongDoan'), xOf = {};
   cds.forEach(function(c) { xOf[String(c.MaCD)] = String(c.MaXuong); });
@@ -217,8 +224,8 @@ function luuQuyTrinh(token, o) {
   o.cd.forEach(function(c) {
     if (loi) return;
     var ma = String(c && c.Ma || '').trim();
-    if (!xOf[ma]) { loi = 'Công đoạn "' + ma.slice(0, 40) + '" không có trong danh mục.'; return; }
-    if (da[ma]) { loi = 'Công đoạn ' + ma + ' bị lặp.'; return; }
+    if (!qtCo_(xOf, ma)) { loi = 'Công đoạn "' + ma.slice(0, 40) + '" không có trong danh mục.'; return; }
+    if (qtCo_(da, ma)) { loi = 'Công đoạn ' + ma + ' bị lặp.'; return; }
     da[ma] = 1;
     var nh = String(c.Nhanh || ''), b = Number(c.Buoc);
     if (!QT_NHANH.hasOwnProperty(nh)) { loi = 'Nhánh của ' + ma + ' không hợp lệ.'; return; }
@@ -227,7 +234,7 @@ function luuQuyTrinh(token, o) {
     if (tr.length > 20) { loi = 'Công đoạn ' + ma + ' có quá nhiều công đoạn trước.'; return; }
     for (var i = 0; i < tr.length; i++) {
       if (tr[i] === ma) { loi = 'Công đoạn ' + ma + ' không thể đứng trước chính nó.'; return; }
-      if (xOf[tr[i]] !== xOf[ma]) { loi = 'Công đoạn trước của ' + ma + ' phải cùng xưởng (luồng giữa các xưởng sửa ở phần "Luồng giữa các xưởng").'; return; }
+      if (!qtCo_(xOf, tr[i]) || xOf[tr[i]] !== xOf[ma]) { loi = 'Công đoạn trước của ' + ma + ' phải cùng xưởng (luồng giữa các xưởng sửa ở phần "Luồng giữa các xưởng").'; return; }
     }
     var gc = String(c.GhiChu || '').replace(/\s+/g, ' ').trim();
     if (gc.length > 200) { loi = 'Ghi chú của ' + ma + ' tối đa 200 ký tự.'; return; }
@@ -240,8 +247,8 @@ function luuQuyTrinh(token, o) {
   (o.xuong || []).forEach(function(x) {
     if (loi) return;
     var tu = String(x && x.Tu || ''), den = String(x && x.Den || ''), btp = String(x.BTP || '').replace(/\s+/g, ' ').trim();
-    if (!xs[tu] || !xs[den] || tu === den) { loi = 'Luồng giữa các xưởng có xưởng không hợp lệ.'; return; }
-    if (daX[tu + '>' + den]) { loi = 'Luồng ' + tu + ' → ' + den + ' bị lặp.'; return; }
+    if (!qtCo_(xs, tu) || !qtCo_(xs, den) || tu === den) { loi = 'Luồng giữa các xưởng có xưởng không hợp lệ.'; return; }
+    if (qtCo_(daX, tu + '>' + den)) { loi = 'Luồng ' + tu + ' → ' + den + ' bị lặp.'; return; }
     if (btp.length > 120) { loi = 'Tên bán thành phẩm tối đa 120 ký tự.'; return; }
     daX[tu + '>' + den] = 1; xl.push({ Tu: tu, Den: den, BTP: btp, GhiChu: String(x.GhiChu || '').replace(/\s+/g, ' ').trim().slice(0, 200) });
   });
@@ -265,8 +272,10 @@ function luuQuyTrinh(token, o) {
   xl.forEach(function(x) { rows.push(['XUONG', x.Tu + '>' + x.Den, x.Tu, x.BTP, '', '', x.GhiChu, me.tk, luc]); });
   Object.keys(cai).forEach(function(k2) { rows.push(['CAIDAT', k2, '', '', '', '', String(cai[k2]), me.tk, luc]); });
   var sh = qtSheet_();
-  if (sh.getLastRow() > 1) sh.getRange(2, 1, sh.getLastRow() - 1, QT_COT.length).clearContent();
-  if (rows.length) sh.getRange(2, 1, rows.length, QT_COT.length).setValues(rows.map(dongAnToan_));
+  if (sh.getMaxRows() < rows.length + 1) sh.insertRowsAfter(sh.getMaxRows(), rows.length + 1 - sh.getMaxRows());
+  var cuoi = sh.getLastRow();
+  if (rows.length) sh.getRange(2, 1, rows.length, QT_COT.length).setValues(rows.map(dongAnToan_));   // ghi trước, rồi mới xóa dòng thừa (lỗi giữa chừng không mất bản cũ)
+  if (cuoi > rows.length + 1) sh.getRange(rows.length + 2, 1, cuoi - rows.length - 1, QT_COT.length).clearContent();
   xoaCache_(QT_SHEET);
   ghiLog_(me, 'Sửa quy trình sản xuất', ds.length + ' công đoạn (' + doi + ' dòng thay đổi), ' + xl.length + ' luồng giữa xưởng');
   return sach_({ ok: true, msg: 'Đã lưu quy trình (' + doi + ' công đoạn thay đổi).', doi: doi });
