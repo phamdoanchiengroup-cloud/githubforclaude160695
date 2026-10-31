@@ -4,6 +4,7 @@ Nhóm: Bắt đầu · Cập nhật 21/10/2026
 Liên quan: [[Việc chờ chủ dự án]] · [[TCC Bán hàng]] · [[00 Mục lục]]
 
 ## Cách làm việc
+- **31/10: Tứ Hóa Phi Tinh (Bắc phái) thành tab riêng "✶ Phi Tinh", tạm chỉ chủ sở hữu thấy**; khi mở bán: phần mở đầu miễn phí, chi tiết bằng xu. Văn hai tầng; chỉ đối chiếu trang cohoc, không chép. – [[TCC Tứ Hóa Phi Tinh]]
 - **31/10: cập nhật chỉ cần bấm đúp `2-CAP-NHAT.bat`** – bộ clasp tự sao lưu và tự triển khai phiên bản mới; hướng dẫn chủ dự án chỉ còn "bấm 2-CAP-NHAT.bat → Ctrl+F5" (lỗi thì 3-KHOI-PHUC.bat). – [[TCC Tự đẩy code lên Apps Script]]
 - **31/10: thần sát Bát Tự "đủ sao có quy tắc rõ"** – chỉ đưa sao có cách an được ≥2 nguồn độc lập xác nhận (156 sao), hiện theo từng trụ như ảnh chủ dự án gửi, thêm từ điển trong tab Tham khảo và vào PDF; văn dễ hiểu theo quy tắc cũ (không tên sao, không đoán tai nạn/bệnh). **Bài luận Bát Tự theo trình tự Tử Bình chuẩn (15 bước).** – [[TCC Thần sát Bát Tự]]
 - **26/10: tải PDF chạy nền** – thẻ tiến trình nhỏ góc dưới phải (%, Hủy); lập lá số mới khi đang dựng thì hỏi rồi hủy. – [[TCC PDF]]

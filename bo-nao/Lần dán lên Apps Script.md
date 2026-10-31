@@ -4,6 +4,7 @@ Nhóm: Bắt đầu · Cập nhật 22/10/2026
 Liên quan: [[Việc chờ chủ dự án]] · [[TCC Kiểm thử]] · [[00 Mục lục]]
 
 ## Tình trạng
+- **31/10: mã `2026.10.31.3`** – tab "✶ Phi Tinh" (Tứ Hóa Phi Tinh Bắc phái, chỉ chủ sở hữu): file mới **TuViPhiTinh** (đủ 31 file .gs), đổi **Code, Script, Styles, Index**. Bấm `2-CAP-NHAT.bat`, Ctrl+F5, đăng nhập chủ sở hữu, lập lá số → tab ✶ Phi Tinh.
 - **31/10: mã `2026.10.31.2`** – sửa sau rà chuyên gia: Cung vị/lưu niên cùng vị trí thần sát mới, Đức Tú, Thái Tuế, PDF bản gọn, tra từ điển. Đổi **BatTuThanSat, BatTuChiTiet, BatTuLuan, Script, Styles, Index**. Bấm `2-CAP-NHAT.bat`, Ctrl+F5.
 - **31/10: mã `2026.10.31.1`** – thần sát Bát Tự 156 sao (file mới **BatTuThanSat**, đủ 30 file .gs), bài luận Bát Tự 15 bước, từ điển thần sát ở tab Tham khảo. Đổi **BatTuThanSat (mới), BatTu, Code, Script, Styles, Index**. Bấm `2-CAP-NHAT.bat` (tự sao lưu + triển khai), Ctrl+F5.
 - **26/10: mã `2026.10.26.1`** – tải PDF chạy nền: thẻ tiến trình nhỏ góc dưới phải (%, nút Hủy), web vẫn dùng được; lập lá số mới khi đang dựng thì hỏi trước. Đổi **Script, Styles, Index**. Bấm `2-CAP-NHAT.bat`, Ctrl+F5.

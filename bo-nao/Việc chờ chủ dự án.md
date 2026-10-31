@@ -4,6 +4,7 @@ Nhóm: Bắt đầu · Cập nhật 22/10/2026
 Liên quan: [[Lần dán lên Apps Script]] · [[TCC Tiến trình]] · [[00 Mục lục]]
 
 ## Việc còn ngỏ
+- 31/10: bấm `2-CAP-NHAT.bat` lấy `2026.10.31.3` – đăng nhập chủ sở hữu, lập lá số của mình (lịch âm) → tab "✶ Phi Tinh": đọc và so với bài cohoc/NotebookLM; cho biết phần nào khớp, phần nào cần sâu hơn, khi nào mở cho khách và giá. – [[TCC Tứ Hóa Phi Tinh]]
 - 31/10: bấm `2-CAP-NHAT.bat` lấy `2026.10.31.1` – xem tab Bát Tự (hàng Thần sát dưới bảng Tứ Trụ, bước 8 "Thần sát", bài 15 bước) và tab Tham khảo → 🔖 Từ điển thần sát. Góp ý: số sao mỗi trụ có nhiều quá không (có thể ẩn nhóm sao chọn ngày); 7 sao trang huyencobattu có mà ta chưa đủ nguồn. – [[TCC Thần sát Bát Tự]]
 - 25/10 (đêm): bấm `2-CAP-NHAT.bat` lấy mã `2026.10.25.7` – đọc tab Tử Vi: 26 bước nay là bài luận chính (mỗi mảng đời sống gồm luận cung + tổ hợp sao đáng chú ý; bước 26 có các đại vận "những điều cần phòng"). Góp ý độ dài, thứ tự. Lưu ý: văn 12 cung cũ (TuViHeThong) còn vài chỗ nêu tên sao trong phần dễ hiểu (vd. "Sao Vũ Khúc Hóa Quyền", "Bạch Hổ") – chờ chủ dự án đồng ý thì rà sửa. Thêm câu hỏi: có khóa bước 26 (mức vận hiện tại, vận năm) và lời "đắc thời" các vận khi khách chưa mua không (hiện đang hé lộ từ trước). – [[TCC Tử Vi đối chiếu các phái]]
 - 25/10 (khuya): bấm `2-CAP-NHAT.bat` lấy mã `2026.10.25.5` – xem tab "📚 Tham khảo" mục Nghề nghiệp (47 nghề, đối chiếu lá số đang mở) và Thư viện bộ sao; xem card luận giải đã dễ đọc chưa (nếu vẫn chưa đủ: cách khác là bỏ tranh sau card chữ). – [[TCC Giao diện]]

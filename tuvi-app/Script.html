@@ -19,7 +19,7 @@
 
   var $ = function (id) { return document.getElementById(id); };
   var state = { result: null, sel: null, token: '', nguoiDung: null };
-  var CAN_TOKEN = { lapLaSo: 1, doGioSinh: 1, getLichSu: 1, xoaLichSu: 1, donLichSu: 1, lapCapDoi: 1, tienIch: 1, gieoQue: 1, dsGieoQue: 1, dangKyBanTin: 1, dsBanTin: 1, dangKyVanNgay: 1, huyVanNgay: 1, dsVanNgay: 1, tuViChuSoHuu: 1 };
+  var CAN_TOKEN = { lapLaSo: 1, doGioSinh: 1, getLichSu: 1, xoaLichSu: 1, donLichSu: 1, lapCapDoi: 1, tienIch: 1, gieoQue: 1, dsGieoQue: 1, dangKyBanTin: 1, dsBanTin: 1, dangKyVanNgay: 1, huyVanNgay: 1, dsVanNgay: 1, tuViChuSoHuu: 1, phiTinhLuan: 1 };
 
   function esc(s) {
     return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) {
@@ -27,7 +27,7 @@
     });
   }
   /** Mã phiên bản giao diện – phải trùng với Index.html (meta tcc-ban) và Styles.html (--tcc-ban) */
-  var BAN_GIAO_DIEN = '2026.10.31.2';
+  var BAN_GIAO_DIEN = '2026.10.31.3';
   /* 25/10: ảnh ngũ hành + 12 con giáp + bìa PDF mới của chủ dự án (tuvi-app/anh/*.webp) qua jsDelivr, ghim theo mã lần lưu */
   var TCC_ANH_CDN = 'https://cdn.jsdelivr.net/gh/phamdoanchiengroup-cloud/githubforclaude160695@19203fbd20433f395336269a411f8aebcf990086/tuvi-app/anh/';
   var ANH_HANH = { 'Mộc': 'NguHanhMoc', 'Hỏa': 'NguHanhHoa', 'Thổ': 'NguHanhTho', 'Kim': 'NguHanhKim', 'Thủy': 'NguHanhThuy' };
@@ -41,7 +41,7 @@
   function hasServer() { return typeof google !== 'undefined' && google.script && google.script.run; }
   /** Hàm máy chủ mới thêm gần đây → file .gs chứa nó (để báo đúng file khi còn bản cũ) */
   var FILE_HAM = { bangGiaCongKhai: 'ThanhToan.gs', muaPhan: 'ThanhToan.gs', viCuaToi: 'ThanhToan.gs', dangKy: 'TaiKhoan.gs', lapLaSo: 'TaiKhoan.gs',
-    tienIch: 'TienIch.gs', gieoQue: 'TienIch.gs', dsGieoQue: 'TienIch.gs', dangKyBanTin: 'TienIch.gs', dsBanTin: 'TienIch.gs', dangKyVanNgay: 'TienIch.gs', huyVanNgay: 'TienIch.gs', dsVanNgay: 'TienIch.gs', thamKhaoTuVi: 'TuViChuyenSau.gs', donLichSu: 'Code.gs', getLichSu: 'Code.gs', lapCapDoi: 'CapDoi.gs', tuViChuSoHuu: 'TuViChuyenSau.gs' };
+    tienIch: 'TienIch.gs', gieoQue: 'TienIch.gs', dsGieoQue: 'TienIch.gs', dangKyBanTin: 'TienIch.gs', dsBanTin: 'TienIch.gs', dangKyVanNgay: 'TienIch.gs', huyVanNgay: 'TienIch.gs', dsVanNgay: 'TienIch.gs', thamKhaoTuVi: 'TuViChuyenSau.gs', donLichSu: 'Code.gs', getLichSu: 'Code.gs', lapCapDoi: 'CapDoi.gs', tuViChuSoHuu: 'TuViChuyenSau.gs', phiTinhLuan: 'TuViPhiTinh.gs', thamKhaoThanSat: 'BatTuThanSat.gs' };
   function call(fn, args, ok, fail) {
     if (!hasServer()) { (fail || showErr)({ message: 'Không tìm thấy máy chủ Apps Script. Hãy mở ứng dụng qua URL Web App.' }); return; }
     var r = google.script.run.withSuccessHandler(ok).withFailureHandler(fail || showErr), a = (args || []).slice();
@@ -322,6 +322,11 @@
     if (tChu) {
       tChu.style.display = laChu() ? '' : 'none';
       if (!laChu()) { CHU.key = null; CHU.data = null; if ($('page-chu')) $('page-chu').innerHTML = '<div class="panel section muted">Hãy lập lá số trước.</div>'; if (tChu.classList.contains('active')) showTab('tong'); }
+    }
+    var tPt = document.querySelector('#tabs [data-tab="pt"]');        // tab "Phi Tinh": 31/10 chỉ chủ sở hữu thấy (thử trước rồi mới mở bán)
+    if (tPt) {
+      tPt.style.display = laChu() ? '' : 'none';
+      if (!laChu()) { PT.key = null; PT.data = null; if ($('page-pt')) $('page-pt').innerHTML = '<div class="panel section muted">Hãy lập lá số trước.</div>'; if (tPt.classList.contains('active')) showTab('tong'); }
     }
     if (state.result) { dungMucLuc(); veCta(); veQc(); }
   }
@@ -1204,6 +1209,7 @@
     if (name === 'capdoi') cdNguoi1();
     if (name === 'que64') tkVe();
     if (name === 'chu') veChu();
+    if (name === 'pt') vePt();
     if (name === 'ti') { veTienIch(); if (state.token) tiDsQue(); }
     dungMucLuc(); if (state.result || state.cd) { veCta(); veQc(); }
   }
@@ -1346,6 +1352,58 @@
   /* ------------------------ TAB LÁ SỐ CHỦ SỞ HỮU ------------------------
      Chỉ tài khoản chủ sở hữu thấy (máy chủ tuViChuSoHuu cũng chặn người khác – TuViChuyenSau.gs):
      bộ sao từng cung, 12 đại vận soi sao hạn (Thiên Không, Thương – Sứ, Không Kiếp…), thọ khí. Được dùng tên sao. */
+  /* ------------------------ TAB TỨ HÓA PHI TINH (Bắc phái) ------------------------
+     Máy chủ phiTinhLuan (TuViPhiTinh.gs) – hiện chỉ chủ sở hữu. Mỗi mục: lời dễ hiểu (không tên sao) + "Căn cứ Phi Tinh" (công thức phi hóa). */
+  var PT = { key: null, data: null, dang: false };
+  var PT_CUNG_THU = ['Mệnh', 'Huynh Đệ', 'Phu Thê', 'Tử Tức', 'Tài Bạch', 'Tật Ách', 'Thiên Di', 'Nô Bộc', 'Quan Lộc', 'Điền Trạch', 'Phúc Đức', 'Phụ Mẫu'];
+  function vePt() {
+    var pg = $('page-pt'); if (!pg) return;
+    if (!laChu()) { pg.innerHTML = '<div class="panel section muted">Tab này hiện chỉ dành cho chủ sở hữu.</div>'; return; }
+    if (!state.input || !state.result || state.result.khach) { pg.innerHTML = '<div class="panel section muted">Hãy lập lá số trước.</div>'; return; }
+    var key = JSON.stringify(state.input);
+    if (PT.key === key && PT.data) { pg.innerHTML = ptHtml(PT.data); dungMucLuc(); return; }
+    if (PT.dang === key) return;
+    PT.dang = key;
+    pg.innerHTML = '<div class="panel section muted">Đang an phi hóa 12 cung…</div>';
+    call('phiTinhLuan', [state.input], function (d) {
+      PT.dang = false; PT.key = key; PT.data = d;
+      if (document.body.getAttribute('data-tab') === 'pt' && JSON.stringify(state.input) === key) { pg.innerHTML = ptHtml(d); dungMucLuc(); }
+    }, function (e) { PT.dang = false; pg.innerHTML = '<div class="panel section muted">' + esc((e && e.message) || String(e)) + '</div>'; });
+  }
+  function ptHtml(D) {
+    var MAU_H = { 'Lộc': 'pt-loc', 'Quyền': 'pt-quyen', 'Khoa': 'pt-khoa', 'Kỵ': 'pt-ky' };
+    function deList(ds) { return ds && ds.length ? '<ul class="pt-de">' + ds.map(function (x) { return '<li>' + esc(x) + '</li>'; }).join('') + '</ul>' : ''; }
+    function canCu(ds, mo) { return ds && ds.length ? '<details class="pt-cc"' + (mo ? ' open' : '') + '><summary>Căn cứ Phi Tinh</summary><ul>' + ds.filter(Boolean).map(function (x) { return '<li>' + esc(x) + '</li>'; }).join('') + '</ul></details>' : ''; }
+    var B = D.coBan || {}, g = D.gioiThieu || {};
+    var phiCua = {}; (D.cung || []).forEach(function (c) { phiCua[c.cung] = c; });
+    var tuHoaCua = {}; (D.tuHoa || []).forEach(function (t) { (tuHoaCua[t.cung] = tuHoaCua[t.cung] || []).push(t); });
+    var snCua = {}; (B.sinhNien || []).forEach(function (s) { if (s.cung) (snCua[s.cung] = snCua[s.cung] || []).push(s); });
+    var bang = '<div class="tbl-wrap"><table class="gio-tbl pt-bang"><thead><tr><th>Cung</th><th>Can chi</th><th>Hóa năm sinh</th><th>Tự hóa</th></tr></thead><tbody>' +
+      (B.canCung || []).slice().sort(function (a, b) { return PT_CUNG_THU.indexOf(a.cung) - PT_CUNG_THU.indexOf(b.cung); }).map(function (c) {
+        return '<tr' + (c.cung === B.menh ? ' class="best"' : '') + '><td><b>' + esc(c.cung) + '</b>' + (B.laiNhan && B.laiNhan.cung === c.cung ? ' <span class="chip neutral">Lai Nhân</span>' : '') + '</td><td>' + esc(c.can + ' ' + c.chi) + '</td>' +
+          '<td>' + (snCua[c.cung] || []).map(function (s) { return '<span class="pt-h ' + MAU_H[s.h] + '">' + esc(s.h) + '</span> <small>' + esc(s.sao) + '</small>'; }).join(' ') + '</td>' +
+          '<td>' + (tuHoaCua[c.cung] || []).map(function (t) { return '<span class="pt-h ' + MAU_H[t.h] + '">' + (t.loai === 'lyTam' ? '↑' : '↓') + esc(t.h) + '</span>'; }).join(' ') + '</td></tr>';
+      }).join('') + '</tbody></table></div><p class="muted" style="font-size:13px">↑ tự hóa ly tâm (hóa ngay trong cung) · ↓ tự hóa hướng tâm (hóa vào cung đối diện). Bảng Tứ Hóa theo trường Phi Tinh (can Nhâm: Khoa ở Tả Phù).</p>';
+    var p0 = '<div class="panel section pt"><h2 class="panel-title"><span class="han">飛</span> Tứ Hóa Phi Tinh · Bắc phái</h2>' +
+      '<p class="lede">' + esc(g.de || 'Cách luận lấy can của từng cung "phi" bốn hóa sang các cung khác để thấy dòng chảy giữa các mảng đời sống.') + '</p>' + canCu([g.ky]) + bang + '</div>';
+    var ln = B.laiNhan ? '<div class="cc-item mid"><b>Lai Nhân cung: ' + esc(B.laiNhan.cung) + ' (' + esc(B.laiNhan.chi) + ')</b><small>' + esc(B.laiNhan.de) + '</small>' + (B.laiNhan.ky ? '<small class="muted">' + esc(B.laiNhan.ky) + '</small>' : '') + '</div>' : '';
+    var mau = (D.mau || []).map(function (m) { return '<div class="cc-item ' + (/Kỵ/.test(m.ten) && !/Nghịch|Nhập khố/.test(m.ten) ? 'bad' : 'mid') + '"><b>' + esc(m.ten) + '</b><small>' + esc(m.de) + '</small><small class="muted">' + esc(m.ky) + '</small></div>'; }).join('');
+    var p1 = '<div class="panel section pt"><h2 class="panel-title"><span class="han">總</span> Tổng quan nguyên cục</h2><div class="cc-list">' + ln + mau + '</div></div>';
+    var p2 = '<div class="panel section pt"><h2 class="panel-title"><span class="han">宮</span> Luận 12 cung theo phi hóa</h2><p class="lede">Thứ tự luận của Bắc phái: Mệnh → Quan Lộc → Tài Bạch → Thiên Di → Phúc Đức → Phu Thê → Tử Tức → Điền Trạch → Tật Ách → Phụ Mẫu → Huynh Đệ → Nô Bộc.</p><div class="lg-list">' +
+      (D.cung || []).map(function (c, i) { return '<details class="lg-block"' + (i < 3 ? ' open' : '') + '><summary><span class="lg-t">' + esc(c.cung) + '</span><span class="lg-meta">' + esc(c.can + ' ' + c.chi) + '</span></summary><div class="lg-body">' + (deList(c.de) || '<p class="muted">Cung này không có phi hóa nổi bật.</p>') + canCu(c.ky) + '</div></details>'; }).join('') + '</div></div>';
+    function tangHtml(t, tieuDe, meta, mo) {
+      var MUC = { 'Thuận': 'r5', 'Bình': 'r3', 'Cần giữ nhịp': 'r2', 'Nên thận trọng': 'r1' };
+      return '<details class="lg-block"' + (mo ? ' open' : '') + '><summary><span class="lg-t">' + tieuDe + '</span><span class="lg-meta">' + meta + '</span><span class="rate ' + (MUC[t.muc] || 'r3') + '">' + esc(t.muc) + '</span></summary><div class="lg-body">' +
+        '<p class="pt-hoa">' + (t.hoa || []).map(function (h) { return '<span class="pt-h ' + MAU_H[h.h] + '">' + esc(h.h) + '</span> ' + esc(h.cung || '—'); }).join(' · ') + '</p>' +
+        deList(t.de) + (t.mau && t.mau.length ? '<ul class="rel-list">' + t.mau.map(function (m) { return '<li class="' + (/Kỵ|xung|Phản/.test(m.ten) ? 'xung' : 'hop') + '"><b>' + esc(m.ten) + '</b><br><small>' + esc(m.de) + '</small></li>'; }).join('') + '</ul>' : '') + canCu([].concat(t.ky || [], (t.mau || []).map(function (m) { return m.ky; }))) + '</div></details>';
+    }
+    var p3 = '<div class="panel section pt"><h2 class="panel-title"><span class="han">大運</span> Đại vận theo phi hóa</h2><p class="lede">Can của cung đại vận phi bốn hóa, đọc chồng lên lá số gốc: Lộc rơi vào đâu là chỗ thuận, Kỵ xung vào đâu là chỗ cần giữ.</p><div class="lg-list">' +
+      (D.daiVan || []).map(function (t) { return tangHtml(t, esc(t.tuoi + '–' + t.den + ' tuổi'), esc('vận ' + t.menh + ' · can ' + t.can) + (t.nay ? ' · <b>đang đi</b>' : ''), t.nay); }).join('') + '</div></div>';
+    var p4 = '<div class="panel section pt"><h2 class="panel-title"><span class="han">流年</span> Lưu niên theo phi hóa</h2><div class="lg-list">' +
+      (D.luuNien || []).map(function (t, i) { return tangHtml(t, 'Năm ' + t.nam, esc(t.tuoi + ' tuổi · Mệnh năm ở ' + t.menh + (t.dvMenh ? ' · trong vận ' + t.dvMenh : '')), i === 0); }).join('') + '</div></div>';
+    var nguon = '<details class="tk-ng"><summary>Nguồn tham khảo Phi Tinh</summary><ul class="chu-nguon">' + (D.nguon || []).map(function (n) { return '<li>' + (n.url ? '<a href="' + esc(n.url) + '" target="_blank" rel="noopener">' + esc(n.ten) + '</a>' : esc(n.ten)) + '</li>'; }).join('') + '</ul></details>';
+    return p0 + p1 + p2 + p3 + p4 + '<div class="panel section muted" style="font-size:13px">Tứ Hóa Phi Tinh là trường phái hiện đại (Đài Loan, từ thập niên 1980); đọc như một góc nhìn bổ sung cho lá số Tử Vi, không thay cho cách luận chính. ' + nguon + '</div>';
+  }
   var CHU = { key: null, data: null, dang: false };
   function laChu() { var u = state.nguoiDung; return !!u && u.vaiTro === 'chu'; }
   function veChu() {

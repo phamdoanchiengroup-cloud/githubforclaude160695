@@ -7,7 +7,7 @@ BatTuPhanTich.gs	39312
 BatTuThanSat.gs	140788
 CapDoi.gs	50111
 ChiemTinh.gs	104280
-Code.gs	25021
+Code.gs	25102
 DeHieu.gs	92746
 DuDoan.gs	38301
 Facts.gs	11809
@@ -15,14 +15,14 @@ HaLac.gs	63987
 HoiTu.gs	61732
 Holo.html	59597
 HumanDesign.gs	46573
-Index.html	48574
+Index.html	48834
 LuanGiai.gs	101399
 Lunar.gs	9228
 NghiemChung.gs	26413
 NghiemChungUI.html	11072
 PhoiNgau.gs	51165
-Script.html	686838
-Styles.html	245305
+Script.html	695566
+Styles.html	246323
 TaiKhoan.gs	20569
 ThanSoHoc.gs	52496
 ThanhToan.gs	49765
@@ -31,6 +31,7 @@ TongHop.gs	72782
 TuVi.gs	57688
 TuViChuyenSau.gs	141271
 TuViHeThong.gs	375984
+TuViPhiTinh.gs	88512
 TuViTamPhap.gs	22990
 TuViTrinhTu.gs	30535
 VanSau.gs	59454
