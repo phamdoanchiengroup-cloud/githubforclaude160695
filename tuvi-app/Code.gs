@@ -68,13 +68,14 @@ var HAM_CAN_CO = {
   'Lunar.gs': 'solarToLunar', 'TuVi.gs': 'tuviLapLaSo', 'BatTu.gs': 'batTuLap',
   'LuanGiai.gs': 'luanChiTiet', 'DuDoan.gs': 'duDoanCuocDoi', 'BatTuChiTiet.gs': 'batTuChiTiet',
   'Astro.gs': 'astToanBo', 'ChiemTinh.gs': 'chiemTinhLap', 'HumanDesign.gs': 'hdLap', 'ThanSoHoc.gs': 'thanSoHocLap', 'TongHop.gs': 'tongHopLuan', 'PhoiNgau.gs': 'phoiNgauLuan', 'HaLac.gs': 'haLacLap', 'HoiTu.gs': 'htHoiTu_', 'VanSau.gs': 'vsHoSoThang_', 'TuViTamPhap.gs': 'tpLap_', 'BatTuLuan.gs': 'btlLinhVuc_', 'TaiKhoan.gs': 'dangNhap', 'ThanhToan.gs': 'muaPhan', 'CapDoi.gs': 'lapCapDoi',
-  'Facts.gs': 'taoFact_', 'TuViHeThong.gs': 'tuviSinhFactsCung_', 'NghiemChung.gs': 'nghiemChungLap', 'DeHieu.gs': 'deHieuLap_', 'BatTuPhanTich.gs': 'btPhanTich_', 'TienIch.gs': 'tienIch', 'TuViTrinhTu.gs': 'tuviTrinhTu', 'TuViChuyenSau.gs': 'tuViChuSoHuu'
+  'Facts.gs': 'taoFact_', 'TuViHeThong.gs': 'tuviSinhFactsCung_', 'NghiemChung.gs': 'nghiemChungLap', 'DeHieu.gs': 'deHieuLap_', 'BatTuPhanTich.gs': 'btPhanTich_', 'TienIch.gs': 'tienIch', 'TuViTrinhTu.gs': 'tuviTrinhTu', 'TuViChuyenSau.gs': 'tuViChuSoHuu', 'BatTuThanSat.gs': 'thsTheoTru_'
 };
 
 /** Trả về danh sách lỗi cài đặt (rỗng nếu mọi thứ đúng) */
 /** Dấu hiệu bản mới: [hàm trong file, đoạn mã mà bản mới phải có] */
 var BAN_MOI_CAN_CO = {
-  'BatTu.gs': ['batTuLap', 'btPhanTich_'],
+  'BatTu.gs': ['batTuLap', 'thsTheoTru_'],
+  'BatTuThanSat.gs': ['thamKhaoThanSat', 'THS_NGUON'],
   'Code.gs': ['lapLaSoDayDu_', 'tvcsBoSaoCong_'],
   'TuViTrinhTu.gs': ['tuviTrinhTu', 'TT_GOP'],
   'TuViChuyenSau.gs': ['thamKhaoTuVi', 'TVCS_NGHE'],
@@ -134,7 +135,7 @@ function trangLoiCaiDat_(loi) {
 /** Chạy hàm này trong trình soạn thảo (chọn kiemTraCaiDat → Chạy) để xem lỗi trong Nhật ký thực thi */
 function kiemTraCaiDat() {
   var loi = kiemTraCaiDat_();
-  if (!loi.length) { Logger.log('✔ Cài đặt đúng: đủ 29 file .gs và 3 file HTML.'); return; }
+  if (!loi.length) { Logger.log('✔ Cài đặt đúng: đủ 30 file .gs và 3 file HTML.'); return; }
   loi.forEach(function (x) { Logger.log('✘ ' + x.replace(/<[^>]+>/g, '').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&amp;/g, '&')); });
 }
 

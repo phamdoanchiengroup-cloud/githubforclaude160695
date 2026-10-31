@@ -4,6 +4,9 @@ Nhóm: Bắt đầu · Cập nhật 21/10/2026
 Liên quan: [[Việc chờ chủ dự án]] · [[TCC Bán hàng]] · [[00 Mục lục]]
 
 ## Cách làm việc
+- **31/10: cập nhật chỉ cần bấm đúp `2-CAP-NHAT.bat`** – bộ clasp tự sao lưu và tự triển khai phiên bản mới; hướng dẫn chủ dự án chỉ còn "bấm 2-CAP-NHAT.bat → Ctrl+F5" (lỗi thì 3-KHOI-PHUC.bat). – [[TCC Tự đẩy code lên Apps Script]]
+- **31/10: thần sát Bát Tự "đủ sao có quy tắc rõ"** – chỉ đưa sao có cách an được ≥2 nguồn độc lập xác nhận (156 sao), hiện theo từng trụ như ảnh chủ dự án gửi, thêm từ điển trong tab Tham khảo và vào PDF; văn dễ hiểu theo quy tắc cũ (không tên sao, không đoán tai nạn/bệnh). **Bài luận Bát Tự theo trình tự Tử Bình chuẩn (15 bước).** – [[TCC Thần sát Bát Tự]]
+- **26/10: tải PDF chạy nền** – thẻ tiến trình nhỏ góc dưới phải (%, Hủy); lập lá số mới khi đang dựng thì hỏi rồi hủy. – [[TCC PDF]]
 - **25/10 (khuya): PDF có 4 loại** – đầy đủ, **bản gọn ~100 trang** (cùng quyền với bản đầy đủ), **bản tóm tắt ~50 trang** (mở cho mọi người, chỉ in phần đã mở), bản xem thử. Nội dung bản gọn/tóm tắt chọn lọc từ luận giải có sẵn theo quy tắc chuyên gia content-creator soạn.
 - **25/10 (khuya): ảnh mới của chủ dự án** – 5 ngũ hành dùng ở tab Bát Tự (banner Nhật chủ, thẻ dụng/hỷ/kỵ thần) và trang PDF "Ngũ hành của bạn"; 12 con giáp (tuổi Mão là Mèo) ở thẻ hồ sơ, đầu vận năm (tab Vận hạn), trang PDF "Tuổi của bạn"; ảnh tiên cảnh cắt giữa phủ kín bìa PDF (cả nền sáng và tối). **PDF đi theo đúng nội dung web cả 6 hệ, đầy đủ, bỏ phần căn cứ; chủ sở hữu xuất thì thêm chương 👑.**
 - **25/10 (đêm): dòng lưu ý "Đây là góc nhìn theo cổ học…" đưa xuống chân trang web** (chữ nhỏ, không khung) vì che mục lục; PDF vẫn giữ trong "Cách đọc báo cáo".

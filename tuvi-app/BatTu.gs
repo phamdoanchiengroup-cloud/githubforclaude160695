@@ -334,6 +334,11 @@ function batTuLap(input) {
     luuNien: luuNien, tietKhi: tietKhi, kinhDoMatTroi: Math.round(L * 100) / 100,
     luan: luan, goiY: goiY, phuTru: phuTru
   };
+  // Thần sát theo từng trụ (BatTuThanSat.gs, 26/10): nhãn dưới mỗi trụ + bước "Thần sát" trong bài luận
+  if (typeof thsTheoTru_ === 'function') {
+    try { R.thanSatTru = thsTheoTru_(pillars.map(function (p) { return { can: p.can, chi: p.chi }; }), male); R.thanSatNghia = thsNghia_(R.thanSatTru); }
+    catch (e) { R.thanSatLoi = String(e && e.message || e); }
+  }
   // Phân tích 9 bước (BatTuPhanTich.gs): vượng suy theo điểm Thiệu Vĩ Hoa, dụng thần nhiều phương pháp, cách cục đủ ngoại cách.
   // Kết quả thay cho ước lượng nhanh ở trên để MỌI module (Tử Vi × Bát Tự, cặp đôi, dự đoán, hội tụ…) dùng chung một kết luận.
   if (typeof btPhanTich_ === 'function') {

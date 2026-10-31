@@ -12,8 +12,7 @@ File này được Claude Code tự đọc khi mở repo. Nó giữ **quy tắc 
 - **Luôn dùng chuyên gia Agency Agents mỗi lần làm việc** (chủ dự án chốt 25/10): mỗi việc gọi ít nhất một chuyên gia phù hợp trong `.claude/agents/` (vd. `content-creator` cho văn luận, `ui-designer`/`frontend-developer` cho giao diện, `code-reviewer`/`reality-checker` để rà trước khi đẩy mã) – danh sách ở `bo-nao/Thiên Cơ Các/TCC Chuyên gia Agency Agents.md`.
 - **Trả lời bằng tiếng Việt.**
   - Chủ dự án không phải dân IT, nên hướng dẫn từng bước theo dạng **"MỞ FILE X → xóa hết → dán bản mới"**.
-  - Luôn nói rõ **file nào cần dán lại** vào Apps Script, kèm bước **Triển khai → Quản lý triển khai → ✏️ → Phiên bản mới → Triển khai**, rồi Ctrl+F5.
-- Nhắc **sao lưu** (Tổng quan → Tạo bản sao dự án) trước khi dán thay đổi lớn.
+  - Luôn nói rõ **file nào thay đổi**. Cách cập nhật (chủ dự án xác nhận 31/10): bấm đúp **`2-CAP-NHAT.bat`** – bộ clasp **tự sao lưu và tự triển khai phiên bản mới** – rồi Ctrl+F5. Không cần dặn bước Triển khai tay hay Tạo bản sao dự án nữa (lỗi thì `3-KHOI-PHUC.bat`).
 - **Cái gì xong trước thì gửi trước** (chủ dự án nhắc 19/10): làm nhiều sản phẩm một lúc thì phần nào xong và đã kiểm tra gửi ngay.
 - Trước khi đề xuất gì, xem `bo-nao/Quyết định của chủ dự án.md`.
 - Chủ dự án hay gửi file đã tự sửa. Khi nhận:
