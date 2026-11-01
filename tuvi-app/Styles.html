@@ -1,6 +1,6 @@
 <style>
 /* Mã phiên bản giao diện – phải trùng với Index.html (meta tcc-ban) và Script.html (BAN_GIAO_DIEN) */
-:root { --tcc-ban: "2026.10.31.5"; }
+:root { --tcc-ban: "2026.11.1.1"; }
 /* ================================================================
    THIÊN CƠ CÁC — phong cách tiên hiệp sáng: ngọc bích, kim sa, mây trắng
    ================================================================ */
@@ -741,6 +741,16 @@ details.yr summary em { font-style: normal; font-weight: 700; font-size: 12.5px;
 .pt-cc { margin-top: 6px; font-size: 13.5px; } .pt-cc summary { cursor: pointer; color: var(--ink-soft, #c9b89a); } .pt-cc ul { margin: 6px 0; padding-left: 18px; } .pt-cc li { margin: 3px 0; }
 .pt-bang td, .pt-bang th { white-space: nowrap; }
 .pt .cc-item small { display: block; margin-top: 6px; } .pt .cc-item small.muted { font-size: 12.5px; opacity: .85; } .pt-hoa { font-size: 14px; }
+/* Tab Gia đình (1/11) */
+.gd-ds { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 10px; }
+.gd-the { padding: 12px 14px; border-radius: 12px; border: 1px solid var(--line); background: rgba(255,255,255,.03); display: grid; gap: 6px; }
+.gd-ten { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; } .gd-ten b { font-size: 16px; }
+.gd-nut { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; }
+.gd-form { margin-top: 10px; } .gd-form summary { cursor: pointer; font-weight: 600; }
+.gd-luoi { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 8px; margin: 10px 0; }
+.gd-luoi label { display: grid; gap: 4px; font-size: 13px; } .gd-luoi .gd-nhuan { display: flex; align-items: center; gap: 6px; }
+.gd textarea { width: 100%; font: inherit; font-size: 14px; } .gd-cap { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; margin-bottom: 10px; }
+.gd-cap select { width: auto; flex: 1 1 200px; max-width: 320px; } .gd-cap input { width: 110px; } .gd-cap label { display: flex; align-items: center; gap: 6px; } .gd-cap .btn, .gd-nut .btn { width: auto; flex: 0 0 auto; }
 /* Lá số Phi Tinh 4×4 nền Hologram (31/10) – cùng tranh và cách căn khung với lá số Tử Vi (#chartArea.xem-holo .chart) */
 .pt-khung { padding: 10px; border-radius: 20px; border: 3px solid transparent; color: #EAF4FF;
   background: linear-gradient(#060B16, #060B16) padding-box, linear-gradient(135deg, #FFE6A8, #B8954A 30%, #5CEBFF 50%, #B8954A 70%, #FFE6A8) border-box; }

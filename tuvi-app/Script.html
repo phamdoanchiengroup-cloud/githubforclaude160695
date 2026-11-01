@@ -19,7 +19,7 @@
 
   var $ = function (id) { return document.getElementById(id); };
   var state = { result: null, sel: null, token: '', nguoiDung: null };
-  var CAN_TOKEN = { lapLaSo: 1, doGioSinh: 1, getLichSu: 1, xoaLichSu: 1, donLichSu: 1, lapCapDoi: 1, tienIch: 1, gieoQue: 1, dsGieoQue: 1, dangKyBanTin: 1, dsBanTin: 1, dangKyVanNgay: 1, huyVanNgay: 1, dsVanNgay: 1, tuViChuSoHuu: 1, phiTinhLuan: 1 };
+  var CAN_TOKEN = { lapLaSo: 1, doGioSinh: 1, getLichSu: 1, xoaLichSu: 1, donLichSu: 1, lapCapDoi: 1, tienIch: 1, gieoQue: 1, dsGieoQue: 1, dangKyBanTin: 1, dsBanTin: 1, dangKyVanNgay: 1, huyVanNgay: 1, dsVanNgay: 1, tuViChuSoHuu: 1, phiTinhLuan: 1, giaDinhDs: 1, giaDinhLuu: 1, giaDinhVanNam: 1 };
 
   function esc(s) {
     return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) {
@@ -27,7 +27,7 @@
     });
   }
   /** Mã phiên bản giao diện – phải trùng với Index.html (meta tcc-ban) và Styles.html (--tcc-ban) */
-  var BAN_GIAO_DIEN = '2026.10.31.5';
+  var BAN_GIAO_DIEN = '2026.11.1.1';
   /* 25/10: ảnh ngũ hành + 12 con giáp + bìa PDF mới của chủ dự án (tuvi-app/anh/*.webp) qua jsDelivr, ghim theo mã lần lưu */
   var TCC_ANH_CDN = 'https://cdn.jsdelivr.net/gh/phamdoanchiengroup-cloud/githubforclaude160695@19203fbd20433f395336269a411f8aebcf990086/tuvi-app/anh/';
   var ANH_HANH = { 'Mộc': 'NguHanhMoc', 'Hỏa': 'NguHanhHoa', 'Thổ': 'NguHanhTho', 'Kim': 'NguHanhKim', 'Thủy': 'NguHanhThuy' };
@@ -41,7 +41,7 @@
   function hasServer() { return typeof google !== 'undefined' && google.script && google.script.run; }
   /** Hàm máy chủ mới thêm gần đây → file .gs chứa nó (để báo đúng file khi còn bản cũ) */
   var FILE_HAM = { bangGiaCongKhai: 'ThanhToan.gs', muaPhan: 'ThanhToan.gs', viCuaToi: 'ThanhToan.gs', dangKy: 'TaiKhoan.gs', lapLaSo: 'TaiKhoan.gs',
-    tienIch: 'TienIch.gs', gieoQue: 'TienIch.gs', dsGieoQue: 'TienIch.gs', dangKyBanTin: 'TienIch.gs', dsBanTin: 'TienIch.gs', dangKyVanNgay: 'TienIch.gs', huyVanNgay: 'TienIch.gs', dsVanNgay: 'TienIch.gs', thamKhaoTuVi: 'TuViChuyenSau.gs', donLichSu: 'Code.gs', getLichSu: 'Code.gs', lapCapDoi: 'CapDoi.gs', tuViChuSoHuu: 'TuViChuyenSau.gs', phiTinhLuan: 'TuViPhiTinh.gs', thamKhaoThanSat: 'BatTuThanSat.gs' };
+    tienIch: 'TienIch.gs', gieoQue: 'TienIch.gs', dsGieoQue: 'TienIch.gs', dangKyBanTin: 'TienIch.gs', dsBanTin: 'TienIch.gs', dangKyVanNgay: 'TienIch.gs', huyVanNgay: 'TienIch.gs', dsVanNgay: 'TienIch.gs', thamKhaoTuVi: 'TuViChuyenSau.gs', donLichSu: 'Code.gs', getLichSu: 'Code.gs', lapCapDoi: 'CapDoi.gs', tuViChuSoHuu: 'TuViChuyenSau.gs', phiTinhLuan: 'TuViPhiTinh.gs', giaDinhDs: 'GiaDinh.gs', giaDinhLuu: 'GiaDinh.gs', giaDinhVanNam: 'GiaDinh.gs', thamKhaoThanSat: 'BatTuThanSat.gs' };
   function call(fn, args, ok, fail) {
     if (!hasServer()) { (fail || showErr)({ message: 'Không tìm thấy máy chủ Apps Script. Hãy mở ứng dụng qua URL Web App.' }); return; }
     var r = google.script.run.withSuccessHandler(ok).withFailureHandler(fail || showErr), a = (args || []).slice();
@@ -323,6 +323,8 @@
       tChu.style.display = laChu() ? '' : 'none';
       if (!laChu()) { CHU.key = null; CHU.data = null; if ($('page-chu')) $('page-chu').innerHTML = '<div class="panel section muted">Hãy lập lá số trước.</div>'; if (tChu.classList.contains('active')) showTab('tong'); }
     }
+    var tGd = document.querySelector('#tabs [data-tab="gd"]');        // tab "Gia đình": chỉ chủ sở hữu
+    if (tGd) { tGd.style.display = laChu() ? '' : 'none'; if (!laChu()) { GD.ds = null; if (tGd.classList.contains('active')) showTab('tong'); } }
     var tPt = document.querySelector('#tabs [data-tab="pt"]');        // tab "Phi Tinh": 31/10 chỉ chủ sở hữu thấy (thử trước rồi mới mở bán)
     if (tPt) {
       tPt.style.display = laChu() ? '' : 'none';
@@ -1210,6 +1212,7 @@
     if (name === 'que64') tkVe();
     if (name === 'chu') veChu();
     if (name === 'pt') vePt();
+    if (name === 'gd') veGd();
     if (name === 'ti') { veTienIch(); if (state.token) tiDsQue(); }
     dungMucLuc(); if (state.result || state.cd) { veCta(); veQc(); }
   }
@@ -1354,6 +1357,100 @@
      bộ sao từng cung, 12 đại vận soi sao hạn (Thiên Không, Thương – Sứ, Không Kiếp…), thọ khí. Được dùng tên sao. */
   /* ------------------------ TAB TỨ HÓA PHI TINH (Bắc phái) ------------------------
      Máy chủ phiTinhLuan (TuViPhiTinh.gs) – hiện chỉ chủ sở hữu. Mỗi mục: lời dễ hiểu (không tên sao) + "Căn cứ Phi Tinh" (công thức phi hóa). */
+  /* ------------------------ TAB GIA ĐÌNH (1/11, chỉ chủ sở hữu) ------------------------
+     Danh sách người nhà lưu ở Script Properties (GiaDinh.gs) – không nằm trong mã. Mở lá số = setForm + submit;
+     quan hệ = điền người A vào khung Nhập thông tin, người B vào tab Cặp đôi rồi xemCapDoi; bảng vận năm = giaDinhVanNam. */
+  var GD = { ds: null, quanHe: [], dang: false, sua: null, nam: null, van: null };
+  var GD_MAU = 'Tên | Quan hệ | Nam/Nữ | Âm/Dương | ngày/tháng/năm | giờ:phút';
+  function gdNgay(i) { return i.day + '/' + i.month + '/' + i.year + (i.calendar === 'am' ? ' (âm' + (i.leap ? ', nhuận' : '') + ')' : ' (dương)') + ' · ' + pad(i.hour || 0) + ':' + pad(i.minute || 0); }
+  function veGd() {
+    var pg = $('page-gd'); if (!pg) return;
+    if (!laChu()) { pg.innerHTML = '<div class="panel section muted">Tab này chỉ dành cho chủ sở hữu.</div>'; return; }
+    if (!GD.ds) {
+      pg.innerHTML = '<div class="panel section muted">Đang tải danh sách gia đình…</div>';
+      if (GD.dang) return; GD.dang = true;
+      call('giaDinhDs', [], function (d) { GD.dang = false; GD.ds = d.ds || []; GD.quanHe = d.quanHe || []; if (document.body.getAttribute('data-tab') === 'gd') veGd(); },
+        function (e) { GD.dang = false; pg.innerHTML = '<div class="panel section muted">' + esc((e && e.message) || String(e)) + '</div>'; });
+      return;
+    }
+    if (!GD.nam) GD.nam = (state.input && state.input.viewYear) || new Date().getFullYear();
+    var opt = function (chon) { return GD.quanHe.map(function (q) { return '<option' + (q === chon ? ' selected' : '') + '>' + esc(q) + '</option>'; }).join(''); };
+    var the = GD.ds.length ? GD.ds.map(function (p, i) {
+      return '<div class="gd-the"><div class="gd-ten"><b>' + esc(p.ten) + '</b><span class="chip neutral">' + esc(p.quanHe) + '</span></div>' +
+        '<small>' + (p.input.gender === 'nu' ? 'Nữ' : 'Nam') + ' · ' + esc(gdNgay(p.input)) + '</small>' +
+        '<div class="gd-nut"><button type="button" class="btn btn-primary btn-sm" data-gd-mo="' + i + '">Mở lá số</button><button type="button" class="btn btn-ghost btn-sm" data-gd-sua="' + i + '">Sửa</button>' +
+        (i ? '<button type="button" class="btn btn-ghost btn-sm" data-gd-len="' + i + '" aria-label="Đưa lên">↑</button>' : '') + '<button type="button" class="btn btn-ghost btn-sm" data-gd-xoa="' + i + '">Xóa</button></div></div>';
+    }).join('') : '<p class="muted">Chưa có ai. Bấm "Thêm lá số đang mở" khi đang xem lá số một người, hoặc dán danh sách vào ô "Nhập nhanh".</p>';
+    var s = GD.sua != null && GD.ds[GD.sua] ? GD.ds[GD.sua] : null, si = s ? s.input : { gender: 'nam', calendar: 'am', hour: 0, minute: 0 };
+    var form = '<details class="gd-form"' + (s ? ' open' : '') + '><summary>' + (s ? 'Sửa: ' + esc(s.ten) : '＋ Thêm người') + '</summary><div class="gd-luoi">' +
+      '<label>Tên<input id="gdTen" value="' + esc(s ? s.ten : '') + '"></label><label>Quan hệ<select id="gdQh">' + opt(s ? s.quanHe : 'Vợ') + '</select></label>' +
+      '<label>Giới tính<select id="gdGt"><option value="nam"' + (si.gender !== 'nu' ? ' selected' : '') + '>Nam</option><option value="nu"' + (si.gender === 'nu' ? ' selected' : '') + '>Nữ</option></select></label>' +
+      '<label>Lịch<select id="gdLich"><option value="am"' + (si.calendar === 'am' ? ' selected' : '') + '>Âm lịch</option><option value="duong"' + (si.calendar !== 'am' ? ' selected' : '') + '>Dương lịch</option></select></label>' +
+      '<label>Ngày/tháng/năm<input id="gdNgay" placeholder="19/5/1995" value="' + (s ? si.day + '/' + si.month + '/' + si.year : '') + '"></label>' +
+      '<label>Giờ:phút<input id="gdGio" placeholder="06:00" value="' + (s ? pad(si.hour) + ':' + pad(si.minute) : '') + '"></label>' +
+      '<label class="gd-nhuan"><input type="checkbox" id="gdNhuan"' + (si.leap ? ' checked' : '') + '> Tháng nhuận (âm lịch)</label></div>' +
+      '<div class="gd-nut"><button type="button" class="btn btn-primary btn-sm" id="gdLuu">' + (s ? 'Lưu thay đổi' : 'Thêm') + '</button>' + (s ? '<button type="button" class="btn btn-ghost btn-sm" id="gdHuy">Hủy</button>' : '') + '</div></details>';
+    var nhap = '<details class="gd-form"><summary>📋 Nhập nhanh nhiều người</summary><p class="muted" style="font-size:13px">Mỗi dòng một người theo mẫu: <code>' + esc(GD_MAU) + '</code>. Giờ theo đồng hồ (ví dụ giờ Mão ghi 06:00).</p><textarea id="gdDan" rows="5" placeholder="' + esc(GD_MAU) + '"></textarea><div class="gd-nut"><button type="button" class="btn btn-primary btn-sm" id="gdNhapNhanh">Thêm vào danh sách</button></div></details>';
+    var p1 = '<div class="panel section gd"><h2 class="panel-title"><span class="han">家</span> Người trong gia đình</h2><p class="lede">Danh sách chỉ lưu trên máy chủ Apps Script của bạn, chỉ tài khoản chủ sở hữu xem được.</p>' +
+      '<div class="gd-ds">' + the + '</div><div class="gd-nut" style="margin:10px 0"><button type="button" class="btn btn-ghost btn-sm" id="gdThemMo"' + (state.input && state.result ? '' : ' disabled') + '>＋ Thêm lá số đang mở</button></div>' + form + nhap + '</div>';
+    var chon = function (id, mac) { return '<select id="' + id + '">' + GD.ds.map(function (p, i) { return '<option value="' + i + '"' + (i === mac ? ' selected' : '') + '>' + esc(p.ten + ' (' + p.quanHe + ')') + '</option>'; }).join('') + '</select>'; };
+    var p2 = GD.ds.length > 1 ? '<div class="panel section gd"><h2 class="panel-title"><span class="han">緣</span> Quan hệ trong gia đình</h2><p class="lede">Chọn hai người để xem mức hợp nhau, điểm cần nhường nhịn và năm thuận cho cả hai (dùng phần Cặp đôi).</p>' +
+      '<div class="gd-cap">' + chon('gdA', 0) + '<span>với</span>' + chon('gdB', 1) + '<button type="button" class="btn btn-primary btn-sm" id="gdXemCap">Xem hợp nhau</button></div></div>' : '';
+    var V = GD.van && GD.van.nam === GD.nam ? GD.van : null;
+    var bang = V ? bangHtml(['Người', 'Tuổi', 'Năm với tuổi', 'Phi Tinh', 'Bát Tự', 'Điều nên để ý'], V.ds.map(function (r) {
+      if (r.loi) return '<tr><td><b>' + esc(r.ten) + '</b></td><td colspan="5" class="muted">' + esc(r.loi) + '</td></tr>';
+      var MUC = { 'Thuận': 'r5', 'Bình': 'r3', 'Cần giữ nhịp': 'r2', 'Nên thận trọng': 'r1' };
+      return '<tr><td><b>' + esc(r.ten) + '</b><br><small class="muted">' + esc(r.quanHe + ' · ' + (r.conGiap || r.namSinh)) + '</small></td><td>' + r.tuoi + '</td><td>' + esc(r.thaiTue || '—') + '</td>' +
+        '<td>' + (r.phiTinh ? '<span class="rate ' + (MUC[r.phiTinh.muc] || 'r3') + '">' + esc(r.phiTinh.muc) + '</span>' : '—') + '</td><td>' + (r.batTu ? esc(r.batTu.danhGia) : '—') + '</td><td><small>' + esc(r.phiTinh ? r.phiTinh.loi : '') + '</small></td></tr>';
+    })) : '<p class="muted">Bấm "Xem" để tính.</p>';
+    var p3 = GD.ds.length ? '<div class="panel section gd"><h2 class="panel-title"><span class="han">年</span> Vận năm cả nhà</h2><div class="gd-cap"><label>Năm <input type="number" id="gdNam" min="1900" max="2200" value="' + GD.nam + '"></label><button type="button" class="btn btn-primary btn-sm" id="gdXemNam">Xem</button>' + (V ? '<span class="muted">' + esc(V.canChi) + '</span>' : '') + '</div>' + bang + '</div>' : '';
+    pg.innerHTML = p1 + p2 + p3;
+    if (GD.ds.length && !V && !GD.dangVan) gdTinhNam();
+  }
+  function gdLuuDs(ds, xong) {
+    call('giaDinhLuu', [ds], function (d) { GD.ds = d.ds; GD.van = null; GD.sua = null; veGd(); if (xong) toast(xong); });
+  }
+  function gdTinhNam() {
+    GD.dangVan = true;
+    call('giaDinhVanNam', [GD.nam], function (d) { GD.dangVan = false; GD.van = d; if (document.body.getAttribute('data-tab') === 'gd') veGd(); }, function (e) { GD.dangVan = false; toast((e && e.message) || String(e), true); });
+  }
+  function gdDocDong(l) {   // "Tên | Quan hệ | Nam/Nữ | Âm/Dương | d/m/y | hh:mm"
+    var a = l.split('|').map(function (x) { return x.trim(); }); if (a.length < 5) throw new Error('Dòng thiếu cột: ' + l);
+    var n = a[4].split(/[\/.\-]/).map(function (x) { return parseInt(x, 10); }), g = (a[5] || '0:0').split(':').map(function (x) { return parseInt(x, 10) || 0; });
+    var am = /^âm|^am/i.test(a[3]);
+    return { ten: a[0], quanHe: a[1], input: { name: a[0], gender: /^n[ữu]/i.test(a[2]) ? 'nu' : 'nam', calendar: am ? 'am' : 'duong', day: n[0], month: n[1], year: n[2], leap: am && /nhuận/i.test(l), hour: g[0], minute: g[1] || 0 } };
+  }
+  document.addEventListener('click', function (e) {
+    var t = e.target; if (!t.closest || !t.closest('#page-gd')) return;
+    var b;
+    if ((b = t.closest('[data-gd-mo]'))) { var p = GD.ds[+b.getAttribute('data-gd-mo')]; setForm(p.input); $('viewYear').value = GD.nam || new Date().getFullYear(); showTab('chart'); submit(); return; }
+    if ((b = t.closest('[data-gd-sua]'))) { GD.sua = +b.getAttribute('data-gd-sua'); veGd(); return; }
+    if ((b = t.closest('[data-gd-xoa]'))) { var i = +b.getAttribute('data-gd-xoa'); if (!confirm('Xóa ' + GD.ds[i].ten + ' khỏi danh sách gia đình?')) return; gdLuuDs(GD.ds.filter(function (x, k) { return k !== i; }), 'Đã xóa.'); return; }
+    if ((b = t.closest('[data-gd-len]'))) { var j = +b.getAttribute('data-gd-len'), ds = GD.ds.slice(), x = ds[j]; ds[j] = ds[j - 1]; ds[j - 1] = x; gdLuuDs(ds); return; }
+    if (t.id === 'gdHuy') { GD.sua = null; veGd(); return; }
+    if (t.id === 'gdThemMo') { var f = state.input; if (!f) return; gdLuuDs(GD.ds.concat([{ ten: f.name || 'Không tên', quanHe: 'Khác', input: f }]), 'Đã thêm ' + (f.name || 'lá số') + ' – bấm Sửa để chọn quan hệ.'); return; }
+    if (t.id === 'gdLuu') {
+      var n = ($('gdNgay').value || '').split(/[\/.\-]/).map(function (v) { return parseInt(v, 10); }), g = ($('gdGio').value || '0:0').split(':').map(function (v) { return parseInt(v, 10) || 0; });
+      var moi = { ten: $('gdTen').value.trim(), quanHe: $('gdQh').value, input: { name: $('gdTen').value.trim(), gender: $('gdGt').value, calendar: $('gdLich').value, day: n[0], month: n[1], year: n[2], leap: $('gdLich').value === 'am' && $('gdNhuan').checked, hour: g[0], minute: g[1] || 0 } };
+      if (!moi.input.day || !moi.input.month || !moi.input.year) { toast('Nhập ngày/tháng/năm, ví dụ 19/5/1995.', true); return; }
+      var ds2 = GD.ds.slice(); if (GD.sua != null) { moi.id = ds2[GD.sua].id; ds2[GD.sua] = moi; } else ds2.push(moi);
+      gdLuuDs(ds2, 'Đã lưu.'); return;
+    }
+    if (t.id === 'gdNhapNhanh') {
+      try { var them = ($('gdDan').value || '').split(/\n/).map(function (l) { return l.trim(); }).filter(Boolean).map(gdDocDong); } catch (er) { toast(er.message, true); return; }
+      if (!them.length) { toast('Chưa có dòng nào.', true); return; }
+      gdLuuDs(GD.ds.concat(them), 'Đã thêm ' + them.length + ' người.'); return;
+    }
+    if (t.id === 'gdXemNam') { GD.nam = parseInt($('gdNam').value, 10) || GD.nam; GD.van = null; veGd(); return; }
+    if (t.id === 'gdXemCap') {
+      var A = GD.ds[+$('gdA').value], Bp = GD.ds[+$('gdB').value]; if (!A || !Bp || A === Bp) { toast('Chọn hai người khác nhau.', true); return; }
+      setForm(A.input); var bi = Bp.input;
+      $('cdName').value = Bp.ten; (bi.gender === 'nu' ? $('cdNu') : $('cdNam')).checked = true; (bi.calendar === 'am' ? $('cdAm') : $('cdDuong')).checked = true;
+      try { $('cdAm').dispatchEvent(new Event('change', { bubbles: true })); } catch (er2) {}
+      $('cdDay').value = bi.day; $('cdMonth').value = bi.month; $('cdYear').value = bi.year; $('cdLeap').checked = !!bi.leap; $('cdHour').value = bi.hour; $('cdMinute').value = bi.minute;
+      showTab('capdoi'); xemCapDoi();
+    }
+  });
   var PT = { key: null, data: null, dang: false };
   var PT_CUNG_THU = ['Mệnh', 'Huynh Đệ', 'Phu Thê', 'Tử Tức', 'Tài Bạch', 'Tật Ách', 'Thiên Di', 'Nô Bộc', 'Quan Lộc', 'Điền Trạch', 'Phúc Đức', 'Phụ Mẫu'];
   function vePt() {
