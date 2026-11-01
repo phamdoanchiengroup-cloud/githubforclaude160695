@@ -36,3 +36,11 @@ Chủ dự án thử bài luận "Bắc phái" (Tứ Hóa Phi Tinh) của tuvi.c
 ## Còn ngỏ
 - Chủ dự án đọc thử, so với cảm nhận từ bài cohoc/NotebookLM; rồi quyết định mở cho khách (giá xu, phần nào miễn phí), có đưa vào PDF không.
 - Có thể thêm: lưu nguyệt (Mệnh tháng theo Đẩu quân), lựa chọn biến thể can Canh, đọc lục thân theo chuyển cung sâu hơn.
+
+## Kho luận giải tổng hợp + bộ sinh lên nhánh (1/11, chuẩn bị chuyển phiên)
+- Chủ dự án chốt cách gộp: phiên cũ làm xong bước tổng hợp, đẩy lên nhánh; phiên mới dựng tab theo mục lục cohoc.
+- Thư mục **`nghien-cuu/phi-tinh/`** (không đẩy lên Apps Script): `tong-quan.md`, `quy-tac.json`, `van.json`, `gen/vo.js`, `gen/dung.py` (sinh lại ra **đúng y hệt** `TuViPhiTinh.gs` hiện tại), `tong-hop/catalog.json` + `tong-hop/README.md`. Cách chạy và việc tiếp: `nghien-cuu/phi-tinh/README.md`.
+- `catalog.json` (chuyên gia `content-creator` tổng hợp 4 bài cohoc A/B/C/D, viết lại bằng lời mới): `mucLuc` 18 phần theo mục lục cohoc, `dinhNghia` 42 khái niệm (ghi mức chắc chắn), `luan` 518 khóa / 606 ý (`nguon`, `ky`, `de`, `muc`). Kiểm: JSON hợp lệ; 185 câu tầng chuyên môn trùng ≥10 chữ liên tiếp với cohoc đã được viết lại → còn 0 (chỉ còn tên mục lục và chú thích viết tắt); tầng dễ hiểu không tên sao/cung; không dữ liệu cá nhân, không lời đoán chết/bệnh/ly hôn.
+- Chưa xác định (đừng bịa): công thức điểm xí hoa, Thiên–Địa–Nhân của can Quý, cung khí số vị, Tài thiên/địa/nhân, Thuận/Nghịch thủy Kỵ, Tuyệt mệnh Kỵ / Phá thể / Dương phi nhập Âm.
+- Bài cohoc đúng của con gái (lid-403265) chưa trích.
+
