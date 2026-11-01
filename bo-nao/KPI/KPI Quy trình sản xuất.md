@@ -396,6 +396,13 @@ Chủ dự án giao (2 tin nhắn, muốn làm trong 1 lượt, **phân tích tr
 - **Kiểm thử:** `don-hang.js` 62, `quy-trinh.js` 54, `quy-trinh-web.js` 63, `manh-web.js` 8, `ky-nang.js` 49; `bao-mat.js` 2 lỗi cũ (ngày đã duyệt). Giả lập thêm `getDisplayValues`, `hideSheet`.
 - Kích thước: Index ~826 KB, QuyTrinh.html ~98 KB, Code.gs ~521 KB.
 
+## Yêu cầu đợt 4 (01/11 khuya) – đang làm
+1. Lưu đồ từng xưởng vẽ theo kiểu lưu đồ toàn nhà máy (thẻ kính + đường nối cong), nhóm công đoạn chỉ để vẽ.
+2. Thêm luồng CNC → Sơn: "đầu gậy lết".
+3. Gửi bảng Excel đầy đủ cấu hình gậy (dòng gậy, 4 thông số, tên gọi) + 22 tên vàng để chủ dự án điền.
+4. Cách A: bước xuất mỗi xưởng (Claude chọn sẵn, sửa trên web) → sản lượng ra/ngày từ nhật ký KPI → ngày làm hết việc theo nhịp thực.
+5. Trả lời: quy trình từng xưởng là bản nháp Claude tự soạn (nguồn: tên công đoạn, định mức, file chủ dự án gửi) – chủ dự án thấy vài chỗ sai → gửi bảng quy trình nháp để sửa.
+
 ## Việc tiếp theo
 - Chủ dự án xem bản thật, chỉnh nháp (thứ tự, nhánh) rồi Lưu. Cho thông số 22 tên hàng vàng (hoặc sửa tay ở "Kiểm phân loại").
 - Nếu chủ dự án gửi bảng ánh xạ → bung mã BTP 60… / S… / Ngọn…; đề xuất các bộ phận ghi số "đã qua" vào Sheet đơn (hoặc lấy từ nhật ký KPI).
