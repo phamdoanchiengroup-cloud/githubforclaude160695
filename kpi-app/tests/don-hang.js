@@ -93,6 +93,8 @@ const loai = r.thay.map(x => x.loai + (x.chieu ? ':' + x.chieu : ''));
 ok(r.ok && r.truoc === '2026-10-30' && loai.includes('thieu:giam') && loai.includes('moi') && r.daChup, 'so với bản hôm qua: thấy "còn thiếu giảm" + "dòng mới"; chụp bản hôm nay', loai);
 ok(r.lichSu.length === 1 && r.lichSu[0][0] === '2026-10-30', 'trả lịch sử tổng còn thiếu theo ngày (để vẽ xu hướng)', r.lichSu);
 c.__ngoai = { [c.DH_SHEET_ID]: { ten: 'x', sheets: { KHO: tab } } }; c.dhDocDon_(true);
+ok(String(c.ss_().getSheetByName('DonHangChup').rows[1][2]).startsWith('~'), 'bản chụp: mảnh dữ liệu bắt đầu bằng "~" (không thành công thức)');
+ok(c.dhKhoaDs_([{ maDon: 'A', ten: 'X|Y', tab: 'KHO' }, { maDon: 'A', ten: 'X|Y', tab: 'KHO' }]).join() === 'A|X/Y|KHO,A|X/Y|KHO#2', 'dòng trùng mã + tên được đánh số, ký tự "|" trong tên không làm lệch khóa');
 
 console.log('\n4. Sửa tay phân loại');
 r = c.__goi('luuPhanLoaiSKU', Tadm, { ten: 'X', loai: 'GAY' }); ok(!r.ok, 'ban điều hành không sửa được');

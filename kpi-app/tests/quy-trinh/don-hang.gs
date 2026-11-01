@@ -283,7 +283,8 @@ function dhDocTab_(sh, tab, nam) {
     var sl = dhSo_(row[cSL]);
     if (!ten || sl <= 0) continue;
     var o = { tab: tab, kenh: DH_NHAN_TAB[tab] || tab, maDon: m0 || ma, ten: ten.replace(/\s+/g, ' '), ghiChu: [cPhoi >= 0 ? row[cPhoi] : '', cCT >= 0 ? row[cCT] : ''].map(function(x) { return String(x == null ? '' : x).replace(/\s+/g, ' ').trim(); }).filter(Boolean).join(' · ').slice(0, 300),
-      sl: sl, thieu: Math.max(0, dhSo_(row[cThieu])), dl: cDL >= 0 ? dhNgay_(row[cDL], nam) : '', qua: {}, hong: {},
+      sl: sl, thieu: cThieu >= 0 ? Math.max(0, dhSo_(row[cThieu])) : Math.max(0, sl - (cTra >= 0 ? dhSo_(row[cTra]) : 0)),   // không có cột "Còn thiếu" -> đặt − đã trả (không coi là đã xong)
+      dl: cDL >= 0 ? dhNgay_(row[cDL], nam) : '', qua: {}, hong: {},
       giao: cGiao >= 0 ? Math.max(0, dhSo_(row[cGiao])) : 0, daTra: cTra >= 0 ? Math.max(0, dhSo_(row[cTra])) : 0,
       phoi: cPhoi >= 0 ? String(row[cPhoi] == null ? '' : row[cPhoi]).replace(/\s+/g, ' ').trim().slice(0, 120) : '',
       chuThich: cCT >= 0 ? String(row[cCT] == null ? '' : row[cCT]).replace(/\s+/g, ' ').trim().slice(0, 200) : '' };
@@ -298,6 +299,7 @@ function dhDocTab_(sh, tab, nam) {
   return out;
 }
 /* Mã đơn "RHINO-22/06" -> người đặt + ngày đặt (giống web app đơn hàng); deadline trước ngày đặt -> sang năm sau */
+var DH_HOM_ = '';
 function dhMaDon_(o, nam) {
   var s = String(o.maDon || ''), m = s.match(/(\d{1,2})\s*\/\s*(\d{1,2})/);
   o.nguoiDat = s.replace(/^[#(\s]+/, '').split(/[-–]\s*\d{1,2}\s*\//)[0].replace(/\d+.*$/, '').replace(/[-–()\s]+$/, '').trim().slice(0, 40);
@@ -305,7 +307,7 @@ function dhMaDon_(o, nam) {
   o.ngayDat = '';
   if (m && Number(m[1]) >= 1 && Number(m[1]) <= 31 && Number(m[2]) >= 1 && Number(m[2]) <= 12) {
     o.ngayDat = nam + '-' + ('0' + m[2]).slice(-2) + '-' + ('0' + m[1]).slice(-2);
-    if (o.ngayDat > Utilities.formatDate(new Date(), TZ_VN, 'yyyy-MM-dd')) o.ngayDat = (nam - 1) + o.ngayDat.slice(4);   // đặt tháng 12 năm trước
+    if (o.ngayDat > (DH_HOM_ || (DH_HOM_ = homNayVN_()))) o.ngayDat = (nam - 1) + o.ngayDat.slice(4);   // đặt tháng 12 năm trước
     if (o.dl && o.dl < o.ngayDat) o.dl = (Number(o.dl.slice(0, 4)) + 1) + o.dl.slice(4);
   }
   return o;
@@ -389,7 +391,9 @@ function luuPhanLoaiSKU(token, o) {
    Sheet DonHangChup (trong file KPI, KHÔNG ghi vào Sheet đơn hàng): Ngay | Phan | DuLieu – mỗi ngày 1 bản, chia mảnh 40.000 ký tự, giữ 30 ngày.
    Chụp lúc 9h sáng cùng trigger snapshotKPIHangNgay, và lần đầu mở tab trong ngày nếu chưa có. */
 var DH_CHUP = 'DonHangChup', DH_CHUP_COT = ['Ngay', 'Phan', 'DuLieu'], DH_CHUP_GIU = 30;
-function dhKhoaDong_(o) { return [o.maDon || '', o.ten || '', o.tab || ''].join('|'); }
+function dhKhoaDong_(o) { return [o.maDon || '', o.ten || '', o.tab || ''].map(function(x) { return String(x).replace(/[|#]/g, '/'); }).join('|'); }
+/* Khóa riêng cho từng dòng: dòng trùng mã đơn + tên + tab (khác màu / ghi chú) được đánh số #2, #3… theo thứ tự trong Sheet */
+function dhKhoaDs_(ds) { var dem = {}; return ds.map(function(o) { var k = dhKhoaDong_(o); dem[k] = (dem[k] || 0) + 1; return dem[k] > 1 ? k + '#' + dem[k] : k; }); }
 function dhTrangThai_(o, homNay) {
   if (o.thieu <= 0 && o.daTra > 0 && o.daTra >= o.sl) return 'daGiao';
   if (o.thieu <= 0) return 'sanSang';
@@ -400,19 +404,19 @@ function dhDocChup_() {   // -> { 'yyyy-MM-dd': [[k, sl, thieu, giao, dl, st], .
   var sh = ss_().getSheetByName(DH_CHUP), out = {};
   if (!sh || sh.getLastRow() < 2) return out;
   var v = sh.getRange(2, 1, sh.getLastRow() - 1, 3).getValues(), p = {};
-  v.forEach(function(r) { var d = r[0] instanceof Date ? Utilities.formatDate(r[0], TZ_VN, 'yyyy-MM-dd') : String(r[0]).trim(); if (!/^\d{4}-\d\d-\d\d$/.test(d)) return; (p[d] = p[d] || []).push([Number(r[1]) || 0, String(r[2] || '')]); });
+  v.forEach(function(r) { var d = r[0] instanceof Date ? Utilities.formatDate(r[0], TZ_VN, 'yyyy-MM-dd') : String(r[0]).trim(); if (!/^\d{4}-\d\d-\d\d$/.test(d)) return; (p[d] = p[d] || []).push([Number(r[1]) || 0, String(r[2] || '').replace(/^~/, '')]); });
   Object.keys(p).forEach(function(d) { try { out[d] = JSON.parse(p[d].sort(function(a, b) { return a[0] - b[0]; }).map(function(x) { return x[1]; }).join('')); } catch (e) {} });
   return out;
 }
 function dhChup_(lamMoi) {
   var hom = homNayVN_(), sh = ss_().getSheetByName(DH_CHUP);
   if (sh && sh.getLastRow() >= 2 && sh.getRange(2, 1, sh.getLastRow() - 1, 1).getDisplayValues().some(function(r) { return String(r[0]) === hom; })) return false;
-  var d = dhDocDon_(!!lamMoi), str = JSON.stringify(d.don.map(function(o) { return [dhKhoaDong_(o), o.sl, o.thieu, o.giao || 0, o.dl || '', dhTrangThai_(o, hom)]; }));
+  var d = dhDocDon_(!!lamMoi), ks = dhKhoaDs_(d.don), str = JSON.stringify(d.don.map(function(o, i) { return [ks[i], o.sl, o.thieu, o.giao || 0, o.dl || '', dhTrangThai_(o, hom)]; }));
   khoa_();
   sh = ss_().getSheetByName(DH_CHUP);
   if (!sh) { sh = ss_().insertSheet(DH_CHUP); sh.getRange(1, 1, 1, 3).setValues([DH_CHUP_COT]).setFontWeight('bold'); sh.setFrozenRows(1); try { sh.hideSheet(); } catch (e) {} }
   if (sh.getLastRow() >= 2 && sh.getRange(2, 1, sh.getLastRow() - 1, 1).getDisplayValues().some(function(r) { return String(r[0]) === hom; })) return false;   // người khác vừa chụp
-  var rows = []; for (var i = 0, n = 0; i < str.length; i += 40000) rows.push([hom, n++, str.slice(i, i + 40000)]);
+  var rows = []; for (var i = 0, n = 0; i < str.length; i += 40000) rows.push([hom, n++, '~' + str.slice(i, i + 40000)]);   // '~' đầu mảnh: ô không bao giờ bị hiểu là công thức
   sh.getRange(sh.getLastRow() + 1, 1, rows.length, 3).setNumberFormat('@').setValues(rows);
   // giữ DH_CHUP_GIU ngày gần nhất
   var v = sh.getRange(2, 1, sh.getLastRow() - 1, 1).getDisplayValues().map(function(r) { return String(r[0]); });
@@ -437,8 +441,9 @@ function layThayDoiDon(token) {
   if (truoc) {
     var cu = {}, nay = {};
     ch[truoc].forEach(function(r) { cu[r[0]] = r; });
-    d.don.forEach(function(o) {
-      var k = dhKhoaDong_(o), c = cu[k], st = dhTrangThai_(o, hom); nay[k] = 1;
+    var ks = dhKhoaDs_(d.don);
+    d.don.forEach(function(o, i) {
+      var k = ks[i], c = cu[k], st = dhTrangThai_(o, hom); nay[k] = 1;
       var x = { maDon: o.maDon, ten: o.ten, kenh: o.kenh, tab: o.tab, st: st };
       if (!c) { thay.push(Object.assign({ loai: 'moi', mota: 'Dòng đơn mới' }, x)); return; }
       if (Number(c[2]) !== Number(o.thieu)) thay.push(Object.assign({ loai: 'thieu', chieu: o.thieu < c[2] ? 'giam' : 'tang', mota: 'Còn thiếu ' + c[2] + ' → ' + o.thieu }, x));
@@ -446,7 +451,7 @@ function layThayDoiDon(token) {
       if (String(c[4] || '') !== String(o.dl || '')) thay.push(Object.assign({ loai: 'deadline', mota: 'Deadline ' + (c[4] || '—') + ' → ' + (o.dl || '—') }, x));
       if (Number(c[1]) !== Number(o.sl)) thay.push(Object.assign({ loai: 'sl', mota: 'SL đặt ' + c[1] + ' → ' + o.sl }, x));
     });
-    ch[truoc].forEach(function(r) { if (!nay[r[0]]) { var a = String(r[0]).split('|'); thay.push({ loai: 'xoa', mota: 'Không còn trong Sheet', maDon: a[0], ten: a[1], tab: a[2], kenh: DH_NHAN_TAB[a[2]] || a[2], st: r[5] }); } });
+    ch[truoc].forEach(function(r) { if (!nay[r[0]]) { var a = String(r[0]).replace(/#\d+$/, '').split('|'); thay.push({ loai: 'xoa', mota: 'Không còn trong Sheet', maDon: a[0], ten: a[1], tab: a[2], kenh: DH_NHAN_TAB[a[2]] || a[2], st: r[5] }); } });
   }
   var lichSu = Object.keys(ch).sort().map(function(x) { var t = 0, tre = 0; ch[x].forEach(function(r) { t += Number(r[2]) || 0; if (r[5] === 'treHan') tre++; }); return [x, t, tre]; });
   var daChup = false;

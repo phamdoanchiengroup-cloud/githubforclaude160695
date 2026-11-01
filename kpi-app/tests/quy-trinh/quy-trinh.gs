@@ -128,7 +128,13 @@ function qtCanh_(ds) {
   });
   return out;
 }
-function qtLuongCap_(x) { return /\bPOM\b|vật liệu|cấp/i.test(String(x.BTP || '')); }
+function qtLuongCap_(x) { return x.Tu === 'NGONTARO' && x.Den === 'PHOITHO'; }   // chỉ đúng luồng cấp POM (chuyên gia bảo mật 01/11: không miễn theo chữ)
+/* Bản luồng đã lưu trước 01/11 (chưa biết POM / ngọn lẻ) -> bổ sung 1 lần; lưu từ 01/11 trở đi thì tôn trọng việc chủ dự án xóa */
+function qtLuongCu_(dong) {
+  var moi = '';
+  dong.forEach(function(r) { if (String(r.Loai).trim() !== 'XUONG') return; var t = r.ThoiDiem instanceof Date ? Utilities.formatDate(r.ThoiDiem, TZ_VN, 'yyyy-MM-dd') : String(r.ThoiDiem || '').slice(0, 10); if (t > moi) moi = t; });
+  return moi < '2026-11-01';
+}
 function qtCoVong_(canh) {
   var mau = {}, vong = '';
   var di = function(m) {
@@ -162,7 +168,7 @@ function qtDocQT_(cds) {
   });
   if (!dong.some(function(r) { return String(r.Loai).trim() === 'XUONG'; }))
     xuong = QT_XUONG_NHAP.map(function(a) { return { Tu: a[0], Den: a[1], BTP: a[2], GhiChu: '' }; });
-  else QT_XUONG_THEM.forEach(function(a) {   // luồng chủ dự án báo thêm sau khi đã lưu (01/11): bổ sung nếu bản đã lưu chưa có
+  else if (qtLuongCu_(dong)) QT_XUONG_THEM.forEach(function(a) {   // luồng chủ dự án báo thêm sau khi đã lưu (01/11): bổ sung nếu bản đã lưu chưa có
     if (!xuong.some(function(l) { return l.Tu === a[0] && l.Den === a[1]; })) xuong.push({ Tu: a[0], Den: a[1], BTP: a[2], GhiChu: 'Thêm 01/11' });
   });
   return { cd: cd, xuong: xuong, caiDat: cai, nhap: nhap };

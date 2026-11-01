@@ -69,6 +69,7 @@ r = thu(q => q.Ma === X0.Ma ? { Truoc: [khacX] } : 0); ok(!r.ok && /cùng xưở
 r = thu(q => q.Ma === X0.Ma ? { Truoc: [X1.Ma] } : 0); ok(!r.ok && /vòng lặp/.test(r.msg), 'vòng lặp (bước 1 ← bước 2 ← bước 1): chặn', r);
 r = c.__goi('luuQuyTrinh', Town, { cd: ds.concat([{ Ma: 'KHONG-CO', Nhanh: 'NGON', Buoc: 1 }]), xuong: R0.xuongLuong }); ok(!r.ok, 'mã công đoạn lạ: chặn', r);
 r = thu(() => 0, [{ Tu: 'SON', Den: 'INUV' }, { Tu: 'INUV', Den: 'SON' }]); ok(!r.ok && /vòng/.test(r.msg), 'luồng xưởng vòng lặp: chặn', r);
+r = thu(() => 0, [{ Tu: 'SON', Den: 'INUV', BTP: 'Hàng cao cấp' }, { Tu: 'INUV', Den: 'SON', BTP: 'vật liệu cấp lại' }]); ok(!r.ok && /vòng/.test(r.msg), 'chữ "cấp" / "vật liệu" không được miễn dò vòng (chỉ luồng POM Ngọn Taro → Phôi Thô)', r);
 r = c.__goi('luuQuyTrinh', Town, { cd: ds, xuong: [], caiDat: { gioCoMat: 30 } }); ok(!r.ok, 'cài đặt ngoài khoảng: chặn', r);
 r = thu(() => 0, [{ Tu: '__proto__', Den: 'DG' }]); ok(!r.ok, 'xưởng tên đặc biệt (__proto__): chặn', r);
 r = thu(q => q.Ma === X0.Ma ? { Truoc: Array(5000).fill('x') } : 0); ok(!r.ok && /quá dài|quá nhiều/.test(r.msg), 'danh sách công đoạn trước quá dài: chặn trước khi xử lý', r);

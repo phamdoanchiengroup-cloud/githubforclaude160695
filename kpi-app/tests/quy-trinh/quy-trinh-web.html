@@ -260,7 +260,7 @@ function qtDoiCD(k,v,a,b){ v=Number(v); if(!isFinite(v)||v<a||v>b){ toast('Giá 
 /* --- Toàn nhà máy --- */
 function qtThuTuX(){
   var vao={}, ra={}, xs=(QT.xuong||[]).map(function(p){return p.MaXuong}), kq=[], da={};
-  QT.luong.forEach(function(a){ (vao[a.Den]=vao[a.Den]||[]).push(a.Tu); (ra[a.Tu]=ra[a.Tu]||[]).push(a.Den); });
+  QT.luong.forEach(function(a){ if(a.Tu==='NGONTARO'&&a.Den==='PHOITHO') return; /* luồng cấp POM chạy ngược, không tính thứ tự */ (vao[a.Den]=vao[a.Den]||[]).push(a.Tu); (ra[a.Tu]=ra[a.Tu]||[]).push(a.Den); });
   var conLai=xs.slice();
   while(conLai.length){
     var san=conLai.filter(function(x){ return (vao[x]||[]).every(function(t){return da[t]||xs.indexOf(t)<0}); });
@@ -826,7 +826,7 @@ function dhVeThayDoi(){
   var h='<div class="card"><div style="font-size:13px;margin-bottom:8px">So với bản chụp ngày <b>'+dhNg(DHTD.truoc)+'</b>: <b>'+x.length+'</b> thay đổi. <button class="btn sm" type="button" onclick="DHTD=null;dhVeLai()">Tải lại</button></div><div class="tw"><table class="dh-bang"><thead><tr><th>Mã đơn</th><th>Kênh</th><th>Sản phẩm</th><th>Thay đổi</th></tr></thead><tbody>';
   nhom.forEach(function(n){ var a=x.filter(function(t){return t.loai===n[0]&&(!n[1]||t.chieu===n[1])}); if(!a.length) return;
     h+='<tr class="dh-khoi"><td colspan="4">'+n[2]+' · '+a.length+'</td></tr>';
-    a.slice(0,300).forEach(function(t){ h+='<tr><td class="ma">'+esc(t.maDon)+'</td><td>'+esc(t.kenh)+'</td><td>'+esc(t.ten)+'</td><td>'+esc(t.mota)+(t.loai==='trangthai'?': '+(DH_ST[t.truoc]||t.truoc)+' → '+dhStChip(t.st):'')+'</td></tr>'; }); });
+    a.slice(0,300).forEach(function(t){ h+='<tr><td class="ma">'+esc(t.maDon)+'</td><td>'+esc(t.kenh)+'</td><td>'+esc(t.ten)+'</td><td>'+esc(t.mota)+(t.loai==='trangthai'?': '+esc(DH_ST[t.truoc]||t.truoc)+' → '+dhStChip(t.st):'')+'</td></tr>'; }); });
   if(!x.length) h+='<tr><td colspan="4" class="pdesc">Không có thay đổi.</td></tr>';
   return h+'</tbody></table></div></div>';
 }
@@ -854,7 +854,7 @@ function dhVeThongKe(ds,don){
   h+='<div class="card"><div style="font-weight:600;margin-bottom:6px">Xu hướng tổng còn thiếu (bản chụp mỗi ngày)</div>';
   if(!DHTD){ dhTaiTD(); h+='<div class="pdesc">Đang tải…</div>'; }
   else if(DHTD.loi||!DHTD.lichSu||DHTD.lichSu.length<2) h+='<div class="pdesc">Cần ít nhất 2 ngày chụp (tự chụp lúc 9h mỗi sáng) mới vẽ được xu hướng.</div>';
-  else { var ls=DHTD.lichSu.slice(-30), m2=Math.max.apply(null,ls.map(function(x){return x[1]}));
+  else { var ls=DHTD.lichSu.slice(-30), m2=Math.max(1,Math.max.apply(null,ls.map(function(x){return x[1]})));
     h+='<div class="dh-cong">'+ls.map(function(x){return '<i style="height:'+Math.max(2,x[1]/m2*100)+'%" title="'+dhNg(x[0])+': '+qtSo(x[1],0)+' sp, '+x[2]+' dòng trễ"></i>'}).join('')+'</div><div style="display:flex;justify-content:space-between;font-size:11.5px;color:var(--ink3)"><span>'+dhNg(ls[0][0])+'</span><span>'+dhNg(ls[ls.length-1][0])+'</span></div>'; }
   h+='</div></div><div style="font-size:12px;color:var(--ink3)">Tỷ lệ giao đúng hạn cần ngày giao thực tế – Sheet đơn chưa có cột này nên chưa tính.</div>';
   return h;
