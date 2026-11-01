@@ -404,6 +404,7 @@ Chủ dự án giao (2 tin nhắn, muốn làm trong 1 lượt, **phân tích tr
 5. Trả lời: quy trình từng xưởng là bản nháp Claude tự soạn (nguồn: tên công đoạn, định mức, file chủ dự án gửi) – chủ dự án thấy vài chỗ sai → gửi bảng quy trình nháp để sửa.
 
 ## Đã làm đợt 4 (01–02/11)
+- **Luồng CNC → Đóng gói "Tip bán lẻ"** (02/11, ngày báo `2026-11-03` trong `QT_XUONG_THEM`): đường cam từ CNC đi ngang dưới Hoàn thiện lên đáy thẻ Đóng gói. 13 luồng.
 - **Luồng CNC → Sơn "Đầu gậy lết"** (`QT_XUONG_NHAP`; `QT_XUONG_THEM` nay có ngày báo – bổ sung vào bản lưu cũ hơn ngày đó, `qtLuongCu_` trả ngày lưu gần nhất). Lưu đồ nhà máy: đường cấp phụ cam từ CNC đi theo khe giữa 2 cột lên đáy thẻ Sơn, nhãn "ĐẦU LẾT". 12 luồng.
 - **Excel cấu hình gậy** (`scratchpad/gui/Cau-hinh-gay-va-quy-trinh-nhap.xlsx`, không commit; dựng bằng `scratchpad/xuat-cauhinh.js` + `tao-excel.py`): sheet Dòng gậy (54 dòng, 4 thông số, đầu mặc định, tên gọi, xếp gậy → ngọn lẻ → chuôi lẻ, kiểu, chất liệu, cột "Sửa"), Tên hàng cần bổ sung (22, ô chọn thả xuống), Tất cả tên hàng (390), Quy trình nháp (195 CĐ: nhóm, nhánh, bước, cột "Sửa"), Bảng mã.
 - **Trả lời chủ dự án:** quy trình từng xưởng là **bản nháp Claude tự soạn** (nhánh/bước trong `QT_NHAP` đoán từ tên công đoạn, định mức, file THÔNG SỐ GẬY, danh mục mã) – chủ dự án thấy vài chỗ sai → ghi vào sheet "Quy trình nháp" hoặc sửa ở "Sửa quy trình".

@@ -18,9 +18,9 @@ var QT_XUONG_NHAP = [
   ['PHOICB', 'PHOITHO', 'Phôi 60 (ngọn + chuôi)'], ['PHOITHO', 'NGONTARO', 'Phôi ngọn'], ['PHOITHO', 'SON', 'Phôi chuôi, nối, gậy 1 khúc (60…)'],
   ['NGONTARO', 'NGONTIP', 'Ngọn đã taro ren (Ngọn…)'], ['CNC', 'NGONTIP', 'Típ, phíp (CNCTip, CNCPhip)'], ['SON', 'INUV', 'Chuôi / nối đã sơn (S…)'],
   ['INUV', 'HT', 'Chuôi / nối đã in UV (UV…)'], ['NGONTIP', 'HT', 'Ngọn đã làm đầu'], ['HT', 'DG', 'Gậy, ngọn, nối hoàn thiện (HT…)'],
-  ['NGONTARO', 'PHOITHO', 'POM các loại (chuôi 87, ngọn 85, 65/75, 30, đáy chuôi)'], ['NGONTIP', 'DG', 'Ngọn bán lẻ (đi thẳng đóng gói)'], ['CNC', 'SON', 'Đầu gậy lết']];   // 01/11: nhánh POM + ngọn lẻ (chủ dự án)
+  ['NGONTARO', 'PHOITHO', 'POM các loại (chuôi 87, ngọn 85, 65/75, 30, đáy chuôi)'], ['NGONTIP', 'DG', 'Ngọn bán lẻ (đi thẳng đóng gói)'], ['CNC', 'SON', 'Đầu gậy lết'], ['CNC', 'DG', 'Tip bán lẻ']];   // 01/11: nhánh POM + ngọn lẻ (chủ dự án)
 /* Luồng chủ dự án báo thêm sau khi có thể đã lưu: [từ, đến, BTP, ngày báo] – bổ sung vào bản lưu cũ hơn ngày báo */
-var QT_XUONG_THEM = [['NGONTARO', 'PHOITHO', QT_XUONG_NHAP[9][2], '2026-11-01'], ['NGONTIP', 'DG', QT_XUONG_NHAP[10][2], '2026-11-01'], ['CNC', 'SON', 'Đầu gậy lết', '2026-11-02']];
+var QT_XUONG_THEM = [['NGONTARO', 'PHOITHO', QT_XUONG_NHAP[9][2], '2026-11-01'], ['NGONTIP', 'DG', QT_XUONG_NHAP[10][2], '2026-11-01'], ['CNC', 'SON', 'Đầu gậy lết', '2026-11-02'], ['CNC', 'DG', 'Tip bán lẻ', '2026-11-03']];
 /* Nháp: MaCD -> [nhánh, bước]. Công đoạn mới không có ở đây -> "Chưa xếp". */
 var QT_NHAP = {
   // Phôi Carbon: chuẩn bị vải -> tỉa -> cuốn -> màng nilong -> rút khuôn -> kiểm / cắt / tiện / chuốt

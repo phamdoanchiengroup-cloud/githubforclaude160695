@@ -582,7 +582,9 @@ function qtVeDuong(){
   noi('PHOICB','PHOITHO'); noi('PHOITHO','SON'); noi('PHOITHO','NGONTARO'); noi('SON','INUV'); noi('NGONTARO','NGONTIP'); noi('INUV','HT'); noi('NGONTIP','HT'); noi('HT','DG');
   var A=o('CNC'),B=o('NGONTIP'); if(A&&B){ ds.push(['M'+B.cx+' '+(A.t-2)+' L'+B.cx+' '+(B.b+6),'phu']); nhan.push([B.cx+8,(A.t+B.b)/2+4,'TIP, PHÍP']); }
   A=o('CNC'); B=o('SON'); var T2=o('NGONTARO'); if(A&&B&&T2){ var gx=(T2.r+o('NGONTIP').l)/2, yb=B.b+20, r2=10;   /* CNC cấp đầu gậy lết cho Sơn: đi lên theo khe giữa 2 cột rồi rẽ vào đáy thẻ Sơn */
-    ds.push(['M'+(A.l-2)+' '+A.cy+' L'+(gx+r2)+' '+A.cy+' Q'+gx+' '+A.cy+' '+gx+' '+(A.cy-r2)+' L'+gx+' '+(yb+r2)+' Q'+gx+' '+yb+' '+(gx-r2)+' '+yb+' L'+(B.cx+r2)+' '+yb+' Q'+B.cx+' '+yb+' '+B.cx+' '+(yb-r2)+' L'+B.cx+' '+(B.b+6),'phu']); nhan.push([gx-62,(yb+A.cy)/2+20,'ĐẦU LẾT']); }
+    ds.push(['M'+(A.l-2)+' '+A.cy+' L'+(gx+r2)+' '+A.cy+' Q'+gx+' '+A.cy+' '+gx+' '+(A.cy-r2)+' L'+gx+' '+(yb+r2)+' Q'+gx+' '+yb+' '+(gx-r2)+' '+yb+' L'+(B.cx+r2)+' '+yb+' Q'+B.cx+' '+yb+' '+B.cx+' '+(yb-r2)+' L'+B.cx+' '+(B.b+6),'phu']); nhan.push([B.cx+14,yb-5,'ĐẦU LẾT']); }
+  A=o('CNC'); B=o('DG'); if(A&&B){ var r3=10;   /* CNC cấp tip bán lẻ thẳng cho Đóng gói: đi ngang dưới Hoàn thiện rồi lên đáy thẻ Đóng gói */
+    ds.push(['M'+(A.r+2)+' '+A.cy+' L'+(B.cx-r3)+' '+A.cy+' Q'+B.cx+' '+A.cy+' '+B.cx+' '+(A.cy-r3)+' L'+B.cx+' '+(B.b+6),'phu']); nhan.push([A.r+14,A.cy-8,'TIP BÁN LẺ']); }
   A=o('NGONTARO'); B=o('PHOITHO'); if(A&&B){ var y=Math.max(A.b,B.b)+24, r=10; ds.push(['M'+A.cx+' '+(A.b+2)+' L'+A.cx+' '+(y-r)+' Q'+A.cx+' '+y+' '+(A.cx-r)+' '+y+' L'+(B.cx+r)+' '+y+' Q'+B.cx+' '+y+' '+B.cx+' '+(y-r)+' L'+B.cx+' '+(B.b+6),'phu']); nhan.push([(A.cx+B.cx)/2-14,y-6,'POM']); }
   svg.setAttribute('width',w.offsetWidth); svg.setAttribute('height',w.offsetHeight);
   svg.innerHTML='<defs><marker id="qtMui" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M1 1L8 5L1 9" fill="none" stroke="rgba(150,230,255,.95)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></marker>'+
