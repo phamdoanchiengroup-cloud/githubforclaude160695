@@ -7535,7 +7535,7 @@ function danhSachVanPhong(token) {
   ds.sort(function(a, b) { return (thuTu[a.vaiTro] - thuTu[b.vaiTro]) || (a.HoTen < b.HoTen ? -1 : 1); });
   return sach_({ ok: true, ds: ds, muc: HS_MUC });
 }
-var KPI_BAN_MAY = '01/11/2026 15:32';   // giờ dựng Code.gs (22/10)
+var KPI_BAN_MAY = '01/11/2026 16:07';   // giờ dựng Code.gs (22/10)
 /* =====================================================================
    KỸ NĂNG (22/10, chủ dự án nhờ thiết kế + tham khảo chuyên gia nhân sự / đào tạo)
    - Danh mục: trưởng / phó phòng đề xuất kỹ năng của xưởng (tên, mô tả, tiêu chí đạt, công đoạn liên quan)
@@ -7915,8 +7915,9 @@ var QT_XUONG_NHAP = [
   ['PHOICB', 'PHOITHO', 'Phôi 60 (ngọn + chuôi)'], ['PHOITHO', 'NGONTARO', 'Phôi ngọn'], ['PHOITHO', 'SON', 'Phôi chuôi, nối, gậy 1 khúc (60…)'],
   ['NGONTARO', 'NGONTIP', 'Ngọn đã taro ren (Ngọn…)'], ['CNC', 'NGONTIP', 'Típ, phíp (CNCTip, CNCPhip)'], ['SON', 'INUV', 'Chuôi / nối đã sơn (S…)'],
   ['INUV', 'HT', 'Chuôi / nối đã in UV (UV…)'], ['NGONTIP', 'HT', 'Ngọn đã làm đầu'], ['HT', 'DG', 'Gậy, ngọn, nối hoàn thiện (HT…)'],
-  ['NGONTARO', 'PHOITHO', 'POM các loại (chuôi 87, ngọn 85, 65/75, 30, đáy chuôi)'], ['NGONTIP', 'DG', 'Ngọn bán lẻ (đi thẳng đóng gói)']];   // 01/11: nhánh POM + ngọn lẻ (chủ dự án)
-var QT_XUONG_THEM = QT_XUONG_NHAP.slice(-2);
+  ['NGONTARO', 'PHOITHO', 'POM các loại (chuôi 87, ngọn 85, 65/75, 30, đáy chuôi)'], ['NGONTIP', 'DG', 'Ngọn bán lẻ (đi thẳng đóng gói)'], ['CNC', 'SON', 'Đầu gậy lết']];   // 01/11: nhánh POM + ngọn lẻ (chủ dự án)
+/* Luồng chủ dự án báo thêm sau khi có thể đã lưu: [từ, đến, BTP, ngày báo] – bổ sung vào bản lưu cũ hơn ngày báo */
+var QT_XUONG_THEM = [['NGONTARO', 'PHOITHO', QT_XUONG_NHAP[9][2], '2026-11-01'], ['NGONTIP', 'DG', QT_XUONG_NHAP[10][2], '2026-11-01'], ['CNC', 'SON', 'Đầu gậy lết', '2026-11-02']];
 /* Nháp: MaCD -> [nhánh, bước]. Công đoạn mới không có ở đây -> "Chưa xếp". */
 var QT_NHAP = {
   // Phôi Carbon: chuẩn bị vải -> tỉa -> cuốn -> màng nilong -> rút khuôn -> kiểm / cắt / tiện / chuốt
@@ -8026,11 +8027,11 @@ function qtCanh_(ds) {
   return out;
 }
 function qtLuongCap_(x) { return x.Tu === 'NGONTARO' && x.Den === 'PHOITHO'; }   // chỉ đúng luồng cấp POM (chuyên gia bảo mật 01/11: không miễn theo chữ)
-/* Bản luồng đã lưu trước 01/11 (chưa biết POM / ngọn lẻ) -> bổ sung 1 lần; lưu từ 01/11 trở đi thì tôn trọng việc chủ dự án xóa */
+/* Ngày lưu luồng gần nhất ('' nếu chưa có): luồng báo thêm sau ngày đó thì bổ sung; lưu sau ngày báo thì tôn trọng việc chủ dự án xóa */
 function qtLuongCu_(dong) {
   var moi = '';
   dong.forEach(function(r) { if (String(r.Loai).trim() !== 'XUONG') return; var t = r.ThoiDiem instanceof Date ? Utilities.formatDate(r.ThoiDiem, TZ_VN, 'yyyy-MM-dd') : String(r.ThoiDiem || '').slice(0, 10); if (t > moi) moi = t; });
-  return moi < '2026-11-01';
+  return moi;
 }
 function qtCoVong_(canh) {
   var mau = {}, vong = '';
@@ -8065,9 +8066,9 @@ function qtDocQT_(cds) {
   });
   if (!dong.some(function(r) { return String(r.Loai).trim() === 'XUONG'; }))
     xuong = QT_XUONG_NHAP.map(function(a) { return { Tu: a[0], Den: a[1], BTP: a[2], GhiChu: '' }; });
-  else if (qtLuongCu_(dong)) QT_XUONG_THEM.forEach(function(a) {   // luồng chủ dự án báo thêm sau khi đã lưu (01/11): bổ sung nếu bản đã lưu chưa có
-    if (!xuong.some(function(l) { return l.Tu === a[0] && l.Den === a[1]; })) xuong.push({ Tu: a[0], Den: a[1], BTP: a[2], GhiChu: 'Thêm 01/11' });
-  });
+  else { var luu = qtLuongCu_(dong); QT_XUONG_THEM.forEach(function(a) { if (luu >= a[3]) return;   // luồng chủ dự án báo thêm sau khi đã lưu (01/11): bổ sung nếu bản đã lưu chưa có
+    if (!xuong.some(function(l) { return l.Tu === a[0] && l.Den === a[1]; })) xuong.push({ Tu: a[0], Den: a[1], BTP: a[2], GhiChu: 'Thêm ' + a[3].slice(8) + '/' + a[3].slice(5, 7) });
+  }); }
   return { cd: cd, xuong: xuong, caiDat: cai, nhap: nhap };
 }
 

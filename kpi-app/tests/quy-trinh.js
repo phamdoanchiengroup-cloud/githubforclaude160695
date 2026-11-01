@@ -29,7 +29,7 @@ const dang = c.doc_('CongDoan').filter(x => String(x.TrangThai).trim() !== 'Ng�
 ok(r.quyTrinh.length === dang.length && r.congDoan.length === dang.length, 'mọi công đoạn đang dùng đều có trong quy trình (' + dang.length + ')');
 const chuaXep = r.quyTrinh.filter(q => q.Nhanh === 'CHUAXEP').map(q => q.Ma);
 ok(chuaXep.length <= 3, 'nháp xếp được gần hết công đoạn (chưa xếp: ' + chuaXep.length + ')', chuaXep);
-ok(r.xuongLuong.length === 11 && r.xuongLuong.some(x => x.Tu === 'HT' && x.Den === 'DG') && r.xuongLuong.some(x => x.Tu === 'NGONTARO' && x.Den === 'PHOITHO' && /POM/.test(x.BTP)) && r.xuongLuong.some(x => x.Tu === 'NGONTIP' && x.Den === 'DG'), 'luồng giữa xưởng nháp 11 mũi tên: có HT → DG, POM Ngọn Taro → Phôi Thô, ngọn lẻ Ngọn Tip → Đóng gói');
+ok(r.xuongLuong.length === 12 && r.xuongLuong.some(x => x.Tu === 'CNC' && x.Den === 'SON') && r.xuongLuong.some(x => x.Tu === 'HT' && x.Den === 'DG') && r.xuongLuong.some(x => x.Tu === 'NGONTARO' && x.Den === 'PHOITHO' && /POM/.test(x.BTP)) && r.xuongLuong.some(x => x.Tu === 'NGONTIP' && x.Den === 'DG'), 'luồng giữa xưởng nháp 12 mũi tên (có CNC → Sơn đầu gậy lết): có HT → DG, POM Ngọn Taro → Phôi Thô, ngọn lẻ Ngọn Tip → Đóng gói');
 ok(r.soNgay === 30 && r.tu === '2026-09-25' && r.den === '2026-10-24' && r.soNgaySX > 15, 'kỳ 30 ngày tính đúng', [r.tu, r.den, r.soNgaySX]);
 const nk = c.doc_('NhatKySanXuat').filter(x => String(x.TrangThai).trim() !== 'Từ chối' && c.ngayVN_(x.Ngay) >= r.tu && c.ngayVN_(x.Ngay) <= r.den && Number(x.SoLuongLamRa) > 0);
 const tong = nk.reduce((a, x) => a + Number(x.SoLuongLamRa), 0), tong2 = Object.values(r.thongKe).reduce((a, t) => a + t.sl, 0);
@@ -77,7 +77,7 @@ r = thu(q => q.Ma === X0.Ma ? { GhiChu: 'x'.repeat(500) } : 0); ok(!r.ok, 'ghi c
 r = thu(q => q.Ma === X0.Ma ? { GhiChu: '=HYPERLINK("x")' } : 0);
 ok(r.ok && r.doi === ds.length, 'lưu lần đầu: mọi công đoạn ghi', r);
 const sh = c.doc_('QuyTrinh');
-ok(sh.filter(x => x.Loai === 'CD').length === ds.length && sh.filter(x => x.Loai === 'XUONG').length === 11 && sh.filter(x => x.Loai === 'CAIDAT').length === 7, 'sheet QuyTrinh: đủ dòng CD / XUONG / CAIDAT');
+ok(sh.filter(x => x.Loai === 'CD').length === ds.length && sh.filter(x => x.Loai === 'XUONG').length === 12 && sh.filter(x => x.Loai === 'CAIDAT').length === 7, 'sheet QuyTrinh: đủ dòng CD / XUONG / CAIDAT');
 ok(String(sh.find(x => x.Ma === X0.Ma).GhiChu).startsWith("'="), 'ghi chú bắt đầu bằng "=" được chặn thành chữ (không thành công thức)');
 let r2 = c.__goi('layQuyTrinh', Town, 30); ok(r2.ok && !r2.nhap, 'đọc lại: không còn là nháp');
 r2 = c.__goi('luuQuyTrinh', Town, { cd: r2.quyTrinh.map(q => q.Ma === X1.Ma ? Object.assign({}, q, { Buoc: 9 }) : q), xuong: r2.xuongLuong, caiDat: Object.assign({}, r2.caiDat, { mucTieu: 130 }) });
@@ -87,10 +87,10 @@ ok(r2.quyTrinh.find(q => q.Ma === X1.Ma).Buoc === 9 && r2.caiDat.mucTieu === 130
 ok(c.doc_('NhatKyThaoTac').some(x => x.HanhDong === 'Sửa quy trình sản xuất'), 'ghi nhật ký thao tác');
 // 01/11: luồng POM (cấp vật liệu ngược chiều) không bị coi là vòng lặp; bản đã lưu cũ (chưa có POM / ngọn lẻ) tự được bổ sung
 r2 = c.__goi('layQuyTrinh', Town, 30);
-const cu = r2.xuongLuong.filter(x => !(x.Tu === 'NGONTARO' && x.Den === 'PHOITHO') && !(x.Tu === 'NGONTIP' && x.Den === 'DG'));
+const cu = r2.xuongLuong.filter(x => !(x.Tu === 'NGONTARO' && x.Den === 'PHOITHO') && !(x.Tu === 'NGONTIP' && x.Den === 'DG') && !(x.Tu === 'CNC' && x.Den === 'SON'));
 r = c.__goi('luuQuyTrinh', Town, { cd: r2.quyTrinh, xuong: cu, caiDat: r2.caiDat }); ok(r.ok, 'lưu bản cũ 9 luồng', r);
 r2 = c.__goi('layQuyTrinh', Town, 30);
-ok(r2.xuongLuong.length === 11 && r2.xuongLuong.some(x => x.Tu === 'NGONTARO' && x.Den === 'PHOITHO'), 'đọc lại bản cũ: tự thêm luồng POM + ngọn lẻ', r2.xuongLuong.length);
+ok(r2.xuongLuong.length === 12 && r2.xuongLuong.some(x => x.Tu === 'NGONTARO' && x.Den === 'PHOITHO'), 'đọc lại bản cũ: tự thêm luồng POM + ngọn lẻ + đầu gậy lết', r2.xuongLuong.length);
 r = c.__goi('luuQuyTrinh', Town, { cd: r2.quyTrinh, xuong: r2.xuongLuong, caiDat: r2.caiDat }); ok(r.ok, 'Phôi Thô → Ngọn Taro + POM Ngọn Taro → Phôi Thô: lưu được (luồng cấp vật liệu không tính vòng lặp)', r);
 
 console.log((loi ? '\n✗ ' : '\n✓ ') + (dem - loi) + '/' + dem + ' đạt');
