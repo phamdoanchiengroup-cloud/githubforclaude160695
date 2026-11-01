@@ -47,6 +47,9 @@ for (let i = 0; i < 250; i++) {
   kt(BA && BA.phan.map(p => p.id).join() === TT.join(), id + 'thứ tự mục lục: ' + (BA && BA.phan.map(p => p.id).join()));
   kt(BA.daiVan.length === 12 && BA.daiVan.filter(d => d.nay).length <= 1, id + 'bài: 12 đại vận');
   kt(BA.nam && BA.nam.nam === 2026, id + 'bài: vận năm 2026');
+  kt(BA.daiVan[0].tong.length > 0, id + 'đại vận đầu (trùng Mệnh gốc) vẫn có tổng luận (M chất)');
+  kt(BA.nam.phan.length && BA.nam.phan[0].muc.length === BA.nam.phan[0].muc.filter(m => m).length && BA.nam.phan[0].muc.length >= 3, id + 'vận năm hiện đủ dòng Tứ Hóa năm');
+  kt(!BA.phan.some(p => p.phan.some(g => g.muc.some(m => /^Thuận thủy/.test(m.t)))), id + 'không còn Thuận thủy Kỵ');
   const mucs = [];
   BA.phan.forEach(p => p.phan.forEach(g => mucs.push(...g.muc)));
   BA.daiVan.forEach(d => { d.phan.forEach(g => mucs.push(...g.muc)); mucs.push(...d.tong); });

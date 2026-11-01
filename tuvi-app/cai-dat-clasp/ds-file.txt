@@ -22,7 +22,7 @@ Lunar.gs	9228
 NghiemChung.gs	26413
 NghiemChungUI.html	11072
 PhoiNgau.gs	51165
-Script.html	727176
+Script.html	727827
 Styles.html	255448
 TaiKhoan.gs	20569
 ThanSoHoc.gs	52496
@@ -32,7 +32,7 @@ TongHop.gs	72782
 TuVi.gs	57688
 TuViChuyenSau.gs	141271
 TuViHeThong.gs	375984
-TuViPhiTinh.gs	350013
+TuViPhiTinh.gs	350124
 TuViTamPhap.gs	22990
 TuViTrinhTu.gs	30535
 VanSau.gs	59454

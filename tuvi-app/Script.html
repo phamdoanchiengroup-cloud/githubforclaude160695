@@ -1640,18 +1640,18 @@
     var dv = (BAI.daiVan || []).map(function (t) {
       return '<details class="lg-block"' + (t.nay ? ' open' : '') + '><summary><span class="lg-t">' + esc(t.tuoi + '–' + t.den + ' tuổi') + '</span><span class="lg-meta">vận ' + esc(t.menh + ' · ' + t.can + ' ' + t.chi) + (t.nay ? ' · <b>đang đi</b>' : '') + '</span></summary><div class="lg-body">' +
         '<p class="pt-hoa">' + (t.hoa || []).map(function (h) { return '<span class="pt-h ' + MAU_H[h.h] + '">' + esc(h.h) + '</span> ' + esc(h.cung || '—'); }).join(' · ') + '</p>' +
-        ptTongHtml(t.tong, 'Tổng luận 12 chủ đề của 10 năm') + '<details class="pt-chitiet-vb"><summary>Chi tiết các dòng luận của vận</summary>' + ptNhomHtml(t.phan) + '</details></div></details>';
+        (t.trung ? '<p class="muted">Cung vận trùng cung Mệnh gốc: hai tầng chồng khít nên không có dòng nhập – chiếu riêng; đọc phần Mệnh vận phi Tứ Hóa và M chất.</p>' : '') + ptTongHtml(t.tong, 'Tổng luận 12 chủ đề của 10 năm') + '<details class="pt-chitiet-vb"><summary>Chi tiết các dòng luận của vận</summary>' + ptNhomHtml(t.phan) + '</details></div></details>';
     }).join('');
     out += ptPhanHtml('dv', '大運', 'Đại vận', '12 vận mười năm', '<p class="lede">Lấy lá số gốc làm Thể, cung vận làm Dụng: xem Tứ Hóa của vận đi vào đâu, các dòng nhập – chiếu – xung giữa hai tầng, rồi tổng kết 12 chủ đề. Vận đang đi mở sẵn.</p><div class="lg-list">' + dv + '</div>', false);
     var N = BAI.nam, namChon = '';
     if (N) {
       var nay = new Date().getFullYear(), ds = []; for (var y = nay - 3; y <= nay + 6; y++) ds.push(y); if (ds.indexOf(N.nam) < 0) ds.push(N.nam);
       namChon = '<label class="pt-namxem">Năm xem <select id="ptNamXem" aria-label="Chọn năm xem vận năm và vận tháng">' + ds.sort().map(function (y) { return '<option value="' + y + '"' + (y === N.nam ? ' selected' : '') + '>' + y + '</option>'; }).join('') + '</select></label>';
-      out += ptPhanHtml('nam', '流年', 'Vận năm ' + N.nam, (N.tuoi ? N.tuoi + ' tuổi · ' : '') + 'Mệnh năm ở ' + N.menh + (N.dvMenh ? ' · trong vận ' + N.dvMenh : ''), namChon + (N.chuaVaoVan ? '<p class="muted">Năm này chưa vào đại vận đầu tiên nên chỉ xem Tứ Hóa của năm.</p>' : '') + ptTongHtml(N.tong, 'Tổng luận 12 chủ đề của năm') + (N.phan.length ? '<details class="pt-chitiet-vb"' + (N.tong.length ? '' : ' open') + '><summary>Chi tiết các dòng luận của năm</summary>' + ptNhomHtml(N.phan) + '</details>' : ''), true);
+      out += ptPhanHtml('nam', '流年', 'Vận năm ' + N.nam, (N.tuoi > 0 ? N.tuoi + ' tuổi · ' : '') + 'Mệnh năm ở ' + N.menh + (N.dvMenh ? ' · trong vận ' + N.dvMenh : ''), namChon + (N.chuaVaoVan ? '<p class="muted">Năm này chưa vào đại vận đầu tiên nên chỉ xem Tứ Hóa của năm.</p>' : N.trung ? '<p class="muted">Mệnh năm trùng cung đại vận: hai tầng chồng khít, không có dòng nhập – chiếu riêng.</p>' : '') + ptTongHtml(N.tong, 'Tổng luận 12 chủ đề của năm') + (N.phan.length ? '<details class="pt-chitiet-vb"' + (N.tong.length ? '' : ' open') + '><summary>Chi tiết các dòng luận của năm</summary>' + ptNhomHtml(N.phan) + '</details>' : ''), true);
     }
     if ((BAI.thang || []).length) {
       var th = BAI.thang.map(function (t) {
-        return '<details class="lg-block"><summary><span class="lg-t">Tháng ' + t.thang + ' âm lịch</span><span class="lg-meta">Mệnh tháng ở ' + esc(t.menh + ' · can ' + t.can) + '</span></summary><div class="lg-body">' + (ptTongHtml(t.tong, 'Kết luận 12 chủ đề') || '<p class="muted">Tháng không có dòng nhập – xung nổi bật.</p>') + '<details class="pt-chitiet-vb"><summary>Chi tiết các dòng luận của tháng</summary>' + ptNhomHtml(t.phan) + '</details></div></details>';
+        return '<details class="lg-block"><summary><span class="lg-t">Tháng ' + t.thang + ' âm lịch</span><span class="lg-meta">Mệnh tháng ở ' + esc(t.menh + ' · can ' + t.can) + '</span></summary><div class="lg-body">' + (t.trung ? '<p class="muted">Mệnh tháng trùng Mệnh năm: hai tầng chồng khít, không có dòng nhập – chiếu riêng.</p>' : '') + (ptTongHtml(t.tong, 'Kết luận 12 chủ đề') || '<p class="muted">Tháng không có dòng nhập – xung nổi bật.</p>') + '<details class="pt-chitiet-vb"><summary>Chi tiết các dòng luận của tháng</summary>' + ptNhomHtml(t.phan) + '</details></div></details>';
       }).join('');
       out += ptPhanHtml('thang', '流月', 'Vận tháng ' + (N ? N.nam : ''), '12 tháng âm lịch', (BAI.thangGhiChu ? '<p class="muted">' + esc(BAI.thangGhiChu) + '</p>' : '') + '<div class="lg-list">' + th + '</div>', false);
     }
@@ -1662,13 +1662,15 @@
   document.addEventListener('change', function (e) {
     if (e.target.id !== 'ptNamXem' || !state.input) return;
     var y = +e.target.value, inp = JSON.parse(JSON.stringify(state.input)); inp.viewYear = y;
-    var pg = $('page-pt'), key = JSON.stringify(state.input) + '|' + y;
+    var pg = $('page-pt'), goc = JSON.stringify(state.input), key = goc + '|' + y;
     var khoi = $('pt-nam'); if (khoi) khoi.querySelector('.pt-than').innerHTML = '<p class="muted">Đang luận năm ' + y + '…</p>';
     PT.dang = key;
     call('phiTinhLuan', [inp], function (d) {
-      if (PT.dang !== key) return; PT.dang = false; PT.data = d; PT.key = JSON.stringify(state.input);
+      if (PT.dang !== key) return; PT.dang = false;
+      if (JSON.stringify(state.input) !== goc) return;                // đã lập lá số khác trong lúc chờ
+      PT.data = d; PT.key = goc; PT.lnI = 0;
       if (document.body.getAttribute('data-tab') === 'pt') { pg.innerHTML = ptHtml(d); ptGan(); dungMucLuc(); var k = $('pt-nam'); if (k) k.scrollIntoView({ block: 'start' }); }
-    }, function (er) { PT.dang = false; toast((er && er.message) || String(er), true); });
+    }, function (er) { if (PT.dang !== key) return; PT.dang = false; toast((er && er.message) || String(er), true); });
   });
   var CHU = { key: null, data: null, dang: false };
   function laChu() { var u = state.nguoiDung; return !!u && u.vaiTro === 'chu'; }

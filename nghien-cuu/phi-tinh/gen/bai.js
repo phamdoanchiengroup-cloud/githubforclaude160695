@@ -24,7 +24,7 @@ function ptMuc_(t, ds, chu, chon, toiDa) {
   var de = [], cc = [], dem = { cat: 0, hung: 0, trung: 0 };
   ds.forEach(function (y) {
     dem[y[3]] = (dem[y[3]] || 0) + 1;
-    if (y[1]) cc.push((y[0] ? y[0] + ': ' : '') + y[1]);
+    if (y[1] && cc.length < 4) cc.push((y[0] ? y[0] + ': ' : '') + y[1]);
     if (y[2] && de.indexOf(y[2]) < 0 && de.length < (toiDa || 2)) de.push(y[2]);
   });
   var muc = dem.cat > dem.hung ? 'cat' : dem.hung > dem.cat ? 'hung' : 'trung';
@@ -33,7 +33,7 @@ function ptMuc_(t, ds, chu, chon, toiDa) {
 /** Mục lấy từ kho theo các khóa thử dần */
 function ptMucK_(t, khoa, chu, chon, toiDa) { return ptMuc_(t, ptKho_(khoa), chu, chon, toiDa); }
 /** Mục tự soạn (khi kho không có khóa – lùi về văn cũ PT_VAN/PT_LUAN) */
-function ptMucTu_(t, ky, de, chu, muc) { return ky || de ? { t: t, chu: chu || '', muc: muc || 'trung', de: de ? [de] : [], cc: ky ? [ky] : [] } : null; }
+function ptMucTu_(t, ky, de, chu, muc, trong) { return ky || de || trong ? { t: t, chu: chu || '', muc: muc || 'trung', de: de ? [de] : [], cc: ky ? [ky] : [] } : null; }
 function ptDay_(ds, m) { if (m) ds.push(m); }
 
 /* ---------- Nguyên cục: các mẫu Lộc/Kỵ có tên (theo cung phát) ---------- */
@@ -45,7 +45,6 @@ function ptMauNC_(N, tv) {
     if (ky != null && ky !== i) {
       if (PT_THUY_ && PT_THUY_.nghich(N, i)) them(X, 'Nghịch thủy Kỵ', X + ' phi Kỵ (' + phi[i][3].sao + ') sang cung đối ' + ten[ky] + ' – nơi có Kỵ năm sinh, không tự hóa');
       else if (ky === ptD_(i)) them(X, X === 'Điền Trạch' || X === 'Tài Bạch' ? 'Lưu xuất Kỵ' : 'Tiết xuất Kỵ', X + ' phi Kỵ sang cung đối ' + ten[ky]);
-      else if (PT_THUY_ && PT_THUY_.thuan(N, i)) them(X, 'Thuận thủy Kỵ', X + ' phi Kỵ nhập ' + ten[ky], null, true);
     }
     if (loc != null && loc === ptD_(i)) {
       if (snLoc === loc) them(X, 'Điệp xuất Lộc', X + ' phi Lộc sang ' + ten[loc] + ' – nơi đã có Lộc năm sinh');
@@ -78,8 +77,7 @@ function ptMauNC_(N, tv) {
     them(ten[a], 'Củ triền Kỵ', ten[a] + ' phi Kỵ nhập ' + ten[ka] + ', ' + ten[b] + ' phi Kỵ nhập ' + ten[kb] + ' (trục ' + cT.join(' – ') + ')', chon);
   }
   // Song Lộc: Lộc năm sinh gặp Lộc Tồn (ngoài Mệnh – Mệnh dùng cách "Lộc hợp uyên ương"), hoặc Lộc và Quyền năm sinh cùng tọa
-  if (snLoc != null && tv.pos['Lộc Tồn'] === snLoc && ten[snLoc] !== 'Mệnh') them(ten[snLoc], 'Song Lộc', 'Lộc năm sinh gặp Lộc Tồn tại ' + ten[snLoc], function (y, n) { return n === 0; });
-  if (snLoc != null && snLoc === snQuyen) them(ten[snLoc], 'Song Lộc', 'Lộc và Quyền năm sinh cùng tọa ' + ten[snLoc], function (y, n) { return n === 1; });
+  if (snLoc != null && snLoc === snQuyen && ten[snLoc] === 'Điền Trạch') them(ten[snLoc], 'Song Lộc', 'Lộc và Quyền năm sinh cùng tọa ' + ten[snLoc], function (y, n) { return n === 1; });
   // Song Kỵ nguyên cục: Mệnh phi Kỵ trùng/xung Kỵ năm sinh
   var mk = phi[N.o['Mệnh']][3].toi;
   if (snKy != null && mk != null && (mk === snKy || mk === ptD_(snKy))) them('Mệnh', 'Song Kỵ', 'Mệnh phi Kỵ ' + (mk === snKy ? 'trùng' : 'xung') + ' Kỵ năm sinh ở ' + ten[snKy]);
@@ -140,7 +138,7 @@ function ptCungBai_(N, tv, X, mauNC, ck) {
   // 4. Cung phi Lộc / Quyền / Khoa / Kỵ
   var d = [];
   N.phi[i].forEach(function (f) {
-    if (f.toi == null || f.toi === i) return;
+    if (f.toi == null || f.toi === i || f.toi === ptD_(i)) return;   // tự hóa (ly tâm/hướng tâm) đã nói ở trên
     var H = PT_H[f.h], Y = N.ten[f.toi], chuyen = ptTenTu_(i, f.toi);
     var t = X + ' (can ' + can + ') phi Hóa ' + H + ' (' + f.sao + ') nhập ' + Y + (X !== 'Mệnh' ? ' – ' + Y + ' là cung ' + chuyen + ' tính từ ' + X : '');
     var m = ptMucK_(t, ['phi|' + X + '|' + H + '|' + Y], lv, null, 2);
@@ -176,24 +174,24 @@ function ptTheDung_(N, tv, theGoc, dungGoc, tang, snO, dungHoa) {
   function cham(X, d, nhan) { var z = diem[X]; if (d > 0) z.tot = Math.max(z.tot, d); else z.xau = Math.max(z.xau, -d); z.ds.push(nhan); }
   PT_CUNG.forEach(function (X) {
     var uT = ptO_(theGoc, X), uD = ptO_(dungGoc, X);
-    if (uT === uD) return;                                                 // hai tầng trùng cung: không xét Thể – Dụng
+    if (snO && snO[uD]) cham(X, 2, 'M chất (' + snO[uD].join(', ') + ')');  // tầng nhỏ chồng lên cung có Hóa năm sinh
+    if (uT === uD) return;                                                 // hai tầng trùng cung: không có dòng Thể – Dụng riêng
     ptHoa_(tv, P[uD].can).forEach(function (f) {                            // Dụng → Thể
       if (f.toi == null) return; var H = PT_H[f.h];
       if (f.toi === uT) { dong.push({ X: X, huong: 'Dụng→Thể', loai: 'nhap', H: H, sao: f.sao, sao4: 3, o: f.toi, tu: uD }); cham(X, H === 'Kỵ' ? -2 : 2, (H === 'Kỵ' ? 'quy vị Kỵ' : 'quy vị ' + H)); }
       else if (f.toi === ptD_(uT)) { var lx = H === 'Kỵ' ? 'xung' : 'chieu'; dong.push({ X: X, huong: 'Dụng→Thể', loai: lx, H: H, sao: f.sao, sao4: 4, o: f.toi, tu: uD }); cham(X, H === 'Kỵ' ? -3 : H === 'Lộc' ? 3 : 1, H + ' Dụng ' + (H === 'Kỵ' ? 'xung' : 'chiếu') + ' Thể'); }
-      if (X !== 'Mệnh' && tang === 'dv') {                                  // ĐV.X phi Hóa vào Mệnh nguyên cục
+      if (X !== 'Mệnh' && X !== 'Thiên Di' && tang === 'dv') {           // Thiên Di: đối cung là Mệnh gốc – đã tính ở Dụng→Thể                                  // ĐV.X phi Hóa vào Mệnh nguyên cục
         if (f.toi === menhNC) { dong.push({ X: X, huong: 'Mệnh', loai: H === 'Kỵ' ? 'kyNhapMenh' : 'catNhapMenh', H: H, sao: f.sao, sao4: 0, o: f.toi, tu: uD }); cham(X, H === 'Kỵ' ? -1 : 1, H + ' nhập Mệnh gốc'); }
         else if (H === 'Kỵ' && f.toi === ptD_(menhNC)) { dong.push({ X: X, huong: 'Mệnh', loai: 'kyXungMenh', H: H, sao: f.sao, sao4: 0, o: f.toi, tu: uD }); cham(X, -2, 'Kỵ xung Mệnh gốc'); }
       }
     });
     ptHoa_(tv, P[uT].can).forEach(function (f) {                            // Thể → Dụng
       if (f.toi == null) return; var H = PT_H[f.h];
-      if (f.toi === uD) { dong.push({ X: X, huong: 'Thể→Dụng', loai: 'nhap', H: H, sao: f.sao, sao4: 1, o: f.toi, tu: uT }); cham(X, H === 'Kỵ' ? -1 : 1, H + ' Thể nhập Dụng'); }
-      else if (f.toi === ptD_(uD)) { var lx2 = H === 'Kỵ' ? 'xung' : 'chieu'; dong.push({ X: X, huong: 'Thể→Dụng', loai: lx2, H: H, sao: f.sao, sao4: 2, o: f.toi, tu: uT }); cham(X, H === 'Kỵ' ? -1 : 1, H + ' Thể ' + (H === 'Kỵ' ? 'xung' : 'chiếu') + ' Dụng'); }
+      if (f.toi === uD) { dong.push({ X: X, huong: 'Thể→Dụng', loai: 'nhap', H: H, sao: f.sao, sao4: 1, o: f.toi, tu: uT }); cham(X, H === 'Kỵ' ? -2 : 1, H + ' Thể nhập Dụng'); }
+      else if (f.toi === ptD_(uD)) { var lx2 = H === 'Kỵ' ? 'xung' : 'chieu'; dong.push({ X: X, huong: 'Thể→Dụng', loai: lx2, H: H, sao: f.sao, sao4: 2, o: f.toi, tu: uT }); cham(X, H === 'Kỵ' ? -2 : 1, H + ' Thể ' + (H === 'Kỵ' ? 'xung' : 'chiếu') + ' Dụng'); }
     });
-    if (snO && snO[uD]) cham(X, 2, 'M chất (' + snO[uD].join(', ') + ')');  // tầng nhỏ chồng lên cung có Hóa năm sinh
   });
-  return { dong: dong, diem: diem };
+  return { dong: dong, diem: diem, trung: theGoc === dungGoc };
 }
 /** Xếp mức tổng luận một chủ đề: cat / binh / hung (+ nhãn chữ theo cách cohoc chấm) */
 function ptXep_(z) {
@@ -228,7 +226,7 @@ function ptTongLuan_(diem, tang) {
     var m = ptMucK_('Chủ đề ' + X + ': ' + x.nhan + ' (' + diem[X].ds.join('; ') + ')', [khoa], ptLv_(X), null, 1);
     if (m) {
       m.muc = x.muc;
-      if (tang === 'nam') { m.de = m.de.map(function (s) { return s.replace(/tháng này/g, 'năm nay').replace(/trong tháng/g, 'trong năm').replace(/một tháng/g, 'một năm').replace(/tháng/g, 'năm'); }); m.cc = m.cc.map(function (s) { return s.replace(/tháng/g, 'năm'); }); }
+      if (tang === 'nam') { m.de = m.de.map(function (s) { return s.replace(/tháng này/g, 'năm nay').replace(/trong tháng/g, 'trong năm').replace(/một tháng/g, 'một năm').replace(/tháng/g, 'năm'); }); m.t = m.t.replace('Kết luận tháng', 'Kết luận năm'); }
       m.cung = X; m.nhan = x.nhan; ra.push(m);
     }
   });
@@ -254,7 +252,7 @@ function ptDaiVanBai_(N, tv, d, ck) {
   var b = [], L = hoa[0].toi, K = hoa[3].toi, tamHop = N.tamHop, daHQ = {};
   ['Mệnh', 'Tài Bạch', 'Quan Lộc'].forEach(function (X) {
     var u = ptO_(d, X), lc = ptHoa_(tv, P[u].can)[0];
-    if (lc.toi != null && tamHop.indexOf(lc.toi) >= 0 && !(X === 'Mệnh' && lc.toi === N.o['Mệnh'])) {
+    if (lc.toi != null && tamHop.indexOf(lc.toi) >= 0 && lc.toi !== N.o[X]) {
       var dich = ten[lc.toi]; if (daHQ[dich]) return; daHQ[dich] = 1;
       ptDay_(b, ptMucK_('Hồi quy: Lộc của ĐV.' + X + ' (' + lc.sao + ') về ' + dich + ' nguyên cục', ['dv|hoiQuy|' + dich], ptLv_(dich)));
     }
@@ -306,7 +304,7 @@ function ptDaiVanBai_(N, tv, d, ck) {
   if (g.length) phan.push({ ten: 'M chất bản mệnh và đại vận', muc: g });
   if (h.length) phan.push({ ten: 'Thể – Dụng: Lộc, Quyền, Khoa nhập/chiếu; Kỵ nhập/xung; quy vị', muc: h });
   if (k.length) phan.push({ ten: 'Kinh nghiệm Bắc phái', muc: k });
-  return { o: d, menh: ten[d], can: CAN[can], chi: CHI[d], hoa: hoa.map(function (f) { return { h: PT_H[f.h], sao: f.sao, cung: f.toi == null ? null : ten[f.toi] }; }), phan: phan, tong: tong };
+  return { o: d, trung: TD.trung, menh: ten[d], can: CAN[can], chi: CHI[d], hoa: hoa.map(function (f) { return { h: PT_H[f.h], sao: f.sao, cung: f.toi == null ? null : ten[f.toi] }; }), phan: phan, tong: tong };
 }
 
 /* ---------- Vận năm (Thể = đại vận, Dụng = lưu niên) ---------- */
@@ -317,7 +315,7 @@ function ptNamBai_(N, tv, y, dvO) {
   hoa.forEach(function (f) {
     if (f.toi == null) return; var H = PT_H[f.h], tDV = dvO != null ? ptTenTu_(dvO, f.toi) : null, tLN = ptTenTu_(m, f.toi);
     var t = 'Hóa ' + H + ' năm ' + y + ' (can ' + CAN[can] + ', ' + f.sao + ') nhập ' + (tDV ? 'ĐV.' + tDV + ' (' : '') + 'LN.' + tLN + (tDV ? ')' : '') + ', nguyên cục ' + ten[f.toi];
-    var mm = H === 'Lộc' || H === 'Kỵ' ? ptMucK_(t, ['nam|nhap|' + H + '|*'], ptLv_(tDV || tLN), null, 1) : ptMucTu_(t, '', '', '');
+    var mm = H === 'Lộc' || H === 'Kỵ' ? ptMucK_(t, ['nam|nhap|' + H + '|*'], ptLv_(tDV || tLN), null, 1) : ptMucTu_(t, '', '', ptLv_(tDV || tLN), 'trung', true);
     if (mm) {
       var thang = ptTamDiem_(f.toi).map(ptThangCuaChi_);
       if (H === 'Lộc' || H === 'Kỵ') mm.cc.push('Ứng kỳ theo tam điểm (' + ptTamDiem_(f.toi).map(function (o) { return CHI[o]; }).join(', ') + '): tháng âm ' + thang.join(', ') + '.');
@@ -335,13 +333,13 @@ function ptNamBai_(N, tv, y, dvO) {
     var uN = N.o[X], uD = dvO != null ? ptO_(dvO, X) : null, uL = ptO_(m, X);
     if (snO[uN] && uD != null && snO[uD] && hoa.some(function (f) { return f.toi === uL; })) ptDay_(b, ptMucK_('Bản mệnh, đại vận và lưu niên ' + X + ' đều có M chất', ['dv|mchatTrung|3tang'], ptLv_(X)));
   });
-  if (dvO == null) return { nam: y, can: CAN[can], chi: CHI[m], menh: ten[m], o: m, phan: a.length ? [{ ten: 'Thông tin lưu niên', muc: a }] : [], tong: [], chuaVaoVan: true };
+  if (dvO == null) return { nam: y, can: CAN[can], chi: CHI[m], menh: ten[m], o: m, phan: [].concat(a.length ? [{ ten: 'Thông tin lưu niên', muc: a }] : [], b.length ? [{ ten: 'Mẫu Lộc – Kỵ trong năm', muc: b }] : []), tong: [], chuaVaoVan: true };
   var TD = ptTheDung_(N, tv, dvO, m, 'nam', null);
   var h = TD.dong.slice().sort(function (x, z) { return z.sao4 - x.sao4; }).map(function (x) { return ptDongMuc_(x, 'nam', 'ĐV', 'LN'); }).filter(Boolean);
   if (a.length) phan.push({ ten: 'Thông tin lưu niên – Tứ Hóa năm vào cung nào của đại vận', muc: a });
   if (b.length) phan.push({ ten: 'Mẫu Lộc – Kỵ trong năm, M chất ba tầng', muc: b });
   if (h.length) phan.push({ ten: 'Thể – Dụng giữa lưu niên và đại vận', muc: h });
-  return { nam: y, can: CAN[can], chi: CHI[m], menh: ten[m], o: m, dvMenh: ten[dvO], phan: phan, tong: ptTongLuan_(TD.diem, 'nam') };
+  return { nam: y, trung: TD.trung, can: CAN[can], chi: CHI[m], menh: ten[m], o: m, dvMenh: ten[dvO], phan: phan, tong: ptTongLuan_(TD.diem, 'nam') };
 }
 
 /* ---------- Vận tháng (Thể = lưu niên, Dụng = nguyệt vận) ---------- */
@@ -353,7 +351,7 @@ function ptThangBai_(N, tv, y, k, mNam, nv, canThang) {
     if (f.toi == null) return; var H = PT_H[f.h], Y = tenLN(f.toi);
     var t = 'Hóa ' + H + ' tháng ' + k + ' (can ' + CAN[canThang] + ', ' + f.sao + ') nhập LN.' + Y + ' (NV.' + ptTenTu_(nv, f.toi) + ')';
     var xuat = !ngaLN(f.toi) && thLN.indexOf(f.toi) < 0;
-    var m = xuat ? ptMucK_(t + ' – ' + H + ' xuất', ['thang|xuat|' + (H === 'Khoa' ? 'Quyền' : H)], ptLv_(Y), null, 1) : ptMucTu_(t, '', '', ptLv_(Y));
+    var m = xuat ? ptMucK_(t + ' – ' + H + ' xuất', ['thang|xuat|' + (H === 'Khoa' ? 'Quyền' : H)], ptLv_(Y), null, 1) : ptMucTu_(t, '', '', ptLv_(Y), 'trung', true);
     ptDay_(a, m);
   });
   var b = [], kyO = {};
@@ -370,7 +368,7 @@ function ptThangBai_(N, tv, y, k, mNam, nv, canThang) {
   if (a.length) phan.push({ ten: '1–2. Thông tin chung, Tứ Hóa nhập xuất', muc: a });
   if (b.length) phan.push({ ten: '3–4. Tha – ngã cung, tương tác các tầng', muc: b });
   if (h.length) phan.push({ ten: 'Các dòng Thể – Dụng (* nhẹ → **** nặng)', muc: h });
-  return { thang: k, o: nv, menh: ten[nv], chi: CHI[nv], can: CAN[canThang], phan: phan, tong: ptTongLuan_(TD.diem, 'thang') };
+  return { thang: k, trung: TD.trung, o: nv, menh: ten[nv], chi: CHI[nv], can: CAN[canThang], phan: phan, tong: ptTongLuan_(TD.diem, 'thang') };
 }
 
 /** Ghép cả bài theo mục lục. vy = năm xem */

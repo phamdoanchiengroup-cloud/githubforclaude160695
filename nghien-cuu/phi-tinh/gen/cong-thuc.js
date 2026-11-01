@@ -11,12 +11,12 @@ function ptMenhThang_(tv, y, n) {
   var dq = ((chiNam - (I.thangAn - 1) + I.hourChi) % 12 + 12) % 12, o = (dq + n - 1) % 12;
   return { o: o, can: tv.palaces[o].can, dauQuan: dq };
 }
-/** Nghịch thủy Kỵ (≥4 nguồn): Mệnh, Tài Bạch hoặc Quan Lộc phi Kỵ sang cung đối, cung đối có Kỵ năm sinh và không tự hóa.
+/** Nghịch thủy Kỵ (≥4 nguồn): Mệnh, Tài Bạch hoặc Quan Lộc phi Kỵ sang cung đối, cung đối có Kỵ năm sinh và không tự hóa (ly tâm – thống nhất với Nhập khố).
  *  Thuận thủy Kỵ (mức trung bình – có lẽ là tên khác của Lưu thủy Kỵ): phi Kỵ sang cung khác, không phải cung đối. */
 var PT_THUY_ = {
   nghich: function (N, i) {
     var k = N.phi[i][3].toi;
-    return ['Mệnh', 'Tài Bạch', 'Quan Lộc'].indexOf(N.ten[i]) >= 0 && k === ptD_(i) && N.sn[3].toi === k && !N.tuHoa.some(function (t) { return t.o === k; });
+    return ['Mệnh', 'Tài Bạch', 'Quan Lộc'].indexOf(N.ten[i]) >= 0 && k === ptD_(i) && N.sn[3].toi === k && !N.coLyTam(k);
   },
   thuan: function (N, i) { var k = N.phi[i][3].toi; return k != null && k !== i && k !== ptD_(i); }
 };
