@@ -54,10 +54,13 @@ const vao = async (p, tk) => { await p.goto(F); await p.waitForSelector('#xtGoiY
     if (CHUP) await p.screenshot({ path: CHUP + '/qt-nm-' + w + '.png', fullPage: true });
     // Từng xưởng
     await p.click('.qt-tabs button:has-text("Từng xưởng")'); await p.waitForTimeout(300);
-    s = await p.evaluate(() => [document.querySelectorAll('.qt-sodo svg g.nut').length, document.querySelectorAll('.qt-sodo path.canh').length, document.querySelector('#qtChonX').value, !!document.querySelector('.qt-sodo svg g.nut.bd')]);
-    ok(s[0] > 3 && s[1] > 3 && s[2], 'Từng xưởng: sơ đồ có nút + mũi tên', s);
-    s = await p.evaluate(() => { const b = document.querySelector('.qt-bc .qt-bh:not(.dau)'); b.click(); return [document.querySelectorAll('.qt-bc .qt-bh:not(.dau)').length, !!document.querySelector('.qt-not'), !!document.querySelector('.qt-con table'), document.querySelectorAll('.qt-bc .qt-bh.nut').length]; });
-    ok(s[0] >= 4 && s[1] && s[2] && s[3] <= 1, 'Từng xưởng: các bước đánh số (nhóm công đoạn), dòng nút thắt trên cùng, bấm dòng mở công đoạn con, tối đa 1 nút thắt', s);
+    s = await p.evaluate(() => [document.querySelectorAll('.qt-xg .qt-o').length, (window.__qtCanhX || []).length, document.querySelector('#qtChonX').value]);
+    ok(s[0] >= 3 && s[1] >= 2 && s[2], 'Từng xưởng: lưu đồ có thẻ + đường nối', s);
+    s = await p.evaluate(() => { const b = document.querySelector('.qt-xg .qt-o'); b.click(); const G = qtGomNhom(QTX, qtTinh()), n = Object.values(G.o).filter(g => g.lan !== 'NGOAI').length;
+      return [document.querySelectorAll('.qt-xg .qt-o').length === n ? n : -1, !!document.querySelector('.qt-not'), !!document.querySelector('.qt-con table'), document.querySelectorAll('.qt-xg .qt-o.nut').length, (window.__qtCanhX || []).length]; });
+    ok(s[0] >= 4 && s[1] && s[2] && s[3] <= 1 && s[4] >= 2, 'Từng xưởng: lưu đồ kiểu nhà máy (mỗi nhóm 1 thẻ, có đường nối), dòng nút thắt trên cùng, bấm thẻ mở công đoạn con, tối đa 1 nút thắt', s);
+    s = await p.evaluate(() => { const r = { }; ['PHOITHO', 'PHOICB', 'HT'].forEach(x => { QTX = x; QTMoNhom = ''; qtVe(); const the = [...document.querySelectorAll('.qt-xg .qt-o')].map(e => e.getBoundingClientRect()); let chong = 0; the.forEach((a, i) => the.forEach((b, j) => { if (i < j && a.left < b.right - 1 && b.left < a.right - 1 && a.top < b.bottom - 1 && b.top < a.bottom - 1) chong++; })); r[x] = [the.length, chong, window.__qtCanhX.length]; }); return r; });
+    ok(Object.values(s).every(v => v[0] > 2 && v[1] === 0 && v[2] >= v[0] - 3), 'lưu đồ xưởng: thẻ không chồng nhau, mỗi thẻ trên dòng chảy đều có đường nối', s);
     await p.evaluate(() => { QTMoNhom = ''; qtVe(); });
     if (CHUP) await p.screenshot({ path: CHUP + '/qt-x-' + w + '.png', fullPage: true });
     await p.selectOption('#qtChonX', 'HT'); await p.waitForTimeout(300);
