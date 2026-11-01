@@ -7535,7 +7535,7 @@ function danhSachVanPhong(token) {
   ds.sort(function(a, b) { return (thuTu[a.vaiTro] - thuTu[b.vaiTro]) || (a.HoTen < b.HoTen ? -1 : 1); });
   return sach_({ ok: true, ds: ds, muc: HS_MUC });
 }
-var KPI_BAN_MAY = '01/11/2026 16:07';   // giờ dựng Code.gs (22/10)
+var KPI_BAN_MAY = '01/11/2026 16:18';   // giờ dựng Code.gs (22/10)
 /* =====================================================================
    KỸ NĂNG (22/10, chủ dự án nhờ thiết kế + tham khảo chuyên gia nhân sự / đào tạo)
    - Danh mục: trưởng / phó phòng đề xuất kỹ năng của xưởng (tên, mô tả, tiêu chí đạt, công đoạn liên quan)
@@ -8046,7 +8046,7 @@ function qtCoVong_(canh) {
 
 /* Quy trình đang lưu (hoặc nháp) -> { cd: {Ma: {...}}, xuong: [...], caiDat, nhap } */
 function qtDocQT_(cds) {
-  var dong = docAnToan_(QT_SHEET), cd = {}, xuong = [], cai = {}, k;
+  var dong = docAnToan_(QT_SHEET), cd = {}, xuong = [], cai = {}, xuat = {}, k;
   for (k in QT_CAI_DAT) cai[k] = QT_CAI_DAT[k];
   dong.forEach(function(r) {
     var l = String(r.Loai).trim(), ma = String(r.Ma).trim();
@@ -8054,6 +8054,7 @@ function qtDocQT_(cds) {
       Buoc: Number(r.Buoc) || 1, Truoc: String(r.Truoc || '').split(',').map(function(x) { return x.trim(); }).filter(Boolean),
       GhiChu: String(r.GhiChu || ''), NguoiSua: String(r.NguoiSua || ''), ThoiDiem: r.ThoiDiem ? String(r.ThoiDiem) : '' };
     else if (l === 'XUONG' && ma.indexOf('>') > 0) xuong.push({ Tu: ma.split('>')[0], Den: ma.split('>')[1], BTP: String(r.Nhanh || ''), GhiChu: String(r.GhiChu || '') });
+    else if (l === 'XUAT' && ma) xuat[ma] = String(r.Nhanh || '').split(',').map(function(x) { return x.trim(); }).filter(Boolean);   // bước xuất của xưởng (cách A, 01/11)
     else if (l === 'CAIDAT' && QT_CAI_DAT.hasOwnProperty(ma) && isFinite(Number(r.GhiChu)) && String(r.GhiChu) !== '') cai[ma] = Number(r.GhiChu);
   });
   var nhap = !dong.some(function(r) { return String(r.Loai).trim() === 'CD'; });
@@ -8069,7 +8070,7 @@ function qtDocQT_(cds) {
   else { var luu = qtLuongCu_(dong); QT_XUONG_THEM.forEach(function(a) { if (luu >= a[3]) return;   // luồng chủ dự án báo thêm sau khi đã lưu (01/11): bổ sung nếu bản đã lưu chưa có
     if (!xuong.some(function(l) { return l.Tu === a[0] && l.Den === a[1]; })) xuong.push({ Tu: a[0], Den: a[1], BTP: a[2], GhiChu: 'Thêm ' + a[3].slice(8) + '/' + a[3].slice(5, 7) });
   }); }
-  return { cd: cd, xuong: xuong, caiDat: cai, nhap: nhap };
+  return { cd: cd, xuong: xuong, caiDat: cai, nhap: nhap, xuat: xuat };
 }
 
 /* Dữ liệu cho tab: quy trình + thống kê sản lượng theo công đoạn trong kỳ + nhân sự + máy + kỹ năng */
@@ -8081,7 +8082,7 @@ function layQuyTrinh(token, soNgay) {
   var den = homNayVN_(), d0 = new Date(den + 'T12:00:00Z'); d0.setUTCDate(d0.getUTCDate() - soNgay + 1);
   var tu = Utilities.formatDate(d0, 'GMT', 'yyyy-MM-dd');
   var dmRow = {}; doc_('DinhMuc').forEach(function(r) { dmRow[String(r.MaCD)] = r; });
-  var tk = {}, ngaySX = {}, cong = {};
+  var tk = {}, ngaySX = {}, cong = {}, d7 = new Date(den + 'T12:00:00Z'); d7.setUTCDate(d7.getUTCDate() - 6); var tu7 = Utilities.formatDate(d7, 'GMT', 'yyyy-MM-dd'), ngay7 = {};
   doc_('NhatKySanXuat').forEach(function(r) {
     if (String(r.TrangThai).trim() === 'Từ chối') return;
     var ng = ngayVN_(r.Ngay); if (ng < tu || ng > den) return;
@@ -8089,6 +8090,7 @@ function layQuyTrinh(token, soNgay) {
     var sl = Number(r.SoLuongLamRa) || 0; if (sl <= 0) return;
     var m = String(r.MaCD), t = tk[m] || (tk[m] = { sl: 0, nguoi: {}, ngay: {} });
     t.sl += sl; t.nguoi[String(r.MaNV)] = (t.nguoi[String(r.MaNV)] || 0) + sl; t.ngay[ng] = 1; ngaySX[ng] = 1;
+    if (ng >= tu7) { t.sl7 = (t.sl7 || 0) + sl; ngay7[ng] = 1; }   // 7 ngày gần nhất (cách A: nhịp ra của bước xuất)
   });
   Object.keys(tk).forEach(function(m) { var t = tk[m]; t.soNgay = Object.keys(t.ngay).length; delete t.ngay; });
   var ngayCong = {}; Object.keys(cong).forEach(function(m) { ngayCong[m] = Object.keys(cong[m]).length; });
@@ -8114,7 +8116,7 @@ function layQuyTrinh(token, soNgay) {
     congDoan: cds.map(function(c) { var d = dmRow[String(c.MaCD)] || {};
       return { MaCD: String(c.MaCD), TenCD: String(c.TenCD), MaXuong: String(c.MaXuong), DM: Number(d.DinhMucGio) || 0, DVT: String(d.DonViTinh || '') }; }),
     xuong: doc_('PhongBan').filter(function(p) { return String(p.TrangThai || 'Đang dùng').trim() !== 'Ngừng'; }).map(function(p) { return { MaXuong: String(p.MaXuong), TenXuong: String(p.TenXuong) }; }),
-    thongKe: tk, ngayCong: ngayCong, nhanSu: ns, may: may, kyNang: kn });
+    thongKe: tk, soNgaySX7: Object.keys(ngay7).length, xuat: qt.xuat, ngayCong: ngayCong, nhanSu: ns, may: may, kyNang: kn });
 }
 
 /* Lưu quy trình (ghi đè toàn bộ sheet QuyTrinh trong khóa). o = { cd: [{Ma, Nhanh, Buoc, Truoc[], GhiChu}], xuong: [{Tu, Den, BTP, GhiChu}], caiDat: {} } */
@@ -8124,7 +8126,8 @@ function luuQuyTrinh(token, o) {
   if (!Array.isArray(o.cd) || o.cd.length > 2000 || !Array.isArray(o.xuong || []) || (o.xuong || []).length > 100) return sach_({ ok: false, msg: 'Dữ liệu quy trình không hợp lệ.' });
   var thoDai = function(v, n) { return v != null && (typeof v !== 'string' && typeof v !== 'number' || String(v).length > n); };   // kiểm độ dài TRƯỚC khi xử lý / giữ khóa
   if (o.cd.some(function(c) { return !c || typeof c !== 'object' || thoDai(c.Ma, 60) || thoDai(c.Nhanh, 20) || thoDai(c.GhiChu, 400) || (c.Truoc != null && (!Array.isArray(c.Truoc) || c.Truoc.length > 20 || c.Truoc.some(function(t) { return thoDai(t, 60); }))); }) ||
-      (o.xuong || []).some(function(x) { return !x || typeof x !== 'object' || thoDai(x.Tu, 30) || thoDai(x.Den, 30) || thoDai(x.BTP, 240) || thoDai(x.GhiChu, 400); }))
+      (o.xuong || []).some(function(x) { return !x || typeof x !== 'object' || thoDai(x.Tu, 30) || thoDai(x.Den, 30) || thoDai(x.BTP, 240) || thoDai(x.GhiChu, 400); }) ||
+      (o.xuat != null && (typeof o.xuat !== 'object' || Array.isArray(o.xuat) || Object.keys(o.xuat).length > 30 || Object.keys(o.xuat).some(function(k) { var a = o.xuat[k]; return k.length > 30 || !Array.isArray(a) || a.length > 30 || a.some(function(t) { return thoDai(t, 60); }); }))))
     return sach_({ ok: false, msg: 'Dữ liệu quy trình không hợp lệ (ô quá dài hoặc quá nhiều công đoạn trước).' });
   khoa_();
   var cds = doc_('CongDoan'), xOf = {};
@@ -8166,6 +8169,15 @@ function luuQuyTrinh(token, o) {
   // luồng cấp vật liệu (POM Ngọn Taro → Phôi Thô) chạy ngược chiều sản phẩm: không tính khi dò vòng lặp
   var cX = {}; xl.forEach(function(x) { if (!qtLuongCap_(x)) (cX[x.Den] = cX[x.Den] || []).push(x.Tu); });
   if (qtCoVong_(cX)) return sach_({ ok: false, msg: 'Luồng giữa các xưởng bị vòng lặp: ' + qtCoVong_(cX) + '.' });
+  var xt = {};
+  Object.keys(o.xuat || {}).forEach(function(x) {
+    if (loi) return;
+    if (!qtCo_(xs, x)) { loi = 'Bước xuất: xưởng không hợp lệ.'; return; }
+    var a = o.xuat[x].map(function(t) { return String(t).trim(); }).filter(function(t, i, b) { return t && b.indexOf(t) === i; });
+    for (var i = 0; i < a.length; i++) if (!qtCo_(xOf, a[i]) || xOf[a[i]] !== x) { loi = 'Bước xuất của ' + x + ' phải là công đoạn của xưởng đó.'; return; }
+    if (a.length) xt[x] = a;
+  });
+  if (loi) return sach_({ ok: false, msg: loi });
   var cai = {}, gh = { gioCoMat: [1, 24], hieuSuat: [0.3, 1.2], mucTieu: [10, 500], soNgay: [14, 90], slThang: [500, 100000], ngayThang: [20, 31], slNay: [0, 5000] };
   for (var k in QT_CAI_DAT) {
     var v = Number((o.caiDat || {})[k]);
@@ -8181,6 +8193,7 @@ function luuQuyTrinh(token, o) {
     return ['CD', c.Ma, c.MaXuong, c.Nhanh, String(c.Buoc), c.Truoc.join(','), c.GhiChu, same ? c0.NguoiSua : me.tk, same ? c0.ThoiDiem : luc];
   });
   xl.forEach(function(x) { rows.push(['XUONG', x.Tu + '>' + x.Den, x.Tu, x.BTP, '', '', x.GhiChu, me.tk, luc]); });
+  Object.keys(xt).forEach(function(x) { rows.push(['XUAT', x, x, xt[x].join(','), '', '', '', me.tk, luc]); });
   Object.keys(cai).forEach(function(k2) { rows.push(['CAIDAT', k2, '', '', '', '', String(cai[k2]), me.tk, luc]); });
   var sh = qtSheet_();
   if (sh.getMaxRows() < rows.length + 1) sh.insertRowsAfter(sh.getMaxRows(), rows.length + 1 - sh.getMaxRows());

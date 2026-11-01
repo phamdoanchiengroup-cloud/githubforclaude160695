@@ -26,6 +26,9 @@ const vao = async (p, tk) => { await p.goto(F); await p.waitForSelector('#xtGoiY
     ok(s[0] > 50 && s[1] === s[2] && s[3] && s[4], 'cân bằng tải theo 9.000 sp/tháng: mục tiêu % = (9000 ÷ 26) ÷ nhịp đóng gói; bảng có cột thiếu / thừa + cần trong danh sách', s);
     s = await p.evaluate(() => { QTS.slNay = 400; const a = qtMT(); QTS.slNay = 0; qtMT(); return a; });
     ok(s === Math.round(9000 / 26 / 400 * 100), 'tự nhập nhịp hiện nay (400 sp/ngày) → mục tiêu tính lại', s);
+    // 01/11 cách A: bước xuất mặc định mỗi xưởng có ít nhất 1 công đoạn, số ra/ngày đúng công thức
+    s = await p.evaluate(() => { const r = {}; (QT.xuong || []).forEach(p => { const a = qtRa(p.MaXuong), N = Math.max(1, QT.soNgaySX); const tay = a.ma.reduce((x, m) => x + ((QT.thongKe[m] || {}).sl || 0), 0) / N; r[p.MaXuong] = [a.ma.length, Math.abs(tay - a.ngay) < 1e-9, a.macDinh]; }); return r; });
+    ok(['PHOICB', 'PHOITHO', 'SON', 'INUV', 'NGONTARO', 'NGONTIP', 'CNC', 'HT', 'DG'].every(x => s[x] && s[x][0] >= 1 && s[x][1]), 'cách A: 9 xưởng đều có bước xuất chọn sẵn, ra/ngày = Σ sản lượng bước xuất ÷ ngày sản xuất', s);
     // 01/11: lưu đồ toàn nhà máy + nhóm công đoạn
     s = await p.evaluate(() => { const T = qtTinh(), ra = {}, khac = [];
       Object.keys(T.x).forEach(x => { const G = qtGomNhom(x, T); if (!G) return; const n = Object.values(G.o).reduce((a, g) => a + g.cd.length, 0);

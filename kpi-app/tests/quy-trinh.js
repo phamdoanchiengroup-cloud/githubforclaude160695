@@ -93,5 +93,16 @@ r2 = c.__goi('layQuyTrinh', Town, 30);
 ok(r2.xuongLuong.length === 12 && r2.xuongLuong.some(x => x.Tu === 'NGONTARO' && x.Den === 'PHOITHO'), 'đọc lại bản cũ: tự thêm luồng POM + ngọn lẻ + đầu gậy lết', r2.xuongLuong.length);
 r = c.__goi('luuQuyTrinh', Town, { cd: r2.quyTrinh, xuong: r2.xuongLuong, caiDat: r2.caiDat }); ok(r.ok, 'Phôi Thô → Ngọn Taro + POM Ngọn Taro → Phôi Thô: lưu được (luồng cấp vật liệu không tính vòng lặp)', r);
 
+// 01/11 cách A: bước xuất mỗi xưởng (lưu dòng XUAT), thống kê 7 ngày gần nhất
+r2 = c.__goi('layQuyTrinh', Town, 30);
+const cdSon = r2.quyTrinh.filter(q => q.MaXuong === 'SON').map(q => q.Ma), cdHT = r2.quyTrinh.find(q => q.MaXuong === 'HT').Ma;
+r = c.__goi('luuQuyTrinh', Town, { cd: r2.quyTrinh, xuong: r2.xuongLuong, caiDat: r2.caiDat, xuat: { SON: [cdHT] } }); ok(!r.ok && /Bước xuất/.test(r.msg), 'bước xuất phải là công đoạn của chính xưởng đó', r);
+r = c.__goi('luuQuyTrinh', Town, { cd: r2.quyTrinh, xuong: r2.xuongLuong, caiDat: r2.caiDat, xuat: { KHONGCO: [cdSon[0]] } }); ok(!r.ok, 'bước xuất: xưởng lạ bị chặn', r);
+r = c.__goi('luuQuyTrinh', Town, { cd: r2.quyTrinh, xuong: r2.xuongLuong, caiDat: r2.caiDat, xuat: { SON: [cdSon[0], cdSon[0], cdSon[1]] } }); ok(r.ok, 'lưu bước xuất Sơn', r);
+r2 = c.__goi('layQuyTrinh', Town, 30);
+ok(r2.xuat && r2.xuat.SON && r2.xuat.SON.join() === [cdSon[0], cdSon[1]].join() && c.doc_('QuyTrinh').some(x => x.Loai === 'XUAT'), 'đọc lại bước xuất (bỏ trùng), lưu dòng XUAT', r2.xuat);
+const t7 = Object.values(r2.thongKe).some(t => t.sl7 > 0 && t.sl7 <= t.sl);
+ok(t7 && r2.soNgaySX7 >= 1 && r2.soNgaySX7 <= 7, 'thống kê có sản lượng 7 ngày gần nhất (≤ cả kỳ) + số ngày sản xuất 7 ngày', r2.soNgaySX7);
+
 console.log((loi ? '\n✗ ' : '\n✓ ') + (dem - loi) + '/' + dem + ' đạt');
 process.exit(loi ? 1 : 0);
