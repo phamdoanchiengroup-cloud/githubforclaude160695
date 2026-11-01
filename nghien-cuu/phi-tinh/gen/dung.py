@@ -26,6 +26,16 @@ for k, v in Q['nguon'].items():
     NG.append({'ten': t, 'url': v.get('url', '')})
 VAN = json.load(open(D + '/van.json')) if os.path.exists(D + '/van.json') else {}
 vo = open(D + '/gen/vo.js').read()
+for f in ['cong-thuc.js', 'bai.js']:
+    if os.path.exists(D + '/gen/' + f): vo += open(D + '/gen/' + f).read()
+# Kho luận giải tổng hợp (catalog.json): khóa -> [[nguồn, ky, de, muc]]; bỏ % / xác suất ở tầng chuyên môn (quy tắc 24/10)
+CAT = json.load(open(D + '/tong-hop/catalog.json'))
+BS = D + '/tong-hop/bo-sung.json'   # văn viết bổ sung cho khóa kho chưa có (content-creator, 1/11)
+if os.path.exists(BS):
+    for k, v in json.load(open(BS)).items(): CAT['luan'].setdefault(k, []).extend(v)
+PHAN_TRAM = re.compile(r'[,;]?\s*\(?\s*(?:khoảng|trên|chừng|tới)?\s*\d+\s*%(?:\s*(?:là\s*)?(?:hung|cát)(?:\s*tượng)?)?\s*\)?')
+def sach(x): return re.sub(r'\s+([,.;:])', r'\1', re.sub(r'\(\s*\)', '', PHAN_TRAM.sub('', x or ''))).strip()
+KHO = {k: [[y.get('nguon', ''), sach(y.get('ky', '')), y.get('de', ''), y.get('muc', 'trung')] for y in v] for k, v in CAT['luan'].items()}
 j = lambda x: json.dumps(x, ensure_ascii=False, indent=1)
 open(OUT, 'w').write('''/**
  * TuViPhiTinh.gs – Tử Vi theo Tứ Hóa Phi Tinh (Bắc phái / Khâm Thiên môn) – tab riêng "Phi Tinh" (31/10/2026).
@@ -45,4 +55,7 @@ var PT_LUAN = %s;
 var PT_VAN = %s;
 
 var PT_NGUON = %s;
-%s''' % (j(TH), j(LUAN), j(VAN), j(NG), vo))
+
+/** Kho luận giải Bắc phái tổng hợp (nghien-cuu/phi-tinh/tong-hop/catalog.json, viết lại bằng lời mới): khóa -> [[nguồn, chuyên môn, dễ hiểu, cat|hung|trung]] */
+var PT_KHO = %s;
+%s''' % (j(TH), j(LUAN), j(VAN), j(NG), json.dumps(KHO, ensure_ascii=False, separators=(',', ':')).replace('],"', '],\n"'), vo))

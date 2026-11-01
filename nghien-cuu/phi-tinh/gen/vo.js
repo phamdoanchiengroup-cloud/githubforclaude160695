@@ -186,7 +186,8 @@ function ptLap_(tv, vy, soNam) {
     tuHoa: N.tuHoa.map(function (t) { return { cung: ten[t.o], h: PT_H[t.h], sao: t.sao, loai: t.loai }; }),
     mau: mau,
     cung: PT_THU_TU.map(function (c) { return ptCung_(N, N.o[c]); }),
-    daiVan: dv, luuNien: ln, nguon: PT_NGUON
+    daiVan: dv, luuNien: ln, nguon: PT_NGUON,
+    bai: ptBai_(tv, vy)
   };
 }
 

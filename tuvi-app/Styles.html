@@ -1,6 +1,6 @@
 <style>
 /* Mã phiên bản giao diện – phải trùng với Index.html (meta tcc-ban) và Script.html (BAN_GIAO_DIEN) */
-:root { --tcc-ban: "2026.11.1.4"; }
+:root { --tcc-ban: "2026.11.1.5"; }
 /* ================================================================
    THIÊN CƠ CÁC — phong cách tiên hiệp sáng: ngọc bích, kim sa, mây trắng
    ================================================================ */
@@ -792,6 +792,28 @@ details.yr summary em { font-style: normal; font-weight: 700; font-size: 12.5px;
 .pt-lop button { min-height: 36px; }
 .pt-chitiet { margin-top: 12px; display: grid; gap: 10px; }
 .pt-chitiet > div { padding: 12px 14px; border-radius: 12px; background: rgba(255, 255, 255, .04); border: 1px solid var(--line, rgba(110, 220, 255, .2)); }
+
+/* Phi Tinh – bài luận theo mục lục Bắc phái (1/11) */
+.pt-phan > summary { list-style: none; cursor: pointer; } .pt-phan > summary::-webkit-details-marker { display: none; }
+.pt-phan > summary .panel-title { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 10px; margin: 0; }
+.pt-phan > summary .panel-title::after { content: '▾'; margin-left: auto; font-size: 16px; opacity: .7; transition: transform .2s; }
+.pt-phan:not([open]) > summary .panel-title::after { transform: rotate(-90deg); }
+.pt-phan > summary:focus-visible { outline: 2px solid var(--gold); outline-offset: 4px; border-radius: 8px; }
+.pt-phu { font-size: 13px; font-family: var(--font-body); opacity: .8; font-weight: 400; }
+.pt-than { margin-top: 10px; }
+.pt-nhom { margin: 16px 0 8px; font-size: 15px; color: var(--head); font-family: var(--font-serif); }
+.pt-y .pt-chu-de { display: inline-block; font-size: 12px; padding: 1px 8px; border-radius: 999px; background: var(--surface-3, rgba(255,255,255,.06)); color: var(--ink-soft); margin-bottom: 4px; }
+.pt-t { font-weight: 600; margin: 6px 0 2px; }
+.pt-chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.pt-tong { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 8px; }
+.pt-tong-o { padding: 10px 12px; border-radius: 12px; border: 1px solid var(--line); background: var(--surface); }
+.pt-tong-o p { margin: 6px 0 0; line-height: 1.6; font-size: 14px; }
+.pt-tong-dau { display: flex; align-items: center; gap: 8px; } .pt-tong-dau b { font-size: 14px; } .pt-tong-dau .rate { margin-left: auto; font-size: 11.5px; padding: 2px 9px; border-radius: 999px; }
+.pt-chitiet-vb { margin-top: 12px; } .pt-chitiet-vb > summary { cursor: pointer; font-weight: 600; color: var(--gold); }
+.pt-ds { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 8px; }
+@media (max-width: 640px) { .pt-ds { grid-template-columns: 1fr; } }
+.pt-namxem { white-space: nowrap; display: inline-flex; gap: 8px; align-items: center; margin-bottom: 8px; } .pt-namxem select { min-height: 36px; }
+@media (max-width: 640px) { .pt-tong { grid-template-columns: 1fr; } }
 @media (max-width: 640px) {
   .pt-khung { padding: 5px; border-width: 2px; }
   .pt-luoi { grid-template-rows: repeat(4, minmax(128px, auto)); gap: 2px; }

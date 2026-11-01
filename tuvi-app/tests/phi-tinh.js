@@ -14,7 +14,8 @@ const LAI = [10, 9, 8, 7, 6, 5, 4, 3, 2, 11];   // Giáp→Tuất … Nhâm→D�
 const SAO = new Set(); T.forEach(r => r.forEach(s => SAO.add(s)));
 ['Thiên Phủ', 'Thiên Tướng', 'Thất Sát', 'Thiên Khôi', 'Thiên Việt', 'Lộc Tồn', 'Kình Dương', 'Đà La', 'Hỏa Tinh', 'Linh Tinh', 'Địa Không', 'Địa Kiếp'].forEach(s => SAO.add(s));
 const TU_CAM = ['Hóa ', 'Kỵ', 'Lai Nhân', 'tự hóa', 'Tứ Hóa', ' phi ', 'Tuyệt mệnh', '{', 'undefined', 'null'];
-let soMau = 0;
+let soMau = 0, soMuc = 0;
+const PT12 = ['Mệnh', 'Huynh Đệ', 'Phu Thê', 'Tử Tức', 'Tài Bạch', 'Tật Ách', 'Thiên Di', 'Nô Bộc', 'Quan Lộc', 'Điền Trạch', 'Phúc Đức', 'Phụ Mẫu'];
 // Năm chưa vào đại vận đầu tiên: lưu niên không được có Phản cung (lỗi chuyên gia rà mã tìm ra 31/10)
 { const tv = ctx.tuviLapLaSo({ name: 'Nho', gender: 'nam', calendar: 'duong', day: 27, month: 3, year: 2024, hour: 10, minute: 0, viewYear: 2026 }), R = ctx.ptLap_(tv, 2026, 3);
   kt(R.luuNien.every(l => !l.mau.some(m => m.k === 'phanCung')), 'trẻ chưa vào đại vận: không Phản cung ở lưu niên'); }
@@ -41,7 +42,28 @@ for (let i = 0; i < 250; i++) {
   [].concat(...R.cung.map(c => c.ky), ...R.mau.map(m => m.ky), ...R.daiVan.map(d => d.ky), ...R.luuNien.map(d => d.ky)).forEach(x => kt(!/\{|undefined/.test(x), id + 'căn cứ còn chỗ trống: ' + x.slice(0, 60)));
   kt(R.luuNien.every(l => !l.mau.some(m => m.k === 'phanCung')), id + 'phản cung chỉ ở đại vận');
   kt(R.luuNien.every(l => l.ky.every(x => x.indexOf('của vận') < 0)), id + 'lưu niên ghi "của năm"');
+  // Bài luận theo mục lục Bắc phái (1/11)
+  const BA = R.bai, TT = ['tq', 'c-Mệnh', 'c-Thân', 'c-Phu Thê', 'c-Tử Tức', 'c-Tài Bạch', 'c-Phúc Đức', 'c-Điền Trạch', 'c-Tật Ách', 'c-Thiên Di', 'c-Quan Lộc', 'c-Phụ Mẫu', 'c-Huynh Đệ', 'c-Nô Bộc'];
+  kt(BA && BA.phan.map(p => p.id).join() === TT.join(), id + 'thứ tự mục lục: ' + (BA && BA.phan.map(p => p.id).join()));
+  kt(BA.daiVan.length === 12 && BA.daiVan.filter(d => d.nay).length <= 1, id + 'bài: 12 đại vận');
+  kt(BA.nam && BA.nam.nam === 2026, id + 'bài: vận năm 2026');
+  const mucs = [];
+  BA.phan.forEach(p => p.phan.forEach(g => mucs.push(...g.muc)));
+  BA.daiVan.forEach(d => { d.phan.forEach(g => mucs.push(...g.muc)); mucs.push(...d.tong); });
+  BA.nam.phan.forEach(g => mucs.push(...g.muc)); mucs.push(...BA.nam.tong);
+  (BA.thang || []).forEach(t => { t.phan.forEach(g => mucs.push(...g.muc)); mucs.push(...t.tong); });
+  mucs.push(...BA.phuLuc);
+  soMuc += mucs.length;
+  mucs.forEach(m => {
+    kt(m && typeof m.t === 'string' && m.t && Array.isArray(m.de) && Array.isArray(m.cc), id + 'mục luận đủ trường');
+    kt(['cat', 'hung', 'trung', 'binh'].indexOf(m.muc) >= 0, id + 'mức ' + m.muc);
+    m.de.forEach(x => { SAO.forEach(s => kt(x.indexOf(s) < 0, id + 'bài: câu dễ hiểu nêu tên sao ' + s + ': ' + x.slice(0, 60))); TU_CAM.forEach(w => kt(x.indexOf(w) < 0, id + 'bài: câu dễ hiểu có "' + w + '": ' + x.slice(0, 70))); kt(!/%|\d+ ?phần trăm/.test(x), id + 'bài: % trong dễ hiểu'); });
+    m.cc.forEach(x => kt(!/%|undefined|\{/.test(x), id + 'bài: căn cứ còn %/chỗ trống: ' + x.slice(0, 70)));
+    kt(!/undefined|\{/.test(m.t), id + 'bài: dòng căn cứ còn chỗ trống: ' + m.t.slice(0, 70));
+  });
+  BA.daiVan.concat([BA.nam], BA.thang || []).forEach(d => d.tong.forEach(t => kt(['cat', 'binh', 'hung'].indexOf(t.muc) >= 0 && PT12.indexOf(t.cung) >= 0, id + 'tổng luận chủ đề hợp lệ')));
 }
+kt(soMuc > 250 * 100, 'bài luận đủ dày (' + soMuc + ' mục)');
 kt(soMau > 250, 'các mẫu Kỵ có tên xuất hiện (' + soMau + ')');
 // Chỉ chủ sở hữu
 let bi = false; try { ctx.phiTinhLuan({ day: 1, month: 1, year: 1990, hour: 1, calendar: 'duong', gender: 'nam' }, 'khong-co'); } catch (e) { bi = true; }
