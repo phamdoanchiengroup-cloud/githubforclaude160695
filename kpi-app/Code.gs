@@ -7535,7 +7535,7 @@ function danhSachVanPhong(token) {
   ds.sort(function(a, b) { return (thuTu[a.vaiTro] - thuTu[b.vaiTro]) || (a.HoTen < b.HoTen ? -1 : 1); });
   return sach_({ ok: true, ds: ds, muc: HS_MUC });
 }
-var KPI_BAN_MAY = '01/11/2026 16:36';   // giờ dựng Code.gs (22/10)
+var KPI_BAN_MAY = '01/11/2026 20:43';   // giờ dựng Code.gs (22/10)
 /* =====================================================================
    KỸ NĂNG (22/10, chủ dự án nhờ thiết kế + tham khảo chuyên gia nhân sự / đào tạo)
    - Danh mục: trưởng / phó phòng đề xuất kỹ năng của xưởng (tên, mô tả, tiêu chí đạt, công đoạn liên quan)
@@ -8397,6 +8397,10 @@ function plKieu_(o) {
   var c = o.chuoi || '', n = o.ngon || '';
   o.kieu = (c === 'PHANHAY') ? 'PHANHAY' : (/PHA$/.test(n) || c === 'GF736DP' || c === 'MIXCBPHA') ? 'PHA' : (/NHAY/.test(n) || /^NHAY/.test(c)) ? 'NHAY' : 'DANH';
   o.vl = (o.loai === 'CHUOI' ? PL_VL_CHUOI[c] : (PL_VL_NGON[n] || PL_VL_CHUOI[c])) || 'KHAC';
+  /* 02/11 (chủ dự án): 2 nhãn chất liệu – chuôi và ngọn có thể khác nhau. '' = SKU không có khúc đó */
+  var coC = o.loai === 'GAY' || o.loai === 'CHUOI', coN = o.loai === 'GAY' || o.loai === 'NGON';
+  o.vlC = coC ? (PL_VL_CHUOI[c] || 'KHAC') : '';
+  o.vlN = coN ? (PL_VL_NGON[n] || 'KHAC') : '';
   return o;
 }
 function plPhanLoai_(ten, ghiChu, sua) { return plKieu_(plPhanLoai0_(ten, ghiChu, sua)); }
@@ -8662,5 +8666,29 @@ function layThayDoiDon(token) {
   var lichSu = Object.keys(ch).sort().map(function(x) { var t = 0, tre = 0; ch[x].forEach(function(r) { t += Number(r[2]) || 0; if (r[5] === 'treHan') tre++; }); return [x, t, tre]; });
   var daChup = false;
   if (!ch[hom]) { try { daChup = dhChup_(false); } catch (e3) {} }
-  return sach_({ ok: true, luc: d.luc, truoc: truoc, thay: thay.slice(0, 2000), lichSu: lichSu, daChup: daChup });
+  return sach_({ ok: true, luc: d.luc, truoc: truoc, thay: thay.slice(0, 2000), lichSu: lichSu, daChup: daChup, chay: dhDongChay_(ch) });
+}
+/* 02/11 (Lean – quan-ly-van-hanh): Vào – Ra – Tồn và giao đúng hạn suy ra từ 2 bản chụp liền nhau (sai số ±1 ngày).
+   vao = SL đặt của dòng mới xuất hiện; ra = phần còn thiếu giảm đi (dòng còn trong Sheet); ton = tổng còn thiếu;
+   xong = dòng hôm trước còn thiếu, hôm nay hết thiếu (còn trong Sheet); dung = xong mà ngày chụp ≤ deadline (không có deadline: không tính);
+   dòng biến mất khi còn thiếu: "không rõ" (có thể hủy) – không tính vào ra / xong. -> { ngay: [[d, vao, ra, ton, xong, dung, mat]], kenh: {tên: [xong, dung]} (28 ngày gần nhất) } */
+function dhDongChay_(ch) {
+  var ds = Object.keys(ch).sort(), ngay = [], kenh = {}, moc = '';
+  if (ds.length) { var m = new Date(ds[ds.length - 1] + 'T00:00:00'); m.setDate(m.getDate() - 28); moc = Utilities.formatDate(m, TZ_VN, 'yyyy-MM-dd'); }
+  for (var i = 1; i < ds.length; i++) {
+    var cu = {}, nay = {}, vao = 0, ra = 0, ton = 0, xong = 0, dung = 0, mat = 0, d = ds[i];
+    ch[ds[i - 1]].forEach(function(r) { cu[r[0]] = r; });
+    ch[d].forEach(function(r) {
+      nay[r[0]] = 1; var t = Number(r[2]) || 0, c = cu[r[0]]; ton += t;
+      if (!c) { vao += Number(r[1]) || 0; return; }
+      var t0 = Number(c[2]) || 0; if (t0 > t) ra += t0 - t;
+      if (t0 > 0 && t <= 0 && r[4]) {
+        xong++; var ok = d <= String(r[4]); if (ok) dung++;
+        if (d > moc) { var tab = String(r[0]).replace(/#\d+$/, '').split('|')[2] || '', kn = DH_NHAN_TAB[tab] || tab, x = kenh[kn] || (kenh[kn] = [0, 0]); x[0]++; if (ok) x[1]++; }
+      }
+    });
+    ch[ds[i - 1]].forEach(function(r) { if (!nay[r[0]] && (Number(r[2]) || 0) > 0) mat++; });
+    ngay.push([d, vao, ra, ton, xong, dung, mat]);
+  }
+  return { ngay: ngay.slice(-60), kenh: kenh };
 }

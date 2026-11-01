@@ -111,6 +111,17 @@ r = c.__goi('luuPhanLoaiSKU', Town, { ten: 'EVO4/LUN2/COMBOMAX', bo: true });
 ok(r.ok && c.doc_('PhanLoaiSKU').length === 0 && c.__goi('layDonHangXuong', Town, false).don[0].pl.nguon === 'tu-dong', '"Về tự động" xóa bản sửa');
 ok(c.doc_('NhatKyThaoTac').some(x => x.HanhDong === 'Phân loại SKU'), 'ghi nhật ký thao tác');
 
+console.log('\n4b. 2 nhãn chất liệu chuôi / ngọn + Vào–Ra–Tồn (02/11)');
+p = PL('Combo MAXBING Evo Crown - ANCIENT OAK'); ok(p.loai === 'GAY' && p.vlC === 'GF' && p.vlN === 'MIX', 'gậy 2 khúc: chuôi GF 736 → Glassfiber, ngọn Mix → Mix (2 nhãn khác nhau)', p);
+p = PL('RHI2-C30PT21.5/11.8/18'); ok(p.vlC === '' && p.vlN === 'FC', 'ngọn lẻ: chỉ nhãn ngọn', p);
+p = PL('Rhino Retro Pool Cue Butt - Black'); ok(p.loai === 'CHUOI' && p.vlN === '' && !!p.vlC, 'chuôi lẻ: chỉ nhãn chuôi', p);
+p = PL('Rhino Soft Cue Case 1X2 - Black'); ok(p.vlC === '' && p.vlN === '', 'phụ kiện: không nhãn chất liệu', p);
+{ const ch = { '2026-10-30': [['A|x|KHO', 10, 10, 0, '2026-11-05', 'dangSX'], ['B|y|DEALER', 5, 5, 0, '2026-10-29', 'treHan'], ['C|z|KHO', 4, 4, 0, '', 'dangSX']],
+    '2026-10-31': [['A|x|KHO', 10, 0, 10, '2026-11-05', 'sanSang'], ['B|y|DEALER', 5, 0, 5, '2026-10-29', 'sanSang'], ['D|w|OEM', 7, 7, 0, '', 'dangSX']] };
+  const r2 = c.dhDongChay_(ch), d = r2.ngay[0];
+  ok(r2.ngay.length === 1 && d.join() === '2026-10-31,7,15,7,2,1,1', 'vào 7 (dòng mới) · ra 15 · tồn 7 · xong 2, đúng hạn 1 · 1 dòng mất khi còn thiếu (không tính ra)', d);
+  ok(r2.kenh.Kho.join() === '1,1' && r2.kenh.Dealer.join() === '1,0', 'đúng hạn theo kênh', r2.kenh); }
+
 if (process.env.DH) {
   console.log('\n5. Toàn bộ đơn thật (DH=)');
   const dh = JSON.parse(fs.readFileSync(process.env.DH, 'utf8')), sh = {};
