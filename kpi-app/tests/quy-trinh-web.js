@@ -30,9 +30,9 @@ const vao = async (p, tk) => { await p.goto(F); await p.waitForSelector('#xtGoiY
     s = await p.evaluate(() => { const T = qtTinh(), ra = {}, khac = [];
       Object.keys(T.x).forEach(x => { const G = qtGomNhom(x, T); if (!G) return; const n = Object.values(G.o).reduce((a, g) => a + g.cd.length, 0);
         ra[x] = [n === T.x[x].cd.length, G.cot.length]; Object.values(G.o).forEach(g => { if (g.ten === 'Khác') g.cd.forEach(c => khac.push(x + ':' + c.ten)); }); });
-      return { ra, khac, vsm: document.querySelectorAll('.qt-vsm .qt-vx').length, nut: document.querySelectorAll('.qt-vsm .qt-vx.nut').length }; });
+      return { ra, khac, vsm: document.querySelectorAll('.qt-nm .qt-o').length, cap: document.querySelectorAll('.qt-nm .qt-cap').length, nut: document.querySelectorAll('.qt-nm .qt-o.nut').length }; });
     ok(Object.values(s.ra).every(v => v[0] && v[1] <= 11) && !s.khac.length, 'nhóm công đoạn: mọi công đoạn vào đúng 1 nhóm, mỗi xưởng ≤ 11 cột, không công đoạn nào rơi vào "Khác"', s);
-    ok(s.vsm === 9 && s.nut === 1, 'lưu đồ toàn nhà máy: 9 ô xưởng, 1 nút thắt nhà máy', s);
+    ok(s.vsm === 8 && s.cap === 2 && s.nut <= 1, 'lưu đồ toàn nhà máy: 8 xưởng trên tuyến + 2 đường cấp (CNC, POM), tối đa 1 nút thắt', s);
     // mỗi người: tổng phần thời gian chia cho các công đoạn = tỷ lệ ngày có mặt (không đếm trùng); xưởng: có mặt ≤ danh sách
     s = await p.evaluate(() => { const t = qtTinh(), N = QT.soNgaySX, fte = Object.values(t.cd).reduce((a, c) => a + c.fte, 0);
       const coMat = Object.values(QT.ngayCong).reduce((a, d) => a + Math.min(1, d / N), 0);
@@ -56,8 +56,8 @@ const vao = async (p, tk) => { await p.goto(F); await p.waitForSelector('#xtGoiY
     await p.click('.qt-tabs button:has-text("Từng xưởng")'); await p.waitForTimeout(300);
     s = await p.evaluate(() => [document.querySelectorAll('.qt-sodo svg g.nut').length, document.querySelectorAll('.qt-sodo path.canh').length, document.querySelector('#qtChonX').value, !!document.querySelector('.qt-sodo svg g.nut.bd')]);
     ok(s[0] > 3 && s[1] > 3 && s[2], 'Từng xưởng: sơ đồ có nút + mũi tên', s);
-    s = await p.evaluate(() => { const b = document.querySelector('.qt-lb .qt-nh'); b.click(); return [document.querySelectorAll('.qt-lb .qt-nh').length, !!document.querySelector('.qt-not'), !!document.querySelector('.qt-con table'), document.querySelectorAll('.qt-lb .ld').length]; });
-    ok(s[0] >= 4 && s[1] && s[2] && s[3] >= 1, 'Từng xưởng: lưu đồ làn bơi (nhóm theo nhánh), dải nút thắt trên cùng, bấm nhóm mở công đoạn con', s);
+    s = await p.evaluate(() => { const b = document.querySelector('.qt-bc .qt-bh:not(.dau)'); b.click(); return [document.querySelectorAll('.qt-bc .qt-bh:not(.dau)').length, !!document.querySelector('.qt-not'), !!document.querySelector('.qt-con table'), document.querySelectorAll('.qt-bc .qt-bh.nut').length]; });
+    ok(s[0] >= 4 && s[1] && s[2] && s[3] <= 1, 'Từng xưởng: các bước đánh số (nhóm công đoạn), dòng nút thắt trên cùng, bấm dòng mở công đoạn con, tối đa 1 nút thắt', s);
     await p.evaluate(() => { QTMoNhom = ''; qtVe(); });
     if (CHUP) await p.screenshot({ path: CHUP + '/qt-x-' + w + '.png', fullPage: true });
     await p.selectOption('#qtChonX', 'HT'); await p.waitForTimeout(300);
