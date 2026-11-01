@@ -62,6 +62,45 @@
   .qt-xl .dong input{grid-column:1/-1;order:5}
   .qt-bar input,.qt-bar select{width:84px}
 }
+
+/* Lưu đồ làn bơi 1 xưởng + lưu đồ toàn nhà máy (01/11) */
+.qt-not{display:flex;flex-wrap:wrap;gap:6px;align-items:center;font-size:13px;margin-bottom:10px}
+.qt-not b{font-weight:700}
+.qt-lb{display:grid;gap:8px 10px;overflow-x:auto;-webkit-overflow-scrolling:touch;padding:2px 2px 8px}
+.qt-lb .ld{font-size:11.5px;font-weight:700;color:var(--ink3);text-transform:uppercase;letter-spacing:.4px;align-self:center}
+.qt-lb .cot{font-size:11.5px;color:var(--ink3);font-weight:600;align-self:end}
+.qt-nh{position:relative;border:1px solid var(--line);background:var(--panel2);border-radius:10px;padding:8px 10px;cursor:pointer;text-align:left;color:var(--ink);font:inherit;min-width:0}
+.qt-nh.wn{border-color:var(--amber)} .qt-nh.bd{border-color:var(--red);border-width:2px}
+.qt-nh.mot{outline:1.5px dashed var(--red);outline-offset:2px}
+.qt-nh .tn{font-weight:600;font-size:13px;line-height:1.3}
+.qt-nh .ph{font-size:11.5px;color:var(--ink3);margin-top:2px}
+.qt-nh .qt-thanh{margin-top:6px}
+.qt-nh .chip{display:none;font-size:10.5px;color:var(--ink3);border:1px solid var(--line);border-radius:8px;padding:0 6px;margin-right:4px}
+.qt-nh.tiep::after{content:'→';position:absolute;right:-12px;top:50%;transform:translateY(-50%);color:var(--ink3);font-size:12px}
+.qt-nh.mo{box-shadow:0 0 0 2px var(--cyan,#2fd3c6) inset}
+.qt-con{grid-column:1/-1;background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:8px 10px;font-size:13px}
+.qt-con table{width:100%}
+.qt-ngoai{margin-top:10px;font-size:12.5px;color:var(--ink2)}
+.qt-vsm{display:grid;grid-template-columns:repeat(6,minmax(118px,1fr));grid-template-rows:auto auto auto;gap:10px 18px;overflow-x:auto;padding:4px 2px 6px}
+.qt-vx{position:relative;border:1px solid var(--line);background:var(--panel2);border-radius:12px;padding:10px;cursor:pointer;text-align:left;color:var(--ink);font:inherit;display:flex;flex-direction:column;gap:4px;justify-content:center}
+.qt-vx .tn{font-weight:700;font-size:14px}
+.qt-vx .so{font-size:12.5px;color:var(--ink2)}
+.qt-vx .nt{font-size:11.5px;color:var(--ink3)}
+.qt-vx.wn{border-color:var(--amber)} .qt-vx.bd{border-color:var(--red);border-width:2px}
+.qt-vx.nut{border-color:var(--red);border-width:3px}
+.qt-vx .nhan-nut{font-size:10.5px;font-weight:800;color:var(--red);letter-spacing:.4px}
+.qt-vx.di::after{content:'→';position:absolute;right:-15px;top:50%;transform:translateY(-50%);color:var(--ink3)}
+.qt-vx.cap{border-style:dashed}
+.qt-vlan{font-size:11.5px;font-weight:700;color:var(--ink3);text-transform:uppercase;letter-spacing:.4px}
+.qt-vsm-dt{display:none}
+@media (max-width:640px){
+  .qt-lb{display:flex;flex-direction:column;overflow:visible}
+  .qt-lb .ld,.qt-lb .cot,.qt-lb .trong{display:none}
+  .qt-nh .chip{display:inline-block}
+  .qt-nh.tiep::after{display:none}
+  .qt-vsm{display:none} .qt-vsm-dt{display:flex;flex-direction:column;gap:8px}
+  .qt-vx.di::after{content:'↓';right:auto;left:50%;top:auto;bottom:-15px;transform:none}
+}
 </style>
 <script>
 /* ===== Quy trình sản xuất (31/10) ===== */
@@ -197,14 +236,15 @@ function qtVeNM(T){
       (ns.length?' Năng suất thực các xưởng chỉ khoảng '+qtPt(Math.min.apply(null,ns))+'–'+qtPt(Math.max.apply(null,ns))+' định mức: thời gian đang mất ở đâu đó (chờ hàng, hỗ trợ, làm lại, việc chưa có định mức) hoặc định mức chưa sát.':'')+'</div>';
   }
   h+='</div><div style="font-size:12.5px;color:var(--ink3)">Mục tiêu mặc định 137% = nhu cầu theo đơn tháng 10 (đóng gói nhận ~250/ngày, hàng còn thiếu tăng thêm ~92/ngày). Đổi ô "Sản lượng mục tiêu" để thử mức khác; 100% = giữ nhịp hiện nay. Độ cân bằng giữa các xưởng: <b>'+qtPt(T.lbr)+'</b> (dưới 85% là lệch nhiều).</div></div>';
+  h+='<div class="card"><div style="font-weight:600;margin-bottom:6px">Lưu đồ toàn nhà máy</div><div style="font-size:12px;color:var(--ink3);margin-bottom:8px">Chuôi: Phôi Carbon → Phôi Thô → Sơn → In UV → Hoàn thiện → Đóng gói. Ngọn: Phôi Carbon → Phôi Thô → Ngọn Taro → Ngọn Tip → Hoàn thiện → Đóng gói. Hàng trên là làn chuôi, hàng dưới là làn ngọn; Phôi Carbon, Phôi Thô, Hoàn thiện, Đóng gói làm cả hai. CNC (viền đứt) cấp tip, phíp; Ngọn Taro cấp POM cho Phôi Thô. Bấm ô xưởng để xem lưu đồ của xưởng.</div>'+qtVsm(T)+'</div>';
   // luồng bán thành phẩm
-  h+='<div class="card"><div style="font-weight:600;margin-bottom:8px">Luồng bán thành phẩm giữa các xưởng</div><div class="qt-luong">';
+  h+='<details class="card"><summary style="cursor:pointer;font-weight:600">Luồng bán thành phẩm giữa các xưởng ('+QT.luong.length+' luồng)</summary><div class="qt-luong" style="margin-top:8px">';
   var thu=qtThuTuX(), vt={}; thu.forEach(function(x,i){vt[x]=i});
   QT.luong.slice().sort(function(a,b){return (vt[a.Tu]-vt[b.Tu])||(vt[a.Den]-vt[b.Den])}).forEach(function(a){
     var t1=T.x[a.Tu]||{tai:0}, t2=T.x[a.Den]||{tai:0};
     h+='<div class="ln"><span class="qt-x '+qtMuc(t1.tai)+'">'+esc(qtTenX(a.Tu))+' · '+qtPt(t1.tai)+'</span> → <span class="qt-x '+qtMuc(t2.tai)+'">'+esc(qtTenX(a.Den))+' · '+qtPt(t2.tai)+'</span><span class="qt-btp">'+esc(a.BTP)+'</span></div>';
   });
-  h+='</div><div style="font-size:12px;color:var(--ink3);margin-top:8px">Số % là tải của xưởng (người cần ÷ người có). Đỏ: quá 100%, vàng: trên 85%.</div></div>';
+  h+='</div><div style="font-size:12px;color:var(--ink3);margin-top:8px">Số % là tải của xưởng (người cần ÷ người có). Đỏ: quá 100%, vàng: trên 85%.</div></details>';
   // bảng xưởng
   h+='<div class="card"><div style="font-weight:600;margin-bottom:8px">Cân bằng các xưởng</div><div class="tw"><table><thead><tr><th>Xưởng</th><th class="qt-so">Giờ chuẩn/ngày</th><th class="qt-so">CN cần</th><th class="qt-so">Có mặt / ngày</th><th class="qt-so">Năng suất</th><th>Tải</th><th class="qt-so">Làm tối đa</th><th>Máy</th></tr></thead><tbody>';
   thu.forEach(function(k){ var o=T.x[k]; if(!o)return;
@@ -225,7 +265,113 @@ function qtVeNM(T){
   return h;
 }
 
-/* --- Sơ đồ công đoạn của 1 xưởng (dọc, tự xếp tầng) --- */
+
+/* ===== Nhóm công đoạn (01/11): gộp để vẽ lưu đồ, KHÔNG đổi danh mục công đoạn tính KPI =====
+   Mỗi xưởng: [tên nhóm, mẫu tên (không dấu)] theo thứ tự dòng chảy; nhánh đặc biệt (POM, nối, làm lại…) có nhóm riêng. */
+var QT_NHOM={
+  PHOICB:[['Nhập & xả vải',/nhap nguyen vat lieu|xa kho/],['Cắt tấm, chọn vải',/cat tam|do tam|chon vai/],['Tỉa vải',/tia vai|danh dau diem cat|xep bo vai/],['Cuốn phôi + màng',/cuon phoi|cuon mang/],['Rút khuôn',/rut khuon/],['Cắt, tiện, chuốt, bóng',/cat phoi|quan bang dinh|tien ra tron|danh nham|danh bong|mai dau phoi/],['Kiểm, xuất',/lau dau|check|danh dau kich thuoc|kiem dem|dong goi ngon/]],
+  PHOITHO:[['Nhận, kiểm, cân, cắt',/check phoi|can phoi|^cat phoi/],['Khoan, epoxy, foam, đạn',/khoan cat|epoxy chuoi|dan go|foam chuoi|dong dan/],['CNC, ren',/chay may cnc|taro chuoi|chon ren|nan ren|quan cao/],['Đúc keo',/duc keo|mang co|cat mat keo|cat 2ly/],['Hoàn tất chuôi',/check lai ren|mai nham ren|cat pom|ve sinh ren/],['Ngọn',/epoxy ngon|foam ngon|can ngon|taro ngon|mai phip/]],
+  NGONTARO:[['Kiểm ngọn',/check ngon/],['Taro ren',/taro ren/],['Epoxy ren',/epoxy ren/],['Cắt mặt',/cat mat/],['Đánh giáp, test',/danh giap|tester/]],
+  NGONTIP:[['Làm bằng',/lam bang/],['Dán tip',/dan tip/],['Làm đầu',/lam dau/],['CNC bo đầu',/bo dau/]],
+  CNC:[['Tấm da',/tam da/],['Dập logo',/dap/],['Tip',/tip|cnc da/]],
+  SON:[['Tuốt lót',/tuot lot/],['Ráp',/rap/],['Cuốn wrap',/wrap/],['Sơn, phủ bóng',/son/],['Cắt mặt nhảy',/cat mat/],['Vệ sinh, lắp POM',/ve sinh|pom/]],
+  INUV:[['In họa tiết',/in hoa tiet/],['(In +) phủ bóng',/phu bong/]],
+  HT:[['Cắt',/^cat phoi|cat mat co/],['Hạ khấc',/ha khac|cat lai mep/],['Bọc da',/keo|da vao|boc da|cat da|di mep|sua gay/],['Ráp, đánh bóng',/bang dinh|rap nuoc|rap nhan|danh bong|mai bong/],['Ráp ngọn',/rap ngon/],['Kiểm',/van ngon|check|iso/]],
+  DG:[['Kiểm trước laser',/truoc khi laser/],['Laser',/laser san pham/],['Vệ sinh',/ve sinh/],['Kiểm bàn giao',/ban giao/],['Seal, đóng gói, đai',/seal|dong goi|dai thung/]]
+};
+var QT_NHOM_NHANH={POM:'SX POM (cấp Phôi Thô)',NOI:'Tay nối',GAY1K:'Gậy 1 khúc',PHIP:'Phíp',PK:'Phụ kiện',DONLE:'Đơn lẻ',LAMLAI:'Làm lại / sửa',HOTRO:'Hỗ trợ',CHUAXEP:'Chưa xếp'};
+function qtKhongDau(t){ return String(t||'').normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/đ/g,'d').replace(/Đ/g,'D').toLowerCase().replace(/[-_]+/g,' ').replace(/\s+/g,' ').trim(); }
+/* -> {ten, thu}: nhóm của 1 công đoạn (thứ tự = cột trên lưu đồ) */
+function qtNhomCD(x,nhanh,ten){
+  var ds=QT_NHOM[x]||[], t=qtKhongDau(ten), i;
+  if(QT_NHOM_NHANH[nhanh]) return {ten:QT_NHOM_NHANH[nhanh],thu:100+QT_THU_NHANH.indexOf(nhanh),rieng:1};
+  for(i=0;i<ds.length;i++) if(ds[i][1].test(t)) return {ten:ds[i][0],thu:i};
+  return {ten:'Khác',thu:90};
+}
+/* Gom công đoạn của 1 xưởng thành nhóm theo làn (nhánh) -> {lan:[nhánh], cot:[{ten,thu}], o:{nhánh|cột: nhóm}} */
+function qtGomNhom(x,T){
+  var xo=T.x[x]; if(!xo) return null;
+  var o={}, cot={}, lan={};
+  xo.cd.forEach(function(c){
+    var g=qtNhomCD(x,c.nhanh,c.ten), ln=g.rieng?(QT_NHANH_NGOAI[c.nhanh]?'NGOAI':c.nhanh):(c.nhanh==='CHUAXEP'?'NGOAI':c.nhanh);
+    var k=ln+'|'+g.ten, n=o[k]||(o[k]={lan:ln,ten:g.ten,thu:g.thu,cd:[],can:0,fte:0,gio:0,biet:{},mot:0,buoc:99});
+    n.cd.push(c); n.can+=c.can; n.fte+=c.fte; n.gio+=c.gio; n.buoc=Math.min(n.buoc,c.buoc||99); if(c.mot)n.mot++;
+    Object.keys(c.biet||{}).forEach(function(m){n.biet[m]=1});
+    if(ln!=='NGOAI'){ cot[g.ten]=cot[g.ten]||{ten:g.ten,thu:g.thu,buoc:99}; cot[g.ten].buoc=Math.min(cot[g.ten].buoc,c.buoc||99); lan[ln]=1; }
+  });
+  Object.keys(o).forEach(function(k){ var n=o[k]; n.nb=Object.keys(n.biet).length; n.tai=n.fte>0.01?n.can/n.fte:(n.can>0.05?9:0); n.cd.sort(function(a,b){return (a.buoc-b.buoc)||(b.tai-a.tai)}); });
+  var cs=Object.keys(cot).map(function(k){return cot[k]}).sort(function(a,b){return (a.thu-b.thu)||(a.buoc-b.buoc)});
+  var ls=Object.keys(lan).sort(function(a,b){ var L=['CHUOI','NGON','GAY1K','NOI','TIP','PHIP','POM','PK','DONLE','CHUNG']; var ia=L.indexOf(a), ib=L.indexOf(b); return (ia<0?40:ia)-(ib<0?40:ib); });
+  return {lan:ls,cot:cs,o:o,xo:xo};
+}
+var QTMoNhom='';
+function qtTheNhom(n,x,laNut,tiep,style){
+  var m=laNut?'bd':qtMuc(n.tai), k=x+'|'+n.lan+'|'+n.ten;
+  return '<button type="button" class="qt-nh '+m+(n.mot?' mot':'')+(tiep?' tiep':'')+(QTMoNhom===k?' mo':'')+'" style="'+(style||'')+'" data-k="'+esc(k)+'" onclick="QTMoNhom=QTMoNhom===this.dataset.k?\'\':this.dataset.k;qtVe()" aria-expanded="'+(QTMoNhom===k)+'">'+
+    '<div class="tn"><span class="chip">'+esc(n.lan==='NGOAI'?'Ngoài dòng':(QT.nhanh[n.lan]||n.lan))+'</span>'+esc(n.ten)+'</div>'+
+    '<div class="ph">'+n.cd.length+' CĐ · cần '+qtSo(n.can,n.can<1?2:1)+' · có '+qtSo(n.fte,n.fte<1?2:1)+' · biết '+n.nb+'</div>'+
+    '<div style="display:flex;gap:6px;align-items:center"><div class="qt-thanh" style="flex:1"><i class="'+m+'" style="width:'+Math.min(100,n.tai*100)+'%"></i></div><span class="qt-tai '+m+'">'+(n.can>0.005?qtPt(n.tai):'–')+'</span></div>'+
+    (laNut?'<div class="ph" style="color:var(--red);font-weight:700">NÚT THẮT XƯỞNG</div>':(n.mot?'<div class="ph" style="color:var(--red)">'+n.mot+' CĐ chỉ 1 người biết</div>':''))+'</button>';
+}
+function qtBangCon(n){
+  return '<div class="qt-con"><b>'+esc(n.ten)+'</b> – '+n.cd.length+' công đoạn<div class="tw"><table><thead><tr><th>Công đoạn</th><th class="qt-so">SL/ngày</th><th class="qt-so">Cần</th><th class="qt-so">Biết</th><th class="qt-so">Tải</th></tr></thead><tbody>'+
+    n.cd.map(function(c){ return '<tr><td>'+esc(c.ten)+(c.mot?'<span class="qt-tag bd">1 người</span>':'')+(c.khongDM?'<span class="qt-tag mo">chưa có ĐM</span>':'')+'</td><td class="qt-so">'+qtSo(c.slN)+'</td><td class="qt-so">'+qtSo(c.can,2)+'</td><td class="qt-so">'+c.nb+'</td><td class="qt-so"><span class="qt-tai '+qtMuc(c.tai)+'">'+(c.can>0.005?qtPt(c.tai):'–')+'</span></td></tr>'; }).join('')+'</tbody></table></div></div>';
+}
+/* Lưu đồ làn bơi 1 xưởng: hàng = nhánh, cột = nhóm theo dòng chảy; điện thoại: danh sách theo thứ tự */
+function qtLanBoi(x,T){
+  var G=qtGomNhom(x,T); if(!G||!G.cot.length) return '<div class="pdesc">Xưởng chưa có công đoạn trên dòng chảy.</div>';
+  var ds=Object.keys(G.o).map(function(k){return G.o[k]}), tren=ds.filter(function(n){return n.lan!=='NGOAI'});
+  var nut=tren.reduce(function(a,n){return n.tai>a.tai?n:a},{tai:0}), mot=ds.filter(function(n){return n.mot});
+  var h='<div class="qt-not">'+(nut.ten&&nut.tai>0?'<span>Nút thắt: <b class="'+(qtMuc(nut.tai)||'ok')+'">'+esc(nut.ten)+'</b> ('+esc(nut.lan==='CHUNG'?'chung':(QT.nhanh[nut.lan]||'').toLowerCase())+') tải <b>'+qtPt(nut.tai)+'</b></span>':'<span>Chưa có sản lượng trong kỳ.</span>')+
+    (mot.length?'<span>· Chỉ 1 người biết ở: '+mot.map(function(n){return '<b class="bd">'+esc(n.ten)+'</b>'}).join(', ')+'</span>':'')+'</div>';
+  var nc=G.cot.length, ci={}; G.cot.forEach(function(c,i){ci[c.ten]=i});
+  h+='<div class="qt-lb" style="grid-template-columns:62px repeat('+nc+',minmax(126px,1fr))">';
+  G.cot.forEach(function(c,i){ h+='<div class="cot" style="grid-row:1;grid-column:'+(i+2)+'">'+(i+1)+'. '+esc(c.ten)+'</div>'; });
+  var moK='';
+  G.lan.forEach(function(l,r){
+    h+='<div class="ld" style="grid-row:'+(r+2)+';grid-column:1">'+esc(QT.nhanh[l]||l)+'</div>';
+    var o=tren.filter(function(n){return n.lan===l}).sort(function(a,b){return ci[a.ten]-ci[b.ten]});
+    o.forEach(function(n,j){ var c=ci[n.ten];
+      h+=qtTheNhom(n,x,n===nut&&n.tai>0,j<o.length-1,'grid-row:'+(r+2)+';grid-column:'+(c+2)+';order:'+(c*20+r));
+      if(QTMoNhom===x+'|'+n.lan+'|'+n.ten) moK=n; });
+  });
+  h+='</div>';
+  if(moK) h+=qtBangCon(moK);
+  var ngoai=ds.filter(function(n){return n.lan==='NGOAI'});
+  if(ngoai.length){ h+='<div class="qt-ngoai">Ngoài dòng chảy (vẫn tính tải):</div><div class="qt-lb" style="grid-template-columns:repeat(auto-fill,minmax(160px,1fr))">'+ngoai.map(function(n){return qtTheNhom(n,x,false,false,'')}).join('')+'</div>';
+    ngoai.forEach(function(n){ if(QTMoNhom===x+'|'+n.lan+'|'+n.ten) h+=qtBangCon(n); }); }
+  return h;
+}
+/* Lưu đồ toàn nhà máy: 2 làn chuôi / ngọn, xưởng chung kéo cao 2 làn; CNC cấp tip/phíp, Ngọn Taro cấp POM (đứt nét) */
+var QT_VSM=[['PHOICB',1,'1/3'],['PHOITHO',2,'1/3'],['SON',3,'1'],['INUV',4,'1'],['NGONTARO',3,'2'],['NGONTIP',4,'2'],['HT',5,'1/3'],['DG',6,'1/3'],['CNC',4,'3']];
+var QTVsmLan='CHUOI';
+function qtNutNhom(x,T){ var G=qtGomNhom(x,T); if(!G)return null; return Object.keys(G.o).map(function(k){return G.o[k]}).filter(function(n){return n.lan!=='NGOAI'}).reduce(function(a,n){return n.tai>a.tai?n:a},{tai:0}); }
+function qtOVsm(x,T,nutNM,di,ghi){
+  var o=T.x[x]; if(!o) return '';
+  var m=qtMuc(o.tai), n=qtNutNhom(x,T), co=o.coMat>0.5?o.coMat:o.co;
+  return '<button type="button" class="qt-vx '+(o===nutNM?'nut':m)+(di?' di':'')+(x==='CNC'?' cap':'')+'" data-x="'+esc(x)+'" onclick="QTX=this.dataset.x;QTV=\'x\';QTMoNhom=\'\';qtVe()">'+
+    (o===nutNM?'<span class="nhan-nut">NÚT THẮT NHÀ MÁY</span>':'')+'<span class="tn">'+esc(qtTenX(x))+'</span>'+
+    '<span class="so">có <b>'+qtSo(co)+'</b> · cần <b>'+qtSo(o.can)+'</b> người</span>'+
+    '<span style="display:flex;gap:6px;align-items:center"><span class="qt-thanh" style="flex:1"><i class="'+m+'" style="width:'+Math.min(100,o.tai*100)+'%"></i></span><span class="qt-tai '+m+'">'+qtPt(o.tai)+'</span></span>'+
+    (n&&n.ten&&n.tai>0?'<span class="nt">căng nhất: '+esc(n.ten)+' '+qtPt(n.tai)+'</span>':'')+(ghi?'<span class="nt">'+ghi+'</span>':'')+'</button>';
+}
+function qtVsm(T){
+  var nutNM=T.nut&&T.nut.tai>0?T.nut:null;
+  var h='<div class="qt-vsm">';
+  var ghi={NGONTIP:'nhận tip/phíp từ CNC · ngọn lẻ → Đóng gói',PHOITHO:'nhận POM từ Ngọn Taro',NGONTARO:'cấp POM → Phôi Thô',CNC:'↑ cấp tip, phíp cho Ngọn Tip'};
+  var hang={'1':'1','2':'2','1/3':'1/3','3':'3'};
+  QT_VSM.forEach(function(v){ h+='<div style="grid-column:'+v[1]+';grid-row:'+hang[v[2]]+';display:flex">'+qtOVsm(v[0],T,nutNM,v[0]!=='DG'&&v[0]!=='CNC',ghi[v[0]]).replace('class="qt-vx','style="flex:1" class="qt-vx')+'</div>'; });
+  h+='</div>';
+  // điện thoại: 2 tab làn
+  var tuyen={CHUOI:['PHOICB','PHOITHO','SON','INUV','HT','DG'],NGON:['PHOICB','PHOITHO','NGONTARO','NGONTIP','HT','DG']};
+  h+='<div class="qt-vsm-dt"><div class="qt-tabs" style="margin:0">'+[['CHUOI','Làn chuôi'],['NGON','Làn ngọn']].map(function(t){return '<button class="btn'+(QTVsmLan===t[0]?' on':'')+'" type="button" onclick="QTVsmLan=\''+t[0]+'\';qtVe()">'+t[1]+'</button>'}).join('')+'</div>';
+  tuyen[QTVsmLan].forEach(function(x,i,a){ h+=qtOVsm(x,T,nutNM,i<a.length-1,ghi[x]); });
+  if(QTVsmLan==='NGON') h+='<div class="qt-ngoai">Cấp phụ:</div>'+qtOVsm('CNC',T,nutNM,false,ghi.CNC);
+  h+='</div>';
+  return h;
+}
+
+/* --- Sơ đồ công đoạn kiểu cũ (giữ cho kiểm thử cạnh nối) --- */
 function qtSoDo(x,T){
   var cs=QTD.filter(function(q){return q.MaXuong===x&&!QT_NHANH_NGOAI[q.Nhanh]});
   if(!cs.length) return '<div class="pdesc">Xưởng chưa có công đoạn trên dòng chảy.</div>';
@@ -260,7 +406,7 @@ function qtVeX(T){
   var yeu=o.cd.filter(function(c){return c.can>0.05&&!QT_NHANH_NGOAI[c.nhanh]}).sort(function(a,b){return b.tai-a.tai}).slice(0,3);
   var h='<div class="card"><div class="qt-ket">'+esc(qtTenX(QTX))+': cần <b>'+qtSo(o.can)+'</b> người, có mặt TB <b>'+qtSo(o.coMat)+'</b>/'+o.co+' → tải <b class="'+(qtMuc(o.tai)||'ok')+'">'+qtPt(o.tai)+'</b>'+(o.thieu?', thiếu khoảng <b class="bd">'+o.thieu+' người</b>':'')+'.</div>';
   if(yeu.length) h+='<div style="font-size:13px">Công đoạn căng nhất (cần ÷ người đang làm quy đổi): '+yeu.map(function(c,i){return (i+1)+'. <b>'+esc(c.ten)+'</b> '+qtPt(c.tai)+(c.mot?' <span class="qt-tag bd">1 người</span>':'')}).join(' · ')+'</div>';
-  h+='</div><div class="card"><div style="font-weight:600;margin-bottom:6px">Sơ đồ công đoạn</div><div style="font-size:12px;color:var(--ink3);margin-bottom:6px">Đi từ trên xuống. Viền đỏ: nút thắt hoặc cần nhiều hơn người đang làm; vàng: trên 85%. "biết" = số người đã làm công đoạn trong kỳ hoặc có kỹ năng cấp 2+.</div>'+qtSoDo(QTX,T)+'</div>';
+  h+='</div><div class="card"><div style="font-weight:600;margin-bottom:6px">Lưu đồ xưởng (nhóm công đoạn)</div><div style="font-size:12px;color:var(--ink3);margin-bottom:8px">Hàng = nhánh, cột = nhóm công đoạn theo thứ tự làm (trái → phải). Bấm một ô để xem các công đoạn trong nhóm. Viền đỏ: tải trên 100% / nút thắt; vàng: trên 85%; viền đứt: có công đoạn chỉ 1 người biết. "có" = người đang làm quy đổi; "biết" = đã làm trong kỳ hoặc kỹ năng cấp 2+. Nhóm chỉ để xem – danh mục công đoạn tính KPI không đổi.</div>'+qtLanBoi(QTX,T)+'<details style="margin-top:10px"><summary style="cursor:pointer;font-size:12.5px;color:var(--ink3)">Sơ đồ từng công đoạn (kiểu cũ)</summary>'+qtSoDo(QTX,T)+'</details></div>';
   h+='<div class="card"><div class="tw"><table><thead><tr><th>Nhánh · bước</th><th>Công đoạn</th><th class="qt-so">SL/ngày</th><th class="qt-so">Định mức</th><th class="qt-so">Giờ chuẩn</th><th class="qt-so">CN cần</th><th class="qt-so">Đang làm (quy đổi)</th><th class="qt-so">Biết làm</th><th class="qt-so">Tải</th></tr></thead><tbody>';
   cds.forEach(function(c){
     h+='<tr><td style="white-space:nowrap">'+esc(QT.nhanh[c.nhanh]||c.nhanh)+' · '+c.buoc+'</td><td>'+esc(c.ten)+(c.mot?'<span class="qt-tag bd">1 người</span>':(c.hai?'<span class="qt-tag wn">2 người</span>':''))+(c.khongDM?'<span class="qt-tag mo">chưa có ĐM</span>':'')+'</td>'+

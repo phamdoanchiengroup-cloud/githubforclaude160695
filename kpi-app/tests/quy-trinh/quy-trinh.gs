@@ -17,7 +17,9 @@ var qtCo_ = function(o, k) { return Object.prototype.hasOwnProperty.call(o, k); 
 var QT_XUONG_NHAP = [
   ['PHOICB', 'PHOITHO', 'Phôi 60 (ngọn + chuôi)'], ['PHOITHO', 'NGONTARO', 'Phôi ngọn'], ['PHOITHO', 'SON', 'Phôi chuôi, nối, gậy 1 khúc (60…)'],
   ['NGONTARO', 'NGONTIP', 'Ngọn đã taro ren (Ngọn…)'], ['CNC', 'NGONTIP', 'Típ, phíp (CNCTip, CNCPhip)'], ['SON', 'INUV', 'Chuôi / nối đã sơn (S…)'],
-  ['INUV', 'HT', 'Chuôi / nối đã in UV (UV…)'], ['NGONTIP', 'HT', 'Ngọn đã làm đầu'], ['HT', 'DG', 'Gậy, ngọn, nối hoàn thiện (HT…)']];
+  ['INUV', 'HT', 'Chuôi / nối đã in UV (UV…)'], ['NGONTIP', 'HT', 'Ngọn đã làm đầu'], ['HT', 'DG', 'Gậy, ngọn, nối hoàn thiện (HT…)'],
+  ['NGONTARO', 'PHOITHO', 'POM các loại (chuôi 87, ngọn 85, 65/75, 30, đáy chuôi)'], ['NGONTIP', 'DG', 'Ngọn bán lẻ (đi thẳng đóng gói)']];   // 01/11: nhánh POM + ngọn lẻ (chủ dự án)
+var QT_XUONG_THEM = QT_XUONG_NHAP.slice(-2);
 /* Nháp: MaCD -> [nhánh, bước]. Công đoạn mới không có ở đây -> "Chưa xếp". */
 var QT_NHAP = {
   // Phôi Carbon: chuẩn bị vải -> tỉa -> cuốn -> màng nilong -> rút khuôn -> kiểm / cắt / tiện / chuốt
@@ -126,6 +128,7 @@ function qtCanh_(ds) {
   });
   return out;
 }
+function qtLuongCap_(x) { return /\bPOM\b|vật liệu|cấp/i.test(String(x.BTP || '')); }
 function qtCoVong_(canh) {
   var mau = {}, vong = '';
   var di = function(m) {
@@ -159,6 +162,9 @@ function qtDocQT_(cds) {
   });
   if (!dong.some(function(r) { return String(r.Loai).trim() === 'XUONG'; }))
     xuong = QT_XUONG_NHAP.map(function(a) { return { Tu: a[0], Den: a[1], BTP: a[2], GhiChu: '' }; });
+  else QT_XUONG_THEM.forEach(function(a) {   // luồng chủ dự án báo thêm sau khi đã lưu (01/11): bổ sung nếu bản đã lưu chưa có
+    if (!xuong.some(function(l) { return l.Tu === a[0] && l.Den === a[1]; })) xuong.push({ Tu: a[0], Den: a[1], BTP: a[2], GhiChu: 'Thêm 01/11' });
+  });
   return { cd: cd, xuong: xuong, caiDat: cai, nhap: nhap };
 }
 
@@ -253,7 +259,8 @@ function luuQuyTrinh(token, o) {
     daX[tu + '>' + den] = 1; xl.push({ Tu: tu, Den: den, BTP: btp, GhiChu: String(x.GhiChu || '').replace(/\s+/g, ' ').trim().slice(0, 200) });
   });
   if (loi) return sach_({ ok: false, msg: loi });
-  var cX = {}; xl.forEach(function(x) { (cX[x.Den] = cX[x.Den] || []).push(x.Tu); });
+  // luồng cấp vật liệu (POM Ngọn Taro → Phôi Thô) chạy ngược chiều sản phẩm: không tính khi dò vòng lặp
+  var cX = {}; xl.forEach(function(x) { if (!qtLuongCap_(x)) (cX[x.Den] = cX[x.Den] || []).push(x.Tu); });
   if (qtCoVong_(cX)) return sach_({ ok: false, msg: 'Luồng giữa các xưởng bị vòng lặp: ' + qtCoVong_(cX) + '.' });
   var cai = {}, gh = { gioCoMat: [1, 24], hieuSuat: [0.3, 1.2], mucTieu: [10, 500], soNgay: [14, 90] };
   for (var k in QT_CAI_DAT) {
