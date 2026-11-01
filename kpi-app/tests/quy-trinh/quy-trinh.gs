@@ -12,7 +12,7 @@ var QT_NHANH = { CHUNG: 'Chung', NGON: 'Ngọn', CHUOI: 'Chuôi', GAY1K: 'Gậy 
   PK: 'Phụ kiện', DONLE: 'Đơn lẻ', LAMLAI: 'Làm lại / sửa', HOTRO: 'Hỗ trợ', CHUAXEP: 'Chưa xếp' };
 var QT_NHANH_DONG = { NGON: 1, CHUOI: 1, GAY1K: 1 };          // nhánh chảy qua / gộp vào "Chung"
 var QT_NHANH_NGOAI = { LAMLAI: 1, HOTRO: 1, CHUAXEP: 1 };      // không nằm trên dòng chảy (vẫn tính tải)
-var QT_CAI_DAT = { gioCoMat: 8, hieuSuat: 0.85, mucTieu: 137, soNgay: 30 };   // mục tiêu 137% = nhu cầu theo đơn tháng 10 (đóng gói ~250/ngày + hàng thiếu tăng ~92/ngày) – chuyên gia vận hành 31/10
+var QT_CAI_DAT = { gioCoMat: 8, hieuSuat: 0.85, mucTieu: 137, soNgay: 30, slThang: 9000, ngayThang: 26, slNay: 0 };   // 01/11: mục tiêu theo sp/tháng (chủ dự án), slNay 0 = tự đo theo đóng gói thành phẩm;   // mục tiêu 137% = nhu cầu theo đơn tháng 10 (đóng gói ~250/ngày + hàng thiếu tăng ~92/ngày) – chuyên gia vận hành 31/10
 var qtCo_ = function(o, k) { return Object.prototype.hasOwnProperty.call(o, k); };   // không nhận tên đặc biệt (__proto__, constructor…)
 var QT_XUONG_NHAP = [
   ['PHOICB', 'PHOITHO', 'Phôi 60 (ngọn + chuôi)'], ['PHOITHO', 'NGONTARO', 'Phôi ngọn'], ['PHOITHO', 'SON', 'Phôi chuôi, nối, gậy 1 khúc (60…)'],
@@ -262,7 +262,7 @@ function luuQuyTrinh(token, o) {
   // luồng cấp vật liệu (POM Ngọn Taro → Phôi Thô) chạy ngược chiều sản phẩm: không tính khi dò vòng lặp
   var cX = {}; xl.forEach(function(x) { if (!qtLuongCap_(x)) (cX[x.Den] = cX[x.Den] || []).push(x.Tu); });
   if (qtCoVong_(cX)) return sach_({ ok: false, msg: 'Luồng giữa các xưởng bị vòng lặp: ' + qtCoVong_(cX) + '.' });
-  var cai = {}, gh = { gioCoMat: [1, 24], hieuSuat: [0.3, 1.2], mucTieu: [10, 500], soNgay: [14, 90] };
+  var cai = {}, gh = { gioCoMat: [1, 24], hieuSuat: [0.3, 1.2], mucTieu: [10, 500], soNgay: [14, 90], slThang: [500, 100000], ngayThang: [20, 31], slNay: [0, 5000] };
   for (var k in QT_CAI_DAT) {
     var v = Number((o.caiDat || {})[k]);
     if ((o.caiDat || {})[k] === undefined) v = QT_CAI_DAT[k];

@@ -17,9 +17,15 @@ const vao = async (p, tk) => { await p.goto(F); await p.waitForSelector('#xtGoiY
     ok(await p.evaluate(() => typeof qtVe === 'undefined' && !window.__qtDaNap), 'chưa mở tab: chưa tải giao diện quy trình (Index nhẹ)');
     await p.evaluate(() => go('qt')); await p.waitForFunction(() => document.querySelector('.qt-ket'), null, { timeout: 30000 });
     let s = await p.evaluate(() => [document.querySelector('.ptitle').textContent, document.querySelector('.qt-ket').textContent, !!document.querySelector('.alert.a-wn'), document.querySelectorAll('.qt-luong .ln').length, document.querySelectorAll('.card table tbody tr').length]);
-    ok(/Quy trình sản xuất/.test(s[0]) && /công nhân trong danh sách/.test(s[1]) && /mục tiêu 137%/.test(s[1]) && s[2] && s[3] === 11 && s[4] === 9, 'Toàn nhà máy: câu kết luận, báo nháp, 11 luồng (có POM, ngọn lẻ), bảng 9 xưởng', s);
+    ok(/Quy trình sản xuất/.test(s[0]) && /công nhân trong danh sách/.test(s[1]) && /Để làm 9\.000 sp\/tháng cần khoảng/.test(s[1]) && s[2] && s[3] === 11 && s[4] === 9, 'Toàn nhà máy: câu kết luận, báo nháp, 11 luồng (có POM, ngọn lẻ), bảng 9 xưởng', s);
     const T = await p.evaluate(() => { const t = qtTinh(); return { nut: t.nut.ma, tai: t.nut.tai, ds: t.ds.map(o => [o.ma, +o.can.toFixed(2), o.co, +o.tai.toFixed(3)]) }; });
     ok(T.nut && T.ds.every(o => o[1] >= 0 && o[2] > 0) && T.ds.every(o => o[3] <= T.tai + 1e-3), 'nút thắt = xưởng tải cao nhất', T);
+    // 01/11: mục tiêu theo sp/tháng -> % so với nhịp đóng gói thành phẩm; bảng thiếu / thừa người
+    s = await p.evaluate(() => { const n = qtSlNayDo(), mt = qtMT(), T = qtTinh(); const th = [...document.querySelectorAll('.card table thead th')].map(x => x.textContent);
+      return [n, mt, Math.round(9000 / 26 / n * 100), th.includes('Thiếu (+) / thừa (−)') && th.includes('Cần trong danh sách'), T.ds.every(o => o.can >= 0)]; });
+    ok(s[0] > 50 && s[1] === s[2] && s[3] && s[4], 'cân bằng tải theo 9.000 sp/tháng: mục tiêu % = (9000 ÷ 26) ÷ nhịp đóng gói; bảng có cột thiếu / thừa + cần trong danh sách', s);
+    s = await p.evaluate(() => { QTS.slNay = 400; const a = qtMT(); QTS.slNay = 0; qtMT(); return a; });
+    ok(s === Math.round(9000 / 26 / 400 * 100), 'tự nhập nhịp hiện nay (400 sp/ngày) → mục tiêu tính lại', s);
     // 01/11: lưu đồ toàn nhà máy + nhóm công đoạn
     s = await p.evaluate(() => { const T = qtTinh(), ra = {}, khac = [];
       Object.keys(T.x).forEach(x => { const G = qtGomNhom(x, T); if (!G) return; const n = Object.values(G.o).reduce((a, g) => a + g.cd.length, 0);
@@ -33,16 +39,18 @@ const vao = async (p, tk) => { await p.goto(F); await p.waitForSelector('#xtGoiY
       return [fte, coMat, t.ds.every(o => o.coMat <= o.co + 1e-9), t.ds.every(o => o.nangSuat >= 0 && o.nangSuat < 2)]; });
     ok(s[0] > 10 && s[0] <= s[1] + 1e-6 && s[2] && s[3], 'chia thời gian người cho công đoạn không vượt ngày có mặt; có mặt ≤ danh sách', s);
     // công thức: thay mục tiêu 100 -> 200 thì CN cần gấp đôi
-    await p.fill('#qtMt', '100'); await p.dispatchEvent('#qtMt', 'change'); await p.waitForTimeout(200);
-    const can1 = await p.evaluate(() => qtTinh().ds.map(o => +o.can.toFixed(2)));
-    await p.fill('#qtMt', '200'); await p.dispatchEvent('#qtMt', 'change'); await p.waitForTimeout(200);
-    const can2 = await p.evaluate(() => qtTinh().ds.map(o => +o.can.toFixed(2)));
-    ok(can2.every((v, i) => Math.abs(v - 2 * can1[i]) < 0.02), 'mục tiêu 200% → CN cần gấp đôi', [can1, can2]);
-    await p.fill('#qtMt', '100'); await p.dispatchEvent('#qtMt', 'change'); await p.waitForTimeout(200);
+    await p.fill('#qtSlT', '6000'); await p.dispatchEvent('#qtSlT', 'change'); await p.waitForTimeout(200);
+    const can1 = await p.evaluate(() => [QTS.mucTieu, qtTinh().ds.map(o => o.can)]);
+    await p.fill('#qtSlT', '12000'); await p.dispatchEvent('#qtSlT', 'change'); await p.waitForTimeout(200);
+    const can2 = await p.evaluate(() => [QTS.mucTieu, qtTinh().ds.map(o => o.can)]);
+    ok(can2[1].every((v, i) => Math.abs(v / can1[1][i] - can2[0] / can1[0]) < 1e-9) && Math.abs(can2[0] / can1[0] - 2) < 0.02, '6.000 → 12.000 sp/tháng → người cần gấp đôi', [can1[0], can2[0]]);
+    await p.fill('#qtSlT', '9000'); await p.dispatchEvent('#qtSlT', 'change'); await p.waitForTimeout(200);
+    await p.evaluate(() => { QTS.slNay = QTS.slThang / QTS.ngayThang; qtVe(); });   // mục tiêu = 100% nhịp hiện nay
     // kiểm tay 1 công đoạn: can = SL/ngày ÷ định mức ÷ (giờ × hiệu suất)
     s = await p.evaluate(() => { const t = qtTinh(), m = Object.keys(QT.thongKe).find(k => (QT.cdMap[k] || {}).DM > 0 && t.cd[k]), c = t.cd[m];
       const tay = QT.thongKe[m].sl / QT.soNgaySX / QT.cdMap[m].DM / (QTS.gioCoMat * QTS.hieuSuat); return [m, c.can, tay]; });
     ok(Math.abs(s[1] - s[2]) < 1e-9, 'CN cần của 1 công đoạn đúng công thức', s);
+    await p.evaluate(() => { QTS.slNay = 0; qtVe(); });
     if (CHUP) await p.screenshot({ path: CHUP + '/qt-nm-' + w + '.png', fullPage: true });
     // Từng xưởng
     await p.click('.qt-tabs button:has-text("Từng xưởng")'); await p.waitForTimeout(300);
@@ -81,7 +89,7 @@ const vao = async (p, tk) => { await p.goto(F); await p.waitForSelector('#xtGoiY
       s = await p.evaluate(() => { const o = { thieu: 10, sl: 30, qua: { UV: 25 }, hong: { SON: 2 } }; return [dhCon(o, 'PHOI', dhChuoi('GAY', 'chuoi')), dhCon(o, 'SON', dhChuoi('GAY', 'chuoi')), dhCon(o, 'TARO', dhChuoi('GAY', 'ngon')), dhCon({ thieu: 4, sl: 4, qua: {} }, 'DG', dhChuoi('NGON', 'ngon'))]; });
       ok(s.join() === '5,7,10,4', 'còn làm: đã qua chặng sau thì chặng trước xong; cộng hỏng làm bù; ngọn không tính theo In UV', s);
       // Thời gian làm hết phần đơn còn lại: tự tính lại từ dhTinh + qtTinh, so với bảng
-      s = await p.evaluate(() => { const K = dhTinh(), T = qtTinh(), G = dhThoiGian(K, T), P = DH_THANG / DH_NGAY, sai = [];
+      s = await p.evaluate(() => { const K = dhTinh(), T = qtTinh(), G = dhThoiGian(K, T), P = QTS.slThang / QTS.ngayThang, sai = [];
         G.ds.forEach(o => { const x = K.X[o.ma], q = T.x[o.ma] || {}, nay = x.goc ? x.tong * K.tongThieu / (P * x.goc) : 0;
           if (Math.abs(nay - o.nay) > 1e-6) sai.push(o.ma + ' nay'); if (q.toiDa > 0 && Math.abs(o.max - nay * 100 / q.toiDa) > 1e-6) sai.push(o.ma + ' max');
           if (Math.abs(o.gio - nay * (q.gio || 0)) > 1e-6) sai.push(o.ma + ' gio'); if (Math.abs(o.cong * QTS.gioCoMat * QTS.hieuSuat - o.gio) > 1e-6) sai.push(o.ma + ' cong'); });
@@ -89,7 +97,7 @@ const vao = async (p, tk) => { await p.goto(F); await p.waitForSelector('#xtGoiY
         const the = [...document.querySelectorAll('.card')].find(c => /Thời gian làm hết/.test(c.textContent));
         return [sai, G.nut && G.nut.max === lon, !!the, the && the.querySelectorAll('tbody tr').length, the && the.querySelectorAll('.qt-tag.bd').length]; });
       ok(!s[0].length && s[1] && s[2] && s[3] === 9 && s[4] === 1, 'thời gian làm hết đơn: ngày nhịp nay / hết sức / giờ chuẩn / công đúng công thức, 1 nút thắt = xưởng lâu nhất', s);
-      s = await p.evaluate(() => { const a = dhThoiGian(dhTinh(), qtTinh()).nut.nay; dhDoiNL('thang', 18000, 1000, 50000); const b = dhThoiGian(dhTinh(), qtTinh()).nut.nay; dhDoiNL('thang', 5, 1000, 50000); const c = DH_THANG; dhDoiNL('thang', 9000, 1000, 50000); return [Math.abs(a / b - 2) < 1e-9, c]; });
+      s = await p.evaluate(() => { const a = dhThoiGian(dhTinh(), qtTinh()).nut.nay; dhDoiNL('thang', 18000, 1000, 50000); const b = dhThoiGian(dhTinh(), qtTinh()).nut.nay; dhDoiNL('thang', 5, 1000, 50000); const c = QTS.slThang; dhDoiNL('thang', 9000, 1000, 50000); return [Math.abs(a / b - 2) < 1e-9, c]; });
       ok(s[0] && s[1] === 18000, 'sửa sản lượng/tháng: gấp đôi sản lượng → số ngày giảm một nửa; số ngoài khoảng bị chặn', s);
       if (CHUP) await p.screenshot({ path: CHUP + '/dh-tg-' + w + '.png', fullPage: true });
       await p.click('.qt-tabs button:has-text("Kiểm phân loại")'); await p.waitForTimeout(300);

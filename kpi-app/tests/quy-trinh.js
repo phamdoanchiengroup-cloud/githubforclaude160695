@@ -76,7 +76,7 @@ r = thu(q => q.Ma === X0.Ma ? { GhiChu: 'x'.repeat(500) } : 0); ok(!r.ok, 'ghi c
 r = thu(q => q.Ma === X0.Ma ? { GhiChu: '=HYPERLINK("x")' } : 0);
 ok(r.ok && r.doi === ds.length, 'lưu lần đầu: mọi công đoạn ghi', r);
 const sh = c.doc_('QuyTrinh');
-ok(sh.filter(x => x.Loai === 'CD').length === ds.length && sh.filter(x => x.Loai === 'XUONG').length === 11 && sh.filter(x => x.Loai === 'CAIDAT').length === 4, 'sheet QuyTrinh: đủ dòng CD / XUONG / CAIDAT');
+ok(sh.filter(x => x.Loai === 'CD').length === ds.length && sh.filter(x => x.Loai === 'XUONG').length === 11 && sh.filter(x => x.Loai === 'CAIDAT').length === 7, 'sheet QuyTrinh: đủ dòng CD / XUONG / CAIDAT');
 ok(String(sh.find(x => x.Ma === X0.Ma).GhiChu).startsWith("'="), 'ghi chú bắt đầu bằng "=" được chặn thành chữ (không thành công thức)');
 let r2 = c.__goi('layQuyTrinh', Town, 30); ok(r2.ok && !r2.nhap, 'đọc lại: không còn là nháp');
 r2 = c.__goi('luuQuyTrinh', Town, { cd: r2.quyTrinh.map(q => q.Ma === X1.Ma ? Object.assign({}, q, { Buoc: 9 }) : q), xuong: r2.xuongLuong, caiDat: Object.assign({}, r2.caiDat, { mucTieu: 130 }) });
