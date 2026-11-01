@@ -358,6 +358,18 @@ File gốc chỉ để ở scratchpad phiên (`scratchpad/qt/`), **không commit
 - **Bung mã BTP chính xác (60… / S… / Ngọn…): chưa làm** – chưa có bảng ánh xạ 4 thông số → mã BTP; hiện nhóm theo loại chuôi / ngọn / tip / ren. Chuyên gia đồng ý giữ.
 - **Kiểm thử:** `don-hang.js` 46, `quy-trinh-web.js` 43 (tự tính lại công thức bảng, sửa sản lượng gấp đôi → ngày giảm nửa), `quy-trinh.js` 50, `manh-web.js` 8, `ky-nang.js` 49; `bao-mat.js` 2 lỗi cũ (ngày đã duyệt, không liên quan).
 
+## Yêu cầu đợt 3 (01/11) – đã lưu, đang phân tích
+Chủ dự án giao (2 tin nhắn, muốn làm trong 1 lượt, **phân tích trước khi làm**):
+1. **Tab Đơn hàng riêng** (dưới tab Quy trình), đọc thông tin **giống web app đơn hàng** đang hiển thị + thêm thống kê → phải sửa mã nguồn cho chủ dự án theo dõi được.
+2. **Lưu đồ sản xuất khó nhìn** → tìm cách thể hiện khác; **thiếu lưu đồ toàn nhà máy**.
+3. **Nhánh POM:** xưởng Ngọn Taro cấp vật liệu POM các loại cho xưởng Phôi Thô.
+4. **Cân bằng tải** phải thể hiện **số nhân sự cần của mỗi xưởng** để đáp ứng tổng sản lượng yêu cầu.
+5. **Rà toàn bộ công đoạn các xưởng, gộp nhóm công đoạn giống nhau** để lưu đồ dễ xem; **tư vấn gộp công đoạn** để bớt số công đoạn ở xưởng quá nhiều công đoạn.
+6. **Việc theo xưởng:** khi phân phối, tổng hợp theo nhóm **chuôi / chuôi nhảy / ngọn**.
+7. **Kiểm phân loại:** chia nhóm **gậy đánh / gậy nhảy / gậy phá**; ngọn lẻ cũng chia **đánh / nhảy / phá**; trong mỗi nhóm xếp **full carbon → mix carbon+glassfiber → glassfiber**.
+8. **Quy tắc chung:** luôn rà logic để sắp xếp theo cách dễ nhìn, dễ theo dõi, dễ tổng hợp nhất (đã ghi vào CLAUDE.md + Quyết định).
+9. **Sau khi xong 1–7 sẽ bàn:** cách thu thập dữ liệu các xưởng đã làm / đã xuất bán thành phẩm để theo dõi tiến độ Việc theo xưởng (đơn đang ở dạng BTP rải rác mọi xưởng, có hỏng hủy qua từng xưởng); phải cân nhắc độ phức tạp, thời gian nhập liệu lần đầu và hằng ngày. Claude suy nghĩ + hỏi chuyên gia rồi tư vấn.
+
 ## Việc tiếp theo
 - Chủ dự án xem bản thật, chỉnh nháp (thứ tự, nhánh) rồi Lưu. Cho thông số 22 tên hàng vàng (hoặc sửa tay ở "Kiểm phân loại").
 - Nếu chủ dự án gửi bảng ánh xạ → bung mã BTP 60… / S… / Ngọn…; đề xuất các bộ phận ghi số "đã qua" vào Sheet đơn (hoặc lấy từ nhật ký KPI).

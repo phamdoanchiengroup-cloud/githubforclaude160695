@@ -35,6 +35,7 @@ File này được Claude Code tự đọc khi mở repo. Nó giữ **quy tắc 
   - logic hiển thị trên web (đúng quyền, đúng số, đúng trạng thái, điện thoại không tràn);
   - các công thức (KPI, định mức, xếp loại, điểm…).
   
+- **Luôn sắp xếp cho dễ nhìn, dễ theo dõi, dễ tổng hợp** (chủ dự án yêu cầu 01/11): mọi bảng / danh sách phải nhóm theo logic sản xuất (vd. gậy đánh / nhảy / phá; chuôi / chuôi nhảy / ngọn; full carbon → mix → glassfiber), có tổng từng nhóm.
   Rà xong mới commit. Báo cho chủ dự án biết đã rà những gì và tìm ra gì.
 
 ## Bộ não thứ hai `bo-nao/` (kiểu Obsidian)
