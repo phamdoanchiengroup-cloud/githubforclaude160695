@@ -140,6 +140,63 @@
 .dh-hai{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 @media (max-width:900px){ .dh-tong{grid-template-columns:repeat(3,minmax(0,1fr))} .dh-hai{grid-template-columns:1fr} }
 @media (max-width:640px){ .dh-bang.chuy td:nth-child(2),.dh-bang.chuy th:nth-child(2),.dh-bang.chuy td:nth-child(6),.dh-bang.chuy th:nth-child(6),.dh-bang.ct td:nth-child(4),.dh-bang.ct th:nth-child(4),.dh-bang.ct td:nth-child(7),.dh-bang.ct th:nth-child(7),.dh-bang.gom td:nth-child(3),.dh-bang.gom th:nth-child(3),.dh-bang.gom td:nth-child(4),.dh-bang.gom th:nth-child(4){display:none} .dh-bang .dh-khoi td{display:table-cell!important} .dh-tong{grid-template-columns:repeat(2,minmax(0,1fr))} .dh-tong b{font-size:19px} .dh-loc input,.dh-loc select{width:100%} .dh-loc>div{flex:1 1 140px} }
+
+/* ===== Lưu đồ – hiệu ứng (01/11 tối, chủ dự án: không ảnh, làm đẹp đường line + card; điện thoại bỏ lưu đồ) ===== */
+.qt-nmw{position:relative;padding:6px 4px 10px}
+.qt-nmw .qt-nm{position:relative;z-index:1;row-gap:44px;column-gap:34px;grid-template-areas:"pcb pt son uv ht dg" "pcb pt taro tip ht dg" ". . . cnc . ."}
+.qt-nh2{display:none!important}
+.qt-o.di::after,.qt-o.vao::before{display:none!important}
+svg.qt-duong{position:absolute;left:0;top:0;z-index:0;pointer-events:none;overflow:visible}
+svg.qt-duong path{fill:none;stroke-linecap:round}
+svg.qt-duong .nen{stroke:rgba(80,200,255,.30);stroke-width:2.2;filter:drop-shadow(0 0 3px rgba(60,190,255,.55))}
+svg.qt-duong .chay{stroke:rgba(150,230,255,.95);stroke-width:2.2;stroke-dasharray:3 15;animation:qtChay 1.4s linear infinite}
+svg.qt-duong .nen.phu{stroke:rgba(255,180,90,.35);stroke-dasharray:5 6;filter:drop-shadow(0 0 3px rgba(255,170,80,.45))}
+svg.qt-duong .chay.phu{stroke:rgba(255,200,120,.95)}
+svg.qt-duong text{fill:#ffc27a;font-size:11.5px;font-weight:700;letter-spacing:.4px}
+@keyframes qtChay{to{stroke-dashoffset:-18}}
+.qt-o{border:1px solid rgba(120,200,255,.18)!important;background:linear-gradient(160deg,rgba(255,255,255,.075),rgba(255,255,255,.02))!important;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);
+  box-shadow:0 10px 26px -12px rgba(0,0,0,.6),inset 0 1px 0 rgba(255,255,255,.07);border-radius:14px!important;padding:12px 12px 14px!important;display:grid!important;grid-template-columns:34px minmax(0,1fr);column-gap:9px;align-items:center;transition:transform .18s ease,box-shadow .18s ease,border-color .18s ease;overflow:hidden;min-height:92px}
+.qt-o:hover{transform:translateY(-3px);border-color:rgba(120,220,255,.55)!important;box-shadow:0 14px 30px -12px rgba(0,0,0,.7),0 0 0 1px rgba(120,220,255,.25),0 0 22px -4px rgba(80,200,255,.45)}
+.qt-o .ic{align-self:start;width:34px;height:34px;border-radius:11px;display:flex;align-items:center;justify-content:center;background:radial-gradient(circle at 30% 25%,rgba(120,220,255,.28),rgba(40,120,200,.10));border:1px solid rgba(120,220,255,.30);color:#9fe3ff;grid-row:1/3}
+.qt-o .ic svg{width:21px;height:21px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+.qt-o .tx{min-width:0;display:flex;flex-direction:column;gap:3px}
+.qt-o .tn{font-size:14px;font-weight:650;line-height:1.2}
+.qt-o .so{font-size:12.5px;color:var(--ink2)}
+.qt-o .d2{display:flex;align-items:center;justify-content:space-between;gap:6px;flex-wrap:wrap}
+.qt-o .qt-bd{min-width:0;padding:1px 7px;font-size:11.5px}
+.qt-o .vach{position:absolute;left:0;right:0;bottom:0;height:3px;background:rgba(255,255,255,.06)}
+.qt-o .vach i{display:block;height:100%;background:linear-gradient(90deg,#33d6a6,#7fe0ff)}
+.qt-o .vach i.wn{background:linear-gradient(90deg,#ffc24d,#ffdf8a)} .qt-o .vach i.bd{background:linear-gradient(90deg,#ff6b6b,#ff9f43)}
+.qt-o .qt-the-nut{align-self:flex-start;background:linear-gradient(90deg,#ff8a3d,#ffb347);color:#1a1206;padding:0 7px;border-radius:6px;font-size:10px;line-height:16px}
+.qt-o.nut{border-color:rgba(255,160,70,.75)!important;animation:qtNut 2.4s ease-in-out infinite}
+@keyframes qtNut{0%,100%{box-shadow:0 10px 26px -12px rgba(0,0,0,.6),0 0 0 1px rgba(255,160,70,.35),0 0 14px -2px rgba(255,150,60,.35)}50%{box-shadow:0 10px 26px -12px rgba(0,0,0,.6),0 0 0 1px rgba(255,160,70,.6),0 0 26px 0 rgba(255,150,60,.55)}}
+.qt-o.cnc{min-height:70px;border-style:dashed!important;border-color:rgba(255,180,90,.45)!important}
+.qt-o.cnc .ic{background:radial-gradient(circle at 30% 25%,rgba(255,200,120,.28),rgba(200,120,40,.10));border-color:rgba(255,190,110,.35);color:#ffcf8f}
+.qt-o .le{font-size:11.5px;color:#ffc27a}
+/* lưu đồ từng xưởng: trục thời gian dọc */
+.qt-bc{position:relative;padding-left:2px}
+.qt-tl{position:relative}
+.qt-tl::before{content:'';position:absolute;left:24px;top:22px;bottom:22px;width:2px;border-radius:2px;background:linear-gradient(180deg,rgba(80,200,255,.0),rgba(80,200,255,.55) 8%,rgba(80,200,255,.55) 92%,rgba(80,200,255,0));box-shadow:0 0 8px rgba(80,200,255,.45)}
+.qt-tl::after{content:'';position:absolute;left:23px;top:22px;width:4px;height:60px;border-radius:4px;background:linear-gradient(180deg,rgba(160,235,255,0),rgba(190,245,255,.95),rgba(160,235,255,0));animation:qtTroi 3.2s linear infinite}
+@keyframes qtTroi{0%{transform:translateY(0);opacity:0}10%{opacity:1}90%{opacity:1}100%{transform:translateY(var(--qt-cao,400px));opacity:0}}
+.qt-bh{position:relative;z-index:1;border-bottom:0!important;margin:4px 0;border-radius:12px;transition:background .15s ease,transform .15s ease,box-shadow .15s ease}
+.qt-bh:not(.dau):hover{background:linear-gradient(90deg,rgba(80,200,255,.10),rgba(255,255,255,.02))!important;transform:translateX(3px);box-shadow:inset 0 0 0 1px rgba(120,220,255,.25)}
+.qt-bh .st{width:30px;height:30px;border-radius:50%;display:flex!important;align-items:center;justify-content:center;background:radial-gradient(circle at 35% 30%,#1f5f86,#0d2a40);border:1.5px solid rgba(120,220,255,.75);color:#d8f6ff!important;font-size:13px;box-shadow:0 0 10px rgba(80,200,255,.55);margin-left:-1px}
+.qt-bh.con .st{visibility:visible!important;width:12px;height:12px;margin-left:8px;background:#0d2a40;border-width:1.5px;box-shadow:0 0 6px rgba(80,200,255,.45);font-size:0}
+.qt-bh.nut .st{border-color:#ffab55;background:radial-gradient(circle at 35% 30%,#8a4a14,#3a1d06);box-shadow:0 0 14px rgba(255,150,60,.75)}
+.qt-bh.nut{background:linear-gradient(90deg,rgba(255,159,67,.13),rgba(255,159,67,.02))!important;box-shadow:inset 3px 0 0 #ff9f43}
+.qt-bh.mo{background:linear-gradient(90deg,rgba(80,200,255,.12),rgba(255,255,255,.02))!important}
+.qt-bh.dau .st{background:none;border:0;box-shadow:none;color:var(--ink3)!important;font-size:12px}
+.qt-bh.ngoai .st{border-style:dashed;box-shadow:none;background:none;color:var(--ink3)!important}
+.qt-bh .qt-nhchip{background:rgba(80,200,255,.08);border-color:rgba(120,220,255,.28)}
+.qt-con{margin-left:44px!important;border-color:rgba(120,220,255,.22)!important;background:linear-gradient(180deg,rgba(80,200,255,.06),rgba(255,255,255,.01))!important}
+.qt-chi-mt{display:none;font-size:12.5px;color:var(--ink3);padding:4px 0}
+html[data-gd="sang"] .qt-o{background:linear-gradient(160deg,#ffffff,#f3f7fa)!important;border-color:#cfe3ee!important;box-shadow:0 8px 20px -12px rgba(20,60,90,.35)}
+html[data-gd="sang"] .qt-o .ic{color:#1679a8;background:#e6f5fc;border-color:#bfe2f2}
+html[data-gd="sang"] svg.qt-duong .nen{stroke:rgba(22,121,168,.35);filter:none} html[data-gd="sang"] svg.qt-duong .chay{stroke:rgba(22,121,168,.9)}
+html[data-gd="sang"] .qt-bh .st{background:#e6f5fc;color:#0d4f70!important;border-color:#1679a8;box-shadow:none}
+@media (prefers-reduced-motion:reduce){ svg.qt-duong .chay,.qt-tl::after,.qt-o.nut{animation:none} .qt-o:hover,.qt-bh:hover{transform:none} }
+@media (max-width:640px){ .qt-nmw,.qt-bc,.qt-chu,.qt-hd-ld{display:none!important} .qt-chi-mt{display:block} }
 </style>
 <script>
 /* ===== Quy trình sản xuất (31/10) ===== */
@@ -254,6 +311,7 @@ function qtVe(){
   if(QTV==='dh') QTV='nm';
   h+=({nm:qtVeNM,x:qtVeX,ng:qtVeNguoi,sua:qtVeSua}[QTV]||qtVeNM)(T);
   $('main').innerHTML=h;
+  qtSauVe();
 }
 function qtDoiCD(k,v,a,b){ v=Number(v); if(!isFinite(v)||v<a||v>b){ toast('Giá trị phải trong khoảng '+a+'–'+b+'.'); qtVe(); return; } QTS[k]=v; QTDoi=true; qtVe(); }
 
@@ -381,41 +439,74 @@ function qtHangNhom(n,x,so,con,laNut,ngoai){
 /* Lưu đồ 1 xưởng: các bước dọc đánh số 1→n theo thứ tự làm; cùng bước khác nhánh xếp liền nhau (└) */
 function qtLanBoi(x,T){
   var G=qtGomNhom(x,T); if(!G||!G.cot.length) return '<div class="pdesc">Xưởng chưa có công đoạn trên dòng chảy.</div>';
+  var mt='<div class="qt-chi-mt">Lưu đồ chỉ hiện trên máy tính – xem bảng công đoạn bên dưới.</div>';
   var ds=Object.keys(G.o).map(function(k){return G.o[k]}), tren=ds.filter(function(n){return n.lan!=='NGOAI'});
   var nut=tren.reduce(function(a,n){return n.tai>a.tai?n:a},{tai:0}), mot=ds.filter(function(n){return n.mot});
   var ci={}; G.cot.forEach(function(c,i){ci[c.ten]=i});
   var thuL=function(l){ return G.lan.indexOf(l); };
   tren.sort(function(a,b){ return (ci[a.ten]-ci[b.ten])||(thuL(a.lan)-thuL(b.lan)); });
-  var h='<div class="qt-not">'+(nut.ten&&nut.tai>0?'<span>Nút thắt xưởng: <b>'+esc(nut.ten)+'</b> ('+esc((QT.nhanh[nut.lan]||'').toLowerCase())+') '+qtBd(nut.tai,nut.can)+'</span>':'<span>Chưa có sản lượng trong kỳ.</span>')+
+  var h=mt+'<div class="qt-not">'+(nut.ten&&nut.tai>0?'<span>Nút thắt xưởng: <b>'+esc(nut.ten)+'</b> ('+esc((QT.nhanh[nut.lan]||'').toLowerCase())+') '+qtBd(nut.tai,nut.can)+'</span>':'<span>Chưa có sản lượng trong kỳ.</span>')+
     (mot.length?'<span style="color:var(--amber)">⚠ Chỉ 1 người biết ở: '+mot.map(function(n){return esc(n.ten)}).join(', ')+'</span>':'')+'</div>';
   h+='<div class="qt-chu"><span>Đọc từ trên xuống theo thứ tự làm.</span><span>Người = đang làm / cần.</span><span><span class="qt-bd">≤85%</span> đủ</span><span><span class="qt-bd wn">95%</span> sát</span><span><span class="qt-bd bd">120%</span> thiếu người</span><span>Bấm một dòng để xem các công đoạn trong nhóm.</span></div>';
   h+='<div class="qt-bc"><div class="qt-bh dau"><span class="st">#</span><span>Nhóm công đoạn</span><span>Nhánh</span><span class="r">CĐ</span><span class="r">Người</span><span class="r">Biết</span><span class="r">Tải</span></div>';
   var truoc=-1;
+  h+='<div class="qt-tl">';
   tren.forEach(function(n){ var c=ci[n.ten], con=c===truoc; truoc=c; h+=qtHangNhom(n,x,c+1,con,n===nut&&n.tai>0,false); });
+  h+='</div>';
   var ngoai=ds.filter(function(n){return n.lan==='NGOAI'});
   if(ngoai.length){ h+='<div class="qt-ngoai">Ngoài dòng chảy (vẫn tính tải)</div>'; ngoai.forEach(function(n){ h+=qtHangNhom(n,x,'',false,false,true); }); }
   return h+'</div>';
 }
 /* Lưu đồ toàn nhà máy: thân chung (Phôi Carbon, Phôi Thô) → rẽ 2 nhánh chuôi / ngọn → nhập lại (Hoàn thiện, Đóng gói); CNC, POM là đường cấp phụ */
 function qtNutNhom(x,T){ var G=qtGomNhom(x,T); if(!G)return null; return Object.keys(G.o).map(function(k){return G.o[k]}).filter(function(n){return n.lan!=='NGOAI'}).reduce(function(a,n){return n.tai>a.tai?n:a},{tai:0}); }
+
+var QT_IC={
+  PHOICB:'<path d="M4 7c0-1.7 3.6-3 8-3s8 1.3 8 3-3.6 3-8 3-8-1.3-8-3z"/><path d="M4 7v10c0 1.7 3.6 3 8 3s8-1.3 8-3V7"/><path d="M4 12c0 1.7 3.6 3 8 3s8-1.3 8-3"/>',
+  PHOITHO:'<path d="M3 12h11"/><path d="M14 9h4l3 3-3 3h-4z"/><path d="M6 9v6M9 9v6"/>',
+  SON:'<path d="M5 9h8v5H5z"/><path d="M13 11h3"/><path d="M8 14v5"/><path d="M18 8l2-1M18 11h3M18 14l2 1"/>',
+  INUV:'<path d="M6 9V4h12v5"/><rect x="3" y="9" width="18" height="7" rx="2"/><path d="M7 16v4h10v-4"/><path d="M17 12.5h.01"/>',
+  NGONTARO:'<path d="M12 3v18"/><path d="M8 6l8 2M8 10l8 2M8 14l8 2"/>',
+  NGONTIP:'<circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="4"/><circle cx="12" cy="12" r=".8"/>',
+  CNC:'<circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M4.9 19.1L7 17M17 7l2.1-2.1"/>',
+  HT:'<path d="M12 3l1.8 4.7L18 9.5l-4.2 1.8L12 16l-1.8-4.7L6 9.5l4.2-1.8z"/><path d="M19 15l.8 2 2 .8-2 .8-.8 2-.8-2-2-.8 2-.8z"/>',
+  DG:'<path d="M3 7.5L12 3l9 4.5v9L12 21l-9-4.5z"/><path d="M3 7.5l9 4.5 9-4.5M12 12v9"/>'
+};
 function qtOXuong(x,T,nutNM,lop){
   var o=T.x[x]; if(!o) return '';
-  var co=o.coMat>0.5?o.coMat:o.co, thieu=o.can-co;
-  return '<button type="button" class="qt-o '+(lop||'')+(o===nutNM?' nut':'')+'" style="grid-area:'+({PHOICB:'pcb',PHOITHO:'pt',SON:'son',INUV:'uv',NGONTARO:'taro',NGONTIP:'tip',HT:'ht',DG:'dg'}[x])+'" data-x="'+esc(x)+'" onclick="QTX=this.dataset.x;QTV=\'x\';QTMoNhom=\'\';qtVe()" title="Bấm để xem lưu đồ xưởng">'+
-    (o===nutNM?'<span class="qt-the-nut">NÚT THẮT</span>':'')+
-    '<span class="tn">'+esc(qtTenX(x))+'</span>'+
-    '<span class="d1"><span class="so">'+Math.round(co)+'/'+Math.round(o.can)+' người'+(thieu>=0.5?' · <b style="color:var(--red)">−'+Math.ceil(thieu-1e-9)+'</b>':'')+'</span>'+qtBd(o.tai,o.can)+'</span></button>';
+  var co=o.coMat>0.5?o.coMat:o.co, thieu=o.can-co, m=qtMuc(o.tai), vung={PHOICB:'pcb',PHOITHO:'pt',SON:'son',INUV:'uv',NGONTARO:'taro',NGONTIP:'tip',HT:'ht',DG:'dg',CNC:'cnc'}[x];
+  return '<button type="button" class="qt-o '+(lop||'')+(o===nutNM?' nut':'')+'" style="grid-area:'+vung+'" data-x="'+esc(x)+'" onclick="QTX=this.dataset.x;QTV=\'x\';QTMoNhom=\'\';qtVe()" title="Bấm để xem lưu đồ xưởng">'+
+    '<span class="ic"><svg viewBox="0 0 24 24" aria-hidden="true">'+(QT_IC[x]||'')+'</svg></span>'+
+    '<span class="tx">'+(o===nutNM?'<span class="qt-the-nut">NÚT THẮT</span>':'')+'<span class="tn">'+esc(qtTenX(x))+'</span>'+
+    '<span class="d2"><span class="so">'+Math.round(co)+'/'+Math.round(o.can)+' người'+(thieu>=0.5?' <b style="color:var(--red)">−'+Math.ceil(thieu-1e-9)+'</b>':'')+'</span>'+qtBd(o.tai,o.can)+'</span>'+(x==='NGONTIP'?'<span class="le">ngọn lẻ → Đóng gói</span>':'')+'</span>'+
+    '<span class="vach"><i class="'+m+'" style="width:'+Math.min(100,o.tai*100)+'%"></i></span></button>';
 }
 function qtVsm(T){
-  var nut=T.nut&&T.nut.tai>0?T.nut:null, cnc=T.x.CNC, pom=T.x.NGONTARO;
-  var h='<div class="qt-nm">';
-  h+=qtOXuong('PHOICB',T,nut,'di')+qtOXuong('PHOITHO',T,nut,'di')+'<div class="qt-nh2 tach" style="grid-column:3;grid-row:1/3"></div>';
-  h+='<div class="lc">Chuôi</div><div class="ln">Ngọn</div>';
-  h+=qtOXuong('SON',T,nut,'vao di')+qtOXuong('INUV',T,nut,'di')+qtOXuong('NGONTARO',T,nut,'vao di')+qtOXuong('NGONTIP',T,nut,'di');
-  h+='<div class="qt-nh2 nhap" style="grid-column:4;grid-row:1/3"></div>'+qtOXuong('HT',T,nut,'di')+qtOXuong('DG',T,nut,'');
-  if(pom) h+='<button type="button" class="qt-cap" style="grid-area:pom" onclick="QTX=\'NGONTARO\';QTV=\'x\';QTMoNhom=\'\';qtVe()">↖ POM: Ngọn Taro cấp cho Phôi Thô</button>';
-  if(cnc) h+='<button type="button" class="qt-cap" style="grid-area:cnc" onclick="QTX=\'CNC\';QTV=\'x\';QTMoNhom=\'\';qtVe()">↑ CNC cấp tip, phíp · '+Math.round(cnc.coMat>0.5?cnc.coMat:cnc.co)+'/'+Math.round(cnc.can)+' người '+qtBd(cnc.tai,cnc.can)+'</button>';
-  return h+'</div>';
+  var nut=T.nut&&T.nut.tai>0?T.nut:null;
+  var h='<div class="qt-chi-mt">Lưu đồ chỉ hiện trên máy tính – xem số ở bảng "Cân bằng các xưởng" bên dưới.</div><div class="qt-nmw"><svg class="qt-duong" aria-hidden="true"></svg><div class="qt-nm">';
+  ['PHOICB','PHOITHO','SON','INUV','NGONTARO','NGONTIP','HT','DG'].forEach(function(x){ h+=qtOXuong(x,T,nut,''); });
+  if(T.x.CNC) h+=qtOXuong('CNC',T,nut,'cnc');
+  return h+'</div></div>';
+}
+/* Vẽ đường nối cong phát sáng giữa các thẻ (đo vị trí thật sau khi vẽ); luồng cấp phụ CNC, POM màu cam đứt nét */
+function qtVeDuong(){
+  var w=document.querySelector('.qt-nmw'); if(!w||w.offsetWidth<50) return;
+  var svg=w.querySelector('svg.qt-duong'), R=w.getBoundingClientRect();
+  var o=function(x){ var e=w.querySelector('[data-x="'+x+'"]'); if(!e) return null; var r=e.getBoundingClientRect(); return {l:r.left-R.left,r:r.right-R.left,t:r.top-R.top,b:r.bottom-R.top,cx:(r.left+r.right)/2-R.left,cy:(r.top+r.bottom)/2-R.top}; };
+  var ds=[], nhan=[];
+  var noi=function(a,b){ var A=o(a),B=o(b); if(!A||!B) return; var x1=A.r+2,y1=A.cy,x2=B.l-6,y2=B.cy,mx=(x1+x2)/2; ds.push(['M'+x1+' '+y1+' C'+mx+' '+y1+' '+mx+' '+y2+' '+x2+' '+y2,'']); };
+  noi('PHOICB','PHOITHO'); noi('PHOITHO','SON'); noi('PHOITHO','NGONTARO'); noi('SON','INUV'); noi('NGONTARO','NGONTIP'); noi('INUV','HT'); noi('NGONTIP','HT'); noi('HT','DG');
+  var A=o('CNC'),B=o('NGONTIP'); if(A&&B){ ds.push(['M'+B.cx+' '+(A.t-2)+' L'+B.cx+' '+(B.b+6),'phu']); nhan.push([B.cx+8,(A.t+B.b)/2+4,'TIP, PHÍP']); }
+  A=o('NGONTARO'); B=o('PHOITHO'); if(A&&B){ var y=Math.max(A.b,B.b)+24, r=10; ds.push(['M'+A.cx+' '+(A.b+2)+' L'+A.cx+' '+(y-r)+' Q'+A.cx+' '+y+' '+(A.cx-r)+' '+y+' L'+(B.cx+r)+' '+y+' Q'+B.cx+' '+y+' '+B.cx+' '+(y-r)+' L'+B.cx+' '+(B.b+6),'phu']); nhan.push([(A.cx+B.cx)/2-14,y-6,'POM']); }
+  svg.setAttribute('width',w.offsetWidth); svg.setAttribute('height',w.offsetHeight);
+  svg.innerHTML='<defs><marker id="qtMui" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M1 1L8 5L1 9" fill="none" stroke="rgba(150,230,255,.95)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></marker>'+
+    '<marker id="qtMuiP" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M1 1L8 5L1 9" fill="none" stroke="rgba(255,200,120,.95)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></marker></defs>'+
+    ds.map(function(d){ return '<path class="nen '+d[1]+'" d="'+d[0]+'" marker-end="url(#'+(d[1]?'qtMuiP':'qtMui')+')"/><path class="chay '+d[1]+'" d="'+d[0]+'"/>'; }).join('')+
+    nhan.map(function(n){ return '<text x="'+n[0]+'" y="'+n[1]+'">'+n[2]+'</text>'; }).join('');
+}
+function qtSauVe(){
+  qtVeDuong(); setTimeout(qtVeDuong,450);   /* vẽ lại sau hiệu ứng mở trang */
+  var tl=document.querySelector('.qt-tl'); if(tl) tl.style.setProperty('--qt-cao',Math.max(40,tl.offsetHeight-90)+'px');
+  if(!window.__qtNghe){ window.__qtNghe=1; var t=0; window.addEventListener('resize',function(){ clearTimeout(t); t=setTimeout(function(){ if(document.querySelector('.qt-nmw')) qtVeDuong(); },120); }); }
 }
 
 /* --- Sơ đồ công đoạn kiểu cũ (giữ cho kiểm thử cạnh nối) --- */

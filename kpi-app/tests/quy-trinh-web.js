@@ -30,9 +30,9 @@ const vao = async (p, tk) => { await p.goto(F); await p.waitForSelector('#xtGoiY
     s = await p.evaluate(() => { const T = qtTinh(), ra = {}, khac = [];
       Object.keys(T.x).forEach(x => { const G = qtGomNhom(x, T); if (!G) return; const n = Object.values(G.o).reduce((a, g) => a + g.cd.length, 0);
         ra[x] = [n === T.x[x].cd.length, G.cot.length]; Object.values(G.o).forEach(g => { if (g.ten === 'Khác') g.cd.forEach(c => khac.push(x + ':' + c.ten)); }); });
-      return { ra, khac, vsm: document.querySelectorAll('.qt-nm .qt-o').length, cap: document.querySelectorAll('.qt-nm .qt-cap').length, nut: document.querySelectorAll('.qt-nm .qt-o.nut').length }; });
+      return { ra, khac, vsm: document.querySelectorAll('.qt-nm .qt-o').length, cap: document.querySelectorAll('svg.qt-duong path.nen.phu').length, duong: document.querySelectorAll('svg.qt-duong path.nen').length, ic: document.querySelectorAll('.qt-nm .qt-o .ic svg path, .qt-nm .qt-o .ic svg circle, .qt-nm .qt-o .ic svg rect').length > 9, nut: document.querySelectorAll('.qt-nm .qt-o.nut').length, hien: innerWidth > 640 ? getComputedStyle(document.querySelector('.qt-nmw')).display !== 'none' : getComputedStyle(document.querySelector('.qt-nmw')).display === 'none' }; });
     ok(Object.values(s.ra).every(v => v[0] && v[1] <= 11) && !s.khac.length, 'nhóm công đoạn: mọi công đoạn vào đúng 1 nhóm, mỗi xưởng ≤ 11 cột, không công đoạn nào rơi vào "Khác"', s);
-    ok(s.vsm === 8 && s.cap === 2 && s.nut <= 1, 'lưu đồ toàn nhà máy: 8 xưởng trên tuyến + 2 đường cấp (CNC, POM), tối đa 1 nút thắt', s);
+    ok(s.vsm === 9 && s.nut <= 1 && s.ic && s.hien && (w <= 640 || (s.duong === 10 && s.cap === 2)), 'lưu đồ toàn nhà máy: 9 thẻ xưởng có biểu tượng, 8 đường nối + 2 đường cấp phụ (CNC, POM), tối đa 1 nút thắt; điện thoại ẩn lưu đồ', s);
     // mỗi người: tổng phần thời gian chia cho các công đoạn = tỷ lệ ngày có mặt (không đếm trùng); xưởng: có mặt ≤ danh sách
     s = await p.evaluate(() => { const t = qtTinh(), N = QT.soNgaySX, fte = Object.values(t.cd).reduce((a, c) => a + c.fte, 0);
       const coMat = Object.values(QT.ngayCong).reduce((a, d) => a + Math.min(1, d / N), 0);
