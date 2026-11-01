@@ -19,7 +19,7 @@
 
   var $ = function (id) { return document.getElementById(id); };
   var state = { result: null, sel: null, token: '', nguoiDung: null };
-  var CAN_TOKEN = { lapLaSo: 1, doGioSinh: 1, getLichSu: 1, xoaLichSu: 1, donLichSu: 1, lapCapDoi: 1, tienIch: 1, gieoQue: 1, dsGieoQue: 1, dangKyBanTin: 1, dsBanTin: 1, dangKyVanNgay: 1, huyVanNgay: 1, dsVanNgay: 1, tuViChuSoHuu: 1, phiTinhLuan: 1, giaDinhDs: 1, giaDinhLuu: 1, giaDinhVanNam: 1 };
+  var CAN_TOKEN = { lapLaSo: 1, doGioSinh: 1, getLichSu: 1, xoaLichSu: 1, donLichSu: 1, lapCapDoi: 1, tienIch: 1, gieoQue: 1, dsGieoQue: 1, dangKyBanTin: 1, dsBanTin: 1, dangKyVanNgay: 1, huyVanNgay: 1, dsVanNgay: 1, tuViChuSoHuu: 1, phiTinhLuan: 1, giaDinhDs: 1, giaDinhLuu: 1, giaDinhVanNam: 1, giaDinhQuanHe: 1 };
 
   function esc(s) {
     return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) {
@@ -27,7 +27,7 @@
     });
   }
   /** Mã phiên bản giao diện – phải trùng với Index.html (meta tcc-ban) và Styles.html (--tcc-ban) */
-  var BAN_GIAO_DIEN = '2026.11.1.3';
+  var BAN_GIAO_DIEN = '2026.11.1.4';
   /* 25/10: ảnh ngũ hành + 12 con giáp + bìa PDF mới của chủ dự án (tuvi-app/anh/*.webp) qua jsDelivr, ghim theo mã lần lưu */
   var TCC_ANH_CDN = 'https://cdn.jsdelivr.net/gh/phamdoanchiengroup-cloud/githubforclaude160695@19203fbd20433f395336269a411f8aebcf990086/tuvi-app/anh/';
   var ANH_HANH = { 'Mộc': 'NguHanhMoc', 'Hỏa': 'NguHanhHoa', 'Thổ': 'NguHanhTho', 'Kim': 'NguHanhKim', 'Thủy': 'NguHanhThuy' };
@@ -41,7 +41,7 @@
   function hasServer() { return typeof google !== 'undefined' && google.script && google.script.run; }
   /** Hàm máy chủ mới thêm gần đây → file .gs chứa nó (để báo đúng file khi còn bản cũ) */
   var FILE_HAM = { bangGiaCongKhai: 'ThanhToan.gs', muaPhan: 'ThanhToan.gs', viCuaToi: 'ThanhToan.gs', dangKy: 'TaiKhoan.gs', lapLaSo: 'TaiKhoan.gs',
-    tienIch: 'TienIch.gs', gieoQue: 'TienIch.gs', dsGieoQue: 'TienIch.gs', dangKyBanTin: 'TienIch.gs', dsBanTin: 'TienIch.gs', dangKyVanNgay: 'TienIch.gs', huyVanNgay: 'TienIch.gs', dsVanNgay: 'TienIch.gs', thamKhaoTuVi: 'TuViChuyenSau.gs', donLichSu: 'Code.gs', getLichSu: 'Code.gs', lapCapDoi: 'CapDoi.gs', tuViChuSoHuu: 'TuViChuyenSau.gs', phiTinhLuan: 'TuViPhiTinh.gs', giaDinhDs: 'GiaDinh.gs', giaDinhLuu: 'GiaDinh.gs', giaDinhVanNam: 'GiaDinh.gs', thamKhaoThanSat: 'BatTuThanSat.gs' };
+    tienIch: 'TienIch.gs', gieoQue: 'TienIch.gs', dsGieoQue: 'TienIch.gs', dangKyBanTin: 'TienIch.gs', dsBanTin: 'TienIch.gs', dangKyVanNgay: 'TienIch.gs', huyVanNgay: 'TienIch.gs', dsVanNgay: 'TienIch.gs', thamKhaoTuVi: 'TuViChuyenSau.gs', donLichSu: 'Code.gs', getLichSu: 'Code.gs', lapCapDoi: 'CapDoi.gs', tuViChuSoHuu: 'TuViChuyenSau.gs', phiTinhLuan: 'TuViPhiTinh.gs', giaDinhDs: 'GiaDinh.gs', giaDinhLuu: 'GiaDinh.gs', giaDinhVanNam: 'GiaDinh.gs', giaDinhQuanHe: 'GiaDinh.gs', thamKhaoThanSat: 'BatTuThanSat.gs' };
   function call(fn, args, ok, fail) {
     if (!hasServer()) { (fail || showErr)({ message: 'Không tìm thấy máy chủ Apps Script. Hãy mở ứng dụng qua URL Web App.' }); return; }
     var r = google.script.run.withSuccessHandler(ok).withFailureHandler(fail || showErr), a = (args || []).slice();
@@ -323,7 +323,7 @@
       tChu.style.display = laChu() ? '' : 'none';
       if (!laChu()) { CHU.key = null; CHU.data = null; if ($('page-chu')) $('page-chu').innerHTML = '<div class="panel section muted">Hãy lập lá số trước.</div>'; if (tChu.classList.contains('active')) showTab('tong'); }
     }
-    if (GD.cua !== (u ? u.ten : '')) { GD.cua = u ? u.ten : ''; GD.ds = null; GD.van = null; if (document.body.getAttribute('data-tab') === 'gd') veGd(); }   // tab Gia đình: danh sách theo tài khoản
+    if (GD.cua !== (u ? u.ten : '')) { GD.cua = u ? u.ten : ''; GD.ds = null; GD.van = null; GD.chon = null; GD.qh = null; if (document.body.getAttribute('data-tab') === 'gd') veGd(); }   // tab Gia đình: danh sách theo tài khoản
     var tPt = document.querySelector('#tabs [data-tab="pt"]');        // tab "Phi Tinh": 31/10 chỉ chủ sở hữu thấy (thử trước rồi mới mở bán)
     if (tPt) {
       tPt.style.display = laChu() ? '' : 'none';
@@ -1358,8 +1358,8 @@
      Máy chủ phiTinhLuan (TuViPhiTinh.gs) – hiện chỉ chủ sở hữu. Mỗi mục: lời dễ hiểu (không tên sao) + "Căn cứ Phi Tinh" (công thức phi hóa). */
   /* ------------------------ TAB GIA ĐÌNH (1/11, chỉ chủ sở hữu) ------------------------
      Danh sách người nhà lưu ở Script Properties (GiaDinh.gs) – không nằm trong mã. Mở lá số = setForm + submit;
-     quan hệ = điền người A vào khung Nhập thông tin, người B vào tab Cặp đôi rồi xemCapDoi; bảng vận năm = giaDinhVanNam. */
-  var GD = { ds: null, quanHe: [], dang: false, sua: null, nam: null, van: null, cua: '' };
+     quan hệ = giaDinhQuanHe (2–4 người, luận theo đúng vai cha mẹ – con, anh chị em…; vợ chồng có thêm nút sang Cặp đôi); bảng vận năm = giaDinhVanNam. */
+  var GD = { ds: null, quanHe: [], dang: false, sua: null, nam: null, van: null, cua: '', chon: null, qh: null, dangQh: false };
   var GD_MAU = 'Tên | Quan hệ | Nam/Nữ | Âm/Dương | ngày/tháng/năm | giờ:phút';
   function gdNgay(i) { return i.day + '/' + i.month + '/' + i.year + (i.calendar === 'am' ? ' (âm' + (i.leap ? ', nhuận' : '') + ')' : ' (dương)') + ' · ' + pad(i.hour || 0) + ':' + pad(i.minute || 0) + (i.lateRat === false && i.hour === 23 ? ' · Tý muộn tính cùng ngày' : ''); }
   function veGd() {
@@ -1391,11 +1391,12 @@
       '<label class="gd-nhuan"><input type="checkbox" id="gdTyMuon"' + (si.lateRat === false ? '' : ' checked') + '> Giờ Tý muộn (23h–24h) tính sang ngày hôm sau</label></div>' +
       '<div class="gd-nut"><button type="button" class="btn btn-primary btn-sm" id="gdLuu">' + (s ? 'Lưu thay đổi' : 'Thêm') + '</button>' + (s ? '<button type="button" class="btn btn-ghost btn-sm" id="gdHuy">Hủy</button>' : '') + '</div></details>';
     var nhap = '<details class="gd-form"><summary>📋 Nhập nhanh nhiều người</summary><p class="muted" style="font-size:13px">Mỗi dòng một người theo mẫu: <code>' + esc(GD_MAU) + '</code>. Giờ theo đồng hồ (ví dụ giờ Mão ghi 06:00).</p><textarea id="gdDan" rows="5" placeholder="' + esc(GD_MAU) + '"></textarea><div class="gd-nut"><button type="button" class="btn btn-primary btn-sm" id="gdNhapNhanh">Thêm vào danh sách</button></div></details>';
-    var p1 = '<div class="panel section gd"><h2 class="panel-title"><span class="han">家</span> Người trong gia đình</h2><p class="lede">Danh sách lưu theo tài khoản của bạn, người khác không xem được. Mở lá số, xem hợp nhau vẫn tính phí như khi tự lập (tài khoản đã mở khóa thì xem ngay).</p>' +
+    var p1 = '<div class="panel section gd"><h2 class="panel-title"><span class="han">家</span> Người trong gia đình</h2><p class="lede">Danh sách lưu theo tài khoản của bạn, người khác không xem được. Mở lá số vẫn tính phí như khi tự lập (tài khoản đã mở khóa thì xem ngay); phần quan hệ gia đình bên dưới xem miễn phí.</p>' +
       '<div class="gd-ds">' + the + '</div><div class="gd-nut" style="margin:10px 0"><button type="button" class="btn btn-ghost btn-sm" id="gdThemMo"' + (state.input && state.result ? '' : ' disabled') + '>＋ Thêm lá số đang mở</button></div>' + form + nhap + '</div>';
-    var chon = function (id, mac) { return '<select id="' + id + '">' + GD.ds.map(function (p, i) { return '<option value="' + i + '"' + (i === mac ? ' selected' : '') + '>' + esc(p.ten + ' (' + p.quanHe + ')') + '</option>'; }).join('') + '</select>'; };
-    var p2 = GD.ds.length > 1 ? '<div class="panel section gd"><h2 class="panel-title"><span class="han">緣</span> Quan hệ trong gia đình</h2><p class="lede">Chọn hai người để xem mức hợp nhau, điểm cần nhường nhịn và năm thuận cho cả hai (dùng phần Cặp đôi).</p>' +
-      '<div class="gd-cap">' + chon('gdA', 0) + '<span>với</span>' + chon('gdB', 1) + '<button type="button" class="btn btn-primary btn-sm" id="gdXemCap">Xem hợp nhau</button></div></div>' : '';
+    if (!GD.chon) GD.chon = GD.ds.slice(0, 2).map(function (p) { return p.id; });
+    var hop = GD.ds.map(function (p) { return '<label class="gd-chon"><input type="checkbox" data-gd-chon="' + esc(p.id) + '"' + (GD.chon.indexOf(p.id) >= 0 ? ' checked' : '') + '> ' + esc(p.ten) + ' <small class="muted">(' + esc(p.quanHe) + ')</small></label>'; }).join('');
+    var p2 = GD.ds.length > 1 ? '<div class="panel section gd"><h2 class="panel-title"><span class="han">緣</span> Quan hệ trong gia đình</h2><p class="lede">Chọn 2 đến 4 người. Mỗi cặp được luận đúng vai (cha mẹ – con, anh chị em, ông bà – cháu…); chọn từ 3 người có thêm phần xem cả nhà: ngũ hành chung, ai tiếp sức cho ai, con gần bố hay mẹ, năm cả nhà cần giữ nhịp.</p>' +
+      '<div class="gd-mini">' + hop + '</div><div class="gd-nut"><button type="button" class="btn btn-primary btn-sm" id="gdXemQh"' + (GD.dangQh ? ' disabled' : '') + '>' + (GD.dangQh ? 'Đang luận…' : 'Xem quan hệ') + '</button></div>' + gdQhHtml(GD.qh) + '</div>' : '';
     var V = GD.van && GD.van.nam === GD.nam ? GD.van : null;
     var bang = V ? bangHtml(['Người', 'Tuổi', 'Năm với tuổi'].concat(V.phiTinh ? ['Phi Tinh'] : [], ['Bát Tự', 'Điều nên để ý']), V.ds.map(function (r) {
       if (r.loi) return '<tr><td><b>' + esc(r.ten) + '</b></td><td colspan="' + (V.phiTinh ? 5 : 4) + '" class="muted">' + esc(r.loi) + '</td></tr>';
@@ -1407,8 +1408,30 @@
     pg.innerHTML = p1 + p2 + p3;
     if (GD.ds.length && !V && !GD.dangVan) gdTinhNam();
   }
+  function gdQhHtml(R) {
+    if (!R) return '';
+    var li = function (a, cls) { return a.length ? '<ul class="' + (cls || '') + '">' + a.map(function (x) { return '<li>' + esc(typeof x === 'string' ? x : x.de) + '</li>'; }).join('') + '</ul>' : ''; };
+    var cs = function (a) { a = a.filter(Boolean); return a.length ? '<details class="gd-cs"><summary>Căn cứ cổ học</summary>' + li(a) + '</details>' : ''; };
+    var caps = R.cap.map(function (c) {
+      return '<div class="gd-qh"><div class="gd-ten"><b>' + esc(c.a + ' – ' + c.b) + '</b><span class="chip neutral">' + esc(c.loaiTen) + '</span><span class="rate ' + (c.diem >= 6.5 ? 'r5' : c.diem >= 5 ? 'r3' : 'r2') + '">' + esc(c.xep) + ' · ' + c.diem + '/10</span></div>' +
+        '<p>' + esc(c.tomTat.join(' ')) + '</p>' +
+        (c.tot.length ? '<h4>Điểm gắn kết</h4>' + li(c.tot, 'gd-tot') : '') + (c.xau.length ? '<h4>Điều nên lưu ý và cách làm</h4>' + li(c.xau, 'gd-xau') : '') +
+        '<small class="muted">' + c.tieuChi.map(function (t) { return t.ten + ' ' + t.diem + '/10'; }).join(' · ') + '</small>' +
+        (c.capDoi ? '<div class="gd-nut"><button type="button" class="btn btn-ghost btn-sm" data-gd-cd="' + c.ia + ',' + c.ib + '">Xem hợp hôn đầy đủ (tab Cặp đôi)</button></div>' : '') + cs(c.canCu) + '</div>';
+    }).join('');
+    var N = R.nhom, nhom = '';
+    if (N) {
+      nhom = '<div class="gd-qh"><h3>Cả nhà cùng nhau</h3>' +
+        '<h4>Năng lượng chung</h4>' + li(N.nguHanh.de) + cs([N.nguHanh.cs]) +
+        (N.tamGiac.length ? '<h4>Cha – mẹ – con</h4>' + N.tamGiac.map(function (t) { return li(t.de) + cs([t.cs]); }).join('') : '') +
+        (N.tuoi.length ? '<h4>Thế tuổi trong nhà</h4>' + li(N.tuoi) + cs(N.tuoi.map(function (x) { return x.cs; })) : '') +
+        (N.vaiTro.length ? '<h4>Vai trò</h4>' + li(N.vaiTro) + cs(N.vaiTro.map(function (x) { return x.cs; })) : '') +
+        '<h4>5 năm tới</h4>' + li(N.nam.map(function (y) { return y.nam + ' ' + y.canChi + ': ' + (y.de || (y.pham.length ? y.pham.join(', ') + ' cần giữ nhịp riêng, còn lại bình thường.' : 'năm êm cho cả nhà.')); })) + '</div>';
+    }
+    return '<div class="gd-kq">' + nhom + caps + '<p class="muted" style="font-size:13px">Kết quả là xu hướng tham khảo từ lá số – sự quan tâm, lắng nghe mỗi ngày mới làm nên một gia đình gắn bó.</p></div>';
+  }
   function gdLuuDs(ds, xong) {
-    call('giaDinhLuu', [ds], function (d) { GD.ds = d.ds; GD.van = null; GD.sua = null; veGd(); if (xong) toast(xong); });
+    call('giaDinhLuu', [ds], function (d) { GD.ds = d.ds; GD.van = null; GD.sua = null; GD.qh = null; GD.chon = null; veGd(); if (xong) toast(xong); });
   }
   function gdTinhNam() {
     GD.dangVan = true;
@@ -1442,8 +1465,21 @@
       gdLuuDs(GD.ds.concat(them), 'Đã thêm ' + them.length + ' người.'); return;
     }
     if (t.id === 'gdXemNam') { GD.nam = parseInt($('gdNam').value, 10) || GD.nam; GD.van = null; veGd(); return; }
-    if (t.id === 'gdXemCap') {
-      var A = GD.ds[+$('gdA').value], Bp = GD.ds[+$('gdB').value]; if (!A || !Bp || A === Bp) { toast('Chọn hai người khác nhau.', true); return; }
+    if ((b = t.closest('[data-gd-chon]'))) {
+      var id = b.getAttribute('data-gd-chon');
+      if (b.checked) { if (GD.chon.length >= 4) { b.checked = false; toast('Chọn tối đa 4 người.', true); return; } GD.chon.push(id); } else GD.chon = GD.chon.filter(function (x) { return x !== id; });
+      return;
+    }
+    if (t.id === 'gdXemQh') {
+      if (GD.chon.length < 2) { toast('Chọn ít nhất 2 người.', true); return; }
+      GD.dangQh = true; GD.qh = null; veGd();
+      var cuaQh = GD.cua;   // đổi tài khoản giữa chừng thì bỏ kết quả cũ
+      call('giaDinhQuanHe', [GD.chon.slice()], function (d) { GD.dangQh = false; if (GD.cua !== cuaQh) return; GD.qh = d; if (document.body.getAttribute('data-tab') === 'gd') veGd(); }, function (e) { GD.dangQh = false; if (GD.cua !== cuaQh) return; veGd(); toast((e && e.message) || String(e), true); });
+      return;
+    }
+    if ((b = t.closest('[data-gd-cd]'))) {   // vợ chồng: mở phần Cặp đôi (hợp hôn) như trước
+      var ij = b.getAttribute('data-gd-cd').split(','), ng = GD.qh.nguoi, A = GD.ds.filter(function (p) { return p.id === ng[+ij[0]].id; })[0], Bp = GD.ds.filter(function (p) { return p.id === ng[+ij[1]].id; })[0];
+      if (!A || !Bp) return;
       setForm(A.input); var bi = Bp.input;
       $('cdName').value = Bp.ten; (bi.gender === 'nu' ? $('cdNu') : $('cdNam')).checked = true; (bi.calendar === 'am' ? $('cdAm') : $('cdDuong')).checked = true;
       try { $('cdAm').dispatchEvent(new Event('change', { bubbles: true })); } catch (er2) {}

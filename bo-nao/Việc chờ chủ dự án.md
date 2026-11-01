@@ -4,6 +4,7 @@ Nhóm: Bắt đầu · Cập nhật 22/10/2026
 Liên quan: [[Lần dán lên Apps Script]] · [[TCC Tiến trình]] · [[00 Mục lục]]
 
 ## Việc còn ngỏ
+- 1/11: phần quan hệ gia đình đang để **miễn phí** (cặp vợ chồng chỉ bản gọn, chi tiết vẫn ở Cặp đôi tính phí) – muốn thu xu thì báo. Vai "Cháu" nên tách "cháu nội/ngoại" và "cháu (con anh chị em)"? – [[TCC Tab Gia đình]]
 - 1/11: đặt tên thật cho "Vợ", "Em gái" trong tab 👪 Gia đình (bấm Sửa). – [[TCC Tab Gia đình]]
 - 31/10: bấm `2-CAP-NHAT.bat` lấy `2026.10.31.3` – đăng nhập chủ sở hữu, lập lá số của mình (lịch âm) → tab "✶ Phi Tinh": đọc và so với bài cohoc/NotebookLM; cho biết phần nào khớp, phần nào cần sâu hơn, khi nào mở cho khách và giá. – [[TCC Tứ Hóa Phi Tinh]]
 - 31/10: bấm `2-CAP-NHAT.bat` lấy `2026.10.31.1` – xem tab Bát Tự (hàng Thần sát dưới bảng Tứ Trụ, bước 8 "Thần sát", bài 15 bước) và tab Tham khảo → 🔖 Từ điển thần sát. Góp ý: số sao mỗi trụ có nhiều quá không (có thể ẩn nhóm sao chọn ngày); 7 sao trang huyencobattu có mà ta chưa đủ nguồn. – [[TCC Thần sát Bát Tự]]

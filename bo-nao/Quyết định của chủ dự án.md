@@ -4,6 +4,7 @@ Nhóm: Bắt đầu · Cập nhật 21/10/2026
 Liên quan: [[Việc chờ chủ dự án]] · [[TCC Bán hàng]] · [[00 Mục lục]]
 
 ## Cách làm việc
+- **1/11: quan hệ gia đình phải luận theo đúng vai** (cha mẹ – con, anh chị em… không dùng mục kết hôn/sinh con); xem được 3–4 lá số cùng lúc. – [[TCC Tab Gia đình]]
 - **1/11: giờ Tý muộn (23–24h) luôn tính sang ngày âm hôm sau** (phân biệt với Tý sớm) – không tắt chuyển ngày để khớp trang khác. – [[TCC Tab Gia đình]]
 - **1/11 (sau): tab Gia đình mở cho mọi thành viên đăng nhập** (mỗi người danh sách riêng, lưu ở Sheet); **đồng ý đưa thông tin gia đình chủ dự án lên GitHub** (danh sách mặc định trong GiaDinh.gs). – [[TCC Tab Gia đình]]
 - **1/11: tab "👪 Gia đình" chỉ chủ sở hữu** (đã đổi) – danh sách người nhà, luận quan hệ (qua Cặp đôi), bảng vận năm cả nhà; dữ liệu người nhà lưu ở Script Properties, không đưa vào GitHub. – [[TCC Tab Gia đình]]

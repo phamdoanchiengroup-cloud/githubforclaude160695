@@ -4,6 +4,7 @@ Nhóm: Bắt đầu · Cập nhật 22/10/2026
 Liên quan: [[Việc chờ chủ dự án]] · [[TCC Kiểm thử]] · [[00 Mục lục]]
 
 ## Tình trạng
+- **1/11: mã `2026.11.1.4`** – tab Gia đình: xem quan hệ luận đúng vai (cha – con không còn mục kết hôn, sinh con), chọn 2–4 người, thêm phần cả nhà. Đổi **GiaDinh, Code, Script, Styles, Index**. Bấm `2-CAP-NHAT.bat`, Ctrl+F5.
 - **1/11: mã `2026.11.1.3`** – lá số con gái mặc định tính đúng giờ Tý muộn sang ngày âm 8/7. Đổi **GiaDinh, Script, Styles, Index**. Bấm `2-CAP-NHAT.bat`, Ctrl+F5.
 - **1/11: mã `2026.11.1.2`** – tab Gia đình mở cho mọi thành viên, chủ sở hữu có sẵn 4 người nhà. Đổi **GiaDinh, Code, Script, Styles, Index**. Bấm `2-CAP-NHAT.bat`, Ctrl+F5 (không cần dán danh sách nữa).
 - **1/11: mã `2026.11.1.1`** – tab "👪 Gia đình": file mới **GiaDinh** (đủ 32 file .gs), đổi **Code, Script, Styles, Index**. Bấm `2-CAP-NHAT.bat`, Ctrl+F5, vào tab Gia đình → Nhập nhanh → dán danh sách.
