@@ -638,3 +638,10 @@ Từ lần này bộ cài tự đọc danh sách file trên GitHub (`kpi-app/dan
 Chép – dán tay (không dùng clasp): dán lại Code.gs, Index.html; tạo file HTML mới tên **QuyTrinh** (đúng chữ hoa Q, T) → dán `QuyTrinh.html` → Ctrl+S → Triển khai → Quản lý triển khai → ✏️ → Phiên bản mới → Triển khai.
 Không có hàm cần chạy. Sheet `QuyTrinh` tự tạo khi bấm "Lưu quy trình" lần đầu.
 
+
+## ĐƠN HÀNG + LƯU ĐỒ MỚI 01/11 – chỉ tài khoản chủ sở hữu – đổi Code.gs, Index.html, QuyTrinh.html
+1. Sao lưu: Tổng quan → Tạo bản sao dự án.
+2. Bấm đúp **2-CAP-NHAT.bat** (bộ cài đã thay 31/10 thì không cần thay nữa) → mở web, Ctrl+F5.
+3. Menu **Sản xuất → Đơn hàng** (tab mới, ngay dưới Quy trình sản xuất).
+Chép – dán tay: dán lại Code.gs, Index.html, QuyTrinh.html → Triển khai → Quản lý triển khai → ✏️ → Phiên bản mới → Triển khai.
+Không có hàm cần chạy. Sheet `DonHangChup` (ẩn) tự tạo khi mở tab Đơn hàng lần đầu; mỗi sáng 9h tự chụp đơn cùng trigger KPI 9h có sẵn. Sheet "Trạng thái đơn hàng" vẫn chỉ đọc.

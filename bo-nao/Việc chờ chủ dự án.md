@@ -24,6 +24,7 @@ Liên quan: [[Lần dán lên Apps Script]] · [[Quyết định của chủ d�
   (Đã chốt: phương án C, chỉ chủ sở hữu xem.) – [[KPI Quy trình sản xuất]]
 
 - (31/10: Qoder chỉ tham khảo; đã làm "Đơn hàng → xưởng".) Việc của chủ dự án: thay bộ cài, cập nhật, mở **Quy trình sản xuất → Đơn hàng → xưởng**, cho thông số 22 tên hàng còn vàng (Must, Hornet, Crest, Lửa Việt, phá nhảy chia 2 màu, gậy thuê, KOMET Break Shaft) hoặc sửa tay ở "Kiểm phân loại"; nếu muốn bung mã BTP 60… / S… / Ngọn… thì gửi bảng ánh xạ. Câu hỏi: có muốn các bộ phận ghi số "đã qua" vào Sheet đơn đều hơn không? – [[KPI Quy trình sản xuất]]
+- (01/11: đã làm tab Đơn hàng riêng, lưu đồ mới, POM, cân bằng tải theo sp/tháng.) Việc của chủ dự án: 2-CAP-NHAT.bat → xem **Sản xuất → Đơn hàng** và **Quy trình sản xuất** (lưu đồ mới), góp ý; quyết từng mục trong **top 10 gộp / ẩn công đoạn** (chỉ tư vấn, chưa đổi danh mục KPI); kiểm số "Hiện nay làm" (~368 sp/ngày đo từ đóng gói) có sát thực tế không. **Buổi bàn tiếp theo:** cách thu thập tiến độ bán thành phẩm ở các xưởng (đã có tư vấn A / B / C trong [[KPI Gộp công đoạn và tiến độ BTP]]). – [[KPI Quy trình sản xuất]]
 
 ## Câu hỏi 22/10
 

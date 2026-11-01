@@ -8,6 +8,7 @@ Liên quan: [[Việc chờ chủ dự án]] · [[KPI Tổng quan và cách dựn
 - Lần dán chung 18/10: chủ dự án đã nhận đủ 5 file + hướng dẫn (HUONG-DAN-CAP-NHAT.md mục "LẦN DÁN CHUNG 18/10"). – [[KPI Bảo mật và vận hành]], [[KPI Âm thanh và giọng Rhino]]
 
 ## Web KPI – chưa dán
+- **Đơn hàng + lưu đồ mới 01/11** (tab Đơn hàng chỉ chủ sở hữu, lưu đồ làm lại, POM, cân bằng tải theo sp/tháng): Code.gs + Index.html + QuyTrinh.html qua 2-CAP-NHAT.bat (bộ cài 31/10). Không có hàm cần chạy; sheet ẩn `DonHangChup` tự tạo. – [[KPI Quy trình sản xuất]]
 - **Quy trình sản xuất + Đơn hàng → xưởng 31/10** (tab mới chỉ chủ sở hữu): Code.gs + Index.html + **file mới QuyTrinh.html**. Phải thay bộ cài clasp một lần bằng zip gửi 31/10, rồi 2-CAP-NHAT.bat. Bản cuối 31/10 có thêm phân loại KOMET / Retro và thẻ "Thời gian làm hết phần đơn còn lại". – [[KPI Quy trình sản xuất]]
 - **Ảnh qua jsDelivr 25/10** (nền đăng nhập + mặt bằng sơ đồ lấy từ repo thay Google Drive): Index.html + SoDo.html (clasp). – [[KPI Ảnh web qua jsDelivr]]
 - **Bỏ trừ "không nhắc" khi CN không bị trừ 25/10**: chỉ Code.gs (clasp). – [[KPI Sửa lỗi 21-10 và dữ liệu sheet]]

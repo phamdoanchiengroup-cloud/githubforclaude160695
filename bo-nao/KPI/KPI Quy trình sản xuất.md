@@ -358,7 +358,7 @@ File gốc chỉ để ở scratchpad phiên (`scratchpad/qt/`), **không commit
 - **Bung mã BTP chính xác (60… / S… / Ngọn…): chưa làm** – chưa có bảng ánh xạ 4 thông số → mã BTP; hiện nhóm theo loại chuôi / ngọn / tip / ren. Chuyên gia đồng ý giữ.
 - **Kiểm thử:** `don-hang.js` 46, `quy-trinh-web.js` 43 (tự tính lại công thức bảng, sửa sản lượng gấp đôi → ngày giảm nửa), `quy-trinh.js` 50, `manh-web.js` 8, `ky-nang.js` 49; `bao-mat.js` 2 lỗi cũ (ngày đã duyệt, không liên quan).
 
-## Yêu cầu đợt 3 (01/11) – đã lưu, đang phân tích
+## Yêu cầu đợt 3 (01/11) – ĐÃ LÀM (xem mục "Đã làm đợt 3" bên dưới)
 Chủ dự án giao (2 tin nhắn, muốn làm trong 1 lượt, **phân tích trước khi làm**):
 1. **Tab Đơn hàng riêng** (dưới tab Quy trình), đọc thông tin **giống web app đơn hàng** đang hiển thị + thêm thống kê → phải sửa mã nguồn cho chủ dự án theo dõi được.
 2. **Lưu đồ sản xuất khó nhìn** → tìm cách thể hiện khác; **thiếu lưu đồ toàn nhà máy**.
@@ -369,6 +369,27 @@ Chủ dự án giao (2 tin nhắn, muốn làm trong 1 lượt, **phân tích tr
 7. **Kiểm phân loại:** chia nhóm **gậy đánh / gậy nhảy / gậy phá**; ngọn lẻ cũng chia **đánh / nhảy / phá**; trong mỗi nhóm xếp **full carbon → mix carbon+glassfiber → glassfiber**.
 8. **Quy tắc chung:** luôn rà logic để sắp xếp theo cách dễ nhìn, dễ theo dõi, dễ tổng hợp nhất (đã ghi vào CLAUDE.md + Quyết định).
 9. **Sau khi xong 1–7 sẽ bàn:** cách thu thập dữ liệu các xưởng đã làm / đã xuất bán thành phẩm để theo dõi tiến độ Việc theo xưởng (đơn đang ở dạng BTP rải rác mọi xưởng, có hỏng hủy qua từng xưởng); phải cân nhắc độ phức tạp, thời gian nhập liệu lần đầu và hằng ngày. Claude suy nghĩ + hỏi chuyên gia rồi tư vấn.
+
+## Đã làm đợt 3 (01/11)
+- **Quyết định chủ dự án (4 câu hỏi):** tab Đơn hàng chỉ chủ sở hữu, có "Thay đổi hôm nay"; mục tiêu theo **sp/tháng** (9.000, 26 ngày, sửa được); gộp công đoạn **chỉ để xem + tư vấn**; **Phá nhảy là nhóm riêng**.
+- **A. Kiểu gậy + chất liệu** (`don-hang.gs`: `plKieu_`, `PL_KIEU`, `PL_VL`, `PL_VL_NGON`, `PL_VL_CHUOI`; `plPhanLoai_` bọc `plPhanLoai0_`): kiểu Đánh / Nhảy / Phá / Phá nhảy (chuôi PHANHAY → phá nhảy; ngọn *PHA, chuôi GF736DP/MIXCBPHA → phá; ngọn/chuôi NHAY → nhảy); chất liệu FC / MIX / GF (GF vỏ carbon, G750 bọc carbon, nhảy 13.9 GF lõi vỏ carbon = MIX; chuôi lẻ theo chuôi). Đơn thật: gậy đánh FC 2.331 / MIX 1.527 / GF 3.419, nhảy 1.077, phá 773, phá nhảy 818.
+  - Việc theo xưởng: nhóm cố định **Chuôi / Chuôi nhảy / Ngọn** (xưởng ngọn: Ngọn đánh/nhảy/phá/phá nhảy; HT/ĐG: Gậy đánh/…/Ngọn lẻ/Chuôi lẻ/Tay nối), trong nhóm FC → MIX → GF, dòng tổng nhóm (`DH_KHOI`, `dhKhoiSKU`, `dhKhoiChuoi`).
+  - Kiểm phân loại: nhóm theo kiểu → chất liệu → chưa chắc lên đầu; nút "Chỉ xem tên chưa chắc".
+- **B. Nhánh POM + ngọn lẻ** (`QT_XUONG_NHAP` thêm NGONTARO→PHOITHO "POM…", NGONTIP→DG; `QT_XUONG_THEM` tự bổ sung vào bản đã lưu; `qtLuongCap_`: luồng cấp vật liệu không tính vòng lặp).
+- **Nhóm công đoạn** (`QT_NHOM` theo mẫu tên không dấu, `QT_NHOM_NHANH`, `qtNhomCD`, `qtGomNhom`): mọi công đoạn vào đúng 1 nhóm, không còn "Khác"; chỉ để xem.
+- **F. Lưu đồ làm lại** (chủ dự án chê bản làn bơi đầu "quá xấu, khó nhìn"; chuyên gia `soat-giao-dien-cuoi` chỉ lỗi: ô trống, viền đỏ khắp nơi, thẻ cao rỗng, chữ gãy):
+  - Toàn nhà máy (`qtVsm`, `qtOXuong`): lưới 6 cột – thân chung Phôi Carbon, Phôi Thô → rẽ chuôi (Sơn, In UV) / ngọn (Ngọn Taro, Ngọn Tip) → nhập lại Hoàn thiện, Đóng gói; CNC + POM là nút cấp phụ viền đứt; thẻ: tên, "có/cần người · −thiếu", huy hiệu tải. Điện thoại: thân chung → 2 cột Chuôi | Ngọn → nhập lại.
+  - Từng xưởng (`qtLanBoi`, `qtHangNhom`): danh sách bước đánh số 1→n (cùng bước khác nhánh: dòng "└"), cột Nhánh / CĐ / Người (đang làm/cần) / Biết / Tải; bấm dòng mở công đoạn con; ngoài dòng chảy để cuối, mờ.
+  - Quy tắc màu: viền trung tính, màu chỉ ở huy hiệu % (`qtBd`: ≤85 xám, 86–100 vàng, >100 đỏ), **chỉ nút thắt** có sọc cam + nhãn; "1 người biết" = chữ ⚠ vàng. Sơ đồ SVG kiểu cũ vẫn có trong mục gập.
+- **C. Cân bằng tải theo sp/tháng** (`qtMT`, `qtSlNay`, `qtSlNayDo`, `QT_CD_DONGGOI`): ô Sản lượng yêu cầu (sp/tháng), Ngày làm/tháng, Hiện nay làm (sp/ngày, để trống = tự đo theo đóng gói thành phẩm + đóng đơn lẻ, ~368/ngày ≈ 9.570/tháng kỳ 31/10). Mục tiêu % = (sp/tháng ÷ ngày) ÷ nhịp hiện nay. Lưu vào `QT_CAI_DAT` (slThang, ngayThang, slNay). Bảng thêm **Thiếu (+)/thừa (−)** và **Cần trong danh sách** (= cần có mặt ÷ tỷ lệ đi làm). Kết luận: "Để làm 9.000 sp/tháng cần ~N người có mặt – thiếu ~K".
+- **D. Tab Đơn hàng riêng** (menu Sản xuất, dưới Quy trình; `vDH` trong Index mục 36, chung mảnh QuyTrinh.html; `dhTrangVe`):
+  - 6 thẻ tổng (đơn theo mã, SL, đang SX, sẵn sàng/đã giao, trễ, còn thiếu); lọc mã/tên, kênh, trạng thái, ngày đặt; Xuất Excel (SheetJS), In / PDF (cửa sổ in).
+  - Chế độ: **Đơn cần chú ý** (mặc định; trễ ≤30 ngày / sắp ≤3 ngày / nguy cơ = còn ngày < thiếu÷60+2, như web app đơn hàng), Chi tiết (bấm tiêu đề sắp xếp), Gom theo đơn, **Thay đổi hôm nay**, **Thống kê** (nhóm hàng × chất liệu, lịch giao 14 ngày, tuổi đơn, theo kênh, xu hướng còn thiếu), Việc theo xưởng (thẻ thời gian làm hết đơn dùng chung ô sp/tháng), Kiểm phân loại.
+  - Máy chủ: `dhDocTab_` thêm cột Có thể giao, Đã trả khách, Loại phôi, Chú thích; `dhMaDon_` (người đặt + ngày đặt từ mã, deadline trước ngày đặt → năm sau); cache `DH_DON_v2`.
+  - Bản chụp: sheet ẩn `DonHangChup` (Ngay | Phan | DuLieu, mảnh 40.000 ký tự, giữ 30 ngày) – `dhChup_`, `dhDocChup_`; chụp lúc 9h trong `snapshotKPIHangNgay` (vá ở `va-don-hang.py`, gọi `chupDonHangHangNgay_`) + lần đầu mở tab trong ngày. `layThayDoiDon` so với bản chụp gần nhất trước hôm nay: mới / còn thiếu giảm / tăng / trạng thái / deadline / SL / không còn; trả `lichSu` cho xu hướng.
+  - Chưa có: tỷ lệ giao đúng hạn (Sheet đơn không có ngày giao thực tế).
+- **Kiểm thử:** `don-hang.js` 60, `quy-trinh.js` 53, `quy-trinh-web.js` 63, `manh-web.js` 8, `ky-nang.js` 49; `bao-mat.js` 2 lỗi cũ (ngày đã duyệt). Giả lập thêm `getDisplayValues`, `hideSheet`.
+- Kích thước: Index ~826 KB, QuyTrinh.html ~98 KB, Code.gs ~521 KB.
 
 ## Việc tiếp theo
 - Chủ dự án xem bản thật, chỉnh nháp (thứ tự, nhánh) rồi Lưu. Cho thông số 22 tên hàng vàng (hoặc sửa tay ở "Kiểm phân loại").
