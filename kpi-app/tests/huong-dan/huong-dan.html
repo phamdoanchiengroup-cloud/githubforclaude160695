@@ -1,0 +1,423 @@
+<!doctype html>
+<html lang="vi"><head><meta charset="utf-8">
+<title>Hướng dẫn tab Quy trình sản xuất và tab Đơn hàng</title>
+<style>
+@page{size:A4;margin:16mm 15mm 16mm 15mm}
+*{box-sizing:border-box}
+body{font-family:"Inter","DejaVu Sans",sans-serif;font-size:10.5pt;line-height:1.5;color:#1d2330;margin:0}
+h1{font-size:20pt;margin:0 0 4mm;color:#0e3a5c;page-break-before:always;border-bottom:2px solid #0e7c86;padding-bottom:2mm}
+h1.dau{page-break-before:auto}
+h2{font-size:14pt;color:#0e7c86;margin:7mm 0 2mm;page-break-after:avoid}
+h3{font-size:11.5pt;color:#0e3a5c;margin:5mm 0 1.5mm;page-break-after:avoid}
+p{margin:1.5mm 0}
+ul,ol{margin:1mm 0 2mm;padding-left:6mm} li{margin:.8mm 0}
+img{display:block;max-width:100%;border:1px solid #c9d2dd;border-radius:3mm;margin:2mm auto 1mm}
+.anh{page-break-inside:avoid;margin:2mm 0 3mm}
+.anh .cap{font-size:8.5pt;color:#5a6577;text-align:center;font-style:italic}
+.nho img{max-width:62%}
+table{border-collapse:collapse;width:100%;margin:2mm 0 3mm;font-size:9.4pt;page-break-inside:auto}
+tr{page-break-inside:avoid}
+th{background:#e4eff3;color:#0e3a5c;text-align:left;padding:1.6mm 2mm;border:1px solid #c9d2dd;font-weight:700}
+td{padding:1.4mm 2mm;border:1px solid #d6dde6;vertical-align:top}
+.o{border-radius:2.5mm;padding:2.5mm 3.5mm;margin:2.5mm 0;page-break-inside:avoid}
+.o.xanh{background:#e8f5f2;border-left:4px solid #0e9c82}
+.o.vang{background:#fff6e0;border-left:4px solid #d99a00}
+.o.do{background:#fdecec;border-left:4px solid #d44}
+.o.xam{background:#f1f3f7;border-left:4px solid #8a95a8}
+.o b.t{display:block;margin-bottom:1mm}
+.tqd th:nth-child(1){width:28%} .tqd th:nth-child(2){width:27%} .tqd th:nth-child(3){width:33%} .tqd th:nth-child(4){width:12%}
+.bia{height:250mm;display:flex;flex-direction:column;justify-content:center;padding:0 8mm}
+.bia .k{font-size:11pt;color:#0e7c86;letter-spacing:.12em;text-transform:uppercase;font-weight:700}
+.bia h1{page-break-before:auto;border:0;font-size:28pt;line-height:1.2;margin:4mm 0 6mm}
+.bia .phu{font-size:12pt;color:#3c4659;max-width:150mm}
+.bia .meta{margin-top:18mm;font-size:10pt;color:#5a6577;border-top:1px solid #c9d2dd;padding-top:4mm}
+.ml{columns:2;column-gap:8mm;font-size:10pt} .ml div{break-inside:avoid;margin-bottom:1mm}
+.ml .c1{font-weight:700;color:#0e3a5c;margin-top:2mm}
+.so5{display:grid;grid-template-columns:repeat(5,1fr);gap:2.5mm;margin:3mm 0}
+.so5 div{border:1px solid #c9d2dd;border-radius:2.5mm;padding:2.5mm;font-size:9pt} .so5 b{display:block;font-size:10pt;color:#0e3a5c;margin-bottom:1mm}
+.luong{display:flex;align-items:center;flex-wrap:wrap;gap:1.5mm;font-size:9pt;margin:2mm 0}
+.luong span{border:1px solid #0e7c86;border-radius:2mm;padding:1mm 2mm;background:#f2fafb}
+.luong i{font-style:normal;color:#0e7c86;font-weight:700}
+code{font-family:"DejaVu Sans Mono",monospace;font-size:8.8pt;background:#eef2f6;padding:0 1mm;border-radius:1mm}
+.buoc{counter-reset:b} .buoc li{list-style:none;position:relative;padding-left:7mm} .buoc li::before{counter-increment:b;content:counter(b);position:absolute;left:0;top:.3mm;width:5mm;height:5mm;border-radius:50%;background:#0e7c86;color:#fff;font-size:8pt;text-align:center;line-height:5mm;font-weight:700}
+.chantrang{font-size:8.5pt;color:#7a8597}
+</style></head><body>
+
+<!-- ============ BÌA ============ -->
+<div class="bia">
+  <div class="k">Web KPI sản xuất · Carbon Billiards (RHINO)</div>
+  <h1>Hướng dẫn sử dụng<br>tab Quy trình sản xuất<br>và tab Đơn hàng</h1>
+  <div class="phu">Tổng quan, thông tin trên màn hình, chức năng, diễn giải các con số, cách thao tác, và cách dùng thống kê để ra quyết định hằng ngày, hằng tuần, hằng tháng.</div>
+  <div class="meta">Bản ngày 02/11/2026, theo phiên bản web cùng ngày.<br>
+  Hai tab này hiện <b>chỉ tài khoản chủ sở hữu</b> xem được.<br>
+  Ảnh minh họa chụp từ bản thử: tên người đã được thay, <b>số đơn hàng là dữ liệu mẫu</b>, không phải số thật của nhà máy.</div>
+</div>
+
+<!-- ============ MỤC LỤC ============ -->
+<h1>Mục lục</h1>
+<div class="ml">
+<div class="c1">0. Đọc trong 2 phút</div>
+<div class="c1">1. Tổng quan</div><div>1.1 Hai tab giúp gì · 1.2 Dữ liệu lấy từ đâu · 1.3 Luồng sản xuất · 1.4 Cách mở</div>
+<div class="c1">2. Tab Quy trình sản xuất</div>
+<div>2.1 Thanh cài đặt</div><div>2.2 Toàn nhà máy (kết luận, lưu đồ, bảng cân bằng)</div><div>2.3 Từng xưởng</div><div>2.4 Con người (quy tắc 3 người)</div><div>2.5 Sửa quy trình</div><div>2.6 Thấy gì → Nghĩa là gì → Làm gì</div>
+<div class="c1">3. Tab Đơn hàng</div>
+<div>3.1 Phần đầu trang: thẻ tổng, bộ lọc, xuất file</div><div>3.2 Đơn cần chú ý</div><div>3.3 Chi tiết · Gom theo đơn</div><div>3.4 Thay đổi hôm nay</div><div>3.5 Việc theo xưởng</div><div>3.6 Thống kê (10 thẻ)</div><div>3.7 Kiểm phân loại</div><div>3.8 Cấu hình sản phẩm + báo sản phẩm mới</div><div>3.9 Thấy gì → Nghĩa là gì → Làm gì</div>
+<div class="c1">4. Nhịp sử dụng: ngày · tuần · tháng</div>
+<div class="c1">5. Giới hạn của số liệu và câu hỏi thường gặp</div>
+<div class="c1">6. Giải thích từ ngữ</div>
+</div>
+
+<!-- ============ 0 ============ -->
+<h1>0. Đọc trong 2 phút</h1>
+<p><b>Tab Quy trình sản xuất</b> trả lời câu hỏi: <i>"Với số người hiện có, nhà máy làm được bao nhiêu sản phẩm mỗi tháng, xưởng nào đang là nút thắt, xưởng nào thiếu hoặc thừa người?"</i></p>
+<p><b>Tab Đơn hàng</b> trả lời câu hỏi: <i>"Đơn nào sắp trễ, mỗi xưởng còn phải làm gì, việc đang dồn ở đâu, và tình hình giao hàng đang tốt lên hay xấu đi?"</i></p>
+<h3>5 con số nên xem mỗi sáng</h3>
+<div class="so5">
+<div><b>① Số ngày hàng tồn</b>Đơn hàng › Thống kê. Dưới 10 ngày: ổn. Trên 15 ngày: phải hành động.</div>
+<div><b>② Đơn trễ hạn</b>Đơn hàng › Đơn cần chú ý. Gọi kênh bán về các đơn ở đầu danh sách.</div>
+<div><b>③ Ngày bắt đầu không kịp</b>Thống kê › Lịch giao lũy kế. Ngày đỏ đầu tiên là ngày phải lùi hạn hoặc tăng ca.</div>
+<div><b>④ Nút thắt</b>Quy trình › Toàn nhà máy. Thẻ viền cam "NÚT THẮT".</div>
+<div><b>⑤ Việc hôm nay</b>Trang đầu khi đăng nhập: báo sản phẩm mới chưa có cấu hình.</div>
+</div>
+<div class="o xanh"><b class="t">Mẹo đọc màu trên cả 2 tab</b>Xám / xanh = bình thường. <b>Vàng</b> = sát giới hạn, cần để ý. <b>Đỏ</b> = vượt giới hạn, cần xử lý. Màu chỉ đặt ở con số quan trọng, nên chỗ nào có màu thì nên đọc kỹ.</div>
+
+<!-- ============ 1 ============ -->
+<h1>1. Tổng quan</h1>
+<h2>1.1 Hai tab giúp gì</h2>
+<table>
+<tr><th style="width:22%">Tab</th><th>Dùng để</th><th style="width:30%">Người dùng</th></tr>
+<tr><td><b>Quy trình sản xuất</b></td><td>Cân bằng tải 9 xưởng theo sản lượng mục tiêu (sp/tháng). Xem lưu đồ toàn nhà máy và từng xưởng, quy tắc 3 người biết làm, và sửa quy trình (thứ tự công đoạn, nhánh, bước ra hàng).</td><td>Chủ sở hữu. Dùng khi họp ban điều hành và trưởng phòng.</td></tr>
+<tr><td><b>Đơn hàng</b></td><td>Theo dõi đơn từ Sheet "Trạng thái đơn hàng": đơn cần chú ý, việc còn lại theo xưởng, thống kê kiểu Lean Six Sigma, phân loại cấu hình sản phẩm.</td><td>Chủ sở hữu. Có thể in hoặc xuất Excel để gửi kênh bán và trưởng xưởng.</td></tr>
+</table>
+<h2>1.2 Dữ liệu lấy từ đâu</h2>
+<ul>
+<li><b>Nhật ký sản xuất</b> (sản lượng công nhân nhập, đã duyệt; dòng "Từ chối" không tính), <b>định mức</b> công đoạn, <b>danh sách nhân sự</b> đang làm, <b>điểm danh</b> (để biết số người có mặt), <b>kỹ năng</b> cấp 2 trở lên. Tất cả đã có sẵn trong web KPI.</li>
+<li><b>Sheet "Trạng thái đơn hàng"</b> của văn phòng. Web <b>chỉ đọc, không bao giờ sửa</b> Sheet này. Web đọc 7 tab kênh (Dealer, Kho, Web lẻ Custom, Web lẻ thường, OEM, A Đông, POD) và <b>tự đọc thêm tab kênh mới</b> nếu tab có cột chuẩn. Dữ liệu được nhớ tạm 5 phút; bấm <b>Làm mới</b> để đọc lại ngay.</li>
+<li><b>Bản chụp đơn lúc 9h mỗi sáng</b>: web tự lưu một bản vào sheet ẩn <code>DonHangChup</code> trong file KPI, giữ 30 ngày. Các mục "Thay đổi hôm nay", "Vào – Ra – Tồn" và "Đúng hạn" được suy ra từ các bản chụp này.</li>
+<li><b>Quy trình và cấu hình sản phẩm</b> anh/chị sửa trên web được lưu ở sheet <code>QuyTrinh</code>, <code>PhanLoaiSKU</code>, <code>CauHinhSP</code> trong file KPI.</li>
+</ul>
+<h2>1.3 Luồng sản xuất (cách web hiểu nhà máy)</h2>
+<div class="luong"><span>Phôi Carbon</span><i>→</i><span>Phôi Thô</span><i>→</i><span>Chuôi: Sơn → In UV</span><i>+</i><span>Ngọn: Ngọn Taro → Ngọn Tip</span><i>→</i><span>Hoàn thiện</span><i>→</i><span>Đóng gói</span></div>
+<p>Các luồng cấp phụ: <b>CNC</b> cấp tip, phíp cho Ngọn Tip, cấp "đầu gậy lết" cho Sơn và cấp tip bán lẻ thẳng cho Đóng gói. <b>Ngọn Taro</b> cấp POM cho Phôi Thô. Ngọn bán lẻ đi thẳng từ Ngọn Tip sang Đóng gói. Sơn và In UV chỉ làm chuôi, không làm ngọn.</p>
+<p>Mỗi sản phẩm được phân loại theo <b>4 thông số</b> (loại chuôi, loại ngọn, loại tip, ren) và có <b>kiểu</b> (đánh / nhảy / phá / phá nhảy) cùng <b>2 nhãn chất liệu</b> (chất liệu chuôi và chất liệu ngọn: Full carbon / Mix carbon + glassfiber / Glassfiber). Mọi bảng đều nhóm theo thứ tự: gậy đánh → nhảy → phá → phá nhảy; Full carbon → Mix → Glassfiber.</p>
+<h2>1.4 Cách mở</h2>
+<ol class="buoc"><li>Đăng nhập bằng tài khoản chủ sở hữu.</li><li>Ở menu, nhóm <b>Sản xuất</b>, bấm <b>Quy trình sản xuất</b> hoặc <b>Đơn hàng</b>.</li><li>Trên điện thoại, mở <b>Menu</b> ở thanh dưới cùng. Lưu đồ chỉ hiện trên máy tính; điện thoại hiện bảng số và danh sách.</li></ol>
+
+<!-- ============ 2 ============ -->
+<h1>2. Tab Quy trình sản xuất</h1>
+<p>Tab có 4 khung nhìn: <b>Toàn nhà máy</b>, <b>Từng xưởng</b>, <b>Con người</b>, <b>Sửa quy trình</b>. Dấu "•" sau chữ "Sửa quy trình" nghĩa là có thay đổi chưa lưu.</p>
+<div class="anh"><img src="anh/qt-tabs.png"></div>
+<h2>2.1 Thanh cài đặt</h2>
+<div class="anh"><img src="anh/qt-caidat.png"><div class="cap">Các ô cài đặt nằm ở đầu tab. Đổi ô nào thì mọi con số tính lại ngay.</div></div>
+<table>
+<tr><th style="width:22%">Ô</th><th>Ý nghĩa</th><th style="width:22%">Mặc định</th></tr>
+<tr><td>Kỳ dữ liệu</td><td>Lấy nhật ký bao nhiêu ngày gần nhất để tính sản lượng và người làm. Kỳ dài thì số ổn định hơn; kỳ ngắn thì phản ánh tình hình mới hơn.</td><td>30 ngày</td></tr>
+<tr><td>Sản lượng yêu cầu</td><td>Mục tiêu nhà máy (sp/tháng). Web chia cho số ngày làm để ra sp/ngày cần đạt.</td><td>9.000 sp/tháng</td></tr>
+<tr><td>Ngày làm / tháng</td><td>Số ngày làm việc trong tháng.</td><td>26</td></tr>
+<tr><td>Hiện nay làm</td><td>Nhịp hiện tại (sp/ngày). Để trống thì web tự đo theo các công đoạn đóng gói thành phẩm và đóng đơn lẻ trong kỳ (khoảng 362–368/ngày).</td><td>tự đo</td></tr>
+<tr><td>Giờ có mặt / ngày</td><td>Số giờ một công nhân có mặt làm hàng mỗi ngày.</td><td>8</td></tr>
+<tr><td>Hiệu suất</td><td>Tỷ lệ % định mức mà một người làm được trong thực tế (đã trừ nghỉ giải lao, chờ việc…).</td><td>85%</td></tr>
+</table>
+<div class="o xam"><b class="t">Mục tiêu % là gì?</b>Mục tiêu % = (sản lượng yêu cầu ÷ ngày làm) ÷ nhịp hiện nay. Ví dụ: 9.000 ÷ 26 = 346 sp/ngày; nhịp hiện nay 362 → mục tiêu 96%, tức là cần làm bằng 96% khối lượng hiện nay.</div>
+
+<h2>2.2 Toàn nhà máy</h2>
+<h3>a) Câu kết luận</h3>
+<div class="anh"><img src="anh/qt-ketluan.png"></div>
+<p>Đoạn chữ đầu tiên tóm tắt kết quả: tổng công nhân, số người có mặt trung bình, số người cần cho mục tiêu, sản lượng tối đa làm được nếu giữ số người như hiện nay, xưởng sát giới hạn nhất, và các xưởng đang chạy gần hết sức.</p>
+<div class="o vang"><b class="t">Lưu ý quan trọng</b>Mọi con số ở đây tính <b>theo định mức</b>, nên đây là giới hạn <b>về người</b>. Nút thắt thật còn có thể nằm ở máy hoặc mẻ (sơn, sấy, in UV, CNC), hàng chờ giữa các xưởng, hàng làm lại, hoặc định mức chưa sát. Những phần đó chưa đo được (giai đoạn 2).</div>
+<h3>b) Lưu đồ toàn nhà máy (chỉ trên máy tính)</h3>
+<div class="anh"><img src="anh/qt-luudo-nm.png"><div class="cap">Mỗi thẻ là 1 xưởng. Đường xanh là luồng chính; đường cam đứt nét là luồng cấp phụ (POM, tip, đầu lết, tip bán lẻ).</div></div>
+<ul>
+<li>Số trên thẻ: <b>người có mặt / người cần</b>. Dấu "−" là thiếu người.</li>
+<li>Huy hiệu %: <b>tải</b> của xưởng. Xám ≤ 85%, <b>vàng 86–100%</b>, <b>đỏ trên 100%</b>.</li>
+<li>Thẻ viền cam "NÚT THẮT" là xưởng có tải cao nhất. Cả nhà máy chỉ chạy nhanh bằng xưởng này.</li>
+<li>Bấm vào một thẻ để mở lưu đồ của xưởng đó.</li>
+</ul>
+<h3>c) Bảng "Cân bằng các xưởng"</h3>
+<div class="anh"><img src="anh/qt-canbang.png"></div>
+<table>
+<tr><th style="width:24%">Cột</th><th>Cách tính và ý nghĩa</th></tr>
+<tr><td>Giờ chuẩn/ngày</td><td>Σ (sản lượng mỗi công đoạn ÷ định mức). Đây là khối lượng việc của xưởng quy ra giờ-người, theo cơ cấu hàng thực tế trong kỳ.</td></tr>
+<tr><td>Cần có mặt</td><td>Giờ chuẩn × mục tiêu % ÷ (giờ có mặt × hiệu suất). Là số người phải có mặt mỗi ngày để đạt mục tiêu.</td></tr>
+<tr><td>Có mặt / ngày</td><td>Số người có mặt trung bình theo điểm danh (số nhỏ phía sau là số người trong danh sách). Không tính trưởng / phó phòng; tổ trưởng vẫn tính.</td></tr>
+<tr><td>Thiếu (+) / thừa (−)</td><td>Cần có mặt − có mặt. Số dương là thiếu người, số âm là thừa người.</td></tr>
+<tr><td>Cần trong danh sách</td><td>Số người cần có tên trong danh sách, đã tính thêm phần người vắng mặt theo tỷ lệ đi làm thực tế.</td></tr>
+<tr><td>Năng suất</td><td>Giờ chuẩn ÷ (người có mặt × giờ có mặt). Là tỷ lệ % định mức mà xưởng đang thực sự đạt. Thấp nghĩa là thời gian đang mất ở đâu đó: chờ hàng, hỗ trợ, làm lại, việc chưa có định mức.</td></tr>
+<tr><td>Tải</td><td>Cần có mặt ÷ có mặt. Trên 100% là không đủ người cho mục tiêu.</td></tr>
+<tr><td>Làm tối đa</td><td>Mục tiêu % ÷ tải: xưởng này cho phép nhà máy làm tới bao nhiêu % nhịp hiện nay.</td></tr>
+<tr><td>Máy</td><td>Số máy của xưởng (từ danh sách Máy móc). Chỉ để tham khảo, chưa tính giới hạn máy.</td></tr>
+</table>
+<p>Thẻ <b>"Luồng bán thành phẩm giữa các xưởng"</b> (mục gập) liệt kê từng luồng "xưởng giao → xưởng nhận" kèm tên bán thành phẩm và % tải hai đầu.</p>
+
+<h2>2.3 Từng xưởng</h2>
+<p>Chọn xưởng ở ô <b>Xưởng</b>. Phần đầu tóm tắt số người cần / có mặt / tải, <b>bước ra hàng</b> (số bán thành phẩm xưởng làm ra mỗi ngày, tính từ nhật ký) và 3 công đoạn căng nhất.</p>
+<div class="anh"><img src="anh/qt-x-tom.png"></div>
+<div class="anh"><img src="anh/qt-x-luudo.png"><div class="cap">Lưu đồ xưởng: đọc từ trái sang phải. Thẻ trải 2 hàng là công đoạn chung của chuôi và ngọn. Số trong vòng tròn là bước.</div></div>
+<ul>
+<li>Mỗi thẻ là một <b>nhóm công đoạn</b>. Nhóm chỉ để dễ nhìn, <b>không thay đổi danh mục công đoạn tính KPI</b>. Bấm vào thẻ để xem các công đoạn bên trong.</li>
+<li>Trên thẻ: người đang làm / người cần, tải, số công đoạn (CĐ), số người biết làm. Dòng "⚠ … CĐ chỉ 1 người" là cảnh báo rủi ro (xem 2.4).</li>
+<li>Phần "Ngoài dòng chảy" (hỗ trợ, làm lại) không nối mũi tên nhưng <b>vẫn tính tải</b>.</li>
+<li>Bảng cuối trang liệt kê từng công đoạn: nhánh · bước, SL/ngày, định mức, giờ chuẩn, CN cần, đang làm (quy đổi), biết làm, tải.</li>
+</ul>
+<div class="o xam"><b class="t">"Đang làm (quy đổi)" là gì?</b>Một người làm nhiều công đoạn trong ngày. Web chia thời gian có mặt của người đó cho từng công đoạn theo giờ chuẩn họ làm ở mỗi công đoạn, để không đếm một người là đủ ở mọi nơi.</div>
+
+<h2>2.4 Con người – quy tắc 3 người</h2>
+<div class="anh"><img src="anh/qt-nguoi.png"></div>
+<p>Mỗi công đoạn nên có <b>ít nhất 3 người làm được</b>, để khi có người nghỉ hoặc chuyển việc thì chuyền không dừng. "Biết làm" = đã làm công đoạn đó trong kỳ (theo nhật ký) hoặc có kỹ năng cấp 2 trở lên. Công đoạn chỉ 1 người biết được gắn nhãn đỏ, 2 người gắn nhãn vàng, kèm tên những người biết làm.</p>
+
+<h2>2.5 Sửa quy trình</h2>
+<p>Màn sửa chia 3 bước có đánh số. Sửa xong bấm <b>Lưu quy trình</b> ở thanh dưới cùng; bấm nhầm thì dùng <b>↶ Hoàn tác</b> (lùi được tới 60 bước); muốn bỏ hết thì bấm <b>Bỏ thay đổi</b>.</p>
+<h3>Bước ① Sắp xếp công đoạn</h3>
+<p>Quy trình được mô tả bằng <b>bước</b> và <b>nhánh</b>:</p>
+<ul>
+<li><b>Bước</b> (cột) = thứ tự làm, từ trái sang phải. Các công đoạn <b>cùng bước</b> là làm cùng lúc.</li>
+<li><b>Nhánh</b> (hàng) = Chung, Ngọn, Chuôi, Gậy 1 khúc, Nối, Típ, Phíp, POM, Phụ kiện, Đơn lẻ. Nhánh Ngọn / Chuôi / Gậy 1 khúc tách ra từ "Chung" và gộp lại ở bước "Chung" kế tiếp. Hỗ trợ và Làm lại nằm ngoài dòng chảy.</li>
+<li>Mũi tên "công đoạn trước → sau" do web tự nối. Số bước cũng tự đánh lại 1, 2, 3… sau mỗi lần sửa.</li>
+</ul>
+<div class="anh"><img src="anh/qt-sua-luudo.png"><div class="cap">Máy tính: kéo thẻ sang ô khác để đổi bước / nhánh; thả vào khe hẹp giữa 2 cột để chèn bước mới; thả vào cột "Bước mới" để đưa xuống cuối.</div></div>
+<p><b>Trên máy tính</b>, có thể làm theo 2 cách:</p>
+<ol class="buoc">
+<li><b>Kéo thả</b>: giữ chuột vào thẻ rồi kéo sang ô khác. Thả vào <b>ô</b> thì công đoạn đổi sang nhánh / bước của ô đó; thả vào <b>khe hẹp giữa 2 cột</b> thì chèn thành bước mới; thả vào ô <b>Hỗ trợ / Làm lại</b> phía dưới thì công đoạn ra ngoài dòng chảy.</li>
+<li><b>Bấm vào thẻ</b> để mở khung chỉnh chi tiết: nút ↑ ↓, ô đổi nhánh, nút ⭐ Ra hàng, mục "Nâng cao".</li>
+</ol>
+<div class="anh"><img src="anh/qt-sua-chon.png"><div class="cap">Khung chỉnh chi tiết của một thẻ (cũng là 1 dòng trong danh sách).</div></div>
+<p><b>Trên điện thoại</b> (và trong mục "Danh sách công đoạn theo bước" trên máy tính), mỗi công đoạn là một dòng:</p>
+<ul>
+<li><b>↑ / ↓</b>: đưa công đoạn lên trước / xuống sau. Bấm 1 lần thì công đoạn làm cùng lúc với bước bên cạnh; bấm thêm 1 lần thì nó thành bước riêng. Ví dụ, để đưa A lên trước B: bấm ↑ hai lần.</li>
+<li><b>Ô nhánh</b>: đổi nhánh (vd. từ Chung sang Chuôi, hoặc sang Hỗ trợ).</li>
+<li><b>Nâng cao – chọn tay công đoạn giao hàng</b>: chỉ dùng khi luồng thật khác với cách nối tự động (vd. một công đoạn nhận hàng từ 2 nơi). Web chặn cách nối tạo thành vòng lặp.</li>
+</ul>
+<h3>Bước ② Bước ra hàng của xưởng (⭐)</h3>
+<div class="anh"><img src="anh/qt-sua-xuat.png"></div>
+<p>Bấm <b>⭐ Ra hàng</b> trên công đoạn cuối cùng mà hàng rời xưởng (vd. kiểm đếm – xuất). Web cộng sản lượng các công đoạn có ⭐ để biết <b>xưởng làm ra bao nhiêu bán thành phẩm mỗi ngày</b>; số này dùng ở cột "Ra/ngày (nhật ký)" trong tab Đơn hàng › Việc theo xưởng. Nếu chưa chọn thì web dùng lựa chọn Claude chọn sẵn theo tên công đoạn; có nút "Về Claude chọn sẵn" để quay lại.</p>
+<div class="o vang"><b class="t">Lưu ý với xưởng Sơn</b>Sơn ghi mỗi lớp sơn thành một lần nhập riêng, nên số "ra/ngày" của bước Sơn có thể gồm nhiều lớp cho cùng một chuôi (số trông cao hơn thực tế). Khi so sánh, hãy nhớ đặc điểm này.</div>
+<h3>Bước ③ Hàng đi giữa các xưởng</h3>
+<p>Mỗi dòng gồm xưởng giao, xưởng nhận và tên bán thành phẩm. Dữ liệu này dùng để vẽ lưu đồ toàn nhà máy. Có nút <b>+ Thêm luồng</b> và nút ✕ để xóa.</p>
+
+<h2>2.6 Thấy gì → Nghĩa là gì → Làm gì (Quy trình sản xuất)</h2>
+<table class="tqd">
+<tr><th>Thấy gì</th><th>Nghĩa là gì</th><th>Làm gì</th><th>Ai làm</th></tr>
+<tr><td>Một xưởng có tải &gt; 100% (đỏ), cột Thiếu (+) dương</td><td>Theo định mức, số người có mặt không đủ cho mục tiêu sp/tháng</td><td>Điều người từ xưởng thừa (cột âm) sang, tăng ca có kế hoạch, hoặc giảm mục tiêu tháng</td><td>Chủ sở hữu + TP</td></tr>
+<tr><td>Tải chỉ 60–80% nhưng hàng vẫn chậm</td><td>Không thiếu người; nút thắt nằm ở máy / mẻ, chờ bán thành phẩm, làm lại, hoặc việc không ghi nhật ký</td><td>Hỏi TP xưởng đó: chờ gì, máy nào kẹt; xem cột Năng suất</td><td>TP xưởng</td></tr>
+<tr><td>Năng suất thấp (vd. 68%) so với hiệu suất 85%</td><td>Khoảng 17% thời gian đang mất (chờ, hỗ trợ, làm lại, việc chưa có định mức)</td><td>Tìm nguyên nhân mất thời gian trước khi tuyển thêm người</td><td>TP + ban điều hành</td></tr>
+<tr><td>Thẻ "NÚT THẮT" đổi xưởng khi tăng mục tiêu</td><td>Mục tiêu mới sẽ bị giới hạn bởi xưởng đó</td><td>Chuẩn bị người / máy cho xưởng đó trước khi nhận đơn lớn</td><td>Chủ sở hữu</td></tr>
+<tr><td>Công đoạn "1 người" (đỏ) ở tab Con người</td><td>Người đó nghỉ thì công đoạn dừng</td><td>Kèm 1–2 người học việc, cập nhật kỹ năng ở tab Kỹ năng</td><td>TP</td></tr>
+<tr><td>Thừa người nhiều (cột âm lớn) ở xưởng có năng suất thấp</td><td>Người có mặt nhưng không đủ việc theo định mức (hoặc định mức lỏng)</td><td>Xem Phân tích định mức; cân nhắc điều chuyển</td><td>Ban điều hành</td></tr>
+<tr><td>Dao động nhỏ 1–3% giữa các ngày</td><td>Bình thường</td><td><b>Không cần làm gì</b></td><td>–</td></tr>
+</table>
+
+<!-- ============ 3 ============ -->
+<h1>3. Tab Đơn hàng</h1>
+<h2>3.1 Phần đầu trang</h2>
+<div class="anh"><img src="anh/dh-tong.png"><div class="cap">6 thẻ tổng: số đơn (theo mã), tổng SL đặt, đang sản xuất, sẵn sàng / đã giao, trễ hạn, tổng còn thiếu.</div></div>
+<div class="anh"><img src="anh/dh-loc.png"><div class="cap">Bộ lọc: mã / tên sản phẩm, kênh, trạng thái, ngày đặt. Nút Xóa lọc, Xuất Excel, In / PDF (theo bộ lọc hiện tại), Làm mới (đọc lại Sheet ngay).</div></div>
+<div class="anh"><img src="anh/dh-tabs.png"><div class="cap">8 mục của tab Đơn hàng. Số trong ngoặc ở "Cấu hình sản phẩm" là số sản phẩm mới chưa có cấu hình.</div></div>
+<p><b>Trạng thái đơn</b>: <i>Trễ hạn</i> (đã quá deadline mà còn thiếu), <i>Đang sản xuất</i>, <i>Sẵn sàng giao</i> (hết thiếu), <i>Đã giao</i> (đã trả khách đủ). Nếu Sheet đơn có tab kênh mới, đầu trang hiện dòng vàng "web đang đọc thêm tab…" kèm nút <b>Bỏ qua tab này</b> (dùng khi tab đó không phải tab đơn hàng, vd. tab tổng hợp). Tab đã bỏ qua có nút <b>Đọc lại</b>.</p>
+
+<h2>3.2 Đơn cần chú ý (mục mặc định)</h2>
+<div class="anh"><img src="anh/dh-chuy.png"></div>
+<table>
+<tr><th style="width:26%">Nhóm</th><th>Điều kiện</th></tr>
+<tr><td>Trễ hạn (trong 30 ngày)</td><td>Đã quá deadline từ 1 đến 30 ngày và còn thiếu hàng.</td></tr>
+<tr><td>Sắp tới hạn</td><td>Còn 0–3 ngày tới deadline.</td></tr>
+<tr><td>Nguy cơ trễ</td><td>Số ngày còn lại &lt; (còn thiếu ÷ 60) + 2. Giả định mỗi đơn làm được khoảng 60 sp/ngày, cộng 2 ngày dự phòng: nếu không ưu tiên thì không kịp.</td></tr>
+<tr><td>Quá hạn hơn 30 ngày</td><td>Thẻ riêng ở dưới cùng, mở sẵn, đơn trễ lâu nhất ở trên cùng.</td></tr>
+</table>
+<div class="anh"><img src="anh/dh-qua30.png" style="max-height:120mm;object-fit:cover;object-position:top"></div>
+<p>Cột "Còn (ngày)" âm là số ngày đã quá hạn; "Cần ~ngày" là số ngày ước tính để làm xong phần thiếu. Bấm mã đơn để xem đơn đó ở mục "Gom theo đơn".</p>
+<div class="o xanh"><b class="t">Cách dùng mỗi sáng</b>① Gọi kênh bán về các đơn trễ ở đầu danh sách: còn giao không, hạn mới là ngày nào. ② Đơn "sắp tới hạn" và "nguy cơ": báo trưởng xưởng ưu tiên. ③ Đơn quá hạn hơn 30 ngày: hỏi rõ làm tiếp, đổi hạn hay hủy, rồi nhờ văn phòng sửa deadline / còn thiếu trong Sheet đơn để số liệu sạch.</div>
+
+<h2>3.3 Chi tiết · Gom theo đơn</h2>
+<div class="anh"><img src="anh/dh-chitiet.png" style="max-height:95mm;object-fit:cover;object-position:top"></div>
+<ul><li><b>Chi tiết</b>: mỗi dòng sản phẩm của đơn là một dòng, có 2 nhãn chất liệu (Chuôi / Ngọn). Bấm tiêu đề cột để sắp xếp (bấm lần nữa để đảo chiều). Mỗi lần hiện 300 dòng, bấm "Xem thêm" để hiện tiếp.</li>
+<li><b>Gom theo đơn</b>: mỗi mã đơn là một dòng (số loại hàng, SL, còn thiếu, deadline gần nhất). Bấm mã đơn để mở danh sách sản phẩm của đơn.</li></ul>
+
+<h2>3.4 Thay đổi hôm nay</h2>
+<p>So Sheet đơn hiện tại với bản chụp 9h gần nhất của ngày trước. Kết quả chia theo nhóm: <i>dòng đơn mới</i>, <i>còn thiếu giảm</i> (đã làm hoặc giao thêm), <i>còn thiếu tăng</i>, <i>đổi trạng thái</i>, <i>đổi deadline</i>, <i>đổi SL đặt</i>, <i>không còn trong Sheet</i>. Lần đầu dùng sẽ báo "chưa có bản chụp ngày trước"; từ ngày hôm sau mục này mới có số.</p>
+<div class="o xam"><b class="t">Dùng để làm gì</b>Biết ngay văn phòng vừa nhận đơn gì mới, đơn nào bị đổi hạn hoặc đổi số lượng. Dòng "còn thiếu tăng" hoặc "không còn trong Sheet" bất thường nên hỏi lại văn phòng.</div>
+
+<h2>3.5 Việc theo xưởng</h2>
+<div class="anh"><img src="anh/dh-xuong-the.png"><div class="cap">9 thẻ xưởng: số việc còn lại (phôi / cái / SKU), số dòng đơn, phần đã quá hạn. Bấm thẻ để xem bảng của xưởng.</div></div>
+<h3>a) Thẻ "Thời gian làm hết phần đơn còn lại"</h3>
+<div class="anh"><img src="anh/dh-xuong-tg.png" style="max-height:115mm;object-fit:cover;object-position:top"></div>
+<table>
+<tr><th style="width:26%">Cột</th><th>Ý nghĩa</th></tr>
+<tr><td>Còn làm</td><td>Số đơn vị xưởng còn phải làm cho các đơn đang mở (đặt − đã qua bộ phận đó, không vượt "còn thiếu", cộng hàng hỏng cần làm bù).</td></tr>
+<tr><td>Ngày (nhịp nay)</td><td>Còn làm ÷ số đơn vị xưởng phải làm mỗi ngày khi nhà máy chạy theo sản lượng sp/tháng đang cài.</td></tr>
+<tr><td>Ngày (năng lực xưởng)</td><td>Theo mức "tối đa" của xưởng ở tab Quy trình (số người có mặt như nay, làm đạt hiệu suất cài).</td></tr>
+<tr><td>Ra/ngày (nhật ký)</td><td>Sản lượng các bước ⭐ ra hàng của xưởng, trung bình 7 ngày gần nhất.</td></tr>
+<tr><td>Ngày (nhịp thực)</td><td>Còn làm ÷ ra/ngày. Đây là con số gần thực tế nhất.</td></tr>
+<tr><td>Giờ chuẩn cần · Công cần</td><td>Khối lượng việc còn lại quy ra giờ-người, và số công (ngày-người) tương ứng.</td></tr>
+</table>
+<p>Nhãn <b>"ít số ghi"</b> nghĩa là cột "đã qua bộ phận" trong Sheet đơn ít được điền cho xưởng đó, nên số "còn làm" có thể cao hơn thực tế. Xưởng chậm nhất được gắn nhãn <b>NÚT THẮT</b>.</p>
+<h3>b) Bảng việc của từng xưởng</h3>
+<div class="anh"><img src="anh/dh-xuong-bang.png" style="max-height:110mm;object-fit:cover;object-position:top"></div>
+<p>Việc được gom theo thông số mà xưởng cần: Phôi theo loại phôi (chuôi / ngọn); Sơn theo loại chuôi × ren; Ngọn Taro theo loại ngọn × ren; Ngọn Tip theo ngọn × tip × đầu; CNC theo loại tip; In UV, Hoàn thiện, Đóng gói theo dòng gậy (SKU). Mỗi nhóm có dòng tổng in đậm; trong nhóm xếp Full carbon → Mix → Glassfiber. Bấm tên dòng để xem các SKU bên trong.</p>
+<p><b>Nhãn chất liệu theo đúng khúc</b>: xưởng chuôi (Phôi chuôi, Sơn, In UV) hiện chất liệu chuôi; xưởng ngọn (Phôi ngọn, Taro, Tip, CNC) hiện chất liệu ngọn; Hoàn thiện và Đóng gói hiện cả 2 nhãn.</p>
+
+<h2>3.6 Thống kê</h2>
+<p>Mỗi thẻ thống kê có ô <b>"Cách đọc"</b> viết sẵn để trình bày cho người khác. Phần dưới đây giải thích thêm cách dùng để ra quyết định.</p>
+<div class="o vang"><b class="t">Ảnh minh họa</b>Các thẻ "Vào – Ra – Tồn" và "Đúng hạn 4 tuần" trong ảnh dùng <b>số mẫu</b>. Trên web thật, hai mục này cần ít nhất 2 ngày có bản chụp 9h mới bắt đầu có số.</div>
+<h3>① Sáu số lớn</h3>
+<div class="anh"><img src="anh/dh-tk-so.png"></div>
+<table>
+<tr><th style="width:24%">Số</th><th>Cách tính</th><th style="width:34%">Dùng để</th></tr>
+<tr><td>Số ngày hàng tồn</td><td>Tổng còn thiếu (không tính nối, phụ kiện) ÷ nhịp kế hoạch sp/ngày.</td><td>&lt; 10 ngày: nhận thêm đơn được. 10–15: cân nhắc. &gt; 15: tăng ca hoặc hẹn hạn xa hơn.</td></tr>
+<tr><td>Đã trễ hạn</td><td>Số sp còn thiếu của các dòng đã quá deadline, và % trên tổng còn thiếu.</td><td>Đo mức "nợ" giao hàng.</td></tr>
+<tr><td>Đơn mới vào (7 ngày)</td><td>SL đặt của các dòng đơn mới xuất hiện trong 7 bản chụp gần nhất.</td><td>So với "Làm xong ra".</td></tr>
+<tr><td>Làm xong ra (7 ngày)</td><td>Phần "còn thiếu" giảm đi trong 7 ngày.</td><td>Vào &gt; Ra thì tồn tăng.</td></tr>
+<tr><td>Giao đúng hạn (4 tuần)</td><td>Số dòng làm xong trước hoặc đúng deadline ÷ số dòng làm xong (28 ngày).</td><td>Thước đo tổng của cả nhà máy. Mục tiêu nên ≥ 80%.</td></tr>
+<tr><td>Dòng đơn đang thiếu</td><td>Số dòng đơn còn thiếu hàng.</td><td>Quy mô việc đang mở.</td></tr>
+</table>
+<h3>② Chuôi / Ngọn còn phải làm theo chất liệu (đơn vị: khúc)</h3>
+<div class="anh"><img src="anh/dh-tk-chuoi.png" style="max-height:80mm;object-fit:cover;object-position:top"></div>
+<p>Bảng Chuôi = chuôi của gậy 2 khúc + chuôi bán lẻ. Bảng Ngọn = ngọn của gậy 2 khúc + ngọn bán lẻ. Hàng chia theo kiểu (đánh / nhảy / phá / phá nhảy), cột chia theo chất liệu, có tổng từng nhóm. <b>Không cộng 2 bảng</b> thành số sản phẩm (một gậy sẽ bị đếm 2 lần). Dòng vàng phía dưới cho biết bao nhiêu khúc còn "Chưa rõ" chất liệu.</p>
+<p><b>Dùng để</b>: xưởng phôi biết cần cuốn bao nhiêu phôi mỗi chất liệu; Sơn và Taro biết khối lượng sắp tới; đặt vật tư carbon / glassfiber.</p>
+<h3>③ Ma trận chuôi × ngọn (gậy 2 khúc)</h3>
+<div class="anh"><img src="anh/dh-tk-mx.png"></div>
+<p>Mỗi ô = số gậy có chuôi chất liệu ở hàng và ngọn chất liệu ở cột. <b>Dùng để</b> lên kế hoạch ghép bộ ở Hoàn thiện: chuôi Mix đi với ngọn Full carbon bao nhiêu bộ, v.v.</p>
+<h3>④ Lịch giao lũy kế 14 ngày so với công suất</h3>
+<div class="anh nho"><img src="anh/dh-tk-luy.png"></div>
+<p>Mỗi cột = tổng lượng hàng phải xong tính tới ngày đó (đã gồm phần trễ). Vạch trắng = công suất cộng dồn (nhịp kế hoạch × số ngày làm, nghỉ Chủ nhật). <b>Cột đỏ</b> nghĩa là tới ngày đó hàng phải xong nhiều hơn sức làm, tức là sẽ có đơn trễ. Dòng chữ phía trên ghi rõ "Bắt đầu không kịp từ ngày…". Rê chuột vào cột để xem số.</p>
+<p><b>Dùng để</b>: chọn đơn làm trước, báo khách lùi hạn <b>sớm</b> cho các đơn rơi vào ngày đỏ đầu tiên, quyết định tăng ca có thời hạn.</p>
+<h3>⑤ Số ngày quá hạn và tuổi đơn</h3>
+<div class="anh nho"><img src="anh/dh-tk-quahan.png"></div>
+<p>Bảng trên chia đơn đang thiếu theo mức <b>gấp</b>: chưa tới hạn, quá 1–3, 4–7, 8–30, hơn 30 ngày. Bảng dưới chia theo <b>tuổi</b> tính từ ngày đặt: 0–7, 8–14, 15–30, trên 30 ngày. Hai dòng cuối của bảng trên được tô đỏ.</p>
+<h3>⑥ Nguồn gây trễ (Pareto theo dòng gậy)</h3>
+<div class="anh nho"><img src="anh/dh-tk-pareto.png" style="max-height:120mm;object-fit:cover;object-position:top"></div>
+<p>Các dòng gậy được xếp theo số lượng trễ từ nhiều tới ít, kèm % cộng dồn. Theo nguyên tắc 80/20, chỉ vài dòng gậy gây ra phần lớn hàng trễ. Các dòng <b>in đậm</b> cộng lại chiếm khoảng 80% số trễ. <b>Dùng để</b> dồn người, máy, phôi cho các dòng này trước: đây là cách giảm trễ nhanh nhất.</p>
+<h3>⑦ Theo kênh</h3>
+<div class="anh nho"><img src="anh/dh-tk-kenh.png" style="max-height:110mm;object-fit:cover;object-position:top"></div>
+<p>Mỗi kênh có: số đơn, còn thiếu, số đơn trễ, SL trễ, <b>tỷ lệ đúng hạn 4 tuần</b>. Bảng xếp theo SL trễ. <b>Dùng để</b> trao đổi với từng kênh về hạn hứa với khách; kênh có tỷ lệ đúng hạn thấp nên hứa hạn xa hơn.</p>
+<h3>⑧ Vào – Ra – Tồn mỗi ngày</h3>
+<div class="anh"><img src="anh/dh-tk-vrt.png"></div>
+<ul>
+<li><b>Vào</b> (xanh dương) = số sp của các dòng đơn mới xuất hiện trong ngày. <b>Ra</b> (xanh lá) = số sp bớt thiếu (đã làm xong / giao). <b>Tồn</b> (vạch vàng) = tổng còn thiếu.</li>
+<li><b>Giới hạn kiểm soát</b> (kiểu Six Sigma, biểu đồ XmR): trung bình Ra ± 2,66 × chênh lệch trung bình giữa 2 ngày liền nhau. Cột Ra <b>đỏ</b> là ngày thấp dưới giới hạn dưới: có sự cố bất thường, nên tìm nguyên nhân ngay trong ngày.</li>
+<li>Nếu Vào cao hơn Ra <b>5 ngày liền</b>, web báo đỏ: đang thiếu công suất, tồn sẽ tăng.</li>
+<li>Số được suy ra từ bản chụp 9h nên lệch khoảng ±1 ngày. Dòng bị xóa khỏi Sheet khi còn thiếu (có thể là đơn hủy) không được tính là "ra".</li>
+</ul>
+<h3>⑨ Hỏng cần làm bù</h3>
+<div class="anh nho"><img src="anh/dh-tk-hong.png"></div>
+<p>Tổng số hỏng cần làm bù theo bộ phận, lấy từ các cột "Hỏng cần làm bù" trong Sheet đơn. Bộ phận đứng đầu là nơi nên làm <b>"5 lần hỏi Tại sao"</b> để tìm nguyên nhân gốc. Con số chỉ đúng khi các bộ phận ghi đủ cột này.</p>
+
+<h2>3.7 Kiểm phân loại</h2>
+<div class="anh"><img src="anh/dh-kiem.png" style="max-height:110mm;object-fit:cover;object-position:top"></div>
+<p>Mỗi tên hàng là một dòng, nhóm theo kiểu và chất liệu. Chấm màu cho biết web chắc chắn tới đâu: <b>xanh</b> = chắc chắn; <b>vàng</b> = dùng mặc định của dòng hoặc dòng chung; <b>đỏ</b> = chưa nhận ra dòng gậy. Nút <b>Chỉ xem tên chưa chắc</b> lọc ra dòng vàng và đỏ.</p>
+<ol class="buoc"><li>Bấm <b>Sửa</b> ở dòng cần sửa.</li><li>Chọn loại hàng, dòng gậy, loại chuôi, ngọn, tip, ren.</li><li>Bấm <b>Lưu cho mọi đơn tên này</b>. Mọi đơn có cùng tên dùng theo, kể cả đơn mới sau này. Muốn bỏ bản sửa tay thì bấm <b>Về tự động</b>.</li></ol>
+
+<h2>3.8 Cấu hình sản phẩm và báo sản phẩm mới</h2>
+<p>Sheet đơn thường <b>không ghi cấu hình</b> sản phẩm. Web tự nhận cấu hình bằng cách so tên sản phẩm với <b>chữ nhận diện</b> của từng dòng gậy. Khi có sản phẩm mới mà web chưa nhận ra, trang <b>Việc hôm nay</b> sẽ báo:</p>
+<div class="anh"><img src="anh/hn-spmoi.png"><div class="cap">Trang Việc hôm nay (chủ sở hữu): báo sản phẩm mới chưa có cấu hình và loại chuôi / ngọn chưa có chất liệu.</div></div>
+<p>Bấm <b>Bổ sung cấu hình</b> để mở thẳng mục <b>Đơn hàng › Cấu hình sản phẩm</b>:</p>
+<div class="anh"><img src="anh/dh-ch-moi.png"></div>
+<h3>Cách 1 – Tạo dòng gậy mới (nên dùng cho sản phẩm mới)</h3>
+<div class="anh"><img src="anh/dh-ch-form.png"></div>
+<ol class="buoc">
+<li>Bấm <b>Tạo dòng gậy mới</b> cạnh tên sản phẩm (tên được điền sẵn).</li>
+<li>Nhập <b>tên dòng gậy</b>, chọn <b>loại hàng</b> (gậy 2 khúc / ngọn bán lẻ / chuôi bán lẻ), <b>loại chuôi, ngọn, tip</b>, ren và đầu mặc định nếu có.</li>
+<li>Ở ô <b>Chữ nhận diện</b>, gõ những chữ luôn có trong tên sản phẩm của dòng này, cách nhau bằng dấu phẩy (vd. <code>NOVA X1, NOVA-X1</code>). Mỗi chữ từ 3 ký tự trở lên. Ngay bên dưới, web cho biết chữ đó <b>khớp bao nhiêu tên hàng</b> trong đơn hiện tại; kiểm tra danh sách này trước khi lưu. Nếu khớp hơn 30 tên, web hỏi xác nhận.</li>
+<li>Bấm <b>Lưu dòng gậy</b>. Mọi tên có chữ nhận diện (mọi màu, mọi cỡ) tự nhận cấu hình ở Việc theo xưởng, Thống kê và nhãn chất liệu. Báo ở Việc hôm nay tự biến mất.</li>
+</ol>
+<h3>Cách 2 – Sửa riêng tên này</h3>
+<p>Dùng cho hàng lẻ, không thành dòng (vd. hàng đặt riêng). Nút này mở mục Kiểm phân loại tại đúng tên đó (xem 3.7).</p>
+<h3>Bảng dòng gậy và bảng loại chuôi / ngọn / tip</h3>
+<div class="anh"><img src="anh/dh-ch-dong.png" style="max-height:95mm;object-fit:cover;object-position:top"></div>
+<div class="anh"><img src="anh/dh-ch-chuoi.png" style="max-height:95mm;object-fit:cover;object-position:top"></div>
+<ul>
+<li><b>Dòng gậy</b>: nhóm theo gậy 2 khúc / ngọn bán lẻ / chuôi bán lẻ, kèm chữ nhận diện, chuôi, ngọn (có nhãn chất liệu), tip · ren · đầu, và số còn thiếu. Bấm <b>Sửa</b> để chỉnh. Với dòng có sẵn, nút <b>Về cấu hình gốc</b> bỏ phần đã sửa; với dòng tự thêm, nút <b>Xóa dòng này</b> xóa dòng.</li>
+<li><b>Loại chuôi / ngọn / tip</b>: chọn <b>chất liệu</b> (Full carbon / Mix / Glassfiber) và <b>kiểu</b> (đánh / nhảy / phá / phá nhảy) ngay trong bảng; web lưu ngay khi đổi. Ô <b>Ẩn</b> giấu loại khỏi ô chọn. Nút <b>+ Thêm loại</b> thêm loại mới. Loại đang được dùng chỉ ẩn được, không xóa được.</li>
+<li>Đổi chất liệu hoặc kiểu ở đây thì áp ngay cho mọi sản phẩm dùng loại đó.</li>
+</ul>
+
+<h2>3.9 Thấy gì → Nghĩa là gì → Làm gì (Đơn hàng)</h2>
+<table class="tqd">
+<tr><th>Thấy gì</th><th>Nghĩa là gì</th><th>Làm gì</th><th>Ai làm</th></tr>
+<tr><td>Số ngày hàng tồn &gt; 15 (đỏ)</td><td>Hàng đang chờ làm vượt xa sức làm</td><td>Tăng ca có thời hạn, hẹn hạn xa hơn cho đơn mới, ưu tiên đơn trễ</td><td>Chủ sở hữu</td></tr>
+<tr><td>Số ngày hàng tồn &lt; 10</td><td>Còn chỗ trống công suất</td><td>Nhận thêm đơn; có thể hứa hạn gần hơn</td><td>Chủ sở hữu + kênh bán</td></tr>
+<tr><td>Lịch lũy kế: cột đỏ từ ngày X</td><td>Từ ngày X trở đi sẽ có đơn trễ nếu giữ nhịp hiện tại</td><td>Báo khách lùi hạn ngay hôm nay cho đơn có hạn ≥ X, hoặc tăng ca trước ngày X</td><td>Văn phòng + TP</td></tr>
+<tr><td>Vào &gt; Ra 5 ngày liền</td><td>Thiếu công suất kéo dài, tồn sẽ tăng</td><td>Xem tab Quy trình: xưởng nào là nút thắt; điều người hoặc giảm nhận đơn</td><td>Chủ sở hữu</td></tr>
+<tr><td>Một ngày Ra tô đỏ (dưới giới hạn kiểm soát)</td><td>Có sự cố bất thường, không phải dao động bình thường</td><td>Hỏi ngay trong ngày: máy hỏng, thiếu phôi, mất điện, nghỉ đông người…</td><td>TP xưởng</td></tr>
+<tr><td>Ra dao động nhưng vẫn trong giới hạn</td><td>Dao động bình thường</td><td><b>Không cần làm gì</b>, không trách người theo từng ngày</td><td>–</td></tr>
+<tr><td>Pareto: 3–5 dòng gậy chiếm ~80% trễ</td><td>Trễ tập trung ở vài dòng</td><td>Dồn phôi, người, máy cho các dòng đó; xem xưởng nào giữ việc của chúng ở Việc theo xưởng</td><td>TP các xưởng</td></tr>
+<tr><td>Kênh có đúng hạn 4 tuần &lt; 70%</td><td>Hạn hứa với khách của kênh này không thực tế</td><td>Thống nhất với kênh: hạn hứa = thời gian làm thực tế + dự phòng</td><td>Chủ sở hữu + kênh</td></tr>
+<tr><td>Việc theo xưởng: xưởng có "Ngày (nhịp thực)" lớn nhất</td><td>Xưởng đó quyết định ngày xong của phần lớn đơn</td><td>Ưu tiên người / máy / ca cho xưởng đó</td><td>Chủ sở hữu</td></tr>
+<tr><td>Nhiều xưởng có nhãn "ít số ghi"</td><td>Sheet đơn ít điền cột "đã qua bộ phận", số còn làm bị phóng đại</td><td>Nhắc các bộ phận ghi đủ cột "đã qua" trong Sheet đơn</td><td>Văn phòng + TP</td></tr>
+<tr><td>Hỏng làm bù dồn ở 1 bộ phận</td><td>Có nguyên nhân gốc về chất lượng</td><td>Họp "5 lần hỏi Tại sao" với bộ phận đó</td><td>TP + QC</td></tr>
+<tr><td>Việc hôm nay báo sản phẩm mới</td><td>Có hàng tạm tính sai (gậy đánh, chưa rõ chất liệu)</td><td>Tạo dòng gậy mới hoặc sửa riêng tên đó (3.8)</td><td>Chủ sở hữu</td></tr>
+<tr><td>Bảng chuôi / ngọn có nhiều "Chưa rõ"</td><td>Một số loại khúc chưa được gán chất liệu</td><td>Chọn chất liệu ở Cấu hình sản phẩm › Loại chuôi / ngọn</td><td>Chủ sở hữu</td></tr>
+</table>
+
+<!-- ============ 4 ============ -->
+<h1>4. Nhịp sử dụng</h1>
+<h2>Hằng ngày (5–10 phút, buổi sáng sau 9h)</h2>
+<ol class="buoc">
+<li><b>Việc hôm nay</b>: xử lý báo sản phẩm mới (nếu có).</li>
+<li><b>Đơn hàng › Đơn cần chú ý</b>: gọi kênh bán về đơn trễ; báo xưởng ưu tiên đơn sắp tới hạn / nguy cơ.</li>
+<li><b>Đơn hàng › Thay đổi hôm nay</b>: đơn mới, đơn đổi hạn, đổi số lượng.</li>
+<li><b>Thống kê › Số ngày hàng tồn</b> và <b>Lịch giao lũy kế</b>: còn kịp không, ngày đỏ đầu tiên là ngày nào.</li>
+<li><b>Thống kê › Vào – Ra – Tồn</b>: hôm qua có cột Ra đỏ không.</li>
+</ol>
+<h2>Hằng tuần (họp với trưởng phòng, 30 phút)</h2>
+<ol class="buoc">
+<li><b>Pareto nguồn gây trễ</b>: chọn 3–5 dòng gậy ưu tiên tuần này.</li>
+<li><b>Việc theo xưởng</b>: xưởng nút thắt, ngày nhịp thực từng xưởng; nhắc các bộ phận ghi số "đã qua" cho đủ.</li>
+<li><b>Theo kênh</b>: tỷ lệ đúng hạn 4 tuần, hạn hứa của từng kênh.</li>
+<li><b>Hỏng cần làm bù</b>: bộ phận nào cần làm "5 lần hỏi Tại sao".</li>
+<li><b>Bảng chuôi / ngọn theo chất liệu</b> và <b>ma trận chuôi × ngọn</b>: kế hoạch phôi và vật tư tuần tới.</li>
+</ol>
+<h2>Hằng tháng (lập kế hoạch tháng sau)</h2>
+<ol class="buoc">
+<li><b>Quy trình › Toàn nhà máy</b>: nhập sản lượng mục tiêu tháng sau, xem nút thắt, thiếu / thừa người từng xưởng.</li>
+<li><b>Năng suất</b> các xưởng: xưởng nào mất nhiều thời gian nhất, vì sao.</li>
+<li><b>Con người</b>: công đoạn chỉ 1–2 người biết, lên kế hoạch kèm người học.</li>
+<li><b>Vào – Ra – Tồn</b> cả tháng, <b>tuổi đơn</b>, <b>số ngày hàng tồn</b>: tháng này tốt lên hay xấu đi.</li>
+<li><b>Sửa quy trình</b> nếu xưởng thay đổi cách làm; kiểm tra bước ⭐ ra hàng.</li>
+</ol>
+
+<!-- ============ 5 ============ -->
+<h1>5. Giới hạn của số liệu và câu hỏi thường gặp</h1>
+<h2>Giới hạn cần nhớ</h2>
+<ul>
+<li><b>Định mức quyết định độ đúng</b> của tab Quy trình. Định mức lỏng thì xưởng trông như thừa người; định mức chặt thì trông như thiếu người.</li>
+<li><b>Cột "đã qua bộ phận" trong Sheet đơn ít được điền</b>, nên "còn làm" ở nhiều xưởng gần bằng "còn thiếu". Ghi đủ thì số chính xác hơn.</li>
+<li><b>Sheet đơn không có ngày giao thực tế</b>: ngày xong được suy từ bản chụp 9h, nên lệch khoảng ±1 ngày.</li>
+<li><b>Xưởng Sơn ghi mỗi lớp sơn thành một lần</b>: số ra/ngày của Sơn có thể gồm nhiều lớp cho cùng một chuôi.</li>
+<li><b>Giới hạn máy / mẻ chưa được tính</b> (giai đoạn 2).</li>
+<li>Dữ liệu đơn được nhớ tạm 5 phút; bấm <b>Làm mới</b> để đọc lại Sheet ngay.</li>
+</ul>
+<h2>Câu hỏi thường gặp</h2>
+<table>
+<tr><th style="width:38%">Câu hỏi</th><th>Trả lời</th></tr>
+<tr><td>Web có sửa Sheet "Trạng thái đơn hàng" không?</td><td>Không. Web chỉ đọc. Mọi phần sửa (quy trình, phân loại, cấu hình) được lưu trong file KPI.</td></tr>
+<tr><td>Văn phòng thêm tab kênh mới thì sao?</td><td>Web tự đọc tab có cột "Loại hàng…" và "Số lượng đặt" (bỏ qua tab ẩn, tab lưu trữ như "Đơn hàng HT", "_SNAPSHOT"). Nếu không phải tab đơn, bấm "Bỏ qua tab này".</td></tr>
+<tr><td>Sản phẩm mới không có cấu hình trên Sheet thì sao?</td><td>Việc hôm nay sẽ báo. Bổ sung một lần ở Cấu hình sản phẩm (tạo dòng gậy với chữ nhận diện), các tên cùng dòng về sau tự nhận.</td></tr>
+<tr><td>Sửa quy trình có làm đổi KPI công nhân không?</td><td>Không. Sửa quy trình chỉ đổi thứ tự / nhánh / bước để tính cân bằng và vẽ lưu đồ. Danh mục công đoạn và định mức tính KPI không đổi.</td></tr>
+<tr><td>Vì sao "Vào – Ra – Tồn" và "Đúng hạn" chưa có số?</td><td>Cần ít nhất 2 ngày có bản chụp 9h. Bản chụp tự chạy mỗi sáng, hoặc khi mở tab lần đầu trong ngày.</td></tr>
+<tr><td>Trên điện thoại sao không thấy lưu đồ?</td><td>Lưu đồ chỉ hiện trên máy tính (màn nhỏ khó đọc). Điện thoại có đủ bảng số và danh sách sửa quy trình với nút ↑ ↓.</td></tr>
+<tr><td>Bấm nhầm khi sửa quy trình?</td><td>Bấm "↶ Hoàn tác", hoặc "Bỏ thay đổi" để quay về bản đã lưu.</td></tr>
+</table>
+
+<!-- ============ 6 ============ -->
+<h1>6. Giải thích từ ngữ</h1>
+<table>
+<tr><th style="width:26%">Từ</th><th>Nghĩa</th></tr>
+<tr><td>Định mức</td><td>Số sản phẩm một công nhân làm được trong 1 giờ (hoặc 1 ca) ở một công đoạn.</td></tr>
+<tr><td>Giờ chuẩn</td><td>Sản lượng ÷ định mức: khối lượng việc quy ra giờ-người.</td></tr>
+<tr><td>Tải</td><td>Người cần ÷ người có. 100% là vừa đủ; trên 100% là không đủ người.</td></tr>
+<tr><td>Nút thắt</td><td>Xưởng hoặc công đoạn có tải cao nhất. Cả chuyền chỉ chạy nhanh bằng nút thắt.</td></tr>
+<tr><td>Hiệu suất / năng suất</td><td>Hiệu suất: % định mức giả định làm được (cài sẵn, mặc định 85%). Năng suất: % định mức thực tế đang đạt (đo từ nhật ký).</td></tr>
+<tr><td>Bán thành phẩm (BTP)</td><td>Hàng đã qua một số xưởng nhưng chưa thành sản phẩm cuối (phôi, chuôi đã sơn, ngọn đã taro…).</td></tr>
+<tr><td>Bước ra hàng (⭐)</td><td>Công đoạn cuối cùng hàng rời xưởng; dùng để đếm số BTP xưởng làm ra mỗi ngày.</td></tr>
+<tr><td>Khúc</td><td>Một chuôi hoặc một ngọn. Gậy 2 khúc = 1 chuôi + 1 ngọn.</td></tr>
+<tr><td>Số ngày hàng tồn</td><td>Tổng còn thiếu ÷ sản lượng 1 ngày: cần bao nhiêu ngày để làm hết nếu không nhận thêm đơn.</td></tr>
+<tr><td>Lũy kế (cộng dồn)</td><td>Cộng dần từ hôm nay tới ngày đang xét.</td></tr>
+<tr><td>Pareto (80/20)</td><td>Xếp nguyên nhân từ lớn tới nhỏ; thường ~20% nguyên nhân gây ra ~80% vấn đề.</td></tr>
+<tr><td>Biểu đồ kiểm soát XmR</td><td>Cách của Six Sigma để phân biệt dao động bình thường với bất thường thật: giới hạn = trung bình ± 2,66 × chênh lệch trung bình giữa 2 ngày liền nhau. Điểm nằm ngoài giới hạn mới cần tìm nguyên nhân.</td></tr>
+<tr><td>Vào – Ra – Tồn</td><td>Hàng mới đặt vào, hàng làm xong ra, hàng còn tồn chưa làm. Tồn tăng khi Vào &gt; Ra.</td></tr>
+<tr><td>5 lần hỏi Tại sao</td><td>Hỏi "tại sao" liên tiếp khoảng 5 lần để tìm nguyên nhân gốc thay vì chữa triệu chứng.</td></tr>
+<tr><td>Chữ nhận diện</td><td>Chữ luôn có trong tên sản phẩm của một dòng gậy; web dùng để tự nhận cấu hình sản phẩm.</td></tr>
+<tr><td>Quy tắc 3 người</td><td>Mỗi công đoạn nên có ít nhất 3 người làm được để chuyền không dừng khi có người nghỉ.</td></tr>
+</table>
+<p class="chantrang">Tài liệu soạn theo phiên bản web ngày 02/11/2026. Khi web thay đổi, các ảnh và một số mô tả có thể khác.</p>
+</body></html>
