@@ -27,7 +27,7 @@
     });
   }
   /** Mã phiên bản giao diện – phải trùng với Index.html (meta tcc-ban) và Styles.html (--tcc-ban) */
-  var BAN_GIAO_DIEN = '2026.11.1.1';
+  var BAN_GIAO_DIEN = '2026.11.1.2';
   /* 25/10: ảnh ngũ hành + 12 con giáp + bìa PDF mới của chủ dự án (tuvi-app/anh/*.webp) qua jsDelivr, ghim theo mã lần lưu */
   var TCC_ANH_CDN = 'https://cdn.jsdelivr.net/gh/phamdoanchiengroup-cloud/githubforclaude160695@19203fbd20433f395336269a411f8aebcf990086/tuvi-app/anh/';
   var ANH_HANH = { 'Mộc': 'NguHanhMoc', 'Hỏa': 'NguHanhHoa', 'Thổ': 'NguHanhTho', 'Kim': 'NguHanhKim', 'Thủy': 'NguHanhThuy' };
@@ -323,8 +323,7 @@
       tChu.style.display = laChu() ? '' : 'none';
       if (!laChu()) { CHU.key = null; CHU.data = null; if ($('page-chu')) $('page-chu').innerHTML = '<div class="panel section muted">Hãy lập lá số trước.</div>'; if (tChu.classList.contains('active')) showTab('tong'); }
     }
-    var tGd = document.querySelector('#tabs [data-tab="gd"]');        // tab "Gia đình": chỉ chủ sở hữu
-    if (tGd) { tGd.style.display = laChu() ? '' : 'none'; if (!laChu()) { GD.ds = null; if (tGd.classList.contains('active')) showTab('tong'); } }
+    if (GD.cua !== (u ? u.ten : '')) { GD.cua = u ? u.ten : ''; GD.ds = null; GD.van = null; if (document.body.getAttribute('data-tab') === 'gd') veGd(); }   // tab Gia đình: danh sách theo tài khoản
     var tPt = document.querySelector('#tabs [data-tab="pt"]');        // tab "Phi Tinh": 31/10 chỉ chủ sở hữu thấy (thử trước rồi mới mở bán)
     if (tPt) {
       tPt.style.display = laChu() ? '' : 'none';
@@ -1360,12 +1359,12 @@
   /* ------------------------ TAB GIA ĐÌNH (1/11, chỉ chủ sở hữu) ------------------------
      Danh sách người nhà lưu ở Script Properties (GiaDinh.gs) – không nằm trong mã. Mở lá số = setForm + submit;
      quan hệ = điền người A vào khung Nhập thông tin, người B vào tab Cặp đôi rồi xemCapDoi; bảng vận năm = giaDinhVanNam. */
-  var GD = { ds: null, quanHe: [], dang: false, sua: null, nam: null, van: null };
+  var GD = { ds: null, quanHe: [], dang: false, sua: null, nam: null, van: null, cua: '' };
   var GD_MAU = 'Tên | Quan hệ | Nam/Nữ | Âm/Dương | ngày/tháng/năm | giờ:phút';
-  function gdNgay(i) { return i.day + '/' + i.month + '/' + i.year + (i.calendar === 'am' ? ' (âm' + (i.leap ? ', nhuận' : '') + ')' : ' (dương)') + ' · ' + pad(i.hour || 0) + ':' + pad(i.minute || 0); }
+  function gdNgay(i) { return i.day + '/' + i.month + '/' + i.year + (i.calendar === 'am' ? ' (âm' + (i.leap ? ', nhuận' : '') + ')' : ' (dương)') + ' · ' + pad(i.hour || 0) + ':' + pad(i.minute || 0) + (i.lateRat === false && i.hour === 23 ? ' · Tý muộn tính cùng ngày' : ''); }
   function veGd() {
     var pg = $('page-gd'); if (!pg) return;
-    if (!laChu()) { pg.innerHTML = '<div class="panel section muted">Tab này chỉ dành cho chủ sở hữu.</div>'; return; }
+    if (!state.token) { pg.innerHTML = '<div class="panel section gd"><h2 class="panel-title"><span class="han">家</span> Lá số cả gia đình</h2><p class="lede">Lưu lá số người thân để mở lại chỉ bằng một chạm, xem hai người hợp nhau thế nào và xem năm nay cả nhà ai thuận, ai cần giữ nhịp.</p><div class="lock-cta"><p>Đăng nhập để tạo danh sách gia đình của bạn.</p><button type="button" class="btn btn-primary btn-sm" data-login>🔑 Đăng nhập</button></div></div>'; return; }
     if (!GD.ds) {
       pg.innerHTML = '<div class="panel section muted">Đang tải danh sách gia đình…</div>';
       if (GD.dang) return; GD.dang = true;
@@ -1388,20 +1387,21 @@
       '<label>Lịch<select id="gdLich"><option value="am"' + (si.calendar === 'am' ? ' selected' : '') + '>Âm lịch</option><option value="duong"' + (si.calendar !== 'am' ? ' selected' : '') + '>Dương lịch</option></select></label>' +
       '<label>Ngày/tháng/năm<input id="gdNgay" placeholder="1/1/1990" value="' + (s ? si.day + '/' + si.month + '/' + si.year : '') + '"></label>' +
       '<label>Giờ:phút<input id="gdGio" placeholder="06:00" value="' + (s ? pad(si.hour) + ':' + pad(si.minute) : '') + '"></label>' +
-      '<label class="gd-nhuan"><input type="checkbox" id="gdNhuan"' + (si.leap ? ' checked' : '') + '> Tháng nhuận (âm lịch)</label></div>' +
+      '<label class="gd-nhuan"><input type="checkbox" id="gdNhuan"' + (si.leap ? ' checked' : '') + '> Tháng nhuận (âm lịch)</label>' +
+      '<label class="gd-nhuan"><input type="checkbox" id="gdTyMuon"' + (si.lateRat === false ? '' : ' checked') + '> Giờ Tý muộn (23h–24h) tính sang ngày hôm sau</label></div>' +
       '<div class="gd-nut"><button type="button" class="btn btn-primary btn-sm" id="gdLuu">' + (s ? 'Lưu thay đổi' : 'Thêm') + '</button>' + (s ? '<button type="button" class="btn btn-ghost btn-sm" id="gdHuy">Hủy</button>' : '') + '</div></details>';
     var nhap = '<details class="gd-form"><summary>📋 Nhập nhanh nhiều người</summary><p class="muted" style="font-size:13px">Mỗi dòng một người theo mẫu: <code>' + esc(GD_MAU) + '</code>. Giờ theo đồng hồ (ví dụ giờ Mão ghi 06:00).</p><textarea id="gdDan" rows="5" placeholder="' + esc(GD_MAU) + '"></textarea><div class="gd-nut"><button type="button" class="btn btn-primary btn-sm" id="gdNhapNhanh">Thêm vào danh sách</button></div></details>';
-    var p1 = '<div class="panel section gd"><h2 class="panel-title"><span class="han">家</span> Người trong gia đình</h2><p class="lede">Danh sách chỉ lưu trên máy chủ Apps Script của bạn, chỉ tài khoản chủ sở hữu xem được.</p>' +
+    var p1 = '<div class="panel section gd"><h2 class="panel-title"><span class="han">家</span> Người trong gia đình</h2><p class="lede">Danh sách lưu theo tài khoản của bạn, người khác không xem được. Mở lá số, xem hợp nhau vẫn tính phí như khi tự lập (tài khoản đã mở khóa thì xem ngay).</p>' +
       '<div class="gd-ds">' + the + '</div><div class="gd-nut" style="margin:10px 0"><button type="button" class="btn btn-ghost btn-sm" id="gdThemMo"' + (state.input && state.result ? '' : ' disabled') + '>＋ Thêm lá số đang mở</button></div>' + form + nhap + '</div>';
     var chon = function (id, mac) { return '<select id="' + id + '">' + GD.ds.map(function (p, i) { return '<option value="' + i + '"' + (i === mac ? ' selected' : '') + '>' + esc(p.ten + ' (' + p.quanHe + ')') + '</option>'; }).join('') + '</select>'; };
     var p2 = GD.ds.length > 1 ? '<div class="panel section gd"><h2 class="panel-title"><span class="han">緣</span> Quan hệ trong gia đình</h2><p class="lede">Chọn hai người để xem mức hợp nhau, điểm cần nhường nhịn và năm thuận cho cả hai (dùng phần Cặp đôi).</p>' +
       '<div class="gd-cap">' + chon('gdA', 0) + '<span>với</span>' + chon('gdB', 1) + '<button type="button" class="btn btn-primary btn-sm" id="gdXemCap">Xem hợp nhau</button></div></div>' : '';
     var V = GD.van && GD.van.nam === GD.nam ? GD.van : null;
-    var bang = V ? bangHtml(['Người', 'Tuổi', 'Năm với tuổi', 'Phi Tinh', 'Bát Tự', 'Điều nên để ý'], V.ds.map(function (r) {
-      if (r.loi) return '<tr><td><b>' + esc(r.ten) + '</b></td><td colspan="5" class="muted">' + esc(r.loi) + '</td></tr>';
+    var bang = V ? bangHtml(['Người', 'Tuổi', 'Năm với tuổi'].concat(V.phiTinh ? ['Phi Tinh'] : [], ['Bát Tự', 'Điều nên để ý']), V.ds.map(function (r) {
+      if (r.loi) return '<tr><td><b>' + esc(r.ten) + '</b></td><td colspan="' + (V.phiTinh ? 5 : 4) + '" class="muted">' + esc(r.loi) + '</td></tr>';
       var MUC = { 'Thuận': 'r5', 'Bình': 'r3', 'Cần giữ nhịp': 'r2', 'Nên thận trọng': 'r1' };
       return '<tr><td><b>' + esc(r.ten) + '</b><br><small class="muted">' + esc(r.quanHe + ' · ' + (r.conGiap || r.namSinh)) + '</small></td><td>' + r.tuoi + '</td><td>' + esc(r.thaiTue || '—') + '</td>' +
-        '<td>' + (r.phiTinh ? '<span class="rate ' + (MUC[r.phiTinh.muc] || 'r3') + '">' + esc(r.phiTinh.muc) + '</span>' : '—') + '</td><td>' + (r.batTu ? esc(r.batTu.danhGia) : '—') + '</td><td><small>' + esc(r.phiTinh ? r.phiTinh.loi : '') + '</small></td></tr>';
+        (V.phiTinh ? '<td>' + (r.phiTinh ? '<span class="rate ' + (MUC[r.phiTinh.muc] || 'r3') + '">' + esc(r.phiTinh.muc) + '</span>' : '—') + '</td>' : '') + '<td>' + (r.batTu ? esc(r.batTu.danhGia) : '—') + '</td><td><small>' + esc(r.phiTinh ? r.phiTinh.loi : (r.batTu && r.batTu.loi) || '') + '</small></td></tr>';
     })) : '<p class="muted">Bấm "Xem" để tính.</p>';
     var p3 = GD.ds.length ? '<div class="panel section gd"><h2 class="panel-title"><span class="han">年</span> Vận năm cả nhà</h2><div class="gd-cap"><label>Năm <input type="number" id="gdNam" min="1900" max="2200" value="' + GD.nam + '"></label><button type="button" class="btn btn-primary btn-sm" id="gdXemNam">Xem</button>' + (V ? '<span class="muted">' + esc(V.canChi) + '</span>' : '') + '</div>' + bang + '</div>' : '';
     pg.innerHTML = p1 + p2 + p3;
@@ -1431,7 +1431,7 @@
     if (t.id === 'gdThemMo') { var f = state.input; if (!f) return; gdLuuDs(GD.ds.concat([{ ten: f.name || 'Không tên', quanHe: 'Khác', input: f }]), 'Đã thêm ' + (f.name || 'lá số') + ' – bấm Sửa để chọn quan hệ.'); return; }
     if (t.id === 'gdLuu') {
       var n = ($('gdNgay').value || '').split(/[\/.\-]/).map(function (v) { return parseInt(v, 10); }), g = ($('gdGio').value || '0:0').split(':').map(function (v) { return parseInt(v, 10) || 0; });
-      var moi = { ten: $('gdTen').value.trim(), quanHe: $('gdQh').value, input: { name: $('gdTen').value.trim(), gender: $('gdGt').value, calendar: $('gdLich').value, day: n[0], month: n[1], year: n[2], leap: $('gdLich').value === 'am' && $('gdNhuan').checked, hour: g[0], minute: g[1] || 0 } };
+      var moi = { ten: $('gdTen').value.trim(), quanHe: $('gdQh').value, input: { name: $('gdTen').value.trim(), gender: $('gdGt').value, calendar: $('gdLich').value, day: n[0], month: n[1], year: n[2], leap: $('gdLich').value === 'am' && $('gdNhuan').checked, hour: g[0], minute: g[1] || 0, lateRat: $('gdTyMuon').checked } };
       if (!moi.input.day || !moi.input.month || !moi.input.year) { toast('Nhập ngày/tháng/năm, ví dụ 1/1/1990.', true); return; }
       var ds2 = GD.ds.slice(); if (GD.sua != null) { moi.id = ds2[GD.sua].id; ds2[GD.sua] = moi; } else ds2.push(moi);
       gdLuuDs(ds2, 'Đã lưu.'); return;

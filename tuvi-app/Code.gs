@@ -77,7 +77,7 @@ var BAN_MOI_CAN_CO = {
   'BatTu.gs': ['batTuLap', 'thsTheoTru_'],
   'BatTuThanSat.gs': ['thamKhaoThanSat', 'THS_NGUON'],
   'TuViPhiTinh.gs': ['ptLap_', 'ptNguyenCuc_'],
-  'GiaDinh.gs': ['giaDinhLuu', 'GD_KHOA'],
+  'GiaDinh.gs': ['gdDoc_', 'GD_MAC_DINH'],
   'Code.gs': ['lapLaSoDayDu_', 'tvcsBoSaoCong_'],
   'TuViTrinhTu.gs': ['tuviTrinhTu', 'TT_GOP'],
   'TuViChuyenSau.gs': ['thamKhaoTuVi', 'TVCS_NGHE'],

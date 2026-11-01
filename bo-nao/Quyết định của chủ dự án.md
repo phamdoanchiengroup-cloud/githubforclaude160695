@@ -4,7 +4,8 @@ Nhóm: Bắt đầu · Cập nhật 21/10/2026
 Liên quan: [[Việc chờ chủ dự án]] · [[TCC Bán hàng]] · [[00 Mục lục]]
 
 ## Cách làm việc
-- **1/11: tab "👪 Gia đình" chỉ chủ sở hữu** – danh sách người nhà, luận quan hệ (qua Cặp đôi), bảng vận năm cả nhà; dữ liệu người nhà lưu ở Script Properties, không đưa vào GitHub. – [[TCC Tab Gia đình]]
+- **1/11 (sau): tab Gia đình mở cho mọi thành viên đăng nhập** (mỗi người danh sách riêng, lưu ở Sheet); **đồng ý đưa thông tin gia đình chủ dự án lên GitHub** (danh sách mặc định trong GiaDinh.gs). – [[TCC Tab Gia đình]]
+- **1/11: tab "👪 Gia đình" chỉ chủ sở hữu** (đã đổi) – danh sách người nhà, luận quan hệ (qua Cặp đôi), bảng vận năm cả nhà; dữ liệu người nhà lưu ở Script Properties, không đưa vào GitHub. – [[TCC Tab Gia đình]]
 - **1/11: Phi Tinh bố cục theo mục lục cohoc, tổng hợp luận giải của họ, bỏ ý trùng, giữ đủ các ý khác nhau đúng lá số** (đã trích 4 bài cohoc của gia đình – chỉ ở scratchpad). – [[TCC Tứ Hóa Phi Tinh]]
 - **31/10: Tứ Hóa Phi Tinh (Bắc phái) thành tab riêng "✶ Phi Tinh", tạm chỉ chủ sở hữu thấy**; khi mở bán: phần mở đầu miễn phí, chi tiết bằng xu. Văn hai tầng; chỉ đối chiếu trang cohoc, không chép. – [[TCC Tứ Hóa Phi Tinh]]
 - **31/10: cập nhật chỉ cần bấm đúp `2-CAP-NHAT.bat`** – bộ clasp tự sao lưu và tự triển khai phiên bản mới; hướng dẫn chủ dự án chỉ còn "bấm 2-CAP-NHAT.bat → Ctrl+F5" (lỗi thì 3-KHOI-PHUC.bat). – [[TCC Tự đẩy code lên Apps Script]]
