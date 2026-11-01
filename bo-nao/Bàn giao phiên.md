@@ -1,9 +1,25 @@
 # Bàn giao phiên
 
-Nhóm: Chung · Cập nhật 31/10/2026
+Nhóm: Chung · Cập nhật 02/11/2026
 Liên quan: [[00 Mục lục]] · [[Liên kết và công cụ]] · [[Việc chờ chủ dự án]] · [[Lần dán lên Apps Script]] · [[Quyết định của chủ dự án]] · [[KPI Kiểm thử]]
 
 Ghi chú này để phiên Claude Code mới nắm bối cảnh ngay. Đọc `CLAUDE.md`, rồi ghi chú này, rồi [[Liên kết và công cụ]] (mọi link Drive, repo, artifact, công cụ), rồi [[00 Mục lục]].
+
+## BÀN GIAO 02/11 (đọc phần này trước)
+Phiên 31/10–02/11 rất dài, chủ dự án yêu cầu chuyển phiên mới. **Mọi việc đã commit + push** lên `claude/beautiful-ptolemy-f2j7za`, bộ não + bản đồ artifact đã cập nhật (bản 57). Chưa biết chủ dự án đã dán các đợt 31/10–02/11 lên web chưa (cách dán: bấm đúp `2-CAP-NHAT.bat`, bộ cài đã thay 31/10).
+
+**Đã xong trong phiên** (chi tiết: [[KPI Quy trình sản xuất]], [[KPI Gộp công đoạn và tiến độ BTP]]):
+- Tab **Quy trình sản xuất** (chỉ chủ sở hữu): cân bằng tải theo **sp/tháng** (9.000, 26 ngày; nhịp hiện nay đo từ đóng gói ~368/ngày – chủ dự án xác nhận "khá sát"), bảng thiếu/thừa người; **lưu đồ nhà máy** (thẻ kính, đường cong phát sáng, CNC→Ngọn Tip, CNC→Sơn "đầu gậy lết", POM Ngọn Taro→Phôi Thô); **lưu đồ từng xưởng kiểu nhà máy** (nhóm công đoạn chỉ để vẽ); điện thoại ẩn lưu đồ; **cách A** bước xuất mỗi xưởng → ra/ngày.
+- Tab **Đơn hàng** riêng (chỉ chủ sở hữu): như web app đơn hàng + thống kê + Việc theo xưởng + Kiểm phân loại; bản chụp đơn 9h hằng ngày (sheet ẩn `DonHangChup`).
+- Phân loại SKU 4 thông số + kiểu (đánh/nhảy/phá/phá nhảy) + chất liệu; 370/390 tên chắc chắn.
+- File **Cau-hinh-gay-va-quy-trinh-nhap.xlsx** đã gửi chủ dự án (chỉ ở scratchpad, không commit; dựng lại bằng `xuat-cauhinh.js` + `tao-excel.py` nếu scratchpad còn – nếu mất thì dựng lại từ `PL_DONG` trong `tests/quy-trinh/don-hang.gs` + quy trình nháp).
+
+**Chờ chủ dự án:**
+- Gửi lại file Excel: 22 tên hàng vàng, sửa cấu hình dòng gậy, **chỗ sai trong sheet "Quy trình nháp"** (quy trình từng xưởng là bản nháp Claude tự soạn – chủ dự án thấy vài chỗ sai). Nhận file → gộp vào `PL_DONG` / `QT_NHAP` (+ sửa tay của chủ dự án trong sheet `PhanLoaiSKU`, `QuyTrinh`).
+- Họp trưởng phòng về **gộp công đoạn có định mức khác nhau** – KHÔNG tự gộp danh mục KPI.
+- Trả lời 02/11: **Sơn và In UV không làm ngọn** (so sánh với ~346 chuôi/ngày); **Sơn có ghi mỗi lớp sơn thành 1 lần riêng** → số ra/ngày của bước xuất Sơn (Sơn máy + súng ≈ 729) đang gồm nhiều lớp, nên cân nhắc hệ số chia hoặc chọn bước 1 lần/chiếc; câu "tip" chủ dự án chưa rõ – hỏi lại đơn giản: CNC ra ~1.200 tip + phíp/ngày trong khi cần ~350 ngọn/ngày, vậy 1 ngọn dùng mấy tip/phíp, có làm tip bán lẻ / để kho không?
+
+**Gợi ý việc tiếp theo:** (1) xử lý file Excel khi chủ dự án gửi lại; (2) Sơn: hệ số lớp sơn cho bước xuất; (3) giai đoạn 2 thu tiến độ BTP: kiểm kê 1 lần + phiếu giao nhận 3 điểm (cách B) khi chủ dự án muốn.
 
 ## Trạng thái nhánh (25/10)
 - Mọi việc đã commit và push lên `claude/beautiful-ptolemy-f2j7za`. Commit cuối: "ảnh web lấy từ repo qua jsDelivr" (25/10).
@@ -21,7 +37,7 @@ Ghi chú này để phiên Claude Code mới nắm bối cảnh ngay. Đọc `CL
 - [[KPI Màn đăng nhập Khắc laser]]: nền ảnh nhà máy ban đêm, thẻ nhân viên vân carbon được laser khắc mã và tên.
 - [[KPI Ảnh web qua jsDelivr]]: 25/10 ảnh nền đăng nhập + mặt bằng sơ đồ lấy từ repo (công khai) qua jsDelivr, ghim commit; Claude tự làm, không cần Drive.
 
-## Đang làm (31/10)
+## Đã làm 31/10 (lịch sử)
 - [[KPI Quy trình sản xuất]]: tab mới gộp Kỹ năng.
   - Đã chốt phương án C, chỉ chủ sở hữu xem.
   - Đã đọc 2 file chủ dự án gửi (danh mục mã hàng, trạng thái đơn hàng). Tiền tố mã cho biết chặng BTP; hàng còn thiếu ~12.000, giao ~250/ngày.
