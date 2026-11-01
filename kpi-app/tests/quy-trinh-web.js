@@ -74,15 +74,37 @@ const vao = async (p, tk) => { await p.goto(F); await p.waitForSelector('#xtGoiY
     await p.click('.qt-tabs button:has-text("Con người")'); await p.waitForTimeout(300);
     s = await p.evaluate(() => [document.querySelector('.qt-ket').textContent, document.querySelectorAll('.card table tbody tr').length]);
     ok(/chỉ 1 người/.test(s[0]) && s[1] > 3, 'Con người: đếm công đoạn 1 người / 2 người + danh sách', s);
-    // Sửa quy trình: đổi bước, chọn tay, chặn vòng lặp, lưu
+    // Sửa quy trình (02/11: A kéo thả trên lưu đồ ở máy tính + B danh sách ↑↓; điện thoại chỉ danh sách)
     await p.click('.qt-tabs button:has-text("Sửa quy trình")'); await p.selectOption('#qtChonX', 'SON'); await p.waitForTimeout(300);
-    s = await p.evaluate(() => document.querySelectorAll('.qt-sua .dong').length);
-    ok(s === 13, 'Sửa: xưởng Sơn có 13 công đoạn để sửa', s);
+    s = await p.evaluate(() => [document.querySelectorAll('.qt-r').length, document.querySelectorAll('.qt-ts').length, getComputedStyle(document.querySelector('.qt-sw')).display, !!document.querySelector('.qt-dsb').open, document.documentElement.scrollWidth > innerWidth + 1]);
+    ok(s[0] === 13 && s[1] === 13 && (w > 640 ? s[2] !== 'none' && !s[3] : s[2] === 'none' && s[3]) && !s[4], 'Sửa: xưởng Sơn 13 công đoạn; ' + (w > 640 ? 'máy tính có lưu đồ kéo thả, danh sách thu gọn' : 'điện thoại: không lưu đồ, danh sách mở sẵn') + '; không tràn ngang', s);
     if (CHUP) await p.screenshot({ path: CHUP + '/qt-sua-' + w + '.png', fullPage: true });
     await p.evaluate(() => qtSuaO('VS-LAP-POM', 'Buoc', 8));
     ok(await p.evaluate(() => QTDoi && qtTim('VS-LAP-POM').Buoc === 8 && /•/.test(document.querySelector('.qt-tabs').textContent)), 'đổi bước: đánh dấu có thay đổi');
+    // ↑ ↓: bước liền nhau 1..n, đi qua "cùng bước" rồi "bước riêng"; hoàn tác
+    s = await p.evaluate(() => { const cs = () => qtCsX('SON').filter(q => !qtNgoai(q)), lien = () => { const b = [...new Set(cs().map(q => q.Buoc))].sort((a, c) => a - c); return b.every((v, i) => v === i + 1); };
+      const q = qtTim('TUOT-LOT'), n0 = QTHoan.length, chung = () => cs().some(c => c !== q && c.Buoc === q.Buoc), c0 = chung();
+      qtDichBuoc('TUOT-LOT', 1); const c1 = chung(), l1 = lien(); qtDichBuoc('TUOT-LOT', 1); const c2 = chung(), l2 = lien();
+      qtHoanTac(); qtHoanTac(); return [c0 ? !c1 : c1, c2 === !c1, l1 && l2, q.Buoc, QTHoan.length === n0]; });
+    ok(s[0] && s[1] && s[2] && s[3] === 1 && s[4], '↓ lần lượt: đang chung bước → tách bước riêng → làm cùng bước sau…; số bước luôn liền 1..n; hoàn tác trả lại như cũ', s);
+    if (w > 640) {
+      s = await p.evaluate(() => { const dt = new DataTransfer(), src = document.querySelector('.qt-ts[data-ma="TUOT-LOT"]'), dst = document.querySelector('.qt-sg .o[data-nh="CHUNG"][data-b="1"]:not(.khe)');
+        src.dispatchEvent(new DragEvent('dragstart', { bubbles: true, dataTransfer: dt })); dst.dispatchEvent(new DragEvent('dragover', { bubbles: true, cancelable: true, dataTransfer: dt })); dst.dispatchEvent(new DragEvent('drop', { bubbles: true, cancelable: true, dataTransfer: dt }));
+        const q = qtTim('TUOT-LOT'), a = [q.Nhanh, q.Buoc]; qtHoanTac();
+        const k = document.querySelector('.qt-sg .khe[data-nh="CHUOI"][data-b="1"]'); src.dispatchEvent(new DragEvent('dragstart', { bubbles: true, dataTransfer: dt })); const s2 = document.querySelector('.qt-ts[data-ma="RAP-MAY-CHUOI"], .qt-ts[data-ma]:not([data-ma="TUOT-LOT"])').dataset.ma;
+        qtThaVao(s2, 'CHUOI', 1, true); const q2 = qtTim(s2), b = [q2.Buoc, qtCsX('SON').filter(c => !qtNgoai(c) && c.Buoc === 1).length]; qtHoanTac();
+        return [a.join(), b, !!window.__qtCanhS && __qtCanhS.length > 0, document.querySelectorAll('.qt-sw svg path').length > 0]; });
+      ok(s[0] === 'CHUNG,1' && s[1][0] === 1 && s[1][1] === 1 && s[2] && s[3], 'kéo thả: thả vào ô → đổi nhánh + bước; thả vào khe → chèn bước mới; mũi tên vẽ lại', s);
+      await p.evaluate(() => { QTChonThe = 'TUOT-LOT'; qtVe(); });
+      ok(await p.evaluate(() => !!document.querySelector('.qt-chonthe .qt-r[data-ma="TUOT-LOT"]')), 'bấm thẻ: hiện khung chỉnh chi tiết của thẻ đó');
+      await p.evaluate(() => { QTChonThe = ''; });
+    }
+    s = await p.evaluate(() => { const x = qtXuat('SON').slice(), m = qtCsX('SON').find(q => x.indexOf(q.Ma) < 0).Ma; qtSao(m); const a = qtXuat('SON').indexOf(m) >= 0 && !qtRa('SON').macDinh; qtHoanTac(); return [a, qtXuat('SON').join() === x.join()]; });
+    ok(s[0] && s[1], '⭐ Ra hàng: thêm bước ra hàng (đã chọn tay), hoàn tác được', s);
+    s = await p.evaluate(() => { qtDoiNhanh('TUOT-LOT', 'HOTRO'); const a = qtTim('TUOT-LOT').Nhanh === 'HOTRO' && !qtCanh(qtCsX('SON'))['TUOT-LOT'].length; qtHoanTac(); return [a, qtTim('TUOT-LOT').Nhanh]; });
+    ok(s[0] && s[1] === 'CHUOI', 'đổi nhánh sang Hỗ trợ: ra ngoài dòng chảy (không nối); hoàn tác', s);
     await p.evaluate(() => { QTMo = 'TUOT-LOT'; qtVe(); });
-    await p.evaluate(() => { const el = document.querySelector('.chon input[data-t="VS-LAP-POM"]'); el.checked = true; qtChonTay(el); });
+    await p.evaluate(() => { const el = document.querySelector('.qt-r[data-ma="TUOT-LOT"] .chon input[data-t="VS-LAP-POM"]') || document.querySelector('.chon input[data-ma="TUOT-LOT"][data-t="VS-LAP-POM"]'); if (el) { el.checked = true; qtChonTay(el); } });
     ok(await p.evaluate(() => qtTim('TUOT-LOT').Truoc.length === 0 && /vòng lặp/.test(document.getElementById('toast').textContent)), 'chọn tay tạo vòng lặp: chặn, báo lỗi');
     await p.click('.qt-luu button:has-text("Lưu quy trình")'); await p.waitForTimeout(2500);
     s = await p.evaluate(() => [QT.nhap, (QTD.find(q => q.Ma === 'VS-LAP-POM') || {}).Buoc, __MAY_CHU.doc_('QuyTrinh').length, QTDoi]);
