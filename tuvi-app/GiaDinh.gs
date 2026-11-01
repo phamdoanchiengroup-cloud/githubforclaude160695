@@ -6,7 +6,7 @@
  * Giờ Tý muộn (23–24h) luôn tính sang ngày âm hôm sau (chủ dự án nhắc 1/11) – không tắt chuyển ngày để khớp trang khác.
  */
 var GD_TOI_DA = 30;
-var GD_QUAN_HE = ['Bản thân', 'Vợ', 'Chồng', 'Con trai', 'Con gái', 'Cha', 'Mẹ', 'Anh', 'Chị', 'Em trai', 'Em gái', 'Ông', 'Bà', 'Cháu', 'Họ hàng', 'Bạn bè', 'Khác'];
+var GD_QUAN_HE = ['Bản thân', 'Vợ', 'Chồng', 'Con trai', 'Con gái', 'Cha', 'Mẹ', 'Anh', 'Chị', 'Em trai', 'Em gái', 'Ông', 'Bà', 'Họ hàng', 'Bạn bè', 'Khác'];
 var GD_SH = ['Tài khoản', 'Danh sách (JSON)', 'Cập nhật'];
 /** Gia đình chủ sở hữu – lấy từ 4 lá số Bắc phái trên tuvi.cohoc.net chủ dự án gửi (đã đối chiếu Mệnh/Cục/Lai Nhân khớp) */
 var GD_MAC_DINH = [
@@ -107,7 +107,7 @@ function giaDinhVanNam(nam, token) {
  * ====================================================================================================== */
 var GD_VAI = {
   'Bản thân': ['S', 0], 'Vợ': ['P', 0], 'Chồng': ['P', 0], 'Con trai': ['C', -1], 'Con gái': ['C', -1], 'Cha': ['M', 1], 'Mẹ': ['M', 1],
-  'Anh': ['E', 0], 'Chị': ['E', 0], 'Em trai': ['E', 0], 'Em gái': ['E', 0], 'Ông': ['O', 2], 'Bà': ['O', 2], 'Cháu': ['H', -2]
+  'Anh': ['E', 0], 'Chị': ['E', 0], 'Em trai': ['E', 0], 'Em gái': ['E', 0], 'Ông': ['O', 2], 'Bà': ['O', 2]
 };
 /** Loại quan hệ giữa hai người theo quan hệ của mỗi người với chủ danh sách. tren = chỉ số người bề trên (0/1) hoặc -1 */
 function gdLoaiCap_(qa, qb) {

@@ -18,7 +18,7 @@ Chủ dự án muốn tab riêng cho lá số gia đình. Chốt: danh sách b�
 - Giao diện: ô chọn người (tối đa 4, mặc định 2 người đầu) → "Xem quan hệ"; kết quả ngay trong tab (`gdQhHtml`). Phần quan hệ gia đình **miễn phí** cho người đăng nhập.
 - Rà: chuyên gia `code-reviewer` – không lỗi chặn; đã sửa: đổi tài khoản giữa lúc chờ thì bỏ kết quả cũ, nhãn ông bà – cháu, bỏ chữ "phúc tinh", vợ chồng bản gọn.
 - Kiểm thử `tests/gia-dinh.js` 7862/7862 (loại cặp, không chữ kết hôn/sinh con cho cha – con, 4 người đủ 6 cặp + tam giác, lời dễ hiểu không tên sao/thuật ngữ, 25 gia đình ngẫu nhiên); cai-dat 103/103; chạy giao diện Playwright 1200px và 390px không lỗi, không tràn.
-- Còn mở: chữ "Cháu" có hai nghĩa (cháu nội/ngoại hay con anh chị em) – hiện xếp "bề trên – bề dưới" chung.
+- 1/11 (sau): chủ dự án **bỏ vai "Cháu"** khỏi `GD_QUAN_HE` (quan hệ xa, ít ảnh hưởng); dữ liệu cũ khi lưu lại thành "Khác". Kiểm thử 7863/7863.
 
 ## Mở cho mọi thành viên + danh sách mặc định (mã 2026.11.1.2)
 - Chủ dự án (1/11): **đồng ý đưa thông tin gia đình lên GitHub** và **mở tab cho mọi thành viên tự nhập tra cứu**.

@@ -46,6 +46,7 @@ kt(L('Vợ', 'Bản thân').loai === 'vc' && L('Cha', 'Mẹ').loai === 'vc' && L
 kt(L('Con gái', 'Con trai').loai === 'ae' && L('Anh', 'Bản thân').loai === 'ae' && L('Cha', 'Con gái').loai === 'ob' && L('Mẹ', 'Vợ').loai === 'dau' && L('Em gái', 'Con gái').loai === 'tren' && L('Bạn bè', 'Bản thân').loai === 'chung', 'anh em, ông bà – cháu, dâu rể, cô – cháu, người ngoài');
 const ids = M.map(x => x.id);
 kt(ids.join() === 'gdmd1,gdmd2,gdmd3,gdmd4', 'danh sách mặc định có id cố định');
+kt(ctx.GD_QUAN_HE.indexOf('Cháu') < 0 && ctx.gdChuan_({ ten: 'X', quanHe: 'Cháu', input: { day: 1, month: 1, year: 2010 } }, 0).quanHe === 'Khác' && L('Cháu', 'Bản thân').loai === 'chung', 'bỏ vai Cháu (chủ dự án 1/11): dữ liệu cũ thành Khác');
 const Q2 = ctx.giaDinhQuanHe([ids[0], ids[2]], tokChu), c2 = Q2.cap[0];
 kt(Q2.cap.length === 1 && !Q2.nhom && c2.loai === 'cm' && c2.capDoi === false && c2.diem >= 0 && c2.diem <= 10, 'cha – con gái: 1 cặp, loại cha mẹ – con, không có nút hợp hôn');
 const chu2 = JSON.stringify(Q2);
@@ -67,7 +68,7 @@ bi = false; try { ctx.giaDinhQuanHe([ids[0]], tokChu); } catch (e) { bi = true; 
 let bi2 = false; try { ctx.giaDinhQuanHe(ids, tokTV); } catch (e) { bi2 = true; }
 kt(bi && bi2, 'chọn 1 người hoặc id không thuộc danh sách mình bị từ chối');
 for (let i = 0; i < 25; i++) {   // ngẫu nhiên: không lỗi, điểm trong 0–10
-  const qh = ['Bản thân', 'Vợ', 'Con trai', 'Con gái', 'Cha', 'Mẹ', 'Anh', 'Em gái', 'Ông', 'Bà', 'Cháu', 'Họ hàng'];
+  const qh = ['Bản thân', 'Vợ', 'Con trai', 'Con gái', 'Cha', 'Mẹ', 'Anh', 'Em gái', 'Ông', 'Bà', 'Họ hàng'];
   const dsN = [0, 1, 2, 3].map(k => ({ ten: 'N' + i + k, quanHe: qh[(i * 5 + k * 7) % qh.length], input: { gender: (i + k) % 2 ? 'nu' : 'nam', calendar: 'duong', day: 1 + (i * 7 + k * 3) % 28, month: 1 + (i + k * 5) % 12, year: 1940 + (i * 13 + k * 17) % 80, hour: (i * 5 + k) % 24, minute: 0 } }));
   const sach = ctx.giaDinhLuu(dsN, tokTV).ds, R = ctx.giaDinhQuanHe(sach.map(x => x.id), tokTV);
   kt(R.cap.length === 6 && R.cap.every(c => c.diem >= 0 && c.diem <= 10 && c.tomTat.length) && R.nhom, '#' + i + ' 4 người ngẫu nhiên luận được');
