@@ -1,0 +1,571 @@
+{
+  "meta": {
+    "ten": "Quy tắc Tử Vi Tứ Hóa Phi Tinh (Bắc phái – Phi Tinh / Khâm Thiên)",
+    "phienBan": "2026-10-31",
+    "nguyenTacChon": "Chỉ đưa vào 'kyThuat' những gì ít nhất 2 nguồn độc lập mô tả giống nhau; chỗ lệch ghi ở 'batDongY'. Mục chỉ có 1 nguồn để riêng ở 'motNguon' (app có thể bỏ qua hoặc chỉ dùng làm gợi ý). Phần giải nghĩa từng cặp cung ở 'luanCung' chủ yếu từ một hệ (Lương Nhược Du / Trương Thế Hiền), còn nguyên tắc chung của nó có ≥2 nguồn – xem trường 'soNguon'.",
+    "luuYDaoDuc": "Không dùng mẫu nào để đoán chết, bệnh, tai nạn. Các mẫu cổ có ý 'hung hiểm' (Tuyệt Mệnh Kỵ…) chỉ diễn đạt là 'giai đoạn nên thận trọng, giữ nhịp an toàn'.",
+    "thuTuCung": ["Mệnh", "Huynh đệ", "Phu thê", "Tử tức", "Tài bạch", "Tật ách", "Thiên di", "Nô bộc", "Quan lộc", "Điền trạch", "Phúc đức", "Phụ mẫu"],
+    "ghiChuThuTuCung": "Từ cung Mệnh đi NGHỊCH chiều địa chi (Mệnh ở Mão thì Huynh đệ ở Dần, Phu thê ở Sửu…). Cung đối = cách 6 cung.",
+    "thienCan": ["Giáp", "Ất", "Bính", "Đinh", "Mậu", "Kỷ", "Canh", "Tân", "Nhâm", "Quý"],
+    "diaChi": ["Tí", "Sửu", "Dần", "Mão", "Thìn", "Tị", "Ngọ", "Mùi", "Thân", "Dậu", "Tuất", "Hợi"],
+    "saoDung": ["Tử Vi", "Thiên Cơ", "Thái Dương", "Vũ Khúc", "Thiên Đồng", "Liêm Trinh", "Thiên Phủ", "Thái Âm", "Tham Lang", "Cự Môn", "Thiên Tướng", "Thiên Lương", "Thất Sát", "Phá Quân", "Văn Xương", "Văn Khúc", "Tả Phù", "Hữu Bật"],
+    "ghiChuSaoDung": "Phi hóa chỉ cần vị trí 14 chính tinh + Văn Xương, Văn Khúc, Tả Phù, Hữu Bật (các sao có thể mang Tứ Hóa). Bắc phái dùng ít sao; không xét miếu hãm, Tuần Triệt, vòng Tràng Sinh khi luận phi hóa [S22, S23, S29]."
+  },
+
+  "nguon": {
+    "S1": {"ten": "Lương Nhược Du (梁若瑜) – Phi Tinh Tử Vi Đẩu Số: 獨門心法班 02 名詞解釋", "url": "https://www.transtar-csft-liang.url.tw/hot_117577.html"},
+    "S2": {"ten": "Lương Nhược Du – 邏輯心法: 化忌轉忌、追忌", "url": "https://www.transtar-csft-liang.url.tw/hot_119411.html"},
+    "S3": {"ten": "Lương Nhược Du – 邏輯心法: 化祿轉忌、追祿", "url": "https://www.transtar-csft-liang.url.tw/hot_118673.html"},
+    "S4": {"ten": "Lương Nhược Du – 四化象義推理解釋", "url": "https://www.transtar-csft-liang.url.tw/hot_117791.html"},
+    "S5": {"ten": "Trương Thế Hiền (張世賢) trên site Lương Nhược Du – 宮位組合化象 (X宮化祿/忌入12宮, 生年祿/忌坐12宮)", "url": "https://www.transtar-csft-liang.url.tw/hot_cg15066.html"},
+    "S6": {"ten": "紫微斗数学堂 – 离心自化和向心自化有什么区别 (dẫn Hứa Thuyên Nhân 許銓仁)", "url": "http://www.ziweicn.com/ziweibaike/4181.html"},
+    "S7": {"ten": "东派斗数 – 简论自化向心自化 (blog Sina)", "url": "https://blog.sina.com.cn/s/blog_133e591180102z53t.html"},
+    "S8": {"ten": "紫微志 ziwei.ist – 宫干飞化与自化", "url": "https://ziwei.ist/learn/flying-stars"},
+    "S9": {"ten": "108s.tw 從星開始紫微研究苑 – 來因宮是這輩子來這人世間的原因", "url": "https://www.108s.tw/article/info/45"},
+    "S10": {"ten": "Threads @yxchen030 – 來因宮怎麼找 (bảng can năm → chi)", "url": "https://www.threads.com/@yxchen030/post/C_xZdnKPZ4x"},
+    "S11": {"ten": "紫微台 – 決定命格高低: 來因宮大揭秘 (chỉ đọc qua kết quả tìm kiếm)", "url": "https://www.ziweitai.com/detail/8960"},
+    "S12": {"ten": "紫微斗数学堂 – 来因宫论命法", "url": "https://www.ziweicn.com/yiyuxinshu/baijiazatan/3868.html"},
+    "S13": {"ten": "qqqtseng pixnet – 流出忌 循環忌 反弓忌 是非忌 逆水忌 拆馬忌 入庫忌 絕命忌", "url": "https://qqqtseng.pixnet.net/blog/posts/9275425958"},
+    "S14": {"ten": "紫微斗数心理网 – 宫位篇 忌星型态", "url": "https://www.chinazwds.com/Home/ArticleDetails/7d3c35e43444489e8f3df6bb90a2ec50"},
+    "S15": {"ten": "pixnet – 斗數四化之忌星型態 (12 loại)", "url": "https://dyhnodsntbimhi.pixnet.net/blog/posts/7038142413"},
+    "S16": {"ten": "jordanwwj pixnet – 紫微斗數09 探討四化星重要雜記 (các điều đánh số)", "url": "https://jordanwwj.pixnet.net/blog/posts/10355545730"},
+    "S17": {"ten": "紫微斗数学堂 – 再论一六共宗的体用关系 (ghi theo 欽天四化)", "url": "https://www.ziweicn.com/show/3255.html"},
+    "S18": {"ten": "紫微台 – 十二宮位、六親宮、六事宮、我宮、他宮", "url": "https://www.ziweitai.com/detail/8155"},
+    "S19": {"ten": "jessietalk – 紫微斗數的六內宮與六外宮", "url": "https://jessietalk.com/2groupsindziwei/"},
+    "S20": {"ten": "khamthientuhoa.com – Giới thiệu cơ bản về Tứ Hóa Phi Tinh và các cấp độ Tứ Hóa", "url": "https://khamthientuhoa.com/gioi-thieu-co-ban-ve-tu-hoa-phi-tinh-va-cac-cap-do-tu-hoa-trong-tu-vi-bac-phai/"},
+    "S21": {"ten": "khamthientuhoa.com – Thể và Dụng, Đại Thái Cực, Tiểu Thái Cực", "url": "https://khamthientuhoa.com/khai-niem-the-va-dung-dai-thai-cuc-tieu-thai-cuc-trong-luan-giai-tu-vi-kham-thien-tu-hoa/"},
+    "S22": {"ten": "hoc.kabala.vn – Bài sưu tầm các môn phái Tử Vi", "url": "https://hoc.kabala.vn/bai-suu-tam-cac-mon-phai-tu-vi/"},
+    "S23": {"ten": "thayungkhiem.vn – Tổng quan các trường phái Tử Vi", "url": "https://thayungkhiem.vn/phai-tu-vi-tong-quan"},
+    "S24": {"ten": "tradiculture – 紫微四化表完整解析: 庚干爭議", "url": "https://tradiculture.com/ziweisihuabiaowanzhengjiexi/"},
+    "S25": {"ten": "qqqtseng pixnet – 戊、庚和壬干的四化 不同派別", "url": "https://qqqtseng.pixnet.net/blog/posts/9292852613"},
+    "S26": {"ten": "tuvi.cohoc.net – bài luận mẫu 'Bắc phái' (lá số riêng của chủ dự án; chỉ dùng để học cấu trúc & kiểm thuật toán)", "url": "https://tuvi.cohoc.net/ (trang luận Bắc phái)"},
+    "S27": {"ten": "vocus – 紫微斗數北派、南派、中洲派之比較", "url": "https://vocus.cc/article/69f2ccd8fd89780001782d08"},
+    "S28": {"ten": "HackMD – 紫微斗數流派", "url": "https://hackmd.io/@2MOUppXTRLeCjH-jrb27NQ/HJnRgZ1T-e"},
+    "S29": {"ten": "matphuoctu.com – Lập lá số Tử Vi Bắc phái (cách đọc nhãn 'Lộc Tài')", "url": "https://matphuoctu.com/tu-vi-bac-phai/"},
+    "S30": {"ten": "blog udn bonniewu2 – 四化飛星分自化、化入、化出 (trang trả 403, chỉ đọc được đoạn trích trong kết quả tìm kiếm)", "url": "https://blog.udn.com/bonniewu2/5553074"}
+  },
+
+  "tuHoa": {
+    "thuTu": ["Lộc", "Quyền", "Khoa", "Kỵ"],
+    "bangDung": {
+      "Giáp": ["Liêm Trinh", "Phá Quân", "Vũ Khúc", "Thái Dương"],
+      "Ất": ["Thiên Cơ", "Thiên Lương", "Tử Vi", "Thái Âm"],
+      "Bính": ["Thiên Đồng", "Thiên Cơ", "Văn Xương", "Liêm Trinh"],
+      "Đinh": ["Thái Âm", "Thiên Đồng", "Thiên Cơ", "Cự Môn"],
+      "Mậu": ["Tham Lang", "Thái Âm", "Hữu Bật", "Thiên Cơ"],
+      "Kỷ": ["Vũ Khúc", "Tham Lang", "Thiên Lương", "Văn Khúc"],
+      "Canh": ["Thái Dương", "Vũ Khúc", "Thái Âm", "Thiên Đồng"],
+      "Tân": ["Cự Môn", "Thái Dương", "Văn Khúc", "Văn Xương"],
+      "Nhâm": ["Thiên Lương", "Tử Vi", "Tả Phù", "Vũ Khúc"],
+      "Quý": ["Phá Quân", "Cự Môn", "Thái Âm", "Tham Lang"]
+    },
+    "nguonBangDung": ["S1", "S24", "S26"],
+    "ghiChu": "Bảng trên là bảng của trường Phi Tinh Lương Nhược Du (S1) và cũng là 'bản thông hành' của phần mềm Đài Loan (S24). Bài luận Bắc phái của tuvi.cohoc.net dùng đúng bảng này – đã kiểm 48/48 phi hóa (S26). Sáu can Giáp, Ất, Bính, Đinh, Kỷ, Tân không có tranh cãi.",
+    "canTranhCai": {
+      "Mậu": {
+        "dung": "Tham Lang Lộc, Thái Âm Quyền, Hữu Bật Khoa, Thiên Cơ Kỵ",
+        "biThe": [
+          {"bang": "Tham Lang, Thái Âm, Thái Dương (Khoa), Thiên Cơ", "phai": "Trung Châu phái (Vương Đình Chi) – vì phái này không cho Tả Hữu nhận Tứ Hóa", "nguon": ["S24", "S25"]}
+        ]
+      },
+      "Canh": {
+        "dung": "Thái Dương Lộc, Vũ Khúc Quyền, Thái Âm Khoa, Thiên Đồng Kỵ (陽武陰同 – theo 《紫微斗數全集》)",
+        "biThe": [
+          {"bang": "Thái Dương, Vũ Khúc, Thiên Đồng (Khoa), Thái Âm (Kỵ) – 陽武同陰", "phai": "《紫微斗數全書》", "nguon": ["S24", "S25"]},
+          {"bang": "Thái Dương, Vũ Khúc, Thiên Phủ (Khoa), Thiên Đồng (Kỵ) – 陽武府同", "phai": "Trung Châu phái", "nguon": ["S24", "S25"]},
+          {"bang": "Thái Dương, Vũ Khúc, Thiên Đồng (Khoa), Thiên Tướng (Kỵ) – 陽武同相", "phai": "một nhánh 'Bắc phái Hà Lạc / Chiêm nghiệm môn' theo S24, S25", "nguon": ["S24", "S25"]}
+        ],
+        "batDongY": "Một kết quả tìm kiếm nói Khâm Thiên môn dùng 陽武同陰, nhưng không có trang gốc xác nhận; trường Phi Tinh (S1) và bài cohoc (S26) dùng 陽武陰同. Nên cho người dùng chọn biến thể Canh trong cài đặt, mặc định 陽武陰同."
+      },
+      "Nhâm": {
+        "dung": "Thiên Lương Lộc, Tử Vi Quyền, Tả Phù Khoa, Vũ Khúc Kỵ (梁紫左武)",
+        "biThe": [
+          {"bang": "Thiên Lương, Tử Vi, Thiên Phủ (Khoa), Vũ Khúc – 梁紫府武", "phai": "Trung Châu phái; một số bản 《全書》", "nguon": ["S24", "S25"]}
+        ]
+      },
+      "Quý": {
+        "dung": "Phá Quân Lộc, Cự Môn Quyền, Thái Âm Khoa, Tham Lang Kỵ",
+        "biThe": [],
+        "ghiChu": "Mọi nguồn đã đọc đều giống nhau (S1, S24, S25)."
+      }
+    }
+  },
+
+  "canCung": {
+    "quyTac": "Ngũ Hổ Độn theo can NĂM SINH: tìm can của cung Dần, rồi đi THUẬN chiều địa chi (Dần, Mão, Thìn … Hợi, Tí, Sửu), mỗi cung tăng 1 can. Vì vậy Tí cùng can với Dần, Sửu cùng can với Mão.",
+    "canDan": {"Giáp": "Bính", "Kỷ": "Bính", "Ất": "Mậu", "Canh": "Mậu", "Bính": "Canh", "Tân": "Canh", "Đinh": "Nhâm", "Nhâm": "Nhâm", "Mậu": "Giáp", "Quý": "Giáp"},
+    "congThuc": "chiSo(canDần) = (chiSo(canNăm) mod 5) × 2 + 2 (mod 10), với Giáp = 0 … Quý = 9; can cung thứ k tính từ Dần = (canDần + k) mod 10, k = 0..11 cho Dần..Sửu.",
+    "nguon": ["S1", "S9", "S26"],
+    "khacBietPhai": "Không thấy phái Phi Tinh/Khâm Thiên nào đặt can cung khác. Thấu Thiên (Minh Đăng) phái thuộc Tam Hợp thì không an thiên can cho cung (S22) – không liên quan Bắc phái.",
+    "daiVan": "Can của đại vận = can của cung gốc mà đại vận đóng (S26, đã kiểm 12/12 đại vận).",
+    "luuNien": "Mệnh lưu niên = cung có địa chi trùng chi năm xem; Tứ Hóa lưu niên lấy theo CAN NĂM xem (không lấy can cung gốc) (S26, S20).",
+    "luuNguyet": "Mệnh tháng theo Đẩu quân (từ cung lưu niên đếm nghịch tới tháng sinh, rồi đếm thuận tới giờ sinh = tháng Giêng; các tháng sau đi thuận); Tứ Hóa tháng lấy theo can của tháng âm lịch (Ngũ Hổ Độn theo can năm xem). Chỉ kiểm được trên S26 – xem 'motNguon'."
+  },
+
+  "laiNhanCung": {
+    "dinhNghia": "Cung có thiên can trùng can năm sinh (不取 Tí, Sửu). Là 'nguồn khí' phát ra Tứ Hóa năm sinh, lý do/động lực của đời này; là đặc thù của Khâm Thiên môn (S9).",
+    "bang": {"Giáp": "Tuất", "Ất": "Dậu", "Bính": "Thân", "Đinh": "Mùi", "Mậu": "Ngọ", "Kỷ": "Tị", "Canh": "Thìn", "Tân": "Mão", "Nhâm": "Dần", "Quý": "Hợi"},
+    "lyDoBoTiSuu": "Theo Ngũ Hổ Độn, Tí trùng can với Dần, Sửu trùng can với Mão; lại 'Tí là Trời, Sửu là Đất' nên Tí/Sửu không làm Lai Nhân cung (S9). Năm Nhâm (Dần và Tí cùng can Nhâm) lấy Dần; năm Tân (Mão và Sửu cùng can Tân) lấy Mão.",
+    "nguon": ["S9", "S10", "S12", "S26"],
+    "batDongY": "S11 cho rằng gốc ở Dần/Mão còn Tí/Sửu chỉ là tham khảo phụ – kết quả vẫn giống bảng trên.",
+    "cachDung": "Tên cung chức tại Lai Nhân cung cho biết 'đời này quan tâm/động lực chính nằm ở mảng nào' (S9, S10). S12 thêm: Lai Nhân cung là cung phát xạ, xét nó cùng cung đối (Lai Nhân – đối cung) có Tứ Hóa năm sinh và tự hóa hay không.",
+    "yNghiaTheoCung": {
+      "Mệnh": "Tự làm chủ, thành bại do mình; nên chủ động gây dựng quan hệ, bớt cố chấp.",
+      "Huynh đệ": "Động lực từ quan hệ với mẹ, anh chị em, bạn đồng trang lứa; hợp kiểu làm ăn chung.",
+      "Phu thê": "Coi trọng tình cảm, gắn bó lứa đôi; cảm xúc dễ bị ảnh hưởng bởi sự lạnh nhạt của người kia.",
+      "Tử tức": "Muốn gia đình trọn vẹn, gần gũi người nhỏ tuổi; thích hợp tác.",
+      "Tài bạch": "Nhạy với tiền và thị trường; coi trọng sự đủ đầy, dễ tự trách khi chưa đạt mục tiêu tài chính.",
+      "Tật ách": "Thích tự tay làm; cần chú ý nhịp làm việc và nghỉ ngơi.",
+      "Thiên di": "Quan tâm hình ảnh bên ngoài, dám đi xa; gặp bế tắc thì mở rộng ra ngoài sẽ có lợi.",
+      "Nô bộc": "Đặt bạn bè lên trước, khó từ chối người khác; cần cân bằng với gia đình.",
+      "Quan lộc": "Coi trọng mục tiêu sự nghiệp, cần lịch làm việc đầy đủ; dễ nản khi vấp váp.",
+      "Điền trạch": "Hướng về gia đình, sự ủng hộ của người nhà là động lực; dễ lập gia đình sớm.",
+      "Phúc đức": "Đề cao đời sống tinh thần hơn vật chất; may mắn đến từ phúc phần.",
+      "Phụ mẫu": "Ảnh hưởng của cha/người trên lớn, định hình cách hành xử và cách làm cha mẹ sau này."
+    },
+    "nguonYNghia": ["S9", "S10"],
+    "soNguonYNghia": "S9 đủ 12 cung; S10 chỉ trích được 5 cung (Mệnh, Huynh, Phu, Tử, Tài) và khớp ý."
+  },
+
+  "kyThuat": [
+    {
+      "id": "tuong_tu_hoa",
+      "ten": "Tượng của Lộc – Quyền – Khoa – Kỵ",
+      "tenHan": "四化象義",
+      "dinhNghia": {
+        "Lộc": "sinh phát, có duyên, vui vẻ; cơ hội và nhân duyên (thiếu dương – mùa xuân).",
+        "Quyền": "mạnh mẽ, nắm giữ, thành tựu; năng lực, sức đẩy (thái dương – mùa hạ).",
+        "Khoa": "văn nhã, lý trí, hòa hoãn; danh tiếng, quý nhân, 'nước chảy đều' (thiếu âm – mùa thu).",
+        "Kỵ": "thu giữ, chấp trước, phải bỏ công sức; sự gắn bó, ràng buộc, tiêu hao (thái âm – mùa đông)."
+      },
+      "nguyenTacLuan": "Kỵ không đồng nghĩa với xấu: Kỵ là nơi ta để tâm và phải bỏ công; Lộc là nơi có duyên, dễ vui. Đọc theo công thức 'Tứ Hóa của cung A + sao ở cung B = quan hệ của A đối với B'.",
+      "nguon": ["S1", "S4", "S20"]
+    },
+    {
+      "id": "sinh_nien_tu_hoa",
+      "ten": "Tứ Hóa năm sinh",
+      "tenHan": "生年四化",
+      "dinhNghia": "Can năm sinh làm 4 sao hóa Lộc, Quyền, Khoa, Kỵ; ngồi cố định suốt đời trong cung có sao đó.",
+      "cachTinh": "tuHoa.bangDung[canNam] → 4 sao → tìm cung chứa từng sao.",
+      "nguyenTacLuan": "Là 'tượng tiên thiên', tác động lâu nhất; mọi phi hóa, tự hóa đều đọc dựa trên nền Tứ Hóa năm sinh (sinh niên trước – chủ, tự hóa sau – phụ).",
+      "nguon": ["S1", "S20", "S6"]
+    },
+    {
+      "id": "phi_hoa",
+      "ten": "Phi hóa (cung A phi Lộc/Quyền/Khoa/Kỵ nhập cung B)",
+      "tenHan": "宮干飛化 / 化出宮 · 化入宮",
+      "dinhNghia": "Can của cung A làm 4 sao hóa; sao mang hóa ở cung B thì gọi 'A phi [hóa] nhập B'. A là cung hóa xuất, B là cung hóa nhập.",
+      "cachTinh": "for A in 12 cung: can = canCung[A]; for (hoa, sao) in zip(['Lộc','Quyền','Khoa','Kỵ'], tuHoa.bangDung[can]): B = cungChua(sao); nếu B == A → tự hóa ly tâm; nếu B == doiCung(A) → hướng tâm (hóa nhập đối cung); ngược lại → phi nhập B. Nếu hoa == 'Kỵ' thì thêm: Kỵ ở B xung doiCung(B).",
+      "nhanHienThi": "Nhãn kiểu cohoc / matphuoctu: '<Hóa> <Cung đích viết tắt>' ví dụ 'Lộc Tài', 'Kỵ Quan', 'Tự Lộc'. Viết tắt hay dùng: Bào = Huynh đệ, Phối = Phu thê, Tử = Tử tức, Tật = Tật ách, Nô = Nô bộc, Quan = Quan lộc, Điền = Điền trạch, Phúc = Phúc đức, Phụ = Phụ mẫu (S26, S29).",
+      "nguyenTacLuan": "Lộc nhập: A có duyên, ban phúc cho B và cũng vui nhờ B (quan hệ hai chiều). Kỵ nhập: A để tâm, gắn bó, phải bỏ công cho B. Quyền nhập: A muốn nắm, đẩy B tới thành tựu. Khoa nhập: A đối với B nhẹ nhàng, lý trí, có chừng mực.",
+      "nguon": ["S1", "S4", "S8", "S26"]
+    },
+    {
+      "id": "tu_hoa_ly_tam",
+      "ten": "Tự hóa ly tâm (tự hóa thông thường)",
+      "tenHan": "自化 / 離心自化 / 化出",
+      "dinhNghia": "Can của cung A làm hóa chính sao đang ngồi trong A. Năng lượng hướng ra ngoài.",
+      "cachTinh": "cungChua(sao hóa của canCung[A]) == A.",
+      "nguyenTacLuan": "Cung có tự hóa là cung 'không ổn định', 'ra mà không giữ': có rồi khó giữ, hay thay đổi, dễ thành 'từ có về không'. Tự hóa Lộc: có mà không tiếc, dễ tiêu; tự hóa Quyền: hay tự đánh giá cao; tự hóa Khoa: nhẹ nhàng, có tiết chế; tự hóa Kỵ: 'Kỵ xuất' – thể hiện ra một cách vô tình, khó giữ. Tự hóa Kỵ không tính thêm một Kỵ, chỉ luận tượng 'Kỵ xuất'.",
+      "nguon": ["S1", "S6", "S7", "S8", "S16"],
+      "batDongY": "S8 có đoạn gọi chung tự hóa là 'tiêu hao bên trong'. S26 có câu 'có tự hóa tất hung' – quá tuyệt đối; các nguồn khác chỉ coi là 'không bền, phải chú ý'."
+    },
+    {
+      "id": "tu_hoa_huong_tam",
+      "ten": "Tự hóa hướng tâm (hóa nhập đối cung)",
+      "tenHan": "向心自化 / 化入對宮 / 視同自化",
+      "dinhNghia": "Can của cung A làm hóa một sao nằm ở cung ĐỐI DIỆN của A. Cung A được gọi là 'có hướng tâm tự hóa' (ví dụ cung Tí can Giáp, Liêm Trinh ở Ngọ → Tí có hướng tâm Liêm Trinh Lộc). Năng lượng hướng vào trong.",
+      "cachTinh": "cungChua(sao hóa của canCung[A]) == doiCung(A). Sáu trục đối: Tí–Ngọ, Sửu–Mùi, Dần–Thân, Mão–Dậu, Thìn–Tuất, Tị–Hợi.",
+      "nguyenTacLuan": "Ly tâm = mất đi, thay đổi, thêm ra; hướng tâm = khởi đầu mới, duyên khởi, gom tụ (bị động nhận về), ảnh hưởng cả bản cung lẫn đối cung. Với Kỵ: Kỵ nhập đối cung chính là Kỵ xung bản cung ('Kỵ xuất thẳng thừng', xem 'luu_xuat_ky').",
+      "nguon": ["S6", "S7"],
+      "batDongY": "S8 gọi tên ly tâm/hướng tâm nhưng không nói rõ cách xác định. Có tác giả chia thêm 'đồng tinh tự hóa / dị tinh tự hóa' (kết quả tìm kiếm) – không đưa vào."
+    },
+    {
+      "id": "ung_tuong_tu_hoa",
+      "ten": "Ứng tượng của tự hóa",
+      "tenHan": "自化祿之宮要轉忌 / 自化權看化科",
+      "dinhNghia": "Tự hóa Lộc phải xem tiếp cung đó phi Kỵ đi đâu (Lộc theo Kỵ); tự hóa Quyền xem Khoa của cung đó rơi đâu; tự hóa Kỵ xem Lộc của cung đó rơi đâu.",
+      "nguon": ["S16", "S30"],
+      "ghiChu": "S30 chỉ đọc được đoạn trích (trang 403) nên coi như nguồn yếu; hai nguồn khớp nhau ở 2 vế 'tự Lộc → chuyển Kỵ' và 'tự Quyền → xem Khoa'."
+    },
+    {
+      "id": "xung",
+      "ten": "Kỵ xung đối cung",
+      "tenHan": "忌沖",
+      "dinhNghia": "Kỵ ngồi (hoặc phi nhập) cung B thì xung cung đối của B. Lộc, Quyền, Khoa ở B chỉ 'chiếu' sang đối cung, không xung.",
+      "cachTinh": "Mỗi Kỵ (năm sinh, phi hóa, đại vận, lưu niên) tại B → đánh dấu 'bị xung' cho doiCung(B).",
+      "nguyenTacLuan": "Cung bị xung là nơi chịu thiệt; cung có Kỵ ngồi là nơi phải bỏ công. Kỵ nhập tam hợp chủ thu giữ, không thành cát hung lớn; Kỵ xung tam hợp mới có cát hung rõ (S16 đ.122; S26 'Kỵ nhập tam hợp Mệnh không gây tổn thất lớn').",
+      "nguon": ["S1", "S16", "S26"]
+    },
+    {
+      "id": "nga_cung_tha_cung",
+      "ten": "Ngã cung – Tha cung (lục nội – lục ngoại)",
+      "tenHan": "我宮 / 他宮 · 六內宮 / 六外宮",
+      "dinhNghia": "Ngã cung (6 cung 'của mình', mình làm chủ): Mệnh, Tài bạch, Tật ách, Quan lộc, Điền trạch, Phúc đức. Tha cung (6 cung giao tiếp với người khác): Huynh đệ, Phu thê, Tử tức, Thiên di, Nô bộc, Phụ mẫu.",
+      "nguyenTacLuan": "Lộc/Kỵ từ Tha cung nhập Ngã cung = nhận về, thu về; Lộc từ Ngã cung xuất sang Tha cung = bỏ ra, đầu tư, có thể hao. Khi luận lục thân phải xét 3 lớp: việc này với ta là gì, với họ là gì, và quan hệ đối đãi giữa hai bên.",
+      "nguon": ["S18", "S19", "S20", "S4"],
+      "batDongY": "Nhóm 'lục thân cung' (Mệnh, Huynh, Phu, Tử, Nô, Phụ) và 'lục sự cung' (Tài, Tật, Di, Quan, Điền, Phúc) là cách chia KHÁC, đừng lẫn (S18). S12 có câu 'lục nội hóa lục ngoại là hung, lục ngoại hóa lục nội là cát nhưng không toàn cát' – một nguồn."
+    },
+    {
+      "id": "chuyen_cung",
+      "ten": "Chuyển cung (lập thái cực, cung chức của cung chức)",
+      "tenHan": "轉宮 / 立太極 / 宮位轉換",
+      "dinhNghia": "Coi cung X là 'Mệnh' của một người/việc rồi đếm 12 cung từ X theo đúng thứ tự cung chức. Ví dụ: Tật ách = 'Điền trạch của Quan lộc'; Huynh đệ = 'Tật ách của Quan lộc' = 'Điền trạch của Tài bạch' (kho tiền nhỏ); Phu thê = 'Phúc đức của Tài bạch'; Mệnh = 'Quan lộc của Tài bạch'; Mệnh = 'Phúc đức của Phu thê'.",
+      "cachTinh": "viTri('K của X') = viTri(X) + chiSo(K) theo thứ tự cung chức (đi nghịch địa chi), mod 12.",
+      "nguyenTacLuan": "Dùng để đặt tên cho cung đích khi luận chuỗi phi hóa (S26 luôn ghi kèm 'cung này là … của …'), và để luận người thân: lấy cung của người đó làm 'Mệnh', vd. Phu thê phi Lộc nhập Mệnh: với ta là người phối ngẫu tốt với ta; với người phối ngẫu thì Mệnh ta là Phúc đức của họ.",
+      "nguon": ["S26", "S4", "S17"],
+      "ghiChu": "S17 dùng chuyển cung để định 'thể' (Tật ách của mỗi cung). Một bài blog (kết quả tìm kiếm, udn 88say) mô tả lập thái cực lấy Mệnh làm Thể, Phu thê làm Dụng – cùng ý."
+    },
+    {
+      "id": "chuyen_ky",
+      "ten": "Kỵ chuyển Kỵ (truy Kỵ)",
+      "tenHan": "化忌轉忌 / 追忌",
+      "dinhNghia": "Khi Kỵ (năm sinh, Mệnh phi Kỵ, hay cung bất kỳ phi Kỵ) rơi vào cung B, lấy can của cung B phi tiếp Kỵ sang cung C – gọi là chuyển Kỵ. Truy Kỵ: tại điểm rơi, có cung khác cũng phi Kỵ thẳng tới (không cần cùng sao) thì gom thêm nhân duyên Kỵ.",
+      "cachTinh": "chain = [B]; lặp: C = cungChua(sao Kỵ của canCung[B]); dừng khi (a) không truy được nữa, (b) lặp lại cung đã đi, (c) gặp tự hóa Kỵ (Kỵ xuất) – luận tượng Kỵ xuất rồi dừng.",
+      "nguyenTacLuan": "Chuyển Kỵ là 'phương tiện chuyên chở' để thấy kết quả cuối (hướng phát triển và mức nặng nhẹ), KHÔNG tính thêm một Kỵ. Nơi chuỗi dừng là nơi sự việc kết thúc.",
+      "nguon": ["S2", "S1", "S26"],
+      "ghiChu": "S26 áp dụng: 'Mệnh Kỵ → Quan lộc; Quan lộc (can Quý) chuyển Kỵ → Huynh đệ; Huynh đệ chuyển Kỵ → Mệnh'."
+    },
+    {
+      "id": "chuyen_loc",
+      "ten": "Lộc chuyển Kỵ (Lộc tùy Kỵ tẩu, truy Lộc)",
+      "tenHan": "化祿轉忌 / 祿隨忌走 / 追祿",
+      "dinhNghia": "Lộc (năm sinh, Mệnh phi Lộc, tự hóa Lộc, cung phi Lộc) rơi vào cung B → lấy can cung B phi Kỵ sang C: Lộc 'đi theo' Kỵ tới C. Truy Lộc: tại điểm rơi có cung khác phi Lộc tới CÙNG MỘT SAO thì nối thêm.",
+      "cachTinh": "B = cungChua(sao Lộc); C = cungChua(sao Kỵ của canCung[B]); kết quả của Lộc nằm ở C. Truy Lộc chỉ nối khi cùng sao.",
+      "nguyenTacLuan": "Lộc là nhân lành, chuyển Kỵ cho thấy quả. Nếu Lộc vào Ngã cung mà Kỵ (chuyển) đi sang Tha cung → lợi 'ảo', có thể mất về sau; ngược lại Lộc vào Tha cung mà Kỵ về Ngã cung → khổ trước ngọt sau, cuối cùng ta được (S26).",
+      "nguon": ["S3", "S26"],
+      "batDongY": "Một nguồn (星塵算命, chỉ đọc qua kết quả tìm kiếm) gọi 'Lộc nhập ta, Kỵ nhập người' là hung tượng Lộc tùy Kỵ tẩu – cùng hướng với S26."
+    },
+    {
+      "id": "song_ky",
+      "ten": "Song Kỵ / đa Kỵ",
+      "tenHan": "雙忌 / 多忌",
+      "dinhNghia": "Hai (hoặc hơn) Kỵ khác nguồn cùng rơi vào một cung hoặc vào hai đầu của cùng một trục đối cung (vd. Kỵ năm sinh và Kỵ đại vận trùng nhau).",
+      "cachTinh": "Đếm Kỵ (năm sinh + phi hóa + đại vận + lưu niên) theo từng trục đối cung; chuyển Kỵ không tính thêm; tự hóa Kỵ không tính.",
+      "nguyenTacLuan": "Một Kỵ: vất vả, để tâm, bỏ công – bình thường. Hai Kỵ: đã quá mức, gây phiền nhiều. Ba Kỵ trở lên: cần sửa chữa, thận trọng. Chỉ khi cùng cung hoặc cùng trục đối mới cộng dồn.",
+      "nguon": ["S4", "S2", "S26"],
+      "batDongY": "S16 còn có lối 'song Kỵ' theo ngũ hành (Lộc vào cung Hợi, Kỵ vào cung Dậu) – không đưa vào. S26 coi 'Lộc Kỵ chiến khắc' (Kỵ gặp Lộc cùng cung/xung) xấu hơn Kỵ đơn."
+    },
+    {
+      "id": "nhat_luc_cong_tong",
+      "ten": "Nhất Lục cộng tông",
+      "tenHan": "一六共宗",
+      "dinhNghia": "Theo số Hà Đồ (1 và 6 cùng hành Thủy): coi một cung là 1 (Mệnh của nó), cung thứ 6 tính từ nó (tức Tật ách của nó) là 'tông/thể' của nó. Các cặp thường dùng: Mệnh – Tật ách; Tài bạch – Điền trạch (Điền là kho của Tài); Quan lộc – Huynh đệ; Phu thê – Nô bộc; Thiên di – Phụ mẫu; Tật ách – Phúc đức.",
+      "cachTinh": "congTong(X) = cung cách X 5 bước theo thứ tự cung chức (Tật ách của X).",
+      "nguyenTacLuan": "Muốn biết gốc rễ của một cung thì xem cung 'Tật ách' của nó: vd. Điền trạch hỏng thì tiền khó vào kho; xem Quan lộc phải xem cả Huynh đệ.",
+      "nguon": ["S17", "S1", "S26"],
+      "ghiChu": "S1 liệt kê 'cộng tông lục vị': Huynh đệ & Quan lộc, Nô bộc & Phu thê, Phụ mẫu & Thiên di, Điền trạch & Tài bạch – khớp công thức. S26 có nhắc tên kỹ thuật."
+    },
+    {
+      "id": "the_dung",
+      "ten": "Thể – Dụng",
+      "tenHan": "體用",
+      "dinhNghia": "Thể là gốc, tiên thiên, tĩnh; Dụng là biểu hiện, hậu thiên, động. Có BA cách áp dụng trong các nguồn – app nên ghi rõ đang dùng cách nào.",
+      "cacCach": [
+        {"cach": "Thể = tứ chính của Mệnh (Mệnh, Thiên di, Tử tức, Điền trạch – 'đại thái cực'); Dụng = tam hợp Mệnh, Tài bạch, Quan lộc ('tiểu thái cực'). Lấy Dụng làm điểm xuất phát rồi đối chiếu Thể để định được/mất.", "nguon": ["S21", "S22"]},
+        {"cach": "Nhất Lục: Tật ách của một cung là Thể của cung đó.", "nguon": ["S17", "S1"]},
+        {"cach": "Bản mệnh (nguyên cục) là Thể, đại vận/lưu niên là Dụng: 'Kỵ Dụng xung Thể' (Kỵ đại vận xung cung nguyên cục) nặng hơn 'Kỵ Thể xung Dụng'.", "nguon": ["S26"], "ghiChu": "Chỉ một nguồn ghi tên; ý 'bản mệnh là tiềm năng, đại vận là lúc thành sự' có ở bài báo ctee/thenewslens (kết quả tìm kiếm)."}
+      ],
+      "nguyenTacLuan": "Trong tứ chính: Mệnh & Điền trạch là 'đồng loại' (ngã cung), Thiên di & Tử tức là 'dị loại' (tha cung); Kỵ nhập đồng loại thường cát (thu về), Kỵ nhập dị loại (xung đồng loại) thường hung (S21).",
+      "nguon": ["S21", "S22", "S17"]
+    },
+    {
+      "id": "dai_van_phi_hoa",
+      "ten": "Đại vận phi hóa",
+      "tenHan": "大限四化 / 大限飛化",
+      "dinhNghia": "Cung đại vận làm Mệnh đại vận; 11 cung còn lại đếm theo thứ tự cung chức. Can đại vận = can cung gốc. Tứ Hóa đại vận (và phi hóa của 12 cung đại vận) đọc chồng lên nguyên cục.",
+      "cachTinh": "dvMenh = cung chứa tuổi; dvCung[k] = dvMenh + k (nghịch địa chi); tuHoaDV = bangDung[canCung[dvMenh]]; với mỗi hóa ghi: cung nguyên cục nào + cung đại vận nào (vd. 'Lộc nhập Tử tức (ĐV Phúc đức)').",
+      "nguyenTacLuan": "Đại vận để 'ứng' bản mệnh: Tứ Hóa đại vận phi vào tam hợp Mệnh–Tài–Quan nguyên cục quyết định tốt xấu của giai đoạn; Kỵ đại vận nhập tam hợp bản mệnh thì không đáng ngại, xung tam hợp bản mệnh ('Kỵ xuất') thì chủ hao tổn.",
+      "nguon": ["S16", "S26", "S20"]
+    },
+    {
+      "id": "luu_nien_phi_hoa",
+      "ten": "Lưu niên phi hóa và tương tác các tầng",
+      "tenHan": "流年四化 / 三盤疊",
+      "dinhNghia": "Mệnh lưu niên ở cung có chi năm; Tứ Hóa theo can năm. Ba tầng: Thiên bàn (nguyên cục – tượng tiên thiên), Địa bàn (đại vận – thúc đẩy thành hình), Nhân bàn (lưu niên – kích hoạt sự kiện).",
+      "cachTinh": "Với mỗi hóa lưu niên: ghi cung nguyên cục, cung đại vận, cung lưu niên. Xét: LN Kỵ có xung cung nguyên cục/đại vận nào; LN Lộc rơi vào cung nào của đại vận.",
+      "nguyenTacLuan": "Cát hung chỉ thành khi cung vị bản mệnh – đại vận – lưu niên chồng lên nhau (S16 đ.4). Lưu niên Kỵ xung Mệnh/Quan/Điền bản mệnh: nặng nhẹ tùy cung đại vận bị xung; xung Phu/Quan/Tử/Điền của đại vận là nặng hơn (S16 đ.123).",
+      "nguon": ["S20", "S16", "S26"]
+    },
+    {
+      "id": "trung_diep",
+      "ten": "Trùng điệp cung / hóa (điệp cung)",
+      "tenHan": "疊宮 / 宮位重疊 / 化象疊",
+      "dinhNghia": "Cung đại vận/lưu niên đè lên cung nguyên cục (vd. Mệnh lưu niên = Nô bộc đại vận = Điền trạch nguyên cục); hoặc hóa của tầng trên rơi đúng chỗ có hóa năm sinh ('Hóa Lộc năm sinh trùng điệp với Hóa Quyền đại vận').",
+      "nguyenTacLuan": "Lộc gặp Lộc, Lộc gặp Quyền: tăng thuận lợi; Kỵ gặp Kỵ (Song Kỵ) hoặc Lộc gặp Kỵ: tăng phiền; Lộc của tầng trên vào chỗ có Kỵ năm sinh có thể 'giải Kỵ' (S26). Phản cung Kỵ là một dạng trùng điệp xấu (xem 'phan_cung_ky').",
+      "nguon": ["S16", "S26", "S15"]
+    },
+    {
+      "id": "luu_xuat_ky",
+      "ten": "Lưu xuất Kỵ (xạ xuất Kỵ, Kỵ nhập đối cung)",
+      "tenHan": "流出忌 / 射出忌 / 洩出忌",
+      "dinhNghia": "Can cung A làm Kỵ sao nằm ở cung đối của A (tức hướng tâm Kỵ) – Kỵ xung ngược về A.",
+      "cachTinh": "cungChua(Kỵ của canCung[A]) == doiCung(A).",
+      "nguyenTacLuan": "Điều cung A đại diện chảy ra ngoài, không giữ được, nhưng cũng 'không tích, không nợ'. Nếu A là Mệnh/Tài/Quan thì gọi 'Thủy mệnh Kỵ': hợp nghề dịch vụ, mua bán, tiền mặt, làm công ăn lương hơn là sản xuất tồn kho.",
+      "nguon": ["S13", "S14", "S15", "S1", "S26"]
+    },
+    {
+      "id": "luu_thuy_ky",
+      "ten": "Lưu thủy Kỵ (cohoc gọi Thuận thủy Kỵ)",
+      "tenHan": "流水忌 / 順水忌",
+      "dinhNghia": "Cung A phi Kỵ nhập cung B, với B không phải A và không phải đối cung của A.",
+      "nguyenTacLuan": "Sức của A chảy về B như nước: vd. Tài bạch phi Kỵ nhập Nô bộc – tiền dễ chảy về phía bạn bè; Mệnh phi Kỵ nhập Quan lộc – dồn sức cho công việc.",
+      "nguon": ["S13", "S14", "S15", "S26"],
+      "batDongY": "Tên gọi không thống nhất: S13, S14 gọi 流水忌; S15 gọi 順水忌; S26 dịch 'Thuận Thủy Kỵ (流水忌)'."
+    },
+    {
+      "id": "tuan_hoan_ky",
+      "ten": "Tuần hoàn Kỵ (Kỵ lai Kỵ)",
+      "tenHan": "循環忌 / 忌來忌",
+      "dinhNghia": "Hai cung (thường là cung lục thân: Mệnh, Huynh, Phu, Tử, Nô, Phụ) phi Kỵ vào nhau: A phi Kỵ nhập B và B phi Kỵ nhập A.",
+      "nguyenTacLuan": "Quan hệ có qua có lại, đối đãi ngang nhau: ta đối xử thế nào thì người kia đáp lại như thế.",
+      "nguon": ["S13", "S14", "S15"]
+    },
+    {
+      "id": "thi_phi_ky",
+      "ten": "Thị phi Kỵ (Lộc lai Kỵ)",
+      "tenHan": "是非忌 / 祿來忌",
+      "dinhNghia": "Hai cung KHÔNG đối nhau: A phi Lộc nhập B, B phi Kỵ trở về A.",
+      "nguyenTacLuan": "Một bên tốt với bên kia mà không được đáp lại tương xứng, dễ sinh than phiền, thị phi (vd. Mệnh Lộc → Phu thê, Phu thê Kỵ → Mệnh: quan tâm quá mức khiến người kia thấy bị gò bó). Nếu hai cung đối nhau thì là Lộc Kỵ xung, không gọi Thị phi Kỵ.",
+      "nguon": ["S13", "S14", "S15", "S26"]
+    },
+    {
+      "id": "cu_trien_ky",
+      "ten": "Củ triền Kỵ (hỗ xung Kỵ)",
+      "tenHan": "糾纏忌 / 互沖忌",
+      "dinhNghia": "Hai Kỵ do hai cung KHÁC nhau phi ra, rơi vào hai cung đối nhau nên xung nhau (vd. Mệnh Kỵ → Phúc đức và Nô bộc Kỵ → Tài bạch; Thiên di Kỵ → Phu thê và Mệnh Kỵ → Quan lộc).",
+      "nguyenTacLuan": "Dây dưa, tranh chấp quanh việc của trục đó (vd. tiền bạc với bạn bè). Nếu nằm trên trục Phu – Quan thì gọi 'Oán thán Kỵ': vợ chồng hay cãi nhau lâu dài nhưng không nhất thiết chia tay.",
+      "nguon": ["S13", "S14", "S15", "S26"]
+    },
+    {
+      "id": "nghich_thuy_ky",
+      "ten": "Nghịch thủy Kỵ",
+      "tenHan": "逆水忌",
+      "dinhNghia": "Mệnh/Tài/Quan có Lưu xuất Kỵ (phi Kỵ nhập đối cung: Thiên di/Phúc đức/Phu thê), mà đối cung đó đang có Kỵ năm sinh và KHÔNG có tự hóa → Kỵ bị 'bức tường' Kỵ năm sinh dội ngược về.",
+      "cachTinh": "A ∈ {Mệnh, Tài bạch, Quan lộc}; Kỵ(canCung[A]) ở doiCung(A); doiCung(A) có Kỵ năm sinh; doiCung(A) không tự hóa (ly tâm).",
+      "nguyenTacLuan": "Dòng chảy ra bị chặn lại thành tích tụ: các nguồn xem là thuận cho phát triển, tích lũy, hợp sản xuất/chuỗi; không tính là Song Kỵ.",
+      "nguon": ["S13", "S14", "S15"],
+      "batDongY": "Một số bài (kết quả tìm kiếm) cho áp dụng mọi cung, đa số giới hạn Mệnh/Tài/Quan. S26 dùng tên 'Nghịch thủy/Khiếm trái Kỵ' với định nghĩa khác – không theo."
+    },
+    {
+      "id": "thuy_tiet_ky",
+      "ten": "Thủy tiết Kỵ (phá cách của Nghịch thủy)",
+      "tenHan": "水洩忌",
+      "dinhNghia": "Đủ điều kiện Nghịch thủy Kỵ nhưng cung có Kỵ năm sinh (Thiên di/Phúc/Phu) lại có tự hóa.",
+      "nguyenTacLuan": "Kiếm được bao nhiêu tiêu bấy nhiêu, khó giữ của.",
+      "nguon": ["S13", "S14"]
+    },
+    {
+      "id": "nhap_kho_ky",
+      "ten": "Nhập khố Kỵ / Tiết khố Kỵ",
+      "tenHan": "入庫忌 / 洩庫忌",
+      "dinhNghia": "Kỵ năm sinh ngồi ở một trong bốn cung mộ Thìn, Tuất, Sửu, Mùi và cung đó không tự hóa. Nếu cung đó có tự hóa thì thành 'Tiết khố Kỵ'.",
+      "nguyenTacLuan": "Chủ giữ của, cần mẫn kiếm tiền, nhưng mang ý 'mắc nợ' (khiếm trái): ở cung lục thân thì người thân đó vất vả kiếm tiền và ta được nhờ; ở Phu thê: người phối ngẫu mang tài lộc/gánh vác; ở Điền trạch: gánh nặng gia đình. Tiết khố Kỵ: tiền khó giữ.",
+      "nguon": ["S13", "S14", "S15", "S26"]
+    },
+    {
+      "id": "sach_ma_ky",
+      "ten": "Sách mã Kỵ (Tứ mã Kỵ)",
+      "tenHan": "拆馬忌 / 四馬忌",
+      "dinhNghia": "Kỵ năm sinh ngồi ở Dần, Thân, Tị, Hợi (tứ mã); S13, S14 tính cả trường hợp cung tứ mã tự hóa Kỵ.",
+      "nguyenTacLuan": "Bôn ba, xa cách: ở cung lục thân thì gặp ít xa nhiều, gần lâu dễ va chạm; ở Mệnh thì hay phải đi xa, khó gần người.",
+      "nguon": ["S13", "S14", "S15"],
+      "batDongY": "S26 gắn nhãn 'Tứ Mã Kỵ' cho cung ở Hợi chỉ có tự hóa Quyền – không đúng định nghĩa."
+    },
+    {
+      "id": "phan_cung_ky",
+      "ten": "Phản cung Kỵ (hồi lực Kỵ)",
+      "tenHan": "反弓忌 / 迴力忌",
+      "dinhNghia": "Đại vận đi vào tam hợp Mệnh–Tài–Quan nguyên cục (Mệnh/Tài/Quan đại vận đè lên Mệnh/Tài/Quan nguyên cục); Mệnh (hoặc Mệnh/Tài/Quan) đại vận phi Kỵ nhập Phu thê/Thiên di/Phúc đức nguyên cục, tức xung ngược Quan lộc/Mệnh/Tài bạch nguyên cục.",
+      "nguyenTacLuan": "Như boomerang: lực phi ra quay về đánh chính mình, sức như Song Kỵ. Giai đoạn này nên giữ thế thủ, tránh mở rộng liều.",
+      "nguon": ["S13", "S14", "S15"],
+      "batDongY": "S13/S14 chỉ xét Mệnh đại vận phi Kỵ; S15 xét cả Mệnh/Tài/Quan đại vận. S13/S14 có câu 'hồi phục mất trên 3 năm' – app không nên nêu con số."
+    },
+    {
+      "id": "tuyet_menh_ky",
+      "ten": "Tuyệt mệnh Kỵ (chỉ dùng nội bộ, không hiển thị tên)",
+      "tenHan": "絕命忌",
+      "dinhNghia": "Nguồn lệch nhau. S15: Mệnh hoặc Điền trạch nguyên cục có Kỵ năm sinh, và Mệnh/Điền/Quan đại vận phi Kỵ nhập đúng chỗ đó. S13/S14: Mệnh phải có Kỵ năm sinh, rồi Kỵ đại vận/lưu niên xung vào Mệnh hoặc Quan lộc nguyên cục. S26: Kỵ từ Điền trạch đại vận xung Quan lộc nguyên cục.",
+      "nguyenTacLuan": "Các nguồn coi là hung hiểm. Theo quy tắc dự án: chỉ diễn đạt 'giai đoạn nên đặc biệt thận trọng với việc thuộc cung bị xung, giữ nếp sống an toàn, tránh quyết định liều'. Không nói chết/bệnh.",
+      "nguon": ["S13", "S14", "S15", "S26"],
+      "hienThi": false
+    },
+    {
+      "id": "ky_nhap_ky_xung_tam_hop",
+      "ten": "Kỵ nhập tam hợp – Kỵ xung tam hợp",
+      "tenHan": "忌入三合 / 忌沖三合",
+      "dinhNghia": "Kỵ (đặc biệt Kỵ đại vận) rơi VÀO tam hợp Mệnh–Tài–Quan bản mệnh là 'Kỵ nhập'; rơi vào cung đối của tam hợp (Thiên di, Phúc đức, Phu thê) nên XUNG tam hợp là 'Kỵ xuất/Kỵ xung'.",
+      "nguyenTacLuan": "Kỵ nhập: thu giữ, bận rộn, không tổn thất lớn. Kỵ xung: hao tổn, mức nặng nhẹ theo cung bị xung.",
+      "nguon": ["S16", "S26"]
+    }
+  ],
+
+  "motNguon": [
+    {"id": "dem_ky", "noiDung": "Cấp độ Kỵ: 1 Kỵ = vất vả/để tâm; 2 Kỵ = quá mức, phiền (cổ văn: 'bệnh, khổ'); 3 Kỵ = hung, phá; 4 Kỵ trở lên = bại.", "nguon": ["S2", "S3", "S4"], "ghiChu": "Cả ba trang cùng một hệ (Lương Nhược Du). App nên diễn đạt nhẹ: 'càng nhiều lớp ràng buộc chồng lên cùng một trục thì càng cần sắp xếp lại'."},
+    {"id": "quyen_khoa_can_loc", "noiDung": "Quyền và Khoa không tự chuyển Kỵ; phải có Lộc dẫn (Lộc Quyền giao củng = cơ duyên + năng lực; Lộc Khoa = nhẹ nhàng tinh tế). Quyền gặp Kỵ = 'Quyền Kỵ tranh chiến' (sự việc căng lên); Khoa đi theo Kỵ = 'Khoa Kỵ dây dưa' (kéo dài, trả góp).", "nguon": ["S4"]},
+    {"id": "loc_ky_giao_hoi", "noiDung": "Lộc và Kỵ từ hai cung khác nhau cùng phi vào MỘT sao ở một cung: Lộc tùy Kỵ tẩu – cung phát Lộc mất gấp đôi, cung phát Kỵ được gấp đôi; phải phân biệt ngã cung / tha cung.", "nguon": ["S3", "S1"]},
+    {"id": "ky_xuat_ba_loai", "noiDung": "Kỵ xuất có 3 dạng: tự hóa Kỵ (thể hiện vô tình), Kỵ nhập đối cung (thẳng thừng, 'một lần trôi hết'), Kỵ nhập Thiên di hoặc Phụ mẫu (lúng túng trước xã hội). Lộc xuất tương tự: tự Lộc, Lộc nhập đối cung, Lộc nhập Thiên di/Phụ mẫu.", "nguon": ["S1", "S2"], "ghiChu": "Cùng hệ Lương Nhược Du."},
+    {"id": "tien_thoai_ky", "noiDung": "Tiến mã Kỵ / Thoái mã Kỵ: chỉ xảy ra ở 4 cung Tí, Sửu, Dần, Mão (nơi can lặp lại) – cung tự hóa Kỵ và Kỵ 'lùi' về cung cách hai ô có cùng can (vd. Mệnh Ất Sửu, Phúc đức Ất Mão, Thái Âm tự hóa Kỵ, Kỵ lùi về Mệnh).", "nguon": ["S15"], "ghiChu": "Nguồn không nêu ý nghĩa. Không đưa vào luận."},
+    {"id": "khoa_giai_ky", "noiDung": "Khoa và Kỵ cùng cung thì Khoa giải được phần nào cái khó của Kỵ; khác cung (đối nhau) thì không giải.", "nguon": ["S16"]},
+    {"id": "sinh_nien_nhap_phi_chieu", "noiDung": "Tứ Hóa năm sinh mạnh ở chỗ 'nhập' (ngồi tại cung); Tứ Hóa phi cung mạnh ở chỗ 'chiếu' (ảnh hưởng cung đối).", "nguon": ["S16"]},
+    {"id": "hai_cung_doi_cung_tu_hoa", "noiDung": "Hai cung đối nhau mỗi bên đều tự hóa: chủ vô sự (triệt tiêu).", "nguon": ["S16"]},
+    {"id": "cohoc_loc", "noiDung": "Các mẫu chỉ thấy ở bài cohoc: Điệp xuất Lộc (Lộc phi vào cung đã có Lộc năm sinh – hao), Đối trì Lộc, Hồi quy Lộc / Hồi quy tam hợp (Lộc của cung đại vận quay về cùng loại cung hoặc tam hợp Mệnh nguyên cục – rất cát), Quy vị Lộc/Quyền/Khoa/Kỵ (hóa quay về cung cùng tên – Kỵ quy vị 'báo động vàng'), Hư lộc (Lộc vào tam hợp đại vận mà không vào tam hợp nguyên cục), Phá thể vị, 'M chất', điểm 'xí hoa'.", "nguon": ["S26"], "ghiChu": "Không có nguồn thứ hai; không đưa vào luận tự động."},
+    {"id": "luu_nguyet_dau_quan", "noiDung": "Lưu nguyệt: Mệnh tháng theo Đẩu quân, Tứ Hóa theo can tháng.", "nguon": ["S26"], "ghiChu": "Đẩu quân là phép chung của Tử Vi, nhưng cách Bắc phái dùng nó cho lưu nguyệt phi hóa mới chỉ kiểm trên S26 (đã khớp 12 tháng)."}
+  ],
+
+  "luanCung": {
+    "nguyenTacChung": {
+      "noiDung": "Mỗi cung luận theo: (1) Tứ Hóa năm sinh ngồi tại cung; (2) cung đó tự hóa (ly tâm/hướng tâm) không; (3) cung đó phi Lộc/Quyền/Khoa/Kỵ đi đâu (ưu tiên Lộc và Kỵ); (4) cung nào phi Lộc/Kỵ vào nó; (5) chuyển Kỵ/chuyển Lộc để thấy kết quả; (6) các mẫu Kỵ có tên. Câu mẫu: 'cung A phi Kỵ nhập B = việc của A khiến ta để tâm, phải bỏ công cho B'; 'cung A phi Lộc nhập B = việc của A mang duyên, niềm vui tới B'.",
+      "nguon": ["S1", "S4", "S8", "S26"]
+    },
+    "ghiChuNguon": "Câu giải nghĩa cụ thể dưới đây tóm ý từ loạt bài 'X化祿/化忌入12宮' và 'sinh niên Lộc/Kỵ tọa 12 cung' của Trương Thế Hiền trên site Lương Nhược Du (S5) – soNguon = 1 cho từng câu cụ thể; nguyên tắc đọc có ≥2 nguồn. Mẫu có tên (Thị phi Kỵ, Oán thán Kỵ…) có ≥2 nguồn. Tất cả là 'xu hướng', không phải định mệnh (S5 nhấn mạnh 'cùng tượng chưa chắc cùng quả').",
+    "cung": {
+      "Mệnh": [
+        {"mau": "Mệnh phi Kỵ nhập Tài bạch", "luan": "Coi trọng tiền bạc, chịu khó kiếm tiền, tính toán chi tiêu kỹ.", "deHieu": "Bạn có xu hướng đặt nặng chuyện tiền và chịu khó kiếm tiền. Gợi ý: đặt mục tiêu tài chính rõ ràng để bớt lo lắng thường trực.", "nguon": ["S5"], "soNguon": 1},
+        {"mau": "Mệnh phi Kỵ nhập Quan lộc", "luan": "Tận tụy với công việc, dồn sức cho sự nghiệp, dễ lơ là tình cảm (cohoc gọi Thuận thủy Kỵ Mệnh → Quan).", "deHieu": "Bạn thuộc mẫu người làm việc hết mình. Gợi ý: dành lịch cố định cho gia đình và người thân để giữ cân bằng.", "nguon": ["S5", "S26"], "soNguon": 2},
+        {"mau": "Mệnh phi Kỵ nhập Phu thê", "luan": "Gắn bó, chung thủy với người phối ngẫu; có xu hướng lập gia đình trước rồi mới lập nghiệp.", "deHieu": "Bạn có xu hướng dành nhiều tâm sức cho người bạn đời. Gợi ý: cho nhau khoảng riêng để tình cảm không thành áp lực.", "nguon": ["S5"], "soNguon": 1},
+        {"mau": "Mệnh phi Kỵ nhập Thiên di (Kỵ xuất)", "luan": "Ít để ý hình ảnh bên ngoài, nói thẳng, ra ngoài dễ gặp trở ngại nhỏ.", "deHieu": "Bạn có xu hướng sống thật, nói thẳng, không chăm chút hình ảnh. Gợi ý: luyện cách nói mềm hơn khi giao tiếp với người lạ.", "nguon": ["S5", "S1"], "soNguon": 2},
+        {"mau": "Mệnh phi Kỵ nhập Điền trạch", "luan": "Lấy gia đình làm trọng, thấy có trách nhiệm với nhà cửa.", "deHieu": "Bạn thuộc mẫu người đặt gia đình lên trước. Gợi ý: chia sẻ việc nhà cho các thành viên khác cùng gánh.", "nguon": ["S5"], "soNguon": 1},
+        {"mau": "Mệnh phi Lộc nhập Phu thê", "luan": "Tình duyên đằm thắm, đa tình với người khác giới; sau khi lập gia đình công việc dễ thuận.", "deHieu": "Bạn có xu hướng tình cảm, chu đáo với người mình thương. Gợi ý: giữ ranh giới rõ trong các mối quan hệ khác giới.", "nguon": ["S5", "S16"], "soNguon": 1},
+        {"mau": "Mệnh phi Lộc nhập Tài bạch", "luan": "Có duyên với tiền mặt, kiếm tiền tương đối nhẹ nhàng; hợp nghề thu tiền mặt hoặc chia lợi nhuận.", "deHieu": "Bạn có duyên với tiền bạc. Gợi ý: tập thói quen để dành để cái duyên ấy thành tài sản lâu dài.", "nguon": ["S5"], "soNguon": 1},
+        {"mau": "Mệnh phi Lộc nhập Tử tức, Tử tức phi Kỵ về Mệnh (Thị phi Kỵ)", "luan": "Tốt với con cái/người hợp tác mà không được đáp lại tương xứng, dễ sinh phiền lòng.", "deHieu": "Bạn có xu hướng cho đi nhiều với người nhỏ tuổi hoặc người cùng làm ăn mà chưa được đáp lại như mong muốn. Gợi ý: nói rõ kỳ vọng và cho đi vừa sức.", "nguon": ["S13", "S14", "S26"], "soNguon": 3}
+      ],
+      "Huynh đệ": [
+        {"mau": "Huynh đệ phi Kỵ nhập Mệnh", "luan": "Việc anh chị em thường đè lên vai mình, phải lo cho họ.", "deHieu": "Bạn có xu hướng gánh vác chuyện anh chị em. Gợi ý: giúp vừa sức và để mỗi người tự chịu trách nhiệm phần mình.", "nguon": ["S5"], "soNguon": 1},
+        {"mau": "Huynh đệ phi Kỵ nhập Tài bạch", "luan": "Huynh đệ là 'kho nhỏ' (Điền của Tài): Kỵ vào Tài dễ chi nhiều thu ít, khó tích lũy.", "deHieu": "Bạn có xu hướng tiền ra nhanh hơn tiền vào. Gợi ý: lập quỹ tiết kiệm tự động ngay khi có thu nhập.", "nguon": ["S5", "S17"], "soNguon": 2},
+        {"mau": "Huynh đệ phi Kỵ nhập Nô bộc (xung Huynh – Kỵ xuất)", "luan": "Cho vay khó đòi, tình người mỏng.", "deHieu": "Bạn có xu hướng nể nang khi người khác hỏi mượn. Gợi ý: chỉ cho mượn số tiền bạn sẵn sàng không lấy lại.", "nguon": ["S5"], "soNguon": 1},
+        {"mau": "Huynh đệ phi Kỵ nhập Quan lộc", "luan": "Không hợp làm ăn chung với anh em; nên giữ bổn phận, làm công hoặc kinh doanh nhỏ ổn định.", "deHieu": "Bạn hợp với con đường ổn định hơn là góp vốn với người nhà. Gợi ý: nếu hợp tác, làm giấy tờ rõ ràng.", "nguon": ["S5"], "soNguon": 1}
+      ],
+      "Phu thê": [
+        {"mau": "Phu thê phi Kỵ nhập Mệnh", "luan": "Chuyện hôn nhân hay làm mình bận lòng; với bản thân người phối ngẫu là người cố chấp.", "deHieu": "Bạn có xu hướng để chuyện vợ chồng ảnh hưởng nhiều tới tâm trạng. Gợi ý: hẹn giờ trò chuyện định kỳ để gỡ vướng mắc sớm.", "nguon": ["S5", "S16"], "soNguon": 2},
+        {"mau": "Phu thê phi Kỵ nhập Quan lộc (Lưu xuất Kỵ – xung bản cung)", "luan": "Người phối ngẫu can thiệp công việc; không hợp làm chung với nhau.", "deHieu": "Bạn và người bạn đời hợp với việc mỗi người một mảng công việc riêng. Gợi ý: tách bạch chuyện nhà và chuyện làm.", "nguon": ["S5", "S13", "S26"], "soNguon": 3},
+        {"mau": "Phu thê phi Kỵ nhập Tài bạch", "luan": "Vì tiền mà lao tâm trong hôn nhân.", "deHieu": "Bạn có xu hướng để chuyện tiền ảnh hưởng tới tình cảm vợ chồng. Gợi ý: thống nhất cách quản lý tiền chung ngay từ đầu.", "nguon": ["S5", "S16"], "soNguon": 2},
+        {"mau": "Phu thê phi Kỵ nhập Thiên di", "luan": "Bề ngoài hòa hợp nhưng trong lòng xa cách; ít lãng mạn.", "deHieu": "Bạn có xu hướng ít bày tỏ tình cảm. Gợi ý: những cử chỉ nhỏ hằng ngày giúp hai người gần nhau hơn.", "nguon": ["S5"], "soNguon": 1},
+        {"mau": "Kỵ từ hai cung khác rơi vào hai đầu trục Phu – Quan (Oán thán Kỵ)", "luan": "Vợ chồng dễ cãi vã kéo dài, nhưng không nhất thiết chia tay.", "deHieu": "Bạn và người bạn đời có thể hay bất đồng. Gợi ý: học cách tranh luận 'về việc, không về người'.", "nguon": ["S13", "S14", "S15", "S26"], "soNguon": 4}
+      ],
+      "Tử tức": [
+        {"mau": "Tử tức phi Kỵ nhập Mệnh", "luan": "Lo nghĩ nhiều cho con cái, như 'mắc nợ con'.", "deHieu": "Bạn có xu hướng đặt con cái vào trung tâm lo toan. Gợi ý: tin tưởng và giao cho con tự lập từng phần.", "nguon": ["S5"], "soNguon": 1},
+        {"mau": "Tử tức phi Kỵ nhập Quan lộc", "luan": "Sau khi có con, việc phát triển sự nghiệp chậm lại.", "deHieu": "Bạn có thể phải cân bằng giữa con nhỏ và công việc. Gợi ý: lên kế hoạch hỗ trợ (người thân, dịch vụ) trước khi có con.", "nguon": ["S5"], "soNguon": 1},
+        {"mau": "Tử tức phi Kỵ nhập Điền trạch (Kỵ xuất)", "luan": "Chi tiêu gia đình eo hẹp; con cái dễ tranh chấp tài sản.", "deHieu": "Bạn nên chuẩn bị sớm cho chuyện tài sản gia đình. Gợi ý: phân chia rõ ràng, minh bạch giữa các con.", "nguon": ["S5"], "soNguon": 1},
+        {"mau": "Tử tức phi Kỵ nhập Nô bộc", "luan": "Hợp tác dễ có người tư lợi; bạn bè thưa dần.", "deHieu": "Bạn nên cẩn trọng khi góp vốn làm ăn. Gợi ý: kiểm tra sổ sách định kỳ.", "nguon": ["S5"], "soNguon": 1}
+      ],
+      "Tài bạch": [
+        {"mau": "Tài bạch phi Kỵ nhập Mệnh", "luan": "Kiếm tiền bằng sức mình, vất vả; lãi mỏng, hợp đi làm hưởng lương ổn định (cohoc gọi Thuận thủy Kỵ Tài → Mệnh).", "deHieu": "Bạn có xu hướng kiếm tiền bằng chính công sức. Gợi ý: đầu tư vào kỹ năng để giá trị sức lao động tăng dần.", "nguon": ["S5", "S26"], "soNguon": 2},
+        {"mau": "Tài bạch phi Kỵ nhập Nô bộc", "luan": "Tiền dễ chảy sang bạn bè, chi nhiều cho giao tế.", "deHieu": "Bạn có xu hướng rộng rãi với bạn bè. Gợi ý: đặt hạn mức chi cho giao tế mỗi tháng.", "nguon": ["S5", "S13", "S14"], "soNguon": 3},
+        {"mau": "Tài bạch phi Kỵ nhập Phúc đức (Lưu xuất Kỵ – xung Tài)", "luan": "Tiêu cho sở thích, hưởng thụ; tiền khó giữ.", "deHieu": "Bạn có xu hướng chi cho niềm vui, sở thích. Gợi ý: tách riêng một khoản 'tiền vui' để không lấn sang tiền để dành.", "nguon": ["S5", "S13"], "soNguon": 2},
+        {"mau": "Tài bạch phi Kỵ nhập Điền trạch", "luan": "Tiết kiệm giữ nhà, ngại tiêu; lá số tốt thì tích dần thành tài sản.", "deHieu": "Bạn thuộc mẫu người chắt chiu, vun vén. Gợi ý: thỉnh thoảng thưởng cho bản thân để giữ động lực.", "nguon": ["S5", "S17"], "soNguon": 2},
+        {"mau": "Tài bạch phi Kỵ nhập Phụ mẫu", "luan": "Tránh vay mượn, bảo lãnh; giấy tờ tiền bạc cần cẩn thận.", "deHieu": "Bạn nên thận trọng với giấy tờ, hợp đồng liên quan tới tiền. Gợi ý: đọc kỹ trước khi ký, tránh đứng ra bảo lãnh.", "nguon": ["S5"], "soNguon": 1}
+      ],
+      "Tật ách": [
+        {"mau": "Tật ách phi Kỵ nhập Mệnh", "luan": "Bận rộn không ngơi, rảnh ra lại thấy bứt rứt.", "deHieu": "Bạn có xu hướng luôn muốn làm việc gì đó. Gợi ý: lên kế hoạch cho thời gian rảnh để nghỉ ngơi thật sự.", "nguon": ["S5"], "soNguon": 1},
+        {"mau": "Tật ách phi Kỵ nhập Tài bạch", "luan": "Dồn sức cho việc kiếm tiền; hợp nghề dịch vụ, không ôm hàng tồn.", "deHieu": "Bạn sẵn sàng bỏ nhiều sức để kiếm tiền. Gợi ý: giữ nhịp làm – nghỉ đều đặn để đi đường dài.", "nguon": ["S5"], "soNguon": 1},
+        {"mau": "Tật ách phi Kỵ nhập Quan lộc", "luan": "Môi trường làm việc dễ không vừa ý; hợp vị trí ổn định.", "deHieu": "Bạn có xu hướng khó hài lòng với nơi làm việc. Gợi ý: chọn môi trường ổn định, rõ ràng về vai trò.", "nguon": ["S5"], "soNguon": 1}
+      ],
+      "Thiên di": [
+        {"mau": "Thiên di phi Kỵ nhập Mệnh (xung Thiên di)", "luan": "Ra ngoài dễ gặp chuyện không như ý, dễ xa dần môi trường xã hội.", "deHieu": "Bạn có xu hướng ngại môi trường đông người. Gợi ý: chọn vài nhóm nhỏ hợp tính để giữ kết nối.", "nguon": ["S5"], "soNguon": 1},
+        {"mau": "Thiên di phi Kỵ nhập Phu thê (xung Quan lộc)", "luan": "Không khéo vun vén hôn nhân, công việc cũng dễ bị ảnh hưởng.", "deHieu": "Bạn có xu hướng để áp lực bên ngoài ảnh hưởng chuyện gia đình. Gợi ý: để lại chuyện công việc ở cửa trước khi về nhà.", "nguon": ["S5", "S26"], "soNguon": 2},
+        {"mau": "Thiên di phi Kỵ nhập Tài bạch (xung Phúc đức)", "luan": "Kiếm tiền vất vả, dễ gặp cạnh tranh không lành mạnh.", "deHieu": "Bạn nên chọn môi trường làm ăn minh bạch. Gợi ý: hợp đồng rõ ràng, tránh 'làm ăn nóng'.", "nguon": ["S5"], "soNguon": 1},
+        {"mau": "Thiên di phi Kỵ nhập Điền trạch (xung Tử tức)", "luan": "Dễ rời quê, không giữ nghiệp nhà; tượng chuyển nhà.", "deHieu": "Bạn có xu hướng thay đổi nơi ở. Gợi ý: giữ giấy tờ nhà đất cẩn thận mỗi lần chuyển.", "nguon": ["S5", "S21"], "soNguon": 2}
+      ],
+      "Nô bộc": [
+        {"mau": "Nô bộc phi Kỵ nhập Mệnh", "luan": "Dễ gặp bạn bè đeo bám; cạnh tranh, thi cử, hợp tác kém thuận.", "deHieu": "Bạn có xu hướng bị cuốn vào chuyện của bạn bè. Gợi ý: học cách nói 'không' nhẹ nhàng.", "nguon": ["S5"], "soNguon": 1},
+        {"mau": "Nô bộc phi Kỵ nhập Phu thê", "luan": "Bạn bè can dự hôn nhân, người phối ngẫu không ưa bạn mình.", "deHieu": "Bạn nên giữ khoảng cách hợp lý giữa bạn bè và gia đình. Gợi ý: hỏi ý người bạn đời trước khi mời bạn bè vào chuyện nhà.", "nguon": ["S5"], "soNguon": 1},
+        {"mau": "Nô bộc phi Kỵ nhập Tài bạch", "luan": "Bạn bè tính toán tiền bạc; cạnh tranh cùng ngành; cổ đông có thể tư lợi.", "deHieu": "Bạn nên tách bạch tiền nong với bạn bè. Gợi ý: mọi khoản góp chung nên có giấy tờ.", "nguon": ["S5"], "soNguon": 1},
+        {"mau": "Mệnh và Nô bộc phi Kỵ vào nhau (Tuần hoàn Kỵ)", "luan": "Quan hệ bạn bè có qua có lại: mình đối xử sao thì bạn đáp lại vậy.", "deHieu": "Bạn sống có trước có sau với bạn bè. Gợi ý: chủ động tử tế trước, bạn sẽ nhận lại tương xứng.", "nguon": ["S13", "S14", "S15"], "soNguon": 3}
+      ],
+      "Quan lộc": [
+        {"mau": "Quan lộc phi Kỵ nhập Mệnh", "luan": "Lao tâm vì công việc, việc gì cũng canh cánh.", "deHieu": "Bạn có xu hướng mang công việc theo cả khi nghỉ. Gợi ý: ghi việc ra danh sách để đầu óc được nhẹ.", "nguon": ["S5"], "soNguon": 1},
+        {"mau": "Quan lộc phi Kỵ nhập Tài bạch", "luan": "Thu nhập từ công việc không nhiều; hợp lương cố định.", "deHieu": "Bạn hợp với thu nhập ổn định hơn là ăn chia rủi ro. Gợi ý: xây nguồn thu phụ nhỏ, an toàn.", "nguon": ["S5"], "soNguon": 1},
+        {"mau": "Quan lộc phi Kỵ nhập Phu thê (Lưu xuất Kỵ – xung Quan)", "luan": "Công việc kéo theo người phối ngẫu, hai người cần nâng đỡ nhau.", "deHieu": "Bạn và người bạn đời nên cùng nhau tính chuyện sự nghiệp. Gợi ý: chia việc nhà hợp lý trong giai đoạn công việc bận.", "nguon": ["S5", "S13"], "soNguon": 2},
+        {"mau": "Quan lộc phi Kỵ nhập Phụ mẫu (Kỵ xuất)", "luan": "Công việc vất vả; hợp khu vực công hoặc doanh nghiệp lớn.", "deHieu": "Bạn hợp với tổ chức có quy trình rõ ràng. Gợi ý: chọn nơi có lộ trình thăng tiến minh bạch.", "nguon": ["S5", "S1"], "soNguon": 2}
+      ],
+      "Điền trạch": [
+        {"mau": "Điền trạch phi Kỵ nhập Mệnh", "luan": "Tay trắng lập nghiệp, gánh trách nhiệm gia đình; nhà cửa, tiền bạc là áp lực; nên tiết kiệm, làm việc ổn định.", "deHieu": "Bạn thuộc mẫu người tự gây dựng, gánh vác gia đình. Gợi ý: lập kế hoạch nhà ở dài hạn, vay vừa sức.", "nguon": ["S5"], "soNguon": 1},
+        {"mau": "Điền trạch phi Kỵ nhập Tử tức (Lưu xuất Kỵ – xung Điền)", "luan": "Kho bị thủng, khó tích lũy; tránh cam kết dài hạn quá sức (cohoc: 'không nên tích trữ').", "deHieu": "Bạn có xu hướng khó giữ của để dành. Gợi ý: chọn kênh tích lũy tự động, khó rút.", "nguon": ["S5", "S26"], "soNguon": 2},
+        {"mau": "Điền trạch phi Kỵ nhập Thiên di (xung Mệnh)", "luan": "Khó quản lý tài sản; tượng chuyển nhà.", "deHieu": "Bạn nên cẩn thận khi xử lý nhà đất. Gợi ý: nhờ người tin cậy, có chuyên môn tư vấn.", "nguon": ["S5", "S21"], "soNguon": 2},
+        {"mau": "Điền trạch phi Kỵ nhập Phụ mẫu", "luan": "Rủi ro giấy tờ; không nên đứng ra bảo lãnh hay ký hợp đồng chưa kiểm.", "deHieu": "Bạn nên thận trọng với giấy tờ liên quan tới nhà cửa. Gợi ý: không đứng tên hộ, không bảo lãnh vay.", "nguon": ["S5"], "soNguon": 1}
+      ],
+      "Phúc đức": [
+        {"mau": "Phúc đức phi Kỵ nhập Mệnh", "luan": "Hay cố chấp ý nghĩ, dễ buồn lo, tự làm khó mình.", "deHieu": "Bạn có xu hướng suy nghĩ nhiều và kỹ tính. Gợi ý: tập buông những việc ngoài tầm tay, dành thời gian cho việc giúp người.", "nguon": ["S5"], "soNguon": 1},
+        {"mau": "Phúc đức phi Kỵ nhập Tài bạch", "luan": "Rất để ý tiền, chăm kiếm tiền, dễ mệt mỏi với nghề.", "deHieu": "Bạn có xu hướng lo về tiền nhiều hơn mức cần. Gợi ý: xem lại con số thật để yên tâm hơn.", "nguon": ["S5"], "soNguon": 1},
+        {"mau": "Phúc đức phi Kỵ nhập Quan lộc", "luan": "Việc gì cũng tự làm, dễ quên chăm sóc tình cảm (cohoc: Thuận thủy Kỵ Phúc → Quan).", "deHieu": "Bạn có xu hướng ôm việc. Gợi ý: giao bớt việc cho người khác và dành thời gian cho người thân.", "nguon": ["S5", "S26"], "soNguon": 2},
+        {"mau": "Phúc đức phi Kỵ nhập Phu thê", "luan": "Rất để ý người phối ngẫu, dễ thành theo sát quá mức.", "deHieu": "Bạn có xu hướng quan tâm người bạn đời rất kỹ. Gợi ý: tin tưởng và cho nhau không gian riêng.", "nguon": ["S5"], "soNguon": 1}
+      ],
+      "Phụ mẫu": [
+        {"mau": "Phụ mẫu phi Kỵ nhập Mệnh", "luan": "Cha mẹ lo cho mình, về sau mình gánh việc phụng dưỡng.", "deHieu": "Bạn có xu hướng mang trách nhiệm với cha mẹ. Gợi ý: cùng anh chị em lên kế hoạch chăm sóc cha mẹ sớm.", "nguon": ["S5"], "soNguon": 1},
+        {"mau": "Phụ mẫu phi Kỵ nhập Phu thê", "luan": "Người trên can dự chuyện tình cảm; sau cưới nên ở riêng.", "deHieu": "Bạn có thể gặp ý kiến trái chiều từ gia đình về chuyện tình cảm. Gợi ý: lắng nghe nhưng tự quyết, sau cưới nên có không gian riêng.", "nguon": ["S5"], "soNguon": 1},
+        {"mau": "Phụ mẫu phi Kỵ nhập Tài bạch", "luan": "Chi tiền cho cha mẹ; cẩn thận vay mượn, bảo lãnh, giấy tờ, tiền phạt.", "deHieu": "Bạn nên quản lý giấy tờ tiền bạc cẩn thận. Gợi ý: lưu hồ sơ, đóng các khoản đúng hạn.", "nguon": ["S5", "S26"], "soNguon": 2},
+        {"mau": "Phụ mẫu phi Kỵ nhập Quan lộc", "luan": "Cha mẹ lo cho sự nghiệp của mình; mình cũng phải chia sẻ gánh phụng dưỡng.", "deHieu": "Bạn có xu hướng vừa làm vừa lo cho gia đình lớn. Gợi ý: chia rõ phần đóng góp với anh chị em.", "nguon": ["S5"], "soNguon": 1}
+      ]
+    },
+    "sinhNienLocToa": {
+      "nguon": ["S5"],
+      "Mệnh": "đầu óc linh hoạt, dễ gần, tinh thần thường vui",
+      "Huynh đệ": "có duyên với anh chị em, chăm thì dễ thành, tài chính khá",
+      "Phu thê": "tình duyên sâu, người bạn đời chu đáo",
+      "Tử tức": "gần gũi con cái, hợp tác thuận",
+      "Tài bạch": "tiền mặt dư dả, kiếm tiền nhẹ nhàng",
+      "Tật ách": "sức khỏe có phúc, môi trường sống và làm việc dễ chịu",
+      "Thiên di": "ra ngoài gặp quý nhân, ứng xử tròn trịa",
+      "Nô bộc": "nhiều bạn tốt, cạnh tranh thuận lợi",
+      "Quan lộc": "công việc thuận, vận may tốt",
+      "Điền trạch": "gia đình hòa thuận, nơi ở dễ chịu",
+      "Phúc đức": "tâm an, biết đủ",
+      "Phụ mẫu": "có duyên với người trên, uy tín tốt"
+    },
+    "sinhNienKyToa": {
+      "nguon": ["S5"],
+      "ghiChu": "Kỵ năm sinh = bài học, trách nhiệm bẩm sinh; không khẳng định chắc chắn xảy ra.",
+      "Mệnh": "hay cố chấp, giao tiếp tốn sức",
+      "Huynh đệ": "anh chị em khó đồng lòng, việc làm ăn cần nhiều công",
+      "Phu thê": "đặt nhiều tâm sức và trách nhiệm vào hôn nhân, dễ lập gia đình trước lập nghiệp",
+      "Tử tức": "nhiều trách nhiệm với con, hợp tác dễ thay đổi",
+      "Tài bạch": "dòng tiền eo hẹp, kiếm tiền vất vả",
+      "Tật ách": "dễ làm quá sức, cần nhịp nghỉ ngơi đều",
+      "Thiên di": "ra ngoài hay gặp trở ngại, tính thẳng, bôn ba",
+      "Nô bộc": "dễ gặp bạn làm mình vướng, nên giúp người nhiều hơn",
+      "Quan lộc": "trách nhiệm nặng, việc gì cũng tự làm",
+      "Điền trạch": "gánh nặng gia đình, nên cải thiện nơi ở (thoáng, sáng)",
+      "Phúc đức": "hay lo nghĩ, kỹ tính, khó thảnh thơi",
+      "Phụ mẫu": "duyên với người trên nhạt, cẩn thận giấy tờ tiền bạc"
+    },
+    "maTranKy": {
+      "ghiChu": "Từ khóa ngắn cho 'cung hàng phi Kỵ nhập cung cột' (S5). Ô trùng cung = tự hóa Kỵ (Kỵ xuất). Dùng để ghép câu, không hiển thị nguyên văn. Tật ách đã bỏ ý bệnh tật.",
+      "nguon": ["S5"],
+      "Mệnh": {"Mệnh": "(nguồn không nêu – tự hóa Kỵ ở Mệnh: luận theo 'Kỵ xuất')", "Huynh đệ": "lo cho anh chị em", "Phu thê": "gắn bó người phối ngẫu", "Tử tức": "dốc lòng nuôi dạy con, hợp tác dễ hao", "Tài bạch": "coi trọng tiền, chịu khó kiếm", "Tật ách": "luôn bận rộn", "Thiên di": "ít để ý hình ảnh, nói thẳng", "Nô bộc": "trọng nghĩa với bạn, dễ bị bạn làm hao", "Quan lộc": "tận tụy công việc", "Điền trạch": "lấy nhà làm trọng", "Phúc đức": "chi cho sở thích, hay lo", "Phụ mẫu": "hiếu thuận, chăm học, hơi nghiêm"},
+      "Huynh đệ": {"Mệnh": "gánh việc anh em", "Huynh đệ": "anh em mỗi người một hướng", "Phu thê": "sau cưới ra ở riêng", "Tử tức": "kho thủng, khó để dành", "Tài bạch": "chi nhiều thu ít", "Tật ách": "làm quá sức", "Thiên di": "ít trợ lực bên ngoài", "Nô bộc": "cho vay khó đòi", "Quan lộc": "không hợp làm chung với anh em", "Điền trạch": "chắt chiu tích lũy", "Phúc đức": "hưởng thụ kèm phiền lo", "Phụ mẫu": "kinh tế khiến cha mẹ lo"},
+      "Phu thê": {"Mệnh": "chuyện vợ chồng làm bận lòng", "Huynh đệ": "anh em tính toán", "Phu thê": "hôn nhân như nợ nhau", "Tử tức": "người phối ngẫu thương con", "Tài bạch": "vì tiền mà phiền", "Tật ách": "hôn nhân bận rộn, khuôn phép", "Thiên di": "bề ngoài hòa, trong xa cách", "Nô bộc": "lòng hướng về bạn bè", "Quan lộc": "can thiệp công việc, không nên làm chung", "Điền trạch": "người nhà gây phiền, nên ở riêng", "Phúc đức": "duyên khó như ý", "Phụ mẫu": "khó được gia đình chúc phúc"},
+      "Tử tức": {"Mệnh": "lo nghĩ cho con", "Huynh đệ": "hợp tác ít lời", "Phu thê": "con cái kéo chậm công việc", "Tử tức": "duyên con mỏng, dạy con chưa trúng", "Tài bạch": "tài chính co lại", "Tật ách": "bỏ sức vì con", "Thiên di": "ít gần con", "Nô bộc": "bạn thưa, hợp tác tư lợi", "Quan lộc": "có con thì sự nghiệp chậm", "Điền trạch": "chi tiêu nhà eo hẹp", "Phúc đức": "lo cho con, nên tính tuổi già", "Phụ mẫu": "con khó bảo"},
+      "Tài bạch": {"Mệnh": "kiếm tiền vất vả", "Huynh đệ": "tính toán tiền với anh em", "Phu thê": "tiền làm phiền hôn nhân", "Tử tức": "tiền cho con eo hẹp", "Tài bạch": "tiền trôi không hay", "Tật ách": "làm lụng vì tiền", "Thiên di": "thu nhập bên ngoài bị cản, chi bất ngờ", "Nô bộc": "chi nhiều cho bạn bè", "Quan lộc": "làm việc tốn tiền túi", "Điền trạch": "tiết kiệm giữ nhà", "Phúc đức": "tiêu cho hưởng thụ", "Phụ mẫu": "cẩn thận vay mượn"},
+      "Tật ách": {"Mệnh": "bận không ngơi", "Huynh đệ": "lạnh nhưng có việc thì xắn tay", "Phu thê": "tình cảm kín đáo", "Tử tức": "ít kiên nhẫn với con", "Tài bạch": "dồn sức kiếm tiền", "Tật ách": "dễ quá sức", "Thiên di": "nóng vội, bận rộn", "Nô bộc": "ít thể hiện quan tâm", "Quan lộc": "nơi làm khó vừa ý", "Điền trạch": "thích ở nhà", "Phúc đức": "tự tìm phiền", "Phụ mẫu": "tính nóng, thẳng"},
+      "Thiên di": {"Mệnh": "ra ngoài khó như ý", "Huynh đệ": "xa anh em, quản tiền vụng", "Phu thê": "khó vun vén hôn nhân", "Tử tức": "dạy con chưa trúng, bôn ba", "Tài bạch": "kiếm tiền vất, dễ hao bất ngờ", "Tật ách": "bị cuốn vào bận rộn", "Thiên di": "thẳng tính, nguồn lực trôi đi", "Nô bộc": "ít giao du", "Quan lộc": "công việc bị cản trở", "Điền trạch": "dễ rời quê, chuyển nhà", "Phúc đức": "khó thảnh thơi", "Phụ mẫu": "học hành, giấy tờ kém thuận"},
+      "Nô bộc": {"Mệnh": "bạn bè đeo bám", "Huynh đệ": "bạn tính toán tiền", "Phu thê": "bạn bè xen vào hôn nhân", "Tử tức": "ảnh hưởng con cái, hợp tác vướng", "Tài bạch": "tiền thất thoát qua bạn", "Tật ách": "bị người khác làm bận", "Thiên di": "tình bạn đứt quãng", "Nô bộc": "(nguồn không nêu)", "Quan lộc": "bạn bè không giúp việc", "Điền trạch": "cẩn thận trộm, cho vay", "Phúc đức": "khó tìm tri kỷ", "Phụ mẫu": "bạn bè làm cha mẹ lo"},
+      "Quan lộc": {"Mệnh": "lao tâm vì việc", "Huynh đệ": "thu mình, giữ thành", "Phu thê": "việc kéo theo người phối ngẫu", "Tử tức": "cả nhà cùng bận", "Tài bạch": "thu nhập ít, hợp lương cố định", "Tật ách": "việc gì cũng tự làm", "Thiên di": "ít quý nhân", "Nô bộc": "trọng nghĩa, dễ làm khổ người hợp tác", "Quan lộc": "hay đổi việc, nên làm nhanh gọn", "Điền trạch": "nhà và nơi làm có thể chung", "Phúc đức": "làm theo sở thích, tránh mạo hiểm", "Phụ mẫu": "vất vả, hợp khu vực công"},
+      "Điền trạch": {"Mệnh": "gánh trách nhiệm gia đình", "Huynh đệ": "anh em gánh việc nhà, hao tiền", "Phu thê": "người phối ngẫu gánh chi tiêu", "Tử tức": "kho thủng khó tích", "Tài bạch": "khó để dành", "Tật ách": "việc nhà vất vả", "Thiên di": "quản tài sản vụng, chuyển nhà", "Nô bộc": "hàng xóm thị phi, cẩn thận cho vay", "Quan lộc": "gia đình ít giúp sự nghiệp", "Điền trạch": "hao không hay", "Phúc đức": "khó giữ tiền, tâm trạng nặng", "Phụ mẫu": "rủi ro giấy tờ, đừng bảo lãnh"},
+      "Phúc đức": {"Mệnh": "hay lo nghĩ, tự làm khó", "Huynh đệ": "chăm lo anh em", "Phu thê": "theo sát người phối ngẫu", "Tử tức": "chiều con quá mức", "Tài bạch": "rất để ý tiền", "Tật ách": "quá chú ý thân thể, bận rộn", "Thiên di": "không ngại ánh mắt người khác", "Nô bộc": "hết lòng với bạn", "Quan lộc": "tự tay làm hết", "Điền trạch": "bênh người nhà", "Phúc đức": "đa sầu, sở thích đến nhanh đi nhanh", "Phụ mẫu": "rất hiếu thuận, cẩn thận giấy tờ"},
+      "Phụ mẫu": {"Mệnh": "trách nhiệm phụng dưỡng", "Huynh đệ": "cha mẹ lo cho anh em, cẩn thận cho vay", "Phu thê": "người trên xen chuyện tình cảm", "Tử tức": "ông bà thương cháu", "Tài bạch": "chi cho cha mẹ, cẩn thận giấy tờ", "Tật ách": "lao tâm vì cha mẹ", "Thiên di": "học, diễn đạt bị hạn chế", "Nô bộc": "cha mẹ can dự bạn bè", "Quan lộc": "chia sẻ gánh phụng dưỡng", "Điền trạch": "có thể ở chung, cẩn thận khoản vay", "Phúc đức": "học hành dễ chán, khoảng cách thế hệ", "Phụ mẫu": "duyên với cha mẹ nhạt"}
+    }
+  },
+
+  "trinhTuLuan": {
+    "nguon": ["S26", "S20", "S4"],
+    "buoc": [
+      "1. Thông tin lá số: can chi 12 cung, Mệnh/Thân, cục; Tứ Hóa năm sinh (cung nào, sao nào); Lai Nhân cung.",
+      "2. Tổng quan: Lai Nhân cung nói gì; Tứ Hóa năm sinh rơi vào ngã cung hay tha cung; các mẫu Kỵ nổi bật (Nhập khố, Sách mã, Lưu xuất, Củ triền…).",
+      "3. Luận 12 cung theo thứ tự ưu tiên của bài mẫu: Mệnh → Thân → Quan lộc → Tài bạch → Thiên di → Phúc đức → Phu thê → Tử tức → Điền trạch → Tật ách → Phụ mẫu → Huynh đệ → Nô bộc. Mỗi cung: hóa năm sinh tại cung, tự hóa, 4 phi hóa của cung (Lộc, Quyền, Khoa, Kỵ đi đâu, kèm tên chuyển cung), chuỗi chuyển Lộc/chuyển Kỵ, mẫu có tên, lời khuyên.",
+      "4. Mỗi đại vận: (a) thông tin chung – cung đại vận, can, Lộc/Kỵ nhập cung nào (tên nguyên cục + tên đại vận); (b) Tứ hóa nhập xuất – trùng điệp với hóa năm sinh, xung chiếu; (c) phi hóa tha ngã cung – các cung đại vận phi Lộc/Kỵ vào Mệnh nguyên cục; (d) tổng luận 12 cung.",
+      "5. Lưu niên (và lưu nguyệt nếu có): như đại vận + mục 'tương tác tứ hóa các tầng' (lưu niên ↔ đại vận ↔ nguyên cục).",
+      "6. Kết luận và lời khuyên (tầng 2: nhẹ nhàng, có hướng khắc phục)."
+    ]
+  },
+
+  "kiemThu": {
+    "laSoMau": "Đã kiểm thuật toán can cung + Lai Nhân + 48 phi hóa + 12 đại vận + lưu niên + lưu nguyệt trên lá số mẫu của cohoc (dữ liệu riêng ở scratchpad doi-chieu.md; không đưa vào repo). Kết quả: khớp toàn bộ.",
+    "goiYCaseTest": [
+      "Năm Giáp → Dần can Bính; Lai Nhân ở Tuất.",
+      "Năm Nhâm → Dần can Nhâm, Tí cũng Nhâm; Lai Nhân phải ra Dần (không phải Tí).",
+      "Năm Tân → Mão và Sửu cùng can Tân; Lai Nhân phải ra Mão.",
+      "Sao Hữu Bật/Tả Phù phải có vị trí, nếu không phi Khoa của can Mậu/Nhâm sẽ trống."
+    ]
+  }
+}
