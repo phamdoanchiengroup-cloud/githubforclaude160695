@@ -381,6 +381,11 @@ Chủ dự án giao (2 tin nhắn, muốn làm trong 1 lượt, **phân tích tr
   - Toàn nhà máy (`qtVsm`, `qtOXuong`): lưới 6 cột – thân chung Phôi Carbon, Phôi Thô → rẽ chuôi (Sơn, In UV) / ngọn (Ngọn Taro, Ngọn Tip) → nhập lại Hoàn thiện, Đóng gói; CNC + POM là nút cấp phụ viền đứt; thẻ: tên, "có/cần người · −thiếu", huy hiệu tải. Điện thoại: thân chung → 2 cột Chuôi | Ngọn → nhập lại.
   - Từng xưởng (`qtLanBoi`, `qtHangNhom`): danh sách bước đánh số 1→n (cùng bước khác nhánh: dòng "└"), cột Nhánh / CĐ / Người (đang làm/cần) / Biết / Tải; bấm dòng mở công đoạn con; ngoài dòng chảy để cuối, mờ.
   - Quy tắc màu: viền trung tính, màu chỉ ở huy hiệu % (`qtBd`: ≤85 xám, 86–100 vàng, >100 đỏ), **chỉ nút thắt** có sọc cam + nhãn; "1 người biết" = chữ ⚠ vàng. Sơ đồ SVG kiểu cũ vẫn có trong mục gập.
+- **Lưu đồ bản 3 – hiệu ứng** (01/11 tối; chủ dự án gửi ảnh mẫu 9 xưởng nhưng chọn **không dùng ảnh**, làm đẹp đường line + card, cả 2 lưu đồ, điện thoại bỏ lưu đồ):
+  - Toàn nhà máy: thẻ kính (`qtOXuong`, biểu tượng SVG từng xưởng `QT_IC`, thanh tải 3px đáy thẻ, nút thắt viền cam sáng nhấp `qtNut`); đường nối cong **vẽ bằng SVG đo vị trí thật** (`qtVeDuong`, gọi trong `qtSauVe` sau mỗi lần vẽ + khi đổi cỡ cửa sổ): 8 đường xanh phát sáng có chấm chạy (`qtChay`), 2 đường cấp phụ cam đứt nét (CNC → Ngọn Tip "TIP, PHÍP"; Ngọn Taro → Phôi Thô "POM").
+  - Từng xưởng: trục thời gian dọc (`.qt-tl`, đường sáng + đốm chạy `qtTroi`), số bước trong vòng tròn phát sáng, bước con chấm nhỏ, nút thắt vòng cam.
+  - Điện thoại (≤ 640px): ẩn lưu đồ, hiện dòng "Lưu đồ chỉ hiện trên máy tính" + bảng số. Giảm chuyển động → tắt hiệu ứng. Giao diện sáng có màu riêng.
+- **Sửa theo `bao-mat-ung-dung` (01/11):** không lỗi nặng; đã sửa: mảnh bản chụp có tiền tố `~` (không thành công thức), khóa dòng trùng đánh số `#2` (`dhKhoaDs_`), `qtLuongCap_` chỉ miễn đúng luồng NGONTARO→PHOITHO, `qtLuongCu_` chỉ bổ sung luồng mới cho bản lưu trước 01/11, `esc` trạng thái cũ, chia 0 ở xu hướng, thiếu cột "Còn thiếu" → đặt − đã trả, `qtThuTuX` bỏ luồng POM.
 - **C. Cân bằng tải theo sp/tháng** (`qtMT`, `qtSlNay`, `qtSlNayDo`, `QT_CD_DONGGOI`): ô Sản lượng yêu cầu (sp/tháng), Ngày làm/tháng, Hiện nay làm (sp/ngày, để trống = tự đo theo đóng gói thành phẩm + đóng đơn lẻ, ~368/ngày ≈ 9.570/tháng kỳ 31/10). Mục tiêu % = (sp/tháng ÷ ngày) ÷ nhịp hiện nay. Lưu vào `QT_CAI_DAT` (slThang, ngayThang, slNay). Bảng thêm **Thiếu (+)/thừa (−)** và **Cần trong danh sách** (= cần có mặt ÷ tỷ lệ đi làm). Kết luận: "Để làm 9.000 sp/tháng cần ~N người có mặt – thiếu ~K".
 - **D. Tab Đơn hàng riêng** (menu Sản xuất, dưới Quy trình; `vDH` trong Index mục 36, chung mảnh QuyTrinh.html; `dhTrangVe`):
   - 6 thẻ tổng (đơn theo mã, SL, đang SX, sẵn sàng/đã giao, trễ, còn thiếu); lọc mã/tên, kênh, trạng thái, ngày đặt; Xuất Excel (SheetJS), In / PDF (cửa sổ in).
@@ -388,7 +393,7 @@ Chủ dự án giao (2 tin nhắn, muốn làm trong 1 lượt, **phân tích tr
   - Máy chủ: `dhDocTab_` thêm cột Có thể giao, Đã trả khách, Loại phôi, Chú thích; `dhMaDon_` (người đặt + ngày đặt từ mã, deadline trước ngày đặt → năm sau); cache `DH_DON_v2`.
   - Bản chụp: sheet ẩn `DonHangChup` (Ngay | Phan | DuLieu, mảnh 40.000 ký tự, giữ 30 ngày) – `dhChup_`, `dhDocChup_`; chụp lúc 9h trong `snapshotKPIHangNgay` (vá ở `va-don-hang.py`, gọi `chupDonHangHangNgay_`) + lần đầu mở tab trong ngày. `layThayDoiDon` so với bản chụp gần nhất trước hôm nay: mới / còn thiếu giảm / tăng / trạng thái / deadline / SL / không còn; trả `lichSu` cho xu hướng.
   - Chưa có: tỷ lệ giao đúng hạn (Sheet đơn không có ngày giao thực tế).
-- **Kiểm thử:** `don-hang.js` 60, `quy-trinh.js` 53, `quy-trinh-web.js` 63, `manh-web.js` 8, `ky-nang.js` 49; `bao-mat.js` 2 lỗi cũ (ngày đã duyệt). Giả lập thêm `getDisplayValues`, `hideSheet`.
+- **Kiểm thử:** `don-hang.js` 62, `quy-trinh.js` 54, `quy-trinh-web.js` 63, `manh-web.js` 8, `ky-nang.js` 49; `bao-mat.js` 2 lỗi cũ (ngày đã duyệt). Giả lập thêm `getDisplayValues`, `hideSheet`.
 - Kích thước: Index ~826 KB, QuyTrinh.html ~98 KB, Code.gs ~521 KB.
 
 ## Việc tiếp theo
