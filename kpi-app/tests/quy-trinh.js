@@ -15,12 +15,12 @@ let r;
 
 console.log('\n1. Quyền: chỉ chủ sở hữu');
 ['layQuyTrinh', 'luuQuyTrinh'].forEach(f => {
-  [[Tadm, 'ban điều hành'], [Ttp, 'trưởng phòng'], [Tcn, 'công nhân']].forEach(([t, ten]) => { r = c.__goi(f, t, f === 'luuQuyTrinh' ? { cd: [], xuong: [] } : 30); ok(!r.ok && /chủ sở hữu/.test(r.msg), f + ': ' + ten + ' bị chặn', r); });
+  [[Tadm, 'ban điều hành'], [Tcn, 'công nhân']].concat(f === 'luuQuyTrinh' ? [[Ttp, 'trưởng phòng (lưu thẳng)']] : []).forEach(([t, ten]) => { r = c.__goi(f, t, f === 'luuQuyTrinh' ? { cd: [], xuong: [] } : 30); ok(!r.ok && /chủ sở hữu/.test(r.msg), f + ': ' + ten + ' bị chặn', r); });
   r = c.__goi(f, 'sai', {}); ok(!r.ok && r.hetHan, f + ': phiên sai bị chặn', r);
 });
 r = c.__goi('layManhGiaoDien', Tadm, 'QuyTrinh'); ok(!r.ok, 'mảnh QuyTrinh: ban điều hành không tải được', r);
 r = c.__goi('layManhGiaoDien', Tcn, 'QuyTrinh'); ok(!r.ok, 'mảnh QuyTrinh: công nhân không tải được', r);
-ok(c.MANH_GD.QuyTrinh.join() === 'OWNER', 'MANH_GD.QuyTrinh = [OWNER]');
+ok(c.MANH_GD.QuyTrinh.join() === 'OWNER,TP,PP', 'MANH_GD.QuyTrinh = [OWNER, TP, PP] (03/11)');
 
 console.log('\n2. Quy trình nháp + thống kê');
 r = c.__goi('layQuyTrinh', Town, 30);
@@ -103,6 +103,38 @@ r2 = c.__goi('layQuyTrinh', Town, 30);
 ok(r2.xuat && r2.xuat.SON && r2.xuat.SON.join() === [cdSon[0], cdSon[1]].join() && c.doc_('QuyTrinh').some(x => x.Loai === 'XUAT'), 'đọc lại bước xuất (bỏ trùng), lưu dòng XUAT', r2.xuat);
 const t7 = Object.values(r2.thongKe).some(t => t.sl7 > 0 && t.sl7 <= t.sl);
 ok(t7 && r2.soNgaySX7 >= 1 && r2.soNgaySX7 <= 7, 'thống kê có sản lượng 7 ngày gần nhất (≤ cả kỳ) + số ngày sản xuất 7 ngày', r2.soNgaySX7);
+
+console.log('\n9. Trưởng / phó phòng: chỉ xưởng mình, sửa = gửi đề xuất, chủ sở hữu duyệt (03/11)');
+{ const tp = TK.find(t => t.VaiTro === 'TP' && t.MaXuong === 'SON'), pp = TK.find(t => t.VaiTro === 'PP' && t.MaXuong), T1 = c.__phienDai(tp), T2 = c.__phienDai(pp);
+  r = c.__goi('layQuyTrinh', T1, 30);
+  ok(r.ok && r.laTP && r.xuongCua === 'SON' && r.quyTrinh.length > 0 && r.quyTrinh.every(x => x.MaXuong === 'SON') && r.congDoan.every(x => x.MaXuong === 'SON') && r.nhanSu.every(x => x.MaXuong === 'SON') && Object.keys(r.may).every(x => x === 'SON'), 'TP Sơn: chỉ nhận công đoạn / nhân sự / máy của xưởng Sơn', [r.xuongCua, r.quyTrinh.length]);
+  ok(Object.keys(r.thongKe).every(m => r.congDoan.some(x => x.MaCD === m) || Object.keys(r.thongKe[m].nguoi).length === 0) && !r.deXuatCho, 'thống kê xưởng khác chỉ có số tổng đóng gói (không tên người); không thấy đề xuất xưởng khác');
+  ok(c.__goi('layQuyTrinh', T2, 30).xuongCua === pp.MaXuong, 'phó phòng: xưởng của mình');
+  ok(!c.__goi('layDonHangXuong', T1, false).ok, 'TP: tab Đơn hàng vẫn bị chặn');
+  const cd = r.quyTrinh.map(x => ({ Ma: x.Ma, Nhanh: x.Nhanh, Buoc: x.Buoc, Truoc: x.Truoc }));
+  const cdNgoai = c.__goi('layQuyTrinh', Town, 30).quyTrinh.find(x => x.MaXuong !== 'SON').Ma;
+  r = c.__goi('guiDeXuatQuyTrinh', T1, { cd: cd.concat([{ Ma: cdNgoai, Nhanh: 'CHUNG', Buoc: 1 }]) }); ok(!r.ok, 'đề xuất có công đoạn xưởng khác: từ chối', r.msg);
+  r = c.__goi('guiDeXuatQuyTrinh', T1, { cd: cd.map((x, i) => i === 0 ? Object.assign({}, x, { Truoc: [cdNgoai] }) : x) }); ok(!r.ok, 'nối tay sang công đoạn xưởng khác: từ chối');
+  const vong = cd.map(x => Object.assign({}, x)); vong[0].Truoc = [vong[1].Ma]; vong[1].Truoc = [vong[0].Ma];
+  r = c.__goi('guiDeXuatQuyTrinh', T1, { cd: vong }); ok(!r.ok && /vòng lặp/.test(r.msg), 'đề xuất tạo vòng lặp: từ chối', r.msg);
+  r = c.__goi('guiDeXuatQuyTrinh', Town, { cd }); ok(!r.ok, 'chủ sở hữu không dùng gửi đề xuất (lưu thẳng)');
+  const cd2 = cd.map(x => Object.assign({}, x)); cd2[0].Nhanh = 'HOTRO';
+  r = c.__goi('guiDeXuatQuyTrinh', T1, { cd: cd2, xuat: [cd[1].Ma], luong: [{ Den: 'INUV', BTP: '=Chuôi sơn' }], loiNhan: 'thử 1' }); ok(r.ok, 'TP gửi đề xuất', r.msg);
+  r = c.__goi('guiDeXuatQuyTrinh', T1, { cd: cd2, xuat: [cd[1].Ma], luong: [{ Den: 'INUV', BTP: 'Chuôi sơn' }], loiNhan: 'thử 2' });
+  ok(r.ok && c.doc_('QuyTrinhDeXuat').filter(x => x.TrangThai === 'Chờ duyệt').length === 1 && c.__goi('layQuyTrinh', T1, 30).deXuat.cho.LoiNhan === 'thử 2', 'gửi lại: thay bản đang chờ (chỉ 1 bản chờ / xưởng)');
+  ok(c.__goi('demDeXuatQuyTrinh', Town).n === 1 && !c.__goi('demDeXuatQuyTrinh', T1).ok, 'chủ sở hữu đếm được đề xuất chờ; TP không gọi được');
+  const truoc = c.__goi('layQuyTrinh', Town, 30).quyTrinh.find(x => x.Ma === cd[0].Ma).Nhanh;
+  ok(truoc !== 'HOTRO', 'chưa duyệt: quy trình chưa đổi');
+  const id = c.__goi('layQuyTrinh', Town, 30).deXuatCho[0].Id;
+  ok(!c.__goi('duyetDeXuatQuyTrinh', T1, id, true).ok, 'TP không tự duyệt được');
+  r = c.__goi('duyetDeXuatQuyTrinh', Town, id, false, 'chưa hợp lý'); ok(r.ok && c.__goi('layQuyTrinh', T1, 30).deXuat.cuoi.LyDo === 'chưa hợp lý', 'từ chối: TP thấy lý do');
+  ok(!c.__goi('duyetDeXuatQuyTrinh', Town, id, true).ok, 'đề xuất đã từ chối không duyệt lại được');
+  c.__goi('guiDeXuatQuyTrinh', T1, { cd: cd2, xuat: [cd[1].Ma], luong: [{ Den: 'INUV', BTP: 'Chuôi sơn' }] });
+  const id2 = c.__goi('layQuyTrinh', Town, 30).deXuatCho[0].Id, khac = c.__goi('layQuyTrinh', Town, 30).quyTrinh.filter(x => x.MaXuong !== 'SON').map(x => x.Ma + x.Nhanh + x.Buoc).join();
+  r = c.__goi('duyetDeXuatQuyTrinh', Town, id2, true); const sau = c.__goi('layQuyTrinh', Town, 30);
+  ok(r.ok && sau.quyTrinh.find(x => x.Ma === cd[0].Ma).Nhanh === 'HOTRO' && sau.xuat.SON.join() === cd[1].Ma && sau.xuongLuong.some(a => a.Tu === 'SON' && a.Den === 'INUV' && a.BTP === 'Chuôi sơn'), 'duyệt: áp dụng nhánh, bước ra hàng, luồng giao đi của xưởng Sơn', [r.msg, sau.xuat.SON, sau.xuongLuong.filter(a => a.Tu === 'SON')]);
+  ok(sau.quyTrinh.filter(x => x.MaXuong !== 'SON').map(x => x.Ma + x.Nhanh + x.Buoc).join() === khac && sau.xuongLuong.some(a => a.Tu !== 'SON'), 'duyệt không đụng tới xưởng khác');
+  ok(c.doc_('NhatKyThaoTac').some(x => x.HanhDong === 'Duyệt đề xuất quy trình') && c.doc_('NhatKyThaoTac').some(x => x.HanhDong === 'Đề xuất quy trình'), 'ghi nhật ký gửi / duyệt'); }
 
 console.log((loi ? '\n✗ ' : '\n✓ ') + (dem - loi) + '/' + dem + ' đạt');
 process.exit(loi ? 1 : 0);

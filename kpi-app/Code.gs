@@ -6634,7 +6634,7 @@ function KIEM_TRA_COM_TRUA() {
    - HoatAnh: dữ liệu hoạt ảnh Lottie – tải nền sau khi đăng nhập.
    - AmThanh: giọng nói Rhino thu sẵn (18/10) – chỉ tải khi người dùng bật giọng.
    Trình duyệt nhớ bản đã tải (localStorage, theo mã phiên bản) nên lần sau không tải lại. */
-var MANH_GD = { SoDo: ['ADMIN', 'TP', 'TL', 'HR'], HoatAnh: null, AmThanh: null, QuyTrinh: ['OWNER'] };   // QuyTrinh (31/10): chỉ chủ sở hữu
+var MANH_GD = { SoDo: ['ADMIN', 'TP', 'TL', 'HR'], HoatAnh: null, AmThanh: null, QuyTrinh: ['OWNER', 'TP', 'PP'] };   // QuyTrinh (31/10): chủ sở hữu; 03/11 thêm trưởng / phó phòng (máy chủ chỉ trả dữ liệu xưởng mình)
 function layManhGiaoDien(token, ten) {
   var me = docPhien_(token);
   if (!me) return sach_({ ok: false, hetHan: true, msg: 'Phiên đăng nhập đã hết hạn.' });
@@ -7535,7 +7535,7 @@ function danhSachVanPhong(token) {
   ds.sort(function(a, b) { return (thuTu[a.vaiTro] - thuTu[b.vaiTro]) || (a.HoTen < b.HoTen ? -1 : 1); });
   return sach_({ ok: true, ds: ds, muc: HS_MUC });
 }
-var KPI_BAN_MAY = '01/11/2026 21:46';   // giờ dựng Code.gs (22/10)
+var KPI_BAN_MAY = '02/11/2026 06:32';   // giờ dựng Code.gs (22/10)
 /* =====================================================================
    KỸ NĂNG (22/10, chủ dự án nhờ thiết kế + tham khảo chuyên gia nhân sự / đào tạo)
    - Danh mục: trưởng / phó phòng đề xuất kỹ năng của xưởng (tên, mô tả, tiêu chí đạt, công đoạn liên quan)
@@ -7985,6 +7985,14 @@ function qtQuyen_(token) {
   if (!me.laOwner) return { loi: sach_({ ok: false, msg: 'Tab Quy trình sản xuất đang chỉ mở cho tài khoản chủ sở hữu.' }) };
   return { me: me };
 }
+/* 03/11 (chủ dự án): trưởng / phó phòng xem + đề xuất sửa quy trình CHỈ xưởng mình (chủ sở hữu duyệt). -> { me, xuong: '' (chủ sở hữu) | mã xưởng } */
+function qtQuyenXem_(token) {
+  var me = docPhien_(token);
+  if (!me) return { loi: sach_({ ok: false, hetHan: true, msg: 'Phiên đăng nhập đã hết hạn.' }) };
+  if (me.laOwner) return { me: me, xuong: '' };
+  if (me.vaiTro === 'TP' && me.xuong && String(me.xuong).trim()) return { me: me, xuong: String(me.xuong).trim() };
+  return { loi: sach_({ ok: false, msg: 'Tab Quy trình sản xuất chỉ mở cho chủ sở hữu và trưởng / phó phòng xưởng.' }) };
+}
 function qtSheet_() {
   var sh = ss_().getSheetByName(QT_SHEET);
   if (!sh) {
@@ -8075,7 +8083,7 @@ function qtDocQT_(cds) {
 
 /* Dữ liệu cho tab: quy trình + thống kê sản lượng theo công đoạn trong kỳ + nhân sự + máy + kỹ năng */
 function layQuyTrinh(token, soNgay) {
-  var q = qtQuyen_(token); if (q.loi) return q.loi;
+  var q = qtQuyenXem_(token); if (q.loi) return q.loi;
   var cds = doc_('CongDoan').filter(function(c) { return String(c.TrangThai).trim() !== 'Ngừng'; });
   var qt = qtDocQT_(cds);
   soNgay = [14, 30, 60, 90].indexOf(Number(soNgay)) >= 0 ? Number(soNgay) : qt.caiDat.soNgay;
@@ -8111,25 +8119,43 @@ function layQuyTrinh(token, soNgay) {
     if (cap < 2 || (hh && hh < hn)) return;
     dsKN[String(g.MaKN)].forEach(function(m) { m = m.trim(); if (!m) return; kn[m] = kn[m] || {}; kn[m][String(g.MaNV)] = Math.max(kn[m][String(g.MaNV)] || 0, cap); });
   });
-  return sach_({ ok: true, nhap: qt.nhap, quyTrinh: Object.keys(qt.cd).map(function(m) { return qt.cd[m]; }), xuongLuong: qt.xuong, caiDat: qt.caiDat,
+  var kq = { ok: true, nhap: qt.nhap, quyTrinh: Object.keys(qt.cd).map(function(m) { return qt.cd[m]; }), xuongLuong: qt.xuong, caiDat: qt.caiDat,
     nhanh: QT_NHANH, soNgay: soNgay, tu: tu, den: den, soNgaySX: Object.keys(ngaySX).length,
     congDoan: cds.map(function(c) { var d = dmRow[String(c.MaCD)] || {};
       return { MaCD: String(c.MaCD), TenCD: String(c.TenCD), MaXuong: String(c.MaXuong), DM: Number(d.DinhMucGio) || 0, DVT: String(d.DonViTinh || '') }; }),
     xuong: doc_('PhongBan').filter(function(p) { return String(p.TrangThai || 'Đang dùng').trim() !== 'Ngừng'; }).map(function(p) { return { MaXuong: String(p.MaXuong), TenXuong: String(p.TenXuong) }; }),
-    thongKe: tk, soNgaySX7: Object.keys(ngay7).length, xuat: qt.xuat, ngayCong: ngayCong, nhanSu: ns, may: may, kyNang: kn });
+    thongKe: tk, soNgaySX7: Object.keys(ngay7).length, xuat: qt.xuat, ngayCong: ngayCong, nhanSu: ns, may: may, kyNang: kn };
+  if (q.xuong) {   // trưởng / phó phòng: chỉ dữ liệu xưởng mình (+ tên xưởng và luồng để vẽ lưu đồ nhà máy không số)
+    var X = q.xuong, cuaX = {}, nvX = {};
+    kq.congDoan = kq.congDoan.filter(function(c) { if (c.MaXuong === X) { cuaX[c.MaCD] = 1; return true; } return false; });
+    kq.quyTrinh = kq.quyTrinh.filter(function(c) { return c.MaXuong === X; });
+    kq.nhanSu = ns.filter(function(n) { if (n.MaXuong === X) { nvX[n.MaNV] = 1; return true; } return false; });
+    var tk2 = {}; Object.keys(tk).forEach(function(m) { if (cuaX[m]) { var t0 = tk[m], ng = {}; Object.keys(t0.nguoi).forEach(function(p) { if (nvX[p]) ng[p] = t0.nguoi[p]; }); tk2[m] = { sl: t0.sl, sl7: t0.sl7, soNgay: t0.soNgay, nguoi: ng }; } else if (QT_CD_DONGGOI_.indexOf(m) >= 0) tk2[m] = { sl: tk[m].sl, nguoi: {} }; });   // nhịp nhà máy (đóng gói) chỉ số tổng
+    kq.thongKe = tk2;
+    var nc2 = {}; Object.keys(ngayCong).forEach(function(m) { if (nvX[m]) nc2[m] = ngayCong[m]; }); kq.ngayCong = nc2;
+    var kn2 = {}; Object.keys(kn).forEach(function(m) { if (!cuaX[m]) return; kn2[m] = {}; Object.keys(kn[m]).forEach(function(p) { if (nvX[p]) kn2[m][p] = kn[m][p]; }); }); kq.kyNang = kn2;   // không lộ mã người xưởng khác
+    var may2 = {}; if (may[X]) may2[X] = may[X]; kq.may = may2;
+    var xu2 = {}; if (qt.xuat[X]) xu2[X] = qt.xuat[X]; kq.xuat = xu2;
+    kq.laTP = true; kq.xuongCua = X; kq.deXuat = qtDeXuatCua_(X);
+  } else kq.deXuatCho = qtDsDeXuat_(true).filter(function(r) { return r.TrangThai === 'Chờ duyệt'; }).map(function(r) { var o = {}; for (var k in r) if (k !== '_row') o[k] = r[k]; o.daDoi = !!r.Dau && r.Dau !== qtDauXuong_(qt, r.MaXuong); return o; });
+  return sach_(kq);
 }
 
 /* Lưu quy trình (ghi đè toàn bộ sheet QuyTrinh trong khóa). o = { cd: [{Ma, Nhanh, Buoc, Truoc[], GhiChu}], xuong: [{Tu, Den, BTP, GhiChu}], caiDat: {} } */
 function luuQuyTrinh(token, o) {
   var q = qtQuyen_(token); if (q.loi) return q.loi;
-  var me = q.me; o = o || {};
-  if (!Array.isArray(o.cd) || o.cd.length > 2000 || !Array.isArray(o.xuong || []) || (o.xuong || []).length > 100) return sach_({ ok: false, msg: 'Dữ liệu quy trình không hợp lệ.' });
+  return sach_(qtKiemGhi_(q.me, o, false));
+}
+/* Kiểm + ghi toàn bộ quy trình (chiKiem = true: chỉ kiểm, không ghi). Trả { ok, msg, doi } */
+function qtKiemGhi_(me, o, chiKiem, ghiChuLog) {
+  o = o || {};
+  if (!Array.isArray(o.cd) || o.cd.length > 2000 || !Array.isArray(o.xuong || []) || (o.xuong || []).length > 100) return ({ ok: false, msg: 'Dữ liệu quy trình không hợp lệ.' });
   var thoDai = function(v, n) { return v != null && (typeof v !== 'string' && typeof v !== 'number' || String(v).length > n); };   // kiểm độ dài TRƯỚC khi xử lý / giữ khóa
   if (o.cd.some(function(c) { return !c || typeof c !== 'object' || thoDai(c.Ma, 60) || thoDai(c.Nhanh, 20) || thoDai(c.GhiChu, 400) || (c.Truoc != null && (!Array.isArray(c.Truoc) || c.Truoc.length > 20 || c.Truoc.some(function(t) { return thoDai(t, 60); }))); }) ||
       (o.xuong || []).some(function(x) { return !x || typeof x !== 'object' || thoDai(x.Tu, 30) || thoDai(x.Den, 30) || thoDai(x.BTP, 240) || thoDai(x.GhiChu, 400); }) ||
       (o.xuat != null && (typeof o.xuat !== 'object' || Array.isArray(o.xuat) || Object.keys(o.xuat).length > 30 || Object.keys(o.xuat).some(function(k) { var a = o.xuat[k]; return k.length > 30 || !Array.isArray(a) || a.length > 30 || a.some(function(t) { return thoDai(t, 60); }); }))))
-    return sach_({ ok: false, msg: 'Dữ liệu quy trình không hợp lệ (ô quá dài hoặc quá nhiều công đoạn trước).' });
-  khoa_();
+    return ({ ok: false, msg: 'Dữ liệu quy trình không hợp lệ (ô quá dài hoặc quá nhiều công đoạn trước).' });
+  if (!chiKiem) khoa_();
   var cds = doc_('CongDoan'), xOf = {};
   cds.forEach(function(c) { xOf[String(c.MaCD)] = String(c.MaXuong); });
   var xs = {}; doc_('PhongBan').forEach(function(p) { xs[String(p.MaXuong)] = 1; });
@@ -8153,9 +8179,9 @@ function luuQuyTrinh(token, o) {
     if (gc.length > 200) { loi = 'Ghi chú của ' + ma + ' tối đa 200 ký tự.'; return; }
     ds.push({ Ma: ma, MaXuong: xOf[ma], Nhanh: nh, Buoc: b, Truoc: tr, GhiChu: gc });
   });
-  if (loi) return sach_({ ok: false, msg: loi });
+  if (loi) return ({ ok: false, msg: loi });
   var vong = qtCoVong_(qtCanh_(ds));
-  if (vong) return sach_({ ok: false, msg: 'Quy trình bị vòng lặp: ' + vong + '. Sửa "công đoạn trước" để không quay vòng.' });
+  if (vong) return ({ ok: false, msg: 'Quy trình bị vòng lặp: ' + vong + '. Sửa "công đoạn trước" để không quay vòng.' });
   var xl = [], daX = {};
   (o.xuong || []).forEach(function(x) {
     if (loi) return;
@@ -8165,10 +8191,10 @@ function luuQuyTrinh(token, o) {
     if (btp.length > 120) { loi = 'Tên bán thành phẩm tối đa 120 ký tự.'; return; }
     daX[tu + '>' + den] = 1; xl.push({ Tu: tu, Den: den, BTP: btp, GhiChu: String(x.GhiChu || '').replace(/\s+/g, ' ').trim().slice(0, 200) });
   });
-  if (loi) return sach_({ ok: false, msg: loi });
+  if (loi) return ({ ok: false, msg: loi });
   // luồng cấp vật liệu (POM Ngọn Taro → Phôi Thô) chạy ngược chiều sản phẩm: không tính khi dò vòng lặp
   var cX = {}; xl.forEach(function(x) { if (!qtLuongCap_(x)) (cX[x.Den] = cX[x.Den] || []).push(x.Tu); });
-  if (qtCoVong_(cX)) return sach_({ ok: false, msg: 'Luồng giữa các xưởng bị vòng lặp: ' + qtCoVong_(cX) + '.' });
+  if (qtCoVong_(cX)) return ({ ok: false, msg: 'Luồng giữa các xưởng bị vòng lặp: ' + qtCoVong_(cX) + '.' });
   var xt = {};
   Object.keys(o.xuat || {}).forEach(function(x) {
     if (loi) return;
@@ -8177,15 +8203,16 @@ function luuQuyTrinh(token, o) {
     for (var i = 0; i < a.length; i++) if (!qtCo_(xOf, a[i]) || xOf[a[i]] !== x) { loi = 'Bước xuất của ' + x + ' phải là công đoạn của xưởng đó.'; return; }
     if (a.length) xt[x] = a;
   });
-  if (loi) return sach_({ ok: false, msg: loi });
+  if (loi) return ({ ok: false, msg: loi });
   var cai = {}, gh = { gioCoMat: [1, 24], hieuSuat: [0.3, 1.2], mucTieu: [10, 500], soNgay: [14, 90], slThang: [500, 100000], ngayThang: [20, 31], slNay: [0, 5000] };
   for (var k in QT_CAI_DAT) {
     var v = Number((o.caiDat || {})[k]);
     if ((o.caiDat || {})[k] === undefined) v = QT_CAI_DAT[k];
-    if (!isFinite(v) || v < gh[k][0] || v > gh[k][1]) return sach_({ ok: false, msg: 'Cài đặt "' + k + '" ngoài khoảng cho phép.' });
+    if (!isFinite(v) || v < gh[k][0] || v > gh[k][1]) return ({ ok: false, msg: 'Cài đặt "' + k + '" ngoài khoảng cho phép.' });
     cai[k] = v;
   }
   // So với bản cũ: dòng không đổi giữ người sửa / thời điểm cũ
+  if (chiKiem) return { ok: true };
   var cu = qtDocQT_([]).cd, luc = Utilities.formatDate(new Date(), TZ_VN, 'yyyy-MM-dd HH:mm'), doi = 0;
   var rows = ds.map(function(c) {
     var c0 = cu[c.Ma], same = c0 && c0.Nhanh === c.Nhanh && c0.Buoc === c.Buoc && c0.Truoc.join(',') === c.Truoc.join(',') && c0.GhiChu === c.GhiChu;
@@ -8201,8 +8228,106 @@ function luuQuyTrinh(token, o) {
   if (rows.length) sh.getRange(2, 1, rows.length, QT_COT.length).setValues(rows.map(dongAnToan_));   // ghi trước, rồi mới xóa dòng thừa (lỗi giữa chừng không mất bản cũ)
   if (cuoi > rows.length + 1) sh.getRange(rows.length + 2, 1, cuoi - rows.length - 1, QT_COT.length).clearContent();
   xoaCache_(QT_SHEET);
-  ghiLog_(me, 'Sửa quy trình sản xuất', ds.length + ' công đoạn (' + doi + ' dòng thay đổi), ' + xl.length + ' luồng giữa xưởng');
-  return sach_({ ok: true, msg: 'Đã lưu quy trình (' + doi + ' công đoạn thay đổi).', doi: doi });
+  ghiLog_(me, 'Sửa quy trình sản xuất', ds.length + ' công đoạn (' + doi + ' dòng thay đổi), ' + xl.length + ' luồng giữa xưởng' + (ghiChuLog ? ' – ' + ghiChuLog : ''));
+  return ({ ok: true, msg: 'Đã lưu quy trình (' + doi + ' công đoạn thay đổi).', doi: doi });
+}
+
+/* ===== 03/11: đề xuất sửa quy trình của trưởng / phó phòng (chỉ xưởng mình) – chủ sở hữu duyệt ===== */
+var QT_DX_SHEET = 'QuyTrinhDeXuat';
+var QT_DX_COT = ['Id', 'MaXuong', 'NguoiGui', 'TenNguoi', 'ThoiDiem', 'DuLieu', 'LoiNhan', 'TrangThai', 'NguoiDuyet', 'ThoiDiemDuyet', 'LyDo'];   // DuLieu xóa sau khi duyệt / từ chối (giữ sheet nhẹ)
+var QT_CD_DONGGOI_ = ['DG-DONGGOITP', 'DG-DONLE-GAY-NGON', 'DG-DONLE-NGON', 'DG-DONLE-CUSTOM', 'DG-DONLE-COMBO'];   // giống QT_CD_DONGGOI ở web (nhịp hiện nay)
+/* Dấu phiên bản phần của 1 xưởng trong quy trình đang lưu (để biết chủ sở hữu đã sửa xưởng đó sau khi trưởng phòng gửi) */
+function qtDauXuong_(qt, X) {
+  var cd = Object.keys(qt.cd).sort().filter(function(m) { return qt.cd[m].MaXuong === X; }).map(function(m) { var c = qt.cd[m]; return [m, c.Nhanh, c.Buoc, (c.Truoc || []).join('+')].join(':'); });
+  var l = qt.xuong.filter(function(a) { return a.Tu === X; }).map(function(a) { return a.Den + '=' + a.BTP; }).sort();
+  return Utilities.computeDigest(Utilities.DigestAlgorithm.SHA_256, JSON.stringify([cd, l, qt.xuat[X] || []]), Utilities.Charset.UTF_8).slice(0, 8).map(function(b) { return ('0' + ((b + 256) % 256).toString(16)).slice(-2); }).join('');
+}
+function qtDsDeXuat_(chiCho) {
+  return docAnToan_(QT_DX_SHEET).map(function(r) {
+    var d = null, cho = String(r.TrangThai || '') === 'Chờ duyệt';
+    if (cho || !chiCho) { try { d = JSON.parse(String(r.DuLieu || '').replace(/^'/, '')); } catch (e) {} }   // chỉ giải mã bản đang chờ khi cần
+    return { Id: String(r.Id), MaXuong: String(r.MaXuong), NguoiGui: String(r.NguoiGui), TenNguoi: String(r.TenNguoi || ''), ThoiDiem: String(r.ThoiDiem || ''), DuLieu: d,
+      LoiNhan: String(r.LoiNhan || ''), TrangThai: String(r.TrangThai || ''), NguoiDuyet: String(r.NguoiDuyet || ''), ThoiDiemDuyet: String(r.ThoiDiemDuyet || ''), LyDo: String(r.LyDo || ''), Dau: d && d.dau || '', _row: r._row };
+  });
+}
+/* Đề xuất đang chờ + quyết định gần nhất của 1 xưởng (cho trưởng phòng) */
+function qtDeXuatCua_(X) {
+  var ds = qtDsDeXuat_().filter(function(r) { return r.MaXuong === X; });
+  var cho = ds.filter(function(r) { return r.TrangThai === 'Chờ duyệt'; }).pop() || null;
+  var xong = ds.filter(function(r) { return r.TrangThai === 'Đã duyệt' || r.TrangThai === 'Từ chối'; }).sort(function(a, b) { return a.ThoiDiemDuyet < b.ThoiDiemDuyet ? -1 : 1; }).pop() || null;
+  var bo = function(r) { if (!r) return null; var o = {}; for (var k in r) if (k !== '_row') o[k] = r[k]; return o; };
+  return { cho: bo(cho), cuoi: bo(xong) };
+}
+/* Ghép đề xuất của xưởng X vào quy trình đang lưu -> o đầy đủ cho qtKiemGhi_ */
+function qtGhepDeXuat_(X, d) {
+  var cds = doc_('CongDoan').filter(function(c) { return String(c.TrangThai).trim() !== 'Ngừng'; });
+  var qt = qtDocQT_(cds), moi = {};
+  (d.cd || []).forEach(function(c) { if (c && c.Ma) moi[String(c.Ma)] = c; });
+  var cd = Object.keys(qt.cd).map(function(m) { var c = qt.cd[m];
+    if (c.MaXuong === X && moi[m]) { var n = moi[m]; return { Ma: m, Nhanh: n.Nhanh, Buoc: n.Buoc, Truoc: n.Truoc || [], GhiChu: c.GhiChu || '' }; }   // ghi chú công đoạn không đổi qua đề xuất
+    return { Ma: m, Nhanh: c.Nhanh, Buoc: c.Buoc, Truoc: c.Truoc || [], GhiChu: c.GhiChu || '' }; });
+  var gcL = {}; qt.xuong.forEach(function(a) { if (a.Tu === X) gcL[a.Den] = a.GhiChu || ''; });
+  var xuong = qt.xuong.filter(function(a) { return a.Tu !== X; }).concat((d.luong || []).map(function(a) { var den = String(a && a.Den || ''); return { Tu: X, Den: den, BTP: String(a && a.BTP || ''), GhiChu: gcL[den] || '' }; }));
+  var xuat = {}; Object.keys(qt.xuat).forEach(function(k) { if (k !== X) xuat[k] = qt.xuat[k]; });
+  if (Array.isArray(d.xuat) && d.xuat.length) xuat[X] = d.xuat;
+  return { cd: cd, xuong: xuong, xuat: xuat, caiDat: qt.caiDat, nhap: qt.nhap };
+}
+/* Trưởng / phó phòng gửi đề xuất. o = { cd: [{Ma, Nhanh, Buoc, Truoc[], GhiChu}] (chỉ công đoạn xưởng mình), xuat: [Ma], luong: [{Den, BTP, GhiChu}], loiNhan } */
+function guiDeXuatQuyTrinh(token, o) {
+  var q = qtQuyenXem_(token); if (q.loi) return q.loi;
+  if (!q.xuong) return sach_({ ok: false, msg: 'Chủ sở hữu lưu thẳng bằng nút "Lưu quy trình".' });
+  var X = q.xuong; o = o || {};
+  if (!Array.isArray(o.cd) || o.cd.length > 400 || (o.xuat != null && (!Array.isArray(o.xuat) || o.xuat.length > 30)) || (o.luong != null && (!Array.isArray(o.luong) || o.luong.length > 20)))
+    return sach_({ ok: false, msg: 'Dữ liệu đề xuất không hợp lệ.' });
+  var xOf = {}; doc_('CongDoan').forEach(function(c) { xOf[String(c.MaCD)] = String(c.MaXuong); });
+  var ngoai = o.cd.some(function(c) { return !c || typeof c !== 'object' || xOf[String(c.Ma)] !== X || (Array.isArray(c.Truoc) && c.Truoc.some(function(t) { return xOf[String(t)] !== X; })); }) ||
+    (o.xuat || []).some(function(m) { return xOf[String(m)] !== X; });
+  if (ngoai) return sach_({ ok: false, msg: 'Chỉ được đề xuất công đoạn của xưởng mình.' });
+  var d = { cd: o.cd.map(function(c) { return { Ma: String(c.Ma), Nhanh: String(c.Nhanh || ''), Buoc: Number(c.Buoc), Truoc: (Array.isArray(c.Truoc) ? c.Truoc : []).map(String) }; }),
+    xuat: (o.xuat || []).map(String), luong: (o.luong || []).map(function(a) { return { Den: String(a && a.Den || '').slice(0, 30), BTP: String(a && a.BTP || '').slice(0, 120), GhiChu: '' }; }) };
+  d.dau = qtDauXuong_(qtDocQT_(doc_('CongDoan').filter(function(c) { return String(c.TrangThai).trim() !== 'Ngừng'; })), X);
+  var kt = qtKiemGhi_(q.me, qtGhepDeXuat_(X, d), true);
+  if (!kt.ok) return sach_({ ok: false, msg: kt.msg });
+  var json = JSON.stringify(d); if (json.length > 45000) return sach_({ ok: false, msg: 'Đề xuất quá lớn.' });
+  khoa_();
+  var sh = ss_().getSheetByName(QT_DX_SHEET);
+  if (!sh) { sh = ss_().insertSheet(QT_DX_SHEET); sh.getRange(1, 1, 1, QT_DX_COT.length).setValues([QT_DX_COT]).setFontWeight('bold'); sh.setFrozenRows(1); sh.getRange(2, 1, sh.getMaxRows() - 1, QT_DX_COT.length).setNumberFormat('@'); try { sh.hideSheet(); } catch (e) {} }
+  xoaCache_(QT_DX_SHEET);
+  qtDsDeXuat_().filter(function(r) { return r.MaXuong === X && r.TrangThai === 'Chờ duyệt'; }).map(function(r) { return r._row; }).sort(function(a, b) { return b - a; }).forEach(function(r) { sh.deleteRow(r); });   // gửi lại: thay bản đang chờ
+  xoaCache_(QT_DX_SHEET);
+  var luc = Utilities.formatDate(new Date(), TZ_VN, 'yyyy-MM-dd HH:mm');
+  them_(QT_DX_SHEET, { Id: 'DX' + new Date().getTime() + '-' + Utilities.getUuid().slice(0, 8), MaXuong: X, NguoiGui: q.me.tk, TenNguoi: String(q.me.hoTen || q.me.ten || q.me.tk), ThoiDiem: luc, DuLieu: json,
+    LoiNhan: String(o.loiNhan || '').replace(/\s+/g, ' ').trim().slice(0, 300), TrangThai: 'Chờ duyệt', NguoiDuyet: '', ThoiDiemDuyet: '', LyDo: '' });
+  ghiLog_(q.me, 'Đề xuất quy trình', X, '', d.cd.length + ' công đoạn, ' + d.luong.length + ' luồng');
+  return sach_({ ok: true, msg: 'Đã gửi đề xuất – chờ chủ sở hữu duyệt.' });
+}
+/* Chủ sở hữu duyệt / từ chối */
+function duyetDeXuatQuyTrinh(token, id, dongY, lyDo) {
+  var q = qtQuyen_(token); if (q.loi) return q.loi;
+  id = String(id || '').slice(0, 40);
+  khoa_(); xoaCache_(QT_DX_SHEET);
+  var r = qtDsDeXuat_().filter(function(x) { return x.Id === id; })[0];
+  if (!r || r.TrangThai !== 'Chờ duyệt') return sach_({ ok: false, msg: 'Đề xuất không còn chờ duyệt (có thể đã được gửi lại bản mới).' });
+  var luc = Utilities.formatDate(new Date(), TZ_VN, 'yyyy-MM-dd HH:mm');
+  if (dongY) {
+    if (!r.DuLieu) return sach_({ ok: false, msg: 'Dữ liệu đề xuất bị hỏng.' });
+    var gh = qtGhepDeXuat_(r.MaXuong, r.DuLieu);
+    if (gh.nhap) return sach_({ ok: false, msg: 'Quy trình nhà máy còn là bản nháp – bấm "Lưu quy trình" một lần để chốt bản nháp, rồi mới duyệt đề xuất.' });
+    var kq = qtKiemGhi_(q.me, gh, false, 'duyệt đề xuất xưởng ' + r.MaXuong + ' của ' + r.NguoiGui);
+    if (!kq.ok) return sach_({ ok: false, msg: 'Không áp dụng được: ' + kq.msg });
+  }
+  var sh = ss_().getSheetByName(QT_DX_SHEET), i8 = QT_DX_COT.indexOf('TrangThai') + 1;
+  sh.getRange(r._row, i8, 1, 4).setValues([[dongY ? 'Đã duyệt' : 'Từ chối', q.me.tk, luc, chuAnToan_(String(lyDo || '').replace(/\s+/g, ' ').trim().slice(0, 300))]]);
+  sh.getRange(r._row, QT_DX_COT.indexOf('DuLieu') + 1).setValue('');   // đã quyết định: bỏ dữ liệu chi tiết cho sheet nhẹ
+  xoaCache_(QT_DX_SHEET);
+  ghiLog_(q.me, dongY ? 'Duyệt đề xuất quy trình' : 'Từ chối đề xuất quy trình', r.MaXuong, '', r.NguoiGui + (lyDo ? ' – ' + String(lyDo).slice(0, 100) : ''));
+  return sach_({ ok: true, msg: dongY ? 'Đã duyệt và áp dụng quy trình xưởng ' + r.MaXuong + '.' : 'Đã từ chối đề xuất.' });
+}
+/* Việc hôm nay (chủ sở hữu): số đề xuất chờ duyệt */
+function demDeXuatQuyTrinh(token) {
+  var q = qtQuyen_(token); if (q.loi) return q.loi;
+  var ds = qtDsDeXuat_().filter(function(r) { return r.TrangThai === 'Chờ duyệt'; });
+  return sach_({ ok: true, n: ds.length, ds: ds.map(function(r) { return { MaXuong: r.MaXuong, TenNguoi: r.TenNguoi || r.NguoiGui, ThoiDiem: r.ThoiDiem }; }) });
 }
 /* =====================================================================
    ĐƠN HÀNG → XƯỞNG (31/10, chủ dự án duyệt): đọc Sheet "Trạng thái đơn hàng" (CHỈ ĐỌC), phân loại từng SKU theo

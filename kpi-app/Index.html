@@ -1848,7 +1848,7 @@ var BOTBAR={
 };
 function dsTabHienCo(){
   var tabChiOwner={pq:1, ptdm:1, log:1, kpiql:1, qt:1, dh:1};   // qt: Quy trình sản xuất (31/10), dh: Đơn hàng (01/11) – chỉ chủ sở hữu
-  return TABS[ME.vaiTro].filter(function(t){ return ME.laOwner || !tabChiOwner[t[0]]; });
+  return TABS[ME.vaiTro].filter(function(t){ return ME.laOwner || !tabChiOwner[t[0]] || (t[0]==='qt'&&ME.vaiTro==='TP'); });   // 03/11: TP/PP xem Quy trình xưởng mình
 }
 function tenTab(k){var t=(TABS[ME.vaiTro]||[]).filter(function(x){return x[0]===k})[0];return t?t[1]:k}
 function nutNav(k,nhan){
@@ -1961,6 +1961,7 @@ function viecHomNay(){
     var tm=(sm.tabMoi||[]).filter(function(t){return tabDX.indexOf(t)<0});
     if(tm.length) v.push({muc:'',so:tm.length,nho:'tab',t:'Sheet đơn có tab kênh mới',m:'Web đang tự đọc thêm: <b>'+tm.map(esc).join(', ')+'</b>. Nếu không phải tab đơn hàng, bấm "Bỏ qua tab này" ở tab Đơn hàng.',fn:"dhDaXemTab();moCauHinhSP('chuy')",nut:'Xem'});
   }
+  if(ME.laOwner&&window.__qtDX&&__qtDX.ok&&__qtDX.n) v.push({muc:'vang',so:__qtDX.n,nho:'đề xuất',t:'Trưởng phòng đề xuất sửa quy trình',m:__qtDX.ds.slice(0,4).map(function(x){return '<b>'+esc(x.MaXuong)+'</b> ('+esc(x.TenNguoi)+', '+esc(x.ThoiDiem)+')'}).join(' · ')+' – xem so sánh rồi duyệt hoặc từ chối.',fn:"window.__qtMo='duyet';go('qt')",nut:'Xem & duyệt'});
   // 5) Yêu cầu sửa hồ sơ
   var yc=D.yeuCauHoSo||[];
   if(yc.length) v.push({muc:'vang',so:yc.length,nho:'yêu cầu',t:'Công nhân xin sửa thông tin liên hệ',m:'Duyệt để cập nhật số điện thoại, CCCD, địa chỉ vào hồ sơ.',k:'hd',nut:'Xem & duyệt'});
@@ -1984,6 +1985,7 @@ function viecHomNay(){
   return v;
 }
 function vHomNay(){
+  if(ME&&ME.laOwner&&!window.__qtDXTai){ window.__qtDXTai=1; call('demDeXuatQuyTrinh',[],function(r){ window.__qtDX=r; if(tabHienTai==='homnay') vHomNay(); }); }
   if(ME&&ME.laOwner&&!window.__spMoiTai){ window.__spMoiTai=1; call('demSanPhamMoi',[],function(r){ window.__spMoi=r; if(tabHienTai==='homnay') vHomNay(); }); }
   var laAdmin=(ME.vaiTro==='ADMIN'), hn=today(), d=new Date(hn+'T00:00:00');
   var thu=['Chủ nhật','Thứ Hai','Thứ Ba','Thứ Tư','Thứ Năm','Thứ Sáu','Thứ Bảy'][d.getDay()];
@@ -2485,7 +2487,7 @@ function call(fn,args,cb){
 var TABS={
   ADMIN:[['hd','📖 Hướng dẫn'],['homnay','Việc hôm nay'],['dash','Tổng quan'],['sodo','Sơ đồ nhà máy'],['com','Cơm trưa'],['nk','Nhật ký'],['dd','Điểm danh'],['nenep','Chấm nề nếp'],['kpi','Bảng KPI'],['kpiql','KPI Quản lý'],['dx','Duyệt định mức'],['ptdm','Phân tích định mức'],
          ['cd','Công đoạn'],['ns','Nhân sự'],['kyn','Kỹ năng'],['qt','Quy trình sản xuất'],['dh','Đơn hàng'],['mm','Máy móc'],['ts','Trọng số'],['pq','Tài khoản'],['log','Nhật ký thao tác']],
-  TP:[['hd','📖 Hướng dẫn'],['homnay','Việc hôm nay'],['dash','Tổng quan'],['sodo','Sơ đồ nhà máy'],['com','Cơm trưa'],['duyetsl','Duyệt sản lượng'],['nenep','Chấm nề nếp'],['dd','Điểm danh'],['nk','Nhập nhật ký'],['kpi','KPI phòng'],['cd','Công đoạn & định mức'],
+  TP:[['hd','📖 Hướng dẫn'],['homnay','Việc hôm nay'],['qt','Quy trình sản xuất'],['dash','Tổng quan'],['sodo','Sơ đồ nhà máy'],['com','Cơm trưa'],['duyetsl','Duyệt sản lượng'],['nenep','Chấm nề nếp'],['dd','Điểm danh'],['nk','Nhập nhật ký'],['kpi','KPI phòng'],['cd','Công đoạn & định mức'],
       ['ns','Nhân sự'],['kyn','Kỹ năng'],['mm','Máy móc']],
   CN:[['hd','📖 Hướng dẫn'],['cnnhap','Nhập sản lượng của tôi'],['com','Cơm trưa'],['kpica','KPI cá nhân'],['cccn','Bảng chấm công của xưởng'],['kpicn','Bảng KPI xưởng'],['kyn','Kỹ năng của tôi']],
   HR:[['hd','📖 Hướng dẫn'],['dash','Tổng quan'],['kpi','Bảng KPI'],['sodo','Sơ đồ nhà máy'],['com','Cơm trưa'],['dd','Điểm danh'],['cd','Công đoạn'],['ns','Hồ sơ nhân sự'],['kyn','Kỹ năng'],['mm','Máy móc']],
@@ -8616,7 +8618,7 @@ function chiXemDon(){
 </script>
 <script>
 /* ===== 19. PHẦN GIAO DIỆN TẢI SAU (12/10) – SoDo.html, HoatAnh.html: chỉ tải khi cần, nhớ lại theo phiên bản ===== */
-var MANH_VER={"SoDo": "5ff0ad17b2a6bbdf", "HoatAnh": "b23cbe69d6aae56e", "AmThanh": "c690fabe4419160c", "QuyTrinh": "053b29ab9a"};
+var MANH_VER={"SoDo": "5ff0ad17b2a6bbdf", "HoatAnh": "b23cbe69d6aae56e", "AmThanh": "c690fabe4419160c", "QuyTrinh": "a98d85bf93"};
 var __manh={da:{},cho:{}};
 function ganManh_(nd){
   var js=[], ngoai=String(nd).replace(/<script>([\s\S]*?)<\/script>/g,function(_,x){js.push(x);return ''});
@@ -9568,7 +9570,7 @@ function hsGhiChuDong(r){
 }
 </script>
 <script>
-var KPI_BAN = '01/11/2026 21:46';
+var KPI_BAN = '02/11/2026 06:35';
 (function(){
   var cu = window.veNav;
   window.veNav = function(){
@@ -10256,7 +10258,7 @@ function vDH(){
   });
 }
 function vQT(){
-  if(!ME||!ME.laOwner){ $('main').innerHTML='<div class="alert a-wn">Tab này đang chỉ mở cho tài khoản chủ sở hữu.</div>'; return; }
+  if(!ME||!(ME.laOwner||ME.vaiTro==='TP')){ $('main').innerHTML='<div class="alert a-wn">Tab này đang chỉ mở cho tài khoản chủ sở hữu.</div>'; return; }
   if(window.__qtDaNap){ qtVe(); return; }
   $('main').innerHTML='<div class="ptitle">Quy trình sản xuất</div><div class="pdesc">Đang tải…</div>';
   taiManh('QuyTrinh',function(ok,msg){

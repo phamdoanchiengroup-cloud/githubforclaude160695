@@ -4,7 +4,7 @@ const { chromium } = require('/opt/node22/lib/node_modules/playwright');
  *   F=<bản xem thử .html> [CHUP=<thư mục ảnh>] node tests/quy-trinh-web.js
  */
 const F = 'file://' + process.env.F, CHUP = process.env.CHUP;
-let dem = 0, loi = 0, DH_TEN_DEM; const ok = (d, t, c) => { dem++; if (d) console.log('  ✓ ' + t); else { loi++; console.log('  ✗ ' + t + (c !== undefined ? ' → ' + JSON.stringify(c).slice(0, 300) : '')); } };
+let dem = 0, loi = 0, DH_TEN_DEM, window_dx; const ok = (d, t, c) => { dem++; if (d) console.log('  ✓ ' + t); else { loi++; console.log('  ✗ ' + t + (c !== undefined ? ' → ' + JSON.stringify(c).slice(0, 300) : '')); } };
 const vao = async (p, tk) => { await p.goto(F); await p.waitForSelector('#xtGoiY'); await p.evaluate(() => { try { localStorage.clear(); } catch (e) {} });
   await p.click('#xtGoiY button:has-text("' + tk + '")'); await p.waitForSelector('#app', { state: 'visible', timeout: 30000 }); await p.waitForTimeout(1500); };
 (async () => {
@@ -194,6 +194,49 @@ const vao = async (p, tk) => { await p.goto(F); await p.waitForSelector('#xtGoiY
   await vao(p, 'giamdoc');
   const s = await p.evaluate(() => { const a = __MAY_CHU.layQuyTrinh(TOKEN, 30), m = __MAY_CHU.layManhGiaoDien(TOKEN, 'QuyTrinh'); return [ME.vaiTro, ME.laOwner, dsTabHienCo().some(t => t[0] === 'qt'), a.ok, m.ok]; });
   ok(s[0] === 'ADMIN' && !s[1] && !s[2] && !s[3] && !s[4], 'ban điều hành (không phải chủ sở hữu): không có tab, máy chủ chặn dữ liệu + giao diện', s);
+  // 03/11: trưởng / phó phòng – chỉ xưởng mình, sửa = gửi đề xuất; chủ sở hữu duyệt
+  for (const w of [1360, 390]) {
+    const pt = await (await b.newContext({ viewport: { width: w, height: 900 } })).newPage(); const e2 = []; pt.on('pageerror', x => e2.push(x.message));
+    await vao(pt, 'tpdg');
+    let t = await pt.evaluate(() => [ME.vaiTro, dsTabHienCo().some(x => x[0] === 'qt'), dsTabHienCo().some(x => x[0] === 'dh')]);
+    ok(t[0] === 'TP' && t[1] && !t[2], 'trưởng phòng (' + w + 'px): có tab Quy trình, không có tab Đơn hàng', t);
+    await pt.evaluate(() => go('qt')); await pt.waitForSelector('.qt-tabs', { timeout: 30000 }); await pt.waitForTimeout(800);
+    t = await pt.evaluate(() => [QT.laTP, QT.xuongCua, new Set(QTD.map(q => q.MaXuong)).size, !!document.querySelector('.qt-bar'), document.querySelectorAll('.qt-tabs button').length, document.querySelectorAll('.qt-o.cua').length, document.querySelectorAll('.qt-o .qt-bd').length, Object.keys(QT.nhanSu.reduce((a, n) => (a[n.MaXuong] = 1, a), {})).length, ME.xuong]);
+    ok(t[0] && t[1] === t[8] && t[2] === 1 && !t[3] && t[4] === 4 && (w > 640 ? t[5] === 1 : true) && t[6] === 0 && t[7] <= 1, 'chỉ dữ liệu xưởng mình, không ô cài đặt, 4 khung; lưu đồ nhà máy không số, xưởng mình tô sáng', t);
+    if (w > 640) {
+      await pt.evaluate(() => { QTV = 'sua'; qtVe(); }); await pt.waitForTimeout(300);
+      t = await pt.evaluate(() => { const q = QTD.find(x => x.MaXuong === QTX && !qtNgoai(x)); qtDichBuoc(q.Ma, 1); const nut = [...document.querySelectorAll('.qt-luu button')].find(x => /Gửi đề xuất/.test(x.textContent));
+        return [!!nut && !nut.disabled, document.querySelectorAll('.qt-xl select[disabled]').length === document.querySelectorAll('.qt-xl .dong').length, document.querySelectorAll('.qt-xl-xem').length > 0]; });
+      ok(t.every(Boolean), 'sửa: nút "Gửi đề xuất" (không có Lưu thẳng); luồng của xưởng khác chỉ xem, luồng của mình không đổi được xưởng giao', t);
+      await pt.evaluate(() => qtGuiDX()); await pt.waitForTimeout(2500);
+      t = await pt.evaluate(() => [!!(QT.deXuat && QT.deXuat.cho), /đang chờ chủ sở hữu duyệt/.test(document.querySelector('main').textContent), QT.xemDX]);
+      ok(t.every(Boolean), 'gửi đề xuất: tải lại thấy "đang chờ duyệt", khung hiển thị bản đề xuất', t);
+      await pt.close();
+    }
+    await pt.close().catch(() => {});
+    ok(!e2.length, 'trưởng phòng: không lỗi JS', e2);
+  }
+  // chủ sở hữu duyệt (cùng bản xem thử: đề xuất vừa gửi nằm trong máy chủ giả lập của trang trưởng phòng nên tạo lại ở trang chủ sở hữu)
+  { const po = await (await b.newContext({ viewport: { width: 1360, height: 900 } })).newPage(); const e3 = []; po.on('pageerror', x => e3.push(x.message));
+    await vao(po, 'chienpham');
+    let t;
+    t = await po.evaluate(() => { const M = __MAY_CHU, tp = M.doc_('TaiKhoan').find(x => x.VaiTro === 'TP' && x.MaXuong === 'SON'), tk = M.taoPhien_(tp), q = M.layQuyTrinh(tk, 30);
+      const cd = q.quyTrinh.map(x => ({ Ma: x.Ma, Nhanh: x.Nhanh, Buoc: x.Buoc, Truoc: x.Truoc })); cd[0].Nhanh = 'HOTRO'; return M.guiDeXuatQuyTrinh(tk, { cd, xuat: [], luong: [{ Den: 'INUV', BTP: 'Chuôi sơn xong' }], loiNhan: 'Đề nghị đổi' }).ok; });
+    window_dx = t;
+    await po.evaluate(() => { window.__qtDXTai = 0; go('homnay'); }); await po.waitForTimeout(1500);
+    t = await po.evaluate(() => viecHomNay().some(v => /đề xuất sửa quy trình/.test(v.t)));
+    ok(window_dx && t, 'chủ sở hữu: Việc hôm nay báo "Trưởng phòng đề xuất sửa quy trình"', [window_dx, t]);
+    await po.evaluate(() => { window.__qtMo = 'duyet'; go('qt'); }); await po.waitForSelector('.qt-tabs', { timeout: 30000 }); await po.waitForTimeout(800);
+    t = await po.evaluate(() => [QTV, [...document.querySelectorAll('.qt-tabs button')].some(x => /Đề xuất từ xưởng \(1\)/.test(x.textContent)), [...document.querySelectorAll('main td')].some(x => /Hỗ trợ/.test(x.textContent)), /Lời nhắn: Đề nghị đổi/.test(document.querySelector('main').textContent)]);
+    ok(t[0] === 'duyet' && t[1] && t[2] && t[3], 'màn duyệt: so sánh hiện tại / đề xuất (nhánh, công đoạn nhận hàng, luồng), lời nhắn', t);
+    await po.evaluate(() => { window.confirm = () => true; const bt = [...document.querySelectorAll('main button')].find(x => /Duyệt và áp dụng/.test(x.textContent)); bt.click(); }); await po.waitForTimeout(1500);
+    ok(await po.evaluate(() => QT.nhap && /bản nháp/.test(document.getElementById('toast').textContent) && (QT.deXuatCho || []).length === 1), 'quy trình còn nháp: chặn duyệt, nhắc lưu nháp trước');
+    await po.evaluate(() => qtLuu()); await po.waitForTimeout(2500);
+    await po.evaluate(() => { QTV = 'duyet'; qtVe(); const bt = [...document.querySelectorAll('main button')].find(x => /Duyệt và áp dụng/.test(x.textContent)); bt.click(); }); await po.waitForTimeout(3000);
+    t = await po.evaluate(() => [!(QT.deXuatCho || []).length, (QTD.find(q => q.MaXuong === 'SON' && q.Nhanh === 'HOTRO') || {}).MaXuong, QT.luong.some(a => a.Tu === 'SON' && a.BTP === 'Chuôi sơn xong')]);
+    ok(t[0] && t[1] === 'SON' && t[2], 'duyệt: áp dụng phần của xưởng Sơn (nhánh + luồng), hết đề xuất chờ', t);
+    ok(!e3.length, 'chủ sở hữu duyệt: không lỗi JS', e3);
+    await po.close(); }
   await b.close();
   console.log((loi ? '✗ ' : '✓ ') + (dem - loi) + '/' + dem + ' đạt'); process.exit(loi ? 1 : 0);
 })();

@@ -28,6 +28,13 @@ _t36("  // 5) Yêu cầu sửa hồ sơ\n", """  // 36b) Sản phẩm mới tron
 _t36("function vHomNay(){\n", """function vHomNay(){
   if(ME&&ME.laOwner&&!window.__spMoiTai){ window.__spMoiTai=1; call('demSanPhamMoi',[],function(r){ window.__spMoi=r; if(tabHienTai==='homnay') vHomNay(); }); }
 """)
+# 03/11: mở tab Quy trình cho trưởng / phó phòng (chỉ xưởng mình – máy chủ lọc dữ liệu); chủ sở hữu thấy đề xuất chờ duyệt ở Việc hôm nay
+_t36("  TP:[['hd','📖 Hướng dẫn'],['homnay','Việc hôm nay'],", "  TP:[['hd','📖 Hướng dẫn'],['homnay','Việc hôm nay'],['qt','Quy trình sản xuất'],")
+_t36("  return TABS[ME.vaiTro].filter(function(t){ return ME.laOwner || !tabChiOwner[t[0]]; });", "  return TABS[ME.vaiTro].filter(function(t){ return ME.laOwner || !tabChiOwner[t[0]] || (t[0]==='qt'&&ME.vaiTro==='TP'); });   // 03/11: TP/PP xem Quy trình xưởng mình")
+_t36("  if(ME&&ME.laOwner&&!window.__spMoiTai){", "  if(ME&&ME.laOwner&&!window.__qtDXTai){ window.__qtDXTai=1; call('demDeXuatQuyTrinh',[],function(r){ window.__qtDX=r; if(tabHienTai==='homnay') vHomNay(); }); }\n  if(ME&&ME.laOwner&&!window.__spMoiTai){")
+_t36("  // 5) Yêu cầu sửa hồ sơ\n", """  if(ME.laOwner&&window.__qtDX&&__qtDX.ok&&__qtDX.n) v.push({muc:'vang',so:__qtDX.n,nho:'đề xuất',t:'Trưởng phòng đề xuất sửa quy trình',m:__qtDX.ds.slice(0,4).map(function(x){return '<b>'+esc(x.MaXuong)+'</b> ('+esc(x.TenNguoi)+', '+esc(x.ThoiDiem)+')'}).join(' · ')+' – xem so sánh rồi duyệt hoặc từ chối.',fn:"window.__qtMo='duyet';go('qt')",nut:'Xem & duyệt'});
+  // 5) Yêu cầu sửa hồ sơ
+""")
 _k36b = s.rfind('</body>')
 s = s[:_k36b] + """<script>
 /* 36b (02/11): mở Đơn hàng ở mục chỉ định (Cấu hình sản phẩm); đánh dấu đã xem tab kênh mới */
@@ -56,7 +63,7 @@ function vDH(){
   });
 }
 function vQT(){
-  if(!ME||!ME.laOwner){ $('main').innerHTML='<div class="alert a-wn">Tab này đang chỉ mở cho tài khoản chủ sở hữu.</div>'; return; }
+  if(!ME||!(ME.laOwner||ME.vaiTro==='TP')){ $('main').innerHTML='<div class="alert a-wn">Tab này đang chỉ mở cho tài khoản chủ sở hữu.</div>'; return; }
   if(window.__qtDaNap){ qtVe(); return; }
   $('main').innerHTML='<div class="ptitle">Quy trình sản xuất</div><div class="pdesc">Đang tải…</div>';
   taiManh('QuyTrinh',function(ok,msg){

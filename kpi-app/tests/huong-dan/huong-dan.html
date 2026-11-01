@@ -49,7 +49,7 @@ code{font-family:"DejaVu Sans Mono",monospace;font-size:8.8pt;background:#eef2f6
   <h1>Hướng dẫn sử dụng<br>tab Quy trình sản xuất<br>và tab Đơn hàng</h1>
   <div class="phu">Tổng quan, thông tin trên màn hình, chức năng, diễn giải các con số, cách thao tác, và cách dùng thống kê để ra quyết định hằng ngày, hằng tuần, hằng tháng.</div>
   <div class="meta">Bản ngày 02/11/2026, theo phiên bản web cùng ngày.<br>
-  Hai tab này hiện <b>chỉ tài khoản chủ sở hữu</b> xem được.<br>
+  Tab Đơn hàng: chỉ chủ sở hữu. Tab Quy trình: chủ sở hữu (toàn nhà máy) và trưởng / phó phòng (chỉ xưởng mình, sửa = gửi đề xuất cho chủ sở hữu duyệt).<br>
   Ảnh minh họa chụp từ bản thử: tên người đã được thay, <b>số đơn hàng là dữ liệu mẫu</b>, không phải số thật của nhà máy.</div>
 </div>
 
@@ -59,7 +59,7 @@ code{font-family:"DejaVu Sans Mono",monospace;font-size:8.8pt;background:#eef2f6
 <div class="c1">0. Đọc trong 2 phút</div>
 <div class="c1">1. Tổng quan</div><div>1.1 Hai tab giúp gì · 1.2 Dữ liệu lấy từ đâu · 1.3 Luồng sản xuất · 1.4 Cách mở</div>
 <div class="c1">2. Tab Quy trình sản xuất</div>
-<div>2.1 Thanh cài đặt</div><div>2.2 Toàn nhà máy (kết luận, lưu đồ, bảng cân bằng)</div><div>2.3 Từng xưởng</div><div>2.4 Con người (quy tắc 3 người)</div><div>2.5 Sửa quy trình</div><div>2.6 Thấy gì → Nghĩa là gì → Làm gì</div>
+<div>2.1 Thanh cài đặt</div><div>2.2 Toàn nhà máy (kết luận, lưu đồ, bảng cân bằng)</div><div>2.3 Từng xưởng</div><div>2.4 Con người (quy tắc 3 người)</div><div>2.5 Sửa quy trình</div><div>2.6 Trưởng / phó phòng: xem và đề xuất · Chủ sở hữu duyệt</div><div>2.7 Thấy gì → Nghĩa là gì → Làm gì</div>
 <div class="c1">3. Tab Đơn hàng</div>
 <div>3.1 Phần đầu trang: thẻ tổng, bộ lọc, xuất file</div><div>3.2 Đơn cần chú ý</div><div>3.3 Chi tiết · Gom theo đơn</div><div>3.4 Thay đổi hôm nay</div><div>3.5 Việc theo xưởng</div><div>3.6 Thống kê (10 thẻ)</div><div>3.7 Kiểm phân loại</div><div>3.8 Cấu hình sản phẩm + báo sản phẩm mới</div><div>3.9 Thấy gì → Nghĩa là gì → Làm gì</div>
 <div class="c1">4. Nhịp sử dụng: ngày · tuần · tháng</div>
@@ -86,7 +86,7 @@ code{font-family:"DejaVu Sans Mono",monospace;font-size:8.8pt;background:#eef2f6
 <h2>1.1 Hai tab giúp gì</h2>
 <table>
 <tr><th style="width:22%">Tab</th><th>Dùng để</th><th style="width:30%">Người dùng</th></tr>
-<tr><td><b>Quy trình sản xuất</b></td><td>Cân bằng tải 9 xưởng theo sản lượng mục tiêu (sp/tháng). Xem lưu đồ toàn nhà máy và từng xưởng, quy tắc 3 người biết làm, và sửa quy trình (thứ tự công đoạn, nhánh, bước ra hàng).</td><td>Chủ sở hữu. Dùng khi họp ban điều hành và trưởng phòng.</td></tr>
+<tr><td><b>Quy trình sản xuất</b></td><td>Cân bằng tải 9 xưởng theo sản lượng mục tiêu (sp/tháng). Xem lưu đồ toàn nhà máy và từng xưởng, quy tắc 3 người biết làm, và sửa quy trình (thứ tự công đoạn, nhánh, bước ra hàng).</td><td>Chủ sở hữu (toàn nhà máy). Trưởng / phó phòng: chỉ xưởng mình, sửa bằng cách gửi đề xuất.</td></tr>
 <tr><td><b>Đơn hàng</b></td><td>Theo dõi đơn từ Sheet "Trạng thái đơn hàng": đơn cần chú ý, việc còn lại theo xưởng, thống kê kiểu Lean Six Sigma, phân loại cấu hình sản phẩm.</td><td>Chủ sở hữu. Có thể in hoặc xuất Excel để gửi kênh bán và trưởng xưởng.</td></tr>
 </table>
 <h2>1.2 Dữ liệu lấy từ đâu</h2>
@@ -194,7 +194,33 @@ code{font-family:"DejaVu Sans Mono",monospace;font-size:8.8pt;background:#eef2f6
 <h3>Bước ③ Hàng đi giữa các xưởng</h3>
 <p>Mỗi dòng gồm xưởng giao, xưởng nhận và tên bán thành phẩm. Dữ liệu này dùng để vẽ lưu đồ toàn nhà máy. Có nút <b>+ Thêm luồng</b> và nút ✕ để xóa.</p>
 
-<h2>2.6 Thấy gì → Nghĩa là gì → Làm gì (Quy trình sản xuất)</h2>
+<h2>2.6 Trưởng / phó phòng: xem và đề xuất · Chủ sở hữu duyệt</h2>
+<p>Trưởng phòng và phó phòng đăng nhập sẽ thấy tab <b>Quy trình sản xuất</b> trong menu, nhưng <b>chỉ dữ liệu xưởng mình</b>. Tab Đơn hàng vẫn chỉ chủ sở hữu xem.</p>
+<div class="anh"><img src="anh/qt-tp-nm.png"><div class="cap">Màn của trưởng phòng xưởng Đóng gói: lưu đồ nhà máy không có số, xưởng mình được tô sáng; bên dưới ghi xưởng mình nhận hàng từ đâu, giao cho ai.</div></div>
+<table>
+<tr><th style="width:24%">Khung</th><th>Trưởng / phó phòng thấy gì</th></tr>
+<tr><td>Lưu đồ nhà máy</td><td>Tên các xưởng và đường hàng đi, <b>không có số người, không có tải</b> của xưởng khác. Xưởng mình tô sáng, bấm vào để xem lưu đồ xưởng.</td></tr>
+<tr><td>Xưởng của tôi</td><td>Như mục 2.3, chỉ xưởng mình: người cần / có mặt, tải, bước ra hàng, công đoạn căng nhất, lưu đồ và bảng công đoạn.</td></tr>
+<tr><td>Con người</td><td>Quy tắc 3 người của xưởng mình (tên người biết làm chỉ gồm người trong xưởng).</td></tr>
+<tr><td>Sửa quy trình</td><td>Như mục 2.5, chỉ công đoạn xưởng mình. Sửa được luồng <b>giao đi từ xưởng mình</b>; luồng của xưởng khác chỉ xem. Các ô cài đặt (mục tiêu, giờ, hiệu suất) do chủ sở hữu đặt, chỉ hiện để tham khảo.</td></tr>
+</table>
+<h3>Trưởng / phó phòng gửi đề xuất</h3>
+<ol class="buoc">
+<li>Vào <b>Sửa quy trình</b>, sắp xếp công đoạn (kéo thả hoặc ↑ ↓), chọn ⭐ bước ra hàng, sửa luồng giao đi nếu cần.</li>
+<li>Ghi <b>lời nhắn</b> cho chủ sở hữu (không bắt buộc), vd. lý do đổi.</li>
+<li>Bấm <b>Gửi đề xuất cho chủ sở hữu duyệt</b>. Quy trình <b>chưa đổi</b> cho tới khi chủ sở hữu duyệt.</li>
+<li>Đầu tab hiện "đang chờ chủ sở hữu duyệt"; các khung hiển thị bản đề xuất. Sửa tiếp và gửi lại sẽ thay bản đang chờ (mỗi xưởng chỉ có 1 bản chờ; trưởng và phó phòng cùng xưởng thấy chung bản này).</li>
+<li>Sau khi chủ sở hữu quyết định, đầu tab báo <b>đã duyệt và áp dụng</b> hoặc <b>bị từ chối</b> kèm lý do.</li>
+</ol>
+<h3>Chủ sở hữu duyệt</h3>
+<ol class="buoc">
+<li>Trang <b>Việc hôm nay</b> báo "Trưởng phòng đề xuất sửa quy trình" → bấm <b>Xem &amp; duyệt</b> (hoặc vào tab Quy trình › <b>Đề xuất từ xưởng (n)</b>).</li>
+<li>Mỗi đề xuất có bảng so sánh <b>Hiện tại / Đề xuất</b>: các công đoạn đổi nhánh hoặc đổi "nhận hàng từ" công đoạn nào, bước ra hàng ⭐, luồng giao đi; kèm lời nhắn của trưởng phòng.</li>
+<li>Bấm <b>Duyệt và áp dụng</b>: chỉ phần của xưởng đó được thay, các xưởng khác giữ nguyên. Hoặc bấm <b>Từ chối</b> và ghi lý do (trưởng phòng sẽ thấy).</li>
+</ol>
+<div class="o vang"><b class="t">Lưu ý khi duyệt</b>Nếu quy trình nhà máy còn là <b>bản nháp</b>, web yêu cầu bấm "Lưu quy trình" một lần trước khi duyệt. Nếu chủ sở hữu đã sửa xưởng đó <b>sau khi</b> trưởng phòng gửi, web cảnh báo: duyệt sẽ thay bằng bản đề xuất (mất phần sửa sau) – nên từ chối và nhờ gửi lại.</div>
+
+<h2>2.7 Thấy gì → Nghĩa là gì → Làm gì (Quy trình sản xuất)</h2>
 <table class="tqd">
 <tr><th>Thấy gì</th><th>Nghĩa là gì</th><th>Làm gì</th><th>Ai làm</th></tr>
 <tr><td>Một xưởng có tải &gt; 100% (đỏ), cột Thiếu (+) dương</td><td>Theo định mức, số người có mặt không đủ cho mục tiêu sp/tháng</td><td>Điều người từ xưởng thừa (cột âm) sang, tăng ca có kế hoạch, hoặc giảm mục tiêu tháng</td><td>Chủ sở hữu + TP</td></tr>
@@ -203,6 +229,7 @@ code{font-family:"DejaVu Sans Mono",monospace;font-size:8.8pt;background:#eef2f6
 <tr><td>Thẻ "NÚT THẮT" đổi xưởng khi tăng mục tiêu</td><td>Mục tiêu mới sẽ bị giới hạn bởi xưởng đó</td><td>Chuẩn bị người / máy cho xưởng đó trước khi nhận đơn lớn</td><td>Chủ sở hữu</td></tr>
 <tr><td>Công đoạn "1 người" (đỏ) ở tab Con người</td><td>Người đó nghỉ thì công đoạn dừng</td><td>Kèm 1–2 người học việc, cập nhật kỹ năng ở tab Kỹ năng</td><td>TP</td></tr>
 <tr><td>Thừa người nhiều (cột âm lớn) ở xưởng có năng suất thấp</td><td>Người có mặt nhưng không đủ việc theo định mức (hoặc định mức lỏng)</td><td>Xem Phân tích định mức; cân nhắc điều chuyển</td><td>Ban điều hành</td></tr>
+<tr><td>Việc hôm nay báo trưởng phòng đề xuất sửa quy trình</td><td>Xưởng muốn đổi thứ tự / nhánh / bước ra hàng / luồng giao đi</td><td>Xem bảng so sánh, hỏi lại nếu cần, duyệt hoặc từ chối có lý do</td><td>Chủ sở hữu</td></tr>
 <tr><td>Dao động nhỏ 1–3% giữa các ngày</td><td>Bình thường</td><td><b>Không cần làm gì</b></td><td>–</td></tr>
 </table>
 
@@ -392,6 +419,7 @@ code{font-family:"DejaVu Sans Mono",monospace;font-size:8.8pt;background:#eef2f6
 <tr><td>Web có sửa Sheet "Trạng thái đơn hàng" không?</td><td>Không. Web chỉ đọc. Mọi phần sửa (quy trình, phân loại, cấu hình) được lưu trong file KPI.</td></tr>
 <tr><td>Văn phòng thêm tab kênh mới thì sao?</td><td>Web tự đọc tab có cột "Loại hàng…" và "Số lượng đặt" (bỏ qua tab ẩn, tab lưu trữ như "Đơn hàng HT", "_SNAPSHOT"). Nếu không phải tab đơn, bấm "Bỏ qua tab này".</td></tr>
 <tr><td>Sản phẩm mới không có cấu hình trên Sheet thì sao?</td><td>Việc hôm nay sẽ báo. Bổ sung một lần ở Cấu hình sản phẩm (tạo dòng gậy với chữ nhận diện), các tên cùng dòng về sau tự nhận.</td></tr>
+<tr><td>Trưởng phòng có xem được xưởng khác không?</td><td>Không. Máy chủ chỉ gửi dữ liệu xưởng của tài khoản đó; lưu đồ nhà máy chỉ có tên xưởng và đường hàng đi.</td></tr>
 <tr><td>Sửa quy trình có làm đổi KPI công nhân không?</td><td>Không. Sửa quy trình chỉ đổi thứ tự / nhánh / bước để tính cân bằng và vẽ lưu đồ. Danh mục công đoạn và định mức tính KPI không đổi.</td></tr>
 <tr><td>Vì sao "Vào – Ra – Tồn" và "Đúng hạn" chưa có số?</td><td>Cần ít nhất 2 ngày có bản chụp 9h. Bản chụp tự chạy mỗi sáng, hoặc khi mở tab lần đầu trong ngày.</td></tr>
 <tr><td>Trên điện thoại sao không thấy lưu đồ?</td><td>Lưu đồ chỉ hiện trên máy tính (màn nhỏ khó đọc). Điện thoại có đủ bảng số và danh sách sửa quy trình với nút ↑ ↓.</td></tr>

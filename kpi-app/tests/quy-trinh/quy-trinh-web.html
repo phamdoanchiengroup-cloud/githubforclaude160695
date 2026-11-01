@@ -257,6 +257,8 @@ html[data-gd="sang"] .qt-bh .st{background:#e6f5fc;color:#0d4f70!important;borde
 
 .ch-form{border:1px solid var(--cyan,#2fd3c6);border-radius:12px;padding:12px;margin-bottom:12px} .ch-form textarea{background:var(--panel2);color:var(--ink);border:1px solid var(--line);border-radius:8px;padding:6px 8px;font:inherit}
 .ch-k select{min-height:34px} .ch-an td{opacity:.55} .ch-d td{vertical-align:top}
+
+.qt-o.mo{opacity:.55;cursor:default} .qt-o.cua{border:2px solid var(--cyan,#2fd3c6)!important;box-shadow:0 0 16px rgba(47,211,198,.35)} .qt-xl-xem{font-size:12.5px;color:var(--ink3);padding:4px 0;border-bottom:1px dashed var(--line)}
 </style>
 <script>
 /* ===== Quy trình sản xuất (31/10) ===== */
@@ -347,6 +349,10 @@ function qtNhan(r){
     QTD=r.quyTrinh.map(function(q){ return {Ma:q.Ma,MaXuong:q.MaXuong,Nhanh:q.Nhanh,Buoc:Number(q.Buoc)||1,Truoc:(q.Truoc||[]).slice(),GhiChu:q.GhiChu||'',moi:!!q.moi}; });
     QT.luong=(r.xuongLuong||[]).map(function(a){return {Tu:a.Tu,Den:a.Den,BTP:a.BTP,GhiChu:a.GhiChu||''}});
     QTDoi=false; QTHoan=[]; QTChonThe='';
+    if(r.laTP){ QTX=r.xuongCua; QTSoNgay=r.soNgay; var dx=r.deXuat&&r.deXuat.cho; QT.xemDX=false;
+      if(dx&&dx.DuLieu){ var m={}; (dx.DuLieu.cd||[]).forEach(function(c){m[c.Ma]=c;}); QTD.forEach(function(q){ var c=m[q.Ma]; if(c){ q.Nhanh=c.Nhanh; q.Buoc=Number(c.Buoc)||1; q.Truoc=(c.Truoc||[]).slice(); q.moi=false; } });
+        QT.luong=QT.luong.filter(function(a){return a.Tu!==QTX}).concat((dx.DuLieu.luong||[]).map(function(a){return {Tu:QTX,Den:a.Den,BTP:a.BTP,GhiChu:''}}));
+        if((dx.DuLieu.xuat||[]).length){ QT.xuatSua={}; QT.xuatSua[QTX]=dx.DuLieu.xuat.slice(); } QT.xemDX=true; } }
     if(!QTX){ var t=qtTinh(); QTX=t.nut.ma||((r.xuong[0]||{}).MaXuong); }
 }
 function qtVe(){
@@ -356,6 +362,8 @@ function qtVe(){
   if(QT.nhap) h+='<div class="alert a-wn">Đây là <b>quy trình nháp</b> Claude soạn từ tên công đoạn và các file anh/chị gửi. Xem ở "Từng xưởng", sửa ở "Sửa quy trình", bấm <b>Lưu</b> để chốt.</div>';
   var moi=QTD.filter(function(q){return q.moi}).length;
   if(moi) h+='<div class="alert a-wn">'+moi+' công đoạn mới chưa có trong quy trình đã lưu – xem ở "Sửa quy trình".</div>';
+  if(window.__qtMo){ QTV=window.__qtMo; window.__qtMo=''; }
+  if(QT.laTP){ h=qtVeDauTP(T); $('main').innerHTML=h+({nm:qtVeNMTP,x:qtVeX,ng:qtVeNguoi,sua:qtVeSua}[QTV]||qtVeNMTP)(T); qtSauVe(); return; }
   if(QTV!=='dh') h+='<div class="qt-bar">'+
     '<div><label for="qtKy">Kỳ dữ liệu</label><select id="qtKy" onchange="QTSoNgay=+this.value;vQTTai()">'+[14,30,60,90].map(function(n){return '<option value="'+n+'"'+(n===QTSoNgay?' selected':'')+'>'+n+' ngày</option>'}).join('')+'</select></div>'+
     '<div><label for="qtSlT">Sản lượng yêu cầu</label><input id="qtSlT" type="number" inputmode="numeric" min="500" max="100000" step="500" value="'+QTS.slThang+'" onchange="qtDoiCD(\'slThang\',this.value,500,100000)"> sp/tháng</div>'+
@@ -364,12 +372,14 @@ function qtVe(){
     '<div><label for="qtGio">Giờ có mặt / ngày</label><input id="qtGio" type="number" inputmode="decimal" min="1" max="24" step="0.5" value="'+QTS.gioCoMat+'" onchange="qtDoiCD(\'gioCoMat\',this.value,1,24)"></div>'+
     '<div><label for="qtHs">Hiệu suất</label><input id="qtHs" type="number" inputmode="numeric" min="30" max="120" step="5" value="'+Math.round(QTS.hieuSuat*100)+'" onchange="qtDoiCD(\'hieuSuat\',this.value/100,0.3,1.2)"> %</div>'+
   '</div>';
-  h+='<div class="qt-tabs">'+[['nm','Toàn nhà máy'],['x','Từng xưởng'],['ng','Con người'],['sua','Sửa quy trình'+(QTDoi?' •':'')]].map(function(t){
+  var nDX=(QT.deXuatCho||[]).length;
+  h+='<div class="qt-tabs">'+[['nm','Toàn nhà máy'],['x','Từng xưởng'],['ng','Con người'],['sua','Sửa quy trình'+(QTDoi?' •':'')]].concat(nDX?[['duyet','Đề xuất từ xưởng ('+nDX+')']]:[]).map(function(t){
     return '<button class="btn'+(QTV===t[0]?' on':'')+'" type="button" onclick="QTV=\''+t[0]+'\';qtVe()">'+t[1]+'</button>'; }).join('')+'</div>';
   if(QTV!=='nm'&&QTV!=='dh') h+='<div style="margin-bottom:12px"><label for="qtChonX">Xưởng</label> <select id="qtChonX" onchange="QTX=this.value;QTMo=\'\';QTChonThe=\'\';qtVe()">'+(QT.xuong||[]).map(function(p){
     return '<option value="'+esc(p.MaXuong)+'"'+(p.MaXuong===QTX?' selected':'')+'>'+esc(p.TenXuong)+'</option>'; }).join('')+'</select></div>';
   if(QTV==='dh') QTV='nm';
-  h+=({nm:qtVeNM,x:qtVeX,ng:qtVeNguoi,sua:qtVeSua}[QTV]||qtVeNM)(T);
+  if(QTV==='duyet'&&!nDX) QTV='nm';
+  h+=({nm:qtVeNM,x:qtVeX,ng:qtVeNguoi,sua:qtVeSua,duyet:qtVeDuyet}[QTV]||qtVeNM)(T);
   $('main').innerHTML=h;
   qtSauVe();
 }
@@ -591,6 +601,8 @@ var QT_IC={
 };
 function qtOXuong(x,T,nutNM,lop){
   var o=T.x[x]; if(!o) return '';
+  if(QT.laTP){ var cua=x===QT.xuongCua, vg={PHOICB:'pcb',PHOITHO:'pt',SON:'son',INUV:'uv',NGONTARO:'taro',NGONTIP:'tip',HT:'ht',DG:'dg',CNC:'cnc'}[x];   /* 03/11: trưởng / phó phòng – lưu đồ không số, xưởng mình tô sáng */
+    return '<'+(cua?'button type="button" onclick="QTV=\'x\';QTMoNhom=\'\';qtVe()" title="Xem lưu đồ xưởng của bạn"':'div')+' class="qt-o '+(lop||'')+(cua?' cua':' mo')+'" style="grid-area:'+vg+'" data-x="'+esc(x)+'"><span class="ic"><svg viewBox="0 0 24 24" aria-hidden="true">'+(QT_IC[x]||'')+'</svg></span><span class="tx"><span class="tn">'+esc(qtTenX(x))+'</span>'+(cua?'<span class="so">★ của bạn</span>':'')+(x==='NGONTIP'?'<span class="le">ngọn lẻ → Đóng gói</span>':'')+'</span></'+(cua?'button':'div')+'>'; }
   var co=o.coMat>0.5?o.coMat:o.co, thieu=o.can-co, m=qtMuc(o.tai), vung={PHOICB:'pcb',PHOITHO:'pt',SON:'son',INUV:'uv',NGONTARO:'taro',NGONTIP:'tip',HT:'ht',DG:'dg',CNC:'cnc'}[x];
   return '<button type="button" class="qt-o '+(lop||'')+(o===nutNM?' nut':'')+'" style="grid-area:'+vung+'" data-x="'+esc(x)+'" onclick="QTX=this.dataset.x;QTV=\'x\';QTMoNhom=\'\';qtVe()" title="Bấm để xem lưu đồ xưởng">'+
     '<span class="ic"><svg viewBox="0 0 24 24" aria-hidden="true">'+(QT_IC[x]||'')+'</svg></span>'+
@@ -834,18 +846,68 @@ function qtVeSua(T){
     (!r.macDinh&&QT.xuatSua&&QT.xuatSua[x]?' <button class="btn sm" type="button" onclick="qtChup();delete QT.xuatSua[QTX];QTDoi=true;qtVe()">Về Claude chọn sẵn</button>':'')+'</div></div>';
   var xs=(QT.xuong||[]);
   var opt=function(v){ return xs.map(function(p){return '<option value="'+esc(p.MaXuong)+'"'+(p.MaXuong===v?' selected':'')+'>'+esc(qtTenX(p.MaXuong))+'</option>'}).join(''); };
-  h+='<div class="card qt-xl"><div class="qt-buoc"><span>3</span>Hàng đi giữa các xưởng</div><div class="qt-hd">Mỗi dòng: xưởng giao → xưởng nhận → tên bán thành phẩm. Dùng cho lưu đồ toàn nhà máy.</div>';
+  h+='<div class="card qt-xl"><div class="qt-buoc"><span>3</span>Hàng đi giữa các xưởng</div><div class="qt-hd">Mỗi dòng: xưởng giao → xưởng nhận → tên bán thành phẩm. Dùng cho lưu đồ toàn nhà máy.'+(QT.laTP?' Bạn sửa được các luồng <b>giao đi từ xưởng mình</b>; luồng của xưởng khác chỉ xem.':'')+'</div>';
   QT.luong.forEach(function(a,i){
-    h+='<div class="dong"><select aria-label="Từ xưởng" onchange="qtSuaL('+i+',\'Tu\',this.value)">'+opt(a.Tu)+'</select><select aria-label="Đến xưởng" onchange="qtSuaL('+i+',\'Den\',this.value)">'+opt(a.Den)+'</select>'+
+    if(QT.laTP&&a.Tu!==QTX){ h+='<div class="qt-xl-xem">'+esc(qtTenX(a.Tu))+' → '+esc(qtTenX(a.Den))+(a.BTP?' · '+esc(a.BTP):'')+'</div>'; return; }
+    h+='<div class="dong"><select aria-label="Từ xưởng"'+(QT.laTP?' disabled':'')+' onchange="qtSuaL('+i+',\'Tu\',this.value)">'+opt(a.Tu)+'</select><select aria-label="Đến xưởng" onchange="qtSuaL('+i+',\'Den\',this.value)">'+opt(a.Den)+'</select>'+
       '<input aria-label="Bán thành phẩm" maxlength="120" value="'+esc(a.BTP)+'" onchange="qtSuaL('+i+',\'BTP\',this.value)"><button class="btn sm dg" type="button" onclick="QT.luong.splice('+i+',1);QTDoi=true;qtVe()" aria-label="Xóa luồng">✕</button></div>';
   });
   h+='<button class="btn sm" type="button" onclick="QT.luong.push({Tu:QTX,Den:QTX===\'DG\'?\'HT\':\'DG\',BTP:\'\',GhiChu:\'\'});QTDoi=true;qtVe()">+ Thêm luồng</button></div>';
+  if(QT.laTP){ var dxc=QT.deXuat&&QT.deXuat.cho;
+    h+='<div class="card"><label for="qtLoiNhan" style="font-size:12.5px;color:var(--ink2)">Lời nhắn cho chủ sở hữu (không bắt buộc)</label><textarea id="qtLoiNhan" rows="2" maxlength="300" style="width:100%;background:var(--panel2);color:var(--ink);border:1px solid var(--line);border-radius:8px;padding:6px 8px;font:inherit">'+esc((dxc&&dxc.LoiNhan)||'')+'</textarea></div>';
+    return h+'<div class="qt-luu"><button class="btn" type="button" onclick="qtGuiDX()"'+(QTDoi||QT.xemDX?'':' disabled')+'>'+(dxc?'Gửi lại đề xuất':'Gửi đề xuất cho chủ sở hữu duyệt')+'</button>'+(QTHoan.length?'<button class="btn sm" type="button" onclick="qtHoanTac()">↶ Hoàn tác</button>':'')+
+      '<span style="font-size:12.5px;color:var(--ink3)">'+(QTDoi?'Có thay đổi chưa gửi.':(dxc?'Đề xuất đang chờ duyệt.':'Chưa có thay đổi.'))+' Quy trình chỉ đổi khi chủ sở hữu duyệt.</span>'+(QTDoi?'<button class="btn sm" type="button" onclick="QTHoan=[];vQTTai()">Bỏ thay đổi</button>':'')+'</div>'; }
   h+='<div class="qt-luu"><button class="btn" type="button" onclick="qtLuu()"'+(QTDoi||QT.nhap?'':' disabled')+'>Lưu quy trình</button>'+
     (QTHoan.length?'<button class="btn sm" type="button" onclick="qtHoanTac()">↶ Hoàn tác</button>':'')+
     '<span style="font-size:12.5px;color:var(--ink3)">'+(QTDoi?'Có thay đổi chưa lưu (cả cài đặt mục tiêu / giờ / hiệu suất).':(QT.nhap?'Đang là nháp – lưu để chốt.':'Đã lưu.'))+'</span>'+
     (QTDoi?'<button class="btn sm" type="button" onclick="QTHoan=[];vQTTai()">Bỏ thay đổi</button>':'')+'</div>';
   return h;
 }
+/* ===== 03/11: trưởng / phó phòng (chỉ xưởng mình, sửa = gửi đề xuất) + chủ sở hữu duyệt ===== */
+function qtVeDauTP(T){
+  var X=QT.xuongCua, d=QT.deXuat||{}, h='<div class="ptitle">Quy trình sản xuất – '+esc(qtTenX(X))+'</div><div class="pdesc">Bạn xem và đề xuất sửa quy trình của xưởng mình. Số liệu từ nhật ký sản xuất '+esc(QT.tu)+' → '+esc(QT.den)+'. Mục tiêu nhà máy <b>'+qtSo(QTS.slThang,0)+'</b> sp/tháng, '+QTS.ngayThang+' ngày làm, giờ có mặt '+QTS.gioCoMat+', hiệu suất '+Math.round(QTS.hieuSuat*100)+'% (chủ sở hữu đặt).</div>';
+  if(d.cho) h+='<div class="alert a-wn">'+(d.cho.NguoiGui===ME.tk?'Bạn':'<b>'+esc(d.cho.TenNguoi||d.cho.NguoiGui)+'</b>')+' đã gửi đề xuất lúc <b>'+esc(d.cho.ThoiDiem)+'</b> – <b>đang chờ chủ sở hữu duyệt</b>. Các khung bên dưới đang hiển thị bản đề xuất này; sửa tiếp và gửi lại sẽ thay bản đang chờ.</div>';
+  else if(d.cuoi) h+='<div class="alert '+(d.cuoi.TrangThai==='Đã duyệt'?'a-ok':'a-bd')+'">Đề xuất gửi lúc '+esc(d.cuoi.ThoiDiem)+' đã <b>'+(d.cuoi.TrangThai==='Đã duyệt'?'được duyệt và áp dụng':'bị từ chối')+'</b> lúc '+esc(d.cuoi.ThoiDiemDuyet)+(d.cuoi.LyDo?' – lý do: '+esc(d.cuoi.LyDo):'')+'.</div>';
+  h+='<div class="qt-tabs">'+[['nm','Lưu đồ nhà máy'],['x','Xưởng của tôi'],['ng','Con người'],['sua','Sửa quy trình'+(QTDoi?' •':'')]].map(function(t){ return '<button class="btn'+(QTV===t[0]?' on':'')+'" type="button" onclick="QTV=\''+t[0]+'\';qtVe()">'+t[1]+'</button>'; }).join('')+'</div>';
+  return h;
+}
+function qtVeNMTP(T){
+  var X=QT.xuongCua, vao=QT.luong.filter(function(a){return a.Den===X}), ra=QT.luong.filter(function(a){return a.Tu===X});
+  var ds=function(a,k){ return a.length?a.map(function(l){return '<b>'+esc(qtTenX(l[k]))+'</b>'+(l.BTP?' ('+esc(l.BTP)+')':'')}).join(', '):'–'; };
+  return '<div class="card"><div style="font-weight:600;margin-bottom:6px">Lưu đồ toàn nhà máy</div><div style="font-size:12px;color:var(--ink3);margin-bottom:8px">Xưởng của bạn được tô sáng (bấm để xem lưu đồ xưởng). Đường xanh: hàng đi chính; đường cam đứt nét: cấp phụ (POM, tip, đầu lết, tip bán lẻ).</div>'+qtVsm(T)+
+    '<div style="font-size:13px;margin-top:10px">Xưởng của bạn <b>nhận hàng từ</b>: '+ds(vao,'Tu')+'.<br>Xưởng của bạn <b>giao hàng cho</b>: '+ds(ra,'Den')+'.</div></div>';
+}
+function qtGuiDX(){
+  var X=QT.xuongCua, el=document.getElementById('qtLoiNhan');
+  var o={cd:QTD.filter(function(q){return q.MaXuong===X}).map(function(q){return {Ma:q.Ma,Nhanh:q.Nhanh,Buoc:q.Buoc,Truoc:q.Truoc||[],GhiChu:q.GhiChu||''}}),
+    xuat:qtXuat(X), luong:QT.luong.filter(function(a){return a.Tu===X}).map(function(a){return {Den:a.Den,BTP:a.BTP}}), loiNhan:el?el.value:''};
+  call('guiDeXuatQuyTrinh',[o],function(r){ if(!r||!r.ok){ toast((r&&r.msg)||'Không gửi được.'); return; } toast(r.msg,true); QTHoan=[]; vQTTai(); });
+}
+/* chủ sở hữu: so sánh đề xuất với quy trình hiện tại (theo nhánh + công đoạn nhận hàng, không theo số bước) */
+function qtVeDuyet(T){
+  var ten=function(m){return (QT.cdMap[m]||{}).TenCD||m}, h='';
+  if(QTDoi) h+='<div class="alert a-wn">Bạn đang có thay đổi chưa lưu ở "Sửa quy trình" – lưu hoặc bỏ thay đổi trước khi duyệt đề xuất.</div>';
+  (QT.deXuatCho||[]).forEach(function(r){ var X=r.MaXuong, d=r.DuLieu||{cd:[]};
+    var cu=QTD.filter(function(q){return q.MaXuong===X}), moi={}; (d.cd||[]).forEach(function(c){moi[c.Ma]=c;});
+    var dsMoi=cu.map(function(q){ var c=moi[q.Ma]; return c?{Ma:q.Ma,MaXuong:X,Nhanh:c.Nhanh,Buoc:Number(c.Buoc)||1,Truoc:c.Truoc||[]}:q; });
+    var e0=qtCanh(cu), e1=qtCanh(dsMoi), doi=[];
+    cu.forEach(function(q,i){ var n=dsMoi[i], a=(e0[q.Ma]||[]).slice().sort().join(), b=(e1[q.Ma]||[]).slice().sort().join(); if(q.Nhanh!==n.Nhanh||a!==b) doi.push([q,n,e0[q.Ma]||[],e1[q.Ma]||[]]); });
+    var mo=function(nh,tr){ return esc(QT.nhanh[nh]||nh)+(QT_NHANH_NGOAI[nh]?'':' · nhận từ: '+(tr.length?esc(tr.map(ten).join(', ')):'<i>đầu xưởng</i>')); };
+    var x0=qtXuat(X).map(ten).join(', '), x1=(d.xuat||[]).map(ten).join(', ');
+    var l0=QT.luong.filter(function(a){return a.Tu===X}).map(function(a){return qtTenX(a.Den)+(a.BTP?' ('+a.BTP+')':'')}).join('; '), l1=(d.luong||[]).map(function(a){return qtTenX(a.Den)+(a.BTP?' ('+a.BTP+')':'')}).join('; ');
+    h+='<div class="card"><div style="font-weight:600">'+esc(qtTenX(X))+' – đề xuất của '+esc(r.TenNguoi||r.NguoiGui)+' lúc '+esc(r.ThoiDiem)+'</div>'+(r.LoiNhan?'<div style="font-size:13px;margin:4px 0">Lời nhắn: <i>'+esc(r.LoiNhan)+'</i></div>':'')+(r.daDoi?'<div class="alert a-wn" style="margin:6px 0">Quy trình xưởng này đã được sửa <b>sau khi</b> trưởng phòng gửi đề xuất. Duyệt sẽ thay phần của xưởng bằng bản đề xuất (mất phần sửa sau). Cân nhắc từ chối và nhờ trưởng phòng gửi lại.</div>':'')+
+      '<div class="tw"><table class="dh-bang"><thead><tr><th>Công đoạn</th><th>Hiện tại</th><th>Đề xuất</th></tr></thead><tbody>'+
+      (doi.length?doi.map(function(z){ return '<tr><td>'+esc(ten(z[0].Ma))+'</td><td>'+mo(z[0].Nhanh,z[2])+'</td><td><b>'+mo(z[1].Nhanh,z[3])+'</b></td></tr>'; }).join(''):'<tr><td colspan="3" class="pdesc">Không đổi thứ tự / nhánh công đoạn.</td></tr>')+
+      (x0!==x1?'<tr><td>⭐ Bước ra hàng</td><td>'+esc(x0||'–')+'</td><td><b>'+esc(x1||'–')+'</b></td></tr>':'')+
+      (l0!==l1?'<tr><td>Luồng giao đi</td><td>'+esc(l0||'–')+'</td><td><b>'+esc(l1||'–')+'</b></td></tr>':'')+'</tbody></table></div>'+
+      '<button class="btn" type="button" data-id="'+esc(r.Id)+'" onclick="qtDuyetDX(this.dataset.id,true)"'+(QTDoi?' disabled':'')+'>Duyệt và áp dụng</button> <button class="btn sm dg" type="button" data-id="'+esc(r.Id)+'" onclick="qtDuyetDX(this.dataset.id,false)"'+(QTDoi?' disabled':'')+'>Từ chối</button>'+
+      '<div style="font-size:12px;color:var(--ink3);margin-top:6px">Duyệt: chỉ phần của xưởng '+esc(qtTenX(X))+' (công đoạn, bước ra hàng, luồng giao đi) được thay bằng bản đề xuất; các xưởng khác giữ nguyên.</div></div>'; });
+  return h||'<div class="card pdesc">Không có đề xuất nào đang chờ duyệt.</div>';
+}
+function qtDuyetDX(id,ok){ var ly='', r=(QT.deXuatCho||[]).filter(function(x){return x.Id===id})[0]||{};
+  if(!ok){ var p=prompt('Lý do từ chối (trưởng phòng sẽ thấy):',''); if(p===null) return; ly=p; }
+  else if(!confirm((r.daDoi?'Quy trình xưởng này đã được sửa SAU khi trưởng phòng gửi – duyệt sẽ thay bằng bản đề xuất (mất phần sửa sau). ':'')+'Duyệt và áp dụng đề xuất này?')) return;
+  call('duyetDeXuatQuyTrinh',[id,!!ok,ly],function(r){ if(!r||!r.ok){ toast((r&&r.msg)||'Không lưu được.'); return; } toast(r.msg,true); window.__qtDXTai=0; vQTTai(); }); }
 function qtTim(m){ return QTD.filter(function(q){return q.Ma===m})[0]; }
 function qtSuaO(m,k,v){
   var q=qtTim(m); if(!q)return;

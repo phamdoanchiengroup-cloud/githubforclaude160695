@@ -6,6 +6,7 @@ Liên quan: [[00 Mục lục]] · [[Liên kết và công cụ]] · [[Việc ch�
 Ghi chú này để phiên Claude Code mới nắm bối cảnh ngay. Đọc `CLAUDE.md`, rồi ghi chú này, rồi [[Liên kết và công cụ]] (mọi link Drive, repo, artifact, công cụ), rồi [[00 Mục lục]].
 
 ## PHIÊN 02/11 (tiếp) – 6 yêu cầu đã xong
+- 03/11: mở tab Quy trình cho trưởng / phó phòng (chỉ xưởng mình, gửi đề xuất → chủ sở hữu duyệt) – [[KPI Quy trình sản xuất]] mục "Đợt 7".
 - Thêm sau đó: Cấu hình sản phẩm trên web + báo sản phẩm mới ở Việc hôm nay + tự đọc tab kênh mới; PDF hướng dẫn 2 tab đã gửi (nguồn `kpi-app/tests/huong-dan/`). Chi tiết: [[KPI Quy trình sản xuất]] mục "Đợt 6".
 - Đã làm + commit + push cả 6 yêu cầu (chi tiết: [[KPI Quy trình sản xuất]] mục "Đợt 5"). Chưa dán: Code.gs + Index.html + QuyTrinh.html (2-CAP-NHAT.bat).
 - Chờ: chất liệu các mã chuôi nhảy / phá nhảy / Vũ trụ / Eclipse / Carom; file Excel cấu hình gậy + quy trình nháp; câu tip; họp trưởng phòng; Sơn hệ số lớp.
