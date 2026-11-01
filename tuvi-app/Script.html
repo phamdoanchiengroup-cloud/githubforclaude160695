@@ -1386,7 +1386,7 @@
       '<label>Tên<input id="gdTen" value="' + esc(s ? s.ten : '') + '"></label><label>Quan hệ<select id="gdQh">' + opt(s ? s.quanHe : 'Vợ') + '</select></label>' +
       '<label>Giới tính<select id="gdGt"><option value="nam"' + (si.gender !== 'nu' ? ' selected' : '') + '>Nam</option><option value="nu"' + (si.gender === 'nu' ? ' selected' : '') + '>Nữ</option></select></label>' +
       '<label>Lịch<select id="gdLich"><option value="am"' + (si.calendar === 'am' ? ' selected' : '') + '>Âm lịch</option><option value="duong"' + (si.calendar !== 'am' ? ' selected' : '') + '>Dương lịch</option></select></label>' +
-      '<label>Ngày/tháng/năm<input id="gdNgay" placeholder="19/5/1995" value="' + (s ? si.day + '/' + si.month + '/' + si.year : '') + '"></label>' +
+      '<label>Ngày/tháng/năm<input id="gdNgay" placeholder="1/1/1990" value="' + (s ? si.day + '/' + si.month + '/' + si.year : '') + '"></label>' +
       '<label>Giờ:phút<input id="gdGio" placeholder="06:00" value="' + (s ? pad(si.hour) + ':' + pad(si.minute) : '') + '"></label>' +
       '<label class="gd-nhuan"><input type="checkbox" id="gdNhuan"' + (si.leap ? ' checked' : '') + '> Tháng nhuận (âm lịch)</label></div>' +
       '<div class="gd-nut"><button type="button" class="btn btn-primary btn-sm" id="gdLuu">' + (s ? 'Lưu thay đổi' : 'Thêm') + '</button>' + (s ? '<button type="button" class="btn btn-ghost btn-sm" id="gdHuy">Hủy</button>' : '') + '</div></details>';
@@ -1432,7 +1432,7 @@
     if (t.id === 'gdLuu') {
       var n = ($('gdNgay').value || '').split(/[\/.\-]/).map(function (v) { return parseInt(v, 10); }), g = ($('gdGio').value || '0:0').split(':').map(function (v) { return parseInt(v, 10) || 0; });
       var moi = { ten: $('gdTen').value.trim(), quanHe: $('gdQh').value, input: { name: $('gdTen').value.trim(), gender: $('gdGt').value, calendar: $('gdLich').value, day: n[0], month: n[1], year: n[2], leap: $('gdLich').value === 'am' && $('gdNhuan').checked, hour: g[0], minute: g[1] || 0 } };
-      if (!moi.input.day || !moi.input.month || !moi.input.year) { toast('Nhập ngày/tháng/năm, ví dụ 19/5/1995.', true); return; }
+      if (!moi.input.day || !moi.input.month || !moi.input.year) { toast('Nhập ngày/tháng/năm, ví dụ 1/1/1990.', true); return; }
       var ds2 = GD.ds.slice(); if (GD.sua != null) { moi.id = ds2[GD.sua].id; ds2[GD.sua] = moi; } else ds2.push(moi);
       gdLuuDs(ds2, 'Đã lưu.'); return;
     }
