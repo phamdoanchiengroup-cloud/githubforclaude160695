@@ -300,7 +300,8 @@ function dhDocTab_(sh, tab, nam) {
 /* Mã đơn "RHINO-22/06" -> người đặt + ngày đặt (giống web app đơn hàng); deadline trước ngày đặt -> sang năm sau */
 function dhMaDon_(o, nam) {
   var s = String(o.maDon || ''), m = s.match(/(\d{1,2})\s*\/\s*(\d{1,2})/);
-  o.nguoiDat = s.replace(/^#/, '').split(/[-–]\s*\d{1,2}\s*\//)[0].replace(/\d+.*$/, '').replace(/[-–\s]+$/, '').trim().slice(0, 40);
+  o.nguoiDat = s.replace(/^[#(\s]+/, '').split(/[-–]\s*\d{1,2}\s*\//)[0].replace(/\d+.*$/, '').replace(/[-–()\s]+$/, '').trim().slice(0, 40);
+  if (!/[A-Za-zÀ-ỹ]/.test(o.nguoiDat)) o.nguoiDat = '';
   o.ngayDat = '';
   if (m && Number(m[1]) >= 1 && Number(m[1]) <= 31 && Number(m[2]) >= 1 && Number(m[2]) <= 12) {
     o.ngayDat = nam + '-' + ('0' + m[2]).slice(-2) + '-' + ('0' + m[1]).slice(-2);

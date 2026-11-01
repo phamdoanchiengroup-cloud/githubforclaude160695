@@ -83,7 +83,21 @@ const vao = async (p, tk) => { await p.goto(F); await p.waitForSelector('#xtGoiY
     ok(s[0] === false && s[1] === 8 && s[2] > 190 && !s[3], 'Lưu: ghi sheet QuyTrinh, tải lại không còn nháp', s);
     // Đơn hàng → xưởng (31/10) – bản xem thử dựng với DH=<các tab Sheet đơn>
     if (await p.evaluate(() => !!__MAY_CHU.doc_('KHO').length)) {
-      await p.click('.qt-tabs button:has-text("Đơn hàng")'); await p.waitForSelector('.dh-the', { timeout: 30000 });
+      // 01/11: tab riêng "Đơn hàng" (dưới tab Quy trình), mặc định "Đơn cần chú ý"
+      ok(await p.evaluate(() => !!document.querySelector('#nav button[data-k="dh"]') && dsTabHienCo().some(t => t[0] === 'dh')), 'chủ sở hữu: có tab Đơn hàng trong menu');
+      await p.evaluate(() => go('dh')); await p.waitForSelector('.dh-tong', { timeout: 30000 });
+      s = await p.evaluate(() => { const ds = dhLoc(), don = dhGomDon(ds), the = [...document.querySelectorAll('.dh-tong b')].map(b => +b.textContent.replace(/\./g, ''));
+        return [the.length, the[0] === don.length, the[5] === ds.reduce((a, o) => a + o.thieu, 0), DHV, dhChuY(don).length ? document.querySelectorAll('.dh-bang tbody tr').length : /Không có đơn cần chú ý/.test(document.querySelector('main').textContent) ? 1 : 0, dhChuY(don).every(x => x.g.thieu > 0)]; });
+      ok(s[0] === 6 && s[1] && s[2] && s[3] === 'chuy' && s[4] > 0 && s[5], 'Đơn hàng: 6 thẻ tổng khớp dữ liệu (số đơn theo mã, tổng còn thiếu); mặc định "Đơn cần chú ý" nhóm trễ / sắp / nguy cơ', s);
+      for (const v of ['chitiet', 'gom', 'thongke', 'thaydoi']) { await p.evaluate(v => { DHV = v; dhVeLai(); }, v); await p.waitForTimeout(400); }
+      s = await p.evaluate(() => { DHV = 'chitiet'; DHL.kenh = 'KHO'; dhVeLai(); const n = document.querySelectorAll('.dh-bang tbody tr').length, k = dhLoc().every(o => o.tab === 'KHO');
+        DHL.kenh = ''; DHL.st = 'treHan'; const t = dhLoc().every(o => o.st === 'treHan'); DHL.st = ''; DHV = 'thongke'; dhVeLai();
+        return [n > 0, k, t, !!document.querySelector('.dh-cong'), [...document.querySelectorAll('.card')].some(c => /nhóm hàng × chất liệu/.test(c.textContent)), dhBangXuat().length === DH.don.length + 1]; });
+      ok(s.every(Boolean), 'lọc theo kênh / trạng thái; Thống kê: ma trận nhóm × chất liệu, lịch giao 14 ngày; bảng xuất Excel đủ dòng', s);
+      await p.evaluate(() => { DHV = 'thaydoi'; DHTD = null; dhVeLai(); }); await p.waitForTimeout(800);
+      ok(await p.evaluate(() => !!DHTD && !DHTD.loi && /bản chụp|So với/.test(document.querySelector('main').textContent)), 'Thay đổi hôm nay: tải được (lần đầu báo chưa có bản ngày trước)');
+      if (CHUP) await p.screenshot({ path: CHUP + '/dh-tab-' + w + '.png', fullPage: false });
+      await p.evaluate(() => { DHV = 'xuong'; dhVeLai(); }); await p.waitForSelector('.dh-the', { timeout: 30000 });
       s = await p.evaluate(() => { const K = dhTinh(); return [document.querySelectorAll('.dh-the button').length, K.tongThieu, K.X.SON.tong, K.X.NGONTARO.tong, K.X.PHOICB.chuoi + K.X.PHOICB.ngon === K.X.PHOICB.tong, document.querySelectorAll('.card table tbody tr').length]; });
       ok(s[0] === 9 && s[1] > 5000 && s[2] > 0 && s[3] > 0 && s[4] && s[5] > 3, 'Đơn hàng → xưởng: 9 xưởng, việc còn lại theo 4 thông số', s);
       s = await p.evaluate(() => { const o = { thieu: 10, sl: 30, qua: { UV: 25 }, hong: { SON: 2 } }; return [dhCon(o, 'PHOI', dhChuoi('GAY', 'chuoi')), dhCon(o, 'SON', dhChuoi('GAY', 'chuoi')), dhCon(o, 'TARO', dhChuoi('GAY', 'ngon')), dhCon({ thieu: 4, sl: 4, qua: {} }, 'DG', dhChuoi('NGON', 'ngon'))]; });
@@ -97,10 +111,13 @@ const vao = async (p, tk) => { await p.goto(F); await p.waitForSelector('#xtGoiY
         const the = [...document.querySelectorAll('.card')].find(c => /Thời gian làm hết/.test(c.textContent));
         return [sai, G.nut && G.nut.max === lon, !!the, the && the.querySelectorAll('tbody tr').length, the && the.querySelectorAll('.qt-tag.bd').length]; });
       ok(!s[0].length && s[1] && s[2] && s[3] === 9 && s[4] === 1, 'thời gian làm hết đơn: ngày nhịp nay / hết sức / giờ chuẩn / công đúng công thức, 1 nút thắt = xưởng lâu nhất', s);
+      s = await p.evaluate(() => { const hn = dhHomNay(), g = { thieu: 600, dl: '' }, cong = (n) => { const d = new Date(hn + 'T00:00:00'); d.setDate(d.getDate() + n); return d.toISOString().slice(0, 10); };
+        const mk = (dl, thieu) => ({ ma: dl, thieu, dl, dong: [] }); const r = dhChuY([mk(cong(-5), 10), mk(cong(-40), 10), mk(cong(2), 10), mk(cong(6), 600), mk(cong(30), 10)]).map(x => x.l); return r.join(); });
+      ok(s === 'tre,sap,nguyco', 'Đơn cần chú ý: trễ ≤ 30 ngày, sắp tới hạn ≤ 3 ngày, nguy cơ (600 sp / 60 mỗi ngày + 2 > 6 ngày); trễ quá 30 ngày và còn xa thì bỏ', s);
       s = await p.evaluate(() => { const a = dhThoiGian(dhTinh(), qtTinh()).nut.nay; dhDoiNL('thang', 18000, 1000, 50000); const b = dhThoiGian(dhTinh(), qtTinh()).nut.nay; dhDoiNL('thang', 5, 1000, 50000); const c = QTS.slThang; dhDoiNL('thang', 9000, 1000, 50000); return [Math.abs(a / b - 2) < 1e-9, c]; });
       ok(s[0] && s[1] === 18000, 'sửa sản lượng/tháng: gấp đôi sản lượng → số ngày giảm một nửa; số ngoài khoảng bị chặn', s);
       if (CHUP) await p.screenshot({ path: CHUP + '/dh-tg-' + w + '.png', fullPage: true });
-      await p.click('.qt-tabs button:has-text("Kiểm phân loại")'); await p.waitForTimeout(300);
+      await p.evaluate(() => { DHV = 'kiem'; dhVeLai(); }); await p.waitForTimeout(300);
       s = await p.evaluate(() => [document.querySelectorAll('.card table tbody tr').length, document.querySelectorAll('.dh-tin.vang').length]);
       ok(s[0] > 300 && s[1] > 0, 'Kiểm phân loại: liệt kê tên hàng, vàng / đỏ lên đầu', s);
       await p.evaluate(() => { DHMo = 'k|' + document.querySelector('.card table tbody tr td').textContent.trim(); });

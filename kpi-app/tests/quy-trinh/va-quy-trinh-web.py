@@ -10,11 +10,11 @@ def _t36(cu, moi, dem=1):
     assert s.count(cu) == dem, ('mục 36: không thấy đúng %d chỗ' % dem, cu[:80], s.count(cu))
     s = s.replace(cu, moi)
 
-_t36("['ns','Nhân sự'],['kyn','Kỹ năng'],['mm','Máy móc'],['ts','Trọng số']", "['ns','Nhân sự'],['kyn','Kỹ năng'],['qt','Quy trình sản xuất'],['mm','Máy móc'],['ts','Trọng số']")
-_t36("  ['Sản xuất',['duyetsl','nk','kcs','dd','nenep','cccn']],", "  ['Sản xuất',['duyetsl','nk','qt','kcs','dd','nenep','cccn']],")
-_t36("  var tabChiOwner={pq:1, ptdm:1, log:1, kpiql:1};", "  var tabChiOwner={pq:1, ptdm:1, log:1, kpiql:1, qt:1};   // qt: Quy trình sản xuất (31/10) – giai đoạn thử")
-_t36("sodo:vSoDo,com:vCom}[k])();", "sodo:vSoDo,com:vCom,qt:vQT}[k])();")
-_t36("  kyn:'<path", "  qt:'<rect x=\"3.5\" y=\"3.5\" width=\"6\" height=\"4.5\" rx=\"1\"/><rect x=\"14.5\" y=\"3.5\" width=\"6\" height=\"4.5\" rx=\"1\"/><rect x=\"9\" y=\"16\" width=\"6\" height=\"4.5\" rx=\"1\"/><path d=\"M6.5 8v3.5h11V8M12 11.5V16\"/>',\n  kyn:'<path")
+_t36("['ns','Nhân sự'],['kyn','Kỹ năng'],['mm','Máy móc'],['ts','Trọng số']", "['ns','Nhân sự'],['kyn','Kỹ năng'],['qt','Quy trình sản xuất'],['dh','Đơn hàng'],['mm','Máy móc'],['ts','Trọng số']")
+_t36("  ['Sản xuất',['duyetsl','nk','kcs','dd','nenep','cccn']],", "  ['Sản xuất',['duyetsl','nk','qt','dh','kcs','dd','nenep','cccn']],")
+_t36("  var tabChiOwner={pq:1, ptdm:1, log:1, kpiql:1};", "  var tabChiOwner={pq:1, ptdm:1, log:1, kpiql:1, qt:1, dh:1};   // qt: Quy trình sản xuất (31/10), dh: Đơn hàng (01/11) – chỉ chủ sở hữu")
+_t36("sodo:vSoDo,com:vCom}[k])();", "sodo:vSoDo,com:vCom,qt:vQT,dh:vDH}[k])();")
+_t36("  kyn:'<path", "  dh:'<path d=\"M5 4.5h14v15H5z\"/><path d=\"M8.5 9h7M8.5 12.5h7M8.5 16h4\"/>',\n  qt:'<rect x=\"3.5\" y=\"3.5\" width=\"6\" height=\"4.5\" rx=\"1\"/><rect x=\"14.5\" y=\"3.5\" width=\"6\" height=\"4.5\" rx=\"1\"/><rect x=\"9\" y=\"16\" width=\"6\" height=\"4.5\" rx=\"1\"/><path d=\"M6.5 8v3.5h11V8M12 11.5V16\"/>',\n  kyn:'<path")
 import hashlib as _hl36, re as _re36
 _v36 = _hl36.md5(_qt_src.encode('utf-8')).hexdigest()[:10]
 _m36 = _re36.search(r'var MANH_VER=(\{[^}]*\});', s)
@@ -24,6 +24,17 @@ s = s.replace(_m36.group(0), 'var MANH_VER=' + _json.dumps(_d36) + ';', 1)
 _k36 = s.rfind('</body>')
 s = s[:_k36] + '''<script>
 /* ===== 36. QUY TRÌNH SẢN XUẤT (31/10) – giao diện ở QuyTrinh.html, chỉ chủ sở hữu (máy chủ chặn ở layManhGiaoDien + từng hàm) ===== */
+/* 01/11: tab "Đơn hàng" (chỉ chủ sở hữu) – cùng mảnh QuyTrinh.html */
+function vDH(){
+  if(!ME||!ME.laOwner){ $('main').innerHTML='<div class="alert a-wn">Tab này đang chỉ mở cho tài khoản chủ sở hữu.</div>'; return; }
+  if(window.__qtDaNap){ dhTrangVe(); return; }
+  $('main').innerHTML='<div class="ptitle">Đơn hàng</div><div class="pdesc">Đang tải…</div>';
+  taiManh('QuyTrinh',function(ok,msg){
+    if(tabHienTai!=='dh')return;
+    if(ok&&window.__qtDaNap){ dhTrangVe(); return; }
+    $('main').innerHTML='<div class="ptitle">Đơn hàng</div><div class="alert a-bd">'+esc(msg||'Không tải được.')+' <button class="btn sm" type="button" onclick="vDH()">Thử lại</button></div>';
+  });
+}
 function vQT(){
   if(!ME||!ME.laOwner){ $('main').innerHTML='<div class="alert a-wn">Tab này đang chỉ mở cho tài khoản chủ sở hữu.</div>'; return; }
   if(window.__qtDaNap){ qtVe(); return; }
