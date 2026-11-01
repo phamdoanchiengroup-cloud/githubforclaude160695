@@ -66,6 +66,7 @@ Những điều đã chốt. Đừng đề xuất lại những gì ghi "không 
 
 - App Qoder (31/10): chỉ làm tạm khi Claude hết token, **không sửa gì trên đó**; lấy phần tốt nhất đưa vào web KPI, ưu tiên phân loại cấu hình gậy cho SKU. Sản lượng thật ~9.000 sản phẩm/tháng (không tính tay nối). – [[KPI Quy trình sản xuất]]
 - 01/11: **Luôn rà logic để sắp xếp theo cách dễ nhìn, dễ theo dõi, dễ tổng hợp nhất.** Đơn hàng: nhóm chuôi / chuôi nhảy / ngọn; gậy đánh / nhảy / phá (ngọn lẻ cũng vậy), trong nhóm xếp full carbon → mix carbon+glassfiber → glassfiber. Đơn hàng ra tab riêng dưới tab Quy trình. Có nhánh POM Ngọn Taro → Phôi Thô. – [[KPI Quy trình sản xuất]]
+- 01/11 (trả lời 4 câu hỏi): tab Đơn hàng **chỉ chủ sở hữu**, **có** "Thay đổi hôm nay" (web KPI tự lưu bản chụp đơn mỗi ngày vào sheet riêng, Sheet đơn vẫn chỉ đọc); cân bằng tải theo **số sản phẩm/tháng sửa được** (mặc định 9.000, 26 ngày); gộp công đoạn **chỉ để xem + tư vấn** (không đổi danh mục KPI); **Phá nhảy là nhóm riêng** (Đánh / Nhảy / Phá / Phá nhảy), GF vỏ carbon tính là Mix. – [[KPI Gộp công đoạn và tiến độ BTP]]
 
 ## KPI và định mức (25/10)
 - Bỏ khoản "Không nhắc CN nhập" của TP/PP với lượt phạt trễ không có vi phạm NHAPTRE (phạt trước 15/09): chỉ trừ khi công nhân thật sự bị trừ. – [[KPI Sửa lỗi 21-10 và dữ liệu sheet]]
