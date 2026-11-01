@@ -396,12 +396,21 @@ Chủ dự án giao (2 tin nhắn, muốn làm trong 1 lượt, **phân tích tr
 - **Kiểm thử:** `don-hang.js` 62, `quy-trinh.js` 54, `quy-trinh-web.js` 63, `manh-web.js` 8, `ky-nang.js` 49; `bao-mat.js` 2 lỗi cũ (ngày đã duyệt). Giả lập thêm `getDisplayValues`, `hideSheet`.
 - Kích thước: Index ~826 KB, QuyTrinh.html ~98 KB, Code.gs ~521 KB.
 
-## Yêu cầu đợt 4 (01/11 khuya) – đang làm
+## Yêu cầu đợt 4 (01/11 khuya) – ĐÃ LÀM (chi tiết ở mục dưới)
 1. Lưu đồ từng xưởng vẽ theo kiểu lưu đồ toàn nhà máy (thẻ kính + đường nối cong), nhóm công đoạn chỉ để vẽ.
 2. Thêm luồng CNC → Sơn: "đầu gậy lết".
 3. Gửi bảng Excel đầy đủ cấu hình gậy (dòng gậy, 4 thông số, tên gọi) + 22 tên vàng để chủ dự án điền.
 4. Cách A: bước xuất mỗi xưởng (Claude chọn sẵn, sửa trên web) → sản lượng ra/ngày từ nhật ký KPI → ngày làm hết việc theo nhịp thực.
 5. Trả lời: quy trình từng xưởng là bản nháp Claude tự soạn (nguồn: tên công đoạn, định mức, file chủ dự án gửi) – chủ dự án thấy vài chỗ sai → gửi bảng quy trình nháp để sửa.
+
+## Đã làm đợt 4 (01–02/11)
+- **Luồng CNC → Sơn "Đầu gậy lết"** (`QT_XUONG_NHAP`; `QT_XUONG_THEM` nay có ngày báo – bổ sung vào bản lưu cũ hơn ngày đó, `qtLuongCu_` trả ngày lưu gần nhất). Lưu đồ nhà máy: đường cấp phụ cam từ CNC đi theo khe giữa 2 cột lên đáy thẻ Sơn, nhãn "ĐẦU LẾT". 12 luồng.
+- **Excel cấu hình gậy** (`scratchpad/gui/Cau-hinh-gay-va-quy-trinh-nhap.xlsx`, không commit; dựng bằng `scratchpad/xuat-cauhinh.js` + `tao-excel.py`): sheet Dòng gậy (54 dòng, 4 thông số, đầu mặc định, tên gọi, xếp gậy → ngọn lẻ → chuôi lẻ, kiểu, chất liệu, cột "Sửa"), Tên hàng cần bổ sung (22, ô chọn thả xuống), Tất cả tên hàng (390), Quy trình nháp (195 CĐ: nhóm, nhánh, bước, cột "Sửa"), Bảng mã.
+- **Trả lời chủ dự án:** quy trình từng xưởng là **bản nháp Claude tự soạn** (nhánh/bước trong `QT_NHAP` đoán từ tên công đoạn, định mức, file THÔNG SỐ GẬY, danh mục mã) – chủ dự án thấy vài chỗ sai → ghi vào sheet "Quy trình nháp" hoặc sửa ở "Sửa quy trình".
+- **Lưu đồ từng xưởng kiểu nhà máy** (`qtLuuDoX`, `qtThe`, `qtVeCanh`, `qtVeXDuong`): mỗi nhóm 1 thẻ kính; công đoạn chung trải 2 hàng (chuôi trên, ngọn dưới); **xếp cột theo đoạn** – giữa 2 công đoạn chung, mỗi nhánh tự xếp liền nhau (nhánh song song đứng cạnh nhau, số = bước/cột); nhánh riêng (nối, POM, gậy 1 khúc, phụ kiện, đơn lẻ…) mỗi nhánh 1 hàng phía dưới; ngoài dòng chảy là thẻ đứt nét không nối; đường nối SVG đo vị trí thật. Danh sách các bước dạng cũ để trong mục gập. Kiểm thử: thẻ không chồng nhau, mỗi thẻ có đường nối.
+- **Cách A** (`QT_XUAT_MD`, `qtXuat`, `qtRa`, `qtChonXuat`, `qtVeXuatSua`; máy chủ: dòng `XUAT` trong sheet QuyTrinh, `thongKe[m].sl7`, `soNgaySX7`): bước xuất mỗi xưởng Claude chọn sẵn theo tên, chủ dự án sửa ở **Sửa quy trình → Bước xuất của xưởng**; ra/ngày = Σ sản lượng bước xuất ÷ ngày SX (ưu tiên 7 ngày gần nhất); thẻ "Thời gian làm hết phần đơn" thêm cột **Ra/ngày (nhật ký)** + **Ngày (nhịp thực)**; trang Từng xưởng hiện dòng bước xuất.
+  - Mặc định (dữ liệu tới 24/10): PHOICB Cắt phôi ngọn + Kiểm đếm xuất phôi chuôi 414/ngày; PHOITHO 718; CNC 1.223; Sơn (vệ sinh lắp POM) 1.244; In UV 704; HT (tổ check) 594; ĐG 359; Ngọn Taro (đánh giáp) 196; Ngọn Tip (CNC bo đầu) 345 – nhiều số lệch nhu cầu ~346 → chủ dự án cần xem lại.
+- **Kiểm thử:** `quy-trinh.js` 59, `quy-trinh-web.js` 67, `don-hang.js` 62, `ky-nang.js` 49, `manh-web.js` 8.
 
 ## Việc tiếp theo
 - Chủ dự án xem bản thật, chỉnh nháp (thứ tự, nhánh) rồi Lưu. Cho thông số 22 tên hàng vàng (hoặc sửa tay ở "Kiểm phân loại").

@@ -645,3 +645,8 @@ Không có hàm cần chạy. Sheet `QuyTrinh` tự tạo khi bấm "Lưu quy tr
 3. Menu **Sản xuất → Đơn hàng** (tab mới, ngay dưới Quy trình sản xuất).
 Chép – dán tay: dán lại Code.gs, Index.html, QuyTrinh.html → Triển khai → Quản lý triển khai → ✏️ → Phiên bản mới → Triển khai.
 Không có hàm cần chạy. Sheet `DonHangChup` (ẩn) tự tạo khi mở tab Đơn hàng lần đầu; mỗi sáng 9h tự chụp đơn cùng trigger KPI 9h có sẵn. Sheet "Trạng thái đơn hàng" vẫn chỉ đọc.
+
+## LƯU ĐỒ XƯỞNG + BƯỚC XUẤT (CÁCH A) 02/11 – đổi Code.gs, Index.html, QuyTrinh.html
+1. Sao lưu → bấm đúp **2-CAP-NHAT.bat** → Ctrl+F5.
+2. Quy trình sản xuất → Sửa quy trình → chọn xưởng → mục **Bước xuất của xưởng**: đánh dấu công đoạn cuối hàng rời xưởng → **Lưu quy trình**.
+Không có hàm cần chạy.
