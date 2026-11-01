@@ -12,7 +12,7 @@ Phiên 31/10–02/11 rất dài, chủ dự án yêu cầu chuyển phiên mới
 - Tab **Quy trình sản xuất** (chỉ chủ sở hữu): cân bằng tải theo **sp/tháng** (9.000, 26 ngày; nhịp hiện nay đo từ đóng gói ~368/ngày – chủ dự án xác nhận "khá sát"), bảng thiếu/thừa người; **lưu đồ nhà máy** (thẻ kính, đường cong phát sáng, CNC→Ngọn Tip, CNC→Sơn "đầu gậy lết", POM Ngọn Taro→Phôi Thô); **lưu đồ từng xưởng kiểu nhà máy** (nhóm công đoạn chỉ để vẽ); điện thoại ẩn lưu đồ; **cách A** bước xuất mỗi xưởng → ra/ngày.
 - Tab **Đơn hàng** riêng (chỉ chủ sở hữu): như web app đơn hàng + thống kê + Việc theo xưởng + Kiểm phân loại; bản chụp đơn 9h hằng ngày (sheet ẩn `DonHangChup`).
 - Phân loại SKU 4 thông số + kiểu (đánh/nhảy/phá/phá nhảy) + chất liệu; 370/390 tên chắc chắn.
-- File **Cau-hinh-gay-va-quy-trinh-nhap.xlsx** đã gửi chủ dự án (chỉ ở scratchpad, không commit; dựng lại bằng `xuat-cauhinh.js` + `tao-excel.py` nếu scratchpad còn – nếu mất thì dựng lại từ `PL_DONG` trong `tests/quy-trinh/don-hang.gs` + quy trình nháp).
+- File **Cau-hinh-gay-va-quy-trinh-nhap.xlsx** đã gửi chủ dự án (chỉ ở scratchpad, không commit; dựng lại bằng `kpi-app/tests/quy-trinh/xuat-cauhinh.js` (cần csdl.json + dh.json lấy lại từ Drive) rồi `tao-excel-cauhinh.py`).
 
 **Chờ chủ dự án:**
 - Gửi lại file Excel: 22 tên hàng vàng, sửa cấu hình dòng gậy, **chỗ sai trong sheet "Quy trình nháp"** (quy trình từng xưởng là bản nháp Claude tự soạn – chủ dự án thấy vài chỗ sai). Nhận file → gộp vào `PL_DONG` / `QT_NHAP` (+ sửa tay của chủ dự án trong sheet `PhanLoaiSKU`, `QuyTrinh`).
