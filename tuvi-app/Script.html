@@ -1647,7 +1647,7 @@
     if (N) {
       var nay = new Date().getFullYear(), ds = []; for (var y = nay - 3; y <= nay + 6; y++) ds.push(y); if (ds.indexOf(N.nam) < 0) ds.push(N.nam);
       namChon = '<label class="pt-namxem">Năm xem <select id="ptNamXem" aria-label="Chọn năm xem vận năm và vận tháng">' + ds.sort().map(function (y) { return '<option value="' + y + '"' + (y === N.nam ? ' selected' : '') + '>' + y + '</option>'; }).join('') + '</select></label>';
-      out += ptPhanHtml('nam', '流年', 'Vận năm ' + N.nam, (N.tuoi ? N.tuoi + ' tuổi · ' : '') + 'Mệnh năm ở ' + N.menh + (N.dvMenh ? ' · trong vận ' + N.dvMenh : ''), namChon + (N.chuaVaoVan ? '<p class="muted">Năm này chưa vào đại vận đầu tiên nên chỉ xem Tứ Hóa của năm.</p>' : '') + ptTongHtml(N.tong, 'Tổng luận 12 chủ đề của năm') + ptNhomHtml(N.phan), true);
+      out += ptPhanHtml('nam', '流年', 'Vận năm ' + N.nam, (N.tuoi ? N.tuoi + ' tuổi · ' : '') + 'Mệnh năm ở ' + N.menh + (N.dvMenh ? ' · trong vận ' + N.dvMenh : ''), namChon + (N.chuaVaoVan ? '<p class="muted">Năm này chưa vào đại vận đầu tiên nên chỉ xem Tứ Hóa của năm.</p>' : '') + ptTongHtml(N.tong, 'Tổng luận 12 chủ đề của năm') + (N.phan.length ? '<details class="pt-chitiet-vb"' + (N.tong.length ? '' : ' open') + '><summary>Chi tiết các dòng luận của năm</summary>' + ptNhomHtml(N.phan) + '</details>' : ''), true);
     }
     if ((BAI.thang || []).length) {
       var th = BAI.thang.map(function (t) {

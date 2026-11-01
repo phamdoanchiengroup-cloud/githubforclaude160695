@@ -1,6 +1,6 @@
 # TCC Tứ Hóa Phi Tinh
 
-Nhóm: Thiên Cơ Các · Cập nhật 31/10/2026
+Nhóm: Thiên Cơ Các · Cập nhật 1/11/2026
 Liên quan: [[TCC Tử Vi đối chiếu các phái]] · [[TCC Kiểm thử]] · [[Quyết định của chủ dự án]] · [[TCC Chuyên gia Agency Agents]]
 
 ## Yêu cầu (31/10)
@@ -44,3 +44,13 @@ Chủ dự án thử bài luận "Bắc phái" (Tứ Hóa Phi Tinh) của tuvi.c
 - Chưa xác định (đừng bịa): công thức điểm xí hoa, Thiên–Địa–Nhân của can Quý, cung khí số vị, Tài thiên/địa/nhân, Thuận/Nghịch thủy Kỵ, Tuyệt mệnh Kỵ / Phá thể / Dương phi nhập Âm.
 - Bài cohoc đúng của con gái (lid-403265) chưa trích.
 
+
+## Dựng lại tab theo mục lục Bắc phái (1/11, phiên mới – mã 2026.11.1.5)
+- Chủ dự án chốt: **đầy đủ 18 phần, mỗi phần một khối bấm mở/thu** · **vận tháng 12 tháng** của năm đang xem · mục chưa rõ công thức thì **tìm trên internet rồi hoàn thiện** · **vẫn chỉ chủ sở hữu**.
+- Bộ sinh: `gen/bai.js` (bộ dựng bài luận) + `gen/cong-thuc.js` (công thức bổ sung) + kho `PT_KHO` (catalog.json, bỏ %/xác suất ở tầng chuyên môn) + `tong-hop/bo-sung.json` (content-creator: Thân cư Phu/Tài/Quan, cung khí tiểu cát / hung nhiều hơn cát). `ptLap_` trả thêm `bai` (giữ dữ liệu cũ cho lá số 4×4).
+- `ptBai_`: Tổng quan (bảng can – hóa, Lai Nhân, chip mẫu Lộc – Kỵ) → Mệnh → Thân → 11 cung (can cung, mẫu phi hóa, Hóa năm sinh/tự hóa, phi 4 hóa kèm chuyển cung, M chất, sao) → 12 đại vận (`ptDaiVanBai_`: Mệnh vận phi Tứ Hóa, hồi quy, phản cung, tha–ngã, cặp Lộc–Kỵ, trùng điệp, M chất, Thể–Dụng `ptTheDung_` có dấu */**/***/****, phi phục, tổng luận 12 chủ đề `ptTongLuan_`) → vận năm (`ptNamBai_`, ô chọn năm, ứng tháng tam điểm, Lộc gặp Kỵ, Song Kỵ, Hư lộc, M chất ba tầng) → vận tháng ×12 (`ptThangBai_`) → phụ lục chính tinh + cách cục (Văn quế văn hoa, Cơ Cự đồng lâm, Lộc hợp uyên ương, Phủ Tướng triều viên).
+- Chấm tổng luận: Lộc Dụng chiếu Thể +3; quy vị cát, M chất +2; Hóa cát Thể nhập/chiếu Dụng, cát nhập Mệnh, Quyền/Khoa Dụng chiếu Thể +1; Kỵ Thể nhập/xung Dụng, Kỵ nhập Mệnh −1; quy vị Kỵ, Kỵ xung Mệnh −2; Kỵ Dụng xung Thể −3 → Thuận / Đan xen / Cần giữ.
+- **Nghiên cứu bổ sung** (`nghien-cuu/phi-tinh/cong-thuc-bo-sung.md`, chuyên gia general-purpose, ~30 nguồn Trung – Việt): đã dùng **Mệnh tháng theo Đẩu quân** (chi năm − (tháng sinh − 1) + giờ = tháng Giêng, đi thuận; can Tứ Hóa tháng = can cung nơi Mệnh tháng đóng – cách phái Tứ Hóa), **Nghịch thủy Kỵ** (Mệnh/Tài/Quan phi Kỵ sang cung đối có Kỵ năm sinh, không tự hóa), **Thuận thủy Kỵ** (= Lưu thủy: phi Kỵ sang cung không đối; không đưa lên chip Tổng quan).
+- **Chưa đưa vào (nguồn thấp hoặc không có):** điểm xí hoa, cung khí theo hỉ – kỵ thần (giả thuyết trọng số can 20/chi 50/nạp âm 30 khớp 10/10 ví dụ nhưng cần kiểm bài gốc), Thiên–Địa–Nhân của can (Quý "không nương" – một nguồn), Tài thiên/địa/nhân, Phá thể (định nghĩa mới: cung thứ ba tam hợp Hình–Riêu, một nguồn), "Dương phi nhập Âm" (không có nguồn – đã gỡ), khí số vị cho tuyến Huynh–Nô/Phụ–Tật. Tuyệt mệnh Kỵ vẫn không hiển thị.
+- Kiểm thử `tests/phi-tinh.js` thêm: thứ tự mục lục, 12 đại vận, vận năm, 12 tháng đi thuận từ Đẩu quân (ví dụ nguồn: năm Hợi, tháng 6, giờ Mão → Dậu), mọi mục đủ trường, câu dễ hiểu không tên sao/thuật ngữ/%, căn cứ không còn %/chỗ trống – 11.036.289 kiểm tra đạt.
+- Ghi chú: `VanSau.gs` khởi tháng Giêng từ cung tiểu hạn, khác Đẩu quân của nguồn Trung văn – chưa đụng.

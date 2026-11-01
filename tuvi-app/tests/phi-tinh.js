@@ -14,7 +14,7 @@ const LAI = [10, 9, 8, 7, 6, 5, 4, 3, 2, 11];   // Giáp→Tuất … Nhâm→D�
 const SAO = new Set(); T.forEach(r => r.forEach(s => SAO.add(s)));
 ['Thiên Phủ', 'Thiên Tướng', 'Thất Sát', 'Thiên Khôi', 'Thiên Việt', 'Lộc Tồn', 'Kình Dương', 'Đà La', 'Hỏa Tinh', 'Linh Tinh', 'Địa Không', 'Địa Kiếp'].forEach(s => SAO.add(s));
 const TU_CAM = ['Hóa ', 'Kỵ', 'Lai Nhân', 'tự hóa', 'Tứ Hóa', ' phi ', 'Tuyệt mệnh', '{', 'undefined', 'null'];
-let soMau = 0, soMuc = 0;
+let soMau = 0, soMuc = 0, soThang = 0;
 const PT12 = ['Mệnh', 'Huynh Đệ', 'Phu Thê', 'Tử Tức', 'Tài Bạch', 'Tật Ách', 'Thiên Di', 'Nô Bộc', 'Quan Lộc', 'Điền Trạch', 'Phúc Đức', 'Phụ Mẫu'];
 // Năm chưa vào đại vận đầu tiên: lưu niên không được có Phản cung (lỗi chuyên gia rà mã tìm ra 31/10)
 { const tv = ctx.tuviLapLaSo({ name: 'Nho', gender: 'nam', calendar: 'duong', day: 27, month: 3, year: 2024, hour: 10, minute: 0, viewYear: 2026 }), R = ctx.ptLap_(tv, 2026, 3);
@@ -53,7 +53,8 @@ for (let i = 0; i < 250; i++) {
   BA.nam.phan.forEach(g => mucs.push(...g.muc)); mucs.push(...BA.nam.tong);
   (BA.thang || []).forEach(t => { t.phan.forEach(g => mucs.push(...g.muc)); mucs.push(...t.tong); });
   mucs.push(...BA.phuLuc);
-  soMuc += mucs.length;
+  soMuc += mucs.length; soThang += (BA.thang || []).length;
+  kt((BA.thang || []).every((t, n) => t.thang === n + 1 && t.o === (BA.thang[0].o + n) % 12), id + '12 tháng đi thuận từ Đẩu quân');
   mucs.forEach(m => {
     kt(m && typeof m.t === 'string' && m.t && Array.isArray(m.de) && Array.isArray(m.cc), id + 'mục luận đủ trường');
     kt(['cat', 'hung', 'trung', 'binh'].indexOf(m.muc) >= 0, id + 'mức ' + m.muc);
@@ -63,6 +64,10 @@ for (let i = 0; i < 250; i++) {
   });
   BA.daiVan.concat([BA.nam], BA.thang || []).forEach(d => d.tong.forEach(t => kt(['cat', 'binh', 'hung'].indexOf(t.muc) >= 0 && PT12.indexOf(t.cung) >= 0, id + 'tổng luận chủ đề hợp lệ')));
 }
+// Đẩu quân: năm Hợi, tháng sinh 6, giờ Mão → tháng Giêng ở Dậu (ví dụ trong nguồn)
+{ const gia = { info: { thangAn: 6, hourChi: 3 }, palaces: Array.from({ length: 12 }, (_, i) => ({ can: i % 10 })) };
+  kt(ctx.ptMenhThang_(gia, 2031, 1).o === 9 && ctx.ptMenhThang_(gia, 2031, 4).o === 0, 'Đẩu quân năm Hợi, tháng 6, giờ Mão = Dậu; tháng 4 = Tý'); }
+kt(soThang === 250 * 12, 'mỗi lá số đủ 12 tháng (' + soThang + ')');
 kt(soMuc > 250 * 100, 'bài luận đủ dày (' + soMuc + ' mục)');
 kt(soMau > 250, 'các mẫu Kỵ có tên xuất hiện (' + soMau + ')');
 // Chỉ chủ sở hữu

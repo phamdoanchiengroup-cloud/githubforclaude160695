@@ -4,6 +4,7 @@ Nhóm: Bắt đầu · Cập nhật 22/10/2026
 Liên quan: [[Lần dán lên Apps Script]] · [[TCC Tiến trình]] · [[00 Mục lục]]
 
 ## Việc còn ngỏ
+- 1/11: bấm `2-CAP-NHAT.bat` lấy `2026.11.1.5` – tab "✶ Phi Tinh" dựng lại theo mục lục cohoc (Tổng quan → 12 cung + Thân → 12 đại vận → vận năm chọn năm → 12 tháng → phụ lục). Đọc trên lá số của mình, so với bài cohoc; quyết định có dùng cung khí/điểm xí hoa theo giả thuyết (nguồn thấp) không. – [[TCC Tứ Hóa Phi Tinh]]
 - 1/11: phần quan hệ gia đình đang để **miễn phí** (cặp vợ chồng chỉ bản gọn, chi tiết vẫn ở Cặp đôi tính phí) – muốn thu xu thì báo. – [[TCC Tab Gia đình]]
 - 1/11: đặt tên thật cho "Vợ", "Em gái" trong tab 👪 Gia đình (bấm Sửa). – [[TCC Tab Gia đình]]
 - 31/10: bấm `2-CAP-NHAT.bat` lấy `2026.10.31.3` – đăng nhập chủ sở hữu, lập lá số của mình (lịch âm) → tab "✶ Phi Tinh": đọc và so với bài cohoc/NotebookLM; cho biết phần nào khớp, phần nào cần sâu hơn, khi nào mở cho khách và giá. – [[TCC Tứ Hóa Phi Tinh]]

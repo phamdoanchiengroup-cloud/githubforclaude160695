@@ -8,7 +8,6 @@ var PT_THUY_ = typeof PT_THUY_ !== 'undefined' ? PT_THUY_ : null;   // quy tắc
 var PT_THU_TU_BAI = ['Mệnh', 'Phu Thê', 'Tử Tức', 'Tài Bạch', 'Phúc Đức', 'Điền Trạch', 'Tật Ách', 'Thiên Di', 'Quan Lộc', 'Phụ Mẫu', 'Huynh Đệ', 'Nô Bộc'];   // thứ tự mục lục bài Bắc phái
 var PT_KHO_TEN = { 'Lộc': 'Lộc', 'Quyền': 'Quyền', 'Khoa': 'Khoa', 'Kỵ': 'Kỵ' };
 function ptO_(goc, ten) { return ptCungTu_(goc, PT_CUNG.indexOf(ten)); }          // ô của cung "ten" khi Mệnh tầng ở ô goc
-function ptDuong_(o) { return o % 2 === 0; }                                          // Tý Dần Thìn Ngọ Thân Tuất là cung dương
 function ptTamDiem_(o) { return [o, ptD_(o), (o + 11) % 12]; }                       // ứng kỳ: chi cung nhận, đối cung, chi liền trước
 function ptThangCuaChi_(c) { return ((c - 2) % 12 + 12) % 12 + 1; }                  // tháng âm mang chi c (Dần = tháng Giêng)
 
@@ -40,13 +39,13 @@ function ptDay_(ds, m) { if (m) ds.push(m); }
 /* ---------- Nguyên cục: các mẫu Lộc/Kỵ có tên (theo cung phát) ---------- */
 function ptMauNC_(N, tv) {
   var ra = [], ten = N.ten, phi = N.phi, snKy = N.sn[3].toi, snLoc = N.sn[0].toi, snQuyen = N.sn[1].toi, snKySao = N.sn[3].sao;
-  function them(cung, khoa, t, chon) { ra.push({ cung: cung, khoa: khoa, t: t, chon: chon }); }
+  function them(cung, khoa, t, chon, an) { ra.push({ cung: cung, khoa: khoa, t: t, chon: chon, an: an }); }
   for (var i = 0; i < 12; i++) {
     var X = ten[i], ky = phi[i][3].toi, loc = phi[i][0].toi;
     if (ky != null && ky !== i) {
-      if (ky === ptD_(i)) them(X, X === 'Điền Trạch' || X === 'Tài Bạch' ? 'Lưu xuất Kỵ' : 'Tiết xuất Kỵ', X + ' phi Kỵ sang cung đối ' + ten[ky]);
-      else if (PT_THUY_ && PT_THUY_.nghich(N, i)) them(X, 'Nghịch thủy Kỵ', X + ' phi Kỵ (' + phi[i][3].sao + ') vào ' + ten[ky] + ' – nơi đang có Kỵ năm sinh cùng sao');
-      else if (PT_THUY_ && PT_THUY_.thuan(N, i)) them(X, 'Thuận thủy Kỵ', X + ' phi Kỵ nhập ' + ten[ky]);
+      if (PT_THUY_ && PT_THUY_.nghich(N, i)) them(X, 'Nghịch thủy Kỵ', X + ' phi Kỵ (' + phi[i][3].sao + ') sang cung đối ' + ten[ky] + ' – nơi có Kỵ năm sinh, không tự hóa');
+      else if (ky === ptD_(i)) them(X, X === 'Điền Trạch' || X === 'Tài Bạch' ? 'Lưu xuất Kỵ' : 'Tiết xuất Kỵ', X + ' phi Kỵ sang cung đối ' + ten[ky]);
+      else if (PT_THUY_ && PT_THUY_.thuan(N, i)) them(X, 'Thuận thủy Kỵ', X + ' phi Kỵ nhập ' + ten[ky], null, true);
     }
     if (loc != null && loc === ptD_(i)) {
       if (snLoc === loc) them(X, 'Điệp xuất Lộc', X + ' phi Lộc sang ' + ten[loc] + ' – nơi đã có Lộc năm sinh');
@@ -218,7 +217,6 @@ function ptDongMuc_(d, tang, tenThe, tenDung) {
     else khoa = d.loai === 'xung' ? ['dv|ncXungDv|*'] : d.loai === 'nhap' && (H === 'Lộc' || H === 'Kỵ') ? ['dv|ncNhapDv|' + H + '|*'] : ['dv|chieu|' + H + '|*'];
   } else khoa = ['ln|' + d.huong + '|' + d.loai + '|' + H + '|' + X, 'ln|' + d.huong + '|' + d.loai + '|' + H + '|*'];
   var m = ptMucK_(t, khoa, lv, null, 1);
-  if (m && tang === 'thang' && ptDuong_(d.tu) !== ptDuong_(d.o)) m.cc.push(ptDuong_(d.tu) ? 'Dương phi nhập Âm: cộng hưởng mạnh, tác động rõ.' : 'Âm phi nhập Dương.');
   return m;
 }
 /** Tổng luận 12 chủ đề từ bảng điểm */
@@ -356,7 +354,6 @@ function ptThangBai_(N, tv, y, k, mNam, nv, canThang) {
     var t = 'Hóa ' + H + ' tháng ' + k + ' (can ' + CAN[canThang] + ', ' + f.sao + ') nhập LN.' + Y + ' (NV.' + ptTenTu_(nv, f.toi) + ')';
     var xuat = !ngaLN(f.toi) && thLN.indexOf(f.toi) < 0;
     var m = xuat ? ptMucK_(t + ' – ' + H + ' xuất', ['thang|xuat|' + (H === 'Khoa' ? 'Quyền' : H)], ptLv_(Y), null, 1) : ptMucTu_(t, '', '', ptLv_(Y));
-    if (m && ptDuong_(nv) && !ptDuong_(f.toi)) m.cc.push('Dương phi nhập Âm: cộng hưởng mạnh.');
     ptDay_(a, m);
   });
   var b = [], kyO = {};
@@ -389,7 +386,7 @@ function ptBai_(tv, vy) {
     var lm = ptMucK_('Lai Nhân cung: ' + X + ' (' + CAN[P[N.ln].can] + ' ' + CHI[N.ln] + ')', ['laiNhan|' + X], ptLv_(X)) || ptMucTu_('Lai Nhân cung: ' + X + ' (' + CAN[P[N.ln].can] + ' ' + CHI[N.ln] + ')', v.ky, v.de, ptLv_(X), 'cat');
     if (lm) tq.push({ ten: 'Lai Nhân cung', muc: [lm] });
   }
-  var dsMau = mauNC.map(function (m) { return { ten: m.khoa, cung: m.cung }; });
+  var dsMau = mauNC.filter(function (m) { return !m.an; }).map(function (m) { return { ten: m.khoa, cung: m.cung }; });
   var phan = [{ id: 'tq', ten: 'Tổng quan', phan: tq, mau: dsMau, gioiThieu: van.gioiThieu || {} }];
   PT_THU_TU_BAI.forEach(function (X, n) {
     phan.push(ptCungBai_(N, tv, X, mauNC, ck));
@@ -423,5 +420,6 @@ function ptBai_(tv, vy) {
   (P[mO].chinh || []).forEach(function (s) { ptDay_(pl, ptMucK_(s.n + ' tại Mệnh', ['sao|' + s.n + '|Mệnh'], 'chính mình')); });
   if (!(P[mO].chinh || []).length) ptDay_(pl, ptMucK_('Mệnh vô chính diệu', ['sao|Vô chính diệu|Mệnh'], 'chính mình'));
   ptCach_(N, tv).forEach(function (c) { ptDay_(pl, ptMucK_('Cách ' + c, ['cach|' + c], 'chính mình')); });
-  return { phan: phan, daiVan: dv, nam: nam, thang: thang, phuLuc: pl, namXem: vy };
+  var thangGhiChu = thang.length ? 'Mệnh tháng an theo Đẩu quân (tháng Giêng ở ' + CHI[ptMenhThang_(tv, vy, 1).o] + ', các tháng sau đi thuận); Tứ Hóa tháng lấy can của cung nơi Mệnh tháng đóng.' : '';
+  return { phan: phan, daiVan: dv, nam: nam, thang: thang, thangGhiChu: thangGhiChu, phuLuc: pl, namXem: vy };
 }
