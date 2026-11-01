@@ -646,7 +646,7 @@ function qtVeX(T){
 
 /* ===== Cách A (01/11, chủ dự án chọn): bước xuất mỗi xưởng → số ra mỗi ngày từ nhật ký KPI =====
    Mặc định Claude chọn theo tên công đoạn; chủ dự án sửa ở "Sửa quy trình" (lưu dòng XUAT trong sheet QuyTrinh). */
-var QT_XUAT_MD={PHOICB:/kiem dem.*xuat|dong goi ngon/,PHOITHO:/ve sinh ren va phoi|taro ngon/,SON:/ve sinh lap pom/,INUV:/phu bong/,NGONTARO:/danh giap/,NGONTIP:/bo dau/,
+var QT_XUAT_MD={PHOICB:/kiem dem.*xuat|^cat phoi ngon$/,PHOITHO:/ve sinh ren va phoi|taro ngon/,SON:/ve sinh lap pom/,INUV:/phu bong/,NGONTARO:/danh giap/,NGONTIP:/bo dau/,
   CNC:/^tip|cnc tip|cnc da lon|phip 12|cnc gia cong phip/,HT:/to check hang/,DG:/dong goi thanh pham|dong don le (gay|ngon|custom|combo)/};
 function qtXuatLuu(x){ return (QT.xuatSua&&QT.xuatSua[x])||((QT.xuat||{})[x]&&QT.xuat[x].length?QT.xuat[x]:null); }
 function qtXuat(x){ var a=qtXuatLuu(x); if(a) return a; var rg=QT_XUAT_MD[x]; return rg?QTD.filter(function(q){return q.MaXuong===x&&rg.test(qtKhongDau((QT.cdMap[q.Ma]||{}).TenCD))}).map(function(q){return q.Ma}):[]; }
