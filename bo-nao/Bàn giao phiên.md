@@ -19,6 +19,14 @@ Phiên 31/10–02/11 rất dài, chủ dự án yêu cầu chuyển phiên mới
 - Họp trưởng phòng về **gộp công đoạn có định mức khác nhau** – KHÔNG tự gộp danh mục KPI.
 - Trả lời 02/11: **Sơn và In UV không làm ngọn** (so sánh với ~346 chuôi/ngày); **Sơn có ghi mỗi lớp sơn thành 1 lần riêng** → số ra/ngày của bước xuất Sơn (Sơn máy + súng ≈ 729) đang gồm nhiều lớp, nên cân nhắc hệ số chia hoặc chọn bước 1 lần/chiếc; câu "tip" chủ dự án chưa rõ – hỏi lại đơn giản: CNC ra ~1.200 tip + phíp/ngày trong khi cần ~350 ngọn/ngày, vậy 1 ngọn dùng mấy tip/phíp, có làm tip bán lẻ / để kho không?
 
+**YÊU CẦU MỚI 02/11 (phiên mới làm ngay, hỏi rõ trước khi sửa code theo CLAUDE.md):**
+1. Tab Đơn hàng → "Đơn cần chú ý": hiện thêm các đơn **quá hạn hơn 30 ngày** trong **1 thẻ riêng bên dưới** (hiện `DH_TRE_MAX=30` đang bỏ hẳn các đơn này – `dhChuY`, `dhVeChuY` trong `tests/quy-trinh/quy-trinh-web.html`).
+2. Nhãn chất liệu của SKU phải có **2 nhãn: chuôi và ngọn** (hiện `plKieu_` chỉ có 1 `vl`; `dhVlChip`). Tách `vlChuoi` / `vlNgon` (bảng `PL_VL_CHUOI`, `PL_VL_NGON` trong `don-hang.gs`).
+3. Thống kê tab Đơn hàng "nhóm hàng × chất liệu" chưa đúng với gậy 2 khúc (chuôi và ngọn có thể khác chất liệu) → thống kê riêng chuôi × chất liệu và ngọn × chất liệu (hoặc ma trận chuôi × ngọn).
+4. Hỏi chuyên gia (`quan-ly-van-hanh`…) theo **Lean Six Sigma** để đưa ra các thống kê có giá trị thực tiễn cho tab Đơn hàng.
+5. "Việc theo xưởng": **nhãn chất liệu nhiều dòng còn sai** → rà lại cách gán chất liệu theo từng xưởng (xưởng chuôi dùng chất liệu chuôi, xưởng ngọn dùng chất liệu ngọn, SKU dùng cả 2).
+6. Tab Quy trình → "Sửa quy trình" **rất khó dùng**, chủ dự án đọc không hiểu → đề xuất 2–3 phương án sửa quy trình dễ hơn (vd. kéo thả thẻ trên lưu đồ xưởng, sửa theo nhóm, nhập từ Excel "Quy trình nháp"), có so sánh + khuyến nghị, hỏi chủ dự án chọn rồi làm.
+
 **Gợi ý việc tiếp theo:** (1) xử lý file Excel khi chủ dự án gửi lại; (2) Sơn: hệ số lớp sơn cho bước xuất; (3) giai đoạn 2 thu tiến độ BTP: kiểm kê 1 lần + phiếu giao nhận 3 điểm (cách B) khi chủ dự án muốn.
 
 ## Trạng thái nhánh (25/10)
