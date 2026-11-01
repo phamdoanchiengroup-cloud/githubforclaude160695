@@ -5,6 +5,11 @@ Liên quan: [[00 Mục lục]] · [[Liên kết và công cụ]] · [[Việc ch�
 
 Ghi chú này để phiên Claude Code mới nắm bối cảnh ngay. Đọc `CLAUDE.md`, rồi ghi chú này, rồi [[Liên kết và công cụ]] (mọi link Drive, repo, artifact, công cụ), rồi [[00 Mục lục]].
 
+## PHIÊN 02/11 (tiếp) – 6 yêu cầu đã xong
+- Đã làm + commit + push cả 6 yêu cầu (chi tiết: [[KPI Quy trình sản xuất]] mục "Đợt 5"). Chưa dán: Code.gs + Index.html + QuyTrinh.html (2-CAP-NHAT.bat).
+- Chờ: chất liệu các mã chuôi nhảy / phá nhảy / Vũ trụ / Eclipse / Carom; file Excel cấu hình gậy + quy trình nháp; câu tip; họp trưởng phòng; Sơn hệ số lớp.
+- Mẹo: repo clone **nông** làm link jsDelivr ghim sai commit khi dựng (SoDo.html đổi) → chạy `git fetch --unshallow origin claude/beautiful-ptolemy-f2j7za` trước khi dựng. Sheet đơn hàng quá lớn để tải qua Drive → dùng bộ đơn giả (`scratchpad/gen/tao-dh.js`) hoặc nhờ chủ dự án tải file lên.
+
 ## BÀN GIAO 02/11 (đọc phần này trước)
 Phiên 31/10–02/11 rất dài, chủ dự án yêu cầu chuyển phiên mới. **Mọi việc đã commit + push** lên `claude/beautiful-ptolemy-f2j7za`, bộ não + bản đồ artifact đã cập nhật (bản 57). Chưa biết chủ dự án đã dán các đợt 31/10–02/11 lên web chưa (cách dán: bấm đúp `2-CAP-NHAT.bat`, bộ cài đã thay 31/10).
 

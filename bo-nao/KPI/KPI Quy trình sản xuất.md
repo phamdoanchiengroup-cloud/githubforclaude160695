@@ -414,6 +414,27 @@ Chủ dự án giao (2 tin nhắn, muốn làm trong 1 lượt, **phân tích tr
   - Chủ dự án trả lời 02/11: Sơn / In UV **không** làm ngọn (so với ~346 chuôi/ngày); Sơn **có** ghi mỗi lớp thành 1 lần → số ra Sơn (≈729) gồm nhiều lớp, chưa chia hệ số (việc tiếp theo); câu tip chủ dự án chưa rõ – hỏi lại đơn giản.
 - **Kiểm thử:** `quy-trinh.js` 59, `quy-trinh-web.js` 67, `don-hang.js` 62, `ky-nang.js` 49, `manh-web.js` 8.
 
+## Đợt 5 – 6 yêu cầu 02/11 (phiên mới, làm 01/11 tối giờ máy)
+Chủ dự án trả lời: đơn quá hạn > 30 ngày **mở sẵn** ở thẻ riêng; nhãn **2 chip có chữ "Chuôi:" / "Ngọn:"**; Thống kê: **tất cả** phần đề xuất + giữ phần có giá trị, **thêm chú thích dễ hiểu để trình bày cho người khác**; Sửa quy trình: **A + B** (lưu ý điện thoại không hiện lưu đồ).
+- **Đơn quá hạn > 30 ngày** (`dhChuY` thêm mức `qua30`, `dhVeChuY` vẽ 2 thẻ): thẻ dưới cùng "Quá hạn hơn 30 ngày · N đơn · còn thiếu X sp", trễ lâu nhất lên đầu, có lời nhắc kiểm tra với kênh bán (làm tiếp / đổi hạn / hủy).
+- **2 nhãn chất liệu** (`plKieu_` thêm `vlC` / `vlN`; `''` = SKU không có khúc đó; giữ `vl` cũ): web `dhVlChip(v,nhan)`, `dhVl2(p,phan)`, `dhThuVl`. Việc theo xưởng: `them(...,ph)` – xưởng chuôi (Phôi chuôi, Sơn, In UV) theo chất liệu chuôi, xưởng ngọn (Phôi ngọn, Taro, Tip, CNC) theo chất liệu ngọn, HT / ĐG hiện cả 2 (lỗi cũ: mọi xưởng dùng 1 nhãn lấy theo ngọn). Kiểm phân loại: chip ở cột Chuôi / Ngọn. Excel xuất: 2 cột "Chất liệu chuôi / ngọn".
+  - Mã chuôi **chưa có chất liệu** (hiện "Chưa rõ"): NHAY33013, NHAY28015, NHAY390, PHANHAY, NHAY305, VUTRU, ECL, CAROM; ngọn CAROM → cần chủ dự án cho biết (thêm vào `PL_VL_CHUOI` / `PL_VL_NGON`).
+- **Thống kê Lean** (`dhVeThongKe`, `dhCachDoc`; máy chủ `dhDongChay_` trong `layThayDoiDon` → `chay: {ngay: [[d,vao,ra,ton,xong,dung,mat]], kenh: {tên:[xong,dung]}}`), góp ý `quan-ly-van-hanh`:
+  - 6 số lớn: **số ngày hàng tồn** (còn thiếu ÷ nhịp kế hoạch QTS; < 10 bình thường, 10–15 vàng, > 15 đỏ), đã trễ hạn, đơn mới vào 7 ngày, làm xong ra 7 ngày, **giao đúng hạn 4 tuần**, dòng đang thiếu.
+  - **Bảng Chuôi / Ngọn theo khúc** (gậy 2 khúc + bán lẻ, cột FC → Mix → GF → Chưa rõ, tổng nhóm) + **ma trận chuôi × ngọn** cho gậy 2 khúc (thay bảng "nhóm hàng × chất liệu" cũ).
+  - **Lịch giao lũy kế 14 ngày** so với công suất cộng dồn (nghỉ CN), báo ngày đầu tiên không kịp.
+  - **Số ngày quá hạn** (chưa hạn / 1–3 / 4–7 / 8–30 / > 30) + giữ **tuổi đơn**.
+  - **Pareto nguồn gây trễ** theo dòng gậy (tô đậm nhóm ~80%).
+  - **Theo kênh** xếp theo SL trễ, thêm cột đúng hạn 4 tuần.
+  - **Vào – Ra – Tồn** (thay "xu hướng tổng còn thiếu"): cột vào / ra mỗi ngày, vạch tồn, giới hạn kiểm soát XmR (TB ± 2,66 × MR̄), ra dưới giới hạn tô đỏ, cảnh báo vào > ra 5 ngày liền. Suy từ bản chụp 9h (±1 ngày); dòng mất khỏi Sheet khi còn thiếu không tính "ra".
+  - **Hỏng cần làm bù** theo bộ phận (từ cột hỏng trong Sheet đơn).
+- **Sửa quy trình mới** (`qtVeSua`, `qtLuuDoSua`, `qtTheSua`, `qtDongSua`, `qtDichBuoc`, `qtThaVao`, `qtDoiNhanh`, `qtSao`, `qtHoanTac`, `qtChuanBuoc`; bỏ `qtVeXuatSua` / `qtChonXuat`), góp ý `kiem-tra-de-dung`:
+  - 3 bước đánh số: ① Sắp xếp công đoạn ② Bước ra hàng (⭐) ③ Hàng đi giữa các xưởng.
+  - **Máy tính (A):** lưới cột = bước, hàng = nhánh, thẻ màu theo nhánh, mũi tên tự nối (`__qtCanhS`); **kéo thẻ** vào ô (đổi nhánh + bước), thả vào **khe giữa 2 cột** = chèn bước mới, cột "Bước mới" cuối; ô Hỗ trợ / Làm lại phía dưới; thêm hàng nhánh trống; bấm thẻ → khung chỉnh chi tiết.
+  - **Mọi máy (B):** danh sách theo bước (điện thoại mở sẵn, máy tính thu gọn): ↑ ↓ (đi qua "bước riêng" ↔ "cùng bước với bên cạnh"), ô đổi nhánh, nút ⭐ Ra hàng, "Nâng cao" = chọn tay công đoạn giao hàng. Số bước tự đánh lại 1..n; chặn vòng lặp; **Hoàn tác** tới 60 bước.
+- Dữ liệu thử: Sheet "Trạng thái đơn hàng" **quá lớn để tải qua Drive** (xuất xlsx báo "File too large", `read_file_content` chỉ trả tiêu đề cột) → phiên này dùng bộ đơn **giả** cùng cấu trúc (`scratchpad/gen/tao-dh.js`, không commit). Muốn chạy trên đơn thật: chủ dự án tải file Excel đơn hàng lên phiên.
+- **Kiểm thử:** `quy-trinh-web.js` 83/83 (thêm: thẻ quá hạn > 30 ngày, thống kê theo khúc khớp tổng, Vào–Ra–Tồn + giới hạn kiểm soát, nhãn theo xưởng, ↑↓ / kéo thả / ⭐ / đổi nhánh / hoàn tác), `don-hang.js` 64/68 (thêm 6: 2 nhãn, `dhDongChay_`; 4 lỗi "bản chụp" trên giả lập **có từ trước**), `quy-trinh.js` 59, `manh-web.js` 8.
+
 ## Việc tiếp theo
 - Chủ dự án xem bản thật, chỉnh nháp (thứ tự, nhánh) rồi Lưu. Cho thông số 22 tên hàng vàng (hoặc sửa tay ở "Kiểm phân loại").
 - Nếu chủ dự án gửi bảng ánh xạ → bung mã BTP 60… / S… / Ngọn…; đề xuất các bộ phận ghi số "đã qua" vào Sheet đơn (hoặc lấy từ nhật ký KPI).
