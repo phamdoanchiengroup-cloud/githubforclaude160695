@@ -75,6 +75,25 @@ r = c.__goi('layDonHangXuong', Town, false); ok(r.ok && r.don.length === 3, 'l�
 r = c.__goi('layDonHangXuong', Town, true); ok(!r.ok && /Trạng thái đơn hàng/.test(r.msg), 'mất quyền vào Sheet đơn → báo lỗi dễ hiểu', r);
 c.__ngoai = { [c.DH_SHEET_ID]: { ten: 'x', sheets: { KHO: tab } } };
 
+console.log('\n3b. Tab Đơn hàng: cột thêm + bản chụp hằng ngày + thay đổi');
+r = c.__goi('layDonHangXuong', Town, true);
+ok(r.don[0].nguoiDat === 'A' && r.don[0].ngayDat === '2026-10-01' && r.don[0].phoi === '' && r.don[1].phoi === '_Joint: Q-loc', 'mã đơn "#A-01/10" → người đặt A, ngày đặt 01/10; tách cột loại phôi', r.don.slice(0, 2).map(o => [o.nguoiDat, o.ngayDat, o.phoi]));
+ok(r.don[1].dl === '2026-10-12', 'deadline sau ngày đặt giữ năm nay', r.don[1].dl);
+r = c.__goi('layThayDoiDon', Tadm); ok(!r.ok, 'ban điều hành không xem được thay đổi đơn');
+r = c.__goi('layThayDoiDon', Town);
+ok(r.ok && !r.truoc && r.daChup && c.doc_('DonHangChup').length >= 1, 'lần đầu: chưa có mốc so sánh, tự chụp bản hôm nay vào sheet DonHangChup (file KPI)', r);
+r = c.__goi('layThayDoiDon', Town); ok(r.ok && !r.daChup, 'mở lại trong ngày: không chụp thêm');
+ok(c.chupDonHangHangNgay_() === undefined && c.doc_('DonHangChup').length === 1, 'trigger 9h: đã có bản hôm nay thì bỏ qua');
+// giả lập: bản chụp là của hôm qua, hôm nay Sheet đơn đổi
+const shC = c.ss_().getSheetByName('DonHangChup'); shC.getRange(2, 1).setValue('2026-10-30');
+const tab2 = tab.map(rw => rw.slice()); tab2[2][4] = 45; tab2.push(['#C-30/10', 'EVO1/BEAST', '', 20, 20, '05/11', '', '', '', '', '', '', '', '']);
+c.__ngoai = { [c.DH_SHEET_ID]: { ten: 'x', sheets: { KHO: tab2 } } }; c.dhDocDon_(true);
+r = c.__goi('layThayDoiDon', Town);
+const loai = r.thay.map(x => x.loai + (x.chieu ? ':' + x.chieu : ''));
+ok(r.ok && r.truoc === '2026-10-30' && loai.includes('thieu:giam') && loai.includes('moi') && r.daChup, 'so với bản hôm qua: thấy "còn thiếu giảm" + "dòng mới"; chụp bản hôm nay', loai);
+ok(r.lichSu.length === 1 && r.lichSu[0][0] === '2026-10-30', 'trả lịch sử tổng còn thiếu theo ngày (để vẽ xu hướng)', r.lichSu);
+c.__ngoai = { [c.DH_SHEET_ID]: { ten: 'x', sheets: { KHO: tab } } }; c.dhDocDon_(true);
+
 console.log('\n4. Sửa tay phân loại');
 r = c.__goi('luuPhanLoaiSKU', Tadm, { ten: 'X', loai: 'GAY' }); ok(!r.ok, 'ban điều hành không sửa được');
 r = c.__goi('luuPhanLoaiSKU', Town, { ten: 'EVO4/LUN2/COMBOMAX', loai: 'GAY', dong: 'EVO4', chuoi: 'XYZ', ngon: 'GF29', tip: 'TIMEK', ren: 'R3810' }); ok(!r.ok, 'giá trị lạ bị chặn', r);

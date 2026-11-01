@@ -43,7 +43,7 @@ function tao(fileCode, duLieu, gioHienTai) {
     deleteRow(i) { thongKe.xoaDong++; this.rows.splice(i - 1, 1); },
     deleteRows(i, n) { thongKe.xoaDong++; this.rows.splice(i - 1, n); },
     insertColumnBefore(c) { this.rows.forEach(r => r.splice(c - 1, 0, '')); },
-    setFrozenRows() {}, setColumnWidth() {}, autoResizeColumn() {},
+    setFrozenRows() {}, setColumnWidth() {}, autoResizeColumn() {}, hideSheet() {},
     clear() { this.rows = []; }
   };
   function chuyen(sh, r, c, v) {
@@ -73,6 +73,7 @@ function tao(fileCode, duLieu, gioHienTai) {
       return o;
     },
     getValue() { return this.getValues()[0][0]; },
+    getDisplayValues() { return this.getValues().map(r => r.map(v => v instanceof RealDate ? v.toISOString().slice(0, 10) : String(v))); },
     setValues(v) {
       thongKe.ghi++;
       v.forEach((row, i) => row.forEach((x, j) => {
