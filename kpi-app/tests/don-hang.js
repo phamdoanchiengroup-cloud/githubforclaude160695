@@ -50,6 +50,11 @@ p = PL('LUMINAX Cue Butt - JET BLACK (wrapless)', '_Joint Type: 3/8-10 chỉ g�
 p = c.plPhanLoai_('Gậy ABC hoàn toàn lạ', '', { LoaiHang: 'GAY', Dong: 'EVO1', Chuoi: 'GF736HK', Ngon: 'MIX', Tip: 'TIMEK', Ren: 'R388' });
 ok(p.nguon === 'duyet' && p.dong === 'EVO1' && p.tin === 'xanh', 'có bản sửa tay → dùng bản sửa', p);
 
+p = PL('EVO4/LUN2/BLUE/LW-BLACK/G/10/12.5'); ok(p.kieu === 'DANH' && p.vl === 'GF', 'EVO 4: gậy đánh, ngọn glassfiber', p);
+p = PL('PHÁ NHẢY EVO VAL1'); ok(p.kieu === 'PHANHAY' && p.vl === 'MIX', 'Valkyrie: phá nhảy (nhóm riêng), ngọn mix', p);
+p = PL('RHI2-KOMET2/BRE/BLUE/13.0/388'); ok(p.kieu === 'PHA' && p.vl === 'FC', 'KOMET: phá, full carbon', p);
+p = PL('Rhino Retro Pool Cue Butt - Black'); ok(p.kieu === 'DANH' && p.vl === 'MIX', 'chuôi lẻ: chất liệu theo chuôi', p);
+
 console.log('\n3. Đọc Sheet đơn (chỉ đọc) + quyền');
 const tab = [['', 'NOTE…'], ['', 'Loại hàng cần sản xuất', 'Loại Phôi', 'Số lượng đặt', 'SX CÒN THIẾU', 'Deadline', 'CHÚ THÍCH CÁC BỘ PHẬN', 'Phôi của Phố', 'Ngày hẹn trả', 'Sơn của Khoa', 'Hỏng cần làm bù', 'UV của Doanh', 'Hoàn thiện của Thịnh', 'Tổng cộng hàng ĐG nhận từ HT'],
   ['#A-01/10', 'EVO4/LUN2/COMBOMAX', '', 100, 60, '20/11', '', '', '', 50, 3, '', '', 40],
@@ -95,6 +100,10 @@ if (process.env.DH) {
   const n = Object.values(ten), xanh = n.filter(x => x === 'xanh').length, doo = n.filter(x => x === 'do').length;
   ok(r.ok && r.don.length > 500, 'đọc ' + r.don.length + ' dòng đơn');
   ok(xanh / n.length >= 0.85 && doo === 0, 'tên hàng chắc chắn ' + xanh + '/' + n.length + ' (≥ 85%), không tên nào đỏ', { xanh, doo, tong: n.length });
+  const kv = {}; r.don.forEach(o => { if (o.pl.loai === 'PK' || o.pl.loai === 'NOI') return; const k = o.pl.loai + '|' + o.pl.kieu + '|' + o.pl.vl; kv[k] = (kv[k] || 0) + o.thieu; });
+  if (process.env.IN_KIEU) console.log(kv);
+  ok(r.don.every(o => o.pl.kieu && o.pl.vl) && Object.keys(kv).some(k => /NHAY\|/.test(k)) && Object.keys(kv).some(k => /\|PHA\|/.test(k)) && Object.keys(kv).some(k => /PHANHAY/.test(k)), 'mọi dòng có kiểu (đánh / nhảy / phá / phá nhảy) + chất liệu', kv);
+  ok(!Object.keys(kv).some(k => /^GAY\|DANH\|KHAC/.test(k) && kv[k] > 0.05 * r.don.reduce((a, o) => a + o.thieu, 0)), 'gậy đánh "chưa rõ chất liệu" < 5% phần còn thiếu', kv);
   ok(r.don.every(o => o.pl.loai && (o.pl.loai === 'PK' || o.pl.loai === 'NOI' || o.pl.tin === 'do' || (o.pl.chuoi && o.pl.ngon && o.pl.tip && o.pl.ren))), 'mọi dòng sản xuất đều đủ 4 thông số');
 }
 

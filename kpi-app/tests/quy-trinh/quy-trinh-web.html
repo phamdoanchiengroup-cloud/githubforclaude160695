@@ -47,6 +47,9 @@
 .dh-the b{display:block;font-size:20px;font-variant-numeric:tabular-nums}
 .dh-the small{color:var(--ink3);font-size:11.5px}
 .dh-the .tre{color:var(--red);font-size:11.5px}
+.dh-khoi td{font-weight:700;background:var(--panel2);border-top:1px solid var(--line)}
+.dh-vl{display:inline-block;font-size:10.5px;padding:1px 6px;border-radius:9px;margin-left:6px;border:1px solid var(--line);color:var(--ink2);white-space:nowrap;vertical-align:middle}
+.dh-vl.FC{border-color:#7aa2ff;color:#9bb8ff} .dh-vl.MIX{border-color:#c69bff;color:#d2b3ff} .dh-vl.GF{border-color:#6fcf97;color:#8fdcae}
 .dh-tin{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:5px;vertical-align:middle}
 .dh-tin.xanh{background:var(--green)} .dh-tin.vang{background:var(--amber)} .dh-tin.do{background:var(--red)}
 .dh-sua{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:6px 10px;background:var(--panel2);border-radius:8px;padding:10px;margin:6px 0}
@@ -348,7 +351,7 @@ function qtLuu(){
   });
 }
 /* ===== Đơn hàng → xưởng (31/10): đọc Sheet "Trạng thái đơn hàng", phân loại 4 thông số, việc còn lại theo xưởng ===== */
-var DH=null, DHX='', DHXem='xuong', DHMo='', DHTai=false, DH_THANG=9000, DH_NGAY=26;
+var DH=null, DHX='', DHXem='xuong', DHMo='', DHTai=false, DHChiCC=false, DH_THANG=9000, DH_NGAY=26;
 /* Chặng: [mã xưởng, tên, cột đã qua trong Sheet đơn, các loại hàng đi qua, phần (chuoi / ngon / ca / sku)] */
 var DH_TUYEN=[['PHOICB','Phôi Carbon','PHOI',{GAY:1,NGON:1,CHUOI:1},'phoi'],['PHOITHO','Phôi Thô','PHOI',{GAY:1,NGON:1,CHUOI:1,NOI:1},'phoi'],
   ['SON','Sơn','SON',{GAY:1,CHUOI:1,NOI:1},'chuoi'],['INUV','In UV','UV',{GAY:1,CHUOI:1,NOI:1},'uv'],['NGONTARO','Ngọn Taro','TARO',{GAY:1,NGON:1},'ngon'],
@@ -373,6 +376,13 @@ function dhCon(o,cot,chuoi){
   return c+((o.hong&&o.hong[cot])||0);
 }
 function dhChuoi(loai,phan){ if(phan==='ngon') return loai==='NGON'?DH_CHUOI_CHANG.ngonLe:DH_CHUOI_CHANG.ngon; return DH_CHUOI_CHANG.chuoi; }
+/* Nhóm cố định (01/11, chủ dự án): chuôi / chuôi nhảy / ngọn; gậy đánh / nhảy / phá / phá nhảy; trong nhóm full carbon → mix → glassfiber */
+var DH_KIEU=['DANH','NHAY','PHA','PHANHAY'], DH_KIEU_TEN={DANH:'đánh',NHAY:'nhảy',PHA:'phá',PHANHAY:'phá nhảy'}, DH_VL=['FC','MIX','GF','KHAC'], DH_VL_TEN={FC:'Full carbon',MIX:'Mix carbon+GF',GF:'Glassfiber',KHAC:'Chưa rõ'};
+var DH_KHOI=['Chuôi','Chuôi nhảy','Ngọn'].concat(DH_KIEU.map(function(k){return 'Ngọn '+DH_KIEU_TEN[k]}),DH_KIEU.map(function(k){return 'Gậy '+DH_KIEU_TEN[k]}),DH_KIEU.map(function(k){return 'Ngọn lẻ '+DH_KIEU_TEN[k]}),['Chuôi lẻ','Tay nối','Phụ kiện','Chưa rõ']);
+function dhKhoiSKU(p){ var k=DH_KIEU_TEN[p.kieu]||'đánh'; return p.loai==='GAY'?'Gậy '+k:p.loai==='NGON'?'Ngọn lẻ '+k:p.loai==='CHUOI'?'Chuôi lẻ':p.loai==='NOI'?'Tay nối':p.loai==='PK'?'Phụ kiện':'Chưa rõ'; }
+function dhKhoiChuoi(p){ return p.loai==='NOI'?'Tay nối':(p.kieu==='NHAY'||p.kieu==='PHANHAY')?'Chuôi nhảy':'Chuôi'; }
+function dhThuKhoi(a){ var i=DH_KHOI.indexOf(a); return i<0?99:i; }
+function dhVlChip(v){ return v&&v!=='KHAC'?' <span class="dh-vl '+v+'">'+DH_VL_TEN[v]+'</span>':''; }
 function dhTinh(){
   var X={};
   DH_TUYEN.forEach(function(t){ X[t[0]]={t:t,tong:0,goc:0,tre:0,gan:0,chuoi:0,ngon:0,nhom:{},dong:0,coGhi:0}; });
@@ -389,22 +399,23 @@ function dhTinh(){
       var phan=({ngon:'ngon',tip:'ngon',cnc:'ngon'})[t[4]]||(p.loai==='NGON'?'ngon':'chuoi');
       var c=dhCon(o,t[2],dhChuoi(p.loai,phan));
       var x=X[t[0]], k, nhan;
-      var them=function(k,nhan,sl){ var g=x.nhom[k]||(x.nhom[k]={nhan:nhan,sl:0,tre:0,gan:0,don:0,ten:{}}); g.sl+=sl; g.don++; if(han==='tre')g.tre+=sl; if(han==='gan')g.gan+=sl; g.ten[o.ten]=(g.ten[o.ten]||0)+sl; };
+      var them=function(k,nhan,sl,khoi){ var vl=p.vl||'KHAC'; k=khoi+'|'+vl+'|'+k; var g=x.nhom[k]||(x.nhom[k]={nhan:nhan,khoi:khoi,vl:vl,sl:0,tre:0,gan:0,don:0,ten:{}}); g.sl+=sl; g.don++; if(han==='tre')g.tre+=sl; if(han==='gan')g.gan+=sl; g.ten[o.ten]=(g.ten[o.ten]||0)+sl; };
       if(t[4]==='phoi'){
         var coC=p.loai!=='NGON', coN=p.loai==='GAY'||p.loai==='NGON';
         var cC=coC?dhCon(o,'PHOI',dhChuoi(p.loai,'chuoi')):0, cN=coN?dhCon(o,'PHOI',dhChuoi(p.loai,'ngon')):0;
         if(!(cC+cN>0)) return;
-        if(cC>0){ them('C|'+p.chuoi,'Chuôi · '+dhTen('chuoi',p.loai==='NOI'?'':p.chuoi)+(p.loai==='NOI'?' (tay nối)':''),cC); x.chuoi+=cC; }
-        if(cN>0){ them('N|'+p.ngon,'Ngọn · '+dhTen('ngon',p.ngon),cN); x.ngon+=cN; }
+        if(cC>0){ them('C|'+p.chuoi,p.loai==='NOI'?'Phôi tay nối':dhTen('chuoi',p.chuoi),cC,dhKhoiChuoi(p)); x.chuoi+=cC; }
+        if(cN>0){ them('N|'+p.ngon,dhTen('ngon',p.ngon),cN,'Ngọn'); x.ngon+=cN; }
         x.tong+=cC+cN; c=cC+cN;
       } else {
         if(!(c>0)) return;
+        var khoi=(t[4]==='chuoi'||t[4]==='uv')?dhKhoiChuoi(p):(t[4]==='sku')?dhKhoiSKU(p):'Ngọn '+(DH_KIEU_TEN[p.kieu]||'đánh');
         if(t[4]==='chuoi'){ k=p.chuoi+'|'+p.ren; nhan=(p.loai==='NOI'?'Tay nối':dhTen('chuoi',p.chuoi))+' · ren '+dhTen('ren',p.ren); }
         else if(t[4]==='ngon'){ k=p.ngon+'|'+p.ren; nhan=dhTen('ngon',p.ngon)+' · ren '+dhTen('ren',p.ren); }
         else if(t[4]==='tip'){ k=p.ngon+'|'+p.tip+'|'+p.dau; nhan=dhTen('ngon',p.ngon)+' · tip '+dhTen('tip',p.tip)+(p.dau?' · đầu '+p.dau:''); }
         else if(t[4]==='cnc'){ k=p.tip; nhan='Tip '+dhTen('tip',p.tip); }
         else { k=p.dong||'?'; nhan=((DH.dongMap[p.dong]||[])[1])||PL_LOAI_TEN(p.loai); }
-        them(k,nhan,c); x.tong+=c;
+        them(k,nhan,c,khoi); x.tong+=c;
       }
       if(han==='tre') x.tre+=c; if(han==='gan') x.gan+=c; x.dong++;
       if(o.qua&&o.qua[t[2]]!=null&&o.qua[t[2]]!=='') x.coGhi++;
@@ -453,17 +464,20 @@ function dhVe(){
   h+='</div><div style="font-size:12px;color:var(--ink3);margin-bottom:12px">Chuôi: Phôi Carbon → Phôi Thô → Sơn → In UV (nhận mã bán thành phẩm, giao Hoàn thiện theo SKU). Ngọn: Phôi Carbon → Phôi Thô → Ngọn Taro → Ngọn Tip (ngọn bán lẻ đi thẳng Đóng gói). Còn lại ở mỗi xưởng = đặt − đã qua bộ phận đó (theo cột trong Sheet đơn), không vượt "còn thiếu", cộng hỏng cần làm bù.</div>';
   h+=dhVeThoiGian(K);
   if(!DHX||!K.X[DHX]) DHX='PHOICB';
-  var x=K.X[DHX], ds=Object.keys(x.nhom).map(function(k){return x.nhom[k]}).sort(function(a,b){return b.sl-a.sl});
+  var x=K.X[DHX], ds=Object.keys(x.nhom).map(function(k){return x.nhom[k]}).sort(function(a,b){return (dhThuKhoi(a.khoi)-dhThuKhoi(b.khoi))||(DH_VL.indexOf(a.vl)-DH_VL.indexOf(b.vl))||(b.sl-a.sl)});
+  var tk={}; ds.forEach(function(g){ var t=tk[g.khoi]||(tk[g.khoi]={sl:0,tre:0,gan:0,don:0}); t.sl+=g.sl; t.tre+=g.tre; t.gan+=g.gan; t.don+=g.don; });
   h+='<div class="card"><div style="font-weight:600;margin-bottom:8px">'+esc(x.t[1])+': còn <b>'+qtSo(x.tong,0)+'</b>'+(x.t[4]==='phoi'?' phôi (chuôi '+qtSo(x.chuoi,0)+' · ngọn '+qtSo(x.ngon,0)+')':'')+' – quá hạn '+qtSo(x.tre,0)+', 7 ngày tới '+qtSo(x.gan,0)+'</div>'+
     '<div style="font-size:12px;color:'+(x.dong&&x.coGhi/x.dong<0.5?'var(--amber)':'var(--ink3)')+';margin-bottom:8px">Sheet đơn có ghi số "đã qua" bộ phận này cho '+x.coGhi+'/'+x.dong+' dòng đơn'+(x.dong&&x.coGhi/x.dong<0.5?' – phần lớn chưa ghi nên số còn làm có thể cao hơn thực tế':'')+'.</div>';
   h+='<div class="tw"><table><thead><tr><th>'+({phoi:'Loại phôi',chuoi:'Loại chuôi · ren',ngon:'Loại ngọn · ren',tip:'Ngọn · tip · đầu',cnc:'Loại tip',uv:'Dòng gậy (SKU)',sku:'Dòng gậy (SKU)'}[x.t[4]])+'</th><th class="qt-so">Còn làm</th><th class="qt-so">Quá hạn</th><th class="qt-so">≤ 7 ngày</th><th class="qt-so">Dòng đơn</th></tr></thead><tbody>';
+  var khoiTr='';
   ds.forEach(function(g,i){
     var mo=DHMo===DHX+'|'+i;
-    h+='<tr><td><a href="#" data-i="'+i+'" onclick="DHMo=DHMo===\''+DHX+'|\'+this.dataset.i?\'\':\''+DHX+'|\'+this.dataset.i;qtVe();return false">'+esc(g.nhan)+'</a></td><td class="qt-so"><b>'+qtSo(g.sl,0)+'</b></td><td class="qt-so'+(g.tre?' bad':'')+'">'+(g.tre?qtSo(g.tre,0):'–')+'</td><td class="qt-so">'+(g.gan?qtSo(g.gan,0):'–')+'</td><td class="qt-so">'+g.don+'</td></tr>';
+    if(g.khoi!==khoiTr){ khoiTr=g.khoi; var t=tk[g.khoi]; h+='<tr class="dh-khoi"><td>'+esc(g.khoi)+'</td><td class="qt-so">'+qtSo(t.sl,0)+'</td><td class="qt-so'+(t.tre?' bad':'')+'">'+(t.tre?qtSo(t.tre,0):'–')+'</td><td class="qt-so">'+(t.gan?qtSo(t.gan,0):'–')+'</td><td class="qt-so">'+t.don+'</td></tr>'; }
+    h+='<tr><td style="padding-left:18px"><a href="#" data-i="'+i+'" onclick="DHMo=DHMo===\''+DHX+'|\'+this.dataset.i?\'\':\''+DHX+'|\'+this.dataset.i;qtVe();return false">'+esc(g.nhan)+'</a>'+dhVlChip(g.vl)+'</td><td class="qt-so"><b>'+qtSo(g.sl,0)+'</b></td><td class="qt-so'+(g.tre?' bad':'')+'">'+(g.tre?qtSo(g.tre,0):'–')+'</td><td class="qt-so">'+(g.gan?qtSo(g.gan,0):'–')+'</td><td class="qt-so">'+g.don+'</td></tr>';
     if(mo) h+='<tr><td colspan="5" style="font-size:12.5px;color:var(--ink2)">'+Object.keys(g.ten).sort(function(a,b){return g.ten[b]-g.ten[a]}).map(function(t){return esc(t)+' <b>'+qtSo(g.ten[t],0)+'</b>'}).join(' · ')+'</td></tr>';
   });
   if(!ds.length) h+='<tr><td colspan="5" class="pdesc">Không còn việc ở xưởng này theo Sheet đơn.</td></tr>';
-  h+='</tbody></table></div><div style="font-size:12px;color:var(--ink3);margin-top:6px">Bấm tên nhóm để xem các SKU trong nhóm.</div></div>';
+  h+='</tbody></table></div><div style="font-size:12px;color:var(--ink3);margin-top:6px">Nhóm cố định: chuôi / chuôi nhảy / ngọn (gậy: đánh / nhảy / phá / phá nhảy); trong nhóm xếp Full carbon → Mix → Glassfiber. Dòng in đậm là tổng nhóm. Bấm tên để xem các SKU.</div></div>';
   return h;
 }
 /* Kiểm phân loại: mỗi tên hàng 1 dòng, đỏ / vàng lên đầu; chủ sở hữu sửa tay -> áp cho mọi đơn cùng tên */
@@ -471,14 +485,18 @@ function dhVeKiem(){
   var ten={};
   DH.don.forEach(function(o){ var k=o.tenChuan||o.ten.toUpperCase(); var x=ten[k]||(ten[k]={o:o,thieu:0,don:0}); x.thieu+=o.thieu; x.don++; });   /* gom như máy chủ (bỏ dấu, gộp khoảng trắng) */
   var ds=Object.keys(ten).map(function(k){return ten[k]}), thu={do:0,vang:1,xanh:2};
-  ds.sort(function(a,b){ return (thu[a.o.pl.tin]-thu[b.o.pl.tin])||(b.thieu-a.thieu); });
-  var dem={xanh:0,vang:0,do:0}; ds.forEach(function(x){ dem[x.o.pl.tin]++; });
-  var h='<div class="card"><div style="font-size:13px;margin-bottom:8px"><span class="dh-tin xanh"></span>'+dem.xanh+' chắc chắn · <span class="dh-tin vang"></span>'+dem.vang+' dùng mặc định / dòng chung · <span class="dh-tin do"></span>'+dem.do+' chưa nhận ra – trên '+ds.length+' tên hàng. Sửa 1 lần, mọi đơn cùng tên dùng theo.</div>';
+  ds.forEach(function(x){ x.khoi=dhKhoiSKU(x.o.pl); });
+  ds.sort(function(a,b){ return (dhThuKhoi(a.khoi)-dhThuKhoi(b.khoi))||(DH_VL.indexOf(a.o.pl.vl||'KHAC')-DH_VL.indexOf(b.o.pl.vl||'KHAC'))||(thu[a.o.pl.tin]-thu[b.o.pl.tin])||(b.thieu-a.thieu); });
+  var dem={xanh:0,vang:0,do:0}, tk={}; ds.forEach(function(x){ dem[x.o.pl.tin]++; var t=tk[x.khoi]||(tk[x.khoi]={n:0,cc:0,thieu:0}); t.n++; t.thieu+=x.thieu; if(x.o.pl.tin!=='xanh')t.cc++; });
+  if(DHChiCC) ds=ds.filter(function(x){return x.o.pl.tin!=='xanh'});
+  var h='<div class="card"><div style="font-size:13px;margin-bottom:8px"><span class="dh-tin xanh"></span>'+dem.xanh+' chắc chắn · <span class="dh-tin vang"></span>'+dem.vang+' dùng mặc định / dòng chung · <span class="dh-tin do"></span>'+dem.do+' chưa nhận ra – trên '+ds.length+' tên hàng. Sửa 1 lần, mọi đơn cùng tên dùng theo.</div><button class="btn sm'+(DHChiCC?' on':'')+'" type="button" aria-pressed="'+DHChiCC+'" onclick="DHChiCC=!DHChiCC;qtVe()" style="margin-bottom:8px">'+(DHChiCC?'✓ ':'')+'Chỉ xem tên chưa chắc</button>';
   h+='<div class="tw"><table><thead><tr><th>Tên hàng</th><th>Loại · dòng</th><th>Chuôi</th><th>Ngọn</th><th>Tip</th><th>Ren</th><th class="qt-so">Còn thiếu</th><th></th></tr></thead><tbody>';
+  var khoiTr='';
   ds.forEach(function(x,i){
     var p=x.o.pl, mo=DHMo==='k|'+x.o.ten;
+    if(x.khoi!==khoiTr){ khoiTr=x.khoi; var t=tk[x.khoi]; h+='<tr class="dh-khoi"><td colspan="6">'+esc(x.khoi)+' · '+t.n+' tên'+(t.cc?' · <span class="wn">'+t.cc+' chưa chắc</span>':'')+'</td><td class="qt-so">'+qtSo(t.thieu,0)+'</td><td></td></tr>'; }
     h+='<tr><td><span class="dh-tin '+p.tin+'" title="'+esc((p.lyDo||[]).join('; '))+'"></span>'+esc(x.o.ten)+(p.nguon==='duyet'?' <span class="qt-tag mo">đã sửa tay</span>':'')+((p.lyDo||[]).length?'<div style="font-size:11.5px;color:var(--ink3)">'+esc(p.lyDo.join('; '))+'</div>':'')+'</td>'+
-      '<td>'+esc(PL_LOAI_TEN(p.loai))+'<div style="font-size:11.5px;color:var(--ink3)">'+esc(((DH.dongMap[p.dong]||[])[1])||'')+'</div></td><td>'+esc(dhTen('chuoi',p.chuoi))+'</td><td>'+esc(dhTen('ngon',p.ngon))+(p.dau?' · '+esc(p.dau):'')+'</td><td>'+esc(dhTen('tip',p.tip))+'</td><td>'+esc(dhTen('ren',p.ren))+'</td>'+
+      '<td>'+esc(PL_LOAI_TEN(p.loai))+dhVlChip(p.vl)+'<div style="font-size:11.5px;color:var(--ink3)">'+esc(((DH.dongMap[p.dong]||[])[1])||'')+'</div></td><td>'+esc(dhTen('chuoi',p.chuoi))+'</td><td>'+esc(dhTen('ngon',p.ngon))+(p.dau?' · '+esc(p.dau):'')+'</td><td>'+esc(dhTen('tip',p.tip))+'</td><td>'+esc(dhTen('ren',p.ren))+'</td>'+
       '<td class="qt-so">'+qtSo(x.thieu,0)+'</td><td><button class="btn sm" type="button" data-t="'+esc(x.o.ten)+'" onclick="DHMo=DHMo===\'k|\'+this.dataset.t?\'\':\'k|\'+this.dataset.t;qtVe()">'+(mo?'Đóng':'Sửa')+'</button></td></tr>';
     if(mo) h+='<tr><td colspan="8">'+dhFormSua(x.o)+'</td></tr>';
   });

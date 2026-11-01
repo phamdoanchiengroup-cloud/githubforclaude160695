@@ -181,7 +181,20 @@ function plTay_(t) {
 }
 
 /* Phân loại 1 dòng hàng. sua = bản sửa tay (PhanLoaiSKU) nếu có */
-function plPhanLoai_(ten, ghiChu, sua) {
+/* Kiểu gậy + chất liệu (01/11, chủ dự án): Đánh / Nhảy / Phá / Phá nhảy; Full carbon → Mix carbon+GF → Glassfiber.
+   GF vỏ carbon / G750 bọc carbon / nhảy 13.9 GF lõi vỏ carbon = Mix. Chuôi bán lẻ lấy chất liệu theo chuôi, còn lại theo ngọn. */
+var PL_KIEU = { DANH: 'Đánh', NHAY: 'Nhảy', PHA: 'Phá', PHANHAY: 'Phá nhảy' };
+var PL_VL = { FC: 'Full carbon', MIX: 'Mix carbon + glassfiber', GF: 'Glassfiber', KHAC: 'Khác / chưa rõ' };
+var PL_VL_NGON = { FC: 'FC', FCPHA: 'FC', FCNHAY: 'FC', MIX: 'MIX', MIXFOAM: 'MIX', MIXPHA: 'MIX', NHAY139: 'MIX', GFCB: 'MIX', G750CB: 'MIX', ZLUK: 'MIX', GF29: 'GF', GF1480: 'GF' };
+var PL_VL_CHUOI = { MIXCB: 'MIX', MIXCB25: 'MIX', MIXCBPHA: 'MIX', GFCBFOAM: 'MIX', GFCB313: 'MIX', GF736DP: 'GF', GF736HK: 'GF', GF740: 'GF', GF1480: 'GF', GFFOAM: 'GF' };
+function plKieu_(o) {
+  var c = o.chuoi || '', n = o.ngon || '';
+  o.kieu = (c === 'PHANHAY') ? 'PHANHAY' : (/PHA$/.test(n) || c === 'GF736DP' || c === 'MIXCBPHA') ? 'PHA' : (/NHAY/.test(n) || /^NHAY/.test(c)) ? 'NHAY' : 'DANH';
+  o.vl = (o.loai === 'CHUOI' ? PL_VL_CHUOI[c] : (PL_VL_NGON[n] || PL_VL_CHUOI[c])) || 'KHAC';
+  return o;
+}
+function plPhanLoai_(ten, ghiChu, sua) { return plKieu_(plPhanLoai0_(ten, ghiChu, sua)); }
+function plPhanLoai0_(ten, ghiChu, sua) {
   var t = plChuan_(ten), g = plChuan_(ghiChu);
   var o = { loai: '', dong: '', chuoi: '', ngon: '', tip: '', ren: '', dau: plDau_(t), tay: plTay_(t), tin: 'xanh', nguon: 'tu-dong', lyDo: [] };
   if (sua) {
@@ -320,7 +333,7 @@ function layDonHangXuong(token, lamMoi) {
     x.pl = plPhanLoai_(o.ten, o.ghiChu, sua['K:' + x.tenChuan]);
     return x;
   });
-  return sach_({ ok: true, luc: d.luc, don: don, nhan: { loai: PL_LOAI, chuoi: PL_CHUOI, ngon: PL_NGON, tip: PL_TIP, ren: PL_REN,
+  return sach_({ ok: true, luc: d.luc, don: don, nhan: { loai: PL_LOAI, chuoi: PL_CHUOI, ngon: PL_NGON, tip: PL_TIP, ren: PL_REN, kieu: PL_KIEU, vl: PL_VL,
     dong: PL_DONG.map(function(x) { return [x[0], x[1], x[2]]; }) } });
 }
 
