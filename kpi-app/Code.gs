@@ -7535,7 +7535,7 @@ function danhSachVanPhong(token) {
   ds.sort(function(a, b) { return (thuTu[a.vaiTro] - thuTu[b.vaiTro]) || (a.HoTen < b.HoTen ? -1 : 1); });
   return sach_({ ok: true, ds: ds, muc: HS_MUC });
 }
-var KPI_BAN_MAY = '01/11/2026 21:03';   // giờ dựng Code.gs (22/10)
+var KPI_BAN_MAY = '01/11/2026 21:46';   // giờ dựng Code.gs (22/10)
 /* =====================================================================
    KỸ NĂNG (22/10, chủ dự án nhờ thiết kế + tham khảo chuyên gia nhân sự / đào tạo)
    - Danh mục: trưởng / phó phòng đề xuất kỹ năng của xưởng (tên, mô tả, tiêu chí đạt, công đoạn liên quan)
@@ -8395,7 +8395,8 @@ var PL_VL_NGON = { FC: 'FC', FCPHA: 'FC', FCNHAY: 'FC', MIX: 'MIX', MIXFOAM: 'MI
 var PL_VL_CHUOI = { MIXCB: 'MIX', MIXCB25: 'MIX', MIXCBPHA: 'MIX', GFCBFOAM: 'MIX', GFCB313: 'MIX', GF736DP: 'GF', GF736HK: 'GF', GF740: 'GF', GF1480: 'GF', GFFOAM: 'GF' };
 function plKieu_(o) {
   var c = o.chuoi || '', n = o.ngon || '';
-  o.kieu = (c === 'PHANHAY') ? 'PHANHAY' : (/PHA$/.test(n) || c === 'GF736DP' || c === 'MIXCBPHA') ? 'PHA' : (/NHAY/.test(n) || /^NHAY/.test(c)) ? 'NHAY' : 'DANH';
+  var kc = PL_KIEU_KHUC[c] || '', kn = PL_KIEU_KHUC[n] || '';   // 02/11: kiểu của loại chuôi / ngọn chủ dự án thêm trên web
+  o.kieu = (c === 'PHANHAY' || kc === 'PHANHAY' || kn === 'PHANHAY') ? 'PHANHAY' : (/PHA$/.test(n) || c === 'GF736DP' || c === 'MIXCBPHA' || kc === 'PHA' || kn === 'PHA') ? 'PHA' : (/NHAY/.test(n) || /^NHAY/.test(c) || kc === 'NHAY' || kn === 'NHAY') ? 'NHAY' : 'DANH';
   o.vl = (o.loai === 'CHUOI' ? PL_VL_CHUOI[c] : (PL_VL_NGON[n] || PL_VL_CHUOI[c])) || 'KHAC';
   /* 02/11 (chủ dự án): 2 nhãn chất liệu – chuôi và ngọn có thể khác nhau. '' = SKU không có khúc đó */
   var coC = o.loai === 'GAY' || o.loai === 'CHUOI', coN = o.loai === 'GAY' || o.loai === 'NGON';
@@ -8460,9 +8461,10 @@ function dhNgay_(v, nam) {   // deadline dd/mm (Sheet hay đảo ngày/tháng) -
   if (!(d >= 1 && d <= 31 && m >= 1 && m <= 12)) return '';
   return nam + '-' + ('0' + m).slice(-2) + '-' + ('0' + d).slice(-2);
 }
-function dhDocTab_(sh, tab, nam) {
-  // Chỉ đọc tới cột cần dùng (Sheet có hàng trăm cột "ngày nhận hàng" phía sau)
+function dhDocTab_(sh, tab, nam, gioiHan) {
+  // Chỉ đọc tới cột cần dùng (Sheet có hàng trăm cột "ngày nhận hàng" phía sau); tab tự thêm: giới hạn số dòng (02/11)
   var nr = sh.getLastRow(), nc = Math.min(sh.getLastColumn(), 60);
+  if (gioiHan && nr > gioiHan) nr = gioiHan;
   if (nr < 2 || nc < 2) return [];
   var dau = sh.getRange(1, 1, Math.min(nr, 10), nc).getValues(), hi = -1;
   for (var r = 0; r < dau.length; r++) {
@@ -8524,7 +8526,7 @@ function dhMaDon_(o, nam) {
 }
 /* Mọi dòng đơn (đã gộp 7 tab). Nhớ tạm DH_CACHE_GIAY giây, chia mảnh < 100 KB */
 function dhDocDon_(lamMoi) {
-  var c = CacheService.getScriptCache(), k = 'DH_DON_v2';
+  var c = CacheService.getScriptCache(), k = 'DH_DON_v3';
   if (!lamMoi) {
     try {
       var n = Number(c.get(k + '_n') || 0);
@@ -8538,7 +8540,17 @@ function dhDocDon_(lamMoi) {
   }
   var ss = SpreadsheetApp.openById(DH_SHEET_ID), nam = Number(Utilities.formatDate(new Date(), TZ_VN, 'yyyy')), ds = [];
   DH_TABS.forEach(function(tab) { var sh = ss.getSheetByName(tab); if (sh) ds = ds.concat(dhDocTab_(sh, tab, nam)); });
-  var kq = { luc: Utilities.formatDate(new Date(), TZ_VN, 'yyyy-MM-dd HH:mm'), don: ds };
+  /* 02/11 (chủ dự án): tự đọc tab kênh mới có cột chuẩn ("Loại hàng…" + "Số lượng đặt") – bỏ tab lưu trữ và tab chủ dự án bấm "Bỏ qua" */
+  var bo = dhTabBo_(), moi = [];
+  ss.getSheets().forEach(function(sh) {
+    var ten = String(sh.getName());
+    if (moi.length >= DH_TAB_MOI_MAX || DH_TABS.indexOf(ten) >= 0 || bo.indexOf(ten) >= 0 || DH_TAB_LOAI.test(ten)) return;
+    try { if (sh.isSheetHidden && sh.isSheetHidden()) return; } catch (e) {}   // tab ẩn (tổng hợp / nháp): không đọc
+    if (!dhCoCotChuan_(sh)) return;
+    var r = dhDocTab_(sh, ten, nam, DH_TAB_MOI_DONG);
+    if (r.length) { ds = ds.concat(r); moi.push(ten); }
+  });
+  var kq = { luc: Utilities.formatDate(new Date(), TZ_VN, 'yyyy-MM-dd HH:mm'), don: ds, tabMoi: moi, tabBo: bo };
   try {
     var str = JSON.stringify(kq), p = {}, m = 0;
     for (var x = 0; x < str.length; x += 30000) p[k + '_' + (m++)] = str.slice(x, x + 30000);   // 100 KB tính theo byte, chữ Việt 2–3 byte
@@ -8554,6 +8566,7 @@ function layDonHangXuong(token, lamMoi) {
   var d;
   try { d = dhDocDon_(!!lamMoi); }
   catch (e) { return sach_({ ok: false, msg: 'Không đọc được Sheet "Trạng thái đơn hàng": ' + (e && e.message || e) + '. Kiểm tra tài khoản chạy web còn được chia sẻ Sheet đó.' }); }
+  plNapThem_();   // 02/11: cấu hình sản phẩm chủ dự án thêm / sửa trên web
   var sua = {};
   docAnToan_(PL_SHEET).forEach(function(r) { if (r.TenChuan) sua[String(r.TenChuan)] = r; });   // khóa dạng 'K:<tên chuẩn>' (không bị Sheet đổi thành số)
   var don = d.don.map(function(o) {
@@ -8562,14 +8575,13 @@ function layDonHangXuong(token, lamMoi) {
     x.pl = plPhanLoai_(o.ten, o.ghiChu, sua['K:' + x.tenChuan]);
     return x;
   });
-  return sach_({ ok: true, luc: d.luc, don: don, nhan: { loai: PL_LOAI, chuoi: PL_CHUOI, ngon: PL_NGON, tip: PL_TIP, ren: PL_REN, kieu: PL_KIEU, vl: PL_VL,
-    dong: PL_DONG.map(function(x) { return [x[0], x[1], x[2]]; }) } });
+  return sach_({ ok: true, luc: d.luc, don: don, nhan: chNhan_(), tabMoi: d.tabMoi || [], tabBo: d.tabBo || [] });
 }
 
 /* Chủ sở hữu sửa phân loại 1 tên hàng (áp cho mọi đơn cùng tên). bo = true -> xóa bản sửa, về tự động */
 function luuPhanLoaiSKU(token, o) {
   var q = qtQuyen_(token); if (q.loi) return q.loi;
-  o = o || {};
+  o = o || {}; plNapThem_();
   var ten = String(o.ten || '').trim();
   if (!ten || ten.length > 300) return sach_({ ok: false, msg: 'Thiếu tên hàng.' });
   var co = function(bang, v) { return Object.prototype.hasOwnProperty.call(bang, String(v)); };
@@ -8578,7 +8590,7 @@ function luuPhanLoaiSKU(token, o) {
     if (o.dong && !plTimDong_(String(o.dong))) return sach_({ ok: false, msg: 'Dòng gậy không hợp lệ.' });
     if (!co(PL_CHUOI, o.chuoi) || !co(PL_NGON, o.ngon) || !co(PL_TIP, o.tip) || !co(PL_REN, o.ren)) return sach_({ ok: false, msg: 'Chọn đủ 4 thông số (chuôi, ngọn, tip, ren).' });
   }
-  khoa_();
+  khoa_(); xoaCache_(PL_SHEET);   // đọc lại sheet sau khi khóa trước khi xóa theo số dòng
   var sh = ss_().getSheetByName(PL_SHEET);
   if (!sh) {
     sh = ss_().insertSheet(PL_SHEET);
@@ -8691,4 +8703,148 @@ function dhDongChay_(ch) {
     ngay.push([d, vao, ra, ton, xong, dung, mat]);
   }
   return { ngay: ngay.slice(-60), kenh: kenh };
+}
+
+/* ===== 02/11: tab kênh mới + cấu hình sản phẩm sửa trên web + báo sản phẩm mới (Việc hôm nay) ===== */
+var DH_TAB_LOAI = /^_|SNAPSHOT|^ĐƠN HÀNG HT$|^DON HANG HT$|LƯU TRỮ|LUU TRU|ARCHIVE|^SHEET\d*$/i;   // tab lưu trữ / nháp: không đọc
+var DH_TAB_MOI_MAX = 15, DH_TAB_MOI_DONG = 5000;   // tab kênh tự thêm: tối đa 15 tab, mỗi tab đọc 5.000 dòng đầu (chống treo / cạn quota)
+/* tab tự thêm phải có ĐỦ cột "Loại hàng" và "Số lượng đặt" trong 10 dòng đầu */
+function dhCoCotChuan_(sh) {
+  var nr = Math.min(sh.getLastRow(), 10), nc = Math.min(sh.getLastColumn(), 60);
+  if (nr < 2 || nc < 2) return false;
+  return sh.getRange(1, 1, nr, nc).getValues().some(function(r) { var j = r.join('|').toUpperCase(); return j.indexOf('LOẠI HÀNG') >= 0 && (j.indexOf('SỐ LƯỢNG ĐẶT') >= 0 || j.indexOf('SL ĐẶT') >= 0); });
+}
+function dhTabBo_() { try { var a = JSON.parse(PropertiesService.getScriptProperties().getProperty('DH_TAB_BO') || '[]'); return Array.isArray(a) ? a.map(String) : []; } catch (e) { return []; } }
+/* Bỏ qua / đọc lại 1 tab kênh tự thêm */
+function boQuaTabDon(token, tab, bo) {
+  var q = qtQuyen_(token); if (q.loi) return q.loi;
+  tab = String(tab || '').slice(0, 100);
+  var cu = dhTabBo_();
+  if (!tab || DH_TABS.indexOf(tab) >= 0) return sach_({ ok: false, msg: 'Tab không hợp lệ.' });
+  if (cu.indexOf(tab) < 0) {   // chỉ nhận tab đang có trong Sheet đơn
+    var coTab = false; try { coTab = SpreadsheetApp.openById(DH_SHEET_ID).getSheets().some(function(sh) { return String(sh.getName()) === tab; }); } catch (e) {}
+    if (!coTab) return sach_({ ok: false, msg: 'Không thấy tab "' + tab + '" trong Sheet đơn.' });
+  }
+  var a = cu.filter(function(x) { return x !== tab; });
+  if (bo) a.push(tab);
+  try { PropertiesService.getScriptProperties().setProperty('DH_TAB_BO', JSON.stringify(a.slice(-40))); }
+  catch (e) { return sach_({ ok: false, msg: 'Không lưu được danh sách tab bỏ qua.' }); }
+  try { var c = CacheService.getScriptCache(); c.remove('DH_DON_v3_n'); } catch (e) {}
+  ghiLog_(q.me, 'Tab đơn hàng', tab, '', bo ? 'bỏ qua' : 'đọc lại');
+  return sach_({ ok: true, msg: bo ? 'Đã bỏ qua tab "' + tab + '".' : 'Sẽ đọc lại tab "' + tab + '".' });
+}
+
+/* Cấu hình sản phẩm chủ dự án sửa trên web – sheet CauHinhSP (file KPI). Mỗi dòng ghi đè / thêm vào bảng gốc trong mã:
+   Loai = DONG (dòng gậy) | CHUOI | NGON | TIP (loại khúc). Áp lại mỗi lần gọi từ bản gốc (plNapThem_), không đổi bảng gốc. */
+var CH_SHEET = 'CauHinhSP';
+var CH_COT = ['Loai', 'Ma', 'Ten', 'LoaiHang', 'TenGoi', 'Chuoi', 'Ngon', 'Tip', 'Ren', 'Dau', 'ChatLieu', 'Kieu', 'An', 'NguoiSua', 'ThoiDiem'];
+var PL_KIEU_KHUC = {}, PL_AN = { CHUOI: {}, NGON: {}, TIP: {} }, PL_THEM = {}, __PL_GOC = null;
+function plNapThem_() {
+  if (!__PL_GOC) __PL_GOC = JSON.stringify({ d: PL_DONG, c: PL_CHUOI, n: PL_NGON, t: PL_TIP, vc: PL_VL_CHUOI, vn: PL_VL_NGON, dau: PL_DAU_MD });
+  var g = JSON.parse(__PL_GOC);
+  PL_DONG = g.d; PL_CHUOI = g.c; PL_NGON = g.n; PL_TIP = g.t; PL_VL_CHUOI = g.vc; PL_VL_NGON = g.vn; PL_DAU_MD = g.dau;
+  PL_KIEU_KHUC = {}; PL_AN = { CHUOI: {}, NGON: {}, TIP: {} }; PL_THEM = {}; __PL_RE = null;
+  var rows = docAnToan_(CH_SHEET);
+  var bang = { CHUOI: function() { return PL_CHUOI; }, NGON: function() { return PL_NGON; }, TIP: function() { return PL_TIP; } };
+  rows.forEach(function(r) {   // loại khúc trước (dòng gậy dùng mã khúc)
+    var L = String(r.Loai), m = String(r.Ma || '');
+    if (!bang[L] || !m) return;
+    var b = bang[L]();
+    if (!Object.prototype.hasOwnProperty.call(b, m)) PL_THEM[L + '|' + m] = 1;
+    if (r.Ten) b[m] = String(r.Ten); else if (!b[m]) b[m] = m;
+    var vl = String(r.ChatLieu || '');
+    if (L === 'CHUOI' && /^(FC|MIX|GF)$/.test(vl)) PL_VL_CHUOI[m] = vl;
+    if (L === 'NGON' && /^(FC|MIX|GF)$/.test(vl)) PL_VL_NGON[m] = vl;
+    if (/^(NHAY|PHA|PHANHAY)$/.test(String(r.Kieu || ''))) PL_KIEU_KHUC[m] = String(r.Kieu);
+    if (String(r.An) === '1' || r.An === true) PL_AN[L][m] = 1;
+  });
+  rows.forEach(function(r) {
+    if (String(r.Loai) !== 'DONG' || !r.Ma) return;
+    var m = String(r.Ma), d = plTimDong_(m), goi = String(r.TenGoi || '').split('|').map(function(x) { return x.trim(); }).filter(Boolean);
+    if (!d) { d = [m, '', 'GAY', [], '', '', '', '', 1]; PL_DONG.push(d); PL_THEM['DONG|' + m] = 1; }
+    if (r.Ten) d[1] = String(r.Ten);
+    if (/^(GAY|NGON|CHUOI)$/.test(String(r.LoaiHang))) d[2] = String(r.LoaiHang);
+    if (goi.length) d[3] = goi;
+    if (r.Chuoi) d[4] = String(r.Chuoi); if (r.Ngon) d[5] = String(r.Ngon); if (r.Tip) d[6] = String(r.Tip); if (r.Ren) d[7] = String(r.Ren);
+    d[8] = 1;   // chủ dự án khai báo = chắc chắn
+    if (r.Dau) PL_DAU_MD[m] = String(r.Dau); else if (PL_THEM['DONG|' + m]) delete PL_DAU_MD[m];
+  });
+  return rows;
+}
+function chNhan_() {
+  return { loai: PL_LOAI, chuoi: PL_CHUOI, ngon: PL_NGON, tip: PL_TIP, ren: PL_REN, kieu: PL_KIEU, vl: PL_VL,
+    dong: PL_DONG.map(function(x) { return [x[0], x[1], x[2]]; }),
+    dongDu: PL_DONG.map(function(x) { return { ma: x[0], ten: x[1], loai: x[2], goi: x[3] || [], chuoi: x[4], ngon: x[5], tip: x[6], ren: x[7], dau: PL_DAU_MD[x[0]] || '', them: !!PL_THEM['DONG|' + x[0]] }; }),
+    vlChuoi: PL_VL_CHUOI, vlNgon: PL_VL_NGON, kieuKhuc: PL_KIEU_KHUC, an: PL_AN, them: PL_THEM };
+}
+function chChu_(v, n) { return String(v == null ? '' : v).replace(/^[=@\s]+/, '').replace(/\s+/g, ' ').trim().slice(0, n); }   // bỏ "=" / "@" đầu tên (them_ còn chặn công thức bằng chuAnToan_)
+/* Lưu 1 dòng cấu hình. o = { loai: 'DONG'|'CHUOI'|'NGON'|'TIP', ma?, ten, loaiHang, tenGoi: [..], chuoi, ngon, tip, ren, dau, chatLieu, kieu, an, xoa } */
+function luuCauHinhSP(token, o) {
+  var q = qtQuyen_(token); if (q.loi) return q.loi;
+  o = o || {};
+  khoa_(); xoaCache_(CH_SHEET); xoaCache_(PL_SHEET);   // khóa trước khi sinh mã / kiểm đang dùng / xóa theo số dòng (tránh 2 lần lưu cùng lúc, dữ liệu nhớ tạm cũ)
+  plNapThem_();
+  var L = String(o.loai || ''), co = function(b, v) { return Object.prototype.hasOwnProperty.call(b, String(v)); };
+  if (!/^(DONG|CHUOI|NGON|TIP)$/.test(L)) return sach_({ ok: false, msg: 'Loại cấu hình không hợp lệ.' });
+  var bangK = { CHUOI: PL_CHUOI, NGON: PL_NGON, TIP: PL_TIP }[L];
+  var ma = String(o.ma || '').toUpperCase().replace(/[^A-Z0-9_-]/g, '').slice(0, 24), moi = !ma;
+  var ten = chChu_(o.ten, 80);
+  if (moi) {
+    if (!ten) return sach_({ ok: false, msg: 'Nhập tên.' });
+    var goc = (L === 'DONG' ? 'D' : L.charAt(0)) + '-' + (plChuan_(ten).replace(/[^A-Z0-9]/g, '').slice(0, 14) || 'MOI'), i = 1;
+    ma = goc; while ((L === 'DONG' ? plTimDong_(ma) : co(bangK, ma))) ma = goc + (++i);
+  } else if (L === 'DONG' ? !plTimDong_(ma) : !co(bangK, ma)) return sach_({ ok: false, msg: 'Không thấy mã ' + ma + '.' });
+  var rec = { Loai: L, Ma: ma, Ten: ten, LoaiHang: '', TenGoi: '', Chuoi: '', Ngon: '', Tip: '', Ren: '', Dau: '', ChatLieu: '', Kieu: '', An: o.an ? '1' : '' };
+  if (o.xoa) {
+    if (moi) return sach_({ ok: false, msg: 'Thiếu mã.' });
+    if (PL_THEM[L + '|' + ma]) {   // loại / dòng tự thêm: chỉ xóa được khi chưa dùng
+      var dung = docAnToan_(PL_SHEET).some(function(r) { return String(r.Dong) === ma || String(r.Chuoi) === ma || String(r.Ngon) === ma || String(r.Tip) === ma; }) ||
+        (L !== 'DONG' && PL_DONG.some(function(d) { return d[4] === ma || d[5] === ma || d[6] === ma; }));
+      if (dung) return sach_({ ok: false, msg: 'Mã ' + ma + ' đang được dùng – chỉ ẩn được, không xóa.' });
+    }
+  } else if (L === 'DONG') {
+    var goi = (Array.isArray(o.tenGoi) ? o.tenGoi : String(o.tenGoi || '').split(/[,\n|]/)).map(function(x) { return chChu_(x, 40).replace(/\|/g, '/'); }).filter(function(x) { return plChuan_(x).replace(/[^A-Z0-9]/g, '').length >= 3; }).slice(0, 15);
+    if (!goi.length) return sach_({ ok: false, msg: 'Nhập ít nhất 1 chữ nhận diện (từ 3 ký tự chữ / số) có trong tên sản phẩm.' });
+    if (!/^(GAY|NGON|CHUOI)$/.test(String(o.loaiHang))) return sach_({ ok: false, msg: 'Chọn loại hàng (gậy / ngọn lẻ / chuôi lẻ).' });
+    var lh = String(o.loaiHang), c = String(o.chuoi || ''), n = String(o.ngon || ''), t = String(o.tip || ''), r = String(o.ren || '');
+    if (lh === 'NGON') c = 'KHONG'; if (lh === 'CHUOI') { n = 'KHONG'; t = 'KHONG'; }
+    if (!co(PL_CHUOI, c) || !co(PL_NGON, n) || !co(PL_TIP, t) || (r && !co(PL_REN, r))) return sach_({ ok: false, msg: 'Chọn đủ chuôi, ngọn, tip (ren có thể để trống).' });
+    if (lh === 'GAY' && (c === 'KHONG' || n === 'KHONG')) return sach_({ ok: false, msg: 'Gậy cần cả loại chuôi và loại ngọn.' });
+    var dau = String(o.dau || '').replace(',', '.'); if (dau && !/^(9\.5|1[0-4]\.\d)$/.test(dau)) return sach_({ ok: false, msg: 'Đầu mặc định dạng 12.5 (để trống nếu không có).' });
+    if (moi && !ten) return sach_({ ok: false, msg: 'Nhập tên dòng gậy.' });
+    rec.LoaiHang = lh; rec.TenGoi = goi.join('|'); rec.Chuoi = c; rec.Ngon = n; rec.Tip = t; rec.Ren = r; rec.Dau = dau;
+  } else {
+    var vl = String(o.chatLieu || ''), kieu = String(o.kieu || '');
+    if (vl && !/^(FC|MIX|GF)$/.test(vl)) return sach_({ ok: false, msg: 'Chất liệu không hợp lệ.' });
+    if (kieu && !/^(NHAY|PHA|PHANHAY)$/.test(kieu)) return sach_({ ok: false, msg: 'Kiểu không hợp lệ.' });
+    if (L !== 'TIP' && moi && !vl) return sach_({ ok: false, msg: 'Chọn chất liệu.' });
+    rec.ChatLieu = L === 'TIP' ? '' : vl; rec.Kieu = L === 'TIP' ? '' : kieu;
+  }
+  var sh = ss_().getSheetByName(CH_SHEET);
+  if (!sh) { sh = ss_().insertSheet(CH_SHEET); sh.getRange(1, 1, 1, CH_COT.length).setValues([CH_COT]).setFontWeight('bold'); sh.setFrozenRows(1); sh.getRange(2, 1, sh.getMaxRows() - 1, CH_COT.length).setNumberFormat('@'); }
+  docAnToan_(CH_SHEET).filter(function(x) { return String(x.Loai) === L && String(x.Ma) === ma; }).map(function(x) { return x._row; }).sort(function(a, b) { return b - a; }).forEach(function(x) { sh.deleteRow(x); });
+  xoaCache_(CH_SHEET);
+  if (!o.xoa) { rec.NguoiSua = q.me.tk; rec.ThoiDiem = Utilities.formatDate(new Date(), TZ_VN, 'yyyy-MM-dd HH:mm'); them_(CH_SHEET, rec); }
+  ghiLog_(q.me, 'Cấu hình sản phẩm', L + ' ' + ma, '', o.xoa ? 'xóa / về mặc định' : [rec.Ten, rec.TenGoi, rec.Chuoi, rec.Ngon, rec.Tip, rec.Ren, rec.ChatLieu, rec.Kieu, rec.An].join(' / ').slice(0, 300));
+  plNapThem_();
+  return sach_({ ok: true, ma: ma, msg: o.xoa ? 'Đã xóa / trả về mặc định ' + ma + '.' : 'Đã lưu ' + (ten || ma) + '.', nhan: chNhan_() });
+}
+/* Việc hôm nay (chủ sở hữu): tên hàng trong đơn còn thiếu mà web chưa nhận ra cấu hình + loại khúc chưa có chất liệu + tab kênh mới */
+function demSanPhamMoi(token) {
+  var q = qtQuyen_(token); if (q.loi) return q.loi;
+  var d; try { d = dhDocDon_(false); } catch (e) { return sach_({ ok: false, msg: 'Không đọc được Sheet đơn hàng.' }); }
+  plNapThem_();
+  var sua = {}; docAnToan_(PL_SHEET).forEach(function(r) { if (r.TenChuan) sua[String(r.TenChuan)] = r; });
+  var ten = {}, khuc = {};
+  d.don.forEach(function(o) {
+    if (!(o.thieu > 0)) return;
+    var k = plChuan_(o.ten), p = plPhanLoai_(o.ten, o.ghiChu, sua['K:' + k]);
+    if (p.loai === 'PK' || p.loai === 'NOI') return;
+    if (p.tin === 'do') { var x = ten[k] || (ten[k] = { ten: o.ten, thieu: 0, dong: 0 }); x.thieu += o.thieu; x.dong++; return; }
+    if (p.vlC === 'KHAC' && p.chuoi && p.chuoi !== 'KHONG') { var a = khuc['CHUOI|' + p.chuoi] || (khuc['CHUOI|' + p.chuoi] = { bang: 'CHUOI', ma: p.chuoi, ten: PL_CHUOI[p.chuoi] || p.chuoi, thieu: 0 }); a.thieu += o.thieu; }
+    if (p.vlN === 'KHAC' && p.ngon && p.ngon !== 'KHONG') { var b = khuc['NGON|' + p.ngon] || (khuc['NGON|' + p.ngon] = { bang: 'NGON', ma: p.ngon, ten: PL_NGON[p.ngon] || p.ngon, thieu: 0 }); b.thieu += o.thieu; }
+  });
+  var ds = Object.keys(ten).map(function(k) { return ten[k]; }).sort(function(a, b) { return b.thieu - a.thieu; });
+  var dk = Object.keys(khuc).map(function(k) { return khuc[k]; }).sort(function(a, b) { return b.thieu - a.thieu; });
+  return sach_({ ok: true, n: ds.length, ten: ds.slice(0, 20), thieu: ds.reduce(function(a, x) { return a + x.thieu; }, 0), khuc: dk.slice(0, 20), tabMoi: d.tabMoi || [] });
 }

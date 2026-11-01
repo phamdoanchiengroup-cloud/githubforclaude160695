@@ -122,6 +122,38 @@ p = PL('Rhino Soft Cue Case 1X2 - Black'); ok(p.vlC === '' && p.vlN === '', 'ph�
   ok(r2.ngay.length === 1 && d.join() === '2026-10-31,7,15,7,2,1,1', 'vào 7 (dòng mới) · ra 15 · tồn 7 · xong 2, đúng hạn 1 · 1 dòng mất khi còn thiếu (không tính ra)', d);
   ok(r2.kenh.Kho.join() === '1,1' && r2.kenh.Dealer.join() === '1,0', 'đúng hạn theo kênh', r2.kenh); }
 
+console.log('\n4c. Cấu hình sản phẩm trên web + báo sản phẩm mới + tab kênh mới (02/11)');
+{ const tabX = [['', 'Loại hàng cần sản xuất', 'Loại Phôi', 'Số lượng đặt', 'SX CÒN THIẾU', 'Deadline'], ['#M-01/10', 'GAY NOVA X1 MAU DO', '', 5, 5, '20/11'], ['', 'GAY NOVA X1 MAU XANH', '', 3, 3, '20/11'], ['', 'EVO4/LUN2/BLUE/LW-BLACK/G/10/12.5', '', 2, 2, '20/11']];
+  c.__ngoai = { [c.DH_SHEET_ID]: { ten: 'x', sheets: { KHO: tabX, 'KÊNH MỚI': tabX.slice(0, 2), 'Đơn hàng HT': tabX, '_SNAPSHOT': tabX } } }; c.dhDocDon_(true);
+  r = c.__goi('demSanPhamMoi', Tadm); ok(!r.ok, 'ban điều hành không xem được');
+  r = c.__goi('demSanPhamMoi', Town);
+  ok(r.ok && r.n === 2 && r.thieu === 13 && r.ten[0].thieu === 10 && r.tabMoi.join() === 'KÊNH MỚI', 'báo 2 tên mới, còn thiếu 13 (tên trùng ở 2 kênh được gộp); tự đọc tab "KÊNH MỚI", bỏ tab lưu trữ "Đơn hàng HT" / "_SNAPSHOT"', r);
+  r = c.__goi('luuCauHinhSP', Tadm, { loai: 'CHUOI', ma: 'NHAY390', chatLieu: 'GF' }); ok(!r.ok, 'ban điều hành không sửa được cấu hình');
+  r = c.__goi('luuCauHinhSP', Town, { loai: 'DONG', ten: 'Nova', loaiHang: 'GAY', tenGoi: 'AB', chuoi: 'MIXCB', ngon: 'FC', tip: 'TIMEK' }); ok(!r.ok, 'chữ nhận diện < 3 ký tự: từ chối');
+  r = c.__goi('luuCauHinhSP', Town, { loai: 'DONG', ten: 'Nova', loaiHang: 'GAY', tenGoi: 'NOVA X1', chuoi: 'KHONG', ngon: 'FC', tip: 'TIMEK' }); ok(!r.ok, 'gậy thiếu loại chuôi: từ chối');
+  r = c.__goi('luuCauHinhSP', Town, { loai: 'DONG', ten: '=Nova X1', loaiHang: 'GAY', tenGoi: 'NOVA X1', chuoi: 'MIXCB', ngon: 'FC', tip: 'TIMEK', ren: 'R388', dau: '12,5' });
+  const maD = r.ma; ok(r.ok && /^D-/.test(maD) && c.doc_('CauHinhSP')[0].Ten === 'Nova X1', 'thêm dòng gậy mới (tên bắt đầu "=" bị bỏ dấu, không thành công thức)', r.msg);
+  let x = c.__goi('layDonHangXuong', Town, false), p2 = x.don.find(o => /NOVA X1 MAU XANH/.test(o.ten)).pl;
+  ok(p2.dong === maD && p2.tin === 'xanh' && p2.vlC === 'MIX' && p2.vlN === 'FC' && p2.dau === '12.5' && p2.ren === 'R388', 'mọi tên có chữ nhận diện tự nhận cấu hình (chuôi Mix, ngọn FC, đầu 12.5)', p2);
+  ok(x.nhan.dongDu.some(d => d.ma === maD && d.them) && x.tabMoi.join() === 'KÊNH MỚI', 'trả danh sách dòng gậy đầy đủ + tab mới cho web');
+  r = c.__goi('luuCauHinhSP', Town, { loai: 'CHUOI', ma: 'NHAY390', chatLieu: 'GF', kieu: 'NHAY' }); x = c.__goi('layDonHangXuong', Town, false);
+  ok(r.ok && x.nhan.vlChuoi.NHAY390 === 'GF' && c.plPhanLoai_('GẬY NHẢY TK ALL NEW MÀU ĐỎ-13.9 REN 3/8-8', '', null).vlC === 'GF', 'sửa chất liệu loại chuôi có sẵn → áp ngay cho sản phẩm dùng loại đó');
+  r = c.__goi('luuCauHinhSP', Town, { loai: 'NGON', ten: 'Ngọn thử nhảy', chatLieu: 'FC', kieu: 'NHAY' }); const maN = r.ma;
+  r = c.__goi('luuCauHinhSP', Town, { loai: 'DONG', ma: maD, ten: 'Nova X1', loaiHang: 'GAY', tenGoi: 'NOVA X1', chuoi: 'MIXCB', ngon: maN, tip: 'TIMEK' });
+  ok(r.ok && c.plPhanLoai_('GAY NOVA X1 MAU DO', '', null).kieu === 'NHAY', 'loại ngọn tự thêm (kiểu nhảy) → dòng dùng nó thành gậy nhảy');
+  r = c.__goi('luuCauHinhSP', Town, { loai: 'NGON', ma: maN, xoa: true }); ok(!r.ok && /đang được dùng/.test(r.msg), 'loại đang được dùng: không xóa được (chỉ ẩn)', r.msg);
+  r = c.__goi('luuCauHinhSP', Town, { loai: 'NGON', ma: maN, ten: 'Ngọn thử nhảy', chatLieu: 'FC', kieu: 'NHAY', an: true }); x = c.__goi('layDonHangXuong', Town, false);
+  ok(r.ok && x.nhan.an.NGON[maN] === 1, 'ẩn loại khỏi ô chọn');
+  r = c.__goi('demSanPhamMoi', Town); ok(r.n === 0, 'sau khi thêm dòng gậy: hết báo sản phẩm mới', r.n);
+  r = c.__goi('luuCauHinhSP', Town, { loai: 'DONG', ma: maD, xoa: true }); ok(r.ok && c.plPhanLoai_('GAY NOVA X1 MAU DO', '', null).tin === 'do', 'xóa dòng tự thêm → tên hàng lại thành "chưa nhận ra"');
+  r = c.__goi('luuCauHinhSP', Town, { loai: 'DONG', ma: 'EVO4', ten: 'EVO 4 (sửa)', loaiHang: 'GAY', tenGoi: 'EVO4, EVO 4', chuoi: 'GF736HK', ngon: 'FC', tip: 'TIMEK', ren: 'R3810' });
+  ok(r.ok && c.plPhanLoai_('EVO4/LUN2/BLUE/LW-BLACK/G/10/12.5', '', null).ngon === 'FC', 'sửa dòng gậy có sẵn (EVO 4 ngọn → FC)');
+  r = c.__goi('luuCauHinhSP', Town, { loai: 'DONG', ma: 'EVO4', xoa: true }); ok(r.ok && c.plPhanLoai_('EVO4/LUN2/BLUE/LW-BLACK/G/10/12.5', '', null).ngon === 'GF29', '"Về cấu hình gốc" trả EVO 4 về như mã');
+  r = c.__goi('boQuaTabDon', Town, 'KÊNH MỚI', true); x = c.__goi('layDonHangXuong', Town, true);
+  ok(r.ok && !x.tabMoi.length && x.tabBo.join() === 'KÊNH MỚI' && !x.don.some(o => o.tab === 'KÊNH MỚI'), 'bỏ qua tab kênh mới: không đọc nữa');
+  r = c.__goi('boQuaTabDon', Town, 'KHO', true); ok(!r.ok, 'không cho bỏ qua 7 tab chuẩn');
+  ok(c.doc_('NhatKyThaoTac').some(x => x.HanhDong === 'Cấu hình sản phẩm'), 'ghi nhật ký thao tác'); }
+
 if (process.env.DH) {
   console.log('\n5. Toàn bộ đơn thật (DH=)');
   const dh = JSON.parse(fs.readFileSync(process.env.DH, 'utf8')), sh = {};

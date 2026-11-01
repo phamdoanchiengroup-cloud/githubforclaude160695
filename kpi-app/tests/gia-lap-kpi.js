@@ -140,7 +140,7 @@ function tao(fileCode, duLieu, gioHienTai) {
     SpreadsheetApp: { getActiveSpreadsheet: () => ss,
       // Sheet của tệp khác (31/10, đọc Sheet "Trạng thái đơn hàng"): kiểm thử gán ctx.__ngoai = { id: { ten, sheets: { Tab: [[...]] } } }
       openById: id => { const m = (ctx.__ngoai || {})[id]; if (!m) throw new Error('Bạn không có quyền truy cập vào tài liệu được yêu cầu (giả lập).');
-        return { getId: () => id, getName: () => m.ten || id, getSheetByName: n => (m.sheets[n] ? new Sheet(n, m.sheets[n]) : null) }; },
+        return { getId: () => id, getName: () => m.ten || id, getSheetByName: n => (m.sheets[n] ? new Sheet(n, m.sheets[n]) : null), getSheets: () => Object.keys(m.sheets).map(n => new Sheet(n, m.sheets[n])) }; },
       create: ten => {   // bảng tính mới (lưu chi tiết cơm trưa lên Drive)
         ctx.__bangMoi = ctx.__bangMoi || []; const ds = [new Sheet('Trang tính1', [])], id = 'ss' + (ctx.__bangMoi.length + 1);
         const o = { ten, id, ds, getId: () => id, getName: () => ten, getSheets: () => ds, getSheetByName: n => ds.find(x => x.ten === n) || null,

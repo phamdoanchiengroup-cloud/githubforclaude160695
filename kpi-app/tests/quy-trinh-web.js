@@ -171,6 +171,17 @@ const vao = async (p, tk) => { await p.goto(F); await p.waitForSelector('#xtGoiY
       s = await p.evaluate(() => [document.querySelectorAll('.card table tbody tr').length, document.querySelectorAll('.dh-tin.vang').length]);
       s.push(new Set(DH_TEN_DEM = await p.evaluate(() => DH.don.map(o => o.tenChuan))).size);
       ok(s[0] >= s[2] && s[1] > 0, 'Kiểm phân loại: liệt kê đủ tên hàng, vàng / đỏ lên đầu', s);
+      // 02/11: Cấu hình sản phẩm (dòng gậy, loại chuôi / ngọn / tip) + báo sản phẩm mới ở Việc hôm nay
+      await p.evaluate(() => { DHV = 'cauhinh'; dhVeLai(); }); await p.waitForTimeout(300);
+      s = await p.evaluate(() => { chMoForm('', 'EVO4'); const k = chKhop(['EVO4']).length, f = !!document.getElementById('chGoi') && /Khớp/.test(document.getElementById('chKhop').textContent); CHForm = null; dhVeLai();
+        return [document.querySelectorAll('.ch-d tbody tr:not(.dh-khoi)').length, document.querySelectorAll('.ch-k').length, k > 0, f, document.documentElement.scrollWidth > innerWidth + 1, [...document.querySelectorAll('.qt-tabs button')].some(b => /Cấu hình sản phẩm/.test(b.textContent))]; });
+      ok(s[0] >= 40 && s[1] === 3 && s[2] && s[3] && !s[4] && s[5], 'Cấu hình sản phẩm: bảng dòng gậy + 3 bảng loại khúc; form xem trước số tên hàng khớp chữ nhận diện; không tràn ngang', s);
+      s = await p.evaluate(() => { window.__spMoi = { ok: true, n: 2, thieu: 13, ten: [{ ten: 'GAY NOVA X1', thieu: 10 }, { ten: 'GAY NOVA X2', thieu: 3 }], khuc: [{ bang: 'CHUOI', ma: 'NHAY390', ten: 'Nhảy 390', thieu: 5 }], tabMoi: ['KÊNH MỚI'] }; window.__spMoiTai = 1;
+        const v = viecHomNay().map(x => x.t); return [v.includes('Sản phẩm mới chưa có cấu hình'), v.includes('Loại chuôi / ngọn chưa có chất liệu'), v.includes('Sheet đơn có tab kênh mới')]; });
+      ok(s.every(Boolean), 'Việc hôm nay (chủ sở hữu): báo sản phẩm mới, loại khúc chưa có chất liệu, tab kênh mới', s);
+      await p.evaluate(() => { moCauHinhSP(); }); await p.waitForTimeout(800);
+      ok(await p.evaluate(() => DHV === 'cauhinh' && !!document.querySelector('.ch-d')), 'bấm "Bổ sung cấu hình" → mở Đơn hàng › Cấu hình sản phẩm');
+      await p.evaluate(() => { window.__spMoi = null; });
       await p.evaluate(() => { DHMo = 'k|' + document.querySelector('.card table tbody tr td').textContent.trim(); });
       if (CHUP) await p.screenshot({ path: CHUP + '/dh-' + w + '.png', fullPage: true });
     }
