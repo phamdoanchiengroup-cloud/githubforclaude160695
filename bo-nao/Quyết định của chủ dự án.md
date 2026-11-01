@@ -4,6 +4,7 @@ Nhóm: Bắt đầu · Cập nhật 21/10/2026
 Liên quan: [[Việc chờ chủ dự án]] · [[TCC Bán hàng]] · [[00 Mục lục]]
 
 ## Cách làm việc
+- **1/11: giờ Tý muộn (23–24h) luôn tính sang ngày âm hôm sau** (phân biệt với Tý sớm) – không tắt chuyển ngày để khớp trang khác. – [[TCC Tab Gia đình]]
 - **1/11 (sau): tab Gia đình mở cho mọi thành viên đăng nhập** (mỗi người danh sách riêng, lưu ở Sheet); **đồng ý đưa thông tin gia đình chủ dự án lên GitHub** (danh sách mặc định trong GiaDinh.gs). – [[TCC Tab Gia đình]]
 - **1/11: tab "👪 Gia đình" chỉ chủ sở hữu** (đã đổi) – danh sách người nhà, luận quan hệ (qua Cặp đôi), bảng vận năm cả nhà; dữ liệu người nhà lưu ở Script Properties, không đưa vào GitHub. – [[TCC Tab Gia đình]]
 - **1/11: Phi Tinh bố cục theo mục lục cohoc, tổng hợp luận giải của họ, bỏ ý trùng, giữ đủ các ý khác nhau đúng lá số** (đã trích 4 bài cohoc của gia đình – chỉ ở scratchpad). – [[TCC Tứ Hóa Phi Tinh]]

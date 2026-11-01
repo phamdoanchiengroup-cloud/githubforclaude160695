@@ -3,6 +3,7 @@
  * và bảng vận năm cả nhà. 1/11/2026: mở cho mọi thành viên đã đăng nhập (chủ dự án chốt); cột Phi Tinh chỉ chủ sở hữu thấy.
  * Lưu ở trang tính "GiaDinh" của Google Sheet dự án (mỗi tài khoản một dòng JSON).
  * Danh sách mặc định của chủ sở hữu (GD_MAC_DINH) – chủ dự án đồng ý đưa thông tin gia đình lên mã (1/11).
+ * Giờ Tý muộn (23–24h) luôn tính sang ngày âm hôm sau (chủ dự án nhắc 1/11) – không tắt chuyển ngày để khớp trang khác.
  */
 var GD_TOI_DA = 30;
 var GD_QUAN_HE = ['Bản thân', 'Vợ', 'Chồng', 'Con trai', 'Con gái', 'Cha', 'Mẹ', 'Anh', 'Chị', 'Em trai', 'Em gái', 'Ông', 'Bà', 'Cháu', 'Họ hàng', 'Bạn bè', 'Khác'];
@@ -11,7 +12,7 @@ var GD_SH = ['Tài khoản', 'Danh sách (JSON)', 'Cập nhật'];
 var GD_MAC_DINH = [
   { ten: 'Phạm Doãn Chiến', quanHe: 'Bản thân', input: { name: 'Phạm Doãn Chiến', gender: 'nam', calendar: 'am', day: 19, month: 5, year: 1995, hour: 6, minute: 0 } },
   { ten: 'Vợ', quanHe: 'Vợ', input: { name: 'Vợ', gender: 'nu', calendar: 'am', day: 20, month: 9, year: 1997, hour: 2, minute: 0 } },
-  { ten: 'Con gái', quanHe: 'Con gái', input: { name: 'Con gái', gender: 'nu', calendar: 'duong', day: 22, month: 8, year: 2023, hour: 23, minute: 30, lateRat: false } },   // giờ Tý muộn tính cùng ngày (khớp cohoc)
+  { ten: 'Con gái', quanHe: 'Con gái', input: { name: 'Con gái', gender: 'nu', calendar: 'duong', day: 22, month: 8, year: 2023, hour: 23, minute: 30 } },   // giờ Tý muộn → sang ngày âm hôm sau (8/7 Quý Mão), chủ dự án xác nhận
   { ten: 'Em gái', quanHe: 'Em gái', input: { name: 'Em gái', gender: 'nu', calendar: 'am', day: 19, month: 7, year: 2001, hour: 2, minute: 0 } }
 ];
 

@@ -10,7 +10,7 @@ Chủ dự án muốn tab riêng cho lá số gia đình. Chốt: danh sách b�
 ## Mở cho mọi thành viên + danh sách mặc định (mã 2026.11.1.2)
 - Chủ dự án (1/11): **đồng ý đưa thông tin gia đình lên GitHub** và **mở tab cho mọi thành viên tự nhập tra cứu**.
 - Lưu ở trang tính **"GiaDinh"** của Google Sheet (mỗi tài khoản một dòng JSON: `gdSh_`, `gdDong_`, `gdDoc_`, `gdGhi_`) thay cho Script Properties. Mọi hàm chỉ cần đăng nhập (`tkCan_(token)`); khách thấy lời giới thiệu + nút Đăng nhập.
-- `GD_MAC_DINH`: 4 người nhà chủ sở hữu (bản thân âm 19/5/1995 giờ Mão; vợ âm 20/9/1997 giờ Sửu; con gái dương 22/8/2023 23:30 **Tý muộn tính cùng ngày** (`lateRat: false` – khớp cohoc âm 7/7); em gái âm 19/7/2001 giờ Sửu) – dùng khi chủ sở hữu chưa lưu danh sách. Đều khớp Mệnh/Cục/Lai Nhân với bài cohoc.
+- `GD_MAC_DINH`: 4 người nhà chủ sở hữu (bản thân âm 19/5/1995 giờ Mão; vợ âm 20/9/1997 giờ Sửu; con gái dương 22/8/2023 23:30 – **giờ Tý muộn sang ngày âm hôm sau = âm 8/7** (chủ dự án sửa 1/11: không được tắt chuyển ngày để khớp cohoc; bài cohoc của con gái an theo 7/7 nên KHÔNG phải lá số thật của cháu, chỉ dùng làm mẫu quy tắc); em gái âm 19/7/2001 giờ Sửu) – dùng khi chủ sở hữu chưa lưu danh sách. Đều khớp Mệnh/Cục/Lai Nhân với bài cohoc.
 - Cột Phi Tinh trong bảng vận năm chỉ chủ sở hữu (`phiTinh: chu`); thành viên thấy Bát Tự lưu niên + ghi chú. Form có ô "Giờ Tý muộn tính sang ngày hôm sau".
 - Mở lá số / Xem hợp nhau tính phí như khi tự lập.
 - Kiểm thử `tests/gia-dinh.js` 14/14.

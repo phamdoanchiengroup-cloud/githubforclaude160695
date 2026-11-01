@@ -11,7 +11,7 @@ Code.gs	25172
 DeHieu.gs	92746
 DuDoan.gs	38301
 Facts.gs	11809
-GiaDinh.gs	5929
+GiaDinh.gs	6106
 HaLac.gs	63987
 HoiTu.gs	61732
 Holo.html	59597
