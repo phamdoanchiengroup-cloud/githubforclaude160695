@@ -7535,7 +7535,7 @@ function danhSachVanPhong(token) {
   ds.sort(function(a, b) { return (thuTu[a.vaiTro] - thuTu[b.vaiTro]) || (a.HoTen < b.HoTen ? -1 : 1); });
   return sach_({ ok: true, ds: ds, muc: HS_MUC });
 }
-var KPI_BAN_MAY = '02/11/2026 08:49';   // giờ dựng Code.gs (22/10)
+var KPI_BAN_MAY = '02/11/2026 11:59';   // giờ dựng Code.gs (22/10)
 /* =====================================================================
    KỸ NĂNG (22/10, chủ dự án nhờ thiết kế + tham khảo chuyên gia nhân sự / đào tạo)
    - Danh mục: trưởng / phó phòng đề xuất kỹ năng của xưởng (tên, mô tả, tiêu chí đạt, công đoạn liên quan)
@@ -8102,8 +8102,17 @@ function layQuyTrinh(token, soNgay) {
   });
   Object.keys(tk).forEach(function(m) { var t = tk[m]; t.soNgay = Object.keys(t.ngay).length; delete t.ngay; });
   var ngayCong = {}; Object.keys(cong).forEach(function(m) { ngayCong[m] = Object.keys(cong[m]).length; });
-  var ns = doc_('NhanSu').filter(function(n) { return String(n.TrangThai).trim() === 'Đang làm'; })
-    .map(function(n) { return { MaNV: String(n.MaNV), HoTen: String(n.HoTen), MaXuong: String(n.MaXuong), ChucDanh: String(n.ChucDanh || '') }; });
+  var nsGoc = doc_('NhanSu').filter(function(n) { return String(n.TrangThai).trim() === 'Đang làm'; });
+  var ns = nsGoc.map(function(n) { return { MaNV: String(n.MaNV), HoTen: String(n.HoTen), MaXuong: String(n.MaXuong), ChucDanh: String(n.ChucDanh || '') }; });
+  /* 03/11 (chủ dự án): số người có mặt theo ĐIỂM DANH (khớp chấm công), không theo ngày có ghi KPI.
+     Ngày có mặt của 1 người = số ngày có sản xuất trong kỳ (từ ngày vào làm) − phần công nghỉ ghi ở DiemDanhNghi (Cong = phần công vẫn được tính) */
+  var dsNgaySX = Object.keys(ngaySX), vang = {};
+  docAnToan_('DiemDanhNghi').forEach(function(r) { var g = ngayVN_(r.Ngay); if (!ngaySX[g]) return;
+    var c = Number(r.Cong); c = isFinite(c) ? Math.max(0, Math.min(1, c)) : 0; var k = String(r.MaNV) + '|' + g; vang[k] = Math.max(vang[k] || 0, 1 - c); });
+  var diemDanh = {};
+  nsGoc.forEach(function(n) { var m = String(n.MaNV), vao = ngayVN_(n.NgayVaoLam) || '', co = 0;
+    dsNgaySX.forEach(function(g) { if (vao && g < vao) return; co += 1 - (vang[m + '|' + g] || 0); });
+    diemDanh[m] = Math.round(co * 10) / 10; });
   var may = {};
   docAnToan_('MayMoc').forEach(function(m) {
     var tt = String(m.TinhTrang).trim(); if (tt === 'Thanh lý') return;
@@ -8124,7 +8133,7 @@ function layQuyTrinh(token, soNgay) {
     congDoan: cds.map(function(c) { var d = dmRow[String(c.MaCD)] || {};
       return { MaCD: String(c.MaCD), TenCD: String(c.TenCD), MaXuong: String(c.MaXuong), DM: Number(d.DinhMucGio) || 0, DVT: String(d.DonViTinh || '') }; }),
     xuong: doc_('PhongBan').filter(function(p) { return String(p.TrangThai || 'Đang dùng').trim() !== 'Ngừng'; }).map(function(p) { return { MaXuong: String(p.MaXuong), TenXuong: String(p.TenXuong) }; }),
-    thongKe: tk, soNgaySX7: Object.keys(ngay7).length, xuat: qt.xuat, ngayCong: ngayCong, nhanSu: ns, may: may, kyNang: kn };
+    thongKe: tk, soNgaySX7: Object.keys(ngay7).length, xuat: qt.xuat, ngayCong: ngayCong, diemDanh: diemDanh, nhanSu: ns, may: may, kyNang: kn };
   if (q.xuong) {   // trưởng / phó phòng: chỉ dữ liệu xưởng mình (+ tên xưởng và luồng để vẽ lưu đồ nhà máy không số)
     var X = q.xuong, cuaX = {}, nvX = {};
     kq.congDoan = kq.congDoan.filter(function(c) { if (c.MaXuong === X) { cuaX[c.MaCD] = 1; return true; } return false; });
@@ -8133,6 +8142,7 @@ function layQuyTrinh(token, soNgay) {
     var tk2 = {}; Object.keys(tk).forEach(function(m) { if (cuaX[m]) { var t0 = tk[m], ng = {}; Object.keys(t0.nguoi).forEach(function(p) { if (nvX[p]) ng[p] = t0.nguoi[p]; }); tk2[m] = { sl: t0.sl, sl7: t0.sl7, soNgay: t0.soNgay, nguoi: ng }; } else if (QT_CD_DONGGOI_.indexOf(m) >= 0) tk2[m] = { sl: tk[m].sl, nguoi: {} }; });   // nhịp nhà máy (đóng gói) chỉ số tổng
     kq.thongKe = tk2;
     var nc2 = {}; Object.keys(ngayCong).forEach(function(m) { if (nvX[m]) nc2[m] = ngayCong[m]; }); kq.ngayCong = nc2;
+    var dd2 = {}; Object.keys(diemDanh).forEach(function(m) { if (nvX[m]) dd2[m] = diemDanh[m]; }); kq.diemDanh = dd2;
     var kn2 = {}; Object.keys(kn).forEach(function(m) { if (!cuaX[m]) return; kn2[m] = {}; Object.keys(kn[m]).forEach(function(p) { if (nvX[p]) kn2[m][p] = kn[m][p]; }); }); kq.kyNang = kn2;   // không lộ mã người xưởng khác
     var may2 = {}; if (may[X]) may2[X] = may[X]; kq.may = may2;
     var xu2 = {}; if (qt.xuat[X]) xu2[X] = qt.xuat[X]; kq.xuat = xu2;

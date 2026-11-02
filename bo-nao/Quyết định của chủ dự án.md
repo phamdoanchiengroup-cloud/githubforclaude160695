@@ -86,3 +86,5 @@ Những điều đã chốt. Đừng đề xuất lại những gì ghi "không 
 - (03/11) Lưu đồ từng xưởng (cả xem và Sửa quy trình) chạy **dọc từ trên xuống**: hàng = bước, cột = nhánh. Không quay lại kiểu ngang.
 - (03/11) Mã "ƯU TIÊN": mục mới trong tab Đơn hàng (chỉ chủ sở hữu), chỉ đơn đang làm (bỏ "Đơn hàng HT"), chỉ tính chữ "ưu tiên" (không tính nền vàng), chữ ở ô mã đơn = cả đơn ưu tiên.
 - (03/11) Phần đề xuất quy trình của trưởng / phó phòng ghi "Ban điều hành" duyệt, không dùng chữ "chủ sở hữu" (quyền duyệt hiện vẫn là tài khoản chủ sở hữu – đang hỏi có mở cho tài khoản Ban điều hành không).
+- (03/11) Lưu đồ / bảng cân bằng: ghi đủ chức danh "1 TP · 2 PP · 2 TT · 18 CN = 23", tổng phải khớp danh sách đang làm / chấm công; tải tính theo **công nhân + tổ trưởng có mặt theo điểm danh** (không theo ngày có ghi KPI). Duyệt đề xuất quy trình: giữ chỉ owner.
+- (03/11) Giai đoạn 2 (hạn từng xưởng): chủ dự án mang PDF đề xuất đi họp với GĐ sản xuất + trưởng phòng rồi mới chốt.

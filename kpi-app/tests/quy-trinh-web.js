@@ -17,7 +17,11 @@ const vao = async (p, tk) => { await p.goto(F); await p.waitForSelector('#xtGoiY
     ok(await p.evaluate(() => typeof qtVe === 'undefined' && !window.__qtDaNap), 'chưa mở tab: chưa tải giao diện quy trình (Index nhẹ)');
     await p.evaluate(() => go('qt')); await p.waitForFunction(() => document.querySelector('.qt-ket'), null, { timeout: 30000 });
     let s = await p.evaluate(() => [document.querySelector('.ptitle').textContent, document.querySelector('.qt-ket').textContent, !!document.querySelector('.alert.a-wn'), document.querySelectorAll('.qt-luong .ln').length, document.querySelectorAll('.card table tbody tr').length]);
-    ok(/Quy trình sản xuất/.test(s[0]) && /công nhân trong danh sách/.test(s[1]) && /Để làm 9\.000 sp\/tháng cần khoảng/.test(s[1]) && s[2] && s[3] === 13 && s[4] === 9, 'Toàn nhà máy: câu kết luận, báo nháp, 13 luồng (có POM, ngọn lẻ, đầu gậy lết, tip bán lẻ), bảng 9 xưởng', s);
+    ok(/Quy trình sản xuất/.test(s[0]) && /người trong danh sách đang làm .*trưởng \/ phó phòng.*Theo điểm danh/.test(s[1]) && /Để làm 9\.000 sp\/tháng cần khoảng/.test(s[1]) && s[2] && s[3] === 13 && s[4] === 10, 'Toàn nhà máy: câu kết luận (danh sách + điểm danh), báo nháp, 13 luồng (có POM, ngọn lẻ, đầu gậy lết, tip bán lẻ), bảng 9 xưởng + dòng tổng', s);
+    s = await p.evaluate(() => { const ns = (QT.nhanSu || []), dem = {}; ns.forEach(n => { dem[n.MaXuong] = (dem[n.MaXuong] || 0) + 1; });
+      const o = [...document.querySelectorAll('.qt-nmw .qt-o[data-x]')].map(e => [e.dataset.x, (e.querySelector('.so.nv') || {}).textContent || '']);
+      return { o, dem, sai: o.filter(([x, t]) => !new RegExp('= ' + (dem[x] || 0) + '$').test(t) || !/CN/.test(t)) }; });
+    ok(s.o.length >= 9 && !s.sai.length, '03/11: ô xưởng ghi TP / PP / TT / CN, tổng = danh sách đang làm (khớp chấm công)', s.sai.length ? s : s.o.slice(0, 3));
     const T = await p.evaluate(() => { const t = qtTinh(); return { nut: t.nut.ma, tai: t.nut.tai, ds: t.ds.map(o => [o.ma, +o.can.toFixed(2), o.co, +o.tai.toFixed(3)]) }; });
     ok(T.nut && T.ds.every(o => o[1] >= 0 && o[2] > 0) && T.ds.every(o => o[3] <= T.tai + 1e-3), 'nút thắt = xưởng tải cao nhất', T);
     // 01/11: mục tiêu theo sp/tháng -> % so với nhịp đóng gói thành phẩm; bảng thiếu / thừa người

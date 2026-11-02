@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="vi"><head><meta charset="utf-8"><title>Đề xuất giai đoạn 2 – Hạn từng xưởng và bàn giao</title>
+<style>
+body{font-family:Inter,"Segoe UI",Arial,sans-serif;color:#1b2430;font-size:11.5pt;line-height:1.5;margin:0}
+h1{font-size:20pt;margin:0 0 4px;color:#0b5f59} h2{font-size:14pt;color:#0b5f59;border-bottom:2px solid #cfe6e3;padding-bottom:3px;margin:22px 0 8px;break-after:avoid}
+h3{font-size:12pt;margin:14px 0 6px;break-after:avoid}
+.phu{color:#5d6973;font-size:10.5pt}
+.bia{border:1px solid #cfe6e3;background:#eef7f6;border-radius:10px;padding:14px 16px;margin:10px 0 6px}
+table{border-collapse:collapse;width:100%;margin:6px 0 10px;font-size:10.5pt;break-inside:avoid}
+th,td{border:1px solid #c9d6dc;padding:5px 7px;vertical-align:top;text-align:left} th{background:#e3f1ef}
+td.so{text-align:right;white-space:nowrap}
+.kn{border:2px solid #0b7a73;background:#f2fbfa;border-radius:10px;padding:10px 14px;margin:10px 0;break-inside:avoid}
+.canh{border-left:4px solid #c0302b;background:#fbefee;padding:8px 12px;margin:10px 0;break-inside:avoid}
+.goi{border-left:4px solid #a86400;background:#fbf4e6;padding:8px 12px;margin:10px 0;break-inside:avoid}
+.chuoi{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin:8px 0;font-size:10pt}
+.chuoi span{border:1px solid #9cc9c4;background:#fff;border-radius:7px;padding:4px 8px} .chuoi b{color:#0b5f59}
+.mock{border:1px solid #c9d6dc;border-radius:12px;padding:10px 12px;width:330px;font-size:10pt;background:#fff;break-inside:avoid}
+.mock .d{display:flex;justify-content:space-between;align-items:center;border-top:1px solid #e3e9ec;padding:6px 0}
+.mock .n{border-radius:7px;padding:3px 9px;font-weight:600;font-size:9.5pt} .ok{background:#0b7a73;color:#fff} .lui{background:#fff;border:1px solid #c0302b;color:#c0302b}
+.hop{display:flex;gap:16px;align-items:flex-start;flex-wrap:wrap}
+ol li,ul li{margin:3px 0} .o{display:inline-block;width:12px;height:12px;border:1.5px solid #1b2430;border-radius:2px;margin-right:6px;vertical-align:-1px}
+.trang{break-before:page}
+</style></head><body>
+
+<h1>Đề xuất giai đoạn 2: hạn từng xưởng và bàn giao nhiều đợt</h1>
+<div class="phu">Web KPI sản xuất · Carbon Billiards (RHINO) · Tài liệu họp với Giám đốc sản xuất và các trưởng / phó phòng · 03/11/2026</div>
+
+<div class="bia"><b>Mục tiêu cuộc họp:</b> chọn cách đặt hạn cho từng xưởng và cách theo dõi hàng giao giữa các xưởng, để đơn ra đúng hạn Ban giám đốc đặt.
+Cuối tài liệu có <b>danh sách câu hỏi cần chốt</b> (trang cuối).</div>
+
+<h2>1. Ý tưởng ban đầu</h2>
+<ol>
+<li>Khi nhận đơn, <b>Giám đốc sản xuất đặt hạn (deadline)</b> cho đơn.</li>
+<li>Từng xưởng xem số lượng trong đơn và lượng phôi / bán thành phẩm đang có, rồi <b>tự đặt hạn của xưởng mình</b>. Ví dụ: Phôi Carbon hẹn ngày A giao cho Phôi Thô; xưởng sau dựa vào hạn xưởng trước để đặt hạn của mình.</li>
+<li>Cuối cùng <b>so hạn của Hoàn thiện và Đóng gói với hạn Ban giám đốc</b> để điều chỉnh, sắp xếp.</li>
+<li>Trong lúc sản xuất, các xưởng <b>báo số lượng đã giao cho xưởng kế tiếp</b>. Hàng giao nhiều đợt hoặc mỗi ngày để gối đầu, không chờ làm đủ mới giao.</li>
+</ol>
+
+<h2>2. Hiện trạng trên Sheet "Trạng thái đơn hàng" (đếm ngày 03/11)</h2>
+<p>Sheet đã có sẵn các cột cho từng xưởng: <b>số lũy kế đã qua</b> ("Phôi của Phố", "Sơn của Khoa", "Taro của Linh", "Tùng làm đầu", "UV của Doanh", "Hoàn thiện của Thịnh", "Đóng gói"), <b>"Hỏng cần làm bù"</b> và <b>"Ngày hẹn trả"</b> của từng xưởng.</p>
+<table><tr><th>Chỉ số</th><th class="so">Số dòng</th><th>Ghi chú</th></tr>
+<tr><td>Dòng đơn đang làm (7 tab kênh)</td><td class="so">≈ 790</td><td>Không tính tab "Đơn hàng HT" (đơn đã xong)</td></tr>
+<tr><td>Dòng có ít nhất 1 ngày hẹn của xưởng</td><td class="so">≈ 117 (15%)</td><td>Gần hết ở tab KHO, chủ yếu là ngày hẹn của xưởng Phôi</td></tr>
+<tr><td>Dòng có từ 2 ngày hẹn xưởng trở lên</td><td class="so">≈ 13 (1,6%)</td><td>Xưởng sau Phôi gần như chưa ghi ngày hẹn</td></tr>
+<tr><td>DEALER, WEB LẺ, POD, A ĐÔNG</td><td class="so">≈ 0–2</td><td>Gần như chưa có ngày hẹn nào</td></tr>
+<tr><td>Cột số lũy kế từng xưởng</td><td class="so">một phần</td><td>Có điền nhưng chưa đều giữa các xưởng và các tab</td></tr>
+</table>
+<div class="canh"><b>Kết luận hiện trạng:</b> cách "mỗi xưởng tự gõ ngày hẹn vào Sheet" chưa được thực hiện, dù cột đã có sẵn từ lâu.</div>
+
+<h2>3. Nhận xét</h2>
+<h3>Phần đúng, nên giữ</h3>
+<ul><li>Mỗi đơn có <b>một hạn chính</b> của Ban giám đốc, chia ra thành hạn cho từng xưởng.</li>
+<li>Giao <b>nhiều đợt, gối đầu</b>: đúng với thực tế sản xuất, giúp ra hàng sớm.</li>
+<li>So hạn cuối (Hoàn thiện / Đóng gói) với hạn Ban giám đốc để biết sớm đơn nào sẽ trễ.</li></ul>
+<h3>Phần khó chạy</h3>
+<ul><li><b>Khối lượng nhập tay quá lớn:</b> 790 dòng × 7 xưởng ≈ <b>5.500 ngày hẹn</b>, chưa kể sửa lại mỗi khi trễ.</li>
+<li><b>Trễ dồn xuống:</b> một xưởng trễ thì mọi xưởng sau đều phải hẹn lại.</li>
+<li><b>Mỗi xưởng tự cộng ngày dự phòng:</b> cộng dồn lại làm thời gian giao cả đơn dài ra.</li>
+<li><b>Đơn nhỏ không đáng công:</b> đơn 1 cây ở web lẻ mà phải hẹn 7 lần là lãng phí.</li>
+<li><b>Sheet khó dùng trên điện thoại:</b> bảng rất to, phải kéo ngang tìm dòng, dễ ghi đè nhầm dòng của xưởng khác.</li></ul>
+<h3>Điểm có lợi đã có sẵn</h3>
+<p>Cột <b>số lũy kế đã qua</b> chính là sổ bàn giao. Nếu web chụp lại số này mỗi đêm, hôm sau sẽ biết mỗi xưởng đã giao bao nhiêu trong ngày. Như vậy theo dõi được <b>giao nhiều đợt</b> mà không cần thêm cột mới. Web KPI cũng đã có sản lượng từng xưởng mỗi ngày (nhật ký KPI) để biết <b>năng lực</b> của từng xưởng.</p>
+
+<h2 class="trang">4. Ba phương án</h2>
+<table>
+<tr><th style="width:15%"></th><th>A. Làm đúng ý tưởng gốc trên Sheet</th><th>B. Web tự tính hạn từng xưởng (khuyến nghị)</th><th>C. B + nút "Bàn giao" trên web</th></tr>
+<tr><td><b>Cách làm</b></td><td>Mỗi xưởng tự gõ ngày hẹn và số đã giao vào Sheet cho mọi dòng</td><td>Hạn xưởng = hạn Ban giám đốc trừ thời gian chuẩn của các xưởng phía sau. Web hiện "phải giao trước ngày X". Chỉ <b>đơn lớn</b> (vd. từ 28 cây) và <b>đơn ưu tiên</b> thì trưởng phòng bấm <b>"Kịp"</b> hoặc <b>"Lùi đến…"</b></td><td>Thêm thẻ "Hàng đang ở xưởng tôi" trên web, nút <b>[+ Giao]</b>. Bên giao khai số, bên nhận xác nhận sau</td></tr>
+<tr><td><b>Xưởng phải làm</b></td><td>Gõ hạn cho mọi dòng (≈ 5.500 ô) và cập nhật số</td><td>Vẫn ghi số lũy kế vào Sheet như hiện nay. Xác nhận khoảng 10–15% số dòng (đơn lớn, ưu tiên)</td><td>Nhập trên web, khoảng 2 phút/ngày, mỗi lần giao không quá 4 lần chạm</td></tr>
+<tr><td><b>Ưu điểm</b></td><td>Không phải làm gì thêm trên web</td><td>Ít việc nhất, có kết quả sớm. Tự báo đơn sắp trễ ở từng xưởng</td><td>Chính xác nhất, chặn được số vô lý (vd. số đã qua lớn hơn số đặt)</td></tr>
+<tr><td><b>Nhược điểm</b></td><td>Dữ liệu cho thấy khó duy trì, dễ bỏ giữa chừng</td><td>Chính xác tới đâu phụ thuộc vào việc xưởng ghi số lũy kế đều đặn</td><td>Tốn công làm hơn. Cần quyết định web có được ghi vào Sheet đơn không</td></tr>
+</table>
+
+<h3>Ví dụ cách web tính hạn ngược (phương án B)</h3>
+<p class="phu">Số ngày dưới đây chỉ để minh họa; thời gian chuẩn thật sẽ đo từ dữ liệu 3 tuần đầu và chốt với các trưởng phòng.</p>
+<p>Đơn có hạn Ban giám đốc <b>30/11</b>. Thời gian chuẩn ví dụ: Đóng gói 1 ngày, Hoàn thiện 2, In UV 1, Sơn 3, Làm đầu / Tip 2, Ngọn Taro 2, Phôi Thô 2, Phôi Carbon 3.</p>
+<div class="chuoi"><span><b>Phôi Carbon</b> giao trước 21/11</span>→<span><b>Phôi Thô</b> giao trước 23/11</span>→<span>Chuôi: <b>Sơn</b> trước 26/11 → <b>In UV</b> trước 27/11</span><span>Ngọn: <b>Taro</b> trước 25/11 → <b>Tip</b> trước 27/11</span>→<span><b>Hoàn thiện</b> trước 29/11</span>→<span><b>Đóng gói</b> xong 30/11</span></div>
+<p>Hai nhánh chuôi và ngọn cùng phải về Hoàn thiện trước 27/11. Nếu số lũy kế của một xưởng chưa đủ khi đã qua "hạn của xưởng", web tô <b style="color:#c0302b">đỏ</b>; còn 1–2 ngày thì tô <b style="color:#a86400">vàng</b>.</p>
+
+<h3>Trưởng phòng sẽ thấy gì (phác thảo)</h3>
+<div class="hop"><div class="mock"><b>Việc hôm nay · Hàng đang ở xưởng Sơn (12 dòng)</b>
+<div class="d"><span>KHO-21/10 · Voyager 12.5<br><small>phải giao trước 26/11 · còn 18/28</small></span><span class="n ok">Kịp</span></div>
+<div class="d"><span>OEM-12/10 · Gậy nhảy TK đỏ<br><small style="color:#c0302b">phải giao trước 04/11 · còn 41/60</small></span><span class="n lui">Lùi đến…</span></div>
+<div class="d"><span>DEALER-28/10 · Komet 2<br><small>phải giao trước 15/11 · còn 40/40</small></span><span class="n ok">Kịp</span></div></div>
+<div style="flex:1;min-width:230px;font-size:10.5pt"><ul><li>Thẻ nằm trong <b>Việc hôm nay</b>, ngay cạnh phần duyệt KPI, nên trưởng phòng không phải mở thêm trang.</li><li>Xếp theo hạn của xưởng, đơn ưu tiên lên đầu, nhóm theo loại gậy (đánh / nhảy / phá) và chất liệu.</li><li>Ngày hẹn web điền sẵn; trưởng phòng chỉ bấm khi <b>không kịp</b>.</li><li>Nhắc lúc 16h nếu còn đơn lớn chưa xác nhận.</li></ul></div></div>
+
+<h2 class="trang">5. Lộ trình đề xuất</h2>
+<table><tr><th style="width:16%">Giai đoạn</th><th>Làm gì</th><th>Đo để biết hiệu quả</th></tr>
+<tr><td><b>2a</b><br>~3 tuần</td><td>Phương án B. Web chụp số lũy kế mỗi đêm, tự tính hạn ngược, tô đỏ / vàng đơn sắp trễ ở từng xưởng. Đo thời gian thực của mỗi xưởng để chỉnh thời gian chuẩn.</td><td>≥ 90% đơn đang chạy có số cập nhật trong 48 giờ; thời gian chuẩn lệch thực tế ≤ 1 ngày</td></tr>
+<tr><td><b>2b</b><br>~4 tuần</td><td>Quản lý quanh <b>xưởng nghẽn</b> (xưởng tải cao nhất trên lưu đồ): mỗi xưởng có "danh sách làm trước" mỗi ngày theo hạn ngược và đơn ưu tiên; thả phôi theo nhịp của xưởng nghẽn, giữ 2–3 ngày hàng chờ trước nó.</td><td>Tỷ lệ giao đúng hạn tăng so với trước khi áp; hàng chờ trước xưởng nghẽn ổn định</td></tr>
+<tr><td><b>2c</b><br>khi cần</td><td>Phương án C: bên giao khai, bên nhận xác nhận trên web; theo dõi hỏng và làm bù theo từng đợt giao.</td><td>Chênh lệch số giao – nhận dưới 2%</td></tr></table>
+<div class="goi"><b>Điều kiện bắt buộc:</b> mọi dòng đơn phải có <b>hạn của Ban giám đốc</b> trong cột Deadline. Thiếu hạn thì web không tính được hạn ngược và không đo được tỷ lệ đúng hạn.</div>
+
+<h3>Mỗi xưởng cần ghi gì mỗi ngày (giai đoạn 2a)</h3>
+<ul><li><b>Chỉ cần:</b> số lũy kế đã qua và số hỏng của những đơn có hàng đi qua xưởng hôm nay (thường 10–30 dòng), vào đúng cột của xưởng mình trong Sheet như hiện nay.</li>
+<li><b>Không bắt</b> các xưởng gõ ngày hẹn.</li>
+<li>Đơn lớn / ưu tiên: bấm "Kịp" hoặc "Lùi đến…" trên web.</li></ul>
+
+<h3>Ý kiến chuyên gia đã tham khảo</h3>
+<ul><li><b>Chuyên gia vận hành (Lean / Six Sigma):</b> không nên để mỗi xưởng tự hẹn nối tiếp; nên tính hạn ngược từ hạn Ban giám đốc; chỉ nhập tay khoảng 10–15% số dòng; lấy số giao từng đợt từ số lũy kế; tập trung vào xưởng nghẽn.</li>
+<li><b>Mô phỏng trưởng xưởng (người dùng điện thoại, đứng chuyền cả ngày):</b> sẽ bỏ nếu phải gõ vào Sheet; chấp nhận nếu mỗi lần không quá 4 lần chạm, khoảng 20 giây, cả ngày không quá 2 phút; thích web điền sẵn ngày, chỉ bấm khi không kịp; muốn thẻ nằm trong Việc hôm nay và được nhắc lúc 16h.</li></ul>
+
+<h2 class="trang">6. Câu hỏi cần chốt trong cuộc họp</h2>
+<table><tr><th style="width:4%">#</th><th style="width:46%">Câu hỏi</th><th>Gợi ý / lựa chọn</th><th style="width:20%">Quyết định</th></tr>
+<tr><td>1</td><td>Chọn phương án nào?</td><td><span class="o"></span>A &nbsp; <span class="o"></span>B (khuyến nghị) &nbsp; <span class="o"></span>C</td><td></td></tr>
+<tr><td>2</td><td>Ai ghi số lũy kế của từng xưởng vào Sheet? Ghi lúc nào trong ngày?</td><td>Gợi ý: trưởng / phó phòng hoặc 1 người được giao mỗi xưởng, trước 16h30</td><td></td></tr>
+<tr><td>3</td><td>Thời gian chuẩn của mỗi xưởng (số ngày làm 1 lô)?</td><td><span class="o"></span>Web đề xuất từ dữ liệu 3 tuần, trưởng phòng sửa &nbsp; <span class="o"></span>Trưởng phòng đưa số</td><td></td></tr>
+<tr><td>4</td><td>"Đơn lớn" phải xác nhận tính từ bao nhiêu cây?</td><td>Gợi ý 28 cây (cộng mọi đơn ưu tiên)</td><td></td></tr>
+<tr><td>5</td><td>Mọi dòng đơn có hạn của Ban giám đốc chưa? Ai bổ sung khi thiếu?</td><td>Gợi ý: Giám đốc sản xuất, ngay khi nhận đơn</td><td></td></tr>
+<tr><td>6</td><td>Web có được <b>ghi</b> vào Sheet đơn không? (hiện chỉ đọc)</td><td>B không cần ghi; C cần ghi hoặc web thành nơi nhập chính</td><td></td></tr>
+<tr><td>7</td><td>Có gắn tỷ lệ giao đúng hẹn vào KPI trưởng phòng không?</td><td>Gợi ý: chạy thử 2–3 tháng, chỉ hiển thị, chưa tính điểm</td><td></td></tr>
+<tr><td>8</td><td>Ngày bắt đầu chạy thử và người theo dõi chung?</td><td></td><td></td></tr>
+</table>
+<p class="phu">Sau cuộc họp, chỉ cần gửi lại các quyết định ở cột cuối để triển khai.</p>
+</body></html>

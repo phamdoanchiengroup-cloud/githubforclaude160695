@@ -31,7 +31,7 @@ Liên quan: [[Lần dán lên Apps Script]] · [[Quyết định của chủ d�
 - (02/11, đã làm) 6 yêu cầu mới xong, chờ chủ dự án bấm 2-CAP-NHAT.bat rồi xem: Đơn hàng → Đơn cần chú ý (thẻ quá hạn > 30 ngày), Thống kê, Việc theo xưởng; Quy trình → Sửa quy trình (kéo thả / ↑↓). Cần chủ dự án cho biết **chất liệu các chuôi nhảy / phá nhảy / Vũ trụ / Eclipse / Carom** (đang "Chưa rõ"). Muốn kiểm số trên đơn thật: tải file Excel đơn hàng lên phiên (Sheet quá lớn, Drive không tải được). – [[KPI Quy trình sản xuất]]
 - (02/11) Chủ dự án giao 6 yêu cầu mới cho phiên sau (đơn quá hạn > 30 ngày, 2 nhãn chất liệu chuôi/ngọn, thống kê theo chuôi/ngọn, thống kê Lean Six Sigma, sửa nhãn chất liệu Việc theo xưởng, Sửa quy trình dễ dùng hơn) – xem [[Bàn giao phiên]].
 
-- (03/11) Giai đoạn 2 hạn từng xưởng + bàn giao: chọn phương án (khuyến nghị B), trả lời 5 câu hỏi (ai ghi số lũy kế, cho web ghi Sheet đơn không, thời gian chuẩn mỗi xưởng, ngưỡng đơn lớn, có gắn tỷ lệ giao đúng hẹn vào KPI trưởng phòng không). – [[KPI Gộp công đoạn và tiến độ BTP]]
+- (03/11) Họp GĐ sản xuất + trưởng phòng với PDF **De-xuat-giai-doan-2.pdf**, ghi quyết định ở trang cuối rồi gửi lại. Giai đoạn 2 hạn từng xưởng + bàn giao: chọn phương án (khuyến nghị B), trả lời 5 câu hỏi (ai ghi số lũy kế, cho web ghi Sheet đơn không, thời gian chuẩn mỗi xưởng, ngưỡng đơn lớn, có gắn tỷ lệ giao đúng hẹn vào KPI trưởng phòng không). – [[KPI Gộp công đoạn và tiến độ BTP]]
 
 ## Câu hỏi 22/10
 

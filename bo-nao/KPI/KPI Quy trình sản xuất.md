@@ -476,3 +476,11 @@ Chủ dự án trả lời: đơn quá hạn > 30 ngày **mở sẵn** ở thẻ
 - Đổi chữ phía trưởng phòng: "Gửi đề xuất cho Ban điều hành duyệt", lời nhắn / trạng thái / thông báo máy chủ "Ban điều hành". PDF mục 2.6 còn chữ cũ.
 - Kiểm thử: quy-trinh-web 102/102, quy-trinh 76/76, manh-web 8/8, don-hang 83/87 (4 lỗi chụp 9h có sẵn); xem thử với dữ liệu giả có chữ ưu tiên: không tràn 390px, không lỗi JS.
 
+## Đợt 11 (03/11): số người theo chức danh + điểm danh; PDF đề xuất giai đoạn 2
+- Chủ dự án hỏi vì sao số người trên lưu đồ lệch chấm công. Nguyên nhân bản cũ: (1) không tính TP / PP / quản lý; (2) "có mặt" = số ngày có dòng nhật ký KPI ÷ số ngày sản xuất – ngày có mặt mà không ghi KPI bị coi như vắng; (3) số làm tròn. Ví dụ Hoàn thiện: danh sách 23 = 1 TP + 2 PP + 2 TT + 18 CN; lưu đồ cũ ghi ~15 (có ghi KPI), điểm danh ~20 công nhân có mặt.
+- Máy chủ `layQuyTrinh`: `diemDanh[MaNV]` = ngày sản xuất trong kỳ (từ NgayVaoLam) − phần nghỉ ở `DiemDanhNghi` (1 − Cong); trưởng phòng chỉ nhận người xưởng mình.
+- Web `qtTinh`: đếm `tp / pp / tt / cn / tong`, `qtNhanNguoi` → "1 TP · 2 PP · 2 TT · 18 CN = 23"; `coMat` theo điểm danh, `coNK` theo nhật ký (câu kết luận báo "~N người có mặt nhưng chưa ghi nhận sản lượng"); ô xưởng 2 dòng (danh sách / có mặt · cần); bảng cân bằng có danh sách dưới tên xưởng + **dòng Tổng nhà máy**; "Cách tính" cập nhật.
+- Số mẫu (bản xem thử 01/11, 30 ngày): 181 người = 27 TP/PP + 154 CN/TT; có mặt TB 143; có ghi KPI ~125.
+- PDF đề xuất giai đoạn 2 (6 trang, nguồn `kpi-app/tests/huong-dan/de-xuat-giai-doan-2.html`): ý tưởng gốc, hiện trạng Sheet, nhận xét, 3 phương án, ví dụ hạn ngược, phác thảo thẻ trưởng phòng, lộ trình 2a/2b/2c, ý kiến chuyên gia, 8 câu hỏi cần chốt có ô ghi quyết định.
+- Kiểm thử: quy-trinh-web 104/104 (thêm: ô xưởng ghi TP/PP/TT/CN, tổng = danh sách đang làm), quy-trinh 76/76, manh-web 8/8.
+

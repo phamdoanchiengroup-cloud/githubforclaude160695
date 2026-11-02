@@ -176,6 +176,7 @@ svg.qt-duong text{fill:#ffc27a;font-size:11.5px;font-weight:700;letter-spacing:.
 .qt-o .tx{min-width:0;display:flex;flex-direction:column;gap:3px}
 .qt-o .tn{font-size:14px;font-weight:650;line-height:1.2}
 .qt-o .so{font-size:12.5px;color:var(--ink2)}
+.qt-o .so.nv{font-size:11.5px;color:var(--ink3);white-space:normal;font-weight:600} .qt-nm .qt-o .d2 .so{white-space:normal}
 .qt-o .d2{display:flex;align-items:center;justify-content:space-between;gap:6px;flex-wrap:wrap}
 .qt-o .qt-bd{min-width:0;padding:1px 7px;font-size:11.5px}
 .qt-o .vach{position:absolute;left:0;right:0;bottom:0;height:3px;background:rgba(255,255,255,.06)}
@@ -327,13 +328,19 @@ var QT_CD_DONGGOI=['DG-DONGGOITP','DG-DONLE-GAY-NGON','DG-DONLE-NGON','DG-DONLE-
 function qtSlNayDo(){ var sl=0; QT_CD_DONGGOI.forEach(function(m){ var t=(QT.thongKe||{})[m]; if(t&&t.sl>0) sl+=t.sl; }); return sl/Math.max(1,QT.soNgaySX||1); }
 function qtSlNay(){ return QTS.slNay>0?QTS.slNay:qtSlNayDo(); }
 function qtMT(){ var n=qtSlNay(), y=QTS.slThang/Math.max(1,QTS.ngayThang); if(n>0) QTS.mucTieu=Math.max(10,Math.min(500,Math.round(y/n*100))); return QTS.mucTieu; }
+function qtNhanNguoi(o){ var a=[]; if(o.tp)a.push(o.tp+' TP'); if(o.pp)a.push(o.pp+' PP'); if(o.ql-o.tp-o.pp>0)a.push((o.ql-o.tp-o.pp)+' QL'); if(o.tt)a.push(o.tt+' TT'); a.push(o.cn+' CN'); return a.join(' · ')+' = '+o.tong; }
 function qtTinh(){
   qtMT();
   var N=Math.max(1,QT.soNgaySX||1), mt=QTS.mucTieu/100, gioNguoi=QTS.gioCoMat*QTS.hieuSuat, nc=QT.ngayCong||{};
   var cd={}, x={}, gcTot={};
-  (QT.xuong||[]).forEach(function(p){ x[p.MaXuong]={ma:p.MaXuong,gio:0,can:0,co:0,coMat:0,ql:0,cd:[],khongDM:0}; });
-  (QT.nhanSu||[]).forEach(function(n){ var o=x[n.MaXuong]; if(!o)return;
-    if(/^\s*(trưởng phòng|phó phòng|quản lý|giám đốc)/i.test(n.ChucDanh)) o.ql++; else { o.co++; o.coMat+=Math.min(1,(nc[n.MaNV]||0)/N); } /* tổ trưởng vẫn tính là người làm */ });
+  (QT.xuong||[]).forEach(function(p){ x[p.MaXuong]={ma:p.MaXuong,gio:0,can:0,co:0,coMat:0,coNK:0,ql:0,tp:0,pp:0,tt:0,cn:0,tong:0,cd:[],khongDM:0}; });
+  /* 03/11 (chủ dự án): tổng người = danh sách "Đang làm" (khớp chấm công), ghi rõ TP / PP / tổ trưởng / công nhân;
+     có mặt = theo ĐIỂM DANH (QT.diemDanh: ngày có mặt trong kỳ); coNK = có mặt theo ngày có ghi KPI (để thấy phần có mặt mà không ghi nhận sản lượng) */
+  var dd=QT.diemDanh||null;
+  (QT.nhanSu||[]).forEach(function(n){ var o=x[n.MaXuong]; if(!o)return; var cd=String(n.ChucDanh||''); o.tong++;
+    if(/^\s*trưởng phòng/i.test(cd)) { o.tp++; o.ql++; } else if(/^\s*phó phòng/i.test(cd)) { o.pp++; o.ql++; } else if(/^\s*(quản lý|giám đốc)/i.test(cd)) o.ql++;
+    else { if(/tổ trưởng/i.test(cd)) o.tt++; else o.cn++; o.co++; var nk=Math.min(1,(nc[n.MaNV]||0)/N); o.coNK+=nk; o.coMat+=dd?Math.min(1,(dd[n.MaNV]||0)/N):nk; } /* tổ trưởng vẫn tính là người làm */ });
+  Object.keys(x).forEach(function(k){ x[k].nhan=qtNhanNguoi(x[k]); });
   var ten={}; (QT.nhanSu||[]).forEach(function(n){ ten[n.MaNV]=n.HoTen; });
   // giờ chuẩn của từng người (để chia thời gian có mặt của họ cho các công đoạn – không đếm 1 người đủ ở mọi công đoạn)
   Object.keys(QT.thongKe).forEach(function(m){ var dm=(QT.cdMap[m]||{}).DM; if(!(dm>0))return;
@@ -430,7 +437,9 @@ function qtVeNM(T){
   var ns=T.ds.filter(function(o){return o.nangSuat>0}).map(function(o){return o.nangSuat});
   if(!n.ma) h+='Chưa có sản lượng trong kỳ này để tính.';
   else {
-    h+='Nhà máy có <b>'+tongCo+'</b> công nhân trong danh sách, trung bình <b>'+qtSo(tongMat,0)+'</b> người có mặt làm hàng mỗi ngày. ';
+    var tongDS=T.ds.reduce(function(a,o){return a+o.tong},0), tongQL=T.ds.reduce(function(a,o){return a+o.ql},0), tongNK=T.ds.reduce(function(a,o){return a+o.coNK},0);
+    h+='Nhà máy có <b>'+tongDS+'</b> người trong danh sách đang làm ('+tongQL+' trưởng / phó phòng + <b>'+tongCo+'</b> công nhân và tổ trưởng). Theo điểm danh, trung bình <b>'+qtSo(tongMat,0)+'</b> công nhân có mặt mỗi ngày'+
+      (QT.diemDanh&&tongMat-tongNK>=1?'; trong đó khoảng <b>'+qtSo(tongNK,0)+'</b> người có ghi sản lượng KPI – <b class="wn">~'+qtSo(tongMat-tongNK,0)+' người có mặt nhưng chưa ghi nhận sản lượng</b> (hỗ trợ, làm lại, học việc, chờ hàng hoặc quên ghi)':'')+'. ';
     var tongCan=T.ds.reduce(function(a,o){return a+o.can},0), slN0=qtSlNay();
     h+='Để làm <b>'+qtSo(QTS.slThang,0)+' sp/tháng</b> cần khoảng <b class="'+(tongCan>tongMat?'bd':'ok')+'">'+qtSo(tongCan,0)+'</b> người có mặt mỗi ngày'+(tongCan>tongMat?' – thiếu <b class="bd">~'+Math.ceil(tongCan-tongMat)+'</b>':' – đủ')+' (xem bảng "Cân bằng các xưởng"). ';
     h+='Giữ số người có mặt như hiện nay và làm đạt <b>'+Math.round(QTS.hieuSuat*100)+'%</b> định mức, nhà máy làm được tối đa khoảng <b class="'+(n.toiDa<QTS.mucTieu?'bd':'ok')+'">'+(slN0>0?qtSo(Math.round(n.toiDa/100*slN0*QTS.ngayThang/100)*100,0)+' sp/tháng</b> ('+Math.round(n.toiDa)+'% nhịp hiện nay)':Math.round(n.toiDa)+'%</b> sản lượng của kỳ này');
@@ -444,7 +453,7 @@ function qtVeNM(T){
   }
   var slN=qtSlNay(), yN=QTS.slThang/Math.max(1,QTS.ngayThang);
   h+='</div><div style="font-size:12.5px;color:var(--ink3)">Mục tiêu <b>'+qtSo(QTS.slThang,0)+'</b> sp/tháng ÷ '+QTS.ngayThang+' ngày = <b>~'+qtSo(yN,0)+'</b> sp/ngày'+(slN>0?' = <b>'+QTS.mucTieu+'%</b> nhịp hiện nay (~'+qtSo(slN,0)+' sp/ngày '+(QTS.slNay>0?'tự nhập':'theo các công đoạn đóng gói thành phẩm + đóng đơn lẻ trong kỳ, gồm cả tay nối')+')':' – chưa đo được nhịp hiện nay, đang dùng mục tiêu '+QTS.mucTieu+'%; hãy nhập ô "Hiện nay làm"')+'. Sửa 3 ô trên để thử mức khác. Độ cân bằng giữa các xưởng: <b>'+qtPt(T.lbr)+'</b> (dưới 85% là lệch nhiều).</div></div>';
-  h+='<div class="card"><div style="font-weight:600;margin-bottom:6px">Lưu đồ toàn nhà máy</div><div style="font-size:12px;color:var(--ink3);margin-bottom:8px">Số = người có mặt / cần (−: thiếu), huy hiệu = tải. Bấm ô xưởng để xem lưu đồ xưởng.</div>'+qtVsm(T)+'</div>';
+  h+='<div class="card"><div style="font-weight:600;margin-bottom:6px">Lưu đồ toàn nhà máy</div><div style="font-size:12px;color:var(--ink3);margin-bottom:8px">Dòng 1 = người trong danh sách (TP trưởng phòng · PP phó phòng · TT tổ trưởng · CN công nhân; tổng khớp chấm công). Dòng 2 = công nhân + tổ trưởng có mặt TB theo điểm danh / cần (−: thiếu), huy hiệu = tải. Bấm ô xưởng để xem lưu đồ xưởng.</div>'+qtVsm(T)+'</div>';
   // luồng bán thành phẩm
   h+='<details class="card"><summary style="cursor:pointer;font-weight:600">Luồng bán thành phẩm giữa các xưởng ('+QT.luong.length+' luồng)</summary><div class="qt-luong" style="margin-top:8px">';
   var thu=qtThuTuX(), vt={}; thu.forEach(function(x,i){vt[x]=i});
@@ -457,16 +466,19 @@ function qtVeNM(T){
   h+='<div class="card"><div style="font-weight:600;margin-bottom:8px">Cân bằng các xưởng</div><div class="tw"><table><thead><tr><th>Xưởng</th><th class="qt-so">Giờ chuẩn/ngày</th><th class="qt-so">Cần có mặt</th><th class="qt-so">Có mặt / ngày</th><th class="qt-so">Thiếu (+) / thừa (−)</th><th class="qt-so">Cần trong danh sách</th><th class="qt-so">Năng suất</th><th>Tải</th><th class="qt-so">Làm tối đa</th><th>Máy</th></tr></thead><tbody>';
   thu.forEach(function(k){ var o=T.x[k]; if(!o)return;
     var may=(QT.may||{})[k]||{}, tm=Object.keys(may).reduce(function(a,b){return a+may[b]},0);
-    h+='<tr><td><a href="#" data-x="'+esc(k)+'" onclick="QTX=this.dataset.x;QTV=\'x\';qtVe();return false">'+esc(qtTenX(k))+'</a>'+(o===T.nut&&o.tai>0?'<span class="qt-tag bd">NÚT THẮT</span>':'')+(o.khongDM?'<span class="qt-tag mo">'+o.khongDM+' CĐ chưa có ĐM</span>':'')+'</td>'+
-      '<td class="qt-so">'+qtSo(o.gio)+'</td><td class="qt-so">'+qtSo(o.can)+'</td><td class="qt-so" title="'+o.co+' người trong danh sách'+(o.ql?', chưa tính '+o.ql+' trưởng / phó phòng':'')+'">'+qtSo(o.coMat)+' <small style="color:var(--ink3)">/ '+o.co+'</small></td>'+(function(){ var co=o.coMat>0.5?o.coMat:o.co, d=o.can-co, tl=o.co?Math.min(1,co/o.co):1; return '<td class="qt-so '+(d>0.5?'bad':(d<-0.5?'':''))+'"><b class="'+(d>0.5?'bd':'ok')+'">'+(d>0?'+':'−')+qtSo(Math.abs(d))+'</b></td><td class="qt-so" title="cần có mặt ÷ tỷ lệ đi làm '+qtPt(tl)+'">'+Math.ceil(o.can/(tl||1)-1e-9)+' <small style="color:var(--ink3)">/ '+o.co+'</small></td>'; })()+'<td class="qt-so">'+(o.nangSuat?qtPt(o.nangSuat):'–')+'</td>'+
+    h+='<tr><td><a href="#" data-x="'+esc(k)+'" onclick="QTX=this.dataset.x;QTV=\'x\';qtVe();return false">'+esc(qtTenX(k))+'</a>'+(o===T.nut&&o.tai>0?'<span class="qt-tag bd">NÚT THẮT</span>':'')+(o.khongDM?'<span class="qt-tag mo">'+o.khongDM+' CĐ chưa có ĐM</span>':'')+'<div style="font-size:11.5px;color:var(--ink3)">'+esc(o.nhan)+'</div></td>'+
+      '<td class="qt-so">'+qtSo(o.gio)+'</td><td class="qt-so">'+qtSo(o.can)+'</td><td class="qt-so" title="có mặt TB theo điểm danh / '+o.co+' công nhân + tổ trưởng; có ghi KPI ~'+qtSo(o.coNK)+'">'+qtSo(o.coMat)+' <small style="color:var(--ink3)">/ '+o.co+'</small></td>'+(function(){ var co=o.coMat>0.5?o.coMat:o.co, d=o.can-co, tl=o.co?Math.min(1,co/o.co):1; return '<td class="qt-so '+(d>0.5?'bad':(d<-0.5?'':''))+'"><b class="'+(d>0.5?'bd':'ok')+'">'+(d>0?'+':'−')+qtSo(Math.abs(d))+'</b></td><td class="qt-so" title="cần có mặt ÷ tỷ lệ đi làm '+qtPt(tl)+'">'+Math.ceil(o.can/(tl||1)-1e-9)+' <small style="color:var(--ink3)">/ '+o.co+'</small></td>'; })()+'<td class="qt-so">'+(o.nangSuat?qtPt(o.nangSuat):'–')+'</td>'+
       '<td><div style="display:flex;gap:6px;align-items:center"><div class="qt-thanh" style="flex:1"><i class="'+qtMuc(o.tai)+'" style="width:'+Math.min(100,o.tai*100)+'%"></i></div><span class="qt-tai '+qtMuc(o.tai)+'">'+qtPt(o.tai)+'</span></div></td>'+
       '<td class="qt-so">'+(o.toiDa?Math.round(o.toiDa)+'%':'–')+'</td><td title="'+esc(Object.keys(may).map(function(l){return may[l]+' '+l}).join(', '))+'">'+tm+'</td></tr>';
   });
+  (function(){ var a=thu.map(function(k){return T.x[k]}).filter(Boolean), S=function(f){return a.reduce(function(s,o){return s+f(o)},0)}, t={tp:S(function(o){return o.tp}),pp:S(function(o){return o.pp}),ql:S(function(o){return o.ql}),tt:S(function(o){return o.tt}),cn:S(function(o){return o.cn}),tong:S(function(o){return o.tong})};   /* 03/11: dòng tổng nhà máy */
+    var can=S(function(o){return o.can}), mat=S(function(o){return o.coMat}), co=S(function(o){return o.co});
+    h+='<tr class="dh-khoi"><td>Tổng nhà máy<div style="font-size:11.5px;font-weight:400;color:var(--ink3)">'+esc(qtNhanNguoi(t))+'</div></td><td class="qt-so">'+qtSo(S(function(o){return o.gio}))+'</td><td class="qt-so">'+qtSo(can)+'</td><td class="qt-so">'+qtSo(mat)+' <small style="color:var(--ink3)">/ '+co+'</small></td><td class="qt-so"><b class="'+(can-mat>0.5?'bd':'ok')+'">'+(can-mat>0?'+':'−')+qtSo(Math.abs(can-mat))+'</b></td><td colspan="5"></td></tr>'; })();
   h+='</tbody></table></div></div>';
   h+='<details class="card"><summary style="cursor:pointer;font-weight:600">Cách tính (bấm để xem)</summary><div style="font-size:13px;color:var(--ink2);line-height:1.6;margin-top:8px">'+
     '<p><b>Giờ chuẩn</b> = sản lượng ÷ định mức của từng công đoạn, nên phôi, cây, cái, bộ… đều quy về giờ-người và cộng được với nhau.</p>'+
     '<p><b>CN cần</b> = giờ chuẩn mỗi ngày × mục tiêu ÷ (giờ có mặt × hiệu suất). Hiệu suất mặc định 85% vì định mức đang đặt ở mức 90% người làm được (P75), không phải mức trung bình.</p>'+
-    '<p><b>Có mặt / ngày</b> = số ngày-người có dòng nhật ký ÷ số ngày có sản xuất (vắng, nghỉ, chuyển xưởng đã bị trừ); số sau dấu "/" là người trong danh sách "Đang làm" (công nhân, tổ trưởng, kỹ thuật – không tính trưởng / phó phòng). <b>Tải</b> = cần ÷ có mặt. Xưởng tải cao nhất là nút thắt; <b>làm tối đa</b> = mục tiêu ÷ tải.</p>'+
+    '<p><b>Danh sách</b> (dưới tên xưởng) = mọi người "Đang làm" của xưởng: TP trưởng phòng, PP phó phòng, TT tổ trưởng, CN công nhân (gồm kỹ thuật); tổng khớp bảng chấm công. <b>Có mặt / ngày</b> = ngày có mặt theo <b>điểm danh</b> (ngày sản xuất từ ngày vào làm, trừ ngày / nửa ngày nghỉ ghi ở điểm danh) ÷ số ngày có sản xuất, chỉ tính công nhân + tổ trưởng (trưởng / phó phòng quản lý, không tính vào người làm hàng); số sau dấu "/" là số công nhân + tổ trưởng trong danh sách. <b>Tải</b> = cần ÷ có mặt. Xưởng tải cao nhất là nút thắt; <b>làm tối đa</b> = mục tiêu ÷ tải.</p>'+
     '<p><b>Năng suất</b> = giờ chuẩn ÷ (người có mặt × giờ có mặt): phần thời gian có mặt biến thành hàng đạt định mức. Thấp nghĩa là thời gian mất ở chờ hàng, hỗ trợ, làm lại, việc chưa có định mức, hoặc định mức chưa sát.</p>'+
     '<p>Ở từng công đoạn, mỗi người được chia thời gian có mặt theo phần việc họ thực làm (không đếm 1 người đủ ở mọi công đoạn). "Biết làm" vẫn đếm đủ để báo rủi ro "chỉ 1 người".</p>'+
     '<p>Sản lượng lấy theo cơ cấu hàng thực tế đã làm trong kỳ (không cần khai từng gậy cần bao nhiêu khúc). Nhật ký chưa ghi máy nên chưa tính giới hạn máy; cột Máy chỉ để tham khảo.</p></div></details>';
@@ -633,7 +645,8 @@ function qtOXuong(x,T,nutNM,lop){
   return '<button type="button" class="qt-o '+(lop||'')+(o===nutNM?' nut':'')+'" style="grid-area:'+vung+'" data-x="'+esc(x)+'" onclick="QTX=this.dataset.x;QTV=\'x\';QTMoNhom=\'\';qtVe()" title="Bấm để xem lưu đồ xưởng">'+
     '<span class="ic"><svg viewBox="0 0 24 24" aria-hidden="true">'+(QT_IC[x]||'')+'</svg></span>'+
     '<span class="tx">'+(o===nutNM?'<span class="qt-the-nut">NÚT THẮT</span>':'')+'<span class="tn">'+esc(qtTenX(x))+'</span>'+
-    '<span class="d2"><span class="so">'+Math.round(co)+'/'+Math.round(o.can)+' người'+(thieu>=0.5?' <b style="color:var(--red)">−'+Math.ceil(thieu-1e-9)+'</b>':'')+'</span>'+qtBd(o.tai,o.can)+'</span>'+(x==='NGONTIP'?'<span class="le">ngọn lẻ → Đóng gói</span>':'')+'</span>'+
+    '<span class="so nv" title="TP: trưởng phòng · PP: phó phòng · TT: tổ trưởng · CN: công nhân – tổng khớp danh sách đang làm / chấm công">'+esc(o.nhan)+'</span>'+
+    '<span class="d2"><span class="so">có mặt '+qtSo(co,0)+' / cần '+qtSo(o.can,0)+(thieu>=0.5?' <b style="color:var(--red)">−'+Math.ceil(thieu-1e-9)+'</b>':'')+'</span>'+qtBd(o.tai,o.can)+'</span>'+(x==='NGONTIP'?'<span class="le">ngọn lẻ → Đóng gói</span>':'')+'</span>'+
     '<span class="vach"><i class="'+m+'" style="width:'+Math.min(100,o.tai*100)+'%"></i></span></button>';
 }
 function qtVsm(T){
@@ -717,7 +730,7 @@ function qtVeX(T){
   var o=T.x[QTX]; if(!o) return '<div class="pdesc">Chưa chọn xưởng.</div>';
   var cds=o.cd.slice().sort(function(a,b){return (QT_THU_NHANH.indexOf(a.nhanh)-QT_THU_NHANH.indexOf(b.nhanh))||(a.buoc-b.buoc)});
   var yeu=o.cd.filter(function(c){return c.can>0.05&&!QT_NHANH_NGOAI[c.nhanh]}).sort(function(a,b){return b.tai-a.tai}).slice(0,3);
-  var h='<div class="card"><div class="qt-ket">'+esc(qtTenX(QTX))+': cần <b>'+qtSo(o.can)+'</b> người, có mặt TB <b>'+qtSo(o.coMat)+'</b>/'+o.co+' → tải <b class="'+(qtMuc(o.tai)||'ok')+'">'+qtPt(o.tai)+'</b>'+(o.thieu?', thiếu khoảng <b class="bd">'+o.thieu+' người</b>':'')+'.</div>';
+  var h='<div class="card"><div style="font-size:12.5px;color:var(--ink3);margin-bottom:4px">Danh sách: '+esc(o.nhan)+' người (TP trưởng phòng · PP phó phòng · TT tổ trưởng · CN công nhân)</div><div class="qt-ket">'+esc(qtTenX(QTX))+': cần <b>'+qtSo(o.can)+'</b> người, công nhân + tổ trưởng có mặt TB (điểm danh) <b>'+qtSo(o.coMat)+'</b>/'+o.co+' → tải <b class="'+(qtMuc(o.tai)||'ok')+'">'+qtPt(o.tai)+'</b>'+(o.thieu?', thiếu khoảng <b class="bd">'+o.thieu+' người</b>':'')+'.</div>';
   var ra=qtRa(QTX); if(ra.ma.length) h+='<div style="font-size:13px;margin-bottom:4px">Bước xuất (cách A): <b>'+esc(ra.ten.join(', '))+'</b> – ra <b>'+qtSo(ra.ngay,0)+'</b>/ngày trong kỳ, <b>'+qtSo(ra.ngay7,0)+'</b>/ngày 7 ngày gần nhất'+(ra.macDinh?' <span style="color:var(--ink3)">(Claude chọn sẵn – sửa ở "Sửa quy trình")</span>':'')+'.</div>';
   if(yeu.length) h+='<div style="font-size:13px">Công đoạn căng nhất (cần ÷ người đang làm quy đổi): '+yeu.map(function(c,i){return (i+1)+'. <b>'+esc(c.ten)+'</b> '+qtPt(c.tai)+(c.mot?' <span class="qt-tag bd">1 người</span>':'')}).join(' · ')+'</div>';
   h+='</div><div class="card"><div style="font-weight:600;margin-bottom:6px">Lưu đồ xưởng (nhóm công đoạn)</div><div style="font-size:12px;color:var(--ink3);margin-bottom:8px">Nhóm chỉ để xem – danh mục công đoạn tính KPI không đổi.</div>'+qtLanBoiDau(QTX,T)+qtLuuDoX(QTX,T)+'<details class="qt-xds" style="margin-top:10px"><summary style="cursor:pointer;font-size:12.5px;color:var(--ink3)">Xem dạng danh sách các bước</summary>'+qtLanBoi(QTX,T,true)+'</details></div>';
