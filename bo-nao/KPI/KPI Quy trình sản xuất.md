@@ -483,4 +483,4 @@ Chủ dự án trả lời: đơn quá hạn > 30 ngày **mở sẵn** ở thẻ
 - Số mẫu (bản xem thử 01/11, 30 ngày): 181 người = 27 TP/PP + 154 CN/TT; có mặt TB 143; có ghi KPI ~125.
 - PDF đề xuất giai đoạn 2 (6 trang, nguồn `kpi-app/tests/huong-dan/de-xuat-giai-doan-2.html`): ý tưởng gốc, hiện trạng Sheet, nhận xét, 3 phương án, ví dụ hạn ngược, phác thảo thẻ trưởng phòng, lộ trình 2a/2b/2c, ý kiến chuyên gia, 8 câu hỏi cần chốt có ô ghi quyết định.
 - Kiểm thử: quy-trinh-web 104/104 (thêm: ô xưởng ghi TP/PP/TT/CN, tổng = danh sách đang làm), quy-trinh 76/76, manh-web 8/8.
-
+- 03/11 chủ dự án giải thích: người có mặt mà chưa có sản lượng chủ yếu là **nhân viên mới đang học việc chưa khai báo sản lượng** (đối chiếu: C727, C723, C741 Phôi Thô; C886, C992, C998, C999 Hoàn thiện vào làm 18/9–5/10). Chủ dự án chỉ giải thích, **không** yêu cầu tách học việc trên lưu đồ – giữ nguyên cách tính. C454 (Đóng gói) thiếu NgayVaoLam.
