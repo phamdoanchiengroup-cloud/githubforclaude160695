@@ -33,6 +33,8 @@ Liên quan: [[Lần dán lên Apps Script]] · [[Quyết định của chủ d�
 
 - (03/11) Họp GĐ sản xuất + trưởng phòng với PDF **De-xuat-giai-doan-2.pdf**, ghi quyết định ở trang cuối rồi gửi lại. Giai đoạn 2 hạn từng xưởng + bàn giao: chọn phương án (khuyến nghị B), trả lời 5 câu hỏi (ai ghi số lũy kế, cho web ghi Sheet đơn không, thời gian chuẩn mỗi xưởng, ngưỡng đơn lớn, có gắn tỷ lệ giao đúng hẹn vào KPI trưởng phòng không). – [[KPI Gộp công đoạn và tiến độ BTP]]
 
+- (03/11) Sau khi cập nhật: chạy `SUA_NHAN_SU_THEO_CHAM_CONG` một lần, báo 6 người (C020, C732, C733, C744, C745, C747) đăng nhập bằng mã mới, cấp mật khẩu tạm cho c759 (tab Tài khoản → Cấp lại mật khẩu). Xem file đối chiếu: 11 trạng thái, 4 chức danh, C043 (BĐH hay HT). – [[KPI Nhân sự theo chấm công]]
+
 ## Câu hỏi 22/10
 
 - Sửa NhanSu: Trương Thị Thùy Linh NgayVaoLam 08/11/2026 (tương lai); Hà Thị Hải có 2 dòng. – [[KPI Phân tích định mức]]

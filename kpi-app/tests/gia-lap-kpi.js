@@ -44,7 +44,7 @@ function tao(fileCode, duLieu, gioHienTai) {
     deleteRows(i, n) { thongKe.xoaDong++; this.rows.splice(i - 1, n); },
     insertColumnBefore(c) { this.rows.forEach(r => r.splice(c - 1, 0, '')); },
     setFrozenRows() {}, setColumnWidth() {}, autoResizeColumn() {}, hideSheet() {},
-    clear() { this.rows = []; }
+    clear() { this.rows = []; }, clearContents() { this.rows = []; return this; }
   };
   function chuyen(sh, r, c, v) {
     if (typeof v === 'string' && sh.fmt[c] !== '@' && sh.fmt[r + ',' + c] !== '@') {
@@ -103,6 +103,7 @@ function tao(fileCode, duLieu, gioHienTai) {
   const ss = {
     getSheetByName: n => sheets[n] || null,
     insertSheet: n => (sheets[n] = new Sheet(n, [])),
+    getSheets: () => Object.keys(sheets).map(n => sheets[n]),   // 03/11: đổi mã nhân viên quét mọi sheet
     getName: () => 'CSDL KPI', getId: () => 'id', getSpreadsheetTimeZone: () => 'Asia/Ho_Chi_Minh'
   };
   let khoa = false;

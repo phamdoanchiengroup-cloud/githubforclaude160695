@@ -834,5 +834,8 @@ exec(io.open(os.path.join(D, 'quy-trinh', 'va-quy-trinh-web.py'), encoding='utf-
 # ---------------------------------------------------------------- 27. Chia đôi màn hình (21/10): Bảng KPI, Nhân sự, KPI quản lý – danh sách trái, chi tiết phải (phải là mục cuối)
 exec(io.open(os.path.join(D, 'chia-doi', 'va-chia-doi.py'), encoding='utf-8').read())
 
+# ---------------------------------------------------------------- 37. Bộ phận ngoài sản xuất (03/11): khối cuối tab Nhân sự, chỉ chủ sở hữu
+exec(io.open(os.path.join(D, 'nhan-su', 'va-nhan-su-web.py'), encoding='utf-8').read())
+
 io.open(os.path.join(D, '..', 'Index.html'), 'w', encoding='utf-8').write(s)
 print('OK Index.html')

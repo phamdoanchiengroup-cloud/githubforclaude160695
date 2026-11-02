@@ -1340,7 +1340,8 @@ s = s.rstrip() + '\n' + io.open(os.path.join(os.path.dirname(__file__), 'bao-cao
 s = s.rstrip() + '\n' + io.open(os.path.join(os.path.dirname(__file__), 'com-trua.gs'), encoding='utf-8').read()
 s = s.rstrip() + '\n' + io.open(os.path.join(os.path.dirname(__file__), 'manh.gs'), encoding='utf-8').read()   # phần giao diện tải sau (SoDo.html, HoatAnh.html)
 s = s.rstrip() + '\n' + io.open(os.path.join(os.path.dirname(__file__), 'bong-da.gs'), encoding='utf-8').read()   # dải thông báo giải bóng đá
-s = s.rstrip() + '\n' + io.open(os.path.join(os.path.dirname(__file__), 'bo-tri-may.gs'), encoding='utf-8').read()   # lưu bố trí máy của sơ đồ 3D
+s = s.rstrip() + '\n' + io.open(os.path.join(os.path.dirname(__file__), 'bo-tri-may.gs'), encoding='utf-8').read()
+s = s.rstrip() + '\n' + io.open(os.path.join(os.path.dirname(__file__), 'nhan-su', 'nhan-su-ngoai-sx.gs'), encoding='utf-8').read()   # 03/11: sửa nhân sự theo chấm công + bộ phận ngoài sản xuất   # lưu bố trí máy của sơ đồ 3D
 
 
 # ---------------------------------------------------------------- bảo mật (rà soát 17/10) – chạy cuối, sửa cả phần đã nối ở trên

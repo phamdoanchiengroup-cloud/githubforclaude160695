@@ -27,6 +27,7 @@ Một chỗ gom mọi đường dẫn, mã file, kết nối và công cụ phi�
   - Chủ dự án tải lên Claude tối đa 30 MB; file to hơn thì chủ dự án đưa lên Drive rồi gửi link.
 - **Sheet "Trạng thái đơn hàng"** (theo dõi đơn, của tài khoản khác chia sẻ cho chủ dự án): `1FKrF_wyQcl0SpDhvoRBg7VoaBzgzhSJ7zZ5U2A5ReMU`. Script gắn kèm (project `19Do2R9xW9GjJZ_PHTFhKLDJvvasZTifEcg3MUP4EPQj9fBZkW64YB3Oq`) không mở được qua Drive; chủ dự án đã gửi mã nguồn. (02/11) Sheet này **quá lớn để tải qua Drive** (xuất xlsx báo lỗi, `read_file_content` chỉ trả tiêu đề) – kiểm thử dùng bộ đơn giả `scratchpad/gen/tao-dh.js` hoặc file chủ dự án tải lên.
 - **File dữ liệu cho [[KPI Quy trình sản xuất]]** (31/10): "THÔNG SỐ GẬY.xlsx" `1wM3DydKenFuPo4PWTirgr2WzE15yBNqB`. Hai file danh mục mã và trạng thái đơn hàng được tải lên trực tiếp vào phiên, không có trên Drive.
+- **Chấm công (03/11)**: thư mục ảnh `1sj-7VartwovgM1YMweWBc1DLxJBj9Irt`; file sửa `1MwEdEj5XELPcjEhLd3BZz-3Tcs4rbQR01KD9hFnor3g`, file bộ phận ngoài SX `1KAbgfq0QMZNmFeyF7VWFcEwjWM-ADK4sRR8FghUAcgk` – [[KPI Nhân sự theo chấm công]]. Phiên không có kết nối Google Sheets (chỉ Drive: đọc, tạo file).
 - Thư mục Drive "Báo cáo KPI hằng tháng" do web tự tạo khi chốt tháng: xem [[KPI Báo cáo tháng]].
 
 ## Apps Script và clasp
