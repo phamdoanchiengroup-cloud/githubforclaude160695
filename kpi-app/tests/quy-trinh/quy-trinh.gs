@@ -402,7 +402,7 @@ function guiDeXuatQuyTrinh(token, o) {
   them_(QT_DX_SHEET, { Id: 'DX' + new Date().getTime() + '-' + Utilities.getUuid().slice(0, 8), MaXuong: X, NguoiGui: q.me.tk, TenNguoi: String(q.me.hoTen || q.me.ten || q.me.tk), ThoiDiem: luc, DuLieu: json,
     LoiNhan: String(o.loiNhan || '').replace(/\s+/g, ' ').trim().slice(0, 300), TrangThai: 'Chờ duyệt', NguoiDuyet: '', ThoiDiemDuyet: '', LyDo: '' });
   ghiLog_(q.me, 'Đề xuất quy trình', X, '', d.cd.length + ' công đoạn, ' + d.luong.length + ' luồng');
-  return sach_({ ok: true, msg: 'Đã gửi đề xuất – chờ chủ sở hữu duyệt.' });
+  return sach_({ ok: true, msg: 'Đã gửi đề xuất – chờ Ban điều hành duyệt.' });
 }
 /* Chủ sở hữu duyệt / từ chối */
 function duyetDeXuatQuyTrinh(token, id, dongY, lyDo) {

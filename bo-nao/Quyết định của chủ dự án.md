@@ -84,3 +84,5 @@ Những điều đã chốt. Đừng đề xuất lại những gì ghi "không 
 - Giao diện tối giữ nguyên (chủ dự án: "đẹp rồi"). Giao diện sáng phải đọc rõ mọi thẻ, lưu đồ. Hologram chủ sở hữu chỉ dùng ở nền tối: chọn nền sáng thì hologram tự tắt; bấm nút hologram khi đang sáng thì web chuyển sang nền tối. – [[KPI Hologram chủ sở hữu]]
 - (03/11) Giao diện sáng: chọn **card xanh ngọc nhạt** (phương án B) cho mọi người, mọi tab; không chọn nền xám + card trắng (A) hay card kem (C).
 - (03/11) Lưu đồ từng xưởng (cả xem và Sửa quy trình) chạy **dọc từ trên xuống**: hàng = bước, cột = nhánh. Không quay lại kiểu ngang.
+- (03/11) Mã "ƯU TIÊN": mục mới trong tab Đơn hàng (chỉ chủ sở hữu), chỉ đơn đang làm (bỏ "Đơn hàng HT"), chỉ tính chữ "ưu tiên" (không tính nền vàng), chữ ở ô mã đơn = cả đơn ưu tiên.
+- (03/11) Phần đề xuất quy trình của trưởng / phó phòng ghi "Ban điều hành" duyệt, không dùng chữ "chủ sở hữu" (quyền duyệt hiện vẫn là tài khoản chủ sở hữu – đang hỏi có mở cho tài khoản Ban điều hành không).

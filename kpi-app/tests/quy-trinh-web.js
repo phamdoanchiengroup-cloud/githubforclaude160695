@@ -209,7 +209,7 @@ const vao = async (p, tk) => { await p.goto(F); await p.waitForSelector('#xtGoiY
         return [!!nut && !nut.disabled, document.querySelectorAll('.qt-xl select[disabled]').length === document.querySelectorAll('.qt-xl .dong').length, document.querySelectorAll('.qt-xl-xem').length > 0]; });
       ok(t.every(Boolean), 'sửa: nút "Gửi đề xuất" (không có Lưu thẳng); luồng của xưởng khác chỉ xem, luồng của mình không đổi được xưởng giao', t);
       await pt.evaluate(() => qtGuiDX()); await pt.waitForTimeout(2500);
-      t = await pt.evaluate(() => [!!(QT.deXuat && QT.deXuat.cho), /đang chờ chủ sở hữu duyệt/.test(document.querySelector('main').textContent), QT.xemDX]);
+      t = await pt.evaluate(() => [!!(QT.deXuat && QT.deXuat.cho), /đang chờ Ban điều hành duyệt/.test(document.querySelector('main').textContent), QT.xemDX]);
       ok(t.every(Boolean), 'gửi đề xuất: tải lại thấy "đang chờ duyệt", khung hiển thị bản đề xuất', t);
       await pt.close();
     }

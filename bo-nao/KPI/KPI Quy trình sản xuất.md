@@ -470,3 +470,9 @@ Chủ dự án trả lời: đơn quá hạn > 30 ngày **mở sẵn** ở thẻ
 - PDF hướng dẫn (mục Sửa quy trình) còn mô tả kiểu ngang – cần dựng lại nếu chủ dự án muốn.
 - Kiểm thử: quy-trinh-web 102/102, holo-web 20/20, manh-web 8/8, quy-trinh 76/76, kpi-tat-ca 17/17, so-do 27/27, chia-doi 27/27; mai-web 29/32 (3 lỗi có sẵn từ trước, bản cũ cũng vậy).
 
+## Đợt 10 (03/11): mục "Ưu tiên" + chữ "Ban điều hành"
+- Sheet đơn ghi "ƯU TIÊN" tự do ở nhiều cột (loại phôi, hạn mới, ghi chú, tên hàng) hoặc ở ô mã đơn. Máy chủ `don-hang.gs`: `dhUuTien_(t)` (so `plChuan_` với `UU TIEN`); `dhDocTab_` dò mọi ô của dòng (trừ ô mã đơn có số) → `o.uuTien` (giữ lời ghi), ô mã đơn có chữ → `o.uuDon` cho mọi dòng cùng mã; cache `DH_DON_v4`.
+- Web: nút "Ưu tiên (n)" trong tab Đơn hàng; `dhVeUuTien` (ô tổng, còn thiếu theo loại × FC/MIX/GF có dòng tổng, đang chờ ở xưởng), danh sách theo đơn (quá hạn → hạn gần; hạn lấy ngày đầu trong lời ghi qua `dhHanUu`), dòng theo khối + chất liệu, "Kẹt ở" = `dhKet` (xưởng đầu tiên đã ghi số mà chưa đủ), mã đủ hàng mờ cuối đơn. Góp ý `quan-ly-van-hanh`.
+- Đổi chữ phía trưởng phòng: "Gửi đề xuất cho Ban điều hành duyệt", lời nhắn / trạng thái / thông báo máy chủ "Ban điều hành". PDF mục 2.6 còn chữ cũ.
+- Kiểm thử: quy-trinh-web 102/102, quy-trinh 76/76, manh-web 8/8, don-hang 83/87 (4 lỗi chụp 9h có sẵn); xem thử với dữ liệu giả có chữ ưu tiên: không tràn 390px, không lỗi JS.
+

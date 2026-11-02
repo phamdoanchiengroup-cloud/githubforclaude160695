@@ -7535,7 +7535,7 @@ function danhSachVanPhong(token) {
   ds.sort(function(a, b) { return (thuTu[a.vaiTro] - thuTu[b.vaiTro]) || (a.HoTen < b.HoTen ? -1 : 1); });
   return sach_({ ok: true, ds: ds, muc: HS_MUC });
 }
-var KPI_BAN_MAY = '02/11/2026 08:36';   // giờ dựng Code.gs (22/10)
+var KPI_BAN_MAY = '02/11/2026 08:49';   // giờ dựng Code.gs (22/10)
 /* =====================================================================
    KỸ NĂNG (22/10, chủ dự án nhờ thiết kế + tham khảo chuyên gia nhân sự / đào tạo)
    - Danh mục: trưởng / phó phòng đề xuất kỹ năng của xưởng (tên, mô tả, tiêu chí đạt, công đoạn liên quan)
@@ -8299,7 +8299,7 @@ function guiDeXuatQuyTrinh(token, o) {
   them_(QT_DX_SHEET, { Id: 'DX' + new Date().getTime() + '-' + Utilities.getUuid().slice(0, 8), MaXuong: X, NguoiGui: q.me.tk, TenNguoi: String(q.me.hoTen || q.me.ten || q.me.tk), ThoiDiem: luc, DuLieu: json,
     LoiNhan: String(o.loiNhan || '').replace(/\s+/g, ' ').trim().slice(0, 300), TrangThai: 'Chờ duyệt', NguoiDuyet: '', ThoiDiemDuyet: '', LyDo: '' });
   ghiLog_(q.me, 'Đề xuất quy trình', X, '', d.cd.length + ' công đoạn, ' + d.luong.length + ' luồng');
-  return sach_({ ok: true, msg: 'Đã gửi đề xuất – chờ chủ sở hữu duyệt.' });
+  return sach_({ ok: true, msg: 'Đã gửi đề xuất – chờ Ban điều hành duyệt.' });
 }
 /* Chủ sở hữu duyệt / từ chối */
 function duyetDeXuatQuyTrinh(token, id, dongY, lyDo) {
@@ -8611,12 +8611,12 @@ function dhDocTab_(sh, tab, nam, gioiHan) {
   });
   var cMax = Math.max.apply(null, [cTen, cPhoi, cSL, cThieu, cDL, cCT, cGiao, cTra].concat(Object.keys(chang).map(function(k) { return chang[k]; }), Object.keys(hong).map(function(k) { return hong[k]; }))) + 1;
   var v = sh.getRange(1, 1, nr, Math.max(1, cMax)).getValues();
-  var out = [], ma = '', trong = 0;
+  var out = [], ma = '', trong = 0, uuDon = '';
   for (var r2 = hi + 1; r2 < v.length; r2++) {
     var row = v[r2], ten = String(row[cTen] == null ? '' : row[cTen]).trim(), m0 = String(row[0] == null ? '' : row[0]).trim();
     if (!ten && !m0) { if (++trong >= 200) break; continue; }
     trong = 0;
-    if (m0 && /[0-9]/.test(m0)) ma = m0;
+    if (m0 && /[0-9]/.test(m0)) { ma = m0; uuDon = dhUuTien_(m0) ? ma : ''; }   // 03/11: "ưu tiên" ở ô mã đơn -> cả đơn ưu tiên (các dòng sau cùng mã)
     var sl = dhSo_(row[cSL]);
     if (!ten || sl <= 0) continue;
     var o = { tab: tab, kenh: DH_NHAN_TAB[tab] || tab, maDon: m0 || ma, ten: ten.replace(/\s+/g, ' '), ghiChu: [cPhoi >= 0 ? row[cPhoi] : '', cCT >= 0 ? row[cCT] : ''].map(function(x) { return String(x == null ? '' : x).replace(/\s+/g, ' ').trim(); }).filter(Boolean).join(' · ').slice(0, 300),
@@ -8626,6 +8626,10 @@ function dhDocTab_(sh, tab, nam, gioiHan) {
       phoi: cPhoi >= 0 ? String(row[cPhoi] == null ? '' : row[cPhoi]).replace(/\s+/g, ' ').trim().slice(0, 120) : '',
       chuThich: cCT >= 0 ? String(row[cCT] == null ? '' : row[cCT]).replace(/\s+/g, ' ').trim().slice(0, 200) : '' };
     dhMaDon_(o, nam);
+    var uu = [];   // 03/11 (chủ dự án): mã có chữ "ưu tiên" ở bất kỳ ô nào của dòng (cột loại phôi, hạn mới, ghi chú…); giữ lời ghi kèm
+    for (var cu = (m0 && /[0-9]/.test(m0)) ? 1 : 0; cu < row.length; cu++) { var t = row[cu]; if (typeof t === 'string' && dhUuTien_(t)) { t = t.replace(/\s+/g, ' ').trim(); if (uu.indexOf(t) < 0) uu.push(t); } }
+    if (uu.length) o.uuTien = uu.join(' · ').slice(0, 160);
+    if (uuDon && o.maDon === uuDon) { o.uuDon = 1; o.uuTien = 'Cả đơn ưu tiên' + (o.uuTien ? ' · ' + o.uuTien : ''); }
     Object.keys(chang).forEach(function(k) {   // ô trống = chưa ghi (bỏ qua), khác với ghi số 0
       var cell = row[chang[k]];
       if (typeof cell === 'number' || /^\s*\d+(\.\d+)?\s*$/.test(String(cell == null ? '' : cell))) o.qua[k] = Math.min(sl, Math.max(0, dhSo_(cell)));
@@ -8635,6 +8639,8 @@ function dhDocTab_(sh, tab, nam, gioiHan) {
   }
   return out;
 }
+/* 03/11: nhận chữ "ưu tiên" (hoa / thường, có / không dấu) */
+function dhUuTien_(t) { return /\bUU\s*TIEN\b/.test(plChuan_(t)); }
 /* Mã đơn "RHINO-22/06" -> người đặt + ngày đặt (giống web app đơn hàng); deadline trước ngày đặt -> sang năm sau */
 var DH_HOM_ = '';
 function dhMaDon_(o, nam) {
@@ -8651,7 +8657,7 @@ function dhMaDon_(o, nam) {
 }
 /* Mọi dòng đơn (đã gộp 7 tab). Nhớ tạm DH_CACHE_GIAY giây, chia mảnh < 100 KB */
 function dhDocDon_(lamMoi) {
-  var c = CacheService.getScriptCache(), k = 'DH_DON_v3';
+  var c = CacheService.getScriptCache(), k = 'DH_DON_v4';   // v4 (03/11): thêm uuTien / uuDon
   if (!lamMoi) {
     try {
       var n = Number(c.get(k + '_n') || 0);
