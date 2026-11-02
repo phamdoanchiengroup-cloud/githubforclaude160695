@@ -106,7 +106,8 @@ function sdVeCT() {
   var ma = SS.xuong(SD.tang, R), s = SS.SO[ma];
   c.innerHTML = '<div class="tang">' + SD_TANG[SD.tang] + (R.a ? ' · ' + String(R.a).replace('.', ',') + ' m²' : '') + (R.p ? ' · bản vẽ ghi ' + R.p + ' người' : '') + '</div><h4>' + esc(R.n) + '</h4>' + (ma ? '<div class="ss-the"><div class="ss-dong"><span>Xưởng làm việc</span><b>' + esc(SS.TEN[ma] || ma) + '</b></div></div>' : '') +
     (Object.keys(eq).length ? '<div class="eq">' + Object.keys(eq).map(function (k) { return '<span>' + esc(k) + ' × ' + eq[k] + '</span>'; }).join('') + '</div>' : '') +
-    (s && s.bt ? '<button class="btn" type="button" onclick="go(\'mm\')">Mở trang Máy móc</button>' : '');
+    (s && s.bt ? '<button class="btn" type="button" onclick="go(\'mm\')">Mở trang Máy móc</button>' : '') +
+    (ma && sdCoLuuDo(ma) ? '<button class="btn" type="button" style="margin-top:8px" onclick="sdLuuDo(\'' + ma + '\')">▦ Xem lưu đồ sản xuất của xưởng</button>' : '');
 }
 function sdChonPhong(ri) {
   SD.chon = { ri: ri }; sdVe(); sdVeCT();
@@ -329,4 +330,55 @@ function sdGanZoom() {
   svg.addEventListener('pointerup', tha); svg.addEventListener('pointercancel', tha);
   // vừa kéo xong thì bỏ cú click (không chọn nhầm khu)
   svg.addEventListener('click', function (e) { if (SD.vuaKeo && Date.now() - SD.vuaKeo < 250) { e.stopPropagation(); e.preventDefault(); } }, true);
+}
+
+/* ===== 03/11 (chủ dự án): lưu đồ sản xuất ngay trên Sơ đồ (2D + 3D) =====
+   Quyền như tab Quy trình: chủ sở hữu mọi xưởng (có số người / tải); trưởng / phó phòng chỉ xưởng mình + lưu đồ nhà máy không số.
+   Dùng lại mảnh QuyTrinh.html (qtLuuDoX, qtVsm, qtVeNMTP…); khung nổi đè cả lớp 3D. Bấm thẻ trong lưu đồ -> vẽ lại trong khung (không nhảy tab). */
+var SDLD = { mo: false, x: '', v: 'x', luu: null };
+function sdCoLuuDo(ma) { return !!(ma && ME && (ME.laOwner || (ME.vaiTro === 'TP' && ma === ME.xuong))); }
+function sdLuuDo(ma) {
+  if (!sdCoLuuDo(ma)) return;
+  if (!SDLD.mo) SDLD.luu = { QTX: window.QTX, QTV: window.QTV, QTMoNhom: window.QTMoNhom };
+  SDLD.mo = true; SDLD.x = ma; SDLD.v = 'x';
+  var k = document.getElementById('sdLd');
+  if (!k) {
+    k = document.createElement('div'); k.id = 'sdLd'; k.setAttribute('role', 'dialog'); k.setAttribute('aria-modal', 'true'); k.setAttribute('aria-label', 'Lưu đồ sản xuất');
+    k.innerHTML = '<div class="sdld-hop"><div class="sdld-dau"><b id="sdLdTen">Lưu đồ sản xuất</b><span class="sdld-tab" id="sdLdTab"></span><button class="btn" type="button" id="sdLdDong">✕ Đóng</button></div><div class="sdld-than" id="sdLdThan"></div></div>';
+    document.body.appendChild(k);
+    k.addEventListener('click', function (e) { if (e.target === k) sdDongLuuDo(); });
+    document.getElementById('sdLdDong').onclick = sdDongLuuDo;
+    document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && SDLD.mo) { e.stopPropagation(); sdDongLuuDo(); } }, true);
+  }
+  k.hidden = false; document.getElementById('sdLdDong').focus();
+  document.getElementById('sdLdThan').innerHTML = '<div class="pdesc">Đang tải lưu đồ…</div>';
+  var nap = function () {
+    if (!window.QT) { call('layQuyTrinh', [window.QTSoNgay || 0], function (r) { if (!SDLD.mo) return; if (!r || !r.ok) { document.getElementById('sdLdThan').innerHTML = '<div class="alert a-wn">' + esc((r && r.msg) || 'Không tải được.') + '</div>'; return; } qtNhan(r); sdLdVe(); }); return; }
+    sdLdVe();
+  };
+  if (window.__qtDaNap) nap();
+  else taiManh('QuyTrinh', function (ok, msg) { if (!SDLD.mo) return; if (ok && window.__qtDaNap) nap(); else document.getElementById('sdLdThan').innerHTML = '<div class="alert a-bd">' + esc(msg || 'Không tải được.') + '</div>'; });
+}
+function sdLdVe() {
+  if (!SDLD.mo) return;
+  if (!window.__sdLdBoc) {   // bấm thẻ trong lưu đồ gọi qtVe(): khi khung đang mở thì vẽ lại khung, không vẽ tab Quy trình
+    window.__sdLdBoc = 1; var g = window.qtVe;
+    window.qtVe = function () { if (SDLD.mo) { if (window.QTV === 'x' && window.QTX) { SDLD.v = 'x'; if (sdCoLuuDo(window.QTX)) SDLD.x = window.QTX; } return sdLdVe(); } return g.apply(this, arguments); };
+  }
+  window.QTX = SDLD.x; window.QTV = SDLD.v === 'nm' ? 'nm' : 'x';
+  var T = qtTinh(), ten = qtTenX(SDLD.x), h;
+  document.getElementById('sdLdTen').textContent = SDLD.v === 'nm' ? 'Lưu đồ toàn nhà máy' : 'Lưu đồ xưởng ' + ten;
+  document.getElementById('sdLdTab').innerHTML = '<button class="btn sm' + (SDLD.v === 'x' ? ' on' : '') + '" type="button" onclick="SDLD.v=\'x\';sdLdVe()">Xưởng ' + esc(ten) + '</button>' +
+    '<button class="btn sm' + (SDLD.v === 'nm' ? ' on' : '') + '" type="button" onclick="SDLD.v=\'nm\';sdLdVe()">Toàn nhà máy</button>' +
+    '<button class="btn sm" type="button" onclick="sdLdQT()">Mở tab Quy trình ↗</button>';
+  if (SDLD.v === 'nm') h = QT.laTP ? qtVeNMTP(T) : '<div class="card">' + qtVsm(T) + '<div style="font-size:12px;color:var(--ink3);margin-top:6px">Số = người có mặt / cần, huy hiệu = tải. Bấm ô xưởng để xem lưu đồ xưởng đó.</div></div>';
+  else h = '<div class="card">' + qtLanBoiDau(SDLD.x, T) + qtLuuDoX(SDLD.x, T) + '</div>';
+  document.getElementById('sdLdThan').innerHTML = h;
+  qtSauVe();
+}
+function sdLdQT() { var x = SDLD.x, v = SDLD.v; sdDongLuuDo(true); if (document.getElementById('sd3d')) sdDong3D(); window.QTX = x; window.__qtMo = v === 'nm' ? 'nm' : 'x'; go('qt'); }
+function sdDongLuuDo(giu) {
+  SDLD.mo = false; var k = document.getElementById('sdLd'); if (k) { k.hidden = true; document.getElementById('sdLdThan').innerHTML = ''; }
+  if (!giu && SDLD.luu) { window.QTX = SDLD.luu.QTX; window.QTV = SDLD.luu.QTV; window.QTMoNhom = SDLD.luu.QTMoNhom; }
+  SDLD.luu = null;
 }

@@ -83,6 +83,16 @@ details.sd-ghep p{color:var(--ink3);font-size:12.5px;margin:8px 0}
 }
 
 .sd-khung.tach ~ .sd-huong,.sd-khung.tach ~ .sd-cgiai{display:none}
+
+/* 03/11: khung lưu đồ sản xuất trên Sơ đồ (đè cả lớp 3D) */
+#sdLd{position:fixed;inset:0;z-index:9000;background:rgba(8,10,12,.62);display:flex;align-items:center;justify-content:center;padding:16px}
+#sdLd[hidden]{display:none}
+#sdLd .sdld-hop{background:var(--bg);color:var(--ink);border:1px solid var(--line);border-radius:14px;width:min(1180px,100%);max-height:calc(100vh - 32px);display:flex;flex-direction:column;box-shadow:0 20px 60px rgba(0,0,0,.45)}
+#sdLd .sdld-dau{display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:12px 14px;border-bottom:1px solid var(--line)}
+#sdLd .sdld-dau b{font-size:16px;margin-right:auto}
+#sdLd .sdld-tab{display:flex;gap:6px;flex-wrap:wrap}
+#sdLd .sdld-than{overflow:auto;padding:12px 14px}
+#sdLd .sdld-than .card{margin-bottom:0}
 </style>
 <textarea id="sdNguon3d" hidden>&lt;!doctype html&gt;&lt;html&gt;&lt;head&gt;&lt;meta charset=utf8&gt;&lt;meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"&gt;&lt;style&gt;:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#faf9f5;color:#141413}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}&lt;/style&gt;&lt;/head&gt;&lt;body&gt;
 &lt;title&gt;Nhà máy Carbon Billiards 3D&lt;/title&gt;
@@ -183,6 +193,13 @@ h1{font:700 26px/1.05 var(--f-display);margin:.25em 0 .2em;text-wrap:balance;let
 }
 #btnNhe{font:600 14px/1 var(--f-display);letter-spacing:.04em;text-transform:uppercase;color:var(--ink);background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:9px 12px;min-height:40px;cursor:pointer;box-shadow:0 1px 3px rgba(0,0,0,.12)}
 #btnNhe[aria-pressed="true"]{background:var(--ink);color:var(--panel)}
+#btnDongHang{font:600 14px/1 var(--f-display);letter-spacing:.04em;text-transform:uppercase;color:var(--ink);background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:9px 12px;min-height:40px;cursor:pointer;box-shadow:0 1px 3px rgba(0,0,0,.12);white-space:nowrap}
+#btnDongHang[aria-pressed="true"]{background:#0b7a73;color:#fff;border-color:#0b7a73}
+#btnDongHang:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.lbl.dh3{background:#0b2f3a;color:#bff3ff;border-color:#46d7ff;font-size:12.5px;padding:3px 8px;box-shadow:0 0 12px rgba(70,215,255,.55)}
+.lbl.dh3.mo{pointer-events:auto;cursor:pointer}.lbl.dh3.mo:hover{background:#0b7a73;color:#fff}
+.lbl.dh3p{background:rgba(60,35,5,.85);color:#ffd9a3;border-color:#ffb347;font-size:12px}
+.ss-ld{margin-top:8px;width:100%;font:600 13px/1.2 var(--f-display);padding:9px 10px;border-radius:6px;border:1px solid #0b7a73;background:#0b7a73;color:#fff;cursor:pointer}
 #btnToan,#btnBen{font:600 14px/1 var(--f-display);letter-spacing:.04em;text-transform:uppercase;color:var(--ink);background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:9px 12px;min-height:40px;cursor:pointer;box-shadow:0 1px 3px rgba(0,0,0,.12);white-space:nowrap}
 #btnToan[aria-pressed="true"],#btnBen[aria-pressed="true"]{background:var(--ink);color:var(--panel)}
 #btnToan:focus-visible,#btnBen:focus-visible,#btnNhe:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
@@ -218,6 +235,7 @@ body.an-ben aside{display:none}
       &lt;/div&gt;
       &lt;button id="btnBoTri" class="nutTop" type="button" aria-pressed="false" title="Kéo thả để dời máy, xoay 90°"&gt;✥ Sắp xếp máy&lt;/button&gt;
       &lt;button id="btnNhe" type="button" aria-pressed="false" title="Chế độ nhẹ: tắt đổ bóng, giảm độ nét, ẩn công nhân – mượt hơn trên điện thoại"&gt;⚡ Nhẹ&lt;/button&gt;
+      &lt;button id="btnDongHang" type="button" aria-pressed="false" title="Mũi tên dòng bán thành phẩm giữa các xưởng (xanh: hàng chính, cam: cấp phụ)"&gt;↝ Dòng hàng&lt;/button&gt;
       &lt;button id="btnToan" type="button" aria-pressed="false" title="Xem toàn màn hình (Esc để thoát)"&gt;⛶ Toàn màn hình&lt;/button&gt;
       &lt;button id="btnBen" type="button" aria-pressed="false" aria-controls="benPhai" title="Ẩn / hiện thanh chi tiết bên phải"&gt;◨ Ẩn chi tiết&lt;/button&gt;
       &lt;div class="seg" id="segMau" role="group" aria-label="Tô màu"&gt;&lt;button data-c="" aria-pressed="false"&gt;Màu thật&lt;/button&gt;&lt;button data-c="kpi" aria-pressed="true"&gt;KPI tháng này&lt;/button&gt;&lt;button data-c="siso" aria-pressed="false"&gt;Sĩ số&lt;/button&gt;&lt;/div&gt;
@@ -2104,6 +2122,7 @@ function apply(){
   document.querySelectorAll('#segFloor button').forEach(b=&gt;b.setAttribute('aria-pressed',b.dataset.f===st.floor));
   document.querySelectorAll('#segMode button').forEach(b=&gt;b.setAttribute('aria-pressed',b.dataset.m===st.mode));
   roomList(); stats();
+  if(typeof DH3!=="undefined"&amp;&amp;DH3&amp;&amp;DH3.on)dh3Dung();
 }
 function veMau(m){
   if(st.cat)return m.userData.cat;
@@ -2166,7 +2185,7 @@ function select(u,go){
     info.innerHTML=`&lt;div class="eyebrow"&gt;${F.ten} · cao độ ${F.cao?'+'+F.cao.toFixed(2).replace('.',','):'±0,00'} · ${F.bv}&lt;/div&gt;&lt;h2&gt;${R.n}&lt;/h2&gt;
      &lt;dl class="kv"&gt;&lt;dt&gt;Loại&lt;/dt&gt;&lt;dd&gt;${CAT[R.c][0]}&lt;/dd&gt;
      &lt;dt&gt;Diện tích&lt;/dt&gt;&lt;dd&gt;${R.a?fmt(R.a)+' m² (theo bản vẽ)':'bản vẽ không ghi'} · đo trên mô hình ≈ ${fmt(area.toFixed(1))} m²&lt;/dd&gt;
-     &lt;dt&gt;Số người&lt;/dt&gt;&lt;dd&gt;${R.p?R.p+' người':'bản vẽ chưa ghi (???)'}&lt;/dd&gt;&lt;/dl&gt;${window.SS&amp;&amp;SS.xuong(u.fi,R)?'&lt;div class="ss-the"&gt;&lt;div class="ss-dong"&gt;&lt;span&gt;Xưởng làm việc&lt;/span&gt;&lt;b&gt;'+SS.TEN[SS.xuong(u.fi,R)]+'&lt;/b&gt;&lt;/div&gt;&lt;/div&gt;':''}
+     &lt;dt&gt;Số người&lt;/dt&gt;&lt;dd&gt;${R.p?R.p+' người':'bản vẽ chưa ghi (???)'}&lt;/dd&gt;&lt;/dl&gt;${window.SS&amp;&amp;SS.xuong(u.fi,R)?'&lt;div class="ss-the"&gt;&lt;div class="ss-dong"&gt;&lt;span&gt;Xưởng làm việc&lt;/span&gt;&lt;b&gt;'+SS.TEN[SS.xuong(u.fi,R)]+'&lt;/b&gt;&lt;/div&gt;'+dh3NutLD(SS.xuong(u.fi,R))+'&lt;/div&gt;':''}
      ${Object.keys(eq).length?`&lt;div class="eq"&gt;${Object.entries(eq).map(([k,v])=&gt;`&lt;span&gt;${k} × ${v}&lt;/span&gt;`).join('')}&lt;/div&gt;`:''}`;
     if(go){if(st.floor!==String(u.fi)){st.floor=String(u.fi);apply();}
       const c=R.center.clone();c.y=targetY(u.fi);fly(c,c.clone().add(new THREE.Vector3(-12,18,17)));}
@@ -2406,6 +2425,53 @@ if(window.__v3)Object.assign(window.__v3,{btBat:batBoTri,btXoayThu:()=&gt;{const
 {const lo=floors[0].mc.find(Mc=&gt;Mc.obj&amp;&amp;Mc.obj.userData.cuaLo);if(lo){lo.obj.userData.mo=1;lo.obj.userData.cuaLo.rotation.y=1.9;if(lo.obj.userData.den)lo.obj.userData.den.material.emissiveIntensity=1.8;}}
 
 let tPrev=0,tVe=0; var canVe=60; ctl.addEventListener('change',()=&gt;{canVe=Math.max(canVe,4);}); renderer.domElement.addEventListener('pointerdown',()=&gt;{canVe=Math.max(canVe,30);});
+/* 03/11: dòng hàng giữa các xưởng – đường cong phát sáng nối khu các xưởng (xuyên tầng), chấm chạy theo chiều hàng đi */
+var DH3={on:false,g:new THREE.Group(),dots:[],key:''};
+scene.add(DH3.g); DH3.g.visible=false;
+var DH3_CANH=[['PHOICB','PHOITHO',0],['PHOITHO','SON',0],['PHOITHO','NGONTARO',0],['SON','INUV',0],['NGONTARO','NGONTIP',0],['INUV','HT',0],['NGONTIP','HT',0],['HT','DG',0],
+  ['NGONTARO','PHOITHO',1,'POM'],['CNC','NGONTIP',1,'Tip, phíp'],['CNC','SON',1,'Đầu lết'],['CNC','DG',1,'Tip bán lẻ'],['NGONTIP','DG',1,'Ngọn lẻ']];
+function dh3Cha(){try{return window.parent&amp;&amp;window.parent!==window?window.parent:null;}catch(e){return null;}}
+function dh3CoLD(ma){const p=dh3Cha();try{return !!(ma&amp;&amp;p&amp;&amp;p.sdCoLuuDo&amp;&amp;p.sdCoLuuDo(ma));}catch(e){return false;}}
+function dh3MoLD(ma){const p=dh3Cha();try{if(p&amp;&amp;p.sdLuuDo)p.sdLuuDo(ma);}catch(e){}}
+function dh3NutLD(ma){return dh3CoLD(ma)?'&lt;button type="button" class="ss-ld" onclick="dh3MoLD(\''+ma+'\')"&gt;▦ Xem lưu đồ sản xuất của xưởng&lt;/button&gt;':'';}
+window.dh3MoLD=dh3MoLD;
+function dh3Nut(){
+  const S=window.SS; if(!S||!S.xuong)return {};
+  const tong={};
+  floors.forEach((F,fi)=&gt;F.rooms.forEach(R=&gt;{const ma=S.xuong(fi,R);if(!ma)return;
+    (R.r||[]).forEach(r=&gt;{const a=rc(r),s=(a.x1-a.x0)*(a.y1-a.y0);if(!(s&gt;0))return;const k=ma+'|'+fi,o=tong[k]||(tong[k]={ma,fi,s:0,x:0,y:0});o.s+=s;o.x+=s*(a.x0+a.x1)/2;o.y+=s*(a.y0+a.y1)/2;});}));
+  const best={};Object.values(tong).forEach(o=&gt;{if(!best[o.ma]||o.s&gt;best[o.ma].s)best[o.ma]=o;});
+  Object.values(best).forEach(o=&gt;{o.x/=o.s;o.y/=o.s;});return best;}
+function dh3Xoa(){DH3.g.traverse(o=&gt;{if(o.geometry)o.geometry.dispose();if(o.material)o.material.dispose();});
+  [...DH3.g.children].forEach(o=&gt;DH3.g.remove(o));DH3.dots=[];}
+function dh3Dung(){
+  dh3Xoa();DH3.g.visible=DH3.on;if(!DH3.on)return;
+  const N=dh3Nut(),ten=(window.SS&amp;&amp;SS.TEN)||{},nhin=ma=&gt;N[ma]&amp;&amp;floors[N[ma].fi].g.visible;
+  const P=ma=&gt;{const o=N[ma];return new THREE.Vector3(px(o.x),floors[o.fi].g.position.y+1.7,pz(o.y));};
+  const vl=(c,op)=&gt;new THREE.MeshBasicMaterial({color:c,depthTest:false,transparent:true,opacity:op});
+  Object.keys(N).filter(nhin).forEach(ma=&gt;{const p=P(ma);
+    const m=new THREE.Mesh(new THREE.SphereGeometry(.5,18,12),vl(0x7fe0ff,.95));m.position.copy(p);m.renderOrder=999;DH3.g.add(m);
+    const el=document.createElement('div');el.className='lbl dh3'+(dh3CoLD(ma)?' mo':'');el.textContent=String(ten[ma]||ma).replace(/^Xưởng\s+/i,'');
+    if(dh3CoLD(ma)){el.title='Bấm để xem lưu đồ sản xuất của xưởng';el.onclick=()=&gt;dh3MoLD(ma);}
+    const L=new CSS2DObject(el);L.position.copy(p).add(new THREE.Vector3(0,1.2,0));DH3.g.add(L);});
+  DH3_CANH.forEach(c=&gt;{if(!nhin(c[0])||!nhin(c[1]))return;const a=P(c[0]),b=P(c[1]);
+    const cao=Math.max(a.y,b.y)+(Math.abs(a.y-b.y)&lt;.5?3.2:2.4),phu=!!c[2],col=phu?0xffb347:0x46d7ff;
+    const cv=new THREE.CubicBezierCurve3(a,new THREE.Vector3(a.x,cao,a.z),new THREE.Vector3(b.x,cao,b.z),b);
+    const tu=new THREE.Mesh(new THREE.TubeGeometry(cv,56,phu?.07:.12,8,false),vl(col,phu?.7:.9));tu.renderOrder=998;DH3.g.add(tu);
+    const t1=cv.getPointAt(.9),t2=cv.getPointAt(.985),mu=new THREE.Mesh(new THREE.ConeGeometry(phu?.28:.38,1,14),vl(col,1));
+    mu.position.copy(t1).lerp(t2,.5);mu.quaternion.setFromUnitVectors(new THREE.Vector3(0,1,0),t2.clone().sub(t1).normalize());mu.renderOrder=999;DH3.g.add(mu);
+    for(let i=0;i&lt;3;i++){const d=new THREE.Mesh(new THREE.SphereGeometry(phu?.15:.2,10,8),vl(0xffffff,1));d.renderOrder=1000;d.userData.cv=cv;d.userData.u=i/3;d.position.copy(cv.getPointAt(i/3));DH3.g.add(d);DH3.dots.push(d);}
+    if(c[3]){const el=document.createElement('div');el.className='lbl dh3p';el.textContent=c[3];const L=new CSS2DObject(el);L.position.copy(cv.getPointAt(.5)).add(new THREE.Vector3(0,.5,0));DH3.g.add(L);}});
+  DH3.key=floors.map(F=&gt;F.g.position.y.toFixed(2)+(F.g.visible?1:0)).join(',');}
+function dh3Buoc(dt){
+  const k=floors.map(F=&gt;F.g.position.y.toFixed(2)+(F.g.visible?1:0)).join(',');if(k!==DH3.key){dh3Dung();return;}
+  if(reduce)return;DH3.dots.forEach(d=&gt;{d.userData.u=(d.userData.u+dt/4200)%1;d.position.copy(d.userData.cv.getPointAt(d.userData.u));});}
+function dh3Bat(on){DH3.on=on;const n=document.getElementById('btnDongHang');if(n)n.setAttribute('aria-pressed',String(on));
+  if(on&amp;&amp;st.mode==='khoi'&amp;&amp;st.floor==='all'){st.mode='tach';apply();}   // tách tầng cho thấy đường đi xuyên tầng
+  dh3Dung();canVe=30;
+  if(on)bao('Dòng hàng: đường xanh = hàng đi chính, đường cam = cấp phụ (POM, tip, phíp, đầu lết)'+(Object.keys(dh3Nut()).some(dh3CoLD)?'. Bấm tên xưởng để xem lưu đồ.':'.'));}
+document.getElementById('btnDongHang').onclick=()=&gt;dh3Bat(!DH3.on);
+if(window.__v3)Object.assign(window.__v3,{dongHang:dh3Bat,dh3:()=&gt;({on:DH3.on,nut:Object.keys(dh3Nut()),canh:DH3.g.children.filter(o=&gt;o.geometry&amp;&amp;o.geometry.type==='TubeGeometry').length,nhan:DH3.g.children.filter(o=&gt;o.isCSS2DObject).map(o=&gt;o.element.textContent)})});
 function loop(t){
   try{
     const dt=Math.min(t-tPrev,100);const k=reduce?1:1-Math.exp(-dt/110); tPrev=t;
@@ -2421,6 +2487,7 @@ function loop(t){
     {const hi=cam.position.y&gt;45;auxGroup.children.forEach(o=&gt;{if(o.isCSS2DObject)o.visible=st.aux&amp;&amp;st.lbl&amp;&amp;hi;});}
     ctl.update();
     if(flyT||floors.some(F=&gt;Math.abs(F.ty-F.yNow)&gt;.002))canVe=Math.max(canVe,2);
+    if(typeof DH3!=="undefined"&amp;&amp;DH3&amp;&amp;DH3.on){dh3Buoc(dt);canVe=Math.max(canVe,2);}
     if(st.hq||!small||canVe&gt;0||t-tVe&gt;500){canVe=Math.max(0,canVe-1);tVe=t;
       if(st.hq)composer.render();else renderer.render(scene,cam);
       lr.render(scene,cam);}
@@ -2628,7 +2695,8 @@ function sdVeCT() {
   var ma = SS.xuong(SD.tang, R), s = SS.SO[ma];
   c.innerHTML = '<div class="tang">' + SD_TANG[SD.tang] + (R.a ? ' · ' + String(R.a).replace('.', ',') + ' m²' : '') + (R.p ? ' · bản vẽ ghi ' + R.p + ' người' : '') + '</div><h4>' + esc(R.n) + '</h4>' + (ma ? '<div class="ss-the"><div class="ss-dong"><span>Xưởng làm việc</span><b>' + esc(SS.TEN[ma] || ma) + '</b></div></div>' : '') +
     (Object.keys(eq).length ? '<div class="eq">' + Object.keys(eq).map(function (k) { return '<span>' + esc(k) + ' × ' + eq[k] + '</span>'; }).join('') + '</div>' : '') +
-    (s && s.bt ? '<button class="btn" type="button" onclick="go(\'mm\')">Mở trang Máy móc</button>' : '');
+    (s && s.bt ? '<button class="btn" type="button" onclick="go(\'mm\')">Mở trang Máy móc</button>' : '') +
+    (ma && sdCoLuuDo(ma) ? '<button class="btn" type="button" style="margin-top:8px" onclick="sdLuuDo(\'' + ma + '\')">▦ Xem lưu đồ sản xuất của xưởng</button>' : '');
 }
 function sdChonPhong(ri) {
   SD.chon = { ri: ri }; sdVe(); sdVeCT();
@@ -2851,5 +2919,56 @@ function sdGanZoom() {
   svg.addEventListener('pointerup', tha); svg.addEventListener('pointercancel', tha);
   // vừa kéo xong thì bỏ cú click (không chọn nhầm khu)
   svg.addEventListener('click', function (e) { if (SD.vuaKeo && Date.now() - SD.vuaKeo < 250) { e.stopPropagation(); e.preventDefault(); } }, true);
+}
+
+/* ===== 03/11 (chủ dự án): lưu đồ sản xuất ngay trên Sơ đồ (2D + 3D) =====
+   Quyền như tab Quy trình: chủ sở hữu mọi xưởng (có số người / tải); trưởng / phó phòng chỉ xưởng mình + lưu đồ nhà máy không số.
+   Dùng lại mảnh QuyTrinh.html (qtLuuDoX, qtVsm, qtVeNMTP…); khung nổi đè cả lớp 3D. Bấm thẻ trong lưu đồ -> vẽ lại trong khung (không nhảy tab). */
+var SDLD = { mo: false, x: '', v: 'x', luu: null };
+function sdCoLuuDo(ma) { return !!(ma && ME && (ME.laOwner || (ME.vaiTro === 'TP' && ma === ME.xuong))); }
+function sdLuuDo(ma) {
+  if (!sdCoLuuDo(ma)) return;
+  if (!SDLD.mo) SDLD.luu = { QTX: window.QTX, QTV: window.QTV, QTMoNhom: window.QTMoNhom };
+  SDLD.mo = true; SDLD.x = ma; SDLD.v = 'x';
+  var k = document.getElementById('sdLd');
+  if (!k) {
+    k = document.createElement('div'); k.id = 'sdLd'; k.setAttribute('role', 'dialog'); k.setAttribute('aria-modal', 'true'); k.setAttribute('aria-label', 'Lưu đồ sản xuất');
+    k.innerHTML = '<div class="sdld-hop"><div class="sdld-dau"><b id="sdLdTen">Lưu đồ sản xuất</b><span class="sdld-tab" id="sdLdTab"></span><button class="btn" type="button" id="sdLdDong">✕ Đóng</button></div><div class="sdld-than" id="sdLdThan"></div></div>';
+    document.body.appendChild(k);
+    k.addEventListener('click', function (e) { if (e.target === k) sdDongLuuDo(); });
+    document.getElementById('sdLdDong').onclick = sdDongLuuDo;
+    document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && SDLD.mo) { e.stopPropagation(); sdDongLuuDo(); } }, true);
+  }
+  k.hidden = false; document.getElementById('sdLdDong').focus();
+  document.getElementById('sdLdThan').innerHTML = '<div class="pdesc">Đang tải lưu đồ…</div>';
+  var nap = function () {
+    if (!window.QT) { call('layQuyTrinh', [window.QTSoNgay || 0], function (r) { if (!SDLD.mo) return; if (!r || !r.ok) { document.getElementById('sdLdThan').innerHTML = '<div class="alert a-wn">' + esc((r && r.msg) || 'Không tải được.') + '</div>'; return; } qtNhan(r); sdLdVe(); }); return; }
+    sdLdVe();
+  };
+  if (window.__qtDaNap) nap();
+  else taiManh('QuyTrinh', function (ok, msg) { if (!SDLD.mo) return; if (ok && window.__qtDaNap) nap(); else document.getElementById('sdLdThan').innerHTML = '<div class="alert a-bd">' + esc(msg || 'Không tải được.') + '</div>'; });
+}
+function sdLdVe() {
+  if (!SDLD.mo) return;
+  if (!window.__sdLdBoc) {   // bấm thẻ trong lưu đồ gọi qtVe(): khi khung đang mở thì vẽ lại khung, không vẽ tab Quy trình
+    window.__sdLdBoc = 1; var g = window.qtVe;
+    window.qtVe = function () { if (SDLD.mo) { if (window.QTV === 'x' && window.QTX) { SDLD.v = 'x'; if (sdCoLuuDo(window.QTX)) SDLD.x = window.QTX; } return sdLdVe(); } return g.apply(this, arguments); };
+  }
+  window.QTX = SDLD.x; window.QTV = SDLD.v === 'nm' ? 'nm' : 'x';
+  var T = qtTinh(), ten = qtTenX(SDLD.x), h;
+  document.getElementById('sdLdTen').textContent = SDLD.v === 'nm' ? 'Lưu đồ toàn nhà máy' : 'Lưu đồ xưởng ' + ten;
+  document.getElementById('sdLdTab').innerHTML = '<button class="btn sm' + (SDLD.v === 'x' ? ' on' : '') + '" type="button" onclick="SDLD.v=\'x\';sdLdVe()">Xưởng ' + esc(ten) + '</button>' +
+    '<button class="btn sm' + (SDLD.v === 'nm' ? ' on' : '') + '" type="button" onclick="SDLD.v=\'nm\';sdLdVe()">Toàn nhà máy</button>' +
+    '<button class="btn sm" type="button" onclick="sdLdQT()">Mở tab Quy trình ↗</button>';
+  if (SDLD.v === 'nm') h = QT.laTP ? qtVeNMTP(T) : '<div class="card">' + qtVsm(T) + '<div style="font-size:12px;color:var(--ink3);margin-top:6px">Số = người có mặt / cần, huy hiệu = tải. Bấm ô xưởng để xem lưu đồ xưởng đó.</div></div>';
+  else h = '<div class="card">' + qtLanBoiDau(SDLD.x, T) + qtLuuDoX(SDLD.x, T) + '</div>';
+  document.getElementById('sdLdThan').innerHTML = h;
+  qtSauVe();
+}
+function sdLdQT() { var x = SDLD.x, v = SDLD.v; sdDongLuuDo(true); if (document.getElementById('sd3d')) sdDong3D(); window.QTX = x; window.__qtMo = v === 'nm' ? 'nm' : 'x'; go('qt'); }
+function sdDongLuuDo(giu) {
+  SDLD.mo = false; var k = document.getElementById('sdLd'); if (k) { k.hidden = true; document.getElementById('sdLdThan').innerHTML = ''; }
+  if (!giu && SDLD.luu) { window.QTX = SDLD.luu.QTX; window.QTV = SDLD.luu.QTV; window.QTMoNhom = SDLD.luu.QTMoNhom; }
+  SDLD.luu = null;
 }
 </script>

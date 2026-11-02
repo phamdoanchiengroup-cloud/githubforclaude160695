@@ -47,3 +47,8 @@ Liên quan: [[KPI Phần giao diện tải sau]] · [[Lần dán lên Apps Scrip
   - Mặt tiền / cổng chính nay ở **bên phải** sơ đồ (dòng hướng dẫn đã sửa).
   - CSS `#sdMb`: `aspect-ratio:35.25/45.75`, rộng `min(100%, (100vh − 150px)·35,25/45,75)` để trên máy tính không cao quá màn hình.
   - Kiểm thử `so-do-web.js` phần 2D 27/27: kiểm khung dọc (cao > 1,2 lần rộng); nhấp đúp cuộn trang lên trước rồi mới đo vị trí, vì sơ đồ dọc cao hơn màn hình.
+- **03/11 (chủ dự án): quy trình sản xuất trên Sơ đồ** – chọn A (bấm xưởng → khung lưu đồ) + B (mũi tên dòng hàng trong 3D); quyền: chủ sở hữu có số, TP/PP xưởng mình + lưu đồ nhà máy không số; người khác chỉ thấy dòng hàng (không số).
+  - B (`tests/so-do/va_3d.py`, `JS_DONG_HANG`, `CSS_DONG_HANG`): nút **↝ Dòng hàng** (`btnDongHang`); nút = khu lớn nhất của mỗi xưởng theo bảng ghép `SS.xuong` (`dh3Nut`), cạnh như lưu đồ toàn nhà máy (`DH3_CANH`: 8 đường chính xanh + POM, tip/phíp, đầu lết, tip bán lẻ, ngọn lẻ màu cam), ống cong `CubicBezierCurve3` + mũi nhọn + 3 chấm chạy (`dh3Buoc`, theo tầng đang di chuyển), vẽ đè (depthTest false); bật thì tự "Tách tầng"; nhãn xưởng bấm được khi có quyền (`dh3CoLD` → `parent.sdCoLuuDo`). Thẻ phòng 3D có nút "Xem lưu đồ sản xuất của xưởng" (`dh3NutLD`). `__v3.dongHang`, `__v3.dh3` cho kiểm thử.
+  - A (`tests/so-do/va-so-do.js` + `.css`): `sdCoLuuDo(ma)`, `sdLuuDo(ma)` mở khung `#sdLd` (z-index 9000 > lớp 3D 8000), tải mảnh QuyTrinh + `layQuyTrinh` khi cần; 2 nút Xưởng / Toàn nhà máy (`qtLuuDoX` dọc, `qtVsm` hoặc `qtVeNMTP` cho TP) + "Mở tab Quy trình ↗"; bọc `qtVe` để bấm thẻ vẽ lại trong khung; Esc / ✕ đóng, trả lại QTX/QTV cũ. Thẻ chi tiết 2D có nút cùng tên.
+  - Kiểm thử `tests/so-do-luu-do-web.js` (2D 15/15; có THREE thêm phần 3D).
+

@@ -81,3 +81,13 @@ details.sd-ghep p{color:var(--ink3);font-size:12.5px;margin:8px 0}
 }
 
 .sd-khung.tach ~ .sd-huong,.sd-khung.tach ~ .sd-cgiai{display:none}
+
+/* 03/11: khung lưu đồ sản xuất trên Sơ đồ (đè cả lớp 3D) */
+#sdLd{position:fixed;inset:0;z-index:9000;background:rgba(8,10,12,.62);display:flex;align-items:center;justify-content:center;padding:16px}
+#sdLd[hidden]{display:none}
+#sdLd .sdld-hop{background:var(--bg);color:var(--ink);border:1px solid var(--line);border-radius:14px;width:min(1180px,100%);max-height:calc(100vh - 32px);display:flex;flex-direction:column;box-shadow:0 20px 60px rgba(0,0,0,.45)}
+#sdLd .sdld-dau{display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:12px 14px;border-bottom:1px solid var(--line)}
+#sdLd .sdld-dau b{font-size:16px;margin-right:auto}
+#sdLd .sdld-tab{display:flex;gap:6px;flex-wrap:wrap}
+#sdLd .sdld-than{overflow:auto;padding:12px 14px}
+#sdLd .sdld-than .card{margin-bottom:0}
