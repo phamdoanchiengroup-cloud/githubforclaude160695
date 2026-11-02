@@ -1152,6 +1152,10 @@ html[data-gd="sang"] #nav .dem:not(.do){background:var(--amber)}
 @media (prefers-reduced-motion:reduce){.mai *,#maiTour .ro::after{animation:none!important}#maiGoc,#maiTour .ro{transition:none!important}}
 </style>
 <style id="gdSangVa">
+/* 03/11 chủ dự án chọn B: card xanh ngọc nhạt trên nền gần trắng */
+html[data-gd="sang"]{--bg:#eaeef0;--panel:#e3f1ef;--panel2:#f8fcfb;--line:#a9cfca;--bong:0 1px 3px rgba(15,60,55,.12)}
+html[data-gd="sang"] .kpi::after{display:none}
+html[data-gd="sang"] .card,html[data-gd="sang"] .kpi{box-shadow:0 1px 3px rgba(15,60,55,.12),0 6px 16px -10px rgba(15,60,55,.25)}
 html[data-gd="sang"] .cn-wrap{background:radial-gradient(900px 400px at 85% -20%,rgba(var(--acc-rgb),.07),transparent 60%),linear-gradient(180deg,#ffffff,#f5f8fa)}
 html[data-gd="sang"] .cn-t,html[data-gd="sang"] .cn-card .nm,html[data-gd="sang"] .cn-formula{color:var(--ink)}
 html[data-gd="sang"] .cn-card{background:linear-gradient(160deg,#ffffff,#eef3f6)}
@@ -1162,6 +1166,7 @@ html[data-gd="sang"] .cn-pill.g{color:#1f7a48;background:rgba(31,122,72,.12)} ht
 html[data-gd="sang"] .cn-pill.r{color:#b42a25;background:rgba(192,48,43,.10)} html[data-gd="sang"] .cn-pill.c{color:#0b6e68;background:rgba(11,122,115,.10)}
 html[data-gd="sang"] .cn-note.w b{color:#9a5b00} html[data-gd="sang"] .cn-note.d b{color:#b42a25} html[data-gd="sang"] .cn-note.o b{color:#17643a}
 html[data-gd="sang"] .mai-chip.mc-dd{color:#17643a}
+html[data-gd="sang"] .mai-chip.mc-at{color:#b42a25} html[data-gd="sang"] .ql-tag{color:#a3262a;background:rgba(192,48,43,.08)}
 </style>
 </head>
 <body>
@@ -8630,7 +8635,7 @@ function chiXemDon(){
 </script>
 <script>
 /* ===== 19. PHẦN GIAO DIỆN TẢI SAU (12/10) – SoDo.html, HoatAnh.html: chỉ tải khi cần, nhớ lại theo phiên bản ===== */
-var MANH_VER={"SoDo": "5ff0ad17b2a6bbdf", "HoatAnh": "b23cbe69d6aae56e", "AmThanh": "c690fabe4419160c", "QuyTrinh": "8c7acf1dbf"};
+var MANH_VER={"SoDo": "5ff0ad17b2a6bbdf", "HoatAnh": "b23cbe69d6aae56e", "AmThanh": "c690fabe4419160c", "QuyTrinh": "920357e29d"};
 var __manh={da:{},cho:{}};
 function ganManh_(nd){
   var js=[], ngoai=String(nd).replace(/<script>([\s\S]*?)<\/script>/g,function(_,x){js.push(x);return ''});
@@ -9582,7 +9587,7 @@ function hsGhiChuDong(r){
 }
 </script>
 <script>
-var KPI_BAN = '02/11/2026 08:06';
+var KPI_BAN = '02/11/2026 08:36';
 (function(){
   var cu = window.veNav;
   window.veNav = function(){

@@ -40,6 +40,10 @@ _t36("    var ds=(r.ds||[]).filter(function(k){ return k.nhan!=='xanh' && k.soCo
 # 02/11: giao diện sáng – các khối viết riêng cho nền tối (Cẩm nang ở Hướng dẫn, chip Rhino) thiếu tương phản
 _h36 = s.find('</head>'); assert _h36 > 0
 s = s[:_h36] + '''<style id="gdSangVa">
+/* 03/11 chủ dự án chọn B: card xanh ngọc nhạt trên nền gần trắng */
+html[data-gd="sang"]{--bg:#eaeef0;--panel:#e3f1ef;--panel2:#f8fcfb;--line:#a9cfca;--bong:0 1px 3px rgba(15,60,55,.12)}
+html[data-gd="sang"] .kpi::after{display:none}
+html[data-gd="sang"] .card,html[data-gd="sang"] .kpi{box-shadow:0 1px 3px rgba(15,60,55,.12),0 6px 16px -10px rgba(15,60,55,.25)}
 html[data-gd="sang"] .cn-wrap{background:radial-gradient(900px 400px at 85% -20%,rgba(var(--acc-rgb),.07),transparent 60%),linear-gradient(180deg,#ffffff,#f5f8fa)}
 html[data-gd="sang"] .cn-t,html[data-gd="sang"] .cn-card .nm,html[data-gd="sang"] .cn-formula{color:var(--ink)}
 html[data-gd="sang"] .cn-card{background:linear-gradient(160deg,#ffffff,#eef3f6)}
@@ -50,6 +54,7 @@ html[data-gd="sang"] .cn-pill.g{color:#1f7a48;background:rgba(31,122,72,.12)} ht
 html[data-gd="sang"] .cn-pill.r{color:#b42a25;background:rgba(192,48,43,.10)} html[data-gd="sang"] .cn-pill.c{color:#0b6e68;background:rgba(11,122,115,.10)}
 html[data-gd="sang"] .cn-note.w b{color:#9a5b00} html[data-gd="sang"] .cn-note.d b{color:#b42a25} html[data-gd="sang"] .cn-note.o b{color:#17643a}
 html[data-gd="sang"] .mai-chip.mc-dd{color:#17643a}
+html[data-gd="sang"] .mai-chip.mc-at{color:#b42a25} html[data-gd="sang"] .ql-tag{color:#a3262a;background:rgba(192,48,43,.08)}
 </style>
 ''' + s[_h36:]
 _k36b = s.rfind('</body>')

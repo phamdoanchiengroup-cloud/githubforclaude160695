@@ -232,6 +232,12 @@ html[data-gd="sang"] .qt-bh .st{background:#e6f5fc;color:#0d4f70!important;borde
 .qt-sg .o{min-height:62px;border:1px dashed transparent;border-radius:10px;padding:4px;display:flex;flex-direction:column;gap:6px;justify-content:center}
 .qt-sg .o.moi{border-color:var(--line);color:var(--ink3);font-size:11px;text-align:center;align-items:center}
 .qt-sg .khe{border-radius:6px;margin:0 3px}
+/* 03/11: lưu đồ dọc (hàng = bước, cột = nhánh) */
+.qt-sg.doc{gap:0 14px} .qt-sg.doc .khe{margin:2px 0;min-height:14px} .qt-sg.doc .o{min-height:54px}
+.qt-sg.doc .ld{border-left:0;border-bottom:4px solid var(--nh);padding:0 4px 4px;justify-content:center;text-align:center;margin-bottom:4px}
+.qt-sg.doc .hd{align-self:end;padding-bottom:6px} .qt-sg.doc .hd.b{align-self:stretch;display:flex;align-items:center;font-weight:600;text-transform:none;letter-spacing:0;font-size:12px;color:var(--ink2);position:sticky;left:0;z-index:2;background:var(--panel)}
+.qt-xg.doc{column-gap:22px;row-gap:30px;justify-content:start}
+.qt-xg.doc .ld{writing-mode:horizontal-tb;transform:none;align-self:end;text-align:center;border-bottom:2px solid var(--line);padding-bottom:4px;width:100%}
 .qt-sw.dang-keo .o,.qt-sw.dang-keo .khe{border:1px dashed var(--line)} .qt-sw.dang-keo .khe{background:rgba(127,127,127,.07)}
 .qt-sg .vao,.qt-sng .vao{border:2px solid var(--cyan,#2fd3c6)!important;background:rgba(47,211,198,.12)!important}
 .qt-ts{position:relative;background:var(--panel2);border:1px solid var(--line);border-left:4px solid var(--nh);border-radius:9px;padding:7px 9px;font-size:12.5px;line-height:1.3;cursor:grab;user-select:none}
@@ -264,7 +270,7 @@ html[data-gd="sang"] .qt-bh .st{background:#e6f5fc;color:#0d4f70!important;borde
 html[data-gd="sang"] .dh-vl.FC{border-color:#2456c9;color:#1d4aa8} html[data-gd="sang"] .dh-vl.MIX{border-color:#7b3fc4;color:#6a33ad} html[data-gd="sang"] .dh-vl.GF{border-color:#1f7a48;color:#17643a}
 html[data-gd="sang"] .qt-ts .tg i.sao,html[data-gd="sang"] .qt-tag.sao,html[data-gd="sang"] .qt-r .n .btn.on{color:#8a5a00;border-color:#c9900a}
 html[data-gd="sang"] .qt-r .n .btn:not(.on){color:var(--ink)}
-html[data-gd="sang"] .qt-o .le{color:#9a5a00} html[data-gd="sang"] .qt-the-nut{color:#fff;background:#a84f00}
+html[data-gd="sang"] .qt-bd.wn{color:#7a4800} html[data-gd="sang"] .qt-o .le{color:#9a5a00} html[data-gd="sang"] .qt-the-nut{color:#fff;background:#a84f00}
 html[data-gd="sang"] svg.qt-duong .nen{stroke:rgba(22,121,168,.6);filter:none} html[data-gd="sang"] svg.qt-duong .chay{stroke:#0d5f86}
 html[data-gd="sang"] svg.qt-duong .nen.phu{stroke:rgba(176,95,0,.6);filter:none} html[data-gd="sang"] svg.qt-duong .chay.phu{stroke:#a35600}
 html[data-gd="sang"] svg.qt-duong text{fill:#8a4d00;paint-order:stroke;stroke:#fff;stroke-width:3px}
@@ -549,16 +555,17 @@ function qtLuuDoX(x,T){
   dongDoan();
   var lanR=[]; rieng.forEach(function(n){ if(lanR.indexOf(n.lan)<0) lanR.push(n.lan); }); lanR.sort(function(a,b){return QT_THU_NHANH.indexOf(a)-QT_THU_NHANH.indexOf(b)});
   var maxR=0; lanR.forEach(function(l){ maxR=Math.max(maxR,rieng.filter(function(n){return n.lan===l}).length); });
-  var ncot=Math.max(cur,maxR,1);
-  var h='<div class="qt-xw"><svg class="qt-duong" aria-hidden="true"></svg><div class="qt-xg" style="grid-template-columns:26px repeat('+ncot+',minmax(120px,1fr))">';
-  hang.forEach(function(l,r){ h+='<div class="ld" style="grid-row:'+(r+1)+';grid-column:1">'+esc(QT.nhanh[l]||l)+'</div>'; });
-  var so=0;
+  /* 03/11 chủ dự án: lưu đồ chạy DỌC từ trên xuống – hàng = bước, cột = nhánh (chuôi trái, ngọn phải), công đoạn chung trải ngang các cột nhánh chính; nhánh riêng mỗi nhánh 1 cột bên phải */
+  var ncot=nh+lanR.length;
+  var h='<div class="qt-xw doc"><svg class="qt-duong" aria-hidden="true"></svg><div class="qt-xg doc" style="grid-template-columns:repeat('+ncot+',minmax(150px,240px))">';
+  hang.forEach(function(l,c){ h+='<div class="ld" style="grid-row:1;grid-column:'+(c+1)+'">'+esc(QT.nhanh[l]||l)+'</div>'; });
+  if(!hang.length&&chinh.length) h+='<div class="ld" style="grid-row:1;grid-column:1">'+esc(QT.nhanh.CHUNG||'Chung')+'</div>';
   chinh.slice().sort(function(a,b){return (col[K(a)]-col[K(b)])||(hang.indexOf(a.lan)-hang.indexOf(b.lan))}).forEach(function(n){ var c=col[K(n)];
-    var st=n.lan==='CHUNG'?'grid-row:1 / '+(1+nh)+';grid-column:'+(c+2):'grid-row:'+(1+hang.indexOf(n.lan))+';grid-column:'+(c+2);
-    h+=qtThe(n,x,n===nut&&n.tai>0,c+1,st); });   /* số = bước (cột); 2 nhánh song song cùng số */
-  lanR.forEach(function(l,j){ var r=1+nh+j, a=rieng.filter(function(n){return n.lan===l}).sort(function(p,q){return (p.thu-q.thu)||(p.buoc-q.buoc)});
-    h+='<div class="ld" style="grid-row:'+r+';grid-column:1">'+esc(QT.nhanh[l]||l)+'</div>';
-    a.forEach(function(n,i){ h+=qtThe(n,x,n===nut&&n.tai>0,'',' grid-row:'+r+';grid-column:'+(i+2)); if(i) canh.push([K(a[i-1]),K(n)]); }); });
+    var st=n.lan==='CHUNG'?'grid-row:'+(c+2)+';grid-column:1 / '+(1+nh):'grid-row:'+(c+2)+';grid-column:'+(1+hang.indexOf(n.lan));
+    h+=qtThe(n,x,n===nut&&n.tai>0,c+1,st); });   /* số = bước (hàng); 2 nhánh song song cùng số */
+  lanR.forEach(function(l,j){ var cc=1+nh+j, a=rieng.filter(function(n){return n.lan===l}).sort(function(p,q){return (p.thu-q.thu)||(p.buoc-q.buoc)});
+    h+='<div class="ld" style="grid-row:1;grid-column:'+cc+'">'+esc(QT.nhanh[l]||l)+'</div>';
+    a.forEach(function(n,i){ h+=qtThe(n,x,n===nut&&n.tai>0,'','grid-row:'+(i+2)+';grid-column:'+cc); if(i) canh.push([K(a[i-1]),K(n)]); }); });
   h+='</div></div>';
   if(ngoai.length) h+='<div class="qt-ngoai">Ngoài dòng chảy (vẫn tính tải)</div><div class="qt-ngoaiw">'+ngoai.map(function(n){return qtThe(n,x,false,'','')}).join('')+'</div>';
   window.__qtCanhX=canh;
@@ -571,7 +578,7 @@ function qtLanBoiDau(x,T){   /* dòng nút thắt + chú thích phía trên lưu
   var ds=Object.keys(G.o).map(function(k){return G.o[k]}), tren=ds.filter(function(n){return n.lan!=='NGOAI'}), nut=tren.reduce(function(a,n){return n.tai>a.tai?n:a},{tai:0}), mot=ds.filter(function(n){return n.mot});
   return '<div class="qt-chi-mt">Lưu đồ chỉ hiện trên máy tính – xem bảng công đoạn bên dưới.</div><div class="qt-not">'+(nut.ten&&nut.tai>0?'<span>Nút thắt xưởng: <b>'+esc(nut.ten)+'</b> ('+esc((QT.nhanh[nut.lan]||'').toLowerCase())+') '+qtBd(nut.tai,nut.can)+'</span>':'<span>Chưa có sản lượng trong kỳ.</span>')+
     (mot.length?'<span style="color:var(--amber)">⚠ Chỉ 1 người biết ở: '+mot.map(function(n){return esc(n.ten)}).join(', ')+'</span>':'')+'</div>'+
-    '<div class="qt-chu"><span>Đọc từ trái sang phải; thẻ giữa trải 2 hàng là công đoạn chung của chuôi và ngọn.</span><span>Người = đang làm / cần.</span><span><span class="qt-bd">≤85%</span> đủ</span><span><span class="qt-bd wn">95%</span> sát</span><span><span class="qt-bd bd">120%</span> thiếu người</span><span>Bấm thẻ để xem công đoạn trong nhóm.</span></div>';
+    '<div class="qt-chu"><span>Đọc từ trên xuống theo thứ tự làm; thẻ rộng trải 2 cột là công đoạn chung của chuôi và ngọn.</span><span>Người = đang làm / cần.</span><span><span class="qt-bd">≤85%</span> đủ</span><span><span class="qt-bd wn">95%</span> sát</span><span><span class="qt-bd bd">120%</span> thiếu người</span><span>Bấm thẻ để xem công đoạn trong nhóm.</span></div>';
 }
 function qtLanBoi(x,T,chiDs){
   var G=qtGomNhom(x,T); if(!G||!G.cot.length) return '<div class="pdesc">Xưởng chưa có công đoạn trên dòng chảy.</div>';
@@ -632,9 +639,13 @@ function qtVsm(T){
 /* Vẽ các cạnh [từ, đến] (data-k) trong 1 khung lưu đồ: đường cong ngang phát sáng có chấm chạy */
 function qtVeCanh(w,canh){
   var svg=w.querySelector('svg.qt-duong'), R=w.getBoundingClientRect(), sl=w.scrollLeft||0;
-  var o=function(k){ var e=w.querySelector('[data-k="'+k+'"]'); if(!e) return null; var r=e.getBoundingClientRect(); return {l:r.left-R.left+sl,r:r.right-R.left+sl,t:r.top-R.top,b:r.bottom-R.top,cy:(r.top+r.bottom)/2-R.top}; };
+  var o=function(k){ var e=w.querySelector('[data-k="'+k+'"]'); if(!e) return null; if(w.classList.contains('doc')&&e.parentNode&&e.parentNode.classList&&e.parentNode.classList.contains('o')) e=e.parentNode;   /* lưu đồ sửa dọc: nối ô ↔ ô (nhiều thẻ cùng ô chỉ 1 mũi tên) */
+    var r=e.getBoundingClientRect(); return {l:r.left-R.left+sl,r:r.right-R.left+sl,t:r.top-R.top,b:r.bottom-R.top,cy:(r.top+r.bottom)/2-R.top,cx:(r.left+r.right)/2-R.left+sl}; };
   var ds=[];
-  canh.forEach(function(c){ var A=o(c[0]),B=o(c[1]); if(!A||!B) return; var x1=A.r+2,y1=A.cy,x2=B.l-6,y2=B.cy,mx=(x1+x2)/2; ds.push('M'+x1+' '+y1+' C'+mx+' '+y1+' '+mx+' '+y2+' '+x2+' '+y2); });
+  var da={};
+  canh.forEach(function(c){ var A=o(c[0]),B=o(c[1]); if(!A||!B) return; var kk=[A.l,A.t,B.l,B.t].map(Math.round).join(','); if(da[kk]) return; da[kk]=1;
+    if(B.t>A.b-2){ var lo=Math.max(A.l,B.l),hi=Math.min(A.r,B.r),x1=A.cx,x2=B.cx; if(hi-lo>24){ x1=x2=(lo+hi)/2; } var y1=A.b+2,y2=B.t-6,my=(y1+y2)/2; ds.push('M'+x1+' '+y1+' C'+x1+' '+my+' '+x2+' '+my+' '+x2+' '+y2); }   /* 03/11: lưu đồ dọc – đáy thẻ trước → đỉnh thẻ sau */
+    else { var X1=A.r+2,Y1=A.cy,X2=B.l-6,Y2=B.cy,mx=(X1+X2)/2; ds.push('M'+X1+' '+Y1+' C'+mx+' '+Y1+' '+mx+' '+Y2+' '+X2+' '+Y2); } });
   svg.setAttribute('width',Math.max(w.scrollWidth,w.offsetWidth)); svg.setAttribute('height',w.offsetHeight);
   svg.innerHTML='<defs><marker id="qtMuiX" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M1 1L8 5L1 9" fill="none" stroke="rgba(150,230,255,.95)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></marker></defs>'+
     ds.map(function(d){ return '<path class="nen" d="'+d+'" marker-end="url(#qtMuiX)"/><path class="chay" d="'+d+'"/>'; }).join('');
@@ -806,17 +817,18 @@ function qtLuuDoSua(x){
   var cs=qtCsX(x), xuat=qtXuat(x), tren=cs.filter(function(q){return !qtNgoai(q)}), ngoai=cs.filter(qtNgoai);
   var nb=tren.reduce(function(a,q){return Math.max(a,q.Buoc)},0);
   var lan=QT_THU_NHANH.filter(function(l){ return !QT_NHANH_NGOAI[l]&&(l==='CHUNG'||QTLanThem[x+'|'+l]||tren.some(function(q){return q.Nhanh===l})); });
-  var cot='120px'; for(var b=1;b<=nb;b++) cot+=' 16px minmax(150px,1fr)'; cot+=' 16px 96px';
-  var h='<div class="qt-sw"><svg class="qt-duong" aria-hidden="true"></svg><div class="qt-sg" style="grid-template-columns:'+cot+'">';
-  h+='<div class="hd" style="grid-row:1;grid-column:1">Nhánh ↓ · Bước →</div>';
-  for(b=1;b<=nb;b++) h+='<div class="hd" style="grid-row:1;grid-column:'+(2*b+1)+'">Bước '+b+'</div>';
-  h+='<div class="hd mo" style="grid-row:1;grid-column:'+(2*nb+3)+'">Bước mới</div>';
+  /* 03/11 chủ dự án: lưu đồ sửa chạy DỌC – hàng = bước (trên → dưới), cột = nhánh; khe hẹp giữa 2 hàng để chèn bước mới */
+  var hang='auto'; for(var b=1;b<=nb;b++) hang+=' 14px auto'; hang+=' 14px auto';
+  var h='<div class="qt-sw doc"><svg class="qt-duong" aria-hidden="true"></svg><div class="qt-sg doc" style="grid-template-columns:78px repeat('+lan.length+',minmax(150px,1fr));grid-template-rows:'+hang+'">';
+  h+='<div class="hd" style="grid-row:1;grid-column:1">Bước ↓ · Nhánh →</div>';
+  lan.forEach(function(l,i){ h+='<div class="ld" style="grid-row:1;grid-column:'+(i+2)+';--nh:'+qtMau(l)+'">'+esc(QT.nhanh[l]||l)+'</div>'; });
+  for(b=1;b<=nb;b++) h+='<div class="hd b" style="grid-row:'+(2*b+1)+';grid-column:1">Bước '+b+'</div>';
+  h+='<div class="hd b mo" style="grid-row:'+(2*nb+3)+';grid-column:1">Bước mới</div>';
   var tha=function(nh,b,chen,r,c,lop,noi){ return '<div class="'+lop+'" style="grid-row:'+r+';grid-column:'+c+'" data-nh="'+nh+'" data-b="'+b+'"'+(chen?' data-chen="1"':'')+' ondragover="qtKeoQua(event)" ondragleave="qtKeoRa(event)" ondrop="qtTha(event)">'+(noi||'')+'</div>'; };
-  lan.forEach(function(l,i){ var r=i+2;
-    h+='<div class="ld" style="grid-row:'+r+';grid-column:1;--nh:'+qtMau(l)+'">'+esc(QT.nhanh[l]||l)+'</div>';
-    for(var b=1;b<=nb;b++){ h+=tha(l,b,true,r,2*b,'khe','');
-      h+=tha(l,b,false,r,2*b+1,'o',tren.filter(function(q){return q.Nhanh===l&&q.Buoc===b}).map(function(q){return qtTheSua(q,xuat)}).join('')); }
-    h+=tha(l,nb+1,true,r,2*nb+2,'khe','')+tha(l,nb+1,true,r,2*nb+3,'o moi','<span>thả vào đây = bước mới</span>'); });
+  lan.forEach(function(l,i){ var c=i+2;
+    for(var b=1;b<=nb;b++){ h+=tha(l,b,true,2*b,c,'khe','');
+      h+=tha(l,b,false,2*b+1,c,'o',tren.filter(function(q){return q.Nhanh===l&&q.Buoc===b}).map(function(q){return qtTheSua(q,xuat)}).join('')); }
+    h+=tha(l,nb+1,true,2*nb+2,c,'khe','')+tha(l,nb+1,true,2*nb+3,c,'o moi','<span>thả vào đây = bước mới</span>'); });
   h+='</div></div>';
   var them=QT_THU_NHANH.filter(function(l){return !QT_NHANH_NGOAI[l]&&lan.indexOf(l)<0});
   if(them.length) h+='<div class="qt-themlan"><label for="qtThemLan">Thêm hàng nhánh để kéo thẻ vào:</label> <select id="qtThemLan" onchange="if(this.value){QTLanThem[QTX+\'|\'+this.value]=1;qtVe()}"><option value="">– chọn –</option>'+them.map(function(l){return '<option value="'+l+'">'+esc(QT.nhanh[l]||l)+'</option>'}).join('')+'</select></div>';
@@ -845,7 +857,7 @@ function qtVeSua(T){
   var canh=qtCanh(cs), xuat=qtXuat(x), r=qtRa(x), dt=window.innerWidth<=640;
   if(QTChonThe&&!qtTim(QTChonThe)) QTChonThe='';
   var h='<div class="card qt-sua2"><div class="qt-buoc"><span>1</span>Sắp xếp công đoạn của xưởng</div>'+
-    '<div class="qt-hd"><span class="pc"><b>Cột = bước</b> (làm trước → sau, từ trái sang phải). <b>Hàng = nhánh</b> (Chung / Ngọn / Chuôi…). Công đoạn <b>cùng cột</b> là làm cùng lúc. Mũi tên tự nối.<br><b>Kéo thẻ</b> sang ô khác; thả vào <b>khe hẹp giữa 2 cột</b> để chèn bước mới. Bấm 1 thẻ để chỉnh chi tiết (hoặc mở "Danh sách" bên dưới).</span>'+
+    '<div class="qt-hd"><span class="pc"><b>Hàng = bước</b> (làm trước → sau, từ trên xuống dưới). <b>Cột = nhánh</b> (Chung / Ngọn / Chuôi…). Công đoạn <b>cùng hàng</b> là làm cùng lúc. Mũi tên tự nối.<br><b>Kéo thẻ</b> sang ô khác; thả vào <b>khe hẹp giữa 2 hàng</b> để chèn bước mới. Bấm 1 thẻ để chỉnh chi tiết (hoặc mở "Danh sách" bên dưới).</span>'+
     '<span class="dt">Công đoạn xếp theo <b>bước</b> (làm trước → sau). Các công đoạn <b>cùng 1 bước</b> là làm cùng lúc. Bấm <b>↑ ↓</b> để đưa công đoạn lên trước / xuống sau (bấm 1 lần: làm cùng lúc với bước bên cạnh; bấm thêm: thành bước riêng). Ô bên cạnh để đổi nhánh. Sửa xong bấm <b>Lưu quy trình</b>.</span></div>';
   h+=qtLuuDoSua(x);
   if(QTChonThe){ var q=qtTim(QTChonThe); h+='<div class="qt-chonthe"><div style="font-weight:600;margin-bottom:4px">Đang chọn <button class="btn sm" type="button" onclick="QTChonThe=\'\';qtVe()" aria-label="Bỏ chọn">✕</button></div>'+qtDongSua(q,xuat,canh,cs)+'</div>'; }

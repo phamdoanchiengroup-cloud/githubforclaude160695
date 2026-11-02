@@ -462,3 +462,11 @@ Chủ dự án trả lời: đơn quá hạn > 30 ngày **mở sẵn** ở thẻ
 - `va-quy-trinh-web.py`: `<style id="gdSangVa">` cho Hướng dẫn (`.cn-*`), `.mai-chip`; sửa Tổng quan TP hiện ô "undefined" (lọc định mức chỉ `do` / `vang`).
 - Chuyên gia `kiem-tra-de-dung` tính tỉ lệ WCAG: mọi màu ≥ 4.5:1, trừ nút chữ trắng nền #c25e00 (4.29) → đổi #a84f00 (5.55); làm đậm NGON #0f7350, CHUOI #a84f00.
 - Kiểm thử: quy-trinh-web 102/102, holo-web 20/20, manh-web 8/8, quy-trinh 76/76; điện thoại 390px sáng không tràn, không lỗi JS (chủ sở hữu + TP).
+
+## Đợt 9 (03/11): card xanh ngọc + lưu đồ xưởng chạy dọc
+- Chủ dự án: nền trắng + card trắng khó nhìn → chọn B (card xanh ngọc nhạt) cho mọi người. `va-quy-trinh-web.py` khối `gdSangVa`: `--bg:#eaeef0; --panel:#e3f1ef; --panel2:#f8fcfb; --line:#a9cfca`, bóng `.card` / `.kpi`, bỏ vệt `.kpi::after` ở nền sáng; sửa chữ nhạt `.mai-chip.mc-at`, `.ql-tag`, `.qt-bd.wn`.
+- Lưu đồ xưởng dọc: `qtLuuDoX` (hàng = bước, cột = Chuôi / Ngọn, công đoạn chung trải 2 cột, nhánh riêng mỗi nhánh 1 cột phải; lớp `.qt-xg.doc`), `qtLuuDoSua` (hàng = Bước 1..n + khe 14px để chèn bước, cột = nhánh, nhãn bước dính trái; `.qt-sg.doc`), `qtVeCanh` nối đáy → đỉnh, ở trình sửa nối ô ↔ ô và bỏ mũi tên trùng. Chữ hướng dẫn đổi "Hàng = bước, Cột = nhánh". Điện thoại vẫn ẩn lưu đồ (dùng danh sách ↑↓).
+- Chuyên gia `soat-giao-dien-cuoi`: lưu đồ dọc đạt; card cần tách rõ hơn → làm nền đậm hơn + bóng, bỏ vệt mờ, nhãn bước dính trái. Chưa làm: đường nối 1 → nhiều cột vẽ kiểu thanh ngang.
+- PDF hướng dẫn (mục Sửa quy trình) còn mô tả kiểu ngang – cần dựng lại nếu chủ dự án muốn.
+- Kiểm thử: quy-trinh-web 102/102, holo-web 20/20, manh-web 8/8, quy-trinh 76/76, kpi-tat-ca 17/17, so-do 27/27, chia-doi 27/27; mai-web 29/32 (3 lỗi có sẵn từ trước, bản cũ cũng vậy).
+
