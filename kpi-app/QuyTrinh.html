@@ -259,6 +259,18 @@ html[data-gd="sang"] .qt-bh .st{background:#e6f5fc;color:#0d4f70!important;borde
 .ch-k select{min-height:34px} .ch-an td{opacity:.55} .ch-d td{vertical-align:top}
 
 .qt-o.mo{opacity:.55;cursor:default} .qt-o.cua{border:2px solid var(--cyan,#2fd3c6)!important;box-shadow:0 0 16px rgba(47,211,198,.35)} .qt-xl-xem{font-size:12.5px;color:var(--ink3);padding:4px 0;border-bottom:1px dashed var(--line)}
+
+/* 02/11: giao diện sáng – tương phản */
+html[data-gd="sang"] .dh-vl.FC{border-color:#2456c9;color:#1d4aa8} html[data-gd="sang"] .dh-vl.MIX{border-color:#7b3fc4;color:#6a33ad} html[data-gd="sang"] .dh-vl.GF{border-color:#1f7a48;color:#17643a}
+html[data-gd="sang"] .qt-ts .tg i.sao,html[data-gd="sang"] .qt-tag.sao,html[data-gd="sang"] .qt-r .n .btn.on{color:#8a5a00;border-color:#c9900a}
+html[data-gd="sang"] .qt-r .n .btn:not(.on){color:var(--ink)}
+html[data-gd="sang"] .qt-o .le{color:#9a5a00} html[data-gd="sang"] .qt-the-nut{color:#fff;background:#a84f00}
+html[data-gd="sang"] svg.qt-duong .nen{stroke:rgba(22,121,168,.6);filter:none} html[data-gd="sang"] svg.qt-duong .chay{stroke:#0d5f86}
+html[data-gd="sang"] svg.qt-duong .nen.phu{stroke:rgba(176,95,0,.6);filter:none} html[data-gd="sang"] svg.qt-duong .chay.phu{stroke:#a35600}
+html[data-gd="sang"] svg.qt-duong text{fill:#8a4d00;paint-order:stroke;stroke:#fff;stroke-width:3px}
+html[data-gd="sang"] svg.qt-duong marker path{stroke:#0d5f86} html[data-gd="sang"] svg.qt-duong #qtMuiP path{stroke:#a35600}
+html[data-gd="sang"] .dh-vrt u,html[data-gd="sang"] .dh-lg.t{background:#b8860b} html[data-gd="sang"] .dh-luy u{background:#1d2330}
+html[data-gd="sang"] .qt-o.cua{box-shadow:0 0 0 3px rgba(11,122,115,.18)}
 </style>
 <script>
 /* ===== Quy trình sản xuất (31/10) ===== */
@@ -730,6 +742,8 @@ function qtVeNguoi(T){
 /* --- Sửa quy trình (02/11, chủ dự án chọn A + B: kéo thả trên lưu đồ ở máy tính + danh sách ↑↓ ở mọi máy; điện thoại không có lưu đồ) ---
    Mô hình: mỗi công đoạn có nhánh (hàng) + bước (cột). Cùng bước = làm song song. Số bước tự đánh lại 1..n sau mỗi lần sửa (qtChuanBuoc). */
 var QT_MAU_NHANH={CHUNG:'#7fb3ff',NGON:'#4fd19a',CHUOI:'#ffb15c',GAY1K:'#c79bff',NOI:'#ff8fb1',TIP:'#5fd7e6',PHIP:'#a6d65f',POM:'#e6c25f',PK:'#b0b8c8',DONLE:'#e69f7a',LAMLAI:'#ff7a7a',HOTRO:'#9aa4b4',CHUAXEP:'#8a8a8a'};
+var QT_MAU_SANG={CHUNG:'#2463c9',NGON:'#0f7350',CHUOI:'#a84f00',GAY1K:'#7a45c4',NOI:'#c0306a',TIP:'#0b7a8a',PHIP:'#4d7a12',POM:'#8a6a00',PK:'#55606f',DONLE:'#a8501f',LAMLAI:'#c0302b',HOTRO:'#5d6973',CHUAXEP:'#555'};
+function qtMau(nh){ return ((document.documentElement.getAttribute('data-gd')==='sang')?QT_MAU_SANG:QT_MAU_NHANH)[nh]||'#888'; }   /* 02/11: màu nhánh đậm hơn ở nền sáng */
 var QTHoan=[], QTKeo='', QTChonThe='', QTLanThem={}, QTMoDs=null;
 function qtCsX(x){ return QTD.filter(function(q){return q.MaXuong===x}); }
 function qtNgoai(q){ return !!QT_NHANH_NGOAI[q.Nhanh]; }
@@ -784,7 +798,7 @@ function qtThaVao(m,nh,b,chen){
 /* thẻ trên lưu đồ sửa (A) */
 function qtTheSua(q,xuat){
   var tay=q.Truoc&&q.Truoc.length, sao=xuat.indexOf(q.Ma)>=0;
-  return '<div class="qt-ts'+(QTChonThe===q.Ma?' chon':'')+'" draggable="true" data-ma="'+esc(q.Ma)+'" data-k="'+esc(q.Ma)+'" style="--nh:'+(QT_MAU_NHANH[q.Nhanh]||'#999')+'" ondragstart="qtKeoBat(event)" ondragend="qtKeoHet()" '+
+  return '<div class="qt-ts'+(QTChonThe===q.Ma?' chon':'')+'" draggable="true" data-ma="'+esc(q.Ma)+'" data-k="'+esc(q.Ma)+'" style="--nh:'+qtMau(q.Nhanh)+'" ondragstart="qtKeoBat(event)" ondragend="qtKeoHet()" '+
     'onclick="QTChonThe=QTChonThe===this.dataset.ma?\'\':this.dataset.ma;qtVe()" title="Kéo để đổi bước / nhánh · bấm để chỉnh chi tiết"><span class="tn">'+esc(qtTenCD(q.Ma))+'</span>'+
     (sao||q.moi||tay?'<span class="tg">'+(sao?'<i class="sao">⭐ ra hàng</i>':'')+(q.moi?'<i class="moi">mới</i>':'')+(tay?'<i>nối tay</i>':'')+'</span>':'')+'</div>';
 }
@@ -799,7 +813,7 @@ function qtLuuDoSua(x){
   h+='<div class="hd mo" style="grid-row:1;grid-column:'+(2*nb+3)+'">Bước mới</div>';
   var tha=function(nh,b,chen,r,c,lop,noi){ return '<div class="'+lop+'" style="grid-row:'+r+';grid-column:'+c+'" data-nh="'+nh+'" data-b="'+b+'"'+(chen?' data-chen="1"':'')+' ondragover="qtKeoQua(event)" ondragleave="qtKeoRa(event)" ondrop="qtTha(event)">'+(noi||'')+'</div>'; };
   lan.forEach(function(l,i){ var r=i+2;
-    h+='<div class="ld" style="grid-row:'+r+';grid-column:1;--nh:'+(QT_MAU_NHANH[l]||'#999')+'">'+esc(QT.nhanh[l]||l)+'</div>';
+    h+='<div class="ld" style="grid-row:'+r+';grid-column:1;--nh:'+qtMau(l)+'">'+esc(QT.nhanh[l]||l)+'</div>';
     for(var b=1;b<=nb;b++){ h+=tha(l,b,true,r,2*b,'khe','');
       h+=tha(l,b,false,r,2*b+1,'o',tren.filter(function(q){return q.Nhanh===l&&q.Buoc===b}).map(function(q){return qtTheSua(q,xuat)}).join('')); }
     h+=tha(l,nb+1,true,r,2*nb+2,'khe','')+tha(l,nb+1,true,r,2*nb+3,'o moi','<span>thả vào đây = bước mới</span>'); });
@@ -808,7 +822,7 @@ function qtLuuDoSua(x){
   if(them.length) h+='<div class="qt-themlan"><label for="qtThemLan">Thêm hàng nhánh để kéo thẻ vào:</label> <select id="qtThemLan" onchange="if(this.value){QTLanThem[QTX+\'|\'+this.value]=1;qtVe()}"><option value="">– chọn –</option>'+them.map(function(l){return '<option value="'+l+'">'+esc(QT.nhanh[l]||l)+'</option>'}).join('')+'</select></div>';
   var lanN=Object.keys(QT_NHANH_NGOAI);
   h+='<div class="qt-sng">'+lanN.filter(function(l){return l!=='CHUAXEP'||ngoai.some(function(q){return q.Nhanh===l})}).map(function(l){
-    return tha(l,1,false,'auto','auto','o ng','<div class="ld" style="--nh:'+QT_MAU_NHANH[l]+'">'+esc(QT.nhanh[l]||l)+' <small>(ngoài dòng chảy, vẫn tính tải)</small></div>'+ngoai.filter(function(q){return q.Nhanh===l}).map(function(q){return qtTheSua(q,xuat)}).join('')); }).join('')+'</div>';
+    return tha(l,1,false,'auto','auto','o ng','<div class="ld" style="--nh:'+qtMau(l)+'">'+esc(QT.nhanh[l]||l)+' <small>(ngoài dòng chảy, vẫn tính tải)</small></div>'+ngoai.filter(function(q){return q.Nhanh===l}).map(function(q){return qtTheSua(q,xuat)}).join('')); }).join('')+'</div>';
   var canh=qtCanh(cs), ds=[]; tren.forEach(function(q){ (canh[q.Ma]||[]).forEach(function(t){ ds.push([t,q.Ma]); }); });
   window.__qtCanhS=ds;
   return h;
@@ -816,7 +830,7 @@ function qtLuuDoSua(x){
 /* 1 dòng sửa (B) – dùng cho danh sách và cho thẻ đang chọn trên lưu đồ */
 function qtDongSua(q,xuat,canh,cs){
   var tr=canh[q.Ma]||[], tay=q.Truoc&&q.Truoc.length, sao=xuat.indexOf(q.Ma)>=0, ng=qtNgoai(q), e=esc(q.Ma);
-  var h='<div class="qt-r" data-ma="'+e+'" style="--nh:'+(QT_MAU_NHANH[q.Nhanh]||'#999')+'"><div class="t"><span class="qt-nh">'+esc(QT.nhanh[q.Nhanh]||q.Nhanh)+'</span><b>'+esc(qtTenCD(q.Ma))+'</b>'+(q.moi?'<span class="qt-tag wn">mới</span>':'')+(sao?'<span class="qt-tag sao">⭐ ra hàng</span>':'')+
+  var h='<div class="qt-r" data-ma="'+e+'" style="--nh:'+qtMau(q.Nhanh)+'"><div class="t"><span class="qt-nh">'+esc(QT.nhanh[q.Nhanh]||q.Nhanh)+'</span><b>'+esc(qtTenCD(q.Ma))+'</b>'+(q.moi?'<span class="qt-tag wn">mới</span>':'')+(sao?'<span class="qt-tag sao">⭐ ra hàng</span>':'')+
     '<small>'+(ng?'ngoài dòng chảy – không nối, vẫn tính tải':'nhận hàng từ: '+(tr.length?esc(tr.map(qtTenCD).join(', ')):'đầu xưởng')+(tay?' (chọn tay)':''))+'</small></div><div class="n">'+
     (ng?'':'<button class="btn sm" type="button" aria-label="Đưa lên trước" title="Lên trước" data-ma="'+e+'" onclick="qtDichBuoc(this.dataset.ma,-1)">↑</button><button class="btn sm" type="button" aria-label="Đưa xuống sau" title="Xuống sau" data-ma="'+e+'" onclick="qtDichBuoc(this.dataset.ma,1)">↓</button>')+
     '<select aria-label="Nhánh của '+esc(qtTenCD(q.Ma))+'" data-ma="'+e+'" onchange="qtDoiNhanh(this.dataset.ma,this.value)">'+QT_THU_NHANH.map(function(k){return '<option value="'+k+'"'+(k===q.Nhanh?' selected':'')+'>'+esc(QT.nhanh[k]||k)+'</option>'}).join('')+'</select>'+

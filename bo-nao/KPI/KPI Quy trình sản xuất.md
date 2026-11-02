@@ -455,3 +455,10 @@ Chủ dự án trả lời: đơn quá hạn > 30 ngày **mở sẵn** ở thẻ
 - Chủ dự án xem bản thật, chỉnh nháp (thứ tự, nhánh) rồi Lưu. Cho thông số 22 tên hàng vàng (hoặc sửa tay ở "Kiểm phân loại").
 - Nếu chủ dự án gửi bảng ánh xạ → bung mã BTP 60… / S… / Ngọn…; đề xuất các bộ phận ghi số "đã qua" vào Sheet đơn (hoặc lấy từ nhật ký KPI).
 - Giai đoạn 2: gắn máy với công đoạn để tính giới hạn máy; theo dõi tồn bán thành phẩm; mở cho TP/PP xem / sửa xưởng mình (hỏi lại quyền).
+
+## Đợt 8 (03/11): giao diện sáng – tương phản
+- Nguyên nhân: hologram chủ sở hữu (biến nền tối) trộn với luật `data-gd="sang"` (thẻ trắng + chữ sáng) → không đọc được. Sửa: `holoSang()` trong `tests/holo/holo-web.js`, `holoBat()` tắt khi nền sáng, `gdDat` gọi lại `holoApDung` + `holoNut`.
+- `quy-trinh-web.html`: `QT_MAU_SANG` + `qtMau(nh)` (màu nhánh đậm cho nền sáng, thay mọi chỗ dùng `QT_MAU_NHANH`), khối CSS "giao diện sáng – tương phản" (nhãn chất liệu, ⭐, nút thẻ #a84f00, đường lưu đồ, nhãn luồng, biểu đồ Vào–Ra–Tồn / lũy kế).
+- `va-quy-trinh-web.py`: `<style id="gdSangVa">` cho Hướng dẫn (`.cn-*`), `.mai-chip`; sửa Tổng quan TP hiện ô "undefined" (lọc định mức chỉ `do` / `vang`).
+- Chuyên gia `kiem-tra-de-dung` tính tỉ lệ WCAG: mọi màu ≥ 4.5:1, trừ nút chữ trắng nền #c25e00 (4.29) → đổi #a84f00 (5.55); làm đậm NGON #0f7350, CHUOI #a84f00.
+- Kiểm thử: quy-trinh-web 102/102, holo-web 20/20, manh-web 8/8, quy-trinh 76/76; điện thoại 390px sáng không tràn, không lỗi JS (chủ sở hữu + TP).

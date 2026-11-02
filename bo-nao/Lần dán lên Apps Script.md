@@ -8,6 +8,7 @@ Liên quan: [[Việc chờ chủ dự án]] · [[KPI Tổng quan và cách dựn
 - Lần dán chung 18/10: chủ dự án đã nhận đủ 5 file + hướng dẫn (HUONG-DAN-CAP-NHAT.md mục "LẦN DÁN CHUNG 18/10"). – [[KPI Bảo mật và vận hành]], [[KPI Âm thanh và giọng Rhino]]
 
 ## Web KPI – chưa dán
+- **Giao diện sáng – tương phản 03/11** (hologram chỉ ở nền tối, màu lưu đồ / thẻ / Hướng dẫn rõ hơn ở nền sáng, sửa ô "undefined" ở Tổng quan trưởng phòng): Code.gs + Index.html + QuyTrinh.html qua 2-CAP-NHAT.bat, rồi Ctrl+F5. Không có hàm cần chạy. – [[KPI Hologram chủ sở hữu]] · [[KPI Quy trình sản xuất]]
 - **Tab Quy trình cho trưởng / phó phòng 03/11**: Code.gs + Index.html + QuyTrinh.html qua 2-CAP-NHAT.bat. Không có hàm cần chạy; sheet ẩn `QuyTrinhDeXuat` tự tạo. Nên bấm "Lưu quy trình" một lần (chốt nháp) trước khi duyệt đề xuất đầu tiên. – [[KPI Quy trình sản xuất]]
 - **Cấu hình sản phẩm + báo sản phẩm mới + tab kênh mới 02/11**: Code.gs + Index.html + QuyTrinh.html qua 2-CAP-NHAT.bat. Không có hàm cần chạy; sheet `CauHinhSP` tự tạo khi lưu lần đầu. – [[KPI Quy trình sản xuất]]
 - **6 yêu cầu 02/11** (đơn quá hạn > 30 ngày, 2 nhãn chất liệu chuôi/ngọn, thống kê Lean, Sửa quy trình kéo thả + danh sách): Code.gs + Index.html + QuyTrinh.html qua 2-CAP-NHAT.bat. Không có hàm cần chạy. – [[KPI Quy trình sản xuất]]

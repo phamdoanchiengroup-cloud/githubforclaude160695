@@ -10,7 +10,9 @@
    ===================================================================== */
 var HOLO_KHOA = 'kpi_holo';
 function holoCheDo() { var v = null; try { v = localStorage.getItem(HOLO_KHOA); } catch (e) {} return v === 'tinh' || v === 'tat' ? v : 'dong'; }
-function holoBat() { return !!(typeof ME !== 'undefined' && ME && ME.laOwner) && holoCheDo() !== 'tat'; }
+function holoSang() { return document.documentElement.getAttribute('data-gd') === 'sang'; }
+/* 02/11: hologram là lớp áo NỀN TỐI – khi người dùng chọn giao diện sáng thì tự tắt (trước đây trộn nền tối + màu chữ sáng → không đọc được) */
+function holoBat() { return !!(typeof ME !== 'undefined' && ME && ME.laOwner) && holoCheDo() !== 'tat' && !holoSang(); }
 function holoDong() { return holoCheDo() === 'dong' && !(typeof GIAM_CD === 'function' && GIAM_CD()); }
 
 var HOLO_CSS =
@@ -113,10 +115,16 @@ function holoNut() {
   var b = document.getElementById('btnHolo');
   if (!b) return;
   var m = holoCheDo();
-  b.innerHTML = '🌌 Hologram<small>' + (m === 'dong' ? 'Bật · có chuyển động' : m === 'tinh' ? 'Bật · nền tĩnh' : 'Đang tắt') + ' – bấm để đổi</small>';
+  b.innerHTML = '🌌 Hologram<small>' + (holoSang() && m !== 'tat' ? 'Chỉ dùng ở nền tối – bấm để bật nền tối' : (m === 'dong' ? 'Bật · có chuyển động' : m === 'tinh' ? 'Bật · nền tĩnh' : 'Đang tắt') + ' – bấm để đổi') + '</small>';
 }
 function holoDoi() {
   var m = holoCheDo(), moi = m === 'dong' ? 'tinh' : m === 'tinh' ? 'tat' : 'dong';
+  if (holoSang()) {   // đang nền sáng: bấm hologram = chuyển sang nền tối và bật hologram
+    moi = m === 'tat' ? 'dong' : m;
+    try { localStorage.setItem(HOLO_KHOA, moi); localStorage.setItem(KHOA_GIAO_DIEN, 'toi'); } catch (e) {}
+    gdDat('toi'); try { if (tabHienTai) go(tabHienTai); } catch (e) {}
+    toast('Đã chuyển sang nền tối và bật hologram', true); return;
+  }
   try { localStorage.setItem(HOLO_KHOA, moi); } catch (e) {}
   holoApDung();
   try { if (tabHienTai) go(tabHienTai); } catch (e) {}
@@ -233,3 +241,5 @@ function holoGanDai() {
     return r;
   };
 })();
+/* 02/11: đổi nền sáng / tối thì áp lại hologram (sáng → tắt, tối → bật lại nếu đang chọn bật) */
+(function () { if (typeof gdDat !== 'function' || gdDat.__holo) return; var goc = gdDat; gdDat = function (v) { goc(v); try { holoApDung(); holoNut(); } catch (e) {} }; gdDat.__holo = true; })();

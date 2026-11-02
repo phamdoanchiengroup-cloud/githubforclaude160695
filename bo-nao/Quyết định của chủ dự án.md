@@ -79,3 +79,6 @@ Những điều đã chốt. Đừng đề xuất lại những gì ghi "không 
 - Cân Phôi – Phân Loại Phôi trả về 180 (chủ dự án tự sửa trên web). **Không giới hạn** mức nâng định mức mỗi lần (bỏ đề xuất 10%/lần). – [[KPI Phân tích định mức]]
 - Người SL 0 cả tháng (Bùi Hoàng Anh, Trần Thị Thuỳ Dung, Tống Thị Mỹ Duyên, Nguyễn Thị Mai Nga) là nhân viên mới; **giữ trọng số** SL 70 / CL 20 / TT 5 / AT 5. – [[KPI Soát đổi định mức 22-10]]
 - Video giới thiệu từ tư liệu Rhino: **tự dựng** (ffmpeg + hoạt ảnh), không dùng video AI tốn credit. – [[KPI Màn đăng nhập demo chờ duyệt]]
+
+## Giao diện sáng (03/11)
+- Giao diện tối giữ nguyên (chủ dự án: "đẹp rồi"). Giao diện sáng phải đọc rõ mọi thẻ, lưu đồ. Hologram chủ sở hữu chỉ dùng ở nền tối: chọn nền sáng thì hologram tự tắt; bấm nút hologram khi đang sáng thì web chuyển sang nền tối. – [[KPI Hologram chủ sở hữu]]

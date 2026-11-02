@@ -35,6 +35,23 @@ _t36("  if(ME&&ME.laOwner&&!window.__spMoiTai){", "  if(ME&&ME.laOwner&&!window.
 _t36("  // 5) Yêu cầu sửa hồ sơ\n", """  if(ME.laOwner&&window.__qtDX&&__qtDX.ok&&__qtDX.n) v.push({muc:'vang',so:__qtDX.n,nho:'đề xuất',t:'Trưởng phòng đề xuất sửa quy trình',m:__qtDX.ds.slice(0,4).map(function(x){return '<b>'+esc(x.MaXuong)+'</b> ('+esc(x.TenNguoi)+', '+esc(x.ThoiDiem)+')'}).join(' · ')+' – xem so sánh rồi duyệt hoặc từ chối.',fn:"window.__qtMo='duyet';go('qt')",nut:'Xem & duyệt'});
   // 5) Yêu cầu sửa hồ sơ
 """)
+# 02/11: Tổng quan TP – khung "Định mức cần chú ý" chỉ biết nhãn do/vang; Phân tích định mức nay có thêm nhe/sat/chat -> hiện "undefined". Chỉ giữ công đoạn lỏng thật (do/vang), không gợi ý hạ (quyết định chủ dự án)
+_t36("    var ds=(r.ds||[]).filter(function(k){ return k.nhan!=='xanh' && k.soCoData>=2; });", "    var ds=(r.ds||[]).filter(function(k){ return (k.nhan==='do'||k.nhan==='vang') && k.soCoData>=2; });")
+# 02/11: giao diện sáng – các khối viết riêng cho nền tối (Cẩm nang ở Hướng dẫn, chip Rhino) thiếu tương phản
+_h36 = s.find('</head>'); assert _h36 > 0
+s = s[:_h36] + '''<style id="gdSangVa">
+html[data-gd="sang"] .cn-wrap{background:radial-gradient(900px 400px at 85% -20%,rgba(var(--acc-rgb),.07),transparent 60%),linear-gradient(180deg,#ffffff,#f5f8fa)}
+html[data-gd="sang"] .cn-t,html[data-gd="sang"] .cn-card .nm,html[data-gd="sang"] .cn-formula{color:var(--ink)}
+html[data-gd="sang"] .cn-card{background:linear-gradient(160deg,#ffffff,#eef3f6)}
+html[data-gd="sang"] .cn-card .pct{filter:saturate(1.2) brightness(.8)}
+html[data-gd="sang"] .cn-a td{border-bottom-color:rgba(20,40,50,.10)}
+html[data-gd="sang"] .cn-formula{background:rgba(139,124,246,.07);border-color:rgba(110,90,220,.45)}
+html[data-gd="sang"] .cn-pill.g{color:#1f7a48;background:rgba(31,122,72,.12)} html[data-gd="sang"] .cn-pill.a{color:#9a5b00;background:rgba(168,100,0,.12)}
+html[data-gd="sang"] .cn-pill.r{color:#b42a25;background:rgba(192,48,43,.10)} html[data-gd="sang"] .cn-pill.c{color:#0b6e68;background:rgba(11,122,115,.10)}
+html[data-gd="sang"] .cn-note.w b{color:#9a5b00} html[data-gd="sang"] .cn-note.d b{color:#b42a25} html[data-gd="sang"] .cn-note.o b{color:#17643a}
+html[data-gd="sang"] .mai-chip.mc-dd{color:#17643a}
+</style>
+''' + s[_h36:]
 _k36b = s.rfind('</body>')
 s = s[:_k36b] + """<script>
 /* 36b (02/11): mở Đơn hàng ở mục chỉ định (Cấu hình sản phẩm); đánh dấu đã xem tab kênh mới */

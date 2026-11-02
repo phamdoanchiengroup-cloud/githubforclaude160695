@@ -1151,6 +1151,18 @@ html[data-gd="sang"] #nav .dem:not(.do){background:var(--amber)}
 @media(max-width:900px){#maiGoc{bottom:76px;right:6px}.mai-thoai .dk{flex-wrap:wrap}.mai-thoai .dk .buoc{width:100%;margin:0 0 2px}.mai-thoai .dk .btn{flex:1}.mai-thoai .loi{font-size:13.5px}#maiTour .vn,#maiHop .vn{bottom:72px}#maiTour .vn svg,#maiHop .vn svg{width:96px;height:130px}}
 @media (prefers-reduced-motion:reduce){.mai *,#maiTour .ro::after{animation:none!important}#maiGoc,#maiTour .ro{transition:none!important}}
 </style>
+<style id="gdSangVa">
+html[data-gd="sang"] .cn-wrap{background:radial-gradient(900px 400px at 85% -20%,rgba(var(--acc-rgb),.07),transparent 60%),linear-gradient(180deg,#ffffff,#f5f8fa)}
+html[data-gd="sang"] .cn-t,html[data-gd="sang"] .cn-card .nm,html[data-gd="sang"] .cn-formula{color:var(--ink)}
+html[data-gd="sang"] .cn-card{background:linear-gradient(160deg,#ffffff,#eef3f6)}
+html[data-gd="sang"] .cn-card .pct{filter:saturate(1.2) brightness(.8)}
+html[data-gd="sang"] .cn-a td{border-bottom-color:rgba(20,40,50,.10)}
+html[data-gd="sang"] .cn-formula{background:rgba(139,124,246,.07);border-color:rgba(110,90,220,.45)}
+html[data-gd="sang"] .cn-pill.g{color:#1f7a48;background:rgba(31,122,72,.12)} html[data-gd="sang"] .cn-pill.a{color:#9a5b00;background:rgba(168,100,0,.12)}
+html[data-gd="sang"] .cn-pill.r{color:#b42a25;background:rgba(192,48,43,.10)} html[data-gd="sang"] .cn-pill.c{color:#0b6e68;background:rgba(11,122,115,.10)}
+html[data-gd="sang"] .cn-note.w b{color:#9a5b00} html[data-gd="sang"] .cn-note.d b{color:#b42a25} html[data-gd="sang"] .cn-note.o b{color:#17643a}
+html[data-gd="sang"] .mai-chip.mc-dd{color:#17643a}
+</style>
 </head>
 <body>
 <div id="bgfx" aria-hidden="true"></div>
@@ -3694,7 +3706,7 @@ function taiDinhMucTP(){
     var box=$('tpDinhMuc'); if(!box)return;
     if(!r||!r.ok){ box.innerHTML=''; return; }
     // Chỉ giữ công đoạn cần chú ý (bỏ 'xanh' = hợp lý), và phải có đủ dữ liệu.
-    var ds=(r.ds||[]).filter(function(k){ return k.nhan!=='xanh' && k.soCoData>=2; });
+    var ds=(r.ds||[]).filter(function(k){ return (k.nhan==='do'||k.nhan==='vang') && k.soCoData>=2; });
     if(!ds.length){ box.innerHTML=''; return; }
     var tenNhan={do:'Lỏng rõ',vang:'Hơi lỏng'};
     var mauNhan={do:'#dc2626',vang:'#d97706'};
@@ -8618,7 +8630,7 @@ function chiXemDon(){
 </script>
 <script>
 /* ===== 19. PHẦN GIAO DIỆN TẢI SAU (12/10) – SoDo.html, HoatAnh.html: chỉ tải khi cần, nhớ lại theo phiên bản ===== */
-var MANH_VER={"SoDo": "5ff0ad17b2a6bbdf", "HoatAnh": "b23cbe69d6aae56e", "AmThanh": "c690fabe4419160c", "QuyTrinh": "a98d85bf93"};
+var MANH_VER={"SoDo": "5ff0ad17b2a6bbdf", "HoatAnh": "b23cbe69d6aae56e", "AmThanh": "c690fabe4419160c", "QuyTrinh": "8c7acf1dbf"};
 var __manh={da:{},cho:{}};
 function ganManh_(nd){
   var js=[], ngoai=String(nd).replace(/<script>([\s\S]*?)<\/script>/g,function(_,x){js.push(x);return ''});
@@ -9570,7 +9582,7 @@ function hsGhiChuDong(r){
 }
 </script>
 <script>
-var KPI_BAN = '02/11/2026 06:35';
+var KPI_BAN = '02/11/2026 08:06';
 (function(){
   var cu = window.veNav;
   window.veNav = function(){
@@ -9964,7 +9976,9 @@ function knVeToi(){
    ===================================================================== */
 var HOLO_KHOA = 'kpi_holo';
 function holoCheDo() { var v = null; try { v = localStorage.getItem(HOLO_KHOA); } catch (e) {} return v === 'tinh' || v === 'tat' ? v : 'dong'; }
-function holoBat() { return !!(typeof ME !== 'undefined' && ME && ME.laOwner) && holoCheDo() !== 'tat'; }
+function holoSang() { return document.documentElement.getAttribute('data-gd') === 'sang'; }
+/* 02/11: hologram là lớp áo NỀN TỐI – khi người dùng chọn giao diện sáng thì tự tắt (trước đây trộn nền tối + màu chữ sáng → không đọc được) */
+function holoBat() { return !!(typeof ME !== 'undefined' && ME && ME.laOwner) && holoCheDo() !== 'tat' && !holoSang(); }
 function holoDong() { return holoCheDo() === 'dong' && !(typeof GIAM_CD === 'function' && GIAM_CD()); }
 
 var HOLO_CSS =
@@ -10067,10 +10081,16 @@ function holoNut() {
   var b = document.getElementById('btnHolo');
   if (!b) return;
   var m = holoCheDo();
-  b.innerHTML = '🌌 Hologram<small>' + (m === 'dong' ? 'Bật · có chuyển động' : m === 'tinh' ? 'Bật · nền tĩnh' : 'Đang tắt') + ' – bấm để đổi</small>';
+  b.innerHTML = '🌌 Hologram<small>' + (holoSang() && m !== 'tat' ? 'Chỉ dùng ở nền tối – bấm để bật nền tối' : (m === 'dong' ? 'Bật · có chuyển động' : m === 'tinh' ? 'Bật · nền tĩnh' : 'Đang tắt') + ' – bấm để đổi') + '</small>';
 }
 function holoDoi() {
   var m = holoCheDo(), moi = m === 'dong' ? 'tinh' : m === 'tinh' ? 'tat' : 'dong';
+  if (holoSang()) {   // đang nền sáng: bấm hologram = chuyển sang nền tối và bật hologram
+    moi = m === 'tat' ? 'dong' : m;
+    try { localStorage.setItem(HOLO_KHOA, moi); localStorage.setItem(KHOA_GIAO_DIEN, 'toi'); } catch (e) {}
+    gdDat('toi'); try { if (tabHienTai) go(tabHienTai); } catch (e) {}
+    toast('Đã chuyển sang nền tối và bật hologram', true); return;
+  }
   try { localStorage.setItem(HOLO_KHOA, moi); } catch (e) {}
   holoApDung();
   try { if (tabHienTai) go(tabHienTai); } catch (e) {}
@@ -10187,6 +10207,8 @@ function holoGanDai() {
     return r;
   };
 })();
+/* 02/11: đổi nền sáng / tối thì áp lại hologram (sáng → tắt, tối → bật lại nếu đang chọn bật) */
+(function () { if (typeof gdDat !== 'function' || gdDat.__holo) return; var goc = gdDat; gdDat = function (v) { goc(v); try { holoApDung(); holoNut(); } catch (e) {} }; gdDat.__holo = true; })();
 </script>
 <script>
 /* =====================================================================

@@ -1,6 +1,6 @@
 # KPI Hologram chủ sở hữu
 
-Nhóm: KPI · Cập nhật 23/10/2026
+Nhóm: KPI · Cập nhật 03/11/2026
 Liên quan: [[KPI Demo giao diện]] · [[KPI Kiểm thử]] · [[Quyết định của chủ dự án]] · [[KPI Cập nhật bằng clasp]]
 
 ## Chủ dự án yêu cầu 23/10
@@ -41,3 +41,6 @@ Liên quan: [[KPI Demo giao diện]] · [[KPI Kiểm thử]] · [[Quyết địn
   - phần tối làm bằng bóng của menu (`box-shadow:0 0 0 100vmax`);
   - nền menu đặc hơn (.97) để chữ phía sau không lẫn vào.
 - Kiểm thử `holo-web.js` 20 (thêm: mở menu, bấm Bảng KPI → sang tab và menu đóng; bấm ra ngoài thì đóng).
+
+## 03/11: chỉ dùng ở nền tối
+- Chủ dự án báo giao diện sáng thiếu tương phản. Hologram (nền vũ trụ tối) trộn với giao diện sáng làm chữ / thẻ không đọc được → `holoSang()`; ở nền sáng hologram tự tắt, nút ghi "Chỉ dùng ở nền tối…", bấm nút thì chuyển sang nền tối + bật hologram. `gdDat` gọi lại `holoApDung()` + `holoNut()`. Chi tiết: [[KPI Quy trình sản xuất]] (Đợt 8).
