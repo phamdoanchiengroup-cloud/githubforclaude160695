@@ -1,7 +1,7 @@
 # KPI Gộp công đoạn và tiến độ BTP
 
 Liên quan: [[KPI Quy trình sản xuất]] · [[KPI Phân tích định mức]] · [[Quyết định của chủ dự án]]
-Nhóm: KPI · Cập nhật 01/11/2026
+Nhóm: KPI · Cập nhật 03/11/2026
 
 Phân tích cho yêu cầu đợt 3 (01/11): gộp nhóm công đoạn để vẽ lưu đồ, tư vấn gộp công đoạn thật, nhân sự cần, cách thu thập tiến độ bán thành phẩm (BTP). Nguồn: danh sách 195 công đoạn + sản lượng TB/ngày (nhật ký 29 ngày), chuyên gia `quan-ly-van-hanh` và `soat-giao-dien-cuoi`.
 
@@ -48,3 +48,11 @@ PHOICB 57 CĐ / 33 NV · PHOITHO 35 / 27 · HT 25 / 24 · ĐG 24 / 21 · NGONTAR
 | B. Kiểm kê WIP 1 lần + phiếu chuyển giao giữa xưởng (mã BTP, đơn, SL giao / nhận / hỏng) | 1–2 ngày đếm | 5–10 phút | cao, theo đơn | TB |
 | C. Thẻ kanban / QR theo lô, quét khi giao / nhận | ~1 tuần | ~2 phút | cao nhất | cao |
 - Chuyên gia khuyên: tuần 1–2 bật A; tháng 1 kiểm kê 1 lần rồi B ở 3 điểm giao chính (PHOICB→PHOITHO, PHOITHO→SƠN / NGONTARO, HT→ĐG), đối chiếu A hằng tuần; phiếu ổn định (≥ 95%) mới lên QR.
+
+## Giai đoạn 2: hạn từng xưởng + bàn giao nhiều đợt (03/11, chỉ tư vấn)
+- Ý tưởng chủ dự án: giám đốc SX đặt hạn đơn; từng xưởng tự đặt "ngày hẹn trả" nối tiếp xưởng trước; so hạn HT / ĐG với hạn BGĐ; các xưởng báo số bàn giao từng đợt (gối đầu).
+- Dữ liệu Sheet đơn (đọc 03/11): ~790 dòng đang làm, chỉ ~117 dòng có ≥ 1 ngày hẹn (gần hết ở KHO, chủ yếu ngày phôi), ~13 dòng có ≥ 2; DEALER / WEB LẺ / POD gần như không có. Cột số lũy kế từng xưởng có điền một phần.
+- `quan-ly-van-hanh`: không nên để mỗi xưởng tự hẹn nối tiếp (~5.500 ngày hẹn, trễ dồn, cộng dồn dự phòng, đơn nhỏ không đáng). Thay bằng: hạn ngược tự tính từ hạn BGĐ − thời gian chuẩn mỗi xưởng (2 nhánh chuôi / ngọn gặp ở HT); chỉ nhập tay đơn lớn (≥ 28 cây) / ưu tiên (~10–15%); DBR quanh xưởng nút thắt; bàn giao suy từ chụp số lũy kế mỗi đêm. Lộ trình 2a (3 tuần đo) → 2b (DBR, danh sách ưu tiên mỗi xưởng) → 2c (giao khai – nhận xác nhận trên web).
+- `dong-vai-nguoi-dung` (vai trưởng xưởng Sơn): bỏ Sheet; dùng nếu ≤ 4 chạm / 20 giây mỗi lần, ≤ 2 phút / ngày; thích web tự điền ngày, chỉ bấm "Kịp" / "Lùi đến…"; thẻ "Hàng đang ở xưởng" trong Việc hôm nay cạnh duyệt KPI, nút [+ Giao]; bên nhận xác nhận sau, không chặn bên giao; nhắc 16h.
+- Claude khuyến nghị B (hạn ngược tự tính + xác nhận đơn lớn / ưu tiên, tiến độ từ số lũy kế Sheet) trước, C (form bàn giao) sau. Chờ chủ dự án trả lời.
+
