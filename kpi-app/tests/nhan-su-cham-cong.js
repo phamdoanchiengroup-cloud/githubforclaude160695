@@ -51,6 +51,8 @@ ok(r.ok && r.sua.filter(x => !/^Bỏ qua|^Bộ phận ngoài/.test(x)).length ==
 console.log('\n4. Chủ sở hữu xem bộ phận ngoài sản xuất');
 r = c.__goi('layNhanSuNgoaiSX', Town);
 const bp = r.ds ? [...new Set(r.ds.map(x => x.BoPhan))] : [];
-ok(r.ok && r.ds.length === csv(NGOAI).length - 1 && bp.join('|') === 'Ban điều hành|Kho|Bếp + tạp vụ|Xưởng May', 'trả ' + (r.ds || []).length + ' người, nhóm theo bộ phận: ' + bp.join(' → '), r.msg);
+const dangLam = new Set(c.doc_('NhanSu').filter(n => n.TrangThai === 'Đang làm').map(n => String(n.MaNV))), soNgoai = csv(NGOAI).slice(1).filter(x => !dangLam.has(x[2])).length;
+ok(r.ok && !r.ds.some(x => x.MaNV === 'C043'), 'người đang làm ở xưởng (C043 – trưởng phòng Hoàn thiện) không bị liệt kê lại ở Ban điều hành');
+ok(r.ok && r.ds.length === soNgoai && bp.join('|') === 'Ban điều hành|Kho|Bếp + tạp vụ|Xưởng May', 'trả ' + (r.ds || []).length + ' người, nhóm theo bộ phận: ' + bp.join(' → '), r.msg);
 ok(!c.doc_('NhanSu').some(n => r.ds.some(x => x.MaNV === n.MaNV && n.MaXuong === '')), 'không thêm ai vào NhanSu (không vào KPI / điểm danh)');
 console.log('\n' + (loi ? '✗ ' : '✓ ') + (dem - loi) + '/' + dem + ' đạt'); process.exit(loi ? 1 : 0);
