@@ -5221,88 +5221,115 @@ nav.tabs button.on{
   .md-lineup-desktop img{display:block;width:100%;height:auto;max-height:none;object-fit:contain}
 }
 
-/* ================= CHUNG KẾT: poster + cặp đấu có logo (06/11/2026) ================= */
-.md-hero-ck{grid-template-columns:minmax(0,1.08fr) minmax(0,.92fr) !important;gap:28px !important;align-items:center !important}
-.md-may-ck{width:min(100%,540px) !important}
-.md-hero-ck .md-poster{transform:rotateY(6deg) rotateX(1.6deg)}
-.md-hero-ck .md-poster::after{opacity:.32}
-.md-tieu-ck{font-size:clamp(34px,4.6vw,52px) !important;line-height:.88 !important}
-.md-tieu-ck .md-vien{font-size:1.08em}
-.md-bang-ck{justify-items:stretch}
-.ck-cap{position:relative;display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:12px;
-  padding:14px 12px;border:1px solid rgba(255,214,140,.30);border-radius:14px;overflow:hidden;isolation:isolate;cursor:pointer;
-  background:radial-gradient(125% 150% at 50% 0,rgba(255,196,90,.14),rgba(7,6,10,.66) 62%)}
-.ck-cap::before{content:'';position:absolute;inset:-45% -25%;z-index:0;pointer-events:none;
-  background:linear-gradient(105deg,transparent 38%,rgba(255,248,215,.55) 50%,transparent 62%);
-  transform:translateX(-70%) skewX(-12deg);animation:ck-quet 5.6s ease-in-out 1.1s infinite}
-.ck-cap::after{content:'';position:absolute;inset:0;border-radius:inherit;pointer-events:none;
-  box-shadow:inset 0 0 26px rgba(255,180,60,.14)}
-.ck-cap:hover{border-color:rgba(255,214,140,.58)}
-.ck-doi{position:relative;z-index:1;display:grid;justify-items:center;gap:4px;min-width:0}
-.ck-doi b{font-family:var(--ff-title);font-style:italic;font-weight:800;font-size:20px;line-height:1.05;letter-spacing:.02em;
-  white-space:nowrap;color:var(--chu2);text-shadow:0 0 16px color-mix(in srgb,var(--mau,#f6c453) 50%,transparent)}
-.ck-doi small{min-height:13px;font-family:var(--ff-hud);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--mo)}
-.ck-logo{position:relative;width:84px;height:84px;display:grid;place-items:center;border-radius:50%;
-  background:radial-gradient(circle at 50% 34%,rgba(255,255,255,.13),rgba(7,6,10,.88) 70%);
-  box-shadow:0 0 0 1px rgba(255,232,178,.42),0 0 24px color-mix(in srgb,var(--mau,#f6c453) 40%,transparent),inset 0 0 18px rgba(0,0,0,.72)}
-.ck-logo img{position:relative;z-index:2;width:72px;height:72px;object-fit:contain;filter:drop-shadow(0 3px 8px rgba(0,0,0,.65))}
+/* ================= CHUNG KẾT: poster lớn + thanh cặp đấu kiểu truyền hình (06/11/2026) ================= */
+.ck-hero{position:relative;display:flex;flex-direction:column;padding:34px 14px 24px;isolation:isolate;overflow:hidden}
+.ck-stage{position:relative}
+.ck-stage .md-goc{width:30px;height:30px}
+.ck-stage .md-poster{border-radius:14px 14px 0 0;overflow:hidden;transform:none;
+  box-shadow:0 0 0 1px rgba(255,231,163,.4),0 0 46px rgba(55,154,255,.16),0 0 90px rgba(255,159,46,.10),0 30px 70px rgba(0,0,0,.65);
+  animation:ck-noi 7s ease-in-out infinite}
+.ck-stage .md-poster img{display:block;width:100%;height:auto}
+.ck-stage .md-poster::after{opacity:.24}
+.ck-bar{position:relative;z-index:2;display:block;padding:clamp(12px,1.6vw,20px) clamp(14px,2.4vw,30px);
+  border-top:1px solid rgba(255,214,140,.36);border-radius:0 0 14px 14px;cursor:pointer;overflow:hidden;isolation:isolate;
+  background:linear-gradient(180deg,rgba(12,18,29,.97),rgba(5,9,15,.99));
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.05),0 26px 60px rgba(0,0,0,.55)}
+.ck-bar::before{content:'';position:absolute;inset:0;z-index:-1;pointer-events:none;
+  background:radial-gradient(60% 140% at 50% 0,rgba(255,196,90,.10),transparent 62%),
+    repeating-linear-gradient(90deg,rgba(255,255,255,.022) 0 1px,transparent 1px 56px)}
+.ck-bar::after{content:'';position:absolute;left:0;right:0;top:0;height:2px;
+  background:linear-gradient(90deg,transparent,rgba(255,214,140,.75),transparent);opacity:.65}
+.ck-bar:hover{border-top-color:rgba(255,214,140,.65)}
+.ck-doi-hang{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);align-items:center;gap:clamp(10px,2vw,26px)}
+.ck-doi{display:flex;align-items:center;gap:clamp(8px,1.2vw,14px);min-width:0;transition:transform .3s ease}
+.ck-doi.phai{flex-direction:row-reverse;text-align:right}
+.ck-logo{position:relative;flex:0 0 auto;width:clamp(46px,5.2vw,66px);height:clamp(46px,5.2vw,66px);display:grid;place-items:center;border-radius:50%;
+  background:radial-gradient(circle at 50% 32%,rgba(255,255,255,.14),rgba(6,9,14,.9) 68%);
+  box-shadow:0 0 0 1px rgba(255,232,178,.45),0 0 22px color-mix(in srgb,var(--mau,#f6c453) 42%,transparent),inset 0 0 16px rgba(0,0,0,.7)}
+.ck-logo img{position:relative;z-index:2;width:86%;height:86%;object-fit:contain;filter:drop-shadow(0 3px 7px rgba(0,0,0,.6))}
 .ck-logo i{position:absolute;inset:0;z-index:1;display:grid;place-items:center;font-style:normal;
-  font-family:var(--ff-title);font-weight:800;font-size:26px;letter-spacing:.02em;
-  color:color-mix(in srgb,var(--mau,#f6c453) 72%,#fff)}
-.ck-hao{position:absolute;inset:-7px;z-index:0;border-radius:50%;opacity:.9;
+  font-family:var(--ff-title);font-weight:800;font-size:22px;letter-spacing:.02em;color:color-mix(in srgb,var(--mau,#f6c453) 72%,#fff)}
+.ck-hao{position:absolute;inset:-7px;z-index:0;border-radius:50%;opacity:.85;
   background:conic-gradient(from 0deg,transparent 0 60%,color-mix(in srgb,var(--mau,#f6c453) 80%,transparent) 75%,transparent 92%);
   -webkit-mask:radial-gradient(farthest-side,transparent calc(100% - 4px),#000 calc(100% - 3px));
   mask:radial-gradient(farthest-side,transparent calc(100% - 4px),#000 calc(100% - 3px));
   animation:ck-xoay 6s linear infinite}
-.ck-giua{position:relative;z-index:1;display:grid;justify-items:center}
-.ck-cup{font-size:25px;line-height:1;filter:drop-shadow(0 0 10px rgba(255,196,90,.7));animation:ck-cup 3.6s ease-in-out infinite}
-.ck-vs{font-family:var(--ff-title);font-style:italic;font-weight:800;font-size:33px;line-height:1;
+.ck-ten{display:grid;gap:3px;min-width:0}
+.ck-ten b{font-family:var(--ff-title);font-style:italic;font-weight:800;font-size:clamp(19px,2.3vw,30px);line-height:1;letter-spacing:.01em;
+  color:#fff;white-space:nowrap;text-shadow:0 2px 0 rgba(0,0,0,.5),0 0 18px color-mix(in srgb,var(--mau,#f6c453) 45%,transparent)}
+.ck-ten small{font-family:var(--ff-hud);font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--mo);white-space:nowrap}
+.ck-giua{display:grid;justify-items:center;gap:2px;padding:0 clamp(8px,1.6vw,22px);border-inline:1px solid rgba(255,214,140,.16)}
+.ck-cup{font-size:clamp(15px,1.6vw,21px);line-height:1;filter:drop-shadow(0 0 9px rgba(255,196,90,.65));animation:ck-cup 3.6s ease-in-out infinite}
+.ck-vs{font-family:var(--ff-title);font-style:italic;font-weight:800;font-size:clamp(26px,3.2vw,44px);line-height:1;
   background:linear-gradient(180deg,#fff6c8,#ffd15a 45%,#c8871a 70%,#fff0b8);-webkit-background-clip:text;background-clip:text;
   color:transparent;filter:drop-shadow(0 0 12px rgba(255,196,90,.55));animation:ck-vs 4.2s ease-in-out infinite}
-.ck-info{display:flex;align-items:baseline;justify-content:center;flex-wrap:wrap;gap:5px 12px;padding:9px 8px;
-  border-block:1px solid rgba(255,214,140,.18);background:linear-gradient(90deg,transparent,rgba(255,196,90,.08),transparent)}
-.ck-gio{font-family:var(--ff-title);font-weight:800;font-size:29px;line-height:1;color:var(--neon);
-  font-variant-numeric:tabular-nums;text-shadow:0 0 14px rgba(255,190,49,.45)}
-.ck-ngay{font-family:var(--ff-hud);font-weight:700;font-size:12.5px;letter-spacing:.1em;color:var(--chu2);text-transform:uppercase}
-.ck-san{font-size:12px;color:var(--mo)}
-.ck-dem-nhan{text-align:center}
+.ck-dong{display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:5px clamp(12px,2vw,26px);
+  margin-top:clamp(10px,1.2vw,14px);padding-top:clamp(9px,1vw,12px);border-top:1px solid rgba(255,214,140,.14);
+  font-family:var(--ff-hud);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--mo)}
+.ck-dong-nhan{color:var(--neon);font-weight:700}
+.ck-dem{display:flex;align-items:flex-end;gap:clamp(10px,1.6vw,18px)}
+.ck-dem-o{display:grid;justify-items:center;gap:1px;min-width:2.2em}
+.ck-dem-o b{font-family:var(--ff-title);font-weight:800;font-size:clamp(20px,2.4vw,30px);line-height:.95;color:#ffd15a;
+  font-variant-numeric:tabular-nums;text-shadow:0 0 14px rgba(255,190,49,.5)}
+.ck-dem-o i{font-style:normal;font-size:9px;letter-spacing:.16em;color:#8fa3bd}
+.ck-vach{width:1px;height:16px;background:rgba(255,214,140,.25)}
+.ck-san,.ck-ngay{font-size:11px;letter-spacing:.14em;color:var(--chu2)}
+.ck-ngay{font-weight:700}
 .ko .r .ko-doi{display:flex;align-items:center;gap:8px;min-width:0}
 .ko .r .ko-doi span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.md-bang-ck .md-dem{gap:8px}
-.md-bang-ck .md-dem .md-kinh{padding:7px 4px 8px}
-.md-bang-ck .md-dem b{font-size:33px}
+/* Thẻ tóm tắt cặp đấu chung kết trong mục BXH */
+.ck-mini{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);align-items:center;gap:10px;
+  max-width:560px;margin:0 auto;padding:12px;border:1px solid rgba(255,214,140,.22);border-radius:12px;overflow:hidden;
+  background:linear-gradient(180deg,rgba(22,30,45,.9),rgba(10,15,24,.94))}
+.ck-mini:hover{border-color:rgba(255,214,140,.42)}
+.ck-mini-doi{display:flex;align-items:center;gap:9px;min-width:0}
+.ck-mini-doi.phai{flex-direction:row-reverse;text-align:right}
+.ck-mini-doi b{font-family:var(--ff-title);font-style:italic;font-weight:800;font-size:16px;line-height:1.05;color:#fff;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
+.ck-mini .ck-logo{width:38px;height:38px}
+.ck-mini .ck-logo img{width:88%;height:88%}
+.ck-mini .ck-logo i{font-size:12px}
+.ck-mini-giua{display:grid;justify-items:center;gap:2px;padding:0 6px}
+.ck-mini-vs{font-family:var(--ff-title);font-style:italic;font-weight:800;font-size:20px;line-height:1;
+  background:linear-gradient(180deg,#fff6c8,#ffd15a 45%,#c8871a 70%,#fff0b8);-webkit-background-clip:text;background-clip:text;color:transparent}
+.ck-mini-so{font-family:var(--ff-title);font-weight:800;font-size:20px;line-height:1;color:#ffd15a;letter-spacing:.02em}
+.ck-mini-giua small{font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--mo)}
+.ck-mini-meta{margin-top:8px;text-align:center;font-family:var(--ff-hud);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--mo)}
 @keyframes ck-xoay{to{transform:rotate(360deg)}}
 @keyframes ck-cup{0%,100%{transform:translateY(0) scale(1)}50%{transform:translateY(-4px) scale(1.07)}}
 @keyframes ck-vs{0%,100%{filter:drop-shadow(0 0 10px rgba(255,196,90,.45))}50%{filter:drop-shadow(0 0 22px rgba(255,232,150,.92))}}
-@keyframes ck-quet{0%{transform:translateX(-70%) skewX(-12deg);opacity:0}8%{opacity:1}26%{transform:translateX(70%) skewX(-12deg);opacity:1}36%,100%{transform:translateX(70%) skewX(-12deg);opacity:0}}
+@keyframes ck-noi{0%,100%{transform:translateY(0)}50%{transform:translateY(-7px)}}
+@keyframes ck-anh{from{transform:scale(1.045)}to{transform:scale(1)}}
 @keyframes ck-len{0%{opacity:0;transform:translateY(22px)}100%{opacity:1;transform:none}}
-.md-motion-ready .ck-cap.md-vao-cho,
-.md-motion-ready .ck-info.md-vao-cho,
-.md-motion-ready .ck-dem-nhan.md-vao-cho,
-.md-motion-ready .md-dem.md-vao-cho{opacity:0}
-.md-motion-ready .ck-cap.md-vao-xong{animation:ck-len .95s cubic-bezier(.2,.78,.22,1) .30s both}
-.md-motion-ready .ck-info.md-vao-xong{animation:ck-len .9s cubic-bezier(.2,.78,.22,1) .52s both}
-.md-motion-ready .ck-dem-nhan.md-vao-xong{animation:ck-len .8s cubic-bezier(.2,.78,.22,1) .68s both}
-.md-motion-ready .md-dem.md-vao-xong{animation:ck-len .9s cubic-bezier(.2,.78,.22,1) .76s both}
-/* Desktop: ảnh chung kết là khung ngang 4:3, không dùng khung dọc 941/1672 của poster cũ */
-@media(min-width:1024px){
-  .md-hero-ck{align-items:center !important;grid-template-columns:minmax(0,1.08fr) minmax(0,.92fr) !important}
-  .md-hero-ck .md-may{aspect-ratio:1448/1086 !important;align-self:center !important;min-height:0}
-  .md-hero-ck .md-poster{flex:0 0 auto}
-  .md-hero-ck .md-poster img{width:100%;height:auto !important;object-fit:contain}
-  .md-bang-ck{align-self:center !important;grid-template-rows:none !important}
-}
+.md-motion-ready .ck-stage .md-poster.md-vao-xong{
+  animation:md-poster-reveal 1.35s cubic-bezier(.19,.75,.22,1) both,ck-noi 7s ease-in-out 1.35s infinite}
+.md-motion-ready .ck-stage .md-poster.md-vao-xong img{animation:ck-anh 1.7s cubic-bezier(.18,.72,.22,1) both}
+.md-motion-ready .ck-bar.md-vao-cho,
+.md-motion-ready .ck-dong.md-vao-cho{opacity:0}
+.md-motion-ready .ck-bar.md-vao-xong{animation:ck-len .9s cubic-bezier(.2,.78,.22,1) .42s both}
+.md-motion-ready .ck-dong.md-vao-xong{animation:ck-len .8s cubic-bezier(.2,.78,.22,1) .60s both}
 @media(max-width:760px){
-  .md-hero-ck{grid-template-columns:1fr !important;gap:18px !important}
-  .md-may-ck{order:1;margin:0 auto 34px}
-  .md-bang-ck{order:2}
+  .ck-hero{padding:26px 6px 20px}
+  .ck-bar{padding:12px 10px;border-radius:0 0 10px 10px}
+  .ck-doi-hang{gap:8px}
+  .ck-bar .ck-doi{gap:7px}
+  .ck-logo{width:42px;height:42px}
+  .ck-ten b{font-size:15px}
+  .ck-ten small{font-size:8.5px;letter-spacing:.12em}
+  .ck-giua{padding:0 6px}
+  .ck-cup{font-size:13px}
+  .ck-vs{font-size:24px}
+  .ck-dong{gap:4px 8px;font-size:9.5px;margin-top:8px;padding-top:8px}
+  .ck-dem{gap:8px}
+  .ck-dem-o b{font-size:18px}
+  .ck-dem-o i{font-size:8px}
+  .ck-vach{display:none}
 }
 @media(prefers-reduced-motion:reduce){
-  .ck-cap::before,.ck-hao,.ck-cup,.ck-vs{animation:none !important}
-  .md-motion-ready .ck-cap.md-vao-cho,.md-motion-ready .ck-info.md-vao-cho,
-  .md-motion-ready .ck-dem-nhan.md-vao-cho,.md-motion-ready .md-dem.md-vao-cho{opacity:1 !important}
-  .md-motion-ready .ck-cap.md-vao-xong,.md-motion-ready .ck-info.md-vao-xong,
-  .md-motion-ready .ck-dem-nhan.md-vao-xong,.md-motion-ready .md-dem.md-vao-xong{animation:none !important}
+  .ck-stage .md-poster,.ck-hao,.ck-cup,.ck-vs{animation:none !important}
+  .md-motion-ready .ck-stage .md-poster.md-vao-xong{animation:none !important;opacity:1 !important;clip-path:none !important}
+  .md-motion-ready .ck-bar.md-vao-cho,.md-motion-ready .ck-dong.md-vao-cho{opacity:1 !important}
+  .md-motion-ready .ck-bar.md-vao-xong,.md-motion-ready .ck-dong.md-vao-xong{animation:none !important}
 }
 </style>
 </head>
@@ -5855,11 +5882,11 @@ function veMatchDay_(el){
   if (bxh.length && bxh[0].st > 0 && (!bxh[1] || bxh[0].diem > bxh[1].diem)) tin.push(bxh[0].tenDoi + ' dẫn đầu bảng xếp hạng · ' + bxh[0].diem + ' điểm');
   var tinHtml = tin.map(function(s){ return '<span>' + esc(s) + '</span>'; }).join('');
 
-  // ⭐ Chung kết: cặp đấu riêng có logo đội, giờ/sân và đồng hồ đếm ngược
+  // ⭐ Chung kết: poster lớn + thanh cặp đấu kiểu truyền hình
   var laCK = /chung\s*k[eế]t/i.test(String(sap.vongDau || '') + ' ' + String(luotTo || ''));
-  var ckCapHtml = '';
+  var ckBarHtml = '', ckDongHtml = '';
   if (laCK) {
-    var ckDoi = function(id, phai){
+    var ckDoiHtml = function(id, phai){
       var x = doiObj(id) || {};
       var url = lg(id);
       var vt = esc(String(x.tenDoi || '?').replace(/\bFC\b/gi, '').trim().slice(0, 2).toUpperCase());
@@ -5867,31 +5894,35 @@ function veMatchDay_(el){
         + '<span class="ck-logo"><span class="ck-hao"></span><i>' + vt + '</i>'
         +   (url ? '<img src="' + url + '" alt="Logo ' + esc(x.tenDoi || '') + '" onerror="this.remove()">' : '')
         + '</span>'
-        + '<b>' + esc(x.tenDoi || '?') + '</b>'
-        + '<small>' + esc(x.mauAo || '') + '</small></div>';
+        + '<span class="ck-ten"><b>' + esc(x.tenDoi || '?') + '</b><small>' + esc(x.mauAo || '') + '</small></span></div>';
     };
-    ckCapHtml = '<div class="ck-cap" onclick="xemDoiHinhTran(\'' + esc(sap.maTran) + '\')" title="Xem đội hình 2 đội">'
-      + ckDoi(sap.maDoiA, false)
-      + '<div class="ck-giua"><span class="ck-cup" aria-hidden="true">🏆</span><span class="ck-vs">VS</span></div>'
-      + ckDoi(sap.maDoiB, true)
+    ckDongHtml = '<div class="ck-dong"><span class="ck-dong-nhan">Bóng lăn sau</span>'
+      + '<span class="ck-dem" data-den="' + sap._d.getTime() + '">'
+      +   '<span class="ck-dem-o"><b data-k="d">--</b><i>Ngày</i></span>'
+      +   '<span class="ck-dem-o"><b data-k="h">--</b><i>Giờ</i></span>'
+      +   '<span class="ck-dem-o"><b data-k="m">--</b><i>Phút</i></span>'
+      +   '<span class="ck-dem-o"><b data-k="s">--</b><i>Giây</i></span>'
+      + '</span>'
+      + (sap.sanDau ? '<span class="ck-vach"></span><span class="ck-san">🏟️ ' + esc(sap.sanDau) + '</span>' : '')
+      + '<span class="ck-vach"></span><span class="ck-ngay">' + bdGioTxt_(sap._d) + ' · ' + BD_THU[sap._d.getDay()] + ' · ' + esc(ngayTxt) + '</span>'
+      + '</div>';
+    ckBarHtml = '<div class="ck-bar" onclick="xemDoiHinhTran(\'' + esc(sap.maTran) + '\')" title="Xem đội hình 2 đội">'
+      + '<div class="ck-doi-hang">'
+      +   ckDoiHtml(sap.maDoiA, false)
+      +   '<div class="ck-giua"><span class="ck-cup" aria-hidden="true">🏆</span><span class="ck-vs">VS</span></div>'
+      +   ckDoiHtml(sap.maDoiB, true)
       + '</div>'
-      + '<div class="ck-info"><span class="ck-gio">' + bdGioTxt_(sap._d) + '</span>'
-      +   '<span class="ck-ngay">' + BD_THU[sap._d.getDay()] + ' · ' + esc(ngayTxt) + '</span>'
-      +   (sap.sanDau ? '<span class="ck-san">🏟️ ' + esc(sap.sanDau) + '</span>' : '')
-      + '</div>'
-      + '<div class="ck-dem-nhan md-hud-nhan">Bóng lăn sau</div>'
-      + mdDemHtml_(sap);
+      + ckDongHtml
+      + '</div>';
   }
   var mdRoundNow = Date.now() >= MD_LUOT3_AT ? 3 : 2;
   var mdRoundData = Number((String(luotTo || '').match(/(\d+)/) || [])[0]);
   var mdRound2Img = 'https://cdn.jsdelivr.net/gh/phamdoanchiengroup-cloud/githubforclaude160695@4859d2c3ed42ac9aac333c40c4452e43c3df05c7/webbongda/anh/match-day-luot-02.png';
   var mdRound3Img = 'https://cdn.jsdelivr.net/gh/phamdoanchiengroup-cloud/githubforclaude160695@d7cfd15dd3d247c2061fb9a5edb88da85837a7e5/webbongda/anh/match-day-luot-03.png';
   var mdDungAnh = mdRoundData === mdRoundNow || (mdRoundNow === 3 && mdRoundData === 2);
-  var tieuDeHtml = laCK
-    ? '<h2 class="md-tieu md-tieu-ck"><span><span class="md-bac">MATCH</span> <span class="md-kim">DAY</span></span><span class="md-vien" data-chu="CHUNG KẾT">CHUNG KẾT</span></h2>'
-    : (mdDungAnh
-      ? '<h2 class="md-tieu md-tieu-anh"><img id="md-title-artwork" src="' + (mdRoundNow === 3 ? mdRound3Img : mdRound2Img) + '" alt="' + (mdRoundNow === 3 ? 'MATCH DAY Lượt 3' : 'MATCH DAY Lượt 02') + '" width="1905" height="828"></h2>'
-      : '<h2 class="md-tieu"><span><span class="md-bac">MATCH</span> <span class="md-kim">DAY</span></span><span class="md-vien" data-chu="' + esc(luotTo) + '">' + esc(luotTo) + '</span></h2>');
+  var tieuDeHtml = mdDungAnh
+    ? '<h2 class="md-tieu md-tieu-anh"><img id="md-title-artwork" src="' + (mdRoundNow === 3 ? mdRound3Img : mdRound2Img) + '" alt="' + (mdRoundNow === 3 ? 'MATCH DAY Lượt 3' : 'MATCH DAY Lượt 02') + '" width="1905" height="828"></h2>'
+    : '<h2 class="md-tieu"><span><span class="md-bac">MATCH</span> <span class="md-kim">DAY</span></span><span class="md-vien" data-chu="' + esc(luotTo) + '">' + esc(luotTo) + '</span></h2>';
   if (!laCK && mdRoundNow === 2 && mdRoundData === 2) {
     window.setTimeout(function(){
       if (!document.body.contains(el)) return;
@@ -5906,14 +5937,12 @@ function veMatchDay_(el){
 
   el.className = 'md-wrap';
   if (laCK) {
-    el.innerHTML = '<div class="md-hero md-hero-ck">'
-      + '<div class="md-may md-may-ck"><span class="md-goc a"></span><span class="md-goc b"></span><span class="md-goc c"></span><span class="md-goc d"></span>'
+    el.innerHTML = '<div class="ck-hero">'
+      + '<div class="ck-stage"><span class="md-goc a"></span><span class="md-goc b"></span>'
       +   (poster ? '<div class="md-poster md-poster-ck" onclick="moAnhLon_(\'' + esc(poster) + '\')"><img alt="Poster chung kết" src="' + esc(poster) + '"></div>' : '')
-      +   '<div class="md-den"></div><div class="md-chu-anh md-hud-nhan mo">Poster chính thức · CHUNG KẾT</div></div>'
-      + '<div class="md-bang md-bang-ck">'
-      +   tieuDeHtml
-      +   ckCapHtml
-      + '</div></div>'
+      +   ckBarHtml
+      + '</div>'
+      + '</div>'
       + (tin.length ? '<div class="md-chay"><div class="md-ray">' + tinHtml + tinHtml + tinHtml + tinHtml + '</div></div>' : '');
   } else {
     el.innerHTML = '<div class="md-hero">'
@@ -5928,7 +5957,7 @@ function veMatchDay_(el){
   }
 
   try { fxMatchDay_(el); } catch(e) {}
-  try { var demCk = el.querySelector('.md-dem[data-den]'); if (demCk) mdChayDem_(demCk); } catch(e) {}
+  try { var demCk = el.querySelector('.md-dem[data-den],.ck-dem[data-den]'); if (demCk) mdChayDem_(demCk); } catch(e) {}
   return true;
 }
 /* Xem ảnh lớn (poster) trong khung xem của thư viện media */
@@ -5978,9 +6007,9 @@ document.addEventListener('click', function(e){
 }, true);
 /* Gắn đèn sân, hạt vàng, poster nghiêng theo chuột vào khung Match Day vừa vẽ */
 function fxMatchDay_(el){
-  var hero = el.querySelector('.md-hero'); if(!hero) return;
+  var hero = el.querySelector('.md-hero, .ck-hero'); if(!hero) return;
   if (!FX_GIAM) {
-    var vao = Array.prototype.slice.call(hero.querySelectorAll('.md-poster,.md-tieu,.md-chips,.md-lineup-desktop,.md-video-intro,.ck-cap,.ck-info,.ck-dem-nhan,.md-dem'));
+    var vao = Array.prototype.slice.call(hero.querySelectorAll('.md-poster,.md-tieu,.md-chips,.md-lineup-desktop,.md-video-intro,.ck-bar,.ck-dong,.md-dem'));
     if (vao.length) {
       hero.classList.add('md-motion-ready');
       var hienDan = function(node){ node.classList.remove('md-vao-cho'); node.classList.add('md-vao-xong'); };
@@ -6003,12 +6032,13 @@ function fxMatchDay_(el){
   fxHat_(hero.querySelector('canvas'), 2);
   var po = hero.querySelector('.md-poster'), img = po && po.querySelector('img');
   if(!po || !img || FX_GIAM) return;
+  var heSoNghieng = hero.classList.contains('ck-hero') ? 0.32 : 1;
   po.insertAdjacentHTML('beforeend','<span class="md-phan-chieu"></span>');
   hero.addEventListener('pointermove', function(e){
     if(e.pointerType!=='mouse') return;
     var r=po.getBoundingClientRect(), x=(e.clientX-r.left)/r.width-.5, y=(e.clientY-r.top)/r.height-.5;
     x=Math.max(-.6,Math.min(.6,x)); y=Math.max(-.6,Math.min(.6,y));
-    img.style.transform='perspective(900px) rotateY('+(x*16)+'deg) rotateX('+(-y*10)+'deg)';
+    img.style.transform='perspective(900px) rotateY('+(x*16*heSoNghieng)+'deg) rotateX('+(-y*10*heSoNghieng)+'deg)';
     po.style.setProperty('--px',(x+.5)*100+'%'); po.style.setProperty('--py',(y+.5)*100+'%');
   });
   hero.addEventListener('pointerleave', function(){ img.style.transform=''; });
@@ -7671,15 +7701,28 @@ function bxhCardHtml_(compact){
       var win=ck.banThangA>ck.banThangB?ck.maDoiA:ck.maDoiB;
       h+='<div class="champ"><div class="t">🏆 Nhà vô địch</div><div class="n">'+esc(tenDoi(win))+'</div></div>';
     }
-    var aw=da&&ck.banThangA>ck.banThangB, bw=da&&ck.banThangB>ck.banThangA;
     var click=(isAdmin())?(' onclick="modalTySo(\''+ck.maTran+'\')" style="cursor:pointer"'):'';
+    var miniDoi=function(id, phai){
+      var x=doiObj(id)||{}, u=x.logoUrl?driveImg(x.logoUrl):'';
+      var ten=x.tenDoi||'?';
+      var vt=esc(ten.replace(/\bFC\b/gi,'').trim().slice(0,2).toUpperCase());
+      return '<div class="ck-mini-doi'+(phai?' phai':'')+'" style="--mau:'+mdMauDoi_(id)+'">'
+        +'<span class="ck-logo"><i>'+vt+'</i>'+(u?'<img src="'+esc(u)+'" alt="Logo '+esc(ten)+'" onerror="this.remove()">':'')+'</span>'
+        +'<b>'+esc(ten)+'</b></div>';
+    };
+    var gioMini=bdGio_(ck.gioThiDau);
+    var metaMini=gioMini
+      ? BD_THU[gioMini.getDay()]+' · '+bdP2_(gioMini.getDate())+'/'+bdP2_(gioMini.getMonth()+1)+'/'+gioMini.getFullYear()
+      : String(ck.gioThiDau||'');
+    if(ck.sanDau) metaMini+=(metaMini?' · ':'')+ck.sanDau;
     h+='<div class="card"><h2>🥇 Chung kết</h2>'
-      +'<div class="ko" style="max-width:420px;margin:0 auto"'+click+'>'
-      +'<div class="r"><span class="ko-doi'+(aw?' win':'')+'">'+logoDoiHtml(ck.maDoiA,30)+'<span>'+esc(tenDoi(ck.maDoiA))+'</span></span>'
-      +'<span class="s">'+(da?ck.banThangA:'')+'</span></div>'
-      +'<div class="r"><span class="ko-doi'+(bw?' win':'')+'">'+logoDoiHtml(ck.maDoiB,30)+'<span>'+esc(tenDoi(ck.maDoiB))+'</span></span>'
-      +'<span class="s">'+(da?ck.banThangB:'')+'</span></div></div>'
-      +((ck.gioThiDau||ck.sanDau)?'<div class="muted" style="text-align:center;margin-top:10px">'+esc([ck.gioThiDau,ck.sanDau].filter(Boolean).join(' · '))+'</div>':'')
+      +'<div class="ck-mini"'+click+'>'
+      +  miniDoi(ck.maDoiA,false)
+      +  '<div class="ck-mini-giua">'+(da?'<b class="ck-mini-so">'+esc(String(ck.banThangA))+' – '+esc(String(ck.banThangB))+'</b>':'<span class="ck-mini-vs">VS</span>')
+      +    '<small>'+(da?'Kết thúc':(gioMini?bdGioTxt_(gioMini):''))+'</small></div>'
+      +  miniDoi(ck.maDoiB,true)
+      +'</div>'
+      +(metaMini?'<div class="ck-mini-meta">'+esc(metaMini)+'</div>':'')
       +'</div>';
   }
   if(!arr.length){
