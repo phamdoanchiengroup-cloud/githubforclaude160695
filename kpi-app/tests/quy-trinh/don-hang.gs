@@ -446,7 +446,10 @@ function dhDocChup_() {   // -> { 'yyyy-MM-dd': [[k, sl, thieu, giao, dl, st], .
 function dhChup_(lamMoi) {
   var hom = homNayVN_(), sh = ss_().getSheetByName(DH_CHUP);
   if (sh && sh.getLastRow() >= 2 && sh.getRange(2, 1, sh.getLastRow() - 1, 1).getDisplayValues().some(function(r) { return String(r[0]) === hom; })) return false;
-  var d = dhDocDon_(!!lamMoi), ks = dhKhoaDs_(d.don), str = JSON.stringify(d.don.map(function(o, i) { return [ks[i], o.sl, o.thieu, o.giao || 0, o.dl || '', dhTrangThai_(o, hom)]; }));
+  var d = dhDocDon_(!!lamMoi), ks = dhKhoaDs_(d.don), rowsC = d.don.map(function(o, i) { return [ks[i], o.sl, o.thieu, o.giao || 0, o.dl || '', dhTrangThai_(o, hom)]; });
+  var su = [];   // 07/11: dòng hôm trước còn trong tab kênh, nay đã chuyển sang tab HT -> thêm vào bản chụp với cờ 1 (cột 7) để tính sản lượng + sự kiện hoàn thiện
+  try { var kq = dhTimChuyenHT_(rowsC, hom); rowsC = rowsC.concat(kq.dong); su = kq.su; } catch (eHT) { try { ghiLog_({ tk: 'HE_THONG', ten: 'Hệ thống' }, 'Đọc tab HT lỗi', String(eHT && eHT.message || eHT).slice(0, 200), '', ''); } catch (e2) {} }
+  var str = JSON.stringify(rowsC);
   khoa_();
   sh = ss_().getSheetByName(DH_CHUP);
   if (!sh) { sh = ss_().insertSheet(DH_CHUP); sh.getRange(1, 1, 1, 3).setValues([DH_CHUP_COT]).setFontWeight('bold'); sh.setFrozenRows(1); try { sh.hideSheet(); } catch (e) {} }
@@ -460,6 +463,7 @@ function dhChup_(lamMoi) {
     var bo = {}; ngay.slice(0, ngay.length - DH_CHUP_GIU).forEach(function(x) { bo[x] = 1; });
     for (var r = v.length - 1; r >= 0; r--) if (bo[v[r]]) sh.deleteRow(r + 2);
   }
+  try { dhGhiHoanThien_(su); } catch (e) {}
   try { dhGhiSanLuong_(dhDocChup_()); } catch (e) {}   // 07/11: lưu tổng sản lượng nhập theo ngày (giữ lâu dài)
   return true;
 }
@@ -487,14 +491,16 @@ function layThayDoiDon(token) {
       if (String(c[4] || '') !== String(o.dl || '')) thay.push(Object.assign({ loai: 'deadline', mota: 'Deadline ' + (c[4] || '—') + ' → ' + (o.dl || '—') }, x));
       if (Number(c[1]) !== Number(o.sl)) thay.push(Object.assign({ loai: 'sl', mota: 'SL đặt ' + c[1] + ' → ' + o.sl }, x));
     });
-    ch[truoc].forEach(function(r) { if (!nay[r[0]]) { var a = String(r[0]).replace(/#\d+$/, '').split('|'); thay.push({ loai: 'xoa', mota: 'Không còn trong Sheet', maDon: a[0], ten: a[1], tab: a[2], kenh: DH_NHAN_TAB[a[2]] || a[2], st: r[5] }); } });
+    var htNay = {}; (ch[hom] || []).forEach(function(r) { if (r[6] === 1) htNay[r[0]] = r; });
+    ch[truoc].forEach(function(r) { if (r[6] === 1 || nay[r[0]]) return; var a = String(r[0]).replace(/#\d+$/, '').split('|'), h = htNay[r[0]];
+      thay.push({ loai: h ? 'ht' : 'xoa', mota: h ? 'Đã hoàn thiện – chuyển sang tab HT' + (Number(h[2]) > 0 ? ' (giao thiếu ' + h[2] + ')' : '') : 'Không còn trong Sheet', maDon: a[0], ten: a[1], tab: a[2], kenh: DH_NHAN_TAB[a[2]] || a[2], st: h ? 'daGiao' : r[5] }); });
   }
-  var lichSu = Object.keys(ch).sort().map(function(x) { var t = 0, tre = 0; ch[x].forEach(function(r) { t += Number(r[2]) || 0; if (r[5] === 'treHan') tre++; }); return [x, t, tre]; });
+  var lichSu = Object.keys(ch).sort().map(function(x) { var t = 0, tre = 0; ch[x].forEach(function(r) { if (r[6] === 1) return; t += Number(r[2]) || 0; if (r[5] === 'treHan') tre++; }); return [x, t, tre]; });
   var daChup = false;
   if (!ch[hom]) { try { daChup = dhChup_(false); } catch (e3) {} }
   if (daChup) ch = dhDocChup_();
   try { dhGhiSanLuong_(ch); } catch (e4) {}   // bù các ngày chưa ghi (bản chụp có từ trước 07/11)
-  return sach_({ ok: true, luc: d.luc, truoc: truoc, thay: thay.slice(0, 2000), lichSu: lichSu, daChup: daChup, chay: dhDongChay_(ch), sanLuong: dhDocSanLuong_(), cs: dhCongSuat_() });
+  return sach_({ ok: true, luc: d.luc, truoc: truoc, thay: thay.slice(0, 2000), lichSu: lichSu, daChup: daChup, chay: dhDongChay_(ch), sanLuong: dhDocSanLuong_(), cs: dhCongSuat_(), ht: dhDocHoanThien_() });
 }
 /* 02/11 (Lean – quan-ly-van-hanh): Vào – Ra – Tồn và giao đúng hạn suy ra từ 2 bản chụp liền nhau (sai số ±1 ngày).
    vao = SL đặt của dòng mới xuất hiện; ra = phần còn thiếu giảm đi (dòng còn trong Sheet); ton = tổng còn thiếu;
@@ -507,22 +513,23 @@ function dhDongChay_(ch) {
     var cu = {}, nay = {}, vao = 0, ra = 0, ton = 0, xong = 0, dung = 0, mat = 0, d = ds[i];
     ch[ds[i - 1]].forEach(function(r) { cu[r[0]] = r; });
     ch[d].forEach(function(r) {
-      nay[r[0]] = 1; var t = Number(r[2]) || 0, c = cu[r[0]]; ton += t;
-      if (!c) { vao += Number(r[1]) || 0; return; }
+      nay[r[0]] = 1; var t = Number(r[2]) || 0, c = cu[r[0]]; if (r[6] !== 1) ton += t;   // dòng chuyển HT: phần thiếu còn lại là giao thiếu / hủy, không còn nợ
+      if (!c) { if (r[6] !== 1) vao += Number(r[1]) || 0; return; }
       var t0 = Number(c[2]) || 0; if (t0 > t) ra += t0 - t;
       if (t0 > 0 && t <= 0 && r[4]) {
         xong++; var ok = d <= String(r[4]); if (ok) dung++;
         if (d > moc) { var tab = String(r[0]).replace(/#\d+$/, '').split('|')[2] || '', kn = DH_NHAN_TAB[tab] || tab, x = kenh[kn] || (kenh[kn] = [0, 0]); x[0]++; if (ok) x[1]++; }
       }
     });
-    ch[ds[i - 1]].forEach(function(r) { if (!nay[r[0]] && (Number(r[2]) || 0) > 0) mat++; });
+    ch[ds[i - 1]].forEach(function(r) { if (!nay[r[0]] && r[6] !== 1 && (Number(r[2]) || 0) > 0) mat++; });
     ngay.push([d, vao, ra, ton, xong, dung, mat]);
   }
   return { ngay: ngay.slice(-60), kenh: kenh };
 }
 
 /* ===== 02/11: tab kênh mới + cấu hình sản phẩm sửa trên web + báo sản phẩm mới (Việc hôm nay) ===== */
-var DH_TAB_LOAI = /^_|SNAPSHOT|^ĐƠN HÀNG HT$|^DON HANG HT$|LƯU TRỮ|LUU TRU|ARCHIVE|^SHEET\d*$|^ĐƠN ƯU TIÊN$|^DON UU TIEN$/i;   // 07/11: tab ĐƠN ƯU TIÊN là bản chép từ các tab kênh -> không cộng vào tổng (đọc riêng làm nguồn mục Ưu tiên)   // tab lưu trữ / nháp: không đọc
+var DH_TAB_HT = /^HT[\s\-_.]*\d{4}$/i;   // 07/11 (chủ dự án): đơn xong được chép cả đơn sang tab HT-<năm> (vd HT-2026) rồi xóa khỏi tab kênh
+var DH_TAB_LOAI = /^_|SNAPSHOT|^ĐƠN HÀNG HT$|^DON HANG HT$|^HT[\s\-_.]*\d{4}$|HOÀN THIỆN|HOAN THIEN|LƯU TRỮ|LUU TRU|ARCHIVE|^SHEET\d*$|^ĐƠN ƯU TIÊN$|^DON UU TIEN$/i;   // 07/11: tab ĐƠN ƯU TIÊN là bản chép từ các tab kênh -> không cộng vào tổng (đọc riêng làm nguồn mục Ưu tiên)   // tab lưu trữ / nháp: không đọc
 var DH_TAB_MOI_MAX = 15, DH_TAB_MOI_DONG = 5000;   // tab kênh tự thêm: tối đa 15 tab, mỗi tab đọc 5.000 dòng đầu (chống treo / cạn quota)
 /* tab tự thêm phải có ĐỦ cột "Loại hàng" và "Số lượng đặt" trong 10 dòng đầu */
 function dhCoCotChuan_(sh) {
@@ -672,13 +679,16 @@ function demSanPhamMoi(token) {
 var DH_SL = 'DonHangSanLuong', DH_SL_COT = ['Ngay', 'TuNgay', 'Ra', 'SX', 'Vao', 'Ton', 'Mat', 'Tang', 'ChiTiet'];
 function dhLoaiSL_(loai) { return loai === 'GAY' || loai === 'CHUOI' || loai === 'NGON' || loai === 'PK' || loai === 'NOI' ? loai : 'KHAC'; }
 function dhTinhSanLuong_(cu, nay, plCache, sua) {   // cu, nay: mảng dòng bản chụp [k, sl, thieu, giao, dl, st]
-  var m = {}, kq = { ra: 0, sx: 0, vao: 0, ton: 0, mat: 0, tang: 0, kenh: {}, loai: {}, don: {} };
+  var m = {}, kq = { ra: 0, sx: 0, vao: 0, ton: 0, mat: 0, tang: 0, kenh: {}, loai: {}, don: {}, ht: { n: 0, sp: 0, thieu: 0 } };
   cu.forEach(function(r) { m[r[0]] = r; });
   var co = {};
   nay.forEach(function(r) {
-    var t = Number(r[2]) || 0, c = m[r[0]]; co[r[0]] = 1; kq.ton += t;
-    if (!c) { kq.vao += Number(r[1]) || 0; return; }
+    var t = Number(r[2]) || 0, c = m[r[0]], laHT = r[6] === 1; co[r[0]] = 1; if (!laHT) kq.ton += t;
+    if (!c && laHT && r[7] != null) c = [r[0], r[1], r[7]];   // dòng chuyển HT chậm (đã vắng ở bản chụp trước): lấy số thiếu lần cuối còn thấy
+    if (!c) { if (!laHT) kq.vao += Number(r[1]) || 0; return; }
+    if (c && c[6] === 1) return;   // đã tính hôm chuyển
     var t0 = Number(c[2]) || 0;
+    if (laHT) { kq.ht.n++; kq.ht.sp += Math.max(0, t0 - t); kq.ht.thieu += t; if (t >= t0) return; }   // phần thiếu khi chuyển = giao thiếu / hủy: không cộng sản lượng, không tính "điều chỉnh"
     if (t > t0) { kq.tang += t - t0; return; }
     if (t0 <= t) return;
     var ra = t0 - t, a = String(r[0]).replace(/#\d+$/, '').split('|'), tab = a[2] || '', kn = DH_NHAN_TAB[tab] || tab, ten = a[1] || '';
@@ -687,7 +697,7 @@ function dhTinhSanLuong_(cu, nay, plCache, sua) {   // cu, nay: mảng dòng b�
     kq.kenh[kn] = (kq.kenh[kn] || 0) + ra; kq.loai[l] = (kq.loai[l] || 0) + ra;
     var md = (a[0] || '(không mã)') + '|' + kn; kq.don[md] = (kq.don[md] || 0) + ra;
   });
-  cu.forEach(function(r) { if (!co[r[0]] && (Number(r[2]) || 0) > 0) kq.mat += Number(r[2]) || 0; });
+  cu.forEach(function(r) { if (!co[r[0]] && r[6] !== 1 && (Number(r[2]) || 0) > 0) kq.mat += Number(r[2]) || 0; });
   return kq;
 }
 function dhGhiSanLuong_(ch) {
@@ -700,7 +710,7 @@ function dhGhiSanLuong_(ch) {
   var sua = {}; docAnToan_(PL_SHEET).forEach(function(r) { if (r.TenChuan) sua[String(r.TenChuan)] = r; });
   var pc = {}, rows = thieu.map(function(i) {
     var k = dhTinhSanLuong_(ch[ds[i - 1]], ch[ds[i]], pc, sua), top = Object.keys(k.don).map(function(x) { return [x, k.don[x]]; }).sort(function(a, b) { return b[1] - a[1]; }).slice(0, 15);
-    return [ds[i], ds[i - 1], k.ra, k.sx, k.vao, k.ton, k.mat, k.tang, '~' + JSON.stringify({ kenh: k.kenh, loai: k.loai, top: top })];
+    return [ds[i], ds[i - 1], k.ra, k.sx, k.vao, k.ton, k.mat, k.tang, '~' + JSON.stringify({ kenh: k.kenh, loai: k.loai, top: top, ht: k.ht })];
   });
   khoa_();
   sh = ss_().getSheetByName(DH_SL);
@@ -750,5 +760,56 @@ function luuCongSuat(token, o) {
   catch (e) { return sach_({ ok: false, msg: 'Không lưu được.' }); }
   ghiLog_(q.me, 'Công suất đơn hàng', sp + ' sp/ngày', '', nghi.length + ' ngày nghỉ, ' + lam.length + ' ngày làm bù');
   return sach_({ ok: true, msg: 'Đã lưu công suất ' + sp + ' sp/ngày và ' + nghi.length + ' ngày nghỉ.', cs: dhCongSuat_() });
+}
+
+/* ===== 07/11 (chủ dự án): đơn xong được chép CẢ ĐƠN sang tab HT-<năm> rồi xóa khỏi tab kênh; có khi chuyển khi còn thiếu (giao thiếu / hủy).
+   Lúc chụp 9h: dòng có ở bản chụp trước, nay không còn ở tab kênh mà có ở tab HT (cùng mã đơn + tên) -> thêm vào bản chụp hôm nay
+   [khóa cũ, SL, còn thiếu ghi ở HT, giao, deadline, 'daGiao', 1]: sản lượng = thiếu hôm trước − thiếu ghi ở HT; phần thiếu ghi ở HT = giao thiếu, không tính "mất".
+   Tab HT chỉ đọc lúc chụp (1 lần / ngày), không đọc khi mở web. Sự kiện lưu ở sheet ẩn DonHangHoanThien để báo cáo "đã hoàn thiện". */
+var DH_HT = 'DonHangHoanThien', DH_HT_COT = ['Ngay', 'TuNgay', 'MaDon', 'Ten', 'Kenh', 'NguoiDat', 'SL', 'ThieuTruoc', 'ThieuHT', 'Deadline', 'DungHan', 'NgayDat'];
+/* (quan-ly-van-hanh) DungHan: 'dung' = đủ hàng + đúng hạn (OTIF), 'tre' = đủ nhưng trễ, 'giaoThieu' = chuyển khi còn thiếu (không tính OTIF);
+   đúng hạn so với ngày CUỐI CÙNG còn thấy đơn ở tab kênh (cho lệch 1 lần chụp vì 9h hôm sau mới phát hiện) */
+function dhDocHT_() {   // -> { 'maDon|ten': {thieu, sl, dl, nguoiDat} } từ tab HT năm nay + năm trước
+  var ss = SpreadsheetApp.openById(DH_SHEET_ID), nam = Number(Utilities.formatDate(new Date(), TZ_VN, 'yyyy')), m = {};
+  ss.getSheets().forEach(function(sh) {
+    var ten = String(sh.getName()).trim(), y = Number((ten.match(/(\d{4})$/) || [])[1]);
+    if (!DH_TAB_HT.test(ten) || (y !== nam && y !== nam - 1)) return;
+    dhDocTab_(sh, ten, nam).forEach(function(o) { var k = dhKhoaDong_(o).split('|').slice(0, 2).join('|'); if (!m[k]) m[k] = { thieu: o.thieu, sl: o.sl, dl: o.dl || '', nguoiDat: o.nguoiDat || '', ngayDat: o.ngayDat || '' }; });
+  });
+  return m;
+}
+function dhTimChuyenHT_(rowsNay, hom) {
+  /* xét 3 bản chụp gần nhất trước hôm nay: dòng xóa khỏi tab kênh mà hôm đó chưa chép sang HT vẫn được nhận khi HT có (quan-ly-van-hanh: "để treo, đối chiếu lại") */
+  var ch = dhDocChup_(), ds = Object.keys(ch).filter(function(x) { return x < hom; }).sort().slice(-3);
+  if (!ds.length) return { dong: [], su: [] };
+  var co = {}, daHT = {}, cuoi = {};
+  rowsNay.forEach(function(r) { co[r[0]] = 1; });
+  ds.forEach(function(d) { ch[d].forEach(function(r) { if (r[6] === 1) daHT[r[0]] = 1; else cuoi[r[0]] = { r: r, d: d }; }); });   // lần cuối còn thấy ở tab kênh
+  var mat = Object.keys(cuoi).filter(function(k) { return !co[k] && !daHT[k]; });
+  if (!mat.length) return { dong: [], su: [] };
+  var ht = dhDocHT_(), dong = [], su = [];
+  mat.forEach(function(k) {
+    var r = cuoi[k].r, tu = cuoi[k].d, a = String(k).replace(/#\d+$/, '').split('|'), h = ht[a[0] + '|' + a[1]]; if (!h) return;
+    var t = Math.max(0, Math.min(Number(h.thieu) || 0, Number(r[1]) || 0)), t0 = Number(r[2]) || 0, dl = r[4] || h.dl || '';
+    dong.push([k, r[1], t, r[3] || 0, dl, 'daGiao', 1, t0]);   // cột 8: còn thiếu lần cuối thấy ở tab kênh (khi lần cuối không phải bản chụp liền trước)
+    su.push([hom, tu, a[0], a[1], DH_NHAN_TAB[a[2]] || a[2], h.nguoiDat, Number(r[1]) || 0, t0, t, dl, t > 0 ? 'giaoThieu' : (!dl ? '' : (tu <= dl ? 'dung' : 'tre')), h.ngayDat || '']);
+  });
+  return { dong: dong, su: su };
+}
+function dhGhiHoanThien_(su) {
+  if (!su || !su.length) return 0;
+  khoa_();
+  var sh = ss_().getSheetByName(DH_HT);
+  if (!sh) { sh = ss_().insertSheet(DH_HT); sh.getRange(1, 1, 1, DH_HT_COT.length).setValues([DH_HT_COT]).setFontWeight('bold'); sh.setFrozenRows(1); try { sh.hideSheet(); } catch (e) {} }
+  if (sh.getLastRow() >= 2 && sh.getRange(2, 1, sh.getLastRow() - 1, 1).getDisplayValues().some(function(r) { return String(r[0]) === su[0][0]; })) return 0;   // ngày này đã ghi
+  sh.getRange(sh.getLastRow() + 1, 1, su.length, DH_HT_COT.length).setNumberFormat('@').setValues(su.map(function(r) { return r.map(function(x) { return String(x == null ? '' : x).replace(/^[=+\-@]/, "'$&"); }); }));
+  return su.length;
+}
+function dhDocHoanThien_() {   // -> [[ngay, tuNgay, maDon, ten, kenh, nguoiDat, sl, thieuTruoc, thieuHT, dl, dungHan, ngayDat]] 400 ngày gần nhất
+  var sh = ss_().getSheetByName(DH_HT); if (!sh || sh.getLastRow() < 2) return [];
+  var moc = Utilities.formatDate(new Date(Date.now() - 400 * 864e5), TZ_VN, 'yyyy-MM-dd');
+  return sh.getRange(2, 1, sh.getLastRow() - 1, DH_HT_COT.length).getDisplayValues().filter(function(r) { return String(r[0]) >= moc; }).map(function(r) {
+    return [r[0], r[1], String(r[2]).replace(/^'/, ''), String(r[3]).replace(/^'/, ''), r[4], String(r[5]).replace(/^'/, ''), Number(r[6]) || 0, Number(r[7]) || 0, Number(r[8]) || 0, r[9], r[10], r[11] || ''];
+  });
 }
 

@@ -187,6 +187,28 @@ console.log('\n4e. Kênh POD-ECOMSTONE, sản lượng nhập theo ngày, công 
   ok(r.ok && r.cs.sp === 400 && r.cs.nghi.length === 1 && r.cs.nghi[0][1] === 'Tết' && r.cs.lam[0] === '2027-01-10' && !r.cs.macDinh, 'lưu công suất 400 + ngày nghỉ (bỏ dấu "=", bỏ trùng) + ngày làm bù', r.cs);
   ok(c.__goi('layDonHangXuong', Town, false).cs.sp === 400, 'công suất mới trả về cho web'); }
 
+console.log('\n4f. Đơn chuyển sang tab HT-<năm> (07/11)');
+{ const H = ['', 'Loại hàng cần sản xuất', 'Loại Phôi', 'Số lượng đặt', 'SX CÒN THIẾU', 'Deadline'], nam = new Date().getFullYear(), tabHT = 'HT-' + nam;
+  const E = 'EVO4/LUN2/BLUE/LW-BLACK/G/10/12.5', K = 'RHI2-KOMET2/BRE/BLUE/13.0/388';
+  c.__ngoai = { [c.DH_SHEET_ID]: { ten: 'x', sheets: { DEALER: [H, ['DEA-02/11', K, '', 4, 4, '20/11']], [tabHT]: [H, ['KHO-01/11', E, '', 10, 0, '20/11'], ['KHO-03/10', E, '', 3, 1, '10/11'], ['OEM-01/01', E, '', 5, 0, '01/02']] } } }; c.dhDocDon_(true);
+  let x = c.__goi('layDonHangXuong', Town, true);
+  ok(x.ok && x.don.length === 1 && !(x.tabMoi || []).length, 'tab ' + tabHT + ' không bị đọc thành kênh mới, không cộng vào tổng đơn', [x.don.length, x.tabMoi]);
+  const cu = [['KHO-01/11|' + E + '|KHO', 10, 10, 0, nam + '-11-20', 'dangSX'], ['DEA-02/11|' + K + '|DEALER', 4, 4, 0, nam + '-11-20', 'dangSX'], ['OEM-09/11|' + K + '|OEM', 2, 2, 0, '', 'dangSX']];
+  const cu0 = [['KHO-03/10|' + E + '|KHO', 3, 3, 0, nam + '-11-10', 'treHan']].concat(cu);
+  const goc = c.dhDocChup_; c.dhDocChup_ = () => ({ [nam + '-11-04']: cu0, [nam + '-11-05']: cu });
+  const nay = [['DEA-02/11|' + K + '|DEALER', 4, 4, 0, nam + '-11-20', 'dangSX']], kq = c.dhTimChuyenHT_(nay, nam + '-11-06'); c.dhDocChup_ = goc;
+  const a = kq.dong.find(r => r[0].startsWith('KHO-01/11')), d = kq.dong.find(r => r[0].startsWith('KHO-03/10')), sa = kq.su.find(r => r[2] === 'KHO-01/11'), sd = kq.su.find(r => r[2] === 'KHO-03/10');
+  ok(kq.dong.length === 2 && a && a[2] === 0 && a[6] === 1 && d && d[2] === 1 && d[7] === 3 && !kq.dong.some(r => r[0].startsWith('OEM-09/11')),
+    'dòng biến mất + có ở tab HT -> thêm vào bản chụp (cờ HT); dòng chuyển chậm 1 ngày vẫn nhận; dòng biến mất không có ở HT -> không', kq.dong);
+  ok(sa && sa[4] === 'Kho' && sa[10] === 'dung' && sd && sd[10] === 'giaoThieu' && sd[1] === nam + '-11-04', 'sự kiện hoàn thiện: kênh từ bản chụp, đủ + đúng hạn / giao thiếu, ngày cuối còn thấy', kq.su);
+  const k = c.dhTinhSanLuong_(cu, nay.concat(kq.dong), {}, {});
+  ok(k.ra === 12 && k.sx === 12 && k.mat === 2 && k.ton === 4 && k.vao === 0 && k.ht.n === 2 && k.ht.thieu === 1 && k.tang === 0,
+    'sản lượng tính cả đơn chuyển HT (10 + 3−1 = 12), phần giao thiếu không cộng; chỉ dòng không có ở HT mới "mất"', k);
+  const n1 = c.dhGhiHoanThien_(kq.su), n2 = c.dhGhiHoanThien_(kq.su), ht = c.dhDocHoanThien_();
+  ok(n1 === 2 && n2 === 0 && ht.length >= 2 && ht.some(r => r[2] === 'KHO-01/11' && r[10] === 'dung' && r[6] === 10), 'lưu sự kiện vào sheet ẩn DonHangHoanThien 1 lần / ngày', ht);
+  const ch = c.dhDongChay_({ [nam + '-11-05']: cu, [nam + '-11-06']: nay.concat(kq.dong) }).ngay[0];
+  ok(ch[1] === 0 && ch[3] === 4 && ch[6] === 1, 'Vào–Ra–Tồn: dòng chuyển HT không tính "vào", không cộng tồn; chỉ 1 dòng mất', ch); }
+
 if (process.env.DH) {
   console.log('\n5. Toàn bộ đơn thật (DH=)');
   const dh = JSON.parse(fs.readFileSync(process.env.DH, 'utf8')), sh = {};

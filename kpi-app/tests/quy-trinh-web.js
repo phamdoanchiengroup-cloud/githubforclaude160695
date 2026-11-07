@@ -149,6 +149,12 @@ const vao = async (p, tk) => { await p.goto(F); await p.waitForSelector('#xtGoiY
         const kT = B.kenh.reduce((a, k) => a + k.n, 0), tl = +document.querySelector('.dh-bcso b').textContent.replace(/\D/g, '');
         return [so.length === 6, B.tre.length === don.filter(g => g.st === 'treHan').length, kT === B.don.length, B.kenh.some(k => k.tab === 'POD-ECOMSTONE'), B.trongTh.every(g => g.dlMin.slice(0, 7) === B.th), !!document.querySelector('.dh-than button[onclick="dhBCPDF()"]'), tl === B.sumK(B.slTh, 'sx')]; });
       ok(s.every(Boolean), 'Báo cáo lãnh đạo: 6 số, số đơn trễ = tab, tổng theo kênh = tổng đơn, đủ kênh (cả POD-ECOMSTONE), đơn deadline đúng tháng', s);
+      s = await p.evaluate(() => { const th = dhHomNay().slice(0, 7), d = th + '-03';
+        DHTD = { lichSu: [], chay: { ngay: [], kenh: {} }, sanLuong: [], ht: [[th + '-04', d, 'A1', 'x', 'Kho', 'LAN', 10, 10, 0, th + '-20', 'dung', th + '-01'], [th + '-04', d, 'A1', 'y', 'Kho', 'LAN', 5, 2, 0, th + '-20', 'dung', th + '-01'], [th + '-04', d, 'B1', 'x', 'OEM', 'PHO', 8, 8, 2, th + '-20', 'giaoThieu', ''], [th + '-04', d, 'C1', 'x', 'Dealer', 'MINH', 4, 4, 0, th + '-01', 'tre', '']] };
+        const g = dhHTDon(th), t = dhHTTong(g); DHV = 'sanluong'; dhVeLai(); const m1 = /Đơn đã hoàn thiện/.test(document.querySelector('main').textContent);
+        DHV = 'baocao'; dhVeLai(); const B = dhBC(th), so = dhBCSo(B);
+        return [g.length === 3, t.n === 3, t.sl === 27, t.giao === 25, t.otif === 33, t.fill === 92.5, t.giaoThieu === 1, t.tre === 1, m1, /3 đơn/.test(so[5][1]) && /OTIF 33%/.test(so[5][2])]; });
+      ok(s.every(Boolean), 'Đã hoàn thiện (tab HT): gom theo đơn, OTIF = đủ + đúng hạn / đơn có hạn, fill rate = giao / đặt; hiện ở Sản lượng ngày + thẻ báo cáo', s);
       await p.evaluate(() => { DHTD = null; DHV = 'chuy'; dhVeLai(); });
       for (const v of ['chitiet', 'gom', 'thongke', 'thaydoi']) { await p.evaluate(v => { DHV = v; dhVeLai(); }, v); await p.waitForTimeout(400); }
       s = await p.evaluate(() => { DHV = 'chitiet'; DHL.kenh = 'KHO'; dhVeLai(); const n = document.querySelectorAll('.dh-bang tbody tr').length, k = dhLoc().every(o => o.tab === 'KHO');
