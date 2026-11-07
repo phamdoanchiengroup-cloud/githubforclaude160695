@@ -531,3 +531,4 @@ Chủ dự án trả lời: đơn quá hạn > 30 ngày **mở sẵn** ở thẻ
 - Số thật T8 sau sửa: fill rate 71,7% (3 đơn giao thiếu một phần), 7 đơn hủy/dừng (4.390 cây). T10: fill rate 100%, 2 đơn hủy/dừng.
 - Kiểm thử: `don-hang.js` 112/116 (4 lỗi bản chụp có từ trước), `quy-trinh.js` 76/76, `quy-trinh-web.js` 120/120.
 - (07/11 tối, chủ dự án gửi ảnh) Bảng PDF báo cáo: tiêu đề cột lệch với số (số canh phải, tiêu đề canh trái) → `bang()`/`tr()` trong `dhBCPDFVe`: ô số (số, %, "15 (15)", `<span class="s">`) canh phải và tiêu đề cột theo đó (`th.s`, cho xuống dòng).
+- (07/11 tối) Chủ dự án: tiền tố chưa biết không quan trọng → đơn tab HT không suy được kênh ghi **"Chưa xác định"** (thay "Không rõ kênh").

@@ -7691,7 +7691,7 @@ function danhSachVanPhong(token) {
   ds.sort(function(a, b) { return (thuTu[a.vaiTro] - thuTu[b.vaiTro]) || (a.HoTen < b.HoTen ? -1 : 1); });
   return sach_({ ok: true, ds: ds, muc: HS_MUC });
 }
-var KPI_BAN_MAY = '07/11/2026 19:18';   // giờ dựng Code.gs (22/10)
+var KPI_BAN_MAY = '07/11/2026 20:12';   // giờ dựng Code.gs (22/10)
 /* =====================================================================
    KỸ NĂNG (22/10, chủ dự án nhờ thiết kế + tham khảo chuyên gia nhân sự / đào tạo)
    - Danh mục: trưởng / phó phòng đề xuất kỹ năng của xưởng (tên, mô tả, tiêu chí đạt, công đoạn liên quan)
@@ -9383,7 +9383,7 @@ function dhDocHoanThien_() {   // -> [[ngay, tuNgay, maDon, ten, kenh, nguoiDat,
 
 /* ===== 07/11 (chủ dự án): đơn đã hoàn thiện đọc TRỰC TIẾP từ tab HT-<năm> (không phụ thuộc bản chụp) – cho báo cáo 3 tháng =====
    Tab HT không có ngày xong -> tháng tính theo HẠN (hạn mới HT nếu có, không thì deadline). Kênh: cột "Kênh" > dòng tiêu đề nhóm kênh
-   > mã đơn còn ở tab kênh / bản chụp / sự kiện hoàn thiện > "Không rõ kênh". Nhớ tạm 10 phút. */
+   > mã đơn còn ở tab kênh / bản chụp / sự kiện hoàn thiện > "Chưa xác định" (chủ dự án 07/11). Nhớ tạm 10 phút. */
 function dhCacheLay_(k) { try { var c = CacheService.getScriptCache(), n = Number(c.get(k + '_n') || 0); if (!n) return null; var ks = []; for (var i = 0; i < n; i++) ks.push(k + '_' + i); var a = c.getAll(ks), s = ''; for (var j = 0; j < n; j++) { if (a[k + '_' + j] == null) return null; s += a[k + '_' + j]; } return JSON.parse(s); } catch (e) { return null; } }
 function dhCacheGhi_(k, o, giay) { try { var s = JSON.stringify(o), p = {}, m = 0; for (var x = 0; x < s.length; x += 30000) p[k + '_' + (m++)] = s.slice(x, x + 30000); p[k + '_n'] = String(m); CacheService.getScriptCache().putAll(p, giay); } catch (e) {} }
 function layDonHoanThien(token, lamMoi) {
@@ -9425,7 +9425,7 @@ function dhHTTrucTiep_(lamMoi) {
     if (!tab) { tab = tienTo(o); if (tab) n = 'tienTo'; }
     nguon[n]++;
     var tc = plChuan_(o.ten), p = pc[tc] || (pc[tc] = plPhanLoai_(o.ten, o.ghiChu, sua['K:' + tc]));
-    return { maDon: o.maDon, ten: o.ten, tab: tab || 'KHONG_RO', kenh: tab ? (DH_NHAN_TAB[tab] || tab) : 'Không rõ kênh', nguoiDat: o.nguoiDat || '', ngayDat: o.ngayDat || '',
+    return { maDon: o.maDon, ten: o.ten, tab: tab || 'KHONG_RO', kenh: tab ? (DH_NHAN_TAB[tab] || tab) : 'Chưa xác định', nguoiDat: o.nguoiDat || '', ngayDat: o.ngayDat || '',
       dl: o.dl || '', hanMoi: o.hanMoi || '', thang: String(o.hanMoi || o.dl || '').slice(0, 7), sl: o.sl, thieu: o.thieu, daTra: o.daTra || 0, htTab: o.tab,
       pl: { loai: p.loai, kieu: p.kieu, vlC: p.vlC, vlN: p.vlN, tin: p.tin } };
   });

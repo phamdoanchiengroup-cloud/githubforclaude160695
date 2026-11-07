@@ -75,4 +75,4 @@ Liên quan: [[Lần dán lên Apps Script]] · [[Quyết định của chủ d�
 ## Việc đã làm, chờ dán
 - Xem [[Lần dán lên Apps Script]].
 
-- **Báo cáo T10 + T11 số thật (07/11)**: đã gửi. Còn chờ: tên thật tab POD-ECOMSTONE (ảnh chưa nhận được); kênh của các tiền tố ORDER, RESTOCK, SEYBERT(S), NEW, AMZ, CUESHOP, PASCAL, RAPTOR, MALCOMLB, JORDAN, JOELS, SNAPSHOT, NOVO, MUST, DYNAMIC, ARENAP, RETRO; cập nhật web (2-CAP-NHAT.bat). – [[KPI Quy trình sản xuất]]
+- **Báo cáo T10 + T11 số thật (07/11)**: đã gửi. Còn chờ: tên thật tab POD-ECOMSTONE (ảnh chưa nhận được); cập nhật web (2-CAP-NHAT.bat). – [[KPI Quy trình sản xuất]]
