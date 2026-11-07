@@ -127,6 +127,29 @@ const vao = async (p, tk) => { await p.goto(F); await p.waitForSelector('#xtGoiY
       s = await p.evaluate(() => { const uu = dhUuDs(); DHV = 'uutien'; dhVeLai(); const r = [uu.length === (DH.uu && DH.uu.length ? dhLoc(DH.uu).length : dhLoc().filter(o => o.uuTien).length), /ĐƠN ƯU TIÊN/.test(document.querySelector('main').textContent) === !!(DH.uu && DH.uu.length), document.querySelector('.dh-sub button.on').textContent.startsWith('Ưu tiên')];
         DHV = 'chuy'; dhVeLai(); return r; });
       ok(s.every(Boolean), 'Ưu tiên: lấy danh sách từ tab "ĐƠN ƯU TIÊN" khi Sheet có tab này', s);
+      // 07/11: thanh % hoàn thành 2 màu ở mọi danh sách đơn
+      s = await p.evaluate(() => { const r = []; for (const v of ['chuy', 'uutien', 'chitiet', 'gom']) { DHV = v; dhVeLai(); r.push(document.querySelectorAll('.dh-than .dh-pb').length > 0); }
+        const t = dhTienDo([{ sl: 10, thieu: 4, qua: { PHOI: 9, SON: 7 } }, { sl: 5, thieu: 0, qua: {} }]); r.push(t.sl === 15 && t.xong === 11 && t.dang === 3);
+        const e = document.createElement('div'); e.innerHTML = dhThanh(t); r.push(/73%/.test(e.textContent) && e.querySelector('i.x').style.width === '73.3%'); DHV = 'chuy'; dhVeLai(); return r; });
+      ok(s.every(Boolean), 'thanh % 2 màu ở Cần chú ý / Ưu tiên / Chi tiết / Gom; % = (đặt − thiếu) ÷ đặt, phần nhạt = đã qua xưởng chưa xong', s);
+      // 07/11: công suất & deadline + sản lượng ngày + báo cáo lãnh đạo
+      s = await p.evaluate(() => { const K = dhCSTinh(), sx = DH.don.filter(o => o.thieu > 0 && dhLaSX(o)).reduce((a, o) => a + o.thieu, 0);
+        const sorted = K.don.every((g, i) => i === 0 || g.eta >= K.don[i - 1].eta), lamCN = K.don.some(g => new Date(g.eta + 'T00:00:00').getDay() === 0);
+        const ngay = dhSoNgayLam(K.hn, dhNgayCong(K.xongHet, 1));
+        DHV = 'congsuat'; dhVeLai(); const tl = document.querySelector('.dh-than .dh-tl b').textContent.replace(/\./g, '');
+        return [K.tong === sx, sorted, !lamCN, Math.abs(ngay - K.ngayCan) <= 1, +tl === sx, K.ky.length === 12, !!document.querySelector('.dh-than svg polyline.phai'), document.querySelectorAll('.dh-bang.cs tbody tr:not(.dh-khoi)').length > 0]; });
+      ok(s.every(Boolean), 'Công suất & deadline: tổng = còn thiếu hàng sản xuất, ngày dự kiến xong tăng dần theo thứ tự, không rơi vào chủ nhật, đủ ngày làm; 12 tuần + biểu đồ + bảng đơn', s);
+      s = await p.evaluate(() => { dhCS(); DH.cs.nghi = [[dhNgayCong(dhHomNay(), 1), 'thử']]; delete DH.cs._m; const a = dhLaNgayLam(dhNgayCong(dhHomNay(), 1)); DH.cs.nghi = []; delete DH.cs._m; return [!a, dhSoNgayLam('2026-11-02', '2026-11-09')]; });
+      ok(s[0] && s[1] === 6, 'ngày nghỉ khai trên web không tính là ngày làm; 1 tuần = 6 ngày làm (thứ 2 – thứ 7)', s);
+      s = await p.evaluate(() => { DHTD = { lichSu: [], chay: { ngay: [], kenh: {} }, sanLuong: [['2026-10-30', '2026-10-29', 330, 300, 10, 100, 0, 0, { kenh: { Kho: 300 }, loai: { GAY: 300, PK: 30 } }], ['2026-11-02', '2026-10-30', 700, 680, 0, 90, 0, 5, { kenh: { Kho: 680 }, loai: { GAY: 680 } }]] };
+        DHV = 'sanluong'; dhVeLai(); const sl = dhSLDong(), m = document.querySelector('main').textContent;
+        return [sl[1].nl === 2, Math.round(sl[1].tb) === 340, dhNhanKhoang(sl[1]) === '30/10–31/10', /Theo tháng/.test(m), document.querySelectorAll('.dh-than svg rect').length === 2]; });
+      ok(s.every(Boolean), 'Sản lượng ngày: khoảng qua chủ nhật = 2 ngày làm, trung bình / ngày; bảng tháng + biểu đồ', s);
+      s = await p.evaluate(() => { DHV = 'baocao'; dhVeLai(); const B = dhBC(dhHomNay().slice(0, 7)), so = dhBCSo(B), don = dhGomDon(dhLoc());
+        const kT = B.kenh.reduce((a, k) => a + k.n, 0), tl = +document.querySelector('.dh-bcso b').textContent.replace(/\D/g, '');
+        return [so.length === 6, B.tre.length === don.filter(g => g.st === 'treHan').length, kT === B.don.length, B.kenh.some(k => k.tab === 'POD-ECOMSTONE'), B.trongTh.every(g => g.dlMin.slice(0, 7) === B.th), !!document.querySelector('.dh-than button[onclick="dhBCPDF()"]'), tl === B.sumK(B.slTh, 'sx')]; });
+      ok(s.every(Boolean), 'Báo cáo lãnh đạo: 6 số, số đơn trễ = tab, tổng theo kênh = tổng đơn, đủ kênh (cả POD-ECOMSTONE), đơn deadline đúng tháng', s);
+      await p.evaluate(() => { DHTD = null; DHV = 'chuy'; dhVeLai(); });
       for (const v of ['chitiet', 'gom', 'thongke', 'thaydoi']) { await p.evaluate(v => { DHV = v; dhVeLai(); }, v); await p.waitForTimeout(400); }
       s = await p.evaluate(() => { DHV = 'chitiet'; DHL.kenh = 'KHO'; dhVeLai(); const n = document.querySelectorAll('.dh-bang tbody tr').length, k = dhLoc().every(o => o.tab === 'KHO');
         DHL.kenh = ''; DHL.st = 'treHan'; const t = dhLoc().every(o => o.st === 'treHan'); DHL.st = ''; DHV = 'thongke'; dhVeLai();

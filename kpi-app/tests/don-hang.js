@@ -165,6 +165,28 @@ console.log('\n4d. Tab "ĐƠN ƯU TIÊN" làm nguồn mục Ưu tiên (07/11)');
   ok((x.uu || []).length === 1 && u.maDon === '#KHO-01/11' && u.tab === 'KHO' && u.uuTien && u.pl && u.pl.dong === 'EVO4', 'trả danh sách ưu tiên riêng, kênh lấy theo mã đơn ở tab chính, có phân loại', u);
   ok(/-11-17$/.test(u.dl) && /-11-26$/.test(x.don.find(o => o.maDon === '#KHO-01/11').dl), 'hạn ưu tiên lấy theo tab ĐƠN ƯU TIÊN (17/11), khác hạn ở tab KHO (26/11)', [u.dl]); }
 
+console.log('\n4e. Kênh POD-ECOMSTONE, sản lượng nhập theo ngày, công suất (07/11)');
+{ const tabE = [['', 'Loại hàng cần sản xuất', 'Loại Phôi', 'Số lượng đặt', 'SX CÒN THIẾU', 'Deadline'], ['#ECO-01/11', 'EVO4/LUN2/BLUE/LW-BLACK/G/10/12.5', '', 3, 3, '20/11']];
+  c.__ngoai = { [c.DH_SHEET_ID]: { ten: 'x', sheets: { KHO: [tabE[0]], 'POD-ECOMSTONE': tabE } } }; c.dhDocDon_(true);
+  let x = c.__goi('layDonHangXuong', Town, true);
+  ok(x.ok && x.don.length === 1 && x.don[0].kenh === 'POD – Ecomstone' && !(x.tabMoi || []).length, 'tab POD-ECOMSTONE đọc như kênh chuẩn (không báo "kênh mới")', x.don && x.don[0]);
+  ok(x.kenhDs.some(k => k[0] === 'POD-ECOMSTONE') && x.kenhDs.some(k => k[0] === 'OEM'), 'trả đủ danh sách kênh (kể cả kênh chưa có đơn)');
+  ok(x.cs && x.cs.sp === 350 && x.cs.macDinh && x.cs.nghi.some(n => n[0] === '2027-01-01'), 'công suất mặc định 350 sp/ngày + lịch lễ gợi ý', x.cs);
+  const cu = [['A|EVO4/LUN2/BLUE/LW-BLACK/G/10/12.5|KHO', 10, 10, 0, '', 'dangSX'], ['B|Rhino Soft Cue Case 1X2 - Black|OEM', 5, 5, 0, '', 'dangSX'], ['C|RHI2-KOMET2/BRE/BLUE/13.0/388|DEALER', 4, 4, 0, '', 'dangSX'], ['D|EVO4/LUN2/BLUE/LW-BLACK/G/10/12.5|KHO', 3, 3, 0, '', 'dangSX']];
+  const nay = [['A|EVO4/LUN2/BLUE/LW-BLACK/G/10/12.5|KHO', 10, 4, 0, '', 'dangSX'], ['B|Rhino Soft Cue Case 1X2 - Black|OEM', 5, 0, 0, '', 'sanSang'], ['C|RHI2-KOMET2/BRE/BLUE/13.0/388|DEALER', 4, 6, 0, '', 'dangSX'], ['E|EVO4/LUN2/BLUE/LW-BLACK/G/10/12.5|KHO', 7, 7, 0, '', 'dangSX']];
+  const k = c.dhTinhSanLuong_(cu, nay, {}, {});
+  ok(k.ra === 11 && k.sx === 6 && k.tang === 2 && k.vao === 7 && k.mat === 3 && k.ton === 17 && k.kenh.Kho === 6 && k.kenh.OEM === 5 && k.loai.GAY === 6 && k.loai.PK === 5,
+    'sản lượng = thiếu trước − thiếu sau cùng dòng: 6 sp sản xuất (+5 phụ kiện tách riêng); thiếu tăng → điều chỉnh; dòng mới / dòng mất không tính', k);
+  const ch = { '2026-11-02': cu, '2026-11-03': nay, '2026-11-04': nay };
+  const n1 = c.dhGhiSanLuong_(ch), n2 = c.dhGhiSanLuong_(ch), sl = c.dhDocSanLuong_().filter(r => r[0] >= '2026-11-03');   // sheet có thể có sẵn ngày cũ từ phần kiểm thử trước
+  ok(n1 === 2 && n2 === 0 && sl.length === 2 && sl[0][0] === '2026-11-03' && sl[0][1] === '2026-11-02' && sl[0][3] === 6 && sl[1][3] === 0 && sl[0][8].kenh.Kho === 6, 'lưu sản lượng mỗi ngày vào sheet ẩn DonHangSanLuong 1 lần (gọi lại không ghi trùng)', sl);
+  let r = c.__goi('luuCongSuat', Tadm, { sp: 300, nghi: [] }); ok(!r.ok, 'ban điều hành không sửa được công suất');
+  r = c.__goi('luuCongSuat', Town, { sp: 0, nghi: [] }); ok(!r.ok, 'công suất 0: từ chối');
+  r = c.__goi('luuCongSuat', Town, { sp: 400, nghi: [['2027-13-40', 'x']] }); ok(!r.ok && /không hợp lệ/.test(r.msg), 'ngày sai: từ chối', r.msg);
+  r = c.__goi('luuCongSuat', Town, { sp: 400, nghi: [['2027-02-05', '=Tết'], ['2027-02-05', 'trùng']], lam: ['2027-01-10'] });
+  ok(r.ok && r.cs.sp === 400 && r.cs.nghi.length === 1 && r.cs.nghi[0][1] === 'Tết' && r.cs.lam[0] === '2027-01-10' && !r.cs.macDinh, 'lưu công suất 400 + ngày nghỉ (bỏ dấu "=", bỏ trùng) + ngày làm bù', r.cs);
+  ok(c.__goi('layDonHangXuong', Town, false).cs.sp === 400, 'công suất mới trả về cho web'); }
+
 if (process.env.DH) {
   console.log('\n5. Toàn bộ đơn thật (DH=)');
   const dh = JSON.parse(fs.readFileSync(process.env.DH, 'utf8')), sh = {};

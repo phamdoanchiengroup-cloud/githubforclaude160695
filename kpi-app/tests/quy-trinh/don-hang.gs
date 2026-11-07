@@ -12,8 +12,8 @@
    lần sau gặp đúng tên đó dùng luôn. Giai đoạn đầu chỉ tài khoản chủ sở hữu (qtQuyen_).
    ===================================================================== */
 var DH_SHEET_ID = '1FKrF_wyQcl0SpDhvoRBg7VoaBzgzhSJ7zZ5U2A5ReMU';   // Sheet "Trạng thái đơn hàng" (chia sẻ cho tài khoản chạy web)
-var DH_TABS = ['DEALER', 'KHO', 'WEB LẺ CUSTOM', 'WEB LẺ ĐƠN THƯỜNG', 'OEM', 'A ĐÔNG', 'POD-A.BÁCH'];
-var DH_NHAN_TAB = { 'DEALER': 'Dealer', 'KHO': 'Kho', 'WEB LẺ CUSTOM': 'Web lẻ – Custom', 'WEB LẺ ĐƠN THƯỜNG': 'Web lẻ – Thường', 'OEM': 'OEM', 'A ĐÔNG': 'A Đông', 'POD-A.BÁCH': 'POD – A.Bách' };
+var DH_TABS = ['DEALER', 'KHO', 'WEB LẺ CUSTOM', 'WEB LẺ ĐƠN THƯỜNG', 'OEM', 'A ĐÔNG', 'POD-A.BÁCH', 'POD-ECOMSTONE'];   // 07/11: thêm kênh POD-ECOMSTONE (chưa có đơn vẫn là kênh)
+var DH_NHAN_TAB = { 'DEALER': 'Dealer', 'KHO': 'Kho', 'WEB LẺ CUSTOM': 'Web lẻ – Custom', 'WEB LẺ ĐƠN THƯỜNG': 'Web lẻ – Thường', 'OEM': 'OEM', 'A ĐÔNG': 'A Đông', 'POD-A.BÁCH': 'POD – A.Bách', 'POD-ECOMSTONE': 'POD – Ecomstone' };
 var DH_CACHE_GIAY = 300;   // Sheet đơn thay đổi liên tục: nhớ tạm 5 phút, có nút "Làm mới"
 var PL_SHEET = 'PhanLoaiSKU';
 var PL_COT = ['TenChuan', 'TenHang', 'LoaiHang', 'Dong', 'Chuoi', 'Ngon', 'Tip', 'Ren', 'GhiChu', 'NguoiSua', 'ThoiDiem'];
@@ -325,8 +325,9 @@ function dhMaDon_(o, nam) {
   return o;
 }
 /* Mọi dòng đơn (đã gộp 7 tab). Nhớ tạm DH_CACHE_GIAY giây, chia mảnh < 100 KB */
+var DH_DON_KHOA = 'DH_DON_v6';
 function dhDocDon_(lamMoi) {
-  var c = CacheService.getScriptCache(), k = 'DH_DON_v5';   // v5 (07/11): thêm uu (tab ĐƠN ƯU TIÊN)   // v4 (03/11): thêm uuTien / uuDon
+  var c = CacheService.getScriptCache(), k = DH_DON_KHOA;   // v6 (07/11): thêm kênh POD-ECOMSTONE   // v5 (07/11): thêm uu (tab ĐƠN ƯU TIÊN)   // v4 (03/11): thêm uuTien / uuDon
   if (!lamMoi) {
     try {
       var n = Number(c.get(k + '_n') || 0);
@@ -385,7 +386,9 @@ function layDonHangXuong(token, lamMoi) {
     return x;
   });
   var uu = (d.uu || []).map(function(o) { var x = {}; for (var k in o) x[k] = o[k]; x.tenChuan = plChuan_(o.ten); x.pl = plPhanLoai_(o.ten, o.ghiChu, sua['K:' + x.tenChuan]); return x; });
-  return sach_({ ok: true, luc: d.luc, don: don, uu: uu, nhan: chNhan_(), tabMoi: d.tabMoi || [], tabBo: d.tabBo || [] });
+  return sach_({ ok: true, luc: d.luc, don: don, uu: uu, nhan: chNhan_(), tabMoi: d.tabMoi || [], tabBo: d.tabBo || [],
+    kenhDs: DH_TABS.map(function(t) { return [t, DH_NHAN_TAB[t] || t]; }).concat((d.tabMoi || []).map(function(t) { return [t, t]; })),   // 07/11: đủ mọi kênh (kể cả kênh chưa có đơn) cho bộ lọc + báo cáo
+    cs: dhCongSuat_() });
 }
 
 /* Chủ sở hữu sửa phân loại 1 tên hàng (áp cho mọi đơn cùng tên). bo = true -> xóa bản sửa, về tự động */
@@ -457,6 +460,7 @@ function dhChup_(lamMoi) {
     var bo = {}; ngay.slice(0, ngay.length - DH_CHUP_GIU).forEach(function(x) { bo[x] = 1; });
     for (var r = v.length - 1; r >= 0; r--) if (bo[v[r]]) sh.deleteRow(r + 2);
   }
+  try { dhGhiSanLuong_(dhDocChup_()); } catch (e) {}   // 07/11: lưu tổng sản lượng nhập theo ngày (giữ lâu dài)
   return true;
 }
 /* Gọi từ trigger 9h sáng (snapshotKPIHangNgay) – không cho gọi từ web */
@@ -488,7 +492,9 @@ function layThayDoiDon(token) {
   var lichSu = Object.keys(ch).sort().map(function(x) { var t = 0, tre = 0; ch[x].forEach(function(r) { t += Number(r[2]) || 0; if (r[5] === 'treHan') tre++; }); return [x, t, tre]; });
   var daChup = false;
   if (!ch[hom]) { try { daChup = dhChup_(false); } catch (e3) {} }
-  return sach_({ ok: true, luc: d.luc, truoc: truoc, thay: thay.slice(0, 2000), lichSu: lichSu, daChup: daChup, chay: dhDongChay_(ch) });
+  if (daChup) ch = dhDocChup_();
+  try { dhGhiSanLuong_(ch); } catch (e4) {}   // bù các ngày chưa ghi (bản chụp có từ trước 07/11)
+  return sach_({ ok: true, luc: d.luc, truoc: truoc, thay: thay.slice(0, 2000), lichSu: lichSu, daChup: daChup, chay: dhDongChay_(ch), sanLuong: dhDocSanLuong_(), cs: dhCongSuat_() });
 }
 /* 02/11 (Lean – quan-ly-van-hanh): Vào – Ra – Tồn và giao đúng hạn suy ra từ 2 bản chụp liền nhau (sai số ±1 ngày).
    vao = SL đặt của dòng mới xuất hiện; ra = phần còn thiếu giảm đi (dòng còn trong Sheet); ton = tổng còn thiếu;
@@ -539,7 +545,7 @@ function boQuaTabDon(token, tab, bo) {
   if (bo) a.push(tab);
   try { PropertiesService.getScriptProperties().setProperty('DH_TAB_BO', JSON.stringify(a.slice(-40))); }
   catch (e) { return sach_({ ok: false, msg: 'Không lưu được danh sách tab bỏ qua.' }); }
-  try { var c = CacheService.getScriptCache(); c.remove('DH_DON_v3_n'); } catch (e) {}
+  try { var c = CacheService.getScriptCache(); c.remove(DH_DON_KHOA + '_n'); } catch (e) {}   // 07/11: sửa khóa cũ (v3) – bỏ / đọc lại tab có hiệu lực ngay
   ghiLog_(q.me, 'Tab đơn hàng', tab, '', bo ? 'bỏ qua' : 'đọc lại');
   return sach_({ ok: true, msg: bo ? 'Đã bỏ qua tab "' + tab + '".' : 'Sẽ đọc lại tab "' + tab + '".' });
 }
@@ -658,3 +664,91 @@ function demSanPhamMoi(token) {
   var dk = Object.keys(khuc).map(function(k) { return khuc[k]; }).sort(function(a, b) { return b.thieu - a.thieu; });
   return sach_({ ok: true, n: ds.length, ten: ds.slice(0, 20), thieu: ds.reduce(function(a, x) { return a + x.thieu; }, 0), khuc: dk.slice(0, 20), tabMoi: d.tabMoi || [] });
 }
+
+/* ===== 07/11 (chủ dự án): sản lượng nhập theo ngày = tổng còn thiếu bản chụp trước − bản chụp sau, CÙNG các dòng đơn =====
+   (quan-ly-van-hanh) chỉ so dòng có ở cả 2 bản chụp; dòng mới thêm không tính; còn thiếu TĂNG (sửa số / hỏng) ghi riêng "điều chỉnh", không trừ vào sản lượng;
+   dòng biến mất khi còn thiếu ghi riêng "mất" (có thể đã giao rồi chuyển sang Đơn hàng HT, hoặc hủy); khoảng giữa 2 bản chụp có thể dài nhiều ngày (chủ nhật, ngày lễ, mất bản chụp).
+   Sheet ẩn DonHangSanLuong (trong file KPI): Ngay | TuNgay | Ra | SX | Vao | Ton | Mat | Tang | ChiTiet – giữ lâu dài (bản chụp chỉ giữ 30 ngày). */
+var DH_SL = 'DonHangSanLuong', DH_SL_COT = ['Ngay', 'TuNgay', 'Ra', 'SX', 'Vao', 'Ton', 'Mat', 'Tang', 'ChiTiet'];
+function dhLoaiSL_(loai) { return loai === 'GAY' || loai === 'CHUOI' || loai === 'NGON' || loai === 'PK' || loai === 'NOI' ? loai : 'KHAC'; }
+function dhTinhSanLuong_(cu, nay, plCache, sua) {   // cu, nay: mảng dòng bản chụp [k, sl, thieu, giao, dl, st]
+  var m = {}, kq = { ra: 0, sx: 0, vao: 0, ton: 0, mat: 0, tang: 0, kenh: {}, loai: {}, don: {} };
+  cu.forEach(function(r) { m[r[0]] = r; });
+  var co = {};
+  nay.forEach(function(r) {
+    var t = Number(r[2]) || 0, c = m[r[0]]; co[r[0]] = 1; kq.ton += t;
+    if (!c) { kq.vao += Number(r[1]) || 0; return; }
+    var t0 = Number(c[2]) || 0;
+    if (t > t0) { kq.tang += t - t0; return; }
+    if (t0 <= t) return;
+    var ra = t0 - t, a = String(r[0]).replace(/#\d+$/, '').split('|'), tab = a[2] || '', kn = DH_NHAN_TAB[tab] || tab, ten = a[1] || '';
+    var l = plCache[ten]; if (l == null) { try { var tc = plChuan_(ten); l = plCache[ten] = dhLoaiSL_(plPhanLoai_(ten, '', sua['K:' + tc]).loai); } catch (e) { l = plCache[ten] = 'KHAC'; } }
+    kq.ra += ra; if (l !== 'PK' && l !== 'NOI') kq.sx += ra;
+    kq.kenh[kn] = (kq.kenh[kn] || 0) + ra; kq.loai[l] = (kq.loai[l] || 0) + ra;
+    var md = (a[0] || '(không mã)') + '|' + kn; kq.don[md] = (kq.don[md] || 0) + ra;
+  });
+  cu.forEach(function(r) { if (!co[r[0]] && (Number(r[2]) || 0) > 0) kq.mat += Number(r[2]) || 0; });
+  return kq;
+}
+function dhGhiSanLuong_(ch) {
+  var ds = Object.keys(ch || {}).sort(); if (ds.length < 2) return 0;
+  var sh = ss_().getSheetByName(DH_SL), daCo = {};
+  if (sh && sh.getLastRow() >= 2) sh.getRange(2, 1, sh.getLastRow() - 1, 1).getDisplayValues().forEach(function(r) { daCo[String(r[0])] = 1; });
+  var thieu = []; for (var i = 1; i < ds.length; i++) if (!daCo[ds[i]]) thieu.push(i);
+  if (!thieu.length) return 0;
+  plNapThem_();
+  var sua = {}; docAnToan_(PL_SHEET).forEach(function(r) { if (r.TenChuan) sua[String(r.TenChuan)] = r; });
+  var pc = {}, rows = thieu.map(function(i) {
+    var k = dhTinhSanLuong_(ch[ds[i - 1]], ch[ds[i]], pc, sua), top = Object.keys(k.don).map(function(x) { return [x, k.don[x]]; }).sort(function(a, b) { return b[1] - a[1]; }).slice(0, 15);
+    return [ds[i], ds[i - 1], k.ra, k.sx, k.vao, k.ton, k.mat, k.tang, '~' + JSON.stringify({ kenh: k.kenh, loai: k.loai, top: top })];
+  });
+  khoa_();
+  sh = ss_().getSheetByName(DH_SL);
+  if (!sh) { sh = ss_().insertSheet(DH_SL); sh.getRange(1, 1, 1, DH_SL_COT.length).setValues([DH_SL_COT]).setFontWeight('bold'); sh.setFrozenRows(1); try { sh.hideSheet(); } catch (e) {} }
+  if (sh.getLastRow() >= 2) { var lai = {}; sh.getRange(2, 1, sh.getLastRow() - 1, 1).getDisplayValues().forEach(function(r) { lai[String(r[0])] = 1; }); rows = rows.filter(function(r) { return !lai[r[0]]; }); }   // người khác vừa ghi
+  if (!rows.length) return 0;
+  sh.getRange(sh.getLastRow() + 1, 1, rows.length, DH_SL_COT.length).setNumberFormat('@').setValues(rows.map(function(r) { return r.map(String); }));
+  return rows.length;
+}
+function dhDocSanLuong_() {   // -> [[ngay, tuNgay, ra, sx, vao, ton, mat, tang, {kenh, loai, top}]] tăng dần theo ngày
+  var sh = ss_().getSheetByName(DH_SL); if (!sh || sh.getLastRow() < 2) return [];
+  return sh.getRange(2, 1, sh.getLastRow() - 1, DH_SL_COT.length).getDisplayValues().map(function(r) {
+    var ct = {}; try { ct = JSON.parse(String(r[8]).replace(/^~/, '')); } catch (e) {}
+    return [r[0], r[1], Number(r[2]) || 0, Number(r[3]) || 0, Number(r[4]) || 0, Number(r[5]) || 0, Number(r[6]) || 0, Number(r[7]) || 0, ct];
+  }).filter(function(r) { return /^\d{4}-\d\d-\d\d$/.test(r[0]); }).sort(function(a, b) { return a[0] < b[0] ? -1 : 1; });
+}
+
+/* ===== 07/11 (chủ dự án + quan-ly-van-hanh): công suất và ngày nghỉ để phân tích độ hợp lý số lượng / deadline =====
+   350 sp/ngày cho mọi hàng sản xuất (gậy + chuôi lẻ + ngọn lẻ; không tính phụ kiện, tay nối); làm thứ 2 – thứ 7; ngày lễ điền sẵn theo luật, chủ sở hữu sửa trên web. */
+var DH_CS_MAC = 350;
+var DH_NGHI_MAC = [   // gợi ý – chủ sở hữu sửa theo lịch nghỉ của công ty
+  ['2027-01-01', 'Tết Dương lịch'],
+  ['2027-02-04', 'Tết Nguyên đán'], ['2027-02-05', 'Tết Nguyên đán'], ['2027-02-06', 'Tết Nguyên đán (mùng 1)'], ['2027-02-08', 'Tết Nguyên đán'], ['2027-02-09', 'Tết Nguyên đán'], ['2027-02-10', 'Tết Nguyên đán'],
+  ['2027-04-16', 'Giỗ Tổ Hùng Vương (10/3 âm)'], ['2027-04-30', 'Giải phóng miền Nam'], ['2027-05-01', 'Quốc tế Lao động'],
+  ['2027-09-02', 'Quốc khánh'], ['2027-09-03', 'Quốc khánh (nghỉ kèm)']
+];
+function dhCongSuat_() {
+  var o = null; try { o = JSON.parse(PropertiesService.getScriptProperties().getProperty('DH_CONG_SUAT') || 'null'); } catch (e) {}
+  if (!o || typeof o !== 'object') o = {};
+  var sp = Number(o.sp); if (!(sp >= 1 && sp <= 100000)) sp = DH_CS_MAC;
+  var nghi = Array.isArray(o.nghi) ? o.nghi.filter(function(x) { return Array.isArray(x) && /^\d{4}-\d\d-\d\d$/.test(String(x[0])); }).map(function(x) { return [String(x[0]), String(x[1] || '').slice(0, 60)]; }) : DH_NGHI_MAC.slice();
+  var lam = Array.isArray(o.lam) ? o.lam.filter(function(x) { return /^\d{4}-\d\d-\d\d$/.test(String(x)); }).map(String) : [];   // chủ nhật đi làm bù
+  return { sp: sp, nghi: nghi.sort(function(a, b) { return a[0] < b[0] ? -1 : 1; }), lam: lam.sort(), macDinh: !Array.isArray(o.nghi) };
+}
+function luuCongSuat(token, o) {
+  var q = qtQuyen_(token); if (q.loi) return q.loi;
+  o = o || {};
+  var sp = Math.round(Number(o.sp)); if (!(sp >= 1 && sp <= 100000)) return sach_({ ok: false, msg: 'Công suất phải từ 1 đến 100.000 sp/ngày.' });
+  var bad = '', nghi = (Array.isArray(o.nghi) ? o.nghi : []).slice(0, 200).map(function(x) {
+    var d = String((x && x[0]) || '').trim(); if (!/^\d{4}-\d\d-\d\d$/.test(d) || isNaN(new Date(d + 'T00:00:00').getTime())) bad = d || '(trống)';
+    return [d, String((x && x[1]) || '').replace(/^[=+\-@]+/, '').trim().slice(0, 60)];
+  });
+  var lam = (Array.isArray(o.lam) ? o.lam : []).slice(0, 100).map(function(d) { d = String(d || '').trim(); if (!/^\d{4}-\d\d-\d\d$/.test(d)) bad = d || '(trống)'; return d; });
+  if (bad) return sach_({ ok: false, msg: 'Ngày không hợp lệ: ' + bad + ' (cần dạng năm-tháng-ngày).' });
+  var gon = {}; nghi = nghi.filter(function(x) { if (gon[x[0]]) return false; gon[x[0]] = 1; return true; });
+  try { PropertiesService.getScriptProperties().setProperty('DH_CONG_SUAT', JSON.stringify({ sp: sp, nghi: nghi, lam: lam })); }
+  catch (e) { return sach_({ ok: false, msg: 'Không lưu được.' }); }
+  ghiLog_(q.me, 'Công suất đơn hàng', sp + ' sp/ngày', '', nghi.length + ' ngày nghỉ, ' + lam.length + ' ngày làm bù');
+  return sach_({ ok: true, msg: 'Đã lưu công suất ' + sp + ' sp/ngày và ' + nghi.length + ' ngày nghỉ.', cs: dhCongSuat_() });
+}
+
