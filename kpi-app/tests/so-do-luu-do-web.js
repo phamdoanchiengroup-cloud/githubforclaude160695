@@ -52,29 +52,13 @@ const choKhung = p => p.waitForFunction(() => { const k = document.getElementByI
   ok(!p.loi.length, 'chủ sở hữu: không lỗi JS', p.loi);
 
   if (THREE) {
-    console.log('\n2. 3D: dòng hàng (chủ sở hữu)');
+    console.log('\n2. 3D: không có phần quy trình (07/11 chủ dự án bỏ)');
     await p.evaluate(() => go('sodo')); await p.waitForTimeout(800);
-    await p.click('#sdNut3d');
+    await p.evaluate(() => sdMo3D());
     const f3 = await (await p.waitForSelector('#sd3d iframe', { state: 'attached', timeout: 120000 })).contentFrame();
-    await f3.waitForSelector('#c3d canvas', { state: 'attached', timeout: 180000 });
-    await f3.evaluate(() => { const t = document.getElementById('tgDi'); if (t && t.checked) t.click(); }); await p.waitForTimeout(3000);
-    s = await f3.evaluate(() => { const n = document.getElementById('btnDongHang'), r = n && n.getBoundingClientRect(); return n ? [r.width > 0 && r.height > 0, r.right <= innerWidth + 1, r.bottom <= innerHeight] : null; });
-    ok(s && s.every(Boolean), 'thanh công cụ 3D có nút "↝ Dòng hàng", nằm trong khung nhìn', s);
-    await f3.evaluate(() => document.getElementById('btnDongHang').click()); await p.waitForTimeout(3500);   // máy thử vẽ 3D bằng phần mềm: bấm qua mã cho khỏi chờ khung hình
-    s = await f3.evaluate(() => __v3.dh3());
-    ok(s.on && s.nut.length >= 9 && s.canh >= 10 && ['Phôi Carbon', 'Đóng gói'].every(t => s.nhan.some(n => n.includes(t))) && s.nhan.includes('POM'), 'bật dòng hàng: ' + s.nut.length + ' xưởng, ' + s.canh + ' đường (chính + POM, tip, đầu lết), nhãn tên xưởng', s);
-    s = await f3.evaluate(() => [document.getElementById('btnDongHang').getAttribute('aria-pressed'), document.querySelector('#segMode button[data-m="tach"]').getAttribute('aria-pressed')]);
-    ok(s[0] === 'true' && s[1] === 'true', 'nút sáng, tự chuyển sang "Tách tầng" để thấy đường đi xuyên tầng', s);
-    if (OUT) await p.screenshot({ path: OUT + '/sd-3d-dong-hang.png', timeout: 180000 }).catch(e => console.log('  (bỏ qua ảnh: ' + e.message.split('\n')[0] + ')'));   // 3D vẽ bằng phần mềm rất chậm
-    await f3.evaluate(() => { const l = [...document.querySelectorAll('.lbl.dh3.mo')].find(e => e.textContent.includes('Sơn')); l && l.click(); });
-    await choKhung(p); await p.waitForTimeout(500);
-    s = await p.evaluate(() => [document.getElementById('sdLdTen').textContent, +getComputedStyle(document.getElementById('sdLd')).zIndex > +getComputedStyle(document.getElementById('sd3d')).zIndex]);
-    ok(/Sơn/.test(s[0]) && s[1], 'bấm nhãn "Sơn" trong 3D: khung lưu đồ xưởng Sơn nổi trên lớp 3D', s);
-    if (OUT) await p.screenshot({ path: OUT + '/sd-3d-luu-do.png', timeout: 180000 }).catch(e => console.log('  (bỏ qua ảnh: ' + e.message.split('\n')[0] + ')'));
-    await p.evaluate(() => document.getElementById('sdLdDong').click());
-    await f3.evaluate(() => document.getElementById('btnDongHang').click()); await p.waitForTimeout(600);
-    s = await f3.evaluate(() => __v3.dh3());
-    ok(!s.on && s.canh === 0, 'bấm lại: tắt dòng hàng, gỡ hết đường', s);
+    await f3.waitForSelector('#c3d canvas', { state: 'attached', timeout: 180000 }); await p.waitForTimeout(2000);
+    s = await f3.evaluate(() => [!!document.getElementById('btnDongHang'), typeof window.dh3MoLD, !!document.querySelector('.ss-ld')]);
+    ok(!s[0] && s[1] === 'undefined' && !s[2], '3D: không còn nút "Dòng hàng", không có nút lưu đồ trong thẻ phòng', s);
     ok(!p.loi.length, '3D: không lỗi JS', p.loi);
   }
   await p.context().close();

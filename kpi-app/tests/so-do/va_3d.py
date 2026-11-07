@@ -78,15 +78,6 @@ if(window.__v3)Object.assign(window.__v3,{btBat:batBoTri,btXoayThu:()=>{const F=
     b = R(b, 'if(!window.SS)segMau.remove();', 'segMau.remove();if(0);')
     b = R(b, "</dl>${window.SS?SS.the(u.fi,R):''}", r'''</dl>${window.SS&&SS.xuong(u.fi,R)?'<div class="ss-the"><div class="ss-dong"><span>Xưởng làm việc</span><b>'+SS.TEN[SS.xuong(u.fi,R)]+'</b></div></div>':''}''')
     b = R(b, 'setHour(+hourEl.value); legend(); size(); apply(); select(null);', JS_DEN_DEM + 'setHour(+hourEl.value); legend(); size(); apply(); select(null);')
-    # ---- 03/11 (chủ dự án): dòng hàng giữa các xưởng trong 3D (nút "↝ Dòng hàng", ai xem sơ đồ cũng thấy, không số)
-    #      + bấm khu / nhãn xưởng -> mở lưu đồ xưởng ở trang cha (chỉ chủ sở hữu, TP/PP xưởng mình – parent.sdCoLuuDo)
-    b = R(b, '⚡ Nhẹ</button>', '⚡ Nhẹ</button>\n      <button id="btnDongHang" type="button" aria-pressed="false" title="Mũi tên dòng bán thành phẩm giữa các xưởng (xanh: hàng chính, cam: cấp phụ)">↝ Dòng hàng</button>')
-    b = R(b, '#btnNhe[aria-pressed="true"]{background:var(--ink);color:var(--panel)}', '#btnNhe[aria-pressed="true"]{background:var(--ink);color:var(--panel)}\n' + CSS_DONG_HANG)
-    b = R(b, "'</b></div></div>':''}", "'</b></div>'+dh3NutLD(SS.xuong(u.fi,R))+'</div>':''}")
-    b = R(b, 'roomList(); stats();\n}', 'roomList(); stats();\n  if(typeof DH3!=="undefined"&&DH3&&DH3.on)dh3Dung();\n}')
-    b = R(b, 'if(flyT||floors.some(F=>Math.abs(F.ty-F.yNow)>.002))canVe=Math.max(canVe,2);',
-             'if(flyT||floors.some(F=>Math.abs(F.ty-F.yNow)>.002))canVe=Math.max(canVe,2);\n    if(typeof DH3!=="undefined"&&DH3&&DH3.on){dh3Buoc(dt);canVe=Math.max(canVe,2);}')
-    b = R(b, 'function loop(t){', JS_DONG_HANG + 'function loop(t){')
     return b
 
 JS_DEN_DEM = r'''/* 23/10: đèn xưởng ban đêm – đèn trần treo trên các khu sản xuất lớn (không đổ bóng cho nhẹ), ánh sáng ấm trong nhà,
@@ -146,63 +137,4 @@ JS_TOAN = r"""document.getElementById('tgHq').checked=st.hq;document.getElementB
 """
 
 
-CSS_DONG_HANG = """#btnDongHang{font:600 14px/1 var(--f-display);letter-spacing:.04em;text-transform:uppercase;color:var(--ink);background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:9px 12px;min-height:40px;cursor:pointer;box-shadow:0 1px 3px rgba(0,0,0,.12);white-space:nowrap}
-#btnDongHang[aria-pressed="true"]{background:#0b7a73;color:#fff;border-color:#0b7a73}
-#btnDongHang:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
-.lbl.dh3{background:#0b2f3a;color:#bff3ff;border-color:#46d7ff;font-size:12.5px;padding:3px 8px;box-shadow:0 0 12px rgba(70,215,255,.55)}
-.lbl.dh3.mo{pointer-events:auto;cursor:pointer}.lbl.dh3.mo:hover{background:#0b7a73;color:#fff}
-.lbl.dh3p{background:rgba(60,35,5,.85);color:#ffd9a3;border-color:#ffb347;font-size:11px}
-.ss-ld{margin-top:8px;width:100%;font:600 13px/1.2 var(--f-display);padding:9px 10px;border-radius:6px;border:1px solid #0b7a73;background:#0b7a73;color:#fff;cursor:pointer}"""
-
-# Dòng hàng 3D: nút = khu lớn nhất của mỗi xưởng (ghép khu ↔ xưởng SS.xuong của trang cha), cạnh như lưu đồ toàn nhà máy (tab Quy trình)
-JS_DONG_HANG = r"""/* 03/11: dòng hàng giữa các xưởng – đường cong phát sáng nối khu các xưởng (xuyên tầng), chấm chạy theo chiều hàng đi */
-var DH3={on:false,g:new THREE.Group(),dots:[],key:''};
-scene.add(DH3.g); DH3.g.visible=false;
-var DH3_CANH=[['PHOICB','PHOITHO',0],['PHOITHO','SON',0],['PHOITHO','NGONTARO',0],['SON','INUV',0],['NGONTARO','NGONTIP',0],['INUV','HT',0],['NGONTIP','HT',0],['HT','DG',0],
-  ['NGONTARO','PHOITHO',1,'POM'],['CNC','NGONTIP',1,'Tip, phíp'],['CNC','SON',1,'Đầu lết'],['CNC','DG',1,'Tip bán lẻ'],['NGONTIP','DG',1,'Ngọn lẻ']];
-function dh3Cha(){try{return window.parent&&window.parent!==window?window.parent:null;}catch(e){return null;}}
-function dh3CoLD(ma){const p=dh3Cha();try{return !!(ma&&p&&p.sdCoLuuDo&&p.sdCoLuuDo(ma));}catch(e){return false;}}
-function dh3MoLD(ma){const p=dh3Cha();try{if(p&&p.sdLuuDo)p.sdLuuDo(ma);}catch(e){}}
-function dh3NutLD(ma){return dh3CoLD(ma)?'<button type="button" class="ss-ld" onclick="dh3MoLD(\''+ma+'\')">▦ Xem lưu đồ sản xuất của xưởng</button>':'';}
-window.dh3MoLD=dh3MoLD;
-function dh3Nut(){
-  const S=window.SS; if(!S||!S.xuong)return {};
-  const tong={};
-  floors.forEach((F,fi)=>F.rooms.forEach(R=>{const ma=S.xuong(fi,R);if(!ma)return;
-    (R.r||[]).forEach(r=>{const a=rc(r),s=(a.x1-a.x0)*(a.y1-a.y0);if(!(s>0))return;const k=ma+'|'+fi,o=tong[k]||(tong[k]={ma,fi,s:0,x:0,y:0});o.s+=s;o.x+=s*(a.x0+a.x1)/2;o.y+=s*(a.y0+a.y1)/2;});}));
-  const best={};Object.values(tong).forEach(o=>{if(!best[o.ma]||o.s>best[o.ma].s)best[o.ma]=o;});
-  Object.values(best).forEach(o=>{o.x/=o.s;o.y/=o.s;});return best;}
-function dh3Xoa(){DH3.g.traverse(o=>{if(o.geometry)o.geometry.dispose();if(o.material)o.material.dispose();});
-  [...DH3.g.children].forEach(o=>DH3.g.remove(o));DH3.dots=[];}
-function dh3Dung(){
-  dh3Xoa();DH3.g.visible=DH3.on;if(!DH3.on)return;
-  const N=dh3Nut(),ten=(window.SS&&SS.TEN)||{},nhin=ma=>N[ma]&&floors[N[ma].fi].g.visible;
-  const P=ma=>{const o=N[ma];return new THREE.Vector3(px(o.x),floors[o.fi].g.position.y+1.7,pz(o.y));};
-  const vl=(c,op)=>new THREE.MeshBasicMaterial({color:c,depthTest:false,transparent:true,opacity:op});
-  Object.keys(N).filter(nhin).forEach(ma=>{const p=P(ma);
-    const m=new THREE.Mesh(new THREE.SphereGeometry(.5,18,12),vl(0x7fe0ff,.95));m.position.copy(p);m.renderOrder=999;DH3.g.add(m);
-    const el=document.createElement('div');el.className='lbl dh3'+(dh3CoLD(ma)?' mo':'');el.textContent=String(ten[ma]||ma).replace(/^Xưởng\s+/i,'');
-    if(dh3CoLD(ma)){el.title='Bấm để xem lưu đồ sản xuất của xưởng';el.onclick=()=>dh3MoLD(ma);}
-    const L=new CSS2DObject(el);L.position.copy(p).add(new THREE.Vector3(0,1.2,0));DH3.g.add(L);});
-  DH3_CANH.forEach(c=>{if(!nhin(c[0])||!nhin(c[1]))return;const a=P(c[0]),b=P(c[1]);
-    const cao=Math.max(a.y,b.y)+(Math.abs(a.y-b.y)<.5?3.2:2.4),phu=!!c[2],col=phu?0xffb347:0x46d7ff;
-    const cv=new THREE.CubicBezierCurve3(a,new THREE.Vector3(a.x,cao,a.z),new THREE.Vector3(b.x,cao,b.z),b);
-    const tu=new THREE.Mesh(new THREE.TubeGeometry(cv,56,phu?.07:.12,8,false),vl(col,phu?.7:.9));tu.renderOrder=998;DH3.g.add(tu);
-    const t1=cv.getPointAt(.9),t2=cv.getPointAt(.985),mu=new THREE.Mesh(new THREE.ConeGeometry(phu?.28:.38,1,14),vl(col,1));
-    mu.position.copy(t1).lerp(t2,.5);mu.quaternion.setFromUnitVectors(new THREE.Vector3(0,1,0),t2.clone().sub(t1).normalize());mu.renderOrder=999;DH3.g.add(mu);
-    for(let i=0;i<3;i++){const d=new THREE.Mesh(new THREE.SphereGeometry(phu?.15:.2,10,8),vl(0xffffff,1));d.renderOrder=1000;d.userData.cv=cv;d.userData.u=i/3;d.position.copy(cv.getPointAt(i/3));DH3.g.add(d);DH3.dots.push(d);}
-    if(c[3]){const el=document.createElement('div');el.className='lbl dh3p';el.textContent=c[3];const L=new CSS2DObject(el);L.position.copy(cv.getPointAt(.5)).add(new THREE.Vector3(0,.5,0));DH3.g.add(L);}});
-  DH3.key=floors.map(F=>F.g.position.y.toFixed(2)+(F.g.visible?1:0)).join(',');}
-function dh3Buoc(dt){
-  const k=floors.map(F=>F.g.position.y.toFixed(2)+(F.g.visible?1:0)).join(',');if(k!==DH3.key){dh3Dung();return;}
-  if(reduce)return;DH3.dots.forEach(d=>{d.userData.u=(d.userData.u+dt/4200)%1;d.position.copy(d.userData.cv.getPointAt(d.userData.u));});}
-function dh3Bat(on){DH3.on=on;
-  {const c=document.getElementById('tgLbl');if(on){DH3.lbl=st.lbl;st.lbl=false;}else if(DH3.lbl!==undefined){st.lbl=DH3.lbl;delete DH3.lbl;}if(c)c.checked=st.lbl;if(!on||!(st.mode==='khoi'&&st.floor==='all'))apply();}   // bật dòng hàng: tạm ẩn tên phòng cho nhãn xưởng dễ đọc, tắt thì trả lại
-  const n=document.getElementById('btnDongHang');if(n)n.setAttribute('aria-pressed',String(on));
-  if(on&&st.mode==='khoi'&&st.floor==='all'){st.mode='tach';apply();}   // tách tầng cho thấy đường đi xuyên tầng
-  if(on&&st.floor==='all')fly(new THREE.Vector3(2,H+GAP,0),new THREE.Vector3(-46,H+GAP+34,52));   // góc nhìn thấy cả 3 tầng và đường nối
-  dh3Dung();canVe=30;
-  if(on)bao('Dòng hàng: đường xanh = hàng đi chính, đường cam = cấp phụ (POM, tip, phíp, đầu lết)'+(Object.keys(dh3Nut()).some(dh3CoLD)?'. Bấm tên xưởng để xem lưu đồ.':'.'));}
-document.getElementById('btnDongHang').onclick=()=>dh3Bat(!DH3.on);
-if(window.__v3)Object.assign(window.__v3,{dongHang:dh3Bat,dh3:()=>({on:DH3.on,nut:Object.keys(dh3Nut()),canh:DH3.g.children.filter(o=>o.geometry&&o.geometry.type==='TubeGeometry').length,nhan:DH3.g.children.filter(o=>o.isCSS2DObject).map(o=>o.element.textContent)})});
-"""
+# 03/11: đã thử dòng hàng trong 3D (↝ Dòng hàng) – 07/11 chủ dự án bỏ ("bỏ cái phần quy trình ở 3D đi"); xem lịch sử git nếu cần lại.

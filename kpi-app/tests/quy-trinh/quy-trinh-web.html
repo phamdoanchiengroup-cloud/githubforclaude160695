@@ -640,13 +640,13 @@ var QT_IC={
 function qtOXuong(x,T,nutNM,lop){
   var o=T.x[x]; if(!o) return '';
   if(QT.laTP){ var cua=x===QT.xuongCua, vg={PHOICB:'pcb',PHOITHO:'pt',SON:'son',INUV:'uv',NGONTARO:'taro',NGONTIP:'tip',HT:'ht',DG:'dg',CNC:'cnc'}[x];   /* 03/11: trưởng / phó phòng – lưu đồ không số, xưởng mình tô sáng */
-    return '<'+(cua?'button type="button" onclick="QTV=\'x\';QTMoNhom=\'\';qtVe()" title="Xem lưu đồ xưởng của bạn"':'div')+' class="qt-o '+(lop||'')+(cua?' cua':' mo')+'" style="grid-area:'+vg+'" data-x="'+esc(x)+'"><span class="ic"><svg viewBox="0 0 24 24" aria-hidden="true">'+(QT_IC[x]||'')+'</svg></span><span class="tx"><span class="tn">'+esc(qtTenX(x))+'</span>'+(cua?'<span class="so">★ của bạn</span>':'')+(x==='NGONTIP'?'<span class="le">ngọn lẻ → Đóng gói</span>':'')+'</span></'+(cua?'button':'div')+'>'; }
+    return '<'+(cua?'button type="button" onclick="QTV=\'x\';QTMoNhom=\'\';qtVe()" title="Xem lưu đồ xưởng của bạn"':'div')+' class="qt-o '+(lop||'')+(cua?' cua':' mo')+'" style="grid-area:'+vg+'" data-x="'+esc(x)+'"><span class="ic"><svg viewBox="0 0 24 24" aria-hidden="true">'+(QT_IC[x]||'')+'</svg></span><span class="tx"><span class="tn">'+esc(qtTenX(x))+'</span>'+(cua?'<span class="so">★ của bạn</span>':'')+''+'</span></'+(cua?'button':'div')+'>'; }
   var co=o.coMat>0.5?o.coMat:o.co, thieu=o.can-co, m=qtMuc(o.tai), vung={PHOICB:'pcb',PHOITHO:'pt',SON:'son',INUV:'uv',NGONTARO:'taro',NGONTIP:'tip',HT:'ht',DG:'dg',CNC:'cnc'}[x];
   return '<button type="button" class="qt-o '+(lop||'')+(o===nutNM?' nut':'')+'" style="grid-area:'+vung+'" data-x="'+esc(x)+'" onclick="QTX=this.dataset.x;QTV=\'x\';QTMoNhom=\'\';qtVe()" title="Bấm để xem lưu đồ xưởng">'+
     '<span class="ic"><svg viewBox="0 0 24 24" aria-hidden="true">'+(QT_IC[x]||'')+'</svg></span>'+
     '<span class="tx">'+(o===nutNM?'<span class="qt-the-nut">NÚT THẮT</span>':'')+'<span class="tn">'+esc(qtTenX(x))+'</span>'+
     '<span class="so nv" title="TP: trưởng phòng · PP: phó phòng · TT: tổ trưởng · CN: công nhân – tổng khớp danh sách đang làm / chấm công">'+esc(o.nhan)+'</span>'+
-    '<span class="d2"><span class="so">có mặt '+qtSo(co,0)+' / cần '+qtSo(o.can,0)+(thieu>=0.5?' <b style="color:var(--red)">−'+Math.ceil(thieu-1e-9)+'</b>':'')+'</span>'+qtBd(o.tai,o.can)+'</span>'+(x==='NGONTIP'?'<span class="le">ngọn lẻ → Đóng gói</span>':'')+'</span>'+
+    '<span class="d2"><span class="so">có mặt '+qtSo(co,0)+' / cần '+qtSo(o.can,0)+(thieu>=0.5?' <b style="color:var(--red)">−'+Math.ceil(thieu-1e-9)+'</b>':'')+'</span>'+qtBd(o.tai,o.can)+'</span>'+''+'</span>'+
     '<span class="vach"><i class="'+m+'" style="width:'+Math.min(100,o.tai*100)+'%"></i></span></button>';
 }
 function qtVsm(T){
@@ -683,6 +683,8 @@ function qtVeDuong(){
     ds.push(['M'+(A.l-2)+' '+A.cy+' L'+(gx+r2)+' '+A.cy+' Q'+gx+' '+A.cy+' '+gx+' '+(A.cy-r2)+' L'+gx+' '+(yb+r2)+' Q'+gx+' '+yb+' '+(gx-r2)+' '+yb+' L'+(B.cx+r2)+' '+yb+' Q'+B.cx+' '+yb+' '+B.cx+' '+(yb-r2)+' L'+B.cx+' '+(B.b+6),'phu']); nhan.push([B.cx+14,yb-5,'ĐẦU LẾT']); }
   A=o('CNC'); B=o('DG'); if(A&&B){ var r3=10;   /* CNC cấp tip bán lẻ thẳng cho Đóng gói: đi ngang dưới Hoàn thiện rồi lên đáy thẻ Đóng gói */
     ds.push(['M'+(A.r+2)+' '+A.cy+' L'+(B.cx-r3)+' '+A.cy+' Q'+B.cx+' '+A.cy+' '+B.cx+' '+(A.cy-r3)+' L'+B.cx+' '+(B.b+6),'phu']); nhan.push([A.r+14,A.cy-8,'TIP BÁN LẺ']); }
+  A=o('NGONTIP'); B=o('DG'); var H0=o('HT'); if(A&&B){ var r4=10, y4=Math.max(A.b-16,(H0?H0.b:0)+16), x4=B.cx-16;   /* 07/11 (chủ dự án): ngọn lẻ Tip -> Đóng gói là đường cấp phụ (nét đứt cam) như POM, đầu lết; đi ngang dưới Hoàn thiện rồi lên đáy Đóng gói */
+    ds.push(['M'+(A.r+2)+' '+y4+' L'+(x4-r4)+' '+y4+' Q'+x4+' '+y4+' '+x4+' '+(y4-r4)+' L'+x4+' '+(B.b+6),'phu']); nhan.push([A.r+14,y4-6,'NGỌN LẺ']); }
   A=o('NGONTARO'); B=o('PHOITHO'); if(A&&B){ var y=Math.max(A.b,B.b)+24, r=10; ds.push(['M'+A.cx+' '+(A.b+2)+' L'+A.cx+' '+(y-r)+' Q'+A.cx+' '+y+' '+(A.cx-r)+' '+y+' L'+(B.cx+r)+' '+y+' Q'+B.cx+' '+y+' '+B.cx+' '+(y-r)+' L'+B.cx+' '+(B.b+6),'phu']); nhan.push([(A.cx+B.cx)/2-14,y-6,'POM']); }
   svg.setAttribute('width',w.offsetWidth); svg.setAttribute('height',w.offsetHeight);
   svg.innerHTML='<defs><marker id="qtMui" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M1 1L8 5L1 9" fill="none" stroke="rgba(150,230,255,.95)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></marker>'+
