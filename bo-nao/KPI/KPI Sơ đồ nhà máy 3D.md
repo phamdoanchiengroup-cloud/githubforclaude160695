@@ -52,3 +52,4 @@ Liên quan: [[KPI Phần giao diện tải sau]] · [[Lần dán lên Apps Scrip
   - A (`tests/so-do/va-so-do.js` + `.css`): `sdCoLuuDo(ma)`, `sdLuuDo(ma)` mở khung `#sdLd` (z-index 9000 > lớp 3D 8000), tải mảnh QuyTrinh + `layQuyTrinh` khi cần; 2 nút Xưởng / Toàn nhà máy (`qtLuuDoX` dọc, `qtVsm` hoặc `qtVeNMTP` cho TP) + "Mở tab Quy trình ↗"; bọc `qtVe` để bấm thẻ vẽ lại trong khung; Esc / ✕ đóng, trả lại QTX/QTV cũ. Thẻ chi tiết 2D có nút cùng tên.
   - Kiểm thử `tests/so-do-luu-do-web.js` 21/21 (có THREE). Bật dòng hàng: camera bay tới góc thấy 3 tầng, tạm ẩn tên phòng.
 
+- **07/11 (chủ dự án): bỏ phần quy trình ở 3D** – gỡ B (nút ↝ Dòng hàng, `JS_DONG_HANG`, `CSS_DONG_HANG`, nút lưu đồ trong thẻ phòng `dh3NutLD`) khỏi `tests/so-do/va_3d.py`. Giữ A (khung lưu đồ `#sdLd` từ thẻ chi tiết 2D). Kiểm thử `so-do-luu-do-web.js` 15/15 (phần 3D kiểm không còn nút Dòng hàng / `dh3MoLD` / `.ss-ld`).

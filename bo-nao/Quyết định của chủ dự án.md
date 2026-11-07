@@ -90,3 +90,6 @@ Những điều đã chốt. Đừng đề xuất lại những gì ghi "không 
 - (03/11) Giai đoạn 2 (hạn từng xưởng): chủ dự án mang PDF đề xuất đi họp với GĐ sản xuất + trưởng phòng rồi mới chốt.
 - (03/11) Bộ phận ngoài sản xuất (Kho, Bếp + tạp vụ, Ban điều hành, Xưởng May): **chỉ danh sách, không tính KPI**, tạm thời **chỉ chủ sở hữu thấy** (cuối tab Nhân sự). Ban điều hành = chủ dự án + tài khoản admin + trợ lý BĐH. Sửa theo chấm công chỉ: ngày vào làm, tên, mã, người thiếu; trạng thái / xưởng / chức danh bỏ qua. Đổi mã thì tên đăng nhập đổi theo, giữ mật khẩu. – [[KPI Nhân sự theo chấm công]]
 - (03/11) Sơ đồ 3D: thêm **dòng hàng** (ai xem sơ đồ cũng thấy, không số) + **khung lưu đồ** khi bấm xưởng (chủ sở hữu có số; TP/PP xưởng mình, nhà máy không số). Không gắn công đoạn vào từng phòng / máy (phương án C chưa làm). – [[KPI Sơ đồ nhà máy 3D]]
+- (07/11) Sơ đồ 3D: **bỏ phần quy trình** (nút Dòng hàng + nút lưu đồ trong thẻ phòng). Khung lưu đồ ở sơ đồ 2D giữ nguyên. – [[KPI Sơ đồ nhà máy 3D]]
+- (07/11) Lưu đồ toàn nhà máy: ngọn lẻ → Đóng gói vẽ bằng **đường** (nét đứt cam) như POM / lết, không ghi chữ.
+- (07/11) Tab Đơn hàng: **làm lại toàn bộ** (3 ô trả lời, 3 nhóm xem, ⚙ Cài đặt, ⋯); tab Sheet **"ĐƠN ƯU TIÊN" là nguồn mục Ưu tiên**, không cộng vào tổng đơn; ở tab Đơn hàng thu gọn cơm trưa + Tết, Rhino không che số liệu. – [[KPI Quy trình sản xuất]]
