@@ -93,3 +93,4 @@ Những điều đã chốt. Đừng đề xuất lại những gì ghi "không 
 - (07/11) Sơ đồ 3D: **bỏ phần quy trình** (nút Dòng hàng + nút lưu đồ trong thẻ phòng). Khung lưu đồ ở sơ đồ 2D giữ nguyên. – [[KPI Sơ đồ nhà máy 3D]]
 - (07/11) Lưu đồ toàn nhà máy: ngọn lẻ → Đóng gói vẽ bằng **đường** (nét đứt cam) như POM / lết, không ghi chữ.
 - (07/11) Tab Đơn hàng: **làm lại toàn bộ** (3 ô trả lời, 3 nhóm xem, ⚙ Cài đặt, ⋯); tab Sheet **"ĐƠN ƯU TIÊN" là nguồn mục Ưu tiên**, không cộng vào tổng đơn; ở tab Đơn hàng thu gọn cơm trưa + Tết, Rhino không che số liệu. – [[KPI Quy trình sản xuất]]
+- (07/11) Đơn hàng: thanh % **2 màu** ở mọi danh sách đơn; **POD-ECOMSTONE** là kênh chuẩn; sản lượng nhập ngày = thiếu hôm trước − thiếu hôm nay cùng đơn; công suất **350 sp/ngày cho mọi hàng sản xuất**, thứ 2 – thứ 7, ngày lễ điền sẵn + sửa trên web; báo cáo lãnh đạo PDF + Excel có **theo kênh · người đặt** và **đơn deadline trong tháng kèm %**. – [[KPI Quy trình sản xuất]]

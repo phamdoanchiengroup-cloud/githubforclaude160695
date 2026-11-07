@@ -8,6 +8,7 @@ Liên quan: [[Việc chờ chủ dự án]] · [[KPI Tổng quan và cách dựn
 - Lần dán chung 18/10: chủ dự án đã nhận đủ 5 file + hướng dẫn (HUONG-DAN-CAP-NHAT.md mục "LẦN DÁN CHUNG 18/10"). – [[KPI Bảo mật và vận hành]], [[KPI Âm thanh và giọng Rhino]]
 
 ## Web KPI – chưa dán
+- **% hoàn thành + POD-ECOMSTONE + Sản lượng ngày + Công suất & deadline + Báo cáo lãnh đạo 07/11**: Code.gs + Index.html + QuyTrinh.html qua 2-CAP-NHAT.bat, Ctrl+F5. Không có hàm cần chạy; sheet ẩn `DonHangSanLuong` tự tạo sau lần chụp 9h đầu tiên. Nên vào Đơn hàng → Sản xuất → Công suất & deadline → ⚙ sửa ngày nghỉ Tết theo lịch công ty. – [[KPI Quy trình sản xuất]]
 - **Tab Đơn hàng làm lại + tab "ĐƠN ƯU TIÊN" + bỏ quy trình ở 3D + đường ngọn lẻ 07/11**: Code.gs + Index.html + QuyTrinh.html + SoDo.html qua 2-CAP-NHAT.bat, rồi Ctrl+F5. Không có hàm cần chạy (bộ nhớ đệm đơn tự đổi sang bản mới). – [[KPI Quy trình sản xuất]] · [[KPI Sơ đồ nhà máy 3D]]
 - **Quy trình trên Sơ đồ 3D 03/11** (dòng hàng + khung lưu đồ): Index.html + SoDo.html (+ Code.gs, QuyTrinh.html) qua 2-CAP-NHAT.bat, Ctrl+F5. – [[KPI Sơ đồ nhà máy 3D]]
 - **Nhân sự theo chấm công 03/11**: Code.gs + Index.html (+ QuyTrinh.html) qua 2-CAP-NHAT.bat, rồi **chạy một lần `SUA_NHAN_SU_THEO_CHAM_CONG`** trong Apps Script (xem Nhật ký; lấy mật khẩu tạm cho c759 ở tab Tài khoản → Cấp lại mật khẩu). Báo 6 người đổi mã đăng nhập bằng mã mới (mật khẩu cũ). – [[KPI Nhân sự theo chấm công]]

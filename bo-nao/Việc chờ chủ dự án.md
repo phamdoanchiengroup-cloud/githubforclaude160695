@@ -4,6 +4,7 @@ Nhóm: Chung · Cập nhật 31/10/2026
 Liên quan: [[Lần dán lên Apps Script]] · [[Quyết định của chủ dự án]] · [[00 Mục lục]]
 
 ## Câu hỏi đang chờ trả lời
+- (07/11) Sửa **ngày nghỉ Tết 2027** và lễ theo lịch công ty ở Đơn hàng → Sản xuất → Công suất & deadline → ⚙ (đang là lịch gợi ý). Rà 181 đơn trễ > 30 ngày với kênh bán. – [[KPI Quy trình sản xuất]]
 - (Đã rõ 22/10: giữ `TranKPI` = 500, không dùng trần.) – [[KPI Sửa lỗi 21-10 và dữ liệu sheet]]
 - Dòng "Tổng" trong thẻ "Chờ chốt" có muốn cộng SL/Lỗi không (đang "–")? – [[KPI Sửa nhỏ trên web]]
 - Xưởng của 3 phòng: "Khu chuốt ráp nước" (T1), "Kho thành phẩm", "Phòng kế toán kho" (T3) – ghi chú 13/10 đã ghép tạm; ô xám chưa rõ máy trên sơ đồ 3D chờ ảnh/giải thích. – [[KPI Sơ đồ nhà máy 3D]]
