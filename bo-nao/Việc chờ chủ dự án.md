@@ -74,3 +74,5 @@ Liên quan: [[Lần dán lên Apps Script]] · [[Quyết định của chủ d�
 
 ## Việc đã làm, chờ dán
 - Xem [[Lần dán lên Apps Script]].
+
+- **Báo cáo tháng 10 số thật (07/11)**: đã gửi PDF + Excel làm qua sheet cầu nối. Chờ chủ dự án trả lời: (1) bỏ tháng 8 khỏi so sánh (nhật ký KPI mới dùng từ giữa T8); (2) suy kênh cho đơn tab HT theo tiền tố mã đơn; (3) đơn chuyển HT mà "SX còn thiếu" = toàn bộ SL đặt (vd X-BILLIARDS 21/3) là hủy hay chưa cập nhật → tách nhóm "chưa xác minh"; (4) tên thật của tab POD-ECOMSTONE; (5) giữ hay xóa sheet cầu nối. – [[KPI Quy trình sản xuất]]
