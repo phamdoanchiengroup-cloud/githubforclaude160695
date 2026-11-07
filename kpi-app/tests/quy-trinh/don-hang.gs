@@ -894,7 +894,7 @@ function layDonHoanThien(token, lamMoi) {
   return sach_(dhHTTrucTiep_(lamMoi));
 }
 function dhHTTrucTiep_(lamMoi) {
-  var K = 'DH_HT_v1', kq = lamMoi ? null : dhCacheLay_(K);
+  var K = 'DH_HT_v2', kq = lamMoi ? null : dhCacheLay_(K);
   if (kq) return kq;
   var ss, nam = Number(Utilities.formatDate(new Date(), TZ_VN, 'yyyy')), rows = [], tabs = [];
   try { ss = SpreadsheetApp.openById(DH_SHEET_ID); } catch (e) { return { ok: false, msg: 'Không mở được Sheet đơn hàng: ' + (e && e.message || e) }; }
@@ -909,9 +909,24 @@ function dhHTTrucTiep_(lamMoi) {
   try { dhDocHoanThien_().forEach(function(r) { if (r[2] && !tabMa[r[2]]) { for (var t in DH_NHAN_TAB) if (DH_NHAN_TAB[t] === r[4]) tabMa[r[2]] = t; } }); } catch (e) {}
   plNapThem_();
   var sua = {}; docAnToan_(PL_SHEET).forEach(function(r) { if (r.TenChuan) sua[String(r.TenChuan)] = r; });
-  var nguon = { cot: 0, nhom: 0, ma: 0, khong: 0 }, pc = {};
+  /* 07/11 (chủ dự án): tab HT không có cột kênh -> suy kênh theo TIỀN TỐ mã đơn (người đặt): luật cố định + kênh chiếm đa số của cùng tiền tố ở tab kênh / đơn HT đã biết kênh */
+  var demTT = {}, dem = function(nd, tab) { nd = String(nd || '').trim().toUpperCase(); if (!nd || !tab) return; var x = demTT[nd] || (demTT[nd] = {}); x[tab] = (x[tab] || 0) + 1; };
+  try { d && d.don.forEach(function(o) { dem(o.nguoiDat, o.tab); }); } catch (e) {}
+  rows.forEach(function(o) { dem(o.nguoiDat, o.kenhCot || o.kenhNhom || tabMa[o.maDon]); });
+  var tienTo = function(o) {
+    var nd = String(o.nguoiDat || '').trim().toUpperCase(), ma = String(o.maDon || '').toUpperCase();
+    if (/^#?KHO\b/.test(ma) || /\bKHO\b/.test(nd)) return 'KHO';   // KHO, EVO KHO, ĐƠN SX TRẢ KHO
+    if (/ECOM/.test(nd) || /ECOM/.test(ma)) return 'POD-ECOMSTONE';
+    if (/^POD/.test(nd)) return 'POD-A.BÁCH';
+    var x = demTT[nd]; if (!x) return '';
+    var ks = Object.keys(x).sort(function(a, b) { return x[b] - x[a]; }), tong = ks.reduce(function(s, k) { return s + x[k]; }, 0);
+    return x[ks[0]] / tong >= 0.6 ? ks[0] : '';
+  };
+  var nguon = { cot: 0, nhom: 0, ma: 0, tienTo: 0, khong: 0 }, pc = {};
   var don = rows.map(function(o) {
-    var tab = o.kenhCot || o.kenhNhom || tabMa[o.maDon] || '', n = o.kenhCot ? 'cot' : o.kenhNhom ? 'nhom' : tab ? 'ma' : 'khong'; nguon[n]++;
+    var tab = o.kenhCot || o.kenhNhom || tabMa[o.maDon] || '', n = o.kenhCot ? 'cot' : o.kenhNhom ? 'nhom' : tab ? 'ma' : 'khong';
+    if (!tab) { tab = tienTo(o); if (tab) n = 'tienTo'; }
+    nguon[n]++;
     var tc = plChuan_(o.ten), p = pc[tc] || (pc[tc] = plPhanLoai_(o.ten, o.ghiChu, sua['K:' + tc]));
     return { maDon: o.maDon, ten: o.ten, tab: tab || 'KHONG_RO', kenh: tab ? (DH_NHAN_TAB[tab] || tab) : 'Không rõ kênh', nguoiDat: o.nguoiDat || '', ngayDat: o.ngayDat || '',
       dl: o.dl || '', hanMoi: o.hanMoi || '', thang: String(o.hanMoi || o.dl || '').slice(0, 7), sl: o.sl, thieu: o.thieu, daTra: o.daTra || 0, htTab: o.tab,
@@ -997,7 +1012,8 @@ function dhGuiEmail_(thu) {
   var homQua = dgD.length ? dgD[dgD.length - 1] : '', dgThang = 0; dgD.forEach(function(x) { if (x.slice(0, 7) === th) dgThang += dg[x]; });
   var d6 = dgD.slice(-6), tb6 = d6.length ? d6.reduce(function(s, x) { return s + dg[x]; }, 0) / d6.length : 0;
   var nl = 0; for (var x = th + '-01'; x < hn; x = dhCongNgay_(x, 1)) { var w = new Date(x + 'T12:00:00Z').getUTCDay(); if ((w !== 0 && !nghi[x]) || cs.lam.indexOf(x) >= 0) nl++; }
-  var ht = { n: 0, sl: 0, thieu: 0 }; try { var H = dhHTTrucTiep_(false), seen = {}; (H.don || []).forEach(function(o) { if (o.thang !== th) return; ht.sl += o.sl; ht.thieu += o.thieu; if (!seen[o.maDon + '|' + o.kenh]) { seen[o.maDon + '|' + o.kenh] = 1; ht.n++; } }); } catch (eH) {}
+  /* 07/11 (chủ dự án): dòng HT có "SX còn thiếu" = cả số đặt là đơn hủy / dừng SX – không tính fill rate */
+  var ht = { n: 0, sl: 0, thieu: 0, huy: 0 }; try { var H = dhHTTrucTiep_(false), seen = {}; (H.don || []).forEach(function(o) { if (o.thang !== th) return; if (o.sl > 0 && o.thieu >= o.sl) { ht.huy += o.sl; return; } ht.sl += o.sl; ht.thieu += o.thieu; if (!seen[o.maDon + '|' + o.kenh]) { seen[o.maDon + '|' + o.kenh] = 1; ht.n++; } }); } catch (eH) {}
   var so = function(n) { return Math.round(Number(n) || 0).toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.'); }, e = function(t) { return String(t == null ? '' : t).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); };
   var ng = function(x) { return x ? x.slice(8, 10) + '/' + x.slice(5, 7) : '–'; }, url = ''; try { url = ScriptApp.getService().getUrl(); } catch (eU) {}
   var thu7 = ['Chủ nhật', 'Thứ 2', 'Thứ 3', 'Thứ 4', 'Thứ 5', 'Thứ 6', 'Thứ 7'][new Date(hn + 'T12:00:00Z').getUTCDay()];
@@ -1006,7 +1022,7 @@ function dhGuiEmail_(thu) {
     ['Còn phải sản xuất', so(thieuSX) + ' sp', '≈ ' + Math.ceil(thieuSX / cs.sp) + ' ngày làm ở ' + so(cs.sp) + ' sp/ngày', '#b87500'],
     ['Đơn trễ hạn', so(tre.length) + ' đơn', so(tre.reduce(function(s, g) { return s + g.thieu; }, 0)) + ' sp còn thiếu', '#c0302b'],
     ['Sắp tới hạn (≤ 3 ngày)', so(sap.length) + ' đơn', so(sap.reduce(function(s, g) { return s + g.thieu; }, 0)) + ' sp còn thiếu', '#b87500'],
-    ['Đã hoàn thiện (tab HT) tháng ' + th.slice(5), so(ht.n) + ' đơn', so(ht.sl - ht.thieu) + ' cây giao · fill rate ' + (ht.sl ? Math.floor((ht.sl - ht.thieu) / ht.sl * 1000) / 10 + '%' : '–'), '#17643a']];
+    ['Đã hoàn thiện (tab HT) tháng ' + th.slice(5), so(ht.n) + ' đơn', so(ht.sl - ht.thieu) + ' cây giao · fill rate ' + (ht.sl ? Math.floor((ht.sl - ht.thieu) / ht.sl * 1000) / 10 + '%' : '–') + (ht.huy ? ' · hủy / dừng SX ' + so(ht.huy) + ' cây' : ''), '#17643a']];
   var h = '<div style="max-width:640px;margin:0 auto;font-family:Segoe UI,Roboto,Arial,sans-serif;color:#1d2327;border:1px solid #d6dedd;border-radius:12px;overflow:hidden">' +
     '<div style="background:#0b4f4a;color:#fff;padding:16px 20px"><div style="font-size:11px;letter-spacing:2px;opacity:.85">CARBON BILLIARDS · BÁO CÁO SẢN XUẤT</div><div style="font-size:19px;font-weight:600;margin-top:4px">' + thu7 + ', ' + ng(hn) + '/' + hn.slice(0, 4) + '</div>' +
     '<div style="font-size:13px;opacity:.9;margin-top:4px">' + so(ds.length) + ' đơn đang theo dõi · <b>' + so(tre.length) + ' trễ hạn</b> · ' + so(tongThieu) + ' sp còn thiếu</div></div><div style="padding:16px 20px">';
