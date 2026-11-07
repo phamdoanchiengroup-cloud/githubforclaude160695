@@ -196,7 +196,8 @@ function dh3Dung(){
 function dh3Buoc(dt){
   const k=floors.map(F=>F.g.position.y.toFixed(2)+(F.g.visible?1:0)).join(',');if(k!==DH3.key){dh3Dung();return;}
   if(reduce)return;DH3.dots.forEach(d=>{d.userData.u=(d.userData.u+dt/4200)%1;d.position.copy(d.userData.cv.getPointAt(d.userData.u));});}
-function dh3Bat(on){DH3.on=on;const n=document.getElementById('btnDongHang');if(n)n.setAttribute('aria-pressed',String(on));
+function dh3Bat(on){DH3.on=on;
+  {const c=document.getElementById('tgLbl');if(on){DH3.lbl=st.lbl;st.lbl=false;}else if(DH3.lbl!==undefined){st.lbl=DH3.lbl;delete DH3.lbl;}if(c)c.checked=st.lbl;if(!on||!(st.mode==='khoi'&&st.floor==='all'))apply();}   // bật dòng hàng: tạm ẩn tên phòng cho nhãn xưởng dễ đọc, tắt thì trả lạiconst n=document.getElementById('btnDongHang');if(n)n.setAttribute('aria-pressed',String(on));
   if(on&&st.mode==='khoi'&&st.floor==='all'){st.mode='tach';apply();}   // tách tầng cho thấy đường đi xuyên tầng
   if(on&&st.floor==='all')fly(new THREE.Vector3(2,H+GAP,0),new THREE.Vector3(-46,H+GAP+34,52));   // góc nhìn thấy cả 3 tầng và đường nối
   dh3Dung();canVe=30;
