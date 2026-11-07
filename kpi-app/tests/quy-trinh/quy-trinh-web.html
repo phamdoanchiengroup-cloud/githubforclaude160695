@@ -1747,14 +1747,14 @@ function dhBCPDFVe(w){
     '<div class="g">Đóng gói = tổng số lượng ở bước xuất xưởng Đóng gói trong nhật ký KPI. Đơn đến hạn = đơn có hạn (hạn mới HT / deadline) trong tháng: đã chuyển tab HT + còn ở tab kênh. Đã xong = đã chuyển tab HT + đủ hàng chưa chuyển. Không tính đơn hủy / dừng sản xuất (chuyển HT khi “SX còn thiếu” bằng cả số đặt). '+(B.dg3.some(function(g){return g.thang<=DH_NK_DAU})?'Tháng '+dhThangNhan(DH_NK_DAU)+' nhật ký KPI mới bắt đầu dùng (từ giữa tháng) nên Đóng gói chưa đủ. ':'')+'* = tháng chưa hết.</div>';
   var top=B.tre.slice().sort(function(a,b){return (b.thieu*Math.max(1,b.tre))-(a.thieu*Math.max(1,a.tre))}).slice(0,8);
   /* 07/11 (chủ dự án): sản lượng TỪNG XƯỞNG trong tháng báo cáo – bước xuất mỗi xưởng, mục tiêu tính ngược từ công suất Đóng gói */
-  var XU=(DHDG&&DHDG.xuong)||null, XT=(DHDG&&DHDG.thuTu)||[], MTx=dhMucTieuXuong(), hn0=dhHomNay(), ngTh=[];
+  var XG=dhXG(), XU=XG&&XG.xuong, XT=XG?XG.thuTu:[], MTx=dhMucTieuXuong(), hn0=dhHomNay(), ngTh=[];
   for(var dd=1;dd<=nD;dd++){ var kd=B.th+'-'+('0'+dd).slice(-2); if(kd<=hn0&&!(DHDG&&DHDG.tu>kd)&&dhLaNgayLam(kd)) ngTh.push(kd); }
   if(XU){ var xr=XT.filter(function(X){return XU[X]&&XU[X].ma&&XU[X].ma.length}).map(function(X){ var x=XU[X], sl=ngTh.reduce(function(a,d){return a+(x.ngay[d]||0)},0), tb=ngTh.length?sl/ngTh.length:0, mt=MTx[X]||0; return {X:X,ten:x.ten,sl:sl,tb:tb,mt:mt,pct:mt?Math.round(tb/mt*100):null,duoi:ngTh.filter(function(d){return mt&&(x.ngay[d]||0)<mt}).length,dv:DH_XUONG_DV[X]||'sp',ng:x.ngay}; });
     var cotX=function(ng,mt){ var m=Math.max(mt*1.15,1); for(var i=1;i<=nD;i++){ var k=B.th+'-'+('0'+i).slice(-2); if((ng[k]||0)>m) m=ng[k]; } var o='<div class="cot">'; for(var d2=1;d2<=nD;d2++){ var k2=B.th+'-'+('0'+d2).slice(-2), v2=ng[k2]||0, ng2=!dhLaNgayLam(k2); o+='<div><i class="'+(ng2?'n':(mt&&v2<mt?'t':''))+'" style="height:'+(Math.max(ng2?3:0,v2/m*100)).toFixed(1)+'%"></i><span>'+(d2===1||d2%10===0?d2:'')+'</span></div>'; } return o+(mt?'<b style="bottom:'+(mt/m*100).toFixed(1)+'%">'+n(mt)+'</b>':'')+'</div>'; };
     h+='<h3>Sản lượng từng xưởng tháng '+thTen+' ('+ngTh.length+' ngày làm có số; vạch đứt = mục tiêu ngày để Đóng gói đủ '+n(c.sp)+' sp)</h3>'+
-      bang(['Xưởng','Đơn vị','Tổng tháng','TB / ngày','Mục tiêu / ngày','% mục tiêu','Ngày dưới mục tiêu'],xr.map(function(r){ return tr([e(r.ten),r.dv,Math.round(r.sl),Math.round(r.tb),r.mt,'<span class="s '+(r.pct!=null&&r.pct<100?'vg':'xa')+'">'+pct(r.pct)+'</span>',r.duoi+'/'+ngTh.length]); }))+
-      '<div class="xg">'+xr.map(function(r){ return '<div><b>'+e(r.ten)+'</b><small>TB '+n(Math.round(r.tb))+' '+r.dv+'/ngày · mục tiêu '+n(r.mt)+' · '+pct(r.pct)+'</small>'+cotX(r.ng,r.mt)+'</div>'; }).join('')+'</div>'+
-      '<div class="g">Sản lượng xưởng = tổng ở bước xuất của xưởng trong nhật ký KPI (tab Quy trình). Mục tiêu tính ngược từ '+n(c.sp)+' sp Đóng gói/ngày theo cơ cấu hàng đang còn thiếu (gậy = 1 chuôi + 1 ngọn): '+XT.filter(function(X){return DH_XUONG_PHAN[X]&&XU[X]}).map(function(X){return e(XU[X].ten)+' = '+DH_XUONG_PHAN[X]}).join('; ')+'. Xưởng vượt xa mục tiêu thường do bước xuất cộng cả linh kiện làm sẵn (POM, típ, phíp) hoặc nhiều bước cho cùng một khúc.</div>'; }
+      bang(['Xưởng','Đơn vị','Tổng tháng','TB / ngày','Mục tiêu / ngày','% mục tiêu','Ngày dưới mục tiêu'],xr.map(function(r){ return tr([e(r.ten),r.dv,Math.round(r.sl),Math.round(r.tb),r.mt||'–','<span class="s '+(r.pct!=null&&r.pct<100?'vg':'xa')+'">'+pct(r.pct)+'</span>',r.mt?r.duoi+'/'+ngTh.length:'–']); }))+
+      '<div class="xg">'+xr.map(function(r){ return '<div><b>'+e(r.ten)+'</b><small>TB '+n(Math.round(r.tb))+' '+r.dv+'/ngày · '+(r.mt?'mục tiêu '+n(r.mt)+' · '+pct(r.pct):'chưa đặt mục tiêu')+'</small>'+cotX(r.ng,r.mt)+'</div>'; }).join('')+'</div>'+
+      '<div class="g" style="font-size:9.5px">'+dhXuongGhiChu(XG,MTx,ngTh,e)+'</div>'; }
   h+='<h2>3. Tám đơn trọng điểm cần xử lý</h2><div class="g">Đơn trễ có (số thiếu × số ngày trễ) lớn nhất.</div>'+bang(['Mã đơn','Kênh · người đặt','Deadline','Trễ','Còn thiếu','% hoàn thành','Kẹt ở công đoạn','Dự kiến xong'],top.map(function(g){ var k=g.dong.filter(function(o){return o.thieu>0}).map(dhKet).filter(Boolean)[0]; return tr([e(g.ma),e(g.kenh)+(g.nguoiDat?' · '+e(g.nguoiDat):''),dhNg(g.dl),'<span class="do">'+g.tre+' ngày</span>',g.thieu,dhBCThanh(g.td),k&&k.k?e(DH_CHANG_TEN[k.k]):'chưa ghi',g.eta?dhNg(g.eta):'–']); }));
   /* ===== kênh + người đặt ===== */
   var tong=function(a){ return dhTienDo([].concat.apply([],a.map(function(x){return x.dong||[]}))); };
@@ -1793,7 +1793,7 @@ function dhBCExcelVe(){
     them('Tom tat',[['BÁO CÁO TÌNH HÌNH SẢN XUẤT & ĐƠN HÀNG – THÁNG '+B.th.slice(5)+'/'+B.th.slice(0,4)],[nguon],[],['Chỉ số','Giá trị','Ghi chú']].concat(so).concat([[],['Rủi ro']]).concat(B.rr.map(function(x){return ['',x]})).concat([['Điểm tốt']]).concat(B.tot.map(function(x){return ['',x]})).concat([['Cần lãnh đạo quyết']]).concat(B.qd.map(function(x){return ['',x]})),[34,22,90]);
     them('Dong goi theo ngay',[['Ngày','Thứ','Ngày làm việc','Đóng gói (sp)','% công suất '+c.sp]].concat(Object.keys(B.dgNg).sort().map(function(d){ return [d,['CN','T2','T3','T4','T5','T6','T7'][new Date(d+'T00:00:00').getDay()],dhLaNgayLam(d)?'có':'nghỉ',B.dgNg[d],Math.round(B.dgNg[d]/c.sp*100)]; })),[12,6,14,14,14]);
     /* 07/11: sản lượng từng xưởng theo ngày trong tháng báo cáo (bước xuất, nhật ký KPI) */
-    (function(){ var XU=(DHDG&&DHDG.xuong)||null; if(!XU) return; var XT=(DHDG.thuTu||Object.keys(XU)).filter(function(X){return XU[X]&&XU[X].ma&&XU[X].ma.length}), MTx=dhMucTieuXuong(), y=+B.th.slice(0,4), m=+B.th.slice(5,7), nD=new Date(y,m,0).getDate(), rows=[], hn0=dhHomNay();
+    (function(){ var XG=dhXG(), XU=XG&&XG.xuong; if(!XU) return; var XT=XG.thuTu.filter(function(X){return XU[X]&&XU[X].ma&&XU[X].ma.length}), MTx=dhMucTieuXuong(), y=+B.th.slice(0,4), m=+B.th.slice(5,7), nD=new Date(y,m,0).getDate(), rows=[], hn0=dhHomNay();
       for(var d=1;d<=nD;d++){ var k=B.th+'-'+('0'+d).slice(-2); if(k>hn0) break; rows.push([k+(dhLaNgayLam(k)?'':' (nghỉ)')].concat(XT.map(function(X){return XU[X].ngay[k]||0}))); }
       var ngL=rows.filter(function(r){return !/nghỉ/.test(r[0])}).length||1;
       them('San luong xuong',[['Sản lượng từng xưởng tháng '+B.th.slice(5)+'/'+B.th.slice(0,4)+' – bước xuất trong nhật ký KPI'],[],['Ngày'].concat(XT.map(function(X){return XU[X].ten+' ('+(DH_XUONG_DV[X]||'sp')+')'}))].concat(rows).concat([[],['Tổng'].concat(XT.map(function(X,j){return rows.reduce(function(a,r){return a+r[j+1]},0)})),['TB / ngày làm'].concat(XT.map(function(X,j){return Math.round(rows.reduce(function(a,r){return a+r[j+1]},0)/ngL)})),['Mục tiêu / ngày'].concat(XT.map(function(X){return MTx[X]||0})),['Bước xuất'].concat(XT.map(function(X){return XU[X].ma.map(function(c){return (XU[X].tenCD||{})[c]||c}).join(', ')}))]),[16].concat(XT.map(function(){return 16})));
@@ -1975,8 +1975,19 @@ function dhVeVRT(C){
 /* 07/11 (chủ dự án): sản lượng TỪNG XƯỞNG – bước xuất của mỗi xưởng trong nhật ký KPI; vạch mục tiêu TÍNH NGƯỢC từ công suất Đóng gói (350 sp/ngày)
    theo cơ cấu hàng còn phải làm (gậy = 1 chuôi + 1 ngọn). quan-ly-van-hanh: 9 ô nhỏ xếp theo dòng chảy, 14 ngày (chuyển 30 ngày), ô dưới mục tiêu tô cam. */
 var DH_XN=14;
-var DH_XUONG_DV={PHOICB:'khúc',PHOITHO:'khúc',CNC:'chiếc',NGONTARO:'ngọn',NGONTIP:'ngọn',SON:'khúc',INUV:'khúc',HT:'sp',DG:'sp'};
-var DH_XUONG_PHAN={PHOICB:'chuôi + ngọn chất liệu carbon / mix',PHOITHO:'chuôi + ngọn + nối',CNC:'1 bộ đầu (típ / phíp) cho mỗi ngọn',NGONTARO:'ngọn',NGONTIP:'ngọn',SON:'chuôi + nối',INUV:'chuôi + nối',HT:'mọi sản phẩm (gậy, chuôi lẻ, ngọn lẻ, nối)',DG:'công suất Đóng gói'};
+var DH_XUONG_DV={PHOICB:'khúc',PHOITHO:'khúc',CNC_TIP:'típ',CNC_PHIP:'phíp',CNC_KHAC:'chiếc',NGONTARO:'ngọn',NGONTARO_POM:'chiếc',NGONTIP:'ngọn',SON:'khúc',INUV:'khúc',HT:'khúc',DG:'sp'};
+/* 07/11 (chủ dự án): tách linh kiện – CNC: Típ / Phíp / Khác; Ngọn Taro: Ngọn / POM (theo mã + tên bước xuất) */
+var DH_XUONG_TACH={CNC:[['CNC_TIP','Xưởng CNC – Típ',/TIP/],['CNC_PHIP','Xưởng CNC – Phíp',/PHIP|BAKELIT/],['CNC_KHAC','Xưởng CNC – Khác (DA, logo…)',null]],NGONTARO:[['NGONTARO','Xưởng Ngọn Taro – Ngọn',/NGON|TESTER/],['NGONTARO_POM','Xưởng Ngọn Taro – POM',/POM/]]};
+function dhXG(){ if(!DHDG||!DHDG.xuong) return null; if(DHDG._xg) return DHDG._xg; var tt=[], xs={};
+  (DHDG.thuTu||Object.keys(DHDG.xuong)).forEach(function(X){ var x=DHDG.xuong[X]; if(!x) return; var T=DH_XUONG_TACH[X]; if(!T){ tt.push(X); xs[X]=x; return; }
+    var nh={}; T.forEach(function(t){ nh[t[0]]={ten:t[1],ma:[],ngay:{},buoc:{},tenCD:{},macDinh:x.macDinh}; });
+    (x.ma||[]).forEach(function(m){ var tc=(x.tenCD||{})[m]||m, k=String(m+' '+tc).normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/đ/gi,'D').toUpperCase();
+      var t=null; for(var i=T.length-1;i>=0;i--) if(T[i][2]&&T[i][2].test(k)){ t=T[i]; break; }   // POM trước Ngọn ("Taro Ren POM")
+      if(!t) t=T.filter(function(q){return !q[2]})[0]||T[0];
+      var g=nh[t[0]], b=(x.buoc||{})[m]||{}; g.ma.push(m); g.tenCD[m]=tc; g.buoc[m]=b; Object.keys(b).forEach(function(d){ g.ngay[d]=(g.ngay[d]||0)+b[d]; }); });
+    T.forEach(function(t){ if(nh[t[0]].ma.length){ tt.push(t[0]); xs[t[0]]=nh[t[0]]; } }); });
+  return (DHDG._xg={thuTu:tt,xuong:xs}); }
+var DH_XUONG_PHAN={PHOICB:'chuôi + ngọn chất liệu carbon / mix',PHOITHO:'chuôi + ngọn + nối',CNC_TIP:'1 típ cho mỗi ngọn',CNC_PHIP:'1 phíp cho mỗi ngọn',CNC_KHAC:'chưa đặt mục tiêu',NGONTARO:'ngọn',NGONTARO_POM:'chưa đặt mục tiêu (linh kiện POM)',NGONTIP:'ngọn',SON:'chuôi + nối',INUV:'chuôi + nối',HT:'chuôi + ngọn + nối (khúc)',DG:'công suất Đóng gói'};
 function dhMucTieuXuong(){
   var c=dhCS(), t={c:0,n:0,noi:0,sp:0,cCB:0,nCB:0}, cb=function(v){return v==='FC'||v==='MIX'};
   ((DH&&DH.don)||[]).forEach(function(o){ if(!(o.thieu>0)) return; var p=o.pl||{}, q=o.thieu;
@@ -1984,31 +1995,41 @@ function dhMucTieuXuong(){
     else if(p.loai==='CHUOI'){ t.c+=q; t.sp+=q; if(cb(p.vlC)) t.cCB+=q; }
     else if(p.loai==='NGON'){ t.n+=q; t.sp+=q; if(cb(p.vlN)) t.nCB+=q; }
     else if(p.loai==='NOI'){ t.noi+=q; t.sp+=q; } });
-  var k=t.sp?c.sp/t.sp:0, m={PHOICB:t.cCB+t.nCB,PHOITHO:t.c+t.n+t.noi,CNC:t.n,NGONTARO:t.n,NGONTIP:t.n,SON:t.c+t.noi,INUV:t.c+t.noi,HT:t.sp,DG:t.sp}, out={_t:t};
+  var k=t.sp?c.sp/t.sp:0, m={PHOICB:t.cCB+t.nCB,PHOITHO:t.c+t.n+t.noi,CNC_TIP:t.n,CNC_PHIP:t.n,CNC_KHAC:0,NGONTARO:t.n,NGONTARO_POM:0,NGONTIP:t.n,SON:t.c+t.noi,INUV:t.c+t.noi,HT:t.c+t.n+t.noi,DG:t.sp}, out={_t:t};
   Object.keys(m).forEach(function(x){ out[x]=x==='DG'?c.sp:Math.round(m[x]*k); });
   return out;
 }
 function dhNgayLamGanNhat(n,den){ var a=[], d=den||dhHomNay(); for(var i=0;i<200&&a.length<n;i++){ if(dhLaNgayLam(d)) a.unshift(d); d=dhNgayCong(d,-1); } return a; }
 function dhXuongTom(X,ngs){ /* -> {sl, tb, mt, pct, duoi} trên các ngày làm ngs */
-  var x=(DHDG&&DHDG.xuong&&DHDG.xuong[X])||{ngay:{}}, mt=dhMucTieuXuong()[X]||0, v=ngs.map(function(d){return x.ngay[d]||0}), sl=v.reduce(function(a,b){return a+b},0), tb=ngs.length?sl/ngs.length:0;
+  var G=dhXG(), x=(G&&G.xuong[X])||{ngay:{}}, mt=dhMucTieuXuong()[X]||0, v=ngs.map(function(d){return x.ngay[d]||0}), sl=v.reduce(function(a,b){return a+b},0), tb=ngs.length?sl/ngs.length:0;
   return {sl:sl,tb:tb,mt:mt,pct:mt?Math.round(tb/mt*100):null,duoi:v.filter(function(y){return mt&&y<mt}).length,v:v};
+}
+function dhXuongGhiChu(G,MT,ngs,e){   /* chú thích chi tiết: dùng chung cho web (Cách đọc) và báo cáo PDF */
+  var t=MT._t, sp=qtSo(dhCS().sp,0);
+  var dong=G.thuTu.map(function(X){ var x=G.xuong[X]; if(!x||!x.ma||!x.ma.length) return ''; var mt=MT[X]||0;
+    var bs=Object.keys(x.buoc||{}).map(function(m){ var v=ngs.reduce(function(a,d){return a+((x.buoc[m]||{})[d]||0)},0); return [m,v/Math.max(1,ngs.length)]; }).filter(function(b){return b[1]>=1}).sort(function(a,b){return b[1]-a[1]});
+    return '<li><b>'+e(x.ten)+'</b> ('+(DH_XUONG_DV[X]||'sp')+'): mục tiêu '+(mt?qtSo(mt,0)+'/ngày = '+(DH_XUONG_PHAN[X]||''):'– '+(DH_XUONG_PHAN[X]||'chưa đặt'))+'. Bước cộng vào: '+(bs.length?bs.map(function(b){return e((x.tenCD||{})[b[0]]||b[0])+' '+qtSo(Math.round(b[1]),0)+'/ngày'}).join(' · '):e(x.ma.map(function(m){return (x.tenCD||{})[m]||m}).join(', '))+' (chưa có số)')+(x.macDinh?' <i>(bước xuất Claude đề xuất)</i>':'')+'</li>'; }).join('');
+  return '<b>Sản lượng xưởng</b> = tổng số lượng công nhân ghi ở <b>bước xuất</b> của xưởng trong nhật ký KPI (đã chốt + chờ duyệt, không tính bị từ chối); bước xuất chọn ở tab Quy trình → Sửa quy trình. '+
+    '<b>Mục tiêu ngày tính ngược từ '+sp+' sp Đóng gói/ngày</b> theo cơ cấu hàng đang còn thiếu ('+qtSo(t.sp,0)+' sp gồm '+qtSo(t.c,0)+' chuôi, '+qtSo(t.n,0)+' ngọn, '+qtSo(t.noi,0)+' nối; mỗi gậy = 1 chuôi + 1 ngọn): mục tiêu xưởng = '+sp+' × (số khúc xưởng đó phải làm ÷ số sp). Cơ cấu đơn đổi thì mục tiêu đổi theo. '+
+    'CNC tách Típ / Phíp / Khác, Ngọn Taro tách Ngọn / POM; linh kiện POM và CNC khác chưa đặt mục tiêu. Cột cam = ngày dưới mục tiêu; tính trên ngày làm việc (thứ 2 – thứ 7, trừ ngày nghỉ).'+
+    '<ul style="margin:6px 0 0 16px;padding:0">'+dong+'</ul>';
 }
 function dhVeXuong(){
   if(!DHDG) dhTaiDG();
   var h='<div class="card"><div style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap"><div style="font-weight:600">Sản lượng từng xưởng – '+DH_XN+' ngày làm gần nhất</div><div class="dh-tabs">'+[14,30].map(function(n){return '<button class="btn sm'+(DH_XN===n?' pri':'')+'" type="button" onclick="DH_XN='+n+';dhVeLai()">'+n+' ngày</button>'}).join(' ')+'</div></div>';
   if(!DHDG) return h+'<div class="pdesc">Đang đọc nhật ký…</div></div>';
   if(DHDG.loi||!DHDG.xuong) return h+'<div class="alert a-bd">'+esc(DHDG.loi||'Máy chủ chưa có số từng xưởng – cập nhật Code.gs.')+'</div></div>';
-  var ngs=dhNgayLamGanNhat(DH_XN), MT=dhMucTieuXuong(), tt=DHDG.thuTu||Object.keys(DHDG.xuong);
+  var ngs=dhNgayLamGanNhat(DH_XN), MT=dhMucTieuXuong(), G=dhXG(), tt=G.thuTu;
   h+='<div class="dh-ghi" style="margin:2px 0 8px">Mỗi ô: tổng ở <b>bước xuất</b> của xưởng trong nhật ký KPI (đã chốt + chờ duyệt, không tính bị từ chối), xếp theo dòng chảy Phôi → Đóng gói. Vạch đứt = <b>mục tiêu ngày</b> để Đóng gói đủ '+qtSo(dhCS().sp,0)+' sp/ngày; cột cam = dưới mục tiêu.</div><div class="dh-xgrid">';
-  tt.forEach(function(X){ var x=DHDG.xuong[X]; if(!x) return; var dv=DH_XUONG_DV[X]||'sp';
+  tt.forEach(function(X){ var x=G.xuong[X]; if(!x) return; var dv=DH_XUONG_DV[X]||'sp';
     if(!x.ma||!x.ma.length){ h+='<div class="dh-xo xam"><div class="t"><b>'+esc(x.ten)+'</b></div><div class="so">Chưa khai bước xuất – tab Quy trình → Sửa quy trình.</div></div>'; return; }
     var T=dhXuongTom(X,ngs), mt=MT[X]||0;
     h+='<div class="dh-xo"><div class="t"><b>'+esc(x.ten)+'</b><span>'+(T.pct==null?'':'<span class="'+(T.pct>=100?'tot':'kem')+'" style="font-weight:700">'+T.pct+'%</span> mục tiêu')+'</span></div>'+
-      '<div class="so">TB <b class="'+(mt&&T.tb<mt?'kem':'tot')+'">'+qtSo(Math.round(T.tb),0)+'</b> '+dv+'/ngày · mục tiêu '+qtSo(mt,0)+' · '+T.duoi+'/'+ngs.length+' ngày dưới'+(x.macDinh?' · <i>bước xuất đề xuất</i>':'')+'</div>'+
+      '<div class="so">TB <b class="'+(mt&&T.tb<mt?'kem':'tot')+'">'+qtSo(Math.round(T.tb),0)+'</b> '+dv+'/ngày · '+(mt?'mục tiêu '+qtSo(mt,0)+' · '+T.duoi+'/'+ngs.length+' ngày dưới':'chưa đặt mục tiêu')+(x.macDinh?' · <i>bước xuất đề xuất</i>':'')+'</div>'+
       dhSvgCot(ngs.map(function(d,i){ return [dhNg(d),T.v[i],mt&&T.v[i]<mt?'thap':'']; }),mt,120,DH_XN>14?6:3)+
       (function(){ var bs=Object.keys(x.buoc||{}).map(function(m){ var t=ngs.reduce(function(a,d){return a+((x.buoc[m]||{})[d]||0)},0); return [m,t/Math.max(1,ngs.length)]; }).filter(function(b){return b[1]>=1}).sort(function(a,b){return b[1]-a[1]});
         return bs.length>1?'<details class="dh-doc"><summary>'+bs.length+' bước cộng vào'+(T.pct!=null&&T.pct>150?' · <b class="kem">có thể đang cộng cả linh kiện / nhiều bước</b>':'')+'</summary>'+bs.map(function(b){return esc((x.tenCD||{})[b[0]]||b[0])+' <b>'+qtSo(Math.round(b[1]),0)+'</b>/ngày'}).join(' · ')+'</details>':''; })()+'</div>'; });
-  h+='</div>'+dhCachDoc('<b>Mục tiêu tính ngược từ '+qtSo(dhCS().sp,0)+' sp Đóng gói/ngày</b> theo cơ cấu hàng đang còn thiếu ('+qtSo(MT._t.sp,0)+' sp: '+qtSo(MT._t.c,0)+' chuôi, '+qtSo(MT._t.n,0)+' ngọn, '+qtSo(MT._t.noi,0)+' nối; mỗi gậy = 1 chuôi + 1 ngọn). Mỗi xưởng làm: '+tt.filter(function(X){return DH_XUONG_PHAN[X]}).map(function(X){return '<b>'+esc((DHDG.xuong[X]||{}).ten||X)+'</b> = '+DH_XUONG_PHAN[X]}).join('; ')+'. Cơ cấu đơn đổi thì mục tiêu đổi theo. Xưởng làm nhiều bước cho cùng một khúc mà khai nhiều bước xuất thì số sẽ cao hơn thực tế – sửa ở tab Quy trình → Sửa quy trình (chọn đúng bước cuối). In UV và Hoàn thiện đang dùng bước xuất do Claude đề xuất (In và phủ bóng + Phủ bóng bề mặt gậy; Tổ check hàng).')+'</div>';
+  h+='</div>'+dhCachDoc(dhXuongGhiChu(G,MT,ngs,esc))+'</div>';
   return h;
 }
 /* thanh ngang (có tổng nhóm) */

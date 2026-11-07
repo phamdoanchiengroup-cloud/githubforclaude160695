@@ -76,4 +76,4 @@ Liên quan: [[Lần dán lên Apps Script]] · [[Quyết định của chủ d�
 - Xem [[Lần dán lên Apps Script]].
 
 - **Báo cáo T10 + T11 số thật (07/11)**: đã gửi. Còn chờ: tên thật tab POD-ECOMSTONE (ảnh chưa nhận được); cập nhật web (2-CAP-NHAT.bat). – [[KPI Quy trình sản xuất]]
-- **Sản lượng từng xưởng (07/11)**: xác nhận mỗi xưởng làm phần nào (Sơn / In UV / Hoàn thiện có làm cả ngọn không; CNC, Ngọn taro có tách linh kiện POM / típ / phíp ra không) để mục tiêu tính ngược đúng. – [[KPI Quy trình sản xuất]]
+- **HỎI LẠI SAU (chủ dự án dặn 07/11)**: chủ dự án làm việc lại với **xưởng Phôi Carbon** về việc ghi nhật ký (T10 chỉ đạt 50% mục tiêu, 21/27 ngày dưới, nhiều ngày trống) → lần làm việc tới hỏi kết quả. Còn mở: Sơn / In UV vượt ~230% (có thể 2 lượt cho cùng khúc: Sơn máy + Sơn súng tay; In và phủ bóng + Phủ bóng). – [[KPI Quy trình sản xuất]]
