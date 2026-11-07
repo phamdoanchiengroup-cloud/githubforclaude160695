@@ -71,7 +71,7 @@ const choKhung = p => p.waitForFunction(() => { const k = document.getElementByI
     s = await p.evaluate(() => [document.getElementById('sdLdTen').textContent, +getComputedStyle(document.getElementById('sdLd')).zIndex > +getComputedStyle(document.getElementById('sd3d')).zIndex]);
     ok(/Sơn/.test(s[0]) && s[1], 'bấm nhãn "Sơn" trong 3D: khung lưu đồ xưởng Sơn nổi trên lớp 3D', s);
     if (OUT) await p.screenshot({ path: OUT + '/sd-3d-luu-do.png', timeout: 180000 }).catch(e => console.log('  (bỏ qua ảnh: ' + e.message.split('\n')[0] + ')'));
-    await p.click('#sdLdDong');
+    await p.evaluate(() => document.getElementById('sdLdDong').click());
     await f3.evaluate(() => document.getElementById('btnDongHang').click()); await p.waitForTimeout(600);
     s = await f3.evaluate(() => __v3.dh3());
     ok(!s.on && s.canh === 0, 'bấm lại: tắt dòng hàng, gỡ hết đường', s);

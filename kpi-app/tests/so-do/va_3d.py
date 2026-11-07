@@ -198,6 +198,7 @@ function dh3Buoc(dt){
   if(reduce)return;DH3.dots.forEach(d=>{d.userData.u=(d.userData.u+dt/4200)%1;d.position.copy(d.userData.cv.getPointAt(d.userData.u));});}
 function dh3Bat(on){DH3.on=on;const n=document.getElementById('btnDongHang');if(n)n.setAttribute('aria-pressed',String(on));
   if(on&&st.mode==='khoi'&&st.floor==='all'){st.mode='tach';apply();}   // tách tầng cho thấy đường đi xuyên tầng
+  if(on&&st.floor==='all')fly(new THREE.Vector3(2,H+GAP,0),new THREE.Vector3(-46,H+GAP+34,52));   // góc nhìn thấy cả 3 tầng và đường nối
   dh3Dung();canVe=30;
   if(on)bao('Dòng hàng: đường xanh = hàng đi chính, đường cam = cấp phụ (POM, tip, phíp, đầu lết)'+(Object.keys(dh3Nut()).some(dh3CoLD)?'. Bấm tên xưởng để xem lưu đồ.':'.'));}
 document.getElementById('btnDongHang').onclick=()=>dh3Bat(!DH3.on);
