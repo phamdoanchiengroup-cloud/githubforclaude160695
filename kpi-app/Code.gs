@@ -7691,7 +7691,7 @@ function danhSachVanPhong(token) {
   ds.sort(function(a, b) { return (thuTu[a.vaiTro] - thuTu[b.vaiTro]) || (a.HoTen < b.HoTen ? -1 : 1); });
   return sach_({ ok: true, ds: ds, muc: HS_MUC });
 }
-var KPI_BAN_MAY = '07/11/2026 20:12';   // giờ dựng Code.gs (22/10)
+var KPI_BAN_MAY = '07/11/2026 21:40';   // giờ dựng Code.gs (22/10)
 /* =====================================================================
    KỸ NĂNG (22/10, chủ dự án nhờ thiết kế + tham khảo chuyên gia nhân sự / đào tạo)
    - Danh mục: trưởng / phó phòng đề xuất kỹ năng của xưởng (tên, mô tả, tiêu chí đạt, công đoạn liên quan)
@@ -9450,12 +9450,34 @@ function dhDongGoiNgay_(tu, den) {   // -> { ma: [...], ngay: { 'yyyy-mm-dd': sp
   });
   return { ma: ma, ngay: out };
 }
+/* 07/11 (chủ dự án: "phải có biểu đồ sản lượng của từng xưởng"): sản lượng ngày của MỌI xưởng = tổng ở bước xuất của xưởng (tab Quy trình → Sửa quy trình).
+   Xưởng chưa khai bước xuất: In UV = In và phủ bóng + Phủ bóng bề mặt gậy; Hoàn thiện = Tổ check hàng (chủ dự án duyệt đề xuất của Claude 07/11); Đóng gói = như dhMaDongGoi_. */
+var DH_XUONG_TT = ['PHOICB', 'PHOITHO', 'CNC', 'NGONTARO', 'NGONTIP', 'SON', 'INUV', 'HT', 'DG'];   // theo dòng chảy Phôi → Đóng gói
+var DH_XUAT_MAC_DINH = { INUV: ['IN-BONG', 'BONG'], HT: ['HT-CHECK'] };
+function dhSanLuongXuong_(tu, den) {   // -> { X: { ten, ma: [...], ngay: { 'yyyy-mm-dd': sl }, macDinh } }
+  var cds = doc_('CongDoan'), dung = cds.filter(function(c) { return String(c.TrangThai).trim() !== 'Ngừng'; }), qt = qtDocQT_(dung), co = {}, out = {};
+  var ten = {}; docAnToan_('PhongBan').forEach(function(r) { ten[String(r.MaXuong)] = String(r.TenXuong || r.MaXuong); });
+  var coCD = {}, tenCD = {}; dung.forEach(function(c) { coCD[String(c.MaCD)] = String(c.MaXuong); tenCD[String(c.MaCD)] = String(c.TenCD || c.MaCD); });
+  DH_XUONG_TT.forEach(function(X) {
+    var ma = X === 'DG' ? dhMaDongGoi_() : ((qt.xuat && qt.xuat[X] && qt.xuat[X].length) ? qt.xuat[X].slice() : null), macDinh = false;
+    if (!ma) { ma = (DH_XUAT_MAC_DINH[X] || []).filter(function(m) { return coCD[m] === X; }); macDinh = ma.length > 0; }
+    out[X] = { ten: ten[X] || X, ma: ma, ngay: {}, buoc: {}, tenCD: {}, macDinh: macDinh };
+    ma.forEach(function(m) { out[X].tenCD[m] = tenCD[m] || m; });
+    ma.forEach(function(m) { (co[m] = co[m] || []).push(X); });
+  });
+  doc_('NhatKySanXuat').forEach(function(r) {
+    var xs = co[String(r.MaCD)]; if (!xs || String(r.TrangThai).trim() === 'Từ chối') return;
+    var ng = ngayVN_(r.Ngay); if (ng < tu || ng > den) return;
+    var sl = Number(r.SoLuongLamRa) || 0, m = String(r.MaCD); if (sl > 0) xs.forEach(function(X) { out[X].ngay[ng] = (out[X].ngay[ng] || 0) + sl; var b = out[X].buoc[m] || (out[X].buoc[m] = {}); b[ng] = (b[ng] || 0) + sl; });   // từng bước: để thấy xưởng nào đang cộng nhiều loại hàng
+  });
+  return out;
+}
 function layDongGoiNgay(token, soNgay) {
   var q = qtQuyen_(token); if (q.loi) return q.loi;
   soNgay = Math.max(7, Math.min(200, Number(soNgay) || 100));
   var den = homNayVN_(), d0 = new Date(den + 'T12:00:00Z'); d0.setUTCDate(d0.getUTCDate() - soNgay + 1);
-  var kq = dhDongGoiNgay_(Utilities.formatDate(d0, 'GMT', 'yyyy-MM-dd'), den);
-  return sach_({ ok: true, ma: kq.ma, ngay: kq.ngay, tu: Utilities.formatDate(d0, 'GMT', 'yyyy-MM-dd'), den: den });
+  var tu = Utilities.formatDate(d0, 'GMT', 'yyyy-MM-dd'), xu = dhSanLuongXuong_(tu, den);
+  return sach_({ ok: true, ma: xu.DG.ma, ngay: xu.DG.ngay, xuong: xu, thuTu: DH_XUONG_TT, tu: tu, den: den });
 }
 
 /* ===== 07/11 (chủ dự án: "email báo cáo tự động – chỉ gửi cho tôi", 8h sáng T2–T7, học cách trình bày của ORDER·FLOW) =====
