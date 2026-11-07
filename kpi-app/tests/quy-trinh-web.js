@@ -117,10 +117,16 @@ const vao = async (p, tk) => { await p.goto(F); await p.waitForSelector('#xtGoiY
     if (await p.evaluate(() => !!__MAY_CHU.doc_('KHO').length)) {
       // 01/11: tab riêng "Đơn hàng" (dưới tab Quy trình), mặc định "Đơn cần chú ý"
       ok(await p.evaluate(() => !!document.querySelector('#nav button[data-k="dh"]') && dsTabHienCo().some(t => t[0] === 'dh')), 'chủ sở hữu: có tab Đơn hàng trong menu');
-      await p.evaluate(() => go('dh')); await p.waitForSelector('.dh-tong', { timeout: 30000 });
-      s = await p.evaluate(() => { const ds = dhLoc(), don = dhGomDon(ds), the = [...document.querySelectorAll('.dh-tong b')].map(b => +b.textContent.replace(/\./g, ''));
-        return [the.length, the[0] === don.length, the[5] === ds.reduce((a, o) => a + o.thieu, 0), DHV, dhChuY(don).length ? document.querySelectorAll('.dh-bang tbody tr').length : /Không có đơn cần chú ý/.test(document.querySelector('main').textContent) ? 1 : 0, dhChuY(don).every(x => x.g.thieu > 0)]; });
-      ok(s[0] === 6 && s[1] && s[2] && s[3] === 'chuy' && s[4] > 0 && s[5], 'Đơn hàng: 6 thẻ tổng khớp dữ liệu (số đơn theo mã, tổng còn thiếu); mặc định "Đơn cần chú ý" nhóm trễ / sắp / nguy cơ', s);
+      await p.evaluate(() => go('dh')); await p.waitForSelector('.dh-tl3', { timeout: 30000 });
+      // 07/11: làm lại giao diện – 3 ô trả lời (Trễ / Sắp tới hạn / Ưu tiên) + dòng số gọn + 3 nhóm (Theo dõi / Đơn / Sản xuất)
+      s = await p.evaluate(() => { const ds = dhLoc(), don = dhGomDon(ds), so = e => +e.textContent.replace(/\./g, ''), tl = [...document.querySelectorAll('.dh-tl b')].map(so), dong = [...document.querySelectorAll('.dh-so b')].map(so);
+        const cy = dhChuY(don), tre = don.filter(g => g.st === 'treHan').length, nTre = cy.filter(x => x.l === 'tre' || x.l === 'qua30').length;
+        return [tl.length, tl[0] === tre, tre === nTre, dong[0] === don.length, dong[2] === ds.reduce((a, o) => a + o.thieu, 0), DHV, cy.length ? document.querySelectorAll('.dh-bang tbody tr').length : /Không có đơn cần chú ý/.test(document.querySelector('main').textContent) ? 1 : 0, cy.every(x => x.g.thieu > 0),
+          document.querySelectorAll('.dh-seg button').length, document.querySelectorAll('.dh-sub button').length, document.querySelectorAll('.dh-menu').length, document.body.classList.contains('tab-dh')]; });
+      ok(s[0] === 3 && s[1] && s[2] && s[3] && s[4] && s[5] === 'chuy' && s[6] > 0 && s[7] && s[8] === 3 && s[9] === 3 && s[10] === 2 && s[11], 'Đơn hàng: 3 ô trả lời (số trễ = tổng nhóm trễ trong bảng), dòng số khớp dữ liệu; 3 nhóm + 3 thẻ con + menu ⚙ / ⋯; mặc định "Cần chú ý"', s);
+      s = await p.evaluate(() => { const uu = dhUuDs(); DHV = 'uutien'; dhVeLai(); const r = [uu.length === (DH.uu && DH.uu.length ? dhLoc(DH.uu).length : dhLoc().filter(o => o.uuTien).length), /ĐƠN ƯU TIÊN/.test(document.querySelector('main').textContent) === !!(DH.uu && DH.uu.length), document.querySelector('.dh-sub button.on').textContent.startsWith('Ưu tiên')];
+        DHV = 'chuy'; dhVeLai(); return r; });
+      ok(s.every(Boolean), 'Ưu tiên: lấy danh sách từ tab "ĐƠN ƯU TIÊN" khi Sheet có tab này', s);
       for (const v of ['chitiet', 'gom', 'thongke', 'thaydoi']) { await p.evaluate(v => { DHV = v; dhVeLai(); }, v); await p.waitForTimeout(400); }
       s = await p.evaluate(() => { DHV = 'chitiet'; DHL.kenh = 'KHO'; dhVeLai(); const n = document.querySelectorAll('.dh-bang tbody tr').length, k = dhLoc().every(o => o.tab === 'KHO');
         DHL.kenh = ''; DHL.st = 'treHan'; const t = dhLoc().every(o => o.st === 'treHan'); DHL.st = ''; DHV = 'thongke'; dhVeLai();
@@ -178,7 +184,7 @@ const vao = async (p, tk) => { await p.goto(F); await p.waitForSelector('#xtGoiY
       // 02/11: Cấu hình sản phẩm (dòng gậy, loại chuôi / ngọn / tip) + báo sản phẩm mới ở Việc hôm nay
       await p.evaluate(() => { DHV = 'cauhinh'; dhVeLai(); }); await p.waitForTimeout(300);
       s = await p.evaluate(() => { chMoForm('', 'EVO4'); const k = chKhop(['EVO4']).length, f = !!document.getElementById('chGoi') && /Khớp/.test(document.getElementById('chKhop').textContent); CHForm = null; dhVeLai();
-        return [document.querySelectorAll('.ch-d tbody tr:not(.dh-khoi)').length, document.querySelectorAll('.ch-k').length, k > 0, f, document.documentElement.scrollWidth > innerWidth + 1, [...document.querySelectorAll('.qt-tabs button')].some(b => /Cấu hình sản phẩm/.test(b.textContent))]; });
+        return [document.querySelectorAll('.ch-d tbody tr:not(.dh-khoi)').length, document.querySelectorAll('.ch-k').length, k > 0, f, document.documentElement.scrollWidth > innerWidth + 1, [...document.querySelectorAll('.dh-menu button')].some(b => /Cấu hình sản phẩm/.test(b.textContent)) && /Cấu hình sản phẩm/.test(document.querySelector('.dh-cdt').textContent)]; });
       ok(s[0] >= 40 && s[1] === 3 && s[2] && s[3] && !s[4] && s[5], 'Cấu hình sản phẩm: bảng dòng gậy + 3 bảng loại khúc; form xem trước số tên hàng khớp chữ nhận diện; không tràn ngang', s);
       s = await p.evaluate(() => { window.__spMoi = { ok: true, n: 2, thieu: 13, ten: [{ ten: 'GAY NOVA X1', thieu: 10 }, { ten: 'GAY NOVA X2', thieu: 3 }], khuc: [{ bang: 'CHUOI', ma: 'NHAY390', ten: 'Nhảy 390', thieu: 5 }], tabMoi: ['KÊNH MỚI'] }; window.__spMoiTai = 1;
         const v = viecHomNay().map(x => x.t); return [v.includes('Sản phẩm mới chưa có cấu hình'), v.includes('Loại chuôi / ngọn chưa có chất liệu'), v.includes('Sheet đơn có tab kênh mới')]; });

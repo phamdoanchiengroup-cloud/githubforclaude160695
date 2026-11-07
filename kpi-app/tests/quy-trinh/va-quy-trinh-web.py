@@ -54,6 +54,15 @@ html[data-gd="sang"] .cn-pill.g{color:#1f7a48;background:rgba(31,122,72,.12)} ht
 html[data-gd="sang"] .cn-pill.r{color:#b42a25;background:rgba(192,48,43,.10)} html[data-gd="sang"] .cn-pill.c{color:#0b6e68;background:rgba(11,122,115,.10)}
 html[data-gd="sang"] .cn-note.w b{color:#9a5b00} html[data-gd="sang"] .cn-note.d b{color:#b42a25} html[data-gd="sang"] .cn-note.o b{color:#17643a}
 html[data-gd="sang"] .mai-chip.mc-dd{color:#17643a}
+body.tab-dh #festbar{font-size:11px;padding:2px 10px;margin-bottom:6px}
+body.tab-dh #combar{padding:5px 10px;gap:4px 10px;font-size:12.5px;margin-top:6px}
+body.tab-dh #combar .cb-mon,body.tab-dh #combar .cb-han,body.tab-dh #combar .cb-ico{display:none}
+body.tab-dh #combar .cb-nut .btn{min-height:30px;padding:3px 10px;font-size:12.5px}
+body.tab-dh #maiGoc .bb{display:none}
+body.tab-dh #maiGoc{width:auto;pointer-events:none} body.tab-dh #maiGoc svg{width:54px;height:72px;margin-right:0;opacity:.85}
+@media (min-width:901px){ body.tab-dh #maiGoc{right:auto;left:14px} }
+@media (max-width:900px){ body.tab-dh #maiGoc{display:none} }
+@media (max-width:640px){ body.tab-dh #combar{flex-wrap:nowrap;align-items:center} body.tab-dh #combar .cb-nd{min-width:0} body.tab-dh #combar .cb-tieu{white-space:nowrap;overflow:hidden;text-overflow:ellipsis} body.tab-dh #combar .cb-nut{flex:none} }
 html[data-gd="sang"] .mai-chip.mc-at{color:#b42a25} html[data-gd="sang"] .ql-tag{color:#a3262a;background:rgba(192,48,43,.08)}
 </style>
 ''' + s[_h36:]
@@ -61,6 +70,8 @@ _k36b = s.rfind('</body>')
 s = s[:_k36b] + """<script>
 /* 36b (02/11): mở Đơn hàng ở mục chỉ định (Cấu hình sản phẩm); đánh dấu đã xem tab kênh mới */
 function moCauHinhSP(v){ window.__dhMo=v||'cauhinh'; go('dh'); }
+/* 07/11 (chủ dự án): ở tab Đơn hàng thu gọn thanh cơm trưa + Tết, Rhino không che số liệu */
+(function(){ var g=go; go=function(k){ try{ document.body.classList.toggle('tab-dh',k==='dh'); }catch(e){} return g.apply(this,arguments); }; })();
 function dhDaXemTab(){ try{ var a=JSON.parse(localStorage.getItem('dhTabDaXem')||'[]'); ((window.__spMoi||{}).tabMoi||[]).forEach(function(t){ if(a.indexOf(t)<0) a.push(t); }); localStorage.setItem('dhTabDaXem',JSON.stringify(a.slice(-50))); }catch(e){} }
 </script>
 """ + s[_k36b:]

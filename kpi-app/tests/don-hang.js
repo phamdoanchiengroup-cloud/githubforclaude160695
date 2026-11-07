@@ -154,6 +154,17 @@ console.log('\n4c. Cấu hình sản phẩm trên web + báo sản phẩm mới 
   r = c.__goi('boQuaTabDon', Town, 'KHO', true); ok(!r.ok, 'không cho bỏ qua 7 tab chuẩn');
   ok(c.doc_('NhatKyThaoTac').some(x => x.HanhDong === 'Cấu hình sản phẩm'), 'ghi nhật ký thao tác'); }
 
+console.log('\n4d. Tab "ĐƠN ƯU TIÊN" làm nguồn mục Ưu tiên (07/11)');
+{ const tabK = [['', 'Loại hàng cần sản xuất', 'Loại Phôi', 'Số lượng đặt', 'SX CÒN THIẾU', 'Deadline'], ['#KHO-01/11', 'EVO4/LUN2/BLUE/LW-BLACK/G/10/12.5', '', 6, 6, '26/11'], ['#KHO-02/11', 'RHI2-KOMET2/BRE/BLUE/13.0/388', '', 4, 4, '26/11']];
+  const tabU = [tabK[0], ['#KHO-01/11', 'EVO4/LUN2/BLUE/LW-BLACK/G/10/12.5', '', 6, 6, '17/11']];
+  c.__ngoai = { [c.DH_SHEET_ID]: { ten: 'x', sheets: { KHO: tabK, 'ĐƠN ƯU TIÊN': tabU } } }; c.dhDocDon_(true);
+  const x = c.__goi('layDonHangXuong', Town, true);
+  ok(x.ok && x.don.length === 2 && x.don.reduce((a, o) => a + o.thieu, 0) === 10, 'tab ĐƠN ƯU TIÊN không cộng vào tổng đơn (không đếm trùng)', x.don && x.don.length);
+  ok(!(x.tabMoi || []).length, 'tab ĐƠN ƯU TIÊN không bị báo là "kênh mới"', x.tabMoi);
+  const u = (x.uu || [])[0] || {};
+  ok((x.uu || []).length === 1 && u.maDon === '#KHO-01/11' && u.tab === 'KHO' && u.uuTien && u.pl && u.pl.dong === 'EVO4', 'trả danh sách ưu tiên riêng, kênh lấy theo mã đơn ở tab chính, có phân loại', u);
+  ok(/-11-17$/.test(u.dl) && /-11-26$/.test(x.don.find(o => o.maDon === '#KHO-01/11').dl), 'hạn ưu tiên lấy theo tab ĐƠN ƯU TIÊN (17/11), khác hạn ở tab KHO (26/11)', [u.dl]); }
+
 if (process.env.DH) {
   console.log('\n5. Toàn bộ đơn thật (DH=)');
   const dh = JSON.parse(fs.readFileSync(process.env.DH, 'utf8')), sh = {};

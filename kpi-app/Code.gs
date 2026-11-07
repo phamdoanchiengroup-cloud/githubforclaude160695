@@ -7691,7 +7691,7 @@ function danhSachVanPhong(token) {
   ds.sort(function(a, b) { return (thuTu[a.vaiTro] - thuTu[b.vaiTro]) || (a.HoTen < b.HoTen ? -1 : 1); });
   return sach_({ ok: true, ds: ds, muc: HS_MUC });
 }
-var KPI_BAN_MAY = '07/11/2026 15:09';   // giờ dựng Code.gs (22/10)
+var KPI_BAN_MAY = '07/11/2026 15:26';   // giờ dựng Code.gs (22/10)
 /* =====================================================================
    KỸ NĂNG (22/10, chủ dự án nhờ thiết kế + tham khảo chuyên gia nhân sự / đào tạo)
    - Danh mục: trưởng / phó phòng đề xuất kỹ năng của xưởng (tên, mô tả, tiêu chí đạt, công đoạn liên quan)
@@ -8823,7 +8823,7 @@ function dhMaDon_(o, nam) {
 }
 /* Mọi dòng đơn (đã gộp 7 tab). Nhớ tạm DH_CACHE_GIAY giây, chia mảnh < 100 KB */
 function dhDocDon_(lamMoi) {
-  var c = CacheService.getScriptCache(), k = 'DH_DON_v4';   // v4 (03/11): thêm uuTien / uuDon
+  var c = CacheService.getScriptCache(), k = 'DH_DON_v5';   // v5 (07/11): thêm uu (tab ĐƠN ƯU TIÊN)   // v4 (03/11): thêm uuTien / uuDon
   if (!lamMoi) {
     try {
       var n = Number(c.get(k + '_n') || 0);
@@ -8847,7 +8847,16 @@ function dhDocDon_(lamMoi) {
     var r = dhDocTab_(sh, ten, nam, DH_TAB_MOI_DONG);
     if (r.length) { ds = ds.concat(r); moi.push(ten); }
   });
-  var kq = { luc: Utilities.formatDate(new Date(), TZ_VN, 'yyyy-MM-dd HH:mm'), don: ds, tabMoi: moi, tabBo: bo };
+  /* 07/11 (chủ dự án): tab "ĐƠN ƯU TIÊN" (bản chép các mã ưu tiên, có hạn riêng) = nguồn của mục Ưu tiên; không cộng vào tổng */
+  var uu = [], kenhMa = {};
+  ds.forEach(function(o) { if (o.maDon && !kenhMa[o.maDon]) kenhMa[o.maDon] = [o.tab, o.kenh]; });
+  ss.getSheets().forEach(function(sh) {
+    if (uu.length || plChuan_(sh.getName()) !== 'DON UU TIEN') return;
+    uu = dhDocTab_(sh, sh.getName(), nam, DH_TAB_MOI_DONG).map(function(o) {
+      var km = kenhMa[o.maDon]; o.tab = km ? km[0] : 'UU_TIEN'; o.kenh = km ? km[1] : 'Ưu tiên'; o.tuTabUu = 1;
+      if (!o.uuTien) o.uuTien = 'Ưu tiên'; return o; });
+  });
+  var kq = { luc: Utilities.formatDate(new Date(), TZ_VN, 'yyyy-MM-dd HH:mm'), don: ds, uu: uu, tabMoi: moi, tabBo: bo };
   try {
     var str = JSON.stringify(kq), p = {}, m = 0;
     for (var x = 0; x < str.length; x += 30000) p[k + '_' + (m++)] = str.slice(x, x + 30000);   // 100 KB tính theo byte, chữ Việt 2–3 byte
@@ -8872,7 +8881,8 @@ function layDonHangXuong(token, lamMoi) {
     x.pl = plPhanLoai_(o.ten, o.ghiChu, sua['K:' + x.tenChuan]);
     return x;
   });
-  return sach_({ ok: true, luc: d.luc, don: don, nhan: chNhan_(), tabMoi: d.tabMoi || [], tabBo: d.tabBo || [] });
+  var uu = (d.uu || []).map(function(o) { var x = {}; for (var k in o) x[k] = o[k]; x.tenChuan = plChuan_(o.ten); x.pl = plPhanLoai_(o.ten, o.ghiChu, sua['K:' + x.tenChuan]); return x; });
+  return sach_({ ok: true, luc: d.luc, don: don, uu: uu, nhan: chNhan_(), tabMoi: d.tabMoi || [], tabBo: d.tabBo || [] });
 }
 
 /* Chủ sở hữu sửa phân loại 1 tên hàng (áp cho mọi đơn cùng tên). bo = true -> xóa bản sửa, về tự động */
@@ -9003,7 +9013,7 @@ function dhDongChay_(ch) {
 }
 
 /* ===== 02/11: tab kênh mới + cấu hình sản phẩm sửa trên web + báo sản phẩm mới (Việc hôm nay) ===== */
-var DH_TAB_LOAI = /^_|SNAPSHOT|^ĐƠN HÀNG HT$|^DON HANG HT$|LƯU TRỮ|LUU TRU|ARCHIVE|^SHEET\d*$/i;   // tab lưu trữ / nháp: không đọc
+var DH_TAB_LOAI = /^_|SNAPSHOT|^ĐƠN HÀNG HT$|^DON HANG HT$|LƯU TRỮ|LUU TRU|ARCHIVE|^SHEET\d*$|^ĐƠN ƯU TIÊN$|^DON UU TIEN$/i;   // 07/11: tab ĐƠN ƯU TIÊN là bản chép từ các tab kênh -> không cộng vào tổng (đọc riêng làm nguồn mục Ưu tiên)   // tab lưu trữ / nháp: không đọc
 var DH_TAB_MOI_MAX = 15, DH_TAB_MOI_DONG = 5000;   // tab kênh tự thêm: tối đa 15 tab, mỗi tab đọc 5.000 dòng đầu (chống treo / cạn quota)
 /* tab tự thêm phải có ĐỦ cột "Loại hàng" và "Số lượng đặt" trong 10 dòng đầu */
 function dhCoCotChuan_(sh) {
