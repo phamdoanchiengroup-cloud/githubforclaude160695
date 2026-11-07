@@ -8,6 +8,7 @@ Liên quan: [[Việc chờ chủ dự án]] · [[KPI Tổng quan và cách dựn
 - Lần dán chung 18/10: chủ dự án đã nhận đủ 5 file + hướng dẫn (HUONG-DAN-CAP-NHAT.md mục "LẦN DÁN CHUNG 18/10"). – [[KPI Bảo mật và vận hành]], [[KPI Âm thanh và giọng Rhino]]
 
 ## Web KPI – chưa dán
+- **Tab chính "Thống kê" 07/11 khuya** (nhân sự, điểm danh, báo cơm, công đoạn, định mức, KPI, sản xuất): Code.gs + Index.html + QuyTrinh.html qua 2-CAP-NHAT.bat, Ctrl+F5. Không có hàm cần chạy. – [[KPI Quy trình sản xuất]]
 - **Bộ biểu đồ Minitab / Lean + slide phương án C 07/11 đêm**: Code.gs + Index.html + QuyTrinh.html qua 2-CAP-NHAT.bat, Ctrl+F5. – [[KPI Quy trình sản xuất]]
 - **Rà soát + Thống kê vào báo cáo + slide họp PowerPoint 07/11 đêm**: Code.gs + Index.html + QuyTrinh.html qua 2-CAP-NHAT.bat, Ctrl+F5. Không có hàm cần chạy. Slide cần mạng (tải PptxGenJS từ jsDelivr). – [[KPI Quy trình sản xuất]]
 - **Thống kê làm lại + sản lượng từng xưởng 07/11 đêm**: Code.gs + Index.html + QuyTrinh.html qua 2-CAP-NHAT.bat, Ctrl+F5. Không có hàm cần chạy. – [[KPI Quy trình sản xuất]]

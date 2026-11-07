@@ -280,6 +280,29 @@ const vao = async (p, tk) => { await p.goto(F); await p.waitForSelector('#xtGoiY
     ok(t[0] && t[1] === 'SON' && t[2], 'duyệt: áp dụng phần của xưởng Sơn (nhánh + luồng), hết đề xuất chờ', t);
     ok(!e3.length, 'chủ sở hữu duyệt: không lỗi JS', e3);
     await po.close(); }
+  // 07/11: tab chính "Thống kê" (chỉ chủ sở hữu) – 8 mục con, không lỗi, không tràn ngang điện thoại
+  for (const [w, ten] of [[1360, 'máy tính'], [390, 'điện thoại']]) {
+    const p = await (await b.newContext({ viewport: { width: w, height: 900 }, timezoneId: 'Asia/Ho_Chi_Minh' })).newPage(); const e = []; p.on('pageerror', x => e.push(x.message));
+    await vao(p, 'chienpham');
+    ok(await p.evaluate(() => dsTabHienCo().some(t => t[0] === 'tk') && !!document.querySelector('#nav button[data-k="tk"]')), ten + ': chủ sở hữu có tab Thống kê trong menu');
+    await p.evaluate(() => go('tk')); await p.waitForFunction(() => window.__qtDaNap && document.querySelector('.dh-tk'), null, { timeout: 60000 });
+    let s = await p.evaluate(() => [...document.querySelectorAll('.dh-tk button')].map(x => x.textContent));
+    ok(s.length === 6 && /Nhân sự/.test(s[0]) && /vắng/.test(s[1]) && /báo cơm/.test(s[3]) && /KPI/.test(s[5]), ten + ': Tổng quan có 6 ô (nhân sự, vắng, xác nhận, không báo cơm, hiệu suất, KPI)', s);
+    for (const [v, re] of [['ns', /Số người theo xưởng.*Thâm niên.*Độ tuổi/s], ['dd', /Vắng mặt theo xưởng.*Vắng theo ngày × xưởng/s], ['com', /Báo cơm theo xưởng.*không báo/is], ['cd', /Sản lượng và hiệu suất theo xưởng/], ['kpi', /Xếp loại KPI theo xưởng.*Điểm trung bình 4 phần/s], ['dm', /Định mức các xưởng/]]) {
+      await p.evaluate(v => tkChon(v), v); await p.waitForFunction(() => window.__soDangChay === 0, null, { timeout: 120000 }); await p.waitForTimeout(300);
+      s = await p.evaluate(() => [document.querySelector('.dh-than').innerText, document.documentElement.scrollWidth - innerWidth]);
+      ok(re.test(s[0]) && s[1] <= 2, ten + ': mục ' + v + ' hiện đủ, không tràn ngang', [s[0].slice(0, 120), s[1]]);
+    }
+    await p.evaluate(() => tkChon('sx')); await p.waitForFunction(() => window.DH && window.__soDangChay === 0 && /Số ngày hàng tồn/.test(document.querySelector('.dh-than').innerText), null, { timeout: 120000 });
+    ok(true, ten + ': mục Sản xuất & đơn hàng hiện Thống kê đơn hàng cũ');
+    await p.evaluate(() => { go('dh'); }); await p.waitForFunction(() => window.DH && document.querySelector('.dh-nav'), null, { timeout: 60000 });
+    await p.evaluate(() => dhChon('thongke')); await p.waitForTimeout(500);
+    ok(await p.evaluate(() => tabHienTai === 'tk' && TKV === 'sx'), ten + ': Đơn hàng → "Thống kê ↗" chuyển sang tab Thống kê');
+    ok(!e.length, ten + ': tab Thống kê không lỗi JS', e);
+    await p.close();
+  }
+  { const p = await (await b.newContext({ viewport: { width: 1360, height: 900 } })).newPage(); await vao(p, 'giamdoc');
+    ok(await p.evaluate(() => !dsTabHienCo().some(t => t[0] === 'tk')), 'tài khoản không phải chủ sở hữu: không thấy tab Thống kê'); await p.close(); }
   await b.close();
   console.log((loi ? '✗ ' : '✓ ') + (dem - loi) + '/' + dem + ' đạt'); process.exit(loi ? 1 : 0);
 })();

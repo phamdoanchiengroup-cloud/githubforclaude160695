@@ -10,11 +10,11 @@ def _t36(cu, moi, dem=1):
     assert s.count(cu) == dem, ('mục 36: không thấy đúng %d chỗ' % dem, cu[:80], s.count(cu))
     s = s.replace(cu, moi)
 
-_t36("['ns','Nhân sự'],['kyn','Kỹ năng'],['mm','Máy móc'],['ts','Trọng số']", "['ns','Nhân sự'],['kyn','Kỹ năng'],['qt','Quy trình sản xuất'],['dh','Đơn hàng'],['mm','Máy móc'],['ts','Trọng số']")
-_t36("  ['Sản xuất',['duyetsl','nk','kcs','dd','nenep','cccn']],", "  ['Sản xuất',['duyetsl','nk','qt','dh','kcs','dd','nenep','cccn']],")
-_t36("  var tabChiOwner={pq:1, ptdm:1, log:1, kpiql:1};", "  var tabChiOwner={pq:1, ptdm:1, log:1, kpiql:1, qt:1, dh:1};   // qt: Quy trình sản xuất (31/10), dh: Đơn hàng (01/11) – chỉ chủ sở hữu")
-_t36("sodo:vSoDo,com:vCom}[k])();", "sodo:vSoDo,com:vCom,qt:vQT,dh:vDH}[k])();")
-_t36("  kyn:'<path", "  dh:'<path d=\"M5 4.5h14v15H5z\"/><path d=\"M8.5 9h7M8.5 12.5h7M8.5 16h4\"/>',\n  qt:'<rect x=\"3.5\" y=\"3.5\" width=\"6\" height=\"4.5\" rx=\"1\"/><rect x=\"14.5\" y=\"3.5\" width=\"6\" height=\"4.5\" rx=\"1\"/><rect x=\"9\" y=\"16\" width=\"6\" height=\"4.5\" rx=\"1\"/><path d=\"M6.5 8v3.5h11V8M12 11.5V16\"/>',\n  kyn:'<path")
+_t36("['ns','Nhân sự'],['kyn','Kỹ năng'],['mm','Máy móc'],['ts','Trọng số']", "['ns','Nhân sự'],['kyn','Kỹ năng'],['qt','Quy trình sản xuất'],['dh','Đơn hàng'],['tk','Thống kê'],['mm','Máy móc'],['ts','Trọng số']")
+_t36("  ['Sản xuất',['duyetsl','nk','kcs','dd','nenep','cccn']],", "  ['Sản xuất',['duyetsl','nk','qt','dh','tk','kcs','dd','nenep','cccn']],")
+_t36("  var tabChiOwner={pq:1, ptdm:1, log:1, kpiql:1};", "  var tabChiOwner={pq:1, ptdm:1, log:1, kpiql:1, qt:1, dh:1, tk:1};   // qt: Quy trình sản xuất (31/10), dh: Đơn hàng (01/11), tk: Thống kê (07/11) – chỉ chủ sở hữu")
+_t36("sodo:vSoDo,com:vCom}[k])();", "sodo:vSoDo,com:vCom,qt:vQT,dh:vDH,tk:vTK}[k])();")
+_t36("  kyn:'<path", "  tk:'<path d=\"M4 20h16\"/><rect x=\"5.5\" y=\"11\" width=\"3\" height=\"7\" rx=\".5\"/><rect x=\"10.5\" y=\"6\" width=\"3\" height=\"12\" rx=\".5\"/><rect x=\"15.5\" y=\"9\" width=\"3\" height=\"9\" rx=\".5\"/>',\n  dh:'<path d=\"M5 4.5h14v15H5z\"/><path d=\"M8.5 9h7M8.5 12.5h7M8.5 16h4\"/>',\n  qt:'<rect x=\"3.5\" y=\"3.5\" width=\"6\" height=\"4.5\" rx=\"1\"/><rect x=\"14.5\" y=\"3.5\" width=\"6\" height=\"4.5\" rx=\"1\"/><rect x=\"9\" y=\"16\" width=\"6\" height=\"4.5\" rx=\"1\"/><path d=\"M6.5 8v3.5h11V8M12 11.5V16\"/>',\n  kyn:'<path")
 # 02/11: Việc hôm nay (chủ sở hữu) báo sản phẩm mới chưa có cấu hình / loại khúc chưa có chất liệu / tab kênh mới – bấm mở Đơn hàng → Cấu hình sản phẩm
 _t36("  // 5) Yêu cầu sửa hồ sơ\n", """  // 36b) Sản phẩm mới trong Sheet đơn chưa có cấu hình (chỉ chủ sở hữu, 02/11) – số đếm nạp ngầm từ demSanPhamMoi
   if(ME.laOwner&&window.__spMoi&&__spMoi.ok){ var sm=__spMoi, tabDX=[]; try{ tabDX=JSON.parse(localStorage.getItem('dhTabDaXem')||'[]'); }catch(e){}
@@ -71,7 +71,7 @@ s = s[:_k36b] + """<script>
 /* 36b (02/11): mở Đơn hàng ở mục chỉ định (Cấu hình sản phẩm); đánh dấu đã xem tab kênh mới */
 function moCauHinhSP(v){ window.__dhMo=v||'cauhinh'; go('dh'); }
 /* 07/11 (chủ dự án): ở tab Đơn hàng thu gọn thanh cơm trưa + Tết, Rhino không che số liệu */
-(function(){ var g=go; go=function(k){ try{ document.body.classList.toggle('tab-dh',k==='dh'); }catch(e){} return g.apply(this,arguments); }; })();
+(function(){ var g=go; go=function(k){ try{ document.body.classList.toggle('tab-dh',k==='dh'||k==='tk'); }catch(e){} return g.apply(this,arguments); }; })();
 function dhDaXemTab(){ try{ var a=JSON.parse(localStorage.getItem('dhTabDaXem')||'[]'); ((window.__spMoi||{}).tabMoi||[]).forEach(function(t){ if(a.indexOf(t)<0) a.push(t); }); localStorage.setItem('dhTabDaXem',JSON.stringify(a.slice(-50))); }catch(e){} }
 </script>
 """ + s[_k36b:]
@@ -93,6 +93,17 @@ function vDH(){
     if(tabHienTai!=='dh')return;
     if(ok&&window.__qtDaNap){ dhTrangVe(); return; }
     $('main').innerHTML='<div class="ptitle">Đơn hàng</div><div class="alert a-bd">'+esc(msg||'Không tải được.')+' <button class="btn sm" type="button" onclick="vDH()">Thử lại</button></div>';
+  });
+}
+/* 07/11: tab chính "Thống kê" (chỉ chủ sở hữu) – cùng mảnh QuyTrinh.html */
+function vTK(){
+  if(!ME||!ME.laOwner){ $('main').innerHTML='<div class="alert a-wn">Tab này đang chỉ mở cho tài khoản chủ sở hữu.</div>'; return; }
+  if(window.__qtDaNap){ tkVe(); return; }
+  $('main').innerHTML='<div class="ptitle">Thống kê</div><div class="pdesc">Đang tải…</div>';
+  taiManh('QuyTrinh',function(ok,msg){
+    if(tabHienTai!=='tk')return;
+    if(ok&&window.__qtDaNap){ tkVe(); return; }
+    $('main').innerHTML='<div class="ptitle">Thống kê</div><div class="alert a-bd">'+esc(msg||'Không tải được.')+' <button class="btn sm" type="button" onclick="vTK()">Thử lại</button></div>';
   });
 }
 function vQT(){

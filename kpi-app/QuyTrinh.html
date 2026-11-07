@@ -1120,11 +1120,11 @@ var DH_TUYEN=[['PHOICB','Phôi Carbon','PHOI',{GAY:1,NGON:1,CHUOI:1},'phoi'],['P
   ['SON','Sơn','SON',{GAY:1,CHUOI:1,NOI:1},'chuoi'],['INUV','In UV','UV',{GAY:1,CHUOI:1,NOI:1},'uv'],['NGONTARO','Ngọn Taro','TARO',{GAY:1,NGON:1},'ngon'],
   ['NGONTIP','Ngọn Tip','TIP',{GAY:1,NGON:1},'tip'],['CNC','CNC (típ, phíp)','TIP',{GAY:1,NGON:1},'cnc'],['HT','Hoàn thiện','HT',{GAY:1,CHUOI:1,NOI:1},'sku'],['DG','Đóng gói','DG',{GAY:1,NGON:1,CHUOI:1,NOI:1},'sku']];
 function dhTai(lamMoi){
-  DHTai=true; if(tabHienTai==='dh') dhVeLai();
+  DHTai=true; if(tabHienTai==='dh'||tabHienTai==='tk') dhVeLai();
   call('layDonHangXuong',[!!lamMoi],function(r){
     DHTai=false;
     if(!r||!r.ok){ DH={loi:(r&&r.msg)||'Không tải được.'}; } else { DH=r; DH.dongMap={}; (r.nhan.dong||[]).forEach(function(d){DH.dongMap[d[0]]=d;}); }
-    if(tabHienTai==='dh') dhVeLai();
+    if(tabHienTai==='dh'||tabHienTai==='tk') dhVeLai();
   });
 }
 function dhTen(bang,k){ var t=DH.nhan[bang]||{}; return k?(t[k]||k):'(chưa rõ)'; }
@@ -1286,7 +1286,7 @@ function dhLuuSua(ten,bo){
 var DHV='chuy', DHL={q:'',kenh:'',st:'',ngay:''}, DHSx={k:'',tang:1}, DHTD=null, DHTDTai=false, DHGom='', DHHet=300, DHQTTai=false;
 var DH_ST={treHan:'Trễ hạn',dangSX:'Đang sản xuất',sanSang:'Sẵn sàng giao',daGiao:'Đã giao'}, DH_ST_THU=['treHan','dangSX','sanSang','daGiao'];
 var DH_CS_DON=60, DH_DEM=2, DH_TRE_MAX=30, DH_SAP=3;   /* như web app đơn hàng: 60 sp/ngày cho 1 đơn, đệm 2 ngày, ≤ 3 ngày = sắp tới hạn; trễ quá 30 ngày: thẻ riêng bên dưới (02/11) */
-function dhVeLai(){ if(typeof tabHienTai!=='undefined'&&tabHienTai==='dh') dhTrangVe(); else qtVe(); }
+function dhVeLai(){ if(typeof tabHienTai!=='undefined'&&tabHienTai==='dh') dhTrangVe(); else if(typeof tabHienTai!=='undefined'&&tabHienTai==='tk') tkVe(); else qtVe(); }   /* 07/11: tab chính Thống kê dùng chung dữ liệu Đơn hàng */
 function dhHomNay(){ var d=new Date(); return d.getFullYear()+'-'+('0'+(d.getMonth()+1)).slice(-2)+'-'+('0'+d.getDate()).slice(-2); }
 function dhCachNgay(a,b){ return Math.round((new Date(b+'T00:00:00')-new Date(a+'T00:00:00'))/864e5); }
 function dhSt(o,hn){ if(o.thieu<=0&&o.daTra>0&&o.daTra>=o.sl)return 'daGiao'; if(o.thieu<=0)return 'sanSang'; if(o.dl&&o.dl<hn)return 'treHan'; return 'dangSX'; }
@@ -1322,11 +1322,12 @@ function dhGomDon(ds){
 /* 07/11 (chủ dự án + soat-giao-dien-cuoi + dong-vai-nguoi-dung): làm lại giao diện – 3 ô trả lời trên cùng (Trễ · Sắp tới hạn · Ưu tiên),
    9 chế độ xem gộp 3 nhóm (Theo dõi / Đơn / Sản xuất), Kiểm phân loại + Cấu hình sản phẩm vào ⚙ Cài đặt, Xuất / In / Tải lại vào "⋯",
    bộ lọc gọn dính trên cùng (điện thoại: nút "Lọc"), bảng gọn, điện thoại hiện thẻ. */
-var DH_NHOM=[['theo','Theo dõi',[['chuy','Cần chú ý'],['uutien','Ưu tiên'],['thoihan','Thời hạn'],['thaydoi','Thay đổi hôm nay']]],['don','Đơn',[['chitiet','Chi tiết từng dòng'],['gom','Gom theo đơn']]],['sx','Sản xuất',[['xuong','Việc theo xưởng'],['congdoan','Công đoạn'],['sanluong','Sản lượng'],['congsuat','Công suất & deadline'],['thongke','Thống kê']]]];
+var DH_NHOM=[['theo','Theo dõi',[['chuy','Cần chú ý'],['uutien','Ưu tiên'],['thoihan','Thời hạn'],['thaydoi','Thay đổi hôm nay']]],['don','Đơn',[['chitiet','Chi tiết từng dòng'],['gom','Gom theo đơn']]],['sx','Sản xuất',[['xuong','Việc theo xưởng'],['congdoan','Công đoạn'],['sanluong','Sản lượng'],['congsuat','Công suất & deadline'],['thongke','Thống kê ↗']]]];
 var DH_CAIDAT=[['kiem','Kiểm phân loại'],['cauhinh','Cấu hình sản phẩm']], DHLocMo=false;
 function dhNhomCua(v){ for(var i=0;i<DH_NHOM.length;i++) if(DH_NHOM[i][2].some(function(t){return t[0]===v})) return DH_NHOM[i]; return null; }
 function dhUuDs(){ return (DH.uu&&DH.uu.length)?dhLoc(DH.uu):dhLoc().filter(function(o){return o.uuTien}); }
-function dhChon(v){ DHV=v; DHHet=300; dhVeLai(); try{ var m=document.querySelector('.dh-nav'); if(m&&m.getBoundingClientRect().top<0) m.scrollIntoView({block:'start'}); }catch(e){} }
+function dhChon(v){ if(v==='thongke'){ TKV='sx'; go('tk'); return; }   /* 07/11: Thống kê đã thành tab chính */
+  DHV=v; DHHet=300; dhVeLai(); try{ var m=document.querySelector('.dh-nav'); if(m&&m.getBoundingClientRect().top<0) m.scrollIntoView({block:'start'}); }catch(e){} }
 function dhTrangVe(){
   if(window.__dhMo){ DHV=window.__dhMo; window.__dhMo=''; CHForm=null; }
   var dau='<div class="dh-dau"><div><div class="ptitle">Đơn hàng</div><div class="dh-mota">'+(DH&&DH.luc?'Sheet "Trạng thái đơn hàng" · đọc lúc '+esc(DH.luc)+' · ':'')+'chỉ chủ sở hữu thấy</div></div>'+
@@ -2347,7 +2348,7 @@ function dhSvgOTD(tuan,M,opt){ opt=opt||{}; var w=opt.w||760, h=opt.h||200, L=44
   g+='<polyline fill="none" stroke="'+M.lam+'" stroke-width="2.2" points="'+tuan.map(function(t,i){return X(i).toFixed(1)+','+Y(t[1]).toFixed(1)}).join(' ')+'"/>'+tuan.map(function(t,i){return '<circle cx="'+X(i).toFixed(1)+'" cy="'+Y(t[1]).toFixed(1)+'" r="4" fill="'+(t[1]<80?M.do:(t[1]<95?M.cam:M.xanh))+'"/>'+dhT(X(i),Y(t[1])-8,t[1]+'%',M,{a:'middle',c:10,m:M.ink})+dhT(X(i),h-16,t[0],M,{a:'middle',c:9.5})+dhT(X(i),h-4,t[2]+' dòng',M,{a:'middle',c:8.5})}).join('');
   return g+'</svg>'; }
 /* Cột ngày + vạch mục tiêu (bản xuất ảnh của ô xưởng) */
-function dhSvgCotX(lb,v,mt,M,opt){ opt=opt||{}; var w=opt.w||360, h=opt.h||150, L=34, n=v.length, mx=Math.max.apply(null,v.concat([mt||0,1]))*(opt.so?1.2:1.12), cw=(w-L-6)/Math.max(1,n), Y=function(x){return 8+(h-30)*(1-x/mx)}, g=dhSvgMo(w,h,M), T=opt.so?dhIMRTinh(v):null;
+function dhSvgCotX(lb,v,mt,M,opt){ opt=opt||{}; var w=opt.w||360, h=opt.h||150, L=34, n=v.length, mx=Math.max.apply(null,v.concat([mt||0,1]))*(opt.so?1.2:1.12), cw=(w-L-6)/Math.max(1,n), Y=function(x){return 8+(h-30)*(1-x/mx)}, g=dhSvgMo(w,h,M), T=opt.so&&!opt.khongKS?dhIMRTinh(v):null;
   v.forEach(function(x,i){ var bt=T&&T.ngoai.indexOf(i)>=0; g+='<rect x="'+(L+i*cw+1).toFixed(1)+'" y="'+Y(x).toFixed(1)+'" width="'+Math.max(1,cw-2).toFixed(1)+'" height="'+(h-22-Y(x)).toFixed(1)+'" rx="1.5" fill="'+(mt&&x<mt?M.cam:M.xanh)+'"'+(bt?' stroke="'+M.do+'" stroke-width="2.5"':'')+'/>'+(opt.so&&x?dhT(L+i*cw+cw/2,Y(x)-4,dhSo0(x),M,{a:'middle',c:opt.coSo||10,m:bt?M.do:M.ink,b:1}):''); });
   if(T&&n) g+='<line x1="'+L+'" x2="'+w+'" y1="'+Y(T.tb).toFixed(1)+'" y2="'+Y(T.tb).toFixed(1)+'" stroke="'+M.lam+'" stroke-width="1.2"/>'+dhT(L+2,Y(T.tb)-3,'TB '+dhSo0(T.tb),M,{c:9.5,m:M.lam});
   if(mt) g+='<line x1="'+L+'" x2="'+w+'" y1="'+Y(mt).toFixed(1)+'" y2="'+Y(mt).toFixed(1)+'" stroke="'+M.ink+'" stroke-dasharray="4 3"/>'+dhT(w-2,Y(mt)-3,dhSo0(mt),M,{a:'end',c:9,m:M.ink});
@@ -2357,8 +2358,8 @@ function dhSvgCotX(lb,v,mt,M,opt){ opt=opt||{}; var w=opt.w||360, h=opt.h||150, 
 /* Thanh ngang chồng (chất liệu / kênh) – rows: [nhãn, [[màu, giá trị, tên]], đậm] */
 function dhSvgStack(rows,M,opt){ opt=opt||{}; var w=opt.w||760, L=opt.L||200, R=110, rh=22, H=rows.length*rh+12, mx=Math.max.apply(null,rows.map(function(r){return r[1].reduce(function(a,s){return a+s[1]},0)}).concat([1])), g=dhSvgMo(w,H,M);
   rows.forEach(function(r,i){ var y=6+i*rh, x=L, tong=r[1].reduce(function(a,s){return a+s[1]},0); if(r[2]) g+='<rect x="0" y="'+(y-2)+'" width="'+w+'" height="'+rh+'" fill="'+M.nhat+'"/>'; g+=dhT(r[2]?4:14,y+13,r[0],M,{m:M.ink,b:r[2],c:11});
-    r[1].forEach(function(s){ var ww=(w-L-R)*s[1]/mx; if(ww>0) g+='<rect x="'+x.toFixed(1)+'" y="'+(y+2)+'" width="'+ww.toFixed(1)+'" height="14" fill="'+s[0]+'"><title>'+esc((s[2]||'')+': '+dhSo0(s[1]))+'</title></rect>'; x+=ww; });
-    g+=dhT(w-R+8,y+13,dhSo0(tong),M,{m:M.ink,b:r[2],c:11}); });
+    r[1].forEach(function(s){ var ww=(w-L-R)*s[1]/(opt.pct?Math.max(1,tong):mx);   /* opt.pct (07/11): mỗi hàng = 100%, để so tỷ lệ giữa xưởng to / nhỏ */ if(ww>0) g+='<rect x="'+x.toFixed(1)+'" y="'+(y+2)+'" width="'+ww.toFixed(1)+'" height="14" fill="'+s[0]+'"><title>'+esc((s[2]||'')+': '+dhSo0(s[1]))+'</title></rect>'; x+=ww; });
+    g+=dhT(w-R+8,y+13,dhSo0(tong)+(opt.pct&&opt.dv?' '+opt.dv:''),M,{m:M.ink,b:r[2],c:11}); });
   return g+'</svg>'; }
 /* SVG -> PNG (để chèn vào PowerPoint) */
 function dhSvgPng(svg,rong,cb){ var m=svg.match(/viewBox="0 0 ([\d.]+) ([\d.]+)"/), w=m?+m[1]:760, h=m?+m[2]:300, k=(rong||1600)/w, img=new Image();
@@ -2613,5 +2614,251 @@ function dhVeCauHinh(){
   h+='<div style="font-size:12px;color:var(--ink3)">Chất liệu / kiểu đổi ở đây áp ngay cho mọi sản phẩm dùng loại đó (nhãn Chuôi / Ngọn, Việc theo xưởng, Thống kê). Loại đã có đơn chỉ ẩn được khỏi ô chọn, không xóa. Cấu hình lưu ở sheet CauHinhSP trong file KPI (không sửa Sheet đơn hàng).</div>';
   return h;
 }
+/* ===== 07/11 (chủ dự án): tab chính "Thống kê" – chỉ chủ sở hữu, nằm dưới "Đơn hàng".
+   Tổng hợp ở một chỗ: Sản xuất & đơn hàng (chuyển từ Đơn hàng → Thống kê), Nhân sự, Điểm danh, Báo cơm (cả người không báo),
+   Công đoạn, Định mức, KPI. Thống kê riêng ở từng tab cũ vẫn giữ. Máy chủ: layThongKe(thang) + phanTichDinhMuc (đã có). ===== */
+var TKV='tq', TKThang='', TKD={}, TKTai={}, TKDM={}, TKDMTai={};
+var TK_TAB=[['tq','Tổng quan'],['sx','Sản xuất & đơn hàng'],['ns','Nhân sự'],['dd','Điểm danh'],['com','Báo cơm'],['cd','Công đoạn'],['dm','Định mức'],['kpi','KPI']];
+function tkThangNay(){ var d=new Date(); return d.getFullYear()+'-'+('0'+(d.getMonth()+1)).slice(-2); }
+function tkThangDs(){ var a=[], t=tkThangNay(); for(var i=0;i<6;i++){ a.push(t); var p=t.split('-'), y=+p[0], m=+p[1]-1; if(m<1){m=12;y--;} t=y+'-'+('0'+m).slice(-2); } return a; }
+function tkChon(v){ TKV=v; tkVe(); try{ var m=document.querySelector('.dh-nav'); if(m&&m.getBoundingClientRect().top<0) m.scrollIntoView({block:'start'}); }catch(e){} }
+function tkTai(lamMoi){ var th=TKThang; if(TKTai[th]) return; TKTai[th]=1;
+  call('layThongKe',[th,!!lamMoi],function(r){ TKTai[th]=0; TKD[th]=(r&&r.ok)?r:{loi:(r&&r.msg)||'Không tải được số liệu thống kê.'}; if(tabHienTai==='tk') tkVe(); }); }
+function tkTaiDM(){ var th=TKThang; if(TKDMTai[th]) return; TKDMTai[th]=1;
+  call('phanTichDinhMuc',['thang',th],function(r){ TKDMTai[th]=0; TKDM[th]=(r&&r.ok)?r:{loi:(r&&r.msg)||'Không tải được phân tích định mức.'}; if(tabHienTai==='tk') tkVe(); }); }
+function tkLamMoi(){ TKD[TKThang]=null; TKDM[TKThang]=null; tkTai(true); if(TKV==='sx'){ DH=null; dhTai(true); } tkVe(); }
+function tkPct(a,b,k){ return b?qtSo(a/b*100,k==null?1:k)+'%':'–'; }
+function tkTenX(D,mx){ for(var i=0;i<(D.xuong||[]).length;i++) if(D.xuong[i][0]===mx) return D.xuong[i][1].replace(/^Xưởng /,''); return mx; }
+function tkCard(tieu,than,doc,nx){ return '<div class="card"><div style="font-weight:600;margin-bottom:6px">'+tieu+'</div>'+than+(nx&&nx.length?dhNX(nx):'')+(doc?dhCachDoc(doc):'')+'</div>'; }
+function tkBang(dau,hang,tong){ /* dau: [[tên, số?]], hang: [[ô…], lớp] */
+  return '<div class="dh-svgw"><table class="dh-bang" style="width:100%;border-collapse:collapse"><thead><tr>'+dau.map(function(c){return '<th style="padding:6px 8px;text-align:'+(c[1]?'right':'left')+'">'+c[0]+'</th>'}).join('')+'</tr></thead><tbody>'+
+    hang.map(function(r){ return '<tr'+(r[1]?' class="'+r[1]+'"':'')+'>'+r[0].map(function(v,i){return '<td style="padding:4px 8px;height:auto'+(i===0?';white-space:nowrap':'')+(dau[i]&&dau[i][1]?';text-align:right;font-variant-numeric:tabular-nums':'')+'">'+v+'</td>'}).join('')+'</tr>'; }).join('')+
+    (tong?'<tr class="dh-khoi">'+tong.map(function(v,i){return '<td style="padding:4px 8px'+(dau[i]&&dau[i][1]?';text-align:right':'')+'">'+v+'</td>'}).join('')+'</tr>':'')+'</tbody></table></div>'; }
+function tkMau(p,vang,do_){ return p>=do_?'var(--red)':(p>=vang?'var(--amber)':''); }
+function tkTo(p,vang,do_,txt){ var c=tkMau(p,vang,do_); return c?'<b style="color:'+c+'">'+txt+'</b>':txt; }
+/* bản đồ nhiệt chung: o(r,d) -> số; mau(v) -> [màu, độ đậm] */
+function tkSvgHeat(hang,ngs,o,mau,nhanO,M,tieu){ var w=760, L=150, cw=(w-L-10)/Math.max(1,ngs.length), rh=20, H=hang.length*rh+34, g=dhSvgMo(w,H,M,tieu||'Bản đồ nhiệt');
+  hang.forEach(function(r,i){ var y=6+i*rh; g+=dhT(4,y+14,r.ten,M,{m:M.ink,c:10.5});
+    ngs.forEach(function(d,j){ var v=o(r,d), c=v==null?[M.nhat,1]:mau(v); g+='<rect x="'+(L+j*cw+1).toFixed(1)+'" y="'+(y+1)+'" width="'+Math.max(1,cw-2).toFixed(1)+'" height="'+(rh-3)+'" rx="2" fill="'+c[0]+'" fill-opacity="'+c[1]+'"><title>'+esc(r.ten+' '+dhNg(d)+': '+(v==null?'–':nhanO(v)))+'</title></rect>'+(v!=null&&cw>=24?dhT(L+j*cw+cw/2,y+13,nhanO(v),M,{a:'middle',c:9,m:M.ink}):''); }); });
+  var buoc=Math.max(1,Math.ceil(ngs.length/12)); ngs.forEach(function(d,j){ if(j%buoc===0) g+=dhT(L+j*cw+cw/2,H-8,dhNg(d),M,{a:'middle',c:9}); });
+  return g+'</svg>'; }
+
+function tkVe(){
+  if(!TKThang) TKThang=tkThangNay();
+  var D=TKD[TKThang], dsT=tkThangDs(); if(dsT.indexOf(TKThang)<0) dsT.push(TKThang);
+  if(TKV!=='sx'&&!D) tkTai(false);
+  var h='<div class="dh-dau" style="flex-wrap:wrap"><div style="min-width:0;flex:1 1 260px"><div class="ptitle">Thống kê</div><div class="dh-mota">Tổng hợp nhân sự, điểm danh, báo cơm, công đoạn, định mức, KPI và sản xuất – chỉ chủ sở hữu thấy'+(D&&D.luc?' · tính lúc '+esc(D.luc):'')+'</div></div>'+
+    '<div class="dh-cu" style="flex-wrap:wrap;gap:6px;max-width:100%"><select aria-label="Chọn tháng" onchange="TKThang=this.value;tkVe()" style="min-height:34px;max-width:100%">'+dsT.map(function(t){return '<option value="'+t+'"'+(t===TKThang?' selected':'')+'>Tháng '+t.slice(5)+'/'+t.slice(0,4)+(t===tkThangNay()?' · đang chạy':'')+'</option>'}).join('')+'</select> <button class="btn sm" type="button" onclick="tkLamMoi()" title="Tính lại từ Sheet">↻ Làm mới</button></div></div>';
+  h+='<div class="dh-nav"><div class="dh-sub" role="tablist">'+TK_TAB.map(function(t){return '<button type="button" role="tab"'+(TKV===t[0]?' class="on" aria-current="page"':'')+' onclick="tkChon(\''+t[0]+'\')">'+t[1]+'</button>'}).join('')+'</div></div><div class="dh-than">';
+  if(TKV==='sx'){
+    h+='<div class="dh-ghi">Số liệu đơn hàng là <b>hiện tại</b> (không theo tháng chọn). Biểu đồ sản lượng xưởng theo nhật ký sản xuất.</div>';
+    if(!DH){ if(!DHTai) dhTai(false); h+='<div class="pdesc">Đang đọc Sheet "Trạng thái đơn hàng"…</div>'; }
+    else if(DH.loi) h+='<div class="alert a-bd">'+esc(DH.loi)+' <button class="btn sm" type="button" onclick="DH=null;dhTai(true)">Thử lại</button></div>';
+    else { var luu=DHL; DHL={q:'',kenh:'',st:'',ngay:''}; var ds=dhLoc(), don=dhGomDon(ds); DHL=luu; h+=dhVeThongKe(ds,don); }
+  }
+  else if(!D) h+='<div class="pdesc">Đang tổng hợp số liệu tháng '+TKThang.slice(5)+'/'+TKThang.slice(0,4)+'…</div>';
+  else if(D.loi) h+='<div class="alert a-bd">'+esc(D.loi)+' <button class="btn sm" type="button" onclick="tkLamMoi()">Thử lại</button></div>';
+  else {
+    if(D.loi&&D.loi.length) h+='<div class="alert a-wn">Một phần chưa tính được: '+esc(D.loi.join(' · '))+'</div>';
+    if(D.chuaChot&&TKV!=='ns') h+='<div class="dh-ghi">⚠ Tháng đang chạy, <b>chưa chốt</b>: mới có '+D.ngayLam.length+' ngày làm. Sản lượng nhập trễ có thể làm số thấp hơn thực tế.</div>';
+    h+=({tq:tkVeTQ,ns:tkVeNS,dd:tkVeDD,com:tkVeCom,cd:tkVeCD,dm:tkVeDM,kpi:tkVeKPI}[TKV]||tkVeTQ)(D);
+  }
+  h+='</div>';
+  $('main').innerHTML=h;
+}
+
+/* ---------- Tổng quan: 1 ô cho mỗi mảng, bấm để xem chi tiết ---------- */
+function tkTongDD(D){ var t={nguoi:0,cong:0,vang:0,nkl:0,xn:0,can:0}; Object.keys((D.dd||{}).x||{}).forEach(function(mx){ var o=D.dd.x[mx]; t.nguoi+=o.nguoi; t.cong+=o.cong; t.vang+=o.vang; t.nkl+=o.nkl; if(o.nguoi){ t.xn+=o.ngayXN; t.can+=D.ngayLam.length; } }); return t; }
+function tkTongCom(D){ var t={an:0,khong:0,chua:0}; ((D.com||{}).x||[]).forEach(function(x){ t.an+=x.an; t.khong+=x.khong; t.chua+=x.chua; }); return t; }
+function tkTongCD(D){ var t={chuan:0,gio:0,dung:0,cho:0,tong:0}; var X=(D.cd||{}).x||{}; Object.keys(X).forEach(function(m){ t.chuan+=X[m].chuan; t.gio+=X[m].gio; t.dung+=X[m].dung; }); var T=(D.cd||{}).trangThai||{}; Object.keys(T).forEach(function(m){ Object.keys(T[m]).forEach(function(s){ t.tong+=T[m][s]; if(s==='Chờ duyệt') t.cho+=T[m][s]; }); }); return t; }
+function tkVeTQ(D){
+  var ns=D.ns||{x:{}}, dang=0, tam=0; Object.keys(ns.x).forEach(function(m){ dang+=ns.x[m].dang; tam+=ns.x[m].tam; });
+  var dd=tkTongDD(D), cm=tkTongCom(D), cd=tkTongCD(D), K=D.kpi||{}, kx=(K.theoKy||{})[K.ky]||{}, kn=0, kt=0, kd=0;
+  Object.keys(kx).forEach(function(m){ kn+=kx[m].n; kt+=kx[m].tong; kd+=(kx[m].loai.D||0); });
+  var pv=dd.cong?dd.vang/dd.cong*100:0, pc=(cm.an+cm.khong+cm.chua)?cm.chua/(cm.an+cm.khong+cm.chua)*100:0, hs=cd.gio?cd.chuan/cd.gio*100:0;
+  var o=function(v,lop,ten,so,nho){ return '<button type="button" class="'+lop+'" onclick="tkChon(\''+v+'\')" style="text-align:left;cursor:pointer;background:none;font:inherit;color:inherit;border:1px solid var(--line);border-radius:10px;padding:8px 10px"><span>'+ten+'</span><b>'+so+'</b><small>'+nho+'</small></button>'; };
+  var h='<div class="dh-tong dh-tk">'+
+    o('ns','',"Nhân sự sản xuất",qtSo(dang,0),'người đang làm'+(tam?' · '+tam+' tạm nghỉ':'')+' · '+Object.keys(ns.vanPhong||{}).reduce(function(a,k){return a+ns.vanPhong[k]},0)+' người ngoài SX')+
+    o('dd',pv>=8?'bd':(pv>=5?'wn':''),'Tỷ lệ vắng',qtSo(pv,1)+'%','≈ '+qtSo(dd.vang,1)+' công / '+qtSo(dd.cong,0)+' công kế hoạch · Nkl '+qtSo(dd.nkl,1))+
+    o('dd',dd.can&&dd.xn/dd.can<0.95?'wn':'','Xưởng xác nhận điểm danh',tkPct(dd.xn,dd.can,0),dd.xn+'/'+dd.can+' (xưởng × ngày làm)')+
+    o('com',pc>5?'bd':(pc>2?'wn':''),'Không báo cơm',qtSo(cm.chua,0),'lượt-người · '+qtSo(pc,1)+'% · '+qtSo(cm.an,0)+' suất ăn')+
+    o('cd',hs&&hs<85?'wn':'','Hiệu suất thô nhà máy',hs?qtSo(hs,1)+'%':'–','giờ chuẩn ÷ giờ có mặt · '+cd.cho+' dòng chờ duyệt')+
+    o('kpi',kn&&kd/kn>0.1?'bd':'','KPI trung bình '+(K.ky?K.ky.slice(5)+'/'+K.ky.slice(0,4)+(K.tamTinh?' (đã chốt)':''):''),kn?qtSo(kt/kn,1):'–',kn+' người · '+kd+' loại D')+'</div>';
+  var nx=[];
+  if(pv>=5) nx.push('Vắng '+qtSo(pv,1)+'% – cao hơn mức nên có (dưới 5%). Xem tab Điểm danh để biết xưởng nào.');
+  if(pc>5) nx.push('Có '+qtSo(cm.chua,0)+' lượt không báo cơm ('+qtSo(pc,1)+'%) – bếp phải đoán số suất.');
+  if(cd.tong&&cd.cho/cd.tong>0.1) nx.push(cd.cho+' dòng sản lượng còn chờ duyệt ('+tkPct(cd.cho,cd.tong,0)+') – KPI và hiệu suất sẽ thay đổi khi duyệt xong.');
+  if(kn&&kd/kn>0.1) nx.push('Hơn 10% người loại D – xem tab KPI để biết phần điểm nào kéo xuống.');
+  h+=dhNX(nx);
+  h+=dhCachDoc('Mỗi ô là một mảng, bấm vào để xem chi tiết. Màu <b style="color:var(--amber)">vàng</b> = cần để ý, <b style="color:var(--red)">đỏ</b> = cần xử lý. Ngưỡng: vắng ≥ 5% vàng, ≥ 8% đỏ; không báo cơm > 2% vàng, > 5% đỏ; xác nhận điểm danh dưới 95% vàng; loại D trên 10% đỏ. Nhân sự là <b>hiện tại</b>; các mảng khác theo tháng chọn ở trên.');
+  return h; }
+
+/* ---------- Nhân sự ---------- */
+function tkVeNS(D){
+  var ns=D.ns; if(!ns) return '<div class="alert a-wn">Chưa tính được phần nhân sự.</div>';
+  var M=dhMau(), xs=D.xuong.filter(function(x){return ns.x[x[0]]}), T={dang:0,tam:0,nghi:0,tn:[0,0,0,0],tuoi:[0,0,0,0,0]};
+  xs.forEach(function(x){ var o=ns.x[x[0]]; T.dang+=o.dang; T.tam+=o.tam; T.nghi+=o.nghi; o.tn.forEach(function(v,i){T.tn[i]+=v}); o.tuoi.forEach(function(v,i){T.tuoi[i]+=v}); });
+  var h='';
+  /* 1. người theo xưởng */
+  var rows=xs.map(function(x){ var o=ns.x[x[0]]; return [x[1].replace(/^Xưởng /,''),[[M.teal,o.dang,'Đang làm'],[M.cam,o.tam,'Tạm nghỉ']]]; });
+  rows.push(['Tổng sản xuất',[[M.teal,T.dang,'Đang làm'],[M.cam,T.tam,'Tạm nghỉ']],1]);
+  var vp=ns.vanPhong||{}, tvp=0; Object.keys(vp).sort(function(a,b){return vp[b]-vp[a]}).forEach(function(b){ rows.push([b,[[M.lam,vp[b],'Đang làm']]]); tvp+=vp[b]; });
+  if(tvp) rows.push(['Tổng ngoài sản xuất',[[M.lam,tvp,'Đang làm']],1]);
+  var cdh=function(o,k){ return o.cd[k]||0; }, bang=xs.map(function(x){ var o=ns.x[x[0]], ql=cdh(o,'Trưởng phòng')+cdh(o,'Phó phòng')+cdh(o,'Tổ trưởng'); return [[esc(x[1].replace(/^Xưởng /,'')),o.dang,cdh(o,'Công nhân'),cdh(o,'Tổ trưởng'),cdh(o,'Phó phòng')+cdh(o,'Trưởng phòng'),ql?qtSo(cdh(o,'Công nhân')/ql,1):'–',o.tam||'',o.nghi||'']]; });
+  h+=tkCard('Số người theo xưởng (xếp theo dòng chảy sản xuất)','<div style="font-size:11.5px;color:var(--ink3)"><span style="color:'+M.teal+'">■</span> đang làm · <span style="color:'+M.cam+'">■</span> tạm nghỉ · <span style="color:'+M.lam+'">■</span> ngoài sản xuất</div>'+dhSvgStack(rows,M,{L:190})+
+    tkBang([['Xưởng'],['Đang làm',1],['Công nhân',1],['Tổ trưởng',1],['TP + PP',1],['CN / quản lý',1],['Tạm nghỉ',1],['Đã nghỉ việc',1]],bang,['Tổng',T.dang,'','','','',T.tam||'',T.nghi||'']),
+    'Đang làm = trạng thái "Đang làm" trong Nhân sự. <b>CN / quản lý</b> = số công nhân trên mỗi tổ trưởng / phó / trưởng phòng – quá thấp là thừa quản lý, quá cao (trên ~12) là quản lý không sát. "Đã nghỉ việc" là tổng tích lũy (Sheet không lưu ngày nghỉ việc nên chưa tính được tỷ lệ nghỉ việc theo tháng).');
+  /* 2. thâm niên + tuổi */
+  var mT=[M.do,M.cam,M.lam,M.teal], mA=[M.lam,M.teal,M.xanh,M.cam,M.do];
+  var r2=function(k,mau,nhan){ var a=xs.map(function(x){ var o=ns.x[x[0]]; return [x[1].replace(/^Xưởng /,''),o[k].map(function(v,i){return [mau[i],v,nhan[i]]})]; }); a.push(['Tổng',T[k].map(function(v,i){return [mau[i],v,nhan[i]]}),1]); return a; };
+  var lg=function(mau,nhan){ return '<div style="font-size:11.5px;color:var(--ink3)">'+nhan.map(function(n,i){return '<span style="color:'+mau[i]+'">■</span> '+n}).join(' · ')+'</div>'; };
+  var tnt=T.tn.reduce(function(a,b){return a+b},0), moi=T.tn[0], nx=[];
+  xs.forEach(function(x){ var o=ns.x[x[0]], t=o.tn.reduce(function(a,b){return a+b},0); if(t>=5&&o.tn[0]/t>0.25) nx.push(x[1].replace(/^Xưởng /,'')+': '+Math.round(o.tn[0]/t*100)+'% người mới dưới 3 tháng – cần kèm cặp, dễ ảnh hưởng chất lượng.'); });
+  h+=tkCard('Thâm niên (tính từ ngày vào làm)',lg(mT,ns.tnNhan)+dhSvgStack(r2('tn',mT,ns.tnNhan),M,{L:190,pct:1,dv:'người'}),'Mỗi thanh = 100% người đang làm của xưởng, số bên phải là số người. Người mới (dưới 3 tháng) nhiều thì năng suất và chất lượng thấp là bình thường; trên 25% ở một xưởng là cảnh báo. '+(ns.thieu.ngayVao?'<b>'+ns.thieu.ngayVao+' người chưa có ngày vào làm</b> không nằm trong biểu đồ.':''),nx.concat(tnt?['Toàn nhà máy: '+Math.round(moi/tnt*100)+'% người dưới 3 tháng, '+Math.round((T.tn[2]+T.tn[3])/tnt*100)+'% trên 1 năm.']:[]));
+  h+=tkCard('Độ tuổi',lg(mA,ns.tuoiNhan)+dhSvgStack(r2('tuoi',mA,ns.tuoiNhan),M,{L:190,pct:1,dv:'người'}),'Mỗi thanh = 100% người đang làm của xưởng. Xưởng có nhiều người từ 45 tuổi trở lên cần kế hoạch đào tạo người kế cận. '+(ns.thieu.namSinh?ns.thieu.namSinh+' người chưa có năm sinh.':''));
+  /* 3. tuyển mới 12 tháng */
+  var km=Object.keys(ns.moi).sort();
+  h+=tkCard('Người vào làm mới theo tháng (12 tháng)',dhSvgCotX(km.map(function(k){return k.slice(5)+'/'+k.slice(2,4)}),km.map(function(k){return ns.moi[k]}),0,M,{w:760,h:170,so:1,khongKS:1}),'Đếm theo ngày vào làm của người <b>còn đang làm</b> – người vào rồi nghỉ không còn trong số này.');
+  /* 4. hồ sơ thiếu */
+  var th=ns.thieu, hd={}; xs.forEach(function(x){ var o=ns.x[x[0]]; Object.keys(o.hd).forEach(function(k){hd[k]=(hd[k]||0)+o.hd[k]}); });
+  h+=tkCard('Hồ sơ nhân sự còn thiếu','<div class="dh-tong dh-tk">'+[['Loại hợp đồng chưa rõ',th.hopDong],['Chưa có ngày vào làm',th.ngayVao],['Chưa có năm sinh',th.namSinh],['Chưa có số CCCD',th.cccd],['Chưa có điện thoại',th.dt]].map(function(x){return '<div class="'+(x[1]?'wn':'')+'"><span>'+x[0]+'</span><b>'+x[1]+'</b><small>người đang làm</small></div>'}).join('')+'</div>'+
+    '<div class="dh-ghi" style="margin-top:6px">Loại hợp đồng: '+Object.keys(hd).sort(function(a,b){return hd[b]-hd[a]}).map(function(k){return esc(k)+' <b>'+hd[k]+'</b>'}).join(' · ')+'</div>','Hồ sơ đủ thì thống kê thâm niên, độ tuổi, hợp đồng mới đúng. Bổ sung ở tab Nhân sự.');
+  return h; }
+
+/* ---------- Điểm danh ---------- */
+function tkVeDD(D){
+  var dd=D.dd; if(!dd) return '<div class="alert a-wn">Chưa tính được phần điểm danh.</div>';
+  var M=dhMau(), nl=D.ngayLam.length, xs=D.xuong.filter(function(x){return dd.x[x[0]]&&dd.x[x[0]].nguoi}), t=tkTongDD(D), h='', nx=[];
+  var bang=xs.map(function(x){ var o=dd.x[x[0]], p=o.cong?o.vang/o.cong*100:0, pk=o.cong?o.nkl/o.cong*100:0, xn=nl?o.ngayXN/nl*100:0;
+    if(p>=8) nx.push(x[1].replace(/^Xưởng /,'')+' vắng '+qtSo(p,1)+'%.'); if(nl&&xn<95) nx.push(x[1].replace(/^Xưởng /,'')+' mới xác nhận điểm danh '+o.ngayXN+'/'+nl+' ngày – ngày chưa xác nhận chưa chắc là đi làm đủ.');
+    return [[esc(x[1].replace(/^Xưởng /,'')),o.nguoi,qtSo(o.cong,0),qtSo(o.vang,1),tkTo(p,5,8,qtSo(p,1)+'%'),qtSo(o.p,1),tkTo(pk,2,4,qtSo(o.nkl,1)),qtSo(o.nua,1),o.muon||'',tkTo(100-xn,5.01,20,o.ngayXN+'/'+nl),o.ngayXNDung+'/'+o.ngayXN]]; });
+  var tp={p:0,nua:0,muon:0,xd:0}; xs.forEach(function(x){ var o=dd.x[x[0]]; tp.p+=o.p; tp.nua+=o.nua; tp.muon+=o.muon; tp.xd+=o.ngayXNDung; });
+  h+=tkCard('Vắng mặt theo xưởng – tháng '+D.thang.slice(5)+' ('+nl+' ngày làm tới hôm nay)',tkBang([['Xưởng'],['Người',1],['Công KH',1],['Công vắng',1],['% vắng',1],['Phép',1],['Không lương / không phép',1],['Nửa ngày',1],['Đi muộn (lượt)',1],['Ngày xác nhận',1],['Xác nhận trong ngày',1]],bang,
+    ['Tổng',t.nguoi,qtSo(t.cong,0),qtSo(t.vang,1),tkPct(t.vang,t.cong),qtSo(tp.p,1),qtSo(t.nkl,1),qtSo(tp.nua,1),tp.muon||'',t.xn+'/'+t.can,tp.xd+'/'+t.xn]),
+    '<b>Công KH</b> = số người đang làm × số ngày làm (thứ 2 – thứ 7, trừ ngày lễ) tới hôm nay. <b>Công vắng</b> = cả ngày tính 1, nửa ngày 0,5, đi muộn tính theo giờ (x-1 = 1/8 công) – như cách tính giờ có mặt trong KPI. Không tính nghỉ lễ (NL) và thai sản (TS). <b>% vắng</b>: dưới 5% tốt, 5–8% vàng, trên 8% đỏ. <b>Ngày xác nhận</b>: điểm danh chỉ ghi người nghỉ, nên ngày xưởng chưa bấm xác nhận thì ô trống <b>chưa chắc</b> là đi làm. "Xác nhận trong ngày" = bấm xác nhận ngay hôm đó.',nx);
+  /* thành phần vắng */
+  var rows=xs.map(function(x){ var o=dd.x[x[0]]; return [x[1].replace(/^Xưởng /,''),[[M.do,o.nkl,'Không lương / không phép'],[M.lam,o.p,'Phép'],[M.cam,o.nua,'Nửa ngày'],[M.xam,Math.max(0,o.vang-o.nkl-o.p-o.nua),'Khác + đi muộn']]]; });
+  h+=tkCard('Vắng gồm những loại nào (công)','<div style="font-size:11.5px;color:var(--ink3)"><span style="color:'+M.do+'">■</span> không lương / không phép · <span style="color:'+M.lam+'">■</span> phép · <span style="color:'+M.cam+'">■</span> nửa ngày · <span style="color:'+M.xam+'">■</span> khác + đi muộn</div>'+dhSvgStack(rows,M,{L:150}),'Phép là quyền lợi, có kế hoạch. Phần <b>đỏ</b> (không lương, không phép) mới là vắng đột xuất làm thiếu người – nên dưới 2% công kế hoạch.');
+  /* nhiệt ngày × xưởng */
+  var hang=xs.map(function(x){return {ten:x[1].replace(/^Xưởng /,''),ma:x[0]}});
+  h+=tkCard('Vắng theo ngày × xưởng (% người vắng)',tkSvgHeat(hang,D.ngayLam,function(r,d){ var o=dd.x[r.ma], v=(dd.ngay[d]||{})[r.ma]||0; return o.nguoi?v/o.nguoi*100:null; },function(p){ return p<=0?[M.xanh,0.25]:(p<5?[M.xanh,0.6]:(p<10?[M.cam,0.8]:[M.do,Math.min(1,0.5+p/40)])); },function(p){return Math.round(p)+''},M,'Vắng theo ngày'),
+    'Mỗi ô = % số người của xưởng vắng ngày đó. Xanh nhạt = không ai vắng, xanh < 5%, cam 5–10%, đỏ ≥ 10%. Ô đỏ dồn một cột = ngày cả nhà máy vắng (sau lễ, mùa vụ…); dồn một hàng = xưởng có vấn đề kéo dài.');
+  /* thứ trong tuần */
+  var tn=['T2','T3','T4','T5','T6','T7'], so=[1,2,3,4,5,6].map(function(i){return Math.round(dd.thu[i]*10)/10}), dem=[1,2,3,4,5,6].map(function(i){return D.ngayLam.filter(function(d){return new Date(d+'T12:00:00').getDay()===i}).length});
+  h+=tkCard('Vắng trung bình theo thứ trong tuần (công / ngày)',dhSvgCotX(tn,so.map(function(v,i){return dem[i]?Math.round(v/dem[i]*10)/10:0}),0,M,{w:760,h:160,so:1,khongKS:1}),'Thứ 2 hoặc thứ 7 cao hẳn thường là nghỉ nối cuối tuần – nên nhắc nhở hoặc xếp lịch phép.');
+  /* người vắng nhiều */
+  if(dd.top.length) h+=tkCard('Người vắng nhiều nhất tháng',tkBang([['Họ tên'],['Xưởng'],['Công vắng',1],['Trong đó không lương / không phép',1],['Số lần',1]],dd.top.map(function(p){return [[esc(p.ten),esc(tkTenX(D,p.mx)),qtSo(p.vang,1),p.nkl?tkTo(p.nkl,1,3,qtSo(p.nkl,1)):'',p.lan]]})),'Không tính nghỉ lễ, thai sản. Nghỉ phép năm nhiều chưa chắc là vấn đề – cần xem cột không lương / không phép.');
+  if(dd.muon3.length) h+=tkCard('Đi muộn từ 3 lần trở lên trong tháng',tkBang([['Họ tên'],['Xưởng'],['Số lần',1]],dd.muon3.map(function(p){return [[esc(p.ten),esc(tkTenX(D,p.mx)),p.lan]]})),'Đi muộn nhiều lần nên nhắc riêng trước khi ghi vi phạm.');
+  return h; }
+
+/* ---------- Báo cơm ---------- */
+function tkVeCom(D){
+  var c=D.com; if(!c) return '<div class="alert a-wn">Chưa tính được phần báo cơm.</div>';
+  var M=dhMau(), thu=D.xuong.map(function(x){return x[0]}), sx=[], khac=[], h='', nx=[], cao=[];
+  (c.x||[]).forEach(function(x){ (thu.indexOf(x.mx)>=0?sx:khac).push(x); });
+  sx.sort(function(a,b){return thu.indexOf(a.mx)-thu.indexOf(b.mx)}); khac.sort(function(a,b){return b.an-a.an});
+  var dong=function(x){ var t=x.an+x.khong+x.chua, p=t?x.chua/t*100:0; if(p>5&&x.chua>=5) cao.push(x.ten.replace(/^Xưởng /,'')+' '+x.chua+' lượt ('+qtSo(p,0)+'%)'); return [[esc(x.ten.replace(/^Xưởng /,'')),x.soNgay,qtSo(x.an,0),qtSo(x.soNgay?x.an/x.soNgay:0,1),x.khong,tkTo(p,2.01,5.01,String(x.chua)),tkTo(p,2.01,5.01,qtSo(p,1)+'%')]]; };
+  var tong=function(a,ten){ var t={an:0,khong:0,chua:0}; a.forEach(function(x){t.an+=x.an;t.khong+=x.khong;t.chua+=x.chua}); var n=t.an+t.khong+t.chua; return [[ten,'',qtSo(t.an,0),'',t.khong,t.chua,tkPct(t.chua,n)],'dh-khoi']; };
+  var hang=sx.map(dong); if(sx.length) hang.push(tong(sx,'Tổng xưởng sản xuất')); khac.forEach(function(x){hang.push(dong(x))}); if(khac.length) hang.push(tong(khac,'Tổng văn phòng, Hà Nội, khác'));
+  var T=tkTongCom(D), n=T.an+T.khong+T.chua; if(cao.length) nx.push('Không báo nhiều (trên 5%): '+cao.join(', ')+'.');
+  h+=tkCard('Báo cơm theo xưởng – tháng '+D.thang.slice(5)+(c.daTongKet?' (đã tổng kết)':''),tkBang([['Xưởng / bộ phận'],['Ngày có cơm',1],['Suất ăn',1],['Suất / ngày',1],['Báo không ăn',1],['Không báo',1],['% không báo',1]],hang,['Toàn công ty','',qtSo(T.an,0),'',T.khong,T.chua,tkPct(T.chua,n)]),
+    '<b>Không báo</b> = người có trong danh sách ăn của xưởng nhưng tới giờ chốt vẫn chưa đăng ký ăn hay không ăn (đếm theo lượt-người-ngày). Bếp phải đoán số suất cho những người này → thừa hoặc thiếu cơm. Mục tiêu dưới 2%; trên 5% là đỏ. Nhóm báo tổng (Hà Nội…) không có người lẻ nên không có "không báo".',nx);
+  if(c.daTongKet) return h+'<div class="dh-ghi">Tháng đã tổng kết: chi tiết từng người, từng ngày nằm ở file lưu trên Drive (tab Báo cơm). Ở đây chỉ còn số tổng.</div>';
+  var ngs=Object.keys(c.ngay||{}).sort();
+  if(ngs.length){
+    h+=tkCard('Theo ngày: ăn / không ăn / không báo (lượt người)','<div style="font-size:11.5px;color:var(--ink3)"><span style="color:'+M.teal+'">■</span> ăn · <span style="color:'+M.xam+'">■</span> báo không ăn · <span style="color:'+M.do+'">■</span> không báo</div>'+
+      dhSvgStack(ngs.map(function(d){var o=c.ngay[d];return [dhNg(d)+' '+['CN','T2','T3','T4','T5','T6','T7'][new Date(d+'T12:00:00').getDay()],[[M.teal,o.an,'Ăn'],[M.xam,o.khong,'Không ăn'],[M.do,o.chua,'Không báo']]]}),M,{L:90}),
+      'Đếm theo từng người có tên (không gồm nhóm báo tổng). Phần đỏ dài ở một ngày = hôm đó nhiều người quên báo – nhắc trưởng xưởng trước giờ chốt.');
+  }
+  if(c.chua&&c.chua.length) h+=tkCard('Người không báo cơm nhiều nhất ('+(c.soNguoiChua||c.chua.length)+' người có ít nhất 1 lần)',tkBang([['Họ tên'],['Xưởng'],['Số lần',1],['Các ngày']],c.chua.map(function(p){return [[esc(p.ten),esc(String(p.xuong).replace(/^Xưởng /,'')),tkTo(p.lan,2,4,String(p.lan)),p.ngay.map(dhNg).join(', ')]]})),
+    'Người không báo 2 lần trở lên nên được trưởng xưởng nhắc. Nếu người đó đã nghỉ việc / chuyển xưởng mà vẫn trong danh sách ăn thì sửa ở tab Báo cơm.');
+  return h; }
+
+/* ---------- Công đoạn ---------- */
+function tkVeCD(D){
+  var c=D.cd; if(!c) return '<div class="alert a-wn">Chưa tính được phần công đoạn.</div>';
+  var M=dhMau(), xs=D.xuong.filter(function(x){return c.x[x[0]]||c.trangThai[x[0]]}), h='', nx=[], thap=[], choD=[], t={sl:0,gio:0,chuan:0,dung:0,cho:0,tc:0,tre:0,dong:0};
+  var bang=xs.map(function(x){ var o=c.x[x[0]]||{sl:0,gio:0,chuan:0,dung:0,nguoi:0,hs:null}, st=c.trangThai[x[0]]||{}, dong=Object.keys(st).reduce(function(a,k){return a+st[k]},0), cho=st['Chờ duyệt']||0, tc=st['Từ chối']||0, tre=c.nhapTre[x[0]]||0, pd=o.gio?o.dung/o.gio*100:0;
+    t.sl+=o.sl; t.gio+=o.gio; t.chuan+=o.chuan; t.dung+=o.dung; t.cho+=cho; t.tc+=tc; t.tre+=tre; t.dong+=dong;
+    if(o.hs!=null&&o.hs<70) thap.push(x[1].replace(/^Xưởng /,'')+' '+qtSo(o.hs,0)+'%');
+    if(dong&&cho/dong>0.15) choD.push(x[1].replace(/^Xưởng /,'')+' '+cho+' dòng ('+tkPct(cho,dong,0)+')');
+    return [[esc(x[1].replace(/^Xưởng /,'')),o.nguoi||'',qtSo(o.sl,0),qtSo(o.gio,0),qtSo(o.chuan,0),o.hs==null?'–':tkTo(100-o.hs,15.01,30.01,qtSo(o.hs,1)+'%'),o.dung?qtSo(o.dung,1)+' ('+qtSo(pd,1)+'%)':'',tkTo(dong?cho/dong*100:0,10.01,20.01,String(cho)),tc||'',tre||'']]; });
+  if(thap.length) nx.push('Hiệu suất thô dưới 70%: '+thap.join(', ')+' – xem định mức (tab Định mức) hoặc giờ chờ việc.'); if(choD.length) nx.push('Còn nhiều dòng chờ duyệt: '+choD.join(', ')+' – số sẽ tăng khi duyệt xong.');
+  h+=tkCard('Sản lượng và hiệu suất theo xưởng – tháng '+D.thang.slice(5),tkBang([['Xưởng'],['Người',1],['Sản lượng',1],['Giờ có mặt',1],['Giờ chuẩn',1],['Hiệu suất thô',1],['Giờ dừng (% giờ)',1],['Chờ duyệt',1],['Từ chối',1],['Nhập trễ (lượt)',1]],bang,
+    ['Tổng',' ',qtSo(t.sl,0),qtSo(t.gio,0),qtSo(t.chuan,0),t.gio?qtSo(t.chuan/t.gio*100,1)+'%':'–',t.dung?qtSo(t.dung,1):'',t.cho,t.tc||'',t.tre||'']),
+    '<b>Giờ chuẩn</b> = Σ (sản lượng đạt ÷ định mức giờ của công đoạn) – số giờ đáng lẽ cần nếu làm đúng định mức. <b>Giờ có mặt</b> theo chấm công (8h/ngày, nửa ngày 4h, đi muộn trừ giờ) của những ngày người đó có nhập sản lượng. <b>Hiệu suất thô</b> = giờ chuẩn ÷ giờ có mặt; dưới 85% vàng, dưới 70% đỏ. "Thô" vì chưa bỏ người mới / học việc như KPI, nên thường thấp hơn điểm Hiệu suất trong KPI. Sản lượng chỉ tính dòng <b>đã chốt</b>; dòng chờ duyệt nhiều thì số còn thay đổi.',nx);
+  /* bullet hiệu suất */
+  var rows=xs.filter(function(x){return c.x[x[0]]&&c.x[x[0]].hs!=null}).map(function(x){var o=c.x[x[0]];return {ten:x[1].replace(/^Xưởng /,''),pct:Math.round(o.hs),phu:qtSo(o.chuan,0)+'/'+qtSo(o.gio,0)+' giờ'}});
+  if(rows.length) h+=tkCard('Hiệu suất thô từng xưởng so với 100% định mức',dhSvgBullet(rows,M,{L:150}),'Vạch đen = 100% (làm đúng định mức). Nền đỏ < 85%, vàng 85–100%, xanh ≥ 100%. Thanh = hiệu suất thực tế của xưởng.');
+  /* nhiệt ngày */
+  var hang=xs.filter(function(x){return c.hsNgay[x[0]]}).map(function(x){return {ten:x[1].replace(/^Xưởng /,''),ma:x[0]}});
+  if(hang.length) h+=tkCard('Hiệu suất thô theo ngày × xưởng',dhSvgHeatX(hang,D.ngayLam,function(r,d){var v=(c.hsNgay[r.ma]||{})[d];return v==null?null:Math.round(v)},M),'Mỗi ô = hiệu suất thô của xưởng ngày đó. Ô xám = chưa có sản lượng đã chốt (chưa nhập hoặc chưa duyệt). Ngày đỏ lẻ tẻ: xem có chờ vật tư / máy hỏng không; đỏ cả hàng: định mức xưởng đó có thể đang đặt quá chặt hoặc nhập thiếu.');
+  /* Pareto dừng */
+  var ly=(c.lyDo||[]).slice(0,10);
+  if(ly.length) h+=tkCard('Lý do dừng máy / chờ việc (Pareto, giờ)',dhSvgPareto(ly.map(function(x){return [x.ly,Math.round(x.gio*10)/10]}),M),'Cột = số giờ dừng của từng lý do, đường xanh = % cộng dồn. Các cột <b>đỏ</b> (trước mốc 80%) là số ít lý do gây phần lớn thời gian dừng – xử lý chúng trước.');
+  else h+=tkCard('Lý do dừng máy / chờ việc','<div class="dh-ghi">Tháng này chưa có dòng sản lượng nào ghi giờ dừng. Nếu thực tế có chờ vật tư / hỏng máy mà không ghi thì hiệu suất thấp sẽ không giải thích được – nên nhắc các xưởng ghi giờ dừng + lý do.</div>');
+  /* chi tiết công đoạn theo xưởng */
+  var ct=xs.map(function(x){ var a=(c.ds||[]).filter(function(o){return o.mx===x[0]}).sort(function(p,q){return q.sl-p.sl}); if(!a.length) return '';
+    return '<details style="margin-top:6px"><summary style="cursor:pointer;font-weight:600">'+esc(x[1])+' – '+a.length+' công đoạn</summary>'+tkBang([['Công đoạn'],['Người',1],['Sản lượng',1],['Lỗi KCS',1],['Định mức / giờ',1],['Giờ chuẩn',1],['Giờ có mặt (chia)',1],['Hiệu suất',1]],
+      a.map(function(o){return [[esc(o.ten)+' <span style="color:var(--ink3);font-size:11px">'+esc(o.ma)+'</span>',o.nguoi,qtSo(o.sl,0),o.loi||'',o.dm?qtSo(o.dm,1):'<span style="color:var(--amber)">chưa có</span>',qtSo(o.chuan,1),qtSo(o.gio,1),o.hs==null?'–':tkTo(100-o.hs,15.01,30.01,qtSo(o.hs,0)+'%')]]}))+'</details>'; }).join('');
+  h+=tkCard('Chi tiết từng công đoạn (bấm tên xưởng để mở)',ct||'<div class="dh-ghi">Chưa có sản lượng đã chốt.</div>','Một người làm nhiều công đoạn trong ngày thì giờ có mặt được chia cho từng công đoạn theo tỷ lệ giờ chuẩn – nên hiệu suất từng công đoạn chỉ để so sánh tương đối. Công đoạn hiệu suất rất cao (trên 130%) hoặc rất thấp (dưới 50%) nhiều ngày: xem lại định mức ở tab Định mức.');
+  return h; }
+
+/* ---------- Định mức (dùng Phân tích định mức sẵn có, 3 tháng gần nhất tới tháng chọn) ---------- */
+var TK_DM_NHAN={do:['Lỏng nhiều','var(--red)'],vang:['Hơi lỏng','var(--amber)'],nhe:['Lỏng nhẹ','var(--cyan)'],sat:['Sát mốc','var(--green)'],chat:['Chặt','#7a6bd6']};
+function tkVeDM(D){
+  var R=TKDM[TKThang]; if(!R){ tkTaiDM(); return '<div class="pdesc">Đang chạy Phân tích định mức (3 tháng tới tháng '+TKThang.slice(5)+')… có thể mất 10–30 giây.</div>'; }
+  if(R.loi) return '<div class="alert a-bd">'+esc(R.loi)+' <button class="btn sm" type="button" onclick="TKDM[TKThang]=null;tkVe()">Thử lại</button></div>';
+  var M=dhMau(), ds=R.ds||[], xs=D.xuong.filter(function(x){return ds.some(function(k){return k.maXuong===x[0]})}), h='', nx=[];
+  var mau={do:M.do,vang:M.cam,nhe:M.lam,sat:M.xanh,chat:'#7a6bd6'}, ks=['do','vang','nhe','sat','chat'];
+  var rows=xs.map(function(x){ var a=ds.filter(function(k){return k.maXuong===x[0]&&k.soCoData>=2}); return [x[1].replace(/^Xưởng /,''),ks.map(function(k){return [mau[k],a.filter(function(z){return z.nhan===k}).length,TK_DM_NHAN[k][0]]})]; });
+  var tong=ks.map(function(k){return ds.filter(function(z){return z.nhan===k&&z.soCoData>=2}).length});
+  rows.push(['Tổng',ks.map(function(k,i){return [mau[k],tong[i],TK_DM_NHAN[k][0]]}),1]);
+  if(tong[0]) nx.push(tong[0]+' công đoạn định mức lỏng nhiều (người khá vượt 110%) – nên nâng định mức.');
+  if(tong[4]) nx.push(tong[4]+' công đoạn định mức chặt (người khá dưới 87%) – kiểm tra lại cách làm / máy trước khi kết luận.');
+  h+=tkCard('Định mức các xưởng: lỏng hay chặt? (số công đoạn)','<div style="font-size:11.5px;color:var(--ink3)">'+ks.map(function(k){return '<span style="color:'+mau[k]+'">■</span> '+TK_DM_NHAN[k][0]}).join(' · ')+'</div>'+dhSvgStack(rows,M,{L:150,pct:1,dv:'CĐ'}),
+    'Mỗi thanh = 100% công đoạn của xưởng. Lấy từ <b>Phân tích định mức</b> (cùng công thức với tab đó, 3 tháng gần nhất). Với mỗi công đoạn, xem hiệu suất của <b>người khá</b> (nhóm 25% giỏi nhất, không tính người mới 2 tháng và ngày học việc). Mốc mong muốn: người khá đạt 90%. <b>Lỏng nhiều</b> &gt; 110%, <b>hơi lỏng</b> 95–110%, <b>lỏng nhẹ</b> 93–95%, <b>sát mốc</b> 87–93%, <b>chặt</b> &lt; 87%. Chỉ đếm công đoạn có từ 2 người có dữ liệu.',nx);
+  var bangDM=function(a){ return tkBang([['Xưởng'],['Công đoạn'],['Đánh giá'],['Định mức / giờ',1],['Người có dữ liệu',1],['Trung vị',1],['Người khá',1],['Gợi ý',1]],a.map(function(k){var n=TK_DM_NHAN[k.nhan]; return [[esc(tkTenX(D,k.maXuong)),esc(k.tenCD)+(k.itNguoi?' <span style="color:var(--amber);font-size:11px">ít người</span>':''),'<b style="color:'+n[1]+'">'+n[0]+'</b>',qtSo(k.dinhMuc,1),k.soCoData,qtSo(k.trungVi,0)+'%',qtSo(k.kha,0)+'%',k.dmGoiY?qtSo(k.dmGoiY,1)+' (+'+k.chinh+'%)':'']]})); };
+  var ds2=ds.filter(function(k){return k.soCoData>=2&&(k.nhan==='do'||k.nhan==='vang'||k.nhan==='chat')}).sort(function(a,b){return xs.map(function(x){return x[0]}).indexOf(a.maXuong)-xs.map(function(x){return x[0]}).indexOf(b.maXuong)||b.kha-a.kha});
+  var long=ds2.filter(function(k){return k.nhan!=='chat'}), chat=ds2.filter(function(k){return k.nhan==='chat'});
+  h+=tkCard('Công đoạn định mức lỏng – nên nâng ('+long.length+')',(long.length?bangDM(long):'<div class="dh-ghi">Không có công đoạn nào định mức lỏng.</div>')+
+    (chat.length?'<details style="margin-top:8px"><summary style="cursor:pointer;font-weight:600">Công đoạn định mức chặt – người khá dưới 87% ('+chat.length+') · bấm để xem</summary>'+bangDM(chat)+'</details>':''),
+    'Gợi ý chỉ <b>nâng</b> định mức lỏng (không hạ định mức chặt – theo quyết định của chủ dự án). Công đoạn "chặt" nhiều thường do người mới, nhập thiếu sản lượng, hoặc chờ việc – kiểm tra trước khi kết luận. Sửa định mức ở tab <b>Phân tích định mức</b>. "Ít người" = dưới 3 người có dữ liệu, gợi ý kém tin cậy.')+
+    '<div style="margin:4px 2px 10px"><button class="btn sm" type="button" onclick="go(\'ptdm\')">Mở tab Phân tích định mức →</button></div>';
+  return h; }
+
+/* ---------- KPI ---------- */
+var TK_LOAI=['S','A+','A','B','C','D','Học việc'];
+function tkVeKPI(D){
+  var K=D.kpi; if(!K||!K.ky) return '<div class="alert a-wn">Chưa có KPI đã chốt.</div>';
+  var M=dhMau(), kx=K.theoKy[K.ky]||{}, xs=D.xuong.filter(function(x){return kx[x[0]]}), h='', nx=[];
+  if(K.tamTinh) h+='<div class="dh-ghi">Tháng '+D.thang.slice(5)+' đang chạy: KPI mới là <b>tạm tính</b> (sản lượng chưa nhập đủ, điểm thấp giả) nên ở đây phân tích tháng <b>'+K.ky.slice(5)+'/'+K.ky.slice(0,4)+'</b> đã chốt. Xem KPI tạm tính tháng này ở tab Bảng KPI.</div>';
+  var mau={'S':'#0b6e3b','A+':M.xanh,'A':M.teal,'B':M.lam,'C':M.cam,'D':M.do,'Học việc':M.xam,'?':M.xam};
+  var T={n:0,loai:{}}; xs.forEach(function(x){ var o=kx[x[0]]; T.n+=o.n; Object.keys(o.loai).forEach(function(l){T.loai[l]=(T.loai[l]||0)+o.loai[l]}); });
+  var ls=TK_LOAI.concat(Object.keys(T.loai).filter(function(l){return TK_LOAI.indexOf(l)<0}));
+  var rows=xs.map(function(x){ var o=kx[x[0]]; return [x[1].replace(/^Xưởng /,''),ls.map(function(l){return [mau[l]||M.xam,o.loai[l]||0,l]})]; });
+  rows.push(['Tổng',ls.map(function(l){return [mau[l]||M.xam,T.loai[l]||0,l]}),1]);
+  h+=tkCard('Xếp loại KPI theo xưởng – tháng '+K.ky.slice(5)+'/'+K.ky.slice(0,4)+(K.ky!==D.thang?' (tháng đã chốt gần nhất)':''),'<div style="font-size:11.5px;color:var(--ink3)">'+ls.filter(function(l){return T.loai[l]}).map(function(l){return '<span style="color:'+(mau[l]||M.xam)+'">■</span> '+l+' '+T.loai[l]}).join(' · ')+'</div>'+dhSvgStack(rows,M,{L:150,pct:1,dv:'người'}),
+    'Mỗi thanh (dài bằng nhau) = 100% người của xưởng chia theo xếp loại (S → D, Học việc). Lấy từ bảng KPI đã chốt (KPIThang). Xưởng có nhiều C, D: xem bảng điểm 4 phần bên dưới để biết phần nào kéo xuống.');
+  /* điểm 4 phần + xu hướng */
+  var r1=function(v){return qtSo(v,1)}, bang=xs.map(function(x){ var o=kx[x[0]], tr=K.dsKy.map(function(k){var z=(K.theoKy[k]||{})[x[0]];return z&&z.n?z.tong/z.n:null});
+    var c4=[o.hs/o.n,o.cl/o.n,o.tt/o.n,o.at/o.n], mn=Math.min.apply(null,c4), tt=tr[tr.length-1], tr0=tr.length>1?tr[tr.length-2]:null;
+    if(tr0!=null&&tt!=null&&tt-tr0<=-5) nx.push(x[1].replace(/^Xưởng /,'')+' giảm '+qtSo(tr0-tt,1)+' điểm so với tháng trước.');
+    return [[esc(x[1].replace(/^Xưởng /,'')),o.n].concat(c4.map(function(v){return v===mn&&v<95?'<b style="color:var(--amber)">'+r1(v)+'</b>':r1(v)})).concat([ '<b>'+r1(o.tong/o.n)+'</b>', tr.map(function(v){return v==null?'–':r1(v)}).join(' → ') ])]; });
+  h+=tkCard('Điểm trung bình 4 phần và xu hướng',tkBang([['Xưởng'],['Người',1],['Hiệu suất SL',1],['Chất lượng',1],['Tuân thủ',1],['An toàn',1],['Tổng KPI',1],['Xu hướng '+K.dsKy.map(function(k){return k.slice(5)}).join(' → ')]],bang),
+    'Điểm trung bình của từng phần theo bảng KPI. Ô <b style="color:var(--amber)">vàng</b> = phần thấp nhất của xưởng (khi dưới 95) – đó là chỗ cần cải thiện trước. Xu hướng = tổng KPI trung bình các tháng gần nhất.',nx);
+  /* người cần chú ý */
+  var ds=K.tut.map(function(p){return [[esc(p.ten),esc(tkTenX(D,p.mx)),'<b style="color:var(--red)">Tụt '+esc(p.tu)+' → '+esc(p.den)+'</b>',qtSo(p.tong,1)]]})
+    .concat(K.d2.map(function(p){return [[esc(p.ten),esc(tkTenX(D,p.mx)),'<b style="color:var(--red)">D hai tháng liền</b>',qtSo(p.tong,1)]]}))
+    .concat(K.len.map(function(p){return [[esc(p.ten),esc(tkTenX(D,p.mx)),'<b style="color:var(--green)">Lên '+esc(p.tu)+' → '+esc(p.den)+'</b>',qtSo(p.tong,1)]]}));
+  var dsN=ds.length; ds=ds.slice(0,30);
+  if(dsN) h+=tkCard('Người cần chú ý (tháng '+K.ky.slice(5)+' so với tháng '+(K.kyTruoc||'').slice(5)+') – '+K.tut.length+' tụt ≥ 2 bậc, '+K.d2.length+' loại D hai tháng, '+K.len.length+' lên ≥ 2 bậc',tkBang([['Họ tên'],['Xưởng'],['Thay đổi'],['Tổng KPI',1]],ds)+(dsN>30?'<div class="dh-ghi">… và '+(dsN-30)+' người khác (xem tab Bảng KPI).</div>':''),'Tụt từ 2 bậc trở lên hoặc loại D hai tháng liền: trưởng xưởng nên nói chuyện riêng để tìm nguyên nhân. Lên từ 2 bậc: nên ghi nhận, khen kịp thời.');
+  /* vi phạm */
+  var vp=K.viPham||[];
+  if(vp.length){ var tv=vp.reduce(function(a,x){return a+x.n},0), mv=vp.map(function(x){return x.ma});
+    h+=tkCard('Vi phạm tháng '+D.thang.slice(5)+' ('+tv+' lượt)',(vp.length<2?'':dhSvgPareto(vp.map(function(x){return [x.ten,x.n]}),M,{h:230}))+
+      tkBang([['Xưởng']].concat(mv.map(function(m){return [esc(m),1]})).concat([['Tổng',1]]),D.xuong.filter(function(x){return K.viPhamX[x[0]]}).map(function(x){var o=K.viPhamX[x[0]];return [[esc(x[1].replace(/^Xưởng /,''))].concat(mv.map(function(m){return o[m]||''})).concat([mv.reduce(function(a,m){return a+(o[m]||0)},0)])]})),
+      'Cột = số lượt vi phạm theo loại, đường = % cộng dồn. Mã: '+vp.map(function(x){return esc(x.ma)+' = '+esc(x.ten)}).join('; ')+'. Nhập sản lượng trễ (NHAPTRE) do hệ thống tự ghi khi quá hạn nhập.'); }
+  return h; }
 window.__qtDaNap=true;
 </script>

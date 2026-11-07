@@ -265,5 +265,26 @@ if (process.env.DH) {
   ok(r.don.every(o => o.pl.loai && (o.pl.loai === 'PK' || o.pl.loai === 'NOI' || o.pl.tin === 'do' || (o.pl.chuoi && o.pl.ngon && o.pl.tip && o.pl.ren))), 'mọi dòng sản xuất đều đủ 4 thông số');
 }
 
+console.log('\n07/11. Tab chính Thống kê – layThongKe (chỉ chủ sở hữu)');
+{ const tk = c.layThongKe(Town, '2026-10', true);
+  ok(tk.ok && !tk.loi && ['ns', 'dd', 'com', 'cd', 'kpi'].every(k => tk[k]), 'chủ sở hữu: đủ 5 mảng, không lỗi', tk.loi || Object.keys(tk));
+  ok(tk.xuong[0][0] === 'PHOICB' && tk.xuong.map(x => x[0]).indexOf('DG') > tk.xuong.map(x => x[0]).indexOf('HT'), 'xưởng xếp theo dòng chảy (Phôi Carbon đầu, Đóng gói sau Hoàn thiện)', tk.xuong.map(x => x[0]));
+  ok(tk.ngayLam.length >= 20 && tk.ngayLam.every(d => d.slice(0, 7) === '2026-10' && new Date(d + 'T12:00:00Z').getUTCDay() !== 0), 'ngày làm tháng 10: thứ 2 – thứ 7, không chủ nhật', tk.ngayLam.length);
+  const ns = Object.values(tk.ns.x).reduce((a, o) => a + o.dang, 0), dl = c.doc_('NhanSu').filter(x => String(x.TrangThai).trim() === 'Đang làm').length;
+  ok(ns === dl, 'nhân sự đang làm = số "Đang làm" trong Nhân sự', [ns, dl]);
+  const x = Object.values(tk.dd.x), sai = x.filter(o => o.vang < 0 || o.vang > o.cong + 1e-9 || o.ngayXN > tk.ngayLam.length);
+  ok(!sai.length && x.some(o => o.vang > 0), 'điểm danh: 0 ≤ công vắng ≤ công kế hoạch, ngày xác nhận ≤ ngày làm', sai[0]);
+  ok(Object.values(tk.dd.kyHieu).length > 0 && !('NL' in Object.fromEntries(tk.dd.top.map(p => [p.nv, 1]))), 'điểm danh: có đếm ký hiệu, NL không tính vắng');
+  ok(tk.com.daTongKet === true && tk.com.x.length > 0 && tk.com.x.every(r => r.chua >= 0), 'báo cơm tháng 10 (đã tổng kết): đọc SuatAnThang, có "không báo"', tk.com.x[0]);
+  const cd = Object.values(tk.cd.x).filter(o => o.hs != null);
+  ok(cd.length >= 5 && cd.every(o => o.hs > 0 && o.hs < 500 && o.gio > 0), 'công đoạn: hiệu suất thô = giờ chuẩn ÷ giờ có mặt (hợp lý)', cd.map(o => o.hs));
+  ok(tk.kpi.ky === '2026-09' && tk.kpi.tamTinh, 'KPI (đồng hồ 31/10 – tháng 10 đang chạy): phân tích tháng đã chốt 09/2026', [tk.kpi.ky, tk.kpi.dsKy]);
+  const c2 = G.tao(path.join(__dirname, '..', 'Code.gs'), du, '2026-11-07T19:00:00+07:00'), T2 = c2.__phienDai(vt('OWNER'));
+  const tk2 = c2.layThongKe(T2, '2026-11', true);
+  ok(tk2.ok && tk2.chuaChot && tk2.kpi.ky === '2026-10' && tk2.kpi.tamTinh && tk2.com.daTongKet === false && tk2.com.soNguoiChua > 0, 'tháng đang chạy: KPI lấy tháng chốt gần nhất, báo cơm tính từng ngày + đếm người không báo', [tk2.kpi.ky, tk2.com.soNguoiChua]);
+  const r2 = c.layThongKe(Tadm, '2026-10');
+  ok(r2.ok === false, 'tài khoản không phải chủ sở hữu (ADMIN) bị chặn', r2);
+}
+
 console.log((loi ? '\n✗ ' : '\n✓ ') + (dem - loi) + '/' + dem + ' đạt');
 process.exit(loi ? 1 : 0);

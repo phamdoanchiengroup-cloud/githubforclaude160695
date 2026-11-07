@@ -1819,6 +1819,7 @@ document.addEventListener('DOMContentLoaded',function(){gdDat(gdHienTai())});
 
 /* ===== GIAO DIỆN MỚI: điều hướng chia nhóm, thanh dưới, Việc hôm nay ===== */
 var ICON={
+  tk:'<path d="M4 20h16"/><rect x="5.5" y="11" width="3" height="7" rx=".5"/><rect x="10.5" y="6" width="3" height="12" rx=".5"/><rect x="15.5" y="9" width="3" height="9" rx=".5"/>',
   dh:'<path d="M5 4.5h14v15H5z"/><path d="M8.5 9h7M8.5 12.5h7M8.5 16h4"/>',
   qt:'<rect x="3.5" y="3.5" width="6" height="4.5" rx="1"/><rect x="14.5" y="3.5" width="6" height="4.5" rx="1"/><rect x="9" y="16" width="6" height="4.5" rx="1"/><path d="M6.5 8v3.5h11V8M12 11.5V16"/>',
   kyn:'<path d="M12 3.5l2.5 5 5.5.8-4 3.9.9 5.5-4.9-2.6-4.9 2.6.9-5.5-4-3.9 5.5-.8z"/>',
@@ -1852,7 +1853,7 @@ function svgIcon(k){return '<svg viewBox="0 0 24 24" aria-hidden="true">'+(ICON[
 /* Nhóm điều hướng: [tiêu đề, [các khóa tab]] — tab nào vai trò không có thì tự bỏ */
 var NHOM_NAV=[
   ['Hôm nay',['homnay','dash','sodo','com','cnnhap','kpica']],
-  ['Sản xuất',['duyetsl','nk','qt','dh','kcs','dd','nenep','cccn']],
+  ['Sản xuất',['duyetsl','nk','qt','dh','tk','kcs','dd','nenep','cccn']],
   ['KPI',['kpi','kpicn','kpiql']],
   ['Định mức',['dx','ptdm','cd']],
   ['Danh mục',['ns','kyn','mm','ts']],
@@ -1873,7 +1874,7 @@ var BOTBAR={
   HR:['dash','ns','dd','com']
 };
 function dsTabHienCo(){
-  var tabChiOwner={pq:1, ptdm:1, log:1, kpiql:1, qt:1, dh:1};   // qt: Quy trình sản xuất (31/10), dh: Đơn hàng (01/11) – chỉ chủ sở hữu
+  var tabChiOwner={pq:1, ptdm:1, log:1, kpiql:1, qt:1, dh:1, tk:1};   // qt: Quy trình sản xuất (31/10), dh: Đơn hàng (01/11), tk: Thống kê (07/11) – chỉ chủ sở hữu
   return TABS[ME.vaiTro].filter(function(t){ return ME.laOwner || !tabChiOwner[t[0]] || (t[0]==='qt'&&ME.vaiTro==='TP'); });   // 03/11: TP/PP xem Quy trình xưởng mình
 }
 function tenTab(k){var t=(TABS[ME.vaiTro]||[]).filter(function(x){return x[0]===k})[0];return t?t[1]:k}
@@ -2512,7 +2513,7 @@ function call(fn,args,cb){
 /* ===== ĐIỀU HƯỚNG ===== */
 var TABS={
   ADMIN:[['hd','📖 Hướng dẫn'],['homnay','Việc hôm nay'],['dash','Tổng quan'],['sodo','Sơ đồ nhà máy'],['com','Cơm trưa'],['nk','Nhật ký'],['dd','Điểm danh'],['nenep','Chấm nề nếp'],['kpi','Bảng KPI'],['kpiql','KPI Quản lý'],['dx','Duyệt định mức'],['ptdm','Phân tích định mức'],
-         ['cd','Công đoạn'],['ns','Nhân sự'],['kyn','Kỹ năng'],['qt','Quy trình sản xuất'],['dh','Đơn hàng'],['mm','Máy móc'],['ts','Trọng số'],['pq','Tài khoản'],['log','Nhật ký thao tác']],
+         ['cd','Công đoạn'],['ns','Nhân sự'],['kyn','Kỹ năng'],['qt','Quy trình sản xuất'],['dh','Đơn hàng'],['tk','Thống kê'],['mm','Máy móc'],['ts','Trọng số'],['pq','Tài khoản'],['log','Nhật ký thao tác']],
   TP:[['hd','📖 Hướng dẫn'],['homnay','Việc hôm nay'],['qt','Quy trình sản xuất'],['dash','Tổng quan'],['sodo','Sơ đồ nhà máy'],['com','Cơm trưa'],['duyetsl','Duyệt sản lượng'],['nenep','Chấm nề nếp'],['dd','Điểm danh'],['nk','Nhập nhật ký'],['kpi','KPI phòng'],['cd','Công đoạn & định mức'],
       ['ns','Nhân sự'],['kyn','Kỹ năng'],['mm','Máy móc']],
   CN:[['hd','📖 Hướng dẫn'],['cnnhap','Nhập sản lượng của tôi'],['com','Cơm trưa'],['kpica','KPI cá nhân'],['cccn','Bảng chấm công của xưởng'],['kpicn','Bảng KPI xưởng'],['kyn','Kỹ năng của tôi']],
@@ -2726,7 +2727,7 @@ function go(k,btn){
   moNav(false);
   window.scrollTo(0,0);
   tabHienTai=k;
-  ({homnay:vHomNay,hd:vHuongDan,kpiql:vKPIQuanLy,dash:vDash,nk:vNK,kpi:vKPI,kpicn:vKPICN,kpica:vKPICaNhanToi,dx:vDX,ptdm:vPTDM,cd:vCD,ns:vNS,kyn:vKN,mm:vMM,ts:vTS,pq:vPQ,log:vLog,kcs:vKCS,duyetsl:vDuyetSL,cnnhap:vCNNhap,nenep:vNeNep,dd:vDiemDanh,cccn:vCCCaNhan,sodo:vSoDo,com:vCom,qt:vQT,dh:vDH}[k])();
+  ({homnay:vHomNay,hd:vHuongDan,kpiql:vKPIQuanLy,dash:vDash,nk:vNK,kpi:vKPI,kpicn:vKPICN,kpica:vKPICaNhanToi,dx:vDX,ptdm:vPTDM,cd:vCD,ns:vNS,kyn:vKN,mm:vMM,ts:vTS,pq:vPQ,log:vLog,kcs:vKCS,duyetsl:vDuyetSL,cnnhap:vCNNhap,nenep:vNeNep,dd:vDiemDanh,cccn:vCCCaNhan,sodo:vSoDo,com:vCom,qt:vQT,dh:vDH,tk:vTK}[k])();
   capNhatDucBar();
   capNhatDem();
   try{sauKhiVeTab(arguments[2])}catch(e){}
@@ -8644,7 +8645,7 @@ function chiXemDon(){
 </script>
 <script>
 /* ===== 19. PHẦN GIAO DIỆN TẢI SAU (12/10) – SoDo.html, HoatAnh.html: chỉ tải khi cần, nhớ lại theo phiên bản ===== */
-var MANH_VER={"SoDo": "d9bc7ce73f034629", "HoatAnh": "b23cbe69d6aae56e", "AmThanh": "c690fabe4419160c", "QuyTrinh": "d91f0b4c4e"};
+var MANH_VER={"SoDo": "d9bc7ce73f034629", "HoatAnh": "b23cbe69d6aae56e", "AmThanh": "c690fabe4419160c", "QuyTrinh": "03df9e3f03"};
 var __manh={da:{},cho:{}};
 function ganManh_(nd){
   var js=[], ngoai=String(nd).replace(/<script>([\s\S]*?)<\/script>/g,function(_,x){js.push(x);return ''});
@@ -9596,7 +9597,7 @@ function hsGhiChuDong(r){
 }
 </script>
 <script>
-var KPI_BAN = '08/11/2026 00:27';
+var KPI_BAN = '08/11/2026 01:02';
 (function(){
   var cu = window.veNav;
   window.veNav = function(){
@@ -10279,7 +10280,7 @@ taiKPIKy = function () {
 /* 36b (02/11): mở Đơn hàng ở mục chỉ định (Cấu hình sản phẩm); đánh dấu đã xem tab kênh mới */
 function moCauHinhSP(v){ window.__dhMo=v||'cauhinh'; go('dh'); }
 /* 07/11 (chủ dự án): ở tab Đơn hàng thu gọn thanh cơm trưa + Tết, Rhino không che số liệu */
-(function(){ var g=go; go=function(k){ try{ document.body.classList.toggle('tab-dh',k==='dh'); }catch(e){} return g.apply(this,arguments); }; })();
+(function(){ var g=go; go=function(k){ try{ document.body.classList.toggle('tab-dh',k==='dh'||k==='tk'); }catch(e){} return g.apply(this,arguments); }; })();
 function dhDaXemTab(){ try{ var a=JSON.parse(localStorage.getItem('dhTabDaXem')||'[]'); ((window.__spMoi||{}).tabMoi||[]).forEach(function(t){ if(a.indexOf(t)<0) a.push(t); }); localStorage.setItem('dhTabDaXem',JSON.stringify(a.slice(-50))); }catch(e){} }
 </script>
 <script>
@@ -10293,6 +10294,17 @@ function vDH(){
     if(tabHienTai!=='dh')return;
     if(ok&&window.__qtDaNap){ dhTrangVe(); return; }
     $('main').innerHTML='<div class="ptitle">Đơn hàng</div><div class="alert a-bd">'+esc(msg||'Không tải được.')+' <button class="btn sm" type="button" onclick="vDH()">Thử lại</button></div>';
+  });
+}
+/* 07/11: tab chính "Thống kê" (chỉ chủ sở hữu) – cùng mảnh QuyTrinh.html */
+function vTK(){
+  if(!ME||!ME.laOwner){ $('main').innerHTML='<div class="alert a-wn">Tab này đang chỉ mở cho tài khoản chủ sở hữu.</div>'; return; }
+  if(window.__qtDaNap){ tkVe(); return; }
+  $('main').innerHTML='<div class="ptitle">Thống kê</div><div class="pdesc">Đang tải…</div>';
+  taiManh('QuyTrinh',function(ok,msg){
+    if(tabHienTai!=='tk')return;
+    if(ok&&window.__qtDaNap){ tkVe(); return; }
+    $('main').innerHTML='<div class="ptitle">Thống kê</div><div class="alert a-bd">'+esc(msg||'Không tải được.')+' <button class="btn sm" type="button" onclick="vTK()">Thử lại</button></div>';
   });
 }
 function vQT(){
