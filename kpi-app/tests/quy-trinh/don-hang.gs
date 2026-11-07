@@ -268,9 +268,11 @@ function dhDocTab_(sh, tab, nam, gioiHan) {
   if (hi < 0) return [];
   var h = dau[hi].map(function(x) { return String(x == null ? '' : x).trim().toUpperCase(); });
   var tim = function(ks) { for (var i = 0; i < h.length; i++) for (var k = 0; k < ks.length; k++) if (h[i].indexOf(ks[k]) >= 0) return i; return -1; };
-  var cTen = tim(['LOẠI HÀNG']), cPhoi = tim(['LOẠI PHÔI']), cSL = tim(['SỐ LƯỢNG ĐẶT', 'SL ĐẶT']), cThieu = tim(['CÒN THIẾU']), cDL = tim(['DEADLINE']), cCT = tim(['CHÚ THÍCH']), cGiao = tim(['CÓ THỂ GIAO']), cTra = tim(['ĐÃ TRẢ KHÁCH', 'HÀNG ĐI']);
+  var cTen = tim(['LOẠI HÀNG']), cPhoi = tim(['LOẠI PHÔI']), cSL = tim(['SỐ LƯỢNG ĐẶT', 'SL ĐẶT']), cThieu = tim(['CÒN THIẾU']), cDL = tim(['DEADLINE']), cCT = tim(['CHÚ THÍCH']), cKenh = tim(['KÊNH', 'NGUỒN ĐƠN']), cHanMoi = tim(['HẠN MỚI']), cGiao = tim(['CÓ THỂ GIAO']), cTra = tim(['ĐÃ TRẢ KHÁCH', 'HÀNG ĐI']);
   if (cTen < 0) cTen = 1;
-  var chang = {}, hong = {};
+  var chang = {}, hong = {}, hen = {};
+  /* 07/11 (theo ORDER·FLOW): cột "Ngày hẹn trả …" của từng công đoạn (BP60 = Phôi) */
+  h.forEach(function(x, i) { if (x.indexOf('NGÀY HẸN TRẢ') < 0) return; var k = /BP60|PHÔI/.test(x) ? 'PHOI' : /SƠN/.test(x) ? 'SON' : /TARO/.test(x) ? 'TARO' : /TIP|ĐẦU/.test(x) ? 'TIP' : /UV/.test(x) ? 'UV' : /HT|HOÀN THIỆN/.test(x) ? 'HT' : ''; if (k && hen[k] == null) hen[k] = i; });
   DH_CHANG.forEach(function(c) {
     for (var i = 0; i < h.length; i++) if (c[1].test(h[i])) {
       chang[c[0]] = i;
@@ -278,14 +280,16 @@ function dhDocTab_(sh, tab, nam, gioiHan) {
       break;
     }
   });
-  var cMax = Math.max.apply(null, [cTen, cPhoi, cSL, cThieu, cDL, cCT, cGiao, cTra].concat(Object.keys(chang).map(function(k) { return chang[k]; }), Object.keys(hong).map(function(k) { return hong[k]; }))) + 1;
+  var cMax = Math.max.apply(null, [cTen, cPhoi, cSL, cThieu, cDL, cCT, cKenh, cHanMoi, cGiao, cTra].concat(Object.keys(chang).map(function(k) { return chang[k]; }), Object.keys(hong).map(function(k) { return hong[k]; }), Object.keys(hen).map(function(k) { return hen[k]; }))) + 1;
   var v = sh.getRange(1, 1, nr, Math.max(1, cMax)).getValues();
-  var out = [], ma = '', trong = 0, uuDon = '';
+  var out = [], ma = '', trong = 0, uuDon = '', nhom = '';   // nhom: dòng tiêu đề nhóm ghi tên kênh (tab HT chép nhiều kênh vào 1 tab)
   for (var r2 = hi + 1; r2 < v.length; r2++) {
     var row = v[r2], ten = String(row[cTen] == null ? '' : row[cTen]).trim(), m0 = String(row[0] == null ? '' : row[0]).trim();
     if (!ten && !m0) { if (++trong >= 200) break; continue; }
     trong = 0;
-    if (m0 && /[0-9]/.test(m0)) { ma = m0; uuDon = dhUuTien_(m0) ? ma : ''; }   // 03/11: "ưu tiên" ở ô mã đơn -> cả đơn ưu tiên (các dòng sau cùng mã)
+    if (dhSo_(row[cSL]) <= 0) { var kn0 = dhKenhTen_(m0) || dhKenhTen_(ten); if (kn0) { nhom = kn0; continue; } }
+    if (dhLaGhiChu_(m0, ten, row)) continue;   // 07/11 (theo ORDER·FLOW): dòng ghi chú chung ("CẦN THÊM … 300PCS/TUẦN") không phải đơn, không đổi mã đơn
+    if (m0 && dhLaMa_(m0)) { ma = m0; uuDon = dhUuTien_(m0) ? ma : ''; }   // 07/11: mã nhóm không có chữ số (vd #DEMO) vẫn là mã đơn   // 03/11: "ưu tiên" ở ô mã đơn -> cả đơn ưu tiên (các dòng sau cùng mã)
     var sl = dhSo_(row[cSL]);
     if (!ten || sl <= 0) continue;
     var o = { tab: tab, kenh: DH_NHAN_TAB[tab] || tab, maDon: m0 || ma, ten: ten.replace(/\s+/g, ' '), ghiChu: [cPhoi >= 0 ? row[cPhoi] : '', cCT >= 0 ? row[cCT] : ''].map(function(x) { return String(x == null ? '' : x).replace(/\s+/g, ' ').trim(); }).filter(Boolean).join(' · ').slice(0, 300),
@@ -296,7 +300,7 @@ function dhDocTab_(sh, tab, nam, gioiHan) {
       chuThich: cCT >= 0 ? String(row[cCT] == null ? '' : row[cCT]).replace(/\s+/g, ' ').trim().slice(0, 200) : '' };
     dhMaDon_(o, nam);
     var uu = [];   // 03/11 (chủ dự án): mã có chữ "ưu tiên" ở bất kỳ ô nào của dòng (cột loại phôi, hạn mới, ghi chú…); giữ lời ghi kèm
-    for (var cu = (m0 && /[0-9]/.test(m0)) ? 1 : 0; cu < row.length; cu++) { var t = row[cu]; if (typeof t === 'string' && dhUuTien_(t)) { t = t.replace(/\s+/g, ' ').trim(); if (uu.indexOf(t) < 0) uu.push(t); } }
+    for (var cu = (m0 && dhLaMa_(m0)) ? 1 : 0; cu < row.length; cu++) { var t = row[cu]; if (typeof t === 'string' && dhUuTien_(t)) { t = t.replace(/\s+/g, ' ').trim(); if (uu.indexOf(t) < 0) uu.push(t); } }
     if (uu.length) o.uuTien = uu.join(' · ').slice(0, 160);
     if (uuDon && o.maDon === uuDon) { o.uuDon = 1; o.uuTien = 'Cả đơn ưu tiên' + (o.uuTien ? ' · ' + o.uuTien : ''); }
     Object.keys(chang).forEach(function(k) {   // ô trống = chưa ghi (bỏ qua), khác với ghi số 0
@@ -304,10 +308,29 @@ function dhDocTab_(sh, tab, nam, gioiHan) {
       if (typeof cell === 'number' || /^\s*\d+(\.\d+)?\s*$/.test(String(cell == null ? '' : cell))) o.qua[k] = Math.min(sl, Math.max(0, dhSo_(cell)));
     });
     Object.keys(hong).forEach(function(k) { var x = dhSo_(row[hong[k]]); if (x > 0) o.hong[k] = Math.min(sl, x); });
+    Object.keys(hen).forEach(function(k) { var x = dhNgay_(row[hen[k]], nam); if (x) (o.hen = o.hen || {})[k] = x; });
+    if (cHanMoi >= 0) { var hm = dhNgay_(row[cHanMoi], nam); if (hm) o.hanMoi = hm; }
+    if (cKenh >= 0) { var kc = dhKenhTen_(row[cKenh]); if (kc) o.kenhCot = kc; }
+    if (nhom) o.kenhNhom = nhom;
     out.push(o);
   }
   return out;
 }
+/* 07/11 (theo ORDER·FLOW): dòng ghi chú chung trong Sheet đơn – có từ khóa ghi chú và ít ô có dữ liệu */
+var DH_GHI_CHU = /CHÚ Ý|\bNOTE\b|TẤT CẢ CÁC GẬY|DÙNG CHO|CẦN THÊM|STOCK KHO|CẬP NHẬT|TRỌNG LƯỢNG|1 TUẦN|\/TUẦN|HỢP ĐỒNG|\bHSG\b/;
+function dhLaGhiChu_(m0, ten, row) {
+  var t = (String(m0 || '') + ' ' + String(ten || '')).toUpperCase(); if (!DH_GHI_CHU.test(t)) return false;
+  var n = 0; for (var i = 0; i < row.length && n <= 4; i++) if (String(row[i] == null ? '' : row[i]).trim() !== '') n++;
+  return n <= 4;
+}
+/* 07/11: chữ trong ô -> tên tab kênh chuẩn (DEALER, KHO, … hoặc nhãn "Dealer", "POD – A.Bách") */
+function dhKenhTen_(t) {
+  var c = plChuan_(String(t == null ? '' : t)).replace(/[^A-Z0-9]/g, ''); if (!c || c.length > 24) return '';
+  for (var i = 0; i < DH_TABS.length; i++) { var a = DH_TABS[i]; if (plChuan_(a).replace(/[^A-Z0-9]/g, '') === c || plChuan_(DH_NHAN_TAB[a] || '').replace(/[^A-Z0-9]/g, '') === c) return a; }
+  return '';
+}
+/* mã đơn: ngắn, không phải câu ghi chú (ORDER·FLOW giữ cả mã không có chữ số như #DEMO) */
+function dhLaMa_(m0) { m0 = String(m0 || '').trim(); return !!m0 && m0.length <= 40 && m0.split(/\s+/).length <= 4 && !DH_GHI_CHU.test(m0.toUpperCase()); }
 /* 03/11: nhận chữ "ưu tiên" (hoa / thường, có / không dấu) */
 function dhUuTien_(t) { return /\bUU\s*TIEN\b/.test(plChuan_(t)); }
 /* Mã đơn "RHINO-22/06" -> người đặt + ngày đặt (giống web app đơn hàng); deadline trước ngày đặt -> sang năm sau */
@@ -373,6 +396,7 @@ function dhDocDon_(lamMoi) {
 /* Tab "Đơn hàng → xưởng": dòng đơn còn thiếu + phân loại + từ điển nhãn */
 function layDonHangXuong(token, lamMoi) {
   var q = qtQuyen_(token); if (q.loi) return q.loi;
+  try { dhCaiEmail_(); } catch (eT) {}   // 07/11: tự cài lịch email 8h (chủ sở hữu bật / tắt ở ⚙ Công suất)
   var d;
   try { d = dhDocDon_(!!lamMoi); }
   catch (e) { return sach_({ ok: false, msg: 'Không đọc được Sheet "Trạng thái đơn hàng": ' + (e && e.message || e) + '. Kiểm tra tài khoản chạy web còn được chia sẻ Sheet đó.' }); }
@@ -388,7 +412,7 @@ function layDonHangXuong(token, lamMoi) {
   var uu = (d.uu || []).map(function(o) { var x = {}; for (var k in o) x[k] = o[k]; x.tenChuan = plChuan_(o.ten); x.pl = plPhanLoai_(o.ten, o.ghiChu, sua['K:' + x.tenChuan]); return x; });
   return sach_({ ok: true, luc: d.luc, don: don, uu: uu, nhan: chNhan_(), tabMoi: d.tabMoi || [], tabBo: d.tabBo || [],
     kenhDs: DH_TABS.map(function(t) { return [t, DH_NHAN_TAB[t] || t]; }).concat((d.tabMoi || []).map(function(t) { return [t, t]; })),   // 07/11: đủ mọi kênh (kể cả kênh chưa có đơn) cho bộ lọc + báo cáo
-    cs: dhCongSuat_() });
+    cs: dhCongSuat_(), email: dhEmailTT_() });
 }
 
 /* Chủ sở hữu sửa phân loại 1 tên hàng (áp cho mọi đơn cùng tên). bo = true -> xóa bản sửa, về tự động */
@@ -678,7 +702,21 @@ function demSanPhamMoi(token) {
    Sheet ẩn DonHangSanLuong (trong file KPI): Ngay | TuNgay | Ra | SX | Vao | Ton | Mat | Tang | ChiTiet – giữ lâu dài (bản chụp chỉ giữ 30 ngày). */
 var DH_SL = 'DonHangSanLuong', DH_SL_COT = ['Ngay', 'TuNgay', 'Ra', 'SX', 'Vao', 'Ton', 'Mat', 'Tang', 'ChiTiet'];
 function dhLoaiSL_(loai) { return loai === 'GAY' || loai === 'CHUOI' || loai === 'NGON' || loai === 'PK' || loai === 'NOI' ? loai : 'KHAC'; }
+/* 07/11 (theo ORDER·FLOW): gộp các dòng trùng mã + tên + tab (#2, #3…) trước khi so -> xóa / chèn 1 dòng trùng không làm lệch sản lượng */
+function dhGop_(rows, boHT) {
+  var m = {}, out = [];
+  rows.forEach(function(r) {
+    if (boHT && r[6] === 1) return;
+    var k = String(r[0]).replace(/#\d+$/, ''), g = m[k];
+    if (!g) { g = m[k] = [k, 0, 0, Number(r[3]) || 0, r[4], r[5], 0, null]; g.n = 0; g.ht = 0; g.co7 = 0; out.push(g); }
+    g[1] += Number(r[1]) || 0; g[2] += Number(r[2]) || 0; g.n++;
+    if (r[6] === 1) { g.ht++; if (r[7] != null) { g.co7 = 1; g[7] = (g[7] || 0) + (Number(r[7]) || 0); } }
+  });
+  out.forEach(function(g) { g[6] = g.ht && g.ht === g.n ? 1 : 0; if (!g[6] || !g.co7) g[7] = null; });
+  return out;
+}
 function dhTinhSanLuong_(cu, nay, plCache, sua) {   // cu, nay: mảng dòng bản chụp [k, sl, thieu, giao, dl, st]
+  cu = dhGop_(cu, true); nay = dhGop_(nay, false);
   var m = {}, kq = { ra: 0, sx: 0, vao: 0, ton: 0, mat: 0, tang: 0, kenh: {}, loai: {}, don: {}, ht: { n: 0, sp: 0, thieu: 0 } };
   cu.forEach(function(r) { m[r[0]] = r; });
   var co = {};
@@ -731,19 +769,52 @@ function dhDocSanLuong_() {   // -> [[ngay, tuNgay, ra, sx, vao, ton, mat, tang,
 /* ===== 07/11 (chủ dự án + quan-ly-van-hanh): công suất và ngày nghỉ để phân tích độ hợp lý số lượng / deadline =====
    350 sp/ngày cho mọi hàng sản xuất (gậy + chuôi lẻ + ngọn lẻ; không tính phụ kiện, tay nối); làm thứ 2 – thứ 7; ngày lễ điền sẵn theo luật, chủ sở hữu sửa trên web. */
 var DH_CS_MAC = 350;
-var DH_NGHI_MAC = [   // gợi ý – chủ sở hữu sửa theo lịch nghỉ của công ty
-  ['2027-01-01', 'Tết Dương lịch'],
-  ['2027-02-04', 'Tết Nguyên đán'], ['2027-02-05', 'Tết Nguyên đán'], ['2027-02-06', 'Tết Nguyên đán (mùng 1)'], ['2027-02-08', 'Tết Nguyên đán'], ['2027-02-09', 'Tết Nguyên đán'], ['2027-02-10', 'Tết Nguyên đán'],
-  ['2027-04-16', 'Giỗ Tổ Hùng Vương (10/3 âm)'], ['2027-04-30', 'Giải phóng miền Nam'], ['2027-05-01', 'Quốc tế Lao động'],
-  ['2027-09-02', 'Quốc khánh'], ['2027-09-03', 'Quốc khánh (nghỉ kèm)']
-];
+/* 07/11 (theo ORDER·FLOW): ngày lễ tự tính mọi năm – Tết Dương lịch, Tết Nguyên đán (29 Tết → mùng 3, 5 ngày), Giỗ Tổ 10/3 âm, 30/4, 1/5, 2/9 + 3/9.
+   Âm lịch → dương lịch theo thuật toán Hồ Ngọc Đức (múi giờ +7). Chủ sở hữu thêm ngày nghỉ riêng của công ty; ngày lễ tự tính nào công ty vẫn làm thì ghi "làm bù". */
+function dhJd_(d, m, y) { var a = Math.floor((14 - m) / 12), yy = y + 4800 - a, mm = m + 12 * a - 3; return d + Math.floor((153 * mm + 2) / 5) + 365 * yy + Math.floor(yy / 4) - Math.floor(yy / 100) + Math.floor(yy / 400) - 32045; }
+function dhTuJd_(jd) { var a = jd + 32044, b = Math.floor((4 * a + 3) / 146097), c = a - Math.floor(b * 146097 / 4), d = Math.floor((4 * c + 3) / 1461), e = c - Math.floor(1461 * d / 4), m = Math.floor((5 * e + 2) / 153);
+  return [e - Math.floor((153 * m + 2) / 5) + 1, m + 3 - 12 * Math.floor(m / 10), b * 100 + d - 4800 + Math.floor(m / 10)]; }
+function dhSoc_(k) {
+  var T = k / 1236.85, T2 = T * T, T3 = T2 * T, dr = Math.PI / 180, jd = 2415020.75933 + 29.53058868 * k + 0.0001178 * T2 - 0.000000155 * T3;
+  jd += 0.00033 * Math.sin((166.56 + 132.87 * T - 0.009173 * T2) * dr);
+  var M = 359.2242 + 29.10535608 * k - 0.0000333 * T2 - 0.00000347 * T3, Mp = 306.0253 + 385.81691806 * k + 0.0107306 * T2 + 0.00001236 * T3, F = 21.2964 + 390.67050646 * k - 0.0016528 * T2 - 0.00000239 * T3;
+  var C = (0.1734 - 0.000393 * T) * Math.sin(M * dr) + 0.0021 * Math.sin(2 * dr * M) - 0.4068 * Math.sin(Mp * dr) + 0.0161 * Math.sin(2 * dr * Mp) - 0.0004 * Math.sin(3 * dr * Mp) + 0.0104 * Math.sin(2 * dr * F)
+    - 0.0051 * Math.sin(dr * (M + Mp)) - 0.0074 * Math.sin(dr * (M - Mp)) + 0.0004 * Math.sin(dr * (2 * F + M)) - 0.0004 * Math.sin(dr * (2 * F - M)) - 0.0006 * Math.sin(dr * (2 * F + Mp)) + 0.0010 * Math.sin(dr * (2 * F - Mp)) + 0.0005 * Math.sin(dr * (2 * Mp + M));
+  var delta = T < -11 ? 0.001 + 0.000839 * T + 0.0002261 * T2 - 0.00000845 * T3 - 0.000000081 * T * T3 : -0.000278 + 0.000265 * T + 0.000262 * T2;
+  return Math.floor(jd + C - delta + 0.5 + 7 / 24);
+}
+function dhKinhDo_(jdn) { var T = (jdn - 2451545.5 - 7 / 24) / 36525, T2 = T * T, dr = Math.PI / 180, M = 357.52910 + 35999.05030 * T - 0.0001559 * T2 - 0.00000048 * T * T2, L0 = 280.46645 + 36000.76983 * T + 0.0003032 * T2;
+  var DL = (1.914600 - 0.004817 * T - 0.000014 * T2) * Math.sin(dr * M) + (0.019993 - 0.000101 * T) * Math.sin(2 * dr * M) + 0.000290 * Math.sin(3 * dr * M), L = (L0 + DL) * dr;
+  L = L - Math.PI * 2 * Math.floor(L / (Math.PI * 2)); return Math.floor(L / Math.PI * 6); }
+function dhThang11_(y) { var k = Math.floor((dhJd_(31, 12, y) - 2415021) / 29.530588853), nm = dhSoc_(k); return dhKinhDo_(nm) >= 9 ? dhSoc_(k - 1) : nm; }
+function dhNhuan_(a11) { var k = Math.floor((a11 - 2415021.076998695) / 29.530588853 + 0.5), last = 0, i = 1, arc = dhKinhDo_(dhSoc_(k + i)); do { last = arc; i++; arc = dhKinhDo_(dhSoc_(k + i)); } while (arc !== last && i < 14); return i - 1; }
+function dhAmSangDuong_(d, m, y) {   // -> 'yyyy-mm-dd' (tháng không nhuận)
+  var a11, b11; if (m < 11) { a11 = dhThang11_(y - 1); b11 = dhThang11_(y); } else { a11 = dhThang11_(y); b11 = dhThang11_(y + 1); }
+  var k = Math.floor((a11 - 2415021.076998695) / 29.530588853 + 0.5), off = m - 11; if (off < 0) off += 12;
+  if (b11 - a11 > 365) { var lOff = dhNhuan_(a11); if (off >= lOff) off += 1; }
+  var r = dhTuJd_(dhSoc_(k + off) + d - 1); return r[2] + '-' + ('0' + r[1]).slice(-2) + '-' + ('0' + r[0]).slice(-2);
+}
+function dhCongNgay_(s, n) { var p = s.split('-'), t = new Date(Date.UTC(+p[0], +p[1] - 1, +p[2] + n)); return t.getUTCFullYear() + '-' + ('0' + (t.getUTCMonth() + 1)).slice(-2) + '-' + ('0' + t.getUTCDate()).slice(-2); }
+function dhLeNam_(y) {
+  var out = [[y + '-01-01', 'Tết Dương lịch'], [y + '-04-30', 'Giải phóng miền Nam'], [y + '-05-01', 'Quốc tế Lao động'], [y + '-09-02', 'Quốc khánh']];   // ngày nghỉ kèm Quốc khánh theo bảng NgayLe của công ty
+  var tet = dhAmSangDuong_(1, 1, y);
+  for (var i = -2; i <= 2; i++) out.push([dhCongNgay_(tet, i), 'Tết Nguyên đán' + (i === 0 ? ' (mùng 1)' : '')]);
+  out.push([dhAmSangDuong_(10, 3, y), 'Giỗ Tổ Hùng Vương (10/3 âm)']);
+  return out;
+}
 function dhCongSuat_() {
   var o = null; try { o = JSON.parse(PropertiesService.getScriptProperties().getProperty('DH_CONG_SUAT') || 'null'); } catch (e) {}
   if (!o || typeof o !== 'object') o = {};
   var sp = Number(o.sp); if (!(sp >= 1 && sp <= 100000)) sp = DH_CS_MAC;
-  var nghi = Array.isArray(o.nghi) ? o.nghi.filter(function(x) { return Array.isArray(x) && /^\d{4}-\d\d-\d\d$/.test(String(x[0])); }).map(function(x) { return [String(x[0]), String(x[1] || '').slice(0, 60)]; }) : DH_NGHI_MAC.slice();
-  var lam = Array.isArray(o.lam) ? o.lam.filter(function(x) { return /^\d{4}-\d\d-\d\d$/.test(String(x)); }).map(String) : [];   // chủ nhật đi làm bù
-  return { sp: sp, nghi: nghi.sort(function(a, b) { return a[0] < b[0] ? -1 : 1; }), lam: lam.sort(), macDinh: !Array.isArray(o.nghi) };
+  var re = /^\d{4}-\d\d-\d\d$/, tay = Array.isArray(o.nghi) ? o.nghi.filter(function(x) { return Array.isArray(x) && re.test(String(x[0])); }).map(function(x) { return [String(x[0]), String(x[1] || '').slice(0, 60)]; }) : [];
+  var lam = Array.isArray(o.lam) ? o.lam.filter(function(x) { return re.test(String(x)); }).map(String) : [];   // ngày làm bù (chủ nhật đi làm, hoặc ngày lễ tự tính mà công ty vẫn làm)
+  var nam = Number(Utilities.formatDate(new Date(), TZ_VN, 'yyyy')), tu = [], co = {};
+  for (var y = nam - 1; y <= nam + 1; y++) dhLeNam_(y).forEach(function(x) { tu.push(x); });
+  var le = [];   // 07/11: bảng NgayLe (lịch nghỉ công ty đang dùng cho KPI) – dòng không ghi xưởng = cả nhà máy
+  try { docAnToan_('NgayLe').forEach(function(r) { var d = ngayVN_(r.Ngay); if (re.test(d) && !String(r.MaXuong || '').trim()) le.push([d, String(r.TenLe || 'Nghỉ lễ').slice(0, 60) + ' (lịch KPI)']); }); } catch (e) {}
+  var nghi = [];
+  tay.concat(le, tu).forEach(function(x) { if (!co[x[0]]) { co[x[0]] = 1; nghi.push(x); } });
+  return { sp: sp, nghi: nghi.sort(function(a, b) { return a[0] < b[0] ? -1 : 1; }), nghiTay: tay.sort(function(a, b) { return a[0] < b[0] ? -1 : 1; }), nghiTuDong: tu.concat(le).sort(function(a, b) { return a[0] < b[0] ? -1 : 1; }), lam: lam.sort(), macDinh: !Array.isArray(o.nghi) };
 }
 function luuCongSuat(token, o) {
   var q = qtQuyen_(token); if (q.loi) return q.loi;
@@ -811,5 +882,142 @@ function dhDocHoanThien_() {   // -> [[ngay, tuNgay, maDon, ten, kenh, nguoiDat,
   return sh.getRange(2, 1, sh.getLastRow() - 1, DH_HT_COT.length).getDisplayValues().filter(function(r) { return String(r[0]) >= moc; }).map(function(r) {
     return [r[0], r[1], String(r[2]).replace(/^'/, ''), String(r[3]).replace(/^'/, ''), r[4], String(r[5]).replace(/^'/, ''), Number(r[6]) || 0, Number(r[7]) || 0, Number(r[8]) || 0, r[9], r[10], r[11] || ''];
   });
+}
+
+/* ===== 07/11 (chủ dự án): đơn đã hoàn thiện đọc TRỰC TIẾP từ tab HT-<năm> (không phụ thuộc bản chụp) – cho báo cáo 3 tháng =====
+   Tab HT không có ngày xong -> tháng tính theo HẠN (hạn mới HT nếu có, không thì deadline). Kênh: cột "Kênh" > dòng tiêu đề nhóm kênh
+   > mã đơn còn ở tab kênh / bản chụp / sự kiện hoàn thiện > "Không rõ kênh". Nhớ tạm 10 phút. */
+function dhCacheLay_(k) { try { var c = CacheService.getScriptCache(), n = Number(c.get(k + '_n') || 0); if (!n) return null; var ks = []; for (var i = 0; i < n; i++) ks.push(k + '_' + i); var a = c.getAll(ks), s = ''; for (var j = 0; j < n; j++) { if (a[k + '_' + j] == null) return null; s += a[k + '_' + j]; } return JSON.parse(s); } catch (e) { return null; } }
+function dhCacheGhi_(k, o, giay) { try { var s = JSON.stringify(o), p = {}, m = 0; for (var x = 0; x < s.length; x += 30000) p[k + '_' + (m++)] = s.slice(x, x + 30000); p[k + '_n'] = String(m); CacheService.getScriptCache().putAll(p, giay); } catch (e) {} }
+function layDonHoanThien(token, lamMoi) {
+  var q = qtQuyen_(token); if (q.loi) return q.loi;
+  return sach_(dhHTTrucTiep_(lamMoi));
+}
+function dhHTTrucTiep_(lamMoi) {
+  var K = 'DH_HT_v1', kq = lamMoi ? null : dhCacheLay_(K);
+  if (kq) return kq;
+  var ss, nam = Number(Utilities.formatDate(new Date(), TZ_VN, 'yyyy')), rows = [], tabs = [];
+  try { ss = SpreadsheetApp.openById(DH_SHEET_ID); } catch (e) { return { ok: false, msg: 'Không mở được Sheet đơn hàng: ' + (e && e.message || e) }; }
+  ss.getSheets().forEach(function(sh) {
+    var ten = String(sh.getName()).trim(), y = Number((ten.match(/(\d{4})$/) || [])[1]);
+    if (!DH_TAB_HT.test(ten) || (y !== nam && y !== nam - 1)) return;
+    tabs.push(ten); rows = rows.concat(dhDocTab_(sh, ten, y));
+  });
+  var tabMa = {}, d = null;   // mã đơn -> tab kênh
+  try { d = dhDocDon_(false); d.don.forEach(function(o) { if (o.maDon && !tabMa[o.maDon]) tabMa[o.maDon] = o.tab; }); } catch (e) {}
+  try { var ch = dhDocChup_(); Object.keys(ch).forEach(function(x) { ch[x].forEach(function(r) { var a = String(r[0]).split('|'); if (a[0] && a[2] && !tabMa[a[0]]) tabMa[a[0]] = a[2]; }); }); } catch (e) {}
+  try { dhDocHoanThien_().forEach(function(r) { if (r[2] && !tabMa[r[2]]) { for (var t in DH_NHAN_TAB) if (DH_NHAN_TAB[t] === r[4]) tabMa[r[2]] = t; } }); } catch (e) {}
+  plNapThem_();
+  var sua = {}; docAnToan_(PL_SHEET).forEach(function(r) { if (r.TenChuan) sua[String(r.TenChuan)] = r; });
+  var nguon = { cot: 0, nhom: 0, ma: 0, khong: 0 }, pc = {};
+  var don = rows.map(function(o) {
+    var tab = o.kenhCot || o.kenhNhom || tabMa[o.maDon] || '', n = o.kenhCot ? 'cot' : o.kenhNhom ? 'nhom' : tab ? 'ma' : 'khong'; nguon[n]++;
+    var tc = plChuan_(o.ten), p = pc[tc] || (pc[tc] = plPhanLoai_(o.ten, o.ghiChu, sua['K:' + tc]));
+    return { maDon: o.maDon, ten: o.ten, tab: tab || 'KHONG_RO', kenh: tab ? (DH_NHAN_TAB[tab] || tab) : 'Không rõ kênh', nguoiDat: o.nguoiDat || '', ngayDat: o.ngayDat || '',
+      dl: o.dl || '', hanMoi: o.hanMoi || '', thang: String(o.hanMoi || o.dl || '').slice(0, 7), sl: o.sl, thieu: o.thieu, daTra: o.daTra || 0, htTab: o.tab,
+      pl: { loai: p.loai, kieu: p.kieu, vlC: p.vlC, vlN: p.vlN, tin: p.tin } };
+  });
+  kq = { ok: true, luc: Utilities.formatDate(new Date(), TZ_VN, 'yyyy-MM-dd HH:mm'), tabs: tabs, don: don, nguon: nguon };
+  dhCacheGhi_(K, kq, 600);
+  return kq;
+}
+
+/* ===== 07/11: sản lượng Đóng gói theo ngày từ NHẬT KÝ KPI (dữ liệu trực tiếp, đủ 3 tháng) – bước xuất của xưởng Đóng gói như tab Quy trình ===== */
+var DH_DG_MD = /DONG GOI THANH PHAM|DONG DON LE (GAY|NGON|CUSTOM|COMBO)/;
+function dhMaDongGoi_() {
+  var cds = doc_('CongDoan'), qt = qtDocQT_(cds.filter(function(c) { return String(c.TrangThai).trim() !== 'Ngừng'; }));
+  if (qt.xuat && qt.xuat.DG && qt.xuat.DG.length) return qt.xuat.DG.slice();
+  return cds.filter(function(c) { return String(c.MaXuong) === 'DG' && DH_DG_MD.test(plChuan_(c.TenCD)); }).map(function(c) { return String(c.MaCD); });
+}
+function dhDongGoiNgay_(tu, den) {   // -> { ma: [...], ngay: { 'yyyy-mm-dd': sp } }
+  var ma = dhMaDongGoi_(), co = {}, out = {}; ma.forEach(function(m) { co[m] = 1; });
+  doc_('NhatKySanXuat').forEach(function(r) {
+    if (!co[String(r.MaCD)] || String(r.TrangThai).trim() === 'Từ chối') return;
+    var ng = ngayVN_(r.Ngay); if (ng < tu || ng > den) return;
+    var sl = Number(r.SoLuongLamRa) || 0; if (sl > 0) out[ng] = (out[ng] || 0) + sl;
+  });
+  return { ma: ma, ngay: out };
+}
+function layDongGoiNgay(token, soNgay) {
+  var q = qtQuyen_(token); if (q.loi) return q.loi;
+  soNgay = Math.max(7, Math.min(200, Number(soNgay) || 100));
+  var den = homNayVN_(), d0 = new Date(den + 'T12:00:00Z'); d0.setUTCDate(d0.getUTCDate() - soNgay + 1);
+  var kq = dhDongGoiNgay_(Utilities.formatDate(d0, 'GMT', 'yyyy-MM-dd'), den);
+  return sach_({ ok: true, ma: kq.ma, ngay: kq.ngay, tu: Utilities.formatDate(d0, 'GMT', 'yyyy-MM-dd'), den: den });
+}
+
+/* ===== 07/11 (chủ dự án: "email báo cáo tự động – chỉ gửi cho tôi", 8h sáng T2–T7, học cách trình bày của ORDER·FLOW) =====
+   Gửi tới email tài khoản chạy web (chủ sở hữu, không ghi cứng địa chỉ). Bỏ qua chủ nhật + ngày lễ (lịch công suất). Lịch tự cài khi chủ sở hữu mở tab. */
+var DH_EMAIL_HAM = 'EMAIL_DON_HANG_8H';
+function dhEmailTT_() { var p = PropertiesService.getScriptProperties(); return { bat: p.getProperty('DH_EMAIL_TAT') !== '1', lan: p.getProperty('DH_EMAIL_LAN') || '' }; }
+function dhCaiEmail_() {
+  var p = PropertiesService.getScriptProperties();
+  if (p.getProperty('DH_EMAIL_TAT') === '1' || p.getProperty('DH_EMAIL_CAI') === '1') return;
+  if (!ScriptApp.getProjectTriggers().some(function(t) { return t.getHandlerFunction() === DH_EMAIL_HAM; }))
+    ScriptApp.newTrigger(DH_EMAIL_HAM).timeBased().atHour(8).everyDays(1).inTimezone(TZ_VN).create();
+  p.setProperty('DH_EMAIL_CAI', '1');
+}
+function batTatEmailDonHang(token, bat) {
+  var q = qtQuyen_(token); if (q.loi) return q.loi;
+  var p = PropertiesService.getScriptProperties();
+  if (bat) { p.deleteProperty('DH_EMAIL_TAT'); p.deleteProperty('DH_EMAIL_CAI'); try { dhCaiEmail_(); } catch (e) { return sach_({ ok: false, msg: 'Không cài được lịch gửi: ' + (e && e.message || e) }); } }
+  else { p.setProperty('DH_EMAIL_TAT', '1'); try { ScriptApp.getProjectTriggers().forEach(function(t) { if (t.getHandlerFunction() === DH_EMAIL_HAM) ScriptApp.deleteTrigger(t); }); } catch (e) {} }
+  ghiLog_(q.me, 'Email đơn hàng 8h', bat ? 'bật' : 'tắt', '', '');
+  return sach_({ ok: true, msg: bat ? 'Đã bật email 8h sáng thứ 2 – thứ 7.' : 'Đã tắt email 8h.', email: dhEmailTT_() });
+}
+function guiThuEmailDonHang(token) {
+  var q = qtQuyen_(token); if (q.loi) return q.loi;
+  try { var to = dhGuiEmail_(true); return sach_({ ok: true, msg: 'Đã gửi thử tới ' + to + '.' }); }
+  catch (e) { return sach_({ ok: false, msg: 'Không gửi được: ' + (e && e.message || e) }); }
+}
+function EMAIL_DON_HANG_8H(e) {
+  if (!noiBo_(e)) return chanWeb_('EMAIL_DON_HANG_8H');
+  try { dhGuiEmail_(false); } catch (x) { try { ghiLog_({ tk: 'HE_THONG', ten: 'Hệ thống' }, 'Email đơn hàng lỗi', String(x && x.message || x).slice(0, 200), '', ''); } catch (x2) {} }
+}
+function dhGuiEmail_(thu) {
+  var hn = homNayVN_(), cs = dhCongSuat_(), nghi = {}; cs.nghi.forEach(function(x) { nghi[x[0]] = x[1]; });
+  var lamBu = cs.lam.indexOf(hn) >= 0, cn = new Date(hn + 'T12:00:00Z').getUTCDay() === 0;
+  if (!thu && !lamBu && (cn || nghi[hn])) return '';
+  var p = PropertiesService.getScriptProperties(); if (!thu && p.getProperty('DH_EMAIL_LAN') === hn) return '';
+  var to = Session.getEffectiveUser().getEmail(); if (!to) throw new Error('Không xác định được email chủ sở hữu.');
+  var d = dhDocDon_(true), sua = {}; plNapThem_(); docAnToan_(PL_SHEET).forEach(function(r) { if (r.TenChuan) sua[String(r.TenChuan)] = r; });
+  var pc = {}, don = {}, kenh = {}, tongSl = 0, tongThieu = 0, thieuSX = 0;
+  d.don.forEach(function(o) {
+    var tc = plChuan_(o.ten), l = (pc[tc] || (pc[tc] = plPhanLoai_(o.ten, o.ghiChu, sua['K:' + tc]))).loai;
+    tongSl += o.sl; tongThieu += o.thieu; if (l !== 'PK' && l !== 'NOI') thieuSX += o.thieu;
+    var k = o.maDon + '|' + o.tab, g = don[k] || (don[k] = { ma: o.maDon, kenh: o.kenh, nguoiDat: o.nguoiDat || '', sl: 0, thieu: 0, dl: '' });
+    g.sl += o.sl; g.thieu += o.thieu; if (o.thieu > 0 && o.dl && (!g.dl || o.dl < g.dl)) g.dl = o.dl;
+  });
+  var ds = Object.keys(don).map(function(k) { return don[k]; }), soNgay = function(a, b) { return Math.round((new Date(b + 'T12:00:00Z') - new Date(a + 'T12:00:00Z')) / 864e5); };
+  var tre = ds.filter(function(g) { return g.thieu > 0 && g.dl && g.dl < hn; }), sap = ds.filter(function(g) { return g.thieu > 0 && g.dl && g.dl >= hn && soNgay(hn, g.dl) <= 3; });
+  ds.forEach(function(g) { var x = kenh[g.kenh] || (kenh[g.kenh] = { don: 0, dang: 0, tre: 0, thieu: 0 }); x.don++; if (g.thieu > 0) x.dang++; if (g.thieu > 0 && g.dl && g.dl < hn) x.tre++; x.thieu += g.thieu; });
+  tre.forEach(function(g) { g.tre = soNgay(g.dl, hn); });
+  var top = tre.slice().sort(function(a, b) { return b.thieu * b.tre - a.thieu * a.tre; }).slice(0, 8);
+  var th = hn.slice(0, 7), dg = dhDongGoiNgay_(th + '-01' < dhCongNgay_(hn, -14) ? th + '-01' : dhCongNgay_(hn, -14), dhCongNgay_(hn, -1)).ngay, dgD = Object.keys(dg).sort();
+  var homQua = dgD.length ? dgD[dgD.length - 1] : '', dgThang = 0; dgD.forEach(function(x) { if (x.slice(0, 7) === th) dgThang += dg[x]; });
+  var d6 = dgD.slice(-6), tb6 = d6.length ? d6.reduce(function(s, x) { return s + dg[x]; }, 0) / d6.length : 0;
+  var nl = 0; for (var x = th + '-01'; x < hn; x = dhCongNgay_(x, 1)) { var w = new Date(x + 'T12:00:00Z').getUTCDay(); if ((w !== 0 && !nghi[x]) || cs.lam.indexOf(x) >= 0) nl++; }
+  var ht = { n: 0, sl: 0, thieu: 0 }; try { var H = dhHTTrucTiep_(false), seen = {}; (H.don || []).forEach(function(o) { if (o.thang !== th) return; ht.sl += o.sl; ht.thieu += o.thieu; if (!seen[o.maDon + '|' + o.kenh]) { seen[o.maDon + '|' + o.kenh] = 1; ht.n++; } }); } catch (eH) {}
+  var so = function(n) { return Math.round(Number(n) || 0).toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.'); }, e = function(t) { return String(t == null ? '' : t).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); };
+  var ng = function(x) { return x ? x.slice(8, 10) + '/' + x.slice(5, 7) : '–'; }, url = ''; try { url = ScriptApp.getService().getUrl(); } catch (eU) {}
+  var thu7 = ['Chủ nhật', 'Thứ 2', 'Thứ 3', 'Thứ 4', 'Thứ 5', 'Thứ 6', 'Thứ 7'][new Date(hn + 'T12:00:00Z').getUTCDay()];
+  var o6 = [['Đóng gói ' + (homQua ? ng(homQua) : 'hôm qua'), so(homQua ? dg[homQua] : 0) + ' sp', 'TB 6 ngày ' + so(tb6) + ' · ' + Math.round(tb6 / cs.sp * 100) + '% công suất', '#0b7a73'],
+    ['Đóng gói tháng ' + th.slice(5), so(dgThang) + ' sp', nl + ' ngày làm · TB ' + so(nl ? dgThang / nl : 0) + '/ngày', '#0b7a73'],
+    ['Còn phải sản xuất', so(thieuSX) + ' sp', '≈ ' + Math.ceil(thieuSX / cs.sp) + ' ngày làm ở ' + so(cs.sp) + ' sp/ngày', '#b87500'],
+    ['Đơn trễ hạn', so(tre.length) + ' đơn', so(tre.reduce(function(s, g) { return s + g.thieu; }, 0)) + ' sp còn thiếu', '#c0302b'],
+    ['Sắp tới hạn (≤ 3 ngày)', so(sap.length) + ' đơn', so(sap.reduce(function(s, g) { return s + g.thieu; }, 0)) + ' sp còn thiếu', '#b87500'],
+    ['Đã hoàn thiện (tab HT) tháng ' + th.slice(5), so(ht.n) + ' đơn', so(ht.sl - ht.thieu) + ' cây giao · fill rate ' + (ht.sl ? Math.floor((ht.sl - ht.thieu) / ht.sl * 1000) / 10 + '%' : '–'), '#17643a']];
+  var h = '<div style="max-width:640px;margin:0 auto;font-family:Segoe UI,Roboto,Arial,sans-serif;color:#1d2327;border:1px solid #d6dedd;border-radius:12px;overflow:hidden">' +
+    '<div style="background:#0b4f4a;color:#fff;padding:16px 20px"><div style="font-size:11px;letter-spacing:2px;opacity:.85">CARBON BILLIARDS · BÁO CÁO SẢN XUẤT</div><div style="font-size:19px;font-weight:600;margin-top:4px">' + thu7 + ', ' + ng(hn) + '/' + hn.slice(0, 4) + '</div>' +
+    '<div style="font-size:13px;opacity:.9;margin-top:4px">' + so(ds.length) + ' đơn đang theo dõi · <b>' + so(tre.length) + ' trễ hạn</b> · ' + so(tongThieu) + ' sp còn thiếu</div></div><div style="padding:16px 20px">';
+  h += '<table style="width:100%;border-collapse:separate;border-spacing:8px"><tr>' + o6.map(function(x, i) { return (i === 3 ? '</tr><tr>' : '') + '<td style="width:33%;border:1px solid #d6dedd;border-left:4px solid ' + x[3] + ';border-radius:8px;padding:8px 10px;vertical-align:top"><div style="font-size:10px;color:#5b6670;text-transform:uppercase">' + e(x[0]) + '</div><div style="font-size:20px;font-weight:700;color:' + x[3] + '">' + e(x[1]) + '</div><div style="font-size:11px;color:#3d474f">' + e(x[2]) + '</div></td>'; }).join('') + '</tr></table>';
+  h += '<div style="font-size:12px;font-weight:600;color:#0b4f4a;border-left:3px solid #0b7a73;padding-left:8px;margin:14px 0 6px">THEO KÊNH</div><table style="width:100%;border-collapse:collapse;font-size:12.5px"><tr style="color:#5b6670;font-size:11px;text-align:right"><td style="text-align:left;padding:4px">Kênh</td><td>Đơn</td><td>Đang làm</td><td>Trễ</td><td style="padding-right:4px">Còn thiếu</td></tr>' +
+    DH_TABS.map(function(t) { var k = DH_NHAN_TAB[t] || t, x = kenh[k] || { don: 0, dang: 0, tre: 0, thieu: 0 }; return '<tr style="border-top:1px solid #e1e7e6;text-align:right"><td style="text-align:left;padding:5px 4px">' + e(k) + '</td><td>' + x.don + '</td><td>' + x.dang + '</td><td style="color:' + (x.tre ? '#b42a25' : '#889') + '">' + x.tre + '</td><td style="padding-right:4px">' + so(x.thieu) + '</td></tr>'; }).join('') + '</table>';
+  h += '<div style="font-size:12px;font-weight:600;color:#b42a25;border-left:3px solid #c0302b;padding-left:8px;margin:14px 0 6px">8 ĐƠN TRỌNG ĐIỂM (trễ × còn thiếu lớn nhất)</div>' + (top.length ? '<table style="width:100%;border-collapse:collapse;font-size:12.5px"><tr style="color:#5b6670;font-size:11px"><td style="padding:4px">Mã đơn</td><td>Kênh · người đặt</td><td style="text-align:right">Deadline</td><td style="text-align:right">Trễ</td><td style="text-align:right;padding-right:4px">Thiếu</td></tr>' +
+    top.map(function(g) { return '<tr style="border-top:1px solid #e1e7e6"><td style="padding:5px 4px;font-weight:600">' + e(g.ma) + '</td><td>' + e(g.kenh) + (g.nguoiDat ? ' · ' + e(g.nguoiDat) : '') + '</td><td style="text-align:right">' + ng(g.dl) + '</td><td style="text-align:right;color:#b42a25">' + g.tre + ' ngày</td><td style="text-align:right;padding-right:4px;font-weight:600">' + so(g.thieu) + '</td></tr>'; }).join('') + '</table>' : '<div style="font-size:12.5px;color:#5b6670">Không có đơn trễ.</div>');
+  h += '</div><div style="background:#f1f5f4;padding:10px 20px;font-size:11px;color:#5b6670;text-align:center">Gửi tự động 8h sáng thứ 2 – thứ 7 (trừ ngày lễ) · Sheet đọc lúc ' + e(d.luc) + ' · Đóng gói theo nhật ký KPI' + (url ? ' · <a href="' + e(url) + '" style="color:#0b7a73">Mở web KPI</a>' : '') + '<br>Tắt / bật ở web: Đơn hàng → Sản xuất → Công suất &amp; deadline → ⚙</div></div>';
+  MailApp.sendEmail({ to: to, subject: (thu ? '[Thử] ' : '') + 'Báo cáo sản xuất ' + ng(hn) + ' · ' + tre.length + ' đơn trễ · Đóng gói ' + (homQua ? so(dg[homQua]) : 0) + ' sp', htmlBody: h, name: 'Hệ thống KPI sản xuất' });
+  if (!thu) p.setProperty('DH_EMAIL_LAN', hn);
+  return to;
 }
 

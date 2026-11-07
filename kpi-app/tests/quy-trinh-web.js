@@ -123,7 +123,7 @@ const vao = async (p, tk) => { await p.goto(F); await p.waitForSelector('#xtGoiY
         const cy = dhChuY(don), tre = don.filter(g => g.st === 'treHan').length, nTre = cy.filter(x => x.l === 'tre' || x.l === 'qua30').length;
         return [tl.length, tl[0] === tre, tre === nTre, dong[0] === don.length, dong[2] === ds.reduce((a, o) => a + o.thieu, 0), DHV, cy.length ? document.querySelectorAll('.dh-bang tbody tr').length : /Không có đơn cần chú ý/.test(document.querySelector('main').textContent) ? 1 : 0, cy.every(x => x.g.thieu > 0),
           document.querySelectorAll('.dh-seg button').length, document.querySelectorAll('.dh-sub button').length, document.querySelectorAll('.dh-menu').length, document.body.classList.contains('tab-dh')]; });
-      ok(s[0] === 3 && s[1] && s[2] && s[3] && s[4] && s[5] === 'chuy' && s[6] > 0 && s[7] && s[8] === 3 && s[9] === 3 && s[10] === 2 && s[11], 'Đơn hàng: 3 ô trả lời (số trễ = tổng nhóm trễ trong bảng), dòng số khớp dữ liệu; 3 nhóm + 3 thẻ con + menu ⚙ / ⋯; mặc định "Cần chú ý"', s);
+      ok(s[0] === 3 && s[1] && s[2] && s[3] && s[4] && s[5] === 'chuy' && s[6] > 0 && s[7] && s[8] === 3 && s[9] === 4 && s[10] === 2 && s[11], 'Đơn hàng: 3 ô trả lời (số trễ = tổng nhóm trễ trong bảng), dòng số khớp dữ liệu; 3 nhóm + 4 thẻ con + menu ⚙ / ⋯; mặc định "Cần chú ý"', s);
       s = await p.evaluate(() => { const uu = dhUuDs(); DHV = 'uutien'; dhVeLai(); const r = [uu.length === (DH.uu && DH.uu.length ? dhLoc(DH.uu).length : dhLoc().filter(o => o.uuTien).length), /ĐƠN ƯU TIÊN/.test(document.querySelector('main').textContent) === !!(DH.uu && DH.uu.length), document.querySelector('.dh-sub button.on').textContent.startsWith('Ưu tiên')];
         DHV = 'chuy'; dhVeLai(); return r; });
       ok(s.every(Boolean), 'Ưu tiên: lấy danh sách từ tab "ĐƠN ƯU TIÊN" khi Sheet có tab này', s);
@@ -143,18 +143,22 @@ const vao = async (p, tk) => { await p.goto(F); await p.waitForSelector('#xtGoiY
       ok(s[0] && s[1] === 6, 'ngày nghỉ khai trên web không tính là ngày làm; 1 tuần = 6 ngày làm (thứ 2 – thứ 7)', s);
       s = await p.evaluate(() => { DHTD = { lichSu: [], chay: { ngay: [], kenh: {} }, sanLuong: [['2026-10-30', '2026-10-29', 330, 300, 10, 100, 0, 0, { kenh: { Kho: 300 }, loai: { GAY: 300, PK: 30 } }], ['2026-11-02', '2026-10-30', 700, 680, 0, 90, 0, 5, { kenh: { Kho: 680 }, loai: { GAY: 680 } }]] };
         DHV = 'sanluong'; dhVeLai(); const sl = dhSLDong(), m = document.querySelector('main').textContent;
-        return [sl[1].nl === 2, Math.round(sl[1].tb) === 340, dhNhanKhoang(sl[1]) === '30/10–31/10', /Theo tháng/.test(m), document.querySelectorAll('.dh-than svg rect').length === 2]; });
-      ok(s.every(Boolean), 'Sản lượng ngày: khoảng qua chủ nhật = 2 ngày làm, trung bình / ngày; bảng tháng + biểu đồ', s);
-      s = await p.evaluate(() => { DHV = 'baocao'; dhVeLai(); const B = dhBC(dhHomNay().slice(0, 7)), so = dhBCSo(B), don = dhGomDon(dhLoc());
+        return [sl[1].nl === 2, Math.round(sl[1].tb) === 340, dhNhanKhoang(sl[1]) === '30/10–31/10', /Theo tháng/.test(m), document.querySelectorAll('.dh-than details .dh-svg rect').length === 2]; });
+      ok(s.every(Boolean), 'Sản lượng theo bản chụp (mục tham khảo): khoảng qua chủ nhật / ngày nghỉ; trung bình / ngày; bảng tháng + biểu đồ', s);
+      await p.waitForFunction(() => window.DHDG && window.DHHT && window.__soDangChay === 0, null, { timeout: 60000 }); await p.evaluate(() => dhVeLai());
+      s = await p.evaluate(() => { const th = dhHomNay().slice(0, 7), g = dhDGThang(th), sp = Object.keys(DHDG.ngay).filter(d => d.slice(0, 7) === th).reduce((a, d) => a + DHDG.ngay[d], 0), m = dhHTThang(th);
+        return [!DHDG.loi && DHDG.ma.length > 0, g.sp === sp, document.querySelectorAll('.dh-than .dh-bk4 > div').length === 4, !DHHT.loi, m.tong === m.nHT + m.du.length + m.dang.length, /đọc trực tiếp tab HT/.test(document.querySelector('main').textContent)]; });
+      ok(s.every(Boolean), 'Sản lượng: Đóng gói theo nhật ký KPI 3 tháng (tổng tháng = cộng từng ngày) + đơn theo tháng hạn đọc thẳng tab HT (đến hạn = HT + đủ hàng + còn thiếu)', s);
+      s = await p.evaluate(() => { DHV = 'baocao'; dhVeLai(); const B = dhBC(dhBCThMacDinh()), so = dhBCSo(B), don = dhGomDon(dhLoc());
         const kT = B.kenh.reduce((a, k) => a + k.n, 0), tl = +document.querySelector('.dh-bcso b').textContent.replace(/\D/g, '');
-        return [so.length === 6, B.tre.length === don.filter(g => g.st === 'treHan').length, kT === B.don.length, B.kenh.some(k => k.tab === 'POD-ECOMSTONE'), B.trongTh.every(g => g.dlMin.slice(0, 7) === B.th), !!document.querySelector('.dh-than button[onclick="dhBCPDF()"]'), tl === B.sumK(B.slTh, 'sx')]; });
+        return [so.length === 6, B.tre.length === don.filter(g => g.st === 'treHan').length, kT === B.don.length, B.kenh.some(k => k.tab === 'POD-ECOMSTONE'), B.trongTh.every(g => g.dlMin.slice(0, 7) === B.th), !!document.querySelector('.dh-than button[onclick="dhBCPDF()"]'), tl === B.dgM.sp, B.dg3.length === 3 && B.ht3.length === 3, so[4][1] === B.htM.tong + ' đơn']; });
       ok(s.every(Boolean), 'Báo cáo lãnh đạo: 6 số, số đơn trễ = tab, tổng theo kênh = tổng đơn, đủ kênh (cả POD-ECOMSTONE), đơn deadline đúng tháng', s);
       s = await p.evaluate(() => { const th = dhHomNay().slice(0, 7), d = th + '-03';
         DHTD = { lichSu: [], chay: { ngay: [], kenh: {} }, sanLuong: [], ht: [[th + '-04', d, 'A1', 'x', 'Kho', 'LAN', 10, 10, 0, th + '-20', 'dung', th + '-01'], [th + '-04', d, 'A1', 'y', 'Kho', 'LAN', 5, 2, 0, th + '-20', 'dung', th + '-01'], [th + '-04', d, 'B1', 'x', 'OEM', 'PHO', 8, 8, 2, th + '-20', 'giaoThieu', ''], [th + '-04', d, 'C1', 'x', 'Dealer', 'MINH', 4, 4, 0, th + '-01', 'tre', '']] };
         const g = dhHTDon(th), t = dhHTTong(g); DHV = 'sanluong'; dhVeLai(); const m1 = /Đơn đã hoàn thiện/.test(document.querySelector('main').textContent);
         DHV = 'baocao'; dhVeLai(); const B = dhBC(th), so = dhBCSo(B);
-        return [g.length === 3, t.n === 3, t.sl === 27, t.giao === 25, t.otif === 33, t.fill === 92.5, t.giaoThieu === 1, t.tre === 1, m1, /3 đơn/.test(so[5][1]) && /OTIF 33%/.test(so[5][2])]; });
-      ok(s.every(Boolean), 'Đã hoàn thiện (tab HT): gom theo đơn, OTIF = đủ + đúng hạn / đơn có hạn, fill rate = giao / đặt; hiện ở Sản lượng ngày + thẻ báo cáo', s);
+        return [g.length === 3, t.n === 3, t.sl === 27, t.giao === 25, t.otif === 33, t.fill === 92.5, t.giaoThieu === 1, t.tre === 1]; });
+      ok(s.every(Boolean), 'Sự kiện chuyển HT (từ bản chụp): gom theo đơn, OTIF = đủ + đúng hạn / đơn có hạn, fill rate = giao / đặt', s);
       await p.evaluate(() => { DHTD = null; DHV = 'chuy'; dhVeLai(); });
       for (const v of ['chitiet', 'gom', 'thongke', 'thaydoi']) { await p.evaluate(v => { DHV = v; dhVeLai(); }, v); await p.waitForTimeout(400); }
       s = await p.evaluate(() => { DHV = 'chitiet'; DHL.kenh = 'KHO'; dhVeLai(); const n = document.querySelectorAll('.dh-bang tbody tr').length, k = dhLoc().every(o => o.tab === 'KHO');

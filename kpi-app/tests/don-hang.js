@@ -184,8 +184,20 @@ console.log('\n4e. Kênh POD-ECOMSTONE, sản lượng nhập theo ngày, công 
   r = c.__goi('luuCongSuat', Town, { sp: 0, nghi: [] }); ok(!r.ok, 'công suất 0: từ chối');
   r = c.__goi('luuCongSuat', Town, { sp: 400, nghi: [['2027-13-40', 'x']] }); ok(!r.ok && /không hợp lệ/.test(r.msg), 'ngày sai: từ chối', r.msg);
   r = c.__goi('luuCongSuat', Town, { sp: 400, nghi: [['2027-02-05', '=Tết'], ['2027-02-05', 'trùng']], lam: ['2027-01-10'] });
-  ok(r.ok && r.cs.sp === 400 && r.cs.nghi.length === 1 && r.cs.nghi[0][1] === 'Tết' && r.cs.lam[0] === '2027-01-10' && !r.cs.macDinh, 'lưu công suất 400 + ngày nghỉ (bỏ dấu "=", bỏ trùng) + ngày làm bù', r.cs);
+  ok(r.ok && r.cs.sp === 400 && r.cs.nghiTay.length === 1 && r.cs.nghiTay[0][1] === 'Tết' && r.cs.nghi.some(n => n[0] === '2027-02-06') && r.cs.nghiTuDong.some(n => n[0] === '2026-04-26' && /Giỗ Tổ/.test(n[1])) && r.cs.lam[0] === '2027-01-10' && !r.cs.macDinh, 'lưu công suất 400 + ngày nghỉ riêng (bỏ dấu "=", bỏ trùng) + ngày làm bù; lễ âm lịch tự tính (Tết 2027 = 06/02, Giỗ Tổ 2026 = 26/04)', r.cs);
   ok(c.__goi('layDonHangXuong', Town, false).cs.sp === 400, 'công suất mới trả về cho web'); }
+
+console.log('\n4g. Đọc Sheet theo ORDER·FLOW: mã không số, dòng ghi chú, ngày hẹn trả, gộp dòng trùng (07/11)');
+{ const E = 'EVO4/LUN2/BLUE/LW-BLACK/G/10/12.5', H = ['Mã', 'Loại hàng cần sản xuất', 'Loại Phôi', 'Số lượng đặt', 'SX CÒN THIẾU', 'Deadline', 'Sơn của Khoa', 'Hỏng cần làm bù', 'Ngày hẹn trả SƠN'];
+  const tab = [H, ['KHO-01/11', E, '', 5, 5, '20/11', 3, '', '25/11'], ['#DEMO', E, '', 2, 2, '', '', '', ''], ['', E, '', 1, 1, '', '', '', ''],
+    ['CẦN THÊM ĐÁNH PHÁ 3/8/8 300PCS/TUẦN', '', '', '', '', '', '', '', ''], ['', E, '', 4, 4, '', '', '', '']];
+  c.__ngoai = { [c.DH_SHEET_ID]: { ten: 'x', sheets: { KHO: tab } } }; c.dhDocDon_(true);
+  const x = c.__goi('layDonHangXuong', Town, true), d = x.don;
+  ok(d.length === 4 && d[1].maDon === '#DEMO' && d[2].maDon === '#DEMO' && d[3].maDon === '#DEMO', 'mã nhóm không có chữ số (#DEMO) giữ cho các dòng dưới; dòng ghi chú "CẦN THÊM … /TUẦN" không thành mã đơn', d.map(o => o.maDon));
+  ok(/-11-25$/.test((d[0].hen || {}).SON || '') && d[0].qua.SON === 3, 'đọc ngày hẹn trả của công đoạn (Sơn 25/11)', d[0].hen);
+  const cu = [['A|x|KHO', 5, 5], ['A|x|KHO#2', 5, 5]], nay = [['A|x|KHO', 5, 3]];
+  const k = c.dhTinhSanLuong_(cu, nay, {}, {});
+  ok(k.ra === 7 && k.mat === 0 && k.vao === 0, 'gộp dòng trùng khóa: 2 dòng (thiếu 10) thành 1 dòng thiếu 3 -> sản lượng 7, không báo mất', k); }
 
 console.log('\n4f. Đơn chuyển sang tab HT-<năm> (07/11)');
 { const H = ['', 'Loại hàng cần sản xuất', 'Loại Phôi', 'Số lượng đặt', 'SX CÒN THIẾU', 'Deadline'], nam = new Date().getFullYear(), tabHT = 'HT-' + nam;
@@ -208,6 +220,33 @@ console.log('\n4f. Đơn chuyển sang tab HT-<năm> (07/11)');
   ok(n1 === 2 && n2 === 0 && ht.length >= 2 && ht.some(r => r[2] === 'KHO-01/11' && r[10] === 'dung' && r[6] === 10), 'lưu sự kiện vào sheet ẩn DonHangHoanThien 1 lần / ngày', ht);
   const ch = c.dhDongChay_({ [nam + '-11-05']: cu, [nam + '-11-06']: nay.concat(kq.dong) }).ngay[0];
   ok(ch[1] === 0 && ch[3] === 4 && ch[6] === 1, 'Vào–Ra–Tồn: dòng chuyển HT không tính "vào", không cộng tồn; chỉ 1 dòng mất', ch); }
+
+console.log('\n4h. Đơn hoàn thiện đọc trực tiếp tab HT + Đóng gói theo nhật ký KPI + lịch NgayLe (07/11)');
+{ const nam = new Date().getFullYear(), E = 'EVO4/LUN2/BLUE/LW-BLACK/G/10/12.5', H = ['Mã', 'Loại hàng cần sản xuất', 'Loại Phôi', 'Số lượng đặt', 'SX CÒN THIẾU', 'Deadline', 'HẠN MỚI HT ĐƠN CŨ', 'Kênh'];
+  const ht = [H, ['OEM-03/09', E, '', 4, 0, '28/09', '', ''], ['', 'Rhino Soft Cue Case 1X2 - Black', '', 3, 0, '', '', ''], ['DEALER', '', '', '', '', '', '', ''], ['DEA-01/09', E, '', 10, 0, '20/09', '05/10', ''], ['KHO-02/09', E, '', 6, 1, '25/09', '', 'Kho']];
+  c.__ngoai = { [c.DH_SHEET_ID]: { ten: 'x', sheets: { OEM: [H.slice(0, 6), ['OEM-03/09', E, '', 1, 1, '28/09']], ['HT-' + nam]: ht } } }; c.dhDocDon_(true);
+  let r = c.__goi('layDonHoanThien', Tadm, true); ok(!r.ok, 'ban điều hành không xem được');
+  r = c.__goi('layDonHoanThien', Town, true);
+  const g = m => r.don.find(o => o.maDon === m) || {};
+  ok(r.ok && r.tabs.join() === 'HT-' + nam && r.don.length === 4 && g('DEA-01/09').tab === 'DEALER' && g('KHO-02/09').tab === 'KHO' && g('OEM-03/09').tab === 'OEM' && g('OEM-03/09').kenh === 'OEM',
+    'đọc tab HT-' + nam + ': kênh từ dòng tiêu đề nhóm (DEALER), cột "Kênh" (Kho), mã đơn còn ở tab kênh (OEM)', r.don.map(o => [o.maDon, o.tab]));
+  ok(g('DEA-01/09').thang === nam + '-10' && g('KHO-02/09').thang === nam + '-09' && g('KHO-02/09').thieu === 1 && g('DEA-01/09').pl.loai === 'GAY' && r.nguon.nhom === 1 && r.nguon.cot === 1 && r.nguon.ma === 2,
+    'tháng theo hạn mới HT (05/10) nếu có, không thì deadline; giữ số thiếu khi chuyển; có phân loại sản phẩm', [g('DEA-01/09').thang, g('KHO-02/09').thang, r.nguon]);
+  const dg = c.__goi('layDongGoiNgay', Town, 200), ma = c.dhMaDongGoi_();
+  ok(dg.ok && ma.length > 0 && Object.keys(dg.ngay).length > 10 && Object.values(dg.ngay).every(v => v > 0), 'Đóng gói theo ngày từ nhật ký KPI (bước xuất Đóng gói: ' + ma.length + ' mã công đoạn, ' + Object.keys(dg.ngay).length + ' ngày)', [ma, Object.keys(dg.ngay).length]);
+  const cs = c.dhCongSuat_(); ok(cs.nghi.some(n => n[0] === '2026-09-01' && /lịch KPI/.test(n[1])), 'ngày nghỉ lấy thêm từ bảng NgayLe của web KPI (01/09/2026)'); }
+
+console.log('\n4i. Email báo cáo 8h (chỉ chủ sở hữu) (07/11)');
+{ c.__mail = []; let r = c.__goi('guiThuEmailDonHang', Tadm); ok(!r.ok, 'ban điều hành không gửi thử được');
+  r = c.__goi('guiThuEmailDonHang', Town); const m = c.__mail[0] || {};
+  ok(r.ok && c.__mail.length === 1 && /^\[Thử\]/.test(m.subject) && /8 ĐƠN TRỌNG ĐIỂM/.test(m.htmlBody) && /THEO KÊNH/.test(m.htmlBody) && /POD – Ecomstone/.test(m.htmlBody), 'gửi thử: tiêu đề [Thử], có 6 số, theo kênh (đủ 8 kênh), 8 đơn trọng điểm', [r.msg, m.subject]);
+  if (process.env.MAIL_OUT) fs.writeFileSync(process.env.MAIL_OUT, '<meta charset="utf-8">' + (m.htmlBody || ''));
+  r = c.__goi('batTatEmailDonHang', Town, false); ok(r.ok && r.email.bat === false, 'tắt email');
+  r = c.__goi('batTatEmailDonHang', Town, true); ok(r.ok && r.email.bat === true, 'bật lại email');
+  c.__trigger = [{ id: 'tEmail', ham: 'EMAIL_DON_HANG_8H' }]; c.__mail = [];
+  c.EMAIL_DON_HANG_8H({ triggerUid: 'tEmail' }); const n1 = c.__mail.length; c.EMAIL_DON_HANG_8H({ triggerUid: 'tEmail' });
+  ok(c.__mail.length === n1 && n1 <= 1, 'trigger 8h: mỗi ngày gửi tối đa 1 lần (chủ nhật / ngày lễ không gửi)', [n1, c.__mail.length]);
+  ok(!(c.EMAIL_DON_HANG_8H({}) || {}).ok || c.__mail.length === n1, 'gọi không qua trigger: bị chặn'); }
 
 if (process.env.DH) {
   console.log('\n5. Toàn bộ đơn thật (DH=)');
