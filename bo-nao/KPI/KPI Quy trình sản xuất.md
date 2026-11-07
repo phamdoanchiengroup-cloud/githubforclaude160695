@@ -503,3 +503,10 @@ Chủ dự án trả lời: đơn quá hạn > 30 ngày **mở sẵn** ở thẻ
 - Lịch lễ gợi ý (sửa trên web): 01/01/2027, Tết 04–10/02/2027 (trừ CN), Giỗ Tổ 16/04/2027, 30/4, 1/5, 2–3/9/2027.
 - Số liệu sản lượng ngày chỉ có **từ khi web cập nhật bản này** (cần ≥ 2 bản chụp 9h).
 - Kiểm thử: don-hang 97/101 (thêm 4e: 10 kiểm tra; 4 lỗi cũ bản chụp), quy-trinh-web 116/116, quy-trinh 76/76, manh-web 8/8, holo-web 20/20, so-do-luu-do-web 15/15, bao-mat 2 lỗi cũ; PDF thử 9 trang, Excel 11 sheet; không tràn ngang 390/1440.
+
+## Đợt 14 (07/11): đơn chuyển sang tab HT-<năm>
+- Chủ dự án: đơn xong được chép **cả đơn, nguyên dòng (cột như tab kênh)** sang tab **HT-2026** rồi xóa khỏi tab kênh; **có khi chuyển khi còn thiếu**. Trước đây web không đọc tab này → sản lượng ngày bị thiếu, đơn chuyển bị ghi "mất"; tab HT còn có thể bị nhận nhầm là "kênh mới".
+- Chuyên gia `quan-ly-van-hanh`: khớp theo mã + sản phẩm; dòng vắng mà chưa có ở HT thì "treo" đối chiếu lại; giao thiếu tách riêng, không tính OTIF; đúng hạn cho lệch 1 lần chụp; báo cáo: số đơn đóng + cây giao, OTIF, fill rate, trễ (số đơn · ngày TB), thời gian đặt → đóng. Quy ước nên nhắc: khi hủy phần còn lại **giữ nguyên số "còn thiếu"** trên dòng chép sang HT.
+- Máy chủ (`don-hang.gs`): `DH_TAB_HT` (/^HT[-_ .]*\d{4}$/, năm nay + năm trước), `DH_TAB_LOAI` thêm HT-xxxx + "HOÀN THIỆN"; `dhDocHT_` (chỉ đọc lúc chụp), `dhTimChuyenHT_` (xét 3 bản chụp gần nhất, dòng bản chụp cờ cột 7 = 1, cột 8 = thiếu lần cuối thấy), `dhGhiHoanThien_` / `dhDocHoanThien_` (sheet ẩn **DonHangHoanThien**: Ngay, TuNgay, MaDon, Ten, Kenh, NguoiDat, SL, ThieuTruoc, ThieuHT, Deadline, DungHan dung|tre|giaoThieu, NgayDat); `dhTinhSanLuong_` / `dhDongChay_` / `layThayDoiDon` bỏ dòng HT khỏi tồn / mất / vào, trả `ht`.
+- Web: `dhHTDon`, `dhHTTong`, `dhVeHT` (bảng tháng ở Sản lượng ngày), cột "Chuyển HT (dòng)"; Thay đổi hôm nay có nhóm "Đã hoàn thiện – chuyển sang tab HT"; báo cáo: thẻ 6 = "Đã hoàn thiện tháng" (OTIF, fill rate), mục **3b**, sheet Excel "Hoan thien"; đơn chỉ còn phụ kiện ghi rõ.
+- Kiểm thử: don-hang 103/107 (thêm 4f: 6), quy-trinh-web 118/118, quy-trinh 76/76, manh-web 8/8.
