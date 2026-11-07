@@ -4,6 +4,7 @@ Nhóm: Chung · Cập nhật 31/10/2026
 Liên quan: [[Lần dán lên Apps Script]] · [[Quyết định của chủ dự án]] · [[00 Mục lục]]
 
 ## Câu hỏi đang chờ trả lời
+- (07/11) **Đổi mật khẩu app ORDER·FLOW** (mật khẩu chủ sở hữu ghi cứng trong Code.gs của app trong Sheet đơn hàng) và xóa dòng `OWNER_PASS`. Sau khi dán bản 07/11: mở tab Đơn hàng 1 lần (tự cài email 8h), bấm "Gửi thử ngay"; xem mục Sản lượng có đọc được tab HT-2026 và kênh không (dòng cuối bảng ghi nguồn kênh). – [[KPI Quy trình sản xuất]]
 - (07/11) Sửa **ngày nghỉ Tết 2027** và lễ theo lịch công ty ở Đơn hàng → Sản xuất → Công suất & deadline → ⚙ (đang là lịch gợi ý). Rà 181 đơn trễ > 30 ngày với kênh bán. – [[KPI Quy trình sản xuất]]
 - (Đã rõ 22/10: giữ `TranKPI` = 500, không dùng trần.) – [[KPI Sửa lỗi 21-10 và dữ liệu sheet]]
 - Dòng "Tổng" trong thẻ "Chờ chốt" có muốn cộng SL/Lỗi không (đang "–")? – [[KPI Sửa nhỏ trên web]]
