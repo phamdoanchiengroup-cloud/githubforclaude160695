@@ -19,6 +19,10 @@ Chủ dự án hỏi 08/11 "Điều gì giúp tôi quản lý và điều phối
   - `layViecXuongToi(token)`: TP/PP → dòng đơn còn thiếu liên quan xưởng mình (`DP_LOAI_XUONG`), chủ sở hữu → tất cả. `dpEmail_` thêm mục "ĐIỀU PHỐI" vào email 8h.
 - Web mục 39 `va-dieu-phoi-web.py` (Việc hôm nay, khối `#dpHN`): `dpVeQL` 4 thẻ (Cách đếm + nút Áp dụng chỉ chủ sở hữu, Nút cổ chai, Dòng chảy, Sức khỏe dữ liệu); việc 2: `dpViecTai` → mảnh QuyTrinh `dpTinhViec` / `dpVeViec` (cùng cách tính Việc theo xưởng `dhCon`), 3 nhóm **Ưu tiên → Trễ hạn → Theo hạn đơn** có tổng nhóm, tổng theo khối (chuôi / chuôi nhảy / ngọn…), 15 đơn + "Xem thêm"; điện thoại dạng thẻ. Chủ sở hữu bấm "Xem việc theo xưởng" + chọn xưởng.
 
+## PDF họp trưởng phòng theo cách đếm mới (08/11)
+- Chủ dự án chọn "áp dụng trên web trước, PDF ra số mới". `tests/hop/tao-pdf-hop-xuong.js` thêm chế độ `MOI=1`: áp `apDeXuatDem` trong bản thử rồi mới lấy số; khung "Cách đếm mới đã áp dụng 08/11" ở trang đầu; trang Phôi Carbon / Sơn / In UV có ô ☐ Đồng ý / ☐ Không; thêm câu Ngọn Taro (Tester + Check ngọn đếm đôi?); số mục 5 (dòng chảy) lấy từ dữ liệu thay vì gõ cứng. Số T10 mới: Phôi Carbon 446/461 (97%), Sơn 383/325 (118%), In UV 377/325 (116%). File 24 trang ở scratchpad (không commit).
+- Chạy: `MOI=1 F=<bản thử số thật> O=<thư mục> LD=<luudo.json> LY=tests/hop/luu-do-y-kien.js node tests/hop/tao-pdf-hop-xuong.js`.
+
 ## Kiểm thử
 - `tests/dieu-phoi.js` 25/25 (DATA + DH số thật), `tests/dieu-phoi-web.js` 13/13 (bản thử số thật GIO 08/11, chủ / giamdoc / tpson điện thoại / c040).
 - Bộ cũ: quy-trinh.js 76/76, tang-toc-3.js 17/17, don-hang.js 130/135 (5 lỗi có sẵn, giống bản trước sửa).
