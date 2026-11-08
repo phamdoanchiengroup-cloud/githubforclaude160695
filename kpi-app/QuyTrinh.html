@@ -497,7 +497,7 @@ function vQTTai(){
   });
 }
 /* Nạp số liệu quy trình không vẽ (tab Đơn hàng cần để tính giờ / ngày theo xưởng) */
-function qtNapNgam(cb){ call('layQuyTrinh',[QTSoNgay||0],function(r){ if(r&&r.ok) qtNhan(r); cb(!!(r&&r.ok)); }); }
+function qtNapNgam(cb){ dhDocNen('layQuyTrinh',[QTSoNgay||0],function(r){ if(r&&r.ok) qtNhan(r); cb(!!(r&&r.ok)); }); }
 function qtNhan(r){
     QT=r; QTSoNgay=r.soNgay; QT.cdMap={}; (r.congDoan||[]).forEach(function(c){ QT.cdMap[c.MaCD]=c; });
     QTS={gioCoMat:r.caiDat.gioCoMat,hieuSuat:r.caiDat.hieuSuat,mucTieu:r.caiDat.mucTieu,slThang:r.caiDat.slThang||9000,ngayThang:r.caiDat.ngayThang||26,slNay:r.caiDat.slNay||0};
@@ -1119,9 +1119,11 @@ var DH=null, DHX='', DHXem='xuong', DHMo='', DHTai=false, DHChiCC=false;
 var DH_TUYEN=[['PHOICB','Phôi Carbon','PHOI',{GAY:1,NGON:1,CHUOI:1},'phoi'],['PHOITHO','Phôi Thô','PHOI',{GAY:1,NGON:1,CHUOI:1,NOI:1},'phoi'],
   ['SON','Sơn','SON',{GAY:1,CHUOI:1,NOI:1},'chuoi'],['INUV','In UV','UV',{GAY:1,CHUOI:1,NOI:1},'uv'],['NGONTARO','Ngọn Taro','TARO',{GAY:1,NGON:1},'ngon'],
   ['NGONTIP','Ngọn Tip','TIP',{GAY:1,NGON:1},'tip'],['CNC','CNC (típ, phíp)','TIP',{GAY:1,NGON:1},'cnc'],['HT','Hoàn thiện','HT',{GAY:1,CHUOI:1,NOI:1},'sku'],['DG','Đóng gói','DG',{GAY:1,NGON:1,CHUOI:1,NOI:1},'sku']];
+/* 08/11: đọc nền – luôn nhận kết quả (kể cả khi đã sang tab khác / máy chủ lỗi) để gỡ cờ đang tải; nơi vẽ tự kiểm tab */
+function dhDocNen(fn,a,cb){ cb.__luonGoi=1; call(fn,a,cb); }
 function dhTai(lamMoi){
   DHTai=true; if(tabHienTai==='dh'||tabHienTai==='tk') dhVeLai();
-  call('layDonHangXuong',[!!lamMoi],function(r){
+  dhDocNen('layDonHangXuong',[!!lamMoi],function(r){
     DHTai=false;
     if(!r||!r.ok){ DH={loi:(r&&r.msg)||'Không tải được.'}; } else { DH=r; DH.dongMap={}; (r.nhan.dong||[]).forEach(function(d){DH.dongMap[d[0]]=d;}); }
     if(tabHienTai==='dh'||tabHienTai==='tk') dhVeLai();
@@ -1496,8 +1498,8 @@ function dhVeCongDoan(ds){
    (không có ngày xong -> tháng theo hạn mới HT / deadline). Bản chụp chỉ còn để xem "Thay đổi hôm nay" và tham khảo. */
 var DHHT=null, DHHTTai=false, DHDG=null, DHDGTai=false;
 function dhHTMo(r){ if(r&&r.donC&&r.donH){ var c=r.donC; r.don=r.donH.map(function(d){ var o={}; for(var j=0;j<c.length;j++) o[c[j]]=d[j]; return o; }); delete r.donH; } return r; }   /* 08/11: máy chủ gửi gọn dạng bảng */
-function dhTaiHT(lam){ if(DHHTTai) return; DHHTTai=true; call('layDonHoanThien',[!!lam],function(r){ DHHTTai=false; dhHTMo(r); DHHT=(r&&r.ok)?r:{loi:(r&&r.msg)||'Không đọc được tab HT.'}; dhVeLai(); }); }
-function dhTaiDG(){ if(DHDGTai) return; DHDGTai=true; call('layDongGoiNgay',[200],function(r){ DHDGTai=false; DHDG=(r&&r.ok)?r:{loi:(r&&r.msg)||'Không đọc được nhật ký.',ngay:{}}; dhVeLai(); }); }
+function dhTaiHT(lam){ if(DHHTTai) return; DHHTTai=true; dhDocNen('layDonHoanThien',[!!lam],function(r){ DHHTTai=false; dhHTMo(r); DHHT=(r&&r.ok)?r:{loi:(r&&r.msg)||'Không đọc được tab HT.'}; dhVeLai(); }); }
+function dhTaiDG(){ if(DHDGTai) return; DHDGTai=true; dhDocNen('layDongGoiNgay',[200],function(r){ DHDGTai=false; DHDG=(r&&r.ok)?r:{loi:(r&&r.msg)||'Không đọc được nhật ký.',ngay:{}}; dhVeLai(); }); }
 function dhThangNhan(t){ return t.slice(5)+'/'+t.slice(0,4); }
 function dhThangTruoc(t,n){ var d=new Date(t+'-01T00:00:00'); d.setMonth(d.getMonth()-(n||1)); return d.getFullYear()+'-'+('0'+(d.getMonth()+1)).slice(-2); }
 function dhDGThang(th){   /* Đóng gói 1 tháng: sp, ngày làm việc đã qua trong tháng (trong khoảng có nhật ký), TB / ngày làm */
@@ -2133,7 +2135,7 @@ function dhVeGom(don){
   if(x.length>DHHet) h+='<button class="btn sm" type="button" style="margin-top:8px" onclick="DHHet+=500;dhVeLai()">Xem thêm</button>';
   return h+'</div>';
 }
-function dhTaiTD(){ if(DHTDTai) return; DHTDTai=true; call('layThayDoiDon',[],function(r){ DHTDTai=false; DHTD=(r&&r.ok)?r:{loi:(r&&r.msg)||'Không tải được.'}; dhVeLai(); }); }
+function dhTaiTD(){ if(DHTDTai) return; DHTDTai=true; dhDocNen('layThayDoiDon',[],function(r){ DHTDTai=false; DHTD=(r&&r.ok)?r:{loi:(r&&r.msg)||'Không tải được.'}; dhVeLai(); }); }
 function dhVeThayDoi(){
   if(!DHTD){ dhTaiTD(); return '<div class="card pdesc">Đang so với bản chụp gần nhất…</div>'; }
   if(DHTD.loi) return '<div class="alert a-bd">'+esc(DHTD.loi)+'</div>';
@@ -2629,9 +2631,9 @@ function tkThangNay(){ var d=new Date(); return d.getFullYear()+'-'+('0'+(d.getM
 function tkThangDs(){ var a=[], t=tkThangNay(); for(var i=0;i<6;i++){ a.push(t); var p=t.split('-'), y=+p[0], m=+p[1]-1; if(m<1){m=12;y--;} t=y+'-'+('0'+m).slice(-2); } return a; }
 function tkChon(v){ TKV=v; tkVe(); try{ var m=document.querySelector('.dh-nav'); if(m&&m.getBoundingClientRect().top<0) m.scrollIntoView({block:'start'}); }catch(e){} }
 function tkTai(lamMoi){ var th=TKThang; if(TKTai[th]) return; TKTai[th]=1;
-  call('layThongKe',[th,!!lamMoi],function(r){ TKTai[th]=0; TKD[th]=(r&&r.ok)?r:{loi:(r&&r.msg)||'Không tải được số liệu thống kê.'}; if(tabHienTai==='tk') tkVe(); }); }
+  dhDocNen('layThongKe',[th,!!lamMoi],function(r){ TKTai[th]=0; TKD[th]=(r&&r.ok)?r:{loi:(r&&r.msg)||'Không tải được số liệu thống kê.'}; if(tabHienTai==='tk') tkVe(); }); }
 function tkTaiDM(){ var th=TKThang; if(TKDMTai[th]) return; TKDMTai[th]=1;
-  call('phanTichDinhMuc',['thang',th],function(r){ TKDMTai[th]=0; TKDM[th]=(r&&r.ok)?r:{loi:(r&&r.msg)||'Không tải được phân tích định mức.'}; if(tabHienTai==='tk') tkVe(); }); }
+  dhDocNen('phanTichDinhMuc',['thang',th],function(r){ TKDMTai[th]=0; TKDM[th]=(r&&r.ok)?r:{loi:(r&&r.msg)||'Không tải được phân tích định mức.'}; if(tabHienTai==='tk') tkVe(); }); }
 function tkLamMoi(){ TKD[TKThang]=null; TKDM[TKThang]=null; tkTai(true); if(TKV==='sx'){ DH=null; dhTai(true); } tkVe(); }
 function tkPct(a,b,k){ return b?qtSo(a/b*100,k==null?1:k)+'%':'–'; }
 function tkTenX(D,mx){ for(var i=0;i<(D.xuong||[]).length;i++) if(D.xuong[i][0]===mx) return D.xuong[i][1].replace(/^Xưởng /,''); return mx; }
@@ -2873,7 +2875,7 @@ function tkVeKPI(D){
 var TKTD=null, TKTDTai=false, TKTDN=7;
 var TD_TEN={trang:'Mở trang (tới màn đăng nhập)',vaoApp:'Bấm Đăng nhập → thấy số',napDuLieu:'Tải gói dữ liệu đăng nhập',napPhan:'Tải lại sau khi lưu',layKPIKy:'Bảng KPI',layKPIQuanLy:'KPI quản lý',layDonHangXuong:'Đơn hàng',layDongGoiNgay:'Sản lượng xưởng (Đơn hàng)',layThongKe:'Thống kê',phanTichDinhMuc:'Phân tích định mức',layQuyTrinh:'Quy trình sản xuất',layDonHoanThien:'Đơn đã hoàn thiện (tab HT)',layManhGiaoDien:'Tải phần giao diện',congNhanGuiSanLuong:'Công nhân gửi sản lượng',duyetNhomNguoi:'Duyệt sản lượng',chotCa:'Chốt ca (trưởng phòng nhập)'};
 var TD_VT={OWNER:'Chủ sở hữu',ADMIN:'Ban điều hành',TP:'Trưởng / phó phòng',PP:'Phó phòng',CN:'Công nhân',HR:'Nhân sự',BEP:'Bếp',TL:'Trợ lý',TBP:'Trưởng bộ phận',NV:'Nhân viên'};
-function tkTDTai(){ if(TKTDTai) return; TKTDTai=true; call('layTocDo',[14],function(r){ TKTDTai=false; TKTD=(r&&r.ok)?r:{loi:(r&&r.msg)||'Không đọc được số đo.'}; if(tabHienTai==='tk'&&TKV==='td') tkVe(); }); }
+function tkTDTai(){ if(TKTDTai) return; TKTDTai=true; dhDocNen('layTocDo',[14],function(r){ TKTDTai=false; TKTD=(r&&r.ok)?r:{loi:(r&&r.msg)||'Không đọc được số đo.'}; if(tabHienTai==='tk'&&TKV==='td') tkVe(); }); }
 function tdGop(ds,lay){ var o=null; ds.forEach(function(n){ var x=lay(n.o); if(!x) return; if(!o){ o=x.slice(); return; } o[0]+=x[0]; o[1]+=x[1]; o[2]=Math.max(o[2],x[2]); o[3]+=x[3]; o[4]+=x[4]; for(var i=5;i<x.length;i++) o[i]+=x[i]; }); return o; }
 function tdPV(o,moc,p){ var n=o[0], can=n*p, cd=0; for(var i=5;i<o.length;i++){ cd+=o[i]; if(cd>=can) return i-5<moc.length?moc[i-5]:null; } return null; }
 function tdS(ms){ return ms==null?'> 15 s':(ms<1000?Math.round(ms)+' ms':qtSo(ms/1000,1)+' s'); }

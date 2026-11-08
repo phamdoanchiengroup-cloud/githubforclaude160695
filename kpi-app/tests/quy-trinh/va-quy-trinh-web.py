@@ -75,6 +75,16 @@ function moCauHinhSP(v){ window.__dhMo=v||'cauhinh'; go('dh'); }
 function dhDaXemTab(){ try{ var a=JSON.parse(localStorage.getItem('dhTabDaXem')||'[]'); ((window.__spMoi||{}).tabMoi||[]).forEach(function(t){ if(a.indexOf(t)<0) a.push(t); }); localStorage.setItem('dhTabDaXem',JSON.stringify(a.slice(-50))); }catch(e){} }
 </script>
 """ + s[_k36b:]
+
+# 08/11 (chủ dự án báo: Đơn hàng + Thống kê "Sản xuất & đơn hàng" treo ở "Đang đọc…" sau khi sang tab Quy trình lưu rồi quay lại):
+# call() bỏ kết quả đọc khi người dùng đã sang tab khác và không gọi lại khi máy chủ lỗi -> cờ "đang tải" (DHTai, DHDGTai, TKTai…) kẹt mãi.
+# Hàm đọc nền đánh dấu cb.__luonGoi: luôn nhận kết quả (tự kiểm tab trước khi vẽ), lỗi máy chủ cũng nhận {ok:false} để gỡ cờ.
+_t36("      if(doc && tabHienTai!==tab0) return;          // đã sang tab khác: bỏ kết quả cũ, không vẽ đè",
+     "      if(doc && tabHienTai!==tab0 && !(cb&&cb.__luonGoi)) return;          // đã sang tab khác: bỏ kết quả cũ, không vẽ đè (trừ hàm đọc nền tự kiểm tab – 08/11)")
+_t36("""      toast('Lỗi: '+(e&&e.message||e));
+    });""", """      toast('Lỗi: '+(e&&e.message||e));
+      if(cb&&cb.__luonGoi){ try{ cb({ok:false,msg:'Lỗi máy chủ: '+(e&&e.message||e)}); }catch(x){} }   // 08/11: gỡ cờ "đang tải"
+    });""")
 import hashlib as _hl36, re as _re36
 _v36 = _hl36.md5(_qt_src.encode('utf-8')).hexdigest()[:10]
 _m36 = _re36.search(r'var MANH_VER=(\{[^}]*\});', s)
