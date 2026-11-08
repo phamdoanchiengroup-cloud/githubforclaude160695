@@ -7701,7 +7701,7 @@ function danhSachVanPhong(token) {
   ds.sort(function(a, b) { return (thuTu[a.vaiTro] - thuTu[b.vaiTro]) || (a.HoTen < b.HoTen ? -1 : 1); });
   return sach_({ ok: true, ds: ds, muc: HS_MUC });
 }
-var KPI_BAN_MAY = '08/11/2026 07:30';   // giờ dựng Code.gs (22/10)
+var KPI_BAN_MAY = '08/11/2026 08:25';   // giờ dựng Code.gs (22/10)
 /* =====================================================================
    KỸ NĂNG (22/10, chủ dự án nhờ thiết kế + tham khảo chuyên gia nhân sự / đào tạo)
    - Danh mục: trưởng / phó phòng đề xuất kỹ năng của xưởng (tên, mô tả, tiêu chí đạt, công đoạn liên quan)
@@ -9637,9 +9637,15 @@ function layThongKe(token, thang, lamMoi) {
     docAnToan_('DiemDanhNghi').forEach(function(r) {
       var d = ngayVN_(r.Ngay); if (!ngSet[d]) return;
       var k = khTuBanGhi_(r), nv = String(r.MaNV || '').trim(), mx = r.MaXuong || nsX[nv] || '?';
-      kh[k] = (kh[k] || 0) + 1; if (TK_BO_VANG[k]) return;
-      var v = (8 - gioCoMat_(k)) / 8; if (!(v > 0)) return;
+      kh[k] = (kh[k] || 0) + 1;
       var o = X[mx] || (X[mx] = { nguoi: 0, cong: 0, vang: 0, nkl: 0, p: 0, nua: 0, muon: 0, khac: 0, ngayXN: 0, ngayXNDung: 0 });
+      /* 08/11 (chủ dự án): người đi làm / ngày – nghỉ cả ngày (kể cả thai sản) = 1 người vắng, nửa ngày = 0,5, đi muộn vẫn tính đi làm;
+         ngày xưởng nghỉ lễ riêng (NL) không tính là ngày làm của xưởng đó */
+      if (k === 'NL') { (o.ngNL = o.ngNL || {})[d] = 1; return; }
+      var vn = k === '0.5x' ? 0.5 : (gioCoMat_(k) === 0 ? 1 : 0);
+      if (vn) { o.vangNg = (o.vangNg || 0) + vn; (o.vangNgD = o.vangNgD || {})[d] = (o.vangNgD[d] || 0) + vn; }
+      if (TK_BO_VANG[k]) return;
+      var v = (8 - gioCoMat_(k)) / 8; if (!(v > 0)) return;
       o.vang += v;
       if (k === 'Nkl' || k === 'Nkp') o.nkl += v; else if (k === 'P') o.p += v; else if (k === '0.5x') o.nua += v; else if (k.indexOf('x-') === 0) { o.muon++; muon[nv] = (muon[nv] || 0) + 1; } else o.khac += v;
       (theoNgay[d] = theoNgay[d] || {})[mx] = ((theoNgay[d] || {})[mx] || 0) + v;
@@ -9647,6 +9653,9 @@ function layThongKe(token, thang, lamMoi) {
       p.vang += v; p.lan++; if (k === 'Nkl' || k === 'Nkp') p.nkl += v;
       thu7[new Date(d + 'T12:00:00Z').getUTCDay()] += v;
     });
+    Object.keys(X).forEach(function(mx) { var o = X[mx], nl = o.ngNL || {}, n = 0, cong = 0;
+      ngayLam.forEach(function(d) { if (nl[d]) return; n++; cong += Math.max(0, o.nguoi - ((o.vangNgD || {})[d] || 0)); });
+      o.ngayLamX = n; o.tbDiLam = n ? Math.round(cong / n * 10) / 10 : null; delete o.ngNL; delete o.vangNgD; });
     var top = Object.keys(theoNguoi).map(function(k) { return theoNguoi[k]; }).sort(function(a, b) { return b.vang - a.vang; }).slice(0, 15);
     var muonDs = Object.keys(muon).filter(function(nv) { return muon[nv] >= 3; }).map(function(nv) { return { nv: nv, ten: tenNV[nv] || nv, mx: nsX[nv] || '', lan: muon[nv] }; }).sort(function(a, b) { return b.lan - a.lan; });
     return { x: X, ngay: theoNgay, top: top, kyHieu: kh, thu: thu7, muon3: muonDs };

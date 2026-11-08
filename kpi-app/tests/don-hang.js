@@ -276,6 +276,7 @@ console.log('\n07/11. Tab chính Thống kê – layThongKe (chỉ chủ sở h�
   ok(ns === dl, 'nhân sự đang làm = số "Đang làm" trong Nhân sự', [ns, dl]);
   const x = Object.values(tk.dd.x), sai = x.filter(o => o.vang < 0 || o.vang > o.cong + 1e-9 || o.ngayXN > tk.ngayLam.length);
   ok(!sai.length && x.some(o => o.vang > 0), 'điểm danh: 0 ≤ công vắng ≤ công kế hoạch, ngày xác nhận ≤ ngày làm', sai[0]);
+  ok(x.filter(o => o.nguoi).every(o => o.tbDiLam != null && o.tbDiLam <= o.nguoi && o.tbDiLam >= 0 && Math.abs(o.tbDiLam - (o.nguoi - (o.vangNg || 0) / o.ngayLamX)) < 0.06), '08/11: TB đi làm / ngày = người − (nghỉ cả ngày + 0,5 × nửa ngày) ÷ ngày làm', x.slice(0, 2));
   ok(Object.values(tk.dd.kyHieu).length > 0 && !('NL' in Object.fromEntries(tk.dd.top.map(p => [p.nv, 1]))), 'điểm danh: có đếm ký hiệu, NL không tính vắng');
   ok(tk.com.daTongKet === true && tk.com.x.length > 0 && tk.com.x.every(r => r.chua >= 0), 'báo cơm tháng 10 (đã tổng kết): đọc SuatAnThang, có "không báo"', tk.com.x[0]);
   const cd = Object.values(tk.cd.x).filter(o => o.hs != null);
