@@ -629,10 +629,12 @@ function chonCot_(r, cot) { var o = {}; cot.forEach(function(k) { o[k] = r[k]; }
 
 function napDuLieuLoi_(token, phan) {
   try {
+  if (!phan) { try { napTruoc_(SHEET_NAP_); } catch (e0) {} }   // 08/11 đợt 4: đọc gộp trước cả bước đọc phiên
   var me = docPhien_(token, true);
   if (!me) return sach_({ ok: false, hetHan: true, msg: 'Phiên đăng nhập đã hết hạn. Đăng nhập lại.' });
   if (me.phaiDoiMK) return sach_({ ok: false, phaiDoiMK: true, me: me, msg: 'Cần đổi mật khẩu lần đầu trước khi dùng hệ thống.' });
   me.banMay = KPI_BAN_MAY;
+  if (me.laOwner) { try { tt4CaiLich_(); } catch (e) {} }   // 08/11 đợt 4: tự cài lịch giữ nóng đăng nhập
   try { me.hoSoThieu = hsVaiTroPhai_(me.vaiTroGoc || me.vaiTro) ? hoSoThieu_(hsCuaToi_(me)) : []; } catch (e) { me.hoSoThieu = []; }   // hồ sơ bắt buộc (22/10) – mọi nhánh, kể cả bếp / nhóm báo cơm
   if (me.vaiTro === 'BEP' || me.vaiTro === 'NHOM' || me.vaiTro === 'NV' || me.vaiTro === 'TBP') {
     var rong = { ok: true, me: me, phan: phan || 'tat', phongban: doc_('PhongBan').map(function(p) { return { MaXuong: p.MaXuong, TenXuong: p.TenXuong }; }) };
@@ -5526,7 +5528,7 @@ function bangThanhDoiTuong_(v) {
 }
 var SHEET_NAP_ = ['TaiKhoan', 'NhanSu', 'PhongBan', 'CongDoan', 'DinhMuc', 'DeXuatDinhMuc', 'DanhMucLoi', 'LyDoDung',
   'NhatKySanXuat', 'PhieuKCS', 'TrongSoKPI', 'MayMoc', 'DanhMucViPham', 'ViPham', 'DiemDanhNghi', 'XacNhanDiemDanh',
-  'NghiDaiHan', 'YeuCauSuaHoSo', 'ThongBao', 'NgayLe', 'MienTruDiemDanh', 'KPIThang', 'PhatNhapTre', 'MienTruKPIQuanLy'];
+  'NghiDaiHan', 'YeuCauSuaHoSo', 'ThongBao', 'NgayLe', 'MienTruDiemDanh', 'KPIThang', 'PhatNhapTre', 'MienTruKPIQuanLy', 'LichSuDinhMuc'];   // 08/11 đợt 4: + LichSuDinhMuc
 
 /* CHẠY TAY: so từng ô giữa cách đọc cũ (getValues) và Sheets API. Khớp hết -> bật đọc gộp. */
 function KIEM_TRA_SHEETS_API() {
@@ -5572,7 +5574,7 @@ function KIEM_TRA_SHEETS_API() {
   else { p.setProperty('KPI_SHEETS_API', '0'); Logger.log('Có ' + lech + ' ô lệch -> CHƯA bật. Ví dụ:\n' + vd.join('\n')); }
 }
 function TAT_SHEETS_API() {
-  if (!noiBo_(arguments[0])) return chanWeb_('TAT_SHEETS_API'); PropertiesService.getScriptProperties().setProperty('KPI_SHEETS_API', '0'); Logger.log('Đã tắt đọc gộp.'); }
+  if (!noiBo_(arguments[0])) return chanWeb_('TAT_SHEETS_API'); PropertiesService.getScriptProperties().setProperty('KPI_SHEETS_API', '0'); PropertiesService.getScriptProperties().setProperty('KPI_SHEETS_TAT', '1'); Logger.log('Đã tắt đọc gộp.'); }
 
 /* ---------- 4) LƯU TRỮ NHẬT KÝ CŨ ----------
    Chuyển các dòng NhatKySanXuat của những tháng ĐÃ CHỐT CHÍNH THỨC và cũ hơn SO_THANG_GIU tháng
@@ -7669,7 +7671,7 @@ function danhSachVanPhong(token) {
   ds.sort(function(a, b) { return (thuTu[a.vaiTro] - thuTu[b.vaiTro]) || (a.HoTen < b.HoTen ? -1 : 1); });
   return sach_({ ok: true, ds: ds, muc: HS_MUC });
 }
-var KPI_BAN_MAY = '08/11/2026 17:48';   // giờ dựng Code.gs (22/10)
+var KPI_BAN_MAY = '08/11/2026 18:54';   // giờ dựng Code.gs (22/10)
 /* =====================================================================
    KỸ NĂNG (22/10, chủ dự án nhờ thiết kế + tham khảo chuyên gia nhân sự / đào tạo)
    - Danh mục: trưởng / phó phòng đề xuất kỹ năng của xưởng (tên, mô tả, tiêu chí đạt, công đoạn liên quan)
@@ -9771,7 +9773,7 @@ function layThongKe(token, thang, lamMoi) {
    2) Bộ đo tốc độ: máy chủ gắn __ms (thời gian chạy) vào kết quả; trình duyệt đo cả đường truyền, gửi gộp về ghiTocDo;
       chủ sở hữu xem ở Thống kê › Tốc độ web (layTocDo). Lưu theo ngày trong ScriptProperties, giữ 14 ngày.
    3) Khóa mã hóa bản lưu số liệu trên máy (người dùng tự bật "ghi nhớ trên máy cá nhân"): layKhoaLuu, đổi khóa khi Thoát / đổi mật khẩu. */
-var NKD_TEN = 'NhatKySanXuat', NKD_K = 'NKD3', NKD_GIAY = 600, NKD_MANH = 90000;
+var NKD_TEN = 'NhatKySanXuat', NKD_K = 'NKD3', NKD_GIAY = 900, NKD_MANH = 90000;   // 08/11 đợt 4: 10 -> 15 phút, lịch giữ nóng làm mới trước khi hết
 var __NKD_TT = { trung: 0, truot: 0 };
 function nkdMoi_() { return Date.now().toString(36) + Math.random().toString(36).slice(2, 7); }
 function nkdPB_() {
@@ -9798,7 +9800,7 @@ function nkdGhi_(pb, v) {
     var z = Utilities.base64Encode(Utilities.gzip(Utilities.newBlob(JSON.stringify(w), 'application/json')).getBytes());
     if (z.length > NKD_MANH * 60) return;   // > ~5 MB nén: không nhớ (nên chạy lưu trữ nhật ký cũ)
     var p = {}, n = 0; for (var x = 0; x < z.length; x += NKD_MANH) p[NKD_K + '_' + pb + '_' + (n++)] = z.slice(x, x + NKD_MANH);
-    var c = CacheService.getScriptCache(); c.putAll(p, NKD_GIAY); c.put(NKD_K + '_m', JSON.stringify({ pb: pb, n: n }), NKD_GIAY);
+    var c = CacheService.getScriptCache(); c.putAll(p, NKD_GIAY); c.put(NKD_K + '_m', JSON.stringify({ pb: pb, n: n }), NKD_GIAY); c.put(NKD_K + '_t', String(Date.now()), NKD_GIAY);
   } catch (e) {}
 }
 
@@ -9841,7 +9843,7 @@ function layTocDo(token, soNgay) {
     d.setUTCDate(d.getUTCDate() - 1);
   }
   var nk = 0; try { var sh = ss_().getSheetByName(NKD_TEN); nk = sh ? sh.getLastRow() - 1 : 0; } catch (e) {}
-  return sach_({ ok: true, moc: TD_MOC, ngay: ngay, nhatKyDong: nk, nkDem: nkdLay_(nkdPB_()) ? 1 : 0 });
+  return sach_({ ok: true, moc: TD_MOC, ngay: ngay, nhatKyDong: nk, nkDem: nkdLay_(nkdPB_()) ? 1 : 0, tt4: tt4TrangThai_() });
 }
 
 /* ---------- 3) KHÓA MÃ HÓA BẢN LƯU TRÊN MÁY ---------- */
@@ -10048,4 +10050,53 @@ function dpEmail_(e0, so) {
   h += '<li>Sức khỏe dữ liệu: ' + (sk.length ? sk.join(' · ') : 'không có gì bất thường') + '</li>';
   if (d.dem.some(function(p) { return !p.daAp; })) h += '<li><b>Chưa áp cách đếm Claude đề xuất</b> (Phôi Carbon / Sơn / In UV) – xem Việc hôm nay.</li>';
   return h + '</ul>';
+}
+
+/* ===== 08/11 TĂNG TỐC ĐỢT 4 – ĐĂNG NHẬP NHANH (chủ dự án: "CN, TP, PP mất hơn 20 giây để đăng nhập, thấy số") =====
+   Chủ dự án chọn A: (1) Sheets API tự bật: 2-CAP-NHAT.bat ghi dịch vụ Sheets vào appsscript.json; lịch giữ nóng tự kiểm tra
+   (đọc 2 cách so khớp như KIEM_TRA_SHEETS_API) rồi bật đọc gộp – mỗi lần đăng nhập đọc ~20 trang tính trong 1 lượt thay vì 20 lượt.
+   (2) Giữ nóng bộ nhớ nhật ký dùng chung (NKD3): lịch 5 phút/lần (6h–22h) đọc lại sheet nhật ký khi bản nhớ sắp hết hạn,
+   nên người đăng nhập không phải chờ đọc ~20.000 dòng. Lịch tự cài khi chủ sở hữu mở web (không cần chạy tay). */
+var TT4_HAM = 'GIU_NONG_DANG_NHAP', TT4_LAM_MOI = 480;   // làm mới bản nhớ khi đã quá 8 phút (bản nhớ sống 15 phút)
+function tt4CaiLich_() {
+  var p = PropertiesService.getScriptProperties();
+  if (p.getProperty('TT4_LICH') === '1' || p.getProperty('TT4_TAT') === '1') return;
+  if (!ScriptApp.getProjectTriggers().some(function(t) { return t.getHandlerFunction() === TT4_HAM; }))
+    ScriptApp.newTrigger(TT4_HAM).timeBased().everyMinutes(5).create();
+  p.setProperty('TT4_LICH', '1');
+}
+function GIU_NONG_DANG_NHAP(e) {
+  if (!noiBo_(e)) return chanWeb_('GIU_NONG_DANG_NHAP');
+  var gio = gioVN_(); if (gio < 6 || gio >= 22) return;
+  var p = PropertiesService.getScriptProperties(), t0 = Date.now();
+  /* (1) Sheets API: tự kiểm tra 1 lần / ngày tới khi khớp (chủ dự án tắt tay bằng TAT_SHEETS_API thì thôi) */
+  try {
+    var sa = p.getProperty('KPI_SHEETS_API'), kt = p.getProperty('TT4_KT_API') || '', hn = homNayVN_();
+    if (typeof Sheets !== 'undefined' && sa !== '1' && p.getProperty('KPI_SHEETS_TAT') !== '1' && kt !== hn) { p.setProperty('TT4_KT_API', hn); KIEM_TRA_SHEETS_API(e); }
+  } catch (x) {}
+  /* (2) nhật ký dùng chung: còn nóng thì thôi, sắp hết hạn thì đọc lại */
+  try {
+    var c = CacheService.getScriptCache(), pb = nkdPB_(), m = c.get(NKD_K + '_m'), tu = Number(c.get(NKD_K + '_t') || 0);
+    m = m ? JSON.parse(m) : null;
+    if (!(m && m.pb === pb && Date.now() - tu < TT4_LAM_MOI * 1000)) {
+      var sh = ss_().getSheetByName(NKD_TEN);
+      if (sh) nkdGhi_(pb, sh.getDataRange().getValues());
+    }
+  } catch (x) {}
+  try { var n = Number(p.getProperty('TT4_DEM') || 0) + 1; if (n % 12 === 1) Logger.log('Giữ nóng đăng nhập: ' + (Date.now() - t0) + ' ms'); p.setProperty('TT4_DEM', String(n)); } catch (x) {}
+}
+/* Chạy tay nếu muốn tắt / bật lại lịch giữ nóng */
+function TAT_GIU_NONG_DANG_NHAP() {
+  if (!noiBo_(arguments[0])) return chanWeb_('TAT_GIU_NONG_DANG_NHAP');
+  ScriptApp.getProjectTriggers().forEach(function(t) { if (t.getHandlerFunction() === TT4_HAM) ScriptApp.deleteTrigger(t); });
+  var p = PropertiesService.getScriptProperties(); p.setProperty('TT4_TAT', '1'); p.deleteProperty('TT4_LICH'); Logger.log('Đã tắt lịch giữ nóng đăng nhập.');
+}
+function BAT_GIU_NONG_DANG_NHAP() {
+  if (!noiBo_(arguments[0])) return chanWeb_('BAT_GIU_NONG_DANG_NHAP');
+  var p = PropertiesService.getScriptProperties(); p.deleteProperty('TT4_TAT'); p.deleteProperty('TT4_LICH'); tt4CaiLich_(); Logger.log('Đã bật lịch giữ nóng đăng nhập (5 phút/lần, 6h–22h).');
+}
+function tt4TrangThai_() {
+  var p = PropertiesService.getScriptProperties(), lich = false;
+  try { lich = ScriptApp.getProjectTriggers().some(function(t) { return t.getHandlerFunction() === TT4_HAM; }); } catch (e) {}
+  return { sheetsApi: typeof Sheets !== 'undefined' ? (p.getProperty('KPI_SHEETS_API') === '1' ? 'bat' : 'chuaKhop') : 'chuaCo', lich: lich };
 }

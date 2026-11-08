@@ -53,7 +53,7 @@ Liên quan: [[Lần dán lên Apps Script]] · [[Quyết định của chủ d�
 ## Chờ chủ dự án làm
 - (25/10) Trên web, sửa định mức Cân Phôi – Phân Loại Phôi 350 → 180; điền NgayVaoLam cho Nguyễn Thị Mai Nga (C996). – [[KPI Soát đổi định mức 22-10]]
 - Lưu trữ 2 link thừa `AKfycbyQ…`, `AKfycbz2…` trong Quản lý triển khai (clasp đã tự triển khai đúng link công ty từ 22/10). – [[KPI Cập nhật bằng clasp]]
-- Dán bản 21/10 (sửa lỗi + tăng tốc), chạy `CAI_TRIGGER_LAM_NONG_KPI`, kiểm tra Sheets API. – [[KPI Tăng tốc đợt 2 (21-10)]]
+- Dán bản 21/10 (sửa lỗi + tăng tốc), chạy `CAI_TRIGGER_LAM_NONG_KPI`, kiểm tra Sheets API (08/11: đã tự động hóa – xem [[KPI Tăng tốc đợt 4 – đăng nhập (08-11)]]). – [[KPI Tăng tốc đợt 2 (21-10)]]
 - Sau khi dán: chạy một lần `AP_DINH_MUC_CA_THANG`, mở Phân tích định mức tháng 10 → "Áp dụng các dòng đã chọn"; nếu tháng đã chốt thì bấm "Chốt bù tháng này". – [[KPI Phân tích định mức]]
 
 ## Dữ liệu trong sheet cần sửa tay (soát 21/10)

@@ -42,6 +42,29 @@ try {
     Copy-Item (Join-Path $tam ($t + '.html')) -Destination (Join-Path $ThuMucMa ($t + '.html')) -Force
   }
 
+  # 3b. (08/11) Bật dịch vụ Google Sheets API trong appsscript.json: máy chủ đọc gộp ~20 trang tính trong 1 lượt -> đăng nhập nhanh hơn.
+  #     Máy chủ tự kiểm tra đọc 2 cách có khớp không rồi mới dùng (lịch giữ nóng). Lỗi gì cũng giữ nguyên file cũ.
+  $mfTep = Join-Path $ThuMucMa 'appsscript.json'
+  $mfCu = [IO.File]::ReadAllText($mfTep)
+  if ($mfCu -notmatch '"serviceId"\s*:\s*"sheets"') {
+    try {
+      $mfObj = $mfCu | ConvertFrom-Json
+      if (-not $mfObj.dependencies) { $mfObj | Add-Member -NotePropertyName dependencies -NotePropertyValue ([pscustomobject]@{}) -Force }
+      $dv = @()
+      if ($mfObj.dependencies.enabledAdvancedServices) { $dv = @($mfObj.dependencies.enabledAdvancedServices) }
+      $dv += [pscustomobject]@{ userSymbol = 'Sheets'; serviceId = 'sheets'; version = 'v4' }
+      $mfObj.dependencies | Add-Member -NotePropertyName enabledAdvancedServices -NotePropertyValue $dv -Force
+      $mfMoi = $mfObj | ConvertTo-Json -Depth 20
+      $kt = $mfMoi | ConvertFrom-Json
+      if (-not (@($kt.dependencies.enabledAdvancedServices) | Where-Object { $_.serviceId -eq 'sheets' })) { throw 'kiểm tra lại không thấy Sheets' }
+      [IO.File]::WriteAllText($mfTep, $mfMoi, (New-Object Text.UTF8Encoding $false))
+      Tot '  Đã bật dịch vụ Google Sheets API (đăng nhập, tải dữ liệu nhanh hơn).'
+    } catch {
+      [IO.File]::WriteAllText($mfTep, $mfCu, (New-Object Text.UTF8Encoding $false))
+      Write-Host ('  Chưa bật được Sheets API (giữ nguyên cấu hình cũ): ' + $_.Exception.Message) -ForegroundColor Yellow
+    }
+  }
+
   # 4. Đẩy lên Apps Script
   Bao 'Đang đẩy lên Apps Script...'
   GoiClasp -ThamSo @('push', '-f') | Out-Host

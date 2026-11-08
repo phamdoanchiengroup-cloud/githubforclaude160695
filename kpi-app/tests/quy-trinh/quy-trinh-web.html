@@ -2887,6 +2887,7 @@ function tkVeTD(){
   if(!TKTD){ tkTDTai(); return '<div class="pdesc">Đang đọc số đo tốc độ…</div>'; }
   if(TKTD.loi) return '<div class="alert a-bd">'+esc(TKTD.loi)+'</div>';
   var R=TKTD, ds=R.ngay.slice(0,TKTDN), moc=R.moc, h='';
+  if(R.tt4) h+='<div class="dh-ghi">Tăng tốc đăng nhập (08/11): đọc gộp Sheets API <b>'+({bat:'đang bật',chuaKhop:'đã có dịch vụ – đang chờ máy chủ tự kiểm tra (trong 1 ngày)',chuaCo:'chưa có dịch vụ – chạy 2-CAP-NHAT.bat bản mới'}[R.tt4.sheetsApi]||'?')+'</b> · lịch giữ nóng nhật ký <b>'+(R.tt4.lich?'đang chạy (5 phút/lần, 6h–22h)':'chưa cài – mở web bằng tài khoản chủ sở hữu để tự cài')+'</b></div>';   /* 08/11 đợt 4 */
   h+='<div class="dh-ghi">Số đo <b>thật</b> từ máy của người dùng (gồm cả đường truyền mạng), gửi về tự động. Chọn: '+[1,7,14].map(function(n){return '<button type="button" class="btn sm'+(TKTDN===n?' pri':'')+'" onclick="TKTDN='+n+';tkVe()">'+(n===1?'Hôm nay':n+' ngày')+'</button>'}).join(' ')+' · Nhật ký sản xuất hiện có <b>'+qtSo(R.nhatKyDong,0)+'</b> dòng'+(R.nkDem?' · bản nhớ dùng chung đang có':'')+'</div>';
   if(!ds.length) return h+'<div class="card"><div class="dh-ghi">Chưa có số đo. Sau khi cập nhật web, mọi người dùng vài giờ là có số.</div></div>';
   /* 1. trải nghiệm theo vai trò */
