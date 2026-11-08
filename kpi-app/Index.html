@@ -8682,7 +8682,7 @@ function chiXemDon(){
 </script>
 <script>
 /* ===== 19. PHẦN GIAO DIỆN TẢI SAU (12/10) – SoDo.html, HoatAnh.html: chỉ tải khi cần, nhớ lại theo phiên bản ===== */
-var MANH_VER={"SoDo": "d9bc7ce73f034629", "HoatAnh": "b23cbe69d6aae56e", "AmThanh": "c690fabe4419160c", "QuyTrinh": "50108feaf2"};
+var MANH_VER={"SoDo": "d9bc7ce73f034629", "HoatAnh": "b23cbe69d6aae56e", "AmThanh": "c690fabe4419160c", "QuyTrinh": "fbae301ad4"};
 var __manh={da:{},cho:{}};
 function ganManh_(nd){
   var js=[], ngoai=String(nd).replace(/<script>([\s\S]*?)<\/script>/g,function(_,x){js.push(x);return ''});
@@ -9634,7 +9634,7 @@ function hsGhiChuDong(r){
 }
 </script>
 <script>
-var KPI_BAN = '08/11/2026 15:55';
+var KPI_BAN = '08/11/2026 16:37';
 (function(){
   var cu = window.veNav;
   window.veNav = function(){
@@ -10685,7 +10685,7 @@ function nsnCapNhat(){ call('capNhatNgoaiSXTuFile',[],function(r){ if(!r||!r.ok)
 </script>
 <script>
 /* ===== 38. TĂNG TỐC ĐỢT 3 (08/11) – bộ đo tốc độ + mở nhanh bằng số lần trước (mã hóa) ===== */
-var TD_BUF=[], TD_T=null, DL_VER='93e99b95d6', DL_HAN=12*3600e3, DL_BO=['SoCCCD','DienThoai','DiaChi','SdtKhanCap','LuongCoBan','NamSinh','SoTaiKhoan','Email'];
+var TD_BUF=[], TD_T=null, DL_VER='1a9bac15c4', DL_HAN=12*3600e3, DL_BO=['SoCCCD','DienThoai','DiaChi','SdtKhanCap','LuongCoBan','NamSinh','SoTaiKhoan','Email'];
 function tdGhi_(f,ms,sv){ if(!(ms>=0)||!f) return; TD_BUF.push({f:String(f),ms:Math.round(ms),sv:(typeof sv==='number'?Math.round(sv):null)});
   if(TD_BUF.length>=15) tdGui_(); else if(!TD_T) TD_T=setTimeout(tdGui_,180000); }
 function tdGui_(){ if(TD_T){clearTimeout(TD_T);TD_T=null;} if(!TD_BUF.length||typeof TOKEN==='undefined'||!TOKEN) return;
@@ -10796,7 +10796,7 @@ function dpVeQL(r){
 }
 function dpApDem(){
   if(!confirm('Áp dụng cách đếm Claude đề xuất cho Phôi Carbon / Sơn / In UV? Biểu đồ sản lượng xưởng, Quy trình, báo cáo sẽ tính theo cách mới.')) return;
-  call('apDeXuatDem',[],function(r){ if(!r||!r.ok){ toast((r&&r.msg)||'Không áp dụng được.'); return; } toast(r.msg,true); window.__dp=null; dpNap(true); });
+  call('apDeXuatDem',[],function(r){ if(!r||!r.ok){ toast((r&&r.msg)||'Không áp dụng được.'); return; } toast(r.msg,true); window.__dp=null; if(typeof dhXGMoi==='function') dhXGMoi(); dpNap(true); });
 }
 /* Việc 2 */
 function dpViecTai(lamMoi){

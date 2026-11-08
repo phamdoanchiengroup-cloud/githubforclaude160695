@@ -1079,7 +1079,7 @@ function qtVeDuyet(T){
 function qtDuyetDX(id,ok){ var ly='', r=(QT.deXuatCho||[]).filter(function(x){return x.Id===id})[0]||{};
   if(!ok){ var p=prompt('Lý do từ chối (trưởng phòng sẽ thấy):',''); if(p===null) return; ly=p; }
   else if(!confirm((r.daDoi?'Quy trình xưởng này đã được sửa SAU khi trưởng phòng gửi – duyệt sẽ thay bằng bản đề xuất (mất phần sửa sau). ':'')+'Duyệt và áp dụng đề xuất này?')) return;
-  call('duyetDeXuatQuyTrinh',[id,!!ok,ly],function(r){ if(!r||!r.ok){ toast((r&&r.msg)||'Không lưu được.'); return; } toast(r.msg,true); window.__qtDXTai=0; vQTTai(); }); }
+  call('duyetDeXuatQuyTrinh',[id,!!ok,ly],function(r){ if(!r||!r.ok){ toast((r&&r.msg)||'Không lưu được.'); return; } toast(r.msg,true); if(ok) dhXGMoi(); window.__qtDXTai=0; vQTTai(); }); }
 function qtTim(m){ return QTD.filter(function(q){return q.Ma===m})[0]; }
 function qtSuaO(m,k,v){
   var q=qtTim(m); if(!q)return;
@@ -1111,7 +1111,7 @@ function qtLuu(){
     xuat:(function(){ var o={}; Object.keys(QT.xuat||{}).forEach(function(x){o[x]=QT.xuat[x]}); Object.keys(QT.xuatSua||{}).forEach(function(x){o[x]=QT.xuatSua[x]}); return o; })() };
   call('luuQuyTrinh',[o],function(r){
     if(!r||!r.ok){ toast((r&&r.msg)||'Không lưu được.'); return; }
-    toast(r.msg,true); vQTTai();
+    toast(r.msg,true); dhXGMoi(); vQTTai();
   });
 }
 /* ===== Đơn hàng → xưởng (31/10): đọc Sheet "Trạng thái đơn hàng", phân loại 4 thông số, việc còn lại theo xưởng ===== */
@@ -1498,9 +1498,11 @@ function dhVeCongDoan(ds){
    Sản lượng = Đóng gói theo NHẬT KÝ KPI (bước xuất Đóng gói như tab Quy trình) – có sẵn nhiều tháng; đơn đã hoàn thiện = đọc thẳng tab HT-<năm>
    (không có ngày xong -> tháng theo hạn mới HT / deadline). Bản chụp chỉ còn để xem "Thay đổi hôm nay" và tham khảo. */
 var DHHT=null, DHHTTai=false, DHDG=null, DHDGTai=false;
+/* 08/11: đổi bước xuất / số lần ghi (Lưu quy trình, duyệt đề xuất, Áp dụng cách đếm) -> bỏ số sản lượng xưởng đã tải, Thống kê / Đơn hàng đọc lại theo bước mới */
+function dhXGMoi(){ if(!DHDGTai) DHDG=null; else window.__dhDGCu=1; }
 function dhHTMo(r){ if(r&&r.donC&&r.donH){ var c=r.donC; r.don=r.donH.map(function(d){ var o={}; for(var j=0;j<c.length;j++) o[c[j]]=d[j]; return o; }); delete r.donH; } return r; }   /* 08/11: máy chủ gửi gọn dạng bảng */
 function dhTaiHT(lam){ if(DHHTTai) return; DHHTTai=true; dhDocNen('layDonHoanThien',[!!lam],function(r){ DHHTTai=false; dhHTMo(r); DHHT=(r&&r.ok)?r:{loi:(r&&r.msg)||'Không đọc được tab HT.'}; dhVeLai(); }); }
-function dhTaiDG(){ if(DHDGTai) return; DHDGTai=true; dhDocNen('layDongGoiNgay',[200],function(r){ DHDGTai=false; DHDG=(r&&r.ok)?r:{loi:(r&&r.msg)||'Không đọc được nhật ký.',ngay:{}}; dhVeLai(); }); }
+function dhTaiDG(){ if(DHDGTai) return; DHDGTai=true; window.__dhDGCu=0; dhDocNen('layDongGoiNgay',[200],function(r){ DHDGTai=false; DHDG=(r&&r.ok)?r:{loi:(r&&r.msg)||'Không đọc được nhật ký.',ngay:{}}; if(window.__dhDGCu){ window.__dhDGCu=0; DHDG=null; } dhVeLai(); }); }
 function dhThangNhan(t){ return t.slice(5)+'/'+t.slice(0,4); }
 function dhThangTruoc(t,n){ var d=new Date(t+'-01T00:00:00'); d.setMonth(d.getMonth()-(n||1)); return d.getFullYear()+'-'+('0'+(d.getMonth()+1)).slice(-2); }
 function dhDGThang(th){   /* Đóng gói 1 tháng: sp, ngày làm việc đã qua trong tháng (trong khoảng có nhật ký), TB / ngày làm */

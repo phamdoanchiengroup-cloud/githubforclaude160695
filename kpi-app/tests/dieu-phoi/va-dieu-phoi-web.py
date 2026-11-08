@@ -99,7 +99,7 @@ function dpVeQL(r){
 }
 function dpApDem(){
   if(!confirm('Áp dụng cách đếm Claude đề xuất cho Phôi Carbon / Sơn / In UV? Biểu đồ sản lượng xưởng, Quy trình, báo cáo sẽ tính theo cách mới.')) return;
-  call('apDeXuatDem',[],function(r){ if(!r||!r.ok){ toast((r&&r.msg)||'Không áp dụng được.'); return; } toast(r.msg,true); window.__dp=null; dpNap(true); });
+  call('apDeXuatDem',[],function(r){ if(!r||!r.ok){ toast((r&&r.msg)||'Không áp dụng được.'); return; } toast(r.msg,true); window.__dp=null; if(typeof dhXGMoi==='function') dhXGMoi(); dpNap(true); });
 }
 /* Việc 2 */
 function dpViecTai(lamMoi){
