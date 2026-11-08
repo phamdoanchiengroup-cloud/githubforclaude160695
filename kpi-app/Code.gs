@@ -6887,9 +6887,8 @@ function layNhanSuNgoaiSX(token) {
   var ds = docAnToan_(NS_NGOAI_SHEET).filter(function(r) { return String(r.MaNV || '').trim() && String(r.TrangThai || 'Đang làm').trim() !== 'Nghỉ việc' && !oXuong[String(r.MaNV).trim().toUpperCase()]; }).map(function(r) {
     return { BoPhan: String(r.BoPhan || ''), Nhom: String(r.Nhom || ''), MaNV: String(r.MaNV), HoTen: String(r.HoTen || ''), ChucDanh: String(r.ChucDanh || ''),
       NgayVaoLam: r.NgayVaoLam ? Utilities.formatDate(new Date(r.NgayVaoLam), TZ_VN, 'dd/MM/yyyy') : '', GhiChu: String(r.GhiChu || ''),
-      /* 08/11 (chủ dự án: "đầy đủ thông tin" = hồ sơ): ngày chính thức, phép năm còn lại (theo bảng chấm công), tình trạng + thâm niên tự tính */
+      /* 08/11 (chủ dự án: "đầy đủ thông tin" = hồ sơ): ngày chính thức, tình trạng (08/11: bỏ phép năm còn lại – chủ dự án chưa cần; cột vẫn giữ trong file) + thâm niên tự tính */
       NgayChinhThuc: r.NgayChinhThuc ? Utilities.formatDate(new Date(r.NgayChinhThuc), TZ_VN, 'dd/MM/yyyy') : '',
-      PhepConLai: (r.PhepConLai === '' || r.PhepConLai == null) ? '' : Number(r.PhepConLai),
       tinhTrang: nsTinhTrang_(r), thamNienThang: nsThamNien_(r.NgayVaoLam) };
   });
   ds.forEach(function(x, i) { x._i = i; });   // trong 1 bộ phận giữ đúng thứ tự bảng chấm công (nhóm, trưởng bộ phận đầu)
@@ -7732,7 +7731,7 @@ function danhSachVanPhong(token) {
   ds.sort(function(a, b) { return (thuTu[a.vaiTro] - thuTu[b.vaiTro]) || (a.HoTen < b.HoTen ? -1 : 1); });
   return sach_({ ok: true, ds: ds, muc: HS_MUC });
 }
-var KPI_BAN_MAY = '08/11/2026 08:58';   // giờ dựng Code.gs (22/10)
+var KPI_BAN_MAY = '08/11/2026 09:01';   // giờ dựng Code.gs (22/10)
 /* =====================================================================
    KỸ NĂNG (22/10, chủ dự án nhờ thiết kế + tham khảo chuyên gia nhân sự / đào tạo)
    - Danh mục: trưởng / phó phòng đề xuất kỹ năng của xưởng (tên, mô tả, tiêu chí đạt, công đoạn liên quan)

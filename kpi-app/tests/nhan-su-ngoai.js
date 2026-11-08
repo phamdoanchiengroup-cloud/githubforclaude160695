@@ -35,7 +35,7 @@ const g = m => r.ds.find(x => x.MaNV === m) || {};
 ok(r.ok && r.ds.length === 5 && !g('Z905').MaNV, 'liệt kê người đang làm, bỏ "Nghỉ việc"', r.ds.map(x => x.MaNV));
 ok(r.ds.map(x => x.BoPhan).join() === 'Ban điều hành,Kinh doanh,Marketing,Kho,Bếp + tạp vụ', 'thứ tự bộ phận: Ban điều hành → Kinh doanh → Marketing → Kho → Bếp', r.ds.map(x => x.BoPhan));
 ok(g('Z901').tinhTrang === 'Chính thức' && g('Z902').tinhTrang === 'Thử việc' && g('Z904').tinhTrang === '' && g('Z906').tinhTrang === '', 'tình trạng: qua ngày chính thức = Chính thức, chưa tới = Thử việc, chưa có ngày = trống', r.ds.map(x => [x.MaNV, x.tinhTrang]));
-ok(g('Z903').PhepConLai === 2.5 && g('Z904').PhepConLai === 0 && g('Z901').PhepConLai === '', 'phép năm còn lại: "2,5" → 2,5; 0 giữ 0; trống giữ trống', [g('Z903').PhepConLai, g('Z904').PhepConLai]);
+ok(!('PhepConLai' in g('Z903')), '08/11: không gửi phép năm còn lại (chủ dự án chưa cần)');
 ok(g('Z903').NgayChinhThuc === '13/07/2025' && g('Z903').NgayVaoLam === '13/05/2025' && g('Z903').thamNienThang === 17 && g('Z901').thamNienThang === 94, 'ngày dd/mm/yyyy, thâm niên tính theo tháng tròn', [g('Z903').thamNienThang, g('Z901').thamNienThang]);
 ok(g('Z901').HoTen === 'Nguyễn Văn A' && /^https:\/\/docs\.google\.com\/spreadsheets\/d\//.test(r.file), 'chuẩn hóa họ tên; có link file gốc');
 r = c.__goi('layThongKe', Town, '2026-11', true);
