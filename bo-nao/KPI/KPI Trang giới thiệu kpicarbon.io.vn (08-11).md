@@ -19,3 +19,6 @@ Liên quan: [[Liên kết và công cụ]] · [[Việc chờ chủ dự án]] ·
 2. Trang quản lý DNS của nơi mua tên miền: 4 bản ghi **A** cho `@` → `185.199.108.153`, `185.199.109.153`, `185.199.110.153`, `185.199.111.153`; 1 bản ghi **CNAME** `www` → `phamdoanchiengroup-cloud.github.io`.
 3. Sau khi DNS chạy: Settings → Pages → tick "Enforce HTTPS".
 - 08/11 kiểm DNS: `kpicarbon.io.vn` chưa có bản ghi (NXDOMAIN).
+
+## Sau đó (08/11)
+- Chủ dự án muốn tên miền **vào thẳng web**, không phải landing. Phương án: A = trang `og:` + chuyển ngay (thanh địa chỉ thành script.google.com, không đổi bảo mật); B = iframe toàn màn hình, giữ kpicarbon.io.vn trên thanh địa chỉ, cần bật lại ALLOWALL (bỏ từ 18/10) + kiểm `location.ancestorOrigins` (chỉ cho chạy khi không bị nhúng hoặc tầng ngoài là kpicarbon.io.vn), mỗi người đăng nhập lại 1 lần. Chưa chọn – **tạm gác** cùng việc chuyển quyền sang công ty (xem [[Việc chờ chủ dự án]]). Trang `docs/` hiện vẫn là bản landing tự mở sau 1,5 s; GitHub Pages + DNS chưa bật.
