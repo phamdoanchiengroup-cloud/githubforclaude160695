@@ -23,6 +23,12 @@ var DP_CAP = [['PHOICB', 'c', 'PHOITHO', 'c', 'Phôi chuôi'], ['PHOICB', 'n', '
   ['SON', '', 'INUV', '', 'Chuôi chờ in UV'], ['PHOITHO', 'n', 'NGONTARO', 'n', 'Ngọn chờ taro'], ['NGONTARO', 'n', 'NGONTIP', '', 'Ngọn chờ làm tip']];   // Hoàn thiện (đếm khúc) → Đóng gói (đếm sản phẩm) khác đơn vị: không so
 var DP_CHUOI = [['Chuỗi chuôi', [['PHOICB', 'c'], ['PHOITHO', 'c'], ['SON', ''], ['INUV', '']]], ['Chuỗi ngọn', [['PHOICB', 'n'], ['PHOITHO', 'n'], ['NGONTARO', 'n'], ['NGONTIP', '']]]];
 
+/* Đối chiếu ghi thiếu (08/11 chủ dự án: số Ngọn Taro đúng, ngọn GF qua Phôi Thô nhưng Phôi Thô ghi thiếu):
+   [nhãn, mã xưởng trước giao, mã xưởng sau nhận, xưởng cần nhắc, chặng dòng chảy liên quan] – xưởng sau làm > 1,3 lần xưởng trước giao (và hơn 20/ngày) trong 14 ngày -> báo */
+var DP_GHI_THIEU = [
+  ['Ngọn Glassfiber', ['XPT-TR-TRNGF'], ['NGON-TARORENDONG-GF', 'NGON-TARORENTHUONG-GF'], 'PHOITHO', 'Ngọn chờ taro'],
+  ['Ngọn Carbon', ['XPT-EPXN-NCBCD', 'XPT-EPXNCB-NCBT'], ['NGON-TAROREN-CB', 'NGON-TARORENDONG-CARBON'], 'PHOITHO', 'Ngọn chờ taro']
+];
 function dpQuyen_(token) {
   var me = docPhien_(token);
   if (!me) return { loi: sach_({ ok: false, hetHan: true, msg: 'Phiên đăng nhập đã hết hạn.' }) };
@@ -62,7 +68,7 @@ function dpTinh_() {
     return 'c';
   };
   var cuaXuat = {}; DH_XUONG_TT.forEach(function(X) { xuat[X].forEach(function(m) { (cuaXuat[m] = cuaXuat[m] || []).push(X); }); });
-  var deXuatMa = {}; DP_DE_XUAT.forEach(function(p) { (p.them || []).forEach(function(m) { deXuatMa[m] = 1; }); (p.doi || []).forEach(function(a) { deXuatMa[a[0]] = 1; }); });
+  var deXuatMa = {}; DP_GHI_THIEU.forEach(function(g) { g[1].concat(g[2]).forEach(function(m) { deXuatMa[m] = 1; }); }); DP_DE_XUAT.forEach(function(p) { (p.them || []).forEach(function(m) { deXuatMa[m] = 1; }); (p.doi || []).forEach(function(a) { deXuatMa[a[0]] = 1; }); });
   /* 1 lượt đọc nhật ký */
   var sl = {}, coNK = {}, cho = {}, tuongLai = [], hang = {}, gan = [];
   doc_('NhatKySanXuat').forEach(function(r) {
@@ -100,7 +106,13 @@ function dpTinh_() {
   var la = gan.filter(function(g) { var t = trungVi[g[0]]; return t && g[2] > Math.max(3 * t, t + 100); })
     .map(function(g) { return { cd: ten(g[0]), x: tenX[xOf[g[0]]] || xOf[g[0]] || '', ng: g[1], sl: g[2], thuong: trungVi[g[0]], nv: g[3], nguoi: g[4], lan: Math.round(g[2] / trungVi[g[0]] * 10) / 10 }; })
     .sort(function(a, b) { return b.lan - a.lan; });
-  var sk = { thieuNK: thieuNK, cho: choDs, choTong: choDs.reduce(function(s, x) { return s + x.n; }, 0), la: la.slice(0, 12), laTong: la.length,
+  var ghiThieu = [];
+  DP_GHI_THIEU.forEach(function(g) {
+    var a1 = g[1].filter(function(m) { return xOf[m]; }), b1 = g[2].filter(function(m) { return xOf[m]; }); if (!a1.length || !b1.length) return;
+    var a = tb(a1, ngay14, 1), b = tb(b1, ngay14, 1);
+    if (b > 20 && b > 1.3 * a && b - a > 20) ghiThieu.push({ nhan: g[0], x: g[3], ten: tenX[g[3]] || g[3], sau: tenX[xOf[b1[0]]] || '', a: Math.round(a), b: Math.round(b), cdA: a1.map(ten), cap: g[4] });
+  });
+  var sk = { ghiThieu: ghiThieu, thieuNK: thieuNK, cho: choDs, choTong: choDs.reduce(function(s, x) { return s + x.n; }, 0), la: la.slice(0, 12), laTong: la.length,
     tuongLai: tuongLai.length, tuongLaiDs: tuongLai.slice(0, 6).map(function(t) { t.x = tenX[t.x] || t.x; return t; }), ngay6: ngay6 };
   /* ---- 3. Dòng chảy + nút cổ chai ---- */
   var ra = function(X, ph, ngs) { var ma = xuat[X].filter(function(m) { return !ph || phan(X, m) === ph; }); if (X === 'NGONTARO' && !ph) ma = ma.filter(function(m) { return phan(X, m) !== ''; }); return tb(ma, ngs, luot[X]); };
@@ -108,7 +120,8 @@ function dpTinh_() {
   var cap = DP_CAP.map(function(c) {
     var a = ra(c[0], c[1], ngay14), b = ra(c[2], c[3], ngay14), ch = a - b, tich = ch * ngay14.length;
     var tt = !(a > 0) || !(b > 0) ? 'thieu' : Math.abs(ch) > 0.4 * Math.max(a, b) ? 'lech' : Math.abs(ch) <= 0.1 * b ? 'can' : ch > 0 ? 'don' : 'hut';   // lệch > 40%: nhiều khả năng do cách đếm, không kết luận dồn / hụt
-    return { nhan: c[4], tu: tenP(c[0], c[1]), den: tenP(c[2], c[3]), a: Math.round(a), b: Math.round(b), ch: Math.round(ch), tich: Math.round(tich), ngayB: b > 0 ? Math.round(tich / b * 10) / 10 : null, tt: tt };
+    var gt = ghiThieu.filter(function(g) { return g.cap === c[4]; }).map(function(g) { return g.nhan; });
+    return { ghiThieu: gt, nhan: c[4], tu: tenP(c[0], c[1]), den: tenP(c[2], c[3]), a: Math.round(a), b: Math.round(b), ch: Math.round(ch), tich: Math.round(tich), ngayB: b > 0 ? Math.round(tich / b * 10) / 10 : null, tt: tt };
   });
   var chuoi = DP_CHUOI.map(function(ch) {
     var ds = ch[1].map(function(a) { return { ten: tenP(a[0], a[1]), x: a[0], tb7: Math.round(ra(a[0], a[1], ngay7)), hq: Math.round(ra(a[0], a[1], [homQua])) }; }).filter(function(o) { return o.tb7 > 0; });
@@ -172,6 +185,7 @@ function dpEmail_(e0, so) {
   if (d.theoDeXuat) h += '<li><i>Tính theo cách đếm Claude đề xuất (chưa áp dụng).</i></li>';
   d.cap.filter(function(c) { return c.tt === 'don' || c.tt === 'hut'; }).forEach(function(c) { h += '<li>' + e(c.nhan) + ': ' + (c.tt === 'don' ? '<b style="color:#b42a25">đang dồn</b> +' + so(c.tich) : '<b style="color:#9a5b00">đang hụt</b> ' + so(c.tich)) + ' trong ' + d.soNgay.d14 + ' ngày (' + e(c.tu) + ' ' + so(c.a) + ' → ' + e(c.den) + ' ' + so(c.b) + '/ngày)</li>'; });
   var s = d.sk, sk = [];
+  (s.ghiThieu || []).forEach(function(g) { sk.push('<b>' + e(g.ten) + ' có thể ghi thiếu ' + e(g.nhan.toLowerCase()) + '</b> (giao ' + so(g.a) + '/ngày, ' + e(g.sau) + ' làm ' + so(g.b) + '/ngày)'); });
   if (s.thieuNK.length) sk.push(s.thieuNK.length + ' xưởng có ngày làm không ghi nhật ký');
   if (s.choTong) sk.push(s.choTong + ' dòng chờ duyệt quá 2 ngày');
   if (s.laTong) sk.push(s.laTong + ' dòng số lượng bất thường (gấp ≥ 3 lần thường ngày)');

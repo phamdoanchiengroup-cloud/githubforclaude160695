@@ -24,10 +24,11 @@ Chủ dự án hỏi 08/11 "Điều gì giúp tôi quản lý và điều phối
 - Chạy: `MOI=1 F=<bản thử số thật> O=<thư mục> LD=<luudo.json> LY=tests/hop/luu-do-y-kien.js node tests/hop/tao-pdf-hop-xuong.js`.
 
 ## Kiểm thử
-- `tests/dieu-phoi.js` 25/25 (DATA + DH số thật), `tests/dieu-phoi-web.js` 13/13 (bản thử số thật GIO 08/11, chủ / giamdoc / tpson điện thoại / c040).
+- `tests/dieu-phoi.js` 27/27 (DATA + DH số thật), `tests/dieu-phoi-web.js` 13/13 (bản thử số thật GIO 08/11, chủ / giamdoc / tpson điện thoại / c040).
 - Bộ cũ: quy-trinh.js 76/76, tang-toc-3.js 17/17, don-hang.js 130/135 (5 lỗi có sẵn, giống bản trước sửa).
 
 ## Còn để sau
 - Việc 4 gợi ý điều người (chờ chủ dự án: có điều người giữa xưởng không). Việc 5 sổ việc sau họp (không chọn).
 - Tồn thật cần số kiểm đếm đầu kỳ; hiện chỉ có phần tăng / giảm trong 14 ngày.
 - Ngọn Taro 451 > Phôi Thô ngọn 310 ("đang hụt"). Chủ dự án trả lời 08/11: **"Tester" là joint tester thử ren chuôi cho khách** (phụ kiện, nhánh PK), không phải ngọn → `phan()` trong `dpTinh_` bỏ nhánh PK / tên có "tester" khỏi chuỗi ngọn (vẫn tính vào sản lượng xưởng). Tester chỉ ~5/ngày nên 451 gần như toàn là "Check ngọn": không đếm đôi; chênh với Phôi Thô có thể do Ngọn Taro đang dùng ngọn tồn hoặc bước xuất ngọn của Phôi Thô chưa đủ – theo dõi thêm.
+- 08/11 chủ dự án: **số Ngọn Taro đúng; ngọn GF qua Phôi Thô nhưng Phôi Thô ghi thiếu.** Thêm `DP_GHI_THIEU` (dieu-phoi.gs): đối chiếu 14 ngày mã xưởng trước giao ↔ xưởng sau nhận (ngọn GF: XPT-TR-TRNGF ↔ NGON-TARORENDONG-GF + NGON-TARORENTHUONG-GF; ngọn carbon: 2 bước Epoxy ngọn CB ↔ NGON-TAROREN-CB + NGON-TARORENDONG-CARBON). Sau > 1,3 × trước và hơn 20/ngày → `sk.ghiThieu` (chip vàng "Có thể ghi thiếu" ở Sức khỏe dữ liệu + email 8h), chặng "Ngọn chờ taro" đang hụt có dòng "có thể do ghi thiếu". Số thật 14 ngày: Phôi Thô ghi giao ngọn GF 39/ngày, Ngọn Taro làm 233/ngày; carbon khớp.

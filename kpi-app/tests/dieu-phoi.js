@@ -34,6 +34,9 @@ ok(r.cap.length === 6 && r.cap.every(x => ['don', 'hut', 'can', 'lech', 'thieu']
 ok(r.chuoi.length === 2 && r.chuoi.every(x => x.nut && x.nut.tb7 === Math.min.apply(null, x.ds.map(o => o.tb7))), 'nút cổ chai = xưởng ra ít nhất mỗi chuỗi');
 ok(Array.isArray(r.sk.thieuNK) && typeof r.sk.choTong === 'number' && r.sk.la.every(x => x.sl > 3 * x.thuong || x.sl > x.thuong + 100), 'sức khỏe dữ liệu: số bất thường ≥ 3 lần mức thường');
 
+const gt = (r.sk.ghiThieu || []).find(g => g.nhan === 'Ngọn Glassfiber');
+ok(gt && gt.b > 1.3 * gt.a && !(r.sk.ghiThieu || []).some(g => g.nhan === 'Ngọn Carbon'), 'ghi thiếu: báo ngọn GF Phôi Thô (giao < Ngọn Taro làm), ngọn carbon khớp không báo', r.sk.ghiThieu);
+ok((r.cap.find(c => c.nhan === 'Ngọn chờ taro') || {}).ghiThieu.indexOf('Ngọn Glassfiber') >= 0, 'chặng Ngọn chờ taro gắn cờ có thể ghi thiếu');
 console.log('\n3. Áp dụng + giữ khi lưu quy trình');
 const sl0 = c.__goi('layDongGoiNgay', Town, 40).xuong;
 r = c.__goi('apDeXuatDem', Town); ok(r.ok, 'chủ sở hữu áp dụng', r);
