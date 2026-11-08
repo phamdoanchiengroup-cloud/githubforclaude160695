@@ -30,7 +30,7 @@ import json as J
 for l in L:
     if 'Trống deadline' in l['mota']: dlm[l['tab']][None].append(l['dong'])
 # cần mã: đọc lại từ dữ liệu
-d=J.load(open('../that/dh-that.json'))
+d=J.load(open(__import__('sys').argv[1]))
 def txt(x): return x['$d'][:10] if isinstance(x,dict) and '$d' in x else ('' if x is None else str(x).strip())
 maDong={}
 for t,v in d.items():
