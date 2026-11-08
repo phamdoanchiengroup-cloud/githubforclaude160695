@@ -1369,5 +1369,6 @@ exec(io.open(os.path.join(os.path.dirname(__file__), 'tang-toc-3', 'va-tang-toc-
 exec(io.open(os.path.join(os.path.dirname(__file__), 'dieu-phoi', 'va-dieu-phoi.py'), encoding='utf-8').read())   # điều phối sản xuất (08/11)
 
 exec(io.open(os.path.join(os.path.dirname(__file__), 'tang-toc-4', 'va-tang-toc-4.py'), encoding='utf-8').read())   # tăng tốc đợt 4 – đăng nhập nhanh (08/11)
+exec(io.open(os.path.join(os.path.dirname(__file__), 'luu-tru', 'va-luu-tru.py'), encoding='utf-8').read())   # dọn dẹp hằng tháng (08/11)
 io.open(RA, 'w', encoding='utf-8').write(s)
 print('OK ->', os.path.abspath(RA))

@@ -163,9 +163,11 @@ function tao(fileCode, duLieu, gioHienTai) {
       TM.prototype = { getName() { return this.ten; }, getUrl() { return 'https://drive.google.com/drive/folders/' + encodeURIComponent(this.ten); },
         getFoldersByName(n) { return it(this.con.filter(x => x.ten === n)); }, createFolder(n) { const f = new TM(n); this.con.push(f); return f; },
         getFilesByName(n) { return it(this.tep.filter(x => x.ten === n && !x.rac)); },
+        getFiles() { return it(this.tep.filter(x => !x.rac)); },   // 08/11 sao lưu tháng
         createFile(b) { const t = { ten: b.getName(), b, rac: false, getName() { return this.ten; }, setTrashed(v) { this.rac = v; } }; this.tep.push(t); return t; } };
       const tepId = {};
-      return { __thuMuc: thuMuc, getFileById: id => tepId[id] || (tepId[id] = { id, cha: null, getUrl: () => 'https://docs.google.com/spreadsheets/d/' + id, moveTo(tm) { this.cha = tm; tm.tep.push({ ten: id, rac: false, bangTinh: id, getName: () => id }); return this; } }),
+      return { __thuMuc: thuMuc, getFileById: id => tepId[id] || (tepId[id] = { id, cha: null, getUrl: () => 'https://docs.google.com/spreadsheets/d/' + id, moveTo(tm) { this.cha = tm; tm.tep.push({ ten: id, rac: false, bangTinh: id, getName: () => id }); return this; },
+          makeCopy(ten, tm) { const t = { ten, rac: false, tao: new Date(Date.now() + tm.tep.length), getName() { return this.ten; }, getDateCreated() { return this.tao; }, setTrashed(v) { this.rac = v; }, isTrashed() { return this.rac; } }; tm.tep.push(t); return t; } }),
         getFoldersByName: n => it(thuMuc.filter(x => x.ten === n)), createFolder: n => { const f = new TM(n); thuMuc.push(f); return f; } };
     })()
   };

@@ -30,3 +30,4 @@ DATA=/đường/dẫn/csdl.json OUT=/tmp/xem-thu-kpi.html node kpi-app/tests/tao
 - 08/11 Điều phối: `DATA=<số thật> DH=<dh-that.json> TZ=Asia/Ho_Chi_Minh node kpi-app/tests/dieu-phoi.js` (25) và `F=<bản thử số thật + DH, GIO 08/11> node kpi-app/tests/dieu-phoi-web.js` (13; CN mặc định c040, TP tpson). – [[KPI Điều phối sản xuất (08-11)]]
 - 08/11 Nhân sự + Tổng quan chủ: `F=<bản thử số thật GIO ngày thường 9h> node kpi-app/tests/nhan-su-loc-web.js` (13) + `tong-quan-web.js` (19); holo-web.js chờ 1,6 giây cho số chạy.
 - 08/11 Tăng tốc đăng nhập: `DATA=<số thật> TZ=Asia/Ho_Chi_Minh node kpi-app/tests/tang-toc-4.js` (14).
+- 08/11 Dọn dẹp hằng tháng: `DATA=<số thật> TZ=Asia/Ho_Chi_Minh node kpi-app/tests/luu-tru.js` (15).
