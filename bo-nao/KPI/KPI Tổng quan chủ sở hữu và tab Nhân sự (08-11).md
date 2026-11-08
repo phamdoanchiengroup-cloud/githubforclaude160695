@@ -21,5 +21,11 @@ Chủ dự án yêu cầu 08/11 (5 việc). Hỏi chuyên gia `quan-ly-van-hanh`
 - Nạp: `siSoTatCaXuong`, `xemTongHopCom`, `layDieuPhoi`, mảnh QuyTrinh (`dhTai`, `dhTaiDG`, `dhTaiTD`); bọc `dhVeLai` để khi đang ở tab Tổng quan thì vẽ lại khối, không vẽ Quy trình.
 - Đài quan sát (`tests/holo/holo-web.js`): bỏ "Dưới 80%" + "Hôm nay đã khai"; cột phải = **Có mặt hôm nay** (`holoCoMat`, cập nhật khi tải xong điểm danh) + **Số liệu ngày làm gần nhất đã duyệt** (`holoNgayLamTruoc`). Hiệu ứng (chỉ khi Hologram · chuyển động, `.hl-dong`; tắt khi "tĩnh" / máy giảm chuyển động): quét radar, vành vạch xoay, hạt bay quỹ đạo, sao nhấp nháy, đa giác vẽ dần, nhịp tim ở tâm, vòng tròn chạy, vạch sáng quét dọc, số chạy từ 0 (`holoDemSo`).
 
+## Gộp Việc hôm nay vào Tổng quan (08/11, chỉ chủ sở hữu)
+- Chủ dự án: "nên kết hợp 2 tab Tổng quan và Việc hôm nay vào làm 1". Chọn **chỉ chủ sở hữu**, tên **Tổng quan**, **số trước – việc sau**.
+- Thứ tự: Đài quan sát → 4 ô số → **Việc cần xử lý** (`tqVeViec`, danh sách `viecHomNay()` bỏ mục "Chưa nhập sản lượng" + khẩu hiệu `maiBang`) → sản lượng xưởng → đơn hàng → nhân lực → độ tin cậy số liệu → **Điều phối** (`dpNap`: cách đếm + nút Áp dụng, nút cổ chai, dòng chảy, sức khỏe dữ liệu, việc theo xưởng) → **Đi nhanh**. Bỏ khối "Cần chú ý" (trùng Điều phối); "Điểm danh hôm nay" nằm trong Nhân lực.
+- Chủ sở hữu: menu bỏ `homnay`, mở web vào Tổng quan, thanh dưới điện thoại `dash, nk, kpi, dx`, số việc gấp (đỏ) gắn ở Tổng quan, mọi `go('homnay')` chuyển sang `dash`. Ban điều hành / TP giữ 2 tab như cũ.
+- `hieu-ung.js` phần đồng hồ KPI cũ chuyển sang tài khoản giamdoc (4 lỗi phần TP có sẵn, giống bản trước).
+
 ## Kiểm thử
-- `tests/nhan-su-loc-web.js` 13/13, `tests/tong-quan-web.js` 19/19 (bản thử số thật GIO 09/11 9h), `holo-web.js` 21/21 (chờ số chạy xong), `van-hanh-web.js` 29/29, `dieu-phoi-web.js` 13/13. `van-hanh.js` 3 lỗi có sẵn (giống bản trước).
+- `tests/nhan-su-loc-web.js` 13/13, `tests/tong-quan-web.js` 26/26 (bản thử số thật GIO 09/11 9h), `holo-web.js` 21/21 (chờ số chạy xong), `van-hanh-web.js` 29/29, `dieu-phoi-web.js` 13/13. `van-hanh.js` 3 lỗi có sẵn (giống bản trước).

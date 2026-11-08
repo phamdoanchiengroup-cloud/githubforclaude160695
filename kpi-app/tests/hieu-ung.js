@@ -19,8 +19,8 @@ async function vao(b, tk, opt = {}) {
 }
 (async () => {
   const b = await chromium.launch();
-  console.log('\n1. Chủ sở hữu (máy tính)');
-  let p = await vao(b, 'chienpham');
+  console.log('\n1. Ban điều hành (máy tính) – 08/11: chủ sở hữu có Tổng quan mới (tests/tong-quan-web.js), đồng hồ KPI cũ kiểm trên tài khoản ban điều hành');
+  let p = await vao(b, 'giamdoc');
   const chi = await p.evaluate(() => { const c = $('navChi'), bt = document.querySelector('#nav button.on'); return { op: c.style.opacity, tr: c.style.transform, top: bt.offsetTop, h: c.style.height, bh: bt.offsetHeight }; });
   ok(chi.op === '1' && chi.tr === 'translateY(' + chi.top + 'px)' && chi.h === chi.bh + 'px', 'thanh chỉ báo menu nằm đúng mục đang chọn', chi);
   const bi = await p.evaluate(() => { const s = getComputedStyle($('busy'), '::after'); return [s.animationName, s.width, s.borderRadius]; });
