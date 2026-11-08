@@ -26,3 +26,4 @@ Bộ não thứ hai của **web KPI sản xuất** (nhánh `claude/beautiful-pto
 2. Làm xong một việc: sửa ghi chú chủ đề đó (thêm ngày, việc đã làm, tên hàm/file, kiểm thử), cập nhật [[Việc chờ chủ dự án]], [[Lần dán lên Apps Script]] và [[Quyết định của chủ dự án]] nếu có thay đổi. Chủ đề mới thì tạo ghi chú mới trong đúng thư mục, dòng 3 ghi `Liên quan: [[...]]`, và thêm vào mục lục này.
 3. Dựng lại bản đồ: `python3 bo-nao/tao-ban-do.py` rồi đăng lại `bo-nao/ban-do.html` lên đúng link Artifact ghi trong `CLAUDE.md`.
 4. Ghi chú viết ngắn, theo gạch đầu dòng; chi tiết kỹ thuật dài để trong ghi chú chủ đề, không dồn vào `CLAUDE.md`.
+- (08/11) [[Đọc PDF ít tốn token]] · [[KPI Chính sách lương và cẩm nang]]
