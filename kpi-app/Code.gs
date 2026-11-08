@@ -6752,7 +6752,7 @@ function luuBoTriMay(token, json) {
    Dữ liệu cá nhân nằm ở 2 file Drive, KHÔNG nằm trong mã nguồn (chỉ có mã file).
    ===================================================================== */
 var NS_CC_FILE_SUA = '1MwEdEj5XELPcjEhLd3BZz-3Tcs4rbQR01KD9hFnor3g';    // KPI - Sửa nhân sự theo chấm công T10
-var NS_CC_FILE_NGOAI = '1yxh8k5XVWNy2prOFNwDHeRc6dnS6voyXpvzNvowbjOM';  // 08/11: KPI - Nhân sự ngoài sản xuất (hồ sơ) – thay file 03/11 (1KAbgfq0QMZNmFeyF7VWFcEwjWM-ADK4sRR8FghUAcgk); thêm Marketing + Kinh doanh
+var NS_CC_FILE_NGOAI = '1wmavTqA4C_yjR-Zl1RaqaEKuCSeV2aEu__jXeWbrUuw';  // 08/11: KPI - Nhân sự ngoài sản xuất (hồ sơ) – thay file 03/11 (1KAbgfq0QMZNmFeyF7VWFcEwjWM-ADK4sRR8FghUAcgk); thêm Marketing + Kinh doanh
 var NS_NGOAI_SHEET = 'NhanSuNgoaiSX', NS_NGOAI_COT = ['BoPhan', 'Nhom', 'MaNV', 'HoTen', 'ChucDanh', 'NgayVaoLam', 'NgayChinhThuc', 'PhepConLai', 'TrangThai', 'GhiChu'];
 var NS_DOI_MA_BO = { NhatKyThaoTac: 1 };   // nhật ký thao tác giữ nguyên lịch sử (ghi đúng tên đăng nhập lúc đó)
 
@@ -7731,7 +7731,7 @@ function danhSachVanPhong(token) {
   ds.sort(function(a, b) { return (thuTu[a.vaiTro] - thuTu[b.vaiTro]) || (a.HoTen < b.HoTen ? -1 : 1); });
   return sach_({ ok: true, ds: ds, muc: HS_MUC });
 }
-var KPI_BAN_MAY = '08/11/2026 09:06';   // giờ dựng Code.gs (22/10)
+var KPI_BAN_MAY = '08/11/2026 09:10';   // giờ dựng Code.gs (22/10)
 /* =====================================================================
    KỸ NĂNG (22/10, chủ dự án nhờ thiết kế + tham khảo chuyên gia nhân sự / đào tạo)
    - Danh mục: trưởng / phó phòng đề xuất kỹ năng của xưởng (tên, mô tả, tiêu chí đạt, công đoạn liên quan)
