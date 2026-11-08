@@ -11,8 +11,8 @@
    Dữ liệu cá nhân nằm ở 2 file Drive, KHÔNG nằm trong mã nguồn (chỉ có mã file).
    ===================================================================== */
 var NS_CC_FILE_SUA = '1MwEdEj5XELPcjEhLd3BZz-3Tcs4rbQR01KD9hFnor3g';    // KPI - Sửa nhân sự theo chấm công T10
-var NS_CC_FILE_NGOAI = '1KAbgfq0QMZNmFeyF7VWFcEwjWM-ADK4sRR8FghUAcgk';  // KPI - Bộ phận ngoài sản xuất
-var NS_NGOAI_SHEET = 'NhanSuNgoaiSX', NS_NGOAI_COT = ['BoPhan', 'Nhom', 'MaNV', 'HoTen', 'ChucDanh', 'NgayVaoLam', 'TrangThai'];
+var NS_CC_FILE_NGOAI = '1yGdL5PRbd6XvpydtiEL17BI0-UHqeECc5q3vd-QQEOU';  // 08/11: KPI - Nhân sự ngoài sản xuất (hồ sơ) – thay file 03/11 (1KAbgfq0QMZNmFeyF7VWFcEwjWM-ADK4sRR8FghUAcgk); thêm Marketing + Kinh doanh
+var NS_NGOAI_SHEET = 'NhanSuNgoaiSX', NS_NGOAI_COT = ['BoPhan', 'Nhom', 'MaNV', 'HoTen', 'ChucDanh', 'NgayVaoLam', 'NgayChinhThuc', 'PhepConLai', 'TrangThai', 'GhiChu'];
 var NS_DOI_MA_BO = { NhatKyThaoTac: 1 };   // nhật ký thao tác giữ nguyên lịch sử (ghi đúng tên đăng nhập lúc đó)
 
 function nsNgay_(v) {   // ô ngày (Date hoặc 'yyyy-mm-dd' / 'dd/mm/yyyy') -> Date 12:00 giờ VN, sai -> null
@@ -124,7 +124,8 @@ function nhapNhanSuNgoaiSX_() {
   var sh = ss_().getSheetByName(NS_NGOAI_SHEET) || ss_().insertSheet(NS_NGOAI_SHEET);
   sh.clearContents();
   var rows = [NS_NGOAI_COT].concat(ds.map(function(r) { return NS_NGOAI_COT.map(function(k) {
-    if (k === 'NgayVaoLam') return nsNgay_(r[k]) || '';
+    if (k === 'NgayVaoLam' || k === 'NgayChinhThuc') return nsNgay_(r[k]) || '';
+    if (k === 'PhepConLai') { var ph = String(r[k] == null ? '' : r[k]).trim().replace(',', '.'); return ph !== '' && !isNaN(Number(ph)) ? Number(ph) : ''; }
     if (k === 'HoTen') return chuanHoaTen_(r[k]);
     return chuAnToan_(String(r[k] == null ? '' : r[k]).trim());
   }); }));
@@ -134,7 +135,7 @@ function nhapNhanSuNgoaiSX_() {
   return ds.length;
 }
 /* Web: danh sách bộ phận ngoài sản xuất – chỉ chủ sở hữu */
-var NS_NGOAI_THU = ['Ban điều hành', 'Kho', 'Bếp + tạp vụ', 'Xưởng May'];
+var NS_NGOAI_THU = ['Ban điều hành', 'Kinh doanh', 'Marketing', 'Kho', 'Bếp + tạp vụ', 'Xưởng May'];
 function layNhanSuNgoaiSX(token) {
   var me = docPhien_(token);
   if (!me) return sach_({ ok: false, hetHan: true, msg: 'Phiên đăng nhập đã hết hạn.' });
@@ -143,7 +144,11 @@ function layNhanSuNgoaiSX(token) {
   var oXuong = {}; docAnToan_('NhanSu').forEach(function(n) { if (String(n.TrangThai).trim() === 'Đang làm') oXuong[String(n.MaNV).trim().toUpperCase()] = 1; });
   var ds = docAnToan_(NS_NGOAI_SHEET).filter(function(r) { return String(r.MaNV || '').trim() && String(r.TrangThai || 'Đang làm').trim() !== 'Nghỉ việc' && !oXuong[String(r.MaNV).trim().toUpperCase()]; }).map(function(r) {
     return { BoPhan: String(r.BoPhan || ''), Nhom: String(r.Nhom || ''), MaNV: String(r.MaNV), HoTen: String(r.HoTen || ''), ChucDanh: String(r.ChucDanh || ''),
-      NgayVaoLam: r.NgayVaoLam ? Utilities.formatDate(new Date(r.NgayVaoLam), TZ_VN, 'dd/MM/yyyy') : '' };
+      NgayVaoLam: r.NgayVaoLam ? Utilities.formatDate(new Date(r.NgayVaoLam), TZ_VN, 'dd/MM/yyyy') : '', GhiChu: String(r.GhiChu || ''),
+      /* 08/11 (chủ dự án: "đầy đủ thông tin" = hồ sơ): ngày chính thức, phép năm còn lại (theo bảng chấm công), tình trạng + thâm niên tự tính */
+      NgayChinhThuc: r.NgayChinhThuc ? Utilities.formatDate(new Date(r.NgayChinhThuc), TZ_VN, 'dd/MM/yyyy') : '',
+      PhepConLai: (r.PhepConLai === '' || r.PhepConLai == null) ? '' : Number(r.PhepConLai),
+      tinhTrang: nsTinhTrang_(r), thamNienThang: nsThamNien_(r.NgayVaoLam) };
   });
   ds.forEach(function(x, i) { x._i = i; });   // trong 1 bộ phận giữ đúng thứ tự bảng chấm công (nhóm, trưởng bộ phận đầu)
   ds.sort(function(a, b) {
@@ -151,5 +156,32 @@ function layNhanSuNgoaiSX(token) {
     return (x - y) || (a._i - b._i);
   });
   ds.forEach(function(x) { delete x._i; });
-  return sach_({ ok: true, ds: ds });
+  return sach_({ ok: true, ds: ds, file: linkFileNgoaiSX_() });
 }
+function nsYmd_(v) { return v ? Utilities.formatDate(new Date(v), TZ_VN, 'yyyy-MM-dd') : ''; }
+function nsTinhTrang_(r) {   // 'Chính thức' | 'Thử việc' | '' (chưa có ngày)
+  var hn = homNayVN_(), ct = nsYmd_(r.NgayChinhThuc), vao = nsYmd_(r.NgayVaoLam);
+  if (ct) return ct <= hn ? 'Chính thức' : 'Thử việc';
+  return vao ? (/thử việc/i.test(String(r.GhiChu || '')) ? 'Thử việc' : '') : '';
+}
+function nsThamNien_(v) {   // số tháng tròn từ ngày vào làm tới hôm nay
+  var a = nsYmd_(v); if (!a) return null; var h = homNayVN_();
+  var m = (Number(h.slice(0, 4)) - Number(a.slice(0, 4))) * 12 + Number(h.slice(5, 7)) - Number(a.slice(5, 7)) - (Number(h.slice(8, 10)) < Number(a.slice(8, 10)) ? 1 : 0);
+  return Math.max(0, m);
+}
+/* 08/11 (chủ dự án): nút "Cập nhật từ file" ở Nhân sự › Bộ phận ngoài sản xuất – chép lại toàn bộ danh sách từ file Drive
+   "KPI - Nhân sự ngoài sản xuất (hồ sơ)" (file là bản gốc: thêm / sửa / ghi "Nghỉ việc" ở file rồi bấm). Chỉ chủ sở hữu.
+   Không tạo tài khoản, không vào KPI / điểm danh / cơm trưa. */
+function capNhatNgoaiSXTuFile(token) {
+  var me = docPhien_(token);
+  if (!me) return sach_({ ok: false, hetHan: true, msg: 'Phiên đăng nhập đã hết hạn.' });
+  if (!me.laOwner) return sach_({ ok: false, msg: 'Chỉ tài khoản chủ sở hữu được cập nhật.' });
+  khoa_();
+  var n = 0;
+  try { n = nhapNhanSuNgoaiSX_(); } catch (e) { return sach_({ ok: false, msg: 'Không đọc được file danh sách: ' + (e && e.message || e) }); }
+  var dem = {}; doc_(NS_NGOAI_SHEET).forEach(function(r) { if (String(r.TrangThai || '').trim() === 'Nghỉ việc') return; var b = String(r.BoPhan || 'Khác'); dem[b] = (dem[b] || 0) + 1; });
+  ghiLog_(me, 'Cập nhật nhân sự ngoài sản xuất', n + ' dòng từ file', '', '');
+  return sach_({ ok: true, n: n, dem: dem, msg: 'Đã cập nhật ' + n + ' người: ' + Object.keys(dem).map(function(b) { return b + ' ' + dem[b]; }).join(', ') + '.' });
+}
+function linkFileNgoaiSX_() { return 'https://docs.google.com/spreadsheets/d/' + NS_CC_FILE_NGOAI + '/edit'; }
+

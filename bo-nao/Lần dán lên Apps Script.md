@@ -8,6 +8,7 @@ Liên quan: [[Việc chờ chủ dự án]] · [[KPI Tổng quan và cách dựn
 - Lần dán chung 18/10: chủ dự án đã nhận đủ 5 file + hướng dẫn (HUONG-DAN-CAP-NHAT.md mục "LẦN DÁN CHUNG 18/10"). – [[KPI Bảo mật và vận hành]], [[KPI Âm thanh và giọng Rhino]]
 
 ## Web KPI – chưa dán
+- **Nhân sự ngoài SX đủ hồ sơ + Kinh doanh, Marketing 08/11**: Code.gs + Index.html (+ QuyTrinh.html) qua 2-CAP-NHAT.bat, Ctrl+F5, rồi vào **Nhân sự** → khối Bộ phận ngoài sản xuất → bấm **↻ Cập nhật từ file** một lần. – [[KPI Quy trình sản xuất]]
 - **Thống kê: TB đi làm / ngày, tỷ lệ (CN + tổ trưởng) / quản lý, số trên biểu đồ thâm niên / tuổi 08/11**: Code.gs + Index.html + QuyTrinh.html qua 2-CAP-NHAT.bat (gộp chung đợt tăng tốc 08/11), Ctrl+F5. – [[KPI Quy trình sản xuất]]
 - **Tăng tốc đợt 3 08/11** (nhật ký dùng chung giữa các lượt gọi, bộ đo tốc độ, "Mở nhanh" trên máy cá nhân, Thống kê › Tốc độ web, đơn HT gọn): Code.gs + Index.html + QuyTrinh.html qua 2-CAP-NHAT.bat, Ctrl+F5. Không có hàm cần chạy. Sửa tay trong Google Sheet thì chạy XOA_BO_NHO_TAM (hoặc đợi 10 phút). – [[KPI Tăng tốc đợt 3 (08-11)]]
 - **Tab chính "Thống kê" 07/11 khuya** (nhân sự, điểm danh, báo cơm, công đoạn, định mức, KPI, sản xuất): Code.gs + Index.html + QuyTrinh.html qua 2-CAP-NHAT.bat, Ctrl+F5. Không có hàm cần chạy. – [[KPI Quy trình sản xuất]]

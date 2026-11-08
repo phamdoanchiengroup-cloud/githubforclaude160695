@@ -1114,7 +1114,7 @@ function layThongKe(token, thang, lamMoi) {
       if (!String(x.SoCCCD || '').trim()) thieu.cccd++;
       if (!String(x.DienThoai || '').trim()) thieu.dt++;
     });
-    var vp = {}; docAnToan_('NhanSuNgoaiSX').forEach(function(x) { if (String(x.TrangThai || '').trim() === 'Nghỉ việc') return; var b = String(x.BoPhan || '').trim() || 'Khác'; vp[b] = (vp[b] || 0) + 1; });
+    var vp = {}; docAnToan_('NhanSuNgoaiSX').forEach(function(x) { if (String(x.TrangThai || '').trim() === 'Nghỉ việc' || dangLam[String(x.MaNV || '').trim()]) return;   /* 08/11: người đang ở 9 xưởng không đếm lại */ var b = String(x.BoPhan || '').trim() || 'Khác'; vp[b] = (vp[b] || 0) + 1; });
     return { x: X, tnNhan: tn.map(function(a) { return a[0]; }), tuoiNhan: tuoi.map(function(a) { return a[0]; }), moi: moi, thieu: thieu, vanPhong: vp };
   });
 
