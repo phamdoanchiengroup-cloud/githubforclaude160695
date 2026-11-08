@@ -137,6 +137,8 @@ function guard_(token) {
 /* ===== NẠP DỮ LIỆU ===== */
 function napDuLieu(token) {
   try {
+    try { khoaSoMua2026_(); }   // chạy đúng 1 lần sau khi cập nhật mã (sao lưu → làm sạch), các lần sau thoát ngay
+    catch (eKs) { ghiLog_('Khóa sổ 2026', 'Lỗi: ' + (eKs.message || eKs)); xoaCache_(); }
     var admin = laAdmin_(token);
     var doi = doc_('Doi').map(function(d) {
       return { maDoi: d.MaDoi, tenDoi: d.TenDoi, bang: d.Bang || '',
@@ -190,6 +192,8 @@ sinhChiSoNeuCan_();
                banThangB: (t.BanThangB === '' || t.BanThangB == null) ? '' : Number(t.BanThangB),
                trangThai: t.TrangThai || 'Chưa đá', thuTuKO: t.ThuTuKO || '',
                sanDau: t.SanDau || '', gioThiDau: t.GioThiDau ? sach_(t.GioThiDau) : '',
+               luanLuuA: (t.LuanLuuA === '' || t.LuanLuuA == null) ? '' : Number(t.LuanLuuA),
+               luanLuuB: (t.LuanLuuB === '' || t.LuanLuuB == null) ? '' : Number(t.LuanLuuB),
                ghiChu: t.GhiChu || '' };
     });
     var suKien = doc_('SuKien').map(function(s) {
@@ -971,19 +975,111 @@ function taoLichVongBang(token) {
   return sach_({ ok: true, msg: 'Đã tạo ' + moi.length + ' trận vòng tròn cho ' + ds.length + ' đội.' });
 }
 
-function capNhatTySo(token, maTran, banA, banB) {
+function capNhatTySo(token, maTran, banA, banB, llA, llB) {
   var g = guard_(token); if (g) return g;
   var t = doc_('TranDau').filter(function(x) { return x.MaTran === maTran; })[0];
   if (!t) return sach_({ ok: false, msg: 'Không tìm thấy trận.' });
   var a = Number(banA), b = Number(banB);
   if (!isFinite(a) || !isFinite(b) || a < 0 || b < 0)
     return sach_({ ok: false, msg: 'Tỷ số phải là số không âm.' });
+  // Luân lưu: chỉ ghi khi hòa và nhập đủ cả hai bên; không thì xóa trắng
+  var coLL = a === b && llA !== '' && llA != null && llB !== '' && llB != null;
+  var la = Number(llA), lb = Number(llB);
+  if (coLL && (!isFinite(la) || !isFinite(lb) || la < 0 || lb < 0 || la === lb))
+    return sach_({ ok: false, msg: 'Luân lưu phải là số không âm và có đội thắng.' });
+  damBaoCot_('TranDau', ['LuanLuuA', 'LuanLuuB']);
   suaO_('TranDau', t._row, 'BanThangA', a);
   suaO_('TranDau', t._row, 'BanThangB', b);
+  suaO_('TranDau', t._row, 'LuanLuuA', coLL ? la : '');
+  suaO_('TranDau', t._row, 'LuanLuuB', coLL ? lb : '');
   suaO_('TranDau', t._row, 'TrangThai', 'Đã đá');
   suaO_('TranDau', t._row, 'ThoiDiemCapNhat', new Date());
-  ghiLog_('Cập nhật tỷ số', maTran + ': ' + a + '-' + b);
-  return sach_({ ok: true, msg: 'Đã lưu tỷ số ' + a + ' - ' + b + '.' });
+  var txt = a + ' - ' + b + (coLL ? ' (luân lưu ' + la + ' - ' + lb + ')' : '');
+  ghiLog_('Cập nhật tỷ số', maTran + ': ' + txt);
+  return sach_({ ok: true, msg: 'Đã lưu tỷ số ' + txt + '.' });
+}
+/* Thêm cột còn thiếu vào cuối hàng tiêu đề của sheet */
+function damBaoCot_(name, cols) {
+  var sh = ss_().getSheetByName(name); if (!sh) return;
+  var head = sh.getRange(1, 1, 1, sh.getLastColumn()).getValues()[0];
+  var thieu = cols.filter(function(c) { return head.indexOf(c) < 0; });
+  if (!thieu.length) return;
+  sh.getRange(1, head.length + 1, 1, thieu.length).setValues([thieu]).setFontWeight('bold');
+  xoaCache_(name);
+}
+
+/* ===== KHÓA SỔ MÙA GIẢI 2026 (chủ giải chốt 08/11/2026) =====
+ * Chạy đúng 1 lần, tự gọi từ napDuLieu:
+ *  1. Ghi kết quả chung kết: EVO FC 3 – 3 TIME-TIP FC, luân lưu 5 – 3 (EVO vô địch).
+ *  2. Sao lưu các tab dữ liệu sang tab "2026_<tên>" ngay trong file (không sao lưu CauHinh vì có mật khẩu).
+ *  3. Làm sạch cho mùa sau: xóa CauThu, TranDau, SuKien, DoiHinh; tab Doi chỉ giữ tên + logo
+ *     (bỏ đội trưởng, màu áo, công bố màu, thành viên). Giữ Media, LuotBoc, PhongBan, NhatKy, CauHinh.
+ * Chạy theo bước có cờ (Script Property KHOA_SO_2026), hỏng giữa chừng thì lần sau làm tiếp; xong rồi không chạy lại. */
+var KS_MA_CK = 'CK1A738D00';
+var KS_SAO_LUU = ['Doi', 'CauThu', 'TranDau', 'SuKien', 'DoiHinh', 'Media', 'LuotBoc', 'PhongBan'];
+var KS_XOA = ['CauThu', 'TranDau', 'SuKien', 'DoiHinh'];
+function khoaSoMua2026_() {
+  // Cờ KHOA_SO_2026: (trống) → 'daSaoLuu' → 'xong'; 'dung' = thiếu trận chung kết, đã ghi nhật ký, không làm gì nữa
+  var props = PropertiesService.getScriptProperties();
+  var co = props.getProperty('KHOA_SO_2026');
+  if (co === 'xong' || co === 'dung') return;
+  var lock = LockService.getScriptLock();
+  if (!lock.tryLock(30000)) return;
+  try {
+    co = props.getProperty('KHOA_SO_2026');
+    if (co === 'xong' || co === 'dung') return;
+    var ss = ss_();
+    xoaCache_();
+    if (co !== 'daSaoLuu') {
+      var ck = doc_('TranDau').filter(function(x) { return x.MaTran === KS_MA_CK; })[0];
+      if (!ck) {
+        props.setProperty('KHOA_SO_2026', 'dung');
+        ghiLog_('Khóa sổ 2026', 'Dừng: không thấy trận chung kết ' + KS_MA_CK + ', không sao lưu và không xóa gì.');
+        return;
+      }
+      // 1. Kết quả chung kết (đội A = EVO FC); ghi lại nhiều lần vẫn cùng kết quả
+      damBaoCot_('TranDau', ['LuanLuuA', 'LuanLuuB']);
+      suaO_('TranDau', ck._row, 'BanThangA', 3);
+      suaO_('TranDau', ck._row, 'BanThangB', 3);
+      suaO_('TranDau', ck._row, 'LuanLuuA', 5);
+      suaO_('TranDau', ck._row, 'LuanLuuB', 3);
+      suaO_('TranDau', ck._row, 'TrangThai', 'Đã đá');
+      suaO_('TranDau', ck._row, 'ThoiDiemCapNhat', new Date());
+      SpreadsheetApp.flush();
+      // 2. Sao lưu (tab nào đã có thì bỏ qua, chạy lại được sau khi hỏng giữa chừng)
+      KS_SAO_LUU.forEach(function(name) {
+        var sh = ss.getSheetByName(name);
+        if (!sh || ss.getSheetByName('2026_' + name)) return;
+        sh.copyTo(ss).setName('2026_' + name);
+      });
+      SpreadsheetApp.flush();
+      var thieu = KS_SAO_LUU.filter(function(name) { return ss.getSheetByName(name) && !ss.getSheetByName('2026_' + name); });
+      if (thieu.length) { ghiLog_('Khóa sổ 2026', 'Sao lưu chưa đủ (' + thieu.join(', ') + '), chưa xóa gì, sẽ thử lại.'); return; }
+      props.setProperty('KHOA_SO_2026', 'daSaoLuu');
+    }
+    // 3. Làm sạch (chỉ tới đây khi đã sao lưu đủ; chạy lại được)
+    KS_XOA.forEach(function(name) {
+      var sh = ss.getSheetByName(name); if (!sh) return;
+      var n = sh.getLastRow();
+      if (n > 2) sh.deleteRows(3, n - 2);
+      if (n >= 2) sh.getRange(2, 1, 1, sh.getMaxColumns()).clearContent();
+      xoaCache_(name);
+    });
+    var shDoi = ss.getSheetByName('Doi');
+    if (shDoi && shDoi.getLastRow() >= 2) {
+      var head = shDoi.getRange(1, 1, 1, shDoi.getLastColumn()).getValues()[0];
+      ['DoiTruongMaCT', 'MauAo', 'CongBoMau', 'ThanhVien'].forEach(function(c) {
+        var i = head.indexOf(c);
+        if (i >= 0) shDoi.getRange(2, i + 1, shDoi.getLastRow() - 1, 1).clearContent();
+      });
+      xoaCache_('Doi');
+    }
+    props.setProperty('KHOA_SO_2026', 'xong');
+    ghiLog_('Khóa sổ 2026', 'Đã ghi chung kết 3-3 (luân lưu 5-3), sao lưu ' + KS_SAO_LUU.join(', ') + ' sang tab 2026_*, làm sạch ' + KS_XOA.join(', ') + ' và đội trưởng/màu áo tab Doi.');
+  } finally {
+    xoaCache_();
+    lock.releaseLock();
+  }
 }
 function datThongTinTran(token, maTran, sanDau, gioThiDau) {
   var g = guard_(token); if (g) return g;
