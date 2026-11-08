@@ -840,5 +840,8 @@ exec(io.open(os.path.join(D, 'nhan-su', 'va-nhan-su-web.py'), encoding='utf-8').
 # ---------------------------------------------------------------- 38. Tăng tốc đợt 3 (08/11): bộ đo tốc độ + mở nhanh bằng số lần trước (mã hóa)
 exec(io.open(os.path.join(D, 'tang-toc-3', 'va-tang-toc-3-web.py'), encoding='utf-8').read())
 
+# ---------------------------------------------------------------- 39. Điều phối sản xuất (08/11): cách đếm, nút cổ chai, dòng chảy, sức khỏe dữ liệu, việc của xưởng – Việc hôm nay
+exec(io.open(os.path.join(D, 'dieu-phoi', 'va-dieu-phoi-web.py'), encoding='utf-8').read())
+
 io.open(os.path.join(D, '..', 'Index.html'), 'w', encoding='utf-8').write(s)
 print('OK Index.html')

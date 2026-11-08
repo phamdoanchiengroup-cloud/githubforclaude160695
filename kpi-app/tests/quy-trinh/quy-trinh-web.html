@@ -856,7 +856,7 @@ function qtVeX(T){
   var cds=o.cd.slice().sort(function(a,b){return (QT_THU_NHANH.indexOf(a.nhanh)-QT_THU_NHANH.indexOf(b.nhanh))||(a.buoc-b.buoc)});
   var yeu=o.cd.filter(function(c){return c.can>0.05&&!QT_NHANH_NGOAI[c.nhanh]}).sort(function(a,b){return b.tai-a.tai}).slice(0,3);
   var h='<div class="card"><div style="font-size:12.5px;color:var(--ink3);margin-bottom:4px">Danh sách: '+esc(o.nhan)+' người (TP trưởng phòng · PP phó phòng · TT tổ trưởng · CN công nhân)</div><div class="qt-ket">'+esc(qtTenX(QTX))+': cần <b>'+qtSo(o.can)+'</b> người, công nhân + tổ trưởng có mặt TB (điểm danh) <b>'+qtSo(o.coMat)+'</b>/'+o.co+' → tải <b class="'+(qtMuc(o.tai)||'ok')+'">'+qtPt(o.tai)+'</b>'+(o.thieu?', thiếu khoảng <b class="bd">'+o.thieu+' người</b>':'')+'.</div>';
-  var ra=qtRa(QTX); if(ra.ma.length) h+='<div style="font-size:13px;margin-bottom:4px">Bước xuất (cách A): <b>'+esc(ra.ten.join(', '))+'</b> – ra <b>'+qtSo(ra.ngay,0)+'</b>/ngày trong kỳ, <b>'+qtSo(ra.ngay7,0)+'</b>/ngày 7 ngày gần nhất'+(ra.macDinh?' <span style="color:var(--ink3)">(Claude chọn sẵn – sửa ở "Sửa quy trình")</span>':'')+'.</div>';
+  var ra=qtRa(QTX); if(ra.ma.length) h+='<div style="font-size:13px;margin-bottom:4px">Bước xuất (cách A): <b>'+esc(ra.ten.join(', '))+'</b> – ra <b>'+qtSo(ra.ngay,0)+'</b>/ngày trong kỳ, <b>'+qtSo(ra.ngay7,0)+'</b>/ngày 7 ngày gần nhất'+(ra.luot>1?' (đã chia '+ra.luot+' vì mỗi khúc ghi '+ra.luot+' lần)':'')+(ra.macDinh?' <span style="color:var(--ink3)">(Claude chọn sẵn – sửa ở "Sửa quy trình")</span>':'')+'.</div>';
   if(yeu.length) h+='<div style="font-size:13px">Công đoạn căng nhất (cần ÷ người đang làm quy đổi): '+yeu.map(function(c,i){return (i+1)+'. <b>'+esc(c.ten)+'</b> '+qtPt(c.tai)+(c.mot?' <span class="qt-tag bd">1 người</span>':'')}).join(' · ')+'</div>';
   h+='</div><div class="card"><div style="font-weight:600;margin-bottom:6px">Lưu đồ xưởng (nhóm công đoạn)</div><div style="font-size:12px;color:var(--ink3);margin-bottom:8px">Nhóm chỉ để xem – danh mục công đoạn tính KPI không đổi.</div>'+qtLanBoiDau(QTX,T)+qtLuuDoX(QTX,T)+'<details class="qt-xds" style="margin-top:10px"><summary style="cursor:pointer;font-size:12.5px;color:var(--ink3)">Xem dạng danh sách các bước</summary>'+qtLanBoi(QTX,T,true)+'</details></div>';
   h+='<div class="card"><div class="tw"><table><thead><tr><th>Nhánh · bước</th><th>Công đoạn</th><th class="qt-so">SL/ngày</th><th class="qt-so">Định mức</th><th class="qt-so">Giờ chuẩn</th><th class="qt-so">CN cần</th><th class="qt-so">Đang làm (quy đổi)</th><th class="qt-so">Biết làm</th><th class="qt-so">Tải</th></tr></thead><tbody>';
@@ -878,7 +878,8 @@ function qtXuat(x){ var a=qtXuatLuu(x); if(a) return a; var rg=QT_XUAT_MD[x]; re
 function qtRa(x){
   var a=qtXuat(x), sl=0, sl7=0, N=Math.max(1,QT.soNgaySX||1);
   a.forEach(function(m){ var t=(QT.thongKe||{})[m]; if(t){ sl+=t.sl||0; sl7+=t.sl7||0; } });
-  return {ma:a, ten:a.map(function(m){return (QT.cdMap[m]||{}).TenCD||m}), ngay:sl/N, ngay7:QT.soNgaySX7?sl7/QT.soNgaySX7:0, macDinh:!qtXuatLuu(x)};
+  var lu=(QT.luot||{})[x]||1; sl/=lu; sl7/=lu;   /* 08/11: mỗi khúc ghi lu lần (Sơn: mỗi lớp 1 lần) */
+  return {luot:lu, ma:a, ten:a.map(function(m){return (QT.cdMap[m]||{}).TenCD||m}), ngay:sl/N, ngay7:QT.soNgaySX7?sl7/QT.soNgaySX7:0, macDinh:!qtXuatLuu(x)};
 }
 /* --- Con người: quy tắc 3 người --- */
 function qtVeNguoi(T){
@@ -2199,11 +2200,11 @@ var DH_XUONG_DV={PHOICB:'khúc',PHOITHO:'khúc',CNC_TIP:'típ',CNC_PHIP:'phíp',
 var DH_XUONG_TACH={CNC:[['CNC_TIP','Xưởng CNC – Típ',/TIP/],['CNC_PHIP','Xưởng CNC – Phíp',/PHIP|BAKELIT/],['CNC_KHAC','Xưởng CNC – Khác (DA, logo…)',null]],NGONTARO:[['NGONTARO','Xưởng Ngọn Taro – Ngọn',/NGON|TESTER/],['NGONTARO_POM','Xưởng Ngọn Taro – POM',/POM/]]};
 function dhXG(){ if(!DHDG||!DHDG.xuong) return null; if(DHDG._xg) return DHDG._xg; var tt=[], xs={};
   (DHDG.thuTu||Object.keys(DHDG.xuong)).forEach(function(X){ var x=DHDG.xuong[X]; if(!x) return; var T=DH_XUONG_TACH[X]; if(!T){ tt.push(X); xs[X]=x; return; }
-    var nh={}; T.forEach(function(t){ nh[t[0]]={ten:t[1],ma:[],ngay:{},buoc:{},tenCD:{},macDinh:x.macDinh}; });
+    var nh={}; T.forEach(function(t){ nh[t[0]]={ten:t[1],ma:[],ngay:{},buoc:{},tenCD:{},macDinh:x.macDinh,luot:x.luot||1}; });
     (x.ma||[]).forEach(function(m){ var tc=(x.tenCD||{})[m]||m, k=String(m+' '+tc).normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/đ/gi,'D').toUpperCase();
       var t=null; for(var i=T.length-1;i>=0;i--) if(T[i][2]&&T[i][2].test(k)){ t=T[i]; break; }   // POM trước Ngọn ("Taro Ren POM")
       if(!t) t=T.filter(function(q){return !q[2]})[0]||T[0];
-      var g=nh[t[0]], b=(x.buoc||{})[m]||{}; g.ma.push(m); g.tenCD[m]=tc; g.buoc[m]=b; Object.keys(b).forEach(function(d){ g.ngay[d]=(g.ngay[d]||0)+b[d]; }); });
+      var g=nh[t[0]], b=(x.buoc||{})[m]||{}; g.ma.push(m); g.tenCD[m]=tc; g.buoc[m]=b; Object.keys(b).forEach(function(d){ g.ngay[d]=(g.ngay[d]||0)+b[d]/(x.luot||1); }); });
     T.forEach(function(t){ if(nh[t[0]].ma.length){ tt.push(t[0]); xs[t[0]]=nh[t[0]]; } }); });
   return (DHDG._xg={thuTu:tt,xuong:xs}); }
 var DH_XUONG_PHAN={PHOICB:'chuôi + ngọn chất liệu carbon / mix',PHOITHO:'chuôi + ngọn + nối',CNC_TIP:'1 típ cho mỗi ngọn',CNC_PHIP:'1 phíp cho mỗi ngọn',CNC_KHAC:'chưa đặt mục tiêu',NGONTARO:'ngọn',NGONTARO_POM:'chưa đặt mục tiêu (linh kiện POM)',NGONTIP:'ngọn',SON:'chuôi + nối',INUV:'chuôi + nối',HT:'chuôi + ngọn + nối (khúc)',DG:'công suất Đóng gói'};
@@ -2227,7 +2228,7 @@ function dhXuongGhiChu(G,MT,ngs,e){   /* chú thích chi tiết: dùng chung cho
   var t=MT._t, sp=qtSo(dhCS().sp,0);
   var dong=G.thuTu.map(function(X){ var x=G.xuong[X]; if(!x||!x.ma||!x.ma.length) return ''; var mt=MT[X]||0;
     var bs=Object.keys(x.buoc||{}).map(function(m){ var v=ngs.reduce(function(a,d){return a+((x.buoc[m]||{})[d]||0)},0); return [m,v/Math.max(1,ngs.length)]; }).filter(function(b){return b[1]>=1}).sort(function(a,b){return b[1]-a[1]});
-    return '<li><b>'+e(x.ten)+'</b> ('+(DH_XUONG_DV[X]||'sp')+'): mục tiêu '+(mt?qtSo(mt,0)+'/ngày = '+(DH_XUONG_PHAN[X]||''):'– '+(DH_XUONG_PHAN[X]||'chưa đặt'))+'. Bước cộng vào: '+(bs.length?bs.map(function(b){return e((x.tenCD||{})[b[0]]||b[0])+' '+qtSo(Math.round(b[1]),0)+'/ngày'}).join(' · '):e(x.ma.map(function(m){return (x.tenCD||{})[m]||m}).join(', '))+' (chưa có số)')+(x.macDinh?' <i>(bước xuất Claude đề xuất)</i>':'')+'</li>'; }).join('');
+    return '<li><b>'+e(x.ten)+'</b> ('+(DH_XUONG_DV[X]||'sp')+'): mục tiêu '+(mt?qtSo(mt,0)+'/ngày = '+(DH_XUONG_PHAN[X]||''):'– '+(DH_XUONG_PHAN[X]||'chưa đặt'))+'. Bước cộng vào: '+(bs.length?bs.map(function(b){return e((x.tenCD||{})[b[0]]||b[0])+' '+qtSo(Math.round(b[1]),0)+'/ngày'}).join(' · '):e(x.ma.map(function(m){return (x.tenCD||{})[m]||m}).join(', '))+' (chưa có số)')+(x.luot>1?' <b>÷ '+x.luot+'</b> (mỗi khúc ghi '+x.luot+' lần – sản lượng xưởng = tổng các bước ÷ '+x.luot+')':'')+(x.macDinh?' <i>(bước xuất Claude đề xuất)</i>':'')+'</li>'; }).join('');
   return '<b>Sản lượng xưởng</b> = tổng số lượng công nhân ghi ở <b>bước xuất</b> của xưởng trong nhật ký KPI (đã chốt + chờ duyệt, không tính bị từ chối); bước xuất chọn ở tab Quy trình → Sửa quy trình. '+
     '<b>Mục tiêu ngày tính ngược từ '+sp+' sp Đóng gói/ngày</b> theo cơ cấu hàng đang còn thiếu ('+qtSo(t.sp,0)+' sp gồm '+qtSo(t.c,0)+' chuôi, '+qtSo(t.n,0)+' ngọn, '+qtSo(t.noi,0)+' nối; mỗi gậy = 1 chuôi + 1 ngọn): mục tiêu xưởng = '+sp+' × (số khúc xưởng đó phải làm ÷ số sp). Cơ cấu đơn đổi thì mục tiêu đổi theo. '+
     'CNC tách Típ / Phíp / Khác, Ngọn Taro tách Ngọn / POM; linh kiện POM và CNC khác chưa đặt mục tiêu. Cột cam = ngày dưới mục tiêu; tính trên ngày làm việc (thứ 2 – thứ 7, trừ ngày nghỉ).'+
@@ -2904,5 +2905,53 @@ function tkVeTD(){
   var cot=ngs.map(function(n){ var o=(n.o.v&&Object.keys(n.o.v).filter(function(k){return /^vaoApp\|/.test(k)}).reduce(function(a,k){ var x=n.o.v[k]; a[0]+=x[0]; a[1]+=x[1]; return a; },[0,0]))||[0,0]; return o[0]?Math.round(o[1]/o[0]/100)/10:0; });
   h+=tkCard('Đăng nhập → thấy số, trung bình theo ngày (giây)',dhSvgCotX(ngs.map(function(n){return dhNg(n.ngay)}),cot,4,dhMau(),{w:760,h:170,so:1,khongKS:1}),'Vạch đứt = mục tiêu 4 giây. Sau mỗi lần cập nhật web, so cột trước / sau để biết có nhanh hơn không.');
   return h; }
+/* ===== 08/11 Điều phối – việc 2 "Hôm nay xưởng tôi làm gì trước" (Việc hôm nay: trưởng / phó phòng xưởng mình, chủ sở hữu chọn xưởng).
+   Phần còn lại ở xưởng = đúng cách tính của Việc theo xưởng (dhCon, hỏng làm bù). Xếp: đơn ưu tiên → hạn đơn sớm nhất (trễ lên đầu) → không có hạn. Hiện cả kênh / người đặt (chủ dự án 08/11). */
+function dpTinhViec(r,X){
+  var t=DH_TUYEN.filter(function(a){return a[0]===X})[0]; if(!t) return null;
+  var ten=function(b,k){ var m=(r.nhan||{})[b]||{}; return k?(m[k]||k):'(chưa rõ)'; }, dm={}; ((r.nhan||{}).dong||[]).forEach(function(d){dm[d[0]]=d;});
+  var hn=dhHomNay(), don={}, khoi={};
+  (r.don||[]).forEach(function(o){
+    if(!(o.thieu>0)) return; var p=o.pl||{}; if(!t[3][p.loai]) return;
+    var c, kh, nh;
+    if(t[4]==='phoi'){ var cC=p.loai!=='NGON'?dhCon(o,'PHOI',dhChuoi(p.loai,'chuoi')):0, cN=(p.loai==='GAY'||p.loai==='NGON')?dhCon(o,'PHOI',dhChuoi(p.loai,'ngon')):0; c=cC+cN;
+      if(cC>0){ var k1=dhKhoiChuoi(p); khoi[k1]=(khoi[k1]||0)+cC; } if(cN>0) khoi['Ngọn']=(khoi['Ngọn']||0)+cN; }
+    else { var phan=({ngon:'ngon',tip:'ngon',cnc:'ngon'})[t[4]]||(p.loai==='NGON'?'ngon':'chuoi'); c=dhCon(o,t[2],dhChuoi(p.loai,phan));
+      kh=(t[4]==='chuoi'||t[4]==='uv')?dhKhoiChuoi(p):(t[4]==='sku')?dhKhoiSKU(p):'Ngọn '+(DH_KIEU_TEN[p.kieu]||'đánh'); if(c>0) khoi[kh]=(khoi[kh]||0)+c; }
+    if(!(c>0)) return;
+    nh=t[4]==='chuoi'||t[4]==='uv'?(p.loai==='NOI'?'Tay nối':ten('chuoi',p.chuoi)):t[4]==='ngon'||t[4]==='tip'?ten('ngon',p.ngon):t[4]==='cnc'?'Tip '+ten('tip',p.tip):((dm[p.dong]||[])[1]||'');
+    var k=o.maDon+'|'+o.kenh, g=don[k]||(don[k]={ma:o.maDon,kenh:o.kenh,nguoiDat:o.nguoiDat||'',c:0,dl:'',uu:'',dong:[]});
+    g.c+=c; if(o.dl&&(!g.dl||o.dl<g.dl)) g.dl=o.dl; if(o.uuTien&&!g.uu) g.uu=o.uuTien; if(!g.uu&&(r.uuMa||{})[o.maDon]) g.uu=r.uuMa[o.maDon];
+    g.dong.push({ten:o.ten,nhan:nh,c:c,dl:o.dl||''});
+  });
+  var ds=Object.keys(don).map(function(k){return don[k]});
+  ds.forEach(function(g){ g.nhom=g.uu?0:(g.dl&&g.dl<hn?1:2); });   /* nhóm: ưu tiên → trễ hạn → theo hạn */
+  ds.sort(function(a,b){ return (a.nhom-b.nhom)||((a.dl?0:1)-(b.dl?0:1))||(a.dl<b.dl?-1:a.dl>b.dl?1:0)||(b.c-a.c); });
+  var tong=ds.reduce(function(s,g){return s+g.c},0), tre=ds.filter(function(g){return g.dl&&g.dl<hn}), gan=ds.filter(function(g){return g.dl&&g.dl>=hn&&dhHan(g.dl)==='gan'});
+  return {t:t,ds:ds,tong:tong,tre:tre.length,treSl:tre.reduce(function(s,g){return s+g.c},0),gan:gan.length,uu:ds.filter(function(g){return g.uu}).length,khoi:khoi,hn:hn};
+}
+function dpVeViec(r,X,soHien){
+  if(!r||!r.ok) return '<div class="alert a-bd">'+esc((r&&r.msg)||'Không tải được việc của xưởng.')+'</div>';
+  if(r.khongCo) return '<div class="pdesc">Xưởng của bạn chưa nằm trong dòng chảy đơn hàng (Phôi → Đóng gói).</div>';
+  var K=dpTinhViec(r,X); if(!K) return '';
+  var dv=K.t[4]==='phoi'?'phôi':(K.t[4]==='sku'?'sp':'cái'), n=soHien||15, hn=K.hn;
+  var kh=DH_KHOI.filter(function(k){return K.khoi[k]>0}).map(function(k){return esc(k)+' <b>'+qtSo(K.khoi[k],0)+'</b>'}).join(' · ');
+  var h='<div class="dpv-tom">Còn <b>'+qtSo(K.tong,0)+'</b> '+dv+' ở <b>'+K.ds.length+'</b> đơn'+(K.uu?' · <b class="dpv-u">'+K.uu+' đơn ưu tiên</b>':'')+(K.tre?' · <b class="bd">'+K.tre+' đơn trễ hạn</b> ('+qtSo(K.treSl,0)+' '+dv+')':'')+(K.gan?' · '+K.gan+' đơn hạn ≤ 7 ngày':'')+'</div>'+(kh?'<div class="dpv-kh">'+kh+'</div>':'');
+  if(!K.ds.length) return h+'<div class="pdesc">Không còn việc ở xưởng này theo Sheet đơn.</div>';
+  h+='<div class="tw"><table class="dpv"><thead><tr><th>#</th><th>Đơn · kênh</th><th>Hạn</th><th class="qt-so">Còn làm</th><th>Sản phẩm</th></tr></thead><tbody>';
+  var NH=['Đơn ưu tiên','Trễ hạn','Theo hạn đơn'], nhTr=-1, tn={}; K.ds.forEach(function(g){ var t=tn[g.nhom]||(tn[g.nhom]={d:0,c:0}); t.d++; t.c+=g.c; });
+  K.ds.slice(0,n).forEach(function(g,i){
+    if(g.nhom!==nhTr){ nhTr=g.nhom; h+='<tr class="dh-khoi"><td colspan="3">'+NH[g.nhom]+' · '+tn[g.nhom].d+' đơn</td><td class="qt-so">'+qtSo(tn[g.nhom].c,0)+'</td><td></td></tr>'; }
+    var nd=g.dl?Math.round((new Date(g.dl+'T00:00:00')-new Date(hn+'T00:00:00'))/864e5):null;
+    var han=g.dl?dhNg(g.dl)+'<div class="'+(nd<0?'bd':nd<=7?'wn':'dpv-m')+'">'+(nd<0?'trễ '+(-nd)+' ngày':nd===0?'hôm nay':'còn '+nd+' ngày')+'</div>':'<span class="dpv-m">chưa có</span>';
+    var sp={}; g.dong.forEach(function(d){ var k=d.nhan||d.ten; sp[k]=(sp[k]||0)+d.c; }); var spk=Object.keys(sp).sort(function(a,b){return sp[b]-sp[a]});
+    h+='<tr><td>'+(i+1)+'</td><td><b>'+esc(g.ma)+'</b>'+(g.uu?' <span class="dpv-uu" title="'+esc(g.uu)+'">ƯU TIÊN</span>':'')+'<div class="dpv-m">'+esc(g.kenh)+(g.nguoiDat?' · '+esc(g.nguoiDat):'')+'</div></td><td>'+han+'</td><td class="qt-so"><b>'+qtSo(g.c,0)+'</b></td>'+
+      '<td><details><summary>'+spk.slice(0,2).map(function(k){return esc(k)+' '+qtSo(sp[k],0)}).join(' · ')+(spk.length>2?' · +'+(spk.length-2):'')+'</summary>'+g.dong.map(function(d){return '<div class="dpv-m">'+esc(d.ten)+' – <b>'+qtSo(d.c,0)+'</b></div>'}).join('')+'</details></td></tr>';
+  });
+  h+='</tbody></table></div>';
+  if(K.ds.length>n) h+='<button class="btn sm" type="button" onclick="dpViecThem()">Xem thêm '+Math.min(15,K.ds.length-n)+' đơn (còn '+(K.ds.length-n)+')</button>';
+  h+='<div class="dpv-chu">Xếp 3 nhóm: <b>đơn ưu tiên</b> → <b>trễ hạn</b> → <b>theo hạn đơn</b>; trong nhóm hạn sớm nhất lên đầu, đơn chưa có hạn ở cuối. Dòng in đậm là tổng nhóm. "Còn làm" = đặt − đã qua xưởng này (theo cột trong Sheet đơn), cộng hỏng cần làm bù. Sheet đọc lúc '+esc(r.luc||'')+'.</div>';
+  return h;
+}
 window.__qtDaNap=true;
 </script>

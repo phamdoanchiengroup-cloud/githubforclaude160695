@@ -157,7 +157,7 @@ function qtCoVong_(canh) {
 
 /* Quy trình đang lưu (hoặc nháp) -> { cd: {Ma: {...}}, xuong: [...], caiDat, nhap } */
 function qtDocQT_(cds) {
-  var dong = docAnToan_(QT_SHEET), cd = {}, xuong = [], cai = {}, xuat = {}, k;
+  var dong = docAnToan_(QT_SHEET), cd = {}, xuong = [], cai = {}, xuat = {}, luot = {}, k;
   for (k in QT_CAI_DAT) cai[k] = QT_CAI_DAT[k];
   dong.forEach(function(r) {
     var l = String(r.Loai).trim(), ma = String(r.Ma).trim();
@@ -166,6 +166,7 @@ function qtDocQT_(cds) {
       GhiChu: String(r.GhiChu || ''), NguoiSua: String(r.NguoiSua || ''), ThoiDiem: r.ThoiDiem ? String(r.ThoiDiem) : '' };
     else if (l === 'XUONG' && ma.indexOf('>') > 0) xuong.push({ Tu: ma.split('>')[0], Den: ma.split('>')[1], BTP: String(r.Nhanh || ''), GhiChu: String(r.GhiChu || '') });
     else if (l === 'XUAT' && ma) xuat[ma] = String(r.Nhanh || '').split(',').map(function(x) { return x.trim(); }).filter(Boolean);   // bước xuất của xưởng (cách A, 01/11)
+    else if (l === 'LUOT' && ma && Number(r.Nhanh) >= 2 && Number(r.Nhanh) <= 5) luot[ma] = Math.round(Number(r.Nhanh));   // 08/11: mỗi khúc ghi mấy lần ở bước xuất (Sơn: mỗi lớp 1 lần)
     else if (l === 'CAIDAT' && QT_CAI_DAT.hasOwnProperty(ma) && isFinite(Number(r.GhiChu)) && String(r.GhiChu) !== '') cai[ma] = Number(r.GhiChu);
   });
   var nhap = !dong.some(function(r) { return String(r.Loai).trim() === 'CD'; });
@@ -181,7 +182,7 @@ function qtDocQT_(cds) {
   else { var luu = qtLuongCu_(dong); QT_XUONG_THEM.forEach(function(a) { if (luu >= a[3]) return;   // luồng chủ dự án báo thêm sau khi đã lưu (01/11): bổ sung nếu bản đã lưu chưa có
     if (!xuong.some(function(l) { return l.Tu === a[0] && l.Den === a[1]; })) xuong.push({ Tu: a[0], Den: a[1], BTP: a[2], GhiChu: 'Thêm ' + a[3].slice(8) + '/' + a[3].slice(5, 7) });
   }); }
-  return { cd: cd, xuong: xuong, caiDat: cai, nhap: nhap, xuat: xuat };
+  return { cd: cd, xuong: xuong, caiDat: cai, nhap: nhap, xuat: xuat, luot: luot };
 }
 
 /* Dữ liệu cho tab: quy trình + thống kê sản lượng theo công đoạn trong kỳ + nhân sự + máy + kỹ năng */
@@ -236,7 +237,7 @@ function layQuyTrinh(token, soNgay) {
     congDoan: cds.map(function(c) { var d = dmRow[String(c.MaCD)] || {};
       return { MaCD: String(c.MaCD), TenCD: String(c.TenCD), MaXuong: String(c.MaXuong), DM: Number(d.DinhMucGio) || 0, DVT: String(d.DonViTinh || '') }; }),
     xuong: doc_('PhongBan').filter(function(p) { return String(p.TrangThai || 'Đang dùng').trim() !== 'Ngừng'; }).map(function(p) { return { MaXuong: String(p.MaXuong), TenXuong: String(p.TenXuong) }; }),
-    thongKe: tk, soNgaySX7: Object.keys(ngay7).length, xuat: qt.xuat, ngayCong: ngayCong, diemDanh: diemDanh, nhanSu: ns, may: may, kyNang: kn };
+    thongKe: tk, soNgaySX7: Object.keys(ngay7).length, xuat: qt.xuat, luot: qt.luot, ngayCong: ngayCong, diemDanh: diemDanh, nhanSu: ns, may: may, kyNang: kn };
   if (q.xuong) {   // trưởng / phó phòng: chỉ dữ liệu xưởng mình (+ tên xưởng và luồng để vẽ lưu đồ nhà máy không số)
     var X = q.xuong, cuaX = {}, nvX = {};
     kq.congDoan = kq.congDoan.filter(function(c) { if (c.MaXuong === X) { cuaX[c.MaCD] = 1; return true; } return false; });
@@ -249,6 +250,7 @@ function layQuyTrinh(token, soNgay) {
     var kn2 = {}; Object.keys(kn).forEach(function(m) { if (!cuaX[m]) return; kn2[m] = {}; Object.keys(kn[m]).forEach(function(p) { if (nvX[p]) kn2[m][p] = kn[m][p]; }); }); kq.kyNang = kn2;   // không lộ mã người xưởng khác
     var may2 = {}; if (may[X]) may2[X] = may[X]; kq.may = may2;
     var xu2 = {}; if (qt.xuat[X]) xu2[X] = qt.xuat[X]; kq.xuat = xu2;
+    var lu2 = {}; if (qt.luot[X]) lu2[X] = qt.luot[X]; kq.luot = lu2;
     kq.laTP = true; kq.xuongCua = X; kq.deXuat = qtDeXuatCua_(X);
   } else kq.deXuatCho = qtDsDeXuat_(true).filter(function(r) { return r.TrangThai === 'Chờ duyệt'; }).map(function(r) { var o = {}; for (var k in r) if (k !== '_row') o[k] = r[k]; o.daDoi = !!r.Dau && r.Dau !== qtDauXuong_(qt, r.MaXuong); return o; });
   return sach_(kq);
@@ -326,7 +328,7 @@ function qtKiemGhi_(me, o, chiKiem, ghiChuLog) {
   }
   // So với bản cũ: dòng không đổi giữ người sửa / thời điểm cũ
   if (chiKiem) return { ok: true };
-  var cu = qtDocQT_([]).cd, luc = Utilities.formatDate(new Date(), TZ_VN, 'yyyy-MM-dd HH:mm'), doi = 0;
+  var qtCu = qtDocQT_([]), cu = qtCu.cd, luc = Utilities.formatDate(new Date(), TZ_VN, 'yyyy-MM-dd HH:mm'), doi = 0;
   var rows = ds.map(function(c) {
     var c0 = cu[c.Ma], same = c0 && c0.Nhanh === c.Nhanh && c0.Buoc === c.Buoc && c0.Truoc.join(',') === c.Truoc.join(',') && c0.GhiChu === c.GhiChu;
     if (!same) doi++;
@@ -334,6 +336,7 @@ function qtKiemGhi_(me, o, chiKiem, ghiChuLog) {
   });
   xl.forEach(function(x) { rows.push(['XUONG', x.Tu + '>' + x.Den, x.Tu, x.BTP, '', '', x.GhiChu, me.tk, luc]); });
   Object.keys(xt).forEach(function(x) { rows.push(['XUAT', x, x, xt[x].join(','), '', '', '', me.tk, luc]); });
+  Object.keys(qtCu.luot).forEach(function(x) { if (qtCo_(xs, x)) rows.push(['LUOT', x, x, String(qtCu.luot[x]), '', '', '', me.tk, luc]); });   // 08/11: giữ "số lần ghi mỗi khúc" (chỉ đổi ở thẻ Cách đếm)
   Object.keys(cai).forEach(function(k2) { rows.push(['CAIDAT', k2, '', '', '', '', String(cai[k2]), me.tk, luc]); });
   var sh = qtSheet_();
   if (sh.getMaxRows() < rows.length + 1) sh.insertRowsAfter(sh.getMaxRows(), rows.length + 1 - sh.getMaxRows());
@@ -441,4 +444,39 @@ function demDeXuatQuyTrinh(token) {
   var q = qtQuyen_(token); if (q.loi) return q.loi;
   var ds = qtDsDeXuat_().filter(function(r) { return r.TrangThai === 'Chờ duyệt'; });
   return sach_({ ok: true, n: ds.length, ds: ds.map(function(r) { return { MaXuong: r.MaXuong, TenNguoi: r.TenNguoi || r.NguoiGui, ThoiDiem: r.ThoiDiem }; }) });
+}
+
+/* ===== 08/11 (chủ dự án chọn "Claude đề xuất cách đếm, tôi duyệt"): đổi bước xuất + số lần ghi mỗi khúc của vài xưởng, giữ nguyên phần còn lại của quy trình.
+   o = { xuat: { X: [MaCD] }, luot: { X: 1..5 } } – chỉ chủ sở hữu. */
+function apCachDem(token, o) {
+  var q = qtQuyen_(token); if (q.loi) return q.loi;
+  o = o || {};
+  var xuat = o.xuat || {}, luot = o.luot || {};
+  if (typeof xuat !== 'object' || Array.isArray(xuat) || typeof luot !== 'object' || Array.isArray(luot) || Object.keys(xuat).length > 12 || Object.keys(luot).length > 12)
+    return sach_({ ok: false, msg: 'Dữ liệu không hợp lệ.' });
+  var xOf = {}; doc_('CongDoan').forEach(function(c) { xOf[String(c.MaCD)] = String(c.MaXuong); });
+  var xs = {}; doc_('PhongBan').forEach(function(p) { xs[String(p.MaXuong)] = 1; });
+  var loi = '';
+  Object.keys(xuat).forEach(function(X) { var a = xuat[X];
+    if (!qtCo_(xs, X) || !Array.isArray(a) || !a.length || a.length > 30) { loi = 'Bước xuất của ' + String(X).slice(0, 20) + ' không hợp lệ.'; return; }
+    a.forEach(function(m) { if (!qtCo_(xOf, String(m)) || xOf[String(m)] !== X) loi = 'Công đoạn ' + String(m).slice(0, 40) + ' không thuộc xưởng ' + X + '.'; }); });
+  Object.keys(luot).forEach(function(X) { var n = Number(luot[X]); if (!qtCo_(xs, X) || !(n >= 1 && n <= 5 && Math.floor(n) === n)) loi = 'Số lần ghi mỗi khúc phải là 1–5.'; });
+  if (loi) return sach_({ ok: false, msg: loi });
+  khoa_();
+  var sh = qtSheet_(), cuoi = sh.getLastRow(), luc = Utilities.formatDate(new Date(), TZ_VN, 'yyyy-MM-dd HH:mm');
+  var cu = cuoi > 1 ? sh.getRange(2, 1, cuoi - 1, QT_COT.length).getValues() : [];
+  var giu = cu.filter(function(r) { var l = String(r[0]).trim(), m = String(r[1]).trim();
+    if (!l && !m) return false;
+    if (l === 'XUAT' && qtCo_(xuat, m)) return false;
+    if (l === 'LUOT' && qtCo_(luot, m)) return false;
+    return true; });
+  Object.keys(xuat).forEach(function(X) { giu.push(['XUAT', X, X, xuat[X].map(String).filter(function(t, i, b) { return b.indexOf(t) === i; }).join(','), '', '', '', q.me.tk, luc]); });
+  Object.keys(luot).forEach(function(X) { if (Number(luot[X]) > 1) giu.push(['LUOT', X, X, String(Number(luot[X])), '', '', '', q.me.tk, luc]); });
+  if (sh.getMaxRows() < giu.length + 1) sh.insertRowsAfter(sh.getMaxRows(), giu.length + 1 - sh.getMaxRows());
+  if (giu.length) sh.getRange(2, 1, giu.length, QT_COT.length).setValues(giu.map(dongAnToan_));
+  if (cuoi > giu.length + 1) sh.getRange(giu.length + 2, 1, cuoi - giu.length - 1, QT_COT.length).clearContent();
+  xoaCache_(QT_SHEET);
+  try { CacheService.getScriptCache().remove('DP_v1'); } catch (e) {}
+  ghiLog_(q.me, 'Đổi cách đếm sản lượng xưởng', Object.keys(xuat).map(function(X) { return X + ': ' + xuat[X].join('+'); }).concat(Object.keys(luot).map(function(X) { return X + ' ÷' + luot[X]; })).join(' · ').slice(0, 400));
+  return sach_({ ok: true, msg: 'Đã áp dụng cách đếm mới. Biểu đồ sản lượng xưởng, Quy trình và báo cáo tính theo cách này từ giờ.' });
 }

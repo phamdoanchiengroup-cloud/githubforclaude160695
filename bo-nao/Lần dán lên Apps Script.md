@@ -8,6 +8,7 @@ Liên quan: [[Việc chờ chủ dự án]] · [[KPI Tổng quan và cách dựn
 - Lần dán chung 18/10: chủ dự án đã nhận đủ 5 file + hướng dẫn (HUONG-DAN-CAP-NHAT.md mục "LẦN DÁN CHUNG 18/10"). – [[KPI Bảo mật và vận hành]], [[KPI Âm thanh và giọng Rhino]]
 
 ## Web KPI – chưa dán
+- **Điều phối sản xuất 08/11** (Việc hôm nay: cách đếm + nút Áp dụng, nút cổ chai, dòng chảy, sức khỏe dữ liệu, việc của xưởng cho TP/PP; email 8h thêm mục Điều phối): Code.gs + Index.html + QuyTrinh.html qua 2-CAP-NHAT.bat, Ctrl+F5, rồi vào **Việc hôm nay** xem bảng so sánh → bấm **Áp dụng đề xuất**. – [[KPI Điều phối sản xuất (08-11)]]
 - **Sửa treo "Đang đọc Sheet đơn…" 08/11** (Đơn hàng + Thống kê › Sản xuất & đơn hàng kẹt sau khi sang tab khác lúc đang tải): Index.html + QuyTrinh.html qua 2-CAP-NHAT.bat, Ctrl+F5. – [[KPI Sửa lỗi giao diện]]
 - **Nghỉ lễ 24/11 08/11**: Code.gs + Index.html qua 2-CAP-NHAT.bat (gộp chung), Ctrl+F5. Không cần nhập sheet NgayLe. – [[KPI Chính sách lương và cẩm nang]]
 - **Nhân sự ngoài SX đủ hồ sơ + Kinh doanh, Marketing 08/11**: Code.gs + Index.html (+ QuyTrinh.html) qua 2-CAP-NHAT.bat, Ctrl+F5, rồi vào **Nhân sự** → khối Bộ phận ngoài sản xuất → bấm **↻ Cập nhật từ file** một lần. – [[KPI Quy trình sản xuất]]

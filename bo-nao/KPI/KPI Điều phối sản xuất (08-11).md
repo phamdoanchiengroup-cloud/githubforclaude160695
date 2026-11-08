@@ -1,0 +1,29 @@
+# KPI Điều phối sản xuất (08-11)
+
+Nhóm: KPI · Cập nhật 08/11/2026
+Liên quan: [[KPI Quy trình sản xuất]] · [[KPI Gộp công đoạn và tiến độ BTP]] · [[KPI Kiểm thử]] · [[Lần dán lên Apps Script]] · [[Quyết định của chủ dự án]] · [[00 Mục lục]]
+
+Chủ dự án hỏi 08/11 "Điều gì giúp tôi quản lý và điều phối sản xuất tốt hơn?". Chuyên gia `quan-ly-van-hanh` đề xuất 5 việc. Chủ dự án chọn **1, 2, 3**; việc 4 (gợi ý điều người) "chưa chắc, để sau"; việc 5 (sổ việc sau họp) không chọn.
+
+## Chủ dự án chốt
+- Việc 1: chưa họp trưởng phòng → **Claude đề xuất cách đếm, chủ dự án duyệt** (bấm Áp dụng).
+- Việc 2: **TP + PP xưởng mình, chủ thấy tất cả, hiện cả kênh bán / khách**; hạn = **chỉ xếp theo hạn đơn** (không tính ngược).
+- Việc 1 + 3 (sức khỏe dữ liệu, tồn / nút cổ chai): **chủ + Ban điều hành** (vai trò ADMIN: giamdoc C019, phogd2 C077, kimloan C067; chủ sở hữu C056).
+
+## Đã làm (`tests/dieu-phoi/`)
+- Máy chủ `dieu-phoi.gs` (va-dieu-phoi.py, cuối va-code.py):
+  - `DP_DE_XUAT`: Phôi Carbon thêm **Cắt Phôi Ngọn** (CB-CHECK-CAT); Sơn **÷ 2**, In UV **÷ 2** (mỗi chuôi ghi 2 lần: Sơn máy + súng tay; In và phủ bóng + phủ bóng). Số thật T10: Phôi Carbon 255 → 471/ngày, Sơn 759 → 379, In UV 706 → 353; đối chiếu Phôi Thô xuất chuôi 340, Đóng gói 342.
+  - "Số lần ghi mỗi khúc" = dòng `LUOT` trong sheet QuyTrinh (`qtDocQT_().luot`), giữ nguyên khi Lưu quy trình / duyệt đề xuất TP (`qtKiemGhi_` chép lại). `dhSanLuongXuong_` chia `luot` (buoc giữ số ghi thật), web `qtRa` / `dhXG` / chú thích xưởng ghi "÷ 2".
+  - `apCachDem(token, {xuat, luot})` (quy-trinh.gs, chỉ chủ sở hữu, chỉ thay dòng XUAT / LUOT của xưởng đó) + `apDeXuatDem(token)`.
+  - `layDieuPhoi(token, lamMoi)` (OWNER / ADMIN, nhớ `DP_v1` 10 phút) → `dem`, `sk` (ngày làm thiếu nhật ký 6 ngày, chờ duyệt > 2 ngày, số bất thường > max(3 × trung vị, trung vị + 100) trong 7 ngày, ngày tương lai), `cap` (6 chặng, 14 ngày làm: đang dồn / hụt / cân bằng / lệch lớn > 40%), `chuoi` (nút cổ chai chuỗi chuôi / ngọn: TB 7 ngày + hôm qua). Chưa áp đề xuất → dòng chảy tính theo đề xuất (`theoDeXuat`). Hoàn thiện → Đóng gói không so (khúc / sản phẩm).
+  - `layViecXuongToi(token)`: TP/PP → dòng đơn còn thiếu liên quan xưởng mình (`DP_LOAI_XUONG`), chủ sở hữu → tất cả. `dpEmail_` thêm mục "ĐIỀU PHỐI" vào email 8h.
+- Web mục 39 `va-dieu-phoi-web.py` (Việc hôm nay, khối `#dpHN`): `dpVeQL` 4 thẻ (Cách đếm + nút Áp dụng chỉ chủ sở hữu, Nút cổ chai, Dòng chảy, Sức khỏe dữ liệu); việc 2: `dpViecTai` → mảnh QuyTrinh `dpTinhViec` / `dpVeViec` (cùng cách tính Việc theo xưởng `dhCon`), 3 nhóm **Ưu tiên → Trễ hạn → Theo hạn đơn** có tổng nhóm, tổng theo khối (chuôi / chuôi nhảy / ngọn…), 15 đơn + "Xem thêm"; điện thoại dạng thẻ. Chủ sở hữu bấm "Xem việc theo xưởng" + chọn xưởng.
+
+## Kiểm thử
+- `tests/dieu-phoi.js` 25/25 (DATA + DH số thật), `tests/dieu-phoi-web.js` 13/13 (bản thử số thật GIO 08/11, chủ / giamdoc / tpson điện thoại / c040).
+- Bộ cũ: quy-trinh.js 76/76, tang-toc-3.js 17/17, don-hang.js 130/135 (5 lỗi có sẵn, giống bản trước sửa).
+
+## Còn để sau
+- Việc 4 gợi ý điều người (chờ chủ dự án: có điều người giữa xưởng không). Việc 5 sổ việc sau họp (không chọn).
+- Tồn thật cần số kiểm đếm đầu kỳ; hiện chỉ có phần tăng / giảm trong 14 ngày.
+- Ngọn Taro đếm cả Tester + Check ngọn → ra 451 > Phôi Thô ngọn 310 ("đang hụt"): có thể cũng đếm 2 lần – hỏi TP Ngọn Taro.

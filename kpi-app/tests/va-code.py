@@ -1366,6 +1366,7 @@ exec(io.open(os.path.join(os.path.dirname(__file__), 'khong-nhac', 'va-khong-nha
 exec(io.open(os.path.join(os.path.dirname(__file__), 'quy-trinh', 'va-quy-trinh.py'), encoding='utf-8').read())
 exec(io.open(os.path.join(os.path.dirname(__file__), 'quy-trinh', 'va-don-hang.py'), encoding='utf-8').read())   # đơn hàng → xưởng (31/10)
 exec(io.open(os.path.join(os.path.dirname(__file__), 'tang-toc-3', 'va-tang-toc-3.py'), encoding='utf-8').read())   # tăng tốc đợt 3 (08/11)
+exec(io.open(os.path.join(os.path.dirname(__file__), 'dieu-phoi', 'va-dieu-phoi.py'), encoding='utf-8').read())   # điều phối sản xuất (08/11)
 
 io.open(RA, 'w', encoding='utf-8').write(s)
 print('OK ->', os.path.abspath(RA))
