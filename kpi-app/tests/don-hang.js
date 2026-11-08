@@ -285,6 +285,7 @@ console.log('\n07/11. Tab chính Thống kê – layThongKe (chỉ chủ sở h�
   const c2 = G.tao(path.join(__dirname, '..', 'Code.gs'), du, '2026-11-07T19:00:00+07:00'), T2 = c2.__phienDai(vt('OWNER'));
   const tk2 = c2.layThongKe(T2, '2026-11', true);
   ok(tk2.ok && tk2.chuaChot && tk2.kpi.ky === '2026-10' && tk2.kpi.tamTinh && tk2.com.daTongKet === false && tk2.com.soNguoiChua > 0, 'tháng đang chạy: KPI lấy tháng chốt gần nhất, báo cơm tính từng ngày + đếm người không báo', [tk2.kpi.ky, tk2.com.soNguoiChua]);
+  ok(c2.laNgayLe_('2026-11-24', '') && c2.laNgayLe_('2027-11-24', 'CNC') && !c2.laNgayLe_('2026-11-23', '') && c2.dhCongSuat_().nghi.some(x => x[0] === '2026-11-24'), '08/11: 24/11 (Ngày Văn hóa Việt Nam) là ngày lễ ở KPI / điểm danh và công suất Đơn hàng');
   const r2 = c.layThongKe(Tadm, '2026-10');
   ok(r2.ok === false, 'tài khoản không phải chủ sở hữu (ADMIN) bị chặn', r2);
 }

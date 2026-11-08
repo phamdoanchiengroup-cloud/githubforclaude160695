@@ -108,3 +108,4 @@ Những điều đã chốt. Đừng đề xuất lại những gì ghi "không 
 - 08/11: 33 người Marketing / Kinh doanh: tách 2 bộ phận; **chưa tạo tài khoản / chưa cấp mật khẩu**, chỉ danh sách + thống kê; cơm vẫn báo theo nhóm. Bộ phận ngoài SX chỉ cần **hồ sơ** (ngày onboard, chính thức, thử việc / chính thức, thâm niên, phép còn lại), không cần chấm công trên web. File Drive chung + nút "Cập nhật từ file". – [[KPI Quy trình sản xuất]]
 - 08/11: **không hiện phép năm còn lại** ở Nhân sự ngoài sản xuất – "không cần bây giờ" (đừng đề xuất lại khi chưa được hỏi). – [[KPI Quy trình sản xuất]]
 - 08/11: **giữ chức danh đúng như tài liệu gửi lên** – không tự sửa chữ (kể cả lỗi gõ như "Giám đóc", chữ hoa "Cửa hàng Trưởng"); chỉ bỏ dấu cách thừa. Áp dụng cho mọi dữ liệu chủ dự án gửi. – [[KPI Quy trình sản xuất]]
+- 08/11: thêm nghỉ lễ **24/11 (Ngày Văn hóa Việt Nam)** hằng năm; **không sửa** chức danh Phạm Kiều Oanh (giữ "Trưởng bộ phận" Kho). – [[KPI Chính sách lương và cẩm nang]]

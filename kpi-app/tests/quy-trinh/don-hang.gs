@@ -795,11 +795,16 @@ function dhAmSangDuong_(d, m, y) {   // -> 'yyyy-mm-dd' (tháng không nhuận)
   var r = dhTuJd_(dhSoc_(k + off) + d - 1); return r[2] + '-' + ('0' + r[1]).slice(-2) + '-' + ('0' + r[0]).slice(-2);
 }
 function dhCongNgay_(s, n) { var p = s.split('-'), t = new Date(Date.UTC(+p[0], +p[1] - 1, +p[2] + n)); return t.getUTCFullYear() + '-' + ('0' + (t.getUTCMonth() + 1)).slice(-2) + '-' + ('0' + t.getUTCDate()).slice(-2); }
+/* 08/11 (chủ dự án): ngày nghỉ lễ cố định hằng năm của công ty ngoài bảng NgayLe (Cẩm nang hội nhập 09/2026: Ngày Văn hóa Việt Nam 24/11).
+   Dùng chung cho KPI / điểm danh (bangNgayLe_), công suất Đơn hàng (dhLeNam_), Thống kê (tkNgayLam_). Rơi vào chủ nhật thì không nghỉ bù. */
+var LE_CO_DINH_ = [['11-24', 'Ngày Văn hóa Việt Nam']];
+function leCoDinhNam_() { var y = Number(Utilities.formatDate(new Date(), TZ_VN, 'yyyy')), o = []; for (var k = y - 1; k <= y + 1; k++) LE_CO_DINH_.forEach(function(x) { o.push([k + '-' + x[0], x[1]]); }); return o; }
 function dhLeNam_(y) {
   var out = [[y + '-01-01', 'Tết Dương lịch'], [y + '-04-30', 'Giải phóng miền Nam'], [y + '-05-01', 'Quốc tế Lao động'], [y + '-09-02', 'Quốc khánh']];   // ngày nghỉ kèm Quốc khánh theo bảng NgayLe của công ty
   var tet = dhAmSangDuong_(1, 1, y);
   for (var i = -2; i <= 2; i++) out.push([dhCongNgay_(tet, i), 'Tết Nguyên đán' + (i === 0 ? ' (mùng 1)' : '')]);
   out.push([dhAmSangDuong_(10, 3, y), 'Giỗ Tổ Hùng Vương (10/3 âm)']);
+  LE_CO_DINH_.forEach(function(x) { out.push([y + '-' + x[0], x[1]]); });   // 08/11: 24/11
   return out;
 }
 function dhCongSuat_() {
@@ -1070,6 +1075,7 @@ function dhGuiEmail_(thu) {
 var TK_BO_VANG = { NL: 1, TS: 1 };   // không tính vào tỷ lệ vắng: nghỉ lễ, thai sản (nghỉ dài, đã biết trước)
 function tkNgayLam_(thang) {   // ngày làm của tháng tới hôm nay: thứ 2 – thứ 7, trừ ngày lễ toàn công ty
   var le = {}; docAnToan_('NgayLe').forEach(function(r) { if (!String(r.MaXuong || '').trim()) le[ngayVN_(r.Ngay)] = 1; });
+  LE_CO_DINH_.forEach(function(x) { le[thang.slice(0, 4) + '-' + x[0]] = 1; });   // 08/11: 24/11
   var hn = homNayVN_(), ds = [], d = new Date(thang + '-01T12:00:00Z');
   while (Utilities.formatDate(d, 'GMT', 'yyyy-MM') === thang) {
     var x = Utilities.formatDate(d, 'GMT', 'yyyy-MM-dd'); if (x > hn) break;

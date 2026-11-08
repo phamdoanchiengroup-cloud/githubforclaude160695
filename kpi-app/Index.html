@@ -9606,7 +9606,7 @@ function hsGhiChuDong(r){
 }
 </script>
 <script>
-var KPI_BAN = '08/11/2026 09:10';
+var KPI_BAN = '08/11/2026 10:13';
 (function(){
   var cu = window.veNav;
   window.veNav = function(){
@@ -10657,7 +10657,7 @@ function nsnCapNhat(){ call('capNhatNgoaiSXTuFile',[],function(r){ if(!r||!r.ok)
 </script>
 <script>
 /* ===== 38. TĂNG TỐC ĐỢT 3 (08/11) – bộ đo tốc độ + mở nhanh bằng số lần trước (mã hóa) ===== */
-var TD_BUF=[], TD_T=null, DL_VER='c0c6f016a3', DL_HAN=12*3600e3, DL_BO=['SoCCCD','DienThoai','DiaChi','SdtKhanCap','LuongCoBan','NamSinh','SoTaiKhoan','Email'];
+var TD_BUF=[], TD_T=null, DL_VER='3c3defccc2', DL_HAN=12*3600e3, DL_BO=['SoCCCD','DienThoai','DiaChi','SdtKhanCap','LuongCoBan','NamSinh','SoTaiKhoan','Email'];
 function tdGhi_(f,ms,sv){ if(!(ms>=0)||!f) return; TD_BUF.push({f:String(f),ms:Math.round(ms),sv:(typeof sv==='number'?Math.round(sv):null)});
   if(TD_BUF.length>=15) tdGui_(); else if(!TD_T) TD_T=setTimeout(tdGui_,180000); }
 function tdGui_(){ if(TD_T){clearTimeout(TD_T);TD_T=null;} if(!TD_BUF.length||typeof TOKEN==='undefined'||!TOKEN) return;

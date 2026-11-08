@@ -11,3 +11,5 @@ Chủ dự án gửi 08/11 (file gốc ở máy chủ dự án, không lưu repo
 - Cẩm nang: thử việc 1 tháng, nhưng hồ sơ ngoài SX thực tế đa số 2 tháng (Marketing 23/25, Kho 6/10, Ban điều hành 6/8), C584 8 tháng, C163 và C443 cùng ngày.
 - Lễ có **Ngày Văn hóa Việt Nam 24/11** (1 ngày) – web (NgayLe 3 dòng, lịch lễ Đơn hàng) chưa có.
 - Chức danh cẩm nang trang 9: Phạm Kiều Oanh "Phó bộ phận Kho" – web ghi "Trưởng bộ phận"; "Quản đốc xưởng" (Q4) và "Trưởng BP" (Q6) dùng lẫn cho các xưởng.
+- (08/11) Chủ dự án chốt: **thêm nghỉ lễ 24/11** → `LE_CO_DINH_` + `leCoDinhNam_()` (don-hang.gs), gắn vào `bangNgayLe_` (KPI, điểm danh, danh sách `ngayLe` gửi web), `dhLeNam_` (công suất Đơn hàng), `tkNgayLam_` (Thống kê). Không cần nhập sheet NgayLe. **Không sửa** chức danh Phạm Kiều Oanh.
+- (08/11) Chủ dự án giải thích: cơ cấu lương mới để **lương đóng BHXH = lương cơ bản**, phần còn lại chia thành các khoản khác. Claude đã nêu rủi ro: theo Luật BHXH 2024 (Đ.31) các khoản trả thường xuyên, ổn định mỗi kỳ vẫn tính vào tiền lương đóng BHXH; muốn hợp lệ thì các khoản đó phải thật sự biến động theo kết quả (KPI, doanh thu). Chờ chủ dự án quyết có nối "Hiệu suất công việc" với KPI web không.
