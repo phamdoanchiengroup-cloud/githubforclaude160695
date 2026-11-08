@@ -26,3 +26,10 @@ Liên quan: [[KPI Quy trình sản xuất]] · [[KPI Bảo mật và vận hành
 - `tests/cau-hinh-gay.js` 45/45 (quyền, lưu / duyệt / từ chối / phiên bản, nhật ký, dữ liệu xấu, mã NV trùng).
 - `tests/cau-hinh-gay-web.js` 40/40 (máy tính + điện thoại; LIB=<node_modules có jspdf + html2canvas> để thử PDF: 2 trang, ~690 KB).
 - Không ảnh hưởng: manh-web 8/8, tong-quan-web 26/26, nhan-su-loc-web 13/13, tang-toc-4 14/14, luu-tru 15/15, dieu-phoi 24/24.
+
+## Tra cứu cấu tạo chuẩn (08/11, chủ dự án yêu cầu "search internet để vẽ cho chuẩn")
+- Ngọn carbon: ống carbon quấn trên lõi thép + epoxy, thành 0,8–1,2 mm (nhiều hãng ~1,0); lõi foam polyurethane (có hãng nhiều tỉ trọng), có hãng bịt nút gỗ maple 2 đầu lõi (Meucci); ferrule gậy carbon 6–13 mm (gỗ cổ điển 19–25). Predator: đầu joint Ø21,31–21,38 mm.
+- Chuôi: đa số gậy carbon vẫn chuôi gỗ; A-joint = mộng tròn cắm lỗ khoan (thợ hay dùng 5/8" ≈ Ø16 × 16); joint pin tổng ~80 mm, phần lớn chôn trong forearm; weight bolt thường 3/8-16, chỉnh ~17,5–21,5 oz.
+- Ren joint (`CG_REN` trong web): 3/8-8 (Ø9,525 · bước 3,175), 3/8-10 (2,54), 3/8-11 (2,309, không lắp lẫn 3/8-10), 3/8-14 (1,814), 5/16-14 (Ø7,938 · 1,814), 5/16-18 (1,411), Radial (~Ø9,42 · ~7,6 ren/inch ≈ 3,34, ren tròn, vặn thẳng vào gỗ / phenolic – số đo thợ, hãng không công bố), Uni-Loc / Q-loc / VQR… (độc quyền – đo thật).
+- Đã thêm vào bản vẽ / form (67 ô): nút bịt đầu / cuối lõi + vật liệu, pin chôn trong chuôi, profile ren (V / tròn – Detail C vẽ ren răng cưa hoặc ren tròn); đổi ren pin → tự điền Ø, bước, profile, ren insert (ô chưa đo); kiểm tra: Ø / bước khác chuẩn của ren, pin chôn chạm mộng A-joint, nút bịt + tenon + insert dài hơn ống. Hộp "Tham khảo khi đo" (bảng ren + cấu tạo) trong tab, không in PDF.
+- Nguồn: pooldawg.com (What's my joint style), predatorcues.com (joint types, Uni-Loc guide), uni-loc.com, meuccicues.com (Carbon Pro), forums.azbilliards.com (Radial), dzcues.com (A-joint), bizubilliards.com (quy trình làm ngọn carbon).
