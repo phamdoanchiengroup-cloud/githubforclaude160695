@@ -12,6 +12,7 @@ Một chỗ gom mọi đường dẫn, mã file, kết nối và công cụ phi�
   - Thiên Cơ Các (`tuvi-app/`): `claude/happy-brown-lttkz3`.
   - Trợ lý KPI qua Zalo (`tro-ly-kpi/`): `claude/awesome-heisenberg-iulbd6`.
 - Không tạo PR nếu chủ dự án không yêu cầu.
+- **Trang giới thiệu có ảnh xem trước**: https://kpicarbon.io.vn (tên miền chủ dự án mua 08/11, GitHub Pages từ thư mục `docs/` nhánh KPI) – [[KPI Trang giới thiệu kpicarbon.io.vn (08-11)]]. Trang cũ chủ dự án tự làm trên Qoder: https://kpi-san-xuat-tefppm4sll9.qoder.website/
 
 ## Google Drive (kết nối Google Drive của tài khoản phamdoanchiengroup@gmail.com)
 - **Sheet "CSDL KPI"** (dữ liệu thật của web): https://docs.google.com/spreadsheets/d/1znHlbc3ulMRQILePmLZbwNQx-mMXFxd9sm0PBG9lrF8

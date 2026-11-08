@@ -18,3 +18,9 @@ Liên quan: [[Việc chờ chủ dự án]] · [[KPI Sửa lỗi giao diện]] �
     - Điện thoại: vòng KPI tổng màu vàng có mốc hạng, bên trong là 4 vòng thành phần (SL, CL, TT, AT). Thêm vòng sản lượng hôm nay và chòm sao 12 ngày.
     - Nền sao vẽ bằng canvas (`veSao`), nhấp nháy khoảng 16 hình/giây. Tắt khi người dùng bật giảm chuyển động. Đổi kiểu thì dừng (`SAO_RAF`). Font tiêu đề Exo 2 (có tiếng Việt).
 
+
+## 08/11 – demo phong cách Apple (chỉ ở scratchpad, chưa áp vào web)
+- `scratchpad/demo/Bento-va-apple-design-4-man-hinh.html` (tao2.py): apple-design và Bento × 4 màn (nhập nhiều công đoạn, KPI của tôi, duyệt, tổng quan).
+- `scratchpad/demo/8-kieu-Apple-dien-thoai-may-tinh.html` (tao3.py, style3.css, tao3.js): 8 kiểu (danh sách nhóm, Liquid Glass, thẻ tóm tắt, vòng hoạt động, widget, thẻ xếp chồng, bảng trượt, thanh bên) + 7 bản máy tính. Chuyên gia `soat-giao-dien-cuoi`: công nhân = bảng trượt (7) + thẻ tóm tắt (3); TP = thanh bên (8) + widget (5); chủ = widget; **không dùng kính mờ** trên điện thoại (máy Android cũ), nút ≥ 44 px, chữ ≥ 13 px.
+- `scratchpad/cn/Web-cong-nhan-demo.html` (tao.py, cn.js, cn.css): toàn bộ màn tài khoản công nhân, thanh dưới 5 nút Nhập · KPI · Cơm · Xưởng · Tôi; số từ bản xem thử (C040, tên giả). Đã sửa theo `dong-vai-nguoi-dung`: D màu cam, mục tiêu lên trước, bảng xưởng chỉ top 3 + người trên + mình, bàn phím mở trống, nút Aa mọi trang. Chờ chủ dự án chốt – [[Việc chờ chủ dự án]].
+- Tốc độ: CSS cả 8 kiểu ~15 KB (nén ~4 KB) so với Index.html ~890 KB (nén ~310 KB) → không ảnh hưởng tải; chỉ kính mờ ảnh hưởng độ mượt.

@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<!-- Trang giới thiệu kpicarbon.io.vn (GitHub Pages, thư mục docs/). Chỉ để có ảnh xem trước khi chia sẻ link
+     và một nút mở web KPI (Google Apps Script). Đổi link web KPI: sửa hằng WEB_KPI bên dưới (href của nút #mo). -->
+<title>Hệ thống KPI sản xuất · Carbon Billiards</title>
+<meta name="description" content="Nhập sản lượng, xem KPI, chấm công và đăng ký cơm trưa – dành cho công nhân và cán bộ Carbon Billiards (RHINO).">
+<meta name="theme-color" content="#060d1b">
+<link rel="canonical" href="https://kpicarbon.io.vn/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="RHINO · Carbon Billiards">
+<meta property="og:locale" content="vi_VN">
+<meta property="og:url" content="https://kpicarbon.io.vn/">
+<meta property="og:title" content="Hệ thống KPI sản xuất · Carbon Billiards">
+<meta property="og:description" content="Nhập sản lượng, xem KPI, chấm công và đăng ký cơm trưa – dành cho công nhân và cán bộ.">
+<meta property="og:image" content="https://kpicarbon.io.vn/og.jpg">
+<meta property="og:image:secure_url" content="https://kpicarbon.io.vn/og.jpg">
+<meta property="og:image:type" content="image/jpeg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Hệ thống KPI sản xuất – nhà máy Carbon Billiards">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Hệ thống KPI sản xuất · Carbon Billiards">
+<meta name="twitter:description" content="Nhập sản lượng, xem KPI, chấm công và đăng ký cơm trưa.">
+<meta name="twitter:image" content="https://kpicarbon.io.vn/og.jpg">
+<link rel="icon" type="image/png" href="favicon.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<style>
+:root{--nen:#060d1b;--chu:#eef3fb;--phu:#b7c4da;--vang:#e0b25c;--xanh:#0a66ff}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{font-family:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;color:var(--chu);background:var(--nen);-webkit-font-smoothing:antialiased}
+.anh{position:fixed;inset:0;background:url(nen.jpg) 60% 40%/cover}
+.phu{position:fixed;inset:0;background:linear-gradient(180deg,rgba(6,13,27,.55) 0%,rgba(6,13,27,.78) 45%,rgba(6,13,27,.97) 100%)}
+main{position:relative;min-height:100%;display:flex;flex-direction:column;justify-content:flex-end;max-width:520px;margin:0 auto;padding:32px 20px calc(28px + env(safe-area-inset-bottom))}
+.logo{width:180px;height:auto;margin-bottom:auto;filter:drop-shadow(0 2px 8px rgba(0,0,0,.5))}
+.nho{font-size:13px;letter-spacing:.18em;color:var(--vang);font-weight:700;text-transform:uppercase;margin:40px 0 8px}
+h1{font-size:clamp(32px,9vw,44px);line-height:1.1;font-weight:800;letter-spacing:-.02em}
+.mo-ta{color:var(--phu);font-size:17px;line-height:1.5;margin:12px 0 26px}
+.nut{display:flex;align-items:center;justify-content:center;gap:10px;min-height:60px;border-radius:16px;background:var(--xanh);color:#fff;font-size:19px;font-weight:700;text-decoration:none;box-shadow:0 10px 28px rgba(10,102,255,.45)}
+.nut:active{transform:scale(.98)}
+.trang-thai{text-align:center;color:var(--phu);font-size:14px;min-height:20px;margin-top:12px}
+.ghi{color:#8fa0bd;font-size:13px;line-height:1.5;text-align:center;margin-top:18px}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<div class="anh" aria-hidden="true"></div><div class="phu" aria-hidden="true"></div>
+<main>
+  <img class="logo" src="logo-rhino.png" alt="RHINO – Made by Vietnam" width="180" height="41">
+  <p class="nho">Carbon Billiards</p>
+  <h1>Hệ thống KPI<br>sản xuất</h1>
+  <p class="mo-ta">Nhập sản lượng, xem KPI, chấm công và đăng ký cơm trưa.</p>
+  <a class="nut" id="mo" href="https://script.google.com/macros/s/AKfycbzeCiG2uecGbXx3nC6B3_VbWnA8AZdGT57A05Fj9RNKdaMq5ZQWfC_hlzJWfc_Ab8-irw/exec">Mở hệ thống KPI →</a>
+  <p class="trang-thai" id="tt" aria-live="polite"></p>
+  <p class="ghi">Đăng nhập bằng tài khoản công ty cấp. Quên mật khẩu hoặc chưa có tài khoản: báo trưởng phòng.</p>
+</main>
+<script>
+// Tự mở web KPI sau 1,5 giây (bấm nút thì mở ngay). Thêm ?o=0 vào link để ở lại trang này.
+(function(){
+  var WEB_KPI = document.getElementById('mo').href;
+  if (/[?&]o=0/.test(location.search)) return;
+  var tt = document.getElementById('tt'); tt.textContent = 'Đang mở hệ thống KPI…';
+  setTimeout(function(){ location.replace(WEB_KPI); }, 1500);
+})();
+</script>
+</body>
+</html>
