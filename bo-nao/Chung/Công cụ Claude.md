@@ -8,3 +8,9 @@ Liên quan: [[KPI Sửa lỗi giao diện]] · [[00 Mục lục]]
 - Plugin Claude Code: `.claude/settings.json` bật ponytail, claude-mem (chỉ bản chạy trên máy, KHÔNG bật claude-mem-cowork vì gửi dữ liệu lên cmem.ai), task-observer, claude-code-setup. Trên phiên đám mây có thể không tải được plugin.
 - Phiên đám mây chặn tự sửa cài đặt Claude (`.claude/settings.json`) ở chế độ Auto; cần chủ dự án chuyển sang "Accept edits" và bấm cho phép.
 - **Kiểm tra plugin trên phiên đám mây (07/10):** `installed_plugins.json` trống, 3 kho bên ngoài (ponytail, thedotmack, one-skill-to-rule-them-all) không được tải về; giữa phiên chỉ thấy skill `claude-code-setup:claude-automation-recommender` xuất hiện. ponytail, claude-mem, task-observer không chạy trên phiên đám mây – dùng được khi chạy Claude Code trên máy của chủ dự án.
+
+## Skill / repo đã xem (08/11)
+- **GIA Chief of Staff** (plugin bên thứ ba): tóm tắt sáng, hộp thư, họp – không cài (trùng email 8h + Tổng quan, phải cấp quyền email). Có sẵn `/morning` nếu cần tóm tắt email + lịch.
+- **wheresryan22/anatomy** (~25,9k sao, MIT): hình minh họa isometric có chuyển động của MỘT cỗ máy (SVG, WebGL, 3D beta) – không đọc / dựng bản vẽ kỹ thuật thật. Không hợp thay Sơ đồ 3D nhà máy (three.js, cả nhà máy là mức "Epic" 6 giờ+, 3D beta ~20 fps ở 380 chi tiết). Đã dựng thử gậy pool carbon 58" (bàn đo + đồng hồ so chạy dọc ngọn, Hình 2 biên dạng côn) bằng `kit/lathe.mjs` – file ở scratchpad, kích thước chuẩn ngành, chưa phải số RHINO.
+- Bản vẽ kỹ thuật thật: MatheusMeM/dwg-interpreter-claude-skill, Cai-aa/freecad-automation-skill, MeltFlexDevs/techdrawai-skills (trả phí), yun121380/cad-drawing-skill – đều nhỏ, mới.
+- **apple-design**: dickwu/apple-design-skill (~3k sao) = soát giao diện theo Apple HIG cho app (Flutter, React Native, Tauri, Electron, SwiftUI); web KPI đã có skill impeccable + chuyên gia soat-giao-dien-cuoi.
