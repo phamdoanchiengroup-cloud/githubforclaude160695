@@ -9606,7 +9606,7 @@ function hsGhiChuDong(r){
 }
 </script>
 <script>
-var KPI_BAN = '08/11/2026 09:01';
+var KPI_BAN = '08/11/2026 09:06';
 (function(){
   var cu = window.veNav;
   window.veNav = function(){
@@ -10644,7 +10644,7 @@ function nsnVe(){
     var tt=function(x){ return x.tinhTrang==='Thử việc'?'<b style="color:var(--amber)">Thử việc</b>':(x.tinhTrang||'<span style="color:var(--ink3)">chưa rõ</span>'); };
     var tv=0; ds.forEach(function(x){ if(x.tinhTrang==='Thử việc') tv++; });
     h+='<div class="tw"><table><thead><tr><th>Bộ phận · nhóm</th><th>Mã</th><th>Họ tên</th><th>Chức danh</th><th>Ngày onboard</th><th>Ngày chính thức</th><th>Tình trạng</th><th style="text-align:right">Thâm niên</th><th>Ghi chú</th></tr></thead><tbody>';
-    bp.forEach(function(b){ var a=g[b], ql=a.filter(function(x){return /Trưởng|Ban|Giám đốc|Quản lý|Cửa hàng trưởng/.test(x.ChucDanh)}).length, tvb=a.filter(function(x){return x.tinhTrang==='Thử việc'}).length;
+    bp.forEach(function(b){ var a=g[b], ql=a.filter(function(x){return /trưởng|Ban|Giám đ|Quản lý/i.test(x.ChucDanh)}).length, tvb=a.filter(function(x){return x.tinhTrang==='Thử việc'}).length;
       h+='<tr class="dh-khoi"><td colspan="9">'+esc(b)+' · '+a.length+' người'+(ql&&b!=='Ban điều hành'?' · '+ql+' quản lý':'')+(tvb?' · '+tvb+' thử việc':'')+'</td></tr>';
       a.forEach(function(x){ h+='<tr><td style="color:var(--ink3)">'+esc(x.Nhom||'')+'</td><td>'+esc(x.MaNV)+'</td><td>'+esc(x.HoTen)+'</td><td>'+esc(x.ChucDanh)+'</td><td>'+esc(x.NgayVaoLam)+'</td><td>'+esc(x.NgayChinhThuc||'–')+'</td><td>'+tt(x)+'</td><td style="text-align:right;white-space:nowrap">'+tn(x.thamNienThang)+'</td><td style="color:var(--ink3)">'+esc(x.GhiChu||'')+'</td></tr>'; }); });
     h+='<tr class="dh-khoi"><td colspan="9">Tổng: '+ds.length+' người'+(tv?' ('+tv+' thử việc)':'')+' · '+bp.map(function(b){return esc(b)+' '+g[b].length}).join(' · ')+'</td></tr></tbody></table></div>'+
@@ -10657,7 +10657,7 @@ function nsnCapNhat(){ call('capNhatNgoaiSXTuFile',[],function(r){ if(!r||!r.ok)
 </script>
 <script>
 /* ===== 38. TĂNG TỐC ĐỢT 3 (08/11) – bộ đo tốc độ + mở nhanh bằng số lần trước (mã hóa) ===== */
-var TD_BUF=[], TD_T=null, DL_VER='2bf84b2578', DL_HAN=12*3600e3, DL_BO=['SoCCCD','DienThoai','DiaChi','SdtKhanCap','LuongCoBan','NamSinh','SoTaiKhoan','Email'];
+var TD_BUF=[], TD_T=null, DL_VER='fa9fc9c1fa', DL_HAN=12*3600e3, DL_BO=['SoCCCD','DienThoai','DiaChi','SdtKhanCap','LuongCoBan','NamSinh','SoTaiKhoan','Email'];
 function tdGhi_(f,ms,sv){ if(!(ms>=0)||!f) return; TD_BUF.push({f:String(f),ms:Math.round(ms),sv:(typeof sv==='number'?Math.round(sv):null)});
   if(TD_BUF.length>=15) tdGui_(); else if(!TD_T) TD_T=setTimeout(tdGui_,180000); }
 function tdGui_(){ if(TD_T){clearTimeout(TD_T);TD_T=null;} if(!TD_BUF.length||typeof TOKEN==='undefined'||!TOKEN) return;

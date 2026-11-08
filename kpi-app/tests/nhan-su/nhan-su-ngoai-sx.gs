@@ -11,7 +11,7 @@
    Dữ liệu cá nhân nằm ở 2 file Drive, KHÔNG nằm trong mã nguồn (chỉ có mã file).
    ===================================================================== */
 var NS_CC_FILE_SUA = '1MwEdEj5XELPcjEhLd3BZz-3Tcs4rbQR01KD9hFnor3g';    // KPI - Sửa nhân sự theo chấm công T10
-var NS_CC_FILE_NGOAI = '1yGdL5PRbd6XvpydtiEL17BI0-UHqeECc5q3vd-QQEOU';  // 08/11: KPI - Nhân sự ngoài sản xuất (hồ sơ) – thay file 03/11 (1KAbgfq0QMZNmFeyF7VWFcEwjWM-ADK4sRR8FghUAcgk); thêm Marketing + Kinh doanh
+var NS_CC_FILE_NGOAI = '1yxh8k5XVWNy2prOFNwDHeRc6dnS6voyXpvzNvowbjOM';  // 08/11: KPI - Nhân sự ngoài sản xuất (hồ sơ) – thay file 03/11 (1KAbgfq0QMZNmFeyF7VWFcEwjWM-ADK4sRR8FghUAcgk); thêm Marketing + Kinh doanh
 var NS_NGOAI_SHEET = 'NhanSuNgoaiSX', NS_NGOAI_COT = ['BoPhan', 'Nhom', 'MaNV', 'HoTen', 'ChucDanh', 'NgayVaoLam', 'NgayChinhThuc', 'PhepConLai', 'TrangThai', 'GhiChu'];
 var NS_DOI_MA_BO = { NhatKyThaoTac: 1 };   // nhật ký thao tác giữ nguyên lịch sử (ghi đúng tên đăng nhập lúc đó)
 

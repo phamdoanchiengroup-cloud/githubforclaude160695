@@ -21,7 +21,7 @@ function nsnVe(){
     var tt=function(x){ return x.tinhTrang==='Thử việc'?'<b style="color:var(--amber)">Thử việc</b>':(x.tinhTrang||'<span style="color:var(--ink3)">chưa rõ</span>'); };
     var tv=0; ds.forEach(function(x){ if(x.tinhTrang==='Thử việc') tv++; });
     h+='<div class="tw"><table><thead><tr><th>Bộ phận · nhóm</th><th>Mã</th><th>Họ tên</th><th>Chức danh</th><th>Ngày onboard</th><th>Ngày chính thức</th><th>Tình trạng</th><th style="text-align:right">Thâm niên</th><th>Ghi chú</th></tr></thead><tbody>';
-    bp.forEach(function(b){ var a=g[b], ql=a.filter(function(x){return /Trưởng|Ban|Giám đốc|Quản lý|Cửa hàng trưởng/.test(x.ChucDanh)}).length, tvb=a.filter(function(x){return x.tinhTrang==='Thử việc'}).length;
+    bp.forEach(function(b){ var a=g[b], ql=a.filter(function(x){return /trưởng|Ban|Giám đ|Quản lý/i.test(x.ChucDanh)}).length, tvb=a.filter(function(x){return x.tinhTrang==='Thử việc'}).length;
       h+='<tr class="dh-khoi"><td colspan="9">'+esc(b)+' · '+a.length+' người'+(ql&&b!=='Ban điều hành'?' · '+ql+' quản lý':'')+(tvb?' · '+tvb+' thử việc':'')+'</td></tr>';
       a.forEach(function(x){ h+='<tr><td style="color:var(--ink3)">'+esc(x.Nhom||'')+'</td><td>'+esc(x.MaNV)+'</td><td>'+esc(x.HoTen)+'</td><td>'+esc(x.ChucDanh)+'</td><td>'+esc(x.NgayVaoLam)+'</td><td>'+esc(x.NgayChinhThuc||'–')+'</td><td>'+tt(x)+'</td><td style="text-align:right;white-space:nowrap">'+tn(x.thamNienThang)+'</td><td style="color:var(--ink3)">'+esc(x.GhiChu||'')+'</td></tr>'; }); });
     h+='<tr class="dh-khoi"><td colspan="9">Tổng: '+ds.length+' người'+(tv?' ('+tv+' thử việc)':'')+' · '+bp.map(function(b){return esc(b)+' '+g[b].length}).join(' · ')+'</td></tr></tbody></table></div>'+
