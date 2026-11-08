@@ -57,6 +57,7 @@ function dpTinh_() {
   var phan = function(X, m) {   // chuôi / ngọn của 1 bước xuất (nhánh trong tab Quy trình, không có thì theo tên); POM ở Ngọn Taro là vật liệu cấp Phôi Thô – bỏ
     var c = qt.cd[m], nh = c ? c.Nhanh : '', t = dpTv_(m + ' ' + ten(m));
     if (X === 'NGONTARO' && (nh === 'POM' || /pom/.test(t))) return '';
+    if (nh === 'PK' || /tester/.test(t)) return '';   // 08/11 chủ dự án: Tester = joint tester thử ren chuôi cho khách (phụ kiện), không phải ngọn
     if (nh === 'NGON' || (/ngon/.test(t) && nh !== 'CHUOI')) return 'n';
     return 'c';
   };

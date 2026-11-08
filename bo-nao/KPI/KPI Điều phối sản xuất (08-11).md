@@ -30,4 +30,4 @@ Chủ dự án hỏi 08/11 "Điều gì giúp tôi quản lý và điều phối
 ## Còn để sau
 - Việc 4 gợi ý điều người (chờ chủ dự án: có điều người giữa xưởng không). Việc 5 sổ việc sau họp (không chọn).
 - Tồn thật cần số kiểm đếm đầu kỳ; hiện chỉ có phần tăng / giảm trong 14 ngày.
-- Ngọn Taro đếm cả Tester + Check ngọn → ra 451 > Phôi Thô ngọn 310 ("đang hụt"): có thể cũng đếm 2 lần – hỏi TP Ngọn Taro.
+- Ngọn Taro 451 > Phôi Thô ngọn 310 ("đang hụt"). Chủ dự án trả lời 08/11: **"Tester" là joint tester thử ren chuôi cho khách** (phụ kiện, nhánh PK), không phải ngọn → `phan()` trong `dpTinh_` bỏ nhánh PK / tên có "tester" khỏi chuỗi ngọn (vẫn tính vào sản lượng xưởng). Tester chỉ ~5/ngày nên 451 gần như toàn là "Check ngọn": không đếm đôi; chênh với Phôi Thô có thể do Ngọn Taro đang dùng ngọn tồn hoặc bước xuất ngọn của Phôi Thô chưa đủ – theo dõi thêm.

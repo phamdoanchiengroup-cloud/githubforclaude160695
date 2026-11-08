@@ -7732,7 +7732,7 @@ function danhSachVanPhong(token) {
   ds.sort(function(a, b) { return (thuTu[a.vaiTro] - thuTu[b.vaiTro]) || (a.HoTen < b.HoTen ? -1 : 1); });
   return sach_({ ok: true, ds: ds, muc: HS_MUC });
 }
-var KPI_BAN_MAY = '08/11/2026 12:49';   // giờ dựng Code.gs (22/10)
+var KPI_BAN_MAY = '08/11/2026 13:45';   // giờ dựng Code.gs (22/10)
 /* =====================================================================
    KỸ NĂNG (22/10, chủ dự án nhờ thiết kế + tham khảo chuyên gia nhân sự / đào tạo)
    - Danh mục: trưởng / phó phòng đề xuất kỹ năng của xưởng (tên, mô tả, tiêu chí đạt, công đoạn liên quan)
@@ -9975,6 +9975,7 @@ function dpTinh_() {
   var phan = function(X, m) {   // chuôi / ngọn của 1 bước xuất (nhánh trong tab Quy trình, không có thì theo tên); POM ở Ngọn Taro là vật liệu cấp Phôi Thô – bỏ
     var c = qt.cd[m], nh = c ? c.Nhanh : '', t = dpTv_(m + ' ' + ten(m));
     if (X === 'NGONTARO' && (nh === 'POM' || /pom/.test(t))) return '';
+    if (nh === 'PK' || /tester/.test(t)) return '';   // 08/11 chủ dự án: Tester = joint tester thử ren chuôi cho khách (phụ kiện), không phải ngọn
     if (nh === 'NGON' || (/ngon/.test(t) && nh !== 'CHUOI')) return 'n';
     return 'c';
   };
