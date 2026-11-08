@@ -30,7 +30,7 @@ import json as J
 for l in L:
     if 'Trống deadline' in l['mota']: dlm[l['tab']][None].append(l['dong'])
 # cần mã: đọc lại từ dữ liệu
-d=J.load(open(__import__('sys').argv[1]))
+d=J.load(open('../that/dh-that.json'))
 def txt(x): return x['$d'][:10] if isinstance(x,dict) and '$d' in x else ('' if x is None else str(x).strip())
 maDong={}
 for t,v in d.items():
@@ -57,7 +57,7 @@ td.n{white-space:nowrap;font-weight:600}.do{color:#b42a25;font-weight:600}tr.k t
 @page{size:A4;margin:12mm 10mm}'''
 h='<html><head><meta charset="utf-8"><style>'+css+'</style></head><body>'
 h+='<h1>Rà soát Sheet "Trạng thái đơn hàng"</h1><div class="g">Bản chụp Sheet lúc 11:56 ngày 07/11/2026 (dữ liệu web KPI dùng). Rà 7 tab kênh + tab ĐƠN ƯU TIÊN; chưa rà tab HT-2026. "Dòng" = số dòng trên Sheet, "Cột" = chữ cột trên Sheet. Dòng nào đã sửa sau 07/11 thì bỏ qua.</div>'
-h+='<div style="margin-top:8px"><span class="o"><b class="do">%d</b>chỗ cần sửa (ảnh hưởng số trên web)</span><span class="o"><b>%d</b>dòng trống deadline</span><span class="o"><b>%d</b>ô bộ phận ghi lớn hơn số đặt</span><span class="o"><b>Không</b>cộng trùng tab ĐƠN ƯU TIÊN vào tổng</span></div>'%(len(rows),sum(len(x) for g2 in dlg.values() for x in g2.values()),sum(len(x) for x in bp.values()))
+h+='<div style="margin-top:8px"><span class="o"><b class="do">%d</b>chỗ cần sửa (ảnh hưởng số trên web)</span><span class="o"><b>%d</b>chỗ tên / mã viết lệch</span><span class="o"><b>%d</b>dòng trống deadline</span><span class="o"><b>%d</b>ô bộ phận ghi lớn hơn số đặt</span><span class="o"><b>Không</b>cộng trùng tab ĐƠN ƯU TIÊN vào tổng</span></div>'%(len(rows),len(json.load(open('ten.json'))),sum(len(x) for g2 in dlg.values() for x in g2.values()),sum(len(x) for x in bp.values()))
 h+='<h2>1. Cần sửa – làm sai số trên web</h2><table><tr><th>Tab</th><th>Dòng</th><th>Cột</th><th>Lỗi</th><th>Giá trị</th><th>Cách sửa</th></tr>'
 cu=None
 for r in rows:
@@ -75,6 +75,21 @@ for t,ls in bp.items():
         return '<b>%s</b> %s %s (%s/%s)'%(l['dong'],l['cot'],e(bo.split(' Của ')[0]),m[1],m[2])
     h+='<tr><td class="n">%s<br><span class="g">%d ô</span></td><td>%s</td></tr>'%(e(t),len(ls),' · '.join(ngan(l) for l in sorted(ls,key=lambda x:int(x['dong']))))
 h+='</table>'
-if demo: h+='<h2>4. Lưu ý khác</h2><table><tr><th>Tab</th><th>Dòng</th><th>Nội dung</th></tr><tr><td>DEALER</td><td class="n">%s</td><td>Mã "#DEMO" không có ngày đặt – web không biết đơn đặt ngày nào. Nếu là hàng mẫu thường xuyên thì không cần sửa.</td></tr></table>'%dongs([l['dong'] for l in demo])
+T=json.load(open('ten.json'))
+ct=[x for x in T if x['loai']=='chính tả']; vk=[x for x in T if x['loai']=='viết nhiều kiểu']; kt=[x for x in T if x['loai']=='khoảng trắng']; md=[x for x in T if x['loai'] in ('mã đơn','ngày đặt')]
+h+='<h2>4. Tên sản phẩm</h2><div class="g">Tên viết khác nhau thì web và người đọc coi là sản phẩm khác: khó cộng, khó tìm, dễ phân loại sai chất liệu.</div>'
+h+='<b>4a. Có thể sai chính tả</b><table><tr><th style="width:16%">Tab</th><th style="width:6%">Dòng</th><th style="width:5%">Cột</th><th>Nội dung</th><th>Tên đang ghi</th><th>Gợi ý</th></tr>'+''.join('<tr><td>%s</td><td class="n">%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td></tr>'%(e(x['tab']),x['dong'],x['cot'],e(x['mota']),e(x['gt']),e(x['sua'])) for x in ct)+'</table>'
+gv=collections.OrderedDict()
+for x in vk: gv.setdefault(x['sua'],[]).append(x)
+h+='<b>4b. Cùng sản phẩm viết nhiều kiểu (%d dòng) – nên thống nhất theo cách viết phổ biến</b><table><tr><th style="width:38%%">Nên viết</th><th>Dòng đang viết khác (tab · dòng: cách viết)</th></tr>'%len(vk)
+for k,xs in gv.items(): h+='<tr><td>%s</td><td>%s</td></tr>'%(e(k),'<br>'.join('%s · <b>%s</b>: %s'%(e(x['tab']),x['dong'],e(x['gt'])) for x in xs))
+h+='</table>'
+if kt:
+    gk=collections.OrderedDict()
+    for x in kt: gk.setdefault(x['tab'],[]).append(x['dong'])
+    h+='<b>4c. Thừa khoảng trắng trong tên (%d dòng, cột B)</b> – dấu cách ở đầu / cuối hoặc 2 dấu cách liền: '%len(kt)+' · '.join('%s dòng %s'%(e(t),dongs(rs)) for t,rs in gk.items())+'<br>'
+if md:
+    h+='<h2>5. Mã đơn và ngày đặt</h2><div class="g">Đã kiểm ngày đặt trong mã đơn: ngày có thật, không sau ngày chụp, không quá 1 năm – <b>không thấy lỗi ngày</b>. Còn:</div><table><tr><th style="width:16%">Tab</th><th style="width:6%">Dòng</th><th>Nội dung</th><th>Mã đang ghi</th><th>Gợi ý</th></tr>'+''.join('<tr><td>%s</td><td class="n">%s</td><td>%s</td><td>%s</td><td>%s</td></tr>'%(e(x['tab']),x['dong'],e(x['mota']),e(x['gt']),e(x['sua'])) for x in md)+'</table>'
+if demo: h+='<h2>6. Lưu ý khác</h2><table><tr><th>Tab</th><th>Dòng</th><th>Nội dung</th></tr><tr><td>DEALER</td><td class="n">%s</td><td>Mã "#DEMO" không có ngày đặt – web không biết đơn đặt ngày nào. Nếu là hàng mẫu thường xuyên thì không cần sửa.</td></tr></table>'%dongs([l['dong'] for l in demo])
 h+='<div class="g" style="margin-top:14px">Lập tự động bằng web KPI · '+str(len(L))+' mục.</div></body></html>'
 open('ra-soat.html','w').write(h)
