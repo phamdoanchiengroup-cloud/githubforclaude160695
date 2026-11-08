@@ -6242,9 +6242,9 @@ var MUA_2026 = {"nam":2026,"ten":"Giải bóng đá Rhino Billiards 2026","voDic
 function muaDoi_(id){ return MUA_2026.doi.filter(function(x){ return x.maDoi === id; })[0] || { tenDoi: '?' }; }
 function muaLogo_(id, cls){ var x = muaDoi_(id); return x.logoUrl ? '<img class="' + (cls || '') + '" alt="Logo ' + esc(x.tenDoi) + '" src="' + esc(driveImg(x.logoUrl)) + '" onerror="this.remove()">' : ''; }
 function muaCK_(){ return MUA_2026.tran.filter(function(t){ return t.vong === 'Chung kết'; })[0]; }
-/* Khung đầu trang khi đã khóa sổ: chưa có trận nào của mùa mới được đá và không còn trận sắp tới */
+/* Khung đầu trang Nhà vô địch: hiện mỗi khi không còn trận sắp tới (thay băng tự chạy nhiều cảnh) */
 function veVoDich_(el){
-  if (!MUA_2026 || (STATE.data.tranDau || []).some(tranDaDa_)) return false;
+  if (!MUA_2026) return false;
   var ck = muaCK_(), vd = muaDoi_(MUA_2026.voDich), vua = MUA_2026.ghiBan[0];
   var tin = [vd.tenDoi + ' vô địch ' + MUA_2026.ten,
     'Chung kết · ' + muaDoi_(ck.a).tenDoi + ' ' + ck.banA + ' – ' + ck.banB + ' ' + muaDoi_(ck.b).tenDoi + ' · luân lưu ' + ck.llA + ' – ' + ck.llB,
@@ -6384,8 +6384,8 @@ function render(){
     // Khi có trận sắp tới, ưu tiên Match Day. Chỉ dùng banner động khi lịch không còn trận phù hợp.
     // Tránh chồng banner cũ lên ảnh nền đầu trang nếu Match Day gặp lỗi dựng giao diện.
     var mdCoTranSap_ = !!mdDuLieu_();
-    // Đã khóa sổ mùa 2026 và mùa mới chưa đá trận nào: khung Nhà vô địch thay banner động
-    if(!veMatchDay_(bannerWrap) && !mdCoTranSap_ && !veVoDich_(bannerWrap)) veBannerDong(bannerWrap);
+    // Không có trận sắp tới: khung Nhà vô địch mùa gần nhất (chủ giải bỏ băng tự chạy nhiều cảnh veBannerDong, 08/11/2026)
+    if(!veMatchDay_(bannerWrap) && !mdCoTranSap_) veVoDich_(bannerWrap);
   }
   catch(e){
     console.error('Không dựng được khung Match Day:', e);
