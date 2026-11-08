@@ -1,0 +1,523 @@
+<!-- CauHinhGay.html – mảnh tải sau (08/11): tab "Cấu hình gậy" – bản vẽ kỹ thuật tự vẽ theo thông số.
+     Chỉ gửi cho 4 mã NV (máy chủ kiểm ở layManhGiaoDien + từng hàm). Nguồn: kpi-app/tests/cau-hinh-gay/cau-hinh-gay-web.html -->
+<style>
+.cg-wrap{display:grid;grid-template-columns:300px minmax(0,1fr);gap:14px;align-items:start}
+@media (max-width:980px){.cg-wrap{grid-template-columns:minmax(0,1fr)}}
+.cg-wrap>*{min-width:0} .cg-bang.ct{min-width:560px} .cg-giay{max-width:100%}
+.cg-mat{display:inline-block;font-size:11px;font-weight:700;letter-spacing:.08em;color:#b42a25;border:1px solid rgba(192,48,43,.45);border-radius:6px;padding:2px 7px;margin-left:8px;vertical-align:3px}
+.cg-ds{position:sticky;top:64px;max-height:calc(100vh - 80px);overflow:auto;padding:10px}
+@media (max-width:980px){.cg-ds{position:static;max-height:none}}
+.cg-tim{width:100%;margin-bottom:8px}
+.cg-nh{font-size:11.5px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--ink3);margin:12px 4px 4px;display:flex;justify-content:space-between}
+.cg-nh2{font-size:11px;color:var(--ink3);margin:6px 6px 2px}
+.cg-it{display:flex;align-items:center;gap:8px;width:100%;text-align:left;border:1px solid transparent;background:none;color:var(--ink);border-radius:8px;padding:7px 8px;cursor:pointer;font:inherit;font-size:13.5px;min-height:40px}
+.cg-it:hover{background:rgba(var(--acc-rgb),.08)} .cg-it.on{border-color:rgba(var(--acc-rgb),.7);background:rgba(var(--acc-rgb),.12)}
+.cg-it>span:first-child{flex:1;min-width:0}
+.cg-chip{flex:none;font-size:11px;font-weight:700;border-radius:20px;padding:2px 8px;white-space:nowrap}
+.cg-chip.ok{background:rgba(31,138,91,.15);color:#1b7a4f} .cg-chip.cho{background:rgba(214,150,30,.18);color:#9a5b00} .cg-chip.chua{background:rgba(120,130,140,.15);color:var(--ink3)}
+.cg-dau{display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:space-between;margin-bottom:10px}
+.cg-dau h2{margin:0;font-size:20px}
+.cg-nut{display:flex;flex-wrap:wrap;gap:6px}
+.cg-tt{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:13px;color:var(--ink2);margin:4px 0 10px}
+.cg-tt b{color:var(--ink)}
+.cg-bao{border-radius:10px;padding:9px 12px;margin:8px 0;font-size:13.5px;line-height:1.45}
+.cg-bao.vang{background:rgba(214,150,30,.14);border:1px solid rgba(214,150,30,.45)} .cg-bao.do{background:rgba(192,48,43,.10);border:1px solid rgba(192,48,43,.4)} .cg-bao.xanh{background:rgba(31,138,91,.10);border:1px solid rgba(31,138,91,.35)}
+.cg-giay{background:#fbfcfd;color:#16202a;border:1px solid #c9d3dc;border-radius:10px;padding:12px;margin:10px 0;overflow-x:auto}
+.cg-giay h4{margin:0 0 6px;font:700 12px/1.3 ui-monospace,Menlo,Consolas,monospace;letter-spacing:.06em;color:#16202a}
+.cg-giay svg.cg-fig{display:block;width:100%;height:auto}
+.cg-dung2{display:grid;grid-template-columns:1fr 1fr;gap:10px} .cg-dung3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.cg-dung2 h5,.cg-dung3 h5{margin:4px 0 2px;font:700 12px ui-monospace,Menlo,Consolas,monospace;letter-spacing:.06em;text-align:center}
+@media (max-width:760px){.cg-dung2,.cg-dung3{grid-template-columns:1fr}}
+.cg-giay svg.cg-o-vl{display:inline-block;width:20px;height:13px;min-width:0;vertical-align:-2px}
+.cg-2c{display:grid;grid-template-columns:1fr 1fr;gap:10px} @media (max-width:900px){.cg-2c{grid-template-columns:1fr}}
+.cg-bang{width:100%;border-collapse:collapse;font-size:13px}
+.cg-bang th,.cg-bang td{border-bottom:1px solid #d9e0e6;padding:6px 8px;text-align:left;vertical-align:top}
+.cg-bang th{font-size:11px;letter-spacing:.05em;text-transform:uppercase;color:#4c5966;background:#eef2f5}
+.cg-bang td.so{font-family:ui-monospace,Menlo,Consolas,monospace;white-space:nowrap}
+.cg-bang tr.nhom td{background:#f3f6f8;font-weight:700;font-size:12px;letter-spacing:.04em}
+.cg-form{display:grid;gap:12px}
+.cg-khoi{border:1px solid var(--line);border-radius:10px;padding:10px 12px}
+.cg-khoi>b{display:block;font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink3);margin-bottom:8px}
+.cg-oluoi{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:8px 10px}
+.cg-o{display:flex;flex-direction:column;gap:3px;font-size:12px;color:var(--ink2)}
+.cg-o .h{display:flex;gap:4px}
+.cg-o input{width:100%;min-height:38px;font:inherit;font-size:14px;padding:6px 8px;border:1px solid var(--line);border-radius:8px;background:var(--panel2);color:var(--ink)}
+.cg-o.chua input{border-color:rgba(214,150,30,.85);background:rgba(214,150,30,.10)}
+.cg-o .dd{flex:none;min-width:38px;border:1px solid var(--line);border-radius:8px;background:var(--panel2);color:var(--ink3);cursor:pointer;font-size:13px}
+.cg-o.da .dd{color:#1b7a4f;border-color:rgba(31,138,91,.6)}
+.cg-o.sai input{border-color:#c0302b}
+.cg-ls{font-size:13px} .cg-ls div{padding:5px 0;border-bottom:1px dashed var(--line)}
+.cg-doi{font-size:13px} .cg-doi td{padding:3px 8px} .cg-doi .cu{color:#b42a25;text-decoration:line-through} .cg-doi .moi{color:#1b7a4f;font-weight:700}
+.cg-phong{position:fixed;inset:0;z-index:300;background:rgba(10,16,22,.78);overflow:auto;padding:46px 12px 20px}
+.cg-phong>button{position:fixed;top:10px;right:14px;width:44px;height:44px;border-radius:50%;border:0;background:#fff;font-size:20px;cursor:pointer;z-index:301}
+.cg-phong-in{background:#fbfcfd;border-radius:10px;padding:12px;margin:0 auto;width:max(900px,96vw);max-width:1400px}
+.cg-phong-in svg{width:100%;height:auto;display:block}
+.cg-in{position:fixed;left:-20000px;top:0;width:794px;background:#fff}
+.cg-trang{width:794px;height:1123px;position:relative;overflow:hidden;background:#fff;color:#16202a;padding:26px 30px;box-sizing:border-box;font-family:Arial,Helvetica,sans-serif}
+.cg-trang h3{margin:0 0 8px;font-size:15px;letter-spacing:.04em}
+.cg-trang .cg-giay{border:0;padding:0;margin:4px 0;background:#fff}
+.cg-trang .cg-giay svg.cg-fig{min-width:0}
+.cg-trang .cg-dung2,.cg-trang .cg-2c{grid-template-columns:1fr 1fr!important} .cg-trang .cg-dung3{grid-template-columns:repeat(3,1fr)!important} .cg-trang .cg-bang{font-size:10.5px} .cg-trang .cg-bang th,.cg-trang .cg-bang td{padding:3px 6px} .cg-trang .cg-giay{margin:2px 0} .cg-trang .cg-giay h4{font-size:11px;margin-bottom:3px} .cg-trang .cg-bang.ct{min-width:0}
+.cg-khung{position:absolute;left:30px;right:30px;bottom:22px;display:grid;grid-template-columns:1.6fr 1fr 1.2fr 1fr;border:1.5px solid #16202a;font-size:11px}
+.cg-khung div{padding:5px 8px;border-left:1px solid #16202a} .cg-khung div:first-child{border-left:0} .cg-khung small{display:block;color:#4c5966;font-size:9px;letter-spacing:.05em}
+.cg-dc{position:absolute;inset:0;pointer-events:none;overflow:hidden}
+.cg-dc i{position:absolute;display:flex;flex-direction:column;align-items:center;gap:6px;transform:rotate(-24deg);opacity:.10;font-style:normal;font:700 15px Arial;color:#283440;white-space:nowrap}
+.cg-dc img{width:190px;height:auto}
+</style>
+<script>
+/* ===================== DỮ LIỆU MẪU + TIỆN ÍCH ===================== */
+var CG = { ds: [], quyen: '', chon: '', bv: null, sua: null, xemPB: 0, loc: '', me: {} };
+/* Thông số mẫu: cơ pool carbon 58 in (bản vẽ tham chiếu chủ dự án gửi 08/11). Mọi ô mẫu hiện vàng "chưa đo" tới khi C077 đo. */
+function cgMau(d){
+  var ren=(d&&d.tenRen&&d.tenRen!=='—')?d.tenRen:'3/8-8';
+  var vlN=(d&&d.vlN)||'', vlC=(d&&d.vlC)||'';
+  var ong=vlN==='GF'?'Ống glassfiber':vlN==='MIX'?'Ống mix carbon / glassfiber':'Ống carbon';
+  return { ngon:{ tip:{d:12.4,h:9.5,vl:(d&&d.tenTip)||'Da thuộc'}, pad:{h:1.2,vl:'Sợi đen'}, ferrule:{h:4,vl:'Sứ / composite trắng',tenonD:8.4,tenonL:5},
+      ong:{vl:ong,loi:'Foam',day:1.2,dai:709.9,dDau:12.4,proDai:381,dPro:13.5,dJoint:21.6}, collar:{d:21.6,h:12,vl:'Composite (vault plate)'}, insert:{d:18.5,l:30,vl:'Đồng thau',ren:ren} },
+    chuoi:{ collar:{d:21.6,h:12,vl:'Thép'}, pin:{ren:ren,d:9.525,tho:12.7,buoc:3.175,vl:'Thép'},
+      forearm:{dai:318,dDau:21.6,dCuoi:25.6,vl:vlC==='GF'?'Glassfiber':vlC==='MIX'?'Mix carbon / glassfiber':'Gỗ cứng',tenonD:16,tenonL:30},
+      wrap:{dai:270,dDau:25.6,dCuoi:27.6,vl:'Linen'}, sleeve:{dai:109.6,dDau:27.6,dCuoi:31.2,vl:vlC==='GF'?'Glassfiber':'Gỗ cứng'},
+      cap:{h:17,d:31.75,vl:'Thép / composite'}, bumper:{h:10,d:31.75,vl:'Cao su'}, khoang:{d:13,sau:150}, bolt:{ren:'3/8-16',dai:75,dauD:12.5,vl:'Thép'} },
+    chung:{ khoiMin:510, khoiMax:595, khoiNgon:115, canBang:470, ghiChu:'' }, daDo:{} };
+}
+/* Trường nhập: [đường dẫn, nhãn, đơn vị, kiểu] – kiểu 's' = chữ */
+var CG_TRUONG = [
+  ['Ngọn – đầu', [['ngon.tip.d','Tip Ø','mm'],['ngon.tip.h','Tip cao','mm'],['ngon.tip.vl','Tip vật liệu','','s'],['ngon.pad.h','Pad dày','mm'],['ngon.pad.vl','Pad vật liệu','','s'],
+    ['ngon.ferrule.h','Ferrule cao','mm'],['ngon.ferrule.vl','Ferrule vật liệu','','s'],['ngon.ferrule.tenonD','Ferrule tenon Ø','mm'],['ngon.ferrule.tenonL','Ferrule tenon dài','mm']]],
+  ['Ngọn – ống', [['ngon.ong.vl','Ống vật liệu','','s'],['ngon.ong.loi','Lõi','','s'],['ngon.ong.day','Thành ống dày','mm'],['ngon.ong.dai','Ống dài','mm'],['ngon.ong.dDau','Ø đầu ống','mm'],
+    ['ngon.ong.proDai','Pro taper dài','mm'],['ngon.ong.dPro','Ø cuối pro taper','mm'],['ngon.ong.dJoint','Ø tại joint','mm']]],
+  ['Ngọn – joint', [['ngon.collar.d','Collar ngọn Ø','mm'],['ngon.collar.h','Collar ngọn dày','mm'],['ngon.collar.vl','Collar ngọn vật liệu','','s'],
+    ['ngon.insert.d','Insert Ø','mm'],['ngon.insert.l','Insert dài','mm'],['ngon.insert.vl','Insert vật liệu','','s'],['ngon.insert.ren','Insert ren','','s']]],
+  ['Chuôi – joint', [['chuoi.collar.d','Collar chuôi Ø','mm'],['chuoi.collar.h','Collar chuôi dày','mm'],['chuoi.collar.vl','Collar chuôi vật liệu','','s'],
+    ['chuoi.pin.ren','Pin ren','','s'],['chuoi.pin.d','Pin Ø','mm'],['chuoi.pin.tho','Pin thò','mm'],['chuoi.pin.buoc','Bước ren','mm'],['chuoi.pin.vl','Pin vật liệu','','s']]],
+  ['Chuôi – thân', [['chuoi.forearm.dai','Forearm dài','mm'],['chuoi.forearm.dDau','Forearm Ø đầu','mm'],['chuoi.forearm.dCuoi','Forearm Ø cuối','mm'],['chuoi.forearm.vl','Forearm vật liệu','','s'],
+    ['chuoi.forearm.tenonD','A-joint tenon Ø','mm'],['chuoi.forearm.tenonL','A-joint tenon dài','mm'],
+    ['chuoi.wrap.dai','Wrap dài','mm'],['chuoi.wrap.dDau','Wrap Ø đầu','mm'],['chuoi.wrap.dCuoi','Wrap Ø cuối','mm'],['chuoi.wrap.vl','Wrap vật liệu','','s'],
+    ['chuoi.sleeve.dai','Butt sleeve dài','mm'],['chuoi.sleeve.dDau','Sleeve Ø đầu','mm'],['chuoi.sleeve.dCuoi','Sleeve Ø cuối','mm'],['chuoi.sleeve.vl','Sleeve vật liệu','','s']]],
+  ['Chuôi – đuôi', [['chuoi.cap.h','Butt cap dày','mm'],['chuoi.cap.d','Butt cap Ø','mm'],['chuoi.cap.vl','Cap vật liệu','','s'],['chuoi.bumper.h','Bumper dày','mm'],['chuoi.bumper.d','Bumper Ø','mm'],['chuoi.bumper.vl','Bumper vật liệu','','s'],
+    ['chuoi.khoang.d','Khoang cân Ø','mm'],['chuoi.khoang.sau','Khoang cân sâu','mm'],['chuoi.bolt.ren','Weight bolt ren','','s'],['chuoi.bolt.dai','Weight bolt dài','mm'],['chuoi.bolt.dauD','Bolt đầu Ø','mm']]],
+  ['Cả cây', [['chung.khoiMin','Khối lượng nhẹ nhất','g'],['chung.khoiMax','Khối lượng nặng nhất','g'],['chung.khoiNgon','Khối lượng ngọn','g'],['chung.canBang','Điểm cân bằng (từ đáy)','mm'],['chung.ghiChu','Ghi chú','','s']]]
+];
+function cgLay(o,p){ return p.split('.').reduce(function(a,k){return a==null?undefined:a[k]},o); }
+function cgDat(o,p,v){ var k=p.split('.'), a=o; for(var i=0;i<k.length-1;i++){ if(!a[k[i]]||typeof a[k[i]]!=='object')a[k[i]]={}; a=a[k[i]]; } a[k[k.length-1]]=v; }
+function cgK(p){ return String(p).replace(/\./g,'__'); }   /* khóa daDo: máy chủ chỉ nhận chữ, số, _ */
+function cgN(v){ v=Number(v); return isFinite(v)?v:0; }
+function cgF(v,n){ if(v===''||v==null||!isFinite(Number(v)))return '–'; var x=Number(v), s=(n==null?(Math.round(x*100)/100):x.toFixed(n)); return String(s).replace('.',','); }
+/* Gộp dữ liệu đã lưu lên mẫu (bản cũ thiếu trường mới vẫn vẽ được) */
+function cgDu(dl,d){ var m=cgMau(d); if(!dl)return m; (function hop(a,b){ Object.keys(b||{}).forEach(function(k){ if(b[k]&&typeof b[k]==='object'&&!Array.isArray(b[k])){ if(!a[k]||typeof a[k]!=='object')a[k]={}; hop(a[k],b[k]); } else a[k]=b[k]; }); })(m,dl); return m; }
+/* Chiều dài tính ra */
+function cgDai(t){ var n=t.ngon,c=t.chuoi;
+  var ngon=cgN(n.tip.h)+cgN(n.pad.h)+cgN(n.ferrule.h)+cgN(n.ong.dai)+cgN(n.collar.h);
+  var chuoi=cgN(c.collar.h)+cgN(c.forearm.dai)+cgN(c.wrap.dai)+cgN(c.sleeve.dai)+cgN(c.cap.h)+cgN(c.bumper.h);
+  return {ngon:ngon,chuoi:chuoi,tong:ngon+chuoi}; }
+/* Kiểm tra ghép / kích thước: trả [{muc:'do'|'vang', t, p:[đường dẫn ô]}] */
+function cgKiemTra(t,d){
+  var n=t.ngon,c=t.chuoi,ra=[],L=cgDai(t),ls=function(a,b){return Math.abs(cgN(a)-cgN(b));};
+  if(ls(n.collar.d,c.collar.d)>0.2) ra.push({muc:'do',t:'Collar ngọn Ø'+cgF(n.collar.d)+' khác collar chuôi Ø'+cgF(c.collar.d)+' – lệch '+cgF(ls(n.collar.d,c.collar.d))+' mm tại mối nối.',p:['ngon.collar.d','chuoi.collar.d']});
+  if(ls(n.ong.dJoint,n.collar.d)>0.3) ra.push({muc:'vang',t:'Ống ngọn tại joint Ø'+cgF(n.ong.dJoint)+' khác collar ngọn Ø'+cgF(n.collar.d)+'.',p:['ngon.ong.dJoint','ngon.collar.d']});
+  if(ls(n.tip.d,n.ong.dDau)>0.3) ra.push({muc:'vang',t:'Tip Ø'+cgF(n.tip.d)+' khác đầu ống Ø'+cgF(n.ong.dDau)+'.',p:['ngon.tip.d','ngon.ong.dDau']});
+  var trong=cgN(n.ong.dJoint)-2*cgN(n.ong.day);
+  if(cgN(n.insert.d)>=trong) ra.push({muc:'do',t:'Insert Ø'+cgF(n.insert.d)+' không lọt lòng ống (lòng ống tại joint Ø'+cgF(trong)+').',p:['ngon.insert.d','ngon.ong.day','ngon.ong.dJoint']});
+  if(cgN(n.ferrule.tenonD)>=cgN(n.ong.dDau)-2*cgN(n.ong.day)) ra.push({muc:'vang',t:'Tenon ferrule Ø'+cgF(n.ferrule.tenonD)+' to hơn lòng ống đầu ngọn.',p:['ngon.ferrule.tenonD']});
+  if(cgN(n.ong.proDai)>=cgN(n.ong.dai)) ra.push({muc:'do',t:'Pro taper dài hơn cả ống ngọn.',p:['ngon.ong.proDai','ngon.ong.dai']});
+  if(cgN(n.ong.dPro)<cgN(n.ong.dDau)||cgN(n.ong.dJoint)<cgN(n.ong.dPro)) ra.push({muc:'vang',t:'Đường kính ống ngọn phải tăng dần: đầu → hết pro taper → joint.',p:['ngon.ong.dDau','ngon.ong.dPro','ngon.ong.dJoint']});
+  if(String(n.insert.ren).replace(/\s/g,'')!==String(c.pin.ren).replace(/\s/g,'')) ra.push({muc:'do',t:'Ren insert ngọn ('+n.insert.ren+') khác ren pin chuôi ('+c.pin.ren+').',p:['ngon.insert.ren','chuoi.pin.ren']});
+  if(d&&d.tenRen&&d.tenRen!=='—'&&String(c.pin.ren).replace(/\s/g,'').toLowerCase()!==String(d.tenRen).replace(/\s/g,'').toLowerCase()) ra.push({muc:'vang',t:'Ren pin ('+c.pin.ren+') khác ren khai trong Cấu hình sản phẩm ('+d.tenRen+').',p:['chuoi.pin.ren']});
+  if(cgN(c.pin.tho)>cgN(n.insert.l)) ra.push({muc:'do',t:'Pin thò '+cgF(c.pin.tho)+' mm dài hơn insert '+cgF(n.insert.l)+' mm.',p:['chuoi.pin.tho','ngon.insert.l']});
+  if(ls(c.forearm.dDau,c.collar.d)>0.3) ra.push({muc:'vang',t:'Forearm Ø đầu '+cgF(c.forearm.dDau)+' khác collar chuôi Ø'+cgF(c.collar.d)+'.',p:['chuoi.forearm.dDau']});
+  if(ls(c.wrap.dDau,c.forearm.dCuoi)>0.3) ra.push({muc:'vang',t:'Wrap Ø đầu khác forearm Ø cuối (có bậc '+cgF(ls(c.wrap.dDau,c.forearm.dCuoi))+' mm).',p:['chuoi.wrap.dDau','chuoi.forearm.dCuoi']});
+  if(ls(c.sleeve.dDau,c.wrap.dCuoi)>0.3) ra.push({muc:'vang',t:'Sleeve Ø đầu khác wrap Ø cuối.',p:['chuoi.sleeve.dDau','chuoi.wrap.dCuoi']});
+  if(ls(c.cap.d,c.sleeve.dCuoi)>0.3) ra.push({muc:'vang',t:'Butt cap Ø'+cgF(c.cap.d)+' khác sleeve Ø cuối '+cgF(c.sleeve.dCuoi)+' – đuôi có bậc '+cgF(ls(c.cap.d,c.sleeve.dCuoi)/2)+' mm mỗi bên.',p:['chuoi.cap.d','chuoi.sleeve.dCuoi']});
+  var duoi=cgN(c.sleeve.dai)+cgN(c.cap.h)+cgN(c.bumper.h)+cgN(c.wrap.dai);
+  if(cgN(c.khoang.sau)>duoi) ra.push({muc:'do',t:'Khoang cân sâu '+cgF(c.khoang.sau)+' mm vượt quá phần wrap + sleeve + đuôi.',p:['chuoi.khoang.sau']});
+  if(cgN(c.bolt.dauD)>=cgN(c.khoang.d)) ra.push({muc:'do',t:'Đầu weight bolt Ø'+cgF(c.bolt.dauD)+' không lọt khoang Ø'+cgF(c.khoang.d)+'.',p:['chuoi.bolt.dauD','chuoi.khoang.d']});
+  if(cgN(c.bolt.dai)>cgN(c.khoang.sau)) ra.push({muc:'do',t:'Weight bolt dài hơn khoang cân.',p:['chuoi.bolt.dai','chuoi.khoang.sau']});
+  if(cgN(t.chung.khoiMin)>cgN(t.chung.khoiMax)) ra.push({muc:'vang',t:'Khối lượng nhẹ nhất lớn hơn nặng nhất.',p:['chung.khoiMin','chung.khoiMax']});
+  if(cgN(t.chung.canBang)<=0||cgN(t.chung.canBang)>=L.tong) ra.push({muc:'vang',t:'Điểm cân bằng phải nằm trong chiều dài cây.',p:['chung.canBang']});
+  if(Math.abs(L.ngon-L.chuoi)>40&&d&&d.loai==='GAY') ra.push({muc:'vang',t:'Ngọn '+cgF(L.ngon,1)+' mm và chuôi '+cgF(L.chuoi,1)+' mm chênh nhau nhiều – kiểm tra lại chiều dài.',p:['ngon.ong.dai','chuoi.forearm.dai']});
+  return ra; }
+
+/* ===================== BỘ VẼ (SVG, nền giấy trắng) ===================== */
+var CG_VL=[ [/carbon/i,'#3a434d','url(#cgHcb)'], [/foam/i,'#efe8d6','url(#cgHfo)'], [/đồng/i,'#c9a24a','url(#cgHdo)'], [/thép|inox|kim/i,'#c9d0d6','url(#cgHth)'],
+  [/gỗ/i,'#d9b98c','url(#cgHgo)'], [/linen|vải|da sport|grip/i,'#6b7480','url(#cgHli)'], [/cao su/i,'#3c3f44','#3c3f44'], [/glass|gf/i,'#bfd4cf','url(#cgHgf)'], [/mix/i,'#7d8a8f','url(#cgHcb)'],
+  [/sứ|trắng|ferrule|composite/i,'#f4f4f2','#f4f4f2'], [/da|tip|time|kamui|nishiki|bak/i,'#2f6db5','#2f6db5'], [/sợi|đen|pad/i,'#1d2126','#1d2126'] ];
+function cgMau1(vl){ for(var i=0;i<CG_VL.length;i++) if(CG_VL[i][0].test(String(vl||''))) return CG_VL[i]; return [null,'#e6e9ec','#e6e9ec']; }
+function cgDefs(){ return '<defs>'+
+  '<pattern id="cgHcb" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="6" height="6" fill="#4a535d"/><line x1="0" y1="0" x2="0" y2="6" stroke="#2a3138" stroke-width="2"/></pattern>'+
+  '<pattern id="cgHfo" width="5" height="5" patternUnits="userSpaceOnUse"><rect width="5" height="5" fill="#efe8d6"/><circle cx="2.5" cy="2.5" r=".7" fill="#c9bd9c"/></pattern>'+
+  '<pattern id="cgHdo" width="5" height="5" patternUnits="userSpaceOnUse" patternTransform="rotate(-45)"><rect width="5" height="5" fill="#d6b45e"/><line x1="0" y1="0" x2="0" y2="5" stroke="#a8862f" stroke-width="1"/></pattern>'+
+  '<pattern id="cgHth" width="5" height="5" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="5" height="5" fill="#d7dde2"/><line x1="0" y1="0" x2="0" y2="5" stroke="#8994a0" stroke-width="1"/></pattern>'+
+  '<pattern id="cgHgo" width="14" height="6" patternUnits="userSpaceOnUse"><rect width="14" height="6" fill="#dcbf93"/><path d="M0 3 Q3.5 1 7 3 T14 3" fill="none" stroke="#b8925e" stroke-width=".8"/></pattern>'+
+  '<pattern id="cgHli" width="4" height="4" patternUnits="userSpaceOnUse"><rect width="4" height="4" fill="#6b7480"/><path d="M0 4L4 0" stroke="#4b525b" stroke-width=".8"/></pattern>'+
+  '<pattern id="cgHgf" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(30)"><rect width="6" height="6" fill="#cfe0dc"/><line x1="0" y1="0" x2="0" y2="6" stroke="#8fb1a9" stroke-width="1"/></pattern>'+
+  '<marker id="cgMt" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 1L7 4L0 7z" fill="#16202a"/></marker>'+
+  '</defs>'; }
+var CG_CHU='font-family="ui-monospace,Menlo,Consolas,monospace"';
+function cgT(x,y,t,o){ o=o||{}; return '<text x="'+x.toFixed(1)+'" y="'+y.toFixed(1)+'" '+CG_CHU+' font-size="'+(o.s||13)+'" fill="'+(o.c||'#16202a')+'"'+(o.a?' text-anchor="'+o.a+'"':'')+(o.w?' font-weight="'+o.w+'"':'')+(o.v?' stroke="#fff" stroke-width="3" paint-order="stroke" stroke-linejoin="round"':'')+'>'+esc(t)+'</text>'; }
+function cgL(x1,y1,x2,y2,o){ o=o||{}; return '<line x1="'+x1.toFixed(1)+'" y1="'+y1.toFixed(1)+'" x2="'+x2.toFixed(1)+'" y2="'+y2.toFixed(1)+'" stroke="'+(o.c||'#16202a')+'" stroke-width="'+(o.w||.8)+'"'+(o.d?' stroke-dasharray="'+o.d+'"':'')+(o.m?' marker-start="url(#cgMt)" marker-end="url(#cgMt)"':'')+'/>'; }
+function cgP(pts,fill,o){ o=o||{}; return '<polygon points="'+pts.map(function(p){return p[0].toFixed(1)+','+p[1].toFixed(1)}).join(' ')+'" fill="'+fill+'" stroke="'+(o.c||'#16202a')+'" stroke-width="'+(o.w||.8)+'"/>'; }
+/* Danh sách đoạn theo trục (mm, 0 = mặt tip): {k, ten, x0, x1, d0, d1, vl} */
+function cgDoan(t){
+  var n=t.ngon,c=t.chuoi,x=0,ra=[],add=function(k,ten,dai,d0,d1,vl){ ra.push({k:k,ten:ten,x0:x,x1:x+cgN(dai),d0:cgN(d0),d1:cgN(d1),vl:vl}); x+=cgN(dai); };
+  add('tip','Tip',n.tip.h,n.tip.d,n.tip.d,'tip '+n.tip.vl); add('pad','Pad',n.pad.h,n.tip.d,n.tip.d,'pad '+n.pad.vl); add('ferrule','Ferrule',n.ferrule.h,n.ong.dDau,n.ong.dDau,'ferrule '+n.ferrule.vl);
+  var x0=x; add('ong1','Pro taper',n.ong.proDai,n.ong.dDau,n.ong.dPro,n.ong.vl); add('ong2','Côn tới joint',cgN(n.ong.dai)-cgN(n.ong.proDai),n.ong.dPro,n.ong.dJoint,n.ong.vl);
+  add('collarN','Collar ngọn',n.collar.h,n.collar.d,n.collar.d,n.collar.vl);
+  var xj=x; add('collarC','Collar chuôi',c.collar.h,c.collar.d,c.collar.d,c.collar.vl); add('forearm','Forearm',c.forearm.dai,c.forearm.dDau,c.forearm.dCuoi,c.forearm.vl);
+  add('wrap','Wrap',c.wrap.dai,c.wrap.dDau,c.wrap.dCuoi,c.wrap.vl); add('sleeve','Butt sleeve',c.sleeve.dai,c.sleeve.dDau,c.sleeve.dCuoi,c.sleeve.vl);
+  add('cap','Butt cap',c.cap.h,c.cap.d,c.cap.d,c.cap.vl); add('bumper','Bumper',c.bumper.h,c.bumper.d,c.bumper.d,c.bumper.vl);
+  ra.xJoint=xj; ra.xOng=x0; ra.tong=x; return ra; }
+function cgTim(ds,k){ return ds.filter(function(z){return z.k===k})[0]; }
+/* Ø tại vị trí v (mm theo trục) */
+function cgDTai(ds,v){ for(var i=0;i<ds.length;i++){ var s=ds[i]; if(v>=s.x0-1e-6&&v<=s.x1+1e-6) return s.d0+(s.d1-s.d0)*(v-s.x0)/((s.x1-s.x0)||1); } return 0; }
+/* Hình thang dọc (trục đứng): tâm cx, từ y0 (bán kính r0) tới y1 (r1); trong = bán kính rỗng (vẽ 2 dải) */
+function cgDai2(cx,y0,y1,r0,r1,fill,i0,i1){
+  if(i0==null) return cgP([[cx-r0,y0],[cx+r0,y0],[cx+r1,y1],[cx-r1,y1]],fill,{w:.7});
+  if(i1==null) i1=i0;
+  return cgP([[cx-r0,y0],[cx-i0,y0],[cx-i1,y1],[cx-r1,y1]],fill,{w:.7})+cgP([[cx+i0,y0],[cx+r0,y0],[cx+r1,y1],[cx+i1,y1]],fill,{w:.7}); }
+/* Kích thước dọc (mũi tên 2 đầu) + chữ xoay đứng */
+function cgKTDoc(x,y0,y1,t,s){ s=s||11; var ym=(y0+y1)/2; return cgL(x,y0,x,y1,{m:1,w:.7})+cgL(x-5,y0,x+5,y0,{w:.6})+cgL(x-5,y1,x+5,y1,{w:.6})+
+  '<text x="'+(x-4).toFixed(1)+'" y="'+ym.toFixed(1)+'" '+CG_CHU+' font-size="'+s+'" text-anchor="middle" fill="#16202a" transform="rotate(-90 '+(x-4).toFixed(1)+' '+ym.toFixed(1)+')">'+esc(t)+'</text>'; }
+/* Kích thước ngang Ø qua hình (mũi tên 2 đầu) + chữ ở trên (hoặc bên trái nếu hẹp) */
+function cgKTNgang(cx,y,r,t,s){ s=s||11; var w=String(t).length*s*0.62, h=cgL(cx-r,y,cx+r,y,{m:1,w:.6});
+  return h+(2*r>w+8?cgT(cx,y-4,t,{a:'middle',s:s,w:700,v:1}):cgT(cx-r-6,y+4,t,{a:'end',s:s,w:700,v:1})); }
+/* Nhãn bên phải xếp dọc không chồng: [{x,y,t}] -> leader tới cột xNhan */
+function cgNhanDoc(ds,xNhan,yMin,yMax,s){
+  s=s||11; var buoc=s+4, h='', yCu=yMin-buoc, a=ds.slice().sort(function(p,q){return p.y-q.y});
+  /* đẩy xuống cho khỏi chồng, nếu tràn đáy thì đẩy ngược lên */
+  var ys=a.map(function(q){ yCu=Math.max(q.y,yCu+buoc); return yCu; });
+  for(var i=ys.length-1;i>=0;i--){ var lim=(i===ys.length-1?yMax:ys[i+1]-buoc); if(ys[i]>lim) ys[i]=lim; }
+  a.forEach(function(q,i){ var ty=ys[i]; h+=cgL(q.x,q.y,xNhan-14,ty,{w:.5,c:'#6b7785'})+cgL(xNhan-14,ty,xNhan-4,ty,{w:.5,c:'#6b7785'})+'<circle cx="'+q.x.toFixed(1)+'" cy="'+q.y.toFixed(1)+'" r="1.8" fill="#16202a"/>'+cgT(xNhan,ty+4,q.t,{s:s}); });
+  return h; }
+var CG_KX=3;   /* đường kính phóng 3× ở hình ngọn / chuôi */
+/* Tỉ lệ chung cho ngọn và chuôi (cùng 1 trang): px / mm theo trục */
+function cgSy(t,Hve){ var L=cgDai(t); return (Hve||980)/Math.max(L.ngon,L.chuoi,1); }
+
+/* ===== HÌNH KHÚC DỰNG ĐỨNG: hình ngoài (trái) + mặt cắt (phải), kích thước + nhãn =====
+   phan 'ngon': tip ở trên, joint ở dưới. 'chuoi': joint (pin) ở trên, bumper ở dưới. */
+function cgKhuc(t,phan,o){
+  o=o||{}; var ds=cgDoan(t), n=t.ngon, c=t.chuoi, L=cgDai(t), sy=cgSy(t,o.cao||980), kx=Math.min(sy*CG_KX,4.2), kp=Math.round(kx/sy*10)/10;   /* Ø phóng kp× (tối đa 4,2 px/mm cho vừa cột) */
+  var a=phan==='ngon'?0:ds.xJoint, b=phan==='ngon'?ds.xJoint:ds.tong, top=(phan==='chuoi'?78:58), xe=215, xs=385, xN=478, W=740;
+  var Y=function(v){return top+(v-a)*sy}, R=function(d){return d/2*kx}, h='', LB=[], doan=ds.filter(function(s){return s.x1>a+1e-6&&s.x0<b-1e-6});
+  var Hb=Y(b)+60;
+  /* tiêu đề */
+  h+=cgT(xe,18,'HÌNH NGOÀI',{a:'middle',s:12,w:700})+cgT(xs,18,'MẶT CẮT DỌC',{a:'middle',s:12,w:700});
+  h+=cgT(xe,32,'Ø phóng '+cgF(kp)+'×',{a:'middle',s:10,c:'#4c5966'})+cgT(xs,32,'qua trục',{a:'middle',s:10,c:'#4c5966'});
+  /* --- hình ngoài --- */
+  doan.forEach(function(s){ h+=cgDai2(xe,Y(s.x0),Y(s.x1),R(s.d0),R(s.d1),cgMau1(s.vl)[1]); });
+  h+=cgL(xe,top-14,xe,Y(b)+14,{d:'10 3 2 3',w:.5,c:'#6b7785'})+cgL(xs,top-14,xs,Y(b)+14,{d:'10 3 2 3',w:.5,c:'#6b7785'});
+  /* --- mặt cắt --- */
+  if(phan==='ngon'){
+    var sT=cgTim(ds,'tip'), sP=cgTim(ds,'pad'), sF=cgTim(ds,'ferrule'), xo=ds.xOng, xe2=ds.xJoint-cgN(n.collar.h), w=cgN(n.ong.day), xi=xe2-cgN(n.insert.l), rpin=cgN(c.pin.d)/2*0.92;
+    h+=cgDai2(xs,Y(sT.x0),Y(sT.x1),R(sT.d0),R(sT.d1),cgMau1(sT.vl)[2])+cgDai2(xs,Y(sP.x0),Y(sP.x1),R(sP.d0),R(sP.d1),'#1d2126')+cgDai2(xs,Y(sF.x0),Y(sF.x1),R(sF.d0),R(sF.d1),'#f4f4f2');
+    /* lõi (từ sau tenon ferrule tới insert), tenon ferrule, insert, thành ống */
+    var tl=xo+cgN(n.ferrule.tenonL);
+    h+=cgDai2(xs,Y(xo),Y(tl),R(cgDTai(ds,xo))-w*kx,R(cgDTai(ds,tl))-w*kx,cgMau1(n.ong.loi)[2]);
+    h+=cgDai2(xs,Y(xo),Y(tl),cgN(n.ferrule.tenonD)/2*kx,cgN(n.ferrule.tenonD)/2*kx,'#f4f4f2');
+    h+=cgDai2(xs,Y(tl),Y(xi),R(cgDTai(ds,tl))-w*kx,R(cgDTai(ds,xi))-w*kx,cgMau1(n.ong.loi)[2]);
+    h+=cgDai2(xs,Y(xi),Y(xe2),R(cgDTai(ds,xi))-w*kx,R(cgDTai(ds,xe2))-w*kx,cgMau1(n.insert.vl)[2],rpin*kx);
+    h+=cgDai2(xs,Y(xo),Y(cgTim(ds,'ong1').x1),R(cgDTai(ds,xo)),R(n.ong.dPro),cgMau1(n.ong.vl)[2],R(cgDTai(ds,xo))-w*kx,R(n.ong.dPro)-w*kx);
+    h+=cgDai2(xs,Y(cgTim(ds,'ong2').x0),Y(xe2),R(n.ong.dPro),R(cgDTai(ds,xe2)),cgMau1(n.ong.vl)[2],R(n.ong.dPro)-w*kx,R(cgDTai(ds,xe2))-w*kx);
+    var sC=cgTim(ds,'collarN'); h+=cgDai2(xs,Y(sC.x0),Y(sC.x1),R(sC.d0),R(sC.d1),cgMau1(n.collar.vl)[2],rpin*kx);
+    /* ren trong insert */
+    for(var v=xe2-cgN(c.pin.buoc||3.175);v>xe2-Math.min(cgN(n.insert.l),cgN(c.pin.tho)+4);v-=cgN(c.pin.buoc)||3.175){ h+=cgL(xs-rpin*kx,Y(v),xs-rpin*kx+3,Y(v),{w:.4})+cgL(xs+rpin*kx,Y(v),xs+rpin*kx-3,Y(v),{w:.4}); }
+    LB=[{x:xs+R(n.tip.d)*0.4,y:Y(sT.x0+n.tip.h*0.5),t:'Tip '+n.tip.vl+' Ø'+cgF(n.tip.d)+' × '+cgF(n.tip.h)},{x:xs+R(n.tip.d)*0.5,y:Y(sP.x0+0.5),t:'Pad '+n.pad.vl+' '+cgF(n.pad.h)},
+      {x:xs+R(n.ong.dDau)*0.6,y:Y(sF.x0+n.ferrule.h/2),t:'Ferrule '+n.ferrule.vl+' '+cgF(n.ferrule.h)},{x:xs+cgN(n.ferrule.tenonD)/2*kx*0.5,y:Y(xo+cgN(n.ferrule.tenonL)/2),t:'Tenon ferrule Ø'+cgF(n.ferrule.tenonD)+' × '+cgF(n.ferrule.tenonL)},
+      {x:xs+R(cgDTai(ds,xo+150))-w*kx/2,y:Y(xo+150),t:n.ong.vl+' · thành '+cgF(n.ong.day)},{x:xs,y:Y(xo+(xi-xo)*0.55),t:'Lõi '+n.ong.loi},
+      {x:xs+(rpin*kx+R(n.insert.d))/2,y:Y((xi+xe2)/2),t:'Insert '+n.insert.vl+' Ø'+cgF(n.insert.d)+' × '+cgF(n.insert.l)},{x:xs+rpin*kx,y:Y(xe2-6),t:'Ren trong '+n.insert.ren},
+      {x:xs+R(n.collar.d)*0.7,y:Y(sC.x0+cgN(n.collar.h)/2),t:'Collar '+n.collar.vl+' Ø'+cgF(n.collar.d)+' × '+cgF(n.collar.h)}];
+    /* Ø trên hình ngoài */
+    h+=cgKTNgang(xe,Y(0)-8,R(n.tip.d),'Ø'+cgF(n.tip.d));
+    h+=cgKTNgang(xe,Y(cgTim(ds,'ong1').x1),R(n.ong.dPro),'Ø'+cgF(n.ong.dPro));
+    h+=cgKTNgang(xe,Y(xe2)-1,R(n.ong.dJoint),'Ø'+cgF(n.ong.dJoint));
+    h+=cgKTNgang(xe,Y(b)+12,R(n.collar.d),'Ø'+cgF(n.collar.d));
+  } else {
+    var x0=ds.xJoint, sCC=cgTim(ds,'collarC'), sFo=cgTim(ds,'forearm'), sW=cgTim(ds,'wrap'), sS=cgTim(ds,'sleeve'), sCap=cgTim(ds,'cap'), sB=cgTim(ds,'bumper');
+    var rp=cgN(c.pin.d)/2*kx, yP=Y(x0)-cgN(c.pin.tho)*sy;
+    /* pin thò lên trên (cả ở hình ngoài) */
+    [xe,xs].forEach(function(cx){ h+='<rect x="'+(cx-rp).toFixed(1)+'" y="'+yP.toFixed(1)+'" width="'+(2*rp).toFixed(1)+'" height="'+(Y(x0)-yP+(cx===xs?Y(sFo.x0+20)-Y(x0):0)).toFixed(1)+'" fill="url(#cgHth)" stroke="#16202a" stroke-width=".7"/>'; });
+    for(var u=1;u<cgN(c.pin.tho)/(cgN(c.pin.buoc)||3.175);u++){ var yy=Y(x0)-u*cgN(c.pin.buoc)*sy; h+=cgL(xe-rp,yy,xe+rp,yy+3,{w:.4}); }
+    h+=cgDai2(xs,Y(sCC.x0),Y(sCC.x1),R(sCC.d0),R(sCC.d1),cgMau1(c.collar.vl)[2],rp);
+    var fF=cgMau1(c.forearm.vl)[2], fS=cgMau1(c.sleeve.vl)[2], rTe=cgN(c.forearm.tenonD)/2*kx, xt=sFo.x1, xt0=xt-cgN(c.forearm.tenonL);
+    h+=cgDai2(xs,Y(sFo.x0),Y(sFo.x0+20),R(sFo.d0),R(cgDTai(ds,sFo.x0+20)),fF,rp);
+    h+=cgDai2(xs,Y(sFo.x0+20),Y(xt0),R(cgDTai(ds,sFo.x0+20)),R(cgDTai(ds,xt0)),fF);
+    h+=cgDai2(xs,Y(xt0),Y(xt),R(cgDTai(ds,xt0)),R(sFo.d1),fF,rTe);
+    h+=cgDai2(xs,Y(xt0),Y(xt),rTe,rTe,fF);   /* mộng A-joint (cùng vật liệu forearm) */
+    h+=cgL(xs-rTe,Y(xt),xs+rTe,Y(xt),{w:.9});
+    var dW=0.8; h+=cgDai2(xs,Y(sW.x0),Y(sW.x1),R(sW.d0)-dW*kx,R(sW.d1)-dW*kx,fS);
+    h+=cgDai2(xs,Y(sW.x0),Y(sW.x1),R(sW.d0),R(sW.d1),cgMau1(c.wrap.vl)[2],R(sW.d0)-dW*kx,R(sW.d1)-dW*kx);
+    h+=cgDai2(xs,Y(sS.x0),Y(sS.x1),R(sS.d0),R(sS.d1),fS)+cgDai2(xs,Y(sCap.x0),Y(sCap.x1),R(sCap.d0),R(sCap.d1),cgMau1(c.cap.vl)[2])+cgDai2(xs,Y(sB.x0),Y(sB.x1),R(sB.d0),R(sB.d1),'#3c3f44');
+    /* khoang cân + insert ren + weight bolt (từ đáy lên) */
+    var e=ds.tong, xk=e-cgN(c.khoang.sau), rk=cgN(c.khoang.d)/2*kx, li=Math.min(20,cgN(c.khoang.sau)*0.15), rb=cgN(c.pin.d)/2*0.95*kx, xb0=xk+li*0.3, xb1=xb0+cgN(c.bolt.dai), rh=cgN(c.bolt.dauD)/2*kx;
+    h+='<rect x="'+(xs-rk).toFixed(1)+'" y="'+Y(xk).toFixed(1)+'" width="'+(2*rk).toFixed(1)+'" height="'+(Y(e)-Y(xk)).toFixed(1)+'" fill="#fff" stroke="#16202a" stroke-width=".7"/>';
+    h+='<rect x="'+(xs-rk).toFixed(1)+'" y="'+Y(xk).toFixed(1)+'" width="'+(2*rk).toFixed(1)+'" height="'+(li*sy).toFixed(1)+'" fill="url(#cgHdo)" stroke="#16202a" stroke-width=".6"/>';
+    h+='<rect x="'+(xs-rb).toFixed(1)+'" y="'+Y(xb0).toFixed(1)+'" width="'+(2*rb).toFixed(1)+'" height="'+((xb1-xb0)*sy).toFixed(1)+'" fill="url(#cgHth)" stroke="#16202a" stroke-width=".6"/>';
+    h+='<rect x="'+(xs-rh).toFixed(1)+'" y="'+Y(xb1-6).toFixed(1)+'" width="'+(2*rh).toFixed(1)+'" height="'+(6*sy).toFixed(1)+'" fill="#7d8790" stroke="#16202a" stroke-width=".6"/>';
+    LB=[{x:xs+rp*0.6,y:yP+4,t:'Pin '+c.pin.vl+' '+c.pin.ren+' · Ø'+cgF(c.pin.d)},{x:xs+R(c.collar.d)*0.7,y:Y(sCC.x0+cgN(c.collar.h)/2),t:'Collar '+c.collar.vl+' Ø'+cgF(c.collar.d)+' × '+cgF(c.collar.h)},
+      {x:xs+R(cgDTai(ds,sFo.x0+120))*0.6,y:Y(sFo.x0+120),t:'Forearm '+c.forearm.vl},{x:xs+rTe*0.5,y:Y((xt0+xt)/2),t:'Mộng A-joint Ø'+cgF(c.forearm.tenonD)+' × '+cgF(c.forearm.tenonL)},
+      {x:xs+R(cgDTai(ds,(sW.x0+sW.x1)/2))-dW*kx/2,y:Y((sW.x0+sW.x1)/2),t:'Wrap '+c.wrap.vl},{x:xs+R(cgDTai(ds,sS.x0+20))*0.7,y:Y(sS.x0+20),t:'Sleeve '+c.sleeve.vl},
+      {x:xs+rk,y:Y(xk+cgN(c.khoang.sau)*0.75),t:'Khoang cân Ø'+cgF(c.khoang.d)+' sâu '+cgF(c.khoang.sau)},{x:xs+rk*0.6,y:Y(xk+li/2),t:'Insert ren '+c.bolt.ren},
+      {x:xs+rb*0.5,y:Y((xb0+xb1)/2),t:'Weight bolt '+c.bolt.vl+' '+c.bolt.ren+' × '+cgF(c.bolt.dai)},{x:xs+R(c.cap.d)*0.7,y:Y(sCap.x0+cgN(c.cap.h)/2),t:'Cap '+c.cap.vl+' × '+cgF(c.cap.h)},{x:xs+R(c.bumper.d)*0.7,y:Y(sB.x0+cgN(c.bumper.h)/2),t:'Bumper '+c.bumper.vl+' × '+cgF(c.bumper.h)}];
+    h+=cgKTNgang(xe,Y(x0)+cgN(c.collar.h)*sy/2+4,R(c.collar.d),'Ø'+cgF(c.collar.d));
+    h+=cgKTNgang(xe,Y(sFo.x1),R(sFo.d1),'Ø'+cgF(sFo.d1));
+    h+=cgKTNgang(xe,Y(sW.x1),R(sW.d1),'Ø'+cgF(sW.d1));
+    h+=cgKTNgang(xe,Y(sS.x1)-2,R(sS.d1),'Ø'+cgF(sS.d1));
+    h+=cgKTNgang(xe,Y(e)+12,R(c.bumper.d),'Ø'+cgF(c.bumper.d));
+  }
+  /* --- chiều dài từng đoạn (dây kích thước bên trái) + tổng --- */
+  var xD=126, nho=[];
+  doan.forEach(function(s){ var hpx=(s.x1-s.x0)*sy; h+=cgL(xD-6,Y(s.x0),xe-R(Math.max(s.d0,s.d1))-3,Y(s.x0),{w:.35,d:'2 2',c:'#8a96a3'});
+    if(hpx>=34) h+=cgKTDoc(xD,Y(s.x0),Y(s.x1),s.ten+' '+cgF(s.x1-s.x0),10.5); else nho.push(s); });
+  h+=cgL(xD-6,Y(b),xe-R(cgDTai(ds,b-1e-3))-3,Y(b),{w:.35,d:'2 2',c:'#8a96a3'});
+  if(nho.length){ /* đoạn ngắn: ghi gộp thành 1 khối chữ cạnh dây kích thước */
+    var gom={}; nho.forEach(function(s){ var k=phan==='ngon'?(s.x0<ds.xOng?'dau':'joint'):(s.x0<ds.xJoint+cgN(c.collar.h)+1?'joint':'duoi'); (gom[k]=gom[k]||[]).push(s); });
+    Object.keys(gom).forEach(function(k){ var g=gom[k], y0=Y(g[0].x0), y1=Y(g[g.length-1].x1), ty=k==='dau'?y0-4:k==='duoi'?y1+14:(y0+y1)/2+4;
+      h+=cgL(xD,y0,xD,y1,{w:1.2});
+      g.forEach(function(s,i){ h+=cgT(xD-10,ty+(k==='duoi'?i*12:k==='dau'?-(g.length-1-i)*12:(i-(g.length-1)/2)*12),s.ten+' '+cgF(s.x1-s.x0),{a:'end',s:10}); }); });
+  }
+  var LK=phan==='ngon'?L.ngon:L.chuoi; h+=cgKTDoc(30,Y(a),Y(b),(phan==='ngon'?'NGỌN ':'CHUÔI ')+cgF(LK,1)+' mm',12);
+  h+=cgNhanDoc(LB,xN,top-30,Hb-20,10.5);
+  /* đầu trang: tên khúc */
+  return '<svg class="cg-fig cg-dung" viewBox="0 0 '+W+' '+Math.ceil(Hb)+'" xmlns="http://www.w3.org/2000/svg">'+cgDefs()+h+'</svg>'; }
+
+/* ===== CHI TIẾT DỰNG ĐỨNG (đúng tỉ lệ thật, phóng to): A đầu ngọn · C joint · D đuôi ===== */
+function cgCT(t,loai){
+  var ds=cgDoan(t), n=t.ngon, c=t.chuoi, W=420, cx=120, xN=230, h='', LB=[], a, b, sc, top=40;
+  if(loai==='A'){ a=0; b=cgN(n.tip.h)+cgN(n.pad.h)+cgN(n.ferrule.h)+cgN(n.ferrule.tenonL)+14; }
+  else if(loai==='C'){ a=ds.xJoint-cgN(n.collar.h)-cgN(n.insert.l)-8; b=ds.xJoint+cgN(c.collar.h)+24; }
+  else { a=Math.min(ds.tong-cgN(c.khoang.sau)-12,cgTim(ds,'sleeve').x0); b=ds.tong; }
+  sc=Math.min(400/(b-a),(150)/Math.max(cgDTai(ds,a+0.01),cgDTai(ds,b-0.01),cgN(c.bumper.d)*(loai==='D'?1:0),1));
+  var Y=function(v){return top+(v-a)*sc}, R=function(d){return d/2*sc}, Hb=Y(b)+50;
+  h+=cgL(cx,top-16,cx,Y(b)+16,{d:'10 3 2 3',w:.5,c:'#6b7785'});
+  if(loai==='A'){
+    var sT=cgTim(ds,'tip'), sP=cgTim(ds,'pad'), sF=cgTim(ds,'ferrule'), xo=ds.xOng, tl=xo+cgN(n.ferrule.tenonL), w=cgN(n.ong.day);
+    h+=cgDai2(cx,Y(sT.x0),Y(sT.x1),R(sT.d0),R(sT.d1),cgMau1(sT.vl)[2])+cgDai2(cx,Y(sP.x0),Y(sP.x1),R(sP.d0),R(sP.d1),'#1d2126')+cgDai2(cx,Y(sF.x0),Y(sF.x1),R(sF.d0),R(sF.d1),'#f4f4f2');
+    h+=cgDai2(cx,Y(xo),Y(b),R(cgDTai(ds,xo)),R(cgDTai(ds,b)),cgMau1(n.ong.vl)[2],R(cgDTai(ds,xo))-w*sc,R(cgDTai(ds,b))-w*sc);
+    h+=cgDai2(cx,Y(xo),Y(tl),R(n.ferrule.tenonD),R(n.ferrule.tenonD),'#f4f4f2');
+    h+=cgDai2(cx,Y(xo),Y(tl),R(cgDTai(ds,xo))-w*sc,R(cgDTai(ds,tl))-w*sc,cgMau1(n.ong.loi)[2],R(n.ferrule.tenonD));
+    h+=cgDai2(cx,Y(tl),Y(b),R(cgDTai(ds,tl))-w*sc,R(cgDTai(ds,b))-w*sc,cgMau1(n.ong.loi)[2]);
+    var xD=cx-R(n.tip.d)-22; [[sT,'Tip'],[sP,'Pad'],[sF,'Ferrule']].forEach(function(q,i){ var s=q[0]; if((s.x1-s.x0)*sc>16) h+=cgKTDoc(xD,Y(s.x0),Y(s.x1),cgF(s.x1-s.x0),10.5); else h+=cgL(xD,Y(s.x0),xD,Y(s.x1),{w:1.2})+cgT(xD-8,Y(s.x1)+3,cgF(s.x1-s.x0),{a:'end',s:10.5}); });
+    h+=cgKTDoc(xD-26,Y(xo),Y(tl),'tenon '+cgF(n.ferrule.tenonL),10);
+    h+=cgKTNgang(cx,Y(0)-8,R(n.tip.d),'Ø'+cgF(n.tip.d))+cgKTNgang(cx,Y(tl)+10,R(n.ferrule.tenonD),'Ø'+cgF(n.ferrule.tenonD));
+    LB=[{x:cx+R(n.tip.d)*0.5,y:Y(cgN(n.tip.h)/2),t:'Tip '+n.tip.vl},{x:cx+R(n.tip.d)*0.6,y:Y(sP.x0+cgN(n.pad.h)/2),t:'Pad '+n.pad.vl},{x:cx+R(n.ong.dDau)*0.6,y:Y(sF.x0+cgN(n.ferrule.h)/2),t:'Ferrule '+n.ferrule.vl},
+      {x:cx+R(n.ferrule.tenonD)*0.5,y:Y(xo+cgN(n.ferrule.tenonL)*0.5),t:'Tenon ferrule'},{x:cx+R(cgDTai(ds,b))-w*sc/2,y:Y(b-4),t:n.ong.vl+' · thành '+cgF(n.ong.day)},{x:cx,y:Y(b-2),t:'Lõi '+n.ong.loi}];
+  } else if(loai==='C'){
+    var xj=ds.xJoint, w2=cgN(n.ong.day), xe2=xj-cgN(n.collar.h), xi=xe2-cgN(n.insert.l), rp=R(c.pin.d), rj=R(n.ong.dJoint);
+    h+=cgDai2(cx,Y(a),Y(xe2),rj,rj,cgMau1(n.ong.vl)[2],rj-w2*sc);
+    h+=cgDai2(cx,Y(a),Y(xi),rj-w2*sc,rj-w2*sc,cgMau1(n.ong.loi)[2]);
+    h+=cgDai2(cx,Y(xi),Y(xe2),R(n.insert.d),R(n.insert.d),cgMau1(n.insert.vl)[2],rp);
+    h+=cgDai2(cx,Y(xe2),Y(xj),R(n.collar.d),R(n.collar.d),cgMau1(n.collar.vl)[2],rp);
+    h+=cgDai2(cx,Y(xj),Y(xj+cgN(c.collar.h)),R(c.collar.d),R(c.collar.d),cgMau1(c.collar.vl)[2],rp);
+    h+=cgDai2(cx,Y(xj+cgN(c.collar.h)),Y(b),R(c.forearm.dDau),R(cgDTai(ds,b)),cgMau1(c.forearm.vl)[2],rp);
+    var p0=xj-cgN(c.pin.tho); h+='<rect x="'+(cx-rp).toFixed(1)+'" y="'+Y(p0).toFixed(1)+'" width="'+(2*rp).toFixed(1)+'" height="'+(Y(b)-Y(p0)).toFixed(1)+'" fill="url(#cgHth)" stroke="#16202a" stroke-width=".7"/>';
+    for(var v=p0+cgN(c.pin.buoc);v<xj;v+=cgN(c.pin.buoc)||3.175) h+=cgL(cx-rp,Y(v),cx+rp,Y(v)+cgN(c.pin.buoc)*sc*0.5,{w:.45});
+    var xD2=cx-R(n.collar.d)-20;
+    h+=cgKTDoc(xD2,Y(xi),Y(xe2),'insert '+cgF(n.insert.l),10)+cgKTDoc(xD2,Y(xe2),Y(xj),cgF(n.collar.h),10)+cgKTDoc(xD2,Y(xj),Y(xj+cgN(c.collar.h)),cgF(c.collar.h),10)+cgKTDoc(xD2-26,Y(p0),Y(xj),'pin thò '+cgF(c.pin.tho),10);
+    h+=cgKTNgang(cx,Y(a)-8,rj,'Ø'+cgF(n.ong.dJoint))+cgKTNgang(cx,Y(xi)-6,R(n.insert.d),'Ø'+cgF(n.insert.d))+cgKTNgang(cx,Y(b)+12,R(cgDTai(ds,b)),'Ø'+cgF(cgDTai(ds,b)));
+    LB=[{x:cx+rj-w2*sc/2,y:Y(a+4),t:n.ong.vl+' · thành '+cgF(n.ong.day)},{x:cx,y:Y((a+xi)/2),t:'Lõi '+n.ong.loi},{x:cx+(rp+R(n.insert.d))/2,y:Y((xi+xe2)/2),t:'Insert '+n.insert.vl+' Ø'+cgF(n.insert.d)},
+      {x:cx+rp,y:Y(xe2-4),t:'Ren '+n.insert.ren},{x:cx+R(n.collar.d)*0.8,y:Y((xe2+xj)/2),t:'Collar ngọn '+n.collar.vl},{x:cx+R(c.collar.d)*0.8,y:Y(xj+cgN(c.collar.h)/2),t:'Collar chuôi '+c.collar.vl},
+      {x:cx+rp*0.5,y:Y(xj+cgN(c.collar.h)+6),t:'Pin '+c.pin.ren+' Ø'+cgF(c.pin.d)+' · bước '+cgF(c.pin.buoc)},{x:cx+R(c.forearm.dDau)*0.8,y:Y(b-6),t:'Forearm '+c.forearm.vl}];
+  } else {
+    var e=ds.tong, sCap=cgTim(ds,'cap'), sB=cgTim(ds,'bumper'), pts=[], pts2=[];
+    for(var u=a;u<=sCap.x0+1e-6;u+=(sCap.x0-a)/60){ pts.push([cx-R(cgDTai(ds,u)),Y(u)]); pts2.push([cx+R(cgDTai(ds,u)),Y(u)]); }
+    h+=cgP(pts.concat(pts2.reverse()),cgMau1(c.sleeve.vl)[2],{w:.7});
+    h+=cgDai2(cx,Y(sCap.x0),Y(sCap.x1),R(c.cap.d),R(c.cap.d),cgMau1(c.cap.vl)[2])+cgDai2(cx,Y(sB.x0),Y(sB.x1),R(c.bumper.d),R(c.bumper.d),'#3c3f44');
+    var xk=e-cgN(c.khoang.sau), rk=R(c.khoang.d), li=Math.min(20,cgN(c.khoang.sau)*0.15), rb=R(c.pin.d)*0.95, xb0=xk+li*0.3, xb1=xb0+cgN(c.bolt.dai), rh=R(c.bolt.dauD);
+    h+='<rect x="'+(cx-rk).toFixed(1)+'" y="'+Y(xk).toFixed(1)+'" width="'+(2*rk).toFixed(1)+'" height="'+(Y(e)-Y(xk)).toFixed(1)+'" fill="#fff" stroke="#16202a" stroke-width=".7"/>';
+    h+='<rect x="'+(cx-rk).toFixed(1)+'" y="'+Y(xk).toFixed(1)+'" width="'+(2*rk).toFixed(1)+'" height="'+(li*sc).toFixed(1)+'" fill="url(#cgHdo)" stroke="#16202a" stroke-width=".6"/>';
+    h+='<rect x="'+(cx-rb).toFixed(1)+'" y="'+Y(xb0).toFixed(1)+'" width="'+(2*rb).toFixed(1)+'" height="'+((xb1-xb0)*sc).toFixed(1)+'" fill="url(#cgHth)" stroke="#16202a" stroke-width=".6"/>';
+    h+='<rect x="'+(cx-rh).toFixed(1)+'" y="'+Y(xb1-6).toFixed(1)+'" width="'+(2*rh).toFixed(1)+'" height="'+(6*sc).toFixed(1)+'" fill="#7d8790" stroke="#16202a" stroke-width=".6"/>';
+    var xD3=cx-R(c.bumper.d)-20;
+    h+=cgKTDoc(xD3,Y(xk),Y(e),'khoang '+cgF(c.khoang.sau),10)+cgKTDoc(xD3-26,Y(xb0),Y(xb1),'bolt '+cgF(c.bolt.dai),10)+cgKTDoc(xD3+12,Y(sCap.x0),Y(sCap.x1),cgF(c.cap.h),9.5)+cgKTDoc(xD3+12,Y(sB.x0),Y(sB.x1),cgF(c.bumper.h),9.5);
+    h+=cgKTNgang(cx,Y(xk)+li*sc+12,rk,'Ø'+cgF(c.khoang.d))+cgKTNgang(cx,Y(e)+12,R(c.bumper.d),'Ø'+cgF(c.bumper.d))+cgKTNgang(cx,Y(a)-8,R(cgDTai(ds,a)),'Ø'+cgF(cgDTai(ds,a)));
+    LB=[{x:cx+R(cgDTai(ds,a+8))*0.7,y:Y(a+8),t:'Sleeve '+c.sleeve.vl},{x:cx+rk*0.6,y:Y(xk+li/2),t:'Insert ren '+c.bolt.ren},{x:cx+rb*0.5,y:Y((xb0+xb1)/2),t:'Weight bolt '+c.bolt.ren+' × '+cgF(c.bolt.dai)},
+      {x:cx+rh*0.6,y:Y(xb1-3),t:'Đầu bolt Ø'+cgF(c.bolt.dauD)},{x:cx+rk,y:Y(xb1+(e-xb1)*0.4),t:'Khoang Ø'+cgF(c.khoang.d)},{x:cx+R(c.cap.d)*0.8,y:Y(sCap.x0+cgN(c.cap.h)/2),t:'Cap '+c.cap.vl+' Ø'+cgF(c.cap.d)},{x:cx+R(c.bumper.d)*0.8,y:Y(sB.x0+cgN(c.bumper.h)/2),t:'Bumper '+c.bumper.vl}];
+  }
+  h+=cgNhanDoc(LB,xN,top-10,Hb-24,10.5);
+  h+=cgT(10,Hb-8,'Đúng tỉ lệ thật · phóng '+cgF(Math.round(sc/((cgSy(t,980))||1)*10)/10)+'× so với hình ngọn / chuôi (trục)',{s:9.5,c:'#4c5966'});
+  return '<svg class="cg-fig cg-dung" viewBox="0 0 '+W+' '+Math.ceil(Hb)+'" xmlns="http://www.w3.org/2000/svg">'+cgDefs()+h+'</svg>'; }
+/* Bảng chi tiết (12 dòng) + bảng thông số */
+function cgBangCT(t){
+  var n=t.ngon,c=t.chuoi, r=function(i,ten,vl,kt,gc){return '<tr><td>'+i+'</td><td>'+esc(ten)+'</td><td>'+esc(vl)+'</td><td class="so">'+esc(kt)+'</td><td>'+esc(gc||'')+'</td></tr>'};
+  return '<table class="cg-bang ct"><thead><tr><th>#</th><th>Chi tiết</th><th>Vật liệu</th><th>Kích thước (mm)</th><th>Ghi chú</th></tr></thead><tbody>'+
+   '<tr class="nhom"><td colspan="5">NGỌN</td></tr>'+
+   r(1,'Tip',n.tip.vl,'Ø'+cgF(n.tip.d)+' × '+cgF(n.tip.h))+r(2,'Ferrule + pad',n.ferrule.vl+' · '+n.pad.vl,cgF(n.ferrule.h)+' · pad '+cgF(n.pad.h),'Tenon Ø'+cgF(n.ferrule.tenonD)+' × '+cgF(n.ferrule.tenonL))+
+   r(3,'Ống ngọn',n.ong.vl+' + lõi '+n.ong.loi,cgF(n.ong.dai)+' · Ø'+cgF(n.ong.dDau)+' → '+cgF(n.ong.dPro)+' → '+cgF(n.ong.dJoint),'Pro taper '+cgF(n.ong.proDai)+' · thành '+cgF(n.ong.day))+
+   r(4,'Collar ngọn + insert',n.collar.vl+' · '+n.insert.vl,'Ø'+cgF(n.collar.d)+' × '+cgF(n.collar.h)+' · insert Ø'+cgF(n.insert.d)+' × '+cgF(n.insert.l),'Ren trong '+n.insert.ren)+
+   '<tr class="nhom"><td colspan="5">CHUÔI</td></tr>'+
+   r(5,'Joint pin',c.pin.vl,c.pin.ren+' · Ø'+cgF(c.pin.d)+' · thò '+cgF(c.pin.tho),'Bước ren '+cgF(c.pin.buoc))+r(6,'Collar chuôi',c.collar.vl,'Ø'+cgF(c.collar.d)+' × '+cgF(c.collar.h))+
+   r(7,'Forearm',c.forearm.vl,cgF(c.forearm.dai)+' · Ø'+cgF(c.forearm.dDau)+' → '+cgF(c.forearm.dCuoi),'A-joint tenon Ø'+cgF(c.forearm.tenonD)+' × '+cgF(c.forearm.tenonL))+
+   r(8,'Wrap',c.wrap.vl,cgF(c.wrap.dai)+' · Ø'+cgF(c.wrap.dDau)+' → '+cgF(c.wrap.dCuoi))+r(9,'Butt sleeve',c.sleeve.vl,cgF(c.sleeve.dai)+' · Ø'+cgF(c.sleeve.dDau)+' → '+cgF(c.sleeve.dCuoi),'Khoang cân Ø'+cgF(c.khoang.d)+' × '+cgF(c.khoang.sau))+
+   r(10,'Butt cap',c.cap.vl,'Ø'+cgF(c.cap.d)+' × '+cgF(c.cap.h))+r(11,'Bumper',c.bumper.vl,'Ø'+cgF(c.bumper.d)+' × '+cgF(c.bumper.h))+r(12,'Weight bolt',c.bolt.vl,c.bolt.ren+' × '+cgF(c.bolt.dai),'Đầu Ø'+cgF(c.bolt.dauD))+
+   '</tbody></table>'; }
+function cgBangTS(t){
+  var n=t.ngon,c=t.chuoi,L=cgDai(t), g1=Math.atan((cgN(n.ong.dPro)-cgN(n.ong.dDau))/2/Math.max(1,cgN(n.ong.proDai)))*180/Math.PI, l2=cgN(n.ong.dai)-cgN(n.ong.proDai), g2=Math.atan((cgN(n.ong.dJoint)-cgN(n.ong.dPro))/2/Math.max(1,l2))*180/Math.PI;
+  var r=function(a,b){return '<tr><td>'+esc(a)+'</td><td class="so">'+esc(b)+'</td></tr>'};
+  return '<table class="cg-bang"><tbody>'+r('Tổng dài',cgF(L.tong,1)+' mm · '+cgF(Math.round(L.tong/25.4*10)/10)+' in')+r('Ngọn / chuôi',cgF(L.ngon,1)+' / '+cgF(L.chuoi,1)+' mm')+
+    r('Pro taper',cgF(n.ong.proDai)+' mm · Ø'+cgF(n.ong.dDau)+' → '+cgF(n.ong.dPro)+' · '+cgF(g1,2)+'°')+r('Côn tới joint',cgF(l2,1)+' mm · Ø'+cgF(n.ong.dPro)+' → '+cgF(n.ong.dJoint)+' · '+cgF(g2,2)+'°')+
+    r('Joint','Ø'+cgF(n.collar.d)+' · pin '+c.pin.ren)+r('Khối lượng',cgF(t.chung.khoiMin)+'–'+cgF(t.chung.khoiMax)+' g · '+cgF(Math.round(cgN(t.chung.khoiMin)/28.35*10)/10)+'–'+cgF(Math.round(cgN(t.chung.khoiMax)/28.35*10)/10)+' oz · ngọn ~'+cgF(t.chung.khoiNgon)+' g')+
+    r('Cân bằng','~'+cgF(t.chung.canBang)+' mm từ đáy')+(t.chung.ghiChu?r('Ghi chú',t.chung.ghiChu):'')+'</tbody></table>'; }
+
+/* ===================== GIAO DIỆN TAB ===================== */
+var CG_KIEU={DANH:'Gậy đánh',NHAY:'Gậy nhảy',PHA:'Gậy phá',PHANHAY:'Gậy phá nhảy'}, CG_VLT={FC:'Ngọn full carbon',MIX:'Ngọn mix carbon + glassfiber',GF:'Ngọn glassfiber',KHAC:'Chưa rõ chất liệu'}, CG_VLX={FC:0,MIX:1,GF:2,KHAC:3};
+function cgVeTrang(){
+  var m=$('main'); if(!m)return;
+  if(CG.tk!==(window.ME&&ME.tk)){ CG.ds=[]; CG.quyen=''; CG.chon=''; CG.bv=null; CG.sua=null; CG.xemPB=0; CG.xemCho=0; CG.tk=ME&&ME.tk; }   /* đổi tài khoản trên cùng trang: nạp lại theo quyền mới */
+  if(!CG.ds.length){ m.innerHTML='<div class="ptitle">Cấu hình gậy</div><div class="pdesc">Đang tải danh sách dòng gậy…</div>'; cgTaiDs(); return; }
+  m.innerHTML='<div class="ptitle">Cấu hình gậy <span class="cg-mat">TÀI LIỆU MẬT</span></div><div class="pdesc">Bản vẽ kỹ thuật từng dòng gậy, tự vẽ theo thông số. '+
+    (CG.quyen==='sua'?'Bạn phụ trách đo đạc: chọn dòng gậy → <b>Sửa thông số</b> → đo, nhập → <b>Lưu</b>, chờ Giám đốc sản xuất duyệt.':CG.quyen==='duyet'?'Bạn duyệt các bản C077 gửi lên – bản duyệt rồi mới có hiệu lực.':'Chỉ xem và tải PDF.')+' Mỗi lần tải PDF được ghi nhật ký, file có dấu chìm tên người tải.</div>'+
+    '<div class="cg-wrap"><div class="card cg-ds" id="cgDs"></div><div id="cgCt"></div></div>';
+  cgVeDs(); if(CG.chon) cgMo(CG.chon,true); else $('cgCt').innerHTML='<div class="card"><div class="cg-bao xanh">Chọn một dòng gậy bên trái để xem bản vẽ.</div></div>';
+}
+function cgTaiDs(cb){ call('layDsCauHinhGay',[],function(r){ if(!r||!r.ok){ $('main').innerHTML='<div class="alert a-bd">'+esc((r&&r.msg)||'Không tải được.')+'</div>'; return; } CG.ds=r.ds; CG.quyen=r.quyen; CG.me={ten:r.ten,tk:r.tk,maNV:r.maNV}; if(cb)cb(); else if(tabHienTai==='cgay')cgVeTrang(); }); }
+function cgVeDs(){
+  var el=$('cgDs'); if(!el)return; var q=CG.loc.toLowerCase(), ds=CG.ds.filter(function(d){ return !q||(d.ten+' '+d.ma).toLowerCase().indexOf(q)>=0; });
+  var nhom=[['GAY','Gậy (đủ bộ)'],['NGON','Ngọn lẻ'],['CHUOI','Chuôi lẻ']], h='<input class="cg-tim" placeholder="Tìm dòng gậy…" value="'+esc(CG.loc)+'" oninput="CG.loc=this.value;cgVeDs();this.focus()">';
+  var chip=function(d){ return d.cho?'<span class="cg-chip cho">Chờ duyệt</span>':d.pb?'<span class="cg-chip ok">v'+d.pb+'</span>':'<span class="cg-chip chua">Chưa có</span>'; };
+  var tongDa=CG.ds.filter(function(d){return d.pb}).length;
+  h+='<div class="cg-nh2">Đã duyệt '+tongDa+' / '+CG.ds.length+' dòng · chờ duyệt '+CG.ds.filter(function(d){return d.cho}).length+'</div>';
+  nhom.forEach(function(g){
+    var a=ds.filter(function(d){return d.loai===g[0]}); if(!a.length)return;
+    h+='<div class="cg-nh"><span>'+g[1]+'</span><span>'+a.length+'</span></div>';
+    var kieu=g[0]==='GAY'?['DANH','NHAY','PHA','PHANHAY']:[''];
+    kieu.forEach(function(k){
+      var b=a.filter(function(d){return !k||d.kieu===k}); if(!b.length)return;
+      if(k) h+='<div class="cg-nh2"><b>'+CG_KIEU[k]+'</b> · '+b.length+'</div>';
+      var vlOf=function(d){ return (g[0]==='CHUOI'?d.vlC:d.vlN)||d.vlC||'KHAC'; }, tenVL=function(v){ return g[0]==='CHUOI'?String(CG_VLT[v]||v).replace('Ngọn','Chuôi'):(CG_VLT[v]||v); };
+      b.sort(function(x,y){ return (CG_VLX[vlOf(x)]||3)-(CG_VLX[vlOf(y)]||3)||x.ten.localeCompare(y.ten); });
+      var vlCu=null; b.forEach(function(d){ var v=vlOf(d); if(v!==vlCu){ vlCu=v; h+='<div class="cg-nh2">'+esc(tenVL(v))+'</div>'; }
+        h+='<button class="cg-it'+(CG.chon===d.ma?' on':'')+'" type="button" data-ma="'+esc(d.ma)+'" onclick="cgMo(this.dataset.ma)"><span>'+esc(d.ten)+'</span>'+chip(d)+'</button>'; });
+    });
+  });
+  el.innerHTML=h;
+}
+function cgMo(ma,giu){
+  CG.chon=ma; if(!giu){ CG.sua=null; CG.xemPB=0; } cgVeDs();
+  var ct=$('cgCt'); if(!ct)return; ct.innerHTML='<div class="card">Đang tải bản vẽ…</div>';
+  if(!giu&&innerWidth<980){ setTimeout(function(){ try{ ct.scrollIntoView({behavior:'smooth',block:'start'}); }catch(e){} },50); }   /* điện thoại: danh sách ở trên – cuộn xuống bản vẽ */
+  call('layCauHinhGay',[ma,CG.xemPB||0],function(r){ if(!r||!r.ok){ ct.innerHTML='<div class="alert a-bd">'+esc((r&&r.msg)||'Không tải được.')+'</div>'; return; } if(CG.chon!==ma)return; CG.bv=r; cgVeCt(); });
+}
+/* Bản đang hiển thị: sửa > xem phiên bản cũ > chờ duyệt (người sửa / người duyệt) > hiệu lực > mẫu */
+function cgBanHien(){
+  var r=CG.bv, d=r.dong;
+  if(CG.sua) return {dl:CG.sua, nhan:'Đang sửa (chưa lưu)', loai:'sua'};
+  if(CG.xemPB&&r.xem) return {dl:cgDu(r.xem.dl,d), nhan:'Bản cũ v'+r.xem.tt.pb, loai:'cu', tt:r.xem.tt};
+  if(CG.xemCho&&r.choDuyet) return {dl:cgDu(r.choDuyet.dl,d), nhan:'Bản chờ duyệt v'+r.choDuyet.tt.pb, loai:'cho', tt:r.choDuyet.tt};
+  if(r.hieuLuc) return {dl:cgDu(r.hieuLuc.dl,d), nhan:'Bản hiệu lực v'+r.hieuLuc.tt.pb, loai:'hl', tt:r.hieuLuc.tt};
+  if(r.choDuyet) return {dl:cgDu(r.choDuyet.dl,d), nhan:'Bản chờ duyệt v'+r.choDuyet.tt.pb, loai:'cho', tt:r.choDuyet.tt};
+  return {dl:cgMau(d), nhan:'Mẫu tham khảo – chưa đo', loai:'mau'};
+}
+function cgVeCt(){
+  var ct=$('cgCt'); if(!ct||!CG.bv)return; var r=CG.bv, d=r.dong, B=cgBanHien(), t=B.dl, kt=cgKiemTra(t,d), L=cgDai(t);
+  var chuaDo=CG_TRUONG.reduce(function(a,g){ return a+g[1].filter(function(f){ return !(t.daDo||{})[cgK(f[0])]; }).length; },0), tongO=CG_TRUONG.reduce(function(a,g){return a+g[1].length},0);
+  var nut='';
+  if(!CG.sua){
+    nut+='<button class="btn" type="button" onclick="cgTaiPdf()">⬇ Tải PDF</button>';
+    if(CG.quyen==='sua') nut+='<button class="btn pri" type="button" onclick="cgBatSua()">✎ Sửa thông số</button>';
+    if(r.choDuyet&&B.loai!=='cho') nut+='<button class="btn" type="button" onclick="CG.xemCho=1;CG.xemPB=0;cgVeCt()">Xem bản chờ duyệt</button>';
+    if(B.loai==='cho'&&r.hieuLuc) nut+='<button class="btn" type="button" onclick="CG.xemCho=0;cgVeCt()">Xem bản hiệu lực</button>';
+    if(B.loai==='cu') nut+='<button class="btn" type="button" onclick="CG.xemPB=0;cgVeCt()">← Về bản hiện tại</button>';
+  } else {
+    nut+='<button class="btn" type="button" onclick="cgHuySua()">Hủy</button><button class="btn pri" type="button" onclick="cgLuu()">Lưu – gửi duyệt</button>';
+  }
+  var h='<div class="card"><div class="cg-dau"><h2>'+esc(d.ten)+'</h2><div class="cg-nut">'+nut+'</div></div>'+
+    '<div class="cg-tt"><span>Mã <b>'+esc(d.ma)+'</b></span><span>'+esc(CG_KIEU[d.kieu]||'')+'</span><span>Chuôi <b>'+esc(d.tenChuoi)+'</b></span><span>Ngọn <b>'+esc(d.tenNgon)+'</b></span><span>Tip <b>'+esc(d.tenTip)+'</b></span><span>Ren <b>'+esc(d.tenRen)+'</b></span></div>'+
+    '<div class="cg-tt"><span>Đang xem: <b>'+esc(B.nhan)+'</b></span>'+(B.tt?'<span>Người đo <b>'+esc(B.tt.nguoi)+'</b> · '+esc(B.tt.luc)+'</span>'+(B.tt.duyet?'<span>Duyệt <b>'+esc(B.tt.duyet)+'</b> · '+esc(B.tt.lucDuyet)+'</span>':''):'')+'<span>Đã đo <b>'+(tongO-chuaDo)+' / '+tongO+'</b> ô</span></div>';
+  if(B.loai==='mau') h+='<div class="cg-bao vang">Dòng gậy này <b>chưa có thông số đo</b>. Bản vẽ dưới đây dựng từ <b>mẫu tham khảo</b> (cơ pool carbon 58 in) – chưa dùng để sản xuất.</div>';
+  if(r.choDuyet&&CG.quyen==='duyet'&&!CG.sua) h+=cgKhoiDuyet();
+  if(r.choDuyet&&CG.quyen==='sua'&&!CG.sua&&B.loai!=='cho') h+='<div class="cg-bao vang">Bản v'+r.choDuyet.tt.pb+' bạn lưu đang chờ Giám đốc sản xuất duyệt.</div>';
+  var tc=(r.lichSu||[]).filter(function(x){return x.tt==='Từ chối'})[0];
+  if(tc&&CG.quyen==='sua'&&!r.choDuyet) h+='<div class="cg-bao do">Bản v'+tc.pb+' bị từ chối ('+esc(tc.duyet)+', '+esc(tc.lucDuyet)+'): <b>'+esc(tc.lyDo)+'</b></div>';
+  if(kt.length) h+='<div class="cg-bao '+(kt.some(function(k){return k.muc==='do'})?'do':'vang')+'"><b>Kiểm tra ghép / kích thước ('+kt.length+')</b><ul style="margin:4px 0 0 18px;padding:0">'+kt.map(function(k){return '<li>'+(k.muc==='do'?'⛔ ':'⚠ ')+esc(k.t)+'</li>'}).join('')+'</ul></div>';
+  else h+='<div class="cg-bao xanh">✓ Các kích thước ghép khớp nhau (joint, ren, tip, insert, khoang cân).</div>';
+  if(CG.sua) h+=cgForm(t,kt);
+  h+='<div class="cg-giay"><h4>NGỌN VÀ CHUÔI · DỰNG ĐỨNG – TRỤC ĐÚNG TỈ LỆ, ĐƯỜNG KÍNH PHÓNG '+CG_KX+'×</h4><div class="cg-dung2"><div><h5>NGỌN · '+cgF(L.ngon,1)+' mm</h5>'+cgKhuc(t,'ngon')+'</div><div><h5>CHUÔI · '+cgF(L.chuoi,1)+' mm</h5>'+cgKhuc(t,'chuoi')+'</div></div><div style="text-align:center;font:700 13px ui-monospace,Menlo,monospace;margin-top:6px">CẢ CÂY '+cgF(L.tong,1)+' mm · '+cgF(Math.round(L.tong/25.4*10)/10)+' in</div></div>'+
+    '<div class="cg-giay"><h4>CHI TIẾT – ĐÚNG TỈ LỆ THẬT, PHÓNG TO</h4><div class="cg-dung3"><div><h5>A · ĐẦU NGỌN</h5>'+cgCT(t,'A')+'</div><div><h5>C · JOINT</h5>'+cgCT(t,'C')+'</div><div><h5>D · ĐUÔI + WEIGHT BOLT</h5>'+cgCT(t,'D')+'</div></div></div>'+
+    '<div class="cg-2c"><div class="cg-giay"><h4>THÔNG SỐ</h4>'+cgBangTS(t)+'</div><div class="cg-giay"><h4>CHÚ THÍCH VẬT LIỆU</h4>'+cgChuThich(t)+'</div></div>'+
+    '<div class="cg-giay"><h4>BẢNG CHI TIẾT</h4>'+cgBangCT(t)+'</div>';
+  if((r.lichSu||[]).length&&!CG.sua) h+='<div class="cg-khoi" style="margin-top:10px"><b>Lịch sử phiên bản</b><div class="cg-ls">'+r.lichSu.map(function(x){ return '<div><b>v'+x.pb+'</b> · '+esc(x.tt)+' · '+esc(x.nguoi)+' '+esc(x.luc)+(x.duyet?' · duyệt/từ chối: '+esc(x.duyet)+' '+esc(x.lucDuyet):'')+(x.ghiChu?' · “'+esc(x.ghiChu)+'”':'')+(x.lyDo?' · lý do: '+esc(x.lyDo):'')+
+    ((x.tt==='Bản cũ'||x.tt==='Hiệu lực')?' <button class="btn sm" type="button" data-ma="'+esc(d.ma)+'" onclick="CG.xemPB='+(Number(x.pb)||0)+';CG.xemCho=0;cgMo(this.dataset.ma,true)">Xem</button>':'')+'</div>'; }).join('')+'</div></div>';
+  h+='</div>'; ct.innerHTML=h;
+  Array.prototype.forEach.call(ct.querySelectorAll('svg.cg-dung'),function(v){ v.style.cursor='zoom-in'; v.setAttribute('title','Bấm để phóng to'); v.onclick=function(){ cgPhong(v); }; });
+}
+/* Xem 1 hình cỡ lớn (cuộn được), bấm nền hoặc ✕ để đóng */
+function cgPhong(v){ var o=document.createElement('div'); o.className='cg-phong'; o.innerHTML='<button type="button" aria-label="Đóng">✕</button><div class="cg-phong-in">'+v.outerHTML+'</div>'; o.onclick=function(e){ if(e.target===o||e.target.tagName==='BUTTON') o.remove(); }; document.body.appendChild(o); var sv=o.querySelector('svg'); sv.style.cursor='default'; sv.removeAttribute('title'); }
+function cgChuThich(t){ var a=[[t.ngon.ong.vl],[t.ngon.ong.loi],[t.ngon.insert.vl],[t.chuoi.collar.vl],[t.chuoi.forearm.vl],[t.chuoi.wrap.vl],[t.chuoi.bumper.vl],['tip '+t.ngon.tip.vl]], seen={}, h='<div style="display:flex;flex-wrap:wrap;gap:8px 16px;font-size:12px">';
+  a.forEach(function(x){ var k=String(x[0]); if(seen[k])return; seen[k]=1; h+='<span style="display:inline-flex;align-items:center;gap:6px"><svg class="cg-o-vl" viewBox="0 0 18 12">'+cgDefs()+'<rect width="18" height="12" fill="'+cgMau1(k)[2]+'" stroke="#16202a" stroke-width=".6"/></svg>'+esc(k.replace(/^tip /,'Tip: '))+'</span>'; });
+  return h+'</div>'; }
+/* ---------- Sửa (C077) ---------- */
+function cgBatSua(){ var r=CG.bv, B=cgBanHien(); CG.sua=JSON.parse(JSON.stringify(r.choDuyet?cgDu(r.choDuyet.dl,r.dong):B.dl)); CG.sua.daDo=CG.sua.daDo||{}; cgVeCt(); }
+function cgHuySua(){ if(!confirm('Bỏ các số vừa nhập?'))return; CG.sua=null; cgVeCt(); }
+function cgForm(t,kt){
+  var sai={}; kt.forEach(function(k){ (k.p||[]).forEach(function(p){ sai[p]=1; }); });
+  var h='<div class="cg-bao xanh" style="margin-top:6px">Ô <b>vàng</b> = chưa đo (còn số mẫu). Nhập số đo thật – ô tự chuyển xanh. Số mẫu đã đúng thì bấm <b>✓</b> để xác nhận. Bản vẽ bên dưới cập nhật theo từng số bạn nhập.</div><div class="cg-form">';
+  CG_TRUONG.forEach(function(g){
+    h+='<div class="cg-khoi"><b>'+g[0]+'</b><div class="cg-oluoi">';
+    g[1].forEach(function(f){ var v=cgLay(t,f[0]), da=(t.daDo||{})[cgK(f[0])];
+      h+='<label class="cg-o'+(da?' da':' chua')+(sai[f[0]]?' sai':'')+'"><span>'+esc(f[1])+(f[2]?' ('+f[2]+')':'')+'</span><span class="h"><input '+(f[3]==='s'?'type="text" maxlength="120"':'type="number" step="0.01" inputmode="decimal"')+' value="'+esc(v==null?'':v)+'" data-p="'+f[0]+'" data-s="'+(f[3]==='s'?1:0)+'" onchange="cgDoiO(this)"><button class="dd" type="button" title="Xác nhận số này đã đo đúng" onclick="cgXacNhan(\''+f[0]+'\')">✓</button></span></label>'; });
+    h+='</div></div>';
+  });
+  return h+'<div class="cg-khoi"><b>Ghi chú lần đo (gửi kèm khi lưu)</b><input id="cgGhiChu" maxlength="300" style="width:100%;min-height:38px" placeholder="vd. đo trên 3 cây mẫu lô 07/11, thước kẹp 0,01"></div></div>'; }
+function cgDoiO(el){ var p=el.dataset.p, v=el.dataset.s==='1'?String(el.value).slice(0,120):(el.value===''?null:Number(el.value)); cgDat(CG.sua,p,v); CG.sua.daDo[cgK(p)]=1; var y=window.scrollY; cgVeCt(); window.scrollTo(0,y); }
+function cgXacNhan(p){ p=cgK(p); if(CG.sua.daDo[p]) delete CG.sua.daDo[p]; else CG.sua.daDo[p]=1; var y=window.scrollY; cgVeCt(); window.scrollTo(0,y); }
+function cgLuu(){
+  var t=CG.sua, kt=cgKiemTra(t,CG.bv.dong), gc=($('cgGhiChu')||{}).value||'';
+  if(kt.some(function(k){return k.muc==='do'})&&!confirm('Còn lỗi ghép (⛔). Vẫn lưu để Giám đốc sản xuất xem?'))return;
+  var chua=CG_TRUONG.reduce(function(a,g){ return a+g[1].filter(function(f){ return !(t.daDo||{})[cgK(f[0])]; }).length; },0);
+  if(chua&&!confirm('Còn '+chua+' ô chưa đo (vàng). Vẫn lưu?'))return;
+  call('luuCauHinhGay',[CG.chon,t,gc],function(r){ toast(r&&r.msg||'Lỗi',!!(r&&r.ok)); if(r&&r.ok){ CG.sua=null; CG.xemCho=1; cgTaiDs(function(){ cgVeDs(); cgMo(CG.chon,true); }); } });
+}
+/* ---------- Duyệt (C019) ---------- */
+function cgPhang(o,pre,ra){ ra=ra||{}; Object.keys(o||{}).forEach(function(k){ if(k==='daDo')return; var v=o[k], p=pre?pre+'.'+k:k; if(v&&typeof v==='object') cgPhang(v,p,ra); else ra[p]=v; }); return ra; }
+function cgKhoiDuyet(){
+  var r=CG.bv, cho=r.choDuyet, a=cgPhang(r.hieuLuc?cgDu(r.hieuLuc.dl,r.dong):cgMau(r.dong)), b=cgPhang(cgDu(cho.dl,r.dong)), ten={};
+  CG_TRUONG.forEach(function(g){ g[1].forEach(function(f){ ten[f[0]]=g[0]+' · '+f[1]; }); });
+  var doi=Object.keys(b).filter(function(k){ return String(a[k])!==String(b[k]); });
+  return '<div class="cg-bao vang"><b>Bản v'+cho.tt.pb+' chờ bạn duyệt</b> – '+esc(cho.tt.nguoi)+' lưu lúc '+esc(cho.tt.luc)+(cho.tt.ghiChu?' · “'+esc(cho.tt.ghiChu)+'”':'')+'<br>'+
+    (doi.length?'Thay đổi so với '+(r.hieuLuc?'bản hiệu lực v'+r.hieuLuc.tt.pb:'mẫu tham khảo')+' ('+doi.length+'):<table class="cg-doi">'+doi.slice(0,60).map(function(k){ return '<tr><td>'+esc(ten[k]||k)+'</td><td class="cu">'+esc(a[k]==null?'–':a[k])+'</td><td class="moi">'+esc(b[k]==null?'–':b[k])+'</td></tr>'; }).join('')+'</table>':'Không đổi số nào so với bản trước.')+
+    '<div class="cg-nut" style="margin-top:8px"><button class="btn" type="button" onclick="CG.xemCho=1;cgVeCt()">Xem bản vẽ bản chờ</button><button class="btn pri" type="button" onclick="cgDuyet(1)">✓ Duyệt – cho hiệu lực</button><button class="btn" type="button" onclick="cgDuyet(0)">✕ Từ chối</button></div></div>'; }
+function cgDuyet(ok){
+  var cho=CG.bv&&CG.bv.choDuyet; if(!cho)return; var ly='';
+  if(!ok){ ly=prompt('Lý do từ chối (người đo sẽ thấy):',''); if(ly===null)return; if(!ly.trim()){ toast('Cần ghi lý do'); return; } }
+  else if(!confirm('Duyệt bản v'+cho.tt.pb+' – bản này thành thông số chính thức?'))return;
+  call('duyetCauHinhGay',[cho.tt.id,!!ok,ly],function(r){ toast(r&&r.msg||'Lỗi',!!(r&&r.ok)); if(r&&r.ok){ CG.xemCho=0; cgTaiDs(function(){ cgVeDs(); cgMo(CG.chon,true); }); } });
+}
+/* ---------- PDF (dấu chìm tên người tải + logo Rhino mờ) ---------- */
+var CG_LOGO='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAQQAAAA7CAYAAACdU/TGAAABCmlDQ1BJQ0MgUHJvZmlsZQAAeJxjYGBckZOcW8wkwMCQm1dSFOTupBARGaXAfoeBkUGSgZlBk8EyMbm4wDEgwIcBJ/h2DagaCC7rgszCrQ4r4ExJLU4G0h+AOD65oKiEgYERZBdPeUkBiB0BZIsUAR0FZOeA2OkQdgOInQRhTwGrCQlyBrJ5gGyHdCR2EhIbahcIsCYbJWciOyS5tKgMypQC4tOMJ5mTWSdxZHN/E7AXDZQ2UfyoOcFIwnqSG2tgeezb7IIq1s6Ns2rWZO6vvXz4pcH//yWpFSUgzc7OBgygMEQPG4RY/iIGBouvDAzMExBiSTMZGLa3MjBI3EKIqSxgYOBvYWDYdh4A8P1N247YzPkAADTISURBVHja7X17eFVnlf77rm+fk4QE6A0qvdELkJBqK92B0mrZAVvFer+cehlHnXF+o1Pv1tuMlxgdL6OO491xvM14G8fjZbRUO9YCB2iFkkPthdMEaCu1tRba0kIgyTn7W+v3x94nOQlJCBAoKt/z7CeBnLP3t7/L+tZ617vWIv50GgHYnEXRGRnPTxlxOQAHw+MGbBJijTmu66vXzdsLhf6a70kURVIoFBSA4ng73o63cTfZMS8EwjCcAqDyuHMNgTasFJcJ1ccACBIgCTNAVftJ22qwdRCuLO9za++9c+VDtfeLosgVCgUPwI5P//F2vA1v7k9BYJ14WkvuRc+94o7SlgfeHATZ13hfqRCs9t1M1WBmJDOkO9W5YCHAq0T83844/ZxLTp519gmnnX7erh1/uHfX9u3bUy2hQ5CbKSiVjq+C4+14O+Y1hI4OQWennbdwyeJA5a97iquvbgmj39K5p5gqAMgo3zIAZgYlTCgiZPIx9fEeo6wh8PNY9BfbbincX/1SFEXBcZPieDvejmENITdzppRKJZ056+zvAdjccGLz7dmMfhIwN44wIxILQkAy1R7UTA2Ueicyj8LnQfVvTjn93AWnzJqNU845/ffFdev6U2EiyOUEpdJxc+J4O64hHGOCyrdctORFQV39TyqV+PnO/C5zbq2p2iH228xMCYBCR3EwNajpNgA/CoQ/2HzLqtuGJFLOIZ/X41jD8XZcIBwDfWpZ+IyTYL5LxM2OtXIxKfOcuO9qHHuQh6vZJMKBIClCcfBxpUzKL0D5RvfGp/8C6NRELuRcPp/3x5fK8faX0OSYMxVyOQFgqvEnnQvOVh+bmnsUtNNIgYGTcWKTpAMoZmY+jmOSWRF5IWHXzl+4dm3zwqWvjKIoSIUBj8WxOt6Otz9rgVA9jZvb2l/inPtb72M1wk+HPi6Kk4+URkIiAGDex95MjcSlQvneQ/vk5uZF0UtTs0GRy7njS+Z4O24yHJVmBGjnt112psJtAPkkMxDQxxtt6mm91vsvQTbzprhSidMNfCT7ojCAzgkTdeVXFeh7t3WtuTX1fhz3RhxvxzWEIyqYclcJAIlNvkrnZqmaJwED9xWbVpQp1gA7WvgeBaSYelXvPcU9MwNXaA6XvCUVBsfNh+Ptz7IFx0Qvosghn49b2to7RNyzNfYxmWw6Ar0oILaQ2RpN4igKBsD72ItwqnOZzzVfFJ3Ws6nwXqBDqsDjX5CAN0zM6yLI5Yh8qyFXIlpbDaVS8u/JGzMil5PBZwAYek6td6hDhvVh9L4Q6BhjUXUCk8NPGT4m1XZwY8JJ0OrHnUM+8bIgCgqFQtzctvT5QvzUzCxd2EaKqPnNPV2FJ7e0Rd8Tl3mljyueh+9lOKSBNIMPMkFQiSt/vaWr8F0g54C/OA/EXyL9W4AOPEEHwJEY7zHv+cQKhMTX71vaoicTXA3ypBqBoKSIqb+9u1i4sLltyfedy7zCx/ETJRAAM0/nxLx2dRdnXAIcOzyFMAwzA2g6T70XUmxyX1vpg4zvG6jsuO+OdbtGzt/Iz7eEyy4y0Rli5hNGOc1EhIb+J599yk2H6cYlAGu+MDrbZdFihtjMCAAkzUwk9pVbt/123U50dEjLz1ddDHFTSdXBvpgIxO/pvnLpBnR26rwwOsWJtII0pPcCaaYqMNnTXVy5qeZ9D3bOCcDmLlgyn0FmtrN4sL+JDirKvbahVCr0Vj871vjOvjA6obHOnaa0hkMaOEX/3v7KH8abwyfQZOgQ5Dt9S3jZLJA/AuVk815R5Rqno6OgBwAan3i7nXQpMWpBS/jIhd1FbEIODnk8kVoCAVhv3HQ6M1hvQTCFgNqkCnsBodZQFzza0rb0Nhivq4v9d2/L5x+rCu/avhj1I07clRrHCooYACbBZw9s3ryjBcD+i3/iGqUrFAoxHHJwmU9qpeJJcVVdmAIELngugOtmr16dhZOvUvgUUxpIGmB0pHneNmfDhou3AQMAng7gp6aqg4dkFa+i+ZZw6c9E9J9L+fxvD1ow5HKCfN47J29xjm+IKxjsLwCooRJMzVwI4K4RYyLI5/2cRYumBdZwFSDPh1no1Z9yqHtBadpQFzwyv23pJjW7tj+2/9k+Yg6fqE0mQKeeG14+3eh+LOKa1XtfKwyOJbNm+GkJL4ELCL0cAKIdEY+hvmVJZgDUEchO5gVInZCzRGS5BPKFgYxsnBc+/YUYxR1LQ5wsa1Y3jaYneCUIspOivVBQgRnAwWcYADUz02RjI9PQYAQq6RYb6kvSt8qQnDe14TZ6zWWBBO4lqrx5flv7Z+ZeuOz09ES1g3JDW9pHDhsTI6CVuGL7HZaAtrQteXHGGjeIBF8TyvNInkYwCyI4lItgVshZFHmOC9y/N2Tklpa26OVJXzrkCRIIycvOCsMpWfr/cS64xMc+Hs0MMABkEm9htGMDwGOi7hmxFABSO+wYse4xbLFN7mVmZqY+9prgOHOcy/503kVLrk42SIfsL8StdnPBYJMnPK16ko+2iYcJSWL/zV7t28jlNuqTfFzxIBrEube7jG5oWdj+jllhOAVV0trEBQNH9nd/TS7ngE5tDqP3iwt+DLDFx7FPODJ22PM4NIexp2CuSPDfzWH7h4FORS7njqpAiKIoqGoG02Xqj0TkWRrHB+IVZJKRpD0RyoIBFQP2YXAVUdR7AHbJ3MXLTj+WtBgzqBl8zc9JuEzN4AFL1GnSJaaT96aq4tzn5y9YugTo1CiK/pSJWxzTUEwOK4sT/Op0EfevJ3Dqza2LluUAWI1AlMPcHwLkfctF0f8LgsxH1Ks39UrSpX0gYIc8t7CRc6iqGnsXBB9oaWt/I/J5L0dtsHM5VygU4jmLojOyiH8h4p6t3scYVxgYAJuSQ86lKtdR3V+kAIYemv0+CZ5MdQQzLy6YLnH8UgA2Z/ny7PATqEOOtpBQDUREprogCCb3yrggCAIR50biKWkOCmdi/wzkXHt7+58jYUsHlVXSmZlpHHuIXAjghy0Ll97QHC5ZmnogqubTIc19oVDwzRdHZ5vwk6re0s1bu0dNxLkgkwmCTHDQl7jADdeEKABF1SvMPtbctrT5SIOKHASB8nnfHC5ZSpWvipO5aZBScCCJbYbGniseq7dHqUd1h5kZCIJWNGApa/AekmKqRsi7WxdE15Wuv37b8C93Hk3hlVjE2Xg3PL7htZIFTSdNIJmRib19NkSWDSOHDYKsdunchTue0tmZgm5/Ro0iYmowUz94SicakpoBEgSXq9nlLW3R98n4Y3fl85tHAI8HN9qer8u44IR4pOZMggDV60pTLYkZD+bmJNWAFiGvsFrQFCBUVVwwzfv4zUdCIBDoYC5XYj6f94VCIW4JL5tldO8i8DYKqH5iEYupiJyyZ7dvypJ6dBcCRdXvBbgJxEtHumtN1ejcaUr9v/lh+8di1Zud2GMCzai406H2u+7i2gcPFU0/2LalWHgYwN8dyWe0tEWfFgmuGT5/ZhRx4u18AAcUCHFcHtXWn2jr7e2tgn1H5Xww728zYk4QZBq9r2jtyQoC6cEm4oJXqufzmsP2L5WDvs/em88/BACtgCthol6onBPbucxULdn/w7ZCbKpXdxcLXz+c95kftr8Owq8g8TBWXayipkbwymAyhUAUrZZCoRADnZbPA3MvXHa6BPpakG9wTs5Q781UdcLhy2YAra5OOZ0WV45iPhelOKH5jQC8iGv0fgT/QYQJYsVz6fh1Bxswyj6DC8xADz71qB9nRyj4qhVwpXy+bLA1ZnYNaherwSiE0eoPvEhoDQ3zBoCCHaqQLBaLleSxEh9hDdGLC5x6/QyNd3rvP0ZxzyIA771nosqzupY19jGIqUHg3kvf8IqWtvZPyb4dXyvl8+UETLQxzXPTRLg1Xzowxcp2Rgq+SqqoenHOqerqnmLh64AxitpdYeZMyx3E6+zYsYOFQsHfVVz9jZa29ldSZJklnj2X9g8gzjhcgVDNaBwDnVYoQOfMWV6XOaHvMgWvIvRFzrlTVBVDhCJy4kIm0dnA+CQPt08S+smRV8fNUvzAXw/obEoG8EPPJQlV3QXyEeeCOd7HAFlHoM5lsrBK5fPbiqvuxnAf/ZFvRyhvQymXS49FaajqbaOopBOZl6CXW89tDZ/W5+NARA6eQCWCwET3euXJQ96CI6csGKyhp7hqE4DlrW1Ln6/E+10QLDRVqGqNYEgiZuM4VhGZTZEv6pRTX9vSdurHu7tW/YRk39hPSVj59XsfdwMB3MjXIQkaHkrW01VM9huQP/jXSTEEe4SpS2rEozKHJhDSfIcAtFAoaGtrLmuNDy9W0+fA+q8E5MnOOZh6pMisHBq70FRExHubIdQ9R41HRYqvVGKIrjGTz5h6VGMrUnmhIq7BTL8bxxUh+VYA0wHGlXL5R6grv79mjA4V8T747x658GyXy+Vwx7aHKgwO6RFMPGY4nWa3KgNjANohyEoPwJQe1Kx6w5FmrVJMgQ4JwxWu2LXq52EY/nIfpv0dDO92QeZs8zHMUAXHa4FHdc61AfxxS1t7Xg1NVANgcigCzJLFr0CrHJZ8A9RsbFU7OOiF2tHBavhvS7jsIsC/RLnzeTA82bmAZgZTNY1jT8IdzoSZUUknNH+qEY8dpXPWizjxPr7JlLtIuyhdzCP87FoP8D1q+lfm/VwJsm3ibEfPhtVFAMDNNx82UHjQguHIZXbyeQCt4WUzQMJsFCIkVSe0fsiGJHf+YdmnR5kw3qlNTZEgl3PFfL4C4CvnXnDJj7OZ+reCeKMEwXT1scGsag6TpFP1CpDiXC7RKDzIQ2TccvLemOOMXnCQ82Do7LTmMGqn8B2m+uwgyASqCjOFH4pSlEnOWXAOid8dlbk3AxP997sQucCJZEeJn6AZDLCGTCbzE/P6uru6Vn5zmKlzaEuWADBnzvKsmxo/pefWX2+awL0IwFpboyZrwOVGmVRXssEoZt7Ac5V4F61KEB7SplQVcBOdH5ssB/LR535UiUhR5O4pFHYAeN/5C5Z8N7b4H0n8tQSBUx8PBx4xBDzi2K+DMuFNSwB2xuLFDU2+7uOEvJUiUPNI3SNHQgiAMJopjJxLtXtNPHhkbUYD6byv7A0EK7zpvyREyVHtYyKh6AYG+yug4z+RK3GCp/QYJ39OgLzPnNB/jZlcn+IPnMi9bKrNMs8fMyVPTN4cEEZCKDBTpNpSle2npKOZv/uxvuzGiWg0ZpPDOGVCDHkiqPeGxIYncjnZnM/fBeDVLW3t3/De/5Oje2YSMr8/8Pin0GRCa6Kjg2EYTmmK637kJPvWhP0YJ0FHiRAY7T6HHwlICswgQAuIXks0sCM3uGYqLjAzrNjtBh6nYXmi5o1hcxHOTAHD2RdccHMDhvIvjmPm59yo4xJFAZD388L29xjs/O7iyk0Y67OjdaVMA9mfMAstZRhOzgUz1SHqbK0u5UWEgH3yodtv2DsRpqILAnf4V8ZxkjWhQxIMyXwL0CHdXasLPV2rn6XAi810kwsCl4ZW/kmFiQcTEgidnbq3rf0TLshcGVfKlaRCEsczgCsikkGCJxyWumSJhnlmqr7uBdiIsaDuSVFKlKLy5SnacAmdzDSNdZiKvD9YZiDO7s9Ungrg5mp028jPVQla+Xzez3n602dkH3V91ZDX6t/mLYheJYJPeMpTASQJPw5uiVbps5M/PkPznWasJgOXyfh44FvdxTVf6+jokM6xU8tZOlZ7feyvIxEfMg/dQNDKBM4nJUzxjCdSFVegc5CI1L1x5U9nz45+WT/T/z3BdwZBcKZPqO7jraOJvfekSbKx7zW+QEjzB7YsXHIJjFenyUkOJESUwDaov8eM50sQnF3jojnY053pqTQNxtNAPE6RRtMj4slTOifqfU/3rYU1LWH0DQmceaOCY2tSZvAucAF8/CIAN4X33CPFBAwfxs1IXUVsXbj0Tdqvi72vvAEdHRKtTv4+f8FlL5Ns5jtxXP7O1uKa24CcQ2fnZIGENqSqj+UerOYUAMdbuCQp4pyZIfaVf+spnvouAOg8gEeFST68Hd3PjV4xGTkpW9ra30iRUGPzRz7H5sQB3TRRcD+24/Mt4WX5ivLtpPsHEWk6nHVLIDFTUDocwVAlhMWHhyGYvF2cuBQcOaBNS2AeKGawH3gfk+BrgyB7asr0OjiWmplKELjYx/MEeJDAaUdC/zIzcxR46H/Mnh3Vg3y+qic4PhuKhFPvzYDXnhs+7fPF4k33DdnSCTdjVvjcKdOx5wUU9xaDLdLYFm/puXlPuGIgUygWK81h++sh7ote48fNWUfy/dbJQ5VJinNuguOAsYrhpOrvHoMWaPrFnq7Cr0dgIuPOq9Gk+Qe3NvYAe4HcIb1ja2spKJVaY7NV9cdi4bFq2v5cLif5fP5BAO9uaYu+bcZvUmSheq/7exrKyfjMzFbwaKU8YgcnnjvYeckYH9gsHUcY+PS3sxPFdkRkKKwcHMhUmL9g6WwzW67eAxNzmdAAR7JVgFYDf6YebzGUn+Nc8OqD1haYOFwEnGdmj1QxtElWE42k83Flz76y/1bjyZnn08kpPo51Am4impmKcydnVb7fuiB6LQZm3gfsyFoDz1fYlWTvS0VcK8UhrsR/teW3azYCCeuuOYw6neMHSSKu2Ee3bFp7b6J+Hr52kPZLTP1N5u37ZgiI0UE9A4WEh+G5dG65+mHvbimI9yjJpXdtXLU5VSGreSUnvLHr6vrSGpr5Q+JazJgRKZBXIjqWA6ksPxQanenO5++cH7bfJBlZqF73S9JLSbS222+4oW9eW/vvAvJsM1WALk32a87JJc0L2z+GzLSP99z88z2H0qfmS58/VcqPv490i9S81exnJUkY7h5TIFTtWgb2dFCmjsxmdMCnJ6cMxLkXwPQyM/4T1P8Kxs85F5y8HxV4nPMtAe6slcSd1VieyQYTXZBx3le+f98d63Y1h9HVLmGaTgzQS4OdRORpCm60hp33gjiJwJnOBVLF4iqVgWu2FNd8HwBaF0ZPUuMXKPJSA6BxeZ3rP/VzhxgUM1bPEmKX+mJ31+ovT+QbF1xyRb5SqfxWRJ6UmhmCJHbDiwtmeI1fDeA9ra2t2VKps4zj7QDmOjwAMZtQ2jMl7JegLE3rgwyuMFUzJ+4fdWD3y1vCaMsh9WZg9zy64JwkkrLmQDUzihNv8U8OaDJ44wWBCGKo8uDcPAQAH8deRE6SIPh3q8Sf9cpljvrNIJMJfaUykSCnhOVGnmSGk7zXeAI4xkF7M7z3MWP715aLloYULFGN7SAxD6p6JeUEkgsAQFXjNMch1PzbtxTXfBYAWsL256jx30RkrqrGZvY4RV9XKuXLyHXIZKPSZtYQRVHwQEODO72vb0zN44EHGtztv7l+x7y26D0B3bdVYx20ENO09EK5Zv5Fy1aUNq1ci7QG5/F9PwHgcWLBeTTDtzSO3yLCM8zUA4NrkKqxUuQc0p1ziOcedH+Q3FNE1Md/EOiXxtxYhZkz00Wpp9ph2GqDVM5K7INM5m0Wx2dXKpVnB2ZfkiCTm3gWZWZIPdcmO5bBzEsQOB/7a7t/u2ZrS9j+LUpAi+0AuRpG7aMkIKgaQAmCIPDq/wDzr+nuKvy6OVzyFFD+kZRXAAavvixkRsX+rueWdVtyuZzLTx6QWDsHWigUYuRytu3668e7f5yCYt9pDpdc5VzmuTWaHM3MRMQp9XOLFy9+2vr168s4StGcfwkt1cofbm5bcjXhfgbQmaEmDDpZX4nn69AOvlphUL03KVDaW3q61j4o46A3iW5ug2GucnhrEkEcVyouCF6YccFXu7tWX2Ua/5tLkjZMwFdrADidaQalSd0t3nuKfipFLC4yVRvPs3BgzYgEsTf28bdV9RmmsqslXPItkOudc68w9apmFedcVr29fcsthf/FUB3Jw1VRhy5Wf5+4EM2n8+4yfLuqfzzFDhKcgKT6OJbALXjMN7wTgEdSi3OMfnBYfzj5gWk17zjsqgV9x0gntl9fRvv7JNKFaaP1t5ZGXCgUFLmc6+lacy1MX0Nyr3MuSLHeGFX8h0khoYO+0hM+uRfMOReQHFCtvL6na/WPx0+hViqluQNtwNQPgOg7XNOdQMbH5YpkMi9qDqMP3bVx9TvU9IMpAj6pEzBh7cA5geG67o1rfpNKzR0JwHLIZaKS9zCuo9n9JL8Fhy4JMq8lOcV7XwEJJy6jcfyPPZtWfw7IuZT9djhmAQFkmDRhspMzKQ174ipeZ5Jbr7S+sA2wDzkXpCzU6p1dkLrP3t+8MGpDPu/RMSyfIowIkg9Xfyb9ASwziZJg2DvWPqcmjyIMVu2Dq/2JGg9bmp59aNzIJHoxWQecnP6mYzFijgBkquHPqZvCI5dzd3UVvhNrvEzVryTJNGuV8DCbiEgQBAFJqulqrcTLurvW/Ec1HfvYoOKOHSwk1s/DKv4GmpxJ4YUpL+BwQlMCH1eUxHubwyU/7t646iMtYbSLIl9I7n2YBI6D1Q5UKwQ+Nrg2qJ8xk8trQmh48HIPAPQKl8k8K/WqwCfx8kYyQ8C8+rf1FAufS+zww9IMDADiIOMF/mEzqx/MfwjEPo4bxbD3oO6Yzys6OqRxxYov7YmbllP4dFPtrzllvJBZU3bMmbP8pduAyog7PO7VPw6z/hRnMDMEZng4k3l0UoS+wPap93vMbB+GBJ4BcAFZrlGLd6nqLsAqKUCqZpoFsSt739RqCqyyqe7CoK8/cbGq9w0w9E8SjLAnjn2vGXoBS099E5DlIJuNa+eyKmS3dnbeAuAZLeGyK2KLX0QgTEl69Ye4UgYI+z3gbzXhT3o2rv4/AMNqM4y52HPIuTzyfn5b9NdmON0EZwYuc/UEgcADnGaIE/s6/nT3xtXvBmDz2qJXOcrXYagz04PyaBziieqDIHCVuPK9LcU1rwI6JCnO06ktYft7xLlPqHoPMx5qXxIbLTW1DCYu41T9H8z7N/TcuubaarXryXifXC7nuu575JQG9RRxBgB7AWTL/c5npvVuu+X63Ydy3znLl9e5h3afXK7U+8bGdGmrZ1+fM0efmZ7tfaiatKTawvDy6Y8OaL0LyoO2rqpn/ZSpcWn9r3ZNhiZ4xuJcQ6b3kWm1zwAANDUBf8TubduuHwCApzz9OSfu3V3OiPTZUF8a2Ditr3LHuqRgyZzly+v08cenS58b1q/6uoqcXF//eKFQOGyh0NoaNe0FmjJZP2y+xTm78NyZu0ZfBx2SpuOz6sadvWXH1MYs6qtzPGFxpJ69/X7gvpZZu2uYtGkJuyGi2AFPv9bw8rOUlUsNcp+QN5lqnJJ1DkeVUorQVO+UfTvazj//fJ/P531L2P4cCL9L8ARVfyQrNCUpqYF9ZrZwS7E9deN0atW33rIweq+I+zgUUPVqoLKatusAbL6ax6hZkhiTJEzj6+jxttKthW1jVT06xtpxwPBYaNU8F5O1Xsa530Q2NecuXnba1vUrH2gOoy8Gmewb47hcIZg5vA1JArpXLG4tFW+6LwzDTLFYrMwNly1yoj8UcbPTcOrDFT5jagdxHHf2FAsfGnXA8nnf3Nb+EkI6KThfRDBImzeDqj+gGk9JzET1viTEx0obV39vpIo2mZs3ZceNF08AjJfFKemXjfg7a1Hw6u+9vb1samqyMWoOcqxAp0KhXSdQI5G5UcDK/IgCrSkqPxoxaqjQayLoDxQ+PlZUKZMCrdW5Glngt0NyudGpxPlqZadczuWQpDAbfTwGx0/GwdE4nnAOwzAoFot+zO8m76CjrIWR9594IuMoioKdO2eKTdn5AwkyL4orZc8Jn5SjCgQYrE8Dmbd1/coHMFjNN+/PD5eeF9O+E7jgEl/NSANj+ryxhJnt/ytrX7YqDVSco3q/pe9hPLX+JLvCMnV3brnlhnsxspQWoKdecEXjidn4WWZ2GWBnEdxt0CcBcvlYHPqq796ADVT9T/bhuzW1+4gjm1btUE/1w9AGjsmit8e1m0MYjwnnN5wdRXUNvfywV/2Wc+614ty7zQzqY88k5nvCMQpmiF0QBD6Of91TjJ6V2u5WlajI5/0Zixc3TK3Uf8CItzgXNBosAf4N47wXE/5VlUxjyXeGOQyqSSu9PSt2deszqGxXjT/a01X4dLUS9UhNofYJzW3R3xDyTsBa9hM2SHIxmtr9gL6uu7hmJarEnSNsIoRhOGUPpi7YUlx901iDE0WRe2i3Ley+dc2GUbQAm9e25Nmxw7Z7NqzZmuYqtGFYwo7+l4rgFBPzpnQ0PBY7u3HbLYX7a0+4Uy+4ovGkbPnFBk4b1JYSxLhehbdv2bj6xpH3r+3HuZdcMrOuXPc84xB4ZkBAtbu7NxVWpP/l5oZLnlV+mCu3by8MDD8JknvPv2jJZer5+57bCr8bviGSv89dsGS+CIKe4po7qoF8w+3+XNYad15218YZq4G8zgvbL92X6d90//r1fYk5fdkiL1wsYMWGeIWkmZoEP+zeeOMjLW3Ry80wQ4DYgErifrSsAgHB3dI3479LpXx5zkXRYiG2bSkWHql5FwKw89ouO1NET9p6y0237bexOzqkZcXql+2qZH/+0O037B05lvMvWTqbno2lW1aWRtEOCQCtC6NTKxU5detvV9024dN9e6HQb8SLgsCtUPgfeY2XQ7XLBRnngkxCb039mweQBl6cBOrjHYC+o0YFG0JY0SH3r1/fd1dx9T+RvNhr5YNe9X9MdbWp/tbMtpnavWb2OzP7Xfr7NlVfUq9dGvufq/c/UtVVZtiW9gtm5l0QOO/9D7uLq37ldOAz4uQEAK9obc1l9yvLNhSo4sIwzCQqo/QANhv7szYNRp94vu3q7uKaG6pgHwAeQWFAAOjLnFwvtP9puXhpWF0ow09w2EO98koT+ZdRF0Vr1ETg89lY/j7576uk9u/y6N7TSLzVYFRFYDCCOtspv9oSRm9CUqREAGBafTxHzf7ezLxCoSn5PClk5sdZH8n3M+VsZMDLAVaQ1B8wmnkQL2oOoy+m76NCLmk4RT6QHiQypNbT5i14+gVG/jMDHdg/ZfuHkncK2EjyAwCID33IagFaALSGnc82w6uAvLa25jICe3e24mZUP+fp/g4mc5P39EzeU00BE1cD+pFigtiAZxvwEhPEkpCErHzWnqQvwmsI+SIAGzKXkp8Bg8tE3WuGmW3J/LJ1xdo2EN86sa68dBg+kH7Xl3WB9/6Hs8LnThmpBKTPMW/8TODstcDEoh0FgM4Nly0i7Ekgm8RkAzw+OqD+lVngKYC9HIbnusA1JGXOxnLXmdE5Z6rbhfbCUteaO5AGUQ3/XKdWTYi08MXm6suEYRg8vLPJlU/plRnlk5jJ1NlDmYfN1dVZ486ZWirly82LluXE7MVmdg7MTk1xCCNJH/vd5cC9Zd6ipcvE+Lq4UomFcpE2PBIBuGEU5L8aqOJzuXNdPr/q5pYw+oa44I3q49hARySeCJfJBHFc+U3PpvZfIEKAQsHnE5v8iLdysM8FseuC1/8XRdFthWEVmfPauviZJ/lK+QUE7k7iEErldFUI8nmvjXiFGH8MWFNrePlZpWL+vto5lH7LWAa39XQVPjvsFI2iJr+X32kOoz/25PM/AgAxzRhY3FIs/Ps4cmyccbEMjGu7i6v+Y+RfWtrav9cSPvyM7iJ+5fbt/KCfMnPFvLD9aVvy+ZtyuZzLowS0dgivW/0xFe3ccsvaB4EPjTgZOxUdHdLT2dnVErb3z2tb0raF3FjFCFoTcpYZ7Pmm/EH1sDLhPprUVjjpV6df79mw7vax3qS7q/CDIe1yiVdg2paNha+NFMgE7gK0uSVc+up8Pv/tXC7n8q2thk4g0S443LWb8IRU4a8y5XvgbDmA6wZzaOQA5AGB7DPY7uns/ZsHgS8NaqodHZLv7PQtFy0NAT1LwfXAAWMTjAB0Trj0PAf9EckmS7I90GWC92cc16vFl9Ls+x6+3Xv/b4DtTQkXtp8woFBVt4PxM0sbC789QEagwYw0SU3IhONfLBYr27cX+h8sFvfdfvsNe4vFFfvuX7++b3uh0F8q5cvzw6VfCsgfUuTlJM8G2ZBqrJqQbLTz3g037hC1f696AugEoL74QJsuBYYI4jci4iQI6qolsgyINY7/T5y+Bug0FNoPP2PUwagJ/ZhqhtsA7vxjr12VClmXnpymlYG/B7HGqH17Z8wYOv1/+EMFQFNeGQfuCwA2e5RfOCgsqh8UMUMSExFFUZDL5Vxra2u2VCj0Cvl+Ei/sqCn4SrKxtTWXnT07qm9tbc1WrxFFYTEGBqNCTG1tzWXDMJzS2tqaveCCKxqjKAo87FbQ5iZ7olQ2uPeR9sHZUVR/zz33CPJ5P//a1deQvGvLLWtXJqf9KCBmSrxT2g2EJHOfAITsTKN8QZzcxD0rAfD88+FH1lYwozjFjNbW1uzs2bMH3zNZr6kwzeVcLpfL5nI5B8VUGKbmcjm3fPnyumT9d1TLz59k8J8H9cXzwqgln8/7cMUKV33QCIIUkc/789qeeaaR512wacYXYWia17akLZn32jHWkwnLw+yC8xcsmZ+Aix2CUolhGGZU/GsMzJNsPLBAyF2Vqiz+QnFyZsoPcAAQx3EsIifV1TddY+C76htsa0/X6neQfIEB+4ZwtaETwYCKif/b7o3rtoRhmJmgGq1p3QcdgYgOXtUJmHfRkquYcVfHcVLd1qqgg5k65ySO4zu7i2s+09zW/gnngrmm3hMMzBsMtigaog+PiwiXnRXjSvl73sf/5SvlT6nq6wXu4ru6Vi2/a8OarTVazlFrGauPSTkB5r9s4Muamy+dmgpVnXvxkvkkz/P19d8HePLZ1QQZuZyAtJaFSxaD6Nu6fuUD3un1ELkkiqJgZNQlQUuTvfh8Pu9LpVIFAAfU3Q+wLh+tnpKaZgTQXyrly9u3F/pLpVK5ek1kXEzVKdFbKuXLxWJxX6lUKt9++w17C4VCLMYLAdyZ4iaZLV03bqRhXd1evL9YLFbmLVh2gZLPlCnWCXSM7XVJ115DBdfC0DJn0aJpyOd9VSU38S+BYX2xWKzkRqdnA6TB5NFSqVTevn374HumOFSNCQyfz+c9SCWo+Xze9/X1+dr1T6I+cNgFxScE/CTQIU1NTTaGNygxraw/R7MNeeS9QW4k+NIawVa9r4Og14PfjB2vAWBhuMIhn/f72PRyQu6GyO0wbTqwyZAOZlyva4N+/wdSZqUhsSThzNBfGej7dCP2fLi4rlhBLue4GWu1YecjFJ4xhOGYpwuc+Xj9luLalQBkJJnlIDkEo9s2IvMTc5W2f2ASaYK3zW97xgJQr/F+MBNuKjRYv3PnDJnIsxPQDa8axz101GP1+9GHDDINPcW1DzYvbF/DxsybAHwcAIKYbzLRb2ZdX59P/KYjRC5fJrRfIpdzW/L53zWHS/bs2CcRgBsnQJ6yuNwv2axTX6kkLD9xZfE2Z35b+8s0oS8rVZ1B9sm+h1YMmisjW0eiItNl9pn5Rc1tS/4WxiwpamYkbBGAW7u7VhcAsFgsxsjlXOM993yiF00/nb9w6RJV/Qeh/UupUOgF2sePHM3l3G35/GPNbVFPoA1XAvjBzJkzLUIUPERe4ozvrboQRxMKQoo3eXFzuGwORLM08zDWKWzDlmKhewzgdKyV5WPvTtqyqbCuJYzuaLlozXsKhcLHx9qXYRhmeimXKdw1yOVc/4MPrmjsC65qXfzMk0r5/KNVLEHNVExO3FpcvaGlLXpLcxi1F4uFwrnh5dMN8fPrypnXDmQHlilFJ2AyJKj/tnXrdhrkuxShGTSt50fANnZ3rf5AurkF+bzunvZ7B6KflGFmQyqy+o6EOyiNzDRVv1a9yrCkqElJLlEfr9qycfWNhrhD6KrVpIe8BMTMuGHHtAkDeR0dglzOVVXoGpT9CUvcYWnqtiZt+oqRl86+MDphfth+sZHs3rjmN64PJ6A263E+78+94JKZIE+7q6vwnfTEMgO/rWZXYhz/+bDBGMGaE+/VYNPN7ByanQWzsxQ8y8yfsXfvAYUuVL3RmIWxEWAjTBsJm6LAHghmzXnq02fUuAKsWCxWzPBOU/9fAtx5V1fh12OaCsM2VmJvq/GnMD4z3fz+oTY+DYY9m4ur7s6NY9aaGcVwOmhn0+wsNZ5lsHMMbloteDnRJmIeAPsexkdM8LTmtssuTZ8zOGY7d84UALYX05aa6datXTfeg3ze37du3S4D1vnywPMBoHXzZrffmlX5DIA3A7A6xK832o23337DXmesZxqefWBQMR202OvXALuaRCNAS116rXOeEp2x7Y7CH6oPvX/9+r7mtmXXmOm3QU5PqihTVD1AtJ3XdtkZd3etvR8TL3M2kTTkmD07qhfKP4HwZtDBpJSkmaka5bNIMrvvMQ5KgyT5p6qKuFO86dMA/GyMRKnD916aQ7BwbDmaDQCKxRX7msPov+oz/AhohOHLANgvzqTKnE3BpWwms5yQefPa2j8iZlNBxKAEZnbFvDD6eKFQeHiiz/dxnAbEoV4MG7uLhU8c1At0ltJifdoIcet6ugpfGPmR+WH7uzMueDOADyI3mHdSthQL3c1tUSGO5acAmJ9QkplOhRm3fogbW1ZEb5m7YMn8rbeuuYuGFypx3YHWngFeg+BTWzf8+q4x7z/xyTMk5fBs+/ZC/9xTl75PVD6ZA668HYiJpJBhubynGnT4UifurOZwycconEJDv5FzqJYB8J+lGTOGaONJNXDr3rSq2By2b24O2z+msOl73cA7AVBpvtaDcMBBy+Vy7u5bC9ug9hPnHGFmquqDIHOyy/I1qcupqiq7nq6V13rzrwRRSf/PDFYRcdOc8c2JHRO6hOk1dMpGURSg6qYbXvBkvEuRz/v6mXhnkM0+A4RzLsgEgy2TAZAR4m6gg0Z+xVThnARJVBsB0EgaaP8AAPhhfvLKqT8BikIul3M9xcKPaDYLij92dxXuBGAy0D900iVgogB8jgIfCGg/Vm/fozFv6r8BYCWBV4xjFiV1EXI5N7Xe1QHEdO/7UlDQDDYlDMPMnDnL68IwzFSviYwrKQqPxjAMM4sXL26o/b5H9uegza41aateLRq9c/GEU9cn3tWrBJ1QBdaJ43NbW3NZg5232/b8MvUw6TgudAbqZyTvOWfwPQ+3pF4Yhpmtt6y6jSbX39EWvdtMH6m6Trdtu7485ynRGVA7XU3fD+FPtGLfi839hOY/aqBvXnh526jRs7mc64/tM4Rdqc5+kPIpho3VhBKAtFZzIwBf8d7/FRJ7wJJUTHjTky9e9vU7k/LXAkBTgs8vm9uiW4Mgc3GSHo5CEEGQeVdz25K1xa411wJF5MerWNnRIeGKFa6v71yWy3vo3O5sNivBQNa5+kpWtMEnPty+PovBeyuVgfclmkG5juA0I7OAepFgqo/tVKBzc08Xbm5piz4JyKtM1QFoMLJBVV02U/eseWH03guvmvmpfHiiRE09Vpg50xItaZD+euyy35KToEqbZfe5M1+WbppBbYyA37lzp4CM54btiwzQnq6V1+435wuiz6nDpwF8EUN0sBjD6bUe+TzitvY3EHZHFReiiJnqwGHgRABR/f6we7SES8+q8kpSqrYfnBfy4KtCpRtey7g2yOID2rjjNaay6cFicd9+ZDKaDoPJSVXovv3es1gc03sCjJU5yZSUVMN7burizn+2pa39y6TUGfFQ9YNBFjkDb+7ZuLprP7dsuPR/oZWXA+iqAsHVbE3Rjh0s3FZ4LAzDhcVbipVBKjZhTNfOhARCZ2fit+3u7Fzf3BatdBI8w6uPYcogyDyp4isfRS73+ly6GIfYfrxHvZ9ppvca+AgMj4uwDJNzmhdEbSI205MnieEEg80EeBKAJgInGtnAFYXGXjQ1smFHvZuCgJbNlmFZId1ApkL49LTJZI2K3ST6ASuD7AcQw6zfwL3qfb9Qrm5ui14NcI8Bu6D4Twr6TCUmlIQ2+AqbhJx969YHT8Jv8zsLYy3VKHIRBnn5x4Sg8HEgmQyaRnHb1tjmShFOK591FlEqUaivE/C6Kr+jWCzGVfJLoVDY1tIW9c4PoxfcVSz8r3d0pM2Ysyg6Q30sdZolhaeqaM4Mp8eu4Q1IU6qp9yKUU5sXXHraACwjIkaK1ZkSEpRLGwt/HFfFEQoVZ5zXdtmZDSaN3puvOKdObA7U3qPCj9YeVDV7qknloAPiEpwsn7+/pS3aCeV7lXJFKixG3F+azCq13PkGU5zdEl72QL/G2dr33IUTH36wuGLfCOZaA4CGMXrRxMF8EZ3I59OkNOY/DLjVgP0UAJqbL50K4lnO25tSQV8Ti9GBMm76WRb2mvPaLjvz7q61vzdDHdSm1K7fVICxxv+XVeOUCQsEAAxXrHDn5nK843ePfIXCKwIGWU2qO/eCuHze9sfOyt9yw71nLF7cMD3OnFJWng3YrWr2IIFGANNAzFa1UwB7CYUnGxk4kUHWc4I2pqB/+rNa45LD0AQO1zsTzf/kFJkZATywFv1Kc14Aph5qNFD3JTHv0gf4nUbsDJz7ektb9KAa7xXYfQrep862Z3t37iiVSmUUCnEiLArD1LFoxw4mGkX+aHIQDAAassEesbgwino/eKKXUbe3AfZ/2375y/Kcuc/Owvq3a2/5Z1V+R/VL7e3tWigUaGbfsDR/n0iw0yx+OPD8MJnxJubMsRex3tmzac27MRSgAzG736B9JpmP1LOaFZdmlKwZ7wHwkdHxo2QDKnmngz4vgHykAjo4IoAZTHrV7J+3bFy1ssoXGCGMf62mjxy0gB7UgO3HSu7b2nXjPVUZOqRItFpLWFhVzvjeQQFr6KLIS6G4ot5lXbK5aArWNaH3SwA2AJAqOU1gmxXJxkuDslA9UEjeUPH+D7VmcurheXBe2P5uKk4EAEytO81MryvdWtg2wqNlQKfcU8TjzQuj72Tj4BwAvzdyq8DvrHmmDa2LTgCAo9ytZvF4gF3Vvy/pAh920sy9KPpXEU4l8ICp7QVlKmCzQDuN4LmAnZYgxEaKc5TaBERVaoDV4AOGYYFI3G/LTxBfHNszWRUwNRuklkRTs32YJkFj9VSFqcWk7YXhfiPvFcM2BboB69GM23panX+oMIbNFu3YwZqJ+HMOtjmawUQTBaSP1rscyXcf694H+/8TfthwAdDervtRiQ1svujyWWD8FDg8GcpzQZtLw1wDThFhkzg3mGVguK+xBhs0S07n9Pfk04iTWgE0mFUMrJDWD3DAYJrEB5gnEZsxJkwNVHB4tl8aHGgCo0vzNQRmCEATGp0RdQDqErWMGcCYfjYYEgppjFatUjgik1rydyYZbBPE/jEYtgLYDNjtJO4w083dxbV/3G9ijryAmMBGGRbCKwfox8hK1iMKsnQwlytxDJ7CWMVb7CDW5UgBKxgeAj3ZguJAPJJRg4MO4j3Hqww+zlwMhnHrBN+z9u8TqUY++BmOdvPWXC5b+d2OVgcshPISgy0COD/IBOJckED76mFe07wANgBgH4y7QOs1wy6Qe2B4DGK7YdwN2COpy2+vqO01yD4K+mGyR+H31TEo90lc1v5s+cSMDTyU6S27ujrLPNBg2ex91tDQkAAuTU2GwYzQI9qOHQx7e5Ngn74+lstnsXJ6H8u9U2VmvCdbyaKeppkBC7JUn5WAjVCbasI6MZkCQ5OKNopiOsCTQZtqymkQTCdsuhmngzaV4HSYNYCsowhEHEQcQEDjGHFc8QQ2G7gB5HpCb+m23h7sD7IdD9E93o45NQ9zFi2fFljlfFW/hIJFNFwA2JkA68zQB+J+mv0e4B8APAjgjwAfhumjJvqomTwq0McbMf1x4MFKCk79eS30qsejqamuMuCmB95OAP1J8DxZiRMBnALIkwCbBbPTCZ4J2mkA6wAbMMN2kreZ2i2Obo2v67+r5+ab9xxfgsfbMSUQmtuiT9B4QepC2QvgXjNudYLfQfS+ik15aFtD375DyApM5HISjcJ0mzlzpuWBlPTUebDq5KQJQqAjVUVLHC2rzcyZMy2JOOs8aPU+iqLgscfQFNfbLB+7M0GcDdN5IGcb0QhDQLOV3cXCJ/EEshuPt+Ottv1/4mGKrYOoirIAAAAASUVORK5CYII=';
+function cgTaiThuVien(cb){
+  if(window.jspdf&&window.html2canvas){cb(true);return}
+  var ds=[['https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js','sha384-JcnsjUPPylna1s1fvi1u12X5qjY5OL56iySh75FdtrwhO/SWXgMjoVqcKyIIWOLk'],['https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js','sha384-ZZ1pncU3bQe8y31yfZdMFdSpttDoPmOZg2wguVK9almUodir1PghgT0eY7Mrty8H']], con=ds.length, hong=false;
+  ds.forEach(function(x){ var u=x[0], s=document.createElement('script'); s.src=u; s.integrity=x[1]; s.crossOrigin='anonymous'; s.onload=function(){ if(--con===0)cb(!hong); }; s.onerror=function(){ hong=true; if(--con===0)cb(false); }; document.head.appendChild(s); });
+}
+function cgDauChim(nguoi,luc){ var h='<div class="cg-dc">'; for(var y=-60;y<1140;y+=250) for(var x=-140;x<820;x+=360) h+='<i style="left:'+(x+(Math.round((y+60)/250)%2?180:0))+'px;top:'+y+'px"><img src="'+CG_LOGO+'" alt="">MẬT · '+esc(nguoi)+' · '+esc(luc)+'</i>'; return h+'</div>'; }
+function cgTrangPdf(t,d,B,nguoi,luc,so,tong,than){
+  return '<div class="cg-trang">'+than+'<div class="cg-khung"><div><small>DÒNG GẬY</small><b>'+esc(d.ten)+'</b> · '+esc(d.ma)+'</div><div><small>PHIÊN BẢN</small>'+esc(B.nhan)+'</div><div><small>NGƯỜI ĐO / DUYỆT</small>'+esc(B.tt?(B.tt.nguoi+(B.tt.duyet?' / '+B.tt.duyet:'')):'–')+'</div><div><small>TRANG</small>'+so+' / '+tong+' · CARBON BILLIARDS</div></div>'+cgDauChim(nguoi,luc)+'</div>'; }
+function cgTaiPdf(){
+  if(!CG.bv)return; var d=CG.bv.dong, B=cgBanHien(), t=B.dl;
+  toast('Đang tạo PDF…',true);
+  call('ghiTaiPdfCauHinhGay',[d.ma,B.tt?B.tt.pb:''],function(g){
+    if(!g||!g.ok){ toast((g&&g.msg)||'Không tạo được PDF'); return; }
+    var nguoi=g.nguoi+(g.maNV?' ('+g.maNV+')':''), luc=g.luc, W=1055;
+    var L=cgDai(t), p=[ '<h3>'+esc(d.ten)+' – NGỌN VÀ CHUÔI (DỰNG ĐỨNG · TRỤC ĐÚNG TỈ LỆ)</h3><div class="cg-giay"><div class="cg-dung2"><div><h5>NGỌN · '+cgF(L.ngon,1)+' mm</h5>'+cgKhuc(t,'ngon',{cao:1650})+'</div><div><h5>CHUÔI · '+cgF(L.chuoi,1)+' mm</h5>'+cgKhuc(t,'chuoi',{cao:1650})+'</div></div><div style="text-align:center;font:700 13px monospace;margin-top:4px">CẢ CÂY '+cgF(L.tong,1)+' mm · '+cgF(Math.round(L.tong/25.4*10)/10)+' in</div></div>',
+      '<h3>CHI TIẾT – ĐÚNG TỈ LỆ THẬT, PHÓNG TO</h3><div class="cg-giay"><div class="cg-dung3"><div><h5>A · ĐẦU NGỌN</h5>'+cgCT(t,'A')+'</div><div><h5>C · JOINT</h5>'+cgCT(t,'C')+'</div><div><h5>D · ĐUÔI</h5>'+cgCT(t,'D')+'</div></div></div><div class="cg-2c" style="grid-template-columns:1.3fr 1fr"><div class="cg-giay"><h4>THÔNG SỐ</h4>'+cgBangTS(t)+'</div><div class="cg-giay"><h4>CHÚ THÍCH VẬT LIỆU</h4>'+cgChuThich(t)+'</div></div><div class="cg-giay"><h4>BẢNG CHI TIẾT</h4>'+cgBangCT(t)+'</div>' ];
+    var box=document.createElement('div'); box.className='cg-in'; box.innerHTML=p.map(function(x,i){ return cgTrangPdf(t,d,B,nguoi,luc,i+1,p.length,x); }).join(''); document.body.appendChild(box);
+    var ten='Cau-hinh-gay-'+d.ma+'-'+(B.tt?'v'+B.tt.pb:'mau')+'.pdf';
+    cgTaiThuVien(function(ok){
+      if(!ok){ cgInDuPhong(box,ten); return; }
+      var pdf=new window.jspdf.jsPDF({orientation:'portrait',unit:'mm',format:'a4'}), trang=box.querySelectorAll('.cg-trang'), i=0;
+      (function tiep(){
+        if(i>=trang.length){ try{ pdf.setProperties({title:d.ten+' – cấu hình gậy',subject:'MẬT – '+nguoi+' – '+luc,author:'Carbon Billiards'}); pdf.save(ten); toast('Đã tải '+ten,true); }catch(e){ toast('Lỗi lưu PDF: '+e.message); } box.remove(); return; }
+        window.html2canvas(trang[i],{scale:2,backgroundColor:'#ffffff',logging:false}).then(function(cv){ if(i)pdf.addPage(); pdf.addImage(cv.toDataURL('image/jpeg',0.9),'JPEG',0,0,210,297); i++; tiep(); })
+          .catch(function(e){ box.remove(); toast('Không tạo được PDF: '+(e&&e.message||e)); });
+      })();
+    });
+  });
+}
+/* Không tải được thư viện PDF (mạng chặn): mở hộp in của trình duyệt -> "Lưu thành PDF" */
+function cgInDuPhong(box,ten){
+  var ifr=document.createElement('iframe'); ifr.style.cssText='position:fixed;right:0;bottom:0;width:0;height:0;border:0'; document.body.appendChild(ifr);
+  var css=Array.prototype.map.call(document.querySelectorAll('style'),function(s){return s.textContent.indexOf('.cg-trang')>=0?s.textContent:''}).join('');
+  var doc=ifr.contentWindow.document; doc.open(); doc.write('<html><head><title>'+esc(ten)+'</title><style>'+css+'@page{size:A4 portrait;margin:0}body{margin:0}.cg-trang{page-break-after:always}*{-webkit-print-color-adjust:exact;print-color-adjust:exact}</style></head><body>'+box.innerHTML+'</body></html>'); doc.close(); box.remove();
+  setTimeout(function(){ try{ ifr.contentWindow.focus(); ifr.contentWindow.print(); toast('Chọn "Lưu thành PDF" trong hộp in',true); }catch(e){ toast('Không in được: '+e.message); } setTimeout(function(){ifr.remove()},60000); },400);
+}
+window.__cgDaNap=true;
+</script>

@@ -849,5 +849,8 @@ exec(io.open(os.path.join(D, 'nhan-su', 'va-nhan-su-loc-web.py'), encoding='utf-
 # ---------------------------------------------------------------- 41. Tổng quan chủ sở hữu (08/11): 4 ô số, sản lượng xưởng, đơn hàng, nhân lực, cần chú ý
 exec(io.open(os.path.join(D, 'tong-quan', 'va-tong-quan-web.py'), encoding='utf-8').read())
 
+# ---------------------------------------------------------------- 42. Cấu hình gậy (08/11): bản vẽ kỹ thuật theo thông số, tài liệu mật (4 mã NV), mảnh CauHinhGay.html
+exec(io.open(os.path.join(D, 'cau-hinh-gay', 'va-cau-hinh-gay-web.py'), encoding='utf-8').read())
+
 io.open(os.path.join(D, '..', 'Index.html'), 'w', encoding='utf-8').write(s)
 print('OK Index.html')
