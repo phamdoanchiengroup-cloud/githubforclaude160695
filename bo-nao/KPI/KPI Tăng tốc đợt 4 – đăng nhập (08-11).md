@@ -21,4 +21,5 @@ Chủ dự án 08/11: "công nhân và TP, PP mất hơn 20 giây để bấm đ
 - cap-nhat.ps1 chưa chạy thử được (máy đám mây không có PowerShell) – đọc soát kỹ, có khôi phục file cũ khi lỗi.
 
 ## Sau khi dán
+- 08/11 chủ dự án báo: dịch vụ Sheets API **đã có sẵn** trong Apps Script → thiếu là cờ `KPI_SHEETS_API` (chỉ đặt khi chạy tay KIEM_TRA_SHEETS_API – chưa chạy). Lịch giữ nóng tự kiểm tra và bật, không cần làm tay.
 - Mở web bằng tài khoản chủ sở hữu 1 lần (tự cài lịch). Sau ≤ 1 ngày xem Thống kê › Tốc độ web: "đọc gộp Sheets API **đang bật**".
