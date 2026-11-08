@@ -837,5 +837,8 @@ exec(io.open(os.path.join(D, 'chia-doi', 'va-chia-doi.py'), encoding='utf-8').re
 # ---------------------------------------------------------------- 37. Bộ phận ngoài sản xuất (03/11): khối cuối tab Nhân sự, chỉ chủ sở hữu
 exec(io.open(os.path.join(D, 'nhan-su', 'va-nhan-su-web.py'), encoding='utf-8').read())
 
+# ---------------------------------------------------------------- 38. Tăng tốc đợt 3 (08/11): bộ đo tốc độ + mở nhanh bằng số lần trước (mã hóa)
+exec(io.open(os.path.join(D, 'tang-toc-3', 'va-tang-toc-3-web.py'), encoding='utf-8').read())
+
 io.open(os.path.join(D, '..', 'Index.html'), 'w', encoding='utf-8').write(s)
 print('OK Index.html')

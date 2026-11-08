@@ -76,6 +76,7 @@ Liên quan: [[Lần dán lên Apps Script]] · [[Quyết định của chủ d�
 - Xem [[Lần dán lên Apps Script]].
 
 - **Báo cáo T10 + T11 số thật (07/11)**: đã gửi. Còn chờ: tên thật tab POD-ECOMSTONE (ảnh chưa nhận được); cập nhật web (2-CAP-NHAT.bat). – [[KPI Quy trình sản xuất]]
+- **Tăng tốc 08/11**: cập nhật web; dùng vài ngày rồi xem Thống kê › **Tốc độ web** (số thật). Tôi sẽ đọc số đó để quyết định có cần tách nhật ký tháng trước / thu nhỏ trang cho công nhân (B) không. – [[KPI Tăng tốc đợt 3 (08-11)]]
 - **Tab Thống kê (07/11 khuya)**: cập nhật web rồi xem; số thật cho thấy **177/180 người chưa có loại hợp đồng**, nhiều xưởng không báo cơm (CNC 57%) – nhắc trưởng xưởng. Hỏi chủ dự án có muốn thêm đối chiếu "báo ăn nhưng vắng" và lưu ngày nghỉ việc để tính tỷ lệ nghỉ việc không. – [[KPI Quy trình sản xuất]]
 - **HỎI LẠI SAU (chủ dự án dặn 07/11)**: chủ dự án làm việc lại với **xưởng Phôi Carbon** về việc ghi nhật ký (T10 chỉ đạt 50% mục tiêu, 21/27 ngày dưới, nhiều ngày trống) → lần làm việc tới hỏi kết quả. Còn mở: Sơn / In UV vượt ~230% (có thể 2 lượt cho cùng khúc: Sơn máy + Sơn súng tay; In và phủ bóng + Phủ bóng). – [[KPI Quy trình sản xuất]]
 - **Họp thống nhất sản lượng xưởng (07/11)**: đã gửi PDF 14 trang. Sau họp gửi Claude kết luận từng xưởng (bước xuất, đơn vị, mục tiêu) để sửa tab Quy trình / mục tiêu trên web. – [[KPI Quy trình sản xuất]]

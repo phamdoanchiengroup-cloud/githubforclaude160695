@@ -1495,7 +1495,8 @@ function dhVeCongDoan(ds){
    Sản lượng = Đóng gói theo NHẬT KÝ KPI (bước xuất Đóng gói như tab Quy trình) – có sẵn nhiều tháng; đơn đã hoàn thiện = đọc thẳng tab HT-<năm>
    (không có ngày xong -> tháng theo hạn mới HT / deadline). Bản chụp chỉ còn để xem "Thay đổi hôm nay" và tham khảo. */
 var DHHT=null, DHHTTai=false, DHDG=null, DHDGTai=false;
-function dhTaiHT(lam){ if(DHHTTai) return; DHHTTai=true; call('layDonHoanThien',[!!lam],function(r){ DHHTTai=false; DHHT=(r&&r.ok)?r:{loi:(r&&r.msg)||'Không đọc được tab HT.'}; dhVeLai(); }); }
+function dhHTMo(r){ if(r&&r.donC&&r.donH){ var c=r.donC; r.don=r.donH.map(function(d){ var o={}; for(var j=0;j<c.length;j++) o[c[j]]=d[j]; return o; }); delete r.donH; } return r; }   /* 08/11: máy chủ gửi gọn dạng bảng */
+function dhTaiHT(lam){ if(DHHTTai) return; DHHTTai=true; call('layDonHoanThien',[!!lam],function(r){ DHHTTai=false; dhHTMo(r); DHHT=(r&&r.ok)?r:{loi:(r&&r.msg)||'Không đọc được tab HT.'}; dhVeLai(); }); }
 function dhTaiDG(){ if(DHDGTai) return; DHDGTai=true; call('layDongGoiNgay',[200],function(r){ DHDGTai=false; DHDG=(r&&r.ok)?r:{loi:(r&&r.msg)||'Không đọc được nhật ký.',ngay:{}}; dhVeLai(); }); }
 function dhThangNhan(t){ return t.slice(5)+'/'+t.slice(0,4); }
 function dhThangTruoc(t,n){ var d=new Date(t+'-01T00:00:00'); d.setMonth(d.getMonth()-(n||1)); return d.getFullYear()+'-'+('0'+(d.getMonth()+1)).slice(-2); }
@@ -1693,7 +1694,7 @@ function dhBCChot(cb){
   toast('Đang đọc lại Sheet đơn, tab HT, nhật ký Đóng gói…',true);
   call('layDonHangXuong',[true],function(r){
     if(r&&r.ok){ DH=r; DH.dongMap={}; (r.nhan.dong||[]).forEach(function(d){DH.dongMap[d[0]]=d;}); }
-    call('layDonHoanThien',[true],function(r2){ if(r2&&r2.ok) DHHT=r2;
+    call('layDonHoanThien',[true],function(r2){ dhHTMo(r2); if(r2&&r2.ok) DHHT=r2;
       call('layDongGoiNgay',[200],function(r3){ if(r3&&r3.ok) DHDG=r3; cb(); }); });
   });
 }
@@ -2618,7 +2619,7 @@ function dhVeCauHinh(){
    Tổng hợp ở một chỗ: Sản xuất & đơn hàng (chuyển từ Đơn hàng → Thống kê), Nhân sự, Điểm danh, Báo cơm (cả người không báo),
    Công đoạn, Định mức, KPI. Thống kê riêng ở từng tab cũ vẫn giữ. Máy chủ: layThongKe(thang) + phanTichDinhMuc (đã có). ===== */
 var TKV='tq', TKThang='', TKD={}, TKTai={}, TKDM={}, TKDMTai={};
-var TK_TAB=[['tq','Tổng quan'],['sx','Sản xuất & đơn hàng'],['ns','Nhân sự'],['dd','Điểm danh'],['com','Báo cơm'],['cd','Công đoạn'],['dm','Định mức'],['kpi','KPI']];
+var TK_TAB=[['tq','Tổng quan'],['sx','Sản xuất & đơn hàng'],['ns','Nhân sự'],['dd','Điểm danh'],['com','Báo cơm'],['cd','Công đoạn'],['dm','Định mức'],['kpi','KPI'],['td','Tốc độ web']];
 function tkThangNay(){ var d=new Date(); return d.getFullYear()+'-'+('0'+(d.getMonth()+1)).slice(-2); }
 function tkThangDs(){ var a=[], t=tkThangNay(); for(var i=0;i<6;i++){ a.push(t); var p=t.split('-'), y=+p[0], m=+p[1]-1; if(m<1){m=12;y--;} t=y+'-'+('0'+m).slice(-2); } return a; }
 function tkChon(v){ TKV=v; tkVe(); try{ var m=document.querySelector('.dh-nav'); if(m&&m.getBoundingClientRect().top<0) m.scrollIntoView({block:'start'}); }catch(e){} }
@@ -2646,11 +2647,12 @@ function tkSvgHeat(hang,ngs,o,mau,nhanO,M,tieu){ var w=760, L=150, cw=(w-L-10)/M
 function tkVe(){
   if(!TKThang) TKThang=tkThangNay();
   var D=TKD[TKThang], dsT=tkThangDs(); if(dsT.indexOf(TKThang)<0) dsT.push(TKThang);
-  if(TKV!=='sx'&&!D) tkTai(false);
+  if(TKV!=='sx'&&TKV!=='td'&&!D) tkTai(false);
   var h='<div class="dh-dau" style="flex-wrap:wrap"><div style="min-width:0;flex:1 1 260px"><div class="ptitle">Thống kê</div><div class="dh-mota">Tổng hợp nhân sự, điểm danh, báo cơm, công đoạn, định mức, KPI và sản xuất – chỉ chủ sở hữu thấy'+(D&&D.luc?' · tính lúc '+esc(D.luc):'')+'</div></div>'+
     '<div class="dh-cu" style="flex-wrap:wrap;gap:6px;max-width:100%"><select aria-label="Chọn tháng" onchange="TKThang=this.value;tkVe()" style="min-height:34px;max-width:100%">'+dsT.map(function(t){return '<option value="'+t+'"'+(t===TKThang?' selected':'')+'>Tháng '+t.slice(5)+'/'+t.slice(0,4)+(t===tkThangNay()?' · đang chạy':'')+'</option>'}).join('')+'</select> <button class="btn sm" type="button" onclick="tkLamMoi()" title="Tính lại từ Sheet">↻ Làm mới</button></div></div>';
   h+='<div class="dh-nav"><div class="dh-sub" role="tablist">'+TK_TAB.map(function(t){return '<button type="button" role="tab"'+(TKV===t[0]?' class="on" aria-current="page"':'')+' onclick="tkChon(\''+t[0]+'\')">'+t[1]+'</button>'}).join('')+'</div></div><div class="dh-than">';
-  if(TKV==='sx'){
+  if(TKV==='td') h+=tkVeTD();
+  else if(TKV==='sx'){
     h+='<div class="dh-ghi">Số liệu đơn hàng là <b>hiện tại</b> (không theo tháng chọn). Biểu đồ sản lượng xưởng theo nhật ký sản xuất.</div>';
     if(!DH){ if(!DHTai) dhTai(false); h+='<div class="pdesc">Đang đọc Sheet "Trạng thái đơn hàng"…</div>'; }
     else if(DH.loi) h+='<div class="alert a-bd">'+esc(DH.loi)+' <button class="btn sm" type="button" onclick="DH=null;dhTai(true)">Thử lại</button></div>';
@@ -2859,6 +2861,40 @@ function tkVeKPI(D){
     h+=tkCard('Vi phạm tháng '+D.thang.slice(5)+' ('+tv+' lượt)',(vp.length<2?'':dhSvgPareto(vp.map(function(x){return [x.ten,x.n]}),M,{h:230}))+
       tkBang([['Xưởng']].concat(mv.map(function(m){return [esc(m),1]})).concat([['Tổng',1]]),D.xuong.filter(function(x){return K.viPhamX[x[0]]}).map(function(x){var o=K.viPhamX[x[0]];return [[esc(x[1].replace(/^Xưởng /,''))].concat(mv.map(function(m){return o[m]||''})).concat([mv.reduce(function(a,m){return a+(o[m]||0)},0)])]})),
       'Cột = số lượt vi phạm theo loại, đường = % cộng dồn. Mã: '+vp.map(function(x){return esc(x.ma)+' = '+esc(x.ten)}).join('; ')+'. Nhập sản lượng trễ (NHAPTRE) do hệ thống tự ghi khi quá hạn nhập.'); }
+  return h; }
+
+/* ---------- Tốc độ web (08/11, tăng tốc đợt 3): số đo thật từ máy người dùng (ghiTocDo), 14 ngày ---------- */
+var TKTD=null, TKTDTai=false, TKTDN=7;
+var TD_TEN={trang:'Mở trang (tới màn đăng nhập)',vaoApp:'Bấm Đăng nhập → thấy số',napDuLieu:'Tải gói dữ liệu đăng nhập',napPhan:'Tải lại sau khi lưu',layKPIKy:'Bảng KPI',layKPIQuanLy:'KPI quản lý',layDonHangXuong:'Đơn hàng',layDongGoiNgay:'Sản lượng xưởng (Đơn hàng)',layThongKe:'Thống kê',phanTichDinhMuc:'Phân tích định mức',layQuyTrinh:'Quy trình sản xuất',layDonHoanThien:'Đơn đã hoàn thiện (tab HT)',layManhGiaoDien:'Tải phần giao diện',congNhanGuiSanLuong:'Công nhân gửi sản lượng',duyetNhomNguoi:'Duyệt sản lượng',chotCa:'Chốt ca (trưởng phòng nhập)'};
+var TD_VT={OWNER:'Chủ sở hữu',ADMIN:'Ban điều hành',TP:'Trưởng / phó phòng',PP:'Phó phòng',CN:'Công nhân',HR:'Nhân sự',BEP:'Bếp',TL:'Trợ lý',TBP:'Trưởng bộ phận',NV:'Nhân viên'};
+function tkTDTai(){ if(TKTDTai) return; TKTDTai=true; call('layTocDo',[14],function(r){ TKTDTai=false; TKTD=(r&&r.ok)?r:{loi:(r&&r.msg)||'Không đọc được số đo.'}; if(tabHienTai==='tk'&&TKV==='td') tkVe(); }); }
+function tdGop(ds,lay){ var o=null; ds.forEach(function(n){ var x=lay(n.o); if(!x) return; if(!o){ o=x.slice(); return; } o[0]+=x[0]; o[1]+=x[1]; o[2]=Math.max(o[2],x[2]); o[3]+=x[3]; o[4]+=x[4]; for(var i=5;i<x.length;i++) o[i]+=x[i]; }); return o; }
+function tdPV(o,moc,p){ var n=o[0], can=n*p, cd=0; for(var i=5;i<o.length;i++){ cd+=o[i]; if(cd>=can) return i-5<moc.length?moc[i-5]:null; } return null; }
+function tdS(ms){ return ms==null?'> 15 s':(ms<1000?Math.round(ms)+' ms':qtSo(ms/1000,1)+' s'); }
+function tdMau(ms,muc){ return ms>=muc*2?'var(--red)':(ms>=muc?'var(--amber)':'var(--green)'); }
+function tkVeTD(){
+  if(!TKTD){ tkTDTai(); return '<div class="pdesc">Đang đọc số đo tốc độ…</div>'; }
+  if(TKTD.loi) return '<div class="alert a-bd">'+esc(TKTD.loi)+'</div>';
+  var R=TKTD, ds=R.ngay.slice(0,TKTDN), moc=R.moc, h='';
+  h+='<div class="dh-ghi">Số đo <b>thật</b> từ máy của người dùng (gồm cả đường truyền mạng), gửi về tự động. Chọn: '+[1,7,14].map(function(n){return '<button type="button" class="btn sm'+(TKTDN===n?' pri':'')+'" onclick="TKTDN='+n+';tkVe()">'+(n===1?'Hôm nay':n+' ngày')+'</button>'}).join(' ')+' · Nhật ký sản xuất hiện có <b>'+qtSo(R.nhatKyDong,0)+'</b> dòng'+(R.nkDem?' · bản nhớ dùng chung đang có':'')+'</div>';
+  if(!ds.length) return h+'<div class="card"><div class="dh-ghi">Chưa có số đo. Sau khi cập nhật web, mọi người dùng vài giờ là có số.</div></div>';
+  /* 1. trải nghiệm theo vai trò */
+  var vt={}; ds.forEach(function(n){ Object.keys(n.o.v||{}).forEach(function(k){ vt[k.split('|')[1]]=1; }); });
+  var muc={trang:3000,vaoApp:4000,napDuLieu:3000};
+  var hang=[]; ['trang','vaoApp','napDuLieu'].forEach(function(f){ Object.keys(vt).sort().forEach(function(v){ var o=tdGop(ds,function(x){return (x.v||{})[f+'|'+v]}); if(!o) return;
+    var tb=o[1]/o[0], p90=tdPV(o,moc,0.9); hang.push([[esc(TD_TEN[f]||f),esc(TD_VT[v]||v),o[0],'<b style="color:'+tdMau(tb,muc[f])+'">'+tdS(tb)+'</b>','<span style="color:'+tdMau(p90==null?99999:p90,muc[f])+'">≤ '+tdS(p90)+'</span>',tdS(o[2]),o[4]?tdS(o[3]/o[4]):'–']]); }); });
+  h+=tkCard('Người dùng chờ bao lâu (theo vai trò)',tkBang([['Bước'],['Vai trò'],['Lượt',1],['Trung bình',1],['90% lượt nhanh hơn',1],['Chậm nhất',1],['Máy chủ chạy (TB)',1]],hang),
+    'Mục tiêu (chuyên gia vận hành 08/11): mở trang &lt; 3 s, bấm Đăng nhập → thấy số &lt; 4 s (công nhân &lt; 2 s), tải gói dữ liệu &lt; 3 s. <b style="color:var(--green)">Xanh</b> = đạt, <b style="color:var(--amber)">vàng</b> = chậm, <b style="color:var(--red)">đỏ</b> = gấp đôi mục tiêu. "90% lượt nhanh hơn" cho biết người mạng yếu chờ bao lâu. <b>Máy chủ chạy</b> = phần Google tính toán; phần còn lại là đường truyền + trình duyệt vẽ.');
+  /* 2. từng hàm */
+  var fs={}; ds.forEach(function(n){ Object.keys(n.o.f||{}).forEach(function(f){ fs[f]=1; }); });
+  var dsF=Object.keys(fs).filter(function(f){return f!=='trang'&&f!=='vaoApp'}).map(function(f){ var o=tdGop(ds,function(x){return (x.f||{})[f]}); return {f:f,o:o,tb:o[1]/o[0],tong:o[1]}; }).sort(function(a,b){return b.tong-a.tong});
+  h+=tkCard('Từng loại thao tác (xếp theo tổng thời gian chờ)',tkBang([['Thao tác'],['Lượt',1],['Trung bình',1],['90% nhanh hơn',1],['Chậm nhất',1],['Máy chủ (TB)',1],['Đường truyền + vẽ (TB)',1]],
+    dsF.slice(0,25).map(function(x){ var o=x.o, sv=o[4]?o[3]/o[4]:null; return [[esc(TD_TEN[x.f]||x.f)+' <span style="color:var(--ink3);font-size:11px">'+esc(x.f)+'</span>',o[0],'<b style="color:'+tdMau(x.tb,2000)+'">'+tdS(x.tb)+'</b>','≤ '+tdS(tdPV(o,moc,0.9)),tdS(o[2]),sv==null?'–':tdS(sv),sv==null?'–':tdS(Math.max(0,x.tb-sv))]]; })),
+    'Thao tác chờ lâu nhất tính theo tổng (lượt × thời gian) nằm trên cùng – cải thiện cái đó lợi nhiều nhất. Nếu "Máy chủ" chiếm phần lớn: cần tính gọn hơn / nhớ sẵn. Nếu "Đường truyền + vẽ" lớn: gói dữ liệu quá to hoặc mạng yếu.');
+  /* 3. theo ngày */
+  var ngs=R.ngay.slice(0,14).slice().reverse();
+  var cot=ngs.map(function(n){ var o=(n.o.v&&Object.keys(n.o.v).filter(function(k){return /^vaoApp\|/.test(k)}).reduce(function(a,k){ var x=n.o.v[k]; a[0]+=x[0]; a[1]+=x[1]; return a; },[0,0]))||[0,0]; return o[0]?Math.round(o[1]/o[0]/100)/10:0; });
+  h+=tkCard('Đăng nhập → thấy số, trung bình theo ngày (giây)',dhSvgCotX(ngs.map(function(n){return dhNg(n.ngay)}),cot,4,dhMau(),{w:760,h:170,so:1,khongKS:1}),'Vạch đứt = mục tiêu 4 giây. Sau mỗi lần cập nhật web, so cột trước / sau để biết có nhanh hơn không.');
   return h; }
 window.__qtDaNap=true;
 </script>

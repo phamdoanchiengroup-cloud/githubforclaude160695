@@ -173,6 +173,8 @@ window.__MANH=${anToan(JSON.stringify(MANH))};
     Utilities:{DigestAlgorithm:{SHA_256:'sha256',MD5:'md5'},Charset:{UTF_8:'utf8'},
       computeDigest:function(a,s){if(a!=='sha256')throw new Error('không hỗ trợ');return sha256(s)},
       getUuid:uuid, formatDate:function(dt,tz,f){return dinhDang(dt,f)}, sleep:function(){},
+      /* 08/11: khóa bản lưu trên máy (layKhoaLuu); gzip không giả lập -> bộ nhớ nhật ký dùng chung tự bỏ qua trong bản xem thử */
+      base64Encode:function(b){return btoa(b.map(function(x){return String.fromCharCode(x&255)}).join(''))}, base64Decode:function(t){return atob(t).split('').map(function(c){var v=c.charCodeAt(0);return v>127?v-256:v})},
       /* bảo mật 18/10: mật khẩu băm HMAC-SHA256 lặp (Utilities.newBlob / computeHmacSha256Signature) */
       newBlob:function(d){var bin=typeof d==='string'?unescape(encodeURIComponent(d)):d.map(function(x){return String.fromCharCode(x&255)}).join('');
         return {getBytes:function(){return bin.split('').map(function(c){var v=c.charCodeAt(0);return v>127?v-256:v})},getDataAsString:function(){return decodeURIComponent(escape(bin))}}},
@@ -211,7 +213,7 @@ window.__MANH=${anToan(JSON.stringify(MANH))};
       if(ten==='withUserObject')return function(){return p};
       return function(){var a=[].slice.call(arguments);
         setTimeout(function(){ var r,e=null; try{r=goi(ten,a)}catch(x){e=x}
-          setTimeout(function(){ e?loi(e):ok(r) }, 120+Math.random()*180); }, 30);};
+          setTimeout(function(){ e?loi(e):ok(r) }, 120+Math.random()*180+((window.__tre||{})[ten]||0)); }, 30);};   /* __tre: thêm độ trễ giả cho kiểm thử (08/11) */
     }}); return p; }}};
 })();
 </script>`;

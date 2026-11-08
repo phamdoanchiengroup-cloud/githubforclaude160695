@@ -891,7 +891,11 @@ function dhCacheLay_(k) { try { var c = CacheService.getScriptCache(), n = Numbe
 function dhCacheGhi_(k, o, giay) { try { var s = JSON.stringify(o), p = {}, m = 0; for (var x = 0; x < s.length; x += 30000) p[k + '_' + (m++)] = s.slice(x, x + 30000); p[k + '_n'] = String(m); CacheService.getScriptCache().putAll(p, giay); } catch (e) {} }
 function layDonHoanThien(token, lamMoi) {
   var q = qtQuyen_(token); if (q.loi) return q.loi;
-  return sach_(dhHTTrucTiep_(lamMoi));
+  /* 08/11 tăng tốc: gửi gọn dạng bảng, chỉ các cột web dùng (1,7 MB → ~0,3 MB). Trình duyệt mở lại bằng dhHTMo. */
+  var H = dhHTTrucTiep_(lamMoi), cot = ['maDon', 'kenh', 'tab', 'nguoiDat', 'dl', 'hanMoi', 'thang', 'sl', 'thieu'], o = {};
+  Object.keys(H).forEach(function(k) { if (k !== 'don') o[k] = H[k]; });
+  if (H.don) { o.donC = cot; o.donH = H.don.map(function(d) { return cot.map(function(c) { var v = d[c]; return v === undefined ? '' : v; }); }); }
+  return sach_(o);
 }
 function dhHTTrucTiep_(lamMoi) {
   var K = 'DH_HT_v2', kq = lamMoi ? null : dhCacheLay_(K);

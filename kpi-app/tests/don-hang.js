@@ -227,10 +227,12 @@ console.log('\n4h. Đơn hoàn thiện đọc trực tiếp tab HT + Đóng gói
   c.__ngoai = { [c.DH_SHEET_ID]: { ten: 'x', sheets: { OEM: [H.slice(0, 6), ['OEM-03/09', E, '', 1, 1, '28/09']], ['HT-' + nam]: ht } } }; c.dhDocDon_(true);
   let r = c.__goi('layDonHoanThien', Tadm, true); ok(!r.ok, 'ban điều hành không xem được');
   r = c.__goi('layDonHoanThien', Town, true);
+  ok(r.ok && !r.don && r.donC.length === 9 && r.donH.every(d => d.length === 9), '08/11: gửi gọn dạng bảng 9 cột (web mở lại bằng dhHTMo)', r.donC);
+  r.don = r.donH.map(d => Object.fromEntries(r.donC.map((k, j) => [k, d[j]])));
   const g = m => r.don.find(o => o.maDon === m) || {};
   ok(r.ok && r.tabs.join() === 'HT-' + nam && r.don.length === 4 && g('DEA-01/09').tab === 'DEALER' && g('KHO-02/09').tab === 'KHO' && g('OEM-03/09').tab === 'OEM' && g('OEM-03/09').kenh === 'OEM',
     'đọc tab HT-' + nam + ': kênh từ dòng tiêu đề nhóm (DEALER), cột "Kênh" (Kho), mã đơn còn ở tab kênh (OEM)', r.don.map(o => [o.maDon, o.tab]));
-  ok(g('DEA-01/09').thang === nam + '-10' && g('KHO-02/09').thang === nam + '-09' && g('KHO-02/09').thieu === 1 && g('DEA-01/09').pl.loai === 'GAY' && r.nguon.nhom === 1 && r.nguon.cot === 1 && r.nguon.ma === 2,
+  ok(g('DEA-01/09').thang === nam + '-10' && g('KHO-02/09').thang === nam + '-09' && g('KHO-02/09').thieu === 1 && c.dhHTTrucTiep_(false).don.find(o => o.maDon === 'DEA-01/09').pl.loai === 'GAY' && r.nguon.nhom === 1 && r.nguon.cot === 1 && r.nguon.ma === 2,
     'tháng theo hạn mới HT (05/10) nếu có, không thì deadline; giữ số thiếu khi chuyển; có phân loại sản phẩm', [g('DEA-01/09').thang, g('KHO-02/09').thang, r.nguon]);
   const dg = c.__goi('layDongGoiNgay', Town, 200), ma = c.dhMaDongGoi_();
   ok(dg.ok && ma.length > 0 && Object.keys(dg.ngay).length > 10 && Object.values(dg.ngay).every(v => v > 0), 'Đóng gói theo ngày từ nhật ký KPI (bước xuất Đóng gói: ' + ma.length + ' mã công đoạn, ' + Object.keys(dg.ngay).length + ' ngày)', [ma, Object.keys(dg.ngay).length]);
