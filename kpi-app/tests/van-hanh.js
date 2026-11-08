@@ -90,15 +90,6 @@ r = c.__goi('soatDuyet', tO);
 const xX = r.ok && r.xuong.find(x => x.MaXuong === tp.MaXuong);
 ok(r.ok && xX && xX.sua >= 1 && Array.isArray(r.mau) && Array.isArray(r.lech), 'ban điều hành: số dòng TP sửa, mẫu đối chiếu, định mức lệch', r.ok ? { x: xX, mau: r.mau.length, lech: r.lech.length } : r);
 
-console.log('\nD4. Đón người mới');
-r = c.__goi('layHoiNhap', tTP);
-const moi = r.ok && r.ds.find(x => x.MaNV === cn.MaNV);
-ok(moi && moi.muc.length === 8 && moi.muc.find(m => m.ma === 'nhapdau').xong, 'trưởng phòng thấy người mới vào 01/10, mục "lần nhập đầu đã duyệt" tự đánh dấu', moi);
-r = c.__goi('danhDauHoiNhap', tTP, cn.MaNV, 'phieu', true); ok(r.ok, 'đánh dấu tay "đã giao phiếu"');
-ok(c.__goi('layHoiNhap', tTP).ds.find(x => x.MaNV === cn.MaNV).muc.find(m => m.ma === 'phieu').xong, 'mục tay đã lưu');
-r = c.__goi('danhDauHoiNhap', tTP, cn.MaNV, 'nhapdau', true); ok(!r.ok, 'mục tự động không đánh dấu tay được');
-r = c.__goi('danhDauHoiNhap', tCN, cn.MaNV, 'phieu', false); ok(!r.ok, 'công nhân không đánh dấu được');
-
 console.log('\nD5. Bảng kỹ năng 3 mức');
 r = c.__goi('luuMucKyNang', tTP, cn.MaNV, cd1.MaCD, 'hoc');
 ok(r.ok && r.MucKyNang[cd1.MaCD] === 'hoc' && r.CongDoanLamDuoc.split(',').includes(cd1.MaCD), 'đặt "Đang học": công đoạn vẫn trong danh sách làm được', r);

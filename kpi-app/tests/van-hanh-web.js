@@ -62,7 +62,7 @@ const doiNguoi = (p, f, giuMai) => p.evaluate(([f, giuMai]) => {
   s = await p.evaluate(l => { const sl = [...$('vhKN').querySelectorAll('tbody select')].find(x => x.getAttribute('aria-label') === l); return [sl && sl.value, sl && sl.parentNode.className]; }, chon);
   ok(s[0] === 'hoc' && s[1] === 'hoc', 'chọn "Đang học": lưu lên máy chủ, ô tô màu', s);
   await p.evaluate(() => go('ns')); await p.waitForTimeout(1500);
-  ok(await p.evaluate(() => !!$('vhHN')), 'tab Nhân sự: khung "Đón người mới" (hiện khi có người vào làm trong 45 ngày)');
+  ok(await p.evaluate(() => !$('vhHN')), 'tab Nhân sự: không còn khung "Đón người mới" (bỏ 08/11)');
   ok(!p.loi.length, 'không lỗi JavaScript (trưởng phòng)', p.loi);
   // hướng dẫn Rhino cho TP lần đầu
   await doiNguoi(p, "x.TenDangNhap==='" + tpTk + "'", true);

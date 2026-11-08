@@ -13,10 +13,6 @@
 .vh-the table{width:100%}
 .vh-so{font-size:22px;font-weight:700}
 .vh-lap{display:flex;flex-wrap:wrap;gap:6px}
-.vh-muc{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);border-radius:999px;padding:4px 10px;font-size:12px;background:transparent;color:var(--ink2);min-height:32px}
-.vh-muc.xong{color:var(--ink);border-color:rgba(102,212,154,.6)}
-.vh-muc.xong::before{content:'✓';color:#66d49a;font-weight:700}
-button.vh-muc{cursor:pointer}
 .vh-kn td,.vh-kn th{text-align:center;padding:4px}
 .vh-kn td:first-child,.vh-kn th:first-child{text-align:left;white-space:nowrap}
 .vh-kn select{min-height:36px;font-size:13px;padding:2px 4px}
@@ -212,33 +208,6 @@ function vhSoat(){
     h+='</div>'; b.innerHTML=h;
   });
 }
-
-/* ---------- D4. Đón người mới (tab Nhân sự) ---------- */
-var _vhVNS=vNS;
-vNS=function(){
-  var kq=_vhVNS.apply(this,arguments);
-  if(['ADMIN','HR','TP','TL'].indexOf(ME.vaiTro)>=0) vhHoiNhap();
-  return kq;
-};
-function vhHoiNhap(){
-  // 24/10 (chủ dự án): thẻ Đón người mới đặt ở CUỐI tab Nhân sự
-  var mHN=$('main'); if(!mHN)return; var cuHN=$('vhHN'); if(cuHN)cuHN.remove();
-  var dHN=document.createElement('div'); dHN.id='vhHN'; mHN.appendChild(dHN);
-  vhGoi('layHoiNhap',[],function(r){
-    var b=$('vhHN'); if(!b||!r.ok||!r.ds||!r.ds.length){ if(b)b.innerHTML=''; return; }
-    var ten={}; (r.muc||[]).forEach(function(m){ten[m[0]]=m[1]});
-    b.innerHTML='<div class="vh-the"><h3>🧭 Đón người mới<span class="nho"> · vào làm trong 45 ngày</span></h3>'+
-      r.ds.map(function(x){
-        return '<div style="padding:8px 0;border-top:1px solid var(--line)"><div><b>'+esc(x.HoTen)+'</b> <span class="nho">'+esc(x.MaNV)+' · '+esc(x.TenXuong)+' · vào '+dmy(x.NgayVaoLam)+' ('+x.soNgay+' ngày) · xong '+x.xong+'/'+x.muc.length+'</span></div>'+
-          '<div class="vh-lap" style="margin-top:6px">'+x.muc.map(function(m){
-            var cls='vh-muc'+(m.xong?' xong':''), nhan=esc(ten[m.ma]||m.ma);
-            if(m.tay&&r.sua) return '<button type="button" class="'+cls+'" aria-pressed="'+m.xong+'" title="Bấm để '+(m.xong?'bỏ đánh dấu':'đánh dấu đã xong')+(m.ai?' · '+esc(m.ai):'')+'" onclick="vhDanhDau(\''+esc(x.MaNV)+'\',\''+m.ma+'\','+(!m.xong)+')">'+nhan+'</button>';
-            return '<span class="'+cls+'" title="'+(m.tay?'':'Tự đánh dấu từ dữ liệu')+'">'+nhan+'</span>';
-          }).join('')+'</div></div>';
-      }).join('')+'<div class="nho" style="margin-top:6px">Mục viền tròn có thể bấm để đánh dấu; các mục khác web tự nhận biết.</div></div>';
-  });
-}
-function vhDanhDau(ma,muc,co){ call('danhDauHoiNhap',[ma,muc,co],function(r){ if(!r.ok){toast(r.msg,false);return} vhHoiNhap(); }); }
 
 /* ---------- D5. Bảng kỹ năng 3 mức (tab Công đoạn, trưởng phòng / ban điều hành) ---------- */
 var _vhVCD=vCD, __vhKnX='';

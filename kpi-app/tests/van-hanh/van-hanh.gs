@@ -144,70 +144,7 @@ function soatDuyetGoc_() {
     lech: lech.slice(0, 15) });
 }
 
-/* ===== D4. ĐÓN NGƯỜI MỚI: danh sách việc cho nhân sự / trưởng phòng =====
-   Mục tự động lấy từ dữ liệu; mục "tay" lưu ở sheet HoiNhap (MaNV, Muc, NguoiDanh, ThoiDiem). */
-var HN_SHEET = 'HoiNhap', HN_COT = ['MaNV', 'Muc', 'NguoiDanh', 'ThoiDiem'], HN_SO_NGAY = 45;
-var HN_MUC = [
-  ['phieu', 'Đã giao phiếu tài khoản (mật khẩu tạm)', 'tay'],
-  ['dangnhap', 'Đã đăng nhập lần đầu', 'tu'],
-  ['doimk', 'Đã đổi mật khẩu riêng', 'tu'],
-  ['congdoan', 'Đã giao công đoạn làm được', 'tu'],
-  ['nhapdau', 'Lần nhập sản lượng đầu đã được duyệt', 'tu'],
-  ['com', 'Đã đăng ký cơm trưa', 'tu'],
-  ['kem', 'Có người kèm cặp 3 ngày đầu', 'tay'],
-  ['ngay30', 'Trưởng phòng xác nhận đã tự nhập được (ngày 30)', 'tay']
-];
-function hnSheet_() {
-  var sh = ss_().getSheetByName(HN_SHEET);
-  if (!sh) { sh = ss_().insertSheet(HN_SHEET); sh.getRange(1, 1, 1, HN_COT.length).setValues([HN_COT]).setFontWeight('bold'); sh.setFrozenRows(1); }
-  return sh;
-}
-function hnDuoc_(me) { return !!me && ['ADMIN', 'HR', 'TP', 'TL'].indexOf(me.vaiTro) >= 0; }
-function layHoiNhap(token) {
-  var me = docPhien_(token);
-  if (!me) return sach_({ ok: false, hetHan: true, msg: 'Phiên đăng nhập đã hết hạn.' });
-  if (!hnDuoc_(me)) return sach_({ ok: true, ds: [] });
-  var homNay = homNayVN_(), tu = congNgay_(homNay, -HN_SO_NGAY);
-  var ns = doc_('NhanSu').filter(function(x){
-    var v = x.NgayVaoLam ? ngayVN_(x.NgayVaoLam) : '';
-    return v && v >= tu && v <= homNay && String(x.TrangThai).trim() !== 'Nghỉ việc' && (me.vaiTro !== 'TP' || x.MaXuong === me.xuong);
-  });
-  if (!ns.length) return sach_({ ok: true, ds: [], muc: HN_MUC });
-  var tk = {}; doc_('TaiKhoan').forEach(function(t){ if (t.MaNV) tk[String(t.MaNV).toUpperCase()] = t; });
-  var nk = {}; doc_('NhatKySanXuat').forEach(function(r){ if (String(r.TrangThai).trim() === 'Đã chốt') nk[r.MaNV] = 1; });
-  var com = {}; docAnToan_('DangKyCom').forEach(function(r){ com[String(r.TenDangNhap).toLowerCase()] = 1; });
-  var tay = {}; (ss_().getSheetByName(HN_SHEET) ? doc_(HN_SHEET) : []).forEach(function(r){ tay[r.MaNV + '|' + r.Muc] = { ai: r.NguoiDanh, luc: r.ThoiDiem }; });
-  var ds = ns.map(function(x){
-    var t = tk[String(x.MaNV).toUpperCase()];
-    var tu_ = {
-      dangnhap: !!(t && String(t.LanDangNhapCuoi || '').trim()),
-      doimk: !!(t && String(t.DoiMatKhauLanDau).trim() === 'Không'),
-      congdoan: !!String(x.CongDoanLamDuoc || '').trim(),
-      nhapdau: !!nk[x.MaNV],
-      com: !!(t && com[String(t.TenDangNhap).toLowerCase()])
-    };
-    var muc = HN_MUC.map(function(m){ var v = m[2] === 'tu' ? tu_[m[0]] : !!tay[x.MaNV + '|' + m[0]]; return { ma: m[0], xong: v, tay: m[2] === 'tay', ai: (tay[x.MaNV + '|' + m[0]] || {}).ai || '' }; });
-    return { MaNV: x.MaNV, HoTen: x.HoTen, MaXuong: x.MaXuong, TenXuong: tenXuong_(x.MaXuong), NgayVaoLam: ngayVN_(x.NgayVaoLam),
-      soNgay: Math.round((new Date(homNay).getTime() - new Date(ngayVN_(x.NgayVaoLam)).getTime()) / 864e5),
-      muc: muc, xong: muc.filter(function(m){ return m.xong; }).length };
-  }).sort(function(a, b){ return a.NgayVaoLam < b.NgayVaoLam ? 1 : -1; });
-  return sach_({ ok: true, ds: ds, muc: HN_MUC, sua: me.vaiTro !== 'TL' });
-}
-function danhDauHoiNhap(token, maNV, muc, co) {
-  var me = docPhien_(token);
-  if (!me) return sach_({ ok: false, hetHan: true, msg: 'Phiên đăng nhập đã hết hạn.' });
-  if (['ADMIN', 'HR', 'TP'].indexOf(me.vaiTro) < 0) return sach_({ ok: false, msg: 'Không có quyền.' });
-  if (!HN_MUC.some(function(m){ return m[0] === muc && m[2] === 'tay'; })) return sach_({ ok: false, msg: 'Mục không đánh dấu tay được.' });
-  var nv = doc_('NhanSu').filter(function(x){ return x.MaNV === maNV; })[0];
-  if (!nv) return sach_({ ok: false, msg: 'Không tìm thấy nhân viên.' });
-  if (me.vaiTro === 'TP' && nv.MaXuong !== me.xuong) return sach_({ ok: false, msg: 'Nhân viên không thuộc xưởng của bạn.' });
-  khoa_();
-  var sh = hnSheet_();
-  var cu = doc_(HN_SHEET).filter(function(r){ return r.MaNV === maNV && r.Muc === muc; });
-  if (co && !cu.length) them_(HN_SHEET, { MaNV: maNV, Muc: muc, NguoiDanh: me.ten, ThoiDiem: new Date() });
-  if (!co && cu.length) xoaNhieuDong_(HN_SHEET, cu.map(function(r){ return r._row; }));
-  return sach_({ ok: true });
-}
+/* D4. Đón người mới: chủ dự án bỏ hẳn 08/11 (sheet HoiNhap cũ để nguyên, không còn dùng). */
 
 /* ===== D5. BẢNG KỸ NĂNG 3 MỨC: Đang học (có người kèm) / Làm được / Kèm được người khác =====
    CongDoanLamDuoc giữ nguyên cách lưu (danh sách mã công đoạn). Mức nằm ở cột mới MucKyNang = JSON {MaCD: 'hoc'|'kem'};

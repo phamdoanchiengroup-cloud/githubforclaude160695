@@ -843,5 +843,11 @@ exec(io.open(os.path.join(D, 'tang-toc-3', 'va-tang-toc-3-web.py'), encoding='ut
 # ---------------------------------------------------------------- 39. Điều phối sản xuất (08/11): cách đếm, nút cổ chai, dòng chảy, sức khỏe dữ liệu, việc của xưởng – Việc hôm nay
 exec(io.open(os.path.join(D, 'dieu-phoi', 'va-dieu-phoi-web.py'), encoding='utf-8').read())
 
+# ---------------------------------------------------------------- 40. Tab Nhân sự gọn lại (08/11): Thêm NV đầu, Tìm + bộ lọc, bảng Thâm niên (bỏ Xưởng / KPI)
+exec(io.open(os.path.join(D, 'nhan-su', 'va-nhan-su-loc-web.py'), encoding='utf-8').read())
+
+# ---------------------------------------------------------------- 41. Tổng quan chủ sở hữu (08/11): 4 ô số, sản lượng xưởng, đơn hàng, nhân lực, cần chú ý
+exec(io.open(os.path.join(D, 'tong-quan', 'va-tong-quan-web.py'), encoding='utf-8').read())
+
 io.open(os.path.join(D, '..', 'Index.html'), 'w', encoding='utf-8').write(s)
 print('OK Index.html')

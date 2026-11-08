@@ -28,3 +28,4 @@ DATA=/đường/dẫn/csdl.json OUT=/tmp/xem-thu-kpi.html node kpi-app/tests/tao
 - Chromium không tin CA của proxy → tải trang ngoài bằng `page.route` + Node `fetch` (NODE_USE_ENV_PROXY=1); ffmpeg đủ codec lấy từ pip `imageio-ffmpeg`. – [[KPI Màn đăng nhập Khắc laser]]
 - 24/10: `manh-web.js` nâng ngân sách Index từ 900 lên 1000 KB. Index 954 KB sau Kỹ năng (+35 KB) và hologram (+24 KB). Bộ clasp chỉ đẩy 5 file cố định nên chưa tách thêm file được.
 - 08/11 Điều phối: `DATA=<số thật> DH=<dh-that.json> TZ=Asia/Ho_Chi_Minh node kpi-app/tests/dieu-phoi.js` (25) và `F=<bản thử số thật + DH, GIO 08/11> node kpi-app/tests/dieu-phoi-web.js` (13; CN mặc định c040, TP tpson). – [[KPI Điều phối sản xuất (08-11)]]
+- 08/11 Nhân sự + Tổng quan chủ: `F=<bản thử số thật GIO ngày thường 9h> node kpi-app/tests/nhan-su-loc-web.js` (13) + `tong-quan-web.js` (19); holo-web.js chờ 1,6 giây cho số chạy.

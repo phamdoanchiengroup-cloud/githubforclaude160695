@@ -23,7 +23,7 @@ const chup = async (p, ten) => { if (ANH) await p.screenshot({ path: ANH + '/' +
   await p.evaluate(() => { try { localStorage.removeItem('kpi_holo'); } catch (e) {} holoApDung(); });
   let s = await p.evaluate(() => ({ cls: document.documentElement.classList.contains('holo'), cv: !!document.getElementById('holoSao'), nut: (document.getElementById('btnHolo') || {}).textContent, raf: HOLO_SAO.raf > 0 }));
   ok(s.cls && s.cv && /có chuyển động/.test(s.nut || '') && s.raf, 'mặc định: bật hologram, nền sao có chuyển động, nút ở cuối menu', s);
-  await moDash(p);
+  await moDash(p); await p.waitForTimeout(1600);   // 08/11: số chạy từ 0 lên ~1,1 giây
   s = await p.evaluate(() => {
     // tự tính lại để so: trung bình KPI tháng của người đang làm (không tính TP/PP) theo xưởng, chỉ người đã có KPI
     const xs = {}; let tong = 0, n = 0;
@@ -31,14 +31,15 @@ const chup = async (p, ten) => { if (ANH) await p.screenshot({ path: ANH + '/' +
       const k = kpi(x.MaNV); if (!k || !(k.tong > 0)) return; (xs[x.MaXuong] = xs[x.MaXuong] || []).push(k.tong); tong += k.tong; n++; });
     const dai = document.getElementById('hlDai');
     return { co: !!dai, sao: dai ? dai.querySelectorAll('.hl-sao').length : 0, soX: Object.keys(xs).length, tb: n ? tong / n : 0,
-      giua: dai ? dai.querySelector('svg text[font-size="17"]').textContent : '', an: getComputedStyle(document.querySelector('#main .kpis') || document.body).display,
+      giua: dai ? dai.querySelector('svg text[font-size="17"]').textContent : '', an: getComputedStyle(document.querySelector('#main .kpis') || document.body).display, coKpis: !!document.querySelector('#main .kpis'), duoi80: /dưới 80%|chưa khai báo/i.test(document.getElementById('main').innerText), tqKhoi: !!document.getElementById('tqKhoi'),
       dong: [...(dai ? dai.querySelectorAll('.hl-dg') : [])].map(d => [d.getAttribute('data-x'), d.querySelector('b').textContent]),
       dung: Object.keys(xs).map(m => [m, (xs[m].reduce((a, b) => a + b, 0) / xs[m].length).toLocaleString('vi-VN', { minimumFractionDigits: 1, maximumFractionDigits: 1 })]) };
   });
   ok(s.co && s.sao === s.soX && s.soX > 3, 'Tổng quan có "Đài quan sát KPI": ' + s.sao + ' ngôi sao = ' + s.soX + ' xưởng có KPI tháng này', s);
   ok(s.giua === s.tb.toLocaleString('vi-VN', { minimumFractionDigits: 1, maximumFractionDigits: 1 }), 'tâm vòng = KPI trung bình nhà máy (' + s.giua + ')', [s.giua, s.tb]);
   ok(s.dung.every(d => s.dong.some(x => x[0] === d[0] && x[1] === d[1])), 'KPI từng xưởng khớp với cách tính lại (trung bình người có KPI tháng này)', { dong: s.dong, dung: s.dung });
-  ok(s.an === 'none', 'ô Hiệu suất / Tỷ lệ đạt cũ ẩn đi (đã gộp vào Đài quan sát)');
+  ok(s.an === 'none' || !s.coKpis, 'ô Hiệu suất / Tỷ lệ đạt cũ không còn (Tổng quan chủ sở hữu mới 08/11)');
+  ok(!s.duoi80 && s.tqKhoi, 'Tổng quan chủ sở hữu: có khối số hằng ngày, không còn "dưới 80%" / "chưa khai báo"', s.duoi80);
   ok(await p.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1), 'không tràn ngang (1360px)');
   await chup(p, 'holo-may-tinh');
   const ma = await p.evaluate(() => document.querySelector('#hlDai .hl-sao').getAttribute('data-x'));
