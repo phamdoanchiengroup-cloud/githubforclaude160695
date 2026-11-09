@@ -41,7 +41,7 @@
 .cg-oluoi{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:8px 10px}
 .cg-o{display:flex;flex-direction:column;gap:3px;font-size:12px;color:var(--ink2)}
 .cg-o .h{display:flex;gap:4px}
-.cg-o input{width:100%;min-height:38px;font:inherit;font-size:14px;padding:6px 8px;border:1px solid var(--line);border-radius:8px;background:var(--panel2);color:var(--ink)}
+.cg-o input,.cg-o select{width:100%;min-height:38px;font:inherit;font-size:14px;padding:6px 8px;border:1px solid var(--line);border-radius:8px;background:var(--panel2);color:var(--ink)}
 .cg-o.chua input{border-color:rgba(214,150,30,.85);background:rgba(214,150,30,.10)}
 .cg-o .dd{flex:none;min-width:38px;border:1px solid var(--line);border-radius:8px;background:var(--panel2);color:var(--ink3);cursor:pointer;font-size:13px}
 .cg-o.da .dd{color:#1b7a4f;border-color:rgba(31,138,91,.6)}
@@ -83,9 +83,14 @@ function cgMau(d){
   return { ngon:{ tip:{d:12.4,h:9.5,vl:(d&&d.tenTip)||'Da thuộc'}, pad:{h:1.2,vl:'Sợi đen'}, ferrule:{h:4,vl:'Sứ / composite trắng',tenonD:8.4,tenonL:5},
       ong:{vl:ong,loi:'Foam polyurethane',day:1.2,dai:709.9,dDau:12.4,proDai:381,dPro:13.5,dJoint:21.6,nutTruoc:0,nutSau:0,nutVl:'Gỗ maple'}, collar:{d:21.6,h:12,vl:'Composite (vault plate)'}, insert:{d:18.5,l:30,vl:'Đồng thau',ren:ren} },
     chuoi:{ collar:{d:21.6,h:12,vl:'Thép'}, pin:(function(){ var r=cgRenTT(ren)||[]; return {ren:ren,d:r[2]||9.525,tho:12.7,buoc:r[3]||3.175,kieu:r[4]==='tròn'?'tròn':'V',chon:70,vl:'Thép'}; })(),
-      forearm:{dai:318,dDau:21.6,dCuoi:25.6,vl:vlC==='GF'?'Glassfiber':vlC==='MIX'?'Mix carbon / glassfiber':'Gỗ cứng',tenonD:16,tenonL:30},
-      wrap:{dai:270,dDau:25.6,dCuoi:27.6,vl:'Linen'}, sleeve:{dai:109.6,dDau:27.6,dCuoi:31.2,vl:vlC==='GF'?'Glassfiber':'Gỗ cứng'},
-      cap:{h:17,d:31.75,vl:'Thép / composite'}, bumper:{h:10,d:31.75,vl:'Cao su'}, khoang:{d:13,sau:150}, bolt:{ren:'3/8-16',dai:75,dauD:12.5,vl:'Thép'} },
+      kieu:'carbon', vo:{day:1.6},
+      forearm:{dai:318,dDau:21.6,dCuoi:25.6,vl:vlC==='GF'?'Glassfiber':vlC==='MIX'?'Mix carbon / glassfiber':'Carbon',tenonD:16,tenonL:30},
+      wrap:{dai:270,dDau:25.6,dCuoi:27.6,vl:vlC==='GF'?'Glassfiber':'Carbon'}, sleeve:{dai:117.6,dDau:27.6,dCuoi:31.2,vl:vlC==='GF'?'Glassfiber':'Carbon'},
+      veneer:{h:4,vl:'Veneer xanh'}, khoiPin:{d:16,l:75,vl:'POM đen'}, loi:{tren:'Foam xanh nhạt',duoi:'Foam xanh đậm'},
+      thanhNoi:{d:10,l:100,vl:'Thép'}, vien:{h:2,vl:'Inlay be'},
+      cap:{h:4,d:31.2,vl:'Veneer xanh'}, bumper:{h:15,d:26,vl:'Cao su',renL:12},
+      ongCan:{d:18,dai:150,vl:'POM đen',ren:'M12'}, qua:{so:2,d:12,dai:25,vl:'Đồng thau'},
+      khoang:{d:13,sau:150}, bolt:{ren:'3/8-16',dai:75,dauD:12.5,vl:'Thép'} },
     chung:{ khoiMin:510, khoiMax:595, khoiNgon:115, canBang:470, ghiChu:'' }, daDo:{} };
 }
 /* Trường nhập: [đường dẫn, nhãn, đơn vị, kiểu] – kiểu 's' = chữ */
@@ -99,14 +104,25 @@ var CG_TRUONG = [
     ['ngon.insert.d','Insert Ø','mm'],['ngon.insert.l','Insert dài','mm'],['ngon.insert.vl','Insert vật liệu','','s'],['ngon.insert.ren','Insert ren','','s']]],
   ['Chuôi – joint', [['chuoi.collar.d','Collar chuôi Ø','mm'],['chuoi.collar.h','Collar chuôi dày','mm'],['chuoi.collar.vl','Collar chuôi vật liệu','','s'],
     ['chuoi.pin.ren','Pin ren','','s'],['chuoi.pin.d','Pin Ø','mm'],['chuoi.pin.tho','Pin thò','mm'],['chuoi.pin.chon','Pin chôn trong chuôi','mm'],['chuoi.pin.buoc','Bước ren','mm'],['chuoi.pin.kieu','Profile ren (V / tròn)','','s'],['chuoi.pin.vl','Pin vật liệu','','s']]],
-  ['Chuôi – thân', [['chuoi.forearm.dai','Forearm dài','mm'],['chuoi.forearm.dDau','Forearm Ø đầu','mm'],['chuoi.forearm.dCuoi','Forearm Ø cuối','mm'],['chuoi.forearm.vl','Forearm vật liệu','','s'],
-    ['chuoi.forearm.tenonD','A-joint tenon Ø','mm'],['chuoi.forearm.tenonL','A-joint tenon dài','mm'],
+  ['Chuôi – thân', [['chuoi.kieu','Kiểu chuôi (carbon / gỗ)','','s'],['chuoi.forearm.dai','Forearm dài','mm'],['chuoi.forearm.dDau','Forearm Ø đầu','mm'],['chuoi.forearm.dCuoi','Forearm Ø cuối','mm'],['chuoi.forearm.vl','Forearm vật liệu','','s'],
+    ['chuoi.vo.day','Vỏ chuôi dày (thành)','mm'],
     ['chuoi.wrap.dai','Wrap dài','mm'],['chuoi.wrap.dDau','Wrap Ø đầu','mm'],['chuoi.wrap.dCuoi','Wrap Ø cuối','mm'],['chuoi.wrap.vl','Wrap vật liệu','','s'],
     ['chuoi.sleeve.dai','Butt sleeve dài','mm'],['chuoi.sleeve.dDau','Sleeve Ø đầu','mm'],['chuoi.sleeve.dCuoi','Sleeve Ø cuối','mm'],['chuoi.sleeve.vl','Sleeve vật liệu','','s']]],
-  ['Chuôi – đuôi', [['chuoi.cap.h','Butt cap dày','mm'],['chuoi.cap.d','Butt cap Ø','mm'],['chuoi.cap.vl','Cap vật liệu','','s'],['chuoi.bumper.h','Bumper dày','mm'],['chuoi.bumper.d','Bumper Ø','mm'],['chuoi.bumper.vl','Bumper vật liệu','','s'],
-    ['chuoi.khoang.d','Khoang cân Ø','mm'],['chuoi.khoang.sau','Khoang cân sâu','mm'],['chuoi.bolt.ren','Weight bolt ren','','s'],['chuoi.bolt.dai','Weight bolt dài','mm'],['chuoi.bolt.dauD','Bolt đầu Ø','mm']]],
+  ['Chuôi – cấu tạo trong (carbon)', [['chuoi.veneer.h','Veneer đầu chuôi dày (0 = không)','mm'],['chuoi.veneer.vl','Veneer vật liệu','','s'],
+    ['chuoi.khoiPin.d','Khối giữ pin Ø','mm'],['chuoi.khoiPin.l','Khối giữ pin dài','mm'],['chuoi.khoiPin.vl','Khối giữ pin vật liệu','','s'],
+    ['chuoi.loi.tren','Lõi đoạn forearm','','s'],['chuoi.loi.duoi','Lõi đoạn tay cầm','','s'],
+    ['chuoi.thanhNoi.d','Thanh nối Ø','mm'],['chuoi.thanhNoi.l','Thanh nối dài (0 = không)','mm'],['chuoi.thanhNoi.vl','Thanh nối vật liệu','','s'],
+    ['chuoi.vien.h','Vòng inlay dày (0 = không)','mm'],['chuoi.vien.vl','Inlay vật liệu','','s']],'cb'],
+  ['Chuôi – đuôi', [['chuoi.cap.h','Butt cap dày','mm'],['chuoi.cap.d','Butt cap Ø','mm'],['chuoi.cap.vl','Cap vật liệu','','s'],['chuoi.bumper.h','Bumper dày','mm'],['chuoi.bumper.d','Bumper Ø','mm'],['chuoi.bumper.vl','Bumper vật liệu','','s']]],
+  ['Chuôi – ống quả cân (carbon)', [['chuoi.ongCan.d','Ống quả cân Ø ngoài','mm'],['chuoi.ongCan.dai','Ống quả cân dài','mm'],['chuoi.ongCan.vl','Ống vật liệu','','s'],['chuoi.ongCan.ren','Ren trong ống','','s'],
+    ['chuoi.qua.so','Số quả cân','quả'],['chuoi.qua.d','Quả cân Ø (ren)','mm'],['chuoi.qua.dai','Quả cân dài (1 quả)','mm'],['chuoi.qua.vl','Quả cân vật liệu','','s'],['chuoi.bumper.renL','Bumper ren cắm vào ống dài','mm']],'cb'],
+  ['Chuôi – gỗ: mộng + khoang cân', [['chuoi.forearm.tenonD','A-joint tenon Ø','mm'],['chuoi.forearm.tenonL','A-joint tenon dài','mm'],
+    ['chuoi.khoang.d','Khoang cân Ø','mm'],['chuoi.khoang.sau','Khoang cân sâu','mm'],['chuoi.bolt.ren','Weight bolt ren','','s'],['chuoi.bolt.dai','Weight bolt dài','mm'],['chuoi.bolt.dauD','Bolt đầu Ø','mm']],'go'],
   ['Cả cây', [['chung.khoiMin','Khối lượng nhẹ nhất','g'],['chung.khoiMax','Khối lượng nặng nhất','g'],['chung.khoiNgon','Khối lượng ngọn','g'],['chung.canBang','Điểm cân bằng (từ đáy)','mm'],['chung.ghiChu','Ghi chú','','s']]]
 ];
+/* Chuôi carbon (vỏ + lõi foam + ống quả cân, như bản vẽ Rhino) hay chuôi gỗ (mộng A-joint + khoang cân) */
+function cgCb(c){ return !/gỗ|go$|^go\b|wood/i.test(String((c&&c.kieu)||'carbon').trim()); }
+function cgTruongHien(t){ var cb=cgCb(t&&t.chuoi); return CG_TRUONG.filter(function(g){ return !g[2]||(g[2]==='cb')===cb; }); }
 function cgLay(o,p){ return p.split('.').reduce(function(a,k){return a==null?undefined:a[k]},o); }
 function cgDat(o,p,v){ var k=p.split('.'), a=o; for(var i=0;i<k.length-1;i++){ if(!a[k[i]]||typeof a[k[i]]!=='object')a[k[i]]={}; a=a[k[i]]; } a[k[k.length-1]]=v; }
 function cgK(p){ return String(p).replace(/\./g,'__'); }   /* khóa daDo: máy chủ chỉ nhận chữ, số, _ */
@@ -134,7 +150,8 @@ function cgKiemTra(t,d){
   if(d&&d.tenRen&&d.tenRen!=='—'&&String(c.pin.ren).replace(/\s/g,'').toLowerCase()!==String(d.tenRen).replace(/\s/g,'').toLowerCase()) ra.push({muc:'vang',t:'Ren pin ('+c.pin.ren+') khác ren khai trong Cấu hình sản phẩm ('+d.tenRen+').',p:['chuoi.pin.ren']});
   var rt=cgRenTT(c.pin.ren);
   if(rt&&rt[2]&&(Math.abs(cgN(c.pin.d)-rt[2])>0.15||Math.abs(cgN(c.pin.buoc)-rt[3])>0.08)) ra.push({muc:'vang',t:'Ren '+rt[1]+' chuẩn là Ø'+cgF(rt[2])+' · bước '+cgF(rt[3])+' mm, đang nhập Ø'+cgF(c.pin.d)+' · bước '+cgF(c.pin.buoc)+'.',p:['chuoi.pin.d','chuoi.pin.buoc']});
-  if(cgN(c.pin.chon)>cgN(c.forearm.dai)-cgN(c.forearm.tenonL)) ra.push({muc:'vang',t:'Pin chôn '+cgF(c.pin.chon)+' mm sâu tới mộng A-joint.',p:['chuoi.pin.chon']});
+  var cb=cgCb(c);
+  if(!cb&&cgN(c.pin.chon)>cgN(c.forearm.dai)-cgN(c.forearm.tenonL)) ra.push({muc:'vang',t:'Pin chôn '+cgF(c.pin.chon)+' mm sâu tới mộng A-joint.',p:['chuoi.pin.chon']});
   if(cgN(n.ong.nutTruoc)+cgN(n.ong.nutSau)+cgN(n.ferrule.tenonL)+cgN(n.insert.l)>=cgN(n.ong.dai)) ra.push({muc:'do',t:'Nút bịt + tenon + insert dài hơn ống ngọn.',p:['ngon.ong.nutTruoc','ngon.ong.nutSau']});
   if(cgN(c.pin.tho)>cgN(n.insert.l)) ra.push({muc:'do',t:'Pin thò '+cgF(c.pin.tho)+' mm dài hơn insert '+cgF(n.insert.l)+' mm.',p:['chuoi.pin.tho','ngon.insert.l']});
   if(ls(c.forearm.dDau,c.collar.d)>0.3) ra.push({muc:'vang',t:'Forearm Ø đầu '+cgF(c.forearm.dDau)+' khác collar chuôi Ø'+cgF(c.collar.d)+'.',p:['chuoi.forearm.dDau']});
@@ -142,16 +159,32 @@ function cgKiemTra(t,d){
   if(ls(c.sleeve.dDau,c.wrap.dCuoi)>0.3) ra.push({muc:'vang',t:'Sleeve Ø đầu khác wrap Ø cuối.',p:['chuoi.sleeve.dDau','chuoi.wrap.dCuoi']});
   if(ls(c.cap.d,c.sleeve.dCuoi)>0.3) ra.push({muc:'vang',t:'Butt cap Ø'+cgF(c.cap.d)+' khác sleeve Ø cuối '+cgF(c.sleeve.dCuoi)+' – đuôi có bậc '+cgF(ls(c.cap.d,c.sleeve.dCuoi)/2)+' mm mỗi bên.',p:['chuoi.cap.d','chuoi.sleeve.dCuoi']});
   var duoi=cgN(c.sleeve.dai)+cgN(c.cap.h)+cgN(c.bumper.h)+cgN(c.wrap.dai);
-  if(cgN(c.khoang.sau)>duoi) ra.push({muc:'do',t:'Khoang cân sâu '+cgF(c.khoang.sau)+' mm vượt quá phần wrap + sleeve + đuôi.',p:['chuoi.khoang.sau']});
-  if(cgN(c.bolt.dauD)>=cgN(c.khoang.d)) ra.push({muc:'do',t:'Đầu weight bolt Ø'+cgF(c.bolt.dauD)+' không lọt khoang Ø'+cgF(c.khoang.d)+'.',p:['chuoi.bolt.dauD','chuoi.khoang.d']});
-  if(cgN(c.bolt.dai)>cgN(c.khoang.sau)) ra.push({muc:'do',t:'Weight bolt dài hơn khoang cân.',p:['chuoi.bolt.dai','chuoi.khoang.sau']});
+  if(cb){ var vd=cgN(c.vo.day), lt=function(dd){return cgN(dd)-2*vd;};
+    if(vd<=0) ra.push({muc:'vang',t:'Chưa nhập độ dày vỏ chuôi.',p:['chuoi.vo.day']});
+    if(cgN(c.khoiPin.d)>=lt(c.forearm.dDau)) ra.push({muc:'do',t:'Khối giữ pin Ø'+cgF(c.khoiPin.d)+' không lọt lòng vỏ đầu chuôi (Ø'+cgF(lt(c.forearm.dDau))+').',p:['chuoi.khoiPin.d','chuoi.vo.day']});
+    if(cgN(c.khoiPin.d)<=cgN(c.pin.d)) ra.push({muc:'do',t:'Khối giữ pin Ø'+cgF(c.khoiPin.d)+' nhỏ hơn pin Ø'+cgF(c.pin.d)+'.',p:['chuoi.khoiPin.d','chuoi.pin.d']});
+    if(cgN(c.pin.chon)>cgN(c.veneer.h)+cgN(c.khoiPin.l)) ra.push({muc:'vang',t:'Pin chôn '+cgF(c.pin.chon)+' mm sâu hơn veneer + khối giữ pin ('+cgF(cgN(c.veneer.h)+cgN(c.khoiPin.l))+' mm) – đuôi pin nằm trong foam.',p:['chuoi.pin.chon','chuoi.khoiPin.l']});
+    if(cgN(c.thanhNoi.l)>0&&cgN(c.thanhNoi.d)>=lt(c.forearm.dCuoi)) ra.push({muc:'do',t:'Thanh nối Ø'+cgF(c.thanhNoi.d)+' không lọt lòng vỏ chỗ nối forearm / tay cầm.',p:['chuoi.thanhNoi.d']});
+    if(cgN(c.thanhNoi.l)/2>Math.min(cgN(c.forearm.dai)-cgN(c.veneer.h)-cgN(c.khoiPin.l),cgN(c.wrap.dai))) ra.push({muc:'vang',t:'Thanh nối dài '+cgF(c.thanhNoi.l)+' mm chạm khối giữ pin hoặc vượt tay cầm.',p:['chuoi.thanhNoi.l']});
+    var dTr=cgN(c.ongCan.dai)-cgN(c.cap.h)>cgN(c.sleeve.dai)?c.wrap.dCuoi:c.sleeve.dDau;
+    if(cgN(c.ongCan.d)>=lt(dTr)) ra.push({muc:'do',t:'Ống quả cân Ø'+cgF(c.ongCan.d)+' không lọt lòng vỏ (Ø'+cgF(lt(dTr))+' tại đầu ống).',p:['chuoi.ongCan.d','chuoi.vo.day']});
+    if(cgN(c.ongCan.dai)>duoi-cgN(c.bumper.h)) ra.push({muc:'do',t:'Ống quả cân dài '+cgF(c.ongCan.dai)+' mm vượt quá tay cầm + sleeve + cap.',p:['chuoi.ongCan.dai']});
+    if(cgN(c.qua.d)>=cgN(c.ongCan.d)-2) ra.push({muc:'do',t:'Quả cân Ø'+cgF(c.qua.d)+' quá to so với ống Ø'+cgF(c.ongCan.d)+' (thành ống dưới 1 mm).',p:['chuoi.qua.d','chuoi.ongCan.d']});
+    var chua=cgN(c.qua.so)*cgN(c.qua.dai)+cgN(c.bumper.renL)+3;
+    if(chua>cgN(c.ongCan.dai)) ra.push({muc:'do',t:cgF(c.qua.so)+' quả cân × '+cgF(c.qua.dai)+' mm + ren bumper '+cgF(c.bumper.renL)+' mm không vừa ống dài '+cgF(c.ongCan.dai)+' mm.',p:['chuoi.qua.so','chuoi.qua.dai','chuoi.ongCan.dai']});
+    if(cgN(c.bumper.d)>cgN(c.cap.d)+0.3) ra.push({muc:'vang',t:'Bumper Ø'+cgF(c.bumper.d)+' to hơn cap Ø'+cgF(c.cap.d)+'.',p:['chuoi.bumper.d']});
+  }
+  if(!cb&&cgN(c.khoang.sau)>duoi) ra.push({muc:'do',t:'Khoang cân sâu '+cgF(c.khoang.sau)+' mm vượt quá phần wrap + sleeve + đuôi.',p:['chuoi.khoang.sau']});
+  if(!cb&&cgN(c.bolt.dauD)>=cgN(c.khoang.d)) ra.push({muc:'do',t:'Đầu weight bolt Ø'+cgF(c.bolt.dauD)+' không lọt khoang Ø'+cgF(c.khoang.d)+'.',p:['chuoi.bolt.dauD','chuoi.khoang.d']});
+  if(!cb&&cgN(c.bolt.dai)>cgN(c.khoang.sau)) ra.push({muc:'do',t:'Weight bolt dài hơn khoang cân.',p:['chuoi.bolt.dai','chuoi.khoang.sau']});
   if(cgN(t.chung.khoiMin)>cgN(t.chung.khoiMax)) ra.push({muc:'vang',t:'Khối lượng nhẹ nhất lớn hơn nặng nhất.',p:['chung.khoiMin','chung.khoiMax']});
   if(cgN(t.chung.canBang)<=0||cgN(t.chung.canBang)>=L.tong) ra.push({muc:'vang',t:'Điểm cân bằng phải nằm trong chiều dài cây.',p:['chung.canBang']});
   if(Math.abs(L.ngon-L.chuoi)>40&&d&&d.loai==='GAY') ra.push({muc:'vang',t:'Ngọn '+cgF(L.ngon,1)+' mm và chuôi '+cgF(L.chuoi,1)+' mm chênh nhau nhiều – kiểm tra lại chiều dài.',p:['ngon.ong.dai','chuoi.forearm.dai']});
   return ra; }
 
 /* ===================== BỘ VẼ (SVG, nền giấy trắng) ===================== */
-var CG_VL=[ [/carbon/i,'#3a434d','url(#cgHcb)'], [/foam/i,'#efe8d6','url(#cgHfo)'], [/đồng/i,'#c9a24a','url(#cgHdo)'], [/thép|inox|kim/i,'#c9d0d6','url(#cgHth)'],
+var CG_VL=[ [/pom|nhựa đen|phenolic/i,'#1f2328','url(#cgHpo)'], [/veneer/i,'#2b62b8','url(#cgHve)'], [/inlay/i,'#e7d6ad','#e7d6ad'],
+  [/foam.*(đậm|dam|tối)/i,'#2c4f88','url(#cgHfd)'], [/foam.*(nhạt|xanh)/i,'#a8c7e8','url(#cgHfx)'], [/carbon/i,'#3a434d','url(#cgHcb)'], [/foam/i,'#efe8d6','url(#cgHfo)'], [/đồng/i,'#c9a24a','url(#cgHdo)'], [/thép|inox|kim/i,'#c9d0d6','url(#cgHth)'],
   [/gỗ/i,'#d9b98c','url(#cgHgo)'], [/linen|vải|da sport|grip/i,'#6b7480','url(#cgHli)'], [/cao su/i,'#3c3f44','#3c3f44'], [/glass|gf/i,'#bfd4cf','url(#cgHgf)'], [/mix/i,'#7d8a8f','url(#cgHcb)'],
   [/sứ|trắng|ferrule|composite/i,'#f4f4f2','#f4f4f2'], [/da|tip|time|kamui|nishiki|bak/i,'#2f6db5','#2f6db5'], [/sợi|đen|pad/i,'#1d2126','#1d2126'] ];
 function cgMau1(vl){ for(var i=0;i<CG_VL.length;i++) if(CG_VL[i][0].test(String(vl||''))) return CG_VL[i]; return [null,'#e6e9ec','#e6e9ec']; }
@@ -163,6 +196,10 @@ function cgDefs(){ return '<defs>'+
   '<pattern id="cgHgo" width="14" height="6" patternUnits="userSpaceOnUse"><rect width="14" height="6" fill="#dcbf93"/><path d="M0 3 Q3.5 1 7 3 T14 3" fill="none" stroke="#b8925e" stroke-width=".8"/></pattern>'+
   '<pattern id="cgHli" width="4" height="4" patternUnits="userSpaceOnUse"><rect width="4" height="4" fill="#6b7480"/><path d="M0 4L4 0" stroke="#4b525b" stroke-width=".8"/></pattern>'+
   '<pattern id="cgHgf" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(30)"><rect width="6" height="6" fill="#cfe0dc"/><line x1="0" y1="0" x2="0" y2="6" stroke="#8fb1a9" stroke-width="1"/></pattern>'+
+  '<pattern id="cgHfx" width="7" height="7" patternUnits="userSpaceOnUse"><rect width="7" height="7" fill="#a8c7e8"/><circle cx="1.5" cy="2" r=".8" fill="#5d8cc2"/><circle cx="5" cy="5.2" r=".6" fill="#ffffff"/><circle cx="5.6" cy="1.2" r=".5" fill="#3f6fa8"/></pattern>'+
+  '<pattern id="cgHfd" width="7" height="7" patternUnits="userSpaceOnUse"><rect width="7" height="7" fill="#2c4f88"/><circle cx="1.5" cy="2" r=".8" fill="#8fb2e0"/><circle cx="5" cy="5.2" r=".6" fill="#16305c"/><circle cx="5.6" cy="1.2" r=".5" fill="#c9daf2"/></pattern>'+
+  '<pattern id="cgHve" width="4" height="4" patternUnits="userSpaceOnUse"><rect width="4" height="4" fill="#2b62b8"/><line x1="0" y1="2" x2="4" y2="2" stroke="#1d4a91" stroke-width=".6"/></pattern>'+
+  '<pattern id="cgHpo" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="6" height="6" fill="#23272c"/><line x1="0" y1="0" x2="0" y2="6" stroke="#4a5058" stroke-width=".8"/></pattern>'+
   '<marker id="cgMt" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 1L7 4L0 7z" fill="#16202a"/></marker>'+
   '</defs>'; }
 var CG_CHU='font-family="ui-monospace,Menlo,Consolas,monospace"';
@@ -204,6 +241,62 @@ function cgNhanDoc(ds,xNhan,yMin,yMax,s){
 var CG_KX=3;   /* đường kính phóng 3× ở hình ngọn / chuôi */
 /* Tỉ lệ chung cho ngọn và chuôi (cùng 1 trang): px / mm theo trục */
 function cgSy(t,Hve){ var L=cgDai(t); return (Hve||980)/Math.max(L.ngon,L.chuoi,1); }
+
+/* ===== BÊN TRONG CHUÔI CARBON (theo bản vẽ Rhino 09/11): vỏ carbon · veneer đầu · khối POM giữ pin · lõi foam 2 đoạn ·
+   thanh nối · vòng inlay · cap veneer · ống POM có ren + quả cân đồng · bumper cao su vặn ren. Dùng chung cho hình chuôi và chi tiết C / D.
+   cx tâm; Y(mm trục) -> px; k = px/mm cho Ø; chỉ vẽ trong khoảng trục [a,b]. Trả {h, LB, m} (pin do nơi gọi vẽ sau cùng). */
+function cgTrongCb(ds,c,cx,Y,k,a,b){
+  var tn=function(ten,vl){ vl=String(vl||''); return vl.toLowerCase().indexOf(ten.toLowerCase())===0?vl:ten+' '+vl; };   /* 'Veneer' + 'Veneer xanh' → không lặp chữ */
+  var h='', LB=[], R=function(d){return cgN(d)/2*k}, vd=cgN(c.vo.day), sy=Math.abs(Y(1)-Y(0))||1;
+  var sFo=cgTim(ds,'forearm'), sW=cgTim(ds,'wrap'), sS=cgTim(ds,'sleeve'), sCap=cgTim(ds,'cap'), sB=cgTim(ds,'bumper');
+  var Ro=function(v){return R(cgDTai(ds,v))}, Ri=function(v){return Math.max(Ro(v)-vd*k,1)}, hs=function(r){return function(){return r}};
+  var cl=function(v){return Math.max(a,Math.min(b,v))};
+  var dai=function(v0,v1,fo,fi,fill){ var u0=cl(v0), u1=cl(v1); if(u1-u0<1e-6)return ''; return cgDai2(cx,Y(u0),Y(u1),fo(u0),fo(u1),fill,fi?fi(u0):null,fi?fi(u1):null); };
+  var nh=function(x,v,t){ if(v>=a-1e-6&&v<=b+1e-6) LB.push({x:x,y:Y(v),t:t}); };
+  var rp=R(c.pin.d), xa=sFo.x0, vh=cgN(c.veneer.h), xv=xa+vh, kl=cgN(c.khoiPin.l), xk=xv+kl, rk=function(){return Math.max(Math.min(R(c.khoiPin.d),Ri(xv)-0.6),rp+0.6)};
+  var xz=sCap.x0, xe=sCap.x1, bl=cgN(c.bumper.renL), oc=c.ongCan, xo=Math.max(xe-cgN(oc.dai),xa+vh+kl), ro=Math.min(R(oc.d),Ri(xo)-0.6), rq=Math.max(Math.min(R(c.qua.d),ro-1.2),1);
+  var tl=cgN(c.thanhNoi.l), xn=sFo.x1, rt=Math.min(R(c.thanhNoi.d),Ri(xn)-0.6), ih=cgN(c.vien.h), day=Math.min(4,cgN(oc.dai)*0.04);
+  /* 1. lõi foam (vẽ trước, các chi tiết khác đè lên) */
+  h+=dai(xk,sFo.x1,Ri,null,cgMau1(c.loi.tren)[2])+dai(sFo.x1,xz,Ri,null,cgMau1(c.loi.duoi)[2]);
+  if(xv<xk) h+=dai(xv,xk,Ri,rk,cgMau1(c.loi.tren)[2]);
+  /* 2. vỏ (forearm / tay cầm / sleeve – vật liệu từng đoạn) */
+  [sFo,sW,sS].forEach(function(s){ h+=dai(s.x0,s.x1,Ro,Ri,cgMau1(s.vl)[2]); });
+  /* 3. veneer đầu + khối giữ pin (lỗ pin ở giữa) */
+  if(vh>0) h+=dai(xa,xv,Ri,hs(rp),cgMau1(c.veneer.vl)[2]);
+  if(kl>0) h+=dai(xv,xk,rk,hs(rp),cgMau1(c.khoiPin.vl)[2]);
+  if(kl>0) h+=dai(cgN(c.pin.chon)+ds.xJoint,xk,hs(rp),null,cgMau1(c.khoiPin.vl)[2]);   /* đáy lỗ pin */
+  /* 4. thanh nối forearm / tay cầm */
+  if(tl>0) h+=dai(xn-tl/2,xn+tl/2,hs(rt),null,'url(#cgHth)');
+  /* 5. vòng inlay ở 2 ranh đoạn (cắt qua vỏ) */
+  if(ih>0) [sFo.x1,sW.x1].forEach(function(v){ h+=dai(v-ih/2,v+ih/2,Ro,Ri,cgMau1(c.vien.vl)[2]); });
+  /* 6. cap (veneer cuối) có lỗ ống; ống quả cân: đáy kín ở trên, lòng ren */
+  h+=dai(sCap.x0,sCap.x1,hs(R(c.cap.d)),hs(ro),cgMau1(c.cap.vl)[2]);
+  h+=dai(xo,xe,hs(ro),hs(rq),cgMau1(oc.vl)[2])+dai(xo,xo+day,hs(rq),null,cgMau1(oc.vl)[2])+dai(xo+day,xe,hs(rq),null,'#fff');
+  var st=Math.max(1.75,3.2/sy); for(var v=xo+day+st/2;v<xe-st/2;v+=st){ if(v<a||v>b)continue; h+=cgL(cx-rq,Y(v),cx-rq+Math.min(2.4,rq*0.3),Y(v+st/2),{w:.4})+cgL(cx+rq,Y(v),cx+rq-Math.min(2.4,rq*0.3),Y(v+st/2),{w:.4}); }
+  /* 7. quả cân (xếp từ dưới lên, trên ren bumper) + ren cắm bumper + bumper */
+  var qd=cgN(c.qua.dai), so=Math.max(0,Math.min(9,Math.round(cgN(c.qua.so)))), q1=xe-bl, rqq=Math.max(rq-0.5,0.8);
+  for(var i=0;i<so;i++){ var qa=q1-(i+1)*qd, qb=q1-i*qd; if(qa<xo+day) break; h+=dai(qa+0.3,qb-0.3,hs(rqq),null,cgMau1(c.qua.vl)[2]); var ym=Y(qa+Math.min(2,qd*0.15)); if(qa>=a&&qa<=b) h+=cgL(cx-rqq*0.45,ym,cx+rqq*0.45,ym,{w:1.2,c:'#5b4410'}); }
+  if(bl>0) h+=dai(q1,xe,hs(rqq),null,'#3c3f44');
+  h+=dai(sB.x0,sB.x1,hs(R(c.bumper.d)),null,'#3c3f44');
+  /* nhãn */
+  if(vh>0) nh(cx+(rp+Ri(xa))/2,(xa+xv)/2,tn('Veneer',c.veneer.vl)+' '+cgF(vh));
+  if(kl>0) nh(cx+(rp+rk())/2,xv+kl*0.6,'Khối giữ pin '+c.khoiPin.vl+' Ø'+cgF(c.khoiPin.d)+' × '+cgF(kl));
+  nh(cx+Ro(xk+40)-vd*k/2,Math.min(xk+40,sFo.x1-10),'Vỏ '+c.forearm.vl+' · thành '+cgF(vd));
+  nh(cx+Ri(xk)*0.45,(xk+(tl>0?xn-tl/2:sFo.x1))/2,tn('Lõi',c.loi.tren));
+  if(tl>0) nh(cx+rt*0.5,xn-tl/4,'Thanh nối '+c.thanhNoi.vl+' Ø'+cgF(c.thanhNoi.d)+' × '+cgF(tl));
+  if(ih>0) nh(cx+Ro(sW.x1)-vd*k/2,sW.x1,tn('Inlay',c.vien.vl)+' '+cgF(ih)+' (2 vòng)');
+  nh(cx+Ri(xn)*0.45,((tl>0?xn+tl/2:xn)+xo)/2,tn('Lõi',c.loi.duoi));
+  nh(cx+(ro+rq)/2,xo+Math.min(14,cgN(oc.dai)*0.1),'Ống quả cân '+oc.vl+' Ø'+cgF(oc.d)+' × '+cgF(oc.dai)+' · ren '+oc.ren);
+  if(so>0) nh(cx+rqq*0.4,q1-qd*Math.min(so,2)/2,so+' quả cân '+c.qua.vl+' Ø'+cgF(c.qua.d)+' × '+cgF(qd));
+  if(bl>0) nh(cx+rqq*0.4,(q1+xe)/2,'Ren cắm bumper '+cgF(bl));
+  nh(cx+R(c.cap.d)*0.85,(sCap.x0+sCap.x1)/2,tn('Cap',c.cap.vl)+' × '+cgF(c.cap.h));
+  nh(cx+R(c.bumper.d)*0.7,(sB.x0+sB.x1)/2,'Bumper '+c.bumper.vl+' Ø'+cgF(c.bumper.d)+' × '+cgF(c.bumper.h));
+  return {h:h,LB:LB,m:{xa:xa,xv:xv,xk:xk,xo:xo,xe:xe,q1:q1,qd:qd,so:so,day:day,ro:ro,rq:rq,rp:rp}}; }
+/* Viền veneer + inlay trên hình ngoài */
+function cgNgoaiCb(ds,c,cx,Y,k){ var R=function(v){return cgDTai(ds,v)/2*k}, h='', sFo=cgTim(ds,'forearm'), sW=cgTim(ds,'wrap'), vh=cgN(c.veneer.h), ih=cgN(c.vien.h);
+  if(vh>0) h+=cgDai2(cx,Y(sFo.x0),Y(sFo.x0+vh),R(sFo.x0),R(sFo.x0+vh),cgMau1(c.veneer.vl)[1]);
+  if(ih>0) [sFo.x1,sW.x1].forEach(function(v){ h+=cgDai2(cx,Y(v-ih/2),Y(v+ih/2),R(v-ih/2),R(v+ih/2),cgMau1(c.vien.vl)[1]); });
+  return h; }
 
 /* ===== HÌNH KHÚC DỰNG ĐỨNG: hình ngoài (trái) + mặt cắt (phải), kích thước + nhãn =====
    phan 'ngon': tip ở trên, joint ở dưới. 'chuoi': joint (pin) ở trên, bumper ở dưới. */
@@ -250,6 +343,16 @@ function cgKhuc(t,phan,o){
   } else {
     var x0=ds.xJoint, sCC=cgTim(ds,'collarC'), sFo=cgTim(ds,'forearm'), sW=cgTim(ds,'wrap'), sS=cgTim(ds,'sleeve'), sCap=cgTim(ds,'cap'), sB=cgTim(ds,'bumper');
     var rp=cgN(c.pin.d)/2*kx, yP=Y(x0)-cgN(c.pin.tho)*sy;
+    if(cgCb(c)){
+      h+=cgNgoaiCb(ds,c,xe,Y,kx);
+      h+='<rect x="'+(xe-rp).toFixed(1)+'" y="'+yP.toFixed(1)+'" width="'+(2*rp).toFixed(1)+'" height="'+(Y(x0)-yP).toFixed(1)+'" fill="url(#cgHth)" stroke="#16202a" stroke-width=".7"/>';
+      for(var u2=1;u2<cgN(c.pin.tho)/(cgN(c.pin.buoc)||3.175);u2++){ var yy2=Y(x0)-u2*cgN(c.pin.buoc)*sy; h+=cgL(xe-rp,yy2,xe+rp,yy2+3,{w:.4}); }
+      h+=cgDai2(xs,Y(sCC.x0),Y(sCC.x1),R(sCC.d0),R(sCC.d1),cgMau1(c.collar.vl)[2],rp);
+      var TB=cgTrongCb(ds,c,xs,Y,kx,x0,ds.tong); h+=TB.h;
+      h+='<rect x="'+(xs-rp).toFixed(1)+'" y="'+yP.toFixed(1)+'" width="'+(2*rp).toFixed(1)+'" height="'+(Y(x0+cgN(c.pin.chon))-yP).toFixed(1)+'" fill="url(#cgHth)" stroke="#16202a" stroke-width=".7"/>';
+      LB=[{x:xs+rp*0.6,y:yP+4,t:'Pin '+c.pin.vl+' '+c.pin.ren+' · Ø'+cgF(c.pin.d)+' · ren '+(c.pin.kieu||'V')},{x:xs,y:Y(x0+cgN(c.pin.chon)*0.8),t:'Pin chôn '+cgF(c.pin.chon)+' (tổng '+cgF(cgN(c.pin.chon)+cgN(c.pin.tho))+')'},{x:xs+R(c.collar.d)*0.7,y:Y(sCC.x0+cgN(c.collar.h)/2),t:'Collar '+c.collar.vl+' Ø'+cgF(c.collar.d)+' × '+cgF(c.collar.h)}].concat(TB.LB);
+      var e=ds.tong;
+    } else {
     /* pin thò lên trên (cả ở hình ngoài) */
     [xe,xs].forEach(function(cx){ h+='<rect x="'+(cx-rp).toFixed(1)+'" y="'+yP.toFixed(1)+'" width="'+(2*rp).toFixed(1)+'" height="'+(Y(x0)-yP+(cx===xs?Y(x0+Math.max(cgN(c.pin.chon),cgN(c.collar.h)))-Y(x0):0)).toFixed(1)+'" fill="url(#cgHth)" stroke="#16202a" stroke-width=".7"/>'; });
     for(var u=1;u<cgN(c.pin.tho)/(cgN(c.pin.buoc)||3.175);u++){ var yy=Y(x0)-u*cgN(c.pin.buoc)*sy; h+=cgL(xe-rp,yy,xe+rp,yy+3,{w:.4}); }
@@ -275,6 +378,7 @@ function cgKhuc(t,phan,o){
       {x:xs+R(cgDTai(ds,(sW.x0+sW.x1)/2))-dW*kx/2,y:Y((sW.x0+sW.x1)/2),t:'Wrap '+c.wrap.vl},{x:xs+R(cgDTai(ds,sS.x0+20))*0.7,y:Y(sS.x0+20),t:'Sleeve '+c.sleeve.vl},
       {x:xs+rk,y:Y(xk+cgN(c.khoang.sau)*0.75),t:'Khoang cân Ø'+cgF(c.khoang.d)+' sâu '+cgF(c.khoang.sau)},{x:xs+rk*0.6,y:Y(xk+li/2),t:'Insert ren '+c.bolt.ren},
       {x:xs+rb*0.5,y:Y((xb0+xb1)/2),t:'Weight bolt '+c.bolt.vl+' '+c.bolt.ren+' × '+cgF(c.bolt.dai)},{x:xs+R(c.cap.d)*0.7,y:Y(sCap.x0+cgN(c.cap.h)/2),t:'Cap '+c.cap.vl+' × '+cgF(c.cap.h)},{x:xs+R(c.bumper.d)*0.7,y:Y(sB.x0+cgN(c.bumper.h)/2),t:'Bumper '+c.bumper.vl+' × '+cgF(c.bumper.h)}];
+    }
     h+=cgKTNgang(xe,Y(x0)+cgN(c.collar.h)*sy/2+4,R(c.collar.d),'Ø'+cgF(c.collar.d));
     h+=cgKTNgang(xe,Y(sFo.x1),R(sFo.d1),'Ø'+cgF(sFo.d1));
     h+=cgKTNgang(xe,Y(sW.x1),R(sW.d1),'Ø'+cgF(sW.d1));
@@ -301,7 +405,8 @@ function cgKhuc(t,phan,o){
 function cgCT(t,loai){
   var ds=cgDoan(t), n=t.ngon, c=t.chuoi, W=480, cx=120, xN=230, h='', LB=[], a, b, sc, top=40;
   if(loai==='A'){ a=0; b=cgN(n.tip.h)+cgN(n.pad.h)+cgN(n.ferrule.h)+cgN(n.ferrule.tenonL)+14; }
-  else if(loai==='C'){ a=ds.xJoint-cgN(n.collar.h)-cgN(n.insert.l)-8; b=ds.xJoint+cgN(c.collar.h)+24; }
+  else if(loai==='C'){ a=ds.xJoint-cgN(n.collar.h)-cgN(n.insert.l)-8; b=ds.xJoint+cgN(c.collar.h)+(cgCb(c)?Math.max(24,Math.min(cgN(c.pin.chon),cgN(c.veneer.h)+cgN(c.khoiPin.l))+8-cgN(c.collar.h)):24); }
+  else if(cgCb(c)){ a=Math.max(ds.xJoint,cgTim(ds,'cap').x1-cgN(c.ongCan.dai)-14); b=ds.tong; }
   else { a=Math.min(ds.tong-cgN(c.khoang.sau)-12,cgTim(ds,'sleeve').x0); b=ds.tong; }
   sc=Math.min(400/(b-a),(150)/Math.max(cgDTai(ds,a+0.01),cgDTai(ds,b-0.01),cgN(c.bumper.d)*(loai==='D'?1:0),1));
   var Y=function(v){return top+(v-a)*sc}, R=function(d){return d/2*sc}, Hb=Y(b)+50;
@@ -326,8 +431,9 @@ function cgCT(t,loai){
     h+=cgDai2(cx,Y(xi),Y(xe2),R(n.insert.d),R(n.insert.d),cgMau1(n.insert.vl)[2],rp);
     h+=cgDai2(cx,Y(xe2),Y(xj),R(n.collar.d),R(n.collar.d),cgMau1(n.collar.vl)[2],rp);
     h+=cgDai2(cx,Y(xj),Y(xj+cgN(c.collar.h)),R(c.collar.d),R(c.collar.d),cgMau1(c.collar.vl)[2],rp);
-    h+=cgDai2(cx,Y(xj+cgN(c.collar.h)),Y(b),R(c.forearm.dDau),R(cgDTai(ds,b)),cgMau1(c.forearm.vl)[2],rp);
-    var p0=xj-cgN(c.pin.tho); h+='<rect x="'+(cx-rp).toFixed(1)+'" y="'+Y(p0).toFixed(1)+'" width="'+(2*rp).toFixed(1)+'" height="'+(Y(b)-Y(p0)).toFixed(1)+'" fill="url(#cgHth)" stroke="#16202a" stroke-width=".7"/>';
+    var TC=null; if(cgCb(c)){ TC=cgTrongCb(ds,c,cx,Y,sc,xj+cgN(c.collar.h),b); h+=TC.h; }
+    else h+=cgDai2(cx,Y(xj+cgN(c.collar.h)),Y(b),R(c.forearm.dDau),R(cgDTai(ds,b)),cgMau1(c.forearm.vl)[2],rp);
+    var p0=xj-cgN(c.pin.tho), pe=Math.min(b,xj+cgN(c.pin.chon)); h+='<rect x="'+(cx-rp).toFixed(1)+'" y="'+Y(p0).toFixed(1)+'" width="'+(2*rp).toFixed(1)+'" height="'+(Y(pe)-Y(p0)).toFixed(1)+'" fill="url(#cgHth)" stroke="#16202a" stroke-width=".7"/>';
     var bu=cgN(c.pin.buoc)||3.175;
     for(var v=p0;v<xj-1e-6;v+=bu){ if(String(c.pin.kieu)==='tròn'){ h+='<path d="M'+(cx-rp).toFixed(1)+' '+Y(v).toFixed(1)+' q '+(-bu*sc*0.25).toFixed(1)+' '+(bu*sc/2).toFixed(1)+' 0 '+(bu*sc).toFixed(1)+' M'+(cx+rp).toFixed(1)+' '+Y(v).toFixed(1)+' q '+(bu*sc*0.25).toFixed(1)+' '+(bu*sc/2).toFixed(1)+' 0 '+(bu*sc).toFixed(1)+'" fill="none" stroke="#16202a" stroke-width=".7"/>'; } else { h+='<path d="M'+(cx-rp).toFixed(1)+' '+Y(v).toFixed(1)+' l '+(-bu*sc*0.3).toFixed(1)+' '+(bu*sc/2).toFixed(1)+' l '+(bu*sc*0.3).toFixed(1)+' '+(bu*sc/2).toFixed(1)+' M'+(cx+rp).toFixed(1)+' '+Y(v).toFixed(1)+' l '+(bu*sc*0.3).toFixed(1)+' '+(bu*sc/2).toFixed(1)+' l '+(-bu*sc*0.3).toFixed(1)+' '+(bu*sc/2).toFixed(1)+'" fill="none" stroke="#16202a" stroke-width=".7"/>'; } h+=cgL(cx-rp,Y(v),cx+rp,Y(v)+bu*sc*0.5,{w:.35}); }
     var xD2=cx-R(n.collar.d)-20;
@@ -335,7 +441,17 @@ function cgCT(t,loai){
     h+=cgKTNgang(cx,Y(a)-8,rj,'Ø'+cgF(n.ong.dJoint))+cgKTNgang(cx,Y(xi)-6,R(n.insert.d),'Ø'+cgF(n.insert.d))+cgKTNgang(cx,Y(b)+12,R(cgDTai(ds,b)),'Ø'+cgF(cgDTai(ds,b)));
     LB=[{x:cx+rj-w2*sc/2,y:Y(a+4),t:n.ong.vl+' · thành '+cgF(n.ong.day)},{x:cx,y:Y((a+xi)/2),t:'Lõi '+n.ong.loi},{x:cx+(rp+R(n.insert.d))/2,y:Y((xi+xe2)/2),t:'Insert '+n.insert.vl+' Ø'+cgF(n.insert.d)},
       {x:cx+rp,y:Y(xe2-4),t:'Ren '+n.insert.ren},{x:cx+R(n.collar.d)*0.8,y:Y((xe2+xj)/2),t:'Collar ngọn '+n.collar.vl},{x:cx+R(c.collar.d)*0.8,y:Y(xj+cgN(c.collar.h)/2),t:'Collar chuôi '+c.collar.vl},
-      {x:cx+rp*0.5,y:Y(xj+cgN(c.collar.h)+6),t:'Pin '+c.pin.ren+' Ø'+cgF(c.pin.d)+' · bước '+cgF(c.pin.buoc)+' · ren '+(c.pin.kieu||'V')},{x:cx+R(c.forearm.dDau)*0.8,y:Y(b-6),t:'Forearm '+c.forearm.vl}];
+      {x:cx+rp*0.5,y:Y(xj+cgN(c.collar.h)+6),t:'Pin '+c.pin.ren+' Ø'+cgF(c.pin.d)+' · bước '+cgF(c.pin.buoc)+' · ren '+(c.pin.kieu||'V')}].concat(TC?TC.LB:[{x:cx+R(c.forearm.dDau)*0.8,y:Y(b-6),t:'Forearm '+c.forearm.vl}]);
+    if(TC&&cgN(c.khoiPin.l)>0) h+=cgKTDoc(xD2,Y(TC.m.xv),Y(Math.min(b,TC.m.xk)),'khối pin '+cgF(c.khoiPin.l),10)+cgKTNgang(cx,Y(Math.min(b,TC.m.xk))-4,R(c.khoiPin.d),'Ø'+cgF(c.khoiPin.d),10);
+    if(TC) h+=cgKTDoc(xD2-26,Y(xj),Y(pe),'pin chôn '+cgF(c.pin.chon),10);
+  } else if(cgCb(c)){
+    var TD=cgTrongCb(ds,c,cx,Y,sc,a,b), m=TD.m, sCp=cgTim(ds,'cap'), sBu=cgTim(ds,'bumper'); h+=TD.h; LB=TD.LB;
+    var xD4=cx-R(Math.max(cgDTai(ds,a),cgN(c.cap.d)))-20;
+    h+=cgKTDoc(xD4-26,Y(m.xo),Y(m.xe),'ống '+cgF(c.ongCan.dai),10);
+    if(m.so>0) h+=cgKTDoc(xD4,Y(m.q1-m.qd*m.so),Y(m.q1),m.so+' × '+cgF(m.qd),10);
+    if(cgN(c.bumper.renL)>0) h+=cgKTDoc(xD4+14,Y(m.q1),Y(m.xe),cgF(c.bumper.renL),9.5);
+    h+=cgKTDoc(xD4,Y(sBu.x0),Y(sBu.x1),cgF(c.bumper.h),9.5);
+    h+=cgKTNgang(cx,Y(a)-8,R(cgDTai(ds,a)),'Ø'+cgF(cgDTai(ds,a)))+cgKTNgang(cx,Y(m.xo)+m.day*sc+10,m.ro,'Ø'+cgF(c.ongCan.d))+cgKTNgang(cx,Y(m.q1-m.qd*m.so)+(m.so?14:30),m.rq,'Ø'+cgF(c.qua.d))+cgKTNgang(cx,Y(b)+12,R(c.bumper.d),'Ø'+cgF(c.bumper.d));
   } else {
     var e=ds.tong, sCap=cgTim(ds,'cap'), sB=cgTim(ds,'bumper'), pts=[], pts2=[];
     for(var u=a;u<=sCap.x0+1e-6;u+=(sCap.x0-a)/60){ pts.push([cx-R(cgDTai(ds,u)),Y(u)]); pts2.push([cx+R(cgDTai(ds,u)),Y(u)]); }
@@ -365,9 +481,19 @@ function cgBangCT(t){
    r(4,'Collar ngọn + insert',n.collar.vl+' · '+n.insert.vl,'Ø'+cgF(n.collar.d)+' × '+cgF(n.collar.h)+' · insert Ø'+cgF(n.insert.d)+' × '+cgF(n.insert.l),'Ren trong '+n.insert.ren)+
    '<tr class="nhom"><td colspan="5">CHUÔI</td></tr>'+
    r(5,'Joint pin',c.pin.vl,c.pin.ren+' · Ø'+cgF(c.pin.d)+' · thò '+cgF(c.pin.tho),'Bước ren '+cgF(c.pin.buoc))+r(6,'Collar chuôi',c.collar.vl,'Ø'+cgF(c.collar.d)+' × '+cgF(c.collar.h))+
+   (cgCb(c)?
+   r(7,'Forearm (vỏ)',c.forearm.vl,cgF(c.forearm.dai)+' · Ø'+cgF(c.forearm.dDau)+' → '+cgF(c.forearm.dCuoi),'Thành '+cgF(c.vo.day)+(cgN(c.veneer.h)>0?' · veneer đầu '+c.veneer.vl+' '+cgF(c.veneer.h):''))+
+   r(8,'Khối giữ pin',c.khoiPin.vl,'Ø'+cgF(c.khoiPin.d)+' × '+cgF(c.khoiPin.l),'Pin chôn '+cgF(c.pin.chon))+
+   r(9,'Lõi',c.loi.tren+' · '+c.loi.duoi,'forearm · tay cầm',cgN(c.thanhNoi.l)>0?'Thanh nối '+c.thanhNoi.vl+' Ø'+cgF(c.thanhNoi.d)+' × '+cgF(c.thanhNoi.l):'Không thanh nối')+
+   r(10,'Tay cầm (vỏ)',c.wrap.vl,cgF(c.wrap.dai)+' · Ø'+cgF(c.wrap.dDau)+' → '+cgF(c.wrap.dCuoi),cgN(c.vien.h)>0?'Inlay '+c.vien.vl+' '+cgF(c.vien.h)+' ở 2 đầu':'')+
+   r(11,'Butt sleeve (vỏ)',c.sleeve.vl,cgF(c.sleeve.dai)+' · Ø'+cgF(c.sleeve.dDau)+' → '+cgF(c.sleeve.dCuoi))+
+   r(12,'Ống quả cân',c.ongCan.vl,'Ø'+cgF(c.ongCan.d)+' × '+cgF(c.ongCan.dai),'Ren trong '+c.ongCan.ren)+
+   r(13,'Quả cân',c.qua.vl,cgF(c.qua.so)+' × Ø'+cgF(c.qua.d)+' × '+cgF(c.qua.dai),'Vặn trong ống, thêm / bớt để chỉnh nặng')+
+   r(14,'Butt cap',c.cap.vl,'Ø'+cgF(c.cap.d)+' × '+cgF(c.cap.h))+r(15,'Bumper',c.bumper.vl,'Ø'+cgF(c.bumper.d)+' × '+cgF(c.bumper.h),'Ren cắm vào ống '+cgF(c.bumper.renL))
+   :
    r(7,'Forearm',c.forearm.vl,cgF(c.forearm.dai)+' · Ø'+cgF(c.forearm.dDau)+' → '+cgF(c.forearm.dCuoi),'A-joint tenon Ø'+cgF(c.forearm.tenonD)+' × '+cgF(c.forearm.tenonL))+
    r(8,'Wrap',c.wrap.vl,cgF(c.wrap.dai)+' · Ø'+cgF(c.wrap.dDau)+' → '+cgF(c.wrap.dCuoi))+r(9,'Butt sleeve',c.sleeve.vl,cgF(c.sleeve.dai)+' · Ø'+cgF(c.sleeve.dDau)+' → '+cgF(c.sleeve.dCuoi),'Khoang cân Ø'+cgF(c.khoang.d)+' × '+cgF(c.khoang.sau))+
-   r(10,'Butt cap',c.cap.vl,'Ø'+cgF(c.cap.d)+' × '+cgF(c.cap.h))+r(11,'Bumper',c.bumper.vl,'Ø'+cgF(c.bumper.d)+' × '+cgF(c.bumper.h))+r(12,'Weight bolt',c.bolt.vl,c.bolt.ren+' × '+cgF(c.bolt.dai),'Đầu Ø'+cgF(c.bolt.dauD))+
+   r(10,'Butt cap',c.cap.vl,'Ø'+cgF(c.cap.d)+' × '+cgF(c.cap.h))+r(11,'Bumper',c.bumper.vl,'Ø'+cgF(c.bumper.d)+' × '+cgF(c.bumper.h))+r(12,'Weight bolt',c.bolt.vl,c.bolt.ren+' × '+cgF(c.bolt.dai),'Đầu Ø'+cgF(c.bolt.dauD)))+
    '</tbody></table>'; }
 function cgBangTS(t){
   var n=t.ngon,c=t.chuoi,L=cgDai(t), g1=Math.atan((cgN(n.ong.dPro)-cgN(n.ong.dDau))/2/Math.max(1,cgN(n.ong.proDai)))*180/Math.PI, l2=cgN(n.ong.dai)-cgN(n.ong.proDai), g2=Math.atan((cgN(n.ong.dJoint)-cgN(n.ong.dPro))/2/Math.max(1,l2))*180/Math.PI;
@@ -428,7 +554,7 @@ function cgBanHien(){
 }
 function cgVeCt(){
   var ct=$('cgCt'); if(!ct||!CG.bv)return; var r=CG.bv, d=r.dong, B=cgBanHien(), t=B.dl, kt=cgKiemTra(t,d), L=cgDai(t);
-  var chuaDo=CG_TRUONG.reduce(function(a,g){ return a+g[1].filter(function(f){ return !(t.daDo||{})[cgK(f[0])]; }).length; },0), tongO=CG_TRUONG.reduce(function(a,g){return a+g[1].length},0);
+  var TH=cgTruongHien(t), chuaDo=TH.reduce(function(a,g){ return a+g[1].filter(function(f){ return !(t.daDo||{})[cgK(f[0])]; }).length; },0), tongO=TH.reduce(function(a,g){return a+g[1].length},0);
   var nut='';
   if(!CG.sua){
     nut+='<button class="btn" type="button" onclick="cgTaiPdf()">⬇ Tải PDF</button>';
@@ -448,10 +574,10 @@ function cgVeCt(){
   var tc=(r.lichSu||[]).filter(function(x){return x.tt==='Từ chối'})[0];
   if(tc&&CG.quyen!=='xem'&&!r.choDuyet) h+='<div class="cg-bao do">Bản v'+tc.pb+' bị từ chối ('+esc(tc.duyet)+', '+esc(tc.lucDuyet)+'): <b>'+esc(tc.lyDo)+'</b></div>';
   if(kt.length) h+='<div class="cg-bao '+(kt.some(function(k){return k.muc==='do'})?'do':'vang')+'"><b>Kiểm tra ghép / kích thước ('+kt.length+')</b><ul style="margin:4px 0 0 18px;padding:0">'+kt.map(function(k){return '<li>'+(k.muc==='do'?'⛔ ':'⚠ ')+esc(k.t)+'</li>'}).join('')+'</ul></div>';
-  else h+='<div class="cg-bao xanh">✓ Các kích thước ghép khớp nhau (joint, ren, tip, insert, khoang cân).</div>';
+  else h+='<div class="cg-bao xanh">✓ Các kích thước ghép khớp nhau (joint, ren, tip, insert, '+(cgCb(t.chuoi)?'khối pin, ống quả cân':'khoang cân')+').</div>';
   if(CG.sua) h+=cgForm(t,kt);
   h+='<div class="cg-giay"><h4>NGỌN VÀ CHUÔI · DỰNG ĐỨNG – TRỤC ĐÚNG TỈ LỆ, ĐƯỜNG KÍNH PHÓNG '+CG_KX+'×</h4><div class="cg-dung2"><div><h5>NGỌN · '+cgF(L.ngon,1)+' mm</h5>'+cgKhuc(t,'ngon')+'</div><div><h5>CHUÔI · '+cgF(L.chuoi,1)+' mm</h5>'+cgKhuc(t,'chuoi')+'</div></div><div style="text-align:center;font:700 13px ui-monospace,Menlo,monospace;margin-top:6px">CẢ CÂY '+cgF(L.tong,1)+' mm · '+cgF(Math.round(L.tong/25.4*10)/10)+' in</div></div>'+
-    '<div class="cg-giay"><h4>CHI TIẾT – ĐÚNG TỈ LỆ THẬT, PHÓNG TO</h4><div class="cg-dung3"><div><h5>A · ĐẦU NGỌN</h5>'+cgCT(t,'A')+'</div><div><h5>C · JOINT</h5>'+cgCT(t,'C')+'</div><div><h5>D · ĐUÔI + WEIGHT BOLT</h5>'+cgCT(t,'D')+'</div></div></div>'+
+    '<div class="cg-giay"><h4>CHI TIẾT – ĐÚNG TỈ LỆ THẬT, PHÓNG TO</h4><div class="cg-dung3"><div><h5>A · ĐẦU NGỌN</h5>'+cgCT(t,'A')+'</div><div><h5>C · JOINT</h5>'+cgCT(t,'C')+'</div><div><h5>D · ĐUÔI + '+(cgCb(t.chuoi)?'ỐNG QUẢ CÂN':'WEIGHT BOLT')+'</h5>'+cgCT(t,'D')+'</div></div></div>'+
     '<div class="cg-2c"><div class="cg-giay"><h4>THÔNG SỐ</h4>'+cgBangTS(t)+'</div><div class="cg-giay"><h4>CHÚ THÍCH VẬT LIỆU</h4>'+cgChuThich(t)+'</div></div>'+
     '<div class="cg-giay"><h4>BẢNG CHI TIẾT</h4>'+cgBangCT(t)+'</div>';
   h+=cgThamKhao();
@@ -466,10 +592,11 @@ function cgThamKhao(){
   return '<details class="cg-khoi" style="margin-top:10px"><summary><b style="display:inline">Tham khảo khi đo – cấu tạo chuẩn & bảng ren joint pin</b></summary><div style="font-size:13px;line-height:1.5;margin-top:6px">'+
    '<p><b>Ngọn carbon:</b> ống sợi carbon quấn trên lõi thép rồi ép keo epoxy, thành ống thường <b>0,8–1,2 mm</b> (nhiều hãng ~1,0). Bên trong là <b>lõi foam polyurethane</b> (có hãng dùng foam nhiều tỉ trọng), một số hãng <b>bịt nút gỗ maple ở hai đầu lõi</b> – điền ở ô "Nút bịt". Ferrule gậy carbon thường ngắn: 6–13 mm (gậy gỗ cổ điển 19–25 mm). Đầu joint của ngọn có insert ren (đồng / phenolic); Radial vặn thẳng vào gỗ / phenolic, không cần insert.</p>'+
    '<p><b>Chuôi:</b> đa số gậy carbon vẫn dùng chuôi gỗ, một số dòng cao cấp có chuôi carbon. Forearm và tay cầm nối bằng <b>mộng A-joint</b> (mộng tròn cắm vào lỗ khoan; thợ hay dùng mộng 5/8" ≈ Ø16 × 16 mm). Joint pin dài tổng khoảng 80 mm, phần lớn chôn trong forearm – điền ở ô "Pin chôn". Khoang cân ở đuôi nhận vít weight bolt (thường 3/8-16), chỉnh nặng khoảng 17,5–21,5 oz.</p>'+
+   '<p><b>Chuôi carbon Rhino (bản vẽ chủ dự án gửi 09/11):</b> vỏ carbon, veneer xanh ở đầu (dưới collar) và cuối (cap), vòng inlay ở ranh forearm / tay cầm / sleeve; joint pin cắm trong <b>khối POM đen</b>; lõi foam 2 đoạn (forearm xanh nhạt, tay cầm xanh đậm); bản "bịt nối" có <b>thanh thép nối</b> forearm với tay cầm (bản thường để 0); đuôi có <b>ống POM ren trong</b> chứa các <b>quả cân đồng</b> vặn ren, bumper cao su Ø26 vặn vào ống. Chọn "Kiểu chuôi = gỗ" để dùng cấu tạo mộng A-joint + khoang cân.</p>'+
    '<table class="cg-bang"><thead><tr><th>Ren</th><th>Ø pin (mm)</th><th>Bước ren (mm)</th><th>Profile</th><th>Ghi chú</th></tr></thead><tbody>'+
    CG_REN.map(function(r){ return '<tr><td><b>'+esc(r[1])+'</b></td><td class="so">'+(r[2]?cgF(r[2],3):'đo thật')+'</td><td class="so">'+(r[3]?cgF(r[3],3):'đo thật')+'</td><td>'+esc(r[4])+'</td><td>'+esc(r[5])+'</td></tr>'; }).join('')+
    '</tbody></table><p style="color:var(--ink3);font-size:12px;margin-top:6px">Nguồn: PoolDawg (joint style), Predator (joint types, Uni-Loc), Uni-Loc catalog, Meucci Carbon Pro, AZBilliards (thợ đo Radial), DZ Cues (A-joint). Số Radial / tháo nhanh là số tham khảo – hãng không công bố, C077 đo trên pin thật. Ghi chú này chỉ để tham khảo, không in vào PDF.</p></div></details>'; }
-function cgChuThich(t){ var a=[[t.ngon.ong.vl],[t.ngon.ong.loi],[t.ngon.insert.vl],[t.chuoi.collar.vl],[t.chuoi.forearm.vl],[t.chuoi.wrap.vl],[t.chuoi.bumper.vl],['tip '+t.ngon.tip.vl]], seen={}, h='<div style="display:flex;flex-wrap:wrap;gap:8px 16px;font-size:12px">';
+function cgChuThich(t){ var a=[[t.ngon.ong.vl],[t.ngon.ong.loi],[t.ngon.insert.vl],[t.chuoi.collar.vl],[t.chuoi.forearm.vl],[t.chuoi.wrap.vl],[t.chuoi.bumper.vl],['tip '+t.ngon.tip.vl]].concat(cgCb(t.chuoi)?[[t.chuoi.loi.tren],[t.chuoi.loi.duoi],[t.chuoi.khoiPin.vl],[t.chuoi.veneer.vl],[t.chuoi.vien.vl],[t.chuoi.qua.vl],[t.chuoi.thanhNoi.vl]]:[]), seen={}, h='<div style="display:flex;flex-wrap:wrap;gap:8px 16px;font-size:12px">';
   a.forEach(function(x){ var k=String(x[0]); if(seen[k])return; seen[k]=1; h+='<span style="display:inline-flex;align-items:center;gap:6px"><svg class="cg-o-vl" viewBox="0 0 18 12">'+cgDefs()+'<rect width="18" height="12" fill="'+cgMau1(k)[2]+'" stroke="#16202a" stroke-width=".6"/></svg>'+esc(k.replace(/^tip /,'Tip: '))+'</span>'; });
   return h+'</div>'; }
 /* ---------- Sửa (C077) ---------- */
@@ -478,10 +605,12 @@ function cgHuySua(){ if(!confirm('Bỏ các số vừa nhập?'))return; CG.sua=
 function cgForm(t,kt){
   var sai={}; kt.forEach(function(k){ (k.p||[]).forEach(function(p){ sai[p]=1; }); });
   var h='<div class="cg-bao xanh" style="margin-top:6px">Ô <b>vàng</b> = chưa đo (còn số mẫu). Nhập số đo thật – ô tự chuyển xanh. Số mẫu đã đúng thì bấm <b>✓</b> để xác nhận. Bản vẽ bên dưới cập nhật theo từng số bạn nhập.</div><div class="cg-form">';
-  CG_TRUONG.forEach(function(g){
+  cgTruongHien(t).forEach(function(g){
     h+='<div class="cg-khoi"><b>'+g[0]+'</b><div class="cg-oluoi">';
     g[1].forEach(function(f){ var v=cgLay(t,f[0]), da=(t.daDo||{})[cgK(f[0])];
-      h+='<label class="cg-o'+(da?' da':' chua')+(sai[f[0]]?' sai':'')+'"><span>'+esc(f[1])+(f[2]?' ('+f[2]+')':'')+'</span><span class="h"><input '+(f[3]==='s'?'type="text" maxlength="120"':'type="number" step="0.01" inputmode="decimal"')+' value="'+esc(v==null?'':v)+'" data-p="'+f[0]+'" data-s="'+(f[3]==='s'?1:0)+'" onchange="cgDoiO(this)"><button class="dd" type="button" title="Xác nhận số này đã đo đúng" onclick="cgXacNhan(\''+f[0]+'\')">✓</button></span></label>'; });
+      var o=f[0]==='chuoi.kieu'?'<select data-p="'+f[0]+'" data-s="1" onchange="cgDoiO(this)"><option value="carbon"'+(cgCb(t.chuoi)?' selected':'')+'>Carbon – vỏ + lõi foam + ống quả cân</option><option value="gỗ"'+(cgCb(t.chuoi)?'':' selected')+'>Gỗ – mộng A-joint + khoang cân</option></select>'
+        :'<input '+(f[3]==='s'?'type="text" maxlength="120"':'type="number" step="0.01" inputmode="decimal"')+' value="'+esc(v==null?'':v)+'" data-p="'+f[0]+'" data-s="'+(f[3]==='s'?1:0)+'" onchange="cgDoiO(this)">';
+      h+='<label class="cg-o'+(da?' da':' chua')+(sai[f[0]]?' sai':'')+'"><span>'+esc(f[1])+(f[2]?' ('+f[2]+')':'')+'</span><span class="h">'+o+'<button class="dd" type="button" title="Xác nhận số này đã đo đúng" onclick="cgXacNhan(\''+f[0]+'\')">✓</button></span></label>'; });
     h+='</div></div>';
   });
   return h+'<div class="cg-khoi"><b>Ghi chú lần đo (gửi kèm khi lưu)</b><input id="cgGhiChu" maxlength="300" style="width:100%;min-height:38px" placeholder="vd. đo trên 3 cây mẫu lô 07/11, thước kẹp 0,01"></div></div>'; }

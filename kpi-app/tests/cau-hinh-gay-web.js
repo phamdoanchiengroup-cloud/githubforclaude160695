@@ -36,7 +36,8 @@ const ra = async p => { await p.waitForTimeout(300); };   // không gọi logout
     ok(s.svg === 5 && s.mau && s.tong && s.bang >= 14, 'Retro chưa đo: hiện mẫu 58 in (1.473,2 mm), 5 hình dựng đứng (ngọn, chuôi, chi tiết A / C / D), bảng chi tiết', s);
     ok(s.nut.some(t => /Sửa thông số/.test(t)) && s.nut.some(t => /Tải PDF/.test(t)), 'C077 có nút Sửa thông số + Tải PDF', s.nut);
     // kiểm tra ghép mặc định: mẫu có bậc cap 31,75 / sleeve 31,2 → cảnh báo vàng
-    ok(await p.evaluate(() => /Butt cap Ø31,75 khác sleeve/.test(document.querySelector('#cgCt').textContent)), 'tự phát hiện bậc đuôi (cap 31,75 > sleeve 31,2) như bản tham chiếu');
+    const cb = await p.evaluate(() => { const x = document.querySelector('#cgCt').textContent; return { kt: [...document.querySelectorAll('#cgCt .cg-bao li')].map(l => l.textContent), co: ['Khối giữ pin', 'Ống quả cân', 'quả cân Đồng thau', 'Lõi Foam xanh nhạt', 'Lõi Foam xanh đậm', 'Thanh nối', 'Inlay', 'Veneer', 'Ren cắm bumper', 'ỐNG QUẢ CÂN'].filter(t => !x.includes(t)) }; });
+    ok(!cb.co.length, 'chuôi carbon theo bản vẽ Rhino (09/11): khối POM giữ pin, lõi foam 2 màu, thanh nối, inlay, veneer, ống quả cân + quả đồng, bumper ren', cb);
     // sửa
     await p.evaluate(() => cgBatSua()); await p.waitForSelector('.cg-form');
     s = await p.evaluate(() => ({ o: document.querySelectorAll('.cg-o').length, vang: document.querySelectorAll('.cg-o.chua').length }));

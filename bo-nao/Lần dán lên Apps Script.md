@@ -8,6 +8,7 @@ Liên quan: [[Việc chờ chủ dự án]] · [[KPI Tổng quan và cách dựn
 - Lần dán chung 18/10: chủ dự án đã nhận đủ 5 file + hướng dẫn (HUONG-DAN-CAP-NHAT.md mục "LẦN DÁN CHUNG 18/10"). – [[KPI Bảo mật và vận hành]], [[KPI Âm thanh và giọng Rhino]]
 
 ## Web KPI – chưa dán
+- **09/11 (2): chuôi carbon vẽ theo bản vẽ Rhino**: Code.gs + Index.html + CauHinhGay.html qua 2-CAP-NHAT.bat, Ctrl+F5. – [[KPI Cấu hình gậy – bản vẽ kỹ thuật (08-11)]]
 - **09/11: thống kê không tính hôm nay + Cấu hình gậy 4 mã sửa + biểu đồ xưởng phóng to**: Code.gs + Index.html + QuyTrinh.html + CauHinhGay.html qua 2-CAP-NHAT.bat, Ctrl+F5. – [[KPI Thống kê không tính hôm nay (09-11)]]
 - **Cấu hình gậy 08/11** (tab mới, chỉ C019 / C056 / C077 / C067): Code.gs + Index.html + **file mới CauHinhGay** qua 2-CAP-NHAT.bat (tự đọc danh-sach-file.txt), Ctrl+F5. Dán tay thì phải **tạo file HTML mới tên `CauHinhGay`** trong Apps Script. – [[KPI Cấu hình gậy – bản vẽ kỹ thuật (08-11)]]
 - **Tăng tốc đăng nhập + gộp Việc hôm nay vào Tổng quan (chủ) 08/11**: Code.gs + Index.html + QuyTrinh.html + appsscript.json (Sheets API) qua 2-CAP-NHAT.bat **bản mới trong repo** (cap-nhat.ps1 đã sửa), Ctrl+F5, rồi mở web bằng tài khoản chủ 1 lần (tự cài lịch giữ nóng + lịch dọn dẹp ngày 1 hằng tháng, lần đầu chạy sau 15 phút). – [[KPI Dọn dẹp hằng tháng và sao lưu (08-11)]] · [[KPI Tăng tốc đợt 4 – đăng nhập (08-11)]]

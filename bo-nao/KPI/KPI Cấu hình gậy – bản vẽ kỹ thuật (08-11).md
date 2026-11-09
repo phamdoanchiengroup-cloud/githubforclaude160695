@@ -36,3 +36,14 @@ Liên quan: [[KPI Quy trình sản xuất]] · [[KPI Bảo mật và vận hành
 
 ## Đổi quyền (09/11)
 - Chủ dự án: **cả 4 tài khoản sửa được**, **C019 hoặc C056 duyệt**, **được tự duyệt** bản mình lưu. `CG_QUYEN = {C056: duyet, C019: duyet, C077: sua, C067: sua}`; `cgQuyen_(…, 'sua')` nhận cả `duyet`. Bản chờ: mỗi dòng gậy 1 bản, ai lưu sau thay bản đang chờ (web báo tên người lưu). Tổng quan chủ sở hữu tự nạp số bản chờ duyệt (`demCauHinhGayCho`). Kiểm thử `cau-hinh-gay.js` 50/50.
+
+## Chuôi carbon theo bản vẽ thực tế Rhino (09/11)
+- Chủ dự án gửi 7 PDF tham khảo (Omega shaft/butt, Radial pin, Rhino cue butt, Rhino carbon fiber, Uni-Loc, "Cao Su Bịt Nối Ø26mm", "Cao Su Ø26mm") – "vẽ chuẩn như vậy".
+- Thêm ô **Kiểu chuôi** (`chuoi.kieu`: carbon mặc định / gỗ). Form chỉ hiện nhóm ô đúng kiểu (`cgTruongHien`), đếm "đã đo x / y" theo nhóm đang hiện. Ô kiểu là ô chọn.
+- Chuôi carbon (`cgTrongCb` dùng chung cho hình chuôi + chi tiết C / D, `cgNgoaiCb` viền trên hình ngoài): vỏ (thành `vo.day`) · veneer đầu dưới collar · **khối POM đen giữ pin** (lỗ pin, đáy kín) · lõi foam 2 đoạn (forearm xanh nhạt, tay cầm xanh đậm, chấm như bản vẽ) · **thanh thép nối** forearm / tay cầm (`thanhNoi.l` = 0 → không có, bản "Bịt Nối" có) · 2 vòng inlay be · cap veneer · **ống POM ren trong** (đáy kín trên) + **quả cân đồng** (số quả × dài, rãnh vặn) · ren cắm bumper · bumper cao su Ø26.
+- Mẫu mới: cap 4 (veneer xanh), bumper Ø26 × 15 ren cắm 12, sleeve 117,6 (giữ tổng 58 in), khối pin Ø16 × 75, ống Ø18 × 150 ren M12, 2 quả Ø12 × 25, thanh nối Ø10 × 100, vỏ 1,6. Chất liệu chuôi FC/MIX/GF → "Carbon"/"Mix…"/"Glassfiber".
+- Chuôi gỗ giữ nguyên cách vẽ cũ (mộng A-joint + khoang cân + weight bolt) – nhóm ô "Chuôi – gỗ: mộng + khoang cân".
+- 90 trường (CG_KHOA máy chủ sinh lại từ CG_TRUONG). Kiểm tra mới: khối pin lọt lòng vỏ / to hơn pin, pin chôn sâu hơn veneer + khối, thanh nối lọt lòng / quá dài, ống lọt lòng / quá dài, quả cân quá to, số quả × dài + ren bumper vừa ống, bumper to hơn cap. Bảng chi tiết chuôi carbon 15 dòng.
+- Màu mới `CG_VL`: POM (`cgHpo`), veneer (`cgHve`), inlay, foam xanh nhạt (`cgHfx`) / đậm (`cgHfd`).
+- Kiểm thử: `cau-hinh-gay.js` 50/50, `cau-hinh-gay-web.js` 40/40 (thay ô "bậc đuôi" bằng kiểm đủ chi tiết chuôi carbon).
+- Chưa chắc (đã hỏi chủ dự án): "Bịt Nối" có đúng là thanh thép nối không; ngọn có cần vẽ lại cùng kiểu màu không; kích thước thật ống POM / quả cân / khối pin.
