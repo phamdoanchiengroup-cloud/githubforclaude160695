@@ -69,8 +69,8 @@
 var CG = { ds: [], quyen: '', chon: '', bv: null, sua: null, xemPB: 0, loc: '', me: {} };
 /* Bảng ren joint pin (tra cứu 08/11 – PoolDawg, Predator, Uni-Loc, AZBilliards; Radial là số đo của thợ, hãng không công bố).
    [nhận diện, tên, Ø pin mm, bước ren mm, profile, ghi chú] */
-var CG_REN=[ [/^3\/8-?8$|radial/i,'3/8-8 (Radial)',9.36,3.20,'tròn','bản vẽ Rhino: Ø9,36 · bước 3,20 · ren tròn; pin tổng 85,20 = chôn 49,35 (ren 35,25 + đoạn xẻ rãnh 14,10) + thò 35,85',35.85,49.35,'radial'], [/^3\/8-?10$/,'3/8-10',9.525,2.54,'V','10 ren/inch – phổ biến ở gậy cao cấp, custom'],
-  [/^3\/8-?11$/,'3/8-11',9.525,2.309,'V','11 ren/inch – KHÔNG lắp lẫn với 3/8-10'], [/^3\/8-?14$/,'3/8-14',9.525,1.814,'V','14 ren/inch'],
+var CG_REN=[ [/^3\/8-?8$|radial/i,'3/8-8 (Radial)',9.36,3.20,'tròn','bản vẽ Rhino: Ø9,36 · bước 3,20 · ren tròn; pin tổng 85,20 = chôn 49,35 (ren 35,25 + đoạn xẻ rãnh 14,10) + thò 35,85',35.85,49.35,'radial'], [/^3\/8-?10$/,'3/8-10',9.525,2.54,'V','bước 2,540 mm – phổ biến ở gậy cao cấp, custom'],
+  [/^3\/8-?11$/,'3/8-11',9.525,2.309,'V','bước 2,309 mm – KHÔNG lắp lẫn với 3/8-10'], [/^3\/8-?14$/,'3/8-14',9.525,1.814,'V','bước 1,814 mm'],
   [/^5\/16-?14$/,'5/16-14',7.938,1.814,'V','KHÔNG lắp lẫn 5/16-18; bản vẽ Rhino: pin ~79,6 (thò ~30,6 đo trên hình), ngọn dùng ren cái Ø12,10 × 27,43',30.6,49,'r1614'],
   [/^5\/16-?18$/,'5/16-18',7.70,1.41,'V','bản vẽ Rhino (Inox): Ø7,70 · bước 1,41; pin 76,55 = chôn 49,35 + thò 27,20 (bản Mạ: 70,55, chôn 43,35)',27.2,49.35,'r1618'],
   [/uni|quick|q-?loc|vqr|psj|vp2|wavy/i,'Uniloc (tháo nhanh)',9.71,2.30,'riêng','bản vẽ Rhino: ren 60° Ø9,71 · bước 2,30; pin 80,80 = chôn ~30,1 (ren M8×1,25) + thò ~50,7; khoảng 7,10 chỉ sai số −0,05',50.7,30.1,'uniloc'] ];
@@ -82,7 +82,7 @@ function cgPinAnh(c){ var r=cgRenTT(c&&c.pin&&c.pin.ren); return r&&r[8]&&CG_PIN
 function cgVePin(p,cx,Y,k,v0,v1,xj){ var a0=xj-p.T, a1=a0+p.L, u0=Math.max(v0,a0), u1=Math.min(v1,a1); if(u1<=u0)return ''; var w=p.D*k, y0=(u0-a0)/p.L*p.h, y1=(u1-a0)/p.L*p.h;
   return '<svg x="'+(cx-w/2).toFixed(1)+'" y="'+Y(u0).toFixed(1)+'" width="'+w.toFixed(1)+'" height="'+(Y(u1)-Y(u0)).toFixed(1)+'" viewBox="0 '+y0.toFixed(1)+' '+p.w+' '+(y1-y0).toFixed(1)+'" preserveAspectRatio="none"><image href="'+p.s+'" x="0" y="0" width="'+p.w+'" height="'+p.h+'"/></svg>'; }
 function cgRenTT(ren){ var r=String(ren||'').replace(/\s|x|×/gi,function(c){return /x|×/i.test(c)?'-':''}); for(var i=0;i<CG_REN.length;i++) if(CG_REN[i][0].test(r)) return CG_REN[i]; return null; }
-/* Thông số mẫu: cơ pool carbon 58 in (bản vẽ tham chiếu chủ dự án gửi 08/11). Mọi ô mẫu hiện vàng "chưa đo" tới khi C077 đo. */
+/* Thông số mẫu: theo bản vẽ nhà máy (ngọn 735 + chuôi 736 mm). Mọi ô mẫu hiện vàng "chưa đo" tới khi C077 đo. */
 function cgMau(d){
   var ren=(d&&d.tenRen&&d.tenRen!=='—')?d.tenRen:'3/8-8';
   var vlN=(d&&d.vlN)||'', vlC=(d&&d.vlC)||'';
@@ -582,9 +582,9 @@ function cgBangCT(t){
 function cgBangTS(t){
   var n=t.ngon,c=t.chuoi,L=cgDai(t), g1=Math.atan((cgN(n.ong.dPro)-cgN(n.ong.dDau))/2/Math.max(1,cgN(n.ong.proDai)))*180/Math.PI, l2=cgN(n.ong.dai)-cgN(n.ong.proDai), g2=Math.atan((cgN(n.ong.dJoint)-cgN(n.ong.dPro))/2/Math.max(1,l2))*180/Math.PI;
   var r=function(a,b){return '<tr><td>'+esc(a)+'</td><td class="so">'+esc(b)+'</td></tr>'};
-  return '<table class="cg-bang"><tbody>'+r('Tổng dài',cgF(L.tong,1)+' mm · '+cgF(Math.round(L.tong/25.4*10)/10)+' in')+r('Ngọn / chuôi',cgF(L.ngon,1)+' / '+cgF(L.chuoi,1)+' mm'+(cgK3(c)?' (3 khúc: '+cgF(L.chuoi-cgN(c.noi.dai),1)+' + '+cgF(c.noi.dai,1)+')':''))+
+  return '<table class="cg-bang"><tbody>'+r('Tổng dài',cgF(L.tong,1)+' mm')+r('Ngọn / chuôi',cgF(L.ngon,1)+' / '+cgF(L.chuoi,1)+' mm'+(cgK3(c)?' (3 khúc: '+cgF(L.chuoi-cgN(c.noi.dai),1)+' + '+cgF(c.noi.dai,1)+')':''))+
     r('Pro taper',cgF(n.ong.proDai)+' mm · Ø'+cgF(n.ong.dDau)+' → '+cgF(n.ong.dPro)+' · '+cgF(g1,2)+'°')+r('Côn tới joint',cgF(l2,1)+' mm · Ø'+cgF(n.ong.dPro)+' → '+cgF(n.ong.dJoint)+' · '+cgF(g2,2)+'°')+
-    r('Joint','Ø'+cgF(n.collar.d)+' · pin '+c.pin.ren)+r('Khối lượng',cgF(t.chung.khoiMin)+'–'+cgF(t.chung.khoiMax)+' g · '+cgF(Math.round(cgN(t.chung.khoiMin)/28.35*10)/10)+'–'+cgF(Math.round(cgN(t.chung.khoiMax)/28.35*10)/10)+' oz · ngọn ~'+cgF(t.chung.khoiNgon)+' g')+
+    r('Joint','Ø'+cgF(n.collar.d)+' · pin '+c.pin.ren)+r('Khối lượng',cgF(t.chung.khoiMin)+'–'+cgF(t.chung.khoiMax)+' g · ngọn ~'+cgF(t.chung.khoiNgon)+' g')+
     r('Cân bằng','~'+cgF(t.chung.canBang)+' mm từ đáy')+(t.chung.ghiChu?r('Ghi chú',t.chung.ghiChu):'')+'</tbody></table>'; }
 
 /* ===================== GIAO DIỆN TAB ===================== */
@@ -660,7 +660,7 @@ function cgVeCt(){
   if(kt.length) h+='<div class="cg-bao '+(kt.some(function(k){return k.muc==='do'})?'do':'vang')+'"><b>Kiểm tra ghép / kích thước ('+kt.length+')</b><ul style="margin:4px 0 0 18px;padding:0">'+kt.map(function(k){return '<li>'+(k.muc==='do'?'⛔ ':'⚠ ')+esc(k.t)+'</li>'}).join('')+'</ul></div>';
   else h+='<div class="cg-bao xanh">✓ Các kích thước ghép khớp nhau (joint, ren, tip, insert, '+(cgCb(t.chuoi)?'khối pin, ống quả cân':'khoang cân')+').</div>';
   if(CG.sua) h+=cgForm(t,kt);
-  h+='<div class="cg-giay"><h4>NGỌN VÀ CHUÔI · DỰNG ĐỨNG – TRỤC ĐÚNG TỈ LỆ, ĐƯỜNG KÍNH PHÓNG '+CG_KX+'×</h4><div class="cg-dung2"><div><h5>NGỌN · '+cgF(L.ngon,1)+' mm</h5>'+cgKhuc(t,'ngon')+'</div><div><h5>CHUÔI · '+cgF(L.chuoi,1)+' mm</h5>'+cgKhuc(t,'chuoi')+'</div></div><div style="text-align:center;font:700 13px ui-monospace,Menlo,monospace;margin-top:6px">CẢ CÂY '+cgF(L.tong,1)+' mm · '+cgF(Math.round(L.tong/25.4*10)/10)+' in</div></div>'+
+  h+='<div class="cg-giay"><h4>NGỌN VÀ CHUÔI · DỰNG ĐỨNG – TRỤC ĐÚNG TỈ LỆ, ĐƯỜNG KÍNH PHÓNG '+CG_KX+'×</h4><div class="cg-dung2"><div><h5>NGỌN · '+cgF(L.ngon,1)+' mm</h5>'+cgKhuc(t,'ngon')+'</div><div><h5>CHUÔI · '+cgF(L.chuoi,1)+' mm</h5>'+cgKhuc(t,'chuoi')+'</div></div><div style="text-align:center;font:700 13px ui-monospace,Menlo,monospace;margin-top:6px">CẢ CÂY '+cgF(L.tong,1)+' mm</div></div>'+
     '<div class="cg-giay"><h4>CHI TIẾT – ĐÚNG TỈ LỆ THẬT, PHÓNG TO</h4><div class="cg-dung3"><div><h5>A · ĐẦU NGỌN</h5>'+cgCT(t,'A')+'</div><div><h5>C · JOINT</h5>'+cgCT(t,'C')+'</div>'+(cgK3(t.chuoi)?'<div><h5>K · KHỚP GIỮA</h5>'+cgCT(t,'B')+'</div>':'')+'<div><h5>D · ĐUÔI + '+(cgCb(t.chuoi)?'ỐNG QUẢ CÂN':'WEIGHT BOLT')+'</h5>'+cgCT(t,'D')+'</div></div></div>'+
     '<div class="cg-2c"><div class="cg-giay"><h4>THÔNG SỐ</h4>'+cgBangTS(t)+'</div><div class="cg-giay"><h4>CHÚ THÍCH VẬT LIỆU</h4>'+cgChuThich(t)+'</div></div>'+
     '<div class="cg-giay"><h4>BẢNG CHI TIẾT</h4>'+cgBangCT(t)+'</div>';
@@ -675,7 +675,7 @@ function cgPhong(v){ var o=document.createElement('div'); o.className='cg-phong'
 function cgThamKhao(){
   return '<details class="cg-khoi" style="margin-top:10px"><summary><b style="display:inline">Tham khảo khi đo – cấu tạo chuẩn & bảng ren joint pin</b></summary><div style="font-size:13px;line-height:1.5;margin-top:6px">'+
    '<p><b>Ngọn carbon:</b> ống sợi carbon quấn trên lõi thép rồi ép keo epoxy, thành ống thường <b>0,8–1,2 mm</b> (nhiều hãng ~1,0). Bên trong là <b>lõi foam polyurethane</b> (có hãng dùng foam nhiều tỉ trọng), một số hãng <b>bịt nút gỗ maple ở hai đầu lõi</b> – điền ở ô "Nút bịt". Ferrule gậy carbon thường ngắn: 6–13 mm (gậy gỗ cổ điển 19–25 mm). Đầu joint của ngọn có insert ren (đồng / phenolic); Radial vặn thẳng vào gỗ / phenolic, không cần insert.</p>'+
-   '<p><b>Chuôi:</b> đa số gậy carbon vẫn dùng chuôi gỗ, một số dòng cao cấp có chuôi carbon. Forearm và tay cầm nối bằng <b>mộng A-joint</b> (mộng tròn cắm vào lỗ khoan; thợ hay dùng mộng 5/8" ≈ Ø16 × 16 mm). Joint pin dài tổng khoảng 80 mm, phần lớn chôn trong forearm – điền ở ô "Pin chôn". Khoang cân ở đuôi nhận vít weight bolt (thường 3/8-16), chỉnh nặng khoảng 17,5–21,5 oz.</p>'+
+   '<p><b>Chuôi:</b> đa số gậy carbon vẫn dùng chuôi gỗ, một số dòng cao cấp có chuôi carbon. Forearm và tay cầm nối bằng <b>mộng A-joint</b> (mộng tròn cắm vào lỗ khoan; thợ hay dùng mộng Ø16 × 16 mm). Joint pin dài tổng khoảng 80 mm, phần lớn chôn trong forearm – điền ở ô "Pin chôn". Khoang cân ở đuôi nhận vít weight bolt (thường 3/8-16), chỉnh nặng cả cây khoảng 496–610 g.</p>'+
    '<p><b>Chuôi carbon Rhino (bản vẽ chủ dự án gửi 09/11):</b> vỏ carbon, veneer xanh ở đầu (dưới collar) và cuối (cap), vòng inlay ở ranh forearm / tay cầm / sleeve; joint pin cắm trong <b>khối POM đen</b>; lõi foam 2 đoạn (forearm xanh nhạt, tay cầm xanh đậm); bản "bịt nối" có <b>thanh thép nối</b> forearm với tay cầm (bản thường để 0); đuôi có <b>ống POM ren trong</b> chứa các <b>quả cân đồng</b> vặn ren, bumper cao su Ø26 vặn vào ống. Chọn "Kiểu chuôi = gỗ" để dùng cấu tạo mộng A-joint + khoang cân.</p>'+
    '<table class="cg-bang"><thead><tr><th>Ren</th><th>Ø pin (mm)</th><th>Bước ren (mm)</th><th>Profile</th><th>Ghi chú</th></tr></thead><tbody>'+
    CG_REN.map(function(r){ return '<tr><td><b>'+esc(r[1])+'</b></td><td class="so">'+(r[2]?cgF(r[2],3):'đo thật')+'</td><td class="so">'+(r[3]?cgF(r[3],3):'đo thật')+'</td><td>'+esc(r[4])+'</td><td>'+esc(r[5])+'</td></tr>'; }).join('')+
@@ -739,7 +739,7 @@ function cgTaiPdf(){
   call('ghiTaiPdfCauHinhGay',[d.ma,B.tt?B.tt.pb:''],function(g){
     if(!g||!g.ok){ toast((g&&g.msg)||'Không tạo được PDF'); return; }
     var nguoi=g.nguoi+(g.maNV?' ('+g.maNV+')':''), luc=g.luc, W=1055;
-    var L=cgDai(t), p=[ '<h3>'+esc(d.ten)+' – NGỌN VÀ CHUÔI (DỰNG ĐỨNG · TRỤC ĐÚNG TỈ LỆ)</h3><div class="cg-giay"><div class="cg-dung2"><div><h5>NGỌN · '+cgF(L.ngon,1)+' mm</h5>'+cgKhuc(t,'ngon',{cao:1650})+'</div><div><h5>CHUÔI · '+cgF(L.chuoi,1)+' mm</h5>'+cgKhuc(t,'chuoi',{cao:1650})+'</div></div><div style="text-align:center;font:700 13px monospace;margin-top:4px">CẢ CÂY '+cgF(L.tong,1)+' mm · '+cgF(Math.round(L.tong/25.4*10)/10)+' in</div></div>',
+    var L=cgDai(t), p=[ '<h3>'+esc(d.ten)+' – NGỌN VÀ CHUÔI (DỰNG ĐỨNG · TRỤC ĐÚNG TỈ LỆ)</h3><div class="cg-giay"><div class="cg-dung2"><div><h5>NGỌN · '+cgF(L.ngon,1)+' mm</h5>'+cgKhuc(t,'ngon',{cao:1650})+'</div><div><h5>CHUÔI · '+cgF(L.chuoi,1)+' mm</h5>'+cgKhuc(t,'chuoi',{cao:1650})+'</div></div><div style="text-align:center;font:700 13px monospace;margin-top:4px">CẢ CÂY '+cgF(L.tong,1)+' mm</div></div>',
       '<h3>CHI TIẾT – ĐÚNG TỈ LỆ THẬT, PHÓNG TO</h3><div class="cg-giay"><div class="cg-dung3"><div><h5>A · ĐẦU NGỌN</h5>'+cgCT(t,'A')+'</div><div><h5>C · JOINT</h5>'+cgCT(t,'C')+'</div>'+(cgK3(t.chuoi)?'<div><h5>K · KHỚP GIỮA</h5>'+cgCT(t,'B')+'</div>':'')+'<div><h5>D · ĐUÔI</h5>'+cgCT(t,'D')+'</div></div></div><div class="cg-2c" style="grid-template-columns:1.3fr 1fr"><div class="cg-giay"><h4>THÔNG SỐ</h4>'+cgBangTS(t)+'</div><div class="cg-giay"><h4>CHÚ THÍCH VẬT LIỆU</h4>'+cgChuThich(t)+'</div></div><div class="cg-giay"><h4>BẢNG CHI TIẾT</h4>'+cgBangCT(t)+'</div>' ];
     var box=document.createElement('div'); box.className='cg-in'; box.innerHTML=p.map(function(x,i){ return cgTrangPdf(t,d,B,nguoi,luc,i+1,p.length,x); }).join(''); document.body.appendChild(box);
     var ten='Cau-hinh-gay-'+d.ma+'-'+(B.tt?'v'+B.tt.pb:'mau')+'.pdf';
