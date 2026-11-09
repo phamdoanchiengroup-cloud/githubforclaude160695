@@ -122,4 +122,3 @@ Những điều đã chốt. Đừng đề xuất lại những gì ghi "không 
 - (09/11) Joint pin trên bản vẽ cấu hình gậy dùng **ảnh cắt từ bản vẽ gốc** (bỏ số kích thước), **ghép thẳng vào file** dù repo đang công khai – chủ dự án chấp nhận. – [[KPI Cấu hình gậy – bản vẽ kỹ thuật (08-11)]]
 - (09/11) Web công nhân kiểu Apple: chỉ CN; thanh dưới 5 nút Nhập · KPI · Cơm · Xưởng · Tôi; bảng KPI xưởng chỉ top 3 + người trên + mình; bật cho tất cả, có nút về giao diện cũ. – [[KPI Web công nhân kiểu Apple (09-11)]]
 - (09/11) Cấu hình gậy: thêm gậy nhảy / phá nhảy **3 khúc** (ô Số khúc), ngọn của gậy 3 khúc C077 đo riêng, khối giữa lõi chuôi là **khối đối trọng**; bảng Ø ngọn mỗi 50 mm **chưa cần**. – [[KPI Cấu hình gậy – bản vẽ kỹ thuật (08-11)]]
-- (09/11) Cấu hình gậy: **mọi đơn vị đo dùng mm** (không ghi inch / oz; khối lượng bằng gram). – [[KPI Cấu hình gậy – bản vẽ kỹ thuật (08-11)]]
