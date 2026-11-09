@@ -38,6 +38,14 @@ const ra = async p => { await p.waitForTimeout(300); };   // không gọi logout
     // kiểm tra ghép mặc định: mẫu có bậc cap 31,75 / sleeve 31,2 → cảnh báo vàng
     const cb = await p.evaluate(() => { const x = document.querySelector('#cgCt').textContent; return { kt: [...document.querySelectorAll('#cgCt .cg-bao li')].map(l => l.textContent), co: ['Khối giữ pin', 'Ống quả cân', 'quả cân Đồng thau', 'Lõi Foam xanh nhạt', 'Lõi Foam xanh đậm', 'Thanh nối', 'Inlay', 'Veneer', 'Ren cắm bumper', 'ỐNG QUẢ CÂN'].filter(t => !x.includes(t)) }; });
     ok(!cb.co.length, 'chuôi carbon theo bản vẽ Rhino (09/11): khối POM giữ pin, lõi foam 2 màu, thanh nối, inlay, veneer, ống quả cân + quả đồng, bumper ren', cb);
+    // 09/11: gậy 3 khúc (bản vẽ nhà máy Nhảy 350-150 / Phá nhảy lùn 380-250): tên "(390-100)" → khúc trên 390 + đuôi rời 100
+    for (const [ma, tren, duoi] of [['TKNHAY', 390, 100], ['EVOVAL', 380, 250]]) {
+      await p.evaluate(m => cgMo(m), ma); await p.waitForFunction(m => CG.bv && CG.bv.dong.ma === m && document.querySelector('#cgCt svg.cg-dung'), ma, { timeout: 20000 });
+      const k3 = await p.evaluate(() => { const x = document.querySelector('#cgCt').textContent; return { h5: [...document.querySelectorAll('#cgCt h5')].map(h => h.textContent), co: ['KHỚP GIỮA', 'KHÚC TRÊN', 'ĐUÔI RỜI', 'Pin nối', 'Ống ren khúc trên'].filter(t => !x.includes(t)), kt: [...document.querySelectorAll('#cgCt .cg-bao li')].map(l => l.textContent), tren: (x.match(/KHÚC TRÊN ([\d,]+)/) || [])[1], duoi: (x.match(/ĐUÔI RỜI ([\d,]+)/) || [])[1] }; });
+      ok(k3.h5.includes('K · KHỚP GIỮA') && !k3.co.length && !k3.kt.length && k3.tren === tren + ',0' && k3.duoi === duoi + ',0', ma + ': gậy 3 khúc – khúc trên ' + tren + ' + đuôi rời ' + duoi + ', chi tiết K khớp giữa, không cảnh báo', k3);
+    }
+    await p.evaluate(() => cgMo('RETRO')); await p.waitForFunction(() => CG.bv && CG.bv.dong.ma === 'RETRO' && document.querySelector('#cgCt svg.cg-dung'), null, { timeout: 20000 });
+    ok(await p.evaluate(() => !/KHỚP GIỮA/.test(document.querySelector('#cgCt').textContent)), 'gậy đánh 2 khúc: không có khớp giữa');
     // sửa
     await p.evaluate(() => cgBatSua()); await p.waitForSelector('.cg-form');
     s = await p.evaluate(() => ({ o: document.querySelectorAll('.cg-o').length, vang: document.querySelectorAll('.cg-o.chua').length }));
