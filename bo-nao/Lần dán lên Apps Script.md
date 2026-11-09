@@ -8,6 +8,7 @@ Liên quan: [[Việc chờ chủ dự án]] · [[KPI Tổng quan và cách dựn
 - Lần dán chung 18/10: chủ dự án đã nhận đủ 5 file + hướng dẫn (HUONG-DAN-CAP-NHAT.md mục "LẦN DÁN CHUNG 18/10"). – [[KPI Bảo mật và vận hành]], [[KPI Âm thanh và giọng Rhino]]
 
 ## Web KPI – chưa dán
+- **09/11 (4): web công nhân kiểu Apple**: chỉ Index.html (+ Code.gs không đổi) qua 2-CAP-NHAT.bat, Ctrl+F5. – [[KPI Web công nhân kiểu Apple (09-11)]]
 - **09/11 (3): joint pin = ảnh bản vẽ gốc**: Code.gs + Index.html + CauHinhGay.html qua 2-CAP-NHAT.bat, Ctrl+F5. – [[KPI Cấu hình gậy – bản vẽ kỹ thuật (08-11)]]
 - **09/11 (2): chuôi carbon vẽ theo bản vẽ Rhino**: Code.gs + Index.html + CauHinhGay.html qua 2-CAP-NHAT.bat, Ctrl+F5. – [[KPI Cấu hình gậy – bản vẽ kỹ thuật (08-11)]]
 - **09/11: thống kê không tính hôm nay + Cấu hình gậy 4 mã sửa + biểu đồ xưởng phóng to**: Code.gs + Index.html + QuyTrinh.html + CauHinhGay.html qua 2-CAP-NHAT.bat, Ctrl+F5. – [[KPI Thống kê không tính hôm nay (09-11)]]

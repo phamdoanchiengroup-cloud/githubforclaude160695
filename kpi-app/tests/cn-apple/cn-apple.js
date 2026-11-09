@@ -24,10 +24,10 @@ function cnThanhDuoi() {
 function cnDanhDau() {
   var n = CN_NHOM[window.tabHienTai] || '', duc = $('ducbar'), coDuc = !!(duc && duc.textContent.replace(/\s+/g, ''));
   document.documentElement.classList.toggle('cn-tab-nhap', n === 'cnnhap');   /* khung nhắc nhập (ducbar) chỉ hiện đủ ở tab Nhập */
-  Array.prototype.forEach.call(document.querySelectorAll('#botbar button'), function (b) { var k = b.getAttribute('data-n'); b.classList.toggle('on', k === n); if (k === 'cnnhap') b.classList.toggle('cham', coDuc); });
+  Array.prototype.forEach.call(document.querySelectorAll('#botbar button'), function (b) { var k = b.getAttribute('data-n'); b.classList.toggle('on', k === n); if (k === n) b.setAttribute('aria-current', 'page'); else b.removeAttribute('aria-current'); if (k === 'cnnhap') b.classList.toggle('cham', coDuc); });
   var seg = $('cnSeg'); if (seg) {
     var o = n === 'xuong'; seg.classList.toggle('hide', !o);
-    if (o) seg.innerHTML = '<div class="cn-seg" role="tablist"><button type="button" role="tab" class="' + (tabHienTai === 'kpicn' ? 'on' : '') + '" onclick="go(\'kpicn\')">Bảng KPI</button><button type="button" role="tab" class="' + (tabHienTai === 'cccn' ? 'on' : '') + '" onclick="go(\'cccn\')">Chấm công</button></div>';
+    if (o) seg.innerHTML = '<div class="cn-seg" role="tablist"><button type="button" role="tab" aria-selected="' + (tabHienTai === 'kpicn') + '" class="' + (tabHienTai === 'kpicn' ? 'on' : '') + '" onclick="go(\'kpicn\')">Bảng KPI</button><button type="button" role="tab" aria-selected="' + (tabHienTai === 'cccn') + '" class="' + (tabHienTai === 'cccn' ? 'on' : '') + '" onclick="go(\'cccn\')">Chấm công</button></div>';
   }
 }
 /* Bật / tắt giao diện mới theo tài khoản + lựa chọn trên máy */
@@ -84,7 +84,7 @@ function cnLocBXH() {
 /* Màn "Tôi" */
 function vCNToi() {
   var ten = (ME.ten || ME.hoTen || ''), chu = ten.trim().split(/\s+/).pop() || '?';
-  var dong = function (nhan, phu, fn, phai) { return '<button type="button" class="cn-dong" onclick="' + fn + '"><span>' + nhan + (phu ? '<small>' + phu + '</small>' : '') + '</span>' + (phai || '<b aria-hidden="true">›</b>') + '</button>'; };
+  var dong = function (nhan, phu, fn, phai, bat) { return '<button type="button" class="cn-dong"' + (bat == null ? '' : ' role="switch" aria-checked="' + !!bat + '"') + ' onclick="' + fn + '"><span>' + nhan + (phu ? '<small>' + phu + '</small>' : '') + '</span>' + (phai || '<b aria-hidden="true">›</b>') + '</button>'; };
   var cong = function (id, on) { return '<span class="cn-cong' + (on ? ' on' : '') + '" id="' + id + '" aria-hidden="true"></span>'; };
   var maiOn = (function () { try { return !maiTat(); } catch (e) { return true; } })();
   $('main').innerHTML =
@@ -94,13 +94,15 @@ function vCNToi() {
       dong('Hướng dẫn sử dụng', 'Cách nhập sản lượng, xem KPI, đăng ký cơm', "go('hd')") +
       dong('Đổi mật khẩu', '', 'moDoiMK()') + '</div>' +
     '<div class="cn-nhom">CÀI ĐẶT</div><div class="cn-the">' +
-      dong('Chữ to', 'Phóng to chữ và nút trên mọi trang', 'cnDoiChuTo()', cong('cnCongTo', cnNho(CN_KHOA_TO) === '1')) +
-      dong('Rhino nhắc nhở', 'Nhân vật Rhino ở góc màn hình', 'cnDoiRhino()', cong('cnCongMai', maiOn)) +
+      dong('Chữ to', 'Phóng to chữ và nút trên mọi trang', 'cnDoiChuTo()', cong('cnCongTo', cnNho(CN_KHOA_TO) === '1'), cnNho(CN_KHOA_TO) === '1') +
+      dong('Rhino nhắc nhở', 'Nhân vật Rhino ở góc màn hình', 'cnDoiRhino()', cong('cnCongMai', maiOn), maiOn) +
       dong('Dùng giao diện cũ', 'Quay lại kiểu cũ; bấm "Giao diện mới" để trở lại', 'cnVeCu()') + '</div>' +
     '<button type="button" class="btn dg cn-thoat" onclick="logout()">Đăng xuất</button>';
 }
-function cnDoiChuTo() { var on = cnNho(CN_KHOA_TO) !== '1'; cnNho(CN_KHOA_TO, on ? '1' : null); document.documentElement.classList.toggle('cn-to', on); var c = $('cnCongTo'); if (c) c.classList.toggle('on', on); }
-function cnDoiRhino() { try { maiDoi(); } catch (e) {} if (tabHienTai !== 'cntoi') go('cntoi'); }
+function cnDoiChuTo() { var on = cnNho(CN_KHOA_TO) !== '1'; cnNho(CN_KHOA_TO, on ? '1' : null); document.documentElement.classList.toggle('cn-to', on); var c = $('cnCongTo'); if (c) { c.classList.toggle('on', on); c.parentNode.setAttribute('aria-checked', on); } }
+function cnDoiRhino() {   /* maiDoi() tự vẽ lại tab hiện tại; vẫn cập nhật công tắc phòng khi không vẽ lại */
+  try { maiDoi(); } catch (e) {} if (tabHienTai !== 'cntoi') go('cntoi');
+  var on = (function () { try { return !maiTat(); } catch (e) { return true; } })(), c = $('cnCongMai'); if (c) { c.classList.toggle('on', on); c.parentNode.setAttribute('aria-checked', on); } }
 function cnVeCu() {
   if (!confirm('Chuyển về giao diện cũ?\nMuốn dùng lại giao diện mới: bấm nút "Giao diện mới" ở đầu trang.')) return;
   cnNho(CN_KHOA_CU, '1'); cnApDung(); try { veNav(); } catch (e) {} go('cnnhap');
