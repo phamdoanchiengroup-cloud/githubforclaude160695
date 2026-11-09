@@ -5375,7 +5375,7 @@ function veBangKPI(r){
   var hop=$('kpi_bang'); if(!hop)return;
   var tt=$('kpi_trangthai');
   if(tt){
-    if(r.tamTinh) tt.innerHTML='⏳ Kỳ này <b>chưa chốt</b> — số liệu đang tính trực tiếp, có thể thay đổi đến khi chốt.';
+    if(r.tamTinh) tt.innerHTML='⏳ Kỳ này <b>chưa chốt</b> — số liệu đang tính trực tiếp, <b>tới hết hôm qua</b> (không tính ngày đang làm), có thể thay đổi đến khi chốt.';
     else tt.innerHTML='✓ Số liệu '+(r.kieu==='thang'?'đã chốt chính thức':'tổng hợp từ các tháng đã chốt')+'.';
   }
 
@@ -8715,7 +8715,7 @@ function chiXemDon(){
 </script>
 <script>
 /* ===== 19. PHẦN GIAO DIỆN TẢI SAU (12/10) – SoDo.html, HoatAnh.html: chỉ tải khi cần, nhớ lại theo phiên bản ===== */
-var MANH_VER={"SoDo": "d9bc7ce73f034629", "HoatAnh": "b23cbe69d6aae56e", "AmThanh": "c690fabe4419160c", "QuyTrinh": "1d9f129eb1", "CauHinhGay": "e1dac7e0a47c0bbe"};
+var MANH_VER={"SoDo": "d9bc7ce73f034629", "HoatAnh": "b23cbe69d6aae56e", "AmThanh": "c690fabe4419160c", "QuyTrinh": "579ff988d1", "CauHinhGay": "6814b4299d9762a5"};
 var __manh={da:{},cho:{}};
 function ganManh_(nd){
   var js=[], ngoai=String(nd).replace(/<script>([\s\S]*?)<\/script>/g,function(_,x){js.push(x);return ''});
@@ -9438,7 +9438,7 @@ var _kpiTho = kpi;
 function kpiThangNay_(maNV) {           // tính tạm: chỉ nhật ký tháng này (như Bảng KPI)
   var th = today().slice(0, 7), c = kpiThangNay_.c, a = D.nhatky || [];
   if (!c || c.a !== a || c.n !== a.length || c.th !== th)
-    c = kpiThangNay_.c = { a: a, n: a.length, th: th, loc: a.filter(function (r) { return ngay(r.Ngay).slice(0, 7) === th; }) };
+    c = kpiThangNay_.c = { a: a, n: a.length, th: th, loc: a.filter(function (r) { var d = ngay(r.Ngay); return d.slice(0, 7) === th && d < today(); }) };   // 09/11: không tính hôm nay
   var luu = D.nhatky; D.nhatky = c.loc;
   try { return _kpiTho(maNV); } finally { D.nhatky = luu; }
 }
@@ -9636,7 +9636,7 @@ function hsGhiChuDong(r){
 }
 </script>
 <script>
-var KPI_BAN = '09/11/2026 00:55';
+var KPI_BAN = '09/11/2026 08:26';
 (function(){
   var cu = window.veNav;
   window.veNav = function(){
@@ -10743,7 +10743,7 @@ function nsnCapNhat(){ call('capNhatNgoaiSXTuFile',[],function(r){ if(!r||!r.ok)
 </script>
 <script>
 /* ===== 38. TĂNG TỐC ĐỢT 3 (08/11) – bộ đo tốc độ + mở nhanh bằng số lần trước (mã hóa) ===== */
-var TD_BUF=[], TD_T=null, DL_VER='53c9db482f', DL_HAN=12*3600e3, DL_BO=['SoCCCD','DienThoai','DiaChi','SdtKhanCap','LuongCoBan','NamSinh','SoTaiKhoan','Email'];
+var TD_BUF=[], TD_T=null, DL_VER='16a75bdea9', DL_HAN=12*3600e3, DL_BO=['SoCCCD','DienThoai','DiaChi','SdtKhanCap','LuongCoBan','NamSinh','SoTaiKhoan','Email'];
 function tdGhi_(f,ms,sv){ if(!(ms>=0)||!f) return; TD_BUF.push({f:String(f),ms:Math.round(ms),sv:(typeof sv==='number'?Math.round(sv):null)});
   if(TD_BUF.length>=15) tdGui_(); else if(!TD_T) TD_T=setTimeout(tdGui_,180000); }
 function tdGui_(){ if(TD_T){clearTimeout(TD_T);TD_T=null;} if(!TD_BUF.length||typeof TOKEN==='undefined'||!TOKEN) return;
@@ -10917,6 +10917,7 @@ function tqVe() {
 function tqNap() {
   if (!window.__qtDXTai) { window.__qtDXTai = 1; call('demDeXuatQuyTrinh', [], function (r) { window.__qtDX = r; tqVeViec(); }); }
   if (!window.__spMoiTai) { window.__spMoiTai = 1; call('demSanPhamMoi', [], function (r) { window.__spMoi = r; tqVeViec(); }); }
+  if (ME && ME.cg === 'duyet' && window.__cgChoTai !== ME.tk) { window.__cgChoTai = ME.tk; call('demCauHinhGayCho', [], function (r) { window.__cgCho = r; tqVeViec(); }); }
   var moi = function (k, ms) { var c = window[k]; return !c || Date.now() - (c.__t || 0) > ms; };
   if (!laChuNhat(today()) && moi('__tqSiSo', 300000)) call('siSoTatCaXuong', [today()], function (r) { if (r) r.__t = Date.now(); window.__tqSiSo = r; var e = document.getElementById('hlCM'); if (e) { e.innerHTML = holoCoMat(r); try { holoDemSo(e); } catch (x) {} } tqVeKhoi(); });
   if (moi('__tqCom', 600000)) call('xemTongHopCom', [today()], function (r) { r = r || { ok: false }; r.__t = Date.now(); window.__tqCom = r; tqVeKhoi(); });

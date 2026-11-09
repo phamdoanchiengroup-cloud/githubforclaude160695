@@ -3160,8 +3160,9 @@ function kpiThang_(maNV, kyThang, dt) {
     return false;
   };
 
-  var gc=0, sl=0, ng2=0, mauSo=0;
+  var gc=0, sl=0, ng2=0, mauSo=0, hnK = homNayVN_();   // 09/11: hôm nay chưa xong -> không tính
   Object.keys(ngayCong).forEach(function(ngayR){
+    if (ngayR >= hnK) return;
     if (nghiDaiHanNgay(ngayR)) return;                 // nghỉ dài hạn -> bỏ qua
     var kyHieu = dt.idxCC ? (dt.idxCC[maNV+'|'+ngayR] || 'x') : kyHieuChamCong_(dt.diemdanh || [], maNV, ngayR);
     var gioMat = gioCoMat_(kyHieu);
@@ -3190,7 +3191,7 @@ function kpiThang_(maNV, kyThang, dt) {
   var vpNguoi = dt.idxVP ? (dt.idxVP[maNV] || []) : dt.vipham.filter(function(v){ return v.MaNV === maNV; });
   var vpThang = vpNguoi.filter(function(v){
     var ng = ngayVN_(v.Ngay) || ngayVN_(v.ThoiDiemGhi);   // A2 (18/10): thiếu ngày thì lấy ngày ghi, không trừ lặp mọi tháng
-    return !!ng && ng.slice(0,7) === kyThang;
+    return !!ng && ng.slice(0,7) === kyThang && ng < hnK;
   });
   var vtt = diemNeNep_(maNV, 'ChuyenCan', dt.dmvp, vpThang);
   var vat = diemNeNep_(maNV, 'NeNep', dt.dmvp, vpThang);
@@ -7673,7 +7674,7 @@ function danhSachVanPhong(token) {
   ds.sort(function(a, b) { return (thuTu[a.vaiTro] - thuTu[b.vaiTro]) || (a.HoTen < b.HoTen ? -1 : 1); });
   return sach_({ ok: true, ds: ds, muc: HS_MUC });
 }
-var KPI_BAN_MAY = '09/11/2026 00:53';   // giờ dựng Code.gs (22/10)
+var KPI_BAN_MAY = '09/11/2026 08:20';   // giờ dựng Code.gs (22/10)
 /* =====================================================================
    KỸ NĂNG (22/10, chủ dự án nhờ thiết kế + tham khảo chuyên gia nhân sự / đào tạo)
    - Danh mục: trưởng / phó phòng đề xuất kỹ năng của xưởng (tên, mô tả, tiêu chí đạt, công đoạn liên quan)
@@ -8226,7 +8227,7 @@ function layQuyTrinh(token, soNgay) {
   var cds = doc_('CongDoan').filter(function(c) { return String(c.TrangThai).trim() !== 'Ngừng'; });
   var qt = qtDocQT_(cds);
   soNgay = [14, 30, 60, 90].indexOf(Number(soNgay)) >= 0 ? Number(soNgay) : qt.caiDat.soNgay;
-  var den = homNayVN_(), d0 = new Date(den + 'T12:00:00Z'); d0.setUTCDate(d0.getUTCDate() - soNgay + 1);
+  var den = congNgay_(homNayVN_(), -1), d0 = new Date(den + 'T12:00:00Z'); d0.setUTCDate(d0.getUTCDate() - soNgay + 1);
   var tu = Utilities.formatDate(d0, 'GMT', 'yyyy-MM-dd');
   var dmRow = {}; doc_('DinhMuc').forEach(function(r) { dmRow[String(r.MaCD)] = r; });
   var tk = {}, ngaySX = {}, cong = {}, d7 = new Date(den + 'T12:00:00Z'); d7.setUTCDate(d7.getUTCDate() - 6); var tu7 = Utilities.formatDate(d7, 'GMT', 'yyyy-MM-dd'), ngay7 = {};
@@ -9504,7 +9505,7 @@ function dhSanLuongXuong_(tu, den) {   // -> { X: { ten, ma: [...], ngay: { 'yyy
 function layDongGoiNgay(token, soNgay) {
   var q = qtQuyen_(token); if (q.loi) return q.loi;
   soNgay = Math.max(7, Math.min(200, Number(soNgay) || 100));
-  var den = homNayVN_(), d0 = new Date(den + 'T12:00:00Z'); d0.setUTCDate(d0.getUTCDate() - soNgay + 1);
+  var den = congNgay_(homNayVN_(), -1), d0 = new Date(den + 'T12:00:00Z'); d0.setUTCDate(d0.getUTCDate() - soNgay + 1);
   var tu = Utilities.formatDate(d0, 'GMT', 'yyyy-MM-dd'), xu = dhSanLuongXuong_(tu, den);
   return sach_({ ok: true, ma: xu.DG.ma, ngay: xu.DG.ngay, xuong: xu, thuTu: DH_XUONG_TT, tu: tu, den: den });
 }
@@ -9596,7 +9597,7 @@ function tkNgayLam_(thang) {   // ngày làm của tháng tới hôm nay: thứ 
   LE_CO_DINH_.forEach(function(x) { le[thang.slice(0, 4) + '-' + x[0]] = 1; });   // 08/11: 24/11
   var hn = homNayVN_(), ds = [], d = new Date(thang + '-01T12:00:00Z');
   while (Utilities.formatDate(d, 'GMT', 'yyyy-MM') === thang) {
-    var x = Utilities.formatDate(d, 'GMT', 'yyyy-MM-dd'); if (x > hn) break;
+    var x = Utilities.formatDate(d, 'GMT', 'yyyy-MM-dd'); if (x >= hn) break;   // 09/11: tới hết hôm qua
     if (d.getUTCDay() !== 0 && !le[x]) ds.push(x);
     d.setUTCDate(d.getUTCDate() + 1);
   }
@@ -9606,7 +9607,7 @@ function tkThangTruoc_(thang, n) { var a = [thang]; for (var i = 1; i < n; i++) 
 function layThongKe(token, thang, lamMoi) {
   var q = qtQuyen_(token); if (q.loi) return q.loi;
   thang = /^\d{4}-\d{2}$/.test(String(thang || '')) ? String(thang) : kyVN_();
-  var khoa = 'TK_v1_' + thang;
+  var hnT = homNayVN_(), khoa = 'TK_v2_' + thang + '_' + hnT;   // 09/11: bỏ hôm nay -> số đổi theo ngày
   if (!lamMoi) { var c = dhCacheLay_(khoa); if (c) return sach_(c); }
   var kq = { ok: true, thang: thang, homNay: homNayVN_(), chuaChot: thang >= kyVN_(), luc: Utilities.formatDate(new Date(), TZ_VN, 'HH:mm dd/MM') };
   var tenX = {}; docAnToan_('PhongBan').forEach(function(p) { tenX[p.MaXuong] = p.TenXuong; });
@@ -9703,11 +9704,11 @@ function layThongKe(token, thang, lamMoi) {
     var cdMa = {}; docAnToan_('CongDoan').forEach(function(c) { cdMa[c.MaCD] = c; });
     var dm = {}; docAnToan_('DinhMuc').forEach(function(x) { var v = soVN_(x.DinhMucGio); if (v > 0) dm[x.MaCD] = v; });
     var nhom = {}; docAnToan_('LyDoDung').forEach(function(r) { nhom[String(r.LyDo || '').trim()] = r.PhanLoai || ''; });
-    var cc = {}; docAnToan_('DiemDanhNghi').forEach(function(r) { var d = ngayVN_(r.Ngay); if (d.slice(0, 7) === thang) cc[r.MaNV + '|' + d] = khTuBanGhi_(r); });
-    var loiK = {}; docAnToan_('PhieuKCS').forEach(function(k) { var d = ngayVN_(k.Ngay); if (d.slice(0, 7) === thang) { var kk = k.MaNV + '|' + d + '|' + k.MaCD; loiK[kk] = (loiK[kk] || 0) + (Number(k.SoLuongKhongDat) || 0); } });
+    var cc = {}; docAnToan_('DiemDanhNghi').forEach(function(r) { var d = ngayVN_(r.Ngay); if (d.slice(0, 7) === thang && d < hnT) cc[r.MaNV + '|' + d] = khTuBanGhi_(r); });
+    var loiK = {}; docAnToan_('PhieuKCS').forEach(function(k) { var d = ngayVN_(k.Ngay); if (d.slice(0, 7) === thang && d < hnT) { var kk = k.MaNV + '|' + d + '|' + k.MaCD; loiK[kk] = (loiK[kk] || 0) + (Number(k.SoLuongKhongDat) || 0); } });
     var C = {}, X = {}, ly = {}, trang = {}, nd = {};
     docNKTu_(kyTruoc_(thang) + '-01').forEach(function(r) {
-      var d = ngayVN_(r.Ngay); if (d.slice(0, 7) !== thang) return;
+      var d = ngayVN_(r.Ngay); if (d.slice(0, 7) !== thang || d >= hnT) return;
       var st = String(r.TrangThai || '').trim() || 'Khác', c = cdMa[r.MaCD] || {}, mx = c.MaXuong || nsX[r.MaNV] || '?';
       var tx = trang[mx] || (trang[mx] = {}); tx[st] = (tx[st] || 0) + 1;
       if (st !== 'Đã chốt') return;
@@ -9733,7 +9734,7 @@ function layThongKe(token, thang, lamMoi) {
     var ds = Object.keys(C).map(function(k) { var o = C[k]; o.nguoi = Object.keys(o.nguoi).length; o.hs = o.gio > 0 ? r1(o.chuan / o.gio * 100) : null; o.gio = r1(o.gio); o.chuan = r1(o.chuan); return o; });
     Object.keys(X).forEach(function(mx) { var x = X[mx]; x.nguoi = Object.keys(x.nguoi).length; x.hs = x.gio > 0 ? r1(x.chuan / x.gio * 100) : null; x.gio = r1(x.gio); x.chuan = r1(x.chuan); });
     var hsNgay = {}; Object.keys(ngX).forEach(function(mx) { hsNgay[mx] = {}; Object.keys(ngX[mx]).forEach(function(d) { var z = ngX[mx][d]; if (z[1] > 0) hsNgay[mx][d] = r1(z[0] / z[1] * 100); }); });
-    var nhapTre = {}; docAnToan_('PhatNhapTre').forEach(function(r) { if (ngayVN_(r.Ngay).slice(0, 7) !== thang) return; var mx = r.MaXuong || nsX[r.MaNV] || '?'; nhapTre[mx] = (nhapTre[mx] || 0) + 1; });
+    var nhapTre = {}; docAnToan_('PhatNhapTre').forEach(function(r) { if (ngayVN_(r.Ngay).slice(0, 7) !== thang || ngayVN_(r.Ngay) >= hnT) return; var mx = r.MaXuong || nsX[r.MaNV] || '?'; nhapTre[mx] = (nhapTre[mx] || 0) + 1; });
     return { ds: ds, x: X, lyDo: Object.keys(ly).map(function(k) { return ly[k]; }).sort(function(a, b) { return b.gio - a.gio; }), trangThai: trang, hsNgay: hsNgay, nhapTre: nhapTre };
   });
 
@@ -9759,7 +9760,7 @@ function layThongKe(token, thang, lamMoi) {
     });
     var tenVP = {}; docAnToan_('DanhMucViPham').forEach(function(v) { tenVP[v.MaVP] = v.TenViPham; });
     var vp = {}, vpX = {};
-    docAnToan_('ViPham').forEach(function(v) { if (ngayVN_(v.Ngay).slice(0, 7) !== thang) return; var m = v.MaVP || '?', mx = nsX[v.MaNV] || '?'; vp[m] = (vp[m] || 0) + 1; (vpX[mx] = vpX[mx] || {})[m] = ((vpX[mx] || {})[m] || 0) + 1; });
+    docAnToan_('ViPham').forEach(function(v) { if (ngayVN_(v.Ngay).slice(0, 7) !== thang || ngayVN_(v.Ngay) >= hnT) return; var m = v.MaVP || '?', mx = nsX[v.MaNV] || '?'; vp[m] = (vp[m] || 0) + 1; (vpX[mx] = vpX[mx] || {})[m] = ((vpX[mx] || {})[m] || 0) + 1; });
     return { ky: ky, tamTinh: tam && ky !== thang, kyTruoc: kt, dsKy: giu, theoKy: theoKy, tut: tut, len: len, d2: d2, viPham: Object.keys(vp).map(function(m) { return { ma: m, ten: tenVP[m] || m, n: vp[m] }; }).sort(function(a, b) { return b.n - a.n; }), viPhamX: vpX };
   });
   if (loi.length) kq.loi = loi;
@@ -10161,14 +10162,14 @@ function DON_DEP_HANG_THANG(e) {
    Tab riêng "Cấu hình gậy": mỗi dòng gậy (dùng chung danh sách với Đơn hàng › Cấu hình sản phẩm) có một bộ thông số
    kích thước / vật liệu đầy đủ; trình duyệt tự vẽ bản vẽ (hình ngoài, mặt cắt, chi tiết joint + đuôi) và xuất PDF.
    TÀI LIỆU MẬT – chỉ 4 mã nhân viên (chủ dự án chốt 08/11):
-     C056 chủ sở hữu (xem), C019 Giám đốc sản xuất (xem + DUYỆT), C077 (xem + NHẬP / LƯU), C067 (xem).
+     C019 + C056 (sửa + DUYỆT, được tự duyệt), C077 + C067 (sửa) – chủ dự án đổi 09/11.
    Luồng: C077 lưu -> bản "Chờ duyệt" (mỗi dòng gậy giữ tối đa 1 bản chờ, lưu lại là thay) -> C019 duyệt -> thành bản hiệu lực
    (số phiên bản tăng, bản hiệu lực cũ chuyển "Bản cũ" – vẫn xem / tải lại được) hoặc từ chối kèm lý do.
    Sheet CauHinhGay (ẩn): Id, MaDong, PhienBan, TrangThai, DuLieu(JSON), NguoiLuu, ThoiDiemLuu, GhiChu, NguoiDuyet, ThoiDiemDuyet, LyDo.
    Mỗi lần tải PDF ghi Nhật ký thao tác (PDF có dấu chìm tên người tải + giờ). */
 var CG_SHEET = 'CauHinhGay';
 var CG_COT = ['Id', 'MaDong', 'PhienBan', 'TrangThai', 'DuLieu', 'NguoiLuu', 'ThoiDiemLuu', 'GhiChu', 'NguoiDuyet', 'ThoiDiemDuyet', 'LyDo'];
-var CG_QUYEN = { C056: 'xem', C019: 'duyet', C077: 'sua', C067: 'xem' };   // mã NV -> quyền (duyệt / sửa đều xem được)
+var CG_QUYEN = { C056: 'duyet', C019: 'duyet', C077: 'sua', C067: 'sua' };   // 09/11 (chủ dự án): cả 4 sửa được; C019 + C056 duyệt (được tự duyệt bản mình lưu)
 var CG_MAX_JSON = 40000;
 /* Trường được lưu (đường dẫn -> 'n' số | 's' chữ) – khớp CG_TRUONG ở CauHinhGay.html (va-cau-hinh-gay-web.py kiểm khớp khi dựng) */
 var CG_KHOA = {"ngon.tip.d": "n", "ngon.tip.h": "n", "ngon.tip.vl": "s", "ngon.pad.h": "n", "ngon.pad.vl": "s", "ngon.ferrule.h": "n", "ngon.ferrule.vl": "s", "ngon.ferrule.tenonD": "n", "ngon.ferrule.tenonL": "n", "ngon.ong.vl": "s", "ngon.ong.loi": "s", "ngon.ong.day": "n", "ngon.ong.dai": "n", "ngon.ong.dDau": "n", "ngon.ong.proDai": "n", "ngon.ong.dPro": "n", "ngon.ong.dJoint": "n", "ngon.ong.nutTruoc": "n", "ngon.ong.nutSau": "n", "ngon.ong.nutVl": "s", "ngon.collar.d": "n", "ngon.collar.h": "n", "ngon.collar.vl": "s", "ngon.insert.d": "n", "ngon.insert.l": "n", "ngon.insert.vl": "s", "ngon.insert.ren": "s", "chuoi.collar.d": "n", "chuoi.collar.h": "n", "chuoi.collar.vl": "s", "chuoi.pin.ren": "s", "chuoi.pin.d": "n", "chuoi.pin.tho": "n", "chuoi.pin.chon": "n", "chuoi.pin.buoc": "n", "chuoi.pin.kieu": "s", "chuoi.pin.vl": "s", "chuoi.forearm.dai": "n", "chuoi.forearm.dDau": "n", "chuoi.forearm.dCuoi": "n", "chuoi.forearm.vl": "s", "chuoi.forearm.tenonD": "n", "chuoi.forearm.tenonL": "n", "chuoi.wrap.dai": "n", "chuoi.wrap.dDau": "n", "chuoi.wrap.dCuoi": "n", "chuoi.wrap.vl": "s", "chuoi.sleeve.dai": "n", "chuoi.sleeve.dDau": "n", "chuoi.sleeve.dCuoi": "n", "chuoi.sleeve.vl": "s", "chuoi.cap.h": "n", "chuoi.cap.d": "n", "chuoi.cap.vl": "s", "chuoi.bumper.h": "n", "chuoi.bumper.d": "n", "chuoi.bumper.vl": "s", "chuoi.khoang.d": "n", "chuoi.khoang.sau": "n", "chuoi.bolt.ren": "s", "chuoi.bolt.dai": "n", "chuoi.bolt.dauD": "n", "chung.khoiMin": "n", "chung.khoiMax": "n", "chung.khoiNgon": "n", "chung.canBang": "n", "chung.ghiChu": "s"};
@@ -10186,7 +10187,8 @@ function cgQuyen_(token, can) {
   var me = docPhien_(token);
   if (!me) return { loi: sach_({ ok: false, hetHan: true, msg: 'Phiên đăng nhập đã hết hạn.' }) };
   var q = cgQuyenCua_(me);
-  if (!q || (can && q !== can)) return { loi: sach_({ ok: false, msg: can === 'sua' ? 'Chỉ người phụ trách đo đạc (C077) được lưu thông số.' : can === 'duyet' ? 'Chỉ Giám đốc sản xuất (C019) được duyệt.' : 'Tài khoản không xem được Cấu hình gậy.' }) };
+  var duoc = !can || q === can || (can === 'sua' && q === 'duyet');   // người duyệt cũng sửa được
+  if (!q || !duoc) return { loi: sach_({ ok: false, msg: can === 'sua' ? 'Tài khoản không được lưu thông số.' : can === 'duyet' ? 'Chỉ C019 hoặc C056 được duyệt.' : 'Tài khoản không xem được Cấu hình gậy.' }) };
   return { me: me, q: q };
 }
 function cgSheet_() {

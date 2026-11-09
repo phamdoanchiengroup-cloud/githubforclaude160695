@@ -852,5 +852,8 @@ exec(io.open(os.path.join(D, 'tong-quan', 'va-tong-quan-web.py'), encoding='utf-
 # ---------------------------------------------------------------- 42. Cấu hình gậy (08/11): bản vẽ kỹ thuật theo thông số, tài liệu mật (4 mã NV), mảnh CauHinhGay.html
 exec(io.open(os.path.join(D, 'cau-hinh-gay', 'va-cau-hinh-gay-web.py'), encoding='utf-8').read())
 
+# ---------------------------------------------------------------- 43. Thống kê / KPI không tính ngày đang làm việc (09/11)
+exec(io.open(os.path.join(D, 'bo-hom-nay', 'va-bo-hom-nay-web.py'), encoding='utf-8').read())
+
 io.open(os.path.join(D, '..', 'Index.html'), 'w', encoding='utf-8').write(s)
 print('OK Index.html')

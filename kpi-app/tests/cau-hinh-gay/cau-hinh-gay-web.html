@@ -384,7 +384,7 @@ function cgVeTrang(){
   if(CG.tk!==(window.ME&&ME.tk)){ CG.ds=[]; CG.quyen=''; CG.chon=''; CG.bv=null; CG.sua=null; CG.xemPB=0; CG.xemCho=0; CG.tk=ME&&ME.tk; }   /* đổi tài khoản trên cùng trang: nạp lại theo quyền mới */
   if(!CG.ds.length){ m.innerHTML='<div class="ptitle">Cấu hình gậy</div><div class="pdesc">Đang tải danh sách dòng gậy…</div>'; cgTaiDs(); return; }
   m.innerHTML='<div class="ptitle">Cấu hình gậy <span class="cg-mat">TÀI LIỆU MẬT</span></div><div class="pdesc">Bản vẽ kỹ thuật từng dòng gậy, tự vẽ theo thông số. '+
-    (CG.quyen==='sua'?'Bạn phụ trách đo đạc: chọn dòng gậy → <b>Sửa thông số</b> → đo, nhập → <b>Lưu</b>, chờ Giám đốc sản xuất duyệt.':CG.quyen==='duyet'?'Bạn duyệt các bản C077 gửi lên – bản duyệt rồi mới có hiệu lực.':'Chỉ xem và tải PDF.')+' Mỗi lần tải PDF được ghi nhật ký, file có dấu chìm tên người tải.</div>'+
+    (CG.quyen==='duyet'?'Bạn sửa được và <b>duyệt</b> được (kể cả bản tự lưu) – bản duyệt rồi mới có hiệu lực.':CG.quyen==='sua'?'Chọn dòng gậy → <b>Sửa thông số</b> → đo, nhập → <b>Lưu</b>, chờ C019 hoặc C056 duyệt.':'Chỉ xem và tải PDF.')+' Mỗi lần tải PDF được ghi nhật ký, file có dấu chìm tên người tải.</div>'+
     '<div class="cg-wrap"><div class="card cg-ds" id="cgDs"></div><div id="cgCt"></div></div>';
   cgVeDs(); if(CG.chon) cgMo(CG.chon,true); else $('cgCt').innerHTML='<div class="card"><div class="cg-bao xanh">Chọn một dòng gậy bên trái để xem bản vẽ.</div></div>';
 }
@@ -432,7 +432,7 @@ function cgVeCt(){
   var nut='';
   if(!CG.sua){
     nut+='<button class="btn" type="button" onclick="cgTaiPdf()">⬇ Tải PDF</button>';
-    if(CG.quyen==='sua') nut+='<button class="btn pri" type="button" onclick="cgBatSua()">✎ Sửa thông số</button>';
+    if(CG.quyen==='sua'||CG.quyen==='duyet') nut+='<button class="btn pri" type="button" onclick="cgBatSua()">✎ Sửa thông số</button>';
     if(r.choDuyet&&B.loai!=='cho') nut+='<button class="btn" type="button" onclick="CG.xemCho=1;CG.xemPB=0;cgVeCt()">Xem bản chờ duyệt</button>';
     if(B.loai==='cho'&&r.hieuLuc) nut+='<button class="btn" type="button" onclick="CG.xemCho=0;cgVeCt()">Xem bản hiệu lực</button>';
     if(B.loai==='cu') nut+='<button class="btn" type="button" onclick="CG.xemPB=0;cgVeCt()">← Về bản hiện tại</button>';
@@ -444,9 +444,9 @@ function cgVeCt(){
     '<div class="cg-tt"><span>Đang xem: <b>'+esc(B.nhan)+'</b></span>'+(B.tt?'<span>Người đo <b>'+esc(B.tt.nguoi)+'</b> · '+esc(B.tt.luc)+'</span>'+(B.tt.duyet?'<span>Duyệt <b>'+esc(B.tt.duyet)+'</b> · '+esc(B.tt.lucDuyet)+'</span>':''):'')+'<span>Đã đo <b>'+(tongO-chuaDo)+' / '+tongO+'</b> ô</span></div>';
   if(B.loai==='mau') h+='<div class="cg-bao vang">Dòng gậy này <b>chưa có thông số đo</b>. Bản vẽ dưới đây dựng từ <b>mẫu tham khảo</b> (cơ pool carbon 58 in) – chưa dùng để sản xuất.</div>';
   if(r.choDuyet&&CG.quyen==='duyet'&&!CG.sua) h+=cgKhoiDuyet();
-  if(r.choDuyet&&CG.quyen==='sua'&&!CG.sua&&B.loai!=='cho') h+='<div class="cg-bao vang">Bản v'+r.choDuyet.tt.pb+' bạn lưu đang chờ Giám đốc sản xuất duyệt.</div>';
+  if(r.choDuyet&&CG.quyen==='sua'&&!CG.sua&&B.loai!=='cho') h+='<div class="cg-bao vang">Bản v'+r.choDuyet.tt.pb+' ('+esc(r.choDuyet.tt.nguoi)+' lưu) đang chờ C019 / C056 duyệt. Lưu bản mới sẽ thay bản đang chờ.</div>';
   var tc=(r.lichSu||[]).filter(function(x){return x.tt==='Từ chối'})[0];
-  if(tc&&CG.quyen==='sua'&&!r.choDuyet) h+='<div class="cg-bao do">Bản v'+tc.pb+' bị từ chối ('+esc(tc.duyet)+', '+esc(tc.lucDuyet)+'): <b>'+esc(tc.lyDo)+'</b></div>';
+  if(tc&&CG.quyen!=='xem'&&!r.choDuyet) h+='<div class="cg-bao do">Bản v'+tc.pb+' bị từ chối ('+esc(tc.duyet)+', '+esc(tc.lucDuyet)+'): <b>'+esc(tc.lyDo)+'</b></div>';
   if(kt.length) h+='<div class="cg-bao '+(kt.some(function(k){return k.muc==='do'})?'do':'vang')+'"><b>Kiểm tra ghép / kích thước ('+kt.length+')</b><ul style="margin:4px 0 0 18px;padding:0">'+kt.map(function(k){return '<li>'+(k.muc==='do'?'⛔ ':'⚠ ')+esc(k.t)+'</li>'}).join('')+'</ul></div>';
   else h+='<div class="cg-bao xanh">✓ Các kích thước ghép khớp nhau (joint, ren, tip, insert, khoang cân).</div>';
   if(CG.sua) h+=cgForm(t,kt);

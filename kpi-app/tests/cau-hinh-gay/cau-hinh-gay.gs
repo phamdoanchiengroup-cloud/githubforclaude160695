@@ -2,14 +2,14 @@
    Tab riêng "Cấu hình gậy": mỗi dòng gậy (dùng chung danh sách với Đơn hàng › Cấu hình sản phẩm) có một bộ thông số
    kích thước / vật liệu đầy đủ; trình duyệt tự vẽ bản vẽ (hình ngoài, mặt cắt, chi tiết joint + đuôi) và xuất PDF.
    TÀI LIỆU MẬT – chỉ 4 mã nhân viên (chủ dự án chốt 08/11):
-     C056 chủ sở hữu (xem), C019 Giám đốc sản xuất (xem + DUYỆT), C077 (xem + NHẬP / LƯU), C067 (xem).
+     C019 + C056 (sửa + DUYỆT, được tự duyệt), C077 + C067 (sửa) – chủ dự án đổi 09/11.
    Luồng: C077 lưu -> bản "Chờ duyệt" (mỗi dòng gậy giữ tối đa 1 bản chờ, lưu lại là thay) -> C019 duyệt -> thành bản hiệu lực
    (số phiên bản tăng, bản hiệu lực cũ chuyển "Bản cũ" – vẫn xem / tải lại được) hoặc từ chối kèm lý do.
    Sheet CauHinhGay (ẩn): Id, MaDong, PhienBan, TrangThai, DuLieu(JSON), NguoiLuu, ThoiDiemLuu, GhiChu, NguoiDuyet, ThoiDiemDuyet, LyDo.
    Mỗi lần tải PDF ghi Nhật ký thao tác (PDF có dấu chìm tên người tải + giờ). */
 var CG_SHEET = 'CauHinhGay';
 var CG_COT = ['Id', 'MaDong', 'PhienBan', 'TrangThai', 'DuLieu', 'NguoiLuu', 'ThoiDiemLuu', 'GhiChu', 'NguoiDuyet', 'ThoiDiemDuyet', 'LyDo'];
-var CG_QUYEN = { C056: 'xem', C019: 'duyet', C077: 'sua', C067: 'xem' };   // mã NV -> quyền (duyệt / sửa đều xem được)
+var CG_QUYEN = { C056: 'duyet', C019: 'duyet', C077: 'sua', C067: 'sua' };   // 09/11 (chủ dự án): cả 4 sửa được; C019 + C056 duyệt (được tự duyệt bản mình lưu)
 var CG_MAX_JSON = 40000;
 /* Trường được lưu (đường dẫn -> 'n' số | 's' chữ) – khớp CG_TRUONG ở CauHinhGay.html (va-cau-hinh-gay-web.py kiểm khớp khi dựng) */
 var CG_KHOA = {"ngon.tip.d": "n", "ngon.tip.h": "n", "ngon.tip.vl": "s", "ngon.pad.h": "n", "ngon.pad.vl": "s", "ngon.ferrule.h": "n", "ngon.ferrule.vl": "s", "ngon.ferrule.tenonD": "n", "ngon.ferrule.tenonL": "n", "ngon.ong.vl": "s", "ngon.ong.loi": "s", "ngon.ong.day": "n", "ngon.ong.dai": "n", "ngon.ong.dDau": "n", "ngon.ong.proDai": "n", "ngon.ong.dPro": "n", "ngon.ong.dJoint": "n", "ngon.ong.nutTruoc": "n", "ngon.ong.nutSau": "n", "ngon.ong.nutVl": "s", "ngon.collar.d": "n", "ngon.collar.h": "n", "ngon.collar.vl": "s", "ngon.insert.d": "n", "ngon.insert.l": "n", "ngon.insert.vl": "s", "ngon.insert.ren": "s", "chuoi.collar.d": "n", "chuoi.collar.h": "n", "chuoi.collar.vl": "s", "chuoi.pin.ren": "s", "chuoi.pin.d": "n", "chuoi.pin.tho": "n", "chuoi.pin.chon": "n", "chuoi.pin.buoc": "n", "chuoi.pin.kieu": "s", "chuoi.pin.vl": "s", "chuoi.forearm.dai": "n", "chuoi.forearm.dDau": "n", "chuoi.forearm.dCuoi": "n", "chuoi.forearm.vl": "s", "chuoi.forearm.tenonD": "n", "chuoi.forearm.tenonL": "n", "chuoi.wrap.dai": "n", "chuoi.wrap.dDau": "n", "chuoi.wrap.dCuoi": "n", "chuoi.wrap.vl": "s", "chuoi.sleeve.dai": "n", "chuoi.sleeve.dDau": "n", "chuoi.sleeve.dCuoi": "n", "chuoi.sleeve.vl": "s", "chuoi.cap.h": "n", "chuoi.cap.d": "n", "chuoi.cap.vl": "s", "chuoi.bumper.h": "n", "chuoi.bumper.d": "n", "chuoi.bumper.vl": "s", "chuoi.khoang.d": "n", "chuoi.khoang.sau": "n", "chuoi.bolt.ren": "s", "chuoi.bolt.dai": "n", "chuoi.bolt.dauD": "n", "chung.khoiMin": "n", "chung.khoiMax": "n", "chung.khoiNgon": "n", "chung.canBang": "n", "chung.ghiChu": "s"};
@@ -27,7 +27,8 @@ function cgQuyen_(token, can) {
   var me = docPhien_(token);
   if (!me) return { loi: sach_({ ok: false, hetHan: true, msg: 'Phiên đăng nhập đã hết hạn.' }) };
   var q = cgQuyenCua_(me);
-  if (!q || (can && q !== can)) return { loi: sach_({ ok: false, msg: can === 'sua' ? 'Chỉ người phụ trách đo đạc (C077) được lưu thông số.' : can === 'duyet' ? 'Chỉ Giám đốc sản xuất (C019) được duyệt.' : 'Tài khoản không xem được Cấu hình gậy.' }) };
+  var duoc = !can || q === can || (can === 'sua' && q === 'duyet');   // người duyệt cũng sửa được
+  if (!q || !duoc) return { loi: sach_({ ok: false, msg: can === 'sua' ? 'Tài khoản không được lưu thông số.' : can === 'duyet' ? 'Chỉ C019 hoặc C056 được duyệt.' : 'Tài khoản không xem được Cấu hình gậy.' }) };
   return { me: me, q: q };
 }
 function cgSheet_() {

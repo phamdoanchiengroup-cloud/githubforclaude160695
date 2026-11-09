@@ -38,6 +38,9 @@ _t42("  // 5) Yêu cầu sửa hồ sơ\n", """  // 42) Cấu hình gậy chờ 
 _t42("function vHomNay(){\n", """function vHomNay(){
   if(ME&&ME.cg==='duyet'&&window.__cgChoTai!==ME.tk){ window.__cgChoTai=ME.tk; call('demCauHinhGayCho',[],function(r){ window.__cgCho=r; if(tabHienTai==='homnay') vHomNay(); }); }
 """)
+# 09/11: chủ sở hữu C056 cũng duyệt – Tổng quan (gộp Việc hôm nay) tự nạp số bản chờ duyệt
+_t42("  if (!window.__spMoiTai) { window.__spMoiTai = 1; call('demSanPhamMoi', [], function (r) { window.__spMoi = r; tqVeViec(); }); }",
+     "  if (!window.__spMoiTai) { window.__spMoiTai = 1; call('demSanPhamMoi', [], function (r) { window.__spMoi = r; tqVeViec(); }); }\n  if (ME && ME.cg === 'duyet' && window.__cgChoTai !== ME.tk) { window.__cgChoTai = ME.tk; call('demCauHinhGayCho', [], function (r) { window.__cgCho = r; tqVeViec(); }); }")
 _k42 = s.rfind('</body>')
 s = s[:_k42] + """<script>
 /* ===== 42. CẤU HÌNH GẬY (08/11) – tài liệu mật: tab chỉ hiện khi ME.cg (máy chủ kiểm lại ở mọi hàm) ===== */

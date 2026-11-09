@@ -19,8 +19,8 @@ ok(owner && gd && do77 && xem67, 'có đủ tài khoản C019 / C077 / C067 / ch
 const Towner = T(owner), Tgd = T(gd), T77 = T(do77), T67 = T(xem67), Ttp = T(tp), Tcn = T(cn);
 ok(c.__goi('napDuLieu', T77).me.cg === 'sua', 'C077: quyền sửa (me.cg = sua)');
 ok(c.__goi('napDuLieu', Tgd).me.cg === 'duyet', 'C019: quyền duyệt');
-ok(c.__goi('napDuLieu', T67).me.cg === 'xem', 'C067: quyền xem');
-ok(c.__goi('napDuLieu', Towner).me.cg === 'xem', 'chủ sở hữu: xem');
+ok(c.__goi('napDuLieu', T67).me.cg === 'sua', 'C067: quyền sửa (09/11)');
+ok(c.__goi('napDuLieu', Towner).me.cg === 'duyet', 'chủ sở hữu C056: sửa + duyệt (09/11)');
 ok(!c.__goi('napDuLieu', Ttp).me.cg && !c.__goi('napDuLieu', Tcn).me.cg, 'trưởng phòng / công nhân: không có quyền');
 ok(!c.__goi('layDsCauHinhGay', Ttp).ok && !c.__goi('layDsCauHinhGay', Tcn).ok, 'TP / CN gọi thẳng hàm: bị chặn');
 ok(!c.__goi('layManhGiaoDien', Ttp, 'CauHinhGay').ok, 'TP không tải được mảnh giao diện CauHinhGay');
@@ -33,17 +33,16 @@ ok(ds.ds.some(d => d.ma === MA && d.kieu === 'DANH' && d.tenRen === '3/8-8'), 'R
 
 console.log('\n2. Lưu (C077) → chờ duyệt');
 const dl = { ngon: { tip: { d: 12.5, h: 10, vl: 'Time 3' }, ong: { vl: 'Ống carbon', day: 1.2, dai: 708, dDau: 12.5, proDai: 380, dPro: 13.4, dJoint: 21.5 } }, chuoi: { pin: { ren: '3/8-8', tho: 19 } }, chung: { canBang: 465, ghiChu: 'đo 3 cây' }, daDo: { ngon__tip__d: 1 } };
-ok(!c.__goi('luuCauHinhGay', T67, MA, dl, '').ok, 'C067 (chỉ xem) không lưu được');
-ok(!c.__goi('luuCauHinhGay', Tgd, MA, dl, '').ok, 'C019 (duyệt) không tự lưu được');
+ok(!c.__goi('luuCauHinhGay', Ttp, MA, dl, '').ok, 'trưởng phòng không lưu được');
 let r = c.__goi('luuCauHinhGay', T77, MA, dl, 'lần đo 1'); ok(r.ok, 'C077 lưu: ' + r.msg);
-const bv67 = c.__goi('layCauHinhGay', T67, MA); ok(bv67.ok && !bv67.choDuyet && !bv67.lichSu.length, 'người chỉ xem (C067): không thấy bản chờ duyệt');
+const bv67 = c.__goi('layCauHinhGay', T67, MA); ok(bv67.ok && bv67.choDuyet && bv67.choDuyet.tt.pb === 1, 'C067 (người sửa) thấy bản chờ duyệt');
 let bv = c.__goi('layCauHinhGay', Tgd, MA);
 ok(bv.ok && !bv.hieuLuc && bv.choDuyet && bv.choDuyet.tt.pb === 1 && bv.choDuyet.dl.ngon.tip.d === 12.5, 'có bản chờ duyệt v1, chưa có hiệu lực');
 r = c.__goi('luuCauHinhGay', T77, MA, Object.assign({}, dl, { chung: { canBang: 470 } }), 'lần đo 2');
 bv = c.__goi('layCauHinhGay', Tgd, MA);
 ok(bv.lichSu.filter(x => x.tt === 'Chờ duyệt').length === 1 && bv.choDuyet.tt.pb === 1 && bv.choDuyet.dl.chung.canBang === 470, 'lưu lại: thay bản chờ (vẫn 1 bản chờ v1)');
 ok(c.__goi('demCauHinhGayCho', Tgd).n === 1, 'Việc hôm nay Giám đốc SX: 1 bản chờ');
-ok(c.__goi('layDsCauHinhGay', Tgd).ds.find(d => d.ma === MA).cho && !c.__goi('layDsCauHinhGay', T67).ds.find(d => d.ma === MA).cho, 'danh sách: Retro "Chờ duyệt" (người chỉ xem không thấy)');
+ok(c.__goi('layDsCauHinhGay', T67).ds.find(d => d.ma === MA).cho, 'danh sách: Retro "Chờ duyệt"');
 
 console.log('\n3. Duyệt / từ chối (C019)');
 const id1 = bv.choDuyet.tt.id;
@@ -64,6 +63,14 @@ ok(bv.hieuLuc.tt.pb === 3 && bv.lichSu.some(x => x.pb === 1 && x.tt === 'Bản c
 const cu = c.__goi('layCauHinhGay', T67, MA, 1); ok(cu.xem && cu.xem.dl.chung.canBang === 470, 'xem lại bản cũ v1');
 ok(!c.__goi('layCauHinhGay', T67, MA, 2).xem, 'bản bị từ chối không mở như bản chính thức');
 
+console.log('\n3b. Quyền 09/11: cả 4 sửa, C019 / C056 duyệt (được tự duyệt)');
+r = c.__goi('luuCauHinhGay', T67, 'EVO1', dl, 'C067 đo'); ok(r.ok, 'C067 lưu được');
+let b2 = c.__goi('layCauHinhGay', Towner, 'EVO1'); ok(!c.__goi('duyetCauHinhGay', T67, b2.choDuyet.tt.id, true, '').ok, 'C067 không duyệt được');
+r = c.__goi('duyetCauHinhGay', Towner, b2.choDuyet.tt.id, true, ''); ok(r.ok, 'C056 (chủ sở hữu) duyệt bản của C067');
+r = c.__goi('luuCauHinhGay', Tgd, 'EVO1', dl, 'C019 tự đo'); ok(r.ok, 'C019 lưu được');
+b2 = c.__goi('layCauHinhGay', Tgd, 'EVO1'); r = c.__goi('duyetCauHinhGay', Tgd, b2.choDuyet.tt.id, true, ''); ok(r.ok && c.__goi('layCauHinhGay', Tgd, 'EVO1').hieuLuc.tt.pb === 2, 'C019 tự duyệt bản mình lưu → v2 hiệu lực');
+r = c.__goi('luuCauHinhGay', Towner, 'EVO1', dl, 'C056 tự đo'); b2 = c.__goi('layCauHinhGay', Towner, 'EVO1');
+ok(r.ok && c.__goi('duyetCauHinhGay', Towner, b2.choDuyet.tt.id, true, '').ok, 'C056 tự lưu + tự duyệt');
 console.log('\n4. Tải PDF + nhật ký');
 const nk0 = c.doc_('NhatKyThaoTac').length;
 r = c.__goi('ghiTaiPdfCauHinhGay', T67, MA, 3); ok(r.ok && r.nguoi && r.luc, 'trả tên + giờ cho dấu chìm', r);
