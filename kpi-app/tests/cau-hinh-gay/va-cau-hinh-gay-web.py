@@ -16,6 +16,14 @@ _k42w = set(k for k, _x in _re42.findall(r"\['((?:ngon|chuoi|chung)\.[A-Za-z.]+)
 _k42s = set(_json.loads(_re42.search(r'var CG_KHOA = (\{.*?\});', io.open(os.path.join(D, 'cau-hinh-gay', 'cau-hinh-gay.gs'), encoding='utf-8').read()).group(1)).keys())
 assert _k42w == _k42s, ('mục 42: trường CG_TRUONG (web) khác CG_KHOA (máy chủ)', _k42w ^ _k42s)
 _cg_src = io.open(os.path.join(D, 'cau-hinh-gay', 'cau-hinh-gay-web.html'), encoding='utf-8').read().replace('{{LOGO_XAM}}', _b64_42.b64encode(_bf.getvalue()).decode())
+# 09/11: ảnh joint pin cắt từ bản vẽ gốc Rhino (đã bỏ kích thước, dựng đứng) – anh/pin/pin-*.png. L dài, T thò khỏi vai, D Ø lớn nhất (mm, theo bản vẽ)
+_pin42 = {'radial': (85.20, 35.85, 9.80), 'uniloc': (80.80, 50.7, 9.71), 'r1618': (76.55, 27.20, 9.80), 'r1614': (79.6, 30.6, 9.70)}
+_pd42 = {}
+for _k, (_L, _T, _Dm) in _pin42.items():
+    _f = os.path.join(D, '..', 'anh', 'pin', 'pin-%s.png' % _k); _im = _Img42.open(_f)
+    _pd42[_k] = {'L': _L, 'T': _T, 'D': _Dm, 'w': _im.size[0], 'h': _im.size[1], 's': 'data:image/png;base64,' + _b64_42.b64encode(open(_f, 'rb').read()).decode()}
+assert _cg_src.count('/*PIN*/{}/*PIN*/') == 1, 'mục 42: thiếu chỗ chèn ảnh pin'
+_cg_src = _cg_src.replace('/*PIN*/{}/*PIN*/', _json.dumps(_pd42, separators=(',', ':')))
 io.open(os.path.join(D, '..', 'CauHinhGay.html'), 'w', encoding='utf-8').write(_cg_src)
 _dsf = os.path.join(D, '..', 'danh-sach-file.txt'); _dsl = io.open(_dsf, encoding='utf-8').read().split()
 if 'CauHinhGay' not in _dsl: io.open(_dsf, 'w', encoding='utf-8').write('\n'.join(_dsl + ['CauHinhGay']) + '\n')

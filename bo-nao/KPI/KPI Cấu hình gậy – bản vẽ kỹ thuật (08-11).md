@@ -47,3 +47,11 @@ Liên quan: [[KPI Quy trình sản xuất]] · [[KPI Bảo mật và vận hành
 - Màu mới `CG_VL`: POM (`cgHpo`), veneer (`cgHve`), inlay, foam xanh nhạt (`cgHfx`) / đậm (`cgHfd`).
 - Kiểm thử: `cau-hinh-gay.js` 50/50, `cau-hinh-gay-web.js` 40/40 (thay ô "bậc đuôi" bằng kiểm đủ chi tiết chuôi carbon).
 - Chưa chắc (đã hỏi chủ dự án): "Bịt Nối" có đúng là thanh thép nối không; ngọn có cần vẽ lại cùng kiểu màu không; kích thước thật ống POM / quả cân / khối pin.
+
+## Joint pin = ảnh cắt từ bản vẽ gốc Rhino (09/11)
+- Chủ dự án: "phần joint pin không vẽ chính xác được thì cắt ảnh ghép vào"; chọn **ghép thẳng vào file** (biết repo đang công khai) và **thay vào chi tiết chuôi, bỏ số kích thước trên ảnh**.
+- Nguồn: 4 PDF bản vẽ pin (3/8-8 Radial xẻ rãnh, Uniloc, 5/16-18 Inox/Mạ, 5/16-14 ren cái). Cách làm: `pdftocairo -svg` → bỏ chữ (`<use>`) và nét kích thước (stroke-width 1, 2), giữ nét thân pin (5, 6; Uniloc 4, 6, bỏ 2 đường dẫn ghi chú) → chụp 4× → cắt sát → xoay đứng (đầu ren nối ngọn lên trên) → nền ngoài trong suốt, trong thân tô xám thép → `kpi-app/anh/pin/pin-{radial,uniloc,r1618,r1614}.png` (~23–27 KB).
+- `va-cau-hinh-gay-web.py` chèn ảnh base64 + kích thước vào `CG_PIN` (giữa `/*PIN*/`): L dài, T thò khỏi vai, D Ø lớn nhất – Radial 85,20 / 35,85 / 9,80; Uniloc 80,80 / ~50,7 / 9,71; 5/16-18 76,55 / 27,20 / 9,80; 5/16-14 ~79,6 / ~30,6 / 9,70 (5/16-14 và Uniloc đo trên hình).
+- Web: `cgPinAnh(c)` chọn ảnh theo ô Pin ren (`CG_REN[8]`), `cgVePin` đặt ảnh đúng tỉ lệ thật (vai tại mặt joint), cắt theo vùng nhìn (svg lồng). Thay pin tự vẽ ở hình chuôi (ngoài: chỉ phần thò; mặt cắt: cả pin) và chi tiết C (cả chuôi carbon lẫn gỗ). Ren khác (3/8-10, 11, 14, 5/16 khác) vẫn tự vẽ.
+- `CG_REN` theo bản vẽ công ty: **3/8-8 = Radial** (Ø9,36 · bước 3,20 · ren tròn), 5/16-18 Ø7,70 · 1,41, Uniloc Ø9,71 · 2,30 (60°); thêm [6] thò, [7] chôn → mẫu và ô tự điền khi đổi ren; insert ngọn mẫu ≥ thò + 2 (Radial 38). Kiểm tra mới: pin thò / chôn lệch bản vẽ > 1 mm.
+- Kiểm thử: cau-hinh-gay 50/50, cau-hinh-gay-web 40/40 (đổi số mẫu pin thò 12,7 → 35,85), manh-web 8/8. CauHinhGay.html ~240 KB.

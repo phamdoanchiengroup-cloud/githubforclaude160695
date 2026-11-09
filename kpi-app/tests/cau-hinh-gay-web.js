@@ -63,7 +63,7 @@ const ra = async p => { await p.waitForTimeout(300); };   // không gọi logout
     await p.evaluate(() => go('cgay')); await p.waitForSelector('#cgDs .cg-it', { timeout: 30000 });
     await p.evaluate(() => cgMo('RETRO')); await p.waitForSelector('.cg-doi', { timeout: 20000 });
     s = await p.evaluate(() => ({ doi: [...document.querySelectorAll('.cg-doi tr')].map(t => t.textContent), sua: [...document.querySelectorAll('#cgCt .cg-nut button')].some(b => /Sửa thông số/.test(b.textContent)) }));
-    ok(s.doi.some(t => /Pin thò/.test(t) && /12\.7/.test(t) && /19/.test(t)) && s.sua, 'C019 thấy bảng thay đổi (pin thò 12,7 → 19), có cả nút Sửa (09/11)', s);
+    ok(s.doi.some(t => /Pin thò/.test(t) && /35\.85/.test(t) && /19/.test(t)) && s.sua, 'C019 thấy bảng thay đổi (pin thò 35,85 theo bản vẽ Radial → 19), có cả nút Sửa (09/11)', s);
     if (CHUP) await p.screenshot({ path: path.join(CHUP, 'cg-duyet-' + w + '.png'), fullPage: false });
     await p.evaluate(() => cgDuyet(1)); await p.waitForFunction(() => CG.bv && CG.bv.hieuLuc, null, { timeout: 20000 });
     s = await p.evaluate(() => ({ pb: CG.bv.hieuLuc.tt.pb, chip: (document.querySelector('#cgDs .cg-it.on .cg-chip') || {}).textContent, mau: /chưa có thông số đo/.test(document.querySelector('#cgCt').textContent) }));

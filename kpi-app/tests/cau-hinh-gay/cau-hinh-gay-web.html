@@ -69,11 +69,18 @@
 var CG = { ds: [], quyen: '', chon: '', bv: null, sua: null, xemPB: 0, loc: '', me: {} };
 /* Bảng ren joint pin (tra cứu 08/11 – PoolDawg, Predator, Uni-Loc, AZBilliards; Radial là số đo của thợ, hãng không công bố).
    [nhận diện, tên, Ø pin mm, bước ren mm, profile, ghi chú] */
-var CG_REN=[ [/^3\/8-?8$/,'3/8-8',9.525,3.175,'V','8 ren/inch – ren thô, gậy Rhino / Cuebots'], [/^3\/8-?10$/,'3/8-10',9.525,2.54,'V','10 ren/inch – phổ biến ở gậy cao cấp, custom'],
+var CG_REN=[ [/^3\/8-?8$|radial/i,'3/8-8 (Radial)',9.36,3.20,'tròn','bản vẽ Rhino: Ø9,36 · bước 3,20 · ren tròn; pin tổng 85,20 = chôn 49,35 (ren 35,25 + đoạn xẻ rãnh 14,10) + thò 35,85',35.85,49.35,'radial'], [/^3\/8-?10$/,'3/8-10',9.525,2.54,'V','10 ren/inch – phổ biến ở gậy cao cấp, custom'],
   [/^3\/8-?11$/,'3/8-11',9.525,2.309,'V','11 ren/inch – KHÔNG lắp lẫn với 3/8-10'], [/^3\/8-?14$/,'3/8-14',9.525,1.814,'V','14 ren/inch'],
-  [/^5\/16-?14$/,'5/16-14',7.938,1.814,'V','chuẩn Mỹ đời cũ – KHÔNG lắp lẫn với 5/16-18'], [/^5\/16-?18$/,'5/16-18',7.938,1.411,'V','phổ biến ở gậy sản xuất hàng loạt / gậy CLB'],
-  [/radial/i,'Radial',9.42,3.34,'tròn','~3/8 × 7,6 ren/inch, ren profile tròn, vặn thẳng vào gỗ / phenolic (không insert) – số đo của thợ'],
-  [/uni|quick|q-?loc|vqr|psj|vp2|wavy/i,'Khớp tháo nhanh (Uni-Loc / Q-loc / VQR…)',null,null,'riêng','ren độc quyền của hãng – đo trên pin thật, không thay lẫn'] ];
+  [/^5\/16-?14$/,'5/16-14',7.938,1.814,'V','KHÔNG lắp lẫn 5/16-18; bản vẽ Rhino: pin ~79,6 (thò ~30,6 đo trên hình), ngọn dùng ren cái Ø12,10 × 27,43',30.6,49,'r1614'],
+  [/^5\/16-?18$/,'5/16-18',7.70,1.41,'V','bản vẽ Rhino (Inox): Ø7,70 · bước 1,41; pin 76,55 = chôn 49,35 + thò 27,20 (bản Mạ: 70,55, chôn 43,35)',27.2,49.35,'r1618'],
+  [/uni|quick|q-?loc|vqr|psj|vp2|wavy/i,'Uniloc (tháo nhanh)',9.71,2.30,'riêng','bản vẽ Rhino: ren 60° Ø9,71 · bước 2,30; pin 80,80 = chôn ~30,1 (ren M8×1,25) + thò ~50,7; khoảng 7,10 chỉ sai số −0,05',50.7,30.1,'uniloc'] ];
+/* Ảnh joint pin cắt từ bản vẽ gốc Rhino (đã bỏ kích thước), dựng đứng: đầu ren nối ngọn ở trên. L dài, T thò, D Ø lớn nhất (mm), w/h px.
+   va-cau-hinh-gay-web.py chèn dữ liệu vào giữa 2 dấu PIN. */
+var CG_PIN=/*PIN*/{}/*PIN*/;
+function cgPinAnh(c){ var r=cgRenTT(c&&c.pin&&c.pin.ren); return r&&r[8]&&CG_PIN[r[8]]?CG_PIN[r[8]]:null; }
+/* Vẽ ảnh pin: mặt vai (ranh chôn / thò) tại trục xj; chỉ hiện phần trục [v0,v1]; k px/mm cho Ø (Ø phóng ở hình chuôi) */
+function cgVePin(p,cx,Y,k,v0,v1,xj){ var a0=xj-p.T, a1=a0+p.L, u0=Math.max(v0,a0), u1=Math.min(v1,a1); if(u1<=u0)return ''; var w=p.D*k, y0=(u0-a0)/p.L*p.h, y1=(u1-a0)/p.L*p.h;
+  return '<svg x="'+(cx-w/2).toFixed(1)+'" y="'+Y(u0).toFixed(1)+'" width="'+w.toFixed(1)+'" height="'+(Y(u1)-Y(u0)).toFixed(1)+'" viewBox="0 '+y0.toFixed(1)+' '+p.w+' '+(y1-y0).toFixed(1)+'" preserveAspectRatio="none"><image href="'+p.s+'" x="0" y="0" width="'+p.w+'" height="'+p.h+'"/></svg>'; }
 function cgRenTT(ren){ var r=String(ren||'').replace(/\s|x|×/gi,function(c){return /x|×/i.test(c)?'-':''}); for(var i=0;i<CG_REN.length;i++) if(CG_REN[i][0].test(r)) return CG_REN[i]; return null; }
 /* Thông số mẫu: cơ pool carbon 58 in (bản vẽ tham chiếu chủ dự án gửi 08/11). Mọi ô mẫu hiện vàng "chưa đo" tới khi C077 đo. */
 function cgMau(d){
@@ -81,8 +88,8 @@ function cgMau(d){
   var vlN=(d&&d.vlN)||'', vlC=(d&&d.vlC)||'';
   var ong=vlN==='GF'?'Ống glassfiber':vlN==='MIX'?'Ống mix carbon / glassfiber':'Ống carbon';
   return { ngon:{ tip:{d:12.4,h:9.5,vl:(d&&d.tenTip)||'Da thuộc'}, pad:{h:1.2,vl:'Sợi đen'}, ferrule:{h:4,vl:'Sứ / composite trắng',tenonD:8.4,tenonL:5},
-      ong:{vl:ong,loi:'Foam polyurethane',day:1.2,dai:709.9,dDau:12.4,proDai:381,dPro:13.5,dJoint:21.6,nutTruoc:0,nutSau:0,nutVl:'Gỗ maple'}, collar:{d:21.6,h:12,vl:'Composite (vault plate)'}, insert:{d:18.5,l:30,vl:'Đồng thau',ren:ren} },
-    chuoi:{ collar:{d:21.6,h:12,vl:'Thép'}, pin:(function(){ var r=cgRenTT(ren)||[]; return {ren:ren,d:r[2]||9.525,tho:12.7,buoc:r[3]||3.175,kieu:r[4]==='tròn'?'tròn':'V',chon:70,vl:'Thép'}; })(),
+      ong:{vl:ong,loi:'Foam polyurethane',day:1.2,dai:709.9,dDau:12.4,proDai:381,dPro:13.5,dJoint:21.6,nutTruoc:0,nutSau:0,nutVl:'Gỗ maple'}, collar:{d:21.6,h:12,vl:'Composite (vault plate)'}, insert:{d:18.5,l:Math.max(30,Math.ceil(((cgRenTT(ren)||[])[6]||0)+2)),vl:'Đồng thau',ren:ren} },
+    chuoi:{ collar:{d:21.6,h:12,vl:'Thép'}, pin:(function(){ var r=cgRenTT(ren)||[]; return {ren:ren,d:r[2]||9.525,tho:r[6]||12.7,buoc:r[3]||3.175,kieu:r[4]==='tròn'?'tròn':'V',chon:r[7]||70,vl:'Thép'}; })(),
       kieu:'carbon', vo:{day:1.6},
       forearm:{dai:318,dDau:21.6,dCuoi:25.6,vl:vlC==='GF'?'Glassfiber':vlC==='MIX'?'Mix carbon / glassfiber':'Carbon',tenonD:16,tenonL:30},
       wrap:{dai:270,dDau:25.6,dCuoi:27.6,vl:vlC==='GF'?'Glassfiber':'Carbon'}, sleeve:{dai:117.6,dDau:27.6,dCuoi:31.2,vl:vlC==='GF'?'Glassfiber':'Carbon'},
@@ -150,7 +157,9 @@ function cgKiemTra(t,d){
   if(d&&d.tenRen&&d.tenRen!=='—'&&String(c.pin.ren).replace(/\s/g,'').toLowerCase()!==String(d.tenRen).replace(/\s/g,'').toLowerCase()) ra.push({muc:'vang',t:'Ren pin ('+c.pin.ren+') khác ren khai trong Cấu hình sản phẩm ('+d.tenRen+').',p:['chuoi.pin.ren']});
   var rt=cgRenTT(c.pin.ren);
   if(rt&&rt[2]&&(Math.abs(cgN(c.pin.d)-rt[2])>0.15||Math.abs(cgN(c.pin.buoc)-rt[3])>0.08)) ra.push({muc:'vang',t:'Ren '+rt[1]+' chuẩn là Ø'+cgF(rt[2])+' · bước '+cgF(rt[3])+' mm, đang nhập Ø'+cgF(c.pin.d)+' · bước '+cgF(c.pin.buoc)+'.',p:['chuoi.pin.d','chuoi.pin.buoc']});
-  var cb=cgCb(c);
+  var cb=cgCb(c), PK=cgPinAnh(c);
+  if(PK&&Math.abs(cgN(c.pin.tho)-PK.T)>1) ra.push({muc:'vang',t:'Pin thò '+cgF(c.pin.tho)+' mm khác bản vẽ pin '+rt[1]+' ('+cgF(PK.T)+' mm).',p:['chuoi.pin.tho']});
+  if(PK&&Math.abs(cgN(c.pin.chon)-(PK.L-PK.T))>1) ra.push({muc:'vang',t:'Pin chôn '+cgF(c.pin.chon)+' mm khác bản vẽ pin '+rt[1]+' ('+cgF(Math.round((PK.L-PK.T)*100)/100)+' mm).',p:['chuoi.pin.chon']});
   if(!cb&&cgN(c.pin.chon)>cgN(c.forearm.dai)-cgN(c.forearm.tenonL)) ra.push({muc:'vang',t:'Pin chôn '+cgF(c.pin.chon)+' mm sâu tới mộng A-joint.',p:['chuoi.pin.chon']});
   if(cgN(n.ong.nutTruoc)+cgN(n.ong.nutSau)+cgN(n.ferrule.tenonL)+cgN(n.insert.l)>=cgN(n.ong.dai)) ra.push({muc:'do',t:'Nút bịt + tenon + insert dài hơn ống ngọn.',p:['ngon.ong.nutTruoc','ngon.ong.nutSau']});
   if(cgN(c.pin.tho)>cgN(n.insert.l)) ra.push({muc:'do',t:'Pin thò '+cgF(c.pin.tho)+' mm dài hơn insert '+cgF(n.insert.l)+' mm.',p:['chuoi.pin.tho','ngon.insert.l']});
@@ -302,7 +311,7 @@ function cgNgoaiCb(ds,c,cx,Y,k){ var R=function(v){return cgDTai(ds,v)/2*k}, h='
    phan 'ngon': tip ở trên, joint ở dưới. 'chuoi': joint (pin) ở trên, bumper ở dưới. */
 function cgKhuc(t,phan,o){
   o=o||{}; var ds=cgDoan(t), n=t.ngon, c=t.chuoi, L=cgDai(t), sy=cgSy(t,o.cao||980), kx=Math.min(sy*CG_KX,4.2), kp=Math.round(kx/sy*10)/10;   /* Ø phóng kp× (tối đa 4,2 px/mm cho vừa cột) */
-  var a=phan==='ngon'?0:ds.xJoint, b=phan==='ngon'?ds.xJoint:ds.tong, top=(phan==='chuoi'?78:58), xe=215, xs=385, xN=478, W=740;
+  var a=phan==='ngon'?0:ds.xJoint, b=phan==='ngon'?ds.xJoint:ds.tong, PA=phan==='chuoi'?cgPinAnh(c):null, top=(phan==='chuoi'?Math.max(78,(PA?PA.T:cgN(c.pin.tho))*sy+46):58), xe=215, xs=385, xN=478, W=740;
   var Y=function(v){return top+(v-a)*sy}, R=function(d){return d/2*kx}, h='', LB=[], doan=ds.filter(function(s){return s.x1>a+1e-6&&s.x0<b-1e-6});
   var Hb=Y(b)+60;
   /* tiêu đề */
@@ -342,20 +351,21 @@ function cgKhuc(t,phan,o){
     h+=cgKTNgang(xe,Y(b)+12,R(n.collar.d),'Ø'+cgF(n.collar.d));
   } else {
     var x0=ds.xJoint, sCC=cgTim(ds,'collarC'), sFo=cgTim(ds,'forearm'), sW=cgTim(ds,'wrap'), sS=cgTim(ds,'sleeve'), sCap=cgTim(ds,'cap'), sB=cgTim(ds,'bumper');
-    var rp=cgN(c.pin.d)/2*kx, yP=Y(x0)-cgN(c.pin.tho)*sy;
+    var rp=cgN(c.pin.d)/2*kx, yP=Y(x0)-(PA?PA.T:cgN(c.pin.tho))*sy;
     if(cgCb(c)){
       h+=cgNgoaiCb(ds,c,xe,Y,kx);
-      h+='<rect x="'+(xe-rp).toFixed(1)+'" y="'+yP.toFixed(1)+'" width="'+(2*rp).toFixed(1)+'" height="'+(Y(x0)-yP).toFixed(1)+'" fill="url(#cgHth)" stroke="#16202a" stroke-width=".7"/>';
-      for(var u2=1;u2<cgN(c.pin.tho)/(cgN(c.pin.buoc)||3.175);u2++){ var yy2=Y(x0)-u2*cgN(c.pin.buoc)*sy; h+=cgL(xe-rp,yy2,xe+rp,yy2+3,{w:.4}); }
+      if(PA) h+=cgVePin(PA,xe,Y,kx,-1e9,x0,x0); else { h+='<rect x="'+(xe-rp).toFixed(1)+'" y="'+yP.toFixed(1)+'" width="'+(2*rp).toFixed(1)+'" height="'+(Y(x0)-yP).toFixed(1)+'" fill="url(#cgHth)" stroke="#16202a" stroke-width=".7"/>';
+      for(var u2=1;u2<cgN(c.pin.tho)/(cgN(c.pin.buoc)||3.175);u2++){ var yy2=Y(x0)-u2*cgN(c.pin.buoc)*sy; h+=cgL(xe-rp,yy2,xe+rp,yy2+3,{w:.4}); } }
       h+=cgDai2(xs,Y(sCC.x0),Y(sCC.x1),R(sCC.d0),R(sCC.d1),cgMau1(c.collar.vl)[2],rp);
       var TB=cgTrongCb(ds,c,xs,Y,kx,x0,ds.tong); h+=TB.h;
-      h+='<rect x="'+(xs-rp).toFixed(1)+'" y="'+yP.toFixed(1)+'" width="'+(2*rp).toFixed(1)+'" height="'+(Y(x0+cgN(c.pin.chon))-yP).toFixed(1)+'" fill="url(#cgHth)" stroke="#16202a" stroke-width=".7"/>';
+      h+=PA?cgVePin(PA,xs,Y,kx,-1e9,1e9,x0):'<rect x="'+(xs-rp).toFixed(1)+'" y="'+yP.toFixed(1)+'" width="'+(2*rp).toFixed(1)+'" height="'+(Y(x0+cgN(c.pin.chon))-yP).toFixed(1)+'" fill="url(#cgHth)" stroke="#16202a" stroke-width=".7"/>';
       LB=[{x:xs+rp*0.6,y:yP+4,t:'Pin '+c.pin.vl+' '+c.pin.ren+' · Ø'+cgF(c.pin.d)+' · ren '+(c.pin.kieu||'V')},{x:xs,y:Y(x0+cgN(c.pin.chon)*0.8),t:'Pin chôn '+cgF(c.pin.chon)+' (tổng '+cgF(cgN(c.pin.chon)+cgN(c.pin.tho))+')'},{x:xs+R(c.collar.d)*0.7,y:Y(sCC.x0+cgN(c.collar.h)/2),t:'Collar '+c.collar.vl+' Ø'+cgF(c.collar.d)+' × '+cgF(c.collar.h)}].concat(TB.LB);
       var e=ds.tong;
     } else {
     /* pin thò lên trên (cả ở hình ngoài) */
-    [xe,xs].forEach(function(cx){ h+='<rect x="'+(cx-rp).toFixed(1)+'" y="'+yP.toFixed(1)+'" width="'+(2*rp).toFixed(1)+'" height="'+(Y(x0)-yP+(cx===xs?Y(x0+Math.max(cgN(c.pin.chon),cgN(c.collar.h)))-Y(x0):0)).toFixed(1)+'" fill="url(#cgHth)" stroke="#16202a" stroke-width=".7"/>'; });
-    for(var u=1;u<cgN(c.pin.tho)/(cgN(c.pin.buoc)||3.175);u++){ var yy=Y(x0)-u*cgN(c.pin.buoc)*sy; h+=cgL(xe-rp,yy,xe+rp,yy+3,{w:.4}); }
+    if(PA) h+=cgVePin(PA,xe,Y,kx,-1e9,x0,x0);
+    else [xe,xs].forEach(function(cx){ h+='<rect x="'+(cx-rp).toFixed(1)+'" y="'+yP.toFixed(1)+'" width="'+(2*rp).toFixed(1)+'" height="'+(Y(x0)-yP+(cx===xs?Y(x0+Math.max(cgN(c.pin.chon),cgN(c.collar.h)))-Y(x0):0)).toFixed(1)+'" fill="url(#cgHth)" stroke="#16202a" stroke-width=".7"/>'; });
+    for(var u=1;!PA&&u<cgN(c.pin.tho)/(cgN(c.pin.buoc)||3.175);u++){ var yy=Y(x0)-u*cgN(c.pin.buoc)*sy; h+=cgL(xe-rp,yy,xe+rp,yy+3,{w:.4}); }
     h+=cgDai2(xs,Y(sCC.x0),Y(sCC.x1),R(sCC.d0),R(sCC.d1),cgMau1(c.collar.vl)[2],rp);
     var fF=cgMau1(c.forearm.vl)[2], fS=cgMau1(c.sleeve.vl)[2], rTe=cgN(c.forearm.tenonD)/2*kx, xt=sFo.x1, xt0=xt-cgN(c.forearm.tenonL);
     var xc2=Math.min(Math.max(x0+cgN(c.pin.chon),sFo.x0+1),xt0-1);
@@ -378,6 +388,7 @@ function cgKhuc(t,phan,o){
       {x:xs+R(cgDTai(ds,(sW.x0+sW.x1)/2))-dW*kx/2,y:Y((sW.x0+sW.x1)/2),t:'Wrap '+c.wrap.vl},{x:xs+R(cgDTai(ds,sS.x0+20))*0.7,y:Y(sS.x0+20),t:'Sleeve '+c.sleeve.vl},
       {x:xs+rk,y:Y(xk+cgN(c.khoang.sau)*0.75),t:'Khoang cân Ø'+cgF(c.khoang.d)+' sâu '+cgF(c.khoang.sau)},{x:xs+rk*0.6,y:Y(xk+li/2),t:'Insert ren '+c.bolt.ren},
       {x:xs+rb*0.5,y:Y((xb0+xb1)/2),t:'Weight bolt '+c.bolt.vl+' '+c.bolt.ren+' × '+cgF(c.bolt.dai)},{x:xs+R(c.cap.d)*0.7,y:Y(sCap.x0+cgN(c.cap.h)/2),t:'Cap '+c.cap.vl+' × '+cgF(c.cap.h)},{x:xs+R(c.bumper.d)*0.7,y:Y(sB.x0+cgN(c.bumper.h)/2),t:'Bumper '+c.bumper.vl+' × '+cgF(c.bumper.h)}];
+    if(PA) h+=cgVePin(PA,xs,Y,kx,-1e9,1e9,x0);
     }
     h+=cgKTNgang(xe,Y(x0)+cgN(c.collar.h)*sy/2+4,R(c.collar.d),'Ø'+cgF(c.collar.d));
     h+=cgKTNgang(xe,Y(sFo.x1),R(sFo.d1),'Ø'+cgF(sFo.d1));
@@ -405,7 +416,7 @@ function cgKhuc(t,phan,o){
 function cgCT(t,loai){
   var ds=cgDoan(t), n=t.ngon, c=t.chuoi, W=480, cx=120, xN=230, h='', LB=[], a, b, sc, top=40;
   if(loai==='A'){ a=0; b=cgN(n.tip.h)+cgN(n.pad.h)+cgN(n.ferrule.h)+cgN(n.ferrule.tenonL)+14; }
-  else if(loai==='C'){ a=ds.xJoint-cgN(n.collar.h)-cgN(n.insert.l)-8; b=ds.xJoint+cgN(c.collar.h)+(cgCb(c)?Math.max(24,Math.min(cgN(c.pin.chon),cgN(c.veneer.h)+cgN(c.khoiPin.l))+8-cgN(c.collar.h)):24); }
+  else if(loai==='C'){ a=Math.min(ds.xJoint-cgN(n.collar.h)-cgN(n.insert.l)-8,ds.xJoint-((cgPinAnh(c)||{}).T||0)-4); b=ds.xJoint+cgN(c.collar.h)+(cgCb(c)?Math.max(24,Math.min(cgN(c.pin.chon),cgN(c.veneer.h)+cgN(c.khoiPin.l))+8-cgN(c.collar.h)):24); }
   else if(cgCb(c)){ a=Math.max(ds.xJoint,cgTim(ds,'cap').x1-cgN(c.ongCan.dai)-14); b=ds.tong; }
   else { a=Math.min(ds.tong-cgN(c.khoang.sau)-12,cgTim(ds,'sleeve').x0); b=ds.tong; }
   sc=Math.min(400/(b-a),(150)/Math.max(cgDTai(ds,a+0.01),cgDTai(ds,b-0.01),cgN(c.bumper.d)*(loai==='D'?1:0),1));
@@ -433,9 +444,9 @@ function cgCT(t,loai){
     h+=cgDai2(cx,Y(xj),Y(xj+cgN(c.collar.h)),R(c.collar.d),R(c.collar.d),cgMau1(c.collar.vl)[2],rp);
     var TC=null; if(cgCb(c)){ TC=cgTrongCb(ds,c,cx,Y,sc,xj+cgN(c.collar.h),b); h+=TC.h; }
     else h+=cgDai2(cx,Y(xj+cgN(c.collar.h)),Y(b),R(c.forearm.dDau),R(cgDTai(ds,b)),cgMau1(c.forearm.vl)[2],rp);
-    var p0=xj-cgN(c.pin.tho), pe=Math.min(b,xj+cgN(c.pin.chon)); h+='<rect x="'+(cx-rp).toFixed(1)+'" y="'+Y(p0).toFixed(1)+'" width="'+(2*rp).toFixed(1)+'" height="'+(Y(pe)-Y(p0)).toFixed(1)+'" fill="url(#cgHth)" stroke="#16202a" stroke-width=".7"/>';
+    var PC=cgPinAnh(c), p0=xj-(PC?PC.T:cgN(c.pin.tho)), pe=Math.min(b,xj+cgN(c.pin.chon)); if(PC) h+=cgVePin(PC,cx,Y,sc,a,b,xj); else h+='<rect x="'+(cx-rp).toFixed(1)+'" y="'+Y(p0).toFixed(1)+'" width="'+(2*rp).toFixed(1)+'" height="'+(Y(pe)-Y(p0)).toFixed(1)+'" fill="url(#cgHth)" stroke="#16202a" stroke-width=".7"/>';
     var bu=cgN(c.pin.buoc)||3.175;
-    for(var v=p0;v<xj-1e-6;v+=bu){ if(String(c.pin.kieu)==='tròn'){ h+='<path d="M'+(cx-rp).toFixed(1)+' '+Y(v).toFixed(1)+' q '+(-bu*sc*0.25).toFixed(1)+' '+(bu*sc/2).toFixed(1)+' 0 '+(bu*sc).toFixed(1)+' M'+(cx+rp).toFixed(1)+' '+Y(v).toFixed(1)+' q '+(bu*sc*0.25).toFixed(1)+' '+(bu*sc/2).toFixed(1)+' 0 '+(bu*sc).toFixed(1)+'" fill="none" stroke="#16202a" stroke-width=".7"/>'; } else { h+='<path d="M'+(cx-rp).toFixed(1)+' '+Y(v).toFixed(1)+' l '+(-bu*sc*0.3).toFixed(1)+' '+(bu*sc/2).toFixed(1)+' l '+(bu*sc*0.3).toFixed(1)+' '+(bu*sc/2).toFixed(1)+' M'+(cx+rp).toFixed(1)+' '+Y(v).toFixed(1)+' l '+(bu*sc*0.3).toFixed(1)+' '+(bu*sc/2).toFixed(1)+' l '+(-bu*sc*0.3).toFixed(1)+' '+(bu*sc/2).toFixed(1)+'" fill="none" stroke="#16202a" stroke-width=".7"/>'; } h+=cgL(cx-rp,Y(v),cx+rp,Y(v)+bu*sc*0.5,{w:.35}); }
+    for(var v=p0;!PC&&v<xj-1e-6;v+=bu){ if(String(c.pin.kieu)==='tròn'){ h+='<path d="M'+(cx-rp).toFixed(1)+' '+Y(v).toFixed(1)+' q '+(-bu*sc*0.25).toFixed(1)+' '+(bu*sc/2).toFixed(1)+' 0 '+(bu*sc).toFixed(1)+' M'+(cx+rp).toFixed(1)+' '+Y(v).toFixed(1)+' q '+(bu*sc*0.25).toFixed(1)+' '+(bu*sc/2).toFixed(1)+' 0 '+(bu*sc).toFixed(1)+'" fill="none" stroke="#16202a" stroke-width=".7"/>'; } else { h+='<path d="M'+(cx-rp).toFixed(1)+' '+Y(v).toFixed(1)+' l '+(-bu*sc*0.3).toFixed(1)+' '+(bu*sc/2).toFixed(1)+' l '+(bu*sc*0.3).toFixed(1)+' '+(bu*sc/2).toFixed(1)+' M'+(cx+rp).toFixed(1)+' '+Y(v).toFixed(1)+' l '+(bu*sc*0.3).toFixed(1)+' '+(bu*sc/2).toFixed(1)+' l '+(-bu*sc*0.3).toFixed(1)+' '+(bu*sc/2).toFixed(1)+'" fill="none" stroke="#16202a" stroke-width=".7"/>'; } h+=cgL(cx-rp,Y(v),cx+rp,Y(v)+bu*sc*0.5,{w:.35}); }
     var xD2=cx-R(n.collar.d)-20;
     h+=cgKTDoc(xD2,Y(xi),Y(xe2),'insert '+cgF(n.insert.l),10)+cgKTDoc(xD2,Y(xe2),Y(xj),cgF(n.collar.h),10)+cgKTDoc(xD2,Y(xj),Y(xj+cgN(c.collar.h)),cgF(c.collar.h),10)+cgKTDoc(xD2-26,Y(p0),Y(xj),'pin thò '+cgF(c.pin.tho),10);
     h+=cgKTNgang(cx,Y(a)-8,rj,'Ø'+cgF(n.ong.dJoint))+cgKTNgang(cx,Y(xi)-6,R(n.insert.d),'Ø'+cgF(n.insert.d))+cgKTNgang(cx,Y(b)+12,R(cgDTai(ds,b)),'Ø'+cgF(cgDTai(ds,b)));
@@ -480,12 +491,12 @@ function cgBangCT(t){
    r(3,'Ống ngọn',n.ong.vl+' + lõi '+n.ong.loi,cgF(n.ong.dai)+' · Ø'+cgF(n.ong.dDau)+' → '+cgF(n.ong.dPro)+' → '+cgF(n.ong.dJoint),'Pro taper '+cgF(n.ong.proDai)+' · thành '+cgF(n.ong.day))+
    r(4,'Collar ngọn + insert',n.collar.vl+' · '+n.insert.vl,'Ø'+cgF(n.collar.d)+' × '+cgF(n.collar.h)+' · insert Ø'+cgF(n.insert.d)+' × '+cgF(n.insert.l),'Ren trong '+n.insert.ren)+
    '<tr class="nhom"><td colspan="5">CHUÔI</td></tr>'+
-   r(5,'Joint pin',c.pin.vl,c.pin.ren+' · Ø'+cgF(c.pin.d)+' · thò '+cgF(c.pin.tho),'Bước ren '+cgF(c.pin.buoc))+r(6,'Collar chuôi',c.collar.vl,'Ø'+cgF(c.collar.d)+' × '+cgF(c.collar.h))+
+   r(5,'Joint pin'+(cgPinAnh(c)?' (hình theo bản vẽ Rhino)':''),c.pin.vl,c.pin.ren+' · Ø'+cgF(c.pin.d)+' · thò '+cgF(c.pin.tho),'Bước ren '+cgF(c.pin.buoc))+r(6,'Collar chuôi',c.collar.vl,'Ø'+cgF(c.collar.d)+' × '+cgF(c.collar.h))+
    (cgCb(c)?
-   r(7,'Forearm (vỏ)',c.forearm.vl,cgF(c.forearm.dai)+' · Ø'+cgF(c.forearm.dDau)+' → '+cgF(c.forearm.dCuoi),'Thành '+cgF(c.vo.day)+(cgN(c.veneer.h)>0?' · veneer đầu '+c.veneer.vl+' '+cgF(c.veneer.h):''))+
+   r(7,'Forearm (vỏ)',c.forearm.vl,cgF(c.forearm.dai)+' · Ø'+cgF(c.forearm.dDau)+' → '+cgF(c.forearm.dCuoi),'Thành '+cgF(c.vo.day)+(cgN(c.veneer.h)>0?' · đầu: '+c.veneer.vl+' '+cgF(c.veneer.h):''))+
    r(8,'Khối giữ pin',c.khoiPin.vl,'Ø'+cgF(c.khoiPin.d)+' × '+cgF(c.khoiPin.l),'Pin chôn '+cgF(c.pin.chon))+
    r(9,'Lõi',c.loi.tren+' · '+c.loi.duoi,'forearm · tay cầm',cgN(c.thanhNoi.l)>0?'Thanh nối '+c.thanhNoi.vl+' Ø'+cgF(c.thanhNoi.d)+' × '+cgF(c.thanhNoi.l):'Không thanh nối')+
-   r(10,'Tay cầm (vỏ)',c.wrap.vl,cgF(c.wrap.dai)+' · Ø'+cgF(c.wrap.dDau)+' → '+cgF(c.wrap.dCuoi),cgN(c.vien.h)>0?'Inlay '+c.vien.vl+' '+cgF(c.vien.h)+' ở 2 đầu':'')+
+   r(10,'Tay cầm (vỏ)',c.wrap.vl,cgF(c.wrap.dai)+' · Ø'+cgF(c.wrap.dDau)+' → '+cgF(c.wrap.dCuoi),cgN(c.vien.h)>0?c.vien.vl+' '+cgF(c.vien.h)+' ở 2 đầu':'')+
    r(11,'Butt sleeve (vỏ)',c.sleeve.vl,cgF(c.sleeve.dai)+' · Ø'+cgF(c.sleeve.dDau)+' → '+cgF(c.sleeve.dCuoi))+
    r(12,'Ống quả cân',c.ongCan.vl,'Ø'+cgF(c.ongCan.d)+' × '+cgF(c.ongCan.dai),'Ren trong '+c.ongCan.ren)+
    r(13,'Quả cân',c.qua.vl,cgF(c.qua.so)+' × Ø'+cgF(c.qua.d)+' × '+cgF(c.qua.dai),'Vặn trong ống, thêm / bớt để chỉnh nặng')+
@@ -615,7 +626,7 @@ function cgForm(t,kt){
   });
   return h+'<div class="cg-khoi"><b>Ghi chú lần đo (gửi kèm khi lưu)</b><input id="cgGhiChu" maxlength="300" style="width:100%;min-height:38px" placeholder="vd. đo trên 3 cây mẫu lô 07/11, thước kẹp 0,01"></div></div>'; }
 function cgDoiO(el){ var p=el.dataset.p, v=el.dataset.s==='1'?String(el.value).slice(0,120):(el.value===''?null:Number(el.value)); cgDat(CG.sua,p,v); CG.sua.daDo[cgK(p)]=1;
-  if(p==='chuoi.pin.ren'){ var rt=cgRenTT(v), dd=CG.sua.daDo; if(rt&&rt[2]){ if(!dd[cgK('chuoi.pin.d')]) CG.sua.chuoi.pin.d=rt[2]; if(!dd[cgK('chuoi.pin.buoc')]) CG.sua.chuoi.pin.buoc=rt[3]; if(!dd[cgK('chuoi.pin.kieu')]) CG.sua.chuoi.pin.kieu=rt[4]; } if(!dd[cgK('ngon.insert.ren')]) CG.sua.ngon.insert.ren=v; } var y=window.scrollY; cgVeCt(); window.scrollTo(0,y); }
+  if(p==='chuoi.pin.ren'){ var rt=cgRenTT(v), dd=CG.sua.daDo; if(rt&&rt[2]){ if(!dd[cgK('chuoi.pin.d')]) CG.sua.chuoi.pin.d=rt[2]; if(rt[6]&&!dd[cgK('chuoi.pin.tho')]) CG.sua.chuoi.pin.tho=rt[6]; if(rt[7]&&!dd[cgK('chuoi.pin.chon')]) CG.sua.chuoi.pin.chon=rt[7]; if(!dd[cgK('chuoi.pin.buoc')]) CG.sua.chuoi.pin.buoc=rt[3]; if(!dd[cgK('chuoi.pin.kieu')]) CG.sua.chuoi.pin.kieu=rt[4]; } if(!dd[cgK('ngon.insert.ren')]) CG.sua.ngon.insert.ren=v; } var y=window.scrollY; cgVeCt(); window.scrollTo(0,y); }
 function cgXacNhan(p){ p=cgK(p); if(CG.sua.daDo[p]) delete CG.sua.daDo[p]; else CG.sua.daDo[p]=1; var y=window.scrollY; cgVeCt(); window.scrollTo(0,y); }
 function cgLuu(){
   var t=CG.sua, kt=cgKiemTra(t,CG.bv.dong), gc=($('cgGhiChu')||{}).value||'';
