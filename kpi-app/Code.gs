@@ -7674,7 +7674,7 @@ function danhSachVanPhong(token) {
   ds.sort(function(a, b) { return (thuTu[a.vaiTro] - thuTu[b.vaiTro]) || (a.HoTen < b.HoTen ? -1 : 1); });
   return sach_({ ok: true, ds: ds, muc: HS_MUC });
 }
-var KPI_BAN_MAY = '09/11/2026 15:47';   // giờ dựng Code.gs (22/10)
+var KPI_BAN_MAY = '09/11/2026 16:29';   // giờ dựng Code.gs (22/10)
 /* =====================================================================
    KỸ NĂNG (22/10, chủ dự án nhờ thiết kế + tham khảo chuyên gia nhân sự / đào tạo)
    - Danh mục: trưởng / phó phòng đề xuất kỹ năng của xưởng (tên, mô tả, tiêu chí đạt, công đoạn liên quan)
@@ -10221,7 +10221,7 @@ function layDsCauHinhGay(token) {
   });
   var ds = PL_DONG.filter(function(d) { return !(PL_AN.DONG && PL_AN.DONG[d[0]]); }).map(function(d) {
     var o = plKieu_({ loai: d[2], chuoi: d[4], ngon: d[5] }), t = tt[d[0]] || { pb: 0, cho: false, luc: '' };
-    return { ma: d[0], ten: d[1], loai: d[2], kieu: o.kieu, vlC: o.vlC, vlN: o.vlN, chuoi: d[4], ngon: d[5], tip: d[6], ren: d[7],
+    return { ma: d[0], ten: d[1], loai: d[2], goi: (d[3] || []).slice(0, 15), kieu: o.kieu, vlC: o.vlC, vlN: o.vlN, chuoi: d[4], ngon: d[5], tip: d[6], ren: d[7],
       tenChuoi: PL_CHUOI[d[4]] || d[4] || '', tenNgon: PL_NGON[d[5]] || d[5] || '', tenTip: PL_TIP[d[6]] || d[6] || '', tenRen: PL_REN[d[7]] || d[7] || '',
       pb: t.pb, cho: t.cho, luc: t.luc };
   });
@@ -10243,7 +10243,7 @@ function layCauHinhGay(token, ma, phienBan) {
   var xem = phienBan ? rows.filter(function(r) { return Number(r.PhienBan) === Number(phienBan) && r.TrangThai !== 'Chờ duyệt' && r.TrangThai !== 'Từ chối'; })[0] : null;
   var o = plKieu_({ loai: d[2], chuoi: d[4], ngon: d[5] });
   return sach_({ ok: true, quyen: Q.q,
-    dong: { ma: d[0], ten: d[1], loai: d[2], kieu: o.kieu, vlC: o.vlC, vlN: o.vlN, chuoi: d[4], ngon: d[5], tip: d[6], ren: d[7],
+    dong: { ma: d[0], ten: d[1], loai: d[2], goi: (d[3] || []).slice(0, 15), kieu: o.kieu, vlC: o.vlC, vlN: o.vlN, chuoi: d[4], ngon: d[5], tip: d[6], ren: d[7],
       tenChuoi: PL_CHUOI[d[4]] || d[4] || '', tenNgon: PL_NGON[d[5]] || d[5] || '', tenTip: PL_TIP[d[6]] || d[6] || '', tenRen: PL_REN[d[7]] || d[7] || '' },
     hieuLuc: hl ? { tt: gon(hl), dl: json(hl) } : null,
     choDuyet: cho ? { tt: gon(cho), dl: json(cho) } : null,

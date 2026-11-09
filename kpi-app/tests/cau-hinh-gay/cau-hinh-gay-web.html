@@ -41,6 +41,8 @@
 .cg-oluoi{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:8px 10px}
 .cg-o{display:flex;flex-direction:column;gap:3px;font-size:12px;color:var(--ink2)}
 .cg-o .h{display:flex;gap:4px}
+.cg-bang-sku td{white-space:nowrap} .cg-bang-sku td:last-child{white-space:normal;min-width:380px}
+.cg-sku{font-style:normal;font-size:11px;font-weight:600;color:#0b6e63;background:#dff3ef;border-radius:6px;padding:0 5px;margin-left:4px;white-space:nowrap}
 .cg-o input,.cg-o select{width:100%;min-height:38px;font:inherit;font-size:14px;padding:6px 8px;border:1px solid var(--line);border-radius:8px;background:var(--panel2);color:var(--ink)}
 .cg-o.chua input{border-color:rgba(214,150,30,.85);background:rgba(214,150,30,.10)}
 .cg-o .dd{flex:none;min-width:38px;border:1px solid var(--line);border-radius:8px;background:var(--panel2);color:var(--ink3);cursor:pointer;font-size:13px}
@@ -81,21 +83,40 @@ function cgPinAnh(c){ var r=cgRenTT(c&&c.pin&&c.pin.ren); return r&&r[8]&&CG_PIN
 /* Vẽ ảnh pin: mặt vai (ranh chôn / thò) tại trục xj; chỉ hiện phần trục [v0,v1]; k px/mm cho Ø (Ø phóng ở hình chuôi) */
 function cgVePin(p,cx,Y,k,v0,v1,xj){ var a0=xj-p.T, a1=a0+p.L, u0=Math.max(v0,a0), u1=Math.min(v1,a1); if(u1<=u0)return ''; var w=p.D*k, y0=(u0-a0)/p.L*p.h, y1=(u1-a0)/p.L*p.h;
   return '<svg x="'+(cx-w/2).toFixed(1)+'" y="'+Y(u0).toFixed(1)+'" width="'+w.toFixed(1)+'" height="'+(Y(u1)-Y(u0)).toFixed(1)+'" viewBox="0 '+y0.toFixed(1)+' '+p.w+' '+(y1-y0).toFixed(1)+'" preserveAspectRatio="none"><image href="'+p.s+'" x="0" y="0" width="'+p.w+'" height="'+p.h+'"/></svg>'; }
+/* ===== File SKU (chủ dự án gửi 09/11, tests/cau-hinh-gay/sku/doc-sku.py → sku.json): 188 mã gậy. Ghép mã → dòng gậy theo tên gọi khác của dòng
+   (Cấu hình sản phẩm: mã, tên, tên gọi); nhóm chưa có tên gọi khớp thì ghép tay ở CG_SKU_TAY. Dùng để điền sẵn mẫu + kiểm tra chéo số đo. */
+var CG_SKU=/*SKU*/[]/*SKU*/;
+var CG_SKU_TAY={'Z-100-200':'CBZW'};
+function cgChuan(x){ return String(x||'').toUpperCase().replace(/Đ/g,'D').normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^A-Z0-9]/g,''); }
+function cgSkuGhep(){ if(CG.skuMap&&CG.skuDs===CG.ds) return CG.skuMap; var m={}, chua=[], ks=[];
+  (CG.ds||[]).forEach(function(d){ [d.ma,d.ten].concat(d.goi||[]).forEach(function(a){ var k=cgChuan(a); if(k.length>=4) ks.push([k,d.ma]); }); });
+  CG_SKU.forEach(function(o){ var hay=cgChuan(o.sku)+'|'+cgChuan(o.nhom), best=null, tay=null;
+    Object.keys(CG_SKU_TAY).forEach(function(g){ if(String(o.nhom).indexOf(g)===0) tay=CG_SKU_TAY[g]; });
+    if(!tay) ks.forEach(function(k){ if(hay.indexOf(k[0])>=0&&(!best||k[0].length>best[0].length)) best=k; });
+    var ma=tay||(best&&best[1]); if(ma) (m[ma]=m[ma]||[]).push(o); else chua.push(o); });
+  CG.skuMap=m; CG.skuChua=chua; CG.skuDs=CG.ds; return m; }
+function cgSkuCua(d){ return d&&d.ma?(cgSkuGhep()[d.ma]||[]):[]; }
+/* Giá trị hay gặp nhất trong các mã của dòng (bỏ trống) */
+function cgSkuSpec(d){ var a=cgSkuCua(d), sp={n:a.length}; if(!a.length) return sp;
+  ['ren','tipD','chuoiDai','co','vach','dChuoi','dFile','dFileL','khuc','tip','ngon','chuoi'].forEach(function(k){ var c={}, best=null, n=0;
+    a.forEach(function(o){ var v=o[k]; if(v==null||v==='') return; var key=JSON.stringify(v); c[key]=(c[key]||0)+1; if(c[key]>n){ n=c[key]; best=v; } }); if(best!=null) sp[k]=best; });
+  return sp; }
 function cgRenTT(ren){ var r=String(ren||'').replace(/\s|x|×/gi,function(c){return /x|×/i.test(c)?'-':''}); for(var i=0;i<CG_REN.length;i++) if(CG_REN[i][0].test(r)) return CG_REN[i]; return null; }
 /* Thông số mẫu: cơ pool carbon 58 in (bản vẽ tham chiếu chủ dự án gửi 08/11). Mọi ô mẫu hiện vàng "chưa đo" tới khi C077 đo. */
 function cgMau(d){
-  var ren=(d&&d.tenRen&&d.tenRen!=='—')?d.tenRen:'3/8-8';
+  var SP=cgSkuSpec(d), ren=(d&&d.tenRen&&d.tenRen!=='—')?d.tenRen:(SP.ren||'3/8-8');
   var vlN=(d&&d.vlN)||'', vlC=(d&&d.vlC)||'';
   var ong=vlN==='GF'?'Ống glassfiber':vlN==='MIX'?'Ống mix carbon / glassfiber':'Ống carbon';
   /* 09/11: gậy nhảy / phá nhảy 3 khúc (bản vẽ nhà máy "Nhảy 350-150", "Phá nhảy lùn 380-250"): ngọn + khúc trên + đuôi rời */
   var kieu=(d&&d.kieu)||'', ten=String((d&&d.ten)||''), k3=(kieu==='NHAY'||kieu==='PHANHAY')&&!/2\s*khúc/i.test(ten), ph=kieu==='PHANHAY';
   if(/3\s*khúc/i.test(ten)) k3=true;
-  var kt=ten.match(/\((\d{3})\s*-\s*(\d{2,3})\)/), tren=kt?+kt[1]:(ph?380:350), duoiR=kt?+kt[2]:(ph?250:150);   /* tên dòng "(390-100)" = khúc trên - đuôi rời */
+  var kt=ten.match(/\((\d{3})\s*-\s*(\d{2,3})\)/)||String((d&&d.tenChuoi)||'').match(/(\d{3})\s*-\s*(\d{2,3})\b/)||(SP.khuc&&SP.khuc.length===2?[0,SP.khuc[0],SP.khuc[1]]:null), tren=kt?+kt[1]:(ph?380:350), duoiR=kt?+kt[2]:(ph?250:150);
+  if(SP.khuc&&SP.khuc.length===2&&(kieu==='NHAY'||kieu==='PHANHAY')) k3=true;   /* tên dòng "(390-100)" = khúc trên - đuôi rời */
   var tc=k3?tren+duoiR-31:0, dt=k3?[Math.round(tc*0.38),Math.round(tc*0.38),tc-2*Math.round(tc*0.38)]:[318,270,117];   /* chuôi 2 khúc 736 (bản vẽ nhà máy) */
   /* Ngọn theo bản vẽ nhà máy: 735 từ mặt joint tới hết ferrule (không tính tip + pad). Gậy nhảy / phá nhảy: Ø theo bảng "Nhảy full carbon"
      (21,37 ở joint → 16,14 cách đầu 335 → 13,87 ở đầu), gậy đánh giữ Ø mẫu cũ. */
   var nh=kieu==='NHAY'||kieu==='PHANHAY', oD=nh?[13.87,335,16.14,21.37]:[12.4,381,13.5,21.6];   /* forearm, tay cầm, sleeve (31 = collar + cap + bumper) */
-  return { ngon:{ tip:{d:oD[0],h:9.5,vl:(d&&d.tenTip)||'Da thuộc'}, pad:{h:1.2,vl:'Sợi đen'}, ferrule:{h:4,vl:'Sứ / composite trắng',tenonD:8.4,tenonL:5},
+  var M={ ngon:{ tip:{d:oD[0],h:9.5,vl:(d&&d.tenTip)||'Da thuộc'}, pad:{h:1.2,vl:'Sợi đen'}, ferrule:{h:4,vl:'Sứ / composite trắng',tenonD:8.4,tenonL:5},
       ong:{vl:ong,loi:'Foam polyurethane',day:1.2,dai:719,dDau:oD[0],proDai:oD[1],dPro:oD[2],dJoint:oD[3],nutTruoc:0,nutSau:0,nutVl:'Gỗ maple'}, collar:{d:oD[3],h:12,vl:'Composite (vault plate)'}, insert:{d:18.5,l:Math.max(30,Math.ceil(((cgRenTT(ren)||[])[6]||0)+2)),vl:'Đồng thau',ren:ren} },
     chuoi:{ collar:{d:oD[3],h:12,vl:'Thép'}, pin:(function(){ var r=cgRenTT(ren)||[]; return {ren:ren,d:r[2]||9.525,tho:r[6]||12.7,buoc:r[3]||3.175,kieu:r[4]==='tròn'?'tròn':'V',chon:r[7]||70,vl:'Thép'}; })(),
       kieu:'carbon', vo:{day:1.6},
@@ -109,7 +130,19 @@ function cgMau(d){
       khoiCan:{dai:k3?0:vlC==='MIX'?70:vlC==='FC'?100:0,vt:vlC==='MIX'?300:550,vl:'Đối trọng'},
       khoang:{d:13,sau:150}, bolt:{ren:'3/8-16',dai:75,dauD:12.5,vl:'Thép'} },
     chung:{ khoiMin:510, khoiMax:595, khoiNgon:115, canBang:470, ghiChu:'' }, daDo:{} };
-}
+  return cgApSku(M,SP,k3); }
+/* Điền số từ file SKU vào mẫu (ô vẫn vàng "chưa đo", ghi chú "theo file SKU") */
+function cgApSku(M,SP,k3){ if(!SP||!SP.n) return M; var n=M.ngon, c=M.chuoi, src={}, dat=function(p,v){ cgDat(M,p,v); src[p]=1; };
+  if(SP.tipD){ dat('ngon.tip.d',SP.tipD); dat('ngon.ong.dDau',SP.tipD); if(n.ong.dPro<SP.tipD+0.6) n.ong.dPro=Math.round((SP.tipD+1.1)*100)/100; }
+  if(SP.co){ dat('ngon.ong.dJoint',SP.co); dat('ngon.collar.d',SP.co); dat('chuoi.collar.d',SP.co); dat('chuoi.forearm.dDau',SP.co); }
+  if(SP.vach) dat('chuoi.vo.day',SP.vach);
+  var dd=SP.dChuoi||(!k3&&SP.dFileL>=600?SP.dFile:null); if(dd){ dat('chuoi.sleeve.dCuoi',dd); dat('chuoi.cap.d',dd); }
+  var dai=SP.chuoiDai||(!k3&&SP.khuc&&SP.khuc.length===1?SP.khuc[0]:null);
+  if(dai&&!k3){ var khac=cgN(c.collar.h)+cgN(c.cap.h)+cgN(c.bumper.h), f=(dai-khac)/(cgN(c.forearm.dai)+cgN(c.wrap.dai)+cgN(c.sleeve.dai));
+    c.forearm.dai=Math.round(c.forearm.dai*f); c.wrap.dai=Math.round(c.wrap.dai*f); dat('chuoi.sleeve.dai',Math.round((dai-khac-c.forearm.dai-c.wrap.dai)*10)/10); src['chuoi.forearm.dai']=src['chuoi.wrap.dai']=1; }
+  if(SP.ren){ src['chuoi.pin.ren']=1; }
+  if(k3&&SP.khuc&&SP.khuc.length===2){ src['chuoi.noi.dai']=1; }
+  M.__sku=src; return M; }
 /* Trường nhập: [đường dẫn, nhãn, đơn vị, kiểu] – kiểu 's' = chữ */
 var CG_TRUONG = [
   ['Ngọn – đầu', [['ngon.tip.d','Tip Ø','mm'],['ngon.tip.h','Tip cao','mm'],['ngon.tip.vl','Tip vật liệu','','s'],['ngon.pad.h','Pad dày','mm'],['ngon.pad.vl','Pad vật liệu','','s'],
@@ -212,6 +245,18 @@ function cgKiemTra(t,d){
   if(!cb&&cgN(c.khoang.sau)>duoi) ra.push({muc:'do',t:'Khoang cân sâu '+cgF(c.khoang.sau)+' mm vượt quá phần wrap + sleeve + đuôi.',p:['chuoi.khoang.sau']});
   if(!cb&&cgN(c.bolt.dauD)>=cgN(c.khoang.d)) ra.push({muc:'do',t:'Đầu weight bolt Ø'+cgF(c.bolt.dauD)+' không lọt khoang Ø'+cgF(c.khoang.d)+'.',p:['chuoi.bolt.dauD','chuoi.khoang.d']});
   if(!cb&&cgN(c.bolt.dai)>cgN(c.khoang.sau)) ra.push({muc:'do',t:'Weight bolt dài hơn khoang cân.',p:['chuoi.bolt.dai','chuoi.khoang.sau']});
+  /* 09/11: kiểm tra chéo với file SKU (giá trị hay gặp nhất trong các mã của dòng) */
+  var SP=cgSkuSpec(d), lech=function(p,ten,sku,dang){ ra.push({muc:'vang',t:'Lệch file SKU – '+ten+': file ghi '+sku+', đang nhập '+dang+'.',p:[p]}); };
+  if(SP.n){
+    if(SP.ren){ var r1=cgRenTT(SP.ren), r2=cgRenTT(c.pin.ren); if(r1&&r2&&r1[1]!==r2[1]) lech('chuoi.pin.ren','ren pin',SP.ren,c.pin.ren); }
+    if(SP.tipD&&Math.abs(cgN(n.tip.d)-SP.tipD)>0.25) lech('ngon.tip.d','Ø tip / đầu ngọn','Ø'+cgF(SP.tipD),'Ø'+cgF(n.tip.d));
+    if(SP.co&&Math.abs(cgN(n.ong.dJoint)-SP.co)>0.3) lech('ngon.ong.dJoint','Ø cổ ngọn (joint)','Ø'+cgF(SP.co),'Ø'+cgF(n.ong.dJoint));
+    var k3s=cgK3(c), daiS=k3s?(SP.khuc&&SP.khuc.length===2?SP.khuc[0]+SP.khuc[1]:null):(SP.chuoiDai||(SP.khuc&&SP.khuc.length===1?SP.khuc[0]:null));
+    if(daiS&&Math.abs(L.chuoi-daiS)>3) lech('chuoi.sleeve.dai','chiều dài chuôi',cgF(daiS)+' mm',cgF(L.chuoi,1)+' mm');
+    if(k3s&&SP.khuc&&SP.khuc.length===2&&Math.abs(cgN(c.noi.dai)-SP.khuc[1])>2) lech('chuoi.noi.dai','đuôi rời',cgF(SP.khuc[1])+' mm',cgF(c.noi.dai)+' mm');
+    var ddS=SP.dChuoi||(!k3s&&SP.dFileL>=600?SP.dFile:null); if(ddS&&Math.abs(cgN(c.sleeve.dCuoi)-ddS)>0.6) lech('chuoi.sleeve.dCuoi','Ø đuôi chuôi',(SP.dChuoi?'Ø':'chu vi file in → Ø')+cgF(ddS),'Ø'+cgF(c.sleeve.dCuoi));
+    if(SP.vach&&cgCb(c)&&Math.abs(cgN(c.vo.day)-SP.vach)>0.2) lech('chuoi.vo.day','vách chuôi',cgF(SP.vach)+' mm',cgF(c.vo.day)+' mm');
+  }
   if(cgN(t.chung.khoiMin)>cgN(t.chung.khoiMax)) ra.push({muc:'vang',t:'Khối lượng nhẹ nhất lớn hơn nặng nhất.',p:['chung.khoiMin','chung.khoiMax']});
   if(cgN(t.chung.canBang)<=0||cgN(t.chung.canBang)>=L.tong) ra.push({muc:'vang',t:'Điểm cân bằng phải nằm trong chiều dài cây.',p:['chung.canBang']});
   if(Math.abs(L.ngon-L.chuoi)>40&&d&&d.loai==='GAY'&&!cgK3(c)) ra.push({muc:'vang',t:'Ngọn '+cgF(L.ngon,1)+' mm và chuôi '+cgF(L.chuoi,1)+' mm chênh nhau nhiều – kiểm tra lại chiều dài.',p:['ngon.ong.dai','chuoi.forearm.dai']});
@@ -618,6 +663,10 @@ function cgVeDs(){
         h+='<button class="cg-it'+(CG.chon===d.ma?' on':'')+'" type="button" data-ma="'+esc(d.ma)+'" onclick="cgMo(this.dataset.ma)"><span>'+esc(d.ten)+'</span>'+chip(d)+'</button>'; });
     });
   });
+  var ghep=cgSkuGhep(), soGhep=Object.keys(ghep).reduce(function(a,k){return a+ghep[k].length},0), chua=CG.skuChua||[];
+  if(CG_SKU.length){ var nh={}; chua.forEach(function(o){ nh[o.nhom]=(nh[o.nhom]||0)+1; });
+    h+='<details class="cg-skuds" style="margin-top:10px;font-size:12.5px"><summary>File SKU: '+CG_SKU.length+' mã · ghép '+soGhep+' vào '+Object.keys(ghep).length+' dòng'+(chua.length?' · <b>'+chua.length+' mã chưa ghép</b>':'')+'</summary>'+
+      (chua.length?'<div style="margin-top:6px;color:var(--ink3)">Nhóm chưa ghép được (thêm tên gọi cho dòng ở Cấu hình sản phẩm để ghép):</div><ul style="margin:4px 0 0 18px;padding:0">'+Object.keys(nh).map(function(k){ return '<li>'+esc(k.slice(0,70))+' ('+nh[k]+')</li>'; }).join('')+'</ul>':'')+'</details>'; }
   el.innerHTML=h;
 }
 function cgMo(ma,giu){
@@ -664,6 +713,7 @@ function cgVeCt(){
     '<div class="cg-giay"><h4>CHI TIẾT – ĐÚNG TỈ LỆ THẬT, PHÓNG TO</h4><div class="cg-dung3"><div><h5>A · ĐẦU NGỌN</h5>'+cgCT(t,'A')+'</div><div><h5>C · JOINT</h5>'+cgCT(t,'C')+'</div>'+(cgK3(t.chuoi)?'<div><h5>K · KHỚP GIỮA</h5>'+cgCT(t,'B')+'</div>':'')+'<div><h5>D · ĐUÔI + '+(cgCb(t.chuoi)?'ỐNG QUẢ CÂN':'WEIGHT BOLT')+'</h5>'+cgCT(t,'D')+'</div></div></div>'+
     '<div class="cg-2c"><div class="cg-giay"><h4>THÔNG SỐ</h4>'+cgBangTS(t)+'</div><div class="cg-giay"><h4>CHÚ THÍCH VẬT LIỆU</h4>'+cgChuThich(t)+'</div></div>'+
     '<div class="cg-giay"><h4>BẢNG CHI TIẾT</h4>'+cgBangCT(t)+'</div>';
+  h+=cgKhoiSku(d);
   h+=cgThamKhao();
   if((r.lichSu||[]).length&&!CG.sua) h+='<div class="cg-khoi" style="margin-top:10px"><b>Lịch sử phiên bản</b><div class="cg-ls">'+r.lichSu.map(function(x){ return '<div><b>v'+x.pb+'</b> · '+esc(x.tt)+' · '+esc(x.nguoi)+' '+esc(x.luc)+(x.duyet?' · duyệt/từ chối: '+esc(x.duyet)+' '+esc(x.lucDuyet):'')+(x.ghiChu?' · “'+esc(x.ghiChu)+'”':'')+(x.lyDo?' · lý do: '+esc(x.lyDo):'')+
     ((x.tt==='Bản cũ'||x.tt==='Hiệu lực')?' <button class="btn sm" type="button" data-ma="'+esc(d.ma)+'" onclick="CG.xemPB='+(Number(x.pb)||0)+';CG.xemCho=0;cgMo(this.dataset.ma,true)">Xem</button>':'')+'</div>'; }).join('')+'</div></div>';
@@ -672,6 +722,12 @@ function cgVeCt(){
 }
 /* Xem 1 hình cỡ lớn (cuộn được), bấm nền hoặc ✕ để đóng */
 function cgPhong(v){ var o=document.createElement('div'); o.className='cg-phong'; o.innerHTML='<button type="button" aria-label="Đóng">✕</button><div class="cg-phong-in">'+v.outerHTML+'</div>'; o.onclick=function(e){ if(e.target===o||e.target.tagName==='BUTTON') o.remove(); }; document.body.appendChild(o); var sv=o.querySelector('svg'); sv.style.cursor='default'; sv.removeAttribute('title'); }
+/* Các mã SKU thuộc dòng này (file SKU 09/11) */
+function cgKhoiSku(d){ var a=cgSkuCua(d), SP=cgSkuSpec(d); if(!a.length) return '<div class="cg-khoi" style="margin-top:10px;font-size:13px;color:var(--ink3)">File SKU: chưa có mã nào ghép được với dòng này. Muốn ghép: thêm tên gọi (vd. tên nhóm hoặc đầu mã SKU) cho dòng ở Cấu hình sản phẩm.</div>';
+  var tom=[SP.ren?'ren '+SP.ren:'',SP.tipD?'Ø tip '+cgF(SP.tipD):'',SP.co?'cổ ngọn Ø'+cgF(SP.co):'',SP.chuoiDai?'chuôi '+cgF(SP.chuoiDai)+' mm':'',SP.khuc?'khúc '+SP.khuc.join(' + ')+' mm':'',SP.dChuoi?'Ø đuôi '+cgF(SP.dChuoi):(SP.dFile?'file in '+cgF(Math.round(SP.dFile*Math.PI*10)/10)+' → Ø'+cgF(SP.dFile):''),SP.vach?'vách '+cgF(SP.vach):''].filter(Boolean).join(' · ');
+  return '<details class="cg-khoi" style="margin-top:10px"><summary><b style="display:inline">Mã SKU của dòng này ('+a.length+')</b> <span style="font-size:12px;color:var(--ink3)">'+esc(tom)+'</span></summary><div style="overflow-x:auto;margin-top:6px"><table class="cg-bang cg-bang-sku" style="min-width:1250px"><thead><tr><th>Nhóm</th><th>SKU</th><th>Ren</th><th>Chuôi</th><th>Ngọn</th><th>Tip</th><th class="so">Ø tip</th><th class="so">Dài chuôi</th><th>File in</th><th>Mô tả</th></tr></thead><tbody>'+
+    a.map(function(o){ return '<tr><td>'+esc(o.nhom.slice(0,40))+'</td><td><b>'+esc(o.sku)+'</b></td><td>'+esc(o.ren||'–')+'</td><td>'+esc(o.chuoi||'–')+'</td><td>'+esc(o.ngon||'–')+'</td><td>'+esc(o.tip||'–')+'</td><td class="so">'+(o.tipD?cgF(o.tipD):'–')+'</td><td class="so">'+(o.chuoiDai?cgF(o.chuoiDai):(o.khuc?o.khuc.join('+'):'–'))+'</td><td>'+esc(o.file||'–')+'</td><td style="min-width:260px;font-size:11.5px">'+esc(o.mt)+'</td></tr>'; }).join('')+
+    '</tbody></table></div><p style="font-size:12px;color:var(--ink3);margin-top:6px">Ô có nhãn <em class="cg-sku">theo file SKU</em> lấy số hay gặp nhất trong các mã trên; vẫn là ô chưa đo tới khi C077 đo / bấm ✓. Ø đuôi suy từ chiều rộng file in = chu vi chuôi ÷ π. Số đo lệch file SKU sẽ hiện cảnh báo vàng.</p></details>'; }
 function cgThamKhao(){
   return '<details class="cg-khoi" style="margin-top:10px"><summary><b style="display:inline">Tham khảo khi đo – cấu tạo chuẩn & bảng ren joint pin</b></summary><div style="font-size:13px;line-height:1.5;margin-top:6px">'+
    '<p><b>Ngọn carbon:</b> ống sợi carbon quấn trên lõi thép rồi ép keo epoxy, thành ống thường <b>0,8–1,2 mm</b> (nhiều hãng ~1,0). Bên trong là <b>lõi foam polyurethane</b> (có hãng dùng foam nhiều tỉ trọng), một số hãng <b>bịt nút gỗ maple ở hai đầu lõi</b> – điền ở ô "Nút bịt". Ferrule gậy carbon thường ngắn: 6–13 mm (gậy gỗ cổ điển 19–25 mm). Đầu joint của ngọn có insert ren (đồng / phenolic); Radial vặn thẳng vào gỗ / phenolic, không cần insert.</p>'+
@@ -694,7 +750,7 @@ function cgForm(t,kt){
     g[1].forEach(function(f){ var v=cgLay(t,f[0]), da=(t.daDo||{})[cgK(f[0])];
       var o=f[0]==='chuoi.kieu'?'<select data-p="'+f[0]+'" data-s="1" onchange="cgDoiO(this)"><option value="carbon"'+(cgCb(t.chuoi)?' selected':'')+'>Carbon – vỏ + lõi foam + ống quả cân</option><option value="gỗ"'+(cgCb(t.chuoi)?'':' selected')+'>Gỗ – mộng A-joint + khoang cân</option></select>'
         :'<input '+(f[3]==='s'?'type="text" maxlength="120"':'type="number" step="0.01" inputmode="decimal"')+' value="'+esc(v==null?'':v)+'" data-p="'+f[0]+'" data-s="'+(f[3]==='s'?1:0)+'" onchange="cgDoiO(this)">';
-      h+='<label class="cg-o'+(da?' da':' chua')+(sai[f[0]]?' sai':'')+'"><span>'+esc(f[1])+(f[2]?' ('+f[2]+')':'')+'</span><span class="h">'+o+'<button class="dd" type="button" title="Xác nhận số này đã đo đúng" onclick="cgXacNhan(\''+f[0]+'\')">✓</button></span></label>'; });
+      h+='<label class="cg-o'+(da?' da':' chua')+(sai[f[0]]?' sai':'')+'"><span>'+esc(f[1])+(f[2]?' ('+f[2]+')':'')+(!da&&t.__sku&&t.__sku[f[0]]?' <em class="cg-sku">theo file SKU</em>':'')+'</span><span class="h">'+o+'<button class="dd" type="button" title="Xác nhận số này đã đo đúng" onclick="cgXacNhan(\''+f[0]+'\')">✓</button></span></label>'; });
     h+='</div></div>';
   });
   return h+'<div class="cg-khoi"><b>Ghi chú lần đo (gửi kèm khi lưu)</b><input id="cgGhiChu" maxlength="300" style="width:100%;min-height:38px" placeholder="vd. đo trên 3 cây mẫu lô 07/11, thước kẹp 0,01"></div></div>'; }

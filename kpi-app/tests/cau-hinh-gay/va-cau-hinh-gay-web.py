@@ -24,6 +24,11 @@ for _k, (_L, _T, _Dm) in _pin42.items():
     _pd42[_k] = {'L': _L, 'T': _T, 'D': _Dm, 'w': _im.size[0], 'h': _im.size[1], 's': 'data:image/png;base64,' + _b64_42.b64encode(open(_f, 'rb').read()).decode()}
 assert _cg_src.count('/*PIN*/{}/*PIN*/') == 1, 'mục 42: thiếu chỗ chèn ảnh pin'
 _cg_src = _cg_src.replace('/*PIN*/{}/*PIN*/', _json.dumps(_pd42, separators=(',', ':')))
+# 09/11: file SKU (tests/cau-hinh-gay/sku/sku.json, sinh bởi sku/doc-sku.py) – chỉ giữ trường web dùng
+_sk42 = _json.load(io.open(os.path.join(D, 'cau-hinh-gay', 'sku', 'sku.json'), encoding='utf-8'))
+_sk42 = [{k: v for k, v in o.items() if k in ('nhom', 'sku', 'mt', 'chuoi', 'ngon', 'tip', 'file', 'ren', 'tipD', 'chuoiDai', 'co', 'vach', 'dChuoi', 'dFile', 'dFileL', 'khuc') and v not in (None, '')} for o in _sk42]
+assert _cg_src.count('/*SKU*/[]/*SKU*/') == 1, 'mục 42: thiếu chỗ chèn file SKU'
+_cg_src = _cg_src.replace('/*SKU*/[]/*SKU*/', _json.dumps(_sk42, ensure_ascii=False, separators=(',', ':')).replace('</', '<\\/'))
 io.open(os.path.join(D, '..', 'CauHinhGay.html'), 'w', encoding='utf-8').write(_cg_src)
 _dsf = os.path.join(D, '..', 'danh-sach-file.txt'); _dsl = io.open(_dsf, encoding='utf-8').read().split()
 if 'CauHinhGay' not in _dsl: io.open(_dsf, 'w', encoding='utf-8').write('\n'.join(_dsl + ['CauHinhGay']) + '\n')

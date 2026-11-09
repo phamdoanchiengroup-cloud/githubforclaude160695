@@ -4,6 +4,7 @@ Nhóm: Chung · Cập nhật 31/10/2026
 Liên quan: [[Lần dán lên Apps Script]] · [[Quyết định của chủ dự án]] · [[00 Mục lục]]
 
 ## Câu hỏi đang chờ trả lời
+- (09/11) **File SKU trong Cấu hình gậy**: xác nhận ghép 48 mã chưa ghép (gợi ý: EVO Break&Jump → EVO phá nhảy Valkyrie, EVO Jump 3 khúc → EVO nhảy Pegasus?, EVO Jump 2 khúc → EVO nhảy IG, EVO Break → EVO phá X, Z-SP (ZF) → Cuebots Z-Pure / Z Fusion, USA Pool → ?, Japan / Covid → ?, Gậy CLB xu hướng EVO → ?, Cuebots G Series → ?). Dán Code.gs + Index.html + CauHinhGay.html. – [[KPI Cấu hình gậy – bản vẽ kỹ thuật (08-11)]]
 - (09/11) **Web công nhân kiểu Apple**: dán Index.html (2-CAP-NHAT.bat), Ctrl+F5; cho công nhân dùng thử, sau ~2 tuần quyết bỏ nút "Dùng giao diện cũ"; quyết có làm tiếp phần trong các màn (bàn phím số khi nhập, Cơm 2 nút to, lịch chấm công riêng) không. – [[KPI Web công nhân kiểu Apple (09-11)]]
 - (09/11) **Chuôi carbon vẽ lại theo bản vẽ Rhino**: chờ chủ dự án xác nhận (1) "Bịt Nối" = thanh thép nối forearm / tay cầm? (2) ngọn có vẽ lại cùng kiểu màu không (3) kích thước thật ống POM, quả cân, khối giữ pin (C077 đo). Dán Code.gs + Index.html + CauHinhGay.html. – [[KPI Cấu hình gậy – bản vẽ kỹ thuật (08-11)]]
 - (08/11) **Cấu hình gậy** (tab mới, tài liệu mật): dán bản mới (2-CAP-NHAT.bat tự lấy thêm file `CauHinhGay`), Ctrl+F5; C077 bắt đầu đo + nhập từng dòng gậy, C019 duyệt. Chờ chủ dự án xem PDF mẫu và góp ý bản vẽ. – [[KPI Cấu hình gậy – bản vẽ kỹ thuật (08-11)]]

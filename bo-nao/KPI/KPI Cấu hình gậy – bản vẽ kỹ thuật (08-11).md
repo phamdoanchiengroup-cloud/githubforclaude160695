@@ -73,3 +73,12 @@ Liên quan: [[KPI Quy trình sản xuất]] · [[KPI Bảo mật và vận hành
 
 ## Đơn vị đo: giữ như cũ (09/11)
 - Chủ dự án yêu cầu "chuyển hết đơn vị đo về mm" → tôi lỡ bỏ cả inch ở tổng dài, đổi ghi chú "ren/inch", bỏ oz (commit bd2aff0) → chủ dự án: **trả lại như cũ**; tên ren / ghi chú ren giữ nguyên, **oz vẫn dùng**; chỉ cần chiều dài + đường kính của ngọn và chuôi bằng mm. Đã revert (d22b709). Hiện mọi chiều dài / Ø ngọn, chuôi (hình, chi tiết, bảng, ô nhập, PDF) đều đã là mm; chỉ dòng tổng cả cây ghi thêm "· x in".
+
+## File SKU → điền sẵn mẫu + kiểm tra chéo (09/11)
+- Chủ dự án gửi `SKU.xlsx` (5 sheet: Gậy Rhino 101 mã, Gậy EVO 51, Gậy Cuebots 36, Nối Rhino 5, Nối EVO 36). Chốt: **cách A** (điền sẵn mẫu + kiểm tra chéo), **không vẽ Nối**, chiều rộng "kích thước file in" = **chu vi chuôi** (Ø = rộng ÷ π).
+- `tests/cau-hinh-gay/sku/doc-sku.py <SKU.xlsx>` → `sku/sku.json` (188 mã gậy): nhóm, SKU, mô tả, chuôi / ngọn / tip, file in + số đọc từ mô tả: ren (mô tả mã trước, tiêu đề nhóm sau), Ø tip (10,5–14,5 mm), dài chuôi (690–760), cổ ngọn (20,5–23), vách, Ø chuôi ("Chuôi 31.3 vách"), Ø từ file in, khúc "(280-150)" / "1 khúc (390mm)". File SKU gốc không lưu vào repo (chỉ json).
+- Web (CauHinhGay.html, `CG_SKU` chèn bởi va-cau-hinh-gay-web.py): `cgSkuGhep` ghép mã → dòng theo mã / tên / **tên gọi** của dòng (máy chủ gửi thêm `goi` = PL_DONG[3]), lấy khớp dài nhất; ghép tay `CG_SKU_TAY` ('Z-100-200' → CBZW). `cgSkuSpec` = giá trị hay gặp nhất. `cgMau` → `cgApSku`: Ø tip + đầu ngọn, cổ ngọn (+ collar, forearm đầu), vách, Ø đuôi (dChuoi hoặc file in ≥ 600 dài), dài chuôi (chia lại forearm / tay cầm / sleeve), ren (khi Cấu hình SP không có), khúc gậy 3 khúc; ô lấy từ SKU có nhãn **"theo file SKU"** (vẫn vàng chưa đo). Khúc gậy 3 khúc còn đọc từ tên chuôi Cấu hình SP ("Phá nhảy 350-385", "Nhảy 330-130").
+- Kiểm tra chéo `cgKiemTra`: lệch ren / Ø tip > 0,25 / cổ ngọn > 0,3 / dài chuôi > 3 / đuôi rời > 2 / Ø đuôi > 0,6 / vách > 0,2 → vàng "Lệch file SKU – …".
+- Khung "Mã SKU của dòng này (n)" (bảng mã + tóm tắt số) trong chi tiết; cuối danh sách "File SKU: 188 mã · ghép x vào y dòng · z mã chưa ghép" + nhóm chưa ghép (ghép thêm = thêm tên gọi ở Cấu hình sản phẩm).
+- Bản xem thử: ghép 140 / 188 vào 21 dòng; 48 mã chưa ghép (USA 2025 pool, bộ Covid / Japan, Gậy CLB xu hướng EVO, EVO Break, EVO Jump 3 khúc / 2 khúc, EVO Break&Jump, Z-SP (ZF), Z-Extension, Cuebots G Series còn lại). Mẫu Retro chuôi 747 (tổng 1.492,7), EVOVAL 350 + 385.
+- Kiểm thử: cau-hinh-gay 50/50, cau-hinh-gay-web 50/50.

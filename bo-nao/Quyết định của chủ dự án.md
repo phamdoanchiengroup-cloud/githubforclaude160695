@@ -124,3 +124,4 @@ Những điều đã chốt. Đừng đề xuất lại những gì ghi "không 
 - (09/11) Cấu hình gậy: thêm gậy nhảy / phá nhảy **3 khúc** (ô Số khúc), ngọn của gậy 3 khúc C077 đo riêng, khối giữa lõi chuôi là **khối đối trọng**; bảng Ø ngọn mỗi 50 mm **chưa cần**. – [[KPI Cấu hình gậy – bản vẽ kỹ thuật (08-11)]]
 - (09/11) Cấu hình gậy: **chiều dài + đường kính ngọn và chuôi bằng mm**; **giữ nguyên tên ren, ghi chú ren (ren/inch) và oz** – không tự đổi các đơn vị khác. – [[KPI Cấu hình gậy – bản vẽ kỹ thuật (08-11)]]
 - (09/11) Báo cáo lãnh đạo: thêm **bản Phó Tổng Giám đốc** (nút riêng, giữ bản Giám đốc sản xuất): bỏ quyết định cần duyệt + hàng chờ theo công đoạn, thêm Nhân sự sau Tóm tắt, ô ký cuối báo cáo. – [[KPI Báo cáo tháng]]
+- (09/11) File SKU dùng cho Cấu hình gậy theo **cách A** (điền sẵn mẫu + kiểm tra chéo); **không vẽ Nối**; chiều rộng file in = chu vi chuôi. – [[KPI Cấu hình gậy – bản vẽ kỹ thuật (08-11)]]
