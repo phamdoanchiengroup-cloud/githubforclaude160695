@@ -1322,8 +1322,8 @@ function dhLoc(src){
 }
 function dhGomDon(ds){
   var m={}, out=[];
-  ds.forEach(function(o){ var k=o.maDon||'(không mã)', g=m[k];
-    if(!g){ g=m[k]={ma:k,kenh:o.kenh,tab:o.tab,nguoiDat:o.nguoiDat,ngayDat:o.ngayDat,sl:0,thieu:0,giao:0,dong:[],dl:'',st:''}; out.push(g); }
+  ds.forEach(function(o){ var k=(o.maDon||'(không mã)')+'|'+(o.tab||''), g=m[k];   /* 09/11: gom theo mã + kênh – 2 kênh có thể trùng mã (vd "#31/10" ở KHO hạn 10/12 và A ĐÔNG hạn 07/11) */
+    if(!g){ g=m[k]={ma:o.maDon||'(không mã)',kenh:o.kenh,tab:o.tab,nguoiDat:o.nguoiDat,ngayDat:o.ngayDat,sl:0,thieu:0,giao:0,dong:[],dl:'',st:''}; out.push(g); }
     g.sl+=o.sl; g.thieu+=o.thieu; g.giao+=o.giao||0; g.dong.push(o);
     if(o.thieu>0&&o.dl&&(!g.dl||o.dl<g.dl)) g.dl=o.dl; });
   out.forEach(function(g){ var sts=g.dong.map(function(o){return o.st}); g.st=sts.indexOf('treHan')>=0?'treHan':sts.indexOf('dangSX')>=0?'dangSX':sts.every(function(x){return x==='daGiao'})?'daGiao':'sanSang'; });

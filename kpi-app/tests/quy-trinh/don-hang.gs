@@ -330,7 +330,8 @@ function dhKenhTen_(t) {
   return '';
 }
 /* mã đơn: ngắn, không phải câu ghi chú (ORDER·FLOW giữ cả mã không có chữ số như #DEMO) */
-function dhLaMa_(m0) { m0 = String(m0 || '').trim(); return !!m0 && m0.length <= 40 && m0.split(/\s+/).length <= 4 && !DH_GHI_CHU.test(m0.toUpperCase()); }
+/* 09/11: ô bắt đầu bằng "#" là mã đơn dù dài / nhiều chữ (vd "#ĐƠN TRẢ HÀNG TUẦN (09/11-14/11)" – trước đây quá 4 chữ nên các dòng sau bị gán vào mã liền trước "#31/10") */
+function dhLaMa_(m0) { m0 = String(m0 || '').trim(); if (!m0 || DH_GHI_CHU.test(m0.toUpperCase())) return false; if (/^#/.test(m0)) return m0.length <= 60; return m0.length <= 40 && m0.split(/\s+/).length <= 4; }
 /* 03/11: nhận chữ "ưu tiên" (hoa / thường, có / không dấu) */
 function dhUuTien_(t) { return /\bUU\s*TIEN\b/.test(plChuan_(t)); }
 /* Mã đơn "RHINO-22/06" -> người đặt + ngày đặt (giống web app đơn hàng); deadline trước ngày đặt -> sang năm sau */
