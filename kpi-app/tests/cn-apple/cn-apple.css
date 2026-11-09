@@ -1,0 +1,77 @@
+/* ===== 44. Web công nhân kiểu Apple (09/11) – chỉ khi html.cn-moi (tài khoản CN, chưa chọn giao diện cũ) ===== */
+html.cn-moi,html.cn-moi[data-gd],html.cn-moi.holo{color-scheme:light;--bg:#f2f2f7;--panel:#ffffff;--panel2:#f2f2f7;--line:#e5e5ea;--row-line:#e5e5ea;
+  --ink:#1c1c1e;--ink2:#3c3c43;--ink3:#6e6e73;--cyan:#0a66ff;--acc-rgb:10,102,255;--amber:#ff9f0a;--red:#ff3b30;--green:#34c759;--bot-bg:rgba(249,249,251,.98);--bong:none;
+  --serif:-apple-system,"SF Pro Display",BlinkMacSystemFont,"Inter","Segoe UI",Roboto,system-ui,sans-serif}
+html.cn-moi body{background:#f2f2f7!important;color:#1c1c1e;font-family:-apple-system,"SF Pro Text",BlinkMacSystemFont,"Inter","Segoe UI",Roboto,system-ui,sans-serif;font-size:16px;line-height:1.45}
+html.cn-moi #nav,html.cn-moi .hnut,html.cn-moi header .hr>*{display:none!important}
+html.cn-moi header .hr #cnNutMoi{display:inline-flex!important}
+html.cn-moi header{background:#f2f2f7!important;border:0!important;backdrop-filter:none!important;-webkit-backdrop-filter:none!important;box-shadow:none!important;min-height:48px}
+html.cn-moi header .hlogo{background:#0a66ff;color:#fff;border-radius:9px}
+html.cn-moi header .htitle{font-size:15px;font-weight:600;color:#1c1c1e}
+html.cn-moi header .hsub{color:#6e6e73}
+html.cn-moi main{max-width:640px;padding:6px 16px calc(100px + env(safe-area-inset-bottom))!important}
+html.cn-moi .ptitle{font-size:30px;font-weight:700;letter-spacing:-.02em;line-height:1.15;color:#000}
+html.cn-moi .pdesc{font-size:14px;color:#6e6e73;margin:4px 0 16px}
+html.cn-moi .card,html.cn-moi .kpi{background:#fff!important;border:0!important;border-radius:16px!important;box-shadow:none!important;backdrop-filter:none!important;-webkit-backdrop-filter:none!important}
+html.cn-moi .card{padding:16px}
+html.cn-moi .card:hover{transform:none}
+html.cn-moi .card h3{font-size:17px;color:#000}
+html.cn-moi .kpis{gap:10px}
+html.cn-moi .kpi{border-top:0!important;background-image:none!important}
+html.cn-moi .btn{min-height:44px;border-radius:12px;border:0;background:#e9e9ee;color:#0a3d99;font-weight:600;font-size:15px}
+html.cn-moi .btn.sm{min-height:36px;font-size:14px}
+html.cn-moi .btn.pri{background:#0a66ff;color:#fff}
+html.cn-moi .btn.dg{color:#d70015}
+html.cn-moi input,html.cn-moi select,html.cn-moi textarea{min-height:48px;border-radius:12px;border:1px solid #d1d1d6;background:#fff;color:#1c1c1e;font-size:16px}
+html.cn-moi input:focus,html.cn-moi select:focus,html.cn-moi textarea:focus{border-color:#0a66ff;box-shadow:0 0 0 3px rgba(10,102,255,.18);outline:0}
+html.cn-moi label{color:#6e6e73}
+html.cn-moi table{font-size:15px}
+html.cn-moi th{font-size:12px;color:#6e6e73;background:transparent!important}
+html.cn-moi td{border-bottom:.5px solid #e5e5ea!important}
+html.cn-moi .note{color:#6e6e73}
+/* thanh dưới: luôn hiện (cả máy tính) */
+html.cn-moi #botbar{display:flex!important;position:fixed;left:0;right:0;bottom:0;z-index:60;background:rgba(249,249,251,.98);border-top:.5px solid #c6c6c8;
+  padding:4px max(6px,env(safe-area-inset-left)) calc(4px + env(safe-area-inset-bottom));justify-content:center}
+html.cn-moi #botbar button{flex:1;max-width:128px;min-height:54px;background:none;border:0;color:#8e8e93;font:500 11px -apple-system,"Inter",system-ui,sans-serif;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;position:relative;cursor:pointer}
+html.cn-moi #botbar button svg{width:25px;height:25px;stroke:currentColor;fill:none;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+html.cn-moi #botbar button.on{color:#0a66ff}
+html.cn-moi #botbar button.on svg{stroke-width:2.1}
+html.cn-moi #botbar button:active{transform:scale(.94)}
+html.cn-moi #botbar .dem{position:absolute;top:2px;left:calc(50% + 7px);min-width:17px;height:17px;padding:0 4px;border-radius:9px;background:#ff3b30;color:#fff;font:600 10.5px system-ui,sans-serif;display:flex;align-items:center;justify-content:center}
+html.cn-moi #botbar .dem.hide{display:none}
+html.cn-moi #botbar button.cham::after{content:"";position:absolute;top:6px;left:calc(50% + 9px);width:9px;height:9px;border-radius:50%;background:#ff3b30;border:2px solid #f9f9fb}
+html.cn-moi:not(.cn-tab-nhap) #ducbar{display:none!important}
+/* Xưởng: nút chuyển Bảng KPI / Chấm công */
+#cnSeg{max-width:640px;margin:0 auto;padding:4px 16px 0}
+#cnSeg.hide,html:not(.cn-moi) #cnSeg{display:none}
+.cn-seg{display:flex;background:#e3e3e8;border-radius:12px;padding:3px;gap:3px}
+.cn-seg button{flex:1;min-height:40px;border:0;border-radius:10px;background:none;color:#3c3c43;font:600 15px -apple-system,"Inter",system-ui,sans-serif;cursor:pointer}
+.cn-seg button.on{background:#fff;color:#000;box-shadow:0 1px 3px rgba(0,0,0,.12)}
+/* Bảng KPI xưởng: gọn – hạng, tên, KPI, loại; chỉ top 3 + người trên + mình */
+html.cn-moi #kpi_bang th:nth-child(n+3):nth-child(-n+6),html.cn-moi #kpi_bang td:nth-child(n+3):nth-child(-n+6),
+html.cn-moi #kpi_bang th:nth-child(9),html.cn-moi #kpi_bang td:nth-child(9){display:none}
+html.cn-moi #kpi_bang tr.cn-an{display:none}
+html.cn-moi #kpi_bang .cn-mo tr.cn-an{display:table-row}
+html.cn-moi #kpi_bang .cn-mo tr.cn-cach{display:none}
+html.cn-moi #kpi_bang tr.cn-toi td{background:#eef4ff!important}
+html.cn-moi #kpi_bang tr.cn-cach td{text-align:center;color:#aeaeb2;padding:0;line-height:1.2;letter-spacing:.2em}
+html.cn-moi .cn-xemhet{display:block;width:100%;margin-top:12px}
+/* Tôi */
+.cn-toi-dau{display:flex;gap:14px;align-items:center;margin:8px 0 6px}
+.cn-toi-dau .pdesc{margin:2px 0 0}
+.cn-av{flex:none;width:64px;height:64px;border-radius:50%;background:#5e5ce6;color:#fff;font:700 28px -apple-system,"Inter",system-ui,sans-serif;display:flex;align-items:center;justify-content:center}
+.cn-nhom{font-size:13px;font-weight:600;color:#6e6e73;margin:22px 4px 6px;letter-spacing:.02em}
+.cn-the{background:#fff;border-radius:16px;overflow:hidden}
+.cn-dong{display:flex;width:100%;min-height:58px;align-items:center;justify-content:space-between;gap:12px;padding:10px 16px;border:0;border-bottom:.5px solid #e5e5ea;background:none;text-align:left;font:400 16px -apple-system,"Inter",system-ui,sans-serif;color:#1c1c1e;cursor:pointer}
+.cn-dong:last-child{border-bottom:0}
+.cn-dong:active{background:#f2f2f7}
+.cn-dong small{display:block;color:#6e6e73;font-size:13px;margin-top:2px}
+.cn-dong b{color:#c7c7cc;font-size:24px;font-weight:400;line-height:1}
+.cn-cong{flex:none;position:relative;width:51px;height:31px;border-radius:16px;background:#e9e9ea;transition:background .2s}
+.cn-cong::after{content:"";position:absolute;top:2px;left:2px;width:27px;height:27px;border-radius:50%;background:#fff;box-shadow:0 2px 4px rgba(0,0,0,.2);transition:transform .2s}
+.cn-cong.on{background:#34c759}
+.cn-cong.on::after{transform:translateX(20px)}
+.btn.cn-thoat{display:block;width:100%;min-height:52px;margin-top:24px;background:#fff;color:#d70015}
+/* Chữ to */
+html.cn-moi.cn-to main,html.cn-moi.cn-to #cnSeg{zoom:1.15}
+@media (prefers-reduced-motion:reduce){.cn-cong,.cn-cong::after{transition:none}}

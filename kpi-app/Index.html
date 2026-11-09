@@ -1206,6 +1206,85 @@ html[data-gd="sang"] .mai-chip.mc-at{color:#b42a25} html[data-gd="sang"] .ql-tag
   .dpv thead{display:none} .dpv,.dpv tbody{display:block;width:100%} .dpv tr{display:grid;grid-template-columns:22px minmax(0,1fr) auto auto;gap:2px 10px;padding:8px 0;border-top:1px solid var(--line)}
   .dpv td{border:0!important;padding:0!important;min-width:0;overflow-wrap:anywhere} .dpv td:nth-child(5){grid-column:2/-1} .dpv tr.dh-khoi{grid-template-columns:1fr auto;padding:6px 4px} .dpv tr.dh-khoi td:empty{display:none} }
 </style>
+<style id="cnApple">
+/* ===== 44. Web công nhân kiểu Apple (09/11) – chỉ khi html.cn-moi (tài khoản CN, chưa chọn giao diện cũ) ===== */
+html.cn-moi,html.cn-moi[data-gd],html.cn-moi.holo{color-scheme:light;--bg:#f2f2f7;--panel:#ffffff;--panel2:#f2f2f7;--line:#e5e5ea;--row-line:#e5e5ea;
+  --ink:#1c1c1e;--ink2:#3c3c43;--ink3:#6e6e73;--cyan:#0a66ff;--acc-rgb:10,102,255;--amber:#ff9f0a;--red:#ff3b30;--green:#34c759;--bot-bg:rgba(249,249,251,.98);--bong:none;
+  --serif:-apple-system,"SF Pro Display",BlinkMacSystemFont,"Inter","Segoe UI",Roboto,system-ui,sans-serif}
+html.cn-moi body{background:#f2f2f7!important;color:#1c1c1e;font-family:-apple-system,"SF Pro Text",BlinkMacSystemFont,"Inter","Segoe UI",Roboto,system-ui,sans-serif;font-size:16px;line-height:1.45}
+html.cn-moi #nav,html.cn-moi .hnut,html.cn-moi header .hr>*{display:none!important}
+html.cn-moi header .hr #cnNutMoi{display:inline-flex!important}
+html.cn-moi header{background:#f2f2f7!important;border:0!important;backdrop-filter:none!important;-webkit-backdrop-filter:none!important;box-shadow:none!important;min-height:48px}
+html.cn-moi header .hlogo{background:#0a66ff;color:#fff;border-radius:9px}
+html.cn-moi header .htitle{font-size:15px;font-weight:600;color:#1c1c1e}
+html.cn-moi header .hsub{color:#6e6e73}
+html.cn-moi main{max-width:640px;padding:6px 16px calc(100px + env(safe-area-inset-bottom))!important}
+html.cn-moi .ptitle{font-size:30px;font-weight:700;letter-spacing:-.02em;line-height:1.15;color:#000}
+html.cn-moi .pdesc{font-size:14px;color:#6e6e73;margin:4px 0 16px}
+html.cn-moi .card,html.cn-moi .kpi{background:#fff!important;border:0!important;border-radius:16px!important;box-shadow:none!important;backdrop-filter:none!important;-webkit-backdrop-filter:none!important}
+html.cn-moi .card{padding:16px}
+html.cn-moi .card:hover{transform:none}
+html.cn-moi .card h3{font-size:17px;color:#000}
+html.cn-moi .kpis{gap:10px}
+html.cn-moi .kpi{border-top:0!important;background-image:none!important}
+html.cn-moi .btn{min-height:44px;border-radius:12px;border:0;background:#e9e9ee;color:#0a3d99;font-weight:600;font-size:15px}
+html.cn-moi .btn.sm{min-height:36px;font-size:14px}
+html.cn-moi .btn.pri{background:#0a66ff;color:#fff}
+html.cn-moi .btn.dg{color:#d70015}
+html.cn-moi input,html.cn-moi select,html.cn-moi textarea{min-height:48px;border-radius:12px;border:1px solid #d1d1d6;background:#fff;color:#1c1c1e;font-size:16px}
+html.cn-moi input:focus,html.cn-moi select:focus,html.cn-moi textarea:focus{border-color:#0a66ff;box-shadow:0 0 0 3px rgba(10,102,255,.18);outline:0}
+html.cn-moi label{color:#6e6e73}
+html.cn-moi table{font-size:15px}
+html.cn-moi th{font-size:12px;color:#6e6e73;background:transparent!important}
+html.cn-moi td{border-bottom:.5px solid #e5e5ea!important}
+html.cn-moi .note{color:#6e6e73}
+/* thanh dưới: luôn hiện (cả máy tính) */
+html.cn-moi #botbar{display:flex!important;position:fixed;left:0;right:0;bottom:0;z-index:60;background:rgba(249,249,251,.98);border-top:.5px solid #c6c6c8;
+  padding:4px max(6px,env(safe-area-inset-left)) calc(4px + env(safe-area-inset-bottom));justify-content:center}
+html.cn-moi #botbar button{flex:1;max-width:128px;min-height:54px;background:none;border:0;color:#8e8e93;font:500 11px -apple-system,"Inter",system-ui,sans-serif;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;position:relative;cursor:pointer}
+html.cn-moi #botbar button svg{width:25px;height:25px;stroke:currentColor;fill:none;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+html.cn-moi #botbar button.on{color:#0a66ff}
+html.cn-moi #botbar button.on svg{stroke-width:2.1}
+html.cn-moi #botbar button:active{transform:scale(.94)}
+html.cn-moi #botbar .dem{position:absolute;top:2px;left:calc(50% + 7px);min-width:17px;height:17px;padding:0 4px;border-radius:9px;background:#ff3b30;color:#fff;font:600 10.5px system-ui,sans-serif;display:flex;align-items:center;justify-content:center}
+html.cn-moi #botbar .dem.hide{display:none}
+html.cn-moi #botbar button.cham::after{content:"";position:absolute;top:6px;left:calc(50% + 9px);width:9px;height:9px;border-radius:50%;background:#ff3b30;border:2px solid #f9f9fb}
+html.cn-moi:not(.cn-tab-nhap) #ducbar{display:none!important}
+/* Xưởng: nút chuyển Bảng KPI / Chấm công */
+#cnSeg{max-width:640px;margin:0 auto;padding:4px 16px 0}
+#cnSeg.hide,html:not(.cn-moi) #cnSeg{display:none}
+.cn-seg{display:flex;background:#e3e3e8;border-radius:12px;padding:3px;gap:3px}
+.cn-seg button{flex:1;min-height:40px;border:0;border-radius:10px;background:none;color:#3c3c43;font:600 15px -apple-system,"Inter",system-ui,sans-serif;cursor:pointer}
+.cn-seg button.on{background:#fff;color:#000;box-shadow:0 1px 3px rgba(0,0,0,.12)}
+/* Bảng KPI xưởng: gọn – hạng, tên, KPI, loại; chỉ top 3 + người trên + mình */
+html.cn-moi #kpi_bang th:nth-child(n+3):nth-child(-n+6),html.cn-moi #kpi_bang td:nth-child(n+3):nth-child(-n+6),
+html.cn-moi #kpi_bang th:nth-child(9),html.cn-moi #kpi_bang td:nth-child(9){display:none}
+html.cn-moi #kpi_bang tr.cn-an{display:none}
+html.cn-moi #kpi_bang .cn-mo tr.cn-an{display:table-row}
+html.cn-moi #kpi_bang .cn-mo tr.cn-cach{display:none}
+html.cn-moi #kpi_bang tr.cn-toi td{background:#eef4ff!important}
+html.cn-moi #kpi_bang tr.cn-cach td{text-align:center;color:#aeaeb2;padding:0;line-height:1.2;letter-spacing:.2em}
+html.cn-moi .cn-xemhet{display:block;width:100%;margin-top:12px}
+/* Tôi */
+.cn-toi-dau{display:flex;gap:14px;align-items:center;margin:8px 0 6px}
+.cn-toi-dau .pdesc{margin:2px 0 0}
+.cn-av{flex:none;width:64px;height:64px;border-radius:50%;background:#5e5ce6;color:#fff;font:700 28px -apple-system,"Inter",system-ui,sans-serif;display:flex;align-items:center;justify-content:center}
+.cn-nhom{font-size:13px;font-weight:600;color:#6e6e73;margin:22px 4px 6px;letter-spacing:.02em}
+.cn-the{background:#fff;border-radius:16px;overflow:hidden}
+.cn-dong{display:flex;width:100%;min-height:58px;align-items:center;justify-content:space-between;gap:12px;padding:10px 16px;border:0;border-bottom:.5px solid #e5e5ea;background:none;text-align:left;font:400 16px -apple-system,"Inter",system-ui,sans-serif;color:#1c1c1e;cursor:pointer}
+.cn-dong:last-child{border-bottom:0}
+.cn-dong:active{background:#f2f2f7}
+.cn-dong small{display:block;color:#6e6e73;font-size:13px;margin-top:2px}
+.cn-dong b{color:#c7c7cc;font-size:24px;font-weight:400;line-height:1}
+.cn-cong{flex:none;position:relative;width:51px;height:31px;border-radius:16px;background:#e9e9ea;transition:background .2s}
+.cn-cong::after{content:"";position:absolute;top:2px;left:2px;width:27px;height:27px;border-radius:50%;background:#fff;box-shadow:0 2px 4px rgba(0,0,0,.2);transition:transform .2s}
+.cn-cong.on{background:#34c759}
+.cn-cong.on::after{transform:translateX(20px)}
+.btn.cn-thoat{display:block;width:100%;min-height:52px;margin-top:24px;background:#fff;color:#d70015}
+/* Chữ to */
+html.cn-moi.cn-to main,html.cn-moi.cn-to #cnSeg{zoom:1.15}
+@media (prefers-reduced-motion:reduce){.cn-cong,.cn-cong::after{transition:none}}
+</style>
 </head>
 <body>
 <div id="bgfx" aria-hidden="true"></div>
@@ -9636,7 +9715,7 @@ function hsGhiChuDong(r){
 }
 </script>
 <script>
-var KPI_BAN = '09/11/2026 09:24';
+var KPI_BAN = '09/11/2026 14:38';
 (function(){
   var cu = window.veNav;
   window.veNav = function(){
@@ -10743,7 +10822,7 @@ function nsnCapNhat(){ call('capNhatNgoaiSXTuFile',[],function(r){ if(!r||!r.ok)
 </script>
 <script>
 /* ===== 38. TĂNG TỐC ĐỢT 3 (08/11) – bộ đo tốc độ + mở nhanh bằng số lần trước (mã hóa) ===== */
-var TD_BUF=[], TD_T=null, DL_VER='bdbcb50a7f', DL_HAN=12*3600e3, DL_BO=['SoCCCD','DienThoai','DiaChi','SdtKhanCap','LuongCoBan','NamSinh','SoTaiKhoan','Email'];
+var TD_BUF=[], TD_T=null, DL_VER='e0b6d1b008', DL_HAN=12*3600e3, DL_BO=['SoCCCD','DienThoai','DiaChi','SdtKhanCap','LuongCoBan','NamSinh','SoTaiKhoan','Email'];
 function tdGhi_(f,ms,sv){ if(!(ms>=0)||!f) return; TD_BUF.push({f:String(f),ms:Math.round(ms),sv:(typeof sv==='number'?Math.round(sv):null)});
   if(TD_BUF.length>=15) tdGui_(); else if(!TD_T) TD_T=setTimeout(tdGui_,180000); }
 function tdGui_(){ if(TD_T){clearTimeout(TD_T);TD_T=null;} if(!TD_BUF.length||typeof TOKEN==='undefined'||!TOKEN) return;
@@ -11093,6 +11172,115 @@ function vCGay(){
     if(ok&&window.__cgDaNap){ cgVeTrang(); return; }
     $('main').innerHTML='<div class="ptitle">Cấu hình gậy</div><div class="alert a-bd">'+esc(msg||'Không tải được.')+' <button class="btn sm" type="button" onclick="vCGay()">Thử lại</button></div>';
   });
+}
+</script>
+<script>
+/* ===== 44. WEB CÔNG NHÂN KIỂU APPLE (09/11) =====
+   Chỉ tài khoản công nhân (ME.vaiTro==='CN'). Thanh dưới 5 nút Nhập · KPI · Cơm · Xưởng · Tôi.
+   Xưởng = Bảng KPI xưởng + Chấm công (nút chuyển trên đầu). Tôi = hồ sơ, kỹ năng, hướng dẫn, đổi mật khẩu, chữ to, Rhino, về giao diện cũ.
+   Bảng KPI xưởng: chỉ hiện top 3 + người ngay trên mình + mình; bấm "Xem cả xưởng" mới hiện hết.
+   Không đổi logic nhập / duyệt / tính KPI – chỉ đổi khung và cách trình bày. */
+var CN_KHOA_CU = 'kpi_cn_gd_cu', CN_KHOA_TO = 'kpi_cn_chu_to', CN_KHOA_XUONG = 'kpi_cn_xuong_tab';
+function cnNho(k, v) { try { if (v === undefined) return localStorage.getItem(k); if (v === null) localStorage.removeItem(k); else localStorage.setItem(k, v); } catch (e) { return null; } }
+function cnLaCN() { return !!(window.ME && ME.vaiTro === 'CN'); }
+function cnMoi() { return cnLaCN() && cnNho(CN_KHOA_CU) !== '1'; }
+var CN_NHOM = { cnnhap: 'cnnhap', kpica: 'kpica', com: 'com', kpicn: 'xuong', cccn: 'xuong', cnxuong: 'xuong', cntoi: 'toi', kyn: 'toi', hd: 'toi' };
+var CN_ICON = {
+  cnnhap: '<path d="M4 20h4l10.5-10.5a2.1 2.1 0 0 0-3-3L5 17v3z"/><path d="M13.5 7.5l3 3"/>',
+  kpica: '<circle cx="12" cy="12" r="8.5"/><path d="M12 12l4-3"/><path d="M12 6.5v1M17.5 12h-1M6.5 12h1"/>',
+  com: '<path d="M4 12h16a8 8 0 0 1-16 0z"/><path d="M8 4.5c0 1.5 1 1.5 1 3M12 3.5c0 1.5 1 1.5 1 3M16 4.5c0 1.5 1 1.5 1 3"/>',
+  xuong: '<path d="M3 20V10l5 3V10l5 3V6h6v14z"/><path d="M3 20h18"/>',
+  toi: '<circle cx="12" cy="8" r="3.8"/><path d="M4.5 20c.8-4 3.8-6 7.5-6s6.7 2 7.5 6"/>'
+};
+function cnNut(k, nhan, nhom) { return '<button type="button" data-k="' + k + '" data-n="' + nhom + '" onclick="go(\'' + k + '\')"><svg viewBox="0 0 24 24">' + CN_ICON[nhom] + '</svg><span class="nl">' + nhan + '</span><span class="dem hide"></span></button>'; }
+function cnThanhDuoi() {
+  var bb = $('botbar'); if (!bb) { bb = document.createElement('div'); bb.id = 'botbar'; $('app').appendChild(bb); }
+  bb.innerHTML = cnNut('cnnhap', 'Nhập', 'cnnhap') + cnNut('kpica', 'KPI', 'kpica') + cnNut('com', 'Cơm', 'com') + cnNut('cnxuong', 'Xưởng', 'xuong') + cnNut('cntoi', 'Tôi', 'toi');
+  cnDanhDau();
+}
+function cnDanhDau() {
+  var n = CN_NHOM[window.tabHienTai] || '', duc = $('ducbar'), coDuc = !!(duc && duc.textContent.replace(/\s+/g, ''));
+  document.documentElement.classList.toggle('cn-tab-nhap', n === 'cnnhap');   /* khung nhắc nhập (ducbar) chỉ hiện đủ ở tab Nhập */
+  Array.prototype.forEach.call(document.querySelectorAll('#botbar button'), function (b) { var k = b.getAttribute('data-n'); b.classList.toggle('on', k === n); if (k === 'cnnhap') b.classList.toggle('cham', coDuc); });
+  var seg = $('cnSeg'); if (seg) {
+    var o = n === 'xuong'; seg.classList.toggle('hide', !o);
+    if (o) seg.innerHTML = '<div class="cn-seg" role="tablist"><button type="button" role="tab" class="' + (tabHienTai === 'kpicn' ? 'on' : '') + '" onclick="go(\'kpicn\')">Bảng KPI</button><button type="button" role="tab" class="' + (tabHienTai === 'cccn' ? 'on' : '') + '" onclick="go(\'cccn\')">Chấm công</button></div>';
+  }
+}
+/* Bật / tắt giao diện mới theo tài khoản + lựa chọn trên máy */
+function cnApDung() {
+  var on = cnMoi(), H = document.documentElement;
+  H.classList.toggle('cn-moi', on); H.classList.toggle('cn-to', on && cnNho(CN_KHOA_TO) === '1');
+  var seg = $('cnSeg'); if (!seg && on) { seg = document.createElement('div'); seg.id = 'cnSeg'; seg.className = 'hide'; $('main').parentNode.insertBefore(seg, $('main')); }
+  var nm = $('cnNutMoi'); if (nm) nm.remove();
+  if (on) cnThanhDuoi();
+  else if (cnLaCN()) {   /* giao diện cũ: có nút quay lại giao diện mới */
+    var hr = document.querySelector('header .hr'); if (hr) { var b = document.createElement('button'); b.id = 'cnNutMoi'; b.className = 'btn sm pri'; b.textContent = 'Giao diện mới'; b.onclick = function () { cnNho(CN_KHOA_CU, null); cnApDung(); go('cnnhap'); }; hr.insertBefore(b, hr.firstChild); }
+  }
+}
+(function () {
+  var gVeNav = window.veNav;
+  window.veNav = function () { var r = gVeNav.apply(this, arguments); try { cnApDung(); } catch (e) {} return r; };
+  var gGo = window.go;
+  window.go = function (k) {
+    if (cnMoi()) {
+      if (k === 'cnxuong') k = cnNho(CN_KHOA_XUONG) === 'cccn' ? 'cccn' : 'kpicn';
+      if (k === 'kpicn' || k === 'cccn') cnNho(CN_KHOA_XUONG, k);
+      if (k === 'cntoi') { try { moNav(false); } catch (e) {} window.scrollTo(0, 0); tabHienTai = 'cntoi'; vCNToi(); cnDanhDau(); try { capNhatDucBar(); capNhatDem(); } catch (e) {} return; }
+    } else if (k === 'cntoi' || k === 'cnxuong') k = k === 'cntoi' ? 'kyn' : 'kpicn';
+    var r = gGo.apply(this, [k].concat([].slice.call(arguments, 1)));
+    if (cnMoi()) cnDanhDau();
+    return r;
+  };
+  var gDuc = window.capNhatDucBar;   /* khung nhắc đổi (vd vừa gửi xong) → cập nhật chấm đỏ ở nút Nhập */
+  window.capNhatDucBar = function () { var r = gDuc.apply(this, arguments); try { if (cnMoi()) cnDanhDau(); } catch (e) {} return r; };
+  /* Bảng KPI xưởng: top 3 + người ngay trên + mình */
+  var gBang = window.veBangKPI;
+  window.veBangKPI = function (r) { var x = gBang.apply(this, arguments); try { if (cnMoi()) cnLocBXH(); } catch (e) {} return x; };
+})();
+function cnLocBXH() {
+  var hop = $('kpi_bang'); if (!hop) return;
+  Array.prototype.forEach.call(hop.querySelectorAll('.card'), function (card) {
+    var tb = card.querySelector('tbody'); if (!tb) return;
+    var rows = [].slice.call(tb.rows), toi = -1;
+    rows.forEach(function (tr, i) { if (/\bBạn\b/.test((tr.cells[1] || {}).textContent || '')) { toi = i; tr.classList.add('cn-toi'); } });
+    var giu = {}; [0, 1, 2, toi - 1, toi].forEach(function (i) { if (i >= 0 && i < rows.length) giu[i] = 1; });
+    var an = 0, truoc = -1;
+    rows.forEach(function (tr, i) {
+      if (giu[i]) { if (truoc >= 0 && i - truoc > 1) { var g = document.createElement('tr'); g.className = 'cn-cach'; g.innerHTML = '<td colspan="' + tr.cells.length + '">⋯</td>'; tb.insertBefore(g, tr); } truoc = i; }
+      else { tr.classList.add('cn-an'); an++; }
+    });
+    if (an) {
+      var b = document.createElement('button'); b.type = 'button'; b.className = 'btn cn-xemhet';
+      b.textContent = 'Xem cả xưởng (' + rows.length + ' người)';
+      b.onclick = function () { var mo = card.classList.toggle('cn-mo'); b.textContent = mo ? 'Thu gọn' : 'Xem cả xưởng (' + rows.length + ' người)'; };
+      card.appendChild(b);
+    }
+  });
+}
+/* Màn "Tôi" */
+function vCNToi() {
+  var ten = (ME.ten || ME.hoTen || ''), chu = ten.trim().split(/\s+/).pop() || '?';
+  var dong = function (nhan, phu, fn, phai) { return '<button type="button" class="cn-dong" onclick="' + fn + '"><span>' + nhan + (phu ? '<small>' + phu + '</small>' : '') + '</span>' + (phai || '<b aria-hidden="true">›</b>') + '</button>'; };
+  var cong = function (id, on) { return '<span class="cn-cong' + (on ? ' on' : '') + '" id="' + id + '" aria-hidden="true"></span>'; };
+  var maiOn = (function () { try { return !maiTat(); } catch (e) { return true; } })();
+  $('main').innerHTML =
+    '<div class="cn-toi-dau"><div class="cn-av" aria-hidden="true">' + esc(chu.charAt(0).toUpperCase()) + '</div><div><div class="ptitle">' + esc(ten) + '</div><div class="pdesc">' + esc(ME.tenXuong ? 'Xưởng ' + ME.tenXuong.replace(/^Xưởng\s+/i, '') : '') + (ME.maNV ? ' · ' + esc(ME.maNV) : '') + '</div></div></div>' +
+    '<div class="cn-nhom">CỦA TÔI</div><div class="cn-the">' +
+      dong('Kỹ năng của tôi', 'Kỹ năng đã được xác nhận', "go('kyn')") +
+      dong('Hướng dẫn sử dụng', 'Cách nhập sản lượng, xem KPI, đăng ký cơm', "go('hd')") +
+      dong('Đổi mật khẩu', '', 'moDoiMK()') + '</div>' +
+    '<div class="cn-nhom">CÀI ĐẶT</div><div class="cn-the">' +
+      dong('Chữ to', 'Phóng to chữ và nút trên mọi trang', 'cnDoiChuTo()', cong('cnCongTo', cnNho(CN_KHOA_TO) === '1')) +
+      dong('Rhino nhắc nhở', 'Nhân vật Rhino ở góc màn hình', 'cnDoiRhino()', cong('cnCongMai', maiOn)) +
+      dong('Dùng giao diện cũ', 'Quay lại kiểu cũ; bấm "Giao diện mới" để trở lại', 'cnVeCu()') + '</div>' +
+    '<button type="button" class="btn dg cn-thoat" onclick="logout()">Đăng xuất</button>';
+}
+function cnDoiChuTo() { var on = cnNho(CN_KHOA_TO) !== '1'; cnNho(CN_KHOA_TO, on ? '1' : null); document.documentElement.classList.toggle('cn-to', on); var c = $('cnCongTo'); if (c) c.classList.toggle('on', on); }
+function cnDoiRhino() { try { maiDoi(); } catch (e) {} if (tabHienTai !== 'cntoi') go('cntoi'); }
+function cnVeCu() {
+  if (!confirm('Chuyển về giao diện cũ?\nMuốn dùng lại giao diện mới: bấm nút "Giao diện mới" ở đầu trang.')) return;
+  cnNho(CN_KHOA_CU, '1'); cnApDung(); try { veNav(); } catch (e) {} go('cnnhap');
 }
 </script>
 </body>

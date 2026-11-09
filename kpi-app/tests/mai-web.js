@@ -10,7 +10,8 @@ async function vao(b, tk, o = {}) {
   const ctx = await b.newContext(Object.assign({ viewport: o.dt ? { width: 390, height: 844 } : { width: 1440, height: 900 } }, o.dt ? { isMobile: true, hasTouch: true } : {}, o.giam ? { reducedMotion: 'reduce' } : {}, { timezoneId: 'Asia/Ho_Chi_Minh', locale: 'vi-VN' }));
   const p = await ctx.newPage(); p.loi = []; p.on('pageerror', e => p.loi.push(e.message));
   if (o.gio) await p.clock.install({ time: new Date(o.gio) });
-  await p.goto(F); await p.waitForSelector('#xtGoiY'); await p.click(`#xtGoiY button:has-text("${tk}")`);
+  await p.goto(F); await p.waitForSelector('#xtGoiY'); await p.evaluate(() => { try { localStorage.setItem('kpi_cn_gd_cu', '1'); } catch (e) {} });   // 09/11: thử nút Rhino ở đầu trang (giao diện cũ); giao diện mới kiểm ở cn-apple-web.js
+  await p.click(`#xtGoiY button:has-text("${tk}")`);
   await p.waitForSelector('#app', { state: 'visible', timeout: 30000 }); await p.waitForTimeout(o.gio ? 0 : 1800); return p;
 }
 const goc = p => p.evaluate(() => { const g = document.getElementById('maiGoc'); return g ? { hien: g.classList.contains('hien'), chu: g.textContent } : { hien: false, chu: '' }; });
