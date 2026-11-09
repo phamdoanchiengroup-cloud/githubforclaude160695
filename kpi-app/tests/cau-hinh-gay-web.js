@@ -32,8 +32,8 @@ const ra = async p => { await p.waitForTimeout(300); };   // không gọi logout
     ok(s.n > 40 && s.nh[0] === 'Gậy (đủ bộ)' && s.kieu[0] === 'Gậy đánh' && s.mat, 'danh sách nhóm theo loại → kiểu (đánh / nhảy / phá) → chất liệu, nhãn TÀI LIỆU MẬT', s);
     await p.evaluate(() => cgMo('RETRO')); await p.waitForSelector('#cgCt svg', { timeout: 20000 });
     s = await p.evaluate(() => ({ svg: document.querySelectorAll('#cgCt svg.cg-dung').length, mau: /chưa có thông số đo/.test(document.querySelector('#cgCt').textContent), kt: document.querySelector('#cgCt .cg-bao.vang, #cgCt .cg-bao.xanh, #cgCt .cg-bao.do') ? 1 : 0,
-      tong: (document.querySelector('#cgCt').textContent.match(/1\.?473,2 mm/) || [''])[0], bang: document.querySelectorAll('#cgCt .cg-bang tbody tr').length, nut: [...document.querySelectorAll('#cgCt .cg-nut button')].map(b => b.textContent) }));
-    ok(s.svg === 5 && s.mau && s.tong && s.bang >= 14, 'Retro chưa đo: hiện mẫu 58 in (1.473,2 mm), 5 hình dựng đứng (ngọn, chuôi, chi tiết A / C / D), bảng chi tiết', s);
+      tong: (document.querySelector('#cgCt').textContent.match(/1\.?481,7 mm/) || [''])[0], bang: document.querySelectorAll('#cgCt .cg-bang tbody tr').length, nut: [...document.querySelectorAll('#cgCt .cg-nut button')].map(b => b.textContent) }));
+    ok(s.svg === 5 && s.mau && s.tong && s.bang >= 14, 'Retro chưa đo: hiện mẫu theo bản vẽ nhà máy (ngọn 735 + chuôi 736 = 1.481,7 mm), 5 hình dựng đứng (ngọn, chuôi, chi tiết A / C / D), bảng chi tiết', s);
     ok(s.nut.some(t => /Sửa thông số/.test(t)) && s.nut.some(t => /Tải PDF/.test(t)), 'C077 có nút Sửa thông số + Tải PDF', s.nut);
     // kiểm tra ghép mặc định: mẫu có bậc cap 31,75 / sleeve 31,2 → cảnh báo vàng
     const cb = await p.evaluate(() => { const x = document.querySelector('#cgCt').textContent; return { kt: [...document.querySelectorAll('#cgCt .cg-bao li')].map(l => l.textContent), co: ['Khối giữ pin', 'Ống quả cân', 'quả cân Đồng thau', 'Lõi Foam xanh nhạt', 'Lõi Foam xanh đậm', 'Thanh nối', 'Inlay', 'Veneer', 'Ren cắm bumper', 'ỐNG QUẢ CÂN'].filter(t => !x.includes(t)) }; });

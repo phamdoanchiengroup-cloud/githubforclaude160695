@@ -64,3 +64,9 @@ Liên quan: [[KPI Quy trình sản xuất]] · [[KPI Bảo mật và vận hành
 - Vẽ: `cgKhopGiua` (ống ren POM ở đáy khúc trên + pin nối thép cắm từ đuôi rời + vạch tháo rời) trên hình chuôi + kích thước KHÚC TRÊN / ĐUÔI RỜI bên trái; chi tiết mới **K · KHỚP GIỮA** (`cgCT(t,'B')`, lưới 4 cột khi có); khối đối trọng trong `cgTrongCb`. Bảng chi tiết thêm nhóm KHỚP GIỮA (K1–K3) + dòng khối đối trọng; thông số ghi "3 khúc: trên + đuôi".
 - Kiểm tra: đuôi rời hợp lệ, pin < ống ren, ống ren lọt lòng vỏ, ống quả cân + pin chôn ≤ đuôi rời, thanh nối ≠ 0 ở gậy 3 khúc (vàng), khối đối trọng chạm ống quả cân / khối pin / khớp giữa. Bỏ cảnh báo "ngọn – chuôi chênh nhiều" cho gậy 3 khúc.
 - Kiểm thử: cau-hinh-gay 50/50, cau-hinh-gay-web 46/46 (thêm TKNHAY 390-100, EVOVAL 380-250, RETRO không khớp giữa). PDF EVOVAL 2 trang có đủ A · C · K · D.
+
+## Chuôi 2 mảnh vẽ tách rời + kích thước mẫu theo bản vẽ nhà máy (09/11)
+- Chủ dự án: "chuôi 2 khúc thì vẽ rời 2 khúc ra, đừng vẽ dính liền"; "xem lại kích thước toàn bộ phần ngọn".
+- Hình chuôi gậy 3 khúc: vẽ 2 lần cắt theo khớp giữa (clipPath `cgKT/cgKD` + số `CG_SO`), mảnh đuôi rời dời xuống G px (≥ 54, đủ chỗ pin thò); **pin nối đi cùng đuôi rời** (`cgPinNoi`, cả hình ngoài + mặt cắt), khúc trên còn lỗ ống ren; chữ "⇅ tháo rời / khớp giữa"; nhãn + kích thước phía dưới dời theo (`Y` mới), KHÚC TRÊN / ĐUÔI RỜI tách 2 đoạn. `cgKhopGiua(..., roi)`; chi tiết K vẫn vẽ ghép để thấy pin cắm vào ống ren.
+- Mẫu theo bản vẽ nhà máy: **ngọn 735 từ mặt joint tới hết ferrule** (ống 719 + collar 12 + ferrule 4; tổng hiển thị 745,7 gồm tip 9,5 + pad 1,2, có thêm đường kích thước "735 KHÔNG TÍNH TIP + PAD"); **chuôi 2 khúc 736** (sleeve 117). Gậy nhảy / phá nhảy: Ø ngọn theo bảng "Nhảy full carbon" (joint 21,37 → 16,14 cách đầu 335 → đầu 13,87), collar + forearm đầu Ø21,37 cho khớp joint. Gậy đánh giữ Ø mẫu cũ (bản vẽ ngọn 735 không ghi Ø).
+- Kiểm thử: cau-hinh-gay 50/50, cau-hinh-gay-web 46/46 (tổng mẫu 1.481,7 mm).
