@@ -7674,7 +7674,7 @@ function danhSachVanPhong(token) {
   ds.sort(function(a, b) { return (thuTu[a.vaiTro] - thuTu[b.vaiTro]) || (a.HoTen < b.HoTen ? -1 : 1); });
   return sach_({ ok: true, ds: ds, muc: HS_MUC });
 }
-var KPI_BAN_MAY = '14/11/2026 11:26';   // giờ dựng Code.gs (22/10)
+var KPI_BAN_MAY = '14/11/2026 13:09';   // giờ dựng Code.gs (22/10)
 /* =====================================================================
    KỸ NĂNG (22/10, chủ dự án nhờ thiết kế + tham khảo chuyên gia nhân sự / đào tạo)
    - Danh mục: trưởng / phó phòng đề xuất kỹ năng của xưởng (tên, mô tả, tiêu chí đạt, công đoạn liên quan)
@@ -8052,11 +8052,13 @@ var QT_CAI_DAT = { gioCoMat: 8, hieuSuat: 0.85, mucTieu: 137, soNgay: 30, slThan
 var qtCo_ = function(o, k) { return Object.prototype.hasOwnProperty.call(o, k); };   // không nhận tên đặc biệt (__proto__, constructor…)
 var QT_XUONG_NHAP = [
   ['PHOICB', 'PHOITHO', 'Phôi 60 (ngọn + chuôi)'], ['PHOITHO', 'NGONTARO', 'Phôi ngọn'], ['PHOITHO', 'SON', 'Phôi chuôi, nối, gậy 1 khúc (60…)'],
-  ['NGONTARO', 'NGONTIP', 'Ngọn đã taro ren (Ngọn…)'], ['CNC', 'NGONTIP', 'Típ, phíp (CNCTip, CNCPhip)'], ['SON', 'INUV', 'Chuôi / nối đã sơn (S…)'],
+  ['NGONTARO', 'HT', 'Ngọn đã taro ren (Ngọn…)'], ['CNC', 'NGONTIP', 'Típ, phíp (CNCTip, CNCPhip)'], ['SON', 'INUV', 'Chuôi / nối đã sơn (S…)'],
   ['INUV', 'HT', 'Chuôi / nối đã in UV (UV…)'], ['NGONTIP', 'HT', 'Ngọn đã làm đầu'], ['HT', 'DG', 'Gậy, ngọn, nối hoàn thiện (HT…)'],
-  ['NGONTARO', 'PHOITHO', 'POM các loại (chuôi 87, ngọn 85, 65/75, 30, đáy chuôi)'], ['NGONTIP', 'DG', 'Ngọn bán lẻ (đi thẳng đóng gói)'], ['CNC', 'SON', 'Đầu gậy lết'], ['CNC', 'DG', 'Tip bán lẻ']];   // 01/11: nhánh POM + ngọn lẻ (chủ dự án)
+  ['NGONTARO', 'PHOITHO', 'POM các loại (chuôi 87, ngọn 85, 65/75, 30, đáy chuôi)'], ['NGONTIP', 'DG', 'Ngọn bán lẻ (đi thẳng đóng gói)'], ['CNC', 'SON', 'Đầu gậy lết'], ['CNC', 'DG', 'Tip bán lẻ'], ['HT', 'NGONTIP', 'Ngọn chờ làm đầu (Hoàn thiện giao)']];   // 14/11 (chủ dự án): ngọn Taro → Hoàn thiện → Ngọn Tip → trả Hoàn thiện → Đóng gói   // 01/11: nhánh POM + ngọn lẻ (chủ dự án)
 /* Luồng chủ dự án báo thêm sau khi có thể đã lưu: [từ, đến, BTP, ngày báo] – bổ sung vào bản lưu cũ hơn ngày báo */
-var QT_XUONG_THEM = [['NGONTARO', 'PHOITHO', QT_XUONG_NHAP[9][2], '2026-11-01'], ['NGONTIP', 'DG', QT_XUONG_NHAP[10][2], '2026-11-01'], ['CNC', 'SON', 'Đầu gậy lết', '2026-11-02'], ['CNC', 'DG', 'Tip bán lẻ', '2026-11-03']];
+var QT_XUONG_THEM = [['NGONTARO', 'PHOITHO', QT_XUONG_NHAP[9][2], '2026-11-01'], ['NGONTIP', 'DG', QT_XUONG_NHAP[10][2], '2026-11-01'], ['CNC', 'SON', 'Đầu gậy lết', '2026-11-02'], ['CNC', 'DG', 'Tip bán lẻ', '2026-11-03'], ['NGONTARO', 'HT', 'Ngọn đã taro ren (Ngọn…)', '2026-11-14'], ['HT', 'NGONTIP', 'Ngọn chờ làm đầu (Hoàn thiện giao)', '2026-11-14']];
+/* 14/11: luồng chủ dự án bỏ – gỡ khỏi bản đã lưu trước ngày báo */
+var QT_XUONG_BO = [['NGONTARO', 'NGONTIP', '2026-11-14']];
 /* Nháp: MaCD -> [nhánh, bước]. Công đoạn mới không có ở đây -> "Chưa xếp". */
 var QT_NHAP = {
   // Phôi Carbon: chuẩn bị vải -> tỉa -> cuốn -> màng nilong -> rút khuôn -> kiểm / cắt / tiện / chuốt
@@ -8217,7 +8219,8 @@ function qtDocQT_(cds) {
     xuong = QT_XUONG_NHAP.map(function(a) { return { Tu: a[0], Den: a[1], BTP: a[2], GhiChu: '' }; });
   else { var luu = qtLuongCu_(dong); QT_XUONG_THEM.forEach(function(a) { if (luu >= a[3]) return;   // luồng chủ dự án báo thêm sau khi đã lưu (01/11): bổ sung nếu bản đã lưu chưa có
     if (!xuong.some(function(l) { return l.Tu === a[0] && l.Den === a[1]; })) xuong.push({ Tu: a[0], Den: a[1], BTP: a[2], GhiChu: 'Thêm ' + a[3].slice(8) + '/' + a[3].slice(5, 7) });
-  }); }
+  });
+  QT_XUONG_BO.forEach(function(a) { if (luu >= a[2]) return; xuong = xuong.filter(function(l) { return !(l.Tu === a[0] && l.Den === a[1]); }); }); }
   return { cd: cd, xuong: xuong, caiDat: cai, nhap: nhap, xuat: xuat, luot: luot };
 }
 
@@ -8344,7 +8347,9 @@ function qtKiemGhi_(me, o, chiKiem, ghiChuLog) {
   });
   if (loi) return ({ ok: false, msg: loi });
   // luồng cấp vật liệu (POM Ngọn Taro → Phôi Thô) chạy ngược chiều sản phẩm: không tính khi dò vòng lặp
-  var cX = {}; xl.forEach(function(x) { if (!qtLuongCap_(x)) (cX[x.Den] = cX[x.Den] || []).push(x.Tu); });
+  // 14/11: ngọn Hoàn thiện → Ngọn Tip → TRẢ LẠI Hoàn thiện là luồng gia công trả về (có chủ đích), không tính là vòng lặp
+  var traVe = { 'NGONTIP>HT': 1 };
+  var cX = {}; xl.forEach(function(x) { if (!qtLuongCap_(x) && !traVe[x.Tu + '>' + x.Den]) (cX[x.Den] = cX[x.Den] || []).push(x.Tu); });
   if (qtCoVong_(cX)) return ({ ok: false, msg: 'Luồng giữa các xưởng bị vòng lặp: ' + qtCoVong_(cX) + '.' });
   var xt = {};
   Object.keys(o.xuat || {}).forEach(function(x) {
@@ -8520,7 +8525,7 @@ function apCachDem(token, o) {
    ĐƠN HÀNG → XƯỞNG (31/10, chủ dự án duyệt): đọc Sheet "Trạng thái đơn hàng" (CHỈ ĐỌC), phân loại từng SKU theo
    4 thông số chủ dự án chốt – LOẠI CHUÔI, LOẠI NGỌN, LOẠI TIP, LOẠI REN – rồi tách việc còn lại về từng xưởng:
      chuôi: Phôi Carbon → Phôi Thô → Sơn → In UV (nhận theo mã bán thành phẩm, giao Hoàn thiện theo SKU)
-     ngọn : Phôi Carbon → Phôi Thô → Ngọn Taro → Ngọn Tip (CNC cấp típ / phíp)
+     ngọn : Phôi Carbon → Phôi Thô → Ngọn Taro → Hoàn thiện → Ngọn Tip (CNC cấp típ / phíp) → trả Hoàn thiện → Đóng gói (14/11)
      gậy  : Hoàn thiện → Đóng gói;  ngọn bán lẻ: Ngọn Tip → thẳng Đóng gói.
    Phân loại 3 lớp (chuyên gia vận hành 31/10):
      1. loại hàng (gậy / ngọn lẻ / chuôi lẻ / nối / phụ kiện)
@@ -8539,16 +8544,16 @@ var PL_COT = ['TenChuan', 'TenHang', 'LoaiHang', 'Dong', 'Chuoi', 'Ngon', 'Tip',
 var DH_CHANG = [['PHOI', /^PHÔI CỦA/], ['SON', /^SƠN CỦA/], ['TARO', /^TARO CỦA/], ['TIP', /LÀM ĐẦU/], ['UV', /^UV CỦA/], ['HT', /^HOÀN THIỆN CỦA/], ['DG', /TỔNG CỘNG HÀNG ĐG|ĐÓNG GÓI CỦA/]];
 /* 14/11 (chủ dự án chốt): nhập giao/nhận ngay trên dòng đơn như Sheet. 10 cột phụ ở cuối dòng (sau vùng ngày):
    ĐANG Ở BP, BP KẾ TIẾP + 7 cột "XN NHẬN <bộ phận>" (bộ phận sau bấm nhận, ghi SL · tài khoản · lúc) + XN HẸN (bộ phận sau đồng ý / không kịp với ngày hẹn). */
-var DH_BP = [['PHOI', 'Phôi'], ['SON', 'Sơn'], ['TARO', 'Taro'], ['TIP', 'Làm đầu'], ['UV', 'UV'], ['HT', 'Hoàn thiện'], ['DG', 'Đóng gói']];
+var DH_BP = [['PHOI', 'Phôi'], ['SON', 'Sơn'], ['TARO', 'Taro'], ['UV', 'UV'], ['HT', 'Hoàn thiện'], ['TIP', 'Làm đầu'], ['DG', 'Đóng gói']];   // 14/11: thứ tự theo luồng mới – ngọn Taro → Hoàn thiện → Làm đầu → trả Hoàn thiện → Đóng gói
 var DH_BP_TEN = { PHOI: 'Phôi', SON: 'Sơn', TARO: 'Taro', TIP: 'Làm đầu', UV: 'UV', HT: 'Hoàn thiện', DG: 'Đóng gói' };
 var DH_TD_COT = ['ĐANG Ở BP', 'BP KẾ TIẾP'].concat(DH_BP.map(function(b) { return 'XN NHẬN ' + b[1].toUpperCase(); })).concat(['XN HẸN']);   // 14/11 (Claude): XN HẸN = bộ phận sau đồng ý / không kịp với ngày hẹn của bộ phận trước
 /* 14/11 (chủ dự án chốt): mỗi DÒNG Sheet = một MÃ SẢN PHẨM, cấu hình bán thành phẩm khác nhau nên SL / hẹn nhập theo mã đó,
    không nhập theo tổng đơn. Mặc định lấy từ luồng xưởng đã duyệt 31/10 (xem chú thích đầu mục ĐƠN HÀNG → XƯỞNG):
      chuôi: Phôi → Sơn → UV → Hoàn thiện → Đóng gói
-     ngọn : Phôi → Taro → Làm đầu → Đóng gói
+     ngọn : Phôi → Taro → Hoàn thiện → Làm đầu → (trả Hoàn thiện) → Đóng gói   (14/11)
      gậy  : cả 2 nhánh nên đủ 7 bộ phận;  nối / phụ kiện: không qua xưởng
    Chủ dự án sửa riêng cho từng mã ở sheet BTPTheoSKU (màn Đơn hàng → dòng → Cấu hình bán thành phẩm). */
-var DH_BTP_CD = { GAY: ['PHOI', 'SON', 'TARO', 'TIP', 'UV', 'HT', 'DG'], CHUOI: ['PHOI', 'SON', 'UV', 'HT', 'DG'], NGON: ['PHOI', 'TARO', 'TIP', 'DG'], NOI: [], PK: [] };
+var DH_BTP_CD = { GAY: ['PHOI', 'SON', 'TARO', 'UV', 'HT', 'TIP', 'DG'], CHUOI: ['PHOI', 'SON', 'UV', 'HT', 'DG'], NGON: ['PHOI', 'TARO', 'HT', 'TIP', 'DG'], NOI: [], PK: [] };   // 14/11: ngọn qua Hoàn thiện trước và sau Làm đầu
 var DH_BTP_SHEET = 'BTPTheoSKU', DH_BTP_COT = ['TenChuan', 'TenHang', 'BTP', 'NguoiSua', 'ThoiDiem'];
 
 var PL_LOAI = { GAY: 'Gậy (ngọn + chuôi)', NGON: 'Ngọn bán lẻ', CHUOI: 'Chuôi bán lẻ', NOI: 'Tay nối', PK: 'Phụ kiện / không sản xuất' };
@@ -9259,6 +9264,7 @@ function dhXnHenGhi_(o) {
 /* bộ phận nhận hàng ngay sau T theo cấu hình bán thành phẩm của mã; T ngoài cấu hình -> bộ phận kế tiếp đang ghi trên dòng */
 function dhBPSau_(ten, T, H) {
   var ds = dhBTP_(ten, plPhanLoai_(ten, ''), dhBTPDoc_()).ds, i = ds.indexOf(T);
+  if (T === 'TIP' && ds.indexOf('HT') >= 0) return 'HT';   // 14/11: Làm đầu xong trả lại Hoàn thiện
   if (i >= 0) return ds[i + 1] || '';
   return (H && H.o === T && H.k) || '';
 }
@@ -10257,8 +10263,8 @@ var DP_DE_XUAT = [
 ];
 /* Dòng chảy: [xưởng trước, phần, xưởng sau, phần, nhãn] – phần 'c' chuôi, 'n' ngọn, '' cả xưởng */
 var DP_CAP = [['PHOICB', 'c', 'PHOITHO', 'c', 'Phôi chuôi'], ['PHOICB', 'n', 'PHOITHO', 'n', 'Phôi ngọn'], ['PHOITHO', 'c', 'SON', '', 'Chuôi chờ sơn'],
-  ['SON', '', 'INUV', '', 'Chuôi chờ in UV'], ['PHOITHO', 'n', 'NGONTARO', 'n', 'Ngọn chờ taro'], ['NGONTARO', 'n', 'NGONTIP', '', 'Ngọn chờ làm tip']];   // Hoàn thiện (đếm khúc) → Đóng gói (đếm sản phẩm) khác đơn vị: không so
-var DP_CHUOI = [['Chuỗi chuôi', [['PHOICB', 'c'], ['PHOITHO', 'c'], ['SON', ''], ['INUV', '']]], ['Chuỗi ngọn', [['PHOICB', 'n'], ['PHOITHO', 'n'], ['NGONTARO', 'n'], ['NGONTIP', '']]]];
+  ['SON', '', 'INUV', '', 'Chuôi chờ in UV'], ['PHOITHO', 'n', 'NGONTARO', 'n', 'Ngọn chờ taro'], ['NGONTARO', 'n', 'HT', 'n', 'Ngọn chờ hoàn thiện (trước làm đầu)']];   // 14/11: ngọn Taro → Hoàn thiện → Ngọn Tip → trả HT   // Hoàn thiện (đếm khúc) → Đóng gói (đếm sản phẩm) khác đơn vị: không so
+var DP_CHUOI = [['Chuỗi chuôi', [['PHOICB', 'c'], ['PHOITHO', 'c'], ['SON', ''], ['INUV', '']]], ['Chuỗi ngọn', [['PHOICB', 'n'], ['PHOITHO', 'n'], ['NGONTARO', 'n'], ['HT', 'n'], ['NGONTIP', '']]]];   // 14/11: ngọn qua Hoàn thiện trước Ngọn Tip
 
 /* Đối chiếu ghi thiếu (08/11 chủ dự án: số Ngọn Taro đúng, ngọn GF qua Phôi Thô nhưng Phôi Thô ghi thiếu):
    [nhãn, mã xưởng trước giao, mã xưởng sau nhận, xưởng cần nhắc, chặng dòng chảy liên quan] – xưởng sau làm > 1,3 lần xưởng trước giao (và hơn 20/ngày) trong 14 ngày -> báo */
@@ -10353,7 +10359,7 @@ function dpTinh_() {
     tuongLai: tuongLai.length, tuongLaiDs: tuongLai.slice(0, 6).map(function(t) { t.x = tenX[t.x] || t.x; return t; }), ngay6: ngay6 };
   /* ---- 3. Dòng chảy + nút cổ chai ---- */
   var ra = function(X, ph, ngs) { var ma = xuat[X].filter(function(m) { return !ph || phan(X, m) === ph; }); if (X === 'NGONTARO' && !ph) ma = ma.filter(function(m) { return phan(X, m) !== ''; }); return tb(ma, ngs, luot[X]); };
-  var tenP = function(X, ph) { return (tenX[X] || X) + (ph === 'c' && (X === 'PHOICB' || X === 'PHOITHO') ? ' (chuôi)' : ph === 'n' && (X === 'PHOICB' || X === 'PHOITHO') ? ' (ngọn)' : ''); };
+  var tenP = function(X, ph) { return (tenX[X] || X) + (ph === 'c' && (X === 'PHOICB' || X === 'PHOITHO') ? ' (chuôi)' : ph === 'n' && (X === 'PHOICB' || X === 'PHOITHO' || X === 'HT') ? ' (ngọn)' : ''); };
   var cap = DP_CAP.map(function(c) {
     var a = ra(c[0], c[1], ngay14), b = ra(c[2], c[3], ngay14), ch = a - b, tich = ch * ngay14.length;
     var tt = !(a > 0) || !(b > 0) ? 'thieu' : Math.abs(ch) > 0.4 * Math.max(a, b) ? 'lech' : Math.abs(ch) <= 0.1 * b ? 'can' : ch > 0 ? 'don' : 'hut';   // lệch > 40%: nhiều khả năng do cách đếm, không kết luận dồn / hụt
@@ -10388,7 +10394,7 @@ function apDeXuatDem(token) {
 
 /* ---- 2) Việc của xưởng: dòng đơn còn thiếu có liên quan tới xưởng (máy khách tính phần còn lại ở xưởng bằng đúng hàm của Việc theo xưởng) ---- */
 var DP_LOAI_XUONG = { PHOICB: { GAY: 1, NGON: 1, CHUOI: 1 }, PHOITHO: { GAY: 1, NGON: 1, CHUOI: 1, NOI: 1 }, SON: { GAY: 1, CHUOI: 1, NOI: 1 }, INUV: { GAY: 1, CHUOI: 1, NOI: 1 },
-  NGONTARO: { GAY: 1, NGON: 1 }, NGONTIP: { GAY: 1, NGON: 1 }, CNC: { GAY: 1, NGON: 1 }, HT: { GAY: 1, CHUOI: 1, NOI: 1 }, DG: { GAY: 1, NGON: 1, CHUOI: 1, NOI: 1 } };
+  NGONTARO: { GAY: 1, NGON: 1 }, NGONTIP: { GAY: 1, NGON: 1 }, CNC: { GAY: 1, NGON: 1 }, HT: { GAY: 1, NGON: 1, CHUOI: 1, NOI: 1 }, DG: { GAY: 1, NGON: 1, CHUOI: 1, NOI: 1 } };
 function layViecXuongToi(token) {
   var me = docPhien_(token);
   if (!me) return sach_({ ok: false, hetHan: true, msg: 'Phiên đăng nhập đã hết hạn.' });

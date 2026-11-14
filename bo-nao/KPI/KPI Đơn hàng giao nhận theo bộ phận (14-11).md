@@ -31,3 +31,9 @@ Liên quan: [[KPI Quy trình sản xuất]] · [[KPI Điều phối sản xuất
 - **Nhập theo bộ phận ở bảng nổi** (`dhBNoi`, Esc / ✕ / bấm ngoài để đóng), vẫn nhập **theo từng mã sản phẩm**.
 - **Tiêu đề bảng đứng yên**: khung bảng cao vừa màn hình dưới thanh lọc dính (`--dhnav` đo bằng JS), tiêu đề 2 tầng cao cố định 36px.
 - Kiểm thử: `quy-trinh-web.js` còn 5 lỗi cũ, `cn-apple-web.js` 30/30; TP không thấy nút bản vẽ.
+
+## 14/11 khuya – gọn bảng nổi + màu đơn + đổi tên (chủ dự án)
+- Tên mục **"Trạng thái đơn hàng"** (thay "Bảng đơn như Sheet"); **bỏ mục "Chi tiết từng dòng"** khỏi menu (hàm `dhVeChiTiet` còn, kiểm thử còn gọi).
+- **Bảng nổi gọn** (`dhBForm` viết lại): tên mã SP, dòng tiến độ từng bộ phận `Phôi 30/30 · Sơn 15/30 (hẹn …)`, ô **đã giao (cộng dồn) / đặt** + **hẹn ngày giao đủ** + nút Lưu; xác nhận hẹn của bộ phận trước (`dhBSau`, Làm đầu → trả Hoàn thiện); cấu hình BTP của mã gập trong `<details>` chỉ chủ sở hữu. Bỏ: chọn bộ phận kế tiếp, xác nhận nhận hàng, bảng công đoạn.
+- Ô bảng **Đã giao** hiện `15/30` (xanh khi đủ). Mỗi đơn **1 màu xoay vòng trắng / be / vàng nhạt / xanh nhạt** (`dh-d0..3`), chữ đen; bảng sáng dùng chung **cả nền tối lẫn nền sáng** (`navy.css` đổi `html[data-gd="toi"]` → `html:not(.cn-moi)` cho khối bảng).
+- Kiểm thử: `don-hang.js` 135/146 (11 cũ), `quy-trinh-web.js` 3 lỗi cũ, `quy-trinh.js` 71/76 (5 cũ), `dieu-phoi.js` 27/27, `cn-apple-web.js` 30/30.

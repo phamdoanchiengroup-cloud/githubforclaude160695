@@ -131,31 +131,38 @@ html[data-gd="toi"]:not(.cn-moi) .dh-seg button.on,html[data-gd="toi"]:not(.cn-m
 }
 @media (min-width:901px) and (prefers-reduced-motion:reduce){html:not(.cn-moi) #nav{transition:none}}
 
-/* ===== 14/11 tối (chủ dự án chốt): BẢNG ĐƠN NỀN IVORY SÁNG, CHỮ ĐEN – tương phản cao, mỗi đơn một dải màu như Sheet ===== */
-html[data-gd="toi"]:not(.cn-moi) .dh-shw{background:#fbf7ee;border:1px solid #1ea7ff;border-radius:12px;box-shadow:0 0 30px -16px rgba(30,167,255,.9)}
-html[data-gd="toi"]:not(.cn-moi) .dh-sh{font-size:14px}
-html[data-gd="toi"]:not(.cn-moi) .dh-sh th,html[data-gd="toi"]:not(.cn-moi) .dh-sh td{padding:7px 10px;border-right:1px solid #e2d8c3;border-bottom:1px solid #e2d8c3}
-html[data-gd="toi"]:not(.cn-moi) .dh-sh td{background:#fbf7ee;color:#14161a}
-html[data-gd="toi"]:not(.cn-moi) .dh-sh tr.dh-d1 td{background:#e6f2fd}
-html[data-gd="toi"]:not(.cn-moi) .dh-sh tr.dh-dmoi td{border-top:2px solid #9cc9ee}
-html[data-gd="toi"]:not(.cn-moi) .dh-sh tbody tr:hover td{background:#fff0bf}
-html[data-gd="toi"]:not(.cn-moi) .dh-sh tr.cua td{box-shadow:inset 3px 0 0 #1ea7ff}
-html[data-gd="toi"]:not(.cn-moi) .dh-sh tr.xong td{opacity:1;color:#5c5649}
-html[data-gd="toi"]:not(.cn-moi) .dh-sh thead th,html[data-gd="toi"]:not(.cn-moi) .dh-sh thead .c1,html[data-gd="toi"]:not(.cn-moi) .dh-sh thead .c2{background:#0b1d33!important;color:#f4ecda!important;font-size:11.5px;font-weight:700;border-color:#1b3657;border-bottom:2px solid #1ea7ff}
-html[data-gd="toi"]:not(.cn-moi) .dh-sh thead tr:nth-child(2) th{color:#5cc4ff!important}
-html[data-gd="toi"]:not(.cn-moi) .dh-sh td.qt-so{color:#000;font-weight:700;font-size:14.5px}
-html[data-gd="toi"]:not(.cn-moi) .dh-sh td.qt-so b{color:#c2410c}
-html[data-gd="toi"]:not(.cn-moi) .dh-sh .c1 a{color:#0b5fa5;font-weight:800;text-decoration:none}
-html[data-gd="toi"]:not(.cn-moi) .dh-sh .c2{font-weight:600;color:#000}
-html[data-gd="toi"]:not(.cn-moi) .dh-sh td.co{color:#0b6fc0;font-weight:700}
-html[data-gd="toi"]:not(.cn-moi) .dh-sh .dh-bv{border-color:#0b6fc0;color:#0b6fc0}
-html[data-gd="toi"]:not(.cn-moi) .dh-sh .dh-bkenh{color:#6b6352}
-html[data-gd="toi"]:not(.cn-moi) .dh-sh .dh-bpo{background:#1ea7ff;color:#04121f;font-weight:800}
-html[data-gd="toi"]:not(.cn-moi) .dh-sh .dh-bk{color:#33302a}
-html[data-gd="toi"]:not(.cn-moi) .dh-sh .dh-bxn{color:#067a4d}
-html[data-gd="toi"]:not(.cn-moi) .dh-sh .pdesc{color:#6b6352}
-html[data-gd="toi"]:not(.cn-moi) .dh-sh .dh-ok{color:#067a4d}
-html[data-gd="toi"]:not(.cn-moi) .dh-sh .dh-ko{color:#c8102e}
-html[data-gd="toi"]:not(.cn-moi) .dh-sh .dh-cho{color:#b45309}
-html[data-gd="toi"]:not(.cn-moi) .dh-sh .btn{background:#0b1d33;color:#f4ecda;border-color:#0b1d33}
+/* ===== 14/11 tối (chủ dự án chốt): BẢNG ĐƠN NỀN SÁNG, CHỮ ĐEN cho CẢ nền tối lẫn nền sáng; mỗi đơn 1 màu trắng / be / vàng / xanh nhạt xoay vòng – tương phản cao, mỗi đơn một dải màu như Sheet ===== */
+html:not(.cn-moi) .dh-shw{background:#fbf7ee;border:1px solid #1ea7ff;border-radius:12px;box-shadow:0 0 30px -16px rgba(30,167,255,.9)}
+html:not(.cn-moi) .dh-sh{font-size:14px}
+html:not(.cn-moi) .dh-sh th,html:not(.cn-moi) .dh-sh td{padding:7px 10px;border-right:1px solid #e2d8c3;border-bottom:1px solid #e2d8c3}
+html:not(.cn-moi) .dh-sh td{background:#fbf7ee;color:#14161a}
+html:not(.cn-moi) .dh-sh tr.dh-d0 td{background:#ffffff}
+html:not(.cn-moi) .dh-sh tr.dh-d1 td{background:#f3e8cf}
+html:not(.cn-moi) .dh-sh tr.dh-d2 td{background:#fff3bf}
+html:not(.cn-moi) .dh-sh tr.dh-d3 td{background:#e3f0fb}
+html:not(.cn-moi) .dh-sh tr.dh-dmoi td{border-top:2px solid #9cc9ee}
+html:not(.cn-moi) .dh-sh tbody tr:hover td{background:#fff0bf}
+html:not(.cn-moi) .dh-sh tr.cua td{box-shadow:inset 3px 0 0 #1ea7ff}
+html:not(.cn-moi) .dh-sh tr.xong td{opacity:1;color:#5c5649}
+html:not(.cn-moi) .dh-sh thead th,html:not(.cn-moi) .dh-sh thead .c1,html:not(.cn-moi) .dh-sh thead .c2{background:#0b1d33!important;color:#f4ecda!important;font-size:11.5px;font-weight:700;border-color:#1b3657;border-bottom:2px solid #1ea7ff}
+html:not(.cn-moi) .dh-sh thead tr:nth-child(2) th{color:#5cc4ff!important}
+html:not(.cn-moi) .dh-sh td.qt-so{color:#000;font-weight:700;font-size:14.5px}
+html:not(.cn-moi) .dh-sh td.qt-so b{color:#c2410c}
+html:not(.cn-moi) .dh-sh .c1 a{color:#0b5fa5;font-weight:800;text-decoration:none}
+html:not(.cn-moi) .dh-sh .c2{font-weight:600;color:#000}
+html:not(.cn-moi) .dh-sh td.co{color:#0b6fc0;font-weight:700}
+html:not(.cn-moi) .dh-sh .dh-bv{border-color:#0b6fc0;color:#0b6fc0}
+html:not(.cn-moi) .dh-sh .dh-bkenh{color:#6b6352}
+html:not(.cn-moi) .dh-sh .dh-bpo{background:#1ea7ff;color:#04121f;font-weight:800}
+html:not(.cn-moi) .dh-sh .dh-bk{color:#33302a}
+html:not(.cn-moi) .dh-sh .dh-bxn{color:#067a4d}
+html:not(.cn-moi) .dh-sh .pdesc{color:#6b6352}
+html:not(.cn-moi) .dh-sh .dh-ok{color:#067a4d}
+html:not(.cn-moi) .dh-sh .dh-ko{color:#c8102e}
+html:not(.cn-moi) .dh-sh .dh-cho{color:#b45309}
+html:not(.cn-moi) .dh-sh .btn{background:#0b1d33;color:#f4ecda;border-color:#0b1d33}
 html[data-gd="toi"]:not(.cn-moi) .dh-noi-in{background:#0d131d;border-color:#1ea7ff}
+html:not(.cn-moi) .dh-sh td.dh-gn.du{color:#04703f}
+html:not(.cn-moi) .dh-sh td.dh-gn i{color:#3d3a33;opacity:1}
+html:not(.cn-moi) .dh-sh tbody tr:hover td{background:#ffe08a!important}
+html[data-gd="sang"] .dh-noi-in{background:#ffffff;color:#14161a}

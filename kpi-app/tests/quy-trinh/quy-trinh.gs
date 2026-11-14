@@ -16,11 +16,13 @@ var QT_CAI_DAT = { gioCoMat: 8, hieuSuat: 0.85, mucTieu: 137, soNgay: 30, slThan
 var qtCo_ = function(o, k) { return Object.prototype.hasOwnProperty.call(o, k); };   // không nhận tên đặc biệt (__proto__, constructor…)
 var QT_XUONG_NHAP = [
   ['PHOICB', 'PHOITHO', 'Phôi 60 (ngọn + chuôi)'], ['PHOITHO', 'NGONTARO', 'Phôi ngọn'], ['PHOITHO', 'SON', 'Phôi chuôi, nối, gậy 1 khúc (60…)'],
-  ['NGONTARO', 'NGONTIP', 'Ngọn đã taro ren (Ngọn…)'], ['CNC', 'NGONTIP', 'Típ, phíp (CNCTip, CNCPhip)'], ['SON', 'INUV', 'Chuôi / nối đã sơn (S…)'],
+  ['NGONTARO', 'HT', 'Ngọn đã taro ren (Ngọn…)'], ['CNC', 'NGONTIP', 'Típ, phíp (CNCTip, CNCPhip)'], ['SON', 'INUV', 'Chuôi / nối đã sơn (S…)'],
   ['INUV', 'HT', 'Chuôi / nối đã in UV (UV…)'], ['NGONTIP', 'HT', 'Ngọn đã làm đầu'], ['HT', 'DG', 'Gậy, ngọn, nối hoàn thiện (HT…)'],
-  ['NGONTARO', 'PHOITHO', 'POM các loại (chuôi 87, ngọn 85, 65/75, 30, đáy chuôi)'], ['NGONTIP', 'DG', 'Ngọn bán lẻ (đi thẳng đóng gói)'], ['CNC', 'SON', 'Đầu gậy lết'], ['CNC', 'DG', 'Tip bán lẻ']];   // 01/11: nhánh POM + ngọn lẻ (chủ dự án)
+  ['NGONTARO', 'PHOITHO', 'POM các loại (chuôi 87, ngọn 85, 65/75, 30, đáy chuôi)'], ['NGONTIP', 'DG', 'Ngọn bán lẻ (đi thẳng đóng gói)'], ['CNC', 'SON', 'Đầu gậy lết'], ['CNC', 'DG', 'Tip bán lẻ'], ['HT', 'NGONTIP', 'Ngọn chờ làm đầu (Hoàn thiện giao)']];   // 14/11 (chủ dự án): ngọn Taro → Hoàn thiện → Ngọn Tip → trả Hoàn thiện → Đóng gói   // 01/11: nhánh POM + ngọn lẻ (chủ dự án)
 /* Luồng chủ dự án báo thêm sau khi có thể đã lưu: [từ, đến, BTP, ngày báo] – bổ sung vào bản lưu cũ hơn ngày báo */
-var QT_XUONG_THEM = [['NGONTARO', 'PHOITHO', QT_XUONG_NHAP[9][2], '2026-11-01'], ['NGONTIP', 'DG', QT_XUONG_NHAP[10][2], '2026-11-01'], ['CNC', 'SON', 'Đầu gậy lết', '2026-11-02'], ['CNC', 'DG', 'Tip bán lẻ', '2026-11-03']];
+var QT_XUONG_THEM = [['NGONTARO', 'PHOITHO', QT_XUONG_NHAP[9][2], '2026-11-01'], ['NGONTIP', 'DG', QT_XUONG_NHAP[10][2], '2026-11-01'], ['CNC', 'SON', 'Đầu gậy lết', '2026-11-02'], ['CNC', 'DG', 'Tip bán lẻ', '2026-11-03'], ['NGONTARO', 'HT', 'Ngọn đã taro ren (Ngọn…)', '2026-11-14'], ['HT', 'NGONTIP', 'Ngọn chờ làm đầu (Hoàn thiện giao)', '2026-11-14']];
+/* 14/11: luồng chủ dự án bỏ – gỡ khỏi bản đã lưu trước ngày báo */
+var QT_XUONG_BO = [['NGONTARO', 'NGONTIP', '2026-11-14']];
 /* Nháp: MaCD -> [nhánh, bước]. Công đoạn mới không có ở đây -> "Chưa xếp". */
 var QT_NHAP = {
   // Phôi Carbon: chuẩn bị vải -> tỉa -> cuốn -> màng nilong -> rút khuôn -> kiểm / cắt / tiện / chuốt
@@ -181,7 +183,8 @@ function qtDocQT_(cds) {
     xuong = QT_XUONG_NHAP.map(function(a) { return { Tu: a[0], Den: a[1], BTP: a[2], GhiChu: '' }; });
   else { var luu = qtLuongCu_(dong); QT_XUONG_THEM.forEach(function(a) { if (luu >= a[3]) return;   // luồng chủ dự án báo thêm sau khi đã lưu (01/11): bổ sung nếu bản đã lưu chưa có
     if (!xuong.some(function(l) { return l.Tu === a[0] && l.Den === a[1]; })) xuong.push({ Tu: a[0], Den: a[1], BTP: a[2], GhiChu: 'Thêm ' + a[3].slice(8) + '/' + a[3].slice(5, 7) });
-  }); }
+  });
+  QT_XUONG_BO.forEach(function(a) { if (luu >= a[2]) return; xuong = xuong.filter(function(l) { return !(l.Tu === a[0] && l.Den === a[1]); }); }); }
   return { cd: cd, xuong: xuong, caiDat: cai, nhap: nhap, xuat: xuat, luot: luot };
 }
 
@@ -308,7 +311,9 @@ function qtKiemGhi_(me, o, chiKiem, ghiChuLog) {
   });
   if (loi) return ({ ok: false, msg: loi });
   // luồng cấp vật liệu (POM Ngọn Taro → Phôi Thô) chạy ngược chiều sản phẩm: không tính khi dò vòng lặp
-  var cX = {}; xl.forEach(function(x) { if (!qtLuongCap_(x)) (cX[x.Den] = cX[x.Den] || []).push(x.Tu); });
+  // 14/11: ngọn Hoàn thiện → Ngọn Tip → TRẢ LẠI Hoàn thiện là luồng gia công trả về (có chủ đích), không tính là vòng lặp
+  var traVe = { 'NGONTIP>HT': 1 };
+  var cX = {}; xl.forEach(function(x) { if (!qtLuongCap_(x) && !traVe[x.Tu + '>' + x.Den]) (cX[x.Den] = cX[x.Den] || []).push(x.Tu); });
   if (qtCoVong_(cX)) return ({ ok: false, msg: 'Luồng giữa các xưởng bị vòng lặp: ' + qtCoVong_(cX) + '.' });
   var xt = {};
   Object.keys(o.xuat || {}).forEach(function(x) {

@@ -2,7 +2,7 @@
    ĐƠN HÀNG → XƯỞNG (31/10, chủ dự án duyệt): đọc Sheet "Trạng thái đơn hàng" (CHỈ ĐỌC), phân loại từng SKU theo
    4 thông số chủ dự án chốt – LOẠI CHUÔI, LOẠI NGỌN, LOẠI TIP, LOẠI REN – rồi tách việc còn lại về từng xưởng:
      chuôi: Phôi Carbon → Phôi Thô → Sơn → In UV (nhận theo mã bán thành phẩm, giao Hoàn thiện theo SKU)
-     ngọn : Phôi Carbon → Phôi Thô → Ngọn Taro → Ngọn Tip (CNC cấp típ / phíp)
+     ngọn : Phôi Carbon → Phôi Thô → Ngọn Taro → Hoàn thiện → Ngọn Tip (CNC cấp típ / phíp) → trả Hoàn thiện → Đóng gói (14/11)
      gậy  : Hoàn thiện → Đóng gói;  ngọn bán lẻ: Ngọn Tip → thẳng Đóng gói.
    Phân loại 3 lớp (chuyên gia vận hành 31/10):
      1. loại hàng (gậy / ngọn lẻ / chuôi lẻ / nối / phụ kiện)
@@ -21,16 +21,16 @@ var PL_COT = ['TenChuan', 'TenHang', 'LoaiHang', 'Dong', 'Chuoi', 'Ngon', 'Tip',
 var DH_CHANG = [['PHOI', /^PHÔI CỦA/], ['SON', /^SƠN CỦA/], ['TARO', /^TARO CỦA/], ['TIP', /LÀM ĐẦU/], ['UV', /^UV CỦA/], ['HT', /^HOÀN THIỆN CỦA/], ['DG', /TỔNG CỘNG HÀNG ĐG|ĐÓNG GÓI CỦA/]];
 /* 14/11 (chủ dự án chốt): nhập giao/nhận ngay trên dòng đơn như Sheet. 10 cột phụ ở cuối dòng (sau vùng ngày):
    ĐANG Ở BP, BP KẾ TIẾP + 7 cột "XN NHẬN <bộ phận>" (bộ phận sau bấm nhận, ghi SL · tài khoản · lúc) + XN HẸN (bộ phận sau đồng ý / không kịp với ngày hẹn). */
-var DH_BP = [['PHOI', 'Phôi'], ['SON', 'Sơn'], ['TARO', 'Taro'], ['TIP', 'Làm đầu'], ['UV', 'UV'], ['HT', 'Hoàn thiện'], ['DG', 'Đóng gói']];
+var DH_BP = [['PHOI', 'Phôi'], ['SON', 'Sơn'], ['TARO', 'Taro'], ['UV', 'UV'], ['HT', 'Hoàn thiện'], ['TIP', 'Làm đầu'], ['DG', 'Đóng gói']];   // 14/11: thứ tự theo luồng mới – ngọn Taro → Hoàn thiện → Làm đầu → trả Hoàn thiện → Đóng gói
 var DH_BP_TEN = { PHOI: 'Phôi', SON: 'Sơn', TARO: 'Taro', TIP: 'Làm đầu', UV: 'UV', HT: 'Hoàn thiện', DG: 'Đóng gói' };
 var DH_TD_COT = ['ĐANG Ở BP', 'BP KẾ TIẾP'].concat(DH_BP.map(function(b) { return 'XN NHẬN ' + b[1].toUpperCase(); })).concat(['XN HẸN']);   // 14/11 (Claude): XN HẸN = bộ phận sau đồng ý / không kịp với ngày hẹn của bộ phận trước
 /* 14/11 (chủ dự án chốt): mỗi DÒNG Sheet = một MÃ SẢN PHẨM, cấu hình bán thành phẩm khác nhau nên SL / hẹn nhập theo mã đó,
    không nhập theo tổng đơn. Mặc định lấy từ luồng xưởng đã duyệt 31/10 (xem chú thích đầu mục ĐƠN HÀNG → XƯỞNG):
      chuôi: Phôi → Sơn → UV → Hoàn thiện → Đóng gói
-     ngọn : Phôi → Taro → Làm đầu → Đóng gói
+     ngọn : Phôi → Taro → Hoàn thiện → Làm đầu → (trả Hoàn thiện) → Đóng gói   (14/11)
      gậy  : cả 2 nhánh nên đủ 7 bộ phận;  nối / phụ kiện: không qua xưởng
    Chủ dự án sửa riêng cho từng mã ở sheet BTPTheoSKU (màn Đơn hàng → dòng → Cấu hình bán thành phẩm). */
-var DH_BTP_CD = { GAY: ['PHOI', 'SON', 'TARO', 'TIP', 'UV', 'HT', 'DG'], CHUOI: ['PHOI', 'SON', 'UV', 'HT', 'DG'], NGON: ['PHOI', 'TARO', 'TIP', 'DG'], NOI: [], PK: [] };
+var DH_BTP_CD = { GAY: ['PHOI', 'SON', 'TARO', 'UV', 'HT', 'TIP', 'DG'], CHUOI: ['PHOI', 'SON', 'UV', 'HT', 'DG'], NGON: ['PHOI', 'TARO', 'HT', 'TIP', 'DG'], NOI: [], PK: [] };   // 14/11: ngọn qua Hoàn thiện trước và sau Làm đầu
 var DH_BTP_SHEET = 'BTPTheoSKU', DH_BTP_COT = ['TenChuan', 'TenHang', 'BTP', 'NguoiSua', 'ThoiDiem'];
 
 var PL_LOAI = { GAY: 'Gậy (ngọn + chuôi)', NGON: 'Ngọn bán lẻ', CHUOI: 'Chuôi bán lẻ', NOI: 'Tay nối', PK: 'Phụ kiện / không sản xuất' };
@@ -741,6 +741,7 @@ function dhXnHenGhi_(o) {
 /* bộ phận nhận hàng ngay sau T theo cấu hình bán thành phẩm của mã; T ngoài cấu hình -> bộ phận kế tiếp đang ghi trên dòng */
 function dhBPSau_(ten, T, H) {
   var ds = dhBTP_(ten, plPhanLoai_(ten, ''), dhBTPDoc_()).ds, i = ds.indexOf(T);
+  if (T === 'TIP' && ds.indexOf('HT') >= 0) return 'HT';   // 14/11: Làm đầu xong trả lại Hoàn thiện
   if (i >= 0) return ds[i + 1] || '';
   return (H && H.o === T && H.k) || '';
 }

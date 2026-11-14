@@ -20,8 +20,8 @@ var DP_DE_XUAT = [
 ];
 /* Dòng chảy: [xưởng trước, phần, xưởng sau, phần, nhãn] – phần 'c' chuôi, 'n' ngọn, '' cả xưởng */
 var DP_CAP = [['PHOICB', 'c', 'PHOITHO', 'c', 'Phôi chuôi'], ['PHOICB', 'n', 'PHOITHO', 'n', 'Phôi ngọn'], ['PHOITHO', 'c', 'SON', '', 'Chuôi chờ sơn'],
-  ['SON', '', 'INUV', '', 'Chuôi chờ in UV'], ['PHOITHO', 'n', 'NGONTARO', 'n', 'Ngọn chờ taro'], ['NGONTARO', 'n', 'NGONTIP', '', 'Ngọn chờ làm tip']];   // Hoàn thiện (đếm khúc) → Đóng gói (đếm sản phẩm) khác đơn vị: không so
-var DP_CHUOI = [['Chuỗi chuôi', [['PHOICB', 'c'], ['PHOITHO', 'c'], ['SON', ''], ['INUV', '']]], ['Chuỗi ngọn', [['PHOICB', 'n'], ['PHOITHO', 'n'], ['NGONTARO', 'n'], ['NGONTIP', '']]]];
+  ['SON', '', 'INUV', '', 'Chuôi chờ in UV'], ['PHOITHO', 'n', 'NGONTARO', 'n', 'Ngọn chờ taro'], ['NGONTARO', 'n', 'HT', 'n', 'Ngọn chờ hoàn thiện (trước làm đầu)']];   // 14/11: ngọn Taro → Hoàn thiện → Ngọn Tip → trả HT   // Hoàn thiện (đếm khúc) → Đóng gói (đếm sản phẩm) khác đơn vị: không so
+var DP_CHUOI = [['Chuỗi chuôi', [['PHOICB', 'c'], ['PHOITHO', 'c'], ['SON', ''], ['INUV', '']]], ['Chuỗi ngọn', [['PHOICB', 'n'], ['PHOITHO', 'n'], ['NGONTARO', 'n'], ['HT', 'n'], ['NGONTIP', '']]]];   // 14/11: ngọn qua Hoàn thiện trước Ngọn Tip
 
 /* Đối chiếu ghi thiếu (08/11 chủ dự án: số Ngọn Taro đúng, ngọn GF qua Phôi Thô nhưng Phôi Thô ghi thiếu):
    [nhãn, mã xưởng trước giao, mã xưởng sau nhận, xưởng cần nhắc, chặng dòng chảy liên quan] – xưởng sau làm > 1,3 lần xưởng trước giao (và hơn 20/ngày) trong 14 ngày -> báo */
@@ -116,7 +116,7 @@ function dpTinh_() {
     tuongLai: tuongLai.length, tuongLaiDs: tuongLai.slice(0, 6).map(function(t) { t.x = tenX[t.x] || t.x; return t; }), ngay6: ngay6 };
   /* ---- 3. Dòng chảy + nút cổ chai ---- */
   var ra = function(X, ph, ngs) { var ma = xuat[X].filter(function(m) { return !ph || phan(X, m) === ph; }); if (X === 'NGONTARO' && !ph) ma = ma.filter(function(m) { return phan(X, m) !== ''; }); return tb(ma, ngs, luot[X]); };
-  var tenP = function(X, ph) { return (tenX[X] || X) + (ph === 'c' && (X === 'PHOICB' || X === 'PHOITHO') ? ' (chuôi)' : ph === 'n' && (X === 'PHOICB' || X === 'PHOITHO') ? ' (ngọn)' : ''); };
+  var tenP = function(X, ph) { return (tenX[X] || X) + (ph === 'c' && (X === 'PHOICB' || X === 'PHOITHO') ? ' (chuôi)' : ph === 'n' && (X === 'PHOICB' || X === 'PHOITHO' || X === 'HT') ? ' (ngọn)' : ''); };
   var cap = DP_CAP.map(function(c) {
     var a = ra(c[0], c[1], ngay14), b = ra(c[2], c[3], ngay14), ch = a - b, tich = ch * ngay14.length;
     var tt = !(a > 0) || !(b > 0) ? 'thieu' : Math.abs(ch) > 0.4 * Math.max(a, b) ? 'lech' : Math.abs(ch) <= 0.1 * b ? 'can' : ch > 0 ? 'don' : 'hut';   // lệch > 40%: nhiều khả năng do cách đếm, không kết luận dồn / hụt
@@ -151,7 +151,7 @@ function apDeXuatDem(token) {
 
 /* ---- 2) Việc của xưởng: dòng đơn còn thiếu có liên quan tới xưởng (máy khách tính phần còn lại ở xưởng bằng đúng hàm của Việc theo xưởng) ---- */
 var DP_LOAI_XUONG = { PHOICB: { GAY: 1, NGON: 1, CHUOI: 1 }, PHOITHO: { GAY: 1, NGON: 1, CHUOI: 1, NOI: 1 }, SON: { GAY: 1, CHUOI: 1, NOI: 1 }, INUV: { GAY: 1, CHUOI: 1, NOI: 1 },
-  NGONTARO: { GAY: 1, NGON: 1 }, NGONTIP: { GAY: 1, NGON: 1 }, CNC: { GAY: 1, NGON: 1 }, HT: { GAY: 1, CHUOI: 1, NOI: 1 }, DG: { GAY: 1, NGON: 1, CHUOI: 1, NOI: 1 } };
+  NGONTARO: { GAY: 1, NGON: 1 }, NGONTIP: { GAY: 1, NGON: 1 }, CNC: { GAY: 1, NGON: 1 }, HT: { GAY: 1, NGON: 1, CHUOI: 1, NOI: 1 }, DG: { GAY: 1, NGON: 1, CHUOI: 1, NOI: 1 } };
 function layViecXuongToi(token) {
   var me = docPhien_(token);
   if (!me) return sach_({ ok: false, hetHan: true, msg: 'Phiên đăng nhập đã hết hạn.' });
