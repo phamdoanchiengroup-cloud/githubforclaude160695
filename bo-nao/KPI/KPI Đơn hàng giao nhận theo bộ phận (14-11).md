@@ -78,3 +78,4 @@ Liên quan: [[KPI Quy trình sản xuất]] · [[KPI Điều phối sản xuất
 - Trước đây chỉ web thay `dl` bằng `hanMoi` (`dhHanMoi_`), máy chủ (email 8h, trạng thái, bản chụp, thống kê) vẫn dùng deadline gốc. Nay **máy chủ thay luôn** khi đọc Sheet (`dhDocTab_`): `o.dl = hanMoi`, giữ `o.dlGoc`; ưu tiên cột ngay bên phải Deadline có chữ HẠN MỚI / GIA HẠN / HẠN HT; hạn mới trước ngày đặt → sang năm sau. Web áp cả tab bản chép; cột Hạn ở bảng đơn hiện thêm "gốc dd/mm" gạch ngang (`dhHanO`).
 - Lưu ý: hôm đầu sau khi cập nhật, "Thay đổi hôm nay" có thể báo nhiều dòng "Đổi deadline" (bản chụp cũ lưu deadline gốc).
 - Kiểm thử: `thu/hanmoi.js` (giả lập Code.gs thật) đạt; các khung thử khác đạt.
+- 15/11 (sau): chủ dự án đưa **DEALER lên bậc 1** (bậc 1 = Dealer + Web lẻ thường + Web lẻ custom + mọi POD). `DH_TAB_BAC1` thêm DEALER, sửa chữ giải thích. `thu/bac.js`: Dealer hạn +2 ngày xong trước tiên trong bậc 1.
