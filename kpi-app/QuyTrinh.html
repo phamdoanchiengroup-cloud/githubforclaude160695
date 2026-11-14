@@ -280,7 +280,7 @@ details.dh-doc[open]{background:var(--bg2,rgba(127,127,127,.08));border-left:3px
 .qt-bd.wn{color:var(--amber)} .qt-bd.bd{color:var(--red);background:rgba(255,80,80,.14)}
 .qt-the-nut{font-size:11px;font-weight:800;letter-spacing:.4px;color:#ff9f43;white-space:nowrap}
 /* toàn nhà máy */
-.qt-nm{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));grid-template-areas:"pcb pt son uv ht dg" "pcb pt taro tip ht dg" ". . pom cnc . .";column-gap:28px;row-gap:12px;align-items:center;position:relative;padding:4px 0}
+.qt-nm{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));grid-template-areas:"pcb pt son uv ht dg" "pcb pt taro . ht dg" ". . pom cnc tip .";column-gap:28px;row-gap:12px;align-items:center;position:relative;padding:4px 0}
 .qt-nm .lc,.qt-nm .ln{display:none}
 .qt-o{position:relative;min-height:84px;box-sizing:border-box;border:1px solid var(--line);background:var(--panel2);border-radius:12px;padding:10px 12px;display:flex;flex-direction:column;justify-content:center;gap:4px;cursor:pointer;text-align:left;color:var(--ink);font:inherit;width:100%}
 .qt-o:hover{border-color:var(--ink3)}
@@ -361,7 +361,7 @@ details.dh-doc[open]{background:var(--bg2,rgba(127,127,127,.08));border-left:3px
 
 /* ===== Lưu đồ – hiệu ứng (01/11 tối, chủ dự án: không ảnh, làm đẹp đường line + card; điện thoại bỏ lưu đồ) ===== */
 .qt-nmw{position:relative;padding:6px 4px 10px}
-.qt-nmw .qt-nm{position:relative;z-index:1;row-gap:44px;column-gap:34px;grid-template-areas:"pcb pt son uv ht dg" "pcb pt taro tip ht dg" ". . . cnc . ."}
+.qt-nmw .qt-nm{position:relative;z-index:1;row-gap:44px;column-gap:34px;grid-template-areas:"pcb pt son uv ht dg" "pcb pt taro . ht dg" ". . . cnc tip ."}   /* 14/11: ngọn Taro → Hoàn thiện → Ngọn Tip → Hoàn thiện → Đóng gói: Tip nằm dưới Hoàn thiện */
 .qt-nh2{display:none!important}
 .qt-o.di::after,.qt-o.vao::before{display:none!important}
 svg.qt-duong{position:absolute;left:0;top:0;z-index:0;pointer-events:none;overflow:visible}
@@ -887,14 +887,16 @@ function qtVeDuong(){
   var svg=w.querySelector('svg.qt-duong'), R=w.getBoundingClientRect();
   var o=function(x){ var e=w.querySelector('[data-x="'+x+'"]'); if(!e) return null; var r=e.getBoundingClientRect(); return {l:r.left-R.left,r:r.right-R.left,t:r.top-R.top,b:r.bottom-R.top,cx:(r.left+r.right)/2-R.left,cy:(r.top+r.bottom)/2-R.top}; };
   var ds=[], nhan=[];
-  var noi=function(a,b){ var A=o(a),B=o(b); if(!A||!B) return; var x1=A.r+2,y1=A.cy,x2=B.l-6,y2=B.cy,mx=(x1+x2)/2; ds.push(['M'+x1+' '+y1+' C'+mx+' '+y1+' '+mx+' '+y2+' '+x2+' '+y2,'']); };
-  noi('PHOICB','PHOITHO'); noi('PHOITHO','SON'); noi('PHOITHO','NGONTARO'); noi('SON','INUV'); noi('NGONTARO','NGONTIP'); noi('INUV','HT'); noi('NGONTIP','HT'); noi('HT','DG');
-  var A=o('CNC'),B=o('NGONTIP'); if(A&&B){ ds.push(['M'+B.cx+' '+(A.t-2)+' L'+B.cx+' '+(B.b+6),'phu']); nhan.push([B.cx+8,(A.t+B.b)/2+4,'TIP, PHÍP']); }
-  A=o('CNC'); B=o('SON'); var T2=o('NGONTARO'); if(A&&B&&T2){ var gx=(T2.r+o('NGONTIP').l)/2, yb=B.b+20, r2=10;   /* CNC cấp đầu gậy lết cho Sơn: đi lên theo khe giữa 2 cột rồi rẽ vào đáy thẻ Sơn */
+  var noi=function(a,b,dy){ var A=o(a),B=o(b); if(!A||!B) return; var x1=A.r+2,y1=A.cy,x2=B.l-6,y2=B.cy+(dy||0),mx=(x1+x2)/2; ds.push(['M'+x1+' '+y1+' C'+mx+' '+y1+' '+mx+' '+y2+' '+x2+' '+y2,'']); };
+  /* 14/11 (chủ dự án): ngọn Taro → Hoàn thiện → Ngọn Tip → trả Hoàn thiện → Đóng gói; luồng chuôi giữ nguyên */
+  noi('PHOICB','PHOITHO'); noi('PHOITHO','SON'); noi('PHOITHO','NGONTARO'); noi('SON','INUV'); noi('INUV','HT',-14); noi('NGONTARO','HT',14); noi('HT','DG');
+  var H1=o('HT'), P1=o('NGONTIP'); if(H1&&P1){ ds.push(['M'+(P1.cx-16)+' '+(H1.b+2)+' L'+(P1.cx-16)+' '+(P1.t-6),'']); ds.push(['M'+(P1.cx+16)+' '+(P1.t-2)+' L'+(P1.cx+16)+' '+(H1.b+6),'']); nhan.push([P1.cx+24,(H1.b+P1.t)/2+4,'TRẢ HT']); }
+  var A=o('CNC'),B=o('NGONTIP'); if(A&&B){ ds.push(['M'+(A.r+2)+' '+(A.cy-8)+' L'+(B.l-6)+' '+(A.cy-8),'phu']); nhan.push([A.r+8,A.cy-14,'TIP, PHÍP']); }
+  A=o('CNC'); B=o('SON'); var T2=o('NGONTARO'); if(A&&B&&T2){ var gx=(T2.r+A.l)/2, yb=B.b+20, r2=10;   /* CNC cấp đầu gậy lết cho Sơn: đi lên theo khe giữa 2 cột rồi rẽ vào đáy thẻ Sơn */
     ds.push(['M'+(A.l-2)+' '+A.cy+' L'+(gx+r2)+' '+A.cy+' Q'+gx+' '+A.cy+' '+gx+' '+(A.cy-r2)+' L'+gx+' '+(yb+r2)+' Q'+gx+' '+yb+' '+(gx-r2)+' '+yb+' L'+(B.cx+r2)+' '+yb+' Q'+B.cx+' '+yb+' '+B.cx+' '+(yb-r2)+' L'+B.cx+' '+(B.b+6),'phu']); nhan.push([B.cx+14,yb-5,'ĐẦU LẾT']); }
-  A=o('CNC'); B=o('DG'); if(A&&B){ var r3=10;   /* CNC cấp tip bán lẻ thẳng cho Đóng gói: đi ngang dưới Hoàn thiện rồi lên đáy thẻ Đóng gói */
-    ds.push(['M'+(A.r+2)+' '+A.cy+' L'+(B.cx-r3)+' '+A.cy+' Q'+B.cx+' '+A.cy+' '+B.cx+' '+(A.cy-r3)+' L'+B.cx+' '+(B.b+6),'phu']); nhan.push([A.r+14,A.cy-8,'TIP BÁN LẺ']); }
-  A=o('NGONTIP'); B=o('DG'); var H0=o('HT'); if(A&&B){ var r4=10, y4=Math.max(A.b-16,(H0?H0.b:0)+16), x4=B.cx-16;   /* 07/11 (chủ dự án): ngọn lẻ Tip -> Đóng gói là đường cấp phụ (nét đứt cam) như POM, đầu lết; đi ngang dưới Hoàn thiện rồi lên đáy Đóng gói */
+  A=o('CNC'); B=o('DG'); if(A&&B){ var r3=10, yc=A.b+16;   /* CNC cấp tip bán lẻ thẳng cho Đóng gói: 14/11 đi vòng dưới Ngọn Tip rồi lên đáy thẻ Đóng gói */
+    ds.push(['M'+A.cx+' '+(A.b+2)+' L'+A.cx+' '+(yc-r3)+' Q'+A.cx+' '+yc+' '+(A.cx+r3)+' '+yc+' L'+(B.cx-r3)+' '+yc+' Q'+B.cx+' '+yc+' '+B.cx+' '+(yc-r3)+' L'+B.cx+' '+(B.b+6),'phu']); nhan.push([A.cx+14,yc-5,'TIP BÁN LẺ']); }
+  A=o('NGONTIP'); B=o('DG'); if(A&&B){ var r4=10, y4=A.cy, x4=B.cx-16;   /* 07/11 (chủ dự án): ngọn lẻ Tip -> Đóng gói là đường cấp phụ (nét đứt cam) như POM, đầu lết; đi ngang dưới Hoàn thiện rồi lên đáy Đóng gói */
     ds.push(['M'+(A.r+2)+' '+y4+' L'+(x4-r4)+' '+y4+' Q'+x4+' '+y4+' '+x4+' '+(y4-r4)+' L'+x4+' '+(B.b+6),'phu']); nhan.push([A.r+14,y4-6,'NGỌN LẺ']); }
   A=o('NGONTARO'); B=o('PHOITHO'); if(A&&B){ var y=Math.max(A.b,B.b)+24, r=10; ds.push(['M'+A.cx+' '+(A.b+2)+' L'+A.cx+' '+(y-r)+' Q'+A.cx+' '+y+' '+(A.cx-r)+' '+y+' L'+(B.cx+r)+' '+y+' Q'+B.cx+' '+y+' '+B.cx+' '+(y-r)+' L'+B.cx+' '+(B.b+6),'phu']); nhan.push([(A.cx+B.cx)/2-14,y-6,'POM']); }
   svg.setAttribute('width',w.offsetWidth); svg.setAttribute('height',w.offsetHeight);
