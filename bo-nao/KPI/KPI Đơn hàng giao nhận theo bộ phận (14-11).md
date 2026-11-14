@@ -73,6 +73,12 @@ Liên quan: [[KPI Quy trình sản xuất]] · [[KPI Điều phối sản xuất
 - Lưu ý: ô Phôi của gậy thành chữ 2 dòng → công thức Sheet nào cộng cột Phôi sẽ không cộng ô đó.
 - Kiểm thử (giả lập): `thu/p2.js` 4/4, `thu/p2luu.js` 4/4, `thu/p2web.js` 14/14; khung thử 30/30, Note 10/10.
 
+## 16/11 – "Giao tiếp cho bộ phận" tách 2 nhánh cho Phôi gậy 2 khúc
+- Chủ dự án báo: Phôi đã có SL / hẹn riêng chuôi, ngọn nhưng ô "Giao tiếp cho bộ phận" chỉ có 1 (Sơn). Đúng quy trình: chuôi → Sơn, ngọn → Ngọn Taro.
+- Web: trong mỗi khối Phôi chuôi / Phôi ngọn có ô chọn riêng `dhBK_c` / `dhBK_n` (mặc định Sơn / Ngọn Taro, ghi "(theo luồng)"); bỏ ô chung khi là Phôi 2 nhánh. `dhK2`, `dhKs`, `dhKTen`; cột "Đang ở / kế tiếp" hiện "chuôi → Sơn · ngọn → Ngọn Taro"; lọc "của tôi" thấy đơn khi mình là một trong 2 bộ phận kế tiếp.
+- Máy chủ: ô BP KẾ TIẾP ghi 2 dòng `Chuôi: SON⏎Ngọn: TARO` (như ô SL / hẹn Phôi); `dhK2_`, `dhKs_`, `dhKKhoa_`, `dhKTen_`; `luuDonGiaoNhan` kiểm từng mã, so sánh theo khóa (không ghi lại khi không đổi); xác nhận nhận hàng chấp nhận cả 2 bộ phận. Chuôi lẻ / ngọn lẻ giữ 1 ô như cũ.
+- Kiểm thử (giả lập): web 10/10 (2 ô, mặc định đúng luồng, đọc lại giá trị đã lưu, chuôi lẻ giữ 1 ô), máy chủ 6/6. Chưa thử số thật: Sheet "Trạng thái đơn hàng" quá lớn để tải qua kết nối Drive (lỗi "File too large for export").
+
 ## 15/11 – Deadline mới (cột "Hạn mới HT đơn cũ")
 - Chủ dự án: đọc cả cột Deadline và cột **"Hạn mới HT đơn cũ"** ngay bên phải (gia hạn = deadline mới).
 - Trước đây chỉ web thay `dl` bằng `hanMoi` (`dhHanMoi_`), máy chủ (email 8h, trạng thái, bản chụp, thống kê) vẫn dùng deadline gốc. Nay **máy chủ thay luôn** khi đọc Sheet (`dhDocTab_`): `o.dl = hanMoi`, giữ `o.dlGoc`; ưu tiên cột ngay bên phải Deadline có chữ HẠN MỚI / GIA HẠN / HẠN HT; hạn mới trước ngày đặt → sang năm sau. Web áp cả tab bản chép; cột Hạn ở bảng đơn hiện thêm "gốc dd/mm" gạch ngang (`dhHanO`).

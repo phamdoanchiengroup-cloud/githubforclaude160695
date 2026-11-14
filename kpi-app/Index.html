@@ -1319,7 +1319,7 @@ html.cn-moi #kpi_bang .tw th:first-child,html.cn-moi #kpi_bang .tw td:first-chil
       <clipPath id="lkTheCat"><rect width="380" height="240" rx="22"/></clipPath>
       <linearGradient id="lkVet" x1="0" x2="1"><stop offset="0" stop-color="#fff" stop-opacity="0"/><stop offset=".5" stop-color="#fff2cf" stop-opacity=".55"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient>
     </defs>
-    <image class="anh" href="https://cdn.jsdelivr.net/gh/phamdoanchiengroup-cloud/githubforclaude160695@60fbe3fa86d14dc792078aab5fb37535aeae6f55/kpi-app/anh/web/nen-dang-nhap.jpg" x="0" y="0" width="1600" height="900" preserveAspectRatio="xMidYMid slice"/>
+    <image class="anh" href="https://cdn.jsdelivr.net/gh/phamdoanchiengroup-cloud/githubforclaude160695@bd1cc8abbb6d662243f86223165a382e3307043b/kpi-app/anh/web/nen-dang-nhap.jpg" x="0" y="0" width="1600" height="900" preserveAspectRatio="xMidYMid slice"/>
     <g id="lkNhom" class="lk-the" transform="translate(150 300) rotate(-7)">
       <rect x="10" y="24" width="380" height="240" rx="22" fill="#000" opacity=".6" filter="url(#lkTheBong)"/>
       <g clip-path="url(#lkTheCat)">
@@ -8810,7 +8810,7 @@ function chiXemDon(){
 </script>
 <script>
 /* ===== 19. PHẦN GIAO DIỆN TẢI SAU (12/10) – SoDo.html, HoatAnh.html: chỉ tải khi cần, nhớ lại theo phiên bản ===== */
-var MANH_VER={"SoDo": "d9bc7ce73f034629", "HoatAnh": "b23cbe69d6aae56e", "AmThanh": "c690fabe4419160c", "QuyTrinh": "7d9ed56d4c", "CauHinhGay": "0fe7f9af088e8d80"};
+var MANH_VER={"SoDo": "a41f0d9daf4cafea", "HoatAnh": "b23cbe69d6aae56e", "AmThanh": "c690fabe4419160c", "QuyTrinh": "da007dbee8", "CauHinhGay": "0fe7f9af088e8d80"};
 var __manh={da:{},cho:{}};
 function ganManh_(nd){
   var js=[], ngoai=String(nd).replace(/<script>([\s\S]*?)<\/script>/g,function(_,x){js.push(x);return ''});
@@ -9731,7 +9731,7 @@ function hsGhiChuDong(r){
 }
 </script>
 <script>
-var KPI_BAN = '14/11/2026 21:12';
+var KPI_BAN = '14/11/2026 22:41';
 (function(){
   var cu = window.veNav;
   window.veNav = function(){
@@ -10838,7 +10838,7 @@ function nsnCapNhat(){ call('capNhatNgoaiSXTuFile',[],function(r){ if(!r||!r.ok)
 </script>
 <script>
 /* ===== 38. TĂNG TỐC ĐỢT 3 (08/11) – bộ đo tốc độ + mở nhanh bằng số lần trước (mã hóa) ===== */
-var TD_BUF=[], TD_T=null, DL_VER='ae179005e3', DL_HAN=12*3600e3, DL_BO=['SoCCCD','DienThoai','DiaChi','SdtKhanCap','LuongCoBan','NamSinh','SoTaiKhoan','Email'];
+var TD_BUF=[], TD_T=null, DL_VER='4750f57a14', DL_HAN=12*3600e3, DL_BO=['SoCCCD','DienThoai','DiaChi','SdtKhanCap','LuongCoBan','NamSinh','SoTaiKhoan','Email'];
 function tdGhi_(f,ms,sv){ if(!(ms>=0)||!f) return; TD_BUF.push({f:String(f),ms:Math.round(ms),sv:(typeof sv==='number'?Math.round(sv):null)});
   if(TD_BUF.length>=15) tdGui_(); else if(!TD_T) TD_T=setTimeout(tdGui_,180000); }
 function tdGui_(){ if(TD_T){clearTimeout(TD_T);TD_T=null;} if(!TD_BUF.length||typeof TOKEN==='undefined'||!TOKEN) return;

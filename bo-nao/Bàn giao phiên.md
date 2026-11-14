@@ -3,6 +3,9 @@
 Nhóm: Chung · Cập nhật 02/11/2026
 Liên quan: [[00 Mục lục]] · [[Liên kết và công cụ]] · [[Việc chờ chủ dự án]] · [[Lần dán lên Apps Script]] · [[Quyết định của chủ dự án]] · [[KPI Kiểm thử]]
 
+## 16/11 – Phôi 2 nhánh có 2 ô "Giao tiếp cho bộ phận" (đã push, chờ 2-CAP-NHAT.bat)
+- Chủ dự án trả lời: C019/C056/C067 đã có vai trò; Sheet không có công thức cộng cột Phôi. Plugin Manufacturing + Design: ListPlugins vẫn trống (chưa bật) – nhắc bật trong Customize rồi mở phiên mới. Sheet thật quá lớn để tải qua Drive (cần cách khác nếu muốn thử số thật). – [[KPI Đơn hàng giao nhận theo bộ phận (14-11)]]
+
 ## BÀN GIAO 15/11 (phiên dài → phiên mới) – ĐỌC PHẦN NÀY TRƯỚC
 **Mọi việc đã commit + push** lên `claude/beautiful-ptolemy-f2j7za`. Chủ dự án **chưa chạy `2-CAP-NHAT.bat`** cho các đợt 14/11 khuya → 15/11 (một lần cập nhật là đủ). Chi tiết từng việc: [[KPI Đơn hàng giao nhận theo bộ phận (14-11)]] (các mục 14/11 khuya, 15/11), [[KPI Thống kê không tính hôm nay (09-11)]].
 

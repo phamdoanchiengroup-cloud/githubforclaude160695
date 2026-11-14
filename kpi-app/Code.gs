@@ -7674,7 +7674,7 @@ function danhSachVanPhong(token) {
   ds.sort(function(a, b) { return (thuTu[a.vaiTro] - thuTu[b.vaiTro]) || (a.HoTen < b.HoTen ? -1 : 1); });
   return sach_({ ok: true, ds: ds, muc: HS_MUC });
 }
-var KPI_BAN_MAY = '14/11/2026 21:12';   // giờ dựng Code.gs (22/10)
+var KPI_BAN_MAY = '14/11/2026 22:41';   // giờ dựng Code.gs (22/10)
 /* =====================================================================
    KỸ NĂNG (22/10, chủ dự án nhờ thiết kế + tham khảo chuyên gia nhân sự / đào tạo)
    - Danh mục: trưởng / phó phòng đề xuất kỹ năng của xưởng (tên, mô tả, tiêu chí đạt, công đoạn liên quan)
@@ -9214,15 +9214,17 @@ function luuDonGiaoNhan(token, p) {
     }
     /* 3) Bộ phận đang làm chọn bộ phận kế tiếp */
     if (p.keTiep !== undefined) {
-      var kt = String(p.keTiep || '').toUpperCase();
-      if (kt && !DH_BP_TEN[kt]) return sach_({ ok: false, msg: 'Bộ phận kế tiếp không hợp lệ.' });
+      var kt = String(p.keTiep || '').toUpperCase(), kt2 = dhK2_(kt);   // 16/11: Phôi gậy 2 khúc – "Chuôi: SON⏎Ngọn: TARO"
+      if (kt2) { if (kt2.c && !DH_BP_TEN[kt2.c] || kt2.n && !DH_BP_TEN[kt2.n]) return sach_({ ok: false, msg: 'Bộ phận kế tiếp không hợp lệ.' });
+        kt = (kt2.c || kt2.n) ? 'Chuôi: ' + kt2.c + '\nNgọn: ' + kt2.n : ''; }
+      else if (kt && !DH_BP_TEN[kt]) return sach_({ ok: false, msg: 'Bộ phận kế tiếp không hợp lệ.' });
       if (!toanQuyen && H.o && H.o !== actor) return sach_({ ok: false, msg: 'Đơn đang ở bộ phận ' + (DH_BP_TEN[H.o] || H.o) + ' – chỉ TP bộ phận đó được chọn bộ phận kế tiếp.' });
-      if (kt !== H.k) { ghi.push([cK, kt]); doi.push('Kế tiếp: ' + (H.k ? DH_BP_TEN[H.k] : '–') + ' → ' + (kt ? DH_BP_TEN[kt] : '–')); }
+      if (dhKKhoa_(kt) !== dhKKhoa_(H.k)) { ghi.push([cK, kt]); doi.push('Kế tiếp: ' + (dhKTen_(H.k) || '–') + ' → ' + (dhKTen_(kt) || '–')); }
     }
     /* 4) Bộ phận sau xác nhận đã nhận hàng từ bộ phận trước */
     if (p.xacNhan) {
       if (!H.o) return sach_({ ok: false, msg: 'Dòng này chưa có "ĐANG Ở BP" – TP bộ phận đang làm chọn bộ phận trước khi bàn giao.' });
-      if (!toanQuyen && H.k && H.k !== actor) return sach_({ ok: false, msg: 'Đơn đang chờ bộ phận ' + (DH_BP_TEN[H.k] || H.k) + ' nhận – chỉ bộ phận kế tiếp xác nhận nhận hàng.' });   // 14/11 (Claude)
+      if (!toanQuyen && H.k && dhKs_(H.k).indexOf(actor) < 0) return sach_({ ok: false, msg: 'Đơn đang chờ bộ phận ' + dhKTen_(H.k) + ' nhận – chỉ bộ phận kế tiếp xác nhận nhận hàng.' });   // 14/11 (Claude)
       if (H.o === actor) return sach_({ ok: false, msg: 'Đơn đang ở chính bộ phận ' + DH_BP_TEN[actor] + ' – chưa có bộ phận trước để xác nhận.' });
       var nhan = p.slNhan != null && String(p.slNhan).trim() !== '' ? Math.max(0, Math.round(Number(p.slNhan))) : (H.qua[H.o] != null ? H.qua[H.o] : tam.sl);
       nhan = Math.min(tam.sl, nhan);
@@ -9283,6 +9285,12 @@ function dhXnHenDoc_(v) {
   });
   return o;
 }
+/* 16/11 (chủ dự án): ô BP KẾ TIẾP của Phôi gậy 2 khúc ghi 2 dòng "Chuôi: SON⏎Ngọn: TARO" (chuôi giao Sơn, ngọn giao Ngọn Taro) */
+function dhK2_(k) { var s = String(k || '').toUpperCase(), c = s.match(/CHU[OÔ]I\s*:\s*([A-Z_]*)/), n = s.match(/NG[OỌ]N\s*:\s*([A-Z_]*)/); return (c || n) ? { c: c ? c[1] : '', n: n ? n[1] : '' } : null; }
+function dhKs_(k) { var z = dhK2_(k); return z ? [z.c, z.n].filter(Boolean) : (k ? [String(k).toUpperCase()] : []); }
+function dhKKhoa_(k) { var z = dhK2_(k); return z ? 'C:' + z.c + '|N:' + z.n : String(k || '').toUpperCase(); }
+function dhKTen_(k) { var z = dhK2_(k); if (!z) return k ? (DH_BP_TEN[String(k).toUpperCase()] || k) : '';
+  return [z.c ? 'chuôi → ' + (DH_BP_TEN[z.c] || z.c) : '', z.n ? 'ngọn → ' + (DH_BP_TEN[z.n] || z.n) : ''].filter(Boolean).join(', '); }
 function dhXnHenGhi_(o) {
   return DH_BP.concat(DH_P2).filter(function(b) { return o[b[0]]; }).map(function(b) { var x = o[b[0]];
     return b[1] + ': ' + (x.ok ? '✓' : '✗') + ' ' + dhDMY_(x.ngay) + ' · ' + String(x.ai || '').replace(/[·:\n]/g, ' ') + ' · ' + (x.luc || '') + (x.ok ? '' : ' · lý do: ' + (x.lyDo || '')); }).join('\n');
@@ -9290,7 +9298,7 @@ function dhXnHenGhi_(o) {
 /* bộ phận nhận hàng ngay sau T theo cấu hình bán thành phẩm của mã; T ngoài cấu hình -> bộ phận kế tiếp đang ghi trên dòng */
 function dhBPSau_(ten, T, H) {   // 14/11: theo luồng mới – xem dhBSau ở web
   var ds = dhBTP_(ten, plPhanLoai_(ten, ''), dhBTPDoc_()).ds, co = function(k) { return ds.indexOf(k) >= 0; };
-  if (!co(T)) return (H && H.o === T && H.k) || '';
+  if (!co(T)) return (H && H.o === T && dhKs_(H.k)[0]) || '';
   var daTip = H && H.qua && H.qua.TIP != null && H.sl > 0 && H.qua.TIP >= H.sl;
   var M = { PHOI: co('SON') ? 'SON' : 'TARO', SON: co('UV') ? 'UV' : 'HT', UV: 'HT', TARO: 'HT', TIP: co('HT') ? 'HT' : 'DG', HT: co('TIP') && !daTip ? 'TIP' : 'DG', DG: '' };
   var k = M[T] || ''; while (k && !co(k)) k = M[k] || ''; return k;
