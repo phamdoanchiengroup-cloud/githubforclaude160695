@@ -294,7 +294,7 @@ function dhDocTab_(sh, tab, nam, gioiHan, meta) {
     }
   });
   var cMax = Math.max.apply(null, [cTen, cPhoi, cSL, cThieu, cDL, cCT, cKenh, cHanMoi, cGiao, cTra].concat(Object.keys(chang).map(function(k) { return chang[k]; }), Object.keys(hong).map(function(k) { return hong[k]; }), Object.keys(hen).map(function(k) { return hen[k]; }))) + 1;
-  if (meta) { meta.hdr = hi + 1; meta.qty = chang; meta.hen = hen; meta.ten = cTen; meta.sl = cSL; meta.thieu = cThieu; meta.dl = cDL; }   // 14/11: cột bộ phận để ghi đúng ô khi lưu giao/nhận
+  if (meta) { meta.hdr = hi + 1; meta.qty = chang; meta.hen = hen; meta.ten = cTen; meta.sl = cSL; meta.phoi = cPhoi; meta.thieu = cThieu; meta.dl = cDL; }   // 14/11: cột bộ phận để ghi đúng ô khi lưu giao/nhận
   var v = sh.getRange(1, 1, nr, Math.max(1, cMax)).getValues();
   var out = [], ma = '', trong = 0, uuDon = '', nhom = '';   // nhom: dòng tiêu đề nhóm ghi tên kênh (tab HT chép nhiều kênh vào 1 tab)
   for (var r2 = hi + 1; r2 < v.length; r2++) {
@@ -310,7 +310,7 @@ function dhDocTab_(sh, tab, nam, gioiHan, meta) {
       sl: sl, thieu: cThieu >= 0 ? Math.max(0, dhSo_(row[cThieu])) : Math.max(0, sl - (cTra >= 0 ? dhSo_(row[cTra]) : 0)),   // không có cột "Còn thiếu" -> đặt − đã trả (không coi là đã xong)
       dl: cDL >= 0 ? dhNgay_(row[cDL], nam) : '', qua: {}, hong: {},
       giao: cGiao >= 0 ? Math.max(0, dhSo_(row[cGiao])) : 0, daTra: cTra >= 0 ? Math.max(0, dhSo_(row[cTra])) : 0,
-      phoi: cPhoi >= 0 ? String(row[cPhoi] == null ? '' : row[cPhoi]).replace(/\s+/g, ' ').trim().slice(0, 120) : '',
+      phoi: cPhoi >= 0 ? String(row[cPhoi] == null ? '' : row[cPhoi]).replace(/[ \t]+/g, ' ').trim().slice(0, 500) : '',   // 15/11: cột LOẠI PHÔI = Note của mã hàng (hiện dưới tên trên web)
       chuThich: cCT >= 0 ? String(row[cCT] == null ? '' : row[cCT]).replace(/\s+/g, ' ').trim().slice(0, 200) : '' };
     dhMaDon_(o, nam);
     var uu = [];   // 03/11 (chủ dự án): mã có chữ "ưu tiên" ở bất kỳ ô nào của dòng (cột loại phôi, hạn mới, ghi chú…); giữ lời ghi kèm
@@ -420,7 +420,7 @@ function dhQuyenDon_(token) {
   if (!me) return { loi: sach_({ ok: false, hetHan: true, msg: 'Phiên đăng nhập đã hết hạn.' }) };
   if (me.vaiTro !== 'ADMIN' && me.vaiTro !== 'TP') return { loi: sach_({ ok: false, msg: 'Tab Đơn hàng mở cho ban điều hành và trưởng / phó phòng.' }) };
   var bp = dhBoPhanCua_(me);
-  return { me: me, bp: bp, xemTatCa: true, sua: me.laOwner ? ['*'] : (bp ? [bp] : []), thay: !!me.laOwner };
+  return { me: me, bp: bp, xemTatCa: true, sua: me.laOwner ? ['*'] : (bp ? [bp] : []), thay: !!me.laOwner, note: dhCoNote_(me) };
 }
 function dhXoaCacheDon_() {
   try {
@@ -565,7 +565,7 @@ function layDonHangXuong(token, lamMoi) {
   });
   return sach_({ ok: true, luc: d.luc, don: don, uu: uu, tre: tre, nhan: chNhan_(), tabMoi: d.tabMoi || [], tabBo: d.tabBo || [], tabPhu: tabPhu,
     cot: d.cot || {},   // 14/11: bản đồ cột SL/hẹn từng bộ phận theo tab (bảng đơn kiểu Sheet)
-    q: { bp: q.bp || '', xemTatCa: !!q.xemTatCa, sua: q.sua || [], thay: !!q.thay, ten: (q.me && q.me.ten) || '', vaiTro: (q.me && q.me.vaiTro) || '' },   // 14/11: quyền nhập của tài khoản
+    q: { bp: q.bp || '', xemTatCa: !!q.xemTatCa, sua: q.sua || [], thay: !!q.thay, note: !!q.note, ten: (q.me && q.me.ten) || '', vaiTro: (q.me && q.me.vaiTro) || '' },   // 14/11: quyền nhập của tài khoản
     bpDs: DH_BP.map(function(b) { return [b[0], b[1]]; }),   // 14/11: danh sách bộ phận để chọn bộ phận kế tiếp
     kenhDs: DH_TABS.map(function(t) { return [t, DH_NHAN_TAB[t] || t]; }).concat((d.tabMoi || []).map(function(t) { return [t, t]; })),   // 07/11: đủ mọi kênh (kể cả kênh chưa có đơn) cho bộ lọc + báo cáo
     cs: dhCongSuat_(), email: dhEmailTT_() });
@@ -1627,4 +1627,52 @@ function layThongKe(token, thang, lamMoi) {
   if (loi.length) kq.loi = loi;
   dhCacheGhi_(khoa, kq, kq.chuaChot ? 600 : 3600);
   return sach_(kq);
+}
+
+/* ===== 15/11 (chủ dự án): NOTE cho từng mã hàng = cột "LOẠI PHÔI" trong Sheet đơn (C067 vốn ghi chú ở cột này).
+   Mọi người xem tab Đơn hàng đều thấy; chỉ C019, C056, C067 (và chủ sở hữu) tạo / sửa / xóa. Một ghi chú mỗi mã, ghi đè được, có nhật ký.
+   Lưu ý: nội dung cột này cũng được dùng khi phân loại sản phẩm (vd "CHỈ ĐẶT NỐI"). */
+var DH_NOTE_NV = { C019: 1, C056: 1, C067: 1 };
+function dhCoNote_(me) {
+  if (!me) return false;
+  if (me.laOwner) return true;
+  var ma = String(me.maNV || '').trim().toUpperCase();
+  if (!DH_NOTE_NV[ma]) return false;
+  var n = doc_('TaiKhoan').filter(function(t) { return String(t.MaNV || '').trim().toUpperCase() === ma && String(t.TrangThai).trim() === 'Đang dùng'; }).length;
+  return n === 1;   // mã NV gắn đúng 1 tài khoản đang dùng (như Cấu hình gậy)
+}
+function luuGhiChuDon(token, p) {
+  var q = dhQuyenDon_(token); if (q.loi) return q.loi;
+  if (!q.note) return sach_({ ok: false, msg: 'Chỉ C019, C056, C067 được ghi Note cho mã hàng.' });
+  p = p || {};
+  var tab = String(p.tab || ''), dong = Number(p.dong) || 0;
+  if (!tab || dong < 2) return sach_({ ok: false, msg: 'Thiếu vị trí dòng đơn – mở lại tab Đơn hàng rồi thử lại.' });
+  var moi = String(p.note == null ? '' : p.note).replace(/\r/g, '').replace(/[ \t]+/g, ' ').trim().slice(0, 500);
+  var lock = LockService.getScriptLock();
+  try { lock.waitLock(20000); } catch (eL) { return sach_({ ok: false, msg: 'Sheet đang được người khác ghi – chờ vài giây rồi bấm lại.' }); }
+  try {
+    var ss = SpreadsheetApp.openById(DH_SHEET_ID), sh = dhTimTab_(ss, tab);
+    if (!sh) return sach_({ ok: false, msg: 'Không thấy tab "' + tab + '" trong Sheet đơn hàng.' });
+    if (dong > sh.getLastRow()) return sach_({ ok: false, msg: 'Dòng ' + dong + ' không còn trong Sheet (dòng bị xóa?).' });
+    var meta = dhMetaTab_(sh, tab);
+    if (!meta || meta.ten < 0) return sach_({ ok: false, msg: 'Không nhận ra cột tên hàng của tab "' + tab + '".' });
+    if (meta.phoi == null || meta.phoi < 0) return sach_({ ok: false, msg: 'Tab "' + tab + '" không có cột LOẠI PHÔI để ghi Note.' });
+    var c = meta.phoi + 1, r = sh.getRange(dong, 1, 1, Math.max(c, meta.ten + 1)).getValues()[0];
+    var ten = String(r[meta.ten] == null ? '' : r[meta.ten]).replace(/\s+/g, ' ').trim();
+    if (p.ten != null && plChuan_(ten) !== plChuan_(String(p.ten))) return sach_({ ok: false, msg: 'Dòng ' + dong + ' đã đổi trong Sheet – mở lại tab Đơn hàng rồi ghi lại.' });
+    var cu = String(r[c - 1] == null ? '' : r[c - 1]).replace(/\r/g, '').replace(/[ \t]+/g, ' ').trim();
+    if (p.cu != null && String(p.cu).replace(/\s+/g, ' ').trim() !== cu.replace(/\s+/g, ' ') && !p.boQua)
+      return sach_({ ok: false, xungDot: true, hienTai: cu, msg: 'Người khác vừa sửa Note của mã này thành: "' + cu.slice(0, 120) + '".' });
+    if (cu === moi) return sach_({ ok: true, khongDoi: true, msg: 'Không có thay đổi.', note: cu });
+    if (sh.getRange(dong, c).getFormula()) return sach_({ ok: false, msg: 'Ô ' + dhTenCot_(c) + dong + ' đang là CÔNG THỨC – web không ghi đè.' });
+    sh.getRange(dong, c).setValue(moi);
+    SpreadsheetApp.flush();
+    try { ghiLog_(q.me, 'Note mã hàng', ten.slice(0, 80), 'tab ' + tab + ' · dòng ' + dong, ('"' + cu + '" → "' + moi + '"').slice(0, 400)); } catch (eLog) {}
+    dhXoaCacheDon_();
+    return sach_({ ok: true, msg: moi ? 'Đã lưu Note.' : 'Đã xóa Note.', note: moi, ai: q.me.ten || q.me.tk, luc: Utilities.formatDate(new Date(), TZ_VN, 'dd/MM HH:mm') });
+  } catch (e) {
+    return sach_({ ok: false, msg: 'Không ghi được vào Sheet: ' + (e && e.message || e) });
+  } finally {
+    try { lock.releaseLock(); } catch (e2) {}
+  }
 }

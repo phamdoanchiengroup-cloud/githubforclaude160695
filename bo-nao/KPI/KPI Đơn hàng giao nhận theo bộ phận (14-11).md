@@ -58,3 +58,10 @@ Liên quan: [[KPI Quy trình sản xuất]] · [[KPI Điều phối sản xuất
 - Chủ dự án chốt: **1** = WEB LẺ ĐƠN THƯỜNG + WEB LẺ CUSTOM + **mọi tab POD** (`/^POD/`); **2** = đơn trễ hạn (dòng đã qua deadline **hoặc** tên hàng trong tab TRỄ HẠN) + đơn ưu tiên (ghi "ưu tiên" / tên trong tab ĐƠN ƯU TIÊN, dòng Kho); **3** = còn lại. Trong mỗi bậc **deadline sớm trước** (bậc 2 trộn trễ + ưu tiên).
 - Sửa `dhBacDong` / `dhBac` (mặc định 3), `DH_SO_BAC=3`; `dhMoPhong` không đổi → áp cho Ngày dự kiến xong, Thử nhận đơn, Thử đẩy ưu tiên, Thống kê theo kênh (hạn đề xuất, bảng "Thứ tự làm – 3 bậc", Bậc 1 quá hạn), chữ giải thích.
 - Kiểm thử: `thu/bac.js` (dữ liệu giả) – 9 ca phân bậc + mô phỏng thứ tự A2, A1 (bậc 1 theo deadline) → B1, B2 → C1; khung thử 30/30.
+
+## 15/11 – Note cho từng mã hàng (cột LOẠI PHÔI)
+- Chủ dự án chốt: dùng luôn cột **LOẠI PHÔI** của Sheet đơn (C067 vốn ghi chú ở đây), hiện cả ghi chú có sẵn; **mọi người xem tab Đơn hàng đều thấy**; **một Note mỗi mã, sửa được**; chỉ **C019, C056, C067** (+ chủ sở hữu) tạo / sửa / xóa.
+- Máy chủ (`don-hang.gs`): `o.phoi` giữ 500 ký tự; `meta.phoi`; `DH_NOTE_NV`, `dhCoNote_` (mã NV gắn đúng 1 tài khoản đang dùng, như Cấu hình gậy) → `q.note`; `luuGhiChuDon(token,{tab,dong,ten,cu,note,boQua})` – khóa, kiểm tên hàng (dòng lệch), xung đột khi người khác vừa sửa, không ghi đè công thức, nhật ký "Note mã hàng", xóa nhớ tạm.
+- Web: `dhNoteO` dưới tên ở cột Mã sản phẩm (ô vàng 📝; "+ Note" / bấm để sửa, textarea + Lưu / Hủy), `dhNoteLuu`. Bản chép (tab ĐƠN ƯU TIÊN / TRỄ HẠN) chỉ xem.
+- Lưu ý: chữ trong LOẠI PHÔI cũng dùng khi phân loại SKU (vd "CHỈ ĐẶT NỐI") – đã có từ trước. Tab Đơn hàng chỉ mở cho ADMIN + TP: nếu C019/C056/C067 là vai trò khác thì chưa vào được tab.
+- Kiểm thử: `thu/note.js` (máy chủ, giả lập) 7/7; `thu/noteweb.js` 10/10 (máy tính + điện thoại); khung thử 30/30.
