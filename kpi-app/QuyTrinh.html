@@ -200,10 +200,8 @@ details.dh-doc[open]{background:var(--bg2,rgba(127,127,127,.08));border-left:3px
 /* 14/11 tối: dải màu theo đơn, ô cấu hình, bảng nổi nhập liệu */
 .dh-sh tr.dh-d1 td{background:rgba(var(--acc-rgb),.07)}
 .dh-sh tr.dh-dmoi td{border-top:2px solid rgba(var(--acc-rgb),.35)}
-.dh-sh td.dh-cfg{min-width:220px;max-width:260px;white-space:normal;line-height:1.35}
-.dh-sh td.dh-cfg small{display:block;font-size:11.5px;color:var(--ink2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:240px}
-.dh-sh td.dh-cfg b{display:inline-block;max-width:180px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;vertical-align:bottom}
-.dh-sh td.dh-cfg .dh-bv{margin:0 0 0 6px;padding:0 7px;font-size:11px;vertical-align:bottom}
+.dh-sh td.dh-cfg,.dh-sh th.dh-cfgh{width:34px;min-width:34px;max-width:34px;padding-left:2px!important;padding-right:2px!important;text-align:center}
+.dh-sh td.dh-cfg .dh-bv{margin:0;padding:2px 4px;font-size:14px;line-height:1;border-radius:6px}
 .dh-bv{margin-top:4px;border:1px solid var(--cyan);background:transparent;color:var(--cyan);border-radius:999px;font:600 11.5px inherit;padding:2px 9px;cursor:pointer}
 .dh-noi{position:fixed;inset:0;z-index:400;background:rgba(3,6,12,.6);display:flex;align-items:center;justify-content:center;padding:16px}
 .dh-noi-in{position:relative;width:min(760px,100%);max-height:calc(100vh - 32px);overflow:auto;background:var(--panel);border:1px solid var(--cyan);border-radius:16px;padding:18px 18px 14px;box-shadow:0 30px 80px rgba(0,0,0,.6)}
@@ -2484,9 +2482,9 @@ function dhVeBang(ds){
       : (tab?'Đang xem tab <b>'+esc(tab)+'</b>. ':'')+'Mỗi dòng là <b>một mã sản phẩm</b> – SL và hẹn nhập riêng cho mã đó (không nhập theo tổng đơn), vì bán thành phẩm mỗi mã một khác. Ô số lượng là <b>lũy kế</b> như trong Sheet (gõ số mới, không cộng thêm). '+
         (coQuyen?'Bấm ô <span style="color:var(--cyan)">xanh</span> hoặc nút Nhập để nhập SL, hẹn trả, chọn bộ phận kế tiếp và xác nhận đã nhận hàng.':'Tài khoản của bạn chỉ xem – việc nhập do trưởng phòng bộ phận thực hiện.'))+'</div>';
   if(!bps.length) return h+'<div class="pdesc">Sheet đơn hàng chưa có cột số lượng của bộ phận (Phôi / Sơn / Taro / Làm đầu / UV / Hoàn thiện / Đóng gói).</div></div>';
-  var y=x.slice(0,DHB.het||120), colW=9+bps.length*2, dem={};
+  var y=x.slice(0,DHB.het||120), colW=8+(dhCoBV()?1:0)+bps.length*2, dem={};
   x.forEach(function(o){ var s=o.tab+'|'+o.maDon; dem[s]=(dem[s]||0)+1; });
-  h+='<div class="dh-shw"><table class="dh-sh"><thead><tr><th rowspan="2" class="c1">Mã đơn</th><th rowspan="2" class="c2">Mã sản phẩm</th><th rowspan="2" class="dh-cfgh">Cấu hình</th><th rowspan="2" class="qt-so">SL đặt</th><th rowspan="2" class="qt-so">Còn thiếu</th><th rowspan="2">Hạn</th>';
+  h+='<div class="dh-shw"><table class="dh-sh"><thead><tr><th rowspan="2" class="c1">Mã đơn</th><th rowspan="2" class="c2">Mã sản phẩm</th>'+(dhCoBV()?'<th rowspan="2" class="dh-cfgh" title="Bản vẽ cấu hình gậy">📐</th>':'')+'<th rowspan="2" class="qt-so">SL đặt</th><th rowspan="2" class="qt-so">Còn thiếu</th><th rowspan="2">Hạn</th>';
   bps.forEach(function(k){ h+='<th colspan="2" style="text-align:center'+(k===bp?';color:var(--cyan)':'')+'">'+esc(dhBPTen(k))+'</th>'; });
   h+='<th rowspan="2">Đang ở / kế tiếp</th><th rowspan="2">Xác nhận đã nhận</th><th rowspan="2"></th></tr><tr>';
   bps.forEach(function(k){ h+='<th class="qt-so"'+(k===bp?' style="color:var(--cyan)"':'')+'>SL</th><th'+(k===bp?' style="color:var(--cyan)"':'')+'>Hẹn</th>'; });
@@ -2498,7 +2496,7 @@ function dhVeBang(ds){
     h+='<tr class="dh-d'+bang+(dau?' dh-dmoi':'')+(cua?' cua':'')+(o.thieu<=0&&!d.o?' xong':'')+'">'+
       '<td class="c1" data-t="'+esc(o.tab)+'" data-d="'+o.dong+'" onclick="dhBMo(this.dataset.t,+this.dataset.d)"><a href="#" onclick="return false">'+esc(o.maDon||'(không mã)')+'</a><div class="dh-bkenh">'+esc(o.kenh)+'</div></td>'+
       '<td class="c2">'+esc(o.ten)+(dem[sk]>1?' <span class="dh-bkenh" title="Đơn này có '+dem[sk]+' mã sản phẩm – mỗi mã nhập SL/hẹn riêng">mã '+vt+'/'+dem[sk]+'</span>':'')+'</td>'+
-      '<td class="dh-cfg">'+dhCfgO(o)+'</td>'+
+      (dhCoBV()?'<td class="dh-cfg">'+dhCfgO(o)+'</td>':'')+
       '<td class="qt-so">'+qtSo(o.sl,0)+'</td><td class="qt-so"><b>'+(o.thieu?qtSo(o.thieu,0):'–')+'</b></td><td>'+(o.dl?dhNg(o.dl):'–')+'</td>';
     bps.forEach(function(k){
       var v=o.qua?o.qua[k]:null, hen=o.hen?o.hen[k]:'', ngoa=!dhBTrongRoute(o,k), co=c.qty[k]!=null&&dhBCo(k)&&!o.phu, at=' data-t="'+esc(o.tab)+'" data-d="'+o.dong+'"'+(co?' onclick="dhBMo(this.dataset.t,+this.dataset.d)" title="'+(ngoa?'Ngoài cấu hình BTP của mã này – bấm để nhập nếu cần':'Bấm để nhập')+'"':'');
@@ -2519,12 +2517,10 @@ function dhVeBang(ds){
 }
 function theoCount(ds,tab){ var n=0; (ds||[]).forEach(function(o){ if(o.tab===tab) n++; }); return n; }
 /* 14/11 tối (chủ dự án): ô Cấu hình lấy từ phân loại / tab Cấu hình gậy (chữ cho mọi người); bản vẽ to chỉ cho 4 mã NV có quyền (ME.cg) */
-function dhCfgO(o){ var p=o.pl||{}, dg=p.dong&&DH.dongMap&&DH.dongMap[p.dong], t=function(b,k){ return k&&k!=='KHONG'?dhTen(b,k):''; };
-  var dong=dg?dg[1]:(p.loai?PL_LOAI_TEN(p.loai):''), ct=[['Chuôi',t('chuoi',p.chuoi)],['Ngọn',t('ngon',p.ngon)],['Tip',t('tip',p.tip)],['Ren',t('ren',p.ren)]].filter(function(x){return x[1];});
-  var full=ct.map(function(x){return x[0]+': '+x[1];}).join(' · ');
-  var h='<b title="'+esc(full)+'">'+esc(dong||'(chưa phân loại)')+'</b>'+(ct.length?'<small title="'+esc(full)+'">'+esc(full)+'</small>':'');
-  if(dg&&/^(GAY|CHUOI|NGON)$/.test(dg[2])&&window.ME&&ME.cg) h+='<button class="dh-bv" type="button" data-m="'+esc(p.dong)+'" onclick="event.stopPropagation();dhCgXem(this.dataset.m)">📐 Bản vẽ</button>';
-  return h; }
+/* 14/11 tối (chủ dự án): cột Cấu hình chỉ còn nút bản vẽ, cột nhỏ nhất; chỉ hiện với 4 mã NV có quyền xem bản vẽ (ME.cg) */
+function dhCoBV(){ return !!(window.ME&&ME.cg); }
+function dhCfgO(o){ var p=o.pl||{}, dg=p.dong&&DH.dongMap&&DH.dongMap[p.dong];
+  return (dg&&/^(GAY|CHUOI|NGON)$/.test(dg[2]))?'<button class="dh-bv" type="button" title="Bản vẽ: '+esc(dg[1])+'" aria-label="Bản vẽ '+esc(dg[1])+'" data-m="'+esc(p.dong)+'" onclick="event.stopPropagation();dhCgXem(this.dataset.m)">📐</button>':''; }
 function dhCgXem(ma){
   var o=document.createElement('div'); o.className='cg-phong dh-cgp'; o.innerHTML='<button type="button" aria-label="Đóng">✕</button><div class="cg-phong-in"><div class="pdesc">Đang tải bản vẽ…</div></div>';
   o.onclick=function(e){ if(e.target===o||e.target.tagName==='BUTTON') o.remove(); }; document.body.appendChild(o);
