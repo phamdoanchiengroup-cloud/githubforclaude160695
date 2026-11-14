@@ -7674,7 +7674,7 @@ function danhSachVanPhong(token) {
   ds.sort(function(a, b) { return (thuTu[a.vaiTro] - thuTu[b.vaiTro]) || (a.HoTen < b.HoTen ? -1 : 1); });
   return sach_({ ok: true, ds: ds, muc: HS_MUC });
 }
-var KPI_BAN_MAY = '14/11/2026 22:41';   // giờ dựng Code.gs (22/10)
+var KPI_BAN_MAY = '14/11/2026 23:14';   // giờ dựng Code.gs (22/10)
 /* =====================================================================
    KỸ NĂNG (22/10, chủ dự án nhờ thiết kế + tham khảo chuyên gia nhân sự / đào tạo)
    - Danh mục: trưởng / phó phòng đề xuất kỹ năng của xưởng (tên, mô tả, tiêu chí đạt, công đoạn liên quan)
@@ -9400,7 +9400,9 @@ function dhDocChup_() {   // -> { 'yyyy-MM-dd': [[k, sl, thieu, giao, dl, st], .
 function dhChup_(lamMoi) {
   var hom = homNayVN_(), sh = ss_().getSheetByName(DH_CHUP);
   if (sh && sh.getLastRow() >= 2 && sh.getRange(2, 1, sh.getLastRow() - 1, 1).getDisplayValues().some(function(r) { return String(r[0]) === hom; })) return false;
-  var d = dhDocDon_(!!lamMoi), ks = dhKhoaDs_(d.don), rowsC = d.don.map(function(o, i) { return [ks[i], o.sl, o.thieu, o.giao || 0, o.dl || '', dhTrangThai_(o, hom)]; });
+  var d = dhDocDon_(!!lamMoi), ks = dhKhoaDs_(d.don), rowsC = d.don.map(function(o, i) { var x = [ks[i], o.sl, o.thieu, o.giao || 0, o.dl || '', dhTrangThai_(o, hom), 0];   // 16/11: cột 7 = 0 (dòng thường) đánh dấu bản chụp mới
+    if (o.hong && Object.keys(o.hong).length) x.push(o.hong);   // 16/11: cột 8 = hỏng cần làm bù từng bộ phận (để tính hỏng phát sinh theo ngày)
+    return x; });
   var su = [];   // 07/11: dòng hôm trước còn trong tab kênh, nay đã chuyển sang tab HT -> thêm vào bản chụp với cờ 1 (cột 7) để tính sản lượng + sự kiện hoàn thiện
   try { var kq = dhTimChuyenHT_(rowsC, hom); rowsC = rowsC.concat(kq.dong); su = kq.su; } catch (eHT) { try { ghiLog_({ tk: 'HE_THONG', ten: 'Hệ thống' }, 'Đọc tab HT lỗi', String(eHT && eHT.message || eHT).slice(0, 200), '', ''); } catch (e2) {} }
   var str = JSON.stringify(rowsC);
@@ -9418,7 +9420,8 @@ function dhChup_(lamMoi) {
     for (var r = v.length - 1; r >= 0; r--) if (bo[v[r]]) sh.deleteRow(r + 2);
   }
   try { dhGhiHoanThien_(su); } catch (e) {}
-  try { dhGhiSanLuong_(dhDocChup_()); } catch (e) {}   // 07/11: lưu tổng sản lượng nhập theo ngày (giữ lâu dài)
+  var chAll = null; try { chAll = dhDocChup_(); dhGhiSanLuong_(chAll); } catch (e) {}   // 07/11: lưu tổng sản lượng nhập theo ngày (giữ lâu dài)
+  try { dhGhiHong_(chAll || dhDocChup_()); } catch (e) {}   // 16/11: hỏng phát sinh theo ngày (giữ lâu dài)
   return true;
 }
 /* Gọi từ trigger 9h sáng (snapshotKPIHangNgay) – không cho gọi từ web */
@@ -9690,6 +9693,38 @@ function dhGhiSanLuong_(ch) {
   if (sh.getLastRow() >= 2) { var lai = {}; sh.getRange(2, 1, sh.getLastRow() - 1, 1).getDisplayValues().forEach(function(r) { lai[String(r[0])] = 1; }); rows = rows.filter(function(r) { return !lai[r[0]]; }); }   // người khác vừa ghi
   if (!rows.length) return 0;
   sh.getRange(sh.getLastRow() + 1, 1, rows.length, DH_SL_COT.length).setNumberFormat('@').setValues(rows.map(function(r) { return r.map(String); }));
+  return rows.length;
+}
+/* 16/11 (chuyên gia vận hành, chủ dự án duyệt làm báo cáo hàng hỏng): cột "Hỏng cần làm bù" là số cộng dồn, không có ngày.
+   Mỗi ngày so bản chụp hôm nay với hôm trước: hỏng phát sinh = max(0, hỏng nay − hỏng trước) theo từng dòng × bộ phận (giảm = đã làm bù / sửa số, không trừ).
+   Chỉ tính khi bản chụp hôm trước đã là dạng mới (có cột 7) – tránh dồn cả số hỏng cũ vào ngày đầu. Lưu lâu dài ở sheet ẩn DonHangHong. */
+var DH_HONG = 'DonHangHong', DH_HONG_COT = ['Ngay', 'TuNgay', 'Khoa', 'BP', 'Moi', 'SL'];
+function dhChupMoi_(a) { return (a || []).some(function(r) { return r.length >= 7 && r[6] === 0; }); }
+function dhTinhHong_(truoc, nay) {   // -> [[khoa, bp, moi, sl]]
+  var cu = {}; (truoc || []).forEach(function(r) { if (r[6] !== 1) cu[r[0]] = r[7] || {}; });
+  var out = [];
+  (nay || []).forEach(function(r) { if (r[6] === 1 || !r[7]) return; var c = cu[r[0]] || {};
+    Object.keys(r[7]).forEach(function(bp) { var m = (Number(r[7][bp]) || 0) - (Number(c[bp]) || 0); if (m > 0) out.push([r[0], bp, m, Number(r[1]) || 0]); }); });
+  return out;
+}
+function dhGhiHong_(ch) {
+  var ds = Object.keys(ch || {}).sort(); if (ds.length < 2) return 0;
+  var sh = ss_().getSheetByName(DH_HONG), daCo = {};
+  if (sh && sh.getLastRow() >= 2) sh.getRange(2, 1, sh.getLastRow() - 1, 1).getDisplayValues().forEach(function(r) { daCo[String(r[0])] = 1; });
+  var rows = [];
+  for (var i = 1; i < ds.length; i++) {
+    if (daCo[ds[i]] || !dhChupMoi_(ch[ds[i - 1]]) || !dhChupMoi_(ch[ds[i]])) continue;
+    var a = dhTinhHong_(ch[ds[i - 1]], ch[ds[i]]);
+    if (!a.length) a = [['', '', 0, 0]];   // dòng trống đánh dấu "đã tính ngày này"
+    a.forEach(function(x) { rows.push([ds[i], ds[i - 1], x[0], x[1], x[2], x[3]]); });
+  }
+  if (!rows.length) return 0;
+  khoa_();
+  sh = ss_().getSheetByName(DH_HONG);
+  if (!sh) { sh = ss_().insertSheet(DH_HONG); sh.getRange(1, 1, 1, DH_HONG_COT.length).setValues([DH_HONG_COT]).setFontWeight('bold'); sh.setFrozenRows(1); try { sh.hideSheet(); } catch (e) {} }
+  if (sh.getLastRow() >= 2) { var lai = {}; sh.getRange(2, 1, sh.getLastRow() - 1, 1).getDisplayValues().forEach(function(r) { lai[String(r[0])] = 1; }); rows = rows.filter(function(r) { return !lai[r[0]]; }); }
+  if (!rows.length) return 0;
+  sh.getRange(sh.getLastRow() + 1, 1, rows.length, DH_HONG_COT.length).setNumberFormat('@').setValues(rows.map(function(r) { return r.map(String); }));
   return rows.length;
 }
 function dhDocSanLuong_() {   // -> [[ngay, tuNgay, ra, sx, vao, ton, mat, tang, {kenh, loai, top}]] tăng dần theo ngày

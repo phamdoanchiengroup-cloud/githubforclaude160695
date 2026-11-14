@@ -3,6 +3,9 @@
 Nhóm: Chung · Cập nhật 02/11/2026
 Liên quan: [[00 Mục lục]] · [[Liên kết và công cụ]] · [[Việc chờ chủ dự án]] · [[Lần dán lên Apps Script]] · [[Quyết định của chủ dự án]] · [[KPI Kiểm thử]]
 
+## 16/11 – ĐANG LÀM: 3 phần học từ ERPNext (đọc [[KPI Học hỏi ERPNext (16-11)]] trước)
+- Đã xong bước 0 (lưu hỏng hằng ngày vào bản chụp → DonHangHong). Kế tiếp: phần 2 hạn chuẩn (chờ chủ dự án duyệt bảng số ngày chuẩn + đệm), rồi phần 1, phần 3. BOM chờ dữ liệu vật tư.
+
 ## 16/11 – Phôi 2 nhánh có 2 ô "Giao tiếp cho bộ phận" (đã push, chờ 2-CAP-NHAT.bat)
 - Chủ dự án trả lời: C019/C056/C067 đã có vai trò; Sheet không có công thức cộng cột Phôi. Plugin Manufacturing + Design: ListPlugins vẫn trống (chưa bật) – nhắc bật trong Customize rồi mở phiên mới. Sheet thật quá lớn để tải qua Drive (cần cách khác nếu muốn thử số thật). – [[KPI Đơn hàng giao nhận theo bộ phận (14-11)]]
 

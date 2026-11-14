@@ -21,3 +21,14 @@ Chủ dự án hỏi (16/11): nghiên cứu ERP (ERPNext, `frappe/erpnext`, 41k 
 - Giờ dừng máy (Downtime Entry) – chủ dự án đã chốt **không làm A3** (18/10).
 - Kiểm tra chất lượng KCS (Quality Inspection) – **chưa có KCS** (A5).
 - Kế toán, kho nhiều vị trí, số lô / serial, đơn giá giờ máy: ngoài phạm vi web KPI.
+
+## 16/11 – Chủ dự án chốt làm cả 3 phần + nghiên cứu BOM
+- Trả lời: (1) làm cả 3; (2) báo cáo hỏng: TP/PP xem, mỗi người chỉ bộ phận mình, ban điều hành xem hết; (3) có email 8h báo bộ phận hẹn trễ hạn chuẩn; (4) đưa hỏng vào báo cáo tháng / PDF lãnh đạo; (5) nghiên cứu định mức nguyên vật liệu (BOM).
+- Đã hỏi chuyên gia `quan-ly-van-hanh`. Góp ý chính:
+  - Hỏng không có ngày → lưu hỏng vào bản chụp 9h, **hỏng phát sinh = max(0, nay − hôm trước)**, lưu lâu dài theo ngày. Giờ công làm lại = SL hỏng × Σ(8h ÷ định mức) các công đoạn từ đầu luồng tới bộ phận hỏng. Chỉ số: tỷ lệ hỏng = hỏng phát sinh ÷ SL giao; giờ công làm lại; Pareto bộ phận × dòng × vật liệu; xu hướng 3 tháng. Số hỏng do bộ phận tự khai → nên kiểm chéo.
+  - Hạn chuẩn: lùi theo luồng từng mã, **ngày làm việc**; bảng số ngày chuẩn bộ phận × loại SKU do chủ duyệt (sau 2–3 tháng chỉnh theo thực tế); **một đệm chung trước Đóng gói** (1–2 ngày), không đệm từng bộ phận. Vàng = trễ hạn chuẩn trong đệm, đỏ = vượt đệm, đỏ đậm = trễ cả deadline; chưa hẹn mà còn ≤ 2 ngày tới hạn chuẩn cũng cảnh báo. Email chỉ dòng mới đỏ / vừa đổi, gom theo bộ phận.
+  - Dự báo: trung bình trượt có trọng số 3 tháng (50/30/20) theo kênh, theo số SP từng loại SKU; khoảng thấp–cao; nhãn "tin cậy thấp" khi < 6 tháng; ghi sai số thực tế mỗi tháng. Tải = công cần (định mức) ÷ công có; > 85% vàng, > 100% đỏ.
+  - BOM: chưa làm ngay; lộ trình: 5–8 vật tư chính, định mức tiêu hao theo nhóm SKU (loại × vật liệu) do tổ trưởng ước + kho kiểm, số xuất kho tháng; web tính nhu cầu (đơn mở + dự báo) và hao hụt.
+  - Thứ tự: lưu hỏng vào bản chụp ngay → hạn chuẩn → báo cáo hỏng (khi có ~1 tháng số) → dự báo → BOM.
+- **Đã làm (16/11)**: bản chụp 9h thêm cột 7 = 0 (dòng thường) + cột 8 = hỏng từng bộ phận; `dhChupMoi_`, `dhTinhHong_`, `dhGhiHong_` → sheet ẩn **DonHangHong** (Ngay, TuNgay, Khoa, BP, Moi, SL), chỉ tính khi cả 2 bản chụp là dạng mới. Kiểm thử giả lập 7/7.
+- **Còn làm**: phần 2 (hạn chuẩn + email), phần 1 (báo cáo hỏng, quyền theo bộ phận, báo cáo tháng / PDF), phần 3 (dự báo), BOM (chờ dữ liệu vật tư).
