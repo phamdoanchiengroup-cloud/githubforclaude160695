@@ -560,7 +560,8 @@ function layDonHangXuong(token, lamMoi) {
     return themBTP(x);
   });
   var uu = (d.uu || []).map(function(o) { var x = {}; for (var k in o) x[k] = o[k]; x.tenChuan = plChuan_(o.ten); x.pl = plPhanLoai_(o.ten, o.ghiChu, sua['K:' + x.tenChuan]); return themBTP(x); });
-  var csHC = dhCongSuat_(); try { dhGanHanChuan_(don, csHC); dhGanHanChuan_(uu, csHC); } catch (eHC) {}   // 14/11: hạn chuẩn từng bộ phận
+  var csHC = dhCongSuat_(); try { csHC.do = dhCsDo_(csHC); } catch (eDo) {}   // 14/11: công suất Đóng gói thực đo
+  try { dhGanHanChuan_(don, csHC); dhGanHanChuan_(uu, csHC); } catch (eHC) {}   // 14/11: hạn chuẩn từng bộ phận
   var tre = (d.tre || []).map(function(o) { return { ten: o.ten, tenChuan: plChuan_(o.ten), thieu: o.thieu }; });
   var tabPhu = {};   // 14/11: dòng của tab bản chép (ĐƠN ƯU TIÊN / TRỄ HẠN) – chỉ để hiện đủ tab như Sheet, không cộng vào tổng
   Object.keys(d.tabPhu || {}).forEach(function(t) {
@@ -1309,15 +1310,15 @@ function dhTienNgayLam_(d, n, laLam) { var x = d, k = n, an = 0; while (k > 0 &&
 function dhSoNgayLam_(a, b, laLam) { if (b <= a) return 0; var x = a, n = 0, an = 0; while (x < b && an++ < 800) { x = dhCongNgay_(x, 1); if (laLam(x)) n++; } return n; }   // số ngày làm trong (a, b]
 /* o: dòng đơn (sl, thieu, dl, qua, hen, p2, btp, pl). Trả { BP: { h: hạn chuẩn, n: số ngày chuẩn, m: mức | '', hen, tre: ngày làm trễ } } hoặc null */
 function dhHanChuan_(o, cs, hn, laLam) {
-  if (!o || !(o.thieu > 0) || !o.dl || !(o.sl > 0) || o.phu) return null;
+  var dl = (o && (o.dl || dhDlNgam_(o))) || ''; if (!o || !(o.thieu > 0) || !dl || !(o.sl > 0) || o.phu) return null;
   var loai = (o.pl && o.pl.loai) || ''; if (loai === 'PK' || loai === 'NOI') return null;
   var r = o.btp || [], co = function(k) { return r.indexOf(k) >= 0; }; if (!r.length) return null;
   laLam = laLam || dhNgayLamFn_(cs);
-  if (dhSoNgayLam_(o.dl, hn, laLam) > DH_HC_TRE_MAX) return null;
+  if (Math.round((new Date(hn + 'T12:00:00Z') - new Date(dl + 'T12:00:00Z')) / 864e5) > DH_HC_TRE_MAX) return null;   // trễ quá 30 ngày lịch (như web): chờ kênh đặt hạn mới
   var C = (cs && cs.bp) || dhCsBP_(null), sl = Number(o.sl) || 0, so = function(k) { return Math.max(1, Math.ceil(sl / (C[k] || 310))); };
   var laNgon = co('TARO') || co('TIP'), laChuoi = co('SON') || co('UV') || !laNgon, hai = laNgon && laChuoi && co('PHOI');
   var out = {}, dat = function(k, h, n) { if (!out[k] || h < out[k].h) out[k] = { h: h, n: n }; };
-  var dg = o.dl, cuoi = dg;   // mốc giao của bộ phận cuối luồng trước Đóng gói
+  var dg = dl, cuoi = dg;   // mốc giao của bộ phận cuối luồng trước Đóng gói
   if (co('DG')) { dat('DG', dg, so('DG')); cuoi = dhLuiNgayLam_(dg, so('DG') + DH_HC_DEM, laLam); }
   var chuoi = function(ds, phoiK) { var moc = cuoi, truoc = null;
     ds.forEach(function(k) { var kk = k === 'HT1' ? 'HT' : k; if (!co(kk === 'PHOI_C' || kk === 'PHOI_N' ? 'PHOI' : kk)) return;
@@ -1333,7 +1334,7 @@ function dhHanChuan_(o, cs, hn, laLam) {
     if (k === 'PHOI_N') return P2 ? (P2.n != null && P2.n >= sl) : (Number(qua.PHOI) || 0) >= sl;
     return (Number(qua[k]) || 0) >= sl; };
   var henK = function(k) { if (k === 'PHOI_C') return (P2 && P2.hc) || hen.PHOI || ''; if (k === 'PHOI_N') return (P2 && P2.hn) || hen.PHOI || ''; return hen[k] || ''; };
-  var muc = function(x, ngay) { if (ngay <= x.h) return ''; if (ngay > o.dl) return 'dd'; return dhSoNgayLam_(x.h, ngay, laLam) <= DH_HC_DEM ? 'vang' : 'do'; };
+  var muc = function(x, ngay) { if (ngay <= x.h) return ''; if (ngay > dl) return 'dd'; return dhSoNgayLam_(x.h, ngay, laLam) <= DH_HC_DEM ? 'vang' : 'do'; };
   var dau = {}, oDang = o.dn && o.dn.o ? dhKs_(o.dn.o)[0] : '', thuDang = oDang && DH_BP_TEN[oDang] ? dhBThuTu_(oDang) : -1;   // bộ phận đầu tiên chưa xong của mỗi nhánh (để cảnh báo "chưa hẹn"); hàng đang ở bộ phận nào thì các bộ phận trước coi như đã qua
   var daQua = function(k) { return thuDang >= 0 && dhBThuTu_(k.indexOf('PHOI') === 0 ? 'PHOI' : k) < thuDang; };
   [hai ? 'PHOI_C' : 'PHOI', 'SON', 'UV', 'HT', 'DG'].concat([hai ? 'PHOI_N' : 'PHOI', 'TARO', 'TIP', 'HT', 'DG']).reduce(function(st, k, i) {
@@ -1345,6 +1346,18 @@ function dhHanChuan_(o, cs, hn, laLam) {
   });
   return out;
 }
+/* 14/11 (chủ dự án + quan-ly-van-hanh): công suất Đóng gói THỰC ĐO = trung vị 10 ngày làm gần nhất có sản lượng > 0 (bỏ hôm nay);
+   dưới 5 ngày số -> null (web dùng công suất ở ⚙). Nhớ tạm 3 giờ. */
+function dhCsDo_(cs) {
+  var c = null; try { c = CacheService.getScriptCache(); var v = c.get('DH_CS_DO'); if (v) return JSON.parse(v); } catch (e) {}
+  var hn = homNayVN_(), laLam = dhNgayLamFn_(cs), dg = dhDongGoiNgay_(dhCongNgay_(hn, -40), dhCongNgay_(hn, -1)).ngay || {};
+  var a = Object.keys(dg).filter(function(d) { return laLam(d) && dg[d] > 0; }).sort().slice(-10).map(function(d) { return dg[d]; }).sort(function(x, y) { return x - y; });
+  var kq = a.length >= 5 ? { sp: Math.round(a.length % 2 ? a[(a.length - 1) / 2] : (a[a.length / 2 - 1] + a[a.length / 2]) / 2), n: a.length } : null;
+  try { if (c) c.put('DH_CS_DO', JSON.stringify(kq), 10800); } catch (e2) {}
+  return kq;
+}
+/* đơn lẻ (Web lẻ, POD) không ghi deadline: hạn ngầm = ngày đặt + 10 ngày lịch (chỉ để xếp lịch / hạn chuẩn) */
+function dhDlNgam_(o) { var t = String((o && o.tab) || '').toUpperCase().trim(); return o && !o.dl && o.ngayDat && (t === 'WEB LẺ CUSTOM' || t === 'WEB LẺ ĐƠN THƯỜNG' || /^POD/.test(t)) ? dhCongNgay_(o.ngayDat, 10) : ''; }
 function dhGanHanChuan_(ds, cs) { var hn = homNayVN_(), laLam = dhNgayLamFn_(cs); (ds || []).forEach(function(x) { var h = dhHanChuan_(x, cs, hn, laLam); if (h) x.hc = h; }); }
 var DH_HC_TEN = { PHOI: 'Phôi', PHOI_C: 'Phôi chuôi', PHOI_N: 'Phôi ngọn', SON: 'Sơn', TARO: 'Taro', UV: 'UV', HT: 'Hoàn thiện', TIP: 'Làm đầu', DG: 'Đóng gói' };
 var DH_HC_THU = ['PHOI', 'PHOI_C', 'PHOI_N', 'SON', 'TARO', 'UV', 'HT', 'TIP', 'DG'];

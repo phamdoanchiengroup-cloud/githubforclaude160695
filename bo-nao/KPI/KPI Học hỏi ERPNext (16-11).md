@@ -36,4 +36,11 @@ Chủ dự án hỏi (16/11): nghiên cứu ERP (ERPNext, `frappe/erpnext`, 41k 
   - Mức: vàng = trễ ≤ 2 ngày làm, đỏ = trễ hơn, đỏ đậm = sau deadline; chưa hẹn: chỉ xét bộ phận đầu tiên chưa xong mỗi nhánh (có cột ĐANG Ở BP thì tính từ đó), quá hạn → xếp mức theo hôm nay, còn ≤ 2 ngày → "sắp".
   - Web `quy-trinh-web.html`: chip ở ô hẹn (`dhHCChip`), thẻ **Hạn chuẩn bộ phận** dưới "Trễ hẹn ở bộ phận" (`dhVeHanChuan`: đỏ đậm / đỏ / vàng / sắp + **% hẹn đúng hạn chuẩn**, bấm bộ phận ra danh sách nhóm theo khối SKU); ⚙ Công suất có 8 ô công suất bộ phận.
   - Kiểm thử: `tests/han-chuan.js` 22/22 (không cần DATA); giả lập trình duyệt 1360 + 390 px: không lỗi, không tràn, đúng quyền.
+- **14/11 (sau) – Ngày dự kiến xong làm lại (chủ dự án chọn B + C, góp ý `quan-ly-van-hanh`).** Lý do: 3 bậc theo kênh đẩy đơn OEM/Kho trễ lùi mãi, cả nhà máy coi như 1 hàng đợi, không xét hàng đã tới bộ phận nào.
+  - **2 làn công suất** mỗi bộ phận mỗi ngày: 30% Dealer + Web lẻ thường + Web lẻ custom + POD, 70% đơn khác; phần dư của 2 làn gom lại (làn lẻ dùng trước). Trong làn: thử đẩy → dòng ưu tiên → deadline sớm.
+  - **Hạn ngầm đơn lẻ** (Web lẻ, POD) không ghi deadline = ngày đặt (theo mã đơn) + 10 ngày lịch (`dhDlNgam` web, `dhDlNgam_` máy chủ – dùng cả cho hạn chuẩn); không ngày đặt thì không có hạn ngầm (không lấy "hôm nay + 10" – chuyên gia: hạn sẽ trôi mãi). Không tính vào thống kê trễ; có chỉ số riêng "đơn lẻ quá 10 ngày".
+  - **Mô phỏng từng ngày qua từng bộ phận** (`dhSimDong`, `dhMoPhong`): chuôi Phôi chuôi → Sơn → UV → HT; ngọn Phôi ngọn → Taro → HT lượt 1 (chỉ tính thời gian) → Làm đầu → HT; rồi Đóng gói; bắt đầu từ số lũy kế trong Sheet + cột ĐANG Ở BP; hàng xong ở bộ phận trước sang ngày sau; không làm tròn từng bộ phận. Hoàn thiện 310 riêng nhánh chuôi + 310 nhánh ngọn (1 gậy = 1 sp).
+  - **Trễ > 30 ngày** chưa đặt Hạn mới: không xếp lịch, nhóm "chờ kênh đặt hạn mới"; đặt hạn mới (cột Hạn mới HT đơn cũ) thì tự vào lại.
+  - **2 ngày dự kiến**: theo công suất ⚙ và theo **công suất Đóng gói thực đo** = trung vị 10 ngày làm gần nhất có số (`dhCsDo_`, nhớ tạm 3 giờ, < 5 ngày thì không dùng).
+  - Kiểm thử: `tests/hai-lan-web.js` 11/11, `tests/han-chuan.js` 27/27; 1.500 dòng tính 0,17 giây.
 - **Còn làm**: phần 1 (báo cáo hỏng, quyền theo bộ phận, báo cáo tháng / PDF), phần 3 (dự báo), BOM (chờ dữ liệu vật tư).

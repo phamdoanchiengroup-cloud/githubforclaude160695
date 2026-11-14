@@ -1691,32 +1691,71 @@ function dhBac(g,mu,mtr){ var b=3; (g&&g.dong||[]).forEach(function(o){ if(o.thi
 /* 13/11 (chủ dự án chốt): xếp theo TỪNG DÒNG hàng – dòng nào khớp tên trong tab ƯU TIÊN / TRỄ HẠN thì dòng đó vào bậc đó,
    không kéo cả đơn; ngày xong của đơn = dòng xong muộn nhất.
    ut (13/11): bảng khóa 'mã|tab' -> mọi dòng của đơn đó lên TRƯỚC các bậc để thử "nếu ưu tiên đơn này thì đơn khác lùi bao nhiêu" */
-function dhMoPhong(don,them,ut){
+/* 14/11 (chủ dự án chốt B + C, góp ý quan-ly-van-hanh):
+   - 2 LÀN công suất mỗi bộ phận mỗi ngày: 30% cho kênh lẻ (Dealer, Web lẻ thường, Web lẻ custom, POD), 70% cho mọi đơn khác; phần làn nào dùng
+     không hết trong ngày thì làn kia dùng (làn lẻ còn hàng chờ thì làn 70% không lấy được phần 30%). Trong làn: đơn "thử đẩy" → dòng ưu tiên → deadline sớm.
+   - Đơn lẻ (Web lẻ, POD) không ghi deadline: HẠN NGẦM = ngày đặt (theo mã đơn) + 10 ngày lịch – chỉ để xếp lịch / hạn chuẩn, không tính thống kê trễ.
+   - Mô phỏng TỪNG NGÀY qua từng bộ phận theo luồng của mã (chuôi: Phôi chuôi → Sơn → UV → Hoàn thiện; ngọn: Phôi ngọn → Taro → HT → Làm đầu → HT; rồi Đóng gói),
+     hàng đã qua bộ phận nào (số lũy kế trong Sheet, cột ĐANG Ở BP) thì tính từ đó; số làm xong ở bộ phận trước sang ngày sau mới làm tiếp; không làm tròn từng bộ phận.
+   - Dòng trễ deadline > 30 ngày (chưa đặt hạn mới) KHÔNG xếp lịch, vào nhóm "chờ kênh đặt hạn mới"; đặt hạn mới thì tự vào lại.
+   - spDG: công suất Đóng gói (mặc định = công suất chung ở ⚙; truyền công suất thực đo để ra ngày dự kiến thứ 2). */
+var DH_LE_TAB={'WEB LẺ CUSTOM':1,'WEB LẺ ĐƠN THƯỜNG':1}, DH_LAN1=0.3, DH_HAN_NGAM=10;
+function dhLaLe(o){ var t=String((o&&o.tab)||'').toUpperCase().trim(); return !!DH_LE_TAB[t]||/^POD/.test(t); }
+function dhLan1(o){ var t=String((o&&o.tab)||'').toUpperCase().trim(); return !!DH_TAB_BAC1[t]||/^POD/.test(t); }
+function dhDlNgam(o){ return (o&&!o.dl&&o.ngayDat&&dhLaLe(o))?dhNgayCong(o.ngayDat,DH_HAN_NGAM):''; }
+function dhQua30(o,hn){ return !!(o&&o.dl&&dhCachNgay(o.dl,hn||dhHomNay())>DH_TRE_MAX); }
+var DH_SIM_C=['PHOI_C','SON','UV','HT'], DH_SIM_N=['PHOI_N','TARO','HT1','TIP','HT'];
+function dhSimDong(o,g,uu,dau,i){   /* -> dòng mô phỏng {g,lan,khoa,need,ch:[[{r,d}]],dg} */
+  var route=o?dhBRoute(o):['PHOI','SON','TARO','UV','HT','TIP','DG'], co=function(k){ return route.indexOf(k)>=0; };
+  var need=o?o.thieu:(g.thieu||0), sl=o?(Number(o.sl)||need):need, base=Math.max(0,sl-need), qua=(o&&o.qua)||{}, P2=(o&&o.p2)||null;
+  var laN=co('TARO')||co('TIP'), laC=co('SON')||co('UV')||!laN, ch=[];
+  var oD=o&&o.dn&&o.dn.o?dhKs(o.dn.o)[0]:'';
+  var qv=function(k){ if(!o) return 0; if(k==='PHOI_C') return P2&&P2.c!=null?P2.c:(Number(qua.PHOI)||0); if(k==='PHOI_N') return P2&&P2.n!=null?P2.n:(Number(qua.PHOI)||0); if(k==='HT1') return Number(qua.TIP)||0; return Number(qua[k])||0; };
+  [[laC,DH_SIM_C,'HT_C'],[laN,DH_SIM_N,'HT_N']].forEach(function(x){ if(!x[0]) return;
+    var st=x[1].filter(function(k){ var b=k.indexOf('PHOI')===0?'PHOI':(k==='HT1'?'HT':k); return co(b); });
+    if(!st.length) return;
+    var vi=oD?st.map(function(k){ return k.indexOf('PHOI')===0?'PHOI':(k==='HT1'?'HT':k); }).indexOf(oD):-1;
+    var d=st.map(function(k,j){ return j<vi?sl:qv(k); });
+    for(var j=d.length-2;j>=0;j--) if(d[j]<d[j+1]) d[j]=d[j+1];   /* lũy kế qua bộ phận trước ≥ bộ phận sau */
+    ch.push(st.map(function(k,j){ return {r:k==='HT1'?'':(k==='HT'?x[2]:k), d:Math.min(need,Math.max(0,d[j]-base))}; }));
+  });
+  return {g:g, lan:o?(dhLan1(o)?1:2):(g.lan||2), uu:dau?0:(uu?1:2), han:(o&&(o.dl||dhDlNgam(o)))||g.dl||'9999', i:i, need:need, ch:ch, dg:0, eta:''};
+}
+function dhMoPhong(don,them,ut,spDG){
   var c=dhCS(), hn=dhHomNay(), ds=don.slice(); if(them) ds.push(them);
-  var mt=dhUuTen(), mtr=dhTreTen(), dong=[], i=0;
-  ds.forEach(function(g){
-    var b0=(ut&&ut[g.ma+'|'+g.tab])?0:null, co=false;
-    (g.dong||[]).forEach(function(o){ if(!(o.thieu>0)||!dhLaSX(o)) return; co=true;
-      dong.push({g:g, thieu:o.thieu, dl:o.dl||'', bac:(b0!=null?b0:dhBacDong(o,mt,mtr)), i:i++}); });
-    if(!co) dong.push({g:g, thieu:g.thieu||0, dl:g.dl||'', bac:(b0!=null?b0:dhBac(g,mt,mtr)), i:i++});   /* đơn mới thử (không có dòng) */
+  var mt=dhUuTen(), mtr=dhTreTen(), L=[], i=0, bp=c.bp||{};
+  var cap={PHOI_C:bp.PHOI_C||250,PHOI_N:bp.PHOI_N||350,SON:bp.SON||310,TARO:bp.TARO||310,UV:bp.UV||310,HT_C:bp.HT||310,HT_N:bp.HT||310,TIP:bp.TIP||310,DG:spDG||c.sp||310,'':1e12};   /* Hoàn thiện: 310 cho nhánh chuôi + 310 cho nhánh ngọn (1 cây gậy = 1 sp, như hạn chuẩn); lượt 1 của ngọn chỉ tính thời gian */
+  ds.forEach(function(g){ var dau=!!(ut&&ut[g.ma+'|'+g.tab]), co=false, cho=0; g.cho=0;
+    (g.dong||[]).forEach(function(o){ if(!(o.thieu>0)||!dhLaSX(o)) return;
+      if(dhQua30(o,hn)&&!dau){ cho+=o.thieu; return; } co=true;
+      L.push(dhSimDong(o,g,dhLaUu(o,mt)||!!(mtr&&mtr[dhTenChuan(o.ten)]),dau,i++)); });
+    g.cho=cho;
+    if(!co&&!cho) L.push(dhSimDong(null,g,false,dau,i++));   /* đơn mới thử (không có dòng): đi đủ luồng gậy */
   });
-  dong.sort(function(a,b){ if(a.bac!==b.bac) return a.bac-b.bac; return String(a.dl||'9999').localeCompare(String(b.dl||'9999'))||(a.i-b.i); });
-  var ngay=dhNgayLamThu(hn,1), dung=0, sau=function(d){ return dhNgayLamThu(dhNgayCong(d,1),1); };
-  dong.forEach(function(l){ var can=l.thieu;
-    for(var k=0;k<5000;k++){ var con=c.sp-dung; if(can<=con){ dung+=can; l.eta=ngay; if(dung>=c.sp){ ngay=sau(ngay); dung=0; } break; } can-=con; ngay=sau(ngay); dung=0; }
-  });
+  L.sort(function(a,b){ return (a.uu-b.uu)||String(a.han).localeCompare(String(b.han))||(a.i-b.i); });
+  var lan={1:L.filter(function(l){return l.lan===1}),2:L.filter(function(l){return l.lan===2})}, R=Object.keys(cap), con=L.length, ngay=dhNgayLamThu(hn,1), E=1e-6;
+  for(var t=0;t<500&&con>0;t++){
+    L.forEach(function(l){ l.s=l.ch.map(function(x){ return x.map(function(y){ return y.d; }); }); l.sDG=l.dg; });   /* số đầu ngày: hàng làm xong hôm nay sang mai mới làm tiếp */
+    R.forEach(function(r){ var con1=cap[r]*DH_LAN1, con2=cap[r]-con1;
+      var lam=function(ds,lim){ for(var a=0;a<ds.length&&lim>E;a++){ var l=ds[a]; if(l.eta) continue;
+          if(r==='DG'){ var vao=l.ch.length?Math.min.apply(null,l.s.map(function(x){return x[x.length-1]})):l.need, q=Math.min(vao-l.sDG,l.need-l.dg,lim); if(q>E){ l.dg+=q; lim-=q; } continue; }
+          for(var z=0;z<l.ch.length&&lim>E;z++){ var x=l.ch[z]; for(var j=0;j<x.length&&lim>E;j++){ if(x[j].r!==r) continue;
+            var tr=j?l.s[z][j-1]:l.need, q2=Math.min(tr-l.s[z][j],l.need-x[j].d,lim); if(q2>E){ x[j].d+=q2; lim-=q2; } } } }
+        return lim; };
+      var du=lam(lan[1],con1)+lam(lan[2],con2); du=lam(lan[1],du); lam(lan[2],du); });   /* phần dư của cả 2 làn gom lại: làn lẻ dùng trước, còn thì làn kia */
+    L.forEach(function(l){ if(!l.eta&&l.dg>=l.need-E){ l.eta=ngay; con--; } });
+    ngay=dhNgayLamThu(dhNgayCong(ngay,1),1);
+  }
   var G={}, out=[];
-  dong.forEach(function(l){ var k=l.g.ma+'|'+l.g.tab, x=G[k];
-    if(!x){ x=G[k]={g:l.g, eta:'', bac:9}; out.push(x); }
-    if(l.bac<x.bac) x.bac=l.bac;
-    if(l.eta>x.eta) x.eta=l.eta; });
-  out.forEach(function(x){ var g=x.g; g.bac=x.bac; g.eta=x.eta;
-    g.lech=g.dl?dhCachNgay(g.dl,g.eta):null;
-    g.lop=!g.dl?'khong':(g.dl<hn?'tre':(g.eta>g.dl?'setre':'kip')); });
-  out.sort(function(a,b){ return String(a.g.eta).localeCompare(String(b.g.eta))||String(a.g.ma).localeCompare(String(b.g.ma)); });
+  ds.forEach(function(g){ var k=g.ma+'|'+g.tab; if(!G[k]){ G[k]={g:g,eta:'',lan:9}; out.push(G[k]); } });
+  L.forEach(function(l){ var x=G[l.g.ma+'|'+l.g.tab]; if(l.lan<x.lan) x.lan=l.lan; if((l.eta||'9999-12-31')>x.eta) x.eta=l.eta||'9999-12-31'; });
+  out.forEach(function(x){ var g=x.g; g.bac=dhBac(g,mt,mtr); g.lan=x.lan===9?(g.lan||2):x.lan; g.eta=x.eta;
+    g.lech=g.dl&&g.eta?dhCachNgay(g.dl,g.eta):null;
+    g.lop=!g.eta?'cho':(!g.dl?'khong':(g.dl<hn?'tre':(g.eta>g.dl?'setre':'kip'))); });
+  out.sort(function(a,b){ return String(a.g.eta||'0').localeCompare(String(b.g.eta||'0'))||String(a.g.ma).localeCompare(String(b.g.ma)); });
   return out.map(function(x){ return x.g; });
 }
-function dhCSDon(){ var sx=DH.don.filter(function(o){return o.thieu>0&&dhLaSX(o)}); return dhGomDon(sx).map(function(g){ var dl=''; g.dong.forEach(function(o){ if(o.thieu>0&&o.dl&&(!dl||o.dl<dl)) dl=o.dl; }); g.dl=dl; g.tatCa=DH.don.filter(function(o){return o.maDon===g.ma||(!o.maDon&&g.ma==='(không mã)')}); return g; }); }
+function dhCSDon(){ var sx=DH.don.filter(function(o){return o.thieu>0&&dhLaSX(o)}); return dhGomDon(sx).map(function(g){ var dl=''; g.dong.forEach(function(o){ if(o.thieu>0&&o.dl&&(!dl||o.dl<dl)) dl=o.dl; }); g.dl=dl; g.dlNgam=g.dong.map(dhDlNgam).filter(Boolean).sort()[0]||''; g.tatCa=DH.don.filter(function(o){return o.maDon===g.ma||(!o.maDon&&g.ma==='(không mã)')}); return g; }); }
 var DHCSThu=null, DHCSHet=50;
 /* 13/11 (chủ dự án): "Thử đẩy một đơn lên ưu tiên" – chọn theo MÃ ĐƠN hoặc TÊN HÀNG (cả hai), đẩy lên trước mọi bậc rồi
    so ngày xong cũ / mới của từng đơn: đơn được đẩy sớm bao nhiêu, các đơn khác lùi bao nhiêu ngày (kèm theo từng tab). */
@@ -1753,16 +1792,19 @@ function dhCSLuu(){ var sp=Number(($('dhCsSp')||{}).value), dong=String(($('dhCs
 /* một nơi tính duy nhất cho tab + báo cáo lãnh đạo (số phải khớp nhau) */
 function dhCSTinh(){
   var c=dhCS(), hn=dhHomNay(), don=dhMoPhong(dhCSDon()), sum=function(a){return a.reduce(function(s,g){return s+g.thieu},0)}, tong=sum(don);
-  var nhom={tre:[],setre:[],kip:[],khong:[]}; don.forEach(function(g){ nhom[g.lop].push(g); });
+  var nhom={tre:[],setre:[],kip:[],khong:[],cho:[]}; don.forEach(function(g){ nhom[g.lop].push(g); });
+  var spDo=c.do&&c.do.sp>0?c.do.sp:0;   /* 14/11: công suất Đóng gói thực đo (trung vị 10 ngày làm) – ngày dự kiến thứ 2 */
+  if(spDo){ var m2={}; dhMoPhong(dhCSDon(),null,null,spDo).forEach(function(g){ m2[g.ma+'|'+g.tab]=g.eta; }); don.forEach(function(g){ g.eta2=m2[g.ma+'|'+g.tab]||''; g.lech2=g.dl&&g.eta2?dhCachNgay(g.dl,g.eta2):null; }); }
+  var leQua=dhGomDon(DH.don.filter(function(o){ return o.thieu>0&&dhLaSX(o)&&!o.dl&&dhDlNgam(o)&&dhDlNgam(o)<hn; })).length;   /* đơn lẻ quá 10 ngày chưa xong (lời hứa với khách) */
   var treSp=sum(nhom.tre), tuan=[], dau=hn; for(var i=0;i<12;i++){ var cuoi=dhNgayCong(dau,(7-new Date(dau+'T00:00:00').getDay())%7); tuan.push([dau,cuoi]); dau=dhNgayCong(cuoi,1); }   /* tuần thứ 2 – chủ nhật */
   var ky=tuan.map(function(t){ var den=sum(don.filter(function(g){return g.dl&&g.dl>=hn&&g.dl<=t[1]})), nl=dhSoNgayLam(hn,dhNgayCong(t[1],1)), nang=nl*c.sp, phai=treSp+den; return {t:t,den:sum(don.filter(function(g){return g.dl&&g.dl>=t[0]&&g.dl<=t[1]})),phai:phai,nang:nang,nl:nl,tl:nang?phai/nang:9}; });
-  return {c:c,hn:hn,don:don,nhom:nhom,tong:tong,ngayCan:Math.ceil(tong/c.sp),xongHet:don.length?don[don.length-1].eta:hn,treSp:treSp,ky:ky,sum:sum};
+  return {c:c,hn:hn,don:don,nhom:nhom,spDo:spDo,leQua:leQua,tong:tong,ngayCan:Math.ceil(tong/c.sp),xongHet:(function(){ var a=don.filter(function(g){return g.eta&&g.eta<'9999'}); return a.length?a[a.length-1].eta:hn; })(),treSp:treSp,ky:ky,sum:sum};
 }
 function dhVeCongSuat(){
   var K=dhCSTinh(), c=K.c, hn=K.hn, don=K.don, sum=K.sum, tong=K.tong, nhom=K.nhom, ngayCan=K.ngayCan, xongHet=K.xongHet, treSp=K.treSp;
   var sl=DHTD&&DHTD.sanLuong?dhSLDong().slice(-7):null, tb=sl&&sl.length?sl.reduce(function(s,x){return s+x.sx},0)/Math.max(1,sl.reduce(function(s,x){return s+x.nl},0)):0;
   if(!DHTD) dhTaiTD();
-  var h='<div class="dh-ghi">Giả định: làm <b>mọi hàng sản xuất</b> (gậy + chuôi lẻ + ngọn lẻ, không tính phụ kiện / tay nối) với <b>'+qtSo(c.sp,0)+' sp/ngày</b> (≈ 26 công/tháng), thứ 2 – thứ 7, trừ '+c.nghi.filter(function(x){return x[0]>=hn}).length+' ngày nghỉ sắp tới; xếp theo <b>5 bậc</b> (ưu tiên → trễ hạn → dealer → kho → còn lại), trong mỗi bậc <b>deadline sớm trước</b>; ưu tiên / trễ hạn xét theo <b>từng dòng hàng</b> (tên hàng khớp tab ƯU TIÊN / TRỄ HẠN), không kéo cả đơn, và <b>deadline lấy cột "HẠN MỚI"</b> nếu có. Đây là ước tính ở mức toàn nhà máy, chưa tính xưởng nút cổ chai và hàng đang dở ở xưởng.'+(tb?' Sản lượng thực tế trung bình 7 lần chụp gần nhất: <b>'+qtSo(Math.round(tb),0)+' sp/ngày</b> ('+Math.round(tb/c.sp*100)+'% công suất).':'')+'</div>';
+  var h='<div class="dh-ghi">Giả định: làm <b>mọi hàng sản xuất</b> (gậy + chuôi lẻ + ngọn lẻ, không tính phụ kiện / tay nối) với <b>'+qtSo(c.sp,0)+' sp/ngày</b> (≈ 26 công/tháng), thứ 2 – thứ 7, trừ '+c.nghi.filter(function(x){return x[0]>=hn}).length+' ngày nghỉ sắp tới; chia <b>2 làn</b>: 30% cho Dealer / Web lẻ / POD, 70% cho đơn khác (làn dư thì làn kia dùng), trong làn dòng ưu tiên rồi <b>deadline sớm trước</b> (đơn lẻ không ghi deadline: hạn ngầm ngày đặt + '+DH_HAN_NGAM+' ngày); tính từng ngày qua từng bộ phận, hàng đang dở ở bộ phận nào tính từ đó; <b>deadline lấy cột "HẠN MỚI"</b> nếu có; dòng trễ quá '+DH_TRE_MAX+' ngày chờ hạn mới, không xếp lịch.'+(K.spDo?' Công suất Đóng gói thực đo (trung vị '+((c.do||{}).n||0)+' ngày làm): <b>'+qtSo(K.spDo,0)+' sp/ngày</b>.':'')+(K.leQua?' <b class="bad">'+K.leQua+' đơn lẻ đã quá '+DH_HAN_NGAM+' ngày</b> kể từ ngày đặt mà chưa xong.':'')+(tb?' Sản lượng thực tế trung bình 7 lần chụp gần nhất: <b>'+qtSo(Math.round(tb),0)+' sp/ngày</b> ('+Math.round(tb/c.sp*100)+'% công suất).':'')+'</div>';
   h+='<div class="dh-tl3"><div class="dh-tl uu"><span>Còn phải làm</span><b>'+qtSo(tong,0)+'</b><small>sp = <strong>'+ngayCan+' ngày làm</strong> · làm hết khoảng <strong>'+dhNg(xongHet)+'/'+xongHet.slice(0,4)+'</strong> nếu không nhận thêm đơn</small></div>'+
     '<div class="dh-tl do"><span>Đã quá hạn (hàng sản xuất)</span><b>'+qtSo(nhom.tre.length,0)+'</b><small>đơn · '+qtSo(treSp,0)+' sp = '+Math.ceil(treSp/c.sp)+' ngày làm chỉ để trả nợ</small></div>'+
     '<div class="dh-tl vang"><span>Chưa trễ nhưng sẽ trễ</span><b>'+qtSo(nhom.setre.length,0)+'</b><small>đơn · '+qtSo(sum(nhom.setre),0)+' sp · '+qtSo(nhom.kip.length,0)+' đơn kịp hạn</small></div></div>';
@@ -1785,7 +1827,7 @@ function dhVeCongSuat(){
   if(DHCSThu){ var g0={ma:'(đơn mới)',thieu:DHCSThu.sl,dl:DHCSThu.dl}, ds2=dhMoPhong(dhCSDon(),g0), den=sum(ds2.filter(function(g){return g.dl&&g.dl<=DHCSThu.dl})), nl=dhSoNgayLam(hn,dhNgayCong(DHCSThu.dl,1)), tl=nl?den/(nl*c.sp):9, ngay0=dhNgayLamThu(hn,Math.ceil(DHCSThu.sl/c.sp));
     var g1={ma:'(đơn mới – làm ngay)',thieu:DHCSThu.sl,dl:'0000-00-00'}, u1={}, ds3; u1[g1.ma+'|'+g1.tab]=1; ds3=dhMoPhong(dhCSDon(),g1,u1);   /* làm ngay = lên trước mọi bậc */
     var bi=ds3.filter(function(g){return g!==g1&&g.lop==='setre'}).length-don.filter(function(g){return g.lop==='setre'}).length;   /* số đơn đang kịp bị đẩy thành trễ nếu chen đơn mới lên đầu */
-    thu='<div class="dh-csthu '+(tl>1?'tre':(tl>0.85?'sap':'ok'))+'"><b>'+(tl>1?'Không khả thi':(tl>0.85?'Rủi ro':'Nhận được'))+'</b> – tải tới '+dhNg(DHCSThu.dl)+' là <b>'+Math.round(tl*100)+'%</b> ('+qtSo(den,0)+' sp phải xong / '+qtSo(nl*c.sp,0)+' sp làm được). Xếp theo 5 bậc rồi deadline, đơn mới xong khoảng <b>'+dhNg(g0.eta)+'</b>'+(g0.lech>0?' (trễ '+g0.lech+' ngày)':'')+'. Nếu làm ngay trước mọi đơn: xong khoảng <b>'+dhNg(ngay0)+'</b>'+(bi>0?', nhưng làm thêm '+bi+' đơn khác bị trễ':'')+'.</div>'; }
+    thu='<div class="dh-csthu '+(tl>1?'tre':(tl>0.85?'sap':'ok'))+'"><b>'+(tl>1?'Không khả thi':(tl>0.85?'Rủi ro':'Nhận được'))+'</b> – tải tới '+dhNg(DHCSThu.dl)+' là <b>'+Math.round(tl*100)+'%</b> ('+qtSo(den,0)+' sp phải xong / '+qtSo(nl*c.sp,0)+' sp làm được). Xếp theo 2 làn (đơn mới vào làn 70%) rồi deadline, đơn mới xong khoảng <b>'+dhNg(g0.eta)+'</b>'+(g0.lech>0?' (trễ '+g0.lech+' ngày)':'')+'. Nếu làm ngay trước mọi đơn: xong khoảng <b>'+dhNg(ngay0)+'</b>'+(bi>0?', nhưng làm thêm '+bi+' đơn khác bị trễ':'')+'.</div>'; }
   h+='<div class="card"><div style="font-weight:600;margin-bottom:4px">Thử nhận đơn mới</div><div class="dh-loc" style="display:flex;flex-wrap:wrap;gap:8px;align-items:center"><label>Số lượng <input id="dhCsSL" type="number" min="1" style="width:110px" value="'+(DHCSThu?DHCSThu.sl:'')+'"></label><label>Deadline <input id="dhCsDL" type="date" value="'+(DHCSThu?DHCSThu.dl:'')+'"></label><button class="btn sm" type="button" onclick="dhCSThu()">Tính</button>'+(DHCSThu?'<button class="btn sm" type="button" onclick="DHCSThu=null;dhVeLai()">Xoá</button>':'')+'</div>'+thu+'</div>';
   /* thử đẩy 1 đơn / 1 tên hàng lên trước mọi bậc -> các đơn khác lùi bao nhiêu ngày */
   var dsUt=[], utSeen={};
@@ -1798,6 +1840,7 @@ function dhVeCongSuat(){
     var duoc=[], lui=[], moiTre=0, tongLui=0, maxLui=0, theo={};
     moiU.forEach(function(g){
       var k=g.ma+'|'+g.tab, a=cuM[k]; if(!a) return;
+      if(!a.eta||!g.eta){ if(utK[k]&&g.eta) duoc.push({ma:g.ma,tab:g.tab,som:0}); return; }   /* 14/11: đơn trễ > 30 ngày chưa xếp lịch */
       var d=dhCachNgay(a.eta,g.eta);   /* > 0: xong muộn hơn lúc chưa đẩy ưu tiên */
       if(utK[k]){ duoc.push({ma:g.ma,tab:g.tab,som:-d}); return; }
       if(d>0){
@@ -1822,18 +1865,19 @@ function dhVeCongSuat(){
       var topLui=lui.slice().sort(function(a,b){ return b.d-a.d; }).slice(0,8);
       if(topLui.length) utKQ+='<div class="tw" style="margin-top:8px"><table class="dh-bang"><thead><tr><th>Đơn lùi nhiều nhất</th><th>Tab</th><th>Deadline</th><th>Xong cũ</th><th>Xong mới</th><th class="qt-so">Lùi</th></tr></thead><tbody>'+
         topLui.map(function(x){ return '<tr><td class="ma">'+esc(x.ma)+'</td><td>'+esc(x.tab)+'</td><td>'+dhNg(x.dl)+'</td><td>'+dhNg(x.cu)+'</td><td>'+dhNg(x.moi)+'</td><td class="qt-so"><span class="dh-han tre">+'+x.d+' ngày</span></td></tr>'; }).join('')+'</tbody></table></div>';
-      utKQ+=dhCachDoc('<b>Cách tính</b>: đơn / tên hàng đã chọn được xếp trước cả bậc 1, phần còn lại giữ nguyên thứ tự 3 bậc rồi deadline; máy làm '+qtSo(c.sp,0)+' sp/ngày, thứ 2 – thứ 7, trừ ngày nghỉ. <b>Lùi</b> = ngày xong mới − ngày xong cũ (ngày lịch); đơn được đẩy tính "sớm" theo cùng cách. Đây là ước tính toàn nhà máy, chưa tính hàng đang dở ở xưởng.');
+      utKQ+=dhCachDoc('<b>Cách tính</b>: đơn / tên hàng đã chọn được xếp <b>lên đầu làn của nó</b> (làn lẻ 30% hoặc làn 70%), các dòng khác giữ nguyên thứ tự (ưu tiên → deadline); tính từng ngày qua từng bộ phận, Đóng gói '+qtSo(c.sp,0)+' sp/ngày, thứ 2 – thứ 7, trừ ngày nghỉ. <b>Lùi</b> = ngày xong mới − ngày xong cũ (ngày lịch); đơn được đẩy tính "sớm" theo cùng cách. Đây là ước tính toàn nhà máy, chưa tính hàng đang dở ở xưởng.');
     }
   }
   h+='<div class="card"><div style="font-weight:600;margin-bottom:4px">Thử đẩy một đơn lên ưu tiên</div><div class="dh-loc" style="display:flex;flex-wrap:wrap;gap:8px;align-items:center"><label>Mã đơn hoặc tên hàng <input id="dhUtGT" list="dhUtDs" style="width:300px;max-width:100%" placeholder="vd #31/10 hoặc GẬY …" value="'+esc(DHUT?DHUT.nhan:'')+'"></label><button class="btn sm" type="button" onclick="dhUTinh()">Tính</button>'+(DHUT?'<button class="btn sm" type="button" onclick="dhUTXoa()">Xoá</button>':'')+'</div><datalist id="dhUtDs">'+dsUt.slice(0,600).map(function(x){ return '<option value="'+esc(x)+'"></option>'; }).join('')+'</datalist>'+utKQ+'</div>';
   /* bảng đơn theo nhóm */
-  var ten={tre:'Đã quá hạn',setre:'Chưa trễ nhưng dự kiến trễ',kip:'Dự kiến kịp hạn',khong:'Chưa có deadline'};
-  h+='<div class="card"><div style="font-weight:600;margin-bottom:4px">Ngày dự kiến xong từng đơn</div><div class="tw"><table class="dh-bang cs"><thead><tr><th>Mã đơn</th><th>Kênh · người đặt</th><th class="qt-so">Còn thiếu</th><th>Deadline</th><th>Dự kiến xong</th><th class="qt-so">Lệch</th><th>Hoàn thành</th></tr></thead><tbody>';
-  ['tre','setre','kip','khong'].forEach(function(k){ var a=nhom[k]; if(!a.length) return;
-    h+='<tr class="dh-khoi"><td colspan="2">'+ten[k]+' · '+a.length+' đơn</td><td class="qt-so">'+qtSo(sum(a),0)+' sp</td><td colspan="4"></td></tr>';
-    a.slice(0,DHCSHet).forEach(function(g){ h+='<tr><td class="ma">'+esc(g.ma)+'</td><td>'+esc(g.kenh)+(g.nguoiDat?' · '+esc(g.nguoiDat):'')+'</td><td class="qt-so"><b>'+qtSo(g.thieu,0)+'</b></td><td>'+dhNg(g.dl)+'</td><td>'+dhNg(g.eta)+'</td><td class="qt-so">'+(g.lech==null?'–':'<span class="dh-han '+(g.lech>0?'tre':'')+'">'+(g.lech>0?'trễ '+g.lech+' ngày':'sớm '+(-g.lech)+' ngày')+'</span>')+'</td><td>'+dhThanh(dhTienDo(g.tatCa),1)+'</td></tr>'; });
-    if(a.length>DHCSHet) h+='<tr><td colspan="7"><button class="btn sm" type="button" onclick="DHCSHet+=200;dhVeLai()">Xem thêm '+(a.length-DHCSHet)+' đơn</button></td></tr>'; });
-  h+='</tbody></table></div>'+dhCachDoc('<b>Dự kiến xong</b>: xếp theo <b>3 bậc</b> (1: Dealer, Web lẻ thường, Web lẻ custom, POD → 2: đơn trễ hạn + đơn ưu tiên → 3: còn lại) <b>theo từng dòng hàng</b>. Trong mỗi bậc deadline sớm trước, nhà máy làm '+qtSo(c.sp,0)+' sp/ngày vào các ngày làm việc (thứ 2 – thứ 7, trừ chủ nhật và ngày lễ); <b>đơn xong khi dòng cuối cùng xong</b> (ngày dự kiến xong của đơn = dòng xong muộn nhất). Deadline = cột <b>HẠN MỚI</b> nếu có, không thì deadline gốc. <b>Lệch</b> = dự kiến xong − deadline. Đơn quá hạn lâu nên hỏi lại kênh bán còn cần không trước khi dồn sức làm (chuyên gia khuyên giữ 60–70% công suất cho đơn trễ, phần còn lại cho đơn đúng hạn để không trễ dây chuyền).')+'</div>';
+  var ten={tre:'Đã quá hạn',setre:'Chưa trễ nhưng dự kiến trễ',kip:'Dự kiến kịp hạn',khong:'Chưa có deadline',cho:'Trễ quá '+DH_TRE_MAX+' ngày – chờ kênh đặt hạn mới (chưa xếp lịch)'}, spDo=K.spDo;
+  h+='<div class="card"><div style="font-weight:600;margin-bottom:4px">Ngày dự kiến xong từng đơn</div><div class="tw"><table class="dh-bang cs"><thead><tr><th>Mã đơn</th><th>Kênh · người đặt</th><th class="qt-so">Còn thiếu</th><th>Deadline</th><th>Dự kiến xong<br><small>('+qtSo(c.sp,0)+' sp/ngày)</small></th><th class="qt-so">Lệch</th>'+(spDo?'<th>Dự kiến xong<br><small>(thực đo '+qtSo(spDo,0)+')</small></th><th class="qt-so">Lệch</th>':'')+'<th>Hoàn thành</th></tr></thead><tbody>';
+  var lechO=function(v){ return v==null?'–':'<span class="dh-han '+(v>0?'tre':'')+'">'+(v>0?'trễ '+v+' ngày':'sớm '+(-v)+' ngày')+'</span>'; }, nCot=spDo?9:7;
+  ['tre','setre','kip','khong','cho'].forEach(function(k){ var a=nhom[k]; if(!a.length) return;
+    h+='<tr class="dh-khoi"><td colspan="2">'+ten[k]+' · '+a.length+' đơn</td><td class="qt-so">'+qtSo(sum(a),0)+' sp</td><td colspan="'+(nCot-3)+'"></td></tr>';
+    a.slice(0,DHCSHet).forEach(function(g){ h+='<tr><td class="ma">'+esc(g.ma)+'</td><td>'+esc(g.kenh)+(g.nguoiDat?' · '+esc(g.nguoiDat):'')+'</td><td class="qt-so"><b>'+qtSo(g.thieu,0)+'</b></td><td>'+(g.dl?dhNg(g.dl):(g.dlNgam?'<span title="Đơn lẻ không ghi deadline: hạn ngầm = ngày đặt + '+DH_HAN_NGAM+' ngày">~'+dhNg(g.dlNgam)+'</span>':'–'))+'</td><td>'+(g.eta?dhNg(g.eta):'<span class="pdesc">chờ hạn mới</span>')+'</td><td class="qt-so">'+(g.dl?lechO(g.lech):(g.dlNgam&&g.eta?lechO(dhCachNgay(g.dlNgam,g.eta)):'–'))+'</td>'+(spDo?'<td>'+(g.eta2?dhNg(g.eta2):'–')+'</td><td class="qt-so">'+(g.dl?lechO(g.lech2):(g.dlNgam&&g.eta2?lechO(dhCachNgay(g.dlNgam,g.eta2)):'–'))+'</td>':'')+'<td>'+dhThanh(dhTienDo(g.tatCa),1)+'</td></tr>'; });
+    if(a.length>DHCSHet) h+='<tr><td colspan="'+nCot+'"><button class="btn sm" type="button" onclick="DHCSHet+=200;dhVeLai()">Xem thêm '+(a.length-DHCSHet)+' đơn</button></td></tr>'; });
+  h+='</tbody></table></div>'+dhCachDoc('<b>Dự kiến xong</b> (14/11): mỗi bộ phận mỗi ngày chia <b>2 làn</b> – <b>30%</b> cho Dealer, Web lẻ thường, Web lẻ custom, POD và <b>70%</b> cho các đơn khác; làn nào dùng không hết thì làn kia dùng. Trong làn: dòng ưu tiên trước, rồi <b>deadline sớm</b> trước. Đơn lẻ (Web lẻ, POD) không ghi deadline lấy <b>hạn ngầm = ngày đặt + '+DH_HAN_NGAM+' ngày</b> (~dd/mm). Tính <b>từng ngày qua từng bộ phận</b> theo luồng của mã: hàng đã qua bộ phận nào (số trong Sheet, cột ĐANG Ở BP) thì tính từ đó, công suất từng bộ phận ở ⚙; Đóng gói '+qtSo(c.sp,0)+' sp/ngày'+(spDo?', cột thứ 2 dùng <b>công suất thực đo '+qtSo(spDo,0)+' sp/ngày</b> (trung vị Đóng gói '+((c.do||{}).n||0)+' ngày làm gần nhất)':' (chưa đủ 5 ngày số Đóng gói để tính công suất thực đo)')+'. Dòng <b>trễ quá '+DH_TRE_MAX+' ngày</b> không xếp lịch cho tới khi kênh đặt <b>Hạn mới</b>. Ngày làm việc: thứ 2 – thứ 7, trừ chủ nhật và ngày lễ; <b>đơn xong khi dòng cuối cùng xong</b> (ngày dự kiến xong của đơn = dòng xong muộn nhất). Deadline = cột <b>HẠN MỚI</b> nếu có, không thì deadline gốc. <b>Lệch</b> = dự kiến xong − deadline. Đơn quá hạn lâu nên hỏi lại kênh bán còn cần không trước khi dồn sức làm (chuyên gia khuyên giữ 60–70% công suất cho đơn trễ, phần còn lại cho đơn đúng hạn để không trễ dây chuyền).')+'</div>';
   var P3=h.length;
   /* cài đặt công suất + ngày nghỉ */
   h+='<details class="card dh-csdat"><summary style="cursor:pointer;font-weight:600">⚙ Công suất và ngày nghỉ</summary><div style="margin-top:8px;display:grid;gap:8px;max-width:520px">'+
@@ -2290,6 +2334,7 @@ function dhKet(o){   /* xưởng đầu tiên (theo thứ tự sản xuất) đ�
 }
 /* 13/11 (chủ dự án): THỐNG KÊ ĐƠN THEO TỪNG TAB/KÊNH + hạn đề xuất theo công suất.
    • 15/11: xếp theo 3 bậc: (1) DEALER + WEB LẺ ĐƠN THƯỜNG + WEB LẺ CUSTOM + mọi tab POD, (2) đơn trễ hạn + đơn ưu tiên, (3) còn lại.
+   • 14/11 (sau): ngày dự kiến xong tính theo 2 làn công suất (30% Dealer / Web lẻ / POD, 70% đơn khác), từng ngày qua từng bộ phận; đơn lẻ không deadline: hạn ngầm ngày đặt + 10 ngày; trễ quá 30 ngày chờ hạn mới; thêm cột công suất thực đo.
    • Trong mỗi bậc: deadline sớm trước; hết hàng vào ngày nào thì đó là HẠN ĐỀ XUẤT (dự kiến xong).
    • Công suất lấy ở ⚙ Công suất (mặc định 310 sp/ngày ≈ 26 công/tháng), thứ 2 – thứ 7, trừ chủ nhật và ngày lễ; chỉ tính hàng sản xuất (không tính phụ kiện / tay nối).
    • Tab TRỄ HẠN, ĐƠN ƯU TIÊN, HT-<năm> là bản chép -> không cộng trùng. */
@@ -2352,9 +2397,9 @@ function dhVeKenh(){
         '<td>'+nx(x.xong)+'</td></tr>';
     }).join('')+
     '<tr class="dh-khoi"><td>Tổng</td><td class="qt-so">'+qtSo(tongDon,0)+'</td><td class="qt-so">'+qtSo(DH.don.length,0)+'</td><td class="qt-so">'+qtSo(tong(DH.don,function(o){return o.sl;}),0)+'</td><td class="qt-so">'+qtSo(tong(DH.don),0)+'</td><td class="qt-so">1 → 5</td><td class="qt-so">'+qtSo(dsK.reduce(function(s,x){return s+x.tre;},0),0)+'</td><td class="qt-so">'+qtSo(dsK.reduce(function(s,x){return s+x.setre;},0),0)+'</td><td>'+nx(K.xongHet)+'</td></tr>'+
-    '</tbody></table></div>'+dhCachDoc('“Xong dự kiến” = ngày làm xong đơn cuối của kênh theo lịch xếp <b>3 bậc, trong bậc deadline sớm trước</b> ở công suất '+qtSo(c.sp,0)+' sp/ngày. Tab TRỄ HẠN / ĐƠN ƯU TIÊN / HT-<năm> là bản chép nên không cộng vào bảng này.')+'</div>';
+    '</tbody></table></div>'+dhCachDoc('“Xong dự kiến” = ngày làm xong đơn cuối của kênh theo lịch <b>2 làn (30% đơn lẻ / 70% đơn khác), trong làn deadline sớm trước</b>, Đóng gói '+qtSo(c.sp,0)+' sp/ngày. Tab TRỄ HẠN / ĐƠN ƯU TIÊN / HT-<năm> là bản chép nên không cộng vào bảng này.')+'</div>';
   /* thứ tự 3 bậc */
-  h+='<div class="card"><div style="font-weight:600;margin-bottom:4px">Thứ tự làm – 3 bậc</div><div class="tw"><table class="dh-bang kenh"><thead><tr><th class="qt-so">Bậc</th><th>Nhóm đơn</th><th class="qt-so">Đơn</th><th class="qt-so">Còn thiếu</th><th class="qt-so">Chia</th><th>Xong dự kiến</th><th class="qt-so">Quá hạn</th></tr></thead><tbody>'+
+  h+='<div class="card"><div style="font-weight:600;margin-bottom:4px">Nhóm đơn theo bậc ưu tiên <small style="font-weight:400;color:var(--ink3)">(ngày xong tính theo 2 làn 30/70)</small></div><div class="tw"><table class="dh-bang kenh"><thead><tr><th class="qt-so">Bậc</th><th>Nhóm đơn</th><th class="qt-so">Đơn</th><th class="qt-so">Còn thiếu</th><th class="qt-so">Chia</th><th>Xong dự kiến</th><th class="qt-so">Quá hạn</th></tr></thead><tbody>'+
     bacTk.map(function(x){ return '<tr><td class="qt-so"><b>'+x.b+'</b></td><td><b>'+esc(x.ten)+'</b>'+(x.note?'<div style="font-size:11px;color:var(--ink3)">'+esc(x.note)+'</div>':'')+'</td>'+
       '<td class="qt-so">'+qtSo(x.n,0)+'</td><td class="qt-so"><b>'+qtSo(x.sp,0)+'</b></td><td class="qt-so">'+(K.tong?Math.round(x.sp/K.tong*100)+'%':'–')+'</td>'+
       '<td>'+(x.n?nx(x.xong):'–')+'</td><td class="qt-so">'+(x.tre?'<span class="dh-han tre">'+x.tre+'</span>':'–')+'</td></tr>'; }).join('')+
@@ -2370,7 +2415,7 @@ function dhVeKenh(){
     '</tbody></table></div>';
   h+='<div class="dh-ghi" style="margin:6px 0 0">Bậc 1 = dòng ghi “ưu tiên”, tên hàng nằm trong tab “ĐƠN ƯU TIÊN”, và toàn bộ đơn ở tab WEB LẺ CUSTOM · WEB LẺ ĐƠN THƯỜNG · POD-A.BÁCH. Thiếu đơn nào thì ghi thêm chữ “ưu tiên” vào dòng đó trên Sheet.</div></div>';
   /* chi tiết từng kênh */
-  h+='<div class="card"><div style="font-weight:600;margin-bottom:4px">Chi tiết từng kênh (theo 3 bậc, trong bậc deadline sớm trước)</div>';
+  h+='<div class="card"><div style="font-weight:600;margin-bottom:4px">Chi tiết từng kênh (2 làn 30/70, trong làn deadline sớm trước)</div>';
   dsK.forEach(function(x){
     var gs=x.gs.slice().sort(function(a,b){ var u=bacGs(a)-bacGs(b); if(u) return u; return String(a.dl||'9999').localeCompare(String(b.dl||'9999'))||String(a.ma).localeCompare(String(b.ma)); });
     h+='<details style="border-top:1px solid var(--line);padding:7px 0"><summary style="cursor:pointer"><b>'+esc(x.ten)+'</b> · '+x.n+' đơn · còn thiếu <b>'+qtSo(x.thieu,0)+'</b> sp'+(!x.bac.length?'':' · bậc '+x.bac.join('·'))+(x.xong?' · xong dự kiến '+nx(x.xong):'')+'</summary>';
@@ -2385,7 +2430,7 @@ function dhVeKenh(){
     }
     h+='</details>';
   });
-  h+='<div class="dh-ghi" style="margin:6px 0 0"><b>Hạn đề xuất</b> = ngày dự kiến xong theo 3 bậc ở công suất '+qtSo(c.sp,0)+' sp/ngày (thứ 2 – thứ 7, trừ chủ nhật và ngày lễ); dùng để hẹn lại khách khi đơn chưa có deadline hoặc deadline cũ không còn phù hợp. “Lệch” = hạn đề xuất − deadline (dương = trễ). Đây là đề xuất trên web, <b>không tự ghi vào Sheet</b>.</div></div>';
+  h+='<div class="dh-ghi" style="margin:6px 0 0"><b>Hạn đề xuất</b> = ngày dự kiến xong theo 2 làn 30/70, Đóng gói '+qtSo(c.sp,0)+' sp/ngày (thứ 2 – thứ 7, trừ chủ nhật và ngày lễ); dùng để hẹn lại khách khi đơn chưa có deadline hoặc deadline cũ không còn phù hợp. “Lệch” = hạn đề xuất − deadline (dương = trễ). Đây là đề xuất trên web, <b>không tự ghi vào Sheet</b>.</div></div>';
   return h;
 }
 function dhBoTab(t,bo){ call('boQuaTabDon',[t,!!bo],function(r){ if(!r||!r.ok){toast((r&&r.msg)||'Không lưu được.');return;} toast(r.msg,true); dhTai(true); }); }
