@@ -7674,7 +7674,7 @@ function danhSachVanPhong(token) {
   ds.sort(function(a, b) { return (thuTu[a.vaiTro] - thuTu[b.vaiTro]) || (a.HoTen < b.HoTen ? -1 : 1); });
   return sach_({ ok: true, ds: ds, muc: HS_MUC });
 }
-var KPI_BAN_MAY = '14/11/2026 13:09';   // giờ dựng Code.gs (22/10)
+var KPI_BAN_MAY = '14/11/2026 13:17';   // giờ dựng Code.gs (22/10)
 /* =====================================================================
    KỸ NĂNG (22/10, chủ dự án nhờ thiết kế + tham khảo chuyên gia nhân sự / đào tạo)
    - Danh mục: trưởng / phó phòng đề xuất kỹ năng của xưởng (tên, mô tả, tiêu chí đạt, công đoạn liên quan)
@@ -9262,11 +9262,12 @@ function dhXnHenGhi_(o) {
     return b[1] + ': ' + (x.ok ? '✓' : '✗') + ' ' + dhDMY_(x.ngay) + ' · ' + String(x.ai || '').replace(/[·:\n]/g, ' ') + ' · ' + (x.luc || '') + (x.ok ? '' : ' · lý do: ' + (x.lyDo || '')); }).join('\n');
 }
 /* bộ phận nhận hàng ngay sau T theo cấu hình bán thành phẩm của mã; T ngoài cấu hình -> bộ phận kế tiếp đang ghi trên dòng */
-function dhBPSau_(ten, T, H) {
-  var ds = dhBTP_(ten, plPhanLoai_(ten, ''), dhBTPDoc_()).ds, i = ds.indexOf(T);
-  if (T === 'TIP' && ds.indexOf('HT') >= 0) return 'HT';   // 14/11: Làm đầu xong trả lại Hoàn thiện
-  if (i >= 0) return ds[i + 1] || '';
-  return (H && H.o === T && H.k) || '';
+function dhBPSau_(ten, T, H) {   // 14/11: theo luồng mới – xem dhBSau ở web
+  var ds = dhBTP_(ten, plPhanLoai_(ten, ''), dhBTPDoc_()).ds, co = function(k) { return ds.indexOf(k) >= 0; };
+  if (!co(T)) return (H && H.o === T && H.k) || '';
+  var daTip = H && H.qua && H.qua.TIP != null && H.sl > 0 && H.qua.TIP >= H.sl;
+  var M = { PHOI: co('SON') ? 'SON' : 'TARO', SON: co('UV') ? 'UV' : 'HT', UV: 'HT', TARO: 'HT', TIP: co('HT') ? 'HT' : 'DG', HT: co('TIP') && !daTip ? 'TIP' : 'DG', DG: '' };
+  var k = M[T] || ''; while (k && !co(k)) k = M[k] || ''; return k;
 }
 function dhTenCot_(c) { var t = ''; while (c > 0) { var m = (c - 1) % 26; t = String.fromCharCode(65 + m) + t; c = Math.floor((c - 1) / 26); } return t; }
 function dhSoVN_(n) { return String(Math.round(Number(n) || 0)).replace(/\B(?=(\d{3})+(?!\d))/g, '.'); }

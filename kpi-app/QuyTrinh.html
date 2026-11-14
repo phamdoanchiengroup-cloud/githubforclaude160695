@@ -2560,8 +2560,12 @@ function dhBNoi(){ try{ var nv=document.querySelector('.dh-nav'), hd=document.qu
 function dhBDong(){ DHB.mo=''; dhBNoi(); dhVeLai(); }
 document.addEventListener('keydown',function(e){ if(e.key==='Escape'&&document.getElementById('dhBNoi')) dhBDong(); });
 /* 14/11 tối (chủ dự án): bảng nổi gọn – mỗi mã sản phẩm: bộ phận nhập SỐ ĐÃ GIAO (lũy kế, hiện kiểu 15/30) + NGÀY HẸN TRẢ ĐỦ;
-   bộ phận sau Đồng ý / Không kịp với hẹn của bộ phận trước. Bỏ chọn kế tiếp, xác nhận nhận hàng, bảng công đoạn (rối). */
-function dhBSau(o,T){ var r=dhBRoute(o), i=r.indexOf(T), d=o.dn||{}; if(T==='TIP'&&r.indexOf('HT')>=0) return 'HT'; if(i>=0) return r[i+1]||''; return (d.o===T&&d.k)||''; }
+   bộ phận sau Đồng ý / Không kịp với hẹn của bộ phận trước. Bỏ xác nhận nhận hàng, bảng công đoạn (rối); 14/11 giữ lại ô chọn bộ phận kế tiếp. */
+/* bộ phận nhận tiếp theo luồng 14/11: Phôi → Sơn (chuôi) / Taro (ngọn lẻ); Sơn → UV → Hoàn thiện; Taro → Hoàn thiện; Hoàn thiện → Làm đầu (khi ngọn chưa làm đầu xong) rồi → Đóng gói; Làm đầu → trả Hoàn thiện */
+function dhBSau(o,T){ var r=dhBRoute(o), co=function(k){ return r.indexOf(k)>=0; }, d=o.dn||{};
+  if(!co(T)) return (d.o===T&&d.k)||'';
+  var M={PHOI:co('SON')?'SON':'TARO', SON:co('UV')?'UV':'HT', UV:'HT', TARO:'HT', TIP:co('HT')?'HT':'DG', HT:(co('TIP')&&dhBSo(o,'TIP')<o.sl)?'TIP':'DG', DG:''};
+  var k=M[T]||''; while(k&&!co(k)) k=M[k]||''; return k; }
 function dhBSo(o,k){ var v=o.qua?o.qua[k]:null; return (v==null?0:v); }
 function dhBForm(o){
   var q=(DH&&DH.q)||{}, bp=q.bp||'', toan=((q.sua||[]).indexOf('*')>=0), coQuyen=((q.sua||[]).length>0), c=dhBCot(o), d=o.dn||{}, bps=dhBDS(), route=dhBRoute(o);
@@ -2580,8 +2584,12 @@ function dhBForm(o){
   if(coSL) h+='<div class="dh-f-o"><label for="dhBSL">'+esc(dhBPTen(dep))+' đã giao (cộng dồn)</label><div class="dh-f-sl"><input id="dhBSL" type="number" inputmode="numeric" min="0" max="'+o.sl+'" step="1" value="'+dhBSo(o,dep)+'"><span>/ '+qtSo(o.sl,0)+'</span></div></div>';
   if(coHen) h+='<div class="dh-f-o"><label for="dhBH">Hẹn ngày giao đủ</label><input id="dhBH" type="date" value="'+esc((o.hen&&o.hen[dep])||'')+'"></div>';
   if(!coSL&&!coHen) h+='<div class="dh-ghi" style="margin:0">Tab '+esc(o.tab)+' chưa có cột số lượng / ngày hẹn của '+esc(dhBPTen(dep))+'.</div>';
+  /* 14/11 (chủ dự án): giữ ô chọn bộ phận kế tiếp – gợi ý sẵn theo luồng (Làm đầu → trả Hoàn thiện); chỉ bộ phận đang giữ hàng (hoặc chủ sở hữu) đổi được */
+  var goiY=d.k||dhBSau(o,dep), duocKT=toan||!d.o||d.o===dep;
+  if(duocKT) h+='<div class="dh-f-o"><label for="dhBK">Giao tiếp cho bộ phận</label><select id="dhBK"><option value="">(chưa chọn)</option>'+bps.filter(function(k){return k!==dep;}).map(function(k){ return '<option value="'+esc(k)+'"'+(k===goiY?' selected':'')+'>'+esc(dhBPTen(k))+(k===dhBSau(o,dep)?' (theo luồng)':'')+'</option>'; }).join('')+'</select></div>';
+  else if(d.k) h+='<div class="dh-f-o"><label>Giao tiếp cho bộ phận</label><div style="padding:10px 0;font-weight:600">'+esc(dhBPTen(d.k))+' <span class="pdesc">(do '+esc(dhBPTen(d.o))+' chọn)</span></div></div>';
   h+='</div>';
-  if(coSL||coHen) h+='<button class="btn pri dh-f-luu" type="button" data-t="'+esc(o.tab)+'" data-d="'+o.dong+'" onclick="dhBLuu(this.dataset.t,+this.dataset.d,false)">Lưu</button>';
+  if(coSL||coHen||duocKT) h+='<button class="btn pri dh-f-luu" type="button" data-t="'+esc(o.tab)+'" data-d="'+o.dong+'" onclick="dhBLuu(this.dataset.t,+this.dataset.d,false)">Lưu</button>';
   /* bộ phận sau xác nhận hẹn của bộ phận trước */
   var truoc=dsBP.filter(function(T){ return T!==dep&&dhBSau(o,T)===dep&&o.hen&&o.hen[T]; });
   truoc.forEach(function(T){ var xh=(d.h||{})[T], hl=xh&&xh.ngay===o.hen[T];
