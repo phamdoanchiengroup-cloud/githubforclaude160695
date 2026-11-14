@@ -560,6 +560,7 @@ function layDonHangXuong(token, lamMoi) {
     return themBTP(x);
   });
   var uu = (d.uu || []).map(function(o) { var x = {}; for (var k in o) x[k] = o[k]; x.tenChuan = plChuan_(o.ten); x.pl = plPhanLoai_(o.ten, o.ghiChu, sua['K:' + x.tenChuan]); return themBTP(x); });
+  var csHC = dhCongSuat_(); try { dhGanHanChuan_(don, csHC); dhGanHanChuan_(uu, csHC); } catch (eHC) {}   // 14/11: hạn chuẩn từng bộ phận
   var tre = (d.tre || []).map(function(o) { return { ten: o.ten, tenChuan: plChuan_(o.ten), thieu: o.thieu }; });
   var tabPhu = {};   // 14/11: dòng của tab bản chép (ĐƠN ƯU TIÊN / TRỄ HẠN) – chỉ để hiện đủ tab như Sheet, không cộng vào tổng
   Object.keys(d.tabPhu || {}).forEach(function(t) {
@@ -570,7 +571,7 @@ function layDonHangXuong(token, lamMoi) {
     q: { bp: q.bp || '', xemTatCa: !!q.xemTatCa, sua: q.sua || [], thay: !!q.thay, note: !!q.note, ten: (q.me && q.me.ten) || '', vaiTro: (q.me && q.me.vaiTro) || '' },   // 14/11: quyền nhập của tài khoản
     bpDs: DH_BP.map(function(b) { return [b[0], b[1]]; }),   // 14/11: danh sách bộ phận để chọn bộ phận kế tiếp
     kenhDs: DH_TABS.map(function(t) { return [t, DH_NHAN_TAB[t] || t]; }).concat((d.tabMoi || []).map(function(t) { return [t, t]; })),   // 07/11: đủ mọi kênh (kể cả kênh chưa có đơn) cho bộ lọc + báo cáo
-    cs: dhCongSuat_(), email: dhEmailTT_() });
+    cs: csHC, email: dhEmailTT_() });
 }
 
 /* ===== 14/11 (chủ dự án chốt): nhập số lượng giao / hẹn / xác nhận nhận hàng NGAY TRÊN DÒNG ĐƠN của Sheet =====
@@ -1267,7 +1268,7 @@ function dhCongSuat_() {
   try { docAnToan_('NgayLe').forEach(function(r) { var d = ngayVN_(r.Ngay); if (re.test(d) && !String(r.MaXuong || '').trim()) le.push([d, String(r.TenLe || 'Nghỉ lễ').slice(0, 60) + ' (lịch KPI)']); }); } catch (e) {}
   var nghi = [];
   tay.concat(le, tu).forEach(function(x) { if (!co[x[0]]) { co[x[0]] = 1; nghi.push(x); } });
-  return { sp: sp, nghi: nghi.sort(function(a, b) { return a[0] < b[0] ? -1 : 1; }), nghiTay: tay.sort(function(a, b) { return a[0] < b[0] ? -1 : 1; }), nghiTuDong: tu.concat(le).sort(function(a, b) { return a[0] < b[0] ? -1 : 1; }), lam: lam.sort(), macDinh: !Array.isArray(o.nghi) };
+  return { sp: sp, bp: dhCsBP_(o.bp), nghi: nghi.sort(function(a, b) { return a[0] < b[0] ? -1 : 1; }), nghiTay: tay.sort(function(a, b) { return a[0] < b[0] ? -1 : 1; }), nghiTuDong: tu.concat(le).sort(function(a, b) { return a[0] < b[0] ? -1 : 1; }), lam: lam.sort(), macDinh: !Array.isArray(o.nghi) };
 }
 function luuCongSuat(token, o) {
   var q = qtQuyen_(token); if (q.loi) return q.loi;
@@ -1280,10 +1281,97 @@ function luuCongSuat(token, o) {
   var lam = (Array.isArray(o.lam) ? o.lam : []).slice(0, 100).map(function(d) { d = String(d || '').trim(); if (!/^\d{4}-\d\d-\d\d$/.test(d)) bad = d || '(trống)'; return d; });
   if (bad) return sach_({ ok: false, msg: 'Ngày không hợp lệ: ' + bad + ' (cần dạng năm-tháng-ngày).' });
   var gon = {}; nghi = nghi.filter(function(x) { if (gon[x[0]]) return false; gon[x[0]] = 1; return true; });
-  try { PropertiesService.getScriptProperties().setProperty('DH_CONG_SUAT', JSON.stringify({ sp: sp, nghi: nghi, lam: lam })); }
+  var bpCs = o.bp && typeof o.bp === 'object' ? dhCsBP_(o.bp) : dhCongSuat_().bp;   // 14/11: công suất từng bộ phận (hạn chuẩn) – web không gửi thì giữ số cũ
+  try { PropertiesService.getScriptProperties().setProperty('DH_CONG_SUAT', JSON.stringify({ sp: sp, nghi: nghi, lam: lam, bp: bpCs })); }
   catch (e) { return sach_({ ok: false, msg: 'Không lưu được.' }); }
   ghiLog_(q.me, 'Công suất đơn hàng', sp + ' sp/ngày', '', nghi.length + ' ngày nghỉ, ' + lam.length + ' ngày làm bù');
   return sach_({ ok: true, msg: 'Đã lưu công suất ' + sp + ' sp/ngày và ' + nghi.length + ' ngày nghỉ.', cs: dhCongSuat_() });
+}
+
+/* ===== 14/11 (chủ dự án chốt): HẠN CHUẨN từng bộ phận lùi từ deadline (học Job Card / scheduling của ERPNext) =====
+   - Công suất mỗi bộ phận (chủ sở hữu sửa ở ⚙): mặc định 310 sp/ngày; Phôi chuôi 250, Phôi ngọn 350.
+   - Số ngày chuẩn = làm tròn lên(SL đặt của DÒNG ÷ công suất), tối thiểu 1 (chủ dự án chọn A: theo dòng, hạn ổn định).
+   - Lùi theo ngày làm việc (thứ 2 – thứ 7, trừ ngày nghỉ, cộng ngày làm bù) từ deadline: Đóng gói ← (đệm chung 2 ngày) ← Hoàn thiện;
+     chuôi: Hoàn thiện ← UV ← Sơn ← Phôi chuôi; ngọn: Hoàn thiện (lượt 2) ← Làm đầu ← Hoàn thiện (lượt 1, chỉ tính thời gian) ← Taro ← Phôi ngọn.
+     Hoàn thiện chỉ 1 hạn = hạn giao Đóng gói (chủ dự án đồng ý).
+   - Mức: hẹn ≤ hạn chuẩn: ổn; trễ ≤ 2 ngày làm (ăn vào đệm): 'vang'; trễ hơn: 'do'; hẹn sau deadline: 'dd' (đỏ đậm).
+     Chưa hẹn: chỉ xét bộ phận đầu tiên chưa xong của mỗi nhánh – quá hạn chuẩn thì xếp mức theo hôm nay; còn ≤ 2 ngày làm: 'sap'.
+   - Không xét: dòng đã đủ, không deadline, trễ deadline quá 30 ngày (đã có thẻ riêng), phụ kiện / nối. Chỉ cảnh báo, không chặn. */
+var DH_HC_DEM = 2, DH_HC_TRE_MAX = 30;
+var DH_HC_BP = [['PHOI_C', 'Phôi chuôi', 250], ['PHOI_N', 'Phôi ngọn', 350], ['SON', 'Sơn', 310], ['TARO', 'Taro', 310], ['UV', 'UV', 310], ['HT', 'Hoàn thiện', 310], ['TIP', 'Làm đầu', 310], ['DG', 'Đóng gói', 310]];
+function dhCsBP_(v) { var o = {}; v = v && typeof v === 'object' ? v : {}; DH_HC_BP.forEach(function(b) { var n = Math.round(Number(v[b[0]])); o[b[0]] = n >= 1 && n <= 100000 ? n : b[2]; }); return o; }
+function dhNgayLamFn_(cs) {   // -> hàm(d 'yyyy-mm-dd') true nếu là ngày làm
+  var nghi = {}, lam = {}; (cs.nghi || []).forEach(function(x) { nghi[x[0]] = 1; }); (cs.lam || []).forEach(function(x) { lam[x] = 1; });
+  return function(d) { if (lam[d]) return true; return new Date(d + 'T12:00:00Z').getUTCDay() !== 0 && !nghi[d]; };
+}
+function dhLuiNgayLam_(d, n, laLam) { var x = d, k = n, an = 0; while (k > 0 && an++ < 800) { x = dhCongNgay_(x, -1); if (laLam(x)) k--; } return x; }
+function dhTienNgayLam_(d, n, laLam) { var x = d, k = n, an = 0; while (k > 0 && an++ < 800) { x = dhCongNgay_(x, 1); if (laLam(x)) k--; } return x; }
+function dhSoNgayLam_(a, b, laLam) { if (b <= a) return 0; var x = a, n = 0, an = 0; while (x < b && an++ < 800) { x = dhCongNgay_(x, 1); if (laLam(x)) n++; } return n; }   // số ngày làm trong (a, b]
+/* o: dòng đơn (sl, thieu, dl, qua, hen, p2, btp, pl). Trả { BP: { h: hạn chuẩn, n: số ngày chuẩn, m: mức | '', hen, tre: ngày làm trễ } } hoặc null */
+function dhHanChuan_(o, cs, hn, laLam) {
+  if (!o || !(o.thieu > 0) || !o.dl || !(o.sl > 0) || o.phu) return null;
+  var loai = (o.pl && o.pl.loai) || ''; if (loai === 'PK' || loai === 'NOI') return null;
+  var r = o.btp || [], co = function(k) { return r.indexOf(k) >= 0; }; if (!r.length) return null;
+  laLam = laLam || dhNgayLamFn_(cs);
+  if (dhSoNgayLam_(o.dl, hn, laLam) > DH_HC_TRE_MAX) return null;
+  var C = (cs && cs.bp) || dhCsBP_(null), sl = Number(o.sl) || 0, so = function(k) { return Math.max(1, Math.ceil(sl / (C[k] || 310))); };
+  var laNgon = co('TARO') || co('TIP'), laChuoi = co('SON') || co('UV') || !laNgon, hai = laNgon && laChuoi && co('PHOI');
+  var out = {}, dat = function(k, h, n) { if (!out[k] || h < out[k].h) out[k] = { h: h, n: n }; };
+  var dg = o.dl, cuoi = dg;   // mốc giao của bộ phận cuối luồng trước Đóng gói
+  if (co('DG')) { dat('DG', dg, so('DG')); cuoi = dhLuiNgayLam_(dg, so('DG') + DH_HC_DEM, laLam); }
+  var chuoi = function(ds, phoiK) { var moc = cuoi, truoc = null;
+    ds.forEach(function(k) { var kk = k === 'HT1' ? 'HT' : k; if (!co(kk === 'PHOI_C' || kk === 'PHOI_N' ? 'PHOI' : kk)) return;
+      if (truoc) moc = dhLuiNgayLam_(moc, so(truoc), laLam);
+      if (k !== 'HT1') { var ten = (k === 'PHOI_C' || k === 'PHOI_N') ? (hai ? k : 'PHOI') : k; dat(ten, moc, so(k)); }
+      truoc = kk === 'HT' ? 'HT' : k; });
+  };
+  if (laChuoi) chuoi(['HT', 'UV', 'SON', 'PHOI_C']);
+  if (laNgon) chuoi(['HT', 'TIP', 'HT1', 'TARO', 'PHOI_N']);
+  /* mức cảnh báo */
+  var qua = o.qua || {}, hen = o.hen || {}, P2 = o.p2 || null, xong = function(k) {
+    if (k === 'PHOI_C') return P2 ? (P2.c != null && P2.c >= sl) : (Number(qua.PHOI) || 0) >= sl;
+    if (k === 'PHOI_N') return P2 ? (P2.n != null && P2.n >= sl) : (Number(qua.PHOI) || 0) >= sl;
+    return (Number(qua[k]) || 0) >= sl; };
+  var henK = function(k) { if (k === 'PHOI_C') return (P2 && P2.hc) || hen.PHOI || ''; if (k === 'PHOI_N') return (P2 && P2.hn) || hen.PHOI || ''; return hen[k] || ''; };
+  var muc = function(x, ngay) { if (ngay <= x.h) return ''; if (ngay > o.dl) return 'dd'; return dhSoNgayLam_(x.h, ngay, laLam) <= DH_HC_DEM ? 'vang' : 'do'; };
+  var dau = {}, oDang = o.dn && o.dn.o ? dhKs_(o.dn.o)[0] : '', thuDang = oDang && DH_BP_TEN[oDang] ? dhBThuTu_(oDang) : -1;   // bộ phận đầu tiên chưa xong của mỗi nhánh (để cảnh báo "chưa hẹn"); hàng đang ở bộ phận nào thì các bộ phận trước coi như đã qua
+  var daQua = function(k) { return thuDang >= 0 && dhBThuTu_(k.indexOf('PHOI') === 0 ? 'PHOI' : k) < thuDang; };
+  [hai ? 'PHOI_C' : 'PHOI', 'SON', 'UV', 'HT', 'DG'].concat([hai ? 'PHOI_N' : 'PHOI', 'TARO', 'TIP', 'HT', 'DG']).reduce(function(st, k, i) {
+    if (i === 5) st.tim = true; if (st.tim && out[k] && !xong(k) && !daQua(k)) { dau[k] = 1; st.tim = false; } return st; }, { tim: true });
+  Object.keys(out).forEach(function(k) { var x = out[k]; x.m = ''; if (xong(k)) { x.xong = 1; return; }
+    var h = henK(k); x.hen = h;
+    if (h) { x.m = muc(x, h); if (x.m) x.tre = Math.max(1, dhSoNgayLam_(x.h, h, laLam)); }
+    else if (dau[k]) { if (hn > x.h) { x.m = muc(x, hn); x.tre = Math.max(1, dhSoNgayLam_(x.h, hn, laLam)); x.chua = 1; } else if (dhSoNgayLam_(hn, x.h, laLam) <= DH_HC_DEM) { x.m = 'sap'; x.chua = 1; } }
+  });
+  return out;
+}
+function dhGanHanChuan_(ds, cs) { var hn = homNayVN_(), laLam = dhNgayLamFn_(cs); (ds || []).forEach(function(x) { var h = dhHanChuan_(x, cs, hn, laLam); if (h) x.hc = h; }); }
+var DH_HC_TEN = { PHOI: 'Phôi', PHOI_C: 'Phôi chuôi', PHOI_N: 'Phôi ngọn', SON: 'Sơn', TARO: 'Taro', UV: 'UV', HT: 'Hoàn thiện', TIP: 'Làm đầu', DG: 'Đóng gói' };
+var DH_HC_THU = ['PHOI', 'PHOI_C', 'PHOI_N', 'SON', 'TARO', 'UV', 'HT', 'TIP', 'DG'];
+function dhBam_(t) { var h = 5381; t = String(t); for (var i = 0; i < t.length; i++) h = ((h * 33) ^ t.charCodeAt(i)) >>> 0; return h.toString(36); }
+/* Email 8h: chỉ dòng MỚI đỏ / đỏ đậm hoặc vừa đổi (mức / hẹn / hạn) so với lần gửi trước; gom theo bộ phận. Nhớ trạng thái ở thuộc tính DH_HC_TRUOC. */
+function dhHanChuanEmail_(ds, cs, e, so, thu) {
+  var hn = homNayVN_(), laLam = dhNgayLamFn_(cs), p = PropertiesService.getScriptProperties(), truoc = {}, nay = {}, nhom = {}, tong = {};
+  try { (p.getProperty('DH_HC_TRUOC') || '').split(',').forEach(function(x) { var i = x.indexOf(':'); if (i > 0) truoc[x.slice(0, i)] = x.slice(i + 1); }); } catch (eP) {}
+  (ds || []).forEach(function(o) { var h = o.hc || dhHanChuan_(o, cs, hn, laLam); if (!h) return;
+    Object.keys(h).forEach(function(k) { var x = h[k]; if (x.m !== 'do' && x.m !== 'dd') return;
+      tong[k] = (tong[k] || 0) + 1;
+      var id = dhBam_(dhKhoaDong_(o) + '|' + k), v = x.m + (x.hen || '-').replace(/-/g, '').slice(4) + x.h.replace(/-/g, '').slice(4); nay[id] = v;
+      if (truoc[id] === v) return;
+      (nhom[k] = nhom[k] || []).push({ o: o, x: x, moi: !truoc[id] }); }); });
+  if (!thu) { var ids = Object.keys(nay).slice(0, 600); try { p.setProperty('DH_HC_TRUOC', ids.map(function(i) { return i + ':' + nay[i]; }).join(',')); } catch (eS) {} }
+  var ks = DH_HC_THU.filter(function(k) { return tong[k]; }), ng = function(x) { return x ? x.slice(8, 10) + '/' + x.slice(5, 7) : '–'; };
+  var h = '<div style="font-size:12px;font-weight:600;color:#b42a25;border-left:3px solid #c0302b;padding-left:8px;margin:14px 0 6px">HẠN CHUẨN BỘ PHẬN – dòng mới đỏ / vừa đổi</div>';
+  if (!ks.length) return h + '<div style="font-size:12.5px;color:#5b6670">Không bộ phận nào trễ hạn chuẩn quá đệm 2 ngày.</div>';
+  h += '<div style="font-size:11.5px;color:#5b6670;margin-bottom:4px">Hạn chuẩn = lùi từ deadline theo công suất từng bộ phận (đệm 2 ngày trước Đóng gói). Đỏ = hẹn / hôm nay trễ hạn chuẩn quá 2 ngày làm; <b>đỏ đậm</b> = trễ cả deadline. Đang đỏ: ' +
+    ks.map(function(k) { return e(DH_HC_TEN[k]) + ' ' + tong[k]; }).join(' · ') + '.</div>';
+  ks.forEach(function(k) { var a = nhom[k] || []; if (!a.length) return;
+    a.sort(function(u, v) { return (u.x.m === 'dd' ? 0 : 1) - (v.x.m === 'dd' ? 0 : 1) || (u.x.h < v.x.h ? -1 : 1); });
+    h += '<div style="font-size:12px;font-weight:600;margin:8px 0 2px">' + e(DH_HC_TEN[k]) + ' · ' + a.length + ' dòng mới / đổi</div><table style="width:100%;border-collapse:collapse;font-size:12px"><tr style="color:#5b6670;font-size:10.5px"><td style="padding:3px">Mã đơn</td><td>Sản phẩm</td><td style="text-align:right">SL</td><td style="text-align:right">Hạn chuẩn</td><td style="text-align:right">Hẹn</td><td style="text-align:right">Deadline</td><td style="text-align:right;padding-right:4px">Mức</td></tr>' +
+      a.slice(0, 15).map(function(y) { var dd = y.x.m === 'dd';
+        return '<tr style="border-top:1px solid #e1e7e6"><td style="padding:4px 3px;font-weight:600">' + e(y.o.maDon || '') + (y.moi ? '' : ' <span style="color:#889;font-weight:400">(đổi)</span>') + '</td><td>' + e(String(y.o.ten || '').slice(0, 40)) + '</td><td style="text-align:right">' + so(y.o.sl) + '</td><td style="text-align:right">' + ng(y.x.h) + '</td><td style="text-align:right">' + (y.x.hen ? ng(y.x.hen) : 'chưa hẹn') + '</td><td style="text-align:right">' + ng(y.o.dl) + '</td><td style="text-align:right;padding-right:4px;font-weight:600;color:' + (dd ? '#7a1010' : '#c0302b') + '">' + (dd ? 'Đỏ đậm' : 'Đỏ') + ' +' + (y.x.tre || 0) + 'n</td></tr>'; }).join('') +
+      (a.length > 15 ? '<tr><td colspan="7" style="color:#5b6670;padding:4px 3px">… và ' + (a.length - 15) + ' dòng nữa – xem trên web.</td></tr>' : '') + '</table>'; });
+  return h;
 }
 
 /* ===== 07/11 (chủ dự án): đơn xong được chép CẢ ĐƠN sang tab HT-<năm> rồi xóa khỏi tab kênh; có khi chuyển khi còn thiếu (giao thiếu / hủy).
@@ -1510,6 +1598,7 @@ function dhGuiEmail_(thu) {
     DH_TABS.map(function(t) { var k = DH_NHAN_TAB[t] || t, x = kenh[k] || { don: 0, dang: 0, tre: 0, thieu: 0 }; return '<tr style="border-top:1px solid #e1e7e6;text-align:right"><td style="text-align:left;padding:5px 4px">' + e(k) + '</td><td>' + x.don + '</td><td>' + x.dang + '</td><td style="color:' + (x.tre ? '#b42a25' : '#889') + '">' + x.tre + '</td><td style="padding-right:4px">' + so(x.thieu) + '</td></tr>'; }).join('') + '</table>';
   h += '<div style="font-size:12px;font-weight:600;color:#b42a25;border-left:3px solid #c0302b;padding-left:8px;margin:14px 0 6px">8 ĐƠN TRỌNG ĐIỂM (trễ × còn thiếu lớn nhất)</div>' + (top.length ? '<table style="width:100%;border-collapse:collapse;font-size:12.5px"><tr style="color:#5b6670;font-size:11px"><td style="padding:4px">Mã đơn</td><td>Kênh · người đặt</td><td style="text-align:right">Deadline</td><td style="text-align:right">Trễ</td><td style="text-align:right;padding-right:4px">Thiếu</td></tr>' +
     top.map(function(g) { return '<tr style="border-top:1px solid #e1e7e6"><td style="padding:5px 4px;font-weight:600">' + e(g.ma) + '</td><td>' + e(g.kenh) + (g.nguoiDat ? ' · ' + e(g.nguoiDat) : '') + '</td><td style="text-align:right">' + ng(g.dl) + '</td><td style="text-align:right;color:#b42a25">' + g.tre + ' ngày</td><td style="text-align:right;padding-right:4px;font-weight:600">' + so(g.thieu) + '</td></tr>'; }).join('') + '</table>' : '<div style="font-size:12.5px;color:#5b6670">Không có đơn trễ.</div>');
+  try { var btpS = dhBTPDoc_(); h += dhHanChuanEmail_(d.don.map(function(o) { var x = {}; for (var k in o) x[k] = o[k]; var tc = plChuan_(o.ten); x.pl = pc[tc] || (pc[tc] = plPhanLoai_(o.ten, o.ghiChu, sua['K:' + tc])); x.btp = dhBTP_(o.ten, x.pl, btpS).ds; return x; }), cs, e, so, thu); } catch (eHC) {}   // 14/11: hạn chuẩn bộ phận
   if (typeof dpEmail_ === 'function') h += dpEmail_(e, so);   // 08/11: điều phối (nút cổ chai, dòng chảy, sức khỏe dữ liệu)
   h += '</div><div style="background:#f1f5f4;padding:10px 20px;font-size:11px;color:#5b6670;text-align:center">Gửi tự động 8h sáng thứ 2 – thứ 7 (trừ ngày lễ) · Sheet đọc lúc ' + e(d.luc) + ' · Đóng gói theo nhật ký KPI' + (url ? ' · <a href="' + e(url) + '" style="color:#0b7a73">Mở web KPI</a>' : '') + '<br>Tắt / bật ở web: Đơn hàng → Sản xuất → Công suất &amp; deadline → ⚙</div></div>';
   MailApp.sendEmail({ to: to, subject: (thu ? '[Thử] ' : '') + 'Báo cáo sản xuất ' + ng(hn) + ' · ' + tre.length + ' đơn trễ · Đóng gói ' + (homQua ? so(dg[homQua]) : 0) + ' sp', htmlBody: h, name: 'Hệ thống KPI sản xuất' });

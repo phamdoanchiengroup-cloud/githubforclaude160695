@@ -7,6 +7,8 @@ Liên quan: [[Lần dán lên Apps Script]] · [[Quyết định của chủ d�
 
 - (15/11) Cập nhật web bằng 2-CAP-NHAT.bat (Đơn hàng sắp xếp lại, đã duyệt mục 5) rồi xem thử. – [[KPI Đơn hàng giao nhận theo bộ phận (14-11)]]
 
+- (14/11 phiên mới) Bấm đúp **2-CAP-NHAT.bat** (hạn chuẩn bộ phận + các đợt trước), Ctrl+F5; vào Đơn hàng → Trạng thái đơn hàng → Công suất & deadline → ⚙ xem / sửa công suất từng bộ phận; xem thẻ **Hạn chuẩn bộ phận**. – [[KPI Học hỏi ERPNext (16-11)]]
+
 ## Câu hỏi đang chờ trả lời
 - (16/11) **HỎI LẠI MỖI NGÀY cho tới khi chủ dự án gửi** (chủ dự án dặn): dữ liệu **định mức nguyên vật liệu (BOM)** – (1) định mức vật tư cho 1 cây gậy đang ghi ở đâu (Excel kho / kế toán / tổ trưởng); (2) danh sách vật tư chính (ống carbon, glassfiber, keo, sơn, mực UV, tip, ferrule, bao bì… còn gì?); (3) có số xuất kho hằng tháng không. Có lời nhắc hằng ngày đặt trong phiên mới. – [[KPI Học hỏi ERPNext (16-11)]]
 - (09/11) **File SKU trong Cấu hình gậy**: xác nhận ghép 48 mã chưa ghép (gợi ý: EVO Break&Jump → EVO phá nhảy Valkyrie, EVO Jump 3 khúc → EVO nhảy Pegasus?, EVO Jump 2 khúc → EVO nhảy IG, EVO Break → EVO phá X, Z-SP (ZF) → Cuebots Z-Pure / Z Fusion, USA Pool → ?, Japan / Covid → ?, Gậy CLB xu hướng EVO → ?, Cuebots G Series → ?). Dán Code.gs + Index.html + CauHinhGay.html. – [[KPI Cấu hình gậy – bản vẽ kỹ thuật (08-11)]]
