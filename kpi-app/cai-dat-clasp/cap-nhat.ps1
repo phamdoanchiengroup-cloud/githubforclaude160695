@@ -65,6 +65,15 @@ try {
     }
   }
 
+  # 3c. (14/11) Gỡ file LẠ là mã trình duyệt bị đặt nhầm thành file máy chủ (.gs/.js có window./document.) – Apps Script chạy mọi file
+  #     máy chủ khi gọi bất kỳ hàm nào nên cả web báo lỗi "window is not defined" (vd. file "_qt_check"). File đã nằm trong bản sao lưu.
+  $giu = if ($chinh) { $chinh.FullName } else { Join-Path $ThuMucMa 'Code.gs' }
+  $la = Get-ChildItem $ThuMucMa -File | Where-Object { ($_.Extension -eq '.gs' -or $_.Extension -eq '.js') -and $_.FullName -ne $giu -and (Select-String -Path $_.FullName -Pattern '(^|[^\w.])(window|document)\.' -Quiet) }
+  foreach ($x in $la) {
+    Remove-Item $x.FullName -Force
+    Write-Host ('  Đã gỡ file lạ "' + $x.BaseName + '" (mã trình duyệt đặt nhầm làm file máy chủ – gây lỗi "window is not defined"). Bản cũ còn trong sao lưu.') -ForegroundColor Yellow
+  }
+
   # 4. Đẩy lên Apps Script
   Bao 'Đang đẩy lên Apps Script...'
   GoiClasp -ThamSo @('push', '-f') | Out-Host
