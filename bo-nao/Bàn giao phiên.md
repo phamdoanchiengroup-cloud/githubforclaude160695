@@ -3,6 +3,15 @@
 Nhóm: Chung · Cập nhật 02/11/2026
 Liên quan: [[00 Mục lục]] · [[Liên kết và công cụ]] · [[Việc chờ chủ dự án]] · [[Lần dán lên Apps Script]] · [[Quyết định của chủ dự án]] · [[KPI Kiểm thử]]
 
+## Bàn giao 14/11 khuya → phiên mới (việc ĐANG CHỜ làm)
+- Đã xong + đã push: luồng ngọn mới (Taro → HT → Tip → trả HT → ĐG) áp mọi chỗ; Trạng thái đơn hàng (bảng nổi gọn: đã giao/đặt + hẹn + giao tiếp cho bộ phận, màu xoay vòng theo đơn, bỏ Chi tiết từng dòng); bộ cài clasp tự gỡ file lạ `_qt_check`. – [[KPI Đơn hàng giao nhận theo bộ phận (14-11)]], [[KPI Cập nhật bằng clasp]]
+- **Yêu cầu mới của chủ dự án (chưa làm)**:
+  1. Menu: "Đơn hàng" lên **đầu mục Sản xuất**, chữ to + nổi bật hơn mục khác.
+  2. TP/PP: trang Tổng quan, **ngay dưới các thông báo**, hiện luôn bảng Trạng thái đơn hàng.
+  3. Bảng Trạng thái đơn hàng: tab **Đơn ưu tiên** và **Đơn trễ hẹn** lên đầu; thêm tab **Đến hạn trong 10 ngày tới** (Claude tự lọc theo deadline). **Bỏ mục "Theo dõi"** – tab Đơn hàng chỉ còn 2 mục: **"Trạng thái đơn hàng"** và **"Số liệu sản xuất"**.
+  4. **Bỏ "Gom theo đơn"**, nhưng thêm **thanh % hoàn thành ở cột Mã đơn** trong bảng.
+  5. Rà soát + **hỏi chuyên gia** (quan-ly-van-hanh, soat-giao-dien-cuoi…) phần trùng lặp có thể bỏ; số liệu thống kê có ý nghĩa thì giữ, không quan trọng thì bỏ – trình chủ dự án duyệt danh sách bỏ trước khi xóa.
+
 ## Bàn giao 14/11 (phiên dài – mở phiên mới cho việc tiếp theo)
 - Xong: Đơn hàng giao nhận theo bộ phận + màu Navy (commit 14/11), CLAUDE.md đã nới quy tắc tiết kiệm token. Chờ chủ dự án dán 3 file. – [[KPI Đơn hàng giao nhận theo bộ phận (14-11)]]
 - Còn mở: 48 SKU chưa khớp dòng gậy, Ø bảng ngọn gậy đánh – [[KPI Cấu hình gậy – bản vẽ kỹ thuật (08-11)]]. 11 lỗi cũ don-hang.js + 5 lỗi cũ quy-trinh-web.js chưa sửa.
