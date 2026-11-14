@@ -53,3 +53,8 @@ Liên quan: [[KPI Quy trình sản xuất]] · [[KPI Điều phối sản xuất
 - **Bỏ tab Đơn ưu tiên / Đơn trễ hẹn** → 2 nút đầu tiên trong **Tất cả đơn** (`DHB.tab` = `@uu` / `@tre`): `@uu` = tab Sheet "ĐƠN ƯU TIÊN" (bản chép, chỉ xem, ẩn nút trùng ở cuối) nếu có, không thì dòng ghi "ưu tiên"; `@tre` = mọi dòng của đơn quá deadline giao khách (`dhTreDs`, trễ lâu nhất trên), bảng trễ hẹn bộ phận ở dưới. Tên cũ `tre`/`uutien`/`chuy` chuyển qua `dhCu`.
 - **Công suất & deadline** chuyển sang Trạng thái đơn hàng (mục: Tất cả đơn · Đến hạn 10 ngày · Công suất & deadline); trong đó **Thử nhận đơn mới, Thử đẩy một đơn lên ưu tiên, Ngày dự kiến xong từng đơn lên đầu** (cắt chuỗi `h` theo mốc P1/P2/P3 trong `dhVeCongSuat`).
 - Kiểm thử: khung dữ liệu giả 30/30 (máy tính + điện thoại); `quy-trinh-web.js` sửa kỳ vọng (3 thẻ con, bỏ ca dhVeChuY / nguy cơ) – chưa chạy vì thiếu DATA.
+
+## 15/11 – bậc ưu tiên mới (3 bậc, thay 5 bậc 13/11)
+- Chủ dự án chốt: **1** = WEB LẺ ĐƠN THƯỜNG + WEB LẺ CUSTOM + **mọi tab POD** (`/^POD/`); **2** = đơn trễ hạn (dòng đã qua deadline **hoặc** tên hàng trong tab TRỄ HẠN) + đơn ưu tiên (ghi "ưu tiên" / tên trong tab ĐƠN ƯU TIÊN, dòng Kho); **3** = còn lại. Trong mỗi bậc **deadline sớm trước** (bậc 2 trộn trễ + ưu tiên).
+- Sửa `dhBacDong` / `dhBac` (mặc định 3), `DH_SO_BAC=3`; `dhMoPhong` không đổi → áp cho Ngày dự kiến xong, Thử nhận đơn, Thử đẩy ưu tiên, Thống kê theo kênh (hạn đề xuất, bảng "Thứ tự làm – 3 bậc", Bậc 1 quá hạn), chữ giải thích.
+- Kiểm thử: `thu/bac.js` (dữ liệu giả) – 9 ca phân bậc + mô phỏng thứ tự A2, A1 (bậc 1 theo deadline) → B1, B2 → C1; khung thử 30/30.

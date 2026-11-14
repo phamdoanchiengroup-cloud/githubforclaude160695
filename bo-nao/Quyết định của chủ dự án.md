@@ -127,3 +127,5 @@ Những điều đã chốt. Đừng đề xuất lại những gì ghi "không 
 - (09/11) Cấu hình gậy: **chiều dài + đường kính ngọn và chuôi bằng mm**; **giữ nguyên tên ren, ghi chú ren (ren/inch) và oz** – không tự đổi các đơn vị khác. – [[KPI Cấu hình gậy – bản vẽ kỹ thuật (08-11)]]
 - (09/11) Báo cáo lãnh đạo: thêm **bản Phó Tổng Giám đốc** (nút riêng, giữ bản Giám đốc sản xuất): bỏ quyết định cần duyệt + hàng chờ theo công đoạn, thêm Nhân sự sau Tóm tắt, ô ký cuối báo cáo. – [[KPI Báo cáo tháng]]
 - (09/11) File SKU dùng cho Cấu hình gậy theo **cách A** (điền sẵn mẫu + kiểm tra chéo); **không vẽ Nối**; chiều rộng file in = chu vi chuôi. – [[KPI Cấu hình gậy – bản vẽ kỹ thuật (08-11)]]
+
+- 15/11: **Bậc ưu tiên đơn hàng 3 bậc** (thay 5 bậc 13/11): 1 = Web lẻ thường + Web lẻ custom + mọi tab POD; 2 = đơn trễ hạn (quá deadline hoặc có trong tab TRỄ HẠN) + đơn ưu tiên; 3 = còn lại; trong bậc deadline sớm trước. – [[KPI Đơn hàng giao nhận theo bộ phận (14-11)]]

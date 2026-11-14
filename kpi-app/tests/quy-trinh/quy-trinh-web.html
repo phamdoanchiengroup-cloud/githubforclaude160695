@@ -1665,19 +1665,20 @@ function dhUuTen(){ var m={}; ((DH&&DH.uu)||[]).forEach(function(o){ var t=dhTen
 function dhLaUu(o,m){ if(!o) return false; if(o.uuTien) return true; return o.tab==='KHO' && !!(m&&m[dhTenChuan(o.ten)]); }   /* 13/11: tên trong tab ưu tiên chỉ tính cho dòng Kho (tab ưu tiên = mã ở sẵn trong Kho); tab khác phải ghi "ưu tiên" */
 /* 13/11 (chủ dự án chốt thứ tự): 1 = ĐƠN ƯU TIÊN + WEB LẺ CUSTOM + WEB LẺ ĐƠN THƯỜNG + POD-A.BÁCH, 2 = TRỄ HẠN, 3 = DEALER, 4 = KHO, 5 = các tab còn lại.
    Tab TRỄ HẠN là bản chép đơn trễ, mã trong đó đã cũ -> đối chiếu theo TÊN HÀNG (cùng cách với tab ưu tiên). */
-var DH_TAB_BAC1={'WEB LẺ CUSTOM':1,'WEB LẺ ĐƠN THƯỜNG':1,'POD-A.BÁCH':1};
+/* 15/11 (chủ dự án chốt 3 bậc): 1 = WEB LẺ ĐƠN THƯỜNG + WEB LẺ CUSTOM + mọi tab POD; 2 = đơn trễ hạn (dòng đã qua deadline, hoặc tên hàng có trong tab TRỄ HẠN) + đơn ưu tiên;
+   3 = các đơn còn lại. Trong mỗi bậc deadline sớm trước. (Thay 5 bậc 13/11.) */
+var DH_TAB_BAC1={'WEB LẺ CUSTOM':1,'WEB LẺ ĐƠN THƯỜNG':1}, DH_SO_BAC=3;
 function dhTreTen(){ var m={}; ((DH&&DH.tre)||[]).forEach(function(o){ var t=dhTenChuan(o.ten); if(t) m[t]=1; }); return m; }
 function dhBacDong(o,mu,mtr){
-  if(!o) return 5;
-  if(dhLaUu(o,mu)) return 1;
-  if(DH_TAB_BAC1[o.tab]) return 1;
-  var t=dhTenChuan(o.ten);
-  if(mtr&&mtr[t]) return 2;
-  if(o.tab==='DEALER') return 3;
-  if(o.tab==='KHO') return 4;
-  return 5;
+  if(!o) return 3;
+  var tab=String(o.tab||'').toUpperCase().trim();
+  if(DH_TAB_BAC1[tab]||/^POD/.test(tab)) return 1;
+  if(dhLaUu(o,mu)) return 2;
+  if(o.dl&&o.dl<dhHomNay()) return 2;
+  if(mtr&&mtr[dhTenChuan(o.ten)]) return 2;
+  return 3;
 }
-function dhBac(g,mu,mtr){ var b=5; (g&&g.dong||[]).forEach(function(o){ if(o.thieu>0) b=Math.min(b,dhBacDong(o,mu,mtr)); }); return b; }
+function dhBac(g,mu,mtr){ var b=3; (g&&g.dong||[]).forEach(function(o){ if(o.thieu>0) b=Math.min(b,dhBacDong(o,mu,mtr)); }); return b; }
 /* 13/11 (chủ dự án chốt): xếp theo TỪNG DÒNG hàng – dòng nào khớp tên trong tab ƯU TIÊN / TRỄ HẠN thì dòng đó vào bậc đó,
    không kéo cả đơn; ngày xong của đơn = dòng xong muộn nhất.
    ut (13/11): bảng khóa 'mã|tab' -> mọi dòng của đơn đó lên TRƯỚC các bậc để thử "nếu ưu tiên đơn này thì đơn khác lùi bao nhiêu" */
@@ -1811,7 +1812,7 @@ function dhVeCongSuat(){
       var topLui=lui.slice().sort(function(a,b){ return b.d-a.d; }).slice(0,8);
       if(topLui.length) utKQ+='<div class="tw" style="margin-top:8px"><table class="dh-bang"><thead><tr><th>Đơn lùi nhiều nhất</th><th>Tab</th><th>Deadline</th><th>Xong cũ</th><th>Xong mới</th><th class="qt-so">Lùi</th></tr></thead><tbody>'+
         topLui.map(function(x){ return '<tr><td class="ma">'+esc(x.ma)+'</td><td>'+esc(x.tab)+'</td><td>'+dhNg(x.dl)+'</td><td>'+dhNg(x.cu)+'</td><td>'+dhNg(x.moi)+'</td><td class="qt-so"><span class="dh-han tre">+'+x.d+' ngày</span></td></tr>'; }).join('')+'</tbody></table></div>';
-      utKQ+=dhCachDoc('<b>Cách tính</b>: đơn / tên hàng đã chọn được xếp trước cả bậc 1, phần còn lại giữ nguyên thứ tự 5 bậc rồi deadline; máy làm '+qtSo(c.sp,0)+' sp/ngày, thứ 2 – thứ 7, trừ ngày nghỉ. <b>Lùi</b> = ngày xong mới − ngày xong cũ (ngày lịch); đơn được đẩy tính "sớm" theo cùng cách. Đây là ước tính toàn nhà máy, chưa tính hàng đang dở ở xưởng.');
+      utKQ+=dhCachDoc('<b>Cách tính</b>: đơn / tên hàng đã chọn được xếp trước cả bậc 1, phần còn lại giữ nguyên thứ tự 3 bậc rồi deadline; máy làm '+qtSo(c.sp,0)+' sp/ngày, thứ 2 – thứ 7, trừ ngày nghỉ. <b>Lùi</b> = ngày xong mới − ngày xong cũ (ngày lịch); đơn được đẩy tính "sớm" theo cùng cách. Đây là ước tính toàn nhà máy, chưa tính hàng đang dở ở xưởng.');
     }
   }
   h+='<div class="card"><div style="font-weight:600;margin-bottom:4px">Thử đẩy một đơn lên ưu tiên</div><div class="dh-loc" style="display:flex;flex-wrap:wrap;gap:8px;align-items:center"><label>Mã đơn hoặc tên hàng <input id="dhUtGT" list="dhUtDs" style="width:300px;max-width:100%" placeholder="vd #31/10 hoặc GẬY …" value="'+esc(DHUT?DHUT.nhan:'')+'"></label><button class="btn sm" type="button" onclick="dhUTinh()">Tính</button>'+(DHUT?'<button class="btn sm" type="button" onclick="dhUTXoa()">Xoá</button>':'')+'</div><datalist id="dhUtDs">'+dsUt.slice(0,600).map(function(x){ return '<option value="'+esc(x)+'"></option>'; }).join('')+'</datalist>'+utKQ+'</div>';
@@ -1822,7 +1823,7 @@ function dhVeCongSuat(){
     h+='<tr class="dh-khoi"><td colspan="2">'+ten[k]+' · '+a.length+' đơn</td><td class="qt-so">'+qtSo(sum(a),0)+' sp</td><td colspan="4"></td></tr>';
     a.slice(0,DHCSHet).forEach(function(g){ h+='<tr><td class="ma">'+esc(g.ma)+'</td><td>'+esc(g.kenh)+(g.nguoiDat?' · '+esc(g.nguoiDat):'')+'</td><td class="qt-so"><b>'+qtSo(g.thieu,0)+'</b></td><td>'+dhNg(g.dl)+'</td><td>'+dhNg(g.eta)+'</td><td class="qt-so">'+(g.lech==null?'–':'<span class="dh-han '+(g.lech>0?'tre':'')+'">'+(g.lech>0?'trễ '+g.lech+' ngày':'sớm '+(-g.lech)+' ngày')+'</span>')+'</td><td>'+dhThanh(dhTienDo(g.tatCa),1)+'</td></tr>'; });
     if(a.length>DHCSHet) h+='<tr><td colspan="7"><button class="btn sm" type="button" onclick="DHCSHet+=200;dhVeLai()">Xem thêm '+(a.length-DHCSHet)+' đơn</button></td></tr>'; });
-  h+='</tbody></table></div>'+dhCachDoc('<b>Dự kiến xong</b>: xếp theo <b>5 bậc</b> (ưu tiên → trễ hạn → dealer → kho → còn lại) <b>theo từng dòng hàng</b>; dòng khớp tên trong tab ƯU TIÊN / TRỄ HẠN vào bậc đó trước, dòng còn lại giữ bậc của tab. Trong mỗi bậc deadline sớm trước, nhà máy làm '+qtSo(c.sp,0)+' sp/ngày vào các ngày làm việc (thứ 2 – thứ 7, trừ chủ nhật và ngày lễ); <b>đơn xong khi dòng cuối cùng xong</b> (ngày dự kiến xong của đơn = dòng xong muộn nhất). Deadline = cột <b>HẠN MỚI</b> nếu có, không thì deadline gốc. <b>Lệch</b> = dự kiến xong − deadline. Đơn quá hạn lâu nên hỏi lại kênh bán còn cần không trước khi dồn sức làm (chuyên gia khuyên giữ 60–70% công suất cho đơn trễ, phần còn lại cho đơn đúng hạn để không trễ dây chuyền).')+'</div>';
+  h+='</tbody></table></div>'+dhCachDoc('<b>Dự kiến xong</b>: xếp theo <b>3 bậc</b> (1: Web lẻ thường, Web lẻ custom, POD → 2: đơn trễ hạn + đơn ưu tiên → 3: còn lại) <b>theo từng dòng hàng</b>. Trong mỗi bậc deadline sớm trước, nhà máy làm '+qtSo(c.sp,0)+' sp/ngày vào các ngày làm việc (thứ 2 – thứ 7, trừ chủ nhật và ngày lễ); <b>đơn xong khi dòng cuối cùng xong</b> (ngày dự kiến xong của đơn = dòng xong muộn nhất). Deadline = cột <b>HẠN MỚI</b> nếu có, không thì deadline gốc. <b>Lệch</b> = dự kiến xong − deadline. Đơn quá hạn lâu nên hỏi lại kênh bán còn cần không trước khi dồn sức làm (chuyên gia khuyên giữ 60–70% công suất cho đơn trễ, phần còn lại cho đơn đúng hạn để không trễ dây chuyền).')+'</div>';
   var P3=h.length;
   /* cài đặt công suất + ngày nghỉ */
   h+='<details class="card dh-csdat"><summary style="cursor:pointer;font-weight:600">⚙ Công suất và ngày nghỉ</summary><div style="margin-top:8px;display:grid;gap:8px;max-width:520px">'+
@@ -2277,7 +2278,7 @@ function dhKet(o){   /* xưởng đầu tiên (theo thứ tự sản xuất) đ�
   return {k:'',con:o.thieu};
 }
 /* 13/11 (chủ dự án): THỐNG KÊ ĐƠN THEO TỪNG TAB/KÊNH + hạn đề xuất theo công suất.
-   • Xếp theo 5 bậc: (1) ĐƠN ƯU TIÊN + WEB LẺ CUSTOM + WEB LẺ ĐƠN THƯỜNG + POD-A.BÁCH, (2) TRỄ HẠN, (3) DEALER, (4) KHO, (5) các tab còn lại.
+   • 15/11: xếp theo 3 bậc: (1) WEB LẺ ĐƠN THƯỜNG + WEB LẺ CUSTOM + mọi tab POD, (2) đơn trễ hạn + đơn ưu tiên, (3) còn lại.
    • Trong mỗi bậc: deadline sớm trước; hết hàng vào ngày nào thì đó là HẠN ĐỀ XUẤT (dự kiến xong).
    • Công suất lấy ở ⚙ Công suất (mặc định 310 sp/ngày ≈ 26 công/tháng), thứ 2 – thứ 7, trừ chủ nhật và ngày lễ; chỉ tính hàng sản xuất (không tính phụ kiện / tay nối).
    • Tab TRỄ HẠN, ĐƠN ƯU TIÊN, HT-<năm> là bản chép -> không cộng trùng. */
@@ -2287,11 +2288,9 @@ function dhVeKenh(){
   var tong=function(a,f){ return a.reduce(function(s,o){ return s+(f?f(o):(Number(o.thieu)||0)); },0); };
   var etaCua={}; K.don.forEach(function(g){ etaCua[g.ma+'|'+g.tab]=g; });
   var namNay=hn.slice(0,4), nx=function(d){ return d?dhNg(d)+(d.slice(0,4)!==namNay?'/'+d.slice(0,4):''):'–'; };
-  var BAC=[['1','ĐƠN ƯU TIÊN · WEB LẺ CUSTOM · WEB LẺ ĐƠN THƯỜNG · POD-A.BÁCH','dòng ghi “ưu tiên” · tên hàng có trong tab ĐƠN ƯU TIÊN (dòng Kho) · 3 tab bán lẻ/POD'],
-    ['2','TRỄ HẠN','đối chiếu theo tên hàng — mã trong tab trễ đã cũ'],
-    ['3','DEALER',''],
-    ['4','KHO',''],
-    ['5','Các tab còn lại','OEM · A Đông · POD-Ecomstone · tab mới']];
+  var BAC=[['1','WEB LẺ ĐƠN THƯỜNG · WEB LẺ CUSTOM · POD','mọi tab bắt đầu bằng POD (POD-A.Bách, POD-Ecomstone…)'],
+    ['2','Đơn trễ hạn + đơn ưu tiên','dòng đã qua deadline · tên hàng có trong tab TRỄ HẠN · dòng ghi “ưu tiên” · tên hàng có trong tab ĐƠN ƯU TIÊN (dòng Kho)'],
+    ['3','Các đơn còn lại','Dealer · Kho · OEM · A Đông · tab mới – theo deadline']];
   var bacTk=BAC.map(function(b){ var a=K.don.filter(function(g){ return bacGs(g)===+b[0]; }), xong='';
     a.forEach(function(g){ if(g.eta&&(!xong||g.eta>xong)) xong=g.eta; });
     return {b:+b[0],ten:b[1],note:b[2],n:a.length,sp:tong(a,function(g){return g.thieu;}),xong:xong,
@@ -2342,14 +2341,14 @@ function dhVeKenh(){
         '<td>'+nx(x.xong)+'</td></tr>';
     }).join('')+
     '<tr class="dh-khoi"><td>Tổng</td><td class="qt-so">'+qtSo(tongDon,0)+'</td><td class="qt-so">'+qtSo(DH.don.length,0)+'</td><td class="qt-so">'+qtSo(tong(DH.don,function(o){return o.sl;}),0)+'</td><td class="qt-so">'+qtSo(tong(DH.don),0)+'</td><td class="qt-so">1 → 5</td><td class="qt-so">'+qtSo(dsK.reduce(function(s,x){return s+x.tre;},0),0)+'</td><td class="qt-so">'+qtSo(dsK.reduce(function(s,x){return s+x.setre;},0),0)+'</td><td>'+nx(K.xongHet)+'</td></tr>'+
-    '</tbody></table></div>'+dhCachDoc('“Xong dự kiến” = ngày làm xong đơn cuối của kênh theo lịch xếp <b>5 bậc, trong bậc deadline sớm trước</b> ở công suất '+qtSo(c.sp,0)+' sp/ngày. Tab TRỄ HẠN / ĐƠN ƯU TIÊN / HT-<năm> là bản chép nên không cộng vào bảng này.')+'</div>';
-  /* thứ tự 5 bậc */
-  h+='<div class="card"><div style="font-weight:600;margin-bottom:4px">Thứ tự làm – 5 bậc</div><div class="tw"><table class="dh-bang kenh"><thead><tr><th class="qt-so">Bậc</th><th>Nhóm đơn</th><th class="qt-so">Đơn</th><th class="qt-so">Còn thiếu</th><th class="qt-so">Chia</th><th>Xong dự kiến</th><th class="qt-so">Quá hạn</th></tr></thead><tbody>'+
+    '</tbody></table></div>'+dhCachDoc('“Xong dự kiến” = ngày làm xong đơn cuối của kênh theo lịch xếp <b>3 bậc, trong bậc deadline sớm trước</b> ở công suất '+qtSo(c.sp,0)+' sp/ngày. Tab TRỄ HẠN / ĐƠN ƯU TIÊN / HT-<năm> là bản chép nên không cộng vào bảng này.')+'</div>';
+  /* thứ tự 3 bậc */
+  h+='<div class="card"><div style="font-weight:600;margin-bottom:4px">Thứ tự làm – 3 bậc</div><div class="tw"><table class="dh-bang kenh"><thead><tr><th class="qt-so">Bậc</th><th>Nhóm đơn</th><th class="qt-so">Đơn</th><th class="qt-so">Còn thiếu</th><th class="qt-so">Chia</th><th>Xong dự kiến</th><th class="qt-so">Quá hạn</th></tr></thead><tbody>'+
     bacTk.map(function(x){ return '<tr><td class="qt-so"><b>'+x.b+'</b></td><td><b>'+esc(x.ten)+'</b>'+(x.note?'<div style="font-size:11px;color:var(--ink3)">'+esc(x.note)+'</div>':'')+'</td>'+
       '<td class="qt-so">'+qtSo(x.n,0)+'</td><td class="qt-so"><b>'+qtSo(x.sp,0)+'</b></td><td class="qt-so">'+(K.tong?Math.round(x.sp/K.tong*100)+'%':'–')+'</td>'+
       '<td>'+(x.n?nx(x.xong):'–')+'</td><td class="qt-so">'+(x.tre?'<span class="dh-han tre">'+x.tre+'</span>':'–')+'</td></tr>'; }).join('')+
     '<tr class="dh-khoi"><td></td><td>Tổng</td><td class="qt-so">'+qtSo(K.don.length,0)+'</td><td class="qt-so">'+qtSo(K.tong,0)+'</td><td class="qt-so">100%</td><td>'+nx(K.xongHet)+'</td><td class="qt-so">'+qtSo(K.nhom.tre.length,0)+'</td></tr>'+
-    '</tbody></table></div>'+dhCachDoc('<b>Bậc 1</b> gồm mã trong tab “ĐƠN ƯU TIÊN”, dòng có chữ “ưu tiên”, và <b>toàn bộ</b> đơn ở tab WEB LẺ CUSTOM, WEB LẺ ĐƠN THƯỜNG, POD-A.BÁCH. <b>Bậc 2</b> là đơn có tên hàng nằm trong tab TRỄ HẠN (mã trong tab trễ đã cũ nên đối chiếu theo tên hàng). Sau đó mới đến DEALER, KHO và các tab còn lại. Trong mỗi bậc xếp deadline sớm trước, đơn không có deadline xuống cuối bậc.')+'</div>';
+    '</tbody></table></div>'+dhCachDoc('<b>Bậc 1</b>: toàn bộ đơn ở tab WEB LẺ ĐƠN THƯỜNG, WEB LẺ CUSTOM và mọi tab POD. <b>Bậc 2</b>: dòng hàng đã qua deadline giao khách hoặc có tên trong tab TRỄ HẠN (mã trong tab trễ đã cũ nên đối chiếu theo tên hàng), và dòng ưu tiên (ghi chữ “ưu tiên”, hoặc tên hàng có trong tab ĐƠN ƯU TIÊN). <b>Bậc 3</b>: các đơn còn lại. Trong mỗi bậc deadline sớm trước, đơn không có deadline xuống cuối bậc.')+'</div>';
   /* bậc 1 đang quá hạn */
   var b1Tre=K.don.filter(function(g){ return bacGs(g)===1 && g.dl && g.dl<hn; });
   h+='<div class="card"><div style="font-weight:600;margin-bottom:4px">Bậc 1 đang quá hạn</div>';
@@ -2360,7 +2359,7 @@ function dhVeKenh(){
     '</tbody></table></div>';
   h+='<div class="dh-ghi" style="margin:6px 0 0">Bậc 1 = dòng ghi “ưu tiên”, tên hàng nằm trong tab “ĐƠN ƯU TIÊN”, và toàn bộ đơn ở tab WEB LẺ CUSTOM · WEB LẺ ĐƠN THƯỜNG · POD-A.BÁCH. Thiếu đơn nào thì ghi thêm chữ “ưu tiên” vào dòng đó trên Sheet.</div></div>';
   /* chi tiết từng kênh */
-  h+='<div class="card"><div style="font-weight:600;margin-bottom:4px">Chi tiết từng kênh (theo 5 bậc, trong bậc deadline sớm trước)</div>';
+  h+='<div class="card"><div style="font-weight:600;margin-bottom:4px">Chi tiết từng kênh (theo 3 bậc, trong bậc deadline sớm trước)</div>';
   dsK.forEach(function(x){
     var gs=x.gs.slice().sort(function(a,b){ var u=bacGs(a)-bacGs(b); if(u) return u; return String(a.dl||'9999').localeCompare(String(b.dl||'9999'))||String(a.ma).localeCompare(String(b.ma)); });
     h+='<details style="border-top:1px solid var(--line);padding:7px 0"><summary style="cursor:pointer"><b>'+esc(x.ten)+'</b> · '+x.n+' đơn · còn thiếu <b>'+qtSo(x.thieu,0)+'</b> sp'+(!x.bac.length?'':' · bậc '+x.bac.join('·'))+(x.xong?' · xong dự kiến '+nx(x.xong):'')+'</summary>';
@@ -2375,7 +2374,7 @@ function dhVeKenh(){
     }
     h+='</details>';
   });
-  h+='<div class="dh-ghi" style="margin:6px 0 0"><b>Hạn đề xuất</b> = ngày dự kiến xong theo 5 bậc ở công suất '+qtSo(c.sp,0)+' sp/ngày (thứ 2 – thứ 7, trừ chủ nhật và ngày lễ); dùng để hẹn lại khách khi đơn chưa có deadline hoặc deadline cũ không còn phù hợp. “Lệch” = hạn đề xuất − deadline (dương = trễ). Đây là đề xuất trên web, <b>không tự ghi vào Sheet</b>.</div></div>';
+  h+='<div class="dh-ghi" style="margin:6px 0 0"><b>Hạn đề xuất</b> = ngày dự kiến xong theo 3 bậc ở công suất '+qtSo(c.sp,0)+' sp/ngày (thứ 2 – thứ 7, trừ chủ nhật và ngày lễ); dùng để hẹn lại khách khi đơn chưa có deadline hoặc deadline cũ không còn phù hợp. “Lệch” = hạn đề xuất − deadline (dương = trễ). Đây là đề xuất trên web, <b>không tự ghi vào Sheet</b>.</div></div>';
   return h;
 }
 function dhBoTab(t,bo){ call('boQuaTabDon',[t,!!bo],function(r){ if(!r||!r.ok){toast((r&&r.msg)||'Không lưu được.');return;} toast(r.msg,true); dhTai(true); }); }
