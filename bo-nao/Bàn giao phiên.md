@@ -3,6 +3,9 @@
 Nhóm: Chung · Cập nhật 02/11/2026
 Liên quan: [[00 Mục lục]] · [[Liên kết và công cụ]] · [[Việc chờ chủ dự án]] · [[Lần dán lên Apps Script]] · [[Quyết định của chủ dự án]] · [[KPI Kiểm thử]]
 
+## Phiên mới – nghiên cứu qcadoo + BOM ERPNext + chỉ số xưởng xong
+- Kết quả: [[KPI Nghiên cứu MES, BOM và chỉ số xưởng (14-11)]]. Đã gửi chủ dự án câu hỏi gộp cho phần 2 hạn chuẩn (SL theo dòng hay theo việc dồn, Hoàn thiện 1 hay 2 hạn, ai thấy cảnh báo, bảng công suất). Chờ trả lời rồi mới code.
+
 ## 16/11 – ĐANG LÀM: 3 phần học từ ERPNext (đọc [[KPI Học hỏi ERPNext (16-11)]] trước)
 - Đã xong bước 0 (lưu hỏng hằng ngày vào bản chụp → DonHangHong). Kế tiếp: phần 2 hạn chuẩn (chờ chủ dự án duyệt bảng số ngày chuẩn + đệm), rồi phần 1, phần 3. BOM chờ dữ liệu vật tư.
 
