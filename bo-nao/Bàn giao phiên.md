@@ -3,6 +3,26 @@
 Nhóm: Chung · Cập nhật 02/11/2026
 Liên quan: [[00 Mục lục]] · [[Liên kết và công cụ]] · [[Việc chờ chủ dự án]] · [[Lần dán lên Apps Script]] · [[Quyết định của chủ dự án]] · [[KPI Kiểm thử]]
 
+## BÀN GIAO 15/11 (phiên dài → phiên mới) – ĐỌC PHẦN NÀY TRƯỚC
+**Mọi việc đã commit + push** lên `claude/beautiful-ptolemy-f2j7za`. Chủ dự án **chưa chạy `2-CAP-NHAT.bat`** cho các đợt 14/11 khuya → 15/11 (một lần cập nhật là đủ). Chi tiết từng việc: [[KPI Đơn hàng giao nhận theo bộ phận (14-11)]] (các mục 14/11 khuya, 15/11), [[KPI Thống kê không tính hôm nay (09-11)]].
+
+**Đã làm 14–15/11 (tab Đơn hàng)**
+- Menu: Đơn hàng đầu nhóm Sản xuất, nút to Azure (mục vá 46 `tests/don-giao-nhan/va-don-noi-bat-web.py`). Tổng quan TP/PP: bảng gọn Trạng thái đơn hàng dưới thông báo (`dhTQVe`, `dhTQGan`).
+- Tab Đơn hàng 2 mục: **Trạng thái đơn hàng** (Tất cả đơn – 2 nút đầu ★ Đơn ưu tiên / Đơn trễ hẹn; Đến hạn 10 ngày; Công suất & deadline – Thử nhận đơn / Thử đẩy ưu tiên / Ngày dự kiến xong lên đầu) và **Số liệu sản xuất**. Bỏ Theo dõi, Gom theo đơn, Chi tiết từng dòng; vạch % cả đơn ở cột Mã đơn; bảng Trễ hẹn ở bộ phận.
+- **Bậc ưu tiên 3 bậc**: 1 = DEALER + Web lẻ thường + Web lẻ custom + mọi tab POD; 2 = trễ hạn (quá deadline hoặc có trong tab TRỄ HẠN) + ưu tiên; 3 = còn lại; trong bậc deadline sớm trước (`dhBacDong`).
+- **Note mã hàng** = cột LOẠI PHÔI (C019, C056, C067 + chủ sở hữu sửa; mọi người xem) – `luuGhiChuDon`.
+- **Phôi gậy 2 khúc tách 2 nhánh** (chuôi → Sơn, ngọn → Ngọn Taro), Sheet ghi chung 1 ô 2 dòng; Sơn / Taro xác nhận hẹn đúng nhánh (`dhP2Gan_`, `p.phoi2`, `PHOI_C`/`PHOI_N`).
+- **Deadline mới**: cột "Hạn mới HT đơn cũ" thay deadline ở cả máy chủ (`o.dl`, giữ `o.dlGoc`), bảng hiện "gốc dd/mm" gạch ngang.
+- Tổng quan TP/PP + ban điều hành tính tới hết hôm qua (mục 43).
+
+**Cách làm việc mới (chủ dự án chốt 15/11)**
+- **Chia việc với Qoder** – `kpi-app/HUONG-DAN-QODER.md` (Qoder việc nhỏ, Claude việc lớn + gộp). Phiên đám mây không điều khiển trực tiếp được Qoder; Remote Control chưa có trên máy chủ dự án.
+- Chủ dự án vừa thêm plugin **Claude for Manufacturing** (và có thể **Design** của Anthropic / Knowledge Work) – phiên mới kiểm tra bằng ListPlugins / danh sách skill, báo chủ dự án skill nào dùng được cho web KPI.
+
+**Kiểm thử**: không có dữ liệu Sheet thật (scratchpad cũ mất). Khung thử dữ liệu giả ở scratchpad phiên cũ (sẽ mất) – nếu cần dựng lại: trang thử nạp `QuyTrinh.html` + giả `call()` trả `layDonHangXuong`. `quy-trinh-web.js` đã sửa kỳ vọng nhưng chưa chạy (thiếu DATA). Lỗi cũ có sẵn: don-hang.js 11, quy-trinh-web 3–5, quy-trinh 5.
+
+**Còn chờ chủ dự án**: chạy 2-CAP-NHAT.bat rồi xem thử; tài khoản C019/C056/C067 có vai trò ADMIN/TP chưa (tab Đơn hàng chỉ mở ADMIN + TP); Sheet có công thức cộng cột Phôi không (ô Phôi gậy thành chữ 2 dòng).
+
 ## 15/11 – Đơn hàng sắp xếp lại xong (đã commit, chờ chủ dự án chạy 2-CAP-NHAT.bat)
 - Xong mục 1–5 (đã duyệt bỏ/giữ), Ưu tiên/Trễ hẹn thành nút trong Tất cả đơn, Công suất & deadline sang Trạng thái đơn hàng. – [[KPI Đơn hàng giao nhận theo bộ phận (14-11)]]
 
