@@ -3,8 +3,8 @@
 Nhóm: Chung · Cập nhật 02/11/2026
 Liên quan: [[00 Mục lục]] · [[Liên kết và công cụ]] · [[Việc chờ chủ dự án]] · [[Lần dán lên Apps Script]] · [[Quyết định của chủ dự án]] · [[KPI Kiểm thử]]
 
-## 14/11 khuya – Đơn hàng sắp xếp lại (đã commit, chờ dán + chờ duyệt mục 5)
-- Xong mục 1–4 + trễ hẹn bộ phận; mục 5 chờ chủ dự án duyệt danh sách bỏ/giữ. – [[KPI Đơn hàng giao nhận theo bộ phận (14-11)]]
+## 15/11 – Đơn hàng sắp xếp lại xong (đã commit, chờ chủ dự án chạy 2-CAP-NHAT.bat)
+- Xong mục 1–5 (đã duyệt bỏ/giữ), Ưu tiên/Trễ hẹn thành nút trong Tất cả đơn, Công suất & deadline sang Trạng thái đơn hàng. – [[KPI Đơn hàng giao nhận theo bộ phận (14-11)]]
 
 ## Bàn giao 14/11 khuya → phiên mới (việc ĐANG CHỜ làm)
 - Đã xong + đã push: luồng ngọn mới (Taro → HT → Tip → trả HT → ĐG) áp mọi chỗ; Trạng thái đơn hàng (bảng nổi gọn: đã giao/đặt + hẹn + giao tiếp cho bộ phận, màu xoay vòng theo đơn, bỏ Chi tiết từng dòng); bộ cài clasp tự gỡ file lạ `_qt_check`. – [[KPI Đơn hàng giao nhận theo bộ phận (14-11)]], [[KPI Cập nhật bằng clasp]]

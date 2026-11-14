@@ -5,7 +5,7 @@ Liên quan: [[Lần dán lên Apps Script]] · [[Quyết định của chủ d�
 
 - (14/11) Dán Code.gs + Index.html + QuyTrinh.html; kiểm tra tài khoản TP/PP có đúng MaXuong (để web biết bộ phận). Nếu web báo "ô … là CÔNG THỨC" thì đổi ô đó thành số gõ tay hoặc báo Claude. – [[KPI Đơn hàng giao nhận theo bộ phận (14-11)]]
 
-- (14/11 khuya) Duyệt danh sách đề xuất bỏ / giữ ở tab Đơn hàng (mục 5, góp ý quan-ly-van-hanh + soat-giao-dien-cuoi) – xem [[KPI Đơn hàng giao nhận theo bộ phận (14-11)]] mục "14/11 khuya".
+- (15/11) Cập nhật web bằng 2-CAP-NHAT.bat (Đơn hàng sắp xếp lại, đã duyệt mục 5) rồi xem thử. – [[KPI Đơn hàng giao nhận theo bộ phận (14-11)]]
 
 ## Câu hỏi đang chờ trả lời
 - (09/11) **File SKU trong Cấu hình gậy**: xác nhận ghép 48 mã chưa ghép (gợi ý: EVO Break&Jump → EVO phá nhảy Valkyrie, EVO Jump 3 khúc → EVO nhảy Pegasus?, EVO Jump 2 khúc → EVO nhảy IG, EVO Break → EVO phá X, Z-SP (ZF) → Cuebots Z-Pure / Z Fusion, USA Pool → ?, Japan / Covid → ?, Gậy CLB xu hướng EVO → ?, Cuebots G Series → ?). Dán Code.gs + Index.html + CauHinhGay.html. – [[KPI Cấu hình gậy – bản vẽ kỹ thuật (08-11)]]

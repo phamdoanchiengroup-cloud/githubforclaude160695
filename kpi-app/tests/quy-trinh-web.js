@@ -123,15 +123,15 @@ const vao = async (p, tk) => { await p.goto(F); await p.waitForSelector('#xtGoiY
         const cy = dhChuY(don), tre = don.filter(g => g.st === 'treHan').length, nTre = cy.filter(x => x.l === 'tre' || x.l === 'qua30').length;
         return [tl.length, tl[0] === tre, tre === nTre, dong[0] === don.length, dong[2] === ds.reduce((a, o) => a + o.thieu, 0), DHV, cy.length ? document.querySelectorAll('.dh-bang tbody tr, .dh-sh tbody tr').length : /Không có đơn cần chú ý/.test(document.querySelector('main').textContent) ? 1 : 0, cy.every(x => x.g.thieu > 0),
           document.querySelectorAll('.dh-seg button').length, document.querySelectorAll('.dh-sub button').length, document.querySelectorAll('.dh-menu').length, document.body.classList.contains('tab-dh')]; });
-      ok(s[0] === 3 && s[1] && s[2] && s[3] && s[4] && s[5] === 'bang' && s[6] > 0 && s[7] && s[8] === 2 && s[9] === 4 && s[10] === 2 && s[11], 'Đơn hàng: 3 ô trả lời (số trễ = tổng nhóm trễ trong bảng), dòng số khớp dữ liệu; 2 mục (Trạng thái đơn hàng · Số liệu sản xuất) + 4 thẻ con (14/11 đã bỏ Chi tiết từng dòng) + menu ⚙ / ⋯; mặc định bảng kiểu Sheet (14/11)', s);
+      ok(s[0] === 3 && s[1] && s[2] && s[3] && s[4] && s[5] === 'bang' && s[6] > 0 && s[7] && s[8] === 2 && s[9] === 3 && s[10] === 2 && s[11], 'Đơn hàng: 3 ô trả lời (số trễ = tổng nhóm trễ trong bảng), dòng số khớp dữ liệu; 2 mục (Trạng thái đơn hàng · Số liệu sản xuất) + 3 thẻ con (Tất cả đơn · Đến hạn 10 ngày · Công suất) + menu ⚙ / ⋯; mặc định bảng kiểu Sheet (14/11)', s);
       s = await p.evaluate(() => { const uu = dhUuDs(); DHV = 'uutien'; dhVeLai(); const r = [uu.length === (DH.uu && DH.uu.length ? dhLoc(DH.uu).length : dhLoc().filter(o => o.uuTien).length), /ĐƠN ƯU TIÊN/.test(document.querySelector('main').textContent) === !!(DH.uu && DH.uu.length), document.querySelector('.dh-sub button.on').textContent.startsWith('Ưu tiên')];
         DHV = 'chuy'; dhVeLai(); return r; });
       ok(s.every(Boolean), 'Ưu tiên: lấy danh sách từ tab "ĐƠN ƯU TIÊN" khi Sheet có tab này', s);
       // 07/11: thanh % hoàn thành 2 màu ở mọi danh sách đơn
-      s = await p.evaluate(() => { const r = []; for (const v of ['tre', 'uutien', 'chitiet', 'han10']) { DHV = v; dhVeLai(); r.push(document.querySelectorAll('.dh-than .dh-pb').length > 0); }
+      s = await p.evaluate(() => { const r = []; for (const v of ['han10', 'chitiet']) { DHV = v; dhVeLai(); r.push(document.querySelectorAll('.dh-than .dh-pb').length > 0); }
         const t = dhTienDo([{ sl: 10, thieu: 4, qua: { PHOI: 9, SON: 7 } }, { sl: 5, thieu: 0, qua: {} }]); r.push(t.sl === 15 && t.xong === 11 && t.dang === 3);
         const e = document.createElement('div'); e.innerHTML = dhThanh(t); r.push(/73%/.test(e.textContent) && e.querySelector('i.x').style.width === '73.3%'); DHV = 'chuy'; dhVeLai(); return r; });
-      ok(s.every(Boolean), 'thanh % 2 màu ở Trễ hẹn / Ưu tiên / Chi tiết / Đến hạn 10 ngày; % = (đặt − thiếu) ÷ đặt, phần nhạt = đã qua xưởng chưa xong', s);
+      ok(s.every(Boolean), 'thanh % 2 màu ở Đến hạn 10 ngày / Chi tiết; % = (đặt − thiếu) ÷ đặt, phần nhạt = đã qua xưởng chưa xong', s);
       // 07/11: công suất & deadline + sản lượng ngày + báo cáo lãnh đạo
       s = await p.evaluate(() => { const K = dhCSTinh(), sx = DH.don.filter(o => o.thieu > 0 && dhLaSX(o)).reduce((a, o) => a + o.thieu, 0);
         const sorted = K.don.every((g, i) => i === 0 || g.eta >= K.don[i - 1].eta), lamCN = K.don.some(g => new Date(g.eta + 'T00:00:00').getDay() === 0);
@@ -201,12 +201,8 @@ const vao = async (p, tk) => { await p.goto(F); await p.waitForSelector('#xtGoiY
       ok(!s[0].length && s[1] && s[2] && s[3] === 9 && s[4] === 1, 'thời gian làm hết đơn: ngày nhịp nay / hết sức / giờ chuẩn / công đúng công thức, 1 nút thắt = xưởng lâu nhất', s);
       s = await p.evaluate(() => { const hn = dhHomNay(), g = { thieu: 600, dl: '' }, cong = (n) => { const d = new Date(hn + 'T00:00:00'); d.setDate(d.getDate() + n); return d.toISOString().slice(0, 10); };
         const mk = (dl, thieu) => ({ ma: dl, thieu, dl, dong: [] }); const r = dhChuY([mk(cong(-5), 10), mk(cong(-40), 10), mk(cong(2), 10), mk(cong(6), 600), mk(cong(30), 10)]).map(x => x.l); return r.join(); });
-      ok(s === 'tre,sap,nguyco,qua30', 'Đơn cần chú ý: trễ ≤ 30 ngày, sắp tới hạn ≤ 3 ngày, nguy cơ (600 sp / 60 mỗi ngày + 2 > 6 ngày); trễ quá 30 ngày xếp cuối (02/11), còn xa thì bỏ', s);
-      s = await p.evaluate(() => { const hn = dhHomNay(), cong = (n) => { const d = new Date(hn + 'T00:00:00'); d.setDate(d.getDate() + n); return d.getFullYear() + '-' + ('0' + (d.getMonth() + 1)).slice(-2) + '-' + ('0' + d.getDate()).slice(-2); };
-        const mk = (dl, thieu) => ({ ma: 'M' + dl, kenh: 'Kho', thieu, dl, dong: [] }); const el = document.createElement('div'); el.innerHTML = dhVeChuY([mk(cong(-5), 10), mk(cong(-40), 7), mk(cong(-90), 3)]);
-        const the = [...el.querySelectorAll('.card')]; const cuoi = the[the.length - 1]; const ma = [...cuoi.querySelectorAll('td.ma')].map(t => t.textContent);
-        return [the.length, /Quá hạn hơn 30 ngày · 2 đơn · còn thiếu 10/.test(cuoi.textContent), ma.join(), /M/.test(the[0].textContent) && !/Quá hạn hơn/.test(the[0].textContent)]; });
-      ok(s[0] === 2 && s[1] && s[2].split(',').length === 2 && s[2].split(',')[0] < s[2].split(',')[1] && s[3], 'Đơn quá hạn > 30 ngày: thẻ riêng bên dưới, mở sẵn, tổng đơn + còn thiếu, trễ lâu nhất lên đầu', s);
+      ok(s === 'tre,sap,qua30', 'Đơn cần chú ý: trễ ≤ 30 ngày, sắp tới hạn ≤ 3 ngày (15/11 bỏ nhóm nguy cơ); trễ quá 30 ngày xếp cuối (02/11), còn xa thì bỏ', s);
+      // 15/11: bỏ thẻ "Cần chú ý" (dhVeChuY) – đơn trễ xem ở Tất cả đơn › Đơn trễ hẹn
       s = await p.evaluate(() => { const a = dhThoiGian(dhTinh(), qtTinh()).nut.nay; dhDoiNL('thang', 18000, 1000, 50000); const b = dhThoiGian(dhTinh(), qtTinh()).nut.nay; dhDoiNL('thang', 5, 1000, 50000); const c = QTS.slThang; dhDoiNL('thang', 9000, 1000, 50000); return [Math.abs(a / b - 2) < 1e-9, c]; });
       ok(s[0] && s[1] === 18000, 'sửa sản lượng/tháng: gấp đôi sản lượng → số ngày giảm một nửa; số ngoài khoảng bị chặn', s);
       if (CHUP) await p.screenshot({ path: CHUP + '/dh-tg-' + w + '.png', fullPage: true });
