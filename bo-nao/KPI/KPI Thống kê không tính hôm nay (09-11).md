@@ -15,3 +15,7 @@ Liên quan: [[KPI Quy trình sản xuất]] · [[KPI Điều phối sản xuất
 - `tests/bo-hom-nay.js` 7/7 (thêm 30 dòng nhật ký hôm nay 99.999 sp → KPI, Thống kê, sản lượng xưởng, lưu đồ không đổi; thêm số 07/11 → đổi).
 - `tests/bo-hom-nay-web.js` 14/14 (máy tính + điện thoại: tới hết hôm qua, cửa sổ nổi, Esc / ✕, KPI tạm tính trình duyệt).
 - quy-trinh-web: 5 lỗi **có sẵn từ trước** (chạy bản b5371b2 cũng y hệt) – mục tiêu % theo cài đặt đã lưu, "chưa tải giao diện", "quy trình còn nháp".
+
+## 15/11 – chủ dự án nhắc lại (sót Tổng quan TP/PP + ban điều hành)
+- Rà lại: Thống kê, KPI (Bảng KPI, KPI tạm tính trình duyệt `kpi()` → `kpiThangNay_`), lưu đồ, Điều phối, Tổng quan chủ sở hữu (`tqNgayLam` = ngày làm trước) đã tới hết hôm qua từ 09/11.
+- **Còn sót**: `vDash` gốc (Tổng quan TP/PP, ADMIN) – ô Hiệu suất / Tỷ lệ đạt / Sản lượng, So sánh hiệu suất xưởng, Xu hướng hiệu suất dùng cả nhật ký hôm nay. Sửa trong mục 43 (`va-bo-hom-nay-web.py`): `var NK = D.nhatky` lọc `Ngay < today()`, ghi chú "tính tới hết hôm qua". Khối "chưa nhập sản lượng hôm nay" giữ nguyên (vận hành trong ngày).
