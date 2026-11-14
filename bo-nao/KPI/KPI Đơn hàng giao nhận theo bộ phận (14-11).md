@@ -72,3 +72,9 @@ Liên quan: [[KPI Quy trình sản xuất]] · [[KPI Điều phối sản xuất
 - Web: `dhLa2` (gậy hoặc cấu hình có cả Sơn + Taro), `dhP2`, `dhHenK`; ô bảng Phôi 2 dòng; bảng nổi của Phôi 2 nhóm; Sơn / Taro thấy đúng hẹn nhánh mình để Đồng ý / Không kịp. Chuôi lẻ, ngọn lẻ giữ 1 ô.
 - Lưu ý: ô Phôi của gậy thành chữ 2 dòng → công thức Sheet nào cộng cột Phôi sẽ không cộng ô đó.
 - Kiểm thử (giả lập): `thu/p2.js` 4/4, `thu/p2luu.js` 4/4, `thu/p2web.js` 14/14; khung thử 30/30, Note 10/10.
+
+## 15/11 – Deadline mới (cột "Hạn mới HT đơn cũ")
+- Chủ dự án: đọc cả cột Deadline và cột **"Hạn mới HT đơn cũ"** ngay bên phải (gia hạn = deadline mới).
+- Trước đây chỉ web thay `dl` bằng `hanMoi` (`dhHanMoi_`), máy chủ (email 8h, trạng thái, bản chụp, thống kê) vẫn dùng deadline gốc. Nay **máy chủ thay luôn** khi đọc Sheet (`dhDocTab_`): `o.dl = hanMoi`, giữ `o.dlGoc`; ưu tiên cột ngay bên phải Deadline có chữ HẠN MỚI / GIA HẠN / HẠN HT; hạn mới trước ngày đặt → sang năm sau. Web áp cả tab bản chép; cột Hạn ở bảng đơn hiện thêm "gốc dd/mm" gạch ngang (`dhHanO`).
+- Lưu ý: hôm đầu sau khi cập nhật, "Thay đổi hôm nay" có thể báo nhiều dòng "Đổi deadline" (bản chụp cũ lưu deadline gốc).
+- Kiểm thử: `thu/hanmoi.js` (giả lập Code.gs thật) đạt; các khung thử khác đạt.

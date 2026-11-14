@@ -282,7 +282,7 @@ function dhDocTab_(sh, tab, nam, gioiHan, meta) {
   if (hi < 0) return [];
   var h = dau[hi].map(function(x) { return String(x == null ? '' : x).trim().toUpperCase(); });
   var tim = function(ks) { for (var i = 0; i < h.length; i++) for (var k = 0; k < ks.length; k++) if (h[i].indexOf(ks[k]) >= 0) return i; return -1; };
-  var cTen = tim(['LOẠI HÀNG']), cPhoi = tim(['LOẠI PHÔI']), cSL = tim(['SỐ LƯỢNG ĐẶT', 'SL ĐẶT']), cThieu = tim(['CÒN THIẾU']), cDL = tim(['DEADLINE']), cCT = tim(['CHÚ THÍCH']), cKenh = tim(['KÊNH', 'NGUỒN ĐƠN']), cHanMoi = tim(['HẠN MỚI']), cGiao = tim(['CÓ THỂ GIAO']), cTra = tim(['ĐÃ TRẢ KHÁCH', 'HÀNG ĐI']);
+  var cTen = tim(['LOẠI HÀNG']), cPhoi = tim(['LOẠI PHÔI']), cSL = tim(['SỐ LƯỢNG ĐẶT', 'SL ĐẶT']), cThieu = tim(['CÒN THIẾU']), cDL = tim(['DEADLINE']), cCT = tim(['CHÚ THÍCH']), cKenh = tim(['KÊNH', 'NGUỒN ĐƠN']), cHanMoi = (cDL >= 0 && /HẠN MỚI|GIA HẠN|HẠN HT|DEADLINE MỚI/.test(h[cDL + 1] || '')) ? cDL + 1 : tim(['HẠN MỚI', 'GIA HẠN', 'DEADLINE MỚI']),   /* 15/11: cột gia hạn ngay bên phải Deadline */ cGiao = tim(['CÓ THỂ GIAO']), cTra = tim(['ĐÃ TRẢ KHÁCH', 'HÀNG ĐI']);
   if (cTen < 0) cTen = 1;
   var chang = {}, hong = {}, hen = {};
   /* 07/11 (theo ORDER·FLOW): cột "Ngày hẹn trả …" của từng công đoạn (BP60 = Phôi) */
@@ -325,7 +325,7 @@ function dhDocTab_(sh, tab, nam, gioiHan, meta) {
     Object.keys(hong).forEach(function(k) { var x = dhSo_(row[hong[k]]); if (x > 0) o.hong[k] = Math.min(sl, x); });
     Object.keys(hen).forEach(function(k) { var x = dhNgay_(row[hen[k]], nam); if (x) (o.hen = o.hen || {})[k] = x; });
     dhP2Gan_(o, chang.PHOI != null ? row[chang.PHOI] : null, hen.PHOI != null ? row[hen.PHOI] : null, nam);   // 15/11: Phôi 2 nhánh (chuôi / ngọn)
-    if (cHanMoi >= 0) { var hm = dhNgay_(row[cHanMoi], nam); if (hm) o.hanMoi = hm; }
+    if (cHanMoi >= 0) { var hm = dhNgay_(row[cHanMoi], nam); if (hm) { if (o.ngayDat && hm < o.ngayDat) hm = (Number(hm.slice(0, 4)) + 1) + hm.slice(4); o.hanMoi = hm; if (hm !== o.dl) { o.dlGoc = o.dl || ''; o.dl = hm; } } }   // 15/11 (chủ dự án): "Hạn mới HT đơn cũ" = deadline mới, thay deadline gốc ở mọi chỗ (cả email, bản chụp, thống kê máy chủ)
     if (cKenh >= 0) { var kc = dhKenhTen_(row[cKenh]); if (kc) o.kenhCot = kc; }
     if (nhom) o.kenhNhom = nhom;
     out.push(o);

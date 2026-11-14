@@ -75,6 +75,7 @@
 .dh-note.sua{background:none;border:0;padding:0} .dh-note textarea{width:100%;min-width:180px;font:inherit;font-size:13px;padding:4px;border:1px solid #c9a227;border-radius:4px;background:#fffdf3;color:#222} .dh-noteadd{all:unset;cursor:pointer;font-size:11.5px;color:#0b7fd0;margin-top:3px} .dh-noteadd:hover,.dh-noteadd:focus-visible{text-decoration:underline}
 .dh-p2{display:block;white-space:nowrap;line-height:1.35} .dh-p2 em{font-style:normal;font-size:10.5px;opacity:.7;margin-right:3px} .dh-p2.du{color:#13804a;font-weight:700}
 .dh-f-p2{border:1px solid var(--line);border-radius:8px;padding:8px 10px;margin-bottom:8px} .dh-f-p2t{font-weight:700;margin-bottom:4px}
+.dh-hangoc{font-size:10.5px;opacity:.65;text-decoration:line-through;white-space:nowrap}
 .dh-tabb.uu{font-weight:700} .dh-tabb.tre{font-weight:700} .dh-tabb.tre i{color:var(--red)} .dh-chu-pb.ma i{background:var(--cyan)} .dh-menughi{font-size:12px;color:var(--ink3);padding:6px 12px;max-width:260px;line-height:1.4}
 /* 14/11 khuya: vạch % của cả đơn dưới mã đơn; tab Trễ hẹn / Đến hạn; bảng gọn trên Tổng quan TP/PP */
 .dh-mabar{display:flex;height:3px;margin-top:4px;border-radius:2px;background:var(--line);overflow:hidden;min-width:44px}
@@ -1246,7 +1247,8 @@ var DH_TUYEN=[['PHOICB','Phôi Carbon','PHOI',{GAY:1,NGON:1,CHUOI:1},'phoi'],['P
 /* 08/11: đọc nền – luôn nhận kết quả (kể cả khi đã sang tab khác / máy chủ lỗi) để gỡ cờ đang tải; nơi vẽ tự kiểm tab */
 function dhDocNen(fn,a,cb){ cb.__luonGoi=1; call(fn,a,cb); }
 /* 13/11 (chủ dự án): cột "HẠN MỚI HT ĐƠN CŨ" có ngày thì dùng thay deadline gốc cho đơn cũ đã dời hạn */
-function dhHanMoi_(r){ ((r&&r.don)||[]).forEach(function(o){ if(o.hanMoi&&o.dl!==o.hanMoi) o.dl=o.hanMoi; }); }
+function dhHanMoi_(r){ var f=function(o){ if(o.hanMoi&&o.dl!==o.hanMoi){ if(!o.dlGoc) o.dlGoc=o.dl; o.dl=o.hanMoi; } }; ((r&&r.don)||[]).forEach(f); ((r&&r.uu)||[]).forEach(f); Object.keys((r&&r.tabPhu)||{}).forEach(function(k){ (r.tabPhu[k]||[]).forEach(f); }); }   /* 15/11: cả tab bản chép */
+function dhHanO(o){ return o.dl?dhNg(o.dl)+(o.dlGoc&&o.dlGoc!==o.dl?'<div class="dh-hangoc" title="Deadline gốc – đã gia hạn ở cột Hạn mới">gốc '+dhNg(o.dlGoc)+'</div>':''):'–'; }
 function dhTai(lamMoi){
   DHTai=true; if(tabHienTai==='dh'||tabHienTai==='tk') dhVeLai();
   dhDocNen('layDonHangXuong',[!!lamMoi],function(r){
@@ -2467,7 +2469,7 @@ function dhVeBang(ds){
       '<td class="c1" data-t="'+esc(o.tab)+'" data-d="'+o.dong+'" onclick="dhBMo(this.dataset.t,+this.dataset.d)"><a href="#" onclick="return false">'+esc(o.maDon||'(không mã)')+'</a><div class="dh-bkenh">'+esc(o.kenh)+(dau?(function(t){ return ' · <b>'+dhPct(t.xong,t.sl)+'%</b></div>'+dhThanhMa(t); })(dhTienDo(tdo[sk])):'</div>')+'</td>'+
       '<td class="c2">'+esc(o.ten)+dhNoteO(o)+(dem[sk]>1?' <span class="dh-bkenh" title="Đơn này có '+dem[sk]+' mã sản phẩm – mỗi mã nhập SL/hẹn riêng">mã '+vt+'/'+dem[sk]+'</span>':'')+'</td>'+
       (dhCoBV()?'<td class="dh-cfg">'+dhCfgO(o)+'</td>':'')+
-      '<td class="qt-so">'+qtSo(o.sl,0)+'</td><td class="qt-so"><b>'+(o.thieu?qtSo(o.thieu,0):'–')+'</b></td><td>'+(o.dl?dhNg(o.dl):'–')+'</td>';
+      '<td class="qt-so">'+qtSo(o.sl,0)+'</td><td class="qt-so"><b>'+(o.thieu?qtSo(o.thieu,0):'–')+'</b></td><td>'+dhHanO(o)+'</td>';
     bps.forEach(function(k){
       var v=o.qua?o.qua[k]:null, hen=o.hen?o.hen[k]:'', ngoa=!dhBTrongRoute(o,k), co=c.qty[k]!=null&&dhBCo(k)&&!o.phu, at=' data-t="'+esc(o.tab)+'" data-d="'+o.dong+'"'+(co?' onclick="dhBMo(this.dataset.t,+this.dataset.d)" title="'+(ngoa?'Ngoài cấu hình BTP của mã này – bấm để nhập nếu cần':'Bấm để nhập')+'"':'');
       if(k==='PHOI'&&!ngoa&&dhLa2(o)){ var P2=dhP2(o), dong2=function(x,lb){ var vv=P2[x]; return '<span class="dh-p2'+(vv!=null&&o.sl>0&&vv>=o.sl?' du':'')+'"><em>'+lb+'</em> '+qtSo(vv||0,0)+'<i>/'+qtSo(o.sl,0)+'</i></span>'; },
