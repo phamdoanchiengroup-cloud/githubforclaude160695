@@ -9,9 +9,9 @@ _t45(""":root{--bg:#1d2125;--panel:#262b30;--panel2:#2f353b;--line:#3e464e;
   --cyan:#2fd3c6;--cyan-d:#138f87;--acc-rgb:47,211,198;--amber:#f0b04e;--red:#f77e7e;--green:#66d49a;
   --on-acc:#062622;--nav-bg:#181b1f;--head-bg:#181b1f;--bot-bg:rgba(24,27,31,.97);--hover:rgba(255,255,255,.05);
   --bong:0 1px 0 rgba(255,255,255,.03) inset;--row-line:rgba(255,255,255,.07)}""",
-""":root{--bg:#050a15;--panel:#0b1626;--panel2:#0f1e33;--line:#1c3454;
-  --ink:#eaf4ff;--ink2:#b4cbe5;--ink3:#8ea9c9;
-  --cyan:#3ea6ff;--cyan-d:#1c6ad1;--acc-rgb:62,166,255;--amber:#ffc857;--red:#ff667d;--green:#3ee0a3;
+""":root{--bg:#070b12;--panel:#0d131d;--panel2:#131b28;--line:#25324a;
+  --ink:#f4ecda;--ink2:#d9d0bd;--ink3:#aaa391;
+  --cyan:#1ea7ff;--cyan-d:#0b7fd0;--acc-rgb:30,167,255;--amber:#ffc857;--red:#ff667d;--green:#3ee0a3;
   --on-acc:#04121f;--nav-bg:#060d1b;--head-bg:#060d1b;--bot-bg:rgba(6,13,27,.97);--hover:rgba(62,166,255,.08);
   --bong:0 14px 34px -24px rgba(0,0,0,.85),inset 0 1px 0 rgba(140,195,255,.09);--row-line:rgba(90,150,220,.13)}""")
 _t45("kpiql:1, qt:1, dh:1, tk:1};", "kpiql:1, qt:1, tk:1};   /* 14/11: Đơn hàng mở cho ban điều hành + TP/PP */")

@@ -80,16 +80,8 @@ html[data-gd="toi"]:not(.cn-moi) .dh-the button{background:linear-gradient(160de
 html[data-gd="toi"]:not(.cn-moi) .dh-the button.on{border-color:rgba(78,160,255,.65);box-shadow:0 0 18px -4px rgba(46,139,255,.55),inset 0 0 0 1px rgba(62,166,255,.35)}
 html[data-gd="toi"]:not(.cn-moi) .dh-tabb{background:linear-gradient(180deg,#0d1d34,#091528);border-color:rgba(72,155,255,.18)}
 html[data-gd="toi"]:not(.cn-moi) .dh-tabb.on{background:linear-gradient(135deg,rgba(47,139,255,.32),rgba(63,192,255,.14));border-color:#3ea6ff;color:#f2f8ff;box-shadow:0 0 18px -6px rgba(46,139,255,.6)}
-html[data-gd="toi"]:not(.cn-moi) .dh-shw{border-color:rgba(90,175,255,.3);border-radius:12px;background:#081326;box-shadow:0 0 30px -20px rgba(46,139,255,.6)}
-html[data-gd="toi"]:not(.cn-moi) .dh-sh th,html[data-gd="toi"]:not(.cn-moi) .dh-sh td{background:#081326;border-bottom-color:rgba(72,155,255,.16);border-right-color:rgba(72,155,255,.13)}
-html[data-gd="toi"]:not(.cn-moi) .dh-sh thead th{background:linear-gradient(180deg,#132a49,#0b1a2f)!important;color:#9cc6ee}
-html[data-gd="toi"]:not(.cn-moi) .dh-sh thead .c1,html[data-gd="toi"]:not(.cn-moi) .dh-sh thead .c2{background:linear-gradient(180deg,#132a49,#0b1a2f)}
-html[data-gd="toi"]:not(.cn-moi) .dh-sh tbody tr:hover td{background:rgba(62,166,255,.07)}
-html[data-gd="toi"]:not(.cn-moi) .dh-sh td.co{color:#7cc8ff}
 html[data-gd="toi"]:not(.cn-moi) .dh-tl{background:linear-gradient(150deg,rgba(17,36,62,.95),rgba(8,18,34,.97));border-color:rgba(72,155,255,.22)}
 html[data-gd="toi"]:not(.cn-moi) .dh-bk4>div{background:linear-gradient(150deg,rgba(17,36,62,.95),rgba(8,18,34,.97));border-color:rgba(72,155,255,.22)}
-html[data-gd="toi"]:not(.cn-moi) .dh-btp2 span{background:rgba(10,24,44,.9);border-color:rgba(72,155,255,.25)}
-html[data-gd="toi"]:not(.cn-moi) .dh-btp2 span.on{border-color:#3ea6ff;background:rgba(46,139,255,.16);color:#8fd4ff;box-shadow:0 0 12px -4px rgba(46,139,255,.55)}
 /* hiệu ứng rất nhẹ: viền sáng thở + vệt sáng quét khi rê nút chính */
 @keyframes navyTho{0%,100%{box-shadow:0 18px 38px -28px rgba(0,0,0,.9),inset 0 1px 0 rgba(150,205,255,.12),0 0 0 rgba(46,139,255,0)}50%{box-shadow:0 18px 38px -28px rgba(0,0,0,.9),inset 0 1px 0 rgba(150,205,255,.12),0 0 22px -10px rgba(46,139,255,.55)}}
 html[data-gd="toi"]:not(.cn-moi) .kpis .kpi{animation:navyTho 7s ease-in-out infinite}
@@ -103,15 +95,69 @@ html[data-gd="toi"]:not(.cn-moi) .btn.pri:hover::after{animation:navyQuet .7s ea
 @media (prefers-reduced-motion:reduce){html[data-gd="toi"]:not(.cn-moi) .kpis .kpi{animation:none}html[data-gd="toi"]:not(.cn-moi) .btn.pri:hover::after{animation:none}}
 /* 14/11 (Claude, chủ dự án dặn): bảng đơn hàng phải TƯƠNG PHẢN rõ giữa nền và chữ / số */
 html[data-gd="toi"]:not(.cn-moi){--ink3:#8ea9c9}
-html[data-gd="toi"]:not(.cn-moi) .dh-sh td{color:#eef6ff}
-html[data-gd="toi"]:not(.cn-moi) .dh-sh td.qt-so{color:#ffffff;font-weight:600}
-html[data-gd="toi"]:not(.cn-moi) .dh-sh thead th{color:#d3e6fb!important}
-html[data-gd="toi"]:not(.cn-moi) .dh-sh tbody tr:nth-child(even) td{background:#0b1a30}
-html[data-gd="toi"]:not(.cn-moi) .dh-sh tbody tr:hover td{background:#12284a}
-html[data-gd="toi"]:not(.cn-moi) .dh-sh tbody tr.cua td{background:#10284d}
-html[data-gd="toi"]:not(.cn-moi) .dh-sh td.co{color:#8fd4ff}
-html[data-gd="toi"]:not(.cn-moi) .dh-sh tr.xong td{opacity:.62}
-html[data-gd="toi"]:not(.cn-moi) .dh-bkenh,html[data-gd="toi"]:not(.cn-moi) .dh-btp{color:#a7bfdc}
-html[data-gd="toi"]:not(.cn-moi) .dh-bpo{background:#1c4f8f;color:#ffffff}
-html[data-gd="toi"]:not(.cn-moi) .dh-bxn{color:#6cf0bd}
 html[data-gd="toi"]:not(.cn-moi) .dh-cho{color:#ffd166}
+/* ===== 14/11 tối (chủ dự án): phối màu 60 / 30 / 10 – Midnight Carbon (nền) · Ivory Cream (chữ, số, thẻ nhấn) · Electric Azure #1EA7FF (điểm nhấn) ===== */
+html[data-gd="toi"]:not(.cn-moi) body{background:radial-gradient(1100px 560px at 12% -12%,rgba(30,167,255,.22),transparent 60%),radial-gradient(900px 600px at 100% 110%,rgba(30,167,255,.14),transparent 62%),#070b12}
+html[data-gd="toi"]:not(.cn-moi) .card{background:linear-gradient(160deg,#111a27,#0b111a)!important;border-color:rgba(30,167,255,.30)!important}
+html[data-gd="toi"]:not(.cn-moi) .ptitle{background:linear-gradient(96deg,#f4ecda 0%,#f4ecda 40%,#1ea7ff 100%);-webkit-background-clip:text;background-clip:text;color:transparent}
+html[data-gd="toi"]:not(.cn-moi) .pdesc{color:#bdb5a3}
+html[data-gd="toi"]:not(.cn-moi) .kpi .v{color:#f4ecda;text-shadow:0 0 18px rgba(30,167,255,.35)}
+html[data-gd="toi"]:not(.cn-moi) .kpi .l{color:#bdb5a3}
+html[data-gd="toi"]:not(.cn-moi) .btn.pri{background:linear-gradient(135deg,#1ea7ff,#5cc4ff);color:#04121f}
+html[data-gd="toi"]:not(.cn-moi) #nav button.on{background:linear-gradient(90deg,rgba(30,167,255,.45),rgba(30,167,255,.08) 80%);border-color:#1ea7ff;color:#fff}
+/* Đơn hàng – 3 ô trả lời: số to; ô giữa nền Ivory như ảnh mẫu */
+html[data-gd="toi"]:not(.cn-moi) .dh-tl{background:linear-gradient(150deg,#141d2b,#0b111a)!important;border:1px solid rgba(30,167,255,.35)!important;border-left-width:4px!important;border-radius:16px;padding:14px 18px;box-shadow:0 0 26px -14px rgba(30,167,255,.7)}
+html[data-gd="toi"]:not(.cn-moi) .dh-tl span{color:#f4ecda;font-size:13px}
+html[data-gd="toi"]:not(.cn-moi) .dh-tl b{font-size:40px;color:#f4ecda;text-shadow:0 0 22px rgba(30,167,255,.35)}
+html[data-gd="toi"]:not(.cn-moi) .dh-tl small{color:#cfc6b2;font-size:13px}
+html[data-gd="toi"]:not(.cn-moi) .dh-tl.do b{color:#ff6b7f;text-shadow:0 0 20px rgba(255,80,100,.45)}
+html[data-gd="toi"]:not(.cn-moi) .dh-tl3>.dh-tl:nth-child(2){background:linear-gradient(150deg,#f4ecda,#e3d8c0)!important;border-color:#f4ecda!important;border-left-color:#ffb020!important}
+html[data-gd="toi"]:not(.cn-moi) .dh-tl3>.dh-tl:nth-child(2) span,html[data-gd="toi"]:not(.cn-moi) .dh-tl3>.dh-tl:nth-child(2) b{color:#0b111a;text-shadow:none}
+html[data-gd="toi"]:not(.cn-moi) .dh-tl3>.dh-tl:nth-child(2) small{color:#3a3426}
+html[data-gd="toi"]:not(.cn-moi) .dh-tl3>.dh-tl:nth-child(3) b{color:#1ea7ff;text-shadow:0 0 22px rgba(30,167,255,.6)}
+html[data-gd="toi"]:not(.cn-moi) .dh-so{font-size:14.5px;color:#cfc6b2}
+html[data-gd="toi"]:not(.cn-moi) .dh-so b{color:#fff;font-size:16px}
+html[data-gd="toi"]:not(.cn-moi) .dh-tabb{color:#f4ecda}
+html[data-gd="toi"]:not(.cn-moi) .dh-tabb.on{background:#1ea7ff;color:#04121f;border-color:#1ea7ff}
+html[data-gd="toi"]:not(.cn-moi) .dh-tabb.on i{color:#04121f}
+html[data-gd="toi"]:not(.cn-moi) .dh-seg button.on,html[data-gd="toi"]:not(.cn-moi) .dh-sub button.on{background:#1ea7ff!important;color:#04121f!important;box-shadow:0 0 22px -4px rgba(30,167,255,.8)}
+
+/* ===== 14/11 tối (chủ dự án): ẨN MENU TRÁI trên máy tính – rê chuột vào mép trái mới hiện; nội dung dùng hết bề ngang ===== */
+@media (min-width:901px){
+  html:not(.cn-moi) #nav{transform:translateX(calc(-100% + 8px));transition:transform .22s ease,box-shadow .22s;z-index:150;border-right:3px solid var(--cyan)!important}
+  html:not(.cn-moi) #nav:hover,html:not(.cn-moi) #nav:focus-within{transform:none;box-shadow:0 0 60px rgba(0,0,0,.6),0 0 30px -6px rgba(30,167,255,.6)}
+  html:not(.cn-moi) #app>#ducbar,html:not(.cn-moi) #app>#minibar,html:not(.cn-moi) #app>main{margin-left:14px}
+  html:not(.cn-moi) #app>main{max-width:none;padding-left:24px;padding-right:24px}
+}
+@media (min-width:901px) and (prefers-reduced-motion:reduce){html:not(.cn-moi) #nav{transition:none}}
+
+/* ===== 14/11 tối (chủ dự án chốt): BẢNG ĐƠN NỀN IVORY SÁNG, CHỮ ĐEN – tương phản cao, mỗi đơn một dải màu như Sheet ===== */
+html[data-gd="toi"]:not(.cn-moi) .dh-shw{background:#fbf7ee;border:1px solid #1ea7ff;border-radius:12px;box-shadow:0 0 30px -16px rgba(30,167,255,.9)}
+html[data-gd="toi"]:not(.cn-moi) .dh-sh{font-size:14px}
+html[data-gd="toi"]:not(.cn-moi) .dh-sh th,html[data-gd="toi"]:not(.cn-moi) .dh-sh td{padding:7px 10px;border-right:1px solid #e2d8c3;border-bottom:1px solid #e2d8c3}
+html[data-gd="toi"]:not(.cn-moi) .dh-sh td{background:#fbf7ee;color:#14161a}
+html[data-gd="toi"]:not(.cn-moi) .dh-sh tr.dh-d1 td{background:#e6f2fd}
+html[data-gd="toi"]:not(.cn-moi) .dh-sh tr.dh-dmoi td{border-top:2px solid #9cc9ee}
+html[data-gd="toi"]:not(.cn-moi) .dh-sh tbody tr:hover td{background:#fff0bf}
+html[data-gd="toi"]:not(.cn-moi) .dh-sh tr.cua td{box-shadow:inset 3px 0 0 #1ea7ff}
+html[data-gd="toi"]:not(.cn-moi) .dh-sh tr.xong td{opacity:1;color:#5c5649}
+html[data-gd="toi"]:not(.cn-moi) .dh-sh thead th,html[data-gd="toi"]:not(.cn-moi) .dh-sh thead .c1,html[data-gd="toi"]:not(.cn-moi) .dh-sh thead .c2{background:#0b1d33!important;color:#f4ecda!important;font-size:11.5px;font-weight:700;border-color:#1b3657;border-bottom:2px solid #1ea7ff}
+html[data-gd="toi"]:not(.cn-moi) .dh-sh thead tr:nth-child(2) th{color:#5cc4ff!important}
+html[data-gd="toi"]:not(.cn-moi) .dh-sh td.qt-so{color:#000;font-weight:700;font-size:14.5px}
+html[data-gd="toi"]:not(.cn-moi) .dh-sh td.qt-so b{color:#c2410c}
+html[data-gd="toi"]:not(.cn-moi) .dh-sh .c1 a{color:#0b5fa5;font-weight:800;text-decoration:none}
+html[data-gd="toi"]:not(.cn-moi) .dh-sh .c2{font-weight:600;color:#000}
+html[data-gd="toi"]:not(.cn-moi) .dh-sh td.co{color:#0b6fc0;font-weight:700}
+html[data-gd="toi"]:not(.cn-moi) .dh-sh td.dh-cfg b{color:#0b1d33}
+html[data-gd="toi"]:not(.cn-moi) .dh-sh td.dh-cfg small{color:#4a4436}
+html[data-gd="toi"]:not(.cn-moi) .dh-sh .dh-bv{border-color:#0b6fc0;color:#0b6fc0}
+html[data-gd="toi"]:not(.cn-moi) .dh-sh .dh-bkenh{color:#6b6352}
+html[data-gd="toi"]:not(.cn-moi) .dh-sh .dh-bpo{background:#1ea7ff;color:#04121f;font-weight:800}
+html[data-gd="toi"]:not(.cn-moi) .dh-sh .dh-bk{color:#33302a}
+html[data-gd="toi"]:not(.cn-moi) .dh-sh .dh-bxn{color:#067a4d}
+html[data-gd="toi"]:not(.cn-moi) .dh-sh .pdesc{color:#6b6352}
+html[data-gd="toi"]:not(.cn-moi) .dh-sh .dh-ok{color:#067a4d}
+html[data-gd="toi"]:not(.cn-moi) .dh-sh .dh-ko{color:#c8102e}
+html[data-gd="toi"]:not(.cn-moi) .dh-sh .dh-cho{color:#b45309}
+html[data-gd="toi"]:not(.cn-moi) .dh-sh .btn{background:#0b1d33;color:#f4ecda;border-color:#0b1d33}
+html[data-gd="toi"]:not(.cn-moi) .dh-noi-in{background:#0d131d;border-color:#1ea7ff}

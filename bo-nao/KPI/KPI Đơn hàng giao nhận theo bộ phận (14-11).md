@@ -22,3 +22,12 @@ Liên quan: [[KPI Quy trình sản xuất]] · [[KPI Điều phối sản xuất
 ## Kiểm thử
 - `don-hang.js` 135/146 (11 lỗi cũ có từ trước; 11 kiểm thử mới mục "14/11" đạt; sửa kỳ vọng: BĐH xem được, công suất 310). Giả lập thêm `getFormulas`, `SpreadsheetApp.flush`.
 - `quy-trinh-web.js` còn 5 lỗi cũ (sửa kỳ vọng: mặc định bảng kiểu Sheet, BĐH + TP có tab Đơn hàng). `cn-apple-web.js` 30/30.
+
+## 14/11 tối – giao diện theo góp ý chủ dự án (ảnh mẫu Ventaro + ảnh Đơn hàng)
+- Phối màu **60/30/10**: Midnight Carbon `#070b12` (nền) · Ivory Cream `#f4ecda` (chữ, số, thẻ "Sắp tới hạn") · Electric Azure `#1EA7FF` (nhấn). Biến `:root` ở `va-don-giao-nhan-web.py`, CSS ở `navy.css`.
+- **Menu trái ẩn** trên máy tính (chừa mép 8px viền Azure), rê chuột / Tab vào mới hiện; nội dung dùng hết bề ngang (mọi vai trò trừ web công nhân kiểu Apple).
+- **Bảng đơn nền Ivory sáng, chữ đen** (chủ dự án chọn), tiêu đề xanh đêm chữ Ivory, **mỗi đơn một dải màu** xen kẽ kem / xanh nhạt + vạch đầu đơn (`tr.dh-d0/dh-d1`, `dh-dmoi` – không dùng `dh-dau` vì trùng lớp tiêu đề trang, từng làm dòng thành flex vỡ bảng).
+- Cột **Mã sản phẩm** chỉ tên + "mã a/b"; cột mới **Cấu hình** (`dhCfgO`): dòng gậy + chuôi/ngọn/tip/ren (chữ cho mọi người); nút **📐 Bản vẽ** chỉ hiện cho 4 mã có quyền (`ME.cg`), chỉ gậy/chuôi/ngọn → `dhCgXem` tải mảnh CauHinhGay rồi `layCauHinhGay` (máy chủ vẫn kiểm quyền) vẽ ngọn + chuôi + chi tiết A/C/K/D phóng to. Bỏ dòng đường đi qua các xưởng.
+- **Nhập theo bộ phận ở bảng nổi** (`dhBNoi`, Esc / ✕ / bấm ngoài để đóng), vẫn nhập **theo từng mã sản phẩm**.
+- **Tiêu đề bảng đứng yên**: khung bảng cao vừa màn hình dưới thanh lọc dính (`--dhnav` đo bằng JS), tiêu đề 2 tầng cao cố định 36px.
+- Kiểm thử: `quy-trinh-web.js` còn 5 lỗi cũ, `cn-apple-web.js` 30/30; TP không thấy nút bản vẽ.
