@@ -3,9 +3,12 @@
 Nhóm: Chung · Cập nhật 02/11/2026
 Liên quan: [[00 Mục lục]] · [[Liên kết và công cụ]] · [[Việc chờ chủ dự án]] · [[Lần dán lên Apps Script]] · [[Quyết định của chủ dự án]] · [[KPI Kiểm thử]]
 
+## 14/11 khuya – Đơn hàng sắp xếp lại (đã commit, chờ dán + chờ duyệt mục 5)
+- Xong mục 1–4 + trễ hẹn bộ phận; mục 5 chờ chủ dự án duyệt danh sách bỏ/giữ. – [[KPI Đơn hàng giao nhận theo bộ phận (14-11)]]
+
 ## Bàn giao 14/11 khuya → phiên mới (việc ĐANG CHỜ làm)
 - Đã xong + đã push: luồng ngọn mới (Taro → HT → Tip → trả HT → ĐG) áp mọi chỗ; Trạng thái đơn hàng (bảng nổi gọn: đã giao/đặt + hẹn + giao tiếp cho bộ phận, màu xoay vòng theo đơn, bỏ Chi tiết từng dòng); bộ cài clasp tự gỡ file lạ `_qt_check`. – [[KPI Đơn hàng giao nhận theo bộ phận (14-11)]], [[KPI Cập nhật bằng clasp]]
-- **Yêu cầu mới của chủ dự án (chưa làm)**:
+- **Yêu cầu chủ dự án (đã làm 1–4, xem mục trên)**:
   1. Menu: "Đơn hàng" lên **đầu mục Sản xuất**, chữ to + nổi bật hơn mục khác.
   2. TP/PP: trang Tổng quan, **ngay dưới các thông báo**, hiện luôn bảng Trạng thái đơn hàng.
   3. Bảng Trạng thái đơn hàng: tab **Đơn ưu tiên** và **Đơn trễ hẹn** lên đầu; thêm tab **Đến hạn trong 10 ngày tới** (Claude tự lọc theo deadline). **Bỏ mục "Theo dõi"** – tab Đơn hàng chỉ còn 2 mục: **"Trạng thái đơn hàng"** và **"Số liệu sản xuất"**.

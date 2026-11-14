@@ -859,6 +859,8 @@ exec(io.open(os.path.join(D, 'bo-hom-nay', 'va-bo-hom-nay-web.py'), encoding='ut
 exec(io.open(os.path.join(D, 'cn-apple', 'va-cn-apple-web.py'), encoding='utf-8').read())
 # ---------------------------------------------------------------- 45. Đơn hàng giao nhận theo bộ phận + màu Carbon Navy (14/11)
 exec(io.open(os.path.join(D, 'don-giao-nhan', 'va-don-giao-nhan-web.py'), encoding='utf-8').read())
+# ---------------------------------------------------------------- 46. Đơn hàng nổi bật trong menu + bảng gọn trên Tổng quan TP/PP (14/11 khuya)
+exec(io.open(os.path.join(D, 'don-giao-nhan', 'va-don-noi-bat-web.py'), encoding='utf-8').read())
 
 io.open(os.path.join(D, '..', 'Index.html'), 'w', encoding='utf-8').write(s)
 print('OK Index.html')

@@ -123,15 +123,15 @@ const vao = async (p, tk) => { await p.goto(F); await p.waitForSelector('#xtGoiY
         const cy = dhChuY(don), tre = don.filter(g => g.st === 'treHan').length, nTre = cy.filter(x => x.l === 'tre' || x.l === 'qua30').length;
         return [tl.length, tl[0] === tre, tre === nTre, dong[0] === don.length, dong[2] === ds.reduce((a, o) => a + o.thieu, 0), DHV, cy.length ? document.querySelectorAll('.dh-bang tbody tr, .dh-sh tbody tr').length : /Không có đơn cần chú ý/.test(document.querySelector('main').textContent) ? 1 : 0, cy.every(x => x.g.thieu > 0),
           document.querySelectorAll('.dh-seg button').length, document.querySelectorAll('.dh-sub button').length, document.querySelectorAll('.dh-menu').length, document.body.classList.contains('tab-dh')]; });
-      ok(s[0] === 3 && s[1] && s[2] && s[3] && s[4] && s[5] === 'bang' && s[6] > 0 && s[7] && s[8] === 3 && s[9] === 3 && s[10] === 2 && s[11], 'Đơn hàng: 3 ô trả lời (số trễ = tổng nhóm trễ trong bảng), dòng số khớp dữ liệu; 3 nhóm + 3 thẻ con (14/11 bỏ Chi tiết từng dòng) + menu ⚙ / ⋯; mặc định bảng kiểu Sheet (14/11)', s);
+      ok(s[0] === 3 && s[1] && s[2] && s[3] && s[4] && s[5] === 'bang' && s[6] > 0 && s[7] && s[8] === 2 && s[9] === 4 && s[10] === 2 && s[11], 'Đơn hàng: 3 ô trả lời (số trễ = tổng nhóm trễ trong bảng), dòng số khớp dữ liệu; 2 mục (Trạng thái đơn hàng · Số liệu sản xuất) + 4 thẻ con (14/11 đã bỏ Chi tiết từng dòng) + menu ⚙ / ⋯; mặc định bảng kiểu Sheet (14/11)', s);
       s = await p.evaluate(() => { const uu = dhUuDs(); DHV = 'uutien'; dhVeLai(); const r = [uu.length === (DH.uu && DH.uu.length ? dhLoc(DH.uu).length : dhLoc().filter(o => o.uuTien).length), /ĐƠN ƯU TIÊN/.test(document.querySelector('main').textContent) === !!(DH.uu && DH.uu.length), document.querySelector('.dh-sub button.on').textContent.startsWith('Ưu tiên')];
         DHV = 'chuy'; dhVeLai(); return r; });
       ok(s.every(Boolean), 'Ưu tiên: lấy danh sách từ tab "ĐƠN ƯU TIÊN" khi Sheet có tab này', s);
       // 07/11: thanh % hoàn thành 2 màu ở mọi danh sách đơn
-      s = await p.evaluate(() => { const r = []; for (const v of ['chuy', 'uutien', 'chitiet', 'gom']) { DHV = v; dhVeLai(); r.push(document.querySelectorAll('.dh-than .dh-pb').length > 0); }
+      s = await p.evaluate(() => { const r = []; for (const v of ['tre', 'uutien', 'chitiet', 'han10']) { DHV = v; dhVeLai(); r.push(document.querySelectorAll('.dh-than .dh-pb').length > 0); }
         const t = dhTienDo([{ sl: 10, thieu: 4, qua: { PHOI: 9, SON: 7 } }, { sl: 5, thieu: 0, qua: {} }]); r.push(t.sl === 15 && t.xong === 11 && t.dang === 3);
         const e = document.createElement('div'); e.innerHTML = dhThanh(t); r.push(/73%/.test(e.textContent) && e.querySelector('i.x').style.width === '73.3%'); DHV = 'chuy'; dhVeLai(); return r; });
-      ok(s.every(Boolean), 'thanh % 2 màu ở Cần chú ý / Ưu tiên / Chi tiết / Gom; % = (đặt − thiếu) ÷ đặt, phần nhạt = đã qua xưởng chưa xong', s);
+      ok(s.every(Boolean), 'thanh % 2 màu ở Trễ hẹn / Ưu tiên / Chi tiết / Đến hạn 10 ngày; % = (đặt − thiếu) ÷ đặt, phần nhạt = đã qua xưởng chưa xong', s);
       // 07/11: công suất & deadline + sản lượng ngày + báo cáo lãnh đạo
       s = await p.evaluate(() => { const K = dhCSTinh(), sx = DH.don.filter(o => o.thieu > 0 && dhLaSX(o)).reduce((a, o) => a + o.thieu, 0);
         const sorted = K.don.every((g, i) => i === 0 || g.eta >= K.don[i - 1].eta), lamCN = K.don.some(g => new Date(g.eta + 'T00:00:00').getDay() === 0);
@@ -160,7 +160,7 @@ const vao = async (p, tk) => { await p.goto(F); await p.waitForSelector('#xtGoiY
         return [g.length === 3, t.n === 3, t.sl === 27, t.giao === 25, t.otif === 33, t.fill === 92.5, t.giaoThieu === 1, t.tre === 1]; });
       ok(s.every(Boolean), 'Sự kiện chuyển HT (từ bản chụp): gom theo đơn, OTIF = đủ + đúng hạn / đơn có hạn, fill rate = giao / đặt', s);
       await p.evaluate(() => { DHTD = null; DHV = 'chuy'; dhVeLai(); });
-      for (const v of ['chitiet', 'gom', 'thongke', 'thaydoi']) { await p.evaluate(v => { DHV = v; dhVeLai(); }, v); await p.waitForTimeout(400); }
+      for (const v of ['chitiet', 'han10', 'thongke', 'thaydoi']) { await p.evaluate(v => { DHV = v; dhVeLai(); }, v); await p.waitForTimeout(400); }
       s = await p.evaluate(() => { DHV = 'chitiet'; DHL.kenh = 'KHO'; dhVeLai(); const n = document.querySelectorAll('.dh-bang tbody tr').length, k = dhLoc().every(o => o.tab === 'KHO');
         DHL.kenh = ''; DHL.st = 'treHan'; const t = dhLoc().every(o => o.st === 'treHan'); DHL.st = ''; DHV = 'thongke'; dhVeLai();
         return [n > 0, k, t, (() => { const el = document.createElement('div'); el.innerHTML = dhLichGiao(); return !!el.querySelector('.dh-cong'); })(), [...document.querySelectorAll('.card')].some(c => /Chuôi còn phải làm theo chất liệu/.test(c.textContent)) && [...document.querySelectorAll('.card')].some(c => /Ngọn còn phải làm theo chất liệu/.test(c.textContent)), dhBangXuat().length === DH.don.length + 1]; });
