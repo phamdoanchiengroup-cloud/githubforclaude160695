@@ -783,11 +783,11 @@ body.tet-tt #festbar{display:block;background:linear-gradient(90deg,rgba(255,143
    ============================================================ */
 :root{--serif:'Cormorant Garamond','Times New Roman',serif;--nav-w:236px}
 /* ---- Bộ màu. Nền tối (mặc định): xám than + cyan ---- */
-:root{--bg:#1d2125;--panel:#262b30;--panel2:#2f353b;--line:#3e464e;
-  --ink:#eef2f4;--ink2:#c3ccd2;--ink3:#9ca8b0;
-  --cyan:#2fd3c6;--cyan-d:#138f87;--acc-rgb:47,211,198;--amber:#f0b04e;--red:#f77e7e;--green:#66d49a;
-  --on-acc:#062622;--nav-bg:#181b1f;--head-bg:#181b1f;--bot-bg:rgba(24,27,31,.97);--hover:rgba(255,255,255,.05);
-  --bong:0 1px 0 rgba(255,255,255,.03) inset;--row-line:rgba(255,255,255,.07)}
+:root{--bg:#050a15;--panel:#0b1626;--panel2:#0f1e33;--line:#1c3454;
+  --ink:#eaf4ff;--ink2:#b4cbe5;--ink3:#8ea9c9;
+  --cyan:#3ea6ff;--cyan-d:#1c6ad1;--acc-rgb:62,166,255;--amber:#ffc857;--red:#ff667d;--green:#3ee0a3;
+  --on-acc:#04121f;--nav-bg:#060d1b;--head-bg:#060d1b;--bot-bg:rgba(6,13,27,.97);--hover:rgba(62,166,255,.08);
+  --bong:0 14px 34px -24px rgba(0,0,0,.85),inset 0 1px 0 rgba(140,195,255,.09);--row-line:rgba(90,150,220,.13)}
 /* ---- Nền sáng: trắng xám + cyan đậm ---- */
 html[data-gd="sang"]{color-scheme:light;--bg:#eef1f3;--panel:#ffffff;--panel2:#f4f6f8;--line:#d6dde2;
   --ink:#151b20;--ink2:#3f4a53;--ink3:#5d6973;
@@ -1999,7 +1999,7 @@ var BOTBAR={
   HR:['dash','ns','dd','com']
 };
 function dsTabHienCo(){
-  var tabChiOwner={pq:1, ptdm:1, log:1, kpiql:1, qt:1, dh:1, tk:1};   // qt: Quy trình sản xuất (31/10), dh: Đơn hàng (01/11), tk: Thống kê (07/11) – chỉ chủ sở hữu
+  var tabChiOwner={pq:1, ptdm:1, log:1, kpiql:1, qt:1, tk:1};   /* 14/11: Đơn hàng mở cho ban điều hành + TP/PP */   // qt: Quy trình sản xuất (31/10), dh: Đơn hàng (01/11), tk: Thống kê (07/11) – chỉ chủ sở hữu
   return TABS[ME.vaiTro].filter(function(t){ return ME.laOwner || !tabChiOwner[t[0]] || (t[0]==='qt'&&ME.vaiTro==='TP'); });   // 03/11: TP/PP xem Quy trình xưởng mình
 }
 function tenTab(k){var t=(TABS[ME.vaiTro]||[]).filter(function(x){return x[0]===k})[0];return t?t[1]:k}
@@ -2653,7 +2653,7 @@ function call(fn,args,cb){
 var TABS={
   ADMIN:[['hd','📖 Hướng dẫn'],['homnay','Việc hôm nay'],['dash','Tổng quan'],['sodo','Sơ đồ nhà máy'],['com','Cơm trưa'],['nk','Nhật ký'],['dd','Điểm danh'],['nenep','Chấm nề nếp'],['kpi','Bảng KPI'],['kpiql','KPI Quản lý'],['dx','Duyệt định mức'],['ptdm','Phân tích định mức'],
          ['cd','Công đoạn'],['ns','Nhân sự'],['kyn','Kỹ năng'],['qt','Quy trình sản xuất'],['dh','Đơn hàng'],['tk','Thống kê'],['cgay','Cấu hình gậy'],['mm','Máy móc'],['ts','Trọng số'],['pq','Tài khoản'],['log','Nhật ký thao tác']],
-  TP:[['hd','📖 Hướng dẫn'],['homnay','Việc hôm nay'],['qt','Quy trình sản xuất'],['dash','Tổng quan'],['sodo','Sơ đồ nhà máy'],['com','Cơm trưa'],['duyetsl','Duyệt sản lượng'],['nenep','Chấm nề nếp'],['dd','Điểm danh'],['nk','Nhập nhật ký'],['kpi','KPI phòng'],['cd','Công đoạn & định mức'],
+  TP:[['hd','📖 Hướng dẫn'],['homnay','Việc hôm nay'],['qt','Quy trình sản xuất'],['dh','Đơn hàng'],['dash','Tổng quan'],['sodo','Sơ đồ nhà máy'],['com','Cơm trưa'],['duyetsl','Duyệt sản lượng'],['nenep','Chấm nề nếp'],['dd','Điểm danh'],['nk','Nhập nhật ký'],['kpi','KPI phòng'],['cd','Công đoạn & định mức'],
       ['ns','Nhân sự'],['kyn','Kỹ năng'],['mm','Máy móc']],
   CN:[['hd','📖 Hướng dẫn'],['cnnhap','Nhập sản lượng của tôi'],['com','Cơm trưa'],['kpica','KPI cá nhân'],['cccn','Bảng chấm công của xưởng'],['kpicn','Bảng KPI xưởng'],['kyn','Kỹ năng của tôi']],
   HR:[['hd','📖 Hướng dẫn'],['dash','Tổng quan'],['kpi','Bảng KPI'],['sodo','Sơ đồ nhà máy'],['com','Cơm trưa'],['dd','Điểm danh'],['cd','Công đoạn'],['ns','Hồ sơ nhân sự'],['kyn','Kỹ năng'],['mm','Máy móc']],
@@ -8809,7 +8809,7 @@ function chiXemDon(){
 </script>
 <script>
 /* ===== 19. PHẦN GIAO DIỆN TẢI SAU (12/10) – SoDo.html, HoatAnh.html: chỉ tải khi cần, nhớ lại theo phiên bản ===== */
-var MANH_VER={"SoDo": "d9bc7ce73f034629", "HoatAnh": "b23cbe69d6aae56e", "AmThanh": "c690fabe4419160c", "QuyTrinh": "9024bccd73", "CauHinhGay": "0fe7f9af088e8d80"};
+var MANH_VER={"SoDo": "d9bc7ce73f034629", "HoatAnh": "b23cbe69d6aae56e", "AmThanh": "c690fabe4419160c", "QuyTrinh": "5ba90019e6", "CauHinhGay": "0fe7f9af088e8d80"};
 var __manh={da:{},cho:{}};
 function ganManh_(nd){
   var js=[], ngoai=String(nd).replace(/<script>([\s\S]*?)<\/script>/g,function(_,x){js.push(x);return ''});
@@ -9730,7 +9730,7 @@ function hsGhiChuDong(r){
 }
 </script>
 <script>
-var KPI_BAN = '09/11/2026 16:39';
+var KPI_BAN = '14/11/2026 11:26';
 (function(){
   var cu = window.veNav;
   window.veNav = function(){
@@ -10475,7 +10475,7 @@ function dhDaXemTab(){ try{ var a=JSON.parse(localStorage.getItem('dhTabDaXem')|
 /* ===== 36. QUY TRÌNH SẢN XUẤT (31/10) – giao diện ở QuyTrinh.html, chỉ chủ sở hữu (máy chủ chặn ở layManhGiaoDien + từng hàm) ===== */
 /* 01/11: tab "Đơn hàng" (chỉ chủ sở hữu) – cùng mảnh QuyTrinh.html */
 function vDH(){
-  if(!ME||!ME.laOwner){ $('main').innerHTML='<div class="alert a-wn">Tab này đang chỉ mở cho tài khoản chủ sở hữu.</div>'; return; }
+  if(!ME||!(ME.laOwner||ME.vaiTro==='ADMIN'||ME.vaiTro==='TP')){ $('main').innerHTML='<div class="alert a-wn">Tab này mở cho ban điều hành và trưởng / phó phòng.</div>'; return; }
   if(window.__qtDaNap){ dhTrangVe(); return; }
   $('main').innerHTML='<div class="ptitle">Đơn hàng</div><div class="pdesc">Đang tải…</div>';
   taiManh('QuyTrinh',function(ok,msg){
@@ -10837,7 +10837,7 @@ function nsnCapNhat(){ call('capNhatNgoaiSXTuFile',[],function(r){ if(!r||!r.ok)
 </script>
 <script>
 /* ===== 38. TĂNG TỐC ĐỢT 3 (08/11) – bộ đo tốc độ + mở nhanh bằng số lần trước (mã hóa) ===== */
-var TD_BUF=[], TD_T=null, DL_VER='dcbd67f2ca', DL_HAN=12*3600e3, DL_BO=['SoCCCD','DienThoai','DiaChi','SdtKhanCap','LuongCoBan','NamSinh','SoTaiKhoan','Email'];
+var TD_BUF=[], TD_T=null, DL_VER='b49f474995', DL_HAN=12*3600e3, DL_BO=['SoCCCD','DienThoai','DiaChi','SdtKhanCap','LuongCoBan','NamSinh','SoTaiKhoan','Email'];
 function tdGhi_(f,ms,sv){ if(!(ms>=0)||!f) return; TD_BUF.push({f:String(f),ms:Math.round(ms),sv:(typeof sv==='number'?Math.round(sv):null)});
   if(TD_BUF.length>=15) tdGui_(); else if(!TD_T) TD_T=setTimeout(tdGui_,180000); }
 function tdGui_(){ if(TD_T){clearTimeout(TD_T);TD_T=null;} if(!TD_BUF.length||typeof TOKEN==='undefined'||!TOKEN) return;
@@ -11300,5 +11300,124 @@ function cnVeCu() {
   cnNho(CN_KHOA_CU, '1'); cnApDung(); try { veNav(); } catch (e) {} go('cnnhap');
 }
 </script>
+<style id="gdNavy">
+/* ===== 14/11: lớp màu "Carbon Navy" – nền xanh đêm, viền + ánh sáng xanh điện như ảnh tham chiếu.
+   Chỉ áp cho nền tối; nền sáng giữ nguyên. Không đổi bố cục – chỉ đổi màu, viền, bóng và hiệu ứng. ===== */
+html[data-gd="toi"]:not(.cn-moi) body{
+  background:
+    radial-gradient(1200px 600px at 14% -14%,rgba(45,125,255,.32),transparent 62%),
+    radial-gradient(950px 560px at 96% -4%,rgba(30,205,255,.16),transparent 60%),
+    radial-gradient(1050px 680px at 52% 116%,rgba(20,90,220,.24),transparent 66%),
+    #050a15;
+  background-attachment:fixed
+}
+html[data-gd="toi"]:not(.cn-moi) header{
+  background:linear-gradient(180deg,rgba(11,23,43,.97),rgba(6,13,26,.94))!important;
+  border-bottom:1px solid rgba(78,160,255,.34)!important;
+  box-shadow:0 1px 0 rgba(150,205,255,.1) inset,0 18px 36px -28px rgba(30,120,255,.8)
+}
+html[data-gd="toi"]:not(.cn-moi) header::after{content:'';position:absolute;left:0;right:0;bottom:-1px;height:1px;
+  background:linear-gradient(90deg,transparent,rgba(90,180,255,.55),transparent);pointer-events:none}
+html[data-gd="toi"]:not(.cn-moi) #nav{
+  background:linear-gradient(180deg,rgba(8,17,32,.95),rgba(5,10,20,.97))!important;
+  border-right:1px solid rgba(78,160,255,.22)!important;
+  box-shadow:inset -1px 0 0 rgba(120,190,255,.05)
+}
+html[data-gd="toi"]:not(.cn-moi) #nav button{border:1px solid transparent;border-radius:10px;color:#b9d2ec}
+html[data-gd="toi"]:not(.cn-moi) #nav button:hover{background:rgba(62,166,255,.08);color:#eaf4ff;border-color:rgba(78,160,255,.14)}
+html[data-gd="toi"]:not(.cn-moi) #nav button.on{
+  background:linear-gradient(90deg,rgba(46,139,255,.34),rgba(46,139,255,.06) 78%);
+  border-color:rgba(78,160,255,.38);color:#f4faff;
+  box-shadow:0 0 26px -6px rgba(46,139,255,.65),inset 0 1px 0 rgba(160,215,255,.2)
+}
+html[data-gd="toi"]:not(.cn-moi) #nav button.on svg{color:#63c2ff;filter:drop-shadow(0 0 5px rgba(62,166,255,.7))}
+html[data-gd="toi"]:not(.cn-moi) .hlogo{
+  background:linear-gradient(135deg,#42b7ff,#2f7bff 60%,#1c5fe0)!important;color:#03111f!important;
+  border:1px solid rgba(150,210,255,.5)!important;
+  box-shadow:0 0 18px rgba(46,139,255,.55),inset 0 1px 0 rgba(255,255,255,.4)
+}
+html[data-gd="toi"]:not(.cn-moi) .card{
+  background:linear-gradient(158deg,rgba(16,33,59,.96),rgba(7,15,30,.97))!important;
+  border:1px solid rgba(90,175,255,.28)!important;border-radius:16px;
+  box-shadow:0 22px 46px -32px rgba(0,0,0,.95),0 0 40px -26px rgba(46,139,255,.55),inset 0 1px 0 rgba(140,195,255,.1)
+}
+html[data-gd="toi"]:not(.cn-moi) .card:hover{box-shadow:0 26px 54px -32px rgba(0,0,0,.98),0 0 34px -18px rgba(46,139,255,.55),inset 0 1px 0 rgba(140,195,255,.12)}
+html[data-gd="toi"]:not(.cn-moi) .kpi{
+  background:linear-gradient(150deg,rgba(19,41,73,.96),rgba(8,17,33,.98))!important;
+  border:1px solid rgba(90,175,255,.3);border-top:2px solid #3ea6ff;border-radius:15px;
+  box-shadow:0 18px 38px -28px rgba(0,0,0,.9),0 0 26px -14px rgba(46,139,255,.6),inset 0 1px 0 rgba(150,205,255,.14)
+}
+html[data-gd="toi"]:not(.cn-moi) .kpi::after{background:radial-gradient(circle,rgba(62,166,255,.20),transparent 68%)}
+html[data-gd="toi"]:not(.cn-moi) .kpi.wn{border-top-color:#ffc857}
+html[data-gd="toi"]:not(.cn-moi) .kpi.bd{border-top-color:#ff667d}
+html[data-gd="toi"]:not(.cn-moi) .kpi .l{color:#86a9cf}
+html[data-gd="toi"]:not(.cn-moi) .kpi .v{color:#e2f1ff;text-shadow:0 0 22px rgba(62,166,255,.35)}
+html[data-gd="toi"]:not(.cn-moi) .ptitle{
+  background:linear-gradient(96deg,#f2f9ff 0%,#9ad6ff 45%,#3ea6ff 100%);
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+  filter:drop-shadow(0 4px 18px rgba(46,139,255,.28))
+}
+html[data-gd="toi"]:not(.cn-moi) .btn{border-radius:10px;background:linear-gradient(180deg,#102239,#0a1728);border-color:rgba(72,155,255,.24);color:#d9e9fb}
+html[data-gd="toi"]:not(.cn-moi) .btn:hover{border-color:rgba(110,190,255,.5);background:linear-gradient(180deg,#142c49,#0d1d33)}
+html[data-gd="toi"]:not(.cn-moi) .btn.pri{background:linear-gradient(135deg,#2f8bff,#3fc0ff);color:#04121f;border-color:transparent;
+  box-shadow:0 10px 24px -10px rgba(47,139,255,.75),inset 0 1px 0 rgba(255,255,255,.4)}
+html[data-gd="toi"]:not(.cn-moi) .btn.pri:hover{filter:brightness(1.08)}
+html[data-gd="toi"]:not(.cn-moi) input,html[data-gd="toi"]:not(.cn-moi) select,html[data-gd="toi"]:not(.cn-moi) textarea{
+  background:rgba(4,10,21,.72);border-color:rgba(72,155,255,.22);border-radius:10px;color:#eaf4ff
+}
+html[data-gd="toi"]:not(.cn-moi) input:focus,html[data-gd="toi"]:not(.cn-moi) select:focus,html[data-gd="toi"]:not(.cn-moi) textarea:focus{
+  border-color:#3ea6ff;box-shadow:0 0 0 3px rgba(46,139,255,.16)
+}
+html[data-gd="toi"]:not(.cn-moi) th{color:#8fb9e6}
+html[data-gd="toi"]:not(.cn-moi) .tw thead th{background:linear-gradient(180deg,#0e2038,#0a1728)!important;border-bottom-color:rgba(72,155,255,.26)!important}
+html[data-gd="toi"]:not(.cn-moi) tbody tr:hover td{background:rgba(62,166,255,.07)}
+html[data-gd="toi"]:not(.cn-moi) .badge{border-color:rgba(78,160,255,.35);color:#6cc6ff;background:rgba(46,139,255,.12)}
+html[data-gd="toi"]:not(.cn-moi) .alert{border-radius:12px}
+html[data-gd="toi"]:not(.cn-moi) a{color:#63c2ff}
+html[data-gd="toi"]:not(.cn-moi) ::-webkit-scrollbar{width:10px;height:10px}
+html[data-gd="toi"]:not(.cn-moi) ::-webkit-scrollbar-track{background:rgba(4,10,21,.6)}
+html[data-gd="toi"]:not(.cn-moi) ::-webkit-scrollbar-thumb{background:linear-gradient(180deg,#1e4e86,#153a64);border-radius:8px;border:2px solid rgba(4,10,21,.6)}
+html[data-gd="toi"]:not(.cn-moi) ::-webkit-scrollbar-thumb:hover{background:linear-gradient(180deg,#2f76c4,#1d4e86)}
+/* --- bảng đơn / thẻ trong tab Đơn hàng --- */
+html[data-gd="toi"]:not(.cn-moi) .dh-the button{background:linear-gradient(160deg,rgba(17,36,62,.95),rgba(8,18,34,.96));border-color:rgba(72,155,255,.2);border-radius:12px}
+html[data-gd="toi"]:not(.cn-moi) .dh-the button.on{border-color:rgba(78,160,255,.65);box-shadow:0 0 18px -4px rgba(46,139,255,.55),inset 0 0 0 1px rgba(62,166,255,.35)}
+html[data-gd="toi"]:not(.cn-moi) .dh-tabb{background:linear-gradient(180deg,#0d1d34,#091528);border-color:rgba(72,155,255,.18)}
+html[data-gd="toi"]:not(.cn-moi) .dh-tabb.on{background:linear-gradient(135deg,rgba(47,139,255,.32),rgba(63,192,255,.14));border-color:#3ea6ff;color:#f2f8ff;box-shadow:0 0 18px -6px rgba(46,139,255,.6)}
+html[data-gd="toi"]:not(.cn-moi) .dh-shw{border-color:rgba(90,175,255,.3);border-radius:12px;background:#081326;box-shadow:0 0 30px -20px rgba(46,139,255,.6)}
+html[data-gd="toi"]:not(.cn-moi) .dh-sh th,html[data-gd="toi"]:not(.cn-moi) .dh-sh td{background:#081326;border-bottom-color:rgba(72,155,255,.16);border-right-color:rgba(72,155,255,.13)}
+html[data-gd="toi"]:not(.cn-moi) .dh-sh thead th{background:linear-gradient(180deg,#132a49,#0b1a2f)!important;color:#9cc6ee}
+html[data-gd="toi"]:not(.cn-moi) .dh-sh thead .c1,html[data-gd="toi"]:not(.cn-moi) .dh-sh thead .c2{background:linear-gradient(180deg,#132a49,#0b1a2f)}
+html[data-gd="toi"]:not(.cn-moi) .dh-sh tbody tr:hover td{background:rgba(62,166,255,.07)}
+html[data-gd="toi"]:not(.cn-moi) .dh-sh td.co{color:#7cc8ff}
+html[data-gd="toi"]:not(.cn-moi) .dh-tl{background:linear-gradient(150deg,rgba(17,36,62,.95),rgba(8,18,34,.97));border-color:rgba(72,155,255,.22)}
+html[data-gd="toi"]:not(.cn-moi) .dh-bk4>div{background:linear-gradient(150deg,rgba(17,36,62,.95),rgba(8,18,34,.97));border-color:rgba(72,155,255,.22)}
+html[data-gd="toi"]:not(.cn-moi) .dh-btp2 span{background:rgba(10,24,44,.9);border-color:rgba(72,155,255,.25)}
+html[data-gd="toi"]:not(.cn-moi) .dh-btp2 span.on{border-color:#3ea6ff;background:rgba(46,139,255,.16);color:#8fd4ff;box-shadow:0 0 12px -4px rgba(46,139,255,.55)}
+/* hiệu ứng rất nhẹ: viền sáng thở + vệt sáng quét khi rê nút chính */
+@keyframes navyTho{0%,100%{box-shadow:0 18px 38px -28px rgba(0,0,0,.9),inset 0 1px 0 rgba(150,205,255,.12),0 0 0 rgba(46,139,255,0)}50%{box-shadow:0 18px 38px -28px rgba(0,0,0,.9),inset 0 1px 0 rgba(150,205,255,.12),0 0 22px -10px rgba(46,139,255,.55)}}
+html[data-gd="toi"]:not(.cn-moi) .kpis .kpi{animation:navyTho 7s ease-in-out infinite}
+html[data-gd="toi"]:not(.cn-moi) .kpis .kpi:nth-child(2){animation-delay:1.2s}
+html[data-gd="toi"]:not(.cn-moi) .kpis .kpi:nth-child(3){animation-delay:2.4s}
+html[data-gd="toi"]:not(.cn-moi) .btn.pri{position:relative;overflow:hidden}
+html[data-gd="toi"]:not(.cn-moi) .btn.pri::after{content:'';position:absolute;top:0;bottom:0;left:-60%;width:40%;transform:skewX(-18deg);
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,.35),transparent);opacity:0}
+html[data-gd="toi"]:not(.cn-moi) .btn.pri:hover::after{animation:navyQuet .7s ease}
+@keyframes navyQuet{0%{left:-60%;opacity:.9}100%{left:120%;opacity:0}}
+@media (prefers-reduced-motion:reduce){html[data-gd="toi"]:not(.cn-moi) .kpis .kpi{animation:none}html[data-gd="toi"]:not(.cn-moi) .btn.pri:hover::after{animation:none}}
+/* 14/11 (Claude, chủ dự án dặn): bảng đơn hàng phải TƯƠNG PHẢN rõ giữa nền và chữ / số */
+html[data-gd="toi"]:not(.cn-moi){--ink3:#8ea9c9}
+html[data-gd="toi"]:not(.cn-moi) .dh-sh td{color:#eef6ff}
+html[data-gd="toi"]:not(.cn-moi) .dh-sh td.qt-so{color:#ffffff;font-weight:600}
+html[data-gd="toi"]:not(.cn-moi) .dh-sh thead th{color:#d3e6fb!important}
+html[data-gd="toi"]:not(.cn-moi) .dh-sh tbody tr:nth-child(even) td{background:#0b1a30}
+html[data-gd="toi"]:not(.cn-moi) .dh-sh tbody tr:hover td{background:#12284a}
+html[data-gd="toi"]:not(.cn-moi) .dh-sh tbody tr.cua td{background:#10284d}
+html[data-gd="toi"]:not(.cn-moi) .dh-sh td.co{color:#8fd4ff}
+html[data-gd="toi"]:not(.cn-moi) .dh-sh tr.xong td{opacity:.62}
+html[data-gd="toi"]:not(.cn-moi) .dh-bkenh,html[data-gd="toi"]:not(.cn-moi) .dh-btp{color:#a7bfdc}
+html[data-gd="toi"]:not(.cn-moi) .dh-bpo{background:#1c4f8f;color:#ffffff}
+html[data-gd="toi"]:not(.cn-moi) .dh-bxn{color:#6cf0bd}
+html[data-gd="toi"]:not(.cn-moi) .dh-cho{color:#ffd166}
+</style>
 </body>
 </html>

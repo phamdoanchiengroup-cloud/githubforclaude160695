@@ -857,6 +857,8 @@ exec(io.open(os.path.join(D, 'bo-hom-nay', 'va-bo-hom-nay-web.py'), encoding='ut
 
 # ---------------------------------------------------------------- 44. Web công nhân kiểu Apple (09/11): thanh dưới 5 nút, Xưởng / Tôi, bảng KPI top 3 + người trên + mình
 exec(io.open(os.path.join(D, 'cn-apple', 'va-cn-apple-web.py'), encoding='utf-8').read())
+# ---------------------------------------------------------------- 45. Đơn hàng giao nhận theo bộ phận + màu Carbon Navy (14/11)
+exec(io.open(os.path.join(D, 'don-giao-nhan', 'va-don-giao-nhan-web.py'), encoding='utf-8').read())
 
 io.open(os.path.join(D, '..', 'Index.html'), 'w', encoding='utf-8').write(s)
 print('OK Index.html')

@@ -3,6 +3,11 @@
 Nhóm: Chung · Cập nhật 02/11/2026
 Liên quan: [[00 Mục lục]] · [[Liên kết và công cụ]] · [[Việc chờ chủ dự án]] · [[Lần dán lên Apps Script]] · [[Quyết định của chủ dự án]] · [[KPI Kiểm thử]]
 
+## Bàn giao 14/11 (phiên dài – mở phiên mới cho việc tiếp theo)
+- Xong: Đơn hàng giao nhận theo bộ phận + màu Navy (commit 14/11), CLAUDE.md đã nới quy tắc tiết kiệm token. Chờ chủ dự án dán 3 file. – [[KPI Đơn hàng giao nhận theo bộ phận (14-11)]]
+- Còn mở: 48 SKU chưa khớp dòng gậy, Ø bảng ngọn gậy đánh – [[KPI Cấu hình gậy – bản vẽ kỹ thuật (08-11)]]. 11 lỗi cũ don-hang.js + 5 lỗi cũ quy-trinh-web.js chưa sửa.
+- Dựng thử: `DATA=$S/that/csdl.json DH=$S/that/dh-that.json` (scratchpad cũ có thể đã mất – nếu mất thì xin chủ dự án JSON xuất Sheet).
+
 Ghi chú này để phiên Claude Code mới nắm bối cảnh ngay. Đọc `CLAUDE.md`, rồi ghi chú này, rồi [[Liên kết và công cụ]] (mọi link Drive, repo, artifact, công cụ), rồi [[00 Mục lục]].
 
 ## PHIÊN 02/11 (tiếp) – 6 yêu cầu đã xong

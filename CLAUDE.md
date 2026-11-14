@@ -15,7 +15,7 @@ File này được Claude Code tự đọc khi mở repo. Nó giữ **quy tắc 
   - Luôn nói rõ **file nào cần dán lại** vào Apps Script, kèm bước **Triển khai → Quản lý triển khai → ✏️ → Phiên bản mới → Triển khai**, rồi Ctrl+F5.
 - **Luôn hỏi để làm rõ yêu cầu trước khi hành động** (chủ dự án yêu cầu 25/10): trước khi sửa code, dựng, gửi file hay đổi dữ liệu, hỏi lại chủ dự án những điểm còn chưa rõ (phạm vi, ai thấy, áp từ khi nào, giữ hay bỏ cái cũ…), chờ trả lời rồi mới làm.
 - **Claude giúp chủ dự án, không giao thêm việc cho chủ dự án** (chủ dự án nhắc 25/10, khi hỏi "sao không dùng jsDelivr" cho ảnh): trước khi đưa ra cách làm, nghĩ kỹ mọi phương án, ưu tiên phương án Claude tự làm được trọn vẹn. Trình bày 2–3 đề xuất có so sánh (việc Claude làm / việc chủ dự án phải làm / ưu nhược) kèm khuyến nghị. Chỉ nhờ chủ dự án làm khi thật sự không có cách nào khác, và nói rõ vì sao.
-- **Luôn dùng vai chuyên gia Agency Agents** (`.claude/agents/`, chủ dự án yêu cầu 25/10): mỗi việc đều hỏi ít nhất một chuyên gia phù hợp, vd. `quan-ly-van-hanh` (KPI, định mức, vận hành), `bao-mat-ung-dung` / `bao-mat-ma-ai` (bảo mật), `soat-giao-dien-cuoi` / `kiem-tra-de-dung` / `dong-vai-nguoi-dung` (giao diện), `hoi-nhap-nhan-su` / `thiet-ke-dao-tao` (nhân sự, kỹ năng), `nhac-nho-dong-vien` (Rhino, nhắc nhở). Báo chủ dự án đã hỏi chuyên gia nào và họ góp ý gì.
+- **Dùng vai chuyên gia Agency Agents** (`.claude/agents/`, chủ dự án yêu cầu 25/10; **nới 14/11 để tiết kiệm token: chỉ hỏi khi làm TÍNH NĂNG LỚN** – việc nhỏ như sửa chữ, màu, lỗi, thêm cột thì không cần): hỏi ít nhất một chuyên gia phù hợp, vd. `quan-ly-van-hanh` (KPI, định mức, vận hành), `bao-mat-ung-dung` / `bao-mat-ma-ai` (bảo mật), `soat-giao-dien-cuoi` / `kiem-tra-de-dung` / `dong-vai-nguoi-dung` (giao diện), `hoi-nhap-nhan-su` / `thiet-ke-dao-tao` (nhân sự, kỹ năng), `nhac-nho-dong-vien` (Rhino, nhắc nhở). Báo chủ dự án đã hỏi chuyên gia nào và họ góp ý gì.
 - Nhắc **sao lưu** (Tổng quan → Tạo bản sao dự án) trước khi dán thay đổi lớn.
 - **Cái gì xong trước thì gửi trước** (chủ dự án nhắc 19/10): khi làm nhiều sản phẩm một lúc (vd. PPT + video), phần nào xong và đã kiểm tra thì gửi ngay, không chờ xong hết mới gửi.
 - Chủ dự án hay gửi file đã tự sửa. Khi nhận:
@@ -30,7 +30,7 @@ File này được Claude Code tự đọc khi mở repo. Nó giữ **quy tắc 
 ## Quy tắc kỹ thuật không được quên
 - **Web KPI:** `kpi-app/Code.gs`, `kpi-app/Index.html` (và `SoDo.html`, `HoatAnh.html`, `AmThanh.html`) là bản **sinh ra** từ `kpi-app/goc/` bằng `tests/va-code.py` và `tests/va-index.py` (mỗi tính năng là một "mục" vá). Sửa thì sửa script vá rồi dựng lại, đừng sửa tay bản sinh ra. Đổi `SoDo` thì phải gửi kèm `Index.html`. Hướng dẫn cho chủ dự án: `kpi-app/HUONG-DAN-CAP-NHAT.md`. Chi tiết: `bo-nao/KPI/`.
 - Chạy kiểm thử liên quan trước khi commit: `bo-nao/KPI/KPI Kiểm thử.md`.
-- **Sau MỖI lần sửa, luôn rà soát lại toàn bộ** (chủ dự án yêu cầu 22/10):
+- **Sau mỗi lần sửa, rà soát** (chủ dự án yêu cầu 22/10; **nới 14/11: tính năng lớn thì rà toàn bộ, việc nhỏ chỉ rà + chạy kiểm thử phần liên quan**):
   - logic code (máy chủ + web);
   - logic hiển thị trên web (đúng quyền, đúng số, đúng trạng thái, điện thoại không tràn);
   - các công thức (KPI, định mức, xếp loại, điểm…).
@@ -41,7 +41,11 @@ File này được Claude Code tự đọc khi mở repo. Nó giữ **quy tắc 
 ## Bộ não thứ hai `bo-nao/` (kiểu Obsidian)
 - Mỗi ghi chú một chủ đề, tên file = tiêu đề, thư mục = nhóm (`KPI/`, `Chung/`; file ở gốc là ghi chú tổng hợp). Liên kết bằng `[[Tên ghi chú]]`, dòng 3 mỗi ghi chú ghi `Liên quan: [[...]]`.
 - Ghi chú tổng hợp: [[00 Mục lục]], [[Bàn giao phiên]], [[Liên kết và công cụ]] (repo, link Drive, artifact, kết nối, skill, plugin), [[Việc chờ chủ dự án]], [[Lần dán lên Apps Script]], [[Quyết định của chủ dự án]] (file `.md` cùng tên ở gốc `bo-nao/`).
-- **Cuối mỗi việc, cập nhật bộ não** (không dồn chi tiết vào CLAUDE.md):
+- **Tiết kiệm token (chủ dự án chốt 14/11, vì hết lưu lượng):**
+  - Phiên quá dài thì Claude **tự ghi bàn giao vào `bo-nao/Bàn giao phiên.md` và báo chủ dự án mở phiên mới** (chủ dự án cho phép tự chuyển). Claude không tự đổi model được – gợi ý: việc nhỏ dùng **Sonnet** (`/model`), việc khó dùng Opus.
+  - Chủ dự án tự sửa bằng AI khác thì chỉ cần nhắn phần đã đổi; nếu gửi cả file, so bằng `diff` rồi chuyển vào script vá, không đọc hết file.
+  - Hỏi gộp một lần, không hỏi nhiều vòng.
+- **Cập nhật bộ não** (không dồn chi tiết vào CLAUDE.md) – nới 14/11: bước 1–2 làm cuối mỗi việc lớn; bước 3–4 (dựng + đăng lại bản đồ) **một lần cuối ngày / cuối phiên**:
   1. Sửa ghi chú chủ đề: ngày, việc đã làm, tên hàm/file, số kiểm thử. Chủ đề mới → ghi chú mới + thêm vào `00 Mục lục.md`.
   2. Cập nhật `Việc chờ chủ dự án.md`, `Lần dán lên Apps Script.md`, `Quyết định của chủ dự án.md`, `Liên kết và công cụ.md` (link / mã file / công cụ mới) nếu có thay đổi.
   3. `python3 bo-nao/tao-ban-do.py` (báo lỗi nếu có liên kết hỏng) → dựng `bo-nao/ban-do.html`.

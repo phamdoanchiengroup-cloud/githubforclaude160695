@@ -62,7 +62,7 @@ const tab = [['', 'NOTE…'], ['', 'Loại hàng cần sản xuất', 'Loại Ph
   ['', '', '', '', '', '', '', '', '', '', '', '', '', ''],
   ['#B-02/10', 'Rhino Soft Cue Case 1X2 - Black', '', 5, 0, '', '', '', '', '', '', '', '', '']];
 c.__ngoai = { [c.DH_SHEET_ID]: { ten: 'Trạng thái đơn hàng', sheets: { KHO: tab } } };
-r = c.__goi('layDonHangXuong', Tadm, true); ok(!r.ok && /chủ sở hữu/.test(r.msg), 'ban điều hành bị chặn', r);
+r = c.__goi('layDonHangXuong', Tadm, true); ok(r.ok && r.q && !r.q.sua.length, 'ban điều hành xem được Đơn hàng, không ghi (14/11)', r && r.q);
 r = c.__goi('layDonHangXuong', 'sai', true); ok(!r.ok && r.hetHan, 'phiên sai bị chặn', r);
 r = c.__goi('layDonHangXuong', Town, true);
 ok(r.ok && r.don.length === 3, 'đọc 3 dòng đơn (bỏ dòng trống)', r.don && r.don.map(o => o.ten));
@@ -171,7 +171,7 @@ console.log('\n4e. Kênh POD-ECOMSTONE, sản lượng nhập theo ngày, công 
   let x = c.__goi('layDonHangXuong', Town, true);
   ok(x.ok && x.don.length === 1 && x.don[0].kenh === 'POD – Ecomstone' && !(x.tabMoi || []).length, 'tab POD-ECOMSTONE đọc như kênh chuẩn (không báo "kênh mới")', x.don && x.don[0]);
   ok(x.kenhDs.some(k => k[0] === 'POD-ECOMSTONE') && x.kenhDs.some(k => k[0] === 'OEM'), 'trả đủ danh sách kênh (kể cả kênh chưa có đơn)');
-  ok(x.cs && x.cs.sp === 350 && x.cs.macDinh && x.cs.nghi.some(n => n[0] === '2027-01-01'), 'công suất mặc định 350 sp/ngày + lịch lễ gợi ý', x.cs);
+  ok(x.cs && x.cs.sp === 310 && x.cs.macDinh && x.cs.nghi.some(n => n[0] === '2027-01-01'), 'công suất mặc định 310 sp/ngày + lịch lễ gợi ý', x.cs);
   const cu = [['A|EVO4/LUN2/BLUE/LW-BLACK/G/10/12.5|KHO', 10, 10, 0, '', 'dangSX'], ['B|Rhino Soft Cue Case 1X2 - Black|OEM', 5, 5, 0, '', 'dangSX'], ['C|RHI2-KOMET2/BRE/BLUE/13.0/388|DEALER', 4, 4, 0, '', 'dangSX'], ['D|EVO4/LUN2/BLUE/LW-BLACK/G/10/12.5|KHO', 3, 3, 0, '', 'dangSX']];
   const nay = [['A|EVO4/LUN2/BLUE/LW-BLACK/G/10/12.5|KHO', 10, 4, 0, '', 'dangSX'], ['B|Rhino Soft Cue Case 1X2 - Black|OEM', 5, 0, 0, '', 'sanSang'], ['C|RHI2-KOMET2/BRE/BLUE/13.0/388|DEALER', 4, 6, 0, '', 'dangSX'], ['E|EVO4/LUN2/BLUE/LW-BLACK/G/10/12.5|KHO', 7, 7, 0, '', 'dangSX']];
   const k = c.dhTinhSanLuong_(cu, nay, {}, {});
@@ -225,7 +225,7 @@ console.log('\n4h. Đơn hoàn thiện đọc trực tiếp tab HT + Đóng gói
 { const nam = new Date().getFullYear(), E = 'EVO4/LUN2/BLUE/LW-BLACK/G/10/12.5', H = ['Mã', 'Loại hàng cần sản xuất', 'Loại Phôi', 'Số lượng đặt', 'SX CÒN THIẾU', 'Deadline', 'HẠN MỚI HT ĐƠN CŨ', 'Kênh'];
   const ht = [H, ['OEM-03/09', E, '', 4, 0, '28/09', '', ''], ['', 'Rhino Soft Cue Case 1X2 - Black', '', 3, 0, '', '', ''], ['DEALER', '', '', '', '', '', '', ''], ['DEA-01/09', E, '', 10, 0, '20/09', '05/10', ''], ['KHO-02/09', E, '', 6, 1, '25/09', '', 'Kho']];
   c.__ngoai = { [c.DH_SHEET_ID]: { ten: 'x', sheets: { OEM: [H.slice(0, 6), ['OEM-03/09', E, '', 1, 1, '28/09']], ['HT-' + nam]: ht } } }; c.dhDocDon_(true);
-  let r = c.__goi('layDonHoanThien', Tadm, true); ok(!r.ok, 'ban điều hành không xem được');
+  let r = c.__goi('layDonHoanThien', Tadm, true); ok(r.ok, 'ban điều hành xem được Hoàn thiện (14/11)');
   r = c.__goi('layDonHoanThien', Town, true);
   ok(r.ok && !r.don && r.donC.length === 9 && r.donH.every(d => d.length === 9), '08/11: gửi gọn dạng bảng 9 cột (web mở lại bằng dhHTMo)', r.donC);
   r.don = r.donH.map(d => Object.fromEntries(r.donC.map((k, j) => [k, d[j]])));
@@ -288,6 +288,32 @@ console.log('\n07/11. Tab chính Thống kê – layThongKe (chỉ chủ sở h�
   ok(c2.laNgayLe_('2026-11-24', '') && c2.laNgayLe_('2027-11-24', 'CNC') && !c2.laNgayLe_('2026-11-23', '') && c2.dhCongSuat_().nghi.some(x => x[0] === '2026-11-24'), '08/11: 24/11 (Ngày Văn hóa Việt Nam) là ngày lễ ở KPI / điểm danh và công suất Đơn hàng');
   const r2 = c.layThongKe(Tadm, '2026-10');
   ok(r2.ok === false, 'tài khoản không phải chủ sở hữu (ADMIN) bị chặn', r2);
+}
+
+console.log('\n14/11. Giao nhận theo bộ phận ghi thẳng vào Sheet đơn + xác nhận hẹn');
+{
+  const T = tk => c.__phienDai(TK.find(t => t.TenDangNhap === tk));
+  const tb = [['', 'NOTE'], ['MÃ', 'Loại hàng cần sản xuất', 'Số lượng đặt', 'SX CÒN THIẾU', 'Deadline', 'Phôi của Phố', 'Ngày hẹn trả BP60', 'Sơn của Khoa', 'Ngày hẹn trả Sơn', 'UV của Doanh', 'Hoàn thiện của Thịnh', 'Tổng cộng hàng ĐG nhận từ HT'],
+    ['#G-14/11', 'Rhino Retro Pool Cue Butt - Black', 50, 50, '30/11', '', '', '', '', '=B3', '', '']];
+  c.__ngoai = { [c.DH_SHEET_ID]: { ten: 'x', sheets: { KHO: tb } } }; c.dhDocDon_(true);
+  const Tphoi = T('tpphoicb'), Tson = T('c398'), Tuv = T('tpinuv');
+  let r = c.luuDonGiaoNhan(Tphoi, { tab: 'KHO', dong: 3, ten: 'Rhino Retro Pool Cue Butt - Black', sl: 20, hen: '2026-11-20', cu: { slDat: 50, sl: 0, hen: '' } });
+  ok(r.ok && tb[2][5] === 20 && r.o === 'PHOI', 'TP Phôi lưu SL lũy kế + hẹn vào đúng dòng Sheet, đơn ở Phôi', r);
+  const n1 = tb[1].length;
+  ok(tb[1].slice(-10).join('|') === c.DH_TD_COT.join('|') && tb[0].length < n1, 'thêm 10 cột phụ ở ĐÚNG dòng tiêu đề (dòng 2)', tb[1].slice(-10));
+  r = c.luuDonGiaoNhan(Tphoi, { tab: 'KHO', dong: 3, ten: 'Rhino Retro Pool Cue Butt - Black', sl: 25, cu: { slDat: 50, sl: 20 } });
+  ok(r.ok && tb[1].length === n1, 'lưu lần 2 không thêm cột lặp lại', tb[1].length);
+  r = c.luuDonGiaoNhan(Tson, { tab: 'KHO', dong: 3, bp: 'PHOI', sl: 1 }); ok(!r.ok, 'PP Sơn không ghi được số của Phôi', r.msg);
+  r = c.luuDonGiaoNhan(Tadm, { tab: 'KHO', dong: 3, bp: 'PHOI', sl: 1 }); ok(!r.ok, 'ban điều hành không ghi được', r.msg);
+  r = c.luuDonGiaoNhan(Tuv, { tab: 'KHO', dong: 3, xnHen: { bp: 'PHOI', dongY: true } }); ok(!r.ok, 'UV không xác nhận được hẹn của Phôi (không phải bộ phận liền sau)', r.msg);
+  r = c.luuDonGiaoNhan(Tson, { tab: 'KHO', dong: 3, xnHen: { bp: 'PHOI', dongY: false } }); ok(!r.ok && /lý do/.test(r.msg), 'không kịp phải ghi lý do', r.msg);
+  r = c.luuDonGiaoNhan(Tson, { tab: 'KHO', dong: 3, xnHen: { bp: 'PHOI', dongY: true } });
+  ok(r.ok && r.xh && r.xh.PHOI && r.xh.PHOI.ok === 1 && r.xh.PHOI.ngay === '2026-11-20' && r.o === 'PHOI', 'Sơn (bộ phận sau) đồng ý hẹn Phôi 20/11, không đổi bộ phận đang làm', r);
+  c.dhDocDon_(true); const d = c.layDonHangXuong(Tson, true), o = d.don.find(x => x.maDon === '#G-14/11');
+  ok(o && o.dn && o.dn.h && o.dn.h.PHOI && o.dn.h.PHOI.ok === 1, 'đọc lại Sheet: thấy xác nhận hẹn', o && o.dn);
+  r = c.luuDonGiaoNhan(Tuv, { tab: 'KHO', dong: 3, xacNhan: true, slNhan: 25 }); ok(r.ok, 'chưa chọn kế tiếp: bộ phận khác vẫn nhận được', r.msg);
+  r = c.luuDonGiaoNhan(Tuv, { tab: 'KHO', dong: 3, sl: 5, cu: { slDat: 50, sl: 0 } });
+  ok(!r.ok && /CÔNG THỨC/.test(r.msg) && tb[2][9] === '=B3', 'ô UV đang là công thức: không ghi đè, báo rõ ô', r.msg);
 }
 
 console.log((loi ? '\n✗ ' : '\n✓ ') + (dem - loi) + '/' + dem + ' đạt');

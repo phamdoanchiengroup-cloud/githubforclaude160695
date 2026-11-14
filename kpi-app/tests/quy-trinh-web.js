@@ -121,9 +121,9 @@ const vao = async (p, tk) => { await p.goto(F); await p.waitForSelector('#xtGoiY
       // 07/11: làm lại giao diện – 3 ô trả lời (Trễ / Sắp tới hạn / Ưu tiên) + dòng số gọn + 3 nhóm (Theo dõi / Đơn / Sản xuất)
       s = await p.evaluate(() => { const ds = dhLoc(), don = dhGomDon(ds), so = e => +e.textContent.replace(/\./g, ''), tl = [...document.querySelectorAll('.dh-tl b')].map(so), dong = [...document.querySelectorAll('.dh-so b')].map(so);
         const cy = dhChuY(don), tre = don.filter(g => g.st === 'treHan').length, nTre = cy.filter(x => x.l === 'tre' || x.l === 'qua30').length;
-        return [tl.length, tl[0] === tre, tre === nTre, dong[0] === don.length, dong[2] === ds.reduce((a, o) => a + o.thieu, 0), DHV, cy.length ? document.querySelectorAll('.dh-bang tbody tr').length : /Không có đơn cần chú ý/.test(document.querySelector('main').textContent) ? 1 : 0, cy.every(x => x.g.thieu > 0),
+        return [tl.length, tl[0] === tre, tre === nTre, dong[0] === don.length, dong[2] === ds.reduce((a, o) => a + o.thieu, 0), DHV, cy.length ? document.querySelectorAll('.dh-bang tbody tr, .dh-sh tbody tr').length : /Không có đơn cần chú ý/.test(document.querySelector('main').textContent) ? 1 : 0, cy.every(x => x.g.thieu > 0),
           document.querySelectorAll('.dh-seg button').length, document.querySelectorAll('.dh-sub button').length, document.querySelectorAll('.dh-menu').length, document.body.classList.contains('tab-dh')]; });
-      ok(s[0] === 3 && s[1] && s[2] && s[3] && s[4] && s[5] === 'chuy' && s[6] > 0 && s[7] && s[8] === 3 && s[9] === 4 && s[10] === 2 && s[11], 'Đơn hàng: 3 ô trả lời (số trễ = tổng nhóm trễ trong bảng), dòng số khớp dữ liệu; 3 nhóm + 4 thẻ con + menu ⚙ / ⋯; mặc định "Cần chú ý"', s);
+      ok(s[0] === 3 && s[1] && s[2] && s[3] && s[4] && s[5] === 'bang' && s[6] > 0 && s[7] && s[8] === 3 && s[9] === 4 && s[10] === 2 && s[11], 'Đơn hàng: 3 ô trả lời (số trễ = tổng nhóm trễ trong bảng), dòng số khớp dữ liệu; 3 nhóm + 4 thẻ con + menu ⚙ / ⋯; mặc định bảng kiểu Sheet (14/11)', s);
       s = await p.evaluate(() => { const uu = dhUuDs(); DHV = 'uutien'; dhVeLai(); const r = [uu.length === (DH.uu && DH.uu.length ? dhLoc(DH.uu).length : dhLoc().filter(o => o.uuTien).length), /ĐƠN ƯU TIÊN/.test(document.querySelector('main').textContent) === !!(DH.uu && DH.uu.length), document.querySelector('.dh-sub button.on').textContent.startsWith('Ưu tiên')];
         DHV = 'chuy'; dhVeLai(); return r; });
       ok(s.every(Boolean), 'Ưu tiên: lấy danh sách từ tab "ĐƠN ƯU TIÊN" khi Sheet có tab này', s);
@@ -235,14 +235,14 @@ const vao = async (p, tk) => { await p.goto(F); await p.waitForSelector('#xtGoiY
   // Ban điều hành: không thấy tab, gọi thẳng bị chặn
   const p = await (await b.newContext({ viewport: { width: 1360, height: 900 } })).newPage();
   await vao(p, 'giamdoc');
-  const s = await p.evaluate(() => { const a = __MAY_CHU.layQuyTrinh(TOKEN, 30), m = __MAY_CHU.layManhGiaoDien(TOKEN, 'QuyTrinh'); return [ME.vaiTro, ME.laOwner, dsTabHienCo().some(t => t[0] === 'qt'), a.ok, m.ok]; });
-  ok(s[0] === 'ADMIN' && !s[1] && !s[2] && !s[3] && !s[4], 'ban điều hành (không phải chủ sở hữu): không có tab, máy chủ chặn dữ liệu + giao diện', s);
+  const s = await p.evaluate(() => { const a = __MAY_CHU.layQuyTrinh(TOKEN, 30), m = __MAY_CHU.layManhGiaoDien(TOKEN, 'QuyTrinh'); return [ME.vaiTro, ME.laOwner, dsTabHienCo().some(t => t[0] === 'qt'), a.ok, m.ok, dsTabHienCo().some(t => t[0] === 'dh')]; });
+  ok(s[0] === 'ADMIN' && !s[1] && !s[2] && !s[3] && s[4] && s[5], 'ban điều hành: không có tab Quy trình (máy chủ chặn dữ liệu), có tab Đơn hàng (14/11)', s);
   // 03/11: trưởng / phó phòng – chỉ xưởng mình, sửa = gửi đề xuất; chủ sở hữu duyệt
   for (const w of [1360, 390]) {
     const pt = await (await b.newContext({ viewport: { width: w, height: 900 } })).newPage(); const e2 = []; pt.on('pageerror', x => e2.push(x.message));
     await vao(pt, 'tpdg');
     let t = await pt.evaluate(() => [ME.vaiTro, dsTabHienCo().some(x => x[0] === 'qt'), dsTabHienCo().some(x => x[0] === 'dh')]);
-    ok(t[0] === 'TP' && t[1] && !t[2], 'trưởng phòng (' + w + 'px): có tab Quy trình, không có tab Đơn hàng', t);
+    ok(t[0] === 'TP' && t[1] && t[2], 'trưởng phòng (' + w + 'px): có tab Quy trình + tab Đơn hàng (14/11)', t);
     await pt.evaluate(() => go('qt')); await pt.waitForSelector('.qt-tabs', { timeout: 30000 }); await pt.waitForTimeout(800);
     t = await pt.evaluate(() => [QT.laTP, QT.xuongCua, new Set(QTD.map(q => q.MaXuong)).size, !!document.querySelector('.qt-bar'), document.querySelectorAll('.qt-tabs button').length, document.querySelectorAll('.qt-o.cua').length, document.querySelectorAll('.qt-o .qt-bd').length, Object.keys(QT.nhanSu.reduce((a, n) => (a[n.MaXuong] = 1, a), {})).length, ME.xuong]);
     ok(t[0] && t[1] === t[8] && t[2] === 1 && !t[3] && t[4] === 4 && (w > 640 ? t[5] === 1 : true) && t[6] === 0 && t[7] <= 1, 'chỉ dữ liệu xưởng mình, không ô cài đặt, 4 khung; lưu đồ nhà máy không số, xưởng mình tô sáng', t);

@@ -73,6 +73,7 @@ function tao(fileCode, duLieu, gioHienTai) {
       return o;
     },
     getValue() { return this.getValues()[0][0]; },
+    getFormulas() { return this.getValues().map(r => r.map(v => (typeof v === 'string' && /^=/.test(v)) ? v : '')); },   // 14/11: ô chuỗi bắt đầu '=' coi là công thức
     getDisplayValues() { return this.getValues().map(r => r.map(v => v instanceof RealDate ? v.toISOString().slice(0, 10) : String(v))); },
     setValues(v) {
       thongKe.ghi++;
@@ -138,7 +139,7 @@ function tao(fileCode, duLieu, gioHienTai) {
       putAll: o => { Object.keys(o).forEach(k => { if (String(o[k]).length > 100000) throw new Error('Cache > 100KB'); cache[k] = o[k]; }); }
     }) },
     LockService: { getScriptLock: () => ({ tryLock: () => { if (khoa) return false; khoa = true; return true; }, waitLock() { khoa = true; }, releaseLock() { khoa = false; } }) },
-    SpreadsheetApp: { getActiveSpreadsheet: () => ss,
+    SpreadsheetApp: { flush() {}, getActiveSpreadsheet: () => ss,
       // Sheet của tệp khác (31/10, đọc Sheet "Trạng thái đơn hàng"): kiểm thử gán ctx.__ngoai = { id: { ten, sheets: { Tab: [[...]] } } }
       openById: id => { const m = (ctx.__ngoai || {})[id]; if (!m) throw new Error('Bạn không có quyền truy cập vào tài liệu được yêu cầu (giả lập).');
         return { getId: () => id, getName: () => m.ten || id, getSheetByName: n => (m.sheets[n] ? new Sheet(n, m.sheets[n]) : null), getSheets: () => Object.keys(m.sheets).map(n => new Sheet(n, m.sheets[n])) }; },

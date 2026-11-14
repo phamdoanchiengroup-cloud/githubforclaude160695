@@ -1372,5 +1372,6 @@ exec(io.open(os.path.join(os.path.dirname(__file__), 'tang-toc-4', 'va-tang-toc-
 exec(io.open(os.path.join(os.path.dirname(__file__), 'luu-tru', 'va-luu-tru.py'), encoding='utf-8').read())   # dọn dẹp hằng tháng (08/11)
 exec(io.open(os.path.join(os.path.dirname(__file__), 'cau-hinh-gay', 'va-cau-hinh-gay.py'), encoding='utf-8').read())   # cấu hình gậy – bản vẽ kỹ thuật (08/11)
 exec(io.open(os.path.join(os.path.dirname(__file__), 'bo-hom-nay', 'va-bo-hom-nay.py'), encoding='utf-8').read())   # thống kê / KPI không tính hôm nay (09/11)
+exec(io.open(os.path.join(os.path.dirname(__file__), 'don-giao-nhan', 'va-don-giao-nhan-code.py'), encoding='utf-8').read())   # Đơn hàng cho ban điều hành (14/11)
 io.open(RA, 'w', encoding='utf-8').write(s)
 print('OK ->', os.path.abspath(RA))

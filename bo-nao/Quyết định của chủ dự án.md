@@ -62,6 +62,8 @@ Những điều đã chốt. Đừng đề xuất lại những gì ghi "không 
 - Không làm A5 (chưa có KCS), giữ ô "Đặt số dòng", không làm A3 giờ dừng, không cần video hướng dẫn; phần tăng ca đã gỡ. – [[KPI Bảo mật và vận hành]]
 
 ## Quy trình sản xuất (31/10)
+- (14/11) **Đơn hàng giao nhận**: BĐH + TP/PP vào tab Đơn hàng, TP/PP xem tất cả, ghi bộ phận mình; **ghi thẳng vào Sheet đơn** (thay "chỉ đọc" 31/10), không đè ô công thức; bộ phận sau xác nhận ngày hẹn; màu Carbon Navy toàn web nền tối, bảng đơn tương phản rõ. – [[KPI Đơn hàng giao nhận theo bộ phận (14-11)]]
+- (14/11) **Tiết kiệm token**: chỉ hỏi chuyên gia + rà toàn bộ khi làm tính năng lớn; bản đồ bộ não đăng lại cuối ngày; Claude tự báo chuyển phiên mới khi phiên dài. – CLAUDE.md
 - Tab "Quy trình sản xuất" (gộp Kỹ năng): làm theo **phương án C**. Giai đoạn 1 cân bằng 9 xưởng; Claude soạn quy trình nháp, TP/PP chỉ sửa. **Tab chỉ mở cho tài khoản chủ sở hữu** cho tới khi chỉnh xong. Kiến trúc **B**: mảnh tải sau `QuyTrinh.html` trong web hiện tại (không làm web riêng). Câu hỏi giờ ca / số máy / ai sửa: chủ dự án thấy khó → Claude tự lấy (giờ = ô chỉnh trên màn hình, máy từ sheet MayMoc, quyền = chỉ chủ sở hữu). – [[KPI Quy trình sản xuất]]
 
 - App Qoder (31/10): chỉ làm tạm khi Claude hết token, **không sửa gì trên đó**; lấy phần tốt nhất đưa vào web KPI, ưu tiên phân loại cấu hình gậy cho SKU. Sản lượng thật ~9.000 sản phẩm/tháng (không tính tay nối). – [[KPI Quy trình sản xuất]]
