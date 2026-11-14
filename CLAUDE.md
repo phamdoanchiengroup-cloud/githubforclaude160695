@@ -45,6 +45,7 @@ File này được Claude Code tự đọc khi mở repo. Nó giữ **quy tắc 
 - **Tiết kiệm token (chủ dự án chốt 14/11, vì hết lưu lượng):**
   - Phiên quá dài thì Claude **tự ghi bàn giao vào `bo-nao/Bàn giao phiên.md` và báo chủ dự án mở phiên mới** (chủ dự án cho phép tự chuyển). Claude không tự đổi model được – gợi ý: việc nhỏ dùng **Sonnet** (`/model`), việc khó dùng Opus.
   - Chủ dự án tự sửa bằng AI khác thì chỉ cần nhắn phần đã đổi; nếu gửi cả file, so bằng `diff` rồi chuyển vào script vá, không đọc hết file.
+  - **Chia việc với Qoder** (chủ dự án chốt 15/11): Qoder trên máy chủ dự án làm việc nhỏ (chữ, màu, ẩn/hiện, đổi chỗ), Claude làm việc lớn + gộp code. Việc nhỏ thì đưa chủ dự án lời dặn dán vào Qoder theo `kpi-app/HUONG-DAN-QODER.md` thay vì tự làm; nhận file Qoder sửa thì `diff` với bản sinh ra rồi chuyển vào nguồn (chỗ sửa có dấu `QODER dd/mm`).
   - Hỏi gộp một lần, không hỏi nhiều vòng.
 - **Cập nhật bộ não** (không dồn chi tiết vào CLAUDE.md) – nới 14/11: bước 1–2 làm cuối mỗi việc lớn; bước 3–4 (dựng + đăng lại bản đồ) **một lần cuối ngày / cuối phiên**:
   1. Sửa ghi chú chủ đề: ngày, việc đã làm, tên hàm/file, số kiểm thử. Chủ đề mới → ghi chú mới + thêm vào `00 Mục lục.md`.

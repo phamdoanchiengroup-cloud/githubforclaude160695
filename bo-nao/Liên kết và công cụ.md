@@ -65,3 +65,4 @@ Một chỗ gom mọi đường dẫn, mã file, kết nối và công cụ phi�
 - Python: Pillow, numpy, openpyxl có sẵn; ffmpeg đủ codec lấy từ pip `imageio-ffmpeg`.
 - Tải trang ngoài qua proxy: Chromium không tin CA của proxy, nên dùng `curl` hoặc Node `fetch` (NODE_USE_ENV_PROXY=1).
 - (08/11) **KPI - Nhân sự ngoài sản xuất (hồ sơ)** – Google Sheet trong Drive chủ dự án, mã `1wmavTqA4C_yjR-Zl1RaqaEKuCSeV2aEu__jXeWbrUuw` (`NS_CC_FILE_NGOAI`): bản gốc danh sách 6 bộ phận ngoài SX (87 người), cột BoPhan, Nhom, MaNV, HoTen, ChucDanh, NgayVaoLam, NgayChinhThuc, PhepConLai, TrangThai, GhiChu. Thay file 03/11 `1KAbgfq0…`. Web: Nhân sự › Bộ phận ngoài sản xuất › "Cập nhật từ file". – [[KPI Quy trình sản xuất]]
+- (15/11) **Qoder** (AI trên máy chủ dự án) – làm việc nhỏ theo `kpi-app/HUONG-DAN-QODER.md` (lời dặn dán sẵn, các bước gửi file cho Claude gộp). Phiên đám mây không điều khiển trực tiếp được Qoder.
