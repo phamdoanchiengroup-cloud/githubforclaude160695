@@ -4,7 +4,7 @@ Nhóm: Chung · Cập nhật 31/10/2026
 Liên quan: [[Việc chờ chủ dự án]] · [[KPI Tổng quan và cách dựng]] · [[00 Mục lục]]
 
 ## Web KPI – đã dán (theo sheet thật đọc ngày 21/10)
-- **14/11 – CHỜ DÁN (bản tối 14/11 thay bản chiều)**: Code.gs, Index.html, QuyTrinh.html (Đơn hàng giao nhận + màu Midnight Carbon / Ivory / Azure, menu ẩn, bảng Ivory, cột Cấu hình, bảng nổi). Lần đầu lưu, web sẽ thêm 10 cột phụ vào cuối các tab Sheet đơn. – [[KPI Đơn hàng giao nhận theo bộ phận (14-11)]]
+- **14/11 – CHỜ CẬP NHẬT bằng `2-CAP-NHAT.bat`** (đã kiểm: 3 file trên GitHub trùng bản mới nhất; bản tối 14/11 thay bản chiều): Code.gs, Index.html, QuyTrinh.html (Đơn hàng giao nhận + màu Midnight Carbon / Ivory / Azure, menu ẩn, bảng Ivory, cột Cấu hình, bảng nổi). Lần đầu lưu, web sẽ thêm 10 cột phụ vào cuối các tab Sheet đơn. – [[KPI Đơn hàng giao nhận theo bộ phận (14-11)]]
 - Bản 18/10 đã lên: sheet thật có LichSuDinhMuc, HoiNhap, BoTriMay. Tên đăng nhập trùng, tài khoản người nghỉ việc, MaGhi thiếu đã được dọn.
 - Lần dán chung 18/10: chủ dự án đã nhận đủ 5 file + hướng dẫn (HUONG-DAN-CAP-NHAT.md mục "LẦN DÁN CHUNG 18/10"). – [[KPI Bảo mật và vận hành]], [[KPI Âm thanh và giọng Rhino]]
 
