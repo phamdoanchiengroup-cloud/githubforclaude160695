@@ -65,3 +65,10 @@ Liên quan: [[KPI Quy trình sản xuất]] · [[KPI Điều phối sản xuất
 - Web: `dhNoteO` dưới tên ở cột Mã sản phẩm (ô vàng 📝; "+ Note" / bấm để sửa, textarea + Lưu / Hủy), `dhNoteLuu`. Bản chép (tab ĐƠN ƯU TIÊN / TRỄ HẠN) chỉ xem.
 - Lưu ý: chữ trong LOẠI PHÔI cũng dùng khi phân loại SKU (vd "CHỈ ĐẶT NỐI") – đã có từ trước. Tab Đơn hàng chỉ mở cho ADMIN + TP: nếu C019/C056/C067 là vai trò khác thì chưa vào được tab.
 - Kiểm thử: `thu/note.js` (máy chủ, giả lập) 7/7; `thu/noteweb.js` 10/10 (máy tính + điện thoại); khung thử 30/30.
+
+## 15/11 – Phôi 2 nhánh (chuôi → Sơn, ngọn → Ngọn Taro)
+- Chủ dự án chốt: gậy 2 khúc tách Phôi thành **Phôi chuôi** và **Phôi ngọn**; **ghi chung 1 ô, 2 dòng** trong Sheet (ô SL `Chuôi: 10⏎Ngọn: 8`, ô hẹn `Chuôi: 20/11/2026⏎Ngọn: 22/11/2026`); **số cũ (1 số) = cả chuôi và ngọn**; **Sơn xác nhận hẹn Phôi chuôi, Taro xác nhận hẹn Phôi ngọn**.
+- Máy chủ: `DH_P2`, `dhP2Dong_`, `dhP2Ngay_` (có năm), `dhP2Gan_` → `o.p2 = {c,n,hc,hn}`, `qua.PHOI` = min (số cặp xong), `hen.PHOI` = hẹn sớm nhất của nhánh chưa xong (các thống kê cũ dùng tiếp). `luuDonGiaoNhan` nhận `p.phoi2` (+ `cu.phoi2` chống ghi đè), ghi 2 dòng; `xnHen.bp` = `PHOI_C` / `PHOI_N` (XN HẸN ghi "Phôi chuôi: ✓ …"). Nhớ tạm `DH_DON_v13`.
+- Web: `dhLa2` (gậy hoặc cấu hình có cả Sơn + Taro), `dhP2`, `dhHenK`; ô bảng Phôi 2 dòng; bảng nổi của Phôi 2 nhóm; Sơn / Taro thấy đúng hẹn nhánh mình để Đồng ý / Không kịp. Chuôi lẻ, ngọn lẻ giữ 1 ô.
+- Lưu ý: ô Phôi của gậy thành chữ 2 dòng → công thức Sheet nào cộng cột Phôi sẽ không cộng ô đó.
+- Kiểm thử (giả lập): `thu/p2.js` 4/4, `thu/p2luu.js` 4/4, `thu/p2web.js` 14/14; khung thử 30/30, Note 10/10.

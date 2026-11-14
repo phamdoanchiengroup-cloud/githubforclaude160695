@@ -23,6 +23,7 @@ var DH_CHANG = [['PHOI', /^PHÔI CỦA/], ['SON', /^SƠN CỦA/], ['TARO', /^TAR
    ĐANG Ở BP, BP KẾ TIẾP + 7 cột "XN NHẬN <bộ phận>" (bộ phận sau bấm nhận, ghi SL · tài khoản · lúc) + XN HẸN (bộ phận sau đồng ý / không kịp với ngày hẹn). */
 var DH_BP = [['PHOI', 'Phôi'], ['SON', 'Sơn'], ['TARO', 'Taro'], ['UV', 'UV'], ['HT', 'Hoàn thiện'], ['TIP', 'Làm đầu'], ['DG', 'Đóng gói']];   // 14/11: thứ tự theo luồng mới – ngọn Taro → Hoàn thiện → Làm đầu → trả Hoàn thiện → Đóng gói
 var DH_BP_TEN = { PHOI: 'Phôi', SON: 'Sơn', TARO: 'Taro', TIP: 'Làm đầu', UV: 'UV', HT: 'Hoàn thiện', DG: 'Đóng gói' };
+var DH_P2 = [['PHOI_C', 'Phôi chuôi', 'c', 'SON'], ['PHOI_N', 'Phôi ngọn', 'n', 'TARO']];   // 15/11: Phôi 2 nhánh – chuôi giao Sơn, ngọn giao Ngọn Taro
 var DH_TD_COT = ['ĐANG Ở BP', 'BP KẾ TIẾP'].concat(DH_BP.map(function(b) { return 'XN NHẬN ' + b[1].toUpperCase(); })).concat(['XN HẸN']);   // 14/11 (Claude): XN HẸN = bộ phận sau đồng ý / không kịp với ngày hẹn của bộ phận trước
 /* 14/11 (chủ dự án chốt): mỗi DÒNG Sheet = một MÃ SẢN PHẨM, cấu hình bán thành phẩm khác nhau nên SL / hẹn nhập theo mã đó,
    không nhập theo tổng đơn. Mặc định lấy từ luồng xưởng đã duyệt 31/10 (xem chú thích đầu mục ĐƠN HÀNG → XƯỞNG):
@@ -323,6 +324,7 @@ function dhDocTab_(sh, tab, nam, gioiHan, meta) {
     });
     Object.keys(hong).forEach(function(k) { var x = dhSo_(row[hong[k]]); if (x > 0) o.hong[k] = Math.min(sl, x); });
     Object.keys(hen).forEach(function(k) { var x = dhNgay_(row[hen[k]], nam); if (x) (o.hen = o.hen || {})[k] = x; });
+    dhP2Gan_(o, chang.PHOI != null ? row[chang.PHOI] : null, hen.PHOI != null ? row[hen.PHOI] : null, nam);   // 15/11: Phôi 2 nhánh (chuôi / ngọn)
     if (cHanMoi >= 0) { var hm = dhNgay_(row[cHanMoi], nam); if (hm) o.hanMoi = hm; }
     if (cKenh >= 0) { var kc = dhKenhTen_(row[cKenh]); if (kc) o.kenhCot = kc; }
     if (nhom) o.kenhNhom = nhom;
@@ -430,7 +432,7 @@ function dhXoaCacheDon_() {
   } catch (e) {}
 }
 /* Mọi dòng đơn (đã gộp 7 tab). Nhớ tạm DH_CACHE_GIAY giây: nén gzip rồi chia mảnh base64 < 100 KB mỗi khóa. */
-var DH_DON_KHOA = 'DH_DON_v12';   // v12 (14/11): dn.h = XN HẸN
+var DH_DON_KHOA = 'DH_DON_v13';   // v13 (15/11): p2 = Phôi 2 nhánh, phoi 500 ký tự (Note)   // v12 (14/11): dn.h = XN HẸN
 function dhDocDon_(lamMoi) {
   var c = CacheService.getScriptCache(), k = DH_DON_KHOA;   // v11 (14/11): thêm tabPhu (dòng tab ĐƠN ƯU TIÊN / TRỄ HẠN để web hiện đủ tab như Sheet)   // v10 (14/11): thêm dn (ĐANG Ở BP / KẾ TIẾP / XN NHẬN) + cot (bản đồ cột bộ phận) cho tab Đơn hàng dạng bảng   // v9 (13/11): nén gzip (11 khóa -> 1–2 khóa, đọc/ghi cache nhanh, tránh DEADLINE_EXCEEDED khi mở tab Đơn hàng)   // v8 (13/11): thêm tre (tab TRỄ HẠN) làm bậc 2 khi lên lịch SX   // v7 (13/11): ánh xạ tab ưu tiên sang Kho theo tên hàng   // v6 (07/11): thêm kênh POD-ECOMSTONE   // v5 (07/11): thêm uu (tab ĐƠN ƯU TIÊN)   // v4 (03/11): thêm uuTien / uuDon
   if (!lamMoi) {
@@ -604,8 +606,10 @@ function dhDocGN_(sh, dong, meta, cotTD) {   // đọc 1 dòng: SL + hẹn từn
     if (s !== '' && (typeof cell(meta.qty[k] + 1) === 'number' || /^\s*\d+(\.\d+)?\s*$/.test(s))) qua[k] = dhSo_(s);
   });
   Object.keys(meta.hen || {}).forEach(function(k) { var x = dhNgay_(cell(meta.hen[k] + 1), nam); if (x) hen[k] = x; });
+  var G2 = { sl: dhSo_(cell(meta.sl + 1)), qua: qua, hen: hen };
+  dhP2Gan_(G2, meta.qty && meta.qty.PHOI != null ? cell(meta.qty.PHOI + 1) : null, meta.hen && meta.hen.PHOI != null ? cell(meta.hen.PHOI + 1) : null, nam);   // 15/11
   return { ma: String(cell(1) == null ? '' : cell(1)).trim(), ten: String(cell(meta.ten + 1) == null ? '' : cell(meta.ten + 1)).replace(/\s+/g, ' ').trim(), sl: dhSo_(cell(meta.sl + 1)),
-    qua: qua, hen: hen,
+    qua: qua, hen: hen, p2: G2.p2,
     o: cotTD && cotTD['ĐANG Ở BP'] ? String(cell(cotTD['ĐANG Ở BP']) == null ? '' : cell(cotTD['ĐANG Ở BP'])).trim().toUpperCase() : '',
     k: cotTD && cotTD['BP KẾ TIẾP'] ? String(cell(cotTD['BP KẾ TIẾP']) == null ? '' : cell(cotTD['BP KẾ TIẾP'])).trim().toUpperCase() : '',
     h: cotTD && cotTD['XN HẸN'] ? dhXnHenDoc_(cell(cotTD['XN HẸN'])) : {},
@@ -664,6 +668,27 @@ function luuDonGiaoNhan(token, p) {
         doi.push('Hẹn ' + DH_BP_TEN[actor] + ': ' + (cuHen ? dhDMY_(cuHen) : '–') + ' → ' + (henMoi ? dhDMY_(henMoi) : '–'));
       }
     }
+    /* 2b) 15/11 (chủ dự án): Phôi của gậy 2 khúc tách 2 nhánh – chuôi (giao Sơn) và ngọn (giao Ngọn Taro), ghi chung 1 ô, 2 dòng:
+       ô SL "Chuôi: 10\nNgọn: 8", ô hẹn "Chuôi: 20/11/2026\nNgọn: 22/11/2026". Số cũ (1 số chung) = cả chuôi và ngọn. */
+    if (p.phoi2 && actor === 'PHOI') {
+      var cP = meta.qty.PHOI != null ? meta.qty.PHOI + 1 : 0, cHP = meta.hen.PHOI != null ? meta.hen.PHOI + 1 : 0;
+      if (!cP) return sach_({ ok: false, msg: 'Tab "' + tab + '" không có cột số lượng của Phôi.' });
+      var P = H.p2 || { c: H.qua.PHOI, n: H.qua.PHOI, hc: H.hen.PHOI || '', hn: H.hen.PHOI || '' }, cuP = p.cu && p.cu.phoi2;
+      if (cuP && !p.boQua && (Number(cuP.c || 0) !== Number(P.c || 0) || Number(cuP.n || 0) !== Number(P.n || 0) || String(cuP.hc || '') !== String(P.hc || '') || String(cuP.hn || '') !== String(P.hn || '')))
+        return sach_({ ok: false, xungDot: true, msg: 'Người khác vừa cập nhật Phôi của mã này (chuôi ' + dhSoVN_(P.c || 0) + ', ngọn ' + dhSoVN_(P.n || 0) + '). Xem lại rồi ghi đè nếu đúng.' });
+      var M = { c: P.c, n: P.n, hc: P.hc || '', hn: P.hn || '' };
+      ['c', 'n'].forEach(function(x) { var v = p.phoi2[x] || {};
+        if (v.sl != null && String(v.sl).trim() !== '' && isFinite(Number(v.sl))) M[x] = Math.min(tam.sl, Math.max(0, Math.round(Number(v.sl))));
+        if (v.hen !== undefined && v.hen !== null) { var hh = String(v.hen).trim(); if (hh && !/^\d{4}-\d\d-\d\d$/.test(hh)) M.loi = 1; M['h' + x] = hh; } });
+      if (M.loi) return sach_({ ok: false, msg: 'Ngày hẹn không hợp lệ.' });
+      var so = function(v) { return v == null ? '' : dhSoVN_(v); };
+      if (M.c !== P.c || M.n !== P.n) { ghi.push([cP, 'Chuôi: ' + so(M.c) + '\nNgọn: ' + so(M.n)]); doi.push('Phôi chuôi ' + so(P.c) + ' → ' + so(M.c) + ', ngọn ' + so(P.n) + ' → ' + so(M.n)); datSL = Math.min(M.c || 0, M.n || 0); }
+      if (M.hc !== (P.hc || '') || M.hn !== (P.hn || '')) {
+        if (!cHP) return sach_({ ok: false, msg: 'Tab "' + tab + '" không có cột ngày hẹn của Phôi.' });
+        ghi.push([cHP, 'Chuôi: ' + (M.hc ? dhDMY_(M.hc) : '–') + '\nNgọn: ' + (M.hn ? dhDMY_(M.hn) : '–')]);
+        doi.push('Hẹn Phôi chuôi ' + (M.hc ? dhDMY_(M.hc) : '–') + ', ngọn ' + (M.hn ? dhDMY_(M.hn) : '–'));
+      }
+    }
     /* 3) Bộ phận đang làm chọn bộ phận kế tiếp */
     if (p.keTiep !== undefined) {
       var kt = String(p.keTiep || '').toUpperCase();
@@ -686,18 +711,19 @@ function luuDonGiaoNhan(token, p) {
     /* 4b) 14/11 (Claude, chủ dự án chốt): bộ phận SAU đồng ý / không kịp với ngày hẹn của bộ phận TRƯỚC.
        Xác nhận gắn với đúng ngày hẹn lúc bấm – bộ phận trước đổi hẹn thì xác nhận cũ tự hết hiệu lực (web hiện "chờ xác nhận"). */
     if (p.xnHen && p.xnHen.bp) {
-      var T = String(p.xnHen.bp).toUpperCase(), henT = H.hen[T] || '';
-      if (!DH_BP_TEN[T]) return sach_({ ok: false, msg: 'Bộ phận hẹn không hợp lệ.' });
-      if (!henT) return sach_({ ok: false, msg: 'Bộ phận ' + DH_BP_TEN[T] + ' chưa hẹn ngày trả cho mã này.' });
-      var sau = dhBPSau_(H.ten, T, H);
-      if (!toanQuyen && actor !== sau) return sach_({ ok: false, msg: 'Chỉ bộ phận nhận hàng sau ' + DH_BP_TEN[T] + (sau ? ' (' + DH_BP_TEN[sau] + ')' : '') + ' xác nhận ngày hẹn này.' });
+      var T = String(p.xnHen.bp).toUpperCase(), P2 = DH_P2.filter(function(b) { return b[0] === T; })[0], henT = P2 ? ((H.p2 ? H.p2['h' + P2[2]] : H.hen.PHOI) || '') : (H.hen[T] || '');
+      if (!DH_BP_TEN[T] && !P2) return sach_({ ok: false, msg: 'Bộ phận hẹn không hợp lệ.' });
+      var tenT = P2 ? P2[1] : DH_BP_TEN[T];
+      if (!henT) return sach_({ ok: false, msg: 'Bộ phận ' + tenT + ' chưa hẹn ngày trả cho mã này.' });
+      var sau = P2 ? P2[3] : dhBPSau_(H.ten, T, H);
+      if (!toanQuyen && actor !== sau) return sach_({ ok: false, msg: 'Chỉ bộ phận nhận hàng sau ' + tenT + (sau ? ' (' + DH_BP_TEN[sau] + ')' : '') + ' xác nhận ngày hẹn này.' });
       if (!cotTD['XN HẸN']) return sach_({ ok: false, msg: 'Chưa tạo được cột XN HẸN ở cuối Sheet.' });
       var lyDo = String(p.xnHen.lyDo || '').replace(/[\r\n|]+/g, ' ').trim().slice(0, 120);
       if (!p.xnHen.dongY && !lyDo) return sach_({ ok: false, msg: 'Ghi lý do không kịp (vd. cần hàng sớm hơn ngày nào).' });
       var xh = {}; Object.keys(H.h || {}).forEach(function(k2) { xh[k2] = H.h[k2]; });
       xh[T] = { ok: p.xnHen.dongY ? 1 : 0, ngay: henT, ai: (q.me.ten || q.me.tk), luc: Utilities.formatDate(new Date(), TZ_VN, 'dd/MM HH:mm'), lyDo: lyDo, boi: actor };
       ghi.push([cotTD['XN HẸN'], dhXnHenGhi_(xh)]);
-      doi.push('Hẹn ' + DH_BP_TEN[T] + ' ' + dhDMY_(henT) + ': ' + (p.xnHen.dongY ? 'đồng ý' : 'không kịp – ' + lyDo));
+      doi.push('Hẹn ' + tenT + ' ' + dhDMY_(henT) + ': ' + (p.xnHen.dongY ? 'đồng ý' : 'không kịp – ' + lyDo));
     }
     /* 5) Lần đầu nhập: đơn chưa có "ĐANG Ở BP" -> gán bộ phận đang nhập */
     if (!H.o && (datSL != null || doi.length) && !p.xacNhan && !p.xnHen) { ghi.push([cO, actor]); doi.push('Đang ở BP: → ' + DH_BP_TEN[actor]); }
@@ -716,7 +742,7 @@ function luuDonGiaoNhan(token, p) {
     try { ghiLog_(q.me, 'Giao/nhận đơn', (H.ma || '') + ' · ' + H.ten.slice(0, 80), 'tab ' + tab + ' · dòng ' + dong, doi.join(' | ').slice(0, 400)); } catch (eLog) {}
     dhXoaCacheDon_();
     var S = dhDocGN_(sh, dong, meta, cotTD);
-    return sach_({ ok: true, msg: 'Đã lưu: ' + doi.join('; ') + '.', dong: dong, o: S.o, k: S.k, sl: S.qua[actor] == null ? 0 : S.qua[actor], hen: S.hen[actor] || '', qua: S.qua, henDs: S.hen, x: S.x, xh: S.h });
+    return sach_({ ok: true, msg: 'Đã lưu: ' + doi.join('; ') + '.', dong: dong, p2: S.p2 || null, o: S.o, k: S.k, sl: S.qua[actor] == null ? 0 : S.qua[actor], hen: S.hen[actor] || '', qua: S.qua, henDs: S.hen, x: S.x, xh: S.h });
   } catch (e) {
     return sach_({ ok: false, msg: 'Không ghi được vào Sheet: ' + (e && e.message || e) });
   } finally {
@@ -726,7 +752,7 @@ function luuDonGiaoNhan(token, p) {
 /* 14/11 (Claude): ô XN HẸN – mỗi bộ phận một dòng, đọc được bằng mắt trong Sheet:
    "Phôi: ✓ 20/11/2026 · Nguyễn A · 14/11 10:20"  |  "Sơn: ✗ 22/11/2026 · Trần B · 14/11 11:00 · lý do: cần ngày 19/11" */
 function dhXnHenDoc_(v) {
-  var o = {}, ten = {}; DH_BP.forEach(function(b) { ten[b[1].toUpperCase()] = b[0]; });
+  var o = {}, ten = {}; DH_BP.concat(DH_P2).forEach(function(b) { ten[b[1].toUpperCase()] = b[0]; });
   String(v == null ? '' : v).split(/\n+/).forEach(function(d) {
     var m = d.trim().match(/^([^:]+):\s*(✓|✗)\s*(\d\d)\/(\d\d)\/(\d{4})\s*(?:·\s*([^·]*?))?\s*(?:·\s*(\d\d\/\d\d \d\d:\d\d))?\s*(?:·\s*lý do:\s*(.*))?$/);
     if (!m) return; var k = ten[m[1].trim().toUpperCase()]; if (!k) return;
@@ -735,7 +761,7 @@ function dhXnHenDoc_(v) {
   return o;
 }
 function dhXnHenGhi_(o) {
-  return DH_BP.filter(function(b) { return o[b[0]]; }).map(function(b) { var x = o[b[0]];
+  return DH_BP.concat(DH_P2).filter(function(b) { return o[b[0]]; }).map(function(b) { var x = o[b[0]];
     return b[1] + ': ' + (x.ok ? '✓' : '✗') + ' ' + dhDMY_(x.ngay) + ' · ' + String(x.ai || '').replace(/[·:\n]/g, ' ') + ' · ' + (x.luc || '') + (x.ok ? '' : ' · lý do: ' + (x.lyDo || '')); }).join('\n');
 }
 /* bộ phận nhận hàng ngay sau T theo cấu hình bán thành phẩm của mã; T ngoài cấu hình -> bộ phận kế tiếp đang ghi trên dòng */
@@ -1675,4 +1701,24 @@ function luuGhiChuDon(token, p) {
   } finally {
     try { lock.releaseLock(); } catch (e2) {}
   }
+}
+
+/* ===== 15/11 (chủ dự án): Phôi 2 nhánh cho gậy 2 khúc – đọc ô ghi chung 2 dòng ("Chuôi: 10 / Ngọn: 8"; hẹn "Chuôi: 20/11/2026 / Ngọn: 22/11/2026").
+   o.p2 = {c, n, hc, hn}; o.qua.PHOI = số cặp đã xong (min chuôi, ngọn); o.hen.PHOI = hẹn sớm nhất của nhánh chưa xong. Ô 1 số / 1 ngày như cũ: không tạo p2 (web hiểu là cả 2 nhánh). */
+function dhP2Dong_(v) {
+  var s = String(v == null ? '' : v); if (!/chu[ôo]i|ng[ọo]n/i.test(s)) return null;
+  var o = {}; s.split(/\n|;/).forEach(function(d) { var m = d.match(/^\s*(chu[ôo]i|ng[ọo]n)\s*[:\-]?\s*(.*)$/i); if (m) o[/^chu/i.test(m[1]) ? 'c' : 'n'] = m[2].trim(); });
+  return (o.c != null || o.n != null) ? o : null;
+}
+function dhP2Ngay_(t, nam) { var m = String(t || '').match(/(\d{1,2})\s*\/\s*(\d{1,2})(?:\s*\/\s*(\d{4}))?/); if (!m) return ''; var d = +m[1], mo = +m[2]; if (!(d >= 1 && d <= 31 && mo >= 1 && mo <= 12)) return ''; return (m[3] || nam) + '-' + ('0' + mo).slice(-2) + '-' + ('0' + d).slice(-2); }
+function dhP2Gan_(o, vSL, vHen, nam) {
+  var a = dhP2Dong_(vSL), b = dhP2Dong_(vHen); if (!a && !b) return;
+  var sl = Number(o.sl) || 0, cu = o.qua && o.qua.PHOI, cuH = o.hen && o.hen.PHOI;
+  var so = function(x) { if (x == null || x === '' || x === '–') return null; var n = dhSo_(String(x).replace(/\./g, '')); return Math.min(sl || n, Math.max(0, n)); };
+  var P = { c: a ? so(a.c) : (cu != null ? cu : null), n: a ? so(a.n) : (cu != null ? cu : null), hc: b ? dhP2Ngay_(b.c, nam) : (cuH || ''), hn: b ? dhP2Ngay_(b.n, nam) : (cuH || '') };
+  o.p2 = P; o.qua = o.qua || {};
+  if (P.c != null || P.n != null) o.qua.PHOI = Math.min(P.c == null ? 0 : P.c, P.n == null ? 0 : P.n); else delete o.qua.PHOI;
+  var hs = [['c', P.hc], ['n', P.hn]].filter(function(x) { return x[1] && (P[x[0]] == null || P[x[0]] < sl); }).map(function(x) { return x[1]; }).sort();
+  if (!hs.length) hs = [P.hc, P.hn].filter(Boolean).sort();
+  if (hs.length) (o.hen = o.hen || {}).PHOI = hs[0]; else if (o.hen) delete o.hen.PHOI;
 }
