@@ -44,7 +44,7 @@ function tao(fileCode, duLieu, gioHienTai) {
     deleteRows(i, n) { thongKe.xoaDong++; this.rows.splice(i - 1, n); },
     insertColumnBefore(c) { this.rows.forEach(r => r.splice(c - 1, 0, '')); },
     setFrozenRows() {}, setColumnWidth() {}, autoResizeColumn() {}, hideSheet() {},
-    clear() { this.rows = []; }, clearContents() { this.rows = []; return this; }
+    clear() { this.rows.length = 0; }, clearContents() { this.rows.length = 0; return this; }   // 15/11: xóa tại chỗ (giữ liên kết với dữ liệu tab)
   };
   function chuyen(sh, r, c, v) {
     if (typeof v === 'string' && sh.fmt[c] !== '@' && sh.fmt[r + ',' + c] !== '@') {
@@ -142,7 +142,7 @@ function tao(fileCode, duLieu, gioHienTai) {
     SpreadsheetApp: { flush() {}, getActiveSpreadsheet: () => ss,
       // Sheet của tệp khác (31/10, đọc Sheet "Trạng thái đơn hàng"): kiểm thử gán ctx.__ngoai = { id: { ten, sheets: { Tab: [[...]] } } }
       openById: id => { const m = (ctx.__ngoai || {})[id]; if (!m) throw new Error('Bạn không có quyền truy cập vào tài liệu được yêu cầu (giả lập).');
-        return { getId: () => id, getName: () => m.ten || id, getSheetByName: n => (m.sheets[n] ? new Sheet(n, m.sheets[n]) : null), getSheets: () => Object.keys(m.sheets).map(n => new Sheet(n, m.sheets[n])) }; },
+        return { getId: () => id, getName: () => m.ten || id, getSheetByName: n => (m.sheets[n] ? new Sheet(n, m.sheets[n]) : null), getSheets: () => Object.keys(m.sheets).map(n => new Sheet(n, m.sheets[n])), insertSheet: n => { m.sheets[n] = m.sheets[n] || []; return new Sheet(n, m.sheets[n]); } }; },   // 15/11: tạo tab mới (tab ĐẾN HẠN 10 NGÀY)
       create: ten => {   // bảng tính mới (lưu chi tiết cơm trưa lên Drive)
         ctx.__bangMoi = ctx.__bangMoi || []; const ds = [new Sheet('Trang tính1', [])], id = 'ss' + (ctx.__bangMoi.length + 1);
         const o = { ten, id, ds, getId: () => id, getName: () => ten, getSheets: () => ds, getSheetByName: n => ds.find(x => x.ten === n) || null,

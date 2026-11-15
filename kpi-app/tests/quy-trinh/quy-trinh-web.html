@@ -2810,12 +2810,18 @@ function dhBangNhom(ds,nhom,tre){
 function dhVeHan10(don){
   var hn=dhHomNay(), a=dhHan10(don).map(function(g){ return {g:g,d:dhCachNgay(hn,g.dl)}; }).sort(function(x,y){ return (x.d-y.d)||(y.g.thieu-x.g.thieu); });
   var h='<div class="dh-ghi">Đơn còn thiếu có deadline từ <b>hôm nay đến '+DH_HAN+' ngày tới</b> (đơn đã trễ nằm ở tab Đơn trễ hẹn).</div>';
-  return h+dhVeNhapNhanh(a)+(a.length?dhBangNhom(a,[['Hôm nay – 3 ngày',0,3],['4–7 ngày',4,7],['8–'+DH_HAN+' ngày',8,DH_HAN]],false):'<div class="card pdesc">Không có đơn đến hạn trong '+DH_HAN+' ngày tới theo bộ lọc hiện tại.</div>');
+  return h+dhTab10Dong()+dhVeNhapNhanh(a)+(a.length?dhBangNhom(a,[['Hôm nay – 3 ngày',0,3],['4–7 ngày',4,7],['8–'+DH_HAN+' ngày',8,DH_HAN]],false):'<div class="card pdesc">Không có đơn đến hạn trong '+DH_HAN+' ngày tới theo bộ lọc hiện tại.</div>');
 }
 /* 15/11 chiều (chủ dự án): TP / PP nhập NHANH số của xưởng mình ngay trong "Đến hạn 10 ngày" – SL đã làm (cộng dồn) + ngày hẹn giao của BỘ PHẬN MÌNH.
    Lưu bằng đúng luuDonGiaoNhan (ghi thẳng vào dòng đơn ở tab kênh của Sheet "Trạng thái đơn hàng"). Deadline của đơn do ban điều hành ghi – không sửa ở đây.
    Phôi gậy 2 khúc (2 nhánh chuôi / ngọn) cần form đầy đủ -> nút "Mở". Chủ sở hữu chọn bộ phận để nhập thay. */
 var DHNN='';
+/* 15/11 tối: trạng thái tab "ĐẾN HẠN 10 NGÀY" trong Sheet đơn (web tạo 7h, đồng bộ 2 chiều ngay khi sửa + mỗi 10 phút) – 4 tài khoản bấm Làm mới ngay */
+function dhTab10Dong(){ var t=(DH&&DH.tab10)||{}, q=(DH&&DH.q)||{}, kq=t.kq||{};
+  return '<div class="dh-ghi" style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">Tab <b>“ĐẾN HẠN 10 NGÀY”</b> trong Sheet đơn hàng: '+(t.tao?'tạo lúc <b>'+esc(t.tao)+'</b> ('+qtSo(t.n,0)+' dòng)':'<b>chưa tạo</b> – tự tạo lúc 7h sáng')+
+    (t.dongBo?' · đồng bộ lúc '+esc(t.dongBo)+(kq.chep?' (chép '+kq.chep+' ô về tab kênh)':'')+(kq.xungDot?' · <b class="bad">'+kq.xungDot+' ô trùng lúc</b> (tô đỏ trong tab)':'')+(kq.mat?' · '+kq.mat+' dòng mất gốc':''):'')+
+    '. Nhập trong tab đó cũng được – web tự chép về đúng dòng ở tab kênh.'+(q.uuGan?' <button class="btn sm" type="button" onclick="dhTab10LamMoi(this)">Làm mới ngay</button>':'')+'</div>'; }
+function dhTab10LamMoi(el){ el.disabled=true; toast('Đang làm mới tab trong Sheet…',true); call('lamMoiTab10',[],function(r){ el.disabled=false; if(!r||!r.ok){ toast((r&&r.msg)||'Không làm mới được.'); return; } if(DH) DH.tab10=r.tab10; toast(r.msg,true); dhVeLai(); }); }
 function dhVeNhapNhanh(a){ var q=(DH&&DH.q)||{}, toan=(q.sua||[]).indexOf('*')>=0, bps=dhBDS(), bp=toan?(DHNN&&bps.indexOf(DHNN)>=0?DHNN:''):(q.bp||'');
   if(!toan&&!bp) return '';
   var hn=dhHomNay(), rows=[];

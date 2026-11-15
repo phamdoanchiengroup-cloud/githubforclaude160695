@@ -33,6 +33,14 @@ Ghi chú: các mục ghi "16/11" ở phiên trước thực ra làm ngày 15/11 
 - Gậy 1 khúc: 1480 → đầu 12.2, 1450 → 12.5 (`plPhanLoai0_`, `cgMau1K`, pro taper dịch theo đầu).
 - Kiểm thử: `uu-tien-web.js` 24/24, `mot-khuc.js` 20/20.
 
+## 15/11 khuya – tab "ĐẾN HẠN 10 NGÀY" trong Sheet đơn (chủ dự án: chỉ giới hạn quyền trên web, Sheet để mở; sau này sẽ khóa Sheet) – góp ý `quan-ly-van-hanh`
+- `dhTab10Tao_` (7h + nút Làm mới ngay cho 4 tài khoản, `lamMoiTab10`): ĐỒNG BỘ TRƯỚC rồi dựng lại tab – dòng còn thiếu có hạn (deadline / hạn mới / hạn ngầm lẻ) hôm nay → +10 ngày, cột KÊNH; cột xám chỉ xem; cột sửa: DEADLINE, HẠN MỚI, NOTE, SL + HẸN 7 bộ phận (chép đúng ô tab kênh).
+- Tìm dòng gốc bằng cột **MÃ DÒNG WEB** (cuối tab kênh, web tự cấp `W…`) – chèn / xóa dòng không chép nhầm.
+- `dhTab10DongBo_`: so 3 chiều với bản gốc (sheet ẩn `DonHang10Goc`): chỉ tab 10 đổi → chép về tab kênh; chỉ tab kênh / web đổi → cập nhật tab 10; cả hai đổi → giữ tab kênh, tô đỏ + ghi chú ô; SL giảm → tô vàng; mất dòng gốc → tô đỏ ô đầu dòng.
+- Trigger: `DH_TAB10_SUA` (onEdit của Sheet đơn, chỉ chạy khi sửa tab 10), `DH_TAB10_DONG_BO` (10 phút, 6h–22h), `DH_TAB10_TAO` (7h) – tự cài khi mở tab Đơn hàng (`dhCaiTab10_`, cờ `DH10_CAI`). Mọi lần ghi Sheet dùng chung LockService.
+- `DH_TAB_LOAI` thêm tên tab để không đọc như tab kênh. Web: dòng trạng thái `dhTab10Dong` ở Đến hạn 10 ngày.
+- Kiểm thử `tab10.js` 14/14 (giả lập: openById có insertSheet, clearContents xóa tại chỗ). bao-mat.js / com-trua.js lỗi có từ trước (dữ liệu cũ).
+
 ## Còn bàn
 - Tab "Đến hạn 10 ngày" thẳng trong Sheet Trạng thái đơn hàng (mỗi đơn ghi kênh): web (Apps Script) ghi được Sheet đó; cần bàn: tab tự làm mới lúc nào, chỉ đọc hay nhập ở đó rồi chép về tab kênh, ai sửa.
 - "Lưu tất cả" (lưu nhiều dòng một lần) – chưa làm, chủ dự án chưa rõ ý nghĩa.
