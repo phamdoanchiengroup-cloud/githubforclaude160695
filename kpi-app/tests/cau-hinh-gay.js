@@ -7,6 +7,8 @@ const G = require('./gia-lap-kpi.js');
 const DATA = process.env.DATA; if (!DATA) { console.log('Cần DATA='); process.exit(1); }
 let dem = 0, loi = 0; const ok = (d, t, c) => { dem++; if (d) console.log('  ✓ ' + t); else { loi++; console.log('  ✗ ' + t + (c !== undefined ? '  → ' + JSON.stringify(c).slice(0, 300) : '')); } };
 const du = JSON.parse(fs.readFileSync(DATA, 'utf8'));
+// 15/11: Sheet thật đã có bản vẽ đo + cấu hình sản phẩm – kiểm thử bắt đầu từ trống
+['CauHinhGay', 'CauHinhSP'].forEach(k => { if (du[k]) du[k] = du[k].slice(0, 1); });
 const h = du.TaiKhoan[0], iDoi = h.indexOf('DoiMatKhauLanDau'), iNV = h.indexOf('MaNV'), iVT = h.indexOf('VaiTro');
 du.TaiKhoan.slice(1).forEach(x => { x[iDoi] = 'Không'; });
 const c = G.tao(path.join(__dirname, '..', 'Code.gs'), du, '2026-11-09T09:00:00+07:00');
@@ -88,7 +90,7 @@ ok(!c.__goi('luuCauHinhGay', T77, MA, { ngon: { tip: { d: '12' } } }, '').ok, 's
 r = c.__goi('luuCauHinhGay', T77, 'NEBULA', JSON.parse('{"__proto__":{"x":1},"la":{"b":1},"ngon":{"tip":{"d":12.3,"zz":5}},"daDo":{"ngon__tip__d":1,"khong__co":1},"chung":{"ghiChu":"=HYPERLINK(\\"x\\")"}}'), '=1+1');
 const row = c.doc_('CauHinhGay').find(x => x.MaDong === 'NEBULA'), J = row && JSON.parse(row.DuLieu);
 ok(r.ok && J && J.ngon.tip.d === 12.3 && !('la' in J) && !('zz' in J.ngon.tip) && !Object.prototype.hasOwnProperty.call(J, '__proto__') && JSON.stringify(J.daDo) === '{"ngon__tip__d":1}', 'chỉ lưu trường đã biết (bỏ khóa lạ, __proto__, ô đã đo không có thật)', J);
-ok(!/^=/.test(row.GhiChu) && String(row.DuLieu).charAt(0) === '{', 'ghi chú "=..." vô hiệu; thông số lưu nguyên JSON (ô bắt đầu bằng "{")', row && row.GhiChu);
+ok(!String(row.GhiChu).startsWith('#CONG_THUC') && String(row.DuLieu).charAt(0) === '{', 'ghi chú "=..." vô hiệu (giữ dạng chữ); thông số lưu nguyên JSON (ô bắt đầu bằng "{")', row && row.GhiChu);   // 15/11: sheet có sẵn thì Sheets ẩn dấu ' – vẫn là chữ
 console.log('\n6. Mã NV trùng');
 const hT = c.__sheets.TaiKhoan.rows[0], dongGia = hT.map(k => k === 'TenDangNhap' ? 'giamao' : k === 'MaNV' ? 'C019' : k === 'TrangThai' ? 'Đang dùng' : k === 'VaiTro' ? 'CN' : k === 'DoiMatKhauLanDau' ? 'Không' : k === 'PhienBan' ? 0 : '');
 c.__sheets.TaiKhoan.rows.push(dongGia); c.xoaCache_('TaiKhoan');

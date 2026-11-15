@@ -12,7 +12,7 @@ for _x in range(_lg.size[0]):
 _lg = _lg.resize((260, 59), _Img42.LANCZOS); _bf = _io42.BytesIO(); _lg.save(_bf, 'PNG', optimize=True)
 import re as _re42
 _h42 = io.open(os.path.join(D, 'cau-hinh-gay', 'cau-hinh-gay-web.html'), encoding='utf-8').read()
-_k42w = set(k for k, _x in _re42.findall(r"\['((?:ngon|chuoi|chung)\.[A-Za-z.]+)','[^']*','[^']*'(,'s')?\]", _h42[_h42.index('var CG_TRUONG = ['):_h42.index('function cgLay(')]))
+_k42w = set(k for k, _x in _re42.findall(r"\['((?:ngon|chuoi|chung|mot)\.[A-Za-z.]+)','[^']*','[^']*'(,'s')?\]", _h42[_h42.index('var CG_TRUONG = ['):_h42.index('function cgLay(')]))
 _k42s = set(_json.loads(_re42.search(r'var CG_KHOA = (\{.*?\});', io.open(os.path.join(D, 'cau-hinh-gay', 'cau-hinh-gay.gs'), encoding='utf-8').read()).group(1)).keys())
 assert _k42w == _k42s, ('mục 42: trường CG_TRUONG (web) khác CG_KHOA (máy chủ)', _k42w ^ _k42s)
 _cg_src = io.open(os.path.join(D, 'cau-hinh-gay', 'cau-hinh-gay-web.html'), encoding='utf-8').read().replace('{{LOGO_XAM}}', _b64_42.b64encode(_bf.getvalue()).decode())

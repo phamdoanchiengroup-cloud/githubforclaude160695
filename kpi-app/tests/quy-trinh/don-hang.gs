@@ -31,13 +31,13 @@ var DH_TD_COT = ['ĐANG Ở BP', 'BP KẾ TIẾP'].concat(DH_BP.map(function(b) 
      ngọn : Phôi → Taro → Hoàn thiện → Làm đầu → (trả Hoàn thiện) → Đóng gói   (14/11)
      gậy  : cả 2 nhánh nên đủ 7 bộ phận;  nối / phụ kiện: không qua xưởng
    Chủ dự án sửa riêng cho từng mã ở sheet BTPTheoSKU (màn Đơn hàng → dòng → Cấu hình bán thành phẩm). */
-var DH_BTP_CD = { GAY: ['PHOI', 'SON', 'TARO', 'UV', 'HT', 'TIP', 'DG'], CHUOI: ['PHOI', 'SON', 'UV', 'HT', 'DG'], NGON: ['PHOI', 'TARO', 'HT', 'TIP', 'DG'], NOI: [], PK: [] };   // 14/11: ngọn qua Hoàn thiện trước và sau Làm đầu
+var DH_BTP_CD = { GAY1K: ['PHOI', 'SON', 'UV', 'HT', 'TIP', 'DG'], GAY: ['PHOI', 'SON', 'TARO', 'UV', 'HT', 'TIP', 'DG'], CHUOI: ['PHOI', 'SON', 'UV', 'HT', 'DG'], NGON: ['PHOI', 'TARO', 'HT', 'TIP', 'DG'], NOI: [], PK: [] };   // 14/11: ngọn qua Hoàn thiện trước và sau Làm đầu
 var DH_BTP_SHEET = 'BTPTheoSKU', DH_BTP_COT = ['TenChuan', 'TenHang', 'BTP', 'NguoiSua', 'ThoiDiem'];
 
-var PL_LOAI = { GAY: 'Gậy (ngọn + chuôi)', NGON: 'Ngọn bán lẻ', CHUOI: 'Chuôi bán lẻ', NOI: 'Tay nối', PK: 'Phụ kiện / không sản xuất' };
+var PL_LOAI = { GAY: 'Gậy (ngọn + chuôi)', GAY1K: 'Gậy 1 khúc (glassfiber nguyên cây)', NGON: 'Ngọn bán lẻ', CHUOI: 'Chuôi bán lẻ', NOI: 'Tay nối', PK: 'Phụ kiện / không sản xuất' };
 var PL_CHUOI = {
   GF736DP: 'GF 736 đánh phá', GF736HK: 'GF 736 hạ khấc (chỉ foam, có đạn)', GF740: 'GF 740 (1480/2) lót trắng – 5/16-18',
-  GF1480: 'GF 1450/1480 chặt đôi', GFFOAM: 'GF 100% foam lót trắng (Cuebots CG)', GFCBFOAM: 'GF vỏ carbon 736 chỉ foam',
+  GF1480: 'GF 1450/1480 chặt đôi', GF1K: 'GF 1450/1480 nguyên cây (gậy 1 khúc)', GFFOAM: 'GF 100% foam lót trắng (Cuebots CG)', GFCBFOAM: 'GF vỏ carbon 736 chỉ foam',
   GFCB313: 'GF vỏ carbon 31.3 (Cuebots Z)', MIXCB: 'Mix vỏ carbon 21.3/30.8 vách 2mm', MIXCB25: 'Mix vỏ carbon 21.3/30.8 vách 2.5mm (tay da)',
   MIXCBPHA: 'Mix vỏ carbon 21.3/31.3 (phá)', NHAY33013: 'Nhảy 330-130', NHAY28015: 'Nhảy 280-150', NHAY390: 'Nhảy 390', PHANHAY: 'Phá nhảy 350-385',
   NHAY305: 'Nhảy 305-205', VUTRU: 'Vũ trụ (Raptor)', ECL: 'Chuôi Eclipse lót bạc', CAROM: 'Carom 720', KHONG: '—'
@@ -98,6 +98,7 @@ var PL_DONG = [
   ['DRAGON', 'Dragon / Aileex Lux / Legend', 'GAY', ['DRAGON', 'AILEEX', 'LUX'], 'GF736HK', 'FC', 'TIME3', 'R388', 1],
   ['CAROM', 'Carom 2025', 'GAY', ['CAROM'], 'CAROM', 'CAROM', 'TIME4', 'R388', 1],
   ['THUE', 'Gậy thuê (chưa có thông số)', 'GAY', ['GAY THUE'], 'GF736DP', 'GFCB', 'DALON', 'R388', 0],
+  ['GAY1K', 'Gậy 1 khúc glassfiber 1450 / 1480 (không ren)', 'GAY1K', ['1 KHUC', 'ONE PIECE', 'GMK'], 'GF1K', 'KHONG', '', 'KHONG', 1],   // 15/11 (chủ dự án): nguyên cây, không ren, có tip 12.5 / 12.2
   // Ngọn bán lẻ (đi Phôi → Taro → Tip → thẳng Đóng gói)
   ['NG-RHINO', 'Ngọn carbon Rhino (single shaft)', 'NGON', ['SINGLE SHAFT', 'SNOOKER & ENGLISH POOL SHAFT', 'C30PT', 'NGON DANH CARBON RHINO', 'MUST SHAFT', 'SHAFT ONLY'], 'KHONG', 'FC', 'TIME3', '', 1],
   ['NG-BREAK', 'Ngọn phá carbon', 'NGON', ['BREAK SHAFT'], 'KHONG', 'FCPHA', 'BAK', 'R388', 1],
@@ -116,7 +117,7 @@ var PL_DONG = [
   ['PK', 'Phụ kiện', 'PK', [], 'KHONG', 'KHONG', 'KHONG', 'KHONG', 1]
 ];
 
-var PL_DAU_MD = { 'NG-ZWAVE': '12.5', 'NG-KOMET': '13.0', 'KOMET': '13.0', 'CBZW': '12.5', 'CBZ': '12.5', 'CBZLUK': '12.5' };   // đầu mặc định theo Thông số gậy
+var PL_DAU_MD = { 'GAY1K': '12.5', 'NG-ZWAVE': '12.5', 'NG-KOMET': '13.0', 'KOMET': '13.0', 'CBZW': '12.5', 'CBZ': '12.5', 'CBZLUK': '12.5' };   // đầu mặc định theo Thông số gậy
 function plChuan_(s) {   // HOA, bỏ dấu, gộp khoảng trắng – để so tên gọi
   return String(s || '').toUpperCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/Đ/g, 'D').replace(/[–—]/g, '-')
     .replace(/[“”"″]/g, '"').replace(/\s+/g, ' ').trim();
@@ -141,6 +142,7 @@ function plLoaiHang_(t, g) {
   if (/CHI DAT NOI/.test(g)) return 'NOI';
   if (/GLOVE|CUE CASE|SOFT CUE CASE|HARD CUE CASE|T-SHIRT|POLO|PATCH|WEIGHT BOLT|JOINT TESTER|POOL CUE TIP|^NISHIKI|^ZAN TIP|BAO CO|GANG TAY/.test(t)) return 'PK';
   if (/EXTENSION|(^|[^A-Z])NOI([^A-Z]|$)|TAY NOI/.test(t)) return 'NOI';
+  if (/(^|[^0-9])1\s*KHUC|ONE[\s-]*PIECE|(^|[^A-Z])GMK/.test(t)) return 'GAY1K';   // 15/11: gậy 1 khúc
   if (/CUE BUTT|BUTT ONLY/.test(t) || /CHI GUI CHUOI/.test(g)) return 'CHUOI';
   if (/SHAFT|^NGON|C30PT/.test(t) || /CHI GUI NGON/.test(g)) return 'NGON';
   return 'GAY';
@@ -200,14 +202,14 @@ function plTay_(t) {
 var PL_KIEU = { DANH: 'Đánh', NHAY: 'Nhảy', PHA: 'Phá', PHANHAY: 'Phá nhảy' };
 var PL_VL = { FC: 'Full carbon', MIX: 'Mix carbon + glassfiber', GF: 'Glassfiber', KHAC: 'Khác / chưa rõ' };
 var PL_VL_NGON = { FC: 'FC', FCPHA: 'FC', FCNHAY: 'FC', MIX: 'MIX', MIXFOAM: 'MIX', MIXPHA: 'MIX', NHAY139: 'MIX', GFCB: 'MIX', G750CB: 'MIX', ZLUK: 'MIX', GF29: 'GF', GF1480: 'GF' };
-var PL_VL_CHUOI = { MIXCB: 'MIX', MIXCB25: 'MIX', MIXCBPHA: 'MIX', GFCBFOAM: 'MIX', GFCB313: 'MIX', GF736DP: 'GF', GF736HK: 'GF', GF740: 'GF', GF1480: 'GF', GFFOAM: 'GF' };
+var PL_VL_CHUOI = { GF1K: 'GF', MIXCB: 'MIX', MIXCB25: 'MIX', MIXCBPHA: 'MIX', GFCBFOAM: 'MIX', GFCB313: 'MIX', GF736DP: 'GF', GF736HK: 'GF', GF740: 'GF', GF1480: 'GF', GFFOAM: 'GF' };
 function plKieu_(o) {
   var c = o.chuoi || '', n = o.ngon || '';
   var kc = PL_KIEU_KHUC[c] || '', kn = PL_KIEU_KHUC[n] || '';   // 02/11: kiểu của loại chuôi / ngọn chủ dự án thêm trên web
   o.kieu = (c === 'PHANHAY' || kc === 'PHANHAY' || kn === 'PHANHAY') ? 'PHANHAY' : (/PHA$/.test(n) || c === 'GF736DP' || c === 'MIXCBPHA' || kc === 'PHA' || kn === 'PHA') ? 'PHA' : (/NHAY/.test(n) || /^NHAY/.test(c) || kc === 'NHAY' || kn === 'NHAY') ? 'NHAY' : 'DANH';
-  o.vl = (o.loai === 'CHUOI' ? PL_VL_CHUOI[c] : (PL_VL_NGON[n] || PL_VL_CHUOI[c])) || 'KHAC';
+  o.vl = (o.loai === 'CHUOI' || o.loai === 'GAY1K' ? PL_VL_CHUOI[c] : (PL_VL_NGON[n] || PL_VL_CHUOI[c])) || 'KHAC';
   /* 02/11 (chủ dự án): 2 nhãn chất liệu – chuôi và ngọn có thể khác nhau. '' = SKU không có khúc đó */
-  var coC = o.loai === 'GAY' || o.loai === 'CHUOI', coN = o.loai === 'GAY' || o.loai === 'NGON';
+  var coC = o.loai === 'GAY' || o.loai === 'CHUOI' || o.loai === 'GAY1K', coN = o.loai === 'GAY' || o.loai === 'NGON';
   o.vlC = coC ? (PL_VL_CHUOI[c] || 'KHAC') : '';
   o.vlN = coN ? (PL_VL_NGON[n] || 'KHAC') : '';
   return o;
@@ -778,8 +780,8 @@ function dhXnHenGhi_(o) {
 function dhBPSau_(ten, T, H) {   // 14/11: theo luồng mới – xem dhBSau ở web
   var ds = dhBTP_(ten, plPhanLoai_(ten, ''), dhBTPDoc_()).ds, co = function(k) { return ds.indexOf(k) >= 0; };
   if (!co(T)) return (H && H.o === T && dhKs_(H.k)[0]) || '';
-  var daTip = H && H.qua && H.qua.TIP != null && H.sl > 0 && H.qua.TIP >= H.sl;
-  var M = { PHOI: co('SON') ? 'SON' : 'TARO', SON: co('UV') ? 'UV' : 'HT', UV: 'HT', TARO: 'HT', TIP: co('HT') ? 'HT' : 'DG', HT: co('TIP') && !daTip ? 'TIP' : 'DG', DG: '' };
+  var daTip = H && H.qua && H.qua.TIP != null && H.sl > 0 && H.qua.TIP >= H.sl, mot = !co('TARO') && co('SON') && co('TIP');   // 15/11: gậy 1 khúc HT → Làm đầu → Đóng gói
+  var M = { PHOI: co('SON') ? 'SON' : 'TARO', SON: co('UV') ? 'UV' : 'HT', UV: 'HT', TARO: 'HT', TIP: co('HT') && !mot ? 'HT' : 'DG', HT: co('TIP') && !daTip ? 'TIP' : 'DG', DG: '' };
   var k = M[T] || ''; while (k && !co(k)) k = M[k] || ''; return k;
 }
 function dhTenCot_(c) { var t = ''; while (c > 0) { var m = (c - 1) % 26; t = String.fromCharCode(65 + m) + t; c = Math.floor((c - 1) / 26); } return t; }
@@ -1068,11 +1070,12 @@ function luuCauHinhSP(token, o) {
   } else if (L === 'DONG') {
     var goi = (Array.isArray(o.tenGoi) ? o.tenGoi : String(o.tenGoi || '').split(/[,\n|]/)).map(function(x) { return chChu_(x, 40).replace(/\|/g, '/'); }).filter(function(x) { return plChuan_(x).replace(/[^A-Z0-9]/g, '').length >= 3; }).slice(0, 15);
     if (!goi.length) return sach_({ ok: false, msg: 'Nhập ít nhất 1 chữ nhận diện (từ 3 ký tự chữ / số) có trong tên sản phẩm.' });
-    if (!/^(GAY|NGON|CHUOI)$/.test(String(o.loaiHang))) return sach_({ ok: false, msg: 'Chọn loại hàng (gậy / ngọn lẻ / chuôi lẻ).' });
+    if (!/^(GAY|GAY1K|NGON|CHUOI)$/.test(String(o.loaiHang))) return sach_({ ok: false, msg: 'Chọn loại hàng (gậy 2 khúc / gậy 1 khúc / ngọn lẻ / chuôi lẻ).' });
     var lh = String(o.loaiHang), c = String(o.chuoi || ''), n = String(o.ngon || ''), t = String(o.tip || ''), r = String(o.ren || '');
-    if (lh === 'NGON') c = 'KHONG'; if (lh === 'CHUOI') { n = 'KHONG'; t = 'KHONG'; }
+    if (lh === 'NGON') c = 'KHONG'; if (lh === 'CHUOI') { n = 'KHONG'; t = 'KHONG'; } if (lh === 'GAY1K') { n = 'KHONG'; r = 'KHONG'; }   // 15/11: 1 khúc không ngọn, không ren
     if (!co(PL_CHUOI, c) || !co(PL_NGON, n) || !co(PL_TIP, t) || (r && !co(PL_REN, r))) return sach_({ ok: false, msg: 'Chọn đủ chuôi, ngọn, tip (ren có thể để trống).' });
     if (lh === 'GAY' && (c === 'KHONG' || n === 'KHONG')) return sach_({ ok: false, msg: 'Gậy cần cả loại chuôi và loại ngọn.' });
+    if (lh === 'GAY1K' && c === 'KHONG') return sach_({ ok: false, msg: 'Gậy 1 khúc cần chọn loại phôi nguyên cây.' });
     var dau = String(o.dau || '').replace(',', '.'); if (dau && !/^(9\.5|1[0-4]\.\d)$/.test(dau)) return sach_({ ok: false, msg: 'Đầu mặc định dạng 12.5 (để trống nếu không có).' });
     if (moi && !ten) return sach_({ ok: false, msg: 'Nhập tên dòng gậy.' });
     rec.LoaiHang = lh; rec.TenGoi = goi.join('|'); rec.Chuoi = c; rec.Ngon = n; rec.Tip = t; rec.Ren = r; rec.Dau = dau;
@@ -1117,7 +1120,7 @@ function demSanPhamMoi(token) {
    dòng biến mất khi còn thiếu ghi riêng "mất" (có thể đã giao rồi chuyển sang Đơn hàng HT, hoặc hủy); khoảng giữa 2 bản chụp có thể dài nhiều ngày (chủ nhật, ngày lễ, mất bản chụp).
    Sheet ẩn DonHangSanLuong (trong file KPI): Ngay | TuNgay | Ra | SX | Vao | Ton | Mat | Tang | ChiTiet – giữ lâu dài (bản chụp chỉ giữ 30 ngày). */
 var DH_SL = 'DonHangSanLuong', DH_SL_COT = ['Ngay', 'TuNgay', 'Ra', 'SX', 'Vao', 'Ton', 'Mat', 'Tang', 'ChiTiet'];
-function dhLoaiSL_(loai) { return loai === 'GAY' || loai === 'CHUOI' || loai === 'NGON' || loai === 'PK' || loai === 'NOI' ? loai : 'KHAC'; }
+function dhLoaiSL_(loai) { return loai === 'GAY' || loai === 'GAY1K' || loai === 'CHUOI' || loai === 'NGON' || loai === 'PK' || loai === 'NOI' ? loai : 'KHAC'; }
 /* 07/11 (theo ORDER·FLOW): gộp các dòng trùng mã + tên + tab (#2, #3…) trước khi so -> xóa / chèn 1 dòng trùng không làm lệch sản lượng */
 function dhGop_(rows, boHT) {
   var m = {}, out = [];
@@ -1316,7 +1319,8 @@ function dhHanChuan_(o, cs, hn, laLam) {
   laLam = laLam || dhNgayLamFn_(cs);
   if (Math.round((new Date(hn + 'T12:00:00Z') - new Date(dl + 'T12:00:00Z')) / 864e5) > DH_HC_TRE_MAX) return null;   // trễ quá 30 ngày lịch (như web): chờ kênh đặt hạn mới
   var C = (cs && cs.bp) || dhCsBP_(null), sl = Number(o.sl) || 0, so = function(k) { return Math.max(1, Math.ceil(sl / (C[k] || 310))); };
-  var laNgon = co('TARO') || co('TIP'), laChuoi = co('SON') || co('UV') || !laNgon, hai = laNgon && laChuoi && co('PHOI');
+  var mot = loai === 'GAY1K' || (!co('TARO') && co('SON') && co('TIP'));   // 15/11: gậy 1 khúc – 1 luồng Phôi → Sơn → UV → HT → Làm đầu
+  var laNgon = !mot && (co('TARO') || co('TIP')), laChuoi = !mot && (co('SON') || co('UV') || !laNgon), hai = laNgon && laChuoi && co('PHOI');
   var out = {}, dat = function(k, h, n) { if (!out[k] || h < out[k].h) out[k] = { h: h, n: n }; };
   var dg = dl, cuoi = dg;   // mốc giao của bộ phận cuối luồng trước Đóng gói
   if (co('DG')) { dat('DG', dg, so('DG')); cuoi = dhLuiNgayLam_(dg, so('DG') + DH_HC_DEM, laLam); }
@@ -1326,6 +1330,7 @@ function dhHanChuan_(o, cs, hn, laLam) {
       if (k !== 'HT1') { var ten = (k === 'PHOI_C' || k === 'PHOI_N') ? (hai ? k : 'PHOI') : k; dat(ten, moc, so(k)); }
       truoc = kk === 'HT' ? 'HT' : k; });
   };
+  if (mot) chuoi(['TIP', 'HT', 'UV', 'SON', 'PHOI_C']);
   if (laChuoi) chuoi(['HT', 'UV', 'SON', 'PHOI_C']);
   if (laNgon) chuoi(['HT', 'TIP', 'HT1', 'TARO', 'PHOI_N']);
   /* mức cảnh báo */

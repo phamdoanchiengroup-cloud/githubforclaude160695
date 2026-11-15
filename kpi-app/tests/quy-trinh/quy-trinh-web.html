@@ -1261,9 +1261,9 @@ function qtLuu(){
 /* ===== Đơn hàng → xưởng (31/10): đọc Sheet "Trạng thái đơn hàng", phân loại 4 thông số, việc còn lại theo xưởng ===== */
 var DH=null, DHX='', DHXem='xuong', DHMo='', DHTai=false, DHChiCC=false;
 /* Chặng: [mã xưởng, tên, cột đã qua trong Sheet đơn, các loại hàng đi qua, phần (chuoi / ngon / ca / sku)] */
-var DH_TUYEN=[['PHOICB','Phôi Carbon','PHOI',{GAY:1,NGON:1,CHUOI:1},'phoi'],['PHOITHO','Phôi Thô','PHOI',{GAY:1,NGON:1,CHUOI:1,NOI:1},'phoi'],
-  ['SON','Sơn','SON',{GAY:1,CHUOI:1,NOI:1},'chuoi'],['INUV','In UV','UV',{GAY:1,CHUOI:1,NOI:1},'uv'],['NGONTARO','Ngọn Taro','TARO',{GAY:1,NGON:1},'ngon'],
-  ['NGONTIP','Ngọn Tip','TIP',{GAY:1,NGON:1},'tip'],['CNC','CNC (típ, phíp)','TIP',{GAY:1,NGON:1},'cnc'],['HT','Hoàn thiện','HT',{GAY:1,NGON:1,CHUOI:1,NOI:1},'sku'],['DG','Đóng gói','DG',{GAY:1,NGON:1,CHUOI:1,NOI:1},'sku']];
+var DH_TUYEN=[['PHOICB','Phôi Carbon','PHOI',{GAY:1,NGON:1,CHUOI:1},'phoi'],['PHOITHO','Phôi Thô','PHOI',{GAY:1,GAY1K:1,NGON:1,CHUOI:1,NOI:1},'phoi'],
+  ['SON','Sơn','SON',{GAY:1,GAY1K:1,CHUOI:1,NOI:1},'chuoi'],['INUV','In UV','UV',{GAY:1,GAY1K:1,CHUOI:1,NOI:1},'uv'],['NGONTARO','Ngọn Taro','TARO',{GAY:1,NGON:1},'ngon'],
+  ['NGONTIP','Ngọn Tip','TIP',{GAY:1,GAY1K:1,NGON:1},'tip'],['CNC','CNC (típ, phíp)','TIP',{GAY:1,GAY1K:1,NGON:1},'cnc'],['HT','Hoàn thiện','HT',{GAY:1,GAY1K:1,NGON:1,CHUOI:1,NOI:1},'sku'],['DG','Đóng gói','DG',{GAY:1,GAY1K:1,NGON:1,CHUOI:1,NOI:1},'sku']];   /* 15/11: gậy 1 khúc qua Phôi Thô → Sơn → UV → HT → Làm đầu → Đóng gói */
 /* 08/11: đọc nền – luôn nhận kết quả (kể cả khi đã sang tab khác / máy chủ lỗi) để gỡ cờ đang tải; nơi vẽ tự kiểm tab */
 function dhDocNen(fn,a,cb){ cb.__luonGoi=1; call(fn,a,cb); }
 /* 13/11 (chủ dự án): cột "HẠN MỚI HT ĐƠN CŨ" có ngày thì dùng thay deadline gốc cho đơn cũ đã dời hạn */
@@ -1280,7 +1280,7 @@ function dhTai(lamMoi){
 function dhTen(bang,k){ var t=DH.nhan[bang]||{}; return k?(t[k]||k):'(chưa rõ)'; }
 function dhHan(dl){ if(!dl)return 'khong'; var h=new Date(), d=new Date(dl+'T00:00:00'); h.setHours(0,0,0,0); var n=Math.round((d-h)/864e5); return n<0?'tre':(n<=7?'gan':'xa'); }
 /* Chuỗi chặng theo phần: đã qua chặng sau thì chặng trước coi như đã xong (cột "Phôi của …" hay bị bỏ trống) */
-var DH_CHUOI_CHANG={chuoi:['PHOI','SON','UV','HT','DG'], ngon:['PHOI','TARO','TIP','HT','DG'], ngonLe:['PHOI','TARO','HT','TIP','DG']};   /* 14/11: ngọn lẻ Taro → Hoàn thiện → Tip → Đóng gói */
+var DH_CHUOI_CHANG={chuoi:['PHOI','SON','UV','HT','DG'], ngon:['PHOI','TARO','TIP','HT','DG'], ngonLe:['PHOI','TARO','HT','TIP','DG'], mot:['PHOI','SON','UV','HT','TIP','DG']};   /* 15/11: mot = gậy 1 khúc */   /* 14/11: ngọn lẻ Taro → Hoàn thiện → Tip → Đóng gói */
 /* Việc còn lại của 1 dòng đơn ở 1 chặng = (đặt − đã qua chặng đó hoặc chặng sau) giới hạn trong "còn thiếu", cộng hỏng cần làm bù */
 function dhCon(o,cot,chuoi){
   var i=chuoi.indexOf(cot), q=null;
@@ -1288,12 +1288,12 @@ function dhCon(o,cot,chuoi){
   var c=(q==null)?o.thieu:Math.max(0,Math.min(o.thieu,o.sl-q));
   return c+((o.hong&&o.hong[cot])||0);
 }
-function dhChuoi(loai,phan){ if(phan==='ngon') return loai==='NGON'?DH_CHUOI_CHANG.ngonLe:DH_CHUOI_CHANG.ngon; return DH_CHUOI_CHANG.chuoi; }
+function dhChuoi(loai,phan){ if(loai==='GAY1K') return DH_CHUOI_CHANG.mot; if(phan==='ngon') return loai==='NGON'?DH_CHUOI_CHANG.ngonLe:DH_CHUOI_CHANG.ngon; return DH_CHUOI_CHANG.chuoi; }
 /* Nhóm cố định (01/11, chủ dự án): chuôi / chuôi nhảy / ngọn; gậy đánh / nhảy / phá / phá nhảy; trong nhóm full carbon → mix → glassfiber */
 var DH_KIEU=['DANH','NHAY','PHA','PHANHAY'], DH_KIEU_TEN={DANH:'đánh',NHAY:'nhảy',PHA:'phá',PHANHAY:'phá nhảy'}, DH_VL=['FC','MIX','GF','KHAC'], DH_VL_TEN={FC:'Full carbon',MIX:'Mix carbon+GF',GF:'Glassfiber',KHAC:'Chưa rõ'};
-var DH_KHOI=['Chuôi','Chuôi nhảy','Ngọn'].concat(DH_KIEU.map(function(k){return 'Ngọn '+DH_KIEU_TEN[k]}),DH_KIEU.map(function(k){return 'Gậy '+DH_KIEU_TEN[k]}),DH_KIEU.map(function(k){return 'Ngọn lẻ '+DH_KIEU_TEN[k]}),['Chuôi lẻ','Tay nối','Phụ kiện','Chưa rõ']);
-function dhKhoiSKU(p){ var k=DH_KIEU_TEN[p.kieu]||'đánh'; return p.loai==='GAY'?'Gậy '+k:p.loai==='NGON'?'Ngọn lẻ '+k:p.loai==='CHUOI'?'Chuôi lẻ':p.loai==='NOI'?'Tay nối':p.loai==='PK'?'Phụ kiện':'Chưa rõ'; }
-function dhKhoiChuoi(p){ return p.loai==='NOI'?'Tay nối':(p.kieu==='NHAY'||p.kieu==='PHANHAY')?'Chuôi nhảy':'Chuôi'; }
+var DH_KHOI=['Chuôi','Chuôi nhảy','Ngọn'].concat(DH_KIEU.map(function(k){return 'Ngọn '+DH_KIEU_TEN[k]}),DH_KIEU.map(function(k){return 'Gậy '+DH_KIEU_TEN[k]}),DH_KIEU.map(function(k){return 'Ngọn lẻ '+DH_KIEU_TEN[k]}),['Gậy 1 khúc','Chuôi lẻ','Tay nối','Phụ kiện','Chưa rõ']);
+function dhKhoiSKU(p){ var k=DH_KIEU_TEN[p.kieu]||'đánh'; return p.loai==='GAY1K'?'Gậy 1 khúc':p.loai==='GAY'?'Gậy '+k:p.loai==='NGON'?'Ngọn lẻ '+k:p.loai==='CHUOI'?'Chuôi lẻ':p.loai==='NOI'?'Tay nối':p.loai==='PK'?'Phụ kiện':'Chưa rõ'; }
+function dhKhoiChuoi(p){ return p.loai==='GAY1K'?'Gậy 1 khúc':p.loai==='NOI'?'Tay nối':(p.kieu==='NHAY'||p.kieu==='PHANHAY')?'Chuôi nhảy':'Chuôi'; }
 function dhThuKhoi(a){ var i=DH_KHOI.indexOf(a); return i<0?99:i; }
 /* 02/11: 2 nhãn chất liệu – chuôi và ngọn (gậy 2 khúc có thể khác nhau). phan: 'c' chỉ chuôi, 'n' chỉ ngọn, bỏ trống = theo SKU (khúc nào có thì hiện) */
 function dhVlChip(v,nhan){ return v?' <span class="dh-vl '+v+'">'+(nhan?'<i>'+nhan+':</i> ':'')+DH_VL_TEN[v]+'</span>':''; }
@@ -1326,10 +1326,10 @@ function dhTinh(){
         x.tong+=cC+cN; c=cC+cN;
       } else {
         if(!(c>0)) return;
-        var khoi=(t[4]==='chuoi'||t[4]==='uv')?dhKhoiChuoi(p):(t[4]==='sku')?dhKhoiSKU(p):'Ngọn '+(DH_KIEU_TEN[p.kieu]||'đánh');
+        var khoi=(t[4]==='chuoi'||t[4]==='uv')?dhKhoiChuoi(p):(t[4]==='sku'||p.loai==='GAY1K')?dhKhoiSKU(p):'Ngọn '+(DH_KIEU_TEN[p.kieu]||'đánh');
         if(t[4]==='chuoi'){ k=p.chuoi+'|'+p.ren; nhan=(p.loai==='NOI'?'Tay nối':dhTen('chuoi',p.chuoi))+' · ren '+dhTen('ren',p.ren); }
         else if(t[4]==='ngon'){ k=p.ngon+'|'+p.ren; nhan=dhTen('ngon',p.ngon)+' · ren '+dhTen('ren',p.ren); }
-        else if(t[4]==='tip'){ k=p.ngon+'|'+p.tip+'|'+p.dau; nhan=dhTen('ngon',p.ngon)+' · tip '+dhTen('tip',p.tip)+(p.dau?' · đầu '+p.dau:''); }
+        else if(t[4]==='tip'){ k=p.ngon+'|'+p.tip+'|'+p.dau; nhan=(p.loai==='GAY1K'?'Gậy 1 khúc':dhTen('ngon',p.ngon))+' · tip '+dhTen('tip',p.tip)+(p.dau?' · đầu '+p.dau:''); }
         else if(t[4]==='cnc'){ k=p.tip; nhan='Tip '+dhTen('tip',p.tip); }
         else { k=p.dong||'?'; nhan=((DH.dongMap[p.dong]||[])[1])||PL_LOAI_TEN(p.loai); }
         them(k,nhan,c,khoi,(t[4]==='chuoi'||t[4]==='uv')?'c':(t[4]==='sku')?'':'n'); x.tong+=c;
@@ -1574,7 +1574,7 @@ function dhVeSLChup(){
     '<div class="dh-tl uu"><span>Tháng '+tn.thang.slice(5)+'/'+tn.thang.slice(0,4)+'</span><b>'+qtSo(tn.sx,0)+'</b><small>sp · '+tn.nl+' ngày làm có dữ liệu · TB '+qtSo(tn.nl?Math.round(tn.sx/tn.nl):0,0)+'/ngày</small></div></div>';
   h+='<div class="card"><div style="font-weight:600;margin-bottom:4px">Sản lượng sản xuất theo ngày ('+gan.length+' lần chụp gần nhất)</div><div class="dh-svgw">'+dhSvgCot(gan.map(function(x){ var v=x.nl>1?Math.round(x.tb):x.sx; return [dhNhanKhoang(x),v,x.nl>1?'gop':(v<c.sp?'thap':'')]; }),c.sp)+'</div>'+
     '<div style="font-size:12px;color:var(--ink3)">Cột nhạt = khoảng nhiều ngày làm (mất bản chụp / làm chủ nhật), chiều cao = trung bình mỗi ngày. Cột cam = dưới công suất. Đường đứt = công suất '+qtSo(c.sp,0)+' sp/ngày.</div></div>';
-  var nh=[['GAY','Gậy'],['CHUOI','Chuôi lẻ'],['NGON','Ngọn lẻ'],['KHAC','Chưa rõ loại'],['PK','Phụ kiện'],['NOI','Tay nối']], kn={}; sl.forEach(function(x){ Object.keys(x.ct.kenh||{}).forEach(function(k){kn[k]=1}); }); var kns=Object.keys(kn).sort();
+  var nh=[['GAY','Gậy'],['GAY1K','Gậy 1 khúc'],['CHUOI','Chuôi lẻ'],['NGON','Ngọn lẻ'],['KHAC','Chưa rõ loại'],['PK','Phụ kiện'],['NOI','Tay nối']], kn={}; sl.forEach(function(x){ Object.keys(x.ct.kenh||{}).forEach(function(k){kn[k]=1}); }); var kns=Object.keys(kn).sort();
   h+='<div class="card"><div style="font-weight:600;margin-bottom:4px">Theo tháng</div><div class="tw"><table class="dh-bang"><thead><tr><th>Tháng</th><th class="qt-so">Sản xuất</th><th class="qt-so">Ngày làm</th><th class="qt-so">TB / ngày</th><th class="qt-so">% công suất</th><th class="qt-so">Gồm PK + tay nối</th></tr></thead><tbody>'+
     th.map(function(t){ var tb=t.nl?t.sx/t.nl:0; return '<tr><td>'+t.thang.slice(5)+'/'+t.thang.slice(0,4)+'</td><td class="qt-so"><b>'+qtSo(t.sx,0)+'</b></td><td class="qt-so">'+t.nl+'</td><td class="qt-so">'+qtSo(Math.round(tb),0)+'</td><td class="qt-so">'+(c.sp?Math.round(tb/c.sp*100):0)+'%</td><td class="qt-so">'+qtSo(t.ra,0)+'</td></tr>'; }).join('')+'</tbody></table></div><div style="font-size:12px;color:var(--ink3)">Tháng tính theo ngày bắt đầu của khoảng chụp. Tháng đầu / tháng hiện tại chưa đủ ngày.</div></div>';
   h+='<div class="card"><div style="font-weight:600;margin-bottom:4px">Chi tiết từng lần chụp (mới nhất trên cùng)</div><div class="tw"><table class="dh-bang"><thead><tr><th>Ngày</th><th class="qt-so">Số ngày làm</th><th class="qt-so">Sản xuất</th>'+nh.slice(0,4).map(function(x){return '<th class="qt-so">'+x[1]+'</th>'}).join('')+'<th class="qt-so">PK + tay nối</th><th class="qt-so">Chuyển HT (dòng)</th><th class="qt-so">Còn thiếu</th></tr></thead><tbody>'+
@@ -1721,14 +1721,15 @@ function dhLaLe(o){ var t=String((o&&o.tab)||'').toUpperCase().trim(); return !!
 function dhLan1(o){ var t=String((o&&o.tab)||'').toUpperCase().trim(); return !!DH_TAB_BAC1[t]||/^POD/.test(t); }
 function dhDlNgam(o){ return (o&&!o.dl&&o.ngayDat&&dhLaLe(o))?dhNgayCong(o.ngayDat,DH_HAN_NGAM):''; }
 function dhQua30(o,hn){ return !!(o&&o.dl&&dhCachNgay(o.dl,hn||dhHomNay())>DH_TRE_MAX); }
-var DH_SIM_C=['PHOI_C','SON','UV','HT'], DH_SIM_N=['PHOI_N','TARO','HT1','TIP','HT'];
+var DH_SIM_C=['PHOI_C','SON','UV','HT'], DH_SIM_N=['PHOI_N','TARO','HT1','TIP','HT'], DH_SIM_1K=['PHOI_C','SON','UV','HT','TIP'];   /* 15/11: gậy 1 khúc 1 luồng, Làm đầu sau Hoàn thiện rồi Đóng gói */
+function dhLa1K(o,route){ var r=route||dhBRoute(o); return ((o&&o.pl)||{}).loai==='GAY1K'||(r.indexOf('TARO')<0&&r.indexOf('SON')>=0&&r.indexOf('TIP')>=0); }
 function dhSimDong(o,g,uu,dau,i){   /* -> dòng mô phỏng {g,lan,khoa,need,ch:[[{r,d}]],dg} */
   var route=o?dhBRoute(o):['PHOI','SON','TARO','UV','HT','TIP','DG'], co=function(k){ return route.indexOf(k)>=0; };
   var need=o?o.thieu:(g.thieu||0), sl=o?(Number(o.sl)||need):need, base=Math.max(0,sl-need), qua=(o&&o.qua)||{}, P2=(o&&o.p2)||null;
-  var laN=co('TARO')||co('TIP'), laC=co('SON')||co('UV')||!laN, ch=[];
+  var mot=!!o&&dhLa1K(o,route), laN=!mot&&(co('TARO')||co('TIP')), laC=!mot&&(co('SON')||co('UV')||!laN), ch=[];
   var oD=o&&o.dn&&o.dn.o?dhKs(o.dn.o)[0]:'';
   var qv=function(k){ if(!o) return 0; if(k==='PHOI_C') return P2&&P2.c!=null?P2.c:(Number(qua.PHOI)||0); if(k==='PHOI_N') return P2&&P2.n!=null?P2.n:(Number(qua.PHOI)||0); if(k==='HT1') return Number(qua.TIP)||0; return Number(qua[k])||0; };
-  [[laC,DH_SIM_C,'HT_C'],[laN,DH_SIM_N,'HT_N']].forEach(function(x){ if(!x[0]) return;
+  [[mot,DH_SIM_1K,'HT_C'],[laC,DH_SIM_C,'HT_C'],[laN,DH_SIM_N,'HT_N']].forEach(function(x){ if(!x[0]) return;
     var st=x[1].filter(function(k){ var b=k.indexOf('PHOI')===0?'PHOI':(k==='HT1'?'HT':k); return co(b); });
     if(!st.length) return;
     var vi=oD?st.map(function(k){ return k.indexOf('PHOI')===0?'PHOI':(k==='HT1'?'HT':k); }).indexOf(oD):-1;
@@ -2013,7 +2014,7 @@ function dhSlideVe(){
   var anh={}, can=[['bullet',dhSvgBullet(TKD.bullet,Mx,{w:1000,L:230})],['heat',dhSvgHeatX(TKD.heat,TKD.ngs,function(r,d){ var x=r.r; if(!x||!x.mt) return null; var v=x.v[TKD.ngs.indexOf(d)]; return v?Math.round(v/x.mt*100):0; },Mx,{w:1100})],
     ['nang',dhSvgNangLuc(TKD.nang,Mx,{w:1000})],['cfd',dhSvgCFD(TKD.C?TKD.C.ngay.slice(-40):[],Mx,{w:1000,h:330})],['aging',dhSvgAging(TKD.cotA,TKD.dots,Mx,{w:1000,h:380}).svg],['pareto',dhSvgPareto(TKD.par,Mx,{w:1000,h:380})],['matran',dhSvgMaTran(Mx)]];
   var vl=DH_VL, mau={FC:'#0b5d4f',MIX:'#2a9d8f',GF:'#8fd3c8',KHAC:'#b9b9b9'}, sx=DH.don.filter(function(o){return o.thieu>0&&dhLaSX(o)}), seg=function(f,k){ return vl.map(function(v){ return [mau[v],sx.filter(function(o){var p=o.pl||{};return f(p)&&(p[k]||'KHAC')===v}).reduce(function(a,o){return a+o.thieu},0),DH_VL_TEN[v]]; }); };
-  can.push(['chatlieu',dhSvgStack([['Chuôi (gậy + chuôi lẻ)',seg(function(p){return p.loai==='GAY'||p.loai==='CHUOI'},'vlC'),1],['Ngọn (gậy + ngọn lẻ)',seg(function(p){return p.loai==='GAY'||p.loai==='NGON'},'vlN'),1]],Mx,{w:900,L:200})]);
+  can.push(['chatlieu',dhSvgStack([['Chuôi (gậy + chuôi lẻ)',seg(function(p){return p.loai==='GAY'||p.loai==='CHUOI'},'vlC'),1],['Ngọn (gậy + ngọn lẻ)',seg(function(p){return p.loai==='GAY'||p.loai==='NGON'},'vlN'),1]].concat(sx.some(function(o){return (o.pl||{}).loai==='GAY1K'})?[['Gậy 1 khúc (nguyên cây)',seg(function(p){return p.loai==='GAY1K'},'vlC'),1]]:[]),Mx,{w:900,L:200})]);   /* 15/11: gậy 1 khúc nhóm riêng */
   var kh=B.kenh.filter(function(k){return k.thieu>0}).sort(function(a,b){return b.thieu-a.thieu});
   can.push(['kenh',dhSvgStack(kh.map(function(k){return [k.ten,[['#c0302b',Math.min(k.treSp,k.thieu),'đã trễ'],['#2f7fb0',Math.max(0,k.thieu-k.treSp),'còn hạn']]]}),Mx,{w:700,L:150})]);
   TKD.xr.forEach(function(r){ can.push(['x_'+r.X,dhSvgCotX(lb,r.v,r.mt,Mx,{w:900,h:300,so:1,coSo:ngs.length>22?8.5:10})]); can.push(['m_'+r.X,dhSvgCotX(lb,r.v,r.mt,Mx,{w:380,h:150})]); });
@@ -2604,7 +2605,7 @@ document.addEventListener('keydown',function(e){ if(e.key==='Escape'&&document.g
 /* bộ phận nhận tiếp theo luồng 14/11: Phôi → Sơn (chuôi) / Taro (ngọn lẻ); Sơn → UV → Hoàn thiện; Taro → Hoàn thiện; Hoàn thiện → Làm đầu (khi ngọn chưa làm đầu xong) rồi → Đóng gói; Làm đầu → trả Hoàn thiện */
 function dhBSau(o,T){ var r=dhBRoute(o), co=function(k){ return r.indexOf(k)>=0; }, d=o.dn||{};
   if(!co(T)) return (d.o===T&&dhKs(d.k)[0])||'';
-  var M={PHOI:co('SON')?'SON':'TARO', SON:co('UV')?'UV':'HT', UV:'HT', TARO:'HT', TIP:co('HT')?'HT':'DG', HT:(co('TIP')&&dhBSo(o,'TIP')<o.sl)?'TIP':'DG', DG:''};
+  var M={PHOI:co('SON')?'SON':'TARO', SON:co('UV')?'UV':'HT', UV:'HT', TARO:'HT', TIP:co('HT')&&!dhLa1K(o,r)?'HT':'DG', HT:(co('TIP')&&dhBSo(o,'TIP')<o.sl)?'TIP':'DG', DG:''};
   var k=M[T]||''; while(k&&!co(k)) k=M[k]||''; return k; }
 function dhBSo(o,k){ var v=o.qua?o.qua[k]:null; return (v==null?0:v); }
 function dhBForm(o){
@@ -2900,8 +2901,9 @@ function dhMucTieuXuong(){
     if(p.loai==='GAY'){ t.c+=q; t.n+=q; t.sp+=q; if(cb(p.vlC)) t.cCB+=q; if(cb(p.vlN)) t.nCB+=q; }
     else if(p.loai==='CHUOI'){ t.c+=q; t.sp+=q; if(cb(p.vlC)) t.cCB+=q; }
     else if(p.loai==='NGON'){ t.n+=q; t.sp+=q; if(cb(p.vlN)) t.nCB+=q; }
-    else if(p.loai==='NOI'){ t.noi+=q; t.sp+=q; } });
-  var k=t.sp?c.sp/t.sp:0, m={PHOICB:t.cCB+t.nCB,PHOITHO:t.c+t.n+t.noi,CNC_TIP:t.n,CNC_PHIP:t.n,CNC_KHAC:0,NGONTARO:t.n,NGONTARO_POM:0,NGONTIP:t.n,SON:t.c+t.noi,INUV:t.c+t.noi,HT:t.c+t.n+t.noi,DG:t.sp}, out={_t:t};
+    else if(p.loai==='NOI'){ t.noi+=q; t.sp+=q; }
+    else if(p.loai==='GAY1K'){ t.mot=(t.mot||0)+q; t.sp+=q; } });   /* 15/11: gậy 1 khúc – xem m bên dưới */
+  var k=t.sp?c.sp/t.sp:0, mo=t.mot||0, m={PHOICB:t.cCB+t.nCB,PHOITHO:t.c+t.n+t.noi+mo,CNC_TIP:t.n+mo,CNC_PHIP:t.n,CNC_KHAC:0,NGONTARO:t.n,NGONTARO_POM:0,NGONTIP:t.n+mo,SON:t.c+t.noi+mo,INUV:t.c+t.noi+mo,HT:t.c+t.n+t.noi+mo,DG:t.sp}, out={_t:t};
   Object.keys(m).forEach(function(x){ out[x]=x==='DG'?c.sp:Math.round(m[x]*k); });
   return out;
 }
@@ -3234,7 +3236,7 @@ function dhVeThongKe(ds,don){
    Khoảng thấp–cao = dự báo ± sai số trung bình khi thử dự báo lại 3 tháng vừa qua (chưa đủ thì lấy tháng thấp nhất–cao nhất trong 3 tháng); < 6 tháng số liệu = "tin cậy thấp".
    Tải = sp cần làm ÷ (công suất ⚙ × ngày làm): > 85% vàng, > 100% đỏ. */
 var DB_TS=[0.2,0.3,0.5], DB_NHOM=[['b2b','Đại lý / OEM / B2B'],['le','Đơn lẻ (Web lẻ + POD)'],['kho','Hàng kho'],['kr','Chưa rõ kênh']];
-var DB_LOAI=[['GAY','Gậy 2 khúc'],['CHUOI','Chuôi bán lẻ'],['NGON','Ngọn bán lẻ'],['KHAC','Khác / chưa rõ loại']];
+var DB_LOAI=[['GAY','Gậy 2 khúc'],['GAY1K','Gậy 1 khúc'],['CHUOI','Chuôi bán lẻ'],['NGON','Ngọn bán lẻ'],['KHAC','Khác / chưa rõ loại']];
 function dbThang(t,k){ var y=+t.slice(0,4), m=+t.slice(5,7)-1+k; y+=Math.floor(m/12); m=((m%12)+12)%12; return y+'-'+('0'+(m+1)).slice(-2); }
 function dbNhan(t){ return t.slice(5)+'/'+t.slice(2,4); }
 function dbNhom(tab){ var t=String(tab||'').toUpperCase().trim(); if(!t||t==='KHONG_RO') return 'kr'; if(/^WEB L|^POD/.test(t)) return 'le'; if(t==='KHO') return 'kho'; return 'b2b'; }
@@ -3357,9 +3359,9 @@ function chFormHTML(){
   var f=CHForm, lh=f.loaiHang;
   var h='<div class="ch-form"><div style="font-weight:600;margin-bottom:6px">'+(f.ma?'Sửa dòng gậy':'Thêm dòng gậy mới')+'</div><div class="dh-sua">'+
     '<div><label for="chTen">Tên dòng gậy</label><input id="chTen" maxlength="80" value="'+esc(f.ten)+'" placeholder="vd. Nebula 3 (Sport / Classic)"></div>'+
-    '<div><label for="chLoai">Loại hàng</label><select id="chLoai" onchange="chDocForm();dhVeLai()">'+[['GAY','Gậy 2 khúc'],['NGON','Ngọn bán lẻ'],['CHUOI','Chuôi bán lẻ']].map(function(x){return '<option value="'+x[0]+'"'+(lh===x[0]?' selected':'')+'>'+x[1]+'</option>'}).join('')+'</select></div>'+
-    (lh!=='NGON'?'<div><label for="chC">Loại chuôi</label><select id="chC"><option value="">– chọn –</option>'+chOpt('chuoi',f.chuoi)+'</select></div>':'')+
-    (lh!=='CHUOI'?'<div><label for="chN">Loại ngọn</label><select id="chN"><option value="">– chọn –</option>'+chOpt('ngon',f.ngon)+'</select></div>':'')+
+    '<div><label for="chLoai">Loại hàng</label><select id="chLoai" onchange="chDocForm();dhVeLai()">'+[['GAY','Gậy 2 khúc'],['GAY1K','Gậy 1 khúc'],['NGON','Ngọn bán lẻ'],['CHUOI','Chuôi bán lẻ']].map(function(x){return '<option value="'+x[0]+'"'+(lh===x[0]?' selected':'')+'>'+x[1]+'</option>'}).join('')+'</select></div>'+
+    (lh!=='NGON'?'<div><label for="chC">'+(lh==='GAY1K'?'Phôi nguyên cây':'Loại chuôi')+'</label><select id="chC"><option value="">– chọn –</option>'+chOpt('chuoi',f.chuoi)+'</select></div>':'')+
+    (lh!=='CHUOI'&&lh!=='GAY1K'?'<div><label for="chN">Loại ngọn</label><select id="chN"><option value="">– chọn –</option>'+chOpt('ngon',f.ngon)+'</select></div>':'')+
     (lh!=='CHUOI'?'<div><label for="chT">Loại tip</label><select id="chT"><option value="">– chọn –</option>'+chOpt('tip',f.tip)+'</select></div>':'')+
     '<div><label for="chR">Ren mặc định</label><select id="chR">'+chOpt('ren',f.ren,true)+'</select></div>'+
     (lh!=='CHUOI'?'<div><label for="chD">Đầu mặc định (mm)</label><input id="chD" inputmode="decimal" maxlength="5" value="'+esc(f.dau)+'" placeholder="12.5"></div>':'')+
@@ -3400,10 +3402,10 @@ function dhVeCauHinh(){
   h+='</div>';
   if(CHForm) h+=chFormHTML();
   // dòng gậy theo loại hàng
-  var dd=(DH.nhan.dongDu||[]).filter(function(d){return d.loai==='GAY'||d.loai==='NGON'||d.loai==='CHUOI'}), dem={};
+  var dd=(DH.nhan.dongDu||[]).filter(function(d){return d.loai==='GAY'||d.loai==='GAY1K'||d.loai==='NGON'||d.loai==='CHUOI'}), dem={};
   DH.don.forEach(function(o){ var p=o.pl||{}; if(o.thieu>0&&p.dong) dem[p.dong]=(dem[p.dong]||0)+o.thieu; });
   h+='<div class="card"><div style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:6px"><b>Dòng gậy ('+dd.length+')</b><button class="btn sm" type="button" onclick="chMoForm(\'\',\'\')">+ Thêm dòng gậy</button></div><div class="tw"><table class="dh-bang ch-d"><thead><tr><th>Dòng gậy</th><th>Chữ nhận diện</th><th>Chuôi</th><th>Ngọn</th><th>Tip · ren · đầu</th><th class="qt-so">Còn thiếu</th><th></th></tr></thead><tbody>';
-  [['GAY','Gậy 2 khúc'],['NGON','Ngọn bán lẻ'],['CHUOI','Chuôi bán lẻ']].forEach(function(g){
+  [['GAY','Gậy 2 khúc'],['GAY1K','Gậy 1 khúc'],['NGON','Ngọn bán lẻ'],['CHUOI','Chuôi bán lẻ']].forEach(function(g){
     var a=dd.filter(function(d){return d.loai===g[0]}).sort(function(x,y){ return (dhThuVl(chVlTen('ngon',x.ngon))-dhThuVl(chVlTen('ngon',y.ngon)))||String(x.ten).localeCompare(String(y.ten)); });
     if(!a.length) return;
     h+='<tr class="dh-khoi"><td colspan="5">'+g[1]+' · '+a.length+' dòng</td><td class="qt-so">'+qtSo(a.reduce(function(s,d){return s+(dem[d.ma]||0)},0),0)+'</td><td></td></tr>';
@@ -3715,7 +3717,7 @@ function dpTinhViec(r,X){
     if(t[4]==='phoi'){ var cC=p.loai!=='NGON'?dhCon(o,'PHOI',dhChuoi(p.loai,'chuoi')):0, cN=(p.loai==='GAY'||p.loai==='NGON')?dhCon(o,'PHOI',dhChuoi(p.loai,'ngon')):0; c=cC+cN;
       if(cC>0){ var k1=dhKhoiChuoi(p); khoi[k1]=(khoi[k1]||0)+cC; } if(cN>0) khoi['Ngọn']=(khoi['Ngọn']||0)+cN; }
     else { var phan=({ngon:'ngon',tip:'ngon',cnc:'ngon'})[t[4]]||(p.loai==='NGON'?'ngon':'chuoi'); c=dhCon(o,t[2],dhChuoi(p.loai,phan));
-      kh=(t[4]==='chuoi'||t[4]==='uv')?dhKhoiChuoi(p):(t[4]==='sku')?dhKhoiSKU(p):'Ngọn '+(DH_KIEU_TEN[p.kieu]||'đánh'); if(c>0) khoi[kh]=(khoi[kh]||0)+c; }
+      kh=(t[4]==='chuoi'||t[4]==='uv')?dhKhoiChuoi(p):(t[4]==='sku'||p.loai==='GAY1K')?dhKhoiSKU(p):'Ngọn '+(DH_KIEU_TEN[p.kieu]||'đánh'); if(c>0) khoi[kh]=(khoi[kh]||0)+c; }
     if(!(c>0)) return;
     nh=t[4]==='chuoi'||t[4]==='uv'?(p.loai==='NOI'?'Tay nối':ten('chuoi',p.chuoi)):t[4]==='ngon'||t[4]==='tip'?ten('ngon',p.ngon):t[4]==='cnc'?'Tip '+ten('tip',p.tip):((dm[p.dong]||[])[1]||'');
     var k=o.maDon+'|'+o.kenh, g=don[k]||(don[k]={ma:o.maDon,kenh:o.kenh,nguoiDat:o.nguoiDat||'',c:0,dl:'',uu:'',dong:[]});
