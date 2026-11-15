@@ -21,6 +21,10 @@ DATA=/đường/dẫn/csdl.json OUT=/tmp/xem-thu-kpi.html node kpi-app/tests/tao
 - `dinh-muc.js` (22/10): kiểm tra `AP_DINH_MUC_CA_THANG` nay so với số công đoạn cần cắt tính từ chính dữ liệu (bộ dữ liệu từ 22/10 đã được cắt sẵn trên sheet thật → 0 là đúng). Đạt 32/32 trên cả 3 bộ dữ liệu.
 - Lỗi đã biết: `hieu-ung.js` còn 1 lỗi "khung chờ tải bảng KPI" có từ trước (bản xem thử trả kết quả quá nhanh). – [[KPI Bảo mật và vận hành]]
 
+## 15/11 – kiểm thử mới + dữ liệu thật
+- Mới: `du-bao-web.js` 18, `mot-khuc.js` 20 (DATA), `uu-tien-web.js` 20 (DATA). Đạt lại hết: `don-hang.js` 141, `quy-trinh.js` 76, `ho-so.js` 28, `luu-tru.js` 15, `cau-hinh-gay.js` 50.
+- Sheet thật nay có số do web tự ghi (DonHangChup, PhanLoaiSKU, CauHinhSP, QuyTrinh, CauHinhGay…) → các bộ kiểm thử **xóa trống các sheet đó trong bộ nhớ** trước khi chạy; ô "=..." ở sheet có sẵn được Sheets ẩn dấu ' (vẫn là chữ) nên kiểm "không thành #CONG_THUC".
+
 ## Mẹo sandbox
 - Kiểm thử cũ đăng nhập bằng tài khoản còn thiếu hồ sơ: tạo bản xem thử với `BO_HO_SO=1` (tắt bảng hồ sơ bắt buộc). – [[KPI Hồ sơ bắt buộc]]
 - 3D cần gói `three@0.160.0` (lấy bằng `npm pack`, đặt `THREE=`); WebGL chạy bằng `--use-gl=swiftshader`. – [[KPI Sơ đồ nhà máy 3D]]

@@ -9,7 +9,10 @@ Liên quan: [[Lần dán lên Apps Script]] · [[Quyết định của chủ d�
 
 - (14/11 phiên mới) Bấm đúp **2-CAP-NHAT.bat** (hạn chuẩn bộ phận + các đợt trước), Ctrl+F5; vào Đơn hàng → Trạng thái đơn hàng → Công suất & deadline → ⚙ xem / sửa công suất từng bộ phận; xem thẻ **Hạn chuẩn bộ phận**. – [[KPI Học hỏi ERPNext (16-11)]]
 
+- (15/11 chiều) Bấm đúp **2-CAP-NHAT.bat** (gộp mọi bản 14–15/11), Ctrl+F5. Xem: Thống kê (cột gradient, I-MR, Dự báo đơn tháng tới); Đơn hàng (dòng đỏ đơn lẻ quá 10 ngày, nút ★ Gắn ưu tiên trong form dòng đơn, Thử nhận đơn để trống deadline → ngày hẹn gợi ý, Đến hạn 10 ngày → bảng Nhập nhanh cho TP); Cấu hình gậy → nhóm Gậy 1 khúc. – [[KPI Gậy 1 khúc, ưu tiên và nhập nhanh (15-11)]]
+
 ## Câu hỏi đang chờ trả lời
+- (15/11 chiều) Phó GĐ sản xuất thứ 2 là ai (mã NV)? Web chỉ có 1 tài khoản "Phó Giám Đốc" (C077) – tạm cho C019, C056, C077, C067 gắn ưu tiên. Tab "Đến hạn 10 ngày" trong Sheet đơn: bàn tiếp. – [[KPI Gậy 1 khúc, ưu tiên và nhập nhanh (15-11)]]
 - (16/11) **HỎI LẠI MỖI NGÀY cho tới khi chủ dự án gửi** (chủ dự án dặn): dữ liệu **định mức nguyên vật liệu (BOM)** – (1) định mức vật tư cho 1 cây gậy đang ghi ở đâu (Excel kho / kế toán / tổ trưởng); (2) danh sách vật tư chính (ống carbon, glassfiber, keo, sơn, mực UV, tip, ferrule, bao bì… còn gì?); (3) có số xuất kho hằng tháng không. Có lời nhắc hằng ngày đặt trong phiên mới. – [[KPI Học hỏi ERPNext (16-11)]]
 - (09/11) **File SKU trong Cấu hình gậy**: xác nhận ghép 48 mã chưa ghép (gợi ý: EVO Break&Jump → EVO phá nhảy Valkyrie, EVO Jump 3 khúc → EVO nhảy Pegasus?, EVO Jump 2 khúc → EVO nhảy IG, EVO Break → EVO phá X, Z-SP (ZF) → Cuebots Z-Pure / Z Fusion, USA Pool → ?, Japan / Covid → ?, Gậy CLB xu hướng EVO → ?, Cuebots G Series → ?). Dán Code.gs + Index.html + CauHinhGay.html. – [[KPI Cấu hình gậy – bản vẽ kỹ thuật (08-11)]]
 - (09/11) **Web công nhân kiểu Apple**: dán Index.html (2-CAP-NHAT.bat), Ctrl+F5; cho công nhân dùng thử, sau ~2 tuần quyết bỏ nút "Dùng giao diện cũ"; quyết có làm tiếp phần trong các màn (bàn phím số khi nhập, Cơm 2 nút to, lịch chấm công riêng) không. – [[KPI Web công nhân kiểu Apple (09-11)]]

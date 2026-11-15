@@ -3,6 +3,11 @@
 Nhóm: Chung · Cập nhật 02/11/2026
 Liên quan: [[00 Mục lục]] · [[Liên kết và công cụ]] · [[Việc chờ chủ dự án]] · [[Lần dán lên Apps Script]] · [[Quyết định của chủ dự án]] · [[KPI Kiểm thử]]
 
+## 15/11 chiều – XONG + đã push (3 commit): đọc [[KPI Gậy 1 khúc, ưu tiên và nhập nhanh (15-11)]]
+- Thống kê: cột gradient, I-MR rộng; **Dự báo đơn tháng tới** (phần 3 ERPNext). Gậy 1 khúc đủ các phần + bản vẽ. Bậc ưu tiên mới (Dealer ra bậc 3), nút ★ ưu tiên cho 4 tài khoản, làn đơn lẻ 10–13%, gợi ý ngày hẹn, cảnh báo đơn lẻ quá 10 ngày, TP nhập nhanh trong Đến hạn 10 ngày.
+- 6 bộ kiểm thử cũ đã đạt hết (don-hang 141, quy-trinh 76, ho-so 28, luu-tru 15, cau-hinh-gay 50): kiểm thử nay **xóa trống các sheet do web tự ghi** trong bộ nhớ trước khi chạy. Lấy DATA: Google Drive tải Sheet CSDL KPI (xlsx) → `csdl-tu-drive.py` → scratchpad.
+- Còn chờ: xác nhận PGĐ SX thứ 2 (đang để C056), bàn tab Đến hạn 10 ngày trong Sheet, BOM (chưa có dữ liệu), phần 1 báo cáo hỏng (đủ ~1 tháng DonHangHong, khoảng giữa tháng 12).
+
 ## Phiên mới – nghiên cứu qcadoo + BOM ERPNext + chỉ số xưởng xong
 - Kết quả: [[KPI Nghiên cứu MES, BOM và chỉ số xưởng (14-11)]]. Phần 2 **hạn chuẩn bộ phận đã làm + push** (chờ chủ dự án chạy 2-CAP-NHAT.bat). Kế tiếp: phần 1 báo cáo hỏng (khi DonHangHong đủ ~1 tháng), phần 3 dự báo, BOM chờ dữ liệu.
 

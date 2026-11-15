@@ -43,4 +43,5 @@ Chủ dự án hỏi (16/11): nghiên cứu ERP (ERPNext, `frappe/erpnext`, 41k 
   - **Trễ > 30 ngày** chưa đặt Hạn mới: không xếp lịch, nhóm "chờ kênh đặt hạn mới"; đặt hạn mới (cột Hạn mới HT đơn cũ) thì tự vào lại.
   - **2 ngày dự kiến**: theo công suất ⚙ và theo **công suất Đóng gói thực đo** = trung vị 10 ngày làm gần nhất có số (`dhCsDo_`, nhớ tạm 3 giờ, < 5 ngày thì không dùng).
   - Kiểm thử: `tests/hai-lan-web.js` 11/11, `tests/han-chuan.js` 27/27; 1.500 dòng tính 0,17 giây.
-- **Còn làm**: phần 1 (báo cáo hỏng, quyền theo bộ phận, báo cáo tháng / PDF), phần 3 (dự báo), BOM (chờ dữ liệu vật tư).
+- **15/11 chiều: XONG phần 3 – Dự báo đơn tháng tới** – [[KPI Gậy 1 khúc, ưu tiên và nhập nhanh (15-11)]].
+- **Còn làm**: phần 1 (báo cáo hỏng – khi DonHangHong đủ ~1 tháng), BOM (chủ dự án chưa có dữ liệu vật tư).

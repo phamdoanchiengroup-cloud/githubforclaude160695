@@ -76,6 +76,13 @@ Những điều đã chốt. Đừng đề xuất lại những gì ghi "không 
 - 02/11 (tiếp): Sheet đơn **thường không có cấu hình** sản phẩm → **báo sản phẩm mới ở Việc hôm nay**; cấu hình sửa trên web (dòng gậy mới = tên + chữ nhận diện + cấu hình; loại chuôi / ngọn / tip: chất liệu, kiểu, thêm mới, chỉ ẩn khi đã dùng); **tự đọc tab kênh mới** có cột chuẩn. Yêu cầu **PDF hướng dẫn chi tiết** 2 tab (tổng quan, thông tin, chức năng, diễn giải, thao tác, phân tích thống kê). – [[KPI Quy trình sản xuất]]
 - 03/11: **mở tab Quy trình cho trưởng / phó phòng** – chỉ xưởng mình; xem Từng xưởng + Con người + Sửa + lưu đồ nhà máy không số; sửa = **gửi đề xuất, chủ sở hữu duyệt**; được sửa luồng giao đi từ xưởng mình; **tab Đơn hàng giữ chỉ chủ sở hữu**. – [[KPI Quy trình sản xuất]]
 
+## Đơn hàng – ưu tiên, gậy 1 khúc (15/11 chiều)
+- Bậc 1 chỉ đơn lẻ thường, lẻ custom, POD (Dealer ra khỏi bậc 1); Kho = kho Amazon / bán lẻ nước ngoài, **kênh chủ chốt**, không xếp sau.
+- Thực tế dành **10–13%** công suất (310 sp/ngày) cho đơn lẻ + POD. Đơn lẻ hẹn **10 ngày từ ngày đặt** trong mã đơn, quá thì cảnh báo.
+- Gắn "ưu tiên": Giám đốc, 2 Phó GĐ sản xuất, Đinh Kim Loan. Web gợi ý ngày hẹn, deadline sớm hơn **chỉ cảnh báo** (không chặn).
+- TP chỉ nhập số của xưởng mình; **deadline đơn do ban điều hành ghi**.
+- Gậy 1 khúc: tên "1 KHÚC" / "ONE PIECE" / "GMK", glassfiber nguyên cây 1450 / 1480, không ren, tip 12.5 / 12.2, nhóm thống kê riêng, có bản vẽ.
+
 ## KPI và định mức (25/10)
 - Bỏ khoản "Không nhắc CN nhập" của TP/PP với lượt phạt trễ không có vi phạm NHAPTRE (phạt trước 15/09): chỉ trừ khi công nhân thật sự bị trừ. – [[KPI Sửa lỗi 21-10 và dữ liệu sheet]]
 - Cân Phôi – Phân Loại Phôi trả về 180 (chủ dự án tự sửa trên web). **Không giới hạn** mức nâng định mức mỗi lần (bỏ đề xuất 10%/lần). – [[KPI Phân tích định mức]]
