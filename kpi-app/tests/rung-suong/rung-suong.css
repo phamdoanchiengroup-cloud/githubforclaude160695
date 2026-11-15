@@ -157,5 +157,5 @@ html.rs.rs-tim{--g-env:#3d3166;--g-env2:#6f5c9e;--g-tone:58,42,100;--g-ink:#fdfb
 /* 16/11: tông SƯƠNG SÁNG – ảnh nền sáng, kính trắng sáng như ảnh mẫu; lớp phủ đậm hơn một chút để chữ trắng không chìm */
 html.rs.rs-suong{--g-env:#3f6656;--g-env2:#86ad98;--g-tone:34,74,58;--g-ink:#ffffff;--g-ink2:rgba(255,255,255,.92);--g-ink3:rgba(255,255,255,.82);
   --g-accent:#e9fff3;--g-accent-ink:#173d2e;--g-warn:#ffe7a0;--g-bad:#ffd0c4;--g-good:#dcffe9;
-  --g1-tint:rgba(255,255,255,.12);--g2-tint:rgba(255,255,255,.10);--g4-tint:rgba(255,255,255,.16);--g-scrim1:.20;--g-scrim2:.42}
+  --g1-tint:rgba(34,74,58,.22);--g2-tint:rgba(255,255,255,.08);--g4-tint:rgba(34,74,58,.24);--g-scrim1:.40;--g-scrim2:.56}
 html.rs.rs-suong .rs-the,html.rs.rs-suong .rs-the2,html.rs.rs-suong .card,html.rs.rs-suong .kpi{text-shadow:0 1px 3px rgba(10,40,28,.7),0 0 12px rgba(10,40,28,.35)!important}

@@ -63,3 +63,4 @@ Liên quan: [[KPI Demo giao diện]] · [[KPI Kiểm thử]] · [[Quyết địn
 - Tông mới **Sương sáng** (`rs-suong`, không dùng `rs-sang` vì trùng lớp "thẻ nền sáng"); thứ tự nút Tông màu: Xanh → Sương sáng → Đỏ → Tím.
 - Sửa lỗi: ánh lóe góc làm `sangNen` nhận nhầm thẻ kính là "thẻ nền sáng" (tắt blur) → chỉ tính nền đặc (alpha ≥ .8).
 - Kiểm thử: holo-web 23/23, tong-quan 26/26.
+- 16/11 (sau nữa): chủ dự án khen ảnh Xanh, chê 3 ảnh còn lại → thay: Sương sáng = rừng thông sương sáng (Pexels 4500037), Đỏ = hàng phong đỏ (708932), Tím = đồng oải hương trời hồng (1166209). Sương sáng tăng lớp phủ (`--g-scrim1/2` .40/.56, kính pha xanh) để chữ trắng đọc rõ.
