@@ -1,5 +1,5 @@
 const { chromium } = require('/opt/node22/lib/node_modules/playwright');
-/** Kiểm thử mục 34 (tests/holo/): hologram chỉ cho tài khoản chủ sở hữu.
+/** Kiểm thử mục 34 (tests/holo/): giao diện kính chỉ cho tài khoản chủ sở hữu (16/11 thay hologram – hologram đã bỏ hẳn).
  *    DATA=csdl.json OUT=$S/xt.html GIO=2026-10-22T17:00:00+07:00 BO_HO_SO=1 TZ=Asia/Ho_Chi_Minh node tests/tao-ban-xem-thu.js
  *    F=$S/xt.html node tests/holo-web.js        (ANH=thư-mục để lưu ảnh chụp) */
 const F = 'file://' + process.env.F, ANH = process.env.ANH;
@@ -20,9 +20,10 @@ const chup = async (p, ten) => { if (ANH) await p.screenshot({ path: ANH + '/' +
   const b = await chromium.launch();
   console.log('1. Chủ sở hữu (chienpham) – máy tính');
   let p = await vao(b, 'chienpham', 1360, 900);
-  await p.evaluate(() => { try { localStorage.removeItem('kpi_holo'); } catch (e) {} holoApDung(); });
-  let s = await p.evaluate(() => ({ cls: document.documentElement.classList.contains('holo'), cv: !!document.getElementById('holoSao'), nut: (document.getElementById('btnHolo') || {}).textContent, raf: HOLO_SAO.raf > 0 }));
-  ok(s.cls && s.cv && /có chuyển động/.test(s.nut || '') && s.raf, 'mặc định: bật hologram, nền sao có chuyển động, nút ở cuối menu', s);
+  await p.evaluate(() => { try { localStorage.removeItem('kpi_kinh'); localStorage.removeItem('kpi_kinh_tong'); } catch (e) {} holoApDung(); });
+  let s = await p.evaluate(() => { const h = document.documentElement; return { rs: h.classList.contains('rs'), xanh: h.classList.contains('rs-xanh'), holo: h.classList.contains('holo'), cv: !!document.getElementById('holoSao'),
+    nen: /url\(data:image/.test(h.style.getPropertyValue('--rs-nen')), nut: (document.getElementById('btnHolo') || {}).textContent, tong: (document.getElementById('btnTong') || {}).textContent }; });
+  ok(s.rs && s.xanh && !s.holo && !s.cv && s.nen && /Giao diện kính.*Đầy đủ/.test(s.nut || '') && /Xanh rừng/.test(s.tong || ''), 'mặc định: kính đầy đủ tông xanh, không còn hologram / nền sao, 2 nút cuối menu', s);
   await moDash(p); await p.waitForTimeout(1600);   // 08/11: số chạy từ 0 lên ~1,1 giây
   s = await p.evaluate(() => {
     // tự tính lại để so: trung bình KPI tháng của người đang làm (không tính TP/PP) theo xưởng, chỉ người đã có KPI
@@ -49,14 +50,20 @@ const chup = async (p, ten) => { if (ANH) await p.screenshot({ path: ANH + '/' +
   await p.evaluate(() => { xuongLoc = ''; kpiXuong = ''; });
   console.log('\n2. Nút đổi chế độ');
   await moDash(p);
-  await p.click('#btnHolo'); await p.waitForTimeout(500);
-  s = await p.evaluate(() => ({ cls: document.documentElement.classList.contains('holo'), raf: HOLO_SAO.raf, nut: document.getElementById('btnHolo').textContent, dai: !!document.getElementById('hlDai') }));
-  ok(s.cls && s.raf === 0 && /nền tĩnh/.test(s.nut) && s.dai, 'bấm lần 1: vẫn hologram, nền sao đứng yên (nhẹ máy)', s);
-  await p.click('#btnHolo'); await p.waitForTimeout(500);
-  s = await p.evaluate(() => ({ cls: document.documentElement.classList.contains('holo'), cv: !!document.getElementById('holoSao'), dai: !!document.getElementById('hlDai'), luu: localStorage.getItem('kpi_holo') }));
-  ok(!s.cls && !s.cv && !s.dai && s.luu === 'tat', 'bấm lần 2: tắt hẳn – về giao diện thường, máy nhớ lựa chọn', s);
-  await p.click('#btnHolo'); await p.waitForTimeout(500);
-  ok(await p.evaluate(() => document.documentElement.classList.contains('holo') && HOLO_SAO.raf > 0 && !!document.getElementById('hlDai')), 'bấm lần 3: bật lại có chuyển động');
+  await p.evaluate(() => document.getElementById('btnTong').click()); await p.waitForTimeout(400);
+  s = await p.evaluate(() => ({ do: document.documentElement.classList.contains('rs-do'), luu: localStorage.getItem('kpi_kinh_tong'), t: document.getElementById('btnTong').textContent }));
+  ok(s.do && s.luu === 'do' && /Đỏ lá phong/.test(s.t), 'nút Tông màu: xanh → đỏ, máy nhớ', s);
+  await p.evaluate(() => document.getElementById('btnTong').click()); await p.evaluate(() => document.getElementById('btnTong').click()); await p.waitForTimeout(400);
+  ok(await p.evaluate(() => document.documentElement.classList.contains('rs-xanh')), 'bấm tiếp: tím → về xanh');
+  await p.evaluate(() => document.getElementById('btnHolo').click()); await p.waitForTimeout(500);
+  s = await p.evaluate(() => ({ rs: document.documentElement.classList.contains('rs'), nhe: document.documentElement.classList.contains('rs-nhe'), nut: document.getElementById('btnHolo').textContent, dai: !!document.getElementById('hlDai'),
+    blur: getComputedStyle(document.querySelector('.card') || document.body).backdropFilter }));
+  ok(s.rs && s.nhe && /Nhẹ/.test(s.nut) && s.dai && (s.blur === 'none' || !s.blur), 'Giao diện kính lần 1: Nhẹ – bỏ làm mờ, Đài quan sát vẫn còn', s);
+  await p.evaluate(() => document.getElementById('btnHolo').click()); await p.waitForTimeout(500);
+  s = await p.evaluate(() => ({ rs: document.documentElement.classList.contains('rs'), tong: document.getElementById('btnTong').style.display, dai: !!document.getElementById('hlDai'), luu: localStorage.getItem('kpi_kinh') }));
+  ok(!s.rs && s.tong === 'none' && s.dai && s.luu === 'tat', 'lần 2: Tắt – về giao diện thường (Đài quan sát vẫn giữ), ẩn nút Tông màu, máy nhớ', s);
+  await p.evaluate(() => document.getElementById('btnHolo').click()); await p.waitForTimeout(500);
+  ok(await p.evaluate(() => document.documentElement.classList.contains('rs') && !document.documentElement.classList.contains('rs-nhe')), 'lần 3: bật lại đầy đủ');
   ok(!p.jsLoi.length, 'không lỗi JS', p.jsLoi);
   await p.context().close();
 
@@ -80,10 +87,10 @@ const chup = async (p, ten) => { if (ANH) await p.screenshot({ path: ANH + '/' +
   console.log('\n4. Tài khoản khác: giao diện giữ nguyên');
   for (const tk of ['giamdoc', 'tpphoicb', 'c360']) {
     p = await vao(b, tk, 1360, 900);
-    await p.evaluate(() => { try { localStorage.removeItem('kpi_holo'); } catch (e) {} });
+    await p.evaluate(() => { try { localStorage.removeItem('kpi_kinh'); } catch (e) {} });
     if (await p.evaluate(() => ME.vaiTro === 'ADMIN' || ME.vaiTro === 'TP')) await moDash(p);
-    s = await p.evaluate(() => ({ cls: document.documentElement.classList.contains('holo'), nut: !!document.getElementById('btnHolo'), dai: !!document.getElementById('hlDai'), cv: !!document.getElementById('holoSao'), owner: ME.laOwner }));
-    ok(!s.cls && !s.nut && !s.dai && !s.cv && !s.owner, tk + ': không có hologram, không có nút', s);
+    s = await p.evaluate(() => ({ cls: document.documentElement.classList.contains('holo') || document.documentElement.classList.contains('rs'), nut: !!document.getElementById('btnHolo') || !!document.getElementById('btnTong'), dai: !!document.getElementById('hlDai'), cv: !!document.getElementById('holoSao'), owner: ME.laOwner }));
+    ok(!s.cls && !s.nut && !s.dai && !s.cv && !s.owner, tk + ': không có giao diện kính / hologram, không có nút', s);
     ok(!p.jsLoi.length, tk + ': không lỗi JS', p.jsLoi);
     await p.context().close();
   }

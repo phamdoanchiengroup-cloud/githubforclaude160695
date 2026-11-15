@@ -95,7 +95,7 @@ html.rs.rs.rs #botbar{background:var(--gh-spec),var(--g4-surface),var(--g4-tint)
   box-shadow:inset 0 1px 0 rgba(255,255,255,.35),0 -8px 24px -14px rgba(0,0,0,.4)!important;-webkit-backdrop-filter:blur(var(--g-blur-2)) saturate(var(--g-sat))!important;backdrop-filter:blur(var(--g-blur-2)) saturate(var(--g-sat))!important}
 
 /* ---------- 6. Deep Glass (hộp nổi đè nội dung: Rhino, thông báo, hộp thoại) ---------- */
-html.rs.rs.rs .mai-thoai,html.rs.rs.rs #toast,html.rs.rs.rs .modal,html.rs.rs.rs .modal-box,html.rs.rs.rs .mbox,html.rs.rs.rs dialog{
+html.rs.rs.rs .mai-thoai,html.rs.rs.rs #maiGoc .bb,html.rs.rs.rs #toast,html.rs.rs.rs .modal,html.rs.rs.rs .modal-box,html.rs.rs.rs .mbox,html.rs.rs.rs dialog{
   background:var(--gh-spec),var(--g3-surface),var(--g3-tint)!important;border-color:var(--gb-top) var(--gb-right) var(--gb-bottom) var(--gb-left)!important;
   box-shadow:var(--gb-inner),var(--gd-1)!important;color:var(--g-ink)!important;
   -webkit-backdrop-filter:blur(var(--g-blur-2)) saturate(var(--g-sat))!important;backdrop-filter:blur(var(--g-blur-2)) saturate(var(--g-sat))!important}
@@ -139,7 +139,7 @@ html.rs.rs.rs tr.cn-toi td,html.rs.rs.rs tr.toi td{background:rgba(255,255,255,.
 @supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){
   html.rs{--g1-tint:rgba(var(--g-tone),.72);--g4-tint:rgba(var(--g-tone),.82);--g3-tint:rgba(var(--g-tone),.9)}}
 html.rs.rs-nhe{--g1-tint:rgba(var(--g-tone),.78);--g4-tint:rgba(var(--g-tone),.86)}
-html.rs.rs-nhe *{-webkit-backdrop-filter:none!important;backdrop-filter:none!important}
+html.rs.rs.rs.rs.rs-nhe *{-webkit-backdrop-filter:none!important;backdrop-filter:none!important}   /* độ ưu tiên cao hơn quy tắc kính */
 html.rs .card,html.rs .rs-the{transition:none}
 @media (prefers-reduced-motion:reduce){html.rs *{transition:none!important;animation:none!important}}
 

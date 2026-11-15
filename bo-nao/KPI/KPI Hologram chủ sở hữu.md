@@ -1,5 +1,7 @@
 # KPI Hologram chủ sở hữu
 
+> **16/11: HOLOGRAM ĐÃ BỎ HẲN** – chủ sở hữu dùng giao diện kính "Premium Glass" (xem mục 16/11 cuối ghi chú). Phần dưới là lịch sử.
+
 Nhóm: KPI · Cập nhật 03/11/2026
 Liên quan: [[KPI Demo giao diện]] · [[KPI Kiểm thử]] · [[Quyết định của chủ dự án]] · [[KPI Cập nhật bằng clasp]]
 
@@ -44,3 +46,12 @@ Liên quan: [[KPI Demo giao diện]] · [[KPI Kiểm thử]] · [[Quyết địn
 
 ## 03/11: chỉ dùng ở nền tối
 - Chủ dự án báo giao diện sáng thiếu tương phản. Hologram (nền vũ trụ tối) trộn với giao diện sáng làm chữ / thẻ không đọc được → `holoSang()`; ở nền sáng hologram tự tắt, nút ghi "Chỉ dùng ở nền tối…", bấm nút thì chuyển sang nền tối + bật hologram. `gdDat` gọi lại `holoApDung()` + `holoNut()`. Chi tiết: [[KPI Quy trình sản xuất]] (Đợt 8).
+
+## 16/11 – Bỏ hologram, chủ sở hữu dùng giao diện kính (chủ dự án chốt)
+- Chủ dự án: "Áp dụng [giao diện kính] cho giao diện chủ sở hữu, bỏ hoàn toàn giao diện hologram". Hỏi gộp: **cho tự đổi 3 tông** (xanh rừng sương / đỏ lá phong / tím oải hương); **giữ Đài quan sát KPI, đổi sang kính**; **có nút + chế độ nhẹ**.
+- Nguồn: `tests/rung-suong/rung-suong.css` (hệ thống vật liệu kính bằng CSS variables: Primary / Secondary / Deep / Light / Control / Highlight / Border; chỉ có hiệu lực khi `html.rs`), `rung-suong.js` (vẽ nền rừng bằng canvas → `--rs-nen`, tự nhận thẻ → `.rs-the` / `.rs-the2` / `.rs-sang` / `.rs-vien`, `rsBat(tông|'0')`; phần nút demo chỉ khi `window.RS_DEMO`). `va-holo-web.py` chèn cả 2 vào Index (mục 34) trước `holo-web.js`.
+- `holo-web.js` viết lại: bỏ nền sao (`holoVeSao`, `HOLO_SAO`), lớp `html.holo`, font Exo 2, màu neon (đổi trắng kính). Khóa mới `kpi_kinh` (day / nhe / tat) + `kpi_kinh_tong` (xanh / do / tim). Nút cuối menu `#btnHolo` "🪟 Giao diện kính" Đầy đủ → Nhẹ → Tắt; `#btnTong` "🎨 Tông màu". Nền sáng (nút mặt trời) thì kính tự tắt. Đài quan sát luôn có cho chủ sở hữu (`holoChu()`), **tĩnh** (`holoDong()` = false, không quét radar liên tục).
+- Góp ý `soat-giao-dien-cuoi` (lần 1 chưa đạt 4 điểm → đã sửa: hộp nổi đủ đặc, không blur chồng, không đổi bố cục, chữ phụ đậm hơn).
+- Lỗi đã sửa khi làm: quy tắc `.rs-nhe` thua độ ưu tiên (chế độ nhẹ vẫn blur); mảnh CSS hologram sót làm `HOLO_CSS` bị ASI cắt → Đài quan sát mất `container-type` (điện thoại 3 cột chật).
+- Kiểm thử: `tests/holo-web.js` viết lại 23/23; `tong-quan-web.js` 26/26 (đổi kỳ vọng: Đài quan sát tĩnh); `cn-apple-web.js` 30/30.
+- Demo trước đó (chỉ để xem): `kpi-app/demo-rung-suong.html`; `tests/rung-suong/tao-demo.py` (phủ kính lên mọi vai trò cho bản xem thử).

@@ -45,7 +45,7 @@
   var daVe='', tg, THU=['xanh','do','tim','0'];
   window.rsBat=function(t){ if(t===true) t='xanh'; if(!t) t='0'; var h=document.documentElement, bat=t!=='0';
     h.classList.toggle('rs',bat); ['xanh','do','tim'].forEach(function(k){ h.classList.toggle('rs-'+k,t===k); });
-    try{ localStorage.setItem('kpi_rs',t); }catch(e){}
+    if(window.RS_DEMO){ try{ localStorage.setItem('kpi_rs',t); }catch(e){} }
     if(!bat) document.querySelectorAll('.rs-sang').forEach(function(e){ e.style.removeProperty('background'); if(e.dataset.rsBg) e.style.setProperty('background',e.dataset.rsBg); e.classList.remove('rs-sang'); daXet.delete(e); });
     if(bat){ P=TONG[t]; if(daVe!==t){ daVe=t; ve(); } setTimeout(quet,50); }
     var n=document.getElementById('rsNut'); if(n) n.style.background=bat?P.nen[2]+'cc':'rgba(30,30,30,.75)'; if(n) n.textContent=bat?'🎨 '+P.ten+' – đổi tông':'🎨 Giao diện gốc – đổi tông'; };
@@ -71,6 +71,7 @@
       if(c.position!=='static'&&getComputedStyle(e,'::before').content==='none') e.classList.add('rs-vien'); } }
   function henQuet(){ if(!hen) hen=setTimeout(quet,350); }
   new MutationObserver(henQuet).observe(document.body,{childList:true,subtree:true});
+  if(!window.RS_DEMO) return;   /* web thật: mục 34 (holo-web.js) gọi rsBat cho chủ sở hữu; phần dưới chỉ cho bản demo */
   var bat='xanh'; try{ var v=localStorage.getItem('kpi_rs'); if(v==='1') v='xanh'; if(THU.indexOf(v)>=0) bat=v; }catch(e){}
   /* nút bật / tắt nổi (chỉ bản demo) */
   var n=document.createElement('button'); n.id='rsNut'; n.type='button';

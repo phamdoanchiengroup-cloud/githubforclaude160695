@@ -1,6 +1,6 @@
 /**
  * Kiểm thử Tổng quan chủ sở hữu (08/11): 4 ô số, sản lượng xưởng, đơn hàng, nhân lực, cần chú ý; bỏ "chưa khai báo" + "dưới 80%";
- * Đài quan sát có hiệu ứng; ban điều hành giữ Tổng quan cũ.
+ * Đài quan sát (16/11: giao diện kính, không chuyển động liên tục); ban điều hành giữ Tổng quan cũ.
  *   F=<bản xem thử số thật có Sheet đơn, GIO ngày thường> [CHUP=<thư mục>] TZ=Asia/Ho_Chi_Minh node kpi-app/tests/tong-quan-web.js
  */
 const { chromium } = require('/opt/node22/lib/node_modules/playwright');
@@ -31,7 +31,7 @@ let dem = 0, loi = 0; const ok = (d, t, c) => { dem++; if (d) console.log('  ✓
     ok(/Việc cần xử lý/i.test(r.t) && !/Chưa nhập sản lượng/i.test(r.t) && /Đi nhanh/i.test(r.t), 'gộp Việc hôm nay: có Việc cần xử lý + Đi nhanh, không có "Chưa nhập sản lượng"');
     ok(r.tab === 'dash' && r.nav.indexOf('homnay') < 0 && r.bot[0] === 'dash' , 'menu chủ: chỉ còn Tổng quan (mở đầu tiên)', r);
     ok(!r.cu, 'không còn "chưa khai báo sản lượng" / "dưới 80%"');
-    ok(r.dai && r.dong && /NGƯỜI/.test(r.cm), 'Đài quan sát có hiệu ứng + ô Có mặt hôm nay', r);
+    ok(r.dai && !r.dong && /NGƯỜI/.test(r.cm), 'Đài quan sát (16/11: tĩnh, không chuyển động liên tục) + ô Có mặt hôm nay', r);
     ok(r.tran <= 0, 'không tràn ngang', r.tran);
     ok(await p.evaluate(() => { go('homnay'); return tabHienTai; }) === 'dash', 'lệnh mở Việc hôm nay chuyển về Tổng quan');
     if (CHUP) await p.screenshot({ path: CHUP + '/tq-' + w + '.png', fullPage: true });
