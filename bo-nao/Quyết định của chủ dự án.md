@@ -79,7 +79,9 @@ Những điều đã chốt. Đừng đề xuất lại những gì ghi "không 
 ## Đơn hàng – ưu tiên, gậy 1 khúc (15/11 chiều)
 - Bậc 1 chỉ đơn lẻ thường, lẻ custom, POD (Dealer ra khỏi bậc 1); Kho = kho Amazon / bán lẻ nước ngoài, **kênh chủ chốt**, không xếp sau.
 - Thực tế dành **10–13%** công suất (310 sp/ngày) cho đơn lẻ + POD. Đơn lẻ hẹn **10 ngày từ ngày đặt** trong mã đơn, quá thì cảnh báo.
-- Gắn "ưu tiên": Giám đốc, 2 Phó GĐ sản xuất, Đinh Kim Loan. Web gợi ý ngày hẹn, deadline sớm hơn **chỉ cảnh báo** (không chặn).
+- Gắn "ưu tiên": Giám đốc (C019), 2 Phó GĐ sản xuất (**C056 = chính chủ dự án** – đừng hỏi lại, + C077), Đinh Kim Loan (C067). 4 tài khoản này sửa được **deadline đơn** (mọi tab, lưu ngược vào Sheet) và **Note**.
+- Gậy 1 khúc: bản **1480 dài hơn 30 mm ở đầu**, côn giữ nguyên → đầu Ø12.2; bản 1450 → Ø12.5. Không cần nút "Lưu tất cả".
+- Tab "Đến hạn 10 ngày" trong Sheet đơn: làm mới **7h sáng**, cho nhập ở đó rồi chép về tab kênh; quyền như tab Đơn hàng (TP: SL + hẹn xưởng mình; 4 tài khoản: deadline + Note) – **chờ chốt cách làm** (Sheet không phân quyền theo người được). Web gợi ý ngày hẹn, deadline sớm hơn **chỉ cảnh báo** (không chặn).
 - TP chỉ nhập số của xưởng mình; **deadline đơn do ban điều hành ghi**.
 - Gậy 1 khúc: tên "1 KHÚC" / "ONE PIECE" / "GMK", glassfiber nguyên cây 1450 / 1480, không ren, tip 12.5 / 12.2, nhóm thống kê riêng, có bản vẽ.
 

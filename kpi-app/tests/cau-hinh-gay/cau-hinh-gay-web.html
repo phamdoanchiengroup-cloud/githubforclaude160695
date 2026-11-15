@@ -754,10 +754,10 @@ function cgChuThich(t){ var a=[[t.ngon.ong.vl],[t.ngon.ong.loi],[t.ngon.insert.v
 /* ===== 15/11 (chủ dự án): GẬY 1 KHÚC – glassfiber nguyên cây dài 1450 / 1480 mm, không ren, có tip 12.5 / 12.2.
    Mẫu số đo riêng (t.mot), vẽ NẰM NGANG cả cây (trục đúng tỉ lệ, Ø phóng), chi tiết đầu / đuôi đúng tỉ lệ thật, bảng + PDF riêng. */
 function cgLa1K(t){ return !!(t&&t.mot); }
-function cgMau1K(d){ var ten=String((d&&d.ten)||'')+' '+((d&&d.goi)||[]).join(' '), L=/1450/.test(ten)&&!/1480/.test(ten)?1450:1480, td=/12[.,]2/.test(ten)?12.2:12.5;
+function cgMau1K(d){ var ten=String((d&&d.ten)||'')+' '+((d&&d.goi)||[]).join(' '), L=/1450/.test(ten)&&!/1480/.test(ten)?1450:1480, td=/12[.,]2/.test(ten)?12.2:/12[.,]5/.test(ten)?12.5:(L===1480?12.2:12.5);   /* 15/11 tối: 1480 dài hơn 30 mm ở ĐẦU (côn giữ nguyên) → đầu 12.2; 1450 → 12.5 */
   var tip={d:td,h:9.5,vl:(d&&d.tenTip&&d.tenTip!=='—')?d.tenTip:'Da thuộc'}, pad={h:1.2,vl:'Sợi đen'}, fer={h:12,vl:'Sứ / composite trắng'}, bum={h:15,d:26,vl:'Cao su'};
   return { mot:{ tip:tip, pad:pad, ferrule:fer, bumper:bum,
-      ong:{vl:'Glassfiber nguyên cây',loi:'Foam polyurethane',day:2,dai:Math.round((L-tip.h-pad.h-fer.h-bum.h)*10)/10,dDau:td,proDai:300,dPro:13.8,dGiua:21,dCuoi:29.5},
+      ong:{vl:'Glassfiber nguyên cây',loi:'Foam polyurethane',day:2,dai:Math.round((L-tip.h-pad.h-fer.h-bum.h)*10)/10,dDau:td,proDai:300,dPro:Math.round((13.8-(12.5-td))*10)/10,dGiua:21,dCuoi:29.5},
       wrap:{cach:30,dai:0,vl:'Glassfiber'} },
     chung:{ khoiMin:520, khoiMax:560, khoiNgon:0, canBang:440, ghiChu:'' }, daDo:{} }; }
 function cgDai1K(t){ var m=t.mot; var tong=cgN(m.tip.h)+cgN(m.pad.h)+cgN(m.ferrule.h)+cgN(m.ong.dai)+cgN(m.bumper.h); return {ngon:0,chuoi:0,tong:tong}; }
@@ -811,7 +811,7 @@ function cgBangTS1K(t){ var m=t.mot, o=m.ong, L=cgDai1K(t).tong, g=function(d0,d
   return '<table class="cg-bang"><tbody>'+r('Tổng dài',cgF(L,1)+' mm · '+cgF(Math.round(L/25.4*10)/10)+' in')+r('Kiểu','1 khúc nguyên cây · không ren, không nối')+
     r('Pro taper',cgF(o.proDai)+' mm · Ø'+cgF(o.dDau)+' → '+cgF(o.dPro)+' · '+g(o.dDau,o.dPro,cgN(o.proDai)))+r('Côn tới giữa cây','Ø'+cgF(o.dPro)+' → '+cgF(o.dGiua)+' · '+g(o.dPro,o.dGiua,L/2-a3-cgN(o.proDai)))+
     r('Côn tới đuôi','Ø'+cgF(o.dGiua)+' → '+cgF(o.dCuoi)+' · '+g(o.dGiua,o.dCuoi,L/2-cgN(m.bumper.h)))+r('Khối lượng',cgF(t.chung.khoiMin)+'–'+cgF(t.chung.khoiMax)+' g')+r('Cân bằng','~'+cgF(t.chung.canBang)+' mm từ đáy')+
-    r('Bản 1450 / 1480','cùng đầu + côn; bản ngắn hơn 30 mm')+(t.chung.ghiChu?r('Ghi chú',t.chung.ghiChu):'')+'</tbody></table>'; }
+    r('Bản 1450 / 1480','cùng côn; bản 1480 dài hơn 30 mm ở đầu → đầu Ø12.2 (1450: Ø12.5)')+(t.chung.ghiChu?r('Ghi chú',t.chung.ghiChu):'')+'</tbody></table>'; }
 function cgBangCT1K(t){ var m=t.mot, o=m.ong, r=function(i,ten,vl,kt,gc){return '<tr><td>'+i+'</td><td>'+esc(ten)+'</td><td>'+esc(vl)+'</td><td class="so">'+esc(kt)+'</td><td>'+esc(gc||'')+'</td></tr>'};
   return '<table class="cg-bang ct"><thead><tr><th>#</th><th>Chi tiết</th><th>Vật liệu</th><th>Kích thước (mm)</th><th>Ghi chú</th></tr></thead><tbody>'+
     r(1,'Tip',m.tip.vl,'Ø'+cgF(m.tip.d)+' × '+cgF(m.tip.h),'12.5 hoặc 12.2')+r(2,'Pad',(m.pad.vl||'Sợi đen'),cgF(m.pad.h))+r(3,'Ferrule',m.ferrule.vl,cgF(m.ferrule.h))+

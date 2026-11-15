@@ -10,6 +10,7 @@ File này được Claude Code tự đọc khi mở repo. Nó giữ **quy tắc 
   - **Trợ lý KPI qua Zalo** (`tro-ly-kpi/`): nhánh `claude/awesome-heisenberg-iulbd6`.
 
 ## Chủ dự án – cách làm việc (bắt buộc)
+- **Chủ dự án = tài khoản `chienpham`, mã NV C056, đồng thời là Phó Giám đốc sản xuất thứ 2** (chủ dự án nhắc nhiều lần – đừng hỏi lại). Ban điều hành: C019 Giám đốc, C056 + C077 Phó GĐ sản xuất, C067 Đinh Kim Loan.
 - **Trả lời bằng tiếng Việt.**
   - Chủ dự án không phải dân IT, nên hướng dẫn từng bước theo dạng **"MỞ FILE X → xóa hết → dán bản mới"**.
   - **Cập nhật web mặc định bằng clasp** (đã cài trên máy chủ dự án từ 22/10): sau khi commit + push, chỉ cần dặn chủ dự án **bấm đúp `2-CAP-NHAT.bat`** (thư mục cài clasp trên máy) → chờ "=== XONG ===" → Ctrl+F5, xem dòng "Bản web: …" cuối menu đã đổi giờ. Bộ cài tự sao lưu, tự tải các file trong `kpi-app/danh-sach-file.txt` từ nhánh này và tự triển khai đúng link công ty. Thêm file HTML mới thì nhớ thêm tên vào `danh-sach-file.txt`. Chi tiết: `bo-nao/KPI/KPI Cập nhật bằng clasp.md`.

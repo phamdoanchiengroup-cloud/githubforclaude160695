@@ -10,7 +10,7 @@ console.log('1. Máy chủ');
 const P = t => c.plPhanLoai_(t, '', null);
 let p = P('GẬY 1 KHÚC GMK 1480 - ĐEN TIP 12.2');
 ok(p.loai === 'GAY1K' && p.dong === 'GAY1K' && p.vlC === 'GF' && p.vlN === '' && p.ren === 'KHONG' && p.ngon === 'KHONG' && p.dau === '12.2' && p.tin === 'xanh', 'tên "1 KHÚC" → gậy 1 khúc, glassfiber, không ren, đầu 12.2', p);
-ok(P('Rhino One Piece House Cue 57"').loai === 'GAY1K' && P('GMK-1450 RED').loai === 'GAY1K' && P('Gậy GMK 1450').dau === '12.5', '"ONE PIECE", "GMK" cũng nhận; đầu mặc định 12.5');
+ok(P('Rhino One Piece House Cue 57"').loai === 'GAY1K' && P('GMK-1450 RED').loai === 'GAY1K' && P('Gậy GMK 1450').dau === '12.5' && P('GMK 1480 RED').dau === '12.2', '"ONE PIECE", "GMK" cũng nhận; đầu mặc định 12.5');
 ok(P('EVO1/BEAST 11 KHÚC').loai !== 'GAY1K' && P('Combo MAXBING Evo Crown - ANCIENT OAK').loai === 'GAY' && P('RHI2-C30PT21.5/11.8/18').loai === 'NGON', 'không nhận nhầm gậy 2 khúc / ngọn lẻ / "11 khúc"');
 const btp = c.dhBTP_('GẬY 1 KHÚC GMK', P('GẬY 1 KHÚC GMK'), {}).ds;
 ok(btp.join() === 'PHOI,SON,UV,HT,TIP,DG', 'luồng bộ phận Phôi → Sơn → UV → HT → Làm đầu → Đóng gói', btp);
@@ -51,10 +51,10 @@ ok(c.CG_KHOA['mot.ong.dCuoi'] === 'n' && c.cgLoc_({ mot: { ong: { dCuoi: 29.4, v
     const t = cgMau(d), L = cgDai(t).tong, kt = cgKiemTra(t, d), th = cgTruongHien(t).reduce((a, g) => a + g[1].length, 0);
     CG.bv = { dong: d, lichSu: [] }; CG.quyen = 'sua'; cgVeCt(); const h1 = document.getElementById('cgCt').innerHTML;
     cgBatSua(); const form = document.querySelectorAll('#cgCt input[data-p^="mot."]').length; CG.sua = null; cgVeCt();
-    const t2 = cgMau(Object.assign({}, d, { ten: 'Gậy 1 khúc 1450', goi: ['GMK 1450 12.2'] })); return { L, kt, th, form, svg: (h1.match(/<svg/g) || []).length, co: /ĐẦU GẬY/.test(h1) && /BẢNG CHI TIẾT/.test(h1) && /1 khúc/.test(h1), L2: cgDai(t2).tong, d2: t2.mot.tip.d,
+    const t2 = cgMau(Object.assign({}, d, { ten: 'Gậy 1 khúc 1450', goi: ['GMK 1450 12.2'] })); return { L, d1: t.mot.tip.d, kt, th, form, svg: (h1.match(/<svg/g) || []).length, co: /ĐẦU GẬY/.test(h1) && /BẢNG CHI TIẾT/.test(h1) && /1 khúc/.test(h1), L2: cgDai(t2).tong, d2: t2.mot.tip.d,
       sai: cgKiemTra1K(Object.assign(JSON.parse(JSON.stringify(t)), { mot: Object.assign(JSON.parse(JSON.stringify(t.mot)), { ong: Object.assign({}, t.mot.ong, { dGiua: 35 }) }) })).map(x => x.muc), rong: document.body.scrollWidth }; });
   ok(er2.length === 0, 'bản vẽ: không lỗi script', er2);
-  ok(Math.abs(v.L - 1480) < 0.01 && v.kt.length === 0, 'mẫu 1480 mm, kiểm tra kích thước không báo lỗi', [v.L, v.kt]);
+  ok(Math.abs(v.L - 1480) < 0.01 && v.kt.length === 0 && v.d1 === 12.2, 'mẫu 1480 mm (đầu 12.2), kiểm tra kích thước không báo lỗi', [v.L, v.kt]);
   ok(Math.abs(v.L2 - 1450) < 0.01 && v.d2 === 12.2, 'tên có "1450" / "12.2" → mẫu 1450 mm, tip 12.2', [v.L2, v.d2]);
   ok(v.svg >= 3 && v.co, 'vẽ cả cây + chi tiết đầu / đuôi + bảng', v.svg);
   ok(v.th === 26 && v.form === 22, 'form sửa có đủ ô số đo gậy 1 khúc', [v.th, v.form]);

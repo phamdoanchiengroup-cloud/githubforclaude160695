@@ -19,6 +19,13 @@ r = c.__goi('layDonHangXuong', gd, false); const o1 = r.don.find(o => o.maDon ==
 ok(o1 && o1.uuWeb && /^Ưu tiên \(/.test(o1.uuTien), 'đơn có cờ ưu tiên + ghi ai gắn', o1 && [o1.uuWeb, o1.uuTien]);
 ok(c.doc_('DonUuTien').length === 1 && !c.ss_().getSheetByName('DonUuTien').rows.some(rw => String(rw.join()).includes('#CONG_THUC')), 'lưu ở sheet ẩn DonUuTien (file KPI, không ghi Sheet đơn)');
 r = c.__goi('luuUuTienDon', gd, { maDon: '#M-01/11', tab: 'OEM', bat: false }); ok(r.ok && c.doc_('DonUuTien').length === 0 && !c.__goi('layDonHangXuong', gd, false).don[0].uuWeb, 'bỏ ưu tiên: xóa cờ');
+console.log('1b. Máy chủ – sửa deadline đơn (15/11 tối)');
+r = c.__goi('luuDeadlineDon', tp, { tab: 'OEM', dl: '2027-01-15', dong: [{ dong: 2, ten: 'GAY NOVA X1 MAU DO', cu: '2026-12-30' }] }); ok(!r.ok, 'trưởng phòng không sửa được deadline đơn', r);
+r = c.__goi('luuDeadlineDon', gd, { tab: 'OEM', dl: '2027-01-15', dong: [{ dong: 2, ten: 'GAY NOVA X1 MAU DO', cu: '2026-12-20' }] }); ok(!r.ok && r.xungDot, 'deadline trong Sheet khác số web đang thấy → báo xung đột', r);
+r = c.__goi('luuDeadlineDon', c.__phienDai(tk('C077')), { tab: 'OEM', dl: '2027-01-15', dong: [{ dong: 2, ten: 'GAY NOVA X1 MAU DO', cu: '2026-12-30' }] });
+const oDl = c.__goi('layDonHangXuong', gd, true).don.find(o => o.maDon === '#M-01/11');
+ok(r.ok && r.n === 1 && oDl.dl === '2027-01-15' && String(c.__ngoai[c.DH_SHEET_ID].sheets.OEM[1][5]).indexOf('15/01/2027') >= 0, 'Phó GĐ C077 ghi deadline mới vào cột DEADLINE của Sheet, web đọc lại đúng (sang năm 2027)', [r, oDl && oDl.dl, c.__ngoai[c.DH_SHEET_ID].sheets.OEM[1]]);
+ok(c.dhCoNote_({ maNV: 'C077' }) && c.dhCoUu_({ maNV: 'C056' }), 'C077 sửa được Note; C056 (Phó GĐ SX) gắn ưu tiên / sửa deadline');
 (async () => {
   console.log('2. Web');
   const b = await chromium.launch(), pg = await b.newPage({ viewport: { width: 1300, height: 900 } }), er = []; pg.on('pageerror', e => er.push(e.message));

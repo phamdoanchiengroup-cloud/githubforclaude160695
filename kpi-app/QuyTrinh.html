@@ -2616,6 +2616,20 @@ function dhNoteLuu(tab,dong,boQua){ var o=dhBRow(tab,dong), t=document.getElemen
 /* 15/11 (chủ dự án): Giám đốc, 2 Phó GĐ sản xuất, chị Kim Loan gắn / bỏ "ưu tiên" cho CẢ ĐƠN (lưu ở file KPI, không ghi Sheet đơn) -> bậc 2 */
 function dhUuNut(o){ var q=(DH&&DH.q)||{}; if(!q.uuGan||!o.maDon||o.maDon==='(không mã)') return o.uuWeb?'<div class="dh-ghi" style="margin:4px 0">★ Đơn ưu tiên – gắn bởi '+esc(o.uuWeb.ai)+' · '+esc(o.uuWeb.luc)+'</div>':''; var co=!!o.uuWeb;
   return '<div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin:4px 0"><button class="btn sm'+(co?'':' pri')+'" type="button" data-m="'+esc(o.maDon)+'" data-t="'+esc(o.tab)+'" data-b="'+(co?0:1)+'" onclick="dhUuGan(this)">'+(co?'Bỏ ưu tiên cả đơn':'★ Gắn ưu tiên cả đơn')+'</button>'+(co?'<small>gắn bởi '+esc(o.uuWeb.ai)+' · '+esc(o.uuWeb.luc)+'</small>':'<small>Đơn lên bậc 2 – làm sau đơn lẻ / POD, trước đơn thường</small>')+'</div>'; }
+/* 15/11 tối (chủ dự án): 4 tài khoản sửa DEADLINE đơn ở mọi tab bảng đơn, lưu ngược vào Sheet (luuDeadlineDon) – mặc định áp cho mọi dòng cùng mã đơn trong tab */
+function dhDlForm(o){ var q=(DH&&DH.q)||{}; if(!q.uuGan) return ''; var id=esc(o.tab)+'_'+o.dong, n=((DH&&DH.don)||[]).filter(function(x){return o.maDon&&x.maDon===o.maDon&&x.tab===o.tab}).length;
+  return '<div class="dh-loc" style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin:4px 0"><label>Deadline đơn <input id="dhDL_'+id+'" type="date" value="'+esc(o.dl||'')+'"></label>'+
+    (n>1?'<label style="font-size:12.5px"><input id="dhDLca_'+id+'" type="checkbox" checked> áp cho cả '+n+' dòng của đơn</label>':'')+
+    '<button class="btn sm" type="button" data-t="'+esc(o.tab)+'" data-d="'+o.dong+'" onclick="dhDlLuu(this)">Lưu deadline</button>'+(o.dlGoc&&o.dlGoc!==o.dl?'<small>đang dùng cột Hạn mới (gốc '+dhNg(o.dlGoc)+')</small>':'')+'</div>'; }
+function dhDlLuu(el,boQua){ var tab=el.dataset.t, dong=+el.dataset.d, o=dhBRow(tab,dong); if(!o){ toast('Không thấy dòng đơn – tải lại tab Đơn hàng.'); return; }
+  var id=tab+'_'+dong, e=document.getElementById('dhDL_'+id), ca=document.getElementById('dhDLca_'+id), dl=e?e.value:'';
+  if(dl===(o.dl||'')&&!boQua){ toast('Deadline chưa đổi.'); return; }
+  if(!dl&&!confirm('Xóa deadline của '+(ca&&ca.checked?'cả đơn':'dòng này')+'?')) return;
+  var rows=(ca&&ca.checked)?DH.don.filter(function(x){return x.maDon===o.maDon&&x.tab===o.tab}):[o];
+  el.disabled=true;
+  call('luuDeadlineDon',[{tab:tab,dl:dl,boQua:!!boQua,dong:rows.map(function(x){return {dong:x.dong,ten:x.ten,cu:x.dl||''};})}],function(r){ el.disabled=false;
+    if(!r||!r.ok){ if(r&&r.xungDot){ if(confirm(r.msg)) dhDlLuu(el,true); return; } toast((r&&r.msg)||'Không lưu được.'); return; }
+    rows.forEach(function(x){ x.dl=dl; }); toast(r.msg,true); dhVeLai(); }); }
 function dhUuGan(el){ var ma=el.dataset.m, tab=el.dataset.t, bat=el.dataset.b==='1'; el.disabled=true;
   call('luuUuTienDon',[{maDon:ma,tab:tab,bat:bat}],function(r){ if(!r||!r.ok){ el.disabled=false; toast((r&&r.msg)||'Không lưu được.'); return; }
     var ai=(DH.q&&DH.q.ten)||'', luc=dhHomNay();
@@ -2660,7 +2674,7 @@ function dhBForm(o){
   var co=function(k){ return c.qty[k]!=null||c.hen[k]!=null; }, dsBP=(route.length?route:bps).filter(co);
   var dep=toan?(DHB.bp&&bps.indexOf(DHB.bp)>=0?DHB.bp:(dsBP[0]||bps[0])):bp;
   var h='<div class="dh-bp"><div class="dh-f-ten">'+esc(o.ten)+'</div>'+
-    dhUuNut(o)+'<div class="pdesc" style="margin:2px 0 12px">Đơn <b>'+esc(o.maDon||'(không mã)')+'</b> · '+esc(o.kenh)+' · đặt <b>'+qtSo(o.sl,0)+'</b>'+(o.dl?' · hạn đơn <b>'+dhNg(o.dl)+'</b>':'')+'</div>';
+    dhUuNut(o)+dhDlForm(o)+'<div class="pdesc" style="margin:2px 0 12px">Đơn <b>'+esc(o.maDon||'(không mã)')+'</b> · '+esc(o.kenh)+' · đặt <b>'+qtSo(o.sl,0)+'</b>'+(o.dl?' · hạn đơn <b>'+dhNg(o.dl)+'</b>':'')+'</div>';
   if(o.phu) return h+'<div class="dh-ghi" style="margin:0">Tab <b>'+esc(o.tab)+'</b> là bản chép – chỉ xem. Nhập ở tab kênh tương ứng.</div></div>';
   /* tiến độ từng bộ phận của mã này: Phôi 30/30 · Sơn 15/30 (hẹn 20/11 ✓) */
   var la2=dhLa2(o), P2=dhP2(o);

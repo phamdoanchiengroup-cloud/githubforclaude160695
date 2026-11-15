@@ -246,6 +246,7 @@ function plPhanLoai0_(ten, ghiChu, sua) {
   else { o.ren = ''; if (o.tin !== 'do') { o.tin = 'vang'; o.lyDo.push('chưa đọc được ren'); } }
   var tip = plTip_(t, g);
   if (tip) o.tip = tip;
+  if (!o.dau && d[0] === 'GAY1K') o.dau = /1480/.test(t) ? '12.2' : '12.5';   // 15/11 tối (chủ dự án): bản 1480 dài hơn 30 mm ở ĐẦU (côn giữ nguyên) nên đầu nhỏ hơn: 1480 → 12.2, 1450 → 12.5
   if (!o.dau && PL_DAU_MD[d[0]]) o.dau = PL_DAU_MD[d[0]];
   if (o.loai === 'NGON' && !o.dau && o.tin === 'xanh' && o.ngon !== 'FCPHA' && o.ngon !== 'NHAY139' && o.ngon !== 'FCNHAY') { o.tin = 'vang'; o.lyDo.push('chưa đọc được đường kính đầu'); }
   return o;
@@ -297,7 +298,7 @@ function dhDocTab_(sh, tab, nam, gioiHan, meta) {
     }
   });
   var cMax = Math.max.apply(null, [cTen, cPhoi, cSL, cThieu, cDL, cCT, cKenh, cHanMoi, cGiao, cTra].concat(Object.keys(chang).map(function(k) { return chang[k]; }), Object.keys(hong).map(function(k) { return hong[k]; }), Object.keys(hen).map(function(k) { return hen[k]; }))) + 1;
-  if (meta) { meta.hdr = hi + 1; meta.qty = chang; meta.hen = hen; meta.ten = cTen; meta.sl = cSL; meta.phoi = cPhoi; meta.thieu = cThieu; meta.dl = cDL; }   // 14/11: cột bộ phận để ghi đúng ô khi lưu giao/nhận
+  if (meta) { meta.hdr = hi + 1; meta.qty = chang; meta.hen = hen; meta.ten = cTen; meta.sl = cSL; meta.phoi = cPhoi; meta.thieu = cThieu; meta.dl = cDL; meta.hanMoi = cHanMoi; }   // 14/11: cột bộ phận để ghi đúng ô khi lưu giao/nhận
   var v = sh.getRange(1, 1, nr, Math.max(1, cMax)).getValues();
   var out = [], ma = '', trong = 0, uuDon = '', nhom = '';   // nhom: dòng tiêu đề nhóm ghi tên kênh (tab HT chép nhiều kênh vào 1 tab)
   for (var r2 = hi + 1; r2 < v.length; r2++) {
@@ -1810,7 +1811,7 @@ function layThongKe(token, thang, lamMoi) {
 /* ===== 15/11 (chủ dự án): NOTE cho từng mã hàng = cột "LOẠI PHÔI" trong Sheet đơn (C067 vốn ghi chú ở cột này).
    Mọi người xem tab Đơn hàng đều thấy; chỉ C019, C056, C067 (và chủ sở hữu) tạo / sửa / xóa. Một ghi chú mỗi mã, ghi đè được, có nhật ký.
    Lưu ý: nội dung cột này cũng được dùng khi phân loại sản phẩm (vd "CHỈ ĐẶT NỐI"). */
-var DH_NOTE_NV = { C019: 1, C056: 1, C067: 1 };
+var DH_NOTE_NV = { C019: 1, C056: 1, C067: 1, C077: 1 };   // 15/11 tối: 4 tài khoản (Giám đốc, 2 Phó GĐ SX C056 + C077, chị Kim Loan) sửa Note + deadline
 function dhCoNote_(me) {
   if (!me) return false;
   if (me.laOwner) return true;
@@ -1878,7 +1879,7 @@ function dhP2Gan_(o, vSL, vHen, nam) {
 /* ===== 15/11 (chủ dự án): GẮN "ƯU TIÊN" CHO CẢ ĐƠN – chỉ Giám đốc, 2 Phó GĐ sản xuất, Đinh Kim Loan (theo mã NV).
    Lưu ở sheet ẩn DonUuTien trong file KPI (KHÔNG ghi vào Sheet đơn hàng); khóa = mã đơn | tab kênh. Đơn có cờ -> bậc 2 (sau đơn lẻ, trước đơn thường).
    Chữ "ưu tiên" gõ thẳng trong Sheet đơn vẫn được tính như cũ. */
-var DH_UU_NV = ['C019', 'C056', 'C077', 'C067'];
+var DH_UU_NV = ['C019', 'C056', 'C077', 'C067'];   // C019 Giám đốc · C056 Phó GĐ SX (chủ dự án) · C077 Phó GĐ SX · C067 Đinh Kim Loan
 var DH_UU_SHEET = 'DonUuTien', DH_UU_COT = ['Khoa', 'NguoiGan', 'MaNV', 'ThoiDiem'];
 function dhCoUu_(me) { return !!me && DH_UU_NV.indexOf(String(me.maNV || '').trim().toUpperCase()) >= 0; }
 function dhUuWebDoc_() { var m = {}; docAnToan_(DH_UU_SHEET).forEach(function(r) { var k = String(r.Khoa || '').replace(/^'/, ''); if (k) m[k] = { ai: String(r.NguoiGan || ''), luc: String(r.ThoiDiem || '') }; }); return m; }
@@ -1897,5 +1898,40 @@ function luuUuTienDon(token, p) {
     if (p.bat) them_(DH_UU_SHEET, { Khoa: k, NguoiGan: (q.me.ten || q.me.tk || '').slice(0, 60), MaNV: String(q.me.maNV || ''), ThoiDiem: Utilities.formatDate(new Date(), TZ_VN, 'yyyy-MM-dd HH:mm') });
     ghiLog_(q.me, 'Ưu tiên đơn', k.slice(0, 120), '', p.bat ? 'gắn' : 'bỏ');
     return sach_({ ok: true, msg: p.bat ? 'Đã gắn ưu tiên cho đơn ' + ma + '.' : 'Đã bỏ ưu tiên đơn ' + ma + '.' });
+  } finally { lock.releaseLock(); }
+}
+
+/* ===== 15/11 tối (chủ dự án): 4 tài khoản (DH_UU_NV) SỬA DEADLINE ĐƠN trên web, LƯU NGƯỢC VÀO SHEET "Trạng thái đơn hàng".
+   p = { tab, dl: 'yyyy-mm-dd' | '' (xóa), dong: [{ dong, ten, cu: 'yyyy-mm-dd' | '' }], boQua }.
+   Mỗi dòng: ô "Hạn mới HT đơn cũ" đang có ngày thì ghi vào ô đó (web đang dùng hạn mới), không thì ghi cột DEADLINE.
+   Ghi dạng chữ dd/mm/yyyy (dấu ' đầu – Sheet không tự đổi thành ngày rồi đảo ngày / tháng). Kiểm tên hàng + deadline web đang thấy để phát hiện người khác vừa sửa. */
+function luuDeadlineDon(token, p) {
+  var q = dhQuyenDon_(token); if (q.loi) return q.loi;
+  if (!dhCoUu_(q.me)) return sach_({ ok: false, msg: 'Chỉ Giám đốc, 2 Phó GĐ sản xuất và chị Kim Loan được sửa deadline đơn.' });
+  p = p || {}; var tab = String(p.tab || ''), dl = String(p.dl || '').trim(), ds = Array.isArray(p.dong) ? p.dong.slice(0, 200) : [];
+  if (!tab || !ds.length) return sach_({ ok: false, msg: 'Thiếu dòng đơn – mở lại tab Đơn hàng rồi thử lại.' });
+  if (dl && !/^\d{4}-\d\d-\d\d$/.test(dl)) return sach_({ ok: false, msg: 'Ngày không hợp lệ.' });
+  var chu = dl ? "'" + dl.slice(8, 10) + '/' + dl.slice(5, 7) + '/' + dl.slice(0, 4) : '';
+  var lock = LockService.getScriptLock();
+  try { lock.waitLock(20000); } catch (eL) { return sach_({ ok: false, msg: 'Sheet đang được người khác ghi – chờ vài giây rồi bấm lại.' }); }
+  try {
+    var ss = SpreadsheetApp.openById(DH_SHEET_ID), sh = dhTimTab_(ss, tab);
+    if (!sh) return sach_({ ok: false, msg: 'Không thấy tab "' + tab + '" trong Sheet đơn hàng.' });
+    var meta = dhMetaTab_(sh, tab), nam = Number(Utilities.formatDate(new Date(), TZ_VN, 'yyyy'));
+    if (!meta || meta.ten < 0 || meta.dl == null || meta.dl < 0) return sach_({ ok: false, msg: 'Tab "' + tab + '" không có cột DEADLINE.' });
+    var ghi = [], lech = [], cMax = Math.max(meta.ten, meta.dl, meta.hanMoi == null ? -1 : meta.hanMoi) + 1, last = sh.getLastRow();
+    ds.forEach(function(x) {
+      var dong = Number(x && x.dong) || 0; if (dong < 2 || dong > last) { lech.push(dong); return; }
+      var r = sh.getRange(dong, 1, 1, cMax).getValues()[0], ten = String(r[meta.ten] == null ? '' : r[meta.ten]).replace(/\s+/g, ' ').trim();
+      if (x.ten != null && plChuan_(ten) !== plChuan_(String(x.ten))) { lech.push(dong); return; }
+      var coHM = meta.hanMoi != null && meta.hanMoi >= 0 && dhNgay_(r[meta.hanMoi], nam), c = coHM ? meta.hanMoi : meta.dl, cuNay = dhNgay_(r[c], nam) || '';
+      if (x.cu != null && !p.boQua && String(x.cu).slice(5) !== cuNay.slice(5)) { lech.push(dong); return; }   // so ngày / tháng (năm suy theo ngày đặt)
+      ghi.push([dong, c + 1]);
+    });
+    if (lech.length && !p.boQua) return sach_({ ok: false, xungDot: true, msg: 'Có ' + lech.length + ' dòng vừa đổi trong Sheet (dòng ' + lech.slice(0, 5).join(', ') + ') – bấm OK để vẫn ghi deadline mới cho các dòng còn khớp, hoặc tải lại tab Đơn hàng.' });
+    ghi.forEach(function(g) { sh.getRange(g[0], g[1]).setValue(chu); });
+    dhXoaCacheDon_();
+    ghiLog_(q.me, 'Sửa deadline đơn', tab + ' · ' + ghi.length + ' dòng', '', dl || 'xóa');
+    return sach_({ ok: true, n: ghi.length, msg: 'Đã ghi deadline ' + (dl ? dl.slice(8, 10) + '/' + dl.slice(5, 7) + '/' + dl.slice(0, 4) : '(trống)') + ' cho ' + ghi.length + ' dòng vào Sheet.' });
   } finally { lock.releaseLock(); }
 }

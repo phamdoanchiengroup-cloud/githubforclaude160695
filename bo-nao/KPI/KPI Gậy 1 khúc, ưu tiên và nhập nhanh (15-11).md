@@ -27,6 +27,12 @@ Ghi chú: các mục ghi "16/11" ở phiên trước thực ra làm ngày 15/11 
 - **Nhập nhanh trong Đến hạn 10 ngày** (`dhVeNhapNhanh`, `dhNNLuu`): TP/PP nhập SL cộng dồn + hẹn giao của bộ phận mình, ghi bằng `luuDonGiaoNhan` (chỉ gửi phần đổi); chủ sở hữu chọn bộ phận; Phôi gậy 2 khúc → nút Mở form đầy đủ; điện thoại dạng thẻ. Deadline đơn do ban điều hành ghi.
 - Kiểm thử: `uu-tien-web.js` 20/20 (cần DATA).
 
+## 15/11 tối – theo trả lời chủ dự án
+- C056 (chủ dự án) là Phó GĐ SX thứ 2 → `DH_UU_NV` giữ C019, C056, C077, C067; `DH_NOTE_NV` thêm C077.
+- **Sửa deadline đơn** (`luuDeadlineDon`, web `dhDlForm` / `dhDlLuu` trong form dòng đơn): 4 tài khoản, mặc định áp cả đơn; ghi chữ `'dd/mm/yyyy` vào ô Hạn mới (nếu dòng đang có) hoặc cột DEADLINE; kiểm tên hàng + deadline cũ (xung đột → hỏi ghi đè). `meta.hanMoi` thêm vào `dhDocTab_`.
+- Gậy 1 khúc: 1480 → đầu 12.2, 1450 → 12.5 (`plPhanLoai0_`, `cgMau1K`, pro taper dịch theo đầu).
+- Kiểm thử: `uu-tien-web.js` 24/24, `mot-khuc.js` 20/20.
+
 ## Còn bàn
 - Tab "Đến hạn 10 ngày" thẳng trong Sheet Trạng thái đơn hàng (mỗi đơn ghi kênh): web (Apps Script) ghi được Sheet đó; cần bàn: tab tự làm mới lúc nào, chỉ đọc hay nhập ở đó rồi chép về tab kênh, ai sửa.
 - "Lưu tất cả" (lưu nhiều dòng một lần) – chưa làm, chủ dự án chưa rõ ý nghĩa.
