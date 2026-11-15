@@ -8,6 +8,10 @@ const DATA = process.env.DATA; if (!DATA) { console.log('Cần DATA='); process.
 let dem = 0, loi = 0; const ok = (d, t, c) => { dem++; if (d) console.log('  ✓ ' + t); else { loi++; console.log('  ✗ ' + t + (c !== undefined ? '  → ' + JSON.stringify(c).slice(0, 300) : '')); } };
 const du = JSON.parse(fs.readFileSync(DATA, 'utf8'));
 const iDoi = du.TaiKhoan[0].indexOf('DoiMatKhauLanDau'); du.TaiKhoan.slice(1).forEach(x => { x[iDoi] = 'Không'; });
+// 15/11: Sheet thật không còn tài khoản nhân sự (HR) không gắn mã NV -> thêm 1 tài khoản HR giả (chỉ trong bộ nhớ) để thử nhánh "chỉ có tài khoản"
+{ const h = du.TaiKhoan[0], col = k => h.indexOf(k), mau = du.TaiKhoan.find((x, i) => i && String(x[col('VaiTro')]).trim() === 'TL' && x[col('TrangThai')] === 'Đang dùng');
+  if (mau && !du.TaiKhoan.some((x, i) => i && String(x[col('VaiTro')]).trim() === 'HR' && x[col('TrangThai')] === 'Đang dùng' && !x[col('MaNV')])) {
+    const x = mau.slice(); x[col('TenDangNhap')] = 'hr_thu_kiem'; x[col('HoTen')] = 'Nhân sự thử'; x[col('VaiTro')] = 'HR'; x[col('MaNV')] = ''; du.TaiKhoan.push(x); } }
 const c = G.tao(path.join(__dirname, '..', 'Code.gs'), du, '2026-10-22T17:00:00+07:00');
 const tks = c.doc_('TaiKhoan').filter(t => t.TrangThai === 'Đang dùng' && t.MaNV && c.hsVaiTroPhai_(t.VaiTro));
 const ns = {}; c.doc_('NhanSu').forEach(x => ns[x.MaNV] = x);
@@ -21,7 +25,7 @@ ok(c.hsChuan_('NgayVaoLam', '2026-05-01', false) === '2026-05-01' && !c.hsChuan_
 console.log('\n2. Ai phải điền');
 const thieu = tks.map(t => ({ t, h: c.hoSoThieu_(ns[t.MaNV]) })).filter(x => x.h.length);
 const du6 = tks.filter(t => ns[t.MaNV] && ns[t.MaNV].TrangThai === 'Đang làm' && !c.hoSoThieu_(ns[t.MaNV]).length);
-ok(thieu.length > 50, thieu.length + ' tài khoản phải điền, ' + du6.length + ' đã đủ');
+ok(thieu.length >= 1 && du6.length > 50, thieu.length + ' tài khoản phải điền, ' + du6.length + ' đã đủ');   // 15/11: hầu hết đã điền xong
 const tk1 = thieu.find(x => x.h.length >= 3).t, T = c.__phienDai(tk1);
 let r = c.__goi('napDuLieu', T);
 ok(r.ok && r.me.hoSoThieu && r.me.hoSoThieu.length >= 3, 'đăng nhập: máy chủ gửi danh sách mục thiếu (' + r.me.hoSoThieu.join(', ') + ')');
@@ -67,7 +71,7 @@ const bep = c.doc_('TaiKhoan').find(x => String(x.VaiTro).trim() === 'BEP' && x.
 if (bep) ok(c.__goi('napDuLieu', c.__phienDai(bep)).me.hoSoThieu.length === 0, 'tài khoản bếp: không phải điền (chủ dự án 22/10)');
 const nhom = c.doc_('TaiKhoan').find(x => String(x.VaiTro).trim() === 'NHOM' && x.TrangThai === 'Đang dùng');
 if (nhom) ok(c.__goi('napDuLieu', c.__phienDai(nhom)).me.hoSoThieu.length === 0 && !c.hsVaiTroPhai_('NHOM'), 'tài khoản nhóm báo cơm (dùng chung): không phải điền');
-const adm = c.doc_('TaiKhoan').find(x => String(x.VaiTro).trim() === 'ADMIN' && x.TrangThai === 'Đang dùng' && !x.MaNV);
+const adm = c.doc_('TaiKhoan').find(x => String(x.VaiTro).trim() === 'ADMIN' && x.TrangThai === 'Đang dùng');   // 15/11: BĐH nay đều gắn mã NV
 ok(!c.__goi('danhSachVanPhong', c.__phienDai(adm)).ok, 'ban điều hành không xem được danh sách này');
 const hr = c.doc_('TaiKhoan').find(x => String(x.VaiTro).trim() === 'HR' && x.TrangThai === 'Đang dùng' && !x.MaNV), Thr = c.__phienDai(hr);
 r = c.__goi('napDuLieu', Thr);

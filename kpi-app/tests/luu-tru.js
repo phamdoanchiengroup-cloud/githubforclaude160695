@@ -23,7 +23,7 @@ const chup = () => { lanh(); const nv = c.doc_('NhanSu').find(x => String(x.Tran
   dp: bo((r => { delete r.sk; return r; })(c.__goi('layDieuPhoi', Town, true))), hs: bo(c.__goi('hoSoNhanVien', Town, nv)) }; };
 
 console.log('\n1. Trước khi dọn (số thật)');
-const nk0 = thang('NhatKySanXuat'), tt0 = thang('NhatKyThaoTac'); console.log('    nhật ký sản lượng', JSON.stringify(nk0), '\n    nhật ký thao tác', JSON.stringify(tt0));
+const nk0 = thang('NhatKySanXuat'), tt0 = thang('NhatKyThaoTac'), lt0 = thang('NhatKySanXuat_LuuTru');   // 15/11: Sheet thật đã có lưu trữ từ lần dọn trước console.log('    nhật ký sản lượng', JSON.stringify(nk0), '\n    nhật ký thao tác', JSON.stringify(tt0));
 const A = chup();
 console.log('\n2. Tự cài lịch');
 c.napDuLieu(c.__phienDai(vt('TP'))); ok(P().getProperty('LD_LICH') !== '1', 'trưởng phòng mở web: không cài');
@@ -35,7 +35,7 @@ ok(P().getProperty('LD_SAO_LUU') === '2026-11', 'đã sao lưu tháng 11 vào KP
 const nk1 = thang('NhatKySanXuat'), lt1 = thang('NhatKySanXuat_LuuTru'), tt1 = thang('NhatKyThaoTac');
 console.log('    còn lại', JSON.stringify(nk1), '\n    lưu trữ', JSON.stringify(lt1), '\n    thao tác', JSON.stringify(tt1));
 ok(!nk1['2026-08'] && !nk1['2026-09'] && nk1['2026-10'] === nk0['2026-10'] && nk1['2026-11'] === nk0['2026-11'], 'sheet chính chỉ còn tháng 10 + 11 (tháng chưa chốt cũ hơn giữ lại)');
-ok(lt1['2026-08'] === nk0['2026-08'] && lt1['2026-09'] === nk0['2026-09'], 'tháng 8, 9 sang NhatKySanXuat_LuuTru đủ dòng');
+ok(['2026-08', '2026-09'].every(m => (lt1[m] || 0) === (lt0[m] || 0) + (nk0[m] || 0)), 'tháng 8, 9 sang NhatKySanXuat_LuuTru đủ dòng (cộng thêm vào phần đã lưu trữ)', [lt0, nk0, lt1]);
 ok(Object.keys(tt1).every(k => k >= '2026-10') && tt1['2026-10'] === tt0['2026-10'] && tt1['2026-11'] >= tt0['2026-11'], 'nhật ký thao tác chỉ còn từ 01/10');
 const B = chup();
 console.log('\n4. Số không đổi sau khi dọn');

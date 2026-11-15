@@ -7,6 +7,8 @@ const G = require('./gia-lap-kpi.js');
 const DATA = process.env.DATA; if (!DATA) { console.log('Cần DATA='); process.exit(1); }
 let dem = 0, loi = 0; const ok = (d, t, c) => { dem++; if (d) console.log('  ✓ ' + t); else { loi++; console.log('  ✗ ' + t + (c !== undefined ? '  → ' + JSON.stringify(c).slice(0, 300) : '')); } };
 const du = JSON.parse(fs.readFileSync(DATA, 'utf8'));
+// 15/11: các sheet do web tự ghi (bản chụp đơn, phân loại / cấu hình SKU, quy trình đã lưu…) – Sheet thật nay đã có số; kiểm thử bắt đầu từ trống như lần đầu dùng
+['DonHangChup','DonHangSanLuong','DonHangHoanThien','DonHangHong','PhanLoaiSKU','CauHinhSP','BTPTheoSKU','QuyTrinh','QuyTrinhDeXuat'].forEach(k => { if (du[k]) du[k] = du[k].slice(0, 1); });
 const iDoi = du.TaiKhoan[0].indexOf('DoiMatKhauLanDau'); du.TaiKhoan.slice(1).forEach(x => { x[iDoi] = 'Không'; });
 const c = G.tao(path.join(__dirname, '..', 'Code.gs'), du, '2026-10-31T17:00:00+07:00');
 const TK = c.doc_('TaiKhoan').filter(t => t.TrangThai === 'Đang dùng'), vt = v => TK.find(t => String(t.VaiTro).trim() === v);
@@ -104,7 +106,7 @@ r = c.__goi('luuPhanLoaiSKU', Town, { ten: 'EVO4/LUN2/COMBOMAX', loai: 'GAY', do
 ok(r.ok, 'lưu sửa tay', r);
 r = c.__goi('layDonHangXuong', Town, false);
 ok(r.don[0].pl.nguon === 'duyet' && r.don[0].pl.chuoi === 'GF740', 'áp ngay cho đơn cùng tên (không cần đọc lại Sheet đơn)', r.don[0].pl);
-ok(String(c.doc_('PhanLoaiSKU')[0].GhiChu).startsWith("'"), 'ghi chú "=" không thành công thức');
+{ const g = String(c.doc_('PhanLoaiSKU')[0].GhiChu); ok(g === "'=1+1" || g === '=1+1', 'ghi chú "=" không thành công thức (giữ dạng chữ)', g); }   // 15/11: sheet có sẵn (không định dạng @) thì Sheets ẩn dấu ' – vẫn là chữ
 c.__goi('luuPhanLoaiSKU', Town, { ten: 'EVO4/LUN2/COMBOMAX', loai: 'GAY', dong: 'EVO4', chuoi: 'GF736HK', ngon: 'GF29', tip: 'TIMEK', ren: 'R3810' });
 ok(c.doc_('PhanLoaiSKU').length === 1, 'sửa lại cùng tên: thay dòng cũ, không nhân đôi');
 r = c.__goi('luuPhanLoaiSKU', Town, { ten: 'EVO4/LUN2/COMBOMAX', bo: true });
@@ -227,7 +229,7 @@ console.log('\n4h. Đơn hoàn thiện đọc trực tiếp tab HT + Đóng gói
   c.__ngoai = { [c.DH_SHEET_ID]: { ten: 'x', sheets: { OEM: [H.slice(0, 6), ['OEM-03/09', E, '', 1, 1, '28/09']], ['HT-' + nam]: ht } } }; c.dhDocDon_(true);
   let r = c.__goi('layDonHoanThien', Tadm, true); ok(r.ok, 'ban điều hành xem được Hoàn thiện (14/11)');
   r = c.__goi('layDonHoanThien', Town, true);
-  ok(r.ok && !r.don && r.donC.length === 9 && r.donH.every(d => d.length === 9), '08/11: gửi gọn dạng bảng 9 cột (web mở lại bằng dhHTMo)', r.donC);
+  ok(r.ok && !r.don && r.donC.length === 13 && r.donH.every(d => d.length === 13), '08/11: gửi gọn dạng bảng 9 cột (web mở lại bằng dhHTMo)', r.donC);
   r.don = r.donH.map(d => Object.fromEntries(r.donC.map((k, j) => [k, d[j]])));
   const g = m => r.don.find(o => o.maDon === m) || {};
   ok(r.ok && r.tabs.join() === 'HT-' + nam && r.don.length === 4 && g('DEA-01/09').tab === 'DEALER' && g('KHO-02/09').tab === 'KHO' && g('OEM-03/09').tab === 'OEM' && g('OEM-03/09').kenh === 'OEM',

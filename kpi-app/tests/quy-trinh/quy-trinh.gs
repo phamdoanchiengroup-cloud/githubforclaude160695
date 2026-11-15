@@ -61,7 +61,7 @@ var QT_NHAP = {
   'NGON-TARO-SXPOM': ['POM', 1], 'NGON-TARO-SXPOM1': ['POM', 1], 'NGON-TARO-SXPOM2': ['POM', 1], 'NGON-TARO-SXPOM3': ['POM', 1], 'NGON-TARO-SXPOM4': ['POM', 1],
   'NGON-TARO-RENPOM': ['POM', 2],
   // Ngọn Tip
-  'NGON-LAMBANG': ['NGON', 1], 'NGONLAMBANGGLASS': ['NGON', 1], 'NGON-DANTIP': ['NGON', 2], 'NGON-TIP-LAMDAU': ['NGON', 3], 'NGON-LAMDAUGLASS': ['NGON', 3],
+  'NGON-LAMBANG': ['NGON', 1], 'NGONLAMBANGGLASS': ['NGON', 1], 'NGON-DANTIP': ['NGON', 2], 'NGON-TIP-LAMDAU': ['NGON', 3], 'NGON-LAMDAUGLASS': ['NGON', 3], 'NGON-LAMDAUDALON': ['NGON', 3], 'TIP-BAKELIT': ['TIP', 3],   /* 15/11: 2 công đoạn mới (làm đầu da lợn = như làm đầu glass; tip bakelit 16mm ở CNC). NUT-CUA-NET, TAM-DA-MICROFIBER để "Chưa xếp" cho chủ dự án tự xếp */
   'NGON-TIP-LAMDAUPHA': ['NGON', 3], 'NGON-CNCBODAU': ['NGON', 4],
   // Sơn
   'TUOT-LOT': ['CHUOI', 1], 'TUOT-LOT-1': ['GAY1K', 1], 'RAP-CHUOI': ['CHUOI', 2], 'RAP-2': ['CHUOI', 2], 'RAP-1': ['GAY1K', 2], 'CUON-WAP-BANG-DINH': ['CHUOI', 3],

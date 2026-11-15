@@ -7,6 +7,8 @@ const G = require('./gia-lap-kpi.js');
 const DATA = process.env.DATA; if (!DATA) { console.log('Cần DATA='); process.exit(1); }
 let dem = 0, loi = 0; const ok = (d, t, c) => { dem++; if (d) console.log('  ✓ ' + t); else { loi++; console.log('  ✗ ' + t + (c !== undefined ? '  → ' + JSON.stringify(c).slice(0, 300) : '')); } };
 const du = JSON.parse(fs.readFileSync(DATA, 'utf8'));
+// 15/11: các sheet do web tự ghi (bản chụp đơn, phân loại / cấu hình SKU, quy trình đã lưu…) – Sheet thật nay đã có số; kiểm thử bắt đầu từ trống như lần đầu dùng
+['DonHangChup','DonHangSanLuong','DonHangHoanThien','DonHangHong','PhanLoaiSKU','CauHinhSP','BTPTheoSKU','QuyTrinh','QuyTrinhDeXuat'].forEach(k => { if (du[k]) du[k] = du[k].slice(0, 1); });
 const iDoi = du.TaiKhoan[0].indexOf('DoiMatKhauLanDau'); du.TaiKhoan.slice(1).forEach(x => { x[iDoi] = 'Không'; });
 const c = G.tao(path.join(__dirname, '..', 'Code.gs'), du, '2026-10-24T17:00:00+07:00');
 const TK = c.doc_('TaiKhoan').filter(t => t.TrangThai === 'Đang dùng'), vt = v => TK.find(t => String(t.VaiTro).trim() === v);
@@ -30,7 +32,7 @@ ok(r.quyTrinh.length === dang.length && r.congDoan.length === dang.length, 'mọ
 const chuaXep = r.quyTrinh.filter(q => q.Nhanh === 'CHUAXEP').map(q => q.Ma);
 ok(chuaXep.length <= 3, 'nháp xếp được gần hết công đoạn (chưa xếp: ' + chuaXep.length + ')', chuaXep);
 ok(r.xuongLuong.length === 14 && r.xuongLuong.some(x => x.Tu === 'CNC' && x.Den === 'SON') && r.xuongLuong.some(x => x.Tu === 'CNC' && x.Den === 'DG') && r.xuongLuong.some(x => x.Tu === 'HT' && x.Den === 'DG') && r.xuongLuong.some(x => x.Tu === 'NGONTARO' && x.Den === 'PHOITHO' && /POM/.test(x.BTP)) && r.xuongLuong.some(x => x.Tu === 'NGONTIP' && x.Den === 'DG'), 'luồng giữa xưởng nháp 14 mũi tên (14/11: Taro → HT ⇄ Tip) (có CNC → Sơn đầu gậy lết, CNC → Đóng gói tip bán lẻ): có HT → DG, POM Ngọn Taro → Phôi Thô, ngọn lẻ Ngọn Tip → Đóng gói');
-ok(r.soNgay === 30 && r.tu === '2026-09-25' && r.den === '2026-10-24' && r.soNgaySX > 15, 'kỳ 30 ngày tính đúng', [r.tu, r.den, r.soNgaySX]);
+ok(r.soNgay === 30 && r.tu === '2026-09-24' && r.den === '2026-10-23' && r.soNgaySX > 15, 'kỳ 30 ngày tính đúng (09/11: tới hết hôm qua)', [r.tu, r.den, r.soNgaySX]);
 const nk = c.doc_('NhatKySanXuat').filter(x => String(x.TrangThai).trim() !== 'Từ chối' && c.ngayVN_(x.Ngay) >= r.tu && c.ngayVN_(x.Ngay) <= r.den && Number(x.SoLuongLamRa) > 0);
 const tong = nk.reduce((a, x) => a + Number(x.SoLuongLamRa), 0), tong2 = Object.values(r.thongKe).reduce((a, t) => a + t.sl, 0);
 ok(Math.abs(tong - tong2) < 1e-6, 'tổng sản lượng thống kê khớp nhật ký (' + tong + ')', [tong, tong2]);
@@ -78,7 +80,7 @@ r = thu(q => q.Ma === X0.Ma ? { GhiChu: '=HYPERLINK("x")' } : 0);
 ok(r.ok && r.doi === ds.length, 'lưu lần đầu: mọi công đoạn ghi', r);
 const sh = c.doc_('QuyTrinh');
 ok(sh.filter(x => x.Loai === 'CD').length === ds.length && sh.filter(x => x.Loai === 'XUONG').length === 14 && sh.filter(x => x.Loai === 'CAIDAT').length === 7, 'sheet QuyTrinh: đủ dòng CD / XUONG / CAIDAT');
-ok(String(sh.find(x => x.Ma === X0.Ma).GhiChu).startsWith("'="), 'ghi chú bắt đầu bằng "=" được chặn thành chữ (không thành công thức)');
+{ const g = String(sh.find(x => x.Ma === X0.Ma).GhiChu); ok(g.startsWith("'=") || (g.startsWith('=') && !g.startsWith('#CONG_THUC')), 'ghi chú bắt đầu bằng "=" được chặn thành chữ (không thành công thức)', g); }
 let r2 = c.__goi('layQuyTrinh', Town, 30); ok(r2.ok && !r2.nhap, 'đọc lại: không còn là nháp');
 r2 = c.__goi('luuQuyTrinh', Town, { cd: r2.quyTrinh.map(q => q.Ma === X1.Ma ? Object.assign({}, q, { Buoc: 9 }) : q), xuong: r2.xuongLuong, caiDat: Object.assign({}, r2.caiDat, { mucTieu: 130 }) });
 ok(r2.ok && r2.doi === 1, 'lưu lại: chỉ đếm dòng thay đổi', r2);

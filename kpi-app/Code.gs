@@ -7674,7 +7674,7 @@ function danhSachVanPhong(token) {
   ds.sort(function(a, b) { return (thuTu[a.vaiTro] - thuTu[b.vaiTro]) || (a.HoTen < b.HoTen ? -1 : 1); });
   return sach_({ ok: true, ds: ds, muc: HS_MUC });
 }
-var KPI_BAN_MAY = '15/11/2026 13:33';   // giờ dựng Code.gs (22/10)
+var KPI_BAN_MAY = '15/11/2026 17:12';   // giờ dựng Code.gs (22/10)
 /* =====================================================================
    KỸ NĂNG (22/10, chủ dự án nhờ thiết kế + tham khảo chuyên gia nhân sự / đào tạo)
    - Danh mục: trưởng / phó phòng đề xuất kỹ năng của xưởng (tên, mô tả, tiêu chí đạt, công đoạn liên quan)
@@ -8097,7 +8097,7 @@ var QT_NHAP = {
   'NGON-TARO-SXPOM': ['POM', 1], 'NGON-TARO-SXPOM1': ['POM', 1], 'NGON-TARO-SXPOM2': ['POM', 1], 'NGON-TARO-SXPOM3': ['POM', 1], 'NGON-TARO-SXPOM4': ['POM', 1],
   'NGON-TARO-RENPOM': ['POM', 2],
   // Ngọn Tip
-  'NGON-LAMBANG': ['NGON', 1], 'NGONLAMBANGGLASS': ['NGON', 1], 'NGON-DANTIP': ['NGON', 2], 'NGON-TIP-LAMDAU': ['NGON', 3], 'NGON-LAMDAUGLASS': ['NGON', 3],
+  'NGON-LAMBANG': ['NGON', 1], 'NGONLAMBANGGLASS': ['NGON', 1], 'NGON-DANTIP': ['NGON', 2], 'NGON-TIP-LAMDAU': ['NGON', 3], 'NGON-LAMDAUGLASS': ['NGON', 3], 'NGON-LAMDAUDALON': ['NGON', 3], 'TIP-BAKELIT': ['TIP', 3],   /* 15/11: 2 công đoạn mới (làm đầu da lợn = như làm đầu glass; tip bakelit 16mm ở CNC). NUT-CUA-NET, TAM-DA-MICROFIBER để "Chưa xếp" cho chủ dự án tự xếp */
   'NGON-TIP-LAMDAUPHA': ['NGON', 3], 'NGON-CNCBODAU': ['NGON', 4],
   // Sơn
   'TUOT-LOT': ['CHUOI', 1], 'TUOT-LOT-1': ['GAY1K', 1], 'RAP-CHUOI': ['CHUOI', 2], 'RAP-2': ['CHUOI', 2], 'RAP-1': ['GAY1K', 2], 'CUON-WAP-BANG-DINH': ['CHUOI', 3],
@@ -9969,9 +9969,10 @@ function dhCacheGhi_(k, o, giay) { try { var s = JSON.stringify(o), p = {}, m = 
 function layDonHoanThien(token, lamMoi) {
   var q = dhQuyenDon_(token); if (q.loi) return q.loi;   // 14/11: tab Hoàn thiện nằm trong Đơn hàng -> mở cùng quyền
   /* 08/11 tăng tốc: gửi gọn dạng bảng, chỉ các cột web dùng (1,7 MB → ~0,3 MB). Trình duyệt mở lại bằng dhHTMo. */
-  var H = dhHTTrucTiep_(lamMoi), cot = ['maDon', 'kenh', 'tab', 'nguoiDat', 'dl', 'hanMoi', 'thang', 'sl', 'thieu'], o = {};
+  /* 15/11 chiều: thêm ngayDat + loại / chất liệu chuôi, ngọn (pl) cho Dự báo đơn tháng tới (web dbDuLieu) */
+  var H = dhHTTrucTiep_(lamMoi), cot = ['maDon', 'kenh', 'tab', 'nguoiDat', 'dl', 'hanMoi', 'thang', 'sl', 'thieu', 'ngayDat', 'loai', 'vlC', 'vlN'], o = {};
   Object.keys(H).forEach(function(k) { if (k !== 'don') o[k] = H[k]; });
-  if (H.don) { o.donC = cot; o.donH = H.don.map(function(d) { return cot.map(function(c) { var v = d[c]; return v === undefined ? '' : v; }); }); }
+  if (H.don) { o.donC = cot; o.donH = H.don.map(function(d) { return cot.map(function(c) { var v = (c === 'loai' || c === 'vlC' || c === 'vlN') ? (d.pl || {})[c] : d[c]; return v === undefined || v === null ? '' : v; }); }); }
   return sach_(o);
 }
 function dhHTTrucTiep_(lamMoi) {

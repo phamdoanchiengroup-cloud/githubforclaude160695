@@ -1446,9 +1446,10 @@ function dhCacheGhi_(k, o, giay) { try { var s = JSON.stringify(o), p = {}, m = 
 function layDonHoanThien(token, lamMoi) {
   var q = dhQuyenDon_(token); if (q.loi) return q.loi;   // 14/11: tab Hoàn thiện nằm trong Đơn hàng -> mở cùng quyền
   /* 08/11 tăng tốc: gửi gọn dạng bảng, chỉ các cột web dùng (1,7 MB → ~0,3 MB). Trình duyệt mở lại bằng dhHTMo. */
-  var H = dhHTTrucTiep_(lamMoi), cot = ['maDon', 'kenh', 'tab', 'nguoiDat', 'dl', 'hanMoi', 'thang', 'sl', 'thieu'], o = {};
+  /* 15/11 chiều: thêm ngayDat + loại / chất liệu chuôi, ngọn (pl) cho Dự báo đơn tháng tới (web dbDuLieu) */
+  var H = dhHTTrucTiep_(lamMoi), cot = ['maDon', 'kenh', 'tab', 'nguoiDat', 'dl', 'hanMoi', 'thang', 'sl', 'thieu', 'ngayDat', 'loai', 'vlC', 'vlN'], o = {};
   Object.keys(H).forEach(function(k) { if (k !== 'don') o[k] = H[k]; });
-  if (H.don) { o.donC = cot; o.donH = H.don.map(function(d) { return cot.map(function(c) { var v = d[c]; return v === undefined ? '' : v; }); }); }
+  if (H.don) { o.donC = cot; o.donH = H.don.map(function(d) { return cot.map(function(c) { var v = (c === 'loai' || c === 'vlC' || c === 'vlN') ? (d.pl || {})[c] : d[c]; return v === undefined || v === null ? '' : v; }); }); }
   return sach_(o);
 }
 function dhHTTrucTiep_(lamMoi) {
