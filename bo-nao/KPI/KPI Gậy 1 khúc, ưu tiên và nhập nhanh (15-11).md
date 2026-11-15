@@ -41,6 +41,12 @@ Ghi chú: các mục ghi "16/11" ở phiên trước thực ra làm ngày 15/11 
 - `DH_TAB_LOAI` thêm tên tab để không đọc như tab kênh. Web: dòng trạng thái `dhTab10Dong` ở Đến hạn 10 ngày.
 - Kiểm thử `tab10.js` 14/14 (giả lập: openById có insertSheet, clearContents xóa tại chỗ). bao-mat.js / com-trua.js lỗi có từ trước (dữ liệu cũ).
 
+## 15/11 khuya – sửa hiểu nhầm (chủ dự án)
+- "Đến hạn 10 ngày tới" thành **1 mục trong bảng đơn** (`@han10`, `dhHan10Ds`, cạnh ★ Đơn ưu tiên / Đơn trễ hẹn) **thay** mục "Lẻ / POD quá 10 ngày" (mục này bỏ – chủ dự án không yêu cầu). Bỏ mục đứng riêng "Đến hạn 10 ngày" + bảng Nhập nhanh khỏi giao diện (hàm `dhVeNhapNhanh` còn trong mã, không gọi); ô "Đến hạn 10 ngày tới" mở thẳng mục trong bảng (`dhChon('han10')`). Dòng trạng thái tab Sheet hiện trong mục mới.
+- Cảnh báo đơn lẻ / POD quá 10 ngày giữ là dòng đỏ, liệt kê mã đơn (không mở mục riêng).
+- Lưu đồ nhà máy làm lại (3 làn, bỏ đường ngọn lẻ Tip → Đóng gói): ở nhánh tạm `claude/beautiful-ptolemy-f2j7za-dang-lam`, **chờ chủ dự án duyệt ảnh** rồi gộp vào nhánh chính.
+- Kiểm thử `uu-tien-web.js` 27/27.
+
 ## Còn bàn
 - Tab "Đến hạn 10 ngày" thẳng trong Sheet Trạng thái đơn hàng (mỗi đơn ghi kênh): web (Apps Script) ghi được Sheet đó; cần bàn: tab tự làm mới lúc nào, chỉ đọc hay nhập ở đó rồi chép về tab kênh, ai sửa.
 - "Lưu tất cả" (lưu nhiều dòng một lần) – chưa làm, chủ dự án chưa rõ ý nghĩa.
