@@ -1,7 +1,7 @@
 /* =====================================================================================================
    GLASS MATERIAL SYSTEM – "Realistic Premium Glassmorphism" (demo 16/11, chủ dự án yêu cầu)
    Chỉ đổi LỚP TRÌNH BÀY: không đổi bố cục, kích thước, vị trí, chức năng. Bật khi <html class="rs">.
-   Tông (nền + màu nhấn): .rs-xanh (mặc định) · .rs-do · .rs-tim. Nền vẽ bằng rung-suong.js (--rs-nen).
+   Tông (nền + màu nhấn): .rs-xanh (mặc định) · .rs-tien (Tiên Cảnh). Nền vẽ bằng rung-suong.js (--rs-nen).
    rung-suong.js gắn lớp vai trò cho mọi "thẻ" của web:
      .rs-the  = Primary Glass (khung nội dung cấp 1)    .rs-the2 = Secondary Glass (thẻ lồng trong thẻ)
      .rs-sang = thẻ vốn nền sáng (chữ chuyển sáng)       .rs-vien = có ::before trống → viền kính gradient thật
@@ -68,7 +68,7 @@ html.rs[data-gd],html.rs.cn-moi,html.rs.holo{color-scheme:dark!important;--bg:tr
 
 /* ---------- 2. Môi trường (nền) – giữ sống động, không phủ màu đục ---------- */
 html.rs body{background:transparent!important;color:var(--g-ink)!important}
-html.rs body::before{content:"";position:fixed;inset:0;z-index:-1;background:linear-gradient(180deg,rgba(var(--g-tone),var(--g-scrim1)),rgba(var(--g-tone),var(--g-scrim2))),var(--rs-nen,linear-gradient(var(--g-env2),var(--g-env))) center/cover no-repeat,var(--g-env2)}
+html.rs body::before{content:"";position:fixed;inset:0;z-index:-1;background:linear-gradient(180deg,rgba(var(--g-tone),var(--g-scrim1)),rgba(var(--g-tone),var(--g-scrim2))),var(--rs-nen,linear-gradient(var(--g-env2),var(--g-env))) var(--rs-nen-pos,center)/cover no-repeat,var(--g-env2)}
 html.rs #bgfx,html.rs #festfx{display:none!important}
 
 /* ---------- 3. Primary Glass (khung nội dung cấp 1) ---------- */
@@ -150,12 +150,18 @@ html.rs .card,html.rs .rs-the{transition:none}
 @media (prefers-reduced-motion:reduce){html.rs *{transition:none!important;animation:none!important}}
 
 /* ---------- 10. Tông ---------- */
-html.rs.rs-do{--g-env:#2a0b10;--g-env2:#561a20;--g-tone:58,14,20;--g-ink:#fff7f4;--g-ink2:rgba(255,240,234,.86);--g-ink3:rgba(255,228,220,.68);
-  --g-accent:#ffc2a6;--g-accent-ink:#3a0c12;--g-warn:#ffdf9a;--g-bad:#ffd2c7;--g-good:#c4f2cd}
-html.rs.rs-tim{--g-env:#3d3166;--g-env2:#6f5c9e;--g-tone:58,42,100;--g-ink:#fdfbff;--g-ink2:rgba(250,245,255,.9);--g-ink3:rgba(243,236,255,.74);
-  --g-accent:#ece0ff;--g-accent-ink:#33245c;--g-warn:#ffe6a8;--g-bad:#ffc2cf;--g-good:#cff6dc}
-/* 16/11: tông SƯƠNG SÁNG – ảnh nền sáng, kính trắng sáng như ảnh mẫu; lớp phủ đậm hơn một chút để chữ trắng không chìm */
-html.rs.rs-suong{--g-env:#3f6656;--g-env2:#86ad98;--g-tone:34,74,58;--g-ink:#ffffff;--g-ink2:rgba(255,255,255,.92);--g-ink3:rgba(255,255,255,.82);
-  --g-accent:#e9fff3;--g-accent-ink:#173d2e;--g-warn:#ffe7a0;--g-bad:#ffd0c4;--g-good:#dcffe9;
-  --g1-tint:rgba(34,74,58,.22);--g2-tint:rgba(255,255,255,.08);--g4-tint:rgba(34,74,58,.24);--g-scrim1:.40;--g-scrim2:.56}
-html.rs.rs-suong .rs-the,html.rs.rs-suong .rs-the2,html.rs.rs-suong .card,html.rs.rs-suong .kpi{text-shadow:0 1px 3px rgba(10,40,28,.7),0 0 12px rgba(10,40,28,.35)!important}
+/* 16/11 (chủ dự án): chỉ giữ 2 tông – XANH RỪNG SƯƠNG (mặc định) và TIÊN CẢNH (ảnh chủ dự án gửi: heo thần, cung điện, phong đỏ).
+   Tiên Cảnh: lòng thẻ TRONG SUỐT HẲN để thấy nền (không tô, không làm mờ), chữ nổi bằng VIỀN CHỮ tối (text-shadow 8 hướng) + quầng mờ;
+   viền kính dày phản quang giữ nguyên. Điện thoại dời khung ảnh sang trái để thấy heo thần. */
+html.rs.rs-tien{--g-env:#3a120f;--g-env2:#7a3a28;--g-tone:70,20,14;--g-ink:#fffaf2;--g-ink2:#fff3e2;--g-ink3:#ffe9cf;
+  --g-accent:#ffd27a;--g-accent-ink:#3a120f;--g-warn:#ffe08a;--g-bad:#ffb4a6;--g-good:#c9f7d2;
+  --g1-tint:transparent;--g1-surface:linear-gradient(transparent,transparent);--g2-tint:transparent;--g2-surface:linear-gradient(transparent,transparent);
+  --g4-tint:rgba(70,20,14,.22);--g-scrim1:.06;--g-scrim2:.20;--rs-nen-pos:center;
+  --t-vien:0 0 1px rgba(45,8,4,.95),1px 0 0 rgba(45,8,4,.9),-1px 0 0 rgba(45,8,4,.9),0 1px 0 rgba(45,8,4,.9),0 -1px 0 rgba(45,8,4,.9),
+    1px 1px 0 rgba(45,8,4,.85),-1px -1px 0 rgba(45,8,4,.85),1px -1px 0 rgba(45,8,4,.85),-1px 1px 0 rgba(45,8,4,.85),0 0 8px rgba(45,8,4,.75)}
+@media (max-width:700px){html.rs.rs-tien{--rs-nen-pos:24% 50%}}
+html.rs.rs.rs.rs-tien .card,html.rs.rs.rs.rs-tien .kpi,html.rs.rs.rs.rs-tien .rs-the,html.rs.rs.rs.rs-tien .rs-the2,html.rs.rs.rs.rs-tien #ducbar,html.rs.rs.rs.rs-tien .card .card{
+  -webkit-backdrop-filter:none!important;backdrop-filter:none!important}
+html.rs.rs-tien #main,html.rs.rs-tien #main *:not(svg):not(svg *):not(input):not(select):not(textarea):not(option),html.rs.rs-tien header *{text-shadow:var(--t-vien)!important}
+html.rs.rs-tien svg text{paint-order:stroke;stroke:rgba(45,8,4,.85);stroke-width:3px;stroke-linejoin:round}
+html.rs.rs-tien #main .btn.pri,html.rs.rs-tien #main .btn.pri *{text-shadow:none!important}   /* nút vàng: chữ tối, không viền */

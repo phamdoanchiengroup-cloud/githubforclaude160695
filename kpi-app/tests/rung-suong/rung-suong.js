@@ -5,12 +5,8 @@
   var TONG={
     xanh:{ten:'Rừng Sương',nen:['#2f5d4a','#1e4637','#0f2a22'],bk:['rgba(160,215,140,.2)','rgba(240,250,235,.14)'],tia:'rgba(255,250,220,',
       can:'rgba(120,190,90,',la1:'rgba(70,140,60,',la2:'rgba(150,215,110,',reu:'rgba(70,120,50,.75)',phu:'rgba(8,26,20,'},
-    do:{ten:'Lá Phong',nen:['#7a2a2c','#561a20','#2a0b10'],bk:['rgba(255,150,120,.2)','rgba(255,235,225,.14)'],tia:'rgba(255,225,200,',
-      can:'rgba(200,70,50,',la1:'rgba(150,25,30,',la2:'rgba(240,110,70,',reu:'rgba(110,30,30,.75)',phu:'rgba(30,6,10,'},
-    suong:{ten:'Sương Sáng',nen:['#a9c9b6','#7da592','#4a705f'],bk:['rgba(235,255,240,.3)','rgba(255,255,255,.25)'],tia:'rgba(255,255,245,',
-      can:'rgba(140,200,110,',la1:'rgba(90,160,80,',la2:'rgba(185,235,150,',reu:'rgba(90,140,70,.7)',phu:'rgba(30,60,45,'},
-    tim:{ten:'Oải Hương',nen:['#9a86c4','#6f5c9e','#3d3166'],bk:['rgba(225,205,255,.24)','rgba(250,245,255,.18)'],tia:'rgba(255,245,255,',
-      can:'rgba(190,160,235,',la1:'rgba(120,90,180,',la2:'rgba(215,190,250,',reu:'rgba(95,70,140,.75)',phu:'rgba(30,20,55,'}};
+    tien:{ten:'Tiên Cảnh',nen:['#c98a5a','#7a3a28','#3a120f'],bk:['rgba(255,200,150,.22)','rgba(255,240,225,.16)'],tia:'rgba(255,230,190,',
+      can:'rgba(200,70,50,',la1:'rgba(160,30,25,',la2:'rgba(240,110,70,',reu:'rgba(110,40,30,.75)',phu:'rgba(40,10,6,'}};
   var P=TONG.xanh;
   function rnd(s){ return function(){ s=(s*16807)%2147483647; return (s-1)/2147483646; }; }
   function giot(c,x,y,r){ var g=c.createRadialGradient(x-r*.35,y-r*.4,r*.1,x,y,r);
@@ -50,9 +46,9 @@
     var url; try{ url=cv.toDataURL('image/jpeg',.82); }catch(e){ return; }
     document.documentElement.style.setProperty('--rs-nen','url('+url+')');
   }
-  var daVe='', tg, THU=['xanh','suong','do','tim','0'];
+  var daVe='', tg, THU=['xanh','tien','0'];
   window.rsBat=function(t){ if(t===true) t='xanh'; if(!t) t='0'; var h=document.documentElement, bat=t!=='0';
-    h.classList.toggle('rs',bat); ['xanh','suong','do','tim'].forEach(function(k){ h.classList.toggle('rs-'+k,t===k); });
+    h.classList.toggle('rs',bat); ['xanh','tien','suong','do','tim'].forEach(function(k){ h.classList.toggle('rs-'+k,t===k); });
     if(window.RS_DEMO){ try{ localStorage.setItem('kpi_rs',t); }catch(e){} }
     if(!bat) document.querySelectorAll('#app .rs-sang').forEach(function(e){ e.style.removeProperty('background'); if(e.dataset.rsBg) e.style.setProperty('background',e.dataset.rsBg); e.classList.remove('rs-sang'); daXet.delete(e); });
     if(bat){ P=TONG[t]; if(daVe!==t){ daVe=t; if(!veAnh(t)) ve(); } setTimeout(quet,50); }
@@ -84,6 +80,6 @@
   /* nút bật / tắt nổi (chỉ bản demo) */
   var n=document.createElement('button'); n.id='rsNut'; n.type='button';
   n.style.cssText='position:fixed;right:calc(10px + env(safe-area-inset-right,0px));top:calc(64px + env(safe-area-inset-top,0px));z-index:9999;padding:8px 12px;border-radius:999px;border:1px solid rgba(255,255,255,.5);background:rgba(16,44,35,.72);color:#f2faf5;font:600 12px system-ui;-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);cursor:pointer';
-  n.onclick=function(){ var h=document.documentElement, cur=h.classList.contains('rs')?(['xanh','suong','do','tim'].filter(function(k){return h.classList.contains('rs-'+k);})[0]||'xanh'):'0'; rsBat(THU[(THU.indexOf(cur)+1)%THU.length]); };
+  n.onclick=function(){ var h=document.documentElement, cur=h.classList.contains('rs')?(['xanh','tien'].filter(function(k){return h.classList.contains('rs-'+k);})[0]||'xanh'):'0'; rsBat(THU[(THU.indexOf(cur)+1)%THU.length]); };
   document.body.appendChild(n); rsBat(bat);
 })();

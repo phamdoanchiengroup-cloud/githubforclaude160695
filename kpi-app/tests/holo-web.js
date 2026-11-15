@@ -52,10 +52,10 @@ const chup = async (p, ten) => { if (ANH) await p.screenshot({ path: ANH + '/' +
   console.log('\n2. Nút đổi chế độ');
   await moDash(p);
   await p.evaluate(() => document.getElementById('btnTong').click()); await p.waitForTimeout(400);
-  s = await p.evaluate(() => ({ do: document.documentElement.classList.contains('rs-suong'), luu: localStorage.getItem('kpi_kinh_tong'), t: document.getElementById('btnTong').textContent }));
-  ok(s.do && s.luu === 'suong' && /Sương sáng/.test(s.t), 'nút Tông màu: xanh → sương sáng, máy nhớ', s);
-  await p.evaluate(() => { const b = document.getElementById('btnTong'); b.click(); b.click(); b.click(); }); await p.waitForTimeout(400);
-  ok(await p.evaluate(() => document.documentElement.classList.contains('rs-xanh')), 'bấm tiếp: đỏ → tím → về xanh');
+  s = await p.evaluate(() => ({ do: document.documentElement.classList.contains('rs-tien'), luu: localStorage.getItem('kpi_kinh_tong'), t: document.getElementById('btnTong').textContent }));
+  ok(s.do && s.luu === 'tien' && /Tiên cảnh/.test(s.t), 'nút Tông màu: xanh → tiên cảnh, máy nhớ', s);
+  await p.evaluate(() => document.getElementById('btnTong').click()); await p.waitForTimeout(400);
+  ok(await p.evaluate(() => document.documentElement.classList.contains('rs-xanh')), 'bấm tiếp: tiên cảnh → về xanh');
   await p.evaluate(() => document.getElementById('btnHolo').click()); await p.waitForTimeout(500);
   s = await p.evaluate(() => ({ rs: document.documentElement.classList.contains('rs'), nhe: document.documentElement.classList.contains('rs-nhe'), nut: document.getElementById('btnHolo').textContent, dai: !!document.getElementById('hlDai'),
     blur: getComputedStyle(document.querySelector('.card') || document.body).backdropFilter }));

@@ -9731,7 +9731,7 @@ function hsGhiChuDong(r){
 }
 </script>
 <script>
-var KPI_BAN = '15/11/2026 14:20';
+var KPI_BAN = '15/11/2026 14:35';
 (function(){
   var cu = window.veNav;
   window.veNav = function(){
@@ -10116,7 +10116,7 @@ function knVeToi(){
 /* =====================================================================================================
    GLASS MATERIAL SYSTEM – "Realistic Premium Glassmorphism" (demo 16/11, chủ dự án yêu cầu)
    Chỉ đổi LỚP TRÌNH BÀY: không đổi bố cục, kích thước, vị trí, chức năng. Bật khi <html class="rs">.
-   Tông (nền + màu nhấn): .rs-xanh (mặc định) · .rs-do · .rs-tim. Nền vẽ bằng rung-suong.js (--rs-nen).
+   Tông (nền + màu nhấn): .rs-xanh (mặc định) · .rs-tien (Tiên Cảnh). Nền vẽ bằng rung-suong.js (--rs-nen).
    rung-suong.js gắn lớp vai trò cho mọi "thẻ" của web:
      .rs-the  = Primary Glass (khung nội dung cấp 1)    .rs-the2 = Secondary Glass (thẻ lồng trong thẻ)
      .rs-sang = thẻ vốn nền sáng (chữ chuyển sáng)       .rs-vien = có ::before trống → viền kính gradient thật
@@ -10183,7 +10183,7 @@ html.rs[data-gd],html.rs.cn-moi,html.rs.holo{color-scheme:dark!important;--bg:tr
 
 /* ---------- 2. Môi trường (nền) – giữ sống động, không phủ màu đục ---------- */
 html.rs body{background:transparent!important;color:var(--g-ink)!important}
-html.rs body::before{content:"";position:fixed;inset:0;z-index:-1;background:linear-gradient(180deg,rgba(var(--g-tone),var(--g-scrim1)),rgba(var(--g-tone),var(--g-scrim2))),var(--rs-nen,linear-gradient(var(--g-env2),var(--g-env))) center/cover no-repeat,var(--g-env2)}
+html.rs body::before{content:"";position:fixed;inset:0;z-index:-1;background:linear-gradient(180deg,rgba(var(--g-tone),var(--g-scrim1)),rgba(var(--g-tone),var(--g-scrim2))),var(--rs-nen,linear-gradient(var(--g-env2),var(--g-env))) var(--rs-nen-pos,center)/cover no-repeat,var(--g-env2)}
 html.rs #bgfx,html.rs #festfx{display:none!important}
 
 /* ---------- 3. Primary Glass (khung nội dung cấp 1) ---------- */
@@ -10265,18 +10265,24 @@ html.rs .card,html.rs .rs-the{transition:none}
 @media (prefers-reduced-motion:reduce){html.rs *{transition:none!important;animation:none!important}}
 
 /* ---------- 10. Tông ---------- */
-html.rs.rs-do{--g-env:#2a0b10;--g-env2:#561a20;--g-tone:58,14,20;--g-ink:#fff7f4;--g-ink2:rgba(255,240,234,.86);--g-ink3:rgba(255,228,220,.68);
-  --g-accent:#ffc2a6;--g-accent-ink:#3a0c12;--g-warn:#ffdf9a;--g-bad:#ffd2c7;--g-good:#c4f2cd}
-html.rs.rs-tim{--g-env:#3d3166;--g-env2:#6f5c9e;--g-tone:58,42,100;--g-ink:#fdfbff;--g-ink2:rgba(250,245,255,.9);--g-ink3:rgba(243,236,255,.74);
-  --g-accent:#ece0ff;--g-accent-ink:#33245c;--g-warn:#ffe6a8;--g-bad:#ffc2cf;--g-good:#cff6dc}
-/* 16/11: tông SƯƠNG SÁNG – ảnh nền sáng, kính trắng sáng như ảnh mẫu; lớp phủ đậm hơn một chút để chữ trắng không chìm */
-html.rs.rs-suong{--g-env:#3f6656;--g-env2:#86ad98;--g-tone:34,74,58;--g-ink:#ffffff;--g-ink2:rgba(255,255,255,.92);--g-ink3:rgba(255,255,255,.82);
-  --g-accent:#e9fff3;--g-accent-ink:#173d2e;--g-warn:#ffe7a0;--g-bad:#ffd0c4;--g-good:#dcffe9;
-  --g1-tint:rgba(34,74,58,.22);--g2-tint:rgba(255,255,255,.08);--g4-tint:rgba(34,74,58,.24);--g-scrim1:.40;--g-scrim2:.56}
-html.rs.rs-suong .rs-the,html.rs.rs-suong .rs-the2,html.rs.rs-suong .card,html.rs.rs-suong .kpi{text-shadow:0 1px 3px rgba(10,40,28,.7),0 0 12px rgba(10,40,28,.35)!important}
+/* 16/11 (chủ dự án): chỉ giữ 2 tông – XANH RỪNG SƯƠNG (mặc định) và TIÊN CẢNH (ảnh chủ dự án gửi: heo thần, cung điện, phong đỏ).
+   Tiên Cảnh: lòng thẻ TRONG SUỐT HẲN để thấy nền (không tô, không làm mờ), chữ nổi bằng VIỀN CHỮ tối (text-shadow 8 hướng) + quầng mờ;
+   viền kính dày phản quang giữ nguyên. Điện thoại dời khung ảnh sang trái để thấy heo thần. */
+html.rs.rs-tien{--g-env:#3a120f;--g-env2:#7a3a28;--g-tone:70,20,14;--g-ink:#fffaf2;--g-ink2:#fff3e2;--g-ink3:#ffe9cf;
+  --g-accent:#ffd27a;--g-accent-ink:#3a120f;--g-warn:#ffe08a;--g-bad:#ffb4a6;--g-good:#c9f7d2;
+  --g1-tint:transparent;--g1-surface:linear-gradient(transparent,transparent);--g2-tint:transparent;--g2-surface:linear-gradient(transparent,transparent);
+  --g4-tint:rgba(70,20,14,.22);--g-scrim1:.06;--g-scrim2:.20;--rs-nen-pos:center;
+  --t-vien:0 0 1px rgba(45,8,4,.95),1px 0 0 rgba(45,8,4,.9),-1px 0 0 rgba(45,8,4,.9),0 1px 0 rgba(45,8,4,.9),0 -1px 0 rgba(45,8,4,.9),
+    1px 1px 0 rgba(45,8,4,.85),-1px -1px 0 rgba(45,8,4,.85),1px -1px 0 rgba(45,8,4,.85),-1px 1px 0 rgba(45,8,4,.85),0 0 8px rgba(45,8,4,.75)}
+@media (max-width:700px){html.rs.rs-tien{--rs-nen-pos:24% 50%}}
+html.rs.rs.rs.rs-tien .card,html.rs.rs.rs.rs-tien .kpi,html.rs.rs.rs.rs-tien .rs-the,html.rs.rs.rs.rs-tien .rs-the2,html.rs.rs.rs.rs-tien #ducbar,html.rs.rs.rs.rs-tien .card .card{
+  -webkit-backdrop-filter:none!important;backdrop-filter:none!important}
+html.rs.rs-tien #main,html.rs.rs-tien #main *:not(svg):not(svg *):not(input):not(select):not(textarea):not(option),html.rs.rs-tien header *{text-shadow:var(--t-vien)!important}
+html.rs.rs-tien svg text{paint-order:stroke;stroke:rgba(45,8,4,.85);stroke-width:3px;stroke-linejoin:round}
+html.rs.rs-tien #main .btn.pri,html.rs.rs-tien #main .btn.pri *{text-shadow:none!important}   /* nút vàng: chữ tối, không viền */
 </style>
 <script>
-window.KINH_ANH={"xanh": {"may": "https://cdn.jsdelivr.net/gh/phamdoanchiengroup-cloud/githubforclaude160695@80da434bffb6bf1a2c4ca4c393f441f7c13ae084/kpi-app/anh/web/kinh-xanh.jpg", "dt": "https://cdn.jsdelivr.net/gh/phamdoanchiengroup-cloud/githubforclaude160695@80da434bffb6bf1a2c4ca4c393f441f7c13ae084/kpi-app/anh/web/kinh-xanh-dt.jpg"}, "suong": {"may": "https://cdn.jsdelivr.net/gh/phamdoanchiengroup-cloud/githubforclaude160695@b60e8e5b97c494e27da7b03d748f71aaeae77248/kpi-app/anh/web/kinh-suong.jpg", "dt": "https://cdn.jsdelivr.net/gh/phamdoanchiengroup-cloud/githubforclaude160695@b60e8e5b97c494e27da7b03d748f71aaeae77248/kpi-app/anh/web/kinh-suong-dt.jpg"}, "do": {"may": "https://cdn.jsdelivr.net/gh/phamdoanchiengroup-cloud/githubforclaude160695@b60e8e5b97c494e27da7b03d748f71aaeae77248/kpi-app/anh/web/kinh-do.jpg", "dt": "https://cdn.jsdelivr.net/gh/phamdoanchiengroup-cloud/githubforclaude160695@b60e8e5b97c494e27da7b03d748f71aaeae77248/kpi-app/anh/web/kinh-do-dt.jpg"}, "tim": {"may": "https://cdn.jsdelivr.net/gh/phamdoanchiengroup-cloud/githubforclaude160695@b60e8e5b97c494e27da7b03d748f71aaeae77248/kpi-app/anh/web/kinh-tim.jpg", "dt": "https://cdn.jsdelivr.net/gh/phamdoanchiengroup-cloud/githubforclaude160695@b60e8e5b97c494e27da7b03d748f71aaeae77248/kpi-app/anh/web/kinh-tim-dt.jpg"}};
+window.KINH_ANH={"xanh": {"may": "https://cdn.jsdelivr.net/gh/phamdoanchiengroup-cloud/githubforclaude160695@80da434bffb6bf1a2c4ca4c393f441f7c13ae084/kpi-app/anh/web/kinh-xanh.jpg", "dt": "https://cdn.jsdelivr.net/gh/phamdoanchiengroup-cloud/githubforclaude160695@80da434bffb6bf1a2c4ca4c393f441f7c13ae084/kpi-app/anh/web/kinh-xanh-dt.jpg"}, "tien": {"may": "https://cdn.jsdelivr.net/gh/phamdoanchiengroup-cloud/githubforclaude160695@74d6b50d07430b2620160c4978f349ade1312db5/kpi-app/anh/web/kinh-tien.jpg", "dt": "https://cdn.jsdelivr.net/gh/phamdoanchiengroup-cloud/githubforclaude160695@74d6b50d07430b2620160c4978f349ade1312db5/kpi-app/anh/web/kinh-tien-dt.jpg"}};
 /* ===== Giao diện "Rừng Sương" (demo 16/11): vẽ nền rừng sương + dương xỉ đọng sương bằng canvas, đặt làm ảnh nền cố định (--rs-nen).
    Không dùng ảnh ngoài. Bật/tắt: rsBat(true/false), nhớ ở localStorage kpi_rs. ===== */
 (function(){
@@ -10284,12 +10290,8 @@ window.KINH_ANH={"xanh": {"may": "https://cdn.jsdelivr.net/gh/phamdoanchiengroup
   var TONG={
     xanh:{ten:'Rừng Sương',nen:['#2f5d4a','#1e4637','#0f2a22'],bk:['rgba(160,215,140,.2)','rgba(240,250,235,.14)'],tia:'rgba(255,250,220,',
       can:'rgba(120,190,90,',la1:'rgba(70,140,60,',la2:'rgba(150,215,110,',reu:'rgba(70,120,50,.75)',phu:'rgba(8,26,20,'},
-    do:{ten:'Lá Phong',nen:['#7a2a2c','#561a20','#2a0b10'],bk:['rgba(255,150,120,.2)','rgba(255,235,225,.14)'],tia:'rgba(255,225,200,',
-      can:'rgba(200,70,50,',la1:'rgba(150,25,30,',la2:'rgba(240,110,70,',reu:'rgba(110,30,30,.75)',phu:'rgba(30,6,10,'},
-    suong:{ten:'Sương Sáng',nen:['#a9c9b6','#7da592','#4a705f'],bk:['rgba(235,255,240,.3)','rgba(255,255,255,.25)'],tia:'rgba(255,255,245,',
-      can:'rgba(140,200,110,',la1:'rgba(90,160,80,',la2:'rgba(185,235,150,',reu:'rgba(90,140,70,.7)',phu:'rgba(30,60,45,'},
-    tim:{ten:'Oải Hương',nen:['#9a86c4','#6f5c9e','#3d3166'],bk:['rgba(225,205,255,.24)','rgba(250,245,255,.18)'],tia:'rgba(255,245,255,',
-      can:'rgba(190,160,235,',la1:'rgba(120,90,180,',la2:'rgba(215,190,250,',reu:'rgba(95,70,140,.75)',phu:'rgba(30,20,55,'}};
+    tien:{ten:'Tiên Cảnh',nen:['#c98a5a','#7a3a28','#3a120f'],bk:['rgba(255,200,150,.22)','rgba(255,240,225,.16)'],tia:'rgba(255,230,190,',
+      can:'rgba(200,70,50,',la1:'rgba(160,30,25,',la2:'rgba(240,110,70,',reu:'rgba(110,40,30,.75)',phu:'rgba(40,10,6,'}};
   var P=TONG.xanh;
   function rnd(s){ return function(){ s=(s*16807)%2147483647; return (s-1)/2147483646; }; }
   function giot(c,x,y,r){ var g=c.createRadialGradient(x-r*.35,y-r*.4,r*.1,x,y,r);
@@ -10329,9 +10331,9 @@ window.KINH_ANH={"xanh": {"may": "https://cdn.jsdelivr.net/gh/phamdoanchiengroup
     var url; try{ url=cv.toDataURL('image/jpeg',.82); }catch(e){ return; }
     document.documentElement.style.setProperty('--rs-nen','url('+url+')');
   }
-  var daVe='', tg, THU=['xanh','suong','do','tim','0'];
+  var daVe='', tg, THU=['xanh','tien','0'];
   window.rsBat=function(t){ if(t===true) t='xanh'; if(!t) t='0'; var h=document.documentElement, bat=t!=='0';
-    h.classList.toggle('rs',bat); ['xanh','suong','do','tim'].forEach(function(k){ h.classList.toggle('rs-'+k,t===k); });
+    h.classList.toggle('rs',bat); ['xanh','tien','suong','do','tim'].forEach(function(k){ h.classList.toggle('rs-'+k,t===k); });
     if(window.RS_DEMO){ try{ localStorage.setItem('kpi_rs',t); }catch(e){} }
     if(!bat) document.querySelectorAll('#app .rs-sang').forEach(function(e){ e.style.removeProperty('background'); if(e.dataset.rsBg) e.style.setProperty('background',e.dataset.rsBg); e.classList.remove('rs-sang'); daXet.delete(e); });
     if(bat){ P=TONG[t]; if(daVe!==t){ daVe=t; if(!veAnh(t)) ve(); } setTimeout(quet,50); }
@@ -10363,7 +10365,7 @@ window.KINH_ANH={"xanh": {"may": "https://cdn.jsdelivr.net/gh/phamdoanchiengroup
   /* nút bật / tắt nổi (chỉ bản demo) */
   var n=document.createElement('button'); n.id='rsNut'; n.type='button';
   n.style.cssText='position:fixed;right:calc(10px + env(safe-area-inset-right,0px));top:calc(64px + env(safe-area-inset-top,0px));z-index:9999;padding:8px 12px;border-radius:999px;border:1px solid rgba(255,255,255,.5);background:rgba(16,44,35,.72);color:#f2faf5;font:600 12px system-ui;-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);cursor:pointer';
-  n.onclick=function(){ var h=document.documentElement, cur=h.classList.contains('rs')?(['xanh','suong','do','tim'].filter(function(k){return h.classList.contains('rs-'+k);})[0]||'xanh'):'0'; rsBat(THU[(THU.indexOf(cur)+1)%THU.length]); };
+  n.onclick=function(){ var h=document.documentElement, cur=h.classList.contains('rs')?(['xanh','tien'].filter(function(k){return h.classList.contains('rs-'+k);})[0]||'xanh'):'0'; rsBat(THU[(THU.indexOf(cur)+1)%THU.length]); };
   document.body.appendChild(n); rsBat(bat);
 })();
 
@@ -10371,12 +10373,12 @@ window.KINH_ANH={"xanh": {"may": "https://cdn.jsdelivr.net/gh/phamdoanchiengroup
    34. GIAO DIỆN CHỦ SỞ HỮU – KÍNH "PREMIUM GLASS" (16/11, chủ dự án: "áp dụng cho giao diện chủ sở hữu, bỏ hoàn toàn giao diện hologram")
    - Hologram (nền vũ trụ, sao nhấp nháy, viền xanh phát sáng, font Exo 2) đã BỎ HẲN 16/11.
    - Chỉ chạy khi ME.laOwner. Mọi tài khoản khác: giao diện giữ nguyên.
-   - Lớp áo: hệ thống vật liệu kính trong tests/rung-suong/rung-suong.css + .js (html.rs, tông rs-xanh / rs-do / rs-tim, rs-nhe).
+   - Lớp áo: hệ thống vật liệu kính trong tests/rung-suong/rung-suong.css + .js (html.rs, tông rs-xanh / rs-tien, rs-nhe).
    - Tổng quan: GIỮ "Đài quan sát KPI" (chòm sao KPI theo xưởng, bấm sao mở Bảng KPI đúng xưởng), đổi màu sang kính, không chuyển động liên tục.
-   - Nút cuối menu: "Giao diện kính" Đầy đủ -> Nhẹ (không làm mờ, cho máy yếu) -> Tắt; "Tông màu" Xanh rừng -> Sương sáng -> Đỏ lá phong -> Tím oải hương.
+   - Nút cuối menu: "Giao diện kính" Đầy đủ -> Nhẹ (không làm mờ, cho máy yếu) -> Tắt; "Tông màu" Xanh rừng sương <-> Tiên cảnh.
      Nhớ trong máy (localStorage kpi_kinh, kpi_kinh_tong). Chọn nền sáng (nút mặt trời) thì kính tự tắt.
    ===================================================================== */
-var HOLO_KHOA = 'kpi_kinh', HOLO_TONG = 'kpi_kinh_tong', HOLO_TONG_TEN = { xanh: 'Xanh rừng sương', suong: 'Sương sáng', do: 'Đỏ lá phong', tim: 'Tím oải hương' };
+var HOLO_KHOA = 'kpi_kinh', HOLO_TONG = 'kpi_kinh_tong', HOLO_TONG_TEN = { xanh: 'Xanh rừng sương', tien: 'Tiên cảnh' };   // 16/11: bỏ Sương sáng / Đỏ / Tím
 function holoCheDo() { var v = null; try { v = localStorage.getItem(HOLO_KHOA); } catch (e) {} return v === 'nhe' || v === 'tat' ? v : 'day'; }
 function holoTong() { var v = null; try { v = localStorage.getItem(HOLO_TONG); } catch (e) {} return HOLO_TONG_TEN[v] ? v : 'xanh'; }
 function holoSang() { return document.documentElement.getAttribute('data-gd') === 'sang'; }
@@ -10458,7 +10460,7 @@ function holoDoi() {
   toast(moi === 'day' ? 'Giao diện kính: đầy đủ' : moi === 'nhe' ? 'Giao diện kính: nhẹ – bỏ làm mờ, nhẹ máy hơn' : 'Đã tắt giao diện kính – về giao diện thường', true);
 }
 function holoDoiTong() {
-  var ds = ['xanh', 'suong', 'do', 'tim'], moi = ds[(ds.indexOf(holoTong()) + 1) % ds.length];
+  var ds = ['xanh', 'tien'], moi = ds[(ds.indexOf(holoTong()) + 1) % ds.length];
   try { localStorage.setItem(HOLO_TONG, moi); } catch (e) {}
   holoApDung(); toast('Tông màu: ' + HOLO_TONG_TEN[moi], true);
 }
@@ -11034,7 +11036,7 @@ function nsnCapNhat(){ call('capNhatNgoaiSXTuFile',[],function(r){ if(!r||!r.ok)
 </script>
 <script>
 /* ===== 38. TĂNG TỐC ĐỢT 3 (08/11) – bộ đo tốc độ + mở nhanh bằng số lần trước (mã hóa) ===== */
-var TD_BUF=[], TD_T=null, DL_VER='bf5ab83c16', DL_HAN=12*3600e3, DL_BO=['SoCCCD','DienThoai','DiaChi','SdtKhanCap','LuongCoBan','NamSinh','SoTaiKhoan','Email'];
+var TD_BUF=[], TD_T=null, DL_VER='a43150f7b9', DL_HAN=12*3600e3, DL_BO=['SoCCCD','DienThoai','DiaChi','SdtKhanCap','LuongCoBan','NamSinh','SoTaiKhoan','Email'];
 function tdGhi_(f,ms,sv){ if(!(ms>=0)||!f) return; TD_BUF.push({f:String(f),ms:Math.round(ms),sv:(typeof sv==='number'?Math.round(sv):null)});
   if(TD_BUF.length>=15) tdGui_(); else if(!TD_T) TD_T=setTimeout(tdGui_,180000); }
 function tdGui_(){ if(TD_T){clearTimeout(TD_T);TD_T=null;} if(!TD_BUF.length||typeof TOKEN==='undefined'||!TOKEN) return;

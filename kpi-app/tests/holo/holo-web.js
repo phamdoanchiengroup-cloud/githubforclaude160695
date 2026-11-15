@@ -2,12 +2,12 @@
    34. GIAO DIỆN CHỦ SỞ HỮU – KÍNH "PREMIUM GLASS" (16/11, chủ dự án: "áp dụng cho giao diện chủ sở hữu, bỏ hoàn toàn giao diện hologram")
    - Hologram (nền vũ trụ, sao nhấp nháy, viền xanh phát sáng, font Exo 2) đã BỎ HẲN 16/11.
    - Chỉ chạy khi ME.laOwner. Mọi tài khoản khác: giao diện giữ nguyên.
-   - Lớp áo: hệ thống vật liệu kính trong tests/rung-suong/rung-suong.css + .js (html.rs, tông rs-xanh / rs-do / rs-tim, rs-nhe).
+   - Lớp áo: hệ thống vật liệu kính trong tests/rung-suong/rung-suong.css + .js (html.rs, tông rs-xanh / rs-tien, rs-nhe).
    - Tổng quan: GIỮ "Đài quan sát KPI" (chòm sao KPI theo xưởng, bấm sao mở Bảng KPI đúng xưởng), đổi màu sang kính, không chuyển động liên tục.
-   - Nút cuối menu: "Giao diện kính" Đầy đủ -> Nhẹ (không làm mờ, cho máy yếu) -> Tắt; "Tông màu" Xanh rừng -> Sương sáng -> Đỏ lá phong -> Tím oải hương.
+   - Nút cuối menu: "Giao diện kính" Đầy đủ -> Nhẹ (không làm mờ, cho máy yếu) -> Tắt; "Tông màu" Xanh rừng sương <-> Tiên cảnh.
      Nhớ trong máy (localStorage kpi_kinh, kpi_kinh_tong). Chọn nền sáng (nút mặt trời) thì kính tự tắt.
    ===================================================================== */
-var HOLO_KHOA = 'kpi_kinh', HOLO_TONG = 'kpi_kinh_tong', HOLO_TONG_TEN = { xanh: 'Xanh rừng sương', suong: 'Sương sáng', do: 'Đỏ lá phong', tim: 'Tím oải hương' };
+var HOLO_KHOA = 'kpi_kinh', HOLO_TONG = 'kpi_kinh_tong', HOLO_TONG_TEN = { xanh: 'Xanh rừng sương', tien: 'Tiên cảnh' };   // 16/11: bỏ Sương sáng / Đỏ / Tím
 function holoCheDo() { var v = null; try { v = localStorage.getItem(HOLO_KHOA); } catch (e) {} return v === 'nhe' || v === 'tat' ? v : 'day'; }
 function holoTong() { var v = null; try { v = localStorage.getItem(HOLO_TONG); } catch (e) {} return HOLO_TONG_TEN[v] ? v : 'xanh'; }
 function holoSang() { return document.documentElement.getAttribute('data-gd') === 'sang'; }
@@ -89,7 +89,7 @@ function holoDoi() {
   toast(moi === 'day' ? 'Giao diện kính: đầy đủ' : moi === 'nhe' ? 'Giao diện kính: nhẹ – bỏ làm mờ, nhẹ máy hơn' : 'Đã tắt giao diện kính – về giao diện thường', true);
 }
 function holoDoiTong() {
-  var ds = ['xanh', 'suong', 'do', 'tim'], moi = ds[(ds.indexOf(holoTong()) + 1) % ds.length];
+  var ds = ['xanh', 'tien'], moi = ds[(ds.indexOf(holoTong()) + 1) % ds.length];
   try { localStorage.setItem(HOLO_TONG, moi); } catch (e) {}
   holoApDung(); toast('Tông màu: ' + HOLO_TONG_TEN[moi], true);
 }

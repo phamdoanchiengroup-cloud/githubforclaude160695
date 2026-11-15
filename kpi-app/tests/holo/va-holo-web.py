@@ -7,6 +7,6 @@ _kinh_css = io.open(os.path.join(D, 'rung-suong', 'rung-suong.css'), encoding='u
 _kinh_js = io.open(os.path.join(D, 'rung-suong', 'rung-suong.js'), encoding='utf-8').read()
 # 16/11: ảnh nền thật (Pexels, kpi-app/anh/web/kinh-*.jpg) qua jsDelivr, ghim theo commit ảnh (anh_cdn trong tests/dang-nhap/anh_rhino.py)
 import sys as _sys; _sys.path.insert(0, os.path.join(D, 'dang-nhap')); from anh_rhino import anh_cdn as _anh_cdn
-_kinh_anh = {t: {'may': _anh_cdn('anh/web/kinh-%s.jpg' % t), 'dt': _anh_cdn('anh/web/kinh-%s-dt.jpg' % t)} for t in ('xanh', 'suong', 'do', 'tim')}
+_kinh_anh = {t: {'may': _anh_cdn('anh/web/kinh-%s.jpg' % t), 'dt': _anh_cdn('anh/web/kinh-%s-dt.jpg' % t)} for t in ('xanh', 'tien')}
 _kinh_js = 'window.KINH_ANH=' + __import__('json').dumps(_kinh_anh) + ';\n' + _kinh_js
 s = s[:_k34] + '<style id="kinhCss">\n' + _kinh_css + '</style>\n<script>\n' + _kinh_js + '\n' + io.open(os.path.join(D, 'holo', 'holo-web.js'), encoding='utf-8').read() + '</script>\n' + s[_k34:]

@@ -64,3 +64,8 @@ Liên quan: [[KPI Demo giao diện]] · [[KPI Kiểm thử]] · [[Quyết địn
 - Sửa lỗi: ánh lóe góc làm `sangNen` nhận nhầm thẻ kính là "thẻ nền sáng" (tắt blur) → chỉ tính nền đặc (alpha ≥ .8).
 - Kiểm thử: holo-web 23/23, tong-quan 26/26.
 - 16/11 (sau nữa): chủ dự án khen ảnh Xanh, chê 3 ảnh còn lại → thay: Sương sáng = rừng thông sương sáng (Pexels 4500037), Đỏ = hàng phong đỏ (708932), Tím = đồng oải hương trời hồng (1166209). Sương sáng tăng lớp phủ (`--g-scrim1/2` .40/.56, kính pha xanh) để chữ trắng đọc rõ.
+
+## 16/11 (tối) – Chỉ còn 2 tông: Xanh rừng sương + Tiên cảnh
+- Chủ dự án gửi ảnh riêng (heo thần, cung điện, phong đỏ – "dùng được thoải mái") → tông **Tiên cảnh** (`rs-tien`, ảnh `anh/web/kinh-tien{,-dt}.jpg`). **Bỏ** Sương sáng / Đỏ / Tím (xóa ảnh + CSS + JS). Nút Tông màu: Xanh ⇄ Tiên cảnh.
+- Tiên cảnh theo yêu cầu: **lòng thẻ trong suốt hẳn** (không tô, không làm mờ) để thấy nền; **chữ nổi bằng viền tối** (`--t-vien`: text-shadow 8 hướng + quầng); chữ SVG dùng `paint-order:stroke`; nút vàng không viền; viền kính dày giữ nguyên. Điện thoại dời khung ảnh `--rs-nen-pos:24% 50%` để thấy heo thần. Lớp phủ nền rất nhẹ (.06/.20).
+- Kiểm thử: holo-web 23/23 (tông xanh → tiên cảnh → xanh), tong-quan 26/26.
