@@ -98,3 +98,28 @@ html.rs #gate .gbox,html.rs #frmLogin{border-radius:26px!important}
 @media (prefers-reduced-motion:reduce){html.rs *{transition:none!important}}
 html.rs.rs-nhe *{-webkit-backdrop-filter:none!important;backdrop-filter:none!important}
 html.rs.rs-nhe .card,html.rs.rs-nhe .kpi,html.rs.rs-nhe header,html.rs.rs-nhe #botbar{background:rgba(18,52,41,.86)!important}
+
+/* ===== 16/11: tông ĐỎ (Lá Phong) và TÍM NHẠT (Oải Hương) – chỉ đổi màu nhấn, nền, chữ; viền kính giữ nguyên ===== */
+html.rs.rs-do,html.rs.rs-do[data-gd],html.rs.rs-do.cn-moi,html.rs.rs-do.holo{
+  --ink:#fff6f3!important;--ink2:rgba(255,238,232,.86)!important;--ink3:rgba(255,226,218,.7)!important;
+  --cyan:#ffb59c!important;--acc-rgb:255,181,156!important;--amber:#ffd98a!important;--red:#ff8f80!important;--green:#b9f0c4!important;
+  --bot-bg:rgba(60,14,20,.5)!important;--rs-kinh-dam:rgba(52,12,18,.8)}
+html.rs.rs-do{background:#2a0b10!important}
+html.rs.rs-do body::before{background-color:#561a20}
+html.rs.rs-do header,html.rs.rs-do #nav{background:rgba(52,12,18,.38)!important}
+html.rs.rs-do #botbar{background:rgba(70,18,24,.45)!important}
+html.rs.rs-do .btn.pri{background:linear-gradient(180deg,rgba(255,196,170,.95),rgba(240,140,110,.95))!important;color:#3a0c12!important}
+html.rs.rs-do option{background:#561a20}
+html.rs.rs-do .card,html.rs.rs-do .kpi,html.rs.rs-do .rs-the,html.rs.rs-do .rs-the2{text-shadow:0 1px 3px rgba(30,4,8,.8),0 0 10px rgba(30,4,8,.45)!important}
+
+html.rs.rs-tim,html.rs.rs-tim[data-gd],html.rs.rs-tim.cn-moi,html.rs.rs-tim.holo{
+  --ink:#fdfbff!important;--ink2:rgba(250,244,255,.9)!important;--ink3:rgba(242,234,255,.76)!important;
+  --cyan:#f3e3ff!important;--acc-rgb:243,227,255!important;--amber:#ffe3a3!important;--red:#ffb3c4!important;--green:#c9f5d8!important;
+  --bot-bg:rgba(80,62,130,.45)!important;--rs-kinh-dam:rgba(62,46,104,.82)}
+html.rs.rs-tim{background:#3d3166!important}
+html.rs.rs-tim body::before{background-color:#6f5c9e}
+html.rs.rs-tim header,html.rs.rs-tim #nav{background:rgba(70,54,118,.36)!important}
+html.rs.rs-tim #botbar{background:rgba(90,70,145,.45)!important}
+html.rs.rs-tim .btn.pri{background:linear-gradient(180deg,rgba(248,238,255,.96),rgba(214,190,250,.96))!important;color:#33245c!important}
+html.rs.rs-tim option{background:#6f5c9e}
+html.rs.rs-tim .card,html.rs.rs-tim .kpi,html.rs.rs-tim .rs-the,html.rs.rs-tim .rs-the2{text-shadow:0 1px 3px rgba(35,22,70,.85),0 0 10px rgba(35,22,70,.5)!important}
