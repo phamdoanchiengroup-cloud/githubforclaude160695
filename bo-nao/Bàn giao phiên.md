@@ -6,10 +6,11 @@ Liên quan: [[00 Mục lục]] · [[Liên kết và công cụ]] · [[Việc ch�
 ## Phiên mới – nghiên cứu qcadoo + BOM ERPNext + chỉ số xưởng xong
 - Kết quả: [[KPI Nghiên cứu MES, BOM và chỉ số xưởng (14-11)]]. Phần 2 **hạn chuẩn bộ phận đã làm + push** (chờ chủ dự án chạy 2-CAP-NHAT.bat). Kế tiếp: phần 1 báo cáo hỏng (khi DonHangHong đủ ~1 tháng), phần 3 dự báo, BOM chờ dữ liệu.
 
-## 16/11 (tối) – ĐANG LÀM: làm lại tab Thống kê (đọc phần này trước)
-- Chủ dự án yêu cầu: (1) mục **Tổng quan** quá ít thông tin → **đưa 6 ô chỉ số lên đầu mục "Sản xuất & đơn hàng"**, bỏ mục Tổng quan; **bỏ bảng SQDCP** (`dhVeSQDCP`); (2) **làm lại toàn bộ hiển thị biểu đồ** – phong cách riêng, hiện đại, 4.0; **web đổi hết (Thống kê + Đơn hàng), PDF lãnh đạo giữ kiểu sáng hiện tại**.
-- Đã làm demo 3 phong cách (số liệu mẫu): nguồn `kpi-app/tests/rung-suong/demo-bieu-do.src.html` (thay `{{NEN}}` bằng base64 `anh/web/kinh-xanh-dt.jpg`), Artifact https://claude.ai/artifact/6Hd1jtUMd8tnEqM86Vtjd2. Phong cách: 1 Phòng điều khiển 4.0 (kính trên ảnh rừng, nét có ánh sáng, số JetBrains Mono, hợp giao diện kính chủ sở hữu) · 2 Tối giản cao cấp (nền ngà, 1 màu nhấn) · 3 Đậm chất dữ liệu (than chì, lưới, đèn tín hiệu). **Chờ chủ dự án chọn.**
-- Việc tiếp: sửa các hàm vẽ trong `kpi-app/tests/quy-trinh/quy-trinh-web.html` (`dhSvg*`, `tkSvg*`, `dhHB`, `dhStack`, `tkVe`, `TK_TAB`), nhận màu theo token (phong cách chọn + tông kính), giữ đường PDF (`dhBCPDF*`, `dhSlide*`) dùng màu cũ; chạy `quy-trinh-web.js`, `tong-quan-web.js`, `holo-web.js`. Tab Thống kê chỉ chủ sở hữu thấy.
+## 16/11 (tối) – XONG: làm lại tab Thống kê (commit 18b7a97)
+- Chủ dự án chọn **phong cách 1 "Phòng điều khiển 4.0"** (demo https://claude.ai/artifact/6Hd1jtUMd8tnEqM86Vtjd2) và cho đẩy lên luôn. Thống kê vẫn **chỉ chủ sở hữu** thấy.
+- Đã làm trong `kpi-app/tests/quy-trinh/quy-trinh-web.html`: bỏ mục `tq` khỏi `TK_TAB` (mặc định `TKV='sx'`), `tkVe` nhánh `sx` tải số liệu tháng rồi chèn `tkVeTQ(D)` (6 ô) lên đầu; bỏ `dhVeSQDCP()` khỏi `dhVeThongKe` (PDF lãnh đạo vẫn có SQDCP); `dhMau()` nền tối → `dhMau4()` (nét sáng, lưới trắng mờ, màu nhấn lấy `--g-accent/--g-warn/--g-bad` của tông kính); khối CSS "Biểu đồ 4.0" (ánh sáng nhẹ cho SVG, số JetBrains Mono, ô kính, cột gradient). Nền sáng + PDF (`dhMau(true)`) giữ màu cũ.
+- Kiểm thử: tong-quan-web 26/26, cn-apple-web 30/30, tang-toc-3-web 24/24, bo-hom-nay-web 14/14, holo-web đạt; quy-trinh-web / ho-so / don-hang / luu-tru có lỗi **giống hệt bản trước khi sửa** (dữ liệu mẫu cũ, không do lần này).
+- Chưa làm (để sau nếu chủ dự án muốn): cột trong biểu đồ SVG xưởng vẫn tô đặc (chưa gradient từng cột).
 
 ## 16/11 – ĐANG LÀM: 3 phần học từ ERPNext (đọc [[KPI Học hỏi ERPNext (16-11)]] trước)
 - Đã xong bước 0 (lưu hỏng hằng ngày vào bản chụp → DonHangHong). Kế tiếp: phần 2 hạn chuẩn (chờ chủ dự án duyệt bảng số ngày chuẩn + đệm), rồi phần 1, phần 3. BOM chờ dữ liệu vật tư.
