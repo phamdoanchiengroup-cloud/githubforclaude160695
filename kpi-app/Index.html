@@ -9731,7 +9731,7 @@ function hsGhiChuDong(r){
 }
 </script>
 <script>
-var KPI_BAN = '15/11/2026 14:35';
+var KPI_BAN = '15/11/2026 14:46';
 (function(){
   var cu = window.veNav;
   window.veNav = function(){
@@ -10272,14 +10272,17 @@ html.rs.rs-tien{--g-env:#3a120f;--g-env2:#7a3a28;--g-tone:70,20,14;--g-ink:#fffa
   --g-accent:#ffd27a;--g-accent-ink:#3a120f;--g-warn:#ffe08a;--g-bad:#ffb4a6;--g-good:#c9f7d2;
   --g1-tint:transparent;--g1-surface:linear-gradient(transparent,transparent);--g2-tint:transparent;--g2-surface:linear-gradient(transparent,transparent);
   --g4-tint:rgba(70,20,14,.22);--g-scrim1:.06;--g-scrim2:.20;--rs-nen-pos:center;
-  --t-vien:0 0 1px rgba(45,8,4,.95),1px 0 0 rgba(45,8,4,.9),-1px 0 0 rgba(45,8,4,.9),0 1px 0 rgba(45,8,4,.9),0 -1px 0 rgba(45,8,4,.9),
-    1px 1px 0 rgba(45,8,4,.85),-1px -1px 0 rgba(45,8,4,.85),1px -1px 0 rgba(45,8,4,.85),-1px 1px 0 rgba(45,8,4,.85),0 0 8px rgba(45,8,4,.75)}
+  /* 16/11 (tối, chủ dự án: "bớt border đi 1 chút"): viền chữ mảnh hơn – 4 hướng nhạt + quầng mềm */
+  --t-vien:1px 0 0 rgba(45,8,4,.55),-1px 0 0 rgba(45,8,4,.55),0 1px 0 rgba(45,8,4,.6),0 -1px 0 rgba(45,8,4,.45),0 0 6px rgba(45,8,4,.6)}
 @media (max-width:700px){html.rs.rs-tien{--rs-nen-pos:24% 50%}}
 html.rs.rs.rs.rs-tien .card,html.rs.rs.rs.rs-tien .kpi,html.rs.rs.rs.rs-tien .rs-the,html.rs.rs.rs.rs-tien .rs-the2,html.rs.rs.rs.rs-tien #ducbar,html.rs.rs.rs.rs-tien .card .card{
   -webkit-backdrop-filter:none!important;backdrop-filter:none!important}
 html.rs.rs-tien #main,html.rs.rs-tien #main *:not(svg):not(svg *):not(input):not(select):not(textarea):not(option),html.rs.rs-tien header *{text-shadow:var(--t-vien)!important}
-html.rs.rs-tien svg text{paint-order:stroke;stroke:rgba(45,8,4,.85);stroke-width:3px;stroke-linejoin:round}
+html.rs.rs-tien svg text{paint-order:stroke;stroke:rgba(45,8,4,.6);stroke-width:2px;stroke-linejoin:round}
 html.rs.rs-tien #main .btn.pri,html.rs.rs-tien #main .btn.pri *{text-shadow:none!important}   /* nút vàng: chữ tối, không viền */
+/* 16/11 (tối): lớp tối thật mỏng CHỈ sau bảng số – nền vẫn nhìn xuyên được nhưng hàng chữ số đỡ rối */
+html.rs.rs.rs.rs-tien table{background:rgba(40,10,6,.24)!important;border-radius:12px}
+html.rs.rs.rs.rs-tien .hl-o{background:rgba(40,10,6,.20)!important}
 </style>
 <script>
 window.KINH_ANH={"xanh": {"may": "https://cdn.jsdelivr.net/gh/phamdoanchiengroup-cloud/githubforclaude160695@80da434bffb6bf1a2c4ca4c393f441f7c13ae084/kpi-app/anh/web/kinh-xanh.jpg", "dt": "https://cdn.jsdelivr.net/gh/phamdoanchiengroup-cloud/githubforclaude160695@80da434bffb6bf1a2c4ca4c393f441f7c13ae084/kpi-app/anh/web/kinh-xanh-dt.jpg"}, "tien": {"may": "https://cdn.jsdelivr.net/gh/phamdoanchiengroup-cloud/githubforclaude160695@74d6b50d07430b2620160c4978f349ade1312db5/kpi-app/anh/web/kinh-tien.jpg", "dt": "https://cdn.jsdelivr.net/gh/phamdoanchiengroup-cloud/githubforclaude160695@74d6b50d07430b2620160c4978f349ade1312db5/kpi-app/anh/web/kinh-tien-dt.jpg"}};
@@ -11036,7 +11039,7 @@ function nsnCapNhat(){ call('capNhatNgoaiSXTuFile',[],function(r){ if(!r||!r.ok)
 </script>
 <script>
 /* ===== 38. TĂNG TỐC ĐỢT 3 (08/11) – bộ đo tốc độ + mở nhanh bằng số lần trước (mã hóa) ===== */
-var TD_BUF=[], TD_T=null, DL_VER='a43150f7b9', DL_HAN=12*3600e3, DL_BO=['SoCCCD','DienThoai','DiaChi','SdtKhanCap','LuongCoBan','NamSinh','SoTaiKhoan','Email'];
+var TD_BUF=[], TD_T=null, DL_VER='2e002edd43', DL_HAN=12*3600e3, DL_BO=['SoCCCD','DienThoai','DiaChi','SdtKhanCap','LuongCoBan','NamSinh','SoTaiKhoan','Email'];
 function tdGhi_(f,ms,sv){ if(!(ms>=0)||!f) return; TD_BUF.push({f:String(f),ms:Math.round(ms),sv:(typeof sv==='number'?Math.round(sv):null)});
   if(TD_BUF.length>=15) tdGui_(); else if(!TD_T) TD_T=setTimeout(tdGui_,180000); }
 function tdGui_(){ if(TD_T){clearTimeout(TD_T);TD_T=null;} if(!TD_BUF.length||typeof TOKEN==='undefined'||!TOKEN) return;

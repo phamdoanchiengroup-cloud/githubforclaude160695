@@ -157,11 +157,14 @@ html.rs.rs-tien{--g-env:#3a120f;--g-env2:#7a3a28;--g-tone:70,20,14;--g-ink:#fffa
   --g-accent:#ffd27a;--g-accent-ink:#3a120f;--g-warn:#ffe08a;--g-bad:#ffb4a6;--g-good:#c9f7d2;
   --g1-tint:transparent;--g1-surface:linear-gradient(transparent,transparent);--g2-tint:transparent;--g2-surface:linear-gradient(transparent,transparent);
   --g4-tint:rgba(70,20,14,.22);--g-scrim1:.06;--g-scrim2:.20;--rs-nen-pos:center;
-  --t-vien:0 0 1px rgba(45,8,4,.95),1px 0 0 rgba(45,8,4,.9),-1px 0 0 rgba(45,8,4,.9),0 1px 0 rgba(45,8,4,.9),0 -1px 0 rgba(45,8,4,.9),
-    1px 1px 0 rgba(45,8,4,.85),-1px -1px 0 rgba(45,8,4,.85),1px -1px 0 rgba(45,8,4,.85),-1px 1px 0 rgba(45,8,4,.85),0 0 8px rgba(45,8,4,.75)}
+  /* 16/11 (tối, chủ dự án: "bớt border đi 1 chút"): viền chữ mảnh hơn – 4 hướng nhạt + quầng mềm */
+  --t-vien:1px 0 0 rgba(45,8,4,.55),-1px 0 0 rgba(45,8,4,.55),0 1px 0 rgba(45,8,4,.6),0 -1px 0 rgba(45,8,4,.45),0 0 6px rgba(45,8,4,.6)}
 @media (max-width:700px){html.rs.rs-tien{--rs-nen-pos:24% 50%}}
 html.rs.rs.rs.rs-tien .card,html.rs.rs.rs.rs-tien .kpi,html.rs.rs.rs.rs-tien .rs-the,html.rs.rs.rs.rs-tien .rs-the2,html.rs.rs.rs.rs-tien #ducbar,html.rs.rs.rs.rs-tien .card .card{
   -webkit-backdrop-filter:none!important;backdrop-filter:none!important}
 html.rs.rs-tien #main,html.rs.rs-tien #main *:not(svg):not(svg *):not(input):not(select):not(textarea):not(option),html.rs.rs-tien header *{text-shadow:var(--t-vien)!important}
-html.rs.rs-tien svg text{paint-order:stroke;stroke:rgba(45,8,4,.85);stroke-width:3px;stroke-linejoin:round}
+html.rs.rs-tien svg text{paint-order:stroke;stroke:rgba(45,8,4,.6);stroke-width:2px;stroke-linejoin:round}
 html.rs.rs-tien #main .btn.pri,html.rs.rs-tien #main .btn.pri *{text-shadow:none!important}   /* nút vàng: chữ tối, không viền */
+/* 16/11 (tối): lớp tối thật mỏng CHỈ sau bảng số – nền vẫn nhìn xuyên được nhưng hàng chữ số đỡ rối */
+html.rs.rs.rs.rs-tien table{background:rgba(40,10,6,.24)!important;border-radius:12px}
+html.rs.rs.rs.rs-tien .hl-o{background:rgba(40,10,6,.20)!important}

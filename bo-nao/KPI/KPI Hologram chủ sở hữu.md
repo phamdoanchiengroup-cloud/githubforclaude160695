@@ -69,3 +69,4 @@ Liên quan: [[KPI Demo giao diện]] · [[KPI Kiểm thử]] · [[Quyết địn
 - Chủ dự án gửi ảnh riêng (heo thần, cung điện, phong đỏ – "dùng được thoải mái") → tông **Tiên cảnh** (`rs-tien`, ảnh `anh/web/kinh-tien{,-dt}.jpg`). **Bỏ** Sương sáng / Đỏ / Tím (xóa ảnh + CSS + JS). Nút Tông màu: Xanh ⇄ Tiên cảnh.
 - Tiên cảnh theo yêu cầu: **lòng thẻ trong suốt hẳn** (không tô, không làm mờ) để thấy nền; **chữ nổi bằng viền tối** (`--t-vien`: text-shadow 8 hướng + quầng); chữ SVG dùng `paint-order:stroke`; nút vàng không viền; viền kính dày giữ nguyên. Điện thoại dời khung ảnh `--rs-nen-pos:24% 50%` để thấy heo thần. Lớp phủ nền rất nhẹ (.06/.20).
 - Kiểm thử: holo-web 23/23 (tông xanh → tiên cảnh → xanh), tong-quan 26/26.
+- 16/11 (tối, sau): viền chữ Tiên cảnh mảnh hơn (4 hướng nhạt + quầng), lớp tối mỏng rgba(40,10,6,.24) chỉ sau bảng số (`table`, `.hl-o`).
