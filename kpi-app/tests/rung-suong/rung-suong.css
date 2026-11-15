@@ -1,125 +1,150 @@
-/* ===== Giao diện "Rừng Sương" (demo 16/11): kính mờ trên nền rừng sương tự vẽ – CHỈ đổi màu / chất liệu, GIỮ NGUYÊN bố cục web KPI.
-   Bật khi html có class rs. Nền vẽ bằng rung-suong.js (canvas → ảnh nền cố định). ===== */
-html.rs,html.rs[data-gd],html.rs.cn-moi,html.rs.holo{color-scheme:dark!important;
-  --bg:rgba(10,32,25,.55)!important;--panel:rgba(214,240,226,.12)!important;--panel2:rgba(214,240,226,.18)!important;
-  --line:rgba(255,255,255,.22)!important;--row-line:rgba(255,255,255,.14)!important;
-  --ink:#f2faf5!important;--ink2:rgba(236,248,241,.84)!important;--ink3:rgba(226,242,233,.66)!important;
-  --cyan:#9fe8c2!important;--acc-rgb:159,232,194!important;--amber:#f2d98b!important;--red:#ffb0a3!important;--green:#a6f0bd!important;
-  --bot-bg:rgba(16,44,35,.5)!important;--bong:none!important;--serif:"Instrument Serif",Georgia,serif!important;
-  --rs-kinh:rgba(255,255,255,.035);--rs-kinh-dam:rgba(12,38,30,.78);--rs-vien:rgba(255,255,255,.3);--rs-mo:blur(5px) saturate(1.25)}
-html.rs{background:#0f2a22!important}
-html.rs body{background:transparent!important;color:var(--ink)!important;font-family:"Be Vietnam Pro","Inter",system-ui,sans-serif!important}
-html.rs body::before{content:"";position:fixed;inset:0;z-index:-1;background:var(--rs-nen,linear-gradient(#2d5a48,#0f2a22)) center/cover no-repeat,#16392d}
+/* =====================================================================================================
+   GLASS MATERIAL SYSTEM – "Realistic Premium Glassmorphism" (demo 16/11, chủ dự án yêu cầu)
+   Chỉ đổi LỚP TRÌNH BÀY: không đổi bố cục, kích thước, vị trí, chức năng. Bật khi <html class="rs">.
+   Tông (nền + màu nhấn): .rs-xanh (mặc định) · .rs-do · .rs-tim. Nền vẽ bằng rung-suong.js (--rs-nen).
+   rung-suong.js gắn lớp vai trò cho mọi "thẻ" của web:
+     .rs-the  = Primary Glass (khung nội dung cấp 1)    .rs-the2 = Secondary Glass (thẻ lồng trong thẻ)
+     .rs-sang = thẻ vốn nền sáng (chữ chuyển sáng)       .rs-vien = có ::before trống → viền kính gradient thật
+   Hiệu năng: backdrop-filter CHỈ ở kính cấp 1 + thanh trên/dưới + hộp nổi; kính lồng, nút, ô nhập không blur.
+   ===================================================================================================== */
+
+/* ---------- 1. Token vật liệu ---------- */
+html.rs{
+  /* màu nền môi trường + chữ (tông đổi các giá trị này) */
+  --g-env:#0f2a22; --g-env2:#1e4637; --g-tone:16,52,40;            /* rgb tông tối để pha kính sâu */
+  --g-ink:#f4faf6; --g-ink2:rgba(240,249,244,.84); --g-ink3:rgba(232,244,238,.80);
+  --g-accent:#a8ecc9; --g-accent-ink:#0d2a20; --g-warn:#f2d98b; --g-bad:#ffb0a3; --g-good:#a6f0bd;
+
+  /* độ mờ: điện thoại giảm (xem mục 9) */
+  --g-blur-1:16px; --g-blur-2:22px; --g-sat:145%;
+
+  /* A. Primary Glass – kính trong, khung nội dung chính */
+  --g1-tint:rgba(var(--g-tone),.20);
+  --g1-surface:linear-gradient(180deg,rgba(255,255,255,.075),rgba(255,255,255,.018) 38%,rgba(0,0,0,.035));
+  /* B. Secondary Glass – kính mờ hơn, thẻ phụ / lồng (không blur riêng) */
+  --g2-tint:rgba(255,255,255,.06);
+  --g2-surface:linear-gradient(180deg,rgba(255,255,255,.09),rgba(255,255,255,.025) 50%,rgba(0,0,0,.04));
+  --g2-full:var(--gh-spec),var(--g2-surface),var(--g2-tint);
+  /* C. Deep Glass – kính tối, đặt trên vùng sáng / hộp nổi đè nội dung */
+  --g3-tint:rgba(var(--g-tone),.86);
+  --g3-surface:linear-gradient(180deg,rgba(255,255,255,.07),rgba(255,255,255,0) 45%);
+  /* D. Light Glass – kính sáng cho thanh trên / dưới nằm trên nền tối */
+  --g4-tint:rgba(255,255,255,.085);
+  --g4-surface:linear-gradient(180deg,rgba(255,255,255,.14),rgba(255,255,255,.04));
+  /* E. Glass Control – nút, ô nhập, chip */
+  --gc-bg:linear-gradient(180deg,rgba(255,255,255,.20),rgba(255,255,255,.07) 55%,rgba(255,255,255,.10));
+  --gc-bg-hover:linear-gradient(180deg,rgba(255,255,255,.28),rgba(255,255,255,.11) 55%,rgba(255,255,255,.14));
+  --gc-field:linear-gradient(180deg,rgba(0,0,0,.20),rgba(0,0,0,.10));
+  --gc-shadow:inset 0 1px 0 rgba(255,255,255,.55),inset 0 -1px 0 rgba(255,255,255,.10),inset 0 -6px 10px -6px rgba(0,0,0,.25),0 1px 1px rgba(0,0,0,.14),0 4px 12px -4px rgba(0,0,0,.30);
+  --gc-field-shadow:inset 0 2px 4px rgba(0,0,0,.28),inset 0 -1px 0 rgba(255,255,255,.14);
+  /* F. Glass Highlight – phản xạ (specular) mềm, không đều */
+  --gh-spec:radial-gradient(120% 70% at 10% -8%,rgba(255,255,255,.20),rgba(255,255,255,0) 52%);
+  --gh-bounce:radial-gradient(70% 55% at 104% 108%,rgba(255,255,255,.08),rgba(255,255,255,0) 60%);
+  --gh-streak:linear-gradient(112deg,rgba(255,255,255,0) 28%,rgba(255,255,255,.055) 36%,rgba(255,255,255,0) 44%);
+  /* G. Glass Border – viền ngoài sáng mảnh, các cạnh khác nhau; viền trong tối hơn */
+  --gb-top:rgba(255,255,255,.62); --gb-left:rgba(255,255,255,.40); --gb-right:rgba(255,255,255,.16); --gb-bottom:rgba(255,255,255,.12);
+  --gb-ring:linear-gradient(140deg,rgba(255,255,255,.85),rgba(255,255,255,.30) 22%,rgba(255,255,255,.08) 48%,rgba(255,255,255,.18) 74%,rgba(255,255,255,.55));
+  --gb-inner:inset 0 0 0 1px rgba(255,255,255,.10),inset 0 1px 0 rgba(255,255,255,.42),inset 1px 0 0 rgba(255,255,255,.12),inset 0 -1px 0 rgba(255,255,255,.06);
+  /* độ sâu: ambient + contact + inner + glow thấp */
+  --gd-1:inset 0 -14px 24px -16px rgba(0,0,0,.30),0 1px 1px rgba(0,0,0,.16),0 2px 6px -2px rgba(0,0,0,.18),0 16px 36px -12px rgba(0,0,0,.34),0 0 28px rgba(255,255,255,.035);
+  --gd-2:inset 0 -8px 14px -10px rgba(0,0,0,.22),0 1px 1px rgba(0,0,0,.10),0 6px 16px -8px rgba(0,0,0,.24);
+
+  /* ánh xạ sang token gốc của web để mọi chỗ dùng var(--ink…) đổi theo */
+  --bg:transparent!important;--panel:var(--g1-tint)!important;--panel2:var(--g2-tint)!important;
+  --line:rgba(255,255,255,.18)!important;--row-line:rgba(255,255,255,.11)!important;
+  --ink:var(--g-ink)!important;--ink2:var(--g-ink2)!important;--ink3:var(--g-ink3)!important;
+  --cyan:var(--g-accent)!important;--amber:var(--g-warn)!important;--red:var(--g-bad)!important;--green:var(--g-good)!important;
+  --bot-bg:var(--g4-tint)!important;--bong:none!important;
+  color-scheme:dark!important;background:var(--g-env)!important}
+html.rs[data-gd],html.rs.cn-moi,html.rs.holo{color-scheme:dark!important;--bg:transparent!important;--panel:var(--g1-tint)!important;--panel2:var(--g2-tint)!important;
+  --line:rgba(255,255,255,.18)!important;--row-line:rgba(255,255,255,.11)!important;--ink:var(--g-ink)!important;--ink2:var(--g-ink2)!important;--ink3:var(--g-ink3)!important;
+  --cyan:var(--g-accent)!important;--amber:var(--g-warn)!important;--red:var(--g-bad)!important;--green:var(--g-good)!important;--bot-bg:var(--g4-tint)!important}
+
+/* ---------- 2. Môi trường (nền) – giữ sống động, không phủ màu đục ---------- */
+html.rs body{background:transparent!important;color:var(--g-ink)!important}
+html.rs body::before{content:"";position:fixed;inset:0;z-index:-1;background:var(--rs-nen,linear-gradient(var(--g-env2),var(--g-env))) center/cover no-repeat,var(--g-env2)}
 html.rs #bgfx,html.rs #festfx{display:none!important}
 
-/* kính dùng chung */
-html.rs header,html.rs #nav,html.rs .card,html.rs .kpi,html.rs #ducbar,html.rs #minibar .mini,html.rs #festbar>*,html.rs #botbar,
-html.rs .gbox,html.rs #toast,html.rs .modal,html.rs .modal-box,html.rs .mbox,html.rs dialog{
-  background:var(--rs-kinh)!important;border:1px solid var(--rs-vien)!important;color:var(--ink)!important;
-  -webkit-backdrop-filter:var(--rs-mo)!important;backdrop-filter:var(--rs-mo)!important;
-  box-shadow:inset 0 1px 0 rgba(255,255,255,.4),0 10px 30px rgba(2,22,15,.28)!important;background-image:none!important}
-html.rs .card,html.rs .kpi{border-radius:22px!important}
-html.rs .card:hover{transform:none!important}
-html.rs header{border-width:0 0 1px!important;border-radius:0!important;background:rgba(14,42,33,.35)!important}
-html.rs #nav{background:rgba(14,42,33,.32)!important}
-html.rs #botbar{border-width:1px!important;left:10px!important;right:10px!important;bottom:calc(10px + env(safe-area-inset-bottom,0px))!important;border-radius:26px!important;background:rgba(18,50,39,.45)!important}
+/* ---------- 3. Primary Glass (khung nội dung cấp 1) ---------- */
+html.rs.rs.rs .card,html.rs.rs.rs .kpi,html.rs.rs.rs .rs-the,html.rs.rs.rs #ducbar,html.rs.rs.rs .gbox{
+  background:var(--gh-spec),var(--gh-bounce),var(--gh-streak),var(--g1-surface),var(--g1-tint)!important;
+  border-color:var(--gb-top) var(--gb-right) var(--gb-bottom) var(--gb-left)!important;
+  box-shadow:var(--gb-inner),var(--gd-1)!important;color:var(--g-ink)!important;
+  -webkit-backdrop-filter:blur(var(--g-blur-1)) saturate(var(--g-sat))!important;backdrop-filter:blur(var(--g-blur-1)) saturate(var(--g-sat))!important}
 
-/* chữ */
-html.rs .ptitle,html.rs .card h3,html.rs h1,html.rs h2,html.rs .htitle,html.rs .hwho b,html.rs #hten,html.rs .kpi .v{color:var(--ink)!important}
-html.rs .ptitle{font-family:var(--serif)!important;font-weight:400!important;letter-spacing:0!important;font-size:clamp(30px,4vw,40px)!important}
-html.rs .kpi .v{font-family:var(--serif)!important;font-weight:400!important}
-html.rs .pdesc,html.rs .hsub,html.rs .note,html.rs label,html.rs .kpi .l,html.rs .kpi .s,html.rs small{color:var(--ink3)!important}
-html.rs a{color:var(--cyan)}
-html.rs .note{border-top-color:var(--line)!important}
+/* viền gradient thật (::before còn trống + phần tử đã định vị – JS kiểm tra rồi mới gắn .rs-vien) */
+html.rs.rs.rs .rs-vien{border-color:transparent!important}
+html.rs.rs.rs .rs-vien::before{content:""!important;position:absolute!important;inset:-1px!important;border-radius:inherit!important;padding:1px!important;pointer-events:none!important;z-index:1!important;
+  background:var(--gb-ring)!important;-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask:linear-gradient(#000 0 0) content-box exclude,linear-gradient(#000 0 0);
+  opacity:1!important;filter:none!important;animation:none!important;transform:none!important;width:auto!important;height:auto!important}
 
-/* bảng */
-html.rs table{background:transparent!important;color:var(--ink)!important}
-html.rs th{background:rgba(12,38,30,.35)!important;color:var(--ink3)!important;border-color:var(--line)!important}
-html.rs td{border-color:var(--row-line)!important;color:var(--ink)!important;background:transparent!important}
-html.rs tr:hover td{background:rgba(255,255,255,.06)!important}
-html.rs tr.cn-toi td,html.rs tr.toi td{background:rgba(159,232,194,.16)!important}
+/* ---------- 4. Secondary Glass (lồng trong kính khác – không blur để tránh blur chồng) ---------- */
+html.rs.rs.rs .rs-the2,html.rs.rs.rs .card .card,html.rs.rs.rs .card .kpi,html.rs.rs.rs .rs-the .kpi,html.rs.rs.rs .rs-the .rs-the,html.rs.rs.rs .rs-sang,html.rs.rs.rs #minibar .mini{
+  background:var(--gh-spec),var(--g2-surface),var(--g2-tint)!important;
+  border-color:rgba(255,255,255,.42) rgba(255,255,255,.12) rgba(255,255,255,.09) rgba(255,255,255,.26)!important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.32),var(--gd-2)!important;
+  -webkit-backdrop-filter:none!important;backdrop-filter:none!important}
+html.rs.rs.rs .rs-sang,html.rs.rs.rs .rs-sang *:not(svg):not(svg *){color:var(--g-ink)!important}
 
-/* nút + ô nhập */
-html.rs .btn{background:rgba(232,250,240,.16)!important;border:1px solid var(--rs-vien)!important;color:var(--ink)!important;border-radius:14px!important;
-  -webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);box-shadow:inset 0 1px 0 rgba(255,255,255,.35)!important}
-html.rs .btn:hover{background:rgba(232,250,240,.26)!important}
-html.rs .btn.pri{background:linear-gradient(180deg,rgba(191,240,212,.92),rgba(150,214,180,.92))!important;color:#0d2a20!important;border-color:rgba(255,255,255,.6)!important}
-html.rs .btn.dg{color:var(--red)!important}
-html.rs input,html.rs select,html.rs textarea{background:rgba(8,30,23,.4)!important;border:1px solid var(--rs-vien)!important;color:var(--ink)!important;border-radius:12px!important}
-html.rs input::placeholder,html.rs textarea::placeholder{color:var(--ink3)!important}
-html.rs input:focus,html.rs select:focus,html.rs textarea:focus{border-color:var(--amber)!important;outline:none;box-shadow:0 0 0 3px rgba(242,217,139,.25)!important}
-html.rs option{background:#16392d;color:#f2faf5}
-html.rs :focus-visible{outline:2px solid var(--amber)!important;outline-offset:2px}
+/* ---------- 5. Light Glass (thanh trên, menu trái, thanh dưới) ---------- */
+html.rs.rs.rs header,html.rs.rs.rs #nav{background:var(--g4-surface),var(--g4-tint)!important;border:0!important;border-bottom:1px solid rgba(255,255,255,.22)!important;
+  box-shadow:inset 0 -1px 0 rgba(255,255,255,.06),0 8px 24px -14px rgba(0,0,0,.4)!important;border-radius:0!important;
+  -webkit-backdrop-filter:blur(var(--g-blur-2)) saturate(var(--g-sat))!important;backdrop-filter:blur(var(--g-blur-2)) saturate(var(--g-sat))!important}
+html.rs.rs.rs #nav{border-bottom:0!important;border-right:1px solid rgba(255,255,255,.16)!important}
+html.rs.rs.rs #botbar{background:var(--gh-spec),var(--g4-surface),var(--g4-tint)!important;border-top-color:var(--gb-top)!important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.35),0 -8px 24px -14px rgba(0,0,0,.4)!important;-webkit-backdrop-filter:blur(var(--g-blur-2)) saturate(var(--g-sat))!important;backdrop-filter:blur(var(--g-blur-2)) saturate(var(--g-sat))!important}
 
-/* menu trái + thanh dưới */
-html.rs nav button{color:var(--ink3)!important}
-html.rs nav button:hover{color:var(--ink)!important}
-html.rs nav button.on,html.rs nav button.act,html.rs nav button[aria-current]{color:var(--ink)!important;background:rgba(255,255,255,.16)!important;border-radius:12px}
-html.rs #botbar button{color:var(--ink3)!important;background:transparent!important}
-html.rs #botbar button.on{color:var(--ink)!important;background:rgba(255,255,255,.16)!important;border-radius:16px}
-html.rs.cn-moi main{padding-bottom:calc(116px + env(safe-area-inset-bottom))!important}
+/* ---------- 6. Deep Glass (hộp nổi đè nội dung: Rhino, thông báo, hộp thoại) ---------- */
+html.rs.rs.rs .mai-thoai,html.rs.rs.rs #toast,html.rs.rs.rs .modal,html.rs.rs.rs .modal-box,html.rs.rs.rs .mbox,html.rs.rs.rs dialog{
+  background:var(--gh-spec),var(--g3-surface),var(--g3-tint)!important;border-color:var(--gb-top) var(--gb-right) var(--gb-bottom) var(--gb-left)!important;
+  box-shadow:var(--gb-inner),var(--gd-1)!important;color:var(--g-ink)!important;
+  -webkit-backdrop-filter:blur(var(--g-blur-2)) saturate(var(--g-sat))!important;backdrop-filter:blur(var(--g-blur-2)) saturate(var(--g-sat))!important}
 
-/* nhãn, chip, thanh tiến độ */
-html.rs .p-gr,html.rs .chip,html.rs .tag,html.rs .badge{background:rgba(255,255,255,.12)!important;color:var(--ink2)!important;border-color:var(--rs-vien)!important}
-html.rs .a-nu,html.rs .alert,html.rs .canh{background:rgba(12,38,30,.38)!important;border-color:var(--rs-vien)!important;color:var(--ink2)!important}
-html.rs #toast{background:rgba(14,42,33,.7)!important}
+/* ---------- 7. Glass Control (nút, ô nhập, chip) – không blur riêng ---------- */
+html.rs.rs.rs .btn{background:var(--gc-bg)!important;border-color:rgba(255,255,255,.55) rgba(255,255,255,.18) rgba(255,255,255,.12) rgba(255,255,255,.34)!important;
+  color:var(--g-ink)!important;box-shadow:var(--gc-shadow)!important;text-shadow:0 1px 2px rgba(0,0,0,.25)}
+html.rs.rs.rs .btn:hover{background:var(--gc-bg-hover)!important}
+html.rs.rs.rs .btn:active{box-shadow:inset 0 2px 5px rgba(0,0,0,.3),inset 0 -1px 0 rgba(255,255,255,.12)!important}
+html.rs.rs.rs .btn.pri{background:linear-gradient(180deg,rgba(255,255,255,.55),rgba(255,255,255,0) 52%),var(--g-accent)!important;color:var(--g-accent-ink)!important;text-shadow:none;
+  border-color:rgba(255,255,255,.85) rgba(255,255,255,.4) rgba(0,0,0,.12) rgba(255,255,255,.6)!important}
+html.rs.rs.rs .btn.dg{color:var(--g-bad)!important}
+html.rs.rs.rs input,html.rs.rs.rs select,html.rs.rs.rs textarea{background:var(--gc-field)!important;
+  border-color:rgba(255,255,255,.14) rgba(255,255,255,.22) rgba(255,255,255,.34) rgba(255,255,255,.18)!important;color:var(--g-ink)!important;box-shadow:var(--gc-field-shadow)!important}
+html.rs input::placeholder,html.rs textarea::placeholder{color:var(--g-ink3)!important}
+html.rs.rs.rs input:focus,html.rs.rs.rs select:focus,html.rs.rs.rs textarea:focus{border-color:rgba(255,255,255,.6)!important;outline:none;box-shadow:var(--gc-field-shadow),0 0 0 3px rgba(255,255,255,.14)!important}
+html.rs option{background:var(--g-env2);color:var(--g-ink)}
+html.rs.rs.rs .p-gr,html.rs.rs.rs .chip,html.rs.rs.rs .tag,html.rs.rs.rs .badge{background:var(--gc-bg)!important;color:var(--g-ink2)!important;border-color:rgba(255,255,255,.3)!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.35)!important}
+html.rs.rs.rs .a-nu,html.rs.rs.rs .alert,html.rs.rs.rs .canh{background:var(--g2-surface),var(--g2-tint)!important;border-color:rgba(255,255,255,.22)!important;color:var(--g-ink2)!important}
+html.rs :focus-visible{outline:2px solid rgba(255,255,255,.85)!important;outline-offset:2px}
+/* menu + thanh dưới: mục đang chọn là một viên kính nhỏ */
+html.rs nav button{color:var(--g-ink3)!important}
+html.rs nav button:hover{color:var(--g-ink)!important}
+html.rs.rs.rs nav button.on,html.rs.rs.rs nav button.act,html.rs.rs.rs #botbar button.on{color:var(--g-ink)!important;background:var(--gc-bg)!important;box-shadow:var(--gc-shadow)!important}
+html.rs #botbar button{color:var(--g-ink3)!important;background:transparent!important}
 
-/* bóng thoại Rhino: kính đặc hơn để đọc rõ khi nằm đè nội dung */
-html.rs .mai-thoai{background:var(--rs-kinh-dam)!important;border:1px solid var(--rs-vien)!important;color:var(--ink)!important;
-  -webkit-backdrop-filter:var(--rs-mo)!important;backdrop-filter:var(--rs-mo)!important;border-radius:22px!important}
-html.rs .mai-thoai .btn{background:rgba(232,250,240,.2)!important}
+/* ---------- 8. Chữ, bảng ---------- */
+html.rs .ptitle,html.rs .card h3,html.rs h1,html.rs h2,html.rs .htitle,html.rs .hwho b,html.rs #hten,html.rs .kpi .v{color:var(--g-ink)!important}
+html.rs .pdesc,html.rs .hsub,html.rs .note,html.rs label,html.rs .kpi .l,html.rs .kpi .s,html.rs small{color:var(--g-ink3)!important}
+html.rs a{color:var(--g-accent)}
+/* bóng chữ rất nhẹ: chỉ để chữ không chìm khi nền phía sau có chi tiết sáng */
+html.rs.rs.rs .rs-the,html.rs.rs.rs .rs-the2,html.rs.rs.rs .card,html.rs.rs.rs .kpi{text-shadow:0 1px 2px rgba(0,0,0,.45)}
+html.rs table{background:transparent!important;color:var(--g-ink)!important}
+html.rs.rs.rs th{background:linear-gradient(180deg,rgba(255,255,255,.08),rgba(255,255,255,.03))!important;color:var(--g-ink3)!important;border-color:rgba(255,255,255,.16)!important}
+html.rs.rs.rs td{border-color:var(--row-line)!important;color:var(--g-ink)!important;background:transparent!important}
+html.rs.rs.rs tr:hover td{background:rgba(255,255,255,.05)!important}
+html.rs.rs.rs tr.cn-toi td,html.rs.rs.rs tr.toi td{background:rgba(255,255,255,.10)!important}
 
-/* 16/11 (chủ dự án): viền card nổi 3D như kính dày – viền sáng chuyển màu (sáng góc trên trái, tối dần), gờ trong, bóng đổ */
-html.rs.rs.rs .card,html.rs.rs.rs .kpi,html.rs.rs.rs .rs-the,html.rs.rs.rs #ducbar,html.rs.rs.rs .mai-thoai,html.rs.rs.rs #botbar,html.rs.rs.rs #minibar .mini{
-  border:1.5px solid!important;border-color:rgba(255,255,255,.85) rgba(255,255,255,.32) rgba(255,255,255,.22) rgba(255,255,255,.6)!important;
-  background:linear-gradient(160deg,rgba(255,255,255,.07),rgba(255,255,255,0) 35%),var(--rs-kinh)!important;
-  box-shadow:inset 0 2px 1px rgba(255,255,255,.55),inset 2px 0 1px rgba(255,255,255,.18),inset 0 -3px 6px rgba(0,35,25,.30),
-    inset 0 0 0 5px rgba(255,255,255,.04),inset 0 0 22px rgba(220,255,240,.08),
-    0 1px 0 rgba(255,255,255,.18),0 10px 18px rgba(0,22,15,.28),0 24px 44px rgba(0,22,15,.22)!important}
-html.rs.rs.rs .mai-thoai{background:var(--rs-kinh-dam)!important}
-html.rs.rs.rs .card,html.rs.rs.rs .kpi,html.rs.rs.rs .rs-the{transition:transform .25s ease,box-shadow .25s ease}
-@media (hover:hover){html.rs.rs.rs .card:hover,html.rs.rs.rs .kpi:hover{transform:translateY(-2px)!important}}
-html.rs.rs.rs .rs-the2{border:1px solid rgba(255,255,255,.28)!important;background:rgba(255,255,255,.03)!important;
-  box-shadow:inset 0 1.5px 0 rgba(255,255,255,.4),inset 0 -2px 4px rgba(0,35,25,.25),0 4px 10px rgba(0,22,15,.18)!important;-webkit-backdrop-filter:none!important;backdrop-filter:none!important}
-html.rs.rs.rs .rs-sang,html.rs.rs.rs .rs-sang *:not(svg):not(svg *){color:var(--ink)!important}
-/* nền thẻ gần như trong suốt → bóng chữ nhẹ để vẫn đọc rõ trên lá */
-html.rs.rs.rs .card,html.rs.rs.rs .kpi,html.rs.rs.rs .rs-the,html.rs.rs.rs .rs-the2{text-shadow:0 1px 3px rgba(0,22,15,.75),0 0 10px rgba(0,22,15,.45)}
-/* nút kính dày */
-html.rs.rs.rs .btn,html.rs.rs.rs #botbar button.on,html.rs.rs.rs nav button.on{
-  box-shadow:inset 0 1.5px 0 rgba(255,255,255,.6),inset 0 -2px 4px rgba(0,35,25,.28),0 4px 10px rgba(0,22,15,.25)!important}
-html.rs.rs.rs .btn.pri{box-shadow:inset 0 2px 0 rgba(255,255,255,.85),inset 0 -3px 5px rgba(20,80,55,.35),0 6px 14px rgba(0,22,15,.3)!important}
-html.rs.rs.rs .ptitle,html.rs.rs.rs .kpi .v,html.rs.rs.rs .card h3{text-shadow:0 2px 12px rgba(0,25,18,.45)}
-
-/* màn đăng nhập */
-html.rs #gate{background:transparent!important}
-html.rs #gate .gbox,html.rs #frmLogin{border-radius:26px!important}
-
-/* máy yếu / giảm chuyển động: bỏ kính mờ */
-@media (prefers-reduced-motion:reduce){html.rs *{transition:none!important}}
+/* ---------- 9. Hiệu năng, điện thoại, fallback, giảm chuyển động ---------- */
+@media (max-width:640px){html.rs{--g-blur-1:8px;--g-blur-2:12px;--g-sat:130%}}
+@supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){
+  html.rs{--g1-tint:rgba(var(--g-tone),.72);--g4-tint:rgba(var(--g-tone),.82);--g3-tint:rgba(var(--g-tone),.9)}}
+html.rs.rs-nhe{--g1-tint:rgba(var(--g-tone),.78);--g4-tint:rgba(var(--g-tone),.86)}
 html.rs.rs-nhe *{-webkit-backdrop-filter:none!important;backdrop-filter:none!important}
-html.rs.rs-nhe .card,html.rs.rs-nhe .kpi,html.rs.rs-nhe header,html.rs.rs-nhe #botbar{background:rgba(18,52,41,.86)!important}
+html.rs .card,html.rs .rs-the{transition:none}
+@media (prefers-reduced-motion:reduce){html.rs *{transition:none!important;animation:none!important}}
 
-/* ===== 16/11: tông ĐỎ (Lá Phong) và TÍM NHẠT (Oải Hương) – chỉ đổi màu nhấn, nền, chữ; viền kính giữ nguyên ===== */
-html.rs.rs-do,html.rs.rs-do[data-gd],html.rs.rs-do.cn-moi,html.rs.rs-do.holo{
-  --ink:#fff6f3!important;--ink2:rgba(255,238,232,.86)!important;--ink3:rgba(255,226,218,.7)!important;
-  --cyan:#ffb59c!important;--acc-rgb:255,181,156!important;--amber:#ffd98a!important;--red:#ff8f80!important;--green:#b9f0c4!important;
-  --bot-bg:rgba(60,14,20,.5)!important;--rs-kinh-dam:rgba(52,12,18,.8)}
-html.rs.rs-do{background:#2a0b10!important}
-html.rs.rs-do body::before{background-color:#561a20}
-html.rs.rs-do header,html.rs.rs-do #nav{background:rgba(52,12,18,.38)!important}
-html.rs.rs-do #botbar{background:rgba(70,18,24,.45)!important}
-html.rs.rs-do .btn.pri{background:linear-gradient(180deg,rgba(255,196,170,.95),rgba(240,140,110,.95))!important;color:#3a0c12!important}
-html.rs.rs-do option{background:#561a20}
-html.rs.rs-do .card,html.rs.rs-do .kpi,html.rs.rs-do .rs-the,html.rs.rs-do .rs-the2{text-shadow:0 1px 3px rgba(30,4,8,.8),0 0 10px rgba(30,4,8,.45)!important}
-
-html.rs.rs-tim,html.rs.rs-tim[data-gd],html.rs.rs-tim.cn-moi,html.rs.rs-tim.holo{
-  --ink:#fdfbff!important;--ink2:rgba(250,244,255,.9)!important;--ink3:rgba(242,234,255,.76)!important;
-  --cyan:#f3e3ff!important;--acc-rgb:243,227,255!important;--amber:#ffe3a3!important;--red:#ffb3c4!important;--green:#c9f5d8!important;
-  --bot-bg:rgba(80,62,130,.45)!important;--rs-kinh-dam:rgba(62,46,104,.82)}
-html.rs.rs-tim{background:#3d3166!important}
-html.rs.rs-tim body::before{background-color:#6f5c9e}
-html.rs.rs-tim header,html.rs.rs-tim #nav{background:rgba(70,54,118,.36)!important}
-html.rs.rs-tim #botbar{background:rgba(90,70,145,.45)!important}
-html.rs.rs-tim .btn.pri{background:linear-gradient(180deg,rgba(248,238,255,.96),rgba(214,190,250,.96))!important;color:#33245c!important}
-html.rs.rs-tim option{background:#6f5c9e}
-html.rs.rs-tim .card,html.rs.rs-tim .kpi,html.rs.rs-tim .rs-the,html.rs.rs-tim .rs-the2{text-shadow:0 1px 3px rgba(35,22,70,.85),0 0 10px rgba(35,22,70,.5)!important}
+/* ---------- 10. Tông ---------- */
+html.rs.rs-do{--g-env:#2a0b10;--g-env2:#561a20;--g-tone:58,14,20;--g-ink:#fff7f4;--g-ink2:rgba(255,240,234,.86);--g-ink3:rgba(255,228,220,.68);
+  --g-accent:#ffc2a6;--g-accent-ink:#3a0c12;--g-warn:#ffdf9a;--g-bad:#ffd2c7;--g-good:#c4f2cd}
+html.rs.rs-tim{--g-env:#3d3166;--g-env2:#6f5c9e;--g-tone:58,42,100;--g-ink:#fdfbff;--g-ink2:rgba(250,245,255,.9);--g-ink3:rgba(243,236,255,.74);
+  --g-accent:#ece0ff;--g-accent-ink:#33245c;--g-warn:#ffe6a8;--g-bad:#ffc2cf;--g-good:#cff6dc}

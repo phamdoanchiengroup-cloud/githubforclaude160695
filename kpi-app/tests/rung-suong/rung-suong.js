@@ -46,6 +46,7 @@
   window.rsBat=function(t){ if(t===true) t='xanh'; if(!t) t='0'; var h=document.documentElement, bat=t!=='0';
     h.classList.toggle('rs',bat); ['xanh','do','tim'].forEach(function(k){ h.classList.toggle('rs-'+k,t===k); });
     try{ localStorage.setItem('kpi_rs',t); }catch(e){}
+    if(!bat) document.querySelectorAll('.rs-sang').forEach(function(e){ e.style.removeProperty('background'); if(e.dataset.rsBg) e.style.setProperty('background',e.dataset.rsBg); e.classList.remove('rs-sang'); daXet.delete(e); });
     if(bat){ P=TONG[t]; if(daVe!==t){ daVe=t; ve(); } setTimeout(quet,50); }
     var n=document.getElementById('rsNut'); if(n) n.style.background=bat?P.nen[2]+'cc':'rgba(30,30,30,.75)'; if(n) n.textContent=bat?'🎨 '+P.ten+' – đổi tông':'🎨 Giao diện gốc – đổi tông'; };
   addEventListener('resize',function(){ if(!daVe) return; P=TONG[daVe]||P; clearTimeout(tg); tg=setTimeout(ve,300); });
@@ -63,7 +64,11 @@
       if(!coVien&&!coNen&&c.backgroundImage==='none') continue;
       var b=e.getBoundingClientRect(); if(laNut?(b.width<90||b.height<70):(b.width<120||b.height<40)) continue;
       e.classList.add(e.parentElement&&e.parentElement.closest('.rs-the')?'rs-the2':'rs-the');
-      if(sangNen(nen)>.62) e.classList.add('rs-sang'); } }
+      if(Math.max(sangNen(nen),sangNen(c.backgroundImage||''))>.62){ e.classList.add('rs-sang');
+        /* ô nền sáng có màu đặt thẳng trên phần tử: ghi đè bằng kính phụ (nhớ giá trị cũ để trả lại khi tắt) */
+        e.dataset.rsBg=e.style.getPropertyValue('background'); e.style.setProperty('background','var(--g2-full)','important'); }
+      /* viền gradient thật bằng ::before: chỉ khi ::before đang trống và phần tử đã được định vị (không đổi bố cục) */
+      if(c.position!=='static'&&getComputedStyle(e,'::before').content==='none') e.classList.add('rs-vien'); } }
   function henQuet(){ if(!hen) hen=setTimeout(quet,350); }
   new MutationObserver(henQuet).observe(document.body,{childList:true,subtree:true});
   var bat='xanh'; try{ var v=localStorage.getItem('kpi_rs'); if(v==='1') v='xanh'; if(THU.indexOf(v)>=0) bat=v; }catch(e){}
