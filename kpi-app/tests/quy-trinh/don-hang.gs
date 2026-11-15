@@ -569,9 +569,10 @@ function layDonHangXuong(token, lamMoi) {
   Object.keys(d.tabPhu || {}).forEach(function(t) {
     tabPhu[t] = (d.tabPhu[t] || []).map(function(o) { var x = {}; for (var k in o) x[k] = o[k]; x.tenChuan = plChuan_(o.ten); x.pl = plPhanLoai_(o.ten, o.ghiChu, sua['K:' + x.tenChuan]); return themBTP(x); });
   });
+  try { var uw = dhUuWebDoc_(); don.forEach(function(x) { var w = uw[String(x.maDon || '') + '|' + x.tab]; if (w) { x.uuWeb = w; x.uuTien = 'Ưu tiên (' + w.ai + ')' + (x.uuTien ? ' · ' + x.uuTien : ''); } }); } catch (eU) {}   // 15/11: cờ ưu tiên gắn trên web
   return sach_({ ok: true, luc: d.luc, don: don, uu: uu, tre: tre, nhan: chNhan_(), tabMoi: d.tabMoi || [], tabBo: d.tabBo || [], tabPhu: tabPhu,
     cot: d.cot || {},   // 14/11: bản đồ cột SL/hẹn từng bộ phận theo tab (bảng đơn kiểu Sheet)
-    q: { bp: q.bp || '', xemTatCa: !!q.xemTatCa, sua: q.sua || [], thay: !!q.thay, note: !!q.note, ten: (q.me && q.me.ten) || '', vaiTro: (q.me && q.me.vaiTro) || '' },   // 14/11: quyền nhập của tài khoản
+    q: { bp: q.bp || '', xemTatCa: !!q.xemTatCa, sua: q.sua || [], thay: !!q.thay, note: !!q.note, uuGan: dhCoUu_(q.me), ten: (q.me && q.me.ten) || '', vaiTro: (q.me && q.me.vaiTro) || '' },   // 14/11: quyền nhập của tài khoản
     bpDs: DH_BP.map(function(b) { return [b[0], b[1]]; }),   // 14/11: danh sách bộ phận để chọn bộ phận kế tiếp
     kenhDs: DH_TABS.map(function(t) { return [t, DH_NHAN_TAB[t] || t]; }).concat((d.tabMoi || []).map(function(t) { return [t, t]; })),   // 07/11: đủ mọi kênh (kể cả kênh chưa có đơn) cho bộ lọc + báo cáo
     cs: csHC, email: dhEmailTT_() });
@@ -1872,4 +1873,29 @@ function dhP2Gan_(o, vSL, vHen, nam) {
   var hs = [['c', P.hc], ['n', P.hn]].filter(function(x) { return x[1] && (P[x[0]] == null || P[x[0]] < sl); }).map(function(x) { return x[1]; }).sort();
   if (!hs.length) hs = [P.hc, P.hn].filter(Boolean).sort();
   if (hs.length) (o.hen = o.hen || {}).PHOI = hs[0]; else if (o.hen) delete o.hen.PHOI;
+}
+
+/* ===== 15/11 (chủ dự án): GẮN "ƯU TIÊN" CHO CẢ ĐƠN – chỉ Giám đốc, 2 Phó GĐ sản xuất, Đinh Kim Loan (theo mã NV).
+   Lưu ở sheet ẩn DonUuTien trong file KPI (KHÔNG ghi vào Sheet đơn hàng); khóa = mã đơn | tab kênh. Đơn có cờ -> bậc 2 (sau đơn lẻ, trước đơn thường).
+   Chữ "ưu tiên" gõ thẳng trong Sheet đơn vẫn được tính như cũ. */
+var DH_UU_NV = ['C019', 'C056', 'C077', 'C067'];
+var DH_UU_SHEET = 'DonUuTien', DH_UU_COT = ['Khoa', 'NguoiGan', 'MaNV', 'ThoiDiem'];
+function dhCoUu_(me) { return !!me && DH_UU_NV.indexOf(String(me.maNV || '').trim().toUpperCase()) >= 0; }
+function dhUuWebDoc_() { var m = {}; docAnToan_(DH_UU_SHEET).forEach(function(r) { var k = String(r.Khoa || '').replace(/^'/, ''); if (k) m[k] = { ai: String(r.NguoiGan || ''), luc: String(r.ThoiDiem || '') }; }); return m; }
+function luuUuTienDon(token, p) {
+  var q = dhQuyenDon_(token); if (q.loi) return q.loi;
+  if (!dhCoUu_(q.me)) return sach_({ ok: false, msg: 'Chỉ Giám đốc, Phó GĐ sản xuất và chị Kim Loan được gắn ưu tiên.' });
+  p = p || {}; var ma = String(p.maDon || '').trim().slice(0, 80), tab = String(p.tab || '').trim().slice(0, 60);
+  if (!ma || !tab || ma === '(không mã)') return sach_({ ok: false, msg: 'Đơn không có mã – không gắn ưu tiên được.' });
+  var k = ma + '|' + tab, lock = LockService.getScriptLock();
+  try { lock.waitLock(20000); } catch (eL) { return sach_({ ok: false, msg: 'Đang có người lưu – thử lại sau vài giây.' }); }
+  try {
+    var sh = ss_().getSheetByName(DH_UU_SHEET);
+    if (!sh) { sh = ss_().insertSheet(DH_UU_SHEET); sh.getRange(1, 1, 1, DH_UU_COT.length).setValues([DH_UU_COT]).setFontWeight('bold'); sh.setFrozenRows(1); sh.getRange(2, 1, sh.getMaxRows() - 1, DH_UU_COT.length).setNumberFormat('@'); try { sh.hideSheet(); } catch (eH) {} xoaCache_(DH_UU_SHEET); }
+    docAnToan_(DH_UU_SHEET).filter(function(r) { return String(r.Khoa || '').replace(/^'/, '') === k; }).map(function(r) { return r._row; }).sort(function(a, b) { return b - a; }).forEach(function(r) { sh.deleteRow(r); });
+    xoaCache_(DH_UU_SHEET);
+    if (p.bat) them_(DH_UU_SHEET, { Khoa: k, NguoiGan: (q.me.ten || q.me.tk || '').slice(0, 60), MaNV: String(q.me.maNV || ''), ThoiDiem: Utilities.formatDate(new Date(), TZ_VN, 'yyyy-MM-dd HH:mm') });
+    ghiLog_(q.me, 'Ưu tiên đơn', k.slice(0, 120), '', p.bat ? 'gắn' : 'bỏ');
+    return sach_({ ok: true, msg: p.bat ? 'Đã gắn ưu tiên cho đơn ' + ma + '.' : 'Đã bỏ ưu tiên đơn ' + ma + '.' });
+  } finally { lock.releaseLock(); }
 }
