@@ -55,3 +55,11 @@ Liên quan: [[KPI Demo giao diện]] · [[KPI Kiểm thử]] · [[Quyết địn
 - Lỗi đã sửa khi làm: quy tắc `.rs-nhe` thua độ ưu tiên (chế độ nhẹ vẫn blur); mảnh CSS hologram sót làm `HOLO_CSS` bị ASI cắt → Đài quan sát mất `container-type` (điện thoại 3 cột chật).
 - Kiểm thử: `tests/holo-web.js` viết lại 23/23; `tong-quan-web.js` 26/26 (đổi kỳ vọng: Đài quan sát tĩnh); `cn-apple-web.js` 30/30.
 - Demo trước đó (chỉ để xem): `kpi-app/demo-rung-suong.html`; `tests/rung-suong/tao-demo.py` (phủ kính lên mọi vai trò cho bản xem thử).
+
+## 16/11 (sau) – Ảnh nền thật, viền kính dày phản quang, tông Sương sáng
+- Chủ dự án so với ảnh mẫu, chọn mục 1 (ảnh thật, **cách A**: ảnh miễn phí bản quyền), 2 (viền dày – "chú ý viền kính dày phản quang"), 3 (tông sáng).
+- Ảnh Pexels (Unsplash chặn tải tự động): `kpi-app/anh/web/kinh-{xanh,suong,do,tim}{,-dt}.jpg` (1600px máy tính / 900px điện thoại, làm mềm sẵn 1,4–2,2px như hậu cảnh nhòe), nguồn ghi ở `anh/web/NGUON-ANH-KINH.md`. `va-holo-web.py` chèn `window.KINH_ANH` (link jsDelivr ghim commit, `anh_cdn`); `rung-suong.js` `veAnh()` tải ảnh, lỗi thì tự vẽ nền. Bản xem thử Artifact phải nhúng ảnh base64 (CSP chặn jsDelivr).
+- Viền: `--gb-w:2px` vành gradient sáng (::before), màu 4 cạnh sáng hơn (cạnh dưới cũng phản quang), `--gb-inner` gờ trong 3px + mép trên/dưới/hai bên + vành ngoài 1px + quầng nhẹ (box-shadow, không đổi kích thước), ánh lóe góc trên trái + góc dưới phải (`--gh-spec`, `--gh-bounce`). Lớp phủ ảnh nền `--g-scrim1/2`.
+- Tông mới **Sương sáng** (`rs-suong`, không dùng `rs-sang` vì trùng lớp "thẻ nền sáng"); thứ tự nút Tông màu: Xanh → Sương sáng → Đỏ → Tím.
+- Sửa lỗi: ánh lóe góc làm `sangNen` nhận nhầm thẻ kính là "thẻ nền sáng" (tắt blur) → chỉ tính nền đặc (alpha ≥ .8).
+- Kiểm thử: holo-web 23/23, tong-quan 26/26.

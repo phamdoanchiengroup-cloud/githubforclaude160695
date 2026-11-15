@@ -21,8 +21,9 @@ const chup = async (p, ten) => { if (ANH) await p.screenshot({ path: ANH + '/' +
   console.log('1. Chủ sở hữu (chienpham) – máy tính');
   let p = await vao(b, 'chienpham', 1360, 900);
   await p.evaluate(() => { try { localStorage.removeItem('kpi_kinh'); localStorage.removeItem('kpi_kinh_tong'); } catch (e) {} holoApDung(); });
+  await p.waitForTimeout(2500);   // 16/11: nền là ảnh thật qua jsDelivr; tải lỗi (máy thử không có mạng ảnh) thì tự vẽ nền thay
   let s = await p.evaluate(() => { const h = document.documentElement; return { rs: h.classList.contains('rs'), xanh: h.classList.contains('rs-xanh'), holo: h.classList.contains('holo'), cv: !!document.getElementById('holoSao'),
-    nen: /url\(data:image/.test(h.style.getPropertyValue('--rs-nen')), nut: (document.getElementById('btnHolo') || {}).textContent, tong: (document.getElementById('btnTong') || {}).textContent }; });
+    nen: /url\("?(data:image|https:\/\/cdn\.jsdelivr\.net)/.test(h.style.getPropertyValue('--rs-nen')) && !!(window.KINH_ANH && KINH_ANH.xanh.may), nut: (document.getElementById('btnHolo') || {}).textContent, tong: (document.getElementById('btnTong') || {}).textContent }; });
   ok(s.rs && s.xanh && !s.holo && !s.cv && s.nen && /Giao diện kính.*Đầy đủ/.test(s.nut || '') && /Xanh rừng/.test(s.tong || ''), 'mặc định: kính đầy đủ tông xanh, không còn hologram / nền sao, 2 nút cuối menu', s);
   await moDash(p); await p.waitForTimeout(1600);   // 08/11: số chạy từ 0 lên ~1,1 giây
   s = await p.evaluate(() => {
@@ -51,10 +52,10 @@ const chup = async (p, ten) => { if (ANH) await p.screenshot({ path: ANH + '/' +
   console.log('\n2. Nút đổi chế độ');
   await moDash(p);
   await p.evaluate(() => document.getElementById('btnTong').click()); await p.waitForTimeout(400);
-  s = await p.evaluate(() => ({ do: document.documentElement.classList.contains('rs-do'), luu: localStorage.getItem('kpi_kinh_tong'), t: document.getElementById('btnTong').textContent }));
-  ok(s.do && s.luu === 'do' && /Đỏ lá phong/.test(s.t), 'nút Tông màu: xanh → đỏ, máy nhớ', s);
-  await p.evaluate(() => document.getElementById('btnTong').click()); await p.evaluate(() => document.getElementById('btnTong').click()); await p.waitForTimeout(400);
-  ok(await p.evaluate(() => document.documentElement.classList.contains('rs-xanh')), 'bấm tiếp: tím → về xanh');
+  s = await p.evaluate(() => ({ do: document.documentElement.classList.contains('rs-suong'), luu: localStorage.getItem('kpi_kinh_tong'), t: document.getElementById('btnTong').textContent }));
+  ok(s.do && s.luu === 'suong' && /Sương sáng/.test(s.t), 'nút Tông màu: xanh → sương sáng, máy nhớ', s);
+  await p.evaluate(() => { const b = document.getElementById('btnTong'); b.click(); b.click(); b.click(); }); await p.waitForTimeout(400);
+  ok(await p.evaluate(() => document.documentElement.classList.contains('rs-xanh')), 'bấm tiếp: đỏ → tím → về xanh');
   await p.evaluate(() => document.getElementById('btnHolo').click()); await p.waitForTimeout(500);
   s = await p.evaluate(() => ({ rs: document.documentElement.classList.contains('rs'), nhe: document.documentElement.classList.contains('rs-nhe'), nut: document.getElementById('btnHolo').textContent, dai: !!document.getElementById('hlDai'),
     blur: getComputedStyle(document.querySelector('.card') || document.body).backdropFilter }));

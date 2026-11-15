@@ -9731,7 +9731,7 @@ function hsGhiChuDong(r){
 }
 </script>
 <script>
-var KPI_BAN = '15/11/2026 13:42';
+var KPI_BAN = '15/11/2026 14:04';
 (function(){
   var cu = window.veNav;
   window.veNav = function(){
@@ -10131,6 +10131,7 @@ html.rs{
   --g-accent:#a8ecc9; --g-accent-ink:#0d2a20; --g-warn:#f2d98b; --g-bad:#ffb0a3; --g-good:#a6f0bd;
 
   /* độ mờ: điện thoại giảm (xem mục 9) */
+  --g-scrim1:.22; --g-scrim2:.48;   /* lớp phủ lên ảnh nền: giữ ảnh sống động nhưng chữ trắng vẫn đọc được */
   --g-blur-1:16px; --g-blur-2:22px; --g-sat:145%;
 
   /* A. Primary Glass – kính trong, khung nội dung chính */
@@ -10153,13 +10154,18 @@ html.rs{
   --gc-shadow:inset 0 1px 0 rgba(255,255,255,.55),inset 0 -1px 0 rgba(255,255,255,.10),inset 0 -6px 10px -6px rgba(0,0,0,.25),0 1px 1px rgba(0,0,0,.14),0 4px 12px -4px rgba(0,0,0,.30);
   --gc-field-shadow:inset 0 2px 4px rgba(0,0,0,.28),inset 0 -1px 0 rgba(255,255,255,.14);
   /* F. Glass Highlight – phản xạ (specular) mềm, không đều */
-  --gh-spec:radial-gradient(120% 70% at 10% -8%,rgba(255,255,255,.20),rgba(255,255,255,0) 52%);
-  --gh-bounce:radial-gradient(70% 55% at 104% 108%,rgba(255,255,255,.08),rgba(255,255,255,0) 60%);
+  --gh-spec:radial-gradient(18px 18px at 10px 10px,rgba(255,255,255,.55),rgba(255,255,255,0) 100%),radial-gradient(120% 70% at 10% -8%,rgba(255,255,255,.20),rgba(255,255,255,0) 52%);   /* ánh lóe góc trên trái + vùng sáng mềm */
+  --gh-bounce:radial-gradient(16px 16px at calc(100% - 9px) calc(100% - 9px),rgba(255,255,255,.35),rgba(255,255,255,0) 100%),radial-gradient(70% 55% at 104% 108%,rgba(255,255,255,.08),rgba(255,255,255,0) 60%);   /* ánh hắt góc dưới phải */
   --gh-streak:linear-gradient(112deg,rgba(255,255,255,0) 28%,rgba(255,255,255,.055) 36%,rgba(255,255,255,0) 44%);
   /* G. Glass Border – viền ngoài sáng mảnh, các cạnh khác nhau; viền trong tối hơn */
-  --gb-top:rgba(255,255,255,.62); --gb-left:rgba(255,255,255,.40); --gb-right:rgba(255,255,255,.16); --gb-bottom:rgba(255,255,255,.12);
-  --gb-ring:linear-gradient(140deg,rgba(255,255,255,.85),rgba(255,255,255,.30) 22%,rgba(255,255,255,.08) 48%,rgba(255,255,255,.18) 74%,rgba(255,255,255,.55));
-  --gb-inner:inset 0 0 0 1px rgba(255,255,255,.10),inset 0 1px 0 rgba(255,255,255,.42),inset 1px 0 0 rgba(255,255,255,.12),inset 0 -1px 0 rgba(255,255,255,.06);
+  --gb-top:rgba(255,255,255,.92); --gb-left:rgba(255,255,255,.62); --gb-right:rgba(255,255,255,.30); --gb-bottom:rgba(255,255,255,.48);
+  --gb-ring:linear-gradient(140deg,#fff,rgba(255,255,255,.62) 14%,rgba(255,255,255,.22) 34%,rgba(255,255,255,.14) 56%,rgba(255,255,255,.45) 80%,rgba(255,255,255,.95));
+  --gb-w:2px;   /* độ dày vành kính */
+  /* gờ kính bên trong: vành mờ 3px + mép trên sáng + mép dưới phản quang + hai bên + ánh sáng tán trong lòng kính;
+     vành ngoài 1px + quầng rất nhẹ vẽ ra NGOÀI bằng box-shadow (không đổi kích thước) */
+  --gb-inner:inset 0 0 0 3px rgba(255,255,255,.07),inset 0 2px 1px rgba(255,255,255,.78),inset 0 -2px 2px rgba(255,255,255,.30),
+    inset 2px 0 1px rgba(255,255,255,.28),inset -2px 0 1px rgba(255,255,255,.14),inset 0 0 16px rgba(255,255,255,.07),
+    0 0 0 1px rgba(255,255,255,.16),0 0 14px rgba(255,255,255,.10);
   /* độ sâu: ambient + contact + inner + glow thấp */
   --gd-1:inset 0 -14px 24px -16px rgba(0,0,0,.30),0 1px 1px rgba(0,0,0,.16),0 2px 6px -2px rgba(0,0,0,.18),0 16px 36px -12px rgba(0,0,0,.34),0 0 28px rgba(255,255,255,.035);
   --gd-2:inset 0 -8px 14px -10px rgba(0,0,0,.22),0 1px 1px rgba(0,0,0,.10),0 6px 16px -8px rgba(0,0,0,.24);
@@ -10177,7 +10183,7 @@ html.rs[data-gd],html.rs.cn-moi,html.rs.holo{color-scheme:dark!important;--bg:tr
 
 /* ---------- 2. Môi trường (nền) – giữ sống động, không phủ màu đục ---------- */
 html.rs body{background:transparent!important;color:var(--g-ink)!important}
-html.rs body::before{content:"";position:fixed;inset:0;z-index:-1;background:var(--rs-nen,linear-gradient(var(--g-env2),var(--g-env))) center/cover no-repeat,var(--g-env2)}
+html.rs body::before{content:"";position:fixed;inset:0;z-index:-1;background:linear-gradient(180deg,rgba(var(--g-tone),var(--g-scrim1)),rgba(var(--g-tone),var(--g-scrim2))),var(--rs-nen,linear-gradient(var(--g-env2),var(--g-env))) center/cover no-repeat,var(--g-env2)}
 html.rs #bgfx,html.rs #festfx{display:none!important}
 
 /* ---------- 3. Primary Glass (khung nội dung cấp 1) ---------- */
@@ -10189,7 +10195,7 @@ html.rs.rs.rs .card,html.rs.rs.rs .kpi,html.rs.rs.rs .rs-the,html.rs.rs.rs #ducb
 
 /* viền gradient thật (::before còn trống + phần tử đã định vị – JS kiểm tra rồi mới gắn .rs-vien) */
 html.rs.rs.rs .rs-vien{border-color:transparent!important}
-html.rs.rs.rs .rs-vien::before{content:""!important;position:absolute!important;inset:-1px!important;border-radius:inherit!important;padding:1px!important;pointer-events:none!important;z-index:1!important;
+html.rs.rs.rs .rs-vien::before{content:""!important;position:absolute!important;inset:calc(-1 * var(--gb-w))!important;border-radius:inherit!important;padding:var(--gb-w)!important;pointer-events:none!important;z-index:1!important;
   background:var(--gb-ring)!important;-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask:linear-gradient(#000 0 0) content-box exclude,linear-gradient(#000 0 0);
   opacity:1!important;filter:none!important;animation:none!important;transform:none!important;width:auto!important;height:auto!important}
 
@@ -10263,8 +10269,14 @@ html.rs.rs-do{--g-env:#2a0b10;--g-env2:#561a20;--g-tone:58,14,20;--g-ink:#fff7f4
   --g-accent:#ffc2a6;--g-accent-ink:#3a0c12;--g-warn:#ffdf9a;--g-bad:#ffd2c7;--g-good:#c4f2cd}
 html.rs.rs-tim{--g-env:#3d3166;--g-env2:#6f5c9e;--g-tone:58,42,100;--g-ink:#fdfbff;--g-ink2:rgba(250,245,255,.9);--g-ink3:rgba(243,236,255,.74);
   --g-accent:#ece0ff;--g-accent-ink:#33245c;--g-warn:#ffe6a8;--g-bad:#ffc2cf;--g-good:#cff6dc}
+/* 16/11: tông SƯƠNG SÁNG – ảnh nền sáng, kính trắng sáng như ảnh mẫu; lớp phủ đậm hơn một chút để chữ trắng không chìm */
+html.rs.rs-suong{--g-env:#3f6656;--g-env2:#86ad98;--g-tone:34,74,58;--g-ink:#ffffff;--g-ink2:rgba(255,255,255,.92);--g-ink3:rgba(255,255,255,.82);
+  --g-accent:#e9fff3;--g-accent-ink:#173d2e;--g-warn:#ffe7a0;--g-bad:#ffd0c4;--g-good:#dcffe9;
+  --g1-tint:rgba(255,255,255,.12);--g2-tint:rgba(255,255,255,.10);--g4-tint:rgba(255,255,255,.16);--g-scrim1:.20;--g-scrim2:.42}
+html.rs.rs-suong .rs-the,html.rs.rs-suong .rs-the2,html.rs.rs-suong .card,html.rs.rs-suong .kpi{text-shadow:0 1px 3px rgba(10,40,28,.7),0 0 12px rgba(10,40,28,.35)!important}
 </style>
 <script>
+window.KINH_ANH={"xanh": {"may": "https://cdn.jsdelivr.net/gh/phamdoanchiengroup-cloud/githubforclaude160695@80da434bffb6bf1a2c4ca4c393f441f7c13ae084/kpi-app/anh/web/kinh-xanh.jpg", "dt": "https://cdn.jsdelivr.net/gh/phamdoanchiengroup-cloud/githubforclaude160695@80da434bffb6bf1a2c4ca4c393f441f7c13ae084/kpi-app/anh/web/kinh-xanh-dt.jpg"}, "suong": {"may": "https://cdn.jsdelivr.net/gh/phamdoanchiengroup-cloud/githubforclaude160695@80da434bffb6bf1a2c4ca4c393f441f7c13ae084/kpi-app/anh/web/kinh-suong.jpg", "dt": "https://cdn.jsdelivr.net/gh/phamdoanchiengroup-cloud/githubforclaude160695@80da434bffb6bf1a2c4ca4c393f441f7c13ae084/kpi-app/anh/web/kinh-suong-dt.jpg"}, "do": {"may": "https://cdn.jsdelivr.net/gh/phamdoanchiengroup-cloud/githubforclaude160695@80da434bffb6bf1a2c4ca4c393f441f7c13ae084/kpi-app/anh/web/kinh-do.jpg", "dt": "https://cdn.jsdelivr.net/gh/phamdoanchiengroup-cloud/githubforclaude160695@80da434bffb6bf1a2c4ca4c393f441f7c13ae084/kpi-app/anh/web/kinh-do-dt.jpg"}, "tim": {"may": "https://cdn.jsdelivr.net/gh/phamdoanchiengroup-cloud/githubforclaude160695@80da434bffb6bf1a2c4ca4c393f441f7c13ae084/kpi-app/anh/web/kinh-tim.jpg", "dt": "https://cdn.jsdelivr.net/gh/phamdoanchiengroup-cloud/githubforclaude160695@80da434bffb6bf1a2c4ca4c393f441f7c13ae084/kpi-app/anh/web/kinh-tim-dt.jpg"}};
 /* ===== Giao diện "Rừng Sương" (demo 16/11): vẽ nền rừng sương + dương xỉ đọng sương bằng canvas, đặt làm ảnh nền cố định (--rs-nen).
    Không dùng ảnh ngoài. Bật/tắt: rsBat(true/false), nhớ ở localStorage kpi_rs. ===== */
 (function(){
@@ -10274,6 +10286,8 @@ html.rs.rs-tim{--g-env:#3d3166;--g-env2:#6f5c9e;--g-tone:58,42,100;--g-ink:#fdfb
       can:'rgba(120,190,90,',la1:'rgba(70,140,60,',la2:'rgba(150,215,110,',reu:'rgba(70,120,50,.75)',phu:'rgba(8,26,20,'},
     do:{ten:'Lá Phong',nen:['#7a2a2c','#561a20','#2a0b10'],bk:['rgba(255,150,120,.2)','rgba(255,235,225,.14)'],tia:'rgba(255,225,200,',
       can:'rgba(200,70,50,',la1:'rgba(150,25,30,',la2:'rgba(240,110,70,',reu:'rgba(110,30,30,.75)',phu:'rgba(30,6,10,'},
+    suong:{ten:'Sương Sáng',nen:['#a9c9b6','#7da592','#4a705f'],bk:['rgba(235,255,240,.3)','rgba(255,255,255,.25)'],tia:'rgba(255,255,245,',
+      can:'rgba(140,200,110,',la1:'rgba(90,160,80,',la2:'rgba(185,235,150,',reu:'rgba(90,140,70,.7)',phu:'rgba(30,60,45,'},
     tim:{ten:'Oải Hương',nen:['#9a86c4','#6f5c9e','#3d3166'],bk:['rgba(225,205,255,.24)','rgba(250,245,255,.18)'],tia:'rgba(255,245,255,',
       can:'rgba(190,160,235,',la1:'rgba(120,90,180,',la2:'rgba(215,190,250,',reu:'rgba(95,70,140,.75)',phu:'rgba(30,20,55,'}};
   var P=TONG.xanh;
@@ -10290,6 +10304,12 @@ html.rs.rs-tim{--g-env:#3d3166;--g-env2:#6f5c9e;--g-tone:58,42,100;--g-ink:#fdfb
         c.fillStyle=g; c.beginPath(); c.moveTo(0,0); c.quadraticCurveTo(len*.5,-len*.16,len,0); c.quadraticCurveTo(len*.5,len*.16,0,0); c.fill(); c.restore();
         if(coGiot&&r()<.16) giot(c,px+Math.cos(s*1.05)*len*.7,py+Math.sin(s*1.05)*len*.7+3,2+r()*dai/90); }); }
     c.restore(); }
+  /* 16/11: ẢNH THẬT làm nền (Pexels, lưu trong repo, lấy qua jsDelivr – KINH_ANH do va-holo-web.py chèn); ảnh lỗi thì vẽ nền như cũ */
+  function veAnh(t){ var A=window.KINH_ANH&&window.KINH_ANH[t]; if(!A) return false;
+    var u=innerWidth<700&&A.dt?A.dt:A.may, im=new Image();
+    im.onload=function(){ if(daVe===t) document.documentElement.style.setProperty('--rs-nen','url("'+u+'")'); };
+    im.onerror=function(){ if(daVe===t) ve(); };
+    im.src=u; return true; }
   function ve(){
     var w=Math.min(1800,Math.max(360,innerWidth)), h=Math.min(1400,Math.max(640,innerHeight)), cv=document.createElement('canvas'); cv.width=w; cv.height=h;
     var c=cv.getContext('2d'), r=rnd(7);
@@ -10309,18 +10329,18 @@ html.rs.rs-tim{--g-env:#3d3166;--g-env2:#6f5c9e;--g-tone:58,42,100;--g-ink:#fdfb
     var url; try{ url=cv.toDataURL('image/jpeg',.82); }catch(e){ return; }
     document.documentElement.style.setProperty('--rs-nen','url('+url+')');
   }
-  var daVe='', tg, THU=['xanh','do','tim','0'];
+  var daVe='', tg, THU=['xanh','suong','do','tim','0'];
   window.rsBat=function(t){ if(t===true) t='xanh'; if(!t) t='0'; var h=document.documentElement, bat=t!=='0';
-    h.classList.toggle('rs',bat); ['xanh','do','tim'].forEach(function(k){ h.classList.toggle('rs-'+k,t===k); });
+    h.classList.toggle('rs',bat); ['xanh','suong','do','tim'].forEach(function(k){ h.classList.toggle('rs-'+k,t===k); });
     if(window.RS_DEMO){ try{ localStorage.setItem('kpi_rs',t); }catch(e){} }
-    if(!bat) document.querySelectorAll('.rs-sang').forEach(function(e){ e.style.removeProperty('background'); if(e.dataset.rsBg) e.style.setProperty('background',e.dataset.rsBg); e.classList.remove('rs-sang'); daXet.delete(e); });
-    if(bat){ P=TONG[t]; if(daVe!==t){ daVe=t; ve(); } setTimeout(quet,50); }
+    if(!bat) document.querySelectorAll('#app .rs-sang').forEach(function(e){ e.style.removeProperty('background'); if(e.dataset.rsBg) e.style.setProperty('background',e.dataset.rsBg); e.classList.remove('rs-sang'); daXet.delete(e); });
+    if(bat){ P=TONG[t]; if(daVe!==t){ daVe=t; if(!veAnh(t)) ve(); } setTimeout(quet,50); }
     var n=document.getElementById('rsNut'); if(n) n.style.background=bat?P.nen[2]+'cc':'rgba(30,30,30,.75)'; if(n) n.textContent=bat?'🎨 '+P.ten+' – đổi tông':'🎨 Giao diện gốc – đổi tông'; };
-  addEventListener('resize',function(){ if(!daVe) return; P=TONG[daVe]||P; clearTimeout(tg); tg=setTimeout(ve,300); });
+  addEventListener('resize',function(){ if(!daVe) return; P=TONG[daVe]||P; clearTimeout(tg); tg=setTimeout(function(){ if(!veAnh(daVe)) ve(); },300); });
   /* 16/11: tìm mọi "thẻ" của web (div bo góc có viền / nền: .card, .vh-the, thẻ Đơn hàng, Đài quan sát…) để gắn viền kính nổi 3D,
      không phải liệt kê từng tên lớp. Thẻ nằm trong thẻ khác → rs-the2 (nhẹ hơn). Thẻ nền sáng (vd. ô kem) → rs-sang (chữ sáng). */
   var daXet=new WeakSet(), hen=0;
-  function sangNen(c){ var m=c.match(/rgba?\(([\d.]+),\s*([\d.]+),\s*([\d.]+)(?:,\s*([\d.]+))?/); if(!m) return 0; var a=m[4]==null?1:+m[4]; if(a<.5) return 0;
+  function sangNen(c){ var m=c.match(/rgba?\(([\d.]+),\s*([\d.]+),\s*([\d.]+)(?:,\s*([\d.]+))?/); if(!m) return 0; var a=m[4]==null?1:+m[4]; if(a<.8) return 0;   /* chỉ nền sáng ĐẶC (ô kem…), không tính ánh lóe trong suốt của chính lớp kính */
     return (.2126*m[1]+.7152*m[2]+.0722*m[3])/255; }
   function quet(){ hen=0; if(!document.documentElement.classList.contains('rs')) return;
     var ds=document.querySelectorAll('#app div,#app section,#app article,#app details,#app li,#app main button');
@@ -10343,7 +10363,7 @@ html.rs.rs-tim{--g-env:#3d3166;--g-env2:#6f5c9e;--g-tone:58,42,100;--g-ink:#fdfb
   /* nút bật / tắt nổi (chỉ bản demo) */
   var n=document.createElement('button'); n.id='rsNut'; n.type='button';
   n.style.cssText='position:fixed;right:calc(10px + env(safe-area-inset-right,0px));top:calc(64px + env(safe-area-inset-top,0px));z-index:9999;padding:8px 12px;border-radius:999px;border:1px solid rgba(255,255,255,.5);background:rgba(16,44,35,.72);color:#f2faf5;font:600 12px system-ui;-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);cursor:pointer';
-  n.onclick=function(){ var h=document.documentElement, cur=h.classList.contains('rs')?(['xanh','do','tim'].filter(function(k){return h.classList.contains('rs-'+k);})[0]||'xanh'):'0'; rsBat(THU[(THU.indexOf(cur)+1)%THU.length]); };
+  n.onclick=function(){ var h=document.documentElement, cur=h.classList.contains('rs')?(['xanh','suong','do','tim'].filter(function(k){return h.classList.contains('rs-'+k);})[0]||'xanh'):'0'; rsBat(THU[(THU.indexOf(cur)+1)%THU.length]); };
   document.body.appendChild(n); rsBat(bat);
 })();
 
@@ -10353,10 +10373,10 @@ html.rs.rs-tim{--g-env:#3d3166;--g-env2:#6f5c9e;--g-tone:58,42,100;--g-ink:#fdfb
    - Chỉ chạy khi ME.laOwner. Mọi tài khoản khác: giao diện giữ nguyên.
    - Lớp áo: hệ thống vật liệu kính trong tests/rung-suong/rung-suong.css + .js (html.rs, tông rs-xanh / rs-do / rs-tim, rs-nhe).
    - Tổng quan: GIỮ "Đài quan sát KPI" (chòm sao KPI theo xưởng, bấm sao mở Bảng KPI đúng xưởng), đổi màu sang kính, không chuyển động liên tục.
-   - Nút cuối menu: "Giao diện kính" Đầy đủ -> Nhẹ (không làm mờ, cho máy yếu) -> Tắt; "Tông màu" Xanh rừng -> Đỏ lá phong -> Tím oải hương.
+   - Nút cuối menu: "Giao diện kính" Đầy đủ -> Nhẹ (không làm mờ, cho máy yếu) -> Tắt; "Tông màu" Xanh rừng -> Sương sáng -> Đỏ lá phong -> Tím oải hương.
      Nhớ trong máy (localStorage kpi_kinh, kpi_kinh_tong). Chọn nền sáng (nút mặt trời) thì kính tự tắt.
    ===================================================================== */
-var HOLO_KHOA = 'kpi_kinh', HOLO_TONG = 'kpi_kinh_tong', HOLO_TONG_TEN = { xanh: 'Xanh rừng sương', do: 'Đỏ lá phong', tim: 'Tím oải hương' };
+var HOLO_KHOA = 'kpi_kinh', HOLO_TONG = 'kpi_kinh_tong', HOLO_TONG_TEN = { xanh: 'Xanh rừng sương', suong: 'Sương sáng', do: 'Đỏ lá phong', tim: 'Tím oải hương' };
 function holoCheDo() { var v = null; try { v = localStorage.getItem(HOLO_KHOA); } catch (e) {} return v === 'nhe' || v === 'tat' ? v : 'day'; }
 function holoTong() { var v = null; try { v = localStorage.getItem(HOLO_TONG); } catch (e) {} return HOLO_TONG_TEN[v] ? v : 'xanh'; }
 function holoSang() { return document.documentElement.getAttribute('data-gd') === 'sang'; }
@@ -10438,7 +10458,7 @@ function holoDoi() {
   toast(moi === 'day' ? 'Giao diện kính: đầy đủ' : moi === 'nhe' ? 'Giao diện kính: nhẹ – bỏ làm mờ, nhẹ máy hơn' : 'Đã tắt giao diện kính – về giao diện thường', true);
 }
 function holoDoiTong() {
-  var ds = ['xanh', 'do', 'tim'], moi = ds[(ds.indexOf(holoTong()) + 1) % ds.length];
+  var ds = ['xanh', 'suong', 'do', 'tim'], moi = ds[(ds.indexOf(holoTong()) + 1) % ds.length];
   try { localStorage.setItem(HOLO_TONG, moi); } catch (e) {}
   holoApDung(); toast('Tông màu: ' + HOLO_TONG_TEN[moi], true);
 }
@@ -11014,7 +11034,7 @@ function nsnCapNhat(){ call('capNhatNgoaiSXTuFile',[],function(r){ if(!r||!r.ok)
 </script>
 <script>
 /* ===== 38. TĂNG TỐC ĐỢT 3 (08/11) – bộ đo tốc độ + mở nhanh bằng số lần trước (mã hóa) ===== */
-var TD_BUF=[], TD_T=null, DL_VER='aae7191ffa', DL_HAN=12*3600e3, DL_BO=['SoCCCD','DienThoai','DiaChi','SdtKhanCap','LuongCoBan','NamSinh','SoTaiKhoan','Email'];
+var TD_BUF=[], TD_T=null, DL_VER='86cd69967e', DL_HAN=12*3600e3, DL_BO=['SoCCCD','DienThoai','DiaChi','SdtKhanCap','LuongCoBan','NamSinh','SoTaiKhoan','Email'];
 function tdGhi_(f,ms,sv){ if(!(ms>=0)||!f) return; TD_BUF.push({f:String(f),ms:Math.round(ms),sv:(typeof sv==='number'?Math.round(sv):null)});
   if(TD_BUF.length>=15) tdGui_(); else if(!TD_T) TD_T=setTimeout(tdGui_,180000); }
 function tdGui_(){ if(TD_T){clearTimeout(TD_T);TD_T=null;} if(!TD_BUF.length||typeof TOKEN==='undefined'||!TOKEN) return;
