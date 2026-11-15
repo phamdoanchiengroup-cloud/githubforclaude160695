@@ -70,3 +70,4 @@ Liên quan: [[KPI Demo giao diện]] · [[KPI Kiểm thử]] · [[Quyết địn
 - Tiên cảnh theo yêu cầu: **lòng thẻ trong suốt hẳn** (không tô, không làm mờ) để thấy nền; **chữ nổi bằng viền tối** (`--t-vien`: text-shadow 8 hướng + quầng); chữ SVG dùng `paint-order:stroke`; nút vàng không viền; viền kính dày giữ nguyên. Điện thoại dời khung ảnh `--rs-nen-pos:24% 50%` để thấy heo thần. Lớp phủ nền rất nhẹ (.06/.20).
 - Kiểm thử: holo-web 23/23 (tông xanh → tiên cảnh → xanh), tong-quan 26/26.
 - 16/11 (tối, sau): viền chữ Tiên cảnh mảnh hơn (4 hướng nhạt + quầng), lớp tối mỏng rgba(40,10,6,.24) chỉ sau bảng số (`table`, `.hl-o`).
+- 16/11 (tối, sau nữa): hiệu ứng kính – thẻ **trượt ngang vào** khi vẽ trang (CSS `rsTruotVao`, so le theo thứ tự), **rê chuột: nổi 4px + vệt sáng chạy quanh viền** (conic-gradient trên ::before của `.rs-vien`, xoay bằng `@property --rs-goc`); tắt khi giảm chuyển động. Kiểm thử holo-web 23/23, tong-quan 26/26.

@@ -9731,7 +9731,7 @@ function hsGhiChuDong(r){
 }
 </script>
 <script>
-var KPI_BAN = '15/11/2026 14:46';
+var KPI_BAN = '15/11/2026 15:17';
 (function(){
   var cu = window.veNav;
   window.veNav = function(){
@@ -10283,6 +10283,29 @@ html.rs.rs-tien #main .btn.pri,html.rs.rs-tien #main .btn.pri *{text-shadow:none
 /* 16/11 (tối): lớp tối thật mỏng CHỈ sau bảng số – nền vẫn nhìn xuyên được nhưng hàng chữ số đỡ rối */
 html.rs.rs.rs.rs-tien table{background:rgba(40,10,6,.24)!important;border-radius:12px}
 html.rs.rs.rs.rs-tien .hl-o{background:rgba(40,10,6,.20)!important}
+
+/* ---------- 11. Chuyển động (16/11, chủ dự án: "card chạy ngang vào, rê chuột thì nổi lên và có viền sáng chạy quanh") ----------
+   - Trượt vào: CSS tự chạy khi thẻ được vẽ (mở trang / đổi tab), so le theo thứ tự; fill-mode backwards nên xong là trả transform cho hiệu ứng rê chuột.
+   - Rê chuột (chỉ máy có chuột): thẻ nhấc lên 4px + bóng sâu hơn; thẻ có vành gradient (.rs-vien) thì vệt sáng chạy vòng quanh viền (conic-gradient xoay bằng @property).
+   - Chỉ transform / opacity / 1 biến góc → nhẹ máy; tắt hết khi máy bật "giảm chuyển động". */
+@property --rs-goc{syntax:"<angle>";inherits:false;initial-value:0deg}
+@keyframes rsTruotVao{from{opacity:0;transform:translateX(-28px)}to{opacity:1;transform:none}}
+@keyframes rsVongSang{to{--rs-goc:360deg}}
+html.rs #main :is(.card,.kpi,.hl-dai){animation:rsTruotVao .55s cubic-bezier(.2,.8,.2,1) backwards}
+html.rs #main :is(.card,.kpi,.hl-dai):nth-child(2){animation-delay:.06s}
+html.rs #main :is(.card,.kpi,.hl-dai):nth-child(3){animation-delay:.12s}
+html.rs #main :is(.card,.kpi,.hl-dai):nth-child(4){animation-delay:.18s}
+html.rs #main :is(.card,.kpi,.hl-dai):nth-child(5){animation-delay:.24s}
+html.rs #main :is(.card,.kpi,.hl-dai):nth-child(n+6){animation-delay:.3s}
+html.rs.rs.rs #main :is(.card,.kpi,.rs-the){transition:transform .28s cubic-bezier(.2,.8,.2,1),box-shadow .28s ease}
+@media (hover:hover){
+  html.rs.rs.rs #main :is(.card,.kpi,.rs-the):not(.rs-the2):hover{transform:translateY(-4px)!important;
+    box-shadow:var(--gb-inner),inset 0 -14px 24px -16px rgba(0,0,0,.3),0 2px 4px rgba(0,0,0,.18),0 24px 48px -14px rgba(0,0,0,.45),0 0 22px rgba(255,255,255,.12)!important}
+  html.rs.rs.rs #main .rs-vien:not(.rs-the2):hover::before{
+    background:conic-gradient(from var(--rs-goc),rgba(255,255,255,.25) 0deg,rgba(255,255,255,.25) 250deg,#fff 300deg,rgba(255,240,200,.95) 320deg,rgba(255,255,255,.25) 360deg)!important;
+    animation:rsVongSang 2.2s linear infinite!important;filter:drop-shadow(0 0 4px rgba(255,255,255,.7))!important}
+}
+@media (prefers-reduced-motion:reduce){html.rs #main :is(.card,.kpi,.hl-dai){animation:none!important}html.rs.rs.rs #main .rs-vien:hover::before{animation:none!important}}
 </style>
 <script>
 window.KINH_ANH={"xanh": {"may": "https://cdn.jsdelivr.net/gh/phamdoanchiengroup-cloud/githubforclaude160695@80da434bffb6bf1a2c4ca4c393f441f7c13ae084/kpi-app/anh/web/kinh-xanh.jpg", "dt": "https://cdn.jsdelivr.net/gh/phamdoanchiengroup-cloud/githubforclaude160695@80da434bffb6bf1a2c4ca4c393f441f7c13ae084/kpi-app/anh/web/kinh-xanh-dt.jpg"}, "tien": {"may": "https://cdn.jsdelivr.net/gh/phamdoanchiengroup-cloud/githubforclaude160695@74d6b50d07430b2620160c4978f349ade1312db5/kpi-app/anh/web/kinh-tien.jpg", "dt": "https://cdn.jsdelivr.net/gh/phamdoanchiengroup-cloud/githubforclaude160695@74d6b50d07430b2620160c4978f349ade1312db5/kpi-app/anh/web/kinh-tien-dt.jpg"}};
@@ -11039,7 +11062,7 @@ function nsnCapNhat(){ call('capNhatNgoaiSXTuFile',[],function(r){ if(!r||!r.ok)
 </script>
 <script>
 /* ===== 38. TĂNG TỐC ĐỢT 3 (08/11) – bộ đo tốc độ + mở nhanh bằng số lần trước (mã hóa) ===== */
-var TD_BUF=[], TD_T=null, DL_VER='2e002edd43', DL_HAN=12*3600e3, DL_BO=['SoCCCD','DienThoai','DiaChi','SdtKhanCap','LuongCoBan','NamSinh','SoTaiKhoan','Email'];
+var TD_BUF=[], TD_T=null, DL_VER='2bacea8cc2', DL_HAN=12*3600e3, DL_BO=['SoCCCD','DienThoai','DiaChi','SdtKhanCap','LuongCoBan','NamSinh','SoTaiKhoan','Email'];
 function tdGhi_(f,ms,sv){ if(!(ms>=0)||!f) return; TD_BUF.push({f:String(f),ms:Math.round(ms),sv:(typeof sv==='number'?Math.round(sv):null)});
   if(TD_BUF.length>=15) tdGui_(); else if(!TD_T) TD_T=setTimeout(tdGui_,180000); }
 function tdGui_(){ if(TD_T){clearTimeout(TD_T);TD_T=null;} if(!TD_BUF.length||typeof TOKEN==='undefined'||!TOKEN) return;
