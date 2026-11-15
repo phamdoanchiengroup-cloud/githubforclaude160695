@@ -397,8 +397,8 @@ details.dh-doc[open]{background:var(--bg2,rgba(127,127,127,.08));border-left:3px
 @media (max-width:640px){ .dh-bang.gom td:nth-child(3),.dh-bang.gom th:nth-child(3),.dh-bang.gom td:nth-child(4),.dh-bang.gom th:nth-child(4){display:none} .dh-bang:not(.dt) .dh-khoi td{display:table-cell!important} }
 
 /* ===== Lưu đồ – hiệu ứng (01/11 tối, chủ dự án: không ảnh, làm đẹp đường line + card; điện thoại bỏ lưu đồ) ===== */
-.qt-nmw{position:relative;padding:6px 4px 40px}   /* 14/11: chừa đáy cho đường + nhãn TIP BÁN LẺ */
-.qt-nmw .qt-nm{position:relative;z-index:1;row-gap:48px;column-gap:72px;grid-template-areas:"pcb pt son uv ht dg" "pcb pt taro . ht dg" ". . . cnc tip ."}   /* 14/11: ngọn Taro → Hoàn thiện → Ngọn Tip → Hoàn thiện → Đóng gói: Tip nằm dưới Hoàn thiện */
+.qt-nmw{position:relative;padding:24px 4px 40px}   /* 15/11 khuya: chừa đỉnh cho nhãn làn */   /* 14/11: chừa đáy cho đường + nhãn TIP BÁN LẺ */
+.qt-nmw .qt-nm{position:relative;z-index:1;row-gap:26px;column-gap:72px;grid-template-areas:"pcb pt son uv ht dg" "pcb pt . . ht dg" "pcb pt taro . ht dg" ". . . cnc tip ."}   /* 15/11 khuya (chủ dự án: lưu đồ rối): 3 làn – chuôi trên, ngọn dưới, Phôi / Hoàn thiện / Đóng gói giữa; Tip dưới Hoàn thiện, CNC cạnh Tip; bỏ đường ngọn lẻ Tip → Đóng gói */   /* 14/11: ngọn Taro → Hoàn thiện → Ngọn Tip → Hoàn thiện → Đóng gói: Tip nằm dưới Hoàn thiện */
 .qt-nh2{display:none!important}
 .qt-o.di::after,.qt-o.vao::before{display:none!important}
 svg.qt-duong{position:absolute;left:0;top:0;z-index:0;pointer-events:none;overflow:visible}
@@ -523,6 +523,7 @@ html[data-gd="sang"] .qt-bd.wn{color:#7a4800} html[data-gd="sang"] .qt-o .le{col
 html[data-gd="sang"] svg.qt-duong .nen{stroke:rgba(22,121,168,.6);filter:none} html[data-gd="sang"] svg.qt-duong .chay{stroke:#0d5f86}
 html[data-gd="sang"] svg.qt-duong .nen.phu{stroke:rgba(176,95,0,.6);filter:none} html[data-gd="sang"] svg.qt-duong .chay.phu{stroke:#a35600}
 html[data-gd="sang"] svg.qt-duong text{fill:#8a4d00;paint-order:stroke;stroke:#fff;stroke-width:3px}
+svg.qt-duong text.lan{fill:rgba(170,215,235,.75);font-size:10.5px;letter-spacing:1.2px} html[data-gd="sang"] svg.qt-duong text.lan{fill:#4a6474}   /* 15/11 khuya: nhãn làn */
 html[data-gd="sang"] svg.qt-duong marker path{stroke:#0d5f86} html[data-gd="sang"] svg.qt-duong #qtMuiP path{stroke:#a35600}
 html[data-gd="sang"] .dh-vrt u,html[data-gd="sang"] .dh-lg.t{background:#b8860b} html[data-gd="sang"] .dh-luy u{background:#1d2330}
 html[data-gd="sang"] .qt-o.cua{box-shadow:0 0 0 3px rgba(11,122,115,.18)}
@@ -949,21 +950,22 @@ function qtVeDuong(){
   var ds=[], nhan=[];
   var noi=function(a,b,dy){ var A=o(a),B=o(b); if(!A||!B) return; var x1=A.r+2,y1=A.cy,x2=B.l-6,y2=B.cy+(dy||0),mx=(x1+x2)/2; ds.push(['M'+x1+' '+y1+' C'+mx+' '+y1+' '+mx+' '+y2+' '+x2+' '+y2,'']); };
   /* 14/11 (chủ dự án): ngọn Taro → Hoàn thiện → Ngọn Tip → trả Hoàn thiện → Đóng gói; luồng chuôi giữ nguyên */
-  noi('PHOICB','PHOITHO'); noi('PHOITHO','SON'); noi('PHOITHO','NGONTARO'); noi('SON','INUV'); noi('INUV','HT',-14); noi('NGONTARO','HT',14); noi('HT','DG');
-  var H1=o('HT'), P1=o('NGONTIP'); if(H1&&P1){ ds.push(['M'+(P1.cx-16)+' '+(H1.b+2)+' L'+(P1.cx-16)+' '+(P1.t-6),'']); ds.push(['M'+(P1.cx+16)+' '+(P1.t-2)+' L'+(P1.cx+16)+' '+(H1.b+6),'']); nhan.push([P1.cx+24,(H1.b+P1.t)/2+4,'TRẢ HT']); }
+  noi('PHOICB','PHOITHO'); noi('PHOITHO','SON'); noi('PHOITHO','NGONTARO'); noi('SON','INUV'); noi('INUV','HT',-12); noi('NGONTARO','HT',12); noi('HT','DG');
+  var H1=o('HT'), P1=o('NGONTIP'); if(H1&&P1){ ds.push(['M'+(P1.cx-16)+' '+(H1.b+2)+' L'+(P1.cx-16)+' '+(P1.t-6),'']); ds.push(['M'+(P1.cx+16)+' '+(P1.t-2)+' L'+(P1.cx+16)+' '+(H1.b+6),'']); nhan.push([P1.cx+24,(H1.b+P1.t)/2+4,'TRẢ HT']); nhan.push([P1.cx-24,(H1.b+P1.t)/2+4,'LÀM ĐẦU','e']); }
+  /* 15/11 khuya: nhãn làn cho dễ đọc */
+  [['SON','NHÁNH CHUÔI'],['NGONTARO','NHÁNH NGỌN'],['CNC','CẤP LINH KIỆN']].forEach(function(z){ var Z=o(z[0]); if(Z) nhan.push([Z.l+2,Z.t-8,z[1],'lan']); });
   var A=o('CNC'),B=o('NGONTIP'); if(A&&B){ ds.push(['M'+(A.r+2)+' '+(A.cy-8)+' L'+(B.l-6)+' '+(A.cy-8),'phu']); nhan.push([(A.r+B.l)/2,A.cy-14,'TIP, PHÍP','m']); }
   A=o('CNC'); B=o('SON'); var T2=o('NGONTARO'); if(A&&B&&T2){ var gx=(T2.r+A.l)/2, yb=B.b+20, r2=10;   /* CNC cấp đầu gậy lết cho Sơn: đi lên theo khe giữa 2 cột rồi rẽ vào đáy thẻ Sơn */
     ds.push(['M'+(A.l-2)+' '+A.cy+' L'+(gx+r2)+' '+A.cy+' Q'+gx+' '+A.cy+' '+gx+' '+(A.cy-r2)+' L'+gx+' '+(yb+r2)+' Q'+gx+' '+yb+' '+(gx-r2)+' '+yb+' L'+(B.cx+r2)+' '+yb+' Q'+B.cx+' '+yb+' '+B.cx+' '+(yb-r2)+' L'+B.cx+' '+(B.b+6),'phu']); nhan.push([B.cx+14,yb-5,'ĐẦU LẾT']); }
   A=o('CNC'); B=o('DG'); if(A&&B){ var r3=10, yc=A.b+16;   /* CNC cấp tip bán lẻ thẳng cho Đóng gói: 14/11 đi vòng dưới Ngọn Tip rồi lên đáy thẻ Đóng gói */
     ds.push(['M'+A.cx+' '+(A.b+2)+' L'+A.cx+' '+(yc-r3)+' Q'+A.cx+' '+yc+' '+(A.cx+r3)+' '+yc+' L'+(B.cx-r3)+' '+yc+' Q'+B.cx+' '+yc+' '+B.cx+' '+(yc-r3)+' L'+B.cx+' '+(B.b+6),'phu']); nhan.push([A.cx+14,yc+15,'TIP BÁN LẺ']); }
-  A=o('NGONTIP'); B=o('DG'); if(A&&B){ var r4=10, y4=A.cy, x4=B.cx-16;   /* 07/11 (chủ dự án): ngọn lẻ Tip -> Đóng gói là đường cấp phụ (nét đứt cam) như POM, đầu lết; đi ngang dưới Hoàn thiện rồi lên đáy Đóng gói */
-    ds.push(['M'+(A.r+2)+' '+y4+' L'+(x4-r4)+' '+y4+' Q'+x4+' '+y4+' '+x4+' '+(y4-r4)+' L'+x4+' '+(B.b+6),'phu']); nhan.push([x4+8,(y4+B.b)/2+4,'NGỌN LẺ']); }
+  /* 15/11 khuya (chủ dự án): bỏ đường ngọn lẻ Ngọn Tip → Đóng gói – mọi ngọn đều trả Hoàn thiện rồi mới Đóng gói */
   A=o('NGONTARO'); B=o('PHOITHO'); if(A&&B){ var y=Math.max(A.b,B.b)+24, r=10; ds.push(['M'+A.cx+' '+(A.b+2)+' L'+A.cx+' '+(y-r)+' Q'+A.cx+' '+y+' '+(A.cx-r)+' '+y+' L'+(B.cx+r)+' '+y+' Q'+B.cx+' '+y+' '+B.cx+' '+(y-r)+' L'+B.cx+' '+(B.b+6),'phu']); nhan.push([(A.cx+B.cx)/2-14,y-6,'POM']); }
   svg.setAttribute('width',w.offsetWidth); svg.setAttribute('height',w.offsetHeight);
   svg.innerHTML='<defs><marker id="qtMui" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M1 1L8 5L1 9" fill="none" stroke="rgba(150,230,255,.95)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></marker>'+
     '<marker id="qtMuiP" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M1 1L8 5L1 9" fill="none" stroke="rgba(255,200,120,.95)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></marker></defs>'+
     ds.map(function(d){ return '<path class="nen '+d[1]+'" d="'+d[0]+'" marker-end="url(#'+(d[1]?'qtMuiP':'qtMui')+')"/><path class="chay '+d[1]+'" d="'+d[0]+'"/>'; }).join('')+
-    nhan.map(function(n){ return '<text x="'+n[0]+'" y="'+n[1]+'"'+(n[3]==='m'?' text-anchor="middle"':'')+'>'+n[2]+'</text>'; }).join('');
+    nhan.map(function(n){ return '<text x="'+n[0]+'" y="'+n[1]+'"'+(n[3]==='m'?' text-anchor="middle"':n[3]==='e'?' text-anchor="end"':'')+(n[3]==='lan'?' class="lan"':'')+'>'+n[2]+'</text>'; }).join('');
 }
 function qtVeXDuong(){ var w=document.querySelector('.qt-xw'); if(w&&w.offsetWidth>50&&window.__qtCanhX) qtVeCanh(w,window.__qtCanhX); w=document.querySelector('.qt-sw'); if(w&&w.offsetWidth>50&&window.__qtCanhS) qtVeCanh(w,window.__qtCanhS); }
 function qtSauVe(){
