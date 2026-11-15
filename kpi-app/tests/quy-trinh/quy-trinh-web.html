@@ -533,6 +533,23 @@ html[data-gd="sang"] .qt-o.cua{box-shadow:0 0 0 3px rgba(11,122,115,.18)}
 .dh-phong-x{flex:none;width:42px;height:42px;border-radius:50%;border:1px solid var(--line);background:var(--panel);color:var(--ink);font-size:18px;cursor:pointer}
 .dh-phong-hinh{overflow-x:auto} .dh-phong-hinh svg{display:block;min-width:640px;width:100%;height:auto}
 .dh-phong-bang{display:flex;flex-wrap:wrap;gap:4px 12px;font-size:12.5px;margin-top:8px;color:var(--ink2)} .dh-phong-bang .kem b{color:#c0392b}
+/* ===== 16/11 Biểu đồ "Phòng điều khiển 4.0" (web, nền tối; nền sáng + PDF giữ kiểu cũ) =====
+   Một drop-shadow cho cả SVG (rẻ hơn lọc từng nét); số kiểu đồng hồ đo bằng JetBrains Mono (Index đã tải font). */
+html:not([data-gd="sang"]) #qtWrap svg[role="img"],html:not([data-gd="sang"]) #main svg[role="img"]{filter:drop-shadow(0 0 2px rgba(190,255,225,.28))}
+html:not([data-gd="sang"]) .dh-tong b,html:not([data-gd="sang"]) .dh-tk b{font-family:"JetBrains Mono",ui-monospace,Menlo,Consolas,monospace;font-weight:600;letter-spacing:-.01em;text-shadow:0 0 14px rgba(168,236,201,.35)}
+html:not([data-gd="sang"]) .dh-tong span,html:not([data-gd="sang"]) .dh-tk span{text-transform:uppercase;letter-spacing:.07em;font-size:11px}
+@media (max-width:700px){html:not([data-gd="sang"]) .dh-tong span,html:not([data-gd="sang"]) .dh-tk span{letter-spacing:.02em;font-size:10.5px}}
+html:not([data-gd="sang"]) .dh-sk{border-radius:999px;background:rgba(255,255,255,.08);box-shadow:inset 0 1px 2px rgba(0,0,0,.35)}
+html:not([data-gd="sang"]) .dh-sk i{box-shadow:inset 0 1px 0 rgba(255,255,255,.35)}
+html:not([data-gd="sang"]) .dh-hb{font-variant-numeric:tabular-nums}
+html:not([data-gd="sang"]) .dh-sk i.FC,html:not([data-gd="sang"]) .dh-lg2.FC{background:linear-gradient(90deg,#4fd1a6,#a8ecc9)}
+html:not([data-gd="sang"]) .dh-sk i.MIX,html:not([data-gd="sang"]) .dh-lg2.MIX{background:linear-gradient(90deg,#4aa8d8,#8fd3ff)}
+html:not([data-gd="sang"]) .dh-sk i.GF,html:not([data-gd="sang"]) .dh-lg2.GF{background:linear-gradient(90deg,#c9b46a,#f2d98b)}
+html:not([data-gd="sang"]) .dh-cong i,html:not([data-gd="sang"]) .dh-vrt i.r{background:linear-gradient(0deg,rgba(168,236,201,.25),var(--g-accent,#a8ecc9));opacity:1;box-shadow:0 0 8px -2px rgba(168,236,201,.6)}
+html:not([data-gd="sang"]) .dh-vrt i.v{background:linear-gradient(0deg,rgba(143,211,255,.25),#8fd3ff)}
+html:not([data-gd="sang"]) .dh-cong i.vuot,html:not([data-gd="sang"]) .dh-vrt i.r.duoi{background:linear-gradient(0deg,rgba(255,158,143,.25),var(--g-bad,#ff9e8f))}
+html:not([data-gd="sang"]) .dh-tong>*,html:not([data-gd="sang"]) .dh-tk>*{border-radius:14px!important;border-color:rgba(255,255,255,.26)!important;
+  background:radial-gradient(120% 80% at 10% -10%,rgba(255,255,255,.12),transparent 55%),rgba(255,255,255,.035)!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.35)}
 </style>
 <script>
 /* ===== Quy trình sản xuất (31/10) ===== */
@@ -2944,7 +2961,12 @@ function dhChayLoc(C){ if(!C||!C.ngay) return C; var bo=[], ng=C.ngay.filter(fun
    Kiểu biểu đồ theo Minitab / Lean (quan-ly-van-hanh): I-MR, bullet, bản đồ nhiệt, năng lực vs nhịp cần, dòng tích lũy (CFD), tuổi dở dang (WIP aging), Pareto lũy kế, xu hướng giao đúng hạn. */
 function dhMau(xuat){ var sang=xuat||document.documentElement.getAttribute('data-gd')==='sang';
   return sang?{ink:'#1d2327',ink3:'#5b6670',line:'#cfd8d6',grid:'#e8eeec',xanh:'#1f8a5b',cam:'#d18a12',do:'#c0302b',lam:'#2f7fb0',teal:'#0b7a73',xam:'#b9c2c0',nhat:'#eef2f1',bandDo:'#f6d9d6',bandCam:'#f8ebcf',bandXanh:'#d8efe2',font:'Arial, Helvetica, sans-serif'}
-    :{ink:'#e8eef0',ink3:'#9aa8ad',line:'#3a4a52',grid:'#26343a',xanh:'#3fbf7f',cam:'#e8a23a',do:'#ff6b5e',lam:'#5b8def',teal:'#34c3b5',xam:'#56646a',nhat:'#22303a',bandDo:'#4a2a2a',bandCam:'#4a3d22',bandXanh:'#1f3d2e',font:'Arial, Helvetica, sans-serif'}; }
+    :dhMau4(); }
+/* 16/11 (chủ dự án chọn "Phòng điều khiển 4.0"): bảng màu biểu đồ trên web – nét mảnh sáng, lưới trắng mờ, đèn tín hiệu dịu;
+   màu nhấn theo tông kính đang bật (--g-accent / --g-warn / --g-bad), không bật kính thì bạc hà mặc định. PDF (xuat) và nền sáng giữ bảng màu cũ. */
+function dhMau4(){ var cs=getComputedStyle(document.documentElement), v=function(k,d){ var x=(cs.getPropertyValue(k)||'').trim(); return x&&x.indexOf('var(')<0?x:d; };
+  return {ink:'#f3faf6',ink3:'rgba(232,246,238,.74)',line:'rgba(255,255,255,.24)',grid:'rgba(255,255,255,.10)',xanh:v('--g-accent','#a8ecc9'),cam:v('--g-warn','#f2d98b'),do:v('--g-bad','#ff9e8f'),lam:'#8fd3ff',teal:'#7fe0d0',xam:'rgba(255,255,255,.30)',
+    nhat:'rgba(255,255,255,.06)',bandDo:'rgba(255,120,100,.16)',bandCam:'rgba(242,217,139,.14)',bandXanh:'rgba(168,236,201,.12)',font:'Inter, system-ui, sans-serif'}; }
 function dhSvgMo(w,h,M,tieu){ return '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 '+w+' '+h+'" font-family="'+M.font+'" width="100%" style="max-width:'+w+'px;display:block;font-family:'+M.font+'" role="img"'+(tieu?' aria-label="'+esc(tieu)+'"':'')+'>'; }
 function dhT(x,y,t,M,o){ o=o||{}; return '<text x="'+(+x).toFixed(1)+'" y="'+(+y).toFixed(1)+'" font-size="'+(o.c||11)+'" fill="'+(o.m||M.ink3)+'"'+(o.a?' text-anchor="'+o.a+'"':'')+(o.b?' font-weight="700"':'')+'>'+esc(String(t))+'</text>'; }
 function dhSo0(x){ return qtSo(Math.round(x||0),0); }
@@ -3146,7 +3168,7 @@ function dhVeThongKe(ds,don){
     '<div class="'+(kn28[0]&&kn28[1]/kn28[0]<0.8?'bd':'')+'"><span>Giao đúng hạn (4 tuần)</span><b>'+(kn28[0]?Math.round(kn28[1]/kn28[0]*100)+'%':'–')+'</b><small>'+(kn28[0]?kn28[1]+'/'+kn28[0]+' dòng xong'+(C&&C.ngay.length<20?' · mới '+C.ngay.length+' ngày chụp':''):'cần vài ngày bản chụp')+'</small></div>'+
     '<div><span>Dòng đơn đang thiếu</span><b>'+qtSo(sx.length,0)+'</b><small>không tính nối / phụ kiện</small></div></div>';
   h+=dhCachDoc('<b>Số ngày hàng tồn</b> = nếu từ nay không nhận thêm đơn, nhà máy làm theo công suất '+qtSo(cs,0)+' sp/ngày (cài ở ⚙ Công suất) thì mất bấy nhiêu ngày mới làm hết phần còn thiếu. <b>Dưới 10 ngày</b>: nhận thêm đơn được. <b>10–15 ngày</b> (vàng): cân nhắc. <b>Trên 15 ngày</b> (đỏ): tăng ca hoặc hẹn hạn xa hơn. Đơn mới vào / làm xong ra / giao đúng hạn suy ra từ bản chụp đơn lúc 9h mỗi ngày (sai số ±1 ngày).');
-  var TKD=dhTKDuLieu(); h=dhVeSQDCP()+h; h+=dhVeIMRDG(TKD);   /* 07/11: SQDCP + I-MR Đóng gói */
+  var TKD=dhTKDuLieu(); h+=dhVeIMRDG(TKD);   /* 07/11: I-MR Đóng gói (16/11: bỏ bảng SQDCP – chủ dự án) */
   // 1. sản lượng từng xưởng
   h+=dhVeXuong(); if(DHDG&&!DHDG.loi&&DHDG.xuong) h+=dhVeBulletHeat(TKD)+dhVeNangLuc(TKD);
   // 2. vào – ra – tồn
@@ -3308,8 +3330,9 @@ function dhVeCauHinh(){
 /* ===== 07/11 (chủ dự án): tab chính "Thống kê" – chỉ chủ sở hữu, nằm dưới "Đơn hàng".
    Tổng hợp ở một chỗ: Sản xuất & đơn hàng (chuyển từ Đơn hàng → Thống kê), Nhân sự, Điểm danh, Báo cơm (cả người không báo),
    Công đoạn, Định mức, KPI. Thống kê riêng ở từng tab cũ vẫn giữ. Máy chủ: layThongKe(thang) + phanTichDinhMuc (đã có). ===== */
-var TKV='tq', TKThang='', TKD={}, TKTai={}, TKDM={}, TKDMTai={};
-var TK_TAB=[['tq','Tổng quan'],['sx','Sản xuất & đơn hàng'],['ns','Nhân sự'],['dd','Điểm danh'],['com','Báo cơm'],['cd','Công đoạn'],['dm','Định mức'],['kpi','KPI'],['td','Tốc độ web']];
+var TKV='sx', TKThang='', TKD={}, TKTai={}, TKDM={}, TKDMTai={};
+var TK_TAB=[['sx','Sản xuất & đơn hàng'],   /* 16/11: bỏ mục Tổng quan – 6 ô chỉ số gộp lên đầu Sản xuất & đơn hàng */
+  ['ns','Nhân sự'],['dd','Điểm danh'],['com','Báo cơm'],['cd','Công đoạn'],['dm','Định mức'],['kpi','KPI'],['td','Tốc độ web']];
 function tkThangNay(){ var d=new Date(); return d.getFullYear()+'-'+('0'+(d.getMonth()+1)).slice(-2); }
 function tkThangDs(){ var a=[], t=tkThangNay(); for(var i=0;i<6;i++){ a.push(t); var p=t.split('-'), y=+p[0], m=+p[1]-1; if(m<1){m=12;y--;} t=y+'-'+('0'+m).slice(-2); } return a; }
 function tkChon(v){ TKV=v; tkVe(); try{ var m=document.querySelector('.dh-nav'); if(m&&m.getBoundingClientRect().top<0) m.scrollIntoView({block:'start'}); }catch(e){} }
@@ -3337,12 +3360,13 @@ function tkSvgHeat(hang,ngs,o,mau,nhanO,M,tieu){ var w=760, L=150, cw=(w-L-10)/M
 function tkVe(){
   if(!TKThang) TKThang=tkThangNay();
   var D=TKD[TKThang], dsT=tkThangDs(); if(dsT.indexOf(TKThang)<0) dsT.push(TKThang);
-  if(TKV!=='sx'&&TKV!=='td'&&!D) tkTai(false);
+  if(TKV!=='td'&&!D) tkTai(false);
   var h='<div class="dh-dau" style="flex-wrap:wrap"><div style="min-width:0;flex:1 1 260px"><div class="ptitle">Thống kê</div><div class="dh-mota">Tổng hợp nhân sự, điểm danh, báo cơm, công đoạn, định mức, KPI và sản xuất – chỉ chủ sở hữu thấy'+(D&&D.luc?' · tính lúc '+esc(D.luc):'')+'</div></div>'+
     '<div class="dh-cu" style="flex-wrap:wrap;gap:6px;max-width:100%"><select aria-label="Chọn tháng" onchange="TKThang=this.value;tkVe()" style="min-height:34px;max-width:100%">'+dsT.map(function(t){return '<option value="'+t+'"'+(t===TKThang?' selected':'')+'>Tháng '+t.slice(5)+'/'+t.slice(0,4)+(t===tkThangNay()?' · đang chạy':'')+'</option>'}).join('')+'</select> <button class="btn sm" type="button" onclick="tkLamMoi()" title="Tính lại từ Sheet">↻ Làm mới</button></div></div>';
   h+='<div class="dh-nav"><div class="dh-sub" role="tablist">'+TK_TAB.map(function(t){return '<button type="button" role="tab"'+(TKV===t[0]?' class="on" aria-current="page"':'')+' onclick="tkChon(\''+t[0]+'\')">'+t[1]+'</button>'}).join('')+'</div></div><div class="dh-than">';
   if(TKV==='td') h+=tkVeTD();
   else if(TKV==='sx'){
+    if(D&&!D.loi) h+=tkVeTQ(D); else if(!D) h+='<div class="pdesc">Đang tổng hợp 6 chỉ số tháng '+TKThang.slice(5)+'/'+TKThang.slice(0,4)+'…</div>';   /* 16/11: 6 ô chỉ số (cũ: mục Tổng quan) */
     h+='<div class="dh-ghi">Số liệu đơn hàng là <b>hiện tại</b> (không theo tháng chọn). Biểu đồ sản lượng xưởng theo nhật ký sản xuất.</div>';
     if(!DH){ if(!DHTai) dhTai(false); h+='<div class="pdesc">Đang đọc Sheet "Trạng thái đơn hàng"…</div>'; }
     else if(DH.loi) h+='<div class="alert a-bd">'+esc(DH.loi)+' <button class="btn sm" type="button" onclick="DH=null;dhTai(true)">Thử lại</button></div>';
@@ -3353,7 +3377,7 @@ function tkVe(){
   else {
     if(D.loi&&D.loi.length) h+='<div class="alert a-wn">Một phần chưa tính được: '+esc(D.loi.join(' · '))+'</div>';
     if(D.chuaChot&&TKV!=='ns') h+='<div class="dh-ghi">⚠ Tháng đang chạy, <b>chưa chốt</b>: mới có '+D.ngayLam.length+' ngày làm, <b>tính tới hết hôm qua</b> (không tính ngày đang làm). Sản lượng nhập trễ có thể làm số thấp hơn thực tế.</div>';
-    h+=({tq:tkVeTQ,ns:tkVeNS,dd:tkVeDD,com:tkVeCom,cd:tkVeCD,dm:tkVeDM,kpi:tkVeKPI}[TKV]||tkVeTQ)(D);
+    h+=({ns:tkVeNS,dd:tkVeDD,com:tkVeCom,cd:tkVeCD,dm:tkVeDM,kpi:tkVeKPI}[TKV]||tkVeNS)(D);
   }
   h+='</div>';
   $('main').innerHTML=h;
