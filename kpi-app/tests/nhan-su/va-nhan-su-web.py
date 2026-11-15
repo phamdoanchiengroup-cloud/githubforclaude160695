@@ -7,7 +7,7 @@ var NSN=null, NSNTai=false;
 function nsnVe(){
   var m=$('main'); if(!m||!ME||!ME.laOwner||tabHienTai!=='ns') return;
   var o=document.getElementById('nsNgoai'); if(!o){ o=document.createElement('div'); o.id='nsNgoai'; m.appendChild(o); }
-  if(!NSN){ o.innerHTML='<div class="card pdesc">Đang tải bộ phận ngoài sản xuất…</div>'; if(!NSNTai){ NSNTai=true; call('layNhanSuNgoaiSX',[],function(r){ NSNTai=false; NSN=r||{ok:false,msg:'Không tải được.'}; nsnVe(); }); } return; }
+  if(!NSN){ o.innerHTML='<div class="card pdesc">Đang tải bộ phận ngoài sản xuất…</div>'; if(!NSNTai||Date.now()-NSNTai>60000){ NSNTai=Date.now(); var cbN=function(r){ NSNTai=false; NSN=r||{ok:false,msg:'Không tải được.'}; if(!NSN.ok) setTimeout(function(){ if(NSN&&!NSN.ok) NSN=null; },100); nsnVe(); }; cbN.__luonGoi=true; call('layNhanSuNgoaiSX',[],cbN); } return; }   /* 16/11: luôn nhận kết quả (kể cả đã sang tab khác / lỗi máy chủ) – trước đây cờ "đang tải" kẹt nên hiện "Đang tải…" mãi */
   if(!NSN.ok){ o.innerHTML='<div class="card pdesc">'+esc(NSN.msg||'Không tải được.')+'</div>'; return; }
   var ds=NSN.ds||[], bp=[], g={};
   ds.forEach(function(x){ if(!g[x.BoPhan]){ g[x.BoPhan]=[]; bp.push(x.BoPhan); } g[x.BoPhan].push(x); });

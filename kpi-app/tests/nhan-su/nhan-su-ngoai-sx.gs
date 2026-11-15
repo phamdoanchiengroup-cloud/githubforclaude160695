@@ -140,6 +140,9 @@ function layNhanSuNgoaiSX(token) {
   var me = docPhien_(token);
   if (!me) return sach_({ ok: false, hetHan: true, msg: 'Phiên đăng nhập đã hết hạn.' });
   if (!me.laOwner) return sach_({ ok: false, msg: 'Chỉ tài khoản chủ sở hữu xem được.' });
+  try { return nsNgoaiDs_(); } catch (e) { return sach_({ ok: false, msg: 'Không đọc được danh sách ngoài sản xuất: ' + (e && e.message || e) }); }   // 16/11: lỗi thì báo, không treo "Đang tải…"
+}
+function nsNgoaiDs_() {
   /* 03/11 (chủ dự án): người đang làm ở 9 xưởng (có trong NhanSu "Đang làm", vd. C043 trưởng phòng Hoàn thiện) giữ ở xưởng, không liệt kê lại ở đây */
   var oXuong = {}; docAnToan_('NhanSu').forEach(function(n) { if (String(n.TrangThai).trim() === 'Đang làm') oXuong[String(n.MaNV).trim().toUpperCase()] = 1; });
   var ds = docAnToan_(NS_NGOAI_SHEET).filter(function(r) { return String(r.MaNV || '').trim() && String(r.TrangThai || 'Đang làm').trim() !== 'Nghỉ việc' && !oXuong[String(r.MaNV).trim().toUpperCase()]; }).map(function(r) {

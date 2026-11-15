@@ -24,4 +24,22 @@ r = c.__goi('luuCotPhuDon', dg, P({ bp: 'DG', giao: { moi: '20', cu: 0 }, kho: {
 ok(r.ok && OEM[1][8] === 12 && OEM[1][9] === 8 && OEM[1][20] === 1 && OEM[1][7] === '=I2+J2' && /CÔNG THỨC/.test(r.msg), 'TP Đóng gói ghi kho 12, đã trả 8, hỏng ĐG 1; ô "Có thể giao" là công thức → giữ nguyên, có báo', [r.msg, OEM[1]]);
 r = c.__goi('luuCotPhuDon', dg, P({ ten: 'TEN KHAC', bp: 'DG', kho: { moi: '1', cu: 12 } })); ok(!r.ok, 'tên hàng ở dòng không khớp → từ chối', r);
 r = c.__goi('luuCotPhuDon', dg, P({ bp: 'DG', tra: { moi: '', cu: 8 } })); ok(r.ok && OEM[1][9] === '', 'xóa trống ô được', [r, OEM[1][9]]);
+
+console.log('\n16/11: sửa thẳng trong bảng (luuBangDon)');
+const uuTK = TK.find(t => ['C019', 'C077', 'C067'].includes(String(t.MaNV).trim().toUpperCase()) && String(t.VaiTro).trim() !== 'OWNER'), uu = uuTK && c.__phienDai(uuTK);
+const B = (x) => Object.assign({ tab: 'OEM', dong: 3, ten: 'GAY NOVA X1 MAU XANH' }, x);
+r = c.__goi('luuBangDon', son, { ds: [B({ sl: { moi: '40', cu: 30 } })] }); ok(!r.ok && OEM[2][3] === 30, 'TP Sơn không sửa được SL đặt', r);
+r = c.__goi('luuBangDon', dg, { ds: [B({ dl: { moi: '2026-12-05', cu: '2026-11-30' } })] }); ok(!r.ok, 'TP Đóng gói không sửa được deadline', r);
+r = c.__goi('luuBangDon', son, { ds: [B({ kho: { moi: '5', cu: 0 } })] }); ok(!r.ok && OEM[2][8] === 0, 'TP Sơn không nhập được cột Đóng gói', r);
+ok(!!uu, 'có tài khoản ban điều hành (C019 / C077 / C067) để thử', uuTK && uuTK.MaNV);
+if (uu) {
+  r = c.__goi('luuBangDon', uu, { ds: [B({ sl: { moi: '40', cu: 30 }, dl: { moi: '2026-12-05', cu: '2026-11-30' }, kho: { moi: '5', cu: 0 }, hong: { moi: '2', cu: 0 } }), P({ dong: 2, tra: { moi: '3', cu: 0 } })] });
+  ok(r.ok && OEM[2][3] === 40 && /^'?05\/12\/2026$/.test(OEM[2][5]) && OEM[2][8] === 5 && OEM[2][20] === 2 && OEM[1][9] === 3 && r.n === 5, 'ban điều hành: 1 lần lưu ghi SL đặt 40, deadline 05/12, trong kho 5, hỏng ĐG 2 (2 dòng)', [r, OEM[2], OEM[1][9]]);
+  r = c.__goi('luuBangDon', uu, { ds: [B({ sl: { moi: '45', cu: 30 } })] }); ok(!r.ok && r.xungDot && OEM[2][3] === 40, 'số web đang thấy khác Sheet → hỏi ghi đè, chưa ghi', r);
+  r = c.__goi('luuBangDon', uu, { boQua: true, ds: [B({ sl: { moi: '45', cu: 30 } })] }); ok(r.ok && OEM[2][3] === 45, 'bấm OK ghi đè → ghi', r);
+  r = c.__goi('luuBangDon', uu, { ds: [B({ sl: { moi: '', cu: 45 } })] }); ok(!r.ok && OEM[2][3] === 45, 'SL đặt không cho để trống', r);
+  r = c.__goi('luuBangDon', uu, { ds: [P({ dong: 2, giao: { moi: '9', cu: 0 } })] }); ok(r.ok && OEM[1][7] === '=I2+J2' && /CÔNG THỨC/.test(r.msg), 'ô công thức (Có thể giao) giữ nguyên, có báo', r);
+  r = c.__goi('luuBangDon', uu, { ds: [B({ ten: 'KHAC', kho: { moi: '1', cu: 5 } })] }); ok(!r.ok && OEM[2][8] === 5, 'tên hàng không khớp dòng → không ghi', r);
+}
+r = c.__goi('luuBangDon', dg, { ds: [B({ hong: { moi: '4', cu: 2 }, tra: { moi: '1', cu: 0 } })] }); ok(r.ok && OEM[2][20] === 4 && OEM[2][9] === 1, 'TP Đóng gói ghi hỏng ĐG + đã trả khách', [r, OEM[2]]);
 console.log(n + ' kiểm thử, ' + l + ' lỗi'); process.exit(l ? 1 : 0);

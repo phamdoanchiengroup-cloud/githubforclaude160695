@@ -3,6 +3,13 @@
 Nhóm: Chung · Cập nhật 02/11/2026
 Liên quan: [[00 Mục lục]] · [[Liên kết và công cụ]] · [[Việc chờ chủ dự án]] · [[Lần dán lên Apps Script]] · [[Quyết định của chủ dự án]] · [[KPI Kiểm thử]]
 
+## 16/11 rạng sáng – làm thêm trước khi chuyển phiên (đã push)
+- **Sửa thẳng trong bảng đơn, 1 nút "Lưu vào Sheet"** (thanh dưới đáy, ô đã sửa tô vàng): SL đặt + deadline (4 tài khoản C019 / C056 / C077 / C067 + chủ sở hữu); Hỏng làm bù của Đóng gói (cột riêng "Hỏng làm bù" dưới Đóng gói) + Có thể giao + Trong kho + ĐG + Đã trả khách (TP/PP Đóng gói + 4 tài khoản). Đổi deadline 1 dòng → các dòng cùng đơn cùng hạn cũ đổi theo. Máy chủ `luuBangDon` (1 khóa, bỏ qua ô công thức, hỏi ghi đè khi Sheet vừa đổi). Hỏng của BP khác vẫn nhập ở bảng nổi (chủ dự án chốt). Bỏ form deadline trong bảng nổi (`dhDlForm`/`dhDlLuu` đã xóa). `luuCotPhuDon` nới quyền ĐG cho 4 tài khoản.
+- **Bỏ nút "Tất cả kênh"**: mặc định tab kênh đầu (`dhBTabMD`); đang tìm mã / ngày thì tìm mọi kênh (chip "Kết quả tìm ở mọi kênh").
+- **Bỏ dính đầu trang ở tab Đơn hàng** (menu chính + thanh Bảng đơn/Thống kê), chỉ dính tiêu đề cột; khung bảng cao gần hết màn hình; tiêu đề cột 2 dòng, cột Mã SP 210px, chú thích 140–190px; cột trái dính nền đặc.
+- **Lỗi "Đang tải…" mãi ở Nhân sự › Bộ phận ngoài SX**: cờ `NSNTai` kẹt khi kết quả về lúc đã sang tab khác / lỗi máy chủ → callback `__luonGoi` + tự thử lại sau 60 giây; máy chủ bọc try/catch (`nsNgoaiDs_`). Máy chủ + file Drive vẫn đúng (86 người).
+- Kiểm thử: cot-phu 21 (thêm 11 cho luuBangDon), don-hang 141, uu-tien-web 28, tab10 14, nhan-su-ngoai 10, quy-trinh 76, ho-so 28 – đạt. Giao diện kính (`html.rs`) ép nền ô trong suốt → thêm luật nền đặc cho cột trái dính + tiêu đề cột.
+
 ## BÀN GIAO 15/11 ĐÊM → PHIÊN MỚI: RÀ SOÁT TOÀN BỘ (đọc phần này trước)
 **Mọi việc đã commit + push** lên `claude/beautiful-ptolemy-f2j7za` (commit cuối 980ecd6). Chủ dự án **chưa chạy `2-CAP-NHAT.bat`** cho các đợt 15/11 (một lần là đủ). Chi tiết mọi việc 15/11: [[KPI Gậy 1 khúc, ưu tiên và nhập nhanh (15-11)]].
 
