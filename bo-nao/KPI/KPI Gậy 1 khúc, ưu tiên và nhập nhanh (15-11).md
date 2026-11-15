@@ -47,6 +47,13 @@ Ghi chú: các mục ghi "16/11" ở phiên trước thực ra làm ngày 15/11 
 - Lưu đồ nhà máy làm lại (3 làn NHÁNH CHUÔI / NHÁNH NGỌN / CẤP LINH KIỆN, Tip dưới Hoàn thiện, nhãn LÀM ĐẦU / TRẢ HT; bỏ đường ngọn lẻ Tip → Đóng gói – `QT_XUONG_BO`, còn 13 mũi tên): chủ dự án duyệt ảnh, đã gộp vào nhánh chính. `quy-trinh.js` 76/76.
 - Kiểm thử `uu-tien-web.js` 28/28.
 
+## 15/11 đêm – cột còn lại của Sheet trong bảng đơn (chủ dự án)
+- Cột thật (tab DEALER, đọc qua Sheet cầu nối): 7 "TỔNG SP CÓ THỂ GIAO: Của Tuyết Anh" · 8 "Hàng Còn lại trong kho và đóng gói, có thể giao" · 9 "HÀNG ĐI- ĐÃ TRẢ KHÁCH" · 10 "CHÚ THÍCH CÁC BỘ PHẬN" · "Hỏng cần làm bù" sau Sơn / Taro / Làm đầu / UV / HT / Đóng gói (**Phôi không có**) · dòng "TỔNG SL CÒN THIẾU" cuối mỗi đơn.
+- Máy chủ: `dhDocTab_` thêm `cKho` → `o.kho`, `meta.hong/giao/kho/tra/ct` (gửi web qua `cot`); **sửa lỗi cũ**: hỏng của Phôi lấy nhầm cột hỏng của Sơn (đếm trùng). `luuCotPhuDon`: hỏng = TP/PP bộ phận đó; giao / kho / tra = chỉ TP/PP Đóng gói; chú thích = mọi TP/PP + 4 tài khoản; ô công thức thì bỏ qua + báo; kiểm xung đột. `DH_DON_KHOA` v14.
+- Web: 3 cột Có thể giao / Trong kho + ĐG / Đã trả khách sau cột Hạn; cột Chú thích các bộ phận; "hỏng N" đỏ dưới ô Đã giao; dòng **TỔNG SL CÒN THIẾU trên cùng mỗi đơn nhiều mã** (`dhTongDon`); form `dhCPForm` / `dhCPLuu` ("Các cột khác trong Sheet").
+- Kiểm thử `cot-phu.js` 10/10; ảnh thử bằng bản xem thử số thật (`DH=` từ CSV cầu nối).
+- **Rà soát toàn bộ (4 chuyên gia) dang dở**: vận hành đã có kết quả (5 chỉ số tính lệch: trễ hạn, số ngày tồn, giao đúng hạn, tải, công suất; mục trùng: dhLichGiao, ô xưởng vs bullet, Đóng gói 3 lần, còn thiếu theo kênh; code chết dhVeSQDCP, dhVeVRT…); giao diện / bảo mật / logic bị ngắt do hết lưu lượng – chạy lại ở phiên mới, trình chủ dự án duyệt trước khi bỏ.
+
 ## Còn bàn
 - Tab "Đến hạn 10 ngày" thẳng trong Sheet Trạng thái đơn hàng (mỗi đơn ghi kênh): web (Apps Script) ghi được Sheet đó; cần bàn: tab tự làm mới lúc nào, chỉ đọc hay nhập ở đó rồi chép về tab kênh, ai sửa.
 - "Lưu tất cả" (lưu nhiều dòng một lần) – chưa làm, chủ dự án chưa rõ ý nghĩa.

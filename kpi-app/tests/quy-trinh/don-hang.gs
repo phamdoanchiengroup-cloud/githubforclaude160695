@@ -287,18 +287,22 @@ function dhDocTab_(sh, tab, nam, gioiHan, meta) {
   var tim = function(ks) { for (var i = 0; i < h.length; i++) for (var k = 0; k < ks.length; k++) if (h[i].indexOf(ks[k]) >= 0) return i; return -1; };
   var cTen = tim(['LOẠI HÀNG']), cPhoi = tim(['LOẠI PHÔI']), cSL = tim(['SỐ LƯỢNG ĐẶT', 'SL ĐẶT']), cThieu = tim(['CÒN THIẾU']), cDL = tim(['DEADLINE']), cCT = tim(['CHÚ THÍCH']), cKenh = tim(['KÊNH', 'NGUỒN ĐƠN']), cHanMoi = (cDL >= 0 && /HẠN MỚI|GIA HẠN|HẠN HT|DEADLINE MỚI/.test(h[cDL + 1] || '')) ? cDL + 1 : tim(['HẠN MỚI', 'GIA HẠN', 'DEADLINE MỚI']),   /* 15/11: cột gia hạn ngay bên phải Deadline */ cGiao = tim(['CÓ THỂ GIAO']), cTra = tim(['ĐÃ TRẢ KHÁCH', 'HÀNG ĐI']);
   if (cTen < 0) cTen = 1;
+  var cKho = tim(['HÀNG CÒN LẠI', 'CÒN LẠI TRONG KHO']);   // 15/11 đêm: "Hàng còn lại trong kho và đóng gói, có thể giao" (TP Đóng gói ghi)
   var chang = {}, hong = {}, hen = {};
   /* 07/11 (theo ORDER·FLOW): cột "Ngày hẹn trả …" của từng công đoạn (BP60 = Phôi) */
   h.forEach(function(x, i) { if (x.indexOf('NGÀY HẸN TRẢ') < 0) return; var k = /BP60|PHÔI/.test(x) ? 'PHOI' : /SƠN/.test(x) ? 'SON' : /TARO/.test(x) ? 'TARO' : /TIP|ĐẦU/.test(x) ? 'TIP' : /UV/.test(x) ? 'UV' : /HT|HOÀN THIỆN/.test(x) ? 'HT' : ''; if (k && hen[k] == null) hen[k] = i; });
   DH_CHANG.forEach(function(c) {
     for (var i = 0; i < h.length; i++) if (c[1].test(h[i])) {
       chang[c[0]] = i;
-      for (var k = i + 1; k <= i + 3 && k < h.length; k++) if (/HỎNG/.test(h[k])) { hong[c[0]] = k; break; }   // "Hỏng cần làm bù" đứng ngay sau cột bộ phận
+      for (var k = i + 1; k <= i + 3 && k < h.length; k++) {   // "Hỏng cần làm bù" đứng ngay sau cột bộ phận
+        if (/HỎNG/.test(h[k])) { hong[c[0]] = k; break; }
+        if (c[0] !== 'DG' && DH_CHANG.some(function(z) { return z[1].test(h[k]); })) break;   // 15/11 đêm: gặp cột bộ phận KHÁC thì dừng – Phôi không có cột hỏng, trước đây lấy nhầm cột hỏng của Sơn (đếm trùng)
+      }
       break;
     }
   });
-  var cMax = Math.max.apply(null, [cTen, cPhoi, cSL, cThieu, cDL, cCT, cKenh, cHanMoi, cGiao, cTra].concat(Object.keys(chang).map(function(k) { return chang[k]; }), Object.keys(hong).map(function(k) { return hong[k]; }), Object.keys(hen).map(function(k) { return hen[k]; }))) + 1;
-  if (meta) { meta.hdr = hi + 1; meta.qty = chang; meta.hen = hen; meta.ten = cTen; meta.sl = cSL; meta.phoi = cPhoi; meta.thieu = cThieu; meta.dl = cDL; meta.hanMoi = cHanMoi; }   // 14/11: cột bộ phận để ghi đúng ô khi lưu giao/nhận
+  var cMax = Math.max.apply(null, [cTen, cPhoi, cSL, cThieu, cDL, cCT, cKenh, cHanMoi, cGiao, cTra, cKho].concat(Object.keys(chang).map(function(k) { return chang[k]; }), Object.keys(hong).map(function(k) { return hong[k]; }), Object.keys(hen).map(function(k) { return hen[k]; }))) + 1;
+  if (meta) { meta.hdr = hi + 1; meta.qty = chang; meta.hen = hen; meta.ten = cTen; meta.sl = cSL; meta.phoi = cPhoi; meta.thieu = cThieu; meta.dl = cDL; meta.hanMoi = cHanMoi; meta.hong = hong; meta.giao = cGiao; meta.kho = cKho; meta.tra = cTra; meta.ct = cCT; }   // 14/11: cột bộ phận để ghi đúng ô khi lưu giao/nhận
   var v = sh.getRange(1, 1, nr, Math.max(1, cMax)).getValues();
   var out = [], ma = '', trong = 0, uuDon = '', nhom = '';   // nhom: dòng tiêu đề nhóm ghi tên kênh (tab HT chép nhiều kênh vào 1 tab)
   for (var r2 = hi + 1; r2 < v.length; r2++) {
@@ -313,9 +317,9 @@ function dhDocTab_(sh, tab, nam, gioiHan, meta) {
     var o = { tab: tab, kenh: DH_NHAN_TAB[tab] || tab, dong: r2 + 1, maDon: m0 || ma, ten: ten.replace(/\s+/g, ' '), ghiChu: [cPhoi >= 0 ? row[cPhoi] : '', cCT >= 0 ? row[cCT] : ''].map(function(x) { return String(x == null ? '' : x).replace(/\s+/g, ' ').trim(); }).filter(Boolean).join(' · ').slice(0, 300),
       sl: sl, thieu: cThieu >= 0 ? Math.max(0, dhSo_(row[cThieu])) : Math.max(0, sl - (cTra >= 0 ? dhSo_(row[cTra]) : 0)),   // không có cột "Còn thiếu" -> đặt − đã trả (không coi là đã xong)
       dl: cDL >= 0 ? dhNgay_(row[cDL], nam) : '', qua: {}, hong: {},
-      giao: cGiao >= 0 ? Math.max(0, dhSo_(row[cGiao])) : 0, daTra: cTra >= 0 ? Math.max(0, dhSo_(row[cTra])) : 0,
+      giao: cGiao >= 0 ? Math.max(0, dhSo_(row[cGiao])) : 0, daTra: cTra >= 0 ? Math.max(0, dhSo_(row[cTra])) : 0, kho: cKho >= 0 ? Math.max(0, dhSo_(row[cKho])) : 0,
       phoi: cPhoi >= 0 ? String(row[cPhoi] == null ? '' : row[cPhoi]).replace(/[ \t]+/g, ' ').trim().slice(0, 500) : '',   // 15/11: cột LOẠI PHÔI = Note của mã hàng (hiện dưới tên trên web)
-      chuThich: cCT >= 0 ? String(row[cCT] == null ? '' : row[cCT]).replace(/\s+/g, ' ').trim().slice(0, 200) : '' };
+      chuThich: cCT >= 0 ? String(row[cCT] == null ? '' : row[cCT]).replace(/\s+/g, ' ').trim().slice(0, 500) : '' };
     dhMaDon_(o, nam);
     var uu = [];   // 03/11 (chủ dự án): mã có chữ "ưu tiên" ở bất kỳ ô nào của dòng (cột loại phôi, hạn mới, ghi chú…); giữ lời ghi kèm
     for (var cu = (m0 && dhLaMa_(m0)) ? 1 : 0; cu < row.length; cu++) { var t = row[cu]; if (typeof t === 'string' && dhUuTien_(t)) { t = t.replace(/\s+/g, ' ').trim(); if (uu.indexOf(t) < 0) uu.push(t); } }
@@ -435,7 +439,7 @@ function dhXoaCacheDon_() {
   } catch (e) {}
 }
 /* Mọi dòng đơn (đã gộp 7 tab). Nhớ tạm DH_CACHE_GIAY giây: nén gzip rồi chia mảnh base64 < 100 KB mỗi khóa. */
-var DH_DON_KHOA = 'DH_DON_v13';   // v13 (15/11): p2 = Phôi 2 nhánh, phoi 500 ký tự (Note)   // v12 (14/11): dn.h = XN HẸN
+var DH_DON_KHOA = 'DH_DON_v14';   // v14 (15/11 đêm): kho, chú thích 500 ký tự, cot.hong / giao / kho / tra / ct   // v13 (15/11): p2 = Phôi 2 nhánh, phoi 500 ký tự (Note)   // v12 (14/11): dn.h = XN HẸN
 function dhDocDon_(lamMoi) {
   var c = CacheService.getScriptCache(), k = DH_DON_KHOA;   // v11 (14/11): thêm tabPhu (dòng tab ĐƠN ƯU TIÊN / TRỄ HẠN để web hiện đủ tab như Sheet)   // v10 (14/11): thêm dn (ĐANG Ở BP / KẾ TIẾP / XN NHẬN) + cot (bản đồ cột bộ phận) cho tab Đơn hàng dạng bảng   // v9 (13/11): nén gzip (11 khóa -> 1–2 khóa, đọc/ghi cache nhanh, tránh DEADLINE_EXCEEDED khi mở tab Đơn hàng)   // v8 (13/11): thêm tre (tab TRỄ HẠN) làm bậc 2 khi lên lịch SX   // v7 (13/11): ánh xạ tab ưu tiên sang Kho theo tên hàng   // v6 (07/11): thêm kênh POD-ECOMSTONE   // v5 (07/11): thêm uu (tab ĐƠN ƯU TIÊN)   // v4 (03/11): thêm uuTien / uuDon
   if (!lamMoi) {
@@ -2055,4 +2059,67 @@ function lamMoiTab10(token) {
   var l; try { l = dh10Khoa_(); } catch (e) { return sach_({ ok: false, msg: 'Đang có người ghi Sheet – thử lại sau vài giây.' }); }
   try { var r = dhTab10Tao_(); try { dhCaiTab10_(); } catch (e2) {} ghiLog_(q.me, 'Làm mới tab ĐẾN HẠN 10 NGÀY', r.n + ' dòng', '', ''); return sach_({ ok: true, msg: 'Đã làm mới tab "ĐẾN HẠN 10 NGÀY" trong Sheet: ' + r.n + ' dòng' + (r.dongBo && r.dongBo.chep ? ' (trước đó đã chép ' + r.dongBo.chep + ' ô về tab kênh)' : '') + '.', tab10: dhTab10TT_() }); }
   catch (e) { return sach_({ ok: false, msg: 'Không làm mới được: ' + (e && e.message || e) }); } finally { l.releaseLock(); }
+}
+
+/* ===== 15/11 đêm (chủ dự án): các cột còn lại của Sheet đơn nhập được trên web, lưu ngược vào Sheet =====
+   p = { tab, dong, ten, bp, boQua, hong: {moi, cu}, giao: {moi, cu}, kho: {moi, cu}, tra: {moi, cu}, ct: {moi, cu} }
+   - hong ("Hỏng cần làm bù" đứng sau cột bộ phận): TP / PP bộ phận đó (chủ sở hữu nhập thay được). Phôi không có cột hỏng trong Sheet.
+   - giao ("TỔNG SP CÓ THỂ GIAO: của Tuyết Anh"), kho ("Hàng còn lại trong kho và đóng gói, có thể giao"), tra ("HÀNG ĐI – ĐÃ TRẢ KHÁCH"): CHỈ TP / PP Đóng gói (+ chủ sở hữu).
+   - ct ("CHÚ THÍCH CÁC BỘ PHẬN"): mọi TP / PP có bộ phận + 4 tài khoản ban điều hành.
+   Ô đang là CÔNG THỨC thì bỏ qua (báo lại), ô khác vẫn ghi. Kiểm số web đang thấy để phát hiện người khác vừa sửa. */
+function luuCotPhuDon(token, p) {
+  var q = dhQuyenDon_(token); if (q.loi) return q.loi;
+  p = p || {};
+  var tab = String(p.tab || ''), dong = Number(p.dong) || 0, toan = (q.sua || []).indexOf('*') >= 0, actor = String(p.bp || q.bp || '').toUpperCase();
+  if (!tab || dong < 2) return sach_({ ok: false, msg: 'Thiếu vị trí dòng đơn – mở lại tab Đơn hàng rồi thử lại.' });
+  var coHong = p.hong && p.hong.moi != null, coDG = ['giao', 'kho', 'tra'].filter(function(k) { return p[k] && p[k].moi != null; }), coCT = p.ct && p.ct.moi != null;
+  if (!coHong && !coDG.length && !coCT) return sach_({ ok: true, khongDoi: true, msg: 'Không có thay đổi.' });
+  if (coHong && !toan && (!q.bp || actor !== q.bp)) return sach_({ ok: false, msg: 'Chỉ nhập "Hỏng cần làm bù" cho bộ phận của mình.' });
+  if (coHong && !DH_BP_TEN[actor]) return sach_({ ok: false, msg: 'Bộ phận không hợp lệ.' });
+  if (coDG.length && !toan && q.bp !== 'DG') return sach_({ ok: false, msg: 'Các cột "Có thể giao", "Còn trong kho", "Đã trả khách" chỉ trưởng / phó phòng Đóng gói nhập.' });
+  if (coCT && !toan && !q.bp && !dhCoUu_(q.me)) return sach_({ ok: false, msg: 'Tài khoản chưa gắn bộ phận nên không ghi chú thích được.' });
+  var lock = LockService.getScriptLock();
+  try { lock.waitLock(20000); } catch (eL) { return sach_({ ok: false, msg: 'Sheet đang được người khác ghi – chờ vài giây rồi bấm lại.' }); }
+  try {
+    var ss = SpreadsheetApp.openById(DH_SHEET_ID), sh = dhTimTab_(ss, tab);
+    if (!sh) return sach_({ ok: false, msg: 'Không thấy tab "' + tab + '" trong Sheet đơn hàng.' });
+    if (dong > sh.getLastRow()) return sach_({ ok: false, msg: 'Dòng ' + dong + ' không còn trong Sheet (dòng bị xóa?).' });
+    var meta = dhMetaTab_(sh, tab);
+    if (!meta || meta.ten < 0 || meta.sl < 0) return sach_({ ok: false, msg: 'Không nhận ra cột tên hàng / SL đặt của tab "' + tab + '".' });
+    var viec = [], ten = { giao: 'Có thể giao', kho: 'Còn trong kho + ĐG', tra: 'Đã trả khách' };
+    if (coHong) { var cH = meta.hong && meta.hong[actor]; if (cH == null) return sach_({ ok: false, msg: 'Tab "' + tab + '" không có cột "Hỏng cần làm bù" của ' + DH_BP_TEN[actor] + '.' }); viec.push(['so', cH, p.hong, 'Hỏng ' + DH_BP_TEN[actor]]); }
+    for (var i = 0; i < coDG.length; i++) { var c0 = meta[coDG[i]]; if (c0 == null || c0 < 0) return sach_({ ok: false, msg: 'Tab "' + tab + '" không có cột "' + ten[coDG[i]] + '".' }); viec.push(['so', c0, p[coDG[i]], ten[coDG[i]]]); }
+    if (coCT) { if (meta.ct == null || meta.ct < 0) return sach_({ ok: false, msg: 'Tab "' + tab + '" không có cột CHÚ THÍCH CÁC BỘ PHẬN.' }); viec.push(['chu', meta.ct, p.ct, 'Chú thích']); }
+    var cMax = Math.max.apply(null, viec.map(function(v) { return v[1]; }).concat([meta.ten, meta.sl])) + 1, rg = sh.getRange(dong, 1, 1, cMax), row = rg.getValues()[0], fx = rg.getFormulas()[0];
+    var tenS = String(row[meta.ten] == null ? '' : row[meta.ten]).replace(/\s+/g, ' ').trim(), slDat = dhSo_(row[meta.sl]);
+    if (p.ten != null && plChuan_(tenS) !== plChuan_(String(p.ten))) return sach_({ ok: false, msg: 'Dòng ' + dong + ' đã đổi trong Sheet – mở lại tab Đơn hàng rồi nhập lại.' });
+    var ghi = [], doi = [], boFx = [], lech = [];
+    viec.forEach(function(v) {
+      var c = v[1], cuS = row[c], x = v[2];
+      if (fx[c]) { boFx.push(v[3]); return; }
+      if (v[0] === 'so') {
+        var s0 = String(x.moi).trim(), moi = s0 === '' ? '' : Math.round(Number(s0)), cu = dhSo_(cuS);
+        if (s0 !== '' && (!isFinite(moi) || moi < 0 || moi > 100000)) { lech.push(v[3] + ': số không hợp lệ'); return; }
+        if (x.cu != null && !p.boQua && Number(x.cu) !== cu) { lech.push(v[3] + ' vừa đổi thành ' + dhSoVN_(cu)); return; }
+        if ((moi === '' ? 0 : moi) === cu && !(moi === '' && String(cuS == null ? '' : cuS).trim() !== '')) return;
+        ghi.push([c + 1, moi]); doi.push(v[3] + ': ' + dhSoVN_(cu) + ' → ' + (moi === '' ? '–' : dhSoVN_(moi)));
+      } else {
+        var m = String(x.moi == null ? '' : x.moi).replace(/\r/g, '').replace(/[ \t]+/g, ' ').trim().slice(0, 500), cuC = String(cuS == null ? '' : cuS).replace(/\r/g, '').replace(/[ \t]+/g, ' ').trim();
+        if (x.cu != null && !p.boQua && String(x.cu).replace(/\s+/g, ' ').trim() !== cuC.replace(/\s+/g, ' ')) { lech.push('Chú thích vừa được người khác sửa'); return; }
+        if (m === cuC) return;
+        ghi.push([c + 1, m ? chuAnToan_(m) : '']); doi.push('Chú thích: "' + m.slice(0, 60) + '"');
+      }
+    });
+    if (lech.length && !p.boQua) return sach_({ ok: false, xungDot: /vừa/.test(lech.join()), msg: lech.join('; ') + '. ' + (/vừa/.test(lech.join()) ? 'Bấm OK để ghi đè bằng số bạn nhập.' : '') });
+    ghi.forEach(function(g) { var r = sh.getRange(dong, g[0]); r.setValue(g[1]); if (typeof g[1] === 'number') r.setNumberFormat('0.####'); });
+    if (ghi.length) { SpreadsheetApp.flush(); dhXoaCacheDon_(); try { ghiLog_(q.me, 'Cột phụ đơn', tenS.slice(0, 80), 'tab ' + tab + ' · dòng ' + dong, doi.join(' | ').slice(0, 400)); } catch (eLog) {} }
+    var r2 = sh.getRange(dong, 1, 1, cMax).getValues()[0], kq = { hong: {} };
+    Object.keys(meta.hong || {}).forEach(function(k) { if (meta.hong[k] < cMax) { var z = dhSo_(r2[meta.hong[k]]); if (z > 0) kq.hong[k] = z; } });
+    ['giao', 'kho', 'tra'].forEach(function(k) { if (meta[k] != null && meta[k] >= 0 && meta[k] < cMax) kq[k] = Math.max(0, dhSo_(r2[meta[k]])); });
+    if (meta.ct != null && meta.ct >= 0 && meta.ct < cMax) kq.ct = String(r2[meta.ct] == null ? '' : r2[meta.ct]).replace(/\s+/g, ' ').trim().slice(0, 500);
+    if (meta.thieu != null && meta.thieu >= 0 && meta.thieu < cMax) kq.thieu = Math.max(0, dhSo_(r2[meta.thieu]));
+    return sach_({ ok: true, khongDoi: !ghi.length && !boFx.length, coHong: coHong ? actor : '', kq: kq,
+      msg: (ghi.length ? 'Đã lưu: ' + doi.join('; ') + '.' : 'Không có thay đổi.') + (boFx.length ? ' Ô ' + boFx.join(', ') + ' trong Sheet là CÔNG THỨC (tự tính) nên web không ghi đè.' : '') });
+  } catch (e) { return sach_({ ok: false, msg: 'Không ghi được vào Sheet: ' + (e && e.message || e) });
+  } finally { try { lock.releaseLock(); } catch (e2) {} }
 }
