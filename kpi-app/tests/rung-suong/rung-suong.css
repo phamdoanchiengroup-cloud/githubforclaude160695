@@ -6,7 +6,7 @@ html.rs,html.rs[data-gd],html.rs.cn-moi,html.rs.holo{color-scheme:dark!important
   --ink:#f2faf5!important;--ink2:rgba(236,248,241,.84)!important;--ink3:rgba(226,242,233,.66)!important;
   --cyan:#9fe8c2!important;--acc-rgb:159,232,194!important;--amber:#f2d98b!important;--red:#ffb0a3!important;--green:#a6f0bd!important;
   --bot-bg:rgba(16,44,35,.5)!important;--bong:none!important;--serif:"Instrument Serif",Georgia,serif!important;
-  --rs-kinh:rgba(22,60,46,.46);--rs-kinh-dam:rgba(12,38,30,.78);--rs-vien:rgba(255,255,255,.3);--rs-mo:blur(24px) saturate(1.4)}
+  --rs-kinh:rgba(52,108,88,.40);--rs-kinh-dam:rgba(12,38,30,.78);--rs-vien:rgba(255,255,255,.3);--rs-mo:blur(24px) saturate(1.4)}
 html.rs{background:#0f2a22!important}
 html.rs body{background:transparent!important;color:var(--ink)!important;font-family:"Be Vietnam Pro","Inter",system-ui,sans-serif!important}
 html.rs body::before{content:"";position:fixed;inset:0;z-index:-1;background:var(--rs-nen,linear-gradient(#2d5a48,#0f2a22)) center/cover no-repeat,#16392d}
@@ -68,6 +68,28 @@ html.rs #toast{background:rgba(14,42,33,.7)!important}
 html.rs .mai-thoai{background:var(--rs-kinh-dam)!important;border:1px solid var(--rs-vien)!important;color:var(--ink)!important;
   -webkit-backdrop-filter:var(--rs-mo)!important;backdrop-filter:var(--rs-mo)!important;border-radius:22px!important}
 html.rs .mai-thoai .btn{background:rgba(232,250,240,.2)!important}
+
+/* 16/11 (chủ dự án): viền card nổi 3D như kính dày – viền sáng chuyển màu (sáng góc trên trái, tối dần), gờ trong, bóng đổ */
+html.rs.rs.rs .card,html.rs.rs.rs .kpi,html.rs.rs.rs .rs-the,html.rs.rs.rs #ducbar,html.rs.rs.rs .mai-thoai,html.rs.rs.rs #botbar,html.rs.rs.rs #minibar .mini{
+  border:1.5px solid transparent!important;
+  background:linear-gradient(160deg,rgba(255,255,255,.16),rgba(255,255,255,.03) 38%,rgba(0,30,22,.10)) padding-box,
+    linear-gradient(var(--rs-kinh),var(--rs-kinh)) padding-box,
+    linear-gradient(135deg,rgba(255,255,255,.95),rgba(255,255,255,.28) 30%,rgba(255,255,255,.10) 55%,rgba(255,255,255,.55) 100%) border-box!important;
+  box-shadow:inset 0 2px 1px rgba(255,255,255,.55),inset 2px 0 1px rgba(255,255,255,.18),inset 0 -3px 6px rgba(0,35,25,.30),
+    inset 0 0 0 5px rgba(255,255,255,.05),inset 0 0 24px rgba(220,255,240,.10),
+    0 1px 0 rgba(255,255,255,.18),0 10px 18px rgba(0,22,15,.28),0 24px 44px rgba(0,22,15,.22)!important}
+html.rs.rs.rs .mai-thoai{background:linear-gradient(160deg,rgba(255,255,255,.12),rgba(255,255,255,0) 40%) padding-box,linear-gradient(var(--rs-kinh-dam),var(--rs-kinh-dam)) padding-box,
+    linear-gradient(135deg,rgba(255,255,255,.95),rgba(255,255,255,.25) 35%,rgba(255,255,255,.5)) border-box!important}
+html.rs.rs.rs .card,html.rs.rs.rs .kpi,html.rs.rs.rs .rs-the{transition:transform .25s ease,box-shadow .25s ease}
+@media (hover:hover){html.rs.rs.rs .card:hover,html.rs.rs.rs .kpi:hover{transform:translateY(-2px)!important}}
+html.rs.rs.rs .rs-the2{border:1px solid rgba(255,255,255,.28)!important;background:linear-gradient(160deg,rgba(255,255,255,.12),rgba(255,255,255,.02) 45%) ,rgba(14,44,34,.28)!important;
+  box-shadow:inset 0 1.5px 0 rgba(255,255,255,.4),inset 0 -2px 4px rgba(0,35,25,.25),0 4px 10px rgba(0,22,15,.18)!important;-webkit-backdrop-filter:none!important;backdrop-filter:none!important}
+html.rs.rs.rs .rs-sang,html.rs.rs.rs .rs-sang *:not(svg):not(svg *){color:var(--ink)!important}
+/* nút kính dày */
+html.rs.rs.rs .btn,html.rs.rs.rs #botbar button.on,html.rs.rs.rs nav button.on{
+  box-shadow:inset 0 1.5px 0 rgba(255,255,255,.6),inset 0 -2px 4px rgba(0,35,25,.28),0 4px 10px rgba(0,22,15,.25)!important}
+html.rs.rs.rs .btn.pri{box-shadow:inset 0 2px 0 rgba(255,255,255,.85),inset 0 -3px 5px rgba(20,80,55,.35),0 6px 14px rgba(0,22,15,.3)!important}
+html.rs.rs.rs .ptitle,html.rs.rs.rs .kpi .v,html.rs.rs.rs .card h3{text-shadow:0 2px 12px rgba(0,25,18,.45)}
 
 /* màn đăng nhập */
 html.rs #gate{background:transparent!important}

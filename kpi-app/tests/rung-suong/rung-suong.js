@@ -35,8 +35,25 @@
   }
   var daVe=0, tg;
   window.rsBat=function(bat){ var h=document.documentElement; h.classList.toggle('rs',!!bat); try{ localStorage.setItem('kpi_rs',bat?'1':'0'); }catch(e){}
-    if(bat&&!daVe){ daVe=1; ve(); } var n=document.getElementById('rsNut'); if(n) n.textContent=bat?'🌿 Rừng Sương: BẬT':'🌿 Rừng Sương: TẮT'; };
+    if(bat&&!daVe){ daVe=1; ve(); } if(bat) setTimeout(quet,50); var n=document.getElementById('rsNut'); if(n) n.textContent=bat?'🌿 Rừng Sương: BẬT':'🌿 Rừng Sương: TẮT'; };
   addEventListener('resize',function(){ if(!daVe) return; clearTimeout(tg); tg=setTimeout(ve,300); });
+  /* 16/11: tìm mọi "thẻ" của web (div bo góc có viền / nền: .card, .vh-the, thẻ Đơn hàng, Đài quan sát…) để gắn viền kính nổi 3D,
+     không phải liệt kê từng tên lớp. Thẻ nằm trong thẻ khác → rs-the2 (nhẹ hơn). Thẻ nền sáng (vd. ô kem) → rs-sang (chữ sáng). */
+  var daXet=new WeakSet(), hen=0;
+  function sangNen(c){ var m=c.match(/rgba?\(([\d.]+),\s*([\d.]+),\s*([\d.]+)(?:,\s*([\d.]+))?/); if(!m) return 0; var a=m[4]==null?1:+m[4]; if(a<.5) return 0;
+    return (.2126*m[1]+.7152*m[2]+.0722*m[3])/255; }
+  function quet(){ hen=0; if(!document.documentElement.classList.contains('rs')) return;
+    var ds=document.querySelectorAll('#app div,#app section,#app article,#app details,#app li,#app main button');
+    for(var i=0;i<ds.length;i++){ var e=ds[i]; if(daXet.has(e)) continue; daXet.add(e);
+      var laNut=e.tagName==='BUTTON'; if((laNut?e.parentElement:e).closest('table,#botbar,header,nav,.btn,button')) continue;
+      var c=getComputedStyle(e), r=parseFloat(c.borderTopLeftRadius)||0; if(r<8) continue;
+      var coVien=(parseFloat(c.borderTopWidth)||0)>=1, nen=c.backgroundColor, coNen=nen&&nen!=='transparent'&&!/,\s*0\)$/.test(nen);
+      if(!coVien&&!coNen&&c.backgroundImage==='none') continue;
+      var b=e.getBoundingClientRect(); if(laNut?(b.width<90||b.height<70):(b.width<120||b.height<40)) continue;
+      e.classList.add(e.parentElement&&e.parentElement.closest('.rs-the')?'rs-the2':'rs-the');
+      if(sangNen(nen)>.62) e.classList.add('rs-sang'); } }
+  function henQuet(){ if(!hen) hen=setTimeout(quet,350); }
+  new MutationObserver(henQuet).observe(document.body,{childList:true,subtree:true});
   var bat=true; try{ bat=localStorage.getItem('kpi_rs')!=='0'; }catch(e){}
   /* nút bật / tắt nổi (chỉ bản demo) */
   var n=document.createElement('button'); n.id='rsNut'; n.type='button';
