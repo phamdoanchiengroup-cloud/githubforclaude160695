@@ -58,7 +58,7 @@ ok(c.dhCoNote_({ maNV: 'C077' }) && c.dhCoUu_({ maNV: 'C056' }), 'C077 sửa đ�
     DH.q = { bp: 'SON', sua: ['SON'] }; DH.don = [mk('A1', 'OEM', 10, dhNgayCong(hn, 3), { st: 'dangSX' }), mk('A1', 'OEM', 5, dhNgayCong(hn, 3), { st: 'dangSX', dong: 3 }), mk('B1', 'KHO', 8, dhNgayCong(hn, 1), { st: 'dangSX', dong: 4 }), mk('C1', 'OEM', 9, dhNgayCong(hn, 20), { st: 'dangSX', dong: 7 }), mk('T1', 'OEM', 9, dhNgayCong(hn, -2), { st: 'treHan', dong: 8 })];
     out.h10 = dhHan10Ds(DH.don).map(o => o.maDon + ':' + o.dong);
     DHB.tab = '@han10'; DHV = 'bang'; try { out.bang = dhVeBang(DH.don); } catch (e) { out.loiBang = e.message; }
-    DHB.tab = ''; DHV = 'tt'; dhChon('han10'); out.chon = [DHV, DHB.tab]; out.nhom = DH_NHOM[0][2].map(x => x[0]).join();
+    DHB.tab = ''; DHV = 'tt'; dhChon('han10'); out.chon = [DHV, DHB.tab]; DH.don.push(mk('L9', 'WEB LẺ CUSTOM', 1, '', { ngayDat: dhNgayCong(hn, -15), st: 'dangSX', dong: 9 })); dhChon('le10'); out.chonLe = [DHV, DHB.tab]; try { out.bangLe = dhVeBang(DH.don); } catch (e) { out.loiLe = e.message; } out.nhom = DH_NHOM[0][2].map(x => x[0]).join();
     DH.q = { bp: '', sua: [], uuGan: false }; out.nnKhong = dhVeNhapNhanh([{ g: g1, d: 2 }]);
     DH.q = { uuGan: true, ten: 'GĐ' }; out.nut = dhUuNut(g1.dong[0]); DH.q.uuGan = false; out.nut2 = dhUuNut(g1.dong[0]);
     return JSON.parse(JSON.stringify(out)); });
@@ -78,6 +78,7 @@ ok(c.dhCoNote_({ maNV: 'C077' }) && c.dhCoUu_({ maNV: 'C056' }), 'C077 sửa đ�
   ok(w.h10.join() === 'B1:4,A1:2,A1:3', 'Đến hạn 10 ngày tới: đủ dòng của đơn hạn trong 10 ngày, hạn sớm trước; bỏ đơn xa + đơn đã trễ', w.h10);
   ok(!w.loiBang && /Đến hạn 10 ngày tới/.test(w.bang) && /data-t="@han10"/.test(w.bang) && !/@le10/.test(w.bang), 'bảng đơn có mục "Đến hạn 10 ngày tới" (thay mục Lẻ / POD quá 10 ngày)', w.loiBang || '');
   ok(w.chon.join() === 'bang,@han10' && w.nhom === 'bang,congsuat', 'ô "Đến hạn 10 ngày tới" mở thẳng mục trong bảng đơn; bỏ mục đứng riêng', [w.chon, w.nhom]);
+  ok(w.chonLe.join() === 'bang,@le10' && !w.loiLe && /Đơn lẻ \/ POD quá 10 ngày<\/b>/.test(w.bangLe) && /L9/.test(w.bangLe) && !/A1/.test(w.bangLe), 'ô đầu trang "Lẻ / POD quá 10 ngày" mở danh sách đơn lẻ / POD quá hạn trong bảng đơn', w.loiLe || w.chonLe);
   ok(/Gắn ưu tiên cả đơn/.test(w.nut) && !/button/.test(w.nut2), 'nút ★ Gắn ưu tiên chỉ hiện với 4 tài khoản', '');
   /* điện thoại: bảng nhập nhanh */
   const q = await b.newPage({ viewport: { width: 390, height: 800 } }); await q.setContent('<html><body style="margin:0"><main id=main style="padding:0 16px"></main></body></html>');

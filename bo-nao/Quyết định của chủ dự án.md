@@ -82,6 +82,7 @@ Những điều đã chốt. Đừng đề xuất lại những gì ghi "không 
 - Gắn "ưu tiên": Giám đốc (C019), 2 Phó GĐ sản xuất (**C056 = chính chủ dự án** – đừng hỏi lại, + C077), Đinh Kim Loan (C067). 4 tài khoản này sửa được **deadline đơn** (mọi tab, lưu ngược vào Sheet) và **Note**.
 - Gậy 1 khúc: bản **1480 dài hơn 30 mm ở đầu**, côn giữ nguyên → đầu Ø12.2; bản 1450 → Ø12.5. Không cần nút "Lưu tất cả".
 - Tab "Đến hạn 10 ngày" trong Sheet đơn: làm mới **7h sáng**, cho nhập ở đó rồi chép về tab kênh; quyền như tab Đơn hàng (TP: SL + hẹn xưởng mình; 4 tài khoản: deadline + Note) – chốt 15/11 khuya: **chỉ giới hạn quyền trên web, Sheet để mở** (TP vẫn gõ thẳng Sheet); sau này chủ dự án sẽ đề xuất khóa Sheet khi mọi người quen web. Web gợi ý ngày hẹn, deadline sớm hơn **chỉ cảnh báo** (không chặn).
+- Lưu đồ nhà máy: **mọi ngọn đều qua Hoàn thiện** (không có đường ngọn lẻ Ngọn Tip → Đóng gói). Bảng đơn: "Đến hạn 10 ngày tới" là 1 mục trong bảng; ô đầu trang là "Lẻ / POD quá 10 ngày".
 - TP chỉ nhập số của xưởng mình; **deadline đơn do ban điều hành ghi**.
 - Gậy 1 khúc: tên "1 KHÚC" / "ONE PIECE" / "GMK", glassfiber nguyên cây 1450 / 1480, không ren, tip 12.5 / 12.2, nhóm thống kê riêng, có bản vẽ.
 

@@ -7674,7 +7674,7 @@ function danhSachVanPhong(token) {
   ds.sort(function(a, b) { return (thuTu[a.vaiTro] - thuTu[b.vaiTro]) || (a.HoTen < b.HoTen ? -1 : 1); });
   return sach_({ ok: true, ds: ds, muc: HS_MUC });
 }
-var KPI_BAN_MAY = '15/11/2026 20:14';   // giờ dựng Code.gs (22/10)
+var KPI_BAN_MAY = '15/11/2026 20:19';   // giờ dựng Code.gs (22/10)
 /* =====================================================================
    KỸ NĂNG (22/10, chủ dự án nhờ thiết kế + tham khảo chuyên gia nhân sự / đào tạo)
    - Danh mục: trưởng / phó phòng đề xuất kỹ năng của xưởng (tên, mô tả, tiêu chí đạt, công đoạn liên quan)
@@ -8054,11 +8054,11 @@ var QT_XUONG_NHAP = [
   ['PHOICB', 'PHOITHO', 'Phôi 60 (ngọn + chuôi)'], ['PHOITHO', 'NGONTARO', 'Phôi ngọn'], ['PHOITHO', 'SON', 'Phôi chuôi, nối, gậy 1 khúc (60…)'],
   ['NGONTARO', 'HT', 'Ngọn đã taro ren (Ngọn…)'], ['CNC', 'NGONTIP', 'Típ, phíp (CNCTip, CNCPhip)'], ['SON', 'INUV', 'Chuôi / nối đã sơn (S…)'],
   ['INUV', 'HT', 'Chuôi / nối đã in UV (UV…)'], ['NGONTIP', 'HT', 'Ngọn đã làm đầu'], ['HT', 'DG', 'Gậy, ngọn, nối hoàn thiện (HT…)'],
-  ['NGONTARO', 'PHOITHO', 'POM các loại (chuôi 87, ngọn 85, 65/75, 30, đáy chuôi)'], ['NGONTIP', 'DG', 'Ngọn bán lẻ (đi thẳng đóng gói)'], ['CNC', 'SON', 'Đầu gậy lết'], ['CNC', 'DG', 'Tip bán lẻ'], ['HT', 'NGONTIP', 'Ngọn chờ làm đầu (Hoàn thiện giao)']];   // 14/11 (chủ dự án): ngọn Taro → Hoàn thiện → Ngọn Tip → trả Hoàn thiện → Đóng gói   // 01/11: nhánh POM + ngọn lẻ (chủ dự án)
+  ['NGONTARO', 'PHOITHO', 'POM các loại (chuôi 87, ngọn 85, 65/75, 30, đáy chuôi)'], ['CNC', 'SON', 'Đầu gậy lết'], ['CNC', 'DG', 'Tip bán lẻ'], ['HT', 'NGONTIP', 'Ngọn chờ làm đầu (Hoàn thiện giao)']];   // 14/11 (chủ dự án): ngọn Taro → Hoàn thiện → Ngọn Tip → trả Hoàn thiện → Đóng gói   // 01/11: nhánh POM + ngọn lẻ (chủ dự án)
 /* Luồng chủ dự án báo thêm sau khi có thể đã lưu: [từ, đến, BTP, ngày báo] – bổ sung vào bản lưu cũ hơn ngày báo */
-var QT_XUONG_THEM = [['NGONTARO', 'PHOITHO', QT_XUONG_NHAP[9][2], '2026-11-01'], ['NGONTIP', 'DG', QT_XUONG_NHAP[10][2], '2026-11-01'], ['CNC', 'SON', 'Đầu gậy lết', '2026-11-02'], ['CNC', 'DG', 'Tip bán lẻ', '2026-11-03'], ['NGONTARO', 'HT', 'Ngọn đã taro ren (Ngọn…)', '2026-11-14'], ['HT', 'NGONTIP', 'Ngọn chờ làm đầu (Hoàn thiện giao)', '2026-11-14']];
+var QT_XUONG_THEM = [['NGONTARO', 'PHOITHO', QT_XUONG_NHAP[9][2], '2026-11-01'], ['CNC', 'SON', 'Đầu gậy lết', '2026-11-02'], ['CNC', 'DG', 'Tip bán lẻ', '2026-11-03'], ['NGONTARO', 'HT', 'Ngọn đã taro ren (Ngọn…)', '2026-11-14'], ['HT', 'NGONTIP', 'Ngọn chờ làm đầu (Hoàn thiện giao)', '2026-11-14']];
 /* 14/11: luồng chủ dự án bỏ – gỡ khỏi bản đã lưu trước ngày báo */
-var QT_XUONG_BO = [['NGONTARO', 'NGONTIP', '2026-11-14']];
+var QT_XUONG_BO = [['NGONTARO', 'NGONTIP', '2026-11-14'], ['NGONTIP', 'DG', '2026-11-15']];   // 15/11 khuya: bỏ ngọn lẻ Tip → Đóng gói (mọi ngọn qua Hoàn thiện)
 /* Nháp: MaCD -> [nhánh, bước]. Công đoạn mới không có ở đây -> "Chưa xếp". */
 var QT_NHAP = {
   // Phôi Carbon: chuẩn bị vải -> tỉa -> cuốn -> màng nilong -> rút khuôn -> kiểm / cắt / tiện / chuốt
