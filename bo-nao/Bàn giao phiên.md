@@ -6,6 +6,11 @@ Liên quan: [[00 Mục lục]] · [[Liên kết và công cụ]] · [[Việc ch�
 ## Phiên mới – nghiên cứu qcadoo + BOM ERPNext + chỉ số xưởng xong
 - Kết quả: [[KPI Nghiên cứu MES, BOM và chỉ số xưởng (14-11)]]. Phần 2 **hạn chuẩn bộ phận đã làm + push** (chờ chủ dự án chạy 2-CAP-NHAT.bat). Kế tiếp: phần 1 báo cáo hỏng (khi DonHangHong đủ ~1 tháng), phần 3 dự báo, BOM chờ dữ liệu.
 
+## 16/11 (tối) – ĐANG LÀM: làm lại tab Thống kê (đọc phần này trước)
+- Chủ dự án yêu cầu: (1) mục **Tổng quan** quá ít thông tin → **đưa 6 ô chỉ số lên đầu mục "Sản xuất & đơn hàng"**, bỏ mục Tổng quan; **bỏ bảng SQDCP** (`dhVeSQDCP`); (2) **làm lại toàn bộ hiển thị biểu đồ** – phong cách riêng, hiện đại, 4.0; **web đổi hết (Thống kê + Đơn hàng), PDF lãnh đạo giữ kiểu sáng hiện tại**.
+- Đã làm demo 3 phong cách (số liệu mẫu): nguồn `kpi-app/tests/rung-suong/demo-bieu-do.src.html` (thay `{{NEN}}` bằng base64 `anh/web/kinh-xanh-dt.jpg`), Artifact https://claude.ai/artifact/ – xem [[Liên kết và công cụ]]. Phong cách: 1 Phòng điều khiển 4.0 (kính trên ảnh rừng, nét có ánh sáng, số JetBrains Mono, hợp giao diện kính chủ sở hữu) · 2 Tối giản cao cấp (nền ngà, 1 màu nhấn) · 3 Đậm chất dữ liệu (than chì, lưới, đèn tín hiệu). **Chờ chủ dự án chọn.**
+- Việc tiếp: sửa các hàm vẽ trong `kpi-app/tests/quy-trinh/quy-trinh-web.html` (`dhSvg*`, `tkSvg*`, `dhHB`, `dhStack`, `tkVe`, `TK_TAB`), nhận màu theo token (phong cách chọn + tông kính), giữ đường PDF (`dhBCPDF*`, `dhSlide*`) dùng màu cũ; chạy `quy-trinh-web.js`, `tong-quan-web.js`, `holo-web.js`. Tab Thống kê chỉ chủ sở hữu thấy.
+
 ## 16/11 – ĐANG LÀM: 3 phần học từ ERPNext (đọc [[KPI Học hỏi ERPNext (16-11)]] trước)
 - Đã xong bước 0 (lưu hỏng hằng ngày vào bản chụp → DonHangHong). Kế tiếp: phần 2 hạn chuẩn (chờ chủ dự án duyệt bảng số ngày chuẩn + đệm), rồi phần 1, phần 3. BOM chờ dữ liệu vật tư.
 

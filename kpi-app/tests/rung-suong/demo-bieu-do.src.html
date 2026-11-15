@@ -1,0 +1,168 @@
+<title>Biểu đồ KPI 4.0</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&family=Space+Grotesk:wght@500;700&display=swap">
+<style>
+/* Bố cục: thanh chọn 3 phong cách ở trên; lưới thẻ biểu đồ 2 cột (điện thoại 1 cột). Mỗi phong cách là một bộ token riêng trên .s1/.s2/.s3.
+   Trang demo cố ý dùng 3 thế giới hình ảnh riêng (không theo giao diện sáng/tối của người xem). */
+:root{color-scheme:dark;--f:"Inter",system-ui,sans-serif;--fm:"JetBrains Mono",ui-monospace,monospace;--fd:"Space Grotesk","Inter",sans-serif}
+body{background:#0b1a15;color:#eef6f1;font-family:var(--f);padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.trang{max-width:1180px;margin:0 auto;padding-block:18px 40px}
+.dau{display:flex;flex-wrap:wrap;gap:12px 20px;align-items:center;justify-content:space-between;margin-bottom:16px}
+.dau h1{margin:0;font:700 22px var(--fd);letter-spacing:.01em}
+.dau p{margin:2px 0 0;font-size:13px;opacity:.75}
+.chon{display:flex;gap:6px;flex-wrap:wrap}
+.chon button{font:600 13px var(--f);padding:9px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.3);background:rgba(255,255,255,.06);color:inherit;cursor:pointer}
+.chon button[aria-pressed="true"]{background:#eef6f1;color:#0b1a15;border-color:#eef6f1}
+.chon button:focus-visible{outline:2px solid #f2d98b;outline-offset:2px}
+.san{border-radius:22px;padding:18px;min-height:400px;transition:background .3s}
+.luoi{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+@media (max-width:760px){.luoi{grid-template-columns:minmax(0,1fr)}}
+.the{min-width:0;padding:16px 18px;position:relative}
+.the h3{margin:0 0 2px;font-size:14px}
+.the .phu{font-size:12px;margin:0 0 10px}
+.the svg{display:block;width:100%;height:auto;overflow:visible}
+.so6{grid-column:1/-1;display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:12px}
+@media (max-width:900px){.so6{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media (max-width:460px){.so6{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.o{padding:12px 14px;min-width:0}
+.o .n{font-size:11px;letter-spacing:.08em;text-transform:uppercase}
+.o .v{font-size:26px;line-height:1.15;margin-top:4px;font-variant-numeric:tabular-nums}
+.o .d{font-size:11.5px;margin-top:2px}
+.tip{position:fixed;pointer-events:none;z-index:9;padding:6px 10px;border-radius:8px;font:500 12px var(--f);opacity:0;transition:opacity .12s;white-space:nowrap}
+.ghi{margin-top:14px;font-size:12px;opacity:.7}
+
+/* ===== Phong cách 1: PHÒNG ĐIỀU KHIỂN 4.0 – kính trên nền rừng, nét mảnh ánh sáng, số kiểu đồng hồ đo ===== */
+.s1{background:linear-gradient(rgba(10,30,22,.35),rgba(10,30,22,.6)),url(data:image/jpeg;base64,{{NEN}}) center/cover;color:#f1faf5}
+.s1 .the,.s1 .o{border-radius:20px;background:radial-gradient(120% 70% at 10% -8%,rgba(255,255,255,.16),transparent 52%),rgba(18,48,38,.32);
+  border:1px solid;border-color:rgba(255,255,255,.85) rgba(255,255,255,.28) rgba(255,255,255,.4) rgba(255,255,255,.55);
+  box-shadow:inset 0 2px 1px rgba(255,255,255,.6),inset 0 -2px 2px rgba(255,255,255,.2),0 0 0 1px rgba(255,255,255,.12),0 16px 36px -12px rgba(0,0,0,.45);
+  -webkit-backdrop-filter:blur(14px) saturate(1.4);backdrop-filter:blur(14px) saturate(1.4)}
+.s1 .phu,.s1 .o .n,.s1 .o .d{color:rgba(232,246,238,.78)}
+.s1 .o .v{font-family:var(--fm);font-weight:600;text-shadow:0 0 14px rgba(168,236,201,.45)}
+.s1 .the h3{font-family:var(--fd);letter-spacing:.06em;text-transform:uppercase;font-size:12.5px}
+.s1 .tip{background:rgba(10,30,22,.85);border:1px solid rgba(255,255,255,.4);color:#fff}
+
+/* ===== Phong cách 2: TỐI GIẢN CAO CẤP – nền ngà, nét sạch, 1 màu nhấn ===== */
+.s2{background:#f6f5f1;color:#1d211f}
+.s2 .the,.s2 .o{background:#fff;border-radius:16px;border:1px solid #e7e5df}
+.s2 .the h3{font-weight:600}
+.s2 .phu,.s2 .o .n,.s2 .o .d{color:#7a7f7b}
+.s2 .o .v{font-family:var(--fd);font-weight:500}
+.s2 .tip{background:#1d211f;color:#fff}
+
+/* ===== Phong cách 3: ĐẬM CHẤT DỮ LIỆU – nền than chì công nghiệp, lưới rõ, đèn tín hiệu ===== */
+.s3{background:#11161c;color:#e6edf3;background-image:linear-gradient(rgba(255,255,255,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.03) 1px,transparent 1px);background-size:24px 24px}
+.s3 .the,.s3 .o{background:#181f27;border:1px solid #2a3440;border-radius:6px;border-top:2px solid #3fb6a8}
+.s3 .the h3{font-family:var(--fm);font-size:12.5px;letter-spacing:.06em;text-transform:uppercase;color:#9fe3da}
+.s3 .phu,.s3 .o .n,.s3 .o .d{color:#8b98a5}
+.s3 .o .v{font-family:var(--fm);font-weight:600}
+.s3 .tip{background:#0b0f13;border:1px solid #3fb6a8;color:#e6edf3}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+
+<div class="trang">
+  <div class="dau">
+    <div><h1>Biểu đồ Thống kê – 3 phong cách</h1><p>Cùng một bộ số liệu mẫu (sản xuất &amp; đơn hàng), vẽ theo 3 phong cách để chọn. Rê chuột / chạm vào biểu đồ để xem số.</p></div>
+    <div class="chon" role="group" aria-label="Chọn phong cách">
+      <button type="button" data-s="1" aria-pressed="true">1 · Phòng điều khiển 4.0</button>
+      <button type="button" data-s="2" aria-pressed="false">2 · Tối giản cao cấp</button>
+      <button type="button" data-s="3" aria-pressed="false">3 · Đậm chất dữ liệu</button>
+    </div>
+  </div>
+  <section class="san s1" id="san" aria-live="polite"></section>
+  <p class="ghi">Số liệu mẫu (gần với số thật tháng 11 nhưng không phải số chính thức). Bố cục: dải 6 chỉ số nhanh (gộp từ mục Tổng quan) → các biểu đồ sản xuất &amp; đơn hàng. Bảng SQDCP đã bỏ.</p>
+</div>
+<div class="tip" id="tip"></div>
+
+<script>
+(function(){
+var X=[['Ngọn Tip',83.1],['CNC',80.8],['Sơn',80.6],['Phôi Carbon',80.6],['Ngọn Taro',74.7],['Phôi Thô',70.8],['In UV',70.6],['Đóng gói',67.7],['Hoàn thiện',61.8]];
+var SL=[312,338,301,355,362,290,0,344,371,358,330,349,366,352], NG=['02','03','04','05','06','07','08','09','10','11','12','13','14','15'];
+var PA=[['EVO Phá',420],['Must',310],['Eclipse',220],['Retro',150],['Komet',110],['Jump',80],['Khác',60]];
+var TAI=[['Phôi Thô',92],['Sơn',104],['In UV',71],['Ngọn Taro',88],['Hoàn thiện',129],['Ngọn Tip',111],['Đóng gói',84]];
+var KENH=[['Dealer',38],['Web lẻ',27],['POD',21],['Custom',14]];
+var HN=['T2','T3','T4','T5','T6','T7'], HX=['Phôi Thô','Sơn','In UV','Taro','HT','Tip','ĐG'];
+var HV=[[3,5,2,7,4,9],[2,1,3,2,6,4],[6,8,5,4,7,10],[1,2,2,3,1,5],[5,7,9,6,8,12],[2,3,1,2,4,3],[4,3,5,6,3,7]];
+var S={
+ 1:{ink:'#f1faf5',dim:'rgba(232,246,238,.7)',grid:'rgba(255,255,255,.14)',a:'#a8ecc9',a2:'#7fd6ff',warn:'#f2d98b',bad:'#ff9e8f',good:'#a6f0bd',glow:true,round:6,mono:true,heat:['rgba(168,236,201,.08)','#a8ecc9','#f2d98b','#ff9e8f'],ringBg:'rgba(255,255,255,.14)'},
+ 2:{ink:'#1d211f',dim:'#8a8f8b',grid:'#ecebe6',a:'#2f6f5e',a2:'#9bb8ae',warn:'#c58b2a',bad:'#c4553f',good:'#2f6f5e',glow:false,round:3,mono:false,heat:['#f1f0ea','#c9dbd3','#6f9d8f','#2f6f5e'],ringBg:'#ecebe6'},
+ 3:{ink:'#e6edf3',dim:'#8b98a5',grid:'#2a3440',a:'#3fb6a8',a2:'#5aa0ff',warn:'#f0b429',bad:'#ef5350',good:'#42c76a',glow:false,round:1,mono:true,heat:['#1d2630','#2f6b63','#f0b429','#ef5350'],ringBg:'#2a3440'}};
+var cur=1, el=function(id){return document.getElementById(id)}, f1=function(v){return v.toLocaleString('vi-VN',{minimumFractionDigits:1,maximumFractionDigits:1})};
+function mau(T,v){ return v>=80?T.good:v>=70?T.warn:T.bad; }
+function chu(T,x,y,t,o){ o=o||{}; return '<text x="'+x+'" y="'+y+'" fill="'+(o.m||T.dim)+'" font-size="'+(o.c||11)+'" text-anchor="'+(o.a||'start')+'"'+(o.b?' font-weight="600"':'')+(o.mono&&T.mono?' font-family="JetBrains Mono,monospace"':'')+'>'+t+'</text>'; }
+function defs(T){ return T.glow?'<defs><filter id="sang" x="-20%" y="-50%" width="140%" height="200%"><feGaussianBlur stdDeviation="2.4" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>'+
+  '<linearGradient id="vung" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="'+T.a+'" stop-opacity=".45"/><stop offset="1" stop-color="'+T.a+'" stop-opacity="0"/></linearGradient></defs>'
+  :'<defs><linearGradient id="vung" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="'+T.a+'" stop-opacity="'+(cur==2?'.14':'.3')+'"/><stop offset="1" stop-color="'+T.a+'" stop-opacity="0"/></linearGradient></defs>'; }
+function tip(t){ return ' data-tip="'+t+'"'; }
+
+/* 1. KPI theo xưởng – thanh ngang, vạch 80 */
+function vKPI(T){ var w=520,rh=28,h=X.length*rh+26,L=96,R=50,sx=function(v){return L+(v-50)/50*(w-L-R)}, s='<svg viewBox="0 0 '+w+' '+h+'" role="img" aria-label="KPI tháng theo xưởng">'+defs(T);
+  [50,60,70,80,90,100].forEach(function(v){ s+='<line x1="'+sx(v)+'" y1="4" x2="'+sx(v)+'" y2="'+(h-20)+'" stroke="'+(v===80?T.warn:T.grid)+'"'+(v===80?' stroke-dasharray="4 4"':'')+'/>'+chu(T,sx(v),h-6,v,{a:'middle',c:10,mono:1}); });
+  X.forEach(function(x,i){ var y=8+i*rh, c=mau(T,x[1]);
+    s+=chu(T,L-8,y+14,x[0],{a:'end',m:T.ink,c:12})+'<rect class="ve" x="'+L+'" y="'+(y+3)+'" width="'+(sx(x[1])-L)+'" height="'+(rh-12)+'" rx="'+T.round+'" fill="'+c+'"'+(T.glow?' filter="url(#sang)" fill-opacity=".9"':'')+tip(x[0]+': '+f1(x[1])+' điểm')+'/>'+
+       chu(T,sx(x[1])+6,y+15,f1(x[1]),{m:T.ink,c:11.5,b:1,mono:1}); });
+  return s+'</svg>'; }
+/* 2. Sản lượng đóng gói 14 ngày – vùng + đường, mục tiêu 346 */
+function vSL(T){ var w=520,h=220,L=36,R=12,Tp=14,B=28,mx=400,sx=function(i){return L+i*(w-L-R)/(SL.length-1)},sy=function(v){return Tp+(1-v/mx)*(h-Tp-B)}, s='<svg viewBox="0 0 '+w+' '+h+'" role="img" aria-label="Sản lượng 14 ngày">'+defs(T);
+  [0,100,200,300,400].forEach(function(v){ s+='<line x1="'+L+'" y1="'+sy(v)+'" x2="'+(w-R)+'" y2="'+sy(v)+'" stroke="'+T.grid+'"/>'+chu(T,L-6,sy(v)+4,v,{a:'end',c:10,mono:1}); });
+  var pts=SL.map(function(v,i){return [sx(i),sy(v)]}), dd=pts.map(function(p,i){ return SL[i]===0?'':((i===0||SL[i-1]===0)?'M':'L')+p.join(' '); }).join(' ');   /* chủ nhật nghỉ: ngắt đường, không kéo xuống 0 */
+  s+='<path d="M'+sx(0)+' '+sy(0)+' '+pts.map(function(p,i){return 'L'+p[0]+' '+(SL[i]===0?sy(0):p[1])}).join(' ')+' L'+sx(SL.length-1)+' '+sy(0)+'Z" fill="url(#vung)"/>';
+  s+='<line x1="'+L+'" y1="'+sy(346)+'" x2="'+(w-R)+'" y2="'+sy(346)+'" stroke="'+T.warn+'" stroke-dasharray="5 5"/>'+chu(T,w-R-14,sy(346)+16,'mục tiêu 346',{a:'end',m:T.warn,c:10.5});
+  s+='<path class="duong" d="'+dd+'" fill="none" stroke="'+T.a+'" stroke-width="'+(cur==2?2:2.4)+'" stroke-linejoin="round"'+(T.glow?' filter="url(#sang)"':'')+'/>';
+  pts.forEach(function(p,i){ var v=SL[i]; s+='<circle cx="'+p[0]+'" cy="'+p[1]+'" r="'+(i===SL.length-1?5:3.2)+'" fill="'+(v===0?T.dim:v<346?T.bad:T.a)+'" stroke="'+(cur==2?'#fff':'none')+'" stroke-width="2"'+tip(NG[i]+'/11: '+(v||'nghỉ (CN)')+(v?' sp':''))+'/>'+(i%2===0?chu(T,p[0],h-8,NG[i],{a:'middle',c:10,mono:1}):''); });
+  return s+'</svg>'; }
+/* 3. Có mặt hôm nay – vòng đo */
+function vVong(T,p,nhan,phu){ var r=62,c=2*Math.PI*r,s='<svg viewBox="0 0 180 170" role="img" aria-label="'+nhan+' '+p+'%">'+defs(T)+
+  '<circle cx="90" cy="82" r="'+r+'" fill="none" stroke="'+T.ringBg+'" stroke-width="12"/>'+
+  '<circle class="cung" cx="90" cy="82" r="'+r+'" fill="none" stroke="'+(p>=95?T.good:p>=90?T.warn:T.bad)+'" stroke-width="12" stroke-linecap="'+(cur==3?'butt':'round')+'" stroke-dasharray="'+(c*p/100)+' '+c+'" transform="rotate(-90 90 82)"'+(T.glow?' filter="url(#sang)"':'')+'/>';
+  if(cur==3) for(var i=0;i<40;i++){ var a=i/40*Math.PI*2; s+='<line x1="'+(90+76*Math.cos(a))+'" y1="'+(82+76*Math.sin(a))+'" x2="'+(90+(i%5?79:83)*Math.cos(a))+'" y2="'+(82+(i%5?79:83)*Math.sin(a))+'" stroke="'+T.grid+'"/>'; }
+  return s+chu(T,90,88,p+'%',{a:'middle',m:T.ink,c:26,b:1,mono:1})+chu(T,90,106,phu,{a:'middle',c:10.5})+chu(T,90,164,nhan,{a:'middle',c:11.5,m:T.ink})+'</svg>'; }
+/* 4. Pareto dòng gậy trễ */
+function vPareto(T){ var w=520,h=230,L=40,R=40,Tp=12,B=30,tong=PA.reduce(function(a,b){return a+b[1]},0),mx=PA[0][1]*1.1,bw=(w-L-R)/PA.length,sy=function(v){return Tp+(1-v/mx)*(h-Tp-B)},sp=function(p){return Tp+(1-p/100)*(h-Tp-B)},s='<svg viewBox="0 0 '+w+' '+h+'" role="img" aria-label="Pareto dòng gậy trễ">'+defs(T),cd=0,pts=[];
+  [0,25,50,75,100].forEach(function(p){ s+='<line x1="'+L+'" y1="'+sp(p)+'" x2="'+(w-R)+'" y2="'+sp(p)+'" stroke="'+T.grid+'"/>'+chu(T,w-R+6,sp(p)+4,p+'%',{c:10,mono:1}); });
+  PA.forEach(function(x,i){ var truoc=cd/tong*100; cd+=x[1]; var p=cd/tong*100, xx=L+i*bw+bw*.18, c=truoc<80?T.bad:T.a2;
+    s+='<rect class="ve" x="'+xx+'" y="'+sy(x[1])+'" width="'+(bw*.64)+'" height="'+(sy(0)-sy(x[1]))+'" rx="'+T.round+'" fill="'+c+'" fill-opacity="'+(cur==2?'.85':'.9')+'"'+tip(x[0]+': '+x[1]+' sp trễ · cộng dồn '+Math.round(p)+'%')+'/>'+chu(T,xx+bw*.32,h-10,x[0],{a:'middle',c:10.5,m:T.ink});
+    pts.push([L+i*bw+bw/2,sp(p)]); });
+  s+='<line x1="'+L+'" y1="'+sp(80)+'" x2="'+(w-R)+'" y2="'+sp(80)+'" stroke="'+T.warn+'" stroke-dasharray="4 4"/>';
+  s+='<path d="M'+pts.map(function(p){return p.join(' ')}).join(' L')+'" fill="none" stroke="'+T.ink+'" stroke-width="1.8"'+(T.glow?' filter="url(#sang)"':'')+'/>'+pts.map(function(p){return '<circle cx="'+p[0]+'" cy="'+p[1]+'" r="3" fill="'+T.ink+'"/>'}).join('');
+  return s+'</svg>'; }
+/* 5. Tải công suất – bullet */
+function vTai(T){ var w=520,rh=30,h=TAI.length*rh+24,L=90,R=44,mx=140,sx=function(v){return L+v/mx*(w-L-R)},s='<svg viewBox="0 0 '+w+' '+h+'" role="img" aria-label="Tải công suất">'+defs(T);
+  TAI.forEach(function(x,i){ var y=6+i*rh, c=x[1]>100?T.bad:x[1]>85?T.warn:T.good;
+    s+=chu(T,L-8,y+15,x[0],{a:'end',m:T.ink,c:12})+'<rect x="'+L+'" y="'+(y+4)+'" width="'+(sx(mx)-L)+'" height="'+(rh-14)+'" rx="'+T.round+'" fill="'+T.grid+'" fill-opacity="'+(cur==2?1:.6)+'"/>'+
+      '<rect class="ve" x="'+L+'" y="'+(y+8)+'" width="'+(sx(x[1])-L)+'" height="'+(rh-22)+'" rx="'+Math.min(T.round,4)+'" fill="'+c+'"'+(T.glow?' filter="url(#sang)"':'')+tip(x[0]+': tải '+x[1]+'% công suất')+'/>'+chu(T,sx(x[1])+6,y+16,x[1]+'%',{m:T.ink,c:11,b:1,mono:1}); });
+  [[85,T.warn],[100,T.bad]].forEach(function(m){ s+='<line x1="'+sx(m[0])+'" y1="2" x2="'+sx(m[0])+'" y2="'+(h-16)+'" stroke="'+m[1]+'" stroke-dasharray="3 4"/>'+chu(T,sx(m[0]),h-4,m[0]+'%',{a:'middle',c:10,m:m[1],mono:1}); });
+  return s+'</svg>'; }
+/* 6. Đơn theo kênh – vành khuyên */
+function vKenh(T){ var C=[T.a,T.a2,T.warn,T.bad], tong=KENH.reduce(function(a,b){return a+b[1]},0), r=58, c=2*Math.PI*r, off=0, s='<svg viewBox="0 0 320 170" role="img" aria-label="Đơn theo kênh">'+defs(T);
+  KENH.forEach(function(k,i){ var d=c*k[1]/tong; s+='<circle class="cung" cx="85" cy="85" r="'+r+'" fill="none" stroke="'+C[i]+'" stroke-width="'+(cur==2?14:18)+'" stroke-dasharray="'+(d-3)+' '+c+'" stroke-dashoffset="'+(-off)+'" transform="rotate(-90 85 85)"'+(T.glow?' filter="url(#sang)"':'')+tip(k[0]+': '+k[1]+'% số sản phẩm')+'/>'; off+=d;
+    s+='<rect x="175" y="'+(34+i*28)+'" width="10" height="10" rx="'+Math.min(T.round,5)+'" fill="'+C[i]+'"/>'+chu(T,192,43+i*28,k[0],{m:T.ink,c:12})+chu(T,312,43+i*28,k[1]+'%',{a:'end',c:12,b:1,mono:1,m:T.ink}); });
+  return s+chu(T,85,82,tong*12+'',{a:'middle',m:T.ink,c:20,b:1,mono:1})+chu(T,85,99,'sp còn thiếu',{a:'middle',c:10})+'</svg>'; }
+/* 7. Nhiệt vắng ngày × xưởng */
+function vNhiet(T){ var w=520,cw=(w-80)/HN.length,ch=24,h=HX.length*ch+28,s='<svg viewBox="0 0 '+w+' '+h+'" role="img" aria-label="Bản đồ nhiệt vắng mặt">';
+  var to=function(v){ return v>=9?T.heat[3]:v>=6?T.heat[2]:v>=3?T.heat[1]:T.heat[0]; };
+  HN.forEach(function(n,j){ s+=chu(T,80+j*cw+cw/2,12,n,{a:'middle',c:10.5,mono:1}); });
+  HX.forEach(function(x,i){ s+=chu(T,72,20+i*ch+16,x,{a:'end',m:T.ink,c:11.5});
+    HV[i].forEach(function(v,j){ s+='<rect x="'+(80+j*cw+2)+'" y="'+(20+i*ch+2)+'" width="'+(cw-4)+'" height="'+(ch-4)+'" rx="'+T.round+'" fill="'+to(v)+'"'+tip(x+' · '+HN[j]+': vắng '+v+'%')+'/>'+chu(T,80+j*cw+cw/2,20+i*ch+16,v+'%',{a:'middle',c:10.5,m:v>=6&&cur!=2?'#111':T.ink,mono:1}); }); });
+  return s+'</svg>'; }
+
+var O=[['Sản lượng hôm qua','352','sp · 102% mục tiêu','good'],['Còn thiếu','12.000','sp · 41 đơn','warn'],['Đơn trễ','7','≤ 30 ngày','bad'],['Giao đúng hạn','86%','tuần này','warn'],['Có mặt','97%','173 / 178 người','good'],['KPI nhà máy','73,8','hạng C','warn']];
+function ve(){ var T=S[cur], h='<div class="luoi"><div class="so6">'+O.map(function(o){ return '<div class="o"><div class="n">'+o[0]+'</div><div class="v" style="color:'+(o[3]==='bad'?T.bad:o[3]==='warn'?(cur==2?T.ink:T.warn):(cur==2?T.ink:T.good))+'">'+o[1]+'</div><div class="d">'+o[2]+'</div></div>'; }).join('')+'</div>'+
+  [['Sản lượng đóng gói 14 ngày','Mỗi điểm = sản phẩm đóng gói trong ngày; vạch vàng = mục tiêu',vSL(T)],['KPI tháng theo xưởng','Xanh ≥ 80 · vàng 70–80 · đỏ < 70',vKPI(T)],
+   ['Nguồn gây trễ (Pareto)','Cột đỏ cộng lại ≈ 80% số trễ – dồn lực vào đây trước',vPareto(T)],['Tải công suất từng xưởng','> 85% vàng · > 100% đỏ = nút thắt',vTai(T)],
+   ['Có mặt & đơn theo kênh','Hôm nay · tỷ trọng số sản phẩm còn thiếu theo kênh','<div style="display:grid;grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr);gap:8px;align-items:center">'+vVong(T,97,'Có mặt hôm nay','173 / 178')+vKenh(T)+'</div>'],
+   ['Vắng mặt theo ngày × xưởng','Ô càng nóng = vắng càng nhiều',vNhiet(T)]].map(function(c){ return '<div class="the"><h3>'+c[0]+'</h3><p class="phu">'+c[1]+'</p>'+c[2]+'</div>'; }).join('')+'</div>';
+  var san=el('san'); san.className='san s'+cur; san.innerHTML=h; hoatAnh(); }
+function hoatAnh(){ if(matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  document.querySelectorAll('#san .ve').forEach(function(r,i){ var w=r.getAttribute('width'),hh=r.getAttribute('height'),y=r.getAttribute('y'); if(+hh>+w&&r.closest('svg').getAttribute('aria-label').indexOf('Pareto')>=0){ var y0=+y+ +hh; r.setAttribute('height',0); r.setAttribute('y',y0); r.animate?r.animate([{height:'0px',y:y0+'px'},{height:hh+'px',y:y+'px'}],{duration:700,delay:i*40,easing:'cubic-bezier(.2,.8,.2,1)',fill:'forwards'}):0; setTimeout(function(){r.setAttribute('height',hh);r.setAttribute('y',y)},760+i*40); }
+    else { r.setAttribute('width',0); setTimeout(function(){ r.style.transition='width .7s cubic-bezier(.2,.8,.2,1)'; r.setAttribute('width',w); },30+i*35); } });
+  document.querySelectorAll('#san .duong').forEach(function(p){ var L=p.getTotalLength(); p.style.strokeDasharray=L; p.style.strokeDashoffset=L; p.getBoundingClientRect(); p.style.transition='stroke-dashoffset 1.2s ease-out'; p.style.strokeDashoffset=0; }); }
+var tp=el('tip');
+document.addEventListener('pointerover',function(e){ var t=e.target.closest&&e.target.closest('[data-tip]'); if(!t) return; tp.textContent=t.getAttribute('data-tip'); tp.style.opacity=1; });
+document.addEventListener('pointermove',function(e){ if(tp.style.opacity==1){ tp.style.left=Math.min(innerWidth-tp.offsetWidth-8,e.clientX+12)+'px'; tp.style.top=(e.clientY-34)+'px'; } });
+document.addEventListener('pointerout',function(e){ if(e.target.closest&&e.target.closest('[data-tip]')) tp.style.opacity=0; });
+document.querySelectorAll('.chon button').forEach(function(b){ b.onclick=function(){ cur=+b.dataset.s; document.querySelectorAll('.chon button').forEach(function(x){x.setAttribute('aria-pressed',x===b)}); ve(); }; });
+ve();
+})();
+</script>
