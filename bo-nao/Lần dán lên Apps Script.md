@@ -4,7 +4,7 @@ Nhóm: Chung · Cập nhật 31/10/2026
 Liên quan: [[Việc chờ chủ dự án]] · [[KPI Tổng quan và cách dựng]] · [[00 Mục lục]]
 
 ## Web KPI – đã dán (theo sheet thật đọc ngày 21/10)
-- **15/11 chiều – CHỜ CẬP NHẬT bằng `2-CAP-NHAT.bat` (gộp mọi bản 14–15/11)**: Code.gs, Index.html, QuyTrinh.html, CauHinhGay.html – dự báo đơn, gậy 1 khúc, bậc ưu tiên mới, gợi ý hẹn, nhập nhanh. – [[KPI Gậy 1 khúc, ưu tiên và nhập nhanh (15-11)]]
+- **15/11 đêm – CHỜ CẬP NHẬT bằng `2-CAP-NHAT.bat` (gộp mọi bản 14–15/11)**: Code.gs, Index.html, QuyTrinh.html, CauHinhGay.html – dự báo đơn, gậy 1 khúc, bậc ưu tiên mới, gợi ý hẹn, sửa deadline, tab ĐẾN HẠN 10 NGÀY trong Sheet, cột Đóng gói / chú thích / hỏng, lưu đồ nhà máy mới. Sau cập nhật: mở tab Đơn hàng bằng tài khoản chủ 1 lần (cài lịch tab 10 ngày, có thể hỏi cấp quyền). – [[KPI Gậy 1 khúc, ưu tiên và nhập nhanh (15-11)]]
 - **16/11 (tối) – CHỜ CẬP NHẬT bằng `2-CAP-NHAT.bat` (gộp mọi bản 14–16/11)**: Index.html, QuyTrinh.html – Thống kê: 6 ô lên đầu Sản xuất & đơn hàng, bỏ SQDCP, biểu đồ kiểu Phòng điều khiển 4.0. – [[Bàn giao phiên]]
 - **14/11 (phiên mới, hạn chuẩn) – CHỜ CẬP NHẬT bằng `2-CAP-NHAT.bat` (gộp mọi bản 14–16/11, bấm 1 lần)**: Code.gs, Index.html, QuyTrinh.html, SoDo.html (link ảnh ghim lại commit) – hạn chuẩn bộ phận + email 8h + ô công suất bộ phận + ngày dự kiến xong 2 làn 30/70 (hạn ngầm đơn lẻ, công suất thực đo). – [[KPI Học hỏi ERPNext (16-11)]]
 - **16/11 (2) – CHỜ CẬP NHẬT bằng `2-CAP-NHAT.bat` (gộp mọi bản 14–16/11)**: Index.html (+ Code.gs) – chủ sở hữu: giao diện kính thay hologram. – [[KPI Hologram chủ sở hữu]]

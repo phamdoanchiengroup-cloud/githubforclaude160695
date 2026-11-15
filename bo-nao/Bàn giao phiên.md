@@ -3,6 +3,27 @@
 Nhóm: Chung · Cập nhật 02/11/2026
 Liên quan: [[00 Mục lục]] · [[Liên kết và công cụ]] · [[Việc chờ chủ dự án]] · [[Lần dán lên Apps Script]] · [[Quyết định của chủ dự án]] · [[KPI Kiểm thử]]
 
+## BÀN GIAO 15/11 ĐÊM → PHIÊN MỚI: RÀ SOÁT TOÀN BỘ (đọc phần này trước)
+**Mọi việc đã commit + push** lên `claude/beautiful-ptolemy-f2j7za` (commit cuối 980ecd6). Chủ dự án **chưa chạy `2-CAP-NHAT.bat`** cho các đợt 15/11 (một lần là đủ). Chi tiết mọi việc 15/11: [[KPI Gậy 1 khúc, ưu tiên và nhập nhanh (15-11)]].
+
+**Đã làm 15/11 (tóm tắt):** Thống kê (cột gradient, I-MR rộng, Dự báo đơn tháng tới) · gậy 1 khúc + bản vẽ · bậc ưu tiên mới + ★ gắn ưu tiên (C019, C056, C077, C067) + làn lẻ 10–13% + gợi ý ngày hẹn · 4 tài khoản sửa deadline lưu về Sheet · tab ĐẾN HẠN 10 NGÀY trong Sheet đơn (đồng bộ 2 chiều theo MÃ DÒNG WEB) · bảng đơn: mục "Đến hạn 10 ngày tới", ô đầu trang "Lẻ / POD quá 10 ngày", dòng TỔNG SL CÒN THIẾU trên cùng mỗi đơn, 3 cột Đóng gói, cột Chú thích (kiểu Note, trước các bộ phận), Hỏng cần làm bù · lưu đồ nhà máy 3 làn (bỏ ngọn lẻ Tip → Đóng gói) · 6 bộ kiểm thử cũ đạt lại.
+
+**VIỆC PHIÊN MỚI: rà soát toàn bộ code + giao diện, hỏi chuyên gia, tìm mục trùng / thừa** (chủ dự án yêu cầu 15/11). Phiên cũ đã giao 4 chuyên gia, chỉ `quan-ly-van-hanh` xong (3 người kia bị ngắt do hết lưu lượng – chạy lại):
+- `soat-giao-dien-cuoi`: mục / thẻ / nút trùng hoặc thừa, chữ lỗi thời (còn nhắc "30%", "Dealer bậc 1"?), code chết (`dhVeHan10`, `dhVeNhapNhanh`, `dhLe10Ds` chỉ còn dùng cho ô đầu trang), điện thoại 390px.
+- `bao-mat-ung-dung`: quyền các hàm mới `luuUuTienDon`, `luuDeadlineDon`, `luuCotPhuDon`, `lamMoiTab10`; **3 hàm trigger `DH_TAB10_TAO` / `DH_TAB10_DONG_BO` / `DH_TAB10_SUA` không có "_" nên trình duyệt gọi được** (cần chặn hoặc kiểm); ghi Sheet chặn công thức.
+- `general-purpose` (logic): tính sai, năm 12 → 1, chia 0, code chết, hàm trùng.
+- **Kết quả `quan-ly-van-hanh` (chưa xử lý, chờ chủ dự án duyệt):**
+  - A. 5 chỉ số cùng tên khác công thức: (1) "Trễ hạn" 3 cách (ô Thống kê theo dòng, `dhCSTinh` theo đơn + tách `leQua`, `dhVeKenh`/báo cáo `dhSt` gồm cả PK) → gộp 1 hàm theo `dhCSTinh`; (2) "Số ngày tồn" (`tong/cs`) vs `K.ngayCan` (`ceil`) → giữ `K.ngayCan`; (3) "Giao đúng hạn" ô 4 tuần (`C.kenh` chưa qua `dhChayLoc`) vs biểu đồ `dhVeOTD` (đã lọc) vs fill rate tab Sản lượng → gộp, dùng số đã lọc (gốc ở `dhDongChay_` máy chủ); (4) "Tải" 3 số (`ky.tl` Công suất, `tai1`, `tai2` Dự báo) → giữ `ky.tl`, Dự báo đổi tên "Nhu cầu tháng tới ÷ công suất", bỏ `tai2`; (5) "Công suất" 4 nguồn → bảng Ngày dự kiến xong giữ 1 cột theo ⚙, thực đo chỉ ghi chú.
+  - B. Trùng: `dhLichGiao` 14 ngày (bỏ, trùng tải 12 tuần; còn dùng `new Date()`) · ô từng xưởng `dhVeXuong` vs Bullet + Bản đồ nhiệt (gộp) · Đóng gói hiện 3 lần (giữ I-MR + ô tháng, bỏ cột 40 ngày `dhVeSanLuong`) · "Còn thiếu theo kênh" mục 7 `dhVeThongKe` vs `dhVeKenh` vs báo cáo (gộp vào `dhVeKenh`) · `dhVeTreBP` + `dhVeHanChuan` (gộp 1 bảng 2 cột) · giữ ô Vào / Ra 7 ngày, giữ aging web + 3 nhóm tuổi PDF.
+  - C. Ít giá trị / code chết: ô "Dòng đơn đang thiếu" (bỏ) · "Hỏng cần làm bù" ẩn khi tổng 0 · OTD tuần tạm ẩn khi < 20 ngày chụp · code chết `dhVeSQDCP`/`dhSQDCP`, `dhVeVRT`, biến `P`/`pk` mục Pareto, nhánh `DHV==='thongke'` trong `dhTrangVe`.
+- Cách làm: gom 4 kết quả thành 1 danh sách Bỏ / Gộp / Giữ / Sửa → **trình chủ dự án duyệt trước khi xóa**; lỗi bảo mật / tính sai rõ ràng thì đề xuất sửa ngay. Rà xong: chạy kiểm thử (dưới), chụp ảnh bản xem thử gửi chủ dự án.
+
+**Kiểm thử / dữ liệu (scratchpad mất khi đổi phiên – lấy lại):**
+- DATA: Drive `download_file_content` Sheet CSDL KPI (xlsx) → `python3 -I kpi-app/tests/csdl-tu-drive.py <file> $S/dl/csdl.json`.
+- Đơn thật: Sheet cầu nối `1lZ1AS0-DiWD4uX_9mpqHN2PJKsgDhMGuEqTD5G3tffk` (`text/csv`) → tách khối 61 cột theo ô `#TAB <tên>` dòng 1 → `{tab: rows}` JSON → `DH=` cho `tao-ban-xem-thu.js` (`GIO=2026-11-16T09:30:00+07:00 BO_HO_SO=1`). Tài khoản thử: `chienpham`, `tpdg` (TP Đóng gói), mật khẩu bản thử `demo`.
+- Bộ cần DATA: don-hang 141, quy-trinh 76, ho-so 28, luu-tru 15, cau-hinh-gay 50, mot-khuc 20, uu-tien-web 28, tab10 14, cot-phu 10. Không cần DATA: du-bao-web 18, hai-lan-web 11, han-chuan 27. Lỗi cũ có sẵn (dữ liệu cũ): bao-mat.js, com-trua.js.
+- Repo clone nông → `git fetch --unshallow origin claude/beautiful-ptolemy-f2j7za` trước khi dựng (link ảnh jsDelivr).
+
 ## 15/11 chiều – XONG + đã push (3 commit): đọc [[KPI Gậy 1 khúc, ưu tiên và nhập nhanh (15-11)]]
 - Thống kê: cột gradient, I-MR rộng; **Dự báo đơn tháng tới** (phần 3 ERPNext). Gậy 1 khúc đủ các phần + bản vẽ. Bậc ưu tiên mới (Dealer ra bậc 3), nút ★ ưu tiên cho 4 tài khoản, làn đơn lẻ 10–13%, gợi ý ngày hẹn, cảnh báo đơn lẻ quá 10 ngày, TP nhập nhanh trong Đến hạn 10 ngày.
 - 6 bộ kiểm thử cũ đã đạt hết (don-hang 141, quy-trinh 76, ho-so 28, luu-tru 15, cau-hinh-gay 50): kiểm thử nay **xóa trống các sheet do web tự ghi** trong bộ nhớ trước khi chạy. Lấy DATA: Google Drive tải Sheet CSDL KPI (xlsx) → `csdl-tu-drive.py` → scratchpad.
