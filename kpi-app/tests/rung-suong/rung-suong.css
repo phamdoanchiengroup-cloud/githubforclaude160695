@@ -1,0 +1,79 @@
+/* ===== Giao diện "Rừng Sương" (demo 16/11): kính mờ trên nền rừng sương tự vẽ – CHỈ đổi màu / chất liệu, GIỮ NGUYÊN bố cục web KPI.
+   Bật khi html có class rs. Nền vẽ bằng rung-suong.js (canvas → ảnh nền cố định). ===== */
+html.rs,html.rs[data-gd],html.rs.cn-moi,html.rs.holo{color-scheme:dark!important;
+  --bg:rgba(10,32,25,.55)!important;--panel:rgba(214,240,226,.12)!important;--panel2:rgba(214,240,226,.18)!important;
+  --line:rgba(255,255,255,.22)!important;--row-line:rgba(255,255,255,.14)!important;
+  --ink:#f2faf5!important;--ink2:rgba(236,248,241,.84)!important;--ink3:rgba(226,242,233,.66)!important;
+  --cyan:#9fe8c2!important;--acc-rgb:159,232,194!important;--amber:#f2d98b!important;--red:#ffb0a3!important;--green:#a6f0bd!important;
+  --bot-bg:rgba(16,44,35,.5)!important;--bong:none!important;--serif:"Instrument Serif",Georgia,serif!important;
+  --rs-kinh:rgba(22,60,46,.46);--rs-kinh-dam:rgba(12,38,30,.78);--rs-vien:rgba(255,255,255,.3);--rs-mo:blur(24px) saturate(1.4)}
+html.rs{background:#0f2a22!important}
+html.rs body{background:transparent!important;color:var(--ink)!important;font-family:"Be Vietnam Pro","Inter",system-ui,sans-serif!important}
+html.rs body::before{content:"";position:fixed;inset:0;z-index:-1;background:var(--rs-nen,linear-gradient(#2d5a48,#0f2a22)) center/cover no-repeat,#16392d}
+html.rs #bgfx,html.rs #festfx{display:none!important}
+
+/* kính dùng chung */
+html.rs header,html.rs #nav,html.rs .card,html.rs .kpi,html.rs #ducbar,html.rs #minibar .mini,html.rs #festbar>*,html.rs #botbar,
+html.rs .gbox,html.rs #toast,html.rs .modal,html.rs .modal-box,html.rs .mbox,html.rs dialog{
+  background:var(--rs-kinh)!important;border:1px solid var(--rs-vien)!important;color:var(--ink)!important;
+  -webkit-backdrop-filter:var(--rs-mo)!important;backdrop-filter:var(--rs-mo)!important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.4),0 10px 30px rgba(2,22,15,.28)!important;background-image:none!important}
+html.rs .card,html.rs .kpi{border-radius:22px!important}
+html.rs .card:hover{transform:none!important}
+html.rs header{border-width:0 0 1px!important;border-radius:0!important;background:rgba(14,42,33,.35)!important}
+html.rs #nav{background:rgba(14,42,33,.32)!important}
+html.rs #botbar{border-width:1px!important;left:10px!important;right:10px!important;bottom:calc(10px + env(safe-area-inset-bottom,0px))!important;border-radius:26px!important;background:rgba(18,50,39,.45)!important}
+
+/* chữ */
+html.rs .ptitle,html.rs .card h3,html.rs h1,html.rs h2,html.rs .htitle,html.rs .hwho b,html.rs #hten,html.rs .kpi .v{color:var(--ink)!important}
+html.rs .ptitle{font-family:var(--serif)!important;font-weight:400!important;letter-spacing:0!important;font-size:clamp(30px,4vw,40px)!important}
+html.rs .kpi .v{font-family:var(--serif)!important;font-weight:400!important}
+html.rs .pdesc,html.rs .hsub,html.rs .note,html.rs label,html.rs .kpi .l,html.rs .kpi .s,html.rs small{color:var(--ink3)!important}
+html.rs a{color:var(--cyan)}
+html.rs .note{border-top-color:var(--line)!important}
+
+/* bảng */
+html.rs table{background:transparent!important;color:var(--ink)!important}
+html.rs th{background:rgba(12,38,30,.35)!important;color:var(--ink3)!important;border-color:var(--line)!important}
+html.rs td{border-color:var(--row-line)!important;color:var(--ink)!important;background:transparent!important}
+html.rs tr:hover td{background:rgba(255,255,255,.06)!important}
+html.rs tr.cn-toi td,html.rs tr.toi td{background:rgba(159,232,194,.16)!important}
+
+/* nút + ô nhập */
+html.rs .btn{background:rgba(232,250,240,.16)!important;border:1px solid var(--rs-vien)!important;color:var(--ink)!important;border-radius:14px!important;
+  -webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);box-shadow:inset 0 1px 0 rgba(255,255,255,.35)!important}
+html.rs .btn:hover{background:rgba(232,250,240,.26)!important}
+html.rs .btn.pri{background:linear-gradient(180deg,rgba(191,240,212,.92),rgba(150,214,180,.92))!important;color:#0d2a20!important;border-color:rgba(255,255,255,.6)!important}
+html.rs .btn.dg{color:var(--red)!important}
+html.rs input,html.rs select,html.rs textarea{background:rgba(8,30,23,.4)!important;border:1px solid var(--rs-vien)!important;color:var(--ink)!important;border-radius:12px!important}
+html.rs input::placeholder,html.rs textarea::placeholder{color:var(--ink3)!important}
+html.rs input:focus,html.rs select:focus,html.rs textarea:focus{border-color:var(--amber)!important;outline:none;box-shadow:0 0 0 3px rgba(242,217,139,.25)!important}
+html.rs option{background:#16392d;color:#f2faf5}
+html.rs :focus-visible{outline:2px solid var(--amber)!important;outline-offset:2px}
+
+/* menu trái + thanh dưới */
+html.rs nav button{color:var(--ink3)!important}
+html.rs nav button:hover{color:var(--ink)!important}
+html.rs nav button.on,html.rs nav button.act,html.rs nav button[aria-current]{color:var(--ink)!important;background:rgba(255,255,255,.16)!important;border-radius:12px}
+html.rs #botbar button{color:var(--ink3)!important;background:transparent!important}
+html.rs #botbar button.on{color:var(--ink)!important;background:rgba(255,255,255,.16)!important;border-radius:16px}
+html.rs.cn-moi main{padding-bottom:calc(116px + env(safe-area-inset-bottom))!important}
+
+/* nhãn, chip, thanh tiến độ */
+html.rs .p-gr,html.rs .chip,html.rs .tag,html.rs .badge{background:rgba(255,255,255,.12)!important;color:var(--ink2)!important;border-color:var(--rs-vien)!important}
+html.rs .a-nu,html.rs .alert,html.rs .canh{background:rgba(12,38,30,.38)!important;border-color:var(--rs-vien)!important;color:var(--ink2)!important}
+html.rs #toast{background:rgba(14,42,33,.7)!important}
+
+/* bóng thoại Rhino: kính đặc hơn để đọc rõ khi nằm đè nội dung */
+html.rs .mai-thoai{background:var(--rs-kinh-dam)!important;border:1px solid var(--rs-vien)!important;color:var(--ink)!important;
+  -webkit-backdrop-filter:var(--rs-mo)!important;backdrop-filter:var(--rs-mo)!important;border-radius:22px!important}
+html.rs .mai-thoai .btn{background:rgba(232,250,240,.2)!important}
+
+/* màn đăng nhập */
+html.rs #gate{background:transparent!important}
+html.rs #gate .gbox,html.rs #frmLogin{border-radius:26px!important}
+
+/* máy yếu / giảm chuyển động: bỏ kính mờ */
+@media (prefers-reduced-motion:reduce){html.rs *{transition:none!important}}
+html.rs.rs-nhe *{-webkit-backdrop-filter:none!important;backdrop-filter:none!important}
+html.rs.rs-nhe .card,html.rs.rs-nhe .kpi,html.rs.rs-nhe header,html.rs.rs-nhe #botbar{background:rgba(18,52,41,.86)!important}
