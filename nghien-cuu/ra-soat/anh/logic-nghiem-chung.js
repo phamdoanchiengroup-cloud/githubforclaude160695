@@ -6,7 +6,7 @@ console.log('## 1. Văn 8 nhóm qua 12 giờ sinh (cùng ngày)');
 const tong = {}, keDong = {};
 NG.forEach(([g, d, m, y]) => {
   const ds = [];
-  for (let h = 0; h < 12; h++) { const hour = h === 0 ? 0 : h * 2; ds.push(ctx.nghiemChungLap({ name: 'x', gender: g, calendar: 'duong', day: d, month: m, year: y, hour, minute: 30, viewYear: 2026 }).doan); }
+  for (let h = 0; h < 12; h++) { const hour = h === 0 ? 0 : h * 2; ds.push(ctx.nghiemChungLap_({ name: 'x', gender: g, calendar: 'duong', day: d, month: m, year: y, hour, minute: 30, viewYear: 2026 }).doan); }
   ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'].forEach((ma, i) => {
     const v = ds.map(x => x[i].text), kh = new Set(v).size;
     let ke = 0; for (let h = 0; h < 12; h++) if (v[h] === v[(h + 1) % 12]) ke++;
@@ -21,7 +21,7 @@ console.log('\n## 2. Câu nghiệm chứng giống nhau giữa NGƯỜI khác nh
 let s = 3; const rnd = () => ((s = (s * 9301 + 49297) % 233280) / 233280);
 const freq = {}, perG = {}; let nla = 40, vdPct = [], vdCon = [];
 for (let k = 0; k < nla; k++) {
-  const r = ctx.nghiemChungLap({ name: 'x', gender: k % 2 ? 'nu' : 'nam', calendar: 'duong', day: 1 + Math.floor(rnd() * 28), month: 1 + Math.floor(rnd() * 12), year: 1966 + Math.floor(rnd() * 38), hour: Math.floor(rnd() * 24), minute: 10, viewYear: 2026 });
+  const r = ctx.nghiemChungLap_({ name: 'x', gender: k % 2 ? 'nu' : 'nam', calendar: 'duong', day: 1 + Math.floor(rnd() * 28), month: 1 + Math.floor(rnd() * 12), year: 1966 + Math.floor(rnd() * 38), hour: Math.floor(rnd() * 24), minute: 10, viewYear: 2026 });
   r.doan.forEach(g => { const seen = new Set(); g.dong.forEach(z => { const c = g.ma + '|' + sach(z.t); if (seen.has(c)) return; seen.add(c); freq[c] = (freq[c] || 0) + 1; perG[g.ma] = (perG[g.ma] || 0) + 1; });
     if (/%/.test(g.text) && vdPct.length < 3) vdPct.push(g.ma + ': ' + g.text.match(/[^.]*%[^.]*/)[0].slice(0, 160));
     if (/Số con|Trai – gái|con trai|con gái/i.test(g.text) && vdCon.length < 3) vdCon.push(g.ma + ': ' + (g.text.match(/(Số con|Trai – gái)[^.]*\./) || [g.text.slice(0, 120)])[0]); });
