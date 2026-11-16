@@ -52,3 +52,10 @@ NHÁP (Bán hàng) → CHỜ DUYỆT → [TRẢ VỀ (lý do) → NHÁP v2] | T�
 - **Chuyên gia**: `soat-giao-dien-cuoi` (nút trong bảng nổi theo bậc nhẹ → nặng, không confirm(), chuông cạnh tiêu đề, chip xám viền đứt, STT dính trái 40px, nhãn cam cho bộ phận giữ hàng); `bao-mat-ung-dung` (hằng quyền riêng, kiểm dòng trong khóa, lý do giới hạn, chống bấm 2 lần, giới hạn/giờ, hoàn tác cần lý do + kiểm màu, không tự tạo file mới khi id hỏng). Chưa làm: nút "Hoàn tác" trong thông báo 10 giây (hoàn tác ở mục Đơn đã hủy).
 - **Kiểm thử** `tests/huy-don.js` 89/89 (quyền, Sheet riêng, tô xám / trả màu, khớp dòng, mồ côi, bớt không trừ 2 lần, hủy cả đơn, thông báo, hoàn tác, bản chụp, giới hạn giờ, web 1300px + 390px). `gia-lap-kpi.js` thêm màu nền + mở lại bảng tính tự tạo.
 
+## GIAI ĐOẠN 1 – Chủ dự án chốt (16/11 khuya) – CHƯA LÀM, phiên mới làm luôn, không hỏi lại
+1. **Tài khoản Bán hàng**: Claude tự tạo từ danh sách nhân sự Marketing / Bán hàng / Kinh doanh đã có trên web (tab Nhân sự › Bộ phận ngoài SX), vai trò mới **BH** (chỉ thấy trang nhập đơn + đơn của mình), mật khẩu tạm đổi lần đầu. **Chủ sở hữu toàn quyền** với các tài khoản này (thêm / bớt / khóa / đặt lại mật khẩu / đổi vai trò) – trình danh sách cho chủ dự án xem lại trước khi bật.
+2. **Cách nhập**: cả 2 – nhập từng dòng (mã đơn, kênh, tên SP chọn từ danh mục, SL, deadline mong muốn, ghi chú) + dán nhiều dòng từ Excel; web tô đỏ dòng lỗi, tự lưu nháp.
+3. **Duyệt**: C019 / C056 / C067 (+ chủ sở hữu) duyệt: chốt deadline cam kết + bậc ưu tiên, hoặc trả về kèm lý do. Duyệt xong web **tự chép đơn vào đúng tab kênh** của Sheet "Trạng thái đơn hàng" (dòng trống cuối tab) → bảng đơn + sản xuất thấy ngay. Lưu đơn ở Sheet "CSDL Đơn hàng (web)" (thêm tab DonHang / DonHangDong, ID bất biến, sổ SuKien) theo góp ý bao-mat-ung-dung 16/11.
+4. **Bán hàng xem**: chỉ đơn của mình + trạng thái (nháp / chờ duyệt / trả về / đang SX với % xong, dự kiến xong, đã hủy / bớt). Không thấy KPI, nhân sự, đơn người khác.
+- Là tính năng lớn: hỏi chuyên gia (bao-mat-ung-dung cho vai trò BH + chép Sheet; soat-giao-dien-cuoi / dong-vai-nguoi-dung cho trang nhập trên điện thoại).
+
