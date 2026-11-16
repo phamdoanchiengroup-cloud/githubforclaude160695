@@ -27,7 +27,9 @@ Liên quan: [[KPI Gậy 1 khúc, ưu tiên và nhập nhanh (15-11)]] · [[KPI �
 ## Đã sửa thêm 16/11 (sau trả lời chủ dự án)
 - Phôi 2 nhánh: `dhP2Loai_` – chuôi lẻ / gậy 1 khúc chỉ tính nhánh chuôi, ngọn lẻ chỉ nhánh ngọn (gọi trong `themBTP` + email hạn chuẩn). Kiểm thử ra-soat-1611 (12).
 - Ngày dự kiến xong: chủ dự án chọn **B – giữ cách tính hiện tại** (không tự đẩy đơn gần xong).
-- Đang hỏi: thứ tự bậc khi hạ đơn ưu tiên (tab ĐƠN ƯU TIÊN = nhặt từ Kho) xuống ngay trên Kho + OEM.
+- **5 bậc mới** (`dhBacDong`, `DH_SO_BAC=5`, mô phỏng xếp theo bậc của dòng `dhSimDong` uu = bậc): xem [[Quyết định của chủ dự án]]. Làn lẻ cố định 10% (`DH_LAN_MAX=0.10`), hạn đơn lẻ 5 ngày (`DH_HAN_NGAM=5`, máy chủ `dhDlNgam_`).
+- **Ưu tiên khớp theo mã đơn + tên** (`dhUuTen` / `dhLaUu`): trước khớp theo tên → 50 dòng Kho bị gắn ưu tiên, đúng 23. Số thật 16/11: tab có 33 dòng / 1.612 sp; Kho có 24 dòng ghi chữ "ưu tiên" (886 sp) không có trong tab – hỏi chủ dự án.
+- Kết quả trên đơn thật 16/11: Seybert 03/12 → **23/11**; làn lẻ 31 sp/ngày, đơn lẻ vào ~14 sp/ngày nhưng tồn 351 sp → 300 đơn lẻ dự kiến quá hạn 5 ngày, hết tồn ~02/12 – báo chủ dự án.
 
 ## Chưa sửa (ghi lại)
 - `luuBangDon` / `luuCotPhuDon` vẫn kiểm theo tên hàng (Sheet không có cột mã dòng cho mọi tab).

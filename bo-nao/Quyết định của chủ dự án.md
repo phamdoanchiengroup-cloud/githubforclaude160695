@@ -151,3 +151,9 @@ Những điều đã chốt. Đừng đề xuất lại những gì ghi "không 
 - 16/11: **Bỏ hẳn hologram.** Chủ sở hữu dùng **giao diện kính Premium Glass** (yêu cầu "Realistic Premium Glassmorphism": vật liệu kính thật, viền gradient, phản xạ, không đổi bố cục / chức năng), **tự đổi 3 tông** xanh / đỏ / tím nhạt, **giữ Đài quan sát** (tĩnh), có nút **Đầy đủ / Nhẹ / Tắt**. Các vai trò khác giữ nguyên. – [[KPI Hologram chủ sở hữu]]
 - 16/11 (tối): **Thống kê**: bỏ mục Tổng quan (6 ô lên đầu Sản xuất & đơn hàng), **bỏ bảng SQDCP** trên web, biểu đồ web kiểu **Phòng điều khiển 4.0**, PDF lãnh đạo giữ kiểu sáng; Thống kê vẫn chỉ chủ sở hữu. – [[Bàn giao phiên]]
 - 16/11 (tối): giao diện kính chủ sở hữu **chỉ giữ 2 tông: Xanh rừng sương (ảnh Pexels) + Tiên cảnh (ảnh chủ dự án gửi)**; bỏ Sương sáng / Đỏ / Tím. Tiên cảnh: thẻ trong suốt hẳn, chữ có viền tối để nổi. – [[KPI Hologram chủ sở hữu]]
+
+## Đơn hàng – bậc ưu tiên, làn lẻ, hạn đơn lẻ (chốt 16/11)
+- **Tab ĐƠN ƯU TIÊN = bản chép mã ưu tiên từ tab KHO** cho dễ nhìn – không đếm 2 lần; web khớp dòng Kho theo mã đơn + tên.
+- **5 bậc**: 1 = Web lẻ thường + Web lẻ custom + POD (làn riêng **cố định 10%** công suất, **hạn 5 ngày** từ ngày đặt); 2 = trễ hạn (quá deadline / tên trong tab TRỄ HẠN) + ★ ban điều hành gắn; 3 = **Dealer + hàng ưu tiên ngang nhau**; 4 = A Đông + tab mới; 5 = Kho + OEM còn lại. Trong bậc: deadline sớm trước.
+- Ngày dự kiến xong: **giữ cách tính hiện tại** (không tự đẩy đơn gần xong lên – chọn B).
+- Phôi 2 nhánh: chuôi bán lẻ chỉ cần nhánh chuôi (ngọn bán lẻ chỉ nhánh ngọn) là đủ.

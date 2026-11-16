@@ -37,6 +37,7 @@ File này được Claude Code tự đọc khi mở repo. Nó giữ **quy tắc 
   - logic hiển thị trên web (đúng quyền, đúng số, đúng trạng thái, điện thoại không tràn);
   - các công thức (KPI, định mức, xếp loại, điểm…).
   
+- **Tab "ĐƠN ƯU TIÊN" trong Sheet đơn chỉ là BẢN CHÉP các mã ưu tiên từ tab KHO** để dễ nhìn (chủ dự án nhấn mạnh 16/11): KHÔNG BAO GIỜ cộng nó thêm lần 2 vào số liệu; khớp dòng Kho theo MÃ ĐƠN + TÊN (không theo tên). Bậc ưu tiên của hàng này NGANG Dealer, không trên Dealer. Thứ tự 5 bậc + làn lẻ cố định 10% + hạn đơn lẻ/POD 5 ngày: xem `bo-nao/Quyết định của chủ dự án.md`.
 - **Luôn sắp xếp cho dễ nhìn, dễ theo dõi, dễ tổng hợp** (chủ dự án yêu cầu 01/11): mọi bảng / danh sách phải nhóm theo logic sản xuất (vd. gậy đánh / nhảy / phá; chuôi / chuôi nhảy / ngọn; full carbon → mix → glassfiber), có tổng từng nhóm.
   Rà xong mới commit. Báo cho chủ dự án biết đã rà những gì và tìm ra gì.
 
