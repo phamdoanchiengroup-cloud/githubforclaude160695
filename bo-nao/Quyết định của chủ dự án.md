@@ -159,3 +159,4 @@ Những điều đã chốt. Đừng đề xuất lại những gì ghi "không 
 - **Bỏ hạn chuẩn trên bảng đơn** (không cần thiết); hạn chuẩn chỉ còn ở Công đoạn / email 8h.
 - Ngày dự kiến xong: **giữ cách tính hiện tại** (không tự đẩy đơn gần xong lên – chọn B).
 - Phôi 2 nhánh: chuôi bán lẻ chỉ cần nhánh chuôi (ngọn bán lẻ chỉ nhánh ngọn) là đủ.
+- (16/11 tối) **Hàng ưu tiên CHỈ là mã có trong tab ĐƠN ƯU TIÊN** – chữ "ưu tiên" ghi trong Sheet KHÔNG tính. **Làn lẻ giữ 10%**, chấp nhận đợt trễ khi đang tồn đơn lẻ (không tạm nâng làn).

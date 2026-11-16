@@ -1650,7 +1650,8 @@ function dhVeSanLuong(){
 /* 13/11: đơn thuộc tab "ĐƠN ƯU TIÊN" cũng tính là ưu tiên theo TÊN HÀNG (mã trong tab ưu tiên có tiền tố #NEW-/#KHO- nên không trùng mã Kho) */
 function dhTenChuan(s){ return String(s==null?'':s).toUpperCase().replace(/[–—]/g,'-').replace(/\s+/g,' ').trim(); }
 function dhUuTen(){ var m={}; ((DH&&DH.uu)||[]).forEach(function(o){ var t=dhTenChuan(o.ten); if(t) m[dhTenChuan(o.maDon||'')+'|'+t]=1; }); return m; }   /* 16/11 (chủ dự án): tab ĐƠN ƯU TIÊN = bản chép mã ưu tiên từ tab KHO để dễ nhìn – khớp theo MÃ ĐƠN + TÊN (trước khớp theo tên: 50 dòng Kho bị gắn nhầm, đúng là 23), không cộng thêm lần 2 */
-function dhLaUu(o,m){ if(!o) return false; if(o.uuTien) return true; if(o.tab!=='KHO'||!m) return false; var t=dhTenChuan(o.ten); return !!(m[dhTenChuan(o.maDon||'')+'|'+t]||m['|'+t]); }   /* 13/11: tên trong tab ưu tiên chỉ tính cho dòng Kho (tab ưu tiên = mã ở sẵn trong Kho); tab khác phải ghi "ưu tiên" */
+function dhLaUu(o,m){ if(!o||o.tab!=='KHO'||!m) return false;   /* 16/11 tối (chủ dự án): hàng ưu tiên CHỈ là mã có trong tab ĐƠN ƯU TIÊN (chữ "ưu tiên" ghi trong Sheet không tính; ★ web là bậc 2 riêng) */
+  var t=dhTenChuan(o.ten); return !!(m[dhTenChuan(o.maDon||'')+'|'+t]||m['|'+t]); }   /* 13/11: tên trong tab ưu tiên chỉ tính cho dòng Kho (tab ưu tiên = mã ở sẵn trong Kho); tab khác phải ghi "ưu tiên" */
 /* 13/11 (chủ dự án chốt thứ tự): 1 = ĐƠN ƯU TIÊN + WEB LẺ CUSTOM + WEB LẺ ĐƠN THƯỜNG + POD-A.BÁCH, 2 = TRỄ HẠN, 3 = DEALER, 4 = KHO, 5 = các tab còn lại.
    Tab TRỄ HẠN là bản chép đơn trễ, mã trong đó đã cũ -> đối chiếu theo TÊN HÀNG (cùng cách với tab ưu tiên). */
 /* 15/11 (chủ dự án chốt 3 bậc): 1 = WEB LẺ ĐƠN THƯỜNG + WEB LẺ CUSTOM + mọi tab POD; 2 = đơn trễ hạn (dòng đã qua deadline, hoặc tên hàng có trong tab TRỄ HẠN) + đơn ưu tiên;
@@ -1663,7 +1664,7 @@ function dhLaUu(o,m){ if(!o) return false; if(o.uuTien) return true; if(o.tab!==
 var DH_TAB_BAC1={'WEB LẺ CUSTOM':1,'WEB LẺ ĐƠN THƯỜNG':1}, DH_SO_BAC=4;
 /* 16/11 (chủ dự án chốt 5 bậc): 1 = Web lẻ thường + Web lẻ custom + POD (làn riêng cố định 10% công suất, hạn 5 ngày từ ngày đặt);
    2 = đơn trễ hạn (dòng quá deadline / tên trong tab TRỄ HẠN) + đơn ★ ban điều hành gắn trên web;
-   3 = DEALER + hàng ưu tiên (chữ "ưu tiên" trong Sheet / mã trong tab ĐƠN ƯU TIÊN – nhặt từ Kho) NGANG NHAU, theo deadline;
+   3 = DEALER + hàng ưu tiên (CHỈ mã trong tab ĐƠN ƯU TIÊN – nhặt từ Kho) NGANG NHAU, theo deadline;
    4 = A ĐÔNG + tab mới + KHO + OEM còn lại NGANG NHAU (16/11 tối: chủ dự án gộp bậc 4 + 5). Trong mỗi bậc deadline sớm trước. */
 function dhTreTen(){ var m={}; ((DH&&DH.tre)||[]).forEach(function(o){ var t=dhTenChuan(o.ten); if(t) m[t]=1; }); return m; }
 function dhBacDong(o,mu,mtr){
@@ -2354,7 +2355,7 @@ function dhVeKenh(){
   var namNay=hn.slice(0,4), nx=function(d){ return d?dhNg(d)+(d.slice(0,4)!==namNay?'/'+d.slice(0,4):''):'–'; };
   var BAC=[['1','WEB LẺ ĐƠN THƯỜNG · WEB LẺ CUSTOM · POD','làn lẻ riêng cố định '+dhLanPT()+' công suất · hạn '+DH_HAN_NGAM+' ngày từ ngày đặt · mọi tab bắt đầu bằng POD'],   /* 16/11 (chủ dự án): 5 bậc */
     ['2','Đơn trễ hạn + ★ ban điều hành gắn','dòng đã qua deadline · tên hàng có trong tab TRỄ HẠN · đơn gắn ★ trên web'],
-    ['3','DEALER + hàng ưu tiên (ngang nhau)','hàng ưu tiên = mã trong tab ĐƠN ƯU TIÊN (bản chép từ Kho, không tính 2 lần) hoặc dòng ghi “ưu tiên” – theo deadline'],
+    ['3','DEALER + hàng ưu tiên (ngang nhau)','hàng ưu tiên = CHỈ mã trong tab ĐƠN ƯU TIÊN (bản chép từ Kho, không tính 2 lần) – theo deadline'],
     ['4','A ĐÔNG · KHO · OEM · tab mới (ngang nhau)','các đơn còn lại – theo deadline']];
   var bacTk=BAC.map(function(b){ var a=K.don.filter(function(g){ return bacGs(g)===+b[0]; }), xong='';
     a.forEach(function(g){ if(g.eta&&(!xong||g.eta>xong)) xong=g.eta; });
@@ -2413,7 +2414,7 @@ function dhVeKenh(){
       '<td class="qt-so">'+qtSo(x.n,0)+'</td><td class="qt-so"><b>'+qtSo(x.sp,0)+'</b></td><td class="qt-so">'+(K.tong?Math.round(x.sp/K.tong*100)+'%':'–')+'</td>'+
       '<td>'+(x.n?nx(x.xong):'–')+'</td><td class="qt-so">'+(x.tre?'<span class="dh-han tre">'+x.tre+'</span>':'–')+'</td></tr>'; }).join('')+
     '<tr class="dh-khoi"><td></td><td>Tổng</td><td class="qt-so">'+qtSo(K.don.length,0)+'</td><td class="qt-so">'+qtSo(K.tong,0)+'</td><td class="qt-so">100%</td><td>'+nx(K.xongHet)+'</td><td class="qt-so">'+qtSo(K.nhom.tre.length,0)+'</td></tr>'+
-    '</tbody></table></div>'+dhCachDoc('<b>Bậc 1</b>: toàn bộ đơn ở tab WEB LẺ ĐƠN THƯỜNG, WEB LẺ CUSTOM và mọi tab POD (đơn 1–2 sp, hạn '+DH_HAN_NGAM+' ngày tính từ ngày đặt trong mã đơn; làn riêng cố định '+dhLanPT()+' công suất; đơn đặt trước làm trước). <b>Bậc 2</b>: dòng hàng đã qua deadline giao khách hoặc có tên trong tab TRỄ HẠN (mã trong tab trễ đã cũ nên đối chiếu theo tên hàng), và đơn Giám đốc / Phó GĐ sản xuất / chị Kim Loan bấm ★ trên web. <b>Bậc 3</b>: DEALER và hàng ưu tiên NGANG NHAU (hàng ưu tiên = mã trong tab ĐƠN ƯU TIÊN – bản chép từ Kho, khớp theo mã đơn + tên, không tính 2 lần – hoặc dòng ghi chữ “ưu tiên”). <b>Bậc 4</b>: A Đông, Kho, OEM và tab mới – ngang nhau. Bậc 2–4: deadline sớm trước, bằng hạn thì đơn gần xong trước; đơn không có deadline xuống cuối bậc.')+'</div>';
+    '</tbody></table></div>'+dhCachDoc('<b>Bậc 1</b>: toàn bộ đơn ở tab WEB LẺ ĐƠN THƯỜNG, WEB LẺ CUSTOM và mọi tab POD (đơn 1–2 sp, hạn '+DH_HAN_NGAM+' ngày tính từ ngày đặt trong mã đơn; làn riêng cố định '+dhLanPT()+' công suất; đơn đặt trước làm trước). <b>Bậc 2</b>: dòng hàng đã qua deadline giao khách hoặc có tên trong tab TRỄ HẠN (mã trong tab trễ đã cũ nên đối chiếu theo tên hàng), và đơn Giám đốc / Phó GĐ sản xuất / chị Kim Loan bấm ★ trên web. <b>Bậc 3</b>: DEALER và hàng ưu tiên NGANG NHAU (hàng ưu tiên = CHỈ mã trong tab ĐƠN ƯU TIÊN – bản chép từ Kho, khớp theo mã đơn + tên, không tính 2 lần). <b>Bậc 4</b>: A Đông, Kho, OEM và tab mới – ngang nhau. Bậc 2–4: deadline sớm trước, bằng hạn thì đơn gần xong trước; đơn không có deadline xuống cuối bậc.')+'</div>';
   /* bậc 1 đang quá hạn */
   var b1Tre=K.don.filter(function(g){ return bacGs(g)===1 && g.dl && g.dl<hn; });
   h+='<div class="card"><div style="font-weight:600;margin-bottom:4px">Bậc 1 đang quá hạn</div>';

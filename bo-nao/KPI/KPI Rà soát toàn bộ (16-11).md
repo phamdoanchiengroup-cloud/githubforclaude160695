@@ -36,6 +36,8 @@ Liên quan: [[KPI Gậy 1 khúc, ưu tiên và nhập nhanh (15-11)]] · [[KPI �
 - Gộp bậc 4 + 5 (`DH_SO_BAC=4`). Bỏ `dhHCChip` trong bảng đơn + `dhVeHanChuan` ở mục Đơn trễ hẹn (giữ ở Công đoạn).
 - Đơn thật 16/11: Seybert → **17/11**; bậc 1 (351 sp lẻ) hết ~30/11 – 300 đơn lẻ quá hạn 5 ngày (làn 30 sp/ngày).
 
+- `dhLaUu`: chỉ mã trong tab ĐƠN ƯU TIÊN (bỏ chữ "ưu tiên"). Đơn thật: bậc 3 = Dealer 1.514 + Kho ưu tiên 1.179 sp; làn lẻ giữ 10%.
+
 ## Chưa sửa (ghi lại)
 - `luuBangDon` / `luuCotPhuDon` vẫn kiểm theo tên hàng (Sheet không có cột mã dòng cho mọi tab).
 - A1/A2/A5 (trễ 3 cách, ngày tồn, công suất 4 nguồn), gộp `dhVeTreBP` + `dhVeHanChuan`, "Đến hạn 10 ngày" web theo đơn vs Sheet theo dòng; `tkNgayLam_` thiếu ngày lễ tự tính.
