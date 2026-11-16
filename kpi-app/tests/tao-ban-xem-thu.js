@@ -82,7 +82,7 @@ const GOI_Y = [[tk.filter(r => String(r[cotTK('TenDangNhap')]).toLowerCase() ===
 const code = fs.readFileSync(path.join(__dirname, '..', 'Code.gs'), 'utf8');
 let html = fs.readFileSync(path.join(__dirname, '..', 'Index.html'), 'utf8');
 // phần giao diện tải sau (SoDo.html, HoatAnh.html – mục 19): nhúng vào máy chủ giả để layManhGiaoDien trả được
-const MANH = {}; ['SoDo', 'HoatAnh', 'AmThanh', 'QuyTrinh', 'CauHinhGay'].forEach(f => { const p = path.join(__dirname, '..', f + '.html'); if (fs.existsSync(p)) MANH[f] = fs.readFileSync(p, 'utf8'); });
+const MANH = {}; ['SoDo', 'HoatAnh', 'AmThanh', 'QuyTrinh', 'CauHinhGay', 'DonBan'].forEach(f => { const p = path.join(__dirname, '..', f + '.html'); if (fs.existsSync(p)) MANH[f] = fs.readFileSync(p, 'utf8'); });
 // GIAO_DIEN=toi|sang: bộ màu mở đầu của bản xem thử (mỗi bản nhớ lựa chọn ☀/☾ riêng)
 const GD = process.env.GIAO_DIEN;
 if (GD) {
@@ -159,6 +159,9 @@ window.__MANH=${anToan(JSON.stringify(MANH))};
     setNumberFormat:function(f){if(this.nr>500){for(var j=0;j<this.nc;j++)this.sh.fmt[this.c+j]=f}
       else for(var i=0;i<this.nr;i++)for(var k=0;k<this.nc;k++)this.sh.fmt[(this.r+i)+','+(this.c+k)]=f;return this},
     setFontWeight:function(){return this},setBackground:function(){return this},setFontColor:function(){return this},
+    /* 16/11 khuya: hủy / bớt mã (màu nền) + duyệt đơn Bán hàng (chép công thức dòng mẫu) */
+    getBackgrounds:function(){var o=[];for(var i=0;i<this.nr;i++){var r=[];for(var j=0;j<this.nc;j++)r.push('#ffffff');o.push(r)}return o},setBackgrounds:function(){return this},setNote:function(){return this},
+    getFormulas:function(){return this.getValues().map(function(r){return r.map(function(v){return (typeof v==='string'&&/^=/.test(v))?v:''})})},getFormulasR1C1:function(){return this.getFormulas()},setFormulasR1C1:function(a){return this.setValues(a)},
     setHorizontalAlignment:function(){return this},setWrap:function(){return this}
   };
   Object.keys(duLieu).forEach(function(t){
@@ -187,7 +190,8 @@ window.__MANH=${anToan(JSON.stringify(MANH))};
     CacheService:{getScriptCache:function(){return {get:function(k){return k in cache?cache[k]:null},put:function(k,v){cache[k]=v},remove:function(k){delete cache[k]},
       getAll:function(ks){var o={};ks.forEach(function(k){if(k in cache)o[k]=cache[k]});return o},putAll:function(o){Object.assign(cache,o)}}}},
     LockService:{getScriptLock:function(){return {tryLock:function(){if(khoa)return false;khoa=true;return true},waitLock:function(){khoa=true},releaseLock:function(){khoa=false},hasLock:function(){return khoa}}}},
-    SpreadsheetApp:{getActiveSpreadsheet:function(){return ss},openById:function(){return ss}},
+    SpreadsheetApp:{getActiveSpreadsheet:function(){return ss},openById:function(){return ss},   /* 16/11 khuya: Sheet "CSDL Đơn hàng (web)" tự tạo – bản xem thử dùng chung bảng tính trong bộ nhớ */
+      create:function(ten){ var dau=ss.insertSheet('__CSDL_DH_1'); dau.setName=function(n){ delete sheets['__CSDL_DH_1']; this.name=this.ten=n; sheets[n]=this; return this; }; return {getId:function(){return 'xem-thu'},getName:function(){return ten},getSheets:function(){return [dau]},insertSheet:function(n){return ss.insertSheet(n)},getSheetByName:function(n){return ss.getSheetByName(n)}}; }},
     ScriptApp:{getProjectTriggers:function(){return []},deleteTrigger:function(){},newTrigger:function(){var b={timeBased:function(){return b},atHour:function(){return b},
       everyDays:function(){return b},onMonthDay:function(){return b},inTimezone:function(){return b},create:function(){return b}};return b}},
     HtmlService:{createHtmlOutputFromFile:function(f){var M=window.__MANH||{};if(!(f in M))throw new Error('Không có file '+f);return {getContent:function(){return M[f]}}},createHtmlOutput:function(){return {getAs:function(){throw new Error('Bản xem thử không tạo được PDF (chỉ Apps Script làm được) – bấm "Xem & in" để xem báo cáo.')}}}}, DriveApp:{}, MailApp:{sendEmail:function(){}}

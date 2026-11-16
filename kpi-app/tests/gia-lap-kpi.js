@@ -100,7 +100,8 @@ function tao(fileCode, duLieu, gioHienTai) {
     getBackgrounds() { const b = this.__bg(), o = []; for (let i = 0; i < this.nr; i++) { const r = []; for (let j = 0; j < this.nc; j++) r.push(b[(this.r + i) + ',' + (this.c + j)] || '#ffffff'); o.push(r); } return o; },
     setBackground(c) { const b = this.__bg(); for (let i = 0; i < this.nr; i++) for (let j = 0; j < this.nc; j++) { const k = (this.r + i) + ',' + (this.c + j); if (c == null) delete b[k]; else b[k] = String(c).toLowerCase(); } return this; },
     setBackgrounds(a) { const b = this.__bg(); a.forEach((r, i) => r.forEach((c, j) => { b[(this.r + i) + ',' + (this.c + j)] = String(c).toLowerCase(); })); return this; },
-    setNote() { return this; }
+    setNote() { return this; },
+    getFormulasR1C1() { return this.getFormulas(); }, setFormulasR1C1(a) { return this.setValues(a); }, setFormulas(a) { return this.setValues(a); }   // 16/11 khuya: chép công thức dòng mẫu (đơn Bán hàng)
   };
 
   Object.keys(duLieu).forEach(ten => {
@@ -196,7 +197,7 @@ function tao(fileCode, duLieu, gioHienTai) {
 
   // Mỗi "lượt gọi" của Apps Script bắt đầu với biến toàn cục mới: xóa bộ nhớ đệm và nhả khóa.
   ctx.__goi = function (ten, ...a) {   // một lượt gọi máy chủ
-    vm.runInContext('if(typeof __T0!=="undefined")__T0=Date.now();if(typeof __NKD_TT!=="undefined")__NKD_TT={trung:0,truot:0};__SS_CACHE=null;__DOC_CACHE={};if(typeof __HEAD_CACHE!=="undefined")__HEAD_CACHE={};if(typeof __KHOA!=="undefined")__KHOA=null;if(typeof __NGAY_LE!=="undefined")__NGAY_LE=null;if(typeof __NGAY_VAO!=="undefined")__NGAY_VAO=null;if(typeof __CHO_GHI!=="undefined")__CHO_GHI={};if(typeof __PB!=="undefined")__PB=null;if(typeof __DA_TANG_PB!=="undefined")__DA_TANG_PB=false;if(typeof __DA_GHI!=="undefined")__DA_GHI={};if(typeof __PB_KPI!=="undefined")__PB_KPI=null;if(typeof __KPI_KHONG_DOI!=="undefined")__KPI_KHONG_DOI=false;if(typeof __DM_TU!=="undefined")__DM_TU=null;', ctx);
+    vm.runInContext('if(typeof __T0!=="undefined")__T0=Date.now();if(typeof __NKD_TT!=="undefined")__NKD_TT={trung:0,truot:0};__SS_CACHE=null;__DOC_CACHE={};if(typeof __HEAD_CACHE!=="undefined")__HEAD_CACHE={};if(typeof __KHOA!=="undefined")__KHOA=null;if(typeof __NGAY_LE!=="undefined")__NGAY_LE=null;if(typeof __NGAY_VAO!=="undefined")__NGAY_VAO=null;if(typeof __CHO_GHI!=="undefined")__CHO_GHI={};if(typeof __PB!=="undefined")__PB=null;if(typeof __DA_TANG_PB!=="undefined")__DA_TANG_PB=false;if(typeof __DA_GHI!=="undefined")__DA_GHI={};if(typeof __PB_KPI!=="undefined")__PB_KPI=null;if(typeof __KPI_KHONG_DOI!=="undefined")__KPI_KHONG_DOI=false;if(typeof __DM_TU!=="undefined")__DM_TU=null;if(typeof __CHO_BH!=="undefined")__CHO_BH=false;', ctx);
     khoa = false;
     try { const r = ctx[ten](...a); return r === undefined ? null : moGoi(JSON.parse(JSON.stringify(r))); }
     finally { khoa = false; }

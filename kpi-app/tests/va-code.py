@@ -1374,5 +1374,6 @@ exec(io.open(os.path.join(os.path.dirname(__file__), 'cau-hinh-gay', 'va-cau-hin
 exec(io.open(os.path.join(os.path.dirname(__file__), 'bo-hom-nay', 'va-bo-hom-nay.py'), encoding='utf-8').read())   # thống kê / KPI không tính hôm nay (09/11)
 exec(io.open(os.path.join(os.path.dirname(__file__), 'don-giao-nhan', 'va-don-giao-nhan-code.py'), encoding='utf-8').read())   # Đơn hàng cho ban điều hành (14/11)
 exec(io.open(os.path.join(os.path.dirname(__file__), 'nghi-viec', 'va-nghi-viec.py'), encoding='utf-8').read())   # cho nghỉ việc hàng loạt (16/11 tối)
+exec(io.open(os.path.join(os.path.dirname(__file__), 'don-ban', 'va-don-ban.py'), encoding='utf-8').read())   # Bán hàng nhập đơn → duyệt → chép vào Sheet đơn (16/11 khuya)
 io.open(RA, 'w', encoding='utf-8').write(s)
 print('OK ->', os.path.abspath(RA))

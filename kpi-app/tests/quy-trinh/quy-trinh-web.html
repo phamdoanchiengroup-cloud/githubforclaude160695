@@ -1453,7 +1453,7 @@ var DHV='bang', DHL={q:'',kenh:'',st:'',ngay:''}, DHSx={k:'',tang:1}, DHTD=null,
 var DH_ST={treHan:'Trễ hạn',dangSX:'Đang sản xuất',sanSang:'Sẵn sàng giao',daGiao:'Đã giao'}, DH_ST_THU=['treHan','dangSX','sanSang','daGiao'];
 var DH_CS_DON=60, DH_DEM=2, DH_TRE_MAX=30, DH_SAP=3;   /* như web app đơn hàng: 60 sp/ngày cho 1 đơn, đệm 2 ngày, ≤ 3 ngày = sắp tới hạn; trễ quá 30 ngày: thẻ riêng bên dưới (02/11) */
 function dhVeLai(){ if(typeof tabHienTai!=='undefined'&&tabHienTai==='dash'){ if(document.getElementById('tqDH')) dhTQVe(); return; }   /* 14/11 khuya: bảng gọn trên Tổng quan TP/PP */
-  if(typeof tabHienTai!=='undefined'&&tabHienTai==='dh') dhTrangVe(); else if(typeof tabHienTai!=='undefined'&&tabHienTai==='tk') tkVe(); else qtVe(); }   /* 07/11: tab chính Thống kê dùng chung dữ liệu Đơn hàng */
+  if(typeof tabHienTai!=='undefined'&&tabHienTai==='dh') dhTrangVe(); else if(typeof tabHienTai!=='undefined'&&tabHienTai==='tk') tkVe(); else if(typeof tabHienTai==='undefined'||tabHienTai==='qt') qtVe(); }   /* 16/11 khuya: dữ liệu đơn tải xong ở nền không còn vẽ đè trang Quy trình lên tab khác (vd Đơn bán hàng) */   /* 07/11: tab chính Thống kê dùng chung dữ liệu Đơn hàng */
 function dhHomNay(){ var d=new Date(Date.now()+7*36e5); return d.getUTCFullYear()+'-'+('0'+(d.getUTCMonth()+1)).slice(-2)+'-'+('0'+d.getUTCDate()).slice(-2); }   /* 16/11 rà soát: giờ Việt Nam (UTC+7) dù máy người xem đặt múi giờ khác */
 function dhCachNgay(a,b){ return Math.round((new Date(b+'T00:00:00')-new Date(a+'T00:00:00'))/864e5); }
 function dhSt(o,hn){ if(o.thieu<=0&&o.daTra>0&&o.daTra>=o.sl)return 'daGiao'; if(o.thieu<=0)return 'sanSang'; if(o.dl&&o.dl<hn)return 'treHan'; return 'dangSX'; }

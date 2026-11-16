@@ -1947,6 +1947,7 @@ var ICON={
   dh:'<path d="M5 4.5h14v15H5z"/><path d="M8.5 9h7M8.5 12.5h7M8.5 16h4"/>',
   qt:'<rect x="3.5" y="3.5" width="6" height="4.5" rx="1"/><rect x="14.5" y="3.5" width="6" height="4.5" rx="1"/><rect x="9" y="16" width="6" height="4.5" rx="1"/><path d="M6.5 8v3.5h11V8M12 11.5V16"/>',
   cgay:'<path d="M3 15.5L15.5 3l2 2L5 17.5z"/><circle cx="18" cy="18" r="2.6"/><path d="M6.5 13.5l2 2M10 10l2 2"/>',
+  bh:'<path d="M4 5h16v14H4z"/><path d="M8 9h8M8 13h5"/><path d="M15.5 15.5l2 2 3-3"/>',
   kyn:'<path d="M12 3.5l2.5 5 5.5.8-4 3.9.9 5.5-4.9-2.6-4.9 2.6.9-5.5-4-3.9 5.5-.8z"/>',
   homnay:'<path d="M4 12.5 12 5l8 7.5"/><path d="M6.5 10.5V19h11v-8.5"/><path d="M10 19v-5h4v5"/>',
   dash:'<rect x="4" y="4" width="7" height="7" rx="1.5"/><rect x="13" y="4" width="7" height="4" rx="1.5"/><rect x="13" y="10" width="7" height="10" rx="1.5"/><rect x="4" y="13" width="7" height="7" rx="1.5"/>',
@@ -1978,7 +1979,7 @@ function svgIcon(k){return '<svg viewBox="0 0 24 24" aria-hidden="true">'+(ICON[
 /* Nhóm điều hướng: [tiêu đề, [các khóa tab]] — tab nào vai trò không có thì tự bỏ */
 var NHOM_NAV=[
   ['Hôm nay',['homnay','dash','sodo','com','cnnhap','kpica']],
-  ['Sản xuất',['dh','duyetsl','nk','qt','cgay','tk','kcs','dd','nenep','cccn']],   /* 14/11 khuya: Đơn hàng lên đầu, nút nổi bật */
+  ['Sản xuất',['dh','bh','duyetsl','nk','qt','cgay','tk','kcs','dd','nenep','cccn']],   /* 14/11 khuya: Đơn hàng lên đầu, nút nổi bật */
   ['KPI',['kpi','kpicn','kpiql']],
   ['Định mức',['dx','ptdm','cd']],
   ['Danh mục',['ns','kyn','mm','ts']],
@@ -1996,6 +1997,7 @@ var BOTBAR={
   NV:['com'],
   TBP:['com'],
   NHOM:['com'],
+  BH:['bh'],
   HR:['dash','ns','dd','com']
 };
 function dsTabHienCo(){
@@ -2116,6 +2118,8 @@ function viecHomNay(){
   if(ME.laOwner&&window.__qtDX&&__qtDX.ok&&__qtDX.n) v.push({muc:'vang',so:__qtDX.n,nho:'đề xuất',t:'Trưởng phòng đề xuất sửa quy trình',m:__qtDX.ds.slice(0,4).map(function(x){return '<b>'+esc(x.MaXuong)+'</b> ('+esc(x.TenNguoi)+', '+esc(x.ThoiDiem)+')'}).join(' · ')+' – xem so sánh rồi duyệt hoặc từ chối.',fn:"window.__qtMo='duyet';go('qt')",nut:'Xem & duyệt'});
   // 42) Cấu hình gậy chờ Giám đốc sản xuất duyệt (08/11)
   if(ME.cg==='duyet'&&window.__cgCho&&__cgCho.ok&&__cgCho.n) v.push({muc:'vang',so:__cgCho.n,nho:'bản vẽ',t:'Cấu hình gậy chờ bạn duyệt',m:__cgCho.ds.slice(0,4).map(function(x){return '<b>'+esc(x.ma)+'</b> v'+esc(x.pb)+' ('+esc(x.nguoi)+', '+esc(x.luc)+')'}).join(' · '),fn:"go('cgay')",nut:'Xem & duyệt'});
+  // 50) Đơn Bán hàng chờ duyệt (16/11 khuya)
+  if(ME.dbDuyet&&window.__dbCho&&__dbCho.ok&&__dbCho.n) v.push({muc:'vang',so:__dbCho.n,nho:'đơn',t:'Đơn mới của Bán hàng chờ bạn duyệt',m:__dbCho.ds.slice(0,4).map(function(x){return '<b>'+esc(x.ma)+'</b> '+esc(x.kenh)+' ('+esc(x.ai)+', '+x.n+' mã)'}).join(' · '),fn:"go('bh')",nut:'Xem & duyệt'});
   // 5) Yêu cầu sửa hồ sơ
   var yc=D.yeuCauHoSo||[];
   if(yc.length) v.push({muc:'vang',so:yc.length,nho:'yêu cầu',t:'Công nhân xin sửa thông tin liên hệ',m:'Duyệt để cập nhật số điện thoại, CCCD, địa chỉ vào hồ sơ.',k:'hd',nut:'Xem & duyệt'});
@@ -2139,6 +2143,7 @@ function viecHomNay(){
   return v;
 }
 function vHomNay(){
+  if(ME&&ME.dbDuyet&&window.__dbChoTai!==ME.tk){ window.__dbChoTai=ME.tk; call('demDonBanCho',[],function(r){ window.__dbCho=r; if(tabHienTai==='homnay') vHomNay(); }); }
   if(ME&&ME.cg==='duyet'&&window.__cgChoTai!==ME.tk){ window.__cgChoTai=ME.tk; call('demCauHinhGayCho',[],function(r){ window.__cgCho=r; if(tabHienTai==='homnay') vHomNay(); }); }
   if(ME&&ME.laOwner&&!window.__qtDXTai){ window.__qtDXTai=1; call('demDeXuatQuyTrinh',[],function(r){ window.__qtDX=r; if(tabHienTai==='homnay') vHomNay(); }); }
   if(ME&&ME.laOwner&&!window.__spMoiTai){ window.__spMoiTai=1; call('demSanPhamMoi',[],function(r){ window.__spMoi=r; if(tabHienTai==='homnay') vHomNay(); }); }
@@ -2542,7 +2547,7 @@ function vaoHeThong(){
     try{ dlLuu_(); }catch(e){}
     $('gate').style.display='none';
     $('app').style.display='block';
-    var vt={OWNER:'CHỦ SỞ HỮU',ADMIN:'BAN ĐIỀU HÀNH',TP:'TRƯỞNG PHÒNG',PP:'PHÓ PHÒNG',HR:'NHÂN SỰ',QC:'KIỂM SOÁT CL',CN:'CÔNG NHÂN',BEP:'BẾP ĂN',TL:'TRỢ LÝ BĐH',NV:'NHÂN VIÊN BP',TBP:'TRƯỞNG BP',NHOM:'NHÓM BÁO CƠM'}[ME.vaiTroGoc||ME.vaiTro];
+    var vt={OWNER:'CHỦ SỞ HỮU',ADMIN:'BAN ĐIỀU HÀNH',TP:'TRƯỞNG PHÒNG',PP:'PHÓ PHÒNG',HR:'NHÂN SỰ',QC:'KIỂM SOÁT CL',CN:'CÔNG NHÂN',BEP:'BẾP ĂN',TL:'TRỢ LÝ BĐH',NV:'NHÂN VIÊN BP',TBP:'TRƯỞNG BP',NHOM:'NHÓM BÁO CƠM',BH:'BÁN HÀNG'}[ME.vaiTroGoc||ME.vaiTro];
     $('hbadge').textContent=vt;
     $('hten').textContent=ME.ten;
     $('hmail').textContent='@'+ME.tk;
@@ -2652,7 +2657,7 @@ function call(fn,args,cb){
 /* ===== ĐIỀU HƯỚNG ===== */
 var TABS={
   ADMIN:[['hd','📖 Hướng dẫn'],['homnay','Việc hôm nay'],['dash','Tổng quan'],['sodo','Sơ đồ nhà máy'],['com','Cơm trưa'],['nk','Nhật ký'],['dd','Điểm danh'],['nenep','Chấm nề nếp'],['kpi','Bảng KPI'],['kpiql','KPI Quản lý'],['dx','Duyệt định mức'],['ptdm','Phân tích định mức',['tk','Thống kê']],
-         ['cd','Công đoạn'],['ns','Nhân sự'],['kyn','Kỹ năng'],['qt','Quy trình sản xuất'],['dh','Đơn hàng'],['tk','Thống kê'],['cgay','Cấu hình gậy'],['mm','Máy móc'],['ts','Trọng số'],['pq','Tài khoản'],['log','Nhật ký thao tác']],
+         ['cd','Công đoạn'],['ns','Nhân sự'],['kyn','Kỹ năng'],['qt','Quy trình sản xuất'],['dh','Đơn hàng'],['bh','Đơn bán hàng'],['tk','Thống kê'],['cgay','Cấu hình gậy'],['mm','Máy móc'],['ts','Trọng số'],['pq','Tài khoản'],['log','Nhật ký thao tác']],
   TP:[['hd','📖 Hướng dẫn'],['homnay','Việc hôm nay'],['qt','Quy trình sản xuất'],['dh','Đơn hàng'],['dash','Tổng quan'],['sodo','Sơ đồ nhà máy'],['com','Cơm trưa'],['duyetsl','Duyệt sản lượng'],['nenep','Chấm nề nếp'],['dd','Điểm danh'],['nk','Nhập nhật ký'],['kpi','KPI phòng'],['cd','Công đoạn & định mức'],
       ['ns','Nhân sự'],['kyn','Kỹ năng'],['mm','Máy móc']],
   CN:[['hd','📖 Hướng dẫn'],['cnnhap','Nhập sản lượng của tôi'],['com','Cơm trưa'],['kpica','KPI cá nhân'],['cccn','Bảng chấm công của xưởng'],['kpicn','Bảng KPI xưởng'],['kyn','Kỹ năng của tôi']],
@@ -2662,6 +2667,7 @@ var TABS={
   NV:[['hd','📖 Hướng dẫn'],['com','Cơm trưa']],
   TBP:[['hd','📖 Hướng dẫn'],['com','Cơm trưa']],
   NHOM:[['com','Cơm trưa']],
+  BH:[['bh','Đơn hàng của tôi']],   /* 16/11 khuya: Bán hàng chỉ thấy trang nhập đơn */
   TL:[['hd','📖 Hướng dẫn'],['dash','Tổng quan'],['kpi','Bảng KPI'],['sodo','Sơ đồ nhà máy'],['com','Cơm trưa'],['dd','Điểm danh'],['cd','Công đoạn'],['ns','Nhân sự'],['kyn','Kỹ năng'],['mm','Máy móc']]
 };
 function buildNav(){
@@ -2866,7 +2872,7 @@ function go(k,btn){
   moNav(false);
   window.scrollTo(0,0);
   tabHienTai=k;
-  ({homnay:vHomNay,hd:vHuongDan,kpiql:vKPIQuanLy,dash:vDash,nk:vNK,kpi:vKPI,kpicn:vKPICN,kpica:vKPICaNhanToi,dx:vDX,ptdm:vPTDM,cd:vCD,ns:vNS,kyn:vKN,mm:vMM,ts:vTS,pq:vPQ,log:vLog,kcs:vKCS,duyetsl:vDuyetSL,cnnhap:vCNNhap,nenep:vNeNep,dd:vDiemDanh,cccn:vCCCaNhan,sodo:vSoDo,com:vCom,qt:vQT,dh:vDH,tk:vTK,cgay:vCGay}[k])();
+  ({homnay:vHomNay,hd:vHuongDan,kpiql:vKPIQuanLy,dash:vDash,nk:vNK,kpi:vKPI,kpicn:vKPICN,kpica:vKPICaNhanToi,dx:vDX,ptdm:vPTDM,cd:vCD,ns:vNS,kyn:vKN,mm:vMM,ts:vTS,pq:vPQ,log:vLog,kcs:vKCS,duyetsl:vDuyetSL,cnnhap:vCNNhap,nenep:vNeNep,dd:vDiemDanh,cccn:vCCCaNhan,sodo:vSoDo,com:vCom,qt:vQT,dh:vDH,tk:vTK,cgay:vCGay,bh:vBH}[k])();
   capNhatDucBar();
   capNhatDem();
   try{sauKhiVeTab(arguments[2])}catch(e){}
@@ -3093,7 +3099,7 @@ function vHuongDan(){
   var vt=ME.vaiTroGoc||ME.vaiTro;
   var laTP=(vt==='TP'||vt==='PP'), laCN=(vt==='CN'),
       laAdmin=(ME.vaiTro==='ADMIN'), laOwner=ME.laOwner;
-  var tenVT={OWNER:'Chủ sở hữu',ADMIN:'Ban điều hành',TP:'Trưởng phòng',PP:'Phó phòng',HR:'Nhân sự',QC:'Kiểm soát chất lượng',CN:'Công nhân',BEP:'Bếp ăn',TL:'Trợ lý ban điều hành',NV:'Nhân viên bộ phận',TBP:'Trưởng bộ phận',NHOM:'Nhóm báo cơm'}[vt]||vt;
+  var tenVT={OWNER:'Chủ sở hữu',ADMIN:'Ban điều hành',TP:'Trưởng phòng',PP:'Phó phòng',HR:'Nhân sự',QC:'Kiểm soát chất lượng',CN:'Công nhân',BEP:'Bếp ăn',TL:'Trợ lý ban điều hành',NV:'Nhân viên bộ phận',TBP:'Trưởng bộ phận',NHOM:'Nhóm báo cơm',BH:'Bán hàng'}[vt]||vt;
 
   // Trọng số ĐỘNG — đọc từ dữ liệu thật để luôn khớp tab "Trọng số"
   var t=D.trongso||{};
@@ -7020,7 +7026,7 @@ function cnDienTen(){
   if(ho&&!ho.value.trim()){var p=nv(nvsel.value);if(p)ho.value=p.HoTen}
 }
 function renderPQ(list){
-  var vt={ADMIN:'Ban điều hành',TP:'Trưởng phòng',PP:'Phó phòng',HR:'Nhân sự',QC:'Kiểm soát CL',CN:'Công nhân',BEP:'Bếp ăn',TL:'Trợ lý BĐH',NV:'Nhân viên BP',TBP:'Trưởng BP',NHOM:'Nhóm báo cơm'};
+  var vt={ADMIN:'Ban điều hành',TP:'Trưởng phòng',PP:'Phó phòng',HR:'Nhân sự',QC:'Kiểm soát CL',CN:'Công nhân',BEP:'Bếp ăn',TL:'Trợ lý BĐH',NV:'Nhân viên BP',TBP:'Trưởng BP',NHOM:'Nhóm báo cơm',BH:'Bán hàng'};
   list=list||[];
 
   // Gom theo xưởng; tài khoản không có xưởng (ADMIN/HR/QC) vào nhóm "Không thuộc xưởng"
@@ -8811,7 +8817,7 @@ function chiXemDon(){
 </script>
 <script>
 /* ===== 19. PHẦN GIAO DIỆN TẢI SAU (12/10) – SoDo.html, HoatAnh.html: chỉ tải khi cần, nhớ lại theo phiên bản ===== */
-var MANH_VER={"SoDo": "d9bc7ce73f034629", "HoatAnh": "b23cbe69d6aae56e", "AmThanh": "c690fabe4419160c", "QuyTrinh": "ba28feb8d0", "CauHinhGay": "8c0f42823f07518c"};
+var MANH_VER={"SoDo": "d9bc7ce73f034629", "HoatAnh": "b23cbe69d6aae56e", "AmThanh": "c690fabe4419160c", "QuyTrinh": "ecc091cf4d", "CauHinhGay": "8c0f42823f07518c", "DonBan": "da00cfbfae151f1a"};
 var __manh={da:{},cho:{}};
 function ganManh_(nd){
   var js=[], ngoai=String(nd).replace(/<script>([\s\S]*?)<\/script>/g,function(_,x){js.push(x);return ''});
@@ -9732,7 +9738,7 @@ function hsGhiChuDong(r){
 }
 </script>
 <script>
-var KPI_BAN = '16/11/2026 20:36';
+var KPI_BAN = '17/11/2026 03:07';
 (function(){
   var cu = window.veNav;
   window.veNav = function(){
@@ -11068,7 +11074,7 @@ function nsnCapNhat(){ call('capNhatNgoaiSXTuFile',[],function(r){ if(!r||!r.ok)
 </script>
 <script>
 /* ===== 38. TĂNG TỐC ĐỢT 3 (08/11) – bộ đo tốc độ + mở nhanh bằng số lần trước (mã hóa) ===== */
-var TD_BUF=[], TD_T=null, DL_VER='88a983d701', DL_HAN=12*3600e3, DL_BO=['SoCCCD','DienThoai','DiaChi','SdtKhanCap','LuongCoBan','NamSinh','SoTaiKhoan','Email'];
+var TD_BUF=[], TD_T=null, DL_VER='e339257a1c', DL_HAN=12*3600e3, DL_BO=['SoCCCD','DienThoai','DiaChi','SdtKhanCap','LuongCoBan','NamSinh','SoTaiKhoan','Email'];
 function tdGhi_(f,ms,sv){ if(!(ms>=0)||!f) return; TD_BUF.push({f:String(f),ms:Math.round(ms),sv:(typeof sv==='number'?Math.round(sv):null)});
   if(TD_BUF.length>=15) tdGui_(); else if(!TD_T) TD_T=setTimeout(tdGui_,180000); }
 function tdGui_(){ if(TD_T){clearTimeout(TD_T);TD_T=null;} if(!TD_BUF.length||typeof TOKEN==='undefined'||!TOKEN) return;
@@ -11243,6 +11249,7 @@ function tqNap() {
   if (!window.__qtDXTai) { window.__qtDXTai = 1; call('demDeXuatQuyTrinh', [], function (r) { window.__qtDX = r; tqVeViec(); }); }
   if (!window.__spMoiTai) { window.__spMoiTai = 1; call('demSanPhamMoi', [], function (r) { window.__spMoi = r; tqVeViec(); }); }
   if (ME && ME.cg === 'duyet' && window.__cgChoTai !== ME.tk) { window.__cgChoTai = ME.tk; call('demCauHinhGayCho', [], function (r) { window.__cgCho = r; tqVeViec(); }); }
+  if (ME && ME.dbDuyet && window.__dbChoTai !== ME.tk) { window.__dbChoTai = ME.tk; call('demDonBanCho', [], function (r) { window.__dbCho = r; tqVeViec(); }); }
   var moi = function (k, ms) { var c = window[k]; return !c || Date.now() - (c.__t || 0) > ms; };
   if (!laChuNhat(today()) && moi('__tqSiSo', 300000)) call('siSoTatCaXuong', [today()], function (r) { if (r) r.__t = Date.now(); window.__tqSiSo = r; var e = document.getElementById('hlCM'); if (e) { e.innerHTML = holoCoMat(r); try { holoDemSo(e); } catch (x) {} } tqVeKhoi(); });
   if (moi('__tqCom', 600000)) call('xemTongHopCom', [today()], function (r) { r = r || { ok: false }; r.__t = Date.now(); window.__tqCom = r; tqVeKhoi(); });
@@ -11783,6 +11790,20 @@ function nvHLLuu(){ if(!NVHL) return; if(!confirm('Chuyển '+NVHL.r.doi+' ngư�
   },true);
   document.addEventListener('keydown',function(e){ if(e.key==='Escape') dong(); });
 })();
+</script>
+<script>
+/* ===== 50. ĐƠN BÁN HÀNG (16/11 khuya) – Bán hàng nhập đơn, C019 / C056 / C067 duyệt. Máy chủ kiểm lại ở mọi hàm ===== */
+(function(){ var g=window.dsTabHienCo; window.dsTabHienCo=function(){ var a=g.apply(this,arguments); return (window.ME&&(ME.vaiTro==='BH'||ME.dbDuyet))?a:a.filter(function(t){return t[0]!=='bh'}); }; })();
+function vBH(){
+  if(!ME||!(ME.vaiTro==='BH'||ME.dbDuyet)){ $('main').innerHTML='<div class="alert a-wn">Tài khoản không dùng được trang này.</div>'; return; }
+  if(window.__bnDaNap){ bnVe(); return; }
+  $('main').innerHTML='<div class="ptitle">Đơn hàng</div><div class="pdesc">Đang tải…</div>';
+  taiManh('DonBan',function(ok,msg){
+    if(tabHienTai!=='bh')return;
+    if(ok&&window.__bnDaNap){ bnVe(); return; }
+    $('main').innerHTML='<div class="ptitle">Đơn hàng</div><div class="alert a-bd">'+esc(msg||'Không tải được.')+' <button class="btn sm" type="button" onclick="vBH()">Thử lại</button></div>';
+  });
+}
 </script>
 </body>
 </html>

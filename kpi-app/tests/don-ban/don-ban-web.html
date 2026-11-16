@@ -1,0 +1,204 @@
+<!-- DonBan.html – mảnh tải sau (16/11 khuya): trang "Đơn hàng của tôi" cho Bán hàng (vai trò BH) + duyệt đơn cho C019 / C056 / C067.
+     Máy chủ kiểm lại quyền ở mọi hàm (tests/don-ban/don-ban.gs). Nguồn: kpi-app/tests/don-ban/don-ban-web.html -->
+<style>
+.db-w{max-width:980px}
+.db-dau{display:flex;gap:10px;flex-wrap:wrap;align-items:center;justify-content:space-between;margin-bottom:10px}
+.db-nhom{margin:16px 0 8px;font-weight:700;font-size:13px;letter-spacing:.02em;display:flex;gap:8px;align-items:center}
+.db-nhom i{font-style:normal;font-weight:600;font-size:11.5px;color:var(--ink3)}
+.db-the{border:1px solid var(--line);border-radius:12px;padding:12px 14px;margin:8px 0;background:var(--panel);overflow-wrap:anywhere}
+.db-the.tv{border-left:4px solid var(--amber)} .db-the.cd{border-left:4px solid var(--cyan)} .db-the.dd{border-left:4px solid var(--green)} .db-the.tc{opacity:.7;border-left:4px solid var(--red)}
+.db-the h4{margin:0 0 4px;font-size:14.5px;display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.db-tt{display:inline-block;font-size:11px;font-weight:700;padding:1px 8px;border-radius:999px;border:1px solid var(--line)}
+.db-tt.CHO_DUYET{color:var(--cyan);border-color:var(--cyan)} .db-tt.TRA_VE{color:var(--amber);border-color:var(--amber)} .db-tt.DA_DUYET{color:var(--green);border-color:var(--green)} .db-tt.TU_CHOI{color:var(--red);border-color:var(--red)}
+.db-msg{margin:6px 0;font-size:13px;line-height:1.5} .db-msg b{font-weight:700}
+.db-dong{width:100%;border-collapse:collapse;font-size:12.5px;margin-top:6px} .db-dong td,.db-dong th{padding:4px 6px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top} .db-dong th{font-size:10.5px;text-transform:uppercase;color:var(--ink3);font-weight:600} .db-dong td.so{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+.db-moi{display:inline-block;font-size:10.5px;font-weight:700;padding:0 6px;border-radius:6px;color:#1a1a1a;background:var(--amber);margin-left:4px}
+.db-thanh{height:6px;border-radius:4px;background:var(--line);overflow:hidden;margin:6px 0 2px;max-width:320px} .db-thanh i{display:block;height:100%;background:var(--green)}
+.db-f{border:1px solid var(--cyan);border-radius:12px;padding:12px 14px;margin:10px 0 80px;background:var(--panel)}
+.db-f label{display:block;font-size:12px;color:var(--ink2);margin:10px 0 4px;font-weight:600}
+.db-f input,.db-f textarea,.db-f select{width:100%;font-size:16px;min-height:42px;padding:8px 10px;border-radius:8px;border:1px solid var(--line);background:var(--panel2);color:var(--ink);font-family:inherit}
+.db-f textarea{min-height:60px}
+.db-kenh{display:flex;flex-wrap:wrap;gap:6px}
+.db-kenh button{min-height:38px;padding:6px 12px;border-radius:999px;border:1px solid var(--line);background:var(--panel2);color:var(--ink2);font:inherit;font-size:13px;cursor:pointer}
+.db-kenh button.on{border-color:var(--cyan);color:var(--ink);background:rgba(var(--acc-rgb),.14);font-weight:700}
+.db-sp{border:1px solid var(--line);border-radius:10px;padding:8px 10px;margin:8px 0;background:var(--panel2)}
+.db-sp.loi{border-color:var(--red);background:rgba(229,72,77,.07)} .db-sp.vang{border-color:var(--amber)}
+.db-sp-h{display:flex;gap:8px;align-items:center;justify-content:space-between;font-size:12px;color:var(--ink3);margin-bottom:4px}
+.db-sp-r{display:grid;grid-template-columns:minmax(0,1fr) 110px;gap:8px}
+.db-sl{display:flex;align-items:center;gap:4px} .db-sl button{min-width:36px;min-height:42px;border-radius:8px;border:1px solid var(--line);background:var(--panel);color:var(--ink);font-size:18px;cursor:pointer}
+.db-sl input{text-align:center;padding:8px 4px}
+.db-x{border:0;background:none;color:var(--red);font-size:13px;cursor:pointer;min-height:32px}
+.db-loi{color:var(--red);font-size:12px;margin-top:3px} .db-vang{color:var(--amber);font-size:12px;margin-top:3px}
+.db-day{position:sticky;bottom:0;z-index:20;display:flex;gap:10px;align-items:center;justify-content:space-between;flex-wrap:wrap;padding:10px 12px;margin:12px -14px -12px;border-top:1px solid var(--line);background:var(--panel);border-radius:0 0 12px 12px}
+.db-day .btn{min-height:44px;padding:8px 18px}
+.db-duyet{margin-top:10px;border-top:1px dashed var(--line);padding-top:10px}
+.db-duyet .hang{display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end}
+.db-duyet input[type=date]{font-size:15px;min-height:40px;padding:6px 8px;border-radius:8px;border:1px solid var(--line);background:var(--panel2);color:var(--ink)}
+.db-duyet textarea{width:100%;font-size:15px;min-height:54px;padding:8px;border-radius:8px;border:1px solid var(--line);background:var(--panel2);color:var(--ink);font-family:inherit;margin-top:6px}
+.db-goi{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px} .db-goi button{font-size:12px;padding:4px 10px;border-radius:999px;border:1px dashed var(--line);background:none;color:var(--ink2);cursor:pointer}
+.db-canh{font-size:12.5px;padding:6px 10px;border-radius:8px;background:rgba(232,160,40,.12);color:var(--ink);margin:6px 0}
+.db-canh.do{background:rgba(229,72,77,.12)}
+.db-tk{width:100%;border-collapse:collapse;font-size:12.5px} .db-tk td,.db-tk th{padding:5px 6px;border-bottom:1px solid var(--line);text-align:left} .db-tk th{font-size:10.5px;color:var(--ink3);text-transform:uppercase}
+.db-mk{font-family:ui-monospace,Menlo,Consolas,monospace;font-weight:700;letter-spacing:.04em}
+.db-duyet input[type=checkbox],.db-tk input[type=checkbox]{width:18px!important;min-width:18px;height:18px;min-height:0;margin:0;flex:none} .db-duyet label{white-space:nowrap}
+@media (max-width:900px){ .db-day{bottom:64px} }   /* trên điện thoại thanh Gửi nằm trên thanh menu dưới */
+@media (max-width:640px){ .db-sp-r{grid-template-columns:minmax(0,1fr)} .db-day{margin:12px -12px -12px} .db-dong{font-size:12px} }
+</style>
+<script>
+/* ===== Trang Đơn hàng của tôi / Đơn bán hàng (16/11 khuya) ===== */
+var BND=null, BNTai=false, BNF=null, BNMo={}, BNTK=null, BNTKKq=null;
+var BN_TT={CHO_DUYET:'Chờ duyệt',TRA_VE:'Trả về – cần sửa',DA_DUYET:'Đang sản xuất',TU_CHOI:'Không duyệt'};
+function bnSo(n){ return String(Math.round(Number(n)||0)).replace(/\B(?=(\d{3})+(?!\d))/g,'.'); }
+function bnNg(d){ var m=String(d||'').match(/^(\d{4})-(\d\d)-(\d\d)/); return m?m[3]+'/'+m[2]+'/'+m[1]:''; }
+function bnGio(t){ var m=String(t||'').match(/^(\d{4})-(\d\d)-(\d\d) (\d\d:\d\d)/); return m?m[4]+' '+m[3]+'/'+m[2]:String(t||''); }
+function bnLenh(){ return 'b'+Date.now().toString(36)+Math.random().toString(36).slice(2,10); }
+function bnSoDoc(v){ var s=String(v==null?'':v).replace(/\s+/g,''); if(/^\d{1,3}([.,]\d{3})+$/.test(s)) s=s.replace(/[.,]/g,''); var n=Number(s); return isFinite(n)?n:NaN; }
+function bnHom(){ return (BND&&BND.hom)||new Date().toISOString().slice(0,10); }
+function bnCong(d,n){ var t=new Date(d+'T00:00:00Z'); t.setUTCDate(t.getUTCDate()+n); return t.toISOString().slice(0,10); }
+function bnNgayLam(sp){ var cs=(BND&&BND.csNgay)||300; return Math.max(1,Math.ceil((Number(sp)||0)/cs)); }
+function bnTai(){ if(BNTai) return; BNTai=true; call('layDonBan',[],function(r){ BNTai=false; BND=(r&&r.ok)?r:{loi:(r&&r.msg)||'Không tải được.'}; bnVe(); }); }
+function bnVe(){
+  var m=$('main'); if(!m) return;
+  if(!BND){ m.innerHTML='<div class="ptitle">Đơn hàng</div><div class="pdesc">Đang tải…</div>'; bnTai(); return; }
+  if(BND.loi){ m.innerHTML='<div class="ptitle">Đơn hàng</div><div class="alert a-bd">'+esc(BND.loi)+' <button class="btn sm" type="button" onclick="BND=null;bnVe()">Thử lại</button></div>'; return; }
+  var h='<div class="db-w"><div class="db-dau"><div><div class="ptitle" style="margin:0">'+(BND.duyet?'Đơn bán hàng':'Đơn hàng của tôi')+'</div><div class="pdesc">'+(BND.duyet?'Bán hàng gửi đơn mới → bạn chốt deadline rồi duyệt → web tự chép vào tab kênh của Sheet "Trạng thái đơn hàng".':'Gửi đơn mới cho sản xuất và theo dõi đơn của bạn.')+'</div></div>'+
+    '<div style="display:flex;gap:8px;flex-wrap:wrap">'+(BNF?'':'<button class="btn pri" type="button" onclick="bnMoForm()">+ Đơn mới</button>')+'<button class="btn sm" type="button" onclick="BND=null;bnVe()">Làm mới</button></div></div>';
+  if(BNF) h+=bnVeForm();
+  var ds=BND.ds||[], nh=function(tt){ return ds.filter(function(x){return x.tt===tt;}); };
+  if(BND.duyet){
+    var cho=nh('CHO_DUYET');
+    h+='<div class="db-nhom">Chờ duyệt <i>'+cho.length+' đơn</i></div>';
+    if(BND.tongThieu!=null&&BND.tongThieu!=='') h+='<div class="pdesc" style="margin-bottom:6px">Xưởng đang còn <b>'+bnSo(BND.tongThieu)+'</b> sp chưa xong ≈ '+bnNgayLam(BND.tongThieu)+' ngày làm (công suất '+bnSo(BND.csNgay)+' sp/ngày).</div>';
+    h+=cho.length?cho.map(bnVeThe).join(''):'<div class="pdesc">Không có đơn nào chờ duyệt.</div>';
+    [['TRA_VE','Đã trả về – chờ Bán hàng sửa'],['DA_DUYET','Đã duyệt'],['TU_CHOI','Không duyệt']].forEach(function(z){ var a=nh(z[0]); if(a.length) h+='<details'+(z[0]==='DA_DUYET'?' open':'')+'><summary class="db-nhom" style="cursor:pointer">'+z[1]+' <i>'+a.length+'</i></summary>'+a.slice(0,60).map(bnVeThe).join('')+'</details>'; });
+  } else {
+    [['TRA_VE','Cần bạn sửa'],['CHO_DUYET','Chờ duyệt'],['DA_DUYET','Đang sản xuất'],['TU_CHOI','Không duyệt']].forEach(function(z){ var a=nh(z[0]); if(a.length) h+='<div class="db-nhom">'+z[1]+' <i>'+a.length+' đơn</i></div>'+a.map(bnVeThe).join(''); });
+    if(!ds.length&&!BNF) h+='<div class="pdesc" style="margin-top:12px">Bạn chưa có đơn nào. Bấm <b>+ Đơn mới</b> để gửi đơn cho sản xuất.</div>';
+  }
+  if(BND.owner) h+=bnVeTK();
+  m.innerHTML=h+'</div>';
+}
+function bnVeThe(x){
+  var cls={CHO_DUYET:'cd',TRA_VE:'tv',DA_DUYET:'dd',TU_CHOI:'tc'}[x.tt]||'', sp={}; (BND.sp||[]).forEach(function(t){sp[t]=1;});
+  var msg='';
+  if(x.tt==='CHO_DUYET') msg=BND.duyet?'Gửi bởi <b>'+esc(x.ai)+'</b> lúc '+esc(bnGio(x.luc))+(x.pb>1?' (đã sửa lần '+(x.pb-1)+')':'')+'.':'Đã gửi, chờ Giám đốc / Phó GĐ duyệt. Bạn không cần làm gì.';
+  else if(x.tt==='TRA_VE') msg='<b>Cần sửa:</b> '+esc(x.ly)+' <span class="pdesc">('+esc(x.duyetAi)+' · '+esc(bnGio(x.duyetLuc))+')</span>';
+  else if(x.tt==='TU_CHOI') msg='<b>Không duyệt:</b> '+esc(x.ly)+' <span class="pdesc">('+esc(x.duyetAi)+' · '+esc(bnGio(x.duyetLuc))+')</span>'+(BND.duyet?'':' – báo khách hoặc tạo đơn mới.');
+  else if(x.tt==='DA_DUYET'){ var t=x.td||{};
+    msg='Deadline chốt <b>'+esc(bnNg(x.dlChot))+'</b>'+(x.uu?' · ★ ưu tiên':'')+' · duyệt bởi '+esc(x.duyetAi)+' ('+esc(bnGio(x.duyetLuc))+')';
+    if(t.khongThay) msg+='<div class="pdesc">Không còn thấy đơn trong các tab kênh (có thể đã giao xong và chuyển sang tab HT).</div>';
+    else msg+='<div class="db-thanh" aria-hidden="true"><i style="width:'+Math.max(0,Math.min(100,t.pct||0))+'%"></i></div><div class="pdesc">Xong <b>'+(t.pct||0)+'%</b> · còn thiếu '+bnSo(t.thieu)+' / '+bnSo(t.sl)+' sp</div>'+
+      ((t.huy||[]).length?'<div class="db-canh">'+t.huy.map(function(z){ return (z.loai==='BOT'?'Bớt ':'Hủy ')+'<b>'+esc(z.ten)+'</b>'+(z.loai==='BOT'?' ('+bnSo(z.slCu)+' → '+bnSo(z.slMoi)+')':'')+': '+esc(z.ly); }).join('<br>')+'</div>':''); }
+  var dong='<table class="db-dong"><thead><tr><th>Sản phẩm</th><th style="text-align:right">SL</th><th>Ghi chú</th></tr></thead><tbody>'+(x.dong||[]).map(function(d){ return '<tr><td>'+esc(d.ten)+(x.tt==='CHO_DUYET'&&!sp[d.ten]?'<span class="db-moi" title="Tên chưa có trong bảng đơn – kiểm tên / cấu hình">mã mới</span>':'')+'</td><td class="so">'+bnSo(d.sl)+'</td><td>'+esc(d.gc||'')+'</td></tr>'; }).join('')+'</tbody></table>';
+  var h='<div class="db-the '+cls+'"><h4><span>'+esc(x.maDon)+'</span><span class="pdesc" style="font-weight:400">'+esc(x.kenh)+'</span><span class="db-tt '+x.tt+'">'+esc(BN_TT[x.tt]||x.tt)+'</span></h4>'+
+    '<div class="pdesc">'+(x.dong||[]).length+' mã · '+bnSo(x.tongSL)+' sp'+(x.dlMuon?' · deadline mong muốn <b>'+esc(bnNg(x.dlMuon))+'</b>':'')+(BND.duyet&&x.tt!=='CHO_DUYET'?' · '+esc(x.ai):'')+'</div>'+
+    (x.ghiChu?'<div class="db-msg">📝 '+esc(x.ghiChu)+'</div>':'')+'<div class="db-msg">'+msg+'</div>'+
+    ((x.tt==='CHO_DUYET'&&BND.duyet)||BNMo[x.id]?dong:'<details><summary class="pdesc" style="cursor:pointer">Xem '+(x.dong||[]).length+' mã sản phẩm</summary>'+dong+'</details>');
+  if(!BND.duyet||x.ai===BND.ten){
+    if(x.tt==='TRA_VE'||(x.tt==='CHO_DUYET'&&!BND.duyet)) h+='<div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px">'+(x.tt==='TRA_VE'?'<button class="btn pri sm" type="button" data-i="'+esc(x.id)+'" onclick="bnSua(this.dataset.i)">Sửa &amp; gửi lại</button>':'<button class="btn sm" type="button" data-i="'+esc(x.id)+'" onclick="bnSua(this.dataset.i)">Sửa</button>')+'<button class="btn sm" type="button" data-i="'+esc(x.id)+'" onclick="bnXoa(this)">Xóa đơn</button></div>';
+    else if(x.tt==='TU_CHOI') h+='<div style="margin-top:8px"><button class="btn sm" type="button" data-i="'+esc(x.id)+'" onclick="bnXoa(this)">Xóa khỏi danh sách</button></div>';
+  }
+  if(x.tt==='CHO_DUYET'&&BND.duyet) h+=bnVeDuyet(x);
+  return h+'</div>';
+}
+/* người duyệt: deadline chốt + ★ + 3 nút; trả về / từ chối mở ô lý do (có lý do mẫu) */
+function bnVeDuyet(x){
+  var can=bnNgayLam(x.tongSL), som=bnCong(bnHom(),can), canh='';
+  if(x.dlMuon&&x.dlMuon<som) canh='<div class="db-canh do">Đơn '+bnSo(x.tongSL)+' sp cần ít nhất ~'+can+' ngày làm nếu làm riêng – deadline mong muốn '+esc(bnNg(x.dlMuon))+' có thể không kịp.</div>';
+  var mo=BNMo['d_'+x.id]||'';
+  var h='<div class="db-duyet">'+canh+'<div class="hang"><div><label class="pdesc" for="dbDl_'+esc(x.id)+'" style="display:block;margin-bottom:3px">Deadline chốt</label><input type="date" id="dbDl_'+esc(x.id)+'" value="'+esc(x.dlMuon||bnCong(bnHom(),Math.max(7,can)))+'" min="'+esc(bnHom())+'"></div>'+
+    '<label style="display:flex;gap:6px;align-items:center;min-height:40px"><input type="checkbox" id="dbUu_'+esc(x.id)+'"> ★ Ưu tiên cả đơn</label></div>';
+  if(mo){ var goi=mo==='TRA_VE'?['Ghi rõ màu / mẫu','Sai kênh','Thiếu thông số ren / tip','Kiểm lại số lượng']:['Kho đang đủ hàng','Không sản xuất mã này','Trùng đơn đã có'];
+    h+='<textarea id="dbLy_'+esc(x.id)+'" maxlength="200" placeholder="Lý do (bắt buộc) – Bán hàng sẽ thấy dòng này"></textarea><div class="db-goi">'+goi.map(function(g){ return '<button type="button" data-i="'+esc(x.id)+'" onclick="var t=document.getElementById(\'dbLy_\'+this.dataset.i);if(t)t.value=this.textContent">'+esc(g)+'</button>'; }).join('')+'</div>'+
+      '<div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px"><button class="btn pri sm" type="button" data-i="'+esc(x.id)+'" data-h="'+mo+'" onclick="bnDuyet(this)">'+(mo==='TRA_VE'?'Trả về cho Bán hàng':'Từ chối đơn')+'</button><button class="btn sm" type="button" data-i="'+esc(x.id)+'" onclick="delete BNMo[\'d_\'+this.dataset.i];bnVe()">Thôi</button></div>';
+  } else h+='<div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px"><button class="btn pri" type="button" data-i="'+esc(x.id)+'" data-h="DUYET" onclick="bnDuyet(this)">Duyệt &amp; đưa vào sản xuất</button><button class="btn sm" type="button" data-i="'+esc(x.id)+'" onclick="BNMo[\'d_\'+this.dataset.i]=\'TRA_VE\';bnVe()">Trả về</button><button class="btn sm" type="button" style="color:var(--red)" data-i="'+esc(x.id)+'" onclick="BNMo[\'d_\'+this.dataset.i]=\'TU_CHOI\';bnVe()">Từ chối</button></div>';
+  return h+'</div>';
+}
+function bnTim(id){ return ((BND&&BND.ds)||[]).filter(function(x){return x.id===id;})[0]; }
+function bnDuyet(el){ var id=el.dataset.i, hanh=el.dataset.h, x=bnTim(id); if(!x) return;
+  var p={id:id,pb:x.pb,hanh:hanh,lenh:bnLenh()};
+  if(hanh==='DUYET'){ var d=document.getElementById('dbDl_'+id), u=document.getElementById('dbUu_'+id); p.dl=d?d.value:''; p.uu=u&&u.checked?1:0; if(!p.dl){ toast('Chốt deadline trước khi duyệt.'); return; }
+    if(!confirm('Duyệt đơn '+x.maDon+' ('+(x.dong||[]).length+' mã, '+bnSo(x.tongSL)+' sp), deadline '+bnNg(p.dl)+(p.uu?', ★ ưu tiên':'')+'?\nWeb sẽ ghi vào cuối tab '+x.tab+' của Sheet đơn.')) return; }
+  else { var t=document.getElementById('dbLy_'+id); p.lyDo=t?t.value:''; if(String(p.lyDo).trim().length<5){ toast('Ghi lý do (ít nhất 5 ký tự).'); return; } }
+  el.disabled=true; el.textContent='Đang lưu…';
+  call('duyetDonBan',[p],function(r){ if(!r||!r.ok){ toast((r&&r.msg)||'Không lưu được.'); el.disabled=false; el.textContent='Thử lại'; if(r&&r.cu){ BND=null; bnVe(); } return; }
+    delete BNMo['d_'+id]; toast(r.msg,true); BND=null; bnVe(); }); }
+function bnXoa(el){ var x=bnTim(el.dataset.i); if(!x||!confirm('Xóa đơn '+x.maDon+'?')) return; el.disabled=true;
+  call('xoaDonBan',[{id:x.id}],function(r){ if(!r||!r.ok){ el.disabled=false; toast((r&&r.msg)||'Không xóa được.'); return; } toast(r.msg,true); BND=null; bnVe(); }); }
+/* ===== Form đơn mới: kênh (nút) → mã đơn → deadline → sản phẩm (thẻ) → dán Excel (thu gọn) → ghi chú; thanh gửi luôn ở đáy. Nháp tự lưu trên máy ===== */
+function bnKhoaNhap(){ return 'dbNhap_'+((window.ME&&ME.tk)||''); }
+function bnMoForm(x){
+  if(x) BNF={id:x.id,pb:x.pb,tab:x.tab,maDon:x.maDon,dl:x.dlMuon||'',ghiChu:x.ghiChu||'',dong:(x.dong||[]).map(function(d){return {ten:d.ten,sl:String(d.sl),gc:d.gc||''};}),lenh:bnLenh()};
+  else { var nh=null; try{ nh=JSON.parse(localStorage.getItem(bnKhoaNhap())||'null'); }catch(e){}
+    BNF=nh&&!nh.id&&nh.dong?nh:{tab:'',maDon:'',dl:'',ghiChu:'',dong:[{ten:'',sl:'',gc:''}]}; BNF.lenh=bnLenh(); if(nh&&nh.dong) BNF.nhapLuc=nh.luc||''; }
+  BNF.thu=0; bnVe(); setTimeout(function(){ var f=document.querySelector('.db-f'); if(f) try{ f.scrollIntoView({block:'start'}); }catch(e){} },0); }
+function bnSua(id){ var x=bnTim(id); if(x) bnMoForm(x); }
+function bnLuuNhap(){ if(!BNF||BNF.id) return; try{ BNF.luc=new Date().toTimeString().slice(0,5); localStorage.setItem(bnKhoaNhap(),JSON.stringify({tab:BNF.tab,maDon:BNF.maDon,dl:BNF.dl,ghiChu:BNF.ghiChu,dong:BNF.dong,luc:BNF.luc})); var e=document.getElementById('dbNhapLuc'); if(e) e.textContent='Đã lưu nháp '+BNF.luc; }catch(e){} }
+function bnKiemDong(d){ var sp={}; (BND.sp||[]).forEach(function(t){sp[t]=1;}); var ten=String(d.ten||'').trim(), sl=bnSoDoc(d.sl);
+  if(!ten&&!String(d.sl||'').trim()) return {trong:1};
+  if(!ten) return {loi:'Thiếu tên sản phẩm'}; if(/^[=+\-@]/.test(ten)) return {loi:'Tên không được bắt đầu bằng = + - @'};
+  if(!(sl>=1&&Math.floor(sl)===sl)) return {loi:'SL phải là số nguyên từ 1'};
+  return sp[ten]?{}:{vang:'Mã mới – chưa có trong bảng đơn, người duyệt sẽ kiểm'}; }
+function bnVeForm(){ var f=BNF, kenh=BND.kenh||[], tong=0, nMa=0;
+  f.dong.forEach(function(d){ var k=bnKiemDong(d); if(!k.trong&&!k.loi){ nMa++; tong+=bnSoDoc(d.sl)||0; } });
+  var h='<div class="db-f"><div style="display:flex;justify-content:space-between;align-items:center;gap:8px"><b>'+(f.id?'Sửa đơn '+esc(f.maDon):'Đơn mới')+'</b><span class="pdesc" id="dbNhapLuc">'+(f.nhapLuc?'Mở lại nháp lúc '+esc(f.nhapLuc):'')+'</span></div>'+
+    '<label>Kênh</label><div class="db-kenh" role="radiogroup" aria-label="Kênh">'+kenh.map(function(k){ return '<button type="button" role="radio" aria-checked="'+(f.tab===k[0])+'" class="'+(f.tab===k[0]?'on':'')+'" data-t="'+esc(k[0])+'" onclick="BNF.tab=this.dataset.t;bnLuuNhap();bnVe()">'+esc(k[1])+'</button>'; }).join('')+'</div>'+
+    '<label for="dbMa">Mã đơn</label><input id="dbMa" maxlength="60" autocomplete="off" placeholder="vd #TENKHACH-'+bnNg(bnHom()).slice(0,5)+'" value="'+esc(f.maDon)+'" oninput="BNF.maDon=this.value;bnLuuNhap()">'+
+    '<label for="dbDl">Deadline mong muốn</label><input id="dbDl" type="date" min="'+esc(bnHom())+'" value="'+esc(f.dl)+'" onchange="BNF.dl=this.value;bnLuuNhap()">'+
+    '<label>Sản phẩm</label><datalist id="dbSpDs">'+(BND.sp||[]).map(function(t){ return '<option value="'+esc(t)+'">'; }).join('')+'</datalist>';
+  f.dong.forEach(function(d,i){ var k=f.thu?bnKiemDong(d):(function(z){ return z.loi&&!String(d.ten||'').trim()&&!String(d.sl||'').trim()?{}:z; })(bnKiemDong(d));
+    h+='<div id="dbSp'+i+'" class="db-sp'+(k.loi&&(f.thu||String(d.ten||d.sl||'').trim())?' loi':k.vang?' vang':'')+'"><div class="db-sp-h"><span>Mã '+(i+1)+'</span><span><button type="button" class="db-x" style="color:var(--ink3)" data-i="'+i+'" onclick="bnChepDong(+this.dataset.i)">Chép dòng</button> <button type="button" class="db-x" data-i="'+i+'" onclick="bnXoaDong(+this.dataset.i)" aria-label="Xóa mã '+(i+1)+'">🗑 Xóa</button></span></div>'+
+      '<div class="db-sp-r"><input list="dbSpDs" aria-label="Tên sản phẩm mã '+(i+1)+'" placeholder="Gõ tên sản phẩm…" maxlength="120" value="'+esc(d.ten)+'" data-i="'+i+'" oninput="BNF.dong[+this.dataset.i].ten=this.value;bnLuuNhap()" onchange="bnKiemO(+this.dataset.i)">'+
+      '<div class="db-sl"><button type="button" aria-label="Bớt 1" data-i="'+i+'" onclick="bnCongSL(+this.dataset.i,-1)">−</button><input inputmode="numeric" aria-label="Số lượng mã '+(i+1)+'" placeholder="SL" value="'+esc(d.sl)+'" data-i="'+i+'" oninput="BNF.dong[+this.dataset.i].sl=this.value;bnLuuNhap();bnTongO()" onchange="bnKiemO(+this.dataset.i)"><button type="button" aria-label="Thêm 1" data-i="'+i+'" onclick="bnCongSL(+this.dataset.i,1)">+</button></div></div>'+
+      '<input style="margin-top:6px;min-height:36px;font-size:14px" aria-label="Ghi chú mã '+(i+1)+'" placeholder="Ghi chú (màu, ren, tip, khắc tên…)" maxlength="300" value="'+esc(d.gc)+'" data-i="'+i+'" oninput="BNF.dong[+this.dataset.i].gc=this.value;bnLuuNhap()">'+
+      '<div id="dbSpM'+i+'">'+(k.loi&&(f.thu||String(d.ten||d.sl||'').trim())?'<div class="db-loi">'+esc(k.loi)+'</div>':k.vang?'<div class="db-vang">'+esc(k.vang)+'</div>':'')+'</div></div>'; });
+  h+='<button class="btn sm" type="button" onclick="BNF.dong.push({ten:\'\',sl:\'\',gc:\'\'});bnLuuNhap();bnVe()">+ Thêm mã</button>'+
+    '<details style="margin-top:10px"'+(f.dan?' open':'')+'><summary style="cursor:pointer;font-size:13px;font-weight:600">Dán từ Excel</summary><div class="pdesc" style="margin:6px 0">Chép các cột <b>Tên sản phẩm · SL · Ghi chú</b> trong Excel rồi dán vào đây (mỗi dòng một mã).</div><textarea id="bnDan" rows="4" placeholder="GAY NOVA X1 MAU DO&#9;5&#9;tip 12.5"></textarea><button class="btn sm" type="button" style="margin-top:6px" onclick="bnDan()">Đọc các dòng đã dán</button>'+(f.danKq?'<div class="db-msg">'+f.danKq+'</div>':'')+'</details>'+
+    '<label for="dbGc">Ghi chú cho cả đơn</label><textarea id="dbGc" maxlength="300" placeholder="Khách, cách giao, yêu cầu đóng gói…" oninput="BNF.ghiChu=this.value;bnLuuNhap()">'+esc(f.ghiChu)+'</textarea>'+
+    '<div class="db-day"><span id="dbTong"><b>'+nMa+'</b> mã · <b>'+bnSo(tong)+'</b> sp</span><span style="display:flex;gap:8px"><button class="btn sm" type="button" onclick="bnDongForm()">Đóng</button><button class="btn pri" type="button" id="bnGui" onclick="bnGui()">'+(f.id?'Gửi lại':'Gửi duyệt')+'</button></span></div></div>';
+  return h; }
+/* cập nhật tại chỗ (không vẽ lại form – giữ con trỏ ở ô đang gõ trên điện thoại) */
+function bnKiemO(i){ var d=BNF&&BNF.dong[i], e=document.getElementById('dbSp'+i), m=document.getElementById('dbSpM'+i); if(!d||!e||!m) return;
+  var k=bnKiemDong(d), coLoi=k.loi&&(BNF.thu||String(d.ten||d.sl||'').trim());
+  e.className='db-sp'+(coLoi?' loi':k.vang?' vang':''); m.innerHTML=coLoi?'<div class="db-loi">'+esc(k.loi)+'</div>':k.vang?'<div class="db-vang">'+esc(k.vang)+'</div>':''; bnTongO(); }
+function bnTongO(){ var e=document.getElementById('dbTong'); if(!e||!BNF) return; var t=0,n=0; BNF.dong.forEach(function(d){ var k=bnKiemDong(d); if(!k.trong&&!k.loi){ n++; t+=bnSoDoc(d.sl)||0; } }); e.innerHTML='<b>'+n+'</b> mã · <b>'+bnSo(t)+'</b> sp'; }
+function bnCongSL(i,d){ var x=BNF.dong[i], v=bnSoDoc(x.sl); v=(isFinite(v)?v:0)+d; x.sl=String(Math.max(1,v)); bnLuuNhap(); bnVe(); }
+function bnXoaDong(i){ BNF.dong.splice(i,1); if(!BNF.dong.length) BNF.dong.push({ten:'',sl:'',gc:''}); bnLuuNhap(); bnVe(); }
+function bnChepDong(i){ var x=BNF.dong[i]; BNF.dong.splice(i+1,0,{ten:x.ten,sl:x.sl,gc:x.gc}); bnLuuNhap(); bnVe(); }
+function bnDongForm(){ if(BNF&&!BNF.id){ bnLuuNhap(); toast('Đã giữ nháp trên máy này – bấm + Đơn mới để mở lại.',true); } BNF=null; bnVe(); }
+function bnDan(){ var t=document.getElementById('bnDan'); if(!t) return; var dong=String(t.value||'').split(/\r?\n/).map(function(s){return s.replace(/\s+$/,'');}).filter(function(s){return s.trim();});
+  var them=[], dung=0, moi=0, loi=0;
+  dong.forEach(function(s){ var c=s.indexOf('\t')>=0?s.split('\t'):s.split(/\s*;\s*/); if(c.length<2){ var m=s.match(/^(.*\S)\s+(\d[\d.,]*)\s*$/); if(m) c=[m[1],m[2]]; }
+    var d={ten:String(c[0]||'').trim(),sl:String(c[1]||'').trim(),gc:String(c.slice(2).join(' ')||'').trim()}, k=bnKiemDong(d);
+    if(k.loi) loi++; else if(k.vang) moi++; else dung++; them.push(d); });
+  if(!them.length){ toast('Chưa có dòng nào để đọc.'); return; }
+  BNF.dong=BNF.dong.filter(function(d){ return String(d.ten||d.sl||d.gc||'').trim(); }).concat(them);
+  BNF.danKq='Đọc được <b>'+them.length+'</b> dòng: '+dung+' đúng'+(moi?', <b style="color:var(--amber)">'+moi+' mã mới</b>':'')+(loi?', <b style="color:var(--red)">'+loi+' lỗi</b> (tô đỏ bên trên – sửa trước khi gửi)':'')+'.';
+  BNF.dan=1; BNF.thu=loi?1:0; bnLuuNhap(); bnVe(); }
+function bnGui(){ var f=BNF; f.thu=1;
+  var dong=f.dong.filter(function(d){ return !bnKiemDong(d).trong; }), loi=dong.filter(function(d){ return bnKiemDong(d).loi; });
+  var thieu=!f.tab?'Chọn kênh của đơn.':!String(f.maDon||'').trim()?'Ghi mã đơn.':!dong.length?'Đơn chưa có sản phẩm.':loi.length?'Còn '+loi.length+' mã lỗi (tô đỏ) – sửa trước khi gửi.':'';
+  if(thieu){ toast(thieu); bnVe(); return; }
+  var b=document.getElementById('bnGui'); if(b){ b.disabled=true; b.textContent='Đang gửi…'; }
+  var p={maDon:String(f.maDon).trim(),tab:f.tab,dl:f.dl||'',ghiChu:f.ghiChu||'',dong:dong.map(function(d){ return {ten:String(d.ten).trim(),sl:bnSoDoc(d.sl),gc:d.gc||''}; }),lenh:f.lenh};
+  if(f.id){ p.id=f.id; p.pb=f.pb; }
+  call('luuDonBan',[p],function(r){ if(!r||!r.ok){ toast((r&&r.msg)||'Không gửi được.'); if(b){ b.disabled=false; b.textContent='Gửi lại'; } BNF.lenh=bnLenh(); if(r&&r.cu){ BNF=null; BND=null; bnVe(); } return; }
+    if(!f.id){ try{ localStorage.removeItem(bnKhoaNhap()); }catch(e){} } BNF=null; toast(r.msg,true); BND=null; bnVe(); }); }
+/* ===== Tài khoản Bán hàng – chỉ chủ sở hữu: xem danh sách gợi ý, tick, tạo; mật khẩu tạm hiện 1 lần ===== */
+function bnVeTK(){
+  var h='<details style="margin-top:22px"'+(BNTK?' open':'')+' ontoggle="if(this.open&&!BNTK){BNTK={tai:1};call(\'dsUngVienBH\',[],function(r){BNTK=(r&&r.ok)?r:{loi:(r&&r.msg)||\'Không tải được.\'};bnVe();});}"><summary class="db-nhom" style="cursor:pointer">Tài khoản Bán hàng <i>chỉ chủ sở hữu</i></summary>';
+  if(!BNTK||BNTK.tai) return h+'<div class="pdesc">Đang tải…</div></details>';
+  if(BNTK.loi) return h+'<div class="alert a-bd">'+esc(BNTK.loi)+'</div></details>';
+  if(BNTKKq) h+='<div class="db-the dd"><b>'+esc(BNTKKq.msg)+'</b>'+(BNTKKq.ds.length?'<table class="db-tk" style="margin-top:6px"><thead><tr><th>Mã NV</th><th>Họ tên</th><th>Tên đăng nhập</th><th>Mật khẩu tạm</th></tr></thead><tbody>'+BNTKKq.ds.map(function(z){ return '<tr><td>'+esc(z.maNV)+'</td><td>'+esc(z.hoTen)+'</td><td class="db-mk">'+esc(z.tk)+'</td><td class="db-mk">'+esc(z.mk)+'</td></tr>'; }).join('')+'</tbody></table><div class="pdesc" style="margin-top:6px">Chụp / chép bảng này gửi riêng từng người – mật khẩu tạm chỉ hiện 1 lần, hết hạn sau '+esc(BNTKKq.hanGio)+' giờ, phải đổi ở lần đăng nhập đầu.</div>':'')+(BNTKKq.boQua&&BNTKKq.boQua.length?'<div class="pdesc">Bỏ qua: '+esc(BNTKKq.boQua.join('; '))+'</div>':'')+'</div>';
+  var nhom={}; (BNTK.ds||[]).forEach(function(u){ var k=u.boPhan+' · '+(u.nhom||'—'); (nhom[k]=nhom[k]||[]).push(u); });
+  h+='<div class="pdesc" style="margin:4px 0 8px">Danh sách lấy từ nhân sự Kinh doanh + Marketing. Đã tick sẵn người hay nhận đơn (Kinh doanh, Sàn TMĐT, CSKH, Website) – bỏ / thêm tick rồi bấm Tạo. Khóa, cấp lại mật khẩu, đổi vai trò: tab <b>Tài khoản</b> như mọi tài khoản.</div><table class="db-tk"><tbody>';
+  Object.keys(nhom).forEach(function(k){ var tong=nhom[k].length, coTK=nhom[k].filter(function(u){return u.tk;}).length; h+='<tr><th colspan="4">'+esc(k)+' · '+tong+' người'+(coTK?' · '+coTK+' đã có tài khoản':'')+'</th></tr>';
+    nhom[k].forEach(function(u){ h+='<tr><td><input type="checkbox" class="dbTkChon" value="'+esc(u.maNV)+'"'+(u.tk?' disabled':(u.goiY?' checked':''))+' aria-label="Chọn '+esc(u.hoTen)+'"></td><td>'+esc(u.maNV)+'</td><td>'+esc(u.hoTen)+' <span class="pdesc">'+esc(u.chuc)+'</span></td><td>'+(u.tk?'<span class="pdesc">đã có: '+esc(u.tk)+' ('+esc(u.vt)+(u.tt&&u.tt!=='Đang dùng'?', '+esc(u.tt):'')+')</span>':'')+'</td></tr>'; }); });
+  return h+'</tbody></table><button class="btn pri" type="button" style="margin-top:10px" onclick="bnTaoTK(this)">Tạo tài khoản Bán hàng cho người đã tick</button></details>';
+}
+function bnTaoTK(el){ var ds=[].slice.call(document.querySelectorAll('.dbTkChon:checked')).map(function(c){return c.value;}); if(!ds.length){ toast('Chưa tick ai.'); return; }
+  if(!confirm('Tạo '+ds.length+' tài khoản Bán hàng (chỉ thấy trang Đơn hàng của tôi)?')) return; el.disabled=true;
+  call('taoTaiKhoanBH',[{ds:ds}],function(r){ el.disabled=false; if(!r||!r.ok){ toast((r&&r.msg)||'Không tạo được.'); return; } BNTKKq=r; BNTK=null; toast(r.msg,true);
+    call('dsUngVienBH',[],function(r2){ BNTK=(r2&&r2.ok)?r2:{loi:(r2&&r2.msg)||'Không tải được.'}; bnVe(); }); bnVe(); }); }
+window.__bnDaNap=true;
+</script>

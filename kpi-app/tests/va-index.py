@@ -868,5 +868,7 @@ exec(io.open(os.path.join(D, 'thong-ke-c019', 'va-thong-ke-c019-web.py'), encodi
 exec(io.open(os.path.join(D, 'nghi-viec', 'va-nghi-viec-web.py'), encoding='utf-8').read())
 # ---------------------------------------------------------------- 49. Nút ☰ Menu nhỏ ở mép trái (16/11 tối)
 exec(io.open(os.path.join(D, 'menu-nut', 'va-menu-nut-web.py'), encoding='utf-8').read())
+# ---------------------------------------------------------------- 50. Bán hàng nhập đơn → duyệt → chép vào Sheet đơn (16/11 khuya)
+exec(io.open(os.path.join(D, 'don-ban', 'va-don-ban-web.py'), encoding='utf-8').read())
 io.open(os.path.join(D, '..', 'Index.html'), 'w', encoding='utf-8').write(s)
 print('OK Index.html')
