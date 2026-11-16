@@ -27,7 +27,7 @@
     });
   }
   /** Mã phiên bản giao diện – phải trùng với Index.html (meta tcc-ban) và Styles.html (--tcc-ban) */
-  var BAN_GIAO_DIEN = '2026.11.16.3';
+  var BAN_GIAO_DIEN = '2026.11.17.1';
   /* 25/10: ảnh ngũ hành + 12 con giáp + bìa PDF mới của chủ dự án (tuvi-app/anh/*.webp) qua jsDelivr, ghim theo mã lần lưu */
   var TCC_ANH_CDN = 'https://cdn.jsdelivr.net/gh/phamdoanchiengroup-cloud/githubforclaude160695@19203fbd20433f395336269a411f8aebcf990086/tuvi-app/anh/';
   var ANH_HANH = { 'Mộc': 'NguHanhMoc', 'Hỏa': 'NguHanhHoa', 'Thổ': 'NguHanhTho', 'Kim': 'NguHanhKim', 'Thủy': 'NguHanhThuy' };
@@ -40,7 +40,7 @@
 
   function hasServer() { return typeof google !== 'undefined' && google.script && google.script.run; }
   /** Hàm máy chủ mới thêm gần đây → file .gs chứa nó (để báo đúng file khi còn bản cũ) */
-  var FILE_HAM = { bangGiaCongKhai: 'ThanhToan.gs', muaPhan: 'ThanhToan.gs', viCuaToi: 'ThanhToan.gs', dangKy: 'TaiKhoan.gs', lapLaSo: 'TaiKhoan.gs',
+  var FILE_HAM = { bangGiaCongKhai: 'ThanhToan.gs', muaPhan: 'ThanhToan.gs', viCuaToi: 'ThanhToan.gs', dangKy: 'TaiKhoan.gs', lapLaSo: 'TaiKhoan.gs', guiMaEmail: 'TaiKhoan.gs', xacThucEmail: 'TaiKhoan.gs', dungLuotGiaDinh: 'ThanhToan.gs',
     tienIch: 'TienIch.gs', gieoQue: 'TienIch.gs', dsGieoQue: 'TienIch.gs', dangKyBanTin: 'TienIch.gs', dsBanTin: 'TienIch.gs', dangKyVanNgay: 'TienIch.gs', huyVanNgay: 'TienIch.gs', dsVanNgay: 'TienIch.gs', thamKhaoTuVi: 'TuViChuyenSau.gs', donLichSu: 'Code.gs', getLichSu: 'Code.gs', lapCapDoi: 'CapDoi.gs', tuViChuSoHuu: 'TuViChuyenSau.gs', phiTinhLuan: 'TuViPhiTinh.gs', giaDinhDs: 'GiaDinh.gs', giaDinhLuu: 'GiaDinh.gs', giaDinhVanNam: 'GiaDinh.gs', giaDinhQuanHe: 'GiaDinh.gs', thamKhaoThanSat: 'BatTuThanSat.gs' };
   function call(fn, args, ok, fail) {
     if (!hasServer()) { (fail || showErr)({ message: 'Không tìm thấy máy chủ Apps Script. Hãy mở ứng dụng qua URL Web App.' }); return; }
@@ -387,8 +387,95 @@
     if (r.qua && r.qua.xu) { try { mungMo('Quà chào mừng +' + r.qua.xu + ' xu'); } catch (e) {} storeSet('tcc_ref', ''); state.refMoi = ''; }
     taiVi();
     if (state.result) lapLai(true);
+    // 17/11: vừa đăng ký → mời xác thực email để nhận quà; việc đang dở (vd. đang mua) chạy tiếp khi đóng hộp xác thực
+    if (r.canXacThuc && !toanQuyen()) { state.sauXacThuc = state.sauDangNhap; state.sauDangNhap = null; storeSet('tcc_ref', ''); state.refMoi = ''; setTimeout(function () { moXacThuc(r.emailGoiY || '', r.quaXacThuc); }, 350); return; }
     if (state.sauDangNhap) { var f = state.sauDangNhap; state.sauDangNhap = null; f(); }
   }
+  /* ---------- Xác thực email bằng mã 6 số → quà chào mừng (TaiKhoan.gs › guiMaEmail / xacThucEmail, 17/11) ---------- */
+  var XT = { hen: 0, cho: 0, email: '', qua: 0, dang: false };
+  /** Số xu quà khi xác thực (0 nếu tài khoản đã từng nhận quà hoặc chủ dự án tắt) */
+  function quaXacThuc() {
+    var bg = bgHienTai(), sc = state.vi && state.vi.soCai;
+    if (sc && sc.some(function (x) { return x.n > 0 && /^Quà chào mừng/.test(String(x.lyDo || '')); })) return 0;
+    return bg ? bg.thuongDangKy || 0 : 0;
+  }
+  /** Nhãn nút mời khách tạo tài khoản: "Tạo tài khoản – tặng 39 xu" (quà mở sau khi xác thực email) */
+  function nhanDK() { var q = quaDK(); return q ? 'Tạo tài khoản – tặng ' + q + ' xu' : 'Tạo tài khoản miễn phí'; }
+  window.tccNhanDK = nhanDK;
+  function xtDemNguoc(giay) {
+    clearInterval(XT.hen); XT.cho = Math.max(0, giay || 0);
+    function ve() { var b = $('xtGui'); if (!b) { clearInterval(XT.hen); return; } b.disabled = XT.cho > 0 || XT.dang; b.textContent = XT.cho > 0 ? 'Gửi lại sau ' + XT.cho + ' giây' : (XT.email ? 'Gửi lại mã' : 'Gửi mã'); }
+    ve(); if (XT.cho > 0) XT.hen = setInterval(function () { XT.cho--; ve(); if (XT.cho <= 0) clearInterval(XT.hen); }, 1000);
+  }
+  function moXacThuc(goiY, qua) {
+    var m = $('xtModal'); if (!m || !state.token) return;
+    XT.qua = qua != null ? +qua || 0 : quaXacThuc(); XT.email = ''; XT.dang = false;
+    var em = goiY || (state.nguoiDung && state.nguoiDung.email) || '';
+    $('xtTitleText').textContent = XT.qua ? 'Nhận ' + XT.qua + ' xu quà: xác thực email' : 'Xác thực email';
+    $('xtBody').innerHTML = '<p class="lede" style="margin-top:0">' + (XT.qua ? 'Xác thực email để nhận <b>' + XT.qua + ' xu</b> quà chào mừng – đủ mở vài phần lẻ (9 hoặc 19 xu) như chủ đề năm, tháng của bạn. Mỗi email nhận quà một lần.' : 'Xác thực email để giữ tài khoản an toàn và khôi phục khi quên mật khẩu.') + '</p>' +
+      '<div class="xt-hang"><div class="field"><label for="xtEmail">Email của bạn</label><input type="email" id="xtEmail" inputmode="email" autocomplete="email" autocapitalize="none" spellcheck="false" placeholder="ten@gmail.com" value="' + esc(em) + '"></div>' +
+      '<button type="button" class="btn btn-primary" id="xtGui">Gửi mã</button></div>' +
+      '<div id="xtBuoc2" hidden><p class="muted xt-da-gui" id="xtDaGui" aria-live="polite"></p>' +
+      '<div class="xt-hang"><div class="field"><label for="xtMa">Mã 6 số trong email</label><input type="text" id="xtMa" inputmode="numeric" autocomplete="one-time-code" maxlength="6" pattern="[0-9]*" placeholder="••••••" class="xt-ma"></div>' +
+      '<button type="button" class="btn btn-primary" id="xtXacNhan">Xác nhận</button></div></div>' +
+      '<p class="form-err" id="xtErr" role="alert"></p>';
+    m.classList.add('show'); xtDemNguoc(0);
+    setTimeout(function () { var i = $('xtEmail'); if (i) i.focus(); }, 60);
+  }
+  function dongXacThuc() {
+    $('xtModal').classList.remove('show'); clearInterval(XT.hen);
+    if (state.sauXacThuc) { var f = state.sauXacThuc; state.sauXacThuc = null; setTimeout(f, 50); }
+  }
+  function xtGui() {
+    var email = (($('xtEmail') || {}).value || '').trim(), err = $('xtErr');
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { err.textContent = 'Email chưa đúng định dạng (ví dụ: ten@gmail.com).'; $('xtEmail').focus(); return; }
+    err.textContent = ''; XT.dang = true; xtDemNguoc(0); $('xtGui').textContent = 'Đang gửi…';
+    call('guiMaEmail', [state.token, email], function (r) {
+      XT.dang = false;
+      if (!r || !r.ok) { err.textContent = (r && r.thongBao) || 'Chưa gửi được mã.'; xtDemNguoc(r && r.choGiay); if (r && (r.hetLuot || r.hetQuota)) $('xtGui').disabled = true; return; }
+      XT.email = r.email || email; XT.maSai = ''; $('xtBuoc2').hidden = false;
+      $('xtDaGui').innerHTML = 'Đã gửi mã tới <b>' + esc(XT.email) + '</b> – mã dùng được trong ' + (r.hetPhut || 15) + ' phút. Không thấy thư thì xem cả mục Thư rác / Quảng cáo.';
+      xtDemNguoc(r.choGiay || 60); var i = $('xtMa'); if (i) { i.value = ''; i.focus(); }
+    }, function (e) { XT.dang = false; xtDemNguoc(0); err.textContent = (e && e.message) || String(e); });
+  }
+  function xtXacNhan() {
+    var ma = (($('xtMa') || {}).value || '').replace(/\D/g, ''), err = $('xtErr'), b = $('xtXacNhan');
+    if (ma.length !== 6) { err.textContent = 'Nhập đủ 6 số trong email.'; return; }
+    if (b.disabled) return;
+    if (XT.maSai === ma) { err.textContent = 'Mã này chưa đúng – bạn kiểm tra lại 6 số trong email nhé.'; return; }   // không tốn lượt thử khi bấm lại cùng một mã
+    b.disabled = true; b.textContent = 'Đang kiểm tra…'; err.textContent = '';
+    call('xacThucEmail', [state.token, ma], function (r) {
+      b.disabled = false; b.textContent = 'Xác nhận';
+      if (!r || !r.ok) { err.textContent = (r && r.thongBao) || 'Mã chưa đúng.'; if (r && r.conLan != null) XT.maSai = ma; if (r && (r.hetHan || r.khoaMa || r.chuaCo)) xtDemNguoc(0); return; }
+      if (state.nguoiDung) { state.nguoiDung.daXacThuc = true; state.nguoiDung.email = r.email || XT.email; }
+      if (r.soDu != null) state.soDu = r.soDu;
+      capNhatUser(); taiVi();
+      var xu = r.qua && r.qua.xu || 0;
+      $('xtModal').classList.remove('show'); clearInterval(XT.hen);
+      if (xu) { try { mungMo('Quà chào mừng +' + xu + ' xu'); } catch (e2) {} toast('Email đã xác thực ✦ +' + xu + ' xu vào ví.'); }
+      else toast(r.qua && r.qua.lyDo === 'email' ? 'Email đã xác thực. Email này đã nhận quà ở một tài khoản khác nên không cộng thêm xu.' : r.qua && r.qua.lyDo === 'taiKhoan' ? 'Email đã xác thực. Tài khoản đã nhận quà chào mừng trước đó.' : 'Email đã xác thực ✦');
+      if (document.body.getAttribute('data-tab') === 'toi') veToi();
+      if (state.sauXacThuc) { var f = state.sauXacThuc; state.sauXacThuc = null; setTimeout(f, xu ? 1900 : 50); }
+    }, function (e) { b.disabled = false; b.textContent = 'Xác nhận'; err.textContent = (e && e.message) || String(e); });
+  }
+  document.addEventListener('click', function (e) {
+    var t = e.target; if (!t.closest) return;
+    if (t.closest('#xtGui')) { xtGui(); return; }
+    if (t.closest('#xtXacNhan')) { xtXacNhan(); return; }
+    if (t.closest('#xtDong')) { dongXacThuc(); return; }
+    if (t.closest('[data-xac-thuc]')) { if (!state.token) { moDangNhap(); return; } moXacThuc(''); }
+  });
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape' && $('xtModal') && $('xtModal').classList.contains('show')) { dongXacThuc(); return; }
+    if (e.key !== 'Enter' || !e.target || !e.target.id) return;
+    if (e.target.id === 'xtEmail') { e.preventDefault(); if (!$('xtGui').disabled) xtGui(); }
+    else if (e.target.id === 'xtMa') { e.preventDefault(); xtXacNhan(); }
+  });
+  document.addEventListener('input', function (e) {
+    if (!e.target || e.target.id !== 'xtMa') return;
+    var v = e.target.value.replace(/\D/g, '').slice(0, 6); if (v !== e.target.value) e.target.value = v;
+    if (v.length === 6) xtXacNhan();
+  });
   function dangNhapGo(e) {
     if (e) e.preventDefault();
     var u = $('lgUser').value.trim(), p = $('lgPass').value;
@@ -425,13 +512,15 @@
     var bg = v.bangGia, link = (v.url || '') + '?ref=' + encodeURIComponent(v.maGioiThieu);
     state.soVe = v.soVe || 0;
     return '<div class="vi-box"><div><small>Số dư</small><b>' + fmtXu(v.soDu) + '</b></div><button type="button" class="btn btn-primary btn-sm" id="accNap">＋ Nạp xu</button></div>' +
-      '<div class="vi-box vi-ve"><div><small>Lượt gia đình</small><b>' + (v.soVe || 0) + ' lượt</b></div><span class="muted" style="font-size:12.5px">Mỗi lượt = Đồng hành cả năm (vận năm + 12 tháng + nhật vận) cho 1 lá số bất kỳ.</span></div>' +
+      '<div class="vi-box vi-ve"><div><small>Lượt gia đình</small><b>' + (v.soVe || 0) + ' lượt</b></div><span class="muted" style="font-size:12.5px">Mỗi lượt = Đồng hành năm (bức tranh chung, 4 chủ đề, 12 tháng từng ngày) cho 1 lá số bất kỳ.</span></div>' +
       '<div class="gd-mini"><button type="button" class="btn btn-ghost btn-sm" data-mua="gia_dinh_3">👨‍👩‍👧 3 người · ' + fmtXu(bg.phan.gia_dinh_3 ? bg.phan.gia_dinh_3.xu : 0) + '</button><button type="button" class="btn btn-ghost btn-sm" data-mua="gia_dinh_5">👨‍👩‍👧‍👦 5 người · ' + fmtXu(bg.phan.gia_dinh_5 ? bg.phan.gia_dinh_5.xu : 0) + '</button></div>' +
       (v.lanDau && bg.thuongLanDau ? '<div class="km-banner">🎉 Lần nạp đầu tiên được <b>tặng thêm ' + bg.thuongLanDau + '% xu</b>.</div>' : '') +
       '<div class="ma-qua"><input type="text" id="maQua" placeholder="🎁 Nhập mã quà tặng" autocapitalize="characters"><button type="button" class="btn btn-ghost btn-sm" id="maQuaGo">Nhận xu</button></div>' +
-      (bg.thuongGioiThieu ? '<details class="coso" open><summary>👥 Mời bạn bè</summary><p style="margin:6px 0">Gửi link này cho bạn bè – bạn ấy đọc luận giải 6 hệ miễn phí. Khi bạn ấy <b>nạp xu lần đầu</b>, bạn nhận thêm <b>' + bg.thuongGioiThieu + '%</b> số xu bạn ấy nạp.</p>' +
+      (v.nguoiDung && v.nguoiDung.daXacThuc === false ? '<div class="vi-box vi-xt"><div><small>Email</small><b>Chưa xác thực</b></div><button type="button" class="btn btn-phu btn-sm" data-xac-thuc>' + (quaXacThuc() ? 'Xác thực – nhận ' + quaXacThuc() + ' xu' : 'Xác thực email') + '</button></div>' : '') +
+      // 17/11: thôi thưởng xu khi mời bạn – vẫn giữ link mời, không nhắc phần thưởng
+      '<details class="coso"><summary>👥 Mời bạn bè</summary><p style="margin:6px 0">Gửi link này cho bạn bè – bạn ấy đọc luận giải 6 hệ miễn phí.</p>' +
         '<button type="button" class="btn btn-primary btn-sm" data-chia-se style="margin-bottom:6px">↗ Gửi link mời</button>' +
-        '<div class="ma-qua"><input type="text" readonly value="' + esc(link) + '"><button type="button" class="btn btn-ghost btn-sm" data-copy="' + esc(link) + '">Chép link</button></div><p class="muted" style="font-size:12.5px">Hoặc nhờ bạn nhập mã giới thiệu: <b>' + esc(v.maGioiThieu) + '</b></p></details>' : '') +
+        '<div class="ma-qua"><input type="text" readonly value="' + esc(link) + '" aria-label="Link mời bạn bè"><button type="button" class="btn btn-ghost btn-sm" data-copy="' + esc(link) + '">Chép link</button></div></details>' +
       (v.soCai.length ? '<details class="coso"><summary>🧾 Lịch sử giao dịch xu</summary><div class="tbl-wrap"><table class="gio-tbl"><tbody>' + v.soCai.map(function (x) {
         return '<tr><td>' + esc(x.luc) + '</td><td class="' + (x.n > 0 ? 'xu-cong' : 'xu-tru') + '">' + (x.n > 0 ? '+' : '') + x.n + '</td><td>' + esc(x.lyDo) + '</td></tr>';
       }).join('') + '</tbody></table></div></details>' : '');
@@ -455,7 +544,14 @@
 
   /* ---------- Mở khóa & nạp xu ---------- */
   function bgHienTai() { return (state.result && state.result.bangGia) || (state.vi && state.vi.bangGia) || (state.cd && state.cd.bangGia) || state.bgCK || null; }
-  function giaPhan(k) { var bg = bgHienTai(); return bg && bg.phan[k] ? bg.phan[k] : { ten: k, xu: 0 }; }
+  function giaPhan(k) {
+    var bg = bgHienTai(), g = bg && bg.phan[k] ? bg.phan[k] : { ten: k, xu: 0 };
+    if (/^Năm X\b/.test(String(g.ten || ''))) {   // 17/11: "Năm X: bức tranh chung" → năm đang xem
+      var y = (state.result && state.result.tuvi && state.result.tuvi.info.viewYear) || new Date().getFullYear();
+      g = Object.assign({}, g, { ten: String(g.ten).replace(/^Năm X\b/, 'Năm ' + y) });
+    }
+    return g;
+  }
   /** Giá kèm giá cũ gạch ngang (HTML) */
   function giaHtml(k) { var g = giaPhan(k); return (g.goc > g.xu ? '<s class="gia-goc">' + fmtXu(g.goc) + '</s> ' : '') + fmtXu(g.xu); }
   /** Quà đăng ký (xu) – 0 nếu đã đăng nhập hoặc chủ dự án tắt */
@@ -481,20 +577,31 @@
   /** Khung "Rủ bạn bè" – đặt cuối tab Tổng quan và Tiện ích */
   function moiBanHtml() {
     var bg = bgHienTai(); if (!bg || toanQuyen()) return '';
-    var pt = bg.thuongGioiThieu || 0;   // 16/11: thưởng mời chỉ khi bạn bè nạp lần đầu
+    // 17/11: bỏ mọi lời nhắc thưởng xu khi mời bạn
     return '<div class="panel section moi-ban"><div class="mb-ic" aria-hidden="true">🤝</div><div class="mb-nd"><b>Rủ bạn bè cùng xem</b>' +
-      (state.token ? '<span>Gửi link mời của bạn – bạn ấy đọc luận giải 6 hệ miễn phí.' + (pt ? ' Khi bạn ấy nạp xu lần đầu, bạn nhận thêm ' + pt + '% số xu bạn ấy nạp.' : '') + '</span>'
+      (state.token ? '<span>Gửi link mời của bạn – bạn ấy đọc luận giải 6 hệ miễn phí.</span>'
         : '<span>Gửi link trang cho bạn bè – ai cũng đọc được luận giải 6 hệ miễn phí.</span>') + '</div>' +
       '<div class="mb-nut"><button type="button" class="btn btn-phu btn-sm" data-chia-se>↗ ' + (state.token ? 'Gửi link mời' : 'Chia sẻ') + '</button></div></div>';
   }
   function giaDv(nam) { return +nam + 9 < new Date().getFullYear() ? giaPhan('dai_van_qua') : giaPhan('dai_van'); }
+  var TEN_CD = { cv: 'Công việc & sự nghiệp', tien: 'Tiền bạc', tc: 'Tình cảm & gia đình', sk: 'Sức khỏe & nhịp sống' };
+  /** Giá combo sau khi trừ phần lẻ đã mua (máy chủ tính sẵn r.giaNangCap, trừ tối đa 50%): { gia, goc, tru } hoặc null.
+   *  dong_hanh chỉ áp cho năm đang xem (máy chủ tính theo viewYear). */
+  function giaNangCap(phan, y) {
+    var r = state.result, g = r && r.giaNangCap && r.giaNangCap[phan];
+    if (!g || g.gia == null) return null;
+    if (phan === 'dong_hanh' && y != null && +y !== +r.tuvi.info.viewYear) return null;
+    return g;
+  }
   /** Tên + giá của một món hàng theo id (đại vận / năm / tháng) */
   function moTaMua(phan, id) {
     var g = giaPhan(phan), ten = g.ten, xu = g.xu;
     if (phan === 'dai_van') { g = giaDv(id); xu = g.xu; var dv = ((state.result && state.result.chiTiet && state.result.chiTiet.daiVan) || []).filter(function (d) { return +String(d.nam).slice(0, 4) === +id; })[0]; ten = 'Đại vận ' + (dv ? dv.khoang + ' (' + dv.nam + ')' : 'từ năm ' + id); }
-    else if (phan === 'nam') ten = 'Vận năm ' + id + ' – tiểu vận, 12 tháng, lưu niên';
-    else if (phan === 'thang') ten = 'Nhật vận tháng ' + String(id).split('-')[1] + '/' + String(id).split('-')[0] + ' – từng ngày';
-    else if (phan === 'dong_hanh') ten = 'Đồng hành cả năm ' + id + ' – vận năm + nhật vận 12 tháng';
+    else if (phan === 'nam') ten = 'Năm ' + id + ': bức tranh chung';
+    else if (phan === 'nam_cd') { var pcd = String(id || '').split(/[:|]/), cdo = state.result && state.result.namCd && state.result.namCd[pcd[0]]; ten = 'Năm ' + pcd[1] + ': ' + (cdo ? cdo.ten : TEN_CD[pcd[0]] || 'chủ đề'); }
+    else if (phan === 'thang') ten = 'Tháng ' + (+String(id).split('-')[1]) + '/' + String(id).split('-')[0] + ' của bạn: từng ngày';
+    else if (phan === 'dong_hanh') { ten = 'Đồng hành năm ' + id + ' – bức tranh chung, 4 chủ đề, 12 tháng từng ngày, bản tin tháng qua email'; var nc = giaNangCap('dong_hanh', id); if (nc) xu = nc.gia; }
+    else if (phan === 'tron_goi') { var nt = giaNangCap('tron_goi'); if (nt) xu = nt.gia; }
     else if (phan === 'hoi_vien') ten = 'Hội viên năm – vận năm, 12 tháng, nhật vận cho mọi lá số trong 12 tháng';
     else if (phan === 'co_ban') ten = 'Tổng hợp 6 hệ';
     else if (phan === 'chon_ngay') { var pc = String(id || '').split('|'); ten = 'Chọn ngày tốt: ' + (TI_VIEC_TEN[pc[0]] || '') + ' – tháng ' + String(pc[1] || '').split('-').reverse().join('/'); }
@@ -508,14 +615,17 @@
     if (!state.token) {
       state.sauDangNhap = function () { if (!toanQuyen()) muaGo(spec); else if (ti) tiChay(phan); else if (cap) xemCapDoi(); else lapLai(true); };
       // 16/11 (phương án A): Tổng hợp 6 hệ và dò giờ sinh miễn phí cho tài khoản – lời mời không nhắc xu
+      var qdk = quaDK();
       moDangNhap(phan === 'co_ban' || phan === 'do_gio' ? 'Tạo tài khoản miễn phí để đọc ' + (phan === 'co_ban' ? 'Tổng hợp 6 hệ' : 'công cụ dò giờ sinh') + ' – lá số đang xem được giữ nguyên.'
-        : 'Đăng nhập hoặc tạo tài khoản miễn phí để mở "' + moTaMua(phan, id).ten + '". Lá số đang xem được giữ nguyên.', 'up');
+        : 'Đăng nhập hoặc tạo tài khoản để mở "' + moTaMua(phan, id).ten + '"' + (qdk ? ' – tài khoản mới được tặng ' + qdk + ' xu sau khi xác thực email' : '') + '. Lá số đang xem được giữ nguyên.', 'up');
       return;
     }
     if (phan === 'co_ban' && !tongKhoa(state.result)) { showTab('tong'); return; }   // tài khoản đã có sẵn
     var g = moTaMua(phan, id);
     var doiTuong = hoiVien ? 'tài khoản của bạn (mọi lá số, 12 tháng)' : giaDinh ? 'tài khoản của bạn (dùng cho ' + (phan === 'gia_dinh_5' ? 5 : 3) + ' lá số bất kỳ)' : cap ? 'cặp ' + (state.cdInput.a.name || 'người 1') + ' & ' + (state.cdInput.b.name || 'người 2') : phan === 'hop_tac' ? 'cặp ' + (inMua.a.name || 'bạn') + ' & ' + (inMua.b.name || 'đối tác') : phan === 'dat_ten' ? 'bé sinh ' + inMua.day + '/' + inMua.month + '/' + inMua.year : 'lá số của ' + (state.input.name || 'bạn');
-    if (!window.confirm((giaDinh ? 'Mua "' : 'Mở khóa "') + g.ten + '" cho ' + doiTuong + '?\nGiá: ' + fmtXu(g.xu) + (phan === 'tron_goi' || phan === 'dong_hanh' ? ' (trừ phần đã mua)' : '') + (giaDinh ? '' : ' · mở vĩnh viễn.'))) return;
+    var nc = phan === 'tron_goi' || phan === 'dong_hanh' ? giaNangCap(phan, id) : null;
+    var duTxt = state.soDu != null && !toanQuyen() ? '\nSố dư: ' + fmtXu(state.soDu) + (state.soDu >= g.xu ? ' → còn ' + fmtXu(state.soDu - g.xu) : ' (cần nạp thêm ' + fmtXu(g.xu - state.soDu) + ')') : '';
+    if (!window.confirm((giaDinh ? 'Mua "' : 'Mở khóa "') + g.ten + '" cho ' + doiTuong + '?\nGiá: ' + fmtXu(g.xu) + (nc && nc.tru ? ' (đã trừ ' + fmtXu(nc.tru) + ' phần bạn mua trước)' : '') + (giaDinh ? '' : ' · mở vĩnh viễn.') + duTxt)) return;
     loading(true);
     call('muaPhan', [state.token, hoiVien ? null : inMua, phan, id == null ? null : id], function (r) {
       loading(false);
@@ -534,7 +644,7 @@
   /** Dùng 1 lượt gia đình cho lá số đang xem */
   function dungLuot() {
     if (!state.token || !state.result) return;
-    if (!window.confirm('Dùng 1 lượt gia đình để mở Đồng hành cả năm ' + state.input.viewYear + ' (vận năm + 12 tháng + nhật vận) cho lá số của ' + (state.input.name || 'người này') + '?')) return;
+    if (!window.confirm('Dùng 1 lượt gia đình để mở Đồng hành năm ' + state.input.viewYear + ' (bức tranh chung, 4 chủ đề, 12 tháng từng ngày) cho lá số của ' + (state.input.name || 'người này') + '?')) return;
     loading(true);
     call('dungLuotGiaDinh', [state.token, state.input], function (r) {
       loading(false); if (r.soVe != null) state.soVe = r.soVe; toast(r.daCo ? 'Lá số này đã được mở.' : 'Đã mở bằng lượt gia đình ✦ – còn ' + r.soVe + ' lượt.'); lapLai(true);
@@ -609,7 +719,7 @@
     return th6KhachHtml(res.th6) + khoaHtml(res, 'tom', 'Chân dung hé lộ', '命') + khoaHtml(res, 'nguoi', 'Con người bạn', '性') +
       khoaHtml(res, 'duyen', 'Tình duyên & người bạn đời', '姻') + khoaHtml(res, 'doi', 'Đường đời & sự nghiệp', '途') +
       '<div class="panel section th6-cta niem-phong"><b>Tổng hợp 6 hệ – miễn phí khi có tài khoản</b><p>Bạn đã đọc riêng từng hệ. Phần tổng hợp ghép cả 6 hệ lại: kết luận 9 lĩnh vực kèm số hệ đồng thuận, chân dung con người, tình duyên, đường đời – sự nghiệp, nghề hợp, mật mã cá nhân.</p>' +
-      (state.token ? nutMua('co_ban', 'Mở Tổng hợp 6 hệ') : '<button type="button" class="btn btn-primary btn-sm" data-dang-ky>Tạo tài khoản miễn phí</button> <button type="button" class="btn-chu" data-login>Đã có tài khoản? Đăng nhập</button>') + '</div>' +
+      (state.token ? nutMua('co_ban', 'Mở Tổng hợp 6 hệ') : '<button type="button" class="btn btn-primary btn-sm" data-dang-ky>' + nhanDK() + '</button> <button type="button" class="btn-chu" data-login>Đã có tài khoản? Đăng nhập</button>') + '</div>' +
       moiBanHtml() + '<div class="tg" data-g="them"><div id="tg-slot-dc"></div></div>';
   }
   function chenKhoa(res) {
@@ -670,7 +780,7 @@
     } else if (qt.tab === 'gia') {
       var bg = d.bangGia;
       h = '<p class="muted" style="margin-top:0">Giá tính bằng xu (1 xu = 1.000đ). Trọn gói tự trừ các phần khách đã mua.</p><div class="gia-list">' + Object.keys(bg.phan).map(function (k) {
-        return '<label class="gia-row"><span>' + esc(bg.phan[k].ten) + '</span><input type="number" min="0" data-gia="' + k + '" value="' + bg.phan[k].xu + '"> xu</label>';
+        return '<label class="gia-row"><span>' + esc(String(bg.phan[k].ten).replace(/^Năm X\b/, 'Năm (đang xem)')) + (bg.phan[k].an ? ' <small class="muted">· ngừng bán</small>' : '') + '</span><input type="number" min="0" data-gia="' + k + '" value="' + bg.phan[k].xu + '"> xu</label>';
       }).join('') + '</div><h4 class="dd-h">Gói nạp</h4><div class="gia-list" id="goiList">' + bg.goi.map(function (g) {
         return '<div class="gia-row goi-row"><input type="number" min="2000" step="1000" class="g-tien" value="' + g.tien + '"> đ → <input type="number" min="1" class="g-xu" value="' + g.xu + '"> xu <button type="button" class="btn btn-ghost btn-sm" data-bo-goi>✕</button></div>';
       }).join('') + '</div><button type="button" class="btn btn-ghost btn-sm" id="themGoi">＋ Thêm gói</button>' +
@@ -797,7 +907,7 @@
     if (res.canMo) return '<div class="lock-cta"><p><b>Trọn đời cho lá số này.</b> 12 đại vận, những năm đáng chú ý, người phối ngẫu, PDF đầy đủ (' + fmtXu(tg.xu) + ').' +
       (res.soDu != null ? ' Số dư của bạn: <b>' + fmtXu(res.soDu) + '</b>.' : '') + '</p><button type="button" class="btn btn-primary" data-mua="tron_goi">Trọn đời · ' + fmtXu(tg.xu) + '</button></div>';
     return '<div class="lock-cta"><p><b>Bạn đang xem bản giới hạn.</b> Tạo tài khoản miễn phí để đọc Tổng hợp 6 hệ và lưu lá số.</p>' +
-      '<button type="button" class="btn btn-primary" data-dang-ky>Tạo tài khoản miễn phí</button><button type="button" class="btn btn-phu" data-login>Đăng nhập</button></div>';
+      '<button type="button" class="btn btn-primary" data-dang-ky>' + nhanDK() + '</button><button type="button" class="btn btn-phu" data-login>Đăng nhập</button></div>';
   }
   /** Mồi vận hạn cho bản giới hạn: điểm từng đại vận + số tháng tốt/xấu – nội dung chi tiết khóa */
   function moiVanKhachHtml(res) {
@@ -812,7 +922,7 @@
       '<div class="dv-line dv-mo-khach">' + (M.daiVan || []).filter(function (d) { return parseInt(d.khoang, 10) < 85; }).map(function (d) {
         return '<div class="dv-card ' + rateClass(d.diem) + (d.isNow ? ' now' : '') + '"><small>' + esc(d.khoang) + '</small><b>' + esc(String(d.nam)) + '</b><span class="rate ' + rateClass(d.diem) + '">' + esc(d.danhGia) + '</span>' + (d.isNow ? '<em class="dv-now">● Bạn đang ở đây</em>' : '<em>🔒 lời luận</em>') + '</div>';
       }).join('') + '</div>' +
-      '<p class="muted" style="font-size:12.5px">Với tài khoản, bạn chọn mở từng giai đoạn: 1 đại vận (' + fmtXu(giaPhan('dai_van').xu) + '), 1 năm (' + fmtXu(giaPhan('nam').xu) + '), lịch từng ngày theo tháng (' + fmtXu(giaPhan('thang').xu) + ') – chỉ trả cho phần bạn cần.</p></div>';
+      '<p class="muted" style="font-size:12.5px">Với tài khoản, bạn chọn mở từng phần: 10 năm (' + fmtXu(giaPhan('dai_van').xu) + '), bức tranh chung 1 năm (' + fmtXu(giaPhan('nam').xu) + '), từng chủ đề năm hoặc từng tháng (' + fmtXu(giaPhan('thang').xu) + ') – chỉ trả cho phần bạn cần.</p></div>';
   }
   function hookKhachHtml(res) {
     var t = (res.teaser || {}).tom, lo = t ? t.lo.filter(Boolean) : [];
@@ -830,10 +940,10 @@
     renderChart(res);
     datCheDo(cheDoLaSo());
     var CTA ='<div class="panel section"><h2 class="panel-title"><span class="han">價</span> Chọn cách mở</h2>' + bangGiaHtml(res) + camKetHtml() +
-      (res.canMo ? '' : '<p class="muted" style="font-size:12.5px;margin-bottom:0">Tạo tài khoản miễn phí để mua. ' + (res.bangGia && res.bangGia.thuongLanDau ? '🎉 Lần nạp đầu tặng thêm ' + res.bangGia.thuongLanDau + '% xu.' : '') + ' <a data-login href="javascript:void 0">Đăng nhập</a></p>') + '</div>';
+      (res.canMo ? '' : '<p class="muted" style="font-size:12.5px;margin-bottom:0">Tạo tài khoản miễn phí để mua.' + (quaDK() ? ' Tài khoản mới được tặng ' + quaDK() + ' xu sau khi xác thực email.' : '') + ' <a data-login href="javascript:void 0">Đăng nhập</a></p>') + '</div>';
     function trang(id, html) { var el = $(id); if (el) el.innerHTML = '<div class="khach-page">' + html + '</div>'; }
     trang('page-luan', '<div class="khach-bar"><span>🔒 ' + (res.canMo ? 'Lá số này chưa được mở khóa' : 'Bạn đang xem bản miễn phí') + ' – lá số, chân dung và phần hé lộ.</span>' +
-      (res.canMo && soVe() ? '<button type="button" class="btn btn-primary btn-sm" data-dung-ve>Dùng 1 lượt gia đình (còn ' + soVe() + ')</button>' : '<button type="button" class="btn btn-primary btn-sm" data-dang-ky>Tạo tài khoản miễn phí</button>') + '</div>' +
+      (res.canMo && soVe() ? '<button type="button" class="btn btn-primary btn-sm" data-dung-ve>Dùng 1 lượt gia đình (còn ' + soVe() + ')</button>' : '<button type="button" class="btn btn-primary btn-sm" data-dang-ky>' + nhanDK() + '</button>') + '</div>' +
       hookKhachHtml(res) + mienPhiHtml(res) + moiVanKhachHtml(res) + khoaHtml(res, 'chart', 'Luận giải 12 cung', '宮') + CTA);
     trang('page-vh', dtHtml(res) + moiVanKhachHtml(res) + khoaHtml(res, 'van', 'Vận năm – tháng – ngày', '運') + khoaHtml(res, 'bien', 'Những năm đáng chú ý · 6 hệ', '會') + CTA);
     trang('page-battu', khoaHtml(res, 'battu', 'Bát Tự – Tứ Trụ', '八字') + CTA);
@@ -1047,9 +1157,9 @@
     var lanDau = bg.thuongLanDau && (!state.vi || state.vi.lanDau) ? '🎉 Nạp lần đầu tặng thêm ' + bg.thuongLanDau + '% xu' : '';
     var soDu = r.soDu != null ? 'Số dư: ' + fmtXu(r.soDu) : '';
     if (r.khach) {
-      if (r.canMo && soVe()) return { tieuDe: 'Bạn còn ' + soVe() + ' lượt gia đình', phan: 've', nut: 'Dùng 1 lượt cho lá số này', moTa: 'Đồng hành cả năm ' + r.tuvi.info.viewYear + ' – không trừ xu.', phu: '' };
+      if (r.canMo && soVe()) return { tieuDe: 'Bạn còn ' + soVe() + ' lượt gia đình', phan: 've', nut: 'Dùng 1 lượt cho lá số này', moTa: 'Đồng hành năm ' + r.tuvi.info.viewYear + ' – không trừ xu.', phu: '' };
       var dv = dvHienTai(r);
-      if (!state.token) return { tieuDe: 'Lưu lá số của bạn', phan: 'dang_ky', nut: 'Tạo tài khoản miễn phí',   // lời mời đầu không nhắc xu/giá (rà soát 16/11)
+      if (!state.token) return { tieuDe: 'Lưu lá số của bạn', phan: 'dang_ky', nut: nhanDK(),   // 17/11: chủ dự án cho nhắc quà 39 xu (không nhắc nạp)
         moTa: (dv ? 'Bạn đang ở giai đoạn ' + dv.khoang + ' tuổi. ' : '') + 'Tạo tài khoản miễn phí để lưu lá số và đọc lại luận giải 6 hệ bất cứ lúc nào.', phu: '' };
       return { tieuDe: 'Trọn đời cho lá số này', phan: 'tron_goi', nut: 'Trọn đời · ' + fmtXu(tg.xu),
         moTa: (dv ? 'Bạn đang ở đại vận ' + dv.khoang + ' (' + dv.danhGia.toLowerCase() + '). ' : '') + '12 đại vận, những năm đáng chú ý, người phối ngẫu, PDF đầy đủ.', phu: [lanDau, soDu].filter(Boolean).join(' · ') };
@@ -1057,20 +1167,20 @@
     var q = r.quyen, v = r.vanTom || {}, vy = r.tuvi.info.viewYear;
     if (!q) return null;
     var qd = quaDK();
-    if (tongKhoa(r) && !(pg && pg.id === 'page-vh') && qd) return { tieuDe: 'Lưu lá số của bạn', phan: 'dang_ky', nut: 'Tạo tài khoản miễn phí',
+    if (tongKhoa(r) && !(pg && pg.id === 'page-vh') && qd) return { tieuDe: 'Lưu lá số của bạn', phan: 'dang_ky', nut: nhanDK(),
       moTa: 'Tạo tài khoản miễn phí để lưu lá số và đọc lại luận giải bất cứ lúc nào.', phu: '' };
     if (tongKhoa(r) && !(pg && pg.id === 'page-vh')) {
-      if (!state.token) return { tieuDe: 'Lưu lá số của bạn', phan: 'dang_ky', nut: 'Tạo tài khoản miễn phí', moTa: 'Tài khoản miễn phí: lưu lá số, đọc Tổng hợp 6 hệ và dò giờ sinh.', phu: '' };
+      if (!state.token) return { tieuDe: 'Lưu lá số của bạn', phan: 'dang_ky', nut: nhanDK(), moTa: 'Tài khoản miễn phí: lưu lá số, đọc Tổng hợp 6 hệ và dò giờ sinh.', phu: '' };
       return { tieuDe: 'Tổng hợp 6 hệ', phan: 'co_ban', nut: 'Mở Tổng hợp 6 hệ',
         moTa: 'Phần tổng hợp ghép 6 hệ thành kết luận 9 lĩnh vực, chân dung, tình duyên, đường đời.', phu: '' };
     }
     var dvn = dvHienTai(r);
     if (dvn && dvn.khoa && qd && qd >= giaDv(dvNamBd(dvn)).xu) return { tieuDe: '🎁 Đăng ký miễn phí – tặng ' + qd + ' xu', phan: 'dai_van|' + dvNamBd(dvn), nut: 'Nhận quà & mở 10 năm này',
-      moTa: 'Đủ mở ngay đại vận ' + dvn.khoang + ' bạn đang sống (' + fmtXu(giaDv(dvNamBd(dvn)).xu) + ') – năm bản lề, cơ hội, rủi ro.', phu: '' };
+      moTa: 'Xác thực email là nhận quà – đủ mở đại vận ' + dvn.khoang + ' bạn đang sống (' + fmtXu(giaDv(dvNamBd(dvn)).xu) + ').', phu: '' };
     if (dvn && dvn.khoa) return { tieuDe: '10 năm bạn đang sống còn khóa', phan: 'dai_van|' + dvNamBd(dvn), nut: 'Mở đại vận · ' + fmtXu(giaDv(dvNamBd(dvn)).xu),
       moTa: 'Đại vận ' + dvn.khoang + ' – ' + dvn.danhGia.toLowerCase() + ': năm bản lề, cơ hội, rủi ro.', phu: soDu };
-    if (!v.coNam) return { tieuDe: 'Vận năm ' + vy + ' còn khóa', phan: 'nam|' + vy, nut: 'Mở năm ' + vy + ' · ' + fmtXu(giaPhan('nam').xu),
-      moTa: 'Tháng nào nên tiến, tháng nào nên giữ. Hoặc gói Đồng hành cả năm ' + fmtXu(giaPhan('dong_hanh').xu) + ' gồm cả lịch từng ngày.', phu: soDu };
+    if (!v.coNam) { var ncDh = giaNangCap('dong_hanh', vy); return { tieuDe: 'Năm ' + vy + ': bức tranh chung còn khóa', phan: 'nam|' + vy, nut: 'Mở · ' + fmtXu(giaPhan('nam').xu),
+      moTa: 'Tháng nào nên tiến, tháng nào nên giữ. Hoặc mở trọn năm (Đồng hành) ' + fmtXu(ncDh ? ncDh.gia : giaPhan('dong_hanh').xu) + ' gồm cả 4 chủ đề và lịch từng ngày.', phu: soDu }; }
     if (!v.coThang) { var t = v.thangNhat.split('-'); return { tieuDe: 'Lịch từng ngày tháng ' + (+t[1]) + ' còn khóa', phan: 'thang|' + v.thangNhat, nut: 'Mở tháng ' + (+t[1]) + ' · ' + fmtXu(giaPhan('thang').xu),
       moTa: 'Ngày nên ký kết, gặp gỡ, ngày nên nghỉ – theo Tử Vi, hoàng đạo và thần số.', phu: soDu }; }
     if (q.tron_goi) return null;
@@ -1416,7 +1526,7 @@
       '<label class="gd-nhuan"><input type="checkbox" id="gdTyMuon"' + (si.lateRat === false ? '' : ' checked') + '> Giờ Tý muộn (23h–24h) tính sang ngày hôm sau</label></div>' +
       '<div class="gd-nut"><button type="button" class="btn btn-primary btn-sm" id="gdLuu">' + (s ? 'Lưu thay đổi' : 'Thêm') + '</button>' + (s ? '<button type="button" class="btn btn-ghost btn-sm" id="gdHuy">Hủy</button>' : '') + '</div></details>';
     var nhap = '<details class="gd-form"><summary>📋 Nhập nhanh nhiều người</summary><p class="muted" style="font-size:13px">Mỗi dòng một người theo mẫu: <code>' + esc(GD_MAU) + '</code>. Giờ theo đồng hồ (ví dụ giờ Mão ghi 06:00).</p><textarea id="gdDan" rows="5" placeholder="' + esc(GD_MAU) + '"></textarea><div class="gd-nut"><button type="button" class="btn btn-primary btn-sm" id="gdNhapNhanh">Thêm vào danh sách</button></div></details>';
-    var p1 = '<div class="panel section gd"><h2 class="panel-title"><span class="han">家</span> Người trong gia đình</h2><p class="lede">Danh sách lưu theo tài khoản của bạn, người khác không xem được. Mở lá số vẫn tính phí như khi tự lập (tài khoản đã mở khóa thì xem ngay); phần quan hệ gia đình bên dưới xem miễn phí.</p>' +
+    var p1 = '<div class="panel section gd"><h2 class="panel-title"><span class="han">家</span> Người trong gia đình</h2><p class="lede">Danh sách lưu theo tài khoản của bạn, người khác không xem được. Mở lá số vẫn tính phí như khi tự lập (tài khoản đã mở khóa thì xem ngay). Phần quan hệ gia đình bên dưới xem thử miễn phí; bản đầy đủ "Hiểu nhau hơn" mở riêng cho từng cặp.</p>' +
       '<div class="gd-ds">' + the + '</div><div class="gd-nut" style="margin:10px 0"><button type="button" class="btn btn-ghost btn-sm" id="gdThemMo"' + (state.input && state.result ? '' : ' disabled') + '>＋ Thêm lá số đang mở</button></div>' + form + nhap + '</div>';
     if (!GD.chon) GD.chon = GD.ds.slice(0, 2).map(function (p) { return p.id; });
     var hop = GD.ds.map(function (p) { return '<label class="gd-chon"><input type="checkbox" data-gd-chon="' + esc(p.id) + '"' + (GD.chon.indexOf(p.id) >= 0 ? ' checked' : '') + '> ' + esc(p.ten) + ' <small class="muted">(' + esc(p.quanHe) + ')</small></label>'; }).join('');
@@ -1437,12 +1547,14 @@
     if (!R) return '';
     var li = function (a, cls) { return a.length ? '<ul class="' + (cls || '') + '">' + a.map(function (x) { return '<li>' + esc(typeof x === 'string' ? x : x.de) + '</li>'; }).join('') + '</ul>' : ''; };
     var cs = function (a) { a = a.filter(Boolean); return a.length ? '<details class="gd-cs"><summary>Căn cứ cổ học</summary>' + li(a) + '</details>' : ''; };
-    var caps = R.cap.map(function (c) {
+    var daMoi = false;   // mỗi màn chỉ một lời mời chính: nút đầu tiên nổi, các nút sau dạng phụ
+    var caps = R.cap.map(function (c, ci) {
       return '<div class="gd-qh"><div class="gd-ten"><b>' + esc(c.a + ' – ' + c.b) + '</b><span class="chip neutral">' + esc(c.loaiTen) + '</span><span class="rate ' + (c.diem >= 6.5 ? 'r5' : c.diem >= 5 ? 'r3' : 'r2') + '">' + esc(c.xep) + ' · ' + c.diem + '/10</span></div>' +
-        '<p>' + esc(c.tomTat.join(' ')) + '</p>' +
-        (c.tot.length ? '<h4>Điểm gắn kết</h4>' + li(c.tot, 'gd-tot') : '') + (c.xau.length ? '<h4>Điều nên lưu ý và cách làm</h4>' + li(c.xau, 'gd-xau') : '') +
-        '<small class="muted">' + c.tieuChi.map(function (t) { return t.ten + ' ' + t.diem + '/10'; }).join(' · ') + '</small>' +
-        (c.capDoi ? '<div class="gd-nut"><button type="button" class="btn btn-ghost btn-sm" data-gd-cd="' + c.ia + ',' + c.ib + '">Xem hợp hôn đầy đủ (tab Cặp đôi)</button></div>' : '') + cs(c.canCu) + '</div>';
+        '<p>' + esc((c.tomTat || []).join(' ')) + '</p>' +
+        (c.tot && c.tot.length ? '<h4>Điểm gắn kết</h4>' + li(c.tot, 'gd-tot') : '') + (c.xau && c.xau.length ? '<h4>Điều nên lưu ý và cách làm</h4>' + li(c.xau, 'gd-xau') : '') +
+        '<small class="muted">' + (c.tieuChi || []).map(function (t) { return t.ten + ' ' + t.diem + '/10'; }).join(' · ') + '</small>' +
+        gdQhLuanHtml(c, ci, function () { var d = daMoi; daMoi = true; return d; }) +
+        (c.capDoi ? '<div class="gd-nut"><button type="button" class="btn btn-ghost btn-sm" data-gd-cd="' + c.ia + ',' + c.ib + '">Xem hợp hôn đầy đủ (tab Cặp đôi)</button></div>' : '') + cs(c.canCu || []) + '</div>';
     }).join('');
     var N = R.nhom, nhom = '';
     if (N) {
@@ -1454,6 +1566,41 @@
         '<h4>5 năm tới</h4>' + li(N.nam.map(function (y) { return y.nam + ' ' + y.canChi + ': ' + (y.de || (y.pham.length ? y.pham.join(', ') + ' cần giữ nhịp riêng, còn lại bình thường.' : 'năm êm cho cả nhà.')); })) + '</div>';
     }
     return '<div class="gd-kq">' + nhom + caps + '<p class="muted" style="font-size:13px">Kết quả là xu hướng tham khảo từ lá số – sự quan tâm, lắng nghe mỗi ngày mới làm nên một gia đình gắn bó.</p></div>';
+  }
+  /** Phần lẻ "Bạn và người thân: hiểu nhau hơn" (quan_he, 9 xu/cặp – 17/11): 5 mục khi đã mở; tên 5 mục + nút mua khi còn khóa */
+  function gdQhLuanHtml(c, ci, daMoi) {
+    var L = c.luan; if (!L || !L.muc || c.capDoi) return '';
+    var ten = esc(c.a + ' và ' + c.b);
+    if (L.khoa || !c.moQH) {
+      var gia = c.giaQH != null ? c.giaQH : giaPhan('quan_he').xu, phu = daMoi();
+      return '<div class="gd-qh-khoa"><b>Hiểu nhau hơn: ' + ten + '</b><p>Bản đầy đủ gồm ' + L.muc.length + ' phần: ' + esc(L.muc.map(function (m) { return chuThuong(m.ten); }).join(' · ')) + '.</p>' +
+        '<button type="button" class="btn ' + (phu ? 'btn-phu' : 'btn-primary') + ' btn-sm" data-gd-qh-mua="' + ci + '" aria-label="Mở phần hiểu nhau hơn của ' + ten + ', ' + fmtXu(gia) + '">Hiểu nhau hơn · ' + fmtXu(gia) + '</button></div>';
+    }
+    return '<div class="gd-qh-luan"><h4 class="gd-qh-tt">Hiểu nhau hơn</h4>' + L.muc.map(function (m) {
+      var ds = (m.ds || []).filter(Boolean);
+      return '<section class="gd-muc gd-muc-' + esc(m.k) + '"><h5>' + esc(m.ten) + '</h5>' + (m.k === 'viec' ? '<ol>' + ds.map(function (x) { return '<li>' + esc(typeof x === 'string' ? x : x.de) + '</li>'; }).join('') + '</ol>' :
+        '<ul>' + ds.map(function (x) { return '<li>' + esc(typeof x === 'string' ? x : x.de) + '</li>'; }).join('') + '</ul>') + '</section>';
+    }).join('') + '</div>';
+  }
+  /** Mua quan_he cho một cặp trong danh sách gia đình (theo id – máy chủ tự lấy ngày sinh) */
+  function gdMuaQh(ci) {
+    var c = GD.qh && GD.qh.cap[ci]; if (!c || !c.ids) return;
+    var gia = c.giaQH != null ? c.giaQH : giaPhan('quan_he').xu;
+    var duTxt = state.soDu != null && !toanQuyen() ? '\nSố dư: ' + fmtXu(state.soDu) + (state.soDu >= gia ? ' → còn ' + fmtXu(state.soDu - gia) : ' (cần nạp thêm ' + fmtXu(gia - state.soDu) + ')') : '';
+    if (!window.confirm('Mở "Hiểu nhau hơn" cho ' + c.a + ' và ' + c.b + '?\nGiá: ' + fmtXu(gia) + ' · mở vĩnh viễn cho cặp này.' + duTxt)) return;
+    loading(true);
+    call('muaPhan', [state.token, { ids: c.ids.slice() }, 'quan_he'], function (r) {
+      loading(false);
+      if (r.ok) {
+        if (r.soDu != null) { state.soDu = r.soDu; capNhatUser(); }
+        if (!r.daCo) mungMo('Hiểu nhau hơn: ' + c.a + ' và ' + c.b);
+        toast(r.daCo ? 'Cặp này đã được mở trước đó.' : 'Đã mở ✦ – đang tải nội dung…');
+        var nut = $('gdXemQh'); if (nut) nut.click(); return;
+      }
+      state.soDu = r.soDu; capNhatUser();
+      state.sauNap = function () { gdMuaQh(ci); };
+      moNap('Bạn cần thêm ' + fmtXu(r.thieu) + ' để mở "Hiểu nhau hơn" (' + fmtXu(r.gia) + '). Chọn gói nạp:', r.thieu);
+    }, function (e) { loading(false); showErr(e); });
   }
   function gdLuuDs(ds, xong) {
     call('giaDinhLuu', [ds], function (d) { GD.ds = d.ds; GD.van = null; GD.sua = null; GD.qh = null; GD.chon = null; veGd(); if (xong) toast(xong); });
@@ -1502,6 +1649,7 @@
       call('giaDinhQuanHe', [GD.chon.slice()], function (d) { GD.dangQh = false; if (GD.cua !== cuaQh) return; GD.qh = d; if (document.body.getAttribute('data-tab') === 'gd') veGd(); }, function (e) { GD.dangQh = false; if (GD.cua !== cuaQh) return; veGd(); toast((e && e.message) || String(e), true); });
       return;
     }
+    if ((b = t.closest('[data-gd-qh-mua]'))) { gdMuaQh(+b.getAttribute('data-gd-qh-mua')); return; }
     if ((b = t.closest('[data-gd-cd]'))) {   // vợ chồng: mở phần Cặp đôi (hợp hôn) như trước
       var ij = b.getAttribute('data-gd-cd').split(','), ng = GD.qh.nguoi, A = GD.ds.filter(function (p) { return p.id === ng[+ij[0]].id; })[0], Bp = GD.ds.filter(function (p) { return p.id === ng[+ij[1]].id; })[0];
       if (!A || !Bp) return;
@@ -2398,7 +2546,7 @@
         return '<span class="chip neutral"><small>' + r[0] + ':</small> <b>' + esc(r[1] || '') + '</b>' + (inf[2] ? ' <small>· ' + esc(inf[2]) + '</small>' : '') + '</span>';
       }).join('') + '</div>' +
       (P.luu.length ? '<div class="star-list">' + P.luu.map(function (x) { return '<span class="chip" style="color:var(--lavender)">' + esc(x) + '</span>'; }).join('') + '</div>' : '');
-    if (luan && !luan.lines) html += '<div class="lock-cta"><p>🔒 Lời luận chi tiết của cung này hiện khi bạn có tài khoản (miễn phí).</p><button type="button" class="btn btn-primary btn-sm" data-dang-ky>Tạo tài khoản miễn phí</button></div>';
+    if (luan && !luan.lines) html += '<div class="lock-cta"><p>🔒 Lời luận chi tiết của cung này hiện khi bạn có tài khoản (miễn phí).</p><button type="button" class="btn btn-primary btn-sm" data-dang-ky>' + nhanDK() + '</button></div>';
     if (luan && luan.lines) {
       html += '<div class="meter"><i style="width:' + scorePct(luan.diem) + '%"></i></div>' +
         '<p><b>Đánh giá: ' + esc(luan.danhGia) + '</b> (' + d10(luan.diem) + '/10)</p><ul>' +
@@ -3871,7 +4019,7 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
       if (x.lo) return o + '<p class="th6-ket"><b>' + esc(x.lo.ket) + '</b>' + (x.lo.noiBat ? ' ' + esc(x.lo.noiBat.t) : '') + '</p>' +
         (x.lo.manh.length ? '<ul class="th6-ds">' + x.lo.manh.filter(function (m) { return (x.lo.ket + ' ' + (x.lo.noiBat ? x.lo.noiBat.t : '')).indexOf(m.t) < 0; }).slice(0, 3).map(function (m) { return '<li>✓ ' + esc(m.t) + '</li>'; }).join('') + '</ul>' : '') + '<small class="muted">Lĩnh vực mạnh nhất được mở miễn phí để bạn tự kiểm chứng.</small>';
       return o + '<p class="vt-khoa">🔒 Kết luận của 6 hệ, điều nên phát huy, điều cần lưu ý' + (x.soNam ? ' và ' + x.soNam + ' năm nổi bật sắp tới' : '') + ' cho lĩnh vực này có trong Tổng hợp 6 hệ – miễn phí khi có tài khoản.</p>' +
-        (state.token ? nutMua('co_ban', 'Mở cả 9 lĩnh vực') : '<button type="button" class="btn btn-primary btn-sm" data-dang-ky>Tạo tài khoản miễn phí</button>');
+        (state.token ? nutMua('co_ban', 'Mở cả 9 lĩnh vực') : '<button type="button" class="btn btn-primary btn-sm" data-dang-ky>' + nhanDK() + '</button>');
     }
     o += '<div class="th6-phieu">' + x.phieu.map(function (p) { return '<span style="--m:' + th6Mau(p.d10) + '"><i style="width:' + Math.round(p.d10 * 10) + '%"></i><b>' + esc(p.he) + '</b><em>' + vtSo(p.d10) + '</em></span>'; }).join('') + '</div>' +
       '<p class="th6-ket"><b>' + esc(x.ket) + '</b>' + (x.noiBat ? ' ' + esc(x.noiBat.t) : '') + '</p>';
@@ -3971,8 +4119,10 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
     return '<div class="khoa-gd"><div class="kg-t">🔒 ' + tieuDe + '</div>' + (moi ? '<p class="kg-moi">' + moi + '</p>' : '') +
       '<div class="kg-nut">' + nut + '</div>' + (ghiChu ? '<small class="muted">' + ghiChu + '</small>' : '') + '</div>';
   }
-  function nutNam(y, cls) { return nutMua('nam|' + y, 'Mở vận năm ' + y + ' · ' + fmtXu(giaPhan('nam').xu), cls); }
-  function nutDongHanh(y) { return nutMua('dong_hanh|' + y, '⭐ Đồng hành cả năm ' + y + ' · ' + fmtXu(giaPhan('dong_hanh').xu), 'btn-ghost'); }
+  function nutNam(y, cls) { return nutMua('nam|' + y, 'Mở bức tranh chung ' + y + ' · ' + fmtXu(giaPhan('nam').xu), cls); }
+  function nutDongHanh(y) { var dh = giaNangCap('dong_hanh', y); return nutMua('dong_hanh|' + y, dh && dh.tru ? '⭐ Mở trọn năm ' + y + ' thêm ' + fmtXu(dh.gia) : '⭐ Trọn năm ' + y + ' (Đồng hành) · ' + fmtXu(dh ? dh.gia : giaPhan('dong_hanh').xu), 'btn-ghost'); }
+  /** Đã có đủ 4 chủ đề của năm đang xem chưa */
+  function cdDuCa(v) { var c = v && v.cd; return !c || ['cv', 'tien', 'tc', 'sk'].every(function (k) { return c[k]; }); }
   /** Dòng thời gian 12 đại vận: điểm hiện rõ (mồi), lời luận khóa theo từng vận */
   function dvTimelineHtml(ds, q) {
     var vy = new Date().getFullYear();
@@ -3991,10 +4141,12 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
     var vy = res.tuvi.info.viewYear, dv = dvHienTai(res), q = res.quyen || {}, v = res.vanTom || {};
     var the = [];
     if (dv && dv.khoa) the.push('<div class="ud"><b>Đại vận hiện tại</b><span>' + esc(dv.khoang) + ' · ' + esc(dv.danhGia) + '</span><p>10 năm bạn đang sống: cơ hội, thử thách, năm bản lề.</p>' + nutMua('dai_van|' + dvNamBd(dv), 'Mở · ' + fmtXu(giaDv(dvNamBd(dv)).xu)) + '</div>');
-    if (!v.coNam) the.push('<div class="ud"><b>Vận năm ' + vy + '</b><span>tiểu vận + 12 tháng + lưu niên</span><p>Tháng nào nên tiến, tháng nào nên giữ – theo 3 hệ.</p>' + nutNam(vy) + '</div>');
-    if (!(q.dhNam && q.dhNam[vy]) && !(v.coNam && v.coThang) && !hoiVienHan()) the.push('<div class="ud ud-hot"><i>Tiết kiệm nhất</i><b>Đồng hành cả năm ' + vy + '</b><span>vận năm + nhật vận 12 tháng</span><p>Mỗi tháng mở sẵn lịch từng ngày: ngày nên ký kết, ngày nên nghỉ.</p>' + nutMua('dong_hanh|' + vy, 'Mở · ' + fmtXu(giaPhan('dong_hanh').xu)) + '<small>Mua lẻ: ' + fmtXu(giaPhan('nam').xu + 12 * giaPhan('thang').xu) + '</small></div>');
-    if (!q.toanQuyen && !hoiVienHan()) the.push(hoiVienTheHtml('ud'));
-    if (!q.tron_dai_van && !q.toanQuyen) the.push('<div class="ud"><b>Trọn 12 đại vận</b><span>cả đời, mở một lần</span><p>Biết trước chặng rực rỡ và chặng cần thủ của cả cuộc đời.</p>' + nutMua('tron_dai_van', 'Mở · ' + fmtXu(giaPhan('tron_dai_van').xu), 'btn-ghost') + '<small>Mua lẻ: ' + fmtXu(12 * giaPhan('dai_van').xu) + '</small></div>');
+    if (!v.coNam) the.push('<div class="ud"><b>Năm ' + vy + ': bức tranh chung</b><span>12 tháng · mỗi hệ góp phần · kế hoạch hành động</span><p>Tháng nào nên tiến, tháng nào nên giữ – kèm một dòng tóm tắt cho từng chủ đề.</p>' + nutNam(vy, 'btn-phu') + '</div>');
+    // 17/11: thôi bán Hội viên năm, 12 đại vận riêng, bản tin lẻ – người đã mua vẫn thấy quyền của mình (hoiVienTheHtml)
+    if (hoiVienHan()) the.push(hoiVienTheHtml('ud'));
+    else if (!(q.dhNam && q.dhNam[vy]) && !(v.coNam && v.coThang && cdDuCa(v))) { var dh = giaNangCap('dong_hanh', vy), dhGia = dh ? dh.gia : giaPhan('dong_hanh').xu, le = giaPhan('nam').xu + 4 * giaPhan('nam_cd').xu + 12 * giaPhan('thang').xu;
+      the.push('<div class="ud ud-hot"><i>Trọn năm</i><b>Đồng hành năm ' + vy + '</b><span>bức tranh chung + 4 chủ đề + 12 tháng từng ngày + bản tin tháng</span><p>Mỗi tháng mở sẵn lịch từng ngày: ngày nên ký kết, ngày nên nghỉ.</p>' +
+        nutMua('dong_hanh|' + vy, dh && dh.tru ? 'Mở trọn năm thêm ' + fmtXu(dhGia) : 'Mở trọn năm · ' + fmtXu(dhGia)) + '<small>' + (dh && dh.tru ? 'Đã trừ ' + fmtXu(dh.tru) + ' phần bạn mua trước' : 'Mua lẻ từng phần: ' + fmtXu(le)) + '</small></div>'); }
     return the.length ? '<div class="ud-row">' + the.join('') + '</div>' : '';
   }
   function chonNamHtml(vy) {
@@ -4013,8 +4165,8 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
     { k: 'gieo_que', ic: '☯', ten: 'Gieo quẻ hỏi việc', mo: 'Hỏi một việc cụ thể – quẻ lập theo đúng lúc bạn hỏi (Mai hoa dịch số). Câu đầu tiên miễn phí.' },
     { k: 'hop_tac', ic: '🤝', ten: 'Hợp tác làm ăn', mo: 'Ghép lá số của bạn với đối tác, cộng sự: điểm hợp, chỗ bổ trợ, nên phân vai thế nào.', laSo: 1 },
     { k: 'dat_ten', ic: '👶', ten: 'Đặt tên cho con', mo: 'Chấm tên theo ngũ hành bổ khuyết, thần số học, thanh điệu – và gợi ý những tên hợp với bé.' },
-    { k: 'ban_tin', ic: '✉️', ten: 'Bản tin vận tháng qua email', mo: 'Sáng ngày 1 mỗi tháng: tổng quan tháng, ngày tốt ký kết – đi xa, ngày xung tuổi cần tránh.', laSo: 1 },
-    { k: 'van_ngay', ic: '🌅', ten: 'Luận giải hằng ngày qua email', mo: '6 giờ sáng mỗi ngày: điều cần lưu ý hôm nay và ngày mai theo lá số đang xem – nên, tránh, giờ tốt, hướng tốt.', laSo: 1 }
+    { k: 'ban_tin', ic: '✉️', ten: 'Bản tin vận tháng qua email', mo: 'Sáng ngày 1 mỗi tháng: tổng quan tháng, ngày tốt ký kết – đi xa, ngày xung tuổi cần tránh. Đi kèm gói Đồng hành năm.', laSo: 1, dongHanh: 1 },
+    { k: 'van_ngay', ic: '🌅', ten: 'Lời nhắn mỗi sáng qua email', mo: '6 giờ sáng mỗi ngày: điều cần lưu ý hôm nay và ngày mai theo lá số đang xem – nên, tránh, giờ tốt, hướng tốt.', laSo: 1 }
   ];
   function tiNgayChon(id) { var v = ($(id) || {}).value || ''; var m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(v); return m ? { day: +m[3], month: +m[2], year: +m[1] } : null; }
   function tiGioOpts(sel) { var o = ''; for (var h = 0; h < 24; h++) o += '<option value="' + h + '"' + (h === sel ? ' selected' : '') + '>' + pad(h) + ' giờ · ' + CHI[Math.floor((h + 1) / 2) % 12] + '</option>'; return o; }
@@ -4037,18 +4189,28 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
     return '';
   }
   function veTienIch() {
-    var pg = $('page-ti'); if (!pg || (pg._xong && pg._toan === toanQuyen())) return; pg._xong = 1;
-    pg._toan = toanQuyen();
-    pg.innerHTML = '<div class="panel section"><h2 class="panel-title"><span class="han">用</span> Tiện ích xem thêm</h2><p class="lede">Những việc người Việt hay xem trước các quyết định lớn. Các công cụ xem đều <b>miễn phí</b>; chỉ hai dịch vụ gửi báo cáo qua email (bản tin tháng, luận giải hằng ngày) tính phí. Mọi kết quả ghi rõ cơ sở tính và chỉ mang tính tham khảo.</p></div>' +
-      '<div class="ti-luoi">' + TI_THE.filter(function (t) { return !t.toanQuyen || toanQuyen(); }).map(function (t) {
+    var coBT = coBanTin();   // 17/11: bản tin tháng không bán lẻ nữa – chỉ hiện cho ai có Đồng hành năm (hoặc toàn quyền)
+    var pg = $('page-ti'); if (!pg || (pg._xong && pg._toan === toanQuyen() && pg._bt === coBT)) return; pg._xong = 1;
+    pg._toan = toanQuyen(); pg._bt = coBT;
+    pg.innerHTML = '<div class="panel section"><h2 class="panel-title"><span class="han">用</span> Tiện ích xem thêm</h2><p class="lede">Những việc người Việt hay xem trước các quyết định lớn. Các công cụ xem đều <b>miễn phí</b>; riêng lời nhắn mỗi sáng qua email tính phí, bản tin tháng đi kèm gói Đồng hành năm. Mọi kết quả ghi rõ cơ sở tính và chỉ mang tính tham khảo.</p></div>' +
+      '<div class="ti-luoi">' + TI_THE.filter(function (t) { return (!t.toanQuyen || toanQuyen()) && (!t.dongHanh || coBT); }).map(function (t) {
         if (t.k === 'van_ngay') { var gv = giaPhan('van_ngay'); return '<details class="panel ti-the" data-ti="van_ngay"><summary><span class="ti-ic">' + t.ic + '</span><span class="ti-tt"><b>' + esc(t.ten) + '</b><small>' + esc(t.mo) + '</small></span><em class="ti-gia">' + (toanQuyen() ? 'Dành cho bạn' : (gv.goc > gv.xu ? '<s class="gia-goc">' + fmtXu(gv.goc) + '</s> ' : '') + fmtXu(gv.xu) + '/30 ngày') + '</em></summary>' +
           '<div class="ti-than">' + tiForm(t.k) + '<button type="button" class="btn btn-primary btn-sm ti-chay" data-ti-chay="van_ngay">Đăng ký · gửi thử ngay</button><div class="ti-kq" id="tiKq-van_ngay"></div></div></details>'; }
-        var gia = t.k === 'ban_tin' ? giaPhan('ban_tin') : t.k === 'gieo_que' ? giaPhan('gieo_que') : giaPhan(t.k), mien = !!gia.mienPhi;
+        var gia = t.k === 'gieo_que' ? giaPhan('gieo_que') : giaPhan(t.k), mien = !!gia.mienPhi || t.k === 'ban_tin';
         return '<details class="panel ti-the" data-ti="' + t.k + '"><summary><span class="ti-ic">' + t.ic + '</span><span class="ti-tt"><b>' + esc(t.ten) + '</b><small>' + esc(t.mo) + '</small></span>' +
-          '<em class="ti-gia">' + (mien ? '<b class="ti-mien">Miễn phí</b>' : (gia.goc > gia.xu ? '<s class="gia-goc">' + fmtXu(gia.goc) + '</s> ' : '') + (t.k === 'gieo_que' ? fmtXu(gia.xu) + '/câu' : t.k === 'chon_ngay' ? fmtXu(gia.xu) + '/tháng' : t.k === 'ban_tin' ? fmtXu(gia.xu) + '/năm' : 'từ ' + fmtXu(gia.xu))) + '</em></summary>' +
+          '<em class="ti-gia">' + (t.k === 'ban_tin' ? '<b class="ti-mien">' + (toanQuyen() ? 'Dành cho bạn' : 'Có trong Đồng hành') + '</b>' : mien ? '<b class="ti-mien">Miễn phí</b>' : (gia.goc > gia.xu ? '<s class="gia-goc">' + fmtXu(gia.goc) + '</s> ' : '') + (t.k === 'gieo_que' ? fmtXu(gia.xu) + '/câu' : t.k === 'chon_ngay' ? fmtXu(gia.xu) + '/tháng' : t.k === 'ban_tin' ? fmtXu(gia.xu) + '/năm' : 'từ ' + fmtXu(gia.xu))) + '</em></summary>' +
           '<div class="ti-than">' + tiForm(t.k) + '<button type="button" class="btn btn-primary btn-sm ti-chay" data-ti-chay="' + t.k + '">' +
-          (({ gieo_que: '☯ Gieo quẻ', ban_tin: 'Đăng ký · ' + fmtXu(gia.xu), dat_ten: 'Chấm tên' })[t.k] || 'Xem miễn phí') + '</button><div class="ti-kq" id="tiKq-' + t.k + '"></div></div></details>';
+          (({ gieo_que: '☯ Gieo quẻ', ban_tin: 'Đăng ký nhận bản tin', dat_ten: 'Chấm tên' })[t.k] || 'Xem miễn phí') + '</button><div class="ti-kq" id="tiKq-' + t.k + '"></div></div></details>';
       }).join('') + '</div>' + moiBanHtml();
+  }
+  /** Lá số đang xem có Đồng hành năm (năm đang xem hoặc năm nay) – được đăng ký bản tin tháng miễn phí */
+  function coBanTin() {
+    if (toanQuyen()) return true;
+    var r = state.result, q = r && r.quyen; if (!q) return false;
+    if (q.namAll && q.thangAll) return true;   // Hội viên năm (gói cũ) / lưu niên đã gồm Đồng hành
+    if (!q.dhNam) return false;
+    var nay = new Date().getFullYear(), vy = r.tuvi && r.tuvi.info.viewYear;
+    return !!((vy >= nay && q.dhNam[vy]) || q.dhNam[nay]);
   }
   function tiCanLaSo() { if (state.input && state.result) return true; toast('Hãy lập lá số của bạn trước (ô "Nhập thông tin").', true); return false; }
   function tiChay(k) {
@@ -4177,10 +4339,9 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
     var box = $('tiKq-ban_tin'), email = ($('tiEmail').value || '').trim();
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { toast('Email chưa đúng.', true); return; }
     if (!state.token) { state.sauDangNhap = function () { tiBanTin(); }; moDangNhap('Đăng nhập để đăng ký bản tin vận tháng.', 'up'); return; }
-    var g = giaPhan('ban_tin');
-    if (!toanQuyen() && !window.confirm('Đăng ký bản tin vận tháng 12 tháng cho lá số của ' + (state.input.name || 'bạn') + ', gửi tới ' + email + '?\nGiá: ' + fmtXu(g.xu))) return;
+    // 17/11: bản tin đi kèm Đồng hành năm – đăng ký không trừ xu (máy chủ tự kiểm tra quyền)
     call('dangKyBanTin', [state.input, email], function (r) {
-      if (!r.ok) { state.sauNap = function () { tiBanTin(); }; moNap('Bạn cần thêm ' + fmtXu(r.thieu) + ' để đăng ký bản tin. Chọn gói nạp:', r.thieu); return; }
+      if (!r.ok) { box.innerHTML = '<p class="ti-ket">Bản tin tháng đi kèm gói Đồng hành năm. Mở Đồng hành năm cho lá số này để nhận bản tin.</p>'; return; }
       if (r.soDu != null) { state.soDu = r.soDu; capNhatUser(); }
       mungMo('Bản tin vận tháng'); box.innerHTML = '<p class="ti-ket">✉️ Đã đăng ký. Sáng ngày 1 mỗi tháng, bản tin sẽ gửi tới <b>' + esc(email) + '</b> – đến hết ngày ' + esc(r.hanDen) + '.</p>';
     });
@@ -4221,7 +4382,7 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
     var el = $('posterQua'); if (!el) return;
     el.hidden = !!state.token || !!state.result; if (el.hidden) { el.innerHTML = ''; return; }   // đã có kết quả: lời mời nằm ở thanh đáy (mỗi trang tối đa 1 lời mời)
     el.innerHTML = '<div class="pq-gon"><div class="pq-gon-chu"><b>Tạo tài khoản miễn phí</b><span>Lưu lá số, đọc lại luận giải 6 hệ bất cứ lúc nào.</span></div>' +
-      '<button type="button" class="btn btn-primary" data-dang-ky>Tạo tài khoản miễn phí</button></div>';
+      '<button type="button" class="btn btn-primary" data-dang-ky>' + nhanDK() + '</button></div>';
   }
   /* Lá số Tử Vi: Hologram (lá số 2D đủ sao trên nền tranh – mặc định) hoặc 2D nền sáng; nhớ lựa chọn trên máy người xem.
      10/2026: bỏ hẳn chế độ 3D theo yêu cầu chủ dự án. */
@@ -4468,7 +4629,7 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
     if (res.khach || tongKhoa(res)) return '<p>Những điều vừa rồi <b>có đúng với bạn không?</b> Nếu phần lớn là đúng, giờ sinh của bạn chuẩn – phần luận đầy đủ sẽ rất sát.</p>' +
       '<p class="muted">Chưa chắc? Làm bài kiểm chứng 2 phút, miễn phí. Nếu không khớp, chúng tôi sẽ nói thật – đừng mua.</p>' +
       '<div class="ht-cuoi"><button type="button" class="btn btn-primary btn-sm" data-ht-di="nc">🔍 Kiểm chứng giờ sinh</button>' +
-      '<button type="button" class="btn btn-ghost btn-sm" data-ht-di="chart">📜 Đọc luận giải 6 hệ (miễn phí)</button>' + (state.token ? '' : '<button type="button" class="btn btn-ghost btn-sm" data-dang-ky>Tạo tài khoản miễn phí</button>') +
+      '<button type="button" class="btn btn-ghost btn-sm" data-ht-di="chart">📜 Đọc luận giải 6 hệ (miễn phí)</button>' + (state.token ? '' : '<button type="button" class="btn btn-ghost btn-sm" data-dang-ky>' + nhanDK() + '</button>') +
       '<button type="button" class="btn btn-ghost btn-sm" data-ht-di="tong">Xem bảng điểm 9 lĩnh vực →</button></div>';
     return '<p>Bạn đã xem qua những nét chính. Chọn nơi muốn đi tiếp:</p><div class="ht-cuoi">' +
       '<button type="button" class="btn btn-primary btn-sm" data-ht-di="tong">☯ Vòm trời 9 lĩnh vực</button>' +
@@ -4596,7 +4757,7 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
     else if (!D.coSu || !D.bienMo && !su.length) o += '<p class="muted">' + (D.bienMo ? 'Năm này không có biến cố lớn nào được từ 3 hệ cùng báo – một năm tương đối êm.' : 'Chưa thấy năm này trong các năm nổi bật. Mở <b>Những năm đáng chú ý (30 năm)</b> để xem đủ từng năm.') + '</p>';
     // hành động
     var nut = '';
-    if (D.khach) nut = state.token ? nutMua('co_ban', 'Mở để xem vận từng năm') : '<button type="button" class="btn btn-primary btn-sm" data-dang-ky>Tạo tài khoản miễn phí</button>';
+    if (D.khach) nut = state.token ? nutMua('co_ban', 'Mở để xem vận từng năm') : '<button type="button" class="btn btn-primary btn-sm" data-dang-ky>' + nhanDK() + '</button>';
     else {
       if (y >= D.now - 1 && y <= D.now + 10) nut += namDaMo(y) ? '<button type="button" class="btn btn-primary btn-sm" data-nam-xem="' + y + '" data-den="vh">Xem vận năm ' + y + ' →</button>' : nutNam(y);
       if (!D.bienMo) nut += nutMua('bien_co', 'Những năm đáng chú ý (30 năm) · ' + fmtXu(giaPhan('bien_co').xu), 'btn-ghost');
@@ -4661,15 +4822,16 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
       return '<a class="hsn-kc ' + k.huong + '" data-hsn="' + k.k + '"><i>' + k.icon + '</i><b>' + esc(k.ten) + '</b><span>' + esc(k.nhan) + '</span>' + (k.doiLap ? '<em>⚖ các hệ chưa thống nhất</em>' : '') + '</a>'; }).join('') + '</div>';
     var khoi = H.khiaCanh.map(function (k, i) {
       var ds = k.sk.map(function (sk) { return SK[sk]; }).filter(Boolean);
-      return '<details class="hsn-khoi" id="hsn-' + k.k + '"' + (!H.khoa && i < 2 ? ' open' : '') + '><summary><i>' + k.icon + '</i> ' + esc(k.ten) + ' <span class="hsn-nhan ' + k.huong + '">' + esc(k.nhan) + '</span>' + (k.doiLap ? ' <span class="hsn-d dl">Đối lập</span>' : '') + '</summary>' +
-        (k.cau ? '<p class="muted">' + esc(k.cau) + '</p>' : '') + ds.map(hsnSk).join('') + '</details>';
+      return '<details class="hsn-khoi" id="hsn-' + k.k + '"' + (!H.khoa && !k.khoa && i < 2 ? ' open' : '') + '><summary><i>' + k.icon + '</i> ' + esc(k.ten) + ' <span class="hsn-nhan ' + k.huong + '">' + esc(k.nhan) + '</span>' + (k.doiLap ? ' <span class="hsn-d dl">Đối lập</span>' : '') + (k.khoa ? ' <span class="hsn-mo">🔒</span>' : '') + '</summary>' +
+        (k.cau ? '<p class="muted">' + esc(k.cau) + '</p>' : '') + ds.map(hsnSk).join('') +
+        (k.khoa && k.cd ? '<p class="hsn-cd-moi">Chi tiết từng việc của khía cạnh này nằm trong chủ đề <b>' + esc(cdTen(k.cd)) + '</b>. <a href="#ncd-' + esc(k.cd) + '" data-ncd-den="' + esc(k.cd) + '">Xem chủ đề →</a></p>' : '') + '</details>';
     }).join('');
-    var khoa = H.khoa ? theKhoa('Hồ sơ biến cố năm ' + H.nam + ' chưa mở', 'Đủ 19 sự kiện với mức tín hiệu từng việc, hệ nào ủng hộ – hệ nào ngược chiều, vì sao, tháng nào cần để ý và nên làm gì. Đã gồm trong vận năm ' + H.nam + '.',
+    var khoa = H.khoa ? theKhoa('Năm ' + H.nam + ': bức tranh chung chưa mở', 'Mỗi hệ góp phần mạnh nhất, kế hoạch hành động cả năm và một dòng tóm tắt cho từng chủ đề. Chi tiết từng việc nằm trong 4 chủ đề năm ' + H.nam + ' bên dưới.',
       nutNam(H.nam) + nutDongHanh(H.nam), 'Mở một lần, xem lại bao nhiêu lần cũng được.') : '';
     var coSo = H.coSo ? '<details class="hsn-coso"><summary>Cách tính mức tín hiệu và đồng thuận</summary><p>' + esc(H.coSo) + '</p></details>' : '';
     // Mỗi hệ góp phần mạnh nhất (không luận hệ này theo hệ kia)
     var gn = H.gocNhin && H.gocNhin.length ? '<div class="gn"><h4 class="hsn-h4">Mỗi hệ góp phần mình giỏi nhất</h4><div class="gn-luoi">' + H.gocNhin.map(function (x) {
-      return '<div class="gn-the"><b>' + esc(x.he) + '</b><small>' + esc(x.vai) + '</small>' + (x.y ? '<p>' + esc(x.y) + '</p>' : '<p class="muted">🔒 Mở vận năm để xem.</p>') + '</div>'; }).join('') + '</div></div>' : '';
+      return '<div class="gn-the"><b>' + esc(x.he) + '</b><small>' + esc(x.vai) + '</small>' + (x.y ? '<p>' + esc(x.y) + '</p>' : '<p class="muted">🔒 Có trong bức tranh chung của năm.</p>') + '</div>'; }).join('') + '</div></div>' : '';
     var hd = H.hanhDong && H.hanhDong.length ? '<div class="hd-ke"><h4 class="hsn-h4">Kế hoạch hành động năm ' + H.nam + '</h4><ol>' + H.hanhDong.map(function (x) {
       return '<li class="hsn-l-' + x.loai + '"><b>' + esc(x.ngan) + '</b> <span class="muted">' + x.p + '% · ' + esc(x.dong.toLowerCase()) + '</span>' + (x.khi ? '<div><i>Khi nào:</i> ' + esc(x.khi) + ' (theo các hệ có lịch tháng).</div>' : '') +
         '<div><i>' + (x.loai === 'xau' ? 'Cách phòng:' : 'Nên làm:') + '</i> ' + esc(x.lam) + '</div>' + (x.hd ? '<div><i>Theo cách hành động của bạn (Human Design):</i> ' + esc(x.hd) + '.</div>' : '') +
@@ -4678,6 +4840,45 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
     var than = hcH + tom + he + gn + hd + luoi + khoa + khoi + cau + coSo;
     if (opt.than) return '<div class="panel section hsn">' + than + '</div>';
     return dau + than + '</div></div>';
+  }
+  /* ---------- 4 CHỦ ĐỀ NĂM (HoiTu.gs › htNamCd_, ThanhToan.gs › ttGanNamCd_ – 17/11): mỗi chủ đề một phần 9 xu (nam_cd:<cd>:<năm>) ---------- */
+  var CD_THU_TU = ['cv', 'tien', 'tc', 'sk'];
+  function cdTen(k) { var r = state.result, o = r && r.namCd && r.namCd[k]; return o ? o.ten : TEN_CD[k] || k; }
+  function cdThang(a) { return a.map(function (m) { return 'tháng ' + m; }).join(', '); }
+  function namCdHtml(res) {
+    var C = res.namCd; if (!C) return '';
+    var ds = CD_THU_TU.map(function (k) { return C[k]; }).filter(Boolean); if (!ds.length) return '';
+    var vy = ds[0].nam || res.tuvi.info.viewYear, toan = toanQuyen(), q = res.quyen || {}, v = res.vanTom || {};
+    var H = res.moRong && res.moRong.tongHop && res.moRong.tongHop.hoSoNam, SK = {};
+    ((H && H.suKien) || []).forEach(function (x) { SK[x.k] = x; });
+    var mo = ds.filter(function (o) { return o.co; }).length, gia = ds[0].gia != null ? ds[0].gia : giaPhan('nam_cd').xu;
+    var coDh = toan || !!(q.dhNam && q.dhNam[vy]), phan = (v.coNam || coDh ? 1 : 0) + mo, dh = giaNangCap('dong_hanh', vy);
+    var tienDo = '';
+    if (!toan) tienDo = '<div class="ncd-tien"><div class="ncd-bar" role="progressbar" aria-valuemin="0" aria-valuemax="5" aria-valuenow="' + phan + '" aria-label="Số phần đã mở của năm ' + vy + '"><i style="width:' + Math.round(phan / 5 * 100) + '%"></i></div>' +
+      '<span>' + (phan >= 5 || coDh ? '✓ Bạn đã mở trọn năm ' + vy + '.' : 'Bạn đã mở <b>' + phan + '/5</b> phần của năm ' + vy + ' (bức tranh chung + 4 chủ đề)' +
+        (dh ? ' · <button type="button" class="btn-chu" data-mua="dong_hanh|' + vy + '">Mở trọn năm ' + (dh.tru ? 'thêm ' : '· ') + fmtXu(dh.gia) + '</button>' : '')) + '</span></div>';
+    var moDau = -1;
+    var the = ds.map(function (o, i) {
+      var dau = '<i aria-hidden="true">' + esc(o.icon || '✦') + '</i><b>' + esc(o.ten) + '</b><span class="hsn-nhan ' + esc(o.huong || '') + '">' + esc(o.nhan || '') + '</span>';
+      if (!o.co) {
+        var moi = o.tom ? esc(o.tom) : (o.soSuKien ? 'Có ' + o.soSuKien + ' việc đáng để ý trong năm. ' : '') + 'Diễn biến cả năm, tháng thuận, tháng cần để ý, các hệ cùng nhìn ra sao và 3 việc nên làm.';
+        return '<article class="ncd-the khoa ' + esc(o.huong || '') + '" id="ncd-' + esc(o.k) + '"><div class="ncd-dau">' + dau + '</div><p class="ncd-tom">' + moi + '</p>' +
+          '<button type="button" class="btn btn-phu btn-sm ncd-mua" data-mua="nam_cd|' + esc(o.id || (o.k + ':' + vy)) + '" aria-label="Mở chủ đề ' + esc(o.ten) + ' năm ' + vy + ', ' + fmtXu(o.gia != null ? o.gia : gia) + '">🔒 Mở · ' + fmtXu(o.gia != null ? o.gia : gia) + '</button></article>';
+      }
+      if (moDau < 0) moDau = i;
+      var sk = (o.suKien || []).map(function (k) { return SK[k]; }).filter(function (x) { return x && !x.khoa && !x.ngoai; }).slice(0, 5);
+      var items = (o.items || []).filter(Boolean);
+      return '<details class="ncd-the co ' + esc(o.huong || '') + '" id="ncd-' + esc(o.k) + '"' + (moDau === i ? ' open' : '') + '><summary class="ncd-dau">' + dau + '</summary><div class="ncd-than">' +
+        (o.tom ? '<p class="ncd-tom">' + esc(o.tom) + '</p>' : '') + items.map(function (t) { return '<p>' + esc(t) + '</p>'; }).join('') +
+        ((o.thangThuan && o.thangThuan.length) || (o.thangChuY && o.thangChuY.length) ? '<div class="ncd-chip">' + (o.thangThuan && o.thangThuan.length ? '<span class="hsn-h tot"><b>Tháng thuận</b>' + esc(cdThang(o.thangThuan)) + '</span>' : '') +
+          (o.thangChuY && o.thangChuY.length ? '<span class="hsn-h xau"><b>Nên để ý</b>' + esc(cdThang(o.thangChuY)) + '</span>' : '') + '<small class="muted">(tháng âm lịch)</small></div>' : '') +
+        ((o.heUng && o.heUng.length) || (o.heNghich && o.heNghich.length) ? '<div class="hsn-dong">' + (o.heUng || []).map(function (h) { return '<span class="hsn-he up">✓ ' + esc(h) + '</span>'; }).join('') + (o.heNghich || []).map(function (h) { return '<span class="hsn-he dn">✗ ' + esc(h) + '</span>'; }).join('') + '</div>' : '') +
+        (sk.length ? '<h4 class="hsn-h4">Việc đáng để ý</h4><ul class="ncd-sk">' + sk.map(function (x) { return '<li class="hsn-l-' + esc(x.loai) + '"><b>' + esc(x.ngan || x.ten) + '</b>' + (x.muc ? ' <span class="muted">· mức ' + esc(String(x.muc).toLowerCase()) + '</span>' : '') + '</li>'; }).join('') + '</ul>' : '') +
+        (o.khuyen && o.khuyen.length ? '<h4 class="hsn-h4">Việc nên làm</h4><ol class="ncd-viec">' + o.khuyen.map(function (t) { return '<li>' + esc(t) + '</li>'; }).join('') + '</ol>' : '') + '</div></details>';
+    }).join('');
+    return '<div class="tg" data-g="vh-cd" id="vh-cd"><div class="tg-head"><span>1 năm</span><b>4 chủ đề năm ' + vy + '</b><em>Công việc · Tiền bạc · Tình cảm · Sức khỏe' + (toan || mo === 4 ? '' : ' – mỗi chủ đề mở riêng') + '</em></div>' +
+      '<div class="panel section ncd">' + tienDo + '<div class="ncd-luoi">' + the + '</div>' +
+      (toan ? '' : '<p class="muted ncd-ghi">Chủ đề Sức khỏe & nhịp sống chỉ nói về nhịp nghỉ ngơi, áp lực và cách chăm sóc bản thân – không thay lời khuyên của bác sĩ.</p>') + '</div></div>';
   }
   /* ---------- HỒ SƠ 12 THÁNG (VanSau.gs › vsHoSoThang_) ---------- */
   /** Biểu đồ điểm tổng hợp 12 tháng (Tử Vi + Bát Tự + Thần số – htThang_) đặt đầu Hồ sơ tháng */
@@ -4692,7 +4893,7 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
     if (!M || M.loi || !M.thang) return '';
     var dau = '<div class="tg" data-g="vh-hst"><div class="tg-head"><span>12 tháng</span><b>Hồ sơ từng tháng năm ' + M.nam + '</b><em>4 hệ có lịch tháng · 19 sự kiện · mốc thiên văn trong tháng</em></div><div class="panel section hst">';
     if (M.khoa) return dau + hstBars(res) + '<div class="hst-khoa">' + M.thang.map(function (m) { return '<span class="hst-m' + (m.nay ? ' nay' : '') + '"><b>Tháng ' + m.thang + '</b>' + esc(m.canChi) + '<em>' + esc(m.danhGia || '') + '</em></span>'; }).join('') + '</div>' +
-      theKhoa('Hồ sơ 12 tháng năm ' + M.nam + ' chưa mở', 'Mỗi tháng: việc dễ đến, việc cần phòng, hệ nào đồng thuận – hệ nào ngược chiều, các mốc ngày cụ thể (khởi đầu tốt, điểm ngoặt, giai đoạn dễ trục trặc giấy tờ) và cơ sở từng hệ. Đã gồm trong vận năm ' + M.nam + '.', nutNam(M.nam) + nutDongHanh(M.nam)) + '</div></div>';
+      theKhoa('Hồ sơ 12 tháng năm ' + M.nam + ' chưa mở', 'Mỗi tháng: việc dễ đến, việc cần phòng, hệ nào đồng thuận – hệ nào ngược chiều, các mốc ngày cụ thể (khởi đầu tốt, điểm ngoặt, giai đoạn dễ trục trặc giấy tờ) và cơ sở từng hệ. Có trong bức tranh chung năm ' + M.nam + '.', nutNam(M.nam) + nutDongHanh(M.nam)) + '</div></div>';
     var bars = hstBars(res);
     // Bảng nhiệt: sự kiện × tháng
     var ds = M.suKien.filter(function (x) { return Math.max.apply(null, x.rel) >= 1.5; });
@@ -4758,11 +4959,12 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
         (v.coNam ? '' : theKhoa('Vận năm ' + vy + ' chưa mở', res.moRong && res.moRong.tongHop && res.moRong.tongHop.namNay ? hl(String(res.moRong.tongHop.namNay.ketLuan[0] || '')) + ' Vì sao, lĩnh vực nào mở, lĩnh vực nào cần phòng – và 12 tháng cụ thể?' : '',
           nutNam(vy) + nutDongHanh(vy), 'Mở một lần, xem lại bao nhiêu lần cũng được.')) + '<div id="vh-slot-nam"></div></div>';
     }
+    html += namCdHtml(res);
     html += hstHtml(res);
     var tn = thangNhatVan(res), tt = tn.split('-');
     html += '<div class="tg" data-g="vh-ngay"><div class="tg-head"><span>1 tháng</span><b>Nhật vận – lịch từng ngày</b><em>Ngày hoàng đạo, ngày cá nhân, ngày nên ký kết – nên nghỉ</em></div>' +
       (v.coThang ? '' : theKhoa('Nhật vận tháng ' + (+tt[1]) + '/' + tt[0] + ' chưa mở', 'Mỗi ngày một lời khuyên: nên gặp đối tác, nên ký giấy tờ, hay nên nghỉ ngơi. Đổi "Ngày xem nhật vận" trong tùy chọn để xem tuần khác trong tháng.',
-        nutMua('thang|' + tn, 'Mở tháng ' + (+tt[1]) + ' · ' + fmtXu(giaPhan('thang').xu)) + nutDongHanh(+tt[0]), 'Gói Đồng hành cả năm đã gồm nhật vận cả 12 tháng.')) + '<div id="vh-slot-ngay"></div></div>';
+        nutMua('thang|' + tn, 'Mở tháng ' + (+tt[1]) + ' · ' + fmtXu(giaPhan('thang').xu)) + nutDongHanh(+tt[0]), 'Gói Đồng hành năm đã gồm lịch từng ngày cả 12 tháng.')) + '<div id="vh-slot-ngay"></div></div>';
     pg.innerHTML = html;
     // Chuyển nội dung đã dựng ở tab khác về đây
     function dua(sel, dich) { var d = $(dich); if (!d) return; document.querySelectorAll(sel).forEach(function (el) { if (el.classList.contains('van-page')) el.classList.add('active'); d.appendChild(el); }); }
@@ -4794,6 +4996,9 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
     var p7 = Array.prototype.filter.call(document.querySelectorAll('#vh-slot-nam > .panel'), function (x) { return /7 ngày tới/.test((x.querySelector('.panel-title') || {}).textContent || ''); })[0];
     if (p7 && $('vh-slot-ngay')) $('vh-slot-ngay').insertBefore(p7, $('vh-slot-ngay').firstChild);
     pg.querySelectorAll('[data-mo-sk]').forEach(function (b) { b.addEventListener('click', function () { if (typeof moForm === 'function') moForm(); var w = $('evWrap'); if (w) { w.open = true; setTimeout(function () { w.scrollIntoView({ behavior: 'smooth', block: 'center' }); }, 250); } }); });
+    pg.querySelectorAll('[data-ncd-den]').forEach(function (a) {
+      a.addEventListener('click', function (e) { e.preventDefault(); var el = $('ncd-' + a.getAttribute('data-ncd-den')); if (el) { if (el.tagName === 'DETAILS') el.open = true; cuonToi(el); } });
+    });
     pg.querySelectorAll('.hsn-kc[data-hsn]').forEach(function (a) {
       a.addEventListener('click', function () { var el = $('hsn-' + a.getAttribute('data-hsn')); if (el) { el.open = true; cuonToi(el); } });
     });
@@ -4810,7 +5015,7 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
     return '<details class="lg-block dv-khoa" id="dv-' + i + '"' + (d.isNow ? ' open' : '') + '><summary><span class="lg-t">Đại vận ' + esc(d.khoang) + (d.isNow ? ' ★ hiện tại' : '') + '</span><span class="lg-meta">Cung ' + esc(d.cung) + ' · năm ' + esc(String(d.nam)) + '</span>' +
       '<span class="rate ' + rateClass(d.diem) + '">' + esc(d.danhGia) + '</span></summary><div class="lg-body">' +
       theKhoa('Lời luận 10 năm này đang khóa', (qua ? 'Vận đã qua – mở để <b>tự kiểm chứng</b>: những gì bạn đã trải qua có khớp không?' : d.isNow ? 'Đây là 10 năm bạn đang sống. Biết sớm năm bản lề giúp bạn đi đúng nhịp.' : 'Chuẩn bị trước cho 10 năm sắp tới: cơ hội đến từ đâu, rủi ro nằm ở đâu.') +
-        ' Gồm: tóm tắt 10 năm, Tứ Hóa đại vận, cung chức, sao đại vận, lời khuyên.', nutMua('dai_van|' + bd, (qua ? 'Kiểm chứng · ' : 'Mở vận này · ') + fmtXu(g.xu)) + nutMua('tron_dai_van', 'Trọn 12 vận · ' + fmtXu(giaPhan('tron_dai_van').xu), 'btn-ghost')) + '</div></details>';
+        ' Gồm: tóm tắt 10 năm, Tứ Hóa đại vận, cung chức, sao đại vận, lời khuyên.', nutMua('dai_van|' + bd, (qua ? 'Kiểm chứng · ' : 'Mở vận này · ') + fmtXu(g.xu))) + '</div></details>';
   }
   /** Bảng giá bậc thang (bản giới hạn & thẻ mở khóa) */
   function bangGiaHtml(res) {
@@ -4819,7 +5024,7 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
     return '<div class="gia-bac">' +
       '<div class="gb gb-hot"><i>Trọn đời lá số này</i><b>Trọn đời</b><div class="gb-gia">' + giaHtml('tron_goi') + '</div><ul><li><b>12 đại vận cả đời</b></li><li>Những năm đáng chú ý (30 năm)</li><li>Người phối ngẫu & tuổi hợp</li><li>PDF đầy đủ</li></ul>' + nutMua('tron_goi', 'Mở Trọn đời') + '</div>' +
       hoiVienTheHtml() +
-      '<div class="gb"><b>Gia đình</b><div class="gb-gia">' + giaHtml('gia_dinh_3') + ' <small>/ 3 người</small></div><ul><li>Mỗi lượt: Đồng hành cả năm (vận năm + 12 tháng + nhật vận)</li><li>Dùng cho bố mẹ, vợ chồng, con cái</li><li>5 người: ' + fmtXu(g5.xu) + '</li></ul>' +
+      '<div class="gb"><b>Gia đình</b><div class="gb-gia">' + giaHtml('gia_dinh_3') + ' <small>/ 3 người</small></div><ul><li>Mỗi lượt: Đồng hành năm (bức tranh chung, 4 chủ đề, 12 tháng)</li><li>Dùng cho bố mẹ, vợ chồng, con cái</li><li>5 người: ' + fmtXu(g5.xu) + '</li></ul>' +
         (ve && res.canMo ? '<button type="button" class="btn btn-primary btn-sm" data-dung-ve>Dùng 1 lượt (còn ' + ve + ')</button>' : nutMua('gia_dinh_3', 'Mua gói 3 người') + nutMua('gia_dinh_5', '5 người', 'btn-ghost')) + '</div></div>';
   }
   function renderTong(res) {
@@ -7008,14 +7213,14 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
     cls = cls || 'gb';
     var han = hoiVienHan(), g = giaPhan('hoi_vien');
     if (han) return '<div class="' + cls + ' hv-co"><b>Hội viên năm</b><span>Còn hiệu lực đến ' + ngayVn(han) + '</span><p>Vận năm, 12 tháng và nhật vận đã mở cho mọi lá số của bạn.</p></div>';
-    if (!g.xu) return '';
+    if (!g.xu || g.an) return '';   // 17/11: gói Hội viên thôi bán (an: true) – chỉ hiện quyền của người đã mua
     return '<div class="' + cls + ' hv"><i>Cho cả gia đình</i><b>Hội viên năm</b>' + (cls === 'gb' ? '<div class="gb-gia">' + giaHtml('hoi_vien') + ' <small>/ 12 tháng</small></div>' : '<span>12 tháng · mọi lá số</span>') +
       (cls === 'gb' ? '<ul><li>Vận năm, 12 tháng, nhật vận</li><li>Cho <b>mọi lá số</b> bạn lập trong 12 tháng</li><li>Mở theo tài khoản, không theo lá số</li></ul>' : '<p>Vận năm, 12 tháng, nhật vận cho mọi lá số trong 12 tháng.</p>') +
       nutMua('hoi_vien', 'Hội viên · ' + fmtXu(g.xu), cls === 'gb' ? 'btn-primary' : 'btn-phu') + '</div>';
   }
   /** Thẻ khóa nhỏ cho lời luận đại vận chưa mở trong tab Bát Tự / Hà Lạc / Dự đoán (máy chủ chỉ để 1 dòng khóa) */
   function khoaDvNhoHtml() {
-    return '<div class="khoa-nho"><span>🔒 Lời luận chi tiết của giai đoạn này nằm trong phần Vận hạn (từng đại vận, 12 đại vận hoặc Trọn đời).</span>' +
+    return '<div class="khoa-nho"><span>🔒 Lời luận chi tiết của giai đoạn này nằm trong phần Vận hạn (từng đại vận hoặc Trọn đời).</span>' +
       '<button type="button" class="btn btn-phu btn-sm" data-den="vh">Xem phần vận hạn →</button></div>';
   }
   /** Huy hiệu đại vận đã qua gần nhất – miễn phí cho tài khoản để tự kiểm chứng */
@@ -7032,7 +7237,7 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
   /** Có lời mời/thẻ mua nào đang hiện trong vùng nhìn không → thanh đáy nhường (mỗi màn tối đa 1 lời mời) */
   function coLoiMoiDangHien() {
     var pg = document.querySelector('.tab-page.active'); if (!pg) return false;
-    var ds = pg.querySelectorAll('.tl-moi, .th6-cta, .lock-cta, .khoa-gd, .khoa-phan, .ud-row, .gia-bac, .moi-ban, .khoa-nho'), H = window.innerHeight;
+    var ds = pg.querySelectorAll('.tl-moi, .th6-cta, .lock-cta, .khoa-gd, .khoa-phan, .ud-row, .gia-bac, .moi-ban, .khoa-nho, .ncd-the.khoa, .ncd-tien, .gd-qh-khoa'), H = window.innerHeight;
     for (var i = 0; i < ds.length; i++) { var r = ds[i].getBoundingClientRect(); if (r.height && r.top < H && r.bottom > 0) return true; }
     return document.body.getAttribute('data-tab') === 'toi';
   }
@@ -7081,7 +7286,7 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
     }).join('') + '<button type="button" class="tl-o tl-o-th" data-di-tab="tong"><b>Tổng hợp 6 hệ</b><span>Điều nhiều hệ cùng nói – 9 lĩnh vực' + (tongKhoa(res) ? ' · miễn phí khi có tài khoản' : '') + '</span></button></div>' +
       '<p class="tl-nc">Không chắc giờ sinh? <button type="button" class="btn-chu" data-mo-nc>Kiểm chứng 2 phút →</button></p></section>';
     if (!state.token) h += '<section class="panel tl-the tl-moi"><b>Lưu lá số – tạo tài khoản miễn phí</b><p>Tài khoản miễn phí: lưu lá số, đọc Tổng hợp 6 hệ, tự nghiệm chứng và dò giờ sinh.</p>' +
-      '<div class="kg-nut"><button type="button" class="btn btn-primary" data-dang-ky>Tạo tài khoản miễn phí</button><button type="button" class="btn-chu" data-login>Đã có tài khoản? Đăng nhập</button></div></section>';
+      '<div class="kg-nut"><button type="button" class="btn btn-primary" data-dang-ky>' + nhanDK() + '</button><button type="button" class="btn-chu" data-login>Đã có tài khoản? Đăng nhập</button></div></section>';
     h += '</div>';   // dòng lưu ý cổ học đã có ở chân trang
     pg.innerHTML = h;
   }
@@ -7092,12 +7297,14 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
     if (u) {
       h += '<section class="panel toi-tk"><div class="toi-av" aria-hidden="true">' + esc(String(u.hienThi || u.ten).trim().charAt(0).toUpperCase()) + '</div><div class="toi-nd"><b>' + esc(u.hienThi || u.ten) + '</b><span>' + esc(VAI_TRO[u.vaiTro] || u.vaiTro) +
         (!toanQuyen() && state.soDu != null ? ' · số dư <b class="so">' + fmtXu(state.soDu) + '</b>' : '') + '</span>' +
-        (toanQuyen() ? '' : '<span class="toi-hv">' + (han ? '★ Hội viên năm đến <b>' + ngayVn(han) + '</b>' : 'Chưa là Hội viên năm') + '</span>') + '</div>' +
+        (toanQuyen() || !han ? '' : '<span class="toi-hv">★ Hội viên năm đến <b>' + ngayVn(han) + '</b></span>') + '</div>' +
         '<div class="toi-nut"><button type="button" class="btn btn-phu btn-sm" data-toi="vi">Ví & tài khoản</button>' + (toanQuyen() ? '' : '<button type="button" class="btn btn-phu btn-sm" data-nap>＋ Nạp xu</button>') + '</div></section>';
-      if (!toanQuyen() && !han) h += '<section class="panel toi-hv-the">' + hoiVienTheHtml('ud') + '</section>';
+      if (!toanQuyen() && u.daXacThuc === false) { var qx = quaXacThuc();
+        h += '<section class="panel toi-xt"><div class="toi-xt-ic" aria-hidden="true">✉</div><div class="toi-nd"><b>' + (qx ? 'Xác thực email – nhận ' + qx + ' xu' : 'Xác thực email') + '</b><span>' + (qx ? 'Nhập mã 6 số gửi tới email của bạn. Quà dùng để mở các phần lẻ như chủ đề năm, tháng của bạn.' : 'Giữ tài khoản an toàn và khôi phục được khi quên mật khẩu.') + '</span></div>' +
+          '<div class="toi-nut"><button type="button" class="btn btn-primary btn-sm" data-xac-thuc>Xác thực ngay</button></div></section>'; }
     } else {
       h += '<section class="panel toi-tk toi-khach"><div class="toi-nd"><b>Bạn chưa đăng nhập</b><span>Tài khoản miễn phí: lưu lá số, đọc Tổng hợp 6 hệ, tự nghiệm chứng và dò giờ sinh.</span></div>' +
-        '<div class="toi-nut"><button type="button" class="btn btn-primary btn-sm" data-dang-ky>Tạo tài khoản miễn phí</button><button type="button" class="btn btn-phu btn-sm" data-login>Đăng nhập</button></div></section>';
+        '<div class="toi-nut"><button type="button" class="btn btn-primary btn-sm" data-dang-ky>' + nhanDK() + '</button><button type="button" class="btn btn-phu btn-sm" data-login>Đăng nhập</button></div></section>';
     }
     var muc = [];
     if (r) muc.push(['data-sua-form', '✎', 'Sửa thông tin', 'Đổi ngày giờ sinh của lá số đang xem'], ['data-la-so-moi', '＋', 'Lá số mới', 'Lập cho người thân, người thương'],
@@ -7429,7 +7636,7 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
     box.hidden = false;
     box.innerHTML = '<div class="nc-moi"><b>Tự kiểm chứng lá số – miễn phí với tài khoản</b>' +
       '<p>Bạn chấm 8 đoạn mô tả ngắn theo cuộc đời thật của mình; hệ thống cho biết lá số có đúng giờ sinh của bạn không. Tạo tài khoản chỉ mất 30 giây.</p>' +
-      '<div class="kg-nut"><button type="button" class="btn btn-primary" data-dang-ky data-sau-nc data-dong="ncModal">Tạo tài khoản miễn phí</button>' +
+      '<div class="kg-nut"><button type="button" class="btn btn-primary" data-dang-ky data-sau-nc data-dong="ncModal">' + (window.tccNhanDK ? window.tccNhanDK() : 'Tạo tài khoản miễn phí') + '</button>' +
       '<button type="button" class="btn btn-phu" data-login data-sau-nc data-dong="ncModal">Đăng nhập</button></div></div>';
     ['ncBuoc1', 'ncBuoc2', 'ncBuoc3'].forEach(function (id) { var el = $(id); if (el) el.style.display = 'none'; });
     $('ncModal').classList.add('show');
@@ -7592,7 +7799,7 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
     var h;
     if (kq.ketLuan === 'CHUA_DU') return '<div class="nc-phieu mid"><b>Chưa đủ để kết luận.</b> ' + esc(kq.khuyen) + '</div>';   // 16/11: phải chấm đủ 8 nhóm
     if (kq.ketLuan === 'XAC_NHAN') h = '<div class="nc-phieu ok"><b>🎯 Giờ sinh của bạn đáng tin.</b> Lá số này đúng là "của bạn" – phần luận giải chi tiết và vận hạn sẽ bám sát cuộc đời bạn.' +
-      '<div class="kg-nut">' + (!tt.dangNhap ? nut('data-dang-ky', 'Tạo tài khoản miễn phí') : tt.khach ? nut('data-den="tong"', 'Đọc Tổng hợp 6 hệ') + nut('data-mua="tron_goi"', 'Trọn đời · ' + tt.giaTron + ' xu', 'btn-ghost') : nut('data-den="vh"', '⏳ Xem vận hạn của bạn')) + '</div></div>';
+      '<div class="kg-nut">' + (!tt.dangNhap ? nut('data-dang-ky', window.tccNhanDK ? window.tccNhanDK() : 'Tạo tài khoản miễn phí') : tt.khach ? nut('data-den="tong"', 'Đọc Tổng hợp 6 hệ') + nut('data-mua="tron_goi"', 'Trọn đời · ' + tt.giaTron + ' xu', 'btn-ghost') : nut('data-den="vh"', '⏳ Xem vận hạn của bạn')) + '</div></div>';
     else if (kq.ketLuan === 'CO_THE_DUNG') h = '<div class="nc-phieu mid"><b>⚠ Có thể lệch giờ sinh.</b> Hay gặp khi sinh sát ranh giới hai giờ (±15 phút) hoặc giờ được nhớ ước lượng. Thử các giờ lân cận miễn phí, hoặc để hệ thống dò đủ 12 giờ theo các sự kiện bạn đã trải qua.' +
       '<div class="kg-nut">' + thuGio + (doGio || nut('data-mua="do_gio"', '🔍 Dò chính xác giờ sinh · ' + tt.giaDoGio + ' xu')) + '</div></div>';
     else h = '<div class="nc-phieu bad"><b>✋ Lá số chưa khớp với bạn.</b> Có hai khả năng: giờ sinh chưa đúng, hoặc <b>phương pháp luận của chúng tôi không phù hợp với bạn</b>. Hãy thử giờ lân cận' + (tt.coBan ? ' hoặc dò giờ theo sự kiện' : '') +

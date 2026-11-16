@@ -272,6 +272,30 @@ var VS_THE_MANH = {
   'Human Design': 'chỉ cách hành động và ra quyết định cho đúng với bản thân – "làm thế nào", không đoán "việc gì"'
 };
 var VS_DG = { 'Đại cát': 2, 'Cát': 1, 'Bình': 0, 'Hơi kém': -1, 'Cẩn trọng': -2 };
+/* "Việc nên làm trong 10 năm này" (content-creator 16/11/2026) – ghép theo mức của vận × độ tuổi × năm đỉnh × năm bản lề × cách làm Human Design.
+ * Độ tuổi theo tuổi mụ đầu vận: 0 dưới 18, 1 18–29, 2 30–44, 3 45–59, 4 từ 60. Không tên sao, không %, không chẩn đoán. */
+var VS_VIEC10 = {
+  tot: ['nuôi dưỡng điều con thích nhất: một môn học, một năng khiếu, một thói quen đọc sách', 'thử nhiều việc, học nhanh và chọn lấy một hướng đi để dồn sức', 'mở rộng những gì đã vững: nhận trách nhiệm lớn hơn, đầu tư vào kỹ năng và các mối quan hệ tốt',
+    'củng cố thành quả, làm việc mình giỏi nhất và bắt đầu truyền lại kinh nghiệm', 'sống thong thả, làm điều mình yêu thích và giữ gần những người thân thương'],
+  vua: ['giữ nếp học và nếp sinh hoạt đều đặn – nền móng quan trọng hơn thành tích', 'học đều, làm đều và tích lũy từng chút – mười năm đều tay sẽ đi xa hơn một năm bứt tốc', 'làm sâu những gì đang có thay vì mở thêm quá nhiều việc mới',
+    'chọn lọc lại việc và người, giữ những gì thật sự quan trọng', 'giữ nhịp sống đều, vận động nhẹ mỗi ngày và chăm lo các mối quan hệ gần'],
+  xau: ['cho con nhiều thời gian chơi, nghỉ và được lắng nghe – bớt áp lực thành tích', 'xây nền vững trước: kỹ năng, sức khỏe, một khoản dự phòng – chưa cần vội chứng tỏ', 'giữ chắc những gì đã có, chia nhỏ mục tiêu và nhờ người đúng lúc thay vì gánh một mình',
+    'sống chậm lại, sắp xếp lại việc và giữ sức cho những năm sau', 'nghỉ ngơi đủ, giữ nếp sinh hoạt điều độ và để người thân cùng chia việc']
+};
+function vsViec10_(C, d, huong, dinh, banLe) {
+  var t = parseInt(d.khoang, 10) || 30, i = t < 18 ? 0 : t < 30 ? 1 : t < 45 ? 2 : t < 60 ? 3 : 4, ds = [];
+  ds.push((huong === 'tot' ? 'Dùng giai đoạn thuận này để ' : huong === 'xau' ? 'Coi đây là giai đoạn xây nền: ' : 'Giai đoạn này hợp để ') + VS_VIEC10[huong][i] + '.');
+  var tot = (dinh || []).filter(function (x) { return x.loai !== 'xau'; }).sort(function (a, b) { return b.rel - a.rel; })[0];
+  var xau = (dinh || []).filter(function (x) { return x.loai === 'xau'; }).sort(function (a, b) { return b.rel - a.rel; })[0];
+  if (tot) ds.push(tot.k === 'cuoiHoi' || tot.k === 'conCai' || tot.k === 'quenMoi' ? 'Nếu bạn có dự định riêng về chuyện gia đình, quanh năm ' + tot.nam + ' là lúc không khí thuận nhất – còn quyết định lúc nào là của bạn.' :
+    'Chuẩn bị từ sớm cho ' + tot.ngan + ' – năm ' + tot.nam + ' là lúc nổi bật nhất; bắt đầu chuẩn bị từ một, hai năm trước để đón trọn.');
+  if (xau) { var S = HSN_SK.filter(function (s) { return s.k === xau.k; })[0]; ds.push('Quanh năm ' + xau.nam + ', chủ động phòng chuyện ' + xau.ngan + (S ? ': ' + S.khuyen.charAt(0).toLowerCase() + S.khuyen.slice(1) : '.')); }
+  if (ds.length < 3 && banLe) ds.push('Năm ' + banLe + ' là năm bản lề, nhiều việc cùng đến: đừng dồn các quyết định lớn vào cùng một lúc, xếp việc theo thứ tự ưu tiên từ cuối năm trước.');
+  var hd = (C.hd && VS_HD_LAM[C.hd.loai]) || null;
+  if (ds.length < 3 && hd) ds.push('Cách làm hợp với bạn suốt giai đoạn này: ' + hd[0] + '.');
+  if (ds.length < 3) ds.push('Mỗi năm trong giai đoạn, chọn một mục tiêu chính và nhìn lại vào dịp cuối năm – mười năm sẽ là mười bước rõ ràng.');
+  return 'Việc nên làm trong 10 năm này: ' + ds.slice(0, 3).map(function (x, k) { return '(' + (k + 1) + ') ' + x; }).join(' ');
+}
 function vsDaiVan_(C, luoi, namTin) {
   var tv = C.tv, bt = C.bt, y0 = tv.info.solar.year, out = [];
   var idx = {}; namTin.forEach(function (n, i) { idx[n.nam] = i; });
@@ -330,6 +354,7 @@ function vsDaiVan_(C, luoi, namTin) {
     if (soTot && soXau) tom.push(he.filter(function (x) { return x.huong === 'tot'; }).map(function (x) { return x.he; }).join(', ') + ' thấy thuận; ' + he.filter(function (x) { return x.huong === 'xau'; }).map(function (x) { return x.he; }).join(', ') + ' thấy thử thách – thường nghĩa là giai đoạn có cơ hội lớn nhưng phải trả giá bằng công sức hoặc biến động; chọn đúng năm để tiến.');
     if (dinh.length) tom.push('Các năm đỉnh: ' + dinh.map(function (x) { return x.ngan + ' ' + x.nam; }).join(', ') + '.');
     if (dem[banLe] >= 2) tom.push('Năm bản lề của vận: ' + banLe + ' (' + dem[banLe] + ' việc cùng nổi lên).');
+    tom.push(vsViec10_(C, d, soTot > soXau ? 'tot' : soXau > soTot ? 'xau' : 'vua', dinh, dem[banLe] >= 2 ? banLe : null));
     moc.sort(function (a, b) { return a.nam - b.nam; });
     var namDoi = moc.filter(function (m) { return m.he !== 'Tử Vi' && m.he !== 'Chiêm tinh'; }).map(function (m) { return m.nam; });
     var lech = namDoi.length ? 'Các hệ chia giai đoạn theo cách riêng nên mốc đổi vận không trùng nhau: Tử Vi tính đại hạn 10 năm theo cục và tuổi mụ; Bát Tự tính từ số ngày đến tiết khí kế tiếp (3 ngày = 1 năm); Hà Lạc theo vận hào 6 hoặc 9 năm; Thần số theo đỉnh cao. ' +

@@ -227,16 +227,64 @@ function phoiNgauLuan_(C) {
     'Tính cách: ' + tinhCach.slice(0, 3).join('; ') + '.',
     'Chênh lệch tuổi: ' + (T > 0.6 ? (male ? 'vợ' : 'chồng') + ' có xu hướng lớn tuổi hơn hoặc chín chắn vượt tuổi' : T > 0.2 ? (male ? 'vợ có xu hướng ngang tuổi hoặc tính cách già dặn' : 'chồng có xu hướng lớn hơn vài tuổi') : T < -0.3 ? (male ? 'vợ có xu hướng kém tuổi' : 'chồng có xu hướng bằng tuổi hoặc trẻ hơn') : 'có xu hướng chênh ít tuổi') + ' (' + dong(tuoiP, T || 1) + ' dấu hiệu cùng chiều).',
     'Nơi/cách gặp: ' + PN_NHA7[r7.nha] + '; hướng cung Phu Thê là ' + PN_HUONG_CHI[pt.chi] + ' (so với nơi ở của bạn).',
-    'Chất lượng hôn nhân: ' + (Q > 0.8 ? 'rất tốt – phối ngẫu là phúc tinh' : Q > 0.2 ? 'khá – hòa thuận, có vun đắp thì bền' : Q > -0.4 ? 'trung bình – có lúc thăng trầm, cần nhẫn nại và giao tiếp' : 'cần nhiều thấu hiểu – nên tìm hiểu kỹ, nói chuyện thẳng thắn và học cách dung hòa') + ' (điểm tổng ' + (Math.round(Q * 10) / 10) + ').',
+    'Chất lượng hôn nhân: ' + (Q > 0.8 ? 'rất thuận – người bạn đời dễ là nguồn may mắn và chỗ dựa của bạn' : Q > 0.2 ? 'khá – hòa thuận, có vun đắp thì bền' : Q > -0.4 ? 'có lúc lên xuống như mọi đôi lứa – nhẫn nại và trò chuyện thường xuyên giúp hai người vững hơn' : 'cần nhiều thấu hiểu – nên tìm hiểu đủ lâu, nói chuyện thẳng thắn và học cách dung hòa; đây là điều học được, không phải điều định sẵn') + ' (điểm tổng ' + (Math.round(Q * 10) / 10) + ').',
     'Năm tín hiệu cưới hỏi mạnh nhất theo Tử Vi: ' + (tot.join(', ') || 'chưa rõ') + (sap.length ? '. Sắp tới: ' + sap.join(', ') : '') + '.'
   ];
   var hop = pnTuoiThangHop_(C, T);
   kl.push('Tuổi hợp nhất (năm âm lịch): ' + hop.tot.slice(0, 5).map(function (x) { return x.nam + ' ' + x.canChi + ' – ' + x.diem + '/10'; }).join('; ') + '.');
   var ta = hop.thangAm.slice().sort(function (a, b) { return b.diem - a.diem; }).slice(0, 3), tdg = hop.thangDuong.slice().sort(function (a, b) { return b.diem - a.diem; }).slice(0, 3);
   kl.push('Tháng sinh hợp: âm lịch tháng ' + ta.map(function (x) { return x.thang + ' (' + x.chi + ')'; }).join(', ') + '; dương lịch tháng ' + tdg.map(function (x) { return x.thang + ' (' + x.cung + ')'; }).join(', ') + '.');
+  pnVanThem_(kl, { ntDS: CT_CUNG[ds.cung].nt, hanh: nc.chiHanh, nha7: r7.nha, hd: hd, Q: Q, bh: bh[tsGoc_(ts.duongDoi)], hop: hop, sap: sap,
+    que: (qhn || []).filter(function (n) { return n.nam >= namNay; }).map(function (n) { return n.nam; }) });
   he.push({ he: 'Xem tuổi (Bát trạch – Ngũ hành)', items: ['Bản mệnh ' + hop.napAm + ', cung phi ' + hop.cungPhi + ' (' + PN_QUAI_HANH[hop.cungPhi] + ') – ' + (['Khảm', 'Ly', 'Chấn', 'Tốn'].indexOf(hop.cungPhi) >= 0 ? 'Đông tứ mệnh: hợp người cùng Đông tứ mệnh (Khảm, Ly, Chấn, Tốn).' : 'Tây tứ mệnh: hợp người cùng Tây tứ mệnh (Càn, Khôn, Cấn, Đoài).'),
     'Chấm điểm thang 10 theo 5 tiêu chí (mỗi tiêu chí 0–2): ngũ hành nạp âm, thiên can, địa chi, cung phi Bát trạch (Sinh khí/Diên niên tốt nhất), thiên mệnh năm sinh; cộng/trừ theo dụng thần Bát Tự và xu hướng chênh tuổi.'] });
   return { tieuDe: 'Chân dung ' + goi + ' tương lai', ketLuan: kl, nguon: he, chiSo: { tuoi: T, chatLuong: Q, cao: cao, beo: beo }, tuoiHop: hop };
+}
+
+/* ---------- Phần lẻ "Người bạn đời hợp với bạn" (phoi_ngau, 9 xu) – văn thêm 5 phần (content-creator 16/11/2026) ----------
+ * Chân dung · cách nhận ra · tuổi hợp và lý do · cách vun đắp · giai đoạn thuận gặp gỡ. Ghép theo tín hiệu: nguyên tố cung Lặn
+ * (chiêm tinh), hành nhật chi (Bát Tự), loại Human Design, mức gắn bó Q, bài học thần số, tiêu chí chấm tuổi, năm có tín hiệu.
+ * Thêm vào CUỐI ketLuan (giữ nguyên thứ tự các dòng cũ). Không tên sao, không %, không phán định chuyện cưới hỏi. */
+var PN_NT_NET = { 'Lửa': 'sôi nổi, dám nghĩ dám làm, mang lại cảm giác sống động', 'Đất': 'điềm tĩnh, thực tế, nói ít làm nhiều', 'Khí': 'cởi mở, hoạt ngôn, nhiều ý tưởng', 'Nước': 'tinh tế, giàu cảm xúc, biết quan tâm' };
+var PN_HANH_NET = { 'Mộc': 'tử tế, ham học hỏi, biết khích lệ người khác', 'Hỏa': 'ấm áp, nhiệt tình, dễ bộc lộ tình cảm', 'Thổ': 'đáng tin, chịu khó, coi trọng sự ổn định', 'Kim': 'gọn gàng, có nguyên tắc, nói là làm', 'Thủy': 'linh hoạt, sâu sắc, giỏi lắng nghe' };
+var PN_NT_NHAN = { 'Lửa': 'người ấy thường chủ động bắt chuyện, rủ bạn thử điều mới, và bạn thấy mình hăng hái hơn khi ở cạnh', 'Đất': 'người ấy giữ lời, đúng hẹn, quan tâm bằng việc làm cụ thể; ở cạnh người ấy, bạn thấy yên tâm',
+  'Khí': 'người ấy trò chuyện với bạn không biết chán, hai người dễ cùng bật cười vì một chuyện nhỏ', 'Nước': 'người ấy nhớ những điều nhỏ bạn từng kể và nhận ra khi bạn không vui dù bạn chưa nói' };
+var PN_HANH_CAN = { 'Mộc': 'được khích lệ và có chỗ để lớn lên', 'Hỏa': 'được ghi nhận, được khen thật lòng', 'Thổ': 'sự ổn định và những lời hứa được giữ', 'Kim': 'sự rõ ràng và được tôn trọng nguyên tắc', 'Thủy': 'được lắng nghe và có khoảng lặng riêng' };
+var PN_HD_NHAN = { 'Generator': 'bạn có xu hướng thấy một cảm giác "có" rất tự nhiên khi người ấy rủ rê – hăng hái chứ không gượng ép',
+  'Manifesting Generator': 'bạn có xu hướng thấy một cảm giác "có" rất tự nhiên khi người ấy rủ rê, và hai người theo kịp nhịp nhanh của nhau',
+  'Projector': 'người ấy nhìn ra giá trị của bạn và chủ động mời bạn cùng tham gia, chứ không bắt bạn phải chứng tỏ',
+  'Manifestor': 'người ấy không thấy phiền khi bạn tự quyết, chỉ mong được báo trước – và bạn thấy thoải mái khi báo trước',
+  'Reflector': 'sau nhiều tuần ở cạnh người ấy, bạn vẫn thấy mình là chính mình, không phải gồng lên' };
+function pnVanThem_(kl, o) {
+  var hop = o.hop || { tot: [] }, hd = o.hd || {};
+  // 1. Chân dung (tầng 1)
+  kl.push('Chân dung người hợp với bạn: Bạn có xu hướng bị thu hút bởi người ' + (PN_NT_NET[o.ntDS] || 'hài hòa, dễ gần') + ', và hợp lâu dài với người ' + (PN_HANH_NET[o.hanh] || 'chân thành, biết lắng nghe') + '. Hai nét này có thể nằm ở cùng một người, hoặc lộ dần theo thời gian quen biết.');
+  // 2. Cách nhận ra
+  kl.push('Cách nhận ra người ấy: ' + (PN_NT_NHAN[o.ntDS] || 'ở cạnh người ấy, bạn thấy mình được là chính mình') + '. Dễ gặp ' + (PN_NHA7[o.nha7] || 'qua những mối quen thường ngày') + '.');
+  kl.push('Dấu hiệu từ bên trong: ' + (PN_HD_NHAN[hd.loai] || 'bạn thấy nhẹ nhõm chứ không phải gồng lên khi ở cạnh người ấy') + '.' +
+    (hd.thamQuyen === 'emotional' ? ' Đừng vội kết luận trong lúc cảm xúc đang dâng cao; cảm giác đúng sẽ vẫn còn nguyên sau vài tuần.' : ''));
+  // 3. Tuổi hợp và lý do (đọc từ các tiêu chí chấm tuổi)
+  var ly = hop.tot.slice(0, 3).map(function (x) {
+    var ct = (x.chiTiet || []).join(' | '), v = [];
+    if (/^Mệnh:[^|]*tương sinh/.test(ct)) v.push('bản mệnh nâng đỡ nhau'); else if (/^Mệnh:[^|]*cùng hành/.test(ct)) v.push('bản mệnh cùng loại nên dễ đồng cảm');
+    if (/Thiên can:[^|]*(ngũ hợp|tương sinh)/.test(ct)) v.push('cách nghĩ dễ bắt nhịp');
+    if (/Địa chi: (Lục hợp|Tam hợp)/.test(ct)) v.push('hai tuổi thuộc nhóm hợp, ở cạnh thấy dễ chịu');
+    if (/Cung phi:[^|]*(Sinh khí|Diên niên|Thiên y)/.test(ct)) v.push('hợp nếp sống, cùng vun vén nhà cửa dễ thuận');
+    if (/hỷ dụng/.test(ct)) v.push('người ấy mang nguồn năng lượng bạn đang cần');
+    if (/khớp xu hướng tuổi/.test(ct)) v.push('đúng khoảng tuổi lá số của bạn nghiêng về');
+    return 'sinh năm ' + x.nam + ' (' + (x.lech > 0 ? 'kém bạn ' + x.lech + ' tuổi' : x.lech < 0 ? 'hơn bạn ' + (-x.lech) + ' tuổi' : 'cùng tuổi') + '): ' + (v.length ? v.slice(0, 3).join(', ') : 'hài hòa ở nhiều tiêu chí cùng lúc');
+  });
+  if (ly.length) kl.push('Vì sao các tuổi này hợp: ' + ly.join('; ') + '. Tuổi hợp chỉ là gợi ý để tham khảo – điều giữ hai người bền lâu vẫn là cách đối xử với nhau mỗi ngày.');
+  // 4. Cách vun đắp (tầng 2: nhẹ nhàng, có cách làm)
+  kl.push('Cách vun đắp: ' + (o.Q > 0.2 ? 'Bạn có xu hướng có nền tình cảm khá thuận; giữ được nhờ những thói quen nhỏ – hỏi han mỗi ngày, cảm ơn cả những việc nhỏ.' :
+    o.Q > -0.4 ? 'Bạn có xu hướng trải qua tình cảm theo từng giai đoạn lên xuống; một buổi trò chuyện thật lòng mỗi tuần giúp hai người không trôi xa nhau.' :
+    'Bạn có xu hướng cần nhiều thời gian để tin và mở lòng; tìm hiểu đủ lâu, nói rõ mong muốn từ đầu và học cách nhường nhau là cách giữ bền.') +
+    ' Người hợp với bạn thường cần ' + (PN_HANH_CAN[o.hanh] || 'được lắng nghe') + ' – trao cho họ điều đó, bạn sẽ nhận lại nhiều hơn.' + (o.bh ? ' Bài học riêng của bạn trong tình yêu: ' + o.bh + '.' : ''));
+  // 5. Giai đoạn thuận gặp gỡ
+  var nam = (o.sap || []).concat(o.que || []).filter(function (y, i, a) { return a.indexOf(y) === i; }).sort().slice(0, 5);
+  kl.push('Giai đoạn thuận để gặp gỡ: ' + (nam.length ? 'các năm ' + nam.join(', ') + ' có không khí thuận cho quen biết và gắn bó. Nếu đang một mình, đây là lúc hợp để mở rộng các mối quen; nếu đã có đôi, đây là lúc hợp để hai người gần nhau hơn.' :
+    'những năm có tín hiệu mạnh nhất đã ở phía sau. Nếu bạn đã có đôi, những năm tới hợp để vun đắp hơn là tìm kiếm; nếu chưa, duyên vẫn đến khi bạn chủ động mở rộng các mối quen.') +
+    ' Năm thuận chỉ làm mọi việc dễ hơn, không thay cho sự chủ động và chân thành của bạn.');
 }
 
 /* =========================================================

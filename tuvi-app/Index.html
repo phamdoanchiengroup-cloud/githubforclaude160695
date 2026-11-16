@@ -3,7 +3,7 @@
 <head>
   <base target="_top">
   <meta charset="utf-8">
-  <meta name="tcc-ban" content="2026.11.16.3">
+  <meta name="tcc-ban" content="2026.11.17.1">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Thiên Cơ Các · Lá Số Tử Vi & Bát Tự</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -431,6 +431,15 @@
       <div class="modal-actions"><button type="button" class="btn btn-ghost" id="accLogout">⎋ Đăng xuất</button>
         <button type="button" class="btn btn-ghost" id="accAdmin" style="display:none">⚙ Quản trị</button><span style="flex:1"></span>
         <button type="button" class="btn btn-primary" data-dong="accModal">Đóng</button></div>
+    </div>
+  </div>
+
+  <!-- 17/11: xác thực email bằng mã 6 số → quà chào mừng (Script.html › moXacThuc) -->
+  <div class="modal" id="xtModal" role="dialog" aria-modal="true" aria-labelledby="xtTitle">
+    <div class="modal-box panel xt-box">
+      <h2 class="panel-title" id="xtTitle"><span class="han" aria-hidden="true">禮</span> <span id="xtTitleText">Xác thực email</span></h2>
+      <div id="xtBody"></div>
+      <div class="modal-actions"><span style="flex:1"></span><button type="button" class="btn btn-ghost" id="xtDong">Để sau</button></div>
     </div>
   </div>
 

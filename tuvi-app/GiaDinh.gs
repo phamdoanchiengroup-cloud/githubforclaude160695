@@ -299,35 +299,159 @@ function gdNhom_(N, caps, vy) {
 /* ---------- Phần lẻ "Bạn và người thân: hiểu nhau hơn" (quan_he, 9 xu/cặp – chủ dự án chốt 16/11) ----------
  * 5 mục theo đề xuất 07: cách thể hiện tình thương · chỗ dễ va chạm · cách nói chuyện · năm thuận để gắn bó · 3 việc nên làm.
  * Ghép tự động từ tín hiệu của gdCap_ (không có mục kết hôn / sinh con). canViet = true: content-creator viết văn riêng cho từng vai. */
+/* Văn riêng cho từng vai (content-creator 16/11/2026). {T} = người bề trên / người lớn hơn, {D} = người bề dưới / nhỏ hơn,
+ * {A}, {B} = hai người khi ngang vai; {g} = cách gọi bề trên (cha/mẹ, ông/bà…). Giai đoạn tuổi của người nhỏ:
+ * nho ≤ 6, hoc 7–12, lon 13–18, truong ≥ 19 (tuổi mụ năm xem). Không có nội dung kết hôn / sinh con; không nêu tên sao, thuật ngữ. */
 var GD_VIEC_VAI = {
-  cm: ['Mỗi tuần dành một buổi riêng hai người (đi dạo, ăn sáng, làm một việc nhỏ cùng nhau), không điện thoại.', 'Khi góp ý, nói điều mình thấy và điều mình mong – tránh so sánh với người khác.', 'Hỏi ý kiến người kia trước những việc lớn liên quan đến họ, dù mình là người quyết.'],
-  ae: ['Giữ một thói quen liên lạc đều đặn (một cuộc gọi mỗi tuần, một bữa cơm mỗi tháng).', 'Chuyện tiền bạc giữa anh chị em nên rõ ràng, có ghi lại, để tình cảm không bị ảnh hưởng.', 'Khi bất đồng, nói thẳng nhẹ nhàng với nhau thay vì nhờ người khác truyền lời.'],
-  ob: ['Dành thời gian nghe ông bà kể chuyện xưa – đó là cách gắn bó tự nhiên nhất.', 'Nhờ ông bà dạy một việc nhỏ (nấu món quen, trồng cây) để hai thế hệ có việc chung.', 'Thăm hỏi đều đặn, nhắc nhau giữ sức khỏe, đi khám định kỳ.'],
-  dau: ['Chủ động hỏi thăm, nhớ những dịp quan trọng của người kia.', 'Có điều chưa vui thì nói trực tiếp, nhẹ nhàng – tránh để người thứ ba truyền lời.', 'Tôn trọng nếp nhà của nhau, thống nhất trước những việc chung.'],
+  cm: {
+    nho: ['Mỗi ngày dành 15 phút chơi cùng {D} theo cách {D} chọn, không điện thoại.', 'Khen cụ thể việc {D} vừa làm được ("con tự cất đồ chơi rồi") thay vì khen chung chung.', 'Giữ một nghi thức nhỏ trước giờ ngủ: kể chuyện, ôm, nói "{g} thương con".'],
+    hoc: ['Mỗi tuần một buổi riêng hai người: đi ăn sáng, đi dạo hay làm một việc nhỏ cùng nhau, không điện thoại.', 'Cùng {D} đặt luật màn hình và giờ học – luật cùng đặt thì dễ giữ.', 'Khi góp ý, nói điều mình thấy và điều mình mong, tránh so sánh {D} với bạn bè.'],
+    lon: ['Giữ một thói quen chung không áp lực: ăn sáng cuối tuần, xem chung một bộ phim, đi xe cùng nhau.', 'Hỏi ý {D} trước những việc lớn liên quan đến {D}, dù {T} là người quyết.', 'Tin trước, nhắc sau: giao cho {D} một việc thật và để {D} tự chịu trách nhiệm.'],
+    truong: ['Gọi điện hoặc ghé thăm đều đặn, không chỉ khi có việc.', 'Nói lời cảm ơn và ghi nhận nhau – điều người trong nhà thường nghĩ mà ít nói ra.', 'Bàn trước những việc lớn của gia đình để không ai thấy mình bị đặt trước sự đã rồi.']
+  },
+  ae: {
+    nho: ['Cho hai anh chị em một việc chung (dọn phòng, chăm cây) và khen cả hai cùng lúc.', 'Tránh so sánh hai anh chị em trước mặt nhau.', 'Mỗi người có một góc đồ riêng được tôn trọng – không ai phải "nhường vì là anh chị".'],
+    truong: ['Giữ một thói quen liên lạc đều đặn: một cuộc gọi mỗi tuần, một bữa cơm mỗi tháng.', 'Chuyện tiền bạc giữa anh chị em nên rõ ràng, có ghi lại, để tình cảm không bị ảnh hưởng.', 'Cùng nhau lo một việc cho cha mẹ – làm chung là cách gắn bó tự nhiên nhất.']
+  },
+  ob: {
+    nho: ['Để {T} kể chuyện hoặc hát ru cho {D} nghe – đó là món quà mà chỉ {g} mới có.', 'Cho {D} phụ {T} một việc nhỏ: tưới cây, nhặt rau, xếp đồ.', 'Chụp ảnh {T} và {D} cùng nhau mỗi dịp về thăm – sau này đó là kỷ niệm quý.'],
+    truong: ['Dành thời gian nghe {T} kể chuyện xưa – đó là cách gắn bó tự nhiên nhất.', 'Nhờ {T} dạy {D} một việc nhỏ (nấu món quen, trồng cây) để hai thế hệ có việc chung.', 'Gọi điện hoặc ghé thăm đều đặn; một cuộc gọi video ngắn cũng làm {T} vui cả ngày.']
+  },
+  dau: ['Chủ động hỏi thăm, nhớ những dịp quan trọng của người kia (ngày sinh, ngày giỗ, Tết).', 'Có điều chưa vui thì nói trực tiếp, nhẹ nhàng, lúc chỉ có hai người – tránh để người thứ ba truyền lời.', 'Tôn trọng nếp nhà của nhau, thống nhất trước những việc chung.'],
   tren: ['Giữ liên lạc vào những dịp quan trọng trong năm.', 'Khi cần lời khuyên, hỏi thẳng và lắng nghe trọn vẹn trước khi trả lời.', 'Cùng làm một việc nhỏ chung (đi chơi, nấu ăn) để có kỷ niệm riêng.'],
-  ngang: ['Giữ một thói quen liên lạc đều đặn.', 'Nói rõ điều mình cần thay vì để bụng.', 'Tôn trọng khác biệt, phân việc chung theo thế mạnh của mỗi người.'],
-  chung: ['Giữ liên lạc đều đặn.', 'Nói rõ điều mình cần thay vì để bụng.', 'Tôn trọng khác biệt của nhau.']
+  ngang: ['Giữ một thói quen liên lạc đều đặn.', 'Nói rõ từ đầu điều mình có thể góp và không thể góp cho việc chung.', 'Tôn trọng khác biệt, phân việc chung theo thế mạnh của mỗi người.'],
+  chung: ['Giữ liên lạc đều đặn, nhất là vào những dịp cả họ gặp nhau.', 'Hỏi thẳng người trong cuộc thay vì nghe chuyện qua người khác.', 'Tôn trọng chuyện riêng của mỗi nhà.']
+};
+/** Cách thể hiện tình thương / lúc căng thẳng / cách nói chuyện hợp – theo hành mạnh nhất trong lá số mỗi người */
+var GD_HANH_THUONG = { 'Mộc': 'thương bằng sự khích lệ: muốn người kia lớn lên, hay động viên và chỉ đường', 'Hỏa': 'thương bằng sự nhiệt tình: nói ra, làm ngay, vui cùng người kia một cách rõ ràng',
+  'Thổ': 'thương bằng sự chăm lo thầm lặng: bữa ăn, chỗ ở, những việc thiết thực hằng ngày', 'Kim': 'thương bằng sự chu đáo có nguyên tắc: giữ lời, lo trước, nhắc nhở đúng lúc', 'Thủy': 'thương bằng sự lắng nghe: để ý cảm xúc, hiểu cả điều người kia chưa nói' };
+var GD_HANH_CANG = { 'Mộc': 'dễ giữ ý mình đến cùng', 'Hỏa': 'dễ nói nhanh, nói thẳng rồi mới nghĩ', 'Thổ': 'dễ im lặng và ôm chuyện trong lòng', 'Kim': 'dễ góp ý thẳng, khó nhân nhượng khi thấy sai nguyên tắc', 'Thủy': 'dễ lảng đi, thu mình vào suy nghĩ riêng' };
+var GD_HANH_NOI = { 'Mộc': 'nói về hướng đi và điều có thể làm tốt hơn, tránh chê trước mặt người khác', 'Hỏa': 'nói ngắn, rõ, vào lúc vui; chuyện khó thì đợi cơn nóng qua rồi mới bàn',
+  'Thổ': 'cho thời gian nghĩ, vài hôm sau hỏi lại nhẹ nhàng', 'Kim': 'nói có lý do, có ví dụ cụ thể và giữ đúng điều đã hứa', 'Thủy': 'hỏi mở, để họ tự nói ra, không ép trả lời ngay' };
+/** Văn theo vai: thuong (bề trên, bề dưới), vaCham, noiChuyen, nam (việc hợp làm trong năm thuận) – cm/ob theo giai đoạn tuổi người nhỏ */
+var GD_VAN_VAI = {
+  cm: {
+    thuongT: '{T} có xu hướng thương {D} theo kiểu lo xa: luôn nghĩ trước một bước cho {D}, đôi khi lo nhiều hơn cả điều {D} thật sự cần.',
+    thuongD: { nho: '{D} còn nhỏ nên thương rất thật: tìm {g} khi vui, bám {g} khi mệt – đó là cách {D} nói "con tin {g}".',
+      hoc: '{D} ở tuổi đi học thường thương {g} bằng cách muốn được khen, muốn khoe với {g} điều mình vừa làm được.',
+      lon: '{D} ở tuổi lớn thường thương theo cách kín đáo hơn: ít nói ra, nhưng vẫn để ý từng lời {g} nói về mình.',
+      truong: '{D} đã trưởng thành thường thương {g} bằng việc làm: hỏi han, đỡ đần, mong {g} bớt vất vả.' },
+    vaCham: { nho: 'Chỗ dễ va chạm thường là giờ ăn, giờ ngủ và những lần {D} muốn tự làm theo ý mình. Với trẻ nhỏ, đó là cách tập lớn chứ không phải cãi lời.',
+      hoc: 'Chỗ dễ va chạm thường là chuyện học, chuyện màn hình và việc giữ lời hứa của cả hai bên.',
+      lon: 'Chỗ dễ va chạm thường là khoảng riêng tư, bạn bè và những lựa chọn của {D}: {D} cần được tin, còn {T} cần được yên tâm.',
+      truong: 'Chỗ dễ va chạm thường là lời khuyên được nhắc quá nhiều lần, chuyện nghề nghiệp, tiền bạc hay nhịp sống riêng của mỗi người – cả hai đều thương, nhưng mỗi người một cách.' },
+    noiChuyen: { nho: 'Với {D} còn nhỏ, nói ngắn, ngồi ngang tầm mắt và cho {D} chọn một trong hai cách sẽ hiệu quả hơn ra lệnh.',
+      hoc: 'Hỏi {D} "hôm nay có chuyện gì vui nhất" thay vì chỉ hỏi chuyện học – câu hỏi nhẹ mở ra câu chuyện dài.',
+      lon: 'Nói chuyện lúc cùng làm một việc (đi xe, nấu ăn) thường dễ hơn ngồi đối diện; nghe hết rồi mới góp ý.',
+      truong: 'Khi góp ý, hỏi trước "có muốn nghe ý kiến không" – một câu hỏi nhỏ giữ được sự tôn trọng hai chiều.' },
+    nam: { nho: 'cùng đi chơi xa, cho {D} trải nghiệm điều mới bên {g}', hoc: 'cùng đi một chuyến xa hoặc học chung một điều mới', lon: 'cùng làm một dự án nhỏ hay đi một chuyến chỉ hai người',
+      truong: 'cùng về thăm quê, đi một chuyến xa hoặc ngồi lại nói chuyện về dự định của mỗi người' }
+  },
+  ae: {
+    thuongT: '{T} có xu hướng thương {D} theo kiểu người đi trước: nhường, che chắn và hay nhắc nhở.',
+    thuongD: { nho: '{D} thương {T} bằng cách bắt chước, muốn đi theo và chơi cùng {T}.', truong: '{D} thường thương {T} bằng sự tin cậy: có chuyện là tìm đến {T} trước tiên, dù ngoài miệng ít nói.' },
+    ngang: '{A} và {B} gần tuổi nhau nên thương nhau như bạn: vừa thân vừa hay so bì, giận nhanh mà làm lành cũng nhanh.',
+    vaCham: { nho: 'Chỗ dễ va chạm thường là đồ dùng, góc riêng và cảm giác ai được chiều hơn; khi lớn hơn, đó dễ thành sự so sánh ai giỏi hơn.',
+      truong: 'Chỗ dễ va chạm giữa anh chị em thường là sự so sánh, chuyện tiền bạc và cách chia nhau lo cho cha mẹ.' },
+    noiChuyen: { nho: 'Khi hai anh chị em giành nhau, để mỗi người kể phần mình trước khi người lớn phân xử – được nghe là đã nguôi một nửa.',
+      truong: 'Giữa anh chị em, nói thẳng nhẹ nhàng với nhau tốt hơn nhờ người khác truyền lời; người lớn hơn bớt giọng "dạy bảo", người nhỏ hơn nói rõ mình cần được giúp hay chỉ cần được nghe.' },
+    nam: { nho: 'cho hai anh chị em một chuyến đi chơi hay một việc chung', truong: 'cùng tổ chức một dịp sum họp, đi một chuyến chung hoặc cùng lo một việc cho cha mẹ' }
+  },
+  ob: {
+    thuongT: '{T} có xu hướng thương {D} theo kiểu bao dung: dễ chiều, dễ bỏ qua, luôn để dành phần ngon cho cháu.',
+    thuongD: { nho: '{D} thương {g} rất hồn nhiên: thích được kể chuyện, được dắt đi chơi, được ôm.', hoc: '{D} thương {g} hồn nhiên: thích được kể chuyện, được {g} khen trước mặt mọi người.',
+      lon: '{D} ở tuổi lớn thương {g} kín đáo hơn – ít nói, nhưng nhớ những món {g} hay nấu, những câu {g} hay dặn.', truong: '{D} đã trưởng thành thường thương {g} bằng sự biết ơn: muốn về thăm, muốn {g} vui khỏe.' },
+    vaCham: { nho: 'Chỗ dễ khác ý thường không nằm giữa hai người mà ở cách chiều cháu: {T} thương nên dễ chiều, khác với nếp cha mẹ đang dạy.',
+      truong: 'Chỗ dễ khác ý thường là khoảng cách thế hệ: cách ăn mặc, giờ giấc, cách dùng điện thoại và những lời dặn lặp lại nhiều lần.' },
+    noiChuyen: { nho: 'Với cháu nhỏ, {T} kể bằng câu chuyện sẽ dễ vào hơn lời dặn; cha mẹ và {T} nên thống nhất vài nếp chung để {D} không bị rối.',
+      truong: 'Với ông bà, nói chậm, nói rõ và hỏi về chuyện ngày xưa là cách mở lòng nhanh nhất; với cháu đã lớn, {T} nên kể bằng câu chuyện hơn là lời dặn.' },
+    nam: { nho: 'đưa {D} về thăm {g} lâu hơn thường lệ', truong: 'về thăm {g}, cùng đi một chuyến ngắn hoặc ghi lại chuyện xưa của {g}' }
+  },
+  dau: {
+    thuongT: '{T} có xu hướng thương {D} theo cách của người đi trước: muốn chỉ bảo, muốn {D} sớm hòa vào nếp nhà.',
+    thuongD: '{D} thường thể hiện tình cảm với {T} bằng sự chu đáo và tôn trọng; tình thân lớn dần theo thời gian, không cần vội.',
+    vaCham: 'Chỗ dễ khác ý thường là nếp sinh hoạt của hai gia đình: cách nấu ăn, cách chi tiêu, cách sắp xếp nhà cửa và chuyện ai quyết việc gì.',
+    noiChuyen: 'Có điều chưa vui thì nói trực tiếp, nhẹ nhàng, lúc chỉ có hai người; một lời hỏi "con làm thế này đã đúng ý chưa" mở ra nhiều hơn mười lần im lặng.',
+    nam: 'cùng chuẩn bị một dịp sum họp, đi một chuyến chung hoặc học nhau một món ăn của mỗi nhà'
+  },
+  tren: {
+    thuongT: '{T} có xu hướng thương {D} như một người đi trước: sẵn lòng góp ý, chỉ đường khi {D} cần.',
+    thuongD: '{D} thường quý {T} theo cách tin cậy: có chuyện khó nói với cha mẹ, {T} lại là người dễ tâm sự.',
+    vaCham: 'Chỗ dễ khác ý thường là khi lời khuyên đi xa hơn điều {D} hỏi, hoặc khi chuyện giữa các nhà trong họ xen vào.',
+    noiChuyen: 'Khi {D} hỏi ý, {T} nghe trọn trước khi trả lời; khi {T} góp ý, {D} nghe đến hết rồi hãy giải thích.',
+    nam: 'gặp nhau nhiều hơn, cùng làm một việc chung hoặc đi một chuyến ngắn'
+  },
+  ngang: {
+    thuong: '{A} và {B} là người thân "qua một người khác", nên tình cảm thường bắt đầu từ sự lịch sự rồi lớn dần thành tin cậy.',
+    vaCham: 'Chỗ dễ khác ý thường là chuyện góp sức, góp tiền cho việc chung của gia đình và cảm giác ai làm nhiều, ai làm ít.',
+    noiChuyen: 'Nói rõ điều mình có thể làm và không thể làm ngay từ đầu; rõ ràng giữ hòa khí lâu hơn khéo léo.',
+    nam: 'cùng lo một việc chung của gia đình hoặc gặp nhau ngoài những dịp bắt buộc'
+  },
+  chung: {
+    thuong: '{A} và {B} là người thân trong họ hàng; tình cảm thể hiện qua những lần có mặt đúng lúc: ngày giỗ, ngày Tết, lúc nhà có việc.',
+    vaCham: 'Chỗ dễ khác ý thường là lời ra tiếng vào trong họ và những chuyện được kể lại qua người khác.',
+    noiChuyen: 'Hỏi thẳng người trong cuộc thay vì nghe qua người khác; chuyện riêng của mỗi nhà để mỗi nhà tự quyết.',
+    nam: 'gặp nhau nhiều hơn vào những dịp cả họ sum họp'
+  }
 };
 function gdLuanQH_(X, Y, L, c, vy) {
   var tA = X.ten, tB = Y.ten;
   function boCach(t) { return String(t).split(/\s*Cách làm:\s*/)[0].trim(); }
   var cachLam = []; c.xau.forEach(function (x) { var m = String(x.de).split(/Cách làm:\s*/)[1]; if (m && cachLam.indexOf(m.trim()) < 0) cachLam.push(m.trim()); });
-  var thuong = c.tot.length ? c.tot.slice(0, 3).map(function (x) { return x.de; }) : [tA + ' và ' + tB + ' thể hiện tình thương theo cách khá kín đáo – để ý những việc nhỏ người kia làm cho mình sẽ thấy rõ hơn.'];
-  var vaCham = c.xau.length ? c.xau.slice(0, 3).map(function (x) { return boCach(x.de); }) : ['Hai người ít điểm va chạm lớn – chỉ cần giữ thói quen nói rõ điều mình cần.'];
-  var noiChuyen = cachLam.length ? cachLam.slice(0, 3) : ['Hai người dễ nói chuyện với nhau; giữ thói quen hỏi lại cho rõ khi chưa chắc mình hiểu đúng ý người kia.'];
-  var namGanBo = [];
+  // Ai là bề trên / người lớn hơn (anh chị em: theo năm sinh), giai đoạn tuổi của người nhỏ, cách gọi bề trên
+  var loai = GD_VAN_VAI[L.loai] ? L.loai : 'chung', V = GD_VAN_VAI[loai];
+  var T = L.tren === 1 ? Y : L.tren === 0 ? X : (X.nam <= Y.nam ? X : Y), D = T === X ? Y : X;
+  var ngang = loai === 'ngang' || loai === 'chung' || (loai === 'ae' && T.nam === D.nam);
+  var tuoiD = vy - D.nam + 1, gd = tuoiD <= 6 ? 'nho' : tuoiD <= 12 ? 'hoc' : tuoiD <= 18 ? 'lon' : 'truong';
+  var g = loai === 'ob' ? (T.male ? 'ông' : 'bà') : loai === 'cm' ? (T.male ? 'bố' : 'mẹ') : T.ten;
+  function thay(s) { return String(s).replace(/\{T\}/g, T.ten).replace(/\{D\}/g, D.ten).replace(/\{A\}/g, tA).replace(/\{B\}/g, tB).replace(/\{g\}/g, g); }
+  // Bảng chỉ có nho/truong: 7–12 tuổi dùng câu "nho"; 13–18 tuổi dùng "truong" (anh chị em tuổi lớn vẫn dùng "nho")
+  function theoTuoi(o) { if (typeof o === 'string' || Array.isArray(o)) return o; return o[gd] || (gd === 'hoc' || (gd === 'lon' && loai === 'ae') ? o.nho : null) || o.truong; }
+  function hanh(bang, p) { return bang[p.manh] || ''; }
+  // 1. Cách mỗi người thể hiện tình thương: câu theo vai + câu theo hành của từng người + điểm sáng từ lá số
+  var thuong = [];
+  if (ngang) thuong.push(thay(V.thuong || GD_VAN_VAI.ae.ngang));
+  else { thuong.push(thay(V.thuongT)); thuong.push(thay(theoTuoi(V.thuongD))); }
+  var hT = hanh(GD_HANH_THUONG, T), hD = hanh(GD_HANH_THUONG, D);
+  if (hT && hD) thuong.push(T.manh === D.manh ? 'Hai người giống nhau ở cách thương: cùng ' + hT + '. Vì giống nên dễ hiểu nhau, chỉ cần nhớ đôi khi người kia cũng cần được thương theo kiểu khác.' :
+    T.ten + ' có xu hướng ' + hT + '; còn ' + D.ten + ' có xu hướng ' + hD + '. Nhận ra "ngôn ngữ thương" của nhau, hai người sẽ bớt hiểu lầm những lúc người kia lo theo cách của mình.');
+  c.tot.slice(0, 2).forEach(function (x) { thuong.push(x.de); });
+  // 2. Chỗ dễ va chạm: câu theo vai + lúc căng thẳng mỗi người phản ứng thế nào + điều lá số nhắc, kết bằng hướng nhẹ nhàng
+  var vaCham = [thay(theoTuoi(V.vaCham))];
+  var cT = hanh(GD_HANH_CANG, T), cD = hanh(GD_HANH_CANG, D);
+  if (cT && cD && !(gd === 'nho' && !ngang)) vaCham.push(T.manh === D.manh ? 'Khi căng thẳng, cả hai cùng ' + cT + ' – vì vậy một người nên chủ động dịu trước, không cần chờ ai đúng ai sai.' :
+    'Khi căng thẳng, ' + T.ten + ' ' + cT + ', còn ' + D.ten + ' ' + cD + '; biết trước điều này, mỗi người sẽ đỡ thấy bị tổn thương.');
+  c.xau.slice(0, 2).forEach(function (x) { vaCham.push(boCach(x.de)); });
+  vaCham.push(c.xau.length ? 'Những chỗ này không làm tình thân mỏng đi; biết trước để nhường nhau đúng lúc là đủ (cách làm ở mục kế tiếp).' : 'Hai người ít điểm va chạm lớn – chỉ cần giữ thói quen nói rõ điều mình cần.');
+  // 3. Cách nói chuyện: câu theo vai + cách nói hợp với từng người + cách làm lá số gợi ý
+  var noiChuyen = [thay(theoTuoi(V.noiChuyen))];
+  var nT = hanh(GD_HANH_NOI, T), nD = hanh(GD_HANH_NOI, D);
+  if (nT && nD && !(gd === 'nho' && !ngang)) noiChuyen.push('Muốn ' + T.ten + ' nghe, nên ' + nT + '. Muốn ' + D.ten + ' mở lòng, nên ' + nD + '.');
+  else if (nT) noiChuyen.push('Muốn ' + T.ten + ' nghe, nên ' + nT + '.');
+  cachLam.slice(0, 2).forEach(function (x) { noiChuyen.push(x.charAt(0).toUpperCase() + x.slice(1)); });
+  // 4. Năm thuận để gắn bó (giữ cách tính: năm hợp tuổi một trong hai người, không năm nào phạm tuổi)
+  var viecNam = thay(theoTuoi(V.nam)), namGanBo = [];
   for (var Y2 = vy; Y2 < vy + 6; Y2++) {
     var cy = ((Y2 + 8) % 12 + 12) % 12, d = function (p) { return (cy - p.chi + 12) % 12; };
     var phamA = [0, 6, 3, 9].indexOf(d(X)) >= 0, phamB = [0, 6, 3, 9].indexOf(d(Y)) >= 0, hopA = [4, 8].indexOf(d(X)) >= 0, hopB = [4, 8].indexOf(d(Y)) >= 0;
     if ((hopA || hopB) && !phamA && !phamB) namGanBo.push({ nam: Y2, canChi: CAN[((Y2 + 6) % 10 + 10) % 10] + ' ' + CHI[cy],
-      de: 'Năm ' + Y2 + ' thuận cho ' + (hopA && hopB ? 'cả hai' : hopA ? tA : tB) + ' – hợp để cùng làm việc chung, đi chơi xa hoặc nói chuyện lại những điều còn vướng.' });
+      de: 'Năm ' + Y2 + ' thuận cho ' + (hopA && hopB ? 'cả hai' : hopA ? tA : tB) + ' – hợp để ' + viecNam + '.' });
   }
-  var viec = cachLam.slice(0, 1).concat((GD_VIEC_VAI[L.loai] || GD_VIEC_VAI.chung)).slice(0, 3);
-  return { canViet: true, muc: [
+  // ds giữ đúng 1 dòng cho mỗi năm (khớp thứ tự với nam[]); lời dẫn và lời kết gắn vào dòng đầu / dòng cuối
+  var namDs = namGanBo.length ? namGanBo.map(function (x) { return x.de; }) :
+    ['Sáu năm tới không có năm nào nổi bật hẳn – sự gắn bó đến từ thói quen đều đặn hơn là thời điểm. Mỗi năm, hãy chọn một dịp để ' + viecNam + '.'];
+  if (namGanBo.length) {
+    namDs[0] = namDs[0] + ' Đây là năm không ai trong hai người phải giữ nhịp, lại có người gặp năm hợp tuổi – lúc thuận để có thêm kỷ niệm chung.';
+    namDs[namDs.length - 1] += ' Những năm không có trong danh sách không phải năm xấu; chỉ là lúc nên giữ nếp quen thay vì bày việc lớn.';
+  }
+  // 5. 3 việc nên làm: một cách làm lá số gợi ý + việc theo vai (và giai đoạn tuổi)
+  var VV = theoTuoi(GD_VIEC_VAI[loai] || GD_VIEC_VAI.chung), viec = [];
+  cachLam.slice(0, 1).concat(VV.map(thay)).forEach(function (x) { x = x.charAt(0).toUpperCase() + x.slice(1); if (viec.length < 3 && viec.indexOf(x) < 0) viec.push(x); });
+  return { canViet: false, muc: [
     { k: 'thuong', ten: 'Cách mỗi người thể hiện tình thương', ds: thuong },
     { k: 'vaCham', ten: 'Chỗ dễ va chạm', ds: vaCham },
     { k: 'noiChuyen', ten: 'Cách nói chuyện để hiểu nhau', ds: noiChuyen },
-    { k: 'namGanBo', ten: 'Năm thuận để gắn bó', ds: namGanBo.length ? namGanBo.map(function (x) { return x.de; }) : ['Sáu năm tới không có năm nào nổi bật hẳn – sự gắn bó đến từ thói quen đều đặn hơn là thời điểm.'], nam: namGanBo },
+    { k: 'namGanBo', ten: 'Năm thuận để gắn bó', ds: namDs, nam: namGanBo },
     { k: 'viec', ten: '3 việc nên làm', ds: viec }
   ] };
 }
