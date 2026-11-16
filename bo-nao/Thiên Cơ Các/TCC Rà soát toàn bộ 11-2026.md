@@ -31,3 +31,13 @@ Chủ dự án: dùng các chuyên gia rà soát toàn bộ mã, giao diện, vi
 - Văn (content-creator, ~70 câu): TuViHeThong.gs (bỏ lời khuyên đầu tư nhà đất, câu nặng, "cha mẹ có thể mất sớm"), ThanSoHoc.gs ("Thiếu 9", 7 mũi tên trống tên trung tính), HoiTu.gs (nhãn "Hao tài"…), TongHop.gs (mục Cơ thể → "Nhịp sống hợp với bạn").
 - Giữ % đồng thuận / % ngũ hành (quyết định 24/10). Kiểm thử: 25 file đạt (nghiem-chung 834 có ca 6/8, 4/8, chưa đủ 8 nhóm).
 - Còn lại cho đợt sau: ~250 câu Tử Vi có tên sao (tách de/ky), câu nặng trong DeHieu.gs/TuViTrinhTu.gs, TS_SUC_KHOE (Thần số), văn trùng lặp phần bán.
+
+## Đợt 3 – phương án A "Tài khoản là chìa khóa" (16/11, máy chủ; commit 41a522c)
+- Chủ dự án duyệt: Trọn đời **89 xu**, Hội viên năm **99 xu** (vận năm/tháng/nhật vận mọi lá số của tài khoản, 12 tháng), gia đình **79/119**, quà **9 xu** sau đăng ký (mỗi SĐT/email một lần), thưởng mời chỉ khi bạn nạp lần đầu, không hoàn xu, người đã mua giữ nguyên quyền.
+- `ttQuyen_`: tài khoản có `taiKhoan`, `co_ban`, `do_gio` miễn phí; `q.daMua` = phần thật sự đã trả (Trọn đời chỉ trừ phần này – trước đó sẽ trừ oan 28 xu); `ttHoiVien_` đọc dòng MoKhoa khóa `TK:<tên>`, mã `hoi_vien:yyyy-mm-dd`.
+- `ttDvMienPhi_`: đại vận ĐÃ QUA gần nhất mở miễn phí (ttCatPhan_ → `vanTom.dvQuaMienPhi`; `muaPhan` trả `daCo`, không bán lại).
+- `ttCatPhan_` (rà soát V2): `duDoan.vanLon`, `battuChiTiet.daiVanCungVi`, `moRong.haLac.luan.daiVan` của vận chưa mở chỉ giữ khung + mức, gắn `khoa:true` (vận đã qua mở cho tài khoản).
+- `ttMuaHoiVien_` (gia hạn nối 365 ngày); `dungLuotGiaDinh` mỗi lượt = `dong_hanh:<năm>`; `ttQuaDangKy_(u, gt, lienHe)` + `ttLienHeChuan_` (Script Property `QUA_LH_<sha>`); `TT_GIA_PHIEN`/`TT_KM_PHIEN` = 3; bỏ mọi giá gạch ngang (`goc`).
+- V1: `getDoanNghiemChung(input, token)` cần tài khoản (hoặc chủ trong trình soạn thảo), tối đa 20 lần/10 phút; giao diện gửi token qua `window.tccToken`.
+- Kiểm thử: thanh-toan viết lại theo phương án A (+Hội viên, quà mỗi liên hệ 1 lần), giai-doan 41/41, bao-mat 185/185, van-ngay 1605/1605; cả 24 file đạt. payments-billing-engineer đang rà.
+- Đợt 4 (giao diện, frontend-developer) đang làm: nút mua Hội viên, huy hiệu vận miễn phí, thẻ khóa vận trong tab từng hệ, điều hướng đáy 4 mục, hiệu ứng thao tác.
