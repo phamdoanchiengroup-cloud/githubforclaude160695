@@ -522,7 +522,7 @@ html[data-gd="sang"] .qt-o.cua{box-shadow:0 0 0 3px rgba(11,122,115,.18)}
 .dh-sh th.dh-dgc{white-space:normal;min-width:64px;max-width:84px;line-height:1.2}
 /* 16/11 (chủ dự án): ô nhập thẳng trong bảng (tô vàng khi đã sửa, chưa lưu) */
 .dh-sh .dh-ei{width:62px;padding:3px 5px;border:1px solid var(--line);border-radius:6px;background:var(--bg);color:var(--ink);font:inherit;font-size:12.5px;text-align:right;font-variant-numeric:tabular-nums}
-.dh-sh .dh-ei.dl{width:118px;text-align:left} .dh-sh .dh-ei:focus{outline:2px solid var(--cyan);outline-offset:0}
+.dh-sh .dh-ei.dl{width:118px;text-align:left} .dh-hanle{font-size:11.5px;margin-top:3px;color:var(--ink2);white-space:nowrap} .dh-hanle.vang{color:#f0b429!important;font-weight:600} .dh-hanle.do{color:#ff6b61!important;font-weight:600} .dh-hanle.xam{color:var(--ink3);font-style:italic} .dh-sh .dh-ei:focus{outline:2px solid var(--cyan);outline-offset:0}
 .dh-sh .dh-ei.doi,html .dh-sh input.dh-ei.doi{background:#fff3b0!important;border-color:#d4a600!important;color:#3a2c00!important;-webkit-text-fill-color:#3a2c00;font-weight:700;box-shadow:0 0 0 2px rgba(212,166,0,.45)!important}
 .dh-ethanh{position:sticky;bottom:0;z-index:7;margin-top:8px;padding:10px 12px;border:1px solid #d4a600;border-radius:10px;background:#0f1c1a;color:#f2f5f4;box-shadow:0 -6px 18px rgba(0,0,0,.35)}
 @media (max-width:640px){ .dh-ethanh{bottom:calc(68px + env(safe-area-inset-bottom,0px));font-size:12.5px;padding:8px 10px;gap:8px} }
@@ -1253,7 +1253,13 @@ var DH_TUYEN=[['PHOICB','Phôi Carbon','PHOI',{GAY:1,NGON:1,CHUOI:1},'phoi'],['P
 function dhDocNen(fn,a,cb){ cb.__luonGoi=1; call(fn,a,cb); }
 /* 13/11 (chủ dự án): cột "HẠN MỚI HT ĐƠN CŨ" có ngày thì dùng thay deadline gốc cho đơn cũ đã dời hạn */
 function dhHanMoi_(r){ var f=function(o){ if(o.hanMoi&&o.dl!==o.hanMoi){ if(!o.dlGoc) o.dlGoc=o.dl; o.dl=o.hanMoi; } }; ((r&&r.don)||[]).forEach(f); ((r&&r.uu)||[]).forEach(f); Object.keys((r&&r.tabPhu)||{}).forEach(function(k){ (r.tabPhu[k]||[]).forEach(f); }); }   /* 15/11: cả tab bản chép */
-function dhHanO(o){ return o.dl?dhNg(o.dl)+(o.dlGoc&&o.dlGoc!==o.dl?'<div class="dh-hangoc" title="Deadline gốc – đã gia hạn ở cột Hạn mới">gốc '+dhNg(o.dlGoc)+'</div>':''):'–'; }
+/* 16/11 tối (chủ dự án): đơn Lẻ / POD không ghi deadline – web tự tính hạn từ NGÀY ĐẶT trong mã đơn (thường 7 · POD 10 · custom 15 ngày làm) và hiện ngay ở cột Hạn;
+   vàng = đã qua mốc sớm (5 / 7 / 12 ngày làm), đỏ = quá hạn. Không ghi vào Sheet. */
+function dhHanLeO(o){ if(!o||o.dl) return ''; var h=dhDlNgam(o); if(!h) return (dhLaLe(o)&&o.thieu>0&&!o.ngayDat)?'<div class="dh-hanle xam" title="Mã đơn không có ngày đặt (dd/mm) nên web không tự tính được hạn">chưa rõ ngày đặt</div>':'';
+  var hn=dhHomNay(), s0=dhHanLeSom(o), n=dhHanLeN(o), cls=o.thieu>0?(h<hn?'do':(s0&&s0<hn?'vang':'')):'';
+  var mau=cls==='do'?'color:#ff6b61 !important;font-weight:600':(cls==='vang'?'color:#f0b429 !important;font-weight:600':'');   /* giao diện kính đè màu chữ trong bảng -> đặt thẳng trên thẻ */
+  return '<div class="dh-hanle '+cls+'" style="'+mau+'" title="Hạn tự tính: ngày đặt '+dhNg(o.ngayDat)+' + '+n[1]+' ngày làm (cảnh báo sau '+n[0]+' ngày làm) – không ghi vào Sheet">hạn '+dhNg(h)+(cls==='do'?' · trễ':(cls==='vang'?' · sắp hết':''))+'</div>'; }
+function dhHanO(o){ if(!o.dl&&dhDlNgam(o)) return ''; return o.dl?dhNg(o.dl)+(o.dlGoc&&o.dlGoc!==o.dl?'<div class="dh-hangoc" title="Deadline gốc – đã gia hạn ở cột Hạn mới">gốc '+dhNg(o.dlGoc)+'</div>':''):'–'; }
 function dhTai(lamMoi){
   DHTai=true; if(tabHienTai==='dh'||tabHienTai==='tk') dhVeLai();
   dhDocNen('layDonHangXuong',[!!lamMoi],function(r){
@@ -2603,7 +2609,7 @@ function dhVeBang(ds){
       '<td class="c1" data-t="'+esc(o.tab)+'" data-d="'+o.dong+'" onclick="dhBMo(this.dataset.t,+this.dataset.d)"><a href="#" onclick="return false">'+esc(o.maDon||'(không mã)')+'</a><div class="dh-bkenh">'+esc(o.kenh)+(dau?(function(t){ return ' · <b>'+dhPct(t.xong,t.sl)+'%</b></div>'+dhThanhMa(t); })(dhTienDo(tdo[sk])):'</div>')+'</td>'+
       '<td class="c2">'+esc(o.ten)+dhNoteO(o)+(dem[sk]>1?' <span class="dh-bkenh" title="Đơn này có '+dem[sk]+' mã sản phẩm – mỗi mã nhập SL/hẹn riêng">mã '+vt+'/'+dem[sk]+'</span>':'')+'</td>'+
       (dhCoBV()?'<td class="dh-cfg">'+dhCfgO(o)+'</td>':'')+
-      '<td class="qt-so">'+(eq.sl&&!o.phu?dhEIn(o,'sl','SL đặt'):qtSo(o.sl,0))+'</td><td class="qt-so"><b>'+(o.thieu?qtSo(o.thieu,0):'–')+'</b></td><td>'+(eq.sl&&!o.phu?dhEIn(o,'dl','Deadline')+(o.dlGoc&&o.dlGoc!==o.dl?'<div class="dh-hangoc" title="Deadline gốc – đã gia hạn ở cột Hạn mới">gốc '+dhNg(o.dlGoc)+'</div>':''):dhHanO(o))+'</td>'+
+      '<td class="qt-so">'+(eq.sl&&!o.phu?dhEIn(o,'sl','SL đặt'):qtSo(o.sl,0))+'</td><td class="qt-so"><b>'+(o.thieu?qtSo(o.thieu,0):'–')+'</b></td><td>'+(eq.sl&&!o.phu?dhEIn(o,'dl','Deadline')+(o.dlGoc&&o.dlGoc!==o.dl?'<div class="dh-hangoc" title="Deadline gốc – đã gia hạn ở cột Hạn mới">gốc '+dhNg(o.dlGoc)+'</div>':''):dhHanO(o))+dhHanLeO(o)+'</td>'+
       (function(){ var dg=eq.dg&&!o.phu, O=function(k,v){ var f=k==='tra'?'tra':k; return '<td class="qt-so dh-dgc">'+(c[k]>=0?(dg?dhEIn(o,f,{giao:'Tổng SP có thể giao',kho:'Còn trong kho + đóng gói',tra:'Hàng đi – đã trả khách'}[k]):(v?qtSo(v,0):'–')):'')+'</td>'; };   /* 16/11: nhập thẳng – TP/PP Đóng gói + 4 tài khoản */
         return O('giao',o.giao)+O('kho',o.kho)+O('tra',o.daTra)+'<td class="dh-ctc">'+(c.ct>=0?dhCTO(o):'')+'</td>'; })();
     bps.forEach(function(k){

@@ -40,6 +40,8 @@ Liên quan: [[KPI Gậy 1 khúc, ưu tiên và nhập nhanh (15-11)]] · [[KPI �
 
 - Hạn đơn lẻ theo kênh (ngày làm): web `DH_HAN_LE`, `dhHanLeN`, `dhCongNgayLam`, `dhHanLeSom`, `dhLeSapDs`; máy chủ `DH_HAN_LE_`, `dhCongNgayLam_`, `dhDlNgam_`. Ô đầu trang "Lẻ / POD quá hạn" + "x đơn sắp hết hạn". Đơn thật 16/11: quá hạn 43 đơn, sắp hết hạn 43; dự kiến trễ: thường 139/187, POD 52/62, custom 19/81. Kiểm thử han-chuan 28, uu-tien-web 25.
 
+- Cột Hạn bảng đơn: đơn Lẻ / POD không ghi deadline hiện **hạn tự tính** (`dhHanLeO`: "hạn dd/mm", vàng = sắp hết, đỏ = trễ, "chưa rõ ngày đặt" khi mã không có ngày; không ghi vào Sheet). Máy chủ `dhMaDon_` nhận cả "10//11": ngày đặt đọc được 377/380 dòng lẻ (trước 348); 3 mã không có ngày: #RHINO38069-1, #RHINO38394, #RHINO38488.
+
 ## Chưa sửa (ghi lại)
 - `luuBangDon` / `luuCotPhuDon` vẫn kiểm theo tên hàng (Sheet không có cột mã dòng cho mọi tab).
 - A1/A2/A5 (trễ 3 cách, ngày tồn, công suất 4 nguồn), gộp `dhVeTreBP` + `dhVeHanChuan`, "Đến hạn 10 ngày" web theo đơn vs Sheet theo dòng; `tkNgayLam_` thiếu ngày lễ tự tính.

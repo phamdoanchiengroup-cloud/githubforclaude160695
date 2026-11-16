@@ -391,7 +391,7 @@ function dhTimTab_(ss, ten) {
 /* Mã đơn "RHINO-22/06" -> người đặt + ngày đặt (giống web app đơn hàng); deadline trước ngày đặt -> sang năm sau */
 var DH_HOM_ = '';
 function dhMaDon_(o, nam) {
-  var s = String(o.maDon || ''), m = s.match(/(\d{1,2})\s*\/\s*(\d{1,2})/);
+  var s = String(o.maDon || ''), m = s.match(/(\d{1,2})\s*\/+\s*(\d{1,2})/);   // 16/11 tối: nhận cả "10//11" (gõ thừa dấu /)
   o.nguoiDat = s.replace(/^[#(\s]+/, '').split(/[-–]\s*\d{1,2}\s*\//)[0].replace(/\d+.*$/, '').replace(/[-–()\s]+$/, '').trim().slice(0, 40);
   if (!/[A-Za-zÀ-ỹ]/.test(o.nguoiDat)) o.nguoiDat = '';
   o.ngayDat = '';
