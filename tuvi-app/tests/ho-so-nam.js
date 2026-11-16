@@ -34,6 +34,13 @@ for (let k = 0; k < 30; k++) {
     kt(!SAO.test(van), 'văn dễ hiểu không nêu tên sao: ' + x.k + ' – ' + (van.match(SAO) || [''])[0]);
   });
   kt(!SAO.test(H.tom.join(' ') + H.khiaCanh.map(c => c.cau).join(' ')), 'tóm tắt không nêu tên sao');
+  // 16/11: 4 chủ đề năm (htNamCd_) – đủ 4 chủ đề, phủ đủ 19 sự kiện, có tóm tắt + đoạn luận, không nêu tên sao
+  const CD = ctx.htNamCd_(H);
+  kt(CD && ['cv', 'tien', 'tc', 'sk'].every(k => CD[k] && CD[k].tom && CD[k].items.length >= 1 && CD[k].nhan), '4 chủ đề năm có nhãn, tóm tắt, đoạn luận');
+  kt(H.khiaCanh.every(c => ctx.htCdCuaKc_(c.k)) && ['cv', 'tien', 'tc', 'sk'].reduce((n, k) => n + CD[k].suKien.length, 0) === H.suKien.filter(x => !x.ngoai).length, 'mỗi khía cạnh thuộc đúng 1 chủ đề; chủ đề phủ đủ sự kiện');
+  kt(!/undefined|NaN/.test(JSON.stringify(CD)), 'chủ đề năm không undefined/NaN');
+  ['cv', 'tien', 'tc', 'sk'].forEach(k => { const v = CD[k].tom + ' ' + CD[k].items.join(' ') + ' ' + CD[k].khuyen.join(' '); kt(!SAO.test(v), 'chủ đề ' + k + ' không nêu tên sao: ' + (v.match(SAO) || [''])[0]); });
+  kt(!/chẩn đoán|bệnh [a-zà-ỹ]+ (gan|tim|phổi|thận)/i.test(CD.sk.items.join(' ')), 'Sức khỏe & nhịp sống: không chẩn đoán bệnh');
   // Chưa mở vận năm: chỉ lộ thế đứng 5 hệ, nhãn khía cạnh và tối đa 1 sự kiện
   const q = { dvMo: {}, namMo: {}, thangMo: {}, dhNam: {} };
   ctx.ttCatPhan_(r, q);
@@ -42,6 +49,7 @@ for (let k = 0; k < 30; k++) {
   kt(K.suKien.filter(x => x.p != null).length <= 1, 'bản khóa lộ tối đa 1 xác suất');
   kt(K.suKien.every(x => x.p != null || (!x.giai && !x.ly && !x.khuyen)), 'bản khóa không lộ lời giải');
   kt(K.he.every(x => x.tot == null && x.xau == null), 'bản khóa không lộ điểm từng hệ');
+  kt(r.namCd && ['cv', 'tien', 'tc', 'sk'].every(k => r.namCd[k].khoa && !r.namCd[k].items && !r.namCd[k].tom), 'bản khóa: 4 chủ đề chỉ giữ tên + nhãn');
 }
 kt((dem.dong['Đồng thuận'] || 0) > 10 && (dem.dong['Đối lập'] || 0) > 10, 'có cả đồng thuận lẫn đối lập: ' + JSON.stringify(dem.dong));
 kt((dem.muc['Cao'] || 0) + (dem.muc['Rất cao'] || 0) > 5 && (dem.muc['Thấp'] || 0) > 50, 'phân bố mức hợp lý: ' + JSON.stringify(dem.muc));

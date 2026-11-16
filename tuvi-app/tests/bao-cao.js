@@ -42,7 +42,7 @@ kt(S.xuTieu === 19 && S.xuTang === 19, 'xu đã dùng / xu tặng');
 const r = ctx.guiBaoCaoNgay();
 kt(thu.length === 1 && thu[0].to === 'chu@vidu.vn', 'gửi về tài khoản Google đang chạy dự án khi chưa đặt BAO_CAO_EMAIL');
 kt(/150\.000 đ/.test(thu[0].subject) && /2 tài khoản mới/.test(thu[0].subject), 'tiêu đề tóm tắt doanh thu và tài khoản mới: ' + thu[0].subject);
-kt(/Báo cáo ngày/.test(thu[0].htmlBody) && /Khách Hai/.test(thu[0].htmlBody) && /Vận năm/.test(thu[0].htmlBody), 'nội dung có tài khoản mới và phần đã mở');
+kt(/Báo cáo ngày/.test(thu[0].htmlBody) && /Khách Hai/.test(thu[0].htmlBody) && /Năm: bức tranh chung/.test(thu[0].htmlBody) && !/Năm X/.test(thu[0].htmlBody), 'nội dung có tài khoản mới và phần đã mở (16/11: "Năm: bức tranh chung")');
 kt(!/undefined|NaN/.test(thu[0].htmlBody), 'nội dung không có undefined/NaN');
 ctx.PropertiesService.getScriptProperties().setProperty('BAO_CAO_EMAIL', 'nhan@vidu.vn');
 ctx.caiDatBaoCaoNgay(); ctx.caiDatBaoCaoNgay();

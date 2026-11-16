@@ -15,7 +15,7 @@ const GIAO_DIEN = ('bangGiaCongKhai dangKy dangKyBanTin dangKyVanNgay dangNhap d
   'dungLuotGiaDinh getDoanNghiemChung getLichSu ghiDoiChieu giaDinhDs giaDinhLuu giaDinhQuanHe giaDinhVanNam gieoQue huyVanNgay kiemTraDon lapCapDoi ' +
   'lapLaSo layAnhHolo muaPhan nhapMaQua phiTinhLuan phien qtDatVaiTro qtDieuChinhXu qtDsMaQua qtHuyDon qtKiemTraPayos qtLuuBangGia qtLuuCauHinh ' +
   'qtTaoMaQua qtTongQuan qtXacNhanDon qtXoaMaQua taoDonNap taoTaiKhoan thamKhaoThanSat thamKhaoTuVi tienIch tinhDiemNghiemChung tuViChuSoHuu viCuaToi ' +
-  'xoaLichSu xoaTaiKhoan dsBanTin dsTaiKhoan dsVanNgay').split(' ');
+  'xoaLichSu xoaTaiKhoan dsBanTin dsTaiKhoan dsVanNgay guiMaEmail xacThucEmail').split(' ');
 const KHUNG = ['doGet', 'include', 'includeTuyChon'];
 // Tiện ích lịch/can chi thuần tính toán – không chứa nội dung trả phí
 const TIEN_ICH = ('canChiIndex canChiText findSolarTermJD getLeapMonthOfYear getTietKhiName jdFromDate jdToDate jdToLocalDateTime lunarToSolar mod10 mod12 ' +
@@ -34,6 +34,12 @@ Object.keys(congKhai).forEach(n => {
   kt(choPhep.has(n), 'hàm công khai chưa được duyệt: ' + n + ' (' + congKhai[n].f + ') – thêm "_" cuối tên hoặc thêm vào danh sách trong tests/bao-mat.js');
 });
 VAN_HANH.forEach(n => kt(congKhai[n] && /chiChayNoiBo_\(/.test(congKhai[n].dong1), n + ' chặn bằng chiChayNoiBo_ ở dòng đầu'));
+// 16/11: hàm xác thực email (quà 39 xu) phải tự kiểm phiên ở dòng đầu; người lạ gọi bị chặn
+['guiMaEmail', 'xacThucEmail'].forEach(n => {
+  kt(congKhai[n] && /tkCan_\(token\)/.test(congKhai[n].dong1), n + ' kiểm phiên (tkCan_) ở dòng đầu');
+  let loi = ''; try { ctx[n]('token-gia-mao-khong-hop-le-123', n === 'guiMaEmail' ? 'a@b.vn' : '123456'); } catch (e) { loi = e.message; }
+  kt(/đăng nhập/.test(loi), n + ': chưa đăng nhập bị chặn');
+});
 // Hàm tính bài luận (trả phí) không còn công khai
 ['luanChiTiet', 'duDoanCuocDoi', 'tongHopLuan', 'phoiNgauLuan', 'ketHopLuan', 'nghiemChungLap', 'tuviTrinhTu', 'tuviLapLaSo', 'batTuLap', 'batTuChiTiet',
   'chiemTinhLap', 'chiemTinhLuan', 'hdLap', 'hdLuan', 'haLacLap', 'haLacLuan', 'thanSoHocLap', 'thanSoHocLuan', 'astToanBo'].forEach(n => {

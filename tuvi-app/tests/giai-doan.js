@@ -9,7 +9,7 @@ const vy = new Date().getFullYear();
 const inp = { name: 'Nguyễn Văn An', gender: 'nam', calendar: 'duong', day: 5, month: 6, year: 1990, hour: 8, minute: 0, viewYear: vy, place: '21.03|105.85|Hà Nội', tz: '7' };
 let r = ctx.lapLaSo(inp, tok);
 // 16/11 – phương án A "Tài khoản là chìa khóa": Tổng hợp 6 hệ + dò giờ + 1 đại vận đã qua gần nhất miễn phí cho tài khoản
-kt(!r.khach && !r.tongKhoa && r.quyen.co_ban && r.quyen.do_gio && qua0 === 9, 'tài khoản: Tổng hợp 6 hệ + dò giờ miễn phí, quà 9 xu');
+kt(!r.khach && !r.tongKhoa && r.quyen.co_ban && r.quyen.do_gio && qua0 === 0 && dk.canXacThuc, 'tài khoản: Tổng hợp 6 hệ + dò giờ miễn phí; quà chỉ sau khi xác thực email (16/11)');
 kt(r.tuvi.luanGiai.cung.length === 12 && r.battu.goiY && r.battu.phanTich && r.moRong.chiemTinhLuan && r.moRong.haLac && r.moRong.thanSo && r.moRong.hd, 'luận giải 6 hệ mở miễn phí');
 kt(r.moRong.deHieu.th6 && r.moRong.tongHop.tinhCach, 'Tổng hợp 6 hệ có kết luận đầy đủ');
 const moDv = () => r.chiTiet.daiVan.filter(d => !d.khoa), bd = d => +String(d.nam).slice(0, 4);
@@ -47,14 +47,17 @@ kt(r.vanTom.coNam && r.chiTiet.nguyetVan.length === 12 && !r.chiTiet.tieuVan.kho
 kt(loNam(r) && r.moRong.tongHop.namNay.nguon.length > 0, 'đã mua năm → lời luận năm của các hệ hiện đủ');
 kt(r.battuChiTiet.luuNien.length === 1 && r.battuChiTiet.luuNien[0].nam === vy, 'lưu niên Bát Tự chỉ năm đã mua');
 kt(r.vanTom.coThang === false, 'nhật vận vẫn khóa sau khi mua năm');
+kt(r.namCd && ['cv', 'tien', 'tc', 'sk'].every(k => r.namCd[k].khoa && r.namCd[k].tom && !r.namCd[k].items), 'bức tranh chung: 4 chủ đề chỉ 1 dòng tóm tắt (chủ đề bán riêng 9 xu)');
 m = ctx.muaPhan(tok, inp, 'dong_hanh', vy); kt(m.ok && m.gia === G('dong_hanh') - G('nam'), 'Đồng hành trừ phần năm đã mua (' + (G('dong_hanh') - G('nam')) + ')');
 r = ctx.lapLaSo(inp, tok);
 kt(r.vanTom.coThang && r.chiTiet.nhatVan.length === 7, 'đồng hành: nhật vận mở');
+kt(['cv', 'tien', 'tc', 'sk'].every(k => r.namCd[k].co && r.namCd[k].items.length) && r.moRong.tongHop.hoSoNam.suKien.every(x => !x.khoa), 'đồng hành: mở cả 4 chủ đề năm');
 const iNext = { ...inp, viewYear: vy + 1 }; r = ctx.lapLaSo(iNext, tok);
 kt(r.vanTom.coNam === false, 'năm sau vẫn phải mua riêng (thu định kỳ)');
 m = ctx.muaPhan(tok, inp, 'thang', (vy + 1) + '-3'); kt(m.ok && m.gia === G('thang'), 'mua tháng lẻ ' + G('thang'));
 try { ctx.muaPhan(tok, inp, 'thang', 'abc'); kt(false, 'tháng sai phải lỗi'); } catch (e) { kt(/Tháng/.test(e.message), 'kiểm tra định dạng tháng'); }
-m = ctx.muaPhan(tok, inp, 'tron_goi'); kt(m.ok && m.gia === G('tron_goi') - G('phoi_ngau'), 'Trọn đời chỉ trừ phần đã trả tiền (' + G('tron_goi') + ' − ' + G('phoi_ngau') + ')');
+const daTraTG = G('phoi_ngau') + G('dai_van') + G('dai_van_qua'), giaTG = G('tron_goi') - Math.min(daTraTG, Math.floor(G('tron_goi') / 2));
+m = ctx.muaPhan(tok, inp, 'tron_goi'); kt(m.ok && m.gia === giaTG, 'Trọn đời trừ phần lẻ đã trả (bạn đời + 2 đại vận = ' + daTraTG + ', tối đa 50%) → ' + giaTG);
 r = ctx.lapLaSo(inp, tok);
 kt(r.chiTiet.daiVan.every(d => !d.khoa), 'Trọn đời: mở cả 12 đại vận');
 kt((r.battuChiTiet.daiVanCungVi || []).every(d => !d.khoa) && ((r.moRong.haLac.luan || {}).daiVan || []).every(v => !v.khoa), 'Trọn đời: đại vận Bát Tự / Hà Lạc mở hết');
@@ -66,7 +69,7 @@ r = ctx.lapLaSo(me, tok); kt(!r.tongKhoa && !r.vanTom.coNam && r.soVe === 3, 'l�
 m = ctx.dungLuotGiaDinh(tok, me); kt(m.ok && m.soVe === 2, 'dùng 1 lượt → còn 2');
 r = ctx.lapLaSo(me, tok); kt(r.vanTom.coNam && r.vanTom.coThang && r.chiTiet.nhatVan.length === 7 && r.chiTiet.daiVan.filter(d => !d.khoa).length <= 1 && !r.quyen.bien_co, 'lượt gia đình: Đồng hành cả năm (vận năm + tháng + nhật vận), đại vận vẫn bán riêng');
 m = ctx.dungLuotGiaDinh(tok, me); kt(m.daCo && m.soVe === 2, 'dùng lại cho cùng lá số không mất lượt');
-const soDu = ctx.ttSoDu_('khachgd'); kt(soDu === qua0 + 1000 - G('phoi_ngau') - G('dai_van') - G('dai_van_qua') - G('nam') - (G('dong_hanh') - G('nam')) - G('thang') - (G('tron_goi') - G('phoi_ngau')) - G('gia_dinh_3'), 'số dư khớp sổ cái (' + soDu + ')');
+const soDu = ctx.ttSoDu_('khachgd'); kt(soDu === qua0 + 1000 - G('phoi_ngau') - G('dai_van') - G('dai_van_qua') - G('nam') - (G('dong_hanh') - G('nam')) - G('thang') - giaTG - G('gia_dinh_3'), 'số dư khớp sổ cái (' + soDu + ')');
 // Khách chưa đăng nhập
 r = ctx.lapLaSo(inp, ''); kt(!loNam(r), 'khách: không lộ lời luận năm'); kt(!r.khach && !r.canMo && r.tongKhoa && r.tuvi.luanGiai.cung.length === 12 && r.chiTiet.daiVan.every(d => d.khoa) && r.moRong.tongHop.thang.every(t => t.khoa) && !r.moRong.tongHop.hoiTu, 'khách chưa đăng nhập: đọc được 6 hệ, vận hạn & biến cố khóa');
 console.log('Đạt', ok, '/', ok + sai);

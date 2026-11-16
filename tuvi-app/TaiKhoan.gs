@@ -36,7 +36,7 @@ function tkKiemMatKhau_(p) {
   if (!/[A-Za-z]/.test(p) || !/[0-9]/.test(p)) throw new Error('Mật khẩu cần có cả chữ và số.');
   return p;
 }
-function tkNguoi_(u, o) { return { ten: u, hienThi: o.hienThi || u, vaiTro: o.vaiTro || 'thanhVien' }; }
+function tkNguoi_(u, o) { return { ten: u, hienThi: o.hienThi || u, vaiTro: o.vaiTro || 'thanhVien', email: o.emailXacThuc ? o.email || '' : '', daXacThuc: !!o.emailXacThuc }; }
 var TK_VAI_TRO = { chu: 'Chủ sở hữu', vip: 'Thành viên VIP', thanhVien: 'Thành viên' };
 
 /* ---------- Phiên ---------- */
@@ -110,7 +110,8 @@ function dsTaiKhoan(token) {
   Object.keys(p).forEach(function (k) {
     if (k.indexOf('TK_') !== 0) return;
     var o = JSON.parse(p[k]), u = k.slice(3);
-    out.push({ ten: u, hienThi: o.hienThi || u, vaiTro: o.vaiTro || 'thanhVien', lienHe: o.lienHe || '', tuDangKy: !!o.tuDangKy, gioiThieu: o.gioiThieu || '', taoLuc: o.taoLuc || '', lanCuoi: o.lanCuoi || '' });
+    out.push({ ten: u, hienThi: o.hienThi || u, vaiTro: o.vaiTro || 'thanhVien', lienHe: o.lienHe || '', tuDangKy: !!o.tuDangKy, gioiThieu: o.gioiThieu || '', taoLuc: o.taoLuc || '', lanCuoi: o.lanCuoi || '',
+      email: o.emailXacThuc ? o.email || '' : '', daXacThuc: !!o.emailXacThuc });
   });
   var TT = { chu: 0, vip: 1, thanhVien: 2 };
   return out.sort(function (a, b) { return (TT[a.vaiTro] || 2) - (TT[b.vaiTro] || 2) || String(b.taoLuc).localeCompare(String(a.taoLuc)); });
@@ -130,7 +131,9 @@ function taoTaiKhoan(token, user, pass, hienThi, vaiTro) {
   tkTaoMoi_(user, pass, hienThi, vaiTro === 'vip' ? 'vip' : 'thanhVien');
   return dsTaiKhoan(token);
 }
-/** Khách tự đăng ký tài khoản thành viên, đăng nhập luôn */
+/** Khách tự đăng ký tài khoản thành viên, đăng nhập luôn.
+ *  16/11 (phiên khuyến mại 4): KHÔNG tặng quà ngay – quà 39 xu chỉ sau khi xác thực email (guiMaEmail → xacThucEmail).
+ *  Trả thêm canXacThuc: true (+ emailGoiY nếu liên hệ là email) để giao diện mời xác thực. Mã mời vẫn lưu (gioiThieu) nhưng thưởng mời = 0. */
 function dangKy(user, pass, hienThi, lienHe, maGioiThieu) {
   var c = CacheService.getScriptCache(), n = parseInt(c.get('DK_DEM') || '0', 10);
   if (n >= 30) throw new Error('Hệ thống đang nhận quá nhiều đăng ký – vui lòng thử lại sau ít phút.');
@@ -141,11 +144,70 @@ function dangKy(user, pass, hienThi, lienHe, maGioiThieu) {
   if (gt && gt !== tkTen_(user) && tkDoc_(gt)) them.gioiThieu = gt;
   var u = tkTaoMoi_(user, pass, hienThi, 'thanhVien', them);
   c.put('DK_DEM', String(n + 1), 600);
-  var qua = { xu: 0, gt: 0 };
-  try { qua = ttQuaDangKy_(u, them.gioiThieu, lienHe); } catch (e) { /* quà lỗi không chặn đăng ký */ }
   var r = dangNhap(u, pass);
-  r.qua = qua;
+  r.qua = { xu: 0, gt: 0 };
+  r.canXacThuc = true; r.quaXacThuc = ttBangGia_().thuongDangKy;
+  if (lienHe.indexOf('@') >= 0) r.emailGoiY = lienHe;
   return r;
+}
+
+/* ---------- Xác thực email bằng mã 6 số (16/11): mở quà chào mừng 39 xu ----------
+ * Mã hiệu lực 15 phút; gửi lại tối thiểu sau 60 giây; tối đa 5 lần gửi mỗi ngày mỗi tài khoản; sai tối đa 5 lần mỗi mã.
+ * Quota MailApp dùng chung với lời nhắn hằng ngày / bản tin: luôn chừa ~40 lượt cho người đang trả tiền.
+ * Mã chỉ lưu dạng băm (kèm salt của tài khoản) trong bản ghi tài khoản. */
+var TK_OTP = { phut: 15, choGiay: 60, toiDaNgay: 5, saiToiDa: 5, chuaQuota: 40 };
+function tkMaSo_() { var h = Utilities.getUuid().replace(/-/g, '') + Utilities.getUuid().replace(/-/g, ''); return String(1000000 + parseInt(h.slice(0, 12), 16) % 1000000).slice(1); }
+function tkBamMa_(o, ma) { return tkSha_(String(o.salt || '') + '|otp|' + ma); }
+function tkEmailHopLe_(e) { return /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(e); }
+/** API: gửi mã 6 số tới email. Trả { ok:true, email, hetPhut, choGiay, conLuot } hoặc { ok:false, thongBao, choGiay | hetLuot | hetQuota } */
+function guiMaEmail(token, email) {
+  var u = tkCan_(token);
+  email = String(email || '').trim().slice(0, 80);
+  if (!tkEmailHopLe_(email)) throw new Error('Email chưa đúng định dạng (ví dụ: ten@gmail.com).');
+  var hom = Utilities.formatDate(new Date(), 'Asia/Ho_Chi_Minh', 'yyyy-MM-dd'), ma = tkMaSo_();
+  var dat = ttKhoa_(function () {
+    var o = tkDoc_(u.ten), now = Date.now(), x = o.otp;
+    if (x && x.luc && now - x.luc < TK_OTP.choGiay * 1000) { var cho = Math.ceil((TK_OTP.choGiay * 1000 - (now - x.luc)) / 1000); return { ok: false, choGiay: cho, thongBao: 'Bạn vừa yêu cầu mã. Vui lòng đợi ' + cho + ' giây rồi bấm gửi lại.' }; }
+    var dem = o.otpNgay === hom ? +o.otpDem || 0 : 0;
+    if (dem >= TK_OTP.toiDaNgay) return { ok: false, hetLuot: true, thongBao: 'Hôm nay bạn đã yêu cầu mã ' + TK_OTP.toiDaNgay + ' lần. Vui lòng thử lại vào ngày mai.' };
+    if (MailApp.getRemainingDailyQuota() <= TK_OTP.chuaQuota) return { ok: false, hetQuota: true, thongBao: 'Hôm nay hệ thống đã gửi gần hết số email được phép. Bạn vui lòng thử lại vào ngày mai nhé – quà vẫn chờ bạn.' };
+    o.otp = { bam: tkBamMa_(o, ma), email: email, het: now + TK_OTP.phut * 60000, sai: 0, luc: now };
+    o.otpNgay = hom; o.otpDem = dem + 1; tkGhi_(u.ten, o);
+    return { ok: true, email: email, hetPhut: TK_OTP.phut, choGiay: TK_OTP.choGiay, conLuot: TK_OTP.toiDaNgay - dem - 1 };
+  });
+  if (!dat.ok) return dat;
+  try {
+    MailApp.sendEmail({ to: email, name: 'Thiên Cơ Các', subject: 'Mã xác thực Thiên Cơ Các: ' + ma,
+      body: 'Mã xác thực email của bạn là: ' + ma + '\nMã có hiệu lực trong ' + TK_OTP.phut + ' phút. Nếu bạn không yêu cầu, hãy bỏ qua email này.',
+      htmlBody: '<div style="font-family:Arial,sans-serif;max-width:520px;margin:auto;color:#1d2733"><h2 style="color:#0b4a5c">Thiên Cơ Các</h2>' +
+        '<p>Mã xác thực email của bạn:</p><p style="font-size:30px;font-weight:700;letter-spacing:6px;color:#0b4a5c">' + ma + '</p>' +
+        '<p>Mã có hiệu lực trong ' + TK_OTP.phut + ' phút. Nếu bạn không yêu cầu, hãy bỏ qua email này.</p></div>' });
+  } catch (e) {
+    ttKhoa_(function () { var o = tkDoc_(u.ten); if (o.otp && o.otp.email === email) { delete o.otp; o.otpDem = Math.max(0, (+o.otpDem || 1) - 1); tkGhi_(u.ten, o); } });
+    throw new Error('Chưa gửi được email lúc này. Bạn vui lòng thử lại sau ít phút.');
+  }
+  return dat;
+}
+/** API: nhập mã 6 số. Đúng → lưu email đã xác thực vào tài khoản và tặng quà chào mừng MỘT lần (mỗi email chuẩn hóa, mỗi tài khoản).
+ *  Trả { ok:true, email, qua: { xu, gt, lyDo }, soDu } hoặc { ok:false, thongBao, conLan | hetHan | khoaMa | chuaCo } */
+function xacThucEmail(token, ma) {
+  var u = tkCan_(token);
+  ma = String(ma || '').replace(/\D/g, '');
+  return ttKhoa_(function () {
+    var o = tkDoc_(u.ten), x = o.otp, now = Date.now();
+    if (!x) return { ok: false, chuaCo: true, thongBao: 'Bạn chưa yêu cầu mã, hoặc mã đã được dùng. Bấm "Gửi mã" để nhận mã mới.' };
+    if (now > x.het) { delete o.otp; tkGhi_(u.ten, o); return { ok: false, hetHan: true, thongBao: 'Mã đã hết hạn (' + TK_OTP.phut + ' phút). Bấm "Gửi lại mã" để nhận mã mới.' }; }
+    if (x.sai >= TK_OTP.saiToiDa) return { ok: false, khoaMa: true, thongBao: 'Bạn đã nhập sai ' + TK_OTP.saiToiDa + ' lần nên mã này không dùng được nữa. Bấm "Gửi lại mã" để nhận mã mới.' };
+    if (ma.length !== 6 || !tkBang_(tkBamMa_(o, ma), x.bam)) {
+      x.sai = (+x.sai || 0) + 1; tkGhi_(u.ten, o);
+      var con = TK_OTP.saiToiDa - x.sai;
+      return con > 0 ? { ok: false, conLan: con, thongBao: 'Mã chưa đúng. Bạn còn ' + con + ' lần thử.' } :
+        { ok: false, khoaMa: true, conLan: 0, thongBao: 'Bạn đã nhập sai ' + TK_OTP.saiToiDa + ' lần nên mã này không dùng được nữa. Bấm "Gửi lại mã" để nhận mã mới.' };
+    }
+    delete o.otp; o.email = x.email; o.emailXacThuc = new Date().toISOString(); tkGhi_(u.ten, o);
+    var qua = ttToanQuyen_(u) ? { xu: 0, gt: 0, lyDo: 'toanQuyen' } : ttQuaXacThuc_(u.ten, o, x.email);
+    return { ok: true, email: x.email, qua: qua, soDu: ttToanQuyen_(u) ? null : ttSoDu_(u.ten) };
+  });
 }
 function qtDatVaiTro(token, user, vaiTro) {
   tkCan_(token, true);
@@ -186,7 +248,9 @@ function lapLaSo(input, token) {
   if (!q.toanQuyen) {
     ttCatPhan_(r, q);
     if (!q.co_ban) ttCatTongHop_(r);
-  }
+  } else ttGanNamCd_(r, q);   // r.namCd: 4 chủ đề năm (đủ nội dung với toàn quyền)
+  // Giá nâng lên combo sau khấu trừ (tối đa 50%) – giao diện hiện "mở trọn năm thêm X xu"
+  if (u && !q.toanQuyen) r.giaNangCap = { dong_hanh: ttGiaNangCap_(q, 'dong_hanh', r.tuvi.info.viewYear, bg), tron_goi: ttGiaNangCap_(q, 'tron_goi', null, bg) };
   r.nguoiDung = u || null; r.khoa = khoa; r.quyen = q; r.bangGia = bg; r.dangNhap = !!u; r.canMo = !!u;
   r.soDu = u && !q.toanQuyen ? ttSoDu_(u.ten) : null; r.soVe = u && !q.toanQuyen ? ttSoVe_(u.ten) : 0;
   return r;

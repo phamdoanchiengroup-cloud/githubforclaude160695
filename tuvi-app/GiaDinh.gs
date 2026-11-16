@@ -296,17 +296,64 @@ function gdNhom_(N, caps, vy) {
   }
   return out;
 }
-/** API: luận quan hệ 2–4 người trong danh sách gia đình (theo id). Mọi thành viên đã đăng nhập. */
+/* ---------- Phần lẻ "Bạn và người thân: hiểu nhau hơn" (quan_he, 9 xu/cặp – chủ dự án chốt 16/11) ----------
+ * 5 mục theo đề xuất 07: cách thể hiện tình thương · chỗ dễ va chạm · cách nói chuyện · năm thuận để gắn bó · 3 việc nên làm.
+ * Ghép tự động từ tín hiệu của gdCap_ (không có mục kết hôn / sinh con). canViet = true: content-creator viết văn riêng cho từng vai. */
+var GD_VIEC_VAI = {
+  cm: ['Mỗi tuần dành một buổi riêng hai người (đi dạo, ăn sáng, làm một việc nhỏ cùng nhau), không điện thoại.', 'Khi góp ý, nói điều mình thấy và điều mình mong – tránh so sánh với người khác.', 'Hỏi ý kiến người kia trước những việc lớn liên quan đến họ, dù mình là người quyết.'],
+  ae: ['Giữ một thói quen liên lạc đều đặn (một cuộc gọi mỗi tuần, một bữa cơm mỗi tháng).', 'Chuyện tiền bạc giữa anh chị em nên rõ ràng, có ghi lại, để tình cảm không bị ảnh hưởng.', 'Khi bất đồng, nói thẳng nhẹ nhàng với nhau thay vì nhờ người khác truyền lời.'],
+  ob: ['Dành thời gian nghe ông bà kể chuyện xưa – đó là cách gắn bó tự nhiên nhất.', 'Nhờ ông bà dạy một việc nhỏ (nấu món quen, trồng cây) để hai thế hệ có việc chung.', 'Thăm hỏi đều đặn, nhắc nhau giữ sức khỏe, đi khám định kỳ.'],
+  dau: ['Chủ động hỏi thăm, nhớ những dịp quan trọng của người kia.', 'Có điều chưa vui thì nói trực tiếp, nhẹ nhàng – tránh để người thứ ba truyền lời.', 'Tôn trọng nếp nhà của nhau, thống nhất trước những việc chung.'],
+  tren: ['Giữ liên lạc vào những dịp quan trọng trong năm.', 'Khi cần lời khuyên, hỏi thẳng và lắng nghe trọn vẹn trước khi trả lời.', 'Cùng làm một việc nhỏ chung (đi chơi, nấu ăn) để có kỷ niệm riêng.'],
+  ngang: ['Giữ một thói quen liên lạc đều đặn.', 'Nói rõ điều mình cần thay vì để bụng.', 'Tôn trọng khác biệt, phân việc chung theo thế mạnh của mỗi người.'],
+  chung: ['Giữ liên lạc đều đặn.', 'Nói rõ điều mình cần thay vì để bụng.', 'Tôn trọng khác biệt của nhau.']
+};
+function gdLuanQH_(X, Y, L, c, vy) {
+  var tA = X.ten, tB = Y.ten;
+  function boCach(t) { return String(t).split(/\s*Cách làm:\s*/)[0].trim(); }
+  var cachLam = []; c.xau.forEach(function (x) { var m = String(x.de).split(/Cách làm:\s*/)[1]; if (m && cachLam.indexOf(m.trim()) < 0) cachLam.push(m.trim()); });
+  var thuong = c.tot.length ? c.tot.slice(0, 3).map(function (x) { return x.de; }) : [tA + ' và ' + tB + ' thể hiện tình thương theo cách khá kín đáo – để ý những việc nhỏ người kia làm cho mình sẽ thấy rõ hơn.'];
+  var vaCham = c.xau.length ? c.xau.slice(0, 3).map(function (x) { return boCach(x.de); }) : ['Hai người ít điểm va chạm lớn – chỉ cần giữ thói quen nói rõ điều mình cần.'];
+  var noiChuyen = cachLam.length ? cachLam.slice(0, 3) : ['Hai người dễ nói chuyện với nhau; giữ thói quen hỏi lại cho rõ khi chưa chắc mình hiểu đúng ý người kia.'];
+  var namGanBo = [];
+  for (var Y2 = vy; Y2 < vy + 6; Y2++) {
+    var cy = ((Y2 + 8) % 12 + 12) % 12, d = function (p) { return (cy - p.chi + 12) % 12; };
+    var phamA = [0, 6, 3, 9].indexOf(d(X)) >= 0, phamB = [0, 6, 3, 9].indexOf(d(Y)) >= 0, hopA = [4, 8].indexOf(d(X)) >= 0, hopB = [4, 8].indexOf(d(Y)) >= 0;
+    if ((hopA || hopB) && !phamA && !phamB) namGanBo.push({ nam: Y2, canChi: CAN[((Y2 + 6) % 10 + 10) % 10] + ' ' + CHI[cy],
+      de: 'Năm ' + Y2 + ' thuận cho ' + (hopA && hopB ? 'cả hai' : hopA ? tA : tB) + ' – hợp để cùng làm việc chung, đi chơi xa hoặc nói chuyện lại những điều còn vướng.' });
+  }
+  var viec = cachLam.slice(0, 1).concat((GD_VIEC_VAI[L.loai] || GD_VIEC_VAI.chung)).slice(0, 3);
+  return { canViet: true, muc: [
+    { k: 'thuong', ten: 'Cách mỗi người thể hiện tình thương', ds: thuong },
+    { k: 'vaCham', ten: 'Chỗ dễ va chạm', ds: vaCham },
+    { k: 'noiChuyen', ten: 'Cách nói chuyện để hiểu nhau', ds: noiChuyen },
+    { k: 'namGanBo', ten: 'Năm thuận để gắn bó', ds: namGanBo.length ? namGanBo.map(function (x) { return x.de; }) : ['Sáu năm tới không có năm nào nổi bật hẳn – sự gắn bó đến từ thói quen đều đặn hơn là thời điểm.'], nam: namGanBo },
+    { k: 'viec', ten: '3 việc nên làm', ds: viec }
+  ] };
+}
+/** Bản xem thử của một cặp chưa mở quan_he: giữ điểm, xếp loại, 1 dòng tóm tắt, 1 điểm sáng + 1 điều lưu ý */
+function gdQhRutGon_(c) {
+  c.tot = c.tot.slice(0, 1); c.xau = c.xau.slice(0, 1); c.canCu = []; c.tomTat = c.tomTat.slice(0, 1);
+  c.luan = { khoa: true, muc: c.luan ? c.luan.muc.map(function (m) { return { k: m.k, ten: m.ten }; }) : [] };
+  return c;
+}
+/** API: luận quan hệ 2–4 người trong danh sách gia đình (theo id). Mọi thành viên đã đăng nhập xem được bản xem thử;
+ *  bản đầy đủ của từng cặp (không phải vợ chồng) mở bằng phần lẻ quan_he: muaPhan(token, { ids: [idA, idB] }, 'quan_he'). */
 function giaDinhQuanHe(ids, token) {
   var u = tkCan_(token), ds = gdDoc_(u);
   if (!Array.isArray(ids)) throw new Error('Chọn người cần xem.');
   var chon = []; ids.forEach(function (id) { var p = ds.filter(function (x) { return x.id === id; })[0]; if (p && chon.indexOf(p) < 0) chon.push(p); });
   if (chon.length < 2 || chon.length > 4) throw new Error('Chọn từ 2 đến 4 người trong danh sách.');
   var vy = new Date().getFullYear(), N = chon.map(function (p) { return gdNguoi_(p, vy); });
-  var caps = [];
+  var caps = [], toan = ttToanQuyen_(u), giaQH = (ttBangGia_().phan.quan_he || {}).xu;
   for (var i = 0; i < N.length; i++) for (var j = i + 1; j < N.length; j++) {
     var L = gdLoaiCap_(N[i].quanHe, N[j].quanHe), c = gdCap_(N[i], N[j], L); c.ia = i; c.ib = j; caps.push(c);
-    if (c.capDoi) { c.tot = c.tot.slice(0, 1); c.xau = c.xau.slice(0, 1); c.canCu = []; c.tomTat = c.tomTat.slice(0, 1).concat(['Phần hợp hôn chi tiết (tuổi, Bát Tự, lá số vợ chồng, năm thuận) xem ở tab Cặp đôi.']); }   // giữ phần Cặp đôi đang bán
+    if (c.capDoi) { c.tot = c.tot.slice(0, 1); c.xau = c.xau.slice(0, 1); c.canCu = []; c.tomTat = c.tomTat.slice(0, 1).concat(['Phần hợp hôn chi tiết (tuổi, Bát Tự, lá số vợ chồng, năm thuận) xem ở tab Cặp đôi.']); continue; }   // giữ phần Cặp đôi đang bán
+    // 16/11: phần lẻ quan_he theo từng cặp (khóa giống Cặp đôi – không phụ thuộc thứ tự)
+    c.luan = gdLuanQH_(N[i], N[j], L, c, vy);
+    c.ids = [chon[i].id, chon[j].id]; c.giaQH = giaQH;
+    c.moQH = toan || ttCoPhanKhoa_(u.ten, ttKhoaCapDoi_(chon[i].input, chon[j].input), 'quan_he');
+    if (!c.moQH) gdQhRutGon_(c);
   }
   var out = { nguoi: N.map(function (x) { return { id: x.p.id, ten: x.ten, quanHe: x.quanHe, tuoi: x.tuoiTen, napAm: x.napAm.ten, nhatChu: x.bt.nhatChu, manh: x.manh, dung: x.bt.goiY.dung }; }), cap: caps, nam: vy };
   if (N.length >= 3) out.nhom = gdNhom_(N, caps, vy);

@@ -437,16 +437,21 @@ function dangKyBanTin(input, email, token) {
   var u = tkCan_(token); email = String(email || '').trim();
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) throw new Error('Email chưa đúng.');
   if (!input || !input.year) throw new Error('Hãy lập lá số trước khi đăng ký.');
-  var bg = ttBangGia_(), gia = ttToanQuyen_(u) ? 0 : (bg.phan.ban_tin ? bg.phan.ban_tin.xu : 99);
+  // 16/11: bản tin không bán riêng nữa – nằm trong Đồng hành năm (cho lá số + năm đó); người đã đăng ký trước giữ đến hết hạn
+  var bg = ttBangGia_(), toan = ttToanQuyen_(u), nay = new Date().getFullYear(), namDh = 0;
+  if (!toan) { var q = ttQuyen_(u, ttKhoaLaSo_(input)); [+input.viewYear || nay, nay].forEach(function (y) { if (y >= nay && !namDh && ttCoDh_(q, y)) namDh = y; }); }
+  var anBT = !bg.phan.ban_tin || bg.phan.ban_tin.an;
+  if (!toan && !namDh && anBT) throw new Error('Bản tin vận tháng nay đi kèm gói Đồng hành năm (' + (bg.phan.dong_hanh ? bg.phan.dong_hanh.xu : 49) + ' xu). Hãy mở Đồng hành năm cho lá số này để nhận bản tin miễn phí.');
+  var gia = toan || namDh ? 0 : bg.phan.ban_tin.xu;
   return ttKhoa_(function () {
     var du = ttSoDu_(u.ten);
     if (du < gia) return { ok: false, thieu: gia - du, gia: gia, soDu: du };
     var moi = gia ? ttCong_(u.ten, -gia, 'Bản tin vận tháng 12 tháng – ' + email, 'ban_tin') : du;
     var han = new Date(); han.setFullYear(han.getFullYear() + 1);
-    var hanStr = han.getFullYear() + '-' + (han.getMonth() < 9 ? '0' : '') + (han.getMonth() + 1) + '-' + (han.getDate() < 10 ? '0' : '') + han.getDate();
+    var hanStr = namDh ? namDh + '-12-31' : han.getFullYear() + '-' + (han.getMonth() < 9 ? '0' : '') + (han.getMonth() + 1) + '-' + (han.getDate() < 10 ? '0' : '') + han.getDate();
     var sh = tiShBanTin_(), clean = {}; ['name', 'gender', 'calendar', 'day', 'month', 'year', 'leap', 'hour', 'minute', 'place', 'longitude', 'tz'].forEach(function (k) { if (input[k] != null) clean[k] = input[k]; });
     sh.appendRow([shO_(u.ten), shO_(email), JSON.stringify(clean), "'" + hanStr, new Date(), '']);
-    return { ok: true, soDu: ttToanQuyen_(u) ? null : moi, gia: gia, hanDen: hanStr };
+    return { ok: true, soDu: toan ? null : moi, gia: gia, hanDen: hanStr, dongHanh: namDh || null };
   });
 }
 function dsBanTin(token) {
@@ -535,7 +540,7 @@ function dangKyVanNgay(input, email, token) {
   var u = tkCan_(token), toan = ttToanQuyen_(u); email = String(email || '').trim();
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) throw new Error('Email chưa đúng.');
   if (!input || !input.year) throw new Error('Hãy lập lá số trước khi đăng ký.');
-  var bg = ttBangGia_(), gia = toan ? 0 : (bg.phan.van_ngay ? bg.phan.van_ngay.xu : 29);
+  var bg = ttBangGia_(), gia = toan ? 0 : (bg.phan.van_ngay ? bg.phan.van_ngay.xu : 19);
   var sh = tiShVanNgay_(), last = sh.getLastRow(), clean = tiInputSach_(input), homNay = tiNgayStr_(tiGioVN_()), hanCu = '';
   var kq = ttKhoa_(function () {
     var du = toan ? 0 : ttSoDu_(u.ten);

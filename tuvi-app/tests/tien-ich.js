@@ -22,7 +22,7 @@ const dk = ctx.dangKy('khachti', 'matkhau123', 'Khách TI', '0912000111', ''); c
 const G = k => ctx.TT_PHAN_MAC_DINH[k].xu, qua0 = ctx.ttSoDu_('khachti');
 ctx.ttKhoa_(() => ctx.ttCong_('khachti', 300, 'test', ''));
 kt(['xem_tuoi', 'phong_thuy', 'chon_ngay', 'hop_tac', 'dat_ten', 'gieo_que'].every(k => ctx.ttBangGia_().phan[k].xu === 0 && ctx.ttBangGia_().phan[k].mienPhi), 'bảng giá: 6 tiện ích = 0 xu');
-kt(ctx.ttBangGia_().phan.ban_tin.xu > 0 && ctx.ttBangGia_().phan.van_ngay.xu > 0, 'chỉ 2 báo cáo email còn tính phí');
+kt(ctx.ttBangGia_().phan.ban_tin.an && ctx.ttBangGia_().phan.van_ngay.xu === 19, 'bản tin tháng thôi bán lẻ (nằm trong Đồng hành), lời nhắn mỗi sáng 19 xu');
 r = ctx.tienIch(inp, 'xem_tuoi', { muon: 1965 }, tok); kt(r.mo && r.bang.length === 10 && r.muon, 'đăng nhập: 10 năm + tuổi mượn');
 r = ctx.tienIch(inp, 'chon_ngay', { viec: 'cuoi', thang: '2026-11' }, tok); kt(r.mo && r.ngay.length === 30, 'chọn ngày đã mua: đủ 30 ngày');
 r = ctx.tienIch(inp, 'chon_ngay', { viec: 'cuoi', thang: '2026-12' }, tok); kt(r.mo, 'tháng khác cũng miễn phí');
@@ -37,10 +37,13 @@ g = ctx.gieoQue('Việc mua nhà năm nay có thuận không?', 'tai_loc', tok);
 kt(ctx.dsGieoQue(tok).length === 2, 'lưu lịch sử câu hỏi');
 try { ctx.muaPhan(tok, inp, 'gieo_que'); kt(false, 'gieo_que không mua qua muaPhan'); } catch (e) { kt(true, 'gieo_que chỉ mua trong công cụ'); }
 // Bản tin
-let b = ctx.dangKyBanTin(inp, 'an@example.com', tok); kt(b.ok && b.gia === G('ban_tin') && /^\d{4}-\d{2}-\d{2}$/.test(b.hanDen), 'đăng ký bản tin ' + G('ban_tin') + ' xu / 12 tháng');
+let b = null; try { ctx.dangKyBanTin(inp, 'an@example.com', tok); } catch (e) { b = e.message; }
+kt(/Đồng hành/.test(b || '') && ctx.ttSoDu_('khachti') === qua0 + 300, 'chưa có Đồng hành năm: không đăng ký bản tin lẻ được, không trừ xu');
+const vyTI = new Date().getFullYear(), dhTI = ctx.muaPhan(tok, inp, 'dong_hanh', vyTI); kt(dhTI.ok && dhTI.gia === G('dong_hanh'), 'mua Đồng hành năm ' + G('dong_hanh') + ' xu');
+b = ctx.dangKyBanTin(inp, 'an@example.com', tok); kt(b.ok && b.gia === 0 && b.hanDen === vyTI + '-12-31' && b.dongHanh === vyTI, 'Đồng hành năm gồm bản tin tháng của năm đó (miễn phí, hạn 31/12)');
 kt(ctx.dsBanTin(tok).length === 1, 'danh sách bản tin của tôi');
 const html = ctx.tiBanTinHtml_(Object.assign({}, inp), 2026, 11); kt(/Vận tháng 11\/2026/.test(html) && /Ngày tốt/.test(html), 'nội dung email bản tin');
-kt(ctx.ttSoDu_('khachti') === qua0 + 300 - G('ban_tin'), 'số dư khớp: chỉ trừ bản tin (' + ctx.ttSoDu_('khachti') + ')');
+kt(ctx.ttSoDu_('khachti') === qua0 + 300 - G('dong_hanh'), 'số dư khớp: chỉ trừ Đồng hành (' + ctx.ttSoDu_('khachti') + ')');
 // Trọn đời gồm xem tuổi & phong thủy
 kt(ctx.TT_TRON_GOI.indexOf('xem_tuoi') >= 0 && ctx.TT_TRON_GOI.indexOf('phong_thuy') >= 0, 'Trọn đời gồm xem tuổi, phong thủy');
 console.log('Tiện ích: đạt ' + ok + '/' + (ok + sai));

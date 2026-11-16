@@ -57,13 +57,16 @@ kt(Q4.cap.filter(c => c.capDoi).length === 1 && Q4.cap.find(c => c.capDoi).loai 
 kt(!Q4.nhom.vaiTro.some(v => /^Con gái có xu hướng là người giữ nhịp/.test(v.de)), 'trẻ nhỏ không bị xếp "giữ nhịp cả nhà"');
 // Lời dễ hiểu: không tên sao / tên cung / thuật ngữ
 const SAO_TEN = Object.keys(ctx.SAO || {}).filter(n => n.length > 3);
-const deHieu = [].concat(...Q4.cap.map(c => c.tomTat.concat(c.tot.map(x => x.de), c.xau.map(x => x.de))), Q4.nhom.nguHanh.de, ...Q4.nhom.tamGiac.map(t => t.de), Q4.nhom.tuoi.map(x => x.de), Q4.nhom.vaiTro.map(x => x.de), Q4.nhom.nam.map(x => x.de));
+const deHieu = [].concat(...Q4.cap.map(c => c.tomTat.concat(c.tot.map(x => x.de), c.xau.map(x => x.de), ...((c.luan && c.luan.muc) || []).map(m => m.ds || []))), Q4.nhom.nguHanh.de, ...Q4.nhom.tamGiac.map(t => t.de), Q4.nhom.tuoi.map(x => x.de), Q4.nhom.vaiTro.map(x => x.de), Q4.nhom.nam.map(x => x.de));
 kt(SAO_TEN.length > 50, 'có danh sách tên sao để dò');
 deHieu.forEach(t => {
   SAO_TEN.forEach(n => kt(t.indexOf(n) < 0, 'lời dễ hiểu nêu tên sao "' + n + '": ' + t));
   kt(!/Tử Tức|Phụ Mẫu|Huynh Đệ|Phúc Đức|hỷ dụng|kỵ thần|nhật chủ|Quan Sát|Thực Thương|Tỷ Kiếp|nạp âm|Hóa Kỵ|Hóa Lộc/i.test(t), 'lời dễ hiểu có thuật ngữ: ' + t);
 });
 kt(Q4.cap.every(c => c.xau.every(x => /Cách làm|nên|đừng/i.test(x.de))), 'mỗi điều cần lưu ý đều kèm cách làm');
+// 16/11: phần lẻ quan_he – chủ sở hữu thấy đủ 5 mục; thành viên chưa mua chỉ thấy bản xem thử
+kt(Q4.cap.filter(c => !c.capDoi).every(c => c.moQH && c.luan && c.luan.muc.length === 5 && c.luan.muc.every(m => m.ds.length)), 'chủ sở hữu: quan hệ người thân đủ 5 mục');
+kt(!/kết hôn|sinh con|cưới|hôn nhân/i.test(JSON.stringify(Q4.cap.filter(c => !c.capDoi).map(c => c.luan))), 'quan hệ người thân: không có mục kết hôn / sinh con');
 bi = false; try { ctx.giaDinhQuanHe([ids[0]], tokChu); } catch (e) { bi = true; }
 let bi2 = false; try { ctx.giaDinhQuanHe(ids, tokTV); } catch (e) { bi2 = true; }
 kt(bi && bi2, 'chọn 1 người hoặc id không thuộc danh sách mình bị từ chối');
@@ -71,7 +74,7 @@ for (let i = 0; i < 25; i++) {   // ngẫu nhiên: không lỗi, điểm trong 0
   const qh = ['Bản thân', 'Vợ', 'Con trai', 'Con gái', 'Cha', 'Mẹ', 'Anh', 'Em gái', 'Ông', 'Bà', 'Họ hàng'];
   const dsN = [0, 1, 2, 3].map(k => ({ ten: 'N' + i + k, quanHe: qh[(i * 5 + k * 7) % qh.length], input: { gender: (i + k) % 2 ? 'nu' : 'nam', calendar: 'duong', day: 1 + (i * 7 + k * 3) % 28, month: 1 + (i + k * 5) % 12, year: 1940 + (i * 13 + k * 17) % 80, hour: (i * 5 + k) % 24, minute: 0 } }));
   const sach = ctx.giaDinhLuu(dsN, tokTV).ds, R = ctx.giaDinhQuanHe(sach.map(x => x.id), tokTV);
-  kt(R.cap.length === 6 && R.cap.every(c => c.diem >= 0 && c.diem <= 10 && c.tomTat.length) && R.nhom, '#' + i + ' 4 người ngẫu nhiên luận được');
+  kt(R.cap.length === 6 && R.cap.every(c => c.diem >= 0 && c.diem <= 10 && c.tomTat.length && (c.capDoi || (!c.moQH && c.luan.khoa && c.tomTat.length === 1))) && R.nhom, '#' + i + ' 4 người ngẫu nhiên luận được (thành viên: bản xem thử quan hệ)');
 }
 console.log('Gia đình: đạt ' + ok + '/' + (ok + sai));
 process.exit(sai ? 1 : 0);

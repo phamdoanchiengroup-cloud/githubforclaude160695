@@ -557,3 +557,66 @@ function htHoSoNam_(C, namTin, thang, W) {
       'Ranh giới "năm" của mỗi hệ cũng khác nhau: Tử Vi và Hà Lạc đổi năm từ Tết âm lịch, Bát Tự từ tiết Lập Xuân (khoảng 4/2), Chiêm tinh và Thần số theo năm dương lịch – các việc rơi vào tháng Giêng, tháng Hai dương lịch có thể được hệ này tính cho năm trước, hệ kia tính cho năm sau. ' +
       'Đây là mô hình tham khảo minh bạch, chưa được hiệu chỉnh bằng thống kê thực tế – hãy dùng các năm đã qua để tự kiểm chứng.' };
 }
+
+/* ======================================================================================================
+ * HỒ SƠ NĂM THEO 4 CHỦ ĐỀ (16/11/2026 – chủ dự án chốt bán lẻ 9/19 xu): mỗi chủ đề là một phần 9 xu (`nam_cd:<cd>:<năm>`).
+ * Gom 8 khía cạnh của Hồ sơ năm thành 4 chủ đề; phần "bức tranh chung" (nam) chỉ thấy 1 dòng tóm tắt của mỗi chủ đề.
+ * Văn ở đây ghép tự động từ tín hiệu sẵn có (sự kiện, tháng hợp, hệ đồng thuận, lời khuyên) – content-creator sẽ viết dày thêm.
+ * Chủ đề Sức khỏe & nhịp sống chỉ nói nhịp nghỉ ngơi, áp lực, chăm sóc bản thân – không chẩn đoán bệnh (quyết định 24/10).
+ * ====================================================================================================== */
+var HSN_CD = [
+  { k: 'cv', ten: 'Công việc & sự nghiệp', icon: '▲', kc: ['nghiep', 'hoc', 'quanHe'], linhVuc: 'công việc' },
+  { k: 'tien', ten: 'Tiền bạc', icon: '◈', kc: ['tien'], linhVuc: 'tiền bạc' },
+  { k: 'tc', ten: 'Tình cảm & gia đình', icon: '❤', kc: ['tinh', 'con', 'nha'], linhVuc: 'tình cảm và gia đình' },
+  { k: 'sk', ten: 'Sức khỏe & nhịp sống', icon: '✚', kc: ['khoe'], linhVuc: 'sức khỏe và nhịp sống' }
+];
+/** Chủ đề (cv/tien/tc/sk) của một khía cạnh Hồ sơ năm */
+function htCdCuaKc_(kc) { for (var i = 0; i < HSN_CD.length; i++) if (HSN_CD[i].kc.indexOf(kc) >= 0) return HSN_CD[i].k; return ''; }
+/** Tách Hồ sơ năm (bản đầy đủ) thành 4 chủ đề: { cv: { k, ten, icon, nhan, huong, tom, items, suKien, thangThuan, thangChuY, heUng, heNghich, khuyen }, … } */
+function htNamCd_(H) {
+  if (!H || H.loi || !H.suKien) return null;
+  var vy = H.nam, qua = !!H.qua, out = {};
+  HSN_CD.forEach(function (C) {
+    var kc = H.khiaCanh.filter(function (x) { return C.kc.indexOf(x.k) >= 0; });
+    var ds = H.suKien.filter(function (x) { return C.kc.indexOf(x.kc) >= 0 && !x.ngoai; }).sort(function (a, b) { return b.p - a.p; });
+    var nhanDs = kc.map(function (x) { return x.nhan; });
+    var nhan = !ds.length ? 'Chưa đến tuổi' : nhanDs.indexOf('Cơ hội lẫn thử thách') >= 0 || (nhanDs.indexOf('Thuận') >= 0 && nhanDs.indexOf('Cần giữ') >= 0) ? 'Cơ hội lẫn thử thách' :
+      nhanDs.indexOf('Cần giữ') >= 0 ? 'Cần giữ' : nhanDs.indexOf('Thuận') >= 0 ? 'Thuận' : nhanDs.indexOf('Có thay đổi') >= 0 ? 'Có thay đổi' : 'Bình ổn';
+    var huong = nhan === 'Thuận' ? 'tot' : nhan === 'Cần giữ' ? 'xau' : nhan === 'Bình ổn' || nhan === 'Chưa đến tuổi' ? 'vua' : 'dong';
+    var noi = ds.filter(function (x) { return x.muc === 'Rất cao' || x.muc === 'Cao' || x.muc === 'Khá cao'; });
+    var top = noi[0] || ds[0];
+    var tot = ds.filter(function (x) { return x.loai !== 'xau'; }), xau = ds.filter(function (x) { return x.loai === 'xau'; });
+    // 1 dòng tóm tắt (bức tranh chung thấy dòng này)
+    var tom = !ds.length ? C.ten + ' năm ' + vy + ': chưa đến độ tuổi của các việc thuộc chủ đề này.' :
+      nhan === 'Thuận' ? C.ten + ' năm ' + vy + ': nghiêng về thuận' + (top ? ', nổi bật nhất là ' + top.ngan : '') + '.' :
+      nhan === 'Cần giữ' ? C.ten + ' năm ' + vy + ': năm nên giữ nhịp' + (top ? ', việc cần để ý nhất: ' + top.ngan : '') + '.' :
+      nhan === 'Cơ hội lẫn thử thách' ? C.ten + ' năm ' + vy + ': có cả cơ hội lẫn việc cần giữ – chuẩn bị kỹ thì phần thuận nhiều hơn.' :
+      nhan === 'Có thay đổi' ? C.ten + ' năm ' + vy + ': có xu hướng thay đổi' + (top ? ' (' + top.ngan + ')' : '') + '.' :
+      noi.length ? C.ten + ' năm ' + vy + ': nhìn chung ổn định; việc có khả năng đến: ' + noi[0].ngan + '.' : C.ten + ' năm ' + vy + ': khá êm, không có việc nào nổi lên rõ.';
+    // Tháng âm lịch hợp: tháng của việc thuận / tháng cần để ý
+    function thangCua(a) { var t = []; a.slice(0, 3).forEach(function (x) { (x.thang || []).forEach(function (m) { if (t.indexOf(m) < 0) t.push(m); }); }); return t.sort(function (a2, b2) { return a2 - b2; }).slice(0, 3); }
+    var thangThuan = thangCua(tot), thangChuY = thangCua(xau).filter(function (m) { return thangThuan.indexOf(m) < 0; });
+    // Các hệ cùng báo / báo ngược trong chủ đề
+    // Mỗi hệ: cộng số việc (trong 4 việc đầu) hệ đó ủng hộ, trừ số việc hệ đó báo chiều ngược → mỗi hệ chỉ đứng một phía
+    var diemHe = {};
+    ds.slice(0, 4).forEach(function (x) { x.ung.forEach(function (h) { diemHe[h] = (diemHe[h] || 0) + 1; }); x.nghich.forEach(function (h) { diemHe[h] = (diemHe[h] || 0) - 1; }); });
+    var heUng = HSN_HE.filter(function (h) { return diemHe[h] > 0; }), heNghich = HSN_HE.filter(function (h) { return diemHe[h] < 0; });
+    var khuyen = []; (noi.length ? noi : ds).slice(0, 3).forEach(function (x) { if (khuyen.indexOf(x.khuyen) < 0) khuyen.push(x.khuyen); });
+    // Các đoạn luận (bản ghép tự động – content-creator viết dày thêm)
+    var items = [];
+    if (!ds.length) items.push('Ở độ tuổi hiện tại, các việc thuộc chủ đề ' + C.linhVuc + ' chưa đến lúc xét.');
+    else {
+      items.push((qua ? 'Năm ' + vy + ' đã qua, mảng ' + C.linhVuc + ' của bạn có xu hướng ' : 'Trong năm ' + vy + ', mảng ' + C.linhVuc + ' của bạn có xu hướng ') +
+        (nhan === 'Thuận' ? 'thuận lợi hơn mức thường' : nhan === 'Cần giữ' ? 'cần được chăm chút, giữ nhịp nhiều hơn' : nhan === 'Cơ hội lẫn thử thách' ? 'vừa mở cơ hội vừa có việc cần giữ' : nhan === 'Có thay đổi' ? 'có thay đổi' : 'ổn định, không có biến động lớn') + '. ' +
+        (noi.length ? 'Những việc đáng để ý: ' + htDs_(noi.slice(0, 3).map(function (x) { return x.ngan + ' (mức ' + x.muc.toLowerCase() + ')'; })) + '.' : 'Không có việc nào nổi lên rõ – khả năng ở mức nền theo độ tuổi.'));
+      if (top && top.giai) items.push(top.giai);
+      items.push(thangThuan.length ? 'Tháng thuận cho chủ đề này (âm lịch): ' + htDs_(thangThuan.map(function (m) { return 'tháng ' + m; })) + ' – nên dồn việc quan trọng vào các tháng này.' : 'Chủ đề này không có tháng nào thuận nổi bật – cứ đều tay quanh năm.');
+      if (thangChuY.length) items.push('Tháng nên để ý hơn (âm lịch): ' + htDs_(thangChuY.map(function (m) { return 'tháng ' + m; })) + ' – giữ nhịp, tránh quyết định vội.');
+      items.push(heUng.length >= 3 && !heNghich.length ? 'Nhìn chung cả chủ đề, ' + htDs_(heUng) + ' cùng nhìn về một hướng – tín hiệu khá rõ.' : heUng.length && heNghich.length ? 'Nhìn chung cả chủ đề, ' + htDs_(heUng) + ' có tín hiệu ủng hộ, còn ' + htDs_(heNghich) + ' nghiêng chiều ngược – kết quả phụ thuộc nhiều vào sự chuẩn bị của bạn.' :
+        heUng.length ? htDs_(heUng) + ' có tín hiệu cho chủ đề này, các hệ còn lại không phản đối.' : 'Các hệ không có tín hiệu đáng kể cho chủ đề này.');
+    }
+    out[C.k] = { k: C.k, ten: C.ten, icon: C.icon, nam: vy, nhan: nhan, huong: huong, tom: tom, items: items, suKien: ds.map(function (x) { return x.k; }),
+      thangThuan: thangThuan, thangChuY: thangChuY, heUng: heUng, heNghich: heNghich, khuyen: khuyen };
+  });
+  return out;
+}

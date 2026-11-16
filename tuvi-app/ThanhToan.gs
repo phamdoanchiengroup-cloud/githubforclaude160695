@@ -14,51 +14,62 @@
  * ============================================================
  */
 /** Bảng giá "kéo người dùng" (10/2026): mọi phần 9–49 xu. goc = giá cũ, chỉ để hiển thị gạch ngang. */
-var TT_GIA_PHIEN = 3;   // 16/11: phương án A – Trọn đời 89, Hội viên năm 99, gia đình 79/119, bỏ giá gạch ngang   // tăng số này khi đổi bảng giá mặc định → bảng giá cũ đã lưu trong Quản trị bị bỏ qua
-/** Gói đổi nghĩa/giá ở phiên 3 (16/11): giá lưu trong Quản trị từ phiên 2 không áp cho các gói này */
-var TT_GIA_DOI = ['tron_goi', 'hoi_vien', 'gia_dinh_3', 'gia_dinh_5'];
+var TT_GIA_PHIEN = 4;   // 16/11 (chủ dự án chốt): bán lẻ chỉ 9 hoặc 19 xu; năm tách "bức tranh chung" + 4 chủ đề; Đồng hành 49 – tăng số này khi đổi bảng giá mặc định → bảng giá cũ đã lưu trong Quản trị bị bỏ qua
+/** Gói đổi nghĩa/giá ở phiên 4: giá lưu trong Quản trị từ phiên 3 không áp cho các gói này (lấy giá mặc định mới).
+ *  'nam' cũng đổi nghĩa (nay chỉ là bức tranh chung, không gồm 4 chủ đề). */
+var TT_GIA_DOI = ['dong_hanh', 'dai_van', 'van_ngay', 'tron_goi', 'gia_dinh_3', 'gia_dinh_5', 'nam'];
+/** Phiên giá bắt đầu tách năm: dòng MoKhoa 'nam:<năm>' ghi ở phiên nhỏ hơn số này (hoặc không ghi phiên) là vận năm KIỂU CŨ → giữ cả 4 chủ đề */
+var TT_NAM_TACH_PHIEN = 4;
+/** 4 chủ đề năm (nam_cd:<cd>:<năm>) – khớp HSN_CD trong HoiTu.gs */
+var TT_CHU_DE = ['cv', 'tien', 'tc', 'sk'];
+/** Khấu trừ khi nâng lên combo: phần lẻ đã mua được trừ, nhưng tối đa 50% giá combo */
+var TT_TRU_TOI_DA = 0.5;
 var TT_PHAN_MAC_DINH = {
-  co_ban: { ten: 'Tổng hợp 6 hệ – kết luận 9 lĩnh vực, chân dung, con người, tình duyên, đường đời', xu: 19, goc: 49 },
-  dai_van: { ten: 'Luận chi tiết 1 đại vận (10 năm)', xu: 9, goc: 19, theo: 'dv' },
-  dai_van_qua: { ten: 'Đại vận đã qua – kiểm chứng', xu: 9, theo: 'dv' },
-  tron_dai_van: { ten: 'Trọn 12 đại vận cả đời', xu: 39, goc: 99 },
-  nam: { ten: 'Vận năm – tiểu vận, 12 tháng, lưu niên', xu: 19, goc: 29, theo: 'nam' },
-  thang: { ten: 'Nhật vận từng ngày trong 1 tháng', xu: 9, theo: 'thang' },
-  dong_hanh: { ten: 'Đồng hành cả năm – vận năm + nhật vận 12 tháng', xu: 39, goc: 79, theo: 'nam' },
-  bien_co: { ten: 'Những năm đáng chú ý 30 năm & dự đoán cả đời', xu: 19, goc: 29 },
-  phoi_ngau: { ten: 'Chân dung người phối ngẫu & tuổi hợp', xu: 9, goc: 19 },
-  pdf: { ten: 'PDF bản đầy đủ', xu: 19, goc: 29 },
-  do_gio: { ten: 'Dò chính xác giờ sinh', xu: 9, goc: 19 },
-  tron_goi: { ten: 'Trọn đời – 12 đại vận, những năm đáng chú ý, phối ngẫu, PDF đầy đủ', xu: 89 },
-  hoi_vien: { ten: 'Hội viên năm – vận năm, 12 tháng và nhật vận cho mọi lá số trong 12 tháng', xu: 99, theo: 'tk' },   // 16/11: mở theo tài khoản, không theo lá số
-  cap_doi: { ten: 'Xem cặp đôi – hợp hôn 2 lá số', xu: 19, goc: 29 },   // mở theo từng cặp, không thuộc trọn gói
+  co_ban: { ten: 'Tổng hợp 6 hệ – kết luận 9 lĩnh vực, chân dung, con người, tình duyên, đường đời', xu: 19 },   // miễn phí cho tài khoản (16/11)
+  dai_van: { ten: '10 năm của bạn – luận chi tiết 1 đại vận', xu: 19, theo: 'dv' },
+  dai_van_qua: { ten: 'Kiểm chứng 10 năm đã qua', xu: 9, theo: 'dv' },
+  tron_dai_van: { ten: 'Trọn 12 đại vận cả đời (gói cũ)', xu: 69, an: true },   // 16/11: thôi bán riêng, nằm trong Trọn đời; người đã mua giữ quyền
+  nam: { ten: 'Năm X: bức tranh chung', xu: 19, theo: 'nam' },   // X = năm đang xem (giao diện thay); không gồm chi tiết 4 chủ đề
+  nam_cd: { ten: 'Năm X theo chủ đề', xu: 9, theo: 'nam_cd' },  // nam_cd:<cv|tien|tc|sk>:<năm>
+  thang: { ten: 'Tháng của bạn – từng ngày trong 1 tháng', xu: 9, theo: 'thang' },
+  dong_hanh: { ten: 'Đồng hành năm – bức tranh chung + 4 chủ đề + 12 tháng + bản tin tháng qua email', xu: 49, theo: 'nam' },
+  bien_co: { ten: 'Những năm đáng chú ý của đời bạn (30 năm)', xu: 19 },
+  phoi_ngau: { ten: 'Người bạn đời hợp với bạn và các tuổi hợp', xu: 9 },
+  pdf: { ten: 'Sách luận giải PDF đầy đủ', xu: 19 },
+  do_gio: { ten: 'Dò chính xác giờ sinh', xu: 9 },   // miễn phí cho tài khoản (16/11)
+  tron_goi: { ten: 'Trọn đời – 12 đại vận, những năm đáng chú ý, người bạn đời, PDF đầy đủ', xu: 89 },
+  hoi_vien: { ten: 'Hội viên năm (gói cũ)', xu: 99, theo: 'tk', an: true },   // 16/11: thôi bán; người đã mua giữ quyền đến hết hạn
+  cap_doi: { ten: 'Hai bạn hợp nhau đến đâu – hợp đôi 2 lá số', xu: 19 },   // mở theo từng cặp, không thuộc trọn gói
+  quan_he: { ten: 'Bạn và người thân: hiểu nhau hơn', xu: 9 },              // mở theo từng cặp người thân (khóa như cap_doi), luận theo vai trong gia đình
   // Tiện ích (TienIch.gs)
-  xem_tuoi: { ten: 'Xem tuổi làm nhà, cưới hỏi – 10 năm + tuổi mượn', xu: 9, goc: 19 },
-  phong_thuy: { ten: 'Phong thủy Bát trạch – 8 hướng, bố trí, màu hợp', xu: 19, goc: 29 },
-  chon_ngay: { ten: 'Chọn ngày tốt – 1 việc trong 1 tháng', xu: 9, goc: 19, theo: 'ngay' },
-  hop_tac: { ten: 'Hợp tác làm ăn – ghép 2 lá số', xu: 19, goc: 29 },        // mở theo từng cặp
-  dat_ten: { ten: 'Đặt tên con – chấm tên & gợi ý theo ngũ hành', xu: 29, goc: 49 },   // mở theo lá số của bé
+  xem_tuoi: { ten: 'Xem tuổi làm nhà, cưới hỏi – 10 năm + tuổi mượn', xu: 9 },
+  phong_thuy: { ten: 'Phong thủy Bát trạch – 8 hướng, bố trí, màu hợp', xu: 19 },
+  chon_ngay: { ten: 'Chọn ngày tốt – 1 việc trong 1 tháng', xu: 9, theo: 'ngay' },
+  hop_tac: { ten: 'Hợp tác làm ăn – ghép 2 lá số', xu: 19 },        // mở theo từng cặp
+  dat_ten: { ten: 'Đặt tên con – chấm tên & gợi ý theo ngũ hành', xu: 29 },   // mở theo lá số của bé
   gieo_que: { ten: 'Gieo quẻ hỏi việc – 1 câu hỏi', xu: 9 },         // trừ theo từng câu (gieoQue)
-  ban_tin: { ten: 'Bản tin vận tháng qua email – 12 tháng', xu: 39, goc: 99 }, // đăng ký theo năm (dangKyBanTin)
-  van_ngay: { ten: 'Luận giải hằng ngày qua email – 30 ngày', xu: 29, goc: 59 }, // đăng ký theo 30 ngày (dangKyVanNgay)
-  gia_dinh_3: { ten: 'Gói gia đình 3 người – đồng hành cả năm cho 3 lá số', xu: 79, luot: 3 },
-  gia_dinh_5: { ten: 'Gói gia đình 5 người – đồng hành cả năm cho 5 lá số', xu: 119, luot: 5 },
+  ban_tin: { ten: 'Bản tin vận tháng qua email – 12 tháng (gói cũ)', xu: 39, an: true }, // 16/11: chỉ còn trong Đồng hành năm; người đã đăng ký giữ đến hết hạn
+  van_ngay: { ten: 'Lời nhắn mỗi sáng qua email – 30 ngày', xu: 19 }, // đăng ký theo 30 ngày (dangKyVanNgay)
+  gia_dinh_3: { ten: 'Gói gia đình 3 người – Đồng hành năm cho 3 lá số', xu: 79, luot: 3 },
+  gia_dinh_5: { ten: 'Gói gia đình 5 người – Đồng hành năm cho 5 lá số', xu: 119, luot: 5 },
   luu_nien: { ten: 'Lưu niên nhiều năm (gói cũ)', xu: 19, an: true }   // gói cũ: người đã mua được xem mọi năm/tháng
 };
 /** 23/10/2026 (chủ dự án): Tiện ích miễn phí hết, chỉ hai phần báo cáo qua email (ban_tin, van_ngay) còn tính phí.
  *  Giá các phần này luôn về 0, kể cả khi Quản trị đã lưu giá khác. */
 var TT_MIEN_PHI = ['xem_tuoi', 'phong_thuy', 'chon_ngay', 'hop_tac', 'dat_ten', 'gieo_que'];
-/** Phần thuộc Trọn đời (không gồm vận năm/tháng – bán theo từng năm) */
+/** Phần thuộc Trọn đời (không gồm vận năm/tháng – bán theo từng năm). co_ban, do_gio, xem_tuoi, phong_thuy nay miễn phí – giữ để người mua cũ không mất gì */
 var TT_TRON_GOI = ['co_ban', 'tron_dai_van', 'bien_co', 'phoi_ngau', 'pdf', 'do_gio', 'xem_tuoi', 'phong_thuy'];
+/** Phần lẻ được khấu trừ khi nâng lên Trọn đời (cộng thêm mọi đại vận lẻ dv:<năm> đã mua) */
+var TT_TRON_GOI_TRU = ['tron_dai_van', 'bien_co', 'phoi_ngau', 'pdf'];
 var TT_GOI_MAC_DINH = [{ tien: 20000, xu: 20 }, { tien: 50000, xu: 55 }, { tien: 100000, xu: 120 }, { tien: 200000, xu: 260 }];
 /** Thưởng kéo người dùng: quà đăng ký, thưởng giới thiệu khi bạn bè đăng ký (xu), trần số lượt thưởng giới thiệu mỗi người */
-var TT_KM_MAC_DINH = { lanDau: 100, gioiThieu: 20, dangKy: 9, gtDangKy: 0, gtToiDa: 30 };   // 16/11: quà 9 xu sau đăng ký (mỗi SĐT/email một lần); thưởng mời chỉ khi bạn nạp lần đầu (gioiThieu %)
-/** Phiên mức quà đăng ký: 23/10/2026 nâng quà lên 50 xu (đủ mở Trọn đời 49 xu). Quà đăng ký lưu trong Quản trị ở phiên cũ bị bỏ qua. */
-var TT_KM_PHIEN = 3;   // 16/11: phương án A
+var TT_KM_MAC_DINH = { lanDau: 100, gioiThieu: 0, dangKy: 39, gtDangKy: 0, gtToiDa: 30 };   // 16/11 (phiên 4): quà 39 xu chỉ khi xác thực email (mỗi email một lần, mỗi tài khoản một lần); bỏ thưởng mời
+/** Phiên mức khuyến mại: quà đăng ký / thưởng mời lưu trong Quản trị ở phiên cũ bị bỏ qua (mã mời và trường gioiThieu vẫn giữ để dữ liệu cũ không lỗi). */
+var TT_KM_PHIEN = 4;   // 16/11: quà 39 xu sau xác thực email, thưởng mời = 0
 var TT_SH = {
   Vi: ['Tài khoản', 'Số dư (xu)', 'Cập nhật'],
   SoCai: ['Thời gian', 'Tài khoản', 'Thay đổi (xu)', 'Số dư sau', 'Lý do', 'Tham chiếu'],
-  MoKhoa: ['Thời gian', 'Tài khoản', 'Khóa lá số', 'Phần', 'Xu', 'Lá số'],
+  MoKhoa: ['Thời gian', 'Tài khoản', 'Khóa lá số', 'Phần', 'Xu', 'Lá số', 'Phiên giá'],   // Phiên giá: để phân biệt vận năm kiểu cũ (trống / < 4) với bức tranh chung
   DonHang: ['Mã đơn', 'Tài khoản', 'Số tiền (đ)', 'Xu', 'Trạng thái', 'Tạo lúc', 'Trả lúc', 'Kênh', 'Tham chiếu', 'Nội dung CK'],
   Ve: ['Tài khoản', 'Lượt mở còn lại', 'Cập nhật'],
   GieoQue: ['Thời gian', 'Tài khoản', 'Câu hỏi', 'Lĩnh vực', 'Kết quả (JSON)']
@@ -117,7 +128,7 @@ function ttBangGia_() {
         if (o.goi && o.goi.length) goi = o.goi.filter(function (g) { return g.tien > 0 && g.xu > 0; });
       }
       if (o.thuongLanDau != null) km.lanDau = Math.max(0, Math.min(500, +o.thuongLanDau || 0));
-      if (o.thuongGioiThieu != null) km.gioiThieu = Math.max(0, Math.min(100, +o.thuongGioiThieu || 0));
+      if (o.thuongGioiThieu != null && +o.kmPhien === TT_KM_PHIEN) km.gioiThieu = Math.max(0, Math.min(100, +o.thuongGioiThieu || 0));
       if (o.thuongDangKy != null && +o.kmPhien === TT_KM_PHIEN) km.dangKy = Math.max(0, Math.min(200, +o.thuongDangKy || 0));
       if (o.thuongGTDangKy != null && +o.kmPhien === TT_KM_PHIEN) km.gtDangKy = Math.max(0, Math.min(100, +o.thuongGTDangKy || 0));
     }
@@ -147,18 +158,29 @@ function ttLienHeChuan_(lh) {
   var so = lh.replace(/\D/g, ''); if (/^84\d{9,10}$/.test(so)) so = '0' + so.slice(2);
   return so;
 }
-function ttQuaDangKy_(u, gt, lienHe) {
-  var bg = ttBangGia_(), qua = { xu: 0, gt: 0 }, lh = ttLienHeChuan_(lienHe), P = PropertiesService.getScriptProperties();
-  var khoaLH = lh ? 'QUA_LH_' + tkSha_(lh).slice(0, 24) : '';
-  ttKhoa_(function () {
-    if (bg.thuongDangKy > 0 && khoaLH && P.getProperty(khoaLH)) return;   // liên hệ này đã nhận quà
-    if (bg.thuongDangKy > 0) { ttCong_(u, bg.thuongDangKy, 'Quà chào mừng khi đăng ký', 'DK'); qua.xu += bg.thuongDangKy; if (khoaLH) P.setProperty(khoaLH, u); }   // cộng xu xong mới đánh dấu: ghi sổ lỗi thì liên hệ không mất quà
-    if (!gt || !(bg.thuongGTDangKy > 0)) return;
-    var o = tkDoc_(gt); if (!o) return;
-    ttCong_(u, bg.thuongGTDangKy, 'Thưởng đăng ký qua lời mời của ' + gt, 'DK'); qua.xu += bg.thuongGTDangKy; qua.gt = bg.thuongGTDangKy;
-    var n = +o.soMoiDK || 0;
-    if (n < bg.gtToiDa) { ttCong_(gt, bg.thuongGTDangKy, 'Bạn ' + u + ' đăng ký qua lời mời của bạn', 'GT'); o.soMoiDK = n + 1; tkGhi_(gt, o); }
-  });
+/** Tài khoản đã từng nhận quà chào mừng chưa (cờ mới daNhanQua, hoặc sổ cái có dòng quà 'DK' của tài khoản – gồm cả quà 50/9 xu kiểu cũ) */
+function ttDaNhanQua_(ten, o) {
+  if (o && o.daNhanQua) return true;
+  var sh = ttSheet_('SoCai');
+  return ttTim_(sh, 2, ten).some(function (r) { var v = sh.getRange(r, 1, 1, 6).getValues()[0]; return String(v[5]) === 'DK' && +v[2] > 0 && /^Quà chào mừng/.test(String(v[4])); });
+}
+/** Quà chào mừng sau khi xác thực email (16/11, phiên khuyến mại 4). GỌI BÊN TRONG ttKhoa_ (xacThucEmail).
+ *  Mỗi email chuẩn hóa nhận 1 lần (khóa QUA_LH_ dùng chung với quà kiểu cũ); mỗi tài khoản nhận 1 lần. o = bản ghi tài khoản (được cập nhật + ghi lại). */
+function ttQuaXacThuc_(ten, o, email) {
+  var bg = ttBangGia_(), qua = { xu: 0, gt: 0, lyDo: '' }, P = PropertiesService.getScriptProperties();
+  if (!(bg.thuongDangKy > 0)) { qua.lyDo = 'tat'; return qua; }
+  if (ttDaNhanQua_(ten, o)) { qua.lyDo = 'taiKhoan'; return qua; }
+  var lh = ttLienHeChuan_(email), khoaLH = lh ? 'QUA_LH_' + tkSha_(lh).slice(0, 24) : '';
+  if (!khoaLH) { qua.lyDo = 'email'; return qua; }
+  if (P.getProperty(khoaLH)) { qua.lyDo = 'email'; return qua; }   // email này đã nhận quà (ở tài khoản khác)
+  ttCong_(ten, bg.thuongDangKy, 'Quà chào mừng khi xác thực email', 'DK'); qua.xu = bg.thuongDangKy;   // cộng xu xong mới đánh dấu: ghi sổ lỗi thì không mất quà
+  P.setProperty(khoaLH, ten); o.daNhanQua = true; tkGhi_(ten, o);
+  var gt = o.gioiThieu, og = gt && bg.thuongGTDangKy > 0 ? tkDoc_(gt) : null;   // thưởng mời: mặc định 0 từ phiên 4 (chỉ bật lại được trong Quản trị)
+  if (og) {
+    ttCong_(ten, bg.thuongGTDangKy, 'Thưởng đăng ký qua lời mời của ' + gt, 'DK'); qua.xu += bg.thuongGTDangKy; qua.gt = bg.thuongGTDangKy;
+    var n = +og.soMoiDK || 0;
+    if (n < bg.gtToiDa) { ttCong_(gt, bg.thuongGTDangKy, 'Bạn ' + ten + ' đăng ký qua lời mời của bạn', 'GT'); og.soMoiDK = n + 1; tkGhi_(gt, og); }
+  }
   return qua;
 }
 
@@ -196,17 +218,22 @@ function ttKhoaLaSo_(input) {
 }
 function ttToanQuyen_(u) { return !!u && (u.vaiTro === 'chu' || u.vaiTro === 'vip'); }
 function ttQuyen_(u, khoa) {
-  var q = { dvMo: {}, namMo: {}, thangMo: {}, dhNam: {}, daMua: {} };   // daMua: phần đã thật sự trả tiền (để Trọn đời trừ đúng)
+  // daMua: phần (không theo thời gian) đã thật sự trả tiền; daTra: xu đã trả theo từng mã (để combo trừ đúng số đã trả)
+  // namCu: năm mua "Vận năm" kiểu cũ (trước phiên 4) → giữ cả 4 chủ đề; cdMo: chủ đề năm đã mua ('cv:2027')
+  var q = { dvMo: {}, namMo: {}, namCu: {}, cdMo: {}, thangMo: {}, dhNam: {}, daMua: {}, daTra: {} };
   Object.keys(TT_PHAN_MAC_DINH).forEach(function (k) { q[k] = false; });
   if (!u) return q;
   if (ttToanQuyen_(u)) { Object.keys(TT_PHAN_MAC_DINH).forEach(function (k) { q[k] = true; }); q.toanQuyen = q.dvAll = q.namAll = q.thangAll = true; return q; }
   var sh = ttSheet_('MoKhoa');
   ttTim_(sh, 3, khoa).forEach(function (r) {
-    var v = sh.getRange(r, 1, 1, 4).getValues()[0];
+    var v = sh.getRange(r, 1, 1, 7).getValues()[0];
     if (String(v[1]) !== u.ten) return;
-    var p = String(v[3]), m = p.match(/^(dv|nam|thang|dong_hanh):(.+)$/);
+    var p = String(v[3]), m = p.match(/^(dv|nam|thang|dong_hanh|nam_cd):(.+)$/);
+    q.daTra[p] = (q.daTra[p] || 0) + (+v[4] || 0);
     if (!m) { q[p] = true; q.daMua[p] = true; return; }
-    if (m[1] === 'dong_hanh') q.dhNam[m[2]] = true; else q[m[1] + 'Mo'][m[2]] = true;
+    if (m[1] === 'dong_hanh') q.dhNam[m[2]] = true;
+    else if (m[1] === 'nam_cd') q.cdMo[m[2]] = true;
+    else { q[m[1] + 'Mo'][m[2]] = true; if (m[1] === 'nam' && !((+v[6] || 0) >= TT_NAM_TACH_PHIEN)) q.namCu[m[2]] = true; }
   });
   // 16/11 (phương án A): tài khoản đã đăng nhập được Tổng hợp 6 hệ + dò giờ sinh miễn phí; 1 đại vận đã qua gần nhất mở ở ttCatPhan_
   q.taiKhoan = true; q.co_ban = true; q.do_gio = true;
@@ -275,6 +302,12 @@ function ttPad2_(n) { return (n < 10 ? '0' : '') + n; }
 function ttCoDv_(q, nam) { return !!(q.toanQuyen || q.dvAll || q.dvMo[String(nam)]); }
 function ttCoDh_(q, y) { return !!(q.toanQuyen || q.dhNam[String(y)] || (q.namAll && q.thangAll)); }   // Hội viên năm / lưu niên đã gồm Đồng hành
 function ttCoNam_(q, y) { return !!(q.toanQuyen || q.namAll || q.namMo[String(y)] || q.dhNam[String(y)]); }
+/** Chủ đề năm cd (cv/tien/tc/sk) của năm y: đã mua chủ đề, có Đồng hành năm đó (gồm Hội viên/lưu niên/lượt gia đình), hoặc vận năm kiểu cũ */
+function ttCoCd_(q, y, cd) { y = String(y); return !!(q.toanQuyen || ttCoDh_(q, y) || (q.namCu || {})[y] || (q.cdMo || {})[cd + ':' + y]); }
+/** Giá combo sau khi trừ phần lẻ đã trả – trừ tối đa TT_TRU_TOI_DA (50%) giá combo */
+function ttGiaCombo_(gia, daTra) { return gia - Math.min(Math.max(0, daTra || 0), Math.floor(gia * TT_TRU_TOI_DA)); }
+/** Tổng xu đã trả cho các mã thỏa điều kiện */
+function ttTongDaTra_(q, loc) { return Object.keys(q.daTra || {}).filter(loc).reduce(function (s, k) { return s + q.daTra[k]; }, 0); }
 function ttCoThang_(q, y, m) { return !!(q.toanQuyen || q.thangAll || q.dhNam[String(y)] || q.thangMo[y + '-' + ttPad2_(+m)]); }
 /** Tháng dương lịch của tuần nhật vận đang xem ("26/9/2026" → [2026, 9]) */
 function ttThangNhatVan_(r) {
@@ -311,7 +344,9 @@ function ttCatPhan_(r, q) {
     if (!vanMo(+String(v.nam).slice(0, 4), +String(v.nam).slice(-4))) { v.items = [KHOA_DV]; v.khoa = true; }
   });
   if (!coNam || !coThang) ttCatNamHe_(r, coNam, coThang, vy);
-  var tomTat = { nam: vy, coNam: coNam, thangNhat: tn[0] + '-' + ttPad2_(tn[1]), coThang: coThang, dv: [] };
+  ttGanNamCd_(r, q);   // 4 chủ đề năm – dựng từ Hồ sơ năm ĐẦY ĐỦ, phải chạy trước khi cắt Hồ sơ năm
+  var tomTat = { nam: vy, coNam: coNam, thangNhat: tn[0] + '-' + ttPad2_(tn[1]), coThang: coThang, dv: [], cd: {} };
+  TT_CHU_DE.forEach(function (cd) { tomTat.cd[cd] = ttCoCd_(q, vy, cd); });
   if (!q.bien_co) {
     if (r.duDoan) { r.duDoan.chuDe = {}; delete r.duDoan._years; }
     if (T) { T.hoiTu = null; T.bienCo = null; }
@@ -334,6 +369,12 @@ function ttCatPhan_(r, q) {
     var bd = +String(c.nam).slice(0, 4);
     if (!ttCoDv_(q, bd)) { c.lines = (c.lines || []).slice(0, 1); c.khoa = true; }
   });
+  // HỒ SƠ NĂM theo chủ đề (16/11): sự kiện / khía cạnh của chủ đề chưa mở chỉ giữ nhãn – kể cả khi đã mua bức tranh chung
+  if (T && T.hoSoNam && !T.hoSoNam.loi) {
+    var H0 = T.hoSoNam, lo0 = H0.noiBat[0], moKc = function (kc) { return ttCoCd_(q, vy, htCdCuaKc_(kc)); };
+    H0.khiaCanh = H0.khiaCanh.map(function (x) { return moKc(x.k) ? x : { k: x.k, ten: x.ten, icon: x.icon, nhan: x.nhan, huong: x.huong, doiLap: x.doiLap, sk: x.sk, cd: htCdCuaKc_(x.k), khoa: true }; });
+    H0.suKien = H0.suKien.map(function (x) { return moKc(x.kc) || x.k === lo0 ? x : { k: x.k, kc: x.kc, loai: x.loai, ten: x.ten, ngan: x.ngan, ngoai: x.ngoai, cd: htCdCuaKc_(x.kc), khoa: true }; });   // giữ 1 sự kiện nổi bật làm mồi
+  }
   // VẬN NĂM
   if (!coNam) {
     if (CT.tieuVan) { CT.tieuVan.secs = []; CT.tieuVan.luu = null; CT.tieuVan.khoa = true; }
@@ -341,14 +382,12 @@ function ttCatPhan_(r, q) {
     if (T && T.namNay) { T.namNay.ketLuan = (T.namNay.ketLuan || []).slice(0, 1); T.namNay.linhVuc = []; T.namNay.khoa = true; }
     if (T && T.thang) T.thang = T.thang.map(function (m) { return { thang: m.thang, canChi: m.canChi, batDau: m.batDau, diem: m.diem, danhGia: m.danhGia, khoa: true }; });
     if (r.moRong && r.moRong.haLac && r.moRong.haLac.luan && r.moRong.haLac.luan.namNay) { var hn = r.moRong.haLac.luan.namNay; hn.y = ''; hn.khuyen = ''; hn.ghi = []; hn.khoa = true; }
-    // Hồ sơ năm: giữ thế đứng 5 hệ + nhãn khía cạnh + 1 sự kiện nổi bật làm mồi
+    // Hồ sơ năm (bức tranh chung chưa mở): giữ thế đứng 5 hệ + nhãn khía cạnh; sự kiện đã cắt theo chủ đề ở trên
     if (T && T.hoSoNam && !T.hoSoNam.loi) {
-      var H = T.hoSoNam, lo = H.noiBat[0];
+      var H = T.hoSoNam;
       H.tom = H.tom.slice(0, 1); H.khoa = true; delete H.hanhDong; delete H.cauNoi;
       if (H.gocNhin) H.gocNhin = H.gocNhin.map(function (x) { return { he: x.he, vai: x.vai }; });
       H.he = H.he.map(function (x) { return { he: x.he, nguon: x.nguon, huong: x.huong, nhan: x.nhan }; });
-      H.khiaCanh = H.khiaCanh.map(function (x) { return { k: x.k, ten: x.ten, icon: x.icon, nhan: x.nhan, huong: x.huong, doiLap: x.doiLap, sk: x.sk }; });
-      H.suKien = H.suKien.map(function (x) { return x.k === lo ? x : { k: x.k, kc: x.kc, loai: x.loai, ten: x.ten, ngan: x.ngan, ngoai: x.ngoai, khoa: true }; });
     }
     // Hồ sơ 12 tháng: chỉ giữ khung tháng + đánh giá chung
     if (T && T.hoSoThang && !T.hoSoThang.loi) {
@@ -369,6 +408,23 @@ function ttCatPhan_(r, q) {
   r.vanTom = tomTat;
   return r;
 }
+/** r.namCd: 4 chủ đề của năm đang xem (htNamCd_ trong HoiTu.gs). Chủ đề chưa mở chỉ giữ tên + nhãn (+ 1 dòng tóm tắt nếu đã có bức tranh chung).
+ *  Mỗi chủ đề có id để mua: muaPhan(token, input, 'nam_cd', '<cd>:<năm>'). */
+function ttGanNamCd_(r, q) {
+  var T = r.moRong && r.moRong.tongHop, H = T && T.hoSoNam, vy = r.tuvi.info.viewYear;
+  var CD = null; try { CD = htNamCd_(H); } catch (e) { CD = null; }
+  if (!CD) { r.namCd = null; return r; }
+  var coNam = ttCoNam_(q, vy), gia = (ttBangGia_().phan.nam_cd || {}).xu;
+  Object.keys(CD).forEach(function (cd) {
+    var o = CD[cd], co = ttCoCd_(q, vy, cd);
+    o.id = cd + ':' + vy; o.co = co; o.gia = gia;
+    if (co) return;
+    CD[cd] = { k: o.k, ten: o.ten, icon: o.icon, nam: o.nam, id: o.id, co: false, gia: gia, khoa: true, nhan: o.nhan, huong: o.huong,
+      tom: coNam ? o.tom : '', soSuKien: o.suKien.length };
+  });
+  r.namCd = CD;
+  return r;
+}
 /* ---------------- API: ví & mở khóa ---------------- */
 function viCuaToi(token) {
   var u = tkCan_(token), bg = ttBangGia_();
@@ -382,7 +438,7 @@ function viCuaToi(token) {
   });
   return out;
 }
-/** id: năm bắt đầu đại vận (dai_van), năm (nam, dong_hanh), 'yyyy-mm' (thang) */
+/** id: năm bắt đầu đại vận (dai_van), năm (nam, dong_hanh), 'yyyy-mm' (thang), '<cd>:<năm>' (nam_cd, cd = cv|tien|tc|sk) */
 function ttMaPhan_(phan, id) {
   var P = TT_PHAN_MAC_DINH[phan];
   if (!P.theo) return phan;
@@ -391,51 +447,77 @@ function ttMaPhan_(phan, id) {
     var n = id.match(/^([a-z_]+)\|(\d{4})-(\d{1,2})$/); if (!n || +n[3] < 1 || +n[3] > 12) throw new Error('Việc hoặc tháng không hợp lệ.');
     return 'ngay:' + n[1] + ':' + n[2] + '-' + ttPad2_(+n[3]);
   }
+  if (P.theo === 'nam_cd') {
+    var c = id.match(/^([a-z]+)[:|](\d{4})$/);
+    if (!c || TT_CHU_DE.indexOf(c[1]) < 0) throw new Error('Chủ đề năm không hợp lệ (cv, tien, tc, sk).');
+    if (+c[2] < 1800 || +c[2] > 2300) throw new Error('Năm không hợp lệ.');
+    return 'nam_cd:' + c[1] + ':' + c[2];
+  }
   if (P.theo === 'thang') { var m = id.match(/^(\d{4})-(\d{1,2})$/); if (!m || +m[2] < 1 || +m[2] > 12) throw new Error('Tháng không hợp lệ.'); return 'thang:' + m[1] + '-' + ttPad2_(+m[2]); }
   if (!/^\d{4}$/.test(id) || +id < 1800 || +id > 2300) throw new Error('Năm không hợp lệ.');
   return (P.theo === 'dv' ? 'dv' : phan === 'dong_hanh' ? 'dong_hanh' : 'nam') + ':' + id;
 }
+/**
+ * Mua một phần cho lá số (hoặc cặp). Trả { ok, soDu, gia } | { ok:false, thieu, gia, soDu } | { ok, daCo } | { ok, toanQuyen }.
+ *  - nam_cd: id = '<cd>:<năm>' (cv, tien, tc, sk) → mã 'nam_cd:<cd>:<năm>'.
+ *  - cap_doi, hop_tac, quan_he: input = { a: lá số 1, b: lá số 2 } (không phụ thuộc thứ tự);
+ *    quan_he nhận thêm input = { ids: [id1, id2] } – hai người trong danh sách Gia đình của tài khoản.
+ *  - Combo dong_hanh / tron_goi: trừ phần lẻ đã trả, tối đa 50% giá combo.
+ */
 function muaPhan(token, input, phan, id) {
   var u = tkCan_(token), bg = ttBangGia_(), p = bg.phan[phan];
-  if (!p || TT_PHAN_MAC_DINH[phan].an) throw new Error('Không có gói "' + phan + '".');
+  if (!p || !TT_PHAN_MAC_DINH[phan] || TT_PHAN_MAC_DINH[phan].an) throw new Error('Không có gói "' + phan + '".');
   if (TT_PHAN_MAC_DINH[phan].luot) return ttMuaGiaDinh_(u, phan, bg);
-  if (phan === 'hoi_vien') return ttMuaHoiVien_(u, p);
-  var capDoi = phan === 'cap_doi' || phan === 'hop_tac', khoa = capDoi ? ttKhoaCapDoi_(input && input.a, input && input.b) : ttKhoaLaSo_(input);
+  if (phan === 'gieo_que') throw new Error('Gói này mua trực tiếp trong công cụ.');
+  if (phan === 'quan_he') input = ttQuanHeInput_(u, input);
+  var capDoi = phan === 'cap_doi' || phan === 'hop_tac' || phan === 'quan_he';
+  if (capDoi && !(input && input.a && input.b)) throw new Error('Cần thông tin của cả hai người.');
+  var khoa = capDoi ? ttKhoaCapDoi_(input.a, input.b) : ttKhoaLaSo_(input);
   var tenLS = capDoi ? String(input.a.name || '?') + ' & ' + String(input.b.name || '?') : String(input && input.name || '');
   if (ttToanQuyen_(u)) return { ok: true, toanQuyen: true };
   if (phan === 'dai_van_qua') { phan = 'dai_van'; p = bg.phan.dai_van; }
-  var ma = ttMaPhan_(phan, id), dvMienPhi = null;
-  if (phan === 'dai_van' && +id + 9 < new Date().getFullYear() && !ttToanQuyen_(u)) {   // vận đã qua gần nhất: miễn phí, không bán lại (tính trước khi khóa ví)
+  var ma = ttMaPhan_(phan, id), dvMienPhi = null, namMa = /^nam_cd:/.test(ma) ? +ma.slice(-4) : +id;
+  if (phan === 'dai_van' && +id + 9 < new Date().getFullYear()) {   // vận đã qua gần nhất: miễn phí, không bán lại (tính trước khi khóa ví)
     var tv = tuviLapLaSo_(input);
     dvMienPhi = ttDvMienPhi_(tv.palaces.map(function (c) { return tv.info.lunar.year + c.daiHan - 1; }));
   }
   return ttKhoa_(function () {
     var q = ttQuyen_(u, khoa);
-    if (phan === 'gieo_que' || phan === 'ban_tin') throw new Error('Gói này mua trực tiếp trong công cụ.');
-    var daCo = ma === phan ? q[phan] : /^ngay:/.test(ma) ? !!q[ma] : (/^dv:/.test(ma) ? ttCoDv_(q, id) : /^thang:/.test(ma) ? ttCoThang_(q, +ma.slice(6, 10), +ma.slice(11)) :
-      /^dong_hanh:/.test(ma) ? ttCoDh_(q, id) : ttCoNam_(q, id));
+    var daCo = ma === phan ? q[phan] : /^ngay:/.test(ma) ? !!q[ma] : /^dv:/.test(ma) ? ttCoDv_(q, id) : /^thang:/.test(ma) ? ttCoThang_(q, +ma.slice(6, 10), +ma.slice(11)) :
+      /^nam_cd:/.test(ma) ? ttCoCd_(q, namMa, ma.split(':')[1]) : /^dong_hanh:/.test(ma) ? ttCoDh_(q, id) : ttCoNam_(q, id);
     if (!daCo && dvMienPhi !== null && dvMienPhi === +id) daCo = true;
     if (daCo) return { ok: true, daCo: true, soDu: ttSoDu_(u.ten) };
-    // Luận giải 6 hệ đã miễn phí → mua vận hạn, biến cố, PDF… không cần mở Tổng hợp 6 hệ trước
-    if (phan === 'phoi_ngau' && !q.co_ban && !q.toanQuyen) throw new Error('Chân dung người phối ngẫu nằm trong phần Tổng hợp 6 hệ – hãy mở "Tổng hợp 6 hệ" trước (hoặc Trọn đời).');
+    // 16/11: không còn điều kiện "mở Tổng hợp trước" cho Người bạn đời – Tổng hợp 6 hệ đã miễn phí
     var gia = p.xu;
     if (phan === 'dai_van' && +id + 9 < new Date().getFullYear()) gia = bg.phan.dai_van_qua.xu;   // vận đã qua: giá kiểm chứng
-    if (phan === 'dong_hanh') {   // trừ phần đã mua của năm đó
-      var daTraNam = q.namMo[String(id)] ? bg.phan.nam.xu : 0;
-      Object.keys(q.thangMo).forEach(function (k) { if (k.indexOf(String(id) + '-') === 0) daTraNam += bg.phan.thang.xu; });
-      gia = Math.max(0, p.xu - daTraNam);
-    }
-    if (phan === 'tron_goi') {
-      var daTra = TT_TRON_GOI.filter(function (k) { return q.daMua[k] && bg.phan[k]; }).reduce(function (s, k) { return s + bg.phan[k].xu; }, 0);
-      gia = Math.max(0, p.xu - daTra);
-    }
+    if (phan === 'dong_hanh' || phan === 'tron_goi') gia = ttGiaNangCap_(q, phan, id, bg).gia;   // trừ phần lẻ đã trả, tối đa 50%
     var du = ttSoDu_(u.ten);
     if (du < gia) return { ok: false, thieu: gia - du, gia: gia, soDu: du };
-    var nhan = p.ten + (ma !== phan ? ' [' + ma + ']' : '');
+    var nhan = p.ten.replace(/^Năm X\b/, 'Năm ' + namMa) + (ma !== phan ? ' [' + ma + ']' : '');   // sổ cái: "Năm 2027: bức tranh chung"
     var moi = gia ? ttCong_(u.ten, -gia, 'Mở khóa: ' + nhan + ' – ' + tenLS.slice(0, 60), khoa) : du;
-    ttGhiQuyen_(u.ten, gia, [new Date(), shO_(u.ten), khoa, ma, gia, shO_(tenLS.slice(0, 80))]);
+    ttGhiQuyen_(u.ten, gia, [new Date(), shO_(u.ten), khoa, ma, gia, shO_(tenLS.slice(0, 80)), TT_GIA_PHIEN]);
     return { ok: true, soDu: moi, gia: gia };
   });
+}
+/** Giá combo sau khấu trừ (dùng khi mua và để giao diện xem trước): { gia, goc, tru } – tru đã giới hạn 50%.
+ *  dong_hanh (năm id): trừ bức tranh chung / vận năm cũ, 4 chủ đề, các tháng của năm đó. tron_goi: trừ đại vận lẻ, 12 đại vận cũ, biến cố, bạn đời, PDF. */
+function ttGiaNangCap_(q, phan, id, bg) {
+  var p = bg.phan[phan], tru = 0;
+  if (phan === 'dong_hanh') { var y = String(id); tru = ttTongDaTra_(q, function (k) { return k === 'nam:' + y || (/^nam_cd:/.test(k) && k.slice(-5) === ':' + y) || k.indexOf('thang:' + y + '-') === 0; }); }
+  if (phan === 'tron_goi') tru = ttTongDaTra_(q, function (k) { return TT_TRON_GOI_TRU.indexOf(k) >= 0 || /^dv:/.test(k); });
+  var gia = tru ? ttGiaCombo_(p.xu, tru) : p.xu;
+  return { gia: gia, goc: p.xu, tru: p.xu - gia };
+}
+/** quan_he: nhận { a, b } (lá số) hoặc { ids: [id1, id2] } trong danh sách Gia đình; cặp vợ chồng xem ở Cặp đôi */
+function ttQuanHeInput_(u, input) {
+  input = input || {};
+  if (Array.isArray(input.ids)) {
+    var ds = gdDoc_(u), ch = input.ids.slice(0, 2).map(function (i) { return ds.filter(function (x) { return x.id === i; })[0]; });
+    if (ch.length < 2 || !ch[0] || !ch[1] || ch[0] === ch[1]) throw new Error('Chọn hai người trong danh sách Gia đình.');
+    if (gdLoaiCap_(ch[0].quanHe, ch[1].quanHe).loai === 'vc') throw new Error('Cặp vợ chồng xem ở phần "Hai bạn hợp nhau đến đâu" (Cặp đôi).');
+    return { a: ch[0].input, b: ch[1].input };
+  }
+  return input;
 }
 
 /* ---------------- Gói gia đình: lượt mở dùng cho nhiều lá số ---------------- */
@@ -451,10 +533,14 @@ function ttCongVe_(ten, n) {
 }
 /** Ghi dòng quyền vào MoKhoa; ghi lỗi thì hoàn lại xu vừa trừ rồi báo lỗi (rà soát Đợt 3 B6) */
 function ttGhiQuyen_(ten, gia, dong) {
-  try { ttSheet_('MoKhoa').appendRow(dong); }
+  try {
+    var sh = ttSheet_('MoKhoa');
+    if (dong.length >= 7 && sh.getRange(1, 7).getValue() === '') sh.getRange(1, 7).setValue(TT_SH.MoKhoa[6]);   // trang tính cũ (6 cột): thêm tiêu đề cột Phiên giá
+    sh.appendRow(dong);
+  }
   catch (e) { if (gia) ttCong_(ten, gia, 'Hoàn xu do lỗi ghi quyền', 'HOAN'); throw new Error('Chưa ghi được quyền mở khóa, xu đã được hoàn lại. Vui lòng thử lại sau ít phút.'); }
 }
-/** Hội viên năm: cộng 12 tháng lịch từ hạn hiện tại (hoặc hôm nay) – mở vận năm/tháng/nhật vận cho mọi lá số của tài khoản */
+/** (Gói cũ – 16/11 thôi bán, muaPhan từ chối 'hoi_vien'; giữ hàm để chủ dự án bật lại nếu cần.) Hội viên năm: cộng 12 tháng lịch từ hạn hiện tại (hoặc hôm nay) – mở vận năm/tháng/nhật vận cho mọi lá số của tài khoản */
 function ttMuaHoiVien_(u, p) {
   if (ttToanQuyen_(u)) return { ok: true, toanQuyen: true };
   return ttKhoa_(function () {
@@ -464,7 +550,7 @@ function ttMuaHoiVien_(u, p) {
     goc.setFullYear(goc.getFullYear() + 1);   // đúng 12 tháng lịch (kể cả năm nhuận)
     var han = Utilities.formatDate(goc, 'Asia/Ho_Chi_Minh', 'yyyy-MM-dd');
     var moi = ttCong_(u.ten, -p.xu, 'Mua ' + p.ten + ' (đến ' + han + ')', 'TK:' + u.ten);
-    ttGhiQuyen_(u.ten, p.xu, [new Date(), shO_(u.ten), 'TK:' + u.ten, 'hoi_vien:' + han, p.xu, 'Hội viên năm']);
+    ttGhiQuyen_(u.ten, p.xu, [new Date(), shO_(u.ten), 'TK:' + u.ten, 'hoi_vien:' + han, p.xu, 'Hội viên năm', TT_GIA_PHIEN]);
     return { ok: true, soDu: moi, gia: p.xu, hoiVien: han };
   });
 }
@@ -487,9 +573,14 @@ function dungLuotGiaDinh(token, input) {
     var q = ttQuyen_(u, khoa);
     if (ttCoDh_(q, vy)) return { ok: true, daCo: true, soVe: ttSoVe_(u.ten) };
     var ve = ttCongVe_(u.ten, -1);
-    ttSheet_('MoKhoa').appendRow([new Date(), shO_(u.ten), khoa, 'dong_hanh:' + vy, 0, shO_(ten + ' (lượt gia đình)')]);
+    ttSheet_('MoKhoa').appendRow([new Date(), shO_(u.ten), khoa, 'dong_hanh:' + vy, 0, shO_(ten + ' (lượt gia đình)'), TT_GIA_PHIEN]);
     return { ok: true, soVe: ve };
   });
+}
+/** Tài khoản đã mua phần `phan` cho khóa `khoa` chưa (tra nhanh MoKhoa – dùng cho quan_he theo từng cặp) */
+function ttCoPhanKhoa_(ten, khoa, phan) {
+  var sh = ttSheet_('MoKhoa');
+  return ttTim_(sh, 3, khoa).some(function (r) { var v = sh.getRange(r, 2, 1, 3).getValues()[0]; return String(v[0]) === ten && String(v[2]) === phan; });
 }
 /** Kiểm tra quyền một phần cho lá số (dùng cho dò giờ sinh…) */
 function ttCanPhan_(token, input, phan) {
@@ -781,7 +872,7 @@ function bcSoLieu_(den) {
   out.donChoLau = don.filter(function (r) { return r[4] === 'CHO' && bcNgay_(r[5]) && bcNgay_(r[5]) < tu && bcNgay_(r[5]) >= tu7; }).length;
   // Phần đã mở: [Thời gian, Tài khoản, Khóa lá số, Phần, Xu, Lá số]
   var mk = bcDong_('MoKhoa', 6).filter(function (r) { return bcTrong_(r[0], tu, den); }), nhom = {};
-  mk.forEach(function (r) { var k = String(r[3]).split(':')[0], g = nhom[k] = nhom[k] || { k: k, ten: (bg.phan[k] && bg.phan[k].ten) || k, n: 0, xu: 0 }; g.n++; g.xu += +r[4] || 0; });
+  mk.forEach(function (r) { var k = String(r[3]).split(':')[0], g = nhom[k] = nhom[k] || { k: k, ten: String((bg.phan[k] && bg.phan[k].ten) || k).replace(/^Năm X\b/, 'Năm'), n: 0, xu: 0 }; g.n++; g.xu += +r[4] || 0; });
   out.moKhoa = Object.keys(nhom).map(function (k) { return nhom[k]; }).sort(function (a, b) { return b.xu - a.xu || b.n - a.n; });
   // Sổ cái xu: [Thời gian, Tài khoản, Thay đổi, Số dư sau, Lý do, Tham chiếu]
   var sc = bcDong_('SoCai', 5).filter(function (r) { return bcTrong_(r[0], tu, den); });

@@ -136,7 +136,7 @@ don = ctx.taoDonNap(b2.token, 0);
 Object.assign(payos.don[don.ma], { status: 'PAID', amountPaid: 100000 });
 ctx.kiemTraDon(b2.token, don.ma);
 ok(ctx.viCuaToi(b2.token).soDu === 240, 'Người được giới thiệu: gói 120 xu + thưởng lần đầu 120 = 240');
-ok(ctx.viCuaToi(T).soDu === 71 + 24, 'Người giới thiệu nhận 20% lần nạp đầu của bạn (+24 xu)');
+ok(ctx.viCuaToi(T).soDu === 71 && JSON.parse(store['TK_ban.moi']).gioiThieu === 'khachmoi', 'Phiên 4: thưởng mời = 0 (người giới thiệu không nhận xu khi bạn nạp), mã mời vẫn lưu');
 // mã quà tặng
 ok(nem(() => ctx.qtTaoMaQua(T, 'TET2027', 30, 1)) !== null, 'Thành viên không tạo được mã quà');
 ctx.qtTaoMaQua(chu, 'tet2027', 30, 1, '2099-01-01');
@@ -161,48 +161,165 @@ ok(cd.moKhoa && cd.thoiDiem && cd.linhVuc.taiChinh && cd.tieuChi.every(t => t.di
 ok(ctx.muaPhan(T, { a: L2, b: L }, 'cap_doi').daCo, 'Mua lại cặp đã mở → báo đã có, không trừ xu');
 ok(ctx.lapCapDoi(L, Object.assign({}, L2, { day: 4 }), T).biKhoa, 'Cặp khác → chưa mở');
 ok(ctx.lapCapDoi(L, L2, chu).moKhoa, 'Chủ sở hữu xem cặp đôi không cần mua');
-// ---- Bảng giá mới & kéo người dùng ----
+// ---- Bảng giá mới (phiên 4, 16/11: bán lẻ 9/19 xu) & quà xác thực email ----
 store.TT_BANG_GIA = JSON.stringify({ phan: { co_ban: 99 }, thuongDangKy: 0, kmPhien: ctx.TT_KM_PHIEN });   // bảng giá lưu từ phiên cũ (không có "phien")
 ok(ctx.ttBangGia_().phan.co_ban.xu === ctx.TT_PHAN_MAC_DINH.co_ban.xu && ctx.ttBangGia_().thuongDangKy === 0, 'Bảng giá phiên cũ bị bỏ qua, giữ mức thưởng đã chỉnh');
 delete store.TT_BANG_GIA;
-const bgM = ctx.ttBangGia_();
-ok(bgM.phan.tron_goi.xu === 89 && bgM.phan.hoi_vien.xu === 99 && bgM.phan.gia_dinh_3.xu === 79 && bgM.phan.gia_dinh_5.xu === 119, 'Phương án A: Trọn đời 89, Hội viên năm 99, gia đình 79/119');
-ok(Object.keys(bgM.phan).every(k => bgM.phan[k].goc === undefined), 'Không còn giá gạch ngang (giá chưa từng bán)');
-ok(bgM.thuongDangKy === 9 && bgM.thuongGTDangKy === 0, 'Quà đăng ký 9 xu; không thưởng xu khi bạn chỉ đăng ký (chỉ thưởng khi bạn nạp lần đầu)');
-{ const cu = store.TT_BANG_GIA; store.TT_BANG_GIA = JSON.stringify({ phien: ctx.TT_GIA_PHIEN, thuongDangKy: 50, thuongGTDangKy: 9, kmPhien: 2 }); ok(ctx.ttBangGia_().thuongDangKy === 9 && ctx.ttBangGia_().thuongGTDangKy === 0, 'Mức quà 50 xu / thưởng mời lưu ở phiên khuyến mại cũ bị bỏ qua → 9 / 0'); store.TT_BANG_GIA = cu; }
+const bgM = ctx.ttBangGia_(), P_ = bgM.phan;
+ok(ctx.TT_GIA_PHIEN === 4 && ctx.TT_KM_PHIEN === 4, 'TT_GIA_PHIEN = TT_KM_PHIEN = 4');
+ok(P_.dai_van.xu === 19 && P_.dai_van_qua.xu === 9 && P_.nam.xu === 19 && P_.thang.xu === 9 && P_.phoi_ngau.xu === 9 && P_.bien_co.xu === 19 && P_.cap_doi.xu === 19 && P_.pdf.xu === 19 && P_.van_ngay.xu === 19,
+  'Giá lẻ: 10 năm 19, kiểm chứng 9, năm 19, tháng 9, bạn đời 9, năm đáng chú ý 19, cặp đôi 19, PDF 19, lời nhắn mỗi sáng 19');
+ok(P_.nam_cd.xu === 9 && P_.quan_he.xu === 9 && /bức tranh chung/.test(P_.nam.ten), 'Phần mới: chủ đề năm 9, quan hệ người thân 9; "Năm X: bức tranh chung"');
+ok(Object.keys(P_).filter(k => !P_[k].an && !P_[k].mienPhi && !P_[k].luot && ['dong_hanh', 'tron_goi', 'co_ban', 'do_gio', 'dat_ten'].indexOf(k) < 0).every(k => P_[k].xu === 9 || P_[k].xu === 19), 'Mọi phần lẻ đang bán chỉ 9 hoặc 19 xu');
+ok(P_.dong_hanh.xu === 49 && P_.tron_goi.xu === 89 && P_.gia_dinh_3.xu === 79 && P_.gia_dinh_5.xu === 119, 'Combo: Đồng hành 49, Trọn đời 89, gia đình 79/119');
+ok(P_.hoi_vien.an && P_.tron_dai_van.an && P_.ban_tin.an, 'Ẩn (thôi bán): Hội viên năm, 12 đại vận, bản tin tháng lẻ');
+ok(Object.keys(P_).every(k => P_[k].goc === undefined), 'Không còn giá gạch ngang (giá chưa từng bán)');
+ok(bgM.thuongDangKy === 39 && bgM.thuongGTDangKy === 0 && bgM.thuongGioiThieu === 0, 'Quà xác thực email 39 xu; bỏ thưởng mời (đăng ký 0, nạp lần đầu 0)');
+{ const cu = store.TT_BANG_GIA; store.TT_BANG_GIA = JSON.stringify({ phien: ctx.TT_GIA_PHIEN, thuongDangKy: 50, thuongGTDangKy: 9, thuongGioiThieu: 20, kmPhien: ctx.TT_KM_PHIEN - 1 });
+  const b = ctx.ttBangGia_(); ok(b.thuongDangKy === 39 && b.thuongGTDangKy === 0 && b.thuongGioiThieu === 0, 'Mức quà / thưởng mời lưu ở phiên khuyến mại cũ bị bỏ qua → 39 / 0 / 0'); store.TT_BANG_GIA = cu; }
+{ const cu = store.TT_BANG_GIA; store.TT_BANG_GIA = JSON.stringify({ phien: ctx.TT_GIA_PHIEN, thuongDangKy: 25, kmPhien: ctx.TT_KM_PHIEN }); ok(ctx.ttBangGia_().thuongDangKy === 25, 'Quản trị vẫn chỉnh được mức quà (thuongDangKy)'); store.TT_BANG_GIA = cu; }
 const ck = ctx.bangGiaCongKhai(); ok(ck.phan && ck.thuongDangKy === bgM.thuongDangKy, 'Bảng giá công khai cho khách');
-const n1 = ctx.dangKy('nguoimoi1', 'matkhau123', 'Người Mới', 'moi1@x.vn', '');
-ok(n1.qua.xu === bgM.thuongDangKy && ctx.viCuaToi(n1.token).soDu === bgM.thuongDangKy, 'Đăng ký nhận quà chào mừng');
-m = ctx.muaPhan(n1.token, Object.assign({}, L, { day: 11 }), 'thang', new Date().getFullYear() + '-12'); ok(m.ok && m.soDu === bgM.thuongDangKy - bgM.phan.thang.xu, 'Dùng quà 9 xu mở ngay 1 tháng, không cần nạp');
-ok(ctx.dangKy('nguoimoi1b', 'matkhau123', 'Trùng Liên Hệ', 'MOI1@x.vn ', '').qua.xu === 0, 'Quà đăng ký mỗi email chỉ một lần (không phân biệt hoa thường)');
-ok(ctx.dangKy('nguoimoi6', 'matkhau123', 'B6', '+84 98 765 4321', '').qua.xu === 9 && ctx.dangKy('nguoimoi6b', 'matkhau123', 'B6b', '0987654321', '').qua.xu === 0, 'Quà đăng ký mỗi SĐT chỉ một lần (+84 và 0 là một)');
-ok(ctx.dangKy('nguoimoi7', 'matkhau123', 'B7', 'Ten.Mot+abc@GoogleMail.com', '').qua.xu === 9 && ctx.dangKy('nguoimoi7b', 'matkhau123', 'B7b', 'tenmot@gmail.com', '').qua.xu === 0, 'Quà: bí danh Gmail (dấu chấm, +đuôi, googlemail) tính là một email');
-ok(ctx.ttLienHeChuan_('ab+x@yahoo.com') === 'ab@yahoo.com' && ctx.ttLienHeChuan_('a.b@yahoo.com') === 'a.b@yahoo.com', 'Chuẩn hóa email: bỏ +đuôi; chỉ Gmail bỏ dấu chấm');
-{ // phiên 2 → 3: giữ giá tùy chỉnh và gói nạp của chủ dự án, trừ các gói đổi nghĩa
-  const cu = store.TT_BANG_GIA; store.TT_BANG_GIA = JSON.stringify({ phien: ctx.TT_GIA_PHIEN - 1, phan: { cap_doi: 25, tron_goi: 49, gia_dinh_3: 39 }, goi: [{ tien: 30000, xu: 33 }], kmPhien: 2 });
-  const b = ctx.ttBangGia_(); ok(b.phan.cap_doi.xu === 25 && b.goi.length === 1 && b.goi[0].xu === 33 && b.phan.tron_goi.xu === 89 && b.phan.gia_dinh_3.xu === 79, 'Bảng giá phiên 2: giữ giá tùy chỉnh + gói nạp, Trọn đời/gia đình lấy giá mới');
+{ // phiên 3 → 4: giữ giá tùy chỉnh và gói nạp của chủ dự án, trừ các gói đổi nghĩa
+  const cu = store.TT_BANG_GIA; store.TT_BANG_GIA = JSON.stringify({ phien: ctx.TT_GIA_PHIEN - 1, phan: { cap_doi: 25, thang: 12, tron_goi: 49, gia_dinh_3: 39, dong_hanh: 39, dai_van: 9, van_ngay: 29, nam: 29 }, goi: [{ tien: 30000, xu: 33 }], kmPhien: 3 });
+  const b = ctx.ttBangGia_(); ok(b.phan.cap_doi.xu === 25 && b.phan.thang.xu === 12 && b.goi.length === 1 && b.goi[0].xu === 33 && b.phan.tron_goi.xu === 89 && b.phan.gia_dinh_3.xu === 79 &&
+    b.phan.dong_hanh.xu === 49 && b.phan.dai_van.xu === 19 && b.phan.van_ngay.xu === 19 && b.phan.nam.xu === 19, 'Bảng giá phiên 3: giữ giá tùy chỉnh + gói nạp; gói đổi nghĩa (Đồng hành, 10 năm, lời nhắn, Trọn đời, gia đình, năm) lấy giá mới');
   store.TT_BANG_GIA = cu; }
-// Hội viên năm: mở vận năm/tháng/nhật vận cho mọi lá số của tài khoản trong 12 tháng
-ctx.qtDieuChinhXu(chu, 'nguoimoi6', 200, 'test hội viên');
-{ const t6 = ctx.dangNhap('nguoimoi6', 'matkhau123').token, x0 = ctx.viCuaToi(t6).soDu;
-  let h = ctx.lapLaSo(Object.assign({}, L, { day: 12 }), t6); ok(h.vanTom.coNam === false && !h.vanTom.hoiVien, 'Chưa là Hội viên: vận năm khóa');
-  const hv = ctx.muaPhan(t6, null, 'hoi_vien'), hanMong = new Date(); hanMong.setFullYear(hanMong.getFullYear() + 1);
-  ok(hv.ok && hv.gia === 99 && ctx.viCuaToi(t6).soDu === x0 - 99 && hv.hoiVien === ctx.Utilities.formatDate(hanMong, 'Asia/Ho_Chi_Minh', 'yyyy-MM-dd'), 'Mua Hội viên năm: trừ 99 xu, hạn đúng 12 tháng (' + hv.hoiVien + ')');
-  h = ctx.lapLaSo(Object.assign({}, L, { day: 12 }), t6); const h2 = ctx.lapLaSo(L2, t6);
-  ok(h.vanTom.coNam && h.vanTom.coThang && h.chiTiet.nguyetVan.length === 12 && h.vanTom.hoiVien === hv.hoiVien, 'Hội viên: vận năm + 12 tháng + nhật vận mở');
-  ok(h2.vanTom.coNam && h2.quyen.hoiVien, 'Hội viên: áp dụng cho mọi lá số của tài khoản');
-  { const sd = ctx.viCuaToi(t6).soDu, dh = ctx.muaPhan(t6, Object.assign({}, L, { day: 12 }), 'dong_hanh', new Date().getFullYear()); ok(dh.daCo && ctx.viCuaToi(t6).soDu === sd, 'Hội viên mua Đồng hành cả năm → đã có, không trừ xu'); }
-  ok(h.chiTiet.daiVan.filter(d => !d.khoa).length === 1 && !h.quyen.bien_co, 'Hội viên không gồm 12 đại vận / biến cố (bán riêng)');
-  const hv2 = ctx.muaPhan(t6, null, 'hoi_vien'); ok(hv2.ok && hv2.hoiVien === (+hv.hoiVien.slice(0, 4) + 1) + hv.hoiVien.slice(4), 'Gia hạn Hội viên: cộng nối thêm 12 tháng (' + hv2.hoiVien + ')');
-  ok(!ctx.lapLaSo(Object.assign({}, L, { day: 12 }), dk.token).quyen.hoiVien, 'Hội viên của tài khoản khác không lan sang');
-}
+
+// --- Đăng ký không tặng ngay; quà 39 xu sau khi xác thực email bằng mã 6 số ---
+const thu = []; let quota = 100, guiLoi = false;
+ctx.MailApp = { sendEmail: o => { if (guiLoi) throw new Error('mail lỗi'); thu.push(o); }, getRemainingDailyQuota: () => quota };
+const maCuoi = () => (String(thu[thu.length - 1].body).match(/(\d{6})/) || [])[1];
+const tkJ = t => JSON.parse(store['TK_' + t]), tkSet = (t, f) => { const o = tkJ(t); f(o); store['TK_' + t] = JSON.stringify(o); };
+const n1 = ctx.dangKy('nguoimoi1', 'matkhau123', 'Người Mới', 'moi1@x.vn', '');
+ok(n1.qua.xu === 0 && n1.canXacThuc === true && n1.emailGoiY === 'moi1@x.vn' && ctx.viCuaToi(n1.token).soDu === 0 && n1.quaXacThuc === 39, 'Đăng ký: chưa tặng xu, trả canXacThuc + gợi ý email');
+ok(ctx.xacThucEmail(n1.token, '123456').chuaCo, 'Chưa gửi mã mà nhập → báo chưa có mã');
+ok(/Email chưa đúng/.test(nem(() => ctx.guiMaEmail(n1.token, 'moi1@x')) || ''), 'Email sai định dạng bị từ chối');
+let g1 = ctx.guiMaEmail(n1.token, 'Moi1@x.vn');
+const ma1 = maCuoi();
+ok(g1.ok && g1.hetPhut === 15 && g1.conLuot === 4 && thu.length === 1 && thu[0].to === 'Moi1@x.vn' && /^\d{6}$/.test(ma1) && !JSON.stringify(tkJ('nguoimoi1')).includes(ma1), 'Gửi mã 6 số qua MailApp (mã chỉ lưu dạng băm)');
+ok(ctx.guiMaEmail(n1.token, 'Moi1@x.vn').choGiay > 0 && thu.length === 1, 'Gửi lại trong 60 giây bị từ chối, không tốn email');
+const sai1 = ctx.xacThucEmail(n1.token, ma1 === '000000' ? '111111' : '000000');
+ok(sai1.ok === false && sai1.conLan === 4 && ctx.ttSoDu_('nguoimoi1') === 0, 'Nhập sai: báo còn 4 lần, không tặng');
+const dung1 = ctx.xacThucEmail(n1.token, ma1);
+ok(dung1.ok && dung1.qua.xu === 39 && dung1.soDu === 39 && dung1.email === 'Moi1@x.vn' && ctx.phien(n1.token).daXacThuc && ctx.phien(n1.token).email === 'Moi1@x.vn', 'Nhập đúng: lưu email đã xác thực + tặng 39 xu');
+ok(ctx.xacThucEmail(n1.token, ma1).chuaCo, 'Mã đã dùng không dùng lại được');
+tkSet('nguoimoi1', o => { o.otp = null; });
+ctx.guiMaEmail(n1.token, 'khac@x.vn'); { const v = ctx.xacThucEmail(n1.token, maCuoi()); ok(v.ok && v.qua.xu === 0 && v.qua.lyDo === 'taiKhoan' && ctx.ttSoDu_('nguoimoi1') === 39, 'Tài khoản đã nhận quà: xác thực email khác không nhận thêm'); }
+m = ctx.muaPhan(n1.token, Object.assign({}, L, { day: 11 }), 'thang', new Date().getFullYear() + '-12'); ok(m.ok && m.soDu === 39 - P_.thang.xu, 'Dùng quà mở ngay 1 tháng, không cần nạp');
+const n1b = ctx.dangKy('nguoimoi1b', 'matkhau123', 'Trùng Email', '0911000001', '');
+ctx.guiMaEmail(n1b.token, 'MOI1@x.vn '); { const v = ctx.xacThucEmail(n1b.token, maCuoi()); ok(v.ok && v.qua.xu === 0 && v.qua.lyDo === 'email' && ctx.ttSoDu_('nguoimoi1b') === 0, 'Quà mỗi email chỉ một lần (không phân biệt hoa thường) – tài khoản khác vẫn xác thực được'); }
+const n7 = ctx.dangKy('nguoimoi7', 'matkhau123', 'B7', '0911000007', ''), n7b = ctx.dangKy('nguoimoi7b', 'matkhau123', 'B7b', '0911000008', '');
+ctx.guiMaEmail(n7.token, 'Ten.Mot+abc@GoogleMail.com'); const q7 = ctx.xacThucEmail(n7.token, maCuoi()).qua.xu;
+ctx.guiMaEmail(n7b.token, 'tenmot@gmail.com'); const q7b = ctx.xacThucEmail(n7b.token, maCuoi()).qua.xu;
+ok(q7 === 39 && q7b === 0, 'Quà: bí danh Gmail (dấu chấm, +đuôi, googlemail) tính là một email');
+ok(ctx.ttLienHeChuan_('ab+x@yahoo.com') === 'ab@yahoo.com' && ctx.ttLienHeChuan_('a.b@yahoo.com') === 'a.b@yahoo.com', 'Chuẩn hóa email: bỏ +đuôi; chỉ Gmail bỏ dấu chấm');
+{ // mã hết hạn 15 phút
+  const t = ctx.dangKy('otphethan', 'matkhau123', 'H', 'hh@x.vn', '').token; ctx.guiMaEmail(t, 'hh@x.vn'); const ma = maCuoi();
+  tkSet('otphethan', o => { o.otp.het = Date.now() - 1000; });
+  const v = ctx.xacThucEmail(t, ma); ok(v.ok === false && v.hetHan && ctx.ttSoDu_('otphethan') === 0 && !tkJ('otphethan').otp, 'Mã quá 15 phút: báo hết hạn, không tặng');
+  tkSet('otphethan', o => { o.otp = null; }); ctx.guiMaEmail(t, 'hh@x.vn');
+  ok(ctx.xacThucEmail(t, maCuoi()).qua.xu === 39, 'Gửi lại mã mới sau khi hết hạn → xác thực được, nhận quà'); }
+{ // sai 5 lần → mã khóa, kể cả nhập đúng sau đó
+  const t = ctx.dangKy('otpsai', 'matkhau123', 'S', '0911000009', '').token; ctx.guiMaEmail(t, 'sai@x.vn'); const ma = maCuoi(), sai = ma === '999999' ? '888888' : '999999';
+  let v; for (let i = 0; i < 5; i++) v = ctx.xacThucEmail(t, sai);
+  ok(v.khoaMa && v.conLan === 0 && ctx.xacThucEmail(t, ma).khoaMa && ctx.ttSoDu_('otpsai') === 0, 'Sai 5 lần: mã bị khóa, nhập đúng cũng không nhận'); }
+{ // tối đa 5 lần gửi mỗi ngày + hết quota MailApp
+  const t = ctx.dangKy('otpgioihan', 'matkhau123', 'G', '0911000010', '').token;
+  tkSet('otpgioihan', o => { o.otpNgay = ctx.Utilities.formatDate(new Date(), 'Asia/Ho_Chi_Minh', 'yyyy-MM-dd'); o.otpDem = 5; });
+  const n0 = thu.length, v = ctx.guiMaEmail(t, 'gh@x.vn'); ok(v.ok === false && v.hetLuot && thu.length === n0, 'Quá 5 lần gửi mã trong ngày: từ chối, không gửi');
+  tkSet('otpgioihan', o => { o.otpDem = 0; });
+  quota = 40; const v2 = ctx.guiMaEmail(t, 'gh@x.vn'); ok(v2.ok === false && v2.hetQuota && /ngày mai/.test(v2.thongBao) && thu.length === n0, 'Quota MailApp còn ≤ 40 (chừa cho người trả tiền): báo thử lại ngày mai, không gửi');
+  quota = 41; ok(ctx.guiMaEmail(t, 'gh@x.vn').ok && thu.length === n0 + 1, 'Quota còn 41 → gửi được');
+  quota = 100; tkSet('otpgioihan', o => { o.otp = null; }); guiLoi = true;
+  ok(/Chưa gửi được email/.test(nem(() => ctx.guiMaEmail(t, 'gh@x.vn')) || '') && !tkJ('otpgioihan').otp, 'MailApp lỗi: báo lỗi rõ, không giữ mã treo'); guiLoi = false; }
+{ // tài khoản cũ đã nhận quà kiểu cũ (sổ cái 'DK') → không nhận thêm 39 xu
+  const t = ctx.dangKy('tkcuqua', 'matkhau123', 'Cũ', '0911000011', '').token;
+  ctx.ttKhoa_(() => ctx.ttCong_('tkcuqua', 9, 'Quà chào mừng khi đăng ký', 'DK'));
+  ctx.guiMaEmail(t, 'cu@x.vn'); const v = ctx.xacThucEmail(t, maCuoi());
+  ok(v.ok && v.qua.xu === 0 && v.qua.lyDo === 'taiKhoan' && ctx.ttSoDu_('tkcuqua') === 9, 'Tài khoản đã nhận quà 9/50 xu kiểu cũ: xác thực email không nhận thêm'); }
+const n6 = ctx.dangKy('nguoimoi6', 'matkhau123', 'B6', '+84 98 765 4321', '');
+ok(n6.qua.xu === 0 && !n6.emailGoiY && ctx.ttSoDu_('nguoimoi6') === 0, 'Đăng ký bằng SĐT: không tặng (SĐT không xác minh được), vẫn mời xác thực email');
+
+// --- Chủ đề năm (nam_cd) và bức tranh chung (nam) ---
+const vyN = new Date().getFullYear(), LN = Object.assign({}, L, { day: 13, viewYear: vyN });
+ctx.qtDieuChinhXu(chu, 'nguoimoi6', 300, 'test chủ đề năm');
+const t6 = ctx.dangNhap('nguoimoi6', 'matkhau123').token;
+let rN = ctx.lapLaSo(LN, t6);
+const CDK = ['cv', 'tien', 'tc', 'sk'];
+ok(rN.namCd && CDK.every(k => rN.namCd[k] && rN.namCd[k].khoa && !rN.namCd[k].items && rN.namCd[k].tom === '' && rN.namCd[k].id === k + ':' + vyN && rN.namCd[k].gia === 9 && rN.namCd[k].nhan), 'Chưa mua gì: 4 chủ đề chỉ có tên + nhãn, không có lời luận / tóm tắt');
+ok(CDK.every(k => rN.vanTom.cd[k] === false) && rN.giaNangCap.dong_hanh.gia === 49, 'vanTom.cd báo 4 chủ đề chưa mở; giá Đồng hành 49');
+ok(/Chủ đề năm không hợp lệ/.test(nem(() => ctx.muaPhan(t6, LN, 'nam_cd', 'abc:' + vyN)) || ''), 'Mã chủ đề sai bị từ chối');
+let du6 = ctx.ttSoDu_('nguoimoi6');
+m = ctx.muaPhan(t6, LN, 'nam_cd', 'cv:' + vyN); ok(m.ok && m.gia === 9 && m.soDu === du6 - 9, 'Mua chủ đề Công việc năm nay: 9 xu');
+ok(ctx.muaPhan(t6, LN, 'nam_cd', 'cv|' + vyN).daCo, 'Mua lại chủ đề đã mở → đã có');
+rN = ctx.lapLaSo(LN, t6);
+const cdHN = kc => ctx.htCdCuaKc_(kc), H6 = rN.moRong.tongHop.hoSoNam, lo6 = H6.noiBat[0];
+ok(rN.namCd.cv.co && rN.namCd.cv.items.length >= 3 && rN.namCd.cv.khuyen.length >= 1 && rN.namCd.cv.tom && ['tien', 'tc', 'sk'].every(k => rN.namCd[k].khoa), 'Chủ đề đã mua có đủ lời luận; 3 chủ đề còn lại khóa');
+ok(rN.vanTom.coNam === false && rN.chiTiet.nguyetVan.length === 0, 'Mua chủ đề không mở bức tranh chung');
+ok(H6.suKien.filter(x => cdHN(x.kc) === 'cv').every(x => !x.khoa && x.giai) && H6.suKien.filter(x => cdHN(x.kc) !== 'cv' && x.k !== lo6).every(x => x.khoa && !x.giai && !x.khuyen), 'Hồ sơ năm: sự kiện chủ đề đã mua đầy đủ, chủ đề khác chỉ giữ tên (trừ 1 sự kiện mồi)');
+m = ctx.muaPhan(t6, LN, 'nam', vyN); ok(m.ok && m.gia === 19, 'Mua bức tranh chung 19 xu');
+rN = ctx.lapLaSo(LN, t6);
+ok(rN.vanTom.coNam && ['tien', 'tc', 'sk'].every(k => rN.namCd[k].khoa && rN.namCd[k].tom && !rN.namCd[k].items), 'Bức tranh chung (mới): mỗi chủ đề chưa mua chỉ có 1 dòng tóm tắt');
+ok(rN.moRong.tongHop.hoSoNam.khiaCanh.filter(x => cdHN(x.k) === 'tien').every(x => x.khoa && !x.cau), 'Bức tranh chung không gồm chi tiết khía cạnh của chủ đề chưa mua');
+du6 = ctx.ttSoDu_('nguoimoi6');
+m = ctx.muaPhan(t6, LN, 'dong_hanh', vyN);
+ok(m.ok && m.gia === 25 && ctx.ttSoDu_('nguoimoi6') === du6 - 25, 'Đồng hành 49: đã trả 19 + 9 = 28 nhưng chỉ trừ tối đa 50% (24) → còn 25 xu');
+rN = ctx.lapLaSo(LN, t6);
+ok(CDK.every(k => rN.namCd[k].co && rN.namCd[k].items) && rN.vanTom.coThang, 'Đồng hành: mở cả 4 chủ đề + các tháng');
+{ // người mua "Vận năm" kiểu cũ (trước phiên 4, dòng MoKhoa không có phiên) giữ cả 4 chủ đề; dòng mới (phiên 4) thì không
+  const Lc = Object.assign({}, L, { day: 14, viewYear: vyN }), Lm = Object.assign({}, L, { day: 17, viewYear: vyN });
+  ctx.ttSheet_('MoKhoa').appendRow([new Date(), 'nguoimoi6', ctx.ttKhoaLaSo_(Lc), 'nam:' + vyN, 29, 'An (cũ)']);
+  ctx.ttSheet_('MoKhoa').appendRow([new Date(), 'nguoimoi6', ctx.ttKhoaLaSo_(Lm), 'nam:' + vyN, 19, 'An (mới)', 4]);
+  const rc = ctx.lapLaSo(Lc, t6), rm = ctx.lapLaSo(Lm, t6);
+  ok(rc.vanTom.coNam && CDK.every(k => rc.namCd[k].co && rc.namCd[k].items) && rc.moRong.tongHop.hoSoNam.suKien.every(x => !x.khoa), 'Vận năm kiểu cũ: giữ trọn năm gồm cả 4 chủ đề');
+  ok(rm.vanTom.coNam && CDK.every(k => rm.namCd[k].khoa), 'Bức tranh chung mua ở phiên 4: không gồm 4 chủ đề');
+  ok(ctx.muaPhan(t6, Lc, 'nam_cd', 'sk:' + vyN).daCo, 'Người mua năm kiểu cũ mua chủ đề → đã có, không trừ xu'); }
+
+// --- Trọn đời: trừ phần lẻ đã mua, tối đa 50% ---
+{ const Lt = Object.assign({}, L, { day: 18 }); ctx.qtDieuChinhXu(chu, 'nguoimoi6', 200, 'test trọn đời');
+  ['bien_co', 'pdf', 'phoi_ngau'].forEach(k => ctx.muaPhan(t6, Lt, k));
+  const rt = ctx.lapLaSo(Lt, t6); ok(rt.giaNangCap.tron_goi.gia === 45 && rt.giaNangCap.tron_goi.tru === 44, 'Xem trước Trọn đời: đã trả 47 nhưng chỉ trừ 44 (50% của 89) → 45');
+  const d0 = ctx.ttSoDu_('nguoimoi6'); m = ctx.muaPhan(t6, Lt, 'tron_goi');
+  ok(m.ok && m.gia === 45 && ctx.ttSoDu_('nguoimoi6') === d0 - 45, 'Trọn đời 89: trừ tối đa 50% → trả 45');
+  const r2 = ctx.lapLaSo(Lt, t6); ok(r2.chiTiet.daiVan.every(d => !d.khoa) && r2.quyen.bien_co && r2.quyen.pdf && r2.quyen.phoi_ngau && !r2.vanTom.coNam && r2.namCd.cv.khoa, 'Trọn đời: 12 đại vận + biến cố + bạn đời + PDF, không gồm năm/tháng/chủ đề'); }
+ok(ctx.muaPhan(t6, Object.assign({}, L, { day: 19 }), 'phoi_ngau').gia === 9, 'Người bạn đời mua thẳng (bỏ điều kiện mở Tổng hợp trước)');
+
+// --- Hội viên năm / 12 đại vận / bản tin: thôi bán, người đã mua giữ quyền ---
+ok(/Không có gói/.test(nem(() => ctx.muaPhan(t6, null, 'hoi_vien')) || '') && /Không có gói/.test(nem(() => ctx.muaPhan(t6, L, 'tron_dai_van')) || '') && /Không có gói/.test(nem(() => ctx.muaPhan(t6, L, 'ban_tin')) || ''), 'Không bán Hội viên năm / 12 đại vận / bản tin lẻ nữa');
+{ const hanCon = (vyN + 1) + '-06-30', Lh = Object.assign({}, L, { day: 12, viewYear: vyN });
+  ctx.ttSheet_('MoKhoa').appendRow([new Date(), 'nguoimoi6', 'TK:nguoimoi6', 'hoi_vien:' + hanCon, 99, 'Hội viên năm']);
+  const h = ctx.lapLaSo(Lh, t6), h2 = ctx.lapLaSo(Object.assign({}, L2, { viewYear: vyN }), t6);
+  ok(h.vanTom.hoiVien === hanCon && h.vanTom.coNam && h.vanTom.coThang && h.chiTiet.nguyetVan.length === 12 && CDK.every(k => h.namCd[k].co) && h2.vanTom.coNam, 'Hội viên còn hạn (mua trước 16/11): vẫn mở năm + tháng + 4 chủ đề cho mọi lá số');
+  const sd = ctx.ttSoDu_('nguoimoi6'); ok(ctx.muaPhan(t6, Lh, 'dong_hanh', vyN).daCo && ctx.ttSoDu_('nguoimoi6') === sd, 'Hội viên mua Đồng hành → đã có, không trừ xu');
+  ok(h.chiTiet.daiVan.filter(d => !d.khoa).length === 1 && !h.quyen.bien_co, 'Hội viên không gồm 12 đại vận / biến cố');
+  const t1 = n1.token; ctx.ttSheet_('MoKhoa').appendRow([new Date(), 'nguoimoi1', 'TK:nguoimoi1', 'hoi_vien:2020-01-01', 99, 'Hội viên năm']);
+  ok(!ctx.lapLaSo(Lh, t1).quyen.hoiVien && !ctx.lapLaSo(Lh, t1).vanTom.coNam, 'Hội viên đã hết hạn: không còn quyền');
+  const Ld = Object.assign({}, L, { day: 22 }); ctx.ttSheet_('MoKhoa').appendRow([new Date(), 'nguoimoi1', ctx.ttKhoaLaSo_(Ld), 'tron_dai_van', 39, 'An']);
+  ok(ctx.lapLaSo(Ld, t1).chiTiet.daiVan.every(d => !d.khoa), 'Người đã mua 12 đại vận (gói cũ): vẫn mở cả 12 đại vận'); }
+
+// --- Quan hệ người thân (quan_he, 9 xu/cặp, khóa như Cặp đôi) ---
+{ const ds = ctx.giaDinhLuu([
+    { ten: 'Tôi', quanHe: 'Bản thân', input: { name: 'Tôi', gender: 'nam', calendar: 'duong', day: 15, month: 8, year: 1990, hour: 10, minute: 30 } },
+    { ten: 'Mẹ', quanHe: 'Mẹ', input: { name: 'Mẹ', gender: 'nu', calendar: 'duong', day: 2, month: 3, year: 1965, hour: 6, minute: 0 } },
+    { ten: 'Vợ', quanHe: 'Vợ', input: { name: 'Vợ', gender: 'nu', calendar: 'duong', day: 3, month: 4, year: 1994, hour: 7, minute: 0 } }], t6).ds;
+  let Q = ctx.giaDinhQuanHe([ds[0].id, ds[1].id], t6), c = Q.cap[0];
+  ok(!c.moQH && c.giaQH === 9 && c.luan.khoa && c.luan.muc.length === 5 && c.luan.muc.every(x => !x.ds) && c.tomTat.length === 1 && c.canCu.length === 0 && c.diem >= 0, 'Quan hệ chưa mua: chỉ điểm, xếp loại, 1 dòng tóm tắt + tên 5 mục');
+  const d0 = ctx.ttSoDu_('nguoimoi6'); m = ctx.muaPhan(t6, { ids: [ds[0].id, ds[1].id] }, 'quan_he');
+  ok(m.ok && m.gia === 9 && ctx.ttSoDu_('nguoimoi6') === d0 - 9, 'Mua quan hệ Tôi – Mẹ: 9 xu');
+  ok(ctx.muaPhan(t6, { a: ds[1].input, b: ds[0].input }, 'quan_he').daCo, 'Khóa cặp không phụ thuộc thứ tự (nhập a/b đảo vẫn là đã có)');
+  Q = ctx.giaDinhQuanHe([ds[1].id, ds[0].id], t6); c = Q.cap[0];
+  ok(c.moQH && c.luan.muc.length === 5 && c.luan.muc.every(x => x.ds && x.ds.length) && c.luan.muc[4].ds.length === 3 && c.canCu.length > 0, 'Quan hệ đã mua: đủ 5 mục (tình thương, va chạm, nói chuyện, năm gắn bó, 3 việc nên làm)');
+  ok(!/kết hôn|sinh con|cưới|hôn nhân/i.test(JSON.stringify(c.luan)), 'Quan hệ người thân: không có mục kết hôn / sinh con');
+  ok(/vợ chồng/i.test(nem(() => ctx.muaPhan(t6, { ids: [ds[0].id, ds[2].id] }, 'quan_he')) || ''), 'Cặp vợ chồng: không bán quan_he (xem ở Cặp đôi)');
+  ok(ctx.lapCapDoi(ds[0].input, ds[1].input, t6).biKhoa, 'Mua quan hệ không mở Cặp đôi');
+  ctx.giaDinhLuu(ds, chu); ok(ctx.giaDinhQuanHe([ds[0].id, ds[1].id], chu).cap[0].moQH, 'Chủ sở hữu: quan hệ mở sẵn'); }
+
+// --- Mã mời: vẫn lưu nhưng không thưởng ---
 const truocGT = ctx.ttSoDu_('nguoimoi1');
 const n2 = ctx.dangKy('nguoimoi2', 'matkhau123', 'Bạn Của Người Mới', 'moi2@x.vn', 'nguoimoi1');
-ok(n2.qua.xu === bgM.thuongDangKy && n2.qua.gt === 0, 'Được mời: chỉ quà đăng ký 9 xu');
-ok(ctx.ttSoDu_('nguoimoi1') === truocGT, 'Người mời chưa nhận xu khi bạn chỉ đăng ký (chống tạo tài khoản ảo)');
-const o1 = JSON.parse(store.TK_nguoimoi1); o1.soMoiDK = bgM.gtToiDa; store.TK_nguoimoi1 = JSON.stringify(o1);
-ctx.dangKy('nguoimoi3', 'matkhau123', 'B3', 'moi3@x.vn', 'nguoimoi1');
-ok(ctx.ttSoDu_('nguoimoi1') === truocGT + bgM.thuongGTDangKy, 'Thưởng mời có trần số lượt');
+ok(n2.qua.xu === 0 && n2.qua.gt === 0 && tkJ('nguoimoi2').gioiThieu === 'nguoimoi1', 'Được mời: lưu mã mời, không tặng khi đăng ký');
+ctx.guiMaEmail(n2.token, 'moi2@x.vn'); const v2 = ctx.xacThucEmail(n2.token, maCuoi());
+ok(v2.qua.xu === 39 && v2.qua.gt === 0 && ctx.ttSoDu_('nguoimoi1') === truocGT, 'Xác thực email: người được mời nhận 39, người mời không nhận gì (bỏ thưởng mời)');
 const n4 = ctx.dangKy('nguoimoi4', 'matkhau123', 'B4', 'moi4@x.vn', 'khong.co.ai');
-ok(n4.qua.gt === 0 && n4.qua.xu === bgM.thuongDangKy, 'Mã mời không tồn tại: chỉ quà đăng ký');
+ok(n4.qua.gt === 0 && !tkJ('nguoimoi4').gioiThieu, 'Mã mời không tồn tại: không lưu');
 if (loi) { console.log(loi + ' lỗi'); process.exit(1); } else console.log('✔ Thanh toán: tất cả kiểm tra đạt');
