@@ -3,7 +3,11 @@
 Nhóm: Chung · Cập nhật 02/11/2026
 Liên quan: [[00 Mục lục]] · [[Liên kết và công cụ]] · [[Việc chờ chủ dự án]] · [[Lần dán lên Apps Script]] · [[Quyết định của chủ dự án]] · [[KPI Kiểm thử]]
 
-## 16/11 KHUYA → PHIÊN MỚI: LÀM GIAI ĐOẠN 0 HỦY / BỚT MÃ (đọc phần này trước)
+## 16/11 khuya – GIAI ĐOẠN 0 HỦY / BỚT MÃ: XONG + đã push (chờ chủ dự án bấm 2-CAP-NHAT.bat)
+- Chi tiết + tên hàm: [[KPI Thiết kế trang Đơn hàng và chuyển từ Sheet sang web (16-11)]] mục "GIAI ĐOẠN 0 – ĐÃ LÀM". Kiểm thử `tests/huy-don.js` 89/89.
+- Kế tiếp (khi chủ dự án gửi danh sách): giai đoạn 1 – vai trò Bán hàng + trang tạo đơn. Còn treo: 2 CN thai sản C454, C451.
+
+## 16/11 KHUYA → PHIÊN MỚI: LÀM GIAI ĐOẠN 0 HỦY / BỚT MÃ (ĐÃ XONG 16/11 khuya)
 - Chủ dự án đã chốt mọi câu hỏi – đặc tả đầy đủ ở [[KPI Thiết kế trang Đơn hàng và chuyển từ Sheet sang web (16-11)]] (mục "Chủ dự án trả lời" + "Đặc tả giai đoạn 0"). Không hỏi lại.
 - Tóm tắt: web tự tạo Sheet CSDL riêng (lớp phủ hủy/bớt + sổ sự kiện + thông báo), Sheet cũ chỉ bị tô xám dòng hủy; quyền C019/C056/C067; chỉ ghi lý do; mục "Đơn đã hủy" + thông báo cho mọi người xem bảng đơn; chuyển "mã 5/11" sang cột STT đầu bảng; không làm bảng rối hơn.
 - Còn treo: 2 CN thai sản C454, C451 (chủ dự án chưa trả lời có cho nghỉ không). Danh sách tài khoản Bán hàng: chủ dự án gửi sau (giai đoạn 1).

@@ -462,7 +462,7 @@ function dhXoaCacheDon_() {
 }
 /* Mọi dòng đơn (đã gộp 7 tab). Nhớ tạm DH_CACHE_GIAY giây: nén gzip rồi chia mảnh base64 < 100 KB mỗi khóa. */
 var DH_DON_KHOA = 'DH_DON_v14';   // v14 (15/11 đêm): kho, chú thích 500 ký tự, cot.hong / giao / kho / tra / ct   // v13 (15/11): p2 = Phôi 2 nhánh, phoi 500 ký tự (Note)   // v12 (14/11): dn.h = XN HẸN
-function dhDocDon_(lamMoi) {
+function dhDocDonGoc_(lamMoi) {   // 16/11 khuya: bản đọc thẳng Sheet (chưa áp lớp phủ hủy / bớt) – mọi chỗ khác gọi dhDocDon_ (huy-don.gs)
   var c = CacheService.getScriptCache(), k = DH_DON_KHOA;   // v11 (14/11): thêm tabPhu (dòng tab ĐƠN ƯU TIÊN / TRỄ HẠN để web hiện đủ tab như Sheet)   // v10 (14/11): thêm dn (ĐANG Ở BP / KẾ TIẾP / XN NHẬN) + cot (bản đồ cột bộ phận) cho tab Đơn hàng dạng bảng   // v9 (13/11): nén gzip (11 khóa -> 1–2 khóa, đọc/ghi cache nhanh, tránh DEADLINE_EXCEEDED khi mở tab Đơn hàng)   // v8 (13/11): thêm tre (tab TRỄ HẠN) làm bậc 2 khi lên lịch SX   // v7 (13/11): ánh xạ tab ưu tiên sang Kho theo tên hàng   // v6 (07/11): thêm kênh POD-ECOMSTONE   // v5 (07/11): thêm uu (tab ĐƠN ƯU TIÊN)   // v4 (03/11): thêm uuTien / uuDon
   if (!lamMoi) {
     try {
@@ -603,7 +603,8 @@ function layDonHangXuong(token, lamMoi) {
     q: { bp: q.bp || '', xemTatCa: !!q.xemTatCa, sua: q.sua || [], thay: !!q.thay, note: !!q.note, uuGan: dhCoUu_(q.me), ten: (q.me && q.me.ten) || '', vaiTro: (q.me && q.me.vaiTro) || '' },   // 14/11: quyền nhập của tài khoản
     bpDs: DH_BP.map(function(b) { return [b[0], b[1]]; }),   // 14/11: danh sách bộ phận để chọn bộ phận kế tiếp
     kenhDs: DH_TABS.map(function(t) { return [t, DH_NHAN_TAB[t] || t]; }).concat((d.tabMoi || []).map(function(t) { return [t, t]; })),   // 07/11: đủ mọi kênh (kể cả kênh chưa có đơn) cho bộ lọc + báo cáo
-    cs: csHC, email: dhEmailTT_() });
+    cs: csHC, email: dhEmailTT_(),
+    huy: (function() { try { return dhhWeb_(q.me, d); } catch (eH) { return { ds: [], quyen: 0, loi: String(eH && eH.message || eH).slice(0, 200) }; } })() });   // 16/11 khuya: mục Đơn đã hủy + chuông thông báo
 }
 
 /* ===== 14/11 (chủ dự án chốt): nhập số lượng giao / hẹn / xác nhận nhận hàng NGAY TRÊN DÒNG ĐƠN của Sheet =====
@@ -912,6 +913,7 @@ function dhChup_(lamMoi) {
   if (sh && sh.getLastRow() >= 2 && sh.getRange(2, 1, sh.getLastRow() - 1, 1).getDisplayValues().some(function(r) { return String(r[0]) === hom; })) return false;
   var d = dhDocDon_(!!lamMoi), ks = dhKhoaDs_(d.don), rowsC = d.don.map(function(o, i) { var x = [ks[i], o.sl, o.thieu, o.giao || 0, o.dl || '', dhTrangThai_(o, hom), 0];   // 16/11: cột 7 = 0 (dòng thường) đánh dấu bản chụp mới
     if (o.hong && Object.keys(o.hong).length) x.push(o.hong);   // 16/11: cột 8 = hỏng cần làm bù từng bộ phận (để tính hỏng phát sinh theo ngày)
+    if (o.slGoc > o.sl) { if (x.length < 8) x.push(null); x.push(o.slGoc - o.sl); }   // 16/11 khuya: cột 9 = SL đã bớt trên web (lớp phủ) – để không tính là sản lượng ra
     return x; });
   var su = [];   // 07/11: dòng hôm trước còn trong tab kênh, nay đã chuyển sang tab HT -> thêm vào bản chụp với cờ 1 (cột 7) để tính sản lượng + sự kiện hoàn thiện
   try { var kq = dhTimChuyenHT_(rowsC, hom); rowsC = rowsC.concat(kq.dong); su = kq.su; } catch (eHT) { try { ghiLog_({ tk: 'HE_THONG', ten: 'Hệ thống' }, 'Đọc tab HT lỗi', String(eHT && eHT.message || eHT).slice(0, 200), '', ''); } catch (e2) {} }
@@ -1157,7 +1159,7 @@ function dhGop_(rows, boHT) {
     if (boHT && r[6] === 1) return;
     var k = String(r[0]).replace(/#\d+$/, ''), g = m[k];
     if (!g) { g = m[k] = [k, 0, 0, Number(r[3]) || 0, r[4], r[5], 0, null]; g.n = 0; g.ht = 0; g.co7 = 0; out.push(g); }
-    g[1] += Number(r[1]) || 0; g[2] += Number(r[2]) || 0; g.n++;
+    g[1] += Number(r[1]) || 0; g[2] += Number(r[2]) || 0; g.n++; if (r[6] !== 1 && r[8]) g[8] = (g[8] || 0) + (Number(r[8]) || 0);   // 16/11 khuya: cột 9 = SL đã bớt trên web
     if (r[6] === 1) { g.ht++; if (r[7] != null) { g.co7 = 1; g[7] = (g[7] || 0) + (Number(r[7]) || 0); } }
   });
   out.forEach(function(g) { g[6] = g.ht && g.ht === g.n ? 1 : 0; if (!g[6] || !g.co7) g[7] = null; });
@@ -1175,6 +1177,8 @@ function dhTinhSanLuong_(cu, nay, plCache, sua) {   // cu, nay: mảng dòng b�
     if (c && c[6] === 1) return;   // đã tính hôm chuyển
     var t0 = Number(c[2]) || 0;
     if (laHT) { kq.ht.n++; kq.ht.sp += Math.max(0, t0 - t); kq.ht.thieu += t; if (t >= t0) return; }   // phần thiếu khi chuyển = giao thiếu / hủy: không cộng sản lượng, không tính "điều chỉnh"
+    var giamSL = laHT ? 0 : Math.max(0, (Number(r[8]) || 0) - (Number(c[8]) || 0));   // 16/11 khuya: phần SL vừa BỚT trên web (cột 9 bản chụp) – thiếu giảm theo là điều chỉnh, KHÔNG phải sản lượng ra
+    if (!laHT && giamSL > 0 && t0 > t) { var bt = Math.min(t0 - t, giamSL); kq.mat += bt; t0 -= bt; }
     if (t > t0) { kq.tang += t - t0; return; }
     if (t0 <= t) return;
     var ra = t0 - t, a = String(r[0]).replace(/#\d+$/, '').split('|'), tab = a[2] || '', kn = DH_NHAN_TAB[tab] || tab, ten = a[1] || '';
@@ -2050,7 +2054,7 @@ function dhTab10Tao_() {
 function dhTab10TT_() { var p = PropertiesService.getScriptProperties(), a = String(p.getProperty('DH10_TAO') || '').split('|'), b = String(p.getProperty('DH10_DB') || '').split('|'); var kq = {}; try { kq = JSON.parse(b[1] || '{}'); } catch (e) {} return { tao: a[0] || '', n: Number(a[1]) || 0, dongBo: b[0] || '', kq: kq }; }
 /* Trigger (hàm toàn cục – trigger không gọi được hàm kết thúc bằng _) */
 function DH_TAB10_TAO(e) { if (!noiBo_(e)) return chanWeb_('DH_TAB10_TAO'); var l; try { l = dh10Khoa_(); dhTab10Tao_(); } catch (e) { try { ghiLog_({ tk: 'HE_THONG', ten: 'Hệ thống' }, 'Tạo tab ĐẾN HẠN 10 NGÀY lỗi', String(e && e.message || e).slice(0, 200), '', ''); } catch (e2) {} } finally { try { l && l.releaseLock(); } catch (e3) {} } }
-function DH_TAB10_DONG_BO(e) { if (!noiBo_(e)) return chanWeb_('DH_TAB10_DONG_BO'); var h = Number(Utilities.formatDate(new Date(), TZ_VN, 'H')); if (h < 6 || h >= 22) return; var l = LockService.getScriptLock(); if (!l.tryLock(5000)) return; try { dhTab10DongBo_(); } catch (e) {} finally { l.releaseLock(); } }
+function DH_TAB10_DONG_BO(e) { if (!noiBo_(e)) return chanWeb_('DH_TAB10_DONG_BO'); var h = Number(Utilities.formatDate(new Date(), TZ_VN, 'H')); if (h < 6 || h >= 22) return; var l = LockService.getScriptLock(); if (!l.tryLock(5000)) return; try { var p10 = PropertiesService.getScriptProperties(); if (p10.getProperty('DH10_CAN_TAO') === '1') { p10.deleteProperty('DH10_CAN_TAO'); dhTab10Tao_(); } else dhTab10DongBo_(); } catch (e) {} finally { l.releaseLock(); } }   /* 16/11 khuya: vừa hủy / bớt mã -> dựng lại tab 10 (bỏ dòng hủy) */
 function DH_TAB10_SUA(e) { if (!noiBo_(e)) return; try { if (!e || !e.range || e.range.getSheet().getName() !== DH10_TEN || e.range.getRow() < 2) return; } catch (x) { return; } var l = LockService.getScriptLock(); if (!l.tryLock(10000)) return; try { dhTab10DongBo_(); } catch (x2) {} finally { l.releaseLock(); } }
 function dhCaiTab10_() {
   var p = PropertiesService.getScriptProperties(); if (p.getProperty('DH10_CAI') === '1') return;

@@ -94,7 +94,13 @@ function tao(fileCode, duLieu, gioHienTai) {
       else for (let i = 0; i < this.nr; i++) for (let j = 0; j < this.nc; j++) this.sh.fmt[(this.r + i) + ',' + (this.c + j)] = f;
       return this;
     },
-    setFontWeight() { return this; }, setBackground() { return this; }, setFontColor() { return this; }
+    setFontWeight() { return this; }, setFontColor() { return this; },
+    // 16/11 khuya: màu nền lưu theo mảng dòng của sheet (openById tạo đối tượng Sheet mới mỗi lần) – kiểm thử tô xám / trả màu khi hủy mã đơn
+    __bg() { return this.sh.rows.__bg || (Object.defineProperty(this.sh.rows, '__bg', { value: {}, enumerable: false }), this.sh.rows.__bg); },
+    getBackgrounds() { const b = this.__bg(), o = []; for (let i = 0; i < this.nr; i++) { const r = []; for (let j = 0; j < this.nc; j++) r.push(b[(this.r + i) + ',' + (this.c + j)] || '#ffffff'); o.push(r); } return o; },
+    setBackground(c) { const b = this.__bg(); for (let i = 0; i < this.nr; i++) for (let j = 0; j < this.nc; j++) { const k = (this.r + i) + ',' + (this.c + j); if (c == null) delete b[k]; else b[k] = String(c).toLowerCase(); } return this; },
+    setBackgrounds(a) { const b = this.__bg(); a.forEach((r, i) => r.forEach((c, j) => { b[(this.r + i) + ',' + (this.c + j)] = String(c).toLowerCase(); })); return this; },
+    setNote() { return this; }
   };
 
   Object.keys(duLieu).forEach(ten => {
@@ -142,7 +148,7 @@ function tao(fileCode, duLieu, gioHienTai) {
     LockService: { getScriptLock: () => ({ tryLock: () => { if (khoa) return false; khoa = true; return true; }, waitLock() { khoa = true; }, releaseLock() { khoa = false; } }) },
     SpreadsheetApp: { flush() {}, getActiveSpreadsheet: () => ss,
       // Sheet của tệp khác (31/10, đọc Sheet "Trạng thái đơn hàng"): kiểm thử gán ctx.__ngoai = { id: { ten, sheets: { Tab: [[...]] } } }
-      openById: id => { const m = (ctx.__ngoai || {})[id]; if (!m) throw new Error('Bạn không có quyền truy cập vào tài liệu được yêu cầu (giả lập).');
+      openById: id => { const bm = (ctx.__bangMoi || []).find(x => x.id === id); if (bm) return bm; const m = (ctx.__ngoai || {})[id]; if (!m) throw new Error('Bạn không có quyền truy cập vào tài liệu được yêu cầu (giả lập).');
         return { getId: () => id, getName: () => m.ten || id, getSheetByName: n => (m.sheets[n] ? new Sheet(n, m.sheets[n]) : null), getSheets: () => Object.keys(m.sheets).map(n => new Sheet(n, m.sheets[n])), insertSheet: n => { m.sheets[n] = m.sheets[n] || []; return new Sheet(n, m.sheets[n]); } }; },   // 15/11: tạo tab mới (tab ĐẾN HẠN 10 NGÀY)
       create: ten => {   // bảng tính mới (lưu chi tiết cơm trưa lên Drive)
         ctx.__bangMoi = ctx.__bangMoi || []; const ds = [new Sheet('Trang tính1', [])], id = 'ss' + (ctx.__bangMoi.length + 1);

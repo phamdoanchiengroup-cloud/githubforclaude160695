@@ -36,3 +36,4 @@ DATA=/đường/dẫn/csdl.json OUT=/tmp/xem-thu-kpi.html node kpi-app/tests/tao
 - 08/11 Tăng tốc đăng nhập: `DATA=<số thật> TZ=Asia/Ho_Chi_Minh node kpi-app/tests/tang-toc-4.js` (14).
 - 08/11 Dọn dẹp hằng tháng: `DATA=<số thật> TZ=Asia/Ho_Chi_Minh node kpi-app/tests/luu-tru.js` (15).
 - 16/11 Rà soát toàn bộ: `DATA=<số thật> TZ=Asia/Ho_Chi_Minh node kpi-app/tests/ra-soat-1611.js` (11) · tab10.js (19) · uu-tien-web.js (25).
+- 16/11 khuya Hủy / bớt mã (giai đoạn 0): `DATA=<số thật> TZ=Asia/Ho_Chi_Minh node kpi-app/tests/huy-don.js` (89, gồm web Chromium). Chạy lại đạt: don-hang 142, cot-phu 21, tab10 19, uu-tien-web 25, quy-trinh 76, luu-tru 15, cau-hinh-gay 50, mot-khuc 20, du-bao-web 18, hai-lan-web 11, han-chuan 28, nhan-su-ngoai 10. `ho-so.js` lỗi sẵn với dữ liệu tải 16/11 khuya (giống trước khi sửa).
