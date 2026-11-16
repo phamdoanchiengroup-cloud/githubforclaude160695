@@ -61,7 +61,7 @@ function tkCan_(token, chiChu) {
  * chỉ được chạy: (1) theo lịch thật của dự án – đối chiếu mã lịch (triggerUid), người ngoài không đoán được; hoặc
  * (2) từ trình soạn thảo Apps Script bởi chính chủ dự án (người đang chạy = tài khoản sở hữu dự án). */
 function laLichThat_(e) {
-  if (!e || !e.triggerUid) return false;
+  if (!e || !/^\d{4,25}$/.test(String(e.triggerUid || ''))) return false;
   try { return ScriptApp.getProjectTriggers().some(function (t) { return String(t.getUniqueId()) === String(e.triggerUid); }); } catch (x) { return false; }
 }
 function laChuTrinhSoan_() {
@@ -77,12 +77,14 @@ function dangNhap(user, pass) {
   var u = tkTen_(user), c = CacheService.getScriptCache(), k = 'SAI_' + u;
   var sai = parseInt(c.get(k) || '0', 10);
   var o = tkDoc_(u), laChu = !!o && o.vaiTro === 'chu';
-  // Chủ sở hữu không bị khóa cứng (người lạ gõ sai 5 lần không chặn được chủ) – chỉ làm chậm dần (rà soát 16/11)
+  // Chủ sở hữu không bị khóa 15 phút (người lạ gõ sai 5 lần không chặn được chủ): sau 5 lần sai chỉ phải đợi vài giây
+  // giữa hai lần thử – từ chối ngay, không ngủ, nên không chiếm suất chạy đồng thời của web (rà soát 16/11)
   if (sai >= 5 && !laChu) throw new Error('Tài khoản tạm khóa do nhập sai nhiều lần. Thử lại sau 15 phút.');
-  if (sai >= 5 && laChu) Utilities.sleep(Math.min(5000, 300 * sai));
+  if (sai >= 5 && laChu && c.get('CHO_' + u)) throw new Error('Nhập sai nhiều lần. Đợi vài giây rồi thử lại.');
   var dung = o ? tkBang_(tkBam_(String(pass || ''), o.salt), o.hash) : (tkBam_(String(pass || ''), 'khong-co-tai-khoan'), false);
   if (!dung) {
     c.put(k, String(sai + 1), 900);
+    if (laChu && sai + 1 >= 5) c.put('CHO_' + u, '1', Math.min(30, 2 * (sai + 1)));
     Utilities.sleep(600);
     throw new Error('Sai tên đăng nhập hoặc mật khẩu.');
   }

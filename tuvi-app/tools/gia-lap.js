@@ -12,7 +12,7 @@ Range.prototype = {
   getValues() { const o = []; for (let i = 0; i < this.nr; i++) { const row = []; for (let j = 0; j < this.nc; j++) row.push(((this.sh.rows[this.r - 1 + i] || [])[this.c - 1 + j]) ?? ''); o.push(row); } return o; },
   getValue() { return this.getValues()[0][0]; },
   getDisplayValues() { return this.getValues().map(r => r.map(v => v instanceof Date ? v.getDate() + '/' + (v.getMonth() + 1) + '/' + v.getFullYear() : String(v))); },
-  setValues(v) { v.forEach((row, i) => row.forEach((x, j) => { const R = this.sh.rows[this.r - 1 + i] = this.sh.rows[this.r - 1 + i] || []; R[this.c - 1 + j] = x; })); return this; },
+  setValues(v) { v.forEach((row, i) => row.forEach((x, j) => { const R = this.sh.rows[this.r - 1 + i] = this.sh.rows[this.r - 1 + i] || []; R[this.c - 1 + j] = (x => typeof x === 'string' && x[0] === "'" ? x.slice(1) : x)(x); })); return this; },
   setValue(x) { return this.setValues([[x]]); },
   setFontWeight() { return this; }, setBackground() { return this; }, setFontColor() { return this; },
   getRow() { return this.r; },

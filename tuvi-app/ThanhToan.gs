@@ -83,14 +83,10 @@ function ttSheet_(ten) {
   }
   return sh;
 }
-/** Giá trị chữ do người dùng nhập trước khi ghi Sheet (rà soát 16/11): thêm dấu ' để Sheet giữ nguyên dạng chữ khi
- *  chuỗi trông như số/ngày/đúng-sai (vd. tên đăng nhập "0912345678" – nếu không sẽ mất số 0 đầu, mất ví) hoặc bắt đầu bằng = + - @
- *  (chặn chèn công thức). Dấu ' không hiện trong ô và không làm đổi giá trị đọc ra. */
-function shO_(v) {
-  if (typeof v !== 'string') return v;
-  if (/^[=+\-@]/.test(v) || (/\d/.test(v) && /^[\d\s.,:\/eE%-]+$/.test(v)) || /^(true|false)$/i.test(v)) return "'" + v;
-  return v;
-}
+/** Chuỗi người dùng nhập trước khi ghi Sheet (rà soát 16/11): LUÔN thêm dấu ' để Sheet giữ nguyên dạng chữ –
+ *  tên đăng nhập "0912345678" không mất số 0 đầu (mất ví), "5-mar" không bị đổi thành ngày, "=IMPORTDATA(…)" không thành công thức.
+ *  Sheet tự bỏ dấu ' này: ô hiển thị và giá trị đọc ra vẫn đúng chuỗi gốc, TextFinder vẫn tìm thấy. */
+function shO_(v) { return typeof v === 'string' && v !== '' ? "'" + v : v; }
 /** Các dòng (1-based) có ô cột col trùng khớp tuyệt đối với val */
 function ttTim_(sh, col, val) {
   var last = sh.getLastRow();

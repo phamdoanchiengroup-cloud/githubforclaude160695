@@ -5,6 +5,7 @@ Liên quan: [[TCC Lịch sử lá số]] · [[TCC Lá số 3D]] · [[00 Mục l�
 
 ```bash
 cd tuvi-app
+node tests/bao-mat.js                          # (16/11) bề mặt API trình duyệt gọi được = danh sách cho phép; hàm vận hành chặn bằng chiChayNoiBo_; tham số URL; ghi Sheet giữ dạng chữ
 node tests/cai-dat.js                          # bộ kiemTraCaiDat: HAM_CAN_CO đủ file, BAN_MOI_CAN_CO khớp mã hiện tại (tránh báo nhầm "bản cũ")
 node tests/bao-cao.js                          # báo cáo ngày cho chủ sở hữu: số liệu 24h/7/30 ngày, người nhận, trigger 7 giờ
 node tests/giai-doan.js                        # bán theo giai đoạn, gói gia đình, phần cắt ở máy chủ (34 kiểm tra)
@@ -40,3 +41,7 @@ cd tests && npm install && node thien-van.mjs && node doi-chieu.js   # đối ch
 - **Giới hạn mạng:** WebFetch bị chặn với một số trang tiếng Việt (vd. lasobattu.com, 4thuman.com); WebSearch dùng được.
 - **Thêm file `.gs` mới:** phải thêm vào `HAM_CAN_CO` trong Code.gs (hàm `kiemTraCaiDat`) và cập nhật số file trong HUONG-DAN-CAI-DAT.md.
 - **`BAN_MOI_CAN_CO` = [hàm, chuỗi phải có trong thân hàm đó]:** chọn đúng hàm thực sự chứa lời gọi (đã từng đặt nhầm `htHoiTu_` thay vì `htTinHieu_` → chủ dự án dán đúng vẫn bị báo bản cũ). Luôn chạy `node tests/cai-dat.js`.
+
+## 16/11/2026 – rà soát bảo mật
+- `thanh-toan.js`, `tai-khoan.js`, `van-ngay.js` không còn bỏ qua khi thiếu `TK_PASS`: tự thay seed chủ sở hữu bằng mật khẩu thử trong bộ nhớ (`mat-khau-thu-nghiem`). Giả lập Sheet bỏ dấu `'` đầu ô như Google Sheet. `thien-van.mjs` có giả lập `Utilities.formatDate`.
+- `doi-chieu.js` cần `cd tests && npm ci` (gói iztro). Toàn bộ 25 file đạt.

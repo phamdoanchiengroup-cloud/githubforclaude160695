@@ -4,6 +4,7 @@ Nhóm: Bắt đầu · Cập nhật 22/10/2026
 Liên quan: [[Việc chờ chủ dự án]] · [[TCC Kiểm thử]] · [[00 Mục lục]]
 
 ## Tình trạng
+- **16/11: đợt bảo mật** (không đổi giao diện, mã vẫn `2026.11.1.5`) – đổi **Code, TaiKhoan, ThanhToan, TienIch, GiaDinh, NghiemChung, Facts, TuViHeThong, LuanGiai, DuDoan, TongHop, PhoiNgau, TuVi, BatTu, BatTuChiTiet, ChiemTinh, HumanDesign, ThanSoHoc, HaLac, Astro, TuViTrinhTu, TuViPhiTinh** và một số file gọi các hàm này. Bấm `2-CAP-NHAT.bat`, Ctrl+F5. Trigger không cần cài lại.
 - **1/11: mã `2026.11.1.5`** – tab ✶ Phi Tinh dựng lại theo mục lục Bắc phái (đủ phần, vận năm + 12 tháng). Đổi **TuViPhiTinh, Script, Styles, Index**. Bấm `2-CAP-NHAT.bat`, Ctrl+F5.
 - **1/11 (sau):** bỏ vai "Cháu" trong danh sách quan hệ. Chỉ đổi **GiaDinh**. Bấm `2-CAP-NHAT.bat`.
 - **1/11: mã `2026.11.1.4`** – tab Gia đình: xem quan hệ luận đúng vai (cha – con không còn mục kết hôn, sinh con), chọn 2–4 người, thêm phần cả nhà. Đổi **GiaDinh, Code, Script, Styles, Index**. Bấm `2-CAP-NHAT.bat`, Ctrl+F5.

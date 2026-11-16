@@ -10,7 +10,10 @@ import fs from 'fs'; import path from 'path'; import vm from 'vm'; import { file
 import * as A from 'astronomy-engine';
 import { calculateChart } from 'hd-chart-engine';
 const D = path.join(path.dirname(fileURLToPath(import.meta.url)), '..');
-const ctx = { console, Math, Date, JSON }; vm.createContext(ctx);
+const ctx = { console, Math, Date, JSON,
+  // Giả lập tối thiểu hàm Apps Script mà mã luận dùng (LuanGiai.gs gọi Utilities.formatDate) – rà soát 16/11
+  Utilities: { formatDate: (d, tz, f) => { const p = n => String(n).padStart(2, '0'); return f.replace('yyyy', d.getFullYear()).replace('MM', p(d.getMonth() + 1)).replace('dd', p(d.getDate())).replace('HH', p(d.getHours())).replace('mm', p(d.getMinutes())); } } };
+vm.createContext(ctx);
 fs.readdirSync(D).filter(f => f.endsWith('.gs') && f !== 'Code.gs').forEach(f => vm.runInContext(fs.readFileSync(path.join(D, f), 'utf8'), ctx, { filename: f }));
 const code = fs.readFileSync(path.join(D, 'Code.gs'), 'utf8');
 vm.runInContext(code.slice(code.indexOf('function lapLaSoDayDu_'), code.indexOf('/* ---------------------- Lưu trữ')), ctx);

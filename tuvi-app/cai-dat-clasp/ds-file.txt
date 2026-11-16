@@ -7,7 +7,7 @@ BatTuPhanTich.gs	39313
 BatTuThanSat.gs	140788
 CapDoi.gs	50113
 ChiemTinh.gs	104289
-Code.gs	25972
+Code.gs	26201
 DeHieu.gs	92746
 DuDoan.gs	38302
 Facts.gs	11840
@@ -24,9 +24,9 @@ NghiemChungUI.html	11072
 PhoiNgau.gs	51166
 Script.html	727827
 Styles.html	255448
-TaiKhoan.gs	22052
+TaiKhoan.gs	22374
 ThanSoHoc.gs	52498
-ThanhToan.gs	50672
+ThanhToan.gs	50566
 TienIch.gs	87503
 TongHop.gs	72784
 TuVi.gs	57689

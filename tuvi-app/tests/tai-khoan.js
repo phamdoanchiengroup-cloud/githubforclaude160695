@@ -46,7 +46,9 @@ if (PASS) {
 }
 ctx.Utilities.sleep = () => {};
 for (let i = 0; i < 5; i++) nem(() => ctx.dangNhap('chienpham', 'sai-mat-khau'));
-ok(nem(() => ctx.dangNhap('chienpham', PASS)) === null, 'Chủ sở hữu không bị người lạ khóa sau 5 lần sai (chỉ làm chậm)');
+ok(/Đợi vài giây/.test(nem(() => ctx.dangNhap('chienpham', PASS)) || ''), 'Chủ sở hữu sau 5 lần sai: chỉ phải đợi vài giây (không khóa 15 phút)');
+ctx.CacheService.getScriptCache().remove('CHO_chienpham');
+ok(nem(() => ctx.dangNhap('chienpham', PASS)) === null, 'Hết vài giây chờ: chủ sở hữu đăng nhập được, không bị người lạ khóa');
 ctx.dangKy('khachkhoa', 'matkhau123', 'Khách', 'khach@vidu.vn');
 for (let i = 0; i < 5; i++) nem(() => ctx.dangNhap('khachkhoa', 'sai-mat-khau'));
 ok(/tạm khóa/.test(nem(() => ctx.dangNhap('khachkhoa', 'matkhau123'))), 'Tài khoản thường: khóa tạm sau 5 lần sai');

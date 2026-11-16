@@ -337,6 +337,9 @@ function ghiDoiChieu(muc, traLoi, them) {
   muc = String(muc || '').slice(0, 60); traLoi = String(traLoi || '');
   if (!muc || ['dung', 'mot', 'sai'].indexOf(traLoi) < 0) return false;
   them = them || {};
+  var c = CacheService.getScriptCache(), dem = parseInt(c.get('DC_DEM') || '0', 10);   // tối đa 200 lần/10 phút toàn hệ thống (rà soát 16/11)
+  if (dem >= 200) return false;
+  c.put('DC_DEM', String(dem + 1), 600);
   var ss = laySS_(), sh = ss.getSheetByName('DoiChieu');
   if (!sh) { sh = ss.insertSheet('DoiChieu'); sh.appendRow(['Thời gian', 'Mục', 'Trả lời', 'Năm sinh', 'Giới tính']); sh.getRange(1, 1, 1, 5).setFontWeight('bold'); sh.setFrozenRows(1); }
   sh.appendRow([new Date(), shO_(String(muc || '').slice(0, 80)), { dung: 'Đúng', mot: 'Một phần', sai: 'Không đúng' }[traLoi], parseInt(them.nam, 10) || '', String(them.gioi || '').slice(0, 10)]);

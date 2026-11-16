@@ -26,7 +26,7 @@ const VAN_HANH = ['guiBanTinThang', 'guiBaoCaoNgay', 'guiVanNgay', 'ttQuetDonTuD
 const congKhai = {};
 fs.readdirSync(D).filter(f => f.endsWith('.gs')).forEach(f => {
   const s = fs.readFileSync(path.join(D, f), 'utf8');
-  for (const m of s.matchAll(/^function\s+([A-Za-z0-9]+)\s*\(([^)]*)\)\s*\{\n?([^\n]*)/gm)) congKhai[m[1]] = { f, dong1: m[3] };
+  for (const m of s.matchAll(/^function\s+([\w$]*[A-Za-z0-9$])\s*\(([^)]*)\)\s*\{\n?([^\n]*)/gm)) congKhai[m[1]] = { f, dong1: m[3] };   // mọi tên KHÔNG kết thúc bằng _
 });
 const choPhep = new Set([].concat(GIAO_DIEN, KHUNG, TIEN_ICH, VAN_HANH));
 Object.keys(congKhai).forEach(n => {
@@ -50,8 +50,8 @@ VAN_HANH.concat(['testFacts']).forEach(n => {
   kt(/chỉ chạy theo lịch/.test(loi), n + ': mã lịch giả bị chặn');
 });
 const cu = ctx.ScriptApp.getProjectTriggers;
-ctx.ScriptApp.getProjectTriggers = () => [{ getUniqueId: () => '777', getHandlerFunction: () => 'guiVanNgay' }];
-kt(ctx.laLichThat_({ triggerUid: '777' }) === true && ctx.laLichThat_({ triggerUid: '778' }) === false, 'chỉ nhận đúng mã lịch có thật của dự án');
+ctx.ScriptApp.getProjectTriggers = () => [{ getUniqueId: () => '7770001', getHandlerFunction: () => 'guiVanNgay' }];
+kt(ctx.laLichThat_({ triggerUid: '7770001' }) === true && ctx.laLichThat_({ triggerUid: '7770002' }) === false, 'chỉ nhận đúng mã lịch có thật của dự án');
 ctx.ScriptApp.getProjectTriggers = cu;
 ctx.__nguoiChay = 'khac@vidu.vn';
 kt(!ctx.laChuTrinhSoan_(), 'người dùng Google khác không phải chủ dự án');
@@ -69,9 +69,15 @@ kt(o.ref === '</script><script>alert(1)</script>' && o.name === 'An' && o.day ==
 kt(JSON.parse(ctx.thamSoAnToan_({ ref: 'a'.repeat(500) })).ref.length === 200, 'giá trị bị cắt ≤ 200 ký tự');
 
 // 4. Ghi Sheet an toàn
-[['0912345678', "'0912345678"], ['1.5', "'1.5"], ['12/10', "'12/10"], ['=IMPORTDATA("x")', "'=IMPORTDATA(\"x\")"], ['+84912', "'+84912"],
-  ['-abc', "'-abc"], ['@a', "'@a"], ['TRUE', "'TRUE"], ['khachmoi', 'khachmoi'], ['Nguyễn Văn An', 'Nguyễn Văn An'], ['an.123', 'an.123'], [42, 42]]
+[['0912345678', "'0912345678"], ['1.5', "'1.5"], ['5-mar', "'5-mar"], ['=IMPORTDATA("x")', "'=IMPORTDATA(\"x\")"], ['+84912', "'+84912"],
+  ['TRUE', "'TRUE"], ['khachmoi', "'khachmoi"], ['Nguyễn Văn An', "'Nguyễn Văn An"], ['', ''], [42, 42]]
   .forEach(([v, k]) => kt(ctx.shO_(v) === k, 'shO_(' + v + ') → ' + k + ' (được ' + ctx.shO_(v) + ')'));
 
+// 5. Web phải chạy dưới quyền chủ dự án – nếu đổi sang USER_ACCESSING thì getActiveUser == getEffectiveUser với mọi người, lớp chặn mất tác dụng
+const cfg = JSON.parse(fs.readFileSync(path.join(D, 'appsscript.json'), 'utf8'));
+kt(cfg.webapp && cfg.webapp.executeAs === 'USER_DEPLOYING', 'appsscript.json: webapp.executeAs phải là USER_DEPLOYING');
+// 6. Ghi Sheet thật: dấu ' bị Sheet bỏ, tìm lại dòng theo tên toàn số vẫn thấy
+{ const sh = ctx.ttSheet_('Vi'); sh.appendRow([ctx.shO_('0912000111'), 5, new Date()]);
+  kt(ctx.ttTim_(sh, 1, '0912000111').length === 1 && ctx.ttSoDu_('0912000111') === 5, 'tên đăng nhập toàn số: tìm lại đúng dòng ví, không mất số 0 đầu'); }
 console.log('Bảo mật: đạt ' + ok + '/' + (ok + sai));
 process.exit(sai ? 1 : 0);
