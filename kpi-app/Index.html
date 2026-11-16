@@ -8811,7 +8811,7 @@ function chiXemDon(){
 </script>
 <script>
 /* ===== 19. PHẦN GIAO DIỆN TẢI SAU (12/10) – SoDo.html, HoatAnh.html: chỉ tải khi cần, nhớ lại theo phiên bản ===== */
-var MANH_VER={"SoDo": "d9bc7ce73f034629", "HoatAnh": "b23cbe69d6aae56e", "AmThanh": "c690fabe4419160c", "QuyTrinh": "0a8d893119", "CauHinhGay": "8c0f42823f07518c"};
+var MANH_VER={"SoDo": "d9bc7ce73f034629", "HoatAnh": "b23cbe69d6aae56e", "AmThanh": "c690fabe4419160c", "QuyTrinh": "65dd0368e2", "CauHinhGay": "8c0f42823f07518c"};
 var __manh={da:{},cho:{}};
 function ganManh_(nd){
   var js=[], ngoai=String(nd).replace(/<script>([\s\S]*?)<\/script>/g,function(_,x){js.push(x);return ''});
@@ -9732,7 +9732,7 @@ function hsGhiChuDong(r){
 }
 </script>
 <script>
-var KPI_BAN = '16/11/2026 13:32';
+var KPI_BAN = '16/11/2026 14:01';
 (function(){
   var cu = window.veNav;
   window.veNav = function(){
@@ -11068,7 +11068,7 @@ function nsnCapNhat(){ call('capNhatNgoaiSXTuFile',[],function(r){ if(!r||!r.ok)
 </script>
 <script>
 /* ===== 38. TĂNG TỐC ĐỢT 3 (08/11) – bộ đo tốc độ + mở nhanh bằng số lần trước (mã hóa) ===== */
-var TD_BUF=[], TD_T=null, DL_VER='9184b70750', DL_HAN=12*3600e3, DL_BO=['SoCCCD','DienThoai','DiaChi','SdtKhanCap','LuongCoBan','NamSinh','SoTaiKhoan','Email'];
+var TD_BUF=[], TD_T=null, DL_VER='2d51bc393a', DL_HAN=12*3600e3, DL_BO=['SoCCCD','DienThoai','DiaChi','SdtKhanCap','LuongCoBan','NamSinh','SoTaiKhoan','Email'];
 function tdGhi_(f,ms,sv){ if(!(ms>=0)||!f) return; TD_BUF.push({f:String(f),ms:Math.round(ms),sv:(typeof sv==='number'?Math.round(sv):null)});
   if(TD_BUF.length>=15) tdGui_(); else if(!TD_T) TD_T=setTimeout(tdGui_,180000); }
 function tdGui_(){ if(TD_T){clearTimeout(TD_T);TD_T=null;} if(!TD_BUF.length||typeof TOKEN==='undefined'||!TOKEN) return;
@@ -11751,6 +11751,30 @@ function nvHLXem(){ var v=($('nvHLma')||{}).value||''; if(!v.trim()){ toast('Dá
     $('nvHLkq').innerHTML=h; }); }
 function nvHLLuu(){ if(!NVHL) return; if(!confirm('Chuyển '+NVHL.r.doi+' người sang "Nghỉ việc" và ngừng tài khoản đăng nhập của họ?')) return;
   call('luuNghiViecHangLoat',[NVHL.ds],function(r){ toast((r&&r.msg)||'Lỗi.',!!(r&&r.ok)); if(r&&r.ok){ NVHL=null; reload(function(){ if(tabHienTai==='ns') vNS(); }); } }); }
+</script>
+<style id="menuNho">
+#btnMenuNho{display:none}
+@media (min-width:901px){
+  html:not(.cn-moi) #btnMenuNho{display:flex;align-items:center;gap:6px;position:fixed;left:12px;top:72px;z-index:160;padding:6px 12px;border-radius:999px;
+    border:1px solid #1ea7ff;background:#0b1d33;color:#f4ecda;font:600 13px/1 inherit;cursor:pointer;box-shadow:0 4px 14px rgba(0,0,0,.35),0 0 12px -2px rgba(30,167,255,.6)}
+  html:not(.cn-moi) #btnMenuNho:hover{background:#12355c}
+  html:not(.cn-moi).nav-mo #nav{transform:none!important;box-shadow:0 0 60px rgba(0,0,0,.6),0 0 30px -6px rgba(30,167,255,.6)}
+  html:not(.cn-moi).nav-mo #btnMenuNho{left:auto;right:auto;transform:translateX(var(--navw,250px))}
+}
+</style>
+<button type="button" id="btnMenuNho" aria-label="Mở menu" title="Mở / đóng menu"><span aria-hidden="true" style="font-size:15px">☰</span> Menu</button>
+<script>
+(function(){
+  var b=document.getElementById('btnMenuNho'), h=document.documentElement; if(!b) return;
+  function dong(){ h.classList.remove('nav-mo'); b.setAttribute('aria-expanded','false'); }
+  b.onclick=function(e){ e.stopPropagation(); var nav=document.getElementById('nav'); if(nav) h.style.setProperty('--navw',(nav.getBoundingClientRect().width||250)+'px');
+    var mo=!h.classList.contains('nav-mo'); h.classList.toggle('nav-mo',mo); b.setAttribute('aria-expanded',mo?'true':'false'); };
+  document.addEventListener('click',function(e){ if(!h.classList.contains('nav-mo')) return; var nav=document.getElementById('nav');
+    if(nav&&nav.contains(e.target)&&!e.target.closest('button')) return; if(e.target===b) return; dong(); });
+  document.addEventListener('keydown',function(e){ if(e.key==='Escape') dong(); });
+  var hien=function(){ var app=document.getElementById('app'); b.style.visibility=(app&&app.style.display==='block')?'visible':'hidden'; };
+  hien(); setInterval(hien,1500);
+})();
 </script>
 </body>
 </html>
