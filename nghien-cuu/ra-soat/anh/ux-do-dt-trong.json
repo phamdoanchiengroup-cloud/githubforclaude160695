@@ -1,0 +1,44 @@
+{
+ "W": 390,
+ "mode": "trong",
+ "tLoad": 4703,
+ "trong": {
+  "docH": 4558,
+  "btnTotal": 44,
+  "small": 5,
+  "smallList": [
+   "poster-hotspot:137x33:",
+   "A:92x18:Đăng ký ngay",
+   "INPUT:19x22:",
+   "INPUT:22x22:",
+   "INPUT:22x22:"
+  ],
+  "fs": {
+   "10": 1,
+   "11": 1,
+   "12": 8,
+   "13": 37,
+   "14": 9,
+   "15": 17,
+   "16": 3,
+   "18": 3
+  },
+  "nText": 79,
+  "noName": 0,
+  "imgsNoAlt": 0,
+  "headings": [
+   "H1 Thiên Cơ Các",
+   "H2 Tạo tài khoản – nhận ngay 50 xu",
+   "H2 Hiểu mình – để sống đúng với mình",
+   "H2 命 Nhập thông tin"
+  ],
+  "nHeadings": 4,
+  "hScroll": 0
+ },
+ "formTop": 2601,
+ "submitTop": 3460,
+ "regFields": 6,
+ "tLap": 31501,
+ "sauLapScroll": 2173,
+ "errs": []
+}
