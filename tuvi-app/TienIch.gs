@@ -450,6 +450,12 @@ function dangKyBanTin(input, email, token) {
     var han = new Date(); han.setFullYear(han.getFullYear() + 1);
     var hanStr = namDh ? namDh + '-12-31' : han.getFullYear() + '-' + (han.getMonth() < 9 ? '0' : '') + (han.getMonth() + 1) + '-' + (han.getDate() < 10 ? '0' : '') + han.getDate();
     var sh = tiShBanTin_(), clean = {}; ['name', 'gender', 'calendar', 'day', 'month', 'year', 'leap', 'hour', 'minute', 'place', 'longitude', 'tz'].forEach(function (k) { if (input[k] != null) clean[k] = input[k]; });
+    if (!gia) {   // rà soát 17/11: bản tin miễn phí không được dùng để gửi hàng loạt email (hạn mức MailApp dùng chung)
+      var js = JSON.stringify(clean), homNay = Utilities.formatDate(new Date(), 'Asia/Ho_Chi_Minh', 'yyyy-MM-dd'), conHan = 0, trung = 0;
+      ttTim_(sh, 1, u.ten).forEach(function (r) { var v = sh.getRange(r, 1, 1, 4).getValues()[0]; if (String(v[3]) >= homNay) { conHan++; if (String(v[2]) === js && String(v[3]) === hanStr) trung = r; } });
+      if (trung) { sh.getRange(trung, 2).setValue(shO_(email)); return { ok: true, soDu: toan ? null : moi, gia: 0, hanDen: hanStr, dongHanh: namDh || null, doiEmail: true }; }
+      if (conHan >= 5) throw new Error('Mỗi tài khoản nhận bản tin cho tối đa 5 lá số cùng lúc.');
+    }
     sh.appendRow([shO_(u.ten), shO_(email), JSON.stringify(clean), "'" + hanStr, new Date(), '']);
     return { ok: true, soDu: toan ? null : moi, gia: gia, hanDen: hanStr, dongHanh: namDh || null };
   });

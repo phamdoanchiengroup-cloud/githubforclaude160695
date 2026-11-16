@@ -27,7 +27,7 @@
     });
   }
   /** Mã phiên bản giao diện – phải trùng với Index.html (meta tcc-ban) và Styles.html (--tcc-ban) */
-  var BAN_GIAO_DIEN = '2026.11.17.1';
+  var BAN_GIAO_DIEN = '2026.11.17.2';
   /* 25/10: ảnh ngũ hành + 12 con giáp + bìa PDF mới của chủ dự án (tuvi-app/anh/*.webp) qua jsDelivr, ghim theo mã lần lưu */
   var TCC_ANH_CDN = 'https://cdn.jsdelivr.net/gh/phamdoanchiengroup-cloud/githubforclaude160695@19203fbd20433f395336269a411f8aebcf990086/tuvi-app/anh/';
   var ANH_HANH = { 'Mộc': 'NguHanhMoc', 'Hỏa': 'NguHanhHoa', 'Thổ': 'NguHanhTho', 'Kim': 'NguHanhKim', 'Thủy': 'NguHanhThuy' };
@@ -412,7 +412,7 @@
     XT.qua = qua != null ? +qua || 0 : quaXacThuc(); XT.email = ''; XT.dang = false;
     var em = goiY || (state.nguoiDung && state.nguoiDung.email) || '';
     $('xtTitleText').textContent = XT.qua ? 'Nhận ' + XT.qua + ' xu quà: xác thực email' : 'Xác thực email';
-    $('xtBody').innerHTML = '<p class="lede" style="margin-top:0">' + (XT.qua ? 'Xác thực email để nhận <b>' + XT.qua + ' xu</b> quà chào mừng – đủ mở vài phần lẻ (9 hoặc 19 xu) như chủ đề năm, tháng của bạn. Mỗi email nhận quà một lần.' : 'Xác thực email để giữ tài khoản an toàn và khôi phục khi quên mật khẩu.') + '</p>' +
+    $('xtBody').innerHTML = '<p class="lede" style="margin-top:0">' + (XT.qua ? 'Xác thực email để nhận <b>' + XT.qua + ' xu</b> quà chào mừng – đủ mở vài phần lẻ (9 hoặc 19 xu) như chủ đề năm, tháng của bạn. Mỗi email nhận quà một lần.' : 'Xác thực email để giữ liên lạc với tài khoản của bạn.') + '</p>' +
       '<div class="xt-hang"><div class="field"><label for="xtEmail">Email của bạn</label><input type="email" id="xtEmail" inputmode="email" autocomplete="email" autocapitalize="none" spellcheck="false" placeholder="ten@gmail.com" value="' + esc(em) + '"></div>' +
       '<button type="button" class="btn btn-primary" id="xtGui">Gửi mã</button></div>' +
       '<div id="xtBuoc2" hidden><p class="muted xt-da-gui" id="xtDaGui" aria-live="polite"></p>' +
@@ -2096,7 +2096,7 @@
     // --- Nhịp năm nay ---
     var n = '';
     if (D.thang.length === 12) n += bkO(D.sk.length ? 's7' : 's12', '12 tháng · điểm tổng hợp', 'Tháng nào nên tiến', '<svg id="bkThang" viewBox="0 0 700 300" role="img" aria-label="Biểu đồ 12 tháng"></svg>');
-    if (D.sk.length) n += bkO('s5', 'Khả năng xảy ra trong năm', 'Sự kiện nổi bật', '<div class="bdk-sk" id="bkSk"></div>' + (D.skKhoa ? '<div class="bdk-khoa"><span>🔒 Các sự kiện khác của năm ' + esc(D.nam) + ' nằm trong phần <b>Vận năm</b>.</span><button type="button" class="btn btn-primary btn-sm" data-mua="nam">Mở xem</button></div>' : ''));
+    if (D.sk.length) n += bkO('s5', 'Khả năng xảy ra trong năm', 'Sự kiện nổi bật', '<div class="bdk-sk" id="bkSk"></div>' + (D.skKhoa ? '<div class="bdk-khoa"><span>🔒 Các sự kiện khác của năm ' + esc(D.nam) + ' nằm trong <b>4 chủ đề năm</b> (mỗi chủ đề 9 xu) ở tab Vận hạn.</span><button type="button" class="btn btn-primary btn-sm" data-mua="nam|' + esc(D.nam) + '">Mở bức tranh chung</button></div>' : ''));
     if (n) h += bkMuc('Năm ' + D.nam + (D.tuoi ? ' · ' + D.tuoi + ' tuổi' : ''), 'Nhịp năm nay', D.namTom, '<div class="bdk-bento">' + n + '</div>');
 
     el.innerHTML = h; el.hidden = false;
@@ -4855,7 +4855,7 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
     var coDh = toan || !!(q.dhNam && q.dhNam[vy]), phan = (v.coNam || coDh ? 1 : 0) + mo, dh = giaNangCap('dong_hanh', vy);
     var tienDo = '';
     if (!toan) tienDo = '<div class="ncd-tien"><div class="ncd-bar" role="progressbar" aria-valuemin="0" aria-valuemax="5" aria-valuenow="' + phan + '" aria-label="Số phần đã mở của năm ' + vy + '"><i style="width:' + Math.round(phan / 5 * 100) + '%"></i></div>' +
-      '<span>' + (phan >= 5 || coDh ? '✓ Bạn đã mở trọn năm ' + vy + '.' : 'Bạn đã mở <b>' + phan + '/5</b> phần của năm ' + vy + ' (bức tranh chung + 4 chủ đề)' +
+      '<span>' + (phan >= 5 || coDh ? (coDh ? '✓ Bạn đã mở trọn năm ' + vy + '.' : '✓ Đã mở bức tranh chung và 4 chủ đề năm ' + vy + ' · 12 tháng từng ngày và bản tin nằm trong Đồng hành') : 'Bạn đã mở <b>' + phan + '/5</b> phần của năm ' + vy + ' (bức tranh chung + 4 chủ đề)' +
         (dh ? ' · <button type="button" class="btn-chu" data-mua="dong_hanh|' + vy + '">Mở trọn năm ' + (dh.tru ? 'thêm ' : '· ') + fmtXu(dh.gia) + '</button>' : '')) + '</span></div>';
     var moDau = -1;
     var the = ds.map(function (o, i) {
@@ -7300,7 +7300,7 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
         (toanQuyen() || !han ? '' : '<span class="toi-hv">★ Hội viên năm đến <b>' + ngayVn(han) + '</b></span>') + '</div>' +
         '<div class="toi-nut"><button type="button" class="btn btn-phu btn-sm" data-toi="vi">Ví & tài khoản</button>' + (toanQuyen() ? '' : '<button type="button" class="btn btn-phu btn-sm" data-nap>＋ Nạp xu</button>') + '</div></section>';
       if (!toanQuyen() && u.daXacThuc === false) { var qx = quaXacThuc();
-        h += '<section class="panel toi-xt"><div class="toi-xt-ic" aria-hidden="true">✉</div><div class="toi-nd"><b>' + (qx ? 'Xác thực email – nhận ' + qx + ' xu' : 'Xác thực email') + '</b><span>' + (qx ? 'Nhập mã 6 số gửi tới email của bạn. Quà dùng để mở các phần lẻ như chủ đề năm, tháng của bạn.' : 'Giữ tài khoản an toàn và khôi phục được khi quên mật khẩu.') + '</span></div>' +
+        h += '<section class="panel toi-xt"><div class="toi-xt-ic" aria-hidden="true">✉</div><div class="toi-nd"><b>' + (qx ? 'Xác thực email – nhận ' + qx + ' xu' : 'Xác thực email') + '</b><span>' + (qx ? 'Nhập mã 6 số gửi tới email của bạn. Quà dùng để mở các phần lẻ như chủ đề năm, tháng của bạn.' : 'Giữ tài khoản an toàn.') + '</span></div>' +
           '<div class="toi-nut"><button type="button" class="btn btn-primary btn-sm" data-xac-thuc>Xác thực ngay</button></div></section>'; }
     } else {
       h += '<section class="panel toi-tk toi-khach"><div class="toi-nd"><b>Bạn chưa đăng nhập</b><span>Tài khoản miễn phí: lưu lá số, đọc Tổng hợp 6 hệ, tự nghiệm chứng và dò giờ sinh.</span></div>' +

@@ -155,7 +155,13 @@ function dangKy(user, pass, hienThi, lienHe, maGioiThieu) {
  * Mã hiệu lực 15 phút; gửi lại tối thiểu sau 60 giây; tối đa 5 lần gửi mỗi ngày mỗi tài khoản; sai tối đa 5 lần mỗi mã.
  * Quota MailApp dùng chung với lời nhắn hằng ngày / bản tin: luôn chừa ~40 lượt cho người đang trả tiền.
  * Mã chỉ lưu dạng băm (kèm salt của tài khoản) trong bản ghi tài khoản. */
-var TK_OTP = { phut: 15, choGiay: 60, toiDaNgay: 5, saiToiDa: 5, chuaQuota: 40 };
+var TK_OTP = { phut: 15, choGiay: 60, toiDaNgay: 5, saiToiDa: 5, chuaQuota: 40, tongNgay: 40 };
+/** Số lượt email cần chừa cho người đang trả tiền: người nhận lời nhắn mỗi sáng (+ bản tin vào ngày 1) + 10 dự phòng, tối thiểu 40 */
+function tkChuaQuota_() {
+  var n = 0;
+  try { n += Math.max(0, tiShVanNgay_().getLastRow() - 1); if (new Date().getDate() <= 2) n += Math.max(0, tiShBanTin_().getLastRow() - 1); } catch (e) { }
+  return Math.max(TK_OTP.chuaQuota, n + 10);
+}
 function tkMaSo_() { var h = Utilities.getUuid().replace(/-/g, '') + Utilities.getUuid().replace(/-/g, ''); return String(1000000 + parseInt(h.slice(0, 12), 16) % 1000000).slice(1); }
 function tkBamMa_(o, ma) { return tkSha_(String(o.salt || '') + '|otp|' + ma); }
 function tkEmailHopLe_(e) { return /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(e); }
@@ -170,9 +176,10 @@ function guiMaEmail(token, email) {
     if (x && x.luc && now - x.luc < TK_OTP.choGiay * 1000) { var cho = Math.ceil((TK_OTP.choGiay * 1000 - (now - x.luc)) / 1000); return { ok: false, choGiay: cho, thongBao: 'Bạn vừa yêu cầu mã. Vui lòng đợi ' + cho + ' giây rồi bấm gửi lại.' }; }
     var dem = o.otpNgay === hom ? +o.otpDem || 0 : 0;
     if (dem >= TK_OTP.toiDaNgay) return { ok: false, hetLuot: true, thongBao: 'Hôm nay bạn đã yêu cầu mã ' + TK_OTP.toiDaNgay + ' lần. Vui lòng thử lại vào ngày mai.' };
-    if (MailApp.getRemainingDailyQuota() <= TK_OTP.chuaQuota) return { ok: false, hetQuota: true, thongBao: 'Hôm nay hệ thống đã gửi gần hết số email được phép. Bạn vui lòng thử lại vào ngày mai nhé – quà vẫn chờ bạn.' };
+    var P = PropertiesService.getScriptProperties(), tong = String(P.getProperty('OTP_TONG') || '').split('|'), tongN = tong[0] === hom ? +tong[1] || 0 : 0;
+    if (tongN >= TK_OTP.tongNgay || MailApp.getRemainingDailyQuota() <= tkChuaQuota_()) return { ok: false, hetQuota: true, thongBao: 'Hôm nay hệ thống đã gửi gần hết số email được phép. Bạn vui lòng thử lại vào ngày mai nhé – quà vẫn chờ bạn.' };
     o.otp = { bam: tkBamMa_(o, ma), email: email, het: now + TK_OTP.phut * 60000, sai: 0, luc: now };
-    o.otpNgay = hom; o.otpDem = dem + 1; tkGhi_(u.ten, o);
+    o.otpNgay = hom; o.otpDem = dem + 1; tkGhi_(u.ten, o); P.setProperty('OTP_TONG', hom + '|' + (tongN + 1));
     return { ok: true, email: email, hetPhut: TK_OTP.phut, choGiay: TK_OTP.choGiay, conLuot: TK_OTP.toiDaNgay - dem - 1 };
   });
   if (!dat.ok) return dat;
@@ -204,8 +211,8 @@ function xacThucEmail(token, ma) {
       return con > 0 ? { ok: false, conLan: con, thongBao: 'Mã chưa đúng. Bạn còn ' + con + ' lần thử.' } :
         { ok: false, khoaMa: true, conLan: 0, thongBao: 'Bạn đã nhập sai ' + TK_OTP.saiToiDa + ' lần nên mã này không dùng được nữa. Bấm "Gửi lại mã" để nhận mã mới.' };
     }
-    delete o.otp; o.email = x.email; o.emailXacThuc = new Date().toISOString(); tkGhi_(u.ten, o);
     var qua = ttToanQuyen_(u) ? { xu: 0, gt: 0, lyDo: 'toanQuyen' } : ttQuaXacThuc_(u.ten, o, x.email);
+    o = tkDoc_(u.ten); delete o.otp; o.email = x.email; o.emailXacThuc = new Date().toISOString(); tkGhi_(u.ten, o);
     return { ok: true, email: x.email, qua: qua, soDu: ttToanQuyen_(u) ? null : ttSoDu_(u.ten) };
   });
 }

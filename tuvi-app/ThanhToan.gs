@@ -144,7 +144,6 @@ function bangGiaCongKhai() {
   bg.url = (function () { try { return ScriptApp.getService().getUrl(); } catch (e) { return ''; } })();
   return bg;
 }
-/** Quà khi tự đăng ký + thưởng người giới thiệu. Gọi từ dangKy (TaiKhoan.gs) sau khi tạo tài khoản. */
 /** Liên hệ chuẩn hóa để chặn nhận quà trùng: email chữ thường; SĐT chỉ số, +84/84 → 0 */
 function ttLienHeChuan_(lh) {
   lh = String(lh || '').trim().toLowerCase();
@@ -226,7 +225,7 @@ function ttQuyen_(u, khoa) {
   if (ttToanQuyen_(u)) { Object.keys(TT_PHAN_MAC_DINH).forEach(function (k) { q[k] = true; }); q.toanQuyen = q.dvAll = q.namAll = q.thangAll = true; return q; }
   var sh = ttSheet_('MoKhoa');
   ttTim_(sh, 3, khoa).forEach(function (r) {
-    var v = sh.getRange(r, 1, 1, 7).getValues()[0];
+    var v = sh.getRange(r, 1, 1, Math.min(7, sh.getMaxColumns ? sh.getMaxColumns() : 7)).getValues()[0];
     if (String(v[1]) !== u.ten) return;
     var p = String(v[3]), m = p.match(/^(dv|nam|thang|dong_hanh|nam_cd):(.+)$/);
     q.daTra[p] = (q.daTra[p] || 0) + (+v[4] || 0);
@@ -506,6 +505,12 @@ function ttGiaNangCap_(q, phan, id, bg) {
   if (phan === 'dong_hanh') { var y = String(id); tru = ttTongDaTra_(q, function (k) { return k === 'nam:' + y || (/^nam_cd:/.test(k) && k.slice(-5) === ':' + y) || k.indexOf('thang:' + y + '-') === 0; }); }
   if (phan === 'tron_goi') tru = ttTongDaTra_(q, function (k) { return TT_TRON_GOI_TRU.indexOf(k) >= 0 || /^dv:/.test(k); });
   var gia = tru ? ttGiaCombo_(p.xu, tru) : p.xu;
+  if (phan === 'dong_hanh') {   // rà soát 17/11: không thu quá tổng giá lẻ của phần còn thiếu trong năm
+    var yy = +id, con = (q.namMo[String(yy)] || (q.namCu || {})[String(yy)] ? 0 : bg.phan.nam.xu);
+    TT_CHU_DE.forEach(function (cd) { if (!ttCoCd_(q, yy, cd)) con += bg.phan.nam_cd.xu; });
+    for (var th = 1; th <= 12; th++) if (!ttCoThang_(q, yy, th)) con += bg.phan.thang.xu;
+    gia = Math.min(gia, con);
+  }
   return { gia: gia, goc: p.xu, tru: p.xu - gia };
 }
 /** quan_he: nhận { a, b } (lá số) hoặc { ids: [id1, id2] } trong danh sách Gia đình; cặp vợ chồng xem ở Cặp đôi */
