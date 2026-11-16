@@ -1,7 +1,7 @@
 /* =====================================================================
    34. GIAO DIỆN CHỦ SỞ HỮU – KÍNH "PREMIUM GLASS" (16/11, chủ dự án: "áp dụng cho giao diện chủ sở hữu, bỏ hoàn toàn giao diện hologram")
    - Hologram (nền vũ trụ, sao nhấp nháy, viền xanh phát sáng, font Exo 2) đã BỎ HẲN 16/11.
-   - Chỉ chạy khi ME.laOwner. Mọi tài khoản khác: giao diện giữ nguyên.
+   - Chỉ chạy khi ME.laOwner (16/11 tối: giao diện kính thêm C019, C067 – holoKinh). Mọi tài khoản khác: giao diện giữ nguyên.
    - Lớp áo: hệ thống vật liệu kính trong tests/rung-suong/rung-suong.css + .js (html.rs, tông rs-xanh / rs-tien, rs-nhe).
    - Tổng quan: GIỮ "Đài quan sát KPI" (chòm sao KPI theo xưởng, bấm sao mở Bảng KPI đúng xưởng), đổi màu sang kính, không chuyển động liên tục.
    - Nút cuối menu: "Giao diện kính" Đầy đủ -> Nhẹ (không làm mờ, cho máy yếu) -> Tắt; "Tông màu" Xanh rừng sương <-> Tiên cảnh.
@@ -12,7 +12,10 @@ function holoCheDo() { var v = null; try { v = localStorage.getItem(HOLO_KHOA); 
 function holoTong() { var v = null; try { v = localStorage.getItem(HOLO_TONG); } catch (e) {} return HOLO_TONG_TEN[v] ? v : 'xanh'; }
 function holoSang() { return document.documentElement.getAttribute('data-gd') === 'sang'; }
 function holoChu() { return !!(typeof ME !== 'undefined' && ME && ME.laOwner); }
-function holoBat() { return holoChu() && holoCheDo() !== 'tat' && !holoSang(); }
+/* 16/11 tối (chủ dự án): giao diện kính dùng chung cho Giám đốc C019 và chị Kim Loan C067 (Đài quan sát vẫn chỉ chủ sở hữu) */
+var HOLO_NV_KINH = { C019: 1, C067: 1 };
+function holoKinh() { return holoChu() || !!(typeof ME !== 'undefined' && ME && HOLO_NV_KINH[String(ME.maNV || '').trim().toUpperCase()]); }
+function holoBat() { return holoKinh() && holoCheDo() !== 'tat' && !holoSang(); }
 function holoDong() { return false; }   // 16/11: không chuyển động liên tục (yêu cầu hiệu năng)
 
 var HOLO_CSS =
@@ -67,7 +70,7 @@ var HOLO_CSS =
 function holoApDung() {
   var html = document.documentElement; html.classList.remove('holo');
   ['holoSao', 'holoFont'].forEach(function (id) { var e = document.getElementById(id); if (e) e.remove(); });   // dọn dấu vết hologram cũ
-  if (holoChu() && !document.getElementById('holoCss')) { var st = document.createElement('style'); st.id = 'holoCss'; st.textContent = HOLO_CSS; document.head.appendChild(st); }
+  if (holoKinh() && !document.getElementById('holoCss')) { var st = document.createElement('style'); st.id = 'holoCss'; st.textContent = HOLO_CSS; document.head.appendChild(st); }
   if (typeof rsBat === 'function') { rsBat(holoBat() ? holoTong() : '0'); html.classList.toggle('rs-nhe', holoBat() && holoCheDo() === 'nhe'); }
   holoNut();
 }
@@ -227,7 +230,7 @@ function holoGanDai() {
     var r = navCu.apply(this, arguments);
     try {
       var nav = document.getElementById('nav');
-      if (nav && ME && ME.laOwner && !document.getElementById('btnHolo')) {
+      if (nav && ME && holoKinh() && !document.getElementById('btnHolo')) {
         var b = document.createElement('button'); b.type = 'button'; b.id = 'btnHolo'; b.className = 'holo-nav'; b.onclick = holoDoi;
         nav.insertBefore(b, nav.querySelector('.nav-chan') || null);
         var t = document.createElement('button'); t.type = 'button'; t.id = 'btnTong'; t.className = 'holo-nav'; t.onclick = holoDoiTong;

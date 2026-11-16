@@ -91,7 +91,8 @@ const chup = async (p, ten) => { if (ANH) await p.screenshot({ path: ANH + '/' +
     await p.evaluate(() => { try { localStorage.removeItem('kpi_kinh'); } catch (e) {} });
     if (await p.evaluate(() => ME.vaiTro === 'ADMIN' || ME.vaiTro === 'TP')) await moDash(p);
     s = await p.evaluate(() => ({ cls: document.documentElement.classList.contains('holo') || document.documentElement.classList.contains('rs'), nut: !!document.getElementById('btnHolo') || !!document.getElementById('btnTong'), dai: !!document.getElementById('hlDai'), cv: !!document.getElementById('holoSao'), owner: ME.laOwner }));
-    ok(!s.cls && !s.nut && !s.dai && !s.cv && !s.owner, tk + ': không có giao diện kính / hologram, không có nút', s);
+    if (tk === 'giamdoc') ok(s.cls && s.nut && !s.dai && !s.owner, tk + ' (C019): có giao diện kính + nút (16/11 tối), không có Đài quan sát của chủ sở hữu', s);
+    else ok(!s.cls && !s.nut && !s.dai && !s.cv && !s.owner, tk + ': không có giao diện kính / hologram, không có nút', s);
     ok(!p.jsLoi.length, tk + ': không lỗi JS', p.jsLoi);
     await p.context().close();
   }

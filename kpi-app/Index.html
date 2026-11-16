@@ -9731,7 +9731,7 @@ function hsGhiChuDong(r){
 }
 </script>
 <script>
-var KPI_BAN = '16/11/2026 11:44';
+var KPI_BAN = '16/11/2026 11:46';
 (function(){
   var cu = window.veNav;
   window.veNav = function(){
@@ -10398,7 +10398,7 @@ window.KINH_ANH={"xanh": {"may": "https://cdn.jsdelivr.net/gh/phamdoanchiengroup
 /* =====================================================================
    34. GIAO DIỆN CHỦ SỞ HỮU – KÍNH "PREMIUM GLASS" (16/11, chủ dự án: "áp dụng cho giao diện chủ sở hữu, bỏ hoàn toàn giao diện hologram")
    - Hologram (nền vũ trụ, sao nhấp nháy, viền xanh phát sáng, font Exo 2) đã BỎ HẲN 16/11.
-   - Chỉ chạy khi ME.laOwner. Mọi tài khoản khác: giao diện giữ nguyên.
+   - Chỉ chạy khi ME.laOwner (16/11 tối: giao diện kính thêm C019, C067 – holoKinh). Mọi tài khoản khác: giao diện giữ nguyên.
    - Lớp áo: hệ thống vật liệu kính trong tests/rung-suong/rung-suong.css + .js (html.rs, tông rs-xanh / rs-tien, rs-nhe).
    - Tổng quan: GIỮ "Đài quan sát KPI" (chòm sao KPI theo xưởng, bấm sao mở Bảng KPI đúng xưởng), đổi màu sang kính, không chuyển động liên tục.
    - Nút cuối menu: "Giao diện kính" Đầy đủ -> Nhẹ (không làm mờ, cho máy yếu) -> Tắt; "Tông màu" Xanh rừng sương <-> Tiên cảnh.
@@ -10409,7 +10409,10 @@ function holoCheDo() { var v = null; try { v = localStorage.getItem(HOLO_KHOA); 
 function holoTong() { var v = null; try { v = localStorage.getItem(HOLO_TONG); } catch (e) {} return HOLO_TONG_TEN[v] ? v : 'xanh'; }
 function holoSang() { return document.documentElement.getAttribute('data-gd') === 'sang'; }
 function holoChu() { return !!(typeof ME !== 'undefined' && ME && ME.laOwner); }
-function holoBat() { return holoChu() && holoCheDo() !== 'tat' && !holoSang(); }
+/* 16/11 tối (chủ dự án): giao diện kính dùng chung cho Giám đốc C019 và chị Kim Loan C067 (Đài quan sát vẫn chỉ chủ sở hữu) */
+var HOLO_NV_KINH = { C019: 1, C067: 1 };
+function holoKinh() { return holoChu() || !!(typeof ME !== 'undefined' && ME && HOLO_NV_KINH[String(ME.maNV || '').trim().toUpperCase()]); }
+function holoBat() { return holoKinh() && holoCheDo() !== 'tat' && !holoSang(); }
 function holoDong() { return false; }   // 16/11: không chuyển động liên tục (yêu cầu hiệu năng)
 
 var HOLO_CSS =
@@ -10464,7 +10467,7 @@ var HOLO_CSS =
 function holoApDung() {
   var html = document.documentElement; html.classList.remove('holo');
   ['holoSao', 'holoFont'].forEach(function (id) { var e = document.getElementById(id); if (e) e.remove(); });   // dọn dấu vết hologram cũ
-  if (holoChu() && !document.getElementById('holoCss')) { var st = document.createElement('style'); st.id = 'holoCss'; st.textContent = HOLO_CSS; document.head.appendChild(st); }
+  if (holoKinh() && !document.getElementById('holoCss')) { var st = document.createElement('style'); st.id = 'holoCss'; st.textContent = HOLO_CSS; document.head.appendChild(st); }
   if (typeof rsBat === 'function') { rsBat(holoBat() ? holoTong() : '0'); html.classList.toggle('rs-nhe', holoBat() && holoCheDo() === 'nhe'); }
   holoNut();
 }
@@ -10624,7 +10627,7 @@ function holoGanDai() {
     var r = navCu.apply(this, arguments);
     try {
       var nav = document.getElementById('nav');
-      if (nav && ME && ME.laOwner && !document.getElementById('btnHolo')) {
+      if (nav && ME && holoKinh() && !document.getElementById('btnHolo')) {
         var b = document.createElement('button'); b.type = 'button'; b.id = 'btnHolo'; b.className = 'holo-nav'; b.onclick = holoDoi;
         nav.insertBefore(b, nav.querySelector('.nav-chan') || null);
         var t = document.createElement('button'); t.type = 'button'; t.id = 'btnTong'; t.className = 'holo-nav'; t.onclick = holoDoiTong;
@@ -11062,7 +11065,7 @@ function nsnCapNhat(){ call('capNhatNgoaiSXTuFile',[],function(r){ if(!r||!r.ok)
 </script>
 <script>
 /* ===== 38. TĂNG TỐC ĐỢT 3 (08/11) – bộ đo tốc độ + mở nhanh bằng số lần trước (mã hóa) ===== */
-var TD_BUF=[], TD_T=null, DL_VER='a713f0c73d', DL_HAN=12*3600e3, DL_BO=['SoCCCD','DienThoai','DiaChi','SdtKhanCap','LuongCoBan','NamSinh','SoTaiKhoan','Email'];
+var TD_BUF=[], TD_T=null, DL_VER='1711659bb9', DL_HAN=12*3600e3, DL_BO=['SoCCCD','DienThoai','DiaChi','SdtKhanCap','LuongCoBan','NamSinh','SoTaiKhoan','Email'];
 function tdGhi_(f,ms,sv){ if(!(ms>=0)||!f) return; TD_BUF.push({f:String(f),ms:Math.round(ms),sv:(typeof sv==='number'?Math.round(sv):null)});
   if(TD_BUF.length>=15) tdGui_(); else if(!TD_T) TD_T=setTimeout(tdGui_,180000); }
 function tdGui_(){ if(TD_T){clearTimeout(TD_T);TD_T=null;} if(!TD_BUF.length||typeof TOKEN==='undefined'||!TOKEN) return;
