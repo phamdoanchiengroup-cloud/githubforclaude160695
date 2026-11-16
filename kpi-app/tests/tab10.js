@@ -43,4 +43,24 @@ r = c.__goi('lamMoiTab10', gd); ok(r.ok && KHO[1][5] === '19/11' && r.tab10 && r
 let goi = 0; const goc = c.dhTab10DongBo_; c.dhTab10DongBo_ = () => { goi++; return {}; };
 c.DH_TAB10_SUA({ range: { getSheet: () => ({ getName: () => 'OEM' }), getRow: () => 3 } }); c.DH_TAB10_SUA({ range: { getSheet: () => ({ getName: () => 'ĐẾN HẠN 10 NGÀY' }), getRow: () => 3 } });
 c.dhTab10DongBo_ = goc; ok(goi === 1, 'trigger khi sửa: chỉ đồng bộ khi sửa tab ĐẾN HẠN 10 NGÀY', goi);
+/* 9) 16/11 rà soát: người dùng SẮP XẾP tab 10 -> vẫn chép đúng đơn (tra theo cột MÃ DÒNG WEB, không theo số dòng) */
+c.dhTab10Tao_(); v = t10(); dau = v[0];
+ok(dau[dau.length - 1] === 'MÃ DÒNG WEB' && v.slice(1).every(x => /^W/.test(String(x[dau.length - 1]))), 'tab 10 có cột MÃ DÒNG WEB ở cuối', dau.slice(-2));
+const R = sh().rows; const tg = R[1]; R[1] = R[2]; R[2] = tg;   // đảo 2 dòng đầu (như bấm sắp xếp)
+const iTen = 2, dongDo = t10().findIndex(x => x[iTen] === 'GAY NOVA X1 MAU DO');
+sh().getRange(dongDo + 1, ci('SL SƠN') + 1).setValue(33); k = c.dhTab10DongBo_();
+const oDo = OEM.find(x => x[1] === 'GAY NOVA X1 MAU DO'), oKho = KHO[1];
+ok(oDo[8] === 33 && oKho[8] !== 33, 'đảo thứ tự dòng tab 10 rồi sửa → chép đúng dòng GAY NOVA X1 MAU DO (không chép nhầm sang Kho)', [k, oDo, oKho]);
+/* 10) dòng tab kênh bị SAO CHÉP (trùng MÃ DÒNG WEB) -> không chép mò; làm mới cấp mã mới */
+const iMa = OEM[0].indexOf('MÃ DÒNG WEB'), sao = oDo.slice(); OEM.push(sao);
+sh().getRange(t10().findIndex(x => x[iTen] === 'GAY NOVA X1 MAU DO') + 1, ci('SL SƠN') + 1).setValue(44); k = c.dhTab10DongBo_();
+ok(k.mat >= 1 && oDo[8] === 33 && sao[8] === 33, 'mã dòng bị trùng (sao chép dòng) → không chép, báo mất gốc', [k, oDo[8], sao[8]]);
+c.dhTab10Tao_(); ok(String(oDo[iMa]) !== String(sao[iMa]) || !String(sao[iMa]), 'làm mới tab → dòng trùng mã được cấp mã mới', [oDo[iMa], sao[iMa]]);
+OEM.pop();
+/* 11) 16/11 rà soát (bảo mật): trình duyệt gọi thẳng 3 hàm trigger -> bị chặn; trigger thật vẫn chạy */
+const nd = c.__nguoiDung; c.__nguoiDung = ''; goi = 0; c.dhTab10DongBo_ = () => { goi++; return {}; };
+const tr1 = c.DH_TAB10_TAO(), tr2 = c.DH_TAB10_DONG_BO(); c.DH_TAB10_SUA({ range: { getSheet: () => ({ getName: () => 'ĐẾN HẠN 10 NGÀY' }), getRow: () => 3 } });
+c.__trigger = [{ id: 'T1', ham: 'DH_TAB10_SUA' }]; c.DH_TAB10_SUA({ triggerUid: 'T1', range: { getSheet: () => ({ getName: () => 'ĐẾN HẠN 10 NGÀY' }), getRow: () => 3 } });
+c.dhTab10DongBo_ = goc; c.__nguoiDung = nd; c.__trigger = [];
+ok(tr1 && tr1.ok === false && tr2 && tr2.ok === false && goi === 1, 'gọi từ web (không phải trigger) → chặn cả 3 hàm; trigger thật (có mã trigger) vẫn đồng bộ', [tr1, tr2, goi]);
 console.log(n + ' kiểm thử, ' + l + ' lỗi'); process.exit(l ? 1 : 0);

@@ -153,30 +153,26 @@ const vao = async (p, tk) => { await p.goto(F); await p.waitForSelector('#xtGoiY
         const kT = B.kenh.reduce((a, k) => a + k.n, 0), tl = +document.querySelector('.dh-bcso b').textContent.replace(/\D/g, '');
         return [so.length === 6, B.tre.length === don.filter(g => g.st === 'treHan').length, kT === B.don.length, B.kenh.some(k => k.tab === 'POD-ECOMSTONE'), B.trongTh.every(g => g.dlMin.slice(0, 7) === B.th), !!document.querySelector('.dh-than button[onclick="dhBCPDF()"]'), tl === B.dgM.sp, B.dg3.length === 3 && B.ht3.length === 3, so[4][1] === B.htM.tong + ' đơn']; });
       ok(s.every(Boolean), 'Báo cáo lãnh đạo: 6 số, số đơn trễ = tab, tổng theo kênh = tổng đơn, đủ kênh (cả POD-ECOMSTONE), đơn deadline đúng tháng', s);
-      s = await p.evaluate(() => { const th = dhHomNay().slice(0, 7), d = th + '-03';
-        DHTD = { lichSu: [], chay: { ngay: [], kenh: {} }, sanLuong: [], ht: [[th + '-04', d, 'A1', 'x', 'Kho', 'LAN', 10, 10, 0, th + '-20', 'dung', th + '-01'], [th + '-04', d, 'A1', 'y', 'Kho', 'LAN', 5, 2, 0, th + '-20', 'dung', th + '-01'], [th + '-04', d, 'B1', 'x', 'OEM', 'PHO', 8, 8, 2, th + '-20', 'giaoThieu', ''], [th + '-04', d, 'C1', 'x', 'Dealer', 'MINH', 4, 4, 0, th + '-01', 'tre', '']] };
-        const g = dhHTDon(th), t = dhHTTong(g); DHV = 'sanluong'; dhVeLai(); const m1 = /Đơn đã hoàn thiện/.test(document.querySelector('main').textContent);
-        DHV = 'baocao'; dhVeLai(); const B = dhBC(th), so = dhBCSo(B);
-        return [g.length === 3, t.n === 3, t.sl === 27, t.giao === 25, t.otif === 33, t.fill === 92.5, t.giaoThieu === 1, t.tre === 1]; });
-      ok(s.every(Boolean), 'Sự kiện chuyển HT (từ bản chụp): gom theo đơn, OTIF = đủ + đúng hạn / đơn có hạn, fill rate = giao / đặt', s);
+      // 16/11 rà soát: bỏ kiểm thử dhHTDon / dhHTTong (bảng HT cũ không còn hiện ở đâu – đã xóa)
       await p.evaluate(() => { DHTD = null; DHV = 'chuy'; dhVeLai(); });
       for (const v of ['chitiet', 'han10', 'thongke', 'thaydoi']) { await p.evaluate(v => { DHV = v; dhVeLai(); }, v); await p.waitForTimeout(400); }
-      s = await p.evaluate(() => { DHV = 'chitiet'; DHL.kenh = 'KHO'; dhVeLai(); const n = document.querySelectorAll('.dh-bang tbody tr').length, k = dhLoc().every(o => o.tab === 'KHO');
-        DHL.kenh = ''; DHL.st = 'treHan'; const t = dhLoc().every(o => o.st === 'treHan'); DHL.st = ''; DHV = 'thongke'; dhVeLai();
-        return [n > 0, k, t, (() => { const el = document.createElement('div'); el.innerHTML = dhLichGiao(); return !!el.querySelector('.dh-cong'); })(), [...document.querySelectorAll('.card')].some(c => /Chuôi còn phải làm theo chất liệu/.test(c.textContent)) && [...document.querySelectorAll('.card')].some(c => /Ngọn còn phải làm theo chất liệu/.test(c.textContent)), dhBangXuat().length === DH.don.length + 1]; });
-      ok(s.every(Boolean), 'lọc theo kênh / trạng thái; Thống kê: bảng chuôi / ngọn theo chất liệu, lịch giao 14 ngày; bảng xuất Excel đủ dòng', s);
+      s = await p.evaluate(() => { DHV = 'bang'; DHB.tab = ''; DHL.kenh = 'KHO'; dhVeLai(); const n = document.querySelectorAll('main .dh-than table tbody tr').length, k = dhLoc().every(o => o.tab === 'KHO');
+        DHL.kenh = ''; DHL.st = 'treHan'; const t = dhLoc().every(o => o.st === 'treHan'); DHL.st = ''; document.querySelector('main').innerHTML = '<div class="dh-than">' + dhVeThongKe(dhLoc(), dhGomDon(dhLoc())) + '</div>';
+        return [n > 0, k, t, typeof dhLichGiao === 'undefined', [...document.querySelectorAll('.card')].some(c => /Chuôi còn phải làm theo chất liệu/.test(c.textContent)) && [...document.querySelectorAll('.card')].some(c => /Ngọn còn phải làm theo chất liệu/.test(c.textContent)), dhBangXuat().length === DH.don.length + 1]; });
+      ok(s.every(Boolean), 'lọc theo kênh / trạng thái; Thống kê: bảng chuôi / ngọn theo chất liệu; đã bỏ lịch giao 14 ngày (16/11); bảng xuất Excel đủ dòng', s);
       // 02/11: thống kê theo khúc – tổng bảng Chuôi = còn thiếu của gậy + chuôi lẻ; bảng Ngọn = gậy + ngọn lẻ; ma trận = gậy; có "Cách đọc" ở mọi thẻ
-      s = await p.evaluate(() => { const so = t => +String(t).replace(/\./g, '').replace(/[^0-9]/g, '') || 0, sx = dhLoc().filter(o => o.thieu > 0), sum = f => sx.filter(f).reduce((a, o) => a + o.thieu, 0);
+      s = await p.evaluate(() => { document.querySelector('main').innerHTML = '<div class="dh-than">' + dhVeThongKe(dhLoc(), dhGomDon(dhLoc())) + '</div>';   // 16/11: Thống kê là tab chính – vẽ thẳng
+        const so = t => +String(t).replace(/\./g, '').replace(/[^0-9]/g, '') || 0, sx = dhLoc().filter(o => o.thieu > 0), sum = f => sx.filter(f).reduce((a, o) => a + o.thieu, 0);
         const cards = [...document.querySelectorAll('main .card')], tim = re => cards.find(c => re.test(c.querySelector('div') ? c.querySelector('div').textContent : '')), tongCuoi = c => c.querySelector('table') ? so([...c.querySelectorAll('tr.dh-khoi')].pop().lastElementChild.textContent) : so([...c.querySelectorAll('.dh-hb .r.k')].pop().querySelector('.v b').textContent);
         const cC = tim(/^Chuôi còn phải làm/), cN = tim(/^Ngọn còn phải làm/), mx = tim(/^Gậy 2 khúc: chuôi × ngọn/);
         return [tongCuoi(cC) === sum(o => o.pl.loai === 'GAY' || o.pl.loai === 'CHUOI'), tongCuoi(cN) === sum(o => o.pl.loai === 'GAY' || o.pl.loai === 'NGON'), tongCuoi(mx) === sum(o => o.pl.loai === 'GAY'),
-          document.querySelectorAll('main .dh-doc').length >= 7, /Số ngày hàng tồn/.test(document.querySelector('.dh-tk').textContent), !!tim(/^Nguồn gây trễ/), !!tim(/^Dòng tích lũy \(CFD\)/), !!tim(/^Đóng gói – biểu đồ kiểm soát I-MR/), !!tim(/^Tuổi hàng dở dang/), !!tim(/^Bảng SQDCP/), !!tim(/^Còn thiếu theo kênh/), !!tim(/^Sản lượng từng xưởng/)]; });
+          document.querySelectorAll('main .dh-doc').length >= 7, /Số ngày hàng tồn/.test(document.querySelector('.dh-tk').textContent), !!tim(/^Nguồn gây trễ/), !!tim(/^Dòng tích lũy \(CFD\)/), !!tim(/^Đóng gói – biểu đồ kiểm soát I-MR/), !!tim(/^Tuổi hàng dở dang/), !tim(/^Bảng SQDCP/), !tim(/^Còn thiếu theo kênh/), !!tim(/^Sản lượng từng xưởng/)]; });
       ok(s.every(Boolean), 'Thống kê theo khúc: tổng bảng chuôi / ngọn / ma trận khớp phần còn thiếu; số ngày hàng tồn, Pareto, Vào–Ra–Tồn, theo kênh; mỗi thẻ có "Cách đọc"', s);
       s = await p.evaluate(() => { const C = { ngay: [['2026-10-28', 50, 300, 900, 4, 3, 0], ['2026-10-29', 40, 320, 620, 5, 5, 0], ['2026-10-30', 30, 310, 340, 3, 2, 0], ['2026-10-31', 60, 290, 110, 2, 2, 0], ['2026-11-01', 20, 20, 110, 1, 0, 1]], kenh: { Kho: [10, 8] } };
-        const cu = DHTD; DHTD = Object.assign({}, DHTD || {}, { loi: '', chay: C }); const el = document.createElement('div'); el.innerHTML = dhVeThongKe(dhLoc(), dhGomDon(dhLoc())) + dhVeVRT(dhChayLoc(C)); DHTD = cu;   // 07/11: Vào–Ra–Tồn còn dùng làm hàm, trang Thống kê thay bằng CFD
+        const cu = DHTD; DHTD = Object.assign({}, DHTD || {}, { loi: '', chay: C }); const el = document.createElement('div'); el.innerHTML = dhVeThongKe(dhLoc(), dhGomDon(dhLoc())); DHTD = cu;   // 16/11 rà soát: bỏ hàm Vào–Ra–Tồn (đã thay bằng CFD)
         const vrt = el.querySelectorAll('.dh-vrt > div'), tk = el.querySelector('.dh-tk').textContent;
-        return [vrt.length, el.querySelectorAll('.dh-vrt i.r.duoi').length, /Giao đúng hạn \(4 tuần\)80%/.test(tk), /8\/10 dòng xong/.test(tk), /Ra trung bình 248/.test(el.textContent)]; });
-      ok(s[0] === 5 && s[1] === 1 && s[2] && s[3] && s[4], 'Vào–Ra–Tồn: 1 cột mỗi ngày, ngày ra thấp dưới giới hạn kiểm soát tô đỏ; đúng hạn 4 tuần = dung/xong', s);
+        return [vrt.length, /Giao đúng hạn \(4 tuần\)–/.test(tk), /cần ≥ 20 ngày bản chụp \(đang có 5\)/.test(tk), !/Dòng đơn đang thiếu/.test(tk)]; });
+      ok(s[0] === 0 && s[1] && s[2] && s[3], '16/11 rà soát: ô Giao đúng hạn 4 tuần chưa hiện % khi chưa đủ 20 ngày bản chụp; bỏ ô Dòng đơn đang thiếu', s);
       await p.evaluate(() => { DHV = 'xuong'; dhVeLai(); }); await p.waitForTimeout(200);
       s = await p.evaluate(() => { const K = dhTinh(), g = x => Object.values(K.X[x].nhom);
         return [g('SON').concat(g('INUV')).every(n => n.vlN === '' && n.ph === 'c'), g('NGONTARO').concat(g('NGONTIP'), g('CNC')).every(n => n.vlC === '' && n.ph === 'n'), g('PHOICB').every(n => (n.ph === 'c' ? n.vlN === '' : n.vlC === '')),

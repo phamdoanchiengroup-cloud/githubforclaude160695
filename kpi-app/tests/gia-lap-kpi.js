@@ -74,6 +74,7 @@ function tao(fileCode, duLieu, gioHienTai) {
     },
     getValue() { return this.getValues()[0][0]; },
     getFormulas() { return this.getValues().map(r => r.map(v => (typeof v === 'string' && /^=/.test(v)) ? v : '')); },   // 14/11: ô chuỗi bắt đầu '=' coi là công thức
+    getFormula() { return this.getFormulas()[0][0]; },   // 16/11: ô đơn
     getDisplayValues() { return this.getValues().map(r => r.map(v => v instanceof RealDate ? v.toISOString().slice(0, 10) : String(v))); },
     setValues(v) {
       thongKe.ghi++;

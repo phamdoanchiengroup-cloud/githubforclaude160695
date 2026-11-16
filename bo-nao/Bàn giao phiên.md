@@ -3,6 +3,12 @@
 Nhóm: Chung · Cập nhật 02/11/2026
 Liên quan: [[00 Mục lục]] · [[Liên kết và công cụ]] · [[Việc chờ chủ dự án]] · [[Lần dán lên Apps Script]] · [[Quyết định của chủ dự án]] · [[KPI Kiểm thử]]
 
+## 16/11 – RÀ SOÁT TOÀN BỘ XONG (đã push) – đọc [[KPI Rà soát toàn bộ (16-11)]]
+- Hỏi 3 chuyên gia + dùng kết quả vận hành; chủ dự án cho "sửa theo ý bạn", góp ý sau khi dán. Đã sửa bảo mật, năm 12→1, tab 10 chép nhầm dòng, chữ lỗi thời, code chết, CSS điện thoại.
+- Chủ dự án cần chạy `2-CAP-NHAT.bat` (gồm cả đợt 15–16/11). Tab ĐẾN HẠN 10 NGÀY có thêm cột MÃ DÒNG WEB sau lần làm mới 7h kế tiếp (hoặc bấm Làm mới).
+- Dữ liệu thử lấy lại: Drive CSDL KPI (xlsx) + Sheet cầu nối (CSV, khối 61 cột bắt đầu ở ô `#TAB`, data bắt đầu ngay cột đó).
+- Chờ chủ dự án: có muốn đổi cách xếp để đơn gần xong (vd. Seybert còn 30/177) được ưu tiên không.
+
 ## 16/11 rạng sáng – làm thêm trước khi chuyển phiên (đã push)
 - **Sửa thẳng trong bảng đơn, 1 nút "Lưu vào Sheet"** (thanh dưới đáy, ô đã sửa tô vàng): SL đặt + deadline (4 tài khoản C019 / C056 / C077 / C067 + chủ sở hữu); Hỏng làm bù của Đóng gói (cột riêng "Hỏng làm bù" dưới Đóng gói) + Có thể giao + Trong kho + ĐG + Đã trả khách (TP/PP Đóng gói + 4 tài khoản). Đổi deadline 1 dòng → các dòng cùng đơn cùng hạn cũ đổi theo. Máy chủ `luuBangDon` (1 khóa, bỏ qua ô công thức, hỏi ghi đè khi Sheet vừa đổi). Hỏng của BP khác vẫn nhập ở bảng nổi (chủ dự án chốt). Bỏ form deadline trong bảng nổi (`dhDlForm`/`dhDlLuu` đã xóa). `luuCotPhuDon` nới quyền ĐG cho 4 tài khoản.
 - **Bỏ nút "Tất cả kênh"**: mặc định tab kênh đầu (`dhBTabMD`); đang tìm mã / ngày thì tìm mọi kênh (chip "Kết quả tìm ở mọi kênh").

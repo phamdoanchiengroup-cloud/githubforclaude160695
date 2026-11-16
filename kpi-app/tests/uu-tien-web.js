@@ -20,9 +20,9 @@ ok(o1 && o1.uuWeb && /^Ưu tiên \(/.test(o1.uuTien), 'đơn có cờ ưu tiên 
 ok(c.doc_('DonUuTien').length === 1 && !c.ss_().getSheetByName('DonUuTien').rows.some(rw => String(rw.join()).includes('#CONG_THUC')), 'lưu ở sheet ẩn DonUuTien (file KPI, không ghi Sheet đơn)');
 r = c.__goi('luuUuTienDon', gd, { maDon: '#M-01/11', tab: 'OEM', bat: false }); ok(r.ok && c.doc_('DonUuTien').length === 0 && !c.__goi('layDonHangXuong', gd, false).don[0].uuWeb, 'bỏ ưu tiên: xóa cờ');
 console.log('1b. Máy chủ – sửa deadline đơn (15/11 tối)');
-r = c.__goi('luuDeadlineDon', tp, { tab: 'OEM', dl: '2027-01-15', dong: [{ dong: 2, ten: 'GAY NOVA X1 MAU DO', cu: '2026-12-30' }] }); ok(!r.ok, 'trưởng phòng không sửa được deadline đơn', r);
-r = c.__goi('luuDeadlineDon', gd, { tab: 'OEM', dl: '2027-01-15', dong: [{ dong: 2, ten: 'GAY NOVA X1 MAU DO', cu: '2026-12-20' }] }); ok(!r.ok && r.xungDot, 'deadline trong Sheet khác số web đang thấy → báo xung đột', r);
-r = c.__goi('luuDeadlineDon', c.__phienDai(tk('C077')), { tab: 'OEM', dl: '2027-01-15', dong: [{ dong: 2, ten: 'GAY NOVA X1 MAU DO', cu: '2026-12-30' }] });
+r = c.__goi('luuBangDon', tp, { ds: [{ tab: 'OEM', dong: 2, ten: 'GAY NOVA X1 MAU DO', dl: { cu: '2026-12-30', moi: '2027-01-15' } }] }); ok(!r.ok, 'trưởng phòng không sửa được deadline đơn', r);
+r = c.__goi('luuBangDon', gd, { ds: [{ tab: 'OEM', dong: 2, ten: 'GAY NOVA X1 MAU DO', dl: { cu: '2026-12-20', moi: '2027-01-15' } }] }); ok(!r.ok && r.xungDot, 'deadline trong Sheet khác số web đang thấy → báo xung đột', r);
+r = c.__goi('luuBangDon', c.__phienDai(tk('C077')), { ds: [{ tab: 'OEM', dong: 2, ten: 'GAY NOVA X1 MAU DO', dl: { cu: '2026-12-30', moi: '2027-01-15' } }] });
 const oDl = c.__goi('layDonHangXuong', gd, true).don.find(o => o.maDon === '#M-01/11');
 ok(r.ok && r.n === 1 && oDl.dl === '2027-01-15' && String(c.__ngoai[c.DH_SHEET_ID].sheets.OEM[1][5]).indexOf('15/01/2027') >= 0, 'Phó GĐ C077 ghi deadline mới vào cột DEADLINE của Sheet, web đọc lại đúng (sang năm 2027)', [r, oDl && oDl.dl, c.__ngoai[c.DH_SHEET_ID].sheets.OEM[1]]);
 ok(c.dhCoNote_({ maNV: 'C077' }) && c.dhCoUu_({ maNV: 'C056' }), 'C077 sửa được Note; C056 (Phó GĐ SX) gắn ưu tiên / sửa deadline');
@@ -48,18 +48,12 @@ ok(c.dhCoNote_({ maNV: 'C077' }) && c.dhCoUu_({ maNV: 'C056' }), 'C077 sửa đ�
     /* đơn lẻ quá 10 ngày */
     const le = [mk('L1', 'WEB LẺ CUSTOM', 1, '', { ngayDat: dhNgayCong(hn, -14), pl: { loai: 'GAY' } }), mk('L2', 'POD-ECOMSTONE', 2, '', { ngayDat: dhNgayCong(hn, -3) }), mk('L3', 'WEB LẺ ĐƠN THƯỜNG', 1, '', { ngayDat: dhNgayCong(hn, -20), thieu: 0 })];
     out.le10 = dhLe10Ds(le).map(o => o.maDon);
-    /* nhập nhanh */
     const g1 = { ma: 'H1', tab: 'OEM', dl: dhNgayCong(hn, 2), thieu: 40, dong: [mk('H1', 'OEM', 40, dhNgayCong(hn, 2), { dong: 5, qua: { SON: 10 } }), mk('H1', 'OEM', 30, dhNgayCong(hn, 2), { dong: 6, btp: ['PHOI','TARO','HT','TIP','DG'], pl: { loai: 'NGON' } })] };
-    DH.don = g1.dong; out.nn = dhVeNhapNhanh([{ g: g1, d: 2 }]); document.getElementById('main').innerHTML = out.nn;
-    document.getElementById('dhNNsl_OEM_5').value = '25'; window.__goi = []; dhNNLuu(document.querySelector('button[data-d="5"]')); out.goi = window.__goi.slice();
-    document.getElementById('dhNNh_OEM_5').value = dhNgayCong(hn, 1); document.getElementById('dhNNsl_OEM_5').value = ''; window.__goi = []; dhNNLuu(document.querySelector('button[data-d="5"]')); out.goi2 = window.__goi.slice();
-    out.rong = document.getElementById('main').scrollWidth;
     /* 15/11 khuya: mục "Đến hạn 10 ngày tới" trong bảng đơn */
     DH.q = { bp: 'SON', sua: ['SON'] }; DH.don = [mk('A1', 'OEM', 10, dhNgayCong(hn, 3), { st: 'dangSX' }), mk('A1', 'OEM', 5, dhNgayCong(hn, 3), { st: 'dangSX', dong: 3 }), mk('B1', 'KHO', 8, dhNgayCong(hn, 1), { st: 'dangSX', dong: 4 }), mk('C1', 'OEM', 9, dhNgayCong(hn, 20), { st: 'dangSX', dong: 7 }), mk('T1', 'OEM', 9, dhNgayCong(hn, -2), { st: 'treHan', dong: 8 })];
     out.h10 = dhHan10Ds(DH.don).map(o => o.maDon + ':' + o.dong);
     DHB.tab = '@han10'; DHV = 'bang'; try { out.bang = dhVeBang(DH.don); } catch (e) { out.loiBang = e.message; }
-    DHB.tab = ''; DHV = 'tt'; dhChon('han10'); out.chon = [DHV, DHB.tab]; DH.don.push(mk('L9', 'WEB LẺ CUSTOM', 1, '', { ngayDat: dhNgayCong(hn, -15), st: 'dangSX', dong: 9 })); dhChon('le10'); out.chonLe = [DHV, DHB.tab]; try { out.bangLe = dhVeBang(DH.don); } catch (e) { out.loiLe = e.message; } out.nhom = DH_NHOM[0][2].map(x => x[0]).join();
-    DH.q = { bp: '', sua: [], uuGan: false }; out.nnKhong = dhVeNhapNhanh([{ g: g1, d: 2 }]);
+    DHB.tab = ''; DHV = 'tt'; dhChon('han10'); window.__dhMo = 'han10'; out.cuHan10 = (function(){ var v = dhCu('han10'); return [v, DHB.tab]; })(); out.chon = [DHV, DHB.tab]; DH.don.push(mk('L9', 'WEB LẺ CUSTOM', 1, '', { ngayDat: dhNgayCong(hn, -15), st: 'dangSX', dong: 9 })); dhChon('le10'); out.chonLe = [DHV, DHB.tab]; try { out.bangLe = dhVeBang(DH.don); } catch (e) { out.loiLe = e.message; } out.nhom = DH_NHOM[0][2].map(x => x[0]).join();
     DH.q = { uuGan: true, ten: 'GĐ' }; out.nut = dhUuNut(g1.dong[0]); DH.q.uuGan = false; out.nut2 = dhUuNut(g1.dong[0]);
     return JSON.parse(JSON.stringify(out)); });
   ok(er.length === 0, 'không lỗi script', er);
@@ -71,16 +65,11 @@ ok(c.dhCoNote_({ maNV: 'C077' }) && c.dhCoUu_({ maNV: 'C056' }), 'C077 sửa đ�
   ok(w.mucSom === 'do' && w.mucXa === '', 'deadline quá sớm → cảnh báo đỏ; sau ngày gợi ý → không cảnh báo', [w.mucSom, w.mucXa]);
   ok(/Ngày hẹn gợi ý cho đơn <b>200 sp/.test(w.cs) && /sớm hơn gợi ý/.test(w.cs2) && /Chỉ cảnh báo/.test(w.cs2), 'Thử nhận đơn: để trống deadline → gợi ý ngày hẹn; deadline sớm → chỉ cảnh báo', '');
   ok(w.le10.join() === 'L1', 'đơn lẻ / POD còn thiếu quá 10 ngày từ ngày đặt → cảnh báo (bỏ đơn mới đặt, đơn đã xong)', w.le10);
-  ok(/Nhập nhanh – Sơn/.test(w.nn) && /dhNNsl_OEM_5/.test(w.nn) && !/dhNNsl_OEM_6/.test(w.nn), 'nhập nhanh: TP Sơn chỉ thấy mã đi qua Sơn (bỏ ngọn lẻ)', '');
-  ok(w.goi.length === 1 && w.goi[0][0] === 'luuDonGiaoNhan' && w.goi[0][1][0].sl === '25' && w.goi[0][1][0].bp === 'SON' && w.goi[0][1][0].hen === undefined && w.goi[0][1][0].dong === 5, 'Lưu: gửi luuDonGiaoNhan đúng dòng, bộ phận Sơn, SL 25 (không đụng hẹn)', w.goi);
-  ok(w.goi2.length === 1 && w.goi2[0][1][0].sl === undefined && !!w.goi2[0][1][0].hen, 'chỉ đổi ngày hẹn → không gửi SL (ô trống không thành 0)', w.goi2);
-  ok(w.nnKhong === '' && w.rong <= 1240, 'tài khoản không có bộ phận: không hiện; bảng không tràn ngang', [w.nnKhong, w.rong]);
   ok(w.h10.join() === 'B1:4,A1:2,A1:3', 'Đến hạn 10 ngày tới: đủ dòng của đơn hạn trong 10 ngày, hạn sớm trước; bỏ đơn xa + đơn đã trễ', w.h10);
   ok(!w.loiBang && /Đến hạn 10 ngày tới/.test(w.bang) && /data-t="@han10"/.test(w.bang) && !/@le10/.test(w.bang), 'bảng đơn có mục "Đến hạn 10 ngày tới" (thay mục Lẻ / POD quá 10 ngày)', w.loiBang || '');
   ok(w.chon.join() === 'bang,@han10' && w.nhom === 'bang,congsuat', 'ô "Đến hạn 10 ngày tới" mở thẳng mục trong bảng đơn; bỏ mục đứng riêng', [w.chon, w.nhom]);
   ok(w.chonLe.join() === 'bang,@le10' && !w.loiLe && /Đơn lẻ \/ POD quá 10 ngày<\/b>/.test(w.bangLe) && /L9/.test(w.bangLe) && !/A1/.test(w.bangLe), 'ô đầu trang "Lẻ / POD quá 10 ngày" mở danh sách đơn lẻ / POD quá hạn trong bảng đơn', w.loiLe || w.chonLe);
+  ok(w.cuHan10 && w.cuHan10.join() === 'bang,@han10', '16/11 rà soát: Tổng quan → Đến hạn 10 ngày → Xem tất cả mở mục trong bảng (không mở màn hình cũ đã bỏ)', w.cuHan10);
   ok(/Gắn ưu tiên cả đơn/.test(w.nut) && !/button/.test(w.nut2), 'nút ★ Gắn ưu tiên chỉ hiện với 4 tài khoản', '');
-  /* điện thoại: bảng nhập nhanh */
-  const q = await b.newPage({ viewport: { width: 390, height: 800 } }); await q.setContent('<html><body style="margin:0"><main id=main style="padding:0 16px"></main></body></html>');
   console.log(n + ' kiểm thử, ' + l + ' lỗi'); await b.close(); process.exit(l ? 1 : 0);
 })();

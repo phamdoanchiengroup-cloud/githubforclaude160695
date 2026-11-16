@@ -35,3 +35,4 @@ DATA=/đường/dẫn/csdl.json OUT=/tmp/xem-thu-kpi.html node kpi-app/tests/tao
 - 08/11 Nhân sự + Tổng quan chủ: `F=<bản thử số thật GIO ngày thường 9h> node kpi-app/tests/nhan-su-loc-web.js` (13) + `tong-quan-web.js` (19); holo-web.js chờ 1,6 giây cho số chạy.
 - 08/11 Tăng tốc đăng nhập: `DATA=<số thật> TZ=Asia/Ho_Chi_Minh node kpi-app/tests/tang-toc-4.js` (14).
 - 08/11 Dọn dẹp hằng tháng: `DATA=<số thật> TZ=Asia/Ho_Chi_Minh node kpi-app/tests/luu-tru.js` (15).
+- 16/11 Rà soát toàn bộ: `DATA=<số thật> TZ=Asia/Ho_Chi_Minh node kpi-app/tests/ra-soat-1611.js` (11) · tab10.js (19) · uu-tien-web.js (25).

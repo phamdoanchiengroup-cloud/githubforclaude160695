@@ -265,12 +265,25 @@ function dhNgay_(v, nam) {   // deadline dd/mm (Sheet hay đảo ngày/tháng) -
     var dd = Number(Utilities.formatDate(v, TZ_VN, 'dd')), mm = Number(Utilities.formatDate(v, TZ_VN, 'MM'));
     if (dd > 12) { d = dd; m = mm; } else { d = mm; m = dd; }   // giống script đơn hàng: ngày ≤ 12 là bị đảo
   } else {
-    var x = String(v || '').match(/(\d{1,2})\s*\/\s*(\d{1,2})/);
+    var x = String(v || '').match(/(\d{1,2})\s*\/\s*(\d{1,2})(?:\s*\/\s*(\d{4}))?/);
     if (!x) return '';
     d = Number(x[1]); m = Number(x[2]);
+    if (x[3] && d >= 1 && d <= 31 && m >= 1 && m <= 12) return x[3] + '-' + ('0' + m).slice(-2) + '-' + ('0' + d).slice(-2);   // 16/11 rà soát: ô ghi rõ năm (web ghi '05/01/2027) -> giữ năm
   }
   if (!(d >= 1 && d <= 31 && m >= 1 && m <= 12)) return '';
-  return nam + '-' + ('0' + m).slice(-2) + '-' + ('0' + d).slice(-2);
+  if (DH_NAM_CD_) return nam + '-' + ('0' + m).slice(-2) + '-' + ('0' + d).slice(-2);   // tab HT-<năm>: dùng đúng năm của tab
+  return dhNamGan_(nam, m, d);
+}
+var DH_NAM_CD_ = 0;
+/* 16/11 rà soát: ngày không ghi năm -> chọn năm gần hôm nay nhất (lệch quá ~6 tháng thì lùi / tiến 1 năm),
+   để 20/12 đọc "05/01" là tháng 1 năm sau, 05/01 đọc "30/12" là tháng 12 năm trước */
+function dhNamGan_(nam, m, d) {
+  var hn = DH_HOM_ || (DH_HOM_ = homNayVN_()), y = Number(String(hn).slice(0, 4)) || Number(nam);
+  var f = function (yy) { return yy + '-' + ('0' + m).slice(-2) + '-' + ('0' + d).slice(-2); };
+  var t0 = Date.parse(hn + 'T00:00:00Z'), t = Date.parse(f(y) + 'T00:00:00Z'), N = 183 * 864e5;
+  if (t - t0 > N) return f(y - 1);
+  if (t0 - t > N) return f(y + 1);
+  return f(y);
 }
 function dhDocTab_(sh, tab, nam, gioiHan, meta) {
   // Chỉ đọc tới cột cần dùng (Sheet có hàng trăm cột "ngày nhận hàng" phía sau); tab tự thêm: giới hạn số dòng (02/11)
@@ -360,6 +373,15 @@ function dhUuTien_(t) { return /\bUU\s*TIEN\b/.test(plChuan_(t)); }
 /* 13/11: khóa tên hàng để đối chiếu tab ĐƠN ƯU TIÊN với Kho (mã trong tab ưu tiên có tiền tố #NEW-/#KHO- nên không trùng mã Kho) */
 function dhTenKhoa_(t) { return String(t == null ? '' : t).toUpperCase().replace(/[–—]/g, '-').replace(/\s+/g, ' ').trim(); }
 /* 13/11: tab có dấu cách ở đầu/cuối tên (vd " POD-ECOMSTONE") – getSheetByName không tìm ra, nên tìm thêm theo tên đã cắt */
+function dhNgayThat_(s) {   // 'yyyy-mm-dd' có thật (chặn 2026-13-45, 2026-02-30)
+  s = String(s || ''); if (!/^\d{4}-\d\d-\d\d$/.test(s)) return false;
+  var d = new Date(s + 'T00:00:00Z'); return !isNaN(d.getTime()) && d.toISOString().slice(0, 10) === s;
+}
+function dhTabGhi_(ss, ten) {   // 16/11 rà soát (bảo mật): web chỉ được ghi vào tab đơn hàng – không ghi vào tab ĐẾN HẠN 10 NGÀY / HT-<năm>
+  var t = String(ten || '').trim();
+  if (!t || t.toUpperCase() === DH10_TEN || DH_TAB_HT.test(t)) return null;
+  return dhTimTab_(ss, t);
+}
 function dhTimTab_(ss, ten) {
   var sh = ss.getSheetByName(ten); if (sh) return sh;
   var a = ss.getSheets(), t = String(ten).trim().toUpperCase();
@@ -640,7 +662,7 @@ function luuDonGiaoNhan(token, p) {
   var lock = LockService.getScriptLock();
   try { lock.waitLock(20000); } catch (eL) { return sach_({ ok: false, msg: 'Sheet đang được người khác ghi – chờ vài giây rồi bấm lại.' }); }
   try {
-    var ss = SpreadsheetApp.openById(DH_SHEET_ID), sh = dhTimTab_(ss, tab);
+    var ss = SpreadsheetApp.openById(DH_SHEET_ID), sh = dhTabGhi_(ss, tab);
     if (!sh) return sach_({ ok: false, msg: 'Không thấy tab "' + tab + '" trong Sheet đơn hàng.' });
     if (dong > sh.getLastRow()) return sach_({ ok: false, msg: 'Dòng ' + dong + ' không còn trong Sheet (dòng bị xóa?).' });
     var meta = dhMetaTab_(sh, tab);
@@ -1316,7 +1338,6 @@ function dhNgayLamFn_(cs) {   // -> hàm(d 'yyyy-mm-dd') true nếu là ngày l�
   return function(d) { if (lam[d]) return true; return new Date(d + 'T12:00:00Z').getUTCDay() !== 0 && !nghi[d]; };
 }
 function dhLuiNgayLam_(d, n, laLam) { var x = d, k = n, an = 0; while (k > 0 && an++ < 800) { x = dhCongNgay_(x, -1); if (laLam(x)) k--; } return x; }
-function dhTienNgayLam_(d, n, laLam) { var x = d, k = n, an = 0; while (k > 0 && an++ < 800) { x = dhCongNgay_(x, 1); if (laLam(x)) k--; } return x; }
 function dhSoNgayLam_(a, b, laLam) { if (b <= a) return 0; var x = a, n = 0, an = 0; while (x < b && an++ < 800) { x = dhCongNgay_(x, 1); if (laLam(x)) n++; } return n; }   // số ngày làm trong (a, b]
 /* o: dòng đơn (sl, thieu, dl, qua, hen, p2, btp, pl). Trả { BP: { h: hạn chuẩn, n: số ngày chuẩn, m: mức | '', hen, tre: ngày làm trễ } } hoặc null */
 function dhHanChuan_(o, cs, hn, laLam) {
@@ -1411,7 +1432,8 @@ function dhDocHT_() {   // -> { 'maDon|ten': {thieu, sl, dl, nguoiDat} } từ ta
   ss.getSheets().forEach(function(sh) {
     var ten = String(sh.getName()).trim(), y = Number((ten.match(/(\d{4})$/) || [])[1]);
     if (!DH_TAB_HT.test(ten) || (y !== nam && y !== nam - 1)) return;
-    dhDocTab_(sh, ten, nam).forEach(function(o) { var k = dhKhoaDong_(o).split('|').slice(0, 2).join('|'); if (!m[k]) m[k] = { thieu: o.thieu, sl: o.sl, dl: o.dl || '', nguoiDat: o.nguoiDat || '', ngayDat: o.ngayDat || '' }; });
+    DH_NAM_CD_ = 1; var rr; try { rr = dhDocTab_(sh, ten, y); } finally { DH_NAM_CD_ = 0; }   // 16/11 rà soát: đọc theo năm của tab (trước dùng năm nay)
+    rr.forEach(function(o) { var k = dhKhoaDong_(o).split('|').slice(0, 2).join('|'); if (!m[k]) m[k] = { thieu: o.thieu, sl: o.sl, dl: o.dl || '', nguoiDat: o.nguoiDat || '', ngayDat: o.ngayDat || '' }; });
   });
   return m;
 }
@@ -1472,7 +1494,7 @@ function dhHTTrucTiep_(lamMoi) {
   ss.getSheets().forEach(function(sh) {
     var ten = String(sh.getName()).trim(), y = Number((ten.match(/(\d{4})$/) || [])[1]);
     if (!DH_TAB_HT.test(ten) || (y !== nam && y !== nam - 1)) return;
-    tabs.push(ten); rows = rows.concat(dhDocTab_(sh, ten, y));
+    tabs.push(ten); DH_NAM_CD_ = 1; try { rows = rows.concat(dhDocTab_(sh, ten, y)); } finally { DH_NAM_CD_ = 0; }
   });
   var tabMa = {}, d = null;   // mã đơn -> tab kênh
   try { d = dhDocDon_(false); d.don.forEach(function(o) { if (o.maDon && !tabMa[o.maDon]) tabMa[o.maDon] = o.tab; }); } catch (e) {}
@@ -1648,7 +1670,6 @@ function tkNgayLam_(thang) {   // ngày làm của tháng tới hôm nay: thứ 
   }
   return ds;
 }
-function tkThangTruoc_(thang, n) { var a = [thang]; for (var i = 1; i < n; i++) a.unshift(kyTruoc_(a[0])); return a; }
 function layThongKe(token, thang, lamMoi) {
   var q = qtQuyen_(token); if (q.loi) return q.loi;
   thang = /^\d{4}-\d{2}$/.test(String(thang || '')) ? String(thang) : kyVN_();
@@ -1827,7 +1848,7 @@ function dhCoNote_(me) {
 }
 function luuGhiChuDon(token, p) {
   var q = dhQuyenDon_(token); if (q.loi) return q.loi;
-  if (!q.note) return sach_({ ok: false, msg: 'Chỉ C019, C056, C067 được ghi Note cho mã hàng.' });
+  if (!q.note) return sach_({ ok: false, msg: 'Chỉ C019, C056, C077, C067 được ghi Note cho mã hàng.' });
   p = p || {};
   var tab = String(p.tab || ''), dong = Number(p.dong) || 0;
   if (!tab || dong < 2) return sach_({ ok: false, msg: 'Thiếu vị trí dòng đơn – mở lại tab Đơn hàng rồi thử lại.' });
@@ -1835,7 +1856,7 @@ function luuGhiChuDon(token, p) {
   var lock = LockService.getScriptLock();
   try { lock.waitLock(20000); } catch (eL) { return sach_({ ok: false, msg: 'Sheet đang được người khác ghi – chờ vài giây rồi bấm lại.' }); }
   try {
-    var ss = SpreadsheetApp.openById(DH_SHEET_ID), sh = dhTimTab_(ss, tab);
+    var ss = SpreadsheetApp.openById(DH_SHEET_ID), sh = dhTabGhi_(ss, tab);
     if (!sh) return sach_({ ok: false, msg: 'Không thấy tab "' + tab + '" trong Sheet đơn hàng.' });
     if (dong > sh.getLastRow()) return sach_({ ok: false, msg: 'Dòng ' + dong + ' không còn trong Sheet (dòng bị xóa?).' });
     var meta = dhMetaTab_(sh, tab);
@@ -1849,7 +1870,7 @@ function luuGhiChuDon(token, p) {
       return sach_({ ok: false, xungDot: true, hienTai: cu, msg: 'Người khác vừa sửa Note của mã này thành: "' + cu.slice(0, 120) + '".' });
     if (cu === moi) return sach_({ ok: true, khongDoi: true, msg: 'Không có thay đổi.', note: cu });
     if (sh.getRange(dong, c).getFormula()) return sach_({ ok: false, msg: 'Ô ' + dhTenCot_(c) + dong + ' đang là CÔNG THỨC – web không ghi đè.' });
-    sh.getRange(dong, c).setValue(moi);
+    sh.getRange(dong, c).setValue(moi ? chuAnToan_(moi) : '');   // 16/11 rà soát: chặn công thức (=, +, -, @) như cột Chú thích
     SpreadsheetApp.flush();
     try { ghiLog_(q.me, 'Note mã hàng', ten.slice(0, 80), 'tab ' + tab + ' · dòng ' + dong, ('"' + cu + '" → "' + moi + '"').slice(0, 400)); } catch (eLog) {}
     dhXoaCacheDon_();
@@ -1868,7 +1889,7 @@ function dhP2Dong_(v) {
   var o = {}; s.split(/\n|;/).forEach(function(d) { var m = d.match(/^\s*(chu[ôo]i|ng[ọo]n)\s*[:\-]?\s*(.*)$/i); if (m) o[/^chu/i.test(m[1]) ? 'c' : 'n'] = m[2].trim(); });
   return (o.c != null || o.n != null) ? o : null;
 }
-function dhP2Ngay_(t, nam) { var m = String(t || '').match(/(\d{1,2})\s*\/\s*(\d{1,2})(?:\s*\/\s*(\d{4}))?/); if (!m) return ''; var d = +m[1], mo = +m[2]; if (!(d >= 1 && d <= 31 && mo >= 1 && mo <= 12)) return ''; return (m[3] || nam) + '-' + ('0' + mo).slice(-2) + '-' + ('0' + d).slice(-2); }
+function dhP2Ngay_(t, nam) { var m = String(t || '').match(/(\d{1,2})\s*\/\s*(\d{1,2})(?:\s*\/\s*(\d{4}))?/); if (!m) return ''; var d = +m[1], mo = +m[2]; if (!(d >= 1 && d <= 31 && mo >= 1 && mo <= 12)) return ''; return m[3] ? m[3] + '-' + ('0' + mo).slice(-2) + '-' + ('0' + d).slice(-2) : dhNgay_(d + '/' + mo, nam); }   // 16/11 rà soát: không ghi năm -> năm gần hôm nay nhất
 function dhP2Gan_(o, vSL, vHen, nam) {
   var a = dhP2Dong_(vSL), b = dhP2Dong_(vHen); if (!a && !b) return;
   var sl = Number(o.sl) || 0, cu = o.qua && o.qua.PHOI, cuH = o.hen && o.hen.PHOI;
@@ -1886,7 +1907,7 @@ function dhP2Gan_(o, vSL, vHen, nam) {
    Chữ "ưu tiên" gõ thẳng trong Sheet đơn vẫn được tính như cũ. */
 var DH_UU_NV = ['C019', 'C056', 'C077', 'C067'];   // C019 Giám đốc · C056 Phó GĐ SX (chủ dự án) · C077 Phó GĐ SX · C067 Đinh Kim Loan
 var DH_UU_SHEET = 'DonUuTien', DH_UU_COT = ['Khoa', 'NguoiGan', 'MaNV', 'ThoiDiem'];
-function dhCoUu_(me) { return !!me && DH_UU_NV.indexOf(String(me.maNV || '').trim().toUpperCase()) >= 0; }
+function dhCoUu_(me) { if (!me || DH_UU_NV.indexOf(String(me.maNV || '').trim().toUpperCase()) < 0) return false; var ma = String(me.maNV).trim().toUpperCase(); return doc_('TaiKhoan').filter(function(t) { return String(t.MaNV || '').trim().toUpperCase() === ma && String(t.TrangThai).trim() === 'Đang dùng'; }).length === 1; }   // 16/11 rà soát: mã NV gắn đúng 1 tài khoản đang dùng (như dhCoNote_)
 function dhUuWebDoc_() { var m = {}; docAnToan_(DH_UU_SHEET).forEach(function(r) { var k = String(r.Khoa || '').replace(/^'/, ''); if (k) m[k] = { ai: String(r.NguoiGan || ''), luc: String(r.ThoiDiem || '') }; }); return m; }
 function luuUuTienDon(token, p) {
   var q = dhQuyenDon_(token); if (q.loi) return q.loi;
@@ -1906,40 +1927,7 @@ function luuUuTienDon(token, p) {
   } finally { lock.releaseLock(); }
 }
 
-/* ===== 15/11 tối (chủ dự án): 4 tài khoản (DH_UU_NV) SỬA DEADLINE ĐƠN trên web, LƯU NGƯỢC VÀO SHEET "Trạng thái đơn hàng".
-   p = { tab, dl: 'yyyy-mm-dd' | '' (xóa), dong: [{ dong, ten, cu: 'yyyy-mm-dd' | '' }], boQua }.
-   Mỗi dòng: ô "Hạn mới HT đơn cũ" đang có ngày thì ghi vào ô đó (web đang dùng hạn mới), không thì ghi cột DEADLINE.
-   Ghi dạng chữ dd/mm/yyyy (dấu ' đầu – Sheet không tự đổi thành ngày rồi đảo ngày / tháng). Kiểm tên hàng + deadline web đang thấy để phát hiện người khác vừa sửa. */
-function luuDeadlineDon(token, p) {
-  var q = dhQuyenDon_(token); if (q.loi) return q.loi;
-  if (!dhCoUu_(q.me)) return sach_({ ok: false, msg: 'Chỉ Giám đốc, 2 Phó GĐ sản xuất và chị Kim Loan được sửa deadline đơn.' });
-  p = p || {}; var tab = String(p.tab || ''), dl = String(p.dl || '').trim(), ds = Array.isArray(p.dong) ? p.dong.slice(0, 200) : [];
-  if (!tab || !ds.length) return sach_({ ok: false, msg: 'Thiếu dòng đơn – mở lại tab Đơn hàng rồi thử lại.' });
-  if (dl && !/^\d{4}-\d\d-\d\d$/.test(dl)) return sach_({ ok: false, msg: 'Ngày không hợp lệ.' });
-  var chu = dl ? "'" + dl.slice(8, 10) + '/' + dl.slice(5, 7) + '/' + dl.slice(0, 4) : '';
-  var lock = LockService.getScriptLock();
-  try { lock.waitLock(20000); } catch (eL) { return sach_({ ok: false, msg: 'Sheet đang được người khác ghi – chờ vài giây rồi bấm lại.' }); }
-  try {
-    var ss = SpreadsheetApp.openById(DH_SHEET_ID), sh = dhTimTab_(ss, tab);
-    if (!sh) return sach_({ ok: false, msg: 'Không thấy tab "' + tab + '" trong Sheet đơn hàng.' });
-    var meta = dhMetaTab_(sh, tab), nam = Number(Utilities.formatDate(new Date(), TZ_VN, 'yyyy'));
-    if (!meta || meta.ten < 0 || meta.dl == null || meta.dl < 0) return sach_({ ok: false, msg: 'Tab "' + tab + '" không có cột DEADLINE.' });
-    var ghi = [], lech = [], cMax = Math.max(meta.ten, meta.dl, meta.hanMoi == null ? -1 : meta.hanMoi) + 1, last = sh.getLastRow();
-    ds.forEach(function(x) {
-      var dong = Number(x && x.dong) || 0; if (dong < 2 || dong > last) { lech.push(dong); return; }
-      var r = sh.getRange(dong, 1, 1, cMax).getValues()[0], ten = String(r[meta.ten] == null ? '' : r[meta.ten]).replace(/\s+/g, ' ').trim();
-      if (x.ten != null && plChuan_(ten) !== plChuan_(String(x.ten))) { lech.push(dong); return; }
-      var coHM = meta.hanMoi != null && meta.hanMoi >= 0 && dhNgay_(r[meta.hanMoi], nam), c = coHM ? meta.hanMoi : meta.dl, cuNay = dhNgay_(r[c], nam) || '';
-      if (x.cu != null && !p.boQua && String(x.cu).slice(5) !== cuNay.slice(5)) { lech.push(dong); return; }   // so ngày / tháng (năm suy theo ngày đặt)
-      ghi.push([dong, c + 1]);
-    });
-    if (lech.length && !p.boQua) return sach_({ ok: false, xungDot: true, msg: 'Có ' + lech.length + ' dòng vừa đổi trong Sheet (dòng ' + lech.slice(0, 5).join(', ') + ') – bấm OK để vẫn ghi deadline mới cho các dòng còn khớp, hoặc tải lại tab Đơn hàng.' });
-    ghi.forEach(function(g) { sh.getRange(g[0], g[1]).setValue(chu); });
-    dhXoaCacheDon_();
-    ghiLog_(q.me, 'Sửa deadline đơn', tab + ' · ' + ghi.length + ' dòng', '', dl || 'xóa');
-    return sach_({ ok: true, n: ghi.length, msg: 'Đã ghi deadline ' + (dl ? dl.slice(8, 10) + '/' + dl.slice(5, 7) + '/' + dl.slice(0, 4) : '(trống)') + ' cho ' + ghi.length + ' dòng vào Sheet.' });
-  } finally { lock.releaseLock(); }
-}
+/* 16/11 rà soát: đã bỏ luuDeadlineDon (15/11 tối) – web sửa deadline bằng luuBangDon (nút Lưu chung trong bảng đơn). */
 
 /* ===== 15/11 tối (chủ dự án + quan-ly-van-hanh): TAB "ĐẾN HẠN 10 NGÀY" NGAY TRONG SHEET "Trạng thái đơn hàng" =====
    - 7h sáng (và khi bấm Làm mới trên web): ĐỒNG BỘ TRƯỚC rồi dựng lại tab – mọi dòng còn thiếu có hạn (deadline / hạn mới / hạn ngầm đơn lẻ)
@@ -1966,29 +1954,34 @@ function dhTab10DongBo_(ss) {
   var sh10 = ss.getSheetByName(DH10_TEN), kq = { chep: 0, capNhat: 0, xungDot: 0, mat: 0, giam: 0 }; if (!sh10) return kq;
   var goc = docAnToan_(DH10_GOC); if (!goc.length) return kq;
   var v10 = sh10.getDataRange().getValues(), nam = Number(Utilities.formatDate(new Date(), TZ_VN, 'yyyy')), theoTab = {}, doiGoc = false, ghiKenh = false;
+  /* 16/11 rà soát: tìm dòng ở tab 10 theo cột MÃ DÒNG WEB (người dùng sắp xếp / lọc / chèn / xóa dòng tab 10 vẫn khớp đúng đơn);
+     tab 10 dựng trước 16/11 chưa có cột này -> theo số dòng như cũ */
+  var cMa10 = (v10[0] || []).map(function(x) { return String(x == null ? '' : x).trim().toUpperCase(); }).indexOf(DH10_MA_COT), hang10 = {};
+  if (cMa10 >= 0) v10.forEach(function(row, i) { var m = String(row[cMa10] || '').trim(); if (i && m) hang10[m] = hang10[m] ? -1 : i + 1; });
   goc.forEach(function(g) { (theoTab[g.Tab] = theoTab[g.Tab] || []).push(g); });
   Object.keys(theoTab).forEach(function(tab) {
     var sh = dhTimTab_(ss, tab), meta = sh ? dhMetaTab_(sh, tab) : null, cMa = (sh && meta) ? dh10CotMa_(sh, meta.hdr, false) : 0;
     var nr = sh ? sh.getLastRow() : 0, ma = {}, khoi = null;
-    if (cMa && nr > meta.hdr) sh.getRange(meta.hdr + 1, cMa, nr - meta.hdr, 1).getValues().forEach(function(r, i) { var m = String(r[0] || '').trim(); if (m) ma[m] = meta.hdr + 1 + i; });
+    if (cMa && nr > meta.hdr) sh.getRange(meta.hdr + 1, cMa, nr - meta.hdr, 1).getValues().forEach(function(r, i) { var m = String(r[0] || '').trim(); if (m) ma[m] = ma[m] ? -1 : meta.hdr + 1 + i; });   // -1: mã trùng (dòng bị sao chép) -> không chép
     var nc = 0; theoTab[tab].forEach(function(g) { var d = {}; try { d = JSON.parse(String(g.DuLieu || '{}')); } catch (e) {} g._d = d; Object.keys(d.f || {}).forEach(function(k) { nc = Math.max(nc, d.f[k][0] + 1); }); });
+    var khoiC = (sh && nr >= 1) ? sh.getRange(1, 1, nr, Math.max(nc, 1)).getValues() : [];   // 16/11 rà soát: đọc cả tab 1 lần (trước: mỗi dòng 1 lần đọc – tốn hạn mức chạy)
     theoTab[tab].forEach(function(g) {
-      var hang = Number(g.Hang) || 0, rowT = v10[hang - 1], dong = ma[String(g.Ma)], d = g._d;
+      var hang = cMa10 >= 0 ? (hang10[String(g.Ma)] || 0) : (Number(g.Hang) || 0), rowT = hang > 0 ? v10[hang - 1] : null, dong = ma[String(g.Ma)], d = g._d;
       if (!rowT || !d.f) return;
-      if (!dong) { kq.mat++; try { sh10.getRange(hang, 1).setBackground('#f8d7da').setNote('Không thấy dòng gốc ở tab ' + tab + ' (đã xóa / đổi?) – số nhập ở dòng này CHƯA được chép. Chờ làm mới 7h hoặc nhập thẳng ở tab kênh.'); } catch (e) {} return; }
-      var rowC = sh.getRange(dong, 1, 1, Math.max(nc, 1)).getValues()[0];
+      if (!(dong > 0)) { kq.mat++; try { sh10.getRange(hang, 1).setBackground('#f8d7da').setNote('Không thấy dòng gốc ở tab ' + tab + ' (đã xóa / đổi?) – số nhập ở dòng này CHƯA được chép. Chờ làm mới 7h hoặc nhập thẳng ở tab kênh.'); } catch (e) {} return; }
+      var rowC = khoiC[dong - 1] || [];
       Object.keys(d.f).forEach(function(k) {
         var cK = d.f[k][0], snap = d.f[k][1], cT = d.f[k][2], rawT = rowT[cT], rawC = rowC[cK], t = dh10Chuan_(rawT), c = dh10Chuan_(rawC);
         if (t === c) { if (t !== snap) { d.f[k][1] = t; doiGoc = true; } return; }
         var o10 = sh10.getRange(hang, cT + 1);
         if (t !== snap && c === snap) {   // chỉ tab 10 đổi -> chép về tab kênh
-          sh.getRange(dong, cK + 1).setValue(rawT); ghiKenh = true; kq.chep++; d.f[k][1] = t; doiGoc = true;
+          sh.getRange(dong, cK + 1).setValue(typeof rawT === 'string' ? chuAnToan_(rawT) : rawT); ghiKenh = true; kq.chep++; d.f[k][1] = t; doiGoc = true;
           if (/^q:/.test(k) && Number(rawT) < Number(rawC)) { kq.giam++; try { o10.setBackground('#fff3cd').setNote('SL giảm từ ' + rawC + ' xuống ' + rawT + ' – ' + Utilities.formatDate(new Date(), TZ_VN, 'dd/MM HH:mm') + '. Kiểm lại nếu nhập nhầm.'); } catch (e) {} }
           else { try { o10.setBackground(null).setNote(''); } catch (e) {} }
         } else if (c !== snap && t === snap) {   // chỉ tab kênh / web đổi -> cập nhật tab 10
-          o10.setValue(rawC); kq.capNhat++; d.f[k][1] = c; doiGoc = true;
+          o10.setValue(typeof rawC === 'string' ? chuAnToan_(rawC) : rawC); kq.capNhat++; d.f[k][1] = c; doiGoc = true;
         } else {   // cả hai đổi, khác nhau -> giữ tab kênh, báo ngay trên ô
-          o10.setValue(rawC); kq.xungDot++; d.f[k][1] = c; doiGoc = true;
+          o10.setValue(typeof rawC === 'string' ? chuAnToan_(rawC) : rawC); kq.xungDot++; d.f[k][1] = c; doiGoc = true;
           try { o10.setBackground('#f8d7da').setNote('Bạn nhập "' + String(rawT) + '", tab ' + tab + ' cùng lúc là "' + String(rawC) + '" – web giữ số ở tab kênh. Nhập lại nếu số của bạn đúng.'); } catch (e) {}
         }
       });
@@ -2003,20 +1996,22 @@ function dhTab10DongBo_(ss) {
 /* Dựng lại tab (đồng bộ trước để không mất số vừa nhập) */
 function dhTab10Tao_() {
   var ss = SpreadsheetApp.openById(DH_SHEET_ID), kq0 = {};
-  try { kq0 = dhTab10DongBo_(ss); } catch (e) {}
+  kq0 = dhTab10DongBo_(ss);   // 16/11 rà soát: đồng bộ lỗi thì DỪNG, không xóa tab (trước nuốt lỗi rồi dựng lại -> mất số vừa nhập)
   var hn = homNayVN_(), den = dhCongNgay_(hn, DH10_NGAY), d = dhDocDon_(true), nam = Number(Utilities.formatDate(new Date(), TZ_VN, 'yyyy'));
   var ds = d.don.filter(function(o) { var h = o.dl || dhDlNgam_(o); return o.thieu > 0 && !o.phu && h && h >= hn && h <= den; }).map(function(o) { return { o: o, han: o.dl || dhDlNgam_(o) }; });
   ds.sort(function(a, b) { return a.han.localeCompare(b.han) || String(a.o.tab).localeCompare(String(b.o.tab)) || (a.o.dong - b.o.dong); });
-  var F = dh10Truong_(), dau = DH10_INFO.concat(F.map(function(f) { return f[1]; })), ra = [dau], goc = [], theoTab = {};
+  var F = dh10Truong_(), dau = DH10_INFO.concat(F.map(function(f) { return f[1]; })).concat([DH10_MA_COT]), ra = [dau], goc = [], theoTab = {}, so = 0;
   ds.forEach(function(x) { (theoTab[x.o.tab] = theoTab[x.o.tab] || []).push(x); });
   var info = {};
   Object.keys(theoTab).forEach(function(tab) {
     var sh = dhTimTab_(ss, tab), meta = sh ? dhMetaTab_(sh, tab) : null; if (!sh || !meta) return;
     var cMa = dh10CotMa_(sh, meta.hdr, true), cols = F.map(function(f) { return dh10CotKenh_(meta, f[0]); }), nc = Math.max(cMa, Math.max.apply(null, cols) + 1, meta.ten + 1);
+    var nrT = sh.getLastRow(), khoi = sh.getRange(1, 1, Math.max(nrT, 1), nc).getValues(), demMa = {};   // 16/11 rà soát: đọc 1 lần + đếm mã trùng (dòng bị sao chép)
+    khoi.forEach(function(r0, i) { if (i < meta.hdr) return; var m0 = String(r0[cMa - 1] || '').trim(); if (m0) demMa[m0] = (demMa[m0] || 0) + 1; });
     theoTab[tab].forEach(function(x) {
-      var r = sh.getRange(x.o.dong, 1, 1, nc).getValues()[0], m = String(r[cMa - 1] || '').trim();
+      var r = khoi[x.o.dong - 1] || [], m = String(r[cMa - 1] || '').trim();
       if (plChuan_(String(r[meta.ten] == null ? '' : r[meta.ten])) !== plChuan_(x.o.ten)) return;   // Sheet vừa đổi -> bỏ, lần sau làm mới
-      if (!m) { m = 'W' + (new Date().getTime()).toString(36).toUpperCase() + Math.floor(Math.random() * 1296).toString(36).toUpperCase(); sh.getRange(x.o.dong, cMa).setValue(m); }
+      if (!m || demMa[m] > 1) { if (m) demMa[m]--; m = 'W' + (new Date().getTime()).toString(36).toUpperCase() + (so++).toString(36).toUpperCase() + Math.floor(Math.random() * 1296).toString(36).toUpperCase(); sh.getRange(x.o.dong, cMa).setValue(m); }
       info[tab + '|' + x.o.dong] = { r: r, cols: cols, ma: m };
     });
   });
@@ -2024,10 +2019,11 @@ function dhTab10Tao_() {
     var I = info[x.o.tab + '|' + x.o.dong]; if (!I) return;
     var dong = [DH_NHAN_TAB[x.o.tab] || x.o.tab, x.o.maDon || '', x.o.ten, x.o.sl, x.o.thieu, x.han.slice(8, 10) + '/' + x.han.slice(5, 7) + (x.o.dl ? '' : ' (hạn ngầm)'), Math.round((new Date(x.han + 'T00:00:00Z') - new Date(hn + 'T00:00:00Z')) / 864e5)], f = {};
     F.forEach(function(t, j) { var c = I.cols[j]; if (c >= 0) { dong.push(I.r[c]); f[t[0]] = [c, dh10Chuan_(I.r[c]), DH10_INFO.length + j]; } else dong.push(''); });
-    ra.push(dong); goc.push([String(ra.length), x.o.tab, I.ma, JSON.stringify({ f: f })]);
+    dong.push(I.ma); ra.push(dong); goc.push([String(ra.length), x.o.tab, I.ma, JSON.stringify({ f: f })]);
   });
   var sh10 = ss.getSheetByName(DH10_TEN); if (!sh10) sh10 = ss.insertSheet(DH10_TEN);
   sh10.clearContents(); try { sh10.getRange(1, 1, Math.max(sh10.getMaxRows(), 2), Math.max(sh10.getMaxColumns(), dau.length)).setBackground(null).clearNote(); } catch (e) {}
+  try { sh10.getRange(1, 1, ra.length, dau.length).setNumberFormats(ra.map(function(row) { return row.map(function(v) { return typeof v === 'string' ? '@' : (Object.prototype.toString.call(v) === '[object Date]' ? 'dd/mm/yyyy' : '0.####'); }); })); } catch (eF) {}   // 16/11 rà soát: ô chữ giữ dạng chữ ("05/12", "1/2 cây" không bị Sheet đổi thành ngày rồi chép ngược về tab kênh)
   sh10.getRange(1, 1, ra.length, dau.length).setValues(ra);
   try { sh10.setFrozenRows(1); sh10.getRange(1, 1, 1, dau.length).setFontWeight('bold').setBackground('#1f3a5f').setFontColor('#ffffff'); if (ra.length > 1) sh10.getRange(2, 1, ra.length - 1, DH10_INFO.length).setBackground('#eef1f4'); } catch (e) {}
   try { sh10.getRange(1, 1).setNote('Web tạo lúc ' + Utilities.formatDate(new Date(), TZ_VN, 'dd/MM HH:mm') + '. Cột xám chỉ để xem. Sửa DEADLINE / HẠN MỚI / NOTE / SL / HẸN ở đây → web tự chép về đúng dòng ở tab kênh (ngay khi sửa, chậm nhất 10 phút).'); } catch (e) {}
@@ -2041,9 +2037,9 @@ function dhTab10Tao_() {
 }
 function dhTab10TT_() { var p = PropertiesService.getScriptProperties(), a = String(p.getProperty('DH10_TAO') || '').split('|'), b = String(p.getProperty('DH10_DB') || '').split('|'); var kq = {}; try { kq = JSON.parse(b[1] || '{}'); } catch (e) {} return { tao: a[0] || '', n: Number(a[1]) || 0, dongBo: b[0] || '', kq: kq }; }
 /* Trigger (hàm toàn cục – trigger không gọi được hàm kết thúc bằng _) */
-function DH_TAB10_TAO() { var l; try { l = dh10Khoa_(); dhTab10Tao_(); } catch (e) { try { ghiLog_({ tk: 'HE_THONG', ten: 'Hệ thống' }, 'Tạo tab ĐẾN HẠN 10 NGÀY lỗi', String(e && e.message || e).slice(0, 200), '', ''); } catch (e2) {} } finally { try { l && l.releaseLock(); } catch (e3) {} } }
-function DH_TAB10_DONG_BO() { var h = Number(Utilities.formatDate(new Date(), TZ_VN, 'H')); if (h < 6 || h >= 22) return; var l = LockService.getScriptLock(); if (!l.tryLock(5000)) return; try { dhTab10DongBo_(); } catch (e) {} finally { l.releaseLock(); } }
-function DH_TAB10_SUA(e) { try { if (!e || !e.range || e.range.getSheet().getName() !== DH10_TEN || e.range.getRow() < 2) return; } catch (x) { return; } var l = LockService.getScriptLock(); if (!l.tryLock(10000)) return; try { dhTab10DongBo_(); } catch (x2) {} finally { l.releaseLock(); } }
+function DH_TAB10_TAO(e) { if (!noiBo_(e)) return chanWeb_('DH_TAB10_TAO'); var l; try { l = dh10Khoa_(); dhTab10Tao_(); } catch (e) { try { ghiLog_({ tk: 'HE_THONG', ten: 'Hệ thống' }, 'Tạo tab ĐẾN HẠN 10 NGÀY lỗi', String(e && e.message || e).slice(0, 200), '', ''); } catch (e2) {} } finally { try { l && l.releaseLock(); } catch (e3) {} } }
+function DH_TAB10_DONG_BO(e) { if (!noiBo_(e)) return chanWeb_('DH_TAB10_DONG_BO'); var h = Number(Utilities.formatDate(new Date(), TZ_VN, 'H')); if (h < 6 || h >= 22) return; var l = LockService.getScriptLock(); if (!l.tryLock(5000)) return; try { dhTab10DongBo_(); } catch (e) {} finally { l.releaseLock(); } }
+function DH_TAB10_SUA(e) { if (!noiBo_(e)) return; try { if (!e || !e.range || e.range.getSheet().getName() !== DH10_TEN || e.range.getRow() < 2) return; } catch (x) { return; } var l = LockService.getScriptLock(); if (!l.tryLock(10000)) return; try { dhTab10DongBo_(); } catch (x2) {} finally { l.releaseLock(); } }
 function dhCaiTab10_() {
   var p = PropertiesService.getScriptProperties(); if (p.getProperty('DH10_CAI') === '1') return;
   var co = {}; ScriptApp.getProjectTriggers().forEach(function(t) { co[t.getHandlerFunction()] = 1; });
@@ -2082,7 +2078,7 @@ function luuCotPhuDon(token, p) {
   var lock = LockService.getScriptLock();
   try { lock.waitLock(20000); } catch (eL) { return sach_({ ok: false, msg: 'Sheet đang được người khác ghi – chờ vài giây rồi bấm lại.' }); }
   try {
-    var ss = SpreadsheetApp.openById(DH_SHEET_ID), sh = dhTimTab_(ss, tab);
+    var ss = SpreadsheetApp.openById(DH_SHEET_ID), sh = dhTabGhi_(ss, tab);
     if (!sh) return sach_({ ok: false, msg: 'Không thấy tab "' + tab + '" trong Sheet đơn hàng.' });
     if (dong > sh.getLastRow()) return sach_({ ok: false, msg: 'Dòng ' + dong + ' không còn trong Sheet (dòng bị xóa?).' });
     var meta = dhMetaTab_(sh, tab);
@@ -2141,7 +2137,7 @@ function luuBangDon(token, p) {
     var x = ds[i] || {};
     if ((x.sl || x.dl) && !coSL) return sach_({ ok: false, msg: 'Chỉ Giám đốc, 2 Phó GĐ sản xuất và chị Kim Loan được sửa SL đặt / deadline.' });
     if ((x.hong || x.giao || x.kho || x.tra) && !coDG) return sach_({ ok: false, msg: 'Các cột của Đóng gói chỉ trưởng / phó phòng Đóng gói và ban điều hành nhập.' });
-    if (x.dl && x.dl.moi && !/^\d{4}-\d\d-\d\d$/.test(String(x.dl.moi))) return sach_({ ok: false, msg: 'Ngày không hợp lệ.' });
+    if (x.dl && x.dl.moi && !dhNgayThat_(x.dl.moi)) return sach_({ ok: false, msg: 'Ngày không hợp lệ.' });
   }
   var lock = LockService.getScriptLock();
   try { lock.waitLock(20000); } catch (eL) { return sach_({ ok: false, msg: 'Sheet đang được người khác ghi – chờ vài giây rồi bấm lại.' }); }
@@ -2150,7 +2146,7 @@ function luuBangDon(token, p) {
     var theoTab = {}; ds.forEach(function(x) { var t = String(x && x.tab || ''); if (t) (theoTab[t] = theoTab[t] || []).push(x); });
     var ghi = [], doi = [], boFx = [], lech = [], loi = [];
     Object.keys(theoTab).forEach(function(tab) {
-      var sh = dhTimTab_(ss, tab); if (!sh) { loi.push('không thấy tab "' + tab + '"'); return; }
+      var sh = dhTabGhi_(ss, tab); if (!sh) { loi.push('không thấy tab "' + tab + '"'); return; }
       var meta = dhMetaTab_(sh, tab); if (!meta || meta.ten < 0 || meta.sl < 0) { loi.push('tab "' + tab + '" không nhận ra cột tên hàng / SL đặt'); return; }
       var cot = function(k) { if (k === 'sl') return meta.sl; if (k === 'hong') return meta.hong && meta.hong.DG != null ? meta.hong.DG : -1; return meta[k] == null ? -1 : meta[k]; };
       var cMax = Math.max.apply(null, [meta.ten, meta.sl, meta.dl == null ? -1 : meta.dl, meta.hanMoi == null ? -1 : meta.hanMoi, cot('hong'), cot('giao'), cot('kho'), cot('tra')]) + 1, last = sh.getLastRow();
@@ -2165,7 +2161,7 @@ function luuBangDon(token, p) {
           var s0 = String(v.moi).trim(), moi = s0 === '' ? '' : Math.round(Number(s0)), cu = dhSo_(row[c]);
           if (s0 !== '' && (!isFinite(moi) || moi < 0 || moi > 100000)) { loi.push(TEN[k] + ' dòng ' + dong + ': số không hợp lệ'); return; }
           if (k === 'sl' && moi === '') { loi.push('SL đặt dòng ' + dong + ' không được để trống'); return; }
-          if (v.cu != null && !p.boQua && Number(v.cu) !== cu) { lech.push(TEN[k] + ' ' + tenS.slice(0, 30) + ' vừa đổi thành ' + dhSoVN_(cu)); return; }
+          if (v.cu != null && !p.boQua && Number(v.cu) !== cu && !(k !== 'sl' && Number(v.cu) === Math.min(cu, dhSo_(row[meta.sl])))) {   /* 16/11 rà soát: web giới hạn số ≤ SL đặt khi hiện -> không báo xung đột mãi */ lech.push(TEN[k] + ' ' + tenS.slice(0, 30) + ' vừa đổi thành ' + dhSoVN_(cu)); return; }
           if ((moi === '' ? 0 : moi) === cu && !(moi === '' && String(row[c] == null ? '' : row[c]).trim() !== '')) return;
           ghi.push([sh, dong, c + 1, moi]); doi.push(tab + ' d' + dong + ' ' + TEN[k] + ': ' + dhSoVN_(cu) + ' → ' + (moi === '' ? '–' : dhSoVN_(moi)));
         });
