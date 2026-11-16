@@ -166,3 +166,14 @@ html:not(.cn-moi) .dh-sh td.dh-gn.du{color:#04703f}
 html:not(.cn-moi) .dh-sh td.dh-gn i{color:#3d3a33;opacity:1}
 html:not(.cn-moi) .dh-sh tbody tr:hover td{background:#ffe08a!important}
 html[data-gd="sang"] .dh-noi-in{background:#ffffff;color:#14161a}
+/* 16/11 tối (chủ dự án): bảng đơn nền trắng – chữ và số đậm, rõ hơn (dòng đã xong không còn nhạt, nhãn Chuôi/Ngọn, kênh, mã x/y, ô trống "0") */
+html:not(.cn-moi) .dh-sh td{font-weight:500}
+html:not(.cn-moi) .dh-sh tr.xong td{color:#1f1d18}
+html:not(.cn-moi) .dh-sh tr.xong td.c2,html:not(.cn-moi) .dh-sh .c2{color:#000;font-weight:700}
+html:not(.cn-moi) .dh-sh .dh-bkenh,html:not(.cn-moi) .dh-sh .pdesc,html:not(.cn-moi) .dh-sh .c1 b{color:#2e2a22;font-weight:600}
+html:not(.cn-moi) .dh-sh td em{opacity:1!important;color:#2e2a22;font-weight:700}
+html:not(.cn-moi) .dh-sh td.dh-gn i{color:#1f1d18;font-weight:600}
+html:not(.cn-moi) .dh-sh .dh-note{font-weight:600}
+html:not(.cn-moi) .dh-sh .dh-ei{color:#ffffff;font-weight:700}
+html:not(.cn-moi) .dh-sh .dh-ei::placeholder{color:#d5dde8;opacity:1}
+html:not(.cn-moi) .dh-sh .dh-hanle{font-weight:600;color:#2e2a22}

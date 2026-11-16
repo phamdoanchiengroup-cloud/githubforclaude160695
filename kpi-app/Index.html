@@ -9731,7 +9731,7 @@ function hsGhiChuDong(r){
 }
 </script>
 <script>
-var KPI_BAN = '16/11/2026 10:39';
+var KPI_BAN = '16/11/2026 11:44';
 (function(){
   var cu = window.veNav;
   window.veNav = function(){
@@ -11062,7 +11062,7 @@ function nsnCapNhat(){ call('capNhatNgoaiSXTuFile',[],function(r){ if(!r||!r.ok)
 </script>
 <script>
 /* ===== 38. TĂNG TỐC ĐỢT 3 (08/11) – bộ đo tốc độ + mở nhanh bằng số lần trước (mã hóa) ===== */
-var TD_BUF=[], TD_T=null, DL_VER='3109e70f63', DL_HAN=12*3600e3, DL_BO=['SoCCCD','DienThoai','DiaChi','SdtKhanCap','LuongCoBan','NamSinh','SoTaiKhoan','Email'];
+var TD_BUF=[], TD_T=null, DL_VER='a713f0c73d', DL_HAN=12*3600e3, DL_BO=['SoCCCD','DienThoai','DiaChi','SdtKhanCap','LuongCoBan','NamSinh','SoTaiKhoan','Email'];
 function tdGhi_(f,ms,sv){ if(!(ms>=0)||!f) return; TD_BUF.push({f:String(f),ms:Math.round(ms),sv:(typeof sv==='number'?Math.round(sv):null)});
   if(TD_BUF.length>=15) tdGui_(); else if(!TD_T) TD_T=setTimeout(tdGui_,180000); }
 function tdGui_(){ if(TD_T){clearTimeout(TD_T);TD_T=null;} if(!TD_BUF.length||typeof TOKEN==='undefined'||!TOKEN) return;
@@ -11694,6 +11694,17 @@ html:not(.cn-moi) .dh-sh td.dh-gn.du{color:#04703f}
 html:not(.cn-moi) .dh-sh td.dh-gn i{color:#3d3a33;opacity:1}
 html:not(.cn-moi) .dh-sh tbody tr:hover td{background:#ffe08a!important}
 html[data-gd="sang"] .dh-noi-in{background:#ffffff;color:#14161a}
+/* 16/11 tối (chủ dự án): bảng đơn nền trắng – chữ và số đậm, rõ hơn (dòng đã xong không còn nhạt, nhãn Chuôi/Ngọn, kênh, mã x/y, ô trống "0") */
+html:not(.cn-moi) .dh-sh td{font-weight:500}
+html:not(.cn-moi) .dh-sh tr.xong td{color:#1f1d18}
+html:not(.cn-moi) .dh-sh tr.xong td.c2,html:not(.cn-moi) .dh-sh .c2{color:#000;font-weight:700}
+html:not(.cn-moi) .dh-sh .dh-bkenh,html:not(.cn-moi) .dh-sh .pdesc,html:not(.cn-moi) .dh-sh .c1 b{color:#2e2a22;font-weight:600}
+html:not(.cn-moi) .dh-sh td em{opacity:1!important;color:#2e2a22;font-weight:700}
+html:not(.cn-moi) .dh-sh td.dh-gn i{color:#1f1d18;font-weight:600}
+html:not(.cn-moi) .dh-sh .dh-note{font-weight:600}
+html:not(.cn-moi) .dh-sh .dh-ei{color:#ffffff;font-weight:700}
+html:not(.cn-moi) .dh-sh .dh-ei::placeholder{color:#d5dde8;opacity:1}
+html:not(.cn-moi) .dh-sh .dh-hanle{font-weight:600;color:#2e2a22}
 </style>
 <style id="navDH">
 #nav button[data-k="dh"],html[data-gd="toi"]:not(.cn-moi) #nav button[data-k="dh"]{min-height:44px;font-size:15px;font-weight:700;color:var(--cyan);background:rgba(var(--acc-rgb),.12);border:1px solid rgba(var(--acc-rgb),.28);border-left:3px solid var(--cyan);margin:2px 0 6px}
