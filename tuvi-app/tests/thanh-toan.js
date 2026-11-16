@@ -176,17 +176,24 @@ ok(n1.qua.xu === bgM.thuongDangKy && ctx.viCuaToi(n1.token).soDu === bgM.thuongD
 m = ctx.muaPhan(n1.token, Object.assign({}, L, { day: 11 }), 'thang', new Date().getFullYear() + '-12'); ok(m.ok && m.soDu === bgM.thuongDangKy - bgM.phan.thang.xu, 'Dùng quà 9 xu mở ngay 1 tháng, không cần nạp');
 ok(ctx.dangKy('nguoimoi1b', 'matkhau123', 'Trùng Liên Hệ', 'MOI1@x.vn ', '').qua.xu === 0, 'Quà đăng ký mỗi email chỉ một lần (không phân biệt hoa thường)');
 ok(ctx.dangKy('nguoimoi6', 'matkhau123', 'B6', '+84 98 765 4321', '').qua.xu === 9 && ctx.dangKy('nguoimoi6b', 'matkhau123', 'B6b', '0987654321', '').qua.xu === 0, 'Quà đăng ký mỗi SĐT chỉ một lần (+84 và 0 là một)');
+ok(ctx.dangKy('nguoimoi7', 'matkhau123', 'B7', 'Ten.Mot+abc@GoogleMail.com', '').qua.xu === 9 && ctx.dangKy('nguoimoi7b', 'matkhau123', 'B7b', 'tenmot@gmail.com', '').qua.xu === 0, 'Quà: bí danh Gmail (dấu chấm, +đuôi, googlemail) tính là một email');
+ok(ctx.ttLienHeChuan_('ab+x@yahoo.com') === 'ab@yahoo.com' && ctx.ttLienHeChuan_('a.b@yahoo.com') === 'a.b@yahoo.com', 'Chuẩn hóa email: bỏ +đuôi; chỉ Gmail bỏ dấu chấm');
+{ // phiên 2 → 3: giữ giá tùy chỉnh và gói nạp của chủ dự án, trừ các gói đổi nghĩa
+  const cu = store.TT_BANG_GIA; store.TT_BANG_GIA = JSON.stringify({ phien: ctx.TT_GIA_PHIEN - 1, phan: { cap_doi: 25, tron_goi: 49, gia_dinh_3: 39 }, goi: [{ tien: 30000, xu: 33 }], kmPhien: 2 });
+  const b = ctx.ttBangGia_(); ok(b.phan.cap_doi.xu === 25 && b.goi.length === 1 && b.goi[0].xu === 33 && b.phan.tron_goi.xu === 89 && b.phan.gia_dinh_3.xu === 79, 'Bảng giá phiên 2: giữ giá tùy chỉnh + gói nạp, Trọn đời/gia đình lấy giá mới');
+  store.TT_BANG_GIA = cu; }
 // Hội viên năm: mở vận năm/tháng/nhật vận cho mọi lá số của tài khoản trong 12 tháng
 ctx.qtDieuChinhXu(chu, 'nguoimoi6', 200, 'test hội viên');
 { const t6 = ctx.dangNhap('nguoimoi6', 'matkhau123').token, x0 = ctx.viCuaToi(t6).soDu;
   let h = ctx.lapLaSo(Object.assign({}, L, { day: 12 }), t6); ok(h.vanTom.coNam === false && !h.vanTom.hoiVien, 'Chưa là Hội viên: vận năm khóa');
-  const hv = ctx.muaPhan(t6, null, 'hoi_vien'), hanMong = new Date(); hanMong.setDate(hanMong.getDate() + 365);
-  ok(hv.ok && hv.gia === 99 && ctx.viCuaToi(t6).soDu === x0 - 99 && hv.hoiVien === hanMong.toISOString().slice(0, 10), 'Mua Hội viên năm: trừ 99 xu, hạn 365 ngày (' + hv.hoiVien + ')');
+  const hv = ctx.muaPhan(t6, null, 'hoi_vien'), hanMong = new Date(); hanMong.setFullYear(hanMong.getFullYear() + 1);
+  ok(hv.ok && hv.gia === 99 && ctx.viCuaToi(t6).soDu === x0 - 99 && hv.hoiVien === ctx.Utilities.formatDate(hanMong, 'Asia/Ho_Chi_Minh', 'yyyy-MM-dd'), 'Mua Hội viên năm: trừ 99 xu, hạn đúng 12 tháng (' + hv.hoiVien + ')');
   h = ctx.lapLaSo(Object.assign({}, L, { day: 12 }), t6); const h2 = ctx.lapLaSo(L2, t6);
   ok(h.vanTom.coNam && h.vanTom.coThang && h.chiTiet.nguyetVan.length === 12 && h.vanTom.hoiVien === hv.hoiVien, 'Hội viên: vận năm + 12 tháng + nhật vận mở');
   ok(h2.vanTom.coNam && h2.quyen.hoiVien, 'Hội viên: áp dụng cho mọi lá số của tài khoản');
+  { const sd = ctx.viCuaToi(t6).soDu, dh = ctx.muaPhan(t6, Object.assign({}, L, { day: 12 }), 'dong_hanh', new Date().getFullYear()); ok(dh.daCo && ctx.viCuaToi(t6).soDu === sd, 'Hội viên mua Đồng hành cả năm → đã có, không trừ xu'); }
   ok(h.chiTiet.daiVan.filter(d => !d.khoa).length === 1 && !h.quyen.bien_co, 'Hội viên không gồm 12 đại vận / biến cố (bán riêng)');
-  const hv2 = ctx.muaPhan(t6, null, 'hoi_vien'); ok(hv2.ok && hv2.hoiVien > hv.hoiVien && (new Date(hv2.hoiVien) - new Date(hv.hoiVien)) / 864e5 === 365, 'Gia hạn Hội viên: cộng nối 365 ngày');
+  const hv2 = ctx.muaPhan(t6, null, 'hoi_vien'); ok(hv2.ok && hv2.hoiVien === (+hv.hoiVien.slice(0, 4) + 1) + hv.hoiVien.slice(4), 'Gia hạn Hội viên: cộng nối thêm 12 tháng (' + hv2.hoiVien + ')');
   ok(!ctx.lapLaSo(Object.assign({}, L, { day: 12 }), dk.token).quyen.hoiVien, 'Hội viên của tài khoản khác không lan sang');
 }
 const truocGT = ctx.ttSoDu_('nguoimoi1');
