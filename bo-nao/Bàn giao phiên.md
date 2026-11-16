@@ -3,6 +3,11 @@
 Nhóm: Chung · Cập nhật 02/11/2026
 Liên quan: [[00 Mục lục]] · [[Liên kết và công cụ]] · [[Việc chờ chủ dự án]] · [[Lần dán lên Apps Script]] · [[Quyết định của chủ dự án]] · [[KPI Kiểm thử]]
 
+## 16/11 KHUYA → PHIÊN MỚI: LÀM GIAI ĐOẠN 0 HỦY / BỚT MÃ (đọc phần này trước)
+- Chủ dự án đã chốt mọi câu hỏi – đặc tả đầy đủ ở [[KPI Thiết kế trang Đơn hàng và chuyển từ Sheet sang web (16-11)]] (mục "Chủ dự án trả lời" + "Đặc tả giai đoạn 0"). Không hỏi lại.
+- Tóm tắt: web tự tạo Sheet CSDL riêng (lớp phủ hủy/bớt + sổ sự kiện + thông báo), Sheet cũ chỉ bị tô xám dòng hủy; quyền C019/C056/C067; chỉ ghi lý do; mục "Đơn đã hủy" + thông báo cho mọi người xem bảng đơn; chuyển "mã 5/11" sang cột STT đầu bảng; không làm bảng rối hơn.
+- Còn treo: 2 CN thai sản C454, C451 (chủ dự án chưa trả lời có cho nghỉ không). Danh sách tài khoản Bán hàng: chủ dự án gửi sau (giai đoạn 1).
+
 ## 16/11 – RÀ SOÁT TOÀN BỘ XONG (đã push) – đọc [[KPI Rà soát toàn bộ (16-11)]]
 - Hỏi 3 chuyên gia + dùng kết quả vận hành; chủ dự án cho "sửa theo ý bạn", góp ý sau khi dán. Đã sửa bảo mật, năm 12→1, tab 10 chép nhầm dòng, chữ lỗi thời, code chết, CSS điện thoại.
 - Chủ dự án cần chạy `2-CAP-NHAT.bat` (gồm cả đợt 15–16/11). Tab ĐẾN HẠN 10 NGÀY có thêm cột MÃ DÒNG WEB sau lần làm mới 7h kế tiếp (hoặc bấm Làm mới).
