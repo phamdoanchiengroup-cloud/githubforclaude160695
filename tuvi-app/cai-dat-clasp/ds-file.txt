@@ -8,7 +8,7 @@ BatTuThanSat.gs	140788
 CapDoi.gs	50113
 ChiemTinh.gs	104289
 Code.gs	26201
-DeHieu.gs	94203
+DeHieu.gs	95807
 DuDoan.gs	38302
 Facts.gs	11840
 GiaDinh.gs	31275
@@ -25,7 +25,7 @@ PhoiNgau.gs	51166
 Script.html	750954
 Styles.html	289750
 TaiKhoan.gs	22369
-ThanSoHoc.gs	53813
+ThanSoHoc.gs	55192
 ThanhToan.gs	61794
 TienIch.gs	87503
 TongHop.gs	72838
@@ -34,5 +34,5 @@ TuViChuyenSau.gs	141273
 TuViHeThong.gs	378360
 TuViPhiTinh.gs	350125
 TuViTamPhap.gs	22991
-TuViTrinhTu.gs	31237
+TuViTrinhTu.gs	32295
 VanSau.gs	59454

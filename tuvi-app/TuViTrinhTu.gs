@@ -26,12 +26,12 @@ var TT_TU_VI_HE = {
   5: ['Tử Vi – Thất Sát đồng cung ở Tỵ – Hợi', 'người có quyền uy và ý chí mạnh, biến hóa khó khăn thành cơ hội']
 };
 var TT_THAN_CU = {
-  'Mệnh': 'Thân và Mệnh cùng một cung: bạn sống đúng như bản chất ban đầu, ít thay đổi theo hoàn cảnh – giữ được mình nhưng cũng nên mềm dẻo hơn.',
-  'Phúc Đức': 'Thân ở cung Phúc: nửa sau cuộc đời coi trọng gia đình, đời sống tinh thần; phúc phần dòng họ là chỗ dựa lớn.',
-  'Quan Lộc': 'Thân ở cung Quan: nửa sau cuộc đời đặt nặng sự nghiệp, danh vị; bạn thấy mình có giá trị khi được làm việc.',
-  'Thiên Di': 'Thân ở cung Di: hay di chuyển, mở rộng giao thiệp; cơ hội thường đến từ bên ngoài, xa nơi sinh.',
-  'Tài Bạch': 'Thân ở cung Tài: coi trọng tài chính, tự lập về kinh tế; biết kiếm và biết giữ là chìa khóa.',
-  'Phu Thê': 'Thân ở cung Phối: người bạn đời ảnh hưởng lớn tới nửa sau cuộc đời; hôn nhân hòa hợp thì mọi việc thuận.'
+  'Mệnh': 'Bạn có xu hướng sống đúng như bản chất ban đầu, ít thay đổi theo hoàn cảnh – giữ được mình là điểm mạnh, chỉ cần mềm dẻo hơn khi cần.',
+  'Phúc Đức': 'Nửa sau cuộc đời, bạn có xu hướng đặt trọng tâm vào gia đình và đời sống tinh thần; sự gắn bó với gia đình, dòng họ là chỗ dựa lớn.',
+  'Quan Lộc': 'Nửa sau cuộc đời, bạn có xu hướng đặt trọng tâm vào sự nghiệp; bạn thấy mình có giá trị khi được làm việc – nhớ dành chỗ cho nghỉ ngơi.',
+  'Thiên Di': 'Nửa sau cuộc đời, bạn có xu hướng hay di chuyển, mở rộng giao thiệp; cơ hội thường đến từ bên ngoài, xa nơi sinh.',
+  'Tài Bạch': 'Nửa sau cuộc đời, bạn có xu hướng coi trọng tài chính và sự tự lập về kinh tế; biết kiếm và biết giữ là chìa khóa.',
+  'Phu Thê': 'Nửa sau cuộc đời, bạn có xu hướng chịu ảnh hưởng nhiều từ người đồng hành; một mối quan hệ được vun đắp tốt giúp mọi việc thuận hơn.'
 };
 var TT_TU_SINH = { ten: ['Tứ chính (Tý Ngọ Mão Dậu)', 'Tứ mộ (Thìn Tuất Sửu Mùi)', 'Tứ sinh (Dần Thân Tỵ Hợi)'],
   y: ['Bạn có tính cách rõ ràng, chính trực, thích sự minh bạch; giữ lập trường vững nhưng đôi khi cứng nhắc.',
@@ -40,19 +40,19 @@ var TT_TU_SINH = { ten: ['Tứ chính (Tý Ngọ Mão Dậu)', 'Tứ mộ (Thìn
 var TT_THAI_TUE = {
   'Thái Tuế': 'thẳng thắn, có chính kiến, hay đứng ra nói lẽ phải', 'Quan Phù': 'chính trực, coi trọng lẽ phải và luật lệ', 'Bạch Hổ': 'cương quyết, dám làm, chịu được áp lực',
   'Thiếu Dương': 'thông minh, lanh lợi, được may mắn bất ngờ', 'Tử Phù': 'kín đáo, hay lo xa', 'Phúc Đức': 'hiền hòa, có phúc, được người giúp',
-  'Tang Môn': 'nhạy cảm, hay lo nghĩ, trải nhiều thăng trầm', 'Tuế Phá': 'thích phản biện, không chịu khuôn phép', 'Điếu Khách': 'giỏi ăn nói, hay can thiệp chuyện người',
+  'Tang Môn': 'nhạy cảm, hay lo nghĩ – chia sẻ với người tin cậy giúp bạn nhẹ lòng hơn', 'Tuế Phá': 'thích phản biện, không chịu khuôn phép – góp ý kèm giải pháp sẽ khiến người khác nể bạn', 'Điếu Khách': 'giỏi ăn nói, nhiệt tình góp ý – chọn lúc và chọn lời giúp lời bạn được đón nhận',
   'Thiếu Âm': 'ôn hòa, tình cảm, khéo léo', 'Long Đức': 'nhân hậu, được che chở', 'Trực Phù': 'thẳng tính, hay gánh việc thay người'
 };
 var TT_LOC_TON = {
-  'Bác Sĩ': 'thông minh, ham học, có uy tín', 'Lực Sĩ': 'khỏe mạnh, có sức làm việc lớn', 'Thanh Long': 'gặp chuyện vui, được hỷ tín', 'Tiểu Hao': 'dễ hao hụt nhỏ, chi tiêu rộng tay',
-  'Tướng Quân': 'cương nghị, có khí thế lãnh đạo', 'Tấu Thư': 'giỏi văn chương, lời nói có sức thuyết phục', 'Phi Liêm': 'nhanh nhẹn nhưng dễ vướng lời ra tiếng vào',
+  'Bác Sĩ': 'thông minh, ham học, có uy tín', 'Lực Sĩ': 'khỏe mạnh, có sức làm việc lớn', 'Thanh Long': 'gặp chuyện vui, được hỷ tín', 'Tiểu Hao': 'có xu hướng chi tiêu rộng tay – ghi chép thu chi giúp bạn giữ tiền tốt hơn',
+  'Tướng Quân': 'cương nghị, có khí thế lãnh đạo', 'Tấu Thư': 'giỏi văn chương, lời nói có sức thuyết phục', 'Phi Liêm': 'nhanh nhẹn; nói ít, làm chắc giúp bạn tránh lời ra tiếng vào',
   'Hỷ Thần': 'vui vẻ, lạc quan, hay gặp tin mừng', 'Bệnh Phù': 'nên giữ nếp sinh hoạt điều độ, nghỉ ngơi đủ', 'Đại Hao': 'chi tiêu dễ lớn, cần quản lý tài chính chặt, tích lũy đều',
-  'Phục Binh': 'nên đề phòng người ngấm ngầm cạnh tranh', 'Quan Phủ': 'nên cẩn trọng giấy tờ, hợp đồng'
+  'Phục Binh': 'nên giữ kín kế hoạch cho đến khi chắc chắn và chọn người cùng làm thật kỹ', 'Quan Phủ': 'nên cẩn trọng giấy tờ, hợp đồng'
 };
 var TT_TRANG_SINH = {
   'Tràng Sinh': 'sức sống mới, dễ khởi đầu', 'Mộc Dục': 'thích làm đẹp, nhiều cảm xúc', 'Quan Đới': 'trưởng thành, có danh phận', 'Lâm Quan': 'đang lên, gặt hái thành quả',
   'Đế Vượng': 'sung mãn, mạnh mẽ nhất', 'Suy': 'trầm lắng, cần giữ sức', 'Bệnh': 'nhịp chậm lại, cần nghỉ ngơi đủ', 'Tử': 'năng lượng lặng, hợp suy ngẫm',
-  'Mộ': 'tích lũy, giữ gìn', 'Tuyệt': 'dễ đứt đoạn, cần bền chí', 'Thai': 'ấp ủ ý tưởng mới', 'Dưỡng': 'được nuôi dưỡng, chờ thời'
+  'Mộ': 'tích lũy, giữ gìn', 'Tuyệt': 'có lúc đứt quãng, nên chia mục tiêu thành từng chặng để giữ nhịp', 'Thai': 'ấp ủ ý tưởng mới', 'Dưỡng': 'được nuôi dưỡng, chờ thời'
 };
 var TT_LUC_CAT = ['Tả Phù', 'Hữu Bật', 'Văn Xương', 'Văn Khúc', 'Thiên Khôi', 'Thiên Việt'];
 var TT_LUC_SAT = ['Kình Dương', 'Đà La', 'Địa Không', 'Địa Kiếp', 'Hỏa Tinh', 'Linh Tinh'];
@@ -114,7 +114,7 @@ function tuviTrinhTu_(tv, ct) {
   var hanhChinh = (M.chinh || []).map(function (s) { return s.h; });
   var hanhTroi = hanhChinh[0] || CHI_HANH[I.menh];
   var lyThuan = (I.menh % 2 === 0) === (I.yCan % 2 === 0);
-  buoc('Khí chất âm dương – ngũ hành', ['Bạn thuộc mẫu người ' + (TT_KHI_CHAT[hanhTroi] || '') + '. ' + (lyThuan ? 'Âm dương thuận lý: việc gì cũng dễ thuận chiều khi bạn làm đúng sở trường.' : 'Âm dương nghịch lý: hay phải đi đường vòng – kiên trì và chuẩn bị kỹ sẽ bù lại.')],
+  buoc('Khí chất âm dương – ngũ hành', ['Bạn thuộc mẫu người ' + (TT_KHI_CHAT[hanhTroi] || '') + '. ' + (lyThuan ? 'Nhịp âm dương của lá số cùng chiều: việc gì cũng dễ thuận khi bạn làm đúng sở trường.' : 'Nhịp âm dương của lá số không cùng chiều: bạn có xu hướng phải đi đường vòng – kiên trì và chuẩn bị kỹ sẽ bù lại.')],
     [I.amDuong + ', Mệnh đóng cung ' + (I.menh % 2 === 0 ? 'dương' : 'âm') + ' → ' + (lyThuan ? 'thuận lý' : 'nghịch lý') + '.', 'Ngũ hành chính tinh Mệnh: ' + (hanhChinh.join(', ') || '— (mượn hành cung ' + CHI_HANH[I.menh] + ')') + '.'], lyThuan ? 'tot' : 'vua');
 
   // 5. Tinh hệ Tử Vi
@@ -147,9 +147,9 @@ function tuviTrinhTu_(tv, ct) {
   // 13–16. Các nhóm sao trong Mệnh và tam phương tứ chính
   function nhomSao(ds) { return ds.filter(function (n) { return trongTP(n); }).map(function (n) { return ttTenSao_(n) + ' (' + cungCo(n) + ')'; }); }
   var cat = nhomSao(TT_LUC_CAT), sat = nhomSao(TT_LUC_SAT), quy = nhomSao(TT_LUC_QUY), duc = nhomSao(TT_TU_DUC);
-  buoc('Lục cát tinh', [cat.length >= 3 ? 'Bạn có xu hướng được quý nhân giúp đỡ, học hành – thi cử – giấy tờ thuận lợi; làm việc nhóm phát huy tốt.' : cat.length ? 'Có một vài sao trợ lực: thêm người giúp đúng lúc nếu bạn chủ động kết nối.' : 'Ít sao trợ lực: bạn chủ yếu tự thân lập nghiệp – xây dựng mạng lưới quan hệ sẽ bù đắp rất tốt.'],
+  buoc('Lục cát tinh', [cat.length >= 3 ? 'Bạn có xu hướng được quý nhân giúp đỡ, học hành – thi cử – giấy tờ thuận lợi; làm việc nhóm phát huy tốt.' : cat.length ? 'Có một vài yếu tố trợ lực: thêm người giúp đúng lúc nếu bạn chủ động kết nối.' : 'Bạn có xu hướng tự thân lập nghiệp – xây dựng mạng lưới quan hệ sẽ bù đắp rất tốt.'],
     [cat.length ? 'Trong Mệnh – tam phương tứ chính: ' + cat.join(', ') + ' (' + cat.length + '/6).' : 'Không có lục cát tinh trong Mệnh – tam phương tứ chính.'], cat.length >= 3 ? 'tot' : cat.length ? 'vua' : 'xau');
-  buoc('Lục sát tinh', [sat.length >= 3 ? 'Đời bạn có nhiều thử thách, va chạm; bù lại bạn có sức bật và bản lĩnh hơn người. Giữ bình tĩnh, tránh liều lĩnh là chìa khóa.' : sat.length ? 'Có một vài áp lực, biến động: biết lường trước rủi ro thì áp lực hóa thành động lực.' : 'Ít sao gây trở ngại: đời khá êm, tránh chủ quan là đủ.'],
+  buoc('Lục sát tinh', [sat.length >= 3 ? 'Bạn có xu hướng gặp nhiều thử thách, va chạm hơn người khác; bù lại bạn có sức bật và bản lĩnh. Giữ bình tĩnh, tránh liều lĩnh là chìa khóa.' : sat.length ? 'Có một vài áp lực, biến động: biết lường trước rủi ro thì áp lực hóa thành động lực.' : 'Ít yếu tố gây trở ngại: đời khá êm, tránh chủ quan là đủ.'],
     [sat.length ? 'Trong Mệnh – tam phương tứ chính: ' + sat.join(', ') + ' (' + sat.length + '/6).' : 'Không có lục sát tinh trong Mệnh – tam phương tứ chính.'], sat.length >= 3 ? 'xau' : sat.length ? 'vua' : 'tot');
   buoc('Lục quý tinh', [quy.length >= 2 ? 'Bạn có xu hướng được trọng vọng, có ân nhân và danh dự; giữ chữ tín là cách nhân đôi phúc này.' : 'Danh vọng đến từ thực lực hơn là quý nhân – mỗi thành quả đều do chính bạn tạo ra.'],
     [quy.length ? quy.join(', ') + '.' : 'Không có lục quý tinh trong Mệnh – tam phương tứ chính.'], quy.length >= 2 ? 'tot' : 'vua');
@@ -159,7 +159,7 @@ function tuviTrinhTu_(tv, ct) {
   // 17. Tuần – Triệt
   var tuan = P.filter(function (p) { return p.tuan; }).map(function (p) { return p.cung; }), triet = P.filter(function (p) { return p.triet; }).map(function (p) { return p.cung; });
   var tTrMenh = M.tuan || M.triet, tTrThan = byChi[I.than].tuan || byChi[I.than].triet;
-  buoc('Tuần – Triệt', [tTrMenh ? 'Mệnh bị "chặn" một phần: theo cách luận truyền thống, giai đoạn trẻ dễ vất vả, thành công có thể đến muộn hơn – bạn hãy đối chiếu với trải nghiệm thật; sau khoảng 30 tuổi mọi thứ thường mở dần. Đừng nản ở giai đoạn đầu.' : 'Mệnh không bị chặn: năng lực được thể hiện trực tiếp, không phải chờ thời.' + (tTrThan ? ' Riêng nửa sau cuộc đời có lúc chững lại – nên có kế hoạch dự phòng.' : '')],
+  buoc('Tuần – Triệt', [tTrMenh ? 'Phần bản thân trong lá số bị "chặn" một phần: theo cách luận truyền thống, bạn có xu hướng đi chậm ở giai đoạn đầu và bứt lên rõ hơn từ khoảng 30 tuổi – bạn hãy đối chiếu với trải nghiệm thật. Mỗi kỹ năng tích lũy lúc này đều là vốn cho chặng sau.' : 'Mệnh không bị chặn: năng lực được thể hiện trực tiếp, không phải chờ thời.' + (tTrThan ? ' Riêng nửa sau cuộc đời có lúc chững lại – nên có kế hoạch dự phòng.' : '')],
     ['Tuần tại ' + (tuan.join(', ') || '—') + ' · Triệt tại ' + (triet.join(', ') || '—') + '.'], tTrMenh ? 'vua' : 'tot');
 
   // 18. Không vong
@@ -169,7 +169,7 @@ function tuviTrinhTu_(tv, ct) {
   if (M.trangSinh === 'Tuyệt') kv.push('Tuyệt');
   if (o(I.menh, 'Thiên Hư')) kv.push('Thiên Hư');
   if (o(I.menh, 'Địa Không')) kv.push('Địa Không');
-  buoc('Nhóm sao Không vong', [kv.length >= 2 ? 'Bạn có xu hướng sống thiên về tinh thần, ít bám chấp vật chất; dễ thấy "được rồi lại mất". Hợp với nghề sáng tạo, nghiên cứu, tâm linh; tài chính nên tích lũy đều, tránh đầu cơ.' : kv.length ? 'Có một chút "khoảng trống" trong Mệnh: đôi lúc thấy hụt hẫng – nuôi dưỡng một niềm tin hay mục tiêu dài hạn sẽ lấp đầy.' : 'Mệnh không vướng nhóm không vong: bạn thực tế, giữ được thành quả.'],
+  buoc('Nhóm sao Không vong', [kv.length >= 2 ? 'Bạn có xu hướng sống thiên về tinh thần, ít bám chấp vật chất; đôi khi thấy thành quả đến rồi đi. Hợp với nghề sáng tạo, nghiên cứu, tâm linh; tài chính nên tích lũy đều, tránh đầu cơ.' : kv.length ? 'Có một chút "khoảng trống" trong Mệnh: đôi lúc thấy hụt hẫng – nuôi dưỡng một niềm tin hay mục tiêu dài hạn sẽ lấp đầy.' : 'Mệnh không vướng nhóm không vong: bạn thực tế, giữ được thành quả.'],
     [kv.length ? 'Tại Mệnh: ' + kv.join(', ') + '.' : 'Không có sao nhóm không vong tại Mệnh.'], kv.length >= 2 ? 'vua' : 'tot');
 
   // 19–25. Chủ đề đời sống
@@ -182,21 +182,21 @@ function tuviTrinhTu_(tv, ct) {
     buoc(ten, de, [cung + ' (' + c.chiTen + '): ' + chinhTxt(c) + ' · điểm ' + d + '/10' + (coSat.length ? ' · sát tinh: ' + coSat.join(', ') : '') + (coKy ? ' · có Hóa Kỵ' : '') + '.'], h);
   }
   chuDe('Công việc – nguy cơ gián đoạn', 'Quan Lộc', 'Sự nghiệp có xu hướng ổn định và thăng tiến; bạn hợp vị trí được giao trách nhiệm.', 'Sự nghiệp đi lên từng bước, có lúc chững lại; trau dồi chuyên môn đều đặn sẽ giữ được chỗ đứng.', 'Công việc dễ thay đổi, có giai đoạn gián đoạn; nên giữ một kỹ năng "nghề tay trái" và quỹ dự phòng 6 tháng.',
-    function (c, sc) { return sc.indexOf('Địa Không') >= 0 || sc.indexOf('Địa Kiếp') >= 0 ? 'Cung sự nghiệp có dấu hiệu thăng trầm bất ngờ – hợp nghề tự do, sáng tạo hơn là đường thẳng.' : ''; });
+    function (c, sc) { return sc.indexOf('Địa Không') >= 0 || sc.indexOf('Địa Kiếp') >= 0 ? 'Sự nghiệp có xu hướng có những khúc rẽ bất ngờ – bạn hợp nghề tự do, sáng tạo hơn là một đường thẳng; giữ quỹ dự phòng giúp bạn yên tâm khi chuyển hướng.' : ''; });
   chuDe('Tiền tài – lúc thiếu hụt', 'Tài Bạch', 'Tiền bạc có xu hướng đến đều, bạn biết kiếm và biết giữ.', 'Tiền bạc đủ dùng nhưng khó dư dả nhanh; tích lũy nhỏ mà đều sẽ thành vốn lớn.', 'Tài chính có xu hướng lên xuống, cần quản lý chặt và tích lũy đều; chủ động lập ngân sách, giữ quỹ dự phòng, tránh vay mượn và đầu tư theo phong trào.',
     function (c, sc) { return trongTP('Lộc Tồn') || sc.indexOf('Hóa Lộc') >= 0 ? 'Có "lộc" chiếu về: cơ hội tài chính thường đến qua chính công việc chuyên môn.' : ''; });
-  chuDe('Tình duyên – đa tình hay muộn duyên', 'Phu Thê', 'Tình duyên có xu hướng êm ấm, người bạn đời là chỗ dựa.', 'Tình cảm có lúc êm lúc sóng; lắng nghe và nhường nhịn đúng lúc giúp hai người đi xa.', 'Đường tình có xu hướng nhiều thử thách, cần nhiều thấu hiểu; chủ động hiểu mình trước khi chọn người và nói chuyện thẳng thắn là chìa khóa.',
+  chuDe('Tình duyên – đa tình hay muộn duyên', 'Phu Thê', 'Tình duyên có xu hướng êm ấm, người đồng hành dễ trở thành chỗ dựa của bạn.', 'Tình cảm có lúc êm lúc sóng; lắng nghe và nhường nhịn đúng lúc giúp hai người đi xa.', 'Đường tình có xu hướng nhiều thử thách, cần nhiều thấu hiểu; chủ động hiểu mình trước khi chọn người và nói chuyện thẳng thắn là chìa khóa.',
     function (c) {
       var dh = TT_DAO_HOA.filter(function (n) { return o(I.menh, n) || o(c.chi, n); }).length, co = ['Cô Thần', 'Quả Tú'].filter(function (n) { return o(I.menh, n) || o(c.chi, n); }).length;
-      return dh >= 2 ? 'Bạn có sức hút, nhiều người để ý – nên chung thủy và rõ ràng để tránh rắc rối tình cảm.' : co ? 'Bạn có xu hướng kén chọn hoặc hay ngại mở lòng – chủ động hơn một chút sẽ khác.' : '';
+      return dh >= 2 ? 'Bạn có sức hút, nhiều người để ý – rõ ràng trong cách cư xử giúp mối quan hệ của bạn yên ổn.' : co ? 'Bạn có xu hướng kén chọn hoặc hay ngại mở lòng – chủ động hơn một chút sẽ khác.' : '';
     });
-  chuDe('Con cái – muộn hay ít con', 'Tử Tức', 'Con cái có xu hướng ngoan, hiếu thảo, là niềm vui tuổi già.', 'Con cái cần nhiều thời gian và sự kiên nhẫn của bạn; đồng hành cùng con là cách nuôi phúc.', 'Con cái là chuyện cần thời gian và sự vun đắp; hai vợ chồng chủ động chăm sóc sức khỏe, kiên nhẫn đồng hành cùng con là cách tốt nhất.');
+  chuDe('Con cái – muộn hay ít con', 'Tử Tức', 'Chuyện con cái có xu hướng thuận; mối gắn bó với con dễ là nguồn vui lâu dài.', 'Con cái cần nhiều thời gian và sự kiên nhẫn của bạn; đồng hành cùng con là cách nuôi phúc.', 'Chuyện con cái có xu hướng cần nhiều kiên nhẫn; lắng nghe, đồng hành và tôn trọng tính riêng của con là cách vun đắp tốt nhất.');
   chuDe('Sức khỏe và nghiệp quả', 'Tật Ách', 'Theo cổ học, phúc phần – nghiệp quả của bạn khá nhẹ nhàng: điều tốt bạn gieo dễ được đáp lại. Giữ nếp sinh hoạt điều độ, nghỉ ngơi và khám định kỳ để giữ phúc lâu bền.', 'Phúc phần – nghiệp quả ở mức vừa: sống điều độ, giữ tâm an và làm việc tử tế là đủ để mọi việc êm thuận. Nên nghỉ ngơi hợp lý và khám định kỳ như mọi người.', 'Phần này nhắc bạn sống chậm lại và chăm chút bản thân hơn: giữ nếp sinh hoạt điều độ, nghỉ ngơi đủ, khám định kỳ. Lá số không thay lời bác sĩ.',
     function () { return PH.diem10 >= 5.5 ? 'Phúc phần tốt nên gặp khó dễ có người giúp.' : 'Sống thiện, giữ hòa khí là cách "trả nghiệp" nhẹ nhàng nhất theo quan niệm xưa.'; });
-  chuDe('Xa quê lập nghiệp', 'Thiên Di', 'Ra ngoài dễ gặp may, xa quê lập nghiệp thuận lợi.', 'Ở quê hay đi xa đều được; điều quan trọng là chọn nơi có người đỡ đầu.', 'Ra ngoài hay gặp trắc trở; nên chuẩn bị kỹ, có người quen dẫn đường khi đi xa.',
+  chuDe('Xa quê lập nghiệp', 'Thiên Di', 'Ra ngoài dễ gặp may, xa quê lập nghiệp thuận lợi.', 'Ở quê hay đi xa đều được; điều quan trọng là chọn nơi có người đỡ đầu.', 'Khi đến nơi mới, bạn có xu hướng cần thời gian làm quen; chuẩn bị kỹ và có người quen dẫn đường sẽ thuận hơn.',
     function (c) { return o(I.menh, 'Thiên Mã') || o(c.chi, 'Thiên Mã') || I.thanCu === 'Thiên Di' ? 'Lá số có dấu hiệu hay di chuyển, đổi chỗ ở – càng đi càng mở mang.' : ''; });
   var NB = cungTen['Nô Bộc'], TD = cungTen['Thiên Di'];
-  buoc('Quan hệ xã hội (Di – Nô)', [(NB.diem10 + TD.diem10) / 2 >= 6 ? 'Bạn có xu hướng được bạn bè, đồng nghiệp quý mến và giúp đỡ; mạng lưới quan hệ là tài sản lớn.' : (NB.diem10 + TD.diem10) / 2 >= 4.5 ? 'Quan hệ xã hội ở mức vừa: chọn bạn mà chơi, giữ khoảng cách với người hay đòi hỏi.' : 'Dễ gặp người không như ý trong hợp tác; làm gì cũng nên có giấy tờ rõ ràng và tin vừa đủ.'],
+  buoc('Quan hệ xã hội (Di – Nô)', [(NB.diem10 + TD.diem10) / 2 >= 6 ? 'Bạn có xu hướng được bạn bè, đồng nghiệp quý mến và giúp đỡ; mạng lưới quan hệ là tài sản lớn.' : (NB.diem10 + TD.diem10) / 2 >= 4.5 ? 'Quan hệ xã hội ở mức vừa: chọn bạn mà chơi, giữ khoảng cách với người hay đòi hỏi.' : 'Bạn có xu hướng cần thời gian để tìm đúng người hợp tác; làm gì cũng nên có thỏa thuận rõ ràng và đi từng bước.'],
     ['Thiên Di (' + TD.chiTen + '): ' + chinhTxt(TD) + ' · ' + TD.diem10 + '/10.', 'Nô Bộc (' + NB.chiTen + '): ' + chinhTxt(NB) + ' · ' + NB.diem10 + '/10.'], (NB.diem10 + TD.diem10) / 2 >= 6 ? 'tot' : 'vua');
 
   // 26. Vận hạn: đại vận, tiểu hạn, năm xung, tam tai
@@ -210,8 +210,8 @@ function tuviTrinhTu_(tv, ct) {
   function mucVan(v, cung) { return v && v.danhGia ? '"' + String(v.danhGia).toLowerCase() + '"' : muc(cung.diem10); }
   if (DH) de26.push('Đại vận 10 năm hiện tại (từ ' + DH.daiHan + ' tuổi) ở mức ' + mucVan(dvNay, DH) + '.');
   if (TH) de26.push('Vận năm ' + vy + ' ở mức ' + mucVan(tvNay && tvNay.nam === vy ? tvNay : null, TH) + '.');
-  if (xung) de26.push('Năm ' + vy + ' xung tuổi: dễ thay đổi, nên giữ sức khỏe và tránh quyết định vội.');
-  if (tamTai) de26.push('Năm ' + vy + ' rơi vào hạn tam tai: theo quan niệm xưa nên cẩn trọng việc lớn, đi lại và tài chính; làm việc thiện, sống chậm lại để "giải hạn".');
+  if (xung) de26.push('Năm ' + vy + ' xung tuổi (theo lịch cổ, năm này đối nhau với tuổi của bạn): nhiều chuyển động hơn thường lệ – giữ nhịp sinh hoạt đều và cân nhắc kỹ trước quyết định lớn.');
+  if (tamTai) de26.push('Năm ' + vy + ' rơi vào hạn tam tai: theo quan niệm xưa, đây là một trong ba năm liền nên sống chậm – cân nhắc kỹ việc lớn, đi lại và tài chính; giữ nếp sống điều độ và làm việc tử tế là cách đón năm nhẹ nhàng.');
   if (!xung && !tamTai) de26.push('Năm ' + vy + ' không phạm năm xung hay tam tai.');
   buoc('Đại vận và tiểu vận', de26, [
     DH ? 'Đại vận tại ' + DH.cung + ' (' + DH.chiTen + ', ' + DH.daiHan + '–' + (DH.daiHan + 9) + ' tuổi): ' + chinhTxt(DH) + ' · ' + DH.diem10 + '/10.' : '',
