@@ -165,4 +165,4 @@ Những điều đã chốt. Đừng đề xuất lại những gì ghi "không 
 - (16/11 tối) **Tab Thống kê mở cho Giám đốc C019 – chỉ xem** (máy chủ `tkQuyen_` cho layThongKe / layThayDoiDon; web mục vá 47 `tests/thong-ke-c019/`). Mục "Tốc độ web" vẫn chỉ chủ sở hữu.
 - (16/11 tối) Mục **★ Đơn ưu tiên** trên bảng đơn hiện **dòng gốc ở tab KHO** (khớp mã đơn + tên) để nhập số được, ghi vào tab Kho; dòng tab ĐƠN ƯU TIÊN không thấy ở Kho chỉ xem.
 - (16/11 tối) Sau cắt giảm: **trưởng / phó phòng / quản lý xưởng tính là người sản xuất** (lưu đồ toàn nhà máy: người làm + có mặt theo điểm danh; giám đốc không tính) – `qtTinh` trong `tests/quy-trinh/quy-trinh-web.html`.
-- (16/11 tối) **Nút "☰ Menu" nhỏ** cố định mép trái trên máy tính (menu vẫn ẩn, rê chuột mép trái vẫn hiện) – mục vá 49 `tests/menu-nut/`.
+- (16/11 tối) **Nút ☰ mở menu trên máy tính = nút kính trong thanh tiêu đề, cạnh logo KPI** (bản 1 nút nổi bị chê xấu) (menu vẫn ẩn, rê chuột mép trái vẫn hiện) – mục vá 49 `tests/menu-nut/`.
