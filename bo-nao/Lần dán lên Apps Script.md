@@ -4,6 +4,7 @@ Nhóm: Bắt đầu · Cập nhật 22/10/2026
 Liên quan: [[Việc chờ chủ dự án]] · [[TCC Kiểm thử]] · [[00 Mục lục]]
 
 ## Tình trạng
+- **17/11: mã `2026.11.17.2`** – bán lẻ 9/19 xu (chủ đề năm, Hiểu nhau hơn, Đồng hành 49, quà 39 xu sau xác thực email, ngừng bán Hội viên/12 đại vận/bản tin lẻ). Đổi **ThanhToan, TaiKhoan, HoiTu, GiaDinh, PhoiNgau, VanSau, TienIch, Code, Script, Styles, Index**. Bấm `2-CAP-NHAT.bat`, Ctrl+F5. Sau khi cập nhật: thử đăng ký 1 tài khoản phụ bằng email thật để nhận mã 6 số.
 - **16/11: mã `2026.11.16.3`** (Đợt 3 giá phương án A + Đợt 4 giao diện mới + sửa sau rà + Đợt 5 phần 1 văn) – đổi **Script, Styles, Index, ThanhToan, TaiKhoan, NghiemChung, NghiemChungUI, TuViTrinhTu, TongHop, DeHieu, ThanSoHoc**. code-reviewer rà: không lỗi chặn. Bấm `2-CAP-NHAT.bat`, Ctrl+F5 (gộp luôn bản `2026.11.16.1` nếu chưa cập nhật).
 - **16/11: mã `2026.11.16.1`** (Đợt 2 rà soát) – đổi **Script, Styles, Index, TaiKhoan, ThanhToan, NghiemChung, TuViTrinhTu, DeHieu, TuViHeThong, ThanSoHoc, HoiTu, TongHop**. Bấm `2-CAP-NHAT.bat`, Ctrl+F5.
 - **16/11: đợt bảo mật** (không đổi giao diện, mã vẫn `2026.11.1.5`) – đổi **Code, TaiKhoan, ThanhToan, TienIch, GiaDinh, NghiemChung, Facts, TuViHeThong, LuanGiai, DuDoan, TongHop, PhoiNgau, TuVi, BatTu, BatTuChiTiet, ChiemTinh, HumanDesign, ThanSoHoc, HaLac, Astro, TuViTrinhTu, TuViPhiTinh** và một số file gọi các hàm này. Bấm `2-CAP-NHAT.bat`, Ctrl+F5. Trigger không cần cài lại.
