@@ -33,4 +33,9 @@ ok(!r.ok && /không hợp lệ/.test(r.msg), 'deadline 2026-13-45 bị từ ch�
 r = c.__goi('luuBangDon', gd, { ds: [{ tab: 'OEM', dong: 2, ten: 'GAY NOVA X1 MAU DO', dl: { cu: '2026-12-30', moi: '2027-01-05' } }] });
 ok(r.ok && /05\/01\/2027/.test(String(OEM[1][5])) && c.dhNgay_(OEM[1][5], 2026) === '2027-01-05', 'deadline sang năm sau ghi + đọc lại đúng năm 2027', [r, OEM[1][5]]);
 ok(typeof c.luuDeadlineDon === 'undefined', 'đã bỏ hàm cũ luuDeadlineDon (thay bằng luuBangDon)');
+console.log('3. Phôi 2 nhánh – chuôi / ngọn bán lẻ (16/11 chủ dự án)');
+const xC = c.dhP2Loai_({ p2: { c: 10, n: null, hc: '2026-11-20', hn: '' }, qua: { PHOI: 0 }, hen: {}, pl: { loai: 'CHUOI' } });
+const xN = c.dhP2Loai_({ p2: { c: null, n: 7, hc: '', hn: '2026-11-21' }, qua: {}, hen: {}, pl: { loai: 'NGON' } });
+const xG = c.dhP2Loai_({ p2: { c: 10, n: null, hc: '', hn: '' }, qua: { PHOI: 0 }, hen: {}, pl: { loai: 'GAY' } });
+ok(xC.qua.PHOI === 10 && xC.hen.PHOI === '2026-11-20' && xN.qua.PHOI === 7 && xG.qua.PHOI === 0, 'chuôi lẻ chỉ tính nhánh chuôi, ngọn lẻ chỉ tính nhánh ngọn; gậy 2 khúc vẫn cần đủ 2 nhánh', [xC.qua, xN.qua, xG.qua]);
 console.log(n + ' kiểm thử, ' + l + ' lỗi'); process.exit(l ? 1 : 0);

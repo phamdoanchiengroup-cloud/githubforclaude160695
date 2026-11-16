@@ -7677,7 +7677,7 @@ function danhSachVanPhong(token) {
   ds.sort(function(a, b) { return (thuTu[a.vaiTro] - thuTu[b.vaiTro]) || (a.HoTen < b.HoTen ? -1 : 1); });
   return sach_({ ok: true, ds: ds, muc: HS_MUC });
 }
-var KPI_BAN_MAY = '16/11/2026 07:15';   // giờ dựng Code.gs (22/10)
+var KPI_BAN_MAY = '16/11/2026 07:44';   // giờ dựng Code.gs (22/10)
 /* =====================================================================
    KỸ NĂNG (22/10, chủ dự án nhờ thiết kế + tham khảo chuyên gia nhân sự / đào tạo)
    - Danh mục: trưởng / phó phòng đề xuất kỹ năng của xưởng (tên, mô tả, tiêu chí đạt, công đoạn liên quan)
@@ -9107,7 +9107,7 @@ function layDonHangXuong(token, lamMoi) {
   var sua = {};
   docAnToan_(PL_SHEET).forEach(function(r) { if (r.TenChuan) sua[String(r.TenChuan)] = r; });   // khóa dạng 'K:<tên chuẩn>' (không bị Sheet đổi thành số)
   var btpSua = dhBTPDoc_();
-  var themBTP = function(x) { var b = dhBTP_(x.ten, x.pl, btpSua); x.btp = b.ds; if (b.sua) x.btpSua = 1; return x; };
+  var themBTP = function(x) { dhP2Loai_(x); var b = dhBTP_(x.ten, x.pl, btpSua); x.btp = b.ds; if (b.sua) x.btpSua = 1; return x; };
   var don = d.don.map(function(o) {
     var x = {}; for (var k in o) x[k] = o[k];
     x.tenChuan = plChuan_(o.ten);
@@ -10172,7 +10172,7 @@ function dhGuiEmail_(thu) {
     DH_TABS.map(function(t) { var k = DH_NHAN_TAB[t] || t, x = kenh[k] || { don: 0, dang: 0, tre: 0, thieu: 0 }; return '<tr style="border-top:1px solid #e1e7e6;text-align:right"><td style="text-align:left;padding:5px 4px">' + e(k) + '</td><td>' + x.don + '</td><td>' + x.dang + '</td><td style="color:' + (x.tre ? '#b42a25' : '#889') + '">' + x.tre + '</td><td style="padding-right:4px">' + so(x.thieu) + '</td></tr>'; }).join('') + '</table>';
   h += '<div style="font-size:12px;font-weight:600;color:#b42a25;border-left:3px solid #c0302b;padding-left:8px;margin:14px 0 6px">8 ĐƠN TRỌNG ĐIỂM (trễ × còn thiếu lớn nhất)</div>' + (top.length ? '<table style="width:100%;border-collapse:collapse;font-size:12.5px"><tr style="color:#5b6670;font-size:11px"><td style="padding:4px">Mã đơn</td><td>Kênh · người đặt</td><td style="text-align:right">Deadline</td><td style="text-align:right">Trễ</td><td style="text-align:right;padding-right:4px">Thiếu</td></tr>' +
     top.map(function(g) { return '<tr style="border-top:1px solid #e1e7e6"><td style="padding:5px 4px;font-weight:600">' + e(g.ma) + '</td><td>' + e(g.kenh) + (g.nguoiDat ? ' · ' + e(g.nguoiDat) : '') + '</td><td style="text-align:right">' + ng(g.dl) + '</td><td style="text-align:right;color:#b42a25">' + g.tre + ' ngày</td><td style="text-align:right;padding-right:4px;font-weight:600">' + so(g.thieu) + '</td></tr>'; }).join('') + '</table>' : '<div style="font-size:12.5px;color:#5b6670">Không có đơn trễ.</div>');
-  try { var btpS = dhBTPDoc_(); h += dhHanChuanEmail_(d.don.map(function(o) { var x = {}; for (var k in o) x[k] = o[k]; var tc = plChuan_(o.ten); x.pl = pc[tc] || (pc[tc] = plPhanLoai_(o.ten, o.ghiChu, sua['K:' + tc])); x.btp = dhBTP_(o.ten, x.pl, btpS).ds; return x; }), cs, e, so, thu); } catch (eHC) {}   // 14/11: hạn chuẩn bộ phận
+  try { var btpS = dhBTPDoc_(); h += dhHanChuanEmail_(d.don.map(function(o) { var x = {}; for (var k in o) x[k] = o[k]; var tc = plChuan_(o.ten); x.pl = pc[tc] || (pc[tc] = plPhanLoai_(o.ten, o.ghiChu, sua['K:' + tc])); dhP2Loai_(x); x.btp = dhBTP_(o.ten, x.pl, btpS).ds; return x; }), cs, e, so, thu); } catch (eHC) {}   // 14/11: hạn chuẩn bộ phận
   if (typeof dpEmail_ === 'function') h += dpEmail_(e, so);   // 08/11: điều phối (nút cổ chai, dòng chảy, sức khỏe dữ liệu)
   h += '</div><div style="background:#f1f5f4;padding:10px 20px;font-size:11px;color:#5b6670;text-align:center">Gửi tự động 8h sáng thứ 2 – thứ 7 (trừ ngày lễ) · Sheet đọc lúc ' + e(d.luc) + ' · Đóng gói theo nhật ký KPI' + (url ? ' · <a href="' + e(url) + '" style="color:#0b7a73">Mở web KPI</a>' : '') + '<br>Tắt / bật ở web: Đơn hàng → Sản xuất → Công suất &amp; deadline → ⚙</div></div>';
   MailApp.sendEmail({ to: to, subject: (thu ? '[Thử] ' : '') + 'Báo cáo sản xuất ' + ng(hn) + ' · ' + tre.length + ' đơn trễ · Đóng gói ' + (homQua ? so(dg[homQua]) : 0) + ' sp', htmlBody: h, name: 'Hệ thống KPI sản xuất' });
@@ -10416,6 +10416,16 @@ function dhP2Dong_(v) {
   return (o.c != null || o.n != null) ? o : null;
 }
 function dhP2Ngay_(t, nam) { var m = String(t || '').match(/(\d{1,2})\s*\/\s*(\d{1,2})(?:\s*\/\s*(\d{4}))?/); if (!m) return ''; var d = +m[1], mo = +m[2]; if (!(d >= 1 && d <= 31 && mo >= 1 && mo <= 12)) return ''; return m[3] ? m[3] + '-' + ('0' + mo).slice(-2) + '-' + ('0' + d).slice(-2) : dhNgay_(d + '/' + mo, nam); }   // 16/11 rà soát: không ghi năm -> năm gần hôm nay nhất
+/* 16/11 (chủ dự án): chuôi bán lẻ (và gậy 1 khúc) chỉ cần nhánh chuôi, ngọn bán lẻ chỉ cần nhánh ngọn – Phôi tính đủ theo đúng nhánh,
+   không lấy số nhỏ hơn của 2 nhánh (nhánh còn lại để trống thì trước đây thành 0). Gọi sau khi đã phân loại (x.pl). */
+function dhP2Loai_(x) {
+  var P = x && x.p2, L = x && x.pl && x.pl.loai; if (!P || !(L === 'CHUOI' || L === 'GAY1K' || L === 'NGON')) return x;
+  var k = L === 'NGON' ? 'n' : 'c', v = P[k], h = P['h' + k], q = {}, hn = {}, i;
+  for (i in (x.qua || {})) q[i] = x.qua[i]; for (i in (x.hen || {})) hn[i] = x.hen[i];
+  if (v != null) q.PHOI = v; else delete q.PHOI;
+  if (h) hn.PHOI = h;
+  x.qua = q; x.hen = hn; return x;
+}
 function dhP2Gan_(o, vSL, vHen, nam) {
   var a = dhP2Dong_(vSL), b = dhP2Dong_(vHen); if (!a && !b) return;
   var sl = Number(o.sl) || 0, cu = o.qua && o.qua.PHOI, cuH = o.hen && o.hen.PHOI;

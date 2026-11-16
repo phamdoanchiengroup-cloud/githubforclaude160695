@@ -24,8 +24,12 @@ Liên quan: [[KPI Gậy 1 khúc, ưu tiên và nhập nhanh (15-11)]] · [[KPI �
   - `dhHomNay` / `dhHan` theo giờ VN. CSS: thanh Lưu ở ≤900px nằm trên thanh 5 nút, khung bảng chừa 150px, dải ô 2 cột ≤640px, biểu đồ rộng cuộn ngang.
 - Kiểm thử mới `tests/ra-soat-1611.js` (11) + tab10.js thêm 5 (19). uu-tien-web 25, quy-trinh-web không có lỗi mới (bớt 1 lỗi cũ).
 
+## Đã sửa thêm 16/11 (sau trả lời chủ dự án)
+- Phôi 2 nhánh: `dhP2Loai_` – chuôi lẻ / gậy 1 khúc chỉ tính nhánh chuôi, ngọn lẻ chỉ nhánh ngọn (gọi trong `themBTP` + email hạn chuẩn). Kiểm thử ra-soat-1611 (12).
+- Ngày dự kiến xong: chủ dự án chọn **B – giữ cách tính hiện tại** (không tự đẩy đơn gần xong).
+- Đang hỏi: thứ tự bậc khi hạ đơn ưu tiên (tab ĐƠN ƯU TIÊN = nhặt từ Kho) xuống ngay trên Kho + OEM.
+
 ## Chưa sửa (ghi lại)
-- Phôi 2 nhánh chỉ ghi 1 nhánh → Phôi = 0 (cần biết SKU có mấy khúc – chờ chủ dự án xác nhận).
 - `luuBangDon` / `luuCotPhuDon` vẫn kiểm theo tên hàng (Sheet không có cột mã dòng cho mọi tab).
 - A1/A2/A5 (trễ 3 cách, ngày tồn, công suất 4 nguồn), gộp `dhVeTreBP` + `dhVeHanChuan`, "Đến hạn 10 ngày" web theo đơn vs Sheet theo dòng; `tkNgayLam_` thiếu ngày lễ tự tính.
 
