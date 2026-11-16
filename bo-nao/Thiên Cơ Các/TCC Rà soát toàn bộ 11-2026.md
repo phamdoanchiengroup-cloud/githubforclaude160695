@@ -39,5 +39,18 @@ Chủ dự án: dùng các chuyên gia rà soát toàn bộ mã, giao diện, vi
 - `ttCatPhan_` (rà soát V2): `duDoan.vanLon`, `battuChiTiet.daiVanCungVi`, `moRong.haLac.luan.daiVan` của vận chưa mở chỉ giữ khung + mức, gắn `khoa:true` (vận đã qua mở cho tài khoản).
 - `ttMuaHoiVien_` (gia hạn nối 365 ngày); `dungLuotGiaDinh` mỗi lượt = `dong_hanh:<năm>`; `ttQuaDangKy_(u, gt, lienHe)` + `ttLienHeChuan_` (Script Property `QUA_LH_<sha>`); `TT_GIA_PHIEN`/`TT_KM_PHIEN` = 3; bỏ mọi giá gạch ngang (`goc`).
 - V1: `getDoanNghiemChung(input, token)` cần tài khoản (hoặc chủ trong trình soạn thảo), tối đa 20 lần/10 phút; giao diện gửi token qua `window.tccToken`.
-- Kiểm thử: thanh-toan viết lại theo phương án A (+Hội viên, quà mỗi liên hệ 1 lần), giai-doan 41/41, bao-mat 185/185, van-ngay 1605/1605; cả 24 file đạt. payments-billing-engineer đang rà.
-- Đợt 4 (giao diện, frontend-developer) đang làm: nút mua Hội viên, huy hiệu vận miễn phí, thẻ khóa vận trong tab từng hệ, điều hướng đáy 4 mục, hiệu ứng thao tác.
+- Kiểm thử: thanh-toan viết lại theo phương án A (+Hội viên, quà mỗi liên hệ 1 lần), bao-mat 185/185, van-ngay 1605/1605; cả 24 file đạt.
+- Sau rà payments-billing-engineer (commit 898cc34): `ttCoDh_` (Hội viên không bị thu Đồng hành / không tốn lượt gia đình); Gmail bỏ dấu chấm và +đuôi; quà cộng xu trước rồi mới đánh dấu liên hệ; bảng giá phiên 2 giữ giá tùy chỉnh, riêng `TT_GIA_DOI` (tron_goi, hoi_vien, gia_dinh_3/5) lấy giá mới; `vanMo` – tab Bát Tự/Hà Lạc/Dự đoán chỉ mở giai đoạn trùng năm với đại vận Tử Vi đã mở (giai đoạn đang diễn ra cần đại vận hiện tại); vận miễn phí tính trước khi khóa ví; `ttGhiQuyen_` hoàn xu nếu ghi quyền lỗi; Hội viên +12 tháng lịch; `ttCatNamHe_` chặn lời luận năm của Chiêm tinh (hồ sơ năm, chu kỳ, lời khuyên năm), HD (Solar Return, transit, Vận trình), Thần số (năm/tháng/ngày cá nhân, Vận trình), Tổng hợp `namNay.nguon`, đoạn "Năm nay" trong phần dễ hiểu. giai-doan 45/45.
+- Còn mở: liên hệ đăng ký chưa xác minh (SĐT giả lấy thêm 9 xu – chủ dự án chọn cách xử lý); khóa `QUA_LH_*` nên chuyển sang sheet riêng khi nhiều người đăng ký.
+
+## Sửa sau rà Đợt 2 (code-reviewer, commit eef2137)
+- Bước 26 Tử Vi: `chuanHoa10_(dvNay.diem)` (trước so điểm thô với ngưỡng thang 10 → chỉ 21/200 lá "thuận"). TongHop: mũi tên trống tra theo dãy số (đổi tên làm lệch điểm tính cách 28/40 lá). Tóm tắt Tổng hợp: "Thế mạnh" (chac) / "Nghiêng về thuận". DeHieu giữ câu "Bạn có xu hướng…". NghiemChungUI đòi đủ 8 nhóm, bỏ NaN%.
+
+## Đợt 4 – giao diện (frontend-developer, mã 2026.11.16.2, commit f572d42)
+- Hologram tinh gọn (lớp token cuối Styles.html, 2 font Be Vietnam Pro + Chakra Petch, bỏ hiệu ứng chạy liên tục, bỏ chữ Hán trang trí). Trang chủ: câu hứa → form "Nhập từng bước" 4 bước (+ "Tôi không rõ giờ sinh") → ảnh chân dung; form điện thoại từ 1655px lên 71px.
+- Thanh đáy 4 mục (Lá số · Vận hạn · Hợp đôi · Tôi) + hàng chip dính; trang `page-tomluoc` mặc định sau khi lập (2408px thay Tử Vi 7583px); trang `page-toi` (ví, hạn Hội viên, lịch sử, gia đình, tiện ích, tham khảo, chủ sở hữu).
+- Thẻ Hội viên năm 99 xu, huy hiệu "Miễn phí – tự kiểm chứng", thẻ khóa vận trong tab từng hệ, nghiệm chứng mời tạo tài khoản; Tử Vi điện thoại: nút phóng to + danh sách 12 cung; Bát Tự Holo không cắt mép; một lời mời mỗi trang; aria tab/tabpanel.
+- Hiệu ứng: nút co .97, rung 8ms (màn cảm ứng), màn "an sao" 12 cung, hiện dần khi lướt, mở niêm phong, đếm số; tắt hết khi `prefers-reduced-motion`.
+- Sửa 6 lỗi giao diện từ rà Đợt 2 (dải mời bị ẩn với khách, giờ trống NaN, đủ 8 nhóm, `mucTh6` thang 6/4,8, `attrMua`, bỏ xu trong lời mời khách).
+- Ảnh trước/sau `nghien-cuu/ra-soat/anh/dot4-*.png` (64 ảnh) + số đo json. Smoke Playwright khách/tài khoản 390/1366: 0 pageerror, 10 tab không có undefined/NaN.
+- Chưa làm: khung 3 tầng từng hệ (Bát Tự/Chiêm tinh vẫn 40–50 nghìn px), dọn lớp CSS cũ, hộp đăng ký 3 ô, câu "lưu ý" riêng cho khách ở Tóm lược (đợt văn).

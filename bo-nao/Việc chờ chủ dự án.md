@@ -5,6 +5,7 @@ Liên quan: [[Lần dán lên Apps Script]] · [[TCC Tiến trình]] · [[00 M�
 
 ## Việc còn ngỏ
 - 16/11: **đổi mật khẩu chủ sở hữu trong web ngay** (≥ 14 ký tự) – seed băm trong repo công khai dò được. Mở Google Sheet lịch sử, xem cột A các trang Vi/MoKhoa/DonHang/Ve có ô dạng số (tài khoản tên toàn số tạo trước 16/11) không – có thì báo để chuyển đổi. Duyệt 6 báo cáo rà soát (`nghien-cuu/ra-soat/`) và 5 câu hỏi miễn phí/trả phí. – [[TCC Rà soát toàn bộ 11-2026]]
+- 16/11: sau khi chuyên gia rà xong Đợt 4, bấm `2-CAP-NHAT.bat` lấy mã `2026.11.16.2` (giá mới + giao diện mới), Ctrl+F5, thử trên điện thoại: thanh đáy 4 mục, trang Tóm lược, trang Tôi, mua thử Hội viên năm bằng tài khoản phụ. Chọn cách chống tạo tài khoản ảo lấy quà 9 xu (chấp nhận / đổi quà thành phiếu mở 1 đại vận / ghi cờ trên máy). – [[TCC Rà soát toàn bộ 11-2026]]
 - 16/11: bấm `2-CAP-NHAT.bat` lấy đợt bảo mật (không đổi giao diện). Sáng hôm sau xem Apps Script → Lần thực thi: `guiVanNgay` 6h, `guiBaoCaoNgay` 7h không báo lỗi "chỉ chạy theo lịch". – [[TCC Rà soát toàn bộ 11-2026]]
 - 1/11: bấm `2-CAP-NHAT.bat` lấy `2026.11.1.5` – tab "✶ Phi Tinh" dựng lại theo mục lục cohoc (Tổng quan → 12 cung + Thân → 12 đại vận → vận năm chọn năm → 12 tháng → phụ lục). Đọc trên lá số của mình, so với bài cohoc; quyết định có dùng cung khí/điểm xí hoa theo giả thuyết (nguồn thấp) không. – [[TCC Tứ Hóa Phi Tinh]]
 - 1/11: phần quan hệ gia đình đang để **miễn phí** (cặp vợ chồng chỉ bản gọn, chi tiết vẫn ở Cặp đôi tính phí) – muốn thu xu thì báo. – [[TCC Tab Gia đình]]
