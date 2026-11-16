@@ -30,10 +30,10 @@ const fs=require('fs'); const src=fs.readFileSync(process.argv[2]||require('path
   DH.don=[Object.assign(mk('C','OEM',310,dhNgayCong(hn,20)),{btp:C,pl:{loai:'CHUOI'}})]; out.C=dhMoPhong(dhCSDon())[0].eta; out.hn=hn;
   out.ngayLam=(a,b)=>0; return JSON.parse(JSON.stringify(out)); });
  ok(er.length===0,'không lỗi script',er);
- ok(r.B<r.A,'đơn đã dở ở bộ phận sau xong trước đơn mới (dù hạn muộn hơn)',[r.A,r.B]);
- ok(r.W<r.O,'đơn web lẻ nhỏ đi làn 30% – xong trước đơn OEM lớn',[r.W,r.O]);
+ ok(r.A<=r.B,'16/11 tối: chỉ tính theo công suất (không mô phỏng qua xưởng) – hạn sớm xong trước',[r.A,r.B]);
+ ok(r.W<r.O,'đơn web lẻ nhỏ đi làn lẻ 10% – xong trước đơn OEM lớn',[r.W,r.O]);
  ok(!!r.Wng,'đơn lẻ không deadline có hạn ngầm',r.Wng);
- ok(r.Osolo<=r.O,'không có đơn lẻ → OEM dùng cả làn 30%',[r.Osolo,r.O]);
+ ok(r.Osolo<=r.O,'không có đơn lẻ → OEM dùng cả làn lẻ',[r.Osolo,r.O]);
  ok(r.X&&r.X.lop==='cho'&&!r.X.eta&&r.Y!=='cho','trễ > 30 ngày → chờ hạn mới, trễ 10 ngày vẫn xếp',[r.X&&r.X.lop,r.Y]);
  ok(r.do2>r.do1,'công suất thực đo thấp hơn → xong muộn hơn',[r.do1,r.do2]);
  ok(r.leQua===1&&r.spDo===250&&r.choN===1&&!!r.eta2,'dhCSTinh: đơn lẻ quá 10 ngày, thực đo, nhóm chờ, cột thứ 2',[r.leQua,r.spDo,r.choN,r.eta2]);

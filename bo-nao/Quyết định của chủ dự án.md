@@ -154,6 +154,8 @@ Những điều đã chốt. Đừng đề xuất lại những gì ghi "không 
 
 ## Đơn hàng – bậc ưu tiên, làn lẻ, hạn đơn lẻ (chốt 16/11)
 - **Tab ĐƠN ƯU TIÊN = bản chép mã ưu tiên từ tab KHO** cho dễ nhìn – không đếm 2 lần; web khớp dòng Kho theo mã đơn + tên.
-- **5 bậc**: 1 = Web lẻ thường + Web lẻ custom + POD (làn riêng **cố định 10%** công suất, **hạn 5 ngày** từ ngày đặt); 2 = trễ hạn (quá deadline / tên trong tab TRỄ HẠN) + ★ ban điều hành gắn; 3 = **Dealer + hàng ưu tiên ngang nhau**; 4 = A Đông + tab mới; 5 = Kho + OEM còn lại. Trong bậc: deadline sớm trước.
+- **4 bậc** (16/11 tối gộp 4 + 5): 1 = Web lẻ thường + Web lẻ custom + POD (làn riêng **cố định 10%** công suất, **hạn 5 ngày** từ ngày đặt); 2 = trễ hạn (quá deadline / tên trong tab TRỄ HẠN) + ★ ban điều hành gắn; 3 = **Dealer + hàng ưu tiên ngang nhau**; 4 = A Đông + Kho + OEM + tab mới ngang nhau. Trong bậc: deadline sớm trước.
+- **Ngày dự kiến xong chỉ tính theo công suất 300 sp/ngày** (⚙ Công suất) – KHÔNG mô phỏng hàng đi qua từng xưởng.
+- **Bỏ hạn chuẩn trên bảng đơn** (không cần thiết); hạn chuẩn chỉ còn ở Công đoạn / email 8h.
 - Ngày dự kiến xong: **giữ cách tính hiện tại** (không tự đẩy đơn gần xong lên – chọn B).
 - Phôi 2 nhánh: chuôi bán lẻ chỉ cần nhánh chuôi (ngọn bán lẻ chỉ nhánh ngọn) là đủ.

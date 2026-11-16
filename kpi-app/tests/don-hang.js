@@ -173,7 +173,7 @@ console.log('\n4e. Kênh POD-ECOMSTONE, sản lượng nhập theo ngày, công 
   let x = c.__goi('layDonHangXuong', Town, true);
   ok(x.ok && x.don.length === 1 && x.don[0].kenh === 'POD – Ecomstone' && !(x.tabMoi || []).length, 'tab POD-ECOMSTONE đọc như kênh chuẩn (không báo "kênh mới")', x.don && x.don[0]);
   ok(x.kenhDs.some(k => k[0] === 'POD-ECOMSTONE') && x.kenhDs.some(k => k[0] === 'OEM'), 'trả đủ danh sách kênh (kể cả kênh chưa có đơn)');
-  ok(x.cs && x.cs.sp === 310 && x.cs.macDinh && x.cs.nghi.some(n => n[0] === '2027-01-01'), 'công suất mặc định 310 sp/ngày + lịch lễ gợi ý', x.cs);
+  ok(x.cs && x.cs.sp === 300 && x.cs.macDinh && x.cs.nghi.some(n => n[0] === '2027-01-01'), 'công suất mặc định 300 sp/ngày (16/11) + lịch lễ gợi ý', x.cs);
   const cu = [['A|EVO4/LUN2/BLUE/LW-BLACK/G/10/12.5|KHO', 10, 10, 0, '', 'dangSX'], ['B|Rhino Soft Cue Case 1X2 - Black|OEM', 5, 5, 0, '', 'dangSX'], ['C|RHI2-KOMET2/BRE/BLUE/13.0/388|DEALER', 4, 4, 0, '', 'dangSX'], ['D|EVO4/LUN2/BLUE/LW-BLACK/G/10/12.5|KHO', 3, 3, 0, '', 'dangSX']];
   const nay = [['A|EVO4/LUN2/BLUE/LW-BLACK/G/10/12.5|KHO', 10, 4, 0, '', 'dangSX'], ['B|Rhino Soft Cue Case 1X2 - Black|OEM', 5, 0, 0, '', 'sanSang'], ['C|RHI2-KOMET2/BRE/BLUE/13.0/388|DEALER', 4, 6, 0, '', 'dangSX'], ['E|EVO4/LUN2/BLUE/LW-BLACK/G/10/12.5|KHO', 7, 7, 0, '', 'dangSX']];
   const k = c.dhTinhSanLuong_(cu, nay, {}, {});

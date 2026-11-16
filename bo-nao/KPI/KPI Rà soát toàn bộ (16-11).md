@@ -31,6 +31,11 @@ Liên quan: [[KPI Gậy 1 khúc, ưu tiên và nhập nhanh (15-11)]] · [[KPI �
 - **Ưu tiên khớp theo mã đơn + tên** (`dhUuTen` / `dhLaUu`): trước khớp theo tên → 50 dòng Kho bị gắn ưu tiên, đúng 23. Số thật 16/11: tab có 33 dòng / 1.612 sp; Kho có 24 dòng ghi chữ "ưu tiên" (886 sp) không có trong tab – hỏi chủ dự án.
 - Kết quả trên đơn thật 16/11: Seybert 03/12 → **23/11**; làn lẻ 31 sp/ngày, đơn lẻ vào ~14 sp/ngày nhưng tồn 351 sp → 300 đơn lẻ dự kiến quá hạn 5 ngày, hết tồn ~02/12 – báo chủ dự án.
 
+## 16/11 tối (chủ dự án)
+- `dhMoPhong` viết lại: chỉ theo công suất (`c.sp`, mặc định 300 – `DH_CS_MAC=300`, máy chủ đổi 310/350 đã lưu cũ → 300), 2 làn (lẻ 10% cố định), xếp bậc → deadline → gần xong; bỏ mô phỏng qua xưởng.
+- Gộp bậc 4 + 5 (`DH_SO_BAC=4`). Bỏ `dhHCChip` trong bảng đơn + `dhVeHanChuan` ở mục Đơn trễ hẹn (giữ ở Công đoạn).
+- Đơn thật 16/11: Seybert → **17/11**; bậc 1 (351 sp lẻ) hết ~30/11 – 300 đơn lẻ quá hạn 5 ngày (làn 30 sp/ngày).
+
 ## Chưa sửa (ghi lại)
 - `luuBangDon` / `luuCotPhuDon` vẫn kiểm theo tên hàng (Sheet không có cột mã dòng cho mọi tab).
 - A1/A2/A5 (trễ 3 cách, ngày tồn, công suất 4 nguồn), gộp `dhVeTreBP` + `dhVeHanChuan`, "Đến hạn 10 ngày" web theo đơn vs Sheet theo dòng; `tkNgayLam_` thiếu ngày lễ tự tính.

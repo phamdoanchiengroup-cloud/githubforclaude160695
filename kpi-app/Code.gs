@@ -7677,7 +7677,7 @@ function danhSachVanPhong(token) {
   ds.sort(function(a, b) { return (thuTu[a.vaiTro] - thuTu[b.vaiTro]) || (a.HoTen < b.HoTen ? -1 : 1); });
   return sach_({ ok: true, ds: ds, muc: HS_MUC });
 }
-var KPI_BAN_MAY = '16/11/2026 07:58';   // giờ dựng Code.gs (22/10)
+var KPI_BAN_MAY = '16/11/2026 08:06';   // giờ dựng Code.gs (22/10)
 /* =====================================================================
    KỸ NĂNG (22/10, chủ dự án nhờ thiết kế + tham khảo chuyên gia nhân sự / đào tạo)
    - Danh mục: trưởng / phó phòng đề xuất kỹ năng của xưởng (tên, mô tả, tiêu chí đạt, công đoạn liên quan)
@@ -9775,7 +9775,7 @@ function dhDocSanLuong_() {   // -> [[ngay, tuNgay, ra, sx, vao, ton, mat, tang,
 /* ===== 07/11 (chủ dự án + quan-ly-van-hanh): công suất và ngày nghỉ để phân tích độ hợp lý số lượng / deadline =====
    13/11: mặc định 310 sp/ngày (chủ dự án chốt lại) cho mọi hàng sản xuất (gậy + chuôi lẻ + ngọn lẻ; không tính phụ kiện, tay nối);
    làm thứ 2 – thứ 7 ≈ 26 công/tháng; ngày lễ điền sẵn theo luật, chủ sở hữu sửa trên web. Giá trị đã lưu ở Script Property DH_CONG_SUAT vẫn thắng mặc định. */
-var DH_CS_MAC = 310;
+var DH_CS_MAC = 300;   // 16/11 tối (chủ dự án): công suất 300 sp/ngày
 /* 07/11 (theo ORDER·FLOW): ngày lễ tự tính mọi năm – Tết Dương lịch, Tết Nguyên đán (29 Tết → mùng 3, 5 ngày), Giỗ Tổ 10/3 âm, 30/4, 1/5, 2/9 + 3/9.
    Âm lịch → dương lịch theo thuật toán Hồ Ngọc Đức (múi giờ +7). Chủ sở hữu thêm ngày nghỉ riêng của công ty; ngày lễ tự tính nào công ty vẫn làm thì ghi "làm bù". */
 function dhJd_(d, m, y) { var a = Math.floor((14 - m) / 12), yy = y + 4800 - a, mm = m + 12 * a - 3; return d + Math.floor((153 * mm + 2) / 5) + 365 * yy + Math.floor(yy / 4) - Math.floor(yy / 100) + Math.floor(yy / 400) - 32045; }
@@ -9818,7 +9818,7 @@ function dhCongSuat_() {
   var o = null; try { o = JSON.parse(PropertiesService.getScriptProperties().getProperty('DH_CONG_SUAT') || 'null'); } catch (e) {}
   if (!o || typeof o !== 'object') o = {};
   var sp = Number(o.sp); if (!(sp >= 1 && sp <= 100000)) sp = DH_CS_MAC;
-  if (sp === 300 || sp === 350) sp = DH_CS_MAC;   // 13/11: 300 / 350 là mặc định của bản cũ đã lỡ lưu -> theo mặc định mới (310); số khác giữ nguyên
+  if (sp === 310 || sp === 350) sp = DH_CS_MAC;   // 16/11 tối: 310 / 350 là mặc định của bản cũ đã lỡ lưu -> theo mặc định mới (300); số khác giữ nguyên
   var re = /^\d{4}-\d\d-\d\d$/, tay = Array.isArray(o.nghi) ? o.nghi.filter(function(x) { return Array.isArray(x) && re.test(String(x[0])); }).map(function(x) { return [String(x[0]), String(x[1] || '').slice(0, 60)]; }) : [];
   var lam = Array.isArray(o.lam) ? o.lam.filter(function(x) { return re.test(String(x)); }).map(String) : [];   // ngày làm bù (chủ nhật đi làm, hoặc ngày lễ tự tính mà công ty vẫn làm)
   var nam = Number(Utilities.formatDate(new Date(), TZ_VN, 'yyyy')), tu = [], co = {};
