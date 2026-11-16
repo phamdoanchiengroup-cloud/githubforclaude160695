@@ -54,3 +54,8 @@ Chủ dự án: dùng các chuyên gia rà soát toàn bộ mã, giao diện, vi
 - Sửa 6 lỗi giao diện từ rà Đợt 2 (dải mời bị ẩn với khách, giờ trống NaN, đủ 8 nhóm, `mucTh6` thang 6/4,8, `attrMua`, bỏ xu trong lời mời khách).
 - Ảnh trước/sau `nghien-cuu/ra-soat/anh/dot4-*.png` (64 ảnh) + số đo json. Smoke Playwright khách/tài khoản 390/1366: 0 pageerror, 10 tab không có undefined/NaN.
 - Chưa làm: khung 3 tầng từng hệ (Bát Tự/Chiêm tinh vẫn 40–50 nghìn px), dọn lớp CSS cũ, hộp đăng ký 3 ô, câu "lưu ý" riêng cho khách ở Tóm lược (đợt văn).
+
+## Sau Đợt 4 (16/11, mã 2026.11.16.3)
+- code-reviewer rà 898cc34 + f572d42: không lỗi chặn; đã sửa S1–S5 (Solar Return năm, "Chủ đề năm theo tên", Hội viên không bị chào Đồng hành, câu lưu ý Tóm lược, nhãn dò giờ cho khách) + M1 (3 tháng sáng nhất trong Tổng hợp), M2 (thẻ khóa tháng/ngày Thần số, transit HD), M3 (giữ Cormorant cho PDF), M9 (giải nghĩa Nhật chủ). Commit e5d35d2.
+- Đợt 5 phần 1 (content-creator, commit 14ea36f): 90 câu nặng/phán chắc viết lại trong DeHieu (36), TuViTrinhTu (30), ThanSoHoc (24, gồm TS_SUC_KHOE, TS_THACH_SK). Tên 26 bước giữ nguyên (khóa TT_GOP).
+- Chủ dự án đổi hướng bán "chi nhỏ nhiều lần" (xem [[Quyết định của chủ dự án]]); product-manager đang soạn `nghien-cuu/ra-soat/07-ban-le-9-19.md`.
