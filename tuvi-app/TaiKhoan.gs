@@ -246,9 +246,9 @@ function demoTeaser_(res) {
   var dvNow = (res.chiTiet.daiVan || []).filter(function (d) { return d.isNow; })[0];
   var dvTot = (res.chiTiet.daiVan || []).filter(function (d) { return +String(d.nam).slice(0, 4) >= vy; }).sort(function (a, b) { return b.diem - a.diem; })[0];
   var out = {};
-  out.tom = TL ? { lo: [TL.tieuDe + '.', TL.phuDe], an: ['2 điểm sáng khác được 6 hệ cùng xác nhận', '3 điều cần canh chừng – có 1 điều liên quan sức khỏe', '3 hành động then chốt cho 10 năm tới', 'Giai đoạn vàng của đời bạn: ' + che_(TL.chiSo[0].gt + ' tuổi (' + TL.chiSo[0].phu + ')')] } : null;
+  out.tom = TL ? { lo: [TL.tieuDe + '.', TL.phuDe], an: ['2 điểm sáng khác được 6 hệ cùng xác nhận', '3 điều nên chăm chút để cân bằng hơn', '3 hành động then chốt cho 10 năm tới', 'Giai đoạn vàng của đời bạn: ' + che_(TL.chiSo[0].gt + ' tuổi (' + TL.chiSo[0].phu + ')')] } : null;
   out.chart = { lo: ['Mệnh ' + menh + ', Thân cư ' + I.thanCu + ', ' + I.cuc + '.', 'Cung mạnh nhất: ' + cung[0].cung + ' (' + cung[0].danhGia + ').'],
-    an: ['Cung yếu nhất – nơi bạn dễ "mất" nhất: ███', 'Ý nghĩa của ' + (res.tuvi.palaces[I.menh].tuan || res.tuvi.palaces[I.menh].triet ? 'Tuần/Triệt đang đóng ở Mệnh' : 'bộ sao tam hợp chiếu Mệnh') + ' với vận của bạn'] };
+    an: ['Mảng đời cần chăm chút nhất và cách bồi đắp: ███','Ý nghĩa của ' + (res.tuvi.palaces[I.menh].tuan || res.tuvi.palaces[I.menh].triet ? 'Tuần/Triệt đang đóng ở Mệnh' : 'bộ sao tam hợp chiếu Mệnh') + ' với vận của bạn'] };
   out.chart.lo.push('Lá số có ' + (res.tuvi.luanGiai.cachCuc || []).length + ' cách cục nổi bật, trong đó có "' + ((res.tuvi.luanGiai.cachCuc || [])[0] || { ten: '—' }).ten + '".');
   out.chart.an = out.chart.an.concat(['Luận chi tiết 12 cung: tài lộc, sự nghiệp, hôn nhân, con cái, sức khỏe, nhà cửa…', 'Cung ' + cung[cung.length - 1].cung + ' đang ở mức "' + cung[cung.length - 1].danhGia + '" – vì sao và cách hóa giải']);
   var HT = T.hoiTu;

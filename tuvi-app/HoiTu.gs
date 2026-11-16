@@ -18,9 +18,9 @@ var HT_CHU_DE = [
   { k: 'ketHon', ten: 'Tình duyên – hôn nhân', loai: 'tot', icon: '❤', tuoi: [18, 50] },
   { k: 'sinhCon', ten: 'Tin vui con cái', loai: 'tot', icon: '✿', tuoi: [20, 46] },
   { k: 'buocNgoat', ten: 'Bước ngoặt – đổi môi trường', loai: 'dong', icon: '⟳', tuoi: [12, 90] },
-  { k: 'sucKhoe', ten: 'Sức khỏe cần giữ', loai: 'xau', icon: '✚', tuoi: [1, 90] },
-  { k: 'taiChinh', ten: 'Hao tài – rủi ro tiền bạc', loai: 'xau', icon: '⚠', tuoi: [18, 90] },
-  { k: 'giaDao', ten: 'Biến động gia đạo – nhà cửa', loai: 'xau', icon: '⌂', tuoi: [1, 90] }
+  { k: 'sucKhoe', ten: 'Nên chăm sóc nhịp sống', loai: 'xau', icon: '✚', tuoi: [1, 90] },
+  { k: 'taiChinh', ten: 'Giai đoạn nên giữ tiền chắc tay', loai: 'xau', icon: '⚠', tuoi: [18, 90] },
+  { k: 'giaDao', ten: 'Nên vun đắp gia đình – nhà cửa', loai: 'xau', icon: '⌂', tuoi: [1, 90] }
 ];
 var HT_QUE = {
   taiLoc: ['Hỏa Thiên Đại Hữu', 'Phong Lôi Ích', 'Lôi Hỏa Phong', 'Hỏa Địa Tấn', 'Địa Thiên Thái', 'Sơn Thiên Đại Súc', 'Hỏa Phong Đỉnh', 'Trạch Địa Tụy', 'Địa Trạch Lâm'],
@@ -70,7 +70,7 @@ function htTinHieu_(C, y, ctx) {
   if ((chi - nChi + 12) % 12 === 6) add('buocNgoat', 'Bát Tự', 0.9, 'Bát Tự: năm xung Thái Tuế – dễ đổi chỗ ở/công việc');
   // Tuế vận tịnh lâm: can chi năm trùng can chi đại vận đang đi ("Tứ trụ dự đoán học" – Thiệu Vĩ Hoa: năm có biến lớn)
   var dvHt = bt.daiVan.filter(function (d) { return d.nam <= y; }).slice(-1)[0];
-  if (dvHt && dvHt.can === can && dvHt.chi === chi) { add('buocNgoat', 'Bát Tự', 1.3, 'Bát Tự: tuế vận tịnh lâm (năm ' + cc + ' trùng đại vận) – năm biến động lớn'); add('sucKhoe', 'Bát Tự', 0.7, 'Bát Tự: tuế vận tịnh lâm – giữ sức khỏe'); }
+  if (dvHt && dvHt.can === can && dvHt.chi === chi) { add('buocNgoat', 'Bát Tự', 1.3, 'Bát Tự: tuế vận tịnh lâm (năm ' + cc + ' trùng đại vận) – năm có nhiều chuyển động'); add('sucKhoe', 'Bát Tự', 0.7, 'Bát Tự: tuế vận tịnh lâm – giữ sức khỏe'); }
   else if (dvHt && (dvHt.chi - chi + 12) % 12 === 6 && htKhacCan_(dvHt.can, can)) add('buocNgoat', 'Bát Tự', 0.9, 'Bát Tự: năm thiên khắc địa xung với đại vận ' + dvHt.canChi + ' – đổi hướng');
   // Hà Lạc
   var hn = ctx.hlNam[y];
@@ -386,7 +386,7 @@ var HSN_SK = [
     khuyen: 'Không cho vay hay đứng tên bảo lãnh lớn; giữ quỹ dự phòng; mọi khoản đầu tư mới nên thử nhỏ trước.' },
   { k: 'taiSan', kc: 'tien', loai: 'dong', ten: 'Mua bán nhà đất, xe hoặc tài sản lớn', ngan: 'giao dịch tài sản lớn', nguoc: 'chưa thuận để mua bán',
     ung: { nhaDat: 1, taiLoc: 0.4 }, nghich: { taiChinh: 0.4 }, manh: { 'Tử Vi': 1.2, 'Bát Tự': 1.1 }, N: 3, tuoi: [22, 75],
-    khuyen: 'Kiểm tra kỹ giấy tờ pháp lý, đọc hợp đồng với người có chuyên môn; đừng vay vượt 40% thu nhập hằng tháng.' },
+    khuyen: 'Kiểm tra kỹ giấy tờ pháp lý, đọc hợp đồng với người có chuyên môn; chỉ quyết định khi đã tính kỹ sức tài chính của mình.' },
   { k: 'quenMoi', kc: 'tinh', loai: 'tot', ten: 'Có mối quan hệ tình cảm mới hoặc tình cảm hiện tại thăng hoa', ngan: 'tình cảm khởi sắc', nguoc: 'tình cảm cần hâm nóng',
     ung: { ketHon: 1 }, nghich: { giaDao: 0.4 }, manh: { 'Chiêm tinh': 1.3, 'Tử Vi': 1.1 }, N: 4, tuoi: [16, 50],
     khuyen: 'Mở lòng với các mối quan hệ qua bạn bè, công việc; nếu đã có đôi, dành thời gian riêng cho hai người.' },
@@ -550,7 +550,7 @@ function htHoSoNam_(C, namTin, thang, W) {
   if (qua) tom.push('Năm này đã qua: hãy đối chiếu với những gì bạn đã trải qua – càng khớp, các năm tới càng đáng tin.');
   return { nam: vy, tuoi: n0.tuoi, canChi: n0.canChi, soCN: n0.soCN, qua: qua, tom: tom, he: he, khiaCanh: khiaCanh, suKien: sk,
     noiBat: noiBat.map(function (x) { return x.k; }), doiLap: doiLap.map(function (x) { return x.k; }),
-    coSo: 'Mỗi sự kiện ghép tín hiệu của 5 hệ có lịch năm (Tử Vi, Bát Tự, Hà Lạc, Chiêm tinh, Thần số học; Human Design không có lịch năm). Mỗi hệ có tín hiệu "ủng hộ" và "ngược chiều" – ví dụ với thu nhập tăng, tín hiệu hao tài là ngược chiều. ' +
+    coSo: 'Mỗi sự kiện ghép tín hiệu của 5 hệ có lịch năm (Tử Vi, Bát Tự, Hà Lạc, Chiêm tinh, Thần số học; Human Design không có lịch năm). Mỗi hệ có tín hiệu "ủng hộ" và "ngược chiều" – ví dụ với thu nhập tăng, tín hiệu cần giữ tiền là ngược chiều. ' +
       'Mức khả năng lấy số lần việc đó thường gặp trong đời người (ví dụ đổi việc khoảng 5 lần, cưới khoảng 1 lần) rồi phân bổ cho từng năm theo độ tuổi và sức mạnh tín hiệu: năm càng nhiều hệ cùng báo càng nhận phần lớn. ' +
       '"×2" nghĩa là gấp đôi mức thường của chính bạn ở độ tuổi đó. Đồng thuận = từ 3 hệ cùng báo, không hệ nào ngược; Đối lập = có hệ báo và có hệ ngược chiều. ' +
       'Mỗi hệ có thế mạnh riêng nên với từng việc, hệ giỏi nhất về việc đó được tính nặng hơn (ví dụ Bát Tự với tiền bạc và sức khỏe, Tử Vi với hôn nhân – con cái – nhà đất, Chiêm tinh với tình cảm – tâm lý – đi xa). ' +

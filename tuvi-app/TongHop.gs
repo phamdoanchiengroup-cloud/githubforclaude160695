@@ -309,11 +309,9 @@ function thVocDang_(C) {
 function thCoThe_(C) {
   // Không chẩn đoán sức khỏe, dự đoán bệnh, sẹo hay thương tích từ lá số.
   return {
-    tieuDe: 'Giới hạn diễn giải về cơ thể và sức khỏe',
+    tieuDe: 'Nhịp sống hợp với bạn',
     ketLuan: [
-      'Các liên hệ giữa sao, ngũ hành, cung hoặc trung tâm Human Design với cơ quan cơ thể là quan niệm truyền thống, chưa phải công cụ y khoa đáng tin cậy.',
-      'Không thể suy ra bệnh, nguy cơ bệnh, sẹo, thương tích hoặc “điểm yếu bẩm sinh” từ lá số. Mục này không thay thế tư vấn y tế; hãy dựa vào triệu chứng và chuyên gia y tế khi có lo ngại.',
-      'Để tránh gây lo lắng hoặc tạo cảm giác chẩn đoán, hệ thống không đưa ra dự đoán cá nhân về bộ phận cơ thể hay sức khỏe.'
+      'Bạn có xu hướng sống khỏe nhất khi giữ được nhịp đều: ngủ đủ, vận động nhẹ mỗi ngày và dành chút khoảng lặng cho mình – cơ thể là người bạn đồng hành, hãy lắng nghe và hỏi ý kiến bác sĩ khi cần (phần này là góc nhìn cổ học để tham khảo, không thay cho tư vấn y tế).'
     ],
     nguon: [
       { he: 'Tử Vi', items: ['Một số sao/cung được gán ý nghĩa tượng trưng trong cổ thư; không phải bằng chứng y khoa.'] },

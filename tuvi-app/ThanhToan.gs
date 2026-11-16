@@ -23,7 +23,7 @@ var TT_PHAN_MAC_DINH = {
   nam: { ten: 'Vận năm – tiểu vận, 12 tháng, lưu niên', xu: 19, goc: 29, theo: 'nam' },
   thang: { ten: 'Nhật vận từng ngày trong 1 tháng', xu: 9, theo: 'thang' },
   dong_hanh: { ten: 'Đồng hành cả năm – vận năm + nhật vận 12 tháng', xu: 39, goc: 79, theo: 'nam' },
-  bien_co: { ten: 'Biến cố hội tụ 30 năm & dự đoán cả đời', xu: 19, goc: 29 },
+  bien_co: { ten: 'Những năm đáng chú ý 30 năm & dự đoán cả đời', xu: 19, goc: 29 },
   phoi_ngau: { ten: 'Chân dung người phối ngẫu & tuổi hợp', xu: 9, goc: 19 },
   pdf: { ten: 'PDF bản đầy đủ', xu: 19, goc: 29 },
   do_gio: { ten: 'Dò chính xác giờ sinh', xu: 9, goc: 19 },

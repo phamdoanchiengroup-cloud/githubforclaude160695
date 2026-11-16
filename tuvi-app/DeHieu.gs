@@ -677,8 +677,15 @@ function th6Lap_(C) {
     if (L.ctNut && C.ctl && C.ctl.phanTich && C.ctl.phanTich.nut) them.push({ he: 'Chiêm tinh', t: C.ctl.phanTich.nut.tron });
     // kết luận hai tầng
     var soP = phieu.length, tieu = soP ? dong + '/' + soP + ' hệ' : '';
-    var ket = huong === 'tot' ? 'Đây là một thế mạnh của bạn' + (soP ? ' – ' + tieu + ' có điểm cùng chiều thuận.' : '.') :
-      huong === 'xau' ? 'Đây là lĩnh vực bạn nên chăm chút nhiều hơn' + (soP ? ' – ' + tieu + ' cùng nhắc.' : '.') :
+    // 16/11 (rà soát logic): chỉ gọi "thế mạnh"/"nên chăm chút" khi đủ chắc – ≥3 hệ chấm, ≥ nửa số hệ cùng chiều, không hệ nào ngược chiều.
+    // Trước có 9,5% câu kiểu "thế mạnh – 1/4 hệ cùng chiều" (điểm chung bị một hệ điểm rất cao kéo lên).
+    var nguoc = phieu.filter(function (p) { return (huong === 'tot' && p.huong === 'xau') || (huong === 'xau' && p.huong === 'tot'); }).length;
+    var chac = huong !== 'vua' && soP >= 3 && dong * 2 >= soP && !nguoc;
+    var coSoHe = soP <= 2 ? soP + ' hệ có chấm điểm lĩnh vực này' : tieu + ' cùng chiều';
+    var ket = huong === 'tot' && chac ? 'Đây là một thế mạnh của bạn – ' + tieu + ' có điểm cùng chiều thuận.' :
+      huong === 'xau' && chac ? 'Đây là lĩnh vực bạn nên chăm chút nhiều hơn – ' + tieu + ' cùng nhắc.' :
+      huong === 'tot' ? 'Lĩnh vực này nghiêng về thuận' + (soP ? ' (' + coSoHe + (nguoc ? ', có hệ nhìn khác chiều' : '') + ')' : '') + ' – nền tảng khá, đọc thêm từng hệ bên dưới để thấy chỗ cần giữ.' :
+      huong === 'xau' ? 'Lĩnh vực này nghiêng về cần chăm chút' + (soP ? ' (' + coSoHe + (nguoc ? ', có hệ nhìn thuận hơn' : '') + ')' : '') + ' – chưa đến mức đáng lo, chủ động vun đắp sẽ khác.' :
       (!manh.length && yeu.length ? 'Lĩnh vực này nghiêng về thử thách – chưa đến mức đáng lo, nhưng nên chủ động chăm chút.' :
        manh.length && !yeu.length ? 'Lĩnh vực này nghiêng về thuận – có nền tảng tốt, cần thêm nỗ lực để bứt lên.' :
        'Lĩnh vực này có cả thuận lẫn khó – kết quả phụ thuộc nhiều vào cách bạn lựa chọn và thời điểm.');
@@ -695,7 +702,7 @@ function th6Lap_(C) {
       (c.qua || []).forEach(function (x) { qua.push({ k: c.k, nam: x.nam, soHe: x.soHe, he: x.he, tot: c.loai === 'tot', ten: c.ten }); });
     });
     toi.sort(function (a, b) { return a.nam - b.nam; });
-    return { k: L.k, ten: L.ten, icon: L.icon, diem: diem, huong: huong, phieu: phieu, dong: dong, soHe: soP, chieu: chieu,
+    return { k: L.k, ten: L.ten, icon: L.icon, diem: diem, huong: huong, chac: chac, nguoc: nguoc, phieu: phieu, dong: dong, soHe: soP, chieu: chieu,
       doDong: soP ? Math.round(dong / soP * 100) : 0, ket: ket, noiBat: noiBat, manh: manh, yeu: yeu, them: them, khuyen: khuyen,
       namToi: toi.slice(0, 3), namQua: qua.sort(function (a, b) { return b.nam - a.nam; }).slice(0, 3) };
   });

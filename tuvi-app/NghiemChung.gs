@@ -68,9 +68,14 @@ function nghiemChungTinhDiem_(cauTraLoi) {
   var pct = diemMax > 0 ? Math.round(diemDuoc / diemMax * 100) : 0;
   var soNhom = chiTiet.filter(function (c) { return c.diem != null; }).length, tyLe = soNhom ? soDungCao / soNhom : 0;
   var ketLuan, khuyen, mau;
-  // Ngưỡng gốc: ≥ 6/8 nhóm "đúng cao" → xác nhận; 4–5/8 → có thể đúng. Quy ra tỷ lệ trên số nhóm được chấm, kèm % khớp có trọng số.
-  if (soNhom >= 4 && tyLe >= 0.75 && pct >= 70) { ketLuan = 'XAC_NHAN'; mau = 'jade'; khuyen = 'Lá số của bạn RẤT KHỚP với giờ sinh đã nhập (' + soDungCao + '/' + soNhom + ' nhóm đúng cao). Yên tâm sử dụng.'; }
-  else if (soNhom >= 4 && tyLe >= 0.5 && pct >= 55) { ketLuan = 'CO_THE_DUNG'; mau = 'gold'; khuyen = 'Lá số CÓ THỂ ĐÚNG nhưng chưa hoàn toàn (' + soDungCao + '/' + soNhom + ' nhóm đúng cao). Bạn có thể tiếp tục, hoặc kiểm tra lại giờ sinh.'; }
+  // Quy tắc chủ dự án: ≥ 6/8 nhóm "đúng cao" → xác nhận; 4–5/8 → có thể đúng (quy ra tỷ lệ trên số nhóm được chấm khi có nhóm
+  // "Không áp dụng"). 16/11 (rà soát logic, chủ dự án duyệt): bỏ điều kiện thêm "% khớp ≥ 70/55" và bắt chấm đủ 8 nhóm mới kết luận
+  // (trước chấm 4 nhóm cũng ra "Xác nhận"); % khớp vẫn hiện để tham khảo.
+  var soTraLoi = chiTiet.length;
+  if (soTraLoi < 8) { ketLuan = 'CHUA_DU'; mau = 'gold'; khuyen = 'Bạn mới chấm ' + soTraLoi + '/8 nhóm. Hãy chấm đủ 8 nhóm (nhóm nào không đúng hoàn cảnh của bạn thì chọn "Không áp dụng") để có kết luận.'; }
+  else if (soNhom < 4) { ketLuan = 'CHUA_DU'; mau = 'gold'; khuyen = 'Có quá nhiều nhóm "Không áp dụng" (chỉ ' + soNhom + ' nhóm được chấm) nên chưa đủ căn cứ để kết luận.'; }
+  else if (tyLe >= 0.75) { ketLuan = 'XAC_NHAN'; mau = 'jade'; khuyen = 'Lá số của bạn RẤT KHỚP với giờ sinh đã nhập (' + soDungCao + '/' + soNhom + ' nhóm đúng cao). Yên tâm sử dụng.'; }
+  else if (tyLe >= 0.5) { ketLuan = 'CO_THE_DUNG'; mau = 'gold'; khuyen = 'Lá số CÓ THỂ ĐÚNG nhưng chưa hoàn toàn (' + soDungCao + '/' + soNhom + ' nhóm đúng cao). Bạn có thể tiếp tục, hoặc kiểm tra lại giờ sinh.'; }
   else { ketLuan = 'CO_THE_SAI'; mau = 'coral'; khuyen = 'Lá số CHƯA KHỚP với giờ sinh (' + soDungCao + '/' + soNhom + ' nhóm đúng cao). Nên thử các giờ sinh lân cận để tìm giờ khớp nhất.'; }
   return { pct: pct, ketLuan: ketLuan, khuyen: khuyen, mau: mau, soDungCao: soDungCao, soSai: soSai, soNhom: soNhom, chiTiet: chiTiet };
 }
@@ -259,9 +264,8 @@ function ncNhomG_(X, g) {
   ncNamQua_(X, g, ['sinhCon'], 1);
   var CC = X.T.phoiNgau && X.T.phoiNgau.conCai;
   ((CC && CC.ketLuan) || []).map(ncSach_).forEach(function (t) {
-    if (/^Số con/.test(t)) g.dong.push(ncDong_(t, 0.6, 'Tử Vi, Bát Tự'));
-    else if (/^Trai – gái/.test(t)) g.dong.push(ncDong_(t.replace(/\s*\(Tử Vi \+ Bát Tự; tham khảo\)/, ''), 0.4, 'Tử Vi, Bát Tự'));
-    else if (/^Quan hệ cha mẹ – con/.test(t)) g.dong.push(ncDong_(t, 0.5, ''));
+    // 16/11: không đưa câu "Số con", "Trai – gái" vào nghiệm chứng (quy tắc bỏ số con / tỷ lệ trai–gái)
+    if (/^Quan hệ cha mẹ – con/.test(t)) g.dong.push(ncDong_(t, 0.5, ''));
   });
   var L = (X.T.phoiNgau && X.T.phoiNgau.ketLuan || []).map(ncSach_), co = L.filter(function (x) { return /^Nếu bạn đã có con/.test(x); })[0];
   if (co) g.dong.push(ncDong_(co.replace(/^Nếu bạn đã có con \(khả năng việc này đã diễn ra trước năm nay ≈ \d+%\), /, 'Nếu đã có con: '), 0.7, 'tổng hợp 5 hệ'));

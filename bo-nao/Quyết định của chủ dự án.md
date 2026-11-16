@@ -4,6 +4,7 @@ Nhóm: Bắt đầu · Cập nhật 21/10/2026
 Liên quan: [[Việc chờ chủ dự án]] · [[TCC Bán hàng]] · [[00 Mục lục]]
 
 ## Cách làm việc
+- **16/11: rà soát toàn bộ bằng 6 chuyên gia, sửa theo đợt.** Chốt: miễn phí/trả phí theo **phương án A "Tài khoản là chìa khóa"** (tài khoản miễn phí mở Tổng hợp + dò giờ + 1 đại vận đã qua; trả phí dồn vào "khi nào"; Trọn đời ~89 xu, Hội viên năm 99 xu, quà 9 xu sau đăng ký) · phong cách **A – Hologram tinh gọn** · nghiệm chứng **đúng quy tắc 6/8, chấm đủ 8 nhóm** · lời mời đầu không nhắc xu · "Biến cố hội tụ" đổi tên "Những năm đáng chú ý". – [[TCC Rà soát toàn bộ 11-2026]]
 - **1/11: quan hệ gia đình phải luận theo đúng vai** (cha mẹ – con, anh chị em… không dùng mục kết hôn/sinh con); xem được 3–4 lá số cùng lúc; **bỏ vai "Cháu"** (quan hệ xa). – [[TCC Tab Gia đình]]
 - **1/11: giờ Tý muộn (23–24h) luôn tính sang ngày âm hôm sau** (phân biệt với Tý sớm) – không tắt chuyển ngày để khớp trang khác. – [[TCC Tab Gia đình]]
 - **1/11 (sau): tab Gia đình mở cho mọi thành viên đăng nhập** (mỗi người danh sách riêng, lưu ở Sheet); **đồng ý đưa thông tin gia đình chủ dự án lên GitHub** (danh sách mặc định trong GiaDinh.gs). – [[TCC Tab Gia đình]]

@@ -204,8 +204,12 @@ function tuviTrinhTu_(tv, ct) {
   var xung = ttMod_(chiNam - I.yChi) === 6, tamTai = (TT_TAM_TAI[I.yChi] || []).indexOf(chiNam) >= 0;
   var thSao = TH ? [].concat(TH.chinh || [], TH.cat || [], TH.hung || []).filter(function (s) { return !s.hoaOf; }).map(function (s) { return s.n; }).slice(0, 10) : [];
   var de26 = [];
-  if (DH) de26.push('Đại vận 10 năm hiện tại (từ ' + DH.daiHan + ' tuổi) ở mức ' + muc(DH.diem10) + '.');
-  if (TH) de26.push('Vận năm ' + vy + ' ở mức ' + muc(TH.diem10) + '.');
+  // 16/11 (rà soát logic): mức vận lấy đúng từ mục Đại vận / Tiểu vận (điểm vận có lưu tinh, Tứ Hóa vận) – trước lấy điểm gốc
+  // của cung nên lệch bậc với mục Tiểu vận ở 53% lá số. Không có chiTiet thì lùi về điểm cung như cũ.
+  var dvNay = ct && (ct.daiVan || []).filter(function (d) { return d.isNow; })[0], tvNay = ct && ct.tieuVan;
+  function mucVan(v, cung) { return v && v.danhGia ? '"' + String(v.danhGia).toLowerCase() + '"' : muc(cung.diem10); }
+  if (DH) de26.push('Đại vận 10 năm hiện tại (từ ' + DH.daiHan + ' tuổi) ở mức ' + mucVan(dvNay, DH) + '.');
+  if (TH) de26.push('Vận năm ' + vy + ' ở mức ' + mucVan(tvNay && tvNay.nam === vy ? tvNay : null, TH) + '.');
   if (xung) de26.push('Năm ' + vy + ' xung tuổi: dễ thay đổi, nên giữ sức khỏe và tránh quyết định vội.');
   if (tamTai) de26.push('Năm ' + vy + ' rơi vào hạn tam tai: theo quan niệm xưa nên cẩn trọng việc lớn, đi lại và tài chính; làm việc thiện, sống chậm lại để "giải hạn".');
   if (!xung && !tamTai) de26.push('Năm ' + vy + ' không phạm năm xung hay tam tai.');
@@ -213,7 +217,7 @@ function tuviTrinhTu_(tv, ct) {
     DH ? 'Đại vận tại ' + DH.cung + ' (' + DH.chiTen + ', ' + DH.daiHan + '–' + (DH.daiHan + 9) + ' tuổi): ' + chinhTxt(DH) + ' · ' + DH.diem10 + '/10.' : '',
     TH ? 'Tiểu hạn ' + vy + ' (' + I.viewCanChi + ', ' + I.tuoi + ' tuổi) tại ' + TH.cung + ' (' + TH.chiTen + ')' + (thSao.length ? ': ' + thSao.join(', ') : '') + '.' : '',
     'Năm xung: ' + (xung ? 'có (' + CHI[chiNam] + ' xung ' + CHI[I.yChi] + ')' : 'không') + ' · Tam tai tuổi ' + CHI[I.yChi] + ': các năm ' + (TT_TAM_TAI[I.yChi] || []).map(function (c) { return CHI[c]; }).join(', ') + (tamTai ? ' – năm nay phạm' : '') + '.'
-  ].filter(Boolean), xung || tamTai ? 'xau' : DH && DH.diem10 >= 6 ? 'tot' : 'vua');
+  ].filter(Boolean), xung || tamTai ? 'xau' : (dvNay ? dvNay.diem >= 6 : DH && DH.diem10 >= 6) ? 'tot' : 'vua');
 
   // Gộp các phần luận khác vào đúng bước (25/10 – chủ dự án chọn "26 bước là bài luận chính"): giao diện đọc trường gop
   // để chèn văn dễ hiểu của cung (chiTiet.cung), bộ sao (chiTiet.boSao), ba vòng nhân sinh (chiTiet.tamPhap), cách cục, sao hạn đại vận.

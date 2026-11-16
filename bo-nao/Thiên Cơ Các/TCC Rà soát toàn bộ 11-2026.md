@@ -21,3 +21,13 @@ Chủ dự án: dùng các chuyên gia rà soát toàn bộ mã, giao diện, vi
 - **Giữ `ALLOWALL`** (báo cáo đề xuất bỏ) vì trang qoder (thien-co-cac-…qoder.website) nhúng web Apps Script.
 - Kiểm thử mới `tests/bao-mat.js` (182) + bật lại thanh-toan/tai-khoan/van-ngay; code-reviewer rà lại: không lỗi chặn, 3 góp ý mức vừa đã sửa.
 - Còn mở (chờ chủ dự án): `getDoanNghiemChung` công khai lộ kết luận Tổng hợp/biến cố (V1); ranh giới vận theo năm trong tab từng hệ (V2); quà 50 xu, thưởng mời (C5); dữ liệu cũ của tài khoản toàn số trên Sheet (nếu có) cần chuyển đổi.
+
+## Chủ dự án chốt (16/11)
+- Miễn phí/trả phí: **phương án A "Tài khoản là chìa khóa"** (Đợt 3). Phong cách: **A – Hologram tinh gọn** (Đợt 4). Nghiệm chứng: **sửa đúng quy tắc 6/8**. Làm Đợt 2 ngay.
+
+## Đợt 2 – gỡ chỗ gây khó chịu (16/11, mã 2026.11.16.1)
+- Giao diện (Script/Index/Styles): poster "50 xu + 3 gói giá" → khung "Tạo tài khoản miễn phí" (`vePosterQua`, ẩn khi `body.co-ket-qua`); lời mời khách không nhắc xu (`tinhTrangMua` dùng `phan: 'dang_ky'` → `data-dang-ky`; `moDangNhap` ẩn dòng quà); tab mở đầu `chart` khi Tổng hợp khóa; bỏ "năm sinh con kèm %" (Index, Cặp đôi); lỗi số tiền hộp nạp; ngưỡng ghi cho khách 6 / 4,8; ô nhập 16px trên điện thoại; xóa ngày giờ điền sẵn form Nghiệm chứng; "Biến cố hội tụ" → "Những năm đáng chú ý" (cả tên phần trong bảng giá ThanhToan.gs).
+- Logic: bước 26 Tử Vi lấy mức từ `chiTiet.daiVan` (isNow) / `chiTiet.tieuVan` (TuViTrinhTu.gs); Tổng hợp 6 hệ chỉ "thế mạnh/nên chăm chút" khi ≥3 hệ, ≥ nửa cùng chiều, không hệ ngược (`chac`, `nguoc` trong `th6Lap_`); nghiệm chứng 6/8 đúng quy tắc, phải chấm đủ 8 nhóm (`CHUA_DU`), bỏ câu số con / trai – gái; lời mồi sợ trong `TaiKhoan.gs` (teaser).
+- Văn (content-creator, ~70 câu): TuViHeThong.gs (bỏ lời khuyên đầu tư nhà đất, câu nặng, "cha mẹ có thể mất sớm"), ThanSoHoc.gs ("Thiếu 9", 7 mũi tên trống tên trung tính), HoiTu.gs (nhãn "Hao tài"…), TongHop.gs (mục Cơ thể → "Nhịp sống hợp với bạn").
+- Giữ % đồng thuận / % ngũ hành (quyết định 24/10). Kiểm thử: 25 file đạt (nghiem-chung 834 có ca 6/8, 4/8, chưa đủ 8 nhóm).
+- Còn lại cho đợt sau: ~250 câu Tử Vi có tên sao (tách de/ky), câu nặng trong DeHieu.gs/TuViTrinhTu.gs, TS_SUC_KHOE (Thần số), văn trùng lặp phần bán.

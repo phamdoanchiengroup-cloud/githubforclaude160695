@@ -141,14 +141,14 @@ var TUVI_FACT_PHUTINH = {
   'Hỏa Tinh':   { yNghia: 'Bạn có thể nóng tính, hành động nhanh và đôi khi hối hận vì đã quá vội vàng.', loai: 'yeu', trongSo: 1.2, tags: ['nong_tinh', 'boc_phat'] },
   'Linh Tinh':  { yNghia: 'Bạn hay lo nghĩ và đôi khi gặp những chuyện bất ngờ không lường trước.', loai: 'yeu', trongSo: 1.1, tags: ['lo_nghi', 'bat_ngo'] },
   'Địa Không':  { yNghia: 'Bạn có những suy nghĩ khác người, thích những điều lớn lao, nhưng cũng dễ hụt hẫng khi thực tế không như mơ.', loai: 'yeu', trongSo: 1.2, tags: ['khac_nguoi', 'hut_hang'] },
-  'Địa Kiếp':   { yNghia: 'Cuộc đời bạn có những lúc thăng trầm, đôi khi gặp mất mát đột ngột.', loai: 'yeu', trongSo: 1.3, tags: ['thang_tram', 'mat_mat'] },
+  'Địa Kiếp':   { yNghia: 'Bạn có xu hướng đi qua những giai đoạn lên xuống rõ rệt — một khoản dự phòng và kế hoạch phương án hai giúp bạn vững vàng khi có thay đổi bất ngờ.', loai: 'yeu', trongSo: 1.3, tags: ['thang_tram', 'mat_mat'] },
   'Hóa Kỵ':     { yNghia: 'Bạn dễ bị hiểu lầm và đôi khi gặp chuyện không như ý — quan trọng là giữ được sự kiên nhẫn.', loai: 'yeu', trongSo: 1.5, tags: ['hieu_lam', 'tro_ngai'] },
   'Thiên Hình': { yNghia: 'Bạn là người nghiêm khắc với chính mình và đôi khi cả với người khác.', loai: 'yeu', trongSo: 1.0, tags: ['nghiem_khac'] },
   'Thiên Riêu': { yNghia: 'Bạn có sức hút trong tình cảm — nên sống rõ ràng, chung thủy để tránh những chuyện phức tạp.', loai: 'yeu', trongSo: 0.9, tags: ['tinh_cam', 'phuc_tap'] },
   'Tang Môn':   { yNghia: 'Bạn nhạy cảm và đôi khi hay buồn phiền về những chuyện nhỏ.', loai: 'yeu', trongSo: 0.9, tags: ['buon_phien'] },
   'Bạch Hổ':    { yNghia: 'Bạn nên cẩn thận với những chuyện bất ngờ — đi lại, làm việc gì cũng nên thong thả, chắc chắn.', loai: 'yeu', trongSo: 1.0, tags: ['tai_nan', 'bat_ngo'] },
   'Thiên Khốc': { yNghia: 'Bạn là người nhạy cảm, dễ xúc động và hay lo lắng.', loai: 'yeu', trongSo: 0.9, tags: ['nhao_cam'] },
-  'Thiên Hư':   { yNghia: 'Bạn có thể gặp những lúc hao tổn hoặc hụt hẫng không rõ lý do.', loai: 'yeu', trongSo: 0.9, tags: ['hao_ton'] },
+  'Thiên Hư':   { yNghia: 'Bạn có xu hướng đôi lúc thấy hụt năng lượng hoặc chi tiêu lặt vặt khó kiểm soát — ghi chép chi tiêu và nghỉ ngơi đủ giúp bạn lấy lại cân bằng.', loai: 'yeu', trongSo: 0.9, tags: ['hao_ton'] },
   'Cô Thần':    { yNghia: 'Bạn thích sống độc lập và đôi khi cảm thấy cô đơn — nhưng bạn không yếu đuối, chỉ là không muốn phụ thuộc ai.', loai: 'yeu', trongSo: 0.8, tags: ['doc_lap', 'co_don'] },
   'Quả Tú':     { yNghia: 'Bạn thích sống độc lập và đôi khi cảm thấy cô đơn — nhưng bạn không yếu đuối, chỉ là không muốn phụ thuộc ai.', loai: 'yeu', trongSo: 0.8, tags: ['doc_lap', 'co_don'] }
 };
@@ -222,7 +222,7 @@ var TUVI_FACT_BAC_SI = {
   'Hỷ Thần':    { yNghia: 'Hỷ Thần (vui vẻ, hỷ sự): có niềm vui, có hỷ sự ở lĩnh vực này.', loai: 'manh', trongSo: 0.7 },
   'Bệnh Phù':   { yNghia: 'Bệnh Phù (mệt mỏi, trì trệ): nên giữ nếp sinh hoạt điều độ, nghỉ ngơi đủ.', loai: 'yeu', trongSo: 0.7 },
   'Đại Hao':    { yNghia: 'Đại Hao (hao tán lớn): chi tiêu dễ vượt dự tính — tài chính cần quản lý chặt, tích lũy đều.', loai: 'yeu', trongSo: 0.9 },
-  'Phục Binh':  { yNghia: 'Phục Binh (tiểu nhân ngầm): cần đề phòng tiểu nhân ngầm phá.', loai: 'yeu', trongSo: 0.8 },
+  'Phục Binh':  { yNghia: 'Phục Binh (điều chưa lộ diện): nên làm việc minh bạch, chọn người cộng tác kỹ và giữ kín thông tin quan trọng.', loai: 'yeu', trongSo: 0.8 },
   'Quan Phủ':   { yNghia: 'Quan Phủ (giấy tờ, tranh chấp): nên cẩn trọng giấy tờ, hợp đồng để tránh tranh chấp.', loai: 'yeu', trongSo: 0.8 }
 };
 
@@ -235,13 +235,13 @@ var TUVI_FACT_THAI_TUE = {
   'Tang Môn':    { yNghia: 'Tang Môn (buồn phiền): dễ có lúc buồn phiền — nên giữ tinh thần thư thái, chia sẻ với người thân.', loai: 'yeu', trongSo: 0.8 },
   'Thiếu Âm':    { yNghia: 'Thiếu Âm (hiền hòa, phúc nhẹ): có sự hiền hòa, có chút phúc nhẹ.', loai: 'manh', trongSo: 0.6 },
   'Quan Phù':    { yNghia: 'Quan Phù (giấy tờ, tranh chấp): nên cẩn trọng giấy tờ, hợp đồng.', loai: 'yeu', trongSo: 0.7 },
-  'Tử Phù':      { yNghia: 'Tử Phù (buồn thương, trở ngại): dễ có chuyện buồn thương, trở ngại.', loai: 'yeu', trongSo: 0.8 },
+  'Tử Phù':      { yNghia: 'Tử Phù (trầm lắng, chậm lại): đôi lúc tâm trạng trầm xuống hoặc việc chậm lại — nên chia sẻ với người tin cậy và chia việc thành từng bước nhỏ.', loai: 'yeu', trongSo: 0.8 },
   'Tuế Phá':     { yNghia: 'Tuế Phá (phá tán, bướng bỉnh): có xu hướng phá tán, bướng bỉnh.', loai: 'yeu', trongSo: 0.7 },
   'Long Đức':    { yNghia: 'Long Đức (phúc đức, giải hung): được phúc đức che chở, gặp dữ hóa lành.', loai: 'manh', trongSo: 0.9 },
   'Bạch Hổ':     { yNghia: 'Bạch Hổ (bất ngờ, va chạm): nên đi lại cẩn thận, cẩn trọng giấy tờ, hợp đồng.', loai: 'yeu', trongSo: 0.9 },
   'Phúc Đức':    { yNghia: 'Phúc Đức (phúc đức, giải hung): được phúc đức che chở, gặp khó có người giúp.', loai: 'manh', trongSo: 0.9 },
-  'Điếu Khách':  { yNghia: 'Điếu Khách (tin buồn, khoác lác): dễ có tin buồn, chuyện không như ý.', loai: 'yeu', trongSo: 0.6 },
-  'Trực Phù':    { yNghia: 'Trực Phù (buồn phiền, trở ngại): dễ có buồn phiền, trở ngại.', loai: 'yeu', trongSo: 0.6 }
+  'Điếu Khách':  { yNghia: 'Điếu Khách (lời nói, tin đồn): nên cẩn trọng lời nói và kiểm chứng tin tức trước khi tin — hứa vừa sức giúp bạn tránh chuyện không như ý.', loai: 'yeu', trongSo: 0.6 },
+  'Trực Phù':    { yNghia: 'Trực Phù (vướng víu, chậm): dễ gặp vài trở ngại nhỏ — kiên nhẫn đi từng bước và hỏi ý người có kinh nghiệm sẽ gỡ được.', loai: 'yeu', trongSo: 0.6 }
 };
 
 /* ============================================================
@@ -335,15 +335,15 @@ var TUVI_FACT_PHUTHE_PHUTINH = {
   // Hung tinh — hôn nhân có thử thách
   'Kình Dương': { yNghia: 'Bạn đời của bạn cá tính mạnh — có thể có va chạm trong hôn nhân. Hai bạn nên nhường nhịn và nhắc nhau sống điều độ, cẩn thận.', loai: 'yeu', trongSo: 1.3, tags: ['phoi_ngau_ca_tinh', 'hon_nhan_va_cham'] },
   'Đà La':      { yNghia: 'Duyên tình đến chậm, dây dưa — có thể trải qua vài mối tình trước khi ổn định.', loai: 'yeu', trongSo: 1.2, tags: ['hon_nhan_muon', 'duyen_cham'] },
-  'Hỏa Tinh':   { yNghia: 'Hôn nhân có thể bùng nổ cãi vã — vợ chồng nóng nảy, dễ to tiếng.', loai: 'yeu', trongSo: 1.2, tags: ['hon_nhan_nong_nay'] },
+  'Hỏa Tinh':   { yNghia: 'Hai bạn có xu hướng phản ứng nhanh khi bất đồng — hẹn nhau tạm dừng vài phút trước khi nói tiếp sẽ giữ được hòa khí.', loai: 'yeu', trongSo: 1.2, tags: ['hon_nhan_nong_nay'] },
   'Linh Tinh':  { yNghia: 'Hôn nhân có những lúc âm ỉ, khó chịu — cần học cách buông bỏ.', loai: 'yeu', trongSo: 1.1, tags: ['hon_nhan_am_i'] },
-  'Địa Không':  { yNghia: 'Tình cảm có lúc hụt hẫng, cảm giác trống vắng — dù bên nhau vẫn thấy cô đơn.', loai: 'yeu', trongSo: 1.2, tags: ['hon_nhan_hut_hang'] },
+  'Địa Không':  { yNghia: 'Tình cảm có lúc chùng xuống, cần được làm mới — dành thời gian riêng cho nhau và nói thật cảm xúc giúp hai bạn gần lại.', loai: 'yeu', trongSo: 1.2, tags: ['hon_nhan_hut_hang'] },
   'Địa Kiếp':   { yNghia: 'Hôn nhân có thể có giai đoạn thử thách — cần kiên nhẫn, nói chuyện thẳng thắn để cùng vượt qua.', loai: 'yeu', trongSo: 1.3, tags: ['hon_nhan_bien_co'] },
   'Hóa Kỵ':     { yNghia: 'Vợ chồng dễ hiểu lầm, ghen tuông — nên kết hôn muộn và nói rõ ràng với nhau.', loai: 'yeu', trongSo: 1.5, tags: ['hon_nhan_hieu_lam', 'can_ket_hon_muon'] },
   'Thiên Riêu': { yNghia: 'Bạn đời của bạn có sức hút — hai bạn nên rõ ràng, chung thủy để giữ gìn hôn nhân.', loai: 'yeu', trongSo: 1.1, tags: ['phoi_ngau_da_tinh'] },
   'Cô Thần':    { yNghia: 'Có những lúc bạn cảm thấy cô đơn ngay trong hôn nhân — cần chủ động chia sẻ.', loai: 'yeu', trongSo: 1.0, tags: ['hon_nhan_co_don'] },
   'Quả Tú':     { yNghia: 'Dễ có lúc xa cách — có thể có giai đoạn vợ chồng ở xa nhau; nên giữ liên lạc và chia sẻ đều đặn.', loai: 'yeu', trongSo: 1.0, tags: ['hon_nhan_xa_cach'] },
-  'Tang Môn':   { yNghia: 'Hôn nhân có thể gặp chuyện buồn — cần kiên nhẫn và thấu hiểu nhau.', loai: 'yeu', trongSo: 0.9, tags: ['hon_nhan_buon'] },
+  'Tang Môn':   { yNghia: 'Hai bạn có thể có lúc cùng trải qua giai đoạn nặng lòng — kiên nhẫn, lắng nghe và làm chỗ dựa cho nhau sẽ giúp tình cảm sâu hơn.', loai: 'yeu', trongSo: 0.9, tags: ['hon_nhan_buon'] },
   'Bạch Hổ':    { yNghia: 'Hai bạn nên quan tâm sức khỏe của nhau hơn — giữ nếp sinh hoạt điều độ, khám định kỳ.', loai: 'yeu', trongSo: 1.0, tags: ['suc_khoe_phoi_ngau'] },
   'Thiên Hình': { yNghia: 'Bạn đời của bạn nghiêm khắc, kỷ luật — có thể làm ngành luật, y, quân đội.', loai: 'trung', trongSo: 0.8, tags: ['phoi_ngau_nghiem_khac'] }
 };
@@ -399,7 +399,7 @@ var TUVI_VAN_PHUTHE = {
   'D': {
     tomTat: 'Hôn nhân của bạn thuộc nhóm "quyết liệt" — bạn đời thuộc mẫu người cá tính mạnh. Hôn nhân có xu hướng nhiều biến động nhưng cũng đầy đam mê.',
     nguoiBanDoi: 'Bạn đời của bạn là người mạnh mẽ, quyết đoán, không chịu khuất phục. Họ sống mãnh liệt, yêu ghét rõ ràng, và sẵn sàng đương đầu với khó khăn. Theo cách luận truyền thống, người này thường toát lên vẻ mạnh mẽ, có uy tự nhiên. Họ có thể hơi nóng tính, nhưng cũng rất trung thành với người họ đã chọn.',
-    kieuHonNhan: 'Hôn nhân của bạn có nhiều sóng gió nhưng cũng đầy cảm xúc — không nhàm chán, không tẻ nhạt. Hai người dễ cãi vã to tiếng nhưng cũng nhanh làm lành. Nếu biết kiềm chế cái tôi và học cách nhường nhịn, đây có thể là kiểu hôn nhân bền bỉ nhất — vì hai người đã cùng nhau vượt qua nhiều thử thách.',
+    kieuHonNhan: 'Hôn nhân của bạn có nhiều chuyển động nhưng cũng đầy cảm xúc — không nhàm chán, không tẻ nhạt. Hai người có thể bất đồng thẳng thắn nhưng cũng nhanh làm lành. Nếu biết kiềm chế cái tôi và học cách nhường nhịn, đây có thể là kiểu hôn nhân bền bỉ nhất — vì hai người đã cùng nhau vượt qua nhiều thử thách.',
     dieuLuuY: 'Cả hai đều có xu hướng nóng nảy và muốn mình đúng — dễ dẫn đến những cuộc cãi vã không đáng có. Bạn đời có thể có giai đoạn thay đổi lớn trong sự nghiệp hoặc cuộc sống, khiến hôn nhân bị ảnh hưởng. Hai bạn nên nhắc nhau giữ nếp sinh hoạt điều độ, nghỉ ngơi đủ.',
     loiKhuyen: [
       'Học cách hạ giọng trước khi nói — chỉ cần 1 câu nhẹ nhàng có thể tránh cả cuộc cãi vã.',
@@ -519,12 +519,12 @@ var TUVI_FACT_TAIBACH_PHUTINH = {
   'Vũ Khúc':    { yNghia: 'Có Vũ Khúc ở Tài — đây là tài tinh ở đúng vị trí. Bạn có tố chất làm kinh tế, giỏi kiếm và giữ tiền.', loai: 'manh', trongSo: 1.8, tags: ['tai_chinh_vung_manh'] },
   'Thiên Phủ':  { yNghia: 'Có Thiên Phủ ở Tài — như kho trời đóng tại cung tiền, tài chính ổn định và biết tích lũy lâu dài.', loai: 'manh', trongSo: 1.6, tags: ['tai_chinh_on_dinh'] },
   'Đại Hao':    { yNghia: 'Có Đại Hao — chi tiêu lớn, khó giữ tiền. Cần kỷ luật tài chính chặt chẽ.', loai: 'yeu', trongSo: 1.1, tags: ['chi_tieu_lon'] },
-  'Tiểu Hao':   { yNghia: 'Có Tiểu Hao — hao hụt lặt vặt, tiền cứ vơi dần mà không rõ lý do.', loai: 'yeu', trongSo: 0.8, tags: ['hao_hut_nho'] },
+  'Tiểu Hao':   { yNghia: 'Có Tiểu Hao — dễ có những khoản chi lặt vặt cộng dồn lại. Ghi chép chi tiêu hằng tuần giúp bạn thấy rõ tiền đi đâu.', loai: 'yeu', trongSo: 0.8, tags: ['hao_hut_nho'] },
 
   // Hung tinh — rủi ro tài chính
   'Kình Dương': { yNghia: 'Có Kình Dương — kiếm tiền bằng cạnh tranh, nhưng dễ xảy ra tranh chấp tiền bạc. Cẩn thận khi cho vay hoặc hùn vốn.', loai: 'yeu', trongSo: 1.3, tags: ['tranh_chap_tien'] },
   'Đà La':      { yNghia: 'Có Đà La — tiền bạc dây dưa, khó dứt khoát. Việc thu nợ hoặc đòi tiền thường kéo dài.', loai: 'yeu', trongSo: 1.2, tags: ['tien_bac_day_dua'] },
-  'Hỏa Tinh':   { yNghia: 'Có Hỏa Tinh — tài chính có thể bùng nổ bất ngờ theo cả hai hướng: thắng lớn hoặc thua đậm. Cần thận trọng với quyết định nhanh.', loai: 'yeu', trongSo: 1.1, tags: ['tai_chinh_bung_no'] },
+  'Hỏa Tinh':   { yNghia: 'Có Hỏa Tinh — tài chính có xu hướng lên xuống nhanh theo cả hai hướng. Cho mình một ngày suy nghĩ trước các quyết định tiền bạc lớn sẽ giúp bạn giữ được thành quả.', loai: 'yeu', trongSo: 1.1, tags: ['tai_chinh_bung_no'] },
   'Linh Tinh':  { yNghia: 'Có Linh Tinh — tài chính âm ỉ, khó khăn kéo dài. Cần kiên nhẫn và không nên đầu tư dài hạn khi chưa chắc chắn.', loai: 'yeu', trongSo: 1.1, tags: ['tai_chinh_kho_khan'] },
   'Địa Không':  { yNghia: 'Có Địa Không — tiền đến rồi đi, tránh đầu cơ, tránh cho vay. Nên tập trung vào thu nhập ổn định thay vì làm giàu nhanh.', loai: 'yeu', trongSo: 1.2, tags: ['tien_den_roi_di', 'tranh_dau_co'] },
   'Địa Kiếp':   { yNghia: 'Có Địa Kiếp — dễ có khoản chi bất ngờ, cẩn thận cho vay hoặc đầu tư rủi ro cao. Cần có quỹ dự phòng.', loai: 'yeu', trongSo: 1.3, tags: ['mat_tien_dot_ngot'] },
@@ -543,7 +543,7 @@ var TUVI_VAN_TAIBACH = {
     tomTat: 'Tài chính của bạn thuộc nhóm "tài tinh" — bạn có tố chất làm kinh tế, giỏi kiếm và giữ tiền. Tài vận có xu hướng ổn định nếu bạn duy trì kỷ luật tài chính.',
     cachKiem: 'Bạn kiếm tiền bằng năng lực thật và sự chăm chỉ — không ỷ lại vào may mắn hay người khác. Thu nhập thường đến từ công việc chính thức, có uy tín. Bạn cũng có khả năng nhìn ra cơ hội tài chính mà người khác bỏ qua, và biết cách tận dụng nó một cách thận trọng.',
     cachGiu: 'Bạn giữ tiền rất tốt — biết phân bổ thành các khoản khác nhau (chi tiêu, tiết kiệm, đầu tư), không tiêu hoang phí. Bạn cũng thích tích lũy tài sản có giá trị lâu dài như nhà đất, vàng bạc thay vì chỉ gửi tiết kiệm.',
-    coHoi: 'Cơ hội tài chính của bạn thường đến từ việc đầu tư dài hạn và các mối quan hệ đáng tin cậy. Bạn hợp với việc tự kinh doanh, đầu tư bất động sản, hoặc giữ vị trí quản lý tài chính trong tổ chức.',
+    coHoi: 'Cơ hội tài chính của bạn thường đến từ việc đầu tư dài hạn và các mối quan hệ đáng tin cậy. Bạn hợp với việc tự kinh doanh, xây dựng tài sản lâu dài, hoặc giữ vị trí quản lý tài chính trong tổ chức.',
     ruiRo: 'Rủi ro chính là sự bảo thủ quá mức — đôi khi bạn bỏ lỡ cơ hội lớn vì quá thận trọng. Ngoài ra, bạn có thể bị "đóng băng" tài sản vào những khoản đầu tư không sinh lời, khiến tiền không luân chuyển.',
     loiKhuyen: [
       'Đa dạng hóa đầu tư — đừng dồn hết tiền vào một kênh dù nó an toàn đến đâu.',
@@ -590,9 +590,9 @@ var TUVI_VAN_TAIBACH = {
     coHoi: 'Cơ hội tài chính lớn của bạn thường đến từ việc nắm bắt xu hướng mới, mở rộng thị trường, hoặc kinh doanh trong lĩnh vực ít cạnh tranh. Bạn hợp với vai trò tiên phong — người mở đường, người khai phá. Càng dấn thân, bạn càng học được nhiều và càng có cơ hội lớn.',
     ruiRo: 'Rủi ro chính là sự thiếu kiên nhẫn — bạn dễ bỏ dở giữa chừng khi chưa thấy kết quả, hoặc đầu tư quá nhiều vào một cơ hội chưa chín muồi. Cần học cách chia nhỏ rủi ro và luôn có "kế hoạch B".',
     loiKhuyen: [
-      'Luôn có quỹ dự phòng 6-12 tháng trước khi đầu tư mạo hiểm — vì tài chính của bạn sẽ có lúc thăng lúc trầm.',
-      'Chia vốn thành nhiều phần — không bao giờ đặt tất cả vào một cược dù bạn tin chắc đến đâu.',
-      'Học cách dừng đúng lúc — khi đã đạt mục tiêu đề ra, hãy chốt lời thay vì tham lam.'
+      'Giữ một quỹ dự phòng trước khi thử những việc nhiều rủi ro — vì tài chính của bạn có lúc lên lúc xuống.',
+      'Đừng dồn hết mọi thứ vào một hướng dù bạn tin chắc đến đâu — luôn chừa đường lui.',
+      'Đặt mục tiêu rõ trước khi bắt đầu, và biết dừng khi đã đạt — thành quả giữ được mới là thành quả thật.'
     ]
   },
 
@@ -1047,7 +1047,7 @@ var TUVI_FACT_DIENTRACH_CHINHTINH = {
 var TUVI_FACT_DIENTRACH_PHUTINH = {
   // Cát tinh — nhà cửa tốt
   'Lộc Tồn':   { yNghia: 'Có Lộc Tồn — bạn giữ được nhà đất, có của để dành. Đây là sao tốt cho Điền Trạch.', loai: 'manh', trongSo: 1.7, tags: ['giu_nha_dat'] },
-  'Hóa Lộc':   { yNghia: 'Có Hóa Lộc — tăng thêm tài sản bất động sản. Nhà đất của bạn có xu hướng sinh lời theo thời gian.', loai: 'manh', trongSo: 1.6, tags: ['tai_san_tang'] },
+  'Hóa Lộc':   { yNghia: 'Có Hóa Lộc — bạn có duyên với nhà cửa, dễ gây dựng được không gian sống ưng ý theo thời gian.', loai: 'manh', trongSo: 1.6, tags: ['tai_san_tang'] },
   'Hóa Khoa':  { yNghia: 'Có Hóa Khoa — giấy tờ nhà đất thuận lợi, mua bán dễ dàng, ít tranh chấp.', loai: 'manh', trongSo: 1.4, tags: ['giay_to_thuan'] },
   'Thiên Trù': { yNghia: 'Có Thiên Trù — nhà đủ ăn, bếp núc ấm cúng. Không khí gia đình ấm áp, dễ chịu.', loai: 'manh', trongSo: 1.2, tags: ['nha_am_cung'] },
   'Long Trì':  { yNghia: 'Có Long Trì — nhà cửa thanh nhã, phong thủy tốt. Ở đâu cũng tạo được không gian đẹp.', loai: 'manh', trongSo: 1.0, tags: ['nha_dep'] },
@@ -1056,14 +1056,14 @@ var TUVI_FACT_DIENTRACH_PHUTINH = {
   'Hữu Bật':   { yNghia: 'Có Hữu Bật — có người hỗ trợ về nhà đất, anh em giúp đỡ lẫn nhau.', loai: 'manh', trongSo: 1.1, tags: ['duoc_giup_nha'] },
 
   // Hung tinh — nhà cửa cần chú ý
-  'Địa Không': { yNghia: 'Có Địa Không — nhà cửa dễ hao hụt, không nên đầu tư bất động sản quy mô lớn.', loai: 'yeu', trongSo: 1.4, tags: ['hao_hut_nha'] },
+  'Địa Không': { yNghia: 'Có Địa Không — chuyện nhà cửa dễ tốn kém hơn dự tính; nên lập kế hoạch chi rõ ràng và cân nhắc kỹ các khoản chi lớn.', loai: 'yeu', trongSo: 1.4, tags: ['hao_hut_nha'] },
   'Địa Kiếp':  { yNghia: 'Có Địa Kiếp — cần rõ ràng giấy tờ, hợp đồng để tránh tranh chấp nhà đất.', loai: 'yeu', trongSo: 1.5, tags: ['mat_nha_dat', 'tranh_chap'] },
-  'Hỏa Tinh':  { yNghia: 'Có Hỏa Tinh — đề phòng hỏa hoạn. Cần kiểm tra hệ thống điện, bếp gas định kỳ.', loai: 'yeu', trongSo: 1.4, tags: ['hoa_hoan'] },
+  'Hỏa Tinh':  { yNghia: 'Có Hỏa Tinh — bạn nên giữ thói quen an toàn trong nhà: kiểm tra điện, bếp định kỳ và tắt thiết bị khi ra ngoài.', loai: 'yeu', trongSo: 1.4, tags: ['hoa_hoan'] },
   'Linh Tinh': { yNghia: 'Có Linh Tinh — nhà cửa có thể có vấn đề ngầm (ẩm mốc, dột, nứt). Cần bảo trì thường xuyên.', loai: 'yeu', trongSo: 1.2, tags: ['nha_hu_hong'] },
   'Kình Dương':{ yNghia: 'Có Kình Dương — nhà cửa có thể có tranh chấp với hàng xóm. Cần giữ hòa khí và rõ ràng ranh giới.', loai: 'yeu', trongSo: 1.3, tags: ['tranh_chap_hang_xom'] },
   'Đà La':     { yNghia: 'Có Đà La — nhà đất dây dưa, mua bán khó dứt khoát. Cần kiên nhẫn trong giao dịch.', loai: 'yeu', trongSo: 1.2, tags: ['giao_dich_cham'] },
   'Hóa Kỵ':    { yNghia: 'Có Hóa Kỵ — giấy tờ nhà đất rắc rối, dễ có vấn đề pháp lý. Cần kiểm tra kỹ trước khi ký kết.', loai: 'yeu', trongSo: 1.5, tags: ['giay_to_rac_roi'] },
-  'Thiên Hình':{ yNghia: 'Có Thiên Hình — nhà cửa có thể gặp vấn đề pháp lý hoặc kiện tụng. Cần minh bạch từ đầu.', loai: 'yeu', trongSo: 1.1, tags: ['kien_tung_nha'] }
+  'Thiên Hình':{ yNghia: 'Có Thiên Hình — chuyện nhà cửa nên được làm rõ ràng, minh bạch từ đầu; giữ giấy tờ đầy đủ giúp bạn yên tâm.', loai: 'yeu', trongSo: 1.1, tags: ['kien_tung_nha'] }
 };
 
 var TUVI_VAN_DIENTRACH = {
@@ -1071,44 +1071,44 @@ var TUVI_VAN_DIENTRACH = {
     tomTat: 'Nhà cửa của bạn thuộc nhóm "vững vàng" — bạn có lộc về nhà đất, tài sản ổn định và có xu hướng tăng theo thời gian.',
     nhaCua: 'Bạn có duyên với nhà đất — thường sở hữu bất động sản có giá trị và giữ được lâu dài. Nhà cửa của bạn khang trang, được nhiều người nể trọng. Có thể bạn được thừa hưởng từ cha mẹ hoặc tự gây dựng từ sớm.',
     moiTruong: 'Môi trường sống lý tưởng của bạn là nơi yên tĩnh, có không gian xanh, an ninh tốt. Bạn hợp với nhà ở khu dân trí cao, gần công viên hoặc sông nước. Không hợp nơi ồn ào, chật chội.',
-    tichLuy: 'Cách tích lũy của bạn là đầu tư vào bất động sản dài hạn — nhà đất, đất nền, hoặc căn hộ cho thuê. Bạn có xu hướng mua để giữ, ít bán. Đây là cách tích lũy an toàn và bền vững cho bạn.',
+    tichLuy: 'Bạn có xu hướng tích lũy chậm mà chắc — thích những thứ bền lâu, giữ gìn kỹ những gì mình đã có. Nếp quản lý tài sản của bạn thiên về an toàn và ổn định hơn là nhanh.',
     loiKhuyen: [
-      'Ưu tiên mua nhà đất ở vị trí tốt — vị trí quan trọng hơn diện tích.',
-      'Giữ nhà cửa ngăn nắp, sạch sẽ — phong thủy tốt giúp tài lộc hanh thông.',
-      'Không nên bán nhà đất vội vàng — càng giữ lâu, giá trị càng tăng.'
+      'Ưu tiên một chỗ ở yên ổn, hợp nhu cầu thật của mình trước rồi mới tính chuyện khác.',
+      'Giữ nhà cửa ngăn nắp, sạch sẽ — không gian gọn gàng giúp bạn thấy thư thái và làm việc tốt hơn.',
+      'Mọi quyết định lớn về nhà cửa, tài sản nên được cân nhắc kỹ, hỏi người có chuyên môn và đọc kỹ giấy tờ trước khi ký.'
     ]
   },
   'B': { // Tự tạo: Vũ Khúc, Tham Lang, Thiên Đồng
     tomTat: 'Nhà cửa của bạn thuộc nhóm "tự tạo" — bạn tự gây dựng nhà đất bằng sức mình, không ỷ lại vào thừa hưởng.',
     nhaCua: 'Bạn có xu hướng tự lập trong việc nhà cửa — theo cách luận truyền thống, bạn ít dựa vào thừa hưởng mà tự tay gây dựng (bạn hãy đối chiếu với thực tế). Ban đầu có thể khó khăn, nhưng càng về sau càng ổn định. Nhà cửa của bạn có giá trị tài chính cao.',
     moiTruong: 'Môi trường sống lý tưởng của bạn là nơi có không gian làm việc, gần trung tâm thương mại hoặc khu công nghiệp. Bạn hợp với nhà phố, căn hộ tiện nghi hơn là nhà vườn yên tĩnh. Không hợp nơi quá xa trung tâm, khó di chuyển.',
-    tichLuy: 'Cách tích lũy của bạn là vừa làm vừa mua — không chờ đủ tiền mới mua, mà mua trả góp hoặc vay ngân hàng. Bạn cũng có thể đầu tư nhiều bất động sản nhỏ rồi bán lại. Đây là cách tích lũy nhanh nhưng cần quản lý rủi ro tốt.',
+    tichLuy: 'Bạn có xu hướng tích lũy bằng sức mình, từng bước một — vừa làm vừa xây dần nền tảng. Nếp quản lý tài sản hợp với bạn là có kế hoạch rõ, biết mình đang ở đâu và cần gì tiếp theo.',
     loiKhuyen: [
-      'Mua nhà sớm nhất có thể — giá bất động sản thường tăng theo thời gian.',
-      'Không nên vay quá nhiều để mua nhà — giữ tỷ lệ nợ dưới 50% thu nhập.',
-      'Cải tạo nhà cũ thành nhà mới — tiết kiệm hơn mua nhà mới.'
+      'Ưu tiên an cư theo khả năng hiện tại — một chỗ ở vừa sức giúp bạn yên tâm làm việc.',
+      'Lập kế hoạch thu chi rõ ràng và giữ quỹ dự phòng trước khi tính các việc lớn.',
+      'Chăm chút, sửa sang dần không gian đang ở — nhà vừa ý không nhất thiết phải là nhà mới.'
     ]
   },
   'C': { // Hưởng tổ nghiệp: Thái Dương, Thiên Lương, Thiên Tướng
     tomTat: 'Nhà cửa của bạn thuộc nhóm "hưởng tổ nghiệp" — bạn có duyên được thừa hưởng nhà đất từ gia đình, hoặc sống ở nơi có truyền thống lâu đời.',
     nhaCua: 'Lá số gợi ý bạn có duyên được thừa hưởng nhà đất từ ông bà, cha mẹ — bạn hãy đối chiếu với thực tế gia đình mình. Nhà cửa của bạn có xu hướng ở nơi có truyền thống, gần họ hàng. Bạn cũng có khả năng giữ gìn và phát triển tài sản thừa hưởng thành tài sản lớn hơn.',
     moiTruong: 'Môi trường sống lý tưởng của bạn là nơi gần gia đình, họ hàng, có không gian sinh hoạt chung. Bạn hợp với nhà có sân vườn, gần chùa hoặc đình làng. Không hợp nơi quá xa quê hương, xa gia đình.',
-    tichLuy: 'Cách tích lũy của bạn là giữ gìn và phát triển tài sản thừa hưởng — cải tạo nhà cũ, mua thêm đất liền kề. Bạn cũng có thể đầu tư vào nhà đất ở quê để giữ gìn cội nguồn. Đây là cách tích lũy mang tính truyền thống.',
+    tichLuy: 'Bạn có xu hướng trân trọng và giữ gìn những gì gia đình để lại, kể cả kỷ vật và nếp nhà. Nếp quản lý tài sản của bạn mang tính truyền thống — giữ gốc trước, phát triển sau.',
     loiKhuyen: [
       'Giữ gìn nhà cửa tổ nghiệp — đó là tài sản tinh thần quý giá.',
       'Cải tạo nhà cũ thành không gian sống hiện đại — vừa giữ truyền thống vừa tiện nghi.',
-      'Đầu tư vào nhà đất gần gia đình — vừa tăng tài sản vừa giữ kết nối họ hàng.'
+      'Giữ kết nối thường xuyên với gia đình, họ hàng — đó là chỗ dựa bền nhất của bạn.'
     ]
   },
   'D': { // Biến động: Thất Sát, Phá Quân, Thiên Cơ, Cự Môn, Liêm Trinh
-    tomTat: 'Nhà cửa của bạn thuộc nhóm "biến động" — nhà đất thay đổi nhiều lần trong đời, có thể gặp tranh chấp hoặc biến động.',
+    tomTat: 'Nhà cửa của bạn thuộc nhóm "biến động" — bạn có xu hướng thay đổi chỗ ở nhiều lần trong đời; giữ giấy tờ rõ ràng giúp mỗi lần đổi thay đều suôn sẻ.',
     nhaCua: 'Bạn có xu hướng thay đổi chỗ ở nhiều lần — mua bán, chuyển nhà, hoặc đổi thành phố sinh sống. Nhà cửa của bạn ít khi cố định một chỗ lâu dài. Nên rõ ràng giấy tờ chuyện thừa kế trong gia đình và ranh giới với hàng xóm để giữ hòa khí.',
     moiTruong: 'Môi trường sống lý tưởng của bạn là nơi có nhiều cơ hội thay đổi — gần trung tâm kinh tế, có thể di chuyển linh hoạt. Bạn hợp với căn hộ hơn là nhà cố định. Không hợp nơi quá yên tĩnh, ít biến động.',
-    tichLuy: 'Cách tích lũy của bạn là mua đi bán lại — kiếm lời từ chênh lệch giá bất động sản. Bạn cũng có thể đầu tư vào đất nền chờ tăng giá. Đây là cách tích lũy nhanh nhưng rủi ro cao, cần kiểm tra pháp lý kỹ.',
+    tichLuy: 'Bạn có xu hướng sống linh hoạt, sẵn sàng thay đổi chỗ ở theo công việc và cơ hội. Nếp quản lý tài sản hợp với bạn là gọn nhẹ, dễ xoay xở, ưu tiên sự an toàn hơn những khoản lời nhanh.',
     loiKhuyen: [
-      'Kiểm tra giấy tờ pháp lý kỹ càng trước khi mua bán — nhóm biến động dễ gặp tranh chấp.',
-      'Không nên đầu tư dài hạn vào một bất động sản duy nhất — chia nhỏ rủi ro.',
-      'Giữ một khoản tiền mặt dự phòng — vì nhà cửa của bạn có thể thay đổi bất ngờ.'
+      'Đọc kỹ giấy tờ, hợp đồng thuê hoặc chuyển nhà trước khi ký — rõ ràng từ đầu giúp bạn tránh phiền phức.',
+      'Giữ đồ đạc gọn nhẹ, dễ mang theo — hợp với nếp sống hay thay đổi của bạn.',
+      'Giữ một khoản dự phòng cho những lần chuyển chỗ ở — để mỗi thay đổi là chủ động, không bị động.'
     ]
   },
   'F': { // VCD
@@ -1436,7 +1436,7 @@ function taoDoanCanhBaoThienDi_(chart, pi) {
     canhBao.push('Có Kình Dương hoặc Đà La — khi đi xa nên đi chậm, tuân thủ an toàn giao thông, hạn chế đi đêm ở nơi xa lạ.');
   }
   if (dsSao.indexOf('Địa Không') >= 0 || dsSao.indexOf('Địa Kiếp') >= 0) {
-    canhBao.push('Có Địa Không hoặc Địa Kiếp — ra ngoài dễ gặp hụt hẫng, mất mát. Cẩn thận bị lừa đảo khi đi xa, không nên tin người quá dễ dàng ở nơi mới. Mang theo ít tiền mặt và giấy tờ tùy thân cẩn thận.');
+    canhBao.push('Có Địa Không hoặc Địa Kiếp — khi ra ngoài, bạn có xu hướng gặp việc không như kỳ vọng ban đầu. Ở nơi mới nên tìm hiểu kỹ trước khi tin hay giao tiền, giữ gọn giấy tờ tùy thân và chỉ mang lượng tiền mặt vừa đủ.');
   }
   if (dsSao.indexOf('Hỏa Tinh') >= 0 || dsSao.indexOf('Linh Tinh') >= 0) {
     canhBao.push('Có Hỏa Tinh hoặc Linh Tinh — ra ngoài dễ gặp chuyện bất ngờ, nóng nảy. Đi xa cần giữ bình tĩnh, tránh quyết định vội vàng khi gặp sự cố.');
@@ -1447,7 +1447,7 @@ function taoDoanCanhBaoThienDi_(chart, pi) {
   var saoR = [].concat(P[gr].chinh, P[gr].cat, P[gr].hung).map(function(s){ return s.n; });
   var badL = saoL.indexOf('Kình Dương') >= 0 || saoL.indexOf('Địa Không') >= 0 || saoL.indexOf('Địa Kiếp') >= 0;
   var badR = saoR.indexOf('Kình Dương') >= 0 || saoR.indexOf('Địa Không') >= 0 || saoR.indexOf('Địa Kiếp') >= 0;
-  if (badL && badR) canhBao.push('Sát tinh kẹp hai bên cung Thiên Di — ra ngoài bị kìm kẹp, khó phát huy. Cần đặc biệt cẩn trọng khi đi xa một mình.');
+  if (badL && badR) canhBao.push('Sát tinh kẹp hai bên cung Thiên Di — khi ra ngoài, bạn có thể thấy khó thể hiện hết mình lúc đầu. Đi xa nên có kế hoạch rõ và giữ liên lạc với người thân; có bạn đồng hành thì càng yên tâm.');
 
   if (!canhBao.length) return null;
   return { tieuDe: 'Cảnh báo đặc biệt khi ra ngoài', text: canhBao.join(' ') };
@@ -1553,15 +1553,15 @@ var TUVI_FACT_NOBOC_PHUTINH = {
   'Hóa Lộc':    { yNghia: 'Có Hóa Lộc — bạn bè mang lại tài lộc, có thể cùng nhau làm ăn. Quan hệ xã hội giúp bạn kiếm tiền.', loai: 'manh', trongSo: 1.6, tags: ['ban_mang_tai_loc'] },
   'Hóa Khoa':   { yNghia: 'Có Hóa Khoa — bạn bè giúp bạn giải quyết khó khăn, giấy tờ thuận lợi. Bạn có duyên với người có học thức.', loai: 'manh', trongSo: 1.5, tags: ['ban_giai_kho'] },
   'Lộc Tồn':    { yNghia: 'Có Lộc Tồn — bạn bè giúp bạn giữ của, mang lại sự ổn định tài chính. Quan hệ bạn bè bền vững.', loai: 'manh', trongSo: 1.4, tags: ['ban_on_dinh'] },
-  'Kình Dương': { yNghia: 'Có Kình Dương — bạn bè tranh giành, dễ xảy ra xung đột. Cẩn thận khi hợp tác làm ăn với người khác.', loai: 'yeu', trongSo: 1.4, tags: ['ban_tranh_gianh', 'can_hop_tac'] },
+  'Kình Dương': { yNghia: 'Có Kình Dương — quan hệ bạn bè có tính cạnh tranh, dễ va chạm ý kiến. Khi hợp tác, thỏa thuận rõ vai trò và quyền lợi từ đầu sẽ giữ được tình bạn.', loai: 'yeu', trongSo: 1.4, tags: ['ban_tranh_gianh', 'can_hop_tac'] },
   'Đà La':      { yNghia: 'Có Đà La — quan hệ bạn bè dây dưa, khó dứt khoát. Có thể bị bạn bè làm phiền hoặc lợi dụng lòng tốt.', loai: 'yeu', trongSo: 1.3, tags: ['ban_day_dua', 'bi_lam_phien'] },
   'Hỏa Tinh':   { yNghia: 'Có Hỏa Tinh — bạn bè nóng nảy, dễ xảy ra cãi vã. Cần giữ bình tĩnh khi giao tiếp với người xung quanh.', loai: 'yeu', trongSo: 1.3, tags: ['ban_nong_nay', 'de_cai_va'] },
   'Linh Tinh':  { yNghia: 'Có Linh Tinh — bạn bè âm ỉ, có thể có chuyện hiểu lầm kéo dài. Cần chủ động nói chuyện để giải tỏa.', loai: 'yeu', trongSo: 1.3, tags: ['ban_am_i', 'hieu_lam'] },
   'Địa Không':  { yNghia: 'Có Địa Không — bạn bè đến rồi đi, khó giữ người ở lâu dài. Nhóm bạn thường thay đổi theo thời gian.', loai: 'yeu', trongSo: 1.2, tags: ['ban_den_roi_di'] },
-  'Địa Kiếp':   { yNghia: 'Có Địa Kiếp — cẩn thận bị bạn bè lợi dụng, mất tiền hoặc mất cơ hội. Không nên tin người quá mức.', loai: 'yeu', trongSo: 1.3, tags: ['bi_loi_dung', 'mat_mat'] },
-  'Hóa Kỵ':     { yNghia: 'Có Hóa Kỵ — bạn bè đố kỵ, quan hệ xã hội dễ nảy sinh thị phi. Cần giữ lời ăn tiếng nói và tránh tranh chấp.', loai: 'yeu', trongSo: 1.6, tags: ['ban_do_ky', 'thi_phi'] },
-  'Phục Binh':  { yNghia: 'Có Phục Binh — đề phòng bạn bè phản trắc, tiểu nhân ngầm phá. Cần cẩn trọng khi chia sẻ thông tin quan trọng.', loai: 'yeu', trongSo: 1.4, tags: ['ban_phan_trac', 'tieu_nhan_ngam'] },
-  'Thiên Hình': { yNghia: 'Có Thiên Hình — quan hệ với người dưới dễ căng thẳng, có thể dẫn đến kiện tụng. Cần minh bạch trong công việc.', loai: 'yeu', trongSo: 1.2, tags: ['cang_thang', 'kien_tung'] }
+  'Địa Kiếp':   { yNghia: 'Có Địa Kiếp — bạn có xu hướng tốt bụng, dễ nhận lời giúp người khác. Nên đặt giới hạn rõ chuyện tiền bạc với bạn bè và tìm hiểu kỹ trước khi cùng làm ăn.', loai: 'yeu', trongSo: 1.3, tags: ['bi_loi_dung', 'mat_mat'] },
+  'Hóa Kỵ':     { yNghia: 'Có Hóa Kỵ — quan hệ xã hội dễ có hiểu lầm do lời qua tiếng lại. Nói rõ ràng, tránh bàn chuyện người vắng mặt sẽ giúp bạn giữ được hòa khí.', loai: 'yeu', trongSo: 1.6, tags: ['ban_do_ky', 'thi_phi'] },
+  'Phục Binh':  { yNghia: 'Có Phục Binh — bạn nên chọn lọc người để chia sẻ chuyện quan trọng. Giữ kín kế hoạch khi chưa chắc chắn và làm việc minh bạch giúp bạn yên tâm.', loai: 'yeu', trongSo: 1.4, tags: ['ban_phan_trac', 'tieu_nhan_ngam'] },
+  'Thiên Hình': { yNghia: 'Có Thiên Hình — quan hệ với người cộng tác, cấp dưới đôi khi căng thẳng vì yêu cầu cao. Thỏa thuận rõ ràng bằng văn bản và minh bạch trong công việc giúp mọi việc suôn sẻ.', loai: 'yeu', trongSo: 1.2, tags: ['cang_thang', 'kien_tung'] }
 };
 
 /* ============================================================
@@ -1593,14 +1593,14 @@ var TUVI_FACT_PHUMau_PHUTINH = {
   'Hóa Quyền':  { yNghia: 'Có Hóa Quyền — cha mẹ mạnh mẽ, có uy. Bạn được hưởng phúc ấm nhưng cũng chịu áp lực kỳ vọng từ cha mẹ.', loai: 'manh', trongSo: 1.5, tags: ['cha_me_manh_me', 'ap_luc_ky_vong'] },
   'Hóa Khoa':   { yNghia: 'Có Hóa Khoa — gia đình có giáo dục, cha mẹ văn nhã. Bạn có học lực cao và được hưởng danh tiếng từ gia đình.', loai: 'manh', trongSo: 1.5, tags: ['gia_giao', 'hoc_luc_cao'] },
   'Thiên Việt': { yNghia: 'Có Thiên Việt — bề trên, người ngoài giúp đỡ bạn. Bạn có duyên với quý nhân ngoài gia đình.', loai: 'manh', trongSo: 1.2, tags: ['quy_nhan_ngoai'] },
-  'Tang Môn':   { yNghia: 'Có Tang Môn — chú ý sức khỏe cha mẹ, có thể có tin buồn. Cần quan tâm cha mẹ nhiều hơn.', loai: 'yeu', trongSo: 1.2, tags: ['suc_khoe_cha_me', 'tin_buon'] },
+  'Tang Môn':   { yNghia: 'Có Tang Môn — bạn là người nặng lòng với gia đình. Dành thời gian thăm hỏi, trò chuyện với cha mẹ đều đặn là cách vun đắp tình thân tốt nhất.', loai: 'yeu', trongSo: 1.2, tags: ['suc_khoe_cha_me', 'tin_buon'] },
   'Bạch Hổ':    { yNghia: 'Có Bạch Hổ — cha mẹ vất vả, giấy tờ liên quan đến gia đình có thể rắc rối. Cẩn thận thủ tục hành chính.', loai: 'yeu', trongSo: 1.2, tags: ['cha_me_vat_va', 'giay_to_rac_roi'] },
-  'Thiên Khốc': { yNghia: 'Có Thiên Khốc — buồn phiền về cha mẹ, có thể có chuyện không vui trong gia đình. Cần giữ tinh thần lạc quan.', loai: 'yeu', trongSo: 1.1, tags: ['buon_phien_gia_dinh'] },
+  'Thiên Khốc': { yNghia: 'Có Thiên Khốc — bạn nhạy cảm với không khí gia đình, dễ để tâm chuyện nhà. Chia sẻ thẳng thắn và nhẹ nhàng với cha mẹ giúp bạn nhẹ lòng hơn.', loai: 'yeu', trongSo: 1.1, tags: ['buon_phien_gia_dinh'] },
   'Kình Dương': { yNghia: 'Có Kình Dương — bất đồng với cha mẹ, dễ xảy ra xung đột. Cần học cách lắng nghe và nhường nhịn.', loai: 'yeu', trongSo: 1.3, tags: ['bat_dong_cha_me', 'xung_dot'] },
   'Đà La':      { yNghia: 'Có Đà La — mối quan hệ cha mẹ con cái dây dưa, khó giải quyết. Có thể có hiểu lầm kéo dài.', loai: 'yeu', trongSo: 1.2, tags: ['hieu_lam_keo_dai'] },
   'Hóa Kỵ':     { yNghia: 'Có Hóa Kỵ — dễ xung khắc với bề trên, giấy tờ liên quan đến gia đình vướng mắc. Cần kiên nhẫn trong các thủ tục.', loai: 'yeu', trongSo: 1.6, tags: ['xung_khac_be_tren', 'giay_to_vuong'] },
-  'Địa Không':  { yNghia: 'Có Địa Không — cha mẹ có thể mất sớm hoặc bạn phải tự lập sớm. Không nên ỷ lại vào gia đình.', loai: 'yeu', trongSo: 1.4, tags: ['cha_me_mat_som', 'tu_lap'] },
-  'Địa Kiếp':   { yNghia: 'Có Địa Kiếp — gia đình có thể gặp biến cố, tài sản thất thoát. Bạn phải tự lực nhiều hơn.', loai: 'yeu', trongSo: 1.4, tags: ['bien_co_gia_dinh', 'tu_luc'] }
+  'Địa Không':  { yNghia: 'Có Địa Không — bạn có xu hướng tự lập sớm, quen tự lo liệu cho mình. Đó là điểm mạnh; đôi khi hãy cho phép mình nhờ gia đình giúp đỡ.', loai: 'yeu', trongSo: 1.4, tags: ['cha_me_mat_som', 'tu_lap'] },
+  'Địa Kiếp':   { yNghia: 'Có Địa Kiếp — gia đình có thể có giai đoạn phải thắt chặt chi tiêu. Bạn có xu hướng tự lực tốt; cùng gia đình lập kế hoạch tài chính rõ ràng giúp mọi người vững tâm.', loai: 'yeu', trongSo: 1.4, tags: ['bien_co_gia_dinh', 'tu_luc'] }
 };
 
 /* ============================================================
