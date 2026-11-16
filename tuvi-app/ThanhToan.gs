@@ -239,7 +239,8 @@ function ttCatNamHe_(r, coNam, coThang, vy) {
     if (H) ['solarReturn', 'transit'].forEach(function (k) { if (H[k]) { if (typeof H[k].t === 'string') H[k].t = KN; H[k].kenh = []; H[k].trungTam = []; H[k].khoa = true; } });
     if (S && S.chuKy) S.chuKy.forEach(function (c) { if (c.nam >= vy) { c.y = KT; c.khoa = true; } });
     if (S && S.thang) S.thang.forEach(function (c) { c.y = KT; c.khoa = true; });
-    if (M.tongHop && M.tongHop.namNay) M.tongHop.namNay.nguon = [];   // 26 câu luận năm của 6 hệ
+    if (M.tongHop && M.tongHop.namNay) M.tongHop.namNay.nguon = [];
+    ((M.tongHop && M.tongHop.matMa) || []).forEach(function (x) { if (x && typeof x.y === 'string' && x.y.indexOf('Năm ' + vy + ', ba tháng') >= 0) x.y = x.y.slice(0, x.y.indexOf('Năm ' + vy + ', ba tháng')).trim(); });   // 26 câu luận năm của 6 hệ
     var coNamVy = new RegExp('[Nn]ăm ' + vy);
     // Chu kỳ Chiêm tinh (transit, tiến triển, Solar Arc): bỏ câu luận năm đang xem và các năm tới
     var namToi = function (t) { var m = String(t).match(/(?:[Nn]ăm|khoảng năm) (\d{4})/); return !!m && +m[1] >= vy; };
@@ -250,11 +251,12 @@ function ttCatNamHe_(r, coNam, coThang, vy) {
         else if (o[k] && typeof o[k] === 'object') w(o[k]);
       }
     })(C.phanTich.chuKy);
+    if (C && C.phanTich && C.phanTich.chuKy && C.phanTich.chuKy.solarReturn) { C.phanTich.chuKy.solarReturn.ds = [KN]; C.phanTich.chuKy.solarReturn.khoa = true; }   // rà soát Đợt 3–4 S1
     [C && C.phanTich, S, H].forEach(function (P) { ((P && P.loiKhuyen) || []).forEach(function (x) { if (x && typeof x.t === 'string' && coNamVy.test(x.t)) { x.t = KN; x.khoa = true; } }); });
-    if (S && S.chuyenTiep && typeof S.chuyenTiep.ket === 'string') S.chuyenTiep.ket = KN;
+    if (S && S.chuyenTiep) { if (typeof S.chuyenTiep.ket === 'string') S.chuyenTiep.ket = KN; if (typeof S.chuyenTiep.tron === 'string') S.chuyenTiep.tron = KN; }
     var HLt = M.haLac && M.haLac.luan && M.haLac.luan.tongQuan;
     if (Array.isArray(HLt)) M.haLac.luan.tongQuan = HLt.map(function (t) { return typeof t === 'string' && t.indexOf('Năm ' + vy) === 0 ? t.split(' – ')[0] + '. ' + KN : t; });
-    var D = M.deHieu || {}, laNam = new RegExp('^(Năm nay|Năm ' + vy + '|Thời điểm hành động)$'), cauNam = new RegExp('Năm ' + vy + '|Năm Cá Nhân|Năm thu hoạch|Chu kỳ 9 năm mới');
+    var D = M.deHieu || {}, laNam = new RegExp('^(Năm nay|Năm ' + vy + '|Thời điểm hành động|Chủ đề năm theo tên của bạn)$'), cauNam = new RegExp('Năm ' + vy + '|Năm Cá Nhân|Năm thu hoạch|Chu kỳ 9 năm mới');
     Object.keys(D).forEach(function (h) {
       ((D[h] && D[h].khoi) || []).forEach(function (k) { (k.doan || []).forEach(function (d) {
         if (laNam.test(String(d.tieuDe || ''))) { d.text = KN; d.list = []; d.khoa = true; return; }
@@ -452,7 +454,7 @@ function ttGhiQuyen_(ten, gia, dong) {
   try { ttSheet_('MoKhoa').appendRow(dong); }
   catch (e) { if (gia) ttCong_(ten, gia, 'Hoàn xu do lỗi ghi quyền', 'HOAN'); throw new Error('Chưa ghi được quyền mở khóa, xu đã được hoàn lại. Vui lòng thử lại sau ít phút.'); }
 }
-/** Hội viên năm: cộng 365 ngày từ hạn hiện tại (hoặc hôm nay) – mở vận năm/tháng/nhật vận cho mọi lá số của tài khoản */
+/** Hội viên năm: cộng 12 tháng lịch từ hạn hiện tại (hoặc hôm nay) – mở vận năm/tháng/nhật vận cho mọi lá số của tài khoản */
 function ttMuaHoiVien_(u, p) {
   if (ttToanQuyen_(u)) return { ok: true, toanQuyen: true };
   return ttKhoa_(function () {
