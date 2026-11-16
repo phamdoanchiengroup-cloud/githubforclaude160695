@@ -160,3 +160,4 @@ Những điều đã chốt. Đừng đề xuất lại những gì ghi "không 
 - Ngày dự kiến xong: **giữ cách tính hiện tại** (không tự đẩy đơn gần xong lên – chọn B).
 - Phôi 2 nhánh: chuôi bán lẻ chỉ cần nhánh chuôi (ngọn bán lẻ chỉ nhánh ngọn) là đủ.
 - (16/11 tối) **Hàng ưu tiên CHỈ là mã có trong tab ĐƠN ƯU TIÊN** – chữ "ưu tiên" ghi trong Sheet KHÔNG tính. **Làn lẻ giữ 10%**, chấp nhận đợt trễ khi đang tồn đơn lẻ (không tạm nâng làn).
+- (16/11 tối) **Hạn đơn lẻ theo kênh, tính NGÀY LÀM VIỆC (trừ CN + ngày lễ)** từ ngày đặt: Web lẻ thường 5–7, POD 7–10, Web lẻ custom 12–15. **Hạn cuối (7/10/15) để tính trễ + xếp lịch**, mốc sớm (5/7/12) chỉ cảnh báo vàng "sắp hết hạn". Thay cho hạn 5 ngày chung.

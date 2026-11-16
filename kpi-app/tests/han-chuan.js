@@ -48,9 +48,10 @@ ok(/D1/.test(m3)&&/\(đổi\)/.test(m3),'hẹn đổi → báo lại, ghi (đổ
 ok(JSON.stringify(ctx.dhCsBP_({SON:'abc',UV:200}))===JSON.stringify(Object.assign(ctx.dhCsBP_(null),{UV:200})),'bảng công suất: số sai về mặc định');
 // 14/11 (2 làn): hạn ngầm đơn lẻ + công suất thực đo
 o={tab:'WEB LẺ CUSTOM',ngayDat:'2026-11-12',sl:10,thieu:10,dl:'',btp:GAY,pl:{loai:'GAY'},qua:{},hen:{}};
-ok(ctx.dhDlNgam_(o)==='2026-11-17','đơn lẻ không deadline → hạn ngầm ngày đặt + 5 (16/11)',ctx.dhDlNgam_(o));
+ctx.DH_LL_=ctx.dhNgayLamFn_(cs); ok(ctx.dhDlNgam_(o)==='2026-12-01','đơn custom không deadline → hạn = ngày đặt + 15 ngày làm (bỏ CN + 24/11 nghỉ – 16/11 tối)',ctx.dhDlNgam_(o));
+ok(ctx.dhDlNgam_(Object.assign({},o,{tab:'WEB LẺ ĐƠN THƯỜNG'}))==='2026-11-20'&&ctx.dhDlNgam_(Object.assign({},o,{tab:'POD-A.BÁCH'}))==='2026-11-25','thường + 7 ngày làm, POD + 10 ngày làm',[ctx.dhDlNgam_(Object.assign({},o,{tab:'WEB LẺ ĐƠN THƯỜNG'})),ctx.dhDlNgam_(Object.assign({},o,{tab:'POD-A.BÁCH'}))]);
 ok(ctx.dhDlNgam_({tab:'OEM',ngayDat:'2026-11-12'})==='','kênh không lẻ → không hạn ngầm');
-h=ctx.dhHanChuan_(o,cs,'2026-11-16'); ok(h&&h.DG.h==='2026-11-17','hạn chuẩn dùng hạn ngầm',h&&h.DG);
+h=ctx.dhHanChuan_(o,cs,'2026-11-16'); ok(h&&h.DG.h==='2026-12-01','hạn chuẩn dùng hạn ngầm',h&&h.DG);
 ctx.dhDongGoiNgay_=()=>({ngay:{'2026-11-02':300,'2026-11-03':0,'2026-11-04':280,'2026-11-05':260,'2026-11-06':320,'2026-11-07':250,'2026-11-09':290,'2026-11-08':999}});
 let d=ctx.dhCsDo_(cs); ok(d&&d.sp===285&&d.n===6,'thực đo = trung vị ngày làm > 0 (bỏ CN, bỏ 0)',d);
 ctx.dhDongGoiNgay_=()=>({ngay:{'2026-11-02':300,'2026-11-04':280}}); ok(ctx.dhCsDo_(cs)===null,'dưới 5 ngày số → không dùng');

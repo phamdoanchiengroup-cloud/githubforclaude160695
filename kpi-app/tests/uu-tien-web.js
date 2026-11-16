@@ -46,14 +46,14 @@ ok(c.dhCoNote_({ maNV: 'C077' }) && c.dhCoUu_({ maNV: 'C056' }), 'C077 sửa đ�
     out.gy = dhGoiYHen(3000); out.gyNho = dhGoiYHen(10); out.mucSom = dhSoHen(dhNgayCong(hn, 3), out.gy); out.mucXa = dhSoHen(dhNgayCong(out.gy.hen, 5), out.gy);
     DHCSThu = { sl: 3000, dl: '' }; out.cs = dhVeCongSuat(); DHCSThu = { sl: 3000, dl: dhNgayCong(hn, 3) }; out.cs2 = dhVeCongSuat(); DHCSThu = null;
     /* đơn lẻ quá 10 ngày */
-    const le = [mk('L1', 'WEB LẺ CUSTOM', 1, '', { ngayDat: dhNgayCong(hn, -14), pl: { loai: 'GAY' } }), mk('L2', 'POD-ECOMSTONE', 2, '', { ngayDat: dhNgayCong(hn, -3) }), mk('L3', 'WEB LẺ ĐƠN THƯỜNG', 1, '', { ngayDat: dhNgayCong(hn, -20), thieu: 0 })];
+    const le = [mk('L1', 'WEB LẺ ĐƠN THƯỜNG', 1, '', { ngayDat: dhNgayCong(hn, -14), pl: { loai: 'GAY' } }), mk('L2', 'POD-ECOMSTONE', 2, '', { ngayDat: dhNgayCong(hn, -3) }), mk('L3', 'WEB LẺ ĐƠN THƯỜNG', 1, '', { ngayDat: dhNgayCong(hn, -20), thieu: 0 })];
     out.le10 = dhLe10Ds(le).map(o => o.maDon);
     const g1 = { ma: 'H1', tab: 'OEM', dl: dhNgayCong(hn, 2), thieu: 40, dong: [mk('H1', 'OEM', 40, dhNgayCong(hn, 2), { dong: 5, qua: { SON: 10 } }), mk('H1', 'OEM', 30, dhNgayCong(hn, 2), { dong: 6, btp: ['PHOI','TARO','HT','TIP','DG'], pl: { loai: 'NGON' } })] };
     /* 15/11 khuya: mục "Đến hạn 10 ngày tới" trong bảng đơn */
     DH.q = { bp: 'SON', sua: ['SON'] }; DH.don = [mk('A1', 'OEM', 10, dhNgayCong(hn, 3), { st: 'dangSX' }), mk('A1', 'OEM', 5, dhNgayCong(hn, 3), { st: 'dangSX', dong: 3 }), mk('B1', 'KHO', 8, dhNgayCong(hn, 1), { st: 'dangSX', dong: 4 }), mk('C1', 'OEM', 9, dhNgayCong(hn, 20), { st: 'dangSX', dong: 7 }), mk('T1', 'OEM', 9, dhNgayCong(hn, -2), { st: 'treHan', dong: 8 })];
     out.h10 = dhHan10Ds(DH.don).map(o => o.maDon + ':' + o.dong);
     DHB.tab = '@han10'; DHV = 'bang'; try { out.bang = dhVeBang(DH.don); } catch (e) { out.loiBang = e.message; }
-    DHB.tab = ''; DHV = 'tt'; dhChon('han10'); window.__dhMo = 'han10'; out.cuHan10 = (function(){ var v = dhCu('han10'); return [v, DHB.tab]; })(); out.chon = [DHV, DHB.tab]; DH.don.push(mk('L9', 'WEB LẺ CUSTOM', 1, '', { ngayDat: dhNgayCong(hn, -15), st: 'dangSX', dong: 9 })); dhChon('le10'); out.chonLe = [DHV, DHB.tab]; try { out.bangLe = dhVeBang(DH.don); } catch (e) { out.loiLe = e.message; } out.nhom = DH_NHOM[0][2].map(x => x[0]).join();
+    DHB.tab = ''; DHV = 'tt'; dhChon('han10'); window.__dhMo = 'han10'; out.cuHan10 = (function(){ var v = dhCu('han10'); return [v, DHB.tab]; })(); out.chon = [DHV, DHB.tab]; DH.don.push(mk('L9', 'WEB LẺ ĐƠN THƯỜNG', 1, '', { ngayDat: dhNgayCong(hn, -15), st: 'dangSX', dong: 9 })); dhChon('le10'); out.chonLe = [DHV, DHB.tab]; try { out.bangLe = dhVeBang(DH.don); } catch (e) { out.loiLe = e.message; } out.nhom = DH_NHOM[0][2].map(x => x[0]).join();
     DH.q = { uuGan: true, ten: 'GĐ' }; out.nut = dhUuNut(g1.dong[0]); DH.q.uuGan = false; out.nut2 = dhUuNut(g1.dong[0]);
     return JSON.parse(JSON.stringify(out)); });
   ok(er.length === 0, 'không lỗi script', er);
@@ -64,11 +64,11 @@ ok(c.dhCoNote_({ maNV: 'C077' }) && c.dhCoUu_({ maNV: 'C056' }), 'C077 sửa đ�
   ok(w.gy && w.gy.hen > w.gy.xong && w.gy.ngayLamHen === Math.ceil(w.gy.ngayLam * 1.2) && w.gyNho.hen <= w.gy.hen, 'ngày hẹn gợi ý = ngày xong khi xếp cuối + 20% dự phòng; đơn nhỏ hẹn sớm hơn', [w.gy, w.gyNho]);
   ok(w.mucSom === 'do' && w.mucXa === '', 'deadline quá sớm → cảnh báo đỏ; sau ngày gợi ý → không cảnh báo', [w.mucSom, w.mucXa]);
   ok(/Ngày hẹn gợi ý cho đơn <b>3\.000 sp/.test(w.cs) && /sớm hơn gợi ý/.test(w.cs2) && /Chỉ cảnh báo/.test(w.cs2), 'Thử nhận đơn: để trống deadline → gợi ý ngày hẹn; deadline sớm → chỉ cảnh báo', '');
-  ok(w.le10.join() === 'L1', 'đơn lẻ / POD còn thiếu quá 5 ngày từ ngày đặt → cảnh báo (bỏ đơn mới đặt, đơn đã xong)', w.le10);
+  ok(w.le10.join() === 'L1', 'đơn lẻ / POD còn thiếu quá hạn kênh (thường 7 ngày làm) từ ngày đặt → cảnh báo (bỏ đơn mới đặt, đơn đã xong)', w.le10);
   ok(w.h10.join() === 'B1:4,A1:2,A1:3', 'Đến hạn 10 ngày tới: đủ dòng của đơn hạn trong 10 ngày, hạn sớm trước; bỏ đơn xa + đơn đã trễ', w.h10);
   ok(!w.loiBang && /Đến hạn 10 ngày tới/.test(w.bang) && /data-t="@han10"/.test(w.bang) && !/@le10/.test(w.bang), 'bảng đơn có mục "Đến hạn 10 ngày tới" (thay mục Lẻ / POD quá 10 ngày)', w.loiBang || '');
   ok(w.chon.join() === 'bang,@han10' && w.nhom === 'bang,congsuat', 'ô "Đến hạn 10 ngày tới" mở thẳng mục trong bảng đơn; bỏ mục đứng riêng', [w.chon, w.nhom]);
-  ok(w.chonLe.join() === 'bang,@le10' && !w.loiLe && /Đơn lẻ \/ POD quá 5 ngày<\/b>/.test(w.bangLe) && /L9/.test(w.bangLe) && !/A1/.test(w.bangLe), 'ô đầu trang "Lẻ / POD quá 5 ngày" mở danh sách đơn lẻ / POD quá hạn trong bảng đơn', w.loiLe || w.chonLe);
+  ok(w.chonLe.join() === 'bang,@le10' && !w.loiLe && /Đơn lẻ \/ POD quá hạn<\/b>/.test(w.bangLe) && /L9/.test(w.bangLe) && !/A1/.test(w.bangLe), 'ô đầu trang "Lẻ / POD quá hạn" mở danh sách đơn lẻ / POD quá hạn trong bảng đơn', w.loiLe || w.chonLe);
   ok(w.cuHan10 && w.cuHan10.join() === 'bang,@han10', '16/11 rà soát: Tổng quan → Đến hạn 10 ngày → Xem tất cả mở mục trong bảng (không mở màn hình cũ đã bỏ)', w.cuHan10);
   ok(/Gắn ưu tiên cả đơn/.test(w.nut) && !/button/.test(w.nut2), 'nút ★ Gắn ưu tiên chỉ hiện với 4 tài khoản', '');
   console.log(n + ' kiểm thử, ' + l + ' lỗi'); await b.close(); process.exit(l ? 1 : 0);

@@ -1389,8 +1389,10 @@ function dhCsDo_(cs) {
   try { if (c) c.put('DH_CS_DO', JSON.stringify(kq), 10800); } catch (e2) {}
   return kq;
 }
-/* đơn lẻ (Web lẻ, POD) không ghi deadline: hạn ngầm = ngày đặt + 5 ngày lịch (chỉ để xếp lịch / hạn chuẩn) */
-function dhDlNgam_(o) { var t = String((o && o.tab) || '').toUpperCase().trim(); return o && !o.dl && o.ngayDat && (t === 'WEB LẺ CUSTOM' || t === 'WEB LẺ ĐƠN THƯỜNG' || /^POD/.test(t)) ? dhCongNgay_(o.ngayDat, 5) : ''; }   // 16/11 (chủ dự án): hạn đơn lẻ / POD 5 ngày (trước 10)
+/* đơn lẻ (Web lẻ, POD) không ghi deadline: hạn ngầm = ngày đặt + 7 / 10 / 15 ngày làm (thường / POD / custom) (chỉ để xếp lịch / hạn chuẩn) */
+var DH_HAN_LE_ = { 'WEB LẺ ĐƠN THƯỜNG': 7, 'WEB LẺ CUSTOM': 15 }, DH_HAN_POD_ = 10, DH_LL_ = null;   // 16/11 tối (chủ dự án): hạn cuối theo kênh, NGÀY LÀM VIỆC (mốc sớm 5 / 7 / 12 chỉ cảnh báo trên web)
+function dhCongNgayLam_(d, n) { if (!DH_LL_) DH_LL_ = dhNgayLamFn_(dhCongSuat_()); var x = d, k = n, an = 0; while (k > 0 && an++ < 800) { x = dhCongNgay_(x, 1); if (DH_LL_(x)) k--; } return x; }
+function dhDlNgam_(o) { var t = String((o && o.tab) || '').toUpperCase().trim(), n = DH_HAN_LE_[t] || (/^POD/.test(t) ? DH_HAN_POD_ : 0); return o && !o.dl && o.ngayDat && n ? dhCongNgayLam_(o.ngayDat, n) : ''; }
 function dhGanHanChuan_(ds, cs) { var hn = homNayVN_(), laLam = dhNgayLamFn_(cs); (ds || []).forEach(function(x) { var h = dhHanChuan_(x, cs, hn, laLam); if (h) x.hc = h; }); }
 var DH_HC_TEN = { PHOI: 'Phôi', PHOI_C: 'Phôi chuôi', PHOI_N: 'Phôi ngọn', SON: 'Sơn', TARO: 'Taro', UV: 'UV', HT: 'Hoàn thiện', TIP: 'Làm đầu', DG: 'Đóng gói' };
 var DH_HC_THU = ['PHOI', 'PHOI_C', 'PHOI_N', 'SON', 'TARO', 'UV', 'HT', 'TIP', 'DG'];

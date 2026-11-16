@@ -38,6 +38,8 @@ Liên quan: [[KPI Gậy 1 khúc, ưu tiên và nhập nhanh (15-11)]] · [[KPI �
 
 - `dhLaUu`: chỉ mã trong tab ĐƠN ƯU TIÊN (bỏ chữ "ưu tiên"). Đơn thật: bậc 3 = Dealer 1.514 + Kho ưu tiên 1.179 sp; làn lẻ giữ 10%.
 
+- Hạn đơn lẻ theo kênh (ngày làm): web `DH_HAN_LE`, `dhHanLeN`, `dhCongNgayLam`, `dhHanLeSom`, `dhLeSapDs`; máy chủ `DH_HAN_LE_`, `dhCongNgayLam_`, `dhDlNgam_`. Ô đầu trang "Lẻ / POD quá hạn" + "x đơn sắp hết hạn". Đơn thật 16/11: quá hạn 43 đơn, sắp hết hạn 43; dự kiến trễ: thường 139/187, POD 52/62, custom 19/81. Kiểm thử han-chuan 28, uu-tien-web 25.
+
 ## Chưa sửa (ghi lại)
 - `luuBangDon` / `luuCotPhuDon` vẫn kiểm theo tên hàng (Sheet không có cột mã dòng cho mọi tab).
 - A1/A2/A5 (trễ 3 cách, ngày tồn, công suất 4 nguồn), gộp `dhVeTreBP` + `dhVeHanChuan`, "Đến hạn 10 ngày" web theo đơn vs Sheet theo dòng; `tkNgayLam_` thiếu ngày lễ tự tính.
