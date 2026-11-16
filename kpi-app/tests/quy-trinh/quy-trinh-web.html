@@ -536,12 +536,9 @@ body:has(.dh-nav) header,body:has(.dh-nav) nav{position:static}
 .dh-sh .c2{min-width:210px!important;max-width:210px!important} .dh-sh td.dh-ctc{min-width:140px;max-width:190px}
 .dh-sh thead th.c2,.dh-sh thead th.dh-ctc{max-width:none}
 /* 16/11: cột trái dính có nền ĐẶC (giao diện kính trong suốt làm chữ / ô nhập cột khác lộ qua khi cuộn ngang) */
-.dh-sh tbody td.c0,.dh-sh tbody td.c1,.dh-sh tbody td.c2{background-image:linear-gradient(var(--panel),var(--panel));background-color:#10211d} [data-gd="sang"] .dh-sh tbody td.c0,[data-gd="sang"] .dh-sh tbody td.c1,[data-gd="sang"] .dh-sh tbody td.c2{background-color:#fff}
-/* 16/11 khuya (chủ dự án): cột STT đầu bảng (thứ tự mã trong đơn, trước nằm cạnh tên) + hủy / bớt mã: khối trong bảng nổi, mục Đơn đã hủy, chuông */
-.dh-sh .c0{position:sticky;left:0;z-index:2;width:40px;min-width:40px;max-width:40px;text-align:center;font-variant-numeric:tabular-nums;font-size:11.5px;color:var(--ink2);padding-left:2px;padding-right:2px}
-.dh-sh .c0 i{font-style:normal;color:var(--ink3)} .dh-sh thead .c0{z-index:6;background:var(--panel2)}
-.dh-sh .c1{left:41px} .dh-sh .c2{left:146px}
-@media (max-width:640px){ .dh-sh .c0{width:30px;min-width:30px;max-width:30px;font-size:10.5px} .dh-sh .c1{left:31px} }
+.dh-sh tbody td.c1,.dh-sh tbody td.c2{background-image:linear-gradient(var(--panel),var(--panel));background-color:#10211d} [data-gd="sang"] [data-gd="sang"] .dh-sh tbody td.c1,[data-gd="sang"] .dh-sh tbody td.c2{background-color:#fff}
+/* 16/11 khuya (chủ dự án): thứ tự mã trong đơn (3/5) nằm ở ô Mã đơn + hủy / bớt mã: khối trong bảng nổi, mục Đơn đã hủy, chuông */
+.dh-stt{display:inline-block;margin-left:4px;padding:0 5px;border-radius:6px;border:1px solid var(--line);font-size:10.5px;font-weight:600;color:var(--ink2);font-variant-numeric:tabular-nums;white-space:nowrap} .dh-stt i{font-style:normal;color:var(--ink3);font-weight:400}
 .dh-tabb.huy{border-style:dashed;color:var(--ink3)} .dh-tabb.huy.on{color:var(--ink)}
 .dh-chg{position:relative;display:inline-block;margin-left:8px;vertical-align:middle}
 .dh-chb{border:1px solid var(--line);background:var(--panel2);color:var(--ink2);border-radius:999px;min-height:30px;min-width:34px;padding:2px 9px;font-size:13px;cursor:pointer;font-family:inherit}
@@ -562,7 +559,7 @@ body:has(.dh-nav) header,body:has(.dh-nav) nav{position:static}
 .dh-hk label{display:block;font-size:12px;color:var(--ink2);margin:8px 0 3px} .dh-hk input{width:100%;max-width:420px;font-size:16px;min-height:38px}
 .dh-hk .dh-hk-hq{font-size:12.5px;line-height:1.5;margin-bottom:4px} .dh-hk .btn.pri.do{background:var(--red);border-color:var(--red)}
 .dh-hk .btn[disabled]{opacity:.45;cursor:not-allowed}
-html.rs.rs.rs .dh-sh tbody td.c0,html.rs.rs.rs .dh-sh tbody td.c1,html.rs.rs.rs .dh-sh tbody td.c2{background:#14291f!important} html.rs.rs.rs .dh-sh thead th{background:#0d1b2e!important}   /* giao diện kính: ô dính phải đặc, không thì chữ cột khác lộ qua khi cuộn */
+html.rs.rs.rs html.rs.rs.rs .dh-sh tbody td.c1,html.rs.rs.rs .dh-sh tbody td.c2{background:#14291f!important} html.rs.rs.rs .dh-sh thead th{background:#0d1b2e!important}   /* giao diện kính: ô dính phải đặc, không thì chữ cột khác lộ qua khi cuộn */
 /* 16/11 rà soát (soat-giao-dien-cuoi): thanh Lưu không bị thanh 5 nút che ở máy tính bảng / điện thoại xoay ngang; khung bảng chừa chỗ thanh dưới;
    dải ô 2 cột trên điện thoại; biểu đồ rộng cuộn ngang thay vì thu nhỏ chữ còn ~5px */
 @media (max-width:900px){ .dh-ethanh{bottom:calc(68px + env(safe-area-inset-bottom,0px))} .dh-shw{max-height:calc(100vh - 150px)!important} }
@@ -2694,9 +2691,9 @@ function dhVeBang(ds){
         (coQuyen?'Bấm ô hoặc nút Nhập để ghi số đã giao và ngày hẹn giao đủ của bộ phận bạn.':'Tài khoản của bạn chỉ xem – số đã giao và ngày hẹn do trưởng / phó phòng từng bộ phận nhập.'))+'</div>';
   if(tab==='@huy') return h.slice(0,h.lastIndexOf('<div class="dh-ghi">'))+dhVeHuy()+'</div>';   /* 16/11 khuya: mục Đơn đã hủy */
   if(!bps.length) return h+'<div class="pdesc">Sheet đơn hàng chưa có cột số lượng của bộ phận (Phôi / Sơn / Taro / Làm đầu / UV / Hoàn thiện / Đóng gói).</div></div>';
-  var y=x.slice(0,DHB.het||120), colW=13+(dhCoBV()?1:0)+bps.length*2+(coHDG?1:0), dem={};   /* 15/11 đêm: + Có thể giao, Trong kho + ĐG, Đã trả khách, Chú thích BP */
+  var y=x.slice(0,DHB.het||120), colW=12+(dhCoBV()?1:0)+bps.length*2+(coHDG?1:0), dem={};   /* 15/11 đêm: + Có thể giao, Trong kho + ĐG, Đã trả khách, Chú thích BP */
   var tdo={}; x.forEach(function(o){ var s=o.tab+'|'+o.maDon; dem[s]=(dem[s]||0)+1; (tdo[s]=tdo[s]||[]).push(o); });   /* 14/11 khuya: % hoàn thành của cả đơn ở cột Mã đơn */
-  h+='<div class="dh-shw"><table class="dh-sh"><thead><tr><th rowspan="2" class="c0" title="Thứ tự mã sản phẩm trong đơn (3/5 = mã thứ 3 của đơn 5 mã)">STT</th><th rowspan="2" class="c1">Mã đơn</th><th rowspan="2" class="c2">Mã sản phẩm</th>'+(dhCoBV()?'<th rowspan="2" class="dh-cfgh" title="Bản vẽ cấu hình gậy">📐</th>':'')+'<th rowspan="2" class="qt-so">SL đặt</th><th rowspan="2" class="qt-so">Còn thiếu</th><th rowspan="2">Hạn</th><th rowspan="2" class="qt-so dh-dgc" title="Cột TỔNG SP CÓ THỂ GIAO trong Sheet – trưởng / phó phòng Đóng gói ghi">Có thể giao</th><th rowspan="2" class="qt-so dh-dgc" title="Hàng còn lại trong kho và đóng gói, có thể giao – Đóng gói ghi">Trong kho + ĐG</th><th rowspan="2" class="qt-so dh-dgc" title="HÀNG ĐI – ĐÃ TRẢ KHÁCH – Đóng gói ghi">Đã trả khách</th><th rowspan="2" class="dh-ctc">Chú thích các bộ phận</th>';   /* 15/11 đêm (2): thứ tự cột như Sheet – chú thích đứng trước các bộ phận */
+  h+='<div class="dh-shw"><table class="dh-sh"><thead><tr><th rowspan="2" class="c1">Mã đơn</th><th rowspan="2" class="c2">Mã sản phẩm</th>'+(dhCoBV()?'<th rowspan="2" class="dh-cfgh" title="Bản vẽ cấu hình gậy">📐</th>':'')+'<th rowspan="2" class="qt-so">SL đặt</th><th rowspan="2" class="qt-so">Còn thiếu</th><th rowspan="2">Hạn</th><th rowspan="2" class="qt-so dh-dgc" title="Cột TỔNG SP CÓ THỂ GIAO trong Sheet – trưởng / phó phòng Đóng gói ghi">Có thể giao</th><th rowspan="2" class="qt-so dh-dgc" title="Hàng còn lại trong kho và đóng gói, có thể giao – Đóng gói ghi">Trong kho + ĐG</th><th rowspan="2" class="qt-so dh-dgc" title="HÀNG ĐI – ĐÃ TRẢ KHÁCH – Đóng gói ghi">Đã trả khách</th><th rowspan="2" class="dh-ctc">Chú thích các bộ phận</th>';   /* 15/11 đêm (2): thứ tự cột như Sheet – chú thích đứng trước các bộ phận */
   bps.forEach(function(k){ h+='<th colspan="'+(k==='DG'&&coHDG?3:2)+'" style="text-align:center'+(k===bp?';color:var(--cyan)':'')+'">'+esc(dhBPTen(k))+'</th>'; });
   h+='<th rowspan="2">Đang ở / kế tiếp</th><th rowspan="2">Xác nhận đã nhận</th><th rowspan="2"></th></tr><tr>';
   bps.forEach(function(k){ h+='<th class="qt-so"'+(k===bp?' style="color:var(--cyan)"':'')+'>Đã giao</th><th'+(k===bp?' style="color:var(--cyan)"':'')+'>Hẹn</th>'+(k==='DG'&&coHDG?'<th class="qt-so" title="Hỏng cần làm bù – Đóng gói">Hỏng làm bù</th>':''); });
@@ -2707,11 +2704,10 @@ function dhVeBang(ds){
     var dau=sk!==truoc; if(dau&&truoc) bang=(bang+1)%4; truoc=sk;   /* 14/11: mỗi đơn một dải màu (như Sheet) */
     /* 15/11 đêm (chủ dự án): dòng TỔNG SL CÒN THIẾU của đơn nhiều mã – Sheet để cuối đơn, web đặt TRÊN CÙNG mỗi đơn (tính trên mọi mã của đơn, kể cả mã đang bị lọc ẩn) */
     var tgD=dau?dhTongDon(o,tdo[sk]):null, coTg=!!(tgD&&tgD.n>1);
-    if(coTg) h+='<tr class="dh-d'+bang+' dh-dmoi dh-tgd"><td class="c0"></td><td class="c1"></td><td class="c2">TỔNG SL CÒN THIẾU <span class="dh-bkenh">'+tgD.n+' mã</span></td>'+(dhCoBV()?'<td></td>':'')+
+    if(coTg) h+='<tr class="dh-d'+bang+' dh-dmoi dh-tgd"><td class="c1"></td><td class="c2">TỔNG SL CÒN THIẾU <span class="dh-bkenh">'+tgD.n+' mã</span></td>'+(dhCoBV()?'<td></td>':'')+
       '<td class="qt-so">'+qtSo(tgD.sl,0)+'</td><td class="qt-so"><b>'+qtSo(tgD.thieu,0)+'</b></td><td></td><td class="qt-so">'+qtSo(tgD.giao,0)+'</td><td class="qt-so">'+qtSo(tgD.kho,0)+'</td><td class="qt-so">'+qtSo(tgD.tra,0)+'</td><td colspan="'+(bps.length*2+4+(coHDG?1:0))+'"></td></tr>';
     h+='<tr class="dh-d'+bang+(dau&&!coTg?' dh-dmoi':'')+(cua?' cua':'')+(o.thieu<=0&&!d.o?' xong':'')+'">'+
-      '<td class="c0">'+vt+(dem[sk]>1?'<i>/'+dem[sk]+'</i>':'')+'</td>'+   /* 16/11 khuya: thứ tự mã trong đơn (trước là chữ "mã 3/5" cạnh tên) */
-      '<td class="c1" data-t="'+esc(o.tab)+'" data-d="'+o.dong+'" onclick="dhBMo(this.dataset.t,+this.dataset.d)"><a href="#" onclick="return false">'+esc(o.maDon||'(không mã)')+'</a><div class="dh-bkenh">'+esc(o.kenh)+(dau?(function(t){ return ' · <b>'+dhPct(t.xong,t.sl)+'%</b></div>'+dhThanhMa(t); })(dhTienDo(tdo[sk])):'</div>')+'</td>'+
+      '<td class="c1" data-t="'+esc(o.tab)+'" data-d="'+o.dong+'" onclick="dhBMo(this.dataset.t,+this.dataset.d)"><a href="#" onclick="return false">'+esc(o.maDon||'(không mã)')+'</a>'+(dem[sk]>1?' <span class="dh-stt" title="Mã thứ '+vt+' trong đơn '+dem[sk]+' mã">'+vt+'<i>/'+dem[sk]+'</i></span>':'')+'<div class="dh-bkenh">'+esc(o.kenh)+(dau?(function(t){ return ' · <b>'+dhPct(t.xong,t.sl)+'%</b></div>'+dhThanhMa(t); })(dhTienDo(tdo[sk])):'</div>')+'</td>'+
       '<td class="c2">'+esc(o.ten)+dhNoteO(o)+'</td>'+
       (dhCoBV()?'<td class="dh-cfg">'+dhCfgO(o)+'</td>':'')+
       '<td class="qt-so">'+(eq.sl&&!o.phu&&!o.bot?dhEIn(o,'sl','SL đặt'):qtSo(o.sl,0))+(o.bot&&o.slGoc?'<div class="dh-hangoc" title="Đã bớt trên web – Sheet vẫn ghi '+o.slGoc+' (xem mục Đơn đã hủy)">bớt từ '+qtSo(o.slGoc,0)+'</div>':'')+'</td><td class="qt-so"><b>'+(o.thieu?qtSo(o.thieu,0):'–')+'</b></td><td>'+(eq.sl&&!o.phu?dhEIn(o,'dl','Deadline')+(o.dlGoc&&o.dlGoc!==o.dl?'<div class="dh-hangoc" title="Deadline gốc – đã gia hạn ở cột Hạn mới">gốc '+dhNg(o.dlGoc)+'</div>':''):dhHanO(o))+dhHanLeO(o)+'</td>'+
