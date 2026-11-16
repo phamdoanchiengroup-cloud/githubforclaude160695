@@ -1,0 +1,212 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Hologram Tinh Gọn</title>
+<!-- Trang MẪU cho đợt rà soát 16/11/2026 – hướng "Hologram tinh gọn". Không phải mã web thật. -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&family=Chakra+Petch:wght@600;700&display=swap&subset=vietnamese" rel="stylesheet">
+<style>
+:root {
+  /* Nền – 3 tầng, không trong suốt khi đặt chữ dài */
+  --nen: #070D1A; --the: #0F1A2E; --the-2: #15233B; --vien: #22324D; --vien-sang: #2F4566;
+  /* Chữ */
+  --chu: #EAF2FB; --chu-phu: #A9B7C9; --chu-mo: #8496AD;
+  /* Nhấn: cyan = bấm được; vàng = quan trọng / đã mở; không dùng tím trong giao diện (chỉ biểu đồ) */
+  --cyan: #5CE1F5; --cyan-dam: #2BB8D6; --vang: #E6C27A; --vang-nhat: rgba(230, 194, 122, .12);
+  /* Tín hiệu */
+  --tot: #6FD8A2; --vua: #E6C27A; --kho: #F29A8E;
+  /* Kiểu chữ, khoảng cách, bo góc */
+  --f-than: 'Be Vietnam Pro', system-ui, sans-serif; --f-so: 'Chakra Petch', 'Be Vietnam Pro', sans-serif;
+  --k1: 4px; --k2: 8px; --k3: 12px; --k4: 16px; --k5: 24px; --k6: 32px;
+  --bo: 12px; --bo-nut: 10px;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--nen); color: var(--chu); font: 400 16px/1.65 var(--f-than); -webkit-font-smoothing: antialiased; }
+/* Tranh chỉ ở đầu trang, mờ dần – không nằm sau chữ dài */
+.dau { position: relative; padding: var(--k5) var(--k4) var(--k6); overflow: hidden;
+  background: radial-gradient(600px 320px at 85% -10%, rgba(92, 225, 245, .16), transparent 70%), radial-gradient(500px 300px at 0% 0%, rgba(230, 194, 122, .10), transparent 70%), var(--nen); border-bottom: 1px solid var(--vien); }
+.dau-nd { max-width: 1040px; margin: 0 auto; display: grid; gap: var(--k4); }
+.thuong-hieu { display: flex; align-items: center; justify-content: space-between; gap: var(--k3); }
+.logo { display: flex; align-items: center; gap: 10px; font: 700 18px/1 var(--f-so); letter-spacing: .02em; }
+.logo i { width: 30px; height: 30px; border-radius: 8px; display: grid; place-items: center; font-style: normal; font-size: 15px; color: var(--nen); background: var(--vang); }
+.ho-so { display: flex; gap: var(--k4); align-items: center; }
+.av { width: 56px; height: 56px; border-radius: 50%; flex: none; display: grid; place-items: center; font: 700 22px/1 var(--f-so); color: var(--vang); background: var(--the-2); box-shadow: inset 0 0 0 1.5px var(--vang); }
+.ho-so h1 { margin: 0; font: 700 24px/1.2 var(--f-than); letter-spacing: -.01em; }
+.ho-so p { margin: 2px 0 0; color: var(--chu-phu); font-size: 14px; }
+/* Thanh tab: 1 kiểu duy nhất, gạch chân cyan */
+.tabs { position: sticky; top: 0; z-index: 5; background: rgba(7, 13, 26, .96); border-bottom: 1px solid var(--vien); }
+.tabs-nd { max-width: 1040px; margin: 0 auto; display: flex; gap: 2px; overflow-x: auto; padding: 0 var(--k2); scrollbar-width: none; }
+.tab { flex: none; min-height: 48px; padding: 0 14px; border: 0; background: none; color: var(--chu-phu); font: 600 15px/1 var(--f-than); border-bottom: 2px solid transparent; cursor: pointer; }
+.tab[aria-selected="true"] { color: var(--chu); border-bottom-color: var(--cyan); }
+.tab:focus-visible, .nut:focus-visible, summary:focus-visible { outline: 2px solid var(--cyan); outline-offset: 2px; }
+main { max-width: 1040px; margin: 0 auto; padding: var(--k5) var(--k4) 120px; display: grid; gap: var(--k4); }
+@media (min-width: 900px) { main { grid-template-columns: minmax(0, 1fr) 320px; align-items: start; } .cot-phai { position: sticky; top: 64px; display: grid; gap: var(--k4); } }
+.cot-trai { display: grid; gap: var(--k4); min-width: 0; }
+/* Thẻ: 1 kiểu, nền đặc, viền mảnh */
+.the { background: var(--the); border: 1px solid var(--vien); border-radius: var(--bo); padding: var(--k5) var(--k4); }
+@media (min-width: 640px) { .the { padding: var(--k5); } }
+.nhan { font: 600 12px/1.2 var(--f-than); letter-spacing: .08em; text-transform: uppercase; color: var(--chu-mo); margin: 0 0 var(--k2); }
+.the h2 { margin: 0 0 var(--k3); font: 700 22px/1.3 var(--f-than); letter-spacing: -.01em; }
+.the h3 { margin: var(--k5) 0 var(--k2); font: 600 17px/1.4 var(--f-than); }
+.the p { margin: 0 0 var(--k3); }
+.phu { color: var(--chu-phu); }
+.goi-y { margin-top: var(--k4); padding: var(--k3) var(--k4); border-radius: 10px; background: var(--vang-nhat); border-left: 3px solid var(--vang); }
+.goi-y b { color: var(--vang); }
+details.can-cu { margin-top: var(--k4); border-top: 1px solid var(--vien); padding-top: var(--k3); }
+details.can-cu summary { cursor: pointer; color: var(--chu-phu); font-size: 14px; font-weight: 600; min-height: 44px; display: flex; align-items: center; }
+details.can-cu p { font-size: 14px; color: var(--chu-phu); }
+/* Điểm 9 lĩnh vực: chữ thay cho số % */
+.dong { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 6px var(--k3); align-items: center; padding: var(--k3) 0; border-top: 1px solid var(--vien); }
+.dong:first-of-type { border-top: 0; }
+.dong span { font-size: 15px; }
+.muc { font: 600 13px/1 var(--f-than); padding: 5px 10px; border-radius: 999px; }
+.muc.tot { color: var(--tot); background: rgba(111, 216, 162, .12); } .muc.vua { color: var(--vua); background: var(--vang-nhat); } .muc.kho { color: var(--kho); background: rgba(242, 154, 142, .12); }
+.thanh { grid-column: 1 / -1; height: 6px; border-radius: 3px; background: var(--the-2); overflow: hidden; }
+.thanh i { display: block; height: 100%; border-radius: 3px; background: var(--cyan); }
+.thanh i.vang { background: var(--vang); } .thanh i.hong { background: var(--kho); }
+/* Nút: 3 cấp, cùng chiều cao 48px, cùng bo góc */
+.nut { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 48px; padding: 0 20px; border-radius: var(--bo-nut); font: 600 15px/1 var(--f-than); cursor: pointer; text-decoration: none; transition: background-color .15s ease, border-color .15s ease; }
+.nut.chinh { background: var(--cyan); color: #04121A; border: 1px solid var(--cyan); }
+.nut.chinh:hover { background: #8BEBF9; }
+.nut.phu { background: transparent; color: var(--chu); border: 1px solid var(--vien-sang); }
+.nut.phu:hover { border-color: var(--cyan); }
+.nut.chu { background: none; border: 0; color: var(--cyan); padding: 0 4px; }
+.nut.rong { width: 100%; }
+.hang-nut { display: flex; flex-wrap: wrap; gap: var(--k2); margin-top: var(--k4); }
+/* Khối mời đọc tiếp: không nhắc tiền ở lời mời đầu */
+.moi { position: relative; overflow: hidden; }
+.mo-dan { position: relative; color: var(--chu-phu); max-height: 132px; overflow: hidden; }
+.mo-dan::after { content: ''; position: absolute; inset: 40px 0 0; background: linear-gradient(180deg, rgba(15, 26, 46, 0), var(--the) 85%); }
+.moi .hop { margin-top: var(--k2); padding: var(--k4); border-radius: var(--bo); background: var(--the-2); border: 1px solid var(--vang); display: grid; gap: var(--k3); }
+.moi .hop b { font-size: 17px; }
+.moi ul { margin: 0; padding: 0 0 0 18px; color: var(--chu-phu); font-size: 15px; }
+.moi li::marker { color: var(--vang); }
+.nho { font-size: 13px; color: var(--chu-mo); }
+/* Chip hệ */
+.chips { display: flex; flex-wrap: wrap; gap: 6px; margin: var(--k3) 0 0; }
+.chip { font-size: 13px; padding: 6px 12px; border-radius: 999px; border: 1px solid var(--vien-sang); color: var(--chu-phu); }
+.chip.on { color: var(--chu); border-color: var(--cyan); background: rgba(92, 225, 245, .08); }
+.so { font: 700 32px/1 var(--f-so); color: var(--vang); }
+.tom { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--k3); }
+.tom div { padding: var(--k3); border-radius: 10px; background: var(--the-2); }
+.tom small { display: block; color: var(--chu-mo); font-size: 12px; }
+.tom b { font-size: 15px; }
+.bang-mau { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 6px; }
+.bang-mau span { height: 40px; border-radius: 8px; border: 1px solid var(--vien); display: grid; place-items: end start; padding: 4px 6px; font: 600 10px/1 var(--f-so); color: #04121A; }
+.thanh-duoi { position: fixed; left: 0; right: 0; bottom: 0; z-index: 6; padding: 10px var(--k4) calc(10px + env(safe-area-inset-bottom)); background: rgba(10, 18, 34, .97); border-top: 1px solid var(--vien); display: flex; align-items: center; gap: var(--k3); }
+.thanh-duoi p { margin: 0; flex: 1; font-size: 14px; color: var(--chu-phu); line-height: 1.35; }
+.thanh-duoi p b { color: var(--chu); }
+@media (min-width: 900px) { .thanh-duoi { display: none; } }
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+</head>
+<body>
+<header class="dau">
+  <div class="dau-nd">
+    <div class="thuong-hieu">
+      <div class="logo"><i>✦</i>Thiên Cơ Các</div>
+      <a class="nut phu" href="#" style="min-height:40px;padding:0 14px;font-size:14px">Đăng nhập</a>
+    </div>
+    <div class="ho-so">
+      <div class="av">A</div>
+      <div>
+        <h1>Nguyễn Văn An</h1>
+        <p>Nam · 15/8/1990 · 10:30 · Hà Nội · tuổi Canh Ngọ</p>
+      </div>
+    </div>
+  </div>
+</header>
+<nav class="tabs" aria-label="Các hệ">
+  <div class="tabs-nd" role="tablist">
+    <button class="tab" role="tab" aria-selected="true">Tổng hợp</button>
+    <button class="tab" role="tab" aria-selected="false">Tử Vi</button>
+    <button class="tab" role="tab" aria-selected="false">Bát Tự</button>
+    <button class="tab" role="tab" aria-selected="false">Vận hạn</button>
+    <button class="tab" role="tab" aria-selected="false">Chiêm tinh</button>
+    <button class="tab" role="tab" aria-selected="false">Thần số</button>
+    <button class="tab" role="tab" aria-selected="false">Human Design</button>
+  </div>
+</nav>
+<main>
+  <div class="cot-trai">
+    <section class="the">
+      <p class="nhan">Chân dung · tầng dễ hiểu</p>
+      <h2>Bạn thuộc mẫu người điềm tĩnh, nghĩ kỹ rồi mới làm</h2>
+      <p>Bạn có xu hướng quan sát lâu trước khi lên tiếng, và khi đã nhận việc thì làm tới nơi tới chốn. Người quanh bạn thường tin tưởng giao những việc cần sự cẩn thận.</p>
+      <p class="phu">Đôi khi sự kỹ lưỡng khiến bạn chậm nắm cơ hội, hoặc giữ cảm xúc trong lòng quá lâu.</p>
+      <div class="goi-y"><b>Gợi ý:</b> đặt cho mình một hạn chót nhỏ khi phải quyết định, và chọn một người thân để nói ra điều đang nghĩ mỗi tuần.</div>
+      <details class="can-cu">
+        <summary>Xem căn cứ chuyên môn</summary>
+        <p>Phần này dành cho người muốn đối chiếu: liệt kê các yếu tố trong lá số dẫn tới nhận định trên, theo từng hệ.</p>
+      </details>
+    </section>
+
+    <section class="the">
+      <p class="nhan">9 lĩnh vực · các hệ cùng nói</p>
+      <h2>Điều nhiều hệ cùng nhận ra</h2>
+      <div class="dong"><span>Công danh – sự nghiệp</span><em class="muc tot">Thuận</em><div class="thanh"><i style="width:72%"></i></div></div>
+      <div class="dong"><span>Tiền bạc – tài sản</span><em class="muc tot">Thuận</em><div class="thanh"><i style="width:66%"></i></div></div>
+      <div class="dong"><span>Tình duyên – hôn nhân</span><em class="muc vua">Cần vun đắp</em><div class="thanh"><i class="vang" style="width:48%"></i></div></div>
+      <div class="dong"><span>Đời sống tinh thần</span><em class="muc kho">Cần chăm chút</em><div class="thanh"><i class="hong" style="width:38%"></i></div></div>
+      <div class="chips"><span class="chip on">Cả 6 hệ</span><span class="chip">Tử Vi</span><span class="chip">Bát Tự</span><span class="chip">Chiêm tinh</span></div>
+    </section>
+
+    <section class="the moi">
+      <p class="nhan">Tình duyên &amp; người bạn đời</p>
+      <h2>Người hợp với bạn là người…</h2>
+      <div class="mo-dan">
+        <p>Bạn có xu hướng tìm một người ổn định về cảm xúc, biết lắng nghe hơn là nói nhiều. Những năm gần tuổi ba mươi lăm là giai đoạn bạn sẵn sàng hơn cho một mối quan hệ lâu dài, khi công việc đã vào nếp và bạn cho phép mình chậm lại…</p>
+      </div>
+      <div class="hop">
+        <b>Đọc tiếp phần này miễn phí</b>
+        <ul>
+          <li>Chân dung người hợp với bạn</li>
+          <li>Giai đoạn thuận cho chuyện tình cảm</li>
+          <li>Điều nên giữ gìn trong mối quan hệ</li>
+        </ul>
+        <a class="nut chinh rong" href="#">Tạo tài khoản miễn phí</a>
+        <span class="nho">30 giây, chỉ cần email. Đã có tài khoản? <a class="nut chu" href="#" style="min-height:auto">Đăng nhập</a></span>
+      </div>
+    </section>
+  </div>
+
+  <aside class="cot-phai">
+    <section class="the">
+      <p class="nhan">Hồ sơ nhanh</p>
+      <div class="tom">
+        <div><small>Năm sinh</small><b>Canh Ngọ</b></div>
+        <div><small>Mệnh</small><b>Lộ Bàng Thổ</b></div>
+        <div><small>Nhật chủ</small><b>Nhâm Thủy</b></div>
+        <div><small>Số chủ đạo</small><b class="so" style="font-size:22px">33/6</b></div>
+      </div>
+    </section>
+    <section class="the">
+      <p class="nhan">Mẫu nút &amp; bảng màu</p>
+      <div class="hang-nut" style="margin-top:0">
+        <a class="nut chinh" href="#">Nút chính</a>
+        <a class="nut phu" href="#">Nút phụ</a>
+        <a class="nut chu" href="#">Liên kết →</a>
+      </div>
+      <div class="bang-mau" style="margin-top:16px">
+        <span style="background:#070D1A;color:#A9B7C9">070D1A</span>
+        <span style="background:#0F1A2E;color:#A9B7C9">0F1A2E</span>
+        <span style="background:#15233B;color:#A9B7C9">15233B</span>
+        <span style="background:#EAF2FB">EAF2FB</span>
+        <span style="background:#5CE1F5">5CE1F5</span>
+        <span style="background:#E6C27A">E6C27A</span>
+        <span style="background:#6FD8A2">6FD8A2</span>
+        <span style="background:#F29A8E">F29A8E</span>
+      </div>
+      <p class="nho" style="margin:12px 0 0">Cyan = bấm được. Vàng = điều quan trọng. Không dùng tím, không chữ chuyển màu, không phát sáng.</p>
+    </section>
+  </aside>
+</main>
+<div class="thanh-duoi">
+  <p><b>Đọc đủ 6 hệ miễn phí</b><br>Lưu lá số và đọc tiếp bất cứ lúc nào</p>
+  <a class="nut chinh" href="#">Tạo tài khoản</a>
+</div>
+</body>
+</html>
