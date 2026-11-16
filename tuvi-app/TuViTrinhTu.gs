@@ -71,7 +71,7 @@ function ttQuanHe_(a, b, tenA, tenB) {
 }
 
 /** tv: kết quả tuviLapLaSo; ct: chiTiet (đại vận, tiểu vận) */
-function tuviTrinhTu(tv, ct) {
+function tuviTrinhTu_(tv, ct) {
   var I = tv.info, P = tv.palaces, pos = tv.pos || {}, out = [];
   var byChi = {}; P.forEach(function (p) { byChi[p.chi] = p; });
   var cungTen = {}; P.forEach(function (p) { cungTen[p.cung] = p; });

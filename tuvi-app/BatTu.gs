@@ -83,7 +83,7 @@ function truongSinhBazi(can, chi) {
 /* ============================================================
  *  HÀM CHÍNH: LẬP BÁT TỰ
  * ============================================================ */
-function batTuLap(input) {
+function batTuLap_(input) {
   var t = chuanHoaThoiGian_(input);
   var male = input.gender !== 'nu';
 
@@ -425,7 +425,7 @@ function batTuQuanHe_(pillars) {
 /**
  * Kết hợp Tử Vi & Bát Tự: tổng luận
  */
-function ketHopLuan(tv, bt) {
+function ketHopLuan_(tv, bt) {
   var out = [];
   var I = tv.info;
   var dung = bt.goiY.dung;

@@ -56,13 +56,32 @@ function tkCan_(token, chiChu) {
   return u;
 }
 
+/* ---------- Chặn gọi từ trình duyệt (rà soát bảo mật 16/11) ----------
+ * Apps Script cho trình duyệt gọi MỌI hàm không có "_" cuối tên. Hàm vận hành (gửi báo cáo, bản tin, bật/tắt lịch, thử nghiệm)
+ * chỉ được chạy: (1) theo lịch thật của dự án – đối chiếu mã lịch (triggerUid), người ngoài không đoán được; hoặc
+ * (2) từ trình soạn thảo Apps Script bởi chính chủ dự án (người đang chạy = tài khoản sở hữu dự án). */
+function laLichThat_(e) {
+  if (!e || !e.triggerUid) return false;
+  try { return ScriptApp.getProjectTriggers().some(function (t) { return String(t.getUniqueId()) === String(e.triggerUid); }); } catch (x) { return false; }
+}
+function laChuTrinhSoan_() {
+  try { var a = Session.getActiveUser().getEmail(), h = Session.getEffectiveUser().getEmail(); return !!a && a === h; } catch (x) { return false; }
+}
+function chiChayNoiBo_(e) {
+  if (laLichThat_(e) || laChuTrinhSoan_()) return;
+  throw new Error('Chức năng này chỉ chạy theo lịch hoặc từ trình soạn thảo Apps Script.');
+}
+
 /* ---------- API cho giao diện ---------- */
 function dangNhap(user, pass) {
   var u = tkTen_(user), c = CacheService.getScriptCache(), k = 'SAI_' + u;
   var sai = parseInt(c.get(k) || '0', 10);
-  if (sai >= 5) throw new Error('Tài khoản tạm khóa do nhập sai nhiều lần. Thử lại sau 15 phút.');
-  var o = tkDoc_(u);
-  if (!o || !tkBang_(tkBam_(String(pass || ''), o.salt), o.hash)) {
+  var o = tkDoc_(u), laChu = !!o && o.vaiTro === 'chu';
+  // Chủ sở hữu không bị khóa cứng (người lạ gõ sai 5 lần không chặn được chủ) – chỉ làm chậm dần (rà soát 16/11)
+  if (sai >= 5 && !laChu) throw new Error('Tài khoản tạm khóa do nhập sai nhiều lần. Thử lại sau 15 phút.');
+  if (sai >= 5 && laChu) Utilities.sleep(Math.min(5000, 300 * sai));
+  var dung = o ? tkBang_(tkBam_(String(pass || ''), o.salt), o.hash) : (tkBam_(String(pass || ''), 'khong-co-tai-khoan'), false);
+  if (!dung) {
     c.put(k, String(sai + 1), 900);
     Utilities.sleep(600);
     throw new Error('Sai tên đăng nhập hoặc mật khẩu.');

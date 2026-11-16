@@ -291,6 +291,7 @@ function topFactsYeu_(facts, n) {
  * Chọn testFacts → bấm ▶ Run → xem Execution log.
  */
 function testFacts() {
+  chiChayNoiBo_(arguments[0]);
   var f1 = taoFact_('Tu Vi', 'Tai Bach', 'tai_chinh', 'manh',
     'Tài lộc đến tự nhiên, dễ có người giúp về tiền bạc.', 1.5,
     { nguon: 'Hóa Lộc cung Tài', tags: ['tai_loc'] });

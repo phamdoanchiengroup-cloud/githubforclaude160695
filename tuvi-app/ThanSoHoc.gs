@@ -81,7 +81,7 @@ function tsDuongDoi_(d, m, y) {
   return n;
 }
 
-function thanSoHocLap(input, solar, viewYear) {
+function thanSoHocLap_(input, solar, viewYear) {
   var d = solar.day, m = solar.month, y = solar.year;
   var ld = tsDuongDoi_(d, m, y);
   var ngay = tsRutGon_(d, true), thaiDo = tsRutGon_(tsTongChuSo_('' + d + m), false);
@@ -167,7 +167,7 @@ var TS_THU_THACH = {
   8: 'quan hệ với tiền bạc và quyền lực – cân bằng vật chất và tinh thần'
 };
 
-function thanSoHocLuan(ts) {
+function thanSoHocLuan_(ts) {
   var S = TS_SO, L = S[ts.duongDoi], secs = [];
   secs.push({ tieuDe: 'Số chủ đạo ' + ts.duongDoi + (ts.duongDoi >= 10 ? '/' + ts.duongDoiGoc : '') + ' – ' + L.ten, items: [
     'Từ khóa: ' + L.tk + '.', '✓ Điểm mạnh: ' + L.manh + '.', '✗ Điểm cần khắc phục: ' + L.yeu + '.', 'Nghề nghiệp hợp: ' + L.nghe + '.', 'Bài học đường đời: ' + L.bh + '.'] });

@@ -31,7 +31,7 @@ let s = 11; const rnd = () => ((s = (s * 9301 + 49297) % 233280) / 233280);
 const bac = { tot: 0, vua: 0, kho: 0 };
 for (let k = 0; k < 200; k++) {
   const inp = { name: 'A', gender: k % 2 ? 'nu' : 'nam', calendar: 'duong', day: 1 + Math.floor(rnd() * 28), month: 1 + Math.floor(rnd() * 12), year: 1940 + Math.floor(rnd() * 80), hour: Math.floor(rnd() * 24), minute: 0, viewYear: 2026 };
-  const b = ctx.batTuLap(inp), tv = ctx.tuviLapLaSo(inp), hl = ctx.haLacLap(b, tv), Lu = ctx.haLacLuan(hl, b, 2026);
+  const b = ctx.batTuLap_(inp), tv = ctx.tuviLapLaSo_(inp), hl = ctx.haLacLap_(b, tv), Lu = ctx.haLacLuan_(hl, b, 2026);
   ['tien', 'hau'].forEach(x => {
     const H = hl.lucHao[x];
     kt(H.hao.length === 6 && H.hao.filter(h => h.the).length === 1 && H.hao.filter(h => h.ung).length === 1, 'Thế/Ứng duy nhất');

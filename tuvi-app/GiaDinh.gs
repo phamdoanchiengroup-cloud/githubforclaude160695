@@ -33,7 +33,7 @@ function gdDoc_(u) {
   return [];
 }
 function gdGhi_(u, ds) {
-  var sh = gdSh_(), r = gdDong_(sh, u.ten), v = [u.ten, JSON.stringify(ds), new Date()];
+  var sh = gdSh_(), r = gdDong_(sh, u.ten), v = [shO_(u.ten), JSON.stringify(ds), new Date()];
   if (r) sh.getRange(r, 1, 1, 3).setValues([v]); else sh.appendRow(v);
 }
 function gdChuan_(x, i) {
@@ -76,7 +76,7 @@ function giaDinhVanNam(nam, token) {
     var o = { id: p.id, ten: p.ten, quanHe: p.quanHe };
     try {
       var inp = JSON.parse(JSON.stringify(p.input)); inp.viewYear = nam; inp.save = false;
-      var tv = tuviLapLaSo(inp), I = tv.info;
+      var tv = tuviLapLaSo_(inp), I = tv.info;
       o.tuoi = nam - I.lunar.year + 1; o.conGiap = I.conGiap || ''; o.namSinh = I.namCanChi || '';
       var d = (chiNam - I.yChi + 12) % 12;   // quan hệ chi năm xem với chi tuổi
       o.thaiTue = d === 0 ? 'Trùng tuổi (năm tuổi)' : d === 6 ? 'Xung tuổi' : (d === 3 || d === 9) ? 'Hình tuổi' : (d === 4 || d === 8) ? 'Tam hợp' : '';
@@ -84,7 +84,7 @@ function giaDinhVanNam(nam, token) {
         var ln = ptLap_(tv, nam, 1).luuNien[0];
         o.phiTinh = { muc: ln.muc, menh: ln.menh, loi: (ln.de || [])[0] || '' };
       }
-      var bt = batTuLap(inp);
+      var bt = batTuLap_(inp);
       if (bt && bt.luuNien) o.batTu = { canChi: bt.luuNien.canChi, danhGia: bt.luuNien.danhGia, loi: (bt.luuNien.ghiChu || [])[0] || '' };
     } catch (e) { o.loi = String(e && e.message || e); }
     return o;
@@ -127,7 +127,7 @@ function gdLoaiCap_(qa, qb) {
 }
 function gdNguoi_(p, vy) {
   var inp = JSON.parse(JSON.stringify(p.input)); inp.viewYear = vy; inp.save = false;
-  var tv = tuviLapLaSo(inp), bt = batTuLap(inp), I = tv.info;
+  var tv = tuviLapLaSo_(inp), bt = batTuLap_(inp), I = tv.info;
   return { p: p, ten: p.ten, quanHe: p.quanHe, tv: tv, bt: bt, male: !!I.male, nam: I.lunar.year, can: I.yCan, chi: I.yChi,
     napAm: I.banMenh, manh: cdHanhManh_(bt), tuoiTen: CAN[I.yCan] + ' ' + CHI[I.yChi] };
 }

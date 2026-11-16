@@ -571,12 +571,12 @@ function thMayMan_(C) {
 /* =========================================================
  * HÀM CHÍNH
  * ========================================================= */
-function tongHopLuan(C) {
+function tongHopLuan_(C) {
   var nghe = thNghe_(C);
   var dd = thDuongDoi_(C);
   var T = {
     xuatThan: thXuatThan_(C),
-    phoiNgau: phoiNgauLuan(C),
+    phoiNgau: phoiNgauLuan_(C),
     namNay: thNamNay_(C, C.ctL),
     mayMan: thMayMan_(C),
     vocDang: thVocDang_(C),

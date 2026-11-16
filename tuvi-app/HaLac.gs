@@ -154,7 +154,7 @@ function hlNguyenDuong_(hao, gioDuong, k) {
   thu = thu.slice(0, 6).concat(khac);
   return thu[k - 1];
 }
-function haLacLap(bt, tv) {
+function haLacLap_(bt, tv) {
   var male = tv.info.male, namAm = tv.info.lunar.year, duongNam = tv.info.yCan % 2 === 0;
   var thien = 0, dia = 0, ct = [];
   bt.pillars.forEach(function (p) {
@@ -216,7 +216,7 @@ function hlLuanNam_(n, bt) {
   return { diem: Math.round(d * 10) / 10, danhGia: hlDanhGia_(d), y: Q[4], khuyen: Q[5], ghi: ghi };
 }
 
-function haLacLuan(hl, bt, viewYear) {
+function haLacLuan_(hl, bt, viewYear) {
   var T = hl.tien, H = hl.hau, secs = [];
   function qStr(q) { return q.ten + ' (quẻ số ' + q.so + ': ' + HL_QUAI[q.tren].tuong + ' ' + q.tren + ' trên, ' + HL_QUAI[q.duoi].tuong + ' ' + q.duoi + ' dưới)'; }
   secs.push({ tieuDe: 'Lập số Hà Lạc', items: hl.chiTiet.concat([

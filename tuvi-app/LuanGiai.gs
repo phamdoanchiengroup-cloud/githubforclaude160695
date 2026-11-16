@@ -1039,7 +1039,7 @@ function lgNhatVan_(chart, bt, dateStr, soNgay, hdTheoTiet) {
 /* ============================================================
  *  HÀM TỔNG
  * ============================================================ */
-function luanChiTiet(chart, bt, input) {
+function luanChiTiet_(chart, bt, input) {
   var I = chart.info;
   var vy = I.viewYear;
   var tieu = lgTieuVan_(chart, bt, vy);

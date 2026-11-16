@@ -24,7 +24,7 @@ const maxE = {}; let maxAsc = 0, maxPl = 0;
 for (let k = 0; k < 200; k++) {
   const y = 1930 + Math.floor(rnd() * 90), m = 1 + Math.floor(rnd() * 12), d = 1 + Math.floor(rnd() * 28), h = Math.floor(rnd() * 24), mi = Math.floor(rnd() * 60);
   const lat = -40 + rnd() * 100, lon = -180 + rnd() * 360;
-  const jd = ctx.astJD_(y, m, d, h, mi, 7), pos = ctx.astToanBo(jd), t = A.MakeTime(jd - 2451545);
+  const jd = ctx.astJD_(y, m, d, h, mi, 7), pos = ctx.astToanBo_(jd), t = A.MakeTime(jd - 2451545);
   for (const b in BODIES) {
     const v = A.GeoVector(BODIES[b], t, true);
     const eqd = A.RotateVector(A.Rotation_EQJ_ECT(t), v), l2 = Math.atan2(eqd.y, eqd.x) / R;
@@ -51,7 +51,7 @@ let tot = 0, gBad = 0, typeBad = 0;
 for (let k = 0; k < 150; k++) {
   const y = 1945 + Math.floor(rnd() * 75), m = 1 + Math.floor(rnd() * 12), d = 1 + Math.floor(rnd() * 28), h = Math.floor(rnd() * 24), mi = Math.floor(rnd() * 60), p = x => String(x).padStart(2, '0');
   const ref = calculateChart({ date: `${y}-${p(m)}-${p(d)}`, time: `${p(h)}:${p(mi)}`, lat: 21.03, lon: 105.85, tz: 'Asia/Bangkok' });
-  const me = ctx.hdLap(ctx.astJD_(y, m, d, h, mi, 7));
+  const me = ctx.hdLap_(ctx.astJD_(y, m, d, h, mi, 7));
   for (const b in ref.planets) for (const s of ['p', 'd']) { const mb = me.act[s][b]; if (!mb) continue; tot++; if (mb.gate !== ref.planets[b][s].g) gBad++; }
 }
 console.log('Human Design: cổng khác tham chiếu', gBad + '/' + tot);

@@ -7,7 +7,7 @@
  *      tứ sát, Hóa Kỵ gốc và Hóa Kỵ của can đại vận, Tang Hổ…; sao giải; các năm hệ trọng trong vận.
  *   3. Thọ khí (cách cổ thư xem dương thọ): Mệnh – Phúc Đức – Tật Ách, sao thọ, sát tinh, Cục – Mệnh,
  *      vòng Tràng Sinh; chỉ nêu mức và các giai đoạn cần giữ gìn, KHÔNG đoán tuổi mất.
- *  Chỉ đọc sao đã an trong tuviLapLaSo (TuVi.gs), không an lại. Máy chủ chặn người không phải chủ sở hữu.
+ *  Chỉ đọc sao đã an trong tuviLapLaSo_ (TuVi.gs), không an lại. Máy chủ chặn người không phải chủ sở hữu.
  *  Nguồn: Tử Vi Đẩu Số Toàn Thư (phú Thái Vi, Cốt Tủy, quyết an Thiên Thương – Thiên Sứ), các bộ cách cục
  *  phổ biến (Trung Châu phái, Tam hợp phái), bài của Lưu Uẩn Linh về Thương – Sứ – xem TVCS_NGUON.
  * ============================================================
@@ -660,5 +660,5 @@ function thamKhaoTuVi() {
 /** API cho giao diện: chỉ chủ sở hữu */
 function tuViChuSoHuu(input, token) {
   tkCan_(token, true);
-  return tvcsLap_(tuviLapLaSo(input || {}));
+  return tvcsLap_(tuviLapLaSo_(input || {}));
 }

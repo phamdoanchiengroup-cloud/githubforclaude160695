@@ -17,11 +17,11 @@ const TU_CAM = ['Hóa ', 'Kỵ', 'Lai Nhân', 'tự hóa', 'Tứ Hóa', ' phi ',
 let soMau = 0, soMuc = 0, soThang = 0;
 const PT12 = ['Mệnh', 'Huynh Đệ', 'Phu Thê', 'Tử Tức', 'Tài Bạch', 'Tật Ách', 'Thiên Di', 'Nô Bộc', 'Quan Lộc', 'Điền Trạch', 'Phúc Đức', 'Phụ Mẫu'];
 // Năm chưa vào đại vận đầu tiên: lưu niên không được có Phản cung (lỗi chuyên gia rà mã tìm ra 31/10)
-{ const tv = ctx.tuviLapLaSo({ name: 'Nho', gender: 'nam', calendar: 'duong', day: 27, month: 3, year: 2024, hour: 10, minute: 0, viewYear: 2026 }), R = ctx.ptLap_(tv, 2026, 3);
+{ const tv = ctx.tuviLapLaSo_({ name: 'Nho', gender: 'nam', calendar: 'duong', day: 27, month: 3, year: 2024, hour: 10, minute: 0, viewYear: 2026 }), R = ctx.ptLap_(tv, 2026, 3);
   kt(R.luuNien.every(l => !l.mau.some(m => m.k === 'phanCung')), 'trẻ chưa vào đại vận: không Phản cung ở lưu niên'); }
 for (let i = 0; i < 250; i++) {
   const inp = { name: 'T' + i, gender: i % 2 ? 'nu' : 'nam', calendar: 'duong', day: 1 + (i * 11) % 28, month: 1 + (i * 5) % 12, year: 1940 + (i * 7) % 80, hour: (i * 3) % 24, minute: 0, viewYear: 2026 };
-  const tv = ctx.tuviLapLaSo(inp), N = ctx.ptNguyenCuc_(tv), id = '#' + i + ' ';
+  const tv = ctx.tuviLapLaSo_(inp), N = ctx.ptNguyenCuc_(tv), id = '#' + i + ' ';
   const canDan = ((tv.info.yCan % 5) * 2 + 2) % 10;
   tv.palaces.forEach((p, k) => kt(p.can === (canDan + (k - 2 + 12) % 12) % 10, id + 'can cung Ngũ Hổ Độn ô ' + k));
   kt(N.ln === LAI[tv.info.yCan] && N.ln >= 2, id + 'Lai Nhân ' + CHI[N.ln]);

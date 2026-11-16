@@ -23,7 +23,7 @@ var TI_THAM_KHAO = 'Theo tục lệ và sách cổ – mang tính tham khảo, k
 function tiCoBan_(input) {
   input = input || {};
   if (!input.viewYear) input.viewYear = new Date().getFullYear();
-  var tv = tuviLapLaSo(input), bt = batTuLap(input);
+  var tv = tuviLapLaSo_(input), bt = batTuLap_(input);
   return { tv: tv, bt: bt, I: tv.info, male: input.gender !== 'nu' };
 }
 function tiChiSo_(chi) { return mod12(chi); }
@@ -265,7 +265,7 @@ function gieoQue(cauHoi, linhVuc, token) {
     if (du < tra) return { ok: false, thieu: tra - du, gia: tra, soDu: du };
     var t = tiGioVN_(), kq = tiQueKetQua_(tiLapQue_(t), cauHoi, linhVuc, t);
     var moi = tra ? ttCong_(u.ten, -tra, 'Gieo quẻ: ' + cauHoi.slice(0, 50), 'que') : du;
-    sh.appendRow([new Date(), u.ten, cauHoi, linhVuc || '', JSON.stringify(kq)]);
+    sh.appendRow([new Date(), shO_(u.ten), shO_(String(cauHoi || '')), shO_(String(linhVuc || '')), JSON.stringify(kq)]);
     kq.ok = true; kq.soDu = toan ? null : moi; kq.mienPhi = mien && !toan; kq.gia = tra;
     return kq;
   });
@@ -371,7 +371,7 @@ function tiChamTen_(ho, ten, gioi, bt, duongDoi, solar, vy, inputCon) {
     if (info.g !== 'ca' && info.g !== gioi) { diem -= 0.5; ghi.push('Tên thường dùng cho ' + (info.g === 'nam' ? 'con trai' : 'con gái') + '.'); }
   }
   var hoTen = (String(ho || '').trim() + ' ' + String(ten).trim()).trim();
-  var ts = thanSoHocLap(Object.assign({}, inputCon, { name: hoTen }), solar, vy), sm = tiTsGoc_(ts.suMenh || 0), dd = tiTsGoc_(duongDoi || 0);
+  var ts = thanSoHocLap_(Object.assign({}, inputCon, { name: hoTen }), solar, vy), sm = tiTsGoc_(ts.suMenh || 0), dd = tiTsGoc_(duongDoi || 0);
   if (sm && dd) {
     var cung = TI_TS_NHOM.some(function (g) { return g.indexOf(sm) >= 0 && g.indexOf(dd) >= 0; });
     if (cung) { diem += 1; ghi.push('Thần số: số sứ mệnh của họ tên (' + sm + ') cùng nhóm với số đường đời (' + dd + ') – tên "cộng hưởng" với ngày sinh.'); }
@@ -386,7 +386,7 @@ function tiChamTen_(ho, ten, gioi, bt, duongDoi, solar, vy, inputCon) {
 }
 function tiDatTen_(inputCon, ho, dsTen, mo) {
   var cb = tiCoBan_(inputCon), bt = cb.bt, vy = new Date().getFullYear(), solar = cb.I.solar, gioi = cb.male ? 'nam' : 'nu';
-  var dd = thanSoHocLap(Object.assign({}, inputCon, { name: '' }), solar, vy).duongDoi;
+  var dd = thanSoHocLap_(Object.assign({}, inputCon, { name: '' }), solar, vy).duongDoi;
   var ten = (dsTen || []).map(function (t) { return String(t || '').trim(); }).filter(Boolean).slice(0, 12);
   var out = { loai: 'dat_ten', mo: mo, gioi: gioi, dung: bt.goiY.dung, hy: bt.goiY.hy, ky: bt.goiY.ky, duongDoi: dd,
     ketLuan: 'Theo Bát Tự, bé ' + (gioi === 'nam' ? 'trai' : 'gái') + ' sinh ' + solar.day + '/' + solar.month + '/' + solar.year + ' cần bổ hành ' + bt.goiY.dung + (bt.goiY.hy.length > 1 ? ' (hỗ trợ: ' + bt.goiY.hy.slice(1).join(', ') + ')' : '') +
@@ -445,7 +445,7 @@ function dangKyBanTin(input, email, token) {
     var han = new Date(); han.setFullYear(han.getFullYear() + 1);
     var hanStr = han.getFullYear() + '-' + (han.getMonth() < 9 ? '0' : '') + (han.getMonth() + 1) + '-' + (han.getDate() < 10 ? '0' : '') + han.getDate();
     var sh = tiShBanTin_(), clean = {}; ['name', 'gender', 'calendar', 'day', 'month', 'year', 'leap', 'hour', 'minute', 'place', 'longitude', 'tz'].forEach(function (k) { if (input[k] != null) clean[k] = input[k]; });
-    sh.appendRow([u.ten, email, JSON.stringify(clean), "'" + hanStr, new Date(), '']);
+    sh.appendRow([shO_(u.ten), shO_(email), JSON.stringify(clean), "'" + hanStr, new Date(), '']);
     return { ok: true, soDu: ttToanQuyen_(u) ? null : moi, gia: gia, hanDen: hanStr };
   });
 }
@@ -473,6 +473,7 @@ function tiBanTinHtml_(input, y, m) {
 }
 /** Gửi bản tin tháng cho mọi người còn hạn (trigger hằng tháng gọi) */
 function guiBanTinThang() {
+  chiChayNoiBo_(arguments[0]);
   var sh = tiShBanTin_(), last = sh.getLastRow(); if (last < 2) return 0;
   var t = tiGioVN_(), homNay = t.y + '-' + (t.m < 10 ? '0' : '') + t.m + '-' + (t.d < 10 ? '0' : '') + t.d, n = 0;
   var rows = sh.getRange(2, 1, last - 1, 6).getDisplayValues();
@@ -488,6 +489,7 @@ function guiBanTinThang() {
 }
 /** Chủ sở hữu chạy 1 lần (trong trình soạn thảo Apps Script) để bật gửi bản tin 7 giờ sáng ngày 1 hằng tháng */
 function caiDatBanTin() {
+  chiChayNoiBo_(arguments[0]);
   ScriptApp.getProjectTriggers().forEach(function (tr) { if (tr.getHandlerFunction() === 'guiBanTinThang') ScriptApp.deleteTrigger(tr); });
   ScriptApp.newTrigger('guiBanTinThang').timeBased().onMonthDay(1).atHour(7).create();
   Logger.log('✔ Đã bật gửi bản tin vận tháng: 7 giờ sáng ngày 1 hằng tháng.');
@@ -545,7 +547,7 @@ function dangKyVanNgay(input, email, token) {
     var han = '';
     if (!toan) { var d0 = hanCu > homNay ? hanCu : homNay, p = d0.split('-'), d = new Date(+p[0], +p[1] - 1, +p[2] + 30); han = tiNgayStr_({ y: d.getFullYear(), m: d.getMonth() + 1, d: d.getDate() }); }
     var moi = gia ? ttCong_(u.ten, -gia, 'Luận giải hằng ngày 30 ngày – ' + email, 'van_ngay') : null;
-    sh.appendRow([u.ten, email, JSON.stringify(clean), new Date(), '', 'bật', han ? "'" + han : '']);
+    sh.appendRow([shO_(u.ten), shO_(email), JSON.stringify(clean), new Date(), '', 'bật', han ? "'" + han : '']);
     return { ok: true, han: han, soDu: moi };
   });
   if (!kq.ok) return kq;
@@ -815,6 +817,7 @@ function tiGuiVanNgay_(email, input, t, zalo) {
 }
 /** Trigger 6 giờ sáng gọi: gửi cho mọi người đang bật (mỗi email một lần mỗi ngày); lá số của chủ sở hữu gửi thêm qua Zalo nếu đã nhập token */
 function guiVanNgay() {
+  chiChayNoiBo_(arguments[0]);
   var sh = tiShVanNgay_(), last = sh.getLastRow(); if (last < 2) return 0;
   var t = tiGioVN_(), homNay = tiNgayStr_(t), n = 0, zaloCo = tiZaloCo_(), daZalo = {};
   sh.getRange(2, 1, last - 1, 7).getDisplayValues().forEach(function (r, i) {
@@ -830,6 +833,7 @@ function guiVanNgay() {
 }
 /** Chủ sở hữu chạy trong trình soạn thảo để thử gửi Zalo ngay (lấy lá số đăng ký đầu tiên của chủ sở hữu) */
 function thuZaloVanNgay() {
+  chiChayNoiBo_(arguments[0]);
   if (!tiZaloCo_()) throw new Error('Chưa nhập ZALO_TOKEN và ZALO_CHAT_ID: Cài đặt dự án › Thuộc tính tập lệnh.');
   var sh = tiShVanNgay_(), last = sh.getLastRow(), r = last >= 2 ? sh.getRange(2, 1, last - 1, 3).getDisplayValues().filter(function (x) { return x[0] === TK_CHU; })[0] : null;
   if (!r) throw new Error('Chủ sở hữu chưa đăng ký lá số nào: vào web › Tiện ích › Luận giải hằng ngày để đăng ký.');
@@ -838,12 +842,14 @@ function thuZaloVanNgay() {
 }
 /** Chủ sở hữu chạy 1 lần trong trình soạn thảo: bật gửi luận giải 6 giờ sáng mỗi ngày */
 function caiDatVanNgay() {
+  chiChayNoiBo_(arguments[0]);
   ScriptApp.getProjectTriggers().forEach(function (tr) { if (tr.getHandlerFunction() === 'guiVanNgay') ScriptApp.deleteTrigger(tr); });
   ScriptApp.newTrigger('guiVanNgay').timeBased().everyDays(1).atHour(6).create();
   var sh = tiShVanNgay_(), co = sh.getLastRow() - 1;
   Logger.log('✔ Đã bật luận giải hằng ngày lúc 6 giờ sáng. ' + (co > 0 ? 'Đang có ' + co + ' email đăng ký.' : 'Chưa có email nào: vào web, lập lá số của bạn, mở Tiện ích › Luận giải hằng ngày để đăng ký.'));
 }
 function tatVanNgay() {
+  chiChayNoiBo_(arguments[0]);
   var n = 0; ScriptApp.getProjectTriggers().forEach(function (tr) { if (tr.getHandlerFunction() === 'guiVanNgay') { ScriptApp.deleteTrigger(tr); n++; } });
   Logger.log(n ? '✔ Đã tắt luận giải hằng ngày.' : 'Luận giải hằng ngày vốn chưa bật.');
 }

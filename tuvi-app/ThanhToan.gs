@@ -83,6 +83,14 @@ function ttSheet_(ten) {
   }
   return sh;
 }
+/** Giá trị chữ do người dùng nhập trước khi ghi Sheet (rà soát 16/11): thêm dấu ' để Sheet giữ nguyên dạng chữ khi
+ *  chuỗi trông như số/ngày/đúng-sai (vd. tên đăng nhập "0912345678" – nếu không sẽ mất số 0 đầu, mất ví) hoặc bắt đầu bằng = + - @
+ *  (chặn chèn công thức). Dấu ' không hiện trong ô và không làm đổi giá trị đọc ra. */
+function shO_(v) {
+  if (typeof v !== 'string') return v;
+  if (/^[=+\-@]/.test(v) || (/\d/.test(v) && /^[\d\s.,:\/eE%-]+$/.test(v)) || /^(true|false)$/i.test(v)) return "'" + v;
+  return v;
+}
 /** Các dòng (1-based) có ô cột col trùng khớp tuyệt đối với val */
 function ttTim_(sh, col, val) {
   var last = sh.getLastRow();
@@ -158,8 +166,8 @@ function ttCong_(u, n, lyDo, thamChieu) {
   var cu = r.length ? Number(sh.getRange(r[0], 2).getValue()) || 0 : 0, moi = cu + n;
   if (moi < 0) throw new Error('Số dư không đủ.');
   if (r.length) sh.getRange(r[0], 2, 1, 2).setValues([[moi, new Date()]]);
-  else sh.appendRow([u, moi, new Date()]);
-  ttSheet_('SoCai').appendRow([new Date(), u, n, moi, lyDo, thamChieu || '']);
+  else sh.appendRow([shO_(u), moi, new Date()]);
+  ttSheet_('SoCai').appendRow([new Date(), shO_(u), n, moi, lyDo, thamChieu || '']);
   return moi;
 }
 
@@ -319,7 +327,7 @@ function muaPhan(token, input, phan, id) {
     if (du < gia) return { ok: false, thieu: gia - du, gia: gia, soDu: du };
     var nhan = p.ten + (ma !== phan ? ' [' + ma + ']' : '');
     var moi = gia ? ttCong_(u.ten, -gia, 'Mở khóa: ' + nhan + ' – ' + tenLS.slice(0, 60), khoa) : du;
-    ttSheet_('MoKhoa').appendRow([new Date(), u.ten, khoa, ma, gia, tenLS.slice(0, 80)]);
+    ttSheet_('MoKhoa').appendRow([new Date(), shO_(u.ten), khoa, ma, gia, shO_(tenLS.slice(0, 80))]);
     return { ok: true, soDu: moi, gia: gia };
   });
 }
@@ -332,7 +340,7 @@ function ttSoVe_(ten) {
 function ttCongVe_(ten, n) {
   var sh = ttSheet_('Ve'), r = ttTim_(sh, 1, ten), moi = ttSoVe_(ten) + n;
   if (moi < 0) throw new Error('Bạn đã dùng hết lượt gia đình.');
-  if (r.length) sh.getRange(r[0], 2, 1, 2).setValues([[moi, new Date()]]); else sh.appendRow([ten, moi, new Date()]);
+  if (r.length) sh.getRange(r[0], 2, 1, 2).setValues([[moi, new Date()]]); else sh.appendRow([shO_(ten), moi, new Date()]);
   return moi;
 }
 function ttMuaGiaDinh_(u, phan, bg) {
@@ -354,8 +362,8 @@ function dungLuotGiaDinh(token, input) {
     var q = ttQuyen_(u, khoa);
     if (q.co_ban && ttCoNam_(q, vy)) return { ok: true, daCo: true, soVe: ttSoVe_(u.ten) };
     var ve = ttCongVe_(u.ten, -1), sh = ttSheet_('MoKhoa');
-    if (!q.co_ban) sh.appendRow([new Date(), u.ten, khoa, 'co_ban', 0, ten + ' (lượt gia đình)']);
-    if (!ttCoNam_(q, vy)) sh.appendRow([new Date(), u.ten, khoa, 'nam:' + vy, 0, ten + ' (lượt gia đình)']);
+    if (!q.co_ban) sh.appendRow([new Date(), shO_(u.ten), khoa, 'co_ban', 0, shO_(ten + ' (lượt gia đình)')]);
+    if (!ttCoNam_(q, vy)) sh.appendRow([new Date(), shO_(u.ten), khoa, 'nam:' + vy, 0, shO_(ten + ' (lượt gia đình)')]);
     return { ok: true, soVe: ve };
   });
 }
@@ -384,7 +392,7 @@ function taoDonNap(token, iGoi) {
     if (!cfg.nganHang.stk || !cfg.nganHang.bin) throw new Error('Chủ sở hữu chưa cài đặt tài khoản nhận tiền. Vui lòng liên hệ để nạp xu.');
     don.bin = cfg.nganHang.bin; don.stk = cfg.nganHang.stk; don.chuTK = cfg.nganHang.chuTK || ''; don.tenNH = cfg.nganHang.tenNH || '';
   }
-  ttSheet_('DonHang').appendRow([ma, u.ten, g.tien, g.xu, 'CHO', new Date(), '', don.kenh, don.checkoutUrl || '', don.noiDung]);
+  ttSheet_('DonHang').appendRow([ma, shO_(u.ten), g.tien, g.xu, 'CHO', new Date(), '', don.kenh, don.checkoutUrl || '', don.noiDung]);
   don.qrAnh = 'https://img.vietqr.io/image/' + encodeURIComponent(don.bin) + '-' + encodeURIComponent(don.stk) + '-compact2.png?amount=' + g.tien +
     '&addInfo=' + encodeURIComponent(don.noiDung) + '&accountName=' + encodeURIComponent(don.chuTK || '');
   return don;
@@ -465,6 +473,7 @@ function ttDoiSoatPayos_(d) {
 }
 /** Trigger mỗi 5 phút: đối soát các đơn payOS đang chờ trong 48 giờ gần nhất */
 function ttQuetDonTuDong() {
+  chiChayNoiBo_(arguments[0]);
   if (!ttCauHinh_().payos) return;
   var sh = ttSheet_('DonHang'), last = sh.getLastRow();
   if (last < 2) return;
@@ -554,6 +563,7 @@ function qtDieuChinhXu(token, user, n, lyDo) {
 
 /** Chạy MỘT LẦN trong trình soạn thảo Apps Script (sau khi dán mã) để cấp quyền gọi payOS, cài trigger và tạo các trang tính */
 function capQuyenThanhToan() {
+  chiChayNoiBo_(arguments[0]);
   ['Vi', 'SoCai', 'MoKhoa', 'DonHang', 'Ve'].forEach(ttSheet_);
   ScriptApp.getProjectTriggers();
   try { UrlFetchApp.fetch('https://api-merchant.payos.vn', { muteHttpExceptions: true }); } catch (e) { /* chỉ để xin quyền */ }
@@ -691,20 +701,23 @@ function bcHtml_(S) {
 
 /** Gửi báo cáo (trigger hằng ngày gọi; chủ sở hữu cũng chạy tay được để xem thử) */
 function guiBaoCaoNgay() {
+  chiChayNoiBo_(arguments[0]);
   var to = bcNguoiNhan_();
   if (!to) throw new Error('Chưa có email nhận báo cáo: thêm Thuộc tính tập lệnh BAO_CAO_EMAIL.');
   var S = bcSoLieu_(new Date());
   MailApp.sendEmail({ to: to, subject: 'Thiên Cơ Các · ' + S.den.getDate() + '/' + (S.den.getMonth() + 1) + ': ' + bcSo_(S.don.tien) + ' đ · ' + S.tkMoi.length + ' tài khoản mới · ' + S.laSo + ' lá số' + (S.loiCaiDat.length ? ' · ⚠ lỗi cài đặt' : ''), htmlBody: bcHtml_(S) });
-  return { to: to, soLieu: S };
+  return { to: to };   // không trả số liệu (doanh thu, liên hệ khách) – rà soát 16/11
 }
 /** Chủ sở hữu chạy 1 lần: bật gửi báo cáo 7 giờ sáng mỗi ngày và gửi ngay một bản thử */
 function caiDatBaoCaoNgay() {
+  chiChayNoiBo_(arguments[0]);
   ScriptApp.getProjectTriggers().forEach(function (tr) { if (tr.getHandlerFunction() === 'guiBaoCaoNgay') ScriptApp.deleteTrigger(tr); });
   ScriptApp.newTrigger('guiBaoCaoNgay').timeBased().everyDays(1).atHour(7).create();
   var r = guiBaoCaoNgay();
   Logger.log('✔ Đã bật báo cáo ngày lúc 7 giờ sáng, gửi tới ' + r.to + '. Vừa gửi một bản thử – hãy kiểm tra hộp thư (cả mục Thư rác/Quảng cáo).');
 }
 function tatBaoCaoNgay() {
+  chiChayNoiBo_(arguments[0]);
   var n = 0; ScriptApp.getProjectTriggers().forEach(function (tr) { if (tr.getHandlerFunction() === 'guiBaoCaoNgay') { ScriptApp.deleteTrigger(tr); n++; } });
   Logger.log(n ? '✔ Đã tắt báo cáo ngày.' : 'Báo cáo ngày vốn chưa bật.');
 }

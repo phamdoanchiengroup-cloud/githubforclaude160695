@@ -161,7 +161,7 @@ function astTrueNode_(jd) {
 }
 
 /** Tất cả thiên thể tại JD (UT). Trả về {sun, earth, moon, northNode, southNode, mercury, ..., pluto} (độ) */
-function astToanBo(jd) {
+function astToanBo_(jd) {
   var d = jd - 2451543.5;
   var sun = astNorm_(astSun_(d).lon - 0.0057);
   var nn = astTrueNode_(jd);

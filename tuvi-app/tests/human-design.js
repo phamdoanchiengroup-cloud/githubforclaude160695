@@ -18,7 +18,7 @@ const loai = {}, mau = [];
   try { hde = await import(path.join(__dirname, 'node_modules', 'hd-chart-engine', 'dist', 'index.js')); } catch (e) { hde = null; }
   for (let k = 0; k < 150; k++) {
     const y = 1945 + Math.floor(rnd() * 75), m = 1 + Math.floor(rnd() * 12), d = 1 + Math.floor(rnd() * 28), h = Math.floor(rnd() * 24), mi = Math.floor(rnd() * 60);
-    const jd = ctx.astJD_(y, m, d, h, mi, 7), hd = ctx.hdLap(jd);
+    const jd = ctx.astJD_(y, m, d, h, mi, 7), hd = ctx.hdLap_(jd);
     const T = { y, m, d, h, mi, tz: 7, jd, lat: 21.03, lon: 105.85, noiSinh: 'Hà Nội' };
     const P = ctx.hdPhanTich_(hd, T, 2026);
     loai[hd.loai] = (loai[hd.loai] || 0) + 1;

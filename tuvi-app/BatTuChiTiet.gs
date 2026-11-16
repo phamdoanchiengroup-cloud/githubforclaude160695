@@ -54,7 +54,7 @@ function btctHyKy_(bt, hanh) {
 }
 
 /** Hàm chính */
-function batTuChiTiet(bt, input, tv) {
+function batTuChiTiet_(bt, input, tv) {
   var male = input.gender !== 'nu';
   var P = bt.pillars, dCan = bt.nhatChuCan, dm = bt.nhatChuHanh;
   var truTen = ['năm', 'tháng', 'ngày', 'giờ'];

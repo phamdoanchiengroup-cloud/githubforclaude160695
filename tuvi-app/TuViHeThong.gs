@@ -1503,8 +1503,9 @@ function sinhVanCungThienDi_(chart, pi) {
 }
 
 function testVanCungThienDi() {
+  chiChayNoiBo_(arguments[0]);
   var input = { name: 'Test', gender: 'nam', calendar: 'duong', day: 16, month: 6, year: 1995, hour: 4, minute: 0, viewYear: 2026 };
-  var chart = tuviLapLaSo(input);
+  var chart = tuviLapLaSo_(input);
   var pi = -1;
   for (var i = 0; i < 12; i++) { if (chart.palaces[i].cung === 'Thiên Di') { pi = i; break; } }
   if (pi < 0) { Logger.log('✗ Không tìm thấy cung Thiên Di'); return; }
@@ -2183,8 +2184,9 @@ function sinhVanCungHuynhDe_(chart, pi) {
 }
 
 function testVan3Cung() {
+  chiChayNoiBo_(arguments[0]);
   var input = { name: 'Test', gender: 'nam', calendar: 'duong', day: 16, month: 6, year: 1995, hour: 4, minute: 0, viewYear: 2026 };
-  var chart = tuviLapLaSo(input);
+  var chart = tuviLapLaSo_(input);
   ['Nô Bộc','Phụ Mẫu','Huynh Đệ'].forEach(function(ten) {
     var pi = -1;
     for (var i = 0; i < 12; i++) { if (chart.palaces[i].cung === ten) { pi = i; break; } }
@@ -2203,11 +2205,12 @@ function testVan3Cung() {
   });
 }
 function testTang2ToanBo12Cung() {
+  chiChayNoiBo_(arguments[0]);
   var input = {
     name: 'Test', gender: 'nam', calendar: 'duong',
     day: 16, month: 6, year: 1995, hour: 4, minute: 0, viewYear: 2026
   };
-  var chart = tuviLapLaSo(input);
+  var chart = tuviLapLaSo_(input);
   var TEN12 = ['Mệnh','Huynh Đệ','Phu Thê','Tử Tức','Tài Bạch','Tật Ách',
     'Thiên Di','Nô Bộc','Quan Lộc','Điền Trạch','Phúc Đức','Phụ Mẫu'];
 
@@ -2235,11 +2238,12 @@ function testTang2ToanBo12Cung() {
   Logger.log('✓ Nếu bạn thấy 12 cung đều có đoạn hoàn cảnh, Tầng 2 đã hoạt động.');
 }
 function testTang1Tang2KhongMauThuan() {
+  chiChayNoiBo_(arguments[0]);
   var input = {
     name: 'Test', gender: 'nam', calendar: 'duong',
     day: 16, month: 6, year: 1995, hour: 4, minute: 0, viewYear: 2026
   };
-  var chart = tuviLapLaSo(input);
+  var chart = tuviLapLaSo_(input);
   var TEN4 = ['Phụ Mẫu', 'Huynh Đệ', 'Nô Bộc', 'Thiên Di'];
 
   Logger.log('=== KIỂM TRA TẦNG 1 + TẦNG 2 KHÔNG MÂU THUẪN ===\n');
@@ -4252,6 +4256,7 @@ function sinhVanCungPhucDuc_(chart, pi) {
  * Test sinh facts cho cung Mệnh của lá số 16/06/1995 4h sáng.
  */
 function testFactsTuVi() {
+  chiChayNoiBo_(arguments[0]);
   var input = {
     name: 'Test',
     gender: 'nam',
@@ -4261,7 +4266,7 @@ function testFactsTuVi() {
     viewYear: 2026
   };
 
-  var chart = tuviLapLaSo(input);
+  var chart = tuviLapLaSo_(input);
   var pi = chart.info.menh;
 
   Logger.log('=== FACTS CHO CUNG MỆNH (' + chart.palaces[pi].cung + ') ===');
@@ -4306,12 +4311,13 @@ function testFactsTuVi() {
  * Test sinh facts cho cung Phu Thê — kiểm tra trước khi viết kho văn.
  */
 function testFactsPhuThe() {
+  chiChayNoiBo_(arguments[0]);
   var input = {
     name: 'Test', gender: 'nam', calendar: 'duong',
     day: 16, month: 6, year: 1995, hour: 4, minute: 0, viewYear: 2026
   };
 
-  var chart = tuviLapLaSo(input);
+  var chart = tuviLapLaSo_(input);
 
   // Tìm cung Phu Thê (không phải cung Mệnh)
   var pi = -1;
@@ -4363,12 +4369,13 @@ function testFactsPhuThe() {
  * Test sinh 7 đoạn văn cung Phu Thê.
  */
 function testVanCungPhuThe() {
+  chiChayNoiBo_(arguments[0]);
   var input = {
     name: 'Test', gender: 'nam', calendar: 'duong',
     day: 16, month: 6, year: 1995, hour: 4, minute: 0, viewYear: 2026
   };
 
-  var chart = tuviLapLaSo(input);
+  var chart = tuviLapLaSo_(input);
 
   // Tìm cung Phu Thê
   var pi = -1;
@@ -4399,12 +4406,13 @@ function testVanCungPhuThe() {
  * Test sinh facts cho cung Tài Bạch.
  */
 function testFactsTaiBach() {
+  chiChayNoiBo_(arguments[0]);
   var input = {
     name: 'Test', gender: 'nam', calendar: 'duong',
     day: 16, month: 6, year: 1995, hour: 4, minute: 0, viewYear: 2026
   };
 
-  var chart = tuviLapLaSo(input);
+  var chart = tuviLapLaSo_(input);
   var pi = -1;
   for (var i = 0; i < 12; i++) {
     if (chart.palaces[i].cung === 'Tài Bạch') { pi = i; break; }
@@ -4454,12 +4462,13 @@ function testFactsTaiBach() {
  * Test sinh 6 đoạn văn cung Tài Bạch.
  */
 function testVanCungTaiBach() {
+  chiChayNoiBo_(arguments[0]);
   var input = {
     name: 'Test', gender: 'nam', calendar: 'duong',
     day: 16, month: 6, year: 1995, hour: 4, minute: 0, viewYear: 2026
   };
 
-  var chart = tuviLapLaSo(input);
+  var chart = tuviLapLaSo_(input);
   var pi = -1;
   for (var i = 0; i < 12; i++) {
     if (chart.palaces[i].cung === 'Tài Bạch') { pi = i; break; }
@@ -4488,12 +4497,13 @@ function testVanCungTaiBach() {
  * Test sinh facts cho cung Quan Lộc.
  */
 function testFactsQuanLoc() {
+  chiChayNoiBo_(arguments[0]);
   var input = {
     name: 'Test', gender: 'nam', calendar: 'duong',
     day: 16, month: 6, year: 1995, hour: 4, minute: 0, viewYear: 2026
   };
 
-  var chart = tuviLapLaSo(input);
+  var chart = tuviLapLaSo_(input);
   var pi = -1;
   for (var i = 0; i < 12; i++) {
     if (chart.palaces[i].cung === 'Quan Lộc') { pi = i; break; }
@@ -4543,12 +4553,13 @@ function testFactsQuanLoc() {
  * Test sinh 7 đoạn văn cung Quan Lộc.
  */
 function testVanCungQuanLoc() {
+  chiChayNoiBo_(arguments[0]);
   var input = {
     name: 'Test', gender: 'nam', calendar: 'duong',
     day: 16, month: 6, year: 1995, hour: 4, minute: 0, viewYear: 2026
   };
 
-  var chart = tuviLapLaSo(input);
+  var chart = tuviLapLaSo_(input);
   var pi = -1;
   for (var i = 0; i < 12; i++) {
     if (chart.palaces[i].cung === 'Quan Lộc') { pi = i; break; }
@@ -4574,9 +4585,10 @@ function testVanCungQuanLoc() {
 }
 
 function testVanCungTuTuc() {
+  chiChayNoiBo_(arguments[0]);
   var input = { name: 'Test', gender: 'nam', calendar: 'duong', day: 16, month: 6, year: 1995, hour: 4, minute: 0, viewYear: 2026 };
-  var chart = tuviLapLaSo(input);
-  var bt = batTuLap(input);
+  var chart = tuviLapLaSo_(input);
+  var bt = batTuLap_(input);
   chart._bt = bt;
 
   var pi = -1;
@@ -4599,8 +4611,9 @@ function testVanCungTuTuc() {
 }
 
 function testVanCungTatAch() {
+  chiChayNoiBo_(arguments[0]);
   var input = { name: 'Test', gender: 'nam', calendar: 'duong', day: 16, month: 6, year: 1995, hour: 4, minute: 0, viewYear: 2026 };
-  var chart = tuviLapLaSo(input);
+  var chart = tuviLapLaSo_(input);
   var pi = -1;
   for (var i = 0; i < 12; i++) { if (chart.palaces[i].cung === 'Tật Ách') { pi = i; break; } }
   if (pi < 0) { Logger.log('✗ Không tìm thấy cung Tật Ách'); return; }
@@ -4621,8 +4634,9 @@ function testVanCungTatAch() {
 }
 
 function testVanCungDienTrach() {
+  chiChayNoiBo_(arguments[0]);
   var input = { name: 'Test', gender: 'nam', calendar: 'duong', day: 16, month: 6, year: 1995, hour: 4, minute: 0, viewYear: 2026 };
-  var chart = tuviLapLaSo(input);
+  var chart = tuviLapLaSo_(input);
   var pi = -1;
   for (var i = 0; i < 12; i++) { if (chart.palaces[i].cung === 'Điền Trạch') { pi = i; break; } }
   if (pi < 0) { Logger.log('✗ Không tìm thấy cung Điền Trạch'); return; }
@@ -4650,13 +4664,14 @@ function testVanCungDienTrach() {
  * Chạy hàm này để xác định lỗi nằm ở tầng nào.
  */
 function testVanCungMenh() {
+  chiChayNoiBo_(arguments[0]);
   var input = {
     name: 'Test', gender: 'nam', calendar: 'duong',
     day: 16, month: 6, year: 1995, hour: 4, minute: 0, viewYear: 2026
   };
 
   Logger.log('=== BƯỚC 1: An sao ===');
-  var chart = tuviLapLaSo(input);
+  var chart = tuviLapLaSo_(input);
   var pi = chart.info.menh;
   Logger.log('Cung Mệnh index: ' + pi + ' (' + chart.palaces[pi].cung + ')');
 

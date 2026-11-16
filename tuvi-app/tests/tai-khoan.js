@@ -9,6 +9,7 @@ const store = {}, cache = {};
 const ctx = {
   console, Math, Date, JSON,
   Utilities: {
+    formatDate: (d, tz, f) => { const p = n => String(n).padStart(2, '0'); return f.replace('yyyy', d.getFullYear()).replace('MM', p(d.getMonth() + 1)).replace('dd', p(d.getDate())).replace('HH', p(d.getHours())).replace('mm', p(d.getMinutes())); },
     DigestAlgorithm: { SHA_256: 'sha256' }, Charset: { UTF_8: 'utf8' },
     computeDigest: (a, s) => Array.from(crypto.createHash('sha256').update(s, 'utf8').digest()).map(b => (b > 127 ? b - 256 : b)),
     getUuid: () => crypto.randomUUID(), sleep: () => {}
@@ -24,7 +25,9 @@ vm.runInContext(code.slice(code.indexOf('function lapLaSoDayDu_'), code.indexOf(
 let loi = 0;
 function ok(c, m) { if (!c) { loi++; console.log('✗', m); } else console.log('✔', m); }
 function nem(f) { try { f(); return null; } catch (e) { return e.message; } }
-const PASS = process.env.TK_PASS;
+// Không có mật khẩu thật (TK_PASS) thì thay seed chủ sở hữu bằng một mật khẩu thử – chỉ trong bộ nhớ kiểm thử (rà soát 16/11)
+if (!process.env.TK_PASS) { const s = 'salt-thu-nghiem'; ctx.TK_CHU_SEED = { salt: s, hash: ctx.tkBam_('mat-khau-thu-nghiem', s), vaiTro: 'chu', hienThi: 'Chủ sở hữu' }; }
+const PASS = process.env.TK_PASS || 'mat-khau-thu-nghiem';
 if (PASS) {
   const r = ctx.dangNhap('ChienPham ', PASS);
   ok(r.token && r.nguoiDung.vaiTro === 'chu', 'Chủ sở hữu đăng nhập được (không phân biệt hoa thường, khoảng trắng)');
@@ -41,8 +44,12 @@ if (PASS) {
   ok(!full.khach && full.moRong && full.battuChiTiet, 'Đã đăng nhập: nhận bản đầy đủ');
   ctx.dangXuat(T); ok(ctx.phien(T) === null, 'Đăng xuất');
 }
+ctx.Utilities.sleep = () => {};
 for (let i = 0; i < 5; i++) nem(() => ctx.dangNhap('chienpham', 'sai-mat-khau'));
-ok(/tạm khóa/.test(nem(() => ctx.dangNhap('chienpham', PASS || 'x'))), 'Khóa tạm sau 5 lần sai');
+ok(nem(() => ctx.dangNhap('chienpham', PASS)) === null, 'Chủ sở hữu không bị người lạ khóa sau 5 lần sai (chỉ làm chậm)');
+ctx.dangKy('khachkhoa', 'matkhau123', 'Khách', 'khach@vidu.vn');
+for (let i = 0; i < 5; i++) nem(() => ctx.dangNhap('khachkhoa', 'sai-mat-khau'));
+ok(/tạm khóa/.test(nem(() => ctx.dangNhap('khachkhoa', 'matkhau123'))), 'Tài khoản thường: khóa tạm sau 5 lần sai');
 const k = ctx.lapLaSo({ name: 'B', gender: 'nu', calendar: 'duong', day: 3, month: 2, year: 1985, hour: 22, minute: 0, save: true }, 'token-gia-mao-khong-hop-le-123');
 const js = JSON.stringify(k);
 ok(!k.khach && k.tongKhoa && k.moRong && !k.moRong.deHieu.th6 && k.chiTiet.daiVan.every(function (d) { return d.khoa; }) && !k.moRong.tongHop.hoiTu, 'Khách: đọc được 6 hệ; Tổng hợp, vận hạn, biến cố bị cắt ở máy chủ');

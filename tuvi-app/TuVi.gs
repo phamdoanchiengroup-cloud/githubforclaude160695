@@ -264,7 +264,7 @@ function canChiText(can, chi) { return CAN[can] + ' ' + CHI[chi]; }
  *  input: {name, gender:'nam'|'nu', calendar:'duong'|'am', day, month, year,
  *          hour, minute, leap, viewYear, lateRat, leapMode, trueSolar, longitude}
  * ============================================================ */
-function tuviLapLaSo(input) {
+function tuviLapLaSo_(input) {
   var t = chuanHoaThoiGian_(input);
   var ld = t.lunar;
   var hourChi = Math.floor((t.hour + 1) / 2) % 12;

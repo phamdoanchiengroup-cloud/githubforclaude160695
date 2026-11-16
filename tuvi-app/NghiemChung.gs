@@ -22,7 +22,7 @@ var NC_TEN_NHOM = { 'A': 'Vóc dáng & nét bên ngoài', 'B': 'Tính cách', 'C
 var NC_HE6 = ['Tử Vi', 'Bát Tự', 'Chiêm tinh', 'Thần số học', 'Human Design', 'Hà Lạc'];
 
 /* -------- HÀM CHÍNH -------- */
-function nghiemChungLap(input) {
+function nghiemChungLap_(input) {
   input = JSON.parse(JSON.stringify(input || {}));
   input.save = false;
   var r = lapLaSoDayDu_(input);
@@ -281,6 +281,7 @@ function ncNhomH_(X, g) {
  *  TEST — Chạy 8 đoạn mô tả cho 3 lá số
  * ============================================================ */
 function testNghiemChung3Nguoi() {
+  chiChayNoiBo_(arguments[0]);
   var ds = [
     { ten: 'BẠN', input: { name: 'Ban', gender: 'nam', calendar: 'duong', day: 16, month: 6, year: 1995, hour: 4, minute: 30, place: '20.45|106.34|Thái Bình', tz: 7, viewYear: 2026 } },
     { ten: 'VỢ', input: { name: 'Vo', gender: 'nu', calendar: 'duong', day: 20, month: 10, year: 1997, hour: 2, minute: 0, place: '20.45|106.34|Hưng Hà', tz: 7, viewYear: 2026 } },
@@ -294,7 +295,7 @@ function testNghiemChung3Nguoi() {
     Logger.log('  ' + x.ten);
     Logger.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
     try {
-      var r = nghiemChungLap(x.input);
+      var r = nghiemChungLap_(x.input);
       r.doan.forEach(function(d) {
         Logger.log('');
         Logger.log('【' + d.ma + '】 ' + d.ten);
@@ -319,6 +320,7 @@ function testNghiemChung3Nguoi() {
  * Chạy hàm này từ editor để xem trước giao diện.
  */
 function showNghiemChungUI() {
+  chiChayNoiBo_(arguments[0]);
   var html = HtmlService.createHtmlOutputFromFile('NghiemChungUI')
     .setWidth(720)
     .setHeight(760)
@@ -333,7 +335,7 @@ function showNghiemChungUI() {
  */
 function getDoanNghiemChung(input) {
   if (!input) throw new Error('Thiếu input.');
-  var r = nghiemChungLap(input);
+  var r = nghiemChungLap_(input);
   return r.doan;
 }
 

@@ -57,7 +57,7 @@ kt(soSao / 2400 > 5 && soSao / 2400 < 30, 'trung bình mỗi trụ 5–30 sao ('
 // 3. Gắn vào batTuLap + từ điển
 for (let i = 0; i < 40; i++) {
   const inp = { name: 'T' + i, gender: i % 2 ? 'nu' : 'nam', calendar: 'duong', day: 1 + (i * 11) % 28, month: 1 + (i * 5) % 12, year: 1950 + (i * 7) % 70, hour: (i * 3) % 24, minute: 0, viewYear: 2026 };
-  const B = ctx.batTuLap(inp);
+  const B = ctx.batTuLap_(inp);
   kt(!B.thanSatLoi && B.thanSatTru && B.thanSatTru.length === 4, '#' + i + ' batTuLap có thần sát theo trụ');
   B.thanSatTru.forEach(d => d.forEach(x => kt(B.thanSatNghia[x.t] && B.thanSatNghia[x.t].y, '#' + i + ' có nghĩa cho ' + x.t)));
   // Cung vị / 12 lĩnh vực / lưu niên (btctThanSat_) phải cùng vị trí với bảng thần sát mới – bài luận không tự mâu thuẫn

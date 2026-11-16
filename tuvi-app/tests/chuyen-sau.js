@@ -11,7 +11,7 @@ const tenSao = p => new Set([].concat(p.chinh, p.cat, p.hung, p.tieu, p.vong || 
 const demMuc = {};
 for (let i = 0; i < 300; i++) {
   const inp = { name: 'T' + i, gender: i % 2 ? 'nu' : 'nam', calendar: 'duong', day: 1 + (i * 11) % 28, month: 1 + (i * 5) % 12, year: 1940 + (i * 7) % 80, hour: (i * 3) % 24, minute: 0, viewYear: 2026 };
-  const tv = ctx.tuviLapLaSo(inp), r = ctx.tvcsLap_(tv), P = tv.palaces;
+  const tv = ctx.tuviLapLaSo_(inp), r = ctx.tvcsLap_(tv), P = tv.palaces;
   const id = '#' + i + ' ';
   kt(r.boSao.length === 12 && r.boSao[0].cung === 'Mệnh', id + '12 cung, bắt đầu từ Mệnh');
   // Bộ sao "đồng cung" chính tinh phải thật sự có mặt (ở cung hoặc cung xung chiếu khi vô chính diệu)

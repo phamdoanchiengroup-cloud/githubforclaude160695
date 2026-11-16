@@ -47,16 +47,18 @@ kt(vn1.ok && /^\d{4}-\d{2}-\d{2}$/.test(vn1.hanDen) && ctx.ttSoDu_('khachvn') ==
 const vn2 = ctx.dangKyVanNgay({ name: 'A', gender: 'nam', calendar: 'duong', day: 1, month: 1, year: 1990, hour: 8 }, 'a@example.com', dk.token);
 kt(vn2.ok === false && vn2.thieu === giaVN - (du0 - giaVN), 'không đủ xu thì báo thiếu, không đăng ký');
 kt(ctx.dsVanNgay(dk.token).length === 1 && ctx.dsVanNgay(dk.token)[0].hanDen === vn1.hanDen, 'danh sách giữ một dòng, đúng hạn');
-if (process.env.TK_PASS) {
-  const tok = ctx.dangNhap('chienpham', process.env.TK_PASS).token, inp = { name: 'Lá số thử', gender: 'nam', calendar: 'duong', day: 15, month: 8, year: 1990, hour: 10, minute: 30 };
-  const r = ctx.dangKyVanNgay(inp, 'thu@example.com', tok);
-  kt(r.ok && thu.length === 1 && /Thiên Cơ Các · /.test(thu[0].subject) && thu[0].to === 'thu@example.com', 'chủ sở hữu đăng ký + gửi ngay bản thử');
+// Không có mật khẩu thật (TK_PASS) thì thay seed chủ sở hữu bằng một mật khẩu thử – chỉ trong bộ nhớ kiểm thử (rà soát 16/11)
+if (!process.env.TK_PASS) { const s = 'salt-thu-nghiem'; ctx.TK_CHU_SEED = { salt: s, hash: ctx.tkBam_('mat-khau-thu-nghiem', s), vaiTro: 'chu', hienThi: 'Chủ sở hữu' }; }
+{
+  const tok = ctx.dangNhap('chienpham', process.env.TK_PASS || 'mat-khau-thu-nghiem').token, inp = { name: 'Lá số thử', gender: 'nam', calendar: 'duong', day: 15, month: 8, year: 1990, hour: 10, minute: 30 };
+  const t0 = thu.length, r = ctx.dangKyVanNgay(inp, 'thu@example.com', tok);
+  kt(r.ok && thu.length === t0 + 1 && /Thiên Cơ Các · /.test(thu[t0].subject) && thu[t0].to === 'thu@example.com', 'chủ sở hữu đăng ký + gửi ngay bản thử');
   ctx.dangKyVanNgay(inp, 'thu@example.com', tok);
   kt(ctx.dsVanNgay(tok).length === 1, 'đăng ký lại cùng email không bị trùng dòng');
   const n1 = ctx.guiVanNgay(), n2 = ctx.guiVanNgay();
-  kt(n1 === 1 && n2 === 0, 'trigger gửi mỗi email một lần mỗi ngày (' + n1 + ', ' + n2 + ')');
+  kt(n1 === 2 && n2 === 0, 'trigger gửi mỗi email một lần mỗi ngày – chủ sở hữu + tài khoản thường còn hạn (' + n1 + ', ' + n2 + ')');
   kt(ctx.huyVanNgay('thu@example.com', tok).n === 1 && ctx.dsVanNgay(tok).length === 0, 'ngừng nhận');
-} else console.log('  (bỏ qua phần đăng ký của chủ sở hữu – chưa có TK_PASS)');
+}
 // Zalo (dùng chung bot Trợ lý KPI): bản chữ thường ≤1900 ký tự/tin, chỉ gửi cho lá số của chủ sở hữu, mỗi lá số một lần mỗi ngày
 {
   const inp = { name: 'Lá số Zalo', gender: 'nam', calendar: 'duong', day: 15, month: 8, year: 1990, hour: 10, minute: 30 };
@@ -73,7 +75,7 @@ if (process.env.TK_PASS) {
   sh.appendRow(['khachvip', 'vip@example.com', JSON.stringify(inp), new Date(), '', 'bật']);
   P.setProperty('ZALO_TOKEN', 'tok-thu'); P.setProperty('ZALO_CHAT_ID', 'chat-thu');
   const e0 = thu.length, n = ctx.guiVanNgay();
-  kt(n === 4 && thu.length - e0 === 4, 'email gửi đủ 4 dòng (3 dòng mới + tài khoản thường còn hạn) (' + n + ')');
+  kt(n === 3 && thu.length - e0 === 3, 'email gửi đủ 3 dòng mới (tài khoản thường đã nhận hôm nay, không gửi lại) (' + n + ')');
   kt(zl.length === 2 && zl.every(x => x.body.chat_id === 'chat-thu' && /bottok-thu\/sendMessage$/.test(x.url)), 'Zalo chỉ gửi 1 lần cho lá số chủ sở hữu (2 tin), không gửi cho VIP (' + zl.length + ')');
   ctx.thuZaloVanNgay(); kt(zl.length === 4, 'thuZaloVanNgay gửi ngay');
   ctx.UrlFetchApp = { fetch: () => ({ getContentText: () => '{"ok":false,"description":"Unauthorized"}', getResponseCode: () => 401 }) };

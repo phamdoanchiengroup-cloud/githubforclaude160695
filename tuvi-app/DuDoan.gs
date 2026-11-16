@@ -367,7 +367,7 @@ function ddPhanTichNam_(chart, bt, Y, dvCache) {
 }
 
 /** Tổng hợp dự đoán cả đời */
-function duDoanCuocDoi(chart, bt, input, daiVanList) {
+function duDoanCuocDoi_(chart, bt, input, daiVanList) {
   var I = chart.info, P = chart.palaces;
   // cache Tứ Hóa đại vận theo cung đại hạn
   var dvCache = {};

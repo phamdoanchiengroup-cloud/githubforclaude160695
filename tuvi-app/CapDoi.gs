@@ -332,7 +332,7 @@ function cdChuanCon_(ds, vy) {
     if (o.day && o.thang) {
       try {
         var inp = { name: o.ten, gender: o.gioiTinh === 'gai' ? 'nu' : 'nam', calendar: 'duong', day: o.day, month: o.thang, year: o.nam, hour: o.gio == null ? 12 : o.gio, minute: 0, viewYear: vy };
-        var tv = tuviLapLaSo(inp), bt = batTuLap(inp);
+        var tv = tuviLapLaSo_(inp), bt = batTuLap_(inp);
         o.namAm = tv.info.lunar.year; o.hanhManh = cdHanhManh_(bt);
         o.moTa = 'Mệnh ' + (tv.palaces[tv.info.menh].chinh.map(function (x) { return x.n; }).join(', ') || 'vô chính diệu') + ' · nhật chủ ' + bt.nhatChu + ' (' + bt.cuong + ')' + (o.gio == null ? ' · chưa rõ giờ sinh' : '');
       } catch (e) { /* thiếu dữ liệu → chỉ xét năm */ }

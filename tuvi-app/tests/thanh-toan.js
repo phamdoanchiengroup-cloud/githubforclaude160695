@@ -29,6 +29,7 @@ const ss = { getSheetByName: n => sheets[n] || null, insertSheet: n => (sheets[n
 const payos = { don: {} };
 const ctx = {
   console, Math, Date, JSON,
+  Session: { getActiveUser: () => ({ getEmail: () => 'chu@vidu.vn' }), getEffectiveUser: () => ({ getEmail: () => 'chu@vidu.vn' }) },
   Utilities: {
     DigestAlgorithm: { SHA_256: 'sha256' }, Charset: { UTF_8: 'utf8' },
     computeDigest: (a, s) => Array.from(crypto.createHash('sha256').update(s, 'utf8').digest()).map(b => (b > 127 ? b - 256 : b)),
@@ -59,8 +60,9 @@ vm.runInContext(code.slice(code.indexOf('function lapLaSoDayDu_'), code.indexOf(
 let loi = 0;
 const ok = (c, m) => { if (!c) { loi++; console.log('✗', m); } else console.log('✔', m); };
 const nem = f => { try { f(); return null; } catch (e) { return e.message; } };
-const PASS = process.env.TK_PASS;
-if (!PASS) { console.log('Bỏ qua: cần biến TK_PASS'); process.exit(0); }
+// Không có mật khẩu thật (TK_PASS) thì thay seed chủ sở hữu bằng một mật khẩu thử – chỉ trong bộ nhớ kiểm thử (rà soát 16/11)
+if (!process.env.TK_PASS) { const s = 'salt-thu-nghiem'; ctx.TK_CHU_SEED = { salt: s, hash: ctx.tkBam_('mat-khau-thu-nghiem', s), vaiTro: 'chu', hienThi: 'Chủ sở hữu' }; }
+const PASS = process.env.TK_PASS || 'mat-khau-thu-nghiem';
 const L = { name: 'Nguyễn Văn An', gender: 'nam', calendar: 'duong', day: 15, month: 8, year: 1990, hour: 10, minute: 30, place: '21.03|105.85|Hà Nội', tz: '7' };
 
 const chu = ctx.dangNhap('chienpham', PASS).token;

@@ -9,7 +9,7 @@ function kt(dk, msg) { if (dk) ok++; else { sai++; console.log('✗', msg); } }
 const thu = [], trig = [];
 ctx.Logger = { log: () => {} };
 ctx.MailApp = { sendEmail: o => thu.push(o) };
-ctx.Session = { getEffectiveUser: () => ({ getEmail: () => 'chu@vidu.vn' }) };
+ctx.Session = { getEffectiveUser: () => ({ getEmail: () => 'chu@vidu.vn' }), getActiveUser: () => ({ getEmail: () => 'chu@vidu.vn' }) };   // chủ dự án chạy trong trình soạn thảo
 ctx.ScriptApp = Object.assign({}, ctx.ScriptApp, { getProjectTriggers: () => trig.slice(), deleteTrigger: t => trig.splice(trig.indexOf(t), 1),
   newTrigger: h => ({ timeBased: () => ({ everyDays: n => ({ atHour: g => ({ create() { trig.push({ getHandlerFunction: () => h, n, g }); } }) }) }) }) });
 const now = Date.now(), gio = h => new Date(now - h * 3600e3);

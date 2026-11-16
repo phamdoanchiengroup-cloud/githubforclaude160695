@@ -39,6 +39,7 @@ const ctx = {
   CacheService: { getScriptCache: () => ({ get: k => (k in cache ? cache[k] : null), put: (k, v) => { cache[k] = v; }, remove: k => { delete cache[k]; } }) },
   LockService: { getScriptLock: () => ({ waitLock() {}, releaseLock() {} }) },
   SpreadsheetApp: { getActiveSpreadsheet: () => ss },
+  Session: { getActiveUser: () => ({ getEmail: () => ctx.__nguoiChay == null ? 'chu@vidu.vn' : ctx.__nguoiChay }), getEffectiveUser: () => ({ getEmail: () => 'chu@vidu.vn' }), getTemporaryActiveUserKey: () => '' },
   ScriptApp: { getService: () => ({ getUrl: () => 'https://script.google.com/macros/s/X/exec' }), getProjectTriggers: () => [], newTrigger: () => ({ timeBased: () => ({ everyMinutes: () => ({ create() { ctx.__trigger = true; } }) }) }) },
   UrlFetchApp: { fetch(url, o) {
     const m = url.match(/payment-requests\/?(\d*)$/); let j;

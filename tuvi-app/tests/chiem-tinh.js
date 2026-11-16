@@ -19,7 +19,7 @@ let s = 3; const rnd = () => ((s = (s * 9301 + 49297) % 233280) / 233280);
 const bac = { tot: 0, vua: 0, kho: 0 }, ch = {};
 for (let k = 0; k < 60; k++) {
   const inp = { name: 'A', gender: k % 2 ? 'nu' : 'nam', calendar: 'duong', day: 1 + Math.floor(rnd() * 28), month: 1 + Math.floor(rnd() * 12), year: 1945 + Math.floor(rnd() * 75), hour: Math.floor(rnd() * 24), minute: Math.floor(rnd() * 60), viewYear: 2026 };
-  const ct = ctx.chiemTinhLap(inp), L = ctx.chiemTinhLuan(ct, 2026), P = L.phanTich;
+  const ct = ctx.chiemTinhLap_(inp), L = ctx.chiemTinhLuan_(ct, 2026), P = L.phanTich;
   { // Phe ngày/đêm + Phần may mắn/tinh thần: ngày = Mọc + Trăng − Trời, đêm đảo; Spirit ngược Fortune
     const ng = ct.by.sun.nha >= 7, n = x => ((x % 360) + 360) % 360, A0 = ct.asc.lon, S0 = ct.by.sun.lon, M0 = ct.by.moon.lon;
     const fE = n(ng ? A0 + M0 - S0 : A0 + S0 - M0), sE = n(ng ? A0 + S0 - M0 : A0 + M0 - S0);
@@ -51,7 +51,7 @@ for (let k = 0; k < 60; k++) {
 kt(bac.tot > 80 && bac.kho > 80 && bac.vua > 120, 'phân bố thuận/vừa/cần rèn: ' + JSON.stringify(bac));
 // 3. So sánh hai lá số
 const iA = { name: 'An', gender: 'nam', calendar: 'duong', day: 15, month: 8, year: 1990, hour: 10, minute: 30, viewYear: 2026 }, iB = { name: 'Bình', gender: 'nu', calendar: 'duong', day: 3, month: 2, year: 1993, hour: 6, minute: 0, viewYear: 2026 };
-const A = ctx.chiemTinhLap(iA), B = ctx.chiemTinhLap(iB), SS = ctx.ctSoSanh_(A, B, 'An', 'Bình');
+const A = ctx.chiemTinhLap_(iA), B = ctx.chiemTinhLap_(iB), SS = ctx.ctSoSanh_(A, B, 'An', 'Bình');
 kt(SS.composite && SS.davison && SS.nhaAB.length + SS.nhaBA.length > 0, 'synastry: nhà chồng lấn, Composite, Davison');
 kt(kc(ctx.ctTrungDiem_(350, 10), 0) < 1e-9 && kc(ctx.ctTrungDiem_(10, 350), 0) < 1e-9, 'trung điểm qua 0°');
 console.log('Chiêm tinh 7 bước: đạt ' + ok + '/' + (ok + sai) + ' · ' + JSON.stringify(bac) + ' · cấu hình ' + JSON.stringify(ch));

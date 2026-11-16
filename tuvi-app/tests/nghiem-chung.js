@@ -5,7 +5,7 @@ const TEN_SAO = /Tử Vi(?! &)|Thiên Cơ|Thái Dương|Vũ Khúc|Thiên Đồng
 let rnd = (s => () => (s = (s * 16807) % 2147483647) / 2147483647)(21), cau = 0, loSao = 0, thieuSo = 0, rong = 0;
 for (let k = 0; k < 25; k++) {
   const inp = { name: 'A', gender: k % 2 ? 'nu' : 'nam', calendar: 'duong', day: 1 + Math.floor(rnd() * 28), month: 1 + Math.floor(rnd() * 12), year: 1950 + Math.floor(rnd() * 70), hour: Math.floor(rnd() * 24), minute: 0, viewYear: 2026, place: '21.03|105.85|Hà Nội', tz: 7 };
-  const r = ctx.nghiemChungLap(inp);
+  const r = ctx.nghiemChungLap_(inp);
   kt(r.doan.length === 8, 'đủ 8 nhóm');
   r.doan.forEach(d => {
     if (!d.dong.length) rong++;

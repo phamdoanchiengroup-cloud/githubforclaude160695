@@ -38,11 +38,19 @@ function doGet(e) {
       .addMetaTag('viewport', 'width=device-width, initial-scale=1');
   }
   var tpl = HtmlService.createTemplateFromFile('Index');
-  tpl.initialParams = JSON.stringify((e && e.parameter) || {});
+  tpl.initialParams = thamSoAnToan_((e && e.parameter) || {});
   return tpl.evaluate()
     .setTitle(APP_TITLE)
     .addMetaTag('viewport', 'width=device-width, initial-scale=1, maximum-scale=5')
     .setXFrameOptionsMode(HtmlService.XFrameOptionsMode.ALLOWALL);
+}
+
+/** Tham số URL → JSON chèn thẳng vào <script> của trang: chỉ nhận khóa chữ/số, giá trị ≤ 200 ký tự,
+ *  thoát < > và ký tự xuống dòng Unicode để link lạ (vd. ?ref=</script><script>…) không chạy được mã (rà soát bảo mật 16/11). */
+function thamSoAnToan_(p) {
+  var o = {};
+  Object.keys(p || {}).forEach(function (k) { if (/^[A-Za-z0-9_]{1,30}$/.test(k)) o[k] = String(p[k] == null ? '' : p[k]).slice(0, 200); });
+  return JSON.stringify(o).replace(/</g, '\\u003c').replace(/>/g, '\\u003e').replace(/&/g, '\\u0026').replace(/\u2028/g, '\\u2028').replace(/\u2029/g, '\\u2029');
 }
 
 /** Nhúng file HTML con (Styles, Script) */
@@ -65,33 +73,33 @@ function layAnhHolo(ten) {
 /* ---------------------- Tự kiểm tra cài đặt ---------------------- */
 var FILE_HTML_CAN_CO = { 'Index': '<!DOCTYPE html>', 'Styles': '<style>', 'Script': '<script>' };
 var HAM_CAN_CO = {
-  'Lunar.gs': 'solarToLunar', 'TuVi.gs': 'tuviLapLaSo', 'BatTu.gs': 'batTuLap',
-  'LuanGiai.gs': 'luanChiTiet', 'DuDoan.gs': 'duDoanCuocDoi', 'BatTuChiTiet.gs': 'batTuChiTiet',
-  'Astro.gs': 'astToanBo', 'ChiemTinh.gs': 'chiemTinhLap', 'HumanDesign.gs': 'hdLap', 'ThanSoHoc.gs': 'thanSoHocLap', 'TongHop.gs': 'tongHopLuan', 'PhoiNgau.gs': 'phoiNgauLuan', 'HaLac.gs': 'haLacLap', 'HoiTu.gs': 'htHoiTu_', 'VanSau.gs': 'vsHoSoThang_', 'TuViTamPhap.gs': 'tpLap_', 'BatTuLuan.gs': 'btlLinhVuc_', 'TaiKhoan.gs': 'dangNhap', 'ThanhToan.gs': 'muaPhan', 'CapDoi.gs': 'lapCapDoi',
-  'Facts.gs': 'taoFact_', 'TuViHeThong.gs': 'tuviSinhFactsCung_', 'NghiemChung.gs': 'nghiemChungLap', 'DeHieu.gs': 'deHieuLap_', 'BatTuPhanTich.gs': 'btPhanTich_', 'TienIch.gs': 'tienIch', 'TuViTrinhTu.gs': 'tuviTrinhTu', 'TuViChuyenSau.gs': 'tuViChuSoHuu', 'BatTuThanSat.gs': 'thsTheoTru_', 'TuViPhiTinh.gs': 'phiTinhLuan', 'GiaDinh.gs': 'giaDinhDs'
+  'Lunar.gs': 'solarToLunar', 'TuVi.gs': 'tuviLapLaSo_', 'BatTu.gs': 'batTuLap_',
+  'LuanGiai.gs': 'luanChiTiet_', 'DuDoan.gs': 'duDoanCuocDoi_', 'BatTuChiTiet.gs': 'batTuChiTiet_',
+  'Astro.gs': 'astToanBo_', 'ChiemTinh.gs': 'chiemTinhLap_', 'HumanDesign.gs': 'hdLap_', 'ThanSoHoc.gs': 'thanSoHocLap_', 'TongHop.gs': 'tongHopLuan_', 'PhoiNgau.gs': 'phoiNgauLuan_', 'HaLac.gs': 'haLacLap_', 'HoiTu.gs': 'htHoiTu_', 'VanSau.gs': 'vsHoSoThang_', 'TuViTamPhap.gs': 'tpLap_', 'BatTuLuan.gs': 'btlLinhVuc_', 'TaiKhoan.gs': 'dangNhap', 'ThanhToan.gs': 'muaPhan', 'CapDoi.gs': 'lapCapDoi',
+  'Facts.gs': 'taoFact_', 'TuViHeThong.gs': 'tuviSinhFactsCung_', 'NghiemChung.gs': 'nghiemChungLap_', 'DeHieu.gs': 'deHieuLap_', 'BatTuPhanTich.gs': 'btPhanTich_', 'TienIch.gs': 'tienIch', 'TuViTrinhTu.gs': 'tuviTrinhTu_', 'TuViChuyenSau.gs': 'tuViChuSoHuu', 'BatTuThanSat.gs': 'thsTheoTru_', 'TuViPhiTinh.gs': 'phiTinhLuan', 'GiaDinh.gs': 'giaDinhDs'
 };
 
 /** Trả về danh sách lỗi cài đặt (rỗng nếu mọi thứ đúng) */
 /** Dấu hiệu bản mới: [hàm trong file, đoạn mã mà bản mới phải có] */
 var BAN_MOI_CAN_CO = {
-  'BatTu.gs': ['batTuLap', 'thsTheoTru_'],
+  'BatTu.gs': ['batTuLap_', 'thsTheoTru_'],
   'BatTuThanSat.gs': ['thamKhaoThanSat', 'THS_NGUON'],
   'TuViPhiTinh.gs': ['ptLap_', 'ptNguyenCuc_'],
   'GiaDinh.gs': ['giaDinhQuanHe', 'gdNhom_'],
   'Code.gs': ['lapLaSoDayDu_', 'tvcsBoSaoCong_'],
-  'TuViTrinhTu.gs': ['tuviTrinhTu', 'TT_GOP'],
+  'TuViTrinhTu.gs': ['tuviTrinhTu_', 'TT_GOP'],
   'TuViChuyenSau.gs': ['thamKhaoTuVi', 'TVCS_NGHE'],
-  'HaLac.gs': ['haLacLap', 'hlNguyenDuong_'],
+  'HaLac.gs': ['haLacLap_', 'hlNguyenDuong_'],
   'BatTuPhanTich.gs': ['btPhanTich_', 'BTP_DIEU_HAU'],
   'ThanSoHoc.gs': ['tsPhanTich_', 'tsChuyenTiep_'],
-  'ChiemTinh.gs': ['chiemTinhLap', 'lot: lot'],
+  'ChiemTinh.gs': ['chiemTinhLap_', 'lot: lot'],
   'HumanDesign.gs': ['hdPhanTich_', 'HD_CENTER_HOI'],
   'DeHieu.gs': ['deHieuLap_', 'th6Lap_'],
   'TaiKhoan.gs': ['dangKy', 'ttQuaDangKy_'],
   'ThanhToan.gs': ['ttBangGia_', 'TT_GIA_PHIEN'],
   'HoiTu.gs': ['htTinHieu_', 'htBtTin_'],
-  'TongHop.gs': ['tongHopLuan', 'vsHieuChinh_'],
-  'LuanGiai.gs': ['luanChiTiet', 'tpLap_'],
+  'TongHop.gs': ['tongHopLuan_', 'vsHieuChinh_'],
+  'LuanGiai.gs': ['luanChiTiet_', 'tpLap_'],
   'TienIch.gs': ['guiVanNgay', 'tiZaloCo_']
 };
 function kiemTraCaiDat_() {
@@ -136,6 +144,7 @@ function trangLoiCaiDat_(loi) {
 
 /** Chạy hàm này trong trình soạn thảo (chọn kiemTraCaiDat → Chạy) để xem lỗi trong Nhật ký thực thi */
 function kiemTraCaiDat() {
+  chiChayNoiBo_(arguments[0]);
   var loi = kiemTraCaiDat_();
   if (!loi.length) { Logger.log('✔ Cài đặt đúng: đủ 32 file .gs và 3 file HTML.'); return; }
   loi.forEach(function (x) { Logger.log('✘ ' + x.replace(/<[^>]+>/g, '').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&amp;/g, '&')); });
@@ -147,22 +156,22 @@ function kiemTraCaiDat() {
  */
 function lapLaSoDayDu_(input) {
   input = input || {};
-  var tv = tuviLapLaSo(input);
-  var bt = batTuLap(input);
+  var tv = tuviLapLaSo_(input);
+  var bt = batTuLap_(input);
   var result = {
     tuvi: tv,
     battu: bt,
-    ketHop: ketHopLuan(tv, bt),
+    ketHop: ketHopLuan_(tv, bt),
     chiTiet: null,
     saoInfo: SAO,
     createdAt: new Date().toISOString()
   };
-  result.chiTiet = luanChiTiet(tv, bt, input);
-  try { result.chiTiet.trinhTu = tuviTrinhTu(tv, result.chiTiet); } catch (e) { result.chiTiet.trinhTu = { loi: String(e && e.message || e) }; }   // luận theo trình tự 26 bước
+  result.chiTiet = luanChiTiet_(tv, bt, input);
+  try { result.chiTiet.trinhTu = tuviTrinhTu_(tv, result.chiTiet); } catch (e) { result.chiTiet.trinhTu = { loi: String(e && e.message || e) }; }   // luận theo trình tự 26 bước
   // Bộ sao từng cung + sao hạn đại vận (bản công khai, TuViChuyenSau.gs) – gộp vào 26 bước; vận chưa mở bị ttCatPhan_ cắt
   if (typeof tvcsBoSaoCong_ === 'function') try { result.chiTiet.boSao = tvcsBoSaoCong_(tv); result.chiTiet.saoHan = tvcsSaoHanCong_(tv); } catch (e) { result.chiTiet.boSaoLoi = String(e && e.message || e); }
-  result.duDoan = duDoanCuocDoi(tv, bt, input, result.chiTiet.daiVan);
-  result.battuChiTiet = batTuChiTiet(bt, input, tv);
+  result.duDoan = duDoanCuocDoi_(tv, bt, input, result.chiTiet.daiVan);
+  result.battuChiTiet = batTuChiTiet_(bt, input, tv);
   // Trường hợp đặc biệt từng lưu niên (BatTuPhanTich.gs): tuế vận tịnh lâm, thiên khắc địa xung, tam hình, Thiên La Địa Võng
   if (typeof btpLuuNienDacBiet_ === 'function' && result.battuChiTiet && result.battuChiTiet.luuNien) {
     result.battuChiTiet.luuNien.forEach(function (y) {
@@ -198,8 +207,8 @@ function doGioSinh(input, token) {
   for (var h = 0; h < 12; h++) {
     var inp = JSON.parse(JSON.stringify(input));
     inp.hour = h === 0 ? 0 : h * 2; inp.minute = h === 0 ? 30 : 0; inp.trueSolar = false; inp.events = ev;
-    var tv = tuviLapLaSo(inp), bt = batTuLap(inp);
-    var D = duDoanCuocDoi(tv, bt, inp, false);
+    var tv = tuviLapLaSo_(inp), bt = batTuLap_(inp);
+    var D = duDoanCuocDoi_(tv, bt, inp, false);
     var dc = D.doiChieu;
     out.push({
       gio: h, gioTen: CHI[h] + ' (' + GIO_CHI[h] + ')', hienTai: h === gocChi,
@@ -233,10 +242,10 @@ function lapMoRong_(input, result) {
   var ct = null, ctL = null, ts = null, hd = null, hl = null, hlL = null;
   var ctOut = null, hdOut = null, hlOut = null, tsL = null, th = null, dh = null;
 
-  try { ct = chiemTinhLap(input); }
+  try { ct = chiemTinhLap_(input); }
   catch (e) { loi.chiemTinh = String(e && e.message || e); }
   if (ct) {
-    try { ctL = chiemTinhLuan(ct, vy); }
+    try { ctL = chiemTinhLuan_(ct, vy); }
     catch (e) { loi.chiemTinhLuan = String(e && e.message || e); }
     try {
       ctOut = { thoiDiem: ct.thoiDiem, heNha: ct.heNha, cusp: ct.cusp, hanhTinh: ct.hanhTinh, asc: ct.asc, mc: ct.mc, goc: ct.goc,
@@ -244,15 +253,15 @@ function lapMoRong_(input, result) {
     } catch (e) { loi.chiemTinhRutGon = String(e && e.message || e); }
   }
 
-  try { ts = thanSoHocLap(input, tv.info.solar, vy); }
+  try { ts = thanSoHocLap_(input, tv.info.solar, vy); }
   catch (e) { loi.thanSo = String(e && e.message || e); }
   if (ts) {
-    try { tsL = thanSoHocLuan(ts); }
+    try { tsL = thanSoHocLuan_(ts); }
     catch (e) { loi.thanSoLuan = String(e && e.message || e); }
   }
 
   if (ct && ct.thoiDiem) {
-    try { hd = hdLap(ct.thoiDiem.jd); }
+    try { hd = hdLap_(ct.thoiDiem.jd); }
     catch (e) { loi.hd = String(e && e.message || e); }
   } else {
     loi.hd = 'Không thể lập Human Design vì dữ liệu thời điểm Chiêm Tinh không có.';
@@ -262,7 +271,7 @@ function lapMoRong_(input, result) {
       hdOut = { act: hd.act, gates: hd.gates, kenh: hd.kenh, dinh: hd.dinh, loai: hd.loai,
         loaiTen: HD_TYPES[hd.loai].ten, thamQuyen: HD_AUTH[hd.thamQuyen].ten,
         chienLuoc: HD_TYPES[hd.loai].chienLuoc, profile: hd.profile, dinhNghia: hd.dinhNghia,
-        cross: hd.cross, goc: hd.goc, luan: hdLuan(hd) };
+        cross: hd.cross, goc: hd.goc, luan: hdLuan_(hd) };
     } catch (e) { loi.hdRutGon = String(e && e.message || e); hdOut = null; }
     if (hdOut) {
       try { hdOut.phanTich = hdPhanTich_(hd, ct.thoiDiem, vy); }
@@ -270,10 +279,10 @@ function lapMoRong_(input, result) {
     }
   }
 
-  try { hl = haLacLap(result.battu, tv); }
+  try { hl = haLacLap_(result.battu, tv); }
   catch (e) { loi.haLac = String(e && e.message || e); }
   if (hl) {
-    try { hlL = haLacLuan(hl, result.battu, vy); }
+    try { hlL = haLacLuan_(hl, result.battu, vy); }
     catch (e) { loi.haLacLuan = String(e && e.message || e); }
     hlOut = { tien: hl.tien, hau: hl.hau, hoTien: hl.hoTien, hoHau: hl.hoHau, lucHao: hl.lucHao, male: hl.male, luan: hlL };
   }
@@ -281,7 +290,7 @@ function lapMoRong_(input, result) {
   // Chỉ tạo luận giải tổng hợp khi đủ dữ liệu đầu vào; các hệ riêng lẻ vẫn hoạt động nếu thiếu một hệ.
   if (ct && ctL && ts && hd && hl && hlL) {
     try {
-      th = tongHopLuan({ tv: tv, bt: result.battu, btct: result.battuChiTiet, ct: ct, ctL: ctL, ts: ts, hd: hd, hl: hl, hlL: hlL, chiTiet: result.chiTiet,
+      th = tongHopLuan_({ tv: tv, bt: result.battu, btct: result.battuChiTiet, ct: ct, ctL: ctL, ts: ts, hd: hd, hl: hl, hlL: hlL, chiTiet: result.chiTiet,
         duDoan: result.duDoan, daiVanTV: result.chiTiet.daiVan, input: input });
     } catch (e) { loi.tongHop = String(e && e.message || e); }
   } else {
@@ -330,7 +339,7 @@ function ghiDoiChieu(muc, traLoi, them) {
   them = them || {};
   var ss = laySS_(), sh = ss.getSheetByName('DoiChieu');
   if (!sh) { sh = ss.insertSheet('DoiChieu'); sh.appendRow(['Thời gian', 'Mục', 'Trả lời', 'Năm sinh', 'Giới tính']); sh.getRange(1, 1, 1, 5).setFontWeight('bold'); sh.setFrozenRows(1); }
-  sh.appendRow([new Date(), muc, { dung: 'Đúng', mot: 'Một phần', sai: 'Không đúng' }[traLoi], parseInt(them.nam, 10) || '', String(them.gioi || '').slice(0, 10)]);
+  sh.appendRow([new Date(), shO_(String(muc || '').slice(0, 80)), { dung: 'Đúng', mot: 'Một phần', sai: 'Không đúng' }[traLoi], parseInt(them.nam, 10) || '', String(them.gioi || '').slice(0, 10)]);
   return true;
 }
 
@@ -366,14 +375,14 @@ function luuLichSu_(input, r) {
     lsXoaDong_(sh, trung);
   }
   sh.appendRow([
-    new Date(), input.name || 'Vô Danh', I.gender, input.calendar === 'am' ? 'Âm lịch' : 'Dương lịch',
+    new Date(), shO_(String(input.name || 'Vô Danh')), I.gender, input.calendar === 'am' ? 'Âm lịch' : 'Dương lịch',
     input.day, input.month, input.year, input.leap ? 'x' : '', input.hour, input.minute,
     "'" + s.day + '/' + s.month + '/' + s.year,                               // dấu ' giữ dạng chữ, tránh Sheet tự đổi thành ngày
     "'" + l.day + '/' + l.month + (l.leap ? ' (nhuận)' : '') + '/' + l.year,
     I.namCanChi, I.banMenh.ten, I.cuc,
     B.pillars.map(function (p) { return p.canTen + ' ' + p.chiTen; }).join(' | '),
     B.nhatChu, B.goiY.dung,
-    JSON.stringify(input), input.taiKhoan || ''
+    JSON.stringify(input), shO_(String(input.taiKhoan || ''))
   ]);
   } finally { if (lock) try { lock.releaseLock(); } catch (e) {} }
 }
@@ -435,6 +444,7 @@ function donLichSu(token) {
 
 /** Hàm chạy thử trong trình soạn thảo Apps Script */
 function testLapLaSo() {
+  chiChayNoiBo_(arguments[0]);
   var r = lapLaSoDayDu_({ name: 'Thử nghiệm', gender: 'nam', calendar: 'duong', day: 15, month: 8, year: 1990, hour: 10, minute: 30, viewYear: 2026 });
   Logger.log(JSON.stringify(r.tuvi.info, null, 2));
   Logger.log(r.battu.pillars.map(function (p) { return p.canTen + ' ' + p.chiTen; }).join(' | '));

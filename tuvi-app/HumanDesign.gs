@@ -141,10 +141,10 @@ function hdCong_(lon) {
  * Lập biểu đồ Human Design.
  * @param {number} jdUT thời điểm sinh (JD UT)
  */
-function hdLap(jdUT) {
-  var pPos = astToanBo(jdUT);
+function hdLap_(jdUT) {
+  var pPos = astToanBo_(jdUT);
   var jdD = astTimMatTroi_(astNorm_(pPos.sun - 88), jdUT - 88.5);
-  var dPos = astToanBo(jdD);
+  var dPos = astToanBo_(jdD);
   var act = { p: {}, d: {} }, gates = {};
   HD_BODIES.forEach(function (b) {
     act.p[b] = hdCong_(pPos[b]); act.d[b] = hdCong_(dPos[b]);
@@ -198,7 +198,7 @@ function hdLap(jdUT) {
 }
 
 /** Luận giải Human Design */
-function hdLuan(hd) {
+function hdLuan_(hd) {
   var T = HD_TYPES[hd.loai], A = HD_AUTH[hd.thamQuyen];
   var secs = [];
   secs.push({ tieuDe: 'Loại năng lượng – ' + T.ten, items: [
@@ -368,7 +368,7 @@ function hdPhanTich_(hd, T, viewYear) {
   out.nut = { p: 'Nút Bắc Tính cách cổng ' + pN.gate + ' (' + HD_GATE_TEN[pN.gate] + '), Nút Nam cổng ' + hd.act.p.southNode.gate + ' – chủ đề môi trường và con đường ý thức, nổi bật sau khoảng 38–40 tuổi.',
     d: 'Nút Bắc Thiết kế cổng ' + dN.gate + ' (' + HD_GATE_TEN[dN.gate] + ') – môi trường và những người cơ thể bạn cần gặp.' };
   function chartTam(jd) {
-    var pos = astToanBo(jd), gs = {}; HD_BODIES.forEach(function (b) { gs[hdCong_(pos[b]).gate] = 1; });
+    var pos = astToanBo_(jd), gs = {}; HD_BODIES.forEach(function (b) { gs[hdCong_(pos[b]).gate] = 1; });
     var moi = HD_CHANNELS.filter(function (c) { return !coKenh(c[0], c[1]) && (hd.gates[c[0]] || gs[c[0]]) && (hd.gates[c[1]] || gs[c[1]]); });
     return { sun: hdCong_(pos.sun), moi: moi.map(function (c) { return 'Kênh ' + c[0] + '–' + c[1] + ' ' + c[2] + ' (' + c[3] + ')'; }), ttMoi: Object.keys(HD_CENTERS).filter(function (c) { return !hd.dinh[c] && moi.some(function (k) { return gc(k[0]) === c || gc(k[1]) === c; }); }) };
   }

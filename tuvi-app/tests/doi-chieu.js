@@ -47,7 +47,7 @@ for (var i = 0; i < 2000; i++) {
   if (!ctx.lunarToSolar(d, m, y, 0)) continue;
   var a;
   try { a = iztro.astro.byLunar(y + '-' + m + '-' + d, h, g, false, true, 'zh-CN'); } catch (e) { continue; }
-  var tv = ctx.tuviLapLaSo({ calendar: 'am', day: d, month: m, year: y, hour: h * 2, minute: 0, gender: g === '男' ? 'nam' : 'nu', viewYear: 2026 });
+  var tv = ctx.tuviLapLaSo_({ calendar: 'am', day: d, month: m, year: y, hour: h * 2, minute: 0, gender: g === '男' ? 'nam' : 'nu', viewYear: 2026 });
   n++;
   if (BR.indexOf(a.earthlyBranchOfSoulPalace) !== tv.info.menh || BR.indexOf(a.earthlyBranchOfBodyPalace) !== tv.info.than) badMenh++;
   a.palaces.forEach(function (p) {
@@ -68,7 +68,7 @@ check('Tử Vi – vị trí sao', starCount, badStar, 0);
 var nb = 0, badP = 0, badPhu = 0;
 for (i = 0; i < 2000; i++) {
   var yy = ri(1930, 2029), mo = ri(1, 12), dd = ri(1, 28), hh = ri(0, 22), mi = ri(0, 59);
-  var bt = ctx.batTuLap({ calendar: 'duong', day: dd, month: mo, year: yy, hour: hh, minute: mi, gender: 'nam', viewYear: 2026 });
+  var bt = ctx.batTuLap_({ calendar: 'duong', day: dd, month: mo, year: yy, hour: hh, minute: mi, gender: 'nam', viewYear: 2026 });
   var t = new Date(Date.UTC(yy, mo - 1, dd, hh, mi) + 3600e3);
   var ec = Solar.fromYmdHms(t.getUTCFullYear(), t.getUTCMonth() + 1, t.getUTCDate(), t.getUTCHours(), t.getUTCMinutes(), 0).getLunar().getEightChar();
   var ecVN = Solar.fromYmdHms(yy, mo, dd, hh, mi, 0).getLunar().getEightChar();
@@ -87,8 +87,8 @@ check('Bát Tự – Thai nguyên, Mệnh cung, Thân cung', nb - badP, badPhu, 
 var TRUC = '建除满平定执破危成收开闭';
 var TS = ['青龙', '明堂', '天刑', '朱雀', '金匮', '天德', '白虎', '玉堂', '天牢', '玄武', '司命', '勾陈'];
 var XIU = '危室壁奎娄胃昴毕觜参井鬼柳星张翼轸角亢氐房心尾箕斗牛女虚';
-var tvRef = ctx.tuviLapLaSo({ calendar: 'duong', day: 15, month: 8, year: 1990, hour: 10, minute: 30, gender: 'nam', viewYear: 2026 });
-var btRef = ctx.batTuLap({ calendar: 'duong', day: 15, month: 8, year: 1990, hour: 10, minute: 30, gender: 'nam', viewYear: 2026 });
+var tvRef = ctx.tuviLapLaSo_({ calendar: 'duong', day: 15, month: 8, year: 1990, hour: 10, minute: 30, gender: 'nam', viewYear: 2026 });
+var btRef = ctx.batTuLap_({ calendar: 'duong', day: 15, month: 8, year: 1990, hour: 10, minute: 30, gender: 'nam', viewYear: 2026 });
 var nd = 0, badTruc = 0, badThan = 0, badTu = 0;
 for (i = 0; i < 300; i++) {
   var days = ctx.lgNhatVan_(tvRef, btRef, ri(1950, 2040) + '-' + ri(1, 12) + '-' + ri(1, 28), 7, true);

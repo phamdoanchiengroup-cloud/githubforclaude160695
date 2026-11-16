@@ -15,10 +15,10 @@ kt(bi, 'chưa đăng nhập bị chặn');
 // Chủ sở hữu: danh sách mặc định
 const M = ctx.giaDinhDs(tokChu).ds;
 kt(M.length === 4 && M[0].quanHe === 'Bản thân' && M[2].quanHe === 'Con gái', 'chủ sở hữu có 4 người mặc định');
-const con = M[2].input, tvCon = ctx.tuviLapLaSo(Object.assign({ viewYear: 2026 }, con));
+const con = M[2].input, tvCon = ctx.tuviLapLaSo_(Object.assign({ viewYear: 2026 }, con));
 kt(con.lateRat === true && tvCon.info.lunar.day === 8 && tvCon.info.lunar.month === 7 && ctx.CHI[tvCon.info.menh] === 'Thân', 'con gái: giờ Tý muộn 22/8/2023 → âm 8/7, Mệnh Thân');
 [['Bản thân', 'Mão', 9], ['Vợ', 'Dậu', 7], ['Em gái', 'Mùi', 3]].forEach(([q, menh, ln]) => {
-  const p = M.find(x => x.quanHe === q), tv = ctx.tuviLapLaSo(Object.assign({ viewYear: 2026 }, p.input));
+  const p = M.find(x => x.quanHe === q), tv = ctx.tuviLapLaSo_(Object.assign({ viewYear: 2026 }, p.input));
   kt(ctx.CHI[tv.info.menh] === menh && ctx.ptNguyenCuc_(tv).ln === ln, q + ' khớp Mệnh/Lai Nhân cohoc');
 });
 // Thành viên thường: rỗng, lưu riêng

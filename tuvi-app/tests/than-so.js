@@ -6,7 +6,7 @@ const path = require('path');
 const { ctx } = require(path.join(__dirname, '..', 'tools', 'gia-lap.js'));
 let ok = 0, sai = 0;
 function kt(dk, msg) { if (dk) ok++; else { sai++; if (sai < 20) console.log('✗', msg); } }
-function lap(ten, d, m, y, g) { return ctx.thanSoHocLap({ name: ten, gender: g || 'nam' }, { day: d, month: m, year: y }, 2026); }
+function lap(ten, d, m, y, g) { return ctx.thanSoHocLap_({ name: ten, gender: g || 'nam' }, { day: d, month: m, year: y }, 2026); }
 // 1. Mẫu tính tay
 let T = lap('Nguyễn Thị Hương', 11, 11, 1991, 'nu');
 kt(T.duongDoi === 6 && T.ngaySinh === 11 && T.thaiDo === 4, 'ĐĐ 6, ngày sinh 11 (giữ số bậc thầy), thái độ 4');

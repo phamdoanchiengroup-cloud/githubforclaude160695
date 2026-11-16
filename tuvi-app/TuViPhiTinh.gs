@@ -1700,7 +1700,7 @@ function ptLap_(tv, vy, soNam) {
 function phiTinhLuan(input, token) {
   tkCan_(token, true);
   input = input || {};
-  var tv = tuviLapLaSo(input);
+  var tv = tuviLapLaSo_(input);
   return ptLap_(tv, parseInt(input.viewYear, 10) || tv.info.viewYear, 5);
 }
 

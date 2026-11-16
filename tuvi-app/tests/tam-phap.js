@@ -19,7 +19,7 @@ const theDem = {}, nhomDem = [0, 0, 0, 0];
 let soIz = 0;
 for (let k = 0; k < 300; k++) {
   const inp = { name: 'K' + k, gender: k % 2 ? 'nu' : 'nam', calendar: 'duong', day: 1 + Math.floor(rnd() * 28), month: 1 + Math.floor(rnd() * 12), year: 1940 + Math.floor(rnd() * 80), hour: Math.floor(rnd() * 24), minute: 30, viewYear: 2026 };
-  const chart = ctx.tuviLapLaSo(inp), I = chart.info, P = chart.palaces;
+  const chart = ctx.tuviLapLaSo_(inp), I = chart.info, P = chart.palaces;
   const dv = ctx.lgDaiVan_(chart, null), T = ctx.tpLap_(chart, dv);
   kt(T && T.baVong && T.phiTinh && T.vanThaiTue, 'đủ ba phần');
   kt(!/undefined|NaN|null\b/.test(JSON.stringify([T.baVong.de, T.vanThaiTue.map(v => v.de), T.phiTinh])), 'không undefined/NaN: ' + k);

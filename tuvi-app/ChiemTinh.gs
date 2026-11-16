@@ -274,10 +274,10 @@ function ctNoiSinh_(input) {
 }
 
 /** Lập bản đồ sao */
-function chiemTinhLap(input) {
+function chiemTinhLap_(input) {
   var T = ctThoiDiem_(input);
   var jd = T.jd;
-  var pos = astToanBo(jd), pos2 = astToanBo(jd + 0.5), pos0 = astToanBo(jd - 0.5);
+  var pos = astToanBo_(jd), pos2 = astToanBo_(jd + 0.5), pos0 = astToanBo_(jd - 0.5);
   var H = ctPlacidus_(jd, T.lat, T.lon);
   var ht = CT_THU_TU.map(function (k) {
     var lon = pos[k], s = ctCung_(lon);
@@ -507,7 +507,7 @@ function ctNamXem_(ct, viewYear) {
 }
 
 /** Luận giải đầy đủ */
-function chiemTinhLuan(ct, viewYear) {
+function chiemTinhLuan_(ct, viewYear) {
   var by = ct.by, S = CT_CUNG, out = { secs: [] };
   var sun = by.sun, moon = by.moon, asc = ct.asc;
   out.tomTat = 'Mặt Trời ' + sun.cungTen + ' · Mặt Trăng ' + moon.cungTen + ' · Mọc ' + asc.cungTen;
@@ -835,7 +835,7 @@ function ctChuKyThoiGian_(ct, viewYear, M) {
   var TR = ['jupiter', 'saturn', 'uranus', 'neptune', 'pluto'], DIEM = ['sun', 'moon', 'mercury', 'venus', 'mars', 'asc', 'mc'];
   function lonCua(k) { return by[k].lon; }
   // Transit hiện tại
-  var P = astToanBo(jdNay);
+  var P = astToanBo_(jdNay);
   out.ngayXet = ctJdNgay_(jdNay, T.tz).t.split(' ')[0];
   out.transit = ['sun', 'moon', 'mercury', 'venus', 'mars'].concat(TR).map(function (k) {
     var lon = P[k], n = ctNhaCua_(lon, cuspLon), gs = [];
@@ -865,7 +865,7 @@ function ctChuKyThoiGian_(ct, viewYear, M) {
   ev.sort(function (a, b) { return a.jd - b.jd; });
   out.suKien = ev.map(function (e) { return { thang: e.thang, tot: e.tot, t: e.t }; });
   // Tiến triển thứ cấp (1 ngày sau sinh = 1 năm đời)
-  var tuoi = (jdNay - T.jd) / 365.2422, jdP = T.jd + tuoi, PP = astToanBo(jdP);
+  var tuoi = (jdNay - T.jd) / 365.2422, jdP = T.jd + tuoi, PP = astToanBo_(jdP);
   out.tienTrien = { tuoi: Math.round(tuoi * 10) / 10, ds: ['sun', 'moon', 'mercury', 'venus', 'mars'].map(function (k) {
     var lon = PP[k], s = ctCung_(lon); return { ten: CT_HT[k].ten, cungTen: CT_CUNG[s].ten, do: ctFmtDo_(lon), nha: ctNhaCua_(lon, cuspLon), doiCung: s !== by[k].cung };
   }) };
@@ -892,7 +892,7 @@ function ctChuKyThoiGian_(ct, viewYear, M) {
   sa.sort(function (p, q) { return p.nam - q.nam; });
   out.solarArc = { cung: Math.round(arc * 10) / 10, ds: sa.slice(0, 10) };
   // Solar Return năm xem
-  var jdSR = astTimMatTroi_(by.sun.lon, astJD_(viewYear, T.m, T.d, 12, 0, T.tz)), H = ctPlacidus_(jdSR, T.lat, T.lon), R = astToanBo(jdSR);
+  var jdSR = astTimMatTroi_(by.sun.lon, astJD_(viewYear, T.m, T.d, 12, 0, T.tz)), H = ctPlacidus_(jdSR, T.lat, T.lon), R = astToanBo_(jdSR);
   var srNha = function (k) { return ctNhaCua_(R[k], H.cusp); };
   var n1 = ['sun', 'moon', 'mercury', 'venus', 'mars', 'jupiter', 'saturn', 'uranus', 'neptune', 'pluto'].filter(function (k) { return srNha(k) === 1; });
   out.solarReturn = { ngay: ctJdNgay_(jdSR, T.tz).t, moc: CT_CUNG[ctCung_(H.asc)].ten, nhaMatTroi: srNha('sun'), matTrang: CT_CUNG[ctCung_(R.moon)].ten + ', nhà ' + srNha('moon'),
@@ -952,7 +952,7 @@ function ctSoSanh_(A, B, tA, tB) {
     t: 'Lá số Composite (trung điểm hai lá số): Mặt Trời chung ở ' + CT_CUNG[ctCung_(comp.sun)].ten + ', nhà ' + nhaC(comp.sun) + ' → mục đích chung của cặp đôi xoay quanh ' + CT_NHA_NGAN[nhaC(comp.sun) - 1] + '; Mặt Trăng chung ở ' + CT_CUNG[ctCung_(comp.moon)].ten + ' → không khí cảm xúc ' + CT_CUNG[ctCung_(comp.moon)].tuKhoa + '.' };
   // Davison: thời điểm và nơi chốn trung bình
   var TA = A.thoiDiem, TB = B.thoiDiem, jd = (TA.jd + TB.jd) / 2, lat = (TA.lat + TB.lat) / 2, lon = (TA.lon + TB.lon) / 2;
-  var P = astToanBo(jd), H = ctPlacidus_(jd, lat, lon), nd = function (k) { return ctNhaCua_(P[k], H.cusp); };
+  var P = astToanBo_(jd), H = ctPlacidus_(jd, lat, lon), nd = function (k) { return ctNhaCua_(P[k], H.cusp); };
   out.davison = { ngay: ctJdNgay_(jd, 7).t, moc: CT_CUNG[ctCung_(H.asc)].ten,
     t: 'Lá số Davison (' + ctJdNgay_(jd, 7).t + ', giữa hai nơi sinh): Mọc ' + CT_CUNG[ctCung_(H.asc)].ten + ' – mối quan hệ hiện ra với người ngoài theo lối ' + CT_CUNG[ctCung_(H.asc)].tuKhoa + '; Mặt Trời ở nhà ' + nd('sun') + ' (' + CT_NHA_NGAN[nd('sun') - 1] + '), Sao Kim ở nhà ' + nd('venus') + ' (' + CT_NHA_NGAN[nd('venus') - 1] + ').' };
   out.tomTat = out.nhaAB.concat(out.nhaBA).filter(function (x) { return x.nha === 7 || x.nha === 5 || x.nha === 1; }).slice(0, 4).map(function (x) { return x.t; });

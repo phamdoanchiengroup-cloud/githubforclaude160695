@@ -15,7 +15,7 @@
  *           và Lưu niên (Thái Tuế, Tuế vận tịnh lâm, Thiên khắc địa xung, Tam hình, Thiên La Địa Võng)
  *  Bước 9 – Tổng hợp, trường hợp đặc biệt & lời khuyên
  *
- *  Hàm chính: btPhanTich_(bt, input) – gọi từ batTuLap (BatTu.gs). Kết quả gắn vào bt.phanTich và
+ *  Hàm chính: btPhanTich_(bt, input) – gọi từ batTuLap_ (BatTu.gs). Kết quả gắn vào bt.phanTich và
  *  cập nhật bt.vuong / bt.cuong / bt.tyLeTro / bt.phanTram / bt.goiY để mọi module dùng chung.
  * ============================================================
  */

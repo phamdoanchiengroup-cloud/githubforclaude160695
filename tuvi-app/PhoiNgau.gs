@@ -70,7 +70,7 @@ var PN_SO_NHOM = [[1, 5, 7], [2, 4, 8], [3, 6, 9]];
 
 function pnNhomSo_(n) { var g = tsGoc_(n); for (var i = 0; i < 3; i++) if (PN_SO_NHOM[i].indexOf(g) >= 0) return PN_SO_NHOM[i]; return [g]; }
 
-function phoiNgauLuan(C) {
+function phoiNgauLuan_(C) {
   var tv = C.tv, bt = C.bt, ct = C.ct, ts = C.ts, hd = C.hd, male = tv.info.male;
   var goi = male ? 'người vợ' : 'người chồng';
   var he = [], phieu = [], tuoiP = [], chatP = [];

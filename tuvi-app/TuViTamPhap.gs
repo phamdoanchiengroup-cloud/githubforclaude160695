@@ -11,7 +11,7 @@
  *  2. Phi Tinh (phái Tứ Hóa / Khâm Thiên – Đài Loan, hiện đại, cổ thư ít ghi → tham khảo,
  *     không cộng điểm): Lai Nhân cung, tự hóa, phi hóa từ – vào cung Mệnh, Kỵ xung Mệnh.
  *
- *  Gọi từ LuanGiai.gs › luanChiTiet (có typeof, thiếu file vẫn chạy).
+ *  Gọi từ LuanGiai.gs › luanChiTiet_ (có typeof, thiếu file vẫn chạy).
  *  Văn "de" (dễ hiểu) không nêu tên sao; tên sao chỉ nằm trong "ky" (cơ sở kỹ thuật).
  */
 
