@@ -1,7 +1,7 @@
 {
  "W": 1366,
  "mode": "day",
- "tLoad": 31505,
+ "tLoad": 1820,
  "tabs": [
   "tong|✧ Tổng Quan 6 Hệ",
   "chart|☯ Tử Vi",
@@ -420,6 +420,6 @@
   "nHeadings": 27,
   "hScroll": 0
  },
- "muaText": "loginModal: 🔑 Đăng nhập\n✦ Đăng ký\n\n🎁 Tạo tài khoản miễn phí – tặng ngay 50 xu, đủ mở \"Tổng hợp 6 hệ – kết luận 9 lĩnh vực, chân dung, con người, tình duyên, đường đời\". Lá số đang xem được giữ nguyên.\n\n籍\nTạo tài khoản\nTên đăng nhập\nTên hiển thị\nSố điện thoại hoặc email (để khôi phục tài khoản)\nMật khẩu (≥ 8 k",
+ "muaText": "loginModal: 🔑 Đăng nhập\n✦ Đăng ký\n\n🎁 Tạo tài khoản miễn phí – tặng ngay 50 xu, đủ mở \"Biến cố hội tụ 30 năm & dự đoán cả đời\". Lá số đang xem được giữ nguyên.\n\n籍\nTạo tài khoản\nTên đăng nhập\nTên hiển thị\nSố điện thoại hoặc email (để khôi phục tài khoản)\nMật khẩu (≥ 8 ký tự, có chữ và số)\nNhập lại mật khẩu\n\n🎁 ",
  "errs": []
 }
