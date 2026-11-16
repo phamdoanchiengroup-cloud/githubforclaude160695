@@ -2563,7 +2563,11 @@ function dhVeBang(ds){
   var q=(DH&&DH.q)||{}, bp=q.bp||'', coQuyen=((q.sua||[]).length>0), bps=dhBDS(), eq=dhEQ(), coHDG=bps.indexOf('DG')>=0&&dhCoHongDG();
   var phu=(DH&&DH.tabPhu)||{}, tab=DHB.tab||dhBTabMD(), uuTab=Object.keys(phu).filter(function(k){return /ƯU TIÊN|UU TIEN/i.test(k)})[0]||'';
   /* 15/11 (chủ dự án): 2 nút đầu "Đơn ưu tiên" (tab ĐƠN ƯU TIÊN của Sheet nếu có, không thì dòng ghi "ưu tiên") và "Đơn trễ hẹn" (đơn quá deadline giao khách) */
-  var uuDs=uuTab?dhBPhuDs(uuTab).concat(ds.filter(function(o){return o.uuWeb})):ds.filter(function(o){return o.uuTien}), treDs=dhTreDs(ds);   /* 15/11: + đơn gắn ưu tiên trên web */
+  /* 16/11 tối (chủ dự án): mục ★ Đơn ưu tiên hiện DÒNG GỐC ở tab KHO (khớp mã đơn + tên với tab ĐƠN ƯU TIÊN) để nhập số được như mọi dòng – số ghi vào tab Kho.
+     Dòng trong tab ĐƠN ƯU TIÊN không tìm thấy ở Kho vẫn hiện (chỉ xem). + đơn gắn ★ trên web. */
+  var mtU=dhUuTen(), kU=function(o){ return dhTenChuan(o.maDon||'')+'|'+dhTenChuan(o.ten); }, uuKho=ds.filter(function(o){ return dhLaUu(o,mtU); }), daCoU={};
+  uuKho.forEach(function(o){ daCoU[kU(o)]=1; });
+  var uuDs=uuKho.concat(ds.filter(function(o){ return o.uuWeb&&!daCoU[kU(o)]; })).concat(uuTab?dhBPhuDs(uuTab).filter(function(o){ return !daCoU[kU(o)]; }):[]), treDs=dhTreDs(ds);
   var laPhu=!!phu[tab]||(tab==='@uu'&&!!uuTab);
   var h10d=dhHan10Ds(ds), theo=tab==='@le10'?dhLe10Ds(ds):tab==='@han10'?h10d:tab==='@uu'?uuDs:tab==='@tre'?treDs:(tab?(laPhu?dhBPhuDs(tab):ds.filter(function(o){return o.tab===tab;})):ds);
   var x=DHB.cua&&bp&&!laPhu?theo.filter(function(o){ var d=o.dn||{}; return d.o===bp||dhKs(d.k).indexOf(bp)>=0||(o.qua&&o.qua[bp]!=null&&o.thieu>0); }):theo;
@@ -3495,9 +3499,9 @@ function tkVe(){
   if(!TKThang) TKThang=tkThangNay();
   var D=TKD[TKThang], dsT=tkThangDs(); if(dsT.indexOf(TKThang)<0) dsT.push(TKThang);
   if(TKV!=='td'&&!D) tkTai(false);
-  var h='<div class="dh-dau" style="flex-wrap:wrap"><div style="min-width:0;flex:1 1 260px"><div class="ptitle">Thống kê</div><div class="dh-mota">Tổng hợp nhân sự, điểm danh, báo cơm, công đoạn, định mức, KPI và sản xuất – chỉ chủ sở hữu thấy'+(D&&D.luc?' · tính lúc '+esc(D.luc):'')+'</div></div>'+
+  var h='<div class="dh-dau" style="flex-wrap:wrap"><div style="min-width:0;flex:1 1 260px"><div class="ptitle">Thống kê</div><div class="dh-mota">Tổng hợp nhân sự, điểm danh, báo cơm, công đoạn, định mức, KPI và sản xuất – chủ sở hữu + Giám đốc xem'+(D&&D.luc?' · tính lúc '+esc(D.luc):'')+'</div></div>'+
     '<div class="dh-cu" style="flex-wrap:wrap;gap:6px;max-width:100%"><select aria-label="Chọn tháng" onchange="TKThang=this.value;tkVe()" style="min-height:34px;max-width:100%">'+dsT.map(function(t){return '<option value="'+t+'"'+(t===TKThang?' selected':'')+'>Tháng '+t.slice(5)+'/'+t.slice(0,4)+(t===tkThangNay()?' · đang chạy':'')+'</option>'}).join('')+'</select> <button class="btn sm" type="button" onclick="tkLamMoi()" title="Tính lại từ Sheet">↻ Làm mới</button></div></div>';
-  h+='<div class="dh-nav"><div class="dh-sub" role="tablist">'+TK_TAB.map(function(t){return '<button type="button" role="tab"'+(TKV===t[0]?' class="on" aria-current="page"':'')+' onclick="tkChon(\''+t[0]+'\')">'+t[1]+'</button>'}).join('')+'</div></div><div class="dh-than">';
+  h+='<div class="dh-nav"><div class="dh-sub" role="tablist">'+TK_TAB.filter(function(t){ return t[0]!=='td'||(typeof ME!=='undefined'&&ME&&ME.laOwner); }).map(function(t){return '<button type="button" role="tab"'+(TKV===t[0]?' class="on" aria-current="page"':'')+' onclick="tkChon(\''+t[0]+'\')">'+t[1]+'</button>'}).join('')+'</div></div><div class="dh-than">';
   if(TKV==='td') h+=tkVeTD();
   else if(TKV==='sx'){
     if(D&&!D.loi) h+=tkVeTQ(D); else if(!D) h+='<div class="pdesc">Đang tổng hợp 6 chỉ số tháng '+TKThang.slice(5)+'/'+TKThang.slice(0,4)+'…</div>';   /* 16/11: 6 ô chỉ số (cũ: mục Tổng quan) */

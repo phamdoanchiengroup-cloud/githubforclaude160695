@@ -939,7 +939,7 @@ function chupDonHangHangNgay_() { try { dhChup_(true); } catch (e) { try { ghiLo
 
 /* Tab "Đơn hàng": thay đổi so với bản chụp gần nhất TRƯỚC hôm nay + lịch sử tổng để thống kê */
 function layThayDoiDon(token) {
-  var q = qtQuyen_(token); if (q.loi) return q.loi;
+  var q = tkQuyen_(token); if (q.loi) return q.loi;   // 16/11 tối: + Giám đốc C019 (chỉ xem)
   var hom = homNayVN_(), d, ch;
   try { d = dhDocDon_(false); } catch (e) { return sach_({ ok: false, msg: 'Không đọc được Sheet "Trạng thái đơn hàng": ' + (e && e.message || e) }); }
   try { ch = dhDocChup_(); } catch (e0) { ch = {}; }   // 13/11: bản chụp lỗi/đọc lâu không được làm hỏng cả tab Đơn hàng
@@ -1673,7 +1673,7 @@ function tkNgayLam_(thang) {   // ngày làm của tháng tới hôm nay: thứ 
   return ds;
 }
 function layThongKe(token, thang, lamMoi) {
-  var q = qtQuyen_(token); if (q.loi) return q.loi;
+  var q = tkQuyen_(token); if (q.loi) return q.loi;   // 16/11 tối: + Giám đốc C019 (chỉ xem)
   thang = /^\d{4}-\d{2}$/.test(String(thang || '')) ? String(thang) : kyVN_();
   var khoa = 'TK_v1_' + thang;
   if (!lamMoi) { var c = dhCacheLay_(khoa); if (c) return sach_(c); }

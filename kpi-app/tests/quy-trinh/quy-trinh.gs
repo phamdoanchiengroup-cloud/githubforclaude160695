@@ -91,6 +91,19 @@ function qtQuyen_(token) {
   return { me: me };
 }
 /* 03/11 (chủ dự án): trưởng / phó phòng xem + đề xuất sửa quy trình CHỈ xưởng mình (chủ sở hữu duyệt). -> { me, xuong: '' (chủ sở hữu) | mã xưởng } */
+/* 16/11 tối (chủ dự án): tab Thống kê mở cho Giám đốc C019 – CHỈ XEM (mã NV gắn đúng 1 tài khoản đang dùng) */
+var TK_NV_XEM_ = { C019: 1 };
+function tkCoXem_(me) {
+  if (!me) return false; if (me.laOwner) return true;
+  var ma = String(me.maNV || '').trim().toUpperCase(); if (!TK_NV_XEM_[ma]) return false;
+  return doc_('TaiKhoan').filter(function(t) { return String(t.MaNV || '').trim().toUpperCase() === ma && String(t.TrangThai).trim() === 'Đang dùng'; }).length === 1;
+}
+function tkQuyen_(token) {
+  var me = docPhien_(token);
+  if (!me) return { loi: sach_({ ok: false, hetHan: true, msg: 'Phiên đăng nhập đã hết hạn.' }) };
+  if (!tkCoXem_(me)) return { loi: sach_({ ok: false, msg: 'Tab Thống kê chỉ mở cho chủ sở hữu và Giám đốc.' }) };
+  return { me: me };
+}
 function qtQuyenXem_(token) {
   var me = docPhien_(token);
   if (!me) return { loi: sach_({ ok: false, hetHan: true, msg: 'Phiên đăng nhập đã hết hạn.' }) };

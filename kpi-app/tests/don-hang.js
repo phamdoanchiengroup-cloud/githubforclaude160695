@@ -81,7 +81,8 @@ console.log('\n3b. Tab Đơn hàng: cột thêm + bản chụp hằng ngày + th
 r = c.__goi('layDonHangXuong', Town, true);
 ok(r.don[0].nguoiDat === 'A' && r.don[0].ngayDat === '2026-10-01' && r.don[0].phoi === '' && r.don[1].phoi === '_Joint: Q-loc', 'mã đơn "#A-01/10" → người đặt A, ngày đặt 01/10; tách cột loại phôi', r.don.slice(0, 2).map(o => [o.nguoiDat, o.ngayDat, o.phoi]));
 ok(r.don[1].dl === '2026-10-12', 'deadline sau ngày đặt giữ năm nay', r.don[1].dl);
-r = c.__goi('layThayDoiDon', Tadm); ok(!r.ok, 'ban điều hành không xem được thay đổi đơn');
+{ const adm2 = c.doc_('TaiKhoan').filter(t => String(t.VaiTro).trim() === 'ADMIN' && t.TrangThai === 'Đang dùng' && String(t.MaNV).toUpperCase() !== 'C019')[0];
+  r = c.__goi('layThayDoiDon', c.__phienDai(adm2)); ok(!r.ok, 'ban điều hành (trừ Giám đốc C019 – 16/11 tối) không xem được thay đổi đơn'); }
 r = c.__goi('layThayDoiDon', Town);
 ok(r.ok && !r.truoc && r.daChup && c.doc_('DonHangChup').length >= 1, 'lần đầu: chưa có mốc so sánh, tự chụp bản hôm nay vào sheet DonHangChup (file KPI)', r);
 r = c.__goi('layThayDoiDon', Town); ok(r.ok && !r.daChup, 'mở lại trong ngày: không chụp thêm');
@@ -288,8 +289,10 @@ console.log('\n07/11. Tab chính Thống kê – layThongKe (chỉ chủ sở h�
   const tk2 = c2.layThongKe(T2, '2026-11', true);
   ok(tk2.ok && tk2.chuaChot && tk2.kpi.ky === '2026-10' && tk2.kpi.tamTinh && tk2.com.daTongKet === false && tk2.com.soNguoiChua > 0, 'tháng đang chạy: KPI lấy tháng chốt gần nhất, báo cơm tính từng ngày + đếm người không báo', [tk2.kpi.ky, tk2.com.soNguoiChua]);
   ok(c2.laNgayLe_('2026-11-24', '') && c2.laNgayLe_('2027-11-24', 'CNC') && !c2.laNgayLe_('2026-11-23', '') && c2.dhCongSuat_().nghi.some(x => x[0] === '2026-11-24'), '08/11: 24/11 (Ngày Văn hóa Việt Nam) là ngày lễ ở KPI / điểm danh và công suất Đơn hàng');
-  const r2 = c.layThongKe(Tadm, '2026-10');
-  ok(r2.ok === false, 'tài khoản không phải chủ sở hữu (ADMIN) bị chặn', r2);
+  const TKa = c.doc_('TaiKhoan').filter(t => t.TrangThai === 'Đang dùng'), c019 = TKa.find(t => String(t.MaNV).toUpperCase() === 'C019'), adm2 = TKa.find(t => String(t.VaiTro).trim() === 'ADMIN' && String(t.MaNV).toUpperCase() !== 'C019');
+  const r2 = c.layThongKe(c.__phienDai(adm2), '2026-10');
+  ok(r2.ok === false, 'tài khoản ADMIN khác (không phải Giám đốc C019) bị chặn', r2);
+  if (c019) { const r3 = c.layThongKe(c.__phienDai(c019), '2026-10'); ok(r3.ok === true, '16/11 tối: Giám đốc C019 xem được Thống kê', r3.msg); }
 }
 
 console.log('\n14/11. Giao nhận theo bộ phận ghi thẳng vào Sheet đơn + xác nhận hẹn');

@@ -862,5 +862,7 @@ exec(io.open(os.path.join(D, 'don-giao-nhan', 'va-don-giao-nhan-web.py'), encodi
 # ---------------------------------------------------------------- 46. Đơn hàng nổi bật trong menu + bảng gọn trên Tổng quan TP/PP (14/11 khuya)
 exec(io.open(os.path.join(D, 'don-giao-nhan', 'va-don-noi-bat-web.py'), encoding='utf-8').read())
 
+# ---------------------------------------------------------------- 47. Tab Thống kê mở cho Giám đốc C019 (16/11 tối)
+exec(io.open(os.path.join(D, 'thong-ke-c019', 'va-thong-ke-c019-web.py'), encoding='utf-8').read())
 io.open(os.path.join(D, '..', 'Index.html'), 'w', encoding='utf-8').write(s)
 print('OK Index.html')

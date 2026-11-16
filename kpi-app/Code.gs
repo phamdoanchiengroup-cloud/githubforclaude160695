@@ -7677,7 +7677,7 @@ function danhSachVanPhong(token) {
   ds.sort(function(a, b) { return (thuTu[a.vaiTro] - thuTu[b.vaiTro]) || (a.HoTen < b.HoTen ? -1 : 1); });
   return sach_({ ok: true, ds: ds, muc: HS_MUC });
 }
-var KPI_BAN_MAY = '16/11/2026 10:38';   // giờ dựng Code.gs (22/10)
+var KPI_BAN_MAY = '16/11/2026 11:53';   // giờ dựng Code.gs (22/10)
 /* =====================================================================
    KỸ NĂNG (22/10, chủ dự án nhờ thiết kế + tham khảo chuyên gia nhân sự / đào tạo)
    - Danh mục: trưởng / phó phòng đề xuất kỹ năng của xưởng (tên, mô tả, tiêu chí đạt, công đoạn liên quan)
@@ -8130,6 +8130,19 @@ function qtQuyen_(token) {
   return { me: me };
 }
 /* 03/11 (chủ dự án): trưởng / phó phòng xem + đề xuất sửa quy trình CHỈ xưởng mình (chủ sở hữu duyệt). -> { me, xuong: '' (chủ sở hữu) | mã xưởng } */
+/* 16/11 tối (chủ dự án): tab Thống kê mở cho Giám đốc C019 – CHỈ XEM (mã NV gắn đúng 1 tài khoản đang dùng) */
+var TK_NV_XEM_ = { C019: 1 };
+function tkCoXem_(me) {
+  if (!me) return false; if (me.laOwner) return true;
+  var ma = String(me.maNV || '').trim().toUpperCase(); if (!TK_NV_XEM_[ma]) return false;
+  return doc_('TaiKhoan').filter(function(t) { return String(t.MaNV || '').trim().toUpperCase() === ma && String(t.TrangThai).trim() === 'Đang dùng'; }).length === 1;
+}
+function tkQuyen_(token) {
+  var me = docPhien_(token);
+  if (!me) return { loi: sach_({ ok: false, hetHan: true, msg: 'Phiên đăng nhập đã hết hạn.' }) };
+  if (!tkCoXem_(me)) return { loi: sach_({ ok: false, msg: 'Tab Thống kê chỉ mở cho chủ sở hữu và Giám đốc.' }) };
+  return { me: me };
+}
 function qtQuyenXem_(token) {
   var me = docPhien_(token);
   if (!me) return { loi: sach_({ ok: false, hetHan: true, msg: 'Phiên đăng nhập đã hết hạn.' }) };
@@ -9465,7 +9478,7 @@ function chupDonHangHangNgay_() { try { dhChup_(true); } catch (e) { try { ghiLo
 
 /* Tab "Đơn hàng": thay đổi so với bản chụp gần nhất TRƯỚC hôm nay + lịch sử tổng để thống kê */
 function layThayDoiDon(token) {
-  var q = qtQuyen_(token); if (q.loi) return q.loi;
+  var q = tkQuyen_(token); if (q.loi) return q.loi;   // 16/11 tối: + Giám đốc C019 (chỉ xem)
   var hom = homNayVN_(), d, ch;
   try { d = dhDocDon_(false); } catch (e) { return sach_({ ok: false, msg: 'Không đọc được Sheet "Trạng thái đơn hàng": ' + (e && e.message || e) }); }
   try { ch = dhDocChup_(); } catch (e0) { ch = {}; }   // 13/11: bản chụp lỗi/đọc lâu không được làm hỏng cả tab Đơn hàng
@@ -10199,7 +10212,7 @@ function tkNgayLam_(thang) {   // ngày làm của tháng tới hôm nay: thứ 
   return ds;
 }
 function layThongKe(token, thang, lamMoi) {
-  var q = qtQuyen_(token); if (q.loi) return q.loi;
+  var q = tkQuyen_(token); if (q.loi) return q.loi;   // 16/11 tối: + Giám đốc C019 (chỉ xem)
   thang = /^\d{4}-\d{2}$/.test(String(thang || '')) ? String(thang) : kyVN_();
   var hnT = homNayVN_(), khoa = 'TK_v2_' + thang + '_' + hnT;   // 09/11: bỏ hôm nay -> số đổi theo ngày
   if (!lamMoi) { var c = dhCacheLay_(khoa); if (c) return sach_(c); }
