@@ -1,0 +1,138 @@
+{
+ "dt:trang-chu": {
+  "cao": 1528,
+  "tranNgang": false,
+  "rong": 390,
+  "form": 71,
+  "oTen": 392,
+  "tab": null
+ },
+ "dt:loi-trong": [],
+ "dt:sau-lap": {
+  "cao": 2408,
+  "tranNgang": false,
+  "rong": 390,
+  "form": null,
+  "oTen": null,
+  "tab": "tomluoc"
+ },
+ "dt:tomluoc": {
+  "cao": 2408,
+  "tranNgang": false,
+  "rong": 390,
+  "form": null,
+  "oTen": null,
+  "tab": "tomluoc"
+ },
+ "dt:tuvi": {
+  "cao": 7544,
+  "tranNgang": false,
+  "rong": 390,
+  "form": null,
+  "oTen": null,
+  "tab": "chart"
+ },
+ "dt:battu": {
+  "cao": 49796,
+  "tranNgang": false,
+  "rong": 390,
+  "form": null,
+  "oTen": null,
+  "tab": "battu"
+ },
+ "dt:vh": {
+  "cao": 10665,
+  "tranNgang": false,
+  "rong": 390,
+  "form": null,
+  "oTen": null,
+  "tab": "vh"
+ },
+ "dt:toi": {
+  "cao": 1361,
+  "tranNgang": false,
+  "rong": 390,
+  "form": null,
+  "oTen": null,
+  "tab": "toi"
+ },
+ "dt:astro": {
+  "cao": 39822,
+  "tranNgang": false,
+  "rong": 390,
+  "form": null,
+  "oTen": null,
+  "tab": "astro"
+ },
+ "dt:loi-khach": [],
+ "dt:loi-tk": [],
+ "dt:loi-khach2": [],
+ "mt:trang-chu": {
+  "cao": 1007,
+  "tranNgang": false,
+  "rong": 1366,
+  "form": 79,
+  "oTen": 371,
+  "tab": null
+ },
+ "mt:loi-trong": [],
+ "mt:sau-lap": {
+  "cao": 1697,
+  "tranNgang": false,
+  "rong": 1366,
+  "form": null,
+  "oTen": null,
+  "tab": "tomluoc"
+ },
+ "mt:tomluoc": {
+  "cao": 1697,
+  "tranNgang": false,
+  "rong": 1366,
+  "form": null,
+  "oTen": null,
+  "tab": "tomluoc"
+ },
+ "mt:tuvi": {
+  "cao": 5678,
+  "tranNgang": false,
+  "rong": 1366,
+  "form": null,
+  "oTen": null,
+  "tab": "chart"
+ },
+ "mt:battu": {
+  "cao": 28546,
+  "tranNgang": false,
+  "rong": 1366,
+  "form": null,
+  "oTen": null,
+  "tab": "battu"
+ },
+ "mt:vh": {
+  "cao": 6482,
+  "tranNgang": false,
+  "rong": 1366,
+  "form": null,
+  "oTen": null,
+  "tab": "vh"
+ },
+ "mt:toi": {
+  "cao": 1098,
+  "tranNgang": false,
+  "rong": 1366,
+  "form": null,
+  "oTen": null,
+  "tab": "toi"
+ },
+ "mt:astro": {
+  "cao": 22291,
+  "tranNgang": false,
+  "rong": 1366,
+  "form": null,
+  "oTen": null,
+  "tab": "astro"
+ },
+ "mt:loi-khach": [],
+ "mt:loi-tk": [],
+ "mt:loi-khach2": []
+}

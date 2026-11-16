@@ -3,12 +3,12 @@
 <head>
   <base target="_top">
   <meta charset="utf-8">
-  <meta name="tcc-ban" content="2026.11.16.1">
+  <meta name="tcc-ban" content="2026.11.16.2">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Thiên Cơ Các · Lá Số Tử Vi & Bát Tự</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&family=Chakra+Petch:wght@500;600;700&family=Noto+Sans+Symbols+2&family=Cormorant+Garamond:wght@500;600;700&family=Ma+Shan+Zheng&family=Noto+Serif:ital,wght@0,400;0,700;1,400&display=swap&subset=vietnamese" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&family=Chakra+Petch:wght@600;700&display=swap&subset=vietnamese" rel="stylesheet">
   <?!= include('Styles'); ?>
 </head>
 <body>
@@ -90,16 +90,21 @@
 
       <!-- ============ FORM ============ -->
       <aside class="panel form-panel">
-        <h2 class="panel-title"><span class="han">命</span> Nhập thông tin</h2>
-        <button type="button" class="btn btn-ghost btn-sm ht-vao" data-ht>✦ Nhập từng bước – có hướng dẫn</button>
-        <form id="form" autocomplete="off" novalidate>
-          <div class="field">
+        <div class="hua">
+          <p class="hua-nhan">6 hệ huyền học · đọc miễn phí</p>
+          <h2 class="hua-td">Hiểu mình – để sống đúng với mình</h2>
+          <p class="hua-phu">Nhập ngày sinh, nhận ngay bản tóm lược về con người bạn từ Tử Vi, Bát Tự, Hà Lạc, Chiêm tinh, Thần số học và Human Design.</p>
+        </div>
+        <h2 class="panel-title form-td"><span class="han" aria-hidden="true">命</span> Nhập thông tin</h2>
+        <div class="tb-dau" id="tbDau" aria-live="polite"><span id="tbSo">Bước 1/4</span><div class="tb-cham" id="tbCham" aria-hidden="true"><i></i><i></i><i></i><i></i></div></div>
+        <form id="form" class="tung-buoc" autocomplete="off" novalidate data-buoc="1">
+          <div class="field" data-buoc="1">
             <label for="name">Họ và tên khai sinh</label>
             <input type="text" id="name" placeholder="Ví dụ: Lý Tiêu Dao" maxlength="80">
             <small class="hint">Tên đầy đủ có dấu – dùng cho biểu đồ tên trong Thần số học.</small>
           </div>
 
-          <div class="field">
+          <div class="field" data-buoc="1">
             <span class="lbl">Giới tính</span>
             <div class="seg">
               <input type="radio" name="gender" id="gNam" value="nam" checked><label for="gNam">☯ Nam</label>
@@ -107,7 +112,7 @@
             </div>
           </div>
 
-          <div class="field">
+          <div class="field" data-buoc="2">
             <span class="lbl">Loại lịch</span>
             <div class="seg">
               <input type="radio" name="calendar" id="calDuong" value="duong" checked><label for="calDuong">☀ Dương lịch</label>
@@ -115,7 +120,7 @@
             </div>
           </div>
 
-          <div class="field">
+          <div class="field" data-buoc="2">
             <span class="lbl">Ngày sinh</span>
             <div class="row c3">
               <select id="day" aria-label="Ngày"></select>
@@ -125,15 +130,17 @@
             <label class="check" id="leapWrap" style="display:none"><input type="checkbox" id="leap"> Tháng nhuận</label>
           </div>
 
-          <div class="field">
+          <div class="field" data-buoc="3">
             <span class="lbl">Giờ sinh</span>
             <div class="row c2">
               <select id="hour" aria-label="Giờ"></select>
               <select id="minute" aria-label="Phút"></select>
             </div>
+            <label class="check khong-ro"><input type="checkbox" id="khongRoGio"> Tôi không rõ giờ sinh</label>
+            <small class="hint" id="khongRoGhi" hidden>Hệ thống tạm dùng 12:00 trưa. Bát Tự (3 trụ năm–tháng–ngày), Thần số học vẫn đúng; lá số Tử Vi, cung Mọc, Human Design chỉ để tham khảo – sau khi lập, bạn có thể dò lại giờ sinh.</small>
           </div>
 
-          <div class="field">
+          <div class="field" data-buoc="4">
             <label for="place">Nơi sinh</label>
             <select id="place"></select>
             <div class="row c2" id="placeCustom" style="display:none;margin-top:6px">
@@ -143,9 +150,9 @@
             <small class="hint">Cần cho cung Mọc, nhà chiêm tinh và giờ mặt trời thực.</small>
           </div>
 
-          <div class="preview-date" id="preview">Chọn ngày sinh để xem đổi lịch…</div>
+          <div class="preview-date" id="preview" data-buoc="2">Chọn ngày sinh để xem đổi lịch…</div>
 
-          <details class="adv">
+          <details class="adv" data-buoc="4">
             <summary>Tùy chọn nâng cao</summary>
             <div class="field">
               <label for="viewYear">Năm xem hạn</label>
@@ -200,14 +207,16 @@
             <label class="check"><input type="checkbox" id="save" checked> Lưu lá số vào Google Sheet</label>
           </details>
 
-          <details class="adv" id="evWrap">
+          <details class="adv" id="evWrap" data-buoc="4">
             <summary>Sự kiện đã biết (đối chiếu & dò giờ sinh)</summary>
             <p class="muted" style="font-size:12.5px;margin:0 0 8px">Nhập các năm đã xảy ra sự kiện thật (năm dương lịch). App sẽ đo độ khớp của lá số, <b>hiệu chỉnh trọng số các hệ theo chính đời bạn</b> (từ 2 sự kiện) và có thể thử cả 12 giờ để tìm giờ sinh giải thích tốt nhất.</p>
             <div id="events"></div>
             <button type="button" class="btn btn-ghost btn-sm" id="addEvent">＋ Thêm sự kiện</button>
           </details>
 
-          <button type="submit" class="btn btn-primary">✦ Lập Lá Số ✦</button>
+          <div class="tb-dieu"><button type="button" class="btn btn-phu" id="tbLui">← Quay lại</button><button type="button" class="btn btn-primary" id="tbToi">Tiếp →</button></div>
+          <button type="submit" class="btn btn-primary nut-lap" data-buoc="4">✦ Lập lá số</button>
+          <button type="button" class="btn-chu tb-doi" id="tbDoi">Hiện tất cả ô cùng lúc</button>
         </form>
       </aside>
 
@@ -215,25 +224,33 @@
       <section class="result-wrap">
         <div class="res-top" id="resTop">
         <div class="tabs" id="tabs" role="tablist" aria-label="Các phần của lá số">
-          <button type="button" class="tab" role="tab" aria-selected="false" data-tab="tong">✧ Tổng Quan 6 Hệ</button>
-          <button type="button" class="tab active" role="tab" aria-selected="true" data-tab="chart">☯ Tử Vi</button>
-          <button type="button" class="tab tab-chu" role="tab" aria-selected="false" data-tab="chu" style="display:none">👑 Lá số chủ sở hữu</button>
-          <button type="button" class="tab tab-chu" role="tab" aria-selected="false" data-tab="pt" style="display:none">✶ Phi Tinh</button>
-          <button type="button" class="tab" role="tab" aria-selected="false" data-tab="gd">👪 Gia đình</button>
-          <button type="button" class="tab" role="tab" aria-selected="false" data-tab="battu">⚖ Bát Tự</button>
-          <button type="button" class="tab" role="tab" aria-selected="false" data-tab="halac">⚏ Hà Lạc</button>
-          <button type="button" class="tab" role="tab" aria-selected="false" data-tab="astro">✶ Chiêm Tinh</button>
-          <button type="button" class="tab" role="tab" aria-selected="false" data-tab="so">❖ Thần Số</button>
-          <button type="button" class="tab" role="tab" aria-selected="false" data-tab="hd">◈ Human Design</button>
-          <button type="button" class="tab tab-vh" role="tab" aria-selected="false" data-tab="vh">⏳ Vận Hạn</button>
-          <button type="button" class="tab tab-cd" role="tab" aria-selected="false" data-tab="capdoi">💞 Cặp Đôi</button>
-          <button type="button" class="tab tab-ti" role="tab" aria-selected="false" data-tab="ti">✦ Tiện Ích</button>
-          <button type="button" class="tab" role="tab" aria-selected="false" data-tab="hist">☰ Lịch Sử</button>
-          <button type="button" class="tab tab-tk" role="tab" aria-selected="false" data-tab="que64">📚 Tham khảo</button>
+          <span class="tab-nhom" data-nhom-nhan="laso" aria-hidden="true">Lá số</span>
+          <button type="button" class="tab" role="tab" aria-selected="false" data-tab="tomluoc" data-nhom="laso">✦ Tóm lược</button>
+          <button type="button" class="tab" role="tab" aria-selected="false" data-tab="chart" data-nhom="laso">Tử Vi</button>
+          <button type="button" class="tab" role="tab" aria-selected="false" data-tab="battu" data-nhom="laso">Bát Tự</button>
+          <button type="button" class="tab" role="tab" aria-selected="false" data-tab="halac" data-nhom="laso">Hà Lạc</button>
+          <button type="button" class="tab" role="tab" aria-selected="false" data-tab="astro" data-nhom="laso">Chiêm tinh</button>
+          <button type="button" class="tab" role="tab" aria-selected="false" data-tab="so" data-nhom="laso">Thần số</button>
+          <button type="button" class="tab" role="tab" aria-selected="false" data-tab="hd" data-nhom="laso">Human Design</button>
+          <button type="button" class="tab" role="tab" aria-selected="false" data-tab="tong" data-nhom="laso">Tổng hợp 6 hệ</button>
+          <span class="tab-nhom" data-nhom-nhan="vh" aria-hidden="true">Vận hạn</span>
+          <button type="button" class="tab tab-vh" role="tab" aria-selected="false" data-tab="vh" data-nhom="vh">⏳ Vận hạn</button>
+          <span class="tab-nhom" data-nhom-nhan="capdoi" aria-hidden="true">Hợp đôi</span>
+          <button type="button" class="tab tab-cd" role="tab" aria-selected="false" data-tab="capdoi" data-nhom="capdoi">💞 Cặp đôi</button>
+          <span class="tab-nhom" data-nhom-nhan="toi" aria-hidden="true">Tôi</span>
+          <button type="button" class="tab" role="tab" aria-selected="false" data-tab="toi" data-nhom="toi">👤 Tôi</button>
+          <button type="button" class="tab" role="tab" aria-selected="false" data-tab="gd" data-nhom="toi">👪 Gia đình</button>
+          <button type="button" class="tab" role="tab" aria-selected="false" data-tab="hist" data-nhom="toi">☰ Lịch sử</button>
+          <button type="button" class="tab tab-ti" role="tab" aria-selected="false" data-tab="ti" data-nhom="toi">✦ Tiện ích</button>
+          <button type="button" class="tab tab-tk" role="tab" aria-selected="false" data-tab="que64" data-nhom="toi">📚 Tham khảo</button>
+          <button type="button" class="tab tab-chu" role="tab" aria-selected="false" data-tab="chu" data-nhom="toi" style="display:none">👑 Lá số chủ sở hữu</button>
+          <button type="button" class="tab tab-chu" role="tab" aria-selected="false" data-tab="pt" data-nhom="toi" style="display:none">✶ Phi Tinh</button>
         </div>
         <button type="button" class="btn btn-ghost btn-sm toc-btn" id="btnToc" aria-controls="toc" aria-expanded="false">☰ Mục lục <span id="tocHien"></span></button>
         </div>
 
+        <div class="tab-page" id="page-tomluoc"><div class="panel section muted">Hãy lập lá số trước.</div></div>
+        <div class="tab-page" id="page-toi"></div>
         <div class="tab-page active" id="page-chart">
           <div id="bdk" class="bdk" hidden></div>
           <div class="panel welcome" id="welcome">
@@ -248,7 +265,7 @@
               <div class="nc-goi-ic" aria-hidden="true">🔍</div>
               <div class="nc-goi-nd">
                 <b>Lá số này có đúng giờ sinh của bạn không?</b>
-                <span>Kiểm chứng trong 2 phút: đối chiếu 8 mô tả ngắn với cuộc đời bạn. Miễn phí, không cần đăng nhập.</span>
+                <span>Kiểm chứng trong 2 phút: đối chiếu 8 mô tả ngắn với cuộc đời bạn. Miễn phí với tài khoản.</span>
                 <details class="nc-goi-them"><summary>Vì sao nên kiểm chứng?</summary>
                   <p>Cùng một ngày sinh, mỗi giờ sinh khác nhau cho ra một lá số khác. Nếu bạn không chắc giờ sinh (mẹ kể khác nhau, giấy khai sinh ghi ước lượng…), lá số có thể <b>không đúng người</b>.</p>
                   <p>Hệ thống tạo 8 đoạn mô tả về vóc dáng, tính cách, cha mẹ, anh chị em, sức khỏe, hôn nhân, con cái, sự nghiệp. Khớp <b>từ 6/8 nhóm</b> trở lên: lá số đúng là của bạn. Khớp thấp: nên thử lại với giờ sinh khác.</p>
@@ -257,6 +274,8 @@
               <button type="button" class="btn btn-primary nc-goi-nut" id="ncBannerGo">Bắt đầu kiểm chứng</button>
             </div>
           <div id="chartArea" style="display:none">
+            <div class="ls-dt" id="lsDt"><button type="button" class="btn btn-phu btn-sm" id="lsPhongTo" aria-pressed="false">🔍 Phóng to lá số</button><span class="muted">Chạm vào cung để đọc</span></div>
+            <details class="tb-gon" id="tbGon"><summary>⚙ Hiển thị · Tải ảnh / PDF / In</summary>
             <div class="toolbar">
               <label class="check"><input type="checkbox" id="optLuu" checked> Lưu tinh</label>
               <div class="nam-luu" role="group" aria-label="Năm xem sao lưu niên"><label for="chartViewYear">Năm lưu niên</label>
@@ -270,11 +289,13 @@
               <button class="btn btn-ghost btn-sm" id="btnPdf" type="button">⤓ Tải PDF</button>
               <button class="btn btn-ghost btn-sm" id="btnPrint" type="button">⎙ In</button>
             </div>
+            </details>
             <div class="chart-scroll">
               <div class="chart-frame" id="chartFrame">
                 <div class="chart" id="chart"></div>
               </div>
             </div>
+            <div class="cung-ds" id="cungDs" aria-label="Danh sách 12 cung"></div>
             <div class="panel palace-detail" id="palaceDetail"></div>
             <div class="luan-embed" id="page-luan"></div>
           </div>
@@ -331,6 +352,12 @@
     </div>
   </main>
 
+  <nav class="nav-day" id="navDay" aria-label="Điều hướng chính">
+    <button type="button" data-nhom="laso" class="on" aria-current="page"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 3a4.5 4.5 0 0 1 0 9a4.5 4.5 0 0 0 0 9"/><circle cx="12" cy="7.5" r="1.2"/><circle cx="12" cy="16.5" r="1.2"/></svg><span>Lá số</span></button>
+    <button type="button" data-nhom="vh"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 3h10M7 21h10M8 3c0 5 8 5 8 9s-8 4-8 9M16 3c0 5-8 5-8 9s8 4 8 9"/></svg><span>Vận hạn</span></button>
+    <button type="button" data-nhom="capdoi"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="12" r="5.5"/><circle cx="15" cy="12" r="5.5"/></svg><span>Hợp đôi</span></button>
+    <button type="button" data-nhom="toi"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8.5" r="4"/><path d="M4.5 20.5c1.2-4 4.2-6 7.5-6s6.3 2 7.5 6"/></svg><span>Tôi</span></button>
+  </nav>
   <div class="doc-bar" aria-hidden="true"><i id="docBar"></i></div>
   <button type="button" class="len-dau" id="lenDau" title="Lên đầu trang" aria-label="Lên đầu trang">↑</button>
     <button type="button" class="nut-coso" id="nutCoso" title="Hiện cơ sở phân tích" aria-label="Hiện/ẩn cơ sở phân tích">🔍</button>
@@ -341,14 +368,15 @@
     Thiên Cơ Các · Tử Vi Đẩu Số (phái Việt Nam) & Bát Tự · Kết quả mang tính tham khảo, "đức năng thắng số".
   </footer>
 
-  <div class="loading" id="loading">
-    <div class="box">
-      <svg viewBox="0 0 100 100" aria-hidden="true">
-        <circle cx="50" cy="50" r="46" fill="#fff" stroke="#c89b3c" stroke-width="3"/>
-        <path d="M50 4a46 46 0 0 1 0 92a23 23 0 0 1 0-46a23 23 0 0 0 0-46z" fill="#1f7a70"/>
-        <circle cx="50" cy="27" r="6" fill="#1f7a70"/><circle cx="50" cy="73" r="6" fill="#fff"/>
-      </svg>
-      <p id="loadingText">Đang khởi quẻ, an sao…</p>
+  <div class="loading" id="loading" role="status" aria-live="polite">
+    <div class="box an-sao-hop">
+      <div class="an-sao" id="anSao" aria-hidden="true">
+        <i style="grid-area:1/1"></i><i style="grid-area:1/2"></i><i style="grid-area:1/3"></i><i style="grid-area:1/4"></i>
+        <i style="grid-area:2/4"></i><i style="grid-area:3/4"></i><i style="grid-area:4/4"></i><i style="grid-area:4/3"></i>
+        <i style="grid-area:4/2"></i><i style="grid-area:4/1"></i><i style="grid-area:3/1"></i><i style="grid-area:2/1"></i>
+        <b>✦</b>
+      </div>
+      <p id="loadingText">Đang an sao…</p>
     </div>
   </div>
   <div class="toast" id="toast"></div>

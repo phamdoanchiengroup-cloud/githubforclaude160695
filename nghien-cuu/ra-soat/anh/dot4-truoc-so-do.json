@@ -1,0 +1,118 @@
+{
+ "dt:trang-chu": {
+  "cao": 3619,
+  "tranNgang": false,
+  "rong": 390,
+  "form": 1655,
+  "oTen": 1799,
+  "tab": null
+ },
+ "dt:loi-trong": [],
+ "dt:sau-lap": {
+  "cao": 7583,
+  "tranNgang": false,
+  "rong": 390,
+  "form": null,
+  "oTen": null,
+  "tab": "chart"
+ },
+ "dt:tong": {
+  "cao": 12283,
+  "tranNgang": false,
+  "rong": 390,
+  "form": null,
+  "oTen": null,
+  "tab": "tong"
+ },
+ "dt:tuvi": {
+  "cao": 7583,
+  "tranNgang": false,
+  "rong": 390,
+  "form": null,
+  "oTen": null,
+  "tab": "chart"
+ },
+ "dt:battu": {
+  "cao": 50193,
+  "tranNgang": false,
+  "rong": 390,
+  "form": null,
+  "oTen": null,
+  "tab": "battu"
+ },
+ "dt:vh": {
+  "cao": 10557,
+  "tranNgang": false,
+  "rong": 390,
+  "form": null,
+  "oTen": null,
+  "tab": "vh"
+ },
+ "dt:astro": {
+  "cao": 38954,
+  "tranNgang": false,
+  "rong": 390,
+  "form": null,
+  "oTen": null,
+  "tab": "astro"
+ },
+ "dt:loi-khach": [],
+ "mt:trang-chu": {
+  "cao": 1692,
+  "tranNgang": false,
+  "rong": 1366,
+  "form": 86,
+  "oTen": 222,
+  "tab": null
+ },
+ "mt:loi-trong": [],
+ "mt:sau-lap": {
+  "cao": 5813,
+  "tranNgang": false,
+  "rong": 1366,
+  "form": null,
+  "oTen": null,
+  "tab": "chart"
+ },
+ "mt:tong": {
+  "cao": 6661,
+  "tranNgang": false,
+  "rong": 1366,
+  "form": null,
+  "oTen": null,
+  "tab": "tong"
+ },
+ "mt:tuvi": {
+  "cao": 5813,
+  "tranNgang": false,
+  "rong": 1366,
+  "form": null,
+  "oTen": null,
+  "tab": "chart"
+ },
+ "mt:battu": {
+  "cao": 28576,
+  "tranNgang": false,
+  "rong": 1366,
+  "form": null,
+  "oTen": null,
+  "tab": "battu"
+ },
+ "mt:vh": {
+  "cao": 6239,
+  "tranNgang": false,
+  "rong": 1366,
+  "form": null,
+  "oTen": null,
+  "tab": "vh"
+ },
+ "mt:astro": {
+  "cao": 21817,
+  "tranNgang": false,
+  "rong": 1366,
+  "form": null,
+  "oTen": null,
+  "tab": "astro"
+ },
+ "mt:loi-khach": []
+}
