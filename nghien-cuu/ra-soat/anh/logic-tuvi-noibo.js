@@ -17,8 +17,11 @@ for (let k = 0; k < N; k++) {
   const mucDV = /Đại vận[^.]*ở mức ([^.]+)\./.exec(t26), mucTN = /Vận năm \d+ ở mức ([^.]+)\./.exec(t26);
   const m2c = m => /rõ rệt|khá thuận/.test(m) ? 1 : /cố gắng/.test(m) ? -1 : 0;
   if (dv && mucDV) f('Bước 26 "Đại vận ở mức…" ↔ danh sách Đại vận (nhãn) khớp chiều', !(m2c(mucDV[1]) * DG[dv.danhGia] === -1) && !(m2c(mucDV[1]) === 0 && Math.abs(DG[dv.danhGia]) === 1 && /Rất|Cần/.test(dv.danhGia)), inp.name + ' bước26: ' + mucDV[1] + ' / danh sách: ' + dv.danhGia + ' (' + dv.diem + ')');
-  if (dv && mucDV) f('Bước 26 "Đại vận" ↔ danh sách Đại vận: cùng MỨC (gom 3 bậc)', m2c(mucDV[1]) === DG[dv.danhGia], inp.name + ' ' + mucDV[1] + ' / ' + dv.danhGia);
-  if (tv && mucTN) f('Bước 26 "Vận năm" ↔ Tiểu vận năm (nhãn): cùng MỨC (gom 3 bậc)', m2c(mucTN[1]) === DG[tv.danhGia], inp.name + ' ' + mucTN[1] + ' / ' + tv.danhGia + ' (' + tv.diem + ')');
+  const M4 = m => /rõ rệt/.test(m) ? 3 : /khá thuận/.test(m) ? 2 : /trung bình/.test(m) ? 1 : 0, D4 = { 'Rất tốt': 3, 'Tốt': 3, 'Khá': 2, 'Trung bình': 1, 'Kém': 0, 'Cần thận trọng': 0 };
+  if (dv && mucDV) f('Bước 26 "Đại vận" ↔ danh sách Đại vận: cùng bậc (4 bậc, cùng ngưỡng 7/5,5/4)', M4(mucDV[1]) === D4[dv.danhGia], inp.name + ' ' + mucDV[1] + ' / ' + dv.danhGia + ' (' + dv.diem + ')');
+  if (dv && mucDV) f('Bước 26 "Đại vận" ↔ danh sách Đại vận: lệch ≥2 bậc', Math.abs(M4(mucDV[1]) - D4[dv.danhGia]) < 2, inp.name + ' ' + mucDV[1] + ' / ' + dv.danhGia + ' (' + dv.diem + ')');
+  if (tv && mucTN) f('Bước 26 "Vận năm" ↔ Tiểu vận năm: cùng bậc (4 bậc)', M4(mucTN[1]) === D4[tv.danhGia], inp.name + ' ' + mucTN[1] + ' / ' + tv.danhGia + ' (' + tv.diem + ')');
+  if (tv && mucTN) f('Bước 26 "Vận năm" ↔ Tiểu vận năm: lệch ≥2 bậc', Math.abs(M4(mucTN[1]) - D4[tv.danhGia]) < 2, inp.name + ' ' + mucTN[1] + ' / ' + tv.danhGia + ' (' + tv.diem + ')');
   const M = ct['Mệnh']; f('Bước 6 "Chính tinh thủ Mệnh" (tot/xau) ↔ nhãn cung Mệnh', !((B[6].huong === 'tot' && DG[M.danhGia] === -1) || (B[6].huong === 'xau' && DG[M.danhGia] === 1)), inp.name + ' bước6 ' + B[6].huong + ' / Mệnh ' + M.danhGia);
   [19, 20, 21, 22, 23, 24].forEach(n => { const b = B[n]; const cg = b.gop && b.gop.cung; if (!cg) return; const c = ct[cg[0]]; if (!c) return;
     f('Bước 19–24 (chủ đề đời sống) ↔ nhãn cung chi tiết', !((b.huong === 'tot' && DG[c.danhGia] === -1) || (b.huong === 'xau' && DG[c.danhGia] === 1)), inp.name + ' ' + b.ten + ' ' + b.huong + ' / ' + cg[0] + ' ' + c.danhGia); });
