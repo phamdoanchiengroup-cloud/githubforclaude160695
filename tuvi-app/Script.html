@@ -602,6 +602,7 @@
     if (bg && !q.do_gio) { var nb = bg.cloneNode(true); nb.removeAttribute('id'); nb.setAttribute('data-mua', 'do_gio'); nb.textContent = '🔒 Dò chính xác giờ sinh (thử 12 giờ) · ' + fmtXu(giaPhan('do_gio').xu); bg.parentNode.replaceChild(nb, bg); }
   }
 
+  window.tccToken = function () { return state.token || ''; };   // cho khối nghiệm chứng (IIFE riêng) gửi kèm phiên đăng nhập
   window.tccTrangThai = function () {
     var r = state.result; if (!r) return null;
     return { toanQuyen: toanQuyen(), khach: !!r.khach || tongKhoa(r), coBan: !r.khach, doGio: !!(r.quyen && r.quyen.do_gio), dangNhap: !!state.token,
@@ -7244,7 +7245,7 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
         err('Lỗi: ' + (e && e.message ? e.message : 'không xác định'));
         showBuoc(1);
       })
-      .getDoanNghiemChung(input);
+      .getDoanNghiemChung(input, window.tccToken ? window.tccToken() : '');
   }
 
 

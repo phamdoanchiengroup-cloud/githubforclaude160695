@@ -33,7 +33,7 @@ const ctx = {
     DigestAlgorithm: { SHA_256: 'sha256' }, Charset: { UTF_8: 'utf8' },
     computeDigest: (a, s) => Array.from(crypto.createHash('sha256').update(s, 'utf8').digest()).map(b => (b > 127 ? b - 256 : b)),
     computeHmacSha256Signature: (s, k) => Array.from(crypto.createHmac('sha256', k).update(s, 'utf8').digest()).map(b => (b > 127 ? b - 256 : b)),
-    getUuid: () => crypto.randomUUID(), sleep: () => {}, formatDate: (d, tz, f) => { const x = new Date(d); const p = n => String(n).padStart(2, '0'); return f === 'yyyyMMdd' ? '' + x.getFullYear() + p(x.getMonth() + 1) + p(x.getDate()) : x.toISOString(); }
+    getUuid: () => crypto.randomUUID(), sleep: () => {}, formatDate: (d, tz, f) => { const x = new Date(d); const p = n => String(n).padStart(2, '0'); return f === 'yyyyMMdd' ? '' + x.getFullYear() + p(x.getMonth() + 1) + p(x.getDate()) : f === 'yyyy-MM-dd' ? x.getFullYear() + '-' + p(x.getMonth() + 1) + '-' + p(x.getDate()) : x.toISOString(); }
   },
   PropertiesService: { getScriptProperties: () => ({ getProperty: k => (k in store ? store[k] : null), setProperty: (k, v) => { store[k] = v; }, deleteProperty: k => { delete store[k]; }, getProperties: () => Object.assign({}, store) }) },
   CacheService: { getScriptCache: () => ({ get: k => (k in cache ? cache[k] : null), put: (k, v) => { cache[k] = v; }, remove: k => { delete cache[k]; } }) },

@@ -41,7 +41,9 @@ kt(ngayXung > 10, 'có gặp ngày xung tuổi trong mẫu (' + ngayXung + '/' +
 // Quyền: tài khoản thường không đăng ký được
 const dk = ctx.dangKy('khachvn', 'matkhau123', 'Khách VN', '0912000222', '');
 // 23/10: tài khoản thường mua theo 30 ngày (giá 'van_ngay'), hết xu thì báo thiếu
-const giaVN = ctx.ttBangGia_().phan.van_ngay.xu, du0 = ctx.ttSoDu_('khachvn');
+const giaVN = ctx.ttBangGia_().phan.van_ngay.xu;
+ctx.ttKhoa_(() => ctx.ttCong_('khachvn', giaVN, 'test', ''));   // 16/11: quà đăng ký còn 9 xu – nạp thêm đúng 1 gói
+const du0 = ctx.ttSoDu_('khachvn');
 const vn1 = ctx.dangKyVanNgay({ name: 'A', gender: 'nam', calendar: 'duong', day: 1, month: 1, year: 1990, hour: 8 }, 'a@example.com', dk.token);
 kt(vn1.ok && /^\d{4}-\d{2}-\d{2}$/.test(vn1.hanDen) && ctx.ttSoDu_('khachvn') === du0 - giaVN, 'tài khoản thường: trừ ' + giaVN + ' xu, hạn 30 ngày (' + vn1.hanDen + ')');
 const vn2 = ctx.dangKyVanNgay({ name: 'A', gender: 'nam', calendar: 'duong', day: 1, month: 1, year: 1990, hour: 8 }, 'a@example.com', dk.token);

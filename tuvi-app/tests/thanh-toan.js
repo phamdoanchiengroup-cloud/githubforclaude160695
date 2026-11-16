@@ -34,7 +34,7 @@ const ctx = {
     DigestAlgorithm: { SHA_256: 'sha256' }, Charset: { UTF_8: 'utf8' },
     computeDigest: (a, s) => Array.from(crypto.createHash('sha256').update(s, 'utf8').digest()).map(b => (b > 127 ? b - 256 : b)),
     computeHmacSha256Signature: (s, k) => Array.from(crypto.createHmac('sha256', k).update(s, 'utf8').digest()).map(b => (b > 127 ? b - 256 : b)),
-    getUuid: () => crypto.randomUUID(), sleep: () => {}, formatDate: (d, tz, f) => { const x = new Date(d); const p = n => String(n).padStart(2, '0'); return f === 'yyyyMMdd' ? '' + x.getFullYear() + p(x.getMonth() + 1) + p(x.getDate()) : x.toISOString(); }
+    getUuid: () => crypto.randomUUID(), sleep: () => {}, formatDate: (d, tz, f) => { const x = new Date(d); const p = n => String(n).padStart(2, '0'); return f === 'yyyyMMdd' ? '' + x.getFullYear() + p(x.getMonth() + 1) + p(x.getDate()) : f === 'yyyy-MM-dd' ? x.getFullYear() + '-' + p(x.getMonth() + 1) + '-' + p(x.getDate()) : x.toISOString(); }
   },
   PropertiesService: { getScriptProperties: () => ({ getProperty: k => (k in store ? store[k] : null), setProperty: (k, v) => { store[k] = v; }, deleteProperty: k => { delete store[k]; }, getProperties: () => Object.assign({}, store) }) },
   CacheService: { getScriptCache: () => ({ get: k => (k in cache ? cache[k] : null), put: (k, v) => { cache[k] = v; }, remove: k => { delete cache[k]; } }) },
@@ -75,9 +75,9 @@ const dk = ctx.dangKy('khachmoi', 'matkhau123', 'Khách Mới', '0912 345 678');
 ok(dk.token && dk.nguoiDung.vaiTro === 'thanhVien', 'Khách tự đăng ký và đăng nhập luôn');
 const T = dk.token;
 let r = ctx.lapLaSo(L, T);
-ok(!r.khach && r.tongKhoa && r.canMo && r.soDu === 0 && r.bangGia.phan.co_ban.xu === 49, 'Thành viên chưa mua: đọc 6 hệ, Tổng hợp 6 hệ khóa (49 xu)');
-let m = ctx.muaPhan(T, L, 'co_ban');
-ok(m.ok === false && m.thieu === 49, 'Không đủ xu → báo thiếu 49 xu');
+ok(!r.khach && !r.tongKhoa && r.quyen.co_ban && r.quyen.do_gio && r.soDu === 0 && r.bangGia.phan.bien_co.xu === 29, 'Tài khoản miễn phí: đọc 6 hệ + Tổng hợp 6 hệ + dò giờ (phương án A 16/11)');
+let m = ctx.muaPhan(T, L, 'bien_co');
+ok(m.ok === false && m.thieu === 29, 'Không đủ xu → báo thiếu 29 xu');
 // nạp thủ công khi chưa có payOS
 ok(/chưa cài đặt/.test(nem(() => ctx.taoDonNap(T, 0))), 'Chưa cài tài khoản nhận tiền → báo lỗi rõ');
 ctx.qtLuuCauHinh(chu, { nganHang: { bin: '970452', stk: '000111222', chuTK: 'pham chien', tenNH: 'KienlongBank' } });
@@ -88,16 +88,16 @@ ok(nem(() => ctx.qtXacNhanDon(T, don.ma)) !== null, 'Thành viên không tự x�
 ctx.qtXacNhanDon(chu, don.ma);
 ok(ctx.kiemTraDon(T, don.ma).soDu === 100, 'Chủ sở hữu xác nhận → cộng 50 xu + thưởng nạp lần đầu 100% = 100 xu');
 ok(nem(() => ctx.qtXacNhanDon(chu, don.ma)) !== null && ctx.viCuaToi(T).soDu === 100 && !ctx.viCuaToi(T).lanDau, 'Xác nhận lần 2 không cộng trùng');
-ok(/Tổng hợp 6 hệ/.test(nem(() => ctx.muaPhan(T, L, 'phoi_ngau'))), 'Mua phối ngẫu khi chưa có Tổng hợp → yêu cầu mở Tổng hợp trước');
-m = ctx.muaPhan(T, L, 'co_ban');
-ok(m.ok && m.soDu === 51, 'Mở Tổng hợp 6 hệ: trừ 49 xu, còn 51');
+ok(ctx.muaPhan(T, L, 'co_ban').daCo && ctx.viCuaToi(T).soDu === 100, 'Tổng hợp 6 hệ đã có sẵn cho tài khoản → mua lại không trừ xu');
+m = ctx.muaPhan(T, L, 'bien_co');
+ok(m.ok && m.soDu === 71, 'Mở Những năm đáng chú ý: trừ 29 xu, còn 71');
 r = ctx.lapLaSo(L, T);
 ok(!r.khach && r.moRong && r.battuChiTiet.linhVuc.length === 12 && r.quyen.co_ban, 'Đã mở: nhận bản đầy đủ');
-ok(r.moRong.tongHop.hoiTu === null && r.moRong.tongHop.phoiNgau === null && Object.keys(r.duDoan.chuDe).length === 0, 'Phần chưa mua (biến cố, phối ngẫu) bị cắt ở máy chủ');
-ok(r.battuChiTiet.luuNien.length === 0 && r.moRong.tongHop.thang.every(function (t) { return t.khoa && t.tv === undefined; }) && r.chiTiet.daiVan.every(function (d) { return d.khoa; }), 'Vận hạn chưa mua: đại vận, lưu niên, lời luận 12 tháng bị khóa (chỉ còn điểm làm mồi)');
-ok(ctx.lapLaSo(Object.assign({}, L, { viewYear: 2031 }), T).quyen.co_ban, 'Đổi năm xem vẫn giữ quyền (mở vĩnh viễn)');
-ok(ctx.lapLaSo(Object.assign({}, L, { day: 16 }), T).tongKhoa, 'Lá số khác → Tổng hợp chưa mở');
-ok(/cần mở khóa/.test(nem(() => ctx.doGioSinh(Object.assign({ events: [{ nam: 2015, loai: 'ketHon' }] }, L), T))), 'Dò giờ sinh cần mở khóa riêng');
+ok(r.moRong.tongHop.phoiNgau === null && Object.keys(r.duDoan.chuDe).length > 0, 'Phần chưa mua (phối ngẫu) bị cắt ở máy chủ, phần đã mua (biến cố) mở');
+ok(r.battuChiTiet.luuNien.length === 0 && r.moRong.tongHop.thang.every(function (t) { return t.khoa && t.tv === undefined; }) && r.chiTiet.daiVan.filter(function (d) { return !d.khoa; }).length === 1 && r.chiTiet.daiVan.filter(function (d) { return !d.khoa; })[0].secs.length > 0 && +String(r.chiTiet.daiVan.filter(function (d) { return !d.khoa; })[0].nam).slice(0, 4) + 9 < new Date().getFullYear(), 'Vận hạn chưa mua: lưu niên, 12 tháng, đại vận khóa – trừ 1 đại vận đã qua gần nhất (tự kiểm chứng)');
+ok(ctx.lapLaSo(Object.assign({}, L, { viewYear: 2031 }), T).quyen.bien_co, 'Đổi năm xem vẫn giữ quyền (mở vĩnh viễn)');
+ok(!ctx.lapLaSo(Object.assign({}, L, { day: 16 }), T).quyen.bien_co, 'Lá số khác → phần đã mua chưa mở');
+ok(nem(() => ctx.doGioSinh(Object.assign({ events: [{ nam: 2015, loai: 'ketHon' }] }, L), T)) === null && /cần mở khóa|đăng nhập/i.test(nem(() => ctx.doGioSinh(Object.assign({ events: [{ nam: 2015, loai: 'ketHon' }] }, L), ''))), 'Dò giờ sinh miễn phí cho tài khoản, khách phải đăng nhập');
 // payOS
 ctx.__checksum = 'ck-secret';
 ctx.qtLuuCauHinh(chu, { clientId: 'cid', apiKey: 'ak', checksum: 'ck-secret' });
@@ -107,11 +107,11 @@ ok(don.kenh === 'payos' && don.checkoutUrl && don.stk === '123456789', 'Đơn pa
 ok(ctx.kiemTraDon(T, don.ma).trangThai === 'CHO', 'Chưa trả → vẫn chờ');
 Object.assign(payos.don[don.ma], { status: 'PAID', amountPaid: 100000, transactions: [{ reference: 'FT123' }] });
 let k = ctx.kiemTraDon(T, don.ma);
-ok(k.trangThai === 'DA_TRA' && k.soDu === 161, 'payOS báo PAID → tự cộng 110 xu, không thưởng lần 2 (số dư 161)');
+ok(k.trangThai === 'DA_TRA' && k.soDu === 181, 'payOS báo PAID → tự cộng 110 xu, không thưởng lần 2 (số dư 181)');
 ctx.ttQuetDonTuDong();
-ok(ctx.viCuaToi(T).soDu === 161, 'Trigger quét lại không cộng trùng');
+ok(ctx.viCuaToi(T).soDu === 181, 'Trigger quét lại không cộng trùng');
 m = ctx.muaPhan(T, L, 'tron_goi');
-ok(m.ok && m.gia === 100 && m.soDu === 61, 'Trọn đời trừ phần đã mua: 149 − 49 = 100 xu');
+ok(m.ok && m.gia === 120 && m.soDu === 61, 'Trọn đời chỉ trừ phần đã thật sự trả tiền: 149 − 29 = 120 xu (Tổng hợp/dò giờ miễn phí không bị trừ)');
 r = ctx.lapLaSo(L, T);
 ok(r.moRong.tongHop.hoiTu && r.moRong.tongHop.phoiNgau && r.quyen.pdf && r.chiTiet.daiVan.every(function (d) { return !d.khoa; }) && r.battuChiTiet.luuNien.length === 0, 'Trọn đời: mở bản mệnh, 12 đại vận, biến cố, phối ngẫu, PDF – vận năm vẫn bán theo năm');
 // VIP & chủ sở hữu
@@ -122,7 +122,7 @@ ok(!r.khach && r.quyen.toanQuyen && r.moRong.tongHop.hoiTu, 'VIP: xem toàn bộ
 r = ctx.lapLaSo(Object.assign({}, L, { day: 21 }), chu);
 ok(!r.khach && r.quyen.toanQuyen && r.soDu === null, 'Chủ sở hữu: toàn quyền, không cần xu');
 ctx.qtDatVaiTro(chu, 'nguoinha', 'thanhVien');
-ok(ctx.lapLaSo(Object.assign({}, L, { day: 20 }), vip).tongKhoa, 'Hạ VIP → thành viên thường');
+{ const rv = ctx.lapLaSo(Object.assign({}, L, { day: 20 }), vip); ok(!rv.quyen.toanQuyen && !rv.quyen.bien_co && rv.moRong.tongHop.hoiTu === null, 'Hạ VIP → thành viên thường'); }
 const tq = ctx.qtTongQuan(chu);
 ok(tq.doanhThu.tong === 150000 && tq.doanhThu.soDon === 2 && tq.cauHinh.payos && !JSON.stringify(tq).includes('ck-secret'), 'Quản trị: doanh thu 150.000đ / 2 đơn, không lộ khóa bí mật');
 ctx.qtDieuChinhXu(chu, 'khachmoi', 10, 'tặng');
@@ -166,19 +166,33 @@ store.TT_BANG_GIA = JSON.stringify({ phan: { co_ban: 99 }, thuongDangKy: 0, kmPh
 ok(ctx.ttBangGia_().phan.co_ban.xu === ctx.TT_PHAN_MAC_DINH.co_ban.xu && ctx.ttBangGia_().thuongDangKy === 0, 'Bảng giá phiên cũ bị bỏ qua, giữ mức thưởng đã chỉnh');
 delete store.TT_BANG_GIA;
 const bgM = ctx.ttBangGia_();
-ok(Object.keys(bgM.phan).filter(k => !bgM.phan[k].an).every(k => bgM.phan[k].xu <= 49), 'Mọi phần mở khóa ≤ 49 xu');
-ok(bgM.phan.co_ban.goc === 49 && bgM.phan.thang.goc === undefined, 'Giá cũ (gạch ngang) chỉ có khi cao hơn giá mới');
-ok(bgM.thuongDangKy >= bgM.phan.co_ban.xu, 'Quà đăng ký đủ mở Tổng hợp 6 hệ');
-ok(bgM.thuongDangKy === 50 && bgM.thuongDangKy >= bgM.phan.tron_goi.xu, 'Quà đăng ký 50 xu – đủ mở Trọn đời');
-{ const cu = store.TT_BANG_GIA; store.TT_BANG_GIA = JSON.stringify({ phien: ctx.TT_GIA_PHIEN, thuongDangKy: 19 }); ok(ctx.ttBangGia_().thuongDangKy === 50, 'Quà đăng ký 19 xu lưu ở phiên cũ bị bỏ qua → 50 xu'); store.TT_BANG_GIA = cu; }
+ok(bgM.phan.tron_goi.xu === 89 && bgM.phan.hoi_vien.xu === 99 && bgM.phan.gia_dinh_3.xu === 79 && bgM.phan.gia_dinh_5.xu === 119, 'Phương án A: Trọn đời 89, Hội viên năm 99, gia đình 79/119');
+ok(Object.keys(bgM.phan).every(k => bgM.phan[k].goc === undefined), 'Không còn giá gạch ngang (giá chưa từng bán)');
+ok(bgM.thuongDangKy === 9 && bgM.thuongGTDangKy === 0, 'Quà đăng ký 9 xu; không thưởng xu khi bạn chỉ đăng ký (chỉ thưởng khi bạn nạp lần đầu)');
+{ const cu = store.TT_BANG_GIA; store.TT_BANG_GIA = JSON.stringify({ phien: ctx.TT_GIA_PHIEN, thuongDangKy: 50, thuongGTDangKy: 9, kmPhien: 2 }); ok(ctx.ttBangGia_().thuongDangKy === 9 && ctx.ttBangGia_().thuongGTDangKy === 0, 'Mức quà 50 xu / thưởng mời lưu ở phiên khuyến mại cũ bị bỏ qua → 9 / 0'); store.TT_BANG_GIA = cu; }
 const ck = ctx.bangGiaCongKhai(); ok(ck.phan && ck.thuongDangKy === bgM.thuongDangKy, 'Bảng giá công khai cho khách');
 const n1 = ctx.dangKy('nguoimoi1', 'matkhau123', 'Người Mới', 'moi1@x.vn', '');
 ok(n1.qua.xu === bgM.thuongDangKy && ctx.viCuaToi(n1.token).soDu === bgM.thuongDangKy, 'Đăng ký nhận quà chào mừng');
-m = ctx.muaPhan(n1.token, Object.assign({}, L, { day: 11 }), 'co_ban'); ok(m.ok && m.soDu === bgM.thuongDangKy - bgM.phan.co_ban.xu, 'Dùng quà mở ngay Tổng hợp 6 hệ, không cần nạp');
+m = ctx.muaPhan(n1.token, Object.assign({}, L, { day: 11 }), 'thang', new Date().getFullYear() + '-12'); ok(m.ok && m.soDu === bgM.thuongDangKy - bgM.phan.thang.xu, 'Dùng quà 9 xu mở ngay 1 tháng, không cần nạp');
+ok(ctx.dangKy('nguoimoi1b', 'matkhau123', 'Trùng Liên Hệ', 'MOI1@x.vn ', '').qua.xu === 0, 'Quà đăng ký mỗi email chỉ một lần (không phân biệt hoa thường)');
+ok(ctx.dangKy('nguoimoi6', 'matkhau123', 'B6', '+84 98 765 4321', '').qua.xu === 9 && ctx.dangKy('nguoimoi6b', 'matkhau123', 'B6b', '0987654321', '').qua.xu === 0, 'Quà đăng ký mỗi SĐT chỉ một lần (+84 và 0 là một)');
+// Hội viên năm: mở vận năm/tháng/nhật vận cho mọi lá số của tài khoản trong 12 tháng
+ctx.qtDieuChinhXu(chu, 'nguoimoi6', 200, 'test hội viên');
+{ const t6 = ctx.dangNhap('nguoimoi6', 'matkhau123').token, x0 = ctx.viCuaToi(t6).soDu;
+  let h = ctx.lapLaSo(Object.assign({}, L, { day: 12 }), t6); ok(h.vanTom.coNam === false && !h.vanTom.hoiVien, 'Chưa là Hội viên: vận năm khóa');
+  const hv = ctx.muaPhan(t6, null, 'hoi_vien'), hanMong = new Date(); hanMong.setDate(hanMong.getDate() + 365);
+  ok(hv.ok && hv.gia === 99 && ctx.viCuaToi(t6).soDu === x0 - 99 && hv.hoiVien === hanMong.toISOString().slice(0, 10), 'Mua Hội viên năm: trừ 99 xu, hạn 365 ngày (' + hv.hoiVien + ')');
+  h = ctx.lapLaSo(Object.assign({}, L, { day: 12 }), t6); const h2 = ctx.lapLaSo(L2, t6);
+  ok(h.vanTom.coNam && h.vanTom.coThang && h.chiTiet.nguyetVan.length === 12 && h.vanTom.hoiVien === hv.hoiVien, 'Hội viên: vận năm + 12 tháng + nhật vận mở');
+  ok(h2.vanTom.coNam && h2.quyen.hoiVien, 'Hội viên: áp dụng cho mọi lá số của tài khoản');
+  ok(h.chiTiet.daiVan.filter(d => !d.khoa).length === 1 && !h.quyen.bien_co, 'Hội viên không gồm 12 đại vận / biến cố (bán riêng)');
+  const hv2 = ctx.muaPhan(t6, null, 'hoi_vien'); ok(hv2.ok && hv2.hoiVien > hv.hoiVien && (new Date(hv2.hoiVien) - new Date(hv.hoiVien)) / 864e5 === 365, 'Gia hạn Hội viên: cộng nối 365 ngày');
+  ok(!ctx.lapLaSo(Object.assign({}, L, { day: 12 }), dk.token).quyen.hoiVien, 'Hội viên của tài khoản khác không lan sang');
+}
 const truocGT = ctx.ttSoDu_('nguoimoi1');
 const n2 = ctx.dangKy('nguoimoi2', 'matkhau123', 'Bạn Của Người Mới', 'moi2@x.vn', 'nguoimoi1');
-ok(n2.qua.xu === bgM.thuongDangKy + bgM.thuongGTDangKy && n2.qua.gt === bgM.thuongGTDangKy, 'Được mời: quà + thưởng lời mời');
-ok(ctx.ttSoDu_('nguoimoi1') === truocGT + bgM.thuongGTDangKy, 'Người mời nhận xu khi bạn bè đăng ký');
+ok(n2.qua.xu === bgM.thuongDangKy && n2.qua.gt === 0, 'Được mời: chỉ quà đăng ký 9 xu');
+ok(ctx.ttSoDu_('nguoimoi1') === truocGT, 'Người mời chưa nhận xu khi bạn chỉ đăng ký (chống tạo tài khoản ảo)');
 const o1 = JSON.parse(store.TK_nguoimoi1); o1.soMoiDK = bgM.gtToiDa; store.TK_nguoimoi1 = JSON.stringify(o1);
 ctx.dangKy('nguoimoi3', 'matkhau123', 'B3', 'moi3@x.vn', 'nguoimoi1');
 ok(ctx.ttSoDu_('nguoimoi1') === truocGT + bgM.thuongGTDangKy, 'Thưởng mời có trần số lượt');

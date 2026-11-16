@@ -142,7 +142,7 @@ function dangKy(user, pass, hienThi, lienHe, maGioiThieu) {
   var u = tkTaoMoi_(user, pass, hienThi, 'thanhVien', them);
   c.put('DK_DEM', String(n + 1), 600);
   var qua = { xu: 0, gt: 0 };
-  try { qua = ttQuaDangKy_(u, them.gioiThieu); } catch (e) { /* quà lỗi không chặn đăng ký */ }
+  try { qua = ttQuaDangKy_(u, them.gioiThieu, lienHe); } catch (e) { /* quà lỗi không chặn đăng ký */ }
   var r = dangNhap(u, pass);
   r.qua = qua;
   return r;

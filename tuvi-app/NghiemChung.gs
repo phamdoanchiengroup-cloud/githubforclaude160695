@@ -337,8 +337,16 @@ function showNghiemChungUI() {
  * @param {Object} input — { name, gender, calendar, day, month, year, hour, minute, place, tz, viewYear }
  * @return {Array} — 8 đoạn { ma, ten, text }
  */
-function getDoanNghiemChung(input) {
+function getDoanNghiemChung(input, token) {
   if (!input) throw new Error('Thiếu input.');
+  // Rà soát V1 (16/11): nghiệm chứng chứa kết luận Tổng hợp 6 hệ + năm biến cố → chỉ cho tài khoản (miễn phí) hoặc chủ trong trình soạn thảo; giới hạn 20 lần / 10 phút
+  if (!laChuTrinhSoan_()) {
+    var u = tkPhien_(token);
+    if (!u) throw new Error('Tạo tài khoản miễn phí hoặc đăng nhập để tự nghiệm chứng lá số – chỉ mất 30 giây.');
+    var c = CacheService.getScriptCache(), k = 'NCG_' + u.ten, n = +(c.get(k) || 0);
+    if (n >= 20) throw new Error('Bạn vừa nghiệm chứng nhiều lần liên tiếp – hãy đợi khoảng 10 phút rồi thử lại.');
+    c.put(k, String(n + 1), 600);
+  }
   var r = nghiemChungLap_(input);
   return r.doan;
 }

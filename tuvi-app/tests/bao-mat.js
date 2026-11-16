@@ -79,5 +79,16 @@ kt(cfg.webapp && cfg.webapp.executeAs === 'USER_DEPLOYING', 'appsscript.json: we
 // 6. Ghi Sheet thật: dấu ' bị Sheet bỏ, tìm lại dòng theo tên toàn số vẫn thấy
 { const sh = ctx.ttSheet_('Vi'); sh.appendRow([ctx.shO_('0912000111'), 5, new Date()]);
   kt(ctx.ttTim_(sh, 1, '0912000111').length === 1 && ctx.ttSoDu_('0912000111') === 5, 'tên đăng nhập toàn số: tìm lại đúng dòng ví, không mất số 0 đầu'); }
+// 7. Nghiệm chứng (rà soát V1): khách lạ không lấy được kết luận Tổng hợp 6 hệ; tài khoản được, có giới hạn số lần
+{ ctx.__nguoiChay = '';
+  const inp = { name: 'An', gender: 'nam', calendar: 'duong', day: 5, month: 6, year: 1990, hour: 8, minute: 0, place: '21.03|105.85|Hà Nội', tz: '7' };
+  let loi = ''; try { ctx.getDoanNghiemChung(inp, ''); } catch (e) { loi = e.message; }
+  kt(/tài khoản|đăng nhập/.test(loi), 'nghiệm chứng: khách chưa đăng nhập bị chặn');
+  const t = ctx.dangKy('kiemnc', 'matkhau123', 'NC', '0911222333', '').token;
+  const d = ctx.getDoanNghiemChung(inp, t); kt(Array.isArray(d) && d.length >= 6, 'nghiệm chứng: tài khoản nhận đủ các nhóm (' + d.length + ')');
+  ctx.CacheService.getScriptCache().put('NCG_kiemnc', '20', 600);
+  loi = ''; try { ctx.getDoanNghiemChung(inp, t); } catch (e) { loi = e.message; }
+  kt(/đợi khoảng 10 phút/.test(loi), 'nghiệm chứng: quá 20 lần / 10 phút bị chặn');
+  ctx.__nguoiChay = null; }
 console.log('Bảo mật: đạt ' + ok + '/' + (ok + sai));
 process.exit(sai ? 1 : 0);
