@@ -102,3 +102,5 @@ Liên quan: [[Lần dán lên Apps Script]] · [[Quyết định của chủ d�
 - (16/11 khuya) **Trang Đơn hàng**: đã chốt giai đoạn 0 (Claude làm ở phiên mới). Chủ dự án còn: gửi danh sách mã NV bộ phận Bán hàng / Marketing / Kinh doanh (giai đoạn 1); trả lời 2 CN thai sản C454, C451 có cho nghỉ không. – [[KPI Thiết kế trang Đơn hàng và chuyển từ Sheet sang web (16-11)]]
 
 - (16/11 khuya) Bấm đúp **2-CAP-NHAT.bat** → chờ "=== XONG ===" → Ctrl+F5. Thử: ô Mã đơn có "3/5" (thứ tự mã trong đơn); bấm 1 mã đơn → cuối bảng nổi có khối "Điều chỉnh đơn" (chỉ C019 / C056 / C067); thử Bớt SL rồi Hoàn tác ở chip "Đơn đã hủy". Lần hủy đầu tiên web tự tạo file "CSDL Đơn hàng (web)" trong Drive (không cần làm gì). – [[KPI Thiết kế trang Đơn hàng và chuyển từ Sheet sang web (16-11)]]
+
+- (16/11 khuya) Mở **phiên Claude mới** để làm giai đoạn 1 (trang Bán hàng nhập đơn) – đã chốt đủ, phiên mới làm luôn. Khi xong sẽ trình danh sách tài khoản Bán hàng để anh xem trước khi bật. – [[KPI Thiết kế trang Đơn hàng và chuyển từ Sheet sang web (16-11)]]

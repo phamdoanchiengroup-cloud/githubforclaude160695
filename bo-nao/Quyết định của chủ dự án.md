@@ -166,3 +166,7 @@ Những điều đã chốt. Đừng đề xuất lại những gì ghi "không 
 - (16/11 tối) Mục **★ Đơn ưu tiên** trên bảng đơn hiện **dòng gốc ở tab KHO** (khớp mã đơn + tên) để nhập số được, ghi vào tab Kho; dòng tab ĐƠN ƯU TIÊN không thấy ở Kho chỉ xem.
 - (16/11 tối) Sau cắt giảm: **trưởng / phó phòng / quản lý xưởng tính là người sản xuất** (lưu đồ toàn nhà máy: người làm + có mặt theo điểm danh; giám đốc không tính) – `qtTinh` trong `tests/quy-trinh/quy-trinh-web.html`.
 - (16/11 tối) **Nút ☰ mở menu trên máy tính = nút kính trong thanh tiêu đề, cạnh logo KPI** (bản 1 nút nổi bị chê xấu) (menu vẫn ẩn, rê chuột mép trái vẫn hiện) – mục vá 49 `tests/menu-nut/`.
+
+## Đơn hàng – hủy / bớt + Bán hàng (16/11 khuya)
+- Thứ tự mã trong đơn (3/5) nằm ngay ô Mã đơn, **không** thêm cột STT.
+- Giai đoạn 1: Claude tự tạo tài khoản Bán hàng (chủ sở hữu toàn quyền xử lý); nhập từng dòng + dán Excel; C019/C056/C067 duyệt rồi web chép vào tab kênh; Bán hàng chỉ xem đơn của mình + tiến độ. – [[KPI Thiết kế trang Đơn hàng và chuyển từ Sheet sang web (16-11)]]

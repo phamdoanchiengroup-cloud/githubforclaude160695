@@ -3,6 +3,11 @@
 Nhóm: Chung · Cập nhật 02/11/2026
 Liên quan: [[00 Mục lục]] · [[Liên kết và công cụ]] · [[Việc chờ chủ dự án]] · [[Lần dán lên Apps Script]] · [[Quyết định của chủ dự án]] · [[KPI Kiểm thử]]
 
+## 16/11 KHUYA (2) → PHIÊN MỚI: LÀM GIAI ĐOẠN 1 – TRANG BÁN HÀNG NHẬP ĐƠN (đọc phần này trước)
+- Chủ dự án đã chốt 4 điểm (tài khoản, cách nhập, duyệt, Bán hàng xem gì) – đọc [[KPI Thiết kế trang Đơn hàng và chuyển từ Sheet sang web (16-11)]] mục "GIAI ĐOẠN 1 – Chủ dự án chốt". Không hỏi lại.
+- Giai đoạn 0 đã push (commit 581ce27 + sửa "3/5" vào ô Mã đơn, không cột STT). Chủ dự án chưa bấm 2-CAP-NHAT.bat.
+- Dữ liệu thử: tải lại Sheet CSDL KPI (xlsx) qua Drive → `csdl-tu-drive.py` (scratchpad mất khi đổi phiên). Kiểm thử mẫu: `tests/huy-don.js` (máy chủ giả + Chromium).
+
 ## 16/11 khuya – GIAI ĐOẠN 0 HỦY / BỚT MÃ: XONG + đã push (chờ chủ dự án bấm 2-CAP-NHAT.bat)
 - Chi tiết + tên hàm: [[KPI Thiết kế trang Đơn hàng và chuyển từ Sheet sang web (16-11)]] mục "GIAI ĐOẠN 0 – ĐÃ LÀM". Kiểm thử `tests/huy-don.js` 89/89.
 - Kế tiếp (khi chủ dự án gửi danh sách): giai đoạn 1 – vai trò Bán hàng + trang tạo đơn. Còn treo: 2 CN thai sản C454, C451.
