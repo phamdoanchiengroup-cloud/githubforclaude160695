@@ -379,7 +379,7 @@ function thTinhCach_(C) {
     var MT = { 'Mũi tên Ý chí': [0, 0, 1, 0.5, 0], 'Mũi tên Quyết tâm': [0, 0, 1, 0.5, 0], 'Mũi tên Hoạt động': [0.7, 0, -0.3, 0.3, 0.5], 'Mũi tên Kế hoạch': [0, 1, 0.5, 0, 0.3], 'Mũi tên Trí tuệ': [0, 1, 0, 0, -0.3],
       'Mũi tên Cân bằng cảm xúc': [0, -0.3, 0.7, 0, 0], 'Mũi tên Thực tế (Thể chất)': [0, 0, 0.5, 0, 1], 'Mũi tên Tâm linh (Nhạy bén)': [-0.3, -0.5, 0, 0, -1],
       'Mũi tên Uất giận (trống 4-5-6)': [-0.5, -0.5, 0, 0, 0], 'Mũi tên Thụ động (trống 7-8-9)': [-0.7, 0, 0.3, -0.5, 0], 'Mũi tên Nhạy cảm (trống 2-5-8)': [-0.5, -0.7, -0.3, 0, 0],
-      'Mũi tên Trì hoãn (trống 1-5-9)': [0, 0, -0.5, -0.3, 0], 'Mũi tên Hoài nghi (trống 3-5-7)': [0, 0.7, 0, 0, 0.7], 'Mũi tên Hỗn loạn (trống 1-4-7)': [0, 0, -0.7, 0, -0.7], 'Mũi tên Trí nhớ ngắn hạn (trống 3-6-9)': [0, -0.5, 0, 0, 0.5] }[a.ten];
+      'Mũi tên Trì hoãn (trống 1-5-9)': [0, 0, -0.5, -0.3, 0], 'Mũi tên Hoài nghi (trống 3-5-7)': [0, 0.7, 0, 0, 0.7], 'Mũi tên Hỗn loạn (trống 1-4-7)': [0, 0, -0.7, 0, -0.7], 'Mũi tên Trí nhớ ngắn hạn (trống 3-6-9)': [0, -0.5, 0, 0, 0.5] }[a.tot ? a.ten : 'Mũi tên ' + ({ '4-5-6': 'Uất giận', '7-8-9': 'Thụ động', '2-5-8': 'Nhạy cảm', '1-5-9': 'Trì hoãn', '3-5-7': 'Hoài nghi', '1-4-7': 'Hỗn loạn', '3-6-9': 'Trí nhớ ngắn hạn' }[a.so]) + ' (trống ' + a.so + ')'];   // mũi tên trống tra theo dãy số (tên hiển thị đã đổi 16/11)
     if (MT) cong('Thần số học', MT, 0.6);
   });
   he.push({ he: 'Thần số học', items: ['Số chủ đạo ' + ts.duongDoi + ' – ' + TS_SO[ts.duongDoi].ten + ': ' + TS_SO[ts.duongDoi].manh + '.', 'Mặt cần rèn: ' + TS_SO[ts.duongDoi].yeu + '.'].concat(ts.coTen ? ['Linh hồn ' + ts.linhHon + ' (' + TS_SO[ts.linhHon].tk + ') · Nhân cách ' + ts.nhanCach + ' (' + TS_SO[ts.nhanCach].tk + ').'] : []) });

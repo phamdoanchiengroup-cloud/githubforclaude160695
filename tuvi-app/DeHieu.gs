@@ -525,7 +525,7 @@ function dhTongHop_(facts) {
     if (DH_TV_BO.test(f.yNghia)) return false;
     if (DH_TV_CUNG_NHOM[f.linhVuc]) f.nhom = DH_TV_CUNG_NHOM[f.linhVuc];
     // Ngoài cung Mệnh, câu "Bạn …" là tính chất sao (thường tả người/việc của cung đó) – dễ gây hiểu nhầm khi gộp
-    if (!f.tvDiem && f.nhom !== 'tinh_cach' && /^Bạn\s/.test(dhBoTenSao_(f.yNghia))) return false;
+    if (!f.tvDiem && f.nhom !== 'tinh_cach' && /^Bạn\s(?!có xu hướng)/.test(dhBoTenSao_(f.yNghia))) return false;
     // Câu mô tả sao vòng Trường Sinh / Thái Tuế ("Bệnh Phù (bệnh tật): …") là tính chất chung, không nói riêng về lĩnh vực → bỏ khỏi phần gộp
     if (!f.tvDiem && f.nhom !== 'tinh_cach' && /^[^:—.]{2,25}\([^)]*\):/.test(f.yNghia)) return false;
     return true;
@@ -713,7 +713,8 @@ function th6Lap_(C) {
   namToi.sort(function (a, b) { return a.nam - b.nam || b.soHe - a.soHe; });
   return {
     linhVuc: ketQua, theManh: theManh.map(function (x) { return x.ten; }), canChuY: canChuY.map(function (x) { return x.ten; }), doTin: doTin,
-    tomTat: (theManh.length ? 'Thế mạnh nổi bật: ' + theManh.map(function (x) { return x.ten.toLowerCase(); }).join(', ') + '. ' : '') +
+    tomTat: (theManh.filter(function (x) { return x.chac; }).length ? 'Thế mạnh nổi bật: ' + theManh.filter(function (x) { return x.chac; }).map(function (x) { return x.ten.toLowerCase(); }).join(', ') + '. ' : '') +
+      (theManh.filter(function (x) { return !x.chac; }).length ? 'Nghiêng về thuận: ' + theManh.filter(function (x) { return !x.chac; }).map(function (x) { return x.ten.toLowerCase(); }).join(', ') + '. ' : '') +
       (canChuY.length ? 'Cần chăm chút: ' + canChuY.map(function (x) { return x.ten.toLowerCase(); }).join(', ') + '. ' : '') +
       'Mức đồng thuận trung bình giữa các hệ: ' + doTin + '%.',
     namToi: namToi.slice(0, 6),

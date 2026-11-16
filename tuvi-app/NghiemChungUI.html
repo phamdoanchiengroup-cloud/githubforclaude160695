@@ -306,12 +306,12 @@ function chonMuc(el) {
 }
 
 function xacNhan() {
-  var soNhom = Object.keys(cauTraLoi).filter(function (k) { return cauTraLoi[k] !== 'khong_ap_dung'; }).length;
-  cauTraLoi._doTin = doTinNhom;
-  if (soNhom < 4) {
-    alert('Cần đánh dấu ít nhất 4 nhóm để tính điểm. Hiện có ' + soNhom + ' nhóm.');
+  var nhom = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'], daCham = nhom.filter(function (k) { return cauTraLoi[k]; }).length;
+  if (daCham < 8) {   // 16/11: máy chủ cần đủ 8 nhóm (nhóm không đúng hoàn cảnh chọn "Không áp dụng")
+    alert('Hãy chấm đủ 8 nhóm (nhóm không đúng hoàn cảnh chọn Không áp dụng). Hiện có ' + daCham + '/8 nhóm.');
     return;
   }
+  cauTraLoi._doTin = doTinNhom;
   doiKhung('khung-loading');
   google.script.run
     .withSuccessHandler(function(kq) {
@@ -332,7 +332,7 @@ function hienKetQua(kq) {
   var html = '';
   html += '<div><b>Tổng:</b> ' + kq.soDungCao + ' nhóm đúng cao · ' + kq.soSai + ' nhóm sai</div>';
   kq.chiTiet.forEach(function(c) {
-    html += '<div>【' + c.ma + '】 ' + c.ten + ' — ' + c.mucTen + ' (' + Math.round(c.diem * 100) + '%)</div>';
+    html += '<div>【' + c.ma + '】 ' + c.ten + ' — ' + c.mucTen + (isNaN(c.diem) || c.diem == null ? '' : ' (' + Math.round(c.diem * 100) + '%)') + '</div>';
   });
   document.getElementById('kq-chitiet').innerHTML = html;
   doiKhung('khung-ketqua');

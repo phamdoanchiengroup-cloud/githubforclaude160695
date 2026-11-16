@@ -217,7 +217,7 @@ function tuviTrinhTu_(tv, ct) {
     DH ? 'Đại vận tại ' + DH.cung + ' (' + DH.chiTen + ', ' + DH.daiHan + '–' + (DH.daiHan + 9) + ' tuổi): ' + chinhTxt(DH) + ' · ' + DH.diem10 + '/10.' : '',
     TH ? 'Tiểu hạn ' + vy + ' (' + I.viewCanChi + ', ' + I.tuoi + ' tuổi) tại ' + TH.cung + ' (' + TH.chiTen + ')' + (thSao.length ? ': ' + thSao.join(', ') : '') + '.' : '',
     'Năm xung: ' + (xung ? 'có (' + CHI[chiNam] + ' xung ' + CHI[I.yChi] + ')' : 'không') + ' · Tam tai tuổi ' + CHI[I.yChi] + ': các năm ' + (TT_TAM_TAI[I.yChi] || []).map(function (c) { return CHI[c]; }).join(', ') + (tamTai ? ' – năm nay phạm' : '') + '.'
-  ].filter(Boolean), xung || tamTai ? 'xau' : (dvNay ? dvNay.diem >= 6 : DH && DH.diem10 >= 6) ? 'tot' : 'vua');
+  ].filter(Boolean), xung || tamTai ? 'xau' : (dvNay ? chuanHoa10_(dvNay.diem) >= 6 : DH && DH.diem10 >= 6)   /* chiTiet.daiVan.diem là điểm thô → quy thang 10 (rà soát Đợt 2) */ ? 'tot' : 'vua');
 
   // Gộp các phần luận khác vào đúng bước (25/10 – chủ dự án chọn "26 bước là bài luận chính"): giao diện đọc trường gop
   // để chèn văn dễ hiểu của cung (chiTiet.cung), bộ sao (chiTiet.boSao), ba vòng nhân sinh (chiTiet.tamPhap), cách cục, sao hạn đại vận.

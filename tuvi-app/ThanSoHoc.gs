@@ -178,7 +178,7 @@ function thanSoHocLuan_(ts) {
   var bd = [];
   for (var k = 1; k <= 9; k++) { var c = ts.bieuDo[k]; bd.push((c === 0 ? '◇ ' : c >= 3 ? '◇ ' : '✓ ') + 'Số ' + k + ' (' + TS_BD[k].y + ') × ' + c + ': ' + TS_BD[k].c[Math.min(4, c)] + '.'); }
   secs.push({ tieuDe: 'Biểu đồ ngày sinh – từng con số', items: bd });
-  secs.push({ tieuDe: 'Mũi tên trên biểu đồ', items: ts.muiTen.length ? ts.muiTen.map(function (a) { return (a.tot ? '✓ ' : '✗ ') + a.ten + ' (' + a.so + '): ' + a.y + '.'; }) : ['Không có mũi tên đầy hay trống trọn vẹn – năng lực phân bố đều, phát triển theo nỗ lực.'] });
+  secs.push({ tieuDe: 'Mũi tên trên biểu đồ', items: ts.muiTen.length ? ts.muiTen.map(function (a) { return (a.tot ? '✓ ' + a.ten + ' (' + a.so + ')' : '✗ ' + a.ten) + ': ' + a.y + '.'; }) : ['Không có mũi tên đầy hay trống trọn vẹn – năng lực phân bố đều, phát triển theo nỗ lực.'] });
   if (ts.coTen) {
     var ten = [
       'Số linh hồn ' + ts.linhHon + ' (khát khao sâu thẳm – từ nguyên âm): ' + S[ts.linhHon].tk + '.',
