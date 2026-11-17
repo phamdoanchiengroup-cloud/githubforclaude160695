@@ -27,7 +27,7 @@
     });
   }
   /** Mã phiên bản giao diện – phải trùng với Index.html (meta tcc-ban) và Styles.html (--tcc-ban) */
-  var BAN_GIAO_DIEN = '2026.11.17.3';
+  var BAN_GIAO_DIEN = '2026.11.17.4';
   /* 25/10: ảnh ngũ hành + 12 con giáp + bìa PDF mới của chủ dự án (tuvi-app/anh/*.webp) qua jsDelivr, ghim theo mã lần lưu */
   var TCC_ANH_CDN = 'https://cdn.jsdelivr.net/gh/phamdoanchiengroup-cloud/githubforclaude160695@19203fbd20433f395336269a411f8aebcf990086/tuvi-app/anh/';
   var ANH_HANH = { 'Mộc': 'NguHanhMoc', 'Hỏa': 'NguHanhHoa', 'Thổ': 'NguHanhTho', 'Kim': 'NguHanhKim', 'Thủy': 'NguHanhThuy' };
@@ -378,7 +378,7 @@
     var qd = quaDK(), rq = $('rgQua');
     if (rq) { rq.hidden = true; rq.innerHTML = ''; }   // quà xu chỉ báo SAU khi tạo tài khoản (rà soát 16/11)
     $('loginModal').classList.add('show');
-    setTimeout(function () { $(tab === 'up' ? 'rgUser' : 'lgUser').focus(); }, 50);
+    setTimeout(function () { $(tab === 'up' ? 'rgContact' : 'lgUser').focus(); }, 50);
   }
   function sauDangNhap(r) {
     datPhien(r.token, r.nguoiDung);
@@ -486,10 +486,9 @@
   }
   function dangKyGo(e) {
     if (e) e.preventDefault();
-    if ($('rgPass').value !== $('rgPass2').value) { $('rgErr').textContent = 'Hai lần nhập mật khẩu không khớp.'; return; }
     $('rgGo').disabled = true; $('rgErr').textContent = 'Đang tạo tài khoản…';
     call('dangKy', [$('rgUser').value, $('rgPass').value, $('rgName').value, $('rgContact').value, $('rgRef').value], function (r) {
-      $('rgGo').disabled = false; ['rgPass', 'rgPass2'].forEach(function (id) { $(id).value = ''; }); sauDangNhap(r);
+      $('rgGo').disabled = false; $('rgPass').value = ''; sauDangNhap(r);
     }, function (err) { $('rgGo').disabled = false; $('rgErr').textContent = (err && err.message) || String(err); });
   }
   function dangXuatGo() {
@@ -857,6 +856,10 @@
     $('btnUser').addEventListener('click', moTaiKhoan);
     $('loginForm').addEventListener('submit', dangNhapGo);
     $('regForm').addEventListener('submit', dangKyGo);
+    if ($('rgMat')) $('rgMat').addEventListener('click', function () {   // 17/11: hiện/ẩn mật khẩu thay cho ô nhập lại
+      var hien = $('rgPass').type === 'password'; $('rgPass').type = hien ? 'text' : 'password';
+      this.setAttribute('aria-pressed', hien ? 'true' : 'false'); this.setAttribute('aria-label', hien ? 'Ẩn mật khẩu' : 'Hiện mật khẩu');
+    });
     document.querySelectorAll('[data-auth]').forEach(function (b) { b.addEventListener('click', function () { authTab(b.getAttribute('data-auth')); }); });
     $('accLogout').addEventListener('click', dangXuatGo);
     $('accAdmin').addEventListener('click', moQuanTri);

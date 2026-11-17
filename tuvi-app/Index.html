@@ -3,7 +3,7 @@
 <head>
   <base target="_top">
   <meta charset="utf-8">
-  <meta name="tcc-ban" content="2026.11.17.3">
+  <meta name="tcc-ban" content="2026.11.17.4">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Thiên Cơ Các · Lá Số Tử Vi & Bát Tự</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -387,7 +387,7 @@
       <p class="muted" id="authNote" style="margin-top:10px">Chưa đăng nhập bạn vẫn lập được lá số và xem phần hé lộ. Đăng nhập để mở khóa luận giải, lưu lịch sử và tải PDF.</p>
       <form id="loginForm" autocomplete="on">
         <h2 class="panel-title" id="loginTitle"><span class="han">鑰</span> Đăng nhập</h2>
-        <div class="field"><label for="lgUser">Tên đăng nhập</label><input type="text" id="lgUser" autocomplete="username" autocapitalize="none" spellcheck="false" required></div>
+        <div class="field"><label for="lgUser">Email hoặc tên đăng nhập</label><input type="text" id="lgUser" autocomplete="username" inputmode="email" autocapitalize="none" spellcheck="false" required></div>
         <div class="field"><label for="lgPass">Mật khẩu</label><input type="password" id="lgPass" autocomplete="current-password" required></div>
         <p class="form-err" id="lgErr"></p>
         <div class="modal-actions"><span style="flex:1"></span>
@@ -396,17 +396,11 @@
       </form>
       <form id="regForm" autocomplete="on" style="display:none">
         <h2 class="panel-title"><span class="han">籍</span> Tạo tài khoản</h2>
-        <div class="row c2">
-          <div class="field"><label for="rgUser">Tên đăng nhập</label><input type="text" id="rgUser" autocomplete="username" autocapitalize="none" spellcheck="false" placeholder="vd: an.nguyen" required></div>
-          <div class="field"><label for="rgName">Tên hiển thị</label><input type="text" id="rgName" maxlength="60" placeholder="vd: Nguyễn An"></div>
-        </div>
-        <div class="field"><label for="rgContact">Email (nhận mã xác thực – quà 39 xu)</label><input type="email" id="rgContact" autocomplete="email" inputmode="email" placeholder="ten@gmail.com" required></div>
-        <div class="row c2">
-          <div class="field"><label for="rgPass">Mật khẩu (≥ 8 ký tự, có chữ và số)</label><input type="password" id="rgPass" autocomplete="new-password" required></div>
-          <div class="field"><label for="rgPass2">Nhập lại mật khẩu</label><input type="password" id="rgPass2" autocomplete="new-password" required></div>
-        </div>
+        <div class="field"><label for="rgContact">Email (dùng để đăng nhập và nhận mã quà 39 xu)</label><input type="email" id="rgContact" autocomplete="email" inputmode="email" placeholder="ten@gmail.com" required></div>
+        <div class="field"><label for="rgPass">Mật khẩu (≥ 8 ký tự, có chữ và số)</label><div class="rg-mk"><input type="password" id="rgPass" autocomplete="new-password" required><button type="button" class="rg-mat" id="rgMat" aria-label="Hiện mật khẩu" aria-pressed="false">👁</button></div></div>
+        <div class="field"><label for="rgName">Tên của bạn</label><input type="text" id="rgName" maxlength="60" autocomplete="name" placeholder="vd: Nguyễn An"></div>
         <p class="rg-qua" id="rgQua" hidden></p>
-        <div class="field"><label for="rgRef">Mã giới thiệu (nếu có)</label><input type="text" id="rgRef" autocapitalize="none" spellcheck="false" placeholder="tên đăng nhập của người giới thiệu"></div>
+        <input type="hidden" id="rgUser" value=""><input type="hidden" id="rgRef" value="">
         <p class="form-err" id="rgErr"></p>
         <div class="modal-actions"><span style="flex:1"></span>
           <button type="button" class="btn btn-ghost" data-dong="loginModal">Để sau</button>

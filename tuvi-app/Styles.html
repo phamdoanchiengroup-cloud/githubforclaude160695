@@ -1,6 +1,6 @@
 <style>
 /* Mã phiên bản giao diện – phải trùng với Index.html (meta tcc-ban) và Script.html (BAN_GIAO_DIEN) */
-:root { --tcc-ban: "2026.11.17.3"; }
+:root { --tcc-ban: "2026.11.17.4"; }
 /* ================================================================
    THIÊN CƠ CÁC — phong cách tiên hiệp sáng: ngọc bích, kim sa, mây trắng
    ================================================================ */
@@ -3142,4 +3142,10 @@ summary.ncd-dau { flex-wrap: nowrap; }
   .xt-hang .btn { flex: 1 1 100%; }
 }
 @media (prefers-reduced-motion: reduce) { .ncd-bar i, summary.ncd-dau::after { transition: none !important; } #xtBuoc2:not([hidden]) { animation: none !important; } }
+/* 17/11: hộp đăng ký 3 ô – nút hiện/ẩn mật khẩu */
+.rg-mk{position:relative}
+.rg-mk input{padding-right:52px}
+.rg-mat{position:absolute;right:4px;top:50%;transform:translateY(-50%);min-width:44px;min-height:44px;border:0;background:transparent;color:inherit;font-size:18px;cursor:pointer;border-radius:8px}
+.rg-mat[aria-pressed="true"]{opacity:.6}
+.rg-mat:focus-visible{outline:2px solid var(--cyan,#3fd3e0);outline-offset:2px}
 </style>

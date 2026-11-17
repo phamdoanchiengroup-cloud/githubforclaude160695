@@ -323,4 +323,12 @@ ctx.guiMaEmail(n2.token, 'moi2@x.vn'); const v2 = ctx.xacThucEmail(n2.token, maC
 ok(v2.qua.xu === 39 && v2.qua.gt === 0 && ctx.ttSoDu_('nguoimoi1') === truocGT, 'Xác thực email: người được mời nhận 39, người mời không nhận gì (bỏ thưởng mời)');
 const n4 = ctx.dangKy('nguoimoi4', 'matkhau123', 'B4', 'moi4@x.vn', 'khong.co.ai');
 ok(n4.qua.gt === 0 && !tkJ('nguoimoi4').gioiThieu, 'Mã mời không tồn tại: không lưu');
+// 17/11: hộp đăng ký 3 ô – tên đăng nhập tự tạo từ email, đăng nhập bằng email, mỗi email 1 tài khoản
+{ const a = ctx.dangKy('', 'matkhau123', 'Lan', 'Lan.Tran+abc@Gmail.com', '');
+  ok(a.token && a.nguoiDung && /^lan\.?tran/.test(a.nguoiDung.ten), 'Đăng ký 3 ô: tên đăng nhập tự tạo từ email (' + (a.nguoiDung && a.nguoiDung.ten) + ')');
+  const b = ctx.dangKy('', 'matkhau123', 'Lan 2', 'lan.tran.khac@gmail.com', '');
+  ok(b.token && b.nguoiDung.ten !== a.nguoiDung.ten, 'Tên tự tạo trùng thì thêm số (' + b.nguoiDung.ten + ')');
+  ok(/đã có tài khoản/.test(nem(() => ctx.dangKy('', 'matkhau123', 'X', 'lantran@gmail.com', ''))), 'Mỗi email (đã chuẩn hóa) chỉ mở 1 tài khoản');
+  ok(ctx.dangNhap('LAN.TRAN+abc@gmail.com', 'matkhau123').nguoiDung.ten === a.nguoiDung.ten, 'Đăng nhập bằng email được');
+  ok(nem(() => ctx.dangNhap('lan.tran+abc@gmail.com', 'sai-mat-khau-1')) !== null, 'Đăng nhập bằng email sai mật khẩu bị từ chối'); }
 if (loi) { console.log(loi + ' lỗi'); process.exit(1); } else console.log('✔ Thanh toán: tất cả kiểm tra đạt');

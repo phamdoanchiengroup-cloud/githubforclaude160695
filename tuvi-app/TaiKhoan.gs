@@ -73,7 +73,11 @@ function chiChayNoiBo_(e) {
 }
 
 /* ---------- API cho giao diện ---------- */
+/** Chỉ mục email → tên đăng nhập (17/11: đăng ký chỉ bằng email, đăng nhập bằng email được) */
+function tkKhoaEmail_(email) { return 'EM_' + tkSha_(ttLienHeChuan_(email)).slice(0, 24); }
+function tkTenTuEmail_(email) { var v = tkProps_().getProperty(tkKhoaEmail_(email)); return v ? tkTen_(v) : ''; }
 function dangNhap(user, pass) {
+  if (String(user || '').indexOf('@') >= 0) user = tkTenTuEmail_(user) || String(user);
   var u = tkTen_(user), c = CacheService.getScriptCache(), k = 'SAI_' + u;
   var sai = parseInt(c.get(k) || '0', 10);
   var o = tkDoc_(u), laChu = !!o && o.vaiTro === 'chu';
@@ -140,9 +144,16 @@ function dangKy(user, pass, hienThi, lienHe, maGioiThieu) {
   lienHe = String(lienHe || '').trim().slice(0, 80);
   // 17/11 (chủ dự án): chỉ đăng ký bằng email – để gửi mã xác thực nhận quà 39 xu
   if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(lienHe)) throw new Error('Nhập email hợp lệ (ví dụ: ten@gmail.com) – mã xác thực nhận quà sẽ gửi về email này.');
+  if (tkTenTuEmail_(lienHe)) throw new Error('Email này đã có tài khoản – hãy đăng nhập bằng email và mật khẩu.');
+  if (!String(user || '').trim()) {   // 17/11: hộp đăng ký 3 ô – tên đăng nhập tự tạo từ phần trước @ của email
+    var goc = lienHe.split('@')[0].split('+')[0].toLowerCase().replace(/[^a-z0-9._-]/g, '').replace(/^[._-]+|[._-]+$/g, '').slice(0, 24);
+    if (goc.length < 3) goc = (goc + 'tcc').slice(0, 24);
+    user = goc; for (var i = 2; tkDoc_(user) && i < 999; i++) user = goc + i;
+  }
   var gt = tkTen_(maGioiThieu), them = { lienHe: lienHe, tuDangKy: true };
   if (gt && gt !== tkTen_(user) && tkDoc_(gt)) them.gioiThieu = gt;
   var u = tkTaoMoi_(user, pass, hienThi, 'thanhVien', them);
+  tkProps_().setProperty(tkKhoaEmail_(lienHe), u);
   c.put('DK_DEM', String(n + 1), 600);
   var r = dangNhap(u, pass);
   r.qua = { xu: 0, gt: 0 };
@@ -213,6 +224,7 @@ function xacThucEmail(token, ma) {
     }
     var qua = ttToanQuyen_(u) ? { xu: 0, gt: 0, lyDo: 'toanQuyen' } : ttQuaXacThuc_(u.ten, o, x.email);
     o = tkDoc_(u.ten); delete o.otp; o.email = x.email; o.emailXacThuc = new Date().toISOString(); tkGhi_(u.ten, o);
+    if (!tkTenTuEmail_(x.email)) tkProps_().setProperty(tkKhoaEmail_(x.email), u.ten);   // tài khoản cũ: đăng nhập bằng email đã xác thực
     return { ok: true, email: x.email, qua: qua, soDu: ttToanQuyen_(u) ? null : ttSoDu_(u.ten) };
   });
 }
