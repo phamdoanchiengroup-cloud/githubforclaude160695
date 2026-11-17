@@ -2653,7 +2653,20 @@ function dhHuyGui(el){ var a=el.dataset.k.split('|'), loai=a.pop(), dong=+a.pop(
   el.disabled=true; el.textContent='Đang lưu…';
   call('huyBotDon',[{loai:loai,tab:tab,dong:dong,ten:o.ten,maDon:o.maDon||'',slMoi:s?Number(s.value):null,lyDo:l.value,lenh:DHHuy.lenh}],function(r){
     if(!r||!r.ok){ toast((r&&r.msg)||'Không lưu được.'); if(r&&r.cu){ DHHuy.mo=''; DHB.mo=''; dhBNoi(); dhTai(true); } else { el.disabled=false; el.textContent='Thử lại'; } return; }
-    DHHuy.mo=''; DHB.mo=''; dhBNoi(); toast(r.msg+' Xem / hoàn tác ở mục Đơn đã hủy.',true); dhTai(false); }); }
+    DHHuy.mo=''; DHB.mo=''; dhBNoi(); dhHoan10(r); dhTai(false); }); }
+/* 17/11 (chủ dự án): sau khi hủy / bớt hiện thanh "Hoàn tác" 10 giây (bấm nhầm thì bấm ngay, không phải ghi lý do – web ghi "bấm nhầm").
+   Quá 10 giây vẫn hoàn tác được ở mục Đơn đã hủy (phải ghi lý do) */
+var DHHoan=null;
+function dhHoan10(r){ dhHoanDong(); if(!r||!(r.nhom||(r.ids&&r.ids.length===1))){ toast(r.msg+' Xem / hoàn tác ở mục Đơn đã hủy.',true); return; }
+  var b=document.createElement('div'); b.id='dhHoan'; b.setAttribute('role','status');
+  b.style.cssText='position:fixed;left:50%;transform:translateX(-50%);bottom:'+(window.innerWidth<=900?'78px':'22px')+';z-index:9999;display:flex;gap:12px;align-items:center;max-width:calc(100vw - 32px);padding:10px 12px 10px 16px;border-radius:12px;background:var(--ink,#1d2325);color:var(--panel,#fff);box-shadow:0 8px 28px rgba(0,0,0,.28);font-size:13.5px;line-height:1.4';
+  b.innerHTML='<span style="flex:1;min-width:0">'+esc(r.msg)+'</span><button type="button" id="dhHoanNut" style="flex:none;min-height:40px;padding:6px 14px;border-radius:9px;border:1px solid currentColor;background:none;color:inherit;font:inherit;font-weight:700;cursor:pointer">Hoàn tác (10)</button>';
+  document.body.appendChild(b);
+  DHHoan={r:r,con:10,t:setInterval(function(){ if(!DHHoan) return; DHHoan.con--; var n=document.getElementById('dhHoanNut'); if(DHHoan.con<=0){ dhHoanDong(); return; } if(n&&!n.disabled) n.textContent='Hoàn tác ('+DHHoan.con+')'; },1000)};
+  document.getElementById('dhHoanNut').onclick=function(){ var n=this, x=DHHoan&&DHHoan.r; if(!x) return; n.disabled=true; n.textContent='Đang hoàn tác…'; clearInterval(DHHoan.t);
+    var p={lyDo:'Bấm nhầm – hoàn tác ngay trong 10 giây',lenh:dhLenh()}; if(x.nhom) p.nhom=x.nhom; else p.id=x.ids[0];
+    call('hoanTacHuyDon',[p],function(k){ dhHoanDong(); if(!k||!k.ok){ toast((k&&k.msg)||'Không hoàn tác được – vào mục Đơn đã hủy để hoàn tác.'); return; } toast(k.msg,true); dhTai(false); }); }; }
+function dhHoanDong(){ if(DHHoan&&DHHoan.t) clearInterval(DHHoan.t); DHHoan=null; var b=document.getElementById('dhHoan'); if(b&&b.parentNode) b.parentNode.removeChild(b); }
 function dhVeBang(ds){
   var q=(DH&&DH.q)||{}, bp=q.bp||'', coQuyen=((q.sua||[]).length>0), bps=dhBDS(), eq=dhEQ(), coHDG=bps.indexOf('DG')>=0&&dhCoHongDG();
   var phu=(DH&&DH.tabPhu)||{}, tab=DHB.tab||dhBTabMD(), uuTab=Object.keys(phu).filter(function(k){return /ƯU TIÊN|UU TIEN/i.test(k)})[0]||'';

@@ -136,7 +136,9 @@ window.__MANH=${anToan(JSON.stringify(MANH))};
     appendRow:function(v){this.getRange(this.getLastRow()+1,1,1,v.length).setValues([v]);return this},
     deleteRow:function(i){this.rows.splice(i-1,1)}, deleteRows:function(i,n){this.rows.splice(i-1,n)},
     insertColumnBefore:function(c){this.rows.forEach(function(r){r.splice(c-1,0,'')})},
-    setFrozenRows:function(){},setColumnWidth:function(){},autoResizeColumn:function(){},clear:function(){this.rows=[]}
+    setFrozenRows:function(){},setColumnWidth:function(){},autoResizeColumn:function(){},clear:function(){this.rows=[]},
+    /* 17/11: khóa cột Sheet đơn (giai đoạn 2) */
+    getProtections:function(){return (this.__pr=this.__pr||[]).slice()},insertRowsAfter:function(){}
   };
   function chuyen(sh,r,c,v){
     if(typeof v==='string'&&sh.fmt[c]!=='@'&&sh.fmt[r+','+c]!=='@'){
@@ -162,7 +164,8 @@ window.__MANH=${anToan(JSON.stringify(MANH))};
     /* 16/11 khuya: hủy / bớt mã (màu nền) + duyệt đơn Bán hàng (chép công thức dòng mẫu) */
     getBackgrounds:function(){var o=[];for(var i=0;i<this.nr;i++){var r=[];for(var j=0;j<this.nc;j++)r.push('#ffffff');o.push(r)}return o},setBackgrounds:function(){return this},setNote:function(){return this},
     getFormulas:function(){return this.getValues().map(function(r){return r.map(function(v){return (typeof v==='string'&&/^=/.test(v))?v:''})})},getFormulasR1C1:function(){return this.getFormulas()},setFormulasR1C1:function(a){return this.setValues(a)},
-    setHorizontalAlignment:function(){return this},setWrap:function(){return this}
+    setHorizontalAlignment:function(){return this},setWrap:function(){return this},
+    protect:function(){var sh=this.sh,ds=(sh.__pr=sh.__pr||[]),p={mo:'',ed:['chu@xem-thu'],setDescription:function(t){this.mo=t;return this},getDescription:function(){return this.mo},setWarningOnly:function(){return this},addEditor:function(){return this},getEditors:function(){return this.ed.map(function(e){return {getEmail:function(){return e}}})},removeEditors:function(){return this},canDomainEdit:function(){return false},setDomainEdit:function(){return this},remove:function(){var i=ds.indexOf(p);if(i>=0)ds.splice(i,1)}};ds.push(p);return p}
   };
   Object.keys(duLieu).forEach(function(t){
     sheets[t]=new Sheet(t,duLieu[t].map(function(r){return r.map(function(v){return (v&&typeof v==='object'&&v.$d)?new RealDate(v.$d+'+07:00'):v})}));
@@ -172,7 +175,7 @@ window.__MANH=${anToan(JSON.stringify(MANH))};
   var uuid=function(){return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g,function(c){var r=Math.random()*16|0;return (c==='x'?r:(r&3|8)).toString(16)})};
   var G={
     Date:FakeDate, Logger:{log:function(m){console.log('[Logger]',m)}},
-    Session:{getScriptTimeZone:function(){return 'Asia/Ho_Chi_Minh'},getActiveUser:function(){return {getEmail:function(){return ''}}}},
+    Session:{getScriptTimeZone:function(){return 'Asia/Ho_Chi_Minh'},getActiveUser:function(){return {getEmail:function(){return ''}}},getEffectiveUser:function(){return {getEmail:function(){return 'chu@xem-thu'}}}},
     Utilities:{DigestAlgorithm:{SHA_256:'sha256',MD5:'md5'},Charset:{UTF_8:'utf8'},
       computeDigest:function(a,s){if(a!=='sha256')throw new Error('không hỗ trợ');return sha256(s)},
       getUuid:uuid, formatDate:function(dt,tz,f){return dinhDang(dt,f)}, sleep:function(){},
@@ -187,12 +190,12 @@ window.__MANH=${anToan(JSON.stringify(MANH))};
         return sha256Bin(op+tb(sha256Bin(ip+mb)))}},
     PropertiesService:{getScriptProperties:function(){return {getProperty:function(k){return k in props?props[k]:null},setProperty:function(k,v){props[k]=String(v)},
       deleteProperty:function(k){delete props[k]},getProperties:function(){return Object.assign({},props)}}}},
-    CacheService:{getScriptCache:function(){return {get:function(k){return k in cache?cache[k]:null},put:function(k,v){cache[k]=v},remove:function(k){delete cache[k]},
+    CacheService:{getScriptCache:function(){return {get:function(k){return k in cache?cache[k]:null},put:function(k,v){cache[k]=v},remove:function(k){delete cache[k]},removeAll:function(ks){ks.forEach(function(k){delete cache[k]})},
       getAll:function(ks){var o={};ks.forEach(function(k){if(k in cache)o[k]=cache[k]});return o},putAll:function(o){Object.assign(cache,o)}}}},
     LockService:{getScriptLock:function(){return {tryLock:function(){if(khoa)return false;khoa=true;return true},waitLock:function(){khoa=true},releaseLock:function(){khoa=false},hasLock:function(){return khoa}}}},
-    SpreadsheetApp:{getActiveSpreadsheet:function(){return ss},openById:function(){return ss},   /* 16/11 khuya: Sheet "CSDL Đơn hàng (web)" tự tạo – bản xem thử dùng chung bảng tính trong bộ nhớ */
+    SpreadsheetApp:{ProtectionType:{RANGE:'RANGE',SHEET:'SHEET'},getActiveSpreadsheet:function(){return ss},openById:function(){return ss},   /* 16/11 khuya: Sheet "CSDL Đơn hàng (web)" tự tạo – bản xem thử dùng chung bảng tính trong bộ nhớ */
       create:function(ten){ var dau=ss.insertSheet('__CSDL_DH_1'); dau.setName=function(n){ delete sheets['__CSDL_DH_1']; this.name=this.ten=n; sheets[n]=this; return this; }; return {getId:function(){return 'xem-thu'},getName:function(){return ten},getSheets:function(){return [dau]},insertSheet:function(n){return ss.insertSheet(n)},getSheetByName:function(n){return ss.getSheetByName(n)}}; }},
-    ScriptApp:{getProjectTriggers:function(){return []},deleteTrigger:function(){},newTrigger:function(){var b={timeBased:function(){return b},atHour:function(){return b},
+    ScriptApp:{getProjectTriggers:function(){return []},deleteTrigger:function(){},newTrigger:function(){var b={forSpreadsheet:function(){return b},onEdit:function(){return b},timeBased:function(){return b},atHour:function(){return b},
       everyDays:function(){return b},onMonthDay:function(){return b},inTimezone:function(){return b},create:function(){return b}};return b}},
     HtmlService:{createHtmlOutputFromFile:function(f){var M=window.__MANH||{};if(!(f in M))throw new Error('Không có file '+f);return {getContent:function(){return M[f]}}},createHtmlOutput:function(){return {getAs:function(){throw new Error('Bản xem thử không tạo được PDF (chỉ Apps Script làm được) – bấm "Xem & in" để xem báo cáo.')}}}}, DriveApp:{}, MailApp:{sendEmail:function(){}}
   };

@@ -36,7 +36,7 @@ function tao(fileCode, duLieu, gioHienTai) {
     getName() { return this.ten; },
     getLastRow() { let n = this.rows.length; while (n > 0 && (!this.rows[n - 1] || this.rows[n - 1].every(v => v === '' || v == null))) n--; return n; },
     getLastColumn() { return Math.max(0, ...this.rows.map(r => { let n = r.length; while (n > 0 && (r[n - 1] === '' || r[n - 1] == null)) n--; return n; })); },
-    getMaxRows() { return Math.max(1000, this.rows.length); },
+    getMaxRows() { return Math.max(this.rows.__max || 1000, this.rows.length); },
     getDataRange() { return this.getRange(1, 1, Math.max(1, this.getLastRow()), Math.max(1, this.getLastColumn())); },
     getRange(r, c, nr, nc) { return new Range(this, r, c, nr || 1, nc || 1); },
     appendRow(v) { thongKe.ghi++; const r = this.getLastRow() + 1; this.getRange(r, 1, 1, v.length).setValues([v]); return this; },
@@ -44,6 +44,10 @@ function tao(fileCode, duLieu, gioHienTai) {
     deleteRows(i, n) { thongKe.xoaDong++; this.rows.splice(i - 1, n); },
     insertColumnBefore(c) { this.rows.forEach(r => r.splice(c - 1, 0, '')); },
     setFrozenRows() {}, setColumnWidth() {}, autoResizeColumn() {}, hideSheet() {},
+    // 17/11: khóa cột (Protection) – lưu theo mảng dòng của sheet như màu nền; thêm dòng trống
+    __pr() { return this.rows.__pr || (Object.defineProperty(this.rows, '__pr', { value: [], enumerable: false }), this.rows.__pr); },
+    getProtections() { return this.__pr().slice(); },
+    insertRowsAfter(r, n) { this.rows.__max = Math.max(this.rows.__max || this.getMaxRows(), r) + n; Object.defineProperty(this.rows, '__max', { value: this.rows.__max, enumerable: false, writable: true }); },
     clear() { this.rows.length = 0; }, clearContents() { this.rows.length = 0; return this; }   // 15/11: xóa tại chỗ (giữ liên kết với dữ liệu tab)
   };
   function chuyen(sh, r, c, v) {
@@ -101,6 +105,13 @@ function tao(fileCode, duLieu, gioHienTai) {
     setBackground(c) { const b = this.__bg(); for (let i = 0; i < this.nr; i++) for (let j = 0; j < this.nc; j++) { const k = (this.r + i) + ',' + (this.c + j); if (c == null) delete b[k]; else b[k] = String(c).toLowerCase(); } return this; },
     setBackgrounds(a) { const b = this.__bg(); a.forEach((r, i) => r.forEach((c, j) => { b[(this.r + i) + ',' + (this.c + j)] = String(c).toLowerCase(); })); return this; },
     setNote() { return this; },
+    protect() { const sh = this.sh, ds = sh.__pr(), p = { r: this.r, c: this.c, nr: this.nr, nc: this.nc, mo: '', canhBao: false, editors: ['chu@vidu.com', 'nv@vidu.com'], mien: true,
+      setDescription(t) { this.mo = t; return this; }, getDescription() { return this.mo; }, setWarningOnly(b) { this.canhBao = !!b; return this; }, isWarningOnly() { return this.canhBao; },
+      addEditor(u) { const e = typeof u === 'string' ? u : u.getEmail(); if (this.editors.indexOf(e) < 0) this.editors.push(e); return this; },
+      getEditors() { return this.editors.map(e => ({ getEmail: () => e })); }, removeEditors(a) { const bo = a.map(u => u.getEmail()); this.editors = this.editors.filter(e => bo.indexOf(e) < 0); return this; },
+      canDomainEdit() { return this.mien; }, setDomainEdit(b) { this.mien = !!b; return this; }, remove() { const i = ds.indexOf(p); if (i >= 0) ds.splice(i, 1); } }; ds.push(p); return p; },
+    getA1Notation() { const L = n => { let s = ''; while (n > 0) { const m = (n - 1) % 26; s = String.fromCharCode(65 + m) + s; n = Math.floor((n - 1) / 26); } return s; }; return L(this.c) + this.r + (this.nr > 1 || this.nc > 1 ? ':' + L(this.c + this.nc - 1) + (this.r + this.nr - 1) : ''); },
+    getSheet() { return this.sh; }, getRow() { return this.r; }, getColumn() { return this.c; }, getNumRows() { return this.nr; }, getNumColumns() { return this.nc; },
     getFormulasR1C1() { return this.getFormulas(); }, setFormulasR1C1(a) { return this.setValues(a); }, setFormulas(a) { return this.setValues(a); }   // 16/11 khuya: chép công thức dòng mẫu (đơn Bán hàng)
   };
 
@@ -143,11 +154,12 @@ function tao(fileCode, duLieu, gioHienTai) {
       get: k => (k in cache ? cache[k] : null),
       put: (k, v) => { if (String(v).length > 100000) throw new Error('Cache > 100KB'); cache[k] = v; },
       remove: k => { delete cache[k]; },
+      removeAll: ks => { ks.forEach(k => { delete cache[k]; }); },   // 17/11: dhXoaCacheDon_ (duyệt đơn Bán hàng xong phải đọc lại Sheet)
       getAll: ks => { const o = {}; ks.forEach(k => { if (k in cache) o[k] = cache[k]; }); return o; },
       putAll: o => { Object.keys(o).forEach(k => { if (String(o[k]).length > 100000) throw new Error('Cache > 100KB'); cache[k] = o[k]; }); }
     }) },
     LockService: { getScriptLock: () => ({ tryLock: () => { if (khoa) return false; khoa = true; return true; }, waitLock() { khoa = true; }, releaseLock() { khoa = false; } }) },
-    SpreadsheetApp: { flush() {}, getActiveSpreadsheet: () => ss,
+    SpreadsheetApp: { flush() {}, ProtectionType: { RANGE: "RANGE", SHEET: "SHEET" }, getActiveSpreadsheet: () => ss,
       // Sheet của tệp khác (31/10, đọc Sheet "Trạng thái đơn hàng"): kiểm thử gán ctx.__ngoai = { id: { ten, sheets: { Tab: [[...]] } } }
       openById: id => { const bm = (ctx.__bangMoi || []).find(x => x.id === id); if (bm) return bm; const m = (ctx.__ngoai || {})[id]; if (!m) throw new Error('Bạn không có quyền truy cập vào tài liệu được yêu cầu (giả lập).');
         return { getId: () => id, getName: () => m.ten || id, getSheetByName: n => (m.sheets[n] ? new Sheet(n, m.sheets[n]) : null), getSheets: () => Object.keys(m.sheets).map(n => new Sheet(n, m.sheets[n])), insertSheet: n => { m.sheets[n] = m.sheets[n] || []; return new Sheet(n, m.sheets[n]); } }; },   // 15/11: tạo tab mới (tab ĐẾN HẠN 10 NGÀY)
@@ -164,7 +176,7 @@ function tao(fileCode, duLieu, gioHienTai) {
       createHtmlOutput: html => ({ getContent: () => html, getAs: type => { const b = blob(Buffer.from(html, 'utf8')); b.__html = html; b.__type = type; b.__ten = ''; b.setName = n => { b.__ten = n; return b; }; b.getName = () => b.__ten; return b; } }) },
     MailApp: { sendEmail: o => { (ctx.__mail = ctx.__mail || []).push(o); }, getRemainingDailyQuota: () => 100 },
     // ctx.__trigger: danh sách trigger đã cài [{id, ham}]
-    ScriptApp: { getProjectTriggers: () => (ctx.__trigger || []).map(t => ({ getUniqueId: () => t.id, getHandlerFunction: () => t.ham })), deleteTrigger() {}, newTrigger: () => { const b = { timeBased: () => b, atHour: () => b, everyDays: () => b, everyMinutes: () => b, everyHours: () => b, onMonthDay: () => b, inTimezone: () => b, create: () => b }; return b; } },
+    ScriptApp: { getProjectTriggers: () => (ctx.__trigger || []).map(t => ({ getUniqueId: () => t.id, getHandlerFunction: () => t.ham })), deleteTrigger() {}, newTrigger: (ham) => { const b = { forSpreadsheet: () => b, onEdit: () => b, onChange: () => b, timeBased: () => b, atHour: () => b, everyDays: () => b, everyMinutes: () => b, everyHours: () => b, onMonthDay: () => b, inTimezone: () => b, create: () => b }; return b; } },
     DriveApp: (() => {   // Drive giả: thư mục + tệp trong bộ nhớ
       const thuMuc = [];
       const it = a => { let i = 0; return { hasNext: () => i < a.length, next: () => a[i++] }; };

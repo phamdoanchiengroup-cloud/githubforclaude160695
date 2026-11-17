@@ -2,6 +2,9 @@
 # Vá Code.gs – giai đoạn 1 Bán hàng nhập đơn (16/11 khuya): nối tests/don-ban/don-ban.gs + vai trò BH.
 # Chạy bằng exec() cuối tests/va-code.py (sau cau-hinh-gay sửa MANH_GD). Kiểm thử: tests/don-ban.js
 s = s.rstrip() + '\n' + io.open(os.path.join(os.path.dirname(__file__), 'don-ban', 'don-ban.gs'), encoding='utf-8').read()
+# 17/11: ngày dự kiến xong + bảng đơn nhà máy + đang xem (du-kien.gs), giai đoạn 2 khóa cột Sheet đơn (khoa-sheet.gs)
+for _f in ['du-kien.gs', 'khoa-sheet.gs']:
+    s = s.rstrip() + '\n' + io.open(os.path.join(os.path.dirname(__file__), 'don-ban', _f), encoding='utf-8').read()
 
 def _tdb(cu, moi, dem=1):
     global s
@@ -13,7 +16,7 @@ _tdb("var __KHOA = null;", "var __KHOA = null;\nvar __CHO_BH = false;   // 16/11
 _tdb("  if (o.vaiTro === 'OWNER') o.vaiTro = 'ADMIN';\n  o.cg = cgQuyenCua_(o);",
      "  if (o.vaiTro === 'OWNER') o.vaiTro = 'ADMIN';\n  if (o.vaiTro === 'BH' && !__CHO_BH) return null;   // 16/11 khuya: Bán hàng chỉ dùng được trang Đơn hàng của tôi + đăng nhập / đổi mật khẩu\n  o.cg = cgQuyenCua_(o);")
 for _h in ['function napDuLieuLoi_(token, phan) {\n', 'function dangXuat(token) {\n', 'function doiMatKhau(token, cu, moi) {\n', 'function layManhGiaoDien(token, ten) {\n',
-           'function layDonBan(token) {\n', 'function luuDonBan(token, p) {\n', 'function xoaDonBan(token, p) {\n']:
+           'function layDonBan(token) {\n', 'function luuDonBan(token, p) {\n', 'function xoaDonBan(token, p) {\n', 'function layBangDonNhaMay(token) {\n']:
     _tdb(_h, _h + '  __CHO_BH = true;   // 16/11 khuya: hàm Bán hàng được gọi\n')
 # napDuLieu: BH nhận gói rỗng như bếp / nhóm báo cơm (không có KPI, nhân sự, nhật ký…)
 _tdb("  if (me.vaiTro === 'BEP' || me.vaiTro === 'NHOM' || me.vaiTro === 'NV' || me.vaiTro === 'TBP') {",
@@ -22,3 +25,6 @@ _tdb("var HS_KHONG_BAT_BUOC = ['OWNER', 'ADMIN', 'NHOM', 'BEP'];", "var HS_KHONG
 _tdb("var MANH_GD = { ", "var MANH_GD = { DonBan: ['BH', 'ADMIN'], ")   # 16/11 khuya: mảnh trang Đơn hàng của tôi (ADMIN = người duyệt; hàm máy chủ kiểm lại quyền)
 # người duyệt: cờ để web hiện tab "Đơn bán hàng" + số chờ duyệt
 _tdb("  me.banMay = KPI_BAN_MAY;\n", "  me.banMay = KPI_BAN_MAY;\n  try { me.dbDuyet = dhCoHuy_(me) ? 1 : 0; } catch (eDB) { me.dbDuyet = 0; }   // 16/11 khuya: duyệt đơn Bán hàng\n")
+# 17/11 giai đoạn 2: nhật ký sửa tay cột khóa – dùng trigger onEdit đã có của Sheet đơn; rà lại khóa ở lượt đồng bộ 10 phút
+_tdb("function DH_TAB10_SUA(e) { if (!noiBo_(e)) return; ", "function DH_TAB10_SUA(e) { if (!noiBo_(e)) return; try { dhkSuaTay_(e); } catch (eK) {} ")
+_tdb("dhTab10Tao_(); } else dhTab10DongBo_(); } catch (e) {}", "dhTab10Tao_(); } else dhTab10DongBo_(); try { dhkRa_(); } catch (eK) {} } catch (e) {}")

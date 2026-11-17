@@ -169,7 +169,7 @@ ok(!r.ok && /1 giờ/.test(r.msg), 'quá 30 lần / giờ → chặn', [so, r]);
   const b = await chromium.launch(), er = [];
   const mo = async (w, d) => { const pg = await b.newPage({ viewport: { width: w, height: 900 } }); pg.on('pageerror', e => er.push(e.message));
     await pg.setContent('<html><head><style>*{box-sizing:border-box}</style></head><body><main id=main style="max-width:100%"></main></body></html>');
-    await pg.addScriptTag({ content: 'window.esc=s=>String(s==null?"":s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;","\\"":"&quot;"}[c]));window.qtSo=n=>String(Math.round(n||0));window.toast=()=>{};window.__goi=[];window.call=(f,a,cb)=>{window.__goi.push([f,a]);cb&&cb({ok:true,msg:"ok"});};window.$=id=>document.getElementById(id);window.tabHienTai="dh";' });
+    await pg.addScriptTag({ content: 'window.esc=s=>String(s==null?"":s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;","\\"":"&quot;"}[c]));window.qtSo=n=>String(Math.round(n||0));window.toast=()=>{};window.__goi=[];window.call=(f,a,cb)=>{window.__goi.push([f,a]);cb&&cb(f==="huyBotDon"?{ok:true,msg:"Đã hủy X.",ids:["Habc123456789"],nhom:""}:{ok:true,msg:"ok"});};window.$=id=>document.getElementById(id);window.tabHienTai="dh";' });
     await pg.addScriptTag({ content: fs.readFileSync(path.join(__dirname, '..', 'QuyTrinh.html'), 'utf8').replace(/^[\s\S]*?<script>/, '').replace(/<\/script>[\s\S]*$/, '') });
     await pg.addStyleTag({ content: (fs.readFileSync(path.join(__dirname, '..', 'QuyTrinh.html'), 'utf8').match(/<style>([\s\S]*?)<\/style>/) || [, ''])[1] });
     await pg.evaluate(d => { window.DH = d; window.dhTai = () => {}; window.dhVeLai = () => { document.getElementById('main').innerHTML = dhVeBang(DH.don); }; DHV = 'bang'; }, d);
@@ -198,6 +198,15 @@ ok(!r.ok && /1 giờ/.test(r.msg), 'quá 30 lần / giờ → chặn', [so, r]);
   if (process.env.ANH) await pg.screenshot({ path: process.env.ANH + '/huy-noi.png' });
   await pg.click('#dhHuyOK'); const goi = await pg.evaluate(() => window.__goi.find(x => x[0] === 'huyBotDon'));
   ok(dis && !dis2 && goi && goi[1][0].loai === 'HUY' && goi[1][0].lyDo === 'Khách đổi mẫu' && goi[1][0].lenh === 'wtest1234', 'gõ lý do ≥ 5 ký tự mới bấm được; gửi huyBotDon đúng dòng + mã yêu cầu', [dis, dis2, goi]);
+  /* 17/11: thanh Hoàn tác 10 giây */
+  let hb = await pg.evaluate(() => { const b = document.getElementById('dhHoan'); return b && [b.innerText, getComputedStyle(b).position, b.getBoundingClientRect().right <= innerWidth + 1]; });
+  ok(hb && /Đã hủy X/.test(hb[0]) && /Hoàn tác \(10\)/.test(hb[0]) && hb[1] === 'fixed' && hb[2], 'sau khi hủy: thanh "Hoàn tác (10)" hiện ở đáy, không tràn màn', hb);
+  await pg.waitForTimeout(1300); hb = await pg.$eval('#dhHoanNut', e => e.textContent); ok(/Hoàn tác \((9|8)\)/.test(hb), 'đếm ngược giây', hb);
+  if (process.env.ANH) await pg.screenshot({ path: process.env.ANH + '/huy-hoan10.png' });
+  await pg.click('#dhHoanNut'); const ht = await pg.evaluate(() => window.__goi.find(x => x[0] === 'hoanTacHuyDon'));
+  ok(ht && ht[1][0].id === 'Habc123456789' && /bấm nhầm/i.test(ht[1][0].lyDo) && !(await pg.$('#dhHoan')), 'bấm Hoàn tác: gọi hoanTacHuyDon đúng bản ghi, lý do "bấm nhầm" tự điền, thanh tắt', ht);
+  await pg.evaluate(() => dhHoan10({ ok: true, msg: 'Đã hủy cả đơn', ids: ['Ha', 'Hb'], nhom: 'Dabc1234567' })); await pg.waitForTimeout(10500);
+  ok(!(await pg.$('#dhHoan')), 'hết 10 giây thanh tự tắt (vẫn hoàn tác được ở mục Đơn đã hủy)');
   if (process.env.ANH) { await pg.evaluate(() => { DHB.mo = ''; dhBNoi(); DHB.tab = 'OEM'; dhVeLai(); }); await pg.screenshot({ path: process.env.ANH + '/huy-bang.png' }); }
   await pg.close();
   /* TP Sơn: không có khối điều chỉnh; chuông có số; nhãn "bộ phận bạn đang giữ" */

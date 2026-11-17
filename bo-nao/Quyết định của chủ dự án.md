@@ -168,5 +168,8 @@ Những điều đã chốt. Đừng đề xuất lại những gì ghi "không 
 - (16/11 tối) **Nút ☰ mở menu trên máy tính = nút kính trong thanh tiêu đề, cạnh logo KPI** (bản 1 nút nổi bị chê xấu) (menu vẫn ẩn, rê chuột mép trái vẫn hiện) – mục vá 49 `tests/menu-nut/`.
 
 ## Đơn hàng – hủy / bớt + Bán hàng (16/11 khuya)
+- (17/11) **Bán hàng xem bảng đơn nhà máy: TẤT CẢ đơn đang làm, chỉ 4 cột** Mã đơn · Mã sản phẩm · Số đặt · Deadline (không thấy tiến độ bộ phận, còn thiếu, ghi chú).
+- (17/11) **Ngày dự kiến xong cho Bán hàng = ngày bảng đơn mô phỏng + 2 NGÀY LÀM VIỆC** (trừ chủ nhật + ngày lễ) cho chắc.
+- (17/11) **Giai đoạn 2: cảnh báo trước ~14 ngày (Google hiện hộp cảnh báo + web ghi nhật ký sửa tay), rồi chủ sở hữu bấm khóa hẳn.** Bỏ qua việc 2 CN thai sản C454 / C451 (không làm).
 - Thứ tự mã trong đơn (3/5) nằm ngay ô Mã đơn, **không** thêm cột STT.
 - Giai đoạn 1: Claude tự tạo tài khoản Bán hàng (chủ sở hữu toàn quyền xử lý); nhập từng dòng + dán Excel; C019/C056/C067 duyệt rồi web chép vào tab kênh; Bán hàng chỉ xem đơn của mình + tiến độ. – [[KPI Thiết kế trang Đơn hàng và chuyển từ Sheet sang web (16-11)]]

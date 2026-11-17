@@ -29,6 +29,7 @@ _t50("cgay:vCGay}[k])();", "cgay:vCGay,bh:vBH}[k])();")
 _t50("  kyn:'<path", "  bh:'<path d=\"M4 5h16v14H4z\"/><path d=\"M8 9h8M8 13h5\"/><path d=\"M15.5 15.5l2 2 3-3\"/>',\n  kyn:'<path")
 _t50("  // 5) Yêu cầu sửa hồ sơ\n", """  // 50) Đơn Bán hàng chờ duyệt (16/11 khuya)
   if(ME.dbDuyet&&window.__dbCho&&__dbCho.ok&&__dbCho.n) v.push({muc:'vang',so:__dbCho.n,nho:'đơn',t:'Đơn mới của Bán hàng chờ bạn duyệt',m:__dbCho.ds.slice(0,4).map(function(x){return '<b>'+esc(x.ma)+'</b> '+esc(x.kenh)+' ('+esc(x.ai)+', '+x.n+' mã)'}).join(' · '),fn:"go('bh')",nut:'Xem & duyệt'});
+  if(ME.laOwner&&window.__dbCho&&__dbCho.khoa&&__dbCho.khoa.hetCB) v.push({muc:'vang',so:__dbCho.khoa.ngay,nho:'ngày',t:'Đã cảnh báo khóa cột Sheet đơn đủ 2 tuần',m:'Có thể bấm <b>Khóa hẳn</b>: chỉ web ghi được Mã đơn / Loại hàng / SL / Deadline trên Sheet (giai đoạn 2).',fn:"go('bh')",nut:'Xem nhật ký & khóa'});   // 17/11
   // 5) Yêu cầu sửa hồ sơ
 """)
 _t50("function vHomNay(){\n", """function vHomNay(){

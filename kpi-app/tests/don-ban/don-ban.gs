@@ -54,6 +54,7 @@ function layDonBan(token) {
   var thu = { CHO_DUYET: 0, TRA_VE: 1, DA_DUYET: 2, TU_CHOI: 3 };
   ds.sort(function(a, b) { return (thu[a.TrangThai] - thu[b.TrangThai]) || String(b.LucGui || b.LucTao).localeCompare(String(a.LucGui || a.LucTao)); });
   var out = ds.slice(0, DB_WEB_MAX).map(function(r) { return dbWeb_(r, r.TrangThai === 'DA_DUYET' && d ? dbTienDo_(d, r) : null); });
+  try { dbkGanDuKien_(out, d); } catch (eK) {}   // 17/11: ngày dự kiến xong (mô phỏng công suất + 2 ngày làm dự phòng) – du-kien.gs
   return sach_({ ok: true, ds: out, bh: q.bh ? 1 : 0, duyet: q.duyet ? 1 : 0, owner: q.me.laOwner ? 1 : 0, ten: q.me.ten || '', kenh: dbKenh_(),
     sp: Object.keys(sp).sort().slice(0, 3000), csNgay: DH_CS_MAC, tongThieu: q.duyet ? tongThieu : null, hom: homNayVN_() });
 }
@@ -210,7 +211,8 @@ function demDonBanCho(token) {
   var duyet = false; try { duyet = dhCoHuy_(me); } catch (e) {}
   if (!duyet) return sach_({ ok: true, n: 0, ds: [] });
   var ss = dhhSS_(false), ds = ss ? dbDoc_(ss).filter(function(r) { return r.TrangThai === 'CHO_DUYET'; }) : [];
-  return sach_({ ok: true, n: ds.length, ds: ds.slice(0, 5).map(function(r) { return { ma: r.MaDon, kenh: DH_NHAN_TAB[r.Tab] || r.Tab, ai: r.NguoiTao, n: r._d.length }; }) });
+  var kh = null; if (me.laOwner) { try { kh = dhkWeb_(); } catch (eK) {} }   // 17/11: nhắc chủ sở hữu khóa hẳn sau 14 ngày cảnh báo
+  return sach_({ ok: true, n: ds.length, khoa: kh, ds: ds.slice(0, 5).map(function(r) { return { ma: r.MaDon, kenh: DH_NHAN_TAB[r.Tab] || r.Tab, ai: r.NguoiTao, n: r._d.length }; }) });
 }
 /* ===== Tài khoản Bán hàng – chỉ chủ sở hữu ===== */
 function dsUngVienBH(token) {

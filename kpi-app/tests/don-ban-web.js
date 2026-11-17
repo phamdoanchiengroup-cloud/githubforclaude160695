@@ -50,7 +50,18 @@ let dem = 0, loi = 0; const ok = (d, t, c) => { dem++; if (d) console.log('  ✓
   ok(await cho(() => !BNF && /Chờ duyệt/.test(document.getElementById('main').innerText) && /#WEB-16\/11/.test(document.getElementById('main').innerText)), 'gửi xong: đơn ở mục "Chờ duyệt"', await p.evaluate(() => window.__toast));
   r = await p.evaluate(() => BND.ds[0]); ok(r && r.tongSL === 1006 && r.dong.length === 3, 'đơn 3 mã, tổng 1006 (1.000 đọc thành 1000)', r && [r.tongSL, r.dong]);
   ok(await p.evaluate(() => document.documentElement.scrollWidth <= 392), 'điện thoại không tràn ngang', await p.evaluate(() => document.documentElement.scrollWidth));
+  r = await p.evaluate(() => [BND.ds[0].duKien, document.getElementById('main').innerText]);
+  ok(/^\d{4}-\d\d-\d\d$/.test(r[0] || '') && /Nếu được duyệt hôm nay: dự kiến xong khoảng \d\d\/\d\d\/\d{4}/.test(r[1]), '17/11: thẻ chờ duyệt có "Nếu được duyệt hôm nay: dự kiến xong khoảng …"', r[0]);
   if (CHUP) await p.screenshot({ path: CHUP + '/db-bh-390.png', fullPage: true });
+  /* 17/11: Bảng đơn nhà máy – 4 cột, tìm, lọc kênh, không tràn */
+  await p.click('.db-xem button:nth-child(2)');
+  ok(await cho(() => document.querySelector('.db-bang tbody tr:not(.nh)')), 'mở "Bảng đơn nhà máy"', await p.evaluate(() => document.getElementById('main').innerText.slice(0, 300)));
+  r = await p.evaluate(() => ({ th: [...document.querySelectorAll('.db-bang thead th')].map(x => x.textContent), nh: [...document.querySelectorAll('.db-bang tr.nh')].map(x => x.textContent), n: document.querySelectorAll('.db-bang tbody tr:not(.nh)').length, w: document.documentElement.scrollWidth }));
+  ok(r.th.join('|') === 'Mã đơn|Mã sản phẩm|Số đặt|Deadline' && r.n === 2 && r.nh.length === 2 && r.w <= 392, 'chỉ 4 cột, nhóm theo kênh có tổng, 2 dòng đang làm, điện thoại không tràn', r);
+  await p.fill('#bnTim', 'rhino'); r = await p.evaluate(() => [document.querySelectorAll('.db-bang tbody tr:not(.nh)').length, document.activeElement && document.activeElement.id]);
+  ok(r[0] === 1 && r[1] === 'bnTim', 'gõ tìm "rhino" → 1 dòng, con trỏ vẫn ở ô tìm', r);
+  if (CHUP) await p.screenshot({ path: CHUP + '/db-bang-390.png', fullPage: true });
+  await p.fill('#bnTim', ''); await p.click('.db-xem button:nth-child(1)');
   await ra();
 
   console.log('\n3. Chủ sở hữu duyệt (1300px)');
@@ -80,6 +91,15 @@ let dem = 0, loi = 0; const ok = (d, t, c) => { dem++; if (d) console.log('  ✓
   if (CHUP) await p.screenshot({ path: CHUP + '/db-duyet-1300.png', fullPage: true });
   await p.click('.db-duyet .btn.pri');
   ok(await cho(() => BND && BND.ds && BND.ds[0] && BND.ds[0].tt === 'DA_DUYET', 40), 'duyệt → "Đã duyệt"', await p.evaluate(() => BND && BND.ds && BND.ds.map(x => x.tt)));
+  r = await p.evaluate(() => [BND.ds[0].td, (document.querySelector('.db-the.dd .db-dk') || {}).innerText]);
+  ok(r[0] && /^\d{4}-/.test(r[0].eta || '') && /Dự kiến xong khoảng/.test(r[1] || ''), '17/11: đơn đã duyệt hiện "Dự kiến xong khoảng …" (đã cộng 2 ngày dự phòng)', r);
+  /* 17/11: mục Khóa cột Sheet đơn (chủ sở hữu) */
+  await p.evaluate(() => { const d = [...document.querySelectorAll('details')].find(x => /Khóa cột trên Sheet đơn/.test(x.innerText)); d.open = true; });
+  ok(await cho(() => window.BNK && BNK.ok && /Chưa khóa/.test(document.getElementById('main').innerText)), 'chủ sở hữu mở mục "Khóa cột trên Sheet đơn": trạng thái Chưa khóa + nút', await p.evaluate(() => window.BNK));
+  await p.click('button[data-m="CANH_BAO"]');
+  ok(await cho(() => window.BNK && BNK.ok && BNK.tt && BNK.tt.muc === 'CANH_BAO' && /Đang CẢNH BÁO/.test(document.getElementById('main').innerText), 20), 'bấm "Bật cảnh báo" → Đang CẢNH BÁO, có nút Khóa hẳn / Gỡ khóa', await p.evaluate(() => [window.BNK, window.__toast]));
+  if (CHUP) await p.screenshot({ path: CHUP + '/db-khoa-1300.png', fullPage: true });
+  await p.click('button[data-m=""]'); ok(await cho(() => window.BNK && BNK.ok && BNK.tt && BNK.tt.muc === '', 20), 'Gỡ khóa → Chưa khóa');
   r = await p.evaluate(() => new Promise(res => call('layDonHangXuong', [true], x => res((x.don || []).filter(o => o.maDon === '#WEB-16/11').map(o => [o.ten, o.sl, o.dl])))));
   ok(r.length === 3 && r.some(o => o[0] === 'NGON RHINO 12.4' && o[1] === 1000) && r.every(o => /^2026-12-20$/.test(o[2])), 'bảng đơn đọc 3 dòng mới ở tab OEM, deadline 20/12', r);
   ok(!jsLoi.length, 'không lỗi JS', jsLoi);
