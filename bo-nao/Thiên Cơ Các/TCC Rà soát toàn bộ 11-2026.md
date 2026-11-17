@@ -66,3 +66,8 @@ Chủ dự án: dùng các chuyên gia rà soát toàn bộ mã, giao diện, vi
 - Giao diện (frontend-developer): thẻ 4 chủ đề + thanh tiến độ + "Mở trọn năm thêm X xu", nút "Hiểu nhau hơn · 9 xu", hộp xác thực email nhận 39 xu, ẩn gói ngừng bán.
 - code-reviewer: không lỗi chặn. Đã sửa: bản tin miễn phí 1 dòng/lá số, tối đa 5 (`dangKyBanTin`); chừa quota email theo người nhận thư (`tkChuaQuota_`) + trần 40 mã/ngày (`OTP_TONG`); cộng quà trước khi lưu email; Đồng hành ≤ giá phần còn thiếu; đọc cột MoKhoa an toàn; nút mở năm.
 - 17/11 chủ dự án chốt: chỉ đăng ký bằng email (`dangKy` từ chối SĐT); `gdQhRutGon_` chỉ khóa 5 mục mới, phần xem cũ giữ đủ; giữ bảng 12 tháng và cách chọn tháng thuận. Mã 2026.11.17.3, 24 file kiểm thử đạt, smoke 8/8.
+
+## 17/11 – hộp đăng ký 3 ô (mã 2026.11.17.4)
+- `dangKy`: tên đăng nhập trống → tự tạo từ phần trước @ (bỏ +đuôi), trùng thì thêm số; mỗi email chuẩn hóa 1 tài khoản (chỉ mục Script Property `EM_<sha>`, `tkKhoaEmail_`/`tkTenTuEmail_`); `dangNhap` nhận email; `xacThucEmail` ghi chỉ mục cho tài khoản cũ.
+- Giao diện: Email · Mật khẩu (nút 👁 hiện/ẩn) · Tên; bỏ ô nhập lại mật khẩu và ô mã mời (mã lấy từ link `?ref=`). Kiểm thử thanh-toan thêm 5 kiểm tra.
+- Đang làm: chia trang 6 hệ thành 3 tầng (frontend-developer) → rồi dọn CSS cũ + câu "lưu ý" cho khách ở Tóm lược.
