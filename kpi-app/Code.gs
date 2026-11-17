@@ -7684,7 +7684,7 @@ function danhSachVanPhong(token) {
   ds.sort(function(a, b) { return (thuTu[a.vaiTro] - thuTu[b.vaiTro]) || (a.HoTen < b.HoTen ? -1 : 1); });
   return sach_({ ok: true, ds: ds, muc: HS_MUC });
 }
-var KPI_BAN_MAY = '17/11/2026 21:42';   // giờ dựng Code.gs (22/10)
+var KPI_BAN_MAY = '17/11/2026 21:46';   // giờ dựng Code.gs (22/10)
 /* =====================================================================
    KỸ NĂNG (22/10, chủ dự án nhờ thiết kế + tham khảo chuyên gia nhân sự / đào tạo)
    - Danh mục: trưởng / phó phòng đề xuất kỹ năng của xưởng (tên, mô tả, tiêu chí đạt, công đoạn liên quan)
@@ -11925,6 +11925,7 @@ function taoTaiKhoanBH(token, p) {
    - Bảng đơn nhà máy: mọi đơn đang làm (còn thiếu > 0, đã bỏ mã hủy / áp SL bớt), CHỈ 4 cột Mã đơn · Mã sản phẩm · Số đặt · Deadline + kênh để lọc.
    - Đang xem: người duyệt mở thẻ chờ duyệt → web báo máy chủ mỗi 30 giây; người duyệt khác thấy "… đang xem đơn này". Kiểm thử: tests/du-kien.js */
 var DBK_TAB_BAC1 = { 'WEB LẺ CUSTOM': 1, 'WEB LẺ ĐƠN THƯỜNG': 1 }, DBK_HAN_LE = { 'WEB LẺ ĐƠN THƯỜNG': [5, 7], 'WEB LẺ CUSTOM': [12, 15] }, DBK_HAN_POD = [7, 10];
+var DBK_LAN_DU = [2, 3, 4, 5, 1];
 var DBK_LAN5 = [[1, 0.10], [2, 0.20], [3, 0.50], [4, 0.05], [5, 0.15]];   // 17/11 tối: 5 làn Lẻ + POD · Dealer · Kho · OEM · A Đông (giống DH_LAN5 trên web)
 var DBK_TRE_MAX = 30, DBK_LAN = 0.10, DBK_DU_PHONG = 2, DBK_DU_KIN = 6, DBK_CHO_MAX = 10, DBK_BANG_MAX = 5000, DBK_CACHE = 'DB_ETA_v1';
 var DBK_SIM_C = ['PHOI_C', 'SON', 'UV', 'HT'], DBK_SIM_N = ['PHOI_N', 'TARO', 'HT1', 'TIP', 'HT'], DBK_SIM_1K = ['PHOI_C', 'SON', 'UV', 'HT', 'TIP'];
@@ -11998,7 +11999,7 @@ function dbkMoPhong_(G, them, cs) {   // G = dbkGiau_(); them = đơn thử {ma,
   var conViec = function(k) { return lan[k].some(function(l) { return !l.eta && l.dg < l.need - E; }); };
   for (var t = 0; t < 800 && con > 0; t++) {
     var du = 0; DBK_LAN5.forEach(function(x) { du += lam(lan[x[0]], SP * x[1]); });
-    for (var v = 0; v < 8 && du > E; v++) { var act = DBK_LAN5.filter(function(x) { return conViec(x[0]); }); if (!act.length) break; var tp = act.reduce(function(a, x) { return a + x[1]; }, 0), du2 = 0; act.forEach(function(x) { du2 += lam(lan[x[0]], du * x[1] / tp); }); du = du2; }
+    DBK_LAN_DU.forEach(function(k) { if (du > E) du = lam(lan[k], du); });   // 17/11 tối: phần dư dồn Dealer → Kho → OEM → A Đông → Lẻ + POD
     L.forEach(function(l) { if (!l.eta && l.dg >= l.need - E) { l.eta = ngay; con--; } });
     ngay = thu(cong(ngay, 1), 1);
   }

@@ -35,7 +35,7 @@ function webMoPhong(DHd, hn, them) {
   const lay = ten => { const i = src.indexOf('\nfunction ' + ten + '('); if (i < 0) throw new Error('không thấy ' + ten); let j = src.indexOf('{', i), d = 0, q = null;
     for (; j < src.length; j++) { const ch = src[j]; if (q) { if (ch === '\\') { j++; continue; } if (ch === q) q = null; continue; } if (ch === "'" || ch === '"') { q = ch; continue; } if (ch === '{') d++; else if (ch === '}' && --d === 0) break; }
     return src.slice(i + 1, j + 1); };
-  const bien = src.split('\n').filter(s => /^var (DH_TAB_BAC1|DH_LE_TAB|DH_HAN_LE|DH_LAN_MIN|DH_SIM_C|DH_CS_DON|DH_LAN5)\b/.test(s)).join('\n');
+  const bien = src.split('\n').filter(s => /^var (DH_TAB_BAC1|DH_LE_TAB|DH_HAN_LE|DH_LAN_MIN|DH_SIM_C|DH_CS_DON|DH_LAN5|DH_LAN_DU)\b/.test(s)).join('\n');
   const ham = ['dhCachNgay', 'dhCS', 'dhNgayCong', 'dhLaNgayLam', 'dhSoNgayLam', 'dhNgayLamThu', 'dhLaSX', 'dhGomDon', 'dhTenChuan', 'dhUuTen', 'dhLaUu', 'dhTreTen', 'dhBacDong', 'dhBac',
     'dhHanLeN', 'dhCongNgayLam', 'dhLanLe', 'dhLaLe', 'dhLan1', 'dhDlNgam', 'dhQua30', 'dhLa1K', 'dhBRoute', 'dhK2', 'dhKs', 'dhSimDong', 'dhMoPhong', 'dhCSDon', 'dhLanSo'].map(lay).join('\n');
   const ctx = { DH: DHd, DHHT: null, HN: hn, them, kq: null }; vm.createContext(ctx);
