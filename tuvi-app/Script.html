@@ -27,7 +27,7 @@
     });
   }
   /** Mã phiên bản giao diện – phải trùng với Index.html (meta tcc-ban) và Styles.html (--tcc-ban) */
-  var BAN_GIAO_DIEN = '2026.11.17.6';
+  var BAN_GIAO_DIEN = '2026.11.17.7';
   /* 25/10: ảnh ngũ hành + 12 con giáp + bìa PDF mới của chủ dự án (tuvi-app/anh/*.webp) qua jsDelivr, ghim theo mã lần lưu */
   var TCC_ANH_CDN = 'https://cdn.jsdelivr.net/gh/phamdoanchiengroup-cloud/githubforclaude160695@19203fbd20433f395336269a411f8aebcf990086/tuvi-app/anh/';
   var ANH_HANH = { 'Mộc': 'NguHanhMoc', 'Hỏa': 'NguHanhHoa', 'Thổ': 'NguHanhTho', 'Kim': 'NguHanhKim', 'Thủy': 'NguHanhThuy' };
@@ -7488,6 +7488,27 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
     ['halac', 'Hà Lạc', 'Quẻ đời bạn và các chặng đời theo hào'], ['astro', 'Chiêm tinh', 'Bản đồ bầu trời lúc bạn chào đời'],
     ['so', 'Thần số học', 'Con số chủ đạo và bài học đường đời'], ['hd', 'Human Design', 'Cách bạn ra quyết định đúng với mình']];
   function tlMuc(d) { var m = mucTh6(d); return m === 'tot' ? ['tot', 'Thuận'] : m === 'kho' ? ['kho', 'Cần chăm chút'] : ['vua', 'Cân bằng']; }
+  /* 17/11 – "Điều nên lưu ý" riêng cho lá số (cả khách): 1 câu "Bạn có xu hướng…" + 1 gợi ý của lĩnh vực yếu nhất. Khách nhận đúng 1 câu + 1 gợi ý
+     (th6LuuY_ trong TaiKhoan.gs); câu có tên sao, thuật ngữ, %, hoặc không theo mẫu "Bạn có xu hướng" thì dùng câu mẫu theo lĩnh vực. */
+  var TL_LUU_Y = {
+    'Tính cách & con người': ['Bạn có xu hướng tự đặt cho mình yêu cầu cao, nên đôi lúc khó hài lòng với chính mình.', 'Mỗi tối ghi lại một việc nhỏ bạn đã làm tốt – sự tự tin lớn dần từ những điều như thế.'],
+    'Công danh – sự nghiệp': ['Bạn có xu hướng cần thử vài hướng đi trước khi tìm được chỗ đứng vững.', 'Chọn một chuyên môn để đi sâu và kiên trì với nó – thành quả đến từ sự bền bỉ.'],
+    'Tiền bạc – tài sản': ['Bạn có xu hướng để tiền vào ra chưa đều, dễ hao vì những khoản chi bất chợt.', 'Tách riêng một khoản tiết kiệm cố định mỗi tháng và lập quỹ dự phòng trước khi đầu tư.'],
+    'Tình duyên – hôn nhân': ['Bạn có xu hướng cần nhiều thời gian để thật sự hiểu và tin một người.', 'Nói rõ điều mình cần thay vì chờ người kia tự hiểu; đừng vội quyết định khi đang nhiều cảm xúc.'],
+    'Con cái': ['Bạn có xu hướng lo nghĩ nhiều cho con cái, hoặc niềm vui này đến chậm hơn mong đợi.', 'Dành thời gian lắng nghe và đồng hành cùng con – điều đó quý hơn lo đủ đầy vật chất.'],
+    'Sức khỏe': ['Bạn có xu hướng dễ mệt khi làm việc quá sức hoặc lo nghĩ nhiều.', 'Giữ nếp ngủ đủ, vận động đều và khám sức khỏe định kỳ mỗi năm.'],
+    'Gia đình – cha mẹ – anh em': ['Bạn có xu hướng tự lo liệu nhiều việc, ít khi nhờ cậy người trong nhà.', 'Giữ một nhịp hỏi han đều đặn với cha mẹ, anh chị em – vài phút mỗi tuần cũng đủ gắn kết.'],
+    'Bạn bè – quý nhân – đi xa': ['Bạn có xu hướng phải tự xoay xở nhiều, ít khi được ai đỡ đần sẵn.', 'Chủ động kết nối qua công việc và sở thích chung; một người bạn đúng giá trị hơn mười người quen.'],
+    'Đời sống tinh thần – bài học': ['Bạn có xu hướng hay lo nghĩ, khó để lòng thật sự thảnh thơi.', 'Dành ít phút tĩnh tâm mỗi ngày – đi bộ, hít thở hay viết vài dòng – để lòng nhẹ hơn.'],
+    _: ['Bạn có xu hướng cần nhiều thời gian hơn để mặt này ổn định – đó là chỗ đáng chăm chút, không phải điều đáng lo.', 'Dành một chút thời gian mỗi tuần để vun đắp mặt này; đọc phần luận của từng hệ để tìm cách cân bằng hợp với bạn.']
+  };
+  var TL_LUU_BO = /Tử Vi|Thiên Cơ|Thái Dương|Vũ Khúc|Thiên Đồng|Liêm Trinh|Thiên Phủ|Thái Âm|Tham Lang|Cự Môn|Thiên Tướng|Thiên Lương|Thất Sát|Phá Quân|Kình Dương|Đà La|Địa Không|Địa Kiếp|Hỏa Tinh|Linh Tinh|Văn Xương|Văn Khúc|Tả Phù|Hữu Bật|Lộc Tồn|Thiên Mã|Hóa (Lộc|Quyền|Khoa|Kỵ)|Đào Hoa|Hồng Loan|dụng thần|thập thần|kỵ thần|hỷ thần|\bsao\b|\bcung\b|Tuần|Triệt|Thái Tuế|thần sát|Nhật chủ|nêu trên|thế mạnh|%|\d+\/\d+|\(|^[^.]{0,30}:/;
+  function tlLuuY(x) {
+    var m = TL_LUU_Y[x.ten] || TL_LUU_Y._;
+    var y = (x.yeu || []).map(function (s) { return s && (s.t || s); }).filter(function (t) { return typeof t === 'string' && /^Bạn có xu hướng/.test(t) && !TL_LUU_BO.test(t); })[0];
+    var k = (x.khuyen || []).filter(function (t) { return typeof t === 'string' && t.length <= 200 && !TL_LUU_BO.test(t); })[0];
+    return [y || m[0], k || m[1]];
+  }
   function chuThuong(t) { t = String(t || ''); return t.charAt(0).toLowerCase() + t.slice(1); }
   function veTomLuoc(res) {
     var pg = $('page-tomluoc'); if (!pg || !res || !res.tuvi) return;
@@ -7515,9 +7536,9 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
       h += '<div class="tl-doi">';
       if (manh) { var mm = tlMuc(manh.diem); h += '<section class="panel tl-the tl-manh"><p class="tl-nhan">Điểm mạnh nổi bật</p><h3>' + esc(manh.ten) + ' <span class="tl-chip ' + mm[0] + '"><span class="tl-so">' + String(manh.diem).replace('.', ',') + '</span>/10</span></h3>' +
         '<p>' + esc(chiTiet(manh, 'noiBat') || chiTiet(manh, 'manh') || 'Nhiều hệ cùng thấy đây là mặt thuận của bạn – điều nên dựa vào khi chọn hướng đi.') + '</p></section>'; }
-      if (yeu && yeu !== manh && mucTh6(yeu.diem) !== 'tot') { var my = tlMuc(yeu.diem), kh = (yeu.khuyen && yeu.khuyen[0]) || (yeu.lo && yeu.lo.khuyen && yeu.lo.khuyen[0]) || 'Dành một chút thời gian mỗi tuần để vun đắp mặt này; đọc phần luận của từng hệ để tìm cách cân bằng hợp với bạn.';
+      if (yeu && yeu !== manh && mucTh6(yeu.diem) !== 'tot') { var my = tlMuc(yeu.diem), ly = tlLuuY(yeu);
         h += '<section class="panel tl-the tl-yeu"><p class="tl-nhan">Điều nên lưu ý</p><h3>' + esc(yeu.ten) + ' <span class="tl-chip ' + my[0] + '">' + my[1] + '</span></h3>' +
-          '<p>' + esc(chiTiet(yeu, 'yeu') || 'Bạn có xu hướng cần nhiều thời gian hơn để mặt này ổn định – đó là chỗ đáng chăm chút, không phải điều đáng lo.') + '</p><p class="tl-goi">Gợi ý: ' + esc(kh) + '</p></section>'; }
+          '<p>' + esc(ly[0]) + '</p><p class="tl-goi">Gợi ý: ' + esc(ly[1]) + '</p></section>'; }
       h += '</div>';
     }
     if (dv) h += '<section class="panel tl-the tl-van"><p class="tl-nhan">Chặng đời hiện tại</p><p>Bạn đang ở chặng <b>' + esc(dv.khoang) + '</b> (' + esc(String(dv.nam)) + ') – nhịp chung của giai đoạn: <b>' + esc(String(dv.danhGia || '').toLowerCase()) + '</b>.</p>' +

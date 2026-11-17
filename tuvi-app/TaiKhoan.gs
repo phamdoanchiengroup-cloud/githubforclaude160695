@@ -302,10 +302,21 @@ function th6Moi_(r) {
   var T = r.moRong && r.moRong.deHieu && r.moRong.deHieu.th6;
   if (!T || T.loi || !T.linhVuc) return null;
   var tot = T.linhVuc.slice().sort(function (a, b) { return b.diem - a.diem; })[0];
+  var yeu = T.linhVuc.slice().sort(function (a, b) { return a.diem - b.diem; })[0];
   return { tomTat: T.tomTat, theManh: T.theManh, canChuY: T.canChuY,
-    linhVuc: T.linhVuc.map(function (x) { return { ten: x.ten, icon: x.icon, diem: x.diem, huong: x.huong, dong: x.dong, soHe: x.soHe,
-      lo: x.k === tot.k ? { ket: x.ket, noiBat: x.noiBat, manh: x.manh } : null, soNam: x.namToi.length }; }),
+    linhVuc: T.linhVuc.map(function (x) { var o = { ten: x.ten, icon: x.icon, diem: x.diem, huong: x.huong, dong: x.dong, soHe: x.soHe,
+      lo: x.k === tot.k ? { ket: x.ket, noiBat: x.noiBat, manh: x.manh } : null, soNam: x.namToi.length };
+      if (x.k === yeu.k && x.k !== tot.k && x.diem < 6) { var l = th6LuuY_(x); if (l.yeu) o.yeu = [{ t: l.yeu }]; if (l.khuyen) o.khuyen = [l.khuyen]; }
+      return o; }),
     soNam: T.namToi.length };
+}
+/** 17/11: "Điều nên lưu ý" ở trang Tóm lược cho khách – chỉ 1 câu "Bạn có xu hướng…" + 1 gợi ý của lĩnh vực yếu nhất (không tên sao, không %, không thuật ngữ).
+    Câu không đạt thì để trống, giao diện dùng câu mẫu theo lĩnh vực (TL_LUU_Y trong Script.html). */
+var TH6_LUU_Y_BO = /Tử Vi|Thiên Cơ|Thái Dương|Vũ Khúc|Thiên Đồng|Liêm Trinh|Thiên Phủ|Thái Âm|Tham Lang|Cự Môn|Thiên Tướng|Thiên Lương|Thất Sát|Phá Quân|Kình Dương|Đà La|Địa Không|Địa Kiếp|Hỏa Tinh|Linh Tinh|Văn Xương|Văn Khúc|Tả Phù|Hữu Bật|Lộc Tồn|Thiên Mã|Hóa (Lộc|Quyền|Khoa|Kỵ)|Đào Hoa|Hồng Loan|dụng thần|thập thần|kỵ thần|hỷ thần|\bsao\b|\bcung\b|Tuần|Triệt|Thái Tuế|thần sát|Nhật chủ|nêu trên|thế mạnh|%|\d+\/\d+|\(|^[^.]{0,30}:/;
+function th6LuuY_(x) {
+  var y = (x.yeu || []).map(function (s) { return s && (s.t || s); }).filter(function (t) { return typeof t === 'string' && /^Bạn có xu hướng/.test(t) && !TH6_LUU_Y_BO.test(t); })[0] || '';
+  var k = (x.khuyen || []).filter(function (t) { return typeof t === 'string' && t.length <= 200 && !TH6_LUU_Y_BO.test(t); })[0] || '';
+  return { yeu: y, khuyen: k };
 }
 /** "Mồi" vận hạn cho bản giới hạn: chỉ khung + điểm, không có lời luận */
 function moiVanHan_(r) {
