@@ -27,7 +27,7 @@
     });
   }
   /** Mã phiên bản giao diện – phải trùng với Index.html (meta tcc-ban) và Styles.html (--tcc-ban) */
-  var BAN_GIAO_DIEN = '2026.11.17.5';
+  var BAN_GIAO_DIEN = '2026.11.17.6';
   /* 25/10: ảnh ngũ hành + 12 con giáp + bìa PDF mới của chủ dự án (tuvi-app/anh/*.webp) qua jsDelivr, ghim theo mã lần lưu */
   var TCC_ANH_CDN = 'https://cdn.jsdelivr.net/gh/phamdoanchiengroup-cloud/githubforclaude160695@19203fbd20433f395336269a411f8aebcf990086/tuvi-app/anh/';
   var ANH_HANH = { 'Mộc': 'NguHanhMoc', 'Hỏa': 'NguHanhHoa', 'Thổ': 'NguHanhTho', 'Kim': 'NguHanhKim', 'Thủy': 'NguHanhThuy' };
@@ -2311,7 +2311,7 @@
       var d = document.createElement('p'); d.className = 'lede tab-lede'; d.textContent = PDF_HOOK[k]; pg.insertBefore(d, pg.firstChild);
     });
     chenKhoa(res);
-    chiaBaTang(res);   // 17/11: khung 3 tầng – chạy sau cùng (sau Holo, câu dẫn PDF, thẻ khóa)
+    chiaBaTang(res, state.giuTab);   // 17/11: khung 3 tầng – chạy sau cùng (sau Holo, câu dẫn PDF, thẻ khóa)
     try { veTomLuoc(res); veCungDs(res); } catch (e) { if (window.console) console.error('[Tóm lược]', e); }
     var giu = state.giuTab && state.tabHien && $('page-' + state.tabHien); state.giuTab = false;
     showTab(giu ? state.tabHien : 'tomluoc');   // Đợt 4: mặc định là trang Tóm lược miễn phí
@@ -3688,8 +3688,8 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
     ['tinhcam', '💞', 'Tình cảm & gia đình'], ['suckhoe', '🌿', 'Sức khỏe & nhịp sống'], ['thoivan', '⏳', 'Thời vận']];
   var T3_RE = [   // thứ tự xét: tiêu đề khớp nhóm đầu tiên
     ['thoivan', /năm nay|năm \d{4}|giai đoạn|nhịp đời|nhịp thời gian|thời vận|thời điểm|chặng|nửa đầu đời|nửa sau đời|chủ đề năm|chu kỳ|đại vận|lưu niên/i],
-    ['suckhoe', /sức khỏe|ăn uống|cơ thể|khí hậu|môi trường hợp|nhịp sống|tiết chế|cân bằng|ngũ hành|sinh lực|tinh thần/i],
-    ['tinhcam', /tình|yêu|hôn nhân|gia đình|cha mẹ|anh chị|con cái|bạn bè|bạn đời|thu hút|quan hệ|trọn vẹn|bề trên|đồng nghiệp|cộng sự/i],
+    ['suckhoe', /sức khỏe|ăn uống|cơ thể|nhịp sống|sinh lực|nghỉ ngơi|vận động/i],
+    ['tinhcam', /tình|yêu(?! cầu)|hôn nhân|gia đình|cha mẹ|anh chị|con cái|bạn bè|bạn đời|thu hút|quan hệ|trọn vẹn|bề trên|đồng nghiệp|cộng sự/i],
     ['congviec', /công việc|sự nghiệp|nghề|công danh|hướng phát triển|chí hướng|theo đuổi|thế mạnh tự nhiên|vai trò|đi xa|ra ngoài|kỹ năng|làm việc/i],
     ['tienbac', /tiền|tài chính|tài sản|của cải|phúc lộc|may mắn|nhà cửa/i],
     ['tinhcach', /bản chất|tính cách|cảm xúc|tư duy|ấn tượng|tính khí|điểm mạnh|điểm yếu|nổi bật|mặt trái|cần rèn|bài học|quyết định|nhìn|bản thân|bản mệnh|thúc đẩy|hành động|câu hỏi|ảnh hưởng|nền mệnh/i]];
@@ -3780,8 +3780,8 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
   }
   function t3CanEl(pid, k, soPhan) {
     var d = document.createElement('details'); d.className = 't3-can'; d.id = pid + '-t3';
-    d.innerHTML = '<summary><b>📚 Căn cứ chi tiết (dành cho người muốn tìm hiểu sâu)</b><small>' + soPhan + ' phần · ' + esc(T3_GOI[k] || '') + '</small></summary><div class="t3-can-nd"></div>';
-    d.addEventListener('toggle', function () { if (d.open) { napAnhHolo(); capNhatCuon(); } });
+    d.innerHTML = '<summary><b><span aria-hidden="true">📚 </span>Căn cứ chi tiết (dành cho người muốn tìm hiểu sâu)</b><small>' + soPhan + ' phần · ' + esc(T3_GOI[k] || '') + '</small></summary><div class="t3-can-nd"></div>';
+    d.addEventListener('toggle', function () { (state.t3Mo = state.t3Mo || {})[d.id] = d.open; if (d.open) { napAnhHolo(); capNhatCuon(); } });
     return d;
   }
   /** Tìm phần tầng 3 hợp chủ đề (theo tên phần), gắn id nếu chưa có */
@@ -3807,7 +3807,7 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
       var a = o.querySelector('small'), b = o.querySelector('b'), c = o.querySelector('span'); return [a ? a.textContent : '', b ? b.textContent : '', c ? c.textContent : ''];
     }).filter(function (x) { return x[0] && x[1]; });
     var can = t3CanEl(pg.id, k, than.filter(function (el) { return el.classList.contains('tg'); }).length || than.length), nd = can.lastChild;
-    than.forEach(function (el) { nd.appendChild(el); });
+    pg.appendChild(can); than.forEach(function (el) { nd.appendChild(el); });
     var phan = Array.prototype.slice.call(nd.children), dhId = (function () { var p = nd.querySelector('.dh-panel'); if (!p) return ''; if (!p.id) p.id = pg.id + '-dh'; return p.id; })();
     var cd = t3ChiaDh(H), dsThe = [];
     T3_CD.forEach(function (c) {
@@ -3815,7 +3815,8 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
       if (!ds.length) return;
       dsThe.push([c[0], '<div class="cung-van-de-hieu">' + ds.map(t3DoanHtml).join('') + '</div>' + (c[0] === 'thoivan' ? t3VanThem(nd) : ''), t3TimCan(phan, T3_CAN[c[0]], pg.id) || dhId]);
     });
-    pg.appendChild(can);
+    // Rà soát 17/11: có thẻ mua vận (khóa) trong tầng 3 mà không có chủ đề Thời vận → vẫn tạo thẻ Thời vận để thẻ mua không bị khuất
+    if (nd.querySelector('.khoa-gd') && !dsThe.some(function (x) { return x[0] === 'thoivan'; })) dsThe.push(['thoivan', t3VanThem(nd), t3TimCan(phan, T3_CAN.thoivan, pg.id) || dhId]);
     pg.insertBefore(t3El(t3TomHtml(pg.id + '-tom', T3_HE[k], t3Net(H), so)), dau || can);
     var cdEl = t3CdHtml(pg.id, T3_HE[k], dsThe); if (cdEl) pg.insertBefore(t3El(cdEl), can);
     pg.classList.add('co-3tang');
@@ -3829,19 +3830,24 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
     Array.prototype.forEach.call(luan.querySelectorAll('details.tt26-b'), function (d) { var s = d.querySelector('.tt26-so'), n = s && s.textContent.trim(); if (/^\d+$/.test(n)) d.id = 't3-tv-b' + n; });
     // Tầng 1
     var net = [], da = {};
-    function them(nhan, b) { if (!b || da[b.so] || !b.de || !b.de[0]) return; da[b.so] = 1; net.push([nhan, t3Cau(b.de[0])]); }
-    [4, 3, 6].forEach(function (s) { them('Nét chính', B[s]); });
-    them('Điểm mạnh', T.buoc.filter(function (b) { return b.huong === 'tot' && b.so >= 5 && b.so <= 25 && !da[b.so]; })[0]);
-    them('Cần lưu ý', T.buoc.filter(function (b) { return b.huong === 'xau' && b.so <= 25 && !da[b.so]; })[0]);
+    var THUAT = /\bsao\b|Sao |cung Mệnh|Mệnh |đắc |hãm|không vong|lấn gốc|Tuần|Triệt|Hóa |Lộc Tồn|Thái Tuế/;
+    function them(nhan, b) {
+      if (!b || da[b.so] || !b.de) return false;
+      var cau = b.de.map(t3Cau).filter(function (x) { return x && !THUAT.test(x); })[0];   // rà soát 17/11: tầng dễ hiểu không thuật ngữ
+      if (!cau) return false; da[b.so] = 1; net.push([nhan, cau]); return true;
+    }
+    var nc = 0; [4, 3, 5, 6, 8, 10].forEach(function (s) { if (nc < 3 && them('Nét chính', B[s])) nc++; });
+    T.buoc.filter(function (b) { return b.huong === 'tot' && b.so >= 5 && b.so <= 25; }).some(function (b) { return them('Điểm mạnh', b); });
+    T.buoc.filter(function (b) { return b.huong === 'xau' && b.so <= 25; }).some(function (b) { return them('Cần lưu ý', b); });
     if (net.length < 5) them('Chặng hiện tại', B[26]);
     var dvNay = (CT.daiVan || []).filter(function (d) { return d.isNow; })[0];
-    var so = [['Năm sinh', I.namCanChi], ['Bản mệnh', I.banMenh && I.banMenh.ten], ['Cục', I.cuc], ['Thân cư', I.thanCu ? 'cung ' + I.thanCu : ''], ['Đại vận hiện tại', dvNay ? String(dvNay.khoang).replace(/(\d)$/, '$1 tuổi') : '', dvNay ? dvNay.danhGia : '']]
+    var so = [['Năm sinh', I.namCanChi], ['Bản mệnh', I.banMenh && I.banMenh.ten], ['Cục', I.cuc, 'nhịp lớn lên và trưởng thành của bạn'], ['Thân cư', I.thanCu ? 'cung ' + I.thanCu : '', 'mảng đời ảnh hưởng mạnh từ tuổi trung niên'], ['Đại vận hiện tại', dvNay ? String(dvNay.khoang).replace(/(\d)$/, '$1 tuổi') : '', dvNay ? dvNay.danhGia : '']]
       .filter(function (x) { return x[1]; });
     var tom = t3El(t3TomHtml('t3TvTom', 'Tử Vi', net.slice(0, 5), so));
     area.insertBefore(tom, area.firstChild);
     // Tầng 3
     var than = Array.prototype.slice.call(luan.children), can = t3CanEl('page-chart', 'chart', than.length), nd = can.lastChild;
-    than.forEach(function (el) { nd.appendChild(el); });
+    luan.appendChild(can); than.forEach(function (el) { nd.appendChild(el); });
     // Tầng 2: lời dễ hiểu từng bước + mục "ba vòng nhân sinh" gộp vào bước đó (đã không tên sao)
     var TP = CT.tamPhap, dsThe = [];
     function tp(t) { var x = TP && TP.baVong && (TP.baVong.de || []).filter(function (d) { return d.t === t; })[0]; return x ? t3DoanHtml({ tieuDe: x.t, text: x.v }) : ''; }
@@ -3855,14 +3861,25 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
       if (c[0] === 'thoivan') h += t3VanThem(null);
       dsThe.push([c[0], '<p class="muted t3-chu">✦ thuận · ◇ vừa · ☾ cần lưu ý</p>' + h, 't3-tv-b' + ds[0].so]);
     });
-    luan.appendChild(can);
     var cdEl = t3CdHtml('page-chart', 'Tử Vi', dsThe); if (cdEl) luan.insertBefore(t3El(cdEl), can);
   }
-  function chiaBaTang(res) {
+  function chiaBaTang(res, giu) {
     var cu = $('t3TvTom'); if (cu) cu.parentNode.removeChild(cu);
     if (!res || res.khach) return;
     ['battu', 'halac', 'astro', 'so', 'hd'].forEach(function (k) { try { t3Trang(res, k); } catch (e) { if (window.console) console.error('[3 tầng ' + k + ']', e); } });
     try { t3TuVi(res); } catch (e) { if (window.console) console.error('[3 tầng chart]', e); }
+    // Rà soát 17/11: đổi năm / mua xong (giữ tab) → giữ nguyên tầng 3 và thẻ chủ đề đang mở
+    if (!giu) { state.t3Mo = {}; state.t3The = {}; return; }
+    Object.keys(state.t3Mo || {}).forEach(function (id) { var d = document.getElementById(id); if (d && state.t3Mo[id]) d.open = true; });
+    Object.keys(state.t3The || {}).forEach(function (p) {
+      var b = state.t3The[p] && document.getElementById(state.t3The[p]); if (!b) return;
+      var khung = b.closest('.t3-ds') || b.parentNode;
+      Array.prototype.forEach.call(khung.querySelectorAll('.t3-nut'), function (x) {
+        var on = x === b, nd = document.getElementById(x.getAttribute('aria-controls'));
+        x.setAttribute('aria-expanded', on ? 'true' : 'false'); if (nd) nd.hidden = !on;
+        var the = x.closest('.t3-the'); if (the) the.classList.toggle('mo', on);
+      });
+    });
   }
   /** PDF: bỏ tầng 1–2 (văn đã có trong tầng 3) và trải phẳng tầng 3 để quy tắc cắt chương (PDF_RUT) thấy đúng cấu trúc cũ */
   function t3Phang(c) {
@@ -3878,6 +3895,7 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
   document.addEventListener('click', function (e) {
     var b = e.target.closest && e.target.closest('.t3-nut'); if (!b) return;
     var mo = b.getAttribute('aria-expanded') !== 'true', khung = b.closest('.t3-ds') || b.parentNode;
+    (state.t3The = state.t3The || {})[khung.closest('.page') ? khung.closest('.page').id : ''] = mo ? b.id : '';
     Array.prototype.forEach.call(khung.querySelectorAll('.t3-nut'), function (x) {
       var on = x === b && mo, nd = document.getElementById(x.getAttribute('aria-controls'));
       x.setAttribute('aria-expanded', on ? 'true' : 'false'); if (nd) nd.hidden = !on;
