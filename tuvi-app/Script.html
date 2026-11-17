@@ -27,7 +27,7 @@
     });
   }
   /** Mã phiên bản giao diện – phải trùng với Index.html (meta tcc-ban) và Styles.html (--tcc-ban) */
-  var BAN_GIAO_DIEN = '2026.11.17.4';
+  var BAN_GIAO_DIEN = '2026.11.17.5';
   /* 25/10: ảnh ngũ hành + 12 con giáp + bìa PDF mới của chủ dự án (tuvi-app/anh/*.webp) qua jsDelivr, ghim theo mã lần lưu */
   var TCC_ANH_CDN = 'https://cdn.jsdelivr.net/gh/phamdoanchiengroup-cloud/githubforclaude160695@19203fbd20433f395336269a411f8aebcf990086/tuvi-app/anh/';
   var ANH_HANH = { 'Mộc': 'NguHanhMoc', 'Hỏa': 'NguHanhHoa', 'Thổ': 'NguHanhTho', 'Kim': 'NguHanhKim', 'Thủy': 'NguHanhThuy' };
@@ -957,6 +957,7 @@
     trang('page-tong', th6KhachHtml(res.th6) + khoaHtml(res, 'tom', 'Chân dung hé lộ', '命') + (res.mien ? '' : khoaHtml(res, 'nguoi', 'Con người bạn', '性')) + khoaHtml(res, 'duyen', 'Tình duyên & người bạn đời', '姻') +
       khoaHtml(res, 'doi', 'Đường đời & sự nghiệp', '途') + CTA);
     ['page-van', 'page-dudoan'].forEach(function (id) { if ($(id)) $(id).innerHTML = ''; });
+    chiaBaTang(res);   // bản khách: chỉ gỡ tầng 1 Tử Vi của lá số trước (trang khách đã gọn)
     $('btnPdfTop').style.display = '';
     try { veTomLuoc(res); veCungDs(res); } catch (e) { if (window.console) console.error('[Tóm lược]', e); }
     var giu = state.giuTab && state.tabHien && $('page-' + state.tabHien); state.giuTab = false;
@@ -2310,6 +2311,7 @@
       var d = document.createElement('p'); d.className = 'lede tab-lede'; d.textContent = PDF_HOOK[k]; pg.insertBefore(d, pg.firstChild);
     });
     chenKhoa(res);
+    chiaBaTang(res);   // 17/11: khung 3 tầng – chạy sau cùng (sau Holo, câu dẫn PDF, thẻ khóa)
     try { veTomLuoc(res); veCungDs(res); } catch (e) { if (window.console) console.error('[Tóm lược]', e); }
     var giu = state.giuTab && state.tabHien && $('page-' + state.tabHien); state.giuTab = false;
     showTab(giu ? state.tabHien : 'tomluoc');   // Đợt 4: mặc định là trang Tóm lược miễn phí
@@ -3651,7 +3653,7 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
   }
   /** Mở sẵn mọi khối thu gọn trong tab (trừ phần "cơ sở lý luận" và các vận đã qua) */
   function moChiTiet(pg) {
-    pg.querySelectorAll('details').forEach(function (d) { if (!d.matches('.coso:not(.bt-bang), .qua-khu, .hsn-coso')) d.open = true; });
+    pg.querySelectorAll('details').forEach(function (d) { if (!d.matches('.coso:not(.bt-bang), .qua-khu, .hsn-coso, .t3-can')) d.open = true; });   // 17/11: không mở khối "Căn cứ chi tiết" (tầng 3)
   }
   /** Thanh mục lục ngay dưới hồ sơ nhanh: bấm để nhảy tới từng phần của tab */
   function mucLucTab(pg) {
@@ -3672,8 +3674,226 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
   }
   document.addEventListener('click', function (e) {
     var b = e.target.closest && e.target.closest('[data-nhay]'); if (!b) return;
-    var el = document.getElementById(b.getAttribute('data-nhay')); if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    var el = document.getElementById(b.getAttribute('data-nhay')); if (!el) return;
+    if (el.tagName === 'DETAILS') el.open = true;
+    cuonToi(el);   // 17/11: mở luôn khối "Căn cứ chi tiết" / thẻ gập bao ngoài rồi mới cuộn tới
   });
+  /* ---------- 17/11: KHUNG 3 TẦNG cho 6 tab hệ (rà soát D3, chủ dự án duyệt 17/11) ----------
+     Tầng 1 "Tóm lược" (luôn mở) · Tầng 2 "6 chủ đề" (thẻ gập, mở một thẻ một lần) · Tầng 3 "Căn cứ chi tiết" (thu gọn, chứa NGUYÊN VẸN
+     toàn bộ phần chuyên sâu cũ: bảng, các bước, thần sát, góc chiếu, kênh/cổng, nút mua, đối chiếu…).
+     Chỉ xếp lại văn dễ hiểu đã có (moRong.deHieu của từng hệ, lời dễ hiểu 26 bước Tử Vi) – không viết lời luận mới; chủ đề không có dữ liệu thì ẩn.
+     Tầng 3 giữ trong DOM (thẻ details đóng – trình duyệt không dàn trang phần đóng) để mục lục, PDF, chenKhoa, đối chiếu vẫn tìm thấy;
+     PDF bỏ tầng 1–2 và trải phẳng tầng 3 (t3Phang) nên bản in giống hệt trước. */
+  var T3_CD = [['tinhcach', '🧭', 'Tính cách & con người'], ['congviec', '💼', 'Công việc & sự nghiệp'], ['tienbac', '💰', 'Tiền bạc'],
+    ['tinhcam', '💞', 'Tình cảm & gia đình'], ['suckhoe', '🌿', 'Sức khỏe & nhịp sống'], ['thoivan', '⏳', 'Thời vận']];
+  var T3_RE = [   // thứ tự xét: tiêu đề khớp nhóm đầu tiên
+    ['thoivan', /năm nay|năm \d{4}|giai đoạn|nhịp đời|nhịp thời gian|thời vận|thời điểm|chặng|nửa đầu đời|nửa sau đời|chủ đề năm|chu kỳ|đại vận|lưu niên/i],
+    ['suckhoe', /sức khỏe|ăn uống|cơ thể|khí hậu|môi trường hợp|nhịp sống|tiết chế|cân bằng|ngũ hành|sinh lực|tinh thần/i],
+    ['tinhcam', /tình|yêu|hôn nhân|gia đình|cha mẹ|anh chị|con cái|bạn bè|bạn đời|thu hút|quan hệ|trọn vẹn|bề trên|đồng nghiệp|cộng sự/i],
+    ['congviec', /công việc|sự nghiệp|nghề|công danh|hướng phát triển|chí hướng|theo đuổi|thế mạnh tự nhiên|vai trò|đi xa|ra ngoài|kỹ năng|làm việc/i],
+    ['tienbac', /tiền|tài chính|tài sản|của cải|phúc lộc|may mắn|nhà cửa/i],
+    ['tinhcach', /bản chất|tính cách|cảm xúc|tư duy|ấn tượng|tính khí|điểm mạnh|điểm yếu|nổi bật|mặt trái|cần rèn|bài học|quyết định|nhìn|bản thân|bản mệnh|thúc đẩy|hành động|câu hỏi|ảnh hưởng|nền mệnh/i]];
+  // Tử Vi: bước nào (26 bước, TuViTrinhTu.gs) thuộc chủ đề nào
+  var T3_TV = { tinhcach: [1, 2, 3, 4, 5, 6, 8, 10, 13, 14, 15, 17, 18], congviec: [19, 24], tienbac: [11, 20], tinhcam: [7, 9, 16, 21, 22, 25], suckhoe: [12, 23], thoivan: [26] };
+  // Phần căn cứ (tầng 3) nên đọc thêm cho từng chủ đề – khớp theo tên phần
+  var T3_CAN = { tinhcach: /Tính cách|Phân tích cá nhân|Loại năng lượng|chỉ số cốt lõi|Quẻ gốc/i, congviec: /Sự nghiệp|Các lĩnh vực|Luận theo lĩnh vực|Ứng dụng thực tế/i,
+    tienbac: /tài lộc|Phú quý|Các lĩnh vực|Luận theo lĩnh vực/i, tinhcam: /Lục thân|Lục hào|So sánh lá số|Các lĩnh vực/i,
+    suckhoe: /Dụng thần|sức khỏe|9 trung tâm|Ngũ hành/i, thoivan: /Vận 10 năm|Chu kỳ thời gian|Vận trình|Lưu niên/i };
+  var T3_HE = { chart: 'Tử Vi', battu: 'Bát Tự', halac: 'Hà Lạc', astro: 'Chiêm tinh', so: 'Thần số học', hd: 'Human Design' };
+  var T3_DH = { battu: 'battu', halac: 'haLac', astro: 'chiemTinh', so: 'thanSo', hd: 'hd' };
+  var T3_GOI = { chart: 'chân dung lá số, luận 26 bước, đối chiếu Tử Vi × Bát Tự', battu: 'tứ trụ, ngũ hành, thập thần, thần sát, đại vận – 15 bước Tử Bình',
+    halac: 'quẻ gốc, lục hào, luận quẻ, vận trình', astro: 'lá số, hành tinh, nhà, góc chiếu, chu kỳ', so: 'chỉ số, biểu đồ, chu kỳ, luận tổng hợp', hd: 'bodygraph, trung tâm, kênh, cổng, hồ sơ' };
+  function t3Loai(t) { t = String(t || ''); for (var i = 0; i < T3_RE.length; i++) if (T3_RE[i][1].test(t)) return T3_RE[i][0]; return ''; }
+  /** Câu đầu của một đoạn (tầng 1 chỉ cần ý chính) */
+  function t3Cau(t) {
+    t = String(t || '').replace(/\s+/g, ' ').trim();
+    var m = t.match(/^.*?[.!?…](?=\s|$)/);
+    if (m && m[0].length >= 25) t = m[0];
+    return t.length > 230 ? t.slice(0, 228).replace(/\s+\S*$/, '') + '…' : t;
+  }
+  function t3El(html) { var d = document.createElement('div'); d.innerHTML = html; return d.firstChild; }
+  function t3Doan(d) { return d && (d.text || (d.list && d.list[0])) || ''; }
+  /** Tầng 1 của 5 hệ: 3–5 dòng lấy từ các đoạn dễ hiểu có sẵn (Tóm tắt, bản chất, điểm mạnh, điều cần lưu ý, chặng hiện tại) */
+  function t3Net(H) {
+    var ds = []; (H.khoi || []).forEach(function (k) { (k.doan || []).forEach(function (d) { if (t3Doan(d)) ds.push(d); }); });
+    var net = [], da = [];
+    function lay(nhan, dsRe, canBan) {
+      for (var j = 0; j < dsRe.length; j++) for (var i = 0; i < ds.length; i++) {
+        var d = ds[i]; if (da.indexOf(d) >= 0 || !dsRe[j].test(d.tieuDe || '')) continue;
+        var t = t3Cau(t3Doan(d)); if (canBan && !/bạn/i.test(t)) continue;
+        da.push(d); net.push([nhan, t]); return;
+      }
+    }
+    lay('Nét chính', [/^tóm tắt$/i], true);
+    lay('Nét chính', [/bản chất/i, /^tính cách$/i, /^bản thân$/i]);
+    lay('Điểm mạnh', [/điểm mạnh|thế mạnh/i]);
+    lay('Cần lưu ý', [/cần lưu ý|điểm yếu|mặt trái|cần rèn/i, /bài học/i]);
+    lay('Chặng hiện tại', [/giai đoạn|nhịp đời|nhịp thời gian/i]);
+    var cuoi = net.length && net[net.length - 1][0] === 'Chặng hiện tại' ? net.pop() : null;
+    for (var i = 0; net.length + (cuoi ? 1 : 0) < 3 && i < ds.length; i++) {   // thiếu dòng: lấy thêm đoạn có nói về "bạn"
+      var t = t3Cau(t3Doan(ds[i]));
+      if (da.indexOf(ds[i]) < 0 && /bạn/i.test(t) && !/^(Tóm tắt|Tổng quan)$/i.test(ds[i].tieuDe || '')) { da.push(ds[i]); net.push(['Nét chính', t]); }
+    }
+    if (cuoi) net.push(cuoi);
+    return net.slice(0, 5);
+  }
+  /** Tầng 2 của 5 hệ: chia các đoạn dễ hiểu theo 6 chủ đề (theo tiêu đề đoạn, rồi theo tên khối; danh sách "Nhãn: …" chia theo nhãn) */
+  function t3ChiaDh(H) {
+    var cd = {}; T3_CD.forEach(function (c) { cd[c[0]] = []; });
+    (H.khoi || []).forEach(function (kh) {
+      var loaiKhoi = t3Loai(kh.ten) || 'tinhcach';
+      (kh.doan || []).forEach(function (d) {
+        if (/^(Tóm tắt|Tổng quan)$/i.test(d.tieuDe || '')) return;   // Tóm tắt đã ở tầng 1; "Tổng quan" là cách chấm điểm (giữ ở tầng 3)
+        var loai = t3Loai(d.tieuDe) || loaiKhoi, phan = {};
+        if (d.text) phan[loai] = { tieuDe: d.tieuDe, text: d.text, list: [] };
+        (d.list || []).forEach(function (x) {
+          var m = /^([^:]{2,48}):\s/.exec(String(x)), k = (m && t3Loai(m[1])) || loai;
+          (phan[k] = phan[k] || { tieuDe: d.tieuDe, text: '', list: [] }).list.push(String(x));
+        });
+        Object.keys(phan).forEach(function (k) { cd[k].push(phan[k]); });
+      });
+    });
+    return cd;
+  }
+  function t3DoanHtml(d) {
+    return '<div class="cv-doan"><h5>' + esc(d.tieuDe || '') + '</h5>' + (d.text ? '<p>' + esc(d.text) + '</p>' : '') +
+      (d.list && d.list.length ? '<ul class="cv-list">' + d.list.map(function (x) { return '<li>' + esc(x) + '</li>'; }).join('') + '</ul>' : '') + '</div>';
+  }
+  function t3TomHtml(id, he, net, so) {
+    return '<section class="panel section t3-tom" id="' + id + '" aria-label="Tóm lược ' + esc(he) + '"><p class="t3-nhan">Tầng 1 · Tóm lược dễ hiểu</p>' +
+      '<h2 class="panel-title">Tóm lược ' + esc(he) + ' của bạn</h2>' +
+      (net.length ? '<ul class="t3-net">' + net.map(function (x, i) { return '<li>' + (i && net[i - 1][0] === x[0] ? '' : '<small>' + esc(x[0]) + '</small>') + esc(x[1]) + '</li>'; }).join('') + '</ul>' : '') +
+      (so.length ? '<div class="t3-so">' + so.map(function (x) { return '<div><small>' + esc(x[0]) + '</small><b>' + esc(String(x[1])) + '</b>' + (x[2] ? '<span>' + esc(String(x[2])) + '</span>' : '') + '</div>'; }).join('') + '</div>' : '') + '</section>';
+  }
+  /** dsThe: [[khoá chủ đề, nội dung html, id phần căn cứ nên đọc thêm]] – chủ đề rỗng đã bị lọc */
+  function t3CdHtml(pid, he, dsThe) {
+    if (!dsThe.length) return '';
+    return '<section class="panel section t3-cd" aria-label="' + esc(he) + ' theo 6 chủ đề"><p class="t3-nhan">Tầng 2 · Đọc theo chủ đề</p>' +
+      '<h2 class="panel-title">' + esc(he) + ' nói gì về từng mặt đời sống</h2><p class="lede">Bấm một chủ đề để mở. Mỗi lần mở một chủ đề cho dễ đọc.</p><div class="t3-ds">' +
+      dsThe.map(function (x, i) {
+        var c = T3_CD.filter(function (c) { return c[0] === x[0]; })[0], id = pid + '-cd-' + x[0], mo = i === 0;
+        return '<div class="t3-the' + (mo ? ' mo' : '') + '"><h3><button type="button" class="t3-nut" id="' + id + '-n" aria-expanded="' + mo + '" aria-controls="' + id + '">' +
+          '<i aria-hidden="true">' + c[1] + '</i><span>' + esc(c[2]) + '</span></button></h3>' +
+          '<div class="t3-nd" id="' + id + '" role="region" aria-labelledby="' + id + '-n"' + (mo ? '' : ' hidden') + '>' + x[1] +
+          (x[2] ? '<p class="t3-lk"><button type="button" class="btn-chu" data-nhay="' + x[2] + '">📚 Xem căn cứ chi tiết của phần này →</button></p>' : '') + '</div></div>';
+      }).join('') + '</div></section>';
+  }
+  function t3CanEl(pid, k, soPhan) {
+    var d = document.createElement('details'); d.className = 't3-can'; d.id = pid + '-t3';
+    d.innerHTML = '<summary><b>📚 Căn cứ chi tiết (dành cho người muốn tìm hiểu sâu)</b><small>' + soPhan + ' phần · ' + esc(T3_GOI[k] || '') + '</small></summary><div class="t3-can-nd"></div>';
+    d.addEventListener('toggle', function () { if (d.open) { napAnhHolo(); capNhatCuon(); } });
+    return d;
+  }
+  /** Tìm phần tầng 3 hợp chủ đề (theo tên phần), gắn id nếu chưa có */
+  function t3TimCan(ds, re, pid) {
+    for (var i = 0; i < ds.length; i++) {
+      var t = ds[i].querySelector(':scope > .tg-head b') || ds[i].querySelector(':scope > .panel-title');
+      if (t && re.test(t.textContent)) { if (!ds[i].id) ds[i].id = pid + '-c' + i; return ds[i].id; }
+    }
+    return '';
+  }
+  /** Thẻ "Thời vận": nhắc thẻ khóa vận (bản sao nút mua đang có ở tầng 3) + lối sang tab Vận hạn */
+  function t3VanThem(goc) {
+    var kg = goc && goc.querySelector('.khoa-gd'), h = '';
+    if (kg) h += '<div class="t3-khoa">' + kg.outerHTML + '</div>';
+    return h + '<p class="t3-lk"><button type="button" class="btn btn-ghost btn-sm" data-den="vh">⏳ Đại vận, vận năm, tháng, ngày ở tab Vận hạn</button></p>';
+  }
+  function t3Trang(res, k) {
+    var pg = $('page-' + k), D = res.moRong && res.moRong.deHieu, H = D && D[T3_DH[k]];
+    if (!pg || pg.querySelector(':scope > .t3-can') || !H || H.loi || !H.khoi || !H.khoi.length) return;   // không có văn dễ hiểu → giữ trang như cũ
+    var dau = pg.querySelector(':scope > .holo-wrap'), than = Array.prototype.filter.call(pg.children, function (el) { return !el.matches('.tab-lede, .holo-wrap'); });
+    if (than.length < 2) return;
+    var so = Array.prototype.slice.call(pg.querySelectorAll('.ho-so-nhanh .hsnh-o'), 0, 4).map(function (o) {
+      var a = o.querySelector('small'), b = o.querySelector('b'), c = o.querySelector('span'); return [a ? a.textContent : '', b ? b.textContent : '', c ? c.textContent : ''];
+    }).filter(function (x) { return x[0] && x[1]; });
+    var can = t3CanEl(pg.id, k, than.filter(function (el) { return el.classList.contains('tg'); }).length || than.length), nd = can.lastChild;
+    than.forEach(function (el) { nd.appendChild(el); });
+    var phan = Array.prototype.slice.call(nd.children), dhId = (function () { var p = nd.querySelector('.dh-panel'); if (!p) return ''; if (!p.id) p.id = pg.id + '-dh'; return p.id; })();
+    var cd = t3ChiaDh(H), dsThe = [];
+    T3_CD.forEach(function (c) {
+      var ds = cd[c[0]];
+      if (!ds.length) return;
+      dsThe.push([c[0], '<div class="cung-van-de-hieu">' + ds.map(t3DoanHtml).join('') + '</div>' + (c[0] === 'thoivan' ? t3VanThem(nd) : ''), t3TimCan(phan, T3_CAN[c[0]], pg.id) || dhId]);
+    });
+    pg.appendChild(can);
+    pg.insertBefore(t3El(t3TomHtml(pg.id + '-tom', T3_HE[k], t3Net(H), so)), dau || can);
+    var cdEl = t3CdHtml(pg.id, T3_HE[k], dsThe); if (cdEl) pg.insertBefore(t3El(cdEl), can);
+    pg.classList.add('co-3tang');
+  }
+  /** Tử Vi: tầng 1 đầu khung lá số; tầng 2–3 trong #page-luan (lời dễ hiểu 26 bước + ba vòng nhân sinh, không tên sao) */
+  function t3TuVi(res) {
+    var luan = $('page-luan'), area = $('chartArea'), CT = res.chiTiet || {}, T = CT.trinhTu, I = res.tuvi.info;
+    if (!luan || !area || !T || !T.buoc || !T.buoc.length || luan.querySelector(':scope > .t3-can') || !luan.children.length) return;
+    var DAU = { tot: '✦', vua: '◇', xau: '☾' }, B = {};
+    T.buoc.forEach(function (b) { B[b.so] = b; });
+    Array.prototype.forEach.call(luan.querySelectorAll('details.tt26-b'), function (d) { var s = d.querySelector('.tt26-so'), n = s && s.textContent.trim(); if (/^\d+$/.test(n)) d.id = 't3-tv-b' + n; });
+    // Tầng 1
+    var net = [], da = {};
+    function them(nhan, b) { if (!b || da[b.so] || !b.de || !b.de[0]) return; da[b.so] = 1; net.push([nhan, t3Cau(b.de[0])]); }
+    [4, 3, 6].forEach(function (s) { them('Nét chính', B[s]); });
+    them('Điểm mạnh', T.buoc.filter(function (b) { return b.huong === 'tot' && b.so >= 5 && b.so <= 25 && !da[b.so]; })[0]);
+    them('Cần lưu ý', T.buoc.filter(function (b) { return b.huong === 'xau' && b.so <= 25 && !da[b.so]; })[0]);
+    if (net.length < 5) them('Chặng hiện tại', B[26]);
+    var dvNay = (CT.daiVan || []).filter(function (d) { return d.isNow; })[0];
+    var so = [['Năm sinh', I.namCanChi], ['Bản mệnh', I.banMenh && I.banMenh.ten], ['Cục', I.cuc], ['Thân cư', I.thanCu ? 'cung ' + I.thanCu : ''], ['Đại vận hiện tại', dvNay ? String(dvNay.khoang).replace(/(\d)$/, '$1 tuổi') : '', dvNay ? dvNay.danhGia : '']]
+      .filter(function (x) { return x[1]; });
+    var tom = t3El(t3TomHtml('t3TvTom', 'Tử Vi', net.slice(0, 5), so));
+    area.insertBefore(tom, area.firstChild);
+    // Tầng 3
+    var than = Array.prototype.slice.call(luan.children), can = t3CanEl('page-chart', 'chart', than.length), nd = can.lastChild;
+    than.forEach(function (el) { nd.appendChild(el); });
+    // Tầng 2: lời dễ hiểu từng bước + mục "ba vòng nhân sinh" gộp vào bước đó (đã không tên sao)
+    var TP = CT.tamPhap, dsThe = [];
+    function tp(t) { var x = TP && TP.baVong && (TP.baVong.de || []).filter(function (d) { return d.t === t; })[0]; return x ? t3DoanHtml({ tieuDe: x.t, text: x.v }) : ''; }
+    T3_CD.forEach(function (c) {
+      var ds = (T3_TV[c[0]] || []).map(function (s) { return B[s]; }).filter(function (b) { return b && b.de && b.de.length; });
+      if (!ds.length) return;
+      var h = ds.map(function (b) {
+        return '<div class="t3-tv ' + esc(b.huong || '') + '"><i aria-hidden="true">' + (DAU[b.huong] || '◇') + '</i><div>' + b.de.map(function (x) { return '<p>' + esc(x) + '</p>'; }).join('') +
+          ((b.gop && b.gop.tp) || []).map(tp).join('') + '</div></div>';
+      }).join('');
+      if (c[0] === 'thoivan') h += t3VanThem(null);
+      dsThe.push([c[0], '<p class="muted t3-chu">✦ thuận · ◇ vừa · ☾ cần lưu ý</p>' + h, 't3-tv-b' + ds[0].so]);
+    });
+    luan.appendChild(can);
+    var cdEl = t3CdHtml('page-chart', 'Tử Vi', dsThe); if (cdEl) luan.insertBefore(t3El(cdEl), can);
+  }
+  function chiaBaTang(res) {
+    var cu = $('t3TvTom'); if (cu) cu.parentNode.removeChild(cu);
+    if (!res || res.khach) return;
+    ['battu', 'halac', 'astro', 'so', 'hd'].forEach(function (k) { try { t3Trang(res, k); } catch (e) { if (window.console) console.error('[3 tầng ' + k + ']', e); } });
+    try { t3TuVi(res); } catch (e) { if (window.console) console.error('[3 tầng chart]', e); }
+  }
+  /** PDF: bỏ tầng 1–2 (văn đã có trong tầng 3) và trải phẳng tầng 3 để quy tắc cắt chương (PDF_RUT) thấy đúng cấu trúc cũ */
+  function t3Phang(c) {
+    Array.prototype.forEach.call(c.querySelectorAll('.t3-tom, .t3-cd'), function (x) { if (x.parentNode) x.parentNode.removeChild(x); });
+    Array.prototype.forEach.call(c.querySelectorAll('.t3-can'), function (d) {
+      var nd = d.querySelector(':scope > .t3-can-nd'), cha = d.parentNode; if (!cha) return;
+      while (nd && nd.firstChild) cha.insertBefore(nd.firstChild, d);
+      cha.removeChild(d);
+    });
+    return c;
+  }
+  // Thẻ chủ đề: mở một thẻ một lần (aria-expanded + hidden), thẻ vừa mở nằm khuất thì cuộn tới
+  document.addEventListener('click', function (e) {
+    var b = e.target.closest && e.target.closest('.t3-nut'); if (!b) return;
+    var mo = b.getAttribute('aria-expanded') !== 'true', khung = b.closest('.t3-ds') || b.parentNode;
+    Array.prototype.forEach.call(khung.querySelectorAll('.t3-nut'), function (x) {
+      var on = x === b && mo, nd = document.getElementById(x.getAttribute('aria-controls'));
+      x.setAttribute('aria-expanded', on ? 'true' : 'false'); if (nd) nd.hidden = !on;
+      var the = x.closest('.t3-the'); if (the) the.classList.toggle('mo', on);
+    });
+    if (!mo) return;
+    var r = b.getBoundingClientRect(), tren = caoThanhTren();
+    if (r.top < tren || r.top > window.innerHeight * 0.7) {
+      var it = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      window.scrollTo({ top: Math.max(0, r.top + window.pageYOffset - tren - 8), behavior: it ? 'auto' : 'smooth' });
+    }
+    napAnhHolo(); capNhatCuon();
+  });
+  // In (nút ⎙ In / Ctrl+P): mở tạm tầng 3 để bản in đủ nội dung như trước
+  window.addEventListener('beforeprint', function () { Array.prototype.forEach.call(document.querySelectorAll('details.t3-can:not([open])'), function (d) { d.open = true; d.setAttribute('data-in-mo', '1'); }); });
+  window.addEventListener('afterprint', function () { Array.prototype.forEach.call(document.querySelectorAll('details.t3-can[data-in-mo]'), function (d) { d.open = false; d.removeAttribute('data-in-mo'); }); });
   function renderBatTu(res) {
     var B = res.battu;
     var cols = B.pillars;
@@ -6360,7 +6580,7 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
   }
   function pdfTuWeb(pageId, RUT, k) {
     var goc = $(pageId); if (!goc || goc.textContent.replace(/\s+/g, ' ').length < 200) return '';
-    var c = pdfLamSach(goc.cloneNode(true), goc.querySelectorAll('canvas'));
+    var c = t3Phang(pdfLamSach(goc.cloneNode(true), goc.querySelectorAll('canvas')));   // 17/11: bỏ tầng 1–2, trải phẳng tầng 3
     if (RUT) pdfCatTheoQuyTac(c, RUT, k);
     return '<div class="pdf-web">' + c.innerHTML + '</div>';
   }

@@ -1,6 +1,6 @@
 <style>
 /* Mã phiên bản giao diện – phải trùng với Index.html (meta tcc-ban) và Script.html (BAN_GIAO_DIEN) */
-:root { --tcc-ban: "2026.11.17.4"; }
+:root { --tcc-ban: "2026.11.17.5"; }
 /* ================================================================
    THIÊN CƠ CÁC — phong cách tiên hiệp sáng: ngọc bích, kim sa, mây trắng
    ================================================================ */
@@ -3148,4 +3148,62 @@ summary.ncd-dau { flex-wrap: nowrap; }
 .rg-mat{position:absolute;right:4px;top:50%;transform:translateY(-50%);min-width:44px;min-height:44px;border:0;background:transparent;color:inherit;font-size:18px;cursor:pointer;border-radius:8px}
 .rg-mat[aria-pressed="true"]{opacity:.6}
 .rg-mat:focus-visible{outline:2px solid var(--cyan,#3fd3e0);outline-offset:2px}
+/* ---------- 17/11: khung 3 tầng cho 6 tab hệ – Tầng 1 Tóm lược · Tầng 2 sáu chủ đề · Tầng 3 Căn cứ chi tiết (Script.html › chiaBaTang) ---------- */
+.t3-tom { border-color: rgba(230, 194, 122, .45) !important; }
+.t3-nhan { margin: 0 0 var(--k2); font: 600 12px/1.4 var(--font-body); letter-spacing: .12em; text-transform: uppercase; color: var(--chu-mo); }
+.t3-tom .panel-title, .t3-cd .panel-title { margin: 0 0 var(--k3) !important; }
+.t3-net { margin: 0; padding: 0; list-style: none; display: grid; gap: var(--k2); }
+.t3-net li { position: relative; padding-left: 18px; color: var(--chu); font-size: 16px; line-height: 1.6; }
+.t3-net li::before { content: ''; position: absolute; left: 2px; top: .66em; width: 6px; height: 6px; transform: rotate(45deg); background: var(--vang); }
+.t3-net li:has(> small)::before { top: calc(18px + .66em); }
+.t3-net small { display: block; margin-top: var(--k1); font: 600 12px/18px var(--font-body); letter-spacing: .08em; text-transform: uppercase; color: var(--vang); }
+.t3-so { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(150px, 100%), 1fr)); gap: var(--k2); margin-top: var(--k4); }
+.t3-so > div { padding: 10px 12px; border-radius: 10px; background: var(--the-2); border: 1px solid var(--vien); min-width: 0; }
+.t3-so small { display: block; color: var(--chu-mo); font-size: 12.5px; }
+.t3-so b { display: block; color: var(--chu); font-size: 15px; overflow-wrap: anywhere; }
+.t3-so span { display: block; color: var(--chu-phu); font-size: 12.5px; line-height: 1.4; }
+.t3-ds { display: grid; gap: var(--k2); }
+.t3-the { border: 1px solid var(--vien); border-radius: var(--bo); background: var(--the-2); }
+.t3-the.mo { border-color: rgba(92, 225, 245, .45); }
+.t3-the h3 { margin: 0; font-size: inherit; }
+.t3-nut { width: 100%; min-height: 52px; display: flex; align-items: center; gap: 12px; padding: 12px 44px 12px 16px; position: relative; background: transparent; border: 0;
+  border-radius: var(--bo); color: var(--chu); font: 600 16.5px/1.35 var(--font-body); text-align: left; cursor: pointer; }
+.t3-nut i { font-style: normal; font-size: 18px; width: 24px; text-align: center; flex: none; }
+.t3-nut::after { content: ''; position: absolute; right: 18px; top: 50%; width: 9px; height: 9px; margin-top: -7px; border-right: 2px solid var(--chu-mo); border-bottom: 2px solid var(--chu-mo); transform: rotate(45deg); transition: transform .2s ease; }
+.t3-nut[aria-expanded="true"]::after { transform: rotate(225deg); margin-top: -2px; border-color: var(--cyan); }
+.t3-nut[aria-expanded="true"] span { color: var(--cyan); }
+.t3-nut:hover span { color: var(--cyan-hover); }
+.t3-nut:focus-visible, .t3-can > summary:focus-visible { outline: 2px solid var(--cyan); outline-offset: 2px; }
+.t3-nd { padding: 0 16px 16px; }
+.t3-nd[hidden] { display: none !important; }
+.t3-nd .cung-van-de-hieu { margin: 0; padding: 12px 14px; }
+.t3-chu { margin: 0 0 var(--k2) !important; font-size: 13px !important; }
+.t3-tv { display: grid; grid-template-columns: 22px minmax(0, 1fr); gap: 4px; padding: 8px 0; border-top: 1px solid var(--vien); }
+.t3-tv:first-of-type { border-top: 0; }
+.t3-tv > i { font-style: normal; color: var(--chu-mo); line-height: 1.7; }
+.t3-tv.tot > i { color: var(--tot); } .t3-tv.xau > i { color: var(--kho); } .t3-tv.vua > i { color: var(--vang); }
+.t3-tv p { margin: 0 0 6px; color: var(--chu); font-size: 15.5px; line-height: 1.7; }
+.t3-tv .cv-doan { margin: 6px 0 0; }
+.t3-lk { margin: var(--k3) 0 0 !important; }
+.t3-khoa { margin-top: var(--k3); }
+.t3-can { margin: var(--k4) 0 0; border: 1px dashed var(--vien-sang); border-radius: var(--bo); background: var(--the); }
+.t3-can > summary { list-style: none; cursor: pointer; min-height: 56px; display: grid; gap: 2px; padding: 14px 48px 14px 18px; position: relative; border-radius: var(--bo); }
+.t3-can > summary::-webkit-details-marker { display: none; }
+.t3-can > summary b { font: 700 17px/1.35 var(--font-body); color: var(--vang); }
+.t3-can > summary small { color: var(--chu-phu); font-size: 13.5px; line-height: 1.45; }
+.t3-can > summary::after { content: ''; position: absolute; right: 20px; top: 26px; width: 10px; height: 10px; border-right: 2px solid var(--vang); border-bottom: 2px solid var(--vang); transform: rotate(45deg); transition: transform .2s ease; }
+.t3-can[open] > summary::after { transform: rotate(225deg); top: 31px; }
+.t3-can[open] > summary { border-bottom: 1px dashed var(--vien-sang); border-radius: var(--bo) var(--bo) 0 0; }
+.t3-can-nd { padding: var(--k2) var(--k3) var(--k3); }
+#chartArea > .t3-tom { margin-bottom: var(--k3); }
+@media (max-width: 600px) {
+  .t3-nd { padding: 0 10px 12px; }
+  .t3-nd .cung-van-de-hieu { padding: 10px; }
+  .t3-can-nd { padding: var(--k2) 2px 4px; }
+  .t3-so { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .t3-so > div:last-child:nth-child(odd) { grid-column: 1 / -1; }
+  .t3-net li { font-size: 15.5px; }
+}
+@media (prefers-reduced-motion: reduce) { .t3-nut::after, .t3-can > summary::after { transition: none !important; } }
+@media print { .t3-tom, .t3-cd { display: none !important; } .t3-can > summary { display: none !important; } .t3-can { border: 0 !important; } }
 </style>
