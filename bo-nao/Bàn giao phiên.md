@@ -6,6 +6,7 @@ Liên quan: [[00 Mục lục]] · [[Liên kết và công cụ]] · [[Việc ch�
 ## 17/11 – 4 VIỆC TIẾP THEO ĐƠN HÀNG: XONG + đã push (chờ 2-CAP-NHAT.bat)
 - Làm: (1) ngày dự kiến xong cho Bán hàng (+2 ngày làm việc), (2) báo "đang xem đơn này", (3) thanh Hoàn tác 10 giây sau hủy / bớt, (4) giai đoạn 2 khóa cột Sheet đơn (cảnh báo trước, khóa sau), + bảng đơn nhà máy 4 cột trong tab Đơn bán hàng. Bỏ qua việc 5 (CN thai sản C454, C451) theo chủ dự án.
 - Chi tiết: [[KPI Thiết kế trang Đơn hàng và chuyển từ Sheet sang web (16-11)]] mục "17/11 – ĐÃ LÀM". Kiểm thử: du-kien.js 44, huy-don.js 93, don-ban.js 65, don-ban-web.js 26, don-hang.js 142, tab10.js 19.
+- Thêm sau: thống kê theo kênh + "nhà máy kín lịch đến …" (+6 ngày làm việc) ở đầu Bảng đơn nhà máy.
 - Kế tiếp (chưa được yêu cầu): chủ dự án bật cảnh báo → 14 ngày → khóa hẳn; giai đoạn 3 (chuyển đơn cũ vào CSDL mới).
 
 ## 16/11 KHUYA (3) – GIAI ĐOẠN 1 TRANG BÁN HÀNG NHẬP ĐƠN: XONG + đã push (chờ 2-CAP-NHAT.bat)

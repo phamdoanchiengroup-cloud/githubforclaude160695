@@ -47,10 +47,12 @@
 .db-bang tr.nh th{background:var(--panel2);font-size:12px;color:var(--ink);text-transform:none;font-weight:700;padding:8px} .db-bang tr.nh th i{font-style:normal;font-weight:500;color:var(--ink3)}
 .db-bang-w{border:1px solid var(--line);border-radius:12px;overflow:auto;max-height:70vh;background:var(--panel)}
 .db-tim{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:8px} .db-tim input{flex:1 1 220px;min-height:40px;font-size:16px;padding:6px 10px;border-radius:8px;border:1px solid var(--line);background:var(--panel2);color:var(--ink)}
+.db-kin{border:1px solid var(--cyan);border-radius:12px;padding:12px 14px;margin:0 0 10px;background:var(--panel)} .db-kin .so{font-size:22px;font-weight:800;letter-spacing:-.01em}
+.db-tk2{width:100%;border-collapse:collapse;font-size:13px;margin-top:8px} .db-tk2 td,.db-tk2 th{padding:6px 8px;border-bottom:1px solid var(--line);text-align:right;white-space:nowrap;font-variant-numeric:tabular-nums} .db-tk2 td:first-child,.db-tk2 th:first-child{text-align:left;white-space:normal} .db-tk2 th{font-size:10.5px;text-transform:uppercase;color:var(--ink3);font-weight:600} .db-tk2 tr.tong td{font-weight:800;border-top:2px solid var(--line)}
 .db-dk{font-size:13px;margin:4px 0} .db-dk b{font-weight:700}
 .db-dangxem{font-size:12.5px;padding:6px 10px;border-radius:8px;background:rgba(var(--acc-rgb),.12);margin:6px 0}
 @media (max-width:900px){ .db-day{bottom:64px} }   /* trên điện thoại thanh Gửi nằm trên thanh menu dưới */
-@media (max-width:640px){ .db-sp-r{grid-template-columns:minmax(0,1fr)} .db-day{margin:12px -12px -12px} .db-dong{font-size:12px} .db-bang{font-size:12px} .db-bang td,.db-bang th{padding:5px 6px} }
+@media (max-width:640px){ .db-tk2{font-size:12px} .db-tk2 td,.db-tk2 th{padding:5px 4px} .db-sp-r{grid-template-columns:minmax(0,1fr)} .db-day{margin:12px -12px -12px} .db-dong{font-size:12px} .db-bang{font-size:12px} .db-bang td,.db-bang th{padding:5px 6px} }
 </style>
 <script>
 /* ===== Trang Đơn hàng của tôi / Đơn bán hàng (16/11 khuya) ===== */
@@ -228,9 +230,18 @@ function bnVeBang(){
   (BNB.ds||[]).forEach(function(d){ dem[d[0]]=(dem[d[0]]||0)+1; });
   var tabs=Object.keys(dem);
   return '<div class="pdesc" style="margin-bottom:8px">Các đơn nhà máy <b>đang làm</b> (chưa xong, đã bỏ mã bị hủy) · cập nhật '+esc(bnGio(BNB.luc)||BNB.luc)+' <button class="btn sm" type="button" onclick="BNB=null;bnVe()">Làm mới</button></div>'+
+    bnVeKin(nhan)+
     '<div class="db-tim"><input id="bnTim" type="search" placeholder="Tìm mã đơn hoặc mã sản phẩm…" value="'+esc(BNBLoc.q)+'" oninput="BNBLoc.q=this.value;bnBangO()" aria-label="Tìm trong bảng đơn"></div>'+
     '<div class="db-kenh" style="margin-bottom:10px"><button type="button" class="'+(!BNBLoc.k?'on':'')+'" onclick="BNBLoc.k=\'\';bnVe()">Tất cả · '+bnSo((BNB.ds||[]).length)+'</button>'+tabs.map(function(k){ return '<button type="button" class="'+(BNBLoc.k===k?'on':'')+'" data-t="'+esc(k)+'" onclick="BNBLoc.k=this.dataset.t;bnVe()">'+esc(nhan[k]||k)+' · '+dem[k]+'</button>'; }).join('')+'</div>'+
     '<div id="bnBangDs">'+bnBangHtml()+'</div>'+(BNB.het?'<div class="pdesc" style="margin-top:6px">Chỉ hiện '+bnSo((BNB.ds||[]).length)+' / '+bnSo(BNB.n)+' dòng đầu.</div>':''); }
+/* 17/11: thống kê theo kênh + nhà máy kín lịch đến ngày nào (mô phỏng công suất + dư ~1 tuần = 6 ngày làm việc) */
+function bnVeKin(nhan){ var tk=BNB.tk||[]; if(!tk.length) return '';
+  var tong=tk[tk.length-1], ds=tk.slice(0,-1);
+  return '<div class="db-kin"><div class="pdesc">Nhà máy kín lịch đến khoảng</div><div class="so">'+(tong.xong?esc(bnNg(tong.xong)):'—')+'</div>'+
+    '<div class="pdesc">Còn <b>'+bnSo(tong.thieu)+'</b> sp phải làm ('+bnSo(tong.don)+' đơn) · công suất '+bnSo(BNB.cs)+' sp/ngày · đã cộng dư khoảng 1 tuần ('+esc(BNB.duKin)+' ngày làm việc). Đơn mới nhận hôm nay thường xếp sau ngày này, trừ đơn lẻ / POD có làn riêng.'+(tong.cho?' Có '+tong.cho+' đơn trễ hạn quá 30 ngày chờ đặt hạn mới (chưa tính).':'')+'</div>'+
+    '<div style="overflow-x:auto"><table class="db-tk2"><thead><tr><th>Kênh</th><th>Đơn</th><th>SL đặt</th><th>Còn làm</th><th>Xong ~</th></tr></thead><tbody>'+
+    ds.map(function(z){ return '<tr><td>'+esc(nhan[z.tab]||z.tab)+'</td><td>'+bnSo(z.don)+'</td><td>'+bnSo(z.sl)+'</td><td>'+bnSo(z.thieu)+'</td><td>'+(z.xong?esc(bnNg(z.xong).slice(0,5)):(z.cho?'chờ hạn':'—'))+'</td></tr>'; }).join('')+
+    '<tr class="tong"><td>Tổng</td><td>'+bnSo(tong.don)+'</td><td>'+bnSo(tong.sl)+'</td><td>'+bnSo(tong.thieu)+'</td><td>'+(tong.xong?esc(bnNg(tong.xong).slice(0,5)):'—')+'</td></tr></tbody></table></div><div class="pdesc" style="margin-top:4px">Xong ~ = ngày xong hết hàng còn phải làm của kênh (đã cộng dư ~1 tuần).</div></div>'; }
 function bnBangHtml(){
   var q=String(BNBLoc.q||'').trim().toUpperCase(), nhan={}; (BNB.kenh||[]).forEach(function(k){ nhan[k[0]]=k[1]; });
   var ds=(BNB.ds||[]).filter(function(d){ return (!BNBLoc.k||d[0]===BNBLoc.k)&&(!q||String(d[1]).toUpperCase().indexOf(q)>=0||String(d[2]).toUpperCase().indexOf(q)>=0); });

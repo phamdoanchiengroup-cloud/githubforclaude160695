@@ -77,12 +77,21 @@ ok(x.td.eta > sau, 'luôn muộn hơn ngày bảng đơn hiện cho sản xuất
 console.log('\n3. Bảng đơn nhà máy (4 cột)');
 r = c.__goi('layBangDonNhaMay', B2);
 ok(r.ok && r.ds.length > 50 && r.ds.every(d => d.length === 5), 'Bán hàng khác cũng xem được – mỗi dòng chỉ [kênh, mã đơn, mã SP, số đặt, deadline] (' + (r.ds || []).length + ' dòng)', r.msg || (r.ds || [])[0]);
-ok(!JSON.stringify(r).match(/thieu|qua"|nguoiDat|ghiChu|uuTien/), 'không lộ còn thiếu / tiến độ bộ phận / ghi chú / người đặt');
+ok(r.ds.every(d => d.length === 5) && !JSON.stringify(r).match(/qua"|nguoiDat|ghiChu|uuTien|dong"/), 'từng dòng không lộ còn thiếu / tiến độ bộ phận / ghi chú / người đặt (chỉ thống kê theo kênh có tổng còn phải làm)');
 ok(!r.ds.some(d => d[1] === '#OEM-HUY-01/11'), 'không có mã đã hủy');
 ok(r.ds.some(d => d[1] === '#BH9-17/11' && d[3] === 30), 'có đơn vừa duyệt');
 const thuTab = r.ds.map(d => c.DH_TABS.indexOf(d[0])); ok(thuTab.every((v, i) => !i || v >= thuTab[i - 1]), 'xếp theo kênh như Sheet (Dealer → Kho → Web lẻ … → POD)');
 ok(!c.__goi('layBangDonNhaMay', tp).ok && !c.__goi('layBangDonNhaMay', c077).ok, 'TP Sơn / C077 không gọi được (chỉ Bán hàng + người duyệt)');
 ok(c.__goi('layBangDonNhaMay', gd).ok, 'người duyệt xem được');
+/* 17/11: thống kê theo kênh + kín lịch */
+r = c.__goi('layBangDonNhaMay', B2); const tk = r.tk || [], tong = tk[tk.length - 1] || {};
+const w3 = webMoPhong(c.__goi('layDonHangXuong', own, true), hn, null), maxTab = {}; let maxAll = '';
+Object.keys(w3).forEach(z => { const e = w3[z], t = z.split('|').pop(); if (!e) return; if (e > (maxTab[t] || '')) maxTab[t] = e; if (e > maxAll) maxAll = e; });
+ok(tk.length >= 7 && tong.tab === '' && tong.sl === r.ds.reduce((a, d) => a + d[3], 0), 'có ' + (tk.length - 1) + ' kênh + dòng tổng; tổng SL đặt = tổng bảng (' + tong.sl + ')', tk);
+ok(tong.xong === R.congN(maxAll, 6) && tong.xong > maxAll, 'nhà máy kín lịch đến ' + tong.xong + ' = ngày xong đơn cuối cùng trên bảng đơn (' + maxAll + ') + 6 ngày làm việc (~1 tuần)', [tong.xong, maxAll]);
+ok(tk.slice(0, -1).every(z => !maxTab[z.tab] ? !z.xong : z.xong === R.congN(maxTab[z.tab], 6)), 'mỗi kênh: xong hết = đơn xong muộn nhất của kênh + 6 ngày làm việc', tk.map(z => [z.tab, z.xong, maxTab[z.tab]]));
+ok(tk.slice(0, -1).every(z => z.thieu <= z.sl && z.don > 0) && tong.thieu === tk.slice(0, -1).reduce((a, z) => a + z.thieu, 0), 'còn phải làm ≤ SL đặt; tổng = cộng các kênh');
+const le = tk.find(z => z.tab === 'WEB LẺ ĐƠN THƯỜNG'); ok(le && le.xong && le.xong < tong.xong, 'kênh lẻ (làn riêng 10%) xong sớm hơn ngày kín lịch chung', le);
 
 console.log('\n4. Người khác đang xem đơn');
 r = c.__goi('luuDonBan', B2, { maDon: '#BH8-17/11', tab: 'KHO', dong: [{ ten: 'NGON RHINO 12.4', sl: 5 }], lenh: 'dk0000003' }); const id8 = r.id;

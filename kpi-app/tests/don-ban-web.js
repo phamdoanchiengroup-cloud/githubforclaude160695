@@ -58,6 +58,8 @@ let dem = 0, loi = 0; const ok = (d, t, c) => { dem++; if (d) console.log('  ✓
   ok(await cho(() => document.querySelector('.db-bang tbody tr:not(.nh)')), 'mở "Bảng đơn nhà máy"', await p.evaluate(() => document.getElementById('main').innerText.slice(0, 300)));
   r = await p.evaluate(() => ({ th: [...document.querySelectorAll('.db-bang thead th')].map(x => x.textContent), nh: [...document.querySelectorAll('.db-bang tr.nh')].map(x => x.textContent), n: document.querySelectorAll('.db-bang tbody tr:not(.nh)').length, w: document.documentElement.scrollWidth }));
   ok(r.th.join('|') === 'Mã đơn|Mã sản phẩm|Số đặt|Deadline' && r.n === 2 && r.nh.length === 2 && r.w <= 392, 'chỉ 4 cột, nhóm theo kênh có tổng, 2 dòng đang làm, điện thoại không tràn', r);
+  r = await p.evaluate(() => ({ t: (document.querySelector('.db-kin') || {}).innerText || '', hang: document.querySelectorAll('.db-tk2 tbody tr').length, w: Math.max(document.documentElement.scrollWidth, document.querySelector('.db-tk2').scrollWidth + 30) }));
+  ok(/Nhà máy kín lịch đến khoảng\s*\d\d\/\d\d\/\d{4}/.test(r.t) && /Tổng/.test(r.t) && r.hang === 3 && r.w <= 392, '17/11: khung "Nhà máy kín lịch đến khoảng …" + thống kê 2 kênh + dòng Tổng, điện thoại không tràn', r);
   await p.fill('#bnTim', 'rhino'); r = await p.evaluate(() => [document.querySelectorAll('.db-bang tbody tr:not(.nh)').length, document.activeElement && document.activeElement.id]);
   ok(r[0] === 1 && r[1] === 'bnTim', 'gõ tìm "rhino" → 1 dòng, con trỏ vẫn ở ô tìm', r);
   if (CHUP) await p.screenshot({ path: CHUP + '/db-bang-390.png', fullPage: true });

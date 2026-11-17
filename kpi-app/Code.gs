@@ -7684,7 +7684,7 @@ function danhSachVanPhong(token) {
   ds.sort(function(a, b) { return (thuTu[a.vaiTro] - thuTu[b.vaiTro]) || (a.HoTen < b.HoTen ? -1 : 1); });
   return sach_({ ok: true, ds: ds, muc: HS_MUC });
 }
-var KPI_BAN_MAY = '17/11/2026 13:20';   // giờ dựng Code.gs (22/10)
+var KPI_BAN_MAY = '17/11/2026 16:39';   // giờ dựng Code.gs (22/10)
 /* =====================================================================
    KỸ NĂNG (22/10, chủ dự án nhờ thiết kế + tham khảo chuyên gia nhân sự / đào tạo)
    - Danh mục: trưởng / phó phòng đề xuất kỹ năng của xưởng (tên, mô tả, tiêu chí đạt, công đoạn liên quan)
@@ -11872,7 +11872,7 @@ function taoTaiKhoanBH(token, p) {
    - Bảng đơn nhà máy: mọi đơn đang làm (còn thiếu > 0, đã bỏ mã hủy / áp SL bớt), CHỈ 4 cột Mã đơn · Mã sản phẩm · Số đặt · Deadline + kênh để lọc.
    - Đang xem: người duyệt mở thẻ chờ duyệt → web báo máy chủ mỗi 30 giây; người duyệt khác thấy "… đang xem đơn này". Kiểm thử: tests/du-kien.js */
 var DBK_TAB_BAC1 = { 'WEB LẺ CUSTOM': 1, 'WEB LẺ ĐƠN THƯỜNG': 1 }, DBK_HAN_LE = { 'WEB LẺ ĐƠN THƯỜNG': [5, 7], 'WEB LẺ CUSTOM': [12, 15] }, DBK_HAN_POD = [7, 10];
-var DBK_TRE_MAX = 30, DBK_LAN = 0.10, DBK_DU_PHONG = 2, DBK_CHO_MAX = 10, DBK_BANG_MAX = 5000, DBK_CACHE = 'DB_ETA_v1';
+var DBK_TRE_MAX = 30, DBK_LAN = 0.10, DBK_DU_PHONG = 2, DBK_DU_KIN = 6, DBK_CHO_MAX = 10, DBK_BANG_MAX = 5000, DBK_CACHE = 'DB_ETA_v1';
 var DBK_SIM_C = ['PHOI_C', 'SON', 'UV', 'HT'], DBK_SIM_N = ['PHOI_N', 'TARO', 'HT1', 'TIP', 'HT'], DBK_SIM_1K = ['PHOI_C', 'SON', 'UV', 'HT', 'TIP'];
 function dbkTC_(s) { return String(s == null ? '' : s).toUpperCase().replace(/[–—]/g, '-').replace(/\s+/g, ' ').trim(); }
 function dbkCach_(a, b) { return Math.round((Date.parse(b + 'T00:00:00Z') - Date.parse(a + 'T00:00:00Z')) / 864e5); }
@@ -11948,7 +11948,7 @@ function dbkMoPhong_(G, them, cs) {   // G = dbkGiau_(); them = đơn thử {ma,
   }
   var out = {}; ds.forEach(function(g) { out[g.ma + '|' + g.tab] = { ma: g.ma, tab: g.tab, eta: '', thu: g.thu ? 1 : 0 }; });
   L.forEach(function(l) { var x = out[l.g.ma + '|' + l.g.tab]; var e = l.eta || '9999-12-31'; if (e > x.eta) x.eta = e; });
-  return { m: out, cong2: function(d) { return thu(cong(d, 1), DBK_DU_PHONG); } };
+  return { m: out, cong2: function(d) { return thu(cong(d, 1), DBK_DU_PHONG); }, congN: function(d, n) { return thu(cong(d, 1), n); } };
 }
 /* ngày dự kiến cho Bán hàng (đã cộng 2 ngày làm): { eta: 'yyyy-mm-dd' | '', cho: 1 nếu dòng trễ > 30 ngày chưa có hạn mới (không xếp lịch) }. Đơn đã xong hết: không có trong mô phỏng -> null */
 function dbkHien_(x, R) { if (!x) return null; if (!x.eta || x.eta >= '9999') return { eta: '', cho: 1 }; return { eta: R.cong2(x.eta), goc: x.eta }; }   // eta rỗng = mọi dòng trễ > 30 ngày (không xếp lịch)
@@ -11959,9 +11959,10 @@ function dbkGanDuKien_(out, d) {
   (d.don || []).forEach(function(o) { tl += o.thieu || 0; ts += o.sl || 0; }); ky.push((d.don || []).length, tl, ts);   // dữ liệu đổi (duyệt / hủy / nhập số) -> khóa nhớ tạm đổi
   var key = DBK_CACHE + '|' + ky.join('|');
   var lay = function() { if (!G) G = dbkGiau_(d); return G; };
-  try { var s = cache.get(key); if (s) { var m0 = JSON.parse(s); R = { m: m0, cong2: dbkMoPhong_({ don: [], uu: [], tre: [] }, null, cs).cong2 }; } } catch (e) { R = null; }
+  try { var s = cache.get(key); if (s) { var m0 = JSON.parse(s); var R0 = dbkMoPhong_({ don: [], uu: [], tre: [] }, null, cs); R = { m: m0, cong2: R0.cong2, congN: R0.congN }; } } catch (e) { R = null; }
   if (R && out.some(function(x) { return x.tt === 'DA_DUYET' && x.td && x.td.thieu > 0 && !R.m[x.maDon + '|' + x.tab]; })) R = null;   // đơn vừa duyệt chưa có trong bản nhớ tạm
   if (!R) { R = dbkMoPhong_(lay(), null, cs); try { var z = JSON.stringify(R.m); if (z.length < 95000) cache.put(key, z, 300); } catch (e) {} }
+  out.R = R;
   var nCho = 0;
   out.forEach(function(x) {
     if (x.tt === 'DA_DUYET' && x.td) { var h = dbkHien_(R.m[x.maDon + '|' + x.tab], R); if (h) { x.td.eta = h.eta; if (h.cho) x.td.etaCho = 1; } return; }
@@ -11982,7 +11983,19 @@ function layBangDonNhaMay(token) {
   ds.sort(function(a, b) { var ta = thu[a.tab] != null ? thu[a.tab] : 99, tb = thu[b.tab] != null ? thu[b.tab] : 99;
     return (ta - tb) || String(a.tab).localeCompare(String(b.tab)) || String(a.maDon || '').localeCompare(String(b.maDon || '')) || String(a.ten).localeCompare(String(b.ten)); });
   var het = ds.length > DBK_BANG_MAX;
-  return sach_({ ok: true, luc: d.luc || '', het: het ? 1 : 0, n: ds.length, kenh: dbKenh_(),
+  /* 17/11 (chủ dự án): thống kê theo kênh – số đơn, SL đặt, còn phải làm, ngày xong hết; dòng tổng = nhà máy kín lịch đến ngày nào.
+     Ngày = mô phỏng công suất (như bảng đơn) + dư khoảng 1 tuần (6 ngày làm việc) cho Bán hàng hứa khách */
+  var tk = [];
+  try {
+    var R = { m: {} }, gia = [{ tt: 'DA_DUYET', td: null }]; dbkGanDuKien_(gia, d); R = gia.R || R;
+    var theo = {}, tong = { tab: '', don: {}, sl: 0, thieu: 0, eta: '', cho: 0 };
+    ds.forEach(function(o) { var x = theo[o.tab] || (theo[o.tab] = { tab: o.tab, don: {}, sl: 0, thieu: 0, eta: '', cho: 0 }); [x, tong].forEach(function(z) { z.don[(o.maDon || '(không mã)') + '|' + o.tab] = 1; z.sl += o.sl || 0; z.thieu += o.thieu || 0; }); });
+    Object.keys(R.m || {}).forEach(function(k) { var g = R.m[k], x = theo[g.tab]; if (!x) return; [x, tong].forEach(function(z) { if (!g.eta || g.eta >= '9999') z.cho++; else if (g.eta > z.eta) z.eta = g.eta; }); });
+    var ra = function(z) { return { tab: z.tab, don: Object.keys(z.don).length, sl: z.sl, thieu: z.thieu, xong: z.eta && R.congN ? R.congN(z.eta, DBK_DU_KIN) : '', cho: z.cho }; };
+    tk = Object.keys(theo).sort(function(a, b) { var ta = thu[a] != null ? thu[a] : 99, tb = thu[b] != null ? thu[b] : 99; return (ta - tb) || a.localeCompare(b); }).map(function(t) { return ra(theo[t]); });
+    tk.push(ra(tong));
+  } catch (eTK) { tk = []; }
+  return sach_({ ok: true, luc: d.luc || '', het: het ? 1 : 0, n: ds.length, kenh: dbKenh_(), tk: tk, duKin: DBK_DU_KIN, cs: dhCongSuat_().sp,
     ds: ds.slice(0, DBK_BANG_MAX).map(function(o) { return [o.tab, String(o.maDon || ''), o.ten, o.sl || 0, o.dl || '']; }) });
 }
 /* "Người khác đang xem đơn này": chỉ người duyệt. ids = đơn chờ duyệt đang hiện trên màn (≤ 10). Nhớ 120 giây, coi là đang xem nếu báo trong 75 giây */
