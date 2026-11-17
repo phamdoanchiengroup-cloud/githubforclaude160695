@@ -310,7 +310,7 @@ function th6Moi_(r) {
       return o; }),
     soNam: T.namToi.length };
 }
-/** 17/11: "Điều nên lưu ý" ở trang Tóm lược cho khách – chỉ 1 câu "Bạn có xu hướng…" + 1 gợi ý của lĩnh vực yếu nhất (không tên sao, không %, không thuật ngữ).
+/** 17/11: "Điều nên lưu ý" ở khối tóm lược đầu trang Tổng hợp 6 hệ cho khách – chỉ 1 câu "Bạn có xu hướng…" + 1 gợi ý của lĩnh vực yếu nhất (không tên sao, không %, không thuật ngữ).
     Câu không đạt thì để trống, giao diện dùng câu mẫu theo lĩnh vực (TL_LUU_Y trong Script.html). */
 var TH6_LUU_Y_BO = /Tử Vi|Thiên Cơ|Thái Dương|Vũ Khúc|Thiên Đồng|Liêm Trinh|Thiên Phủ|Thái Âm|Tham Lang|Cự Môn|Thiên Tướng|Thiên Lương|Thất Sát|Phá Quân|Kình Dương|Đà La|Địa Không|Địa Kiếp|Hỏa Tinh|Linh Tinh|Văn Xương|Văn Khúc|Tả Phù|Hữu Bật|Lộc Tồn|Thiên Mã|Hóa (Lộc|Quyền|Khoa|Kỵ)|Đào Hoa|Hồng Loan|dụng thần|thập thần|kỵ thần|hỷ thần|\bsao\b|\bcung\b|Tuần|Triệt|Thái Tuế|thần sát|Nhật chủ|nêu trên|thế mạnh|%|\d+\/\d+|\(|^[^.]{0,30}:/;
 function th6LuuY_(x) {

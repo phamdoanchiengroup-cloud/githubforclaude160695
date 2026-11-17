@@ -27,7 +27,7 @@
     });
   }
   /** Mã phiên bản giao diện – phải trùng với Index.html (meta tcc-ban) và Styles.html (--tcc-ban) */
-  var BAN_GIAO_DIEN = '2026.11.17.8';
+  var BAN_GIAO_DIEN = '2026.11.17.9';
   /* 25/10: ảnh ngũ hành + 12 con giáp + bìa PDF mới của chủ dự án (tuvi-app/anh/*.webp) qua jsDelivr, ghim theo mã lần lưu */
   var TCC_ANH_CDN = 'https://cdn.jsdelivr.net/gh/phamdoanchiengroup-cloud/githubforclaude160695@19203fbd20433f395336269a411f8aebcf990086/tuvi-app/anh/';
   var ANH_HANH = { 'Mộc': 'NguHanhMoc', 'Hỏa': 'NguHanhHoa', 'Thổ': 'NguHanhTho', 'Kim': 'NguHanhKim', 'Thủy': 'NguHanhThuy' };
@@ -961,7 +961,7 @@
     $('btnPdfTop').style.display = '';
     try { veTomLuoc(res); veCungDs(res); } catch (e) { if (window.console) console.error('[Tóm lược]', e); }
     var giu = state.giuTab && state.tabHien && $('page-' + state.tabHien); state.giuTab = false;
-    showTab(giu ? state.tabHien : 'tomluoc');
+    showTab(giu ? state.tabHien : 'tong');   // 17/11: mặc định Tổng hợp 6 hệ (khối tóm lược ở đầu trang)
     selectPalace(res.tuvi.info.menh);
     if (!giu) window.scrollTo(0, 0);
     sauHienThi();
@@ -1209,7 +1209,7 @@
       var khoa = !c1 && !!(vung.classList.contains('khoa-phan') || vung.querySelector('.demo-an'));
       dh.muc.push({ el: khoi, ten: ten, cap: c1 ? 1 : 2, khoa: khoa });
     });
-    if (!dh.muc.length) { document.body.classList.remove('co-toc'); nav.innerHTML = ''; nav.classList.remove('mo'); capNhatCuon(); return; }   // trang không có mục (Tóm lược, Tôi)
+    if (!dh.muc.length) { document.body.classList.remove('co-toc'); nav.innerHTML = ''; nav.classList.remove('mo'); capNhatCuon(); return; }   // trang không có mục (Tôi)
     nav.innerHTML = '<div class="toc-head"><b>Mục lục</b><small>' + esc(TEN_TAB[page.id.replace('page-', '')] || '') + ' · ' + dh.muc.length + ' mục</small><button type="button" class="toc-x" data-toc-x aria-label="Đóng">✕</button></div>' +
       '<ol>' + dh.muc.map(function (x, i) { return '<li class="c' + x.cap + (x.khoa ? ' khoa' : '') + '"><a data-toc="' + i + '">' + esc(x.ten) + '</a></li>'; }).join('') + '</ol>';   // 16/11: bỏ lời mời trong mục lục
     capNhatCuon();
@@ -1231,7 +1231,7 @@
     var r = state.result;
     document.querySelectorAll('#tabs .tab').forEach(function (t) {
       var k = t.getAttribute('data-tab');
-      t.classList.toggle('khoa', !!(r && (r.khach ? (k !== 'chart' && k !== 'hist' && k !== 'capdoi' && k !== 'vh') : (k === 'tong' && tongKhoa(r)))));
+      t.classList.toggle('khoa', !!(r && k !== 'tong' && (r.khach ? (k !== 'chart' && k !== 'hist' && k !== 'capdoi' && k !== 'vh') : false)));   // 17/11: Tổng hợp 6 hệ là trang mặc định (có phần miễn phí) – không gắn ổ khóa
     });
     dungMucLuc(); veCta(); veQc();
         if (window._danhDauCoso) window._danhDauCoso();
@@ -1330,7 +1330,7 @@
     });
   }
   function showTab(name) {
-    if (!$('page-' + name)) name = 'tomluoc';
+    if (name === 'tomluoc' || !$('page-' + name)) name = 'tong';   // 17/11: trang Tóm lược đã gộp vào Tổng hợp 6 hệ
     var nhom = nhomCua(name);
     if (!state.result && nhom === 'laso') { veTrangChu(); return; }   // chưa lập lá số: các mục "Lá số" đưa về ô nhập
     state.tabHien = name; NHOM_CUOI[nhom] = name;
@@ -2314,7 +2314,7 @@
     chiaBaTang(res, state.giuTab);   // 17/11: khung 3 tầng – chạy sau cùng (sau Holo, câu dẫn PDF, thẻ khóa)
     try { veTomLuoc(res); veCungDs(res); } catch (e) { if (window.console) console.error('[Tóm lược]', e); }
     var giu = state.giuTab && state.tabHien && $('page-' + state.tabHien); state.giuTab = false;
-    showTab(giu ? state.tabHien : 'tomluoc');   // Đợt 4: mặc định là trang Tóm lược miễn phí
+    showTab(giu ? state.tabHien : 'tong');   // 17/11: bỏ trang Tóm lược – mặc định Tổng hợp 6 hệ (khối tóm lược nằm đầu trang)
     setTimeout(napAnhHolo, 80);
     selectPalace(res.tuvi.info.menh, true);
     if (!giu) window.scrollTo(0, 0);
@@ -4161,7 +4161,7 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
         return '<details class="dh-lv th6-lv ' + x.huong + '">' + head + '<div class="th6-body"><p class="muted">🔒 Kết luận, điều các hệ cùng thấy, lời khuyên' + (x.soNam ? ' và ' + x.soNam + ' năm nổi bật sắp tới' : '') + ' có trong phần Tổng hợp 6 hệ.</p></div></details>';
       }).join('') +
       '<div class="th6-cta"><b>Xem đầy đủ 9 lĩnh vực' + (M.soNam ? ' và ' + M.soNam + ' năm nhiều hệ cùng báo' : '') + '</b><p>Mỗi lĩnh vực: kết luận của 6 hệ, điều cần phát huy – cần lưu ý, lời khuyên cụ thể và năm nên hành động.</p>' +
-      (state.token ? nutMua('co_ban', 'Mở Tổng hợp 6 hệ') : '<button type="button" class="btn btn-primary btn-sm" data-dang-ky>Tạo tài khoản miễn phí – đọc đủ 9 lĩnh vực</button>') + '</div></div>';
+      (state.token ? nutMua('co_ban', 'Mở Tổng hợp 6 hệ') : '<button type="button" class="btn btn-primary btn-sm" data-dang-ky>' + nhanDK() + '</button>') + '</div></div>';
     return html;
   }
   function th6Html(T) {
@@ -7420,11 +7420,12 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
   }
 
   /* =====================================================================
-     ĐỢT 4 (16/11/2026) – BỐ CỤC MỚI: thanh đáy 4 mục · chip 6 hệ · trang Tóm lược · trang "Tôi"
-     Lá số (Tóm lược + 6 hệ + Tổng hợp) · Vận hạn · Hợp đôi (Cặp đôi) · Tôi (tài khoản, ví, Hội viên,
+     ĐỢT 4 (16/11/2026) – BỐ CỤC MỚI: thanh đáy 4 mục · chip 6 hệ · trang "Tôi"
+     (17/11: bỏ trang Tóm lược – khối tóm lược nằm đầu Tổng hợp 6 hệ, trang mặc định)
+     Lá số (Tổng hợp + 6 hệ) · Vận hạn · Hợp đôi (Cặp đôi) · Tôi (tài khoản, ví, Hội viên,
      Lịch sử, Tiện ích, Tham khảo, Gia đình, 👑 / ✶ / Quản trị cho chủ sở hữu). Máy tính: cột trái cùng nhóm.
      ===================================================================== */
-  var NHOM_MAC = { laso: 'tomluoc', vh: 'vh', capdoi: 'capdoi', toi: 'toi' };
+  var NHOM_MAC = { laso: 'tong', vh: 'vh', capdoi: 'capdoi', toi: 'toi' };
   var NHOM_CUOI = {};
   function nhomCua(tab) { var t = document.querySelector('#tabs .tab[data-tab="' + tab + '"]'); return (t && t.getAttribute('data-nhom')) || 'laso'; }
   function veNavDay(nhom) {
@@ -7478,12 +7479,12 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
   /** Có lời mời/thẻ mua nào đang hiện trong vùng nhìn không → thanh đáy nhường (mỗi màn tối đa 1 lời mời) */
   function coLoiMoiDangHien() {
     var pg = document.querySelector('.tab-page.active'); if (!pg) return false;
-    var ds = pg.querySelectorAll('.tl-moi, .th6-cta, .lock-cta, .khoa-gd, .khoa-phan, .ud-row, .gia-bac, .moi-ban, .khoa-nho, .ncd-the.khoa, .ncd-tien, .gd-qh-khoa'), H = window.innerHeight;
+    var ds = pg.querySelectorAll('.tl-moi, .th6-cta, .bdk-khoa, .lock-cta, .khoa-gd, .khoa-phan, .ud-row, .gia-bac, .moi-ban, .khoa-nho, .ncd-the.khoa, .ncd-tien, .gd-qh-khoa'), H = window.innerHeight;
     for (var i = 0; i < ds.length; i++) { var r = ds[i].getBoundingClientRect(); if (r.height && r.top < H && r.bottom > 0) return true; }
     return document.body.getAttribute('data-tab') === 'toi';
   }
 
-  /* ---------- Trang Tóm lược (miễn phí, 1–2 màn): hồ sơ nhanh · 3 nét chính · 1 điểm mạnh · 1 lưu ý · đại vận · lối vào 6 hệ ---------- */
+  /* ---------- Khối tóm lược đầu trang Tổng hợp 6 hệ (17/11: trang Tóm lược gộp vào đây): hồ sơ nhanh · nét chính · lưu ý · chặng đời · lối vào 6 hệ ---------- */
   var TL_HE = [['chart', 'Tử Vi', '12 mặt đời sống: tính cách, công việc, tiền bạc, tình cảm'], ['battu', 'Bát Tự', 'Ngũ hành bẩm sinh và điều giúp bạn cân bằng'],
     ['halac', 'Hà Lạc', 'Quẻ đời bạn và các chặng đời theo hào'], ['astro', 'Chiêm tinh', 'Bản đồ bầu trời lúc bạn chào đời'],
     ['so', 'Thần số học', 'Con số chủ đạo và bài học đường đời'], ['hd', 'Human Design', 'Cách bạn ra quyết định đúng với mình']];
@@ -7510,16 +7511,22 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
     return [y || m[0], k || m[1]];
   }
   function chuThuong(t) { t = String(t || ''); return t.charAt(0).toLowerCase() + t.slice(1); }
+  /** 17/11: vẽ khối tóm lược (div.tl.tl-gop) lên ĐẦU trang Tổng hợp 6 hệ – gọi sau khi trang Tổng hợp đã dựng xong.
+      Không lặp điều Tổng hợp đã có: bỏ dòng "mặt thuận" (đã có hàng chip), bỏ thẻ "Điểm mạnh" khi có bảng 9 lĩnh vực
+      (lĩnh vực mạnh nhất đã mở sẵn), bỏ thẻ "Điều nên lưu ý" khi bảng 9 lĩnh vực đầy đủ; bản khách/chưa mở giữ câu lưu ý riêng (tlLuuY).
+      Khách: 1 thẻ mời cuối khối (.tl-moi) – thanh đáy tự nhường khi thẻ mời đang hiện (coLoiMoiDangHien), mỗi màn tối đa 1 lời mời. */
   function veTomLuoc(res) {
-    var pg = $('page-tomluoc'); if (!pg || !res || !res.tuvi) return;
+    var pg = $('page-tong'); if (!pg || !res || !res.tuvi) return;
+    var cu = pg.querySelector(':scope > .tl-gop'); if (cu) cu.remove();
     var T6 = res.th6 || (res.moRong && res.moRong.deHieu && res.moRong.deHieu.th6) || null;
     var TL = res.moRong && res.moRong.tongHop && res.moRong.tongHop.tomLuoc;
     var te = res.teaser || {}, tom = (te.tom && te.tom.lo) || [], ng = (te.nguoi && te.nguoi.lo) || [];
+    var coBang = !!pg.querySelector('.th6'), duBang = !!pg.querySelector('#dh-tonghop');   // bảng 9 lĩnh vực: bản hé lộ / bản đầy đủ
     var tieuDe = htCau((TL && TL.tieuDe) || tom[0] || '').replace(/\.$/, '') || 'Bức chân dung của bạn';
     var net = [], phu = htCau((TL && TL.phuDe) || tom[1] || '');
     if (phu && !/:\s*$/.test(phu)) net.push(phu);
     if (ng[0] && /^Tính cách:/.test(ng[0])) net.push('Nét tính cách rõ nhất: ' + chuThuong(htCau(ng[0]).replace(/^Tính cách:\s*/, '')));
-    if (T6 && T6.theManh && T6.theManh.length) net.push('Những mặt đời sống nhiều hệ cùng thấy thuận: ' + T6.theManh.map(chuThuong).join(', ') + '.');
+    if (!coBang && T6 && T6.theManh && T6.theManh.length) net.push('Những mặt đời sống nhiều hệ cùng thấy thuận: ' + T6.theManh.map(chuThuong).join(', ') + '.');
     var lv = (T6 && T6.linhVuc ? T6.linhVuc.slice() : []).filter(function (x) { return x && x.diem != null; });
     var manh = lv.slice().sort(function (a, b) { return b.diem - a.diem; })[0], yeu = lv.slice().sort(function (a, b) { return a.diem - b.diem; })[0];
     function chiTiet(x, k) { var o = x.lo || x, v = o[k]; if (Array.isArray(v)) v = v[0]; return (v && (v.t || (typeof v === 'string' ? v : ''))) || (o[k + 's'] && o[k + 's'][0] && o[k + 's'][0].t) || ''; }
@@ -7527,30 +7534,32 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
     var so = TS.duongDoi; if (so && typeof so === 'object') so = so.so != null ? so.so : so.n;
     var hs = [['Năm sinh', I.namCanChi], ['Bản mệnh', I.banMenh && I.banMenh.ten], ['Nhật chủ (bản chất ngũ hành của bạn)', B.nhatChu], ['Số chủ đạo', so], ['Kiểu năng lượng', HD.loaiTen || HD.loai]].filter(function (x) { return x[1] != null && x[1] !== ''; });
     var dv = dvHienTai(res), krg = state.khongRoGio;
-    var h = '<div class="tl">';
-    h += '<section class="panel tl-the tl-dau"><p class="tl-nhan">Tóm lược · tầng dễ hiểu</p><h2 class="tl-td">' + esc(tieuDe) + '</h2>' +
+    var h = '<div class="tl tl-gop">';
+    h += '<section class="panel tl-the tl-dau"><p class="tl-nhan">Tóm lược về bạn · tầng dễ hiểu</p><h2 class="tl-td">' + esc(tieuDe) + '</h2>' +
       (net.length ? '<ul class="tl-net">' + net.slice(0, 3).map(function (t) { return '<li>' + esc(t) + '</li>'; }).join('') + '</ul>' : '') +
-      (hs.length ? '<div class="tl-hs">' + hs.map(function (x) { return '<div><small>' + esc(x[0]) + '</small><b>' + esc(String(x[1])) + '</b></div>'; }).join('') + '</div>' : '') + '</section>';
+      (hs.length ? '<div class="tl-hs">' + hs.map(function (x) { return '<div><small>' + esc(x[0]) + '</small><b' + (x[0] === 'Số chủ đạo' ? ' class="tl-so"' : '') + '>' + esc(String(x[1])) + '</b></div>'; }).join('') + '</div>' : '') + '</section>';
     if (krg) h += '<div class="panel tl-the tl-canh"><b>Bạn chưa rõ giờ sinh</b><p>Hệ thống đang tạm dùng 12:00 trưa. Bát Tự 3 trụ, Thần số học, Hà Lạc theo năm vẫn dùng được; lá số Tử Vi, cung Mọc, Human Design chỉ nên đọc để tham khảo.</p><button type="button" class="btn btn-phu btn-sm" data-mo-nc>Dò lại giờ sinh</button></div>';
-    if (manh || yeu) {
+    var theManh = manh && !coBang, theYeu = yeu && yeu !== manh && !duBang && mucTh6(yeu.diem) !== 'tot';
+    if (theManh || theYeu) {
       h += '<div class="tl-doi">';
-      if (manh) { var mm = tlMuc(manh.diem); h += '<section class="panel tl-the tl-manh"><p class="tl-nhan">Điểm mạnh nổi bật</p><h3>' + esc(manh.ten) + ' <span class="tl-chip ' + mm[0] + '"><span class="tl-so">' + String(manh.diem).replace('.', ',') + '</span>/10</span></h3>' +
+      if (theManh) { var mm = tlMuc(manh.diem); h += '<section class="panel tl-the tl-manh"><p class="tl-nhan">Điểm mạnh nổi bật</p><h3>' + esc(manh.ten) + ' <span class="tl-chip ' + mm[0] + '"><span class="tl-so">' + String(manh.diem).replace('.', ',') + '</span>/10</span></h3>' +
         '<p>' + esc(chiTiet(manh, 'noiBat') || chiTiet(manh, 'manh') || 'Nhiều hệ cùng thấy đây là mặt thuận của bạn – điều nên dựa vào khi chọn hướng đi.') + '</p></section>'; }
-      if (yeu && yeu !== manh && mucTh6(yeu.diem) !== 'tot') { var my = tlMuc(yeu.diem), ly = tlLuuY(yeu);
+      if (theYeu) { var my = tlMuc(yeu.diem), ly = tlLuuY(yeu);
         h += '<section class="panel tl-the tl-yeu"><p class="tl-nhan">Điều nên lưu ý</p><h3>' + esc(yeu.ten) + ' <span class="tl-chip ' + my[0] + '">' + my[1] + '</span></h3>' +
           '<p>' + esc(ly[0]) + '</p><p class="tl-goi">Gợi ý: ' + esc(ly[1]) + '</p></section>'; }
       h += '</div>';
     }
-    if (dv) h += '<section class="panel tl-the tl-van"><p class="tl-nhan">Chặng đời hiện tại</p><p>Bạn đang ở chặng <b>' + esc(dv.khoang) + '</b> (' + esc(String(dv.nam)) + ') – nhịp chung của giai đoạn: <b>' + esc(String(dv.danhGia || '').toLowerCase()) + '</b>.</p>' +
-      '<button type="button" class="btn btn-phu btn-sm" data-di-nhom="vh">Xem vận hạn →</button></section>';
-    h += '<section class="panel tl-the tl-he"><p class="tl-nhan">Đọc sâu từng hệ</p><div class="tl-luoi">' + TL_HE.map(function (x) {
-      return '<button type="button" class="tl-o" data-di-tab="' + x[0] + '"><b>' + x[1] + '</b><span>' + x[2] + '</span></button>';
-    }).join('') + '<button type="button" class="tl-o tl-o-th" data-di-tab="tong"><b>Tổng hợp 6 hệ</b><span>Điều nhiều hệ cùng nói – 9 lĩnh vực' + (tongKhoa(res) ? ' · miễn phí khi có tài khoản' : '') + '</span></button></div>' +
+    h += '<section class="panel tl-the tl-he">' +
+      (dv ? '<div class="tl-van"><p class="tl-nhan">Chặng đời hiện tại</p><p>Bạn đang ở chặng <b>' + esc(dv.khoang) + '</b> (' + esc(String(dv.nam)) + ') – nhịp chung của giai đoạn: <b>' + esc(String(dv.danhGia || '').toLowerCase()) + '</b>. ' +
+        '<button type="button" class="btn-chu" data-di-nhom="vh">Xem vận hạn →</button></p></div>' : '') +
+      '<p class="tl-nhan">Đọc sâu từng hệ</p><div class="tl-luoi">' + TL_HE.map(function (x) {
+        return '<button type="button" class="tl-o" data-di-tab="' + x[0] + '"><b>' + x[1] + '</b><span>' + x[2] + '</span></button>';
+      }).join('') + '</div>' +
       '<p class="tl-nc">Không chắc giờ sinh? <button type="button" class="btn-chu" data-mo-nc>Kiểm chứng 2 phút →</button></p></section>';
-    if (!state.token) h += '<section class="panel tl-the tl-moi"><b>Lưu lá số – tạo tài khoản miễn phí</b><p>Tài khoản miễn phí: lưu lá số, đọc Tổng hợp 6 hệ, tự nghiệm chứng và dò giờ sinh.</p>' +
+    if (!state.token) h += '<section class="panel tl-the tl-moi"><b>Lưu lá số – tạo tài khoản miễn phí</b><p>Tài khoản miễn phí: lưu lá số, đọc đủ Tổng hợp 6 hệ, tự nghiệm chứng và dò giờ sinh.</p>' +
       '<div class="kg-nut"><button type="button" class="btn btn-primary" data-dang-ky>' + nhanDK() + '</button><button type="button" class="btn-chu" data-login>Đã có tài khoản? Đăng nhập</button></div></section>';
     h += '</div>';   // dòng lưu ý cổ học đã có ở chân trang
-    pg.innerHTML = h;
+    pg.insertAdjacentHTML('afterbegin', h);
   }
   /* ---------- Trang "Tôi": tài khoản, ví, Hội viên, lá số, công cụ, mục chủ sở hữu ---------- */
   function veToi() {

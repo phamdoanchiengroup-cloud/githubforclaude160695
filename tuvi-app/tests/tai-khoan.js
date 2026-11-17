@@ -57,7 +57,7 @@ const js = JSON.stringify(k);
 ok(!k.khach && k.tongKhoa && k.moRong && !k.moRong.deHieu.th6 && k.chiTiet.daiVan.every(function (d) { return d.khoa; }) && !k.moRong.tongHop.hoiTu, 'Khách: đọc được 6 hệ; Tổng hợp, vận hạn, biến cố bị cắt ở máy chủ');
 ok(k.teaser && k.teaser.chart && k.tuvi.palaces.length === 12 && k.th6 && js.length < 3000000, 'Khách: có lá số + hé lộ Tổng hợp (' + Math.round(js.length / 1024) + ' KB)');
 ok(/lines/.test(JSON.stringify(k.tuvi.luanGiai)) && k.battu.goiY, 'Khách: có lời luận 12 cung và Bát Tự (miễn phí)');
-// 17/11: "Điều nên lưu ý" ở Tóm lược – khách chỉ nhận {ten, diem, yeu[0], khuyen[0]} của lĩnh vực yếu nhất, không thêm lời luận nào khác
+// 17/11: "Điều nên lưu ý" ở khối tóm lược (đầu Tổng hợp 6 hệ) – khách chỉ nhận {ten, diem, yeu[0], khuyen[0]} của lĩnh vực yếu nhất, không thêm lời luận nào khác
 (function () {
   const lv = k.th6.linhVuc, yeu = lv.slice().sort(function (a, b) { return a.diem - b.diem; })[0];
   const coThem = lv.filter(function (x) { return x.yeu || x.khuyen; });

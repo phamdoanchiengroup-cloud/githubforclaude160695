@@ -84,3 +84,6 @@ Chủ dự án: dùng các chuyên gia rà soát toàn bộ mã, giao diện, vi
 
 ## 17/11 – sửa ô mệnh ở Tóm lược (mã 2026.11.17.8)
 - Chủ dự án báo: Tóm lược ghi "Thành Đầu Thổ" trong khi Tử Vi ghi "Sơn Đầu Hỏa". Nguyên nhân: `veTomLuoc` (Script.html) lấy `I.menhNapAm` (nạp âm cung Mệnh – dùng tính Cục) gắn nhãn "Mệnh". Sửa thành `I.banMenh` nhãn "Bản mệnh" (nạp âm năm sinh). Đã rà các chỗ khác: chỉ có bảng chỉ số Tử Vi dùng `menhNapAm` và ghi rõ "Nạp âm cung Mệnh" – đúng.
+
+## 17/11 – bỏ Tóm lược, Tổng hợp 6 hệ lên đầu (mã 2026.11.17.9)
+- frontend-developer: xóa `page-tomluoc` và chip; `veTomLuoc` vẽ khối `.tl.tl-gop` lên đầu `page-tong` (hồ sơ nhanh dùng `I.banMenh`, cảnh báo không rõ giờ, lưu ý khách `tlLuuY`, chặng đời + lối vào 6 hệ + Kiểm chứng 2 phút, thẻ mời khách); bỏ phần trùng với Tổng hợp. Mặc định mở `tong` cho mọi người; `showTab('tomluoc')` → `tong`; `NHOM_MAC.laso = 'tong'`; chip Tổng hợp đứng đầu; bỏ ổ khóa trên chip Tổng hợp. Kiểm thử đạt, smoke `gop-tong.js` 6/6.
