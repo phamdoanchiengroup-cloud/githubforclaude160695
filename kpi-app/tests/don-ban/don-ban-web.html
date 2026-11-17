@@ -102,7 +102,7 @@ function bnVeThe(x){
     msg='Deadline chốt <b>'+esc(bnNg(x.dlChot))+'</b>'+(x.uu?' · ★ ưu tiên':'')+' · duyệt bởi '+esc(x.duyetAi)+' ('+esc(bnGio(x.duyetLuc))+')';
     if(t.khongThay) msg+='<div class="pdesc">Không còn thấy đơn trong các tab kênh (có thể đã giao xong và chuyển sang tab HT).</div>';
     else msg+='<div class="db-thanh" aria-hidden="true"><i style="width:'+Math.max(0,Math.min(100,t.pct||0))+'%"></i></div><div class="pdesc">Xong <b>'+(t.pct||0)+'%</b> · còn thiếu '+bnSo(t.thieu)+' / '+bnSo(t.sl)+' sp</div>'+
-      bnVeDK(x)+((t.huy||[]).length?'<div class="db-canh">'+t.huy.map(function(z){ return (z.loai==='BOT'?'Bớt ':'Hủy ')+'<b>'+esc(z.ten)+'</b>'+(z.loai==='BOT'?' ('+bnSo(z.slCu)+' → '+bnSo(z.slMoi)+')':'')+': '+esc(z.ly); }).join('<br>')+'</div>':''); }
+      bnVeDK(x)+((t.dung||[]).length?'<div class="db-canh"><b>Có mã tạm dừng sản xuất</b> – đơn chưa giao đủ được nếu không giao từng phần:<br>'+t.dung.map(function(z){ return '<b>'+esc(z.ten)+'</b> (còn '+bnSo(z.thieu)+' sp): '+esc(z.ly)+(z.hen?' – dự kiến chạy lại '+esc(bnNg(z.hen)):''); }).join('<br>')+'</div>':'')+((t.huy||[]).length?'<div class="db-canh">'+t.huy.map(function(z){ return (z.loai==='BOT'?'Bớt ':'Hủy ')+'<b>'+esc(z.ten)+'</b>'+(z.loai==='BOT'?' ('+bnSo(z.slCu)+' → '+bnSo(z.slMoi)+')':'')+': '+esc(z.ly); }).join('<br>')+'</div>':''); }
   var dong='<table class="db-dong"><thead><tr><th>Sản phẩm</th><th style="text-align:right">SL</th><th>Ghi chú</th></tr></thead><tbody>'+(x.dong||[]).map(function(d){ return '<tr><td>'+esc(d.ten)+(x.tt==='CHO_DUYET'&&!sp[d.ten]?'<span class="db-moi" title="Tên chưa có trong bảng đơn – kiểm tên / cấu hình">mã mới</span>':'')+'</td><td class="so">'+bnSo(d.sl)+'</td><td>'+esc(d.gc||'')+'</td></tr>'; }).join('')+'</tbody></table>';
   var h='<div class="db-the '+cls+'"><h4><span>'+esc(x.maDon)+'</span><span class="pdesc" style="font-weight:400">'+esc(x.kenh)+'</span><span class="db-tt '+x.tt+'">'+esc(BN_TT[x.tt]||x.tt)+'</span></h4>'+
     '<div class="pdesc">'+(x.dong||[]).length+' mã · '+bnSo(x.tongSL)+' sp'+(x.dlMuon?' · deadline mong muốn <b>'+esc(bnNg(x.dlMuon))+'</b>':'')+(BND.duyet&&x.tt!=='CHO_DUYET'?' · '+esc(x.ai):'')+'</div>'+
@@ -219,6 +219,7 @@ function bnTaoTK(el){ var ds=[].slice.call(document.querySelectorAll('.dbTkChon:
 /* 17/11: ngày dự kiến xong (máy chủ chạy đúng mô phỏng công suất của bảng đơn, cộng thêm 2 ngày làm việc cho chắc) */
 function bnVeDK(x){ var t=x.td||{};
   if(t.eta) return '<div class="db-dk">Dự kiến xong khoảng <b>'+esc(bnNg(t.eta))+'</b>'+(x.dlChot&&t.eta>x.dlChot?' – <b style="color:var(--amber)">có thể trễ deadline chốt '+esc(bnNg(x.dlChot))+'</b>':'')+' <span class="pdesc">(theo công suất xưởng, đã cộng 2 ngày dự phòng)</span></div>';
+  if((t.dung||[]).length&&t.thieu>0&&t.dung.reduce(function(a,z){return a+z.thieu;},0)>=t.thieu) return '<div class="db-dk"><b style="color:var(--amber)">Đơn đang tạm dừng sản xuất</b> – chưa có ngày dự kiến.</div>';
   if(t.etaCho) return '<div class="db-dk pdesc">Có mã trễ hạn quá 30 ngày – chờ ban điều hành đặt hạn mới rồi mới có ngày dự kiến.</div>';
   return ''; }
 /* 17/11: Bảng đơn nhà máy – mọi đơn đang làm, chỉ Mã đơn · Mã sản phẩm · Số đặt · Deadline (nhóm theo kênh, tổng từng kênh) */
@@ -238,7 +239,7 @@ function bnVeBang(){
 function bnVeKin(nhan){ var tk=BNB.tk||[]; if(!tk.length) return '';
   var tong=tk[tk.length-1], ds=tk.slice(0,-1);
   return '<div class="db-kin"><div class="pdesc">Nhà máy kín lịch đến khoảng</div><div class="so">'+(tong.xong?esc(bnNg(tong.xong)):'—')+'</div>'+
-    '<div class="pdesc">Còn <b>'+bnSo(tong.thieu)+'</b> sp phải làm ('+bnSo(tong.don)+' đơn) · công suất '+bnSo(BNB.cs)+' sp/ngày · đã cộng dư khoảng 1 tuần ('+esc(BNB.duKin)+' ngày làm việc). Đơn mới nhận hôm nay thường xếp sau ngày này, trừ đơn lẻ / POD có làn riêng.'+(tong.cho?' Có '+tong.cho+' đơn trễ hạn quá 30 ngày chờ đặt hạn mới (chưa tính).':'')+'</div>'+
+    '<div class="pdesc">Còn <b>'+bnSo(tong.thieu)+'</b> sp phải làm ('+bnSo(tong.don)+' đơn) · công suất '+bnSo(BNB.cs)+' sp/ngày · đã cộng dư khoảng 1 tuần ('+esc(BNB.duKin)+' ngày làm việc). Đơn mới nhận hôm nay thường xếp sau ngày này, trừ đơn lẻ / POD có làn riêng.'+(tong.cho?' Có '+tong.cho+' đơn trễ hạn quá 30 ngày chờ đặt hạn mới (chưa tính).':'')+(tong.dung?' <b>Tạm dừng '+bnSo(tong.dung)+' sp ('+tong.donDung+' đơn) – không tính</b>.':'')+'</div>'+
     '<div style="overflow-x:auto"><table class="db-tk2"><thead><tr><th>Kênh</th><th>Đơn</th><th>SL đặt</th><th>Còn làm</th><th>Xong ~</th></tr></thead><tbody>'+
     ds.map(function(z){ return '<tr><td>'+esc(nhan[z.tab]||z.tab)+'</td><td>'+bnSo(z.don)+'</td><td>'+bnSo(z.sl)+'</td><td>'+bnSo(z.thieu)+'</td><td>'+(z.xong?esc(bnNg(z.xong).slice(0,5)):(z.cho?'chờ hạn':'—'))+'</td></tr>'; }).join('')+
     '<tr class="tong"><td>Tổng</td><td>'+bnSo(tong.don)+'</td><td>'+bnSo(tong.sl)+'</td><td>'+bnSo(tong.thieu)+'</td><td>'+(tong.xong?esc(bnNg(tong.xong).slice(0,5)):'—')+'</td></tr></tbody></table></div><div class="pdesc" style="margin-top:4px">Xong ~ = ngày xong hết hàng còn phải làm của kênh (đã cộng dư ~1 tuần).</div></div>'; }
@@ -250,7 +251,7 @@ function bnBangHtml(){
   ds.forEach(function(d){ var g=nhom[d[0]]||(nhom[d[0]]={n:0,sl:0,don:{}}); g.n++; g.sl+=Number(d[3])||0; g.don[d[1]]=1; });
   ds.slice(0,MAX).forEach(function(d){
     if(d[0]!==tab){ tab=d[0]; var g=nhom[tab]; h+='<tr class="nh"><th colspan="4">'+esc(nhan[tab]||tab)+' <i>· '+Object.keys(g.don).length+' đơn · '+g.n+' mã · '+bnSo(g.sl)+' sp</i></th></tr>'; }
-    h+='<tr><td>'+esc(d[1]||'—')+'</td><td>'+esc(d[2])+'</td><td class="so">'+bnSo(d[3])+'</td><td class="ng'+(d[4]&&d[4]<hn?' qua':'')+'">'+(d[4]?esc(bnNg(d[4])):'—')+'</td></tr>'; });
+    h+='<tr'+(d[5]?' style="opacity:.75"':'')+'><td>'+esc(d[1]||'—')+'</td><td>'+esc(d[2])+(d[5]?' <span class="db-moi" style="background:#f6d365">tạm dừng</span>':'')+'</td><td class="so">'+bnSo(d[3])+'</td><td class="ng'+(d[4]&&d[4]<hn?' qua':'')+'">'+(d[4]?esc(bnNg(d[4])):'—')+'</td></tr>'; });
   return h+'</tbody></table></div>'+(ds.length>MAX?'<div class="pdesc" style="margin-top:6px">Đang hiện '+MAX+' / '+bnSo(ds.length)+' dòng – gõ tìm hoặc chọn kênh để xem gọn hơn.</div>':''); }
 function bnBangO(){ var e=document.getElementById('bnBangDs'); if(e&&BNB&&!BNB.loi) e.innerHTML=bnBangHtml(); }
 /* 17/11: "Người khác đang xem đơn này" – người duyệt đang mở mục Chờ duyệt báo máy chủ mỗi 30 giây (dừng khi rời tab / ẩn trình duyệt) */

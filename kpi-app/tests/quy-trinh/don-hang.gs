@@ -1345,7 +1345,7 @@ function dhLuiNgayLam_(d, n, laLam) { var x = d, k = n, an = 0; while (k > 0 && 
 function dhSoNgayLam_(a, b, laLam) { if (b <= a) return 0; var x = a, n = 0, an = 0; while (x < b && an++ < 800) { x = dhCongNgay_(x, 1); if (laLam(x)) n++; } return n; }   // số ngày làm trong (a, b]
 /* o: dòng đơn (sl, thieu, dl, qua, hen, p2, btp, pl). Trả { BP: { h: hạn chuẩn, n: số ngày chuẩn, m: mức | '', hen, tre: ngày làm trễ } } hoặc null */
 function dhHanChuan_(o, cs, hn, laLam) {
-  var dl = (o && (o.dl || dhDlNgam_(o))) || ''; if (!o || !(o.thieu > 0) || !dl || !(o.sl > 0) || o.phu) return null;
+  var dl = (o && (o.dl || dhDlNgam_(o))) || ''; if (!o || !(o.thieu > 0) || !dl || !(o.sl > 0) || o.phu || o.dung) return null;   // 17/11: mã TẠM DỪNG không có hạn chuẩn bộ phận
   var loai = (o.pl && o.pl.loai) || ''; if (loai === 'PK' || loai === 'NOI') return null;
   var r = o.btp || [], co = function(k) { return r.indexOf(k) >= 0; }; if (!r.length) return null;
   laLam = laLam || dhNgayLamFn_(cs);
@@ -1620,6 +1620,7 @@ function dhGuiEmail_(thu) {
   var pc = {}, don = {}, kenh = {}, tongSl = 0, tongThieu = 0, thieuSX = 0;
   d.don.forEach(function(o) {
     var tc = plChuan_(o.ten), l = (pc[tc] || (pc[tc] = plPhanLoai_(o.ten, o.ghiChu, sua['K:' + tc]))).loai;
+    if (o.dung) return;   // 17/11: đơn TẠM DỪNG không tính vào báo cáo email
     tongSl += o.sl; tongThieu += o.thieu; if (l !== 'PK' && l !== 'NOI') thieuSX += o.thieu;
     var k = o.maDon + '|' + o.tab, g = don[k] || (don[k] = { ma: o.maDon, kenh: o.kenh, nguoiDat: o.nguoiDat || '', sl: 0, thieu: 0, dl: '' });
     g.sl += o.sl; g.thieu += o.thieu; if (o.thieu > 0 && o.dl && (!g.dl || o.dl < g.dl)) g.dl = o.dl;
@@ -2014,7 +2015,7 @@ function dhTab10Tao_() {
   var ss = SpreadsheetApp.openById(DH_SHEET_ID), kq0 = {};
   kq0 = dhTab10DongBo_(ss);   // 16/11 rà soát: đồng bộ lỗi thì DỪNG, không xóa tab (trước nuốt lỗi rồi dựng lại -> mất số vừa nhập)
   var hn = homNayVN_(), den = dhCongNgay_(hn, DH10_NGAY), d = dhDocDon_(true), nam = Number(Utilities.formatDate(new Date(), TZ_VN, 'yyyy'));
-  var ds = d.don.filter(function(o) { var h = o.dl || dhDlNgam_(o); return o.thieu > 0 && !o.phu && h && h >= hn && h <= den; }).map(function(o) { return { o: o, han: o.dl || dhDlNgam_(o) }; });
+  var ds = d.don.filter(function(o) { var h = o.dl || dhDlNgam_(o); return o.thieu > 0 && !o.phu && !o.dung && h && h >= hn && h <= den; }).map(function(o) { return { o: o, han: o.dl || dhDlNgam_(o) }; });
   ds.sort(function(a, b) { return a.han.localeCompare(b.han) || String(a.o.tab).localeCompare(String(b.o.tab)) || (a.o.dong - b.o.dong); });
   var F = dh10Truong_(), dau = DH10_INFO.concat(F.map(function(f) { return f[1]; })).concat([DH10_MA_COT]), ra = [dau], goc = [], theoTab = {}, so = 0;
   ds.forEach(function(x) { (theoTab[x.o.tab] = theoTab[x.o.tab] || []).push(x); });

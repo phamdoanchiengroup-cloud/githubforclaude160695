@@ -19,6 +19,7 @@ const tab = (ten, so, kieu) => { const r = [H]; for (let i = 0; i < so; i++) {
   r.push(['#' + ten.slice(0, 3).replace(/\W/g, 'X') + i + '-' + ('0' + ngay).slice(-2) + '/' + thang, TEN[rnd(TEN.length)], '', sl, thieu, dl, '', qua || '', qua ? Math.floor(qua / 2) : '', '', '', '', '']); }
   return r; };
 const TABS = { DEALER: tab('DEALER', 14), KHO: tab('KHO', 16), 'WEB LẺ ĐƠN THƯỜNG': tab('WEB', 18, 'le'), 'WEB LẺ CUSTOM': tab('CUS', 8, 'le'), OEM: tab('OEM', 12), 'A ĐÔNG': tab('ADO', 6), 'POD-A.BÁCH': tab('POD', 9, 'le') };
+['GAY NOVA X1 MAU DO', 'NGON RHINO 12.4', 'CHUOI CARBON EVO'].forEach((ten, i) => TABS.KHO.push(['#KHO-DUNG-02/11', ten, '', 60, i === 2 ? 0 : 60, '30/11', '', '', '', '', '', '', '']));   // 17/11: đơn sẽ tạm dừng cả đơn (mã thứ 3 đã xong)
 TABS.OEM.push(['#OEM-HUY-01/11', 'GAY NOVA X1 MAU DO', '', 40, 40, '20/12', '', '', '', '', '', '', '']);   // sẽ hủy
 TABS['ĐẾN HẠN 10 NGÀY'] = [['KÊNH', 'MÃ ĐƠN', 'LOẠI HÀNG CẦN SẢN XUẤT', 'SL ĐẶT', 'CÒN THIẾU', 'HẠN DÙNG', 'CÒN (NGÀY)', 'DEADLINE', 'HẠN MỚI HT ĐƠN CŨ', 'MÃ DÒNG WEB']];
 c.__ngoai = { [c.DH_SHEET_ID]: { ten: 'x', sheets: TABS } };
@@ -76,8 +77,8 @@ ok(x.td.eta > sau, 'luôn muộn hơn ngày bảng đơn hiện cho sản xuất
 
 console.log('\n3. Bảng đơn nhà máy (4 cột)');
 r = c.__goi('layBangDonNhaMay', B2);
-ok(r.ok && r.ds.length > 50 && r.ds.every(d => d.length === 5), 'Bán hàng khác cũng xem được – mỗi dòng chỉ [kênh, mã đơn, mã SP, số đặt, deadline] (' + (r.ds || []).length + ' dòng)', r.msg || (r.ds || [])[0]);
-ok(r.ds.every(d => d.length === 5) && !JSON.stringify(r).match(/qua"|nguoiDat|ghiChu|uuTien|dong"/), 'từng dòng không lộ còn thiếu / tiến độ bộ phận / ghi chú / người đặt (chỉ thống kê theo kênh có tổng còn phải làm)');
+ok(r.ok && r.ds.length > 50 && r.ds.every(d => d.length === 6 && (d[5] === 0 || d[5] === 1)), 'Bán hàng khác cũng xem được – mỗi dòng chỉ [kênh, mã đơn, mã SP, số đặt, deadline, cờ tạm dừng] (' + (r.ds || []).length + ' dòng)', r.msg || (r.ds || [])[0]);
+ok(r.ds.every(d => d.length === 6 && (d[5] === 0 || d[5] === 1)) && !JSON.stringify(r).match(/qua"|nguoiDat|ghiChu|uuTien|dong"/), 'từng dòng không lộ còn thiếu / tiến độ bộ phận / ghi chú / người đặt (chỉ thống kê theo kênh có tổng còn phải làm)');
 ok(!r.ds.some(d => d[1] === '#OEM-HUY-01/11'), 'không có mã đã hủy');
 ok(r.ds.some(d => d[1] === '#BH9-17/11' && d[3] === 30), 'có đơn vừa duyệt');
 const thuTab = r.ds.map(d => c.DH_TABS.indexOf(d[0])); ok(thuTab.every((v, i) => !i || v >= thuTab[i - 1]), 'xếp theo kênh như Sheet (Dealer → Kho → Web lẻ … → POD)');
@@ -138,5 +139,54 @@ r = c.__goi('luuBangDon', own, { ds: [{ tab: 'OEM', dong: 3, ten: TABS.OEM[2][1]
 ok(r.ok && ssDH().getSheetByName('OEM').getRange(3, 4).getValue() === 77, 'web vẫn sửa SL được khi đã khóa (tài khoản chạy web)', r);
 r = c.__goi('datKhoaSheetDon', own, { muc: '' }); ok(r.ok && prs().length === 0 && c.__goi('layKhoaSheetDon', gd).tt.muc === '', 'gỡ khóa: xóa hết khóa của web', r);
 
+{
+console.log('\n6. Tạm dừng sản xuất (17/11)');
+const D0 = c.__goi('layDonHangXuong', own, true), dongK = D0.don.filter(o => o.maDon === '#KHO-DUNG-02/11'), o1 = dongK[0];
+const truoc = webMoPhong(D0, hn, null), kinTruoc = c.__goi('layBangDonNhaMay', gd).tk.slice(-1)[0];
+ok(dongK.length === 3 && truoc['#KHO-DUNG-02/11|KHO'], 'đơn #KHO-DUNG-02/11 có 3 mã, đang được xếp lịch ' + truoc['#KHO-DUNG-02/11|KHO']);
+const DP = x => Object.assign({ loai: 'DUNG_DON', tab: 'KHO', dong: o1.dong, ten: o1.ten, maDon: o1.maDon, lyDo: 'Chờ khách thanh toán', lenh: 'dung00001' }, x);
+ok(!c.__goi('huyBotDon', tp, DP()).ok && !c.__goi('huyBotDon', c077, DP()).ok, 'TP Sơn / C077 không tạm dừng được');
+ok(!c.__goi('huyBotDon', gd, DP({ lyDo: 'abc', lenh: null })).ok, 'thiếu lý do → chặn');
+ok(!c.__goi('huyBotDon', gd, DP({ hen: '2026-11-01', lenh: null })).ok, 'ngày chạy lại đã qua → chặn');
+const dongXong = dongK.find(o => !(o.thieu > 0)); ok(!c.__goi('huyBotDon', gd, DP({ loai: 'DUNG', dong: dongXong.dong, ten: dongXong.ten, lenh: null })).ok, 'mã đã làm xong → không tạm dừng');
+r = c.__goi('huyBotDon', gd, DP({ hen: '2026-11-25' }));
+ok(r.ok && r.n === 2 && r.nhom && /bỏ qua 1/.test(r.msg), r.msg + ' (mã đã xong bỏ qua)', r);
+const D1 = c.__goi('layDonHangXuong', own, true), dk = D1.don.filter(o => o.maDon === '#KHO-DUNG-02/11');
+ok(dk.length === 3 && dk.filter(o => o.dung).length === 2 && dk.filter(o => o.dung).every(o => o.st === 'tamDung' && o.dung.ly === 'Chờ khách thanh toán' && o.dung.hen === '2026-11-25'), 'đơn VẪN hiện đủ 3 dòng; 2 dòng có cờ tạm dừng (lý do, hẹn 25/11), trạng thái "tamDung"', dk.map(o => [o.st, o.dung]));
+const sau6 = webMoPhong(D1, hn, null), R6 = c.dbkMoPhong_(c.dbkGiau_(c.dhDocDon_(false)), null, cs);
+ok(!sau6['#KHO-DUNG-02/11|KHO'] && !R6.m['#KHO-DUNG-02/11|KHO'], 'web + máy chủ: đơn tạm dừng ra khỏi mô phỏng công suất');
+const k6 = Object.keys(sau6); ok(k6.every(z => (R6.m[z] || {}).eta === sau6[z]), 'ngày xong các đơn khác: máy chủ vẫn trùng web 100%');
+ok(k6.some(z => truoc[z] && sau6[z] < truoc[z]) && k6.every(z => !truoc[z] || sau6[z] <= truoc[z]), 'các đơn khác xong SỚM hơn hoặc bằng (không đơn nào muộn đi)', k6.filter(z => sau6[z] < truoc[z]).length);
+const shK = c.SpreadsheetApp.openById(c.DH_SHEET_ID).getSheetByName('KHO'), mauD = () => dongK.map(o => shK.getRange(o.dong, 1, 1, 3).getBackgrounds()[0][0]);
+ok(mauD().join() === '#fff2cc,#fff2cc,#ffffff', 'Sheet: 2 dòng tạm dừng tô vàng nhạt, dòng đã xong giữ màu', mauD());
+const bt = c.__goi('layBangDonNhaMay', B1), tkK = bt.tk.find(z => z.tab === 'KHO'), tg = bt.tk.slice(-1)[0];
+ok(bt.ds.filter(d => d[1] === '#KHO-DUNG-02/11').every(d => d[5] === 1) && tkK.dung === 120 && tg.dung === 120 && tg.donDung === 1 && tg.thieu === kinTruoc.thieu - 120, 'Bảng đơn nhà máy: dòng có cờ tạm dừng; thống kê tách "tạm dừng 120 sp (1 đơn)", còn làm giảm 120', [tkK, tg.thieu, kinTruoc.thieu]);
+ok(tg.xong <= kinTruoc.xong, 'ngày kín lịch không muộn đi (' + kinTruoc.xong + ' → ' + tg.xong + ')');
+r = c.__goi('huyBotDon', gd, DP({ loai: 'DUNG', lenh: null })); ok(!r.ok && /đang tạm dừng/.test(r.msg), 'tạm dừng lại mã đang dừng → báo đang dừng', r);
+r = c.__goi('huyBotDon', c067, { loai: 'BOT', tab: 'KHO', dong: o1.dong, ten: o1.ten, maDon: o1.maDon, slMoi: 40, lyDo: 'Khách giảm số' });
+const o1b = c.__goi('layDonHangXuong', own, true).don.find(o => o.dong === o1.dong && o.tab === 'KHO');
+ok(r.ok && o1b.sl === 40 && o1b.dung, 'bớt SL mã đang tạm dừng: vẫn giữ tạm dừng (2 lớp riêng)', [r.msg, o1b.sl, !!o1b.dung]);
+/* nhắc */
+r = c.__goi('demDonBanCho', gd); ok(r.dung && r.dung.tong === 2 && r.dung.den === 0, 'chưa đến ngày hẹn: chưa nhắc', r.dung);
+const shH = c.dhhSS_(false).getSheetByName('DongHuy'), hH = shH.rows[0], iHen = hH.indexOf('Hen'), iLoai = hH.indexOf('Loai'), iLuc = hH.indexOf('Luc');
+shH.rows.forEach((row, i) => { if (i && row[iLoai] === 'DUNG') row[iHen] = '2026-11-17'; }); c.dhhXoaCache_();
+r = c.__goi('demDonBanCho', gd); ok(r.dung && r.dung.den === 1 && r.dung.ds[0].ma === '#KHO-DUNG-02/11', 'đến ngày hẹn chạy lại → Việc hôm nay nhắc 1 đơn', r.dung);
+shH.rows.forEach((row, i) => { if (i && row[iLoai] === 'DUNG') { row[iHen] = ''; row[iLuc] = '2026-10-30 08:00:00'; } }); c.dhhXoaCache_();
+r = c.__goi('demDonBanCho', c067); ok(r.dung && r.dung.den === 1 && r.dung.ds[0].ngay === 18, 'không ghi ngày hẹn, đã dừng 18 ngày (> 14) → nhắc', r.dung);
+/* Bán hàng thấy */
+r = c.__goi('luuDonBan', B1, { maDon: '#BH7-17/11', tab: 'OEM', dong: [{ ten: 'GAY NOVA X1 MAU DO', sl: 10 }], lenh: 'dk0000007' }); const id7 = r.id;
+c.__goi('duyetDonBan', gd, { id: id7, hanh: 'DUYET', dl: '2026-12-20', lenh: 'dk0000008' });
+const o7 = c.__goi('layDonHangXuong', own, true).don.find(o => o.maDon === '#BH7-17/11');
+r = c.__goi('huyBotDon', gd, { loai: 'DUNG', tab: 'OEM', dong: o7.dong, ten: o7.ten, maDon: o7.maDon, lyDo: 'Khách tạm hoãn' }); ok(r.ok, 'tạm dừng đơn của Bán hàng', r);
+x = c.__goi('layDonBan', B1).ds.find(z => z.id === id7);
+ok(x.td.dung.length === 1 && x.td.dung[0].ly === 'Khách tạm hoãn' && !x.td.eta, 'Bán hàng thấy mã tạm dừng + lý do, không có ngày dự kiến', x.td);
+/* chạy lại */
+r = c.__goi('hoanTacHuyDon', gd, { nhom: dk.find(o => o.dung).dung.nhom, lyDo: 'Chạy lại sản xuất' });
+const D2 = c.__goi('layDonHangXuong', own, true);
+ok(r.ok && r.chay === 1 && /Đã chạy lại/.test(r.msg) && D2.don.filter(o => o.maDon === '#KHO-DUNG-02/11').every(o => !o.dung) && webMoPhong(D2, hn, null)['#KHO-DUNG-02/11|KHO'], r.msg + ' → vào lại mô phỏng', r);
+ok(mauD().join() === '#ffffff,#ffffff,#ffffff', 'Sheet: trả lại màu cũ', mauD());
+ok(c.__goi('layDonHangXuong', own, true).don.find(o => o.dong === o1.dong && o.tab === 'KHO').sl === 40, 'bớt SL vẫn còn sau khi chạy lại');
+
+}
 console.log('\n' + (l ? '✗ ' + l + ' / ' + n + ' lỗi' : '✓ Đạt ' + n + ' / ' + n));
 process.exit(l ? 1 : 0);

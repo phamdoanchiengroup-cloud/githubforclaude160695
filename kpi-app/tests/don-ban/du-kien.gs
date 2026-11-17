@@ -63,7 +63,7 @@ function dbkMoPhong_(G, them, cs) {   // G = dbkGiau_(); them = đơn thử {ma,
   };
   /* nhóm đơn như dhCSDon: dòng còn thiếu, không phải phụ kiện / hàng nối, gom theo mã đơn + tab */
   var m = {}, ds = [];
-  G.don.forEach(function(o) { var l = (o.pl || {}).loai; if (!(o.thieu > 0) || l === 'PK' || l === 'NOI') return;
+  G.don.forEach(function(o) { var l = (o.pl || {}).loai; if (!(o.thieu > 0) || l === 'PK' || l === 'NOI' || o.dung) return;   // 17/11: TẠM DỪNG không tính (như dhLaSX trên web)
     var ma = o.maDon || '(không mã)', k = ma + '|' + (o.tab || ''), g = m[k];
     if (!g) { g = m[k] = { ma: ma, tab: o.tab, thieu: 0, dong: [], dl: '' }; ds.push(g); }
     g.thieu += o.thieu; g.dong.push(o); if (o.dl && (!g.dl || o.dl < g.dl)) g.dl = o.dl; });
@@ -121,15 +121,15 @@ function layBangDonNhaMay(token) {
   var tk = [];
   try {
     var R = { m: {} }, gia = [{ tt: 'DA_DUYET', td: null }]; dbkGanDuKien_(gia, d); R = gia.R || R;
-    var theo = {}, tong = { tab: '', don: {}, sl: 0, thieu: 0, eta: '', cho: 0 };
-    ds.forEach(function(o) { var x = theo[o.tab] || (theo[o.tab] = { tab: o.tab, don: {}, sl: 0, thieu: 0, eta: '', cho: 0 }); [x, tong].forEach(function(z) { z.don[(o.maDon || '(không mã)') + '|' + o.tab] = 1; z.sl += o.sl || 0; z.thieu += o.thieu || 0; }); });
+    var theo = {}, tong = { tab: '', don: {}, sl: 0, thieu: 0, eta: '', cho: 0, dung: 0, donDung: {} };
+    ds.forEach(function(o) { var x = theo[o.tab] || (theo[o.tab] = { tab: o.tab, don: {}, sl: 0, thieu: 0, eta: '', cho: 0, dung: 0, donDung: {} }); [x, tong].forEach(function(z) { var kd = (o.maDon || '(không mã)') + '|' + o.tab; if (o.dung) { z.dung += o.thieu || 0; z.donDung[kd] = 1; return; } z.don[kd] = 1; z.sl += o.sl || 0; z.thieu += o.thieu || 0; }); });   // 17/11: TẠM DỪNG tách riêng, không tính
     Object.keys(R.m || {}).forEach(function(k) { var g = R.m[k], x = theo[g.tab]; if (!x) return; [x, tong].forEach(function(z) { if (!g.eta || g.eta >= '9999') z.cho++; else if (g.eta > z.eta) z.eta = g.eta; }); });
-    var ra = function(z) { return { tab: z.tab, don: Object.keys(z.don).length, sl: z.sl, thieu: z.thieu, xong: z.eta && R.congN ? R.congN(z.eta, DBK_DU_KIN) : '', cho: z.cho }; };
+    var ra = function(z) { return { tab: z.tab, don: Object.keys(z.don).length, sl: z.sl, thieu: z.thieu, dung: z.dung, donDung: Object.keys(z.donDung).length, xong: z.eta && R.congN ? R.congN(z.eta, DBK_DU_KIN) : '', cho: z.cho }; };
     tk = Object.keys(theo).sort(function(a, b) { var ta = thu[a] != null ? thu[a] : 99, tb = thu[b] != null ? thu[b] : 99; return (ta - tb) || a.localeCompare(b); }).map(function(t) { return ra(theo[t]); });
     tk.push(ra(tong));
   } catch (eTK) { tk = []; }
   return sach_({ ok: true, luc: d.luc || '', het: het ? 1 : 0, n: ds.length, kenh: dbKenh_(), tk: tk, duKin: DBK_DU_KIN, cs: dhCongSuat_().sp,
-    ds: ds.slice(0, DBK_BANG_MAX).map(function(o) { return [o.tab, String(o.maDon || ''), o.ten, o.sl || 0, o.dl || '']; }) });
+    ds: ds.slice(0, DBK_BANG_MAX).map(function(o) { return [o.tab, String(o.maDon || ''), o.ten, o.sl || 0, o.dl || '', o.dung ? 1 : 0]; }) });   // [5] = 1: đang tạm dừng
 }
 /* "Người khác đang xem đơn này": chỉ người duyệt. ids = đơn chờ duyệt đang hiện trên màn (≤ 10). Nhớ 120 giây, coi là đang xem nếu báo trong 75 giây */
 function dbDangXem(token, ids) {

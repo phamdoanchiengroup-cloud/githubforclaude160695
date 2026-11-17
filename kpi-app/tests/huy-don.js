@@ -207,6 +207,23 @@ ok(!r.ok && /1 giờ/.test(r.msg), 'quá 30 lần / giờ → chặn', [so, r]);
   ok(ht && ht[1][0].id === 'Habc123456789' && /bấm nhầm/i.test(ht[1][0].lyDo) && !(await pg.$('#dhHoan')), 'bấm Hoàn tác: gọi hoanTacHuyDon đúng bản ghi, lý do "bấm nhầm" tự điền, thanh tắt', ht);
   await pg.evaluate(() => dhHoan10({ ok: true, msg: 'Đã hủy cả đơn', ids: ['Ha', 'Hb'], nhom: 'Dabc1234567' })); await pg.waitForTimeout(10500);
   ok(!(await pg.$('#dhHoan')), 'hết 10 giây thanh tự tắt (vẫn hoàn tác được ở mục Đơn đã hủy)');
+  /* 17/11: tạm dừng sản xuất trên web */
+  w = await pg.evaluate(() => { const o = {}, ds = DH.don.filter(x => x.tab === 'OEM' && x.thieu > 0 && !x.phu), r1 = ds[0];
+    DHB.mo = ''; dhBNoi(); DHB.tab = 'OEM'; o.formDung0 = dhBForm(r1); DHHuy.mo = r1.tab + '|' + r1.dong + '|DUNG'; o.formDung = dhBForm(r1); DHHuy.mo = '';
+    const k = (r1.maDon || '(không mã)') + '|' + r1.tab, coTruoc = dhCSDon().some(g => g.ma + '|' + g.tab === k && g.dong.indexOf(r1) >= 0);
+    r1.dung = { id: 'Hdung0000001', nhom: '', ly: 'Chờ khách thanh toán', ai: 'Giám đốc', luc: '2026-10-25 08:00:00', hen: '' }; r1.st = 'tamDung';
+    o.ra = coTruoc && !dhCSDon().some(g => g.dong.indexOf(r1) >= 0);
+    dhVeLai(); o.nhan = (document.querySelector('.dh-dung') || {}).textContent || ''; o.nhanCls = (document.querySelector('.dh-dung') || {}).className || ''; o.chip = (document.querySelector('.dh-tabb.dung') || {}).textContent || '';
+    o.form = dhBForm(r1); DHHuy.mo = r1.tab + '|' + r1.dong + '|CHAY'; o.formChay = dhBForm(r1); DHHuy.mo = '';
+    DHB.tab = '@dung'; dhVeLai(); o.tom = (document.querySelector('.dh-dg-don') || {}).textContent || ''; o.dong = document.querySelectorAll('.dh-sh tbody td.c1').length;
+    DHB.tab = 'OEM'; return o; });
+  ok(/Tạm dừng mã này/.test(w.formDung0) && /Dự kiến chạy lại/.test(w.formDung) && /Chờ khách thanh toán/.test(w.formDung) && /không tính/.test(w.formDung) && /disabled/.test(w.formDung), 'C019: bảng nổi có "Tạm dừng mã này"; form: lý do bắt buộc (có lý do mẫu) + ngày dự kiến chạy lại + giải thích không tính', w.formDung.slice(0, 120));
+  ok(w.ra, 'mã tạm dừng ra khỏi danh sách tính công suất (dhCSDon)');
+  ok(/Tạm dừng · 23 ngày/.test(w.nhan) && /\bcam\b/.test(w.nhanCls) && /Tạm dừng/.test(w.chip), 'dòng vẫn hiện, nhãn "Tạm dừng · 23 ngày" màu cam (> 14 ngày); có chip mục Tạm dừng', [w.nhan, w.nhanCls, w.chip]);
+  ok(/Đang tạm dừng 23 ngày/.test(w.form) && /Chạy lại mã này/.test(w.form) && /làm dở/.test(w.form), 'bảng nổi mã đang dừng: lý do, số ngày, nút Chạy lại, nhắc chỉ nhập hàng làm dở');
+  ok(/Deadline mới/.test(w.formChay) && /Chạy lại sản xuất/.test(w.formChay), 'Chạy lại: hiện deadline hiện tại / ngày dự kiến nếu chạy lại + ô deadline mới');
+  ok(/23 ngày/.test(w.tom) && /quá 14 ngày/.test(w.tom) && w.dong === 1, 'mục Tạm dừng: thẻ đơn (23 ngày, nhắc "đã quá 14 ngày – chạy lại hay hủy?") + bảng 1 dòng để nhập số', [w.tom, w.dong]);
+  if (process.env.ANH) { await pg.evaluate(() => { DHB.tab = '@dung'; dhVeLai(); }); await pg.screenshot({ path: process.env.ANH + '/dung-muc.png' }); }
   if (process.env.ANH) { await pg.evaluate(() => { DHB.mo = ''; dhBNoi(); DHB.tab = 'OEM'; dhVeLai(); }); await pg.screenshot({ path: process.env.ANH + '/huy-bang.png' }); }
   await pg.close();
   /* TP Sơn: không có khối điều chỉnh; chuông có số; nhãn "bộ phận bạn đang giữ" */

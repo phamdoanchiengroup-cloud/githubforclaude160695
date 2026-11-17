@@ -9,10 +9,11 @@
    - Quyền: C019 / C056 / C067 (mã NV gắn đúng 1 tài khoản đang dùng) + chủ sở hữu. Bắt buộc lý do; có hoàn tác (cũng phải ghi lý do).
    Kiểm thử: tests/huy-don.js */
 var DH_HUY_NV = ['C019', 'C056', 'C067'];   // C019 Giám đốc · C056 Phó GĐ SX · C067 chị Kim Loan (C077 KHÔNG có quyền này) – hằng riêng, không dùng chung DH_UU_NV
-var DHH_TEN = 'CSDL Đơn hàng (web)', DHH_PROP = 'DH_CSDL_ID', DHH_CACHE = 'DH_HUY_v1', DHH_XAM = '#d9d9d9';
+var DHH_TEN = 'CSDL Đơn hàng (web)', DHH_PROP = 'DH_CSDL_ID', DHH_CACHE = 'DH_HUY_v1', DHH_XAM = '#d9d9d9', DHH_VANG = '#fff2cc';   // 17/11: vàng nhạt = TẠM DỪNG
+var DHH_MAU = { HUY: DHH_XAM, DUNG: DHH_VANG }, DHH_DUNG_LAU = 14;   // 17/11: tạm dừng quá 14 ngày -> nhắc
 var DHH_LY_MIN = 5, DHH_LY_MAX = 200, DHH_DON_MAX = 50, DHH_GIO_MAX = 30, DHH_WEB_MAX = 300;
 var DHH_COT = {
-  DongHuy: ['Id', 'MaDong', 'Tab', 'MaDon', 'Ten', 'Loai', 'SLCu', 'SLMoi', 'LyDo', 'Ai', 'Tk', 'MaNV', 'Luc', 'TienDo', 'MauCu', 'DongSheet', 'TrangThai', 'Nhom', 'NguoiHoanTac', 'TkHoanTac', 'LucHoanTac', 'LyDoHoanTac'],
+  DongHuy: ['Id', 'MaDong', 'Tab', 'MaDon', 'Ten', 'Loai', 'SLCu', 'SLMoi', 'LyDo', 'Ai', 'Tk', 'MaNV', 'Luc', 'TienDo', 'MauCu', 'DongSheet', 'TrangThai', 'Nhom', 'NguoiHoanTac', 'TkHoanTac', 'LucHoanTac', 'LyDoHoanTac', 'Hen'],   // 17/11: Hen = dự kiến chạy lại (TẠM DỪNG)
   SuKien: ['Luc', 'Ai', 'Tk', 'MaNV', 'ThaoTac', 'Id', 'MaDong', 'ChiTiet', 'Lenh'],
   ThongBao: ['Tk', 'DaXemDen']
 };
@@ -55,6 +56,7 @@ function dhhThem_(ss, t, ds) {
   if (!ds.length) return;
   var sh = ss.getSheetByName(t), c = DHH_COT[t];
   if (!sh) { sh = ss.insertSheet(t); sh.getRange(1, 1, 1, c.length).setValues([c]); }
+  else if (sh.getLastColumn() < c.length) sh.getRange(1, 1, 1, c.length).setValues([c]);   // 17/11: thêm cột mới vào cuối (vd Hen) – sửa dòng tiêu đề
   sh.getRange(sh.getLastRow() + 1, 1, ds.length, c.length).setNumberFormat('@')
     .setValues(ds.map(function(o) { return c.map(function(k) { return chuAnToan_(o[k] == null ? '' : String(o[k])); }); }));
 }
@@ -88,13 +90,22 @@ function dhApPhu_(d, phu) {
   var out = {}; for (var k in d) out[k] = d[k];
   out.huyKhop = {}; out.phuDs = phu || [];
   var hl = (phu || []).filter(function(x) { return x.TrangThai === 'HIEU_LUC'; }); if (!hl.length) return out;
-  var m = {}; hl.forEach(function(x) { m[String(x.MaDong)] = x; });
+  var m = {}, md = {}; hl.forEach(function(x) { if (x.Loai === 'DUNG') md[String(x.MaDong)] = x; else m[String(x.MaDong)] = x; });   // 17/11: TẠM DỪNG là lớp riêng (một mã có thể vừa bớt vừa tạm dừng)
   var ks = dhKhoaDs_(d.don), huy3 = {}, huy2 = {}, don = [];
   d.don.forEach(function(o, i) {
-    var x = m[ks[i]]; if (!x) { don.push(o); return; }
-    out.huyKhop[x.Id] = 1;
-    if (x.Loai === 'HUY') { huy3[(o.maDon || '') + '|' + o.ten + '|' + o.tab] = 1; huy2[(o.maDon || '') + '|' + o.ten] = 1; return; }
-    don.push(dhApBot_(o, x));
+    var x = m[ks[i]], z = md[ks[i]], o2 = o;
+    if (x) {
+      out.huyKhop[x.Id] = 1;
+      if (x.Loai === 'HUY') { huy3[(o.maDon || '') + '|' + o.ten + '|' + o.tab] = 1; huy2[(o.maDon || '') + '|' + o.ten] = 1; return; }
+      o2 = dhApBot_(o, x);
+    }
+    if (z) {   /* TẠM DỪNG: vẫn hiện, nhập số được; không tính vào công suất / ngày dự kiến / trễ hạn / tab 10 ngày / hạn chuẩn / email */
+      out.huyKhop[z.Id] = 1;
+      var c = {}; for (var k in o2) c[k] = o2[k];
+      c.dung = { id: z.Id, nhom: z.Nhom || '', ly: z.LyDo, ai: z.Ai, luc: z.Luc, hen: z.Hen || '' }; if (c.thieu > 0) c.st = 'tamDung';
+      o2 = c;
+    }
+    don.push(o2);
   });
   out.don = don;
   out.uu = (d.uu || []).filter(function(o) { return !huy3[(o.maDon || '') + '|' + o.ten + '|' + o.tab]; });   // tab ĐƠN ƯU TIÊN = bản chép (tab đã ánh xạ về kênh)
@@ -116,7 +127,7 @@ function dhhWeb_(me, d) {
     var td = {}; try { td = JSON.parse(x.TienDo || '{}'); } catch (e) {}
     var giu = []; if (td.dn && td.dn.o) giu.push(td.dn.o); Object.keys(td.qua || {}).forEach(function(k) { if (td.qua[k] > 0 && giu.indexOf(k) < 0) giu.push(k); });
     var hl = x.TrangThai === 'HIEU_LUC', ht = !hl;
-    return { id: x.Id, tab: x.Tab, kenh: DH_NHAN_TAB[x.Tab] || x.Tab, maDon: x.MaDon, ten: x.Ten, loai: x.Loai, slCu: dhhSo_(x.SLCu), slMoi: dhhSo_(x.SLMoi), ly: x.LyDo, ai: x.Ai, luc: x.Luc,
+    return { hen: x.Hen || '', id: x.Id, tab: x.Tab, kenh: DH_NHAN_TAB[x.Tab] || x.Tab, maDon: x.MaDon, ten: x.Ten, loai: x.Loai, slCu: dhhSo_(x.SLCu), slMoi: dhhSo_(x.SLMoi), ly: x.LyDo, ai: x.Ai, luc: x.Luc,
       td: td, giu: giu, hl: hl ? 1 : 0, moCoi: hl && !khop[x.Id] ? 1 : 0, nhom: x.Nhom || '', toi: x.Tk === tk ? 1 : 0,
       htAi: ht ? x.NguoiHoanTac : '', htLuc: ht ? x.LucHoanTac : '', htLy: ht ? x.LyDoHoanTac : '',
       moi: ((x.Luc > xem && x.Tk !== tk) || (ht && x.LucHoanTac > xem && x.TkHoanTac !== tk)) ? 1 : 0 };
@@ -132,12 +143,15 @@ function dhhRateOk_(ss, tk) {   // tối đa 30 lần hủy / bớt / hoàn tác
 }
 function dhhLenh_(p) { var l = String(p && p.lenh || ''); return /^[A-Za-z0-9_-]{6,40}$/.test(l) ? l : ''; }
 
-/* p = { loai: 'HUY' | 'BOT' | 'HUY_DON', tab, dong, ten, maDon, slMoi (BOT), lyDo, lenh (mã yêu cầu chống bấm 2 lần) } */
+/* p = { loai: 'HUY' | 'BOT' | 'HUY_DON' | 'DUNG' | 'DUNG_DON' (17/11 tạm dừng mã / cả đơn), tab, dong, ten, maDon, slMoi (BOT), hen (DUNG, tùy chọn), lyDo, lenh } */
 function huyBotDon(token, p) {
   var q = dhQuyenDon_(token); if (q.loi) return q.loi;
   if (!dhCoHuy_(q.me)) return sach_({ ok: false, msg: 'Chỉ Giám đốc (C019), Phó GĐ sản xuất (C056) và chị Kim Loan (C067) được hủy / bớt mã.' });
   p = p || {};
-  var loai = String(p.loai || ''); if (['HUY', 'BOT', 'HUY_DON'].indexOf(loai) < 0) return sach_({ ok: false, msg: 'Thao tác không hợp lệ.' });
+  var loai = String(p.loai || ''); if (['HUY', 'BOT', 'HUY_DON', 'DUNG', 'DUNG_DON'].indexOf(loai) < 0) return sach_({ ok: false, msg: 'Thao tác không hợp lệ.' });
+  var laDung = loai === 'DUNG' || loai === 'DUNG_DON', caDon = loai === 'HUY_DON' || loai === 'DUNG_DON', hen = String(p.hen || '').trim();
+  if (laDung && hen && (!dhNgayThat_(hen) || hen < homNayVN_() || hen > dhCongNgay_(homNayVN_(), 366))) return sach_({ ok: false, msg: 'Ngày dự kiến chạy lại không hợp lệ (từ hôm nay đến 1 năm).' });
+  if (!laDung) hen = '';
   var ly = dhhLy_(p.lyDo); if (ly.loi) return sach_({ ok: false, msg: ly.loi });
   var tab = String(p.tab || '').trim().slice(0, 60), dong = Number(p.dong), ten = String(p.ten || '').replace(/\s+/g, ' ').trim();
   if (!tab || DH_TAB_LOAI.test(tab) || !(dong >= 2 && dong <= DH_TAB_MOI_DONG && Math.floor(dong) === dong) || !ten) return sach_({ ok: false, msg: 'Dòng không hợp lệ.' });
@@ -155,22 +169,26 @@ function huyBotDon(token, p) {
     if (!o0 || o0.ten !== ten || (p.maDon != null && String(p.maDon) !== String(o0.maDon || ''))) return sach_({ ok: false, cu: true, msg: 'Dòng này vừa đổi trong Sheet – bấm Làm mới rồi thử lại.' });
     var ssDH = SpreadsheetApp.openById(DH_SHEET_ID), sh = dhTabGhi_(ssDH, tab), meta = sh ? dhMetaTab_(sh, tab) : null;
     if (!sh || !meta || DH_TAB_LOAI.test(String(sh.getName()).trim())) return sach_({ ok: false, msg: 'Chỉ hủy / bớt được ở tab kênh đơn hàng.' });
-    var ds = loai === 'HUY_DON' ? dg.don.map(function(o, i) { return [o, i]; }).filter(function(z) { return !z[0].phu && z[0].tab === tab && (z[0].maDon || '') === (o0.maDon || ''); }) : [[o0, i0]];
-    if (loai === 'HUY_DON' && (!o0.maDon || o0.maDon === '(không mã)')) return sach_({ ok: false, msg: 'Dòng không có mã đơn – hủy từng mã.' });
-    if (ds.length > DHH_DON_MAX) return sach_({ ok: false, msg: 'Đơn có ' + ds.length + ' mã – hủy cả đơn tối đa ' + DHH_DON_MAX + ' mã một lần.' });
+    var ds = caDon ? dg.don.map(function(o, i) { return [o, i]; }).filter(function(z) { return !z[0].phu && z[0].tab === tab && (z[0].maDon || '') === (o0.maDon || ''); }) : [[o0, i0]];
+    if (caDon && (!o0.maDon || o0.maDon === '(không mã)')) return sach_({ ok: false, msg: 'Dòng không có mã đơn – ' + (laDung ? 'tạm dừng' : 'hủy') + ' từng mã.' });
+    if (loai === 'DUNG' && !(o0.thieu > 0)) return sach_({ ok: false, msg: 'Mã này đã làm xong – không cần tạm dừng.' });
+    if (ds.length > DHH_DON_MAX) return sach_({ ok: false, msg: 'Đơn có ' + ds.length + ' mã – ' + (laDung ? 'tạm dừng' : 'hủy') + ' cả đơn tối đa ' + DHH_DON_MAX + ' mã một lần.' });
     /* đọc lại đúng các dòng trong Sheet: tên SP + SL đặt phải khớp (Sheet vừa chèn / xóa dòng -> từ chối, không tô nhầm) */
     var nr = sh.getLastRow(), dMax = Math.max.apply(null, ds.map(function(z) { return z[0].dong; }));
     if (dMax > nr) return sach_({ ok: false, cu: true, msg: 'Dòng này vừa đổi trong Sheet – bấm Làm mới rồi thử lại.' });
     var khoi = sh.getRange(1, 1, dMax, Math.max(meta.ten, meta.sl) + 1).getValues();
     var lech = ds.filter(function(z) { var r = khoi[z[0].dong - 1] || []; return String(r[meta.ten] == null ? '' : r[meta.ten]).replace(/\s+/g, ' ').trim() !== z[0].ten || dhSo_(r[meta.sl]) !== z[0].sl; });
     if (lech.length) return sach_({ ok: false, cu: true, msg: 'Sheet vừa đổi ở dòng ' + lech[0][0].dong + ' – bấm Làm mới rồi thử lại.' });
-    var ss = dhhSS_(true), tatCa = dhhDoc_(ss, 'DongHuy'), hl = {};
-    tatCa.forEach(function(x) { if (x.TrangThai === 'HIEU_LUC') hl[x.MaDong] = x; });
+    var ss = dhhSS_(true), tatCa = dhhDoc_(ss, 'DongHuy'), hl = {}, daHuy = {};
+    tatCa.forEach(function(x) { if (x.TrangThai !== 'HIEU_LUC') return; if (x.Loai === 'HUY') daHuy[x.MaDong] = x; if ((x.Loai === 'DUNG') === laDung) hl[x.MaDong] = x; });   // 17/11: tạm dừng là lớp riêng, không thay bản bớt
     if (!dhhRateOk_(ss, String(q.me.tk || ''))) return sach_({ ok: false, msg: 'Bạn đã thao tác ' + DHH_GIO_MAX + ' lần trong 1 giờ – thử lại sau.' });
-    var gio = dhhGio_(), nhom = loai === 'HUY_DON' ? 'D' + Utilities.getUuid().replace(/-/g, '').slice(0, 10) : '', moi = [], thay = [], boQua = 0, canhBao = '';
+    var gio = dhhGio_(), nhom = caDon ? 'D' + Utilities.getUuid().replace(/-/g, '').slice(0, 10) : '', moi = [], thay = [], boQua = 0, canhBao = '';
     for (var j = 0; j < ds.length; j++) {
       var o = ds[j][0], k = ks[ds[j][1]], cu3 = hl[k];
       if (cu3 && cu3.Loai === 'HUY') { if (loai === 'HUY_DON') { boQua++; continue; } return sach_({ ok: false, msg: 'Mã này đã hủy trước đó (' + cu3.Ai + ' · ' + cu3.Luc + ').' }); }
+      if (laDung) {
+        if (daHuy[k] || cu3 || !(o.thieu > 0)) { if (loai === 'DUNG_DON') { boQua++; continue; } return sach_({ ok: false, msg: daHuy[k] ? 'Mã này đã hủy.' : cu3 ? 'Mã này đang tạm dừng (' + cu3.Ai + ' · ' + cu3.Luc + ').' : 'Mã này đã làm xong.' }); }
+      }
       if (loai === 'BOT') {
         var nen = cu3 ? dhhSo_(cu3.SLMoi) : o.sl;
         if (slMoi >= o.sl) return sach_({ ok: false, msg: 'SL mới phải nhỏ hơn SL đặt trong Sheet (' + o.sl + ').' });
@@ -178,16 +196,16 @@ function huyBotDon(token, p) {
       }
       if (cu3) thay.push(cu3);
       var td = { thieu: o.thieu, qua: o.qua || {}, hong: o.hong || {}, giao: o.giao || 0, kho: o.kho || 0, daTra: o.daTra || 0, dl: o.dl || '', dn: o.dn ? { o: o.dn.o || '', k: o.dn.k || '' } : {}, p2: o.p2 || null };
-      moi.push({ o: o, rec: { Id: 'H' + Utilities.getUuid().replace(/-/g, '').slice(0, 12), MaDong: k, Tab: tab, MaDon: o.maDon || '', Ten: o.ten, Loai: loai === 'BOT' ? 'BOT' : 'HUY', SLCu: o.sl, SLMoi: loai === 'BOT' ? slMoi : 0,
+      moi.push({ o: o, rec: { Id: 'H' + Utilities.getUuid().replace(/-/g, '').slice(0, 12), MaDong: k, Tab: tab, MaDon: o.maDon || '', Ten: o.ten, Loai: loai === 'BOT' ? 'BOT' : laDung ? 'DUNG' : 'HUY', SLCu: o.sl, SLMoi: loai === 'BOT' ? slMoi : 0, Hen: hen,
         LyDo: ly.s, Ai: String(q.me.ten || q.me.tk || '').slice(0, 60), Tk: String(q.me.tk || ''), MaNV: String(q.me.maNV || ''), Luc: gio, TienDo: JSON.stringify(td).slice(0, 4000), MauCu: '', DongSheet: o.dong, TrangThai: 'HIEU_LUC', Nhom: nhom } });
     }
-    if (!moi.length) return sach_({ ok: false, msg: 'Mọi mã của đơn này đã hủy trước đó.' });
+    if (!moi.length) return sach_({ ok: false, msg: laDung ? 'Mọi mã của đơn này đã tạm dừng, đã hủy hoặc đã làm xong.' : 'Mọi mã của đơn này đã hủy trước đó.' });
     /* tô xám dòng HỦY trên Sheet cũ (chỉ màu nền), lưu màu cũ để hoàn tác. Dòng đang BỚT bị thay bằng HỦY thì giữ nguyên màu cũ của nó */
     var nc = Math.max(1, Math.min(sh.getLastColumn(), 300));
     moi.forEach(function(z) {
-      if (z.rec.Loai !== 'HUY') return;
-      try { var rg = sh.getRange(z.o.dong, 1, 1, nc); z.rec.MauCu = JSON.stringify(dhhNen_(rg.getBackgrounds()[0])); rg.setBackground(DHH_XAM); }
-      catch (eM) { canhBao = ' (chưa tô xám được dòng trong Sheet: ' + String(eM && eM.message || eM).slice(0, 80) + ')'; }
+      var mau = DHH_MAU[z.rec.Loai]; if (!mau) return;   // HỦY tô xám, TẠM DỪNG tô vàng nhạt (17/11)
+      try { var rg = sh.getRange(z.o.dong, 1, 1, nc); z.rec.MauCu = JSON.stringify(dhhNen_(rg.getBackgrounds()[0])); rg.setBackground(mau); }
+      catch (eM) { canhBao = ' (chưa tô màu được dòng trong Sheet: ' + String(eM && eM.message || eM).slice(0, 80) + ')'; }
     });
     thay.forEach(function(x) { dhhSua_(ss, 'DongHuy', x._row, { TrangThai: 'THAY_THE', LucHoanTac: gio }); });
     dhhThem_(ss, 'DongHuy', moi.map(function(z) { return z.rec; }));
@@ -195,9 +213,9 @@ function huyBotDon(token, p) {
       ChiTiet: JSON.stringify({ ly: ly.s, slMoi: loai === 'BOT' ? slMoi : null, n: moi.length, boQua: boQua, thay: thay.map(function(x) { return x.Id; }) }).slice(0, 4000), Lenh: lenh }]);
     dhhXoaCache_();
     try { PropertiesService.getScriptProperties().setProperty('DH10_CAN_TAO', '1'); } catch (e) {}   // tab ĐẾN HẠN 10 NGÀY dựng lại ở lượt đồng bộ 10 phút kế tiếp
-    try { ghiLog_(q.me, loai === 'BOT' ? 'Bớt SL mã đơn' : (loai === 'HUY_DON' ? 'Hủy cả đơn' : 'Hủy mã đơn'), (tab + ' · ' + (o0.maDon || '') + ' · ' + (loai === 'HUY_DON' ? moi.length + ' mã' : o0.ten)).slice(0, 200), loai === 'BOT' ? String(o0.sl) : '', (loai === 'BOT' ? slMoi + ' · ' : '') + ly.s.slice(0, 120)); } catch (e) {}
+    try { ghiLog_(q.me, { BOT: 'Bớt SL mã đơn', HUY_DON: 'Hủy cả đơn', HUY: 'Hủy mã đơn', DUNG: 'Tạm dừng mã đơn', DUNG_DON: 'Tạm dừng cả đơn' }[loai], (tab + ' · ' + (o0.maDon || '') + ' · ' + (caDon ? moi.length + ' mã' : o0.ten)).slice(0, 200), loai === 'BOT' ? String(o0.sl) : '', (loai === 'BOT' ? slMoi + ' · ' : '') + ly.s.slice(0, 120)); } catch (e) {}
     var kq = { ok: true, n: moi.length, ids: moi.map(function(z) { return z.rec.Id; }), nhom: nhom,
-      msg: (loai === 'BOT' ? 'Đã bớt ' + o0.ten + ' từ ' + o0.sl + ' còn ' + slMoi : loai === 'HUY_DON' ? 'Đã hủy cả đơn ' + o0.maDon + ' (' + moi.length + ' mã' + (boQua ? ', ' + boQua + ' mã đã hủy trước đó' : '') + ')' : 'Đã hủy ' + o0.ten) + '.' + canhBao };
+      msg: (loai === 'DUNG' ? 'Đã tạm dừng ' + o0.ten + (hen ? ' (dự kiến chạy lại ' + hen.slice(8, 10) + '/' + hen.slice(5, 7) + ')' : '') : loai === 'DUNG_DON' ? 'Đã tạm dừng cả đơn ' + o0.maDon + ' (' + moi.length + ' mã' + (boQua ? ', bỏ qua ' + boQua + ' mã đã xong / đã hủy / đang dừng' : '') + ')' : loai === 'BOT' ? 'Đã bớt ' + o0.ten + ' từ ' + o0.sl + ' còn ' + slMoi : loai === 'HUY_DON' ? 'Đã hủy cả đơn ' + o0.maDon + ' (' + moi.length + ' mã' + (boQua ? ', ' + boQua + ' mã đã hủy trước đó' : '') + ')' : 'Đã hủy ' + o0.ten) + '.' + canhBao };
     if (lenh) { try { cache.put('DHH_L_' + lenh, JSON.stringify(kq), 600); } catch (e) {} }
     return sach_(kq);
   } finally { lock.releaseLock(); }
@@ -222,7 +240,7 @@ function hoanTacHuyDon(token, p) {
     if (!ds.length) return sach_({ ok: false, msg: 'Bản ghi này đã được hoàn tác hoặc không còn hiệu lực.' });
     if (!dhhRateOk_(ss, String(q.me.tk || ''))) return sach_({ ok: false, msg: 'Bạn đã thao tác ' + DHH_GIO_MAX + ' lần trong 1 giờ – thử lại sau.' });
     var gio = dhhGio_(), ai = String(q.me.ten || q.me.tk || '').slice(0, 60), bao = [];
-    var huy = ds.filter(function(x) { return x.Loai === 'HUY' && x.MauCu; });
+    var huy = ds.filter(function(x) { return DHH_MAU[x.Loai] && x.MauCu; });   // 17/11: + TẠM DỪNG (vàng)
     if (huy.length) {
       try {
         var ssDH = SpreadsheetApp.openById(DH_SHEET_ID), dg = null;
@@ -236,7 +254,7 @@ function hoanTacHuyDon(token, p) {
             if (!dong || !khop(dong)) { bao.push(x.Ten + ': không thấy dòng trong Sheet – màu chưa trả'); return; }
           }
           var rg = sh.getRange(dong, 1, 1, mau.length), nay = rg.getBackgrounds()[0];
-          if (nay.some(function(c) { return String(c).toLowerCase() !== DHH_XAM; })) { bao.push(x.Ten + ': dòng đã được đổi màu, giữ màu hiện tại'); return; }
+          if (nay.some(function(c) { return String(c).toLowerCase() !== DHH_MAU[x.Loai]; })) { bao.push(x.Ten + ': dòng đã được đổi màu, giữ màu hiện tại'); return; }
           rg.setBackgrounds([mau]);
         });
       } catch (eM) { bao.push('chưa trả được màu: ' + String(eM && eM.message || eM).slice(0, 80)); }
@@ -245,8 +263,9 @@ function hoanTacHuyDon(token, p) {
     dhhThem_(ss, 'SuKien', [{ Luc: gio, Ai: ai, Tk: String(q.me.tk || ''), MaNV: String(q.me.maNV || ''), ThaoTac: 'HOAN_TAC', Id: ds.map(function(x) { return x.Id; }).join(',').slice(0, 2000), MaDong: ds.map(function(x) { return x.MaDong; }).join(' ; ').slice(0, 4000), ChiTiet: JSON.stringify({ ly: ly.s, bao: bao }).slice(0, 4000), Lenh: lenh }]);
     dhhXoaCache_();
     try { PropertiesService.getScriptProperties().setProperty('DH10_CAN_TAO', '1'); } catch (e) {}
-    try { ghiLog_(q.me, 'Hoàn tác hủy / bớt đơn', (ds[0].Tab + ' · ' + ds[0].MaDon + ' · ' + (ds.length > 1 ? ds.length + ' mã' : ds[0].Ten)).slice(0, 200), '', ly.s.slice(0, 120)); } catch (e) {}
-    var kq = { ok: true, n: ds.length, msg: 'Đã hoàn tác ' + (ds.length > 1 ? ds.length + ' mã của đơn ' + ds[0].MaDon : ds[0].Ten) + '.' + (bao.length ? ' Lưu ý: ' + bao.join('; ') + '.' : '') };
+    var chay = ds.every(function(x) { return x.Loai === 'DUNG'; });
+    try { ghiLog_(q.me, chay ? 'Chạy lại đơn tạm dừng' : 'Hoàn tác hủy / bớt đơn', (ds[0].Tab + ' · ' + ds[0].MaDon + ' · ' + (ds.length > 1 ? ds.length + ' mã' : ds[0].Ten)).slice(0, 200), '', ly.s.slice(0, 120)); } catch (e) {}
+    var kq = { ok: true, n: ds.length, chay: chay ? 1 : 0, msg: (chay ? 'Đã chạy lại ' : 'Đã hoàn tác ') + (ds.length > 1 ? ds.length + ' mã của đơn ' + ds[0].MaDon : ds[0].Ten) + '.' + (bao.length ? ' Lưu ý: ' + bao.join('; ') + '.' : '') };
     if (lenh) { try { cache.put('DHH_L_' + lenh, JSON.stringify(kq), 600); } catch (e) {} }
     return sach_(kq);
   } finally { lock.releaseLock(); }
@@ -264,3 +283,15 @@ function xemThongBaoHuy(token) {
     return sach_({ ok: true, xem: gio });
   } finally { lock.releaseLock(); }
 }
+
+/* 17/11: nhắc 3 người duyệt – mã TẠM DỪNG đã đến ngày dự kiến chạy lại, hoặc không ghi ngày mà đã dừng quá 14 ngày (gom theo đơn) */
+function dhhNhacDung_() {
+  var hn = homNayVN_(), don = {}, n = 0;
+  (dhhPhu_(false) || []).forEach(function(x) { if (x.TrangThai !== 'HIEU_LUC' || x.Loai !== 'DUNG') return; n++;
+    var ngay = Math.floor((Date.parse(hn + 'T00:00:00Z') - Date.parse(String(x.Luc).slice(0, 10) + 'T00:00:00Z')) / 864e5);
+    var den = x.Hen ? x.Hen <= hn : ngay >= DHH_DUNG_LAU; if (!den) return;
+    var k = x.Tab + '|' + x.MaDon, g = don[k] || (don[k] = { ma: x.MaDon || x.Ten, kenh: DH_NHAN_TAB[x.Tab] || x.Tab, n: 0, ngay: 0, hen: x.Hen || '' }); g.n++; if (ngay > g.ngay) g.ngay = ngay; });
+  var ds = Object.keys(don).map(function(k) { return don[k]; }).sort(function(a, b) { return b.ngay - a.ngay; });
+  return { tong: n, den: ds.length, ds: ds.slice(0, 5) };
+}
+

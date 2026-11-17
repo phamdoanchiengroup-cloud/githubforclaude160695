@@ -547,7 +547,9 @@ body:has(.dh-nav) header,body:has(.dh-nav) nav{position:static}
 .dh-chm{position:absolute;left:0;top:calc(100% + 6px);z-index:40;width:min(360px,calc(100vw - 32px));background:var(--panel);border:1px solid var(--line);border-radius:12px;box-shadow:0 12px 32px rgba(0,0,0,.35);padding:8px;font-weight:400}
 @media (max-width:640px){ .dh-chm{position:fixed;left:16px;right:16px;top:96px;width:auto;max-height:70vh;overflow:auto} }
 .dh-chi{padding:7px 8px;border-radius:8px;font-size:12.5px;line-height:1.4;border-bottom:1px solid var(--line)} .dh-chi.moi{background:rgba(var(--acc-rgb),.08)} .dh-chi small{color:var(--ink3)}
-.dh-hl{display:inline-block;font-size:10.5px;font-weight:700;padding:1px 6px;border-radius:6px;border:1px solid var(--line);margin-right:4px;letter-spacing:.03em} .dh-hl.HUY{color:var(--red);border-color:var(--red)} .dh-hl.BOT{color:var(--amber);border-color:var(--amber)} .dh-hl.ht{color:var(--ink3)} .dh-hl.mc{color:#1a1a1a;background:var(--amber);border-color:var(--amber)}
+.dh-dung{display:inline-block;margin-left:4px;padding:0 6px;border-radius:6px;font-size:10.5px;font-weight:700;white-space:nowrap;background:#f6d365;color:#3d2e00} .dh-dung.cam{background:#f0a24b} .dh-dung.do{background:#e5484d;color:#fff} .dh-tabb.dung{border-style:dashed}
+.dh-dg-don{border:1px solid var(--line);border-left:4px solid #f6d365;border-radius:10px;padding:8px 10px;margin:6px 0;background:var(--panel)} .dh-dg-don.cam{border-left-color:#f0a24b} .dh-dg-don.do{border-left-color:#e5484d}
+.dh-hl{display:inline-block;font-size:10.5px;font-weight:700;padding:1px 6px;border-radius:6px;border:1px solid var(--line);margin-right:4px;letter-spacing:.03em} .dh-hl.HUY{color:var(--red);border-color:var(--red)} .dh-hl.BOT{color:var(--amber);border-color:var(--amber)} .dh-hl.DUNG{color:#b07d00;border-color:#d9a400} .dh-hl.ht{color:var(--ink3)} .dh-hl.mc{color:#1a1a1a;background:var(--amber);border-color:var(--amber)}
 .dh-giu{display:inline-block;margin-top:3px;font-size:11.5px;font-weight:600;color:var(--amber)} .dh-giu:before{content:'';display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--amber);margin-right:5px;vertical-align:1px}
 .dh-hg-don{margin:12px 0 6px;font-weight:700;font-size:13px;display:flex;gap:8px;align-items:center;flex-wrap:wrap} .dh-hg-don small{font-weight:400;color:var(--ink3)}
 .dh-hcard{border:1px solid var(--line);border-radius:10px;padding:9px 11px;margin:6px 0;background:var(--panel2);font-size:12.5px;line-height:1.5;overflow-wrap:anywhere} .dh-hcard.ht{opacity:.62} .dh-hcard.giu{border-left:3px solid var(--amber)}
@@ -1450,7 +1452,7 @@ function dhLuuSua(ten,bo){
 
 /* ===== Tab "Đơn hàng" (01/11, chỉ chủ sở hữu): như web app đơn hàng + thống kê + việc theo xưởng + kiểm phân loại ===== */
 var DHV='bang', DHL={q:'',kenh:'',st:'',ngay:''}, DHSx={k:'',tang:1}, DHTD=null, DHTDTai=false, DHGom='', DHHet=300, DHQTTai=false;
-var DH_ST={treHan:'Trễ hạn',dangSX:'Đang sản xuất',sanSang:'Sẵn sàng giao',daGiao:'Đã giao'}, DH_ST_THU=['treHan','dangSX','sanSang','daGiao'];
+var DH_ST={treHan:'Trễ hạn',dangSX:'Đang sản xuất',tamDung:'Tạm dừng',sanSang:'Sẵn sàng giao',daGiao:'Đã giao'}, DH_ST_THU=['treHan','dangSX','tamDung','sanSang','daGiao'];   /* 17/11: + Tạm dừng */
 var DH_CS_DON=60, DH_DEM=2, DH_TRE_MAX=30, DH_SAP=3;   /* như web app đơn hàng: 60 sp/ngày cho 1 đơn, đệm 2 ngày, ≤ 3 ngày = sắp tới hạn; trễ quá 30 ngày: thẻ riêng bên dưới (02/11) */
 function dhVeLai(){ if(typeof tabHienTai!=='undefined'&&tabHienTai==='dash'){ if(document.getElementById('tqDH')) dhTQVe(); return; }   /* 14/11 khuya: bảng gọn trên Tổng quan TP/PP */
   if(typeof tabHienTai!=='undefined'&&tabHienTai==='dh') dhTrangVe(); else if(typeof tabHienTai!=='undefined'&&tabHienTai==='tk') tkVe(); else if(typeof tabHienTai==='undefined'||tabHienTai==='qt') qtVe(); }   /* 16/11 khuya: dữ liệu đơn tải xong ở nền không còn vẽ đè trang Quy trình lên tab khác (vd Đơn bán hàng) */   /* 07/11: tab chính Thống kê dùng chung dữ liệu Đơn hàng */
@@ -1483,7 +1485,7 @@ function dhGomDon(ds){
     if(!g){ g=m[k]={ma:o.maDon||'(không mã)',kenh:o.kenh,tab:o.tab,nguoiDat:o.nguoiDat,ngayDat:o.ngayDat,sl:0,thieu:0,giao:0,dong:[],dl:'',st:''}; out.push(g); }
     g.sl+=o.sl; g.thieu+=o.thieu; g.giao+=o.giao||0; g.dong.push(o);
     if(o.thieu>0&&o.dl&&(!g.dl||o.dl<g.dl)) g.dl=o.dl; });
-  out.forEach(function(g){ var sts=g.dong.map(function(o){return o.st}); g.st=sts.indexOf('treHan')>=0?'treHan':sts.indexOf('dangSX')>=0?'dangSX':sts.every(function(x){return x==='daGiao'})?'daGiao':'sanSang'; });
+  out.forEach(function(g){ var sts=g.dong.map(function(o){return o.st}); g.st=sts.indexOf('treHan')>=0?'treHan':sts.indexOf('dangSX')>=0?'dangSX':sts.indexOf('tamDung')>=0&&sts.every(function(x){return x==='tamDung'||x==='daGiao'})?'tamDung':sts.every(function(x){return x==='daGiao'})?'daGiao':'sanSang'; });
   return out;
 }
 /* 07/11 (chủ dự án + soat-giao-dien-cuoi + dong-vai-nguoi-dung): làm lại giao diện – 3 ô trả lời trên cùng (nay: Trễ hạn · Lẻ/POD quá 10 ngày · Ưu tiên),
@@ -1564,7 +1566,7 @@ function dhNgayCong(d,n){ var x=new Date(d+'T00:00:00'); x.setDate(x.getDate()+n
 function dhLaNgayLam(d){ var c=dhCS(); if(c._l[d]) return true; if(new Date(d+'T00:00:00').getDay()===0) return false; return !c._m[d]; }
 function dhSoNgayLam(a,b){ var n=0; for(var d=a,i=0;d<b&&i<4000;d=dhNgayCong(d,1),i++) if(dhLaNgayLam(d)) n++; return n; }   /* số ngày làm trong [a, b) */
 function dhNgayLamThu(tu,n){ var d=tu,i=0; while(!dhLaNgayLam(d)&&i++<400) d=dhNgayCong(d,1); for(var k=1;k<n;k++){ d=dhNgayCong(d,1); i=0; while(!dhLaNgayLam(d)&&i++<400) d=dhNgayCong(d,1); } return d; }
-function dhLaSX(o){ var l=(o.pl||{}).loai; return l!=='PK'&&l!=='NOI'; }
+function dhLaSX(o){ var l=(o.pl||{}).loai; return l!=='PK'&&l!=='NOI'&&!o.dung; }   /* 17/11: mã TẠM DỪNG không tính vào việc phải làm (công suất, ngày dự kiến, kín lịch, lẻ quá hạn, thống kê) */
 function dhSvgCot(ds,ngang,cao,cach){   /* cach: ghi nhãn ngày mỗi bao nhiêu cột (ô nhỏ) */   /* ds: [[nhãn, giá trị, lớp]] – cột + vạch công suất */
   var w=Math.max(320,ds.length*26), h=cao||170, m=Math.max(ngang||0,1,Math.max.apply(null,ds.map(function(x){return x[1]})))*1.12, bw=Math.max(6,(w-40)/Math.max(ds.length,1)-6);
   var y=function(v){return h-22-(v/m)*(h-36)}, g='<svg class="dh-svg" viewBox="0 0 '+w+' '+h+'" preserveAspectRatio="none" role="img" aria-label="Biểu đồ cột">';
@@ -2587,12 +2589,13 @@ function dhBPhuDs(t){   /* lọc tab bản chép theo ô tìm / trạng thái / 
 /* ===== 16/11 khuya (chủ dự án chốt) – GIAI ĐOẠN 0 HỦY / BỚT MÃ: khối "Điều chỉnh đơn" trong bảng nổi (C019 / C056 / C067 + chủ sở hữu),
    mục "Đơn đã hủy", chuông thông báo cho mọi người xem bảng đơn (bộ phận đang giữ hàng của mã đó thấy nhãn cam). Máy chủ: huy-don.gs ===== */
 var DHHuy={mo:'',chuong:false,lenh:''};
-function dhHuyDs(){ return (DH&&DH.huy&&DH.huy.ds)||[]; }
+function dhHuyDs(){ return (DH&&DH.huy&&DH.huy.ds)||[]; }   /* gồm cả TẠM DỪNG (chuông báo) */
+function dhHuyDs2(){ return dhHuyDs().filter(function(x){ return x.loai!=='DUNG'; }); }   /* 17/11: mục Đơn đã hủy chỉ hủy / bớt */
 function dhHuyQ(){ return !!(DH&&DH.huy&&DH.huy.quyen); }
 function dhHuyGiu(x){ var bp=(DH&&DH.q&&DH.q.bp)||''; return bp&&(x.giu||[]).indexOf(bp)>=0?bp:''; }
 function dhHuySo(x,bp){ var td=x.td||{}; if(bp==='PHOI'&&td.p2) return Math.max(td.p2.c||0,td.p2.n||0); return (td.qua||{})[bp]||0; }
 function dhHuyGiuO(x){ var g=x.hl?dhHuyGiu(x):''; if(!g) return ''; var n=dhHuySo(x,g); return '<div class="dh-giu">Bộ phận bạn ('+esc(dhBPTen(g))+') đang giữ '+(n?qtSo(n,0)+' cái':'hàng')+' của mã này</div>'; }
-function dhHuyTag(x){ return x.hl?(x.moCoi?'<span class="dh-hl mc">Sheet đã đổi</span>':'')+'<span class="dh-hl '+x.loai+'">'+(x.loai==='BOT'?'BỚT':'HỦY')+'</span>':'<span class="dh-hl ht">ĐÃ HOÀN TÁC</span>'; }
+function dhHuyTag(x){ return x.hl?(x.moCoi?'<span class="dh-hl mc">Sheet đã đổi</span>':'')+'<span class="dh-hl '+x.loai+'">'+(x.loai==='BOT'?'BỚT':x.loai==='DUNG'?'TẠM DỪNG':'HỦY')+'</span>':'<span class="dh-hl ht">ĐÃ HOÀN TÁC</span>'; }
 function dhHuyLuc(t){ var m=String(t||'').match(/^(\d{4})-(\d\d)-(\d\d) (\d\d:\d\d)/); return m?m[4]+' '+m[3]+'/'+m[2]:String(t||''); }
 function dhLenh(){ return 'w'+Date.now().toString(36)+Math.random().toString(36).slice(2,10); }
 /* chuông cạnh tiêu đề "Trạng thái đơn hàng": số chưa xem; mở danh sách = đã xem (lưu theo tài khoản trên máy chủ) */
@@ -2608,7 +2611,7 @@ function dhChuongMo(){ DHHuy.chuong=!DHHuy.chuong;
   dhVeLai(); }
 document.addEventListener('click',function(e){ if(DHHuy.chuong&&!(e.target.closest&&e.target.closest('.dh-chg'))){ DHHuy.chuong=false; dhVeLai(); } });
 /* mục Đơn đã hủy: nhóm theo đơn (mới nhất trên cùng), mỗi mã một thẻ; số đã giao từng bộ phận lúc hủy thu gọn */
-function dhVeHuy(){ var ds=dhHuyDs(), q=dhHuyQ(), loi=DH&&DH.huy&&DH.huy.loi, mc=ds.filter(function(x){return x.hl&&x.moCoi;});
+function dhVeHuy(){ var ds=dhHuyDs2(), q=dhHuyQ(), loi=DH&&DH.huy&&DH.huy.loi, mc=ds.filter(function(x){return x.hl&&x.moCoi;});
   var h='<div class="dh-ghi"><b>Đơn đã hủy</b> = mã bị hủy / bớt trên web. Dòng hủy không còn trong bảng đơn, ETA, thống kê, tab ĐẾN HẠN 10 NGÀY; dòng bớt tính theo SL mới. Trong Sheet, dòng hủy được tô xám (chữ, số giữ nguyên).'+(q?' Hủy nhầm thì bấm <b>Hoàn tác</b>.':'')+'</div>';
   if(loi) h+='<div class="alert a-wn">Không đọc được danh sách hủy: '+esc(loi)+'</div>';
   if(mc.length) h+='<div class="alert a-wn">⚠ <b>'+mc.length+'</b> mã hủy / bớt không còn khớp dòng nào trong Sheet (Sheet đã đổi tên / xóa dòng) – web <b>không</b> áp sang dòng khác. Kiểm lại trong Sheet'+(q?'; nếu không cần nữa thì bấm Hoàn tác để bỏ cảnh báo':'')+'.</div>';
@@ -2635,14 +2638,29 @@ function dhHuyHT(el){ var l=document.getElementById('dhHuyLy'); if(!l) return; e
   var p={lyDo:l.value,lenh:DHHuy.lenh}; if(el.dataset.n) p.nhom=el.dataset.id; else p.id=el.dataset.id;
   call('hoanTacHuyDon',[p],function(r){ if(!r||!r.ok){ el.disabled=false; toast((r&&r.msg)||'Không hoàn tác được.'); return; } DHHuy.mo=''; toast(r.msg,true); dhTai(false); }); }
 /* khối "Điều chỉnh đơn" cuối bảng nổi: Bớt SL (nhẹ) · Hủy mã này (viền đỏ) · Hủy cả đơn (chữ đỏ, tách phải). Bấm -> mở ô lý do + tóm tắt hậu quả ngay trong bảng nổi */
-function dhHuyKhoi(o){ if(!dhHuyQ()||!o||o.phu||!o.tab||String(o.tab).charAt(0)==='@') return '';
+function dhHuyKhoi(o){ if(o&&o.dung&&!dhHuyQ()) return '<div class="dh-dg-don '+dhDungMuc(dhDungNgay(o.dung.luc))+'"><b>Mã đang tạm dừng '+dhDungNgay(o.dung.luc)+' ngày</b> – '+esc(o.dung.ly)+'<div class="pdesc">Chỉ nhập số <b>hàng đã làm dở</b>, không làm thêm hàng mới cho mã này cho tới khi ban điều hành chạy lại'+(o.dung.hen?' (dự kiến '+esc(dhNg(o.dung.hen))+')':'')+'.</div></div>';   /* 17/11: TP / PP thấy nhắc */
+  if(!dhHuyQ()||!o||o.phu||!o.tab||String(o.tab).charAt(0)==='@') return '';
   var k=o.tab+'|'+o.dong+'|', loai=DHHuy.mo.indexOf(k)===0?DHHuy.mo.slice(k.length):'', coDon=o.maDon&&o.maDon!=='(không mã)';
   var dsDon=coDon?((DH&&DH.don)||[]).filter(function(x){ return x.tab===o.tab&&x.maDon===o.maDon&&!x.phu; }):[o], slG=o.slGoc||o.sl;
   var h='<div class="dh-hk"><div class="dh-hk-t">Điều chỉnh đơn</div>'+(o.bot?'<div class="pdesc" style="margin-bottom:6px">Mã này đã bớt từ '+qtSo(o.bot.cu,0)+' còn '+qtSo(o.bot.moi,0)+' ('+esc(o.bot.ai||'')+' · '+esc(dhHuyLuc(o.bot.luc))+'). Muốn trả lại SL cũ thì hoàn tác ở mục Đơn đã hủy.</div>':'');
-  if(!loai) return h+'<div class="dh-hk-n">'+(slG>1?'<button class="btn sm" type="button" data-k="'+esc(k)+'BOT" onclick="dhHuyChon(this)">Bớt SL</button>':'')+
+  var dsDung=coDon?dsDon.filter(function(x){return x.dung;}):(o.dung?[o]:[]), dsChay=dsDon.filter(function(x){return x.thieu>0&&!x.dung;}), nhD=dsDung.length>1&&dsDung.every(function(x){return x.dung.nhom&&x.dung.nhom===dsDung[0].dung.nhom;})?dsDung[0].dung.nhom:'';
+  if(!loai&&o.dung){ var nd=dhDungNgay(o.dung.luc);
+    return h+'<div class="dh-dg-don '+dhDungMuc(nd)+'"><b>Đang tạm dừng '+nd+' ngày</b>'+(dhDungTre(o)?' <span class="dh-hl HUY">dừng khi đã trễ / sát hạn</span>':'')+'<div>Lý do: '+esc(o.dung.ly)+'</div><div class="pdesc">'+esc(o.dung.ai)+' · '+esc(dhHuyLuc(o.dung.luc))+(o.dung.hen?' · dự kiến chạy lại '+esc(dhNg(o.dung.hen)):'')+'</div><div class="pdesc">Bộ phận vẫn nhập được số <b>hàng đã làm dở</b>; không làm thêm hàng mới cho mã này.</div></div>'+
+      '<div class="dh-hk-n">'+'<button class="btn sm pri" type="button" data-k="'+esc(k)+'CHAY" onclick="dhHuyChon(this)">Chạy lại mã này</button>'+(nhD?'<button class="btn sm" type="button" data-k="'+esc(k)+'CHAY_DON" onclick="dhHuyChon(this)">Chạy lại cả đơn ('+dsDung.length+' mã)</button>':'')+(slG>1?'<button class="btn sm" type="button" data-k="'+esc(k)+'BOT" onclick="dhHuyChon(this)">Bớt SL</button>':'')+'<button class="btn sm dh-hk-do" type="button" data-k="'+esc(k)+'HUY" onclick="dhHuyChon(this)">Hủy mã này</button></div></div>'; }
+  if(!loai) return h+'<div class="dh-hk-n">'+(o.thieu>0?'<button class="btn sm" type="button" data-k="'+esc(k)+'DUNG" onclick="dhHuyChon(this)">Tạm dừng mã này</button>':'')+(coDon&&dsChay.length>1?'<button class="btn sm" type="button" data-k="'+esc(k)+'DUNG_DON" onclick="dhHuyChon(this)">Tạm dừng cả đơn ('+dsChay.length+' mã)</button>':'')+(slG>1?'<button class="btn sm" type="button" data-k="'+esc(k)+'BOT" onclick="dhHuyChon(this)">Bớt SL</button>':'')+
     '<button class="btn sm dh-hk-do" type="button" data-k="'+esc(k)+'HUY" onclick="dhHuyChon(this)">Hủy mã này</button>'+
     (coDon&&dsDon.length>1?'<button class="btn sm dh-hk-do2" type="button" data-k="'+esc(k)+'HUY_DON" onclick="dhHuyChon(this)">Hủy cả đơn ('+dsDon.length+' mã)</button>':'')+'</div></div>';
   var bpDa=function(x){ var a=Object.keys(x.qua||{}).filter(function(z){ return x.qua[z]>0; }); return a.length?' Đã giao: '+a.map(function(z){ return esc(dhBPTen(z))+' '+qtSo(x.qua[z],0); }).join(' · ')+' (web lưu lại để xem sau).':''; };
+  if(loai==='DUNG'||loai==='DUNG_DON'){ var dd=loai==='DUNG'?[o]:dsChay;
+    h+='<div class="dh-hk-hq">Tạm dừng '+(loai==='DUNG'?'<b>'+esc(o.ten)+'</b>':'<b>cả đơn '+esc(o.maDon)+'</b> ('+dd.length+' mã còn phải làm)')+': còn thiếu '+qtSo(dd.reduce(function(a,x){return a+(x.thieu||0);},0),0)+' sp <b>không tính</b> vào công suất, ngày dự kiến, trễ hạn, tab 10 ngày nữa – đơn khác được làm sớm hơn. Dòng vẫn hiện (nhãn vàng), bộ phận vẫn nhập số hàng đã làm dở; Sheet tô nền vàng nhạt. Web lưu số đã giao từng bộ phận lúc dừng.'+(dd.some(dhDungTre)?' <b style="color:var(--red)">Đơn đã trễ / sát hạn – web ghi cờ "dừng khi đã trễ".</b>':'')+'</div>'+
+      '<label for="dhHuyHen">Dự kiến chạy lại (không bắt buộc – để trống thì web nhắc sau 14 ngày)</label><input id="dhHuyHen" type="date" min="'+esc(dhHomNay())+'">';
+    return h+'<label for="dhHuyLy">Lý do (bắt buộc)</label><input id="dhHuyLy" maxlength="200" placeholder="vd. khách đổi mẫu, chờ thanh toán" oninput="dhHuyKiem()" autocomplete="off"><div class="db-goi" style="display:flex;flex-wrap:wrap;gap:6px;margin-top:6px">'+['Khách đổi mẫu','Chờ khách thanh toán','Chờ vật liệu','Lỗi kỹ thuật','Khách tạm hoãn'].map(function(g){ return '<button type="button" class="btn sm" style="font-size:12px" onclick="var t=document.getElementById(\'dhHuyLy\');t.value=this.textContent;dhHuyKiem()">'+esc(g)+'</button>'; }).join('')+'</div>'+
+      '<div class="dh-hk-n" style="margin-top:10px"><button id="dhHuyOK" class="btn sm pri" type="button" disabled data-k="'+esc(k)+loai+'" onclick="dhHuyGui(this)">'+(loai==='DUNG'?'Tạm dừng mã này':'Tạm dừng '+dd.length+' mã')+'</button><button class="btn sm" type="button" onclick="DHHuy.mo=\'\';dhBNoi()">Thôi</button></div></div>'; }
+  if(loai==='CHAY'||loai==='CHAY_DON'){ var dc=loai==='CHAY'?[o]:dsDung, eta=dhDungEta(dc), dl0=dc.map(function(x){return x.dl;}).filter(Boolean).sort()[0]||'';
+    h+='<div class="dh-hk-hq">Chạy lại '+(loai==='CHAY'?'<b>'+esc(o.ten)+'</b>':'<b>'+dc.length+' mã của đơn '+esc(o.maDon)+'</b>')+': còn thiếu '+qtSo(dc.reduce(function(a,x){return a+(x.thieu||0);},0),0)+' sp vào lại hàng đợi. Deadline hiện tại <b>'+(dl0?esc(dhNg(dl0)):'–')+'</b>'+(eta?'; nếu chạy lại hôm nay dự kiến xong <b>'+esc(dhNg(eta))+'</b>'+(dl0&&eta>dl0?' – <b style="color:var(--red)">muộn hơn deadline</b>':''):'')+'.</div>'+
+      '<label for="dhHuyDl">Deadline mới (để trống = giữ nguyên; web ghi cột HẠN MỚI nếu có)</label><div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap"><input id="dhHuyDl" type="date" min="'+esc(dhHomNay())+'" style="flex:1 1 160px">'+(eta?'<button type="button" class="btn sm" data-d="'+esc(eta)+'" onclick="document.getElementById(\'dhHuyDl\').value=this.dataset.d">Dùng ngày dự kiến</button>':'')+'</div>';
+    return h+'<label for="dhHuyLy">Ghi chú chạy lại</label><input id="dhHuyLy" maxlength="200" value="Chạy lại sản xuất" oninput="dhHuyKiem()" autocomplete="off">'+
+      '<div class="dh-hk-n" style="margin-top:10px"><button id="dhHuyOK" class="btn sm pri" type="button" data-k="'+esc(k)+loai+'" onclick="dhHuyGui(this)">'+(loai==='CHAY'?'Chạy lại mã này':'Chạy lại '+dc.length+' mã')+'</button><button class="btn sm" type="button" onclick="DHHuy.mo=\'\';dhBNoi()">Thôi</button></div></div>'; }
   if(loai==='BOT') h+='<div class="dh-hk-hq">Bớt SL đặt của <b>'+esc(o.ten)+'</b> (Sheet ghi '+qtSo(slG,0)+'). Web tính theo SL mới ở mọi chỗ; Sheet giữ nguyên số.</div><label for="dhHuySL">SL mới (1 – '+qtSo(slG-1,0)+')</label><input id="dhHuySL" type="number" inputmode="numeric" min="1" max="'+(slG-1)+'" step="1" oninput="dhHuyKiem()">';
   else if(loai==='HUY') h+='<div class="dh-hk-hq">Hủy <b>'+esc(o.ten)+'</b> (SL '+qtSo(o.sl,0)+', còn thiếu '+qtSo(o.thieu,0)+'). Dòng biến khỏi bảng và mọi phép tính; trong Sheet chỉ tô xám.'+bpDa(o)+'</div>';
   else h+='<div class="dh-hk-hq">Hủy <b>cả đơn '+esc(o.maDon)+'</b>: '+dsDon.length+' mã, tổng SL '+qtSo(dsDon.reduce(function(a,x){return a+(x.sl||0);},0),0)+', còn thiếu '+qtSo(dsDon.reduce(function(a,x){return a+(x.thieu||0);},0),0)+'. Các dòng tô xám trong Sheet.</div>';
@@ -2651,7 +2669,9 @@ function dhHuyKhoi(o){ if(!dhHuyQ()||!o||o.phu||!o.tab||String(o.tab).charAt(0)=
 function dhHuyChon(el){ DHHuy.mo=el.dataset.k; DHHuy.lenh=dhLenh(); dhBNoi(); setTimeout(function(){ var e=document.getElementById('dhHuySL')||document.getElementById('dhHuyLy'); if(e){ try{ e.focus({preventScroll:true}); e.scrollIntoView({block:'center'}); }catch(x){} } },0); }
 function dhHuyGui(el){ var a=el.dataset.k.split('|'), loai=a.pop(), dong=+a.pop(), tab=a.join('|'), o=dhBRow(tab,dong), l=document.getElementById('dhHuyLy'), s=document.getElementById('dhHuySL'); if(!o||!l) return;
   el.disabled=true; el.textContent='Đang lưu…';
-  call('huyBotDon',[{loai:loai,tab:tab,dong:dong,ten:o.ten,maDon:o.maDon||'',slMoi:s?Number(s.value):null,lyDo:l.value,lenh:DHHuy.lenh}],function(r){
+  if(loai==='CHAY'||loai==='CHAY_DON'){ dhChayLai(el,o,loai,l.value); return; }
+  var hn=document.getElementById('dhHuyHen');
+  call('huyBotDon',[{loai:loai,tab:tab,dong:dong,ten:o.ten,maDon:o.maDon||'',slMoi:s?Number(s.value):null,hen:hn?hn.value:'',lyDo:l.value,lenh:DHHuy.lenh}],function(r){
     if(!r||!r.ok){ toast((r&&r.msg)||'Không lưu được.'); if(r&&r.cu){ DHHuy.mo=''; DHB.mo=''; dhBNoi(); dhTai(true); } else { el.disabled=false; el.textContent='Thử lại'; } return; }
     DHHuy.mo=''; DHB.mo=''; dhBNoi(); dhHoan10(r); dhTai(false); }); }
 /* 17/11 (chủ dự án): sau khi hủy / bớt hiện thanh "Hoàn tác" 10 giây (bấm nhầm thì bấm ngay, không phải ghi lý do – web ghi "bấm nhầm").
@@ -2666,6 +2686,29 @@ function dhHoan10(r){ dhHoanDong(); if(!r||!(r.nhom||(r.ids&&r.ids.length===1)))
   document.getElementById('dhHoanNut').onclick=function(){ var n=this, x=DHHoan&&DHHoan.r; if(!x) return; n.disabled=true; n.textContent='Đang hoàn tác…'; clearInterval(DHHoan.t);
     var p={lyDo:'Bấm nhầm – hoàn tác ngay trong 10 giây',lenh:dhLenh()}; if(x.nhom) p.nhom=x.nhom; else p.id=x.ids[0];
     call('hoanTacHuyDon',[p],function(k){ dhHoanDong(); if(!k||!k.ok){ toast((k&&k.msg)||'Không hoàn tác được – vào mục Đơn đã hủy để hoàn tác.'); return; } toast(k.msg,true); dhTai(false); }); }; }
+/* ===== 17/11 (chủ dự án): TẠM DỪNG SẢN XUẤT – C019 / C056 / C067 (+ chủ sở hữu), mã hoặc cả đơn; vẫn hiện, không tính vào việc phải làm ===== */
+function dhDungNgay(luc){ var d=String(luc||'').slice(0,10); return /^\d{4}-\d\d-\d\d$/.test(d)?Math.max(0,dhCachNgay(d,dhHomNay())):0; }
+function dhDungMuc(n){ return n>30?'do':n>14?'cam':''; }   /* chuyên gia vận hành: > 14 ngày cam, > 30 ngày đỏ */
+function dhDungTre(o){ if(!o||!o.dl||!o.dung) return false; var l=String(o.dung.luc||'').slice(0,10)||dhHomNay(); return o.dl<=dhNgayCong(l,5); }   /* dừng khi đã trễ / còn ≤ 5 ngày */
+function dhDungNhan(o){ var n=dhDungNgay(o.dung.luc); return ' <span class="dh-dung '+dhDungMuc(n)+'" title="Tạm dừng: '+esc(o.dung.ly)+' ('+esc(o.dung.ai)+')'+(o.dung.hen?' – dự kiến chạy lại '+esc(dhNg(o.dung.hen)):'')+'">Tạm dừng · '+n+' ngày</span>'; }
+function dhDungDon(){ var m={}, out=[]; ((DH&&DH.don)||[]).forEach(function(o){ if(!o.dung||o.phu) return; var k=(o.maDon||'(không mã)')+'|'+o.tab, g=m[k]; if(!g){ g=m[k]={ma:o.maDon||'(không mã)',tab:o.tab,kenh:o.kenh,dong:[],thieu:0,luc:o.dung.luc,ngay:0,tre:false}; out.push(g); }
+  g.dong.push(o); g.thieu+=o.thieu||0; var n=dhDungNgay(o.dung.luc); if(n>g.ngay){ g.ngay=n; g.luc=o.dung.luc; } if(dhDungTre(o)) g.tre=true; }); out.sort(function(a,b){ return b.ngay-a.ngay; }); return out; }
+function dhVeDungTom(){ var ds=dhDungDon(), hn=dhHomNay(), sp=ds.reduce(function(a,g){return a+g.thieu;},0);
+  var h='<div class="dh-ghi"><b>Tạm dừng</b> = mã / đơn ban điều hành tạm dừng trên web: vẫn hiện ở bảng (bộ phận nhập được số hàng đã làm dở) nhưng <b>không tính</b> vào công suất, ngày dự kiến, kín lịch, trễ hạn, tab ĐẾN HẠN 10 NGÀY. Đang dừng <b>'+ds.length+'</b> đơn · '+qtSo(sp,0)+' sp còn thiếu. Bấm mã đơn → <b>Chạy lại</b>.</div>';
+  ds.forEach(function(g){ var o=g.dong[0], hen=g.dong.map(function(x){return x.dung.hen;}).filter(Boolean).sort()[0]||'';
+    h+='<div class="dh-dg-don '+dhDungMuc(g.ngay)+'"><b>'+esc(g.ma)+'</b> <small>· '+esc(g.kenh||g.tab)+' · '+g.dong.length+' mã · '+qtSo(g.thieu,0)+' sp</small> <span class="dh-dung '+dhDungMuc(g.ngay)+'">'+g.ngay+' ngày</span>'+(g.tre?' <span class="dh-hl HUY">dừng khi đã trễ / sát hạn</span>':'')+
+      '<div class="pdesc">'+esc(o.dung.ly)+' · '+esc(o.dung.ai)+' · '+esc(dhHuyLuc(g.luc))+(hen?' · dự kiến chạy lại <b'+(hen<=hn?' style="color:var(--red)"':'')+'>'+esc(dhNg(hen))+'</b>':g.ngay>=14?' · <b style="color:var(--red)">đã quá 14 ngày – chạy lại hay hủy?</b>':'')+'</div></div>'; });
+  return h; }
+/* ngày dự kiến xong nếu chạy lại các dòng này hôm nay (mô phỏng như bảng đơn, tạm bỏ cờ dừng) */
+function dhDungEta(dc){ var luu=dc.map(function(x){ var d=x.dung; x.dung=null; return d; }), e='';
+  try{ var g=dhMoPhong(dhCSDon()), k=(dc[0].maDon||'(không mã)')+'|'+dc[0].tab; g.forEach(function(x){ if(x.ma+'|'+x.tab===k&&x.eta&&x.eta<'9999') e=x.eta; }); }catch(x){}
+  dc.forEach(function(x,i){ x.dung=luu[i]; }); return e; }
+function dhChayLai(el,o,loai,ly){ var dc=loai==='CHAY'?[o]:((DH&&DH.don)||[]).filter(function(x){ return x.tab===o.tab&&x.maDon===o.maDon&&x.dung&&!x.phu; }), dlE=document.getElementById('dhHuyDl'), dl=dlE?dlE.value:'';
+  var p={lyDo:String(ly||'').trim().length>=5?ly:'Chạy lại sản xuất',lenh:DHHuy.lenh}; if(loai==='CHAY') p.id=o.dung.id; else p.nhom=o.dung.nhom;
+  call('hoanTacHuyDon',[p],function(r){ if(!r||!r.ok){ el.disabled=false; el.textContent='Thử lại'; toast((r&&r.msg)||'Không chạy lại được.'); return; }
+    var xong=function(m){ DHHuy.mo=''; DHB.mo=''; dhBNoi(); toast(m,true); dhTai(false); };
+    if(!dl){ xong(r.msg+' Deadline giữ nguyên.'); return; }
+    call('luuBangDon',[{ds:dc.filter(function(x){return x.thieu>0;}).map(function(x){ return {tab:x.tab,dong:x.dong,ten:x.ten,dl:{moi:dl,cu:x.dl||''}}; })}],function(k){ xong(r.msg+(k&&k.ok?' Deadline mới '+dhNg(dl)+'.':' Chưa ghi được deadline mới: '+((k&&k.msg)||'lỗi')+' – sửa ở cột Deadline.')); }); }); }
 function dhHoanDong(){ if(DHHoan&&DHHoan.t) clearInterval(DHHoan.t); DHHoan=null; var b=document.getElementById('dhHoan'); if(b&&b.parentNode) b.parentNode.removeChild(b); }
 function dhVeBang(ds){
   var q=(DH&&DH.q)||{}, bp=q.bp||'', coQuyen=((q.sua||[]).length>0), bps=dhBDS(), eq=dhEQ(), coHDG=bps.indexOf('DG')>=0&&dhCoHongDG();
@@ -2677,14 +2720,15 @@ function dhVeBang(ds){
   uuKho.forEach(function(o){ daCoU[kU(o)]=1; });
   var uuDs=uuKho.concat(ds.filter(function(o){ return o.uuWeb&&!daCoU[kU(o)]; })).concat(uuTab?dhBPhuDs(uuTab).filter(function(o){ return !daCoU[kU(o)]; }):[]), treDs=dhTreDs(ds);
   var laPhu=!!phu[tab]||(tab==='@uu'&&!!uuTab);
-  var h10d=dhHan10Ds(ds), theo=tab==='@le10'?dhLe10Ds(ds):tab==='@han10'?h10d:tab==='@uu'?uuDs:tab==='@tre'?treDs:(tab?(laPhu?dhBPhuDs(tab):ds.filter(function(o){return o.tab===tab;})):ds);
+  var h10d=dhHan10Ds(ds), theo=tab==='@dung'?ds.filter(function(o){return o.dung;}):tab==='@le10'?dhLe10Ds(ds):tab==='@han10'?h10d:tab==='@uu'?uuDs:tab==='@tre'?treDs:(tab?(laPhu?dhBPhuDs(tab):ds.filter(function(o){return o.tab===tab;})):ds);
   var x=DHB.cua&&bp&&!laPhu?theo.filter(function(o){ var d=o.dn||{}; return d.o===bp||dhKs(d.k).indexOf(bp)>=0||(o.qua&&o.qua[bp]!=null&&o.thieu>0); }):theo;
   var donDem=function(a){ var m={}; a.forEach(function(o){m[o.tab+'|'+o.maDon]=1}); return Object.keys(m).length; };
   var chips='<div class="dh-tabs" role="tablist">'+
     '<button type="button" role="tab" aria-selected="'+(tab==='@uu')+'" class="dh-tabb uu'+(tab==='@uu'?' on':'')+'" data-t="@uu" onclick="dhBTab(this.dataset.t)">★ Đơn ưu tiên <i>'+qtSo(donDem(uuDs),0)+'</i></button>'+
     '<button type="button" role="tab" aria-selected="'+(tab==='@tre')+'" class="dh-tabb tre'+(tab==='@tre'?' on':'')+'" data-t="@tre" onclick="dhBTab(this.dataset.t)">Đơn trễ hẹn <i>'+qtSo(donDem(treDs),0)+'</i></button>'+
     '<button type="button" role="tab" aria-selected="'+(tab==='@han10')+'" class="dh-tabb'+(tab==='@han10'?' on':'')+'" data-t="@han10" onclick="dhBTab(this.dataset.t)">Đến hạn '+DH_HAN+' ngày tới <i>'+qtSo(donDem(h10d),0)+'</i></button>'+
-    (DH&&DH.huy?'<button type="button" role="tab" aria-selected="'+(tab==='@huy')+'" class="dh-tabb huy'+(tab==='@huy'?' on':'')+'" data-t="@huy" onclick="dhBTab(this.dataset.t)">Đơn đã hủy <i>'+qtSo(dhHuyDs().filter(function(z){return z.hl;}).length,0)+'</i></button>':'')+   /* 16/11 khuya: mục xem lại mã hủy / bớt */
+    (DH&&DH.huy?'<button type="button" role="tab" aria-selected="'+(tab==='@huy')+'" class="dh-tabb huy'+(tab==='@huy'?' on':'')+'" data-t="@huy" onclick="dhBTab(this.dataset.t)">Đơn đã hủy <i>'+qtSo(dhHuyDs2().filter(function(z){return z.hl;}).length,0)+'</i></button>':'')+
+    (dhDungDon().length?'<button type="button" role="tab" aria-selected="'+(tab==='@dung')+'" class="dh-tabb dung'+(tab==='@dung'?' on':'')+'" data-t="@dung" onclick="dhBTab(this.dataset.t)">Tạm dừng <i>'+qtSo(dhDungDon().length,0)+'</i></button>':'')+   /* 17/11 */   /* 16/11 khuya: mục xem lại mã hủy / bớt */
     (tab?'':'<span class="dh-tabb on" style="cursor:default">Kết quả tìm ở mọi kênh <i>'+qtSo(ds.length,0)+'</i></span>');
   ((DH&&DH.kenhDs)||[]).forEach(function(k){
     var t=k[0], n=theoCount(ds,t);
@@ -2700,9 +2744,10 @@ function dhVeBang(ds){
     chips+
     '<div class="dh-ghi">'+(laPhu
       ? 'Tab <b>'+esc(tab==='@uu'?uuTab:tab)+'</b> trong Sheet là <b>bản chép</b> từ các tab kênh (không cộng vào tổng). Chỉ xem – nhập số lượng ở tab kênh tương ứng.'
-      : (tab==='@le10'?'<b>Đơn lẻ / POD quá hạn</b> = đơn Web lẻ thường, Web lẻ custom, POD còn thiếu mà đã quá hạn giao ('+DH_HAN_TXT+') kể từ ngày đặt (ngày trong mã đơn), đơn đặt sớm nhất trên cùng. ':'')+(tab==='@han10'?'<b>Đến hạn '+DH_HAN+' ngày tới</b> = đơn còn thiếu có deadline từ hôm nay đến '+DH_HAN+' ngày tới (đơn đã trễ ở mục Đơn trễ hẹn), hạn sớm nhất trên cùng, mọi kênh. '+dhTab10Dong()+' ':'')+(tab==='@huy'?'':tab==='@tre'?'<b>Đơn trễ hẹn</b> = đơn còn thiếu đã quá deadline giao khách (đơn trễ lâu nhất trên cùng). Trễ hẹn ở từng bộ phận xem bảng cuối. ':tab==='@uu'?'<b>Đơn ưu tiên</b> = các dòng có chữ "ưu tiên". ':(tab?'Đang xem tab <b>'+esc(tab)+'</b>. ':''))+'Mỗi dòng là <b>một mã sản phẩm</b>. Ô <b>Đã giao</b> hiện <b>đã giao / đặt</b> (vd. 15/30). '+
+      : (tab==='@le10'?'<b>Đơn lẻ / POD quá hạn</b> = đơn Web lẻ thường, Web lẻ custom, POD còn thiếu mà đã quá hạn giao ('+DH_HAN_TXT+') kể từ ngày đặt (ngày trong mã đơn), đơn đặt sớm nhất trên cùng. ':'')+(tab==='@han10'?'<b>Đến hạn '+DH_HAN+' ngày tới</b> = đơn còn thiếu có deadline từ hôm nay đến '+DH_HAN+' ngày tới (đơn đã trễ ở mục Đơn trễ hẹn), hạn sớm nhất trên cùng, mọi kênh. '+dhTab10Dong()+' ':'')+(tab==='@huy'?'':tab==='@tre'?'<b>Đơn trễ hẹn</b> = đơn còn thiếu đã quá deadline giao khách (đơn trễ lâu nhất trên cùng). Trễ hẹn ở từng bộ phận xem bảng cuối. ':tab==='@uu'?'<b>Đơn ưu tiên</b> = các dòng có chữ "ưu tiên". ':tab==='@dung'?'Các dòng đang <b>tạm dừng</b> (bộ phận vẫn nhập số hàng đã làm dở). ':(tab?'Đang xem tab <b>'+esc(tab)+'</b>. ':''))+'Mỗi dòng là <b>một mã sản phẩm</b>. Ô <b>Đã giao</b> hiện <b>đã giao / đặt</b> (vd. 15/30). '+
         (coQuyen?'Bấm ô hoặc nút Nhập để ghi số đã giao và ngày hẹn giao đủ của bộ phận bạn.':'Tài khoản của bạn chỉ xem – số đã giao và ngày hẹn do trưởng / phó phòng từng bộ phận nhập.'))+'</div>';
-  if(tab==='@huy') return h.slice(0,h.lastIndexOf('<div class="dh-ghi">'))+dhVeHuy()+'</div>';   /* 16/11 khuya: mục Đơn đã hủy */
+  if(tab==='@huy') return h.slice(0,h.lastIndexOf('<div class="dh-ghi">'))+dhVeHuy()+'</div>';
+  if(tab==='@dung') h=h.slice(0,h.lastIndexOf('<div class="dh-ghi">'))+dhVeDungTom()+h.slice(h.lastIndexOf('<div class="dh-ghi">'));   /* 17/11: tóm tắt đơn tạm dừng + nút Chạy lại, bên dưới vẫn là bảng các dòng (nhập số được) */   /* 16/11 khuya: mục Đơn đã hủy */
   if(!bps.length) return h+'<div class="pdesc">Sheet đơn hàng chưa có cột số lượng của bộ phận (Phôi / Sơn / Taro / Làm đầu / UV / Hoàn thiện / Đóng gói).</div></div>';
   var y=x.slice(0,DHB.het||120), colW=12+(dhCoBV()?1:0)+bps.length*2+(coHDG?1:0), dem={};   /* 15/11 đêm: + Có thể giao, Trong kho + ĐG, Đã trả khách, Chú thích BP */
   var tdo={}; x.forEach(function(o){ var s=o.tab+'|'+o.maDon; dem[s]=(dem[s]||0)+1; (tdo[s]=tdo[s]||[]).push(o); });   /* 14/11 khuya: % hoàn thành của cả đơn ở cột Mã đơn */
@@ -2720,7 +2765,7 @@ function dhVeBang(ds){
     if(coTg) h+='<tr class="dh-d'+bang+' dh-dmoi dh-tgd"><td class="c1"></td><td class="c2">TỔNG SL CÒN THIẾU <span class="dh-bkenh">'+tgD.n+' mã</span></td>'+(dhCoBV()?'<td></td>':'')+
       '<td class="qt-so">'+qtSo(tgD.sl,0)+'</td><td class="qt-so"><b>'+qtSo(tgD.thieu,0)+'</b></td><td></td><td class="qt-so">'+qtSo(tgD.giao,0)+'</td><td class="qt-so">'+qtSo(tgD.kho,0)+'</td><td class="qt-so">'+qtSo(tgD.tra,0)+'</td><td colspan="'+(bps.length*2+4+(coHDG?1:0))+'"></td></tr>';
     h+='<tr class="dh-d'+bang+(dau&&!coTg?' dh-dmoi':'')+(cua?' cua':'')+(o.thieu<=0&&!d.o?' xong':'')+'">'+
-      '<td class="c1" data-t="'+esc(o.tab)+'" data-d="'+o.dong+'" onclick="dhBMo(this.dataset.t,+this.dataset.d)"><a href="#" onclick="return false">'+esc(o.maDon||'(không mã)')+'</a>'+(dem[sk]>1?' <span class="dh-stt" title="Mã thứ '+vt+' trong đơn '+dem[sk]+' mã">'+vt+'<i>/'+dem[sk]+'</i></span>':'')+'<div class="dh-bkenh">'+esc(o.kenh)+(dau?(function(t){ return ' · <b>'+dhPct(t.xong,t.sl)+'%</b></div>'+dhThanhMa(t); })(dhTienDo(tdo[sk])):'</div>')+'</td>'+
+      '<td class="c1" data-t="'+esc(o.tab)+'" data-d="'+o.dong+'" onclick="dhBMo(this.dataset.t,+this.dataset.d)"><a href="#" onclick="return false">'+esc(o.maDon||'(không mã)')+'</a>'+(o.dung?dhDungNhan(o):'')+(dem[sk]>1?' <span class="dh-stt" title="Mã thứ '+vt+' trong đơn '+dem[sk]+' mã">'+vt+'<i>/'+dem[sk]+'</i></span>':'')+'<div class="dh-bkenh">'+esc(o.kenh)+(dau?(function(t){ return ' · <b>'+dhPct(t.xong,t.sl)+'%</b></div>'+dhThanhMa(t); })(dhTienDo(tdo[sk])):'</div>')+'</td>'+
       '<td class="c2">'+esc(o.ten)+dhNoteO(o)+'</td>'+
       (dhCoBV()?'<td class="dh-cfg">'+dhCfgO(o)+'</td>':'')+
       '<td class="qt-so">'+(eq.sl&&!o.phu&&!o.bot?dhEIn(o,'sl','SL đặt'):qtSo(o.sl,0))+(o.bot&&o.slGoc?'<div class="dh-hangoc" title="Đã bớt trên web – Sheet vẫn ghi '+o.slGoc+' (xem mục Đơn đã hủy)">bớt từ '+qtSo(o.slGoc,0)+'</div>':'')+'</td><td class="qt-so"><b>'+(o.thieu?qtSo(o.thieu,0):'–')+'</b></td><td>'+(eq.sl&&!o.phu?dhEIn(o,'dl','Deadline')+(o.dlGoc&&o.dlGoc!==o.dl?'<div class="dh-hangoc" title="Deadline gốc – đã gia hạn ở cột Hạn mới">gốc '+dhNg(o.dlGoc)+'</div>':''):dhHanO(o))+dhHanLeO(o)+'</td>'+
@@ -2744,7 +2789,7 @@ function dhVeBang(ds){
   h+='</tbody></table></div>'; setTimeout(dhBNoi,0);
   if((eq.sl||eq.dg)&&!laPhu) h+='<div id="dhEThanh" class="qt-luu dh-ethanh" style="display:'+(dhEDem()?'flex':'none')+'"><span>Đang sửa <b>'+dhEDem()+'</b> ô (tô vàng) – chưa lưu vào Sheet.</span><button class="btn pri" type="button" onclick="dhELuu()">Lưu vào Sheet</button><button class="btn sm" type="button" onclick="dhEHuy()">Hủy</button></div>';
   h+='<div class="dh-ghi" style="margin:8px 2px 0">Đang hiện <b>'+qtSo(y.length,0)+'</b> / '+qtSo(x.length,0)+' dòng'+(DHB.cua&&!laPhu?' (đã lọc việc của '+esc(dhBPTen(bp))+')':'')+
-    (tab?' · tab '+esc(tab):'')+(laPhu?' · bản chép, không cộng vào tổng':'')+'.</div>';
+    (tab&&tab!=='@dung'?' · tab '+esc(tab):tab?' · mục Tạm dừng':'')+(laPhu?' · bản chép, không cộng vào tổng':'')+'.</div>';
   if(x.length>y.length) h+='<button class="btn sm" type="button" style="margin-top:8px" onclick="DHB.het=(DHB.het||120)+200;dhVeLai()">Xem thêm ('+qtSo(x.length-y.length,0)+' dòng nữa)</button>';
   if(tab==='@tre') return h+'</div>'+dhVeTreBP(ds);   /* 16/11 tối (chủ dự án): bỏ hạn chuẩn trên bảng đơn */
   return h+'</div>';
@@ -2754,7 +2799,7 @@ function dhHanLe(o){ return o&&dhLaLe(o)?(o.dl||dhDlNgam(o)):''; }
 function dhLeSapDs(ds){ var hn=dhHomNay(); return (ds||[]).filter(function(o){ var s0=dhHanLeSom(o), h=dhHanLe(o); return o.thieu>0&&dhLaSX(o)&&s0&&s0<hn&&h>=hn; }); }   /* qua mốc sớm, chưa tới hạn cuối */
 /* 15/11 khuya: dòng của các đơn đến hạn 10 ngày tới (cùng cách lọc với ô "Đến hạn 10 ngày tới"), sắp theo hạn đơn */
 function dhHan10Ds(ds){ var gs=dhHan10(dhGomDon(ds)), m={}; gs.forEach(function(g){ m[g.ma+'|'+g.tab]=g.dl; });
-  return (ds||[]).filter(function(o){ return o.thieu>0&&m[(o.maDon||'(không mã)')+'|'+o.tab]; }).sort(function(a,b){ var ka=(a.maDon||'(không mã)')+'|'+a.tab, kb=(b.maDon||'(không mã)')+'|'+b.tab; return String(m[ka]).localeCompare(String(m[kb]))||ka.localeCompare(kb)||(a.dong-b.dong); }); }
+  return (ds||[]).filter(function(o){ return o.thieu>0&&!o.dung&&m[(o.maDon||'(không mã)')+'|'+o.tab]; }).sort(function(a,b){ var ka=(a.maDon||'(không mã)')+'|'+a.tab, kb=(b.maDon||'(không mã)')+'|'+b.tab; return String(m[ka]).localeCompare(String(m[kb]))||ka.localeCompare(kb)||(a.dong-b.dong); }); }
 function dhLe10Ds(ds){ var hn=dhHomNay(); return (ds||[]).filter(function(o){ var h=dhHanLe(o); return o.thieu>0&&dhLaSX(o)&&h&&h<hn; }).sort(function(a,b){ return String(a.ngayDat||'').localeCompare(String(b.ngayDat||'')); }); }
 function dhTreDs(ds){ var dl={}; dhGomDon(ds).forEach(function(g){ if(g.st==='treHan') dl[g.ma+'|'+(g.tab||'')]=g.dl||''; });
   return ds.map(function(o,i){return [o,i]}).filter(function(x){ return dl[(x[0].maDon||'(không mã)')+'|'+(x[0].tab||'')]!=null; })

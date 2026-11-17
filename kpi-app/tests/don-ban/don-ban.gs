@@ -38,10 +38,10 @@ function dbWeb_(r, tienDo) {
 /* Tiến độ đơn đã duyệt: cộng các dòng cùng tab + mã đơn trong dữ liệu đơn (đã áp hủy / bớt) */
 function dbTienDo_(d, r) {
   var ds = (d.don || []).filter(function(o) { return !o.phu && o.tab === r.Tab && String(o.maDon || '') === String(r.MaDon); });
-  var sl = 0, thieu = 0; ds.forEach(function(o) { sl += o.sl || 0; thieu += o.thieu || 0; });
+  var sl = 0, thieu = 0, dung = []; ds.forEach(function(o) { sl += o.sl || 0; thieu += o.thieu || 0; if (o.dung && o.thieu > 0) dung.push({ ten: o.ten, thieu: o.thieu, ly: o.dung.ly, luc: o.dung.luc, hen: o.dung.hen }); });   // 17/11: mã TẠM DỪNG
   var phu = (d.phuDs || []).filter(function(x) { return x.TrangThai === 'HIEU_LUC' && x.Tab === r.Tab && x.MaDon === r.MaDon; })
     .map(function(x) { return { ten: x.Ten, loai: x.Loai, slCu: dhhSo_(x.SLCu), slMoi: dhhSo_(x.SLMoi), ly: x.LyDo }; });
-  return { n: ds.length, sl: sl, thieu: thieu, pct: sl ? Math.round((sl - thieu) / sl * 100) : (phu.length ? 0 : 100), huy: phu, khongThay: !ds.length && !phu.length ? 1 : 0 };
+  return { n: ds.length, sl: sl, thieu: thieu, pct: sl ? Math.round((sl - thieu) / sl * 100) : (phu.length ? 0 : 100), huy: phu, dung: dung, khongThay: !ds.length && !phu.length ? 1 : 0 };
 }
 /* Trang "Đơn hàng của tôi": BH = đơn của mình; người duyệt = mọi đơn (chờ duyệt trên cùng) */
 function layDonBan(token) {
@@ -212,7 +212,8 @@ function demDonBanCho(token) {
   if (!duyet) return sach_({ ok: true, n: 0, ds: [] });
   var ss = dhhSS_(false), ds = ss ? dbDoc_(ss).filter(function(r) { return r.TrangThai === 'CHO_DUYET'; }) : [];
   var kh = null; if (me.laOwner) { try { kh = dhkWeb_(); } catch (eK) {} }   // 17/11: nhắc chủ sở hữu khóa hẳn sau 14 ngày cảnh báo
-  return sach_({ ok: true, n: ds.length, khoa: kh, ds: ds.slice(0, 5).map(function(r) { return { ma: r.MaDon, kenh: DH_NHAN_TAB[r.Tab] || r.Tab, ai: r.NguoiTao, n: r._d.length }; }) });
+  var dung = null; try { dung = dhhNhacDung_(); } catch (eD) {}   // 17/11: nhắc đơn tạm dừng đến ngày chạy lại / dừng quá 14 ngày
+  return sach_({ ok: true, n: ds.length, khoa: kh, dung: dung, ds: ds.slice(0, 5).map(function(r) { return { ma: r.MaDon, kenh: DH_NHAN_TAB[r.Tab] || r.Tab, ai: r.NguoiTao, n: r._d.length }; }) });
 }
 /* ===== Tài khoản Bán hàng – chỉ chủ sở hữu ===== */
 function dsUngVienBH(token) {
