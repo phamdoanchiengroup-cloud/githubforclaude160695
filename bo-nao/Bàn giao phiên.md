@@ -9,7 +9,7 @@ Liên quan: [[00 Mục lục]] · [[Liên kết và công cụ]] · [[Việc ch�
 - Thêm sau: thống kê theo kênh + "nhà máy kín lịch đến …" (+6 ngày làm việc) ở đầu Bảng đơn nhà máy.
 - Thêm sau nữa: **TẠM DỪNG SẢN XUẤT** (mã / cả đơn, chạy lại, nhắc, Sheet vàng nhạt) – mục "TẠM DỪNG SẢN XUẤT (17/11)" trong ghi chú thiết kế.
 - 17/11 tối: Sheet đơn giữ nguyên khi hủy / bớt / tạm dừng; tab ĐẾN HẠN 10 NGÀY sang file riêng "Đơn đến hạn 10 ngày (web)".
-- 17/11 tối: đổi sang **5 làn** (Lẻ + POD 10 · Dealer 10 · Kho 55 · OEM 5 · A Đông 20, dư chia theo tỷ lệ). Chờ chủ dự án xem kết quả mô phỏng (Dealer trễ nhiều hơn) – có thể chỉnh tỷ lệ.
+- 17/11 tối: đổi sang **5 làn** (Lẻ + POD 10 · Dealer 10 · Kho 55 · OEM 5 · A Đông 20, dư chia theo tỷ lệ). Chủ dự án chỉnh lại 10 · 20 · 50 · 5 · 15.
 - Kế tiếp (chưa được yêu cầu): chủ dự án bật cảnh báo → 14 ngày → khóa hẳn; giai đoạn 3 (chuyển đơn cũ vào CSDL mới).
 
 ## 16/11 KHUYA (3) – GIAI ĐOẠN 1 TRANG BÁN HÀNG NHẬP ĐƠN: XONG + đã push (chờ 2-CAP-NHAT.bat)

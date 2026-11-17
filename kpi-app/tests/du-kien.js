@@ -68,16 +68,16 @@ ok(R.cong2('2026-11-20') === '2026-11-23', '20/11 → 23/11 (bỏ chủ nhật 2
   ok(kq.join() === '2,1,1,1,1,2,2', '17/11 tối: ưu tiên TRONG LÀN – trễ hạn / ★ / hàng ưu tiên = 1, còn lại = 2', kq);
   vm.runInContext(src.match(/\nvar DH_LAN5=[^\n]*/)[0] + src.slice(src.indexOf('\nfunction dhLanSo('), src.indexOf('\n', src.indexOf('\nfunction dhLanSo(') + 1)), ctx);
   const ls = ['WEB LẺ CUSTOM', 'POD-A.BÁCH', 'DEALER', 'KHO', 'OEM', 'A ĐÔNG', 'TAB MỚI'].map(x => ctx.dhLanSo(x));
-  ok(ls.join() === '1,1,2,3,4,5,3' && ctx.DH_LAN5.map(x => x[2]).join() === '0.1,0.1,0.55,0.05,0.2', '5 làn: Lẻ + POD 10% · Dealer 10% · Kho 55% · OEM 5% · A Đông 20%; tab mới tạm vào làn Kho', ls);
+  ok(ls.join() === '1,1,2,3,4,5,3' && ctx.DH_LAN5.map(x => x[2]).join() === '0.1,0.2,0.5,0.05,0.15', '5 làn: Lẻ + POD 10% · Dealer 20% · Kho 50% · OEM 5% · A Đông 15%; tab mới tạm vào làn Kho', ls);
   const DHx = c.__goi('layDonHangXuong', own, true), wx = webMoPhong(DHx, hn, null), Rx = c.dbkMoPhong_(c.dbkGiau_(c.dhDocDon_(false)), null, cs);
   const dea = Object.keys(wx).filter(z => /\|DEALER$/.test(z) && wx[z]).map(z => wx[z]).sort(), treKhac = DHx.don.filter(o => o.tab === 'OEM' && o.thieu > 0 && o.dl && o.dl < hn && o.dl >= '2026-10-18').map(o => wx[(o.maDon || '(không mã)') + '|OEM']).filter(Boolean).sort();
   ok(dea.length && Object.keys(wx).every(z => (Rx.m[z] || {}).eta === wx[z]), 'máy chủ vẫn trùng web 100% với thứ tự mới');
   /* làn riêng: Dealer không phải chờ Kho – tăng Kho thêm rất nhiều không làm Dealer muộn đi */
   const dea2 = Object.keys(wx).filter(z => /\|DEALER$/.test(z) && wx[z]).sort((a, b) => wx[b].localeCompare(wx[a]))[0];
   const Rk = c.dbkMoPhong_(c.dbkGiau_(c.dhDocDon_(false)), { ma: '(thử) KHO 5000', tab: 'KHO', thieu: 5000, dl: '2026-11-20', bac: 1 }, cs);
-  const canDea = DHx.don.filter(o => o.tab === 'DEALER' && o.thieu > 0 && !o.dung && !(o.dl && (Date.parse(hn) - Date.parse(o.dl)) / 864e5 > 30)).reduce((a, o) => a + o.thieu, 0), soNgay = Math.ceil(canDea / (cs.sp * 0.10));
+  const canDea = DHx.don.filter(o => o.tab === 'DEALER' && o.thieu > 0 && !o.dung && !(o.dl && (Date.parse(hn) - Date.parse(o.dl)) / 864e5 > 30)).reduce((a, o) => a + o.thieu, 0), soNgay = Math.ceil(canDea / (cs.sp * 0.20));
   let hanToi = hn, dem = 0; while (dem < soNgay) { hanToi = new Date(Date.parse(hanToi + 'T00:00:00Z') + 864e5).toISOString().slice(0, 10); if (new Date(hanToi + 'T00:00:00Z').getUTCDay() !== 0 && hanToi !== '2026-11-24') dem++; }
-  ok(dea2 && Rk.m[dea2].eta <= hanToi, 'thêm đơn Kho 5.000 sp trễ: Dealer vẫn có làn riêng 10% – xong chậm nhất ' + hanToi + ' (' + canDea + ' sp ÷ ' + (cs.sp * 0.1) + ' sp/ngày), thực tế ' + Rk.m[dea2].eta, [wx[dea2], Rk.m[dea2], hanToi]); }
+  ok(dea2 && Rk.m[dea2].eta <= hanToi, 'thêm đơn Kho 5.000 sp trễ: Dealer vẫn có làn riêng 20% – xong chậm nhất ' + hanToi + ' (' + canDea + ' sp ÷ ' + (cs.sp * 0.2) + ' sp/ngày), thực tế ' + Rk.m[dea2].eta, [wx[dea2], Rk.m[dea2], hanToi]); }
 
 console.log('\n2. Bán hàng thấy ngày dự kiến (đã cộng 2 ngày làm)');
 const shTK = c.ss_().getSheetByName('TaiKhoan'); r = c.__goi('taoTaiKhoanBH', own, { ds: c.__goi('dsUngVienBH', own).ds.filter(u => u.goiY).slice(0, 2).map(u => u.maNV) });
