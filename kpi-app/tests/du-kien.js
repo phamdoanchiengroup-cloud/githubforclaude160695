@@ -59,6 +59,18 @@ ok(web2['(thử) X|OEM'] && R2.m['(thử) X|OEM'].eta === web2['(thử) X|OEM'],
 ok(R.cong2('2026-11-21') === '2026-11-25', '+2 ngày làm việc bỏ qua chủ nhật 22/11 + ngày nghỉ 24/11 (Ngày Văn hóa VN): 21/11 → 25/11', R.cong2('2026-11-21'));
 ok(R.cong2('2026-11-20') === '2026-11-23', '20/11 → 23/11 (bỏ chủ nhật 22, không có ngày lễ chen)', R.cong2('2026-11-20'));
 
+/* 17/11 tối (chủ dự án): thứ tự bậc làn chính: Dealer (kể cả trễ) → trễ hạn + ★ + hàng ưu tiên → còn lại */
+{ const src = fs.readFileSync(path.join(__dirname, 'quy-trinh', 'quy-trinh-web.html'), 'utf8'), i0 = src.indexOf('\nfunction dhBacDong('), j0 = src.indexOf('\n}', i0);
+  const ctx = { HN: '2026-11-17' }; vm.createContext(ctx);
+  vm.runInContext("var DH_TAB_BAC1={'WEB LẺ CUSTOM':1,'WEB LẺ ĐƠN THƯỜNG':1}; function dhHomNay(){return HN} function dhTenChuan(s){return String(s||'').toUpperCase().trim()} function dhLaUu(o,m){ return o.tab==='KHO'&&!!m[dhTenChuan(o.maDon)+'|'+dhTenChuan(o.ten)] }" + src.slice(i0, j0 + 2), ctx);
+  const b = (o, mu, mtr) => ctx.dhBacDong(o, mu || {}, mtr || {});
+  const kq = [b({ tab: 'DEALER', dl: '2026-12-30' }), b({ tab: 'DEALER', dl: '2026-11-01' }), b({ tab: 'OEM', dl: '2026-11-01' }), b({ tab: 'KHO', uuWeb: { ai: 'x' } }), b({ tab: 'KHO', maDon: '#K1', ten: 'A' }, { '#K1|A': 1 }), b({ tab: 'OEM', dl: '2026-12-30' }), b({ tab: 'POD-X' })];
+  ok(kq.join() === '2,2,3,3,3,4,1', 'thứ tự bậc mới: Dealer (cả khi trễ) = 2 → trễ hạn / ★ / hàng ưu tiên = 3 → còn lại = 4 (lẻ / POD làn riêng = 1)', kq);
+  const DHx = c.__goi('layDonHangXuong', own, true), wx = webMoPhong(DHx, hn, null), Rx = c.dbkMoPhong_(c.dbkGiau_(c.dhDocDon_(false)), null, cs);
+  const dea = Object.keys(wx).filter(z => /\|DEALER$/.test(z) && wx[z]).map(z => wx[z]).sort(), treKhac = DHx.don.filter(o => o.tab === 'OEM' && o.thieu > 0 && o.dl && o.dl < hn && o.dl >= '2026-10-18').map(o => wx[(o.maDon || '(không mã)') + '|OEM']).filter(Boolean).sort();
+  ok(dea.length && Object.keys(wx).every(z => (Rx.m[z] || {}).eta === wx[z]), 'máy chủ vẫn trùng web 100% với thứ tự mới');
+  ok(!treKhac.length || dea[dea.length - 1] <= treKhac[0], 'mọi đơn Dealer xong trước (hoặc cùng ngày) đơn trễ hạn của kênh khác', [dea.slice(-1), treKhac.slice(0, 1)]); }
+
 console.log('\n2. Bán hàng thấy ngày dự kiến (đã cộng 2 ngày làm)');
 const shTK = c.ss_().getSheetByName('TaiKhoan'); r = c.__goi('taoTaiKhoanBH', own, { ds: c.__goi('dsUngVienBH', own).ds.filter(u => u.goiY).slice(0, 2).map(u => u.maNV) });
 const iD2 = shTK.rows[0].indexOf('DoiMatKhauLanDau'), iV2 = shTK.rows[0].indexOf('VaiTro'); shTK.rows.forEach((row, i) => { if (i && row[iV2] === 'BH') row[iD2] = 'Không'; }); c.xoaCache_('TaiKhoan');

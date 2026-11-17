@@ -35,10 +35,11 @@ function dbkMoPhong_(G, them, cs) {   // G = dbkGiau_(); them = đơn thử {ma,
   var bac = function(o) {
     var tab = String(o.tab || '').toUpperCase().trim(), t = dbkTC_(o.ten);
     if (DBK_TAB_BAC1[tab] || /^POD/.test(tab)) return 1;
-    if (o.uuWeb) return 2;
-    if (o.dl && o.dl < hn) return 2;
-    if (mtr[t]) return 2;
-    if (tab === 'DEALER' || (o.tab === 'KHO' && (mu[dbkTC_(o.maDon || '') + '|' + t] || mu['|' + t]))) return 3;
+    if (tab === 'DEALER') return 2;   // 17/11 tối (chủ dự án): Dealer đứng đầu làn chính, kể cả khi trễ
+    if (o.uuWeb) return 3;
+    if (o.dl && o.dl < hn) return 3;
+    if (mtr[t]) return 3;
+    if (o.tab === 'KHO' && (mu[dbkTC_(o.maDon || '') + '|' + t] || mu['|' + t])) return 3;   // hàng ưu tiên cùng bậc trễ + ★
     return 4;
   };
   var k2 = function(k) { var s = String(k || '').toUpperCase(), c = s.match(/CHU[OÔ]I\s*:\s*([A-Z_]*)/), n = s.match(/NG[OỌ]N\s*:\s*([A-Z_]*)/); return (c || n) ? { c: c ? c[1] : '', n: n ? n[1] : '' } : null; };
@@ -102,7 +103,7 @@ function dbkGanDuKien_(out, d) {
     if (x.tt === 'DA_DUYET' && x.td) { var h = dbkHien_(R.m[x.maDon + '|' + x.tab], R); if (h) { x.td.eta = h.eta; if (h.cho) x.td.etaCho = 1; } return; }
     if (x.tt !== 'CHO_DUYET' || nCho >= DBK_CHO_MAX) return;
     nCho++;   /* đơn chờ duyệt: thử xếp đơn này vào cuối hàng đợi đúng bậc của kênh, deadline = deadline mong muốn */
-    var tab = String(x.tab || '').toUpperCase().trim(), bac = (DBK_TAB_BAC1[tab] || /^POD/.test(tab)) ? 1 : tab === 'DEALER' ? 3 : 4;
+    var tab = String(x.tab || '').toUpperCase().trim(), bac = (DBK_TAB_BAC1[tab] || /^POD/.test(tab)) ? 1 : tab === 'DEALER' ? 2 : 4;
     var R2 = dbkMoPhong_(lay(), { ma: '(thử) ' + x.maDon, tab: x.tab, thieu: x.tongSL, dl: x.dlMuon || '', bac: bac }, cs);
     var h2 = dbkHien_(R2.m['(thử) ' + x.maDon + '|' + x.tab], R2); if (h2 && h2.eta) x.duKien = h2.eta;
   });
