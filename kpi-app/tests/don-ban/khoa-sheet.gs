@@ -1,6 +1,5 @@
 /* ===== 17/11 (chủ dự án chọn "cảnh báo trước, khóa sau") – GIAI ĐOẠN 2: HỦY / BỚT / ĐỔI HẠN / SL CHỈ QUA WEB, KHÓA CỘT TRÊN SHEET ĐƠN =====
-   - Cột khóa ở mọi tab kênh: Mã đơn (cột A), Loại hàng (tên SP), Số lượng đặt, Deadline, Hạn mới HT đơn cũ; tab ĐẾN HẠN 10 NGÀY: Deadline + Hạn mới
-     (tab này đồng bộ 2 chiều sang tab kênh). Web vẫn ghi được (chạy bằng tài khoản chủ sở hữu): duyệt đơn Bán hàng, sửa SL / deadline trong bảng đơn, hủy / bớt.
+   - Cột khóa ở mọi tab kênh: Mã đơn (cột A), Loại hàng (tên SP), Số lượng đặt, Deadline, Hạn mới HT đơn cũ (tab ĐẾN HẠN 10 NGÀY đã chuyển sang file riêng 17/11 tối). Web vẫn ghi được (chạy bằng tài khoản chủ sở hữu): duyệt đơn Bán hàng, sửa SL / deadline trong bảng đơn, hủy / bớt.
    - CANH_BAO: Protection setWarningOnly – ai sửa trên Sheet thấy hộp cảnh báo của Google (vẫn sửa được) + web ghi nhật ký "Sửa tay" (tab SuaTay
      trong Sheet "CSDL Đơn hàng (web)": lúc, email nếu Google cho biết, tab, ô, cột, giá trị cũ → mới). Hết ~14 ngày chủ sở hữu bấm KHÓA HẲN.
    - KHOA: chỉ tài khoản chạy web (chủ sở hữu) sửa được các cột đó. '' = gỡ hết khóa có tiền tố "KPI web – " (không phụ thuộc trạng thái đã lưu).
@@ -44,12 +43,7 @@ function dhkAp_(muc) {
     if (meta.dl >= 0) cot[meta.dl + 1] = 'Deadline'; if (meta.hanMoi >= 0) cot[meta.hanMoi + 1] = 'Hạn mới HT đơn cũ';
     dat(sh, meta.hdr, cot);
   });
-  var s10 = ss.getSheetByName(DH10_TEN);
-  if (s10) {
-    var v = s10.getRange(1, 1, Math.min(3, Math.max(1, s10.getLastRow())), Math.max(1, s10.getLastColumn())).getValues(), hdr = 0, c10 = {};
-    for (var i = 0; i < v.length && !hdr; i++) v[i].forEach(function(x, j) { var t = String(x == null ? '' : x).trim().toUpperCase(); if (t === 'DEADLINE' || t === 'HẠN MỚI HT ĐƠN CŨ') { hdr = i + 1; c10[j + 1] = t === 'DEADLINE' ? 'Deadline (tab 10 ngày)' : 'Hạn mới (tab 10 ngày)'; } });
-    if (hdr) dat(s10, hdr, c10);
-  }
+  /* 17/11 tối: tab ĐẾN HẠN 10 NGÀY đã chuyển sang file riêng – không khóa trong Sheet đơn nữa */
   return kq;
 }
 /* Chủ sở hữu: muc = 'CANH_BAO' | 'KHOA' | '' (gỡ) */

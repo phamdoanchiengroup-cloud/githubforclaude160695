@@ -106,10 +106,10 @@ const ssDH = () => c.SpreadsheetApp.openById(c.DH_SHEET_ID), prs = () => ssDH().
 ok(!c.__goi('datKhoaSheetDon', gd, { muc: 'CANH_BAO' }).ok, 'Giám đốc không bật được (chỉ chủ sở hữu)');
 r = c.__goi('datKhoaSheetDon', own, { muc: 'CANH_BAO' });
 let p0 = prs();
-ok(r.ok && p0.length === 7 * 4 + 2 && p0.every(p => p.canhBao && /^KPI web – /.test(p.mo)), r.msg + ' (7 tab × 4 cột + 2 cột tab 10 ngày, đều là CẢNH BÁO)', [r, p0.length]);
+ok(r.ok && p0.length === 7 * 4 && p0.every(p => p.canhBao && /^KPI web – /.test(p.mo)), r.msg + ' (7 tab × 4 cột, đều là CẢNH BÁO; tab 10 ngày đã sang file riêng)', [r, p0.length]);
 const pOEM = p0.filter(p => p.tab === 'OEM').map(p => p.c).sort((a, b) => a - b); ok(pOEM.join() === '1,2,4,6', 'tab OEM khóa cột A (mã đơn), B (tên), D (SL), F (deadline) – không khóa cột bộ phận', pOEM);
 ok(p0.filter(p => p.tab === 'OEM').every(p => p.r === 2 && p.r + p.nr - 1 >= 1000), 'khóa từ dòng dưới tiêu đề tới hết bảng (đơn mới vẫn bị khóa)');
-r = c.__goi('datKhoaSheetDon', own, { muc: 'CANH_BAO' }); ok(prs().length === 30, 'bấm lại không tạo khóa trùng');
+r = c.__goi('datKhoaSheetDon', own, { muc: 'CANH_BAO' }); ok(prs().length === 28, 'bấm lại không tạo khóa trùng');
 const ev = (tab, row, col, cu, moi, nr, nc) => { const sh = ssDH().getSheetByName(tab); return { triggerUid: 'T10', range: sh.getRange(row, col, nr || 1, nc || 1), oldValue: cu, value: moi, user: { getEmail: () => '' } }; };
 c.__trigger = [{ id: 'T10', ham: 'DH_TAB10_SUA' }];
 c.DH_TAB10_SUA(ev('OEM', 3, 4, '50', '60'));
@@ -127,14 +127,14 @@ const st = JSON.parse(c.PropertiesService.getScriptProperties().getProperty('DH_
 r = c.__goi('demDonBanCho', own); ok(r.khoa && r.khoa.hetCB === 1 && r.khoa.ngay === 16, 'sau 16 ngày cảnh báo: Việc hôm nay nhắc chủ sở hữu khóa hẳn', r.khoa);
 ok(!c.__goi('demDonBanCho', gd).khoa, 'người duyệt khác không nhận nhắc này');
 /* tự rà: ai đó gỡ khóa ở tab KHO -> đặt lại */
-const shK = ssDH().getSheetByName('KHO'); shK.getProtections('RANGE').forEach(p => p.remove()); ok(prs().length === 26, 'giả lập: có người gỡ 4 khóa tab KHO');
+const shK = ssDH().getSheetByName('KHO'); shK.getProtections('RANGE').forEach(p => p.remove()); ok(prs().length === 24, 'giả lập: có người gỡ 4 khóa tab KHO');
 st.ra = 0; st.tu = '2026-11-01 08:00:00'; c.PropertiesService.getScriptProperties().setProperty('DH_KHOA', JSON.stringify(st)); c.dhkRa_();
-ok(prs().length === 30, 'lượt rà 6 giờ: đặt lại khóa tab KHO');
+ok(prs().length === 28, 'lượt rà 6 giờ: đặt lại khóa tab KHO');
 const sk = c.dhhDoc_(c.dhhSS_(false), 'SuKien').filter(z => z.ThaoTac === 'KHOA_SHEET_DAT_LAI'); ok(sk.length === 1 && /KHO/.test(sk[0].ChiTiet), 'ghi sổ "khóa bị gỡ – đặt lại"', sk);
 ok(JSON.parse(c.PropertiesService.getScriptProperties().getProperty('DH_KHOA')).tu === '2026-11-01 08:00:00', 'giữ ngày bắt đầu cảnh báo');
 /* khóa hẳn */
 r = c.__goi('datKhoaSheetDon', own, { muc: 'KHOA' }); p0 = prs();
-ok(r.ok && p0.length === 30 && p0.every(p => !p.canhBao && p.editors.join() === 'chu@vidu.com' && !p.mien), r.msg + ' – chỉ tài khoản chạy web sửa được', p0[0]);
+ok(r.ok && p0.length === 28 && p0.every(p => !p.canhBao && p.editors.join() === 'chu@vidu.com' && !p.mien), r.msg + ' – chỉ tài khoản chạy web sửa được', p0[0]);
 r = c.__goi('luuBangDon', own, { ds: [{ tab: 'OEM', dong: 3, ten: TABS.OEM[2][1], sl: { moi: 77, cu: TABS.OEM[2][3] } }] });
 ok(r.ok && ssDH().getSheetByName('OEM').getRange(3, 4).getValue() === 77, 'web vẫn sửa SL được khi đã khóa (tài khoản chạy web)', r);
 r = c.__goi('datKhoaSheetDon', own, { muc: '' }); ok(r.ok && prs().length === 0 && c.__goi('layKhoaSheetDon', gd).tt.muc === '', 'gỡ khóa: xóa hết khóa của web', r);
@@ -158,7 +158,7 @@ ok(!sau6['#KHO-DUNG-02/11|KHO'] && !R6.m['#KHO-DUNG-02/11|KHO'], 'web + máy ch�
 const k6 = Object.keys(sau6); ok(k6.every(z => (R6.m[z] || {}).eta === sau6[z]), 'ngày xong các đơn khác: máy chủ vẫn trùng web 100%');
 ok(k6.some(z => truoc[z] && sau6[z] < truoc[z]) && k6.every(z => !truoc[z] || sau6[z] <= truoc[z]), 'các đơn khác xong SỚM hơn hoặc bằng (không đơn nào muộn đi)', k6.filter(z => sau6[z] < truoc[z]).length);
 const shK = c.SpreadsheetApp.openById(c.DH_SHEET_ID).getSheetByName('KHO'), mauD = () => dongK.map(o => shK.getRange(o.dong, 1, 1, 3).getBackgrounds()[0][0]);
-ok(mauD().join() === '#fff2cc,#fff2cc,#ffffff', 'Sheet: 2 dòng tạm dừng tô vàng nhạt, dòng đã xong giữ màu', mauD());
+ok(mauD().join() === '#ffffff,#ffffff,#ffffff', '17/11 tối: Sheet đơn GIỮ NGUYÊN khi tạm dừng (không tô màu)', mauD());
 const bt = c.__goi('layBangDonNhaMay', B1), tkK = bt.tk.find(z => z.tab === 'KHO'), tg = bt.tk.slice(-1)[0];
 ok(bt.ds.filter(d => d[1] === '#KHO-DUNG-02/11').every(d => d[5] === 1) && tkK.dung === 120 && tg.dung === 120 && tg.donDung === 1 && tg.thieu === kinTruoc.thieu - 120, 'Bảng đơn nhà máy: dòng có cờ tạm dừng; thống kê tách "tạm dừng 120 sp (1 đơn)", còn làm giảm 120', [tkK, tg.thieu, kinTruoc.thieu]);
 ok(tg.xong <= kinTruoc.xong, 'ngày kín lịch không muộn đi (' + kinTruoc.xong + ' → ' + tg.xong + ')');
@@ -184,7 +184,7 @@ ok(x.td.dung.length === 1 && x.td.dung[0].ly === 'Khách tạm hoãn' && !x.td.e
 r = c.__goi('hoanTacHuyDon', gd, { nhom: dk.find(o => o.dung).dung.nhom, lyDo: 'Chạy lại sản xuất' });
 const D2 = c.__goi('layDonHangXuong', own, true);
 ok(r.ok && r.chay === 1 && /Đã chạy lại/.test(r.msg) && D2.don.filter(o => o.maDon === '#KHO-DUNG-02/11').every(o => !o.dung) && webMoPhong(D2, hn, null)['#KHO-DUNG-02/11|KHO'], r.msg + ' → vào lại mô phỏng', r);
-ok(mauD().join() === '#ffffff,#ffffff,#ffffff', 'Sheet: trả lại màu cũ', mauD());
+ok(mauD().join() === '#ffffff,#ffffff,#ffffff', 'chạy lại: Sheet vẫn nguyên', mauD());
 ok(c.__goi('layDonHangXuong', own, true).don.find(o => o.dong === o1.dong && o.tab === 'KHO').sl === 40, 'bớt SL vẫn còn sau khi chạy lại');
 
 }

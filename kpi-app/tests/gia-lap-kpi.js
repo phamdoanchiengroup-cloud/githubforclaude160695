@@ -162,10 +162,10 @@ function tao(fileCode, duLieu, gioHienTai) {
     SpreadsheetApp: { flush() {}, ProtectionType: { RANGE: "RANGE", SHEET: "SHEET" }, getActiveSpreadsheet: () => ss,
       // Sheet của tệp khác (31/10, đọc Sheet "Trạng thái đơn hàng"): kiểm thử gán ctx.__ngoai = { id: { ten, sheets: { Tab: [[...]] } } }
       openById: id => { const bm = (ctx.__bangMoi || []).find(x => x.id === id); if (bm) return bm; const m = (ctx.__ngoai || {})[id]; if (!m) throw new Error('Bạn không có quyền truy cập vào tài liệu được yêu cầu (giả lập).');
-        return { getId: () => id, getName: () => m.ten || id, getSheetByName: n => (m.sheets[n] ? new Sheet(n, m.sheets[n]) : null), getSheets: () => Object.keys(m.sheets).map(n => new Sheet(n, m.sheets[n])), insertSheet: n => { m.sheets[n] = m.sheets[n] || []; return new Sheet(n, m.sheets[n]); } }; },   // 15/11: tạo tab mới (tab ĐẾN HẠN 10 NGÀY)
+        return { getId: () => id, getName: () => m.ten || id, getSheetByName: n => (m.sheets[n] ? new Sheet(n, m.sheets[n]) : null), getSheets: () => Object.keys(m.sheets).map(n => new Sheet(n, m.sheets[n])), insertSheet: n => { m.sheets[n] = m.sheets[n] || []; return new Sheet(n, m.sheets[n]); }, deleteSheet: sh => { delete m.sheets[sh.getName()]; } }; },   // 15/11: tạo tab mới (tab ĐẾN HẠN 10 NGÀY)
       create: ten => {   // bảng tính mới (lưu chi tiết cơm trưa lên Drive)
         ctx.__bangMoi = ctx.__bangMoi || []; const ds = [new Sheet('Trang tính1', [])], id = 'ss' + (ctx.__bangMoi.length + 1);
-        const o = { ten, id, ds, getId: () => id, getName: () => ten, getSheets: () => ds, getSheetByName: n => ds.find(x => x.ten === n) || null,
+        const o = { ten, id, ds, getId: () => id, getName: () => ten, getUrl: () => 'https://docs.google.com/spreadsheets/d/' + id, getSheets: () => ds, getSheetByName: n => ds.find(x => x.ten === n) || null,
           insertSheet: n => { const x = new Sheet(n, []); ds.push(x); return x; } };
         Sheet.prototype.setName = Sheet.prototype.setName || function (n) { this.ten = n; return this; };
         ctx.__bangMoi.push(o); return o;

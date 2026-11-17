@@ -10,7 +10,7 @@
    Kiểm thử: tests/huy-don.js */
 var DH_HUY_NV = ['C019', 'C056', 'C067'];   // C019 Giám đốc · C056 Phó GĐ SX · C067 chị Kim Loan (C077 KHÔNG có quyền này) – hằng riêng, không dùng chung DH_UU_NV
 var DHH_TEN = 'CSDL Đơn hàng (web)', DHH_PROP = 'DH_CSDL_ID', DHH_CACHE = 'DH_HUY_v1', DHH_XAM = '#d9d9d9', DHH_VANG = '#fff2cc';   // 17/11: vàng nhạt = TẠM DỪNG
-var DHH_MAU = { HUY: DHH_XAM, DUNG: DHH_VANG }, DHH_DUNG_LAU = 14;   // 17/11: tạm dừng quá 14 ngày -> nhắc
+var DHH_MAU = { HUY: DHH_XAM, DUNG: DHH_VANG }, DHH_DUNG_LAU = 14, DHH_TO_MAU = false;   // 17/11 tối: tắt tô màu Sheet (dòng hủy cũ đã tô thì hoàn tác vẫn trả màu)   // 17/11: tạm dừng quá 14 ngày -> nhắc
 var DHH_LY_MIN = 5, DHH_LY_MAX = 200, DHH_DON_MAX = 50, DHH_GIO_MAX = 30, DHH_WEB_MAX = 300;
 var DHH_COT = {
   DongHuy: ['Id', 'MaDong', 'Tab', 'MaDon', 'Ten', 'Loai', 'SLCu', 'SLMoi', 'LyDo', 'Ai', 'Tk', 'MaNV', 'Luc', 'TienDo', 'MauCu', 'DongSheet', 'TrangThai', 'Nhom', 'NguoiHoanTac', 'TkHoanTac', 'LucHoanTac', 'LyDoHoanTac', 'Hen'],   // 17/11: Hen = dự kiến chạy lại (TẠM DỪNG)
@@ -203,7 +203,7 @@ function huyBotDon(token, p) {
     /* tô xám dòng HỦY trên Sheet cũ (chỉ màu nền), lưu màu cũ để hoàn tác. Dòng đang BỚT bị thay bằng HỦY thì giữ nguyên màu cũ của nó */
     var nc = Math.max(1, Math.min(sh.getLastColumn(), 300));
     moi.forEach(function(z) {
-      var mau = DHH_MAU[z.rec.Loai]; if (!mau) return;   // HỦY tô xám, TẠM DỪNG tô vàng nhạt (17/11)
+      var mau = DHH_TO_MAU ? DHH_MAU[z.rec.Loai] : ''; if (!mau) return;   // 17/11 (chủ dự án): KHÔNG đổi gì trên Sheet đơn khi hủy / bớt / tạm dừng – chỉ web biết
       try { var rg = sh.getRange(z.o.dong, 1, 1, nc); z.rec.MauCu = JSON.stringify(dhhNen_(rg.getBackgrounds()[0])); rg.setBackground(mau); }
       catch (eM) { canhBao = ' (chưa tô màu được dòng trong Sheet: ' + String(eM && eM.message || eM).slice(0, 80) + ')'; }
     });

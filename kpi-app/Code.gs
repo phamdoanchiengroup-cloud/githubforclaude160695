@@ -7684,7 +7684,7 @@ function danhSachVanPhong(token) {
   ds.sort(function(a, b) { return (thuTu[a.vaiTro] - thuTu[b.vaiTro]) || (a.HoTen < b.HoTen ? -1 : 1); });
   return sach_({ ok: true, ds: ds, muc: HS_MUC });
 }
-var KPI_BAN_MAY = '17/11/2026 17:39';   // giờ dựng Code.gs (22/10)
+var KPI_BAN_MAY = '17/11/2026 20:43';   // giờ dựng Code.gs (22/10)
 /* =====================================================================
    KỸ NĂNG (22/10, chủ dự án nhờ thiết kế + tham khảo chuyên gia nhân sự / đào tạo)
    - Danh mục: trưởng / phó phòng đề xuất kỹ năng của xưởng (tên, mô tả, tiêu chí đạt, công đoạn liên quan)
@@ -10500,6 +10500,21 @@ function luuUuTienDon(token, p) {
    - Đồng bộ 2 chiều, so 3 chiều với bản gốc (sheet ẩn DonHang10Goc trong file KPI): chỉ tab 10 đổi -> chép về tab kênh; chỉ tab kênh đổi -> cập nhật tab 10;
      cả hai đổi khác nhau -> GIỮ tab kênh, tô đỏ + ghi chú ô ở tab 10 ("Bạn nhập X, tab kênh là Y"). SL giảm -> tô vàng (không chặn).
    - Chạy: ngay khi có người sửa tab 10 (trigger onEdit cài đặt) + mỗi 10 phút 6h–22h (lưới an toàn); mọi lần ghi dùng chung khóa. */
+/* 17/11 tối (chủ dự án): tab ĐẾN HẠN 10 NGÀY KHÔNG còn nằm trong Sheet "Trạng thái đơn hàng" – web tự tạo file riêng
+   "Đơn đến hạn 10 ngày (web)" (id ở ScriptProperties DH10_SS_ID, chỉ chủ sở hữu thấy; muốn ai sửa thì chia sẻ file này – không lộ dữ liệu khác).
+   Lần dựng đầu: đồng bộ số vừa nhập ở tab cũ trong Sheet đơn rồi XÓA tab cũ. Sửa ở file mới vẫn chép về tab kênh như cũ. */
+var DH10_FILE = 'Đơn đến hạn 10 ngày (web)', DH10_PROP = 'DH10_SS_ID';
+function dh10SS_(tao) {
+  var p = PropertiesService.getScriptProperties(), id = p.getProperty(DH10_PROP);
+  if (id) return SpreadsheetApp.openById(id);
+  if (!tao) return null;
+  var s10 = SpreadsheetApp.create(DH10_FILE); s10.getSheets()[0].setName(DH10_TEN); p.setProperty(DH10_PROP, s10.getId()); return s10;
+}
+function dh10Tab_(ss) {   // tab 10 đang dùng: file riêng; chưa có thì tab cũ trong Sheet đơn (trước 17/11)
+  var s10 = null; try { s10 = dh10SS_(false); } catch (e) { s10 = null; }
+  var sh = s10 && s10.getSheetByName(DH10_TEN); if (sh) return sh;
+  return ss.getSheetByName(DH10_TEN);
+}
 var DH10_TEN = 'ĐẾN HẠN 10 NGÀY', DH10_GOC = 'DonHang10Goc', DH10_GOC_COT = ['Hang', 'Tab', 'Ma', 'DuLieu'], DH10_MA_COT = 'MÃ DÒNG WEB', DH10_NGAY = 10;
 var DH10_INFO = ['KÊNH', 'MÃ ĐƠN', 'LOẠI HÀNG CẦN SẢN XUẤT', 'SL ĐẶT', 'CÒN THIẾU', 'HẠN DÙNG', 'CÒN (NGÀY)'];
 function dh10Truong_() { var f = [['dl', 'DEADLINE'], ['hanMoi', 'HẠN MỚI HT ĐƠN CŨ'], ['phoi', 'NOTE (LOẠI PHÔI)']]; DH_BP.forEach(function(b) { f.push(['q:' + b[0], 'SL ' + b[1].toUpperCase()]); f.push(['h:' + b[0], 'HẸN ' + b[1].toUpperCase()]); }); return f; }
@@ -10514,7 +10529,7 @@ function dh10Khoa_() { var l = LockService.getScriptLock(); l.waitLock(25000); r
 /* Đồng bộ 2 chiều (gọi khi đã giữ khóa). Trả {chep, capNhat, xungDot, mat} */
 function dhTab10DongBo_(ss) {
   ss = ss || SpreadsheetApp.openById(DH_SHEET_ID);
-  var sh10 = ss.getSheetByName(DH10_TEN), kq = { chep: 0, capNhat: 0, xungDot: 0, mat: 0, giam: 0 }; if (!sh10) return kq;
+  var sh10 = dh10Tab_(ss), kq = { chep: 0, capNhat: 0, xungDot: 0, mat: 0, giam: 0 }; if (!sh10) return kq;
   var goc = docAnToan_(DH10_GOC); if (!goc.length) return kq;
   var v10 = sh10.getDataRange().getValues(), nam = Number(Utilities.formatDate(new Date(), TZ_VN, 'yyyy')), theoTab = {}, doiGoc = false, ghiKenh = false;
   /* 16/11 rà soát: tìm dòng ở tab 10 theo cột MÃ DÒNG WEB (người dùng sắp xếp / lọc / chèn / xóa dòng tab 10 vẫn khớp đúng đơn);
@@ -10584,7 +10599,8 @@ function dhTab10Tao_() {
     F.forEach(function(t, j) { var c = I.cols[j]; if (c >= 0) { dong.push(I.r[c]); f[t[0]] = [c, dh10Chuan_(I.r[c]), DH10_INFO.length + j]; } else dong.push(''); });
     dong.push(I.ma); ra.push(dong); goc.push([String(ra.length), x.o.tab, I.ma, JSON.stringify({ f: f })]);
   });
-  var sh10 = ss.getSheetByName(DH10_TEN); if (!sh10) sh10 = ss.insertSheet(DH10_TEN);
+  var s10 = dh10SS_(true), sh10 = s10.getSheetByName(DH10_TEN); if (!sh10) sh10 = s10.insertSheet(DH10_TEN);
+  var cu10 = ss.getSheetByName(DH10_TEN); if (cu10) { try { ss.deleteSheet(cu10); } catch (eX) {} }   // 17/11 tối: xóa tab cũ trong Sheet đơn (đã đồng bộ ở trên)
   sh10.clearContents(); try { sh10.getRange(1, 1, Math.max(sh10.getMaxRows(), 2), Math.max(sh10.getMaxColumns(), dau.length)).setBackground(null).clearNote(); } catch (e) {}
   try { sh10.getRange(1, 1, ra.length, dau.length).setNumberFormats(ra.map(function(row) { return row.map(function(v) { return typeof v === 'string' ? '@' : (Object.prototype.toString.call(v) === '[object Date]' ? 'dd/mm/yyyy' : '0.####'); }); })); } catch (eF) {}   // 16/11 rà soát: ô chữ giữ dạng chữ ("05/12", "1/2 cây" không bị Sheet đổi thành ngày rồi chép ngược về tab kênh)
   sh10.getRange(1, 1, ra.length, dau.length).setValues(ra);
@@ -10596,13 +10612,14 @@ function dhTab10Tao_() {
   if (goc.length) shG.getRange(2, 1, goc.length, DH10_GOC_COT.length).setValues(goc);
   xoaCache_(DH10_GOC); dhXoaCacheDon_();
   PropertiesService.getScriptProperties().setProperty('DH10_TAO', Utilities.formatDate(new Date(), TZ_VN, 'dd/MM HH:mm') + '|' + goc.length);
+  try { dhCaiTab10b_(); } catch (eT) {}
   return { n: goc.length, dongBo: kq0 };
 }
-function dhTab10TT_() { var p = PropertiesService.getScriptProperties(), a = String(p.getProperty('DH10_TAO') || '').split('|'), b = String(p.getProperty('DH10_DB') || '').split('|'); var kq = {}; try { kq = JSON.parse(b[1] || '{}'); } catch (e) {} return { tao: a[0] || '', n: Number(a[1]) || 0, dongBo: b[0] || '', kq: kq }; }
+function dhTab10TT_() { var p = PropertiesService.getScriptProperties(), a = String(p.getProperty('DH10_TAO') || '').split('|'), b = String(p.getProperty('DH10_DB') || '').split('|'); var kq = {}; try { kq = JSON.parse(b[1] || '{}'); } catch (e) {} var url = ''; try { var s10 = dh10SS_(false); if (s10) url = s10.getUrl(); } catch (e) {} return { tao: a[0] || '', n: Number(a[1]) || 0, dongBo: b[0] || '', kq: kq, url: url, file: DH10_FILE }; }
 /* Trigger (hàm toàn cục – trigger không gọi được hàm kết thúc bằng _) */
 function DH_TAB10_TAO(e) { if (!noiBo_(e)) return chanWeb_('DH_TAB10_TAO'); var l; try { l = dh10Khoa_(); dhTab10Tao_(); } catch (e) { try { ghiLog_({ tk: 'HE_THONG', ten: 'Hệ thống' }, 'Tạo tab ĐẾN HẠN 10 NGÀY lỗi', String(e && e.message || e).slice(0, 200), '', ''); } catch (e2) {} } finally { try { l && l.releaseLock(); } catch (e3) {} } }
 function DH_TAB10_DONG_BO(e) { if (!noiBo_(e)) return chanWeb_('DH_TAB10_DONG_BO'); var h = Number(Utilities.formatDate(new Date(), TZ_VN, 'H')); if (h < 6 || h >= 22) return; var l = LockService.getScriptLock(); if (!l.tryLock(5000)) return; try { var p10 = PropertiesService.getScriptProperties(); if (p10.getProperty('DH10_CAN_TAO') === '1') { p10.deleteProperty('DH10_CAN_TAO'); dhTab10Tao_(); } else dhTab10DongBo_(); try { dhkRa_(); } catch (eK) {} } catch (e) {} finally { l.releaseLock(); } }   /* 16/11 khuya: vừa hủy / bớt mã -> dựng lại tab 10 (bỏ dòng hủy) */
-function DH_TAB10_SUA(e) { if (!noiBo_(e)) return; try { dhkSuaTay_(e); } catch (eK) {} try { if (!e || !e.range || e.range.getSheet().getName() !== DH10_TEN || e.range.getRow() < 2) return; } catch (x) { return; } var l = LockService.getScriptLock(); if (!l.tryLock(10000)) return; try { dhTab10DongBo_(); } catch (x2) {} finally { l.releaseLock(); } }
+function DH_TAB10_SUA(e) { if (!noiBo_(e)) return; try { dhkSuaTay_(e); } catch (eK) {} try { if (!e || !e.range || e.range.getSheet().getName() !== DH10_TEN || e.range.getRow() < 2) return; } catch (x) { return; }   /* 17/11 tối: có 2 trigger cùng hàm – Sheet đơn (nhật ký sửa tay cột khóa) + file riêng tab 10 ngày */ var l = LockService.getScriptLock(); if (!l.tryLock(10000)) return; try { dhTab10DongBo_(); } catch (x2) {} finally { l.releaseLock(); } }
 function dhCaiTab10_() {
   var p = PropertiesService.getScriptProperties(); if (p.getProperty('DH10_CAI') === '1') return;
   var co = {}; ScriptApp.getProjectTriggers().forEach(function(t) { co[t.getHandlerFunction()] = 1; });
@@ -10611,12 +10628,16 @@ function dhCaiTab10_() {
   if (!co.DH_TAB10_SUA) ScriptApp.newTrigger('DH_TAB10_SUA').forSpreadsheet(DH_SHEET_ID).onEdit().create();
   p.setProperty('DH10_CAI', '1');
 }
+function dhCaiTab10b_() {   // 17/11 tối: trigger sửa của file riêng tab 10 ngày (cài 1 lần sau khi file được tạo)
+  var p = PropertiesService.getScriptProperties(), id = p.getProperty(DH10_PROP); if (!id || p.getProperty('DH10_CAI2') === id) return;
+  ScriptApp.newTrigger('DH_TAB10_SUA').forSpreadsheet(id).onEdit().create(); p.setProperty('DH10_CAI2', id);
+}
 /* Web: 4 tài khoản bấm "Làm mới ngay" */
 function lamMoiTab10(token) {
   var q = dhQuyenDon_(token); if (q.loi) return q.loi;
   if (!dhCoUu_(q.me)) return sach_({ ok: false, msg: 'Chỉ Giám đốc, 2 Phó GĐ sản xuất và chị Kim Loan làm mới được tab này.' });
   var l; try { l = dh10Khoa_(); } catch (e) { return sach_({ ok: false, msg: 'Đang có người ghi Sheet – thử lại sau vài giây.' }); }
-  try { var r = dhTab10Tao_(); try { dhCaiTab10_(); } catch (e2) {} ghiLog_(q.me, 'Làm mới tab ĐẾN HẠN 10 NGÀY', r.n + ' dòng', '', ''); return sach_({ ok: true, msg: 'Đã làm mới tab "ĐẾN HẠN 10 NGÀY" trong Sheet: ' + r.n + ' dòng' + (r.dongBo && r.dongBo.chep ? ' (trước đó đã chép ' + r.dongBo.chep + ' ô về tab kênh)' : '') + '.', tab10: dhTab10TT_() }); }
+  try { var r = dhTab10Tao_(); try { dhCaiTab10_(); } catch (e2) {} ghiLog_(q.me, 'Làm mới tab ĐẾN HẠN 10 NGÀY', r.n + ' dòng', '', ''); return sach_({ ok: true, msg: 'Đã làm mới tab "ĐẾN HẠN 10 NGÀY" (file "' + DH10_FILE + '"): ' + r.n + ' dòng' + (r.dongBo && r.dongBo.chep ? ' (trước đó đã chép ' + r.dongBo.chep + ' ô về tab kênh)' : '') + '.', tab10: dhTab10TT_() }); }
   catch (e) { return sach_({ ok: false, msg: 'Không làm mới được: ' + (e && e.message || e) }); } finally { l.releaseLock(); }
 }
 
@@ -10759,7 +10780,7 @@ function luuBangDon(token, p) {
    Kiểm thử: tests/huy-don.js */
 var DH_HUY_NV = ['C019', 'C056', 'C067'];   // C019 Giám đốc · C056 Phó GĐ SX · C067 chị Kim Loan (C077 KHÔNG có quyền này) – hằng riêng, không dùng chung DH_UU_NV
 var DHH_TEN = 'CSDL Đơn hàng (web)', DHH_PROP = 'DH_CSDL_ID', DHH_CACHE = 'DH_HUY_v1', DHH_XAM = '#d9d9d9', DHH_VANG = '#fff2cc';   // 17/11: vàng nhạt = TẠM DỪNG
-var DHH_MAU = { HUY: DHH_XAM, DUNG: DHH_VANG }, DHH_DUNG_LAU = 14;   // 17/11: tạm dừng quá 14 ngày -> nhắc
+var DHH_MAU = { HUY: DHH_XAM, DUNG: DHH_VANG }, DHH_DUNG_LAU = 14, DHH_TO_MAU = false;   // 17/11 tối: tắt tô màu Sheet (dòng hủy cũ đã tô thì hoàn tác vẫn trả màu)   // 17/11: tạm dừng quá 14 ngày -> nhắc
 var DHH_LY_MIN = 5, DHH_LY_MAX = 200, DHH_DON_MAX = 50, DHH_GIO_MAX = 30, DHH_WEB_MAX = 300;
 var DHH_COT = {
   DongHuy: ['Id', 'MaDong', 'Tab', 'MaDon', 'Ten', 'Loai', 'SLCu', 'SLMoi', 'LyDo', 'Ai', 'Tk', 'MaNV', 'Luc', 'TienDo', 'MauCu', 'DongSheet', 'TrangThai', 'Nhom', 'NguoiHoanTac', 'TkHoanTac', 'LucHoanTac', 'LyDoHoanTac', 'Hen'],   // 17/11: Hen = dự kiến chạy lại (TẠM DỪNG)
@@ -10952,7 +10973,7 @@ function huyBotDon(token, p) {
     /* tô xám dòng HỦY trên Sheet cũ (chỉ màu nền), lưu màu cũ để hoàn tác. Dòng đang BỚT bị thay bằng HỦY thì giữ nguyên màu cũ của nó */
     var nc = Math.max(1, Math.min(sh.getLastColumn(), 300));
     moi.forEach(function(z) {
-      var mau = DHH_MAU[z.rec.Loai]; if (!mau) return;   // HỦY tô xám, TẠM DỪNG tô vàng nhạt (17/11)
+      var mau = DHH_TO_MAU ? DHH_MAU[z.rec.Loai] : ''; if (!mau) return;   // 17/11 (chủ dự án): KHÔNG đổi gì trên Sheet đơn khi hủy / bớt / tạm dừng – chỉ web biết
       try { var rg = sh.getRange(z.o.dong, 1, 1, nc); z.rec.MauCu = JSON.stringify(dhhNen_(rg.getBackgrounds()[0])); rg.setBackground(mau); }
       catch (eM) { canhBao = ' (chưa tô màu được dòng trong Sheet: ' + String(eM && eM.message || eM).slice(0, 80) + ')'; }
     });
@@ -12048,8 +12069,7 @@ function dbDangXem(token, ids) {
   return sach_({ ok: true, xem: kq });
 }
 /* ===== 17/11 (chủ dự án chọn "cảnh báo trước, khóa sau") – GIAI ĐOẠN 2: HỦY / BỚT / ĐỔI HẠN / SL CHỈ QUA WEB, KHÓA CỘT TRÊN SHEET ĐƠN =====
-   - Cột khóa ở mọi tab kênh: Mã đơn (cột A), Loại hàng (tên SP), Số lượng đặt, Deadline, Hạn mới HT đơn cũ; tab ĐẾN HẠN 10 NGÀY: Deadline + Hạn mới
-     (tab này đồng bộ 2 chiều sang tab kênh). Web vẫn ghi được (chạy bằng tài khoản chủ sở hữu): duyệt đơn Bán hàng, sửa SL / deadline trong bảng đơn, hủy / bớt.
+   - Cột khóa ở mọi tab kênh: Mã đơn (cột A), Loại hàng (tên SP), Số lượng đặt, Deadline, Hạn mới HT đơn cũ (tab ĐẾN HẠN 10 NGÀY đã chuyển sang file riêng 17/11 tối). Web vẫn ghi được (chạy bằng tài khoản chủ sở hữu): duyệt đơn Bán hàng, sửa SL / deadline trong bảng đơn, hủy / bớt.
    - CANH_BAO: Protection setWarningOnly – ai sửa trên Sheet thấy hộp cảnh báo của Google (vẫn sửa được) + web ghi nhật ký "Sửa tay" (tab SuaTay
      trong Sheet "CSDL Đơn hàng (web)": lúc, email nếu Google cho biết, tab, ô, cột, giá trị cũ → mới). Hết ~14 ngày chủ sở hữu bấm KHÓA HẲN.
    - KHOA: chỉ tài khoản chạy web (chủ sở hữu) sửa được các cột đó. '' = gỡ hết khóa có tiền tố "KPI web – " (không phụ thuộc trạng thái đã lưu).
@@ -12093,12 +12113,7 @@ function dhkAp_(muc) {
     if (meta.dl >= 0) cot[meta.dl + 1] = 'Deadline'; if (meta.hanMoi >= 0) cot[meta.hanMoi + 1] = 'Hạn mới HT đơn cũ';
     dat(sh, meta.hdr, cot);
   });
-  var s10 = ss.getSheetByName(DH10_TEN);
-  if (s10) {
-    var v = s10.getRange(1, 1, Math.min(3, Math.max(1, s10.getLastRow())), Math.max(1, s10.getLastColumn())).getValues(), hdr = 0, c10 = {};
-    for (var i = 0; i < v.length && !hdr; i++) v[i].forEach(function(x, j) { var t = String(x == null ? '' : x).trim().toUpperCase(); if (t === 'DEADLINE' || t === 'HẠN MỚI HT ĐƠN CŨ') { hdr = i + 1; c10[j + 1] = t === 'DEADLINE' ? 'Deadline (tab 10 ngày)' : 'Hạn mới (tab 10 ngày)'; } });
-    if (hdr) dat(s10, hdr, c10);
-  }
+  /* 17/11 tối: tab ĐẾN HẠN 10 NGÀY đã chuyển sang file riêng – không khóa trong Sheet đơn nữa */
   return kq;
 }
 /* Chủ sở hữu: muc = 'CANH_BAO' | 'KHOA' | '' (gỡ) */

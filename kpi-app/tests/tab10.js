@@ -9,8 +9,11 @@ const H = ['', 'Loại hàng cần sản xuất', 'Loại Phôi', 'Số lượng
 const OEM = [H, ['#A-01/11', 'GAY NOVA X1 MAU DO', 'note A', 50, 50, '20/11', 10, '', 0, ''], ['', 'GAY NOVA X1 MAU XANH', '', 30, 30, '20/11', '', '', '', ''], ['#B-02/11', 'GAY NOVA X1 MAU VANG', '', 20, 20, '30/12', '', '', '', '']];
 const KHO = [H, ['#K-03/11', 'GAY RETRO DEN', '', 40, 40, '18/11', 5, '', '', '']];
 const sheets = { OEM: OEM, KHO: KHO }; c.__ngoai = { [c.DH_SHEET_ID]: { ten: 'x', sheets: sheets } }; c.dhDocDon_(true);
-const sh = () => c.SpreadsheetApp.openById(c.DH_SHEET_ID).getSheetByName('ĐẾN HẠN 10 NGÀY');
-let r = c.dhTab10Tao_(); const t10 = () => sh().getDataRange().getValues();
+sheets['ĐẾN HẠN 10 NGÀY'] = [['KÊNH', 'MÃ ĐƠN']];   // 17/11 tối: tab cũ còn trong Sheet đơn -> lần dựng đầu phải xóa
+const sh = () => c.dh10SS_(false).getSheetByName('ĐẾN HẠN 10 NGÀY');
+let r = c.dhTab10Tao_();
+ok(!sheets['ĐẾN HẠN 10 NGÀY'] && c.dh10SS_(false) && c.dh10SS_(false).getName() === 'Đơn đến hạn 10 ngày (web)' && sh(), '17/11 tối: tab ĐẾN HẠN 10 NGÀY nằm ở file riêng "Đơn đến hạn 10 ngày (web)", tab cũ trong Sheet đơn đã xóa', Object.keys(sheets));
+ok(/docs.google.com/.test(c.dhTab10TT_().url) && c.PropertiesService.getScriptProperties().getProperty('DH10_CAI2') === c.dh10SS_(false).getId(), 'web có link file mới; đã cài trigger sửa cho file mới'); const t10 = () => sh().getDataRange().getValues();
 let v = t10(), dau = v[0], ci = k => dau.indexOf(k);
 ok(r.n === 3 && v.length === 4, 'lọc đúng 3 dòng hạn trong 10 ngày (bỏ đơn hạn 30/12)', [r, v.length]);
 ok(v[1][0] === 'Kho' && v[2][0] === 'OEM' && v[1][1] === '#K-03/11', 'xếp theo hạn sớm trước, có cột KÊNH', v.slice(1).map(x => x.slice(0, 3)));

@@ -169,6 +169,7 @@ Những điều đã chốt. Đừng đề xuất lại những gì ghi "không 
 
 ## Đơn hàng – hủy / bớt + Bán hàng (16/11 khuya)
 - (17/11) **Bán hàng xem bảng đơn nhà máy: TẤT CẢ đơn đang làm, chỉ 4 cột** Mã đơn · Mã sản phẩm · Số đặt · Deadline (không thấy tiến độ bộ phận, còn thiếu, ghi chú).
+- (17/11 tối) **Hủy / bớt / tạm dừng không thay đổi gì trên Sheet đơn** (không tô màu) – chỉ trên web. **Tab ĐẾN HẠN 10 NGÀY chuyển ra file riêng "Đơn đến hạn 10 ngày (web)"**, xóa khỏi Sheet đơn.
 - (17/11) **TẠM DỪNG SẢN XUẤT:** C019 / C056 / C067 dừng mã hoặc cả đơn (lý do bắt buộc); chạy lại bằng tay (ngày hẹn chỉ để nhắc); deadline giữ nguyên, lúc chạy lại cho đặt deadline mới; đơn dừng vẫn hiện (nhãn vàng, bộ phận vẫn nhập số), không tính vào công suất / ngày dự kiến / kín lịch / trễ hạn / tab 10 ngày; Sheet tô vàng nhạt.
 - (17/11) **Bảng đơn nhà máy có thống kê theo kênh (đơn · SL đặt · còn làm · xong ~) + "nhà máy kín lịch đến ngày …"; các ngày này cộng dư ~1 tuần = 6 ngày làm việc** (khác ngày dự kiến từng đơn: +2).
 - (17/11) **Ngày dự kiến xong cho Bán hàng = ngày bảng đơn mô phỏng + 2 NGÀY LÀM VIỆC** (trừ chủ nhật + ngày lễ) cho chắc.

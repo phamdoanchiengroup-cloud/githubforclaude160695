@@ -1,5 +1,5 @@
 /** Kiểm thử giai đoạn 0 hủy / bớt mã đơn hàng (16/11 khuya, tests/quy-trinh/huy-don.gs):
- *  quyền, Sheet riêng tự tạo, khớp dòng theo tab + mã đơn + tên, mồ côi, tô xám / trả màu, hoàn tác, loại khỏi tính toán, không áp 2 lần.
+ *  quyền, Sheet riêng tự tạo, khớp dòng theo tab + mã đơn + tên, mồ côi, Sheet đơn giữ nguyên (17/11 tối: không tô màu), hoàn tác, loại khỏi tính toán, không áp 2 lần.
  *   DATA=<csdl.json> TZ=Asia/Ho_Chi_Minh node kpi-app/tests/huy-don.js */
 const path = require('path'), fs = require('fs'); const G = require('./gia-lap-kpi.js');
 const DATA = process.env.DATA; if (!DATA) { console.log('Cần DATA='); process.exit(1); }
@@ -58,7 +58,7 @@ ok(!!idCsdl && ssH.getName() === 'CSDL Đơn hàng (web)' && ['DongHuy', 'SuKien
 const vH = ssH.getSheetByName('DongHuy').getDataRange().getValues();
 ok(vH.length === 2 && vH[1][1] === '/A-01/11|GAY NOVA X1 MAU XANH|OEM' && vH[1][16] === 'HIEU_LUC', 'DongHuy ghi khóa tab + mã đơn + tên, trạng thái HIEU_LUC', vH[1]);
 ok(!String(vH[1][8]).startsWith('#CONG_THUC') && /HYPERLINK/.test(vH[1][8]), 'lý do bắt đầu "=" lưu dạng chữ', vH[1][8]);
-ok(mau(3).every(m => m === '#d9d9d9') && OEM[2][3] === 30 && OEM[2][1] === 'GAY NOVA X1 MAU XANH', 'Sheet cũ: dòng 3 tô xám cả dòng, chữ / số giữ nguyên', mau(3));
+ok(mau(3).every(m => m === '#ffffff') && OEM[2][3] === 30 && OEM[2][1] === 'GAY NOVA X1 MAU XANH', '17/11 tối: Sheet đơn GIỮ NGUYÊN (không tô màu, chữ / số không đổi)', mau(3));
 r = lay(own); x = dong(r, 'GAY NOVA X1 MAU XANH');
 ok(!x && r.don.filter(o => o.tab === 'OEM').reduce((a, o) => a + o.thieu, 0) === t0 - 30, 'bảng đơn: dòng hủy biến mất, tổng còn thiếu OEM giảm 30');
 ok(r.huy.ds.length === 1 && r.huy.ds[0].hl === 1 && !r.huy.ds[0].moCoi && r.huy.ds[0].td.qua.PHOI === 5 && r.huy.ds[0].giu.indexOf('PHOI') >= 0, 'mục Đơn đã hủy: 1 bản ghi, khớp dòng, lưu số đã giao (Phôi 5) + bộ phận đang giữ', r.huy.ds[0]);
@@ -99,7 +99,7 @@ ok(r.ok && x.length === 1 && x[0].sl === 40 && x[0].dong === 5, 'hủy dòng tr�
 r = huy(gd, { loai: 'HUY_DON', dong: 5, ten: 'GAY NOVA X1 MAU DO', maDon: '#B-02/11', lyDo: 'Khách hủy đơn' });
 x = lay(own).don.filter(o => o.maDon === '#B-02/11');
 ok(r.ok && r.n === 1 && /1 mã đã hủy trước đó/.test(r.msg) && x.length === 0 && r.nhom, 'hủy cả đơn #B: bỏ qua mã đã hủy, đơn biến khỏi bảng', r);
-ok(mau(5).every(m => m === '#d9d9d9') && mau(6).every(m => m === '#d9d9d9'), 'cả 2 dòng đơn #B tô xám');
+ok(mau(5).every(m => m === '#ffffff') && mau(6).every(m => m === '#ffffff'), 'hủy cả đơn #B: Sheet đơn giữ nguyên màu');
 r = huy(gd, { loai: 'HUY_DON', dong: 5, ten: 'GAY NOVA X1 MAU DO', maDon: '#B-02/11', lyDo: 'Khách hủy đơn' }); ok(!r.ok, 'hủy cả đơn lần 2 → báo đã hủy hết', r);
 
 console.log('\n5. Thông báo');
@@ -120,13 +120,13 @@ x = lay(own).huy.ds.find(h => h.id === rec.id); ok(x && x.hl === 0 && x.htAi && 
 /* hủy dòng có màu riêng rồi hoàn tác: trả đúng màu cam */
 const bot = lay(own).huy.ds.find(h => h.loai === 'BOT' && h.hl); c.__goi('hoanTacHuyDon', gd, { id: bot.id, lyDo: 'Bớt nhầm số' });
 ok(dong(lay(own), 'GAY NOVA X1 MAU DO', '#A-01/11').sl === 50, 'hoàn tác bớt → SL đặt về 50');
-r = huy(gd, { loai: 'HUY', dong: 2, ten: 'GAY NOVA X1 MAU DO', maDon: '#A-01/11', lyDo: 'Thử màu cam' }); ok(r.ok && mau(2).every(m => m === '#d9d9d9'), 'hủy dòng màu cam → xám', r);
+r = huy(gd, { loai: 'HUY', dong: 2, ten: 'GAY NOVA X1 MAU DO', maDon: '#A-01/11', lyDo: 'Thử màu cam' }); ok(r.ok && mau(2)[0] === '#fce5cd', 'hủy dòng màu cam → Sheet giữ màu cam', r);
 c.__goi('hoanTacHuyDon', gd, { id: r.ids[0], lyDo: 'Thử màu cam' }); const m2 = mau(2);
 ok(m2[0] === '#fce5cd' && m2[2] === '#fce5cd' && m2[3] === '#ffffff', 'hoàn tác trả đúng màu cam ở 3 ô đầu, trắng các ô sau', m2);
 /* ai đó đổi màu dòng sau khi hủy -> hoàn tác giữ màu đó */
 r = huy(gd, { loai: 'HUY', dong: 2, ten: 'GAY NOVA X1 MAU DO', maDon: '#A-01/11', lyDo: 'Thử đổi màu' });
 shDH().getRange(2, 5).setBackground('#ff0000'); r = c.__goi('hoanTacHuyDon', gd, { id: r.ids[0], lyDo: 'Thử đổi màu' });
-ok(r.ok && /đổi màu/.test(r.msg) && mau(2)[4] === '#ff0000', 'dòng đã bị đổi màu → hoàn tác vẫn bỏ hủy nhưng giữ màu hiện tại, có báo', [r.msg, mau(2)]);
+ok(r.ok && !/đổi màu/.test(r.msg) && mau(2)[4] === '#ff0000', 'người dùng tự đổi màu dòng → hoàn tác không đụng màu Sheet', [r.msg, mau(2)]);
 const nhom = lay(own).huy.ds.find(h => h.nhom && h.hl).nhom;
 r = c.__goi('hoanTacHuyDon', kl, { nhom: nhom, lyDo: 'Khách đặt lại đơn' });
 ok(r.ok && lay(own).don.filter(o => o.maDon === '#B-02/11').length === 1, 'hoàn tác cả đơn #B (theo nhóm) – dòng hủy riêng lẻ trước đó vẫn hủy', r);
@@ -190,7 +190,7 @@ ok(!r.ok && /1 giờ/.test(r.msg), 'quá 30 lần / giờ → chặn', [so, r]);
   ok(/Đơn đã hủy/.test(w.chip) && w.chuong, 'có chip "Đơn đã hủy (n)" + chuông thông báo', w.chip);
   ok(/bớt từ 50/.test(w.bot), 'dòng đang bớt: ô SL đặt ghi "bớt từ 50" (không thêm cột)', w.bot);
   ok(/Điều chỉnh đơn/.test(w.form) && /Bớt SL/.test(w.form) && /Hủy mã này/.test(w.form), 'C019: bảng nổi có khối Điều chỉnh đơn (Bớt SL / Hủy mã này)');
-  ok(/Lý do \(bắt buộc\)/.test(w.formHuy) && /disabled/.test(w.formHuy) && /tô xám/.test(w.formHuy), 'bấm Hủy mã này: hiện ô lý do + tóm tắt hậu quả, nút xác nhận khóa đến khi đủ lý do');
+  ok(/Lý do \(bắt buộc\)/.test(w.formHuy) && /disabled/.test(w.formHuy) && /Sheet đơn giữ nguyên/.test(w.formHuy), 'bấm Hủy mã này: hiện ô lý do + tóm tắt hậu quả, nút xác nhận khóa đến khi đủ lý do');
   ok(w.the >= 5 && w.htNut >= 1 && /Sheet đã đổi/.test(w.huy) && /không<\/b> áp sang dòng khác/.test(w.huy), 'mục Đơn đã hủy: thẻ từng mã, nút Hoàn tác, cảnh báo mồ côi', [w.the, w.htNut]);
   await pg.evaluate(() => { DHB.tab = 'OEM'; dhVeLai(); const r0 = DH.don.find(x => x.tab === 'OEM' && x.maDon === '#A-01/11'); DHB.mo = r0.tab + '|' + r0.dong; dhBNoi(); DHHuy.mo = r0.tab + '|' + r0.dong + '|HUY'; DHHuy.lenh = 'wtest1234'; dhBNoi(); });
   await pg.fill('#dhHuyLy', 'abc'); let dis = await pg.$eval('#dhHuyOK', e => e.disabled);
