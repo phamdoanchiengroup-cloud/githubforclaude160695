@@ -7684,7 +7684,7 @@ function danhSachVanPhong(token) {
   ds.sort(function(a, b) { return (thuTu[a.vaiTro] - thuTu[b.vaiTro]) || (a.HoTen < b.HoTen ? -1 : 1); });
   return sach_({ ok: true, ds: ds, muc: HS_MUC });
 }
-var KPI_BAN_MAY = '17/11/2026 22:15';   // giờ dựng Code.gs (22/10)
+var KPI_BAN_MAY = '18/11/2026 05:13';   // giờ dựng Code.gs (22/10)
 /* =====================================================================
    KỸ NĂNG (22/10, chủ dự án nhờ thiết kế + tham khảo chuyên gia nhân sự / đào tạo)
    - Danh mục: trưởng / phó phòng đề xuất kỹ năng của xưởng (tên, mô tả, tiêu chí đạt, công đoạn liên quan)
@@ -9851,8 +9851,48 @@ function dhCongSuat_() {
   try { docAnToan_('NgayLe').forEach(function(r) { var d = ngayVN_(r.Ngay); if (re.test(d) && !String(r.MaXuong || '').trim()) le.push([d, String(r.TenLe || 'Nghỉ lễ').slice(0, 60) + ' (lịch KPI)']); }); } catch (e) {}
   var nghi = [];
   tay.concat(le, tu).forEach(function(x) { if (!co[x[0]]) { co[x[0]] = 1; nghi.push(x); } });
-  return { sp: sp, bp: dhCsBP_(o.bp), nghi: nghi.sort(function(a, b) { return a[0] < b[0] ? -1 : 1; }), nghiTay: tay.sort(function(a, b) { return a[0] < b[0] ? -1 : 1; }), nghiTuDong: tu.concat(le).sort(function(a, b) { return a[0] < b[0] ? -1 : 1; }), lam: lam.sort(), macDinh: !Array.isArray(o.nghi) };
+  return { sp: sp, bp: dhCsBP_(o.bp), nghi: nghi.sort(function(a, b) { return a[0] < b[0] ? -1 : 1; }), nghiTay: tay.sort(function(a, b) { return a[0] < b[0] ? -1 : 1; }), nghiTuDong: tu.concat(le).sort(function(a, b) { return a[0] < b[0] ? -1 : 1; }), lam: lam.sort(), macDinh: !Array.isArray(o.nghi), lan: dhLanCfg_() };   // 17/11 khuya: + cấu hình 5 làn
 }
+/* ===== 17/11 khuya (chủ dự án): CHỦ SỞ HỮU TỰ CHIA 5 LÀN ở ⚙ Công suất (có xem trước trên web) =====
+   - pt = % công suất của làn 1 Lẻ + POD · 2 Dealer · 3 Kho · 4 OEM · 5 A Đông (số nguyên, tổng 100; làn 0% chỉ nhận phần dư).
+   - du = thứ tự nhận phần công suất dư (đủ 5 làn). kenh = tab kênh -> làn (chỉ lưu kênh khác quy tắc mặc định; tab mới mặc định vào Kho).
+   - Web (dhMoPhong) và máy chủ (dbkMoPhong_, Bán hàng) cùng đọc cs.lan. Mỗi lần đổi ghi nhật ký + 20 lần gần nhất (DH_LAN_LS). */
+var DH_LAN_MAC = { pt: [10, 20, 50, 5, 15], du: [2, 3, 4, 5, 1] }, DH_LAN_TEN = ['', 'Lẻ + POD', 'Dealer', 'Kho', 'OEM', 'A Đông'];
+function dhLanGoc_(tab) { var t = String(tab || '').toUpperCase().trim(); if (t === 'WEB LẺ CUSTOM' || t === 'WEB LẺ ĐƠN THƯỜNG' || /^POD/.test(t)) return 1; if (t === 'DEALER') return 2; if (t === 'OEM') return 4; if (t === 'A ĐÔNG') return 5; return 3; }
+function dhLanKiem_(o) {   // -> { loi } | { pt, du, kenh }
+  o = o || {};
+  var pt = Array.isArray(o.pt) ? o.pt.slice(0, 5).map(Number) : [];
+  if (pt.length !== 5 || pt.some(function(x) { return !(x >= 0 && x <= 100 && Math.floor(x) === x); })) return { loi: 'Tỷ lệ mỗi làn là số nguyên từ 0 đến 100.' };
+  var tong = pt.reduce(function(a, x) { return a + x; }, 0); if (tong !== 100) return { loi: 'Tổng tỷ lệ 5 làn phải đúng 100% (đang ' + tong + '%).' };
+  var du = Array.isArray(o.du) ? o.du.map(Number) : [];
+  if (du.length !== 5 || [1, 2, 3, 4, 5].some(function(k) { return du.indexOf(k) < 0; })) return { loi: 'Thứ tự nhận phần dư phải đủ 5 làn, không trùng.' };
+  var kenh = {}, n = 0, bad = '';
+  Object.keys(o.kenh && typeof o.kenh === 'object' ? o.kenh : {}).forEach(function(k) {
+    var t = String(k).toUpperCase().replace(/[\u0000-\u001f]/g, '').trim().slice(0, 60), v = Number(o.kenh[k]);
+    if (!t) return; if (!(v >= 1 && v <= 5 && Math.floor(v) === v)) { bad = t; return; }
+    if (v !== dhLanGoc_(t) && n < 60) { kenh[t] = v; n++; } });
+  if (bad) return { loi: 'Làn của kênh ' + bad + ' không hợp lệ.' };
+  return { pt: pt, du: du, kenh: kenh };
+}
+function dhLanCfg_() {
+  var o = null; try { o = JSON.parse(PropertiesService.getScriptProperties().getProperty('DH_LAN_CFG') || 'null'); } catch (e) {}
+  var k = o ? dhLanKiem_(o) : { loi: 1 };
+  var r = k.loi ? { pt: DH_LAN_MAC.pt.slice(), du: DH_LAN_MAC.du.slice(), kenh: {}, macDinh: 1 } : { pt: k.pt, du: k.du, kenh: k.kenh, ai: String(o.ai || ''), luc: String(o.luc || '') };
+  r.ten = DH_LAN_TEN.slice(1); return r;
+}
+function dhLanTxt_(cf) { cf = cf || dhLanCfg_(); return cf.pt.map(function(p, i) { return DH_LAN_TEN[i + 1] + ' ' + p + '%'; }).join(' · '); }
+function luuLanCongSuat(token, o) {
+  var q = qtQuyen_(token); if (q.loi) return q.loi;   // chỉ chủ sở hữu (chủ dự án chốt 17/11 khuya)
+  var k = dhLanKiem_(o); if (k.loi) return sach_({ ok: false, msg: k.loi });
+  var cu = dhLanCfg_(), p = PropertiesService.getScriptProperties(), luc = Utilities.formatDate(new Date(), TZ_VN, 'yyyy-MM-dd HH:mm'), ai = String(q.me.ten || q.me.tk || '').slice(0, 60);
+  var ls = []; try { ls = JSON.parse(p.getProperty('DH_LAN_LS') || '[]') || []; } catch (e) { ls = []; }
+  ls.unshift({ luc: luc, ai: ai, cu: dhLanTxt_(cu), moi: dhLanTxt_(k), du: k.du.map(function(x) { return DH_LAN_TEN[x]; }).join(' → '), kenh: Object.keys(k.kenh).map(function(t) { return t + ' → ' + DH_LAN_TEN[k.kenh[t]]; }).join(', ') });
+  try { p.setProperty('DH_LAN_CFG', JSON.stringify({ pt: k.pt, du: k.du, kenh: k.kenh, ai: ai, luc: luc })); p.setProperty('DH_LAN_LS', JSON.stringify(ls.slice(0, 20))); }
+  catch (e) { return sach_({ ok: false, msg: 'Không lưu được.' }); }
+  ghiLog_(q.me, 'Chia làn công suất', dhLanTxt_(k).slice(0, 200), dhLanTxt_(cu).slice(0, 120), ('Dư: ' + ls[0].du + (ls[0].kenh ? ' · ' + ls[0].kenh : '')).slice(0, 120));
+  return sach_({ ok: true, msg: 'Đã lưu chia làn: ' + dhLanTxt_(k) + '. Ngày dự kiến (cả trang Bán hàng) tính lại theo tỷ lệ mới.', cs: dhCongSuat_() });
+}
+function layLichSuLan(token) { var q = qtQuyen_(token); if (q.loi) return q.loi; var ls = []; try { ls = JSON.parse(PropertiesService.getScriptProperties().getProperty('DH_LAN_LS') || '[]') || []; } catch (e) {} return sach_({ ok: true, ls: ls }); }
 function luuCongSuat(token, o) {
   var q = qtQuyen_(token); if (q.loi) return q.loi;
   o = o || {};
@@ -11723,7 +11763,7 @@ function layDonBan(token) {
   try { dbkGanDuKien_(out, d); } catch (eK) {}
   var dn = []; try { dn = dbtDsDN_(q); } catch (eN) {}   // 17/11 khuya: đề nghị ưu tiên (thu-don.gs)   // 17/11: ngày dự kiến xong (mô phỏng công suất + 2 ngày làm dự phòng) – du-kien.gs
   return sach_({ ok: true, ds: out, bh: q.bh ? 1 : 0, duyet: q.duyet ? 1 : 0, owner: q.me.laOwner ? 1 : 0, ten: q.me.ten || '', kenh: dbKenh_(),
-    sp: Object.keys(sp).sort().slice(0, 3000), csNgay: DH_CS_MAC, tongThieu: q.duyet ? tongThieu : null, hom: homNayVN_(), dn: dn });
+    sp: Object.keys(sp).sort().slice(0, 3000), csNgay: DH_CS_MAC, tongThieu: q.duyet ? tongThieu : null, hom: homNayVN_(), dn: dn, lanTxt: dhLanTxt_() });
 }
 function dbKiemDon_(p) {   // -> { loi } | { don }
   p = p || {};
@@ -11927,8 +11967,7 @@ function taoTaiKhoanBH(token, p) {
    - Bảng đơn nhà máy: mọi đơn đang làm (còn thiếu > 0, đã bỏ mã hủy / áp SL bớt), CHỈ 4 cột Mã đơn · Mã sản phẩm · Số đặt · Deadline + kênh để lọc.
    - Đang xem: người duyệt mở thẻ chờ duyệt → web báo máy chủ mỗi 30 giây; người duyệt khác thấy "… đang xem đơn này". Kiểm thử: tests/du-kien.js */
 var DBK_TAB_BAC1 = { 'WEB LẺ CUSTOM': 1, 'WEB LẺ ĐƠN THƯỜNG': 1 }, DBK_HAN_LE = { 'WEB LẺ ĐƠN THƯỜNG': [5, 7], 'WEB LẺ CUSTOM': [12, 15] }, DBK_HAN_POD = [7, 10];
-var DBK_LAN_DU = [2, 3, 4, 5, 1];
-var DBK_LAN5 = [[1, 0.10], [2, 0.20], [3, 0.50], [4, 0.05], [5, 0.15]];   // 17/11 tối: 5 làn Lẻ + POD · Dealer · Kho · OEM · A Đông (giống DH_LAN5 trên web)
+/* 17/11 khuya: tỷ lệ 5 làn + thứ tự phần dư + kênh -> làn đọc từ cs.lan (dhLanCfg_, chủ sở hữu chỉnh ở ⚙) – không còn hằng số DBK_LAN5 / DBK_LAN_DU */
 var DBK_TRE_MAX = 30, DBK_LAN = 0.10, DBK_DU_PHONG = 2, DBK_DU_KIN = 6, DBK_CHO_MAX = 10, DBK_BANG_MAX = 5000, DBK_CACHE = 'DB_ETA_v1';
 var DBK_SIM_C = ['PHOI_C', 'SON', 'UV', 'HT'], DBK_SIM_N = ['PHOI_N', 'TARO', 'HT1', 'TIP', 'HT'], DBK_SIM_1K = ['PHOI_C', 'SON', 'UV', 'HT', 'TIP'];
 function dbkTC_(s) { return String(s == null ? '' : s).toUpperCase().replace(/[–—]/g, '-').replace(/\s+/g, ' ').trim(); }
@@ -11954,7 +11993,8 @@ function dbkMoPhong_(G, them, cs, ut) {   // G = dbkGiau_(); them = đơn thử 
   G.tre.forEach(function(o) { var t = dbkTC_(o.ten); if (t) mtr[t] = 1; });
   var hanLe = function(o) { var t = String((o && o.tab) || '').toUpperCase().trim(); return DBK_HAN_LE[t] || (/^POD/.test(t) ? DBK_HAN_POD : null); };
   var dlNgam = function(o) { var n = hanLe(o); return (o && !o.dl && o.ngayDat && n) ? thu(cong(o.ngayDat, 1), n[1]) : ''; };
-  var lanSo = function(tab) { var t = String(tab || '').toUpperCase().trim(); if (DBK_TAB_BAC1[t] || /^POD/.test(t)) return 1; if (t === 'DEALER') return 2; if (t === 'OEM') return 4; if (t === 'A ĐÔNG') return 5; return 3; };
+  var CF = (cs && cs.lan) || dhLanCfg_(), LAN5 = CF.pt.map(function(p, j) { return [j + 1, p / 100]; }), LANDU = CF.du;
+  var lanSo = function(tab) { var t = String(tab || '').toUpperCase().trim(); if (CF.kenh && CF.kenh[t]) return CF.kenh[t]; if (DBK_TAB_BAC1[t] || /^POD/.test(t)) return 1; if (t === 'DEALER') return 2; if (t === 'OEM') return 4; if (t === 'A ĐÔNG') return 5; return 3; };
   var bac = function(o) {
     var tab = String(o.tab || '').toUpperCase().trim(), t = dbkTC_(o.ten);
     if (o.uuWeb) return 1;   // 17/11 tối: ưu tiên TRONG LÀN – trễ / ★ / tên trong tab TRỄ HẠN / hàng ưu tiên = 1, còn lại = 2
@@ -11996,12 +12036,12 @@ function dbkMoPhong_(G, them, cs, ut) {   // G = dbkGiau_(); them = đơn thử 
     if (!co && !cho) L.push(sim(null, g, g.bac0 || 2, dau, i++)); });
   L.sort(function(a, b) { return (a.uu - b.uu) || String(a.han).localeCompare(String(b.han)) || ((b.tien || 0) - (a.tien || 0)) || (a.i - b.i); });
   var SP = cs.sp || DH_CS_MAC, lan = {}, con = L.length, ngay = thu(hn, 1), E = 1e-6;
-  DBK_LAN5.forEach(function(x) { lan[x[0]] = L.filter(function(l) { return l.lan === x[0]; }); });
+  LAN5.forEach(function(x) { lan[x[0]] = L.filter(function(l) { return l.lan === x[0]; }); });
   var lam = function(a, lim) { for (var j = 0; j < a.length && lim > E; j++) { var l = a[j]; if (l.eta) continue; var q = Math.min(l.need - l.dg, lim); if (q > E) { l.dg += q; lim -= q; } } return lim; };
   var conViec = function(k) { return lan[k].some(function(l) { return !l.eta && l.dg < l.need - E; }); };
   for (var t = 0; t < 800 && con > 0; t++) {
-    var du = 0; DBK_LAN5.forEach(function(x) { du += lam(lan[x[0]], SP * x[1]); });
-    DBK_LAN_DU.forEach(function(k) { if (du > E) du = lam(lan[k], du); });   // 17/11 tối: phần dư dồn Dealer → Kho → OEM → A Đông → Lẻ + POD
+    var du = 0; LAN5.forEach(function(x) { du += lam(lan[x[0]], SP * x[1]); });
+    LANDU.forEach(function(k) { if (du > E) du = lam(lan[k], du); });   // 17/11 tối: phần dư dồn Dealer → Kho → OEM → A Đông → Lẻ + POD
     L.forEach(function(l) { if (!l.eta && l.dg >= l.need - E) { l.eta = ngay; con--; } });
     ngay = thu(cong(ngay, 1), 1);
   }
@@ -12016,6 +12056,7 @@ function dbkGanDuKien_(out, d) {
   if (!d) return;
   var cs = dhCongSuat_(), G = null, R = null, cache = CacheService.getScriptCache(), ky = [d.luc || '', cs.sp, (d.phuDs || []).length], tl = 0, ts = 0;
   (d.don || []).forEach(function(o) { tl += o.thieu || 0; ts += o.sl || 0; }); ky.push((d.don || []).length, tl, ts);
+  try { ky.push(JSON.stringify([cs.lan.pt, cs.lan.du, cs.lan.kenh])); } catch (eL) {}   // 17/11 khuya: đổi chia làn -> tính lại
   try { var uwK = Object.keys(dhUuWebDoc_()).sort().join(','); ky.push(uwK.length, uwK.slice(-40)); } catch (eU) {}   // 17/11 khuya: gắn / bỏ ★ (vd duyệt đề nghị ưu tiên) -> tính lại   // dữ liệu đổi (duyệt / hủy / nhập số) -> khóa nhớ tạm đổi
   var key = DBK_CACHE + '|' + ky.join('|');
   var lay = function() { if (!G) G = dbkGiau_(d); return G; };
@@ -12203,7 +12244,7 @@ function dhkRa_() {
      cùng chỗ với nút ★ trên bảng đơn) / Không đồng ý (lý do bắt buộc). Bán hàng thấy trạng thái đề nghị của mình. Kiểm thử: tests/thu-don.js */
 DHH_COT.DeNghiUu = ['Id', 'Luc', 'MaDon', 'Tabs', 'LyDo', 'NguoiTao', 'Tk', 'MaNV', 'TrangThai', 'KetQua', 'NguoiXuLy', 'TkXuLy', 'LucXuLy', 'LyDoXuLy', 'Lenh', 'NgayCan'];   // NgayCan = khách cần trước ngày (không bắt buộc)
 var DBT_LAN_TEN = ['', 'Lẻ + POD', 'Dealer', 'Kho', 'OEM', 'A Đông'], DBT_GIO_MAX = 60, DBT_LUI_MAX = 400, DBT_DN_WEB = 40;
-function dbtLan_(tab) { var t = String(tab || '').toUpperCase().trim(); if (DBK_TAB_BAC1[t] || /^POD/.test(t)) return 1; if (t === 'DEALER') return 2; if (t === 'OEM') return 4; if (t === 'A ĐÔNG') return 5; return 3; }
+function dbtLan_(tab) { var t = String(tab || '').toUpperCase().trim(), kn = dhLanCfg_().kenh || {}; if (kn[t]) return kn[t]; if (DBK_TAB_BAC1[t] || /^POD/.test(t)) return 1; if (t === 'DEALER') return 2; if (t === 'OEM') return 4; if (t === 'A ĐÔNG') return 5; return 3; }
 /* nhóm đơn đang làm như dbkMoPhong_ (còn thiếu, không phụ kiện / hàng nối, không tạm dừng): 'mã|tab' -> { ma, tab, dl, ten:{} } */
 function dbtNhom_(G) {
   var m = {};

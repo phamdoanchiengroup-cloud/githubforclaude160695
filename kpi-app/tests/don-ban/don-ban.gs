@@ -57,7 +57,7 @@ function layDonBan(token) {
   try { dbkGanDuKien_(out, d); } catch (eK) {}
   var dn = []; try { dn = dbtDsDN_(q); } catch (eN) {}   // 17/11 khuya: đề nghị ưu tiên (thu-don.gs)   // 17/11: ngày dự kiến xong (mô phỏng công suất + 2 ngày làm dự phòng) – du-kien.gs
   return sach_({ ok: true, ds: out, bh: q.bh ? 1 : 0, duyet: q.duyet ? 1 : 0, owner: q.me.laOwner ? 1 : 0, ten: q.me.ten || '', kenh: dbKenh_(),
-    sp: Object.keys(sp).sort().slice(0, 3000), csNgay: DH_CS_MAC, tongThieu: q.duyet ? tongThieu : null, hom: homNayVN_(), dn: dn });
+    sp: Object.keys(sp).sort().slice(0, 3000), csNgay: DH_CS_MAC, tongThieu: q.duyet ? tongThieu : null, hom: homNayVN_(), dn: dn, lanTxt: dhLanTxt_() });
 }
 function dbKiemDon_(p) {   // -> { loi } | { don }
   p = p || {};

@@ -6,8 +6,7 @@
    - Bảng đơn nhà máy: mọi đơn đang làm (còn thiếu > 0, đã bỏ mã hủy / áp SL bớt), CHỈ 4 cột Mã đơn · Mã sản phẩm · Số đặt · Deadline + kênh để lọc.
    - Đang xem: người duyệt mở thẻ chờ duyệt → web báo máy chủ mỗi 30 giây; người duyệt khác thấy "… đang xem đơn này". Kiểm thử: tests/du-kien.js */
 var DBK_TAB_BAC1 = { 'WEB LẺ CUSTOM': 1, 'WEB LẺ ĐƠN THƯỜNG': 1 }, DBK_HAN_LE = { 'WEB LẺ ĐƠN THƯỜNG': [5, 7], 'WEB LẺ CUSTOM': [12, 15] }, DBK_HAN_POD = [7, 10];
-var DBK_LAN_DU = [2, 3, 4, 5, 1];
-var DBK_LAN5 = [[1, 0.10], [2, 0.20], [3, 0.50], [4, 0.05], [5, 0.15]];   // 17/11 tối: 5 làn Lẻ + POD · Dealer · Kho · OEM · A Đông (giống DH_LAN5 trên web)
+/* 17/11 khuya: tỷ lệ 5 làn + thứ tự phần dư + kênh -> làn đọc từ cs.lan (dhLanCfg_, chủ sở hữu chỉnh ở ⚙) – không còn hằng số DBK_LAN5 / DBK_LAN_DU */
 var DBK_TRE_MAX = 30, DBK_LAN = 0.10, DBK_DU_PHONG = 2, DBK_DU_KIN = 6, DBK_CHO_MAX = 10, DBK_BANG_MAX = 5000, DBK_CACHE = 'DB_ETA_v1';
 var DBK_SIM_C = ['PHOI_C', 'SON', 'UV', 'HT'], DBK_SIM_N = ['PHOI_N', 'TARO', 'HT1', 'TIP', 'HT'], DBK_SIM_1K = ['PHOI_C', 'SON', 'UV', 'HT', 'TIP'];
 function dbkTC_(s) { return String(s == null ? '' : s).toUpperCase().replace(/[–—]/g, '-').replace(/\s+/g, ' ').trim(); }
@@ -33,7 +32,8 @@ function dbkMoPhong_(G, them, cs, ut) {   // G = dbkGiau_(); them = đơn thử 
   G.tre.forEach(function(o) { var t = dbkTC_(o.ten); if (t) mtr[t] = 1; });
   var hanLe = function(o) { var t = String((o && o.tab) || '').toUpperCase().trim(); return DBK_HAN_LE[t] || (/^POD/.test(t) ? DBK_HAN_POD : null); };
   var dlNgam = function(o) { var n = hanLe(o); return (o && !o.dl && o.ngayDat && n) ? thu(cong(o.ngayDat, 1), n[1]) : ''; };
-  var lanSo = function(tab) { var t = String(tab || '').toUpperCase().trim(); if (DBK_TAB_BAC1[t] || /^POD/.test(t)) return 1; if (t === 'DEALER') return 2; if (t === 'OEM') return 4; if (t === 'A ĐÔNG') return 5; return 3; };
+  var CF = (cs && cs.lan) || dhLanCfg_(), LAN5 = CF.pt.map(function(p, j) { return [j + 1, p / 100]; }), LANDU = CF.du;
+  var lanSo = function(tab) { var t = String(tab || '').toUpperCase().trim(); if (CF.kenh && CF.kenh[t]) return CF.kenh[t]; if (DBK_TAB_BAC1[t] || /^POD/.test(t)) return 1; if (t === 'DEALER') return 2; if (t === 'OEM') return 4; if (t === 'A ĐÔNG') return 5; return 3; };
   var bac = function(o) {
     var tab = String(o.tab || '').toUpperCase().trim(), t = dbkTC_(o.ten);
     if (o.uuWeb) return 1;   // 17/11 tối: ưu tiên TRONG LÀN – trễ / ★ / tên trong tab TRỄ HẠN / hàng ưu tiên = 1, còn lại = 2
@@ -75,12 +75,12 @@ function dbkMoPhong_(G, them, cs, ut) {   // G = dbkGiau_(); them = đơn thử 
     if (!co && !cho) L.push(sim(null, g, g.bac0 || 2, dau, i++)); });
   L.sort(function(a, b) { return (a.uu - b.uu) || String(a.han).localeCompare(String(b.han)) || ((b.tien || 0) - (a.tien || 0)) || (a.i - b.i); });
   var SP = cs.sp || DH_CS_MAC, lan = {}, con = L.length, ngay = thu(hn, 1), E = 1e-6;
-  DBK_LAN5.forEach(function(x) { lan[x[0]] = L.filter(function(l) { return l.lan === x[0]; }); });
+  LAN5.forEach(function(x) { lan[x[0]] = L.filter(function(l) { return l.lan === x[0]; }); });
   var lam = function(a, lim) { for (var j = 0; j < a.length && lim > E; j++) { var l = a[j]; if (l.eta) continue; var q = Math.min(l.need - l.dg, lim); if (q > E) { l.dg += q; lim -= q; } } return lim; };
   var conViec = function(k) { return lan[k].some(function(l) { return !l.eta && l.dg < l.need - E; }); };
   for (var t = 0; t < 800 && con > 0; t++) {
-    var du = 0; DBK_LAN5.forEach(function(x) { du += lam(lan[x[0]], SP * x[1]); });
-    DBK_LAN_DU.forEach(function(k) { if (du > E) du = lam(lan[k], du); });   // 17/11 tối: phần dư dồn Dealer → Kho → OEM → A Đông → Lẻ + POD
+    var du = 0; LAN5.forEach(function(x) { du += lam(lan[x[0]], SP * x[1]); });
+    LANDU.forEach(function(k) { if (du > E) du = lam(lan[k], du); });   // 17/11 tối: phần dư dồn Dealer → Kho → OEM → A Đông → Lẻ + POD
     L.forEach(function(l) { if (!l.eta && l.dg >= l.need - E) { l.eta = ngay; con--; } });
     ngay = thu(cong(ngay, 1), 1);
   }
@@ -95,6 +95,7 @@ function dbkGanDuKien_(out, d) {
   if (!d) return;
   var cs = dhCongSuat_(), G = null, R = null, cache = CacheService.getScriptCache(), ky = [d.luc || '', cs.sp, (d.phuDs || []).length], tl = 0, ts = 0;
   (d.don || []).forEach(function(o) { tl += o.thieu || 0; ts += o.sl || 0; }); ky.push((d.don || []).length, tl, ts);
+  try { ky.push(JSON.stringify([cs.lan.pt, cs.lan.du, cs.lan.kenh])); } catch (eL) {}   // 17/11 khuya: đổi chia làn -> tính lại
   try { var uwK = Object.keys(dhUuWebDoc_()).sort().join(','); ky.push(uwK.length, uwK.slice(-40)); } catch (eU) {}   // 17/11 khuya: gắn / bỏ ★ (vd duyệt đề nghị ưu tiên) -> tính lại   // dữ liệu đổi (duyệt / hủy / nhập số) -> khóa nhớ tạm đổi
   var key = DBK_CACHE + '|' + ky.join('|');
   var lay = function() { if (!G) G = dbkGiau_(d); return G; };

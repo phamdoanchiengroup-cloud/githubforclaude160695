@@ -12,7 +12,7 @@
      cùng chỗ với nút ★ trên bảng đơn) / Không đồng ý (lý do bắt buộc). Bán hàng thấy trạng thái đề nghị của mình. Kiểm thử: tests/thu-don.js */
 DHH_COT.DeNghiUu = ['Id', 'Luc', 'MaDon', 'Tabs', 'LyDo', 'NguoiTao', 'Tk', 'MaNV', 'TrangThai', 'KetQua', 'NguoiXuLy', 'TkXuLy', 'LucXuLy', 'LyDoXuLy', 'Lenh', 'NgayCan'];   // NgayCan = khách cần trước ngày (không bắt buộc)
 var DBT_LAN_TEN = ['', 'Lẻ + POD', 'Dealer', 'Kho', 'OEM', 'A Đông'], DBT_GIO_MAX = 60, DBT_LUI_MAX = 400, DBT_DN_WEB = 40;
-function dbtLan_(tab) { var t = String(tab || '').toUpperCase().trim(); if (DBK_TAB_BAC1[t] || /^POD/.test(t)) return 1; if (t === 'DEALER') return 2; if (t === 'OEM') return 4; if (t === 'A ĐÔNG') return 5; return 3; }
+function dbtLan_(tab) { var t = String(tab || '').toUpperCase().trim(), kn = dhLanCfg_().kenh || {}; if (kn[t]) return kn[t]; if (DBK_TAB_BAC1[t] || /^POD/.test(t)) return 1; if (t === 'DEALER') return 2; if (t === 'OEM') return 4; if (t === 'A ĐÔNG') return 5; return 3; }
 /* nhóm đơn đang làm như dbkMoPhong_ (còn thiếu, không phụ kiện / hàng nối, không tạm dừng): 'mã|tab' -> { ma, tab, dl, ten:{} } */
 function dbtNhom_(G) {
   var m = {};

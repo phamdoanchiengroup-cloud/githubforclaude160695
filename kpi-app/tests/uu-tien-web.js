@@ -74,5 +74,23 @@ ok(c.dhCoNote_({ maNV: 'C077' }) && c.dhCoUu_({ maNV: 'C056' }), 'C077 sửa đ�
   ok(w.chonLe.join() === 'bang,@le10' && !w.loiLe && /Đơn lẻ \/ POD quá hạn<\/b>/.test(w.bangLe) && /L9/.test(w.bangLe) && !/A1/.test(w.bangLe), 'ô đầu trang "Lẻ / POD quá hạn" mở danh sách đơn lẻ / POD quá hạn trong bảng đơn', w.loiLe || w.chonLe);
   ok(w.cuHan10 && w.cuHan10.join() === 'bang,@han10', '16/11 rà soát: Tổng quan → Đến hạn 10 ngày → Xem tất cả mở mục trong bảng (không mở màn hình cũ đã bỏ)', w.cuHan10);
   ok(/Gắn ưu tiên cả đơn/.test(w.nut) && !/button/.test(w.nut2), 'nút ★ Gắn ưu tiên chỉ hiện với 4 tài khoản', '');
+  /* 17/11 khuya: chủ sở hữu tự chia 5 làn ở ⚙ */
+  const v = await pg.evaluate(() => { const hn = dhHomNay(), out = {}, R = ['PHOI','SON','TARO','UV','HT','TIP','DG'];
+    const mk = (ma, tab, sl, dl) => ({ maDon: ma, tab: tab, kenh: tab, ten: 'Gậy ' + ma, sl: sl, thieu: sl, dl: dl, btp: R, pl: { loai: 'GAY' }, qua: {}, hen: {}, dong: 2 });
+    window.DH = { luc: 'L1', cs: { sp: 300, nghi: [], lam: [], bp: {}, lan: { pt: [10, 30, 40, 0, 20], du: [5, 2, 3, 4, 1], kenh: { OEM: 2 }, luc: '2026-11-17 22:00', ai: 'Chiến' } }, kenhDs: [['DEALER', 'Dealer'], ['KHO', 'Kho'], ['OEM', 'OEM'], ['A ĐÔNG', 'A Đông']], q: { thay: true },
+      don: [mk('K1', 'KHO', 3000, dhNgayCong(hn, 20)), mk('D1', 'DEALER', 900, dhNgayCong(hn, 10)), mk('O1', 'OEM', 300, dhNgayCong(hn, 15)), mk('A1', 'A ĐÔNG', 1500, dhNgayCong(hn, 30))], email: {} };
+    out.lan = ['OEM', 'DEALER', 'KHO'].map(dhLanSo); out.txt = dhLanTxt(); out.du = DH_LAN_DU.join();
+    out.ve0 = dhLnVe(); dhLnMo(); out.ln = JSON.parse(JSON.stringify(DHLN));
+    dhLnPt(2, 60); out.tong = dhLnTong(); dhLnPt(2, 40); dhLnDoi(0, 1); out.du2 = DHLN.du.join();
+    DHLN.pt = [10, 10, 70, 0, 10]; dhLnXem(); out.kq = DHLN.kq; out.ve = dhLnVe();
+    out.sauXem = [DH_LAN5.map(x => x[2]).join(), DH_LAN_DU.join(), JSON.stringify(DH_LAN_KENH)];
+    DH.q = { thay: false }; out.veKhach = dhLnVe(); return JSON.parse(JSON.stringify(out)); });
+  ok(v.lan.join() === '2,2,3' && v.txt === 'Lẻ + POD 10% · Dealer 30% · Kho 40% · OEM 0% · A Đông 20%' && v.du === '5,2,3,4,1', '17/11 khuya: web đọc cấu hình làn từ máy chủ (OEM vào làn Dealer, tỷ lệ + thứ tự dư mới)', v);
+  ok(/Chỉnh chia làn/.test(v.ve0) && v.ln.pt.join() === '10,30,40,0,20' && v.ln.kenh.OEM === 2 && v.ln.kenh.KHO === 3, 'chủ sở hữu bấm "Chỉnh chia làn" → ô sửa điền sẵn tỷ lệ, kênh → làn hiện tại', v.ln);
+  ok(v.tong === 120 && v.du2 === '2,5,3,4,1', 'gõ % thì tổng tự cộng (120% → báo phải 100%); ↓ đổi thứ tự nhận phần dư', [v.tong, v.du2]);
+  ok(v.kq && v.kq.cu[3].eta && v.kq.moi[3].eta && v.kq.moi[3].eta < v.kq.cu[3].eta && /Xong hết: hiện tại → mới/.test(v.ve) && /Cả nhà máy/.test(v.ve), 'Xem trước: Kho 40% → 70% thì Kho xong sớm hơn (' + (v.kq && v.kq.cu[3].eta) + ' → ' + (v.kq && v.kq.moi[3].eta) + '), bảng từng làn + cả nhà máy', v.kq);
+  ok(v.sauXem[0] === '0.1,0.3,0.4,0,0.2' && v.sauXem[1] === '5,2,3,4,1' && v.sauXem[2] === '{"OEM":2}', 'xem trước KHÔNG đổi cấu hình đang dùng (chưa lưu)', v.sauXem);
+  ok(!/Chỉnh chia làn|Lưu chia làn/.test(v.veKhach) && /Chia 5 làn công suất/.test(v.veKhach), 'người không phải chủ sở hữu chỉ xem tỷ lệ, không có nút sửa', v.veKhach.slice(0, 200));
+  ok(er.length === 0, 'không lỗi script (chia làn)', er);
   console.log(n + ' kiểm thử, ' + l + ' lỗi'); await b.close(); process.exit(l ? 1 : 0);
 })();

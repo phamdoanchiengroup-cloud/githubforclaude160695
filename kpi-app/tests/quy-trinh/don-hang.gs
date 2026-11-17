@@ -1305,8 +1305,48 @@ function dhCongSuat_() {
   try { docAnToan_('NgayLe').forEach(function(r) { var d = ngayVN_(r.Ngay); if (re.test(d) && !String(r.MaXuong || '').trim()) le.push([d, String(r.TenLe || 'Nghỉ lễ').slice(0, 60) + ' (lịch KPI)']); }); } catch (e) {}
   var nghi = [];
   tay.concat(le, tu).forEach(function(x) { if (!co[x[0]]) { co[x[0]] = 1; nghi.push(x); } });
-  return { sp: sp, bp: dhCsBP_(o.bp), nghi: nghi.sort(function(a, b) { return a[0] < b[0] ? -1 : 1; }), nghiTay: tay.sort(function(a, b) { return a[0] < b[0] ? -1 : 1; }), nghiTuDong: tu.concat(le).sort(function(a, b) { return a[0] < b[0] ? -1 : 1; }), lam: lam.sort(), macDinh: !Array.isArray(o.nghi) };
+  return { sp: sp, bp: dhCsBP_(o.bp), nghi: nghi.sort(function(a, b) { return a[0] < b[0] ? -1 : 1; }), nghiTay: tay.sort(function(a, b) { return a[0] < b[0] ? -1 : 1; }), nghiTuDong: tu.concat(le).sort(function(a, b) { return a[0] < b[0] ? -1 : 1; }), lam: lam.sort(), macDinh: !Array.isArray(o.nghi), lan: dhLanCfg_() };   // 17/11 khuya: + cấu hình 5 làn
 }
+/* ===== 17/11 khuya (chủ dự án): CHỦ SỞ HỮU TỰ CHIA 5 LÀN ở ⚙ Công suất (có xem trước trên web) =====
+   - pt = % công suất của làn 1 Lẻ + POD · 2 Dealer · 3 Kho · 4 OEM · 5 A Đông (số nguyên, tổng 100; làn 0% chỉ nhận phần dư).
+   - du = thứ tự nhận phần công suất dư (đủ 5 làn). kenh = tab kênh -> làn (chỉ lưu kênh khác quy tắc mặc định; tab mới mặc định vào Kho).
+   - Web (dhMoPhong) và máy chủ (dbkMoPhong_, Bán hàng) cùng đọc cs.lan. Mỗi lần đổi ghi nhật ký + 20 lần gần nhất (DH_LAN_LS). */
+var DH_LAN_MAC = { pt: [10, 20, 50, 5, 15], du: [2, 3, 4, 5, 1] }, DH_LAN_TEN = ['', 'Lẻ + POD', 'Dealer', 'Kho', 'OEM', 'A Đông'];
+function dhLanGoc_(tab) { var t = String(tab || '').toUpperCase().trim(); if (t === 'WEB LẺ CUSTOM' || t === 'WEB LẺ ĐƠN THƯỜNG' || /^POD/.test(t)) return 1; if (t === 'DEALER') return 2; if (t === 'OEM') return 4; if (t === 'A ĐÔNG') return 5; return 3; }
+function dhLanKiem_(o) {   // -> { loi } | { pt, du, kenh }
+  o = o || {};
+  var pt = Array.isArray(o.pt) ? o.pt.slice(0, 5).map(Number) : [];
+  if (pt.length !== 5 || pt.some(function(x) { return !(x >= 0 && x <= 100 && Math.floor(x) === x); })) return { loi: 'Tỷ lệ mỗi làn là số nguyên từ 0 đến 100.' };
+  var tong = pt.reduce(function(a, x) { return a + x; }, 0); if (tong !== 100) return { loi: 'Tổng tỷ lệ 5 làn phải đúng 100% (đang ' + tong + '%).' };
+  var du = Array.isArray(o.du) ? o.du.map(Number) : [];
+  if (du.length !== 5 || [1, 2, 3, 4, 5].some(function(k) { return du.indexOf(k) < 0; })) return { loi: 'Thứ tự nhận phần dư phải đủ 5 làn, không trùng.' };
+  var kenh = {}, n = 0, bad = '';
+  Object.keys(o.kenh && typeof o.kenh === 'object' ? o.kenh : {}).forEach(function(k) {
+    var t = String(k).toUpperCase().replace(/[\u0000-\u001f]/g, '').trim().slice(0, 60), v = Number(o.kenh[k]);
+    if (!t) return; if (!(v >= 1 && v <= 5 && Math.floor(v) === v)) { bad = t; return; }
+    if (v !== dhLanGoc_(t) && n < 60) { kenh[t] = v; n++; } });
+  if (bad) return { loi: 'Làn của kênh ' + bad + ' không hợp lệ.' };
+  return { pt: pt, du: du, kenh: kenh };
+}
+function dhLanCfg_() {
+  var o = null; try { o = JSON.parse(PropertiesService.getScriptProperties().getProperty('DH_LAN_CFG') || 'null'); } catch (e) {}
+  var k = o ? dhLanKiem_(o) : { loi: 1 };
+  var r = k.loi ? { pt: DH_LAN_MAC.pt.slice(), du: DH_LAN_MAC.du.slice(), kenh: {}, macDinh: 1 } : { pt: k.pt, du: k.du, kenh: k.kenh, ai: String(o.ai || ''), luc: String(o.luc || '') };
+  r.ten = DH_LAN_TEN.slice(1); return r;
+}
+function dhLanTxt_(cf) { cf = cf || dhLanCfg_(); return cf.pt.map(function(p, i) { return DH_LAN_TEN[i + 1] + ' ' + p + '%'; }).join(' · '); }
+function luuLanCongSuat(token, o) {
+  var q = qtQuyen_(token); if (q.loi) return q.loi;   // chỉ chủ sở hữu (chủ dự án chốt 17/11 khuya)
+  var k = dhLanKiem_(o); if (k.loi) return sach_({ ok: false, msg: k.loi });
+  var cu = dhLanCfg_(), p = PropertiesService.getScriptProperties(), luc = Utilities.formatDate(new Date(), TZ_VN, 'yyyy-MM-dd HH:mm'), ai = String(q.me.ten || q.me.tk || '').slice(0, 60);
+  var ls = []; try { ls = JSON.parse(p.getProperty('DH_LAN_LS') || '[]') || []; } catch (e) { ls = []; }
+  ls.unshift({ luc: luc, ai: ai, cu: dhLanTxt_(cu), moi: dhLanTxt_(k), du: k.du.map(function(x) { return DH_LAN_TEN[x]; }).join(' → '), kenh: Object.keys(k.kenh).map(function(t) { return t + ' → ' + DH_LAN_TEN[k.kenh[t]]; }).join(', ') });
+  try { p.setProperty('DH_LAN_CFG', JSON.stringify({ pt: k.pt, du: k.du, kenh: k.kenh, ai: ai, luc: luc })); p.setProperty('DH_LAN_LS', JSON.stringify(ls.slice(0, 20))); }
+  catch (e) { return sach_({ ok: false, msg: 'Không lưu được.' }); }
+  ghiLog_(q.me, 'Chia làn công suất', dhLanTxt_(k).slice(0, 200), dhLanTxt_(cu).slice(0, 120), ('Dư: ' + ls[0].du + (ls[0].kenh ? ' · ' + ls[0].kenh : '')).slice(0, 120));
+  return sach_({ ok: true, msg: 'Đã lưu chia làn: ' + dhLanTxt_(k) + '. Ngày dự kiến (cả trang Bán hàng) tính lại theo tỷ lệ mới.', cs: dhCongSuat_() });
+}
+function layLichSuLan(token) { var q = qtQuyen_(token); if (q.loi) return q.loi; var ls = []; try { ls = JSON.parse(PropertiesService.getScriptProperties().getProperty('DH_LAN_LS') || '[]') || []; } catch (e) {} return sach_({ ok: true, ls: ls }); }
 function luuCongSuat(token, o) {
   var q = qtQuyen_(token); if (q.loi) return q.loi;
   o = o || {};

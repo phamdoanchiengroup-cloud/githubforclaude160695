@@ -307,7 +307,7 @@ function bnVeThu(){
   if(!BNB&&!BNBTai) bnTaiBang();
   var kenh=BND.kenh||[], hom=bnHom(); if(!BNT.tab&&kenh.length) BNT.tab=(kenh.filter(function(k){return k[0]==='KHO';})[0]||kenh[0])[0];
   var h=(BNF?'<div style="margin-bottom:8px"><button class="btn sm" type="button" onclick="BNXem=\'don\';bnVe()">← Quay lại đơn đang soạn</button></div>':'')+
-    '<div class="pdesc" style="margin-bottom:10px">Thử ở đây <b>trước khi soạn đơn</b> – không lưu gì, không ảnh hưởng đơn nào. Ngày tính theo công suất xưởng ('+bnSo(BND.csNgay)+' sp/ngày) chia 5 làn: Lẻ + POD 10% · Dealer 20% · Kho 50% · OEM 5% · A Đông 15% (làn nào hết việc thì nhường làn khác).</div>';
+    '<div class="pdesc" style="margin-bottom:10px">Thử ở đây <b>trước khi soạn đơn</b> – không lưu gì, không ảnh hưởng đơn nào. Ngày tính theo công suất xưởng ('+bnSo(BND.csNgay)+' sp/ngày) chia 5 làn: '+esc(BND.lanTxt||'Lẻ + POD 10% · Dealer 20% · Kho 50% · OEM 5% · A Đông 15%')+' (làn nào hết việc thì nhường làn khác).</div>';
   h+='<div class="db-thu"><b>1. Thử nhận đơn mới</b><div class="pdesc">Chọn kênh, số lượng và deadline khách muốn → web cho biết xong khoảng ngày nào và nên hẹn khách ngày nào.</div>'+
     '<label>Kênh</label><div class="db-kenh" role="radiogroup" aria-label="Kênh">'+kenh.map(function(k){ return '<button type="button" role="radio" aria-checked="'+(BNT.tab===k[0])+'" class="'+(BNT.tab===k[0]?'on':'')+'" data-t="'+esc(k[0])+'" onclick="BNT.tab=this.dataset.t;BNT.kqN=null;bnVe()">'+esc(k[1])+'</button>'; }).join('')+'</div>'+
     '<div class="db-thu-h"><div><label for="bnTSl">Số lượng (sp)</label><input id="bnTSl" inputmode="numeric" placeholder="vd 300" value="'+esc(BNT.sl)+'" oninput="BNT.sl=this.value"></div>'+

@@ -37,9 +37,9 @@ function webMoPhong(DHd, hn, them, ut) {
   const lay = ten => { const i = src.indexOf('\nfunction ' + ten + '('); if (i < 0) throw new Error('không thấy ' + ten); let j = src.indexOf('{', i), d = 0, q = null;
     for (; j < src.length; j++) { const ch = src[j]; if (q) { if (ch === '\\') { j++; continue; } if (ch === q) q = null; continue; } if (ch === "'" || ch === '"') { q = ch; continue; } if (ch === '{') d++; else if (ch === '}' && --d === 0) break; }
     return src.slice(i + 1, j + 1); };
-  const bien = src.split('\n').filter(s => /^var (DH_TAB_BAC1|DH_LE_TAB|DH_HAN_LE|DH_LAN_MIN|DH_SIM_C|DH_CS_DON|DH_LAN5|DH_LAN_DU)\b/.test(s)).join('\n');
+  const bien = src.split('\n').filter(s => /^var (DH_TAB_BAC1|DH_LE_TAB|DH_HAN_LE|DH_LAN_MIN|DH_SIM_C|DH_CS_DON|DH_LAN5|DH_LAN_DU|DH_LAN_KENH)\b/.test(s)).join('\n');
   const ham = ['dhCachNgay', 'dhCS', 'dhNgayCong', 'dhLaNgayLam', 'dhSoNgayLam', 'dhNgayLamThu', 'dhLaSX', 'dhGomDon', 'dhTenChuan', 'dhUuTen', 'dhLaUu', 'dhTreTen', 'dhBacDong', 'dhBac',
-    'dhHanLeN', 'dhCongNgayLam', 'dhLanLe', 'dhLaLe', 'dhLan1', 'dhDlNgam', 'dhQua30', 'dhLa1K', 'dhBRoute', 'dhK2', 'dhKs', 'dhSimDong', 'dhMoPhong', 'dhCSDon', 'dhLanSo'].map(lay).join('\n');
+    'dhHanLeN', 'dhCongNgayLam', 'dhLanLe', 'dhLaLe', 'dhLan1', 'dhDlNgam', 'dhQua30', 'dhLa1K', 'dhBRoute', 'dhK2', 'dhKs', 'dhSimDong', 'dhMoPhong', 'dhCSDon', 'dhLanSo', 'dhLanNap'].map(lay).join('\n');
   const ctx = { DH: DHd, DHHT: null, HN: hn, them, ut: ut || null, kq: null }; vm.createContext(ctx);
   vm.runInContext(bien + '\n' + ham + '\nfunction dhHomNay(){ return HN; }\nkq = dhMoPhong(dhCSDon(), them, ut);', ctx);
   const m = {}; ctx.kq.forEach(g => { m[g.ma + '|' + g.tab] = g.eta; }); return m;
@@ -130,6 +130,22 @@ r = c.__goi('guiDeNghiUu', B1, { gt: maDay, lyDo: 'Gửi lại lần nữa', daX
 console.log('\n6. Giới hạn thử 60 lần / giờ');
 c.CacheService.getScriptCache().put('DBT_' + bhTK[1].TenDangNhap, '60', 3600);
 r = c.__goi('thuDonBH', B2, { loai: 'NHAN', tab: 'KHO', sl: 10 }); ok(!r.ok && /nhiều lần/.test(r.msg), 'quá 60 lần → báo nghỉ ít phút', r);
+
+console.log('\n7. Chủ sở hữu tự chia 5 làn (⚙ Công suất)');
+r = c.__goi('luuLanCongSuat', gd, { pt: [10, 20, 50, 5, 15], du: [2, 3, 4, 5, 1], kenh: {} }); ok(!r.ok, 'Giám đốc không sửa được (chỉ chủ sở hữu)', r);
+r = c.__goi('luuLanCongSuat', own, { pt: [10, 20, 50, 5, 10], du: [2, 3, 4, 5, 1] }); ok(!r.ok && /100%/.test(r.msg), 'tổng 95% → chặn', r);
+r = c.__goi('luuLanCongSuat', own, { pt: [10, 20, 50, 5, 15], du: [2, 3, 3, 5, 1] }); ok(!r.ok && /phần dư/.test(r.msg), 'thứ tự dư trùng làn → chặn', r);
+r = c.__goi('luuLanCongSuat', own, { pt: [10.5, 20, 49.5, 5, 15], du: [2, 3, 4, 5, 1] }); ok(!r.ok, 'tỷ lệ lẻ thập phân → chặn', r);
+const D0 = c.__goi('layDonHangXuong', own, true), e0 = webMoPhong(D0, hn, null);
+r = c.__goi('luuLanCongSuat', own, { pt: [10, 30, 40, 0, 20], du: [5, 2, 3, 4, 1], kenh: { OEM: 2, 'POD-A.BÁCH': 1, KHO: 3 } });
+ok(r.ok && r.cs.lan.pt.join() === '10,30,40,0,20' && r.cs.lan.du.join() === '5,2,3,4,1' && JSON.stringify(r.cs.lan.kenh) === '{"OEM":2}', 'lưu 10·30·40·0·20, dư A Đông trước, OEM vào làn Dealer (chỉ lưu kênh khác mặc định)', r.cs && r.cs.lan);
+const D1 = c.__goi('layDonHangXuong', own, true), e1 = webMoPhong(D1, hn, null), R7 = c.dbkMoPhong_(c.dbkGiau_(c.dhDocDon_(false)), null, c.dhCongSuat_());
+const lech7 = Object.keys(e1).filter(z => (R7.m[z] || {}).eta !== e1[z]);
+ok(D1.cs.lan && !lech7.length && Object.keys(e1).some(z => e1[z] !== e0[z]), 'web nhận cấu hình mới; ngày xong máy chủ trùng web 100% với tỷ lệ mới (và khác trước)', lech7.slice(0, 3).map(z => [z, e1[z], R7.m[z]]));
+r = c.__goi('thuDonBH', B1, { loai: 'NHAN', tab: 'OEM', sl: 100 }); ok(r.ok && r.lan === 'Dealer', 'Bán hàng thử đơn OEM → xếp vào làn Dealer theo cấu hình', r.lan);
+r = c.__goi('layDonBan', B1); ok(r.lanTxt === 'Lẻ + POD 10% · Dealer 30% · Kho 40% · OEM 0% · A Đông 20%', 'trang Bán hàng hiện tỷ lệ mới: ' + r.lanTxt, r.lanTxt);
+r = c.__goi('layLichSuLan', own); ok(r.ok && r.ls.length === 1 && /OEM → Dealer/.test(r.ls[0].kenh) && /A Đông → Dealer/.test(r.ls[0].du), 'lịch sử đổi làn: cũ → mới, thứ tự dư, kênh đổi làn', r.ls);
+r = c.__goi('luuLanCongSuat', own, { pt: [10, 20, 50, 5, 15], du: [2, 3, 4, 5, 1], kenh: { OEM: 4 } }); ok(r.ok && !Object.keys(r.cs.lan.kenh).length, 'về mặc định 10·20·50·5·15', r.cs && r.cs.lan);
 
 console.log('\n' + (l ? '✗ ' + l + ' / ' + n + ' lỗi' : '✓ Đạt ' + n + ' / ' + n));
 process.exit(l ? 1 : 0);

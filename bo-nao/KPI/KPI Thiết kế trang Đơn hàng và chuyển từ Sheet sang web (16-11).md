@@ -111,3 +111,10 @@ NHÁP (Bán hàng) → CHỜ DUYỆT → [TRẢ VỀ (lý do) → NHÁP v2] | T�
 - Chưa làm (để chủ dự án chốt ở họp): quota đề nghị/tuần, chặn gửi lại 7 ngày sau khi bị từ chối.
 - Bộ slide họp với Bán hàng (17 slide, số liệu chụp 16/11): https://claude.ai/artifact/UqiDkrJZfvUo7zSYyaaKhB
 - Kiểm thử: `thu-don.js` 44 (mới) · `don-ban-web.js` 41 (+14) · du-kien 76 · don-ban 65 · huy-don 99 · don-hang 142.
+
+## 17/11 KHUYA (2) – CHỦ SỞ HỮU TỰ CHIA 5 LÀN ở ⚙ Công suất – ĐÃ LÀM · chờ `2-CAP-NHAT.bat`
+- Chủ dự án chốt: chỉ chủ sở hữu sửa; chỉnh được % từng làn, thứ tự nhận phần dư, kênh thuộc làn nào; có Xem trước.
+- Máy chủ (`don-hang.gs`): `dhLanCfg_()` (prop `DH_LAN_CFG`, mặc định 10·20·50·5·15, dư 2→3→4→5→1), `dhLanKiem_` (số nguyên, tổng 100, dư đủ 5 làn, kênh chỉ lưu nếu khác quy tắc mặc định), `luuLanCongSuat` (qtQuyen_ = chủ sở hữu, nhật ký + 20 lần gần nhất `DH_LAN_LS`), `layLichSuLan`, `dhLanTxt_`. `dhCongSuat_().lan`.
+- `dbkMoPhong_` đọc `cs.lan` (bỏ hằng DBK_LAN5 / DBK_LAN_DU); khóa nhớ tạm ETA gồm cấu hình làn; `dbtLan_` theo kênh → làn; trang Bán hàng hiện `BND.lanTxt`.
+- Web: `dhLanNap` (gọi trong dhCS / dhLanSo) ghi đè DH_LAN5 %, DH_LAN_DU, DH_LAN_KENH; ⚙ "Chia 5 làn công suất": `dhLnVe` / `dhLnMo` / `dhLnPt` / `dhLnDoi` / `dhLnXem` (`dhLnTinh` chạy dhMoPhong với cấu hình thử rồi trả lại – không đổi cấu hình đang dùng) / `dhLnLuu` / `dhLnMacDinh`. Người khác chỉ thấy tỷ lệ.
+- Kiểm thử: thu-don.js 54 (+10: quyền, kiểm lỗi, web = máy chủ với tỷ lệ mới, BH theo làn mới, lịch sử, về mặc định) · uu-tien-web.js 33 (+7) · du-kien 76 · don-ban 65 · don-hang 142. huy-don 96/99: 3 lỗi do đồng hồ qua 18/11 (bản trước cũng vậy).

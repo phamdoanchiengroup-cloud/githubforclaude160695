@@ -1561,7 +1561,7 @@ function dhTrangVe(){
   $('main').innerHTML=h;
 }
 /* ===== 07/11 (chủ dự án + quan-ly-van-hanh): ngày làm việc, sản lượng nhập theo ngày, công suất & deadline ===== */
-function dhCS(){ var c=(DH&&DH.cs)||(DHTD&&DHTD.cs)||{}; if(!c._m){ c.sp=c.sp||300; c.nghi=c.nghi||[]; c.lam=c.lam||[]; c._m={}; c.nghi.forEach(function(x){c._m[x[0]]=x[1]||'nghỉ'}); c._l={}; c.lam.forEach(function(x){c._l[x]=1}); } return c; }
+function dhCS(){ var c=(DH&&DH.cs)||(DHTD&&DHTD.cs)||{}; dhLanNap(c); if(!c._m){ c.sp=c.sp||300; c.nghi=c.nghi||[]; c.lam=c.lam||[]; c._m={}; c.nghi.forEach(function(x){c._m[x[0]]=x[1]||'nghỉ'}); c._l={}; c.lam.forEach(function(x){c._l[x]=1}); } return c; }
 function dhNgayCong(d,n){ var x=new Date(d+'T00:00:00'); x.setDate(x.getDate()+n); return x.getFullYear()+'-'+('0'+(x.getMonth()+1)).slice(-2)+'-'+('0'+x.getDate()).slice(-2); }
 function dhLaNgayLam(d){ var c=dhCS(); if(c._l[d]) return true; if(new Date(d+'T00:00:00').getDay()===0) return false; return !c._m[d]; }
 function dhSoNgayLam(a,b){ var n=0; for(var d=a,i=0;d<b&&i<4000;d=dhNgayCong(d,1),i++) if(dhLaNgayLam(d)) n++; return n; }   /* số ngày làm trong [a, b) */
@@ -1706,7 +1706,10 @@ function dhTreTen(){ var m={}; ((DH&&DH.tre)||[]).forEach(function(o){ var t=dhT
    Máy chủ chép y hệt (tests/don-ban/du-kien.gs dbkMoPhong_) – tests/du-kien.js so 2 bản. */
 var DH_LAN_DU=[2,3,4,5,1];   /* thứ tự nhận phần công suất dư */
 var DH_LAN5=[[1,'Lẻ + POD',0.10],[2,'Dealer',0.20],[3,'Kho',0.50],[4,'OEM',0.05],[5,'A Đông',0.15]];   /* 17/11 tối: chủ dự án nâng Dealer 20% */
-function dhLanSo(tab){ var t=String(tab||'').toUpperCase().trim(); if(DH_TAB_BAC1[t]||/^POD/.test(t)) return 1; if(t==='DEALER') return 2; if(t==='OEM') return 4; if(t==='A ĐÔNG') return 5; return 3; }
+var DH_LAN_KENH={}, DH_LAN_AP=null, DH_LAN_THU=false;   /* 17/11 khuya (chủ dự án): chủ sở hữu tự chia làn ở ⚙ – cs.lan = {pt:[5 %], du:[thứ tự dư], kenh:{TAB:làn}} (dhLanCfg_ máy chủ) */
+function dhLanNap(c){ var L=c&&c.lan; if(!L||DH_LAN_THU||L===DH_LAN_AP||!Array.isArray(L.pt)||L.pt.length!==5) return; DH_LAN_AP=L;
+  L.pt.forEach(function(x,i){ DH_LAN5[i][2]=Number(x)/100; }); if(Array.isArray(L.du)&&L.du.length===5) DH_LAN_DU=L.du.slice(); DH_LAN_KENH=L.kenh||{}; }
+function dhLanSo(tab){ if(typeof dhLanNap==='function'&&typeof DH!=='undefined'&&DH&&DH.cs) dhLanNap(DH.cs); var t=String(tab||'').toUpperCase().trim(); if(DH_LAN_KENH[t]) return DH_LAN_KENH[t]; if(DH_TAB_BAC1[t]||/^POD/.test(t)) return 1; if(t==='DEALER') return 2; if(t==='OEM') return 4; if(t==='A ĐÔNG') return 5; return 3; }
 function dhLanTen(n){ for(var i=0;i<DH_LAN5.length;i++) if(DH_LAN5[i][0]===n) return DH_LAN5[i][1]; return ''; }
 function dhLanPct(n){ for(var i=0;i<DH_LAN5.length;i++) if(DH_LAN5[i][0]===n) return DH_LAN5[i][2]; return 0; }
 function dhBacDong(o,mu,mtr){   /* ưu tiên TRONG LÀN: 1 = trễ hạn / ★ / hàng ưu tiên / tên trong tab TRỄ HẠN, 2 = còn lại */
@@ -1748,7 +1751,7 @@ function dhLanLe(){ var k=(DH&&DH.luc||'')+'|'+(DHHT&&DHHT.luc||''); if(DH&&DH._
   var spN=sp/nl, can=spN*1.25/cs, r={k:k,spNgay:spN,can:can,pct:Math.min(DH_LAN_MAX,Math.max(DH_LAN_MIN,can)),coHT:!!(typeof DHHT!=='undefined'&&DHHT&&DHHT.don)};
   if(DH) DH._lan=r; return r; }
 function dhLanPT(){ return Math.round(dhLanLe().pct*100)+'%'; }
-function dhLanTxt(){ return DH_LAN5.map(function(x){ return x[1]+' '+Math.round(x[2]*100)+'%'; }).join(' · '); }   /* 17/11 tối: 5 làn */
+function dhLanTxt(){ dhCS(); return DH_LAN5.map(function(x){ return x[1]+' '+Math.round(x[2]*100)+'%'; }).join(' · '); }   /* 17/11 tối: 5 làn */
 function dhLaLe(o){ var t=String((o&&o.tab)||'').toUpperCase().trim(); return !!DH_LE_TAB[t]||/^POD/.test(t); }
 function dhLan1(o){ var t=String((o&&o.tab)||'').toUpperCase().trim(); return !!DH_TAB_BAC1[t]||/^POD/.test(t); }
 function dhDlNgam(o){ var n=dhHanLeN(o); return (o&&!o.dl&&o.ngayDat&&n)?dhCongNgayLam(o.ngayDat,n[1]):''; }
@@ -1842,6 +1845,39 @@ var DH_HEN_DU=6;   /* 17/11 tối (chủ dự án chọn): hẹn khách an toàn
 function dhGoiYHen(sl,tab){ var g={ma:'(gợi ý hẹn)',tab:tab||'KHO',thieu:sl,dl:''}; dhMoPhong(dhCSDon(),g); if(!g.eta||g.eta>='9999') return null;
   return {xong:g.eta, hen:dhCongNgayLam(g.eta,DH_HEN_DU)}; }
 function dhSoHen(dl,G){ if(!dl||!G||dl>=G.hen) return ''; return dl<G.xong?'do':'vang'; }   /* đỏ: sớm hơn cả ngày xong khi xếp cuối làn; vàng: chỉ ăn vào phần dự phòng */
+/* ===== 17/11 khuya (chủ dự án): CHIA 5 LÀN ở ⚙ – chỉ chủ sở hữu sửa; Xem trước = chạy dhMoPhong với tỷ lệ mới, so ngày xong / số đơn trễ từng làn ===== */
+var DHLN=null;
+function dhLnHt(){ dhCS(); var kn={}; ((DH&&DH.kenhDs)||[]).forEach(function(k){ kn[String(k[0]).toUpperCase().trim()]=dhLanSo(k[0]); });
+  return {pt:DH_LAN5.map(function(x){ return Math.round(x[2]*100); }), du:DH_LAN_DU.slice(), kenh:kn}; }
+function dhLnMo(){ if(!DHLN){ var h=dhLnHt(); DHLN={pt:h.pt,du:h.du,kenh:h.kenh,kq:null}; } }
+function dhLnTinh(cf){ var luu=[DH_LAN5.map(function(x){return x[2];}),DH_LAN_DU,DH_LAN_KENH]; dhCS(); DH_LAN_THU=true;
+  try{ cf.pt.forEach(function(x,i){ DH_LAN5[i][2]=x/100; }); DH_LAN_DU=cf.du.slice(); DH_LAN_KENH=cf.kenh||{}; var ds=dhMoPhong(dhCSDon()); }
+  finally{ luu[0].forEach(function(x,i){ DH_LAN5[i][2]=x; }); DH_LAN_DU=luu[1]; DH_LAN_KENH=luu[2]; DH_LAN_THU=false; }
+  var r={tong:{eta:'',tre:0,n:0,sl:0}}; ds.forEach(function(g){ [r[g.lan]||(r[g.lan]={eta:'',tre:0,n:0,sl:0}),r.tong].forEach(function(z){ z.n++; z.sl+=g.thieu||0; if(g.eta&&g.eta<'9999'&&g.eta>z.eta) z.eta=g.eta; if(g.lop==='setre') z.tre++; }); }); return r; }
+function dhLnTong(){ return DHLN.pt.reduce(function(a,x){ return a+(Number(x)||0); },0); }
+function dhLnPt(i,v){ DHLN.pt[i]=Math.max(0,Math.round(Number(v)||0)); DHLN.kq=null; var t=dhLnTong(), e=$('dhLnTong'); if(e){ e.textContent='Tổng '+t+'%'+(t!==100?' – phải đúng 100%':''); e.className=t===100?'dh-han':'dh-han tre'; } var sp=$('dhLnSp'+i); if(sp) sp.textContent=qtSo(dhCS().sp*DHLN.pt[i]/100,0)+' sp/ngày'; }
+function dhLnDoi(i,d){ var a=DHLN.du, j=i+d; if(j<0||j>=a.length) return; var t=a[i]; a[i]=a[j]; a[j]=t; DHLN.kq=null; dhVeLai(); }
+function dhLnXem(){ if(dhLnTong()!==100){ toast('Tổng tỷ lệ phải đúng 100%.'); return; } DHLN.kq={cu:dhLnTinh(dhLnHt()),moi:dhLnTinh(DHLN)}; dhVeLai(); }
+function dhLnMacDinh(){ var kn={}; Object.keys(DHLN.kenh).forEach(function(t){ var luu=DH_LAN_KENH; DH_LAN_KENH={}; kn[t]=dhLanSo(t); DH_LAN_KENH=luu; }); DHLN={pt:[10,20,50,5,15],du:[2,3,4,5,1],kenh:kn,kq:null}; dhVeLai(); }
+function dhLnLuu(el){ if(dhLnTong()!==100){ toast('Tổng tỷ lệ phải đúng 100%.'); return; } if(!DHLN.kq&&!confirm('Chưa bấm Xem trước. Vẫn lưu tỷ lệ mới?')) return;
+  el.disabled=true; call('luuLanCongSuat',[{pt:DHLN.pt,du:DHLN.du,kenh:DHLN.kenh}],function(r){ el.disabled=false; if(!r||!r.ok){ toast((r&&r.msg)||'Không lưu được.'); return; } toast(r.msg,true); DH.cs=r.cs; if(DHTD) DHTD.cs=r.cs; DHLN=null; dhVeLai(); }); }
+function dhLnVe(){ var c=dhCS(), chu=!(DH&&DH.q)||!!DH.q.thay, L=c.lan||{};
+  var h='<div style="border-top:1px solid var(--line);padding-top:8px"><b>Chia 5 làn công suất</b> – đang dùng: '+esc(dhLanTxt())+'; phần dư: '+DH_LAN_DU.map(dhLanTen).join(' → ')+(L.luc?' <span style="font-size:12px;color:var(--ink3)">(sửa '+esc(L.luc)+(L.ai?' · '+esc(L.ai):'')+')</span>':'');
+  if(!chu) return h+'</div>';
+  if(!DHLN) return h+'<div style="margin-top:6px"><button class="btn sm" type="button" onclick="dhLnMo();dhVeLai()">Chỉnh chia làn</button></div></div>';
+  var t=dhLnTong();
+  h+='<div style="font-size:12.5px;color:var(--ink3);margin:6px 0">Tỷ lệ % công suất mỗi ngày ('+qtSo(c.sp,0)+' sp). Làn 0% chỉ làm khi có phần dư. Bấm <b>Xem trước</b> để so ngày xong từng làn trước khi lưu – áp cho cả trang Bán hàng.</div>'+
+    '<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:6px">'+DH_LAN5.map(function(x,i){ return '<label style="font-size:13px">'+esc(x[1])+' <input id="dhLnPt'+i+'" type="number" min="0" max="100" step="1" value="'+DHLN.pt[i]+'" style="width:64px" oninput="dhLnPt('+i+',this.value)"> %<br><small id="dhLnSp'+i+'" style="color:var(--ink3)">'+qtSo(c.sp*DHLN.pt[i]/100,0)+' sp/ngày</small></label>'; }).join('')+'</div>'+
+    '<div style="margin:4px 0"><span id="dhLnTong" class="'+(t===100?'dh-han':'dh-han tre')+'">Tổng '+t+'%'+(t!==100?' – phải đúng 100%':'')+'</span></div>'+
+    '<div style="margin-top:6px"><b style="font-size:13px">Thứ tự nhận phần dư</b><ol style="margin:4px 0 0 18px;font-size:13px">'+DHLN.du.map(function(k,i){ return '<li>'+esc(dhLanTen(k))+' <button class="btn sm" type="button" aria-label="Lên" onclick="dhLnDoi('+i+',-1)"'+(i?'':' disabled')+'>↑</button> <button class="btn sm" type="button" aria-label="Xuống" onclick="dhLnDoi('+i+',1)"'+(i<4?'':' disabled')+'>↓</button></li>'; }).join('')+'</ol></div>'+
+    '<div style="margin-top:6px"><b style="font-size:13px">Kênh thuộc làn nào</b><div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:6px;margin-top:4px">'+((DH&&DH.kenhDs)||[]).map(function(k){ var key=String(k[0]).toUpperCase().trim(); return '<label style="font-size:13px">'+esc(k[1])+' <select data-k="'+esc(key)+'" onchange="DHLN.kenh[this.dataset.k]=+this.value;DHLN.kq=null">'+DH_LAN5.map(function(x){ return '<option value="'+x[0]+'"'+(DHLN.kenh[key]===x[0]?' selected':'')+'>'+esc(x[1])+'</option>'; }).join('')+'</select></label>'; }).join('')+'</div></div>'+
+    '<div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:8px"><button class="btn sm" type="button" onclick="dhLnXem()">Xem trước</button><button class="btn sm" type="button" onclick="dhLnLuu(this)">Lưu chia làn</button><button class="btn sm" type="button" onclick="dhLnMacDinh()">Về mặc định 10·20·50·5·15</button><button class="btn sm" type="button" onclick="DHLN=null;dhVeLai()">Thôi</button></div>';
+  if(DHLN.kq){ var K=DHLN.kq, o=function(z,k){ return (z[k]||{eta:'',tre:0,n:0,sl:0}); };
+    h+='<div class="tw" style="margin-top:8px"><table class="dh-bang"><thead><tr><th>Làn</th><th class="qt-so">Đơn</th><th class="qt-so">Còn làm (sp)</th><th>Xong hết: hiện tại → mới</th><th class="qt-so">Đơn dự kiến trễ: hiện tại → mới</th></tr></thead><tbody>'+
+      DH_LAN5.map(function(x){ var a=o(K.cu,x[0]), b=o(K.moi,x[0]), d=a.eta&&b.eta?dhCachNgay(a.eta,b.eta):0; return '<tr><td>'+esc(x[1])+'</td><td class="qt-so">'+b.n+'</td><td class="qt-so">'+qtSo(b.sl,0)+'</td><td>'+(a.eta?dhNg(a.eta):'–')+' → <b>'+(b.eta?dhNg(b.eta):'–')+'</b>'+(d?' <span class="dh-han'+(d>0?' tre':'')+'">'+(d>0?'+':'')+d+' ngày</span>':'')+'</td><td class="qt-so">'+a.tre+' → <b'+(b.tre>a.tre?' class="bad"':'')+'>'+b.tre+'</b></td></tr>'; }).join('')+
+      '<tr class="dh-khoi"><td>Cả nhà máy</td><td class="qt-so">'+K.moi.tong.n+'</td><td class="qt-so">'+qtSo(K.moi.tong.sl,0)+'</td><td>'+dhNg(K.cu.tong.eta)+' → <b>'+dhNg(K.moi.tong.eta)+'</b></td><td class="qt-so">'+K.cu.tong.tre+' → <b>'+K.moi.tong.tre+'</b></td></tr></tbody></table></div>'+
+      '<div style="font-size:12px;color:var(--ink3)">Xong hết = ngày làn làm xong hàng hiện có (chưa cộng dự phòng). Đơn dự kiến trễ = chưa quá hạn nhưng dự kiến xong sau deadline. Tổng công suất không đổi, chia lại chỉ dời ngày giữa các làn.</div>'; }
+  return h+'</div>'; }
 function dhCSLuu(){ var sp=Number(($('dhCsSp')||{}).value), dong=String(($('dhCsNghi')||{}).value||'').split(/\n+/), nghi=[], lam=[];
   dong.forEach(function(l){ l=l.trim(); if(!l) return; var m=l.match(/^(\d{4}-\d\d-\d\d)\s*(.*)$/); if(!m){ nghi.push([l,'']); return; } if(/^\+|làm bù/i.test(m[2])) lam.push(m[1]); else nghi.push([m[1],m[2].replace(/^[-–:·\s]+/,'')]); });
   var bpCs={}; DH_HC_CS.forEach(function(b){ var e=$('dhCsBP_'+b[0]); if(e) bpCs[b[0]]=Number(e.value); });
@@ -1939,12 +1975,12 @@ function dhVeCongSuat(){
   h+='</tbody></table></div>'+dhCachDoc('<b>Dự kiến xong</b> (16/11): chỉ tính theo <b>công suất '+qtSo(c.sp,0)+' sp/ngày</b> (không tính hàng đi qua từng xưởng); mỗi ngày chia <b>5 làn</b>: <b>'+esc(dhLanTxt())+'</b> (Lẻ + POD = Web lẻ thường, Web lẻ custom, POD; tab kênh khác tạm vào làn Kho); làn nào hết việc trong ngày thì phần dư <b>dồn hết theo thứ tự Dealer → Kho → OEM → A Đông</b> (rồi Lẻ + POD). Trong mỗi làn: dòng <b>trễ hạn + ★ + hàng ưu tiên</b> trước, rồi <b>deadline sớm</b> trước, bằng hạn thì đơn <b>gần xong</b> trước. Đơn lẻ (Web lẻ, POD) không ghi deadline lấy <b>hạn ngầm = ngày đặt + '+DH_HAN_TXT+'</b> (~dd/mm). Công suất sửa ở ⚙ Công suất'+(spDo?', cột thứ 2 dùng <b>công suất thực đo '+qtSo(spDo,0)+' sp/ngày</b> (trung vị Đóng gói '+((c.do||{}).n||0)+' ngày làm gần nhất)':' (chưa đủ 5 ngày số Đóng gói để tính công suất thực đo)')+'. Dòng <b>trễ quá '+DH_TRE_MAX+' ngày</b> không xếp lịch cho tới khi kênh đặt <b>Hạn mới</b>. Ngày làm việc: thứ 2 – thứ 7, trừ chủ nhật và ngày lễ; <b>đơn xong khi dòng cuối cùng xong</b> (ngày dự kiến xong của đơn = dòng xong muộn nhất). Deadline = cột <b>HẠN MỚI</b> nếu có, không thì deadline gốc. <b>Lệch</b> = dự kiến xong − deadline. Đơn quá hạn lâu nên hỏi lại kênh bán còn cần không trước khi dồn sức làm (chuyên gia khuyên giữ 60–70% công suất cho đơn trễ, phần còn lại cho đơn đúng hạn để không trễ dây chuyền).')+'</div>';
   var P3=h.length;
   /* cài đặt công suất + ngày nghỉ */
-  h+='<details class="card dh-csdat"><summary style="cursor:pointer;font-weight:600">⚙ Công suất và ngày nghỉ</summary><div style="margin-top:8px;display:grid;gap:8px;max-width:520px">'+
+  h+='<details class="card dh-csdat"'+(DHLN?' open':'')+'><summary style="cursor:pointer;font-weight:600">⚙ Công suất và ngày nghỉ</summary><div style="margin-top:8px;display:grid;gap:8px;max-width:520px">'+
     '<label>Công suất (sp/ngày, mọi hàng sản xuất) <input id="dhCsSp" type="number" min="1" value="'+c.sp+'" style="width:120px"></label>'+
     '<div><b>Công suất từng bộ phận</b> (sp/ngày – dùng tính <b>hạn chuẩn</b> lùi từ deadline):<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:6px;margin-top:4px">'+DH_HC_CS.map(function(b){ return '<label style="font-size:13px">'+esc(b[1])+' <input id="dhCsBP_'+b[0]+'" type="number" min="1" value="'+(((c.bp||{})[b[0]])||b[2])+'" style="width:80px"></label>'; }).join('')+'</div></div>'+
     '<label>Ngày nghỉ (mỗi dòng: <code>năm-tháng-ngày tên</code>; ngày chủ nhật đi làm bù thì ghi <code>2027-01-10 làm bù</code>)<textarea id="dhCsNghi" rows="10" style="width:100%;font-family:var(--mono,monospace);font-size:13px">'+esc((c.nghiTay||[]).map(function(x){return x[0]+' '+x[1]}).concat(c.lam.map(function(d){return d+' làm bù'})).join('\n'))+'</textarea></label>'+
     '<div style="font-size:12px;color:var(--ink3)">Ô trên chỉ ghi <b>ngày nghỉ riêng của công ty</b> (vd nghỉ Tết dài hơn luật). Ngày lễ theo luật <b>tự tính mọi năm</b> (âm lịch): '+(c.nghiTuDong||[]).filter(function(x){return x[0]>=hn}).slice(0,12).map(function(x){return dhNg(x[0])+'/'+x[0].slice(2,4)+' '+esc(x[1])}).join(' · ')+'. Ngày lễ nào công ty vẫn làm thì ghi "làm bù". Chủ nhật luôn nghỉ (trừ ngày ghi "làm bù").</div>'+
-    '<div><button class="btn sm" type="button" onclick="dhCSLuu()">Lưu</button></div>'+
+    '<div><button class="btn sm" type="button" onclick="dhCSLuu()">Lưu</button></div>'+dhLnVe()+
     '<div style="border-top:1px solid var(--line);padding-top:8px"><b>Email báo cáo 8h sáng</b> (thứ 2 – thứ 7, trừ ngày lễ; gửi tới email tài khoản chủ sở hữu): '+((DH.email||{}).bat!==false?'<span class="dh-han">đang bật</span>':'<span class="dh-han tre">đang tắt</span>')+((DH.email||{}).lan?' · lần gửi gần nhất '+dhNg(DH.email.lan):'')+
     '<div style="display:flex;gap:6px;margin-top:6px;flex-wrap:wrap"><button class="btn sm" type="button" onclick="dhEmailBat('+((DH.email||{}).bat===false)+')">'+((DH.email||{}).bat===false?'Bật email':'Tắt email')+'</button><button class="btn sm" type="button" onclick="dhEmailThu()">Gửi thử ngay</button></div></div></div></details>';
   h=h.slice(P2,P3)+h.slice(0,P2)+h.slice(P3);
