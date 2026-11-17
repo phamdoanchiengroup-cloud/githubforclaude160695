@@ -65,4 +65,4 @@ Chủ dự án: dùng các chuyên gia rà soát toàn bộ mã, giao diện, vi
 - Văn (content-creator, 1b15431): 4 chủ đề năm 5 mục ~350–450 chữ (`HSN_CD_VAN`, `htCdVan_`), Hiểu nhau hơn theo vai + tuổi (`GD_VAN_VAI`, `GD_HANH_*`), Người bạn đời thêm 7 dòng (`pnVanThem_`), "Việc nên làm trong 10 năm này" (`vsViec10_`).
 - Giao diện (frontend-developer): thẻ 4 chủ đề + thanh tiến độ + "Mở trọn năm thêm X xu", nút "Hiểu nhau hơn · 9 xu", hộp xác thực email nhận 39 xu, ẩn gói ngừng bán.
 - code-reviewer: không lỗi chặn. Đã sửa: bản tin miễn phí 1 dòng/lá số, tối đa 5 (`dangKyBanTin`); chừa quota email theo người nhận thư (`tkChuaQuota_`) + trần 40 mã/ngày (`OTP_TONG`); cộng quà trước khi lưu email; Đồng hành ≤ giá phần còn thiếu; đọc cột MoKhoa an toàn; nút mở năm.
-- Chờ chủ dự án: hồ sơ 12 tháng theo việc có thuộc bức tranh chung không; khóa phần quan hệ gia đình từng miễn phí; lời mời "tặng 39 xu"; tháng thuận trùng giữa các chủ đề.
+- 17/11 chủ dự án chốt: chỉ đăng ký bằng email (`dangKy` từ chối SĐT); `gdQhRutGon_` chỉ khóa 5 mục mới, phần xem cũ giữ đủ; giữ bảng 12 tháng và cách chọn tháng thuận. Mã 2026.11.17.3, 24 file kiểm thử đạt, smoke 8/8.
