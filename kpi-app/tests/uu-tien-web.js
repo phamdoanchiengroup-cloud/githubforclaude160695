@@ -45,7 +45,8 @@ ok(c.dhCoNote_({ maNV: 'C077' }) && c.dhCoUu_({ maNV: 'C056' }), 'C077 sửa đ�
     const dlx = dhNgayCong(hn, 40); DH.don = [mk('A', 'OEM', 300, dlx), mk('B', 'OEM', 300, dlx, { qua: { PHOI: 300, SON: 300, TARO: 300, UV: 300 }, p2: { c: 300, n: 300 } })];
     const m = dhMoPhong(dhCSDon()); out.ab = [m.find(g => g.ma === 'A').eta, m.find(g => g.ma === 'B').eta];
     out.gy = dhGoiYHen(3000); out.gyNho = dhGoiYHen(10); out.mucSom = dhSoHen(dhNgayCong(hn, 3), out.gy); out.mucXa = dhSoHen(dhNgayCong(out.gy.hen, 5), out.gy);
-    DHCSThu = { sl: 3000, dl: '' }; out.cs = dhVeCongSuat(); DHCSThu = { sl: 3000, dl: dhNgayCong(hn, 3) }; out.cs2 = dhVeCongSuat(); DHCSThu = null;
+    DHCSThu = { sl: 3000, dl: '', tab: 'KHO' }; out.cs = dhVeCongSuat(); DHCSThu = { sl: 3000, dl: dhNgayCong(hn, 3), tab: 'DEALER' }; out.cs2 = dhVeCongSuat(); DHCSThu = null;
+    out.gyD = dhGoiYHen(3000, 'DEALER'); out.gyO = dhGoiYHen(3000, 'OEM'); out.hen6 = dhCongNgayLam(out.gy.xong, 6);
     /* đơn lẻ quá 10 ngày */
     const le = [mk('L1', 'WEB LẺ ĐƠN THƯỜNG', 1, '', { ngayDat: dhNgayCong(hn, -14), pl: { loai: 'GAY' } }), mk('L2', 'POD-ECOMSTONE', 2, '', { ngayDat: dhNgayCong(hn, -3) }), mk('L3', 'WEB LẺ ĐƠN THƯỜNG', 1, '', { ngayDat: dhNgayCong(hn, -20), thieu: 0 })];
     out.le10 = dhLe10Ds(le).map(o => o.maDon);
@@ -62,9 +63,10 @@ ok(c.dhCoNote_({ maNV: 'C077' }) && c.dhCoUu_({ maNV: 'C056' }), 'C077 sửa đ�
   ok(w.lan0 === 0.10, 'ít đơn lẻ → làn đơn lẻ 10% (sàn)', w.lan0);
   ok(w.lan1.pct === 0.10 && w.lan1.spNgay > 0, 'nhiều đơn lẻ → làn vẫn CỐ ĐỊNH 10% (16/11), có số sp lẻ/ngày', w.lan1);
   ok(w.ab[1] <= w.ab[0], 'bằng deadline: đơn đã qua nhiều bộ phận (gần xong) xong trước', w.ab);
-  ok(w.gy && w.gy.hen > w.gy.xong && w.gy.ngayLamHen === Math.ceil(w.gy.ngayLam * 1.2) && w.gyNho.hen <= w.gy.hen, 'ngày hẹn gợi ý = ngày xong khi xếp cuối + 20% dự phòng; đơn nhỏ hẹn sớm hơn', [w.gy, w.gyNho]);
+  ok(w.gy && w.gy.hen === w.hen6 && w.gy.hen > w.gy.xong && w.gyNho.hen <= w.gy.hen, '17/11 tối: hẹn khách an toàn = xong khi xếp cuối làn + 6 ngày làm; đơn nhỏ hẹn sớm hơn', [w.gy, w.hen6, w.gyNho]);
+  ok(w.gyD && w.gyO && w.gyD.xong !== w.gyO.xong, 'đơn thử vào đúng làn của kênh đã chọn (Dealer / OEM ra ngày khác nhau)', [w.gyD, w.gyO]);
   ok(w.mucSom === 'do' && w.mucXa === '', 'deadline quá sớm → cảnh báo đỏ; sau ngày gợi ý → không cảnh báo', [w.mucSom, w.mucXa]);
-  ok(/Ngày hẹn gợi ý cho đơn <b>3\.000 sp/.test(w.cs) && /sớm hơn gợi ý/.test(w.cs2) && /Chỉ cảnh báo/.test(w.cs2), 'Thử nhận đơn: để trống deadline → gợi ý ngày hẹn; deadline sớm → chỉ cảnh báo', '');
+  ok(/Hẹn khách an toàn<\/b> cho đơn <b>3\.000 sp/.test(w.cs) && /làn Kho/.test(w.cs) && /id="dhCsKenh"/.test(w.cs) && /Xong khoảng/.test(w.cs2) && /làn Dealer/.test(w.cs2) && /Hẹn khách an toàn: /.test(w.cs2) && /Chỉ cảnh báo/.test(w.cs2), 'Thử nhận đơn: ô chọn kênh; để trống deadline → hẹn khách an toàn; có deadline → "Xong khoảng … nếu nhận với deadline" + hẹn an toàn + chỉ cảnh báo', [w.cs.slice(-600), w.cs2.slice(-900)]);
   ok(w.le10.join() === 'L1', 'đơn lẻ / POD còn thiếu quá hạn kênh (thường 7 ngày làm) từ ngày đặt → cảnh báo (bỏ đơn mới đặt, đơn đã xong)', w.le10);
   ok(w.h10.join() === 'B1:4,A1:2,A1:3', 'Đến hạn 10 ngày tới: đủ dòng của đơn hạn trong 10 ngày, hạn sớm trước; bỏ đơn xa + đơn đã trễ', w.h10);
   ok(!w.loiBang && /Đến hạn 10 ngày tới/.test(w.bang) && /data-t="@han10"/.test(w.bang) && !/@le10/.test(w.bang), 'bảng đơn có mục "Đến hạn 10 ngày tới" (thay mục Lẻ / POD quá 10 ngày)', w.loiBang || '');
