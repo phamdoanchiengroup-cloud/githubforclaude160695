@@ -35,9 +35,9 @@ function webMoPhong(DHd, hn, them) {
   const lay = ten => { const i = src.indexOf('\nfunction ' + ten + '('); if (i < 0) throw new Error('không thấy ' + ten); let j = src.indexOf('{', i), d = 0, q = null;
     for (; j < src.length; j++) { const ch = src[j]; if (q) { if (ch === '\\') { j++; continue; } if (ch === q) q = null; continue; } if (ch === "'" || ch === '"') { q = ch; continue; } if (ch === '{') d++; else if (ch === '}' && --d === 0) break; }
     return src.slice(i + 1, j + 1); };
-  const bien = src.split('\n').filter(s => /^var (DH_TAB_BAC1|DH_LE_TAB|DH_HAN_LE|DH_LAN_MIN|DH_SIM_C|DH_CS_DON)\b/.test(s)).join('\n');
+  const bien = src.split('\n').filter(s => /^var (DH_TAB_BAC1|DH_LE_TAB|DH_HAN_LE|DH_LAN_MIN|DH_SIM_C|DH_CS_DON|DH_LAN5)\b/.test(s)).join('\n');
   const ham = ['dhCachNgay', 'dhCS', 'dhNgayCong', 'dhLaNgayLam', 'dhSoNgayLam', 'dhNgayLamThu', 'dhLaSX', 'dhGomDon', 'dhTenChuan', 'dhUuTen', 'dhLaUu', 'dhTreTen', 'dhBacDong', 'dhBac',
-    'dhHanLeN', 'dhCongNgayLam', 'dhLanLe', 'dhLaLe', 'dhLan1', 'dhDlNgam', 'dhQua30', 'dhLa1K', 'dhBRoute', 'dhK2', 'dhKs', 'dhSimDong', 'dhMoPhong', 'dhCSDon'].map(lay).join('\n');
+    'dhHanLeN', 'dhCongNgayLam', 'dhLanLe', 'dhLaLe', 'dhLan1', 'dhDlNgam', 'dhQua30', 'dhLa1K', 'dhBRoute', 'dhK2', 'dhKs', 'dhSimDong', 'dhMoPhong', 'dhCSDon', 'dhLanSo'].map(lay).join('\n');
   const ctx = { DH: DHd, DHHT: null, HN: hn, them, kq: null }; vm.createContext(ctx);
   vm.runInContext(bien + '\n' + ham + '\nfunction dhHomNay(){ return HN; }\nkq = dhMoPhong(dhCSDon(), them);', ctx);
   const m = {}; ctx.kq.forEach(g => { m[g.ma + '|' + g.tab] = g.eta; }); return m;
@@ -54,7 +54,7 @@ ok(k.length > 50 && !lech.length && Object.keys(R.m).length === k.length, k.leng
 ok(!R.m['#OEM-HUY-01/11|OEM'], 'đơn đã hủy không có trong mô phỏng');
 ok(k.some(z => !web[z]), 'có đơn trễ > 30 ngày không xếp lịch (chờ đặt hạn mới) – cả 2 bên giống nhau', k.filter(z => !web[z]).length);
 const thu = { ma: '(thử) X', tab: 'OEM', thieu: 250, dl: '2026-12-20', dong: [] };
-const web2 = webMoPhong(DHd, hn, thu), R2 = c.dbkMoPhong_(c.dbkGiau_(c.dhDocDon_(false)), { ma: '(thử) X', tab: 'OEM', thieu: 250, dl: '2026-12-20', bac: 4 }, cs);
+const web2 = webMoPhong(DHd, hn, thu), R2 = c.dbkMoPhong_(c.dbkGiau_(c.dhDocDon_(false)), { ma: '(thử) X', tab: 'OEM', thieu: 250, dl: '2026-12-20', bac: 2 }, cs);
 ok(web2['(thử) X|OEM'] && R2.m['(thử) X|OEM'].eta === web2['(thử) X|OEM'], 'đơn thử 250 sp (như "Thử nhận đơn"): ngày xong trùng web ' + web2['(thử) X|OEM'], [web2['(thử) X|OEM'], R2.m['(thử) X|OEM']]);
 ok(R.cong2('2026-11-21') === '2026-11-25', '+2 ngày làm việc bỏ qua chủ nhật 22/11 + ngày nghỉ 24/11 (Ngày Văn hóa VN): 21/11 → 25/11', R.cong2('2026-11-21'));
 ok(R.cong2('2026-11-20') === '2026-11-23', '20/11 → 23/11 (bỏ chủ nhật 22, không có ngày lễ chen)', R.cong2('2026-11-20'));
@@ -65,11 +65,19 @@ ok(R.cong2('2026-11-20') === '2026-11-23', '20/11 → 23/11 (bỏ chủ nhật 2
   vm.runInContext("var DH_TAB_BAC1={'WEB LẺ CUSTOM':1,'WEB LẺ ĐƠN THƯỜNG':1}; function dhHomNay(){return HN} function dhTenChuan(s){return String(s||'').toUpperCase().trim()} function dhLaUu(o,m){ return o.tab==='KHO'&&!!m[dhTenChuan(o.maDon)+'|'+dhTenChuan(o.ten)] }" + src.slice(i0, j0 + 2), ctx);
   const b = (o, mu, mtr) => ctx.dhBacDong(o, mu || {}, mtr || {});
   const kq = [b({ tab: 'DEALER', dl: '2026-12-30' }), b({ tab: 'DEALER', dl: '2026-11-01' }), b({ tab: 'OEM', dl: '2026-11-01' }), b({ tab: 'KHO', uuWeb: { ai: 'x' } }), b({ tab: 'KHO', maDon: '#K1', ten: 'A' }, { '#K1|A': 1 }), b({ tab: 'OEM', dl: '2026-12-30' }), b({ tab: 'POD-X' })];
-  ok(kq.join() === '2,2,3,3,3,4,1', 'thứ tự bậc mới: Dealer (cả khi trễ) = 2 → trễ hạn / ★ / hàng ưu tiên = 3 → còn lại = 4 (lẻ / POD làn riêng = 1)', kq);
+  ok(kq.join() === '2,1,1,1,1,2,2', '17/11 tối: ưu tiên TRONG LÀN – trễ hạn / ★ / hàng ưu tiên = 1, còn lại = 2', kq);
+  vm.runInContext(src.match(/\nvar DH_LAN5=[^\n]*/)[0] + src.slice(src.indexOf('\nfunction dhLanSo('), src.indexOf('\n', src.indexOf('\nfunction dhLanSo(') + 1)), ctx);
+  const ls = ['WEB LẺ CUSTOM', 'POD-A.BÁCH', 'DEALER', 'KHO', 'OEM', 'A ĐÔNG', 'TAB MỚI'].map(x => ctx.dhLanSo(x));
+  ok(ls.join() === '1,1,2,3,4,5,3' && ctx.DH_LAN5.map(x => x[2]).join() === '0.1,0.1,0.55,0.05,0.2', '5 làn: Lẻ + POD 10% · Dealer 10% · Kho 55% · OEM 5% · A Đông 20%; tab mới tạm vào làn Kho', ls);
   const DHx = c.__goi('layDonHangXuong', own, true), wx = webMoPhong(DHx, hn, null), Rx = c.dbkMoPhong_(c.dbkGiau_(c.dhDocDon_(false)), null, cs);
   const dea = Object.keys(wx).filter(z => /\|DEALER$/.test(z) && wx[z]).map(z => wx[z]).sort(), treKhac = DHx.don.filter(o => o.tab === 'OEM' && o.thieu > 0 && o.dl && o.dl < hn && o.dl >= '2026-10-18').map(o => wx[(o.maDon || '(không mã)') + '|OEM']).filter(Boolean).sort();
   ok(dea.length && Object.keys(wx).every(z => (Rx.m[z] || {}).eta === wx[z]), 'máy chủ vẫn trùng web 100% với thứ tự mới');
-  ok(!treKhac.length || dea[dea.length - 1] <= treKhac[0], 'mọi đơn Dealer xong trước (hoặc cùng ngày) đơn trễ hạn của kênh khác', [dea.slice(-1), treKhac.slice(0, 1)]); }
+  /* làn riêng: Dealer không phải chờ Kho – tăng Kho thêm rất nhiều không làm Dealer muộn đi */
+  const dea2 = Object.keys(wx).filter(z => /\|DEALER$/.test(z) && wx[z]).sort((a, b) => wx[b].localeCompare(wx[a]))[0];
+  const Rk = c.dbkMoPhong_(c.dbkGiau_(c.dhDocDon_(false)), { ma: '(thử) KHO 5000', tab: 'KHO', thieu: 5000, dl: '2026-11-20', bac: 1 }, cs);
+  const canDea = DHx.don.filter(o => o.tab === 'DEALER' && o.thieu > 0 && !o.dung && !(o.dl && (Date.parse(hn) - Date.parse(o.dl)) / 864e5 > 30)).reduce((a, o) => a + o.thieu, 0), soNgay = Math.ceil(canDea / (cs.sp * 0.10));
+  let hanToi = hn, dem = 0; while (dem < soNgay) { hanToi = new Date(Date.parse(hanToi + 'T00:00:00Z') + 864e5).toISOString().slice(0, 10); if (new Date(hanToi + 'T00:00:00Z').getUTCDay() !== 0 && hanToi !== '2026-11-24') dem++; }
+  ok(dea2 && Rk.m[dea2].eta <= hanToi, 'thêm đơn Kho 5.000 sp trễ: Dealer vẫn có làn riêng 10% – xong chậm nhất ' + hanToi + ' (' + canDea + ' sp ÷ ' + (cs.sp * 0.1) + ' sp/ngày), thực tế ' + Rk.m[dea2].eta, [wx[dea2], Rk.m[dea2], hanToi]); }
 
 console.log('\n2. Bán hàng thấy ngày dự kiến (đã cộng 2 ngày làm)');
 const shTK = c.ss_().getSheetByName('TaiKhoan'); r = c.__goi('taoTaiKhoanBH', own, { ds: c.__goi('dsUngVienBH', own).ds.filter(u => u.goiY).slice(0, 2).map(u => u.maNV) });
@@ -79,7 +87,7 @@ r = c.__goi('luuDonBan', B1, { maDon: '#BH9-17/11', tab: 'OEM', dl: '2026-12-15'
 ok(r.ok, 'BH gửi đơn 50 sp', r);
 r = c.__goi('layDonBan', B1); x = r.ds[0];
 ok(x && x.tt === 'CHO_DUYET' && /^\d{4}-\d\d-\d\d$/.test(x.duKien || ''), 'đơn chờ duyệt có "nếu duyệt hôm nay: dự kiến xong ~' + (x && x.duKien) + '"', x);
-const Rt = c.dbkMoPhong_(c.dbkGiau_(c.dhDocDon_(false)), { ma: '(thử) #BH9-17/11', tab: 'OEM', thieu: 50, dl: '2026-12-15', bac: 4 }, cs);
+const Rt = c.dbkMoPhong_(c.dbkGiau_(c.dhDocDon_(false)), { ma: '(thử) #BH9-17/11', tab: 'OEM', thieu: 50, dl: '2026-12-15', bac: 2 }, cs);
 ok(x && x.duKien === Rt.cong2(Rt.m['(thử) #BH9-17/11|OEM'].eta), 'ngày đó = mô phỏng + 2 ngày làm', [x && x.duKien, Rt.m['(thử) #BH9-17/11|OEM']]);
 r = c.__goi('duyetDonBan', gd, { id: x.id, pb: x.pb, hanh: 'DUYET', dl: '2026-12-15', lenh: 'dk0000002' }); ok(r.ok, 'Giám đốc duyệt', r);
 r = c.__goi('layDonBan', B1); x = r.ds[0];

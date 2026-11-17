@@ -35,6 +35,7 @@ ok(c.dhCoNote_({ maNV: 'C077' }) && c.dhCoUu_({ maNV: 'C056' }), 'C077 sửa đ�
   const w = await pg.evaluate(() => { const hn = dhHomNay(), out = {}, R = ['PHOI','SON','TARO','UV','HT','TIP','DG'];
     const mk = (ma, tab, sl, dl, x) => Object.assign({ maDon: ma, tab: tab, kenh: tab, ten: 'Gậy ' + ma, sl: sl, thieu: sl, dl: dl, btp: R, pl: { loai: 'GAY' }, qua: {}, hen: {}, dong: 2 }, x || {});
     window.DHHT = { ok: true, luc: 'x', don: [] };
+    out.lan = ['DEALER', 'WEB LẺ ĐƠN THƯỜNG', 'POD-A.BÁCH', 'KHO', 'OEM', 'A ĐÔNG'].map(dhLanSo);
     out.bac = [dhBacDong(mk('D', 'DEALER', 50, dhNgayCong(hn, 20))), dhBacDong(mk('W', 'WEB LẺ ĐƠN THƯỜNG', 1, '')), dhBacDong(mk('P', 'POD-A.BÁCH', 1, '')), dhBacDong(mk('K', 'KHO', 50, dhNgayCong(hn, 20))), dhBacDong(mk('U', 'OEM', 50, dhNgayCong(hn, 20), { uuTien: 'Ưu tiên (GĐ)', uuWeb: { ai: 'GĐ' } })), dhBacDong(mk('T', 'OEM', 50, dhNgayCong(hn, -3)))];
     window.DH = { luc: 'a', cs: { sp: 310, nghi: [], lam: [], bp: {} }, don: [mk('O', 'OEM', 500, dhNgayCong(hn, 30))], q: { bp: 'SON', sua: ['SON'], uuGan: true, ten: 'GĐ' }, cot: { OEM: { qty: { PHOI: 1, SON: 1, UV: 1, HT: 1, DG: 1 }, hen: { SON: 1 } } }, bpDs: [['PHOI','Phôi'],['SON','Sơn'],['UV','UV'],['HT','Hoàn thiện'],['DG','Đóng gói']] };
     out.lan0 = dhLanLe().pct;
@@ -57,7 +58,7 @@ ok(c.dhCoNote_({ maNV: 'C077' }) && c.dhCoUu_({ maNV: 'C056' }), 'C077 sửa đ�
     DH.q = { uuGan: true, ten: 'GĐ' }; out.nut = dhUuNut(g1.dong[0]); DH.q.uuGan = false; out.nut2 = dhUuNut(g1.dong[0]);
     return JSON.parse(JSON.stringify(out)); });
   ok(er.length === 0, 'không lỗi script', er);
-  ok(w.bac.join() === '3,1,1,4,2,2', '4 bậc (16/11 tối): Dealer 3 · Web lẻ 1 · POD 1 · Kho 4 · đơn gắn ★ 2 · đơn trễ 2', w.bac);
+  ok(w.lan.join() === '2,1,1,3,4,5' && w.bac.join() === '2,2,2,2,1,1', '5 làn (17/11 tối): Lẻ + POD 1 · Dealer 2 · Kho 3 · OEM 4 · A Đông 5; trong làn: đơn ★ + đơn trễ lên trước (1), còn lại 2', [w.lan, w.bac]);
   ok(w.lan0 === 0.10, 'ít đơn lẻ → làn đơn lẻ 10% (sàn)', w.lan0);
   ok(w.lan1.pct === 0.10 && w.lan1.spNgay > 0, 'nhiều đơn lẻ → làn vẫn CỐ ĐỊNH 10% (16/11), có số sp lẻ/ngày', w.lan1);
   ok(w.ab[1] <= w.ab[0], 'bằng deadline: đơn đã qua nhiều bộ phận (gần xong) xong trước', w.ab);

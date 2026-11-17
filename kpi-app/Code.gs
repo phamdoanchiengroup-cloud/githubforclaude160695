@@ -7684,7 +7684,7 @@ function danhSachVanPhong(token) {
   ds.sort(function(a, b) { return (thuTu[a.vaiTro] - thuTu[b.vaiTro]) || (a.HoTen < b.HoTen ? -1 : 1); });
   return sach_({ ok: true, ds: ds, muc: HS_MUC });
 }
-var KPI_BAN_MAY = '17/11/2026 21:16';   // giờ dựng Code.gs (22/10)
+var KPI_BAN_MAY = '17/11/2026 21:36';   // giờ dựng Code.gs (22/10)
 /* =====================================================================
    KỸ NĂNG (22/10, chủ dự án nhờ thiết kế + tham khảo chuyên gia nhân sự / đào tạo)
    - Danh mục: trưởng / phó phòng đề xuất kỹ năng của xưởng (tên, mô tả, tiêu chí đạt, công đoạn liên quan)
@@ -11925,6 +11925,7 @@ function taoTaiKhoanBH(token, p) {
    - Bảng đơn nhà máy: mọi đơn đang làm (còn thiếu > 0, đã bỏ mã hủy / áp SL bớt), CHỈ 4 cột Mã đơn · Mã sản phẩm · Số đặt · Deadline + kênh để lọc.
    - Đang xem: người duyệt mở thẻ chờ duyệt → web báo máy chủ mỗi 30 giây; người duyệt khác thấy "… đang xem đơn này". Kiểm thử: tests/du-kien.js */
 var DBK_TAB_BAC1 = { 'WEB LẺ CUSTOM': 1, 'WEB LẺ ĐƠN THƯỜNG': 1 }, DBK_HAN_LE = { 'WEB LẺ ĐƠN THƯỜNG': [5, 7], 'WEB LẺ CUSTOM': [12, 15] }, DBK_HAN_POD = [7, 10];
+var DBK_LAN5 = [[1, 0.10], [2, 0.10], [3, 0.55], [4, 0.05], [5, 0.20]];   // 17/11 tối: 5 làn Lẻ + POD · Dealer · Kho · OEM · A Đông (giống DH_LAN5 trên web)
 var DBK_TRE_MAX = 30, DBK_LAN = 0.10, DBK_DU_PHONG = 2, DBK_DU_KIN = 6, DBK_CHO_MAX = 10, DBK_BANG_MAX = 5000, DBK_CACHE = 'DB_ETA_v1';
 var DBK_SIM_C = ['PHOI_C', 'SON', 'UV', 'HT'], DBK_SIM_N = ['PHOI_N', 'TARO', 'HT1', 'TIP', 'HT'], DBK_SIM_1K = ['PHOI_C', 'SON', 'UV', 'HT', 'TIP'];
 function dbkTC_(s) { return String(s == null ? '' : s).toUpperCase().replace(/[–—]/g, '-').replace(/\s+/g, ' ').trim(); }
@@ -11950,16 +11951,14 @@ function dbkMoPhong_(G, them, cs) {   // G = dbkGiau_(); them = đơn thử {ma,
   G.tre.forEach(function(o) { var t = dbkTC_(o.ten); if (t) mtr[t] = 1; });
   var hanLe = function(o) { var t = String((o && o.tab) || '').toUpperCase().trim(); return DBK_HAN_LE[t] || (/^POD/.test(t) ? DBK_HAN_POD : null); };
   var dlNgam = function(o) { var n = hanLe(o); return (o && !o.dl && o.ngayDat && n) ? thu(cong(o.ngayDat, 1), n[1]) : ''; };
-  var lan1 = function(o) { var t = String((o && o.tab) || '').toUpperCase().trim(); return !!DBK_TAB_BAC1[t] || /^POD/.test(t); };
+  var lanSo = function(tab) { var t = String(tab || '').toUpperCase().trim(); if (DBK_TAB_BAC1[t] || /^POD/.test(t)) return 1; if (t === 'DEALER') return 2; if (t === 'OEM') return 4; if (t === 'A ĐÔNG') return 5; return 3; };
   var bac = function(o) {
     var tab = String(o.tab || '').toUpperCase().trim(), t = dbkTC_(o.ten);
-    if (DBK_TAB_BAC1[tab] || /^POD/.test(tab)) return 1;
-    if (tab === 'DEALER') return 2;   // 17/11 tối (chủ dự án): Dealer đứng đầu làn chính, kể cả khi trễ
-    if (o.uuWeb) return 3;
-    if (o.dl && o.dl < hn) return 3;
-    if (mtr[t]) return 3;
-    if (o.tab === 'KHO' && (mu[dbkTC_(o.maDon || '') + '|' + t] || mu['|' + t])) return 3;   // hàng ưu tiên cùng bậc trễ + ★
-    return 4;
+    if (o.uuWeb) return 1;   // 17/11 tối: ưu tiên TRONG LÀN – trễ / ★ / tên trong tab TRỄ HẠN / hàng ưu tiên = 1, còn lại = 2
+    if (o.dl && o.dl < hn) return 1;
+    if (mtr[t]) return 1;
+    if (o.tab === 'KHO' && (mu[dbkTC_(o.maDon || '') + '|' + t] || mu['|' + t])) return 1;
+    return 2;
   };
   var k2 = function(k) { var s = String(k || '').toUpperCase(), c = s.match(/CHU[OÔ]I\s*:\s*([A-Z_]*)/), n = s.match(/NG[OỌ]N\s*:\s*([A-Z_]*)/); return (c || n) ? { c: c ? c[1] : '', n: n ? n[1] : '' } : null; };
   var ks = function(k) { var z = k2(k); return z ? [z.c, z.n].filter(Boolean) : (k ? [String(k)] : []); };
@@ -11979,7 +11978,7 @@ function dbkMoPhong_(G, them, cs) {   // G = dbkGiau_(); them = đơn thử {ma,
       ch.push(st.map(function(k, j) { return Math.min(need, Math.max(0, dd[j] - base)); }));
     });
     var tien = 0, nb = 0; ch.forEach(function(x) { x.forEach(function(y) { tien += need ? y / need : 0; nb++; }); });
-    return { g: g, lan: o ? (lan1(o) ? 1 : 2) : (g.lan || 2), uu: dau ? 0 : (+uu || 4), han: (o && (o.dl || dlNgam(o))) || g.dl || '9999', i: i, need: need, dg: 0, eta: '', tien: nb ? tien / nb : 0 };
+    return { g: g, lan: lanSo(o ? o.tab : g.tab), uu: dau ? 0 : (+uu || 2), han: (o && (o.dl || dlNgam(o))) || g.dl || '9999', i: i, need: need, dg: 0, eta: '', tien: nb ? tien / nb : 0 };
   };
   /* nhóm đơn như dhCSDon: dòng còn thiếu, không phải phụ kiện / hàng nối, gom theo mã đơn + tab */
   var m = {}, ds = [];
@@ -11987,16 +11986,19 @@ function dbkMoPhong_(G, them, cs) {   // G = dbkGiau_(); them = đơn thử {ma,
     var ma = o.maDon || '(không mã)', k = ma + '|' + (o.tab || ''), g = m[k];
     if (!g) { g = m[k] = { ma: ma, tab: o.tab, thieu: 0, dong: [], dl: '' }; ds.push(g); }
     g.thieu += o.thieu; g.dong.push(o); if (o.dl && (!g.dl || o.dl < g.dl)) g.dl = o.dl; });
-  if (them) ds.push({ ma: them.ma, tab: them.tab, thieu: them.thieu, dong: [], dl: them.dl || '', lan: lan1(them) ? 1 : 2, bac0: them.bac || 4, thu: 1 });
+  if (them) ds.push({ ma: them.ma, tab: them.tab, thieu: them.thieu, dong: [], dl: them.dl || '', bac0: them.bac || 2, thu: 1 });
   var L = [], i = 0;
   ds.forEach(function(g) { var co = false, cho = 0;
     g.dong.forEach(function(o) { if (o.dl && dbkCach_(o.dl, hn) > DBK_TRE_MAX) { cho += o.thieu; return; } co = true; L.push(sim(o, g, bac(o), false, i++)); });
-    if (!co && !cho) L.push(sim(null, g, g.bac0 || 4, false, i++)); });
+    if (!co && !cho) L.push(sim(null, g, g.bac0 || 2, false, i++)); });
   L.sort(function(a, b) { return (a.uu - b.uu) || String(a.han).localeCompare(String(b.han)) || ((b.tien || 0) - (a.tien || 0)) || (a.i - b.i); });
-  var SP = cs.sp || DH_CS_MAC, lan = { 1: L.filter(function(l) { return l.lan === 1; }), 2: L.filter(function(l) { return l.lan === 2; }) }, con = L.length, ngay = thu(hn, 1), E = 1e-6;
+  var SP = cs.sp || DH_CS_MAC, lan = {}, con = L.length, ngay = thu(hn, 1), E = 1e-6;
+  DBK_LAN5.forEach(function(x) { lan[x[0]] = L.filter(function(l) { return l.lan === x[0]; }); });
   var lam = function(a, lim) { for (var j = 0; j < a.length && lim > E; j++) { var l = a[j]; if (l.eta) continue; var q = Math.min(l.need - l.dg, lim); if (q > E) { l.dg += q; lim -= q; } } return lim; };
+  var conViec = function(k) { return lan[k].some(function(l) { return !l.eta && l.dg < l.need - E; }); };
   for (var t = 0; t < 800 && con > 0; t++) {
-    var c1 = SP * DBK_LAN, du = lam(lan[1], c1) + lam(lan[2], SP - c1); du = lam(lan[1], du); lam(lan[2], du);
+    var du = 0; DBK_LAN5.forEach(function(x) { du += lam(lan[x[0]], SP * x[1]); });
+    for (var v = 0; v < 8 && du > E; v++) { var act = DBK_LAN5.filter(function(x) { return conViec(x[0]); }); if (!act.length) break; var tp = act.reduce(function(a, x) { return a + x[1]; }, 0), du2 = 0; act.forEach(function(x) { du2 += lam(lan[x[0]], du * x[1] / tp); }); du = du2; }
     L.forEach(function(l) { if (!l.eta && l.dg >= l.need - E) { l.eta = ngay; con--; } });
     ngay = thu(cong(ngay, 1), 1);
   }
@@ -12023,7 +12025,7 @@ function dbkGanDuKien_(out, d) {
     if (x.tt !== 'CHO_DUYET' || nCho >= DBK_CHO_MAX) return;
     nCho++;   /* đơn chờ duyệt: thử xếp đơn này vào cuối hàng đợi đúng bậc của kênh, deadline = deadline mong muốn */
     var tab = String(x.tab || '').toUpperCase().trim(), bac = (DBK_TAB_BAC1[tab] || /^POD/.test(tab)) ? 1 : tab === 'DEALER' ? 2 : 4;
-    var R2 = dbkMoPhong_(lay(), { ma: '(thử) ' + x.maDon, tab: x.tab, thieu: x.tongSL, dl: x.dlMuon || '', bac: bac }, cs);
+    var R2 = dbkMoPhong_(lay(), { ma: '(thử) ' + x.maDon, tab: x.tab, thieu: x.tongSL, dl: x.dlMuon || '', bac: 2 }, cs);   // 17/11 tối: xếp cuối làn của kênh
     var h2 = dbkHien_(R2.m['(thử) ' + x.maDon + '|' + x.tab], R2); if (h2 && h2.eta) x.duKien = h2.eta;
   });
 }
