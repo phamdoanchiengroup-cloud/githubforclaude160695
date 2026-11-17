@@ -69,9 +69,9 @@ const chu = ctx.dangNhap('chienpham', PASS).token;
 // Phần đầu kiểm tra cơ chế với bảng giá cũ (ghim cố định) và tắt quà đăng ký; phần cuối kiểm tra bảng giá mặc định mới + quà
 const GIA_CU = { co_ban: 49, tron_goi: 149, cap_doi: 29, dai_van: 19, nam: 29, dong_hanh: 79, bien_co: 29, phoi_ngau: 19, pdf: 29, do_gio: 19, tron_dai_van: 99 };
 store.TT_BANG_GIA = JSON.stringify({ phien: ctx.TT_GIA_PHIEN, phan: GIA_CU, goi: [{ tien: 50000, xu: 50 }, { tien: 100000, xu: 110 }, { tien: 200000, xu: 240 }, { tien: 500000, xu: 650 }], thuongDangKy: 0, thuongGTDangKy: 0, kmPhien: ctx.TT_KM_PHIEN });
-ok(nem(() => ctx.dangKy('ab', 'matkhau123', 'A', '0912345678')) !== null, 'Đăng ký: chặn tên quá ngắn');
+ok(nem(() => ctx.dangKy('ab', 'matkhau123', 'A', 'ab@vidu.vn')) !== null, 'Đăng ký: chặn tên quá ngắn');
 ok(nem(() => ctx.dangKy('khachmoi', 'matkhau123', 'Khách', 'abc')) !== null, 'Đăng ký: bắt buộc SĐT/email hợp lệ');
-const dk = ctx.dangKy('khachmoi', 'matkhau123', 'Khách Mới', '0912 345 678');
+const dk = ctx.dangKy('khachmoi', 'matkhau123', 'Khách Mới', 'khachmoi@vidu.vn');
 ok(dk.token && dk.nguoiDung.vaiTro === 'thanhVien', 'Khách tự đăng ký và đăng nhập luôn');
 const T = dk.token;
 let r = ctx.lapLaSo(L, T);
@@ -206,9 +206,9 @@ ok(ctx.xacThucEmail(n1.token, ma1).chuaCo, 'Mã đã dùng không dùng lại đ
 tkSet('nguoimoi1', o => { o.otp = null; });
 ctx.guiMaEmail(n1.token, 'khac@x.vn'); { const v = ctx.xacThucEmail(n1.token, maCuoi()); ok(v.ok && v.qua.xu === 0 && v.qua.lyDo === 'taiKhoan' && ctx.ttSoDu_('nguoimoi1') === 39, 'Tài khoản đã nhận quà: xác thực email khác không nhận thêm'); }
 m = ctx.muaPhan(n1.token, Object.assign({}, L, { day: 11 }), 'thang', new Date().getFullYear() + '-12'); ok(m.ok && m.soDu === 39 - P_.thang.xu, 'Dùng quà mở ngay 1 tháng, không cần nạp');
-const n1b = ctx.dangKy('nguoimoi1b', 'matkhau123', 'Trùng Email', '0911000001', '');
+const n1b = ctx.dangKy('nguoimoi1b', 'matkhau123', 'Trùng Email', 'nguoimoi1b@vidu.vn', '');
 ctx.guiMaEmail(n1b.token, 'MOI1@x.vn '); { const v = ctx.xacThucEmail(n1b.token, maCuoi()); ok(v.ok && v.qua.xu === 0 && v.qua.lyDo === 'email' && ctx.ttSoDu_('nguoimoi1b') === 0, 'Quà mỗi email chỉ một lần (không phân biệt hoa thường) – tài khoản khác vẫn xác thực được'); }
-const n7 = ctx.dangKy('nguoimoi7', 'matkhau123', 'B7', '0911000007', ''), n7b = ctx.dangKy('nguoimoi7b', 'matkhau123', 'B7b', '0911000008', '');
+const n7 = ctx.dangKy('nguoimoi7', 'matkhau123', 'B7', 'nguoimoi7@vidu.vn', ''), n7b = ctx.dangKy('nguoimoi7b', 'matkhau123', 'B7b', 'nguoimoi7b@vidu.vn', '');
 ctx.guiMaEmail(n7.token, 'Ten.Mot+abc@GoogleMail.com'); const q7 = ctx.xacThucEmail(n7.token, maCuoi()).qua.xu;
 ctx.guiMaEmail(n7b.token, 'tenmot@gmail.com'); const q7b = ctx.xacThucEmail(n7b.token, maCuoi()).qua.xu;
 ok(q7 === 39 && q7b === 0, 'Quà: bí danh Gmail (dấu chấm, +đuôi, googlemail) tính là một email');
@@ -220,11 +220,11 @@ ok(ctx.ttLienHeChuan_('ab+x@yahoo.com') === 'ab@yahoo.com' && ctx.ttLienHeChuan_
   tkSet('otphethan', o => { o.otp = null; }); ctx.guiMaEmail(t, 'hh@x.vn');
   ok(ctx.xacThucEmail(t, maCuoi()).qua.xu === 39, 'Gửi lại mã mới sau khi hết hạn → xác thực được, nhận quà'); }
 { // sai 5 lần → mã khóa, kể cả nhập đúng sau đó
-  const t = ctx.dangKy('otpsai', 'matkhau123', 'S', '0911000009', '').token; ctx.guiMaEmail(t, 'sai@x.vn'); const ma = maCuoi(), sai = ma === '999999' ? '888888' : '999999';
+  const t = ctx.dangKy('otpsai', 'matkhau123', 'S', 'otpsai@vidu.vn', '').token; ctx.guiMaEmail(t, 'sai@x.vn'); const ma = maCuoi(), sai = ma === '999999' ? '888888' : '999999';
   let v; for (let i = 0; i < 5; i++) v = ctx.xacThucEmail(t, sai);
   ok(v.khoaMa && v.conLan === 0 && ctx.xacThucEmail(t, ma).khoaMa && ctx.ttSoDu_('otpsai') === 0, 'Sai 5 lần: mã bị khóa, nhập đúng cũng không nhận'); }
 { // tối đa 5 lần gửi mỗi ngày + hết quota MailApp
-  const t = ctx.dangKy('otpgioihan', 'matkhau123', 'G', '0911000010', '').token;
+  const t = ctx.dangKy('otpgioihan', 'matkhau123', 'G', 'otpgioihan@vidu.vn', '').token;
   tkSet('otpgioihan', o => { o.otpNgay = ctx.Utilities.formatDate(new Date(), 'Asia/Ho_Chi_Minh', 'yyyy-MM-dd'); o.otpDem = 5; });
   const n0 = thu.length, v = ctx.guiMaEmail(t, 'gh@x.vn'); ok(v.ok === false && v.hetLuot && thu.length === n0, 'Quá 5 lần gửi mã trong ngày: từ chối, không gửi');
   tkSet('otpgioihan', o => { o.otpDem = 0; });
@@ -233,12 +233,13 @@ ok(ctx.ttLienHeChuan_('ab+x@yahoo.com') === 'ab@yahoo.com' && ctx.ttLienHeChuan_
   quota = 100; tkSet('otpgioihan', o => { o.otp = null; }); guiLoi = true;
   ok(/Chưa gửi được email/.test(nem(() => ctx.guiMaEmail(t, 'gh@x.vn')) || '') && !tkJ('otpgioihan').otp, 'MailApp lỗi: báo lỗi rõ, không giữ mã treo'); guiLoi = false; }
 { // tài khoản cũ đã nhận quà kiểu cũ (sổ cái 'DK') → không nhận thêm 39 xu
-  const t = ctx.dangKy('tkcuqua', 'matkhau123', 'Cũ', '0911000011', '').token;
+  const t = ctx.dangKy('tkcuqua', 'matkhau123', 'Cũ', 'tkcuqua@vidu.vn', '').token;
   ctx.ttKhoa_(() => ctx.ttCong_('tkcuqua', 9, 'Quà chào mừng khi đăng ký', 'DK'));
   ctx.guiMaEmail(t, 'cu@x.vn'); const v = ctx.xacThucEmail(t, maCuoi());
   ok(v.ok && v.qua.xu === 0 && v.qua.lyDo === 'taiKhoan' && ctx.ttSoDu_('tkcuqua') === 9, 'Tài khoản đã nhận quà 9/50 xu kiểu cũ: xác thực email không nhận thêm'); }
-const n6 = ctx.dangKy('nguoimoi6', 'matkhau123', 'B6', '+84 98 765 4321', '');
-ok(n6.qua.xu === 0 && !n6.emailGoiY && ctx.ttSoDu_('nguoimoi6') === 0, 'Đăng ký bằng SĐT: không tặng (SĐT không xác minh được), vẫn mời xác thực email');
+const n6 = ctx.dangKy('nguoimoi6', 'matkhau123', 'B6', 'nguoimoi6@vidu.vn', '');
+ok(n6.qua.xu === 0 && n6.emailGoiY === 'nguoimoi6@vidu.vn' && n6.canXacThuc && ctx.ttSoDu_('nguoimoi6') === 0, 'Đăng ký: chưa tặng ngay, gợi ý đúng email để xác thực');
+ok(/email hợp lệ/.test(nem(() => ctx.dangKy('nguoisdt', 'matkhau123', 'SĐT', '0987654321', ''))), '17/11: chỉ đăng ký bằng email – số điện thoại bị từ chối');
 
 // --- Chủ đề năm (nam_cd) và bức tranh chung (nam) ---
 const vyN = new Date().getFullYear(), LN = Object.assign({}, L, { day: 13, viewYear: vyN });
@@ -303,7 +304,7 @@ ok(/Không có gói/.test(nem(() => ctx.muaPhan(t6, null, 'hoi_vien')) || '') &&
     { ten: 'Mẹ', quanHe: 'Mẹ', input: { name: 'Mẹ', gender: 'nu', calendar: 'duong', day: 2, month: 3, year: 1965, hour: 6, minute: 0 } },
     { ten: 'Vợ', quanHe: 'Vợ', input: { name: 'Vợ', gender: 'nu', calendar: 'duong', day: 3, month: 4, year: 1994, hour: 7, minute: 0 } }], t6).ds;
   let Q = ctx.giaDinhQuanHe([ds[0].id, ds[1].id], t6), c = Q.cap[0];
-  ok(!c.moQH && c.giaQH === 9 && c.luan.khoa && c.luan.muc.length === 5 && c.luan.muc.every(x => !x.ds) && c.tomTat.length === 1 && c.canCu.length === 0 && c.diem >= 0, 'Quan hệ chưa mua: chỉ điểm, xếp loại, 1 dòng tóm tắt + tên 5 mục');
+  ok(!c.moQH && c.giaQH === 9 && c.luan.khoa && c.luan.muc.length === 5 && c.luan.muc.every(x => !x.ds) && c.tomTat.length >= 1 && c.diem >= 0, 'Quan hệ chưa mua: phần xem cũ giữ đầy đủ (miễn phí), 5 mục "Hiểu nhau hơn" chỉ còn tên');
   const d0 = ctx.ttSoDu_('nguoimoi6'); m = ctx.muaPhan(t6, { ids: [ds[0].id, ds[1].id] }, 'quan_he');
   ok(m.ok && m.gia === 9 && ctx.ttSoDu_('nguoimoi6') === d0 - 9, 'Mua quan hệ Tôi – Mẹ: 9 xu');
   ok(ctx.muaPhan(t6, { a: ds[1].input, b: ds[0].input }, 'quan_he').daCo, 'Khóa cặp không phụ thuộc thứ tự (nhập a/b đảo vẫn là đã có)');

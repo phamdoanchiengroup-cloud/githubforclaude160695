@@ -39,7 +39,7 @@ let ngayXung = 0, ngay = 0;
 });
 kt(ngayXung > 10, 'có gặp ngày xung tuổi trong mẫu (' + ngayXung + '/' + ngay + ')');
 // Quyền: tài khoản thường không đăng ký được
-const dk = ctx.dangKy('khachvn', 'matkhau123', 'Khách VN', '0912000222', '');
+const dk = ctx.dangKy('khachvn', 'matkhau123', 'Khách VN', 'khachvn@vidu.vn', '');
 // 23/10: tài khoản thường mua theo 30 ngày (giá 'van_ngay'), hết xu thì báo thiếu
 const giaVN = ctx.ttBangGia_().phan.van_ngay.xu;
 kt(giaVN === 19 && dk.qua.xu === 0 && ctx.ttSoDu_('khachvn') === 0, '16/11: lời nhắn mỗi sáng 19 xu / 30 ngày; đăng ký chưa có quà (quà sau khi xác thực email)');

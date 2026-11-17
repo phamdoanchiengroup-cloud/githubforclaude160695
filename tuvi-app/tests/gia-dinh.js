@@ -9,7 +9,7 @@ let ok = 0, sai = 0;
 function kt(dk, msg) { if (dk) ok++; else { sai++; console.log('✗', msg); } }
 const tokChu = 'gia-dinh-kiem-thu-token-chu-01';
 ctx.CacheService.getScriptCache().put('SS_' + tokChu, JSON.stringify({ ten: 'chienpham' }));
-const dk = ctx.dangKy('giadinhthu', 'matkhau123', 'Thử', '0912000999', ''), tokTV = dk.token;
+const dk = ctx.dangKy('giadinhthu', 'matkhau123', 'Thử', 'giadinhthu@vidu.vn', ''), tokTV = dk.token;
 let bi = false; try { ctx.giaDinhDs('khong-hop-le'); } catch (e) { bi = true; }
 kt(bi, 'chưa đăng nhập bị chặn');
 // Chủ sở hữu: danh sách mặc định
@@ -74,7 +74,7 @@ for (let i = 0; i < 25; i++) {   // ngẫu nhiên: không lỗi, điểm trong 0
   const qh = ['Bản thân', 'Vợ', 'Con trai', 'Con gái', 'Cha', 'Mẹ', 'Anh', 'Em gái', 'Ông', 'Bà', 'Họ hàng'];
   const dsN = [0, 1, 2, 3].map(k => ({ ten: 'N' + i + k, quanHe: qh[(i * 5 + k * 7) % qh.length], input: { gender: (i + k) % 2 ? 'nu' : 'nam', calendar: 'duong', day: 1 + (i * 7 + k * 3) % 28, month: 1 + (i + k * 5) % 12, year: 1940 + (i * 13 + k * 17) % 80, hour: (i * 5 + k) % 24, minute: 0 } }));
   const sach = ctx.giaDinhLuu(dsN, tokTV).ds, R = ctx.giaDinhQuanHe(sach.map(x => x.id), tokTV);
-  kt(R.cap.length === 6 && R.cap.every(c => c.diem >= 0 && c.diem <= 10 && c.tomTat.length && (c.capDoi || (!c.moQH && c.luan.khoa && c.tomTat.length === 1))) && R.nhom, '#' + i + ' 4 người ngẫu nhiên luận được (thành viên: bản xem thử quan hệ)');
+  kt(R.cap.length === 6 && R.cap.every(c => c.diem >= 0 && c.diem <= 10 && c.tomTat.length && (c.capDoi || (!c.moQH && c.luan.khoa && c.luan.muc.every(m => !m.ds)))) && R.nhom, '#' + i + ' 4 người ngẫu nhiên luận được (thành viên: bản xem thử quan hệ)');
 }
 console.log('Gia đình: đạt ' + ok + '/' + (ok + sai));
 process.exit(sai ? 1 : 0);

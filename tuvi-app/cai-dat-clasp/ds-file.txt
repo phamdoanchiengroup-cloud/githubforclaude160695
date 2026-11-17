@@ -11,12 +11,12 @@ Code.gs	26195
 DeHieu.gs	95807
 DuDoan.gs	38302
 Facts.gs	11840
-GiaDinh.gs	53396
+GiaDinh.gs	53433
 HaLac.gs	63989
 HoiTu.gs	103422
 Holo.html	59597
 HumanDesign.gs	46578
-Index.html	53518
+Index.html	53545
 LuanGiai.gs	101400
 Lunar.gs	9228
 NghiemChung.gs	27775
@@ -24,7 +24,7 @@ NghiemChungUI.html	11264
 PhoiNgau.gs	58901
 Script.html	772374
 Styles.html	295228
-TaiKhoan.gs	29352
+TaiKhoan.gs	29370
 ThanSoHoc.gs	55192
 ThanhToan.gs	71242
 TienIch.gs	89026

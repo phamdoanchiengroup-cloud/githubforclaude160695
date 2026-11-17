@@ -138,8 +138,8 @@ function dangKy(user, pass, hienThi, lienHe, maGioiThieu) {
   var c = CacheService.getScriptCache(), n = parseInt(c.get('DK_DEM') || '0', 10);
   if (n >= 30) throw new Error('Hệ thống đang nhận quá nhiều đăng ký – vui lòng thử lại sau ít phút.');
   lienHe = String(lienHe || '').trim().slice(0, 80);
-  var hopLe = lienHe.indexOf('@') >= 0 ? /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(lienHe) : /^\+?\d{9,13}$/.test(lienHe.replace(/[\s.-]/g, ''));
-  if (!hopLe) throw new Error('Nhập số điện thoại hoặc email hợp lệ – dùng khi cần khôi phục tài khoản.');
+  // 17/11 (chủ dự án): chỉ đăng ký bằng email – để gửi mã xác thực nhận quà 39 xu
+  if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(lienHe)) throw new Error('Nhập email hợp lệ (ví dụ: ten@gmail.com) – mã xác thực nhận quà sẽ gửi về email này.');
   var gt = tkTen_(maGioiThieu), them = { lienHe: lienHe, tuDangKy: true };
   if (gt && gt !== tkTen_(user) && tkDoc_(gt)) them.gioiThieu = gt;
   var u = tkTaoMoi_(user, pass, hienThi, 'thanhVien', them);

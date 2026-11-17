@@ -18,7 +18,7 @@ const inp = { name: 'Nguyễn Văn An', gender: 'nam', calendar: 'duong', day: 1
 let r = ctx.tienIch(inp, 'xem_tuoi', { muon: 1965 }, ''); kt(r.mo && r.bang.length === 10 && r.muon, 'xem tuổi miễn phí (23/10): đủ 10 năm + tuổi mượn, không cần đăng nhập');
 r = ctx.tienIch(inp, 'phong_thuy', {}, ''); kt(r.mo && r.huong && r.cungPhi === 'Khảm', 'phong thủy miễn phí: đủ 8 hướng');
 r = ctx.tienIch(inp, 'chon_ngay', { viec: 'cuoi', thang: '2026-11' }, ''); kt(r.mo && r.ngay.length === 30, 'chọn ngày miễn phí: đủ 30 ngày');
-const dk = ctx.dangKy('khachti', 'matkhau123', 'Khách TI', '0912000111', ''); const tok = dk.token;
+const dk = ctx.dangKy('khachti', 'matkhau123', 'Khách TI', 'khachti@vidu.vn', ''); const tok = dk.token;
 const G = k => ctx.TT_PHAN_MAC_DINH[k].xu, qua0 = ctx.ttSoDu_('khachti');
 ctx.ttKhoa_(() => ctx.ttCong_('khachti', 300, 'test', ''));
 kt(['xem_tuoi', 'phong_thuy', 'chon_ngay', 'hop_tac', 'dat_ten', 'gieo_que'].every(k => ctx.ttBangGia_().phan[k].xu === 0 && ctx.ttBangGia_().phan[k].mienPhi), 'bảng giá: 6 tiện ích = 0 xu');

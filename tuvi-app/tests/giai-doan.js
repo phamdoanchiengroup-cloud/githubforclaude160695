@@ -1,7 +1,7 @@
 /** Kiểm thử bán theo giai đoạn: đại vận / vận năm / tháng / Đồng hành / Trọn đời / gói gia đình và phần cắt ở máy chủ. Chạy: node tests/giai-doan.js */
 const { ctx } = require('../tools/gia-lap.js');
 let ok = 0, sai = 0; function kt(dk, ten) { if (dk) ok++; else { sai++; console.log('  ✘', ten); } }
-const dk = ctx.dangKy('khachgd', 'matkhau123', 'Khách GĐ', '0912345678', '');
+const dk = ctx.dangKy('khachgd', 'matkhau123', 'Khách GĐ', 'khachgd@vidu.vn', '');
 const tok = dk.token; kt(tok, 'đăng ký có token');
 const G = k => ctx.TT_PHAN_MAC_DINH[k].xu, qua0 = ctx.ttSoDu_('khachgd');
 ctx.ttKhoa_(() => ctx.ttCong_('khachgd', 1000, 'test', ''));

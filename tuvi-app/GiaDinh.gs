@@ -456,8 +456,7 @@ function gdLuanQH_(X, Y, L, c, vy) {
   ] };
 }
 /** Bản xem thử của một cặp chưa mở quan_he: giữ điểm, xếp loại, 1 dòng tóm tắt, 1 điểm sáng + 1 điều lưu ý */
-function gdQhRutGon_(c) {
-  c.tot = c.tot.slice(0, 1); c.xau = c.xau.slice(0, 1); c.canCu = []; c.tomTat = c.tomTat.slice(0, 1);
+function gdQhRutGon_(c) {   // 17/11 (chủ dự án): phần xem quan hệ cũ giữ đầy đủ, miễn phí – chỉ 5 mục "Hiểu nhau hơn" mới cần mở
   c.luan = { khoa: true, muc: c.luan ? c.luan.muc.map(function (m) { return { k: m.k, ten: m.ten }; }) : [] };
   return c;
 }
