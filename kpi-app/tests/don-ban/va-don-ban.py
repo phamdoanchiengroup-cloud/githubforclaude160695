@@ -3,7 +3,7 @@
 # Chạy bằng exec() cuối tests/va-code.py (sau cau-hinh-gay sửa MANH_GD). Kiểm thử: tests/don-ban.js
 s = s.rstrip() + '\n' + io.open(os.path.join(os.path.dirname(__file__), 'don-ban', 'don-ban.gs'), encoding='utf-8').read()
 # 17/11: ngày dự kiến xong + bảng đơn nhà máy + đang xem (du-kien.gs), giai đoạn 2 khóa cột Sheet đơn (khoa-sheet.gs)
-for _f in ['du-kien.gs', 'khoa-sheet.gs']:
+for _f in ['du-kien.gs', 'khoa-sheet.gs', 'thu-don.gs']:   # 17/11 khuya: + thử trước khi đặt / đề nghị ưu tiên
     s = s.rstrip() + '\n' + io.open(os.path.join(os.path.dirname(__file__), 'don-ban', _f), encoding='utf-8').read()
 
 def _tdb(cu, moi, dem=1):
@@ -16,7 +16,8 @@ _tdb("var __KHOA = null;", "var __KHOA = null;\nvar __CHO_BH = false;   // 16/11
 _tdb("  if (o.vaiTro === 'OWNER') o.vaiTro = 'ADMIN';\n  o.cg = cgQuyenCua_(o);",
      "  if (o.vaiTro === 'OWNER') o.vaiTro = 'ADMIN';\n  if (o.vaiTro === 'BH' && !__CHO_BH) return null;   // 16/11 khuya: Bán hàng chỉ dùng được trang Đơn hàng của tôi + đăng nhập / đổi mật khẩu\n  o.cg = cgQuyenCua_(o);")
 for _h in ['function napDuLieuLoi_(token, phan) {\n', 'function dangXuat(token) {\n', 'function doiMatKhau(token, cu, moi) {\n', 'function layManhGiaoDien(token, ten) {\n',
-           'function layDonBan(token) {\n', 'function luuDonBan(token, p) {\n', 'function xoaDonBan(token, p) {\n', 'function layBangDonNhaMay(token) {\n']:
+           'function layDonBan(token) {\n', 'function luuDonBan(token, p) {\n', 'function xoaDonBan(token, p) {\n', 'function layBangDonNhaMay(token) {\n',
+           'function thuDonBH(token, p) {\n', 'function guiDeNghiUu(token, p) {\n']:
     _tdb(_h, _h + '  __CHO_BH = true;   // 16/11 khuya: hàm Bán hàng được gọi\n')
 # napDuLieu: BH nhận gói rỗng như bếp / nhóm báo cơm (không có KPI, nhân sự, nhật ký…)
 _tdb("  if (me.vaiTro === 'BEP' || me.vaiTro === 'NHOM' || me.vaiTro === 'NV' || me.vaiTro === 'TBP') {",

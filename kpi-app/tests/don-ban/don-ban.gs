@@ -54,9 +54,10 @@ function layDonBan(token) {
   var thu = { CHO_DUYET: 0, TRA_VE: 1, DA_DUYET: 2, TU_CHOI: 3 };
   ds.sort(function(a, b) { return (thu[a.TrangThai] - thu[b.TrangThai]) || String(b.LucGui || b.LucTao).localeCompare(String(a.LucGui || a.LucTao)); });
   var out = ds.slice(0, DB_WEB_MAX).map(function(r) { return dbWeb_(r, r.TrangThai === 'DA_DUYET' && d ? dbTienDo_(d, r) : null); });
-  try { dbkGanDuKien_(out, d); } catch (eK) {}   // 17/11: ngày dự kiến xong (mô phỏng công suất + 2 ngày làm dự phòng) – du-kien.gs
+  try { dbkGanDuKien_(out, d); } catch (eK) {}
+  var dn = []; try { dn = dbtDsDN_(q); } catch (eN) {}   // 17/11 khuya: đề nghị ưu tiên (thu-don.gs)   // 17/11: ngày dự kiến xong (mô phỏng công suất + 2 ngày làm dự phòng) – du-kien.gs
   return sach_({ ok: true, ds: out, bh: q.bh ? 1 : 0, duyet: q.duyet ? 1 : 0, owner: q.me.laOwner ? 1 : 0, ten: q.me.ten || '', kenh: dbKenh_(),
-    sp: Object.keys(sp).sort().slice(0, 3000), csNgay: DH_CS_MAC, tongThieu: q.duyet ? tongThieu : null, hom: homNayVN_() });
+    sp: Object.keys(sp).sort().slice(0, 3000), csNgay: DH_CS_MAC, tongThieu: q.duyet ? tongThieu : null, hom: homNayVN_(), dn: dn });
 }
 function dbKiemDon_(p) {   // -> { loi } | { don }
   p = p || {};
@@ -213,7 +214,8 @@ function demDonBanCho(token) {
   var ss = dhhSS_(false), ds = ss ? dbDoc_(ss).filter(function(r) { return r.TrangThai === 'CHO_DUYET'; }) : [];
   var kh = null; if (me.laOwner) { try { kh = dhkWeb_(); } catch (eK) {} }   // 17/11: nhắc chủ sở hữu khóa hẳn sau 14 ngày cảnh báo
   var dung = null; try { dung = dhhNhacDung_(); } catch (eD) {}   // 17/11: nhắc đơn tạm dừng đến ngày chạy lại / dừng quá 14 ngày
-  return sach_({ ok: true, n: ds.length, khoa: kh, dung: dung, ds: ds.slice(0, 5).map(function(r) { return { ma: r.MaDon, kenh: DH_NHAN_TAB[r.Tab] || r.Tab, ai: r.NguoiTao, n: r._d.length }; }) });
+  var dn = null; try { var a = dhhDoc_(ss, 'DeNghiUu').filter(function(r) { return r.TrangThai === 'CHO'; }); dn = { n: a.length, ds: a.slice(0, 4).map(function(r) { return { ma: r.MaDon, ai: r.NguoiTao }; }) }; } catch (eN) {}   // 17/11 khuya: đề nghị ưu tiên chờ xử lý
+  return sach_({ ok: true, n: ds.length, khoa: kh, dung: dung, dn: dn, ds: ds.slice(0, 5).map(function(r) { return { ma: r.MaDon, kenh: DH_NHAN_TAB[r.Tab] || r.Tab, ai: r.NguoiTao, n: r._d.length }; }) });
 }
 /* ===== Tài khoản Bán hàng – chỉ chủ sở hữu ===== */
 function dsUngVienBH(token) {

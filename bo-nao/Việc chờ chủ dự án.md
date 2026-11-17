@@ -3,6 +3,7 @@
 Nhóm: Chung · Cập nhật 31/10/2026
 Liên quan: [[Lần dán lên Apps Script]] · [[Quyết định của chủ dự án]] · [[00 Mục lục]]
 
+- **17/11 khuya:** bấm 2-CAP-NHAT.bat (Thử trước khi đặt + đề nghị ưu tiên); họp Bán hàng bằng slide https://claude.ai/artifact/UqiDkrJZfvUo7zSYyaaKhB, chốt quota đề nghị ưu tiên / tuần.
 - (14/11) Dán Code.gs + Index.html + QuyTrinh.html; kiểm tra tài khoản TP/PP có đúng MaXuong (để web biết bộ phận). Nếu web báo "ô … là CÔNG THỨC" thì đổi ô đó thành số gõ tay hoặc báo Claude. – [[KPI Đơn hàng giao nhận theo bộ phận (14-11)]]
 
 - (15/11) Cập nhật web bằng 2-CAP-NHAT.bat (Đơn hàng sắp xếp lại, đã duyệt mục 5) rồi xem thử. – [[KPI Đơn hàng giao nhận theo bộ phận (14-11)]]

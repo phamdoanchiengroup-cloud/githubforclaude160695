@@ -99,3 +99,15 @@ NHÁP (Bán hàng) → CHỜ DUYỆT → [TRẢ VỀ (lý do) → NHÁP v2] | T�
 - **Chỉnh tỷ lệ (17/11 tối, chủ dự án): 10 · 20 · 50 · 5 · 15.** Mô phỏng trên đơn 16/11: Lẻ + POD xong 02/12 (0 trễ) · Dealer 18/12 (29/174 dòng trễ) · Kho 13/01 · OEM 11/01 · A Đông 15/01. Kiểm thử du-kien.js 76.
 - **Phần dư dồn theo thứ tự (17/11 tối, chủ dự án):** `DH_LAN_DU` / `DBK_LAN_DU` = [Dealer, Kho, OEM, A Đông, Lẻ + POD] – phần công suất dư của các làn dồn lần lượt, thay chia theo tỷ lệ. Mô phỏng đơn 16/11: Lẻ + POD 02/12 · Dealer 14/12 (29 trễ) · Kho 11/01 · OEM 11/01 · A Đông 15/01. Kiểm thử du-kien.js 76.
 - **Thử nhận đơn mới (17/11 tối, chủ dự án):** thêm ô **chọn kênh** (`dhCsKenh`, đơn thử vào đúng làn); hiện 2 ngày rõ nghĩa: "Xong khoảng … nếu nhận với deadline …" và "**Hẹn khách an toàn** = xong khi xếp CUỐI làn của kênh + **6 ngày làm** dự phòng" (`DH_HEN_DU = 6`, thay + 20% số ngày làm; giống ngày kín lịch cho Bán hàng). Cảnh báo: đỏ khi deadline sớm hơn cả ngày xong khi xếp cuối làn, vàng khi chỉ ăn vào phần dự phòng. Kiểm thử uu-tien-web.js 26.
+
+## 17/11 KHUYA – Bán hàng "Thử trước khi đặt" + GỬI ĐỀ NGHỊ ƯU TIÊN – ĐÃ LÀM · chờ `2-CAP-NHAT.bat`
+- Chủ dự án chốt: Thử + nút gửi đề nghị; BH thấy ĐỦ danh sách đơn bị lùi; file họp = bộ slide.
+- Tab Đơn bán hàng thêm nút xem thứ 3 **"Thử trước khi đặt"** (BH + người duyệt), máy chủ `kpi-app/tests/don-ban/thu-don.gs` (nối trong va-don-ban.py):
+  - `thuDonBH(token,{loai:'NHAN',tab,sl,dl})`: xếp cuối làn → `cuoi`, `hen` = +6 ngày làm; có deadline → `xong` (+2), `kip`, `mau` đỏ/vàng (như dhSoHen), `biTre` (số đơn đang kịp thành trễ). Nút "Soạn đơn …" mở form đúng kênh + deadline; form có "Thử ngày xong trước".
+  - `thuDonBH(token,{loai:'DAY',gt})`: mã đơn / tên hàng (như dhUTinh) → `dbkMoPhong_(G,null,cs,ut)` (THÊM tham số `ut` = đầu làn, kể cả dòng trễ > 30 ngày – trùng 100% dhMoPhong web), trả `duoc`, đủ `lui` (≤ 400), `theo` kênh, `tong`, `guiDuoc` (chỉ BH + mã đơn + chưa ★ + chưa có đề nghị chờ).
+  - `guiDeNghiUu` (chỉ BH, theo mã đơn, lý do 5–200, `daXem` bắt buộc – góp ý quan-ly-van-hanh, ngày khách cần tùy chọn, chống bấm 2 lần bằng lenh, máy chủ tự tính lại kết quả). Tab **DeNghiUu** trong Sheet "CSDL Đơn hàng (web)".
+  - `xuLyDeNghiUu` (C019/C056/C067 + chủ sở hữu): DONG_Y = `dbGanUu_` mọi tab của mã; KHONG phải có lý do. Việc hôm nay: `demDonBanCho().dn`. `layDonBan().dn` (người duyệt: tất cả; BH: của mình).
+  - Giới hạn thử 60 lần/giờ/người (cache `DBT_<tk>`). Khóa nhớ tạm ETA thêm chữ ký ★ web (đồng ý ★ → tính lại ngay).
+- Chưa làm (để chủ dự án chốt ở họp): quota đề nghị/tuần, chặn gửi lại 7 ngày sau khi bị từ chối.
+- Bộ slide họp với Bán hàng (17 slide, số liệu chụp 16/11): https://claude.ai/artifact/UqiDkrJZfvUo7zSYyaaKhB
+- Kiểm thử: `thu-don.js` 44 (mới) · `don-ban-web.js` 41 (+14) · du-kien 76 · don-ban 65 · huy-don 99 · don-hang 142.

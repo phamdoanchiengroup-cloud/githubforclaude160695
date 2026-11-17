@@ -39,6 +39,7 @@ Một chỗ gom mọi đường dẫn, mã file, kết nối và công cụ phi�
 
 ## Trang Artifact của chủ dự án (riêng tư)
 - **Bộ não web KPI** (đăng lại sau mỗi việc): https://claude.ai/artifact/PXgStqzHKBtykmfvDch6GE
+- Slide họp Sản xuất – Bán hàng (17/11 khuya): https://claude.ai/artifact/UqiDkrJZfvUo7zSYyaaKhB
 - Bốn kiểu giao diện KPI (demo 22/10): https://claude.ai/artifact/S35dXvGWZFSHA6UFSh4bb6
 - Giới thiệu Nhà máy Carbon Billiards: https://claude.ai/artifact/63EC8tT6gTTMLfKccyjUEQ
 - Nhà máy Carbon Billiards 3D: https://claude.ai/artifact/DDeNNhgicGzDcTmNgnEi5Y

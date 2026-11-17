@@ -2122,6 +2122,7 @@ function viecHomNay(){
   if(ME.dbDuyet&&window.__dbCho&&__dbCho.ok&&__dbCho.n) v.push({muc:'vang',so:__dbCho.n,nho:'đơn',t:'Đơn mới của Bán hàng chờ bạn duyệt',m:__dbCho.ds.slice(0,4).map(function(x){return '<b>'+esc(x.ma)+'</b> '+esc(x.kenh)+' ('+esc(x.ai)+', '+x.n+' mã)'}).join(' · '),fn:"go('bh')",nut:'Xem & duyệt'});
   if(ME.dbDuyet&&window.__dbCho&&__dbCho.dung&&__dbCho.dung.den) v.push({muc:'vang',so:__dbCho.dung.den,nho:'đơn',t:'Đơn tạm dừng đến hạn xem lại',m:__dbCho.dung.ds.map(function(x){return '<b>'+esc(x.ma)+'</b> '+esc(x.kenh)+' ('+x.ngay+' ngày'+(x.hen?', hẹn chạy lại '+esc(x.hen.slice(8,10)+'/'+x.hen.slice(5,7)):'')+')'}).join(' · ')+' – chạy lại hay hủy?',fn:"go('dh')",nut:'Mở bảng đơn'});   // 17/11: tạm dừng đến ngày hẹn / quá 14 ngày
   if(ME.laOwner&&window.__dbCho&&__dbCho.khoa&&__dbCho.khoa.hetCB) v.push({muc:'vang',so:__dbCho.khoa.ngay,nho:'ngày',t:'Đã cảnh báo khóa cột Sheet đơn đủ 2 tuần',m:'Có thể bấm <b>Khóa hẳn</b>: chỉ web ghi được Mã đơn / Loại hàng / SL / Deadline trên Sheet (giai đoạn 2).',fn:"go('bh')",nut:'Xem nhật ký & khóa'});   // 17/11
+  if(ME.dbDuyet&&window.__dbCho&&__dbCho.dn&&__dbCho.dn.n) v.push({muc:'vang',so:__dbCho.dn.n,nho:'đơn',t:'Bán hàng đề nghị ưu tiên đơn',m:__dbCho.dn.ds.map(function(x){return '<b>'+esc(x.ma)+'</b> ('+esc(x.ai)+')'}).join(' · ')+' – xem các đơn bị lùi rồi Đồng ý (★) / Không đồng ý',fn:"go('bh')",nut:'Xem đề nghị'});   /* 17/11 khuya */
   // 5) Yêu cầu sửa hồ sơ
   var yc=D.yeuCauHoSo||[];
   if(yc.length) v.push({muc:'vang',so:yc.length,nho:'yêu cầu',t:'Công nhân xin sửa thông tin liên hệ',m:'Duyệt để cập nhật số điện thoại, CCCD, địa chỉ vào hồ sơ.',k:'hd',nut:'Xem & duyệt'});
@@ -8819,7 +8820,7 @@ function chiXemDon(){
 </script>
 <script>
 /* ===== 19. PHẦN GIAO DIỆN TẢI SAU (12/10) – SoDo.html, HoatAnh.html: chỉ tải khi cần, nhớ lại theo phiên bản ===== */
-var MANH_VER={"SoDo": "d9bc7ce73f034629", "HoatAnh": "b23cbe69d6aae56e", "AmThanh": "c690fabe4419160c", "QuyTrinh": "f763d0ac6e", "CauHinhGay": "8c0f42823f07518c", "DonBan": "15f5221fce3145e3"};
+var MANH_VER={"SoDo": "d9bc7ce73f034629", "HoatAnh": "b23cbe69d6aae56e", "AmThanh": "c690fabe4419160c", "QuyTrinh": "f763d0ac6e", "CauHinhGay": "8c0f42823f07518c", "DonBan": "946406135d597a24"};
 var __manh={da:{},cho:{}};
 function ganManh_(nd){
   var js=[], ngoai=String(nd).replace(/<script>([\s\S]*?)<\/script>/g,function(_,x){js.push(x);return ''});
@@ -9740,7 +9741,7 @@ function hsGhiChuDong(r){
 }
 </script>
 <script>
-var KPI_BAN = '17/11/2026 21:54';
+var KPI_BAN = '17/11/2026 22:15';
 (function(){
   var cu = window.veNav;
   window.veNav = function(){
@@ -11076,7 +11077,7 @@ function nsnCapNhat(){ call('capNhatNgoaiSXTuFile',[],function(r){ if(!r||!r.ok)
 </script>
 <script>
 /* ===== 38. TĂNG TỐC ĐỢT 3 (08/11) – bộ đo tốc độ + mở nhanh bằng số lần trước (mã hóa) ===== */
-var TD_BUF=[], TD_T=null, DL_VER='7c3e73cdde', DL_HAN=12*3600e3, DL_BO=['SoCCCD','DienThoai','DiaChi','SdtKhanCap','LuongCoBan','NamSinh','SoTaiKhoan','Email'];
+var TD_BUF=[], TD_T=null, DL_VER='c9348d8fd2', DL_HAN=12*3600e3, DL_BO=['SoCCCD','DienThoai','DiaChi','SdtKhanCap','LuongCoBan','NamSinh','SoTaiKhoan','Email'];
 function tdGhi_(f,ms,sv){ if(!(ms>=0)||!f) return; TD_BUF.push({f:String(f),ms:Math.round(ms),sv:(typeof sv==='number'?Math.round(sv):null)});
   if(TD_BUF.length>=15) tdGui_(); else if(!TD_T) TD_T=setTimeout(tdGui_,180000); }
 function tdGui_(){ if(TD_T){clearTimeout(TD_T);TD_T=null;} if(!TD_BUF.length||typeof TOKEN==='undefined'||!TOKEN) return;

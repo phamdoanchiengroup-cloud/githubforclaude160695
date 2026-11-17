@@ -25,7 +25,7 @@ function dbkGiau_(d) {
   });
   return { don: don, uu: d.uu || [], tre: d.tre || [] };
 }
-function dbkMoPhong_(G, them, cs) {   // G = dbkGiau_(); them = đơn thử {ma, tab, thieu, dl, bac} | null -> [{ma, tab, eta, g}]
+function dbkMoPhong_(G, them, cs, ut) {   // G = dbkGiau_(); them = đơn thử {ma, tab, thieu, dl, bac} | null; ut = {'mã|tab': 1} đơn "thử đẩy" lên đầu làn (như dhMoPhong) -> [{ma, tab, eta, g}]
   var laLam = dhNgayLamFn_(cs), cong = function(d, n) { var t = Date.parse(d + 'T00:00:00Z') + n * 864e5, x = new Date(t); return x.toISOString().slice(0, 10); };
   var thu = function(tu, n) { var d = tu, i = 0; while (!laLam(d) && i++ < 400) d = cong(d, 1); for (var k = 1; k < n; k++) { d = cong(d, 1); i = 0; while (!laLam(d) && i++ < 400) d = cong(d, 1); } return d; };
   var hn = homNayVN_(), mu = {}, mtr = {};
@@ -70,9 +70,9 @@ function dbkMoPhong_(G, them, cs) {   // G = dbkGiau_(); them = đơn thử {ma,
     g.thieu += o.thieu; g.dong.push(o); if (o.dl && (!g.dl || o.dl < g.dl)) g.dl = o.dl; });
   if (them) ds.push({ ma: them.ma, tab: them.tab, thieu: them.thieu, dong: [], dl: them.dl || '', bac0: them.bac || 2, thu: 1 });
   var L = [], i = 0;
-  ds.forEach(function(g) { var co = false, cho = 0;
-    g.dong.forEach(function(o) { if (o.dl && dbkCach_(o.dl, hn) > DBK_TRE_MAX) { cho += o.thieu; return; } co = true; L.push(sim(o, g, bac(o), false, i++)); });
-    if (!co && !cho) L.push(sim(null, g, g.bac0 || 2, false, i++)); });
+  ds.forEach(function(g) { var co = false, cho = 0, dau = !!(ut && ut[g.ma + '|' + g.tab]);   // 17/11 khuya: thử đẩy = lên đầu làn, kể cả dòng trễ > 30 ngày
+    g.dong.forEach(function(o) { if (o.dl && dbkCach_(o.dl, hn) > DBK_TRE_MAX && !dau) { cho += o.thieu; return; } co = true; L.push(sim(o, g, bac(o), dau, i++)); });
+    if (!co && !cho) L.push(sim(null, g, g.bac0 || 2, dau, i++)); });
   L.sort(function(a, b) { return (a.uu - b.uu) || String(a.han).localeCompare(String(b.han)) || ((b.tien || 0) - (a.tien || 0)) || (a.i - b.i); });
   var SP = cs.sp || DH_CS_MAC, lan = {}, con = L.length, ngay = thu(hn, 1), E = 1e-6;
   DBK_LAN5.forEach(function(x) { lan[x[0]] = L.filter(function(l) { return l.lan === x[0]; }); });
@@ -94,7 +94,8 @@ function dbkHien_(x, R) { if (!x) return null; if (!x.eta || x.eta >= '9999') re
 function dbkGanDuKien_(out, d) {
   if (!d) return;
   var cs = dhCongSuat_(), G = null, R = null, cache = CacheService.getScriptCache(), ky = [d.luc || '', cs.sp, (d.phuDs || []).length], tl = 0, ts = 0;
-  (d.don || []).forEach(function(o) { tl += o.thieu || 0; ts += o.sl || 0; }); ky.push((d.don || []).length, tl, ts);   // dữ liệu đổi (duyệt / hủy / nhập số) -> khóa nhớ tạm đổi
+  (d.don || []).forEach(function(o) { tl += o.thieu || 0; ts += o.sl || 0; }); ky.push((d.don || []).length, tl, ts);
+  try { var uwK = Object.keys(dhUuWebDoc_()).sort().join(','); ky.push(uwK.length, uwK.slice(-40)); } catch (eU) {}   // 17/11 khuya: gắn / bỏ ★ (vd duyệt đề nghị ưu tiên) -> tính lại   // dữ liệu đổi (duyệt / hủy / nhập số) -> khóa nhớ tạm đổi
   var key = DBK_CACHE + '|' + ky.join('|');
   var lay = function() { if (!G) G = dbkGiau_(d); return G; };
   try { var s = cache.get(key); if (s) { var m0 = JSON.parse(s); var R0 = dbkMoPhong_({ don: [], uu: [], tre: [] }, null, cs); R = { m: m0, cong2: R0.cong2, congN: R0.congN }; } } catch (e) { R = null; }

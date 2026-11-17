@@ -31,6 +31,7 @@ _t50("  // 5) Yêu cầu sửa hồ sơ\n", """  // 50) Đơn Bán hàng chờ d
   if(ME.dbDuyet&&window.__dbCho&&__dbCho.ok&&__dbCho.n) v.push({muc:'vang',so:__dbCho.n,nho:'đơn',t:'Đơn mới của Bán hàng chờ bạn duyệt',m:__dbCho.ds.slice(0,4).map(function(x){return '<b>'+esc(x.ma)+'</b> '+esc(x.kenh)+' ('+esc(x.ai)+', '+x.n+' mã)'}).join(' · '),fn:"go('bh')",nut:'Xem & duyệt'});
   if(ME.dbDuyet&&window.__dbCho&&__dbCho.dung&&__dbCho.dung.den) v.push({muc:'vang',so:__dbCho.dung.den,nho:'đơn',t:'Đơn tạm dừng đến hạn xem lại',m:__dbCho.dung.ds.map(function(x){return '<b>'+esc(x.ma)+'</b> '+esc(x.kenh)+' ('+x.ngay+' ngày'+(x.hen?', hẹn chạy lại '+esc(x.hen.slice(8,10)+'/'+x.hen.slice(5,7)):'')+')'}).join(' · ')+' – chạy lại hay hủy?',fn:"go('dh')",nut:'Mở bảng đơn'});   // 17/11: tạm dừng đến ngày hẹn / quá 14 ngày
   if(ME.laOwner&&window.__dbCho&&__dbCho.khoa&&__dbCho.khoa.hetCB) v.push({muc:'vang',so:__dbCho.khoa.ngay,nho:'ngày',t:'Đã cảnh báo khóa cột Sheet đơn đủ 2 tuần',m:'Có thể bấm <b>Khóa hẳn</b>: chỉ web ghi được Mã đơn / Loại hàng / SL / Deadline trên Sheet (giai đoạn 2).',fn:"go('bh')",nut:'Xem nhật ký & khóa'});   // 17/11
+  if(ME.dbDuyet&&window.__dbCho&&__dbCho.dn&&__dbCho.dn.n) v.push({muc:'vang',so:__dbCho.dn.n,nho:'đơn',t:'Bán hàng đề nghị ưu tiên đơn',m:__dbCho.dn.ds.map(function(x){return '<b>'+esc(x.ma)+'</b> ('+esc(x.ai)+')'}).join(' · ')+' – xem các đơn bị lùi rồi Đồng ý (★) / Không đồng ý',fn:"go('bh')",nut:'Xem đề nghị'});   /* 17/11 khuya */
   // 5) Yêu cầu sửa hồ sơ
 """)
 _t50("function vHomNay(){\n", """function vHomNay(){

@@ -3,6 +3,9 @@
 Nhóm: Chung · Cập nhật 02/11/2026
 Liên quan: [[00 Mục lục]] · [[Liên kết và công cụ]] · [[Việc chờ chủ dự án]] · [[Lần dán lên Apps Script]] · [[Quyết định của chủ dự án]] · [[KPI Kiểm thử]]
 
+## 17/11 KHUYA – Thử trước khi đặt + đề nghị ưu tiên cho Bán hàng + bộ slide họp: XONG + đã push (chờ 2-CAP-NHAT.bat)
+- Chi tiết: ghi chú thiết kế Đơn hàng mục "17/11 KHUYA". Slide họp: https://claude.ai/artifact/UqiDkrJZfvUo7zSYyaaKhB (chủ dự án điền [ngày], [dd/mm] kín lịch, người phụ trách).
+
 ## 17/11 – 4 VIỆC TIẾP THEO ĐƠN HÀNG: XONG + đã push (chờ 2-CAP-NHAT.bat)
 - Làm: (1) ngày dự kiến xong cho Bán hàng (+2 ngày làm việc), (2) báo "đang xem đơn này", (3) thanh Hoàn tác 10 giây sau hủy / bớt, (4) giai đoạn 2 khóa cột Sheet đơn (cảnh báo trước, khóa sau), + bảng đơn nhà máy 4 cột trong tab Đơn bán hàng. Bỏ qua việc 5 (CN thai sản C454, C451) theo chủ dự án.
 - Chi tiết: [[KPI Thiết kế trang Đơn hàng và chuyển từ Sheet sang web (16-11)]] mục "17/11 – ĐÃ LÀM". Kiểm thử: du-kien.js 44, huy-don.js 93, don-ban.js 65, don-ban-web.js 26, don-hang.js 142, tab10.js 19.
