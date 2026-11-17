@@ -70,4 +70,9 @@ Chủ dự án: dùng các chuyên gia rà soát toàn bộ mã, giao diện, vi
 ## 17/11 – hộp đăng ký 3 ô (mã 2026.11.17.4)
 - `dangKy`: tên đăng nhập trống → tự tạo từ phần trước @ (bỏ +đuôi), trùng thì thêm số; mỗi email chuẩn hóa 1 tài khoản (chỉ mục Script Property `EM_<sha>`, `tkKhoaEmail_`/`tkTenTuEmail_`); `dangNhap` nhận email; `xacThucEmail` ghi chỉ mục cho tài khoản cũ.
 - Giao diện: Email · Mật khẩu (nút 👁 hiện/ẩn) · Tên; bỏ ô nhập lại mật khẩu và ô mã mời (mã lấy từ link `?ref=`). Kiểm thử thanh-toan thêm 5 kiểm tra.
-- Đang làm: chia trang 6 hệ thành 3 tầng (frontend-developer) → rồi dọn CSS cũ + câu "lưu ý" cho khách ở Tóm lược.
+
+
+## 17/11 – trang 6 hệ chia 3 tầng (mã 2026.11.17.6)
+- frontend-developer: `chiaBaTang` (gọi cuối `render`), `t3Trang` (Bát Tự/Hà Lạc/Chiêm tinh/Thần số/HD từ `moRong.deHieu`), `t3TuVi` (26 bước + ba vòng, bảng `T3_TV`), `T3_CD`/`T3_RE`/`T3_CAN`, `t3Phang` (PDF trải phẳng – giống hệt từng byte), `cuonToi` (mục lục tự mở tầng 3). Chiều cao mặc định điện thoại: Bát Tự 58 → 5,3 màn, Chiêm tinh 46 → 5,8, HD 31 → 5,1, Hà Lạc 28 → 3,2, Thần số 25 → 4,3, Tử Vi 8,3 → 5,8.
+- code-reviewer: không lỗi chặn; đã sửa Tóm lược Tử Vi bỏ câu thuật ngữ (`THUAT`) + giải nghĩa Cục/Thân cư, chèn khung tầng 3 trước khi chuyển nội dung, thẻ Thời vận luôn có khi có thẻ mua vận, giữ trạng thái mở khi đổi năm (`state.t3Mo`, `state.t3The`), regex chủ đề.
+- Chưa: dựng tầng 3 khi mở (lazy thật), văn tầng 2 lặp trong tầng 3, Chiêm tinh tầng 1–2 còn tên hành tinh/cung (văn gốc). Tiếp theo: dọn CSS cũ + câu "lưu ý" riêng cho khách ở Tóm lược.

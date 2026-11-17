@@ -4,6 +4,7 @@ Nhóm: Bắt đầu · Cập nhật 22/10/2026
 Liên quan: [[Việc chờ chủ dự án]] · [[TCC Kiểm thử]] · [[00 Mục lục]]
 
 ## Tình trạng
+- **17/11: mã `2026.11.17.6`** – trang 6 hệ chia 3 tầng (Tóm lược · 6 chủ đề · Căn cứ chi tiết thu gọn). Đổi **Script, Styles, Index**. Bấm `2-CAP-NHAT.bat`, Ctrl+F5.
 - **17/11: mã `2026.11.17.4`** – hộp đăng ký 3 ô (email, mật khẩu, tên), đăng nhập bằng email. Đổi **TaiKhoan, Index, Script, Styles**.
 - **17/11: mã `2026.11.17.3`** – chỉ đăng ký bằng email; tab Gia đình giữ phần xem cũ miễn phí. Đổi thêm **GiaDinh, TaiKhoan, Index, Script, Styles** (gộp luôn bản .2).
 - **17/11: mã `2026.11.17.2`** – bán lẻ 9/19 xu (chủ đề năm, Hiểu nhau hơn, Đồng hành 49, quà 39 xu sau xác thực email, ngừng bán Hội viên/12 đại vận/bản tin lẻ). Đổi **ThanhToan, TaiKhoan, HoiTu, GiaDinh, PhoiNgau, VanSau, TienIch, Code, Script, Styles, Index**. Bấm `2-CAP-NHAT.bat`, Ctrl+F5. Sau khi cập nhật: thử đăng ký 1 tài khoản phụ bằng email thật để nhận mã 6 số.
