@@ -22,7 +22,7 @@ Lunar.gs	9228
 NghiemChung.gs	27775
 NghiemChungUI.html	11264
 PhoiNgau.gs	58901
-Script.html	797243
+Script.html	797245
 Styles.html	237626
 TaiKhoan.gs	32072
 ThanSoHoc.gs	55192

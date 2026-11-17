@@ -27,7 +27,7 @@
     });
   }
   /** Mã phiên bản giao diện – phải trùng với Index.html (meta tcc-ban) và Styles.html (--tcc-ban) */
-  var BAN_GIAO_DIEN = '2026.11.17.7';
+  var BAN_GIAO_DIEN = '2026.11.17.8';
   /* 25/10: ảnh ngũ hành + 12 con giáp + bìa PDF mới của chủ dự án (tuvi-app/anh/*.webp) qua jsDelivr, ghim theo mã lần lưu */
   var TCC_ANH_CDN = 'https://cdn.jsdelivr.net/gh/phamdoanchiengroup-cloud/githubforclaude160695@19203fbd20433f395336269a411f8aebcf990086/tuvi-app/anh/';
   var ANH_HANH = { 'Mộc': 'NguHanhMoc', 'Hỏa': 'NguHanhHoa', 'Thổ': 'NguHanhTho', 'Kim': 'NguHanhKim', 'Thủy': 'NguHanhThuy' };
@@ -7525,7 +7525,7 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
     function chiTiet(x, k) { var o = x.lo || x, v = o[k]; if (Array.isArray(v)) v = v[0]; return (v && (v.t || (typeof v === 'string' ? v : ''))) || (o[k + 's'] && o[k + 's'][0] && o[k + 's'][0].t) || ''; }
     var I = res.tuvi.info, B = res.battu || {}, M = res.moRong || {}, TS = M.thanSo || {}, HD = M.hd || {};
     var so = TS.duongDoi; if (so && typeof so === 'object') so = so.so != null ? so.so : so.n;
-    var hs = [['Năm sinh', I.namCanChi], ['Mệnh', I.menhNapAm && I.menhNapAm.ten], ['Nhật chủ (bản chất ngũ hành của bạn)', B.nhatChu], ['Số chủ đạo', so], ['Kiểu năng lượng', HD.loaiTen || HD.loai]].filter(function (x) { return x[1] != null && x[1] !== ''; });
+    var hs = [['Năm sinh', I.namCanChi], ['Bản mệnh', I.banMenh && I.banMenh.ten], ['Nhật chủ (bản chất ngũ hành của bạn)', B.nhatChu], ['Số chủ đạo', so], ['Kiểu năng lượng', HD.loaiTen || HD.loai]].filter(function (x) { return x[1] != null && x[1] !== ''; });
     var dv = dvHienTai(res), krg = state.khongRoGio;
     var h = '<div class="tl">';
     h += '<section class="panel tl-the tl-dau"><p class="tl-nhan">Tóm lược · tầng dễ hiểu</p><h2 class="tl-td">' + esc(tieuDe) + '</h2>' +
