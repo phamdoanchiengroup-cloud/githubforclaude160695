@@ -8,6 +8,8 @@ Bộ não thứ hai của **web KPI sản xuất** (nhánh `claude/beautiful-pto
 - [[Việc chờ chủ dự án]]: demo chờ góp ý, câu hỏi chờ trả lời, dữ liệu cần sửa tay.
 - [[Lần dán lên Apps Script]]: bản nào đã dán, bản nào chưa, dán kèm file gì.
 - [[Quyết định của chủ dự án]]: những gì đã chốt hoặc đã nói "không cần" – đừng đề xuất lại.
+- [[Nhật ký thay đổi]]: mỗi lần sửa gì, VÌ SAO, file / commit; việc lớn (18/11).
+- [[Bài học của Claude]]: những lần Claude sai và cách tránh (18/11).
 - Quy tắc làm việc với chủ dự án: nằm ở `CLAUDE.md` (ô "CLAUDE.md" trên bản đồ).
 
 ## Web KPI sản xuất (`kpi-app/`)

@@ -25,6 +25,10 @@ File này được Claude Code tự đọc khi mở repo. Nó giữ **quy tắc 
   - Rồi rà lỗi.
 - Trước khi đề xuất gì, xem `bo-nao/Quyết định của chủ dự án.md`: những gì đã nói "không cần" thì đừng đề xuất lại.
 
+## Ghi nhớ và số liệu thật (bắt buộc – chủ dự án yêu cầu 18/11)
+- **Mỗi lần sửa gì** (web, dữ liệu, quy tắc, tài liệu): ghi vào `bo-nao/Nhật ký thay đổi.md` – ngày · sửa gì · **VÌ SAO** (ai yêu cầu, lỗi gì) · file/hàm · kiểm thử · commit. **Việc lớn** ghi thêm vào ghi chú chủ đề. Làm sai thì ghi `bo-nao/Bài học của Claude.md`.
+- **Câu hỏi có số liệu đơn hàng → tải số thật TRƯỚC khi trả lời**: Sheet cầu nối (`Liên kết và công cụ.md`) qua Google Drive `download_file_content`, `exportMimeType: text/csv`; không dùng bản chụp cũ trong scratchpad. Nói rõ đọc lúc nào, không cộng tab ĐƠN ƯU TIÊN / HT-2026, và số chưa trừ hủy / bớt / tạm dừng làm trên web. Không bao giờ nói "không có dữ liệu" khi chưa thử tải.
+
 ## Bảo mật (bắt buộc)
 - **Không bao giờ ghi mật khẩu thật vào repo hay commit.**
 - Dữ liệu JSON xuất từ Sheet (có thông tin cá nhân) chỉ để ở scratchpad, **không commit**.
