@@ -10,6 +10,8 @@ Bộ não thứ hai của **web KPI sản xuất** (nhánh `claude/beautiful-pto
 - [[Quyết định của chủ dự án]]: những gì đã chốt hoặc đã nói "không cần" – đừng đề xuất lại.
 - [[Nhật ký thay đổi]]: mỗi lần sửa gì, VÌ SAO, file / commit; việc lớn (18/11).
 - [[Bài học của Claude]]: những lần Claude sai và cách tránh (18/11).
+- [[Số liệu đơn hàng theo tuần]]: mỗi lần tải số thật ghi 1 dòng tồn theo kênh – xem xu hướng (18/11).
+- [[Từ điển nhà máy]]: người, quyền, kênh, bộ phận, tên gọi trên web (18/11).
 - Quy tắc làm việc với chủ dự án: nằm ở `CLAUDE.md` (ô "CLAUDE.md" trên bản đồ).
 
 ## Web KPI sản xuất (`kpi-app/`)

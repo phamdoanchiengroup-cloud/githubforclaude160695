@@ -13,6 +13,13 @@ Liên quan: [[Lần dán lên Apps Script]] · [[Quyết định của chủ d�
 - (15/11 chiều) Bấm đúp **2-CAP-NHAT.bat** (gộp mọi bản 14–15/11), Ctrl+F5. Xem: Thống kê (cột gradient, I-MR, Dự báo đơn tháng tới); Đơn hàng (dòng đỏ đơn lẻ quá 10 ngày, nút ★ Gắn ưu tiên trong form dòng đơn, Thử nhận đơn để trống deadline → ngày hẹn gợi ý, Đến hạn 10 ngày → bảng Nhập nhanh cho TP); Cấu hình gậy → nhóm Gậy 1 khúc. – [[KPI Gậy 1 khúc, ưu tiên và nhập nhanh (15-11)]]
 
 ## Câu hỏi đang chờ trả lời
+- (18/11) **Đơn hàng – còn để ngỏ, phiên sau nhắc chủ dự án, KHÔNG tự quyết:**
+  1. Giới hạn đề nghị ưu tiên mỗi người / tuần (gợi ý 2) và có chặn gửi lại 7 ngày sau khi bị từ chối không – web chưa làm.
+  2. Tab kênh mới (đang mặc định làn Kho) – nay chủ sở hữu tự gán ở ⚙ Chia làn; chỉ nhắc khi có tab mới.
+  3. Deadline đơn Kho đang sớm hơn sức làn Kho (~7.670 sp trước 10/12 vs ~150 sp/ngày): đặt hạn mới thực tế, tăng % Kho, hay ★ vài mã?
+  4. Đơn #16/10 hạn sớm hơn #04/11 mà xong muộn hơn – có muốn web thêm "Vì sao đơn này xong ngày này" không.
+  5. Sau buổi họp Bán hàng: chủ dự án gửi điều đã chốt (8 quy tắc, chỉ số tuần, người phụ trách) → ghi [[Quyết định của chủ dự án]] + sửa web theo.
+  6. Tab POD-ECOMSTONE trong Sheet cầu nối báo #REF! (tên tab thật khác) – sửa 1 ô công thức để Claude đọc được.
 - (15/11 đêm) Sheet đơn không có cột "Hỏng cần làm bù" cho **Phôi** – muốn nhập thì thêm cột sau "Ngày hẹn trả BP60". Cột "TỔNG SP CÓ THỂ GIAO" có vẻ là công thức – web không ghi đè.
 - (15/11 khuya) Sau 2-CAP-NHAT.bat: mở tab Đơn hàng 1 lần bằng tài khoản chủ (tự cài 3 lịch của tab ĐẾN HẠN 10 NGÀY; lần đầu Google có thể hỏi cấp quyền – bấm Cho phép) → Đến hạn 10 ngày → **Làm mới ngay** để tạo tab luôn, không chờ 7h. – [[KPI Gậy 1 khúc, ưu tiên và nhập nhanh (15-11)]]
 - (16/11) **HỎI LẠI MỖI NGÀY cho tới khi chủ dự án gửi** (chủ dự án dặn): dữ liệu **định mức nguyên vật liệu (BOM)** – (1) định mức vật tư cho 1 cây gậy đang ghi ở đâu (Excel kho / kế toán / tổ trưởng); (2) danh sách vật tư chính (ống carbon, glassfiber, keo, sơn, mực UV, tip, ferrule, bao bì… còn gì?); (3) có số xuất kho hằng tháng không. Có lời nhắc hằng ngày đặt trong phiên mới. – [[KPI Học hỏi ERPNext (16-11)]]
