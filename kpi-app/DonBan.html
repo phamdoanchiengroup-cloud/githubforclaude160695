@@ -70,6 +70,7 @@
 <script>
 /* ===== Trang Đơn hàng của tôi / Đơn bán hàng (16/11 khuya) ===== */
 var BND=null, BNTai=false, BNF=null, BNMo={}, BNTK=null, BNTKKq=null, BNXem='don', BNB=null, BNBTai=false, BNBLoc={q:'',k:''}, BNDX={}, BNDXT=null, BNK=null;
+var BNVS={};   /* 18/11: Vì sao đơn này xong ngày này – id thẻ -> {dang} | kết quả viSaoDonBH */
 var BNT={tab:'',sl:'',dl:'',gt:'',kqN:null,kqD:null,dang:'',ly:'',can:'',xem:false,lenh:''}, BNDNMo={};   /* 17/11 khuya: thử trước khi đặt + đề nghị ưu tiên */
 var BN_TT={CHO_DUYET:'Chờ duyệt',TRA_VE:'Trả về – cần sửa',DA_DUYET:'Đang sản xuất',TU_CHOI:'Không duyệt'};
 function bnSo(n){ return String(Math.round(Number(n)||0)).replace(/\B(?=(\d{3})+(?!\d))/g,'.'); }
@@ -236,7 +237,7 @@ function bnTaoTK(el){ var ds=[].slice.call(document.querySelectorAll('.dbTkChon:
     call('dsUngVienBH',[],function(r2){ BNTK=(r2&&r2.ok)?r2:{loi:(r2&&r2.msg)||'Không tải được.'}; bnVe(); }); bnVe(); }); }
 /* 17/11: ngày dự kiến xong (máy chủ chạy đúng mô phỏng công suất của bảng đơn, cộng thêm 2 ngày làm việc cho chắc) */
 function bnVeDK(x){ var t=x.td||{};
-  if(t.eta) return '<div class="db-dk">Dự kiến xong khoảng <b>'+esc(bnNg(t.eta))+'</b>'+(x.dlChot&&t.eta>x.dlChot?' – <b style="color:var(--amber)">có thể trễ deadline chốt '+esc(bnNg(x.dlChot))+'</b>':'')+' <span class="pdesc">(theo công suất xưởng, đã cộng 2 ngày dự phòng)</span></div>';
+  if(t.eta) return '<div class="db-dk">Dự kiến xong khoảng <b>'+esc(bnNg(t.eta))+'</b>'+(x.dlChot&&t.eta>x.dlChot?' – <b style="color:var(--amber)">có thể trễ deadline chốt '+esc(bnNg(x.dlChot))+'</b>':'')+' <span class="pdesc">(theo công suất xưởng, đã cộng 2 ngày dự phòng)</span> <button type="button" class="db-lk" data-i="'+esc(x.id)+'" onclick="bnViSao(this.dataset.i)">'+(BNVS[x.id]&&!BNVS[x.id].dang?'Ẩn giải thích':'Vì sao ngày này?')+'</button></div>'+bnVeViSao(BNVS[x.id]);
   if((t.dung||[]).length&&t.thieu>0&&t.dung.reduce(function(a,z){return a+z.thieu;},0)>=t.thieu) return '<div class="db-dk"><b style="color:var(--amber)">Đơn đang tạm dừng sản xuất</b> – chưa có ngày dự kiến.</div>';
   if(t.etaCho) return '<div class="db-dk pdesc">Có mã trễ hạn quá 30 ngày – chờ ban điều hành đặt hạn mới rồi mới có ngày dự kiến.</div>';
   return ''; }
@@ -380,5 +381,15 @@ function bnXuLyDN(el){ var id=el.dataset.i, hanh=el.dataset.h, ly='';
   else if(!confirm('Đồng ý ★ ưu tiên cả đơn này? Các đơn khác sẽ lùi như kết quả thử.')) return;
   el.disabled=true; call('xuLyDeNghiUu',[{id:id,hanh:hanh,lyDo:ly,lenh:bnLenh()}],function(r){ el.disabled=false; if(!r||!r.ok){ toast((r&&r.msg)||'Không lưu được.'); if(r&&r.cu){ BND=null; bnVe(); } return; }
     toast(r.msg,true); delete BNDNMo[id]; window.__dbChoTai=null; BND=null; bnVe(); }); }
+/* ===== 18/11 (chủ dự án): VÌ SAO ĐƠN NÀY XONG NGÀY NÀY – bản rút gọn cho Bán hàng (máy chủ viSaoDonBH, cùng cách tính với bảng của người duyệt) ===== */
+function bnViSao(id){ var x=bnTim(id); if(!x) return; if(BNVS[id]&&!BNVS[id].dang){ delete BNVS[id]; bnVe(); return; } BNVS[id]={dang:1}; bnVe();
+  call('viSaoDonBH',[{ma:x.maDon,tab:x.tab}],function(r){ if(!r||!r.ok){ delete BNVS[id]; toast((r&&r.msg)||'Không xem được.'); bnVe(); return; } BNVS[id]=r; bnVe(); }); }
+function bnVeViSao(v){ if(!v) return ''; if(v.dang) return '<div class="db-canh">Đang tính…</div>'; if(v.khong) return '<div class="db-canh">'+esc(v.msg)+'</div>';
+  var h='<div class="db-canh" style="background:rgba(var(--acc-rgb),.08);line-height:1.55">Đơn xếp ở <b>làn '+esc(v.lanTen)+'</b> ('+v.pct+'% = '+bnSo(v.spNgay)+' sp/ngày, làn nào hết việc thì nhường thêm).<br>'+
+    'Hàng <b>xếp trước</b> trong làn: <b>'+bnSo(v.spTruoc)+' sp</b> của '+v.nTruoc+' đơn khác'+(v.truoc.length?' – nhiều nhất: '+v.truoc.slice(0,4).map(function(z){ return esc(z.ma)+' ('+esc(z.kenh)+', '+bnSo(z.sp)+' sp, '+esc(z.ly)+')'; }).join('; '):'')+'.<br>'+
+    'Phần của đơn này tới dòng cuối: '+bnSo(v.spMinh)+' sp → khoảng '+v.ngayLan+' ngày làm nếu chỉ dùng phần của làn.<br>'+
+    '<b>Dòng xong muộn nhất</b> (quyết định ngày xong cả đơn): '+esc(v.keo.ten)+' – còn '+bnSo(v.keo.sp)+' sp'+(v.keo.han?', hạn '+esc(bnNg(v.keo.han).slice(0,5)):', chưa có deadline')+'.'+
+    (v.cho?'<br><b>'+bnSo(v.cho)+' sp</b> trễ quá 30 ngày chưa có hạn mới – chưa xếp lịch.':'')+'</div>';
+  return h; }
 window.__bnDaNap=true;
 </script>

@@ -17,7 +17,7 @@ function dbtLan_(tab) { var t = String(tab || '').toUpperCase().trim(), kn = dhL
 function dbtNhom_(G) {
   var m = {};
   G.don.forEach(function(o) { var l = (o.pl || {}).loai; if (!(o.thieu > 0) || l === 'PK' || l === 'NOI' || o.dung) return;
-    var ma = o.maDon || '(không mã)', k = ma + '|' + (o.tab || ''), g = m[k] || (m[k] = { ma: ma, tab: o.tab, dl: '', ten: {}, uu: !!o.uuWeb });
+    var ma = o.maDon || '(không mã)', k = ma + '|' + (o.tab || ''), g = m[k] || (m[k] = { ma: ma, tab: o.tab, dl: '', ten: {}, uu: !!o.uuWeb, thieu: 0, sl: 0 }); g.thieu += o.thieu || 0; g.sl += o.sl || 0;
     if (o.dl && (!g.dl || o.dl < g.dl)) g.dl = o.dl; var t = dbkTC_(o.ten); if (t && !g.ten[t]) g.ten[t] = o.ten; if (!o.uuWeb) g.uu = false; });
   return m;
 }
@@ -155,4 +155,46 @@ function dbtDsDN_(q) {
   ds.sort(function(a, b) { return ((a.TrangThai === 'CHO' ? 0 : 1) - (b.TrangThai === 'CHO' ? 0 : 1)) || String(b.Luc).localeCompare(String(a.Luc)); });
   return ds.slice(0, DBT_DN_WEB).map(function(r) { var kq = {}; try { kq = JSON.parse(r.KetQua || '{}') || {}; } catch (e) {}
     return { id: r.Id, luc: r.Luc, ma: r.MaDon, kenh: String(r.Tabs || '').split(',').map(function(t) { return DH_NHAN_TAB[t] || t; }).join(', '), ly: r.LyDo, can: r.NgayCan || '', ai: r.NguoiTao, tt: r.TrangThai, kq: kq, xlAi: r.NguoiXuLy, xlLuc: r.LucXuLy, xlLy: r.LyDoXuLy }; });
+}
+/* ===== 18/11 (chủ dự án): "VÌ SAO ĐƠN NÀY XONG NGÀY NÀY" – Bán hàng + người duyệt, một cách tính ở máy chủ (dbkMoPhong_ giữ L) =====
+   Trả: làn + sp/ngày của làn; từng dòng hàng (còn, hạn, lý do bậc, xong ngày nào); DÒNG KÉO ngày xong của cả đơn (xong muộn nhất);
+   các đơn xếp TRƯỚC dòng đó trong cùng làn (sp, lý do: ★ / trễ hạn / tab TRỄ HẠN / hàng ưu tiên / deadline sớm hơn / cùng hạn gần xong hơn);
+   dòng trễ > 30 ngày chưa có hạn mới (không xếp lịch). Ngày hiện ở đây là ngày mô phỏng (chưa cộng dự phòng) + bản cộng 2 ngày làm. Kiểm thử: tests/thu-don.js */
+var DBV_TRUOC_MAX = 12;
+function dbvTinh_(R, ma, tab) {
+  var L = R.L || [], ten = DBT_LAN_TEN, khop = function(l) { return l.g.ma === ma && l.g.tab === tab; };
+  var minh = L.filter(khop); if (!minh.length) return null;
+  var keo = minh[0]; minh.forEach(function(l) { if ((l.eta || '9999') > (keo.eta || '9999')) keo = l; });
+  var lanL = L.filter(function(l) { return l.lan === keo.lan; }), vt = lanL.indexOf(keo), truoc = {}, spTruoc = 0, spMinh = 0;
+  lanL.slice(0, vt + 1).forEach(function(l) {
+    if (khop(l)) { spMinh += l.need; return; }
+    spTruoc += l.need;
+    var k = l.g.ma + '|' + l.g.tab, z = truoc[k] || (truoc[k] = { ma: l.g.ma, tab: l.g.tab, sp: 0, dong: 0, ly: '', han: '' });
+    z.sp += l.need; z.dong++;
+    var ly = l.uu === 0 ? 'đang thử đẩy' : (l.uu === 1 ? (l.ly || 'bậc ưu tiên') : (String(l.han) < String(keo.han) ? 'deadline sớm hơn' : 'cùng hạn, đã làm được nhiều hơn'));
+    if (!z.ly || (l.uu < 2 && z.ly.indexOf('deadline') === 0)) z.ly = ly;
+    if (l.han && l.han < '9999' && (!z.han || l.han < z.han)) z.han = l.han;
+  });
+  var pct = 0; (R.lan5 || []).forEach(function(x) { if (x[0] === keo.lan) pct = x[1]; });
+  var ds = Object.keys(truoc).map(function(k) { return truoc[k]; }).sort(function(a, b) { return b.sp - a.sp; });
+  var dong = minh.map(function(l) { return { ten: l.o ? l.o.ten : '(đơn thử)', sp: l.need, han: l.han < '9999' ? l.han : '', ly: l.uu === 1 ? (l.ly || 'bậc ưu tiên') : '', xong: l.eta, xong2: l.eta ? R.cong2(l.eta) : '', keo: l === keo ? 1 : 0 }; })
+    .sort(function(a, b) { return String(b.xong).localeCompare(String(a.xong)); });
+  var cho = 0, choDong = []; (minh[0].g.dong || []).forEach(function(o) { if (o.dl && dbkCach_(o.dl, R.hn) > DBK_TRE_MAX) { cho += o.thieu; choDong.push(o.ten); } });
+  return { lan: keo.lan, lanTen: ten[keo.lan], pct: Math.round(pct * 100), spNgay: Math.round(R.sp * pct), sp: R.sp,
+    xong: keo.eta, xong2: keo.eta ? R.cong2(keo.eta) : '', keo: { ten: keo.o ? keo.o.ten : '', sp: keo.need, han: keo.han < '9999' ? keo.han : '', ly: keo.uu === 1 ? (keo.ly || 'bậc ưu tiên') : '' },
+    spTruoc: spTruoc, spMinh: spMinh, nTruoc: ds.length, truoc: ds.slice(0, DBV_TRUOC_MAX), dong: dong.slice(0, 60), nDong: dong.length,
+    ngayLan: pct > 0 ? Math.ceil((spTruoc + spMinh) / (R.sp * pct)) : 0, cho: cho, choDong: choDong.slice(0, 10), hn: R.hn };
+}
+function viSaoDonBH(token, p) {
+  var q = dbQuyen_(token); if (q.loi) return q.loi;
+  p = p || {}; var ma = String(p.ma || '').trim().slice(0, 80), tab = String(p.tab || '').trim().slice(0, 60);
+  if (!ma || !tab) return sach_({ ok: false, msg: 'Thiếu mã đơn.' });
+  if (!dbtGioOk_(String(q.me.tk || ''))) return sach_({ ok: false, msg: 'Bạn đã xem nhiều lần trong 1 giờ – nghỉ ít phút rồi thử lại.' });
+  var B; try { B = dbtNen_(); } catch (e) { return sach_({ ok: false, msg: 'Chưa đọc được bảng đơn – thử lại sau ít phút.' }); }
+  var v = dbvTinh_(B.R0, ma, tab);
+  if (!v) { var dung = B.G.don.some(function(o) { return String(o.maDon || '') === ma && o.tab === tab && o.dung && o.thieu > 0; });
+    return sach_({ ok: true, khong: 1, msg: dung ? 'Đơn đang TẠM DỪNG – không xếp lịch.' : 'Đơn không còn hàng phải làm (đã xong, đã hủy) hoặc mọi dòng trễ quá 30 ngày chưa có hạn mới.' }); }
+  var kenh = {}; dbKenh_().forEach(function(z) { kenh[z[0]] = z[1]; }); v.truoc.forEach(function(z) { z.kenh = kenh[z.tab] || z.tab; });
+  v.ok = true; v.ma = ma; v.tab = tab; v.kenh = kenh[tab] || tab; v.du = DBK_DU_PHONG;
+  return sach_(v);
 }

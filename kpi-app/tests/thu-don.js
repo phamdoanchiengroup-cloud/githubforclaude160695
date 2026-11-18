@@ -147,5 +147,37 @@ r = c.__goi('layDonBan', B1); ok(r.lanTxt === 'Lẻ + POD 10% · Dealer 30% · K
 r = c.__goi('layLichSuLan', own); ok(r.ok && r.ls.length === 1 && /OEM → Dealer/.test(r.ls[0].kenh) && /A Đông → Dealer/.test(r.ls[0].du), 'lịch sử đổi làn: cũ → mới, thứ tự dư, kênh đổi làn', r.ls);
 r = c.__goi('luuLanCongSuat', own, { pt: [10, 20, 50, 5, 15], du: [2, 3, 4, 5, 1], kenh: { OEM: 4 } }); ok(r.ok && !Object.keys(r.cs.lan.kenh).length, 'về mặc định 10·20·50·5·15', r.cs && r.cs.lan);
 
+console.log('\n8. Vì sao đơn này xong ngày này');
+r = c.__goi('viSaoDonBH', tp, { ma: maDay, tab: 'KHO' }); ok(!r.ok, 'trưởng phòng SX không xem được', r);
+const DH8 = c.__goi('layDonHangXuong', own, true), w8 = webMoPhong(DH8, hn, null);
+const kVs = Object.keys(w8).filter(z => w8[z] && /\|KHO$/.test(z) && !/DUNG/.test(z)).sort((a, b) => w8[b].localeCompare(w8[a]))[0], maVs = kVs.split('|')[0];
+r = c.__goi('viSaoDonBH', B1, { ma: maVs, tab: 'KHO' });
+const R8 = c.dbkMoPhong_(c.dbkGiau_(c.dhDocDon_(false)), null, c.dhCongSuat_()), L8 = R8.L.filter(l => l.lan === 3);
+const keo8 = R8.L.filter(l => l.g.ma === maVs && l.g.tab === 'KHO').reduce((a, l) => (l.eta || '9999') > (a.eta || '9999') ? l : a);
+const truoc8 = L8.slice(0, L8.indexOf(keo8)).filter(l => !(l.g.ma === maVs && l.g.tab === 'KHO')).reduce((a, l) => a + l.need, 0);
+ok(r.ok && r.lanTen === 'Kho' && r.pct === 50 && r.spNgay === 150 && r.xong === w8[kVs] && r.xong2 === R8.cong2(w8[kVs]), 'đơn Kho xong muộn nhất ' + maVs + ': làn Kho 50% = 150 sp/ngày, ngày xong = bảng web ' + w8[kVs], r);
+ok(r.spTruoc === truoc8 && r.nTruoc > 0 && r.truoc.every(z => z.sp > 0 && z.ly && z.kenh) && r.truoc.every((z, i, a) => !i || a[i - 1].sp >= z.sp), 'hàng xếp trước dòng cuối trong làn: ' + r.spTruoc + ' sp của ' + r.nTruoc + ' đơn, có lý do từng đơn, lớn trước', r.truoc && r.truoc.slice(0, 3));
+ok(r.dong.length >= 1 && r.dong.filter(z => z.keo).length === 1 && r.dong[0].keo === 1 && r.keo.sp > 0, 'từng dòng hàng + đánh dấu đúng 1 dòng kéo ngày xong (xong muộn nhất)', r.dong && r.dong.slice(0, 3));
+ok(r.ngayLan === Math.ceil((r.spTruoc + r.spMinh) / 150), 'ước số ngày làm nếu chỉ dùng phần của làn = (trước + của đơn) ÷ 150', [r.ngayLan, r.spTruoc, r.spMinh]);
+const kTre = Object.keys(w8).find(z => !w8[z]); const mTre = kTre.split('|');
+r = c.__goi('viSaoDonBH', gd, { ma: mTre[0], tab: mTre[1] }); ok(r.ok && r.khong && /30 ngày/.test(r.msg), 'đơn mọi dòng trễ > 30 ngày → giải thích "chưa có hạn mới, không xếp lịch"', r);
+r = c.__goi('viSaoDonBH', gd, { ma: '#KHO-DUNG-02/11', tab: 'KHO' }); ok(r.ok && (r.khong ? /TẠM DỪNG|không còn/.test(r.msg) : true), 'đơn tạm dừng / không còn hàng → báo rõ', r);
+
+console.log('\n9. Sheet tóm tắt cho trợ lý');
+const t9 = c.dttCapNhat_(true), ss9 = c.SpreadsheetApp.openById(t9.id), doc9 = ten => ss9.getSheetByName(ten).getDataRange().getValues();
+const tq = doc9('TongQuan'), tqM = {}; tq.forEach(x => { tqM[x[0]] = x[1]; });
+ok(t9 && t9.don > 50 && /Tóm tắt đơn hàng cho trợ lý/.test(ss9.getName()), 'tạo file riêng "Tóm tắt đơn hàng cho trợ lý (web)", ' + t9.don + ' đơn', t9);
+const td = doc9('TungDon'); const tongTD = td.slice(1).reduce((a, x) => a + Number(x[3]), 0);
+ok(Number(tqM['Tổng còn phải làm (sp, đang sản xuất)']) === tongTD && tongTD > 0 && td.length - 1 === t9.don, 'Tổng quan = cộng tab TungDon (' + tongTD + ' sp)', [tqM['Tổng còn phải làm (sp, đang sản xuất)'], tongTD]);
+const r9 = td.find(x => x[0] === maVs && x[1] === 'Kho');
+ok(r9 && r9[6] === w8[kVs] && r9[7] === R8.cong2(w8[kVs]) && r9[2] === 'Kho', 'từng đơn: ngày dự kiến = bảng web, cột Bán hàng +2 ngày làm', r9);
+ok(td.some(x => x[0] === '#OEM-HUY-01/11'), 'trước khi hủy: đơn #OEM-HUY-01/11 có trong tóm tắt');
+r = c.__goi('huyBotDon', own, { loai: 'HUY_DON', tab: 'OEM', dong: TABS.OEM.length, ten: 'GAY NOVA X1 MAU DO', maDon: '#OEM-HUY-01/11', lyDo: 'Khách hủy cả đơn' });
+c.dttCapNhat_(true); ok(r.ok && !doc9('TungDon').some(x => x[0] === '#OEM-HUY-01/11'), 'hủy trên web → lần ghi sau không còn đơn đó', r.msg);
+ok(doc9('TheoKenh').length > 5 && doc9('UuTien').some(x => x[0] === maDay) && doc9('TamDung').length >= 1, 'có tab Theo kênh, ★ ưu tiên (đơn vừa được đồng ý), Tạm dừng', [doc9('UuTien').length, doc9('TamDung').length]);
+ok(c.dttCapNhat_(false) === null, 'gọi lại trong 60 phút → không ghi lại (giãn 1 giờ)');
+r = c.__goi('capNhatTomTatTroLy', gd); ok(!r.ok, 'chỉ chủ sở hữu bấm cập nhật ngay', r);
+r = c.__goi('capNhatTomTatTroLy', own); ok(r.ok && r.id === t9.id, 'chủ sở hữu cập nhật ngay → ghi đè đúng file cũ', r);
+
 console.log('\n' + (l ? '✗ ' + l + ' / ' + n + ' lỗi' : '✓ Đạt ' + n + ' / ' + n));
 process.exit(l ? 1 : 0);

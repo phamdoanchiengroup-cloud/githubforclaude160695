@@ -5,6 +5,10 @@ Liên quan: [[00 Mục lục]] · [[Quyết định của chủ dự án]] · [[
 Mỗi lần sửa web / dữ liệu / quy tắc: **ngày · sửa gì · VÌ SAO sửa (ai yêu cầu, lỗi gì, số liệu nào) · file / hàm · kiểm thử · commit**. Mới nhất ở trên. Chủ dự án yêu cầu 18/11: "khi chúng ta sửa gì, tại sao phải sửa, cũng phải ghi vào bộ nhớ; công việc lớn cũng phải ghi lại". Chi tiết kỹ thuật dài để ở ghi chú chủ đề, ở đây chỉ 3–6 dòng mỗi mục.
 
 ## 18/11
+- **"Vì sao đơn này xong ngày này"** (Bán hàng: nút trên thẻ đơn; người duyệt: bấm mã đơn trong bảng dự kiến). Vì sao: chủ dự án thấy đơn Kho trễ nhiều mà không biết do đâu (#16/10 hạn sớm hơn mà xong muộn hơn). Hàm `viSaoDonBH` / `dbvTinh_`.
+- **Sheet "Tóm tắt đơn hàng cho trợ lý (web)"** web tự ghi mỗi giờ. Vì sao: để Claude (và Trợ lý Zalo sau này) đọc đúng số web – cầu nối không có hủy / tạm dừng / ★. `tom-tat.gs`.
+- **Đọc được Sheet "CSDL Đơn hàng (web)"** qua Drive (ghi mã file vào [[Liên kết và công cụ]]); số tồn 18/11 trừ tạm dừng ≈ 12.150 sp ([[Số liệu đơn hàng theo tuần]]).
+- Kiểm thử: thu-don 70 · don-ban-web 42 · du-kien 76 · don-ban 65 · don-hang 142 · uu-tien-web 33.
 - **Ghi các trả lời của chủ dự án** vào [[Quyết định của chủ dự án]]: không giới hạn đề nghị ưu tiên; chưa xử lý deadline Kho; CÓ làm "Vì sao đơn này xong ngày này"; họp Bán hàng chốt sau; POD-ECOMSTONE trống là bình thường (sửa lại ghi chú đã ghi nhầm là lỗi).
 - **Thêm [[Số liệu đơn hàng theo tuần]], [[Từ điển nhà máy]], mục câu hỏi còn mở trong [[Việc chờ chủ dự án]]**. Vì sao: chủ dự án "thấy cái nào cần thì lưu lại, vì còn làm rất nhiều về web và đơn hàng" – để phiên sau hiểu ngay tên gọi, thấy xu hướng tồn và không quên việc chưa chốt.
 - **Quy tắc: câu hỏi có số liệu → tải số thật trước** (CLAUDE.md). Vì sao: Claude trả lời "không có dữ liệu sống" trong khi đã có Sheet cầu nối + kết nối Google Drive; chủ dự án nhắc. Xem [[Bài học của Claude]].

@@ -34,6 +34,9 @@ function dbkMoPhong_(G, them, cs, ut) {   // G = dbkGiau_(); them = đơn thử 
   var dlNgam = function(o) { var n = hanLe(o); return (o && !o.dl && o.ngayDat && n) ? thu(cong(o.ngayDat, 1), n[1]) : ''; };
   var CF = (cs && cs.lan) || dhLanCfg_(), LAN5 = CF.pt.map(function(p, j) { return [j + 1, p / 100]; }), LANDU = CF.du;
   var lanSo = function(tab) { var t = String(tab || '').toUpperCase().trim(); if (CF.kenh && CF.kenh[t]) return CF.kenh[t]; if (DBK_TAB_BAC1[t] || /^POD/.test(t)) return 1; if (t === 'DEALER') return 2; if (t === 'OEM') return 4; if (t === 'A ĐÔNG') return 5; return 3; };
+  var lyDo = function(o) {   // 18/11: lý do dòng ở bậc 1 (cho "Vì sao đơn này xong ngày này")
+    var t = dbkTC_(o.ten); if (o.uuWeb) return '★ ưu tiên'; if (o.dl && o.dl < hn) return 'trễ hạn'; if (mtr[t]) return 'tên trong tab TRỄ HẠN';
+    if (o.tab === 'KHO' && (mu[dbkTC_(o.maDon || '') + '|' + t] || mu['|' + t])) return 'hàng ưu tiên'; return ''; };
   var bac = function(o) {
     var tab = String(o.tab || '').toUpperCase().trim(), t = dbkTC_(o.ten);
     if (o.uuWeb) return 1;   // 17/11 tối: ưu tiên TRONG LÀN – trễ / ★ / tên trong tab TRỄ HẠN / hàng ưu tiên = 1, còn lại = 2
@@ -60,7 +63,7 @@ function dbkMoPhong_(G, them, cs, ut) {   // G = dbkGiau_(); them = đơn thử 
       ch.push(st.map(function(k, j) { return Math.min(need, Math.max(0, dd[j] - base)); }));
     });
     var tien = 0, nb = 0; ch.forEach(function(x) { x.forEach(function(y) { tien += need ? y / need : 0; nb++; }); });
-    return { g: g, lan: lanSo(o ? o.tab : g.tab), uu: dau ? 0 : (+uu || 2), han: (o && (o.dl || dlNgam(o))) || g.dl || '9999', i: i, need: need, dg: 0, eta: '', tien: nb ? tien / nb : 0 };
+    return { o: o, ly: o ? lyDo(o) : '', g: g, lan: lanSo(o ? o.tab : g.tab), uu: dau ? 0 : (+uu || 2), han: (o && (o.dl || dlNgam(o))) || g.dl || '9999', i: i, need: need, dg: 0, eta: '', tien: nb ? tien / nb : 0 };
   };
   /* nhóm đơn như dhCSDon: dòng còn thiếu, không phải phụ kiện / hàng nối, gom theo mã đơn + tab */
   var m = {}, ds = [];
@@ -86,7 +89,7 @@ function dbkMoPhong_(G, them, cs, ut) {   // G = dbkGiau_(); them = đơn thử 
   }
   var out = {}; ds.forEach(function(g) { out[g.ma + '|' + g.tab] = { ma: g.ma, tab: g.tab, eta: '', thu: g.thu ? 1 : 0 }; });
   L.forEach(function(l) { var x = out[l.g.ma + '|' + l.g.tab]; var e = l.eta || '9999-12-31'; if (e > x.eta) x.eta = e; });
-  return { m: out, cong2: function(d) { return thu(cong(d, 1), DBK_DU_PHONG); }, congN: function(d, n) { return thu(cong(d, 1), n); } };
+  return { m: out, L: L, lan5: LAN5, sp: SP, hn: hn, cong2: function(d) { return thu(cong(d, 1), DBK_DU_PHONG); }, congN: function(d, n) { return thu(cong(d, 1), n); } };
 }
 /* ngày dự kiến cho Bán hàng (đã cộng 2 ngày làm): { eta: 'yyyy-mm-dd' | '', cho: 1 nếu dòng trễ > 30 ngày chưa có hạn mới (không xếp lịch) }. Đơn đã xong hết: không có trong mô phỏng -> null */
 function dbkHien_(x, R) { if (!x) return null; if (!x.eta || x.eta >= '9999') return { eta: '', cho: 1 }; return { eta: R.cong2(x.eta), goc: x.eta }; }   // eta rỗng = mọi dòng trễ > 30 ngày (không xếp lịch)

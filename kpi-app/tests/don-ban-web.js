@@ -145,6 +145,9 @@ let dem = 0, loi = 0; const ok = (d, t, c) => { dem++; if (d) console.log('  ✓
   if (CHUP) await p.screenshot({ path: CHUP + '/db-denghi-duyet-1300.png', fullPage: true });
   await p.evaluate(() => { const b = [...document.querySelectorAll('.db-dn button')].find(x => /Đồng ý/.test(x.textContent)); b.click(); });
   ok(await cho(() => window.BND && BND.dn && BND.dn[0] && BND.dn[0].tt === 'DONG_Y', 40), 'bấm "Đồng ý ★ ưu tiên" → đề nghị chuyển "Đã đồng ý ★"', await p.evaluate(() => window.BND && BND.dn));
+  /* 18/11: Vì sao đơn này xong ngày này (thẻ đơn đã duyệt) */
+  await p.evaluate(() => { const b = [...document.querySelectorAll('.db-the.dd .db-lk')].find(x => /Vì sao ngày này/.test(x.textContent)); b.click(); });
+  ok(await cho(() => /Đơn xếp ở làn \S+/.test(document.getElementById('main').innerText) && /Dòng xong muộn nhất/.test(document.getElementById('main').innerText), 40), '18/11: thẻ đơn đã duyệt → "Vì sao ngày này?" → làn, hàng xếp trước, dòng xong muộn nhất', await p.evaluate(() => [window.BNVS, document.getElementById('main').innerText.slice(0, 300)]));
   ok(!jsLoi.length, 'không lỗi JS', jsLoi);
   await b.close();
   console.log('\n' + (loi ? '✗ ' + loi + ' / ' + dem + ' lỗi' : '✓ Đạt ' + dem + ' / ' + dem));
