@@ -7,7 +7,7 @@ Mỗi lần Claude tải số thật (Sheet cầu nối, cách đọc ở [[Bài
 | Ngày đọc | Kho | A Đông | Dealer | OEM | Lẻ + POD | Tổng còn thiếu | Ghi chú |
 |---|---:|---:|---:|---:|---:|---:|---|
 | 16/11 (bản chụp 9h) | 8.768 | 3.312 | 1.653 | 834 | 384 | ≈ 14.950 | Kho gồm KHO#2, #3 |
-| 18/11 (cầu nối, sáng) | 8.031 | 3.211 | 1.688 | 706 | 435 | ≈ 14.070 | POD-ECOMSTONE #REF! – chưa tính |
+| 18/11 (cầu nối, sáng) | 8.031 | 3.211 | 1.688 | 706 | 435 | ≈ 14.070 | POD-ECOMSTONE chưa có đơn |
 
 Ghi chú đọc số:
 - Công suất mặc định 300 sp/ngày ≈ 7.800 sp/tháng (26 ngày làm). Đơn về ước ~11.800 sp/tháng (thống kê 16/11) → tồn lẽ ra tăng; 16 → 18/11 giảm ~900 sp nên cần theo dõi thêm vài tuần mới kết luận.

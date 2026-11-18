@@ -179,3 +179,11 @@ Những điều đã chốt. Đừng đề xuất lại những gì ghi "không 
 - (17/11) **Giai đoạn 2: cảnh báo trước ~14 ngày (Google hiện hộp cảnh báo + web ghi nhật ký sửa tay), rồi chủ sở hữu bấm khóa hẳn.** Bỏ qua việc 2 CN thai sản C454 / C451 (không làm).
 - Thứ tự mã trong đơn (3/5) nằm ngay ô Mã đơn, **không** thêm cột STT.
 - Giai đoạn 1: Claude tự tạo tài khoản Bán hàng (chủ sở hữu toàn quyền xử lý); nhập từng dòng + dán Excel; C019/C056/C067 duyệt rồi web chép vào tab kênh; Bán hàng chỉ xem đơn của mình + tiến độ. – [[KPI Thiết kế trang Đơn hàng và chuyển từ Sheet sang web (16-11)]]
+
+## Đơn hàng – trả lời các câu còn mở (18/11)
+- **Giới hạn số đề nghị ưu tiên / tuần: KHÔNG CẦN** – đừng đề xuất lại.
+- **Xử lý deadline đơn Kho (hạn mới thực tế / tăng % Kho / ★): CHƯA CẦN** – không nhắc lại trừ khi chủ dự án hỏi.
+- **Làm phần "Vì sao đơn này xong ngày này": CÓ** (chờ làm rõ cách hiện trước khi code).
+- **Điều chốt sau họp Bán hàng: chủ dự án bàn với Giám đốc rồi chốt sau** – không hỏi dồn.
+- **Tab POD-ECOMSTONE**: chưa có đơn nào nên cầu nối trống – không phải lỗi, không cần sửa.
+

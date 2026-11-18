@@ -5,6 +5,7 @@ Liên quan: [[00 Mục lục]] · [[Quyết định của chủ dự án]] · [[
 Mỗi lần sửa web / dữ liệu / quy tắc: **ngày · sửa gì · VÌ SAO sửa (ai yêu cầu, lỗi gì, số liệu nào) · file / hàm · kiểm thử · commit**. Mới nhất ở trên. Chủ dự án yêu cầu 18/11: "khi chúng ta sửa gì, tại sao phải sửa, cũng phải ghi vào bộ nhớ; công việc lớn cũng phải ghi lại". Chi tiết kỹ thuật dài để ở ghi chú chủ đề, ở đây chỉ 3–6 dòng mỗi mục.
 
 ## 18/11
+- **Ghi các trả lời của chủ dự án** vào [[Quyết định của chủ dự án]]: không giới hạn đề nghị ưu tiên; chưa xử lý deadline Kho; CÓ làm "Vì sao đơn này xong ngày này"; họp Bán hàng chốt sau; POD-ECOMSTONE trống là bình thường (sửa lại ghi chú đã ghi nhầm là lỗi).
 - **Thêm [[Số liệu đơn hàng theo tuần]], [[Từ điển nhà máy]], mục câu hỏi còn mở trong [[Việc chờ chủ dự án]]**. Vì sao: chủ dự án "thấy cái nào cần thì lưu lại, vì còn làm rất nhiều về web và đơn hàng" – để phiên sau hiểu ngay tên gọi, thấy xu hướng tồn và không quên việc chưa chốt.
 - **Quy tắc: câu hỏi có số liệu → tải số thật trước** (CLAUDE.md). Vì sao: Claude trả lời "không có dữ liệu sống" trong khi đã có Sheet cầu nối + kết nối Google Drive; chủ dự án nhắc. Xem [[Bài học của Claude]].
 - **Lập ghi chú này + [[Bài học của Claude]]**. Vì sao: chủ dự án muốn mọi thay đổi có lý do được nhớ qua các phiên.
