@@ -5,6 +5,7 @@ Liên quan: [[00 Mục lục]] · [[Quyết định của chủ dự án]] · [[
 Mỗi lần sửa web / dữ liệu / quy tắc: **ngày · sửa gì · VÌ SAO sửa (ai yêu cầu, lỗi gì, số liệu nào) · file / hàm · kiểm thử · commit**. Mới nhất ở trên. Chủ dự án yêu cầu 18/11: "khi chúng ta sửa gì, tại sao phải sửa, cũng phải ghi vào bộ nhớ; công việc lớn cũng phải ghi lại". Chi tiết kỹ thuật dài để ở ghi chú chủ đề, ở đây chỉ 3–6 dòng mỗi mục.
 
 ## 18/11
+- **Xuất Excel KPI tháng 9 + 10 cả người đã nghỉ** (không sửa web). Vì sao: tuần 12–14/11 nhà máy cắt giảm ~60 người, chủ dự án cần danh sách. Nguồn: CSDL KPI (xlsx qua Drive) – tab `KPIThang` (giữ cả người nghỉ) + `NhanSu.TrangThai` + ngày cuối có nhật ký sản xuất. 160 người, 63 đã nghỉ (48 người làm ngày cuối 12–14/11). File chỉ ở scratchpad (có tên người).
 - **"Vì sao đơn này xong ngày này"** (Bán hàng: nút trên thẻ đơn; người duyệt: bấm mã đơn trong bảng dự kiến). Vì sao: chủ dự án thấy đơn Kho trễ nhiều mà không biết do đâu (#16/10 hạn sớm hơn mà xong muộn hơn). Hàm `viSaoDonBH` / `dbvTinh_`.
 - **Sheet "Tóm tắt đơn hàng cho trợ lý (web)"** web tự ghi mỗi giờ. Vì sao: để Claude (và Trợ lý Zalo sau này) đọc đúng số web – cầu nối không có hủy / tạm dừng / ★. `tom-tat.gs`.
 - **Đọc được Sheet "CSDL Đơn hàng (web)"** qua Drive (ghi mã file vào [[Liên kết và công cụ]]); số tồn 18/11 trừ tạm dừng ≈ 12.150 sp ([[Số liệu đơn hàng theo tuần]]).
