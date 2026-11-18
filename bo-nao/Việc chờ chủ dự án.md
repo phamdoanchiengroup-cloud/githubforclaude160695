@@ -3,6 +3,7 @@
 Nhóm: Chung · Cập nhật 31/10/2026
 Liên quan: [[Lần dán lên Apps Script]] · [[Quyết định của chủ dự án]] · [[00 Mục lục]]
 
+- **18/11:** bấm 2-CAP-NHAT.bat (Vì sao xong ngày này + Sheet tóm tắt cho trợ lý – sau khi cập nhật, trong ~1 giờ (6h–22h) web tự tạo file "Tóm tắt đơn hàng cho trợ lý (web)" trong Drive).
 - **17/11 khuya:** bấm 2-CAP-NHAT.bat (Thử trước khi đặt + đề nghị ưu tiên); họp Bán hàng bằng slide https://claude.ai/artifact/UqiDkrJZfvUo7zSYyaaKhB, chốt quota đề nghị ưu tiên / tuần.
 - (14/11) Dán Code.gs + Index.html + QuyTrinh.html; kiểm tra tài khoản TP/PP có đúng MaXuong (để web biết bộ phận). Nếu web báo "ô … là CÔNG THỨC" thì đổi ô đó thành số gõ tay hoặc báo Claude. – [[KPI Đơn hàng giao nhận theo bộ phận (14-11)]]
 
@@ -13,7 +14,7 @@ Liên quan: [[Lần dán lên Apps Script]] · [[Quyết định của chủ d�
 - (15/11 chiều) Bấm đúp **2-CAP-NHAT.bat** (gộp mọi bản 14–15/11), Ctrl+F5. Xem: Thống kê (cột gradient, I-MR, Dự báo đơn tháng tới); Đơn hàng (dòng đỏ đơn lẻ quá 10 ngày, nút ★ Gắn ưu tiên trong form dòng đơn, Thử nhận đơn để trống deadline → ngày hẹn gợi ý, Đến hạn 10 ngày → bảng Nhập nhanh cho TP); Cấu hình gậy → nhóm Gậy 1 khúc. – [[KPI Gậy 1 khúc, ưu tiên và nhập nhanh (15-11)]]
 
 ## Câu hỏi đang chờ trả lời
-- (18/11) **Đơn hàng – chủ dự án đã trả lời 18/11** (xem [[Quyết định của chủ dự án]]). Còn chờ: chủ dự án bàn với Giám đốc rồi gửi điều chốt sau họp Bán hàng (không hỏi dồn); làm rõ cách hiện "Vì sao đơn này xong ngày này" rồi làm.
+- (18/11) **Đơn hàng – chủ dự án đã trả lời 18/11** (xem [[Quyết định của chủ dự án]]). Còn chờ: chủ dự án bàn với Giám đốc rồi gửi điều chốt sau họp Bán hàng (không hỏi dồn); "Vì sao đơn này xong ngày này" đã làm 18/11. **Cầu nối KPI: làm sau khi chủ dự án về văn phòng** (tạo 1 Sheet + dán 1 ô công thức Claude soạn).
 - (15/11 đêm) Sheet đơn không có cột "Hỏng cần làm bù" cho **Phôi** – muốn nhập thì thêm cột sau "Ngày hẹn trả BP60". Cột "TỔNG SP CÓ THỂ GIAO" có vẻ là công thức – web không ghi đè.
 - (15/11 khuya) Sau 2-CAP-NHAT.bat: mở tab Đơn hàng 1 lần bằng tài khoản chủ (tự cài 3 lịch của tab ĐẾN HẠN 10 NGÀY; lần đầu Google có thể hỏi cấp quyền – bấm Cho phép) → Đến hạn 10 ngày → **Làm mới ngay** để tạo tab luôn, không chờ 7h. – [[KPI Gậy 1 khúc, ưu tiên và nhập nhanh (15-11)]]
 - (16/11) **HỎI LẠI MỖI NGÀY cho tới khi chủ dự án gửi** (chủ dự án dặn): dữ liệu **định mức nguyên vật liệu (BOM)** – (1) định mức vật tư cho 1 cây gậy đang ghi ở đâu (Excel kho / kế toán / tổ trưởng); (2) danh sách vật tư chính (ống carbon, glassfiber, keo, sơn, mực UV, tip, ferrule, bao bì… còn gì?); (3) có số xuất kho hằng tháng không. Có lời nhắc hằng ngày đặt trong phiên mới. – [[KPI Học hỏi ERPNext (16-11)]]
