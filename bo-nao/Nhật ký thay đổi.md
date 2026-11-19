@@ -5,6 +5,7 @@ Liên quan: [[00 Mục lục]] · [[Quyết định của chủ dự án]] · [[
 Mỗi lần sửa web / dữ liệu / quy tắc: **ngày · sửa gì · VÌ SAO sửa (ai yêu cầu, lỗi gì, số liệu nào) · file / hàm · kiểm thử · commit**. Mới nhất ở trên. Chủ dự án yêu cầu 18/11: "khi chúng ta sửa gì, tại sao phải sửa, cũng phải ghi vào bộ nhớ; công việc lớn cũng phải ghi lại". Chi tiết kỹ thuật dài để ở ghi chú chủ đề, ở đây chỉ 3–6 dòng mỗi mục.
 
 ## 19/11
+- **Soạn Phiếu mô tả công việc Ban điều hành cho chủ dự án** (Word theo mẫu công ty, không sửa web). Chủ dự án chốt: quản lý trực tiếp = GĐ Hán Việt Hưng (C019); mảng phụ trách: kế hoạch SX & đơn hàng · KPI, định mức, nhân sự SX · số hóa – web KPI · quy trình & kỹ thuật SX (cấu hình gậy phối hợp C077); công việc hằng ngày viết theo việc, không theo giờ. File ở scratchpad.
 - **Xuất Excel KPI quản lý tháng 9 + 10** (không sửa web). Vì sao: chủ dự án cần sau đợt cắt giảm. Cách: KPI quản lý KHÔNG lưu sẵn (web tính lúc xem, `layKPIQuanLy`) → chạy đúng hàm web trong `gia-lap-kpi.js` trên CSDL KPI thật (nhớ đặt prop `KPI_MOC_LUU_TRU`='2026-10' để đọc nhật ký lưu trữ, không thì tháng 9 hiệu suất xưởng = 0), 2 lần: như web hiện nay và coi 63 CN đã nghỉ là còn làm.
 - **Phát hiện**: Trụ 1 (hiệu suất + tỷ lệ đạt xưởng) chỉ tính CN có `TrangThai` ≠ "Nghỉ việc" HÔM NAY → KPI quản lý tháng cũ đổi sau mỗi đợt nghỉ việc (vd INUV T10: 90,3 → 96,9). Chưa sửa web – chờ chủ dự án quyết ([[Việc chờ chủ dự án]]).
 
