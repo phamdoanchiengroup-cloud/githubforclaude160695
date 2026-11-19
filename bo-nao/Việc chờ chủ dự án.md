@@ -14,6 +14,7 @@ Liên quan: [[Lần dán lên Apps Script]] · [[Quyết định của chủ d�
 - (15/11 chiều) Bấm đúp **2-CAP-NHAT.bat** (gộp mọi bản 14–15/11), Ctrl+F5. Xem: Thống kê (cột gradient, I-MR, Dự báo đơn tháng tới); Đơn hàng (dòng đỏ đơn lẻ quá 10 ngày, nút ★ Gắn ưu tiên trong form dòng đơn, Thử nhận đơn để trống deadline → ngày hẹn gợi ý, Đến hạn 10 ngày → bảng Nhập nhanh cho TP); Cấu hình gậy → nhóm Gậy 1 khúc. – [[KPI Gậy 1 khúc, ưu tiên và nhập nhanh (15-11)]]
 
 ## Câu hỏi đang chờ trả lời
+- (19/11) **KPI quản lý tháng cũ đổi khi công nhân nghỉ việc**: web tính lại hiệu suất xưởng chỉ với CN còn làm hôm nay. Đề xuất: tính theo CN có KPI trong tháng đó (gồm người đã nghỉ) và/hoặc chốt KPI quản lý vào bảng khi chốt tháng. Chờ chủ dự án quyết.
 - (18/11) **Đơn hàng – chủ dự án đã trả lời 18/11** (xem [[Quyết định của chủ dự án]]). Còn chờ: chủ dự án bàn với Giám đốc rồi gửi điều chốt sau họp Bán hàng (không hỏi dồn); "Vì sao đơn này xong ngày này" đã làm 18/11. **Cầu nối KPI: làm sau khi chủ dự án về văn phòng** (tạo 1 Sheet + dán 1 ô công thức Claude soạn).
 - (15/11 đêm) Sheet đơn không có cột "Hỏng cần làm bù" cho **Phôi** – muốn nhập thì thêm cột sau "Ngày hẹn trả BP60". Cột "TỔNG SP CÓ THỂ GIAO" có vẻ là công thức – web không ghi đè.
 - (15/11 khuya) Sau 2-CAP-NHAT.bat: mở tab Đơn hàng 1 lần bằng tài khoản chủ (tự cài 3 lịch của tab ĐẾN HẠN 10 NGÀY; lần đầu Google có thể hỏi cấp quyền – bấm Cho phép) → Đến hạn 10 ngày → **Làm mới ngay** để tạo tab luôn, không chờ 7h. – [[KPI Gậy 1 khúc, ưu tiên và nhập nhanh (15-11)]]

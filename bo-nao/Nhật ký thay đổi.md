@@ -4,6 +4,10 @@ Liên quan: [[00 Mục lục]] · [[Quyết định của chủ dự án]] · [[
 
 Mỗi lần sửa web / dữ liệu / quy tắc: **ngày · sửa gì · VÌ SAO sửa (ai yêu cầu, lỗi gì, số liệu nào) · file / hàm · kiểm thử · commit**. Mới nhất ở trên. Chủ dự án yêu cầu 18/11: "khi chúng ta sửa gì, tại sao phải sửa, cũng phải ghi vào bộ nhớ; công việc lớn cũng phải ghi lại". Chi tiết kỹ thuật dài để ở ghi chú chủ đề, ở đây chỉ 3–6 dòng mỗi mục.
 
+## 19/11
+- **Xuất Excel KPI quản lý tháng 9 + 10** (không sửa web). Vì sao: chủ dự án cần sau đợt cắt giảm. Cách: KPI quản lý KHÔNG lưu sẵn (web tính lúc xem, `layKPIQuanLy`) → chạy đúng hàm web trong `gia-lap-kpi.js` trên CSDL KPI thật (nhớ đặt prop `KPI_MOC_LUU_TRU`='2026-10' để đọc nhật ký lưu trữ, không thì tháng 9 hiệu suất xưởng = 0), 2 lần: như web hiện nay và coi 63 CN đã nghỉ là còn làm.
+- **Phát hiện**: Trụ 1 (hiệu suất + tỷ lệ đạt xưởng) chỉ tính CN có `TrangThai` ≠ "Nghỉ việc" HÔM NAY → KPI quản lý tháng cũ đổi sau mỗi đợt nghỉ việc (vd INUV T10: 90,3 → 96,9). Chưa sửa web – chờ chủ dự án quyết ([[Việc chờ chủ dự án]]).
+
 ## 18/11
 - **Xuất Excel KPI tháng 9 + 10 cả người đã nghỉ** (không sửa web). Vì sao: tuần 12–14/11 nhà máy cắt giảm ~60 người, chủ dự án cần danh sách. Nguồn: CSDL KPI (xlsx qua Drive) – tab `KPIThang` (giữ cả người nghỉ) + `NhanSu.TrangThai` + ngày cuối có nhật ký sản xuất. 160 người, 63 đã nghỉ (48 người làm ngày cuối 12–14/11). File chỉ ở scratchpad (có tên người).
 - **"Vì sao đơn này xong ngày này"** (Bán hàng: nút trên thẻ đơn; người duyệt: bấm mã đơn trong bảng dự kiến). Vì sao: chủ dự án thấy đơn Kho trễ nhiều mà không biết do đâu (#16/10 hạn sớm hơn mà xong muộn hơn). Hàm `viSaoDonBH` / `dbvTinh_`.
