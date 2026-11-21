@@ -155,6 +155,7 @@ function dangKy(user, pass, hienThi, lienHe, maGioiThieu) {
   var u = tkTaoMoi_(user, pass, hienThi, 'thanhVien', them);
   tkProps_().setProperty(tkKhoaEmail_(lienHe), u);
   c.put('DK_DEM', String(n + 1), 600);
+  skGhi_('dang_ky', u);
   var r = dangNhap(u, pass);
   r.qua = { xu: 0, gt: 0 };
   r.canXacThuc = true; r.quaXacThuc = ttBangGia_().thuongDangKy;
@@ -225,6 +226,7 @@ function xacThucEmail(token, ma) {
     var qua = ttToanQuyen_(u) ? { xu: 0, gt: 0, lyDo: 'toanQuyen' } : ttQuaXacThuc_(u.ten, o, x.email);
     o = tkDoc_(u.ten); delete o.otp; o.email = x.email; o.emailXacThuc = new Date().toISOString(); tkGhi_(u.ten, o);
     if (!tkTenTuEmail_(x.email)) tkProps_().setProperty(tkKhoaEmail_(x.email), u.ten);   // tài khoản cũ: đăng nhập bằng email đã xác thực
+    skGhi_('xac_thuc_email', u.ten, { qua: qua.xu || 0 });
     return { ok: true, email: x.email, qua: qua, soDu: ttToanQuyen_(u) ? null : ttSoDu_(u.ten) };
   });
 }
@@ -259,6 +261,7 @@ function lapLaSo(input, token) {
   if (!u) input.save = false;
   input.taiKhoan = u ? u.ten : '';
   var r = lapLaSoDayDu_(input);
+  skLapLaSo_(!!u);
   try { r.teaser = demoTeaser_(r); } catch (e) { r.teaser = {}; }
   var khoa = ttKhoaLaSo_(input), bg = ttBangGia_();
   // Luận giải 6 hệ (12 cung Tử Vi, Bát Tự, Chiêm tinh, Thần số, HD, Hà Lạc) mở cho mọi người đọc.

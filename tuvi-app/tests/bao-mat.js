@@ -15,7 +15,7 @@ const GIAO_DIEN = ('bangGiaCongKhai dangKy dangKyBanTin dangKyVanNgay dangNhap d
   'dungLuotGiaDinh getDoanNghiemChung getLichSu ghiDoiChieu giaDinhDs giaDinhLuu giaDinhQuanHe giaDinhVanNam gieoQue huyVanNgay kiemTraDon lapCapDoi ' +
   'lapLaSo layAnhHolo muaPhan nhapMaQua phiTinhLuan phien qtDatVaiTro qtDieuChinhXu qtDsMaQua qtHuyDon qtKiemTraPayos qtLuuBangGia qtLuuCauHinh ' +
   'qtTaoMaQua qtTongQuan qtXacNhanDon qtXoaMaQua taoDonNap taoTaiKhoan thamKhaoThanSat thamKhaoTuVi tienIch tinhDiemNghiemChung tuViChuSoHuu viCuaToi ' +
-  'xoaLichSu xoaTaiKhoan dsBanTin dsTaiKhoan dsVanNgay guiMaEmail xacThucEmail').split(' ');
+  'xoaLichSu xoaTaiKhoan dsBanTin dsTaiKhoan dsVanNgay guiMaEmail xacThucEmail kyMonHoi qtPheu').split(' ');
 const KHUNG = ['doGet', 'include', 'includeTuyChon'];
 // Tiện ích lịch/can chi thuần tính toán – không chứa nội dung trả phí
 const TIEN_ICH = ('canChiIndex canChiText findSolarTermJD getLeapMonthOfYear getTietKhiName jdFromDate jdToDate jdToLocalDateTime lunarToSolar mod10 mod12 ' +
@@ -40,6 +40,10 @@ VAN_HANH.forEach(n => kt(congKhai[n] && /chiChayNoiBo_\(/.test(congKhai[n].dong1
   let loi = ''; try { ctx[n]('token-gia-mao-khong-hop-le-123', n === 'guiMaEmail' ? 'a@b.vn' : '123456'); } catch (e) { loi = e.message; }
   kt(/đăng nhập/.test(loi), n + ': chưa đăng nhập bị chặn');
 });
+// 21/11: Kỳ Môn hỏi việc cần đăng nhập; phễu bán hàng chỉ chủ sở hữu – cả hai kiểm phiên ở dòng đầu
+kt(congKhai.kyMonHoi && /tkCan_\(token\)/.test(congKhai.kyMonHoi.dong1), 'kyMonHoi kiểm phiên (tkCan_) ở dòng đầu');
+kt(congKhai.qtPheu && /tkCan_\(token, true\)/.test(congKhai.qtPheu.dong1), 'qtPheu chỉ chủ sở hữu (tkCan_(token, true)) ở dòng đầu');
+['kyMonHoi', 'qtPheu'].forEach(n => { let loi = ''; try { ctx[n]('token-gia-mao-khong-hop-le-123', n === 'kyMonHoi' ? 'cong_viec' : 7); } catch (e) { loi = e.message; } kt(/đăng nhập/.test(loi), n + ': chưa đăng nhập bị chặn'); });
 // Hàm tính bài luận (trả phí) không còn công khai
 ['luanChiTiet', 'duDoanCuocDoi', 'tongHopLuan', 'phoiNgauLuan', 'ketHopLuan', 'nghiemChungLap', 'tuviTrinhTu', 'tuviLapLaSo', 'batTuLap', 'batTuChiTiet',
   'chiemTinhLap', 'chiemTinhLuan', 'hdLap', 'hdLuan', 'haLacLap', 'haLacLuan', 'thanSoHocLap', 'thanSoHocLuan', 'astToanBo'].forEach(n => {

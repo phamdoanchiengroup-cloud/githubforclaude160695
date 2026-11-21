@@ -50,6 +50,8 @@ var TT_PHAN_MAC_DINH = {
   gieo_que: { ten: 'Gieo quẻ hỏi việc – 1 câu hỏi', xu: 9 },         // trừ theo từng câu (gieoQue)
   ban_tin: { ten: 'Bản tin vận tháng qua email – 12 tháng (gói cũ)', xu: 39, an: true }, // 16/11: chỉ còn trong Đồng hành năm; người đã đăng ký giữ đến hết hạn
   van_ngay: { ten: 'Lời nhắn mỗi sáng qua email – 30 ngày', xu: 19 }, // đăng ký theo 30 ngày (dangKyVanNgay)
+  // Kỳ Môn (KyMon.gs, 21/11): mua theo TÀI KHOẢN (khóa 'TK:<tài khoản>'), mã km_hoi:<yyyymmddhh>:<loại việc> – muaPhan(token, thoiDiem, 'km_hoi', loai)
+  km_hoi: { ten: 'Kỳ Môn – hỏi một việc', xu: 9, theo: 'tk' },
   gia_dinh_3: { ten: 'Gói gia đình 3 người – Đồng hành năm cho 3 lá số', xu: 79, luot: 3 },
   gia_dinh_5: { ten: 'Gói gia đình 5 người – Đồng hành năm cho 5 lá số', xu: 119, luot: 5 },
   luu_nien: { ten: 'Lưu niên nhiều năm (gói cũ)', xu: 19, an: true }   // gói cũ: người đã mua được xem mọi năm/tháng
@@ -72,7 +74,8 @@ var TT_SH = {
   MoKhoa: ['Thời gian', 'Tài khoản', 'Khóa lá số', 'Phần', 'Xu', 'Lá số', 'Phiên giá'],   // Phiên giá: để phân biệt vận năm kiểu cũ (trống / < 4) với bức tranh chung
   DonHang: ['Mã đơn', 'Tài khoản', 'Số tiền (đ)', 'Xu', 'Trạng thái', 'Tạo lúc', 'Trả lúc', 'Kênh', 'Tham chiếu', 'Nội dung CK'],
   Ve: ['Tài khoản', 'Lượt mở còn lại', 'Cập nhật'],
-  GieoQue: ['Thời gian', 'Tài khoản', 'Câu hỏi', 'Lĩnh vực', 'Kết quả (JSON)']
+  GieoQue: ['Thời gian', 'Tài khoản', 'Câu hỏi', 'Lĩnh vực', 'Kết quả (JSON)'],
+  SuKien: ['Thời gian', 'Sự kiện', 'Tài khoản', 'Thêm', 'Ngày (VN)', 'Số lần']   // phễu bán hàng (skGhi_): khách chưa đăng nhập chỉ được đếm, không ghi gì riêng
 };
 var TT_TRANG_THAI = { CHO: 'Chờ thanh toán', DA_TRA: 'Đã thanh toán', HUY: 'Đã hủy', HET_HAN: 'Hết hạn' };
 
@@ -111,7 +114,7 @@ function ttTim_(sh, col, val) {
 function ttKhoa_(fn) {
   var l = LockService.getScriptLock();
   l.waitLock(20000);
-  try { return fn(); } finally { l.releaseLock(); }
+  try { return fn(); } finally { try { SpreadsheetApp.flush(); } catch (e) { /* bỏ qua */ } l.releaseLock(); }   // ghi hết xuống Sheet trước khi nhả khóa: lượt sau đọc đúng số dư / quyền (chống trừ xu hai lần)
 }
 
 /* ---------------- Bảng giá & cấu hình ---------------- */
@@ -467,6 +470,7 @@ function muaPhan(token, input, phan, id) {
   var u = tkCan_(token), bg = ttBangGia_(), p = bg.phan[phan];
   if (!p || !TT_PHAN_MAC_DINH[phan] || TT_PHAN_MAC_DINH[phan].an) throw new Error('Không có gói "' + phan + '".');
   if (TT_PHAN_MAC_DINH[phan].luot) return ttMuaGiaDinh_(u, phan, bg);
+  if (phan === 'km_hoi') return ttMuaKmHoi_(u, input, id, bg);
   if (phan === 'gieo_que') throw new Error('Gói này mua trực tiếp trong công cụ.');
   if (phan === 'quan_he') input = ttQuanHeInput_(u, input);
   var capDoi = phan === 'cap_doi' || phan === 'hop_tac' || phan === 'quan_he';
@@ -495,8 +499,35 @@ function muaPhan(token, input, phan, id) {
     var nhan = p.ten.replace(/^Năm X\b/, 'Năm ' + namMa) + (ma !== phan ? ' [' + ma + ']' : '');   // sổ cái: "Năm 2027: bức tranh chung"
     var moi = gia ? ttCong_(u.ten, -gia, 'Mở khóa: ' + nhan + ' – ' + tenLS.slice(0, 60), khoa) : du;
     ttGhiQuyen_(u.ten, gia, [new Date(), shO_(u.ten), khoa, ma, gia, shO_(tenLS.slice(0, 80)), TT_GIA_PHIEN]);
+    skMua_(u.ten, gia, ma);
     return { ok: true, soDu: moi, gia: gia };
   });
+}
+/** Kỳ Môn "Hỏi một việc" (21/11): input = thoiDiem {day, month, year, hour, minute} giờ VN (lấy đúng thoiDiem kyMonHoi trả về; bỏ trống = bây giờ),
+ *  id = loại việc. Khóa 'TK:<tài khoản>', mã km_hoi:<yyyymmddhh>:<loại> – cùng loại việc trong cùng giờ âm lịch chỉ trừ xu 1 lần.
+ *  Trả { ok, soDu, gia, ma, ketQua } | { ok, daCo, soDu, ma, ketQua } | { ok:false, thieu, gia, soDu } | { ok, toanQuyen } */
+function ttMuaKmHoi_(u, thoiDiem, loai, bg) {
+  loai = String(loai || '');
+  if (!KM_LOAI.hasOwnProperty(loai)) throw new Error('Loại việc không hợp lệ.');
+  if (ttToanQuyen_(u)) return { ok: true, toanQuyen: true };
+  kmGioiHan_(u);   // rà mã 21/11: mỗi lượt dựng ~48 bàn – dùng chung giới hạn 30 lượt / 10 phút
+  var o = kmThoiDiem_(thoiDiem), ma = kmMaHoi_(o, loai), gia = bg.phan.km_hoi.xu, p = function (n) { return (n < 10 ? '0' : '') + n; };
+  var nhan = 'Kỳ Môn – ' + KM_LOAI[loai].ten + ' @' + o.year + '-' + p(o.month) + '-' + p(o.day) + ' ' + p(o.hour) + ':' + p(o.minute);
+  var r = ttKhoa_(function () {
+    var cu = kmDaMua_(u.ten, ma);
+    if (cu) return { ok: true, daCo: true, soDu: ttSoDu_(u.ten), ma: ma, thoiDiem: cu.thoiDiem || o };
+    var du = ttSoDu_(u.ten);
+    if (du < gia) return { ok: false, thieu: gia - du, gia: gia, soDu: du };
+    var moi = gia ? ttCong_(u.ten, -gia, 'Mở khóa: ' + bg.phan.km_hoi.ten + ' [' + ma + ']', 'TK:' + u.ten) : du;
+    ttGhiQuyen_(u.ten, gia, [new Date(), shO_(u.ten), 'TK:' + u.ten, ma, gia, shO_(nhan), TT_GIA_PHIEN]);
+    skMua_(u.ten, gia, ma);
+    return { ok: true, soDu: moi, gia: gia, ma: ma, thoiDiem: o };
+  });
+  if (r.ok) {   // dựng lời luận ngoài khóa ví
+    try { r.ketQua = kmKetQua_(r.thoiDiem, loai, true); r.ketQua.daMua = true; r.ketQua.gia = gia; r.ketQua.soDu = r.soDu; if (r.daCo) r.ketQua.nhacHoiLai = KM_NHAC_HOI_LAI; }
+    catch (e) { r.ketQua = null; }   // đã ghi quyền: gọi lại kyMonHoi để xem
+  }
+  return r;
 }
 /** Giá combo sau khấu trừ (dùng khi mua và để giao diện xem trước): { gia, goc, tru } – tru đã giới hạn 50%.
  *  dong_hanh (năm id): trừ bức tranh chung / vận năm cũ, 4 chủ đề, các tháng của năm đó. tron_goi: trừ đại vận lẻ, 12 đại vận cũ, biến cố, bạn đời, PDF. */
@@ -556,6 +587,7 @@ function ttMuaHoiVien_(u, p) {
     var han = Utilities.formatDate(goc, 'Asia/Ho_Chi_Minh', 'yyyy-MM-dd');
     var moi = ttCong_(u.ten, -p.xu, 'Mua ' + p.ten + ' (đến ' + han + ')', 'TK:' + u.ten);
     ttGhiQuyen_(u.ten, p.xu, [new Date(), shO_(u.ten), 'TK:' + u.ten, 'hoi_vien:' + han, p.xu, 'Hội viên năm', TT_GIA_PHIEN]);
+    skMua_(u.ten, p.xu, 'hoi_vien');
     return { ok: true, soDu: moi, gia: p.xu, hoiVien: han };
   });
 }
@@ -566,6 +598,7 @@ function ttMuaGiaDinh_(u, phan, bg) {
     var du = ttSoDu_(u.ten);
     if (du < p.xu) return { ok: false, thieu: p.xu - du, gia: p.xu, soDu: du };
     var moi = ttCong_(u.ten, -p.xu, 'Mua ' + p.ten + ' (' + luot + ' lượt mở)', phan);
+    skMua_(u.ten, p.xu, phan);
     return { ok: true, soDu: moi, gia: p.xu, soVe: ttCongVe_(u.ten, luot), luot: luot };
   });
 }
@@ -639,6 +672,8 @@ function ttGhiNhanDon_(ma, nguon, thamChieu) {
     if (thamChieu) sh.getRange(d.row, 9).setValue(thamChieu);
     var lanDau = !ttTim_(sh, 2, d.tk).some(function (r) { return r !== d.row && sh.getRange(r, 5).getValue() === 'DA_TRA'; });
     ttCong_(d.tk, d.xu, 'Nạp ' + d.tien + 'đ (' + nguon + ')', 'DON' + ma);
+    skGhi_('nap', d.tk, { tien: d.tien, xu: d.xu });
+    if (lanDau) skGhi_('nap_dau', d.tk, { tien: d.tien, xu: d.xu });
     if (lanDau) {
       var bg = ttBangGia_(), o = tkDoc_(d.tk) || {};
       var th = Math.round(d.xu * bg.thuongLanDau / 100);
@@ -924,6 +959,7 @@ function guiBaoCaoNgay() {
   chiChayNoiBo_(arguments[0]);
   var to = bcNguoiNhan_();
   if (!to) throw new Error('Chưa có email nhận báo cáo: thêm Thuộc tính tập lệnh BAO_CAO_EMAIL.');
+  skXa_();   // dồn lượt lập lá số đang đếm trong bộ nhớ đệm xuống trang SuKien mỗi ngày
   var S = bcSoLieu_(new Date());
   MailApp.sendEmail({ to: to, subject: 'Thiên Cơ Các · ' + S.den.getDate() + '/' + (S.den.getMonth() + 1) + ': ' + bcSo_(S.don.tien) + ' đ · ' + S.tkMoi.length + ' tài khoản mới · ' + S.laSo + ' lá số' + (S.loiCaiDat.length ? ' · ⚠ lỗi cài đặt' : ''), htmlBody: bcHtml_(S) });
   return { to: to };   // không trả số liệu (doanh thu, liên hệ khách) – rà soát 16/11
@@ -940,4 +976,105 @@ function tatBaoCaoNgay() {
   chiChayNoiBo_(arguments[0]);
   var n = 0; ScriptApp.getProjectTriggers().forEach(function (tr) { if (tr.getHandlerFunction() === 'guiBaoCaoNgay') { ScriptApp.deleteTrigger(tr); n++; } });
   Logger.log(n ? '✔ Đã tắt báo cáo ngày.' : 'Báo cáo ngày vốn chưa bật.');
+}
+
+/* ---------------- Phễu bán hàng (21/11): trang SuKien ----------------
+ * Dòng: [Thời gian, Sự kiện, Tài khoản, Thêm (JSON), Ngày VN 'yyyy-mm-dd', Số lần].
+ * Sự kiện: lap_la_so (gộp: Tài khoản = '(khách)' hoặc '(tài khoản)'), dang_ky, xac_thuc_email, mua_dau, mua, nap_dau, nap.
+ * Không lưu dữ liệu cá nhân ngoài tên tài khoản; khách chưa đăng nhập chỉ được đếm. Mọi hàm ghi đều nuốt lỗi – không bao giờ làm hỏng luồng người dùng.
+ * lap_la_so gọi rất nhiều → đếm trong CacheService ('SK_GOP') và dồn xuống Sheet khi đủ 20 lượt, sau 30 phút, khi sang ngày,
+ * khi chủ sở hữu mở phễu (qtPheu) hoặc khi gửi báo cáo ngày. Bộ đệm có thể bị xóa sớm → số lập lá số là số gần đúng (có thể hụt vài lượt). */
+var SK_SU_KIEN = ['lap_la_so', 'dang_ky', 'xac_thuc_email', 'mua_dau', 'mua', 'nap_dau', 'nap'];
+var SK_GOP = { lan: 20, phut: 30 };
+function skNgay_(d) { var x = new Date((d ? d.getTime() : Date.now()) + 7 * 3600e3), p = function (n) { return (n < 10 ? '0' : '') + n; }; return x.getUTCFullYear() + '-' + p(x.getUTCMonth() + 1) + '-' + p(x.getUTCDate()); }
+function skGhi_(su, ten, them, soLan, ngay) {
+  try { ttSheet_('SuKien').appendRow([new Date(), su, shO_(String(ten || '')), them ? shO_(JSON.stringify(them)) : '', shO_(ngay || skNgay_()), soLan == null ? 1 : soLan]); }
+  catch (e) { /* phễu chỉ để thống kê */ }
+}
+function skDocGop_(c) { try { var v = JSON.parse(c.get('SK_GOP') || 'null'); return v && v.ngay ? v : null; } catch (e) { return null; } }
+function skDoGop_(v) {
+  if (!v) return;
+  if (v.khach > 0) skGhi_('lap_la_so', '(khách)', null, v.khach, v.ngay);
+  if (v.tk > 0) skGhi_('lap_la_so', '(tài khoản)', null, v.tk, v.ngay);
+}
+/** Đếm một lượt lập lá số (khách / tài khoản) */
+function skLapLaSo_(coTK) {
+  try {
+    var c = CacheService.getScriptCache(), v = skDocGop_(c), hom = skNgay_(), now = Date.now();
+    if (v && v.ngay !== hom) { c.remove('SK_GOP'); skDoGop_(v); v = null; }
+    v = v || { ngay: hom, khach: 0, tk: 0, t: now };
+    if (coTK) v.tk++; else v.khach++;
+    if (v.khach + v.tk >= SK_GOP.lan || now - v.t > SK_GOP.phut * 60000) { c.remove('SK_GOP'); skDoGop_(v); }   // xóa trước rồi mới ghi: hai lượt cùng lúc không ghi trùng
+    else c.put('SK_GOP', JSON.stringify(v), 21600);
+  } catch (e) { /* bỏ qua */ }
+}
+/** Dồn ngay phần đang đếm xuống Sheet */
+function skXa_() { try { var c = CacheService.getScriptCache(), v = skDocGop_(c); if (v) { c.remove('SK_GOP'); skDoGop_(v); } } catch (e) { /* bỏ qua */ } }
+/** Một lần mua bằng xu (gọi bên trong ttKhoa_, SAU khi đã trừ xu). Lần mua đầu của tài khoản → thêm mua_dau, đánh dấu daMuaXu trong bản ghi tài khoản. */
+function skMua_(ten, gia, ma) {
+  try {
+    if (!(gia > 0)) return;
+    var phan = String(ma || '').split(':')[0];
+    skGhi_('mua', ten, { xu: gia, phan: phan });
+    var o = tkDoc_(ten);
+    if (!o || o.daMuaXu) return;
+    var sh = ttSheet_('SoCai'), truoc = ttTim_(sh, 2, ten).filter(function (r) { var v = sh.getRange(r, 3, 1, 4).getValues()[0]; return +v[0] < 0 && String(v[3]) !== 'ADMIN'; }).length;
+    if (truoc <= 1) skGhi_('mua_dau', ten, { xu: gia, phan: phan });   // dòng trừ xu vừa ghi là dòng duy nhất
+    o = tkDoc_(ten); if (!o || o.daMuaXu) return;   // đọc lại ngay trước khi ghi: không đè thay đổi tài khoản xảy ra trong lúc quét SoCai (vd. doiMatKhau chạy ngoài khóa)
+    o.daMuaXu = new Date().toISOString(); tkGhi_(ten, o);
+  } catch (e) { /* bỏ qua */ }
+}
+/** Tỷ lệ % (1 chữ số thập phân), null khi mẫu số = 0 */
+function skTyLe_(a, b) { return b > 0 ? Math.round(a / b * 1000) / 10 : null; }
+/**
+ * API Quản trị (chỉ chủ sở hữu): phễu bán hàng N ngày gần nhất (mặc định 7, tối đa 60), tính theo ngày giờ VN, có cả hôm nay.
+ * Trả { soNgay, tu, den, ngay: [{ ngay, lapLaSoKhach, lapLaSoTK, dangKy, xacThucEmail, muaDau, mua, xuMua, napDau, nap, tienNap }],
+ *   tong: {cùng các trường}, tyLe: { dangKyTrenKhach, xacThucTrenDangKy, muaDauTrenXacThuc, napDauTrenMuaDau, napDauTrenDangKy } (%),
+ *   quaChuaNap: { soTK, hetQua } – tài khoản đã nhận quà 39 xu, đã tiêu xu, chưa từng nạp (hetQua: còn dưới 9 xu) }
+ */
+function qtPheu(token, soNgay) {
+  tkCan_(token, true);
+  var n = Math.max(1, Math.min(60, Math.floor(+soNgay) || 7)), ngay = [], idx = {}, now = Date.now();
+  skXa_();
+  for (var i = n - 1; i >= 0; i--) {
+    var k = skNgay_(new Date(now - i * 864e5)), o = { ngay: k, lapLaSoKhach: 0, lapLaSoTK: 0, dangKy: 0, xacThucEmail: 0, muaDau: 0, mua: 0, xuMua: 0, napDau: 0, nap: 0, tienNap: 0 };
+    idx[k] = o; ngay.push(o);
+  }
+  var TEN = { dang_ky: 'dangKy', xac_thuc_email: 'xacThucEmail', mua_dau: 'muaDau', mua: 'mua', nap_dau: 'napDau', nap: 'nap' };
+  var sh = ttSheet_('SuKien'), last = sh.getLastRow();
+  if (last >= 2) {
+    var tu = Math.max(2, last - 50000 + 1);
+    sh.getRange(tu, 1, last - tu + 1, 6).getValues().forEach(function (v) {
+      var d = v[4] instanceof Date ? skNgay_(v[4]) : String(v[4]), o = idx[d];
+      if (!o) return;
+      var su = String(v[1]), sl = +v[5] || 0, them = {};
+      try { them = v[3] ? JSON.parse(String(v[3])) : {}; } catch (e) { them = {}; }
+      if (su === 'lap_la_so') { if (String(v[2]) === '(khách)') o.lapLaSoKhach += sl; else o.lapLaSoTK += sl; return; }
+      if (!TEN[su]) return;
+      o[TEN[su]] += sl;
+      if (su === 'mua') o.xuMua += +them.xu || 0;
+      if (su === 'nap') o.tienNap += +them.tien || 0;
+    });
+  }
+  var tong = {};
+  Object.keys(ngay[0]).forEach(function (k) { if (k !== 'ngay') tong[k] = ngay.reduce(function (s, o) { return s + o[k]; }, 0); });
+  return { soNgay: n, tu: ngay[0].ngay, den: ngay[n - 1].ngay, ngay: ngay, tong: tong,
+    tyLe: { dangKyTrenKhach: skTyLe_(tong.dangKy, tong.lapLaSoKhach), xacThucTrenDangKy: skTyLe_(tong.xacThucEmail, tong.dangKy),
+      muaDauTrenXacThuc: skTyLe_(tong.muaDau, tong.xacThucEmail), napDauTrenMuaDau: skTyLe_(tong.napDau, tong.muaDau), napDauTrenDangKy: skTyLe_(tong.napDau, tong.dangKy) },
+    quaChuaNap: skQuaChuaNap_(), ghiChu: 'Số lập lá số là số gần đúng (đếm qua bộ nhớ đệm). Sự kiện chỉ có từ ngày cài bản 21/11/2026.' };
+}
+/** Tài khoản đã nhận quà chào mừng, đã tiêu xu (trừ điều chỉnh của Quản trị) nhưng chưa từng nạp. hetQua: số dư còn dưới giá rẻ nhất (9 xu). */
+function skQuaChuaNap_() {
+  var qua = {}, chi = {}, napRoi = {}, du = {};
+  var p = tkProps_().getProperties();
+  Object.keys(p).forEach(function (k) { if (k.indexOf('TK_') !== 0) return; try { var o = JSON.parse(p[k]); if (o.daNhanQua && o.vaiTro !== 'chu' && o.vaiTro !== 'vip') qua[k.slice(3)] = true; } catch (e) {} });
+  bcDong_('SoCai', 6).forEach(function (r) {
+    var t = String(r[1]);
+    if (+r[2] > 0 && String(r[5]) === 'DK' && /^Quà chào mừng/.test(String(r[4]))) qua[t] = true;
+    if (+r[2] < 0 && String(r[5]) !== 'ADMIN') chi[t] = true;
+  });
+  bcDong_('DonHang', 5).forEach(function (r) { if (r[4] === 'DA_TRA') napRoi[String(r[1])] = true; });
+  bcDong_('Vi', 2).forEach(function (r) { du[String(r[0])] = +r[1] || 0; });
+  var ds = Object.keys(qua).filter(function (t) { return chi[t] && !napRoi[t]; });
+  return { soTK: ds.length, hetQua: ds.filter(function (t) { return (du[t] || 0) < 9; }).length };
 }

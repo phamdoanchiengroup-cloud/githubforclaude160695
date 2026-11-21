@@ -265,6 +265,7 @@ function gieoQue(cauHoi, linhVuc, token) {
     if (du < tra) return { ok: false, thieu: tra - du, gia: tra, soDu: du };
     var t = tiGioVN_(), kq = tiQueKetQua_(tiLapQue_(t), cauHoi, linhVuc, t);
     var moi = tra ? ttCong_(u.ten, -tra, 'Gieo quẻ: ' + cauHoi.slice(0, 50), 'que') : du;
+    if (tra) skMua_(u.ten, tra, 'gieo_que');
     sh.appendRow([new Date(), shO_(u.ten), shO_(String(cauHoi || '')), shO_(String(linhVuc || '')), JSON.stringify(kq)]);
     kq.ok = true; kq.soDu = toan ? null : moi; kq.mienPhi = mien && !toan; kq.gia = tra;
     return kq;
@@ -447,6 +448,7 @@ function dangKyBanTin(input, email, token) {
     var du = ttSoDu_(u.ten);
     if (du < gia) return { ok: false, thieu: gia - du, gia: gia, soDu: du };
     var moi = gia ? ttCong_(u.ten, -gia, 'Bản tin vận tháng 12 tháng – ' + email, 'ban_tin') : du;
+    if (gia) skMua_(u.ten, gia, 'ban_tin');
     var han = new Date(); han.setFullYear(han.getFullYear() + 1);
     var hanStr = namDh ? namDh + '-12-31' : han.getFullYear() + '-' + (han.getMonth() < 9 ? '0' : '') + (han.getMonth() + 1) + '-' + (han.getDate() < 10 ? '0' : '') + han.getDate();
     var sh = tiShBanTin_(), clean = {}; ['name', 'gender', 'calendar', 'day', 'month', 'year', 'leap', 'hour', 'minute', 'place', 'longitude', 'tz'].forEach(function (k) { if (input[k] != null) clean[k] = input[k]; });
@@ -558,6 +560,7 @@ function dangKyVanNgay(input, email, token) {
     var han = '';
     if (!toan) { var d0 = hanCu > homNay ? hanCu : homNay, p = d0.split('-'), d = new Date(+p[0], +p[1] - 1, +p[2] + 30); han = tiNgayStr_({ y: d.getFullYear(), m: d.getMonth() + 1, d: d.getDate() }); }
     var moi = gia ? ttCong_(u.ten, -gia, 'Luận giải hằng ngày 30 ngày – ' + email, 'van_ngay') : null;
+    if (gia) skMua_(u.ten, gia, 'van_ngay');
     sh.appendRow([shO_(u.ten), shO_(email), JSON.stringify(clean), new Date(), '', 'bật', han ? "'" + han : '']);
     return { ok: true, han: han, soDu: moi };
   });
