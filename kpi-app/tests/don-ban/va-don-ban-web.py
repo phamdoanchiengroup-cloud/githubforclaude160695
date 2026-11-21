@@ -55,3 +55,8 @@ function vBH(){
 }
 </script>
 """ + s[_k50:]
+# 21/11: Bán hàng không tải cơm trưa / bóng đá / KPI (trước gọi -> máy chủ chặn -> bị đăng xuất "hết phiên")
+_t50("function comTai(cb){\n  if(typeof TOKEN==='undefined'||!TOKEN)return;", "function comTai(cb){\n  if(typeof TOKEN==='undefined'||!TOKEN)return;\n  if(window.ME&&ME.vaiTro==='BH')return;   /* 21/11: Bán hàng không có cơm trưa */")
+_t50("function bdTai() {\n  if (typeof TOKEN === 'undefined' || !TOKEN) return;", "function bdTai() {\n  if (typeof TOKEN === 'undefined' || !TOKEN) return;\n  if (window.ME && ME.vaiTro === 'BH') return;   // 21/11")
+_t50("function taiKPIMay(ep) {\n  if (!ME || !TOKEN || KPI_MAY.dang) return;", "function taiKPIMay(ep) {\n  if (!ME || !TOKEN || KPI_MAY.dang || ME.vaiTro === 'BH') return;   // 21/11")
+

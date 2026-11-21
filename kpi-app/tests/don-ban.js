@@ -39,6 +39,8 @@ console.log('\n2. Bán hàng bị chặn ở mọi hàm khác');
 r = c.__goiTho('napDuLieu', B1); const nap = typeof r === 'string' ? JSON.parse(r) : r;
 ok(nap && nap.ok && nap.me.vaiTro === 'BH' && !(nap.nhansu || []).length && !(nap.nhatky || []).length, 'napDuLieu: BH đăng nhập được, gói rỗng (không KPI, nhân sự, nhật ký)', nap && Object.keys(nap));
 ['layDonHangXuong', 'layThongKe', 'huyBotDon', 'duyetDonBan', 'dsUngVienBH', 'demDonBanCho', 'layQuyTrinh', 'danhSachVanPhong'].forEach(f => { r = c.__goi(f, B1, {}); ok(!r || r.ok !== true, 'BH gọi ' + f + ' → bị chặn', r); });
+['napComTrua', 'layBongDa', 'layKPIKy', 'layThongKe'].forEach(f => { r = c.__goi(f, B1); ok(r && r.ok === false && !r.hetHan && r.bhChan === 1, '21/11: BH gọi ' + f + ' → bị chặn nhưng KHÔNG báo hết phiên (không bị đăng xuất)', r); });
+r = c.__goi('layDonBan', B1); ok(r.ok, '…và ngay sau đó vẫn vào trang Đơn hàng của tôi bình thường', r.msg);
 r = c.__goi('layManhGiaoDien', B1, 'QuyTrinh'); ok(!r.ok, 'BH không tải được mảnh Đơn hàng / Quy trình', r);
 r = c.__goi('layDonBan', tp); ok(!r.ok, 'TP Sơn không vào trang Đơn bán hàng', r);
 r = c.__goi('layDonBan', c077); ok(!r.ok, 'C077 không vào (không có quyền duyệt)', r);

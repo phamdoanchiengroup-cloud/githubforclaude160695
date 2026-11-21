@@ -17,6 +17,7 @@ var __SS_CACHE = null;
 var __DOC_CACHE = {};
 var __HEAD_CACHE = {};
 var __KHOA = null;
+var __BH_CHAN = false;   // 21/11: lượt này chặn tài khoản BH (KHÔNG phải hết phiên) -> sach_ đổi hetHan thành báo không dùng được
 var __CHO_BH = false;   // 16/11 khuya: hàm cho phép tài khoản Bán hàng (BH) đặt true trước docPhien_
 var TZ_VN = 'Asia/Ho_Chi_Minh';
 
@@ -243,6 +244,7 @@ function sach_(v) {
   xong_();                                            // cuối lượt: ghi bộ đệm, tăng phiên bản dữ liệu nếu có ghi
   ganPhanDoi_(v);                                     // báo giao diện phần dữ liệu nào vừa đổi
   var r = sachLoi_(v);
+  if (__BH_CHAN && r && typeof r === 'object' && r.hetHan) r = { ok: false, bhChan: 1, msg: 'Tài khoản Bán hàng không dùng chức năng này.' };   // 21/11
   if (r && typeof r === 'object' && Object.prototype.toString.call(r) !== '[object Array]' && 'ok' in r) r.__ms = Date.now() - __T0;   // 08/11 bộ đo
   return r;
 }
@@ -496,7 +498,7 @@ function docPhien_(token, choPhepChuaDoiMK) {
   // OWNER = chu so huu: co moi quyen ADMIN, cong them co laOwner cho cac chuc nang doc quyen.
   o.laOwner = (o.vaiTroGoc === 'OWNER');
   if (o.vaiTro === 'OWNER') o.vaiTro = 'ADMIN';
-  if (o.vaiTro === 'BH' && !__CHO_BH) return null;   // 16/11 khuya: Bán hàng chỉ dùng được trang Đơn hàng của tôi + đăng nhập / đổi mật khẩu
+  if (o.vaiTro === 'BH' && !__CHO_BH) { __BH_CHAN = true; return null; }   // 16/11 khuya: Bán hàng chỉ dùng được trang Đơn hàng của tôi + đăng nhập / đổi mật khẩu
   o.cg = cgQuyenCua_(o);   // 08/11: Cấu hình gậy (tài liệu mật – 4 mã NV)
   return o;
 }
@@ -7684,7 +7686,7 @@ function danhSachVanPhong(token) {
   ds.sort(function(a, b) { return (thuTu[a.vaiTro] - thuTu[b.vaiTro]) || (a.HoTen < b.HoTen ? -1 : 1); });
   return sach_({ ok: true, ds: ds, muc: HS_MUC });
 }
-var KPI_BAN_MAY = '18/11/2026 08:08';   // giờ dựng Code.gs (22/10)
+var KPI_BAN_MAY = '21/11/2026 11:26';   // giờ dựng Code.gs (22/10)
 /* =====================================================================
    KỸ NĂNG (22/10, chủ dự án nhờ thiết kế + tham khảo chuyên gia nhân sự / đào tạo)
    - Danh mục: trưởng / phó phòng đề xuất kỹ năng của xưởng (tên, mô tả, tiêu chí đạt, công đoạn liên quan)

@@ -105,6 +105,9 @@ let dem = 0, loi = 0; const ok = (d, t, c) => { dem++; if (d) console.log('  ✓
   r = await p.evaluate(() => new Promise(res => call('layDonHangXuong', [true], x => res((x.don || []).filter(o => o.maDon === '#WEB-16/11').map(o => [o.ten, o.sl, o.dl])))));
   ok(r.length === 3 && r.some(o => o[0] === 'NGON RHINO 12.4' && o[1] === 1000) && r.every(o => /^2026-12-20$/.test(o[2])), 'bảng đơn đọc 3 dòng mới ở tab OEM, deadline 20/12', r);
 
+  /* 21/11: Bán hàng báo "cứ bị hết phiên" – ở trang 90 giây (cơm trưa / bóng đá / KPI không còn gọi cho BH), vẫn đăng nhập */
+  await ra(); await vao('c163'); await p.waitForTimeout(90000);
+  ok(await p.evaluate(() => document.getElementById('app').style.display === 'block' && window.ME && ME.vaiTro === 'BH'), '21/11: Bán hàng ở trang 90 giây không bị đăng xuất', await p.evaluate(() => document.getElementById('app').style.display));
   console.log('\n4. 17/11 khuya: "Thử trước khi đặt" + gửi / xử lý đề nghị ưu tiên');
   const M = () => document.getElementById('main').innerText;
   await ra(); await p.setViewportSize({ width: 390, height: 844 });

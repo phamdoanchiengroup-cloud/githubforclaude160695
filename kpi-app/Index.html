@@ -8519,6 +8519,7 @@ function comNut(ng,mo,chiTiet){
 }
 function comTai(cb){
   if(typeof TOKEN==='undefined'||!TOKEN)return;
+  if(window.ME&&ME.vaiTro==='BH')return;   /* 21/11: Bán hàng không có cơm trưa */
   var lan=COM.lan=(COM.lan||0)+1;
   clearTimeout(COM.cho); COM.cho=setTimeout(function(){ if(lan===COM.lan&&!COM.d)comLoi('Máy chủ chưa trả lời sau 30 giây.') },30000);
   google.script.run.withSuccessHandler(function(r){
@@ -8882,6 +8883,7 @@ var BD_THU = ['Chủ nhật', 'Thứ Hai', 'Thứ Ba', 'Thứ Tư', 'Thứ Năm'
 function bdNgay_(d) { var p = function (x) { return ('0' + x).slice(-2); }; return d.getFullYear() + '-' + p(d.getMonth() + 1) + '-' + p(d.getDate()); }
 function bdTai() {
   if (typeof TOKEN === 'undefined' || !TOKEN) return;
+  if (window.ME && ME.vaiTro === 'BH') return;   // 21/11
   try {
     google.script.run.withSuccessHandler(function (r) { if (r && r.ok) { BD.d = r; bdVe(); } })
       .withFailureHandler(function () {}).layBongDa(TOKEN);
@@ -9562,7 +9564,7 @@ function kpiMayVeLai_() {
   window.scrollTo(0, y);
 }
 function taiKPIMay(ep) {
-  if (!ME || !TOKEN || KPI_MAY.dang) return;
+  if (!ME || !TOKEN || KPI_MAY.dang || ME.vaiTro === 'BH') return;   // 21/11
   var th = today().slice(0, 7);
   if (!ep && KPI_MAY.th === th && Date.now() - KPI_MAY.luc < KPI_MAY_CACH) return;
   KPI_MAY.dang = true;
@@ -9741,7 +9743,7 @@ function hsGhiChuDong(r){
 }
 </script>
 <script>
-var KPI_BAN = '18/11/2026 08:08';
+var KPI_BAN = '21/11/2026 11:26';
 (function(){
   var cu = window.veNav;
   window.veNav = function(){
@@ -11077,7 +11079,7 @@ function nsnCapNhat(){ call('capNhatNgoaiSXTuFile',[],function(r){ if(!r||!r.ok)
 </script>
 <script>
 /* ===== 38. TĂNG TỐC ĐỢT 3 (08/11) – bộ đo tốc độ + mở nhanh bằng số lần trước (mã hóa) ===== */
-var TD_BUF=[], TD_T=null, DL_VER='f9c5c183f5', DL_HAN=12*3600e3, DL_BO=['SoCCCD','DienThoai','DiaChi','SdtKhanCap','LuongCoBan','NamSinh','SoTaiKhoan','Email'];
+var TD_BUF=[], TD_T=null, DL_VER='d02d3a9613', DL_HAN=12*3600e3, DL_BO=['SoCCCD','DienThoai','DiaChi','SdtKhanCap','LuongCoBan','NamSinh','SoTaiKhoan','Email'];
 function tdGhi_(f,ms,sv){ if(!(ms>=0)||!f) return; TD_BUF.push({f:String(f),ms:Math.round(ms),sv:(typeof sv==='number'?Math.round(sv):null)});
   if(TD_BUF.length>=15) tdGui_(); else if(!TD_T) TD_T=setTimeout(tdGui_,180000); }
 function tdGui_(){ if(TD_T){clearTimeout(TD_T);TD_T=null;} if(!TD_BUF.length||typeof TOKEN==='undefined'||!TOKEN) return;
