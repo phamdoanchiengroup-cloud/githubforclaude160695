@@ -15,7 +15,7 @@ var Solar = require('lunar-javascript').Solar;
 
 var ctx = {};
 vm.createContext(ctx);
-['Lunar.gs', 'TuVi.gs', 'BatTu.gs', 'LuanGiai.gs'].forEach(function (f) {
+['Lunar.gs', 'Astro.gs', 'KyMon.gs', 'TuVi.gs', 'BatTu.gs', 'LuanGiai.gs'].forEach(function (f) {
   vm.runInContext(fs.readFileSync(path.join(__dirname, '..', f), 'utf8'), ctx, { filename: f });
 });
 

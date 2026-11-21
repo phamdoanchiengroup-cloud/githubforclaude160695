@@ -86,6 +86,7 @@ function lunarSunLongitudeRad_(jdn) {
  * (Lịch âm vẫn dùng công thức gốc của Hồ Ngọc Đức để khớp lịch Việt Nam.)
  */
 function sunLongitudeDeg(jdUT) {
+  if (typeof kmKinhDoMatTroi_ === 'function') return kmKinhDoMatTroi_(jdUT);   // 21/11: dùng bản chính xác (KyMon.gs, lệch ≤1 phút)
   var T = (jdUT - 2451545.0) / 36525, dr = Math.PI / 180;
   var omega = 125.04 - 1934.136 * T;
   var L = lunarSunLongitudeRad_(jdUT) / dr - 0.00569 - 0.00478 * Math.sin(omega * dr);
