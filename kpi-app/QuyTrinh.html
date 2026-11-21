@@ -48,6 +48,7 @@
 .dh-the small{color:var(--ink3);font-size:11.5px}
 .dh-the .tre{color:var(--red);font-size:11.5px}
 .dh-khoi td{font-weight:700;background:var(--panel2);border-top:1px solid var(--line)}
+.dh-ngayhan{border-top:1px solid var(--line);padding:6px 0} .dh-ngayhan summary{cursor:pointer;font-size:13px;line-height:1.6}
 /* ===== 07/11: tab Đơn hàng làm lại (soat-giao-dien-cuoi + dong-vai-nguoi-dung) ===== */
 .dh-dau{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:10px}
 .dh-dau .ptitle{margin-bottom:2px}
@@ -1810,7 +1811,7 @@ function dhMoPhong(don,them,ut,spDG){
   return out.map(function(x){ return x.g; });
 }
 function dhCSDon(){ var sx=DH.don.filter(function(o){return o.thieu>0&&dhLaSX(o)}); return dhGomDon(sx).map(function(g){ var dl=''; g.dong.forEach(function(o){ if(o.thieu>0&&o.dl&&(!dl||o.dl<dl)) dl=o.dl; }); g.dl=dl; g.dlNgam=g.dong.map(dhDlNgam).filter(Boolean).sort()[0]||''; g.tatCa=DH.don.filter(function(o){return o.maDon===g.ma||(!o.maDon&&g.ma==='(không mã)')}); return g; }); }
-var DHCSThu=null, DHCSHet=50;
+var DHCSThu=null, DHCSHet=50; var DHCSHetK={};   /* 21/11: "xem thêm" theo từng nhóm */
 /* 13/11 (chủ dự án): "Thử đẩy một đơn lên ưu tiên" – chọn theo MÃ ĐƠN hoặc TÊN HÀNG (cả hai), đẩy lên trước mọi bậc rồi
    so ngày xong cũ / mới của từng đơn: đơn được đẩy sớm bao nhiêu, các đơn khác lùi bao nhiêu ngày (kèm theo từng tab). */
 var DHUT=null;
@@ -1980,13 +1981,42 @@ function dhVeCongSuat(){
   h+='<div class="card"><div style="font-weight:600;margin-bottom:4px">Thử đẩy một đơn lên ưu tiên</div><div class="dh-loc" style="display:flex;flex-wrap:wrap;gap:8px;align-items:center"><label>Mã đơn hoặc tên hàng <input id="dhUtGT" list="dhUtDs" style="width:300px;max-width:100%" placeholder="vd #31/10 hoặc GẬY …" value="'+esc(DHUT?DHUT.nhan:'')+'"></label><button class="btn sm" type="button" onclick="dhUTinh()">Tính</button>'+(DHUT?'<button class="btn sm" type="button" onclick="dhUTXoa()">Xoá</button>':'')+'</div><datalist id="dhUtDs">'+dsUt.slice(0,600).map(function(x){ return '<option value="'+esc(x)+'"></option>'; }).join('')+'</datalist>'+utKQ+'</div>';
   /* bảng đơn theo nhóm */
   var ten={tre:'Đã quá hạn',setre:'Chưa trễ nhưng dự kiến trễ',kip:'Dự kiến kịp hạn',khong:'Chưa có deadline',cho:'Trễ quá '+DH_TRE_MAX+' ngày – chờ kênh đặt hạn mới (chưa xếp lịch)'}, spDo=K.spDo;
-  h+='<div class="card"><div style="font-weight:600;margin-bottom:4px">Ngày dự kiến xong từng đơn</div><div class="tw"><table class="dh-bang cs"><thead><tr><th>Mã đơn</th><th>Kênh · người đặt</th><th class="qt-so">Còn thiếu</th><th>Deadline</th><th>Dự kiến xong<br><small>('+qtSo(c.sp,0)+' sp/ngày)</small></th><th class="qt-so">Lệch</th>'+(spDo?'<th>Dự kiến xong<br><small>(thực đo '+qtSo(spDo,0)+')</small></th><th class="qt-so">Lệch</th>':'')+'<th>Hoàn thành</th></tr></thead><tbody>';
+  /* 21/11 (chủ dự án): bảng xếp THEO KÊNH (deadline sớm trước, nhãn tình trạng); thêm card THEO NGÀY ĐẾN HẠN; đơn LẺ + POD tách card riêng */
   var lechO=function(v){ return v==null?'–':'<span class="dh-han '+(v>0?'tre':'')+'">'+(v>0?'trễ '+v+' ngày':'sớm '+(-v)+' ngày')+'</span>'; }, nCot=spDo?9:7;
-  ['tre','setre','kip','khong','cho'].forEach(function(k){ var a=nhom[k]; if(!a.length) return;
-    h+='<tr class="dh-khoi"><td colspan="2">'+ten[k]+' · '+a.length+' đơn</td><td class="qt-so">'+qtSo(sum(a),0)+' sp</td><td colspan="'+(nCot-3)+'"></td></tr>';
-    a.slice(0,DHCSHet).forEach(function(g){ var kVS=g.ma+'|'+g.tab; h+='<tr><td class="ma"><button type="button" class="dh-vsnut" title="Vì sao đơn này xong ngày này" data-m="'+esc(g.ma)+'" data-t="'+esc(g.tab)+'" onclick="dhViSao(this.dataset.m,this.dataset.t)">'+esc(g.ma)+' <span aria-hidden="true">ⓘ</span></button></td><td>'+esc(g.kenh)+(g.nguoiDat?' · '+esc(g.nguoiDat):'')+'</td><td class="qt-so"><b>'+qtSo(g.thieu,0)+'</b></td><td>'+(g.dl?dhNg(g.dl):(g.dlNgam?'<span title="Đơn lẻ không ghi deadline: hạn ngầm = ngày đặt + '+DH_HAN_TXT+'">~'+dhNg(g.dlNgam)+'</span>':'–'))+'</td><td>'+(g.eta?dhNg(g.eta):'<span class="pdesc">chờ hạn mới</span>')+'</td><td class="qt-so">'+(g.dl?lechO(g.lech):(g.dlNgam&&g.eta?lechO(dhCachNgay(g.dlNgam,g.eta)):'–'))+'</td>'+(spDo?'<td>'+(g.eta2?dhNg(g.eta2):'–')+'</td><td class="qt-so">'+(g.dl?lechO(g.lech2):(g.dlNgam&&g.eta2?lechO(dhCachNgay(g.dlNgam,g.eta2)):'–'))+'</td>':'')+'<td>'+dhThanh(dhTienDo(g.tatCa),1)+'</td></tr>'+(DHVS&&DHVS.k===kVS?'<tr><td colspan="'+nCot+'">'+dhVeViSao(DHVS)+'</td></tr>':''); });
-    if(a.length>DHCSHet) h+='<tr><td colspan="'+nCot+'"><button class="btn sm" type="button" onclick="DHCSHet+=200;dhVeLai()">Xem thêm '+(a.length-DHCSHet)+' đơn</button></td></tr>'; });
+  var TT={tre:['Quá hạn','tre'],setre:['Sẽ trễ','sap'],kip:['Kịp',''],cho:['Chờ hạn mới','tre']};
+  var dong=function(g){ var kVS=g.ma+'|'+g.tab, t=TT[g.lop]; return '<tr><td class="ma"><button type="button" class="dh-vsnut" title="Vì sao đơn này xong ngày này" data-m="'+esc(g.ma)+'" data-t="'+esc(g.tab)+'" onclick="dhViSao(this.dataset.m,this.dataset.t)">'+esc(g.ma)+' <span aria-hidden="true">ⓘ</span></button></td><td>'+esc(g.kenh)+(g.nguoiDat?' · '+esc(g.nguoiDat):'')+'</td><td class="qt-so"><b>'+qtSo(g.thieu,0)+'</b></td><td>'+(g.dl?dhNg(g.dl):(g.dlNgam?'<span title="Đơn lẻ không ghi deadline: hạn ngầm = ngày đặt + '+DH_HAN_TXT+'">~'+dhNg(g.dlNgam)+'</span>':'–'))+(t?' <span class="dh-han '+t[1]+'" style="font-size:11px">'+t[0]+'</span>':'')+'</td><td>'+(g.eta?dhNg(g.eta):'<span class="pdesc">chờ hạn mới</span>')+'</td><td class="qt-so">'+(g.dl?lechO(g.lech):(g.dlNgam&&g.eta?lechO(dhCachNgay(g.dlNgam,g.eta)):'–'))+'</td>'+(spDo?'<td>'+(g.eta2?dhNg(g.eta2):'–')+'</td><td class="qt-so">'+(g.dl?lechO(g.lech2):(g.dlNgam&&g.eta2?lechO(dhCachNgay(g.dlNgam,g.eta2)):'–'))+'</td>':'')+'<td>'+dhThanh(dhTienDo(g.tatCa),1)+'</td></tr>'+(DHVS&&DHVS.k===kVS?'<tr><td colspan="'+nCot+'">'+dhVeViSao(DHVS)+'</td></tr>':''); };
+  var dau='<div class="tw"><table class="dh-bang cs"><thead><tr><th>Mã đơn</th><th>Kênh · người đặt</th><th class="qt-so">Còn thiếu</th><th>Deadline</th><th>Dự kiến xong<br><small>('+qtSo(c.sp,0)+' sp/ngày)</small></th><th class="qt-so">Lệch</th>'+(spDo?'<th>Dự kiến xong<br><small>(thực đo '+qtSo(spDo,0)+')</small></th><th class="qt-so">Lệch</th>':'')+'<th>Hoàn thành</th></tr></thead><tbody>';
+  var han=function(g){ return g.dl||g.dlNgam||''; }, xep=function(a){ return a.slice().sort(function(x,y){ var p=han(x), q=han(y); return (p?0:1)-(q?0:1)||(p<q?-1:p>q?1:0)||(y.thieu-x.thieu); }); };
+  var khoi=function(nhan,a,khoa){ var qh=a.filter(function(g){ var d=han(g); return d&&d<hn; }).length, n=DHCSHetK[khoa]||DHCSHet, r='<tr class="dh-khoi"><td colspan="2">'+esc(nhan)+' · '+a.length+' đơn'+(qh?' · <span class="dh-han tre">'+qh+' quá hạn</span>':'')+'</td><td class="qt-so">'+qtSo(sum(a),0)+' sp</td><td colspan="'+(nCot-3)+'"></td></tr>';
+    xep(a).slice(0,n).forEach(function(g){ r+=dong(g); });
+    if(a.length>n) r+='<tr><td colspan="'+nCot+'"><button class="btn sm" type="button" onclick="DHCSHetK[\''+khoa+'\']='+(n+200)+';dhVeLai()">Xem thêm '+(a.length-n)+' đơn</button></td></tr>';
+    return r; };
+  var laLe=function(g){ return /^WEB LẺ|^POD/.test(String(g.tab||'')); };
+  var lon=don.filter(function(g){ return !laLe(g); }), le=don.filter(laLe), THU={'DEALER':1,'KHO':2,'OEM':3,'A ĐÔNG':4}, theoK={};
+  lon.forEach(function(g){ (theoK[g.tab]=theoK[g.tab]||[]).push(g); });
+  h+='<div class="card"><div style="font-weight:600;margin-bottom:4px">Ngày dự kiến xong theo kênh <span class="pdesc" style="font-weight:400">(không gồm đơn lẻ / POD – xem card riêng bên dưới)</span></div>'+dau;
+  Object.keys(theoK).sort(function(x,y){ return (THU[x]||9)-(THU[y]||9)||x.localeCompare(y); }).forEach(function(t){ h+=khoi(theoK[t][0].kenh||t,theoK[t],'k:'+t); });
   h+='</tbody></table></div>'+dhCachDoc('<b>Dự kiến xong</b> (16/11): chỉ tính theo <b>công suất '+qtSo(c.sp,0)+' sp/ngày</b> (không tính hàng đi qua từng xưởng); mỗi ngày chia <b>5 làn</b>: <b>'+esc(dhLanTxt())+'</b> (Lẻ + POD = Web lẻ thường, Web lẻ custom, POD; tab kênh khác tạm vào làn Kho); làn nào hết việc trong ngày thì phần dư <b>dồn hết theo thứ tự Dealer → Kho → OEM → A Đông</b> (rồi Lẻ + POD). Trong mỗi làn: dòng <b>trễ hạn + ★ + hàng ưu tiên</b> trước, rồi <b>deadline sớm</b> trước, bằng hạn thì đơn <b>gần xong</b> trước. Đơn lẻ (Web lẻ, POD) không ghi deadline lấy <b>hạn ngầm = ngày đặt + '+DH_HAN_TXT+'</b> (~dd/mm). Công suất sửa ở ⚙ Công suất'+(spDo?', cột thứ 2 dùng <b>công suất thực đo '+qtSo(spDo,0)+' sp/ngày</b> (trung vị Đóng gói '+((c.do||{}).n||0)+' ngày làm gần nhất)':' (chưa đủ 5 ngày số Đóng gói để tính công suất thực đo)')+'. Dòng <b>trễ quá '+DH_TRE_MAX+' ngày</b> không xếp lịch cho tới khi kênh đặt <b>Hạn mới</b>. Ngày làm việc: thứ 2 – thứ 7, trừ chủ nhật và ngày lễ; <b>đơn xong khi dòng cuối cùng xong</b> (ngày dự kiến xong của đơn = dòng xong muộn nhất). Deadline = cột <b>HẠN MỚI</b> nếu có, không thì deadline gốc. <b>Lệch</b> = dự kiến xong − deadline. Đơn quá hạn lâu nên hỏi lại kênh bán còn cần không trước khi dồn sức làm (chuyên gia khuyên giữ 60–70% công suất cho đơn trễ, phần còn lại cho đơn đúng hạn để không trễ dây chuyền).')+'</div>';
+  /* card THEO NGÀY ĐẾN HẠN: quá hạn gộp 1 dòng + từng ngày có đơn đến hạn trong 30 ngày tới (không gồm lẻ / POD) */
+  var toi=dhNgayCong(hn,30), theoN={}, qh=[];
+  lon.forEach(function(g){ if(!g.dl) return; if(g.dl<hn) qh.push(g); else if(g.dl<=toi) (theoN[g.dl]=theoN[g.dl]||[]).push(g); });
+  var THUTEN=['CN','T2','T3','T4','T5','T6','T7'];
+  var ngayKhoi=function(nhan,a,mo){ var tre=a.filter(function(g){ return g.lech>0||g.lop==='cho'; }).length, kk={}; a.forEach(function(g){ kk[g.kenh]=(kk[g.kenh]||0)+1; });
+    return '<details class="dh-ngayhan"'+(mo?' open':'')+'><summary><b>'+nhan+'</b> · '+a.length+' đơn · '+qtSo(sum(a),0)+' sp <span class="pdesc">('+Object.keys(kk).map(function(k){ return esc(k)+' '+kk[k]; }).join(' · ')+')</span>'+(tre?' <span class="dh-han tre">'+tre+' dự kiến trễ</span>':'')+'</summary>'+
+      '<div class="tw"><table class="dh-bang"><thead><tr><th>Mã đơn</th><th>Kênh</th><th class="qt-so">Còn thiếu</th><th>Deadline</th><th>Dự kiến xong</th><th class="qt-so">Lệch</th></tr></thead><tbody>'+
+      xep(a).map(function(g){ return '<tr><td class="ma">'+esc(g.ma)+'</td><td>'+esc(g.kenh)+'</td><td class="qt-so">'+qtSo(g.thieu,0)+'</td><td>'+dhNg(g.dl)+'</td><td>'+(g.eta?dhNg(g.eta):'<span class="pdesc">chờ hạn mới</span>')+'</td><td class="qt-so">'+lechO(g.lech)+'</td></tr>'; }).join('')+'</tbody></table></div></details>'; };
+  h+='<div class="card"><div style="font-weight:600;margin-bottom:4px">Theo ngày đến hạn <span class="pdesc" style="font-weight:400">(30 ngày tới, không gồm đơn lẻ / POD)</span></div>';
+  var dsN=Object.keys(theoN).sort();
+  if(!qh.length&&!dsN.length) h+='<div class="pdesc">Không có đơn nào đến hạn trong 30 ngày tới.</div>';
+  if(qh.length) h+=ngayKhoi('<span class="dh-han tre">Đã quá hạn</span>',qh,false);
+  dsN.forEach(function(d,i){ h+=ngayKhoi(THUTEN[new Date(d+'T00:00:00').getDay()]+' '+dhNg(d)+(d===hn?' (hôm nay)':''),theoN[d],i===0&&!qh.length); });
+  h+=dhCachDoc('Mỗi ngày = các đơn có <b>deadline</b> (hạn mới nếu có) đúng ngày đó; bấm để xem từng đơn. <b>Dự kiến trễ</b> = ngày dự kiến xong sau deadline. Đơn chưa có deadline không có ở đây (xem bảng theo kênh).')+'</div>';
+  /* card ĐƠN LẺ + POD: 3 nhóm, hạn sớm trước (hạn ngầm nếu không ghi deadline) */
+  var nhomLe=[['Web lẻ – Thường',function(g){ return g.tab==='WEB LẺ ĐƠN THƯỜNG'; }],['Web lẻ – Custom',function(g){ return g.tab==='WEB LẺ CUSTOM'; }],['POD',function(g){ return /^POD/.test(g.tab); }]];
+  h+='<div class="card"><div style="font-weight:600;margin-bottom:4px">Đơn lẻ + POD <span class="pdesc" style="font-weight:400">('+le.length+' đơn · '+qtSo(sum(le),0)+' sp)</span></div>';
+  if(!le.length) h+='<div class="pdesc">Không có đơn lẻ / POD đang làm.</div>';
+  else { h+=dau; nhomLe.forEach(function(z,i){ var a=le.filter(z[1]); if(a.length) h+=khoi(z[0],a,'le'+i); }); h+='</tbody></table></div>'; }
+  h+=dhCachDoc('Đơn lẻ không ghi deadline dùng <b>hạn ngầm</b> (~dd/mm) = ngày đặt + '+DH_HAN_TXT+'. Xếp hạn sớm trước.')+'</div>';
   var P3=h.length;
   /* cài đặt công suất + ngày nghỉ */
   h+='<details class="card dh-csdat"'+(DHLN?' open':'')+'><summary style="cursor:pointer;font-weight:600">⚙ Công suất và ngày nghỉ</summary><div style="margin-top:8px;display:grid;gap:8px;max-width:520px">'+

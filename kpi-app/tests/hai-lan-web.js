@@ -37,7 +37,7 @@ const fs=require('fs'); const src=fs.readFileSync(process.argv[2]||require('path
  ok(r.X&&r.X.lop==='cho'&&!r.X.eta&&r.Y!=='cho','trễ > 30 ngày → chờ hạn mới, trễ 10 ngày vẫn xếp',[r.X&&r.X.lop,r.Y]);
  ok(r.do2>r.do1,'công suất thực đo thấp hơn → xong muộn hơn',[r.do1,r.do2]);
  ok(r.leQua===1&&r.spDo===250&&r.choN===1&&!!r.eta2,'dhCSTinh: đơn lẻ quá 10 ngày, thực đo, nhóm chờ, cột thứ 2',[r.leQua,r.spDo,r.choN,r.eta2]);
- ok(!r.loiVe&&/thực đo 250/.test(r.html)&&/chờ kênh đặt hạn mới/.test(r.html)&&/~/.test(r.html),'bảng Ngày dự kiến xong vẽ được 2 cột + nhóm chờ + hạn ngầm',r.loiVe||r.html.slice(0,200));
+ ok(!r.loiVe&&/thực đo 250/.test(r.html)&&/Chờ hạn mới/.test(r.html)&&/Theo ngày đến hạn/.test(r.html)&&/Đơn lẻ \+ POD/.test(r.html)&&/~/.test(r.html),'bảng theo kênh vẽ được 2 cột + nhãn chờ hạn mới + hạn ngầm (card Lẻ + POD) + card theo ngày đến hạn (21/11)',r.loiVe||r.html.slice(0,200));
  ok(!r.loiVe2&&/Thử nhận đơn/.test(r.html2)&&/xếp <b>lên đầu làn/.test(r.html2),"Thử nhận đơn + Thử đẩy (đơn trễ >30 ngày) chạy được",r.loiVe2||String(r.html2).slice(0,300));
  ok(!!r.C,'chuôi lẻ có ngày dự kiến',r.C);
  console.log('A/B',r.A,r.B,'O/W',r.O,r.W,'solo',r.Osolo,'do',r.do1,r.do2,'C',r.C,'hn',r.hn);
