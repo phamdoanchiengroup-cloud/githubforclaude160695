@@ -261,6 +261,7 @@ function lapLaSo(input, token) {
   if (!u) input.save = false;
   input.taiKhoan = u ? u.ten : '';
   var r = lapLaSoDayDu_(input);
+  if (typeof taGanNam_ === 'function') taGanNam_(r, input);   // Thái Ất vận năm cá nhân (r.thaiAtNam) – cắt theo quyền năm ở ttCatPhan_
   if (!input.khongDem) skLapLaSo_(!!u);   // trang Năm 2027 gọi thêm lần nữa – không đếm vào phễu
   try { r.teaser = demoTeaser_(r); } catch (e) { r.teaser = {}; }
   var khoa = ttKhoaLaSo_(input), bg = ttBangGia_();

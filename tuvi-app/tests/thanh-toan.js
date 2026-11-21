@@ -170,7 +170,7 @@ ok(ctx.TT_GIA_PHIEN === 4 && ctx.TT_KM_PHIEN === 4, 'TT_GIA_PHIEN = TT_KM_PHIEN 
 ok(P_.dai_van.xu === 19 && P_.dai_van_qua.xu === 9 && P_.nam.xu === 19 && P_.thang.xu === 9 && P_.phoi_ngau.xu === 9 && P_.bien_co.xu === 19 && P_.cap_doi.xu === 19 && P_.pdf.xu === 19 && P_.van_ngay.xu === 19,
   'Giá lẻ: 10 năm 19, kiểm chứng 9, năm 19, tháng 9, bạn đời 9, năm đáng chú ý 19, cặp đôi 19, PDF 19, lời nhắn mỗi sáng 19');
 ok(P_.nam_cd.xu === 9 && P_.quan_he.xu === 9 && /bức tranh chung/.test(P_.nam.ten), 'Phần mới: chủ đề năm 9, quan hệ người thân 9; "Năm X: bức tranh chung"');
-ok(Object.keys(P_).filter(k => !P_[k].an && !P_[k].mienPhi && !P_[k].luot && ['dong_hanh', 'tron_goi', 'co_ban', 'do_gio', 'dat_ten'].indexOf(k) < 0).every(k => P_[k].xu === 9 || P_[k].xu === 19), 'Mọi phần lẻ đang bán chỉ 9 hoặc 19 xu');
+ok(Object.keys(P_).filter(k => !P_[k].an && !P_[k].mienPhi && !P_[k].luot && ['dong_hanh', 'tron_goi', 'co_ban', 'do_gio', 'dat_ten', 'hoi_2_mon'].indexOf(k) < 0).every(k => P_[k].xu === 9 || P_[k].xu === 19), 'Mọi phần lẻ đang bán chỉ 9 hoặc 19 xu (combo hỏi việc 2 môn 15 xu – chủ dự án 21/11)');
 ok(P_.dong_hanh.xu === 49 && P_.tron_goi.xu === 89 && P_.gia_dinh_3.xu === 79 && P_.gia_dinh_5.xu === 119, 'Combo: Đồng hành 49, Trọn đời 89, gia đình 79/119');
 ok(P_.hoi_vien.an && P_.tron_dai_van.an && P_.ban_tin.an, 'Ẩn (thôi bán): Hội viên năm, 12 đại vận, bản tin tháng lẻ');
 ok(Object.keys(P_).every(k => P_[k].goc === undefined), 'Không còn giá gạch ngang (giá chưa từng bán)');

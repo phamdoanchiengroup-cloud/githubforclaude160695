@@ -141,7 +141,7 @@ if (typeof ctx.kmVanLuan_ === 'function') {
     });
   });
   kt(!loiVan.length, 'văn thật ' + lan + ' bài (7 loại × 3 mức × 4 bàn): ' + (loiVan.slice(0, 5).join(' | ') || 'đạt'));
-  const g1 = ctx.kmGoiVan_(ban, ctx.kmDanhGia_(ban, 'cong_viec'), ctx.kmKhungTot3Ngay_({ day: 21, month: 11, year: 2026, hour: 9, minute: 0 }, 'cong_viec'));
+  const g1 = ctx.kmGoiVan_(ban, ctx.kmDanhGia_(ban, 'cong_viec'), ctx.kmKhungTot3Ngay_((function () { const d = new Date(Date.now() + 7 * 3600e3 + 864e5); return { day: d.getUTCDate(), month: d.getUTCMonth() + 1, year: d.getUTCFullYear(), hour: 9, minute: 0 }; })(), 'cong_viec'));
   kt(g1.gioTot.length === 3 && g1.ly.every(x => typeof x === 'string'), 'danhGia gửi văn: 3 khung giờ, ly là mã');
   const dgCho = Object.assign({}, ctx.kmDanhGia_(ban, 'thi_cu'), { muc: 'nen_cho' }), gc = ctx.kmGoiVan_(ban, dgCho, []);
   kt(gc.choDen && gc.choDen.nam === 2026 && gc.choDen.thang === 11 && gc.choDen.ngay === 24, 'nên chờ, không có khung tốt: chờ đến 3 ngày sau (24/11)');

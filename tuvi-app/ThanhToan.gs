@@ -52,6 +52,11 @@ var TT_PHAN_MAC_DINH = {
   van_ngay: { ten: 'Lời nhắn mỗi sáng qua email – 30 ngày', xu: 19 }, // đăng ký theo 30 ngày (dangKyVanNgay)
   // Kỳ Môn (KyMon.gs, 21/11): mua theo TÀI KHOẢN (khóa 'TK:<tài khoản>'), mã km_hoi:<yyyymmddhh>:<loại việc> – muaPhan(token, thoiDiem, 'km_hoi', loai)
   km_hoi: { ten: 'Kỳ Môn – hỏi một việc', xu: 9, theo: 'tk' },
+  // Thái Ất (21/11, chủ dự án chốt): mệnh pháp theo LÁ SỐ (muaPhan(token, input, 'ta_menh')); hỏi việc theo TÀI KHOẢN
+  // ta_hoi:<yyyymmddhh>:<loại> – muaPhan(token, thoiDiem, 'ta_hoi', loai); combo 2 môn mở cả km_hoi + ta_hoi cùng loại việc, cùng giờ âm lịch
+  ta_menh: { ten: 'Thái Ất – bản đồ đời theo mệnh pháp (12 cung)', xu: 19 },
+  ta_hoi: { ten: 'Thái Ất – hỏi một việc theo giờ', xu: 9, theo: 'tk' },
+  hoi_2_mon: { ten: 'Hỏi một việc theo 2 môn (Kỳ Môn + Thái Ất)', xu: 15, theo: 'tk' },
   gia_dinh_3: { ten: 'Gói gia đình 3 người – Đồng hành năm cho 3 lá số', xu: 79, luot: 3 },
   gia_dinh_5: { ten: 'Gói gia đình 5 người – Đồng hành năm cho 5 lá số', xu: 119, luot: 5 },
   luu_nien: { ten: 'Lưu niên nhiều năm (gói cũ)', xu: 19, an: true }   // gói cũ: người đã mua được xem mọi năm/tháng
@@ -346,6 +351,7 @@ function ttCatPhan_(r, q) {
     if (!vanMo(+String(v.nam).slice(0, 4), +String(v.nam).slice(-4))) { v.items = [KHOA_DV]; v.khoa = true; }
   });
   if (!coNam || !coThang) ttCatNamHe_(r, coNam, coThang, vy);
+  ttCatThaiAtNam_(r, coNam);   // Thái Ất vận năm cá nhân (21/11): năm chưa mở chỉ còn dòng hé lộ
   ttGanNamCd_(r, q);   // 4 chủ đề năm – dựng từ Hồ sơ năm ĐẦY ĐỦ, phải chạy trước khi cắt Hồ sơ năm
   var tomTat = { nam: vy, coNam: coNam, thangNhat: tn[0] + '-' + ttPad2_(tn[1]), coThang: coThang, dv: [], cd: {} };
   TT_CHU_DE.forEach(function (cd) { tomTat.cd[cd] = ttCoCd_(q, vy, cd); });
@@ -471,6 +477,8 @@ function muaPhan(token, input, phan, id) {
   if (!p || !TT_PHAN_MAC_DINH[phan] || TT_PHAN_MAC_DINH[phan].an) throw new Error('Không có gói "' + phan + '".');
   if (TT_PHAN_MAC_DINH[phan].luot) return ttMuaGiaDinh_(u, phan, bg);
   if (phan === 'km_hoi') return ttMuaKmHoi_(u, input, id, bg);
+  if (phan === 'ta_hoi') return ttMuaTaHoi_(u, input, id, bg);
+  if (phan === 'hoi_2_mon') return ttMuaHoi2Mon_(u, input, id, bg);
   if (phan === 'gieo_que') throw new Error('Gói này mua trực tiếp trong công cụ.');
   if (phan === 'quan_he') input = ttQuanHeInput_(u, input);
   var capDoi = phan === 'cap_doi' || phan === 'hop_tac' || phan === 'quan_he';
@@ -1077,4 +1085,268 @@ function skQuaChuaNap_() {
   bcDong_('Vi', 2).forEach(function (r) { du[String(r[0])] = +r[1] || 0; });
   var ds = Object.keys(qua).filter(function (t) { return chi[t] && !napRoi[t]; });
   return { soTK: ds.length, hetQua: ds.filter(function (t) { return (du[t] || 0) < 9; }).length };
+}
+
+/* ============================================================
+ *  THÁI ẤT (21/11, chủ dự án chốt): API + bán. Bộ máy tính ở ThaiAt.gs, văn luận ở ThaiAtVan.gs (gọi có kiểm typeof + try).
+ *  (1) Mệnh pháp: thaiAtMenh – tóm tắt miễn phí cho tài khoản, đầy đủ = phần 'ta_menh' (19 xu, theo LÁ SỐ, muaPhan(token, input, 'ta_menh')).
+ *  (2) Vận năm cá nhân: GHÉP vào kết quả lapLaSo (r.thaiAtNam, taGanNam_) – chưa mở năm chỉ còn dòng hé lộ (ttCatThaiAtNam_).
+ *  (3) Thời cuộc chung: thaiAtThoiCuoc – miễn phí, không cần đăng nhập, cache theo năm/tháng tiết.
+ *  (4) Hỏi việc theo giờ: thaiAtHoi – 'ta_hoi' 9 xu theo TÀI KHOẢN, mã ta_hoi:<yyyymmddhh>:<loại> (cùng khung giờ âm lịch như km_hoi);
+ *      combo 'hoi_2_mon' 15 xu mở cả km_hoi lẫn ta_hoi cho cùng loại việc + cùng giờ âm lịch (đã có một môn: trả 15 − 9 = 6).
+ * ============================================================ */
+var TA_HOI_GIOI_HAN = { lan: 30, giay: 600 };   // 30 lượt / 10 phút / tài khoản (riêng với Kỳ Môn)
+var TA_VAI = { khach: 'Bạn là người chủ động (đi mở lời, đề nghị, bắt đầu việc mới)', chu: 'Bạn là người đang giữ (đang có sẵn vị trí, được người khác tìm đến)' };
+var TA_NGHIENG_HOI = {
+  chu_ro: 'Giờ này nghiêng rõ về người đang giữ thế.', chu: 'Giờ này hơi nghiêng về người đang giữ thế.',
+  giang_co: 'Giờ này hai phía ngang nhau, đang giằng co.', khach: 'Giờ này hơi nghiêng về người chủ động.', khach_ro: 'Giờ này nghiêng rõ về người chủ động.'
+};
+/** Bàn rút gọn để vẽ hình 16 ô + ô giữa (bỏ số tích, điểm nội bộ). Ô: {o, ten, cung, cungTen, huong, laCung, than:[{ma, ten, loai}]} */
+function taBanGon_(b) {
+  var x = { phep: b.phep, muiGio: b.muiGio, ke: b.ke, keTen: b.keTen, keGiai: b.keGiai, cuc: b.cuc, cucTen: b.cucTen, don: b.don, donTen: b.donTen,
+    nguyen: b.nguyen, namTiet: b.namTiet, namCanChi: b.namCanChi, thaiTue: b.thaiTue,
+    thaiAt: { cung: b.thaiAt.cung, cungTen: b.thaiAt.cungTen, huong: b.thaiAt.huong, pheGiai: b.thaiAt.pheGiai },
+    toan: { chu: b.toan.chu.so, khach: b.toan.khach.so, dinh: b.toan.dinh.so },
+    nghieng: b.soSanh.nghieng, nghiengTen: b.soSanh.nghiengTen,
+    o: b.o.map(function (v) { return { o: v.o, ten: v.ten, cung: v.cung, cungTen: v.cungTen, huong: v.huong, laCung: v.laCung,
+      than: v.than.map(function (ma) { return { ma: ma, ten: TA_THAN[ma].ten, loai: TA_THAN[ma].loai }; }) }; }) };
+  if (b.thangTiet != null) { x.thangTiet = b.thangTiet; x.thangChi = b.thangChi; }
+  if (b.thoiDiem) { x.thoiDiem = b.thoiDiem; x.tyMuon = b.tyMuon; }
+  if (b.ngay) { x.ngay = b.ngay.ten; x.gio = b.gio.ten; }
+  return x;
+}
+function taCachGon_(b) { return b.cach.map(function (c) { return { ma: c.ma, ten: c.ten, giai: c.giai, muc: c.muc, ben: c.ben || null }; }); }
+/** Lý do chấm (mã + câu) – không đưa điểm số ra ngoài */
+function taLyGon_(dg) { return dg.ly.map(function (x) { return { k: x.k, ta: x.ta, tot: x.diem > 0 }; }); }
+/** Gọi một hàm văn của ThaiAtVan.gs: chưa có file / lỗi → khung rỗng (đánh dấu chuaCoVan / loiVan) */
+function taGoiVan_(ten, args, rong) {
+  var g = typeof globalThis !== 'undefined' ? globalThis : this, f = g[ten];
+  if (typeof f !== 'function') { rong.chuaCoVan = true; return rong; }
+  try { var v = f.apply(null, args); return v && typeof v === 'object' ? v : rong; }
+  catch (e) { rong.loiVan = true; return rong; }
+}
+
+/* ---------- (3) Thời cuộc chung: miễn phí, không cần đăng nhập ---------- */
+/**
+ * API: khí thế chung của năm (Tuế kế) và tháng hiện tại (Nguyệt kế), giờ VN. KHÔNG cần đăng nhập (chủ dự án chốt 21/11):
+ * chỉ là bàn chung cho mọi người (không dùng dữ liệu cá nhân, không có phần trả phí) – dùng để kéo khách, chia sẻ được.
+ * Có cache theo năm/tháng tiết (6 giờ). Trả { ok, nam: {ban, muc, mucTen, mucGiai, nghiengTen, van}, thang: {...}, thang12: [{thang, chi, muc, mucTen, nghiengTen}], luuY }
+ */
+function thaiAtThoiCuoc() {
+  var bay = kmTuDate_(kmBayGio_());
+  var bN = taLap_({ ke: 'nam', day: bay.day, month: bay.month, year: bay.year, hour: bay.hour, minute: bay.minute });
+  var bT = taLap_({ ke: 'thang', day: bay.day, month: bay.month, year: bay.year, hour: bay.hour, minute: bay.minute });
+  var ck = 'TAC_' + bN.namTiet + '_' + bT.thangTiet, c = null;
+  try { c = CacheService.getScriptCache(); var v = c.get(ck); if (v) return JSON.parse(v); } catch (e) { c = null; }
+  function phan(b) {
+    var dg = taDanhGia_(b, 'chung', 'chu');
+    return { ban: taBanGon_(b), muc: dg.muc, mucTen: dg.mucTen, mucGiai: dg.mucGiai, nghiengTen: b.soSanh.nghiengTen,
+      van: taGoiVan_('taVanThoiCuoc_', [b], { tieuDe: '', van: '', canCu: [] }) };
+  }
+  var kq = { ok: true, namTiet: bN.namTiet, thangTiet: bT.thangTiet, nam: phan(bN), thang: phan(bT), thang12: [], luuY: KM_LUU_Y };
+  for (var m = 1; m <= 12; m++) {   // giữa mỗi tháng tiết (tháng 1 = Dần, từ Lập xuân ~4/2)
+    var d = new Date(Date.UTC(bN.namTiet, 1, 19) + Math.round((m - 1) * 30.44) * 864e5);
+    var b = taLap_({ ke: 'thang', day: d.getUTCDate(), month: d.getUTCMonth() + 1, year: d.getUTCFullYear(), hour: 12, minute: 0 }), dg = taDanhGia_(b, 'chung', 'chu');
+    kq.thang12.push({ thang: b.thangTiet, chi: b.thangChi, nay: b.thangTiet === bT.thangTiet, muc: dg.muc, mucTen: dg.mucTen, nghiengTen: b.soSanh.nghiengTen });
+  }
+  try { if (c) c.put(ck, JSON.stringify(kq), 21600); } catch (e) { /* bỏ qua */ }
+  return kq;
+}
+
+/* ---------- (1) Mệnh pháp cá nhân: tóm tắt miễn phí, đầy đủ 'ta_menh' 19 xu theo lá số ---------- */
+function taSinh_(input) {
+  input = input || {};
+  var d = +input.day, m = +input.month, y = +input.year;
+  if (!(d >= 1 && d <= 31 && m >= 1 && m <= 12 && y >= 1900 && y <= 2100)) throw new Error('Ngày sinh không hợp lệ.');
+  return { day: d, month: m, year: y, hour: input.hour == null || input.hour === '' ? 12 : +input.hour, minute: +input.minute || 0,
+    gender: input.gender === 'nu' ? 'nu' : 'nam', calendar: input.calendar === 'am' ? 'am' : 'duong', leap: !!input.leap };
+}
+/**
+ * API: Thái Ất mệnh pháp. Cần đăng nhập. input = lá số {name, day, month, year, hour, minute, gender, calendar, leap}.
+ *  Miễn phí: { ok, daMua:false, phep, doTinCay, canChi, namSinhTiet, theBamSinh: {ma, giai}, banNam (bàn Tuế kế năm sinh, 16 ô),
+ *              luan: {tomTat, luuY}, gia, soDu, khoa }
+ *  Đã mua 'ta_menh' cho lá số này (hoặc toàn quyền): thêm menh, thanCung, cung12 (12 cung), cachNamSinh, banGio, luan đầy đủ
+ *              {tomTat, chiTiet[12], loiKhuyen[], canCu[], luuY}, hanGhiChu.
+ */
+function thaiAtMenh(token, input) {
+  var u = tkPhien_(token);   // chủ dự án 21/11: khách chưa đăng nhập xem được tóm tắt miễn phí (như 6 hệ); bản đầy đủ cần đăng nhập + mua
+  var s = taSinh_(input), M = taMenh_(s), khoa = ttKhoaLaSo_(input), toan = !!u && ttToanQuyen_(u);
+  var co = toan || (!!u && !!ttQuyen_(u, khoa).ta_menh), bg = ttBangGia_();
+  var V = taGoiVan_('taVanMenh_', [M], { tomTat: '', chiTiet: [], loiKhuyen: [], canCu: [], luuY: '' });
+  var tomTat = V.tomTat || ('Bạn thuộc mẫu người ' + M.theBamSinh.giai + '.');
+  var kq = { ok: true, phep: M.phep, doTinCay: M.doTinCay, canChi: M.canChi, namSinhTiet: M.namSinhTiet, gioiTinh: M.gioiTinh,
+    theBamSinh: { ma: M.theBamSinh.ma, giai: M.theBamSinh.giai }, banNam: taBanGon_(M.banNam),
+    luan: { tomTat: tomTat, luuY: V.luuY || KM_LUU_Y }, gia: (bg.phan.ta_menh || {}).xu, daMua: co && !toan, toanQuyen: toan,
+    soDu: (toan || !u) ? null : ttSoDu_(u.ten), khoa: khoa, canDangNhap: !u };
+  if (V.chuaCoVan) kq.luan.chuaCoVan = true;
+  if (co) {
+    var ten = function (ds) { return ds.map(function (ma) { return { ma: ma, ten: TA_THAN[ma].ten, loai: TA_THAN[ma].loai, giai: TA_THAN[ma].giai }; }); };
+    kq.menh = { chi: M.menh.chi, chiTen: M.menh.chiTen, than: ten(M.menh.than) };
+    kq.thanCung = { chi: M.thanCung.chi, chiTen: M.thanCung.chiTen, cung: M.thanCung.cung, cungTen: M.thanCung.cungTen, than: ten(M.thanCung.than) };
+    kq.cung12 = M.cung12.map(function (c) { return { i: c.i, ma: c.ma, ten: c.ten, deHieu: c.deHieu, chi: c.chi, chiTen: c.chiTen, than: ten(c.than), danhGia: c.danhGia, laThan: c.laThan }; });
+    kq.theBamSinh = M.theBamSinh;
+    kq.cachNamSinh = M.cachNamSinh.map(function (ma) { return { ma: ma, ten: TA_CACH[ma].ten, giai: TA_CACH[ma].giai, muc: TA_CACH[ma].muc }; });
+    kq.banGio = taBanGon_(M.banGio);
+    kq.luan = { tomTat: tomTat, chiTiet: V.chiTiet || [], cungTot: V.cungTot || [], cungXau: V.cungXau || [], loiKhuyen: V.loiKhuyen || [], canCu: V.canCu || [], luuY: V.luuY || KM_LUU_Y };
+    if (V.chuaCoVan) kq.luan.chuaCoVan = true; if (V.loiVan) kq.luan.loiVan = true;
+    kq.hanGhiChu = M.hanGhiChu;
+  }
+  return kq;
+}
+
+/* ---------- (2) Vận năm cá nhân: ghép vào kết quả năm của lapLaSo ---------- */
+/** r.thaiAtNam (bản đầy đủ) cho năm đang xem – gọi trong lapLaSo trước khi cắt theo quyền; lỗi thì { loi } */
+function taGanNam_(r, input) {
+  try {
+    var vy = +(r.tuvi && r.tuvi.info && r.tuvi.info.viewYear) || new Date().getFullYear();
+    var N = taNamCaNhan_(taSinh_(input), vy, 'chu'), dg = N.danhGia;
+    var V = taGoiVan_('taVanNam_', [N], { heLo: '', van: '', viec: [], canCu: [], ghiChu: '' });
+    var ten12 = {}; TA_CUNG12.forEach(function (c) { ten12[c.ma] = c.ten; });
+    var cung = function (ds) { return ds.map(function (ma) { return { ma: ma, ten: ten12[ma] }; }); };
+    var thanTen = function (ds) { return ds.map(function (ma) { return { ma: ma, ten: TA_THAN[ma].ten, loai: TA_THAN[ma].loai }; }); };
+    r.thaiAtNam = { nam: N.namXem, namCanChi: N.namCanChi, tuoi: N.tuoi, muc: dg.muc, mucTen: dg.mucTen,
+      heLo: V.heLo || ('Năm ' + N.namXem + ' với bạn: ' + dg.mucTen.toLowerCase() + '.'),
+      mucGiai: dg.mucGiai, ghepGiai: N.ghepGiai, ban: taBanGon_(N.ban), cach: taCachGon_(N.ban), ly: taLyGon_(dg),
+      cungDuocPhuc: cung(N.cungDuocPhuc), cungBiCan: cung(N.cungBiCan), menhGap: thanTen(N.menhGap), thanCungGap: thanTen(N.thanCungGap),
+      thanVaoCung: N.thanVaoCung.map(function (x) { return { than: x.than, ten: x.ten, loai: x.loai, cung: x.cung, cungTen: x.cungTen }; }),
+      luan: { heLo: V.heLo || '', van: V.van || '', doan: V.doan || [], viec: V.viec || [], canCu: V.canCu || [], ghiChu: V.ghiChu || '' } };
+    if (V.chuaCoVan) r.thaiAtNam.luan.chuaCoVan = true; if (V.loiVan) r.thaiAtNam.luan.loiVan = true;
+  } catch (e) { r.thaiAtNam = { loi: String(e && e.message || e) }; }
+  return r;
+}
+/** Năm chưa mở (chưa mua "bức tranh chung" năm / Đồng hành / gói cũ): chỉ còn dòng hé lộ + mức (màu) */
+function ttCatThaiAtNam_(r, coNam) {
+  var A = r.thaiAtNam;
+  if (!A || A.loi || coNam) return r;
+  r.thaiAtNam = { nam: A.nam, namCanChi: A.namCanChi, muc: A.muc, mucTen: A.mucTen, heLo: A.heLo, khoa: true };
+  return r;
+}
+
+/* ---------- (4) Hỏi việc theo giờ: 'ta_hoi' 9 xu, combo 'hoi_2_mon' ---------- */
+function taMaHoi_(o, loai) { return kmMaHoi_(o, loai).replace(/^km_hoi:/, 'ta_hoi:'); }
+function taGioiHan_(u) {
+  if (ttToanQuyen_(u)) return;
+  var c = CacheService.getScriptCache(), k = 'TAH_' + u.ten, now = Date.now(), v = null;
+  try { v = JSON.parse(c.get(k) || 'null'); } catch (e) { v = null; }
+  if (!v || now - v.t > TA_HOI_GIOI_HAN.giay * 1000) v = { t: now, n: 0 };
+  if (v.n >= TA_HOI_GIOI_HAN.lan) throw new Error('Bạn hỏi hơi nhiều trong thời gian ngắn – vui lòng đợi khoảng 10 phút rồi hỏi tiếp.');
+  v.n++; c.put(k, JSON.stringify(v), TA_HOI_GIOI_HAN.giay);
+}
+function taLoaiHoi_(loai) {
+  loai = String(loai || '');
+  if (!KM_LOAI.hasOwnProperty(loai) || !TA_LOAI.hasOwnProperty(loai)) throw new Error('Loại việc không hợp lệ.');
+  return loai;
+}
+/** Dựng kết quả hỏi việc Thái Ất (dùng chung cho thaiAtHoi và muaPhan). mo = true → kèm phần trả phí */
+function taKetQua_(o, loai, vai, mo) {
+  vai = vai === 'chu' ? 'chu' : 'khach';
+  var b = taLap_({ ke: 'gio', day: o.day, month: o.month, year: o.year, hour: o.hour, minute: o.minute }), dg = taDanhGia_(b, loai, vai), ga = kmGioAm_(o);
+  var kq = { ok: true, mon: 'thai_at', loai: loai, loaiTen: KM_LOAI[loai].ten, vai: vai, vaiTen: TA_VAI[vai], ma: taMaHoi_(o, loai), thoiDiem: o,
+    gioAm: { chi: ga.chi, ten: ga.ten, tu: ga.tu, den: ga.den }, ban: taBanGon_(b), cauHeLo: TA_NGHIENG_HOI[b.soSanh.nghieng],
+    muc: dg.muc, mucTen: dg.mucTen, mucGiai: dg.mucGiai,
+    luuY: [KM_LUU_Y].concat(KM_LUU_Y_THEM[loai] ? [KM_LUU_Y_THEM[loai]] : []) };
+  if (mo) {
+    var khac = taDanhGia_(b, loai, vai === 'chu' ? 'khach' : 'chu');
+    kq.danhGia = { cach: taCachGon_(b), ly: taLyGon_(dg),
+      vaiKhac: { vai: khac.vai, vaiTen: TA_VAI[khac.vai], muc: khac.muc, mucTen: khac.mucTen, mucGiai: khac.mucGiai } };
+    kq.luan = taGoiVan_('taVanHoi_', [b, loai, dg], { ketLuan: '', canCu: [], viec: [], luuY: '' });
+  }
+  return kq;
+}
+/** Giá combo 2 môn cho tài khoản/mã: min(giá combo, tổng giá lẻ phần còn thiếu); { gia, goc, thieu: ['km_hoi'|'ta_hoi'], le: {km_hoi, ta_hoi} } */
+function ttGiaHoi2Mon_(daKm, daTa, bg) {
+  var le = { km_hoi: bg.phan.km_hoi.xu, ta_hoi: bg.phan.ta_hoi.xu }, thieu = [], con = 0;
+  if (!daKm) { thieu.push('km_hoi'); con += le.km_hoi; }
+  if (!daTa) { thieu.push('ta_hoi'); con += le.ta_hoi; }
+  var goc = bg.phan.hoi_2_mon.xu, gia = 0;   // chủ dự án 21/11: combo 15; đã có một môn thì trả phần còn lại = combo − giá lẻ môn đã có (15 − 9 = 6)
+  if (thieu.length === 2) gia = Math.min(goc, con);
+  else if (thieu.length === 1) gia = Math.max(0, Math.min(con, goc - le[thieu[0] === 'km_hoi' ? 'ta_hoi' : 'km_hoi']));
+  return { gia: gia, goc: goc, thieu: thieu, le: le };
+}
+/**
+ * API: Thái Ất "Hỏi một việc theo giờ" (Thời kế). Cần đăng nhập; tối đa 30 lượt / 10 phút / tài khoản.
+ *  loai ∈ cong_viec, tai_loc, tinh_cam, di_xa, suc_khoe, kien_tung, thi_cu (như Kỳ Môn).
+ *  thoiDiem (tùy chọn) = {day, month, year, hour, minute} giờ VN, từ 1 ngày trước đến 3 ngày tới; bỏ trống = bây giờ.
+ *  vai (tùy chọn): 'khach' (người chủ động – mặc định) | 'chu' (người đang giữ). Lượt mua tính theo loại việc + giờ âm lịch, đổi vai không phải mua lại.
+ *  Chưa mua: { ok, mon:'thai_at', loai, loaiTen, vai, vaiTen, ma, thoiDiem, gioAm, ban (16 ô + giữa), cauHeLo, muc, mucTen, mucGiai, luuY,
+ *              gia, giaCombo {gia, goc, thieu, le}, kyMonDaMua, daMua:false, toanQuyen, soDu }
+ *  Đã mua (ta_hoi hoặc combo, hoặc toàn quyền): thêm daMua:true, danhGia {cach, ly, vaiKhac}, luan {ketLuan, canCu, viec, luuY}, nhacHoiLai
+ *  (mở lại đúng thời điểm đã hỏi lúc mua).
+ */
+function thaiAtHoi(token, loai, thoiDiem, vai) {
+  var u = tkCan_(token);
+  loai = taLoaiHoi_(loai);
+  taGioiHan_(u);
+  var o = kmThoiDiem_(thoiDiem, true), toan = ttToanQuyen_(u), ma = taMaHoi_(o, loai), mua = toan ? null : kmDaMua_(u.ten, ma);
+  if (!mua) kmThoiDiem_(thoiDiem);   // chưa mua: giữ phạm vi 1 ngày trước – 3 ngày tới; đã mua: mở lại được cả lượt cũ
+  if (mua && mua.thoiDiem) o = mua.thoiDiem;
+  var kq = taKetQua_(o, loai, vai, toan || !!mua), bg = ttBangGia_();
+  var daKm = toan || !!kmDaMua_(u.ten, kmMaHoi_(o, loai));
+  kq.gia = bg.phan.ta_hoi.xu; kq.giaCombo = ttGiaHoi2Mon_(daKm, toan || !!mua, bg); kq.kyMonDaMua = daKm;
+  kq.daMua = !!mua; kq.toanQuyen = toan; kq.soDu = toan ? null : ttSoDu_(u.ten);
+  if (mua) kq.nhacHoiLai = KM_NHAC_HOI_LAI;
+  return kq;
+}
+function taNhanHoi_(mon, loai, o) {
+  var p = function (n) { return (n < 10 ? '0' : '') + n; };
+  return mon + ' – ' + KM_LOAI[loai].ten + ' @' + o.year + '-' + p(o.month) + '-' + p(o.day) + ' ' + p(o.hour) + ':' + p(o.minute);
+}
+/** muaPhan(token, thoiDiem, 'ta_hoi', loai) – như ttMuaKmHoi_. Trả { ok, soDu, gia, ma, ketQua } | { ok, daCo, … } | { ok:false, thieu, gia, soDu } | { ok, toanQuyen } */
+function ttMuaTaHoi_(u, thoiDiem, loai, bg) {
+  loai = taLoaiHoi_(loai);
+  if (ttToanQuyen_(u)) return { ok: true, toanQuyen: true };
+  taGioiHan_(u);
+  var o = kmThoiDiem_(thoiDiem), ma = taMaHoi_(o, loai), gia = bg.phan.ta_hoi.xu;
+  var r = ttKhoa_(function () {
+    var cu = kmDaMua_(u.ten, ma);
+    if (cu) return { ok: true, daCo: true, soDu: ttSoDu_(u.ten), ma: ma, thoiDiem: cu.thoiDiem || o };
+    var du = ttSoDu_(u.ten);
+    if (du < gia) return { ok: false, thieu: gia - du, gia: gia, soDu: du };
+    var moi = gia ? ttCong_(u.ten, -gia, 'Mở khóa: ' + bg.phan.ta_hoi.ten + ' [' + ma + ']', 'TK:' + u.ten) : du;
+    ttGhiQuyen_(u.ten, gia, [new Date(), shO_(u.ten), 'TK:' + u.ten, ma, gia, shO_(taNhanHoi_('Thái Ất', loai, o)), TT_GIA_PHIEN]);
+    skMua_(u.ten, gia, ma);
+    return { ok: true, soDu: moi, gia: gia, ma: ma, thoiDiem: o };
+  });
+  if (r.ok) {
+    try { r.ketQua = taKetQua_(r.thoiDiem, loai, null, true); r.ketQua.daMua = true; r.ketQua.gia = gia; r.ketQua.soDu = r.soDu; if (r.daCo) r.ketQua.nhacHoiLai = KM_NHAC_HOI_LAI; }
+    catch (e) { r.ketQua = null; }   // đã ghi quyền: gọi lại thaiAtHoi để xem
+  }
+  return r;
+}
+/**
+ * muaPhan(token, thoiDiem, 'hoi_2_mon', loai): combo hỏi việc 2 môn – mở km_hoi + ta_hoi cho cùng loại việc, cùng giờ âm lịch.
+ *  Giá = min(giá combo, tổng giá lẻ phần còn thiếu); đã có đủ cả hai → daCo, không trừ. Ghi 1 dòng sổ cái, mỗi môn còn thiếu 1 dòng MoKhoa
+ *  (giá chia theo tỷ lệ giá lẻ – để cộng đúng số đã trả). Trả { ok, soDu, gia, ma: {km_hoi, ta_hoi}, ketQua: {kyMon, thaiAt} } | { ok, daCo, … } | { ok:false, thieu, gia, soDu } | { ok, toanQuyen }
+ */
+function ttMuaHoi2Mon_(u, thoiDiem, loai, bg) {
+  loai = taLoaiHoi_(loai);
+  if (ttToanQuyen_(u)) return { ok: true, toanQuyen: true };
+  kmGioiHan_(u); taGioiHan_(u);
+  var o = kmThoiDiem_(thoiDiem), maKm = kmMaHoi_(o, loai), maTa = taMaHoi_(o, loai), maC = maKm.replace(/^km_hoi:/, 'hoi_2_mon:');
+  var r = ttKhoa_(function () {
+    var cuKm = kmDaMua_(u.ten, maKm), cuTa = kmDaMua_(u.ten, maTa), G = ttGiaHoi2Mon_(!!cuKm, !!cuTa, bg);
+    var td = (cuKm && cuKm.thoiDiem) || (cuTa && cuTa.thoiDiem) || o;   // đã mua một môn: môn còn lại lập đúng thời điểm đã hỏi
+    if (!G.thieu.length) return { ok: true, daCo: true, soDu: ttSoDu_(u.ten), ma: { km_hoi: maKm, ta_hoi: maTa }, thoiDiem: { km_hoi: cuKm.thoiDiem || o, ta_hoi: cuTa.thoiDiem || o } };
+    var du = ttSoDu_(u.ten), gia = G.gia;
+    if (du < gia) return { ok: false, thieu: gia - du, gia: gia, soDu: du, giaCombo: G };
+    var moi = gia ? ttCong_(u.ten, -gia, 'Mở khóa: ' + bg.phan.hoi_2_mon.ten + ' [' + maC + ']', 'TK:' + u.ten) : du;
+    var tongLe = G.thieu.reduce(function (s, k) { return s + G.le[k]; }, 0), daChia = 0;
+    G.thieu.forEach(function (k, i) {
+      var phan = i === G.thieu.length - 1 ? gia - daChia : (tongLe ? Math.round(gia * G.le[k] / tongLe) : 0);
+      daChia += phan;
+      // dòng đầu ghi lỗi → hoàn cả gia; dòng sau ghi lỗi → chỉ hoàn phần của môn đó (môn trước đã có quyền)
+      ttGhiQuyen_(u.ten, i === 0 ? gia : phan, [new Date(), shO_(u.ten), 'TK:' + u.ten, k === 'km_hoi' ? maKm : maTa, phan,
+        shO_(taNhanHoi_(k === 'km_hoi' ? 'Kỳ Môn' : 'Thái Ất', loai, td) + ' (combo 2 môn)'), TT_GIA_PHIEN]);
+    });
+    skMua_(u.ten, gia, maC);
+    return { ok: true, soDu: moi, gia: gia, ma: { km_hoi: maKm, ta_hoi: maTa }, thoiDiem: { km_hoi: (cuKm && cuKm.thoiDiem) || td, ta_hoi: (cuTa && cuTa.thoiDiem) || td } };
+  });
+  if (r.ok) {
+    r.ketQua = {};
+    try { r.ketQua.kyMon = kmKetQua_(r.thoiDiem.km_hoi, loai, true); r.ketQua.kyMon.daMua = true; } catch (e) { r.ketQua.kyMon = null; }
+    try { r.ketQua.thaiAt = taKetQua_(r.thoiDiem.ta_hoi, loai, null, true); r.ketQua.thaiAt.daMua = true; } catch (e) { r.ketQua.thaiAt = null; }
+    if (r.daCo) [r.ketQua.kyMon, r.ketQua.thaiAt].forEach(function (k) { if (k) k.nhacHoiLai = KM_NHAC_HOI_LAI; });
+    if (r.ketQua.kyMon && r.ketQua.thaiAt) r.ketQua.haiMon = { kyMon: r.ketQua.kyMon.muc, thaiAt: r.ketQua.thaiAt.muc, cungChieu: r.ketQua.kyMon.muc === r.ketQua.thaiAt.muc };
+  }
+  return r;
 }

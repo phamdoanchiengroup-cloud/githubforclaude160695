@@ -15,7 +15,7 @@ const GIAO_DIEN = ('bangGiaCongKhai dangKy dangKyBanTin dangKyVanNgay dangNhap d
   'dungLuotGiaDinh getDoanNghiemChung getLichSu ghiDoiChieu giaDinhDs giaDinhLuu giaDinhQuanHe giaDinhVanNam gieoQue huyVanNgay kiemTraDon lapCapDoi ' +
   'lapLaSo layAnhHolo muaPhan nhapMaQua phiTinhLuan phien qtDatVaiTro qtDieuChinhXu qtDsMaQua qtHuyDon qtKiemTraPayos qtLuuBangGia qtLuuCauHinh ' +
   'qtTaoMaQua qtTongQuan qtXacNhanDon qtXoaMaQua taoDonNap taoTaiKhoan thamKhaoThanSat thamKhaoTuVi tienIch tinhDiemNghiemChung tuViChuSoHuu viCuaToi ' +
-  'xoaLichSu xoaTaiKhoan dsBanTin dsTaiKhoan dsVanNgay guiMaEmail xacThucEmail kyMonHoi qtPheu').split(' ');
+  'xoaLichSu xoaTaiKhoan dsBanTin dsTaiKhoan dsVanNgay guiMaEmail xacThucEmail kyMonHoi qtPheu thaiAtHoi thaiAtMenh thaiAtThoiCuoc').split(' ');
 const KHUNG = ['doGet', 'include', 'includeTuyChon'];
 // Tiện ích lịch/can chi thuần tính toán – không chứa nội dung trả phí
 const TIEN_ICH = ('canChiIndex canChiText findSolarTermJD getLeapMonthOfYear getTietKhiName jdFromDate jdToDate jdToLocalDateTime lunarToSolar mod10 mod12 ' +
@@ -44,6 +44,23 @@ VAN_HANH.forEach(n => kt(congKhai[n] && /chiChayNoiBo_\(/.test(congKhai[n].dong1
 kt(congKhai.kyMonHoi && /tkCan_\(token\)/.test(congKhai.kyMonHoi.dong1), 'kyMonHoi kiểm phiên (tkCan_) ở dòng đầu');
 kt(congKhai.qtPheu && /tkCan_\(token, true\)/.test(congKhai.qtPheu.dong1), 'qtPheu chỉ chủ sở hữu (tkCan_(token, true)) ở dòng đầu');
 ['kyMonHoi', 'qtPheu'].forEach(n => { let loi = ''; try { ctx[n]('token-gia-mao-khong-hop-le-123', n === 'kyMonHoi' ? 'cong_viec' : 7); } catch (e) { loi = e.message; } kt(/đăng nhập/.test(loi), n + ': chưa đăng nhập bị chặn'); });
+// 21/11: Thái Ất – hỏi việc và mệnh pháp cần đăng nhập (tkCan_ dòng đầu); thời cuộc chung MIỄN PHÍ, không cần đăng nhập
+// (chủ dự án chốt: bàn chung cho mọi người, không nhận dữ liệu cá nhân, không có phần trả phí) – kiểm: không tham số, không đọc phiên/ví, không lộ trường riêng
+['thaiAtHoi'].forEach(n => {
+  kt(congKhai[n] && /tkCan_\(token\)/.test(congKhai[n].dong1), n + ' kiểm phiên (tkCan_) ở dòng đầu');
+  let loi = ''; try { ctx[n]('token-gia-mao-khong-hop-le-123', 'cong_viec'); } catch (e) { loi = e.message; }
+  kt(/đăng nhập/.test(loi), n + ': chưa đăng nhập bị chặn');
+});
+// thaiAtMenh: khách xem được tóm tắt (chủ dự án 21/11) – dòng đầu đọc phiên bằng tkPhien_, token giả không mở phần trả phí
+{ kt(congKhai.thaiAtMenh && /tkPhien_\(token\)/.test(congKhai.thaiAtMenh.dong1), 'thaiAtMenh đọc phiên (tkPhien_) ở dòng đầu');
+  const g = ctx.thaiAtMenh('token-gia-mao-khong-hop-le-123', { day: 1, month: 1, year: 1990, hour: 8, gender: 'nam' });
+  kt(g.ok && !g.cung12 && !g.luan.chiTiet && g.soDu === null && g.canDangNhap === true, 'thaiAtMenh: khách chỉ thấy tóm tắt, không lộ phần trả phí'); }
+{
+  const src = fs.readFileSync(path.join(D, congKhai.thaiAtThoiCuoc.f), 'utf8'), than = src.slice(src.indexOf('function thaiAtThoiCuoc('), src.indexOf('/* ---------- (1) Mệnh pháp'));
+  kt(/^function thaiAtThoiCuoc\(\)/m.test(src) && !/tkPhien_|tkCan_|ttSoDu_|ttQuyen_|MoKhoa|token/.test(than), 'thaiAtThoiCuoc: không tham số, không đọc phiên/ví/quyền');
+  const tc = JSON.stringify(ctx.thaiAtThoiCuoc());
+  kt(!/"(soDu|nguoiDung|ten|email|token|danhGia|luan|daMua)"\s*:/.test(tc.replace(/"ten":"[^"]*"/g, '')) && !/"(soDu|email|token|daMua|nguoiDung)"/.test(tc), 'thaiAtThoiCuoc: không lộ trường riêng tư / trả phí');
+}
 // Hàm tính bài luận (trả phí) không còn công khai
 ['luanChiTiet', 'duDoanCuocDoi', 'tongHopLuan', 'phoiNgauLuan', 'ketHopLuan', 'nghiemChungLap', 'tuviTrinhTu', 'tuviLapLaSo', 'batTuLap', 'batTuChiTiet',
   'chiemTinhLap', 'chiemTinhLuan', 'hdLap', 'hdLuan', 'haLacLap', 'haLacLuan', 'thanSoHocLap', 'thanSoHocLuan', 'astToanBo'].forEach(n => {
