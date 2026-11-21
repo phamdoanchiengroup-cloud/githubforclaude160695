@@ -13,7 +13,7 @@
 .db-msg{margin:6px 0;font-size:13px;line-height:1.5} .db-msg b{font-weight:700}
 .db-dong{width:100%;border-collapse:collapse;font-size:12.5px;margin-top:6px} .db-dong td,.db-dong th{padding:4px 6px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top} .db-dong th{font-size:10.5px;text-transform:uppercase;color:var(--ink3);font-weight:600} .db-dong td.so{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
 .db-moi{display:inline-block;font-size:10.5px;font-weight:700;padding:0 6px;border-radius:6px;color:#1a1a1a;background:var(--amber);margin-left:4px}
-.db-thanh{height:6px;border-radius:4px;background:var(--line);overflow:hidden;margin:6px 0 2px;max-width:320px} .db-thanh i{display:block;height:100%;background:var(--green)}
+.db-thanh{height:6px;border-radius:4px;background:var(--line);overflow:hidden;margin:6px 0 2px;max-width:320px} .db-thanh i{display:block;height:100%;background:var(--green)} .db-bang tr.db-dau-don td{border-top:2px solid var(--line)} .db-bang td .db-thanh{min-width:70px;max-width:140px;margin:4px 0 0}
 .db-f{border:1px solid var(--cyan);border-radius:12px;padding:12px 14px;margin:10px 0 80px;background:var(--panel)}
 .db-f label{display:block;font-size:12px;color:var(--ink2);margin:10px 0 4px;font-weight:600}
 .db-f input,.db-f textarea,.db-f select{width:100%;font-size:16px;min-height:42px;padding:8px 10px;border-radius:8px;border:1px solid var(--line);background:var(--panel2);color:var(--ink);font-family:inherit}
@@ -88,9 +88,10 @@ function bnVe(){
   if(BND.loi){ m.innerHTML='<div class="ptitle">Đơn hàng</div><div class="alert a-bd">'+esc(BND.loi)+' <button class="btn sm" type="button" onclick="BND=null;bnVe()">Thử lại</button></div>'; return; }
   var h='<div class="db-w"><div class="db-dau"><div><div class="ptitle" style="margin:0">'+(BND.duyet?'Đơn bán hàng':'Đơn hàng của tôi')+'</div><div class="pdesc">'+(BND.duyet?'Bán hàng gửi đơn mới → bạn chốt deadline rồi duyệt → web tự chép vào tab kênh của Sheet "Trạng thái đơn hàng".':'Gửi đơn mới cho sản xuất và theo dõi đơn của bạn.')+'</div></div>'+
     '<div style="display:flex;gap:8px;flex-wrap:wrap">'+(BNF?'':'<button class="btn pri" type="button" onclick="bnMoForm()">+ Đơn mới</button>')+'<button class="btn sm" type="button" onclick="BND=null;bnVe()">Làm mới</button></div></div>';
-  h+='<div class="db-xem" role="tablist"><button type="button" role="tab" aria-selected="'+(BNXem==='don')+'" class="'+(BNXem==='don'?'on':'')+'" onclick="BNXem=\'don\';bnVe()">'+(BND.duyet?'Đơn Bán hàng gửi':'Đơn của tôi')+'</button><button type="button" role="tab" aria-selected="'+(BNXem==='bang')+'" class="'+(BNXem==='bang'?'on':'')+'" onclick="BNXem=\'bang\';bnVe()">Bảng đơn nhà máy</button><button type="button" role="tab" aria-selected="'+(BNXem==='thu')+'" class="'+(BNXem==='thu'?'on':'')+'" onclick="BNXem=\'thu\';bnVe()">Thử trước khi đặt</button></div>';
+  h+='<div class="db-xem" role="tablist"><button type="button" role="tab" aria-selected="'+(BNXem==='don')+'" class="'+(BNXem==='don'?'on':'')+'" onclick="BNXem=\'don\';bnVe()">'+(BND.duyet?'Đơn Bán hàng gửi':'Đơn của tôi')+'</button><button type="button" role="tab" aria-selected="'+(BNXem==='bang')+'" class="'+(BNXem==='bang'?'on':'')+'" onclick="BNXem=\'bang\';bnVe()">Bảng đơn nhà máy</button><button type="button" role="tab" aria-selected="'+(BNXem==='thu')+'" class="'+(BNXem==='thu'?'on':'')+'" onclick="BNXem=\'thu\';bnVe()">Thử trước khi đặt</button><button type="button" role="tab" aria-selected="'+(BNXem==='xong')+'" class="'+(BNXem==='xong'?'on':'')+'" onclick="BNXem=\'xong\';bnVe()">Lẻ / POD đã xong</button></div>';
   if(BNXem==='bang'){ m.innerHTML=h+bnVeBang()+'</div>'; return; }
   if(BNXem==='thu'){ m.innerHTML=h+bnVeThu()+'</div>'; return; }
+  if(BNXem==='xong'){ m.innerHTML=h+bnVeXong()+'</div>'; return; }
   if(BNF) h+=bnVeForm();
   var ds=BND.ds||[], nh=function(tt){ return ds.filter(function(x){return x.tt===tt;}); };
   if(BND.duyet){
@@ -266,12 +267,35 @@ function bnBangHtml(){
   var q=String(BNBLoc.q||'').trim().toUpperCase(), nhan={}; (BNB.kenh||[]).forEach(function(k){ nhan[k[0]]=k[1]; });
   var ds=(BNB.ds||[]).filter(function(d){ return (!BNBLoc.k||d[0]===BNBLoc.k)&&(!q||String(d[1]).toUpperCase().indexOf(q)>=0||String(d[2]).toUpperCase().indexOf(q)>=0); });
   if(!ds.length) return '<div class="pdesc">Không có dòng nào khớp.</div>';
+  bnDonTruoc='';
   var MAX=800, hn=bnHom(), h='<div class="db-bang-w"><table class="db-bang"><thead><tr><th>Mã đơn</th><th>Mã sản phẩm</th><th style="text-align:right">Số đặt</th><th>Deadline</th></tr></thead><tbody>', tab=null, nhom={};
   ds.forEach(function(d){ var g=nhom[d[0]]||(nhom[d[0]]={n:0,sl:0,don:{}}); g.n++; g.sl+=Number(d[3])||0; g.don[d[1]]=1; });
   ds.slice(0,MAX).forEach(function(d){
     if(d[0]!==tab){ tab=d[0]; var g=nhom[tab]; h+='<tr class="nh"><th colspan="4">'+esc(nhan[tab]||tab)+' <i>· '+Object.keys(g.don).length+' đơn · '+g.n+' mã · '+bnSo(g.sl)+' sp</i></th></tr>'; }
-    h+='<tr'+(d[5]?' style="opacity:.75"':'')+'><td>'+esc(d[1]||'—')+'</td><td>'+esc(d[2])+(d[5]?' <span class="db-moi" style="background:#f6d365">tạm dừng</span>':'')+'</td><td class="so">'+bnSo(d[3])+'</td><td class="ng'+(d[4]&&d[4]<hn?' qua':'')+'">'+(d[4]?esc(bnNg(d[4])):'—')+'</td></tr>'; });
+    var kp=d[0]+'|'+d[1], dau=d[1]&&kp!==bnDonTruoc, pc=(BNB.pct||{})[kp]; bnDonTruoc=kp;   // 21/11: thanh % hoàn thành ở dòng đầu mỗi đơn
+    h+='<tr'+(d[5]?' style="opacity:.75"':'')+(dau?' class="db-dau-don"':'')+'><td>'+esc(d[1]||'—')+(dau&&pc!=null?'<div class="db-thanh" title="Đơn đã xong '+pc+'% (cả các mã đã xong)"><i style="width:'+pc+'%"></i></div><div class="pdesc" style="font-size:11px">Xong '+pc+'%</div>':'')+'</td><td>'+esc(d[2])+(d[5]?' <span class="db-moi" style="background:#f6d365">tạm dừng</span>':'')+'</td><td class="so">'+bnSo(d[3])+'</td><td class="ng'+(d[4]&&d[4]<hn?' qua':'')+'">'+(d[4]?esc(bnNg(d[4])):'—')+'</td></tr>'; });
   return h+'</tbody></table></div>'+(ds.length>MAX?'<div class="pdesc" style="margin-top:6px">Đang hiện '+MAX+' / '+bnSo(ds.length)+' dòng – gõ tìm hoặc chọn kênh để xem gọn hơn.</div>':''); }
+var bnDonTruoc='';
+/* 21/11 (chủ dự án): đơn lẻ / POD đã xong trong 3 ngày làm việc gần nhất + tra cứu */
+var BNX=null, BNXTai=false, BNXLoc={q:''};
+function bnTaiXong(){ if(BNXTai) return; BNXTai=true; call('layDonXongLePOD',[],function(r){ BNXTai=false; BNX=(r&&r.ok)?r:{loi:(r&&r.msg)||'Không tải được.'}; if(BNXem==='xong') bnVe(); }); }
+function bnVeXong(){
+  if(!BNX){ bnTaiXong(); return '<div class="pdesc">Đang tải đơn đã xong…</div>'; }
+  if(BNX.loi) return '<div class="alert a-bd">'+esc(BNX.loi)+' <button class="btn sm" type="button" onclick="BNX=null;bnVe()">Thử lại</button></div>';
+  var ng=(BNX.ngay||[]).slice().reverse().map(function(x){ return bnNg(x).slice(0,5); }).join(', ');
+  return '<div class="pdesc" style="margin-bottom:8px">Đơn <b>lẻ</b> và <b>POD</b> đã xong (chuyển sang tab hoàn thiện) trong 3 ngày làm việc gần nhất: '+esc(ng)+'. Ngày xong = ngày web thấy đơn rời tab kênh (chụp lúc 9h sáng), có thể chậm 1 ngày. <button class="btn sm" type="button" onclick="BNX=null;bnVe()">Làm mới</button></div>'+
+    '<div class="db-tim"><input id="bnTimX" type="search" placeholder="Tra cứu mã đơn hoặc tên sản phẩm…" value="'+esc(BNXLoc.q)+'" oninput="BNXLoc.q=this.value;bnXongO()" aria-label="Tra cứu đơn đã xong"></div>'+
+    '<div id="bnXongDs">'+bnXongHtml()+'</div>'; }
+function bnXongHtml(){
+  var q=String(BNXLoc.q||'').trim().toUpperCase(), ds=(BNX.ds||[]).filter(function(x){ return !q||String(x.maDon).toUpperCase().indexOf(q)>=0||(x.dong||[]).some(function(z){ return String(z[0]).toUpperCase().indexOf(q)>=0; }); });
+  return [['le','Đơn lẻ (Web lẻ thường + custom)'],['pod','Đơn POD']].map(function(g){
+    var a=ds.filter(function(x){ return x.nhom===g[0]; }), sp=a.reduce(function(s,x){ return s+(x.dong||[]).reduce(function(t,z){ return t+(Number(z[1])||0); },0); },0);
+    var h='<div class="db-nhom">'+g[1]+' <i>'+a.length+' đơn · '+bnSo(sp)+' sp</i></div>';
+    if(!a.length) return h+'<div class="pdesc" style="margin-bottom:10px">'+(q?'Không có đơn nào khớp.':'Chưa có đơn nào xong trong 3 ngày làm việc gần nhất.')+'</div>';
+    return h+'<div class="db-bang-w"><table class="db-bang"><thead><tr><th>Mã đơn</th><th>Kênh</th><th>Sản phẩm</th><th style="text-align:right">SL</th><th>Xong</th></tr></thead><tbody>'+
+      a.map(function(x){ var d=x.dong||[]; return d.map(function(z,i){ return '<tr'+(i===0?' class="db-dau-don"':'')+'><td>'+(i===0?'<b>'+esc(x.maDon||'—')+'</b>':'')+'</td><td>'+(i===0?esc(x.kenh):'')+'</td><td>'+esc(z[0])+(Number(z[2])>0?' <span class="db-moi" style="background:#f6d365">giao thiếu '+bnSo(z[2])+'</span>':'')+'</td><td class="so">'+bnSo(z[1])+'</td><td class="ng">'+(i===0?esc(bnNg(x.xong).slice(0,5)):'')+'</td></tr>'; }).join(''); }).join('')+
+      '</tbody></table></div>'; }).join(''); }
+function bnXongO(){ var e=document.getElementById('bnXongDs'); if(e&&BNX&&!BNX.loi) e.innerHTML=bnXongHtml(); }
 function bnBangO(){ var e=document.getElementById('bnBangDs'); if(e&&BNB&&!BNB.loi) e.innerHTML=bnBangHtml(); }
 /* 17/11: "Người khác đang xem đơn này" – người duyệt đang mở mục Chờ duyệt báo máy chủ mỗi 30 giây (dừng khi rời tab / ẩn trình duyệt) */
 function bnXemIds(){ return ((BND&&BND.ds)||[]).filter(function(x){ return x.tt==='CHO_DUYET'; }).slice(0,10).map(function(x){ return x.id; }); }

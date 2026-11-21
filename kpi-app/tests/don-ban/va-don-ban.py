@@ -17,7 +17,7 @@ _tdb("  if (o.vaiTro === 'OWNER') o.vaiTro = 'ADMIN';\n  o.cg = cgQuyenCua_(o);"
      "  if (o.vaiTro === 'OWNER') o.vaiTro = 'ADMIN';\n  if (o.vaiTro === 'BH' && !__CHO_BH) { __BH_CHAN = true; return null; }   // 16/11 khuya: Bán hàng chỉ dùng được trang Đơn hàng của tôi + đăng nhập / đổi mật khẩu\n  o.cg = cgQuyenCua_(o);")
 for _h in ['function napDuLieuLoi_(token, phan) {\n', 'function dangXuat(token) {\n', 'function doiMatKhau(token, cu, moi) {\n', 'function layManhGiaoDien(token, ten) {\n',
            'function layDonBan(token) {\n', 'function luuDonBan(token, p) {\n', 'function xoaDonBan(token, p) {\n', 'function layBangDonNhaMay(token) {\n',
-           'function thuDonBH(token, p) {\n', 'function guiDeNghiUu(token, p) {\n', 'function viSaoDonBH(token, p) {\n']:
+           'function thuDonBH(token, p) {\n', 'function guiDeNghiUu(token, p) {\n', 'function viSaoDonBH(token, p) {\n', 'function layDonXongLePOD(token) {\n']:   # 21/11: đơn lẻ / POD đã xong
     _tdb(_h, _h + '  __CHO_BH = true;   // 16/11 khuya: hàm Bán hàng được gọi\n')
 # napDuLieu: BH nhận gói rỗng như bếp / nhóm báo cơm (không có KPI, nhân sự, nhật ký…)
 _tdb("  if (me.vaiTro === 'BEP' || me.vaiTro === 'NHOM' || me.vaiTro === 'NV' || me.vaiTro === 'TBP') {",

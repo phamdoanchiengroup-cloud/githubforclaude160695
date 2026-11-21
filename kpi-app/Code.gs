@@ -7708,7 +7708,7 @@ function danhSachVanPhong(token) {
   ds.sort(function(a, b) { return (thuTu[a.vaiTro] - thuTu[b.vaiTro]) || (a.HoTen < b.HoTen ? -1 : 1); });
   return sach_({ ok: true, ds: ds, muc: HS_MUC });
 }
-var KPI_BAN_MAY = '21/11/2026 12:08';   // giờ dựng Code.gs (22/10)
+var KPI_BAN_MAY = '21/11/2026 12:38';   // giờ dựng Code.gs (22/10)
 /* =====================================================================
    KỸ NĂNG (22/10, chủ dự án nhờ thiết kế + tham khảo chuyên gia nhân sự / đào tạo)
    - Danh mục: trưởng / phó phòng đề xuất kỹ năng của xưởng (tên, mô tả, tiêu chí đạt, công đoạn liên quan)
@@ -12124,7 +12124,37 @@ function layBangDonNhaMay(token) {
     tk.push(ra(tong));
   } catch (eTK) { tk = []; }
   return sach_({ ok: true, luc: d.luc || '', het: het ? 1 : 0, n: ds.length, kenh: dbKenh_(), tk: tk, duKin: DBK_DU_KIN, cs: dhCongSuat_().sp,
+    pct: dbxPctDon_(d.don || []),   // 21/11 (chủ dự án): thanh % hoàn thành theo từng đơn
     ds: ds.slice(0, DBK_BANG_MAX).map(function(o) { return [o.tab, String(o.maDon || ''), o.ten, o.sl || 0, o.dl || '', o.dung ? 1 : 0]; }) });   // [5] = 1: đang tạm dừng
+}
+/* ===== 21/11 (chủ dự án): % hoàn thành từng đơn = (số đặt − còn thiếu) ÷ số đặt, cộng MỌI mã của đơn (cả mã đã xong) – bỏ hàng phụ / mã hủy ===== */
+function dbxPctDon_(don) {
+  var m = {};
+  don.forEach(function(o) { if (o.phu || !o.ten || !o.maDon) return; var k = o.tab + '|' + o.maDon, x = m[k] || (m[k] = [0, 0]); x[0] += Number(o.sl) || 0; x[1] += Math.max(0, Number(o.thieu) || 0); });
+  var out = {}; Object.keys(m).forEach(function(k) { var x = m[k]; if (x[0] > 0) out[k] = Math.max(0, Math.min(100, Math.round((x[0] - Math.min(x[1], x[0])) * 100 / x[0]))); });
+  return out;
+}
+/* ===== 21/11 (chủ dự án): đơn LẺ / POD đã xong trong 3 ngày làm việc gần nhất (kể cả hôm nay) – từ sự kiện hoàn thiện (bản chụp 9h phát hiện đơn rời tab kênh
+   sang tab HT; ngày xong = ngày web phát hiện, chậm tối đa 1 ngày). Sự kiện trùng (cùng mã + tên + lần cuối thấy) chỉ lấy 1. ===== */
+var DBX_SO_NGAY = 3, DBX_LE = { 'WEB LẺ ĐƠN THƯỜNG': 'le', 'WEB LẺ CUSTOM': 'le', 'POD-A.BÁCH': 'pod', 'POD-ECOMSTONE': 'pod' };
+function layDonXongLePOD(token) {
+  __CHO_BH = true;   // 16/11 khuya: hàm Bán hàng được gọi
+  var q = dbQuyen_(token); if (q.loi) return q.loi;
+  var laLam = dhNgayLamFn_(dhCongSuat_()), hn = homNayVN_(), ng = [], d = hn, i = 0;
+  while (ng.length < DBX_SO_NGAY && i++ < 40) { if (laLam(d)) ng.push(d); d = new Date(Date.parse(d + 'T00:00:00Z') - 864e5).toISOString().slice(0, 10); }
+  var tu = ng[ng.length - 1] || hn, tabNhan = {}; Object.keys(DH_NHAN_TAB).forEach(function(t) { tabNhan[DH_NHAN_TAB[t]] = t; });
+  var thay = {}, don = {};
+  dhDocHoanThien_().forEach(function(r) {
+    var tab = tabNhan[r[4]] || r[4], nhom = DBX_LE[tab]; if (!nhom || String(r[0]) < tu) return;
+    var k = r[2] + '|' + r[3] + '|' + r[1]; if (thay[k] && thay[k] <= r[0]) return; thay[k] = r[0];
+    var kd = tab + '|' + r[2], x = don[kd] || (don[kd] = { nhom: nhom, tab: tab, kenh: DH_NHAN_TAB[tab] || tab, maDon: r[2], xong: r[0], dong: {} });
+    x.dong[r[3]] = { ten: r[3], sl: r[6] || r[7] || 0, thieu: r[8] || 0, xong: r[0] };
+  });
+  var ds = Object.keys(don).map(function(k) { var x = don[k], dong = Object.keys(x.dong).map(function(t) { return x.dong[t]; });
+    x.xong = dong.reduce(function(a, z) { return z.xong > a ? z.xong : a; }, '');   // đơn xong khi mã cuối cùng rời tab kênh
+    return { nhom: x.nhom, tab: x.tab, kenh: x.kenh, maDon: x.maDon, xong: x.xong, dong: dong.map(function(z) { return [z.ten, z.sl, z.thieu]; }) }; });
+  ds.sort(function(a, b) { return (b.xong > a.xong ? 1 : b.xong < a.xong ? -1 : 0) || String(a.maDon).localeCompare(String(b.maDon)); });
+  return sach_({ ok: true, ngay: ng, tu: tu, ds: ds });
 }
 /* "Người khác đang xem đơn này": chỉ người duyệt. ids = đơn chờ duyệt đang hiện trên màn (≤ 10). Nhớ 120 giây, coi là đang xem nếu báo trong 75 giây */
 function dbDangXem(token, ids) {

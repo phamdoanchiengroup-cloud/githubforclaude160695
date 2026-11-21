@@ -3,7 +3,7 @@
 Nhóm: Chung · Cập nhật 31/10/2026
 Liên quan: [[Lần dán lên Apps Script]] · [[Quyết định của chủ dự án]] · [[00 Mục lục]]
 
-- **21/11:** sao lưu → bấm 2-CAP-NHAT.bat (KPI mới từ T11 + chốt KPI quản lý + sửa Bán hàng hết phiên). Xem bản trình bày https://claude.ai/artifact/6MFU4zcWD3frTzXbV3KFWh; nhắc HC nhập chấm công đúng ký hiệu; chọn công đoạn cần bấm giờ lại định mức (Sơn, Ngọn Tip, In UV).
+- **21/11:** sao lưu → bấm 2-CAP-NHAT.bat (Lẻ / POD đã xong + thanh % đơn, KPI mới từ T11 + chốt KPI quản lý + sửa Bán hàng hết phiên). Xem bản trình bày https://claude.ai/artifact/6MFU4zcWD3frTzXbV3KFWh; nhắc HC nhập chấm công đúng ký hiệu; chọn công đoạn cần bấm giờ lại định mức (Sơn, Ngọn Tip, In UV).
 - **18/11:** bấm 2-CAP-NHAT.bat (Vì sao xong ngày này + Sheet tóm tắt cho trợ lý – sau khi cập nhật, trong ~1 giờ (6h–22h) web tự tạo file "Tóm tắt đơn hàng cho trợ lý (web)" trong Drive).
 - **17/11 khuya:** bấm 2-CAP-NHAT.bat (Thử trước khi đặt + đề nghị ưu tiên); họp Bán hàng bằng slide https://claude.ai/artifact/UqiDkrJZfvUo7zSYyaaKhB, chốt quota đề nghị ưu tiên / tuần.
 - (14/11) Dán Code.gs + Index.html + QuyTrinh.html; kiểm tra tài khoản TP/PP có đúng MaXuong (để web biết bộ phận). Nếu web báo "ô … là CÔNG THỨC" thì đổi ô đó thành số gõ tay hoặc báo Claude. – [[KPI Đơn hàng giao nhận theo bộ phận (14-11)]]
