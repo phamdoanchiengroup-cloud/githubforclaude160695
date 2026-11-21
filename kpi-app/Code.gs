@@ -2123,7 +2123,8 @@ function kpiQuanLy_(maNV, maXuong, kyThang, dt) {
   if (vh < 0) vh = 0;
   if (String(kyThang) >= KPI_MOI_TU) {   // 21/11: tỷ lệ làm đúng – xưởng đông người không bị trừ về 0
     var soNg = ngayLV.length, loiDD = chiTiet.ddQuen + 0.5 * chiTiet.ddMuon, luot = Math.max(1, dem * Math.max(1, soNg)), loiCN = chiTiet.duyetTre + chiTiet.duyetAu + chiTiet.khongNhac;
-    vh = 100 * (0.5 * (soNg ? Math.max(0, 1 - KM_HE_SO_LOI * loiDD / soNg) : 1) + 0.5 * Math.max(0, 1 - KM_HE_SO_LOI * loiCN / luot));   // mỗi 1% lượt lỗi trừ 2 điểm
+    vh = 100 * (0.5 * (soNg ? Math.max(0, 1 - KM_HE_SO_LOI * loiDD / soNg) : 1) + 0.5 * Math.max(0, 1 - KM_HE_SO_LOI * loiCN / luot));   // mỗi 1% lượt lỗi trừ 5 điểm
+    vh = Math.max(0, vh - KM_TRU_QUEN_DD * chiTiet.ddQuen);   // 21/11 tối (chủ dự án): mỗi lần TP/PP QUÊN điểm danh trừ thẳng 10 điểm vận hành
   }
 
   /* ===== TRỤ 3: Nề nếp (chuyên cần của chính TP/PP) ===== */
@@ -3291,7 +3292,8 @@ function gioCoMat_(kyHieu){
 }
 
 function docDuLieuKPI_(canLuuTru) {
-  try { kqlTran150_(); } catch (eT) {}   // 21/11: trần hiệu suất CN 150% từ T11/2026 (1 lần)
+  try { kqlTran150_(); } catch (eT) {}
+  try { kmTran150T9_(); } catch (eT9) {}   // 21/11 tối: trần 150% từ T9 (chốt lại T9, T10 theo cách mới)   // 21/11: trần hiệu suất CN 150% từ T11/2026 (1 lần)
   napTruoc_(SHEET_NAP_);
   var dt = {
     nhatky: (canLuuTru && ss_().getSheetByName(TEN_LUU_TRU)) ? doc_(TEN_LUU_TRU).concat(doc_('NhatKySanXuat')) : doc_('NhatKySanXuat'),
@@ -7708,7 +7710,7 @@ function danhSachVanPhong(token) {
   ds.sort(function(a, b) { return (thuTu[a.vaiTro] - thuTu[b.vaiTro]) || (a.HoTen < b.HoTen ? -1 : 1); });
   return sach_({ ok: true, ds: ds, muc: HS_MUC });
 }
-var KPI_BAN_MAY = '21/11/2026 13:18';   // giờ dựng Code.gs (22/10)
+var KPI_BAN_MAY = '21/11/2026 14:30';   // giờ dựng Code.gs (22/10)
 /* =====================================================================
    KỸ NĂNG (22/10, chủ dự án nhờ thiết kế + tham khảo chuyên gia nhân sự / đào tạo)
    - Danh mục: trưởng / phó phòng đề xuất kỹ năng của xưởng (tên, mô tả, tiêu chí đạt, công đoạn liên quan)
@@ -12642,10 +12644,10 @@ function kqlTran150_() {
 }
 
 /* ===== 21/11: KPI MỚI TỪ THÁNG 11/2026 (bỏ học việc, chuyên cần theo chấm công, ngày công tối thiểu, vận hành theo tỷ lệ) ===== */
-var KPI_MOI_TU = '2026-11', __KCONG = {};
+var KPI_MOI_TU = '2026-09', __KCONG = {};   // 21/11 tối (chủ dự án): áp cả T9, T10 rồi chốt lại trên web
 var KM_CO_PHEP = { 'P': 1, 'NL': 1, 'Nb': 1, 'Cu': 1, 'TS': 1, 'Ta': 1, 'OD': 1 };   // nghỉ phép năm, lễ, bù, cưới, tang, thai sản, ốm có giấy… – không tính vào ngày phải làm
 var KM_KHONG_LUONG = { 'Nkl': 1, 'KLD': 1, 'VGĐ': 1 };
-var KM_HE_SO_LOI = 2, KM_TRU_NKP = 15, KM_TRU_NKL = 5, KM_NKL_MIEN = 2, KM_TRU_MUON = 2, KM_CONG_DU = 0.8, KM_CONG_TOI_THIEU = 0.5;
+var KM_HE_SO_LOI = 5, KM_TRU_QUEN_DD = 10, KM_TRU_NKP = 15, KM_TRU_NKL = 5, KM_NKL_MIEN = 2, KM_TRU_MUON = 2, KM_CONG_DU = 0.8, KM_CONG_TOI_THIEU = 0.5;
 var KM_BAC = ['S', 'A+', 'A', 'B', 'C', 'D'];
 function kmCuoiLam_(maNV, dt) {   // người đã nghỉ việc: ngày cuối có nhật ký (không có cột ngày nghỉ việc)
   if (!dt._kmTT) { dt._kmTT = {}; (dt.nhansuTatCa || dt.nhansu || []).forEach(function(x){ dt._kmTT[String(x.MaNV).trim()] = String(x.TrangThai).trim(); }); }
@@ -12666,4 +12668,14 @@ function kmLoai_(maNV, ky, tong) {
   if (t < KM_CONG_TOI_THIEU) return 'Thiếu công';
   if (t < KM_CONG_DU) { var i = KM_BAC.indexOf(L); if (i >= 0 && i < KM_BAC.length - 1) L = KM_BAC[i + 1]; }
   return L;
+}
+
+function kmTran150T9_() {   // 1 lần: thêm dòng trọng số từ 2026-09-01, giữ trọng số tháng 9, trần 150%
+  var p = PropertiesService.getScriptProperties(); if (p.getProperty('KM_TRAN150_T9') === '1') return;
+  var ds = doc_('TrongSoKPI'), t9 = trongSoKy_(ds, '2026-09', TRONG_SO_MAC_DINH);
+  if (!(Number(t9.TranKPI) === KQL_TRAN_CN && chuanKy_(t9.KyApDung) === '2026-09'))
+    them_('TrongSoKPI', { KyApDung: '2026-09-01', SanLuong: Number(t9.SanLuong), ChatLuong: Number(t9.ChatLuong), TuanThu: Number(t9.TuanThu), AnToan: Number(t9.AnToan),
+      TranKPI: KQL_TRAN_CN, TyTrongTo: Number(t9.TyTrongTo) || 70, NguoiCapNhat: 'Hệ thống (chủ dự án: KPI mới áp từ T9 – 21/11)', ThoiDiem: new Date() });
+  p.setProperty('KM_TRAN150_T9', '1');
+  try { xoaCache_('TrongSoKPI'); } catch (e) {}
 }

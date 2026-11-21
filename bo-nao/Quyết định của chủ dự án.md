@@ -89,7 +89,7 @@ Những điều đã chốt. Đừng đề xuất lại những gì ghi "không 
 ## Hạn riêng từng mã (chốt 21/11)
 - Ưu tiên 1 mã đi sớm hơn deadline cả đơn = **hạn riêng lưu trên web**, không đổi deadline Sheet (hạn khách). Quyền như gắn ★. Web tính lại ngày dự kiến mọi đơn; Bán hàng thấy "nhà máy ưu tiên mã … (mục tiêu nội bộ)".
 
-## KPI mới từ tháng 11/2026 (chốt 21/11)
+## KPI mới – áp từ tháng 9/2026 (chốt 21/11; tối 21/11: chốt lại T9, T10 trên web; vận hành ×5 + quên điểm danh −10/lần)
 - **Bỏ học việc**: người mới tính sản lượng + xếp loại ngay từ ngày vào làm. Tháng 9–10 giữ cách cũ.
 - **Kho** do Kế toán tự tính, không nằm trong KPI sản xuất. **Tiền thưởng** do HC – Kế toán làm từ loại / hạng; web KHÔNG tính tiền.
 - Chuyên cần theo chấm công (HC-NS đề xuất): Nkp −15, không lương từ ngày 3 −5, đi muộn −2. Ngày công tối thiểu (chủ dự án giao Claude quyết): ≥80% bình thường, 50–80% hạ 1 bậc, <50% "Thiếu công".

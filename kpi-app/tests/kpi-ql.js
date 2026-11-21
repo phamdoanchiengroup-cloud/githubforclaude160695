@@ -19,7 +19,7 @@ for (const ky of ['2026-09', '2026-10']) {
   ok(r.ds.every(o => o.hieuSuatXuong <= 130), ky + ': mọi xưởng ≤ 130%', r.ds.map(o => o.hieuSuatXuong).filter(x => x > 130));
 }
 const uv10 = ql('2026-10').ds.find(o => o.maXuong === 'INUV');
-ok(uv10 && Math.abs(uv10.tong - 90.3) < 0.1, 'In UV T10 = 90,3 (trước sửa web hiện 96,9 vì bỏ người đã nghỉ)', uv10 && uv10.tong);
+ok(uv10 && Math.abs(uv10.tong - 90.73) < 0.1, 'In UV T10 = 90,7 (tính cả CN đã nghỉ; 21/11 tối: cách mới áp từ T9 – vận hành ×5)', uv10 && uv10.tong);
 
 console.log('\n2. Chốt tháng → lưu KPI quản lý, không tự đổi nữa');
 let r = c.__goi('chotThang', own, '2026-10'); ok(r.ok && /cho 16\d người/.test(r.msg), r.msg + ' (tháng 10 có 153 người lúc chốt cũ + 11 CN làm trong T10 nhưng nghỉ trước ngày chốt – trừ người không có nhật ký)', r);
@@ -36,8 +36,8 @@ r = c.__goi('chotThang', own, '2026-10', 'INUV'); ok(r.ok && c.doc_('KPIQuanLyTh
 console.log('\n3. Trần hiệu suất công nhân 150% từ tháng 11');
 c.__goi('layKPIKy', own, 'thang', '2026-11', '');
 const ts = c.doc_('TrongSoKPI'), moi = ts[ts.length - 1];
-ok(Number(moi.TranKPI) === 150 && c.chuanKy_(moi.KyApDung) === '2026-11' && Number(moi.SanLuong) === 70 && Number(moi.ChatLuong) === 20, 'tự thêm 1 dòng trọng số: từ 2026-11 trần 150%, giữ 70/20/5/5', moi);
-ok(Number(c.trongSoKy_(ts, '2026-10').TranKPI) === 500 && Number(c.trongSoKy_(ts, '2026-11').TranKPI) === 150, 'tháng 10 vẫn trần cũ (đã chốt), tháng 11 trần 150');
+ok(Number(moi.TranKPI) === 150 && c.chuanKy_(moi.KyApDung) === '2026-09' && Number(moi.SanLuong) === 70 && Number(moi.ChatLuong) === 20, 'tự thêm dòng trọng số: từ 2026-09 trần 150% (21/11 tối: áp từ T9), giữ 70/20/5/5', moi);
+ok(Number(c.trongSoKy_(ts, '2026-08').TranKPI) === 500 && Number(c.trongSoKy_(ts, '2026-09').TranKPI) === 150 && Number(c.trongSoKy_(ts, '2026-11').TranKPI) === 150, 'tháng 8 vẫn trần cũ, từ tháng 9 trần 150');
 c.__goi('layKPIKy', own, 'thang', '2026-11', ''); ok(c.doc_('TrongSoKPI').length === ts.length, 'chỉ thêm 1 lần');
 r = c.__goi('layKPIKy', own, 'thang', '2026-11', ''); ok(r.ok && (r.ds || []).every(o => Number(o.sl) <= 150.0001), 'KPI tháng 11: hiệu suất mọi người ≤ 150%', (r.ds || []).filter(o => o.sl > 150).slice(0, 3));
 console.log('\n' + (l ? '✗ ' + l + ' / ' + n + ' lỗi' : '✓ Đạt ' + n + ' / ' + n)); process.exit(l ? 1 : 0);

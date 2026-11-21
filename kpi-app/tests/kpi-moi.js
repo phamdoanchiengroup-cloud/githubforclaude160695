@@ -6,7 +6,7 @@ let n = 0, l = 0; const ok = (c, t, x) => { n++; if (!c) l++; console.log((c ? '
 const du = JSON.parse(fs.readFileSync(process.env.DATA, 'utf8'));
 const c = G.tao(path.join(__dirname, '..', 'Code.gs'), du, '2026-11-21T18:00:00+07:00');
 c.PropertiesService.getScriptProperties().setProperty('KPI_MOC_LUU_TRU', '2026-10');
-const T11 = '2026-11', T10 = '2026-10';
+const T11 = '2026-11', T10 = '2026-08';   // 21/11 tối: cách mới áp từ T9 -> tháng "cũ" để so là T8
 let dt = c.docDuLieuKPI_(false);
 const dangLam = dt.nhansu.filter(x => String(x.TrangThai).trim() !== 'Nghỉ việc' && !/TP|PP|OWNER|GD|BH/.test(String(x.VaiTro || '')));
 const coNK = ma => dt.nhatky.filter(r => String(r.MaNV).trim() === ma && c.ngayVN_(r.Ngay).slice(0, 7) === T11).map(r => c.ngayVN_(r.Ngay));
@@ -15,8 +15,8 @@ const mau = dangLam.map(x => String(x.MaNV).trim()).find(m => new Set(coNK(m)).s
 console.log('\n1. Bỏ học việc từ T11 – tháng cũ không đổi');
 ok(dangLam.every(x => !c.laHocViecThang_(x.MaNV, T11)), 'T11: không ai là học việc (' + dangLam.length + ' người đang làm)');
 const hv10 = dangLam.filter(x => c.laHocViecThang_(x.MaNV, T10)).length;
-ok(c.laHocViecThang_.toString().includes('KPI_MOI_TU') && hv10 >= 0, 'T10 vẫn dùng quy tắc học việc cũ (' + hv10 + ' người học việc T10)');
-ok(c.loaiCo_(mau, T10, 91) === 'A+' && c.loaiCo_(mau, T10, 60) === 'D', 'T10: loại theo điểm như cũ (91 → A+, 60 → D)');
+ok(c.laHocViecThang_.toString().includes('KPI_MOI_TU') && hv10 >= 0, 'T8 vẫn dùng quy tắc học việc cũ (' + hv10 + ' người học việc T8)');
+ok(c.loaiCo_(mau, T10, 91) === 'A+' && c.loaiCo_(mau, T10, 60) === 'D', 'T8: loại theo điểm như cũ (91 → A+, 60 → D)');
 
 console.log('\n2. Chuyên cần theo chấm công (người mẫu ' + mau + ')');
 const k0 = c.kpiThang_(mau, T11, dt);
@@ -61,14 +61,17 @@ if (nghi1) { const m = String(nghi1.MaNV).trim(), cuoi = c.kmCuoiLam_(m, dt), kq
   ok(cuoi && cuoi === coNK(m).sort().pop() && kq.cong.lv <= 13, 'người đã nghỉ ' + m + ': chỉ tính đến ngày cuối có nhật ký ' + cuoi + ' (' + kq.cong.lv + ' ngày)', [cuoi, kq.cong]); }
 ok(c.kmCuoiLam_(mau, dt) === '', 'người đang làm: không cắt ngày cuối');
 
-console.log('\n5. Vận hành TP/PP theo tỷ lệ (T11), T10 như cũ');
+console.log('\n5. Vận hành TP/PP theo tỷ lệ ×5 + quên điểm danh −10 (từ T9)');
 const TK = c.doc_('TaiKhoan'), own = c.__phienDai(TK.find(t => String(t.VaiTro).trim() === 'OWNER'));
 const q11 = c.__goi('layKPIQuanLy', own, T11), q10 = c.__goi('layKPIQuanLy', own, T10);
 ok(q11.ok && q11.ds.length > 10 && q11.ds.every(o => o.vanHanh >= 0 && o.vanHanh <= 100), 'T11: ' + q11.ds.length + ' TP/PP, vận hành 0–100', q11.msg);
-const vh = {}; q11.ds.forEach(o => { vh[o.maXuong] = Math.round(o.vanHanh * 10) / 10; });
-ok(Object.values(vh).filter(v => v < 50).length === 0, 'T11 không xưởng nào bị trừ về gần 0 vì đông người: ' + JSON.stringify(vh), vh);
-ok(q10.ok && q10.ds.some(o => o.vanHanh < 50), 'T10 giữ cách cũ (có xưởng vận hành < 50 do trừ theo lượt)', q10.ds.map(o => o.vanHanh));
-
+const dtQ = c.docDuLieuKPI_(false), tpHT = q11.ds.filter(o => o.chiTiet && o.chiTiet.ddQuen > 0)[0];
+if (tpHT) { const v1 = c.kpiQuanLy_(tpHT.maNV, tpHT.maXuong, T11, dtQ); c.KM_TRU_QUEN_DD = 0; const v0 = c.kpiQuanLy_(tpHT.maNV, tpHT.maXuong, T11, dtQ); c.KM_TRU_QUEN_DD = 10;
+  ok(Math.abs(v1.vanHanh - Math.max(0, v0.vanHanh - 10 * tpHT.chiTiet.ddQuen)) < 0.01, 'quên điểm danh ' + tpHT.chiTiet.ddQuen + ' lần → trừ thêm ' + 10 * tpHT.chiTiet.ddQuen + ' điểm vận hành (' + tpHT.maXuong + ': ' + v0.vanHanh.toFixed(1) + ' → ' + v1.vanHanh.toFixed(1) + ')', [v0.vanHanh, v1.vanHanh]); }
+c.KM_HE_SO_LOI = 2; c.KM_TRU_QUEN_DD = 0; const nhe = c.kpiQuanLy_(q11.ds[q11.ds.length - 1].maNV, q11.ds[q11.ds.length - 1].maXuong, T11, dtQ).vanHanh; c.KM_HE_SO_LOI = 5; c.KM_TRU_QUEN_DD = 10;
+const nang = c.kpiQuanLy_(q11.ds[q11.ds.length - 1].maNV, q11.ds[q11.ds.length - 1].maXuong, T11, dtQ).vanHanh;
+ok(nang < nhe, 'hệ số 5 nặng hơn hệ số 2 cũ (' + q11.ds[q11.ds.length - 1].maXuong + ': ' + nhe.toFixed(1) + ' → ' + nang.toFixed(1) + ')', [nhe, nang]);
+const q9 = c.__goi('layKPIQuanLy', own, '2026-09'); ok(q9.ok && q9.ds.every(o => o.vanHanh >= 0 && o.vanHanh <= 100), 'T9 cũng tính vận hành theo cách mới (áp từ T9)', q9.msg);
 console.log('\n6. Bảng KPI tháng 11 qua hàm web');
 const r = c.__goi('layKPIKy', own, 'thang', T11, '');
 const ds = (r && (r.ds || r.danhSach || r.rows)) || [];
