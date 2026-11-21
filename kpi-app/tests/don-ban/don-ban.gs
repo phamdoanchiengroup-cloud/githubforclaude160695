@@ -38,10 +38,11 @@ function dbWeb_(r, tienDo) {
 /* Tiến độ đơn đã duyệt: cộng các dòng cùng tab + mã đơn trong dữ liệu đơn (đã áp hủy / bớt) */
 function dbTienDo_(d, r) {
   var ds = (d.don || []).filter(function(o) { return !o.phu && o.tab === r.Tab && String(o.maDon || '') === String(r.MaDon); });
-  var sl = 0, thieu = 0, dung = []; ds.forEach(function(o) { sl += o.sl || 0; thieu += o.thieu || 0; if (o.dung && o.thieu > 0) dung.push({ ten: o.ten, thieu: o.thieu, ly: o.dung.ly, luc: o.dung.luc, hen: o.dung.hen }); });   // 17/11: mã TẠM DỪNG
+  try { dhGanHanRieng_(ds); } catch (eHR) {}
+  var sl = 0, thieu = 0, dung = [], hr = []; ds.forEach(function(o) { sl += o.sl || 0; thieu += o.thieu || 0; if (o.hanRieng && o.thieu > 0) hr.push({ ten: o.ten, han: o.hanRieng.han, dl: o.dl || '' }); if (o.dung && o.thieu > 0) dung.push({ ten: o.ten, thieu: o.thieu, ly: o.dung.ly, luc: o.dung.luc, hen: o.dung.hen }); });   // 17/11: mã TẠM DỪNG
   var phu = (d.phuDs || []).filter(function(x) { return x.TrangThai === 'HIEU_LUC' && x.Tab === r.Tab && x.MaDon === r.MaDon; })
     .map(function(x) { return { ten: x.Ten, loai: x.Loai, slCu: dhhSo_(x.SLCu), slMoi: dhhSo_(x.SLMoi), ly: x.LyDo }; });
-  return { n: ds.length, sl: sl, thieu: thieu, pct: sl ? Math.round((sl - thieu) / sl * 100) : (phu.length ? 0 : 100), huy: phu, dung: dung, khongThay: !ds.length && !phu.length ? 1 : 0 };
+  return { n: ds.length, sl: sl, thieu: thieu, pct: sl ? Math.round((sl - thieu) / sl * 100) : (phu.length ? 0 : 100), huy: phu, dung: dung, hr: hr, khongThay: !ds.length && !phu.length ? 1 : 0 };
 }
 /* Trang "Đơn hàng của tôi": BH = đơn của mình; người duyệt = mọi đơn (chờ duyệt trên cùng) */
 function layDonBan(token) {

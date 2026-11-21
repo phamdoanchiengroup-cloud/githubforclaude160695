@@ -7708,7 +7708,7 @@ function danhSachVanPhong(token) {
   ds.sort(function(a, b) { return (thuTu[a.vaiTro] - thuTu[b.vaiTro]) || (a.HoTen < b.HoTen ? -1 : 1); });
   return sach_({ ok: true, ds: ds, muc: HS_MUC });
 }
-var KPI_BAN_MAY = '21/11/2026 12:38';   // giờ dựng Code.gs (22/10)
+var KPI_BAN_MAY = '21/11/2026 13:18';   // giờ dựng Code.gs (22/10)
 /* =====================================================================
    KỸ NĂNG (22/10, chủ dự án nhờ thiết kế + tham khảo chuyên gia nhân sự / đào tạo)
    - Danh mục: trưởng / phó phòng đề xuất kỹ năng của xưởng (tên, mô tả, tiêu chí đạt, công đoạn liên quan)
@@ -9166,6 +9166,7 @@ function layDonHangXuong(token, lamMoi) {
   Object.keys(d.tabPhu || {}).forEach(function(t) {
     tabPhu[t] = (d.tabPhu[t] || []).map(function(o) { var x = {}; for (var k in o) x[k] = o[k]; x.tenChuan = plChuan_(o.ten); x.pl = plPhanLoai_(o.ten, o.ghiChu, sua['K:' + x.tenChuan]); return themBTP(x); });
   });
+  try { dhGanHanRieng_(don); } catch (eHR) {}   // 21/11: hạn riêng từng mã
   try { var uw = dhUuWebDoc_(); don.forEach(function(x) { var w = uw[String(x.maDon || '') + '|' + x.tab]; if (w) { x.uuWeb = w; x.uuTien = 'Ưu tiên (' + w.ai + ')' + (x.uuTien ? ' · ' + x.uuTien : ''); } }); } catch (eU) {}   // 15/11: cờ ưu tiên gắn trên web
   try { dhCaiTab10_(); } catch (eT10) {}   // 15/11 tối: lịch tạo / đồng bộ tab ĐẾN HẠN 10 NGÀY
   return sach_({ ok: true, luc: d.luc, don: don, uu: uu, tre: tre, tab10: dhTab10TT_(), nhan: chNhan_(), tabMoi: d.tabMoi || [], tabBo: d.tabBo || [], tabPhu: tabPhu,
@@ -10832,6 +10833,44 @@ function luuBangDon(token, p) {
   } catch (e) { return sach_({ ok: false, msg: 'Không ghi được vào Sheet: ' + (e && e.message || e) });
   } finally { try { lock.releaseLock(); } catch (e2) {} }
 }
+
+/* ===== 21/11 (chủ dự án + quan-ly-van-hanh): HẠN RIÊNG TỪNG MÃ – mục tiêu NỘI BỘ để 1 mã đi sớm hơn deadline cả đơn.
+   Lưu ở sheet ẩn HanRiengMa (file KPI), KHÔNG đổi deadline Sheet đơn (hạn hứa khách). Khóa = mã đơn | tab | tên chuẩn.
+   Người đặt như gắn ★ (dhCoUu_ + chủ sở hữu). Bắt buộc lý do; không cho đặt muộn hơn deadline dòng. Mã đã xong (thiếu 0) / hủy: tự hết tác dụng.
+   Mô phỏng: dòng có hạn riêng lên bậc 1 (như trễ / ★) và xếp theo hạn riêng -> các đơn khác tự tính lại ngày dự kiến. ===== */
+var DH_HR_SHEET = 'HanRiengMa', DH_HR_COT = ['Khoa', 'Han', 'LyDo', 'NguoiGan', 'MaNV', 'ThoiDiem', 'HanCu'];
+function dhHrKhoa_(maDon, tab, ten) { return String(maDon || '').trim() + '|' + String(tab || '').trim() + '|' + plChuan_(ten); }
+function dhHanRiengDoc_() { var m = {}; docAnToan_(DH_HR_SHEET).forEach(function(r) { var k = String(r.Khoa || '').replace(/^'/, ''), h = ngayVN_(r.Han); if (k && h) m[k] = { han: h, ly: String(r.LyDo || ''), ai: String(r.NguoiGan || ''), luc: String(r.ThoiDiem || '') }; }); return m; }
+function dhGanHanRieng_(ds) { var m = dhHanRiengDoc_(); if (!Object.keys(m).length) return; (ds || []).forEach(function(o) { if (!(o.thieu > 0) || o.phu) return; var h = m[dhHrKhoa_(o.maDon, o.tab, o.ten)]; if (h) o.hanRieng = h; }); }
+function luuHanRieng(token, p) {
+  var q = dhQuyenDon_(token); if (q.loi) return q.loi;
+  if (!dhCoUu_(q.me) && !q.me.laOwner) return sach_({ ok: false, msg: 'Chỉ Giám đốc, Phó GĐ sản xuất, chị Kim Loan và chủ sở hữu được đặt hạn riêng.' });
+  p = p || {}; var ma = String(p.maDon || '').trim().slice(0, 80), tab = String(p.tab || '').trim().slice(0, 60), ten = String(p.ten || '').trim().slice(0, 200);
+  var han = String(p.han || '').trim(), ly = String(p.ly || '').replace(/[\u0000-\u001f]+/g, ' ').trim().slice(0, 200);
+  if (!ma || ma === '(không mã)' || !tab || !ten) return sach_({ ok: false, msg: 'Thiếu mã đơn / tab / tên hàng.' });
+  if (han && !/^\d{4}-\d\d-\d\d$/.test(han)) return sach_({ ok: false, msg: 'Ngày không hợp lệ.' });
+  var o = null; try { o = (dhDocDon_(false).don || []).filter(function(x) { return !x.phu && String(x.maDon || '') === ma && x.tab === tab && plChuan_(x.ten) === plChuan_(ten); })[0]; } catch (e) {}
+  if (han) {
+    if (!o || !(o.thieu > 0)) return sach_({ ok: false, msg: 'Không thấy mã này còn phải làm trong đơn ' + ma + ' (có thể đã xong / hủy).' });
+    if (!ly) return sach_({ ok: false, msg: 'Ghi ngắn lý do đặt hạn riêng.' });
+    if (han < homNayVN_()) return sach_({ ok: false, msg: 'Hạn riêng phải từ hôm nay trở đi.' });
+    if (o.dl && han >= o.dl) return sach_({ ok: false, msg: 'Hạn riêng phải SỚM hơn deadline của dòng (' + o.dl.split('-').reverse().join('/') + ') – không thì không có tác dụng.' });
+  }
+  var k = dhHrKhoa_(ma, tab, ten), lock = LockService.getScriptLock();
+  try { lock.waitLock(20000); } catch (eL) { return sach_({ ok: false, msg: 'Đang có người lưu – thử lại sau vài giây.' }); }
+  try {
+    var sh = ss_().getSheetByName(DH_HR_SHEET);
+    if (!sh) { sh = ss_().insertSheet(DH_HR_SHEET); sh.getRange(1, 1, 1, DH_HR_COT.length).setValues([DH_HR_COT]).setFontWeight('bold'); sh.setFrozenRows(1); sh.getRange(2, 1, sh.getMaxRows() - 1, DH_HR_COT.length).setNumberFormat('@'); try { sh.hideSheet(); } catch (eH) {} xoaCache_(DH_HR_SHEET); }
+    var cu = docAnToan_(DH_HR_SHEET).filter(function(r) { return String(r.Khoa || '').replace(/^'/, '') === k; }), hanCu = cu.length ? ngayVN_(cu[cu.length - 1].Han) : '';
+    cu.map(function(r) { return r._row; }).sort(function(a, b) { return b - a; }).forEach(function(r) { sh.deleteRow(r); });
+    xoaCache_(DH_HR_SHEET);
+    if (han) them_(DH_HR_SHEET, { Khoa: k, Han: han, LyDo: ly, NguoiGan: (q.me.ten || q.me.tk || '').slice(0, 60), MaNV: String(q.me.maNV || ''), ThoiDiem: Utilities.formatDate(new Date(), TZ_VN, 'yyyy-MM-dd HH:mm'), HanCu: hanCu });
+    ghiLog_(q.me, 'Hạn riêng mã', k.slice(0, 160), hanCu, han ? han + ' · ' + ly : 'bỏ');   // lịch sử: ai, lúc nào, hạn cũ -> mới, lý do
+    try { CacheService.getScriptCache().remove('DBK_MP'); } catch (eC) {}
+    return sach_({ ok: true, hanRieng: han ? { han: han, ly: ly, ai: (q.me.ten || q.me.tk || ''), luc: Utilities.formatDate(new Date(), TZ_VN, 'yyyy-MM-dd HH:mm') } : null,
+      msg: han ? 'Đã đặt hạn riêng ' + han.split('-').reverse().join('/') + ' cho ' + ten + ' (đơn ' + ma + '). Deadline với khách không đổi.' : 'Đã bỏ hạn riêng của ' + ten + '.' });
+  } finally { lock.releaseLock(); }
+}
 /* ===== 16/11 khuya (chủ dự án chốt) – GIAI ĐOẠN 0: HỦY / BỚT MÃ ĐƠN HÀNG TRÊN WEB =====
    - Nơi lưu = Sheet riêng "CSDL Đơn hàng (web)" do web tự tạo lần đầu (SpreadsheetApp.create, id ở ScriptProperties DH_CSDL_ID).
      Tab DongHuy (lớp phủ hủy / bớt), SuKien (sổ mọi thao tác), ThongBao (mỗi tài khoản đã xem tới lúc nào).
@@ -11767,10 +11806,11 @@ function dbWeb_(r, tienDo) {
 /* Tiến độ đơn đã duyệt: cộng các dòng cùng tab + mã đơn trong dữ liệu đơn (đã áp hủy / bớt) */
 function dbTienDo_(d, r) {
   var ds = (d.don || []).filter(function(o) { return !o.phu && o.tab === r.Tab && String(o.maDon || '') === String(r.MaDon); });
-  var sl = 0, thieu = 0, dung = []; ds.forEach(function(o) { sl += o.sl || 0; thieu += o.thieu || 0; if (o.dung && o.thieu > 0) dung.push({ ten: o.ten, thieu: o.thieu, ly: o.dung.ly, luc: o.dung.luc, hen: o.dung.hen }); });   // 17/11: mã TẠM DỪNG
+  try { dhGanHanRieng_(ds); } catch (eHR) {}
+  var sl = 0, thieu = 0, dung = [], hr = []; ds.forEach(function(o) { sl += o.sl || 0; thieu += o.thieu || 0; if (o.hanRieng && o.thieu > 0) hr.push({ ten: o.ten, han: o.hanRieng.han, dl: o.dl || '' }); if (o.dung && o.thieu > 0) dung.push({ ten: o.ten, thieu: o.thieu, ly: o.dung.ly, luc: o.dung.luc, hen: o.dung.hen }); });   // 17/11: mã TẠM DỪNG
   var phu = (d.phuDs || []).filter(function(x) { return x.TrangThai === 'HIEU_LUC' && x.Tab === r.Tab && x.MaDon === r.MaDon; })
     .map(function(x) { return { ten: x.Ten, loai: x.Loai, slCu: dhhSo_(x.SLCu), slMoi: dhhSo_(x.SLMoi), ly: x.LyDo }; });
-  return { n: ds.length, sl: sl, thieu: thieu, pct: sl ? Math.round((sl - thieu) / sl * 100) : (phu.length ? 0 : 100), huy: phu, dung: dung, khongThay: !ds.length && !phu.length ? 1 : 0 };
+  return { n: ds.length, sl: sl, thieu: thieu, pct: sl ? Math.round((sl - thieu) / sl * 100) : (phu.length ? 0 : 100), huy: phu, dung: dung, hr: hr, khongThay: !ds.length && !phu.length ? 1 : 0 };
 }
 /* Trang "Đơn hàng của tôi": BH = đơn của mình; người duyệt = mọi đơn (chờ duyệt trên cùng) */
 function layDonBan(token) {
@@ -12007,6 +12047,7 @@ function dbkGiau_(d) {
     var w = uw[String(x.maDon || '') + '|' + x.tab]; if (w) x.uuWeb = w;
     return x;
   });
+  try { dhGanHanRieng_(don); } catch (eHR) {}   // 21/11: hạn riêng từng mã
   return { don: don, uu: d.uu || [], tre: d.tre || [] };
 }
 function dbkMoPhong_(G, them, cs, ut) {   // G = dbkGiau_(); them = đơn thử {ma, tab, thieu, dl, bac} | null; ut = {'mã|tab': 1} đơn "thử đẩy" lên đầu làn (như dhMoPhong) -> [{ma, tab, eta, g}]
@@ -12020,10 +12061,11 @@ function dbkMoPhong_(G, them, cs, ut) {   // G = dbkGiau_(); them = đơn thử 
   var CF = (cs && cs.lan) || dhLanCfg_(), LAN5 = CF.pt.map(function(p, j) { return [j + 1, p / 100]; }), LANDU = CF.du;
   var lanSo = function(tab) { var t = String(tab || '').toUpperCase().trim(); if (CF.kenh && CF.kenh[t]) return CF.kenh[t]; if (DBK_TAB_BAC1[t] || /^POD/.test(t)) return 1; if (t === 'DEALER') return 2; if (t === 'OEM') return 4; if (t === 'A ĐÔNG') return 5; return 3; };
   var lyDo = function(o) {   // 18/11: lý do dòng ở bậc 1 (cho "Vì sao đơn này xong ngày này")
-    var t = dbkTC_(o.ten); if (o.uuWeb) return '★ ưu tiên'; if (o.dl && o.dl < hn) return 'trễ hạn'; if (mtr[t]) return 'tên trong tab TRỄ HẠN';
+    var t = dbkTC_(o.ten); if (o.hanRieng) return '⏱ hạn riêng ' + o.hanRieng.han.split('-').reverse().slice(0, 2).join('/'); if (o.uuWeb) return '★ ưu tiên'; if (o.dl && o.dl < hn) return 'trễ hạn'; if (mtr[t]) return 'tên trong tab TRỄ HẠN';
     if (o.tab === 'KHO' && (mu[dbkTC_(o.maDon || '') + '|' + t] || mu['|' + t])) return 'hàng ưu tiên'; return ''; };
   var bac = function(o) {
     var tab = String(o.tab || '').toUpperCase().trim(), t = dbkTC_(o.ten);
+    if (o.hanRieng) return 1;   // 21/11: hạn riêng từng mã = ưu tiên trong làn
     if (o.uuWeb) return 1;   // 17/11 tối: ưu tiên TRONG LÀN – trễ / ★ / tên trong tab TRỄ HẠN / hàng ưu tiên = 1, còn lại = 2
     if (o.dl && o.dl < hn) return 1;
     if (mtr[t]) return 1;
@@ -12048,7 +12090,7 @@ function dbkMoPhong_(G, them, cs, ut) {   // G = dbkGiau_(); them = đơn thử 
       ch.push(st.map(function(k, j) { return Math.min(need, Math.max(0, dd[j] - base)); }));
     });
     var tien = 0, nb = 0; ch.forEach(function(x) { x.forEach(function(y) { tien += need ? y / need : 0; nb++; }); });
-    return { o: o, ly: o ? lyDo(o) : '', g: g, lan: lanSo(o ? o.tab : g.tab), uu: dau ? 0 : (+uu || 2), han: (o && (o.dl || dlNgam(o))) || g.dl || '9999', i: i, need: need, dg: 0, eta: '', tien: nb ? tien / nb : 0 };
+    return { o: o, ly: o ? lyDo(o) : '', g: g, lan: lanSo(o ? o.tab : g.tab), uu: dau ? 0 : (+uu || 2), han: (o && ((o.hanRieng && o.hanRieng.han) || o.dl || dlNgam(o))) || g.dl || '9999', i: i, need: need, dg: 0, eta: '', tien: nb ? tien / nb : 0 };
   };
   /* nhóm đơn như dhCSDon: dòng còn thiếu, không phải phụ kiện / hàng nối, gom theo mã đơn + tab */
   var m = {}, ds = [];
@@ -12085,6 +12127,7 @@ function dbkGanDuKien_(out, d) {
   (d.don || []).forEach(function(o) { tl += o.thieu || 0; ts += o.sl || 0; }); ky.push((d.don || []).length, tl, ts);
   try { ky.push(JSON.stringify([cs.lan.pt, cs.lan.du, cs.lan.kenh])); } catch (eL) {}   // 17/11 khuya: đổi chia làn -> tính lại
   try { var uwK = Object.keys(dhUuWebDoc_()).sort().join(','); ky.push(uwK.length, uwK.slice(-40)); } catch (eU) {}   // 17/11 khuya: gắn / bỏ ★ (vd duyệt đề nghị ưu tiên) -> tính lại   // dữ liệu đổi (duyệt / hủy / nhập số) -> khóa nhớ tạm đổi
+  try { var hrK = JSON.stringify(dhHanRiengDoc_()); ky.push(hrK.length, hrK.slice(-60)); } catch (eHR) {}   // 21/11: đặt / bỏ hạn riêng -> tính lại
   var key = DBK_CACHE + '|' + ky.join('|');
   var lay = function() { if (!G) G = dbkGiau_(d); return G; };
   try { var s = cache.get(key); if (s) { var m0 = JSON.parse(s); var R0 = dbkMoPhong_({ don: [], uu: [], tre: [] }, null, cs); R = { m: m0, cong2: R0.cong2, congN: R0.congN }; } } catch (e) { R = null; }
@@ -12106,6 +12149,7 @@ function layBangDonNhaMay(token) {
   __CHO_BH = true;   // 16/11 khuya: hàm Bán hàng được gọi
   var q = dbQuyen_(token); if (q.loi) return q.loi;
   var d; try { d = dhDocDon_(false); } catch (e) { return sach_({ ok: false, msg: 'Chưa đọc được bảng đơn – thử lại sau ít phút.' }); }
+  try { dhGanHanRieng_(d.don); } catch (eHR) {}   // 21/11
   var thu = {}; DH_TABS.forEach(function(t, i) { thu[t] = i; });
   var ds = (d.don || []).filter(function(o) { return !o.phu && o.thieu > 0 && o.ten; });
   ds.sort(function(a, b) { var ta = thu[a.tab] != null ? thu[a.tab] : 99, tb = thu[b.tab] != null ? thu[b.tab] : 99;
@@ -12125,7 +12169,7 @@ function layBangDonNhaMay(token) {
   } catch (eTK) { tk = []; }
   return sach_({ ok: true, luc: d.luc || '', het: het ? 1 : 0, n: ds.length, kenh: dbKenh_(), tk: tk, duKin: DBK_DU_KIN, cs: dhCongSuat_().sp,
     pct: dbxPctDon_(d.don || []),   // 21/11 (chủ dự án): thanh % hoàn thành theo từng đơn
-    ds: ds.slice(0, DBK_BANG_MAX).map(function(o) { return [o.tab, String(o.maDon || ''), o.ten, o.sl || 0, o.dl || '', o.dung ? 1 : 0]; }) });   // [5] = 1: đang tạm dừng
+    ds: ds.slice(0, DBK_BANG_MAX).map(function(o) { return [o.tab, String(o.maDon || ''), o.ten, o.sl || 0, o.dl || '', o.dung ? 1 : 0, o.hanRieng ? o.hanRieng.han : '']; }) });   // [5] = 1: đang tạm dừng · [6] = hạn riêng (21/11)
 }
 /* ===== 21/11 (chủ dự án): % hoàn thành từng đơn = (số đặt − còn thiếu) ÷ số đặt, cộng MỌI mã của đơn (cả mã đã xong) – bỏ hàng phụ / mã hủy ===== */
 function dbxPctDon_(don) {

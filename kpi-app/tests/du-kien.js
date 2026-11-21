@@ -97,8 +97,8 @@ ok(x.td.eta > sau, 'luôn muộn hơn ngày bảng đơn hiện cho sản xuất
 
 console.log('\n3. Bảng đơn nhà máy (4 cột)');
 r = c.__goi('layBangDonNhaMay', B2);
-ok(r.ok && r.ds.length > 50 && r.ds.every(d => d.length === 6 && (d[5] === 0 || d[5] === 1)), 'Bán hàng khác cũng xem được – mỗi dòng chỉ [kênh, mã đơn, mã SP, số đặt, deadline, cờ tạm dừng] (' + (r.ds || []).length + ' dòng)', r.msg || (r.ds || [])[0]);
-ok(r.ds.every(d => d.length === 6 && (d[5] === 0 || d[5] === 1)) && !JSON.stringify(r).match(/qua"|nguoiDat|ghiChu|uuTien|dong"/), 'từng dòng không lộ còn thiếu / tiến độ bộ phận / ghi chú / người đặt (chỉ thống kê theo kênh có tổng còn phải làm)');
+ok(r.ok && r.ds.length > 50 && r.ds.every(d => d.length === 7 && (d[5] === 0 || d[5] === 1) && (d[6] === '' || /^\d{4}-/.test(d[6]))), 'Bán hàng khác cũng xem được – mỗi dòng chỉ [kênh, mã đơn, mã SP, số đặt, deadline, cờ tạm dừng, hạn riêng (21/11)] (' + (r.ds || []).length + ' dòng)', r.msg || (r.ds || [])[0]);
+ok(r.ds.every(d => d.length === 7 && (d[5] === 0 || d[5] === 1)) && !JSON.stringify(r).match(/qua"|nguoiDat|ghiChu|uuTien|dong"/), 'từng dòng không lộ còn thiếu / tiến độ bộ phận / ghi chú / người đặt (chỉ thống kê theo kênh có tổng còn phải làm)');
 ok(!r.ds.some(d => d[1] === '#OEM-HUY-01/11'), 'không có mã đã hủy');
 ok(r.ds.some(d => d[1] === '#BH9-17/11' && d[3] === 30), 'có đơn vừa duyệt');
 const thuTab = r.ds.map(d => c.DH_TABS.indexOf(d[0])); ok(thuTab.every((v, i) => !i || v >= thuTab[i - 1]), 'xếp theo kênh như Sheet (Dealer → Kho → Web lẻ … → POD)');
@@ -208,5 +208,35 @@ ok(mauD().join() === '#ffffff,#ffffff,#ffffff', 'chạy lại: Sheet vẫn nguy�
 ok(c.__goi('layDonHangXuong', own, true).don.find(o => o.dong === o1.dong && o.tab === 'KHO').sl === 40, 'bớt SL vẫn còn sau khi chạy lại');
 
 }
+console.log('\n9. Hạn riêng từng mã (21/11)');
+{ const D0 = c.__goi('layDonHangXuong', own, true), hn9 = c.homNayVN_();
+  // chọn 1 dòng KHO còn thiếu, deadline xa nhất (để hạn riêng có tác dụng rõ)
+  const o9 = D0.don.filter(o => o.tab === 'KHO' && o.thieu > 0 && o.dl > '2026-12-01' && !o.dung && o.maDon).sort((a, b) => b.dl < a.dl ? -1 : 1)[0];
+  const k9 = o9.maDon + '|KHO', cs9 = c.dhCongSuat_(), truoc = c.dbkMoPhong_(c.dbkGiau_(c.dhDocDon_(false)), null, cs9), han9 = '2026-11-20';
+  let r9 = c.__goi('luuHanRieng', tp, { maDon: o9.maDon, tab: 'KHO', ten: o9.ten, han: han9, ly: 'gấp' }); ok(!r9.ok, 'trưởng phòng không đặt được hạn riêng', r9);
+  r9 = c.__goi('luuHanRieng', gd, { maDon: o9.maDon, tab: 'KHO', ten: o9.ten, han: han9, ly: '' }); ok(!r9.ok && /lý do/.test(r9.msg), 'bắt buộc lý do', r9);
+  r9 = c.__goi('luuHanRieng', gd, { maDon: o9.maDon, tab: 'KHO', ten: o9.ten, han: o9.dl, ly: 'x' }); ok(!r9.ok && /SỚM hơn deadline/.test(r9.msg), 'không cho hạn riêng bằng / muộn hơn deadline dòng', r9);
+  r9 = c.__goi('luuHanRieng', gd, { maDon: o9.maDon, tab: 'KHO', ten: o9.ten, han: '2026-11-01', ly: 'x' }); ok(!r9.ok, 'không cho hạn riêng trong quá khứ', r9);
+  const shTruoc = JSON.stringify(c.__ngoai[c.DH_SHEET_ID].sheets.KHO);
+  r9 = c.__goi('luuHanRieng', gd, { maDon: o9.maDon, tab: 'KHO', ten: o9.ten, han: han9, ly: 'Khách cần gấp mã này' });
+  ok(r9.ok && r9.hanRieng && r9.hanRieng.han === han9 && /không đổi/.test(r9.msg), 'Giám đốc đặt hạn riêng ' + han9 + ' cho ' + o9.ten + ' (đơn ' + o9.maDon + ', deadline ' + o9.dl + ')', r9);
+  const D1 = c.__goi('layDonHangXuong', own, true), o9b = D1.don.find(o => o.tab === 'KHO' && o.dong === o9.dong);
+  ok(o9b.hanRieng && o9b.hanRieng.han === han9 && o9b.dl === o9.dl, 'bảng đơn có hạn riêng, deadline Sheet giữ nguyên ' + o9b.dl, o9b && [o9b.hanRieng, o9b.dl]);
+  ok(JSON.stringify(c.__ngoai[c.DH_SHEET_ID].sheets.KHO) === shTruoc, 'không ghi gì vào Sheet đơn (tab KHO giữ nguyên)');
+  const td9 = c.dbTienDo_(c.dhDocDon_(false), { Tab: 'KHO', MaDon: o9.maDon });
+  ok(td9.hr && td9.hr.length === 1 && td9.hr[0].han === han9 && td9.hr[0].dl === o9.dl, 'thẻ đơn của Bán hàng có "nhà máy ưu tiên mã … – mục tiêu nội bộ, deadline khách vẫn …"', td9.hr);
+  const sau = c.dbkMoPhong_(c.dbkGiau_(c.dhDocDon_(false)), null, cs9), w9 = webMoPhong(D1, hn9, null);
+  const kk = Object.keys(w9), lech9 = kk.filter(z => (sau.m[z] || {}).eta !== w9[z]);
+  ok(!lech9.length, 'có hạn riêng: ngày xong máy chủ vẫn trùng web 100% (' + kk.length + ' đơn)', lech9.slice(0, 4).map(z => [z, w9[z], sau.m[z]]));
+  const doi = kk.filter(z => z !== k9 && (truoc.m[z] || {}).eta !== (sau.m[z] || {}).eta);
+  ok(doi.length > 0, 'các đơn khác tự tính lại ngày dự kiến (' + doi.length + ' đơn đổi ngày)', doi.length);
+  const vs = c.__goi('viSaoDonBH', own, { ma: o9.maDon, tab: 'KHO' });
+  ok(vs.ok && JSON.stringify(vs).indexOf('hạn riêng') >= 0, '"Vì sao" ghi lý do bậc: ⏱ hạn riêng', vs.msg || (vs.rows || []).slice(0, 2));
+  const B9 = c.__goi('layBangDonNhaMay', own), d9 = B9.ds.find(d => d[1] === o9.maDon && d[2] === o9.ten);
+  ok(d9 && d9[6] === han9, 'Bảng đơn nhà máy (tab Đơn bán hàng) có cột hạn riêng', d9);
+  r9 = c.__goi('luuHanRieng', gd, { maDon: o9.maDon, tab: 'KHO', ten: o9.ten, han: '' });
+  ok(r9.ok && !c.__goi('layDonHangXuong', own, true).don.find(o => o.tab === 'KHO' && o.dong === o9.dong).hanRieng, 'bỏ hạn riêng', r9);
+}
+
 console.log('\n' + (l ? '✗ ' + l + ' / ' + n + ' lỗi' : '✓ Đạt ' + n + ' / ' + n));
 process.exit(l ? 1 : 0);

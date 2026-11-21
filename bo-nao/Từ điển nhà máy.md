@@ -17,6 +17,7 @@ Tên gọi trong xưởng / trên web để phiên sau hiểu đúng câu chủ 
 - **Còn thiếu** = cột SX CÒN THIẾU – mọi ngày dự kiến tính trên số này.
 - **Hạn mới** = deadline đặt lại khi đơn trễ; trễ > 30 ngày chưa có hạn mới thì không xếp lịch.
 - **Hạn ngầm** đơn lẻ = ngày đặt (trong mã đơn) + 7 ngày làm (thường) / 10 (POD) / 15 (custom).
+- **⏱ Hạn riêng** = mục tiêu nội bộ cho 1 mã trong đơn (sớm hơn deadline), lưu trên web, không đổi hạn khách; mã có hạn riêng lên nhóm ưu tiên trong làn.
 - **★ ưu tiên** = gắn trên web (cả đơn); **đề nghị ưu tiên** = Bán hàng xin, ban điều hành duyệt.
 - **Hủy / bớt / tạm dừng** = lớp trên web (Sheet "CSDL Đơn hàng (web)"), Sheet đơn không đổi.
 - **5 làn**: Lẻ + POD · Dealer · Kho · OEM · A Đông (mặc định 10·20·50·5·15, chủ sở hữu chỉnh ở ⚙).

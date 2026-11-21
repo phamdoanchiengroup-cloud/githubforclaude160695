@@ -22,6 +22,7 @@ function dbkGiau_(d) {
     var w = uw[String(x.maDon || '') + '|' + x.tab]; if (w) x.uuWeb = w;
     return x;
   });
+  try { dhGanHanRieng_(don); } catch (eHR) {}   // 21/11: hạn riêng từng mã
   return { don: don, uu: d.uu || [], tre: d.tre || [] };
 }
 function dbkMoPhong_(G, them, cs, ut) {   // G = dbkGiau_(); them = đơn thử {ma, tab, thieu, dl, bac} | null; ut = {'mã|tab': 1} đơn "thử đẩy" lên đầu làn (như dhMoPhong) -> [{ma, tab, eta, g}]
@@ -35,10 +36,11 @@ function dbkMoPhong_(G, them, cs, ut) {   // G = dbkGiau_(); them = đơn thử 
   var CF = (cs && cs.lan) || dhLanCfg_(), LAN5 = CF.pt.map(function(p, j) { return [j + 1, p / 100]; }), LANDU = CF.du;
   var lanSo = function(tab) { var t = String(tab || '').toUpperCase().trim(); if (CF.kenh && CF.kenh[t]) return CF.kenh[t]; if (DBK_TAB_BAC1[t] || /^POD/.test(t)) return 1; if (t === 'DEALER') return 2; if (t === 'OEM') return 4; if (t === 'A ĐÔNG') return 5; return 3; };
   var lyDo = function(o) {   // 18/11: lý do dòng ở bậc 1 (cho "Vì sao đơn này xong ngày này")
-    var t = dbkTC_(o.ten); if (o.uuWeb) return '★ ưu tiên'; if (o.dl && o.dl < hn) return 'trễ hạn'; if (mtr[t]) return 'tên trong tab TRỄ HẠN';
+    var t = dbkTC_(o.ten); if (o.hanRieng) return '⏱ hạn riêng ' + o.hanRieng.han.split('-').reverse().slice(0, 2).join('/'); if (o.uuWeb) return '★ ưu tiên'; if (o.dl && o.dl < hn) return 'trễ hạn'; if (mtr[t]) return 'tên trong tab TRỄ HẠN';
     if (o.tab === 'KHO' && (mu[dbkTC_(o.maDon || '') + '|' + t] || mu['|' + t])) return 'hàng ưu tiên'; return ''; };
   var bac = function(o) {
     var tab = String(o.tab || '').toUpperCase().trim(), t = dbkTC_(o.ten);
+    if (o.hanRieng) return 1;   // 21/11: hạn riêng từng mã = ưu tiên trong làn
     if (o.uuWeb) return 1;   // 17/11 tối: ưu tiên TRONG LÀN – trễ / ★ / tên trong tab TRỄ HẠN / hàng ưu tiên = 1, còn lại = 2
     if (o.dl && o.dl < hn) return 1;
     if (mtr[t]) return 1;
@@ -63,7 +65,7 @@ function dbkMoPhong_(G, them, cs, ut) {   // G = dbkGiau_(); them = đơn thử 
       ch.push(st.map(function(k, j) { return Math.min(need, Math.max(0, dd[j] - base)); }));
     });
     var tien = 0, nb = 0; ch.forEach(function(x) { x.forEach(function(y) { tien += need ? y / need : 0; nb++; }); });
-    return { o: o, ly: o ? lyDo(o) : '', g: g, lan: lanSo(o ? o.tab : g.tab), uu: dau ? 0 : (+uu || 2), han: (o && (o.dl || dlNgam(o))) || g.dl || '9999', i: i, need: need, dg: 0, eta: '', tien: nb ? tien / nb : 0 };
+    return { o: o, ly: o ? lyDo(o) : '', g: g, lan: lanSo(o ? o.tab : g.tab), uu: dau ? 0 : (+uu || 2), han: (o && ((o.hanRieng && o.hanRieng.han) || o.dl || dlNgam(o))) || g.dl || '9999', i: i, need: need, dg: 0, eta: '', tien: nb ? tien / nb : 0 };
   };
   /* nhóm đơn như dhCSDon: dòng còn thiếu, không phải phụ kiện / hàng nối, gom theo mã đơn + tab */
   var m = {}, ds = [];
@@ -100,6 +102,7 @@ function dbkGanDuKien_(out, d) {
   (d.don || []).forEach(function(o) { tl += o.thieu || 0; ts += o.sl || 0; }); ky.push((d.don || []).length, tl, ts);
   try { ky.push(JSON.stringify([cs.lan.pt, cs.lan.du, cs.lan.kenh])); } catch (eL) {}   // 17/11 khuya: đổi chia làn -> tính lại
   try { var uwK = Object.keys(dhUuWebDoc_()).sort().join(','); ky.push(uwK.length, uwK.slice(-40)); } catch (eU) {}   // 17/11 khuya: gắn / bỏ ★ (vd duyệt đề nghị ưu tiên) -> tính lại   // dữ liệu đổi (duyệt / hủy / nhập số) -> khóa nhớ tạm đổi
+  try { var hrK = JSON.stringify(dhHanRiengDoc_()); ky.push(hrK.length, hrK.slice(-60)); } catch (eHR) {}   // 21/11: đặt / bỏ hạn riêng -> tính lại
   var key = DBK_CACHE + '|' + ky.join('|');
   var lay = function() { if (!G) G = dbkGiau_(d); return G; };
   try { var s = cache.get(key); if (s) { var m0 = JSON.parse(s); var R0 = dbkMoPhong_({ don: [], uu: [], tre: [] }, null, cs); R = { m: m0, cong2: R0.cong2, congN: R0.congN }; } } catch (e) { R = null; }
@@ -120,6 +123,7 @@ function dbkGanDuKien_(out, d) {
 function layBangDonNhaMay(token) {
   var q = dbQuyen_(token); if (q.loi) return q.loi;
   var d; try { d = dhDocDon_(false); } catch (e) { return sach_({ ok: false, msg: 'Chưa đọc được bảng đơn – thử lại sau ít phút.' }); }
+  try { dhGanHanRieng_(d.don); } catch (eHR) {}   // 21/11
   var thu = {}; DH_TABS.forEach(function(t, i) { thu[t] = i; });
   var ds = (d.don || []).filter(function(o) { return !o.phu && o.thieu > 0 && o.ten; });
   ds.sort(function(a, b) { var ta = thu[a.tab] != null ? thu[a.tab] : 99, tb = thu[b.tab] != null ? thu[b.tab] : 99;
@@ -139,7 +143,7 @@ function layBangDonNhaMay(token) {
   } catch (eTK) { tk = []; }
   return sach_({ ok: true, luc: d.luc || '', het: het ? 1 : 0, n: ds.length, kenh: dbKenh_(), tk: tk, duKin: DBK_DU_KIN, cs: dhCongSuat_().sp,
     pct: dbxPctDon_(d.don || []),   // 21/11 (chủ dự án): thanh % hoàn thành theo từng đơn
-    ds: ds.slice(0, DBK_BANG_MAX).map(function(o) { return [o.tab, String(o.maDon || ''), o.ten, o.sl || 0, o.dl || '', o.dung ? 1 : 0]; }) });   // [5] = 1: đang tạm dừng
+    ds: ds.slice(0, DBK_BANG_MAX).map(function(o) { return [o.tab, String(o.maDon || ''), o.ten, o.sl || 0, o.dl || '', o.dung ? 1 : 0, o.hanRieng ? o.hanRieng.han : '']; }) });   // [5] = 1: đang tạm dừng · [6] = hạn riêng (21/11)
 }
 /* ===== 21/11 (chủ dự án): % hoàn thành từng đơn = (số đặt − còn thiếu) ÷ số đặt, cộng MỌI mã của đơn (cả mã đã xong) – bỏ hàng phụ / mã hủy ===== */
 function dbxPctDon_(don) {

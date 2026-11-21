@@ -86,6 +86,9 @@ Những điều đã chốt. Đừng đề xuất lại những gì ghi "không 
 - TP chỉ nhập số của xưởng mình; **deadline đơn do ban điều hành ghi**.
 - Gậy 1 khúc: tên "1 KHÚC" / "ONE PIECE" / "GMK", glassfiber nguyên cây 1450 / 1480, không ren, tip 12.5 / 12.2, nhóm thống kê riêng, có bản vẽ.
 
+## Hạn riêng từng mã (chốt 21/11)
+- Ưu tiên 1 mã đi sớm hơn deadline cả đơn = **hạn riêng lưu trên web**, không đổi deadline Sheet (hạn khách). Quyền như gắn ★. Web tính lại ngày dự kiến mọi đơn; Bán hàng thấy "nhà máy ưu tiên mã … (mục tiêu nội bộ)".
+
 ## KPI mới từ tháng 11/2026 (chốt 21/11)
 - **Bỏ học việc**: người mới tính sản lượng + xếp loại ngay từ ngày vào làm. Tháng 9–10 giữ cách cũ.
 - **Kho** do Kế toán tự tính, không nằm trong KPI sản xuất. **Tiền thưởng** do HC – Kế toán làm từ loại / hạng; web KHÔNG tính tiền.
