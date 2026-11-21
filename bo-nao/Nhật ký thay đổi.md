@@ -4,6 +4,10 @@ Liên quan: [[00 Mục lục]] · [[Quyết định của chủ dự án]] · [[
 
 Mỗi lần sửa web / dữ liệu / quy tắc: **ngày · sửa gì · VÌ SAO sửa (ai yêu cầu, lỗi gì, số liệu nào) · file / hàm · kiểm thử · commit**. Mới nhất ở trên. Chủ dự án yêu cầu 18/11: "khi chúng ta sửa gì, tại sao phải sửa, cũng phải ghi vào bộ nhớ; công việc lớn cũng phải ghi lại". Chi tiết kỹ thuật dài để ở ghi chú chủ đề, ở đây chỉ 3–6 dòng mỗi mục.
 
+## 21/11
+- **Soạn Phiếu mô tả công việc chị Đinh Kim Loan (C067)**, Trợ lý Ban điều hành: hàng hóa – đơn hàng, Bán hàng, khách OEM, hỗ trợ Đóng gói, giấy tờ HC-NS (cùng kiểu chung chung chủ dự án duyệt; quản lý trực tiếp ghi GĐ Hán Việt Hưng – Claude tự điền). Trước đó (19–20/11): bản GĐ Hán Việt Hưng (ô quản lý trực tiếp để trống).
+- **Đánh giá KPI trước khi gắn QUỸ THƯỞNG (từ tháng 12)** – hỏi `quan-ly-van-hanh`, chưa sửa web. Vì sao: chủ dự án báo từ tháng tới có quỹ thưởng theo KPI. Kết luận chính: KPI CN thực chất ≈ 0,7×HS + 29,6 (CL, tuân thủ gần như ai cũng 100); trần HS 500% vô nghĩa; tự khai + TP duyệt mà TP hưởng theo HS xưởng; Vận hành TP/PP trừ thẳng dễ về 0; KPI QL không chốt. Đề xuất: trần thưởng 130/120, chất lượng thành hệ số, Vận hành theo tỷ lệ 25% sàn 40, giờ chờ việc, chốt KPI QL, chia quỹ theo xưởng × hệ số loại (85% CN / 15% QL), chạy thử tháng 12. Chờ chủ dự án chọn việc làm ([[Việc chờ chủ dự án]]).
+
 ## 19/11
 - **Soạn Phiếu mô tả công việc Ban điều hành cho chủ dự án** (Word theo mẫu công ty, không sửa web). Chủ dự án chốt: quản lý trực tiếp = GĐ Hán Việt Hưng (C019); mảng phụ trách: kế hoạch SX & đơn hàng · KPI, định mức, nhân sự SX · số hóa – web KPI · quy trình & kỹ thuật SX (cấu hình gậy phối hợp C077); công việc hằng ngày viết theo việc, không theo giờ. File ở scratchpad.
 - **Xuất Excel KPI quản lý tháng 9 + 10** (không sửa web). Vì sao: chủ dự án cần sau đợt cắt giảm. Cách: KPI quản lý KHÔNG lưu sẵn (web tính lúc xem, `layKPIQuanLy`) → chạy đúng hàm web trong `gia-lap-kpi.js` trên CSDL KPI thật (nhớ đặt prop `KPI_MOC_LUU_TRU`='2026-10' để đọc nhật ký lưu trữ, không thì tháng 9 hiệu suất xưởng = 0), 2 lần: như web hiện nay và coi 63 CN đã nghỉ là còn làm.
