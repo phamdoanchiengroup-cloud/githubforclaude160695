@@ -64,6 +64,36 @@ for (var i = 0; i < 2000; i++) {
 check('Tử Vi – Mệnh/Thân/Đại hạn (' + n + ' lá số)', n, badMenh, 0);
 check('Tử Vi – vị trí sao', starCount, badStar, 0);
 
+/* 1b. Tử Vi – người sinh THÁNG NHUẬN (21/11: bổ sung sau khi xem repo Numerologist_skills).
+ *  Hai quy tắc đều phải khớp iztro: mặc định (cả tháng nhuận an như tháng thường) ↔ iztro fixLeap=false;
+ *  leapMode 'split' (từ ngày 16 tính sang tháng sau) ↔ iztro fixLeap=true. */
+['thuong', 'split'].forEach(function (che) {
+  var nl = 0, badL = 0, sl = 0, badLS = 0;
+  for (var k = 0; k < 4000 && nl < 400; k++) {
+    var yl = ri(1900, 2099), lm = ctx.getLeapMonthOfYear(yl);
+    if (!lm) continue;
+    var dl = ri(1, 30), hl = ri(0, 11), gl = rnd() < 0.5 ? '男' : '女';
+    if (!ctx.lunarToSolar(dl, lm, yl, 1)) continue;
+    var al; try { al = iztro.astro.byLunar(yl + '-' + lm + '-' + dl, hl, gl, true, che === 'split', 'zh-CN'); } catch (e) { continue; }
+    if (!/闰/.test(al.lunarDate)) continue;   // lịch Trung Quốc không nhuận tháng này (vd. 1917: VN nhuận 3, TQ nhuận 2) – khác lịch, không phải lỗi an sao
+    var inp = { calendar: 'am', day: dl, month: lm, year: yl, leap: true, hour: hl * 2, minute: 0, gender: gl === '男' ? 'nam' : 'nu', viewYear: 2026 };
+    if (che === 'split') inp.leapMode = 'split';
+    var tl; try { tl = ctx.tuviLapLaSo_(inp); } catch (e) { continue; }
+    nl++;
+    if (BR.indexOf(al.earthlyBranchOfSoulPalace) !== tl.info.menh || BR.indexOf(al.earthlyBranchOfBodyPalace) !== tl.info.than) badL++;
+    al.palaces.forEach(function (p) {
+      var pi = BR.indexOf(p.earthlyBranch);
+      p.majorStars.concat(p.minorStars, p.adjectiveStars).forEach(function (s) {
+        var vn = Z[s.name];
+        if (!vn || (vn === 'Hỏa Tinh' && !tl.info.thuan)) return;
+        sl++; if (tl.pos[vn] !== pi) badLS++;
+      });
+    });
+  }
+  check('Tử Vi tháng nhuận (' + (che === 'split' ? 'từ ngày 16 tính tháng sau' : 'cả tháng như tháng thường') + ') – Mệnh/Thân (' + nl + ' lá số)', nl, badL, 0);
+  check('Tử Vi tháng nhuận (' + (che === 'split' ? 'từ ngày 16 tính tháng sau' : 'cả tháng như tháng thường') + ') – vị trí sao', sl, badLS, 0);
+});
+
 /* 2. Bát Tự vs lunar-javascript (giờ Trung Quốc = giờ VN + 1) */
 var nb = 0, badP = 0, badPhu = 0;
 for (i = 0; i < 2000; i++) {

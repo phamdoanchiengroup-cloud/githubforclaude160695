@@ -45,3 +45,5 @@ cd tests && npm install && node thien-van.mjs && node doi-chieu.js   # đối ch
 ## 16/11/2026 – rà soát bảo mật
 - `thanh-toan.js`, `tai-khoan.js`, `van-ngay.js` không còn bỏ qua khi thiếu `TK_PASS`: tự thay seed chủ sở hữu bằng mật khẩu thử trong bộ nhớ (`mat-khau-thu-nghiem`). Giả lập Sheet bỏ dấu `'` đầu ô như Google Sheet. `thien-van.mjs` có giả lập `Utilities.formatDate`.
 - `doi-chieu.js` cần `cd tests && npm ci` (gói iztro). Toàn bộ 25 file đạt.
+
+- 21/11: `tests/doi-chieu.js` thêm mục **Tử Vi tháng nhuận** đối chiếu iztro (MIT): 400 lá số × 2 quy tắc – mặc định "cả tháng nhuận như tháng thường" ↔ iztro `fixLeap=false`, `leapMode:'split'` ↔ `fixLeap=true`; bỏ qua năm mà lịch Trung Quốc nhuận tháng khác lịch Việt (vd. 1917). Kết quả 400/400 Mệnh/Thân, ~21.400/21.400 vị trí sao mỗi quy tắc. Nguồn ý tưởng: repo FANzR-arch/Numerologist_skills (không giấy phép – chỉ học cách làm, không chép mã).

@@ -87,3 +87,7 @@ Chủ dự án: dùng các chuyên gia rà soát toàn bộ mã, giao diện, vi
 
 ## 17/11 – bỏ Tóm lược, Tổng hợp 6 hệ lên đầu (mã 2026.11.17.9)
 - frontend-developer: xóa `page-tomluoc` và chip; `veTomLuoc` vẽ khối `.tl.tl-gop` lên đầu `page-tong` (hồ sơ nhanh dùng `I.banMenh`, cảnh báo không rõ giờ, lưu ý khách `tlLuuY`, chặng đời + lối vào 6 hệ + Kiểm chứng 2 phút, thẻ mời khách); bỏ phần trùng với Tổng hợp. Mặc định mở `tong` cho mọi người; `showTab('tomluoc')` → `tong`; `NHOM_MAC.laso = 'tong'`; chip Tổng hợp đứng đầu; bỏ ổ khóa trên chip Tổng hợp. Kiểm thử đạt, smoke `gop-tong.js` 6/6.
+
+## 21/11 – xem repo FANzR-arch/Numerologist_skills
+- Bộ "AI skill" (SKILL.md + references + Python CLI) cho Kỳ Môn, Tử Vi, Bát Tự; KHÔNG có giấy phép → chỉ học ý tưởng. Đối chiếu 120 ca mẫu iztro của họ với Tử Vi của mình: chính tinh/phụ tinh khớp; khác biệt có lý do: Hỏa/Linh (phái Việt tính chiều theo âm dương nam nữ), tháng nhuận (họ mặc định tách ở ngày 16), lịch VN (UTC+7) lệch 1 ngày âm với lịch TQ ở vài tháng.
+- Đã có sẵn đối chiếu iztro 2.000 lá số; bổ sung mục tháng nhuận (xem [[TCC Kiểm thử]]). Chủ dự án chọn: thêm kiểm thử (xong) + nghiên cứu Kỳ Môn Độn Giáp (product-manager đang soạn `nghien-cuu/ky-mon/00-de-xuat.md`).
