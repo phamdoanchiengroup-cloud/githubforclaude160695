@@ -1,4 +1,4 @@
-# Thái Ất Thần Kinh – đề xuất mục mới "Thái Ất" cho 4 phạm vi (21/11/2026, chờ chủ dự án duyệt)
+# Thái Ất Thần Kinh – đề xuất mục mới "Thái Ất" cho 4 phạm vi (21/11/2026; chủ dự án đã duyệt phương án, phần tính đã lập trình ở `tuvi-app/ThaiAt.gs`)
 
 Người soạn: Claude (phiên nghiên cứu). **Chưa viết mã, chưa commit.** Căn cứ trong repo: `nghien-cuu/ky-mon/00-de-xuat.md` (mẫu cách viết), `nghien-cuu/ra-soat/07-ban-le-9-19.md` (chuẩn 9/19 xu), `tuvi-app/KyMon.gs` (`kmKinhDoMatTroi_`, `kmTietKhiNam_`), `Lunar.gs` (`solarToLunar`, `jdFromDate`), `BatTu.gs` (`batTuLap_`, can chi ngày giờ). Nguồn ngoài chỉ dùng để học thuật toán. Thư viện chính (kintaiyi) có giấy phép MIT. Các repo không có giấy phép thì chỉ đọc mô tả, không đọc mã.
 
@@ -229,30 +229,51 @@ Phải ghi rõ trong văn: "**cách ghép của Thiên Cơ Các**, không phải
 
 ## 4. Kiểm chứng
 
-### 4a. Bộ ca kiểm thử
-- Viết `tuvi-app/tools/thai-at-ca-kiem.py`. File này chạy `pip install kintaiyi==0.2.3` **trên máy kiểm thử** (không trong Apps Script, không commit thư viện), sinh JSON khoảng 300 ca:
-  - 72 cục dương và 72 cục âm của Tuế kế và Thời kế;
-  - các năm 1900–2100;
-  - 50 giờ ngẫu nhiên.
-- `ThaiAt.gs` so từng trường. Trường nào lệch thì đối chiếu danh sách lỗi đã biết của kintaiyi ở 4c.
-- Việc cài gói kintaiyi cần chủ dự án đồng ý, vì phiên này không được cài gói.
+> **Cập nhật 21/11/2026 (đã lập trình `tuvi-app/ThaiAt.gs`, chủ dự án duyệt các phương án đề xuất):** mục 4a–4d dưới đây là kết quả đối chiếu thật.
 
-### 4b. Đã thử (bằng mã kiểm tra tự viết, không đưa vào repo)
-- Quy tắc 3d–3j dựng lại bảng 72 × 2 cục của kintaiyi:
-  - Thủy Kích khớp **70/72**;
-  - Chủ/Khách/Định toán khớp **421/432**.
-- Ví dụ trong README của kintaiyi (năm 658, dương độn cục 55, bàn giống năm 2026) khớp **16 trường**: Thái Ất, Văn Xương, Thủy Kích, Kế, Hợp, Định mục, Chủ toán, Chủ đại tướng, Chủ tham tướng, Định toán, Thiên Ất, Địa Ất, Tứ Thần, Trực Phù, Thần Cơ, Dân Cơ. Quân Cơ cũng khớp (Thìn), sau khi đã sửa lệch 1 bước như ở 3k.
+### 4a. Bộ ca kiểm thử (đã làm)
+- Chủ dự án cho phép cài kintaiyi **0.2.3** (MIT, PyPI) trong virtualenv riêng trên máy kiểm thử (`/tmp/claude-0/ta-venv`, kèm `ephem numpy cn2an sxtwl`). Bản 0.2.3 **không có** `data.pkl`, không có `taiyi_life`/`shi_geju`/bảng `yangcal` (các hàm đó ở bản GitHub mới hơn mà mục 2a đã đọc).
+- Script sinh ca: `tuvi-app/tools/thai-at/sinh-doi-chieu.py` (chạy bằng python của venv với `-I`, từ thư mục khác). Ra `tuvi-app/tests/du-lieu/thai-at-doi-chieu.json` (chỉ dữ liệu, README ghi nguồn "kintaiyi (MIT) – kentang2017"). **1.232 ca**:
+  - Tuế kế 1900–2100 (ngày 1/7) + 15 ca giữa Tết và Lập xuân;
+  - Nguyệt kế 2000–2035, mỗi tháng một ngày mà tháng âm trùng tháng tiết (432 ca) + 40 ca lệch ranh tháng;
+  - Thời kế 300 giờ ngẫu nhiên 1950–2050, 2 chuỗi 6 ngày liền (đủ 72 cục dương và 72 cục âm), 100 ca sát Đông chí/Hạ chí.
+- Kiểm thử Node: `tuvi-app/tests/doi-chieu-thai-at.js` (báo tỷ lệ khớp từng trường; khác biệt đã biết K1–K10 phải khớp đúng luật mô phỏng kintaiyi, nếu không thì báo lỗi) và `tuvi-app/tests/thai-at.js` (thuộc tính bất biến, biên Lập xuân/Đông chí/Hạ chí, ca mẫu mục 5, mệnh pháp, vận năm, hỏi việc – 70.839 phép kiểm, 0 sai).
 
-### 4c. Lỗi trong dữ liệu kintaiyi (không được chép bảng)
-- **Thủy Kích**, cục 31 và 67 (bảng dùng chung cho dương và âm): kintaiyi ghi Dậu và Càn cho hai cục có cùng đầu vào. Quy tắc cho Tuất. Khách toán trong chính bảng của kintaiyi (cục 31 = 10) cũng chỉ đúng khi Thủy Kích ở Tuất.
-- **Bảng toán**, theo dạng [chủ, khách, định], quy tắc / kintaiyi:
-  - dương: cục 6 định 32/12; cục 44 chủ 33/23; cục 57 định 1/10; cục 58 định 37/27;
-  - âm: cục 6 định 30/10; cục 10 khách 34/24; cục 13 định 13/12; cục 27 định 16/26; cục 39 chủ 37/27; cục 60 định 23/25; cục 61 khách 12/22.
-  - Phần lớn là gõ nhầm một chữ số.
-- `kingbase` (Quân Cơ) viết `//30 or 1`, nên không bao giờ ra chi Tỵ.
-- `bigyo` (Đại Du) đảo bảng chỉ số; `smyo` (Tiểu Du) rối.
-- Bảng nhãn cách cục âm độn dài 73 phần tử, trong khi phải là 72, nên bị lệch.
-- Đại tướng khi toán chia hết cho 10: chủ lấy 1, khách lấy 5, không nhất quán.
+### 4b. Kết quả đối chiếu với kintaiyi 0.2.3 (1.177 ca so đủ trường; 55 ca ranh năm/tháng chỉ kiểm luật tích số)
+
+| Trường | Khớp | Khác biệt đã biết (ngoài ra **không có lỗi nào chưa giải thích**) |
+|---|---|---|
+| Tích số, cục, Thái Ất, Văn Xương, Hợp Thần, Thái Tuế, Định Mục | **100%** | – |
+| Thần Cơ, Dân Cơ, Tứ Thần, Thiên Ất, Địa Ất, Trực Phù | **100%** | – |
+| Âm/dương độn | 93,5% | K3: 77 ca (đều trong 7 ngày trước Hạ chí/Đông chí) |
+| Thủy Kích | 97,2% | K5: 33 ca (cục 30, 66) |
+| Kế Thần | 76,1% | K4: 281 ca (mọi ca âm độn) |
+| Chủ / Khách / Định toán | 95,5% / 94,1% / 95,1% | K6: 53 / 37 / 58; K5: 33 (khách) |
+| Chủ / Khách / Định đại tướng (tham tướng như nhau) | 83,3% / 87,9% / 90,8% | K7: 144 / 73 / 50; kéo theo K5/K6: 53 / 70 / 58 |
+| Quân Cơ | 95,7% | K8: 51 |
+| Ngũ Phúc | 2,5% | K9: 1.147 (lệch đều một cung) |
+| Đại Du / Tiểu Du | 15,2% / 7,8% | K10: toàn bộ phần còn lại |
+
+Ca mẫu: README kintaiyi năm 658 (cục 55, tích 10.154.575) và năm 1552 (dương 13) khớp; 4 năm, 4 tháng, 5 giờ ở mục 5 khớp đủ mọi trường đã ghi.
+
+### 4c. Khác biệt đã biết (ta cố ý khác, hoặc lỗi của kintaiyi) – kiểm riêng trong `tests/doi-chieu-thai-at.js`
+- **K1 ranh năm Tuế kế**: ta lấy Lập xuân (chủ dự án chốt), kintaiyi lấy năm âm lịch → giữa Tết và Lập xuân tích của ta nhỏ hơn 1. (Kintaiyi còn tự mâu thuẫn: tích theo Tết nhưng Thái Tuế theo Lập xuân.)
+- **K2 ranh tháng Nguyệt kế**: ta lấy tháng tiết (tháng 1 = Dần, từ Lập xuân, cho đồng bộ với ranh năm); kintaiyi lấy tháng âm (tháng nhuận tính như tháng thường) nhưng Thái Tuế lại theo tháng tiết.
+- **K3 độn Thời kế**: hàm `jq()` của kintaiyi trả tiết *kế tiếp* của thời điểm 7 ngày trước và đọc giờ nhập như giờ UTC → đổi độn sớm khoảng 7 ngày. Ta đổi đúng giờ Đông chí/Hạ chí (giờ VN).
+- **K4 Kế Thần âm độn**: kintaiyi 0.2.3 luôn khởi Dần; ta khởi Thân. Bằng chứng: bảng Thủy Kích `sf_list` của chính kintaiyi (dùng chung cho âm và dương) chỉ khớp 70/72 cục âm khi Kế Thần âm khởi Thân, 0/72 khi khởi Dần.
+- **K5 lỗi gõ `sf_list`** cục 30 và 66 (đánh số 1–72; mục cũ ghi 31/67 là đánh số khác): bảng ghi Sửu, quy tắc ra Thân; Khách toán, tướng khách kéo theo.
+- **K6 toán khi ô khởi trùng cung Thái Ất**: ta lấy số cung Thái Ất (sách Kim Kính); kintaiyi 0.2.3 ra 0 (hoặc 1 với Định toán) ở 4 cung góc.
+- **K7 đại tướng**: ta toán 10/20/30/40 → 1 (Kim Kính, chủ dự án duyệt); kintaiyi → 5; riêng chủ toán bằng 1 kintaiyi lấy số cung Thái Ất.
+- **K8 Quân Cơ**: kintaiyi chia nguyên không trừ 1 → lệch một chi khi (tích + 250) chia hết cho 30.
+- **K9 Ngũ Phúc**: kintaiyi 0.2.3 đánh khóa bảng từ 1 (dư 0 rơi Trung) → luôn lệch một cung so với Thống Tông (tianyugong). Ví dụ 2024: ta Khôn, kintaiyi Tốn.
+- **K10 Đại Du, Tiểu Du**: `bigyo` (chu kỳ 388, đảo bảng chỉ số) và `smyo` (lấy dư lẫn lộn) không theo quy tắc nào; ta theo chu kỳ 288 (36 năm/cung, khởi Khôn) và 24 (như Thái Ất dương).
+- Lỗi khác của kintaiyi ghi nhận (không ảnh hưởng ca kiểm vì đã tránh): giờ 23 trong `gangzhi()` cộng nhầm 23 ngày; bảng nhãn cách cục `skyeyes_summary` lệch một vị trí và không nhất quán (vd. cục 26–27 ghi "tù" dù Văn Xương không cùng cung) nên **không dùng làm nguồn** cho cách cục.
+
+### 4d. Quy ước đã chốt khi lập trình (theo phương án đề xuất, ghi để người rà soát biết)
+- "Cung kề" = kề thật trên bàn. Ô gian thần đứng ngay **trước** (chiều nghịch) cung Thái Ất tính là **thần bách nội** (không tính tù) – theo nhãn kintaiyi cục 3 ("nội bách"); ô ngay sau là thần bách ngoại; cung chính kề hai bên (và ô gian thần thuộc cung kề phía nội) là cung bách. Phía trước = chiều thuận = ngoại; phía sau = nội.
+- Tù/yểm: đứng đúng ô cung Thái Ất. Đối/cách: ô thuộc cung đối diện. Tướng ở cung giữa (5) không xét tù/bách.
+- Mệnh pháp: 4 ô góc quy về chi theo cặp **Cấn Dần, Tốn Tỵ, Khôn Thân, Càn Hợi** khi đặt lên 12 cung; thần ở cung giữa không đặt.
+- Hỏi việc: ngưỡng 3 mức chỉnh trên 20.000 bàn giờ 1990–2040 (vai Khách) cho khoảng 30% / 45% / 25%.
 
 ## 5. Bảng ca đối chiếu mẫu (để lập trình)
 
@@ -262,7 +283,11 @@ Ký hiệu nguồn:
 - **R** = khớp ví dụ README kintaiyi;
 - **N** = nhãn cách cục của kintaiyi.
 
-"≥2 nguồn" = Q cộng ít nhất một trong B, R, N, cộng quy tắc được sách Kim Kính hoặc tianyugong xác nhận. **Chưa tìm thấy trang nào công bố sẵn bàn của 2024–2027 hay của một giờ cụ thể**: tìm bằng cả tiếng Trung lẫn tiếng Việt đều không ra. Cần chủ dự án dò tay với sách hoặc phần mềm quen dùng (câu hỏi 8.10).
+"≥2 nguồn" = Q cộng ít nhất một trong B, R, N, cộng quy tắc được sách Kim Kính hoặc tianyugong xác nhận.
+
+> **Cập nhật 21/11/2026:** `ThaiAt.gs` tính ra **đúng mọi giá trị** trong các bảng 5a, 5b, 5c dưới đây (kể cả các thần khác và cách nổi bật); `tests/thai-at.js` kiểm lại từng ca. So với kintaiyi 0.2.3: 4 năm 2024–2027 khớp mọi trường lõi; riêng 2026 kintaiyi cho Khách toán 0 (K6, Thủy Kích trùng cung Cấn), 2027 Định đại tướng 5 thay vì 1 (K7, Định toán 10), Ngũ Phúc cả 4 năm ra Tốn (K9). Bàn mẫu dùng ranh năm Lập xuân, tháng theo tiết.
+
+**Chưa tìm thấy trang nào công bố sẵn bàn của 2024–2027 hay của một giờ cụ thể**: tìm bằng cả tiếng Trung lẫn tiếng Việt đều không ra. Cần chủ dự án dò tay với sách hoặc phần mềm quen dùng (câu hỏi 8.10).
 
 ### 5a. Tuế kế 2024–2027 (Thống Tông; Kim Kính chỉ khác ở Ngũ Phúc và Đại Du)
 
