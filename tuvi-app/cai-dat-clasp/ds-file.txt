@@ -16,7 +16,7 @@ HaLac.gs	63989
 HoiTu.gs	103422
 Holo.html	59597
 HumanDesign.gs	46578
-Index.html	52884
+Index.html	53235
 KyMon.gs	40546
 KyMonVan.gs	58353
 LuanGiai.gs	101400
@@ -24,9 +24,9 @@ Lunar.gs	9371
 NghiemChung.gs	27775
 NghiemChungUI.html	11264
 PhoiNgau.gs	58901
-Script.html	798451
-Styles.html	237796
-TaiKhoan.gs	32208
+Script.html	832937
+Styles.html	253559
+TaiKhoan.gs	32304
 ThanSoHoc.gs	54848
 ThanhToan.gs	81846
 TienIch.gs	89160

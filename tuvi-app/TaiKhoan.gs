@@ -261,7 +261,7 @@ function lapLaSo(input, token) {
   if (!u) input.save = false;
   input.taiKhoan = u ? u.ten : '';
   var r = lapLaSoDayDu_(input);
-  skLapLaSo_(!!u);
+  if (!input.khongDem) skLapLaSo_(!!u);   // trang Năm 2027 gọi thêm lần nữa – không đếm vào phễu
   try { r.teaser = demoTeaser_(r); } catch (e) { r.teaser = {}; }
   var khoa = ttKhoaLaSo_(input), bg = ttBangGia_();
   // Luận giải 6 hệ (12 cung Tử Vi, Bát Tự, Chiêm tinh, Thần số, HD, Hà Lạc) mở cho mọi người đọc.

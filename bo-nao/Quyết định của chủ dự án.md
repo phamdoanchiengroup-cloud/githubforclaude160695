@@ -62,3 +62,9 @@ Liên quan: [[Việc chờ chủ dự án]] · [[TCC Bán hàng]] · [[00 Mục 
 - Luận giải 6 hệ mở miễn phí cho mọi người; khóa Tổng hợp 6 hệ (`co_ban` 19 xu), vận hạn, biến cố, phối ngẫu.
 - Mọi phần 9–49 xu, hiện giá cũ gạch ngang; quà đăng ký ~~19~~ **50 xu** (23/10: chủ dự án nâng lên 50, đủ mở Trọn đời 49 xu); mời bạn cả hai +9 xu. – [[TCC Bán hàng]]
 - Gói Trọn đời không gồm vận năm/tháng (giữ nguồn thu định kỳ).
+
+## 21/11 – Kỳ Môn, mùa Tết, Thái Ất
+- Kỳ Môn "Hỏi một việc": hỏi được từ 1 ngày trước đến 3 ngày tới (giữ chỗ cho gói "Giờ tốt 7 ngày" đợt 2); đã mua thì mở lại được lượt cũ bất cứ lúc nào. – [[TCC Kỳ Môn Độn Giáp]]
+- Bát Tự dùng giờ giao tiết chính xác (hàm của Kỳ Môn).
+- Mùa Tết: trang "Năm 2027 của bạn" + băng mời (nút tới trang đó) + thẻ "Phễu bán hàng" trong Quản trị.
+- Thái Ất Thần Kinh: làm cả 4 phạm vi (mệnh cá nhân, vận năm cá nhân, thời cuộc chung, hỏi việc theo giờ); mục riêng cho mệnh + hỏi việc, vận năm ghép vào trang Năm 2027, thời cuộc miễn phí; combo hỏi việc 2 môn (Kỳ Môn + Thái Ất) 19 xu; hé lộ miễn phí + phần 9/19 xu; phái Thống Tông, các điểm chưa chắc theo đề xuất chuyên gia; cho cài kintaiyi (MIT) trên máy kiểm thử để sinh ca đối chiếu; làm luôn bàn + giao diện. – [[TCC Thái Ất Thần Kinh]]

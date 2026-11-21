@@ -13,7 +13,8 @@ Bộ não thứ hai của **Thiên Cơ Các** (nhánh `claude/happy-brown-lttkz3
 ## Thiên Cơ Các (`tuvi-app/`)
 - Nền tảng: [[TCC Tổng quan]] · [[TCC Tiến trình]] · [[TCC Kiểm thử]] · [[TCC Lịch sử lá số]] · [[TCC Tự đẩy code lên Apps Script]] · [[TCC Chuyên gia Agency Agents]]
 - Lõi luận giải: [[TCC Lập lá số và bốn tầng luận]] · [[TCC Sáu hệ]] · [[TCC Văn dễ hiểu và Tổng hợp 6 hệ]] · [[TCC Nghiệm chứng]] · [[TCC Vận hạn chuyên sâu và biến cố]] · [[TCC Tử Vi đối chiếu các phái]] · [[TCC Tứ Hóa Phi Tinh]] · [[TCC Tab Gia đình]] · [[TCC Rà soát toàn bộ 11-2026]] · [[TCC Bát Tự Hà Lạc và Tứ Trụ đối chiếu nguồn]] · [[TCC Thần sát Bát Tự]] · [[TCC Chiêm tinh Thần số HD nâng cấp chuyên sâu]]
-- [[TCC Kỳ Môn Độn Giáp]] – hệ thứ 7: lập bàn (21/11), "Hỏi một việc" 9 xu đang làm
+- [[TCC Kỳ Môn Độn Giáp]] – hệ thứ 7: lập bàn, "Hỏi một việc" 9 xu (21/11)
+- [[TCC Thái Ất Thần Kinh]] – nghiên cứu xong, đang lập bàn (21/11)
 - Giao diện: [[TCC Giao diện]] · [[TCC Lá số 3D]] · [[TCC PDF]]
 - Kinh doanh: [[TCC Bán hàng]] · [[TCC Tiện ích bán lẻ]] · [[TCC Báo cáo ngày]] · [[TCC Luận giải hằng ngày qua email]]
 

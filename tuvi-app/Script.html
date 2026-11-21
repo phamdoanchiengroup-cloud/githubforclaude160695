@@ -27,7 +27,7 @@
     });
   }
   /** Mã phiên bản giao diện – phải trùng với Index.html (meta tcc-ban) và Styles.html (--tcc-ban) */
-  var BAN_GIAO_DIEN = '2026.11.17.9';
+  var BAN_GIAO_DIEN = '2026.11.21.1';
   /* 25/10: ảnh ngũ hành + 12 con giáp + bìa PDF mới của chủ dự án (tuvi-app/anh/*.webp) qua jsDelivr, ghim theo mã lần lưu */
   var TCC_ANH_CDN = 'https://cdn.jsdelivr.net/gh/phamdoanchiengroup-cloud/githubforclaude160695@19203fbd20433f395336269a411f8aebcf990086/tuvi-app/anh/';
   var ANH_HANH = { 'Mộc': 'NguHanhMoc', 'Hỏa': 'NguHanhHoa', 'Thổ': 'NguHanhTho', 'Kim': 'NguHanhKim', 'Thủy': 'NguHanhThuy' };
@@ -41,7 +41,7 @@
   function hasServer() { return typeof google !== 'undefined' && google.script && google.script.run; }
   /** Hàm máy chủ mới thêm gần đây → file .gs chứa nó (để báo đúng file khi còn bản cũ) */
   var FILE_HAM = { bangGiaCongKhai: 'ThanhToan.gs', muaPhan: 'ThanhToan.gs', viCuaToi: 'ThanhToan.gs', dangKy: 'TaiKhoan.gs', lapLaSo: 'TaiKhoan.gs', guiMaEmail: 'TaiKhoan.gs', xacThucEmail: 'TaiKhoan.gs', dungLuotGiaDinh: 'ThanhToan.gs',
-    tienIch: 'TienIch.gs', gieoQue: 'TienIch.gs', dsGieoQue: 'TienIch.gs', dangKyBanTin: 'TienIch.gs', dsBanTin: 'TienIch.gs', dangKyVanNgay: 'TienIch.gs', huyVanNgay: 'TienIch.gs', dsVanNgay: 'TienIch.gs', thamKhaoTuVi: 'TuViChuyenSau.gs', donLichSu: 'Code.gs', getLichSu: 'Code.gs', lapCapDoi: 'CapDoi.gs', tuViChuSoHuu: 'TuViChuyenSau.gs', phiTinhLuan: 'TuViPhiTinh.gs', giaDinhDs: 'GiaDinh.gs', giaDinhLuu: 'GiaDinh.gs', giaDinhVanNam: 'GiaDinh.gs', giaDinhQuanHe: 'GiaDinh.gs', thamKhaoThanSat: 'BatTuThanSat.gs' };
+    tienIch: 'TienIch.gs', gieoQue: 'TienIch.gs', dsGieoQue: 'TienIch.gs', dangKyBanTin: 'TienIch.gs', dsBanTin: 'TienIch.gs', dangKyVanNgay: 'TienIch.gs', huyVanNgay: 'TienIch.gs', dsVanNgay: 'TienIch.gs', thamKhaoTuVi: 'TuViChuyenSau.gs', donLichSu: 'Code.gs', getLichSu: 'Code.gs', lapCapDoi: 'CapDoi.gs', tuViChuSoHuu: 'TuViChuyenSau.gs', phiTinhLuan: 'TuViPhiTinh.gs', giaDinhDs: 'GiaDinh.gs', giaDinhLuu: 'GiaDinh.gs', giaDinhVanNam: 'GiaDinh.gs', giaDinhQuanHe: 'GiaDinh.gs', thamKhaoThanSat: 'BatTuThanSat.gs', kyMonHoi: 'KyMon.gs', qtPheu: 'ThanhToan.gs' };
   function call(fn, args, ok, fail) {
     if (!hasServer()) { (fail || showErr)({ message: 'Không tìm thấy máy chủ Apps Script. Hãy mở ứng dụng qua URL Web App.' }); return; }
     var r = google.script.run.withSuccessHandler(ok).withFailureHandler(fail || showErr), a = (args || []).slice();
@@ -587,7 +587,9 @@
   /** Giá combo sau khi trừ phần lẻ đã mua (máy chủ tính sẵn r.giaNangCap, trừ tối đa 50%): { gia, goc, tru } hoặc null.
    *  dong_hanh chỉ áp cho năm đang xem (máy chủ tính theo viewYear). */
   function giaNangCap(phan, y) {
-    var r = state.result, g = r && r.giaNangCap && r.giaNangCap[phan];
+    var r = state.result, n27 = phan === 'dong_hanh' && y != null && +y === N27_NAM && n27Res();
+    if (n27) r = n27;   // 21/11: mua Đồng hành 2027 từ trang "Năm 2027" khi lá số đang xem năm khác
+    var g = r && r.giaNangCap && r.giaNangCap[phan];
     if (!g || g.gia == null) return null;
     if (phan === 'dong_hanh' && y != null && +y !== +r.tuvi.info.viewYear) return null;
     return g;
@@ -793,6 +795,11 @@
         '<details class="coso" open><summary>➕ Tạo / sửa mã</summary><div class="row c2"><div class="field"><label>Mã</label><input type="text" id="mqMa" placeholder="vd: TET2027" autocapitalize="characters"></div>' +
         '<div class="field"><label>Số xu tặng</label><input type="number" id="mqXu" value="20" min="1"></div></div><div class="row c2"><div class="field"><label>Số lượt dùng tối đa</label><input type="number" id="mqLuot" value="100" min="1"></div>' +
         '<div class="field"><label>Hết hạn (tùy chọn)</label><input type="date" id="mqHan"></div></div><button type="button" class="btn btn-primary btn-sm" id="mqGo">Lưu mã</button></details>';
+    } else if (qt.tab === 'pheu') {
+      var nP = qt.pheuNgay || 7;
+      h = '<div class="pheu-dau"><p class="muted" style="margin:0">Khách đi qua từng bước: lập lá số → đăng ký → xác thực email → mua lần đầu → nạp lần đầu.</p>' +
+        '<div class="pheu-chon" role="group" aria-label="Khoảng thời gian">' + [7, 30].map(function (n) { return '<button type="button" class="chip' + (n === nP ? ' on' : '') + '" data-pheu-ngay="' + n + '" aria-pressed="' + (n === nP) + '">' + n + ' ngày</button>'; }).join('') + '</div></div>' +
+        '<div id="pheuBody"><span class="muted">Đang tải…</span></div>';
     } else {
       var c = d.cauHinh;
       h = '<p>Trạng thái: <b>' + (c.payos ? '✓ Đã kết nối payOS – tự động cộng xu' : '◇ Chưa có payOS – dùng chuyển khoản thủ công') + '</b></p>' +
@@ -810,6 +817,7 @@
     }
     b.innerHTML = h;
     ganQT();
+    if (qt.tab === 'pheu') taiPheu();
   }
   function ganQT() {
     var b = $('qtBody');
@@ -1231,8 +1239,9 @@
     var r = state.result;
     document.querySelectorAll('#tabs .tab').forEach(function (t) {
       var k = t.getAttribute('data-tab');
-      t.classList.toggle('khoa', !!(r && k !== 'tong' && (r.khach ? (k !== 'chart' && k !== 'hist' && k !== 'capdoi' && k !== 'vh') : false)));   // 17/11: Tổng hợp 6 hệ là trang mặc định (có phần miễn phí) – không gắn ổ khóa
+      t.classList.toggle('khoa', !!(r && k !== 'tong' && (r.khach ? (k !== 'chart' && k !== 'hist' && k !== 'capdoi' && k !== 'vh' && k !== 'n27') : false)));   // 17/11: Tổng hợp 6 hệ là trang mặc định (có phần miễn phí) – không gắn ổ khóa
     });
+    try { n27Banner(); } catch (e) { if (window.console) console.error('[Năm 2027]', e); }
     dungMucLuc(); veCta(); veQc();
         if (window._danhDauCoso) window._danhDauCoso();
     try { veHoSo(); } catch (e) { if (window.console) console.error('[Hồ sơ]', e); }
@@ -1351,6 +1360,7 @@
     if (name === 'chu') veChu();
     if (name === 'pt') vePt();
     if (name === 'gd') veGd();
+    if (name === 'n27') veN27();
     if (name === 'ti') { veTienIch(); if (state.token) tiDsQue(); }
     dungMucLuc(); if (state.result || state.cd) { veCta(); veQc(); }
   }
@@ -4394,6 +4404,308 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
     var y0 = new Date().getFullYear(), ds = [y0 - 1, y0, y0 + 1, y0 + 2];
     return '<div class="nam-xem"><span>Xem vận năm:</span>' + ds.map(function (y) { return '<button type="button" class="chip' + (y === vy ? ' on' : '') + '" data-nam-xem="' + y + '">' + y + (y > y0 ? ' ✦' : '') + '</button>'; }).join('') + '</div>';
   }
+  /* =====================================================================
+     21/11/2026 – TRANG "NĂM 2027 CỦA BẠN" (xem trước miễn phí + lời mời mua), banner mời ở đầu Tổng hợp 6 hệ & Vận hạn,
+     KỲ MÔN "HỎI MỘT VIỆC" (thẻ trong Tiện ích – KyMon.gs › kyMonHoi, mua qua muaPhan 'km_hoi'),
+     PHỄU BÁN HÀNG (Quản trị – ThanhToan.gs › qtPheu).
+     Dữ liệu năm 2027: nếu lá số đang xem đúng năm 2027 thì dùng luôn, nếu không gọi lapLaSo với viewYear = 2027 (không lưu Sheet).
+     Mua dùng đúng luồng sẵn có: data-mua="nam|2027", "nam_cd|<cd>:2027", "dong_hanh|2027" → muaGo.
+     ===================================================================== */
+  var N27_NAM = 2027;
+  var N27 = { key: '', res: null, dang: '' };
+  var N27_KC_CD = { nghiep: 'cv', hoc: 'cv', quanHe: 'cv', tien: 'tien', tinh: 'tc', con: 'tc', nha: 'tc', khoe: 'sk' };
+  var N27_CD_MO = { cv: 'Thăng tiến, đổi việc, áp lực nơi làm, học hành, quý nhân và giấy tờ.', tien: 'Tiền vào, khoản chi lớn, mua bán tài sản.', tc: 'Tình cảm, cưới hỏi, con cái, cha mẹ và chuyện nhà cửa.', sk: 'Nhịp nghỉ ngơi, đi lại, tinh thần – và cách giữ sức cả năm.' };
+  /** Khóa bộ nhớ đệm dữ liệu 2027: lá số (bỏ năm xem) + tài khoản + quyền hiện có (mua xong quyền đổi → tải lại) */
+  function n27Khoa() {
+    var I = state.input; if (!I) return '';
+    var o = Object.assign({}, I); delete o.viewYear; delete o.save;
+    return JSON.stringify(o) + '|' + (state.token || '') + '|' + JSON.stringify((state.result && state.result.quyen) || {});
+  }
+  function n27Res() {
+    var r = state.result;
+    if (r && r.tuvi && +r.tuvi.info.viewYear === N27_NAM) return r;
+    return N27.res && N27.key === n27Khoa() ? N27.res : null;
+  }
+  function n27CoDh(r) { var q = (r && r.quyen) || {}; return !!(toanQuyen() || q.toanQuyen || (q.dhNam && q.dhNam[N27_NAM]) || (q.namAll && q.thangAll)); }
+  function n27Diem(r) {
+    var T = (r.moRong && r.moRong.tongHop) || {}, kl = String(((T.namNay || {}).ketLuan || [])[0] || ''), m = kl.match(/(\d+(?:[.,]\d+)?)\s*\/\s*10/);
+    var d = m ? +m[1].replace(',', '.') : null, nhan = (kl.match(/^Năm ([^(]+?)\s*\(/) || [])[1] || '';
+    if (d == null && r.chiTiet && r.chiTiet.tieuVan && r.chiTiet.tieuVan.diem != null) d = Math.max(0, Math.min(10, 5 + (+r.chiTiet.tieuVan.diem) / 2));
+    if (!nhan && d != null) nhan = d >= 7.5 ? 'rất thuận' : d >= 6 ? 'khá' : d >= 4.5 ? 'bình ổn' : 'cần giữ nhịp';
+    return { diem: d, nhan: nhan.trim() };
+  }
+  function n27So(x) { return String(Math.round(x * 10) / 10).replace('.', ','); }
+  /** Lời tầng 1 cho điểm năm – không tên sao, không thuật ngữ */
+  function n27LoiDiem(d) {
+    if (d == null) return 'Năm 2027 của bạn có cả nhịp tiến lẫn nhịp nghỉ – biết chọn đúng tháng thì mọi việc nhẹ nhàng hơn.';
+    if (d >= 7.5) return 'Bạn có xu hướng đón một năm mở – nhiều việc thuận chiều hơn mức thường, hợp để bắt đầu điều mình ấp ủ.';
+    if (d >= 6) return 'Bạn có xu hướng có một năm khá: cơ hội đến đều, chỉ cần chọn đúng tháng để dồn sức.';
+    if (d >= 4.5) return 'Bạn có xu hướng có một năm bình ổn – tiến chắc từng bước sẽ tốt hơn là đi một bước dài.';
+    return 'Năm 2027 hợp với nhịp chậm và chắc: giữ những gì đang có, chuẩn bị kỹ rồi mới mở rộng. Đi đúng tháng thuận, năm vẫn có thành quả.';
+  }
+  function n27VongHtml(d) {
+    var r = 46, cv = 2 * Math.PI * r, p = d == null ? 0 : Math.max(0, Math.min(1, d / 10)), mau = d == null ? 'var(--vang)' : d >= 6.2 ? 'var(--tot)' : d <= 4.3 ? 'var(--kho)' : 'var(--vang)';
+    return '<svg class="n27-vong" viewBox="0 0 110 110" role="img" aria-label="' + (d == null ? 'Chưa có điểm' : 'Điểm cả năm ' + n27So(d) + ' trên 10') + '">' +
+      '<circle cx="55" cy="55" r="' + r + '" fill="none" stroke="var(--vien-sang)" stroke-width="9"/>' +
+      '<circle cx="55" cy="55" r="' + r + '" fill="none" stroke="' + mau + '" stroke-width="9" stroke-linecap="round" stroke-dasharray="' + (cv * p).toFixed(1) + ' ' + cv.toFixed(1) + '" transform="rotate(-90 55 55)"/>' +
+      '<text x="55" y="60" text-anchor="middle" class="n27-vong-so">' + (d == null ? '–' : n27So(d)) + '</text><text x="55" y="78" text-anchor="middle" class="n27-vong-phu">/ 10</text></svg>';
+  }
+  function n27ThangHtml(r) {
+    var T = (r.moRong && r.moRong.tongHop) || {}, ds = (T.thang && T.thang.length ? T.thang : (T.hoSoThang && T.hoSoThang.thang) || []).filter(function (m) { return m && m.diem != null; });
+    if (!ds.length) return '';
+    var top = ds.slice().sort(function (a, b) { return b.diem - a.diem; }).slice(0, 3), laTop = {};
+    top.forEach(function (m) { laTop[m.thang] = 1; });
+    var mn = Math.min.apply(null, ds.map(function (m) { return m.diem; })), mx = Math.max.apply(null, ds.map(function (m) { return m.diem; })), kh = mx - mn || 1;
+    var cot = ds.map(function (m) {
+      var h = 18 + Math.round((m.diem - mn) / kh * 82);
+      return '<div class="n27-cot' + (laTop[m.thang] ? ' sang' : '') + '" title="Tháng ' + m.thang + ' âm lịch – ' + esc(m.danhGia || '') + '"><i style="height:' + h + '%"></i><small>T' + m.thang + '</small></div>';
+    }).join('');
+    var ngay = function (m) { var b = String(m.batDau || m.tu || ''); var x = b.split('/'); return x.length >= 2 ? x[0] + '/' + x[1] : ''; };
+    return '<div class="panel section n27-thang"><h3 class="n27-h">Những tháng sáng nhất năm 2027</h3>' +
+      '<div class="n27-cots" aria-hidden="true">' + cot + '</div>' +
+      '<ol class="n27-top">' + top.sort(function (a, b) { return a.thang - b.thang; }).map(function (m) {
+        return '<li><b>Tháng ' + m.thang + ' âm lịch</b>' + (ngay(m) ? '<span>bắt đầu từ ' + esc(ngay(m)) + '/' + N27_NAM + '</span>' : '') + '<em>' + esc(m.danhGia || 'Thuận') + '</em></li>';
+      }).join('') + '</ol><p class="muted n27-ghi">Đây là những tháng nhiều phương pháp cùng chấm cao – hợp để khởi đầu việc quan trọng, gặp gỡ, ký kết. Lý do từng tháng và lời khuyên cụ thể nằm trong phần bức tranh chung.</p></div>';
+  }
+  /** Chủ đề hé lộ: lấy sự kiện nổi bật đang để mở (máy chủ giữ 1 sự kiện làm mồi) – văn tầng 1, không %, không tên sao */
+  function n27HeLo(r) {
+    var T = (r.moRong && r.moRong.tongHop) || {}, H = T.hoSoNam && !T.hoSoNam.loi ? T.hoSoNam : null, C = r.namCd || {};
+    if (!H || !H.suKien) return null;
+    var dau = (H.noiBat || [])[0], sk = H.suKien.filter(function (x) { return x.k === dau && !x.khoa && !x.ngoai; })[0] || H.suKien.filter(function (x) { return !x.khoa && !x.ngoai && x.khuyen; })[0];
+    if (!sk) return null;
+    var cd = N27_KC_CD[sk.kc] || 'cv', o = C[cd] || { ten: TEN_CD[cd], nhan: '', huong: 'vua' };
+    var ten = String(sk.ten || ''), tenNho = ten.charAt(0).toLowerCase() + ten.slice(1);
+    var cau = sk.loai === 'tot' ? 'Bạn có xu hướng đón tin vui ở mảng này: ' + tenNho + '.' : sk.loai === 'xau' ? 'Bạn có xu hướng cần để ý hơn ở mảng này trong năm: ' + tenNho + '. Biết trước để chuẩn bị thì nhẹ đi nhiều.' : 'Bạn có xu hướng gặp một thay đổi ở mảng này: ' + tenNho + '.';
+    var soHe = (sk.ung || []).length;
+    return { cd: cd, o: o, cau: cau, soHe: soHe, thang: sk.thang || [], khuyen: sk.khuyen || '' };
+  }
+  function n27TrangThaiNut(co, spec, nhan, cls) {
+    return co ? '<button type="button" class="btn btn-phu btn-sm" data-n27-xem>✓ Đã mở – đọc ngay</button>' : nutMua(spec, nhan, cls);
+  }
+  function n27Html(r) {
+    var v = r.vanTom || {}, coDh = n27CoDh(r), toan = toanQuyen() || (r.quyen && r.quyen.toanQuyen), D = n27Diem(r), T = (r.moRong && r.moRong.tongHop) || {}, H = T.hoSoNam && !T.hoSoNam.loi ? T.hoSoNam : null;
+    var C = r.namCd || {}, heLo = n27HeLo(r), gCd = giaPhan('nam_cd').xu || 9, gNam = giaPhan('nam').xu || 19;
+    var dh = r.giaNangCap && r.giaNangCap.dong_hanh, gDh = dh && dh.gia != null ? dh.gia : (giaPhan('dong_hanh').xu || 49);
+    var coNam = toan || coDh || !!v.coNam, coCd = function (k) { return !!(toan || coDh || (v.cd && v.cd[k]) || (C[k] && C[k].co)); };
+    var thuan = H && H.he ? H.he.filter(function (x) { return x.huong === 'tot'; }).length : 0, soHe = H && H.he ? H.he.length : 0;
+    var h = '<div class="panel section n27-dau"><div class="n27-dau-nd"><span class="n27-nhan">Xem trước miễn phí</span><h2 class="n27-tieu">Năm 2027 của bạn</h2>' +
+      '<p class="n27-ai">' + esc((state.input && state.input.name) || 'Lá số đang xem') + (H && H.tuoi ? ' · ' + esc(String(H.tuoi)) + ' tuổi' : '') + (H && H.canChi ? ' · năm ' + esc(H.canChi) : '') + '</p>' +
+      '<p class="n27-loi">' + esc(n27LoiDiem(D.diem)) + '</p>' +
+      (soHe ? '<div class="n27-he" aria-label="' + thuan + ' trên ' + soHe + ' phương pháp nghiêng thuận">' + H.he.map(function (x) { return '<span class="n27-he-i ' + esc(x.huong) + '" title="' + esc(x.he + ': ' + (x.nhan || '')) + '"><i></i>' + esc(x.he) + '</span>'; }).join('') + '</div><p class="muted n27-ghi">' + thuan + ' trên ' + soHe + ' phương pháp cùng nghiêng về phía thuận.</p>' : '') +
+      '</div><div class="n27-diem">' + n27VongHtml(D.diem) + '<b>Điểm cả năm</b>' + (D.nhan ? '<span>Năm ' + esc(D.nhan) + '</span>' : '') + '</div></div>';
+    h += n27ThangHtml(r);
+    if (heLo) {
+      var cdMo = coCd(heLo.cd);
+      h += '<div class="panel section n27-helo"><div class="n27-helo-dau"><span class="n27-nhan">Hé lộ 1 chủ đề</span><h3 class="n27-h">' + esc(heLo.o.icon || '') + ' ' + esc(heLo.o.ten || TEN_CD[heLo.cd]) + '</h3>' + (heLo.o.nhan ? '<span class="chip n27-chip ' + esc(heLo.o.huong || 'vua') + '">' + esc(heLo.o.nhan) + '</span>' : '') + '</div>' +
+        '<p class="n27-cau">' + esc(heLo.cau) + '</p>' +
+        (heLo.soHe >= 2 ? '<p class="muted n27-ghi">' + heLo.soHe + ' phương pháp độc lập cùng chỉ về hướng này.</p>' : '') +
+        (heLo.thang.length ? '<p class="n27-dong"><b>Thời điểm dễ thấy rõ nhất:</b> ' + heLo.thang.map(function (t) { return 'tháng ' + t; }).join(' và ') + ' âm lịch.</p>' : '') +
+        (heLo.khuyen ? '<p class="n27-dong n27-khuyen"><b>Gợi ý cho bạn:</b> ' + esc(heLo.khuyen) + '</p>' : '') +
+        '<div class="n27-helo-cta"><span class="muted">Trọn chủ đề: diễn biến cả năm, tháng thuận, tháng cần để ý và 3 việc nên làm.</span>' + n27TrangThaiNut(cdMo, 'nam_cd|' + heLo.cd + ':' + N27_NAM, 'Đọc trọn chủ đề · ' + fmtXu(gCd), 'btn-primary') + '</div></div>';
+    }
+    var dsCd = ['cv', 'tien', 'tc', 'sk'];
+    h += '<div class="panel section n27-mua"><h3 class="n27-h">Mở năm 2027 theo cách bạn muốn</h3>' +
+      '<div class="n27-cd">' + dsCd.map(function (k) {
+        var o = C[k] || { ten: TEN_CD[k] }, co = coCd(k);
+        return '<article class="n27-cd-i' + (co ? ' co' : '') + (heLo && heLo.cd === k ? ' n27-lo' : '') + '"><b>' + esc((o.icon ? o.icon + ' ' : '') + (o.ten || TEN_CD[k])) + '</b>' + (o.nhan ? '<span class="chip n27-chip ' + esc(o.huong || 'vua') + '">' + esc(o.nhan) + '</span>' : '') +
+          '<small>' + esc(N27_CD_MO[k]) + '</small>' + n27TrangThaiNut(co, 'nam_cd|' + k + ':' + N27_NAM, '🔒 Mở · ' + fmtXu(o.gia != null ? o.gia : gCd), 'btn-ghost') + '</article>';
+      }).join('') + '</div>' +
+      '<div class="n27-goi">' +
+        '<div class="n27-goi-i"><b>Bức tranh chung 2027</b><span>' + fmtXu(gNam) + '</span><p>Cả năm qua 5 lăng kính: tháng nào nên tiến, tháng nào nên giữ, kèm kế hoạch hành động và một dòng tóm tắt cho từng chủ đề.</p>' +
+          n27TrangThaiNut(coNam, 'nam|' + N27_NAM, 'Mở bức tranh chung · ' + fmtXu(gNam), 'btn-phu') + '</div>' +
+        '<div class="n27-goi-i hot"><i>Đáng giá nhất</i><b>Đồng hành năm 2027</b><span>' + (dh && dh.tru ? 'thêm ' : '') + fmtXu(gDh) + '</span><p>Bức tranh chung + cả 4 chủ đề + 12 tháng có lịch từng ngày + bản tin đầu tháng qua email.</p>' +
+          (coDh ? '<button type="button" class="btn btn-phu btn-sm" data-n27-xem>✓ Bạn đã có trọn năm – đọc ngay</button>' : nutMua('dong_hanh|' + N27_NAM, 'Mở trọn năm · ' + fmtXu(gDh), 'btn-primary')) +
+          (coDh ? '' : '<small>' + (dh && dh.tru ? 'Đã trừ ' + fmtXu(dh.tru) + ' phần bạn mua trước' : 'Mua lẻ từng phần: ' + fmtXu(gNam + 4 * gCd + 12 * (giaPhan('thang').xu || 9))) + '</small>') + '</div>' +
+      '</div>' + (state.token ? '' : '<p class="muted n27-ghi">Bạn cần tài khoản (miễn phí) để mở. Lá số đang xem được giữ nguyên.</p>') +
+      '<p class="muted n27-ghi">Mở một lần, đọc lại bất cứ lúc nào. Tháng tính theo âm lịch. Nội dung mang tính tham khảo – quyết định là của bạn.</p></div>';
+    return '<div class="n27">' + h + '</div>';
+  }
+  function veN27() {
+    var pg = $('page-n27'); if (!pg) return;
+    if (!state.result || !state.input) { pg.innerHTML = '<div class="panel section n27-trong"><h2 class="n27-tieu">Năm 2027 của bạn</h2><p>Nhập ngày sinh để xem trước miễn phí điểm cả năm 2027, những tháng sáng nhất và một chủ đề hé lộ.</p><button type="button" class="btn btn-primary" data-n27-lap>Nhập ngày sinh</button></div>'; return; }
+    var r = n27Res();
+    if (r) { pg.innerHTML = n27Html(r); return; }
+    var k = n27Khoa();
+    if (N27.dang === k) return;
+    N27.dang = k;
+    pg.innerHTML = '<div class="panel section n27-cho" role="status"><span class="n27-cho-vong" aria-hidden="true"></span><p>Đang soạn năm 2027 cho bạn…</p></div>';
+    var inp = JSON.parse(JSON.stringify(state.input)); inp.viewYear = N27_NAM; inp.save = false; inp.khongDem = true;
+    call('lapLaSo', [inp], function (res) {
+      if (N27.dang === k) N27.dang = '';
+      if (k !== n27Khoa()) return;
+      N27.key = k; N27.res = res;
+      if (state.tabHien === 'n27') veN27();
+    }, function (e) {
+      if (N27.dang === k) N27.dang = '';
+      pg.innerHTML = '<div class="panel section n27-trong"><p>Chưa tải được năm 2027: ' + esc(e && e.message || 'lỗi không rõ') + '</p><button type="button" class="btn btn-phu btn-sm" data-n27-thu>Thử lại</button></div>';
+    });
+  }
+  /** "Đọc ngay" sau khi đã mở: chuyển năm xem sang 2027 rồi mở tab Vận hạn */
+  function n27Xem() {
+    if (state.result && +state.result.tuvi.info.viewYear === N27_NAM) { showTab('vh'); window.scrollTo(0, 0); return; }
+    state.tabHien = 'vh'; $('viewYear').value = N27_NAM; lapLai();
+  }
+  /* ---------- Banner mời ở đầu Tổng hợp 6 hệ & Vận hạn (đóng được – ẩn 7 ngày) ---------- */
+  var N27_DONG = 'tcc_n27_dong';
+  function n27DaDong() { var t = +(storeGet(N27_DONG) || 0); return t && Date.now() - t < 7 * 864e5; }
+  function n27Banner() {
+    ['tong', 'vh'].forEach(function (k) {
+      var pg = $('page-' + k); if (!pg) return;
+      [].forEach.call(pg.querySelectorAll('.n27-moi'), function (x) { x.remove(); });
+      if (!state.result || n27DaDong()) return;
+      var coDh = n27CoDh(state.result) || (n27Res() && n27CoDh(n27Res()));
+      pg.insertAdjacentHTML('afterbegin', '<aside class="n27-moi" aria-label="Lời mời: Năm 2027 của bạn"><span class="n27-moi-ic" aria-hidden="true">2027</span>' +
+        '<div class="n27-moi-nd"><b>Năm 2027 của bạn</b><span>' + (coDh ? 'Trọn năm 2027 đã mở cho bạn – xem điểm cả năm và những tháng sáng nhất.' : 'Điểm cả năm, những tháng sáng nhất và một chủ đề hé lộ – xem trước miễn phí.') + '</span></div>' +
+        '<button type="button" class="btn btn-primary btn-sm n27-moi-di" data-n27-di>Xem năm 2027 →</button>' +
+        '<button type="button" class="n27-moi-x" data-n27-dong aria-label="Đóng lời mời năm 2027" title="Đóng">×</button></aside>');
+    });
+  }
+  /* ---------- KỲ MÔN "HỎI MỘT VIỆC" (thẻ trong Tiện ích) ---------- */
+  var KM_LOAI_TEN = { cong_viec: 'Công việc, xin việc, thăng tiến', tai_loc: 'Tiền bạc, mua bán, hợp tác', tinh_cam: 'Tình cảm, hẹn gặp, tái hợp', di_xa: 'Đi xa, xuất hành, chuyển nhà', suc_khoe: 'Sức khỏe và nhịp sống', kien_tung: 'Tranh chấp, giấy tờ, hợp đồng', thi_cu: 'Thi cử, học hành, hồ sơ' };
+  var KM_LAC_THU = [4, 9, 2, 3, 5, 7, 8, 1, 6];   // lưới 3×3 theo Lạc Thư, Nam ở trên
+  var KM = { kq: null };
+  var KM_THU = ['Chủ nhật', 'Thứ Hai', 'Thứ Ba', 'Thứ Tư', 'Thứ Năm', 'Thứ Sáu', 'Thứ Bảy'];
+  function kmGioVn(lech) { var d = new Date(Date.now() + 7 * 3600e3 + (lech || 0)); return d.getUTCFullYear() + '-' + pad(d.getUTCMonth() + 1) + '-' + pad(d.getUTCDate()) + 'T' + pad(d.getUTCHours()) + ':' + pad(d.getUTCMinutes()); }
+  function kmForm() {
+    return '<div class="ti-f"><label>Việc bạn muốn hỏi<select id="kmLoai">' + Object.keys(KM_LOAI_TEN).map(function (k) { return '<option value="' + k + '">' + KM_LOAI_TEN[k] + '</option>'; }).join('') + '</select></label>' +
+      '<label>Thời điểm<select id="kmKhi"><option value="nay">Ngay bây giờ</option><option value="chon">Chọn ngày giờ khác</option></select></label>' +
+      '<label class="ti-rong km-chon" id="kmChonWrap" hidden>Ngày giờ định làm việc (giờ Việt Nam)<input type="datetime-local" id="kmLuc" step="60"></label></div>' +
+      '<small class="muted">Chọn được từ 1 ngày trước đến 3 ngày tới. Nghĩ rõ một việc rồi mới hỏi – mỗi việc chỉ nên hỏi một lần.</small>';
+  }
+  function kmThoiDiemChon() {
+    if (($('kmKhi') || {}).value !== 'chon') return null;
+    var m = /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2})/.exec(($('kmLuc') || {}).value || '');
+    return m ? { year: +m[1], month: +m[2], day: +m[3], hour: +m[4], minute: +m[5] } : false;
+  }
+  function kmNgay(s) { var m = /^(\d{4})-(\d{2})-(\d{2})/.exec(String(s || '')); if (!m) return String(s || ''); var t = new Date(Date.UTC(+m[1], +m[2] - 1, +m[3])); return KM_THU[t.getUTCDay()] + ' ' + (+m[3]) + '/' + (+m[2]); }
+  function kmTd(o) { return o ? pad(o.hour) + ':' + pad(o.minute) + ' ngày ' + o.day + '/' + o.month + '/' + o.year : ''; }
+  function kmChay() {
+    var td = kmThoiDiemChon();
+    if (td === false) { toast('Chọn ngày giờ bạn định làm việc.', true); return; }
+    kmHoi(($('kmLoai') || {}).value || 'cong_viec', td);
+  }
+  function kmHoi(loai, td) {
+    var box = $('tiKq-km_hoi'); if (!box) return;
+    if (!state.token) { state.sauDangNhap = function () { showTab('ti'); kmHoi(loai, td); }; moDangNhap('Đăng nhập (miễn phí) để hỏi Kỳ Môn – bàn của giờ và lời kết luận ngắn xem miễn phí.', 'up'); return; }
+    box.innerHTML = '<p class="muted" role="status">Đang lập bàn theo thời điểm bạn chọn…</p>';
+    call('kyMonHoi', [state.token, loai, td || null], function (kq) {
+      KM.kq = kq; if (kq.soDu != null) { state.soDu = kq.soDu; capNhatUser(); }
+      box.innerHTML = kmHtml(kq);
+    }, function (e) { box.innerHTML = '<p class="km-loi" role="alert">' + esc(e && e.message || 'Chưa hỏi được, thử lại sau.') + '</p>'; });
+  }
+  function kmMua() {
+    var kq = KM.kq; if (!kq) return;
+    if (!state.token) { state.sauDangNhap = function () { showTab('ti'); kmMua(); }; moDangNhap('Đăng nhập để mở luận đầy đủ.', 'in'); return; }
+    var du = state.soDu, gia = kq.gia != null ? kq.gia : 9;
+    if (!window.confirm('Mở luận đầy đủ Kỳ Môn cho việc "' + kq.loaiTen + '" (' + kmTd(kq.thoiDiem) + ')?\nGiá: ' + fmtXu(gia) + (du != null ? '\nSố dư: ' + fmtXu(du) + (du >= gia ? ' → còn ' + fmtXu(du - gia) : ' (cần nạp thêm ' + fmtXu(gia - du) + ')') : ''))) return;
+    loading(true);
+    call('muaPhan', [state.token, kq.thoiDiem, 'km_hoi', kq.loai], function (r) {
+      loading(false);
+      if (r.toanQuyen) { kmHoi(kq.loai, kq.thoiDiem); return; }
+      if (!r.ok) { if (r.soDu != null) { state.soDu = r.soDu; capNhatUser(); } state.sauNap = function () { kmMua(); }; moNap('Bạn cần thêm ' + fmtXu(r.thieu) + ' để mở luận Kỳ Môn (' + fmtXu(r.gia) + '). Chọn gói nạp:', r.thieu); return; }
+      if (r.soDu != null) { state.soDu = r.soDu; capNhatUser(); }
+      if (!r.daCo) mungMo('Kỳ Môn – ' + kq.loaiTen);
+      toast(r.daCo ? 'Việc này bạn đã mở trước đó – hiện lại bản đã mua.' : 'Đã mở luận đầy đủ ✦');
+      if (r.ketQua) { KM.kq = r.ketQua; var box = $('tiKq-km_hoi'); if (box) box.innerHTML = kmHtml(r.ketQua); }
+      else kmHoi(kq.loai, r.thoiDiem || kq.thoiDiem);
+    }, function (e) { loading(false); showErr(e); });
+  }
+  function kmBanHtml(kq) {
+    var B = kq.ban || {}, ds = {}, dg = kq.danhGia || {}, oViec = {}, oBan = (dg.nguoiHoi && dg.nguoiHoi.cung) || 0;
+    (B.cung || []).forEach(function (c) { ds[c.so] = c; });
+    (dg.dungThan || []).forEach(function (d) { if (d.cung && !d.nguoc) oViec[d.cung] = d.vai === 'chinh' ? 'chinh' : (oViec[d.cung] || 'phu'); });
+    var o = KM_LAC_THU.map(function (so) {
+      var c = ds[so] || { so: so }, giua = so === 5;
+      var cls = 'km-o' + (giua ? ' km-giua' : '') + (c.khongVong ? ' km-kv' : '') + (oViec[so] === 'chinh' ? ' km-o-viec' : '') + (oBan === so ? ' km-ban-than' : '');
+      var tag = (c.khongVong ? '<i class="km-tag">Không vong</i>' : '') + (c.maTinh ? '<i class="km-tag ma">Ngựa</i>' : '') + (oViec[so] === 'chinh' ? '<i class="km-tag viec">Ô của việc</i>' : '') + (oBan === so ? '<i class="km-tag ban">Ô của bạn</i>' : '');
+      if (giua) return '<div class="' + cls + '"><div class="km-o-dau"><b>Trung cung</b><small>' + so + '</small></div><div class="km-can"><span title="Lớp Đất">' + esc(c.diaBan || '') + '</span></div>' +
+        '<div class="km-giua-nd">' + esc(B.donTen || '') + (B.cuc ? ' · cục ' + B.cuc : '') + (B.nguyenTen ? '<br>' + esc(B.nguyenTen) : '') + '</div></div>';
+      return '<div class="' + cls + '"><div class="km-o-dau"><b>' + esc(c.huong || '') + '</b><small>' + esc(c.quai || '') + ' ' + so + '</small></div>' +
+        '<div class="km-than">' + esc(c.than || '') + '</div><div class="km-sao">' + esc((c.sao || []).join(' · ')) + '</div>' +
+        '<div class="km-can"><span title="Lớp Trời">' + esc((c.thienBan || []).join(' ')) + '</span><span class="km-can-dat" title="Lớp Đất">' + esc(c.diaBan || '') + '</span></div>' +
+        '<div class="km-mon">' + (c.mon ? 'Cửa ' + esc(c.mon) : '') + '</div>' + (tag ? '<div class="km-tags">' + tag + '</div>' : '') + '</div>';
+    }).join('');
+    var tk = B.tietKhi ? B.tietKhi.ten : '';
+    return '<details class="km-ban-wrap" open><summary>Bàn Kỳ Môn của thời điểm này <small>(phần chuyên môn)</small></summary>' +
+      '<p class="km-meta">' + [B.ngay ? 'Ngày ' + esc(B.ngay) : '', B.gio ? 'giờ ' + esc(B.gio) : '', tk ? 'tiết ' + esc(tk) : '', B.trucPhu && B.trucPhu.saoTen ? 'Trực phù ' + esc(B.trucPhu.saoTen) : '', B.trucSu && B.trucSu.monTen ? 'Trực sử cửa ' + esc(B.trucSu.monTen) : ''].filter(Boolean).join(' · ') + '</p>' +
+      '<div class="km-luoi" role="img" aria-label="Bàn Kỳ Môn 9 ô, hướng Nam ở trên">' + o + '</div>' +
+      '<p class="km-chu-giai"><span>▲ Nam ở trên</span> Mỗi ô: hướng · thần · sao · can lớp Trời / <span class="km-can-dat">lớp Đất</span> · cửa.</p></details>';
+  }
+  function kmLuanHtml(kq) {
+    var L = kq.luan || {}, h = '';
+    var doan = String(L.ketLuan || '').split(/\n\s*\n/).map(function (x) { return x.trim(); }).filter(Boolean);
+    if (doan.length) h += '<div class="km-luan-nd">' + doan.map(function (p) { return '<p>' + esc(p) + '</p>'; }).join('') + '</div>';
+    else if (L.chuaCoVan || L.loiVan) h += '<p class="muted">Lời luận chi tiết đang được cập nhật – phần căn cứ và khung giờ tốt bên dưới đã đầy đủ.</p>';
+    if ((L.viec || []).length) h += '<h5>Việc nên làm</h5><ol class="km-viec">' + L.viec.map(function (x) { return '<li>' + esc(x) + '</li>'; }).join('') + '</ol>';
+    if ((kq.khungTot || []).length) h += '<h5>3 khung giờ tốt trong 3 ngày</h5><div class="km-khung">' + kq.khungTot.map(function (g) {
+      return '<div class="km-khung-i ' + esc(g.muc || '') + '"><b>' + esc(kmNgay(g.ngay)) + '</b><span>' + esc(g.ten || '') + ' · ' + esc(g.tu || '') + '–' + esc(g.den || '') + '</span><small>Hướng ' + esc(g.huong || '') + ' · ' + esc(g.mucTen || '') + '</small></div>';
+    }).join('') + '</div>';
+    if ((L.canCu || []).length) h += '<details class="coso km-cancu"><summary>Căn cứ trên bàn</summary><ul>' + L.canCu.map(function (x) { return '<li>' + esc(x) + '</li>'; }).join('') + '</ul></details>';
+    if (L.luuY) h += '<p class="muted km-luuy">' + esc(L.luuY) + '</p>';
+    if (kq.nhacHoiLai) h += '<p class="km-nhac">↻ ' + esc(kq.nhacHoiLai) + '</p>';
+    return '<div class="km-luan"><h4>Luận đầy đủ</h4>' + h + '</div>';
+  }
+  function kmHtml(kq) {
+    var mo = kq.daMua || kq.toanQuyen || !!kq.luan, g = kq.gioTot, gia = kq.gia != null ? kq.gia : 9;
+    var h = '<div class="km-kq"><p class="km-dau"><b>' + esc(kq.loaiTen || KM_LOAI_TEN[kq.loai] || '') + '</b><small>' + esc(kmTd(kq.thoiDiem)) + (kq.gioAm ? ' · giờ ' + esc(kq.gioAm.ten) + ' (' + esc(kq.gioAm.tu) + '–' + esc(kq.gioAm.den) + ')' : '') + '</small></p>' +
+      '<div class="km-muc ' + esc(kq.muc || '') + '"><b>' + esc(kq.mucTen || '') + '</b><p>' + esc(kq.loiMuc || '') + '</p></div>' +
+      (kq.giaoTiet ? '<p class="km-giao">Thời điểm này sát lúc chuyển tiết khí – nên hỏi thêm một giờ sau để đối chiếu.</p>' : '') +
+      (g ? '<p class="km-gio"><span aria-hidden="true">⏰</span> Giờ tốt gợi ý: <b>' + esc(g.ten || '') + ' ' + esc(g.tu || '') + '–' + esc(g.den || '') + '</b>, ' + esc(kmNgay(g.ngay)) + (g.huong ? ' · hướng ' + esc(g.huong) : '') + (g.mucTen ? ' · ' + esc(g.mucTen) : '') + '</p>' : '');
+    if (mo) h += kmLuanHtml(kq);
+    else h += '<div class="km-cta"><p>Luận đầy đủ cho việc này: vì sao ra mức trên, điều kiện cần lo trước, 3 việc nên làm kèm giờ và hướng, 3 khung giờ tốt trong 3 ngày.</p>' +
+      '<button type="button" class="btn btn-primary btn-sm" data-km-mua>Xem luận đầy đủ – ' + fmtXu(gia) + '</button>' + (kq.soDu != null ? '<small>Số dư: ' + fmtXu(kq.soDu) + '</small>' : '') + '</div>';
+    h += kmBanHtml(kq);
+    if (!mo && (kq.luuY || []).length) h += '<p class="muted km-luuy">' + kq.luuY.map(esc).join(' ') + '</p>';
+    return h + '</div>';
+  }
+  /* ---------- PHỄU BÁN HÀNG (Quản trị) ---------- */
+  function pheuSo(n) { return n == null ? '–' : (Number(n) || 0).toLocaleString('vi-VN'); }
+  function pheuTl(x) { return x == null ? '–' : String(x).replace('.', ',') + '%'; }
+  function pheuNgay(s) { var m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(String(s || '')); return m ? m[3] + '/' + m[2] : esc(s); }
+  function pheuHtml(d) {
+    var t = d.tong || {}, tl = d.tyLe || {}, q = d.quaChuaNap || {};
+    var buoc = [['Lập lá số (khách)', t.lapLaSoKhach, null, 'gần đúng'], ['Đăng ký', t.dangKy, tl.dangKyTrenKhach], ['Xác thực email', t.xacThucEmail, tl.xacThucTrenDangKy], ['Mua lần đầu', t.muaDau, tl.muaDauTrenXacThuc], ['Nạp lần đầu', t.napDau, tl.napDauTrenMuaDau]];
+    var h = '<p class="muted pheu-khoang">Từ ' + pheuNgay(d.tu) + ' đến ' + pheuNgay(d.den) + ' (' + d.soNgay + ' ngày, giờ Việt Nam)</p>' +
+      '<ol class="pheu" aria-label="Các bước phễu bán hàng">' + buoc.map(function (b, i) {
+        return (i ? '<li class="pheu-mui" aria-hidden="true"><span>' + pheuTl(b[2]) + '</span></li>' : '') +
+          '<li class="pheu-b"><small>' + esc(b[0]) + '</small><b>' + pheuSo(b[1]) + '</b>' + (b[3] ? '<em>' + esc(b[3]) + '</em>' : i ? '<em>' + pheuTl(b[2]) + ' từ bước trước</em>' : '') + '</li>';
+      }).join('') + '</ol>' +
+      '<div class="stat-row pheu-phu">' + [['Nạp đầu / Đăng ký', pheuTl(tl.napDauTrenDangKy)], ['Lập lá số bằng tài khoản', pheuSo(t.lapLaSoTK)], ['Lượt mua', pheuSo(t.mua) + ' <small>(' + pheuSo(t.xuMua) + ' xu)</small>'], ['Lượt nạp', pheuSo(t.nap) + ' <small>(' + fmtTien(t.tienNap) + ')</small>']].map(function (x) {
+        return '<div class="stat"><small>' + x[0] + '</small><b>' + x[1] + '</b></div>'; }).join('') + '</div>' +
+      '<p class="pheu-qua">🎁 Tài khoản đã dùng quà nhưng chưa nạp: <b>' + pheuSo(q.soTK) + '</b>' + (q.hetQua != null ? ' · trong đó <b>' + pheuSo(q.hetQua) + '</b> đã gần hết quà (còn dưới 9 xu)' : '') + '</p>' +
+      '<div class="tbl-wrap"><table class="gio-tbl qt-tbl pheu-tbl"><thead><tr><th>Ngày</th><th>Lá số khách</th><th>Lá số TK</th><th>Đăng ký</th><th>Xác thực</th><th>Mua đầu</th><th>Lượt mua</th><th>Xu mua</th><th>Nạp đầu</th><th>Lượt nạp</th><th>Tiền nạp</th></tr></thead><tbody>' +
+      (d.ngay || []).slice().reverse().map(function (o) {
+        return '<tr><td><b>' + pheuNgay(o.ngay) + '</b></td><td>' + pheuSo(o.lapLaSoKhach) + '</td><td>' + pheuSo(o.lapLaSoTK) + '</td><td>' + pheuSo(o.dangKy) + '</td><td>' + pheuSo(o.xacThucEmail) + '</td><td>' + pheuSo(o.muaDau) + '</td><td>' + pheuSo(o.mua) + '</td><td>' + pheuSo(o.xuMua) + '</td><td>' + pheuSo(o.napDau) + '</td><td>' + pheuSo(o.nap) + '</td><td>' + (o.tienNap == null ? '–' : fmtTien(o.tienNap)) + '</td></tr>';
+      }).join('') +
+      '<tr class="pheu-tong"><td><b>Tổng</b></td><td>' + pheuSo(t.lapLaSoKhach) + '</td><td>' + pheuSo(t.lapLaSoTK) + '</td><td>' + pheuSo(t.dangKy) + '</td><td>' + pheuSo(t.xacThucEmail) + '</td><td>' + pheuSo(t.muaDau) + '</td><td>' + pheuSo(t.mua) + '</td><td>' + pheuSo(t.xuMua) + '</td><td>' + pheuSo(t.napDau) + '</td><td>' + pheuSo(t.nap) + '</td><td>' + (t.tienNap == null ? '–' : fmtTien(t.tienNap)) + '</td></tr>' +
+      '</tbody></table></div>' + (d.ghiChu ? '<p class="muted pheu-ghi">ⓘ ' + esc(d.ghiChu) + '</p>' : '');
+    return h;
+  }
+  function taiPheu() {
+    var box = $('pheuBody'); if (!box) return;
+    var n = qt.pheuNgay || 7;
+    box.innerHTML = '<span class="muted">Đang tải phễu ' + n + ' ngày…</span>';
+    call('qtPheu', [state.token, n], function (d) { if ($('pheuBody') && qt.tab === 'pheu') $('pheuBody').innerHTML = pheuHtml(d); },
+      function (e) { if ($('pheuBody')) $('pheuBody').innerHTML = '<p class="muted">Chưa tải được phễu: ' + esc(e && e.message) + '</p>'; });
+  }
+  function n27Init() {
+    document.addEventListener('click', function (e) {
+      var t = e.target; if (!t.closest) return;
+      if (t.closest('[data-n27-di]')) { showTab('n27'); window.scrollTo(0, 0); return; }
+      var x = t.closest('[data-n27-dong]'); if (x) { storeSet(N27_DONG, String(Date.now())); [].forEach.call(document.querySelectorAll('.n27-moi'), function (b) { b.remove(); }); toast('Đã ẩn lời mời – bạn vẫn mở được "Năm 2027" ở mục Vận hạn.'); return; }
+      if (t.closest('[data-n27-xem]')) { n27Xem(); return; }
+      if (t.closest('[data-n27-thu]')) { N27.dang = ''; veN27(); return; }
+      if (t.closest('[data-n27-lap]')) { veTrangChu(); return; }
+      if (t.closest('[data-km-mua]')) { kmMua(); return; }
+      var p = t.closest('[data-pheu-ngay]'); if (p) { qt.pheuNgay = +p.getAttribute('data-pheu-ngay'); [].forEach.call(document.querySelectorAll('[data-pheu-ngay]'), function (b) { var on = b === p; b.classList.toggle('on', on); b.setAttribute('aria-pressed', on ? 'true' : 'false'); }); taiPheu(); }
+    });
+    document.addEventListener('change', function (e) {
+      if (!e.target || e.target.id !== 'kmKhi') return;
+      var w = $('kmChonWrap'), i = $('kmLuc'), chon = e.target.value === 'chon';
+      if (w) w.hidden = !chon;
+      if (i && chon) { i.min = kmGioVn(-864e5 + 6e4); i.max = kmGioVn(3 * 864e5 - 6e4); if (!i.value) i.value = kmGioVn(0); }
+    });
+  }
   /* ---------- TIỆN ÍCH XEM THÊM (TienIch.gs): xem tuổi, phong thủy, chọn ngày, gieo quẻ, hợp tác, đặt tên, bản tin ---------- */
   var TI = { inHT: null, inDT: null };
   var TI_SP = ['xem_tuoi', 'phong_thuy', 'chon_ngay', 'hop_tac', 'dat_ten'];
@@ -4404,6 +4716,7 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
     { k: 'phong_thuy', ic: '🧭', ten: 'Phong thủy nhà theo tuổi', mo: 'Cung phi Bát trạch: hướng cửa, bàn làm việc, giường ngủ, bếp và màu hợp với bạn.', laSo: 1 },
     { k: 'chon_ngay', ic: '📅', ten: 'Chọn ngày tốt', mo: 'Cưới hỏi, khai trương, động thổ, nhập trạch, ký kết, xuất hành, mua nhà xe – theo tháng, hợp tuổi bạn.', laSo: 1 },
     { k: 'gieo_que', ic: '☯', ten: 'Gieo quẻ hỏi việc', mo: 'Hỏi một việc cụ thể – quẻ lập theo đúng lúc bạn hỏi (Mai hoa dịch số). Câu đầu tiên miễn phí.' },
+    { k: 'km_hoi', ic: '✴', ten: 'Kỳ Môn – hỏi một việc', mo: 'Chọn việc bạn đang cân nhắc và lúc định làm: xem việc đang thuận hay nên chờ, kèm một giờ tốt và bàn 9 ô của giờ đó.' },
     { k: 'hop_tac', ic: '🤝', ten: 'Hợp tác làm ăn', mo: 'Ghép lá số của bạn với đối tác, cộng sự: điểm hợp, chỗ bổ trợ, nên phân vai thế nào.', laSo: 1 },
     { k: 'dat_ten', ic: '👶', ten: 'Đặt tên cho con', mo: 'Chấm tên theo ngũ hành bổ khuyết, thần số học, thanh điệu – và gợi ý những tên hợp với bé.' },
     { k: 'ban_tin', ic: '✉️', ten: 'Bản tin vận tháng qua email', mo: 'Sáng ngày 1 mỗi tháng: tổng quan tháng, ngày tốt ký kết – đi xa, ngày xung tuổi cần tránh. Đi kèm gói Đồng hành năm.', laSo: 1, dongHanh: 1 },
@@ -4437,6 +4750,8 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
       '<div class="ti-luoi">' + TI_THE.filter(function (t) { return (!t.toanQuyen || toanQuyen()) && (!t.dongHanh || coBT); }).map(function (t) {
         if (t.k === 'van_ngay') { var gv = giaPhan('van_ngay'); return '<details class="panel ti-the" data-ti="van_ngay"><summary><span class="ti-ic">' + t.ic + '</span><span class="ti-tt"><b>' + esc(t.ten) + '</b><small>' + esc(t.mo) + '</small></span><em class="ti-gia">' + (toanQuyen() ? 'Dành cho bạn' : (gv.goc > gv.xu ? '<s class="gia-goc">' + fmtXu(gv.goc) + '</s> ' : '') + fmtXu(gv.xu) + '/30 ngày') + '</em></summary>' +
           '<div class="ti-than">' + tiForm(t.k) + '<button type="button" class="btn btn-primary btn-sm ti-chay" data-ti-chay="van_ngay">Đăng ký · gửi thử ngay</button><div class="ti-kq" id="tiKq-van_ngay"></div></div></details>'; }
+        if (t.k === 'km_hoi') return '<details class="panel ti-the" data-ti="km_hoi"><summary><span class="ti-ic">' + t.ic + '</span><span class="ti-tt"><b>' + esc(t.ten) + '</b><small>' + esc(t.mo) + (toanQuyen() ? '' : ' Luận đầy đủ ' + fmtXu(giaPhan('km_hoi').xu || 9) + '.') + '</small></span><em class="ti-gia"><b class="ti-mien">Miễn phí</b></em></summary>' +
+          '<div class="ti-than">' + kmForm() + '<button type="button" class="btn btn-primary btn-sm ti-chay" data-ti-chay="km_hoi">✴ Xem bàn miễn phí</button><div class="ti-kq" id="tiKq-km_hoi"></div></div></details>';
         var gia = t.k === 'gieo_que' ? giaPhan('gieo_que') : giaPhan(t.k), mien = !!gia.mienPhi || t.k === 'ban_tin';
         return '<details class="panel ti-the" data-ti="' + t.k + '"><summary><span class="ti-ic">' + t.ic + '</span><span class="ti-tt"><b>' + esc(t.ten) + '</b><small>' + esc(t.mo) + '</small></span>' +
           '<em class="ti-gia">' + (t.k === 'ban_tin' ? '<b class="ti-mien">' + (toanQuyen() ? 'Dành cho bạn' : 'Có trong Đồng hành') + '</b>' : mien ? '<b class="ti-mien">Miễn phí</b>' : (gia.goc > gia.xu ? '<s class="gia-goc">' + fmtXu(gia.goc) + '</s> ' : '') + (t.k === 'gieo_que' ? fmtXu(gia.xu) + '/câu' : t.k === 'chon_ngay' ? fmtXu(gia.xu) + '/tháng' : t.k === 'ban_tin' ? fmtXu(gia.xu) + '/năm' : 'từ ' + fmtXu(gia.xu))) + '</em></summary>' +
@@ -4459,6 +4774,7 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
     var T = TI_THE.filter(function (t) { return t.k === k; })[0];
     if (T && T.laSo && !tiCanLaSo()) return;
     if (k === 'gieo_que') return tiGieo();
+    if (k === 'km_hoi') return kmChay();
     if (k === 'ban_tin') return tiBanTin();
     if (k === 'van_ngay') return tiVanNgay();
     var input = state.input, ts = {};
@@ -6569,7 +6885,7 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
      pdfTuWeb chép HTML của tab đã dựng: mở mọi thẻ gập, bỏ căn cứ thuật ngữ, nút bấm, thẻ khóa, mục lục trong tab,
      bảng Hologram (đã chụp riêng thành ảnh), canvas đổi thành ảnh. CSS .pdf-web đổi màu cho nền giấy. */
   var PDF_WEB = {};
-  var PDF_BO_WEB = '.holo-wrap, .muc-he, .tt26-ky, .cung-chitiet, details.coso, .coso, .vs-canco, .hdc, button, .btn, .kd-loc, input, select, textarea, .tab-lede, .khoa-gd, .tcc-luu-y, script, .strip, [data-mua], .meo-mua';
+  var PDF_BO_WEB = '.holo-wrap, .muc-he, .tt26-ky, .cung-chitiet, details.coso, .coso, .vs-canco, .hdc, button, .btn, .kd-loc, input, select, textarea, .tab-lede, .khoa-gd, .tcc-luu-y, script, .strip, [data-mua], .meo-mua, .n27-moi';
   function pdfLamSach(el, canvasGoc) {
     var cv = el.querySelectorAll('canvas');
     Array.prototype.forEach.call(cv, function (c, i) {
@@ -7716,6 +8032,7 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
     buoc('biểu mẫu', initForm);
     buoc('bố cục đợt 4', initDot4);
     buoc('cặp đôi', initCapDoi);
+    buoc('năm 2027 · Kỳ Môn · phễu', n27Init);
     buoc('chú giải', tipInit);
     buoc('hiệu ứng nền', bkHat);
     buoc('nút cơ sở', function () {

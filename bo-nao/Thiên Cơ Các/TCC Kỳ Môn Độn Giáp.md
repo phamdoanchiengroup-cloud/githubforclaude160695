@@ -15,5 +15,14 @@ Liên quan: [[TCC Rà soát toàn bộ 11-2026]] · [[TCC Kiểm thử]] · [[Qu
 - Lập thu 2022: 19:29 giờ VN (đề xuất cũ ghi nhầm, đã sửa).
 
 ## Còn mở
-- `sunLongitudeDeg` cũ trong Lunar.gs (Bát Tự, Tiện ích dùng) lệch tới 13 phút so với lunar-javascript → trong ~13 phút quanh giờ giao tiết Bát Tự và Kỳ Môn có thể nhận khác tiết. Chờ chủ dự án quyết có chuyển Bát Tự sang hàm mới không.
-- Đợt 1b: API công khai `kyMonHoi` + phần bán `km_hoi` 9 xu + văn luận 7 loại việc (content-creator) + giao diện (frontend-developer) + rà (code-reviewer).
+- Cách cục: 13 cách chỉ có một nguồn – nên đối chiếu thêm trước khi quảng bá.
+- Đợt 2: gói "Giờ tốt 7 ngày"; combo hỏi việc 2 môn với Thái Ất (19 xu).
+
+## Đợt 1b – "Hỏi một việc" 9 xu (21/11, xong, mã `2026.11.21.1`)
+- Bát Tự: `sunLongitudeDeg` (Lunar.gs) gọi `kmKinhDoMatTroi_` khi có → lệch tối đa 0,43 phút (trước 12,9 phút); 37.572 mốc quét quanh giờ giao tiết chỉ còn lệch đúng phút giao.
+- API `kyMonHoi(token, loai, thoiDiem)`; phần bán `km_hoi` 9 xu qua `muaPhan` → `ttMuaKmHoi_` (mã `km_hoi:yyyymmddhh:loai`, MoKhoa cột 6 lưu thời điểm). `kmDanhGia_` chấm dụng thần → mức thuan/thuan_dk/nen_cho (ngưỡng chỉnh ~30/45/25%). `kmThoiDiem_(t, boPhamVi)`: chưa mua giới hạn 1 ngày trước–3 ngày tới, đã mua mở lại được.
+- Văn: file mới `KyMonVan.gs` (`kmVanLuan_` → ketLuan, canCu, viec, luuY; bảng KMV_*), 34 file .gs.
+- Phễu: sheet `SuKien`, `skGhi_`, `skLapLaSo_` (Cache, gần đúng; trang Năm 2027 gửi `khongDem`), `skMua_`, API chủ `qtPheu(token, soNgay)`.
+- Rà mã: `ttKhoa_` flush trước khi nhả khóa; `skMua_` đọc lại tài khoản trước khi ghi; giới hạn 30 lượt/10 phút cả khi mua.
+- Giao diện (Script.html `km*`): thẻ trong Tiện ích sau Gieo quẻ, bàn 9 ô Lạc Thư (Nam trên).
+- Test: `tests/ky-mon-hoi.js` 98/98, `tests/pheu.js` 41/41, bao-mat 197/197; cả 28 file đạt.

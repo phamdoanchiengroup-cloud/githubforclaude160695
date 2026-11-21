@@ -4,6 +4,8 @@ Nhóm: Bắt đầu · Cập nhật 22/10/2026
 Liên quan: [[Việc chờ chủ dự án]] · [[TCC Kiểm thử]] · [[00 Mục lục]]
 
 ## Tình trạng
+- **21/11 (tối): mã `2026.11.21.1`** – trang "Năm 2027 của bạn" (tab ✦ Năm 2027, xem trước miễn phí + mời mua 9/19/49 xu), băng mời ở Tổng hợp và Vận hạn, thẻ "Phễu bán hàng" trong Quản trị, Kỳ Môn "Hỏi một việc" 9 xu trong Tiện ích. Đổi **Index, Script, Styles, TaiKhoan** (+ đợt máy chủ trước: **KyMon, KyMonVan (file mới, 34 file .gs), ThanhToan, TienIch, Code**). Bấm `2-CAP-NHAT.bat`, Ctrl+F5.
+- **21/11: Bát Tự giờ giao tiết chính xác** – đổi **Lunar** (1 dòng; lệch tối đa 0,43 phút thay vì 12,9 phút). Bấm `2-CAP-NHAT.bat`.
 - **21/11:** Thần số giữ số bậc thầy theo Nhật Nguyệt (đổi **ThanSoHoc**) + file mới **KyMon** (đủ 33 file .gs, chưa hiện trên web) + **Code** (danh sách file). Bấm `2-CAP-NHAT.bat`. Lưu ý: kết quả Thần số của một số người đổi (ví dụ tên có chữ Y, ngày sinh 11/22).
 - **17/11: mã `2026.11.17.9`** – bỏ trang Tóm lược, gộp vào đầu Tổng hợp 6 hệ; Tổng hợp là trang mở đầu và đứng đầu hàng chip. Đổi **Script, Styles, Index**. Bấm `2-CAP-NHAT.bat`, Ctrl+F5.
 - **17/11: mã `2026.11.17.8`** – sửa ô mệnh ở Tóm lược: trước lấy nhầm nạp âm cung Mệnh (dùng tính Cục), nay là **Bản mệnh** theo năm sinh như tab Tử Vi. Chỉ đổi **Script, Styles, Index**. Bấm `2-CAP-NHAT.bat`, Ctrl+F5.
