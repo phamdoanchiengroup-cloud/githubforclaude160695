@@ -86,6 +86,13 @@ Những điều đã chốt. Đừng đề xuất lại những gì ghi "không 
 - TP chỉ nhập số của xưởng mình; **deadline đơn do ban điều hành ghi**.
 - Gậy 1 khúc: tên "1 KHÚC" / "ONE PIECE" / "GMK", glassfiber nguyên cây 1450 / 1480, không ren, tip 12.5 / 12.2, nhóm thống kê riêng, có bản vẽ.
 
+## KPI mới từ tháng 11/2026 (chốt 21/11)
+- **Bỏ học việc**: người mới tính sản lượng + xếp loại ngay từ ngày vào làm. Tháng 9–10 giữ cách cũ.
+- **Kho** do Kế toán tự tính, không nằm trong KPI sản xuất. **Tiền thưởng** do HC – Kế toán làm từ loại / hạng; web KHÔNG tính tiền.
+- Chuyên cần theo chấm công (HC-NS đề xuất): Nkp −15, không lương từ ngày 3 −5, đi muộn −2. Ngày công tối thiểu (chủ dự án giao Claude quyết): ≥80% bình thường, 50–80% hạ 1 bậc, <50% "Thiếu công".
+- Trần CN 150%, xưởng 130%; không thêm giờ dừng máy (để CN có ý thức bảo trì); sau khi TP/PP duyệt chỉ chủ sở hữu sửa sản lượng.
+- Chủ dự án cho rằng nhiều S / A+ là do **định mức chưa chuẩn** → hướng xử lý là chuẩn hóa định mức, không đổi thang loại.
+
 ## KPI và định mức (25/10)
 - Bỏ khoản "Không nhắc CN nhập" của TP/PP với lượt phạt trễ không có vi phạm NHAPTRE (phạt trước 15/09): chỉ trừ khi công nhân thật sự bị trừ. – [[KPI Sửa lỗi 21-10 và dữ liệu sheet]]
 - Cân Phôi – Phân Loại Phôi trả về 180 (chủ dự án tự sửa trên web). **Không giới hạn** mức nâng định mức mỗi lần (bỏ đề xuất 10%/lần). – [[KPI Phân tích định mức]]
