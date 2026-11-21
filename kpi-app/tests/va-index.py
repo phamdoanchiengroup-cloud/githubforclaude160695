@@ -870,5 +870,7 @@ exec(io.open(os.path.join(D, 'nghi-viec', 'va-nghi-viec-web.py'), encoding='utf-
 exec(io.open(os.path.join(D, 'menu-nut', 'va-menu-nut-web.py'), encoding='utf-8').read())
 # ---------------------------------------------------------------- 50. Bán hàng nhập đơn → duyệt → chép vào Sheet đơn (16/11 khuya)
 exec(io.open(os.path.join(D, 'don-ban', 'va-don-ban-web.py'), encoding='utf-8').read())
+# ---------------------------------------------------------------- 51. KPI mới từ T11 (21/11): bỏ học việc, loại máy chủ có ngày công tối thiểu
+exec(io.open(os.path.join(D, 'kpi-moi', 'va-kpi-moi-web.py'), encoding='utf-8').read())
 io.open(os.path.join(D, '..', 'Index.html'), 'w', encoding='utf-8').write(s)
 print('OK Index.html')

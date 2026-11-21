@@ -5300,12 +5300,12 @@ function vKPICaNhanToi(){
   // Tổng quan KPI (dùng hàm kpi có sẵn — mẫu số theo giờ có mặt)
   var k=kpi(maNV);
   if(k){
-    var lo=loai(k.tong);
+    var lo=loai(k.tong); if(k.loai){ lo=[k.loai, k.loai==='Thiếu công'?'p-bd':lo[1]]; }   // 21/11: loại máy chủ (ngày công tối thiểu)
     h+='<div class="kpis">'+
       boxG('Hiệu suất',k.sl,f(k.sl)+'%')+
       boxG('Tỷ lệ đạt',k.cl,f(k.cl)+'%')+
       boxG('KPI tổng',k.tong,f(k.tong)+'%')+
-      box('Xếp loại',vhHocViec()?'Học việc':lo[0],null,vhHocViec()?'tháng đầu chưa xếp loại':'A đến D')+'</div>';
+      box('Xếp loại',vhHocViec()?'Học việc':lo[0],null,vhHocViec()?'tháng đầu chưa xếp loại':(lo[0]==='Thiếu công'?'đi làm dưới 50% ngày công':'S đến D'))+'</div>';
     try{ h+=vhHocViec()?vhMaiHocViec():maiKPI(lo[0],k.tong); }catch(e){}
   }
 
@@ -5494,7 +5494,7 @@ function veBangKPI(r){
     var me=ds.filter(function(o){return o.MaNV===ME.maNV})[0];
     if(me){
       h+='<div class="kpis" style="margin-bottom:16px">'+
-        box('Hạng của bạn',me.hang?'#'+me.hang+' / '+(theoXuong[me.MaXuong]||[]).length:'Học việc',null,me.hang?'trong xưởng':'tháng đầu chưa xếp hạng')+
+        box('Hạng của bạn',me.hang?'#'+me.hang+' / '+(theoXuong[me.MaXuong]||[]).length:(me.loai==='Thiếu công'?'Thiếu công':'Học việc'),null,me.hang?'trong xưởng':(me.loai==='Thiếu công'?'chưa đủ 50% ngày công':'tháng đầu chưa xếp hạng'))+
         box('KPI của bạn',f(me.tong)+'%',me.tong,me.loai)+
         box('Sản lượng',f(me.sl)+'%',me.sl)+
         box('Chất lượng',f(me.cl)+'%',me.cl)+'</div>';
@@ -5510,7 +5510,7 @@ function veBangKPI(r){
       '<th class="n">Tuân thủ</th><th class="n">An toàn</th><th class="n">Tổng KPI</th><th>Loại</th><th></th></tr></thead><tbody>';
     arr.forEach(function(o){
       var laToi=(laCN&&o.MaNV===ME.maNV);
-      var huy=!o.hang?'<span title="Đang học việc – chưa xếp hạng">–</span>':o.hang<=3?'<span class="bi-so s'+o.hang+'" title="Hạng '+o.hang+'"><b>'+o.hang+'</b></span>':String(o.hang);
+      var huy=!o.hang?'<span title="'+(o.loai==='Thiếu công'?'Thiếu công – chưa xếp hạng':'Đang học việc – chưa xếp hạng')+'">–</span>':o.hang<=3?'<span class="bi-so s'+o.hang+'" title="Hạng '+o.hang+'"><b>'+o.hang+'</b></span>':String(o.hang);
       body+='<tr'+(o.hang&&o.hang<=3?' class="gd-top"':'')+(laToi?' style="background:rgba(var(--acc-rgb),.10)"':'')+'>'+
         '<td style="font-weight:600;font-size:15px">'+huy+'</td>'+
         '<td>'+esc(o.HoTen)+(laToi?' <span class="pill p-nu" style="margin-left:4px">Bạn</span>':'')+
@@ -9038,7 +9038,7 @@ function vhHetHocViec(maNV){
   var cuoi=new Date(Date.UTC(y,m,0)).getUTCDate();
   return y+'-'+('0'+m).slice(-2)+'-'+('0'+Math.min(d,cuoi)).slice(-2);
 }
-function vhHocViec(){ if(!ME||ME.vaiTro!=='CN')return false; var h=vhHetHocViec(ME.maNV); return !!h&&today()<h; }
+function vhHocViec(){ if(!ME||ME.vaiTro!=='CN'||today()>='2026-11-01')return false;   /* 21/11: bỏ học việc từ T11 */ var h=vhHetHocViec(ME.maNV); return !!h&&today()<h; }
 function vhMaiHocViec(){
   var h=vhHetHocViec(ME.maNV);
   return '<div class="mai-bang" style="margin-top:12px">'+(maiTat()?'':maiHinh('vui'))+'<div class="nd"><small>Tháng học việc · tới '+dmy(h)+'</small>'+
@@ -9552,7 +9552,7 @@ function kpiThangNay_(maNV) {           // tính tạm: chỉ nhật ký tháng 
 kpi = function (maNV) {
   var o = (KPI_MAY.m && KPI_MAY.th === today().slice(0, 7)) ? KPI_MAY.m[maNV] : null;
   if (o && isFinite(Number(o.tong)))
-    return { sl: Number(o.sl) || 0, cl: Number(o.cl) || 0, tt: Number(o.tt) || 0, at: Number(o.at) || 0, tong: Number(o.tong) || 0, spl: Number(o.spl) || 0, may: true };
+    return { sl: Number(o.sl) || 0, cl: Number(o.cl) || 0, tt: Number(o.tt) || 0, at: Number(o.at) || 0, tong: Number(o.tong) || 0, spl: Number(o.spl) || 0, may: true, loai: o.loai || '' };
   return kpiThangNay_(maNV);
 };
 function kpiMayVeLai_() {
@@ -9743,7 +9743,7 @@ function hsGhiChuDong(r){
 }
 </script>
 <script>
-var KPI_BAN = '21/11/2026 11:26';
+var KPI_BAN = '21/11/2026 12:08';
 (function(){
   var cu = window.veNav;
   window.veNav = function(){
@@ -11079,7 +11079,7 @@ function nsnCapNhat(){ call('capNhatNgoaiSXTuFile',[],function(r){ if(!r||!r.ok)
 </script>
 <script>
 /* ===== 38. TĂNG TỐC ĐỢT 3 (08/11) – bộ đo tốc độ + mở nhanh bằng số lần trước (mã hóa) ===== */
-var TD_BUF=[], TD_T=null, DL_VER='d02d3a9613', DL_HAN=12*3600e3, DL_BO=['SoCCCD','DienThoai','DiaChi','SdtKhanCap','LuongCoBan','NamSinh','SoTaiKhoan','Email'];
+var TD_BUF=[], TD_T=null, DL_VER='183eb905b6', DL_HAN=12*3600e3, DL_BO=['SoCCCD','DienThoai','DiaChi','SdtKhanCap','LuongCoBan','NamSinh','SoTaiKhoan','Email'];
 function tdGhi_(f,ms,sv){ if(!(ms>=0)||!f) return; TD_BUF.push({f:String(f),ms:Math.round(ms),sv:(typeof sv==='number'?Math.round(sv):null)});
   if(TD_BUF.length>=15) tdGui_(); else if(!TD_T) TD_T=setTimeout(tdGui_,180000); }
 function tdGui_(){ if(TD_T){clearTimeout(TD_T);TD_T=null;} if(!TD_BUF.length||typeof TOKEN==='undefined'||!TOKEN) return;

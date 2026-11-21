@@ -1376,5 +1376,6 @@ exec(io.open(os.path.join(os.path.dirname(__file__), 'don-giao-nhan', 'va-don-gi
 exec(io.open(os.path.join(os.path.dirname(__file__), 'nghi-viec', 'va-nghi-viec.py'), encoding='utf-8').read())   # cho nghỉ việc hàng loạt (16/11 tối)
 exec(io.open(os.path.join(os.path.dirname(__file__), 'don-ban', 'va-don-ban.py'), encoding='utf-8').read())   # Bán hàng nhập đơn → duyệt → chép vào Sheet đơn (16/11 khuya)
 exec(io.open(os.path.join(os.path.dirname(__file__), 'kpi-ql', 'va-kpi-ql.py'), encoding='utf-8').read())   # chốt KPI quản lý + trần 150/130 (21/11, quỹ thưởng)
+exec(io.open(os.path.join(os.path.dirname(__file__), 'kpi-moi', 'va-kpi-moi.py'), encoding='utf-8').read())   # KPI mới từ T11: bỏ học việc, chuyên cần chấm công, ngày công tối thiểu, vận hành tỷ lệ (21/11)
 io.open(RA, 'w', encoding='utf-8').write(s)
 print('OK ->', os.path.abspath(RA))
