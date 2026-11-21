@@ -9,7 +9,7 @@ function kt(dk, msg) { if (dk) ok++; else { sai++; if (sai < 20) console.log('�
 function lap(ten, d, m, y, g) { return ctx.thanSoHocLap_({ name: ten, gender: g || 'nam' }, { day: d, month: m, year: y }, 2026); }
 // 1. Mẫu tính tay
 let T = lap('Nguyễn Thị Hương', 11, 11, 1991, 'nu');
-kt(T.duongDoi === 6 && T.ngaySinh === 11 && T.thaiDo === 4, 'ĐĐ 6, ngày sinh 11 (giữ số bậc thầy), thái độ 4');
+kt(T.duongDoi === 6 && T.ngaySinh === 2 && T.thaiDo === 4, 'ĐĐ 6, ngày sinh 11 → 2 (rút hẳn về một chữ số), thái độ 4');
 kt(T.tenChuan === 'NGUYEN THI HUONG', 'bỏ dấu tên');
 kt(T.phanTich.dacBiet.some(x => /bậc thầy/.test(x.ten) && x.co), 'phát hiện số bậc thầy 11');
 kt(T.phanTich.dacBiet.some(x => /lặp/.test(x.ten) && x.co && /1 \(×6\)/.test(x.t)), 'số lặp: sáu số 1');

@@ -145,7 +145,7 @@ So thêm số cục, âm/dương độn, Trực phù, Trực sử, không vong. 
    - giờ Bính Dần: Thiên Bồng ở ô 8, cửa Hưu ở ô 3.
 
    Ví dụ này kiểm đúng việc Trực phù và Trực sử đi riêng.
-2. **Ngày 7/8/2022** (năm Nhâm Dần, tháng Mậu Thân, ngày Nhâm Thìn): sau giờ giao tiết Lập thu thì là hạ nguyên, **âm độn cục 8** ([bài trên gcores](https://www.gcores.com/articles/160638)). Lập thu năm đó giao vào tối 7/8 (khoảng 21 giờ 29 giờ Bắc Kinh, tức khoảng 20 giờ 29 giờ Việt Nam; cần đối chiếu lại bằng `Lunar.gs`). Trước giờ đó vẫn là Đại thử hạ nguyên, âm độn cục 4. Đây là ca kiểm thử **giờ giao tiết** rất tốt.
+2. **Ngày 7/8/2022** (năm Nhâm Dần, tháng Mậu Thân, ngày Nhâm Thìn): sau giờ giao tiết Lập thu thì là hạ nguyên, **âm độn cục 8** ([bài trên gcores](https://www.gcores.com/articles/160638)). Lập thu năm đó giao vào tối 7/8 (20 giờ 29 giờ Bắc Kinh, tức 19 giờ 29 giờ Việt Nam – đã kiểm bằng `KyMon.gs` và 2 thư viện đối chiếu, 21/11). Trước giờ đó vẫn là Đại thử hạ nguyên, âm độn cục 4. Đây là ca kiểm thử **giờ giao tiết** rất tốt.
 3. **Đông chí thượng nguyên là dương độn cục 1** ([Master Sean Chan – 18 cục](https://www.masterseanchan.com/qmdj-18-dun-periods/)).
 
 Dò tay thêm 20 bàn trên các trang lập bàn miễn phí: [thayungkhiem.vn](https://thayungkhiem.vn/ky-mon-don-giap) (chọn Sách Bổ, chuyển bàn), [máy tính Master Sean Chan](https://www.masterseanchan.com/qi-men-dun-jia-calculator/), [qimen-2k2](https://qimen-2k2.pages.dev/en/guide/). Reality-checker đọc thử 3 câu hỏi mẫu cho mỗi loại việc trước khi bật bán (theo rủi ro R3, rà soát 07).

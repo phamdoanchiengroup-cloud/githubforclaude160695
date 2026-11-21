@@ -1,7 +1,7 @@
 /**
  * ============================================================
  *  ThanSoHoc.gs — THẦN SỐ HỌC PYTHAGORAS (trường phái phổ biến ở Việt Nam)
- *  - Số Chủ đạo (Đường đời) 2–11, 22/4, 33/6; số Ngày sinh; số Thái độ
+ *  - Số Chủ đạo (Đường đời) 1–9, 11/2, 22/4, 33/6; số Ngày sinh; số Thái độ
  *  - Biểu đồ ngày sinh (lưới Lo Shu 3-6-9 / 2-5-8 / 1-4-7): ý nghĩa từng con số
  *    theo số lần xuất hiện, 8 mũi tên sức mạnh và 7 mũi tên trống
  *  - Biểu đồ tên & tổng hợp: số Linh hồn (nguyên âm), Nhân cách (phụ âm),
@@ -66,25 +66,16 @@ function tsGoc_(n) { return n === 11 ? 2 : n === 22 ? 4 : n === 33 ? 6 : n === 1
 function tsBoDau_(s) {
   return String(s || '').replace(/[đĐ]/g, 'D').normalize('NFD').replace(/[̀-ͯ]/g, '').toUpperCase().replace(/[^A-Z ]/g, ' ').replace(/\s+/g, ' ').trim();
 }
-function tsLaNguyenAm_(w, i) {
-  var c = w.charAt(i);
-  if ('AEIOU'.indexOf(c) >= 0) return true;
-  if (c !== 'Y') return false;
-  var tr = w.charAt(i - 1), sau = w.charAt(i + 1);
-  return !('AEIOU'.indexOf(tr) >= 0 && tr) && !('AEIOU'.indexOf(sau) >= 0 && sau); // Y đứng một mình giữa phụ âm = nguyên âm
-}
 
-/** Số chủ đạo: cộng tất cả chữ số ngày sinh; rút gọn tới 2–11, giữ 22, 33 */
+/** Số chủ đạo: cộng tất cả chữ số ngày sinh; rút gọn về 1–9, giữ 11, 22, 33 */
 function tsDuongDoi_(d, m, y) {
-  var n = tsTongChuSo_('' + d + m + y);
-  while (n > 11 && n !== 22 && n !== 33) n = tsTongChuSo_(n);
-  return n;
+  return tsRutGon_(tsTongChuSo_('' + d + m + y), true);
 }
 
 function thanSoHocLap_(input, solar, viewYear) {
   var d = solar.day, m = solar.month, y = solar.year;
   var ld = tsDuongDoi_(d, m, y);
-  var ngay = tsRutGon_(d, true), thaiDo = tsRutGon_(tsTongChuSo_('' + d + m), false);
+  var ngay = tsRutGon_(d, false), thaiDo = tsRutGon_(tsTongChuSo_('' + d + m), true);
   // Biểu đồ ngày sinh
   var dem = {}; for (var k = 1; k <= 9; k++) dem[k] = 0;
   ('' + d + m + y).split('').forEach(function (c) { if (c !== '0') dem[+c]++; });
@@ -103,9 +94,9 @@ function thanSoHocLap_(input, solar, viewYear) {
     for (var i = 0; i < w.length; i++) {
       var v = TS_CHU[w.charAt(i)]; if (!v) continue;
       demTen[v]++;
-      if (tsLaNguyenAm_(w, i)) nh += v; else pa += v;
+      if ('AEIOU'.indexOf(w.charAt(i)) >= 0) nh += v; else pa += v; // Y luôn là phụ âm
     }
-    linhHon += tsRutGon_(nh, true); nhanCach += tsRutGon_(pa, true); suMenh += tsRutGon_(nh + pa, true);
+    linhHon += nh; nhanCach += pa; suMenh += nh + pa;
     tenTu.push({ tu: w, nguyenAm: nh, phuAm: pa });
     cb += TS_CHU[w.charAt(0)] || 0;
   });
@@ -113,7 +104,7 @@ function thanSoHocLap_(input, solar, viewYear) {
   var R = { duongDoi: ld, duongDoiGoc: tsGoc_(ld), ngaySinh: ngay, thaiDo: thaiDo, bieuDo: dem, muiTen: muiTen, coTen: coTen, tenChuan: ten };
   if (coTen) {
     R.linhHon = tsRutGon_(linhHon, true); R.nhanCach = tsRutGon_(nhanCach, true); R.suMenh = tsRutGon_(suMenh, true);
-    R.truongThanh = tsRutGon_(tsGoc_(ld) + tsGoc_(R.suMenh), true);
+    R.truongThanh = tsRutGon_(ld + R.suMenh, true);
     R.canBang = tsRutGon_(cb, false);
     R.baiHoc = []; for (k = 1; k <= 9; k++) if (!demTen[k]) R.baiHoc.push(k);
     var maxc = 0; for (k = 1; k <= 9; k++) maxc = Math.max(maxc, demTen[k]);
@@ -122,7 +113,8 @@ function thanSoHocLap_(input, solar, viewYear) {
   }
   // Đỉnh cao & thử thách
   var rm = tsRutGon_(m, false), rd = tsRutGon_(d, false), ry = tsRutGon_(tsTongChuSo_(y), false);
-  var p1 = tsRutGon_(rm + rd, true), p2 = tsRutGon_(rd + ry, true), p3 = tsRutGon_(tsGoc_(p1) + tsGoc_(p2), true), p4 = tsRutGon_(rm + ry, true);
+  var sm = tsTongChuSo_(m), sd = tsTongChuSo_(d), sy = tsTongChuSo_(y);
+  var p1 = tsRutGon_(sm + sd, true), p2 = tsRutGon_(sd + sy, true), p3 = tsRutGon_(p1 + p2, true), p4 = tsRutGon_(sm + sy, true);
   var c1 = Math.abs(rm - rd), c2 = Math.abs(rd - ry), c3 = Math.abs(c1 - c2), c4 = Math.abs(rm - ry);
   var t1 = 36 - tsGoc_(ld);
   R.dinhCao = [

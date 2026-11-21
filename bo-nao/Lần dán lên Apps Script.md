@@ -4,6 +4,7 @@ Nhóm: Bắt đầu · Cập nhật 22/10/2026
 Liên quan: [[Việc chờ chủ dự án]] · [[TCC Kiểm thử]] · [[00 Mục lục]]
 
 ## Tình trạng
+- **21/11:** Thần số giữ số bậc thầy theo Nhật Nguyệt (đổi **ThanSoHoc**) + file mới **KyMon** (đủ 33 file .gs, chưa hiện trên web) + **Code** (danh sách file). Bấm `2-CAP-NHAT.bat`. Lưu ý: kết quả Thần số của một số người đổi (ví dụ tên có chữ Y, ngày sinh 11/22).
 - **17/11: mã `2026.11.17.9`** – bỏ trang Tóm lược, gộp vào đầu Tổng hợp 6 hệ; Tổng hợp là trang mở đầu và đứng đầu hàng chip. Đổi **Script, Styles, Index**. Bấm `2-CAP-NHAT.bat`, Ctrl+F5.
 - **17/11: mã `2026.11.17.8`** – sửa ô mệnh ở Tóm lược: trước lấy nhầm nạp âm cung Mệnh (dùng tính Cục), nay là **Bản mệnh** theo năm sinh như tab Tử Vi. Chỉ đổi **Script, Styles, Index**. Bấm `2-CAP-NHAT.bat`, Ctrl+F5.
 - **17/11: mã `2026.11.17.7`** – dọn CSS cũ (Styles.html nhẹ 21%, so điểm ảnh không đổi), câu "Điều nên lưu ý" riêng cho khách ở Tóm lược. Đổi **Styles, Script, Index, TaiKhoan**. Bấm `2-CAP-NHAT.bat`, Ctrl+F5.

@@ -76,7 +76,7 @@ var HAM_CAN_CO = {
   'Lunar.gs': 'solarToLunar', 'TuVi.gs': 'tuviLapLaSo_', 'BatTu.gs': 'batTuLap_',
   'LuanGiai.gs': 'luanChiTiet_', 'DuDoan.gs': 'duDoanCuocDoi_', 'BatTuChiTiet.gs': 'batTuChiTiet_',
   'Astro.gs': 'astToanBo_', 'ChiemTinh.gs': 'chiemTinhLap_', 'HumanDesign.gs': 'hdLap_', 'ThanSoHoc.gs': 'thanSoHocLap_', 'TongHop.gs': 'tongHopLuan_', 'PhoiNgau.gs': 'phoiNgauLuan_', 'HaLac.gs': 'haLacLap_', 'HoiTu.gs': 'htHoiTu_', 'VanSau.gs': 'vsHoSoThang_', 'TuViTamPhap.gs': 'tpLap_', 'BatTuLuan.gs': 'btlLinhVuc_', 'TaiKhoan.gs': 'dangNhap', 'ThanhToan.gs': 'muaPhan', 'CapDoi.gs': 'lapCapDoi',
-  'Facts.gs': 'taoFact_', 'TuViHeThong.gs': 'tuviSinhFactsCung_', 'NghiemChung.gs': 'nghiemChungLap_', 'DeHieu.gs': 'deHieuLap_', 'BatTuPhanTich.gs': 'btPhanTich_', 'TienIch.gs': 'tienIch', 'TuViTrinhTu.gs': 'tuviTrinhTu_', 'TuViChuyenSau.gs': 'tuViChuSoHuu', 'BatTuThanSat.gs': 'thsTheoTru_', 'TuViPhiTinh.gs': 'phiTinhLuan', 'GiaDinh.gs': 'giaDinhDs'
+  'Facts.gs': 'taoFact_', 'TuViHeThong.gs': 'tuviSinhFactsCung_', 'NghiemChung.gs': 'nghiemChungLap_', 'DeHieu.gs': 'deHieuLap_', 'BatTuPhanTich.gs': 'btPhanTich_', 'TienIch.gs': 'tienIch', 'TuViTrinhTu.gs': 'tuviTrinhTu_', 'TuViChuyenSau.gs': 'tuViChuSoHuu', 'BatTuThanSat.gs': 'thsTheoTru_', 'TuViPhiTinh.gs': 'phiTinhLuan', 'GiaDinh.gs': 'giaDinhDs', 'KyMon.gs': 'kmLap_'
 };
 
 /** Trả về danh sách lỗi cài đặt (rỗng nếu mọi thứ đúng) */
@@ -146,7 +146,7 @@ function trangLoiCaiDat_(loi) {
 function kiemTraCaiDat() {
   chiChayNoiBo_(arguments[0]);
   var loi = kiemTraCaiDat_();
-  if (!loi.length) { Logger.log('✔ Cài đặt đúng: đủ 32 file .gs và 3 file HTML.'); return; }
+  if (!loi.length) { Logger.log('✔ Cài đặt đúng: đủ 33 file .gs và 3 file HTML.'); return; }
   loi.forEach(function (x) { Logger.log('✘ ' + x.replace(/<[^>]+>/g, '').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&amp;/g, '&')); });
 }
 
