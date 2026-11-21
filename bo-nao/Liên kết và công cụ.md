@@ -35,6 +35,8 @@ Một chỗ gom mọi đường dẫn, mã file, kết nối và công cụ phi�
 - **Chấm công (03/11)**: thư mục ảnh `1sj-7VartwovgM1YMweWBc1DLxJBj9Irt`; file sửa `1MwEdEj5XELPcjEhLd3BZz-3Tcs4rbQR01KD9hFnor3g`, file bộ phận ngoài SX `1KAbgfq0QMZNmFeyF7VWFcEwjWM-ADK4sRR8FghUAcgk` – [[KPI Nhân sự theo chấm công]]. Phiên không có kết nối Google Sheets (chỉ Drive: đọc, tạo file).
 - Thư mục Drive "Báo cáo KPI hằng tháng" do web tự tạo khi chốt tháng: xem [[KPI Báo cáo tháng]].
 
+- **File bên Bán hàng** (chủ dự án gửi 21/11, chỉ đọc; có tên / địa chỉ / SĐT khách → chỉ tải về scratchpad, KHÔNG commit): "DEALER OEM NN ORDER" `1oRYbWm1KMopMdKQiy2XXH_LGidNL6DK32z8xex7KMpo` (tab DEALER orders, Đặt kho nội địa, Đặt kho nước ngoài 2, 2027 Đặt hàng nước ngoài, ĐƠN GĂNG, DATA (SKU), Price reference) · "Q2 2026 - SHOPIFY ORDER" `1m17T1xsvdc-h55EX8qBS5YSaR_eNjTh8YIW6TBogi7I` (tab SHOPIFY_ORDER ~14.200 dòng / 10.000 đơn từ 05/2026, ISSUES ~1.200 khiếu nại, EXCEPTION LOG). Tải: `download_file_content` + `exportMimeType` xlsx rồi đọc bằng openpyxl. Đánh giá 21/11 ở [[Nhật ký thay đổi]].
+
 ## Apps Script và clasp
 - Cập nhật web: bộ cài `kpi-app/cai-dat-clasp/`. Gửi lại cho chủ dự án: `cd kpi-app && zip -qr $S/cai-dat-clasp-KPI.zip cai-dat-clasp`, rồi gửi file bằng công cụ gửi file.
 - Mã dự án Apps Script (`scriptId`) và đăng nhập clasp chỉ nằm trên máy chủ dự án (`C:\Users\<tên>\KPI-AppsScript`), không có trong repo. Chi tiết: [[KPI Cập nhật bằng clasp]].
