@@ -267,15 +267,18 @@ function bnBangHtml(){
   var q=String(BNBLoc.q||'').trim().toUpperCase(), nhan={}; (BNB.kenh||[]).forEach(function(k){ nhan[k[0]]=k[1]; });
   var ds=(BNB.ds||[]).filter(function(d){ return (!BNBLoc.k||d[0]===BNBLoc.k)&&(!q||String(d[1]).toUpperCase().indexOf(q)>=0||String(d[2]).toUpperCase().indexOf(q)>=0); });
   if(!ds.length) return '<div class="pdesc">Không có dòng nào khớp.</div>';
-  bnDonTruoc='';
+  /* 21/11 (chủ dự án): trong mỗi kênh xếp TỪNG DÒNG theo deadline gần → xa (quá hạn đầu, không có hạn cuối) */
+  var thuT={}; ds.forEach(function(d){ if(thuT[d[0]]==null) thuT[d[0]]=Object.keys(thuT).length; });
+  ds=ds.map(function(d,i){ return [d,i]; }).sort(function(a,b){ var p=a[0][4]||'', q=b[0][4]||''; return (thuT[a[0][0]]-thuT[b[0][0]])||(p?0:1)-(q?0:1)||(p<q?-1:p>q?1:0)||(a[1]-b[1]); }).map(function(z){ return z[0]; });
+  bnDonTruoc=''; bnDaPct={};
   var MAX=800, hn=bnHom(), h='<div class="db-bang-w"><table class="db-bang"><thead><tr><th>Mã đơn</th><th>Mã sản phẩm</th><th style="text-align:right">Số đặt</th><th>Deadline</th></tr></thead><tbody>', tab=null, nhom={};
   ds.forEach(function(d){ var g=nhom[d[0]]||(nhom[d[0]]={n:0,sl:0,don:{}}); g.n++; g.sl+=Number(d[3])||0; g.don[d[1]]=1; });
   ds.slice(0,MAX).forEach(function(d){
     if(d[0]!==tab){ tab=d[0]; var g=nhom[tab]; h+='<tr class="nh"><th colspan="4">'+esc(nhan[tab]||tab)+' <i>· '+Object.keys(g.don).length+' đơn · '+g.n+' mã · '+bnSo(g.sl)+' sp</i></th></tr>'; }
-    var kp=d[0]+'|'+d[1], dau=d[1]&&kp!==bnDonTruoc, pc=(BNB.pct||{})[kp]; bnDonTruoc=kp;   // 21/11: thanh % hoàn thành ở dòng đầu mỗi đơn
+    var kp=d[0]+'|'+d[1], dau=d[1]&&kp!==bnDonTruoc&&!bnDaPct[kp], pc=(BNB.pct||{})[kp]; bnDonTruoc=kp; if(dau) bnDaPct[kp]=1;   // 21/11: thanh % hoàn thành ở dòng đầu mỗi đơn
     h+='<tr'+(d[5]?' style="opacity:.75"':'')+(dau?' class="db-dau-don"':'')+'><td>'+esc(d[1]||'—')+(dau&&pc!=null?'<div class="db-thanh" title="Đơn đã xong '+pc+'% (cả các mã đã xong)"><i style="width:'+pc+'%"></i></div><div class="pdesc" style="font-size:11px">Xong '+pc+'%</div>':'')+'</td><td>'+esc(d[2])+(d[5]?' <span class="db-moi" style="background:#f6d365">tạm dừng</span>':'')+(d[6]?' <span class="db-moi" style="background:#bfe3ff" title="Nhà máy ưu tiên mã này – mục tiêu nội bộ, deadline với khách giữ nguyên">⏱ ưu tiên '+esc(bnNg(d[6]).slice(0,5))+'</span>':'')+'</td><td class="so">'+bnSo(d[3])+'</td><td class="ng'+(d[4]&&d[4]<hn?' qua':'')+'">'+(d[4]?esc(bnNg(d[4])):'—')+'</td></tr>'; });
   return h+'</tbody></table></div>'+(ds.length>MAX?'<div class="pdesc" style="margin-top:6px">Đang hiện '+MAX+' / '+bnSo(ds.length)+' dòng – gõ tìm hoặc chọn kênh để xem gọn hơn.</div>':''); }
-var bnDonTruoc='';
+var bnDonTruoc='', bnDaPct={};
 /* 21/11 (chủ dự án): đơn lẻ / POD đã xong trong 3 ngày làm việc gần nhất + tra cứu */
 var BNX=null, BNXTai=false, BNXLoc={q:''};
 function bnTaiXong(){ if(BNXTai) return; BNXTai=true; call('layDonXongLePOD',[],function(r){ BNXTai=false; BNX=(r&&r.ok)?r:{loi:(r&&r.msg)||'Không tải được.'}; if(BNXem==='xong') bnVe(); }); }
