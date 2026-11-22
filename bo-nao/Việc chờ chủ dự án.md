@@ -4,6 +4,7 @@ Nhóm: Bắt đầu · Cập nhật 22/10/2026
 Liên quan: [[Lần dán lên Apps Script]] · [[TCC Tiến trình]] · [[00 Mục lục]]
 
 ## Việc còn ngỏ
+- 22/11: bấm `2-CAP-NHAT.bat` lấy mã `2026.11.22.1` (nếu lần trước bị lỗi 503 thì lần này gộp luôn), Ctrl+F5; thử tab ☯ Thái Ất, mua thử combo 15 xu bằng tài khoản phụ. Cân nhắc: tab Thái Ất đang ở nhóm "Tôi" (cạnh Tiện ích) – muốn chuyển sang nhóm Vận hạn thì báo. – [[TCC Thái Ất Thần Kinh]]
 - 21/11: bấm `2-CAP-NHAT.bat` lấy mã `2026.11.21.1`, Ctrl+F5; thử trang Năm 2027, Kỳ Môn "Hỏi một việc" (mua thử 9 xu bằng tài khoản phụ), thẻ Phễu bán hàng. Đăng ảnh Facebook `nghien-cuu/anh-quang-cao/nam-2027-fb*.png` khi trang Năm 2027 đã chạy. – [[TCC Kỳ Môn Độn Giáp]], [[TCC Thái Ất Thần Kinh]]
 - 16/11: **đổi mật khẩu chủ sở hữu trong web ngay** (≥ 14 ký tự) – seed băm trong repo công khai dò được. Mở Google Sheet lịch sử, xem cột A các trang Vi/MoKhoa/DonHang/Ve có ô dạng số (tài khoản tên toàn số tạo trước 16/11) không – có thì báo để chuyển đổi. Duyệt 6 báo cáo rà soát (`nghien-cuu/ra-soat/`) và 5 câu hỏi miễn phí/trả phí. – [[TCC Rà soát toàn bộ 11-2026]]
 - 16/11: sau khi chuyên gia rà xong Đợt 4, bấm `2-CAP-NHAT.bat` lấy mã `2026.11.16.2` (giá mới + giao diện mới), Ctrl+F5, thử trên điện thoại: thanh đáy 4 mục, trang Tóm lược, trang Tôi, mua thử Hội viên năm bằng tài khoản phụ. Chọn cách chống tạo tài khoản ảo lấy quà 9 xu (chấp nhận / đổi quà thành phiếu mở 1 đại vận / ghi cờ trên máy). – [[TCC Rà soát toàn bộ 11-2026]]
