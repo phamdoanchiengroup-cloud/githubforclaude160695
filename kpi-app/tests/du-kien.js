@@ -97,8 +97,8 @@ ok(x.td.eta > sau, 'luôn muộn hơn ngày bảng đơn hiện cho sản xuất
 
 console.log('\n3. Bảng đơn nhà máy (4 cột)');
 r = c.__goi('layBangDonNhaMay', B2);
-ok(r.ok && r.ds.length > 50 && r.ds.every(d => d.length === 7 && (d[5] === 0 || d[5] === 1) && (d[6] === '' || /^\d{4}-/.test(d[6]))), 'Bán hàng khác cũng xem được – mỗi dòng chỉ [kênh, mã đơn, mã SP, số đặt, deadline, cờ tạm dừng, hạn riêng (21/11)] (' + (r.ds || []).length + ' dòng)', r.msg || (r.ds || [])[0]);
-ok(r.ds.every(d => d.length === 7 && (d[5] === 0 || d[5] === 1)) && !JSON.stringify(r).match(/qua"|nguoiDat|ghiChu|uuTien|dong"/), 'từng dòng không lộ còn thiếu / tiến độ bộ phận / ghi chú / người đặt (chỉ thống kê theo kênh có tổng còn phải làm)');
+ok(r.ok && r.ds.length > 50 && r.ds.every(d => d.length === 8 && (d[5] === 0 || d[5] === 1) && (d[6] === '' || /^\d{4}-/.test(d[6]))), 'Bán hàng khác cũng xem được – mỗi dòng chỉ [kênh, mã đơn, mã SP, số đặt, deadline, cờ tạm dừng, hạn riêng (21/11), còn thiếu (22/11)] (' + (r.ds || []).length + ' dòng)', r.msg || (r.ds || [])[0]);
+ok(r.ds.every(d => d.length === 8 && (d[5] === 0 || d[5] === 1)) && !JSON.stringify(r).match(/qua"|nguoiDat|ghiChu|uuTien|dong"/), 'từng dòng không lộ tiến độ bộ phận / ghi chú / người đặt (22/11: chủ dự án cho Bán hàng xem Đặt / Thiếu / Giao)');
 ok(!r.ds.some(d => d[1] === '#OEM-HUY-01/11'), 'không có mã đã hủy');
 ok(r.ds.some(d => d[1] === '#BH9-17/11' && d[3] === 30), 'có đơn vừa duyệt');
 const thuTab = r.ds.map(d => c.DH_TABS.indexOf(d[0])); ok(thuTab.every((v, i) => !i || v >= thuTab[i - 1]), 'xếp theo kênh như Sheet (Dealer → Kho → Web lẻ … → POD)');
@@ -108,7 +108,7 @@ ok(c.__goi('layBangDonNhaMay', gd).ok, 'người duyệt xem được');
 r = c.__goi('layBangDonNhaMay', B2); const tk = r.tk || [], tong = tk[tk.length - 1] || {};
 const w3 = webMoPhong(c.__goi('layDonHangXuong', own, true), hn, null), maxTab = {}; let maxAll = '';
 Object.keys(w3).forEach(z => { const e = w3[z], t = z.split('|').pop(); if (!e) return; if (e > (maxTab[t] || '')) maxTab[t] = e; if (e > maxAll) maxAll = e; });
-ok(tk.length >= 7 && tong.tab === '' && tong.sl === r.ds.reduce((a, d) => a + d[3], 0), 'có ' + (tk.length - 1) + ' kênh + dòng tổng; tổng SL đặt = tổng bảng (' + tong.sl + ')', tk);
+ok(tk.length >= 7 && tong.tab === '' && tong.sl === r.ds.filter(d => d[7] > 0).reduce((a, d) => a + d[3], 0), 'có ' + (tk.length - 1) + ' kênh + dòng tổng; tổng SL đặt = tổng các mã còn thiếu trong bảng (' + tong.sl + ')', tk);
 ok(tong.xong === R.congN(maxAll, 6) && tong.xong > maxAll, 'nhà máy kín lịch đến ' + tong.xong + ' = ngày xong đơn cuối cùng trên bảng đơn (' + maxAll + ') + 6 ngày làm việc (~1 tuần)', [tong.xong, maxAll]);
 ok(tk.slice(0, -1).every(z => !maxTab[z.tab] ? !z.xong : z.xong === R.congN(maxTab[z.tab], 6)), 'mỗi kênh: xong hết = đơn xong muộn nhất của kênh + 6 ngày làm việc', tk.map(z => [z.tab, z.xong, maxTab[z.tab]]));
 ok(tk.slice(0, -1).every(z => z.thieu <= z.sl && z.don > 0) && tong.thieu === tk.slice(0, -1).reduce((a, z) => a + z.thieu, 0), 'còn phải làm ≤ SL đặt; tổng = cộng các kênh');
@@ -180,7 +180,7 @@ ok(k6.some(z => truoc[z] && sau6[z] < truoc[z]) && k6.every(z => !truoc[z] || sa
 const shK = c.SpreadsheetApp.openById(c.DH_SHEET_ID).getSheetByName('KHO'), mauD = () => dongK.map(o => shK.getRange(o.dong, 1, 1, 3).getBackgrounds()[0][0]);
 ok(mauD().join() === '#ffffff,#ffffff,#ffffff', '17/11 tối: Sheet đơn GIỮ NGUYÊN khi tạm dừng (không tô màu)', mauD());
 const bt = c.__goi('layBangDonNhaMay', B1), tkK = bt.tk.find(z => z.tab === 'KHO'), tg = bt.tk.slice(-1)[0];
-ok(bt.ds.filter(d => d[1] === '#KHO-DUNG-02/11').every(d => d[5] === 1) && tkK.dung === 120 && tg.dung === 120 && tg.donDung === 1 && tg.thieu === kinTruoc.thieu - 120, 'Bảng đơn nhà máy: dòng có cờ tạm dừng; thống kê tách "tạm dừng 120 sp (1 đơn)", còn làm giảm 120', [tkK, tg.thieu, kinTruoc.thieu]);
+ok(bt.ds.filter(d => d[1] === '#KHO-DUNG-02/11' && d[7] > 0).every(d => d[5] === 1) && tkK.dung === 120 && tg.dung === 120 && tg.donDung === 1 && tg.thieu === kinTruoc.thieu - 120, 'Bảng đơn nhà máy: dòng có cờ tạm dừng; thống kê tách "tạm dừng 120 sp (1 đơn)", còn làm giảm 120', [tkK, tg.thieu, kinTruoc.thieu]);
 ok(tg.xong <= kinTruoc.xong, 'ngày kín lịch không muộn đi (' + kinTruoc.xong + ' → ' + tg.xong + ')');
 r = c.__goi('huyBotDon', gd, DP({ loai: 'DUNG', lenh: null })); ok(!r.ok && /đang tạm dừng/.test(r.msg), 'tạm dừng lại mã đang dừng → báo đang dừng', r);
 r = c.__goi('huyBotDon', c067, { loai: 'BOT', tab: 'KHO', dong: o1.dong, ten: o1.ten, maDon: o1.maDon, slMoi: 40, lyDo: 'Khách giảm số' });

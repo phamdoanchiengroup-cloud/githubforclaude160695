@@ -13,6 +13,29 @@
 .db-msg{margin:6px 0;font-size:13px;line-height:1.5} .db-msg b{font-weight:700}
 .db-dong{width:100%;border-collapse:collapse;font-size:12.5px;margin-top:6px} .db-dong td,.db-dong th{padding:4px 6px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top} .db-dong th{font-size:10.5px;text-transform:uppercase;color:var(--ink3);font-weight:600} .db-dong td.so{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
 .db-moi{display:inline-block;font-size:10.5px;font-weight:700;padding:0 6px;border-radius:6px;color:#1a1a1a;background:var(--amber);margin-left:4px}
+.of-the{border:1px solid var(--line);border-radius:14px;background:var(--panel);margin:0 0 12px;overflow:hidden}
+.of-the.tre{border-color:rgba(244,114,114,.55)}
+.of-dau{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;padding:12px 14px 8px}
+.of-ma{font-family:ui-monospace,Menlo,monospace;font-weight:700;font-size:15px;color:var(--green)}
+.of-phu{font-size:12px;color:var(--ink3);margin-top:2px}
+.of-phai{display:flex;gap:8px;align-items:center;flex-wrap:wrap;justify-content:flex-end}
+.of-dl{border:1px solid var(--line);border-radius:10px;padding:3px 10px;text-align:center;line-height:1.15}
+.of-dl small{display:block;font-size:9px;letter-spacing:.12em;color:var(--ink3)}
+.of-dl b{font-size:17px}.of-dl i{display:block;font-style:normal;font-size:10.5px}
+.of-dl.tre{border-color:rgba(244,114,114,.6);background:rgba(244,114,114,.08)}.of-dl.tre b,.of-dl.tre i{color:var(--red)}
+.of-dl.sap b,.of-dl.sap i{color:#d9952c}
+.of-tt{font-size:11.5px;font-weight:600;border-radius:999px;padding:3px 10px;border:1px solid}
+.of-tt.tre{color:var(--red);border-color:rgba(244,114,114,.5);background:rgba(244,114,114,.08)}
+.of-tt.ok{color:var(--green);border-color:currentColor}.of-tt.sap{color:#d9952c;border-color:currentColor}
+.of-thanh{display:grid;grid-template-columns:110px 1fr auto;gap:10px;align-items:center;padding:4px 14px;font-size:11px;color:var(--ink3);letter-spacing:.06em}
+.of-thanh .bar{height:5px;border-radius:4px;background:rgba(127,127,127,.25);overflow:hidden}.of-thanh .bar i{display:block;height:100%;border-radius:4px}
+.of-thanh .so{font-family:ui-monospace,Menlo,monospace;letter-spacing:0;color:var(--ink2)}.of-thanh .so b{color:var(--green)}.of-thanh .so em{color:var(--red);font-style:normal}
+.of-dong{display:grid;grid-template-columns:1fr 46px 46px 46px;gap:6px;align-items:center;padding:8px 14px;border-top:1px solid var(--line);font-size:13px}
+.of-dong .c{text-align:center;font-family:ui-monospace,Menlo,monospace;font-weight:700;line-height:1.1}
+.of-dong .c small{display:block;font-size:8.5px;font-weight:500;color:var(--ink3);letter-spacing:.1em}
+.of-dong .thieu{color:var(--red)}.of-dong .giao{color:var(--green)}.of-dong.xong .thieu{color:var(--green)}.of-dong.xong .ten{color:var(--ink3)}
+.of-tag{white-space:nowrap;display:inline-block;font-size:10.5px;border-radius:5px;padding:1px 6px;margin-left:6px;font-weight:600}
+@media (max-width:520px){.of-thanh{grid-template-columns:1fr auto;gap:2px 8px;font-size:10px}.of-thanh .bar{grid-column:1/-1;grid-row:2}.of-ma{font-size:14px;white-space:nowrap}.of-dau{flex-wrap:wrap}}
 .db-thanh{height:6px;border-radius:4px;background:var(--line);overflow:hidden;margin:6px 0 2px;max-width:320px} .db-thanh i{display:block;height:100%;background:var(--green)} .db-bang tr.db-dau-don td{border-top:2px solid var(--line)} .db-bang td .db-thanh{min-width:70px;max-width:140px;margin:4px 0 0}
 .db-f{border:1px solid var(--cyan);border-radius:12px;padding:12px 14px;margin:10px 0 80px;background:var(--panel)}
 .db-f label{display:block;font-size:12px;color:var(--ink2);margin:10px 0 4px;font-weight:600}
@@ -248,12 +271,12 @@ function bnVeBang(){
   if(!BNB){ bnTaiBang(); return '<div class="pdesc">Đang tải bảng đơn…</div>'; }
   if(BNB.loi) return '<div class="alert a-bd">'+esc(BNB.loi)+' <button class="btn sm" type="button" onclick="BNB=null;bnVe()">Thử lại</button></div>';
   var nhan={}, dem={}; (BNB.kenh||[]).forEach(function(k){ nhan[k[0]]=k[1]; });
-  (BNB.ds||[]).forEach(function(d){ dem[d[0]]=(dem[d[0]]||0)+1; });
+  bnGomDon().forEach(function(g){ dem[g.tab]=(dem[g.tab]||0)+1; });   /* 22/11: đếm theo ĐƠN */
   var tabs=Object.keys(dem);
-  return '<div class="pdesc" style="margin-bottom:8px">Các đơn nhà máy <b>đang làm</b> (chưa xong, đã bỏ mã bị hủy) · cập nhật '+esc(bnGio(BNB.luc)||BNB.luc)+' <button class="btn sm" type="button" onclick="BNB=null;bnVe()">Làm mới</button></div>'+
+  return '<div class="pdesc" style="margin-bottom:8px">Các đơn nhà máy <b>đang làm</b> (đơn còn mã chưa xong, đã bỏ mã bị hủy) · cập nhật '+esc(bnGio(BNB.luc)||BNB.luc)+' <button class="btn sm" type="button" onclick="BNB=null;bnVe()">Làm mới</button></div>'+
     bnVeKin(nhan)+
     '<div class="db-tim"><input id="bnTim" type="search" placeholder="Tìm mã đơn hoặc mã sản phẩm…" value="'+esc(BNBLoc.q)+'" oninput="BNBLoc.q=this.value;bnBangO()" aria-label="Tìm trong bảng đơn"></div>'+
-    '<div class="db-kenh" style="margin-bottom:10px"><button type="button" class="'+(!BNBLoc.k?'on':'')+'" onclick="BNBLoc.k=\'\';bnVe()">Tất cả · '+bnSo((BNB.ds||[]).length)+'</button>'+tabs.map(function(k){ return '<button type="button" class="'+(BNBLoc.k===k?'on':'')+'" data-t="'+esc(k)+'" onclick="BNBLoc.k=this.dataset.t;bnVe()">'+esc(nhan[k]||k)+' · '+dem[k]+'</button>'; }).join('')+'</div>'+
+    '<div class="db-kenh" style="margin-bottom:10px"><button type="button" class="'+(!BNBLoc.k?'on':'')+'" onclick="BNBLoc.k=\'\';bnVe()">Tất cả · '+bnSo(bnGomDon().length)+'</button>'+tabs.map(function(k){ return '<button type="button" class="'+(BNBLoc.k===k?'on':'')+'" data-t="'+esc(k)+'" onclick="BNBLoc.k=this.dataset.t;bnVe()">'+esc(nhan[k]||k)+' · '+dem[k]+'</button>'; }).join('')+'</div>'+
     '<div id="bnBangDs">'+bnBangHtml()+'</div>'+(BNB.het?'<div class="pdesc" style="margin-top:6px">Chỉ hiện '+bnSo((BNB.ds||[]).length)+' / '+bnSo(BNB.n)+' dòng đầu.</div>':''); }
 /* 17/11: thống kê theo kênh + nhà máy kín lịch đến ngày nào (mô phỏng công suất + dư ~1 tuần = 6 ngày làm việc) */
 function bnVeKin(nhan){ var tk=BNB.tk||[]; if(!tk.length) return '';
@@ -263,21 +286,37 @@ function bnVeKin(nhan){ var tk=BNB.tk||[]; if(!tk.length) return '';
     '<div style="overflow-x:auto"><table class="db-tk2"><thead><tr><th>Kênh</th><th>Đơn</th><th>SL đặt</th><th>Còn làm</th><th>Xong ~</th></tr></thead><tbody>'+
     ds.map(function(z){ return '<tr><td>'+esc(nhan[z.tab]||z.tab)+'</td><td>'+bnSo(z.don)+'</td><td>'+bnSo(z.sl)+'</td><td>'+bnSo(z.thieu)+'</td><td>'+(z.xong?esc(bnNg(z.xong).slice(0,5)):(z.cho?'chờ hạn':'—'))+'</td></tr>'; }).join('')+
     '<tr class="tong"><td>Tổng</td><td>'+bnSo(tong.don)+'</td><td>'+bnSo(tong.sl)+'</td><td>'+bnSo(tong.thieu)+'</td><td>'+(tong.xong?esc(bnNg(tong.xong).slice(0,5)):'—')+'</td></tr></tbody></table></div><div class="pdesc" style="margin-top:4px">Xong ~ = ngày xong hết hàng còn phải làm của kênh (đã cộng dư ~1 tuần).</div></div>'; }
+/* 22/11 (chủ dự án): bảng đơn nhà máy hiện THẺ THEO ĐƠN kiểu ORDER·FLOW – deadline + quá hạn N ngày, nhãn tình trạng, thanh Theo loại / Theo số lượng,
+   từng mã Đặt · Thiếu · Giao (mã còn thiếu trên, mã đã xong mờ dưới). "Tất cả" = trộn mọi kênh theo deadline gần → xa; chọn kênh = chỉ kênh đó. */
+var BNB_THE=60;
+function bnGomDon(){ var m={}, ds=[]; (BNB.ds||[]).forEach(function(d){ var k=d[0]+'|'+d[1], g=m[k];
+    if(!g){ g=m[k]={tab:d[0],ma:d[1],dong:[],sl:0,thieu:0,dl:'',hr:''}; ds.push(g); }
+    var th=d[7]==null?(Number(d[3])||0):Number(d[7])||0; g.dong.push({ten:d[2],sl:Number(d[3])||0,thieu:th,dl:d[4]||'',dung:d[5],hr:d[6]||''}); g.sl+=Number(d[3])||0; g.thieu+=th;
+    if(th>0&&d[4]&&(!g.dl||d[4]<g.dl)) g.dl=d[4]; });
+  return ds.filter(function(g){ return g.thieu>0; }); }
 function bnBangHtml(){
   var q=String(BNBLoc.q||'').trim().toUpperCase(), nhan={}; (BNB.kenh||[]).forEach(function(k){ nhan[k[0]]=k[1]; });
-  var ds=(BNB.ds||[]).filter(function(d){ return (!BNBLoc.k||d[0]===BNBLoc.k)&&(!q||String(d[1]).toUpperCase().indexOf(q)>=0||String(d[2]).toUpperCase().indexOf(q)>=0); });
-  if(!ds.length) return '<div class="pdesc">Không có dòng nào khớp.</div>';
-  /* 21/11 (chủ dự án): trong mỗi kênh xếp TỪNG DÒNG theo deadline gần → xa (quá hạn đầu, không có hạn cuối) */
-  var thuT={}; ds.forEach(function(d){ if(thuT[d[0]]==null) thuT[d[0]]=Object.keys(thuT).length; });
-  ds=ds.map(function(d,i){ return [d,i]; }).sort(function(a,b){ var p=a[0][4]||'', q=b[0][4]||''; return (thuT[a[0][0]]-thuT[b[0][0]])||(p?0:1)-(q?0:1)||(p<q?-1:p>q?1:0)||(a[1]-b[1]); }).map(function(z){ return z[0]; });
-  bnDonTruoc=''; bnDaPct={};
-  var MAX=800, hn=bnHom(), h='<div class="db-bang-w"><table class="db-bang"><thead><tr><th>Mã đơn</th><th>Mã sản phẩm</th><th style="text-align:right">Số đặt</th><th>Deadline</th></tr></thead><tbody>', tab=null, nhom={};
-  ds.forEach(function(d){ var g=nhom[d[0]]||(nhom[d[0]]={n:0,sl:0,don:{}}); g.n++; g.sl+=Number(d[3])||0; g.don[d[1]]=1; });
-  ds.slice(0,MAX).forEach(function(d){
-    if(d[0]!==tab){ tab=d[0]; var g=nhom[tab]; h+='<tr class="nh"><th colspan="4">'+esc(nhan[tab]||tab)+' <i>· '+Object.keys(g.don).length+' đơn · '+g.n+' mã · '+bnSo(g.sl)+' sp</i></th></tr>'; }
-    var kp=d[0]+'|'+d[1], dau=d[1]&&kp!==bnDonTruoc&&!bnDaPct[kp], pc=(BNB.pct||{})[kp]; bnDonTruoc=kp; if(dau) bnDaPct[kp]=1;   // 21/11: thanh % hoàn thành ở dòng đầu mỗi đơn
-    h+='<tr'+(d[5]?' style="opacity:.75"':'')+(dau?' class="db-dau-don"':'')+'><td>'+esc(d[1]||'—')+(dau&&pc!=null?'<div class="db-thanh" title="Đơn đã xong '+pc+'% (cả các mã đã xong)"><i style="width:'+pc+'%"></i></div><div class="pdesc" style="font-size:11px">Xong '+pc+'%</div>':'')+'</td><td>'+esc(d[2])+(d[5]?' <span class="db-moi" style="background:#f6d365">tạm dừng</span>':'')+(d[6]?' <span class="db-moi" style="background:#bfe3ff" title="Nhà máy ưu tiên mã này – mục tiêu nội bộ, deadline với khách giữ nguyên">⏱ ưu tiên '+esc(bnNg(d[6]).slice(0,5))+'</span>':'')+'</td><td class="so">'+bnSo(d[3])+'</td><td class="ng'+(d[4]&&d[4]<hn?' qua':'')+'">'+(d[4]?esc(bnNg(d[4])):'—')+'</td></tr>'; });
-  return h+'</tbody></table></div>'+(ds.length>MAX?'<div class="pdesc" style="margin-top:6px">Đang hiện '+MAX+' / '+bnSo(ds.length)+' dòng – gõ tìm hoặc chọn kênh để xem gọn hơn.</div>':''); }
+  var ds=bnGomDon().filter(function(g){ return (!BNBLoc.k||g.tab===BNBLoc.k)&&(!q||String(g.ma).toUpperCase().indexOf(q)>=0||g.dong.some(function(z){ return String(z.ten).toUpperCase().indexOf(q)>=0; })); });
+  if(!ds.length) return '<div class="pdesc">Không có đơn nào khớp.</div>';
+  ds.sort(function(a,b){ return (a.dl?0:1)-(b.dl?0:1)||(a.dl<b.dl?-1:a.dl>b.dl?1:0)||(b.thieu-a.thieu); });
+  var hn=bnHom(), h=ds.slice(0,BNB_THE).map(function(g){ return bnThe(g,nhan,hn); }).join('');
+  if(ds.length>BNB_THE) h+='<div style="text-align:center;margin:8px 0"><button class="btn sm" type="button" onclick="BNB_THE+=60;bnBangO()">Xem thêm '+(ds.length-BNB_THE)+' đơn</button></div>';
+  return '<div class="pdesc" style="margin-bottom:8px">'+ds.length+' đơn · xếp theo deadline gần → xa (quá hạn trên cùng)</div>'+h; }
+function bnNgayCach(a,b){ return Math.round((Date.parse(b+'T00:00:00Z')-Date.parse(a+'T00:00:00Z'))/864e5); }
+function bnThe(g,nhan,hn){
+  var nL=g.dong.length, xL=g.dong.filter(function(z){ return z.thieu<=0; }).length, pc=g.sl?Math.round((g.sl-g.thieu)*100/g.sl):0;
+  var q=g.dl?bnNgayCach(g.dl,hn):null, tre=q!=null&&q>0, sap=!tre&&q!=null&&q>-4, dung=g.dong.some(function(z){ return z.dung&&z.thieu>0; });
+  var mau=tre?'var(--red)':pc>=90?'var(--green)':pc>=50?'#f0b04e':'var(--red)';
+  var tt=tre?['tre','Trễ hạn – còn thiếu']:dung?['sap','Có mã tạm dừng']:sap?['sap','Sắp đến hạn']:['ok','Đang sản xuất'];
+  var h='<div class="of-the'+(tre?' tre':'')+'"><div class="of-dau"><div><div class="of-ma">'+esc(g.ma||'(không mã)')+'</div><div class="of-phu">'+esc(nhan[g.tab]||g.tab)+'</div></div><div class="of-phai">'+
+    (g.dl?'<div class="of-dl'+(tre?' tre':sap?' sap':'')+'"><small>DEADLINE</small><b>'+esc(bnNg(g.dl).slice(0,5))+'</b><i>'+(tre?'quá hạn '+q+' ngày':(q===0?'hôm nay':'còn '+(-q)+' ngày'))+'</i></div>':'<div class="of-dl"><small>DEADLINE</small><b>—</b><i>chưa có</i></div>')+
+    '<span class="of-tt '+tt[0]+'">● '+tt[1]+'</span></div></div>'+
+    '<div class="of-thanh"><span>THEO LOẠI</span><div class="bar"><i style="width:'+(nL?Math.round(xL*100/nL):0)+'%;background:'+mau+'"></i></div><span class="so">Xong <b>'+xL+'/'+nL+'</b> loại</span></div>'+
+    '<div class="of-thanh"><span>THEO SỐ LƯỢNG</span><div class="bar"><i style="width:'+pc+'%;background:'+mau+'"></i></div><span class="so"><b>'+pc+'%</b> · '+bnSo(g.sl-g.thieu)+'/'+bnSo(g.sl)+' SP · thiếu <em>'+bnSo(g.thieu)+'</em></span></div>';
+  g.dong.map(function(z,i){ return [z,i]; }).sort(function(a,b){ return ((b[0].thieu>0)-(a[0].thieu>0))||(a[1]-b[1]); }).forEach(function(x){ var z=x[0], xong=z.thieu<=0;
+    h+='<div class="of-dong'+(xong?' xong':'')+'"><div class="ten">'+esc(z.ten)+(z.hr&&!xong?'<span class="of-tag" style="background:#bfe3ff;color:#123" title="Nhà máy ưu tiên mã này – mục tiêu nội bộ, deadline với khách giữ nguyên">⏱ ưu tiên '+esc(bnNg(z.hr).slice(0,5))+'</span>':'')+(z.dung&&!xong?'<span class="of-tag" style="background:#f6d365;color:#321">tạm dừng</span>':'')+(z.dl&&g.dl&&z.dl!==g.dl&&!xong?'<span class="of-tag" style="border:1px solid var(--line)">hạn '+esc(bnNg(z.dl).slice(0,5))+'</span>':'')+'</div>'+
+      '<div class="c"><small>ĐẶT</small>'+bnSo(z.sl)+'</div><div class="c thieu"><small>THIẾU</small>'+bnSo(z.thieu)+'</div><div class="c giao"><small>GIAO</small>'+bnSo(Math.max(0,z.sl-z.thieu))+'</div></div>'; });
+  return h+'</div>'; }
 var bnDonTruoc='', bnDaPct={};
 /* 21/11 (chủ dự án): đơn lẻ / POD đã xong trong 3 ngày làm việc gần nhất + tra cứu */
 var BNX=null, BNXTai=false, BNXLoc={q:''};

@@ -8821,7 +8821,7 @@ function chiXemDon(){
 </script>
 <script>
 /* ===== 19. PHẦN GIAO DIỆN TẢI SAU (12/10) – SoDo.html, HoatAnh.html: chỉ tải khi cần, nhớ lại theo phiên bản ===== */
-var MANH_VER={"SoDo": "d9bc7ce73f034629", "HoatAnh": "b23cbe69d6aae56e", "AmThanh": "c690fabe4419160c", "QuyTrinh": "251ca09858", "CauHinhGay": "8c0f42823f07518c", "DonBan": "577ee018223a0ad6"};
+var MANH_VER={"SoDo": "d9bc7ce73f034629", "HoatAnh": "b23cbe69d6aae56e", "AmThanh": "c690fabe4419160c", "QuyTrinh": "251ca09858", "CauHinhGay": "8c0f42823f07518c", "DonBan": "d1213efe68d6ba00"};
 var __manh={da:{},cho:{}};
 function ganManh_(nd){
   var js=[], ngoai=String(nd).replace(/<script>([\s\S]*?)<\/script>/g,function(_,x){js.push(x);return ''});
@@ -9743,7 +9743,7 @@ function hsGhiChuDong(r){
 }
 </script>
 <script>
-var KPI_BAN = '21/11/2026 16:34';
+var KPI_BAN = '22/11/2026 08:41';
 (function(){
   var cu = window.veNav;
   window.veNav = function(){
@@ -10417,13 +10417,14 @@ window.KINH_ANH={"xanh": {"may": "https://cdn.jsdelivr.net/gh/phamdoanchiengroup
      Nhớ trong máy (localStorage kpi_kinh, kpi_kinh_tong). Chọn nền sáng (nút mặt trời) thì kính tự tắt.
    ===================================================================== */
 var HOLO_KHOA = 'kpi_kinh', HOLO_TONG = 'kpi_kinh_tong', HOLO_TONG_TEN = { xanh: 'Xanh rừng sương', tien: 'Tiên cảnh' };   // 16/11: bỏ Sương sáng / Đỏ / Tím
-function holoCheDo() { var v = null; try { v = localStorage.getItem(HOLO_KHOA); } catch (e) {} return v === 'nhe' || v === 'tat' ? v : 'day'; }
+function holoCheDo() { var v = null; try { v = localStorage.getItem(HOLO_KHOA); } catch (e) {} return v === 'nhe' || v === 'tat' || v === 'day' ? v : (holoLaBH() ? 'nhe' : 'day'); }   // 22/11: Bán hàng mặc định kính NHẸ
+function holoLaBH() { return !!(typeof ME !== 'undefined' && ME && ME.vaiTro === 'BH'); }
 function holoTong() { var v = null; try { v = localStorage.getItem(HOLO_TONG); } catch (e) {} return HOLO_TONG_TEN[v] ? v : 'xanh'; }
 function holoSang() { return document.documentElement.getAttribute('data-gd') === 'sang'; }
 function holoChu() { return !!(typeof ME !== 'undefined' && ME && ME.laOwner); }
 /* 16/11 tối (chủ dự án): giao diện kính dùng chung cho Giám đốc C019 và chị Kim Loan C067 (Đài quan sát vẫn chỉ chủ sở hữu) */
 var HOLO_NV_KINH = { C019: 1, C067: 1 };
-function holoKinh() { return holoChu() || !!(typeof ME !== 'undefined' && ME && HOLO_NV_KINH[String(ME.maNV || '').trim().toUpperCase()]); }
+function holoKinh() { return holoChu() || holoLaBH() || !!(typeof ME !== 'undefined' && ME && HOLO_NV_KINH[String(ME.maNV || '').trim().toUpperCase()]); }   // 22/11 (chủ dự án): + tài khoản Bán hàng
 function holoBat() { return holoKinh() && holoCheDo() !== 'tat' && !holoSang(); }
 function holoDong() { return false; }   // 16/11: không chuyển động liên tục (yêu cầu hiệu năng)
 
@@ -11079,7 +11080,7 @@ function nsnCapNhat(){ call('capNhatNgoaiSXTuFile',[],function(r){ if(!r||!r.ok)
 </script>
 <script>
 /* ===== 38. TĂNG TỐC ĐỢT 3 (08/11) – bộ đo tốc độ + mở nhanh bằng số lần trước (mã hóa) ===== */
-var TD_BUF=[], TD_T=null, DL_VER='814c556395', DL_HAN=12*3600e3, DL_BO=['SoCCCD','DienThoai','DiaChi','SdtKhanCap','LuongCoBan','NamSinh','SoTaiKhoan','Email'];
+var TD_BUF=[], TD_T=null, DL_VER='e33c722cf1', DL_HAN=12*3600e3, DL_BO=['SoCCCD','DienThoai','DiaChi','SdtKhanCap','LuongCoBan','NamSinh','SoTaiKhoan','Email'];
 function tdGhi_(f,ms,sv){ if(!(ms>=0)||!f) return; TD_BUF.push({f:String(f),ms:Math.round(ms),sv:(typeof sv==='number'?Math.round(sv):null)});
   if(TD_BUF.length>=15) tdGui_(); else if(!TD_T) TD_T=setTimeout(tdGui_,180000); }
 function tdGui_(){ if(TD_T){clearTimeout(TD_T);TD_T=null;} if(!TD_BUF.length||typeof TOKEN==='undefined'||!TOKEN) return;

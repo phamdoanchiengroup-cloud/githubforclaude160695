@@ -40,6 +40,8 @@ console.log('\n2. Bảng đơn nhà máy: % hoàn thành theo từng đơn');
 r = c.__goi('layBangDonNhaMay', own);
 ok(r.ok && r.pct && r.pct['KHO|#K-03/11'] === 80, 'đơn #K-03/11: 200 đặt, còn 40 → xong 80% (tính cả mã đã xong): ' + JSON.stringify(r.pct), r.pct);
 ok(r.pct['KHO|#K-04/11'] === 0, 'đơn chưa làm → 0%');
-ok(r.ds.every(d => d[1] !== '#K-03/11' || d[2] !== 'GAY RHINO R1'), 'bảng vẫn chỉ hiện mã còn thiếu');
+const r1 = r.ds.find(d => d[1] === '#K-03/11' && d[2] === 'GAY RHINO R1'), r2 = r.ds.find(d => d[1] === '#K-03/11' && d[2] === 'NGON RHINO 12.4');
+ok(r1 && r1[7] === 0 && r2 && r2[7] === 40 && r2[3] === 100, '22/11: thẻ đơn có cả mã đã xong (thiếu 0) và mã còn thiếu (đặt 100, thiếu 40)', [r1, r2]);
+ok(!r.ds.some(d => d[1] === '#K-04/11' && d[7] === 0), 'đơn đã xong hết không có trong bảng');
 
 console.log('\n' + (n - l) + '/' + n + ' đạt'); process.exit(l ? 1 : 0);

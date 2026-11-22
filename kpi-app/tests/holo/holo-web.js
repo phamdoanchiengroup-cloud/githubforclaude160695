@@ -8,13 +8,14 @@
      Nhớ trong máy (localStorage kpi_kinh, kpi_kinh_tong). Chọn nền sáng (nút mặt trời) thì kính tự tắt.
    ===================================================================== */
 var HOLO_KHOA = 'kpi_kinh', HOLO_TONG = 'kpi_kinh_tong', HOLO_TONG_TEN = { xanh: 'Xanh rừng sương', tien: 'Tiên cảnh' };   // 16/11: bỏ Sương sáng / Đỏ / Tím
-function holoCheDo() { var v = null; try { v = localStorage.getItem(HOLO_KHOA); } catch (e) {} return v === 'nhe' || v === 'tat' ? v : 'day'; }
+function holoCheDo() { var v = null; try { v = localStorage.getItem(HOLO_KHOA); } catch (e) {} return v === 'nhe' || v === 'tat' || v === 'day' ? v : (holoLaBH() ? 'nhe' : 'day'); }   // 22/11: Bán hàng mặc định kính NHẸ
+function holoLaBH() { return !!(typeof ME !== 'undefined' && ME && ME.vaiTro === 'BH'); }
 function holoTong() { var v = null; try { v = localStorage.getItem(HOLO_TONG); } catch (e) {} return HOLO_TONG_TEN[v] ? v : 'xanh'; }
 function holoSang() { return document.documentElement.getAttribute('data-gd') === 'sang'; }
 function holoChu() { return !!(typeof ME !== 'undefined' && ME && ME.laOwner); }
 /* 16/11 tối (chủ dự án): giao diện kính dùng chung cho Giám đốc C019 và chị Kim Loan C067 (Đài quan sát vẫn chỉ chủ sở hữu) */
 var HOLO_NV_KINH = { C019: 1, C067: 1 };
-function holoKinh() { return holoChu() || !!(typeof ME !== 'undefined' && ME && HOLO_NV_KINH[String(ME.maNV || '').trim().toUpperCase()]); }
+function holoKinh() { return holoChu() || holoLaBH() || !!(typeof ME !== 'undefined' && ME && HOLO_NV_KINH[String(ME.maNV || '').trim().toUpperCase()]); }   // 22/11 (chủ dự án): + tài khoản Bán hàng
 function holoBat() { return holoKinh() && holoCheDo() !== 'tat' && !holoSang(); }
 function holoDong() { return false; }   // 16/11: không chuyển động liên tục (yêu cầu hiệu năng)
 

@@ -143,7 +143,14 @@ function layBangDonNhaMay(token) {
   } catch (eTK) { tk = []; }
   return sach_({ ok: true, luc: d.luc || '', het: het ? 1 : 0, n: ds.length, kenh: dbKenh_(), tk: tk, duKin: DBK_DU_KIN, cs: dhCongSuat_().sp,
     pct: dbxPctDon_(d.don || []),   // 21/11 (chủ dự án): thanh % hoàn thành theo từng đơn
-    ds: ds.slice(0, DBK_BANG_MAX).map(function(o) { return [o.tab, String(o.maDon || ''), o.ten, o.sl || 0, o.dl || '', o.dung ? 1 : 0, o.hanRieng ? o.hanRieng.han : '']; }) });   // [5] = 1: đang tạm dừng · [6] = hạn riêng (21/11)
+    ds: dbxTheDs_(d.don || [], thu).slice(0, DBK_BANG_MAX).map(function(o) { return [o.tab, String(o.maDon || ''), o.ten, o.sl || 0, o.dl || '', o.dung ? 1 : 0, o.hanRieng ? o.hanRieng.han : '', Math.max(0, o.thieu || 0)]; }) });   // [5] tạm dừng · [6] hạn riêng (21/11) · [7] còn thiếu (22/11: chủ dự án cho Bán hàng xem Đặt / Thiếu / Giao như ORDER·FLOW)
+}
+/* 22/11 (chủ dự án): bảng đơn nhà máy hiện THẺ THEO ĐƠN kiểu ORDER·FLOW – mọi mã của đơn đang làm (cả mã đã xong), bỏ hàng phụ / mã hủy */
+function dbxTheDs_(don, thu) {
+  var dang = {}; don.forEach(function(o) { if (!o.phu && o.ten && o.thieu > 0) dang[o.tab + '|' + String(o.maDon || '')] = 1; });
+  var a = don.filter(function(o) { return !o.phu && o.ten && dang[o.tab + '|' + String(o.maDon || '')]; });
+  a.sort(function(x, y) { var tx = thu[x.tab] != null ? thu[x.tab] : 99, ty = thu[y.tab] != null ? thu[y.tab] : 99; return (tx - ty) || String(x.maDon || '').localeCompare(String(y.maDon || '')); });
+  return a;
 }
 /* ===== 21/11 (chủ dự án): % hoàn thành từng đơn = (số đặt − còn thiếu) ÷ số đặt, cộng MỌI mã của đơn (cả mã đã xong) – bỏ hàng phụ / mã hủy ===== */
 function dbxPctDon_(don) {
