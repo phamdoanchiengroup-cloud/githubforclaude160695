@@ -14,9 +14,9 @@ Facts.gs	11840
 GiaDinh.gs	53433
 HaLac.gs	63989
 HoiTu.gs	103422
-Holo.html	59597
+Holo.html	59869
 HumanDesign.gs	46578
-Index.html	53423
+Index.html	53645
 KyMon.gs	40546
 KyMonVan.gs	58353
 LuanGiai.gs	101400
@@ -24,8 +24,8 @@ Lunar.gs	9371
 NghiemChung.gs	27775
 NghiemChungUI.html	11264
 PhoiNgau.gs	58901
-Script.html	869403
-Styles.html	264478
+Script.html	885899
+Styles.html	273301
 TaiKhoan.gs	32458
 ThaiAt.gs	40109
 ThaiAtVan.gs	80883

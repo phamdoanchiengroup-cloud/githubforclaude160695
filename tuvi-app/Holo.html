@@ -457,12 +457,14 @@ table.holo-bt{width:100%;min-width:720px;border-collapse:separate;border-spacing
     if (typeof html2canvas === 'undefined') { alert('Không tải được thư viện chụp ảnh – hãy thử lại sau.'); return; }
     var w = b.closest('.holo-wrap'), nut = w.querySelector('.board'), ten = b.getAttribute('data-holo-tai');
     var cu = b.textContent; b.disabled = true; b.textContent = 'Đang chụp…';
+    var tam = !!(window.cpTam && w.closest('#cotPhai'));   // giao diện 3 cột: bảng đang ở cột phải → tạm trả về trang để chụp đúng cỡ
+    if (tam) { window.cpTam(true); w = document.getElementById(w.id) || w; }
     chupBang(w).then(function (cv) {
       var a = document.createElement('a'); a.href = cv.toDataURL('image/png');
       a.download = ten + '-' + (tenNguoi || 'thien-co-cac').replace(/\s+/g, '-') + '.png';
       document.body.appendChild(a); a.click(); a.remove();
     }).catch(function (err) { alert('Chưa chụp được ảnh: ' + (err && err.message || err)); })
-      .then(function () { b.disabled = false; b.textContent = cu; });
+      .then(function () { b.disabled = false; b.textContent = cu; if (tam) window.cpTam(false); });
   });
   /** Chụp một bảng Hologram (khung .holo-wrap) thành canvas – dùng cho nút Tải ảnh và báo cáo PDF */
   function chupBang(w, scale) {

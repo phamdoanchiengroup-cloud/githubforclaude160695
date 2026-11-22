@@ -199,3 +199,9 @@ Liên quan: [[TCC PDF]] · [[TCC Lá số 3D]] · [[TCC Văn dễ hiểu và T�
 - 25/10 (đêm, mã 2026.10.25.8): `.tcc-luu-y` chuyển từ `.res-top` (Index.html) vào `<footer class="footer">`, CSS gọn (12,5px, không nền/viền).
 - 25/10 (đêm, mã 2026.10.25.9): `.cta-bar` bị lệch ra mép phải vì hiệu ứng chung `.hien { animation: huLen }` đè `transform: translate(-50%)` → thêm `.cta-bar.hien { animation: none }`. Chân trang: `body.co-cta .footer { padding-bottom: 120px }`, điện thoại padding ngang 64px tránh nút tròn nổi. Kiểm tra bằng chuyên gia evidence-collector.
 - 25/10 (khuya, mã 2026.10.25.10): ảnh ngũ hành (`.bcs-banner` Nhật chủ, `.bcs-anh` trong 5 thẻ dụng/hỷ/kỵ/nhàn thần – tab Bát Tự), ảnh con giáp ở thẻ hồ sơ (`.ho-so-av.co-anh`, `veHoSo`) và đầu vận năm (`.vh-giap`, tab Vận hạn). Xem [[TCC PDF]].
+
+## Bố cục 3 cột cho máy tính (22/11, mã `2026.11.22.2`)
+- Chỉ `@media (min-width:1280px)` + `matchMedia` (`cpRong()`); dưới 1280px không đổi (so ảnh 390/1024 trước/sau 7 trang: không lệch).
+- Cột phải `#cotPhai` (`--cp-w: clamp(380px, 48vw − 248px, 520px)`): lá số của tab được DI CHUYỂN sang (`cpMuon`, dấu chỗ comment), trả lại bằng `cpTra` khi đổi tab/thu màn/PDF/In (`CP.inAn`, beforeprint/afterprint) và khi Tải ảnh Hologram (`window.cpTam`, Holo.html). Bát Tự: cột phải giữ bảng tranh, chỗ cũ có bản chép tĩnh bảng chi tiết (`.cp-ban-sao`).
+- `veCotPhai` (bảng `CP_HOLO`), `cpTomHtml` thẻ hồ sơ, lớp phủ phóng to `#cpPhong` (`cpMoPhong`/`cpDongPhong`, Esc), mục lục tô sáng bằng IntersectionObserver (`cpTocIO`, `tocDatOn`), MutationObserver dựng lại khi kết quả vẽ lại.
+- Rà mã: sửa In mất lá số, IO không ngắt; mình sửa Tải ảnh Bát Tự thiếu bảng chi tiết. Biết trước: bấm cung làm cột phải cuộn về đầu; vạch dò lệch 20–40px khi thanh mời hiện/ẩn.

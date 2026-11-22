@@ -27,7 +27,7 @@
     });
   }
   /** Mã phiên bản giao diện – phải trùng với Index.html (meta tcc-ban) và Styles.html (--tcc-ban) */
-  var BAN_GIAO_DIEN = '2026.11.22.1';
+  var BAN_GIAO_DIEN = '2026.11.22.2';
   /* 25/10: ảnh ngũ hành + 12 con giáp + bìa PDF mới của chủ dự án (tuvi-app/anh/*.webp) qua jsDelivr, ghim theo mã lần lưu */
   var TCC_ANH_CDN = 'https://cdn.jsdelivr.net/gh/phamdoanchiengroup-cloud/githubforclaude160695@19203fbd20433f395336269a411f8aebcf990086/tuvi-app/anh/';
   var ANH_HANH = { 'Mộc': 'NguHanhMoc', 'Hỏa': 'NguHanhHoa', 'Thổ': 'NguHanhTho', 'Kim': 'NguHanhKim', 'Thủy': 'NguHanhThuy' };
@@ -1219,9 +1219,18 @@
       var khoa = !c1 && !!(vung.classList.contains('khoa-phan') || vung.querySelector('.demo-an'));
       dh.muc.push({ el: khoi, ten: ten, cap: c1 ? 1 : 2, khoa: khoa });
     });
-    if (!dh.muc.length) { document.body.classList.remove('co-toc'); nav.innerHTML = ''; nav.classList.remove('mo'); capNhatCuon(); return; }   // trang không có mục (Tôi)
+    if (dh.muc.length < 2 && cpRong()) {   // 22/11 (≥1280px): trang không dùng tiêu đề chuẩn (Thái Ất, Tiện ích…) → lấy tiêu đề phần và tên công cụ
+      page.querySelectorAll('h2.n27-tieu, h3.n27-h, details.ti-the > summary, .panel > h3').forEach(function (h) {
+        if (h.closest('[hidden], .palace-detail, .holo-wrap, .km-ban-wrap') || !h.getClientRects().length) return;
+        var khoi = h.tagName === 'SUMMARY' ? h.parentNode : (h.closest('.panel') || h);
+        if (dh.muc.some(function (x) { return x.el === khoi || x.el.contains(khoi); })) return;
+        var ten = h.tagName === 'SUMMARY' ? ((h.querySelector('.ti-tt b, b') || h).textContent || '').replace(/\s+/g, ' ').trim() : tenTieuDe(h); if (ten) dh.muc.push({ el: khoi, ten: ten.length > 60 ? ten.slice(0, 58) + '…' : ten, cap: 2 });
+      });
+    }
+    if (!dh.muc.length) { document.body.classList.remove('co-toc'); nav.innerHTML = ''; nav.classList.remove('mo'); cpTocIO(); capNhatCuon(); return; }   // trang không có mục (Tôi)
     nav.innerHTML = '<div class="toc-head"><b>Mục lục</b><small>' + esc(TEN_TAB[page.id.replace('page-', '')] || '') + ' · ' + dh.muc.length + ' mục</small><button type="button" class="toc-x" data-toc-x aria-label="Đóng">✕</button></div>' +
       '<ol>' + dh.muc.map(function (x, i) { return '<li class="c' + x.cap + (x.khoa ? ' khoa' : '') + '"><a data-toc="' + i + '">' + esc(x.ten) + '</a></li>'; }).join('') + '</ol>';   // 16/11: bỏ lời mời trong mục lục
+    cpTocIO();
     capNhatCuon();
   }
   function khoaCta(m) { return (m && m.phan === 'cap_doi' ? state.cd && state.cd.khoa : state.result && state.result.khoa) || 'x'; }
@@ -1244,7 +1253,7 @@
       t.classList.toggle('khoa', !!(r && k !== 'tong' && (r.khach ? (k !== 'chart' && k !== 'hist' && k !== 'capdoi' && k !== 'vh' && k !== 'n27' && k !== 'ta') : false)));   // 17/11: Tổng hợp 6 hệ là trang mặc định (có phần miễn phí) – không gắn ổ khóa
     });
     try { n27Banner(); } catch (e) { if (window.console) console.error('[Năm 2027]', e); }
-    dungMucLuc(); veCta(); veQc();
+    dungMucLuc(); veCta(); veQc(); veCotPhai();
         if (window._danhDauCoso) window._danhDauCoso();
     try { veHoSo(); } catch (e) { if (window.console) console.error('[Hồ sơ]', e); }
     try { veChao(); setTimeout(hieuUng, 80); } catch (e) { if (window.console) console.error('[Sinh động]', e); }
@@ -1275,20 +1284,27 @@
       bar.classList.toggle('hien', hien); document.body.classList.toggle('co-cta', hien);
       document.documentElement.style.setProperty('--top-h', Math.round(caoThanhTren()) + 'px');
       if (!dh.muc.length) { $('tocHien').textContent = ''; return; }
+      if (CP.io) return;   // ≥1280px: mục đang đọc do IntersectionObserver báo (cpTocIO)
       var moc = caoThanhTren() + 40, on = 0;
       for (var i = 0; i < dh.muc.length; i++) { var r = dh.muc[i].el.getClientRects(); if (r.length && r[0].top <= moc) on = i; }
-      if (on === dh.on) return;
+      tocDatOn(on);
+    });
+  }
+  /** Tô sáng mục thứ `on` trong mục lục và giữ nó trong tầm mắt (dùng chung cho cách dò khi cuộn và IntersectionObserver) */
+  function tocDatOn(on) {
+    {
+      if (on === dh.on || !dh.muc[on]) return;
       dh.on = on;
       var nav = $('toc'), li = nav.querySelectorAll('li');
       li.forEach(function (x, i) { x.classList.toggle('on', i === on); });
       $('tocHien').textContent = '· ' + dh.muc[on].ten;
       var a = li[on];
-      var cuon = $('navCol') && nav.parentNode === $('navCol') ? $('navCol') : nav;   // máy tính: cột trái cuộn cả khối tab + mục lục
+      var cuon = $('navCol') && nav.parentNode === $('navCol') && !(cpRong() && state.result) ? $('navCol') : nav;   // máy tính: cột trái cuộn cả khối tab + mục lục (≥1280px: mục lục cuộn riêng)
       if (a && cuon.scrollHeight > cuon.clientHeight) {
         var ra = a.getBoundingClientRect(), rc = cuon.getBoundingClientRect();
         if (ra.top < rc.top + 40 || ra.bottom > rc.bottom - 40) cuon.scrollTop += ra.top - rc.top - cuon.clientHeight / 3;
       }
-    });
+    }
   }
   function initDieuHuong() {
     window.addEventListener('scroll', capNhatCuon, { passive: true });
@@ -1331,6 +1347,182 @@
     if (typeof ANH_NGUOI === 'string' && ANH_NGUOI) $('qsNguoi').src = ANH_NGUOI; else $('qcStrip').classList.add('no-anh');
   }
 
+  /* ------------------------ CỘT PHẢI – LÁ SỐ THEO HỆ (chỉ màn hình ≥ 1280px, 22/11) ------------------------
+     Không vẽ lại: phần tử lá số / bảng Hologram / bàn Thái Ất – Kỳ Môn đã có trong trang được DI CHUYỂN sang #cotPhai
+     (để lại một dấu chỗ là nút chú thích), rồi trả về đúng chỗ cũ khi đổi tab, khi màn hình hẹp lại, hoặc khi dựng PDF.
+     Trang nào chưa có biểu đồ thì cột phải hiện thẻ tóm tắt người xem. Dưới 1280px cột này luôn trống và ẩn. */
+  var CP = { mq: null, muon: [], hen: 0, mo: null, io: null, thay: null, inAn: false };
+  /** ≥1280px: mục lục tô sáng bằng IntersectionObserver – vạch dò nằm ngang ngay dưới thanh trên cùng; khối nào đang cắt vạch là mục đang đọc
+      (cùng quy tắc với cách dò cũ khi cuộn). Dưới 1280px vẫn dùng cách dò cũ trong capNhatCuon. */
+  function cpTocIO() {
+    if (CP.io) { CP.io.disconnect(); CP.io = null; }
+    if (!cpRong() || !window.IntersectionObserver || !dh.muc.length) return;
+    var moc = Math.round(caoThanhTren() + 40), duoi = Math.max(0, window.innerHeight - moc - 1), dang = {};
+    CP.io = new IntersectionObserver(function (ds) {
+      ds.forEach(function (d) { for (var i = 0; i < dh.muc.length; i++) if (dh.muc[i].el === d.target) { if (d.isIntersecting) dang[i] = 1; else delete dang[i]; } });
+      var k = Object.keys(dang).map(Number); if (k.length) tocDatOn(Math.max.apply(null, k));
+    }, { rootMargin: '-' + moc + 'px 0px -' + duoi + 'px 0px', threshold: 0 });
+    dh.muc.forEach(function (x) { CP.io.observe(x.el); });
+    if (dh.on < 0) tocDatOn(0);
+  }
+  /** Lớp phủ "Phóng to": DI CHUYỂN lá số Tử Vi từ cột phải vào lớp phủ (không vẽ bàn thứ hai), đóng thì trả lại cột phải */
+  function cpMoPhong() {
+    var cot = $('cotPhai'), sc = cot && cot.querySelector('.cp-than > .chart-scroll'); if (!sc) return;
+    var lop = $('cpPhong');
+    if (!lop) {
+      lop = document.createElement('div'); lop.id = 'cpPhong'; lop.className = 'cp-phong'; lop.setAttribute('role', 'dialog'); lop.setAttribute('aria-modal', 'true'); lop.setAttribute('aria-label', 'Lá số Tử Vi phóng to');
+      lop.innerHTML = '<div class="cp-phong-hop"><div class="cp-phong-dau"><b>Lá số Tử Vi</b><span>Bấm vào một cung để đọc luận cung đó</span><button type="button" class="cp-phong-x" data-cp-dong aria-label="Đóng">✕</button></div><div class="cp-phong-than"></div></div>';
+      document.body.appendChild(lop);
+      lop.addEventListener('click', function (e) {
+        if (e.target === lop || e.target.closest('[data-cp-dong]')) { cpDongPhong(); return; }
+        if (e.target.closest('.chart .cung')) {   // selectPalace đã chạy (sự kiện của cung) → đóng lớp phủ, mở luận cung
+          cpDongPhong();
+          if (state.tabHien !== 'chart') showTab('chart');
+          setTimeout(function () { if ($('palaceDetail')) cuonToi($('palaceDetail')); }, 60);
+        }
+      });
+    }
+    lop.classList.toggle('xem-holo', cot.classList.contains('xem-holo'));
+    CP.thay = sc.parentNode; lop.querySelector('.cp-phong-than').appendChild(sc);
+    lop.hidden = false; document.body.classList.add('cp-phong-mo');
+    cpCanLaSo(); var x = lop.querySelector('[data-cp-dong]'); if (x) x.focus({ preventScroll: true });
+  }
+  function cpDongPhong() {
+    var lop = $('cpPhong'); if (!lop || lop.hidden) return;
+    var sc = lop.querySelector('.chart-scroll');
+    if (sc && CP.thay && CP.thay.isConnected) CP.thay.appendChild(sc);
+    else if (sc) { var m = CP.muon.filter(function (x) { return x.el === sc; })[0]; if (m && m.cho.parentNode) m.cho.parentNode.replaceChild(sc, m.cho); }
+    CP.thay = null; lop.hidden = true; document.body.classList.remove('cp-phong-mo');
+    cpCanLaSo();
+    var n = document.querySelector('#cotPhai [data-cp-phong]'); if (n) n.focus({ preventScroll: true });
+  }
+  var CP_TEN = { tong: 'Tổng hợp 6 hệ', chart: 'Lá số Tử Vi', battu: 'Bàn Tứ Trụ', halac: 'Quẻ Hà Lạc', astro: 'Bản đồ sao', so: 'Sơ đồ con số', hd: 'Bodygraph', ta: 'Bàn Thái Ất', ti: 'Bàn Kỳ Môn', chu: 'Lá số Tử Vi', pt: 'Lá số Tử Vi' };
+  var CP_HOLO = { battu: 'holoBT', halac: 'holoHL', astro: 'holoCT', so: 'holoTS', hd: 'holoHD' };
+  function cpRong() { return !!(CP.mq && CP.mq.matches); }
+  /** Trả mọi phần tử đã mượn về chỗ cũ. Chỗ cũ đã bị vẽ lại (dấu chỗ mất) hoặc phần tử đã bị thay → bỏ bản cũ */
+  function cpTra() {
+    var cot = $('cotPhai');
+    CP.muon.forEach(function (m) {
+      var conDung = cot && cot.contains(m.el);
+      if (conDung && m.cho.parentNode) m.cho.parentNode.replaceChild(m.el, m.cho);
+      else { if (m.cho.parentNode) m.cho.parentNode.removeChild(m.cho); if (conDung && m.el.parentNode) m.el.parentNode.removeChild(m.el); }
+      if (m.sao && m.sao.parentNode) m.sao.parentNode.removeChild(m.sao);
+      if (m.tra) try { m.tra(m.el); } catch (e) {}
+    });
+    CP.muon = [];
+  }
+  function cpMuon(el, hop, tra) {
+    var cho = document.createComment('cot-phai'); el.parentNode.insertBefore(cho, el);
+    var m = { el: el, cho: cho, tra: tra };
+    // Bát Tự: bảng tứ trụ chi tiết (khối thứ hai của #holoBT) quá rộng cho cột phải → để một bản chép tĩnh ở chỗ cũ, cột phải chỉ giữ bảng tranh
+    var bang = el.id === 'holoBT' ? el.querySelectorAll(':scope > .holo-cuon')[1] : null;
+    if (bang) { m.sao = document.createElement('div'); m.sao.className = 'cp-ban-sao'; m.sao.appendChild(bang.cloneNode(true)); cho.parentNode.insertBefore(m.sao, cho.nextSibling); }
+    hop.appendChild(el); CP.muon.push(m);
+  }
+  function cpCanLaSo() { try { coLaSo(); drawOverlay(); } catch (e) {} }
+  /** Bàn Thái Ất / Kỳ Môn của lượt đang xem: ưu tiên lượt hỏi gần nhất, rồi bản đồ đời, rồi thời cuộc */
+  function cpBan(tab) {
+    var ds = tab === 'ta' ? ['#taHoiKq', '#taMenh', '#taThoi'] : ['#page-ti'];
+    for (var i = 0; i < ds.length; i++) {
+      var hop = document.querySelector(ds[i]); if (!hop) continue;
+      var b = [].filter.call(hop.querySelectorAll(tab === 'ta' ? '.ta-ban-wrap' : '.km-ban-wrap:not(.ta-ban-wrap)'), function (x) { return !x.parentNode.closest('[hidden], details:not([open])'); });
+      if (b.length) return b[b.length - 1];
+    }
+    return null;
+  }
+  function cpDong(nhan, gt, rong) { return gt == null || gt === '' ? '' : '<div' + (rong ? ' class="cp-rong"' : '') + '><small>' + esc(nhan) + '</small><b>' + esc(String(gt)) + '</b></div>'; }
+  /** Thẻ tóm tắt người xem (tên, ngày giờ sinh, mệnh, cục, nhật chủ, số chủ đạo) – kieu 'he' thêm một dòng cho mỗi hệ, bấm để mở hệ đó */
+  function cpTomHtml(kieu) {
+    var r = state.result, f = state.input || {}; if (!r || !r.tuvi) return '';
+    var I = r.tuvi.info || {}, s = I.solar, l = I.lunar, B = r.battu || {}, M = r.moRong || {}, TS = M.thanSo || {}, HD = M.hd || {}, A = M.chiemTinh, H = M.haLac;
+    var so = TS.duongDoi; if (so && typeof so === 'object') so = so.so != null ? so.so : so.n;
+    var ngay = s ? s.day + '/' + s.month + '/' + s.year : '', gio = f.hour != null ? pad(f.hour) + ':' + pad(f.minute || 0) : '';
+    var h = '<div class="cp-nguoi"><div><b>' + esc(I.name || f.name || 'Lá số') + '</b><span>' + (f.gender === 'nu' ? 'Nữ' : 'Nam') + (ngay ? ' · ' + ngay : '') + (gio ? ' · ' + gio : '') +
+      (l ? ' · âm ' + l.day + '/' + l.month + (l.leap ? ' nhuận' : '') : '') + '</span></div></div>';
+    h += '<div class="cp-tom">' + cpDong('Tuổi', I.namCanChi) + cpDong('Giờ sinh', String(I.gioTen || '').split(' ')[0]) + cpDong('Bản mệnh', I.banMenh && I.banMenh.ten) + cpDong('Cục', I.cuc) +
+      cpDong('Nhật chủ', B.nhatChu) + cpDong('Số chủ đạo', so) + '</div>';
+    if (kieu !== 'he') return h;
+    var byK = function (k) { return A && A.hanhTinh ? A.hanhTinh.filter(function (p) { return p.key === k; })[0] : null; }, su = byK('sun'), mo = byK('moon');
+    var tru = (B.pillars || []).map(function (p) { return p.canTen + ' ' + p.chiTen; }).join(' · ');
+    var he = [
+      ['chart', 'Tử Vi', [I.banMenh && I.banMenh.ten, I.cuc].filter(Boolean).join(' · ')],
+      ['battu', 'Bát Tự', tru || (B.nhatChu ? 'Nhật chủ ' + B.nhatChu : '')],
+      ['halac', 'Hà Lạc', H && H.tien ? H.tien.ten + (H.hau ? ' → ' + H.hau.ten : '') : ''],
+      ['astro', 'Chiêm tinh', [su ? 'Mặt Trời ' + su.cungTen : '', mo ? 'Mặt Trăng ' + mo.cungTen : '', A && A.asc ? 'Mọc ' + A.asc.cungTen : ''].filter(Boolean).join(' · ')],
+      ['so', 'Thần số', so != null && so !== '' ? 'Số chủ đạo ' + so : ''],
+      ['hd', 'Human Design', [HD.loaiTen || HD.loai, HD.profile].filter(Boolean).join(' · ')]
+    ].filter(function (x) { return x[2]; });
+    if (he.length) h += '<div class="cp-he" style="margin-top:10px">' + he.map(function (x) { return '<button type="button" data-cp-tab="' + x[0] + '"><small>' + esc(x[1]) + '</small><span>' + esc(x[2]) + '</span></button>'; }).join('') + '</div>';
+    return h;
+  }
+  function cpKhung(ten, phu, noi, nut) { return '<section class="cp-khung">' + (ten ? '<div class="cp-dau"><b>' + esc(ten) + '</b>' + (phu ? '<small>' + esc(phu) + '</small>' : '') + (nut || '') + '</div>' : '') + (noi || '') + '</section>'; }
+  /** Dựng lại cột phải theo tab đang xem. Gọi sau showTab, sauHienThi, khi nội dung trang vẽ lại và khi đổi cỡ màn hình */
+  function veCotPhai() {
+    var cot = $('cotPhai'); if (!cot) return;
+    cpDongPhong();
+    cpTra();
+    var r = state.result, bat = cpRong() && !!(r && r.tuvi);
+    document.body.classList.toggle('co-cot-phai', bat);
+    if (!bat) { cot.innerHTML = ''; cpXong(); return; }
+    var tab = state.tabHien || document.body.getAttribute('data-tab') || 'tong', ten = (r.tuvi.info && r.tuvi.info.name) || '';
+    var ca = $('chartArea'), sc = ca && ca.querySelector('.chart-scroll'), coLS = !!(sc && ca.style.display !== 'none');
+    var muon = [], kieuTom = 'nguoi', tieuDe = CP_TEN[tab] || 'Hồ sơ của bạn';
+    if (!PDF_DANG && !CP.inAn) {   // đang dựng PDF hoặc đang In (cột phải ẩn khi in): trả mọi bảng về chỗ cũ để chụp đúng cỡ, cột phải chỉ còn thẻ tóm tắt
+      if ((tab === 'chart' || tab === 'tong' || tab === 'chu' || tab === 'pt' || tab === 'vh' || tab === 'n27') && coLS) muon.push(sc);
+      if (CP_HOLO[tab] && $(CP_HOLO[tab])) muon.push($(CP_HOLO[tab]));
+      if (tab === 'ta' || tab === 'ti') { var bn = cpBan(tab); if (bn) muon.push(bn); }
+    }
+    if (tab === 'tong') kieuTom = 'he';
+    if (!muon.length && tab !== 'tong') tieuDe = 'Hồ sơ của bạn';
+    cot.classList.toggle('xem-holo', !!(ca && ca.classList.contains('xem-holo')));
+    var laLS = !!sc && muon[0] === sc, vy = r.tuvi.info && r.tuvi.info.viewYear;
+    cot.innerHTML = (muon.length ? cpKhung(laLS ? 'Lá số Tử Vi' : '', laLS && (tab === 'vh' || tab === 'n27') && vy ? 'lưu niên ' + vy : ten, '<div class="cp-than"></div>' +
+        (laLS && tab !== 'chart' ? '<p class="cp-goi">Bấm vào một cung để đọc luận cung đó · <a data-cp-tab="chart">mở trang Tử Vi</a></p>' : ''),
+        laLS ? '<button type="button" class="btn btn-ghost btn-sm cp-phong-nut" data-cp-phong aria-haspopup="dialog">⤢ Phóng to</button>' : '') : '') +
+      cpKhung(tab === 'tong' ? 'Tóm tắt 6 hệ' : muon.length ? 'Hồ sơ' : tieuDe, muon.length ? '' : ten, cpTomHtml(kieuTom));
+    var than = cot.querySelector('.cp-than');
+    muon.forEach(function (el) {
+      if (el === sc) cpMuon(el, than, function () { cpCanLaSo(); });
+      else if (el.tagName === 'DETAILS') { var mo = el.open; el.open = true; cpMuon(el, than, function (x) { x.open = mo; }); }
+      else cpMuon(el, than);
+    });
+    if (muon.indexOf(sc) >= 0) cpCanLaSo();
+    cot.scrollTop = 0;
+    var tb = $('tabs'), ta = tb && tb.querySelector('.tab.active');   // danh sách trang cuộn riêng: giữ trang đang xem trong tầm mắt
+    if (ta && tb.scrollHeight > tb.clientHeight) { var rt = ta.getBoundingClientRect(), rb = tb.getBoundingClientRect(); if (rt.top < rb.top || rt.bottom > rb.bottom) tb.scrollTop += rt.top - rb.top - tb.clientHeight / 3; }
+    cpXong();
+  }
+  function cpXong() { if (CP.mo) CP.mo.takeRecords(); }
+  /** Nội dung trang đang xem vẽ lại (mua, đổi năm, hỏi việc…) → dựng lại mục lục và cột phải (chỉ ≥ 1280px) */
+  function cpTheoDoi(ds) {
+    if (!cpRong() || !state.result) return;
+    var pg = document.querySelector('.tab-page.active'); if (!pg) return;
+    if (!ds.some(function (m) { return pg.contains(m.target) || m.target === pg; })) return;
+    clearTimeout(CP.hen);
+    CP.hen = setTimeout(function () { if (!cpRong()) return; dungMucLuc(); veCotPhai(); }, 250);
+  }
+  function initCotPhai() {
+    if (!$('cotPhai') || !window.matchMedia) return;
+    CP.mq = window.matchMedia('(min-width: 1280px)');
+    var doi = function () { veCotPhai(); dungMucLuc(); if (!cpRong()) capNhatCuon(); };
+    if (CP.mq.addEventListener) CP.mq.addEventListener('change', doi); else if (CP.mq.addListener) CP.mq.addListener(doi);
+    var rw = document.querySelector('.result-wrap');
+    if (rw && window.MutationObserver) { CP.mo = new MutationObserver(cpTheoDoi); CP.mo.observe(rw, { childList: true, subtree: true }); }
+    document.addEventListener('keydown', function (e) { if (e.key === 'Escape') cpDongPhong(); });
+    window.addEventListener('beforeprint', function () { CP.inAn = true; veCotPhai(); });   // In: trả lá số/bảng về trang, nếu không chúng nằm trong cột phải (bị ẩn khi in) và mất khỏi bản in
+    window.addEventListener('afterprint', function () { CP.inAn = false; veCotPhai(); });
+    window.cpTam = function (b) { CP.inAn = !!b; veCotPhai(); };   // Tải ảnh Hologram: tạm trả bảng về trang để chụp đủ (Bát Tự kèm bảng chi tiết), xong mượn lại
+    var rt = 0; window.addEventListener('resize', function () { clearTimeout(rt); rt = setTimeout(function () { cpTocIO(); if (cpRong() && CP.muon.length) { cpCanLaSo(); if (window.TCCHolo && TCCHolo.veDuong) TCCHolo.veDuong(); } }, 150); });
+    $('cotPhai').addEventListener('click', function (e) {
+      if (e.target.closest('[data-cp-phong]')) { cpMoPhong(); return; }
+      var t = e.target.closest('[data-cp-tab]');
+      if (t) { showTab(t.getAttribute('data-cp-tab')); window.scrollTo({ top: 0, behavior: 'smooth' }); return; }
+      // Bấm một cung trên lá số khi đang ở trang khác: mở trang Tử Vi tới phần luận cung đó
+      if (e.target.closest('.chart .cung') && state.tabHien !== 'chart') { showTab('chart'); setTimeout(function () { if ($('palaceDetail')) cuonToi($('palaceDetail')); }, 60); }
+    });
+    veCotPhai();
+  }
+
   /* ------------------------ TABS ------------------------ */
   /** Tranh nạp chậm cho các khối có data-holo-anh (vd. đĩa ngũ hành của bánh xe 9 lĩnh vực) */
   function napAnhHolo() {
@@ -1366,6 +1558,7 @@
     if (name === 'ta') veTa();
     if (name === 'ti') { veTienIch(); if (state.token) tiDsQue(); }
     dungMucLuc(); if (state.result || state.cd) { veCta(); veQc(); }
+    veCotPhai();
   }
 
   /* ------------------------ TAB THAM KHẢO (mở cho mọi người) ------------------------
@@ -7916,6 +8109,7 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
       return p;
     }
     var phien = { huy: false }; PDF_DANG = phien;
+    veCotPhai();   // ≥1280px: trả các bảng về chỗ cũ để chụp đúng cỡ
     var traNgam = [], tongChuan = 0, daChuan = 0;
     function kiemHuy() { if (phien.huy || PDF_DANG !== phien || state.result !== res) throw new Error('HUY_PDF'); }
     function ngam(name) { var f = pdfMoNgam(name); traNgam.push(f); return f; }
@@ -8042,6 +8236,7 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
     }).then(function () {
       traNgam.forEach(function (f) { try { f(); } catch (e) {} });
       root.remove(); if (PDF_DANG === phien) PDF_DANG = null;
+      veCotPhai();
     });
   }
 
@@ -8385,6 +8580,7 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
       // Đợt 4: nút trong ảnh chân dung đưa về ô nhập (gắn trong initDot4)
     });
     buoc('điều hướng', initDieuHuong);
+    buoc('cột phải ≥1280px', initCotPhai);
     buoc('tài khoản', initTaiKhoan);
     buoc('biểu mẫu', initForm);
     buoc('bố cục đợt 4', initDot4);

@@ -4,6 +4,7 @@ Nhóm: Bắt đầu · Cập nhật 22/10/2026
 Liên quan: [[Việc chờ chủ dự án]] · [[TCC Kiểm thử]] · [[00 Mục lục]]
 
 ## Tình trạng
+- **22/11: mã `2026.11.22.2`** – giao diện máy tính 3 cột (≥1280px): trái danh sách trang + mục lục, giữa luận (≤860px), phải lá số dính khi cuộn + nút Phóng to. Điện thoại/máy tính bảng không đổi. Đổi **Index, Script, Styles, Holo**. Bấm `2-CAP-NHAT.bat`, Ctrl+F5.
 - **22/11: mã `2026.11.22.1`** – mục **☯ Thái Ất** (bản đồ đời 19 xu, hỏi một việc 9 xu, combo Kỳ Môn + Thái Ất 15 xu, thời cuộc miễn phí), khối Thái Ất ở trang Năm 2027 / Vận hạn. Đổi **Index, Script, Styles** + máy chủ **ThanhToan, TaiKhoan, Code**, file mới **ThaiAt, ThaiAtVan** (đủ 36 file .gs). Bấm `2-CAP-NHAT.bat`, Ctrl+F5.
 - **21/11 (khuya):** lần bấm `2-CAP-NHAT.bat` bản 17beac5 đẩy xong mã nhưng bước triển khai bị Google báo lỗi 503 (máy chủ Google bận) – bấm lại là được.
 - **21/11 (tối): mã `2026.11.21.1`** – trang "Năm 2027 của bạn" (tab ✦ Năm 2027, xem trước miễn phí + mời mua 9/19/49 xu), băng mời ở Tổng hợp và Vận hạn, thẻ "Phễu bán hàng" trong Quản trị, Kỳ Môn "Hỏi một việc" 9 xu trong Tiện ích. Đổi **Index, Script, Styles, TaiKhoan** (+ đợt máy chủ trước: **KyMon, KyMonVan (file mới, 34 file .gs), ThanhToan, TienIch, Code**). Bấm `2-CAP-NHAT.bat`, Ctrl+F5.

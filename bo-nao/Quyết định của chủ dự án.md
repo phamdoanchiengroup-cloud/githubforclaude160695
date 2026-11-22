@@ -69,3 +69,6 @@ Liên quan: [[Việc chờ chủ dự án]] · [[TCC Bán hàng]] · [[00 Mục 
 - Mùa Tết: trang "Năm 2027 của bạn" + băng mời (nút tới trang đó) + thẻ "Phễu bán hàng" trong Quản trị.
 - Thái Ất Thần Kinh: làm cả 4 phạm vi (mệnh cá nhân, vận năm cá nhân, thời cuộc chung, hỏi việc theo giờ); mục riêng cho mệnh + hỏi việc, vận năm ghép vào trang Năm 2027, thời cuộc miễn phí; combo hỏi việc 2 môn (Kỳ Môn + Thái Ất) **15 xu** (đổi từ 19 ngày 22/11 vì lẻ 9+9 = 18; đã có một môn thì trả 6); hé lộ miễn phí + phần 9/19 xu; phái Thống Tông, các điểm chưa chắc theo đề xuất chuyên gia; cho cài kintaiyi (MIT) trên máy kiểm thử để sinh ca đối chiếu; làm luôn bàn + giao diện. – [[TCC Thái Ất Thần Kinh]]
 - 22/11: mệnh pháp Thái Ất – khách chưa đăng nhập xem được đoạn tóm tắt miễn phí; bản đầy đủ 12 mảng đời 19 xu.
+
+## 22/11 – Giao diện máy tính 3 cột
+- Từ 1280px: cột trái = danh sách trang + mục lục trang đang xem (tô sáng mục đang đọc); giữa = luận (tối đa ~860px); phải = lá số đổi theo hệ, dính khi cuộn (tới 520px), nút Phóng to. Vận hạn, Năm 2027, Lá số chủ sở hữu, Phi Tinh hiện bàn Tử Vi; trang khác thẻ hồ sơ. Ẩn ảnh quảng bá nổi ở góc. Dưới 1280px giữ nguyên. – [[TCC Giao diện]]
