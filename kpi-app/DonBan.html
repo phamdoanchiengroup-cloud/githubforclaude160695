@@ -1,7 +1,7 @@
 <!-- DonBan.html – mảnh tải sau (16/11 khuya): trang "Đơn hàng của tôi" cho Bán hàng (vai trò BH) + duyệt đơn cho C019 / C056 / C067.
      Máy chủ kiểm lại quyền ở mọi hàm (tests/don-ban/don-ban.gs). Nguồn: kpi-app/tests/don-ban/don-ban-web.html -->
 <style>
-.db-w{max-width:980px}
+.db-w{max-width:1280px}
 .db-dau{display:flex;gap:10px;flex-wrap:wrap;align-items:center;justify-content:space-between;margin-bottom:10px}
 .db-nhom{margin:16px 0 8px;font-weight:700;font-size:13px;letter-spacing:.02em;display:flex;gap:8px;align-items:center}
 .db-nhom i{font-style:normal;font-weight:600;font-size:11.5px;color:var(--ink3)}
@@ -13,6 +13,14 @@
 .db-msg{margin:6px 0;font-size:13px;line-height:1.5} .db-msg b{font-weight:700}
 .db-dong{width:100%;border-collapse:collapse;font-size:12.5px;margin-top:6px} .db-dong td,.db-dong th{padding:4px 6px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top} .db-dong th{font-size:10.5px;text-transform:uppercase;color:var(--ink3);font-weight:600} .db-dong td.so{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
 .db-moi{display:inline-block;font-size:10.5px;font-weight:700;padding:0 6px;border-radius:6px;color:#1a1a1a;background:var(--amber);margin-left:4px}
+.dh-tb{border:1px solid var(--line);border-left:5px solid #e0a040;border-radius:12px;padding:10px 14px;margin:0 0 12px;background:var(--panel)}
+.dh-tb.co{border-left-color:var(--red);box-shadow:0 0 0 2px rgba(244,114,114,.25)}
+.dh-tb-dau{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;font-size:14px} .dh-tb-dau .so{color:var(--red)}
+.dh-tb-ds{display:grid;grid-template-columns:repeat(auto-fill,minmax(420px,1fr));gap:6px 18px;margin-top:8px}
+.dh-tb-don{font-size:13px} .dh-tb-don>b{font-family:ui-monospace,Menlo,monospace;color:var(--green)}
+.dh-tb-ma{padding:2px 0 2px 10px;font-size:12.5px} .dh-tb-ma .cu{text-decoration:line-through;color:var(--ink3)} .dh-tb-ma .lui{color:var(--red);font-weight:600} .dh-tb-ma .som{color:var(--green);font-weight:600}
+.dh-tb-ma.moi{background:rgba(244,114,114,.10);border-radius:6px} .dh-tb-ma i{font-style:normal;font-size:10px;font-weight:700;background:var(--red);color:#fff;border-radius:4px;padding:0 5px}
+@media (max-width:520px){.dh-tb-ds{grid-template-columns:1fr}}
 .of-the{border:1px solid var(--line);border-radius:14px;background:var(--panel);margin:0 0 12px;overflow:hidden}
 .of-the.tre{border-color:rgba(244,114,114,.55)}
 .of-dau{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;padding:12px 14px 8px}
@@ -30,7 +38,9 @@
 .of-thanh{display:grid;grid-template-columns:110px 1fr auto;gap:10px;align-items:center;padding:4px 14px;font-size:11px;color:var(--ink3);letter-spacing:.06em}
 .of-thanh .bar{height:5px;border-radius:4px;background:rgba(127,127,127,.25);overflow:hidden}.of-thanh .bar i{display:block;height:100%;border-radius:4px}
 .of-thanh .so{font-family:ui-monospace,Menlo,monospace;letter-spacing:0;color:var(--ink2)}.of-thanh .so b{color:var(--green)}.of-thanh .so em{color:var(--red);font-style:normal}
-.of-dong{display:grid;grid-template-columns:1fr 46px 46px 46px;gap:6px;align-items:center;padding:8px 14px;border-top:1px solid var(--line);font-size:13px}
+.of-ton{padding:4px 14px 8px;font-size:12px;color:var(--ink3)} .of-ton b{color:var(--ink)} .of-ton b.g{color:var(--green)}
+.of-dong .tra{color:var(--ink2)}
+.of-dong{display:grid;grid-template-columns:1fr 52px 52px 74px 74px;gap:6px;align-items:center;padding:8px 14px;border-top:1px solid var(--line);font-size:13px}
 .of-dong .c{text-align:center;font-family:ui-monospace,Menlo,monospace;font-weight:700;line-height:1.1}
 .of-dong .c small{display:block;font-size:8.5px;font-weight:500;color:var(--ink3);letter-spacing:.1em}
 .of-dong .thieu{color:var(--red)}.of-dong .giao{color:var(--green)}.of-dong.xong .thieu{color:var(--green)}.of-dong.xong .ten{color:var(--ink3)}
@@ -109,8 +119,9 @@ function bnVe(){
   var m=$('main'); if(!m) return;
   if(!BND){ m.innerHTML='<div class="ptitle">Đơn hàng</div><div class="pdesc">Đang tải…</div>'; bnTai(); return; }
   if(BND.loi){ m.innerHTML='<div class="ptitle">Đơn hàng</div><div class="alert a-bd">'+esc(BND.loi)+' <button class="btn sm" type="button" onclick="BND=null;bnVe()">Thử lại</button></div>'; return; }
-  var h='<div class="db-w"><div class="db-dau"><div><div class="ptitle" style="margin:0">'+(BND.duyet?'Đơn bán hàng':'Đơn hàng của tôi')+'</div><div class="pdesc">'+(BND.duyet?'Bán hàng gửi đơn mới → bạn chốt deadline rồi duyệt → web tự chép vào tab kênh của Sheet "Trạng thái đơn hàng".':'Gửi đơn mới cho sản xuất và theo dõi đơn của bạn.')+'</div></div>'+
+  var h='<div class="db-w"><div class="db-dau"><div><div class="ptitle" style="margin:0">'+(BND.duyet?'Order-Flow':'Order-Flow · Đơn hàng của tôi')+'</div><div class="pdesc">'+(BND.duyet?'Bán hàng gửi đơn mới → bạn chốt deadline rồi duyệt → web tự chép vào tab kênh của Sheet "Trạng thái đơn hàng".':'Gửi đơn mới cho sản xuất và theo dõi đơn của bạn.')+'</div></div>'+
     '<div style="display:flex;gap:8px;flex-wrap:wrap">'+(BNF?'':'<button class="btn pri" type="button" onclick="bnMoForm()">+ Đơn mới</button>')+'<button class="btn sm" type="button" onclick="BND=null;bnVe()">Làm mới</button></div></div>';
+  h+=bnVeDoiHan();   /* 22/11: thông báo đổi deadline – ngay dưới tiêu đề, trên các nút xem */
   h+='<div class="db-xem" role="tablist"><button type="button" role="tab" aria-selected="'+(BNXem==='don')+'" class="'+(BNXem==='don'?'on':'')+'" onclick="BNXem=\'don\';bnVe()">'+(BND.duyet?'Đơn Bán hàng gửi':'Đơn của tôi')+'</button><button type="button" role="tab" aria-selected="'+(BNXem==='bang')+'" class="'+(BNXem==='bang'?'on':'')+'" onclick="BNXem=\'bang\';bnVe()">Bảng đơn nhà máy</button><button type="button" role="tab" aria-selected="'+(BNXem==='thu')+'" class="'+(BNXem==='thu'?'on':'')+'" onclick="BNXem=\'thu\';bnVe()">Thử trước khi đặt</button><button type="button" role="tab" aria-selected="'+(BNXem==='xong')+'" class="'+(BNXem==='xong'?'on':'')+'" onclick="BNXem=\'xong\';bnVe()">Lẻ / POD đã xong</button></div>';
   if(BNXem==='bang'){ m.innerHTML=h+bnVeBang()+'</div>'; return; }
   if(BNXem==='thu'){ m.innerHTML=h+bnVeThu()+'</div>'; return; }
@@ -291,7 +302,7 @@ function bnVeKin(nhan){ var tk=BNB.tk||[]; if(!tk.length) return '';
 var BNB_THE=60;
 function bnGomDon(){ var m={}, ds=[]; (BNB.ds||[]).forEach(function(d){ var k=d[0]+'|'+d[1], g=m[k];
     if(!g){ g=m[k]={tab:d[0],ma:d[1],dong:[],sl:0,thieu:0,dl:'',hr:''}; ds.push(g); }
-    var th=d[7]==null?(Number(d[3])||0):Number(d[7])||0; g.dong.push({ten:d[2],sl:Number(d[3])||0,thieu:th,dl:d[4]||'',dung:d[5],hr:d[6]||''}); g.sl+=Number(d[3])||0; g.thieu+=th;
+    var th=d[7]==null?(Number(d[3])||0):Number(d[7])||0; g.dong.push({ten:d[2],sl:Number(d[3])||0,thieu:th,dl:d[4]||'',dung:d[5],hr:d[6]||'',kho:Number(d[8])||0,tra:Number(d[9])||0}); g.sl+=Number(d[3])||0; g.thieu+=th; g.kho=(g.kho||0)+(Number(d[8])||0); g.tra=(g.tra||0)+(Number(d[9])||0);
     if(th>0&&d[4]&&(!g.dl||d[4]<g.dl)) g.dl=d[4]; });
   return ds.filter(function(g){ return g.thieu>0; }); }
 function bnBangHtml(){
@@ -302,6 +313,23 @@ function bnBangHtml(){
   var hn=bnHom(), h=ds.slice(0,BNB_THE).map(function(g){ return bnThe(g,nhan,hn); }).join('');
   if(ds.length>BNB_THE) h+='<div style="text-align:center;margin:8px 0"><button class="btn sm" type="button" onclick="BNB_THE+=60;bnBangO()">Xem thêm '+(ds.length-BNB_THE)+' đơn</button></div>';
   return '<div class="pdesc" style="margin-bottom:8px">'+ds.length+' đơn · xếp theo deadline gần → xa (quá hạn trên cùng)</div>'+h; }
+/* 22/11 (chủ dự án): THÔNG BÁO ĐỔI DEADLINE – 7 ngày gần nhất, mục mới (sau lần bấm "Đã xem") tô nổi; gom theo đơn */
+function bnDhKhoa(){ return 'kpi_dh_xem_'+((window.ME&&ME.tk)||''); }
+function bnDhXem(){ try{ return localStorage.getItem(bnDhKhoa())||''; }catch(e){ return ''; } }
+function bnDhDs(){ return (window.BND&&BND.doiHan)||(window.BNB&&BNB.doiHan)||[]; }
+var BNDH_MO=false;
+function bnVeDoiHan(){ var a=bnDhDs(); if(!a.length) return '';
+  var xem=bnDhXem(), moi=a.filter(function(x){ return x[0]>xem; }), nhan={}; (BND&&BND.kenh||[]).forEach(function(k){ nhan[k[0]]=k[1]; });
+  var ds=BNDH_MO?a:(moi.length?moi:a).slice(0,6), theo={}, thu=[];
+  ds.forEach(function(x){ var k=x[1]+'|'+x[2]; if(!theo[k]){ theo[k]=[]; thu.push(k); } theo[k].push(x); });
+  var dong=thu.map(function(k){ var b=theo[k], f=b[0];
+    return '<div class="dh-tb-don"><b>'+esc(f[2]||'(không mã)')+'</b> <span class="pdesc">'+esc(nhan[f[1]]||f[1])+'</span>'+b.map(function(x){ var c=x[4], m=x[5], lech=c&&m?bnNgayCach(c,m):null, la=x[0]>xem;
+      return '<div class="dh-tb-ma'+(la?' moi':'')+'">'+(la?'<i>MỚI</i> ':'')+esc(x[3])+': <span class="cu">'+(c?esc(bnNg(c).slice(0,5)):'chưa có')+'</span> → <b>'+(m?esc(bnNg(m).slice(0,5)):'bỏ hạn')+'</b>'+
+        (lech?' <span class="'+(lech>0?'lui':'som')+'">('+(lech>0?'lùi '+lech:'sớm '+(-lech))+' ngày)</span>':'')+' <span class="pdesc">· '+esc(x[0].slice(8,10)+'/'+x[0].slice(5,7)+' '+x[0].slice(11,16))+(x[6]?' · '+esc(x[6]):'')+'</span></div>'; }).join('')+'</div>'; }).join('');
+  return '<div class="dh-tb'+(moi.length?' co':'')+'" role="status"><div class="dh-tb-dau"><span>🔔 <b>Deadline đã thay đổi</b>'+(moi.length?' · <b class="so">'+moi.length+' mã mới</b>':'')+' <span class="pdesc">(7 ngày qua: '+a.length+' lần đổi)</span></span>'+
+    '<span style="display:flex;gap:6px">'+(a.length>ds.length||BNDH_MO?'<button class="btn sm" type="button" onclick="BNDH_MO=!BNDH_MO;bnVe()">'+(BNDH_MO?'Thu gọn':'Xem tất cả '+a.length)+'</button>':'')+(moi.length?'<button class="btn sm pri" type="button" onclick="try{localStorage.setItem(bnDhKhoa(),bnDhDs()[0][0])}catch(e){};bnVe()">Đã xem</button>':'')+'</span></div>'+
+    '<div class="dh-tb-ds">'+dong+'</div><div class="pdesc" style="margin-top:4px">Báo lại khách nếu đơn của bạn có mã đổi hạn. Ngày mới cũng đã cập nhật trong Bảng đơn nhà máy.</div></div>'; }
+function bnDhMa(tab,ma,ten){ var a=bnDhDs(), t=String(ten).toUpperCase().replace(/\s+/g,' ').trim(); for(var i=0;i<a.length;i++){ var x=a[i]; if(x[1]===tab&&String(x[2])===String(ma)&&String(x[3]).toUpperCase().replace(/\s+/g,' ').trim()===t) return x; } return null; }
 function bnNgayCach(a,b){ return Math.round((Date.parse(b+'T00:00:00Z')-Date.parse(a+'T00:00:00Z'))/864e5); }
 function bnThe(g,nhan,hn){
   var nL=g.dong.length, xL=g.dong.filter(function(z){ return z.thieu<=0; }).length, pc=g.sl?Math.round((g.sl-g.thieu)*100/g.sl):0;
@@ -312,10 +340,11 @@ function bnThe(g,nhan,hn){
     (g.dl?'<div class="of-dl'+(tre?' tre':sap?' sap':'')+'"><small>DEADLINE</small><b>'+esc(bnNg(g.dl).slice(0,5))+'</b><i>'+(tre?'quá hạn '+q+' ngày':(q===0?'hôm nay':'còn '+(-q)+' ngày'))+'</i></div>':'<div class="of-dl"><small>DEADLINE</small><b>—</b><i>chưa có</i></div>')+
     '<span class="of-tt '+tt[0]+'">● '+tt[1]+'</span></div></div>'+
     '<div class="of-thanh"><span>THEO LOẠI</span><div class="bar"><i style="width:'+(nL?Math.round(xL*100/nL):0)+'%;background:'+mau+'"></i></div><span class="so">Xong <b>'+xL+'/'+nL+'</b> loại</span></div>'+
-    '<div class="of-thanh"><span>THEO SỐ LƯỢNG</span><div class="bar"><i style="width:'+pc+'%;background:'+mau+'"></i></div><span class="so"><b>'+pc+'%</b> · '+bnSo(g.sl-g.thieu)+'/'+bnSo(g.sl)+' SP · thiếu <em>'+bnSo(g.thieu)+'</em></span></div>';
+    '<div class="of-thanh"><span>THEO SỐ LƯỢNG</span><div class="bar"><i style="width:'+pc+'%;background:'+mau+'"></i></div><span class="so"><b>'+pc+'%</b> · '+bnSo(g.sl-g.thieu)+'/'+bnSo(g.sl)+' SP · thiếu <em>'+bnSo(g.thieu)+'</em></span></div>'+
+    '<div class="of-ton">Đã trả khách <b>'+bnSo(g.tra||0)+'</b> · Còn sẵn trong nhà máy (tồn kho + đóng gói) <b class="g">'+bnSo(g.kho||0)+'</b> sp – chỉ số này có thể đi ngay</div>';
   g.dong.map(function(z,i){ return [z,i]; }).sort(function(a,b){ return ((b[0].thieu>0)-(a[0].thieu>0))||(a[1]-b[1]); }).forEach(function(x){ var z=x[0], xong=z.thieu<=0;
-    h+='<div class="of-dong'+(xong?' xong':'')+'"><div class="ten">'+esc(z.ten)+(z.hr&&!xong?'<span class="of-tag" style="background:#bfe3ff;color:#123" title="Nhà máy ưu tiên mã này – mục tiêu nội bộ, deadline với khách giữ nguyên">⏱ ưu tiên '+esc(bnNg(z.hr).slice(0,5))+'</span>':'')+(z.dung&&!xong?'<span class="of-tag" style="background:#f6d365;color:#321">tạm dừng</span>':'')+(z.dl&&g.dl&&z.dl!==g.dl&&!xong?'<span class="of-tag" style="border:1px solid var(--line)">hạn '+esc(bnNg(z.dl).slice(0,5))+'</span>':'')+'</div>'+
-      '<div class="c"><small>ĐẶT</small>'+bnSo(z.sl)+'</div><div class="c thieu"><small>THIẾU</small>'+bnSo(z.thieu)+'</div><div class="c giao"><small>GIAO</small>'+bnSo(Math.max(0,z.sl-z.thieu))+'</div></div>'; });
+    h+='<div class="of-dong'+(xong?' xong':'')+'"><div class="ten">'+esc(z.ten)+(z.hr&&!xong?'<span class="of-tag" style="background:#bfe3ff;color:#123" title="Nhà máy ưu tiên mã này – mục tiêu nội bộ, deadline với khách giữ nguyên">⏱ ưu tiên '+esc(bnNg(z.hr).slice(0,5))+'</span>':'')+(z.dung&&!xong?'<span class="of-tag" style="background:#f6d365;color:#321">tạm dừng</span>':'')+(z.dl&&g.dl&&z.dl!==g.dl&&!xong?'<span class="of-tag" style="border:1px solid var(--line)">hạn '+esc(bnNg(z.dl).slice(0,5))+'</span>':'')+(function(e){ return e&&!xong?'<span class="of-tag" style="background:#ffd8d2;color:#5a1208" title="Deadline đổi lúc '+esc(e[0])+'">🔔 đổi hạn '+(e[4]?esc(bnNg(e[4]).slice(0,5)):'–')+' → '+(e[5]?esc(bnNg(e[5]).slice(0,5)):'–')+'</span>':''; })(bnDhMa(g.tab,g.ma,z.ten))+'</div>'+
+      '<div class="c"><small>ĐẶT</small>'+bnSo(z.sl)+'</div><div class="c thieu"><small>THIẾU</small>'+bnSo(z.thieu)+'</div><div class="c tra"><small>ĐÃ TRẢ KHÁCH</small>'+bnSo(z.tra)+'</div><div class="c giao"><small>TỒN KHO+ĐG</small>'+bnSo(z.kho)+'</div></div>'; });
   return h+'</div>'; }
 var bnDonTruoc='', bnDaPct={};
 /* 21/11 (chủ dự án): đơn lẻ / POD đã xong trong 3 ngày làm việc gần nhất + tra cứu */

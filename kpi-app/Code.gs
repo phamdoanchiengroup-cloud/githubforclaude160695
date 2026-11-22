@@ -7710,7 +7710,7 @@ function danhSachVanPhong(token) {
   ds.sort(function(a, b) { return (thuTu[a.vaiTro] - thuTu[b.vaiTro]) || (a.HoTen < b.HoTen ? -1 : 1); });
   return sach_({ ok: true, ds: ds, muc: HS_MUC });
 }
-var KPI_BAN_MAY = '22/11/2026 08:41';   // giờ dựng Code.gs (22/10)
+var KPI_BAN_MAY = '22/11/2026 10:37';   // giờ dựng Code.gs (22/10)
 /* =====================================================================
    KỸ NĂNG (22/10, chủ dự án nhờ thiết kế + tham khảo chuyên gia nhân sự / đào tạo)
    - Danh mục: trưởng / phó phòng đề xuất kỹ năng của xưởng (tên, mô tả, tiêu chí đạt, công đoạn liên quan)
@@ -10685,7 +10685,7 @@ function dhTab10Tao_() {
 function dhTab10TT_() { var p = PropertiesService.getScriptProperties(), a = String(p.getProperty('DH10_TAO') || '').split('|'), b = String(p.getProperty('DH10_DB') || '').split('|'); var kq = {}; try { kq = JSON.parse(b[1] || '{}'); } catch (e) {} var url = ''; try { var s10 = dh10SS_(false); if (s10) url = s10.getUrl(); } catch (e) {} return { tao: a[0] || '', n: Number(a[1]) || 0, dongBo: b[0] || '', kq: kq, url: url, file: DH10_FILE }; }
 /* Trigger (hàm toàn cục – trigger không gọi được hàm kết thúc bằng _) */
 function DH_TAB10_TAO(e) { if (!noiBo_(e)) return chanWeb_('DH_TAB10_TAO'); var l; try { l = dh10Khoa_(); dhTab10Tao_(); } catch (e) { try { ghiLog_({ tk: 'HE_THONG', ten: 'Hệ thống' }, 'Tạo tab ĐẾN HẠN 10 NGÀY lỗi', String(e && e.message || e).slice(0, 200), '', ''); } catch (e2) {} } finally { try { l && l.releaseLock(); } catch (e3) {} } }
-function DH_TAB10_DONG_BO(e) { if (!noiBo_(e)) return chanWeb_('DH_TAB10_DONG_BO'); var h = Number(Utilities.formatDate(new Date(), TZ_VN, 'H')); if (h < 6 || h >= 22) return; var l = LockService.getScriptLock(); if (!l.tryLock(5000)) return; try { var p10 = PropertiesService.getScriptProperties(); if (p10.getProperty('DH10_CAN_TAO') === '1') { p10.deleteProperty('DH10_CAN_TAO'); dhTab10Tao_(); } else dhTab10DongBo_(); try { dhkRa_(); } catch (eK) {} } catch (e) {} finally { l.releaseLock(); } try { dttCapNhat_(false); } catch (eT) {} }   /* 16/11 khuya: vừa hủy / bớt mã -> dựng lại tab 10 (bỏ dòng hủy) */
+function DH_TAB10_DONG_BO(e) { if (!noiBo_(e)) return chanWeb_('DH_TAB10_DONG_BO'); var h = Number(Utilities.formatDate(new Date(), TZ_VN, 'H')); if (h < 6 || h >= 22) return; var l = LockService.getScriptLock(); if (!l.tryLock(5000)) return; try { var p10 = PropertiesService.getScriptProperties(); if (p10.getProperty('DH10_CAN_TAO') === '1') { p10.deleteProperty('DH10_CAN_TAO'); dhTab10Tao_(); } else dhTab10DongBo_(); try { dhkRa_(); } catch (eK) {} } catch (e) {} finally { l.releaseLock(); } try { dttCapNhat_(false); } catch (eT) {} try { dthRa_(null, false); } catch (eDT) {} }   /* 22/11: + phát hiện đổi deadline · 16/11 khuya: vừa hủy / bớt mã -> dựng lại tab 10 (bỏ dòng hủy) */
 function DH_TAB10_SUA(e) { if (!noiBo_(e)) return; try { dhkSuaTay_(e); } catch (eK) {} try { if (!e || !e.range || e.range.getSheet().getName() !== DH10_TEN || e.range.getRow() < 2) return; } catch (x) { return; }   /* 17/11 tối: có 2 trigger cùng hàm – Sheet đơn (nhật ký sửa tay cột khóa) + file riêng tab 10 ngày */ var l = LockService.getScriptLock(); if (!l.tryLock(10000)) return; try { dhTab10DongBo_(); } catch (x2) {} finally { l.releaseLock(); } }
 function dhCaiTab10_() {
   var p = PropertiesService.getScriptProperties(); if (p.getProperty('DH10_CAI') === '1') return;
@@ -10795,7 +10795,7 @@ function luuBangDon(token, p) {
   try {
     var ss = SpreadsheetApp.openById(DH_SHEET_ID), nam = Number(Utilities.formatDate(new Date(), TZ_VN, 'yyyy'));
     var theoTab = {}; ds.forEach(function(x) { var t = String(x && x.tab || ''); if (t) (theoTab[t] = theoTab[t] || []).push(x); });
-    var ghi = [], doi = [], boFx = [], lech = [], loi = [];
+    var ghi = [], doi = [], boFx = [], lech = [], loi = [], dlDoi = [];
     Object.keys(theoTab).forEach(function(tab) {
       var sh = dhTabGhi_(ss, tab); if (!sh) { loi.push('không thấy tab "' + tab + '"'); return; }
       var meta = dhMetaTab_(sh, tab); if (!meta || meta.ten < 0 || meta.sl < 0) { loi.push('tab "' + tab + '" không nhận ra cột tên hàng / SL đặt'); return; }
@@ -10822,14 +10822,14 @@ function luuBangDon(token, p) {
           if (fx[c2]) { boFx.push('Deadline (' + tab + ' dòng ' + dong + ')'); return; }
           if (x.dl.cu != null && !p.boQua && String(x.dl.cu).slice(5) !== cuNay.slice(5)) { lech.push('Deadline ' + tenS.slice(0, 30) + ' vừa đổi trong Sheet'); return; }
           if (dl.slice(5) === cuNay.slice(5) && (!!dl === !!cuNay)) return;
-          ghi.push([sh, dong, c2 + 1, dl ? "'" + dl.slice(8, 10) + '/' + dl.slice(5, 7) + '/' + dl.slice(0, 4) : '']); doi.push(tab + ' d' + dong + ' Deadline → ' + (dl ? dl.slice(8, 10) + '/' + dl.slice(5, 7) : 'trống'));
+          ghi.push([sh, dong, c2 + 1, dl ? "'" + dl.slice(8, 10) + '/' + dl.slice(5, 7) + '/' + dl.slice(0, 4) : '']); doi.push(tab + ' d' + dong + ' Deadline → ' + (dl ? dl.slice(8, 10) + '/' + dl.slice(5, 7) : 'trống')); dlDoi.push({ tab: tab, dong: dong, ten: tenS, maDon: x.maDon || '', cu: cuNay, moi: dl });   // 22/11: thông báo Bán hàng
         }
       });
     });
     if (loi.length) return sach_({ ok: false, msg: 'Chưa lưu gì: ' + loi.slice(0, 4).join('; ') + '.' });
     if (lech.length && !p.boQua) return sach_({ ok: false, xungDot: true, msg: lech.slice(0, 4).join('; ') + (lech.length > 4 ? ' … (' + lech.length + ' chỗ)' : '') + '. Bấm OK để vẫn ghi số bạn nhập, Hủy để tải lại.' });
     ghi.forEach(function(g) { var r = g[0].getRange(g[1], g[2]); r.setValue(g[3]); if (typeof g[3] === 'number') r.setNumberFormat('0.####'); });
-    if (ghi.length) { SpreadsheetApp.flush(); dhXoaCacheDon_(); try { ghiLog_(q.me, 'Sửa bảng đơn', ghi.length + ' ô', '', doi.join(' | ').slice(0, 450)); } catch (eLog) {} }
+    if (ghi.length) { SpreadsheetApp.flush(); dhXoaCacheDon_(); try { ghiLog_(q.me, 'Sửa bảng đơn', ghi.length + ' ô', '', doi.join(' | ').slice(0, 450)); } catch (eLog) {} try { if (typeof dthGhiWeb_ === 'function') dthGhiWeb_(dlDoi, q.me); } catch (eDH) {} }
     return sach_({ ok: true, n: ghi.length, khongDoi: !ghi.length,
       msg: (ghi.length ? 'Đã lưu ' + ghi.length + ' ô vào Sheet.' : 'Không có thay đổi.') + (boFx.length ? ' Ô ' + boFx.slice(0, 3).join(', ') + (boFx.length > 3 ? '…' : '') + ' là CÔNG THỨC trong Sheet nên web không ghi đè.' : '') });
   } catch (e) { return sach_({ ok: false, msg: 'Không ghi được vào Sheet: ' + (e && e.message || e) });
@@ -11828,7 +11828,8 @@ function layDonBan(token) {
   var out = ds.slice(0, DB_WEB_MAX).map(function(r) { return dbWeb_(r, r.TrangThai === 'DA_DUYET' && d ? dbTienDo_(d, r) : null); });
   try { dbkGanDuKien_(out, d); } catch (eK) {}
   var dn = []; try { dn = dbtDsDN_(q); } catch (eN) {}   // 17/11 khuya: đề nghị ưu tiên (thu-don.gs)   // 17/11: ngày dự kiến xong (mô phỏng công suất + 2 ngày làm dự phòng) – du-kien.gs
-  return sach_({ ok: true, ds: out, bh: q.bh ? 1 : 0, duyet: q.duyet ? 1 : 0, owner: q.me.laOwner ? 1 : 0, ten: q.me.ten || '', kenh: dbKenh_(),
+  var doiHan = []; try { doiHan = dthDs_(); } catch (eDH) {}   // 22/11: thông báo đổi deadline
+  return sach_({ ok: true, doiHan: doiHan, ds: out, bh: q.bh ? 1 : 0, duyet: q.duyet ? 1 : 0, owner: q.me.laOwner ? 1 : 0, ten: q.me.ten || '', kenh: dbKenh_(),
     sp: Object.keys(sp).sort().slice(0, 3000), csNgay: DH_CS_MAC, tongThieu: q.duyet ? tongThieu : null, hom: homNayVN_(), dn: dn, lanTxt: dhLanTxt_() });
 }
 function dbKiemDon_(p) {   // -> { loi } | { don }
@@ -12152,6 +12153,7 @@ function layBangDonNhaMay(token) {
   var q = dbQuyen_(token); if (q.loi) return q.loi;
   var d; try { d = dhDocDon_(false); } catch (e) { return sach_({ ok: false, msg: 'Chưa đọc được bảng đơn – thử lại sau ít phút.' }); }
   try { dhGanHanRieng_(d.don); } catch (eHR) {}   // 21/11
+  try { dthRa_(d, false); } catch (eDT) {}   // 22/11: phát hiện đổi deadline (≤ 1 lần / 5 phút)
   var thu = {}; DH_TABS.forEach(function(t, i) { thu[t] = i; });
   var ds = (d.don || []).filter(function(o) { return !o.phu && o.thieu > 0 && o.ten; });
   ds.sort(function(a, b) { var ta = thu[a.tab] != null ? thu[a.tab] : 99, tb = thu[b.tab] != null ? thu[b.tab] : 99;
@@ -12170,8 +12172,8 @@ function layBangDonNhaMay(token) {
     tk.push(ra(tong));
   } catch (eTK) { tk = []; }
   return sach_({ ok: true, luc: d.luc || '', het: het ? 1 : 0, n: ds.length, kenh: dbKenh_(), tk: tk, duKin: DBK_DU_KIN, cs: dhCongSuat_().sp,
-    pct: dbxPctDon_(d.don || []),   // 21/11 (chủ dự án): thanh % hoàn thành theo từng đơn
-    ds: dbxTheDs_(d.don || [], thu).slice(0, DBK_BANG_MAX).map(function(o) { return [o.tab, String(o.maDon || ''), o.ten, o.sl || 0, o.dl || '', o.dung ? 1 : 0, o.hanRieng ? o.hanRieng.han : '', Math.max(0, o.thieu || 0)]; }) });   // [5] tạm dừng · [6] hạn riêng (21/11) · [7] còn thiếu (22/11: chủ dự án cho Bán hàng xem Đặt / Thiếu / Giao như ORDER·FLOW)
+    pct: dbxPctDon_(d.don || []), doiHan: dthDs_(),   // 21/11 (chủ dự án): thanh % hoàn thành theo từng đơn
+    ds: dbxTheDs_(d.don || [], thu).slice(0, DBK_BANG_MAX).map(function(o) { return [o.tab, String(o.maDon || ''), o.ten, o.sl || 0, o.dl || '', o.dung ? 1 : 0, o.hanRieng ? o.hanRieng.han : '', Math.max(0, o.thieu || 0), Math.max(0, Number(o.kho) || 0), Math.max(0, Number(o.daTra) || 0)]; }) });   // [8] tồn kho + đóng gói · [9] đã trả khách (22/11)   // [5] tạm dừng · [6] hạn riêng (21/11) · [7] còn thiếu (22/11: chủ dự án cho Bán hàng xem Đặt / Thiếu / Giao như ORDER·FLOW)
 }
 /* 22/11 (chủ dự án): bảng đơn nhà máy hiện THẺ THEO ĐƠN kiểu ORDER·FLOW – mọi mã của đơn đang làm (cả mã đã xong), bỏ hàng phụ / mã hủy */
 function dbxTheDs_(don, thu) {
@@ -12602,6 +12604,60 @@ function dttCapNhat_(ep) {
 }
 /* chủ sở hữu bấm cập nhật ngay (không chờ 1 giờ) */
 function capNhatTomTatTroLy(token) { var q = qtQuyen_(token); if (q.loi) return q.loi; try { var r = dttCapNhat_(true); return sach_({ ok: true, msg: 'Đã cập nhật Sheet "' + DTT_TEN + '" (' + r.don + ' đơn).', id: r.id }); } catch (e) { return sach_({ ok: false, msg: 'Chưa cập nhật được: ' + String(e && e.message || e).slice(0, 150) }); } }
+
+/* ===== 22/11 (chủ dự án): THÔNG BÁO ĐỔI DEADLINE cho Bán hàng (tab Order-Flow) =====
+   - Sửa trên web (luuBangDon): ghi ngay, kèm tên người sửa.
+   - Sửa thẳng trong Sheet đơn: so deadline hiện tại với bản ghi lần trước (sheet HanCuoi trong "CSDL Đơn hàng (web)") – chạy trong lượt đồng bộ
+     10 phút (DH_TAB10_DONG_BO) và khi mở Order-Flow (tối đa 1 lần / 5 phút). Lần chạy đầu chỉ ghi mốc, không báo.
+   - Chỉ xét mã còn thiếu > 0, bỏ hàng phụ; deadline = hạn mới nếu có. Hiện 7 ngày gần nhất. */
+DHH_COT.DoiHan = ['Luc', 'Tab', 'MaDon', 'Ten', 'Cu', 'Moi', 'Nguon'];
+DHH_COT.HanCuoi = ['Khoa', 'Dl'];
+var DTH_NGAY = 7, DTH_CACH = 300;
+function dthKhoa_(tab, ma, ten) { return String(tab || '') + '|' + String(ma || '') + '|' + plChuan_(ten); }
+function dthGio_() { return Utilities.formatDate(new Date(), TZ_VN, 'yyyy-MM-dd HH:mm'); }
+function dthRa_(d, ep) {
+  var p = PropertiesService.getScriptProperties(), bay = Date.now();
+  if (!ep && bay - Number(p.getProperty('DTH_LUC') || 0) < DTH_CACH * 1000) return 0;
+  p.setProperty('DTH_LUC', String(bay));
+  var ss = dhhSS_(true); if (!ss) return 0;
+  d = d || dhDocDon_(false);
+  var nay = {}; (d.don || []).forEach(function(o) { if (o.phu || !o.ten || !(o.thieu > 0)) return; nay[dthKhoa_(o.tab, o.maDon, o.ten)] = { dl: o.dl || '', o: o }; });
+  var cu = {}, coCu = false; dhhDoc_(ss, 'HanCuoi').forEach(function(r) { coCu = true; cu[r.Khoa] = r.Dl; });
+  var moc = Utilities.formatDate(new Date(bay - 864e5), TZ_VN, 'yyyy-MM-dd HH:mm'), web = {};
+  dhhDoc_(ss, 'DoiHan').forEach(function(r) { if (r.Luc >= moc && r.Nguon !== 'Sheet') web[r.Tab + '|' + plChuan_(r.Ten) + '|' + r.Moi] = 1; });
+  var ev = [], doi = false;
+  Object.keys(nay).forEach(function(k) {
+    var x = nay[k]; if (!(k in cu)) { doi = true; return; }
+    if (String(cu[k]) === String(x.dl)) return; doi = true;
+    if (coCu && !web[x.o.tab + '|' + plChuan_(x.o.ten) + '|' + x.dl]) ev.push({ Luc: dthGio_(), Tab: x.o.tab, MaDon: String(x.o.maDon || ''), Ten: x.o.ten, Cu: cu[k], Moi: x.dl, Nguon: 'Sheet' });
+  });
+  Object.keys(cu).forEach(function(k) { if (!(k in nay)) doi = true; });
+  if (ev.length) dhhThem_(ss, 'DoiHan', ev);
+  if (doi || !coCu) {
+    var sh = ss.getSheetByName('HanCuoi'); if (!sh) { sh = ss.insertSheet('HanCuoi'); }
+    sh.clearContents(); var rows = [DHH_COT.HanCuoi].concat(Object.keys(nay).map(function(k) { return [k, nay[k].dl]; }));
+    sh.getRange(1, 1, rows.length, 2).setNumberFormat('@').setValues(rows);
+    try { sh.hideSheet(); } catch (e) {}
+  }
+  if (ev.length) { try { CacheService.getScriptCache().remove('DTH_DS'); } catch (e) {} }
+  return ev.length;
+}
+function dthGhiWeb_(ds, me) {   // gọi từ luuBangDon sau khi ghi deadline vào Sheet
+  if (!ds || !ds.length) return;
+  var ss = dhhSS_(true), d = null; try { d = dhDocDon_(false); } catch (e) {}
+  var ma = {}; if (d) (d.don || []).forEach(function(o) { ma[o.tab + '|' + o.dong] = o.maDon || ''; });
+  dhhThem_(ss, 'DoiHan', ds.map(function(x) { return { Luc: dthGio_(), Tab: x.tab, MaDon: x.maDon || ma[x.tab + '|' + x.dong] || '', Ten: x.ten, Cu: x.cu || '', Moi: x.moi || '', Nguon: String(me && (me.ten || me.tk) || 'web').slice(0, 60) }; }));
+  try { CacheService.getScriptCache().remove('DTH_DS'); } catch (e) {}
+}
+function dthDs_() {   // -> [[luc, tab, maDon, ten, cu, moi, nguon]] 7 ngày gần nhất, mới trước (nhớ tạm 2 phút)
+  var c = CacheService.getScriptCache(); try { var s = c.get('DTH_DS'); if (s) return JSON.parse(s); } catch (e) {}
+  var ss = dhhSS_(false); if (!ss) return [];
+  var moc = Utilities.formatDate(new Date(Date.now() - DTH_NGAY * 864e5), TZ_VN, 'yyyy-MM-dd');
+  var a = dhhDoc_(ss, 'DoiHan').filter(function(r) { return r.Luc >= moc; }).map(function(r) { return [r.Luc, r.Tab, r.MaDon, r.Ten, r.Cu, r.Moi, r.Nguon === 'Sheet' ? '' : r.Nguon]; });
+  a.sort(function(x, y) { return x[0] < y[0] ? 1 : -1; }); a = a.slice(0, 200);
+  try { c.put('DTH_DS', JSON.stringify(a), 120); } catch (e) {}
+  return a;
+}
 
 /* ===== 21/11 (chủ dự án chốt trước khi gắn QUỸ THƯỞNG): CHỐT KPI QUẢN LÝ + TRẦN 150% / 130% =====
    - KPIQuanLyThang: 1 dòng / TP-PP / tháng, ghi khi chốt tháng (chotThangLoi_, cả chốt tự động đầu tháng). Tháng đã chốt:

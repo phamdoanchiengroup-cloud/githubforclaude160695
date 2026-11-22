@@ -124,6 +124,7 @@ function layBangDonNhaMay(token) {
   var q = dbQuyen_(token); if (q.loi) return q.loi;
   var d; try { d = dhDocDon_(false); } catch (e) { return sach_({ ok: false, msg: 'Chưa đọc được bảng đơn – thử lại sau ít phút.' }); }
   try { dhGanHanRieng_(d.don); } catch (eHR) {}   // 21/11
+  try { dthRa_(d, false); } catch (eDT) {}   // 22/11: phát hiện đổi deadline (≤ 1 lần / 5 phút)
   var thu = {}; DH_TABS.forEach(function(t, i) { thu[t] = i; });
   var ds = (d.don || []).filter(function(o) { return !o.phu && o.thieu > 0 && o.ten; });
   ds.sort(function(a, b) { var ta = thu[a.tab] != null ? thu[a.tab] : 99, tb = thu[b.tab] != null ? thu[b.tab] : 99;
@@ -142,8 +143,8 @@ function layBangDonNhaMay(token) {
     tk.push(ra(tong));
   } catch (eTK) { tk = []; }
   return sach_({ ok: true, luc: d.luc || '', het: het ? 1 : 0, n: ds.length, kenh: dbKenh_(), tk: tk, duKin: DBK_DU_KIN, cs: dhCongSuat_().sp,
-    pct: dbxPctDon_(d.don || []),   // 21/11 (chủ dự án): thanh % hoàn thành theo từng đơn
-    ds: dbxTheDs_(d.don || [], thu).slice(0, DBK_BANG_MAX).map(function(o) { return [o.tab, String(o.maDon || ''), o.ten, o.sl || 0, o.dl || '', o.dung ? 1 : 0, o.hanRieng ? o.hanRieng.han : '', Math.max(0, o.thieu || 0)]; }) });   // [5] tạm dừng · [6] hạn riêng (21/11) · [7] còn thiếu (22/11: chủ dự án cho Bán hàng xem Đặt / Thiếu / Giao như ORDER·FLOW)
+    pct: dbxPctDon_(d.don || []), doiHan: dthDs_(),   // 21/11 (chủ dự án): thanh % hoàn thành theo từng đơn
+    ds: dbxTheDs_(d.don || [], thu).slice(0, DBK_BANG_MAX).map(function(o) { return [o.tab, String(o.maDon || ''), o.ten, o.sl || 0, o.dl || '', o.dung ? 1 : 0, o.hanRieng ? o.hanRieng.han : '', Math.max(0, o.thieu || 0), Math.max(0, Number(o.kho) || 0), Math.max(0, Number(o.daTra) || 0)]; }) });   // [8] tồn kho + đóng gói · [9] đã trả khách (22/11)   // [5] tạm dừng · [6] hạn riêng (21/11) · [7] còn thiếu (22/11: chủ dự án cho Bán hàng xem Đặt / Thiếu / Giao như ORDER·FLOW)
 }
 /* 22/11 (chủ dự án): bảng đơn nhà máy hiện THẺ THEO ĐƠN kiểu ORDER·FLOW – mọi mã của đơn đang làm (cả mã đã xong), bỏ hàng phụ / mã hủy */
 function dbxTheDs_(don, thu) {

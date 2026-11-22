@@ -2223,7 +2223,7 @@ function luuBangDon(token, p) {
   try {
     var ss = SpreadsheetApp.openById(DH_SHEET_ID), nam = Number(Utilities.formatDate(new Date(), TZ_VN, 'yyyy'));
     var theoTab = {}; ds.forEach(function(x) { var t = String(x && x.tab || ''); if (t) (theoTab[t] = theoTab[t] || []).push(x); });
-    var ghi = [], doi = [], boFx = [], lech = [], loi = [];
+    var ghi = [], doi = [], boFx = [], lech = [], loi = [], dlDoi = [];
     Object.keys(theoTab).forEach(function(tab) {
       var sh = dhTabGhi_(ss, tab); if (!sh) { loi.push('không thấy tab "' + tab + '"'); return; }
       var meta = dhMetaTab_(sh, tab); if (!meta || meta.ten < 0 || meta.sl < 0) { loi.push('tab "' + tab + '" không nhận ra cột tên hàng / SL đặt'); return; }
@@ -2250,14 +2250,14 @@ function luuBangDon(token, p) {
           if (fx[c2]) { boFx.push('Deadline (' + tab + ' dòng ' + dong + ')'); return; }
           if (x.dl.cu != null && !p.boQua && String(x.dl.cu).slice(5) !== cuNay.slice(5)) { lech.push('Deadline ' + tenS.slice(0, 30) + ' vừa đổi trong Sheet'); return; }
           if (dl.slice(5) === cuNay.slice(5) && (!!dl === !!cuNay)) return;
-          ghi.push([sh, dong, c2 + 1, dl ? "'" + dl.slice(8, 10) + '/' + dl.slice(5, 7) + '/' + dl.slice(0, 4) : '']); doi.push(tab + ' d' + dong + ' Deadline → ' + (dl ? dl.slice(8, 10) + '/' + dl.slice(5, 7) : 'trống'));
+          ghi.push([sh, dong, c2 + 1, dl ? "'" + dl.slice(8, 10) + '/' + dl.slice(5, 7) + '/' + dl.slice(0, 4) : '']); doi.push(tab + ' d' + dong + ' Deadline → ' + (dl ? dl.slice(8, 10) + '/' + dl.slice(5, 7) : 'trống')); dlDoi.push({ tab: tab, dong: dong, ten: tenS, maDon: x.maDon || '', cu: cuNay, moi: dl });   // 22/11: thông báo Bán hàng
         }
       });
     });
     if (loi.length) return sach_({ ok: false, msg: 'Chưa lưu gì: ' + loi.slice(0, 4).join('; ') + '.' });
     if (lech.length && !p.boQua) return sach_({ ok: false, xungDot: true, msg: lech.slice(0, 4).join('; ') + (lech.length > 4 ? ' … (' + lech.length + ' chỗ)' : '') + '. Bấm OK để vẫn ghi số bạn nhập, Hủy để tải lại.' });
     ghi.forEach(function(g) { var r = g[0].getRange(g[1], g[2]); r.setValue(g[3]); if (typeof g[3] === 'number') r.setNumberFormat('0.####'); });
-    if (ghi.length) { SpreadsheetApp.flush(); dhXoaCacheDon_(); try { ghiLog_(q.me, 'Sửa bảng đơn', ghi.length + ' ô', '', doi.join(' | ').slice(0, 450)); } catch (eLog) {} }
+    if (ghi.length) { SpreadsheetApp.flush(); dhXoaCacheDon_(); try { ghiLog_(q.me, 'Sửa bảng đơn', ghi.length + ' ô', '', doi.join(' | ').slice(0, 450)); } catch (eLog) {} try { if (typeof dthGhiWeb_ === 'function') dthGhiWeb_(dlDoi, q.me); } catch (eDH) {} }
     return sach_({ ok: true, n: ghi.length, khongDoi: !ghi.length,
       msg: (ghi.length ? 'Đã lưu ' + ghi.length + ' ô vào Sheet.' : 'Không có thay đổi.') + (boFx.length ? ' Ô ' + boFx.slice(0, 3).join(', ') + (boFx.length > 3 ? '…' : '') + ' là CÔNG THỨC trong Sheet nên web không ghi đè.' : '') });
   } catch (e) { return sach_({ ok: false, msg: 'Không ghi được vào Sheet: ' + (e && e.message || e) });

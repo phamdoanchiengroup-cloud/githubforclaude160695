@@ -23,7 +23,7 @@ _t50("NHOM:'Nhóm báo cơm'}[vt]||vt", "NHOM:'Nhóm báo cơm',BH:'Bán hàng'}
 _t50("var vt={ADMIN:'Ban điều hành',TP:'Trưởng phòng',PP:'Phó phòng',HR:'Nhân sự',QC:'Kiểm soát CL',CN:'Công nhân',BEP:'Bếp ăn',TL:'Trợ lý BĐH',NV:'Nhân viên BP',TBP:'Trưởng BP',NHOM:'Nhóm báo cơm'};",
      "var vt={ADMIN:'Ban điều hành',TP:'Trưởng phòng',PP:'Phó phòng',HR:'Nhân sự',QC:'Kiểm soát CL',CN:'Công nhân',BEP:'Bếp ăn',TL:'Trợ lý BĐH',NV:'Nhân viên BP',TBP:'Trưởng BP',NHOM:'Nhóm báo cơm',BH:'Bán hàng'};")
 # người duyệt (ban điều hành): tab "Đơn bán hàng" ngay sau Đơn hàng – chỉ hiện khi ME.dbDuyet
-_t50("['dh','Đơn hàng'],['tk','Thống kê']", "['dh','Đơn hàng'],['bh','Đơn bán hàng'],['tk','Thống kê']")
+_t50("['dh','Đơn hàng'],['tk','Thống kê']", "['dh','Đơn hàng'],['bh','Order-Flow'],['tk','Thống kê']")   # 22/11: tab "Đơn bán hàng" đổi tên Order-Flow (chủ dự án)
 _t50("  ['Sản xuất',['dh','duyetsl',", "  ['Sản xuất',['dh','bh','duyetsl',")
 _t50("cgay:vCGay}[k])();", "cgay:vCGay,bh:vBH}[k])();")
 _t50("  kyn:'<path", "  bh:'<path d=\"M4 5h16v14H4z\"/><path d=\"M8 9h8M8 13h5\"/><path d=\"M15.5 15.5l2 2 3-3\"/>',\n  kyn:'<path")

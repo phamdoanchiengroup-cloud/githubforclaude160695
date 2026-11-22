@@ -3,7 +3,7 @@
 # Chạy bằng exec() cuối tests/va-code.py (sau cau-hinh-gay sửa MANH_GD). Kiểm thử: tests/don-ban.js
 s = s.rstrip() + '\n' + io.open(os.path.join(os.path.dirname(__file__), 'don-ban', 'don-ban.gs'), encoding='utf-8').read()
 # 17/11: ngày dự kiến xong + bảng đơn nhà máy + đang xem (du-kien.gs), giai đoạn 2 khóa cột Sheet đơn (khoa-sheet.gs)
-for _f in ['du-kien.gs', 'khoa-sheet.gs', 'thu-don.gs', 'tom-tat.gs']:   # 18/11: + Sheet tóm tắt cho trợ lý   # 17/11 khuya: + thử trước khi đặt / đề nghị ưu tiên
+for _f in ['du-kien.gs', 'khoa-sheet.gs', 'thu-don.gs', 'tom-tat.gs', 'doi-han.gs']:   # 22/11: thông báo đổi deadline   # 18/11: + Sheet tóm tắt cho trợ lý   # 17/11 khuya: + thử trước khi đặt / đề nghị ưu tiên
     s = s.rstrip() + '\n' + io.open(os.path.join(os.path.dirname(__file__), 'don-ban', _f), encoding='utf-8').read()
 
 def _tdb(cu, moi, dem=1):
@@ -30,7 +30,7 @@ _tdb("  me.banMay = KPI_BAN_MAY;\n", "  me.banMay = KPI_BAN_MAY;\n  try { me.dbD
 _tdb("function DH_TAB10_SUA(e) { if (!noiBo_(e)) return; ", "function DH_TAB10_SUA(e) { if (!noiBo_(e)) return; try { dhkSuaTay_(e); } catch (eK) {} ")
 _tdb("dhTab10Tao_(); } else dhTab10DongBo_(); } catch (e) {}", "dhTab10Tao_(); } else dhTab10DongBo_(); try { dhkRa_(); } catch (eK) {} } catch (e) {}")
 # 18/11: Sheet "Tóm tắt đơn hàng cho trợ lý (web)" – ghi sau lượt đồng bộ 10 phút (ngoài khóa, giãn 60 phút)
-_tdb(" finally { l.releaseLock(); } }   /* 16/11 khuya: vừa hủy", " finally { l.releaseLock(); } try { dttCapNhat_(false); } catch (eT) {} }   /* 16/11 khuya: vừa hủy")
+_tdb(" finally { l.releaseLock(); } }   /* 16/11 khuya: vừa hủy", " finally { l.releaseLock(); } try { dttCapNhat_(false); } catch (eT) {} try { dthRa_(null, false); } catch (eDT) {} }   /* 22/11: + phát hiện đổi deadline · 16/11 khuya: vừa hủy")
 # 21/11 (Bán hàng báo "cứ bị hết phiên"): web gọi napComTrua / layBongDa / layKPIKy cho mọi tài khoản sau đăng nhập -> BH bị chặn
 # ở docPhien_ -> máy chủ trả hetHan -> web đăng xuất. Nay lượt bị chặn vì là BH trả { ok:false, bhChan:1 } (KHÔNG hetHan).
 _tdb("  var r = sachLoi_(v);\n", "  var r = sachLoi_(v);\n  if (__BH_CHAN && r && typeof r === 'object' && r.hetHan) r = { ok: false, bhChan: 1, msg: 'Tài khoản Bán hàng không dùng chức năng này.' };   // 21/11\n")
