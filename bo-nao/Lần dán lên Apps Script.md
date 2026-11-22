@@ -4,6 +4,7 @@ Nhóm: Chung · Cập nhật 31/10/2026
 Liên quan: [[Việc chờ chủ dự án]] · [[KPI Tổng quan và cách dựng]] · [[00 Mục lục]]
 
 ## Web KPI – đã dán (theo sheet thật đọc ngày 21/10)
+- **21–22/11 – CHỜ CẬP NHẬT bằng `2-CAP-NHAT.bat`** (gộp mọi bản từ 18/11): Code.gs, Index.html, QuyTrinh.html, DonBan.html – KPI mới từ T9 + chốt KPI quản lý, sửa Bán hàng hết phiên, Lẻ/POD đã xong, Công suất theo kênh / ngày, hạn riêng từng mã, Đơn hàng mỗi đơn 1 thẻ, Order-Flow (thẻ đơn, thông báo đổi deadline, cột trả khách / tồn kho, tìm theo mã SP, kính nhẹ). Sau cập nhật: KPI → Chốt tháng T9 rồi T10. – [[Nhật ký thay đổi]]
 - **17/11 – CHỜ CẬP NHẬT bằng `2-CAP-NHAT.bat`**: Code.gs, Index.html, QuyTrinh.html, DonBan.html – ngày dự kiến xong cho Bán hàng, bảng đơn nhà máy, đang xem, hoàn tác 10 giây, khóa cột Sheet đơn. – [[KPI Thiết kế trang Đơn hàng và chuyển từ Sheet sang web (16-11)]]
 - **16/11 khuya (2) – CHỜ CẬP NHẬT bằng `2-CAP-NHAT.bat`**: Code.gs, Index.html, QuyTrinh.html, **DonBan.html (file mới – bộ cài tự thêm theo danh-sach-file.txt)** – trang Bán hàng nhập đơn + duyệt. – [[KPI Thiết kế trang Đơn hàng và chuyển từ Sheet sang web (16-11)]]
 - **16/11 khuya – CHỜ CẬP NHẬT bằng `2-CAP-NHAT.bat`**: Code.gs, Index.html, QuyTrinh.html – giai đoạn 0 hủy / bớt mã (Sheet CSDL Đơn hàng (web) tự tạo lần hủy đầu), "3/5" trong ô Mã đơn, mục Đơn đã hủy, chuông. – [[KPI Thiết kế trang Đơn hàng và chuyển từ Sheet sang web (16-11)]]

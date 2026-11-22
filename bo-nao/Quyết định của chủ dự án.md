@@ -86,6 +86,13 @@ Những điều đã chốt. Đừng đề xuất lại những gì ghi "không 
 - TP chỉ nhập số của xưởng mình; **deadline đơn do ban điều hành ghi**.
 - Gậy 1 khúc: tên "1 KHÚC" / "ONE PIECE" / "GMK", glassfiber nguyên cây 1450 / 1480, không ren, tip 12.5 / 12.2, nhóm thống kê riêng, có bản vẽ.
 
+## Order-Flow + bảng đơn (chốt 22/11)
+- Tab "Đơn bán hàng" đổi tên **Order-Flow**. Bảng đơn nhà máy: mỗi đơn 1 thẻ kiểu ORDER·FLOW (Đặt · Thiếu · **Đã trả khách** · **Tồn kho + ĐG**), Bán hàng xem đủ; "Tất cả" trộn mọi kênh theo deadline; tìm mã SP chỉ hiện dòng khớp; Bán hàng có kính bản Nhẹ. Mọi người xem đơn bằng **máy tính** → thiết kế / demo bản máy tính trước.
+- Tab Đơn hàng › Tất cả đơn: **mỗi đơn 1 thẻ** nhưng giữ phong cách / cột như Google Sheet; đơn xếp theo deadline gần nhất.
+- Đổi deadline bất kỳ đơn nào → **thông báo rõ ở Order-Flow** cho Bán hàng (cả sửa trên web và sửa thẳng Sheet).
+- Có cảnh báo khi Đã trả khách + Tồn kho/ĐG > Số đặt. Không đụng app ORDER·FLOW riêng.
+- Công suất & deadline: bảng theo kênh (Dealer → Kho → OEM → A Đông, hạn sớm trước), card theo ngày đến hạn (quá hạn + 30 ngày), card riêng Lẻ + POD. Đơn lẻ / POD đã xong: chỉ 3 ngày làm việc gần nhất.
+
 ## Hạn riêng từng mã (chốt 21/11)
 - Ưu tiên 1 mã đi sớm hơn deadline cả đơn = **hạn riêng lưu trên web**, không đổi deadline Sheet (hạn khách). Quyền như gắn ★. Web tính lại ngày dự kiến mọi đơn; Bán hàng thấy "nhà máy ưu tiên mã … (mục tiêu nội bộ)".
 

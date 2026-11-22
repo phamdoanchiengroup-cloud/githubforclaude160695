@@ -7,6 +7,7 @@ Tên gọi trong xưởng / trên web để phiên sau hiểu đúng câu chủ 
 ## Người và quyền
 - **Chủ dự án = `chienpham`, C056, Phó GĐ sản xuất** (chủ sở hữu web). Ban điều hành: **C019** Giám đốc · **C056**, **C077** Phó GĐ sản xuất · **C067** chị Kim Loan.
 - **Người duyệt đơn / hủy / tạm dừng**: C019, C056, C067 (+ chủ sở hữu). **Chỉ chủ sở hữu**: ⚙ Cài đặt, chia làn, Báo cáo lãnh đạo, khóa cột Sheet.
+- **Order-Flow** = tab web dành cho Bán hàng + ban điều hành (trước tên "Đơn bán hàng", đổi 22/11); khác với **app ORDER·FLOW** riêng chạy trong Sheet đơn (không sửa).
 - **BH** = tài khoản Bán hàng (Kinh doanh / Marketing), tên đăng nhập = mã NV; chỉ thấy tab Đơn hàng của tôi.
 - **TP / PP** = trưởng / phó phòng (xưởng), **CN** = công nhân, **TBP** = trưởng bộ phận ngoài SX.
 
@@ -14,6 +15,7 @@ Tên gọi trong xưởng / trên web để phiên sau hiểu đúng câu chủ 
 - **Sheet đơn / "Trạng thái đơn hàng"**: mỗi kênh một tab. **Kênh**: DEALER · KHO · OEM · A ĐÔNG · WEB LẺ ĐƠN THƯỜNG · WEB LẺ CUSTOM · POD-A.BÁCH · POD-ECOMSTONE.
 - **ĐƠN ƯU TIÊN** = bản chép mã ưu tiên của tab KHO – KHÔNG cộng lần 2. **Hàng ưu tiên** chỉ là mã trong tab này.
 - **TRỄ HẠN** = tab tên hàng đang trễ (dòng khớp tên → bậc 1). **HT-2026** = đơn đã hoàn thiện (đã giao đủ).
+- **Đã trả khách** = cột HÀNG ĐI – ĐÃ TRẢ KHÁCH (khách đã lấy); **Tồn kho + ĐG** = cột Hàng còn lại trong kho và đóng gói (sẵn, đi được ngay); **Có thể giao** ≈ hai cột cộng lại.
 - **Còn thiếu** = cột SX CÒN THIẾU – mọi ngày dự kiến tính trên số này.
 - **Hạn mới** = deadline đặt lại khi đơn trễ; trễ > 30 ngày chưa có hạn mới thì không xếp lịch.
 - **Hạn ngầm** đơn lẻ = ngày đặt (trong mã đơn) + 7 ngày làm (thường) / 10 (POD) / 15 (custom).

@@ -3,6 +3,7 @@
 Nhóm: Chung · Cập nhật 31/10/2026
 Liên quan: [[Lần dán lên Apps Script]] · [[Quyết định của chủ dự án]] · [[00 Mục lục]]
 
+- **22/11:** sao lưu → 2-CAP-NHAT.bat (gộp Order-Flow + Đơn hàng dạng thẻ + KPI mới) → KPI chốt lại T9, T10. **Sửa trong Sheet** các deadline bị tăng năm: KHO-16/10 (27/11/2027–2030), KHO-26/09 (2028, 2029). Trả lời: có sửa lỗi ghi trùng đơn hoàn thiện (19 & 20/11) không; có cần liệt kê 47 dòng Sheet lệch số không.
 - **21/11 tối:** sau 2-CAP-NHAT.bat: KPI → chọn kỳ tháng 9 → Chốt tháng; rồi tháng 10 → Chốt tháng (thay số đã chốt bằng cách mới; KPI quản lý cũng được lưu).
 - **21/11:** sao lưu → bấm 2-CAP-NHAT.bat (Lẻ / POD đã xong + thanh % đơn, KPI mới từ T11 + chốt KPI quản lý + sửa Bán hàng hết phiên). Xem bản trình bày https://claude.ai/artifact/6MFU4zcWD3frTzXbV3KFWh; nhắc HC nhập chấm công đúng ký hiệu; chọn công đoạn cần bấm giờ lại định mức (Sơn, Ngọn Tip, In UV).
 - **18/11:** bấm 2-CAP-NHAT.bat (Vì sao xong ngày này + Sheet tóm tắt cho trợ lý – sau khi cập nhật, trong ~1 giờ (6h–22h) web tự tạo file "Tóm tắt đơn hàng cho trợ lý (web)" trong Drive).

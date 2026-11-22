@@ -1,7 +1,14 @@
 # Bàn giao phiên
 
-Nhóm: Chung · Cập nhật 02/11/2026
+Nhóm: Chung · Cập nhật 22/11/2026
 Liên quan: [[00 Mục lục]] · [[Liên kết và công cụ]] · [[Việc chờ chủ dự án]] · [[Lần dán lên Apps Script]] · [[Quyết định của chủ dự án]] · [[KPI Kiểm thử]]
+
+## 21–22/11 – KPI MỚI + ĐƠN HÀNG / ORDER-FLOW: XONG + đã push (chờ 2-CAP-NHAT.bat)
+- **KPI:** cách mới áp từ T9 (bỏ học việc, chấm công, ngày công ≥80% / 50–80% hạ bậc / <50% Thiếu công, trần 150/130, vận hành TP/PP ×5 + quên điểm danh −10). Chủ dự án cần **Chốt tháng lại T9, T10** sau khi cập nhật. Bản trình bày https://claude.ai/artifact/6MFU4zcWD3frTzXbV3KFWh; PDF KPI T9–T10 (scratchpad, có tên NV).
+- **Đơn hàng:** Lẻ / POD đã xong (3 ngày làm); Công suất & deadline chia theo kênh + card theo ngày + card Lẻ/POD; hạn riêng từng mã; xếp theo deadline; **tab Đơn hàng mỗi đơn 1 thẻ** (giữ cột Sheet); chữ Note / Chú thích rõ; cảnh báo trả + tồn > đặt.
+- **Order-Flow** (tên mới của tab Đơn bán hàng): thẻ đơn kiểu ORDER·FLOW (Đặt · Thiếu · Đã trả khách · Tồn kho+ĐG), Tất cả trộn kênh theo deadline, tìm mã SP chỉ hiện dòng khớp, thông báo đổi deadline, kính bản nhẹ cho Bán hàng, rộng 1280px.
+- Còn mở: lỗi ghi trùng DonHangHoanThien (19 & 20/11) – chờ chủ dự án quyết; deadline Sheet tăng năm (KHO-16/10, KHO-26/09) – chủ dự án sửa trong Sheet; 47 dòng Sheet lệch "có thể giao / còn thiếu"; gợi ý chưa làm: cảnh báo deadline > 1 năm, cảnh báo hạn riêng > 20% công suất làn.
+- Chi tiết từng việc: [[Nhật ký thay đổi]] ngày 21/11 và 22/11.
 
 ## 17/11 KHUYA – Thử trước khi đặt + đề nghị ưu tiên cho Bán hàng + bộ slide họp: XONG + đã push (chờ 2-CAP-NHAT.bat)
 - Chi tiết: ghi chú thiết kế Đơn hàng mục "17/11 KHUYA". Slide họp: https://claude.ai/artifact/UqiDkrJZfvUo7zSYyaaKhB (chủ dự án điền [ngày], [dd/mm] kín lịch, người phụ trách).
