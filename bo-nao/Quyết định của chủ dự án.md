@@ -178,7 +178,8 @@ Những điều đã chốt. Đừng đề xuất lại những gì ghi "không 
 - (16/11 tối) **Nút ☰ mở menu trên máy tính = nút kính trong thanh tiêu đề, cạnh logo KPI** (bản 1 nút nổi bị chê xấu) (menu vẫn ẩn, rê chuột mép trái vẫn hiện) – mục vá 49 `tests/menu-nut/`.
 
 ## Đơn hàng – hủy / bớt + Bán hàng (16/11 khuya)
-- (17/11) **Bán hàng xem bảng đơn nhà máy: TẤT CẢ đơn đang làm, chỉ 4 cột** Mã đơn · Mã sản phẩm · Số đặt · Deadline (không thấy tiến độ bộ phận, còn thiếu, ghi chú).
+- (22/11, thay quyết định 17/11) **Bán hàng xem bảng đơn nhà máy dạng thẻ kiểu ORDER·FLOW, thấy Đặt / Thiếu / Giao từng mã** (vẫn không thấy tiến độ bộ phận, ghi chú, người đặt); tài khoản Bán hàng dùng giao diện kính bản Nhẹ.
+- (17/11 – đã thay 22/11) **Bán hàng xem bảng đơn nhà máy: TẤT CẢ đơn đang làm, chỉ 4 cột** Mã đơn · Mã sản phẩm · Số đặt · Deadline (không thấy tiến độ bộ phận, còn thiếu, ghi chú).
 - (17/11 tối) **Thử nhận đơn: chọn kênh; "Hẹn khách an toàn" = xếp cuối làn + 6 ngày làm** (thay + 20%).
 - (17/11 tối, thay mục ngay dưới) **5 LÀN công suất: 1 Lẻ + POD 10% · 2 Dealer 20% · 3 Kho 50% · 4 OEM 5% · 5 A Đông 15%** (chủ dự án nâng Dealer 10 → 20% sau khi xem mô phỏng). Làn hết việc trong ngày → phần dư **DỒN HẾT theo thứ tự Dealer → Kho → OEM → A Đông** (rồi Lẻ + POD) – chủ dự án đổi 17/11 tối, thay chia theo tỷ lệ. Trong mỗi làn: trễ hạn + ★ + hàng ưu tiên + tên trong tab TRỄ HẠN trước, rồi deadline sớm trước, bằng hạn thì gần xong trước. Tab kênh mới: tạm vào làn Kho – chọn làn cho tab mới làm sau.
 - (17/11 tối, ĐÃ THAY bằng 5 làn) **Thứ tự bậc làn chính ĐỔI: 2 = DEALER (kể cả khi trễ – chỉ xếp theo deadline nên Dealer trễ tự lên đầu) → 3 = trễ hạn + ★ + hàng ưu tiên (tab ĐƠN ƯU TIÊN) ngang nhau → 4 = còn lại.** Thay quyết định 16/11 "hàng ưu tiên ngang Dealer". Làn lẻ / POD 10% (bậc 1) giữ nguyên.
