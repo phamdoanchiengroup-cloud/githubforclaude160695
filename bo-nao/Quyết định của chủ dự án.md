@@ -72,3 +72,6 @@ Liên quan: [[Việc chờ chủ dự án]] · [[TCC Bán hàng]] · [[00 Mục 
 
 ## 22/11 – Giao diện máy tính 3 cột
 - Từ 1280px: cột trái = danh sách trang + mục lục trang đang xem (tô sáng mục đang đọc); giữa = luận (tối đa ~860px); phải = lá số đổi theo hệ, dính khi cuộn (tới 520px), nút Phóng to. Vận hạn, Năm 2027, Lá số chủ sở hữu, Phi Tinh hiện bàn Tử Vi; trang khác thẻ hồ sơ. Ẩn ảnh quảng bá nổi ở góc. Dưới 1280px giữ nguyên. – [[TCC Giao diện]]
+
+## 23/11 – Repo GitHub
+- Giữ repo **công khai** và dùng bộ clasp cũ (bỏ qua việc chuyển riêng tư). Biết rằng: link web để lộ tên repo (ảnh tải qua jsDelivr/raw), nên ai lần theo cũng đọc được mã. Nếu sau này muốn riêng tư: phải tách ảnh + kd64.json sang repo ảnh công khai riêng trước, rồi dùng `4-KHOA-GITHUB.bat` (đã có, không ảnh hưởng khi chưa có khóa). – [[TCC Tự đẩy code lên Apps Script]]
