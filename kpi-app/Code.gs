@@ -3266,10 +3266,8 @@ function sapXepHangHV_(arr, ky) {
   return arr;
 }
 
-function loaiKPI_(v) {             // thang 22/10: S ≥ 95, A+ ≥ 90, A ≥ 85, B ≥ 80, C ≥ 70, D < 70
-  if (v >= 95) return 'S';
-  if (v >= 90) return 'A+';
-  if (v >= 85) return 'A';
+function loaiKPI_(v) {             // 23/11 (chủ dự án): thang 4 bậc A ≥ 90, B 80–89, C 70–79, D < 70 – bỏ S / A+
+  if (v >= 90) return 'A';
   if (v >= 80) return 'B';
   if (v >= 70) return 'C';
   return 'D';
@@ -3293,7 +3291,8 @@ function gioCoMat_(kyHieu){
 
 function docDuLieuKPI_(canLuuTru) {
   try { kqlTran150_(); } catch (eT) {}
-  try { kmTran150T9_(); } catch (eT9) {}   // 21/11 tối: trần 150% từ T9 (chốt lại T9, T10 theo cách mới)   // 21/11: trần hiệu suất CN 150% từ T11/2026 (1 lần)
+  try { kmTran150T9_(); } catch (eT9) {}
+  try { xl4Chuyen_(); } catch (eX4) {}   // 23/11: đổi loại đã lưu sang thang 4 bậc (1 lần)   // 21/11 tối: trần 150% từ T9 (chốt lại T9, T10 theo cách mới)   // 21/11: trần hiệu suất CN 150% từ T11/2026 (1 lần)
   napTruoc_(SHEET_NAP_);
   var dt = {
     nhatky: (canLuuTru && ss_().getSheetByName(TEN_LUU_TRU)) ? doc_(TEN_LUU_TRU).concat(doc_('NhatKySanXuat')) : doc_('NhatKySanXuat'),
@@ -5678,8 +5677,8 @@ function napPhan(token, phan) {
    ===================================================================== */
 var BC_THU_MUC = 'Báo cáo KPI hằng tháng';
 var BC_SHEET_NHAN = 'NguoiNhanBaoCao';
-var BC_LOAI = ['S','A+','A','B','C','D','Học việc'];
-var BC_MAU_LOAI = { 'S':'#5b3fa8', 'A+':'#1e7f5c', 'A':'#3aa57a', 'B':'#d29b2a', 'C':'#e07b39', 'D':'#c0392b', 'Học việc':'#7d868c' };
+var BC_LOAI = ['A','B','C','D','Thiếu công','Học việc'];   // 23/11: thang 4 bậc (+ Thiếu công từ KPI mới)
+var BC_MAU_LOAI = { 'Thiếu công':'#8e44ad', 'A':'#1e7f5c', 'B':'#d29b2a', 'C':'#e07b39', 'D':'#c0392b', 'Học việc':'#7d868c' };
 
 function bcSo_(v, n) {
   if (v === null || v === undefined || v === '' || isNaN(v)) return '–';
@@ -5847,14 +5846,14 @@ function bcTomTat_(du, mx) {
   function loc(a){ return mx ? a.filter(function(o){ return o.MaXuong === mx; }) : a; }
   function cong(X, f){ return Object.keys(X).filter(function(m){ return !mx || m === mx; }).reduce(function(s,m){ return s + (X[m][f] || 0); }, 0); }
   var kp = loc(du.kpi), kpT = loc(du.kpiTds);
-  var phanLoai = {}; BC_LOAI.forEach(function(l){ phanLoai[l] = 0; }); kp.forEach(function(o){ phanLoai[o.loai]++; });
+  var phanLoai = {}; BC_LOAI.forEach(function(l){ phanLoai[l] = 0; }); kp.forEach(function(o){ var l = xl4Cu_(o.loai); phanLoai[l] = (phanLoai[l] || 0) + 1; });
   var sl = cong(du.sl.X,'sl'), loi = cong(du.sl.X,'loi'), slT = cong(du.slT.X,'sl'), loiT = cong(du.slT.X,'loi');
   function tlCC(C){ var tu=0, mau=0; Object.keys(C.X).filter(function(m){ return !mx || m === mx; }).forEach(function(m){ var c=C.X[m], n=(du.ns[m]||{}).tong||0; if (c.ngayCong && n){ tu += c.cp + c.kp; mau += c.ngayCong*n; } }); return mau ? 100 - tu/mau*100 : null; }
   var ngay = {};
   Object.keys(du.sl.X).filter(function(m){ return !mx || m === mx; }).forEach(function(m){ var n = du.sl.X[m].ngay; Object.keys(n).forEach(function(d){ ngay[d] = (ngay[d]||0) + n[d]; }); });
   var r = {
     soNguoi:kp.length, kpiTB:bcTB_(kp,'tong'), kpiTBT:bcTB_(kpT,'tong'), hsTB:bcTB_(kp,'sl'), clTB:bcTB_(kp,'cl'), ttTB:bcTB_(kp,'tt'), atTB:bcTB_(kp,'at'),
-    phanLoai:phanLoai, tlTot: kp.length ? (phanLoai['S'] + phanLoai['A+'] + phanLoai['A']) / kp.length * 100 : null,
+    phanLoai:phanLoai, tlTot: kp.length ? phanLoai['A'] / kp.length * 100 : null,
     tlTotT: kpT.length ? kpT.filter(function(o){ return o.tong >= 90; }).length / kpT.length * 100 : null,
     sl:sl, slT:slT, tlLoi: sl ? loi/sl*100 : null, tlLoiT: slT ? loiT/slT*100 : null,
     cc:tlCC(du.cc), ccT:tlCC(du.ccT), vp:loc(du.vp).length, vpT:loc(du.vpT).length, tre:loc(du.tre).length, ngay:ngay
@@ -5950,7 +5949,7 @@ function bcTomTatHtml_(t, du) {
   return '<table><tr>' +
     bcO_('KPI trung bình công nhân', t.kpiTB === null ? '–' : bcSo_(t.kpiTB,1), bcLech_(t.kpiTB, t.kpiTBT, 1, ' điểm') + ' · ' + t.soNguoi + ' người', t.kpiTB >= 90 ? '#1e7f5c' : t.kpiTB >= 80 ? '#d29b2a' : '#c0392b') +
     bcO_('Tổng sản lượng (sp)', bcSo_(t.sl), t.slT ? bcLech_(t.sl / t.slT * 100, 100, 1, '%') + ' so với tháng trước' : 'chưa có tháng trước') +
-    bcO_('Tỷ lệ xếp loại S/A+/A', t.tlTot === null ? '–' : bcSo_(t.tlTot,1) + '%', bcLech_(t.tlTot, t.tlTotT, 1, ' điểm %')) + '</tr><tr>' +
+    bcO_('Tỷ lệ xếp loại A', t.tlTot === null ? '–' : bcSo_(t.tlTot,1) + '%', bcLech_(t.tlTot, t.tlTotT, 1, ' điểm %')) + '</tr><tr>' +
     bcO_('Tỷ lệ hàng không đạt (KCS)', t.tlLoi === null ? '–' : bcSo_(t.tlLoi,2) + '%', bcLech_(t.tlLoi, t.tlLoiT, 2, ' điểm %', true), t.tlLoi >= 3 ? '#c0392b' : '#127c74') +
     bcO_('Tỷ lệ chuyên cần', t.cc === null ? '–' : bcSo_(t.cc,1) + '%', bcLech_(t.cc, t.ccT, 1, ' điểm %')) +
     bcO_('Vi phạm nề nếp / nhập trễ', t.vp + ' / ' + t.tre, bcLech_(t.vp, t.vpT, 0, ' lượt', true)) + '</tr></table>';
@@ -5978,7 +5977,7 @@ function bcBangCD_(dsCD, du, coXuong) {
 function bcPhuongPhap_(du) {
   return '<h2>Ghi chú cách tính</h2><p class="nho" style="line-height:1.5">KPI công nhân lấy đúng như bảng KPI trên web: ' +
     (du.chinhThuc ? 'bản chốt chính thức của tháng.' : 'có xưởng chưa chốt chính thức nên đang tính trực tiếp từ dữ liệu hiện có; số có thể đổi đến khi chốt.') +
-    ' KPI = Sản lượng × trọng số + Chất lượng × trọng số + Tuân thủ × trọng số + An toàn × trọng số (trọng số theo đúng kỳ). Xếp loại: S ≥ 95, A+ ≥ 90, A ≥ 85, B ≥ 80, C ≥ 70, D &lt; 70. ' +
+    ' KPI = Sản lượng × trọng số + Chất lượng × trọng số + Tuân thủ × trọng số + An toàn × trọng số (trọng số theo đúng kỳ). Xếp loại: A ≥ 90, B 80–89, C 70–79, D &lt; 70 (Thiếu công: đi làm dưới 50% ngày công). ' +
     'Sản lượng chỉ gồm dòng đã duyệt. Tỷ lệ chuyên cần = 1 − (ngày vắng có phép + không phép) ÷ (số người × số ngày đã điểm danh). Không gồm trưởng/phó phòng trong bảng KPI công nhân (có bảng KPI quản lý riêng).</p>';
 }
 
@@ -5991,13 +5990,13 @@ function bcHtmlTong_(du) {
   // So sánh xưởng
   var bx = du.dsX.map(function(mx){ var x = bcTomTat_(du, mx); x.mx = mx; x.ql = du.ql.filter(function(q){ return q.MaXuong === mx && q.vaiTro === 'TP'; })[0]; return x; })
     .filter(function(x){ return x.soNguoi || x.sl; }).sort(function(a,b){ return (b.kpiTB||0) - (a.kpiTB||0); });
-  h += '<h2>3. So sánh các xưởng</h2><table class="bang"><tr><th class="c">#</th><th>Xưởng</th><th class="r">Người</th><th class="r">KPI TB</th><th style="width:15%">Phân loại S → D</th>' + (du.duSo ? '<th class="r">So tháng trước</th>' : '') + '<th class="r">Sản lượng</th><th class="r">Lỗi KCS</th><th class="r">Chuyên cần</th><th class="r">Vi phạm</th><th class="r">KPI trưởng phòng</th></tr>';
+  h += '<h2>3. So sánh các xưởng</h2><table class="bang"><tr><th class="c">#</th><th>Xưởng</th><th class="r">Người</th><th class="r">KPI TB</th><th style="width:15%">Phân loại A → D</th>' + (du.duSo ? '<th class="r">So tháng trước</th>' : '') + '<th class="r">Sản lượng</th><th class="r">Lỗi KCS</th><th class="r">Chuyên cần</th><th class="r">Vi phạm</th><th class="r">KPI trưởng phòng</th></tr>';
   bx.forEach(function(x, i){
     h += '<tr' + (i % 2 ? ' class="chan"' : '') + '><td class="c">' + (i+1) + '</td><td><b>' + bcE_(du.tenX[x.mx] || x.mx) + '</b></td><td class="r">' + x.soNguoi + '</td>' +
       '<td class="r"><b style="color:' + (x.kpiTB >= 90 ? '#1e7f5c' : x.kpiTB >= 80 ? '#b7791f' : '#c0392b') + '">' + bcSo_(x.kpiTB,1) + '</b></td><td>' + bcChongLoai_(x.phanLoai, x.soNguoi) + '</td>' +
       (du.duSo ? '<td class="r">' + bcLech_(x.kpiTB, x.kpiTBT, 1, '') + '</td>' : '') + '<td class="r">' + bcSo_(x.sl) + '</td><td class="r">' + (x.tlLoi === null ? '–' : bcSo_(x.tlLoi,2) + '%') + '</td>' +
       '<td class="r">' + (x.cc === null ? '–' : bcSo_(x.cc,1) + '%') + '</td><td class="r">' + x.vp + '</td><td class="r">' + (x.ql ? bcSo_(x.ql.tong,1) : '–') + '</td></tr>'; });
-  h += '</table><p class="nho">Thanh phân loại: <span style="color:' + BC_MAU_LOAI.S + '">■</span> S <span style="color:' + BC_MAU_LOAI['A+'] + '">■</span> A+ <span style="color:' + BC_MAU_LOAI.A + '">■</span> A <span style="color:' + BC_MAU_LOAI.B + '">■</span> B <span style="color:' + BC_MAU_LOAI.C + '">■</span> C <span style="color:' + BC_MAU_LOAI.D + '">■</span> D. Xếp theo KPI trung bình.</p>';
+  h += '</table><p class="nho">Thanh phân loại: <span style="color:' + BC_MAU_LOAI.A + '">■</span> A <span style="color:' + BC_MAU_LOAI.B + '">■</span> B <span style="color:' + BC_MAU_LOAI.C + '">■</span> C <span style="color:' + BC_MAU_LOAI.D + '">■</span> D. Xếp theo KPI trung bình.</p>';
   // Phân loại toàn nhà máy
   h += '<h2>4. Phân bố xếp loại toàn nhà máy</h2><table class="bang"><tr>' + BC_LOAI.map(function(l){ return '<th class="c" style="background:' + BC_MAU_LOAI[l] + ';border-color:' + BC_MAU_LOAI[l] + '">' + l + '</th>'; }).join('') + '</tr><tr>' +
     BC_LOAI.map(function(l){ return '<td class="c"><b style="font-size:13pt">' + t.phanLoai[l] + '</b><br><span class="nho">' + (t.soNguoi ? bcSo_(t.phanLoai[l]/t.soNguoi*100,1) : '0') + '%</span></td>'; }).join('') + '</tr></table>';
@@ -6123,7 +6122,7 @@ function guiBaoCaoThang_(ky) {
   }
   var t = bcTomTat_(du, ''), nd = bcNhanDinh_(du, '').slice(0, 5);
   var than = '<div style="font-family:Arial,sans-serif;font-size:14px;color:#1d2a33"><p>Kính gửi Ban lãnh đạo,</p><p>Hệ thống KPI gửi báo cáo sản xuất &amp; KPI <b>' + bcThang_(ky) + '</b>' + (du.chinhThuc ? ' (đã chốt chính thức)' : ' (tạm tính)') + '.</p>' +
-    '<p>KPI trung bình công nhân: <b>' + bcSo_(t.kpiTB,1) + '</b> · Tổng sản lượng: <b>' + bcSo_(t.sl) + '</b> sp · Tỷ lệ S/A+/A: <b>' + bcSo_(t.tlTot,1) + '%</b></p><ul>' +
+    '<p>KPI trung bình công nhân: <b>' + bcSo_(t.kpiTB,1) + '</b> · Tổng sản lượng: <b>' + bcSo_(t.sl) + '</b> sp · Tỷ lệ loại A: <b>' + bcSo_(t.tlTot,1) + '%</b></p><ul>' +
     nd.map(function(x){ return '<li style="margin:4px 0">' + x.s + '</li>'; }).join('') + '</ul><p>Chi tiết trong tệp PDF đính kèm' + (thuMuc ? ' và trên Google Drive: <a href="' + thuMuc.getUrl() + '">' + BC_THU_MUC + ' / ' + ky + '</a>' : '') + '.</p>' +
     '<p style="color:#8a949c;font-size:12px">Email tự động từ web KPI sản xuất.</p></div>';
   if (nhan.tong.length) {
@@ -7710,7 +7709,7 @@ function danhSachVanPhong(token) {
   ds.sort(function(a, b) { return (thuTu[a.vaiTro] - thuTu[b.vaiTro]) || (a.HoTen < b.HoTen ? -1 : 1); });
   return sach_({ ok: true, ds: ds, muc: HS_MUC });
 }
-var KPI_BAN_MAY = '23/11/2026 09:29';   // giờ dựng Code.gs (22/10)
+var KPI_BAN_MAY = '23/11/2026 16:52';   // giờ dựng Code.gs (22/10)
 /* =====================================================================
    KỸ NĂNG (22/10, chủ dự án nhờ thiết kế + tham khảo chuyên gia nhân sự / đào tạo)
    - Danh mục: trưởng / phó phòng đề xuất kỹ năng của xưởng (tên, mô tả, tiêu chí đạt, công đoạn liên quan)
@@ -10429,7 +10428,7 @@ function layThongKe(token, thang, lamMoi) {
     var all = docAnToan_('KPIThang'), kys = {}; all.forEach(function(r) { kys[String(r.Ky).replace(/^'/, '')] = 1; });
     var dsKy = Object.keys(kys).sort(), kyNay = kyVN_(), tam = thang >= kyNay;   // tháng đang chạy: bảng KPI chỉ là tạm tính giữa tháng (sản lượng chưa nhập đủ) -> so sánh bằng tháng đã chốt gần nhất
     var ky = dsKy.filter(function(k) { return k <= thang && k < kyNay; }).pop() || (dsKy.indexOf(thang) >= 0 ? thang : '');
-    var giu = dsKy.filter(function(k) { return k <= ky; }).slice(-4), bac = { 'S': 6, 'A+': 5, 'A': 4, 'B': 3, 'C': 2, 'D': 1 };
+    var giu = dsKy.filter(function(k) { return k <= ky; }).slice(-4), bac = { 'A': 4, 'B': 3, 'C': 2, 'D': 1 };   // 23/11: 4 bậc
     var theoKy = {}, nguoi = {};
     all.forEach(function(r) {
       var k = String(r.Ky).replace(/^'/, ''); if (giu.indexOf(k) < 0) return;
@@ -12714,7 +12713,7 @@ var KPI_MOI_TU = '2026-09', __KCONG = {};   // 21/11 tối (chủ dự án): áp
 var KM_CO_PHEP = { 'P': 1, 'NL': 1, 'Nb': 1, 'Cu': 1, 'TS': 1, 'Ta': 1, 'OD': 1 };   // nghỉ phép năm, lễ, bù, cưới, tang, thai sản, ốm có giấy… – không tính vào ngày phải làm
 var KM_KHONG_LUONG = { 'Nkl': 1, 'KLD': 1, 'VGĐ': 1 };
 var KM_HE_SO_LOI = 5, KM_TRU_QUEN_DD = 10, KM_TRU_NKP = 15, KM_TRU_NKL = 5, KM_NKL_MIEN = 2, KM_TRU_MUON = 2, KM_CONG_DU = 0.8, KM_CONG_TOI_THIEU = 0.5;
-var KM_BAC = ['S', 'A+', 'A', 'B', 'C', 'D'];
+var KM_BAC = ['A', 'B', 'C', 'D'];   // 23/11: thang 4 bậc
 function kmCuoiLam_(maNV, dt) {   // người đã nghỉ việc: ngày cuối có nhật ký (không có cột ngày nghỉ việc)
   if (!dt._kmTT) { dt._kmTT = {}; (dt.nhansuTatCa || dt.nhansu || []).forEach(function(x){ dt._kmTT[String(x.MaNV).trim()] = String(x.TrangThai).trim(); }); }
   if (dt._kmTT[String(maNV).trim()] !== 'Nghỉ việc') return '';
@@ -12725,7 +12724,7 @@ function kmTyLeCong_(maNV, ky) { var c = __KCONG[maNV + '|' + ky]; return c && c
 var __KM_CHOT = null;
 function kmLoaiChot_(maNV, ky) {   // tháng đã chốt (đọc snapshot KPIThang, không tính lại công): lấy loại đã lưu
   if (!__KM_CHOT) { __KM_CHOT = {}; try { (ss_().getSheetByName('KPIThang') ? doc_('KPIThang') : []).forEach(function(r){ __KM_CHOT[String(r.MaNV).trim() + '|' + chuanKy_(r.Ky)] = String(r.Loai || '').trim(); }); } catch (e) {} }
-  return __KM_CHOT[String(maNV).trim() + '|' + ky] || '';
+  return xl4Cu_(__KM_CHOT[String(maNV).trim() + '|' + ky] || '');
 }
 function kmThieuCong_(maNV, ky) { if (String(ky) < KPI_MOI_TU) return false; var t = kmTyLeCong_(maNV, ky); return t === null ? kmLoaiChot_(maNV, ky) === 'Thiếu công' : t < KM_CONG_TOI_THIEU; }
 function kmLoai_(maNV, ky, tong) {
@@ -12734,6 +12733,46 @@ function kmLoai_(maNV, ky, tong) {
   if (t < KM_CONG_TOI_THIEU) return 'Thiếu công';
   if (t < KM_CONG_DU) { var i = KM_BAC.indexOf(L); if (i >= 0 && i < KM_BAC.length - 1) L = KM_BAC[i + 1]; }
   return L;
+}
+
+/* ===== 23/11 (chủ dự án): THANG 4 BẬC A / B / C / D – bỏ S, A+ ===== */
+function xl4Cu_(l) {   // chữ loại cũ (6 bậc) -> 4 bậc theo ngưỡng; giữ Thiếu công / Học việc
+  l = String(l || '').trim();
+  return l === 'S' || l === 'A+' ? 'A' : l;   // A (85–89) / B (80–84) cũ đều = B mới – riêng 'A' cũ cần TongKPI (xem xl4Chuyen_)
+}
+function xl4Cu6_(v, luc) {   // loại theo thang cũ tại lúc chốt: trước 22/10 dùng A+ ≥ 100, A ≥ 90…; từ 22/10 dùng S ≥ 95, A+ ≥ 90, A ≥ 85…
+  var tr = luc && String(luc) < '2026-10-22';
+  if (tr) return v >= 100 ? 'A+' : v >= 90 ? 'A' : v >= 80 ? 'B' : v >= 70 ? 'C' : 'D';
+  return v >= 95 ? 'S' : v >= 90 ? 'A+' : v >= 85 ? 'A' : v >= 80 ? 'B' : v >= 70 ? 'C' : 'D';
+}
+function xl4Moi_(tong, cu, luc) {   // loại 4 bậc cho 1 dòng đã lưu: tính lại từ điểm; nếu dòng cũ đã bị hạ bậc (ngày công) thì hạ 1 bậc
+  cu = String(cu || '').trim();
+  if (cu === 'Thiếu công' || cu === 'Học việc' || cu === '' || !isFinite(Number(tong))) return cu;
+  var v = Number(tong), moi = loaiKPI_(v), ky = xl4Cu6_(v, luc), thu6 = ['S', 'A+', 'A', 'B', 'C', 'D'];
+  if (thu6.indexOf(cu) > thu6.indexOf(ky) && thu6.indexOf(ky) >= 0) { var i = KM_BAC.indexOf(moi); if (i >= 0 && i < KM_BAC.length - 1) moi = KM_BAC[i + 1]; }
+  return moi;
+}
+function xl4Chuyen_() {   // 1 lần: đổi cột Loai đã lưu (KPIThang + KPIQuanLyThang) sang thang 4 bậc – áp ngược mọi tháng, kể cả T9, T10
+  var p = PropertiesService.getScriptProperties(); if (p.getProperty('XL4_CHUYEN') === '1') return;
+  var lock = LockService.getScriptLock(); if (!lock.tryLock(20000)) return;
+  try {
+    if (p.getProperty('XL4_CHUYEN') === '1') return;
+    ['KPIThang', 'KPIQuanLyThang'].forEach(function(ten) {
+      var sh = ss_().getSheetByName(ten); if (!sh || sh.getLastRow() < 2) return;
+      var dau = sh.getRange(1, 1, 1, sh.getLastColumn()).getValues()[0].map(String);
+      var cL = dau.indexOf('Loai'), cT = dau.indexOf('TongKPI'), cC = dau.indexOf('ThoiDiemChot');
+      if (cT < 0) cT = dau.indexOf('Tong');
+      if (cL < 0 || cT < 0) return;
+      var n = sh.getLastRow() - 1, T = sh.getRange(2, cT + 1, n, 1).getValues(), L = sh.getRange(2, cL + 1, n, 1).getValues(),
+          C = cC >= 0 ? sh.getRange(2, cC + 1, n, 1).getValues() : null, doi = 0;
+      var moi = L.map(function(r, i) {
+        var luc = C && C[i][0] ? (C[i][0] instanceof Date ? Utilities.formatDate(C[i][0], 'Asia/Ho_Chi_Minh', 'yyyy-MM-dd') : String(C[i][0]).slice(0, 10)) : '';
+        var x = xl4Moi_(T[i][0], r[0], luc); if (x !== r[0]) doi++; return [x]; });
+      if (doi) sh.getRange(2, cL + 1, n, 1).setValues(moi);
+      try { xoaCache_(ten); } catch (e) {}
+    });
+    p.setProperty('XL4_CHUYEN', '1');
+  } finally { lock.releaseLock(); }
 }
 
 function kmTran150T9_() {   // 1 lần: thêm dòng trọng số từ 2026-09-01, giữ trọng số tháng 9, trần 150%

@@ -20,7 +20,8 @@ Những điều đã chốt. Đừng đề xuất lại những gì ghi "không 
 - Phân tích định mức chỉ gợi ý **nâng** định mức lỏng về mốc 85%. **Không gợi ý hạ** định mức chặt – có thể đang đào tạo nhân viên mới (chủ dự án đã nói từ trước, nhắc lại 21/10). – [[KPI Phân tích định mức]]
 
 ## Xếp loại (22/10)
-- Thang mới: **S ≥ 95, A+ ≥ 90, A ≥ 85, B ≥ 80, C ≥ 70, D < 70**. – [[KPI Thang xếp loại]]
+- ~~Thang 22/10: S ≥ 95, A+ ≥ 90, A ≥ 85, B ≥ 80, C ≥ 70, D < 70~~ – **thay 23/11**.
+- **23/11: thang 4 bậc A ≥ 90 · B 80–89 · C 70–79 · D < 70** (+ Thiếu công; 50–80% ngày công hạ 1 bậc). Bỏ hẳn S / A+, áp ngược mọi tháng đã lưu (kể cả T9, T10). HC – Kế toán làm lại bảng thưởng theo 4 bậc (chủ dự án tự báo). Đừng đề xuất lại 3 bậc ABC. – [[KPI Thang xếp loại]]
 
 - **Không dùng trần hiệu suất sản lượng** để ép người giỏi về 90–95% (22/10: "người ta làm được nhiều thật thì phải được ghi nhận"). Giữ `TranKPI` = 500; muốn người giỏi nhất quanh 90–95% thì chỉnh bằng định mức. – [[KPI Phân tích định mức]]
 

@@ -3989,12 +3989,12 @@ function tkVeDM(D){
   return h; }
 
 /* ---------- KPI ---------- */
-var TK_LOAI=['S','A+','A','B','C','D','Học việc'];
+var TK_LOAI=['A','B','C','D','Thiếu công','Học việc'];   /* 23/11: thang 4 bậc */
 function tkVeKPI(D){
   var K=D.kpi; if(!K||!K.ky) return '<div class="alert a-wn">Chưa có KPI đã chốt.</div>';
   var M=dhMau(), kx=K.theoKy[K.ky]||{}, xs=D.xuong.filter(function(x){return kx[x[0]]}), h='', nx=[];
   if(K.tamTinh) h+='<div class="dh-ghi">Tháng '+D.thang.slice(5)+' đang chạy: KPI mới là <b>tạm tính</b> (sản lượng chưa nhập đủ, điểm thấp giả) nên ở đây phân tích tháng <b>'+K.ky.slice(5)+'/'+K.ky.slice(0,4)+'</b> đã chốt. Xem KPI tạm tính tháng này ở tab Bảng KPI.</div>';
-  var mau={'S':'#0b6e3b','A+':M.xanh,'A':M.teal,'B':M.lam,'C':M.cam,'D':M.do,'Học việc':M.xam,'?':M.xam};
+  var mau={'A':M.xanh,'Thiếu công':'#8e44ad','B':M.lam,'C':M.cam,'D':M.do,'Học việc':M.xam,'?':M.xam};
   var T={n:0,loai:{}}; xs.forEach(function(x){ var o=kx[x[0]]; T.n+=o.n; Object.keys(o.loai).forEach(function(l){T.loai[l]=(T.loai[l]||0)+o.loai[l]}); });
   var ls=TK_LOAI.concat(Object.keys(T.loai).filter(function(l){return TK_LOAI.indexOf(l)<0}));
   var rows=xs.map(function(x){ var o=kx[x[0]]; return [x[1].replace(/^Xưởng /,''),ls.map(function(l){return [mau[l]||M.xam,o.loai[l]||0,l]})]; });

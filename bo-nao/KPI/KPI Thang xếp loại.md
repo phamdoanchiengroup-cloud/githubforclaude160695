@@ -2,6 +2,8 @@
 
 Nhóm: KPI · Cập nhật 22/10/2026
 Liên quan: [[KPI Tổng quan và cách dựng]] · [[KPI Báo cáo tháng]] · [[KPI Âm thanh và giọng Rhino]] · [[Quyết định của chủ dự án]]
+> **23/11: THAY BẰNG THANG 4 BẬC** A ≥ 90 · B 80–89 · C 70–79 · D < 70 (bỏ S / A+; vá `tests/xep-loai-4/`, kiểm thử `tests/xep-loai.js`; loại đã lưu đổi bằng `xl4Chuyen_()` 1 lần). Phần dưới là lịch sử thang 22/10.
+
 
 ## Thang hiện hành (chủ dự án 22/10)
 - **S ≥ 95 · A+ ≥ 90 · A ≥ 85 · B ≥ 80 · C ≥ 70 · D < 70** (mốc tính "từ … trở lên").

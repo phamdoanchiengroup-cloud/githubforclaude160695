@@ -16,7 +16,7 @@ console.log('\n1. Bỏ học việc từ T11 – tháng cũ không đổi');
 ok(dangLam.every(x => !c.laHocViecThang_(x.MaNV, T11)), 'T11: không ai là học việc (' + dangLam.length + ' người đang làm)');
 const hv10 = dangLam.filter(x => c.laHocViecThang_(x.MaNV, T10)).length;
 ok(c.laHocViecThang_.toString().includes('KPI_MOI_TU') && hv10 >= 0, 'T8 vẫn dùng quy tắc học việc cũ (' + hv10 + ' người học việc T8)');
-ok(c.loaiCo_(mau, T10, 91) === 'A+' && c.loaiCo_(mau, T10, 60) === 'D', 'T8: loại theo điểm như cũ (91 → A+, 60 → D)');
+ok(c.loaiCo_(mau, T10, 91) === 'A' && c.loaiCo_(mau, T10, 60) === 'D', 'T8: loại theo điểm (thang 4 bậc 23/11: 91 → A, 60 → D)');
 
 console.log('\n2. Chuyên cần theo chấm công (người mẫu ' + mau + ')');
 const k0 = c.kpiThang_(mau, T11, dt);
@@ -38,10 +38,10 @@ ok(Math.abs(k.tt - kGoc.tt) < 0.01 && k.cong.lv === kGoc.cong.lv - 3, 'phép / l
 
 console.log('\n3. Ngày công tối thiểu');
 xoaCC(); k = c.kpiThang_(mau, T11, dt);
-ok(c.loaiCo_(mau, T11, 91) === 'A+', 'đủ công: 91 điểm → A+');
+ok(c.loaiCo_(mau, T11, 91) === 'A', 'đủ công: 91 điểm → A');
 const lv = kGoc.cong.lv, nghi = Math.ceil(lv * 0.3); const kh = {}; for (let i = 0; i < nghi; i++) kh[i] = 'Nkl';
 datCC(kh); k = c.kpiThang_(mau, T11, dt);
-ok(k.cong.cong / k.cong.lv < 0.8 && k.cong.cong / k.cong.lv >= 0.5 && c.loaiCo_(mau, T11, 91) === 'A', 'đi ' + k.cong.cong + '/' + k.cong.lv + ' ngày (50–80%) → hạ 1 bậc: 91 → A', [k.cong, c.loaiCo_(mau, T11, 91)]);
+ok(k.cong.cong / k.cong.lv < 0.8 && k.cong.cong / k.cong.lv >= 0.5 && c.loaiCo_(mau, T11, 91) === 'B', 'đi ' + k.cong.cong + '/' + k.cong.lv + ' ngày (50–80%) → hạ 1 bậc: 91 → B', [k.cong, c.loaiCo_(mau, T11, 91)]);
 ok(c.loaiCo_(mau, T11, 60) === 'D', 'đã là D thì vẫn D');
 xoaCC(); const kh2 = {}; for (let i = 0; i < Math.ceil(lv * 0.6); i++) kh2[i] = 'Nkp';
 datCC(kh2); k = c.kpiThang_(mau, T11, dt);

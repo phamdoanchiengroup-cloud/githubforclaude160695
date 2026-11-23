@@ -3012,7 +3012,7 @@ function ngLoi(r){
     .reduce(function(a,k){return a+Number(k.SoLuongKhongDat||0)},0);
 }
 function loai(v){
-  if(v>=95)return['S','p-ok'];if(v>=90)return['A+','p-ok'];if(v>=85)return['A','p-ok'];   // thang 22/10
+  if(v>=90)return['A','p-ok'];   // 23/11: thang 4 bậc A/B/C/D
   if(v>=80)return['B','p-wn'];if(v>=70)return['C','p-wn'];return['D','p-bd'];
 }
 function cls(v){return v>=90?'':(v>=80?'wn':'bd')}
@@ -3353,7 +3353,7 @@ function camNangChiTiet(vt){
         '<p>Trụ Vận hành bắt đầu 100, trừ dần: điểm danh muộn −5/ngày, quên điểm danh −10/ngày, duyệt trễ −2/CN, duyệt ẩu −2/dòng, không nhắc CN nhập −2/CN.</p>'+
         '<div class="cn-note o"><b>Phó phòng tính giống Trưởng phòng</b>Thuần KPI quản lý; sản lượng kèm CN mới không tính điểm.</div>'],
       ['Thang xếp loại & chốt tháng',
-        '<p>Xếp loại: <span class="cn-pill g">S ≥95</span> <span class="cn-pill g">A+ 90–94</span> <span class="cn-pill g">A 85–89</span> <span class="cn-pill c">B 80–84</span> <span class="cn-pill a">C 70–79</span> <span class="cn-pill r">D &lt;70</span></p>'+
+        '<p>Xếp loại: <span class="cn-pill g">A ≥90</span> <span class="cn-pill c">B 80–89</span> <span class="cn-pill a">C 70–79</span> <span class="cn-pill r">D &lt;70</span> · Thiếu công: đi làm dưới 50% ngày công; 50–80% ngày công hạ 1 bậc.</p>'+
         '<ul><li>Tháng hiện tại: tính trực tiếp.</li>'+
         '<li>Snapshot tạm tự động 9h mỗi ngày.</li>'+
         '<li>Tháng trước được chốt chính thức lúc 23h ngày làm việc thứ 3 của tháng sau (để kịp duyệt sản lượng cuối tháng).</li>'+
@@ -3610,7 +3610,7 @@ function vKPIQuanLy(){
     '• <b>Vận hành (40%)</b>: bắt đầu 100 điểm, trừ dần — điểm danh muộn −5/ngày, quên điểm danh −10/ngày, duyệt trễ −2/công nhân (quá 2 ngày làm việc), duyệt ẩu −2/dòng bị BĐH từ chối, không nhắc CN nhập −2/công nhân quá hạn.<br>'+
     '• <b>Nề nếp (10%)</b>: chuyên cần của chính quản lý.<br>'+
     '• <b>Phó phòng</b> tính giống Trưởng phòng (thuần KPI quản lý); sản lượng ghi nhận khi kèm CN mới không tính vào điểm.<br>'+
-    'Xếp loại: S (≥95), A+ (90–94), A (85–89), B (80–84), C (70–79), D (&lt;70).'+
+    'Xếp loại: A (≥90), B (80–89), C (70–79), D (&lt;70); Thiếu công khi đi làm dưới 50% ngày công.'+
     '</div></div>';
   h+='<div id="qlBody"><div class="empty">Đang tải…</div></div>';
   $('main').innerHTML=h;
@@ -3663,7 +3663,7 @@ function vKPIQuanLy(){
     $('qlBody').innerHTML=b;
   });
 }
-function loaiFE(v){ return v>=95?'S':(v>=90?'A+':(v>=85?'A':(v>=80?'B':(v>=70?'C':'D')))); }
+function loaiFE(v){ return v>=90?'A':(v>=80?'B':(v>=70?'C':'D')); }   /* 23/11: 4 bậc */
 function mauKPI(v){ var s=document.documentElement.getAttribute('data-gd')==='sang';
   return v>=90?(s?'#1f7a48':'#66d49a'):(v>=80?(s?'#0b7a73':'#2fd3c6'):(v>=70?(s?'#a86400':'#f0b04e'):(s?'#c0302b':'#f47272'))); }
 function f1(n){ return (Number(n)||0).toFixed(1); }
@@ -4650,10 +4650,8 @@ function maiDoi(){maiNho('kpi_mai',maiTat()?'bat':'tat');maiNut();maiGocDong();t
 /* Động viên theo hạng KPI (số liệu thật) */
 function maiKPI(hang,tong){
   if(maiTat())return '';
-  var t={'S':['vui covu','Hạng <b>S</b> – xuất sắc! Bạn đang <b>dẫn đầu</b>, giữ nhịp này và chỉ mẹo cho đồng đội nhé.'],
-    'A+':['vui covu','Rất giỏi! Còn <b>'+f(Math.max(0,95-tong))+'%</b> nữa là lên hạng S.'],
-    'A':['vui','Rất tốt! Còn <b>'+f(Math.max(0,90-tong))+'%</b> nữa là lên hạng A+.'],
-    'B':['','Ổn định đó! Còn <b>'+f(Math.max(0,85-tong))+'%</b> nữa là lên hạng A. Thử <b>giảm hàng lỗi</b> – bớt một cái lỗi là điểm tăng lên.'],
+  var t={'A':['vui covu','Hạng <b>A</b> – xuất sắc! Bạn đang <b>dẫn đầu</b>, giữ nhịp này và chỉ mẹo cho đồng đội nhé.'],   /* 23/11: thang 4 bậc */
+    'B':['','Ổn định đó! Còn <b>'+f(Math.max(0,90-tong))+'%</b> nữa là lên hạng A. Thử <b>giảm hàng lỗi</b> – bớt một cái lỗi là điểm tăng lên.'],
     'C':['lo','Tháng này hơi vất vả. Rhino tin bạn làm được hơn! <b>Hỏi trưởng phòng</b> mẹo của công đoạn khó nhé.'],
     'D':['lo','Đừng nản nhé! Nhập <b>đủ sản lượng mỗi ngày</b> và hỏi trưởng phòng cách làm nhanh hơn – Rhino cổ vũ bạn!']}[hang]||['','Cố lên nhé!'];
   return '<div class="mai-bang" style="margin-top:12px">'+maiHinh(t[0])+'<div class="nd"><small>Rhino nói về KPI của bạn · hạng '+esc(hang)+'</small><div class="kh" style="font-weight:500">'+t[1]+'</div></div></div>';
@@ -8244,7 +8242,7 @@ vKPICaNhanToi=function(){
   var kq=_ttVKPICaNhanToi.apply(this,arguments);
   try{
     var k=kpi(ME.maNV), hang=k?loai(k.tong)[0]:'', chuoi=maiChuoi(), khoa='kpi_phao_'+ME.tk;
-    var hangCu=maiNho('kpi_hang_'+ME.tk)||'', thu=['D','C','B','A','A+','S'], lenHang=hang&&hangCu&&thu.indexOf(hang)>thu.indexOf(hangCu);
+    var hangCu=maiNho('kpi_hang_'+ME.tk)||'', thu=['D','C','B','A'], lenHang=hang&&hangCu&&thu.indexOf(hang)>thu.indexOf(hangCu);
     if(hang&&!vhHocViec())maiNho('kpi_hang_'+ME.tk,hang);
     if(lenHang&&!vhHocViec()&&maiNho(khoa)!==today()){   // C7: pháo giấy chỉ khi LÊN HẠNG (giữ giá trị phần thưởng)
       maiNho(khoa,today());
@@ -8821,7 +8819,7 @@ function chiXemDon(){
 </script>
 <script>
 /* ===== 19. PHẦN GIAO DIỆN TẢI SAU (12/10) – SoDo.html, HoatAnh.html: chỉ tải khi cần, nhớ lại theo phiên bản ===== */
-var MANH_VER={"SoDo": "d9bc7ce73f034629", "HoatAnh": "b23cbe69d6aae56e", "AmThanh": "c690fabe4419160c", "QuyTrinh": "72b9226157", "CauHinhGay": "8c0f42823f07518c", "DonBan": "d30cb1c2865083d6"};
+var MANH_VER={"SoDo": "493b0b0c976b4e49", "HoatAnh": "b23cbe69d6aae56e", "AmThanh": "c690fabe4419160c", "QuyTrinh": "7841bf337b", "CauHinhGay": "8c0f42823f07518c", "DonBan": "d30cb1c2865083d6"};
 var __manh={da:{},cho:{}};
 function ganManh_(nd){
   var js=[], ngoai=String(nd).replace(/<script>([\s\S]*?)<\/script>/g,function(_,x){js.push(x);return ''});
@@ -9743,7 +9741,7 @@ function hsGhiChuDong(r){
 }
 </script>
 <script>
-var KPI_BAN = '23/11/2026 09:29';
+var KPI_BAN = '23/11/2026 16:53';
 (function(){
   var cu = window.veNav;
   window.veNav = function(){
@@ -10508,7 +10506,7 @@ function holoDoiTong() {
 }
 
 /* ---------- Đài quan sát KPI (đầu màn Tổng quan) ---------- */
-var HOLO_THANG = [[95, 'S'], [90, 'A+'], [85, 'A'], [80, 'B'], [70, 'C'], [0, 'D']];
+var HOLO_THANG = [[90, 'A'], [80, 'B'], [70, 'C'], [0, 'D']];   // 23/11: 4 bậc
 function holoLoai(v) { for (var i = 0; i < HOLO_THANG.length; i++) if (v >= HOLO_THANG[i][0]) return HOLO_THANG[i][1]; }
 function holoKeTiep(v) { for (var i = HOLO_THANG.length - 1; i >= 0; i--) if (HOLO_THANG[i][0] > v) return HOLO_THANG[i]; return null; }
 function holoSo(v, d) { return Number(v).toLocaleString('vi-VN', { minimumFractionDigits: d || 0, maximumFractionDigits: d || 0 }); }
@@ -10561,7 +10559,7 @@ function holoChomSao(sl) {
   for (var t = 0; t < 72; t++) { var a0 = t * 5 * Math.PI / 180, l = t % 2 ? 5 : 10; s += '<line x1="' + (C + 178 * Math.cos(a0)).toFixed(1) + '" y1="' + (C + 178 * Math.sin(a0)).toFixed(1) + '" x2="' + (C + (178 + l) * Math.cos(a0)).toFixed(1) + '" y2="' + (C + (178 + l) * Math.sin(a0)).toFixed(1) + '" stroke="rgba(255,255,255,.5)"/>'; }
   s += '</g>';
   var aNhan = (-90 + 180 / Math.max(1, n)) * Math.PI / 180;   // chữ hạng đặt ở khe giữa 2 ngôi sao đầu, không đè sao
-  [[70, 'C'], [80, 'B'], [85, 'A'], [90, 'A+'], [95, 'S']].forEach(function (m) {
+  [[70, 'C'], [80, 'B'], [90, 'A']].forEach(function (m) {
     var r = rk(m[0]);
     s += '<circle class="hl-tri" cx="200" cy="200" r="' + r.toFixed(1) + '" fill="none" stroke="' + (m[0] === 80 ? 'rgba(251,113,133,.5)' : 'rgba(255,255,255,.22)') + '" stroke-dasharray="' + (m[0] === 80 ? '4 4' : '2 5') + '"/>' +
       '<text class="hl-tri" x="' + (C + r * Math.cos(aNhan)).toFixed(1) + '" y="' + (C + r * Math.sin(aNhan) + 3.5).toFixed(1) + '" fill="#f5c86b" font-size="10" font-family="Exo 2,sans-serif" text-anchor="middle">' + m[1] + '</text>';
@@ -10600,7 +10598,7 @@ function holoDaiQuanSat() {
     return '<button type="button" class="hl-dg" data-x="' + esc(x.ma) + '" title="Mở Bảng KPI ' + esc(x.t) + '"><span>' + esc(x.t) + ' <span class="hl-nho">· ' + x.n + ' người</span></span><b class="' + (x.k < 80 ? 'thap' : x.k >= 90 ? 'cao' : '') + '" data-dem="' + x.k.toFixed(1) + '" data-so="1">' + holoSo(x.k, 1) + '</b>' +
       '<span class="hl-vach"><i class="' + (x.k < 80 ? 'thap' : '') + '" style="width:' + Math.max(0, Math.min(100, (x.k - 60) / 40 * 100)).toFixed(1) + '%"></i></span></button>';
   }).join('') : '<div class="hl-nho">Chưa có sản lượng tháng này.</div>') + '</div></div>';
-  h += '<div class="hl-giua">' + holoChomSao(sl) + '<div class="hl-hang">' + ['D', 'C', 'B', 'A', 'A+', 'S'].map(function (l) { return '<span' + (sl.soNguoi && l === holoLoai(sl.tb) ? ' class="bat"' : '') + '>' + l + '</span>'; }).join('') + '</div>' +
+  h += '<div class="hl-giua">' + holoChomSao(sl) + '<div class="hl-hang">' + ['D', 'C', 'B', 'A'].map(function (l) { return '<span' + (sl.soNguoi && l === holoLoai(sl.tb) ? ' class="bat"' : '') + '>' + l + '</span>'; }).join('') + '</div>' +
     '<p class="hl-nho" style="text-align:center;margin:6px 0 0">Mỗi ngôi sao là một xưởng, càng xa tâm KPI càng cao. Vòng đỏ đứt = 80%. Sao vàng ≥ 90, sao hồng &lt; 80. Vệt sáng quét = radar đang theo dõi.' + (sl.soNguoi && kt ? ' Nhà máy còn ' + holoSo(kt[0] - sl.tb, 1) + ' điểm lên ' + kt[1] + '.' : '') + ' Bấm vào sao để mở Bảng KPI xưởng đó.</p></div>';
   var tc = sl.daD + sl.choD, pTc = tc ? sl.daD / tc * 100 : 0;
   h += '<div><div class="hl-o"><h3>Có mặt hôm nay</h3><div id="hlCM">' + holoCoMat(window.__tqSiSo) + '</div></div>' +
@@ -11080,7 +11078,7 @@ function nsnCapNhat(){ call('capNhatNgoaiSXTuFile',[],function(r){ if(!r||!r.ok)
 </script>
 <script>
 /* ===== 38. TĂNG TỐC ĐỢT 3 (08/11) – bộ đo tốc độ + mở nhanh bằng số lần trước (mã hóa) ===== */
-var TD_BUF=[], TD_T=null, DL_VER='072bf187ed', DL_HAN=12*3600e3, DL_BO=['SoCCCD','DienThoai','DiaChi','SdtKhanCap','LuongCoBan','NamSinh','SoTaiKhoan','Email'];
+var TD_BUF=[], TD_T=null, DL_VER='98cdd099aa', DL_HAN=12*3600e3, DL_BO=['SoCCCD','DienThoai','DiaChi','SdtKhanCap','LuongCoBan','NamSinh','SoTaiKhoan','Email'];
 function tdGhi_(f,ms,sv){ if(!(ms>=0)||!f) return; TD_BUF.push({f:String(f),ms:Math.round(ms),sv:(typeof sv==='number'?Math.round(sv):null)});
   if(TD_BUF.length>=15) tdGui_(); else if(!TD_T) TD_T=setTimeout(tdGui_,180000); }
 function tdGui_(){ if(TD_T){clearTimeout(TD_T);TD_T=null;} if(!TD_BUF.length||typeof TOKEN==='undefined'||!TOKEN) return;

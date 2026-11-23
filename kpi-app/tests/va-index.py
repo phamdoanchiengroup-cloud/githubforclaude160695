@@ -872,5 +872,7 @@ exec(io.open(os.path.join(D, 'menu-nut', 'va-menu-nut-web.py'), encoding='utf-8'
 exec(io.open(os.path.join(D, 'don-ban', 'va-don-ban-web.py'), encoding='utf-8').read())
 # ---------------------------------------------------------------- 51. KPI mới từ T11 (21/11): bỏ học việc, loại máy chủ có ngày công tối thiểu
 exec(io.open(os.path.join(D, 'kpi-moi', 'va-kpi-moi-web.py'), encoding='utf-8').read())
+# ---------------------------------------------------------------- 52. Thang 4 bậc A/B/C/D (23/11) – LUÔN để cuối
+exec(io.open(os.path.join(D, 'xep-loai-4', 'va-xep-loai-4-web.py'), encoding='utf-8').read())
 io.open(os.path.join(D, '..', 'Index.html'), 'w', encoding='utf-8').write(s)
 print('OK Index.html')
