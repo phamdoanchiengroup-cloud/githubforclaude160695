@@ -9,6 +9,7 @@ Mỗi lần Claude tải số thật (Sheet cầu nối, cách đọc ở [[Bài
 | 16/11 (bản chụp 9h) | 8.768 | 3.312 | 1.653 | 834 | 384 | ≈ 14.950 | Kho gồm KHO#2, #3 |
 | 18/11 (cầu nối, sáng) | 8.031 | 3.211 | 1.688 | 706 | 435 | ≈ 14.070 | chưa trừ tạm dừng; POD-ECOMSTONE chưa có đơn |
 | 18/11 – đã trừ tạm dừng (CSDL web) | 8.031 | 1.978 | 1.688 | 22 | 435 | ≈ 12.150 | tạm dừng 17/11: OEM 684 sp (3 đơn X-BILLIARDS), A Đông 1.233 sp (đơn trả hàng tuần 09–14/11) |
+| 23/11 (cầu nối, tab KHO – đối chiếu đi tàu) | – | – | – | – | – | – | chỉ đọc tab KHO: danh sách tàu biển OAKSEA19 "Sea 08-12" 104 mã / 4.341 sp; tồn kho + ĐG đi được 1.274 sp; đủ 23 mã, thiếu một phần 21, chưa có hàng 30, không có trong tab KHO 30 (găng, gift set, case, weight bolt…) |
 
 Ghi chú đọc số:
 - Công suất mặc định 300 sp/ngày ≈ 7.800 sp/tháng (26 ngày làm). Đơn về ước ~11.800 sp/tháng (thống kê 16/11) → tồn lẽ ra tăng; 16 → 18/11 giảm ~900 sp nên cần theo dõi thêm vài tuần mới kết luận.
