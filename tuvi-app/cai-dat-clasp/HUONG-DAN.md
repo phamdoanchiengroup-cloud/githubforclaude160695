@@ -35,6 +35,19 @@ Bộ này giống bộ của web KPI nhưng **dùng riêng cho Thiên Cơ Các**
 - Các hàm "chạy một lần" (nếu bản mới có, ví dụ bật email hằng ngày) vẫn chạy trong Apps Script như cũ. Claude sẽ ghi rõ.
 - Nếu lúc cài đặt máy báo không tự triển khai được: sau khi chạy 2-CAP-NHAT.bat, bạn vẫn bấm **Triển khai → Quản lý triển khai → ✏️ → Phiên bản mới → Triển khai** như trước.
 
+## Khi repo GitHub để riêng tư (làm một lần)
+Repo riêng tư thì máy phải có **khóa truy cập GitHub** (chỉ đọc) mới tải được mã. Khóa chỉ lưu trên máy bạn (`ThienCoCac-AppsScript\khoa-github.txt`), **không gửi cho ai, kể cả Claude**.
+1. Đăng nhập GitHub → mở https://github.com/settings/personal-access-tokens/new
+2. Điền:
+   - **Token name:** `ThienCoCac cap nhat`.
+   - **Expiration:** chọn 1 năm (hoặc Custom). Hết hạn thì làm lại bước này.
+   - **Repository access:** **Only select repositories** → chọn `githubforclaude160695`.
+   - **Permissions → Repository permissions → Contents:** **Read-only**. Các quyền khác để nguyên.
+3. Bấm **Generate token** → bấm nút chép khóa (bắt đầu bằng `github_pat_`).
+4. Bấm đúp **4-KHOA-GITHUB.bat** → chuột phải để dán khóa → Enter. Thấy **KHÓA DÙNG ĐƯỢC** là xong.
+5. Từ giờ bấm **2-CAP-NHAT.bat** như bình thường.
+- Khi máy báo "GitHub từ chối khóa truy cập": khóa hết hạn hoặc bị xóa → làm lại bước 1–4.
+
 ## Khi bản mới có vấn đề
 - Bấm đúp **3-KHOI-PHUC.bat** → chọn **1** (bản ngay trước lần cập nhật). Web quay về bản cũ.
 

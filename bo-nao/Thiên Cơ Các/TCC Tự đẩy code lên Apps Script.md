@@ -36,3 +36,7 @@ Nhóm: Thiên Cơ Các · Tạo 22/10/2026
 ## Lưu ý
 - Mỗi push đổi mã lên nhánh có thể lên web thật khi chủ dự án bấm cập nhật, nên chỉ push sau khi kiểm thử đạt.
 - Nếu web KPI và Thiên Cơ Các ở hai tài khoản Google khác nhau, phải đăng nhập lại clasp khi chuyển dự án.
+
+## Repo riêng tư (23/11)
+- Repo đang công khai; chủ dự án chọn chuyển riêng tư. `chung.ps1`: `KhoaGithub`/`TieuDeGithub` đọc `%USERPROFILE%\ThienCoCac-AppsScript\khoa-github.txt`, gửi `Authorization: Bearer` cho api.github.com và raw; 401/404 báo rõ (403 hết lượt API vẫn rơi về raw). File mới `4-KHOA-GITHUB.bat` + `khoa-github.ps1` (nhập khóa ẩn, thử gọi API rồi lưu). HUONG-DAN.md có mục tạo khóa fine-grained (Contents read-only).
+- Phải tải bộ cài mới về máy TRƯỚC khi chuyển riêng tư (2-CAP-NHAT không tự cập nhật chính nó). Chưa chạy thử trên Windows thật (máy đám mây không có PowerShell).

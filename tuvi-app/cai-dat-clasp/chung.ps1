@@ -7,6 +7,7 @@ $Goc      = Join-Path $env:USERPROFILE 'ThienCoCac-AppsScript' # thư mục làm
 $ThuMucMa = Join-Path $Goc 'ma'                                # bản mã đang có trên Apps Script
 $SaoLuu   = Join-Path $Goc 'sao-luu'                           # mỗi lần cập nhật sao lưu một bản
 $CauHinh  = Join-Path $Goc 'cau-hinh.json'
+$TepKhoa  = Join-Path $Goc 'khoa-github.txt'                    # khóa truy cập GitHub (chỉ đọc) khi repo để riêng tư – chỉ nằm trên máy này
 $Repo     = 'phamdoanchiengroup-cloud/githubforclaude160695'
 $Nhanh    = 'claude/happy-brown-lttkz3'
 $ThuMucRepo = 'tuvi-app'
@@ -76,15 +77,28 @@ function KiemTraDungDuAn {
 # Tải toàn bộ file .gs / .html của Thiên Cơ Các ở bản mới nhất trên GitHub về thư mục $dich, kiểm tra đủ dung lượng từng file.
 # Cách 1: GitHub API (api.github.com) lấy đúng mã commit mới nhất. Cách 2 (máy không vào được api.github.com):
 # chỉ dùng raw.githubusercontent.com với danh sách cai-dat-clasp/ds-file.txt (tên file + dung lượng).
+# Khóa GitHub (repo riêng tư): đọc từ khoa-github.txt nếu có. Không in ra màn hình, không ghi vào đâu khác.
+function KhoaGithub { if (Test-Path $TepKhoa) { return ((Get-Content $TepKhoa -Raw -Encoding UTF8) -replace '\s', '') } return '' }
+function TieuDeGithub($loai) {
+  $h = @{ 'User-Agent' = 'ThienCoCac-clasp' }
+  if ($loai) { $h['Accept'] = $loai }
+  $k = KhoaGithub
+  if ($k) { $h['Authorization'] = 'Bearer ' + $k }
+  return $h
+}
 function TaiTep($url, $ra) {
   $lan = 0
   while ($true) {
-    try { Invoke-WebRequest -UseBasicParsing -Uri $url -OutFile $ra; return }
+    try { Invoke-WebRequest -UseBasicParsing -Headers (TieuDeGithub '') -Uri $url -OutFile $ra; return }
     catch { $lan++; if ($lan -ge 3) { throw }; Start-Sleep -Seconds (2 * $lan) }
   }
 }
 function LoiMang($e) {
   $m = [string]$e.Exception.Message
+  if ($m -match '\b(401|404)\b|Not Found|Unauthorized') {
+    if (KhoaGithub) { return 'GitHub từ chối khóa truy cập (' + $m + '). Khóa có thể đã hết hạn hoặc chưa cấp quyền đọc repo – tạo khóa mới rồi bấm đúp 4-KHOA-GITHUB.bat để nhập lại.' }
+    return 'Không tải được từ GitHub (' + $m + '). Repo có thể đã chuyển sang riêng tư – bấm đúp 4-KHOA-GITHUB.bat để nhập khóa truy cập GitHub (xem HUONG-DAN.md), rồi chạy lại.'
+  }
   if ($m -match 'could not be resolved|không thể phân giải|No such host|Unable to connect|timed out|actively refused|proxy|502|503') {
     return 'Máy không kết nối được tới GitHub (' + $m + '). Kiểm tra mạng: mở thử https://github.com trên trình duyệt; tắt VPN / phần mềm chặn web nếu có; hoặc thử mạng khác (phát Wi-Fi từ điện thoại) rồi chạy lại.'
   }
@@ -96,13 +110,14 @@ function TaiBanMoi($dich) {
   New-Item -ItemType Directory -Force -Path $dich | Out-Null
   $tep = @(); $goc = ''; $ma = ''
   try {
-    $tieuDe = @{ 'User-Agent' = 'ThienCoCac-clasp'; 'Accept' = 'application/vnd.github+json' }
+    $tieuDe = TieuDeGithub 'application/vnd.github+json'
     $commit = Invoke-RestMethod -UseBasicParsing -Headers $tieuDe -Uri ('https://api.github.com/repos/' + $Repo + '/commits/' + $Nhanh)
     $ds = Invoke-RestMethod -UseBasicParsing -Headers $tieuDe -Uri ('https://api.github.com/repos/' + $Repo + '/contents/' + $ThuMucRepo + '?ref=' + $commit.sha)
     $tep = @($ds | Where-Object { $_.type -eq 'file' -and $_.name -match '\.(gs|html)$' } | ForEach-Object { [pscustomobject]@{ Ten = $_.name; Co = [int64]$_.size } })
     $goc = 'https://raw.githubusercontent.com/' + $Repo + '/' + $commit.sha + '/' + $ThuMucRepo + '/'
     $ma = $commit.sha.Substring(0, 7)
   } catch {
+    if ([string]$_.Exception.Message -match '\b(401|404)\b|Not Found|Unauthorized') { throw (LoiMang $_) }   # repo riêng tư / khóa sai: báo rõ, không thử đường raw (403 thường là hết lượt API → vẫn thử raw)
     Write-Host '  Không vào được api.github.com – chuyển sang tải trực tiếp (raw.githubusercontent.com).' -ForegroundColor Yellow
     $goc = 'https://raw.githubusercontent.com/' + $Repo + '/' + $Nhanh + '/' + $ThuMucRepo + '/'
     $dsTxt = Join-Path $dich 'ds-file.txt'

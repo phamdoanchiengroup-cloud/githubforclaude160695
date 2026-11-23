@@ -4,6 +4,7 @@ Nhóm: Bắt đầu · Cập nhật 22/10/2026
 Liên quan: [[Lần dán lên Apps Script]] · [[TCC Tiến trình]] · [[00 Mục lục]]
 
 ## Việc còn ngỏ
+- 23/11: chuyển repo GitHub sang riêng tư – theo thứ tự: (1) tải bộ `cai-dat-clasp` mới (ZIP Claude gửi), giải nén đè thư mục cũ; (2) tạo khóa GitHub fine-grained (Contents read-only, chỉ repo này) → bấm `4-KHOA-GITHUB.bat`; (3) GitHub → Settings → Danger Zone → Change visibility → Private; (4) bấm `2-CAP-NHAT.bat` thử. Lưu ý bộ cập nhật web KPI / Trợ lý Zalo (cùng repo, nhánh khác) cũng sẽ cần khóa. – [[TCC Tự đẩy code lên Apps Script]]
 - 22/11: bấm `2-CAP-NHAT.bat` lấy mã `2026.11.22.2`, Ctrl+F5, xem trên máy tính màn rộng: cuộn trang Tử Vi (lá số dính bên phải), bấm ⤢ Phóng to, thử In và Tải ảnh Bát Tự. – [[TCC Giao diện]]
 - 22/11: bấm `2-CAP-NHAT.bat` lấy mã `2026.11.22.1` (nếu lần trước bị lỗi 503 thì lần này gộp luôn), Ctrl+F5; thử tab ☯ Thái Ất, mua thử combo 15 xu bằng tài khoản phụ. Cân nhắc: tab Thái Ất đang ở nhóm "Tôi" (cạnh Tiện ích) – muốn chuyển sang nhóm Vận hạn thì báo. – [[TCC Thái Ất Thần Kinh]]
 - 21/11: bấm `2-CAP-NHAT.bat` lấy mã `2026.11.21.1`, Ctrl+F5; thử trang Năm 2027, Kỳ Môn "Hỏi một việc" (mua thử 9 xu bằng tài khoản phụ), thẻ Phễu bán hàng. Đăng ảnh Facebook `nghien-cuu/anh-quang-cao/nam-2027-fb*.png` khi trang Năm 2027 đã chạy. – [[TCC Kỳ Môn Độn Giáp]], [[TCC Thái Ất Thần Kinh]]
