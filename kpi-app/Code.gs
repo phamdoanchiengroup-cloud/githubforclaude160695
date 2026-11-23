@@ -6680,7 +6680,7 @@ function KIEM_TRA_COM_TRUA() {
    - HoatAnh: dữ liệu hoạt ảnh Lottie – tải nền sau khi đăng nhập.
    - AmThanh: giọng nói Rhino thu sẵn (18/10) – chỉ tải khi người dùng bật giọng.
    Trình duyệt nhớ bản đã tải (localStorage, theo mã phiên bản) nên lần sau không tải lại. */
-var MANH_GD = { DonBan: ['BH', 'ADMIN'], SoDo: ['ADMIN', 'TP', 'TL', 'HR'], HoatAnh: null, AmThanh: null, QuyTrinh: ['OWNER', 'ADMIN', 'TP', 'PP'], CauHinhGay: [] };   /* 14/11: + ADMIN – tab Đơn hàng cho ban điều hành */   // CauHinhGay (08/11): kiểm theo mã NV ở cgQuyenCua_   // QuyTrinh (31/10): chủ sở hữu; 03/11 thêm trưởng / phó phòng (máy chủ chỉ trả dữ liệu xưởng mình)
+var MANH_GD = { DonBan: ['BH', 'ADMIN', 'TP'], SoDo: ['ADMIN', 'TP', 'TL', 'HR'], HoatAnh: null, AmThanh: null, QuyTrinh: ['OWNER', 'ADMIN', 'TP', 'PP'], CauHinhGay: [] };   /* 14/11: + ADMIN – tab Đơn hàng cho ban điều hành */   // CauHinhGay (08/11): kiểm theo mã NV ở cgQuyenCua_   // QuyTrinh (31/10): chủ sở hữu; 03/11 thêm trưởng / phó phòng (máy chủ chỉ trả dữ liệu xưởng mình)
 function layManhGiaoDien(token, ten) {
   __CHO_BH = true;   // 16/11 khuya: hàm Bán hàng được gọi
   var me = docPhien_(token);
@@ -7710,7 +7710,7 @@ function danhSachVanPhong(token) {
   ds.sort(function(a, b) { return (thuTu[a.vaiTro] - thuTu[b.vaiTro]) || (a.HoTen < b.HoTen ? -1 : 1); });
   return sach_({ ok: true, ds: ds, muc: HS_MUC });
 }
-var KPI_BAN_MAY = '22/11/2026 10:37';   // giờ dựng Code.gs (22/10)
+var KPI_BAN_MAY = '23/11/2026 09:29';   // giờ dựng Code.gs (22/10)
 /* =====================================================================
    KỸ NĂNG (22/10, chủ dự án nhờ thiết kế + tham khảo chuyên gia nhân sự / đào tạo)
    - Danh mục: trưởng / phó phòng đề xuất kỹ năng của xưởng (tên, mô tả, tiêu chí đạt, công đoạn liên quan)
@@ -11783,10 +11783,11 @@ DHH_COT.DonBan = DB_COT;
 var DB_DONG_MAX = 50, DB_TEN_MAX = 120, DB_GC_MAX = 300, DB_SL_MAX = 100000, DB_GIO_MAX = 40, DB_WEB_MAX = 300;
 var DB_NHOM_BH = /^(Kinh doanh|Marketing)$/i, DB_NHOM_GOI_Y = /Kinh doanh|Sàn TMĐT|CSKH|Website/i;   // gợi ý tick sẵn: Kinh doanh + Marketing (Sàn TMĐT, CSKH, Website)
 function dbLaBH_(me) { return !!me && me.vaiTro === 'BH'; }
-function dbQuyen_(token) {
+function dbQuyen_(token, xem) {   // 23/11: xem=true -> TP / PP (cả PP vì máy chủ đổi PP thành TP) được XEM Order-Flow (bảng đơn nhà máy, lẻ/POD đã xong, đổi deadline)
   var me = docPhien_(token);
   if (!me) return { loi: sach_({ ok: false, hetHan: true, msg: 'Phiên đăng nhập đã hết hạn.' }) };
   var duyet = false; try { duyet = dhCoHuy_(me); } catch (e) {}
+  if (!dbLaBH_(me) && !duyet && xem && me.vaiTro === 'TP') return { me: me, bh: false, duyet: false, xem: true };   // 23/11 (chủ dự án): chỉ xem, không tạo / duyệt / đề nghị
   if (!dbLaBH_(me) && !duyet) return { loi: sach_({ ok: false, msg: 'Trang này dành cho Bán hàng và người duyệt đơn (C019 / C056 / C067).' }) };
   return { me: me, bh: dbLaBH_(me), duyet: duyet };
 }
@@ -11817,7 +11818,9 @@ function dbTienDo_(d, r) {
 /* Trang "Đơn hàng của tôi": BH = đơn của mình; người duyệt = mọi đơn (chờ duyệt trên cùng) */
 function layDonBan(token) {
   __CHO_BH = true;   // 16/11 khuya: hàm Bán hàng được gọi
-  var q = dbQuyen_(token); if (q.loi) return q.loi;
+  var q = dbQuyen_(token, true); if (q.loi) return q.loi;
+  if (q.xem) { var dh0 = []; try { dh0 = dthDs_(); } catch (eX) {}   // 23/11: TP / PP chỉ xem – không trả đơn Bán hàng
+    return sach_({ ok: true, xem: 1, doiHan: dh0, ds: [], bh: 0, duyet: 0, owner: 0, ten: q.me.ten || '', kenh: dbKenh_(), sp: [], hom: homNayVN_(), dn: [] }); }
   var ss = dhhSS_(false), ds = ss ? dbDoc_(ss) : [], tk = String(q.me.tk || '');
   ds = ds.filter(function(r) { return r.TrangThai !== 'DA_XOA' && (q.duyet || r.Tk === tk); });
   var d = null; try { d = dhDocDon_(false); } catch (e) {}
@@ -12150,7 +12153,7 @@ function dbkGanDuKien_(out, d) {
 /* Bảng đơn nhà máy cho Bán hàng / người duyệt: mọi đơn đang làm, 4 cột */
 function layBangDonNhaMay(token) {
   __CHO_BH = true;   // 16/11 khuya: hàm Bán hàng được gọi
-  var q = dbQuyen_(token); if (q.loi) return q.loi;
+  var q = dbQuyen_(token, true); if (q.loi) return q.loi;   // 23/11: + TP / PP xem
   var d; try { d = dhDocDon_(false); } catch (e) { return sach_({ ok: false, msg: 'Chưa đọc được bảng đơn – thử lại sau ít phút.' }); }
   try { dhGanHanRieng_(d.don); } catch (eHR) {}   // 21/11
   try { dthRa_(d, false); } catch (eDT) {}   // 22/11: phát hiện đổi deadline (≤ 1 lần / 5 phút)
@@ -12194,7 +12197,7 @@ function dbxPctDon_(don) {
 var DBX_SO_NGAY = 3, DBX_LE = { 'WEB LẺ ĐƠN THƯỜNG': 'le', 'WEB LẺ CUSTOM': 'le', 'POD-A.BÁCH': 'pod', 'POD-ECOMSTONE': 'pod' };
 function layDonXongLePOD(token) {
   __CHO_BH = true;   // 16/11 khuya: hàm Bán hàng được gọi
-  var q = dbQuyen_(token); if (q.loi) return q.loi;
+  var q = dbQuyen_(token, true); if (q.loi) return q.loi;   // 23/11: + TP / PP xem
   var laLam = dhNgayLamFn_(dhCongSuat_()), hn = homNayVN_(), ng = [], d = hn, i = 0;
   while (ng.length < DBX_SO_NGAY && i++ < 40) { if (laLam(d)) ng.push(d); d = new Date(Date.parse(d + 'T00:00:00Z') - 864e5).toISOString().slice(0, 10); }
   var tu = ng[ng.length - 1] || hn, tabNhan = {}; Object.keys(DH_NHAN_TAB).forEach(function(t) { tabNhan[DH_NHAN_TAB[t]] = t; });

@@ -102,7 +102,7 @@ ok(r.ds.every(d => d.length === 10 && (d[5] === 0 || d[5] === 1)) && !JSON.strin
 ok(!r.ds.some(d => d[1] === '#OEM-HUY-01/11'), 'không có mã đã hủy');
 ok(r.ds.some(d => d[1] === '#BH9-17/11' && d[3] === 30), 'có đơn vừa duyệt');
 const thuTab = r.ds.map(d => c.DH_TABS.indexOf(d[0])); ok(thuTab.every((v, i) => !i || v >= thuTab[i - 1]), 'xếp theo kênh như Sheet (Dealer → Kho → Web lẻ … → POD)');
-ok(!c.__goi('layBangDonNhaMay', tp).ok && !c.__goi('layBangDonNhaMay', c077).ok, 'TP Sơn / C077 không gọi được (chỉ Bán hàng + người duyệt)');
+ok(c.__goi('layBangDonNhaMay', tp).ok && !c.__goi('layBangDonNhaMay', c077).ok, '23/11: TP Sơn XEM được (Order-Flow mở cho TP/PP); C077 (không duyệt) vẫn không');
 ok(c.__goi('layBangDonNhaMay', gd).ok, 'người duyệt xem được');
 /* 17/11: thống kê theo kênh + kín lịch */
 r = c.__goi('layBangDonNhaMay', B2); const tk = r.tk || [], tong = tk[tk.length - 1] || {};

@@ -13,10 +13,11 @@ DHH_COT.DonBan = DB_COT;
 var DB_DONG_MAX = 50, DB_TEN_MAX = 120, DB_GC_MAX = 300, DB_SL_MAX = 100000, DB_GIO_MAX = 40, DB_WEB_MAX = 300;
 var DB_NHOM_BH = /^(Kinh doanh|Marketing)$/i, DB_NHOM_GOI_Y = /Kinh doanh|Sàn TMĐT|CSKH|Website/i;   // gợi ý tick sẵn: Kinh doanh + Marketing (Sàn TMĐT, CSKH, Website)
 function dbLaBH_(me) { return !!me && me.vaiTro === 'BH'; }
-function dbQuyen_(token) {
+function dbQuyen_(token, xem) {   // 23/11: xem=true -> TP / PP (cả PP vì máy chủ đổi PP thành TP) được XEM Order-Flow (bảng đơn nhà máy, lẻ/POD đã xong, đổi deadline)
   var me = docPhien_(token);
   if (!me) return { loi: sach_({ ok: false, hetHan: true, msg: 'Phiên đăng nhập đã hết hạn.' }) };
   var duyet = false; try { duyet = dhCoHuy_(me); } catch (e) {}
+  if (!dbLaBH_(me) && !duyet && xem && me.vaiTro === 'TP') return { me: me, bh: false, duyet: false, xem: true };   // 23/11 (chủ dự án): chỉ xem, không tạo / duyệt / đề nghị
   if (!dbLaBH_(me) && !duyet) return { loi: sach_({ ok: false, msg: 'Trang này dành cho Bán hàng và người duyệt đơn (C019 / C056 / C067).' }) };
   return { me: me, bh: dbLaBH_(me), duyet: duyet };
 }
@@ -46,7 +47,9 @@ function dbTienDo_(d, r) {
 }
 /* Trang "Đơn hàng của tôi": BH = đơn của mình; người duyệt = mọi đơn (chờ duyệt trên cùng) */
 function layDonBan(token) {
-  var q = dbQuyen_(token); if (q.loi) return q.loi;
+  var q = dbQuyen_(token, true); if (q.loi) return q.loi;
+  if (q.xem) { var dh0 = []; try { dh0 = dthDs_(); } catch (eX) {}   // 23/11: TP / PP chỉ xem – không trả đơn Bán hàng
+    return sach_({ ok: true, xem: 1, doiHan: dh0, ds: [], bh: 0, duyet: 0, owner: 0, ten: q.me.ten || '', kenh: dbKenh_(), sp: [], hom: homNayVN_(), dn: [] }); }
   var ss = dhhSS_(false), ds = ss ? dbDoc_(ss) : [], tk = String(q.me.tk || '');
   ds = ds.filter(function(r) { return r.TrangThai !== 'DA_XOA' && (q.duyet || r.Tk === tk); });
   var d = null; try { d = dhDocDon_(false); } catch (e) {}

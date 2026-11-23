@@ -121,7 +121,7 @@ function dbkGanDuKien_(out, d) {
 }
 /* Bảng đơn nhà máy cho Bán hàng / người duyệt: mọi đơn đang làm, 4 cột */
 function layBangDonNhaMay(token) {
-  var q = dbQuyen_(token); if (q.loi) return q.loi;
+  var q = dbQuyen_(token, true); if (q.loi) return q.loi;   // 23/11: + TP / PP xem
   var d; try { d = dhDocDon_(false); } catch (e) { return sach_({ ok: false, msg: 'Chưa đọc được bảng đơn – thử lại sau ít phút.' }); }
   try { dhGanHanRieng_(d.don); } catch (eHR) {}   // 21/11
   try { dthRa_(d, false); } catch (eDT) {}   // 22/11: phát hiện đổi deadline (≤ 1 lần / 5 phút)
@@ -164,7 +164,7 @@ function dbxPctDon_(don) {
    sang tab HT; ngày xong = ngày web phát hiện, chậm tối đa 1 ngày). Sự kiện trùng (cùng mã + tên + lần cuối thấy) chỉ lấy 1. ===== */
 var DBX_SO_NGAY = 3, DBX_LE = { 'WEB LẺ ĐƠN THƯỜNG': 'le', 'WEB LẺ CUSTOM': 'le', 'POD-A.BÁCH': 'pod', 'POD-ECOMSTONE': 'pod' };
 function layDonXongLePOD(token) {
-  var q = dbQuyen_(token); if (q.loi) return q.loi;
+  var q = dbQuyen_(token, true); if (q.loi) return q.loi;   // 23/11: + TP / PP xem
   var laLam = dhNgayLamFn_(dhCongSuat_()), hn = homNayVN_(), ng = [], d = hn, i = 0;
   while (ng.length < DBX_SO_NGAY && i++ < 40) { if (laLam(d)) ng.push(d); d = new Date(Date.parse(d + 'T00:00:00Z') - 864e5).toISOString().slice(0, 10); }
   var tu = ng[ng.length - 1] || hn, tabNhan = {}; Object.keys(DH_NHAN_TAB).forEach(function(t) { tabNhan[DH_NHAN_TAB[t]] = t; });

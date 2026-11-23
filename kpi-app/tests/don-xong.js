@@ -44,4 +44,15 @@ const r1 = r.ds.find(d => d[1] === '#K-03/11' && d[2] === 'GAY RHINO R1'), r2 = 
 ok(r1 && r1[7] === 0 && r2 && r2[7] === 40 && r2[3] === 100, '22/11: thẻ đơn có cả mã đã xong (thiếu 0) và mã còn thiếu (đặt 100, thiếu 40)', [r1, r2]);
 ok(!r.ds.some(d => d[1] === '#K-04/11' && d[7] === 0), 'đơn đã xong hết không có trong bảng');
 
+console.log('\n3. 23/11: TP / PP được XEM Order-Flow (chỉ xem)');
+const tp = c.__phienDai(TK().find(t => String(t.VaiTro).trim() === 'TP')), pp = c.__phienDai(TK().find(t => String(t.VaiTro).trim() === 'PP'));
+r = c.__goi('layBangDonNhaMay', tp); ok(r.ok && r.ds.length > 0, 'TP xem bảng đơn nhà máy', r);
+r = c.__goi('layBangDonNhaMay', pp); ok(r.ok, 'PP xem bảng đơn nhà máy', r);
+r = c.__goi('layDonXongLePOD', pp); ok(r.ok && r.ds.length === 3, 'PP xem lẻ / POD đã xong', r);
+r = c.__goi('layDonBan', tp); ok(r.ok && r.xem === 1 && r.ds.length === 0 && !r.duyet && Array.isArray(r.doiHan), 'TP mở Order-Flow: chế độ chỉ xem, không thấy đơn Bán hàng gửi', r);
+r = c.__goi('luuDonBan', tp, { maDon: '#X', tab: 'KHO', dong: [{ ten: 'A', sl: 1 }] }); ok(!r.ok, 'TP không tạo được đơn', r);
+r = c.__goi('duyetDonBan', tp, { id: 'x' }); ok(!r.ok, 'TP không duyệt được đơn', r);
+r = c.__goi('layDonBan', cn); ok(!r.ok, 'công nhân vẫn không mở được', r);
+r = c.__goi('layManhGiaoDien', tp, 'DonBan'); ok(r && r.ok, 'TP tải được giao diện Order-Flow', String(JSON.stringify(r)).slice(0,200));
+r = c.__goi('layManhGiaoDien', cn, 'DonBan'); ok(r && !r.ok, 'công nhân không tải được giao diện Order-Flow', r);
 console.log('\n' + (n - l) + '/' + n + ' đạt'); process.exit(l ? 1 : 0);

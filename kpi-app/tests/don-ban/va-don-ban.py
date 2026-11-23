@@ -23,7 +23,7 @@ for _h in ['function napDuLieuLoi_(token, phan) {\n', 'function dangXuat(token) 
 _tdb("  if (me.vaiTro === 'BEP' || me.vaiTro === 'NHOM' || me.vaiTro === 'NV' || me.vaiTro === 'TBP') {",
      "  if (me.vaiTro === 'BEP' || me.vaiTro === 'NHOM' || me.vaiTro === 'NV' || me.vaiTro === 'TBP' || me.vaiTro === 'BH') {   // 16/11 khuya: + BH (Bán hàng)")
 _tdb("var HS_KHONG_BAT_BUOC = ['OWNER', 'ADMIN', 'NHOM', 'BEP'];", "var HS_KHONG_BAT_BUOC = ['OWNER', 'ADMIN', 'NHOM', 'BEP', 'BH'];   // 16/11 khuya: + BH – hồ sơ Bán hàng quản lý ở danh sách nhân sự ngoài SX")
-_tdb("var MANH_GD = { ", "var MANH_GD = { DonBan: ['BH', 'ADMIN'], ")   # 16/11 khuya: mảnh trang Đơn hàng của tôi (ADMIN = người duyệt; hàm máy chủ kiểm lại quyền)
+_tdb("var MANH_GD = { ", "var MANH_GD = { DonBan: ['BH', 'ADMIN', 'TP'], ")   # 23/11: + TP (PP đổi thành TP ở máy chủ) – xem Order-Flow   # 16/11 khuya: mảnh trang Đơn hàng của tôi (ADMIN = người duyệt; hàm máy chủ kiểm lại quyền)
 # người duyệt: cờ để web hiện tab "Đơn bán hàng" + số chờ duyệt
 _tdb("  me.banMay = KPI_BAN_MAY;\n", "  me.banMay = KPI_BAN_MAY;\n  try { me.dbDuyet = dhCoHuy_(me) ? 1 : 0; } catch (eDB) { me.dbDuyet = 0; }   // 16/11 khuya: duyệt đơn Bán hàng\n")
 # 17/11 giai đoạn 2: nhật ký sửa tay cột khóa – dùng trigger onEdit đã có của Sheet đơn; rà lại khóa ở lượt đồng bộ 10 phút

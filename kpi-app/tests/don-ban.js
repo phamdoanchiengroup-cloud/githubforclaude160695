@@ -42,7 +42,7 @@ ok(nap && nap.ok && nap.me.vaiTro === 'BH' && !(nap.nhansu || []).length && !(na
 ['napComTrua', 'layBongDa', 'layKPIKy', 'layThongKe'].forEach(f => { r = c.__goi(f, B1); ok(r && r.ok === false && !r.hetHan && r.bhChan === 1, '21/11: BH gọi ' + f + ' → bị chặn nhưng KHÔNG báo hết phiên (không bị đăng xuất)', r); });
 r = c.__goi('layDonBan', B1); ok(r.ok, '…và ngay sau đó vẫn vào trang Đơn hàng của tôi bình thường', r.msg);
 r = c.__goi('layManhGiaoDien', B1, 'QuyTrinh'); ok(!r.ok, 'BH không tải được mảnh Đơn hàng / Quy trình', r);
-r = c.__goi('layDonBan', tp); ok(!r.ok, 'TP Sơn không vào trang Đơn bán hàng', r);
+r = c.__goi('layDonBan', tp); ok(r.ok && r.xem === 1 && r.ds.length === 0, '23/11: TP Sơn vào Order-Flow chế độ CHỈ XEM – không thấy đơn Bán hàng gửi', r);
 r = c.__goi('layDonBan', c077); ok(!r.ok, 'C077 không vào (không có quyền duyệt)', r);
 
 console.log('\n3. Bán hàng gửi đơn');

@@ -2661,7 +2661,7 @@ function call(fn,args,cb){
 var TABS={
   ADMIN:[['hd','📖 Hướng dẫn'],['homnay','Việc hôm nay'],['dash','Tổng quan'],['sodo','Sơ đồ nhà máy'],['com','Cơm trưa'],['nk','Nhật ký'],['dd','Điểm danh'],['nenep','Chấm nề nếp'],['kpi','Bảng KPI'],['kpiql','KPI Quản lý'],['dx','Duyệt định mức'],['ptdm','Phân tích định mức',['tk','Thống kê']],
          ['cd','Công đoạn'],['ns','Nhân sự'],['kyn','Kỹ năng'],['qt','Quy trình sản xuất'],['dh','Đơn hàng'],['bh','Order-Flow'],['tk','Thống kê'],['cgay','Cấu hình gậy'],['mm','Máy móc'],['ts','Trọng số'],['pq','Tài khoản'],['log','Nhật ký thao tác']],
-  TP:[['hd','📖 Hướng dẫn'],['homnay','Việc hôm nay'],['qt','Quy trình sản xuất'],['dh','Đơn hàng'],['dash','Tổng quan'],['sodo','Sơ đồ nhà máy'],['com','Cơm trưa'],['duyetsl','Duyệt sản lượng'],['nenep','Chấm nề nếp'],['dd','Điểm danh'],['nk','Nhập nhật ký'],['kpi','KPI phòng'],['cd','Công đoạn & định mức'],
+  TP:[['hd','📖 Hướng dẫn'],['homnay','Việc hôm nay'],['qt','Quy trình sản xuất'],['dh','Đơn hàng'],['bh','Order-Flow'],['dash','Tổng quan'],['sodo','Sơ đồ nhà máy'],['com','Cơm trưa'],['duyetsl','Duyệt sản lượng'],['nenep','Chấm nề nếp'],['dd','Điểm danh'],['nk','Nhập nhật ký'],['kpi','KPI phòng'],['cd','Công đoạn & định mức'],
       ['ns','Nhân sự'],['kyn','Kỹ năng'],['mm','Máy móc']],
   CN:[['hd','📖 Hướng dẫn'],['cnnhap','Nhập sản lượng của tôi'],['com','Cơm trưa'],['kpica','KPI cá nhân'],['cccn','Bảng chấm công của xưởng'],['kpicn','Bảng KPI xưởng'],['kyn','Kỹ năng của tôi']],
   HR:[['hd','📖 Hướng dẫn'],['dash','Tổng quan'],['kpi','Bảng KPI'],['sodo','Sơ đồ nhà máy'],['com','Cơm trưa'],['dd','Điểm danh'],['cd','Công đoạn'],['ns','Hồ sơ nhân sự'],['kyn','Kỹ năng'],['mm','Máy móc']],
@@ -8821,7 +8821,7 @@ function chiXemDon(){
 </script>
 <script>
 /* ===== 19. PHẦN GIAO DIỆN TẢI SAU (12/10) – SoDo.html, HoatAnh.html: chỉ tải khi cần, nhớ lại theo phiên bản ===== */
-var MANH_VER={"SoDo": "d9bc7ce73f034629", "HoatAnh": "b23cbe69d6aae56e", "AmThanh": "c690fabe4419160c", "QuyTrinh": "72b9226157", "CauHinhGay": "8c0f42823f07518c", "DonBan": "9a3d0e494b7eaa85"};
+var MANH_VER={"SoDo": "d9bc7ce73f034629", "HoatAnh": "b23cbe69d6aae56e", "AmThanh": "c690fabe4419160c", "QuyTrinh": "72b9226157", "CauHinhGay": "8c0f42823f07518c", "DonBan": "d30cb1c2865083d6"};
 var __manh={da:{},cho:{}};
 function ganManh_(nd){
   var js=[], ngoai=String(nd).replace(/<script>([\s\S]*?)<\/script>/g,function(_,x){js.push(x);return ''});
@@ -9743,7 +9743,7 @@ function hsGhiChuDong(r){
 }
 </script>
 <script>
-var KPI_BAN = '22/11/2026 16:03';
+var KPI_BAN = '23/11/2026 09:29';
 (function(){
   var cu = window.veNav;
   window.veNav = function(){
@@ -11080,7 +11080,7 @@ function nsnCapNhat(){ call('capNhatNgoaiSXTuFile',[],function(r){ if(!r||!r.ok)
 </script>
 <script>
 /* ===== 38. TĂNG TỐC ĐỢT 3 (08/11) – bộ đo tốc độ + mở nhanh bằng số lần trước (mã hóa) ===== */
-var TD_BUF=[], TD_T=null, DL_VER='0f8d4ee8e7', DL_HAN=12*3600e3, DL_BO=['SoCCCD','DienThoai','DiaChi','SdtKhanCap','LuongCoBan','NamSinh','SoTaiKhoan','Email'];
+var TD_BUF=[], TD_T=null, DL_VER='072bf187ed', DL_HAN=12*3600e3, DL_BO=['SoCCCD','DienThoai','DiaChi','SdtKhanCap','LuongCoBan','NamSinh','SoTaiKhoan','Email'];
 function tdGhi_(f,ms,sv){ if(!(ms>=0)||!f) return; TD_BUF.push({f:String(f),ms:Math.round(ms),sv:(typeof sv==='number'?Math.round(sv):null)});
   if(TD_BUF.length>=15) tdGui_(); else if(!TD_T) TD_T=setTimeout(tdGui_,180000); }
 function tdGui_(){ if(TD_T){clearTimeout(TD_T);TD_T=null;} if(!TD_BUF.length||typeof TOKEN==='undefined'||!TOKEN) return;
@@ -11866,9 +11866,9 @@ function nvHLLuu(){ if(!NVHL) return; if(!confirm('Chuyển '+NVHL.r.doi+' ngư�
 </script>
 <script>
 /* ===== 50. ĐƠN BÁN HÀNG (16/11 khuya) – Bán hàng nhập đơn, C019 / C056 / C067 duyệt. Máy chủ kiểm lại ở mọi hàm ===== */
-(function(){ var g=window.dsTabHienCo; window.dsTabHienCo=function(){ var a=g.apply(this,arguments); return (window.ME&&(ME.vaiTro==='BH'||ME.dbDuyet))?a:a.filter(function(t){return t[0]!=='bh'}); }; })();
+(function(){ var g=window.dsTabHienCo; window.dsTabHienCo=function(){ var a=g.apply(this,arguments); return (window.ME&&(ME.vaiTro==='BH'||ME.dbDuyet||ME.vaiTro==='TP'))?a:a.filter(function(t){return t[0]!=='bh'}); }; })();
 function vBH(){
-  if(!ME||!(ME.vaiTro==='BH'||ME.dbDuyet)){ $('main').innerHTML='<div class="alert a-wn">Tài khoản không dùng được trang này.</div>'; return; }
+  if(!ME||!(ME.vaiTro==='BH'||ME.dbDuyet||ME.vaiTro==='TP')){ $('main').innerHTML='<div class="alert a-wn">Tài khoản không dùng được trang này.</div>'; return; }
   if(window.__bnDaNap){ bnVe(); return; }
   $('main').innerHTML='<div class="ptitle">Đơn hàng</div><div class="pdesc">Đang tải…</div>';
   taiManh('DonBan',function(ok,msg){

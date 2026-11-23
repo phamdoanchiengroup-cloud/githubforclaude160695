@@ -25,6 +25,7 @@ _t50("var vt={ADMIN:'Ban điều hành',TP:'Trưởng phòng',PP:'Phó phòng',H
 # người duyệt (ban điều hành): tab "Đơn bán hàng" ngay sau Đơn hàng – chỉ hiện khi ME.dbDuyet
 _t50("['dh','Đơn hàng'],['tk','Thống kê']", "['dh','Đơn hàng'],['bh','Order-Flow'],['tk','Thống kê']")   # 22/11: tab "Đơn bán hàng" đổi tên Order-Flow (chủ dự án)
 _t50("  ['Sản xuất',['dh','duyetsl',", "  ['Sản xuất',['dh','bh','duyetsl',")
+_t50("['qt','Quy trình sản xuất'],['dh','Đơn hàng'],['dash','Tổng quan']", "['qt','Quy trình sản xuất'],['dh','Đơn hàng'],['bh','Order-Flow'],['dash','Tổng quan']")   # 23/11 (chủ dự án): mở Order-Flow cho mọi TP / PP – chỉ xem
 _t50("cgay:vCGay}[k])();", "cgay:vCGay,bh:vBH}[k])();")
 _t50("  kyn:'<path", "  bh:'<path d=\"M4 5h16v14H4z\"/><path d=\"M8 9h8M8 13h5\"/><path d=\"M15.5 15.5l2 2 3-3\"/>',\n  kyn:'<path")
 _t50("  // 5) Yêu cầu sửa hồ sơ\n", """  // 50) Đơn Bán hàng chờ duyệt (16/11 khuya)
@@ -42,9 +43,9 @@ _t50("  if (ME && ME.cg === 'duyet' && window.__cgChoTai !== ME.tk) { window.__c
 _k50 = s.rfind('</body>')
 s = s[:_k50] + """<script>
 /* ===== 50. ĐƠN BÁN HÀNG (16/11 khuya) – Bán hàng nhập đơn, C019 / C056 / C067 duyệt. Máy chủ kiểm lại ở mọi hàm ===== */
-(function(){ var g=window.dsTabHienCo; window.dsTabHienCo=function(){ var a=g.apply(this,arguments); return (window.ME&&(ME.vaiTro==='BH'||ME.dbDuyet))?a:a.filter(function(t){return t[0]!=='bh'}); }; })();
+(function(){ var g=window.dsTabHienCo; window.dsTabHienCo=function(){ var a=g.apply(this,arguments); return (window.ME&&(ME.vaiTro==='BH'||ME.dbDuyet||ME.vaiTro==='TP'))?a:a.filter(function(t){return t[0]!=='bh'}); }; })();
 function vBH(){
-  if(!ME||!(ME.vaiTro==='BH'||ME.dbDuyet)){ $('main').innerHTML='<div class="alert a-wn">Tài khoản không dùng được trang này.</div>'; return; }
+  if(!ME||!(ME.vaiTro==='BH'||ME.dbDuyet||ME.vaiTro==='TP')){ $('main').innerHTML='<div class="alert a-wn">Tài khoản không dùng được trang này.</div>'; return; }
   if(window.__bnDaNap){ bnVe(); return; }
   $('main').innerHTML='<div class="ptitle">Đơn hàng</div><div class="pdesc">Đang tải…</div>';
   taiManh('DonBan',function(ok,msg){
