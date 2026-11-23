@@ -18,13 +18,13 @@ try {
   [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
   # Danh sách file HTML lấy từ GitHub (31/10): web thêm file mới thì không phải gửi lại bộ cài. Lỗi thì dùng danh sách sẵn trong chung.ps1.
   try {
-    $dsMoi = (Invoke-WebRequest -UseBasicParsing -Uri ($NguonWeb + 'danh-sach-file.txt?t=' + (Get-Date -Format 'yyyyMMddHHmmss'))).Content -split "`r?`n" |
+    $dsMoi = (TaiTuGitHub -Ten 'danh-sach-file.txt') -split "`r?`n" |
       ForEach-Object { $_.Trim() } | Where-Object { $_ -match '^[A-Za-z][A-Za-z0-9]{1,40}$' }
     if ($dsMoi -and ($dsMoi -contains 'Index')) { $CacFileHtml = @($dsMoi) }
-  } catch { Write-Host '  (Không đọc được danh sách file mới – dùng danh sách có sẵn.)' -ForegroundColor Yellow }
+  } catch { if ($_.Exception.Message -match '4-NHAP-MA-GITHUB') { throw }; Write-Host '  (Không đọc được danh sách file mới – dùng danh sách có sẵn.)' -ForegroundColor Yellow }
   $ds = @('Code.gs') + ($CacFileHtml | ForEach-Object { $_ + '.html' })
   foreach ($f in $ds) {
-    Invoke-WebRequest -UseBasicParsing -Uri ($NguonWeb + $f + '?t=' + (Get-Date -Format 'yyyyMMddHHmmss')) -OutFile (Join-Path $tam $f)
+    TaiTuGitHub -Ten $f -OutFile (Join-Path $tam $f) | Out-Null
     $kb = [math]::Round((Get-Item (Join-Path $tam $f)).Length / 1KB)
     if ($kb -lt 5) { throw ('File ' + $f + ' tải về quá nhỏ (' + $kb + ' KB) – mạng lỗi? Chạy lại.') }
     Tot ('  ' + $f + '  ' + $kb + ' KB')

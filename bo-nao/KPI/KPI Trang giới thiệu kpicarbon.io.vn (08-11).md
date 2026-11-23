@@ -2,6 +2,8 @@
 
 Liên quan: [[Liên kết và công cụ]] · [[Việc chờ chủ dự án]] · [[KPI Demo giao diện]] · [[00 Mục lục]]
 
+> **23/11: ĐÃ BỎ** – chủ dự án không dùng nữa; `docs/` đã gỡ khỏi repo (chuẩn bị repo riêng tư). Cần tắt GitHub Pages + xóa bản ghi DNS ở nơi mua tên miền.
+
 ## Vì sao có trang này
 - Chủ dự án muốn link web KPI dán vào Zalo có **ảnh xem trước** (như trang Qoder `kpi-san-xuat-tefppm4sll9.qoder.website` họ tự làm).
 - Link Apps Script (`script.google.com/.../exec`) không hiện ảnh vì Google bọc web trong iframe, Zalo không đọc được thẻ `og:`. → cần trang trung gian ở chỗ khác.

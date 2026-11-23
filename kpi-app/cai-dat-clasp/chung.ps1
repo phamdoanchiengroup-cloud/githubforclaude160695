@@ -45,6 +45,35 @@ function GoiClasp {
   return $kq
 }
 
+# 23/11: repo GitHub chuyển RIÊNG TƯ -> tải file phải kèm mã truy cập GitHub (fine-grained, chỉ đọc, chỉ repo này).
+# Mã lưu MÃ HÓA bằng Windows (DPAPI, chỉ đúng tài khoản Windows trên đúng máy này giải được) ở $MaGitHubTep – không nằm trong repo.
+$MaGitHubTep = Join-Path $Goc 'github-ma.txt'
+function DocMaGitHub {
+  if (-not (Test-Path $MaGitHubTep)) { return '' }
+  try {
+    $ss = (Get-Content $MaGitHubTep -Raw).Trim() | ConvertTo-SecureString
+    return [Runtime.InteropServices.Marshal]::PtrToStringAuto([Runtime.InteropServices.Marshal]::SecureStringToBSTR($ss))
+  } catch { return '' }
+}
+function TaiTuGitHub {
+  param([string]$Ten, [string]$OutFile, [string]$Ma)
+  if ($null -eq $Ma -or $Ma -eq '') { $Ma = DocMaGitHub }
+  $dau = @{}
+  if ($Ma) { $dau['Authorization'] = 'token ' + $Ma }
+  $uri = $NguonWeb + $Ten + '?t=' + (Get-Date -Format 'yyyyMMddHHmmss')
+  try {
+    if ($OutFile) { Invoke-WebRequest -UseBasicParsing -Uri $uri -Headers $dau -OutFile $OutFile | Out-Null; return '' }
+    return (Invoke-WebRequest -UseBasicParsing -Uri $uri -Headers $dau).Content
+  } catch {
+    $sc = 0; try { $sc = [int]$_.Exception.Response.StatusCode } catch {}
+    if ($sc -eq 404 -or $sc -eq 401 -or $sc -eq 403) {
+      if (-not $Ma) { throw 'GitHub không cho tải (repo đã để riêng tư). Bấm đúp 4-NHAP-MA-GITHUB.bat để nhập mã truy cập GitHub, rồi chạy lại.' }
+      throw 'GitHub từ chối mã truy cập (sai, hết hạn hoặc thiếu quyền Contents: Read). Bấm đúp 4-NHAP-MA-GITHUB.bat để nhập mã mới.'
+    }
+    throw
+  }
+}
+
 function DocCauHinh {
   if (-not (Test-Path $CauHinh)) { throw 'Chưa cài đặt. Chạy file 1-CAI-DAT.bat trước.' }
   return Get-Content $CauHinh -Raw -Encoding UTF8 | ConvertFrom-Json

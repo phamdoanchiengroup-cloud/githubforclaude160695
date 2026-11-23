@@ -62,6 +62,7 @@ Những điều đã chốt. Đừng đề xuất lại những gì ghi "không 
 - Không làm A5 (chưa có KCS), giữ ô "Đặt số dòng", không làm A3 giờ dừng, không cần video hướng dẫn; phần tăng ca đã gỡ. – [[KPI Bảo mật và vận hành]]
 
 ## Quy trình sản xuất (31/10)
+- (23/11) **Bỏ trang kpicarbon.io.vn** (chủ dự án: không dùng nữa) – đã gỡ `docs/`. **Đồng ý chuyển repo GitHub sang riêng tư**; dùng 2 máy (nhà + văn phòng) → mỗi máy nhập mã GitHub 1 lần. – [[Nhật ký thay đổi]]
 - (23/11) **Order-Flow mở cho mọi TP / PP – chỉ xem**: Bảng đơn nhà máy + Lẻ / POD đã xong + thông báo đổi deadline, toàn bộ nhà máy; KHÔNG thấy danh sách đơn Bán hàng gửi, không tạo / duyệt / đề nghị ưu tiên / thử trước khi đặt. – [[Nhật ký thay đổi]]
 - (22/11) **Nền tối toàn web = "Graphite Platinum"** (thay Carbon Navy): xám đậm chủ đạo (KHÔNG đen tuyền – chủ dự án thấy quá tối), điểm nhấn bạc Platinum #C9CCD1 ~20%, màu báo hiệu đỏ / vàng / xanh lá giữ. Áp mọi tài khoản nền tối; giao diện mới công nhân (nền sáng) và giao diện kính giữ nguyên. – [[Nhật ký thay đổi]]
 - (14/11) **Đơn hàng giao nhận**: BĐH + TP/PP vào tab Đơn hàng, TP/PP xem tất cả, ghi bộ phận mình; **ghi thẳng vào Sheet đơn** (thay "chỉ đọc" 31/10), không đè ô công thức; bộ phận sau xác nhận ngày hẹn; màu Carbon Navy toàn web nền tối, bảng đơn tương phản rõ. – [[KPI Đơn hàng giao nhận theo bộ phận (14-11)]]
