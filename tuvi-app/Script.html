@@ -27,7 +27,7 @@
     });
   }
   /** Mã phiên bản giao diện – phải trùng với Index.html (meta tcc-ban) và Styles.html (--tcc-ban) */
-  var BAN_GIAO_DIEN = '2026.11.22.2';
+  var BAN_GIAO_DIEN = '2026.11.23.1';
   /* 25/10: ảnh ngũ hành + 12 con giáp + bìa PDF mới của chủ dự án (tuvi-app/anh/*.webp) qua jsDelivr, ghim theo mã lần lưu */
   var TCC_ANH_CDN = 'https://cdn.jsdelivr.net/gh/phamdoanchiengroup-cloud/githubforclaude160695@19203fbd20433f395336269a411f8aebcf990086/tuvi-app/anh/';
   var ANH_HANH = { 'Mộc': 'NguHanhMoc', 'Hỏa': 'NguHanhHoa', 'Thổ': 'NguHanhTho', 'Kim': 'NguHanhKim', 'Thủy': 'NguHanhThuy' };
@@ -1482,7 +1482,7 @@
       cpKhung(tab === 'tong' ? 'Tóm tắt 6 hệ' : muon.length ? 'Hồ sơ' : tieuDe, muon.length ? '' : ten, cpTomHtml(kieuTom));
     var than = cot.querySelector('.cp-than');
     muon.forEach(function (el) {
-      if (el === sc) cpMuon(el, than, function () { cpCanLaSo(); });
+      if (el === sc) { if ($('lnThanh')) cpMuon($('lnThanh'), than); cpMuon(el, than, function () { cpCanLaSo(); }); }   // 23/11: ô chọn năm lưu niên đi cùng lá số
       else if (el.tagName === 'DETAILS') { var mo = el.open; el.open = true; cpMuon(el, than, function (x) { x.open = mo; }); }
       else cpMuon(el, than);
     });
@@ -7435,7 +7435,7 @@ if (c.cung === 'Huynh Đệ' && c.vanFacts && c.vanFacts.kieu === 'huynhde') {
      pdfTuWeb chép HTML của tab đã dựng: mở mọi thẻ gập, bỏ căn cứ thuật ngữ, nút bấm, thẻ khóa, mục lục trong tab,
      bảng Hologram (đã chụp riêng thành ảnh), canvas đổi thành ảnh. CSS .pdf-web đổi màu cho nền giấy. */
   var PDF_WEB = {};
-  var PDF_BO_WEB = '.holo-wrap, .muc-he, .tt26-ky, .cung-chitiet, details.coso, .coso, .vs-canco, .hdc, button, .btn, .kd-loc, input, select, textarea, .tab-lede, .khoa-gd, .tcc-luu-y, script, .strip, [data-mua], .meo-mua, .n27-moi';
+  var PDF_BO_WEB = '.holo-wrap, .muc-he, .tt26-ky, .cung-chitiet, details.coso, .coso, .vs-canco, .hdc, button, .btn, .kd-loc, input, select, textarea, .tab-lede, .khoa-gd, .tcc-luu-y, script, .strip, [data-mua], .meo-mua, .n27-moi, .ln-thanh';
   function pdfLamSach(el, canvasGoc) {
     var cv = el.querySelectorAll('canvas');
     Array.prototype.forEach.call(cv, function (c, i) {

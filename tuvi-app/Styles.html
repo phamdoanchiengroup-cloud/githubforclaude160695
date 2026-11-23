@@ -1,6 +1,6 @@
 <style>
 /* Mã phiên bản giao diện – phải trùng với Index.html (meta tcc-ban) và Script.html (BAN_GIAO_DIEN) */
-:root { --tcc-ban: "2026.11.22.2"; }
+:root { --tcc-ban: "2026.11.23.1"; }
 .chart-frame {
   --paper: #fbf7ef; --card: #ffffff; --card-solid: #fdfefe;
   --surface: #ffffff; --surface-2: #fbfdfd; --surface-3: #f4ecdc; --surface-glass: rgba(255,255,255,.7); --cell-hover: linear-gradient(180deg, #fffef9, #f4ead2);
@@ -1872,6 +1872,9 @@ body.co-ket-qua.mo-form .form-panel, .wl-anh { background: #0A1426; }
 body:has(#page-chart.active) .tcc-goc-anh { opacity:.55; }
 @media (max-width:640px) { .tcc-goc-anh { border-radius:8px; opacity:.72; } }
 @media(max-width:760px){.wl-hero{gap:16px}.wl-anh{width:min(100%,300px);}.wl-nd{min-width:0}.tcc-goc-anh{width:42px;right:7px;bottom:calc(8px + env(safe-area-inset-bottom));}}
+.ln-thanh { display: flex; justify-content: center; margin: 0 0 8px; }
+@media print { .ln-thanh { display: none !important; } }
+.cot-phai .ln-thanh, .cp-phong .ln-thanh { margin: 0 0 10px; }
 .nam-luu { display: inline-flex; align-items: center; gap: 4px; font-size: 12.5px; }
 .nam-luu label { margin-right: 4px; color: var(--ink-soft); white-space: nowrap; }
 .nam-luu input { width: 72px; text-align: center; font-weight: 700; padding: 5px 4px; background: var(--card, transparent); -moz-appearance: textfield; }

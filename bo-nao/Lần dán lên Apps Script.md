@@ -4,6 +4,7 @@ Nhóm: Bắt đầu · Cập nhật 22/10/2026
 Liên quan: [[Việc chờ chủ dự án]] · [[TCC Kiểm thử]] · [[00 Mục lục]]
 
 ## Tình trạng
+- **23/11: mã `2026.11.23.1`** – ô chọn "Năm lưu niên" (‹ năm ›) đặt ngay trên lá số Tử Vi: máy tính nằm đầu khung lá số bên phải, điện thoại hiện ngay trên lá số (không còn gập trong ⚙ Hiển thị). Đổi **Index, Script, Styles**. Bấm `2-CAP-NHAT.bat`, Ctrl+F5.
 - **22/11: mã `2026.11.22.2`** – giao diện máy tính 3 cột (≥1280px): trái danh sách trang + mục lục, giữa luận (≤860px), phải lá số dính khi cuộn + nút Phóng to. Điện thoại/máy tính bảng không đổi. Đổi **Index, Script, Styles, Holo**. Bấm `2-CAP-NHAT.bat`, Ctrl+F5.
 - **22/11: mã `2026.11.22.1`** – mục **☯ Thái Ất** (bản đồ đời 19 xu, hỏi một việc 9 xu, combo Kỳ Môn + Thái Ất 15 xu, thời cuộc miễn phí), khối Thái Ất ở trang Năm 2027 / Vận hạn. Đổi **Index, Script, Styles** + máy chủ **ThanhToan, TaiKhoan, Code**, file mới **ThaiAt, ThaiAtVan** (đủ 36 file .gs). Bấm `2-CAP-NHAT.bat`, Ctrl+F5.
 - **21/11 (khuya):** lần bấm `2-CAP-NHAT.bat` bản 17beac5 đẩy xong mã nhưng bước triển khai bị Google báo lỗi 503 (máy chủ Google bận) – bấm lại là được.

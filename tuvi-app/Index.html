@@ -3,7 +3,7 @@
 <head>
   <base target="_top">
   <meta charset="utf-8">
-  <meta name="tcc-ban" content="2026.11.22.2">
+  <meta name="tcc-ban" content="2026.11.23.1">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Thiên Cơ Các · Lá Số Tử Vi & Bát Tự</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -278,9 +278,6 @@
             <details class="tb-gon" id="tbGon"><summary>⚙ Hiển thị · Tải ảnh / PDF / In</summary>
             <div class="toolbar">
               <label class="check"><input type="checkbox" id="optLuu" checked> Lưu tinh</label>
-              <div class="nam-luu" role="group" aria-label="Năm xem sao lưu niên"><label for="chartViewYear">Năm lưu niên</label>
-                <button type="button" data-nam-luu="-1" aria-label="Năm trước">‹</button><input type="number" id="chartViewYear" min="1800" max="2300" step="1" inputmode="numeric"><button type="button" data-nam-luu="1" aria-label="Năm sau">›</button>
-              </div>
               <label class="check"><input type="checkbox" id="optMinor" checked> Tiểu tinh</label>
               <label class="check"><input type="checkbox" id="optLines" checked> Tam hợp – xung chiếu</label>
               <span class="sp"></span>
@@ -290,6 +287,11 @@
               <button class="btn btn-ghost btn-sm" id="btnPrint" type="button">⎙ In</button>
             </div>
             </details>
+            <div class="ln-thanh" id="lnThanh">
+              <div class="nam-luu" role="group" aria-label="Năm xem sao lưu niên"><label for="chartViewYear">Năm lưu niên</label>
+                <button type="button" data-nam-luu="-1" aria-label="Năm trước">‹</button><input type="number" id="chartViewYear" min="1800" max="2300" step="1" inputmode="numeric"><button type="button" data-nam-luu="1" aria-label="Năm sau">›</button>
+              </div>
+            </div>
             <div class="chart-scroll">
               <div class="chart-frame" id="chartFrame">
                 <div class="chart" id="chart"></div>
