@@ -75,3 +75,7 @@ Liên quan: [[Việc chờ chủ dự án]] · [[TCC Bán hàng]] · [[00 Mục 
 
 ## 23/11 – Repo GitHub
 - Giữ repo **công khai** và dùng bộ clasp cũ (bỏ qua việc chuyển riêng tư). Biết rằng: link web để lộ tên repo (ảnh tải qua jsDelivr/raw), nên ai lần theo cũng đọc được mã. Nếu sau này muốn riêng tư: phải tách ảnh + kd64.json sang repo ảnh công khai riêng trước, rồi dùng `4-KHOA-GITHUB.bat` (đã có, không ảnh hưởng khi chưa có khóa). – [[TCC Tự đẩy code lên Apps Script]]
+
+## 24/11 – Đổi quy tắc văn luận (thay quy tắc "luôn hướng khắc phục")
+- Luận **đủ cả mặt tốt và mặt xấu, tích cực và tiêu cực song song**. Mặt xấu nói thẳng, rõ, không né, không làm mềm; giọng thẳng thắn nhưng tôn trọng (không hù dọa, không từ nặng kiểu sách cổ). Gợi ý ứng xử vẫn có nhưng ngắn, đặt sau.
+- Áp dụng: **sửa toàn bộ văn ngay** (6 hệ, Tổng hợp, Vận hạn, Kỳ Môn, Thái Ất, Phi Tinh…) và mọi nội dung mới (bản đồ nhân quả). CLAUDE.md đã cập nhật.

@@ -21,7 +21,7 @@ File này được Claude Code tự đọc khi mở repo. Nó giữ **quy tắc 
 - **Văn luận giải cho người đọc:**
   - Ngôn ngữ đời thường. **Không nêu tên sao** trong phần "dễ hiểu". Thuật ngữ cổ phải giải nghĩa. Không dùng chữ Hán trong văn (chỉ giữ tên Hán-Việt).
   - **Tầng 1:** "Bạn thuộc mẫu người… / có xu hướng…".
-  - **Tầng 2:** giọng nhẹ nhàng, không phán xét, luôn kèm hướng khắc phục.
+  - **Tầng 2 (chủ dự án đổi 24/11):** luận **song song cả mặt tốt và mặt xấu**, tích cực và tiêu cực ngang nhau. Mặt xấu nói **thẳng, rõ, không né tránh, không làm mềm** nhưng tôn trọng (không hù dọa, không dùng từ quá nặng như sách cổ). Gợi ý ứng xử vẫn có nhưng ngắn, đặt sau, không thay cho việc nêu mặt xấu.
   - Hai tầng không được mâu thuẫn nhau.
 - **Nghiệm chứng:** từ 6/8 nhóm "đúng cao" trở lên là xác nhận, 4–5 nhóm là có thể đúng. Mã hiện quy ra tỷ lệ kèm ngưỡng %.
 - **Bảo mật:**
