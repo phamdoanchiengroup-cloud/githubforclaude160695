@@ -79,3 +79,7 @@ Liên quan: [[Việc chờ chủ dự án]] · [[TCC Bán hàng]] · [[00 Mục 
 ## 24/11 – Đổi quy tắc văn luận (thay quy tắc "luôn hướng khắc phục")
 - Luận **đủ cả mặt tốt và mặt xấu, tích cực và tiêu cực song song**. Mặt xấu nói thẳng, rõ, không né, không làm mềm; giọng thẳng thắn nhưng tôn trọng (không hù dọa, không từ nặng kiểu sách cổ). Gợi ý ứng xử vẫn có nhưng ngắn, đặt sau.
 - Áp dụng: **sửa toàn bộ văn ngay** (6 hệ, Tổng hợp, Vận hạn, Kỳ Môn, Thái Ất, Phi Tinh…) và mọi nội dung mới (bản đồ nhân quả). CLAUDE.md đã cập nhật.
+
+## 24/11 – "Gieo và gặt" (Tử Vi / Phi Tinh theo nhân quả)
+- Làm khối **"Gieo và gặt"** trong tab ✶ Phi Tinh, thử nội bộ trước (làm SAU đợt viết lại văn hai mặt). Không dùng chữ nghiệp / tiền kiếp / quả báo / giải nghiệp ở chỗ khách thấy; bỏ trục Tật Ách "thân nghiệp".
+- Có bảng 6 người thân; miễn phí đoạn Gốc (Lai Nhân), 9 xu bản nguyên cục, 19 xu 12 đại vận; thêm "Hai hệ cùng nói" (ghép Nút Bắc/Nam, Sao Thổ – độ tin thấp, ghi rõ); đưa vào PDF. – [[TCC Gieo và gặt]]
