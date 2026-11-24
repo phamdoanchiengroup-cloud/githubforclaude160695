@@ -83,3 +83,4 @@ Liên quan: [[Việc chờ chủ dự án]] · [[TCC Bán hàng]] · [[00 Mục 
 ## 24/11 – "Gieo và gặt" (Tử Vi / Phi Tinh theo nhân quả)
 - Làm khối **"Gieo và gặt"** trong tab ✶ Phi Tinh, thử nội bộ trước (làm SAU đợt viết lại văn hai mặt). Không dùng chữ nghiệp / tiền kiếp / quả báo / giải nghiệp ở chỗ khách thấy; bỏ trục Tật Ách "thân nghiệp".
 - Có bảng 6 người thân; miễn phí đoạn Gốc (Lai Nhân), 9 xu bản nguyên cục, 19 xu 12 đại vận; thêm "Hai hệ cùng nói" (ghép Nút Bắc/Nam, Sao Thổ – độ tin thấp, ghi rõ); đưa vào PDF. – [[TCC Gieo và gặt]]
+- 24/11 (bổ sung): **Sức khỏe nêu thẳng các bệnh** (thay quyết định 24/10, 31/10 "không chẩn đoán"): văn được nêu tên bệnh / vùng cơ thể dễ mắc theo sách, vẫn dùng "có xu hướng / dễ", không khẳng định chắc, luôn nhắc hỏi bác sĩ. Đoạn "linh hồn / tiền kiếp" cũ trong Tử Vi đổi từ cho đồng bộ (bỏ "tiền kiếp", "nghiệp lực" ở chỗ khách thấy; dùng "bài học mang theo", "nền tâm thức").

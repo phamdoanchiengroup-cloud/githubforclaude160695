@@ -15,3 +15,7 @@ Thay quy tắc cũ "Tầng 2: giọng nhẹ nhàng, không phán xét, luôn kè
 - Cũ: "Bạn có xu hướng gặp nhiều trăn trở trong chuyện tình cảm. Dành thời gian hiểu rõ bản thân trước khi gắn bó sẽ giúp bạn chọn đúng."
 - Mới: "Mặt tốt: bạn yêu sâu, chung thủy khi đã chọn. Mặt xấu: tình cảm nhiều trắc trở, dễ chọn sai người, có giai đoạn cô đơn kéo dài và tổn thương khó lành. Gợi ý: đừng quyết chuyện cưới hỏi khi đang ở giai đoạn rối."
 - Không viết: "Bạn sẽ ly hôn", "con cái yểu", "phá sản" (khẳng định / từ nặng).
+
+## Bổ sung 24/11 (chủ dự án chốt)
+- **Sức khỏe: nêu thẳng các bệnh** sách cổ gắn với sao/cung/hành (vd. "dễ mắc bệnh dạ dày, gan, huyết áp, bệnh về mắt…"), vẫn dùng "có xu hướng / dễ", không khẳng định chắc, không đoán tai nạn chết người, luôn kèm một câu nhắc khám và hỏi bác sĩ.
+- **Không dùng ở chỗ khách thấy:** "tiền kiếp", "kiếp trước", "nghiệp lực", "quả báo", "giải nghiệp" – thay bằng "bài học mang theo", "nền tâm thức", "gieo – gặt".
