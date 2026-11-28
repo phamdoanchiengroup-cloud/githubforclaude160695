@@ -1316,6 +1316,26 @@ html[data-gd="sang"]:not(.cn-moi):not(.rs) .dh-tabb.on,html[data-gd="sang"]:not(
 html[data-gd="sang"]:not(.cn-moi):not(.rs) .ptitle::after{content:'';display:block;width:46px;height:3px;border-radius:2px;background:#FF8A1F;margin-top:8px}
 @media (min-width:901px){html[data-gd="toi"]:not(.cn-moi):not(.rs) #nav,html[data-gd="sang"]:not(.cn-moi):not(.rs) #nav{border-right-color:#FF8A1F!important}}
 </style>
+<style id="menuRail">
+/* 28/11: menu trái dạng cột biểu tượng (máy tính) */
+@media (min-width:901px){
+  html:not(.cn-moi) body #nav{transform:none!important;visibility:visible!important;width:64px!important;padding-left:6px!important;padding-right:6px!important;overflow-x:hidden!important;
+    transition:width .18s ease,box-shadow .18s ease!important;z-index:150!important;border-right-width:1px!important}
+  html:not(.cn-moi) body #nav:hover,html:not(.cn-moi) body #nav:focus-within,html.nav-mo:not(.cn-moi) body #nav{width:var(--nav-w,236px)!important;box-shadow:0 0 50px rgba(0,0,0,.45)!important}
+  /* thu gọn: chỉ biểu tượng – ẩn chữ, tiêu đề nhóm, chân menu; số đếm thành chấm nhỏ trên biểu tượng */
+  html:not(.cn-moi):not(.nav-mo) body #nav:not(:hover):not(:focus-within) .nl,
+  html:not(.cn-moi):not(.nav-mo) body #nav:not(:hover):not(:focus-within) .nav-chan,
+  html:not(.cn-moi):not(.nav-mo) body #nav:not(:hover):not(:focus-within) #kpiBan{display:none!important}
+  html:not(.cn-moi):not(.nav-mo) body #nav:not(:hover):not(:focus-within) .ngt{font-size:0!important;height:1px;padding:0!important;margin:8px 6px!important;border-top:1px solid var(--line);overflow:hidden}
+  html:not(.cn-moi):not(.nav-mo) body #nav:not(:hover):not(:focus-within) button{justify-content:center!important;padding-left:0!important;padding-right:0!important;position:relative}
+  html:not(.cn-moi):not(.nav-mo) body #nav:not(:hover):not(:focus-within) button .dem:not(.hide){position:absolute;top:3px;right:6px;min-width:8px;height:8px;padding:0!important;font-size:0!important;border-radius:50%}
+  html:not(.cn-moi) body #nav button{white-space:nowrap;overflow:hidden}
+  html:not(.cn-moi) body #nav button svg{flex:0 0 auto}
+  /* nội dung chừa chỗ cho cột biểu tượng (cột mở rộng thì nổi đè lên, không đẩy trang) */
+  html:not(.cn-moi) body #app>#ducbar,html:not(.cn-moi) body #app>#minibar,html:not(.cn-moi) body #app>main{margin-left:66px!important}
+}
+@media (min-width:901px) and (prefers-reduced-motion:reduce){html:not(.cn-moi) body #nav{transition:none!important}}
+</style>
 </head>
 <body>
 <div id="bgfx" aria-hidden="true"></div>
@@ -9758,7 +9778,7 @@ function hsGhiChuDong(r){
 }
 </script>
 <script>
-var KPI_BAN = '28/11/2026 21:46';
+var KPI_BAN = '28/11/2026 21:47';
 (function(){
   var cu = window.veNav;
   window.veNav = function(){
@@ -11095,7 +11115,7 @@ function nsnCapNhat(){ call('capNhatNgoaiSXTuFile',[],function(r){ if(!r||!r.ok)
 </script>
 <script>
 /* ===== 38. TĂNG TỐC ĐỢT 3 (08/11) – bộ đo tốc độ + mở nhanh bằng số lần trước (mã hóa) ===== */
-var TD_BUF=[], TD_T=null, DL_VER='2e6e863281', DL_HAN=12*3600e3, DL_BO=['SoCCCD','DienThoai','DiaChi','SdtKhanCap','LuongCoBan','NamSinh','SoTaiKhoan','Email'];
+var TD_BUF=[], TD_T=null, DL_VER='0f832459c2', DL_HAN=12*3600e3, DL_BO=['SoCCCD','DienThoai','DiaChi','SdtKhanCap','LuongCoBan','NamSinh','SoTaiKhoan','Email'];
 function tdGhi_(f,ms,sv){ if(!(ms>=0)||!f) return; TD_BUF.push({f:String(f),ms:Math.round(ms),sv:(typeof sv==='number'?Math.round(sv):null)});
   if(TD_BUF.length>=15) tdGui_(); else if(!TD_T) TD_T=setTimeout(tdGui_,180000); }
 function tdGui_(){ if(TD_T){clearTimeout(TD_T);TD_T=null;} if(!TD_BUF.length||typeof TOKEN==='undefined'||!TOKEN) return;
