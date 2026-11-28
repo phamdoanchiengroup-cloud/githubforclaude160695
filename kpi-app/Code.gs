@@ -7725,7 +7725,7 @@ function danhSachVanPhong(token) {
   ds.sort(function(a, b) { return (thuTu[a.vaiTro] - thuTu[b.vaiTro]) || (a.HoTen < b.HoTen ? -1 : 1); });
   return sach_({ ok: true, ds: ds, muc: HS_MUC });
 }
-var KPI_BAN_MAY = '28/11/2026 21:33';   // giờ dựng Code.gs (22/10)
+var KPI_BAN_MAY = '28/11/2026 21:37';   // giờ dựng Code.gs (22/10)
 /* =====================================================================
    KỸ NĂNG (22/10, chủ dự án nhờ thiết kế + tham khảo chuyên gia nhân sự / đào tạo)
    - Danh mục: trưởng / phó phòng đề xuất kỹ năng của xưởng (tên, mô tả, tiêu chí đạt, công đoạn liên quan)
@@ -9061,7 +9061,7 @@ function dhXoaCacheDon_() {
   } catch (e) {}
 }
 /* Mọi dòng đơn (đã gộp 7 tab). Nhớ tạm DH_CACHE_GIAY giây: nén gzip rồi chia mảnh base64 < 100 KB mỗi khóa. */
-var DH_DON_KHOA = 'DH_DON_v17';   // v17 (28/11): tab ĐƠN ƯU TIÊN là kênh riêng + trungUu   // v16 (28/11): o.sku   // v15 (28/11): giao / kho / daTra mã ưu tiên lấy từ tab ĐƠN ƯU TIÊN   // v14 (15/11 đêm): kho, chú thích 500 ký tự, cot.hong / giao / kho / tra / ct   // v13 (15/11): p2 = Phôi 2 nhánh, phoi 500 ký tự (Note)   // v12 (14/11): dn.h = XN HẸN
+var DH_DON_KHOA = 'DH_DON_v18';   // v18 (28/11): ngayDoan (ngày đặt suy theo số đơn)   // v17 (28/11): tab ĐƠN ƯU TIÊN là kênh riêng + trungUu   // v16 (28/11): o.sku   // v15 (28/11): giao / kho / daTra mã ưu tiên lấy từ tab ĐƠN ƯU TIÊN   // v14 (15/11 đêm): kho, chú thích 500 ký tự, cot.hong / giao / kho / tra / ct   // v13 (15/11): p2 = Phôi 2 nhánh, phoi 500 ký tự (Note)   // v12 (14/11): dn.h = XN HẸN
 function dhDocDonGoc_(lamMoi) {   // 16/11 khuya: bản đọc thẳng Sheet (chưa áp lớp phủ hủy / bớt) – mọi chỗ khác gọi dhDocDon_ (huy-don.gs)
   var c = CacheService.getScriptCache(), k = DH_DON_KHOA;   // v11 (14/11): thêm tabPhu (dòng tab ĐƠN ƯU TIÊN / TRỄ HẠN để web hiện đủ tab như Sheet)   // v10 (14/11): thêm dn (ĐANG Ở BP / KẾ TIẾP / XN NHẬN) + cot (bản đồ cột bộ phận) cho tab Đơn hàng dạng bảng   // v9 (13/11): nén gzip (11 khóa -> 1–2 khóa, đọc/ghi cache nhanh, tránh DEADLINE_EXCEEDED khi mở tab Đơn hàng)   // v8 (13/11): thêm tre (tab TRỄ HẠN) làm bậc 2 khi lên lịch SX   // v7 (13/11): ánh xạ tab ưu tiên sang Kho theo tên hàng   // v6 (07/11): thêm kênh POD-ECOMSTONE   // v5 (07/11): thêm uu (tab ĐƠN ƯU TIÊN)   // v4 (03/11): thêm uuTien / uuDon
   if (!lamMoi) {
@@ -9135,6 +9135,7 @@ function dhDocDonGoc_(lamMoi) {   // 16/11 khuya: bản đọc thẳng Sheet (ch
   /* 28/11 (chủ dự án): Đóng gói ghi Có thể giao / Tồn kho + ĐG / Đã trả khách của hàng ưu tiên Ở TAB ĐƠN ƯU TIÊN (tab KHO lệch 69/152 mã)
      -> dòng kênh có cùng MÃ ĐƠN + TÊN (chỉ khi khóa này duy nhất ở cả 2 tab) lấy 3 cột đó từ tab ưu tiên – THAY số tab kênh, không cộng thêm. */
   try { var tUu = Object.keys(phu).filter(function(n) { return plChuan_(n) === 'DON UU TIEN'; })[0]; if (tUu) dhUuDongGoi_(ds, phu[tUu]); } catch (eUG) {}
+  try { dhNgayDoan_(ds); } catch (eND) {}   // 28/11: đơn lẻ / POD không ghi ngày trong mã -> suy theo số đơn gần nhất
   try { var gSku = function(o) { var k = skuCua_(o.ten); if (k) o.sku = k; }; ds.forEach(gSku); uu.forEach(gSku); Object.keys(phu).forEach(function(n) { phu[n].forEach(gSku); }); } catch (eSku) {}   // 28/11: SKU từng mã
   /* 13/11 (chủ dự án): tab "TRỄ HẠN" – tên hàng đang trễ, dùng làm BẬC 2 khi lên lịch SX; chỉ lấy danh sách tên, không cộng vào tổng (đây là bản chép của các tab kênh).
      13/11: tab này có thể rất dài -> giới hạn số dòng và bọc lỗi riêng, để lỗi đọc tab trễ không làm hỏng cả tab Đơn hàng (DEADLINE_EXCEEDED). */
@@ -12246,7 +12247,7 @@ function layBangDonNhaMay(token) {
   } catch (eTK) { tk = []; }
   return sach_({ ok: true, luc: d.luc || '', het: het ? 1 : 0, n: ds.length, kenh: dbKenh_(), tk: tk, duKin: DBK_DU_KIN, cs: dhCongSuat_().sp,
     pct: dbxPctDon_(d.don || []), doiHan: dthDs_(),   // 21/11 (chủ dự án): thanh % hoàn thành theo từng đơn
-    ds: dbxTheDs_(d.don || [], thu).slice(0, DBK_BANG_MAX).map(function(o) { return [o.tab, String(o.maDon || ''), o.ten, o.sl || 0, o.dl || '', o.dung ? 1 : 0, o.hanRieng ? o.hanRieng.han : '', Math.max(0, o.thieu || 0), Math.max(0, Number(o.kho) || 0), Math.max(0, Number(o.daTra) || 0), o.sku || skuCua_(o.ten), /^WEB L/.test(String(o.tab)) ? String(o.phoi || '').slice(0, 300) : '']; }) });   // [10] SKU · [11] ghi chú đơn lẻ = cột Loại phôi của tab Web lẻ custom / thường (28/11)   // [8] tồn kho + đóng gói · [9] đã trả khách (22/11)   // [5] tạm dừng · [6] hạn riêng (21/11) · [7] còn thiếu (22/11: chủ dự án cho Bán hàng xem Đặt / Thiếu / Giao như ORDER·FLOW)
+    ds: dbxTheDs_(d.don || [], thu).slice(0, DBK_BANG_MAX).map(function(o) { return [o.tab, String(o.maDon || ''), o.ten, o.sl || 0, o.dl || '', o.dung ? 1 : 0, o.hanRieng ? o.hanRieng.han : '', Math.max(0, o.thieu || 0), Math.max(0, Number(o.kho) || 0), Math.max(0, Number(o.daTra) || 0), o.sku || skuCua_(o.ten), /^WEB L/.test(String(o.tab)) ? String(o.phoi || '').slice(0, 300) : '', o.ngayDat || '', o.ngayDoan ? 1 : 0]; }) });   // [10] SKU · [11] ghi chú đơn lẻ = cột Loại phôi của tab Web lẻ custom / thường (28/11)   // [8] tồn kho + đóng gói · [9] đã trả khách (22/11)   // [5] tạm dừng · [6] hạn riêng (21/11) · [7] còn thiếu (22/11: chủ dự án cho Bán hàng xem Đặt / Thiếu / Giao như ORDER·FLOW)
 }
 /* 22/11 (chủ dự án): bảng đơn nhà máy hiện THẺ THEO ĐƠN kiểu ORDER·FLOW – mọi mã của đơn đang làm (cả mã đã xong), bỏ hàng phụ / mã hủy */
 function dbxTheDs_(don, thu) {
@@ -14583,4 +14584,16 @@ function skuCua_(ten) {
   var g = String(ten).trim();
   if (!/\s/.test(g) && g.indexOf('/') > 0 && g.length >= 8) return g;
   return '';
+}
+
+/* 28/11 (chủ dự án): ngày đặt của đơn lẻ / POD không ghi ngày trong mã -> lấy theo đơn cùng tiền tố có số đơn gần nhất (số đơn tăng theo thời gian) */
+function dhNgayDoan_(ds) {
+  var so = function(m) { var x = String(m || '').replace(/^[#\s]+/, '').match(/^([A-Za-z.\-]*?)-?(\d{3,})/); return x ? [x[1].toUpperCase(), Number(x[2])] : null; };
+  var moc = {};
+  ds.forEach(function(o) { if (!/^WEB L|^POD/i.test(String(o.tab)) || !o.ngayDat) return; var k = so(o.maDon); if (k) (moc[k[0]] = moc[k[0]] || []).push([k[1], o.ngayDat]); });
+  ds.forEach(function(o) {
+    if (!/^WEB L|^POD/i.test(String(o.tab)) || o.ngayDat) return; var k = so(o.maDon), a = k && moc[k[0]]; if (!a || !a.length) return;
+    var tot = null; a.forEach(function(z) { if (!tot || Math.abs(z[0] - k[1]) < Math.abs(tot[0] - k[1])) tot = z; });
+    if (tot && Math.abs(tot[0] - k[1]) <= 2000) { o.ngayDat = tot[1]; o.ngayDoan = 1; }
+  });
 }

@@ -312,7 +312,7 @@ var BNB_THE=60;
 function bnSkuTen(sku,ten){ return sku?'<b class="of-sku">'+esc(sku)+'</b><span class="of-sku-ten">'+esc(ten)+'</span>':esc(ten); }
 function bnTk(z){ return (String(z.ten)+' '+(z.sku||'')+' '+(z.gc||'')).toUpperCase(); }
 function bnGomDon(){ var m={}, ds=[]; (BNB.ds||[]).forEach(function(d){ var k=d[0]+'|'+d[1], g=m[k];
-    if(!g){ g=m[k]={tab:d[0],ma:d[1],dong:[],sl:0,thieu:0,dl:'',hr:''}; ds.push(g); }
+    if(!g){ g=m[k]={tab:d[0],ma:d[1],dong:[],sl:0,thieu:0,dl:'',hr:'',nd:d[12]||'',ndD:!!d[13]}; ds.push(g); }   /* 28/11: nd = ngày đặt (từ mã đơn; ndD = suy theo số đơn) */
     var th=d[7]==null?(Number(d[3])||0):Number(d[7])||0; g.dong.push({ten:d[2],sku:d[10]||'',gc:d[11]||'',sl:Number(d[3])||0,thieu:th,dl:d[4]||'',dung:d[5],hr:d[6]||'',kho:Number(d[8])||0,tra:Number(d[9])||0}); g.sl+=Number(d[3])||0; g.thieu+=th; g.kho=(g.kho||0)+(Number(d[8])||0); g.tra=(g.tra||0)+(Number(d[9])||0);
     if(th>0&&d[4]&&(!g.dl||d[4]<g.dl)) g.dl=d[4]; });
   return ds.filter(function(g){ return g.thieu>0; }); }
@@ -320,10 +320,14 @@ function bnBangHtml(){
   var q=String(BNBLoc.q||'').trim().toUpperCase(), nhan={}; (BNB.kenh||[]).forEach(function(k){ nhan[k[0]]=k[1]; });
   var ds=bnGomDon().filter(function(g){ return (!BNBLoc.k||g.tab===BNBLoc.k)&&(!q||String(g.ma).toUpperCase().indexOf(q)>=0||g.dong.some(function(z){ return bnTk(z).indexOf(q)>=0; })); });
   if(!ds.length) return '<div class="pdesc">Không có đơn nào khớp.</div>';
-  ds.sort(function(a,b){ return (a.dl?0:1)-(b.dl?0:1)||(a.dl<b.dl?-1:a.dl>b.dl?1:0)||(b.thieu-a.thieu); });
+  /* 28/11 (chủ dự án): đơn lẻ / POD xếp theo NGÀY ĐẶT cũ → mới; đơn kênh khác xếp theo deadline (đơn có deadline trước, rồi đơn lẻ, rồi đơn chưa có deadline) */
+  var laLe=function(g){ return /^WEB L|^POD/i.test(g.tab); }, hang=function(g){ return laLe(g)?1:(g.dl?0:2); };
+  ds.sort(function(a,b){ var ha=hang(a), hb=hang(b); if(ha!==hb) return ha-hb;
+    if(ha===1) return ((a.nd?0:1)-(b.nd?0:1))||(a.nd<b.nd?-1:a.nd>b.nd?1:0)||String(a.ma).localeCompare(String(b.ma),'vi',{numeric:true});
+    return (a.dl<b.dl?-1:a.dl>b.dl?1:0)||(b.thieu-a.thieu); });
   var hn=bnHom(), h=ds.slice(0,BNB_THE).map(function(g){ return bnThe(g,nhan,hn,q&&String(g.ma).toUpperCase().indexOf(q)<0?q:''); }).join('');   /* 22/11: tìm theo mã SP -> chỉ hiện dòng khớp */
   if(ds.length>BNB_THE) h+='<div style="text-align:center;margin:8px 0"><button class="btn sm" type="button" onclick="BNB_THE+=60;bnBangO()">Xem thêm '+(ds.length-BNB_THE)+' đơn</button></div>';
-  return '<div class="pdesc" style="margin-bottom:8px">'+ds.length+' đơn · xếp theo deadline gần → xa (quá hạn trên cùng)</div>'+h; }
+  return '<div class="pdesc" style="margin-bottom:8px">'+ds.length+' đơn · '+(BNBLoc.k&&/^WEB L|^POD/i.test(BNBLoc.k)?'xếp theo ngày đặt cũ → mới':'đơn có deadline xếp gần → xa (quá hạn trên cùng), đơn lẻ / POD xếp theo ngày đặt cũ → mới')+'</div>'+h; }
 /* 22/11 (chủ dự án): THÔNG BÁO ĐỔI DEADLINE – 7 ngày gần nhất, mục mới (sau lần bấm "Đã xem") tô nổi; gom theo đơn */
 function bnDhKhoa(){ return 'kpi_dh_xem_'+((window.ME&&ME.tk)||''); }
 function bnDhXem(){ try{ return localStorage.getItem(bnDhKhoa())||''; }catch(e){ return ''; } }
@@ -350,7 +354,7 @@ function bnThe(g,nhan,hn,qSP){
   var q=g.dl?bnNgayCach(g.dl,hn):null, tre=q!=null&&q>0, sap=!tre&&q!=null&&q>-4, dung=g.dong.some(function(z){ return z.dung&&z.thieu>0; });
   var mau=tre?'var(--red)':pc>=90?'var(--green)':pc>=50?'#f0b04e':'var(--red)';
   var tt=tre?['tre','Trễ hạn – còn thiếu']:dung?['sap','Có mã tạm dừng']:sap?['sap','Sắp đến hạn']:['ok','Đang sản xuất'];
-  var h='<div class="of-the'+(tre?' tre':'')+'"><div class="of-dau"><div><div class="of-ma">'+esc(g.ma||'(không mã)')+'</div><div class="of-phu">'+esc(nhan[g.tab]||g.tab)+'</div></div><div class="of-phai">'+
+  var h='<div class="of-the'+(tre?' tre':'')+'"><div class="of-dau"><div><div class="of-ma">'+esc(g.ma||'(không mã)')+'</div><div class="of-phu">'+esc(nhan[g.tab]||g.tab)+(g.nd?' · <span class="of-nd" title="'+(g.ndD?'Mã đơn không ghi ngày – ngày đặt suy theo đơn có số gần nhất':'Ngày đặt đọc từ mã đơn')+'">Đặt '+(g.ndD?'≈ ':'')+esc(bnNg(g.nd).slice(0,5))+'</span>':'')+'</div></div><div class="of-phai">'+
     (g.dl?'<div class="of-dl'+(tre?' tre':sap?' sap':'')+'"><small>DEADLINE</small><b>'+esc(bnNg(g.dl).slice(0,5))+'</b><i>'+(tre?'quá hạn '+q+' ngày':(q===0?'hôm nay':'còn '+(-q)+' ngày'))+'</i></div>':'<div class="of-dl"><small>DEADLINE</small><b>—</b><i>chưa có</i></div>')+
     '<span class="of-tt '+tt[0]+'">● '+tt[1]+'</span></div></div>'+
     '<div class="of-thanh"><span>THEO LOẠI</span><div class="bar"><i style="width:'+(nL?Math.round(xL*100/nL):0)+'%;background:'+mau+'"></i></div><span class="so">Xong <b>'+xL+'/'+nL+'</b> loại</span></div>'+

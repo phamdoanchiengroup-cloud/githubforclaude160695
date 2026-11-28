@@ -16,3 +16,5 @@ Những lần Claude làm sai / làm chưa tới và cách tránh lặp lại. P
 - **17/11 – Kiểm thử phụ thuộc đồng hồ**: huy-don.js lỗi 3 mục sau 0h 18/11 (số ngày tạm dừng). → Khi báo lỗi kiểm thử, chạy lại trên bản trước để phân biệt lỗi thật / lỗi đồng hồ; nên sửa kiểm thử dùng giờ giả cố định.
 - **17/11 – Chọn Playwright `text=` khớp nhầm câu khác** → dùng `button:has-text("…")`.
 - **17/11 – Slide: trình duyệt có lề mặc định cho p/h** → đặt `h1,h2,h3,p{margin:0}` trong deck.css trước khi đo tràn.
+
+- (28/11, lặp lại lỗi 28/11 sáng) Vá dòng bảng nhà máy, tôi lại chèn chú thích `// …` vào GIỮA dòng mã → nuốt mất ` });` phía sau, Code.gs lỗi cú pháp (kiểm thử bắt được). **Quy tắc:** chuỗi thay thế trong script vá KHÔNG được có `//` khi phần sau dòng còn mã; ghi chú để bằng `#` trong Python hoặc `/* */`.

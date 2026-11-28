@@ -2627,7 +2627,7 @@ function dhTheDau(o,t,ds,han,colW){   /* 22/11: tiêu đề thẻ đơn (kiểu 
   var nL=a.length, xL=a.filter(function(x){ return !(x.thieu>0); }).length, pc=t.sl?Math.round((t.sl-t.thieu)*100/t.sl):0, dung=a.some(function(x){ return x.dung&&x.thieu>0; }), uu=!!o.uuWeb;
   var mau=tre?'var(--red)':pc>=90?'var(--green)':pc>=50?'#e0a040':'var(--red)', tt=tre?['tre','Trễ hạn – còn thiếu']:dung?['sap','Có mã tạm dừng']:sap?['sap','Sắp đến hạn']:['ok','Đang sản xuất'];
   return '<tr class="dh-the-dau '+tt[0]+'"><td colspan="'+colW+'"><div class="dh-td">'+
-    '<div class="dh-td-ma"><b>'+esc(o.maDon||'(không mã)')+'</b>'+(uu?' <span class="dh-han sap">★ ưu tiên</span>':'')+'<small>'+esc(o.kenh||o.tab)+(o.nguoiDat?' · '+esc(o.nguoiDat):'')+' · '+nL+' mã</small></div>'+
+    '<div class="dh-td-ma"><b>'+esc(o.maDon||'(không mã)')+'</b>'+(uu?' <span class="dh-han sap">★ ưu tiên</span>':'')+'<small>'+esc(o.kenh||o.tab)+(o.nguoiDat?' · '+esc(o.nguoiDat):'')+(o.ngayDat&&/^WEB L|^POD/i.test(String(o.tab))?' · Đặt '+(o.ngayDoan?'≈ ':'')+dhNg(o.ngayDat):'')+' · '+nL+' mã</small></div>'+   /* 28/11: ngày đặt đơn lẻ */
     '<div class="dh-td-dl '+(tre?'tre':sap?'sap':'')+'"><small>DEADLINE</small><b>'+(han?dhNg(han):'—')+'</b><i>'+(q==null?'chưa có':tre?'quá hạn '+q+' ngày':q===0?'hôm nay':'còn '+(-q)+' ngày')+'</i></div>'+
     '<span class="dh-td-tt '+tt[0]+'">● '+tt[1]+'</span>'+
     '<div class="dh-td-bar"><div><span>Theo loại</span><i><b style="width:'+(nL?Math.round(xL*100/nL):0)+'%;background:'+mau+'"></b></i><em>xong <b>'+xL+'/'+nL+'</b> loại</em></div>'+
@@ -2856,8 +2856,12 @@ function dhVeBang(ds){
     /* 22/11 (chủ dự án): mỗi ĐƠN một thẻ – gom các mã của đơn lại (giữ thứ tự Sheet trong đơn), đơn xếp theo deadline sớm nhất của mã còn thiếu (quá hạn đầu, chưa có hạn cuối) */
     var hanD={}, thuD={}; x.forEach(function(o,i){ var k=o.tab+'|'+o.maDon, d=hanB(o); if(thuD[k]==null) thuD[k]=i; if(o.thieu>0&&d&&(!hanD[k]||d<hanD[k])) hanD[k]=d; });
     x.forEach(function(o){ var k=o.tab+'|'+o.maDon; if(hanD[k]==null){ var d=hanB(o); if(d&&(!hanD[k]||d<hanD[k])) hanD[k]=d; } });
-    x=x.map(function(o,i){ return [o,i]; }).sort(function(a,b){ var ka=a[0].tab+'|'+a[0].maDon, kb=b[0].tab+'|'+b[0].maDon, p=hanD[ka]||'', q=hanD[kb]||'';
-      return (p?0:1)-(q?0:1)||(p<q?-1:p>q?1:0)||(thuD[ka]-thuD[kb])||(a[1]-b[1]); }).map(function(z){ return z[0]; }); DHB._hanD=hanD; }
+    /* 28/11 (chủ dự án): đơn lẻ / POD xếp theo NGÀY ĐẶT (từ mã đơn) cũ → mới; kênh khác theo deadline. Trộn nhiều kênh: đơn có deadline → đơn lẻ → đơn chưa có hạn */
+    var laLeB=function(o){ return /^WEB L|^POD/i.test(String(o.tab)); }, hangB=function(o,p){ return laLeB(o)?1:(p?0:2); };
+    x=x.map(function(o,i){ return [o,i]; }).sort(function(a,b){ var ka=a[0].tab+'|'+a[0].maDon, kb=b[0].tab+'|'+b[0].maDon, p=hanD[ka]||'', q=hanD[kb]||'', ha=hangB(a[0],p), hb=hangB(b[0],q);
+      if(ha!==hb) return ha-hb;
+      if(ha===1){ var na=a[0].ngayDat||'', nb=b[0].ngayDat||''; return ((na?0:1)-(nb?0:1))||(na<nb?-1:na>nb?1:0)||String(a[0].maDon).localeCompare(String(b[0].maDon),'vi',{numeric:true})||(a[1]-b[1]); }
+      return (p<q?-1:p>q?1:0)||(thuD[ka]-thuD[kb])||(a[1]-b[1]); }).map(function(z){ return z[0]; }); DHB._hanD=hanD; }
   else DHB._hanD=null;
   var donDem=function(a){ var m={}; a.forEach(function(o){m[o.tab+'|'+o.maDon]=1}); return Object.keys(m).length; };
   var chips='<div class="dh-tabs" role="tablist">'+
