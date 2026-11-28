@@ -3,6 +3,14 @@
 Nhóm: Chung · Cập nhật 22/11/2026
 Liên quan: [[00 Mục lục]] · [[Liên kết và công cụ]] · [[Việc chờ chủ dự án]] · [[Lần dán lên Apps Script]] · [[Quyết định của chủ dự án]] · [[KPI Kiểm thử]]
 
+
+## 28/11 tối – VIỆC DỞ (chủ dự án yêu cầu, chưa xong khi hết lượt)
+VIỆC 1 – Tính đơn tab ĐƠN ƯU TIÊN vào KÊNH KHO trong MỌI số liệu / hiển thị (không là kênh riêng). GIỮ nút lọc "★ Đơn ưu tiên" (chủ dự án chọn). Giữ o.tab='ĐƠN ƯU TIÊN' để ghi đúng tab, chỉ gộp khi thống kê:
+- Máy chủ: module tests/uu-kho/va-uu-kho.py, exec cuối tests/va-code.py (sau le-ngay). DH_NHAN_TAB['ĐƠN ƯU TIÊN']='Kho'; dhTabK_(t); kenhDs bỏ ĐƠN ƯU TIÊN; bảng email theo DH_TABS bỏ ĐƠN ƯU TIÊN; tabNhan / vòng dhDocHoanThien_ không để 'Kho' trỏ sang ĐƠN ƯU TIÊN; theo[o.tab]/theo[g.tab] (thống kê theo kênh, dbt, Sheet tóm tắt) dùng dhTabK_; DH_DON_KHOA v19.
+- Web quy-trinh-web.html: dhTabK(t) ở theoK/THU, báo cáo kds/kenh/tuoi, dhVeKenh, lọc kênh bảng đơn, theoCount, DHTD.thay; bỏ ghi chú cũ "ĐƠN ƯU TIÊN không cộng / bản chép". don-ban-web.html: đếm + lọc kênh gộp KHO.
+VIỆC 2 – Cột Mã sản phẩm (bảng trạng thái đơn + thẻ Order-Flow): chỉ hiện SKU, tên sản phẩm ẩn sau nút ▾; chưa có SKU thì hiện thẳng tên (chủ dự án chọn, cả 2 bảng).
+Sau đó: dựng lại, kiểm thử (uu-tab, don-hang, du-kien, uu-tien-web, hai-lan-web, sku-web, bo-cuc-web, don-xong), ghi bo-nao, commit + push, đăng lại bản đồ, báo chủ dự án.
+
 ## 21–22/11 – KPI MỚI + ĐƠN HÀNG / ORDER-FLOW: XONG + đã push (chờ 2-CAP-NHAT.bat)
 - **KPI:** cách mới áp từ T9 (bỏ học việc, chấm công, ngày công ≥80% / 50–80% hạ bậc / <50% Thiếu công, trần 150/130, vận hành TP/PP ×5 + quên điểm danh −10). Chủ dự án cần **Chốt tháng lại T9, T10** sau khi cập nhật. Bản trình bày https://claude.ai/artifact/6MFU4zcWD3frTzXbV3KFWh; PDF KPI T9–T10 (scratchpad, có tên NV).
 - **Đơn hàng:** Lẻ / POD đã xong (3 ngày làm); Công suất & deadline chia theo kênh + card theo ngày + card Lẻ/POD; hạn riêng từng mã; xếp theo deadline; **tab Đơn hàng mỗi đơn 1 thẻ** (giữ cột Sheet); chữ Note / Chú thích rõ; cảnh báo trả + tồn > đặt.
