@@ -18,4 +18,9 @@ ok(dd && dd[10] === 'RHI2-NEBULA2/388/GRAY/NW/11.8', 'Bảng đơn nhà máy: c�
 const idx = fs.readFileSync(path.join(__dirname, '..', 'DonBan.html'), 'utf8'), qt = fs.readFileSync(path.join(__dirname, '..', 'QuyTrinh.html'), 'utf8');
 ok(/function bnSkuTen/.test(idx) && /bnSkuTen\(z\.sku,z\.ten\)/.test(idx) && /bnSkuTen\(z\[3\],z\[0\]\)/.test(idx) && /x\[7\]\?'<b>'\+esc\(x\[7\]\)/.test(idx), 'Order-Flow: bảng đơn, Lẻ/POD đã xong, đổi deadline hiện SKU to + tên nhỏ');
 ok(/function dhSkuTen/.test(qt) && /dhSkuTen\(o\)/.test(qt) && /o\.sku\|\|''/.test(qt), 'tab Đơn hàng: ô Mã sản phẩm hiện SKU + tìm được theo SKU');
+const c2 = G.tao(path.join(__dirname, '..', 'Code.gs'), JSON.parse(fs.readFileSync(process.env.DATA, 'utf8')), '2026-11-28T09:00:00+07:00');
+c2.__ngoai = { [c2.DH_SHEET_ID]: { ten: 'x', sheets: { 'WEB LẺ CUSTOM': [H, ['#C-9', 'GAY CUSTOM X', 'Khắc tên: MINH · màu đỏ', 1, 1, '30/12', '', 0, 0, '', '']], KHO: [H, ['#K-2', 'GAY KHO Y', 'CYCO 12.5', 5, 5, '30/12', '', 0, 0, '', '']] } } };
+const own2 = c2.__phienDai(c2.doc_('TaiKhoan').find(t => String(t.VaiTro).trim() === 'OWNER')), r2 = c2.__goi('layBangDonNhaMay', own2), cu = r2.ds.find(x => x[2] === 'GAY CUSTOM X'), kh = r2.ds.find(x => x[2] === 'GAY KHO Y');
+ok(cu && cu[11] === 'Khắc tên: MINH · màu đỏ' && kh && kh[11] === '', 'ghi chú đơn lẻ (cột Loại phôi) chỉ gửi cho tab Web lẻ, tab khác để trống', [cu, kh]);
+ok(/z\.gc\?'<span class="of-gc">/.test(idx), 'Order-Flow hiện ghi chú chữ nhỏ dưới tên sản phẩm');
 console.log('\n' + (n - l) + '/' + n + ' đạt'); process.exit(l ? 1 : 0);

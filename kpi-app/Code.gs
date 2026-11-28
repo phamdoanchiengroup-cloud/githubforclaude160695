@@ -7725,7 +7725,7 @@ function danhSachVanPhong(token) {
   ds.sort(function(a, b) { return (thuTu[a.vaiTro] - thuTu[b.vaiTro]) || (a.HoTen < b.HoTen ? -1 : 1); });
   return sach_({ ok: true, ds: ds, muc: HS_MUC });
 }
-var KPI_BAN_MAY = '28/11/2026 13:17';   // giờ dựng Code.gs (22/10)
+var KPI_BAN_MAY = '28/11/2026 16:32';   // giờ dựng Code.gs (22/10)
 /* =====================================================================
    KỸ NĂNG (22/10, chủ dự án nhờ thiết kế + tham khảo chuyên gia nhân sự / đào tạo)
    - Danh mục: trưởng / phó phòng đề xuất kỹ năng của xưởng (tên, mô tả, tiêu chí đạt, công đoạn liên quan)
@@ -12213,7 +12213,7 @@ function layBangDonNhaMay(token) {
   } catch (eTK) { tk = []; }
   return sach_({ ok: true, luc: d.luc || '', het: het ? 1 : 0, n: ds.length, kenh: dbKenh_(), tk: tk, duKin: DBK_DU_KIN, cs: dhCongSuat_().sp,
     pct: dbxPctDon_(d.don || []), doiHan: dthDs_(),   // 21/11 (chủ dự án): thanh % hoàn thành theo từng đơn
-    ds: dbxTheDs_(d.don || [], thu).slice(0, DBK_BANG_MAX).map(function(o) { return [o.tab, String(o.maDon || ''), o.ten, o.sl || 0, o.dl || '', o.dung ? 1 : 0, o.hanRieng ? o.hanRieng.han : '', Math.max(0, o.thieu || 0), Math.max(0, Number(o.kho) || 0), Math.max(0, Number(o.daTra) || 0), o.sku || skuCua_(o.ten)]; }) });   // [10] SKU (28/11)   // [8] tồn kho + đóng gói · [9] đã trả khách (22/11)   // [5] tạm dừng · [6] hạn riêng (21/11) · [7] còn thiếu (22/11: chủ dự án cho Bán hàng xem Đặt / Thiếu / Giao như ORDER·FLOW)
+    ds: dbxTheDs_(d.don || [], thu).slice(0, DBK_BANG_MAX).map(function(o) { return [o.tab, String(o.maDon || ''), o.ten, o.sl || 0, o.dl || '', o.dung ? 1 : 0, o.hanRieng ? o.hanRieng.han : '', Math.max(0, o.thieu || 0), Math.max(0, Number(o.kho) || 0), Math.max(0, Number(o.daTra) || 0), o.sku || skuCua_(o.ten), /^WEB L/.test(String(o.tab)) ? String(o.phoi || '').slice(0, 300) : '']; }) });   // [10] SKU · [11] ghi chú đơn lẻ = cột Loại phôi của tab Web lẻ custom / thường (28/11)   // [8] tồn kho + đóng gói · [9] đã trả khách (22/11)   // [5] tạm dừng · [6] hạn riêng (21/11) · [7] còn thiếu (22/11: chủ dự án cho Bán hàng xem Đặt / Thiếu / Giao như ORDER·FLOW)
 }
 /* 22/11 (chủ dự án): bảng đơn nhà máy hiện THẺ THEO ĐƠN kiểu ORDER·FLOW – mọi mã của đơn đang làm (cả mã đã xong), bỏ hàng phụ / mã hủy */
 function dbxTheDs_(don, thu) {
