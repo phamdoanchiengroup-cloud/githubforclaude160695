@@ -2867,9 +2867,9 @@ function dhVeBang(ds){
   var donDem=function(a){ var m={}; a.forEach(function(o){m[o.tab+'|'+o.maDon]=1}); return Object.keys(m).length; };
   var chips='<div class="dh-tabs" role="tablist">'+
     '<button type="button" role="tab" aria-selected="'+(tab==='@uu')+'" class="dh-tabb uu'+(tab==='@uu'?' on':'')+'" data-t="@uu" onclick="dhBTab(this.dataset.t)">★ Đơn ưu tiên <i>'+qtSo(donDem(uuDs),0)+'</i></button>'+
-    '<button type="button" role="tab" aria-selected="'+(tab==='@tre')+'" class="dh-tabb tre'+(tab==='@tre'?' on':'')+'" data-t="@tre" onclick="dhBTab(this.dataset.t)">Đơn trễ hẹn <i>'+qtSo(donDem(treDs),0)+'</i></button>'+
-    '<button type="button" role="tab" aria-selected="'+(tab==='@han10')+'" class="dh-tabb'+(tab==='@han10'?' on':'')+'" data-t="@han10" onclick="dhBTab(this.dataset.t)">Đến hạn '+DH_HAN+' ngày tới <i>'+qtSo(donDem(h10d),0)+'</i></button>'+
-    (DH&&DH.huy?'<button type="button" role="tab" aria-selected="'+(tab==='@huy')+'" class="dh-tabb huy'+(tab==='@huy'?' on':'')+'" data-t="@huy" onclick="dhBTab(this.dataset.t)">Đơn đã hủy <i>'+qtSo(dhHuyDs2().filter(function(z){return z.hl;}).length,0)+'</i></button>':'')+
+    /* 28/11 (chủ dự án): bỏ nút này khỏi bảng Trạng thái đơn hàng */ ''+   // '<button type="button" role="tab" aria-selected="'+(tab==='@
+    /* 28/11 (chủ dự án): bỏ nút này khỏi bảng Trạng thái đơn hàng */ ''+   // '<button type="button" role="tab" aria-selected="'+(tab==='@
+    /* 28/11 (chủ dự án): bỏ nút này khỏi bảng Trạng thái đơn hàng */ ''+   // (DH&&DH.huy?'<button type="button" role="tab" aria-selected=
     (dhDungDon().length?'<button type="button" role="tab" aria-selected="'+(tab==='@dung')+'" class="dh-tabb dung'+(tab==='@dung'?' on':'')+'" data-t="@dung" onclick="dhBTab(this.dataset.t)">Tạm dừng <i>'+qtSo(dhDungDon().length,0)+'</i></button>':'')+   /* 17/11 */   /* 16/11 khuya: mục xem lại mã hủy / bớt */
     (tab?'':'<span class="dh-tabb on" style="cursor:default">Kết quả tìm ở mọi kênh <i>'+qtSo(ds.length,0)+'</i></span>');
   ((DH&&DH.kenhDs)||[]).forEach(function(k){
