@@ -1383,5 +1383,6 @@ exec(io.open(os.path.join(os.path.dirname(__file__), 'sku', 'va-sku.py'), encodi
 exec(io.open(os.path.join(os.path.dirname(__file__), 'uu-tab', 'va-uu-tab.py'), encoding='utf-8').read())   # tab ĐƠN ƯU TIÊN thành kênh riêng (28/11) – sau sku
 exec(io.open(os.path.join(os.path.dirname(__file__), 'ghi-sheet', 'va-ghi-sheet.py'), encoding='utf-8').read())   # duyệt đơn web ghi Sheet giống cách tab đang ghi (28/11)
 exec(io.open(os.path.join(os.path.dirname(__file__), 'le-ngay', 'va-le-ngay.py'), encoding='utf-8').read())   # ngày đặt đơn lẻ suy theo số đơn + gửi Order-Flow (28/11)
+exec(io.open(os.path.join(os.path.dirname(__file__), 'uu-kho', 'va-uu-kho.py'), encoding='utf-8').read())   # đơn ĐƠN ƯU TIÊN tính vào kênh Kho trong mọi thống kê (28/11 tối)
 io.open(RA, 'w', encoding='utf-8').write(s)
 print('OK ->', os.path.abspath(RA))

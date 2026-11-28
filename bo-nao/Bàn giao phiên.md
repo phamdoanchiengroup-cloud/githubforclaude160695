@@ -4,7 +4,7 @@ Nhóm: Chung · Cập nhật 22/11/2026
 Liên quan: [[00 Mục lục]] · [[Liên kết và công cụ]] · [[Việc chờ chủ dự án]] · [[Lần dán lên Apps Script]] · [[Quyết định của chủ dự án]] · [[KPI Kiểm thử]]
 
 
-## 28/11 tối – VIỆC DỞ (chủ dự án yêu cầu, chưa xong khi hết lượt)
+## 28/11 tối – ĐÃ XONG (cùng phiên): 2 việc dưới đây đã làm, commit cùng ngày
 VIỆC 1 – Tính đơn tab ĐƠN ƯU TIÊN vào KÊNH KHO trong MỌI số liệu / hiển thị (không là kênh riêng). GIỮ nút lọc "★ Đơn ưu tiên" (chủ dự án chọn). Giữ o.tab='ĐƠN ƯU TIÊN' để ghi đúng tab, chỉ gộp khi thống kê:
 - Máy chủ: module tests/uu-kho/va-uu-kho.py, exec cuối tests/va-code.py (sau le-ngay). DH_NHAN_TAB['ĐƠN ƯU TIÊN']='Kho'; dhTabK_(t); kenhDs bỏ ĐƠN ƯU TIÊN; bảng email theo DH_TABS bỏ ĐƠN ƯU TIÊN; tabNhan / vòng dhDocHoanThien_ không để 'Kho' trỏ sang ĐƠN ƯU TIÊN; theo[o.tab]/theo[g.tab] (thống kê theo kênh, dbt, Sheet tóm tắt) dùng dhTabK_; DH_DON_KHOA v19.
 - Web quy-trinh-web.html: dhTabK(t) ở theoK/THU, báo cáo kds/kenh/tuoi, dhVeKenh, lọc kênh bảng đơn, theoCount, DHTD.thay; bỏ ghi chú cũ "ĐƠN ƯU TIÊN không cộng / bản chép". don-ban-web.html: đếm + lọc kênh gộp KHO.

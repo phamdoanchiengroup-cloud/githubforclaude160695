@@ -28,4 +28,23 @@ let dem = 0, loi = 0; const ok = (d, t, c) => { dem++; if (d) console.log('  ✓
     await p.close(); }
   { const p = await vao('tpcnc'); await p.evaluate(() => go('bh')); await p.waitForTimeout(4500);
     ok(await p.evaluate(() => document.querySelectorAll('.of-the').length <= 12 && document.documentElement.scrollHeight < 9000), 'Order-Flow: tối đa 12 thẻ, trang ngắn', await p.evaluate(() => [document.querySelectorAll('.of-the').length, document.documentElement.scrollHeight])); await p.close(); }
+  console.log('4. 28/11 tối: đơn ưu tiên gộp kênh Kho + cột Mã sản phẩm chỉ hiện SKU (▾ xem tên)');
+  { const p = await vao('chienpham'); await p.evaluate(() => go('dh')); await p.waitForTimeout(4500);
+    const r = await p.evaluate(() => { const ch = [...document.querySelectorAll('.dh-tabb')].map(x => x.textContent.trim());
+      const nU = DH.don.filter(o => o.tab === 'ĐƠN ƯU TIÊN').length, nK = DH.don.filter(o => o.tab === 'KHO' || o.tab === 'ĐƠN ƯU TIÊN').length;
+      return { ch, nU, nK, dem: theoCount(DH.don, 'KHO'), kenhU: DH.don.filter(o => o.tab === 'ĐƠN ƯU TIÊN').every(o => o.kenh === 'Kho') }; });
+    ok(r.nU > 0 && r.dem === r.nK && r.kenhU && !r.ch.some(x => /^ĐƠN ƯU TIÊN/.test(x)) && r.ch.some(x => /Đơn ưu tiên/.test(x)), 'kênh Kho đếm cả tab ĐƠN ƯU TIÊN, không có nút kênh riêng, vẫn có nút ★ Đơn ưu tiên', r);
+    await p.evaluate(() => dhBTab('KHO')); await p.waitForTimeout(800);
+    const s1 = await p.evaluate(() => { const td = [...document.querySelectorAll('.dh-sh td.c2')].filter(t => t.querySelector('.dh-sku'))[0]; if (!td) return null; const ten = td.querySelector('.dh-sku-ten'), bt = td.querySelector('.dh-tenbt');
+      const an = getComputedStyle(ten).display === 'none'; bt.click(); const hien = getComputedStyle(ten).display !== 'none'; bt.click(); return [an, hien, getComputedStyle(ten).display === 'none', document.querySelectorAll('.dh-sh td.c2 .dh-sku').length]; });
+    ok(s1 && s1[0] && s1[1] && s1[2], 'bảng trạng thái: chỉ hiện SKU, bấm ▾ hiện tên, bấm lại ẩn', s1);
+    const s2 = await p.evaluate(() => { const td = [...document.querySelectorAll('.dh-sh td.c2')].find(t => !t.querySelector('.dh-sku')); return td ? td.textContent.trim().length > 3 : 'không có dòng thiếu SKU'; });
+    ok(s2 === true || s2 === 'không có dòng thiếu SKU', 'dòng chưa có SKU hiện thẳng tên', s2);
+    if (process.env.ANH) await p.screenshot({ path: process.env.ANH + '/sku-dh.png', clip: await p.evaluate(() => { const r = document.querySelector('.dh-sh').getBoundingClientRect(); return { x: 0, y: Math.max(0, r.y + scrollY - 140), width: 1440, height: 760 }; }) });
+    ok(!p.__L.length, 'không lỗi JS', p.__L); await p.close(); }
+  { const p = await vao('tpcnc'); await p.evaluate(() => go('bh')); await p.waitForTimeout(4500);
+    const r = await p.evaluate(() => { const t = document.querySelector('.of-sku-ten'); if (!t) return null; const an = getComputedStyle(t).display === 'none'; t.previousSibling.querySelector('.of-tenbt').click(); return [an, getComputedStyle(t).display !== 'none', [...document.querySelectorAll('.db-kenh button')].map(x => x.textContent.trim())]; });
+    ok(r && r[0] && r[1] && !r[2].some(x => /^ĐƠN ƯU TIÊN/.test(x)), 'Order-Flow: chỉ SKU, ▾ hiện tên; không có nút kênh ĐƠN ƯU TIÊN', r);
+    if (process.env.ANH) await p.screenshot({ path: process.env.ANH + '/sku-of.png', clip: await p.evaluate(() => { const r = document.querySelector('.of-the').getBoundingClientRect(); return { x: 0, y: Math.max(0, r.y + scrollY - 200), width: 1440, height: 760 }; }) });
+    ok(!p.__L.length, 'Order-Flow không lỗi JS', p.__L); await p.close(); }
   console.log('\n' + (dem - loi) + '/' + dem + ' đạt'); await b.close(); process.exit(loi ? 1 : 0); })();

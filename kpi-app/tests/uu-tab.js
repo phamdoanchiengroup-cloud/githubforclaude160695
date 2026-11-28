@@ -9,14 +9,14 @@ console.log('1. Không trùng (sau khi xóa ở tab KHO)');
 { const KHO = [H, ['KHO-02/11', 'GAY B', '', 30, 5, '25/12', '', 20, 20, '', '']], UU = [H, ['KHO-25/09', 'GAY A', '', 60, 10, '25/11', '', 60, 30, 30, ''], ['', 'GAY D', '', 8, 8, '25/11', '', 0, 0, '', '']];
   const c = tao(KHO, UU), d = c.dhDocDon_(true), u = d.don.filter(o => o.tab === 'ĐƠN ƯU TIÊN');
   ok(d.don.length === 3 && u.length === 2, 'đọc cả 2 tab, không trùng: 1 dòng KHO + 2 dòng ưu tiên', d.don.map(o => o.tab + ' ' + o.ten));
-  ok(u.every(o => o.uuTien && o.kenh === 'ĐƠN ƯU TIÊN' && !o.phu), 'dòng tab ưu tiên: kênh "ĐƠN ƯU TIÊN", là hàng ưu tiên, là dòng thật (không phải bản chép)', u[0]);
+  ok(u.every(o => o.uuTien && o.tab === 'ĐƠN ƯU TIÊN' && o.kenh === 'Kho' && !o.phu), 'dòng tab ưu tiên: tab ĐƠN ƯU TIÊN, nhãn kênh "Kho" (28/11 tối), là hàng ưu tiên, là dòng thật (không phải bản chép)', u[0]);
   ok(u[0].giao === 60 && u[0].kho === 30 && u[0].daTra === 30 && u[1].maDon === 'KHO-25/09', 'Có thể giao / Tồn kho + ĐG / Đã trả + mã đơn gộp dòng lấy đúng tab ưu tiên', u);
   ok(d.uu.length === 2 && d.trungUu.length === 0 && !Object.keys(d.tabPhu || {}).some(t => /ƯU TIÊN/.test(t)), 'mục Ưu tiên = 2 dòng; không còn tab bản chép', [d.uu.length, d.trungUu, Object.keys(d.tabPhu || {})]);
   const own = c.__phienDai(c.doc_('TaiKhoan').find(t => String(t.VaiTro).trim() === 'OWNER'));
   const r = c.__goi('luuBangDon', own, { ds: [{ tab: 'ĐƠN ƯU TIÊN', dong: u[0].dong, ten: u[0].ten, kho: { moi: 29, cu: 30 }, sl: { moi: 61, cu: 60 } }] });
   ok(r.ok && UU[1][8] === 29 && UU[1][3] === 61, 'web sửa Tồn kho + SL đặt → ghi thẳng vào tab ĐƠN ƯU TIÊN', [r, UU[1][8], UU[1][3]]);
   const b = c.__goi('layBangDonNhaMay', own); ok(b.ok && b.ds.filter(x => x[0] === 'ĐƠN ƯU TIÊN').length === 2 && b.kenh.some(k => k[0] === 'ĐƠN ƯU TIÊN'), 'Order-Flow: có dòng + nút lọc kênh ĐƠN ƯU TIÊN', b.kenh);
-  const x = c.__goi('layDonHangXuong', own, true); ok(x.ok && x.kenhDs.some(k => k[0] === 'ĐƠN ƯU TIÊN') && x.don.filter(o => o.tab === 'ĐƠN ƯU TIÊN').length === 2, 'tab Đơn hàng: có nút lọc kênh ĐƠN ƯU TIÊN', x.kenhDs);
+  const x = c.__goi('layDonHangXuong', own, true); ok(x.ok && !x.kenhDs.some(k => k[0] === 'ĐƠN ƯU TIÊN') && x.don.filter(o => o.tab === 'ĐƠN ƯU TIÊN').length === 2, 'tab Đơn hàng: ĐƠN ƯU TIÊN không là kênh riêng (gộp Kho), dòng vẫn đọc đủ', x.kenhDs);
   const d2 = c.dhDocDon_(false), RR = c.dbkMoPhong_(c.dbkGiau_(d2), null, c.dhCongSuat_()), L = (RR.L || []).filter(z => z.o && z.o.tab === 'ĐƠN ƯU TIÊN');
   ok(L.length === 2 && L.every(z => z.lan === 3 && /ưu tiên|trễ/.test(z.ly)), 'xếp lịch: dòng ưu tiên ở làn Kho (3), ưu tiên trong làn', L.map(z => [z.lan, z.ly])); }
 console.log('2. Còn sót dòng trùng ở tab KHO');

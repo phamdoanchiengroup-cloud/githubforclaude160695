@@ -37,7 +37,7 @@ function webMoPhong(DHd, hn, them) {
     return src.slice(i + 1, j + 1); };
   const bien = src.split('\n').filter(s => /^var (DH_TAB_BAC1|DH_LE_TAB|DH_HAN_LE|DH_LAN_MIN|DH_SIM_C|DH_CS_DON|DH_LAN5|DH_LAN_DU|DH_LAN_KENH)\b/.test(s)).join('\n');
   const ham = ['dhCachNgay', 'dhCS', 'dhNgayCong', 'dhLaNgayLam', 'dhSoNgayLam', 'dhNgayLamThu', 'dhLaSX', 'dhGomDon', 'dhTenChuan', 'dhUuTen', 'dhLaUu', 'dhTreTen', 'dhBacDong', 'dhBac',
-    'dhHanLeN', 'dhCongNgayLam', 'dhLanLe', 'dhLaLe', 'dhLan1', 'dhDlNgam', 'dhQua30', 'dhLa1K', 'dhBRoute', 'dhK2', 'dhKs', 'dhSimDong', 'dhMoPhong', 'dhCSDon', 'dhLanSo', 'dhLanNap'].map(lay).join('\n');
+    'dhHanLeN', 'dhCongNgayLam', 'dhLanLe', 'dhLaLe', 'dhLan1', 'dhDlNgam', 'dhQua30', 'dhLa1K', 'dhBRoute', 'dhK2', 'dhKs', 'dhSimDong', 'dhMoPhong', 'dhCSDon', 'dhLanSo', 'dhLanNap', 'dhTabK'].map(lay).join('\n');
   const ctx = { DH: DHd, DHHT: null, HN: hn, them, kq: null }; vm.createContext(ctx);
   vm.runInContext(bien + '\n' + ham + '\nfunction dhHomNay(){ return HN; }\nkq = dhMoPhong(dhCSDon(), them);', ctx);
   const m = {}; ctx.kq.forEach(g => { m[g.ma + '|' + g.tab] = g.eta; }); return m;
@@ -66,7 +66,7 @@ ok(R.cong2('2026-11-20') === '2026-11-23', '20/11 → 23/11 (bỏ chủ nhật 2
   const b = (o, mu, mtr) => ctx.dhBacDong(o, mu || {}, mtr || {});
   const kq = [b({ tab: 'DEALER', dl: '2026-12-30' }), b({ tab: 'DEALER', dl: '2026-11-01' }), b({ tab: 'OEM', dl: '2026-11-01' }), b({ tab: 'KHO', uuWeb: { ai: 'x' } }), b({ tab: 'KHO', maDon: '#K1', ten: 'A' }, { '#K1|A': 1 }), b({ tab: 'OEM', dl: '2026-12-30' }), b({ tab: 'POD-X' })];
   ok(kq.join() === '2,1,1,1,1,2,2', '17/11 tối: ưu tiên TRONG LÀN – trễ hạn / ★ / hàng ưu tiên = 1, còn lại = 2', kq);
-  vm.runInContext(src.match(/\nvar DH_LAN5=[^\n]*/)[0] + '\nvar DH_LAN_KENH={};' + src.slice(src.indexOf('\nfunction dhLanSo('), src.indexOf('\n', src.indexOf('\nfunction dhLanSo(') + 1)), ctx);
+  vm.runInContext(src.match(/\nvar DH_LAN5=[^\n]*/)[0] + '\nvar DH_LAN_KENH={};function dhTabK(t){ return t===\'ĐƠN ƯU TIÊN\'?\'KHO\':t; }\n' + src.slice(src.indexOf('\nfunction dhLanSo('), src.indexOf('\n', src.indexOf('\nfunction dhLanSo(') + 1)), ctx);
   const ls = ['WEB LẺ CUSTOM', 'POD-A.BÁCH', 'DEALER', 'KHO', 'OEM', 'A ĐÔNG', 'TAB MỚI'].map(x => ctx.dhLanSo(x));
   ok(ls.join() === '1,1,2,3,4,5,3' && ctx.DH_LAN5.map(x => x[2]).join() === '0.1,0.2,0.5,0.05,0.15', '5 làn: Lẻ + POD 10% · Dealer 20% · Kho 50% · OEM 5% · A Đông 15%; tab mới tạm vào làn Kho', ls);
   const DHx = c.__goi('layDonHangXuong', own, true), wx = webMoPhong(DHx, hn, null), Rx = c.dbkMoPhong_(c.dbkGiau_(c.dhDocDon_(false)), null, cs);

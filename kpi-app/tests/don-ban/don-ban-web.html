@@ -39,7 +39,7 @@
 .of-thanh .bar{height:5px;border-radius:4px;background:rgba(127,127,127,.25);overflow:hidden}.of-thanh .bar i{display:block;height:100%;border-radius:4px}
 .of-thanh .so{font-family:ui-monospace,Menlo,monospace;letter-spacing:0;color:var(--ink2)}.of-thanh .so b{color:var(--green)}.of-thanh .so em{color:var(--red);font-style:normal}
 .of-loc{padding:4px 14px 8px;font-size:12px;color:var(--ink3);display:flex;gap:8px;align-items:center} .of-loc b{color:var(--ink)}
-.of-sku{display:block;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:13.5px;font-weight:700;letter-spacing:.01em;word-break:break-all} .of-sku-ten{display:block;font-size:11.5px;font-weight:400;color:var(--ink3);margin-top:1px}
+.of-sku{display:block;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:13.5px;font-weight:700;letter-spacing:.01em;word-break:break-all} .of-sku-ten{display:block;font-size:11.5px;font-weight:400;color:var(--ink3);margin-top:1px} .of-sku-ten:not(.mo){display:none} .of-tenbt{border:0;background:transparent;color:var(--ink3);font-size:12px;line-height:1;padding:2px 5px;margin-left:4px;cursor:pointer;border-radius:4px;vertical-align:1px;font-family:inherit} .of-tenbt:hover{background:rgba(0,0,0,.07)} @media print{.of-sku-ten{display:block!important}.of-tenbt{display:none}}
 .of-nd-ma{font-size:12px;font-weight:500;color:var(--ink3);margin-left:8px;font-family:inherit} .of-xong{padding:8px 14px 10px;border-top:1px dashed var(--line)} .of-xong .btn{font-size:12px} .of-gc{display:block;font-size:11.5px;font-weight:400;color:var(--ink2);margin-top:2px;white-space:pre-line} /* 28/11: ghi chú đơn lẻ (cột Loại phôi) */
 .of-ton{padding:4px 14px 8px;font-size:12px;color:var(--ink3)} .of-ton b{color:var(--ink)} .of-ton b.g{color:var(--green)}
 .of-dong .tra{color:var(--ink2)}
@@ -290,7 +290,7 @@ function bnVeBang(){
   if(!BNB){ bnTaiBang(); return '<div class="pdesc">Đang tải bảng đơn…</div>'; }
   if(BNB.loi) return '<div class="alert a-bd">'+esc(BNB.loi)+' <button class="btn sm" type="button" onclick="BNB=null;bnVe()">Thử lại</button></div>';
   var nhan={}, dem={}; (BNB.kenh||[]).forEach(function(k){ nhan[k[0]]=k[1]; });
-  bnGomDon().forEach(function(g){ dem[g.tab]=(dem[g.tab]||0)+1; });   /* 22/11: đếm theo ĐƠN */
+  bnGomDon().forEach(function(g){ var t=g.tab==='ĐƠN ƯU TIÊN'?'KHO':g.tab; dem[t]=(dem[t]||0)+1; });   /* 28/11 tối: đơn ưu tiên đếm vào Kho */   /* 22/11: đếm theo ĐƠN */
   var tabs=Object.keys(dem);
   return '<div class="pdesc" style="margin-bottom:8px">Các đơn nhà máy <b>đang làm</b> (đơn còn mã chưa xong, đã bỏ mã bị hủy) · cập nhật '+esc(bnGio(BNB.luc)||BNB.luc)+' <button class="btn sm" type="button" onclick="BNB=null;bnVe()">Làm mới</button></div>'+
     bnVeKin(nhan)+
@@ -309,7 +309,7 @@ function bnVeKin(nhan){ var tk=BNB.tk||[]; if(!tk.length) return '';
    từng mã Đặt · Thiếu · Giao (mã còn thiếu trên, mã đã xong mờ dưới). "Tất cả" = trộn mọi kênh theo deadline gần → xa; chọn kênh = chỉ kênh đó. */
 var BNB_THE=12, BNB_DAY={};   /* 28/11 (đánh giá bố cục): 60 -> 12 thẻ mỗi lần (trang TP dài 32.694px); mỗi thẻ tối đa 8 mã còn thiếu, nút xem thêm */
 /* 28/11 (chủ dự án): SKU chữ to + tên nhỏ; tìm theo cả SKU và tên */
-function bnSkuTen(sku,ten){ return sku?'<b class="of-sku">'+esc(sku)+'</b><span class="of-sku-ten">'+esc(ten)+'</span>':esc(ten); }
+function bnSkuTen(sku,ten){ return sku?'<b class="of-sku">'+esc(sku)+'<button type="button" class="of-tenbt" aria-expanded="false" title="Xem tên sản phẩm" aria-label="Xem tên sản phẩm" onclick="event.stopPropagation();var t=this.parentNode.nextSibling,m=t.classList.toggle(\'mo\');this.setAttribute(\'aria-expanded\',m);this.textContent=m?\'▴\':\'▾\'">▾</button></b><span class="of-sku-ten">'+esc(ten)+'</span>':esc(ten); }   /* 28/11 tối (chủ dự án): chỉ hiện SKU, bấm ▾ mới hiện tên; chưa có SKU thì hiện tên */
 function bnTk(z){ return (String(z.ten)+' '+(z.sku||'')+' '+(z.gc||'')).toUpperCase(); }
 function bnGomDon(){ var m={}, ds=[]; (BNB.ds||[]).forEach(function(d){ var k=d[0]+'|'+d[1], g=m[k];
     if(!g){ g=m[k]={tab:d[0],ma:d[1],dong:[],sl:0,thieu:0,dl:'',hr:'',nd:d[12]||'',ndD:!!d[13]}; ds.push(g); }   /* 28/11: nd = ngày đặt (từ mã đơn; ndD = suy theo số đơn) */
@@ -318,7 +318,7 @@ function bnGomDon(){ var m={}, ds=[]; (BNB.ds||[]).forEach(function(d){ var k=d[
   return ds.filter(function(g){ return g.thieu>0; }); }
 function bnBangHtml(){
   var q=String(BNBLoc.q||'').trim().toUpperCase(), nhan={}; (BNB.kenh||[]).forEach(function(k){ nhan[k[0]]=k[1]; });
-  var ds=bnGomDon().filter(function(g){ return (!BNBLoc.k||g.tab===BNBLoc.k)&&(!q||String(g.ma).toUpperCase().indexOf(q)>=0||g.dong.some(function(z){ return bnTk(z).indexOf(q)>=0; })); });
+  var ds=bnGomDon().filter(function(g){ return (!BNBLoc.k||(g.tab==='ĐƠN ƯU TIÊN'?'KHO':g.tab)===BNBLoc.k)&&(!q||String(g.ma).toUpperCase().indexOf(q)>=0||g.dong.some(function(z){ return bnTk(z).indexOf(q)>=0; })); });
   if(!ds.length) return '<div class="pdesc">Không có đơn nào khớp.</div>';
   /* 28/11 (chủ dự án): đơn lẻ / POD xếp theo NGÀY ĐẶT cũ → mới; đơn kênh khác xếp theo deadline (đơn có deadline trước, rồi đơn lẻ, rồi đơn chưa có deadline) */
   var laLe=function(g){ return /^WEB L|^POD/i.test(g.tab); }, hang=function(g){ return laLe(g)?1:(g.dl?0:2); };

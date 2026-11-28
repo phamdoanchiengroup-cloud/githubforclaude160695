@@ -7725,7 +7725,7 @@ function danhSachVanPhong(token) {
   ds.sort(function(a, b) { return (thuTu[a.vaiTro] - thuTu[b.vaiTro]) || (a.HoTen < b.HoTen ? -1 : 1); });
   return sach_({ ok: true, ds: ds, muc: HS_MUC });
 }
-var KPI_BAN_MAY = '28/11/2026 21:37';   // giờ dựng Code.gs (22/10)
+var KPI_BAN_MAY = '28/11/2026 23:12';   // giờ dựng Code.gs (22/10)
 /* =====================================================================
    KỸ NĂNG (22/10, chủ dự án nhờ thiết kế + tham khảo chuyên gia nhân sự / đào tạo)
    - Danh mục: trưởng / phó phòng đề xuất kỹ năng của xưởng (tên, mô tả, tiêu chí đạt, công đoạn liên quan)
@@ -8600,7 +8600,8 @@ function apCachDem(token, o) {
    ===================================================================== */
 var DH_SHEET_ID = '1FKrF_wyQcl0SpDhvoRBg7VoaBzgzhSJ7zZ5U2A5ReMU';   // Sheet "Trạng thái đơn hàng" (chia sẻ cho tài khoản chạy web)
 var DH_TABS = ['DEALER', 'KHO', 'ĐƠN ƯU TIÊN', 'WEB LẺ CUSTOM', 'WEB LẺ ĐƠN THƯỜNG', 'OEM', 'A ĐÔNG', 'POD-A.BÁCH', 'POD-ECOMSTONE'];   // 07/11: thêm kênh POD-ECOMSTONE (chưa có đơn vẫn là kênh)
-var DH_NHAN_TAB = { 'DEALER': 'Dealer', 'KHO': 'Kho', 'ĐƠN ƯU TIÊN': 'ĐƠN ƯU TIÊN', 'WEB LẺ CUSTOM': 'Web lẻ – Custom', 'WEB LẺ ĐƠN THƯỜNG': 'Web lẻ – Thường', 'OEM': 'OEM', 'A ĐÔNG': 'A Đông', 'POD-A.BÁCH': 'POD – A.Bách', 'POD-ECOMSTONE': 'POD – Ecomstone' };
+function dhTabK_(t) { return t === 'ĐƠN ƯU TIÊN' ? 'KHO' : t; }   // 28/11 tối (chủ dự án): đơn tab ĐƠN ƯU TIÊN tính vào kênh Kho trong mọi thống kê
+var DH_NHAN_TAB = { 'DEALER': 'Dealer', 'KHO': 'Kho', 'ĐƠN ƯU TIÊN': 'Kho', 'WEB LẺ CUSTOM': 'Web lẻ – Custom', 'WEB LẺ ĐƠN THƯỜNG': 'Web lẻ – Thường', 'OEM': 'OEM', 'A ĐÔNG': 'A Đông', 'POD-A.BÁCH': 'POD – A.Bách', 'POD-ECOMSTONE': 'POD – Ecomstone' };
 var DH_CACHE_GIAY = 300;   // Sheet đơn thay đổi liên tục: nhớ tạm 5 phút, có nút "Làm mới"
 var PL_SHEET = 'PhanLoaiSKU';
 var PL_COT = ['TenChuan', 'TenHang', 'LoaiHang', 'Dong', 'Chuoi', 'Ngon', 'Tip', 'Ren', 'GhiChu', 'NguoiSua', 'ThoiDiem'];
@@ -9061,7 +9062,7 @@ function dhXoaCacheDon_() {
   } catch (e) {}
 }
 /* Mọi dòng đơn (đã gộp 7 tab). Nhớ tạm DH_CACHE_GIAY giây: nén gzip rồi chia mảnh base64 < 100 KB mỗi khóa. */
-var DH_DON_KHOA = 'DH_DON_v18';   // v18 (28/11): ngayDoan (ngày đặt suy theo số đơn)   // v17 (28/11): tab ĐƠN ƯU TIÊN là kênh riêng + trungUu   // v16 (28/11): o.sku   // v15 (28/11): giao / kho / daTra mã ưu tiên lấy từ tab ĐƠN ƯU TIÊN   // v14 (15/11 đêm): kho, chú thích 500 ký tự, cot.hong / giao / kho / tra / ct   // v13 (15/11): p2 = Phôi 2 nhánh, phoi 500 ký tự (Note)   // v12 (14/11): dn.h = XN HẸN
+var DH_DON_KHOA = 'DH_DON_v19';   // v19 (28/11 tối): nhãn kênh ĐƠN ƯU TIÊN = Kho   // v18 (28/11): ngayDoan (ngày đặt suy theo số đơn)   // v17 (28/11): tab ĐƠN ƯU TIÊN là kênh riêng + trungUu   // v16 (28/11): o.sku   // v15 (28/11): giao / kho / daTra mã ưu tiên lấy từ tab ĐƠN ƯU TIÊN   // v14 (15/11 đêm): kho, chú thích 500 ký tự, cot.hong / giao / kho / tra / ct   // v13 (15/11): p2 = Phôi 2 nhánh, phoi 500 ký tự (Note)   // v12 (14/11): dn.h = XN HẸN
 function dhDocDonGoc_(lamMoi) {   // 16/11 khuya: bản đọc thẳng Sheet (chưa áp lớp phủ hủy / bớt) – mọi chỗ khác gọi dhDocDon_ (huy-don.gs)
   var c = CacheService.getScriptCache(), k = DH_DON_KHOA;   // v11 (14/11): thêm tabPhu (dòng tab ĐƠN ƯU TIÊN / TRỄ HẠN để web hiện đủ tab như Sheet)   // v10 (14/11): thêm dn (ĐANG Ở BP / KẾ TIẾP / XN NHẬN) + cot (bản đồ cột bộ phận) cho tab Đơn hàng dạng bảng   // v9 (13/11): nén gzip (11 khóa -> 1–2 khóa, đọc/ghi cache nhanh, tránh DEADLINE_EXCEEDED khi mở tab Đơn hàng)   // v8 (13/11): thêm tre (tab TRỄ HẠN) làm bậc 2 khi lên lịch SX   // v7 (13/11): ánh xạ tab ưu tiên sang Kho theo tên hàng   // v6 (07/11): thêm kênh POD-ECOMSTONE   // v5 (07/11): thêm uu (tab ĐƠN ƯU TIÊN)   // v4 (03/11): thêm uuTien / uuDon
   if (!lamMoi) {
@@ -9219,7 +9220,7 @@ function layDonHangXuong(token, lamMoi) {
     cot: d.cot || {},   // 14/11: bản đồ cột SL/hẹn từng bộ phận theo tab (bảng đơn kiểu Sheet)
     q: { bp: q.bp || '', xemTatCa: !!q.xemTatCa, sua: q.sua || [], thay: !!q.thay, note: !!q.note, uuGan: dhCoUu_(q.me), ten: (q.me && q.me.ten) || '', vaiTro: (q.me && q.me.vaiTro) || '' },   // 14/11: quyền nhập của tài khoản
     bpDs: DH_BP.map(function(b) { return [b[0], b[1]]; }),   // 14/11: danh sách bộ phận để chọn bộ phận kế tiếp
-    kenhDs: DH_TABS.map(function(t) { return [t, DH_NHAN_TAB[t] || t]; }).concat((d.tabMoi || []).map(function(t) { return [t, t]; })),   // 07/11: đủ mọi kênh (kể cả kênh chưa có đơn) cho bộ lọc + báo cáo
+    kenhDs: DH_TABS.filter(function(t) { return t !== 'ĐƠN ƯU TIÊN'; }).map(function(t) { return [t, DH_NHAN_TAB[t] || t]; }).concat((d.tabMoi || []).map(function(t) { return [t, t]; })),   // 07/11: đủ mọi kênh (kể cả kênh chưa có đơn) cho bộ lọc + báo cáo
     cs: csHC, email: dhEmailTT_(),
     huy: (function() { try { return dhhWeb_(q.me, d); } catch (eH) { return { ds: [], quyen: 0, loi: String(eH && eH.message || eH).slice(0, 200) }; } })() });   // 16/11 khuya: mục Đơn đã hủy + chuông thông báo
 }
@@ -10162,7 +10163,7 @@ function dhHTTrucTiep_(lamMoi) {
   var tabMa = {}, d = null;   // mã đơn -> tab kênh
   try { d = dhDocDon_(false); d.don.forEach(function(o) { if (o.maDon && !tabMa[o.maDon]) tabMa[o.maDon] = o.tab; }); } catch (e) {}
   try { var ch = dhDocChup_(); Object.keys(ch).forEach(function(x) { ch[x].forEach(function(r) { var a = String(r[0]).split('|'); if (a[0] && a[2] && !tabMa[a[0]]) tabMa[a[0]] = a[2]; }); }); } catch (e) {}
-  try { dhDocHoanThien_().forEach(function(r) { if (r[2] && !tabMa[r[2]]) { for (var t in DH_NHAN_TAB) if (DH_NHAN_TAB[t] === r[4]) tabMa[r[2]] = t; } }); } catch (e) {}
+  try { dhDocHoanThien_().forEach(function(r) { if (r[2] && !tabMa[r[2]]) { for (var t in DH_NHAN_TAB) if (DH_NHAN_TAB[t] === r[4] && !tabMa[r[2]]) tabMa[r[2]] = t; } }); } catch (e) {}
   plNapThem_();
   var sua = {}; docAnToan_(PL_SHEET).forEach(function(r) { if (r.TenChuan) sua[String(r.TenChuan)] = r; });
   /* 07/11 (chủ dự án): tab HT không có cột kênh -> suy kênh theo TIỀN TỐ mã đơn (người đặt): luật cố định + kênh chiếm đa số của cùng tiền tố ở tab kênh / đơn HT đã biết kênh */
@@ -10307,7 +10308,7 @@ function dhGuiEmail_(thu) {
     '<div style="font-size:13px;opacity:.9;margin-top:4px">' + so(ds.length) + ' đơn đang theo dõi · <b>' + so(tre.length) + ' trễ hạn</b> · ' + so(tongThieu) + ' sp còn thiếu</div></div><div style="padding:16px 20px">';
   h += '<table style="width:100%;border-collapse:separate;border-spacing:8px"><tr>' + o6.map(function(x, i) { return (i === 3 ? '</tr><tr>' : '') + '<td style="width:33%;border:1px solid #d6dedd;border-left:4px solid ' + x[3] + ';border-radius:8px;padding:8px 10px;vertical-align:top"><div style="font-size:10px;color:#5b6670;text-transform:uppercase">' + e(x[0]) + '</div><div style="font-size:20px;font-weight:700;color:' + x[3] + '">' + e(x[1]) + '</div><div style="font-size:11px;color:#3d474f">' + e(x[2]) + '</div></td>'; }).join('') + '</tr></table>';
   h += '<div style="font-size:12px;font-weight:600;color:#0b4f4a;border-left:3px solid #0b7a73;padding-left:8px;margin:14px 0 6px">THEO KÊNH</div><table style="width:100%;border-collapse:collapse;font-size:12.5px"><tr style="color:#5b6670;font-size:11px;text-align:right"><td style="text-align:left;padding:4px">Kênh</td><td>Đơn</td><td>Đang làm</td><td>Trễ</td><td style="padding-right:4px">Còn thiếu</td></tr>' +
-    DH_TABS.map(function(t) { var k = DH_NHAN_TAB[t] || t, x = kenh[k] || { don: 0, dang: 0, tre: 0, thieu: 0 }; return '<tr style="border-top:1px solid #e1e7e6;text-align:right"><td style="text-align:left;padding:5px 4px">' + e(k) + '</td><td>' + x.don + '</td><td>' + x.dang + '</td><td style="color:' + (x.tre ? '#b42a25' : '#889') + '">' + x.tre + '</td><td style="padding-right:4px">' + so(x.thieu) + '</td></tr>'; }).join('') + '</table>';
+    DH_TABS.filter(function(t) { return t !== 'ĐƠN ƯU TIÊN'; }).map(function(t) { var k = DH_NHAN_TAB[t] || t, x = kenh[k] || { don: 0, dang: 0, tre: 0, thieu: 0 }; return '<tr style="border-top:1px solid #e1e7e6;text-align:right"><td style="text-align:left;padding:5px 4px">' + e(k) + '</td><td>' + x.don + '</td><td>' + x.dang + '</td><td style="color:' + (x.tre ? '#b42a25' : '#889') + '">' + x.tre + '</td><td style="padding-right:4px">' + so(x.thieu) + '</td></tr>'; }).join('') + '</table>';
   h += '<div style="font-size:12px;font-weight:600;color:#b42a25;border-left:3px solid #c0302b;padding-left:8px;margin:14px 0 6px">8 ĐƠN TRỌNG ĐIỂM (trễ × còn thiếu lớn nhất)</div>' + (top.length ? '<table style="width:100%;border-collapse:collapse;font-size:12.5px"><tr style="color:#5b6670;font-size:11px"><td style="padding:4px">Mã đơn</td><td>Kênh · người đặt</td><td style="text-align:right">Deadline</td><td style="text-align:right">Trễ</td><td style="text-align:right;padding-right:4px">Thiếu</td></tr>' +
     top.map(function(g) { return '<tr style="border-top:1px solid #e1e7e6"><td style="padding:5px 4px;font-weight:600">' + e(g.ma) + '</td><td>' + e(g.kenh) + (g.nguoiDat ? ' · ' + e(g.nguoiDat) : '') + '</td><td style="text-align:right">' + ng(g.dl) + '</td><td style="text-align:right;color:#b42a25">' + g.tre + ' ngày</td><td style="text-align:right;padding-right:4px;font-weight:600">' + so(g.thieu) + '</td></tr>'; }).join('') + '</table>' : '<div style="font-size:12.5px;color:#5b6670">Không có đơn trễ.</div>');
   try { var btpS = dhBTPDoc_(); h += dhHanChuanEmail_(d.don.map(function(o) { var x = {}; for (var k in o) x[k] = o[k]; var tc = plChuan_(o.ten); x.pl = pc[tc] || (pc[tc] = plPhanLoai_(o.ten, o.ghiChu, sua['K:' + tc])); dhP2Loai_(x); x.btp = dhBTP_(o.ten, x.pl, btpS).ds; return x; }), cs, e, so, thu); } catch (eHC) {}   // 14/11: hạn chuẩn bộ phận
@@ -12136,7 +12137,7 @@ function dbkMoPhong_(G, them, cs, ut) {   // G = dbkGiau_(); them = đơn thử 
   var hanLe = function(o) { var t = String((o && o.tab) || '').toUpperCase().trim(); return DBK_HAN_LE[t] || (/^POD/.test(t) ? DBK_HAN_POD : null); };
   var dlNgam = function(o) { var n = hanLe(o); return (o && !o.dl && o.ngayDat && n) ? thu(cong(o.ngayDat, 1), n[1]) : ''; };
   var CF = (cs && cs.lan) || dhLanCfg_(), LAN5 = CF.pt.map(function(p, j) { return [j + 1, p / 100]; }), LANDU = CF.du;
-  var lanSo = function(tab) { var t = String(tab || '').toUpperCase().trim(); if (CF.kenh && CF.kenh[t]) return CF.kenh[t]; if (DBK_TAB_BAC1[t] || /^POD/.test(t)) return 1; if (t === 'DEALER') return 2; if (t === 'OEM') return 4; if (t === 'A ĐÔNG') return 5; return 3; };
+  var lanSo = function(tab) { var t = dhTabK_(String(tab || '').toUpperCase().trim()); if (CF.kenh && CF.kenh[t]) return CF.kenh[t]; if (DBK_TAB_BAC1[t] || /^POD/.test(t)) return 1; if (t === 'DEALER') return 2; if (t === 'OEM') return 4; if (t === 'A ĐÔNG') return 5; return 3; };
   var lyDo = function(o) {   // 18/11: lý do dòng ở bậc 1 (cho "Vì sao đơn này xong ngày này")
     var t = dbkTC_(o.ten); if (o.hanRieng) return '⏱ hạn riêng ' + o.hanRieng.han.split('-').reverse().slice(0, 2).join('/'); if (o.uuWeb) return '★ ưu tiên'; if (o.dl && o.dl < hn) return 'trễ hạn'; if (mtr[t]) return 'tên trong tab TRỄ HẠN';
     if ((o.tab === 'KHO' || o.tab === 'ĐƠN ƯU TIÊN') && (mu[dbkTC_(o.maDon || '') + '|' + t] || mu['|' + t])) return 'hàng ưu tiên'; return ''; };
@@ -12239,8 +12240,8 @@ function layBangDonNhaMay(token) {
   try {
     var R = { m: {} }, gia = [{ tt: 'DA_DUYET', td: null }]; dbkGanDuKien_(gia, d); R = gia.R || R;
     var theo = {}, tong = { tab: '', don: {}, sl: 0, thieu: 0, eta: '', cho: 0, dung: 0, donDung: {} };
-    ds.forEach(function(o) { var x = theo[o.tab] || (theo[o.tab] = { tab: o.tab, don: {}, sl: 0, thieu: 0, eta: '', cho: 0, dung: 0, donDung: {} }); [x, tong].forEach(function(z) { var kd = (o.maDon || '(không mã)') + '|' + o.tab; if (o.dung) { z.dung += o.thieu || 0; z.donDung[kd] = 1; return; } z.don[kd] = 1; z.sl += o.sl || 0; z.thieu += o.thieu || 0; }); });   // 17/11: TẠM DỪNG tách riêng, không tính
-    Object.keys(R.m || {}).forEach(function(k) { var g = R.m[k], x = theo[g.tab]; if (!x) return; [x, tong].forEach(function(z) { if (!g.eta || g.eta >= '9999') z.cho++; else if (g.eta > z.eta) z.eta = g.eta; }); });
+    ds.forEach(function(o) { var x = theo[dhTabK_(o.tab)] || (theo[dhTabK_(o.tab)] = { tab: dhTabK_(o.tab), don: {}, sl: 0, thieu: 0, eta: '', cho: 0, dung: 0, donDung: {} }); [x, tong].forEach(function(z) { var kd = (o.maDon || '(không mã)') + '|' + o.tab; if (o.dung) { z.dung += o.thieu || 0; z.donDung[kd] = 1; return; } z.don[kd] = 1; z.sl += o.sl || 0; z.thieu += o.thieu || 0; }); });   // 17/11: TẠM DỪNG tách riêng, không tính
+    Object.keys(R.m || {}).forEach(function(k) { var g = R.m[k], x = theo[dhTabK_(g.tab)]; if (!x) return; [x, tong].forEach(function(z) { if (!g.eta || g.eta >= '9999') z.cho++; else if (g.eta > z.eta) z.eta = g.eta; }); });
     var ra = function(z) { return { tab: z.tab, don: Object.keys(z.don).length, sl: z.sl, thieu: z.thieu, dung: z.dung, donDung: Object.keys(z.donDung).length, xong: z.eta && R.congN ? R.congN(z.eta, DBK_DU_KIN) : '', cho: z.cho }; };
     tk = Object.keys(theo).sort(function(a, b) { var ta = thu[a] != null ? thu[a] : 99, tb = thu[b] != null ? thu[b] : 99; return (ta - tb) || a.localeCompare(b); }).map(function(t) { return ra(theo[t]); });
     tk.push(ra(tong));
@@ -12271,7 +12272,7 @@ function layDonXongLePOD(token) {
   var q = dbQuyen_(token, true); if (q.loi) return q.loi;   // 23/11: + TP / PP xem
   var laLam = dhNgayLamFn_(dhCongSuat_()), hn = homNayVN_(), ng = [], d = hn, i = 0;
   while (ng.length < DBX_SO_NGAY && i++ < 40) { if (laLam(d)) ng.push(d); d = new Date(Date.parse(d + 'T00:00:00Z') - 864e5).toISOString().slice(0, 10); }
-  var tu = ng[ng.length - 1] || hn, tabNhan = {}; Object.keys(DH_NHAN_TAB).forEach(function(t) { tabNhan[DH_NHAN_TAB[t]] = t; });
+  var tu = ng[ng.length - 1] || hn, tabNhan = {}; Object.keys(DH_NHAN_TAB).forEach(function(t) { if (!tabNhan[DH_NHAN_TAB[t]]) tabNhan[DH_NHAN_TAB[t]] = t; });
   var thay = {}, don = {};
   dhDocHoanThien_().forEach(function(r) {
     var tab = tabNhan[r[4]] || r[4], nhom = DBX_LE[tab]; if (!nhom || String(r[0]) < tu) return;
@@ -12430,7 +12431,7 @@ function dhkRa_() {
      cùng chỗ với nút ★ trên bảng đơn) / Không đồng ý (lý do bắt buộc). Bán hàng thấy trạng thái đề nghị của mình. Kiểm thử: tests/thu-don.js */
 DHH_COT.DeNghiUu = ['Id', 'Luc', 'MaDon', 'Tabs', 'LyDo', 'NguoiTao', 'Tk', 'MaNV', 'TrangThai', 'KetQua', 'NguoiXuLy', 'TkXuLy', 'LucXuLy', 'LyDoXuLy', 'Lenh', 'NgayCan'];   // NgayCan = khách cần trước ngày (không bắt buộc)
 var DBT_LAN_TEN = ['', 'Lẻ + POD', 'Dealer', 'Kho', 'OEM', 'A Đông'], DBT_GIO_MAX = 60, DBT_LUI_MAX = 400, DBT_DN_WEB = 40;
-function dbtLan_(tab) { var t = String(tab || '').toUpperCase().trim(), kn = dhLanCfg_().kenh || {}; if (kn[t]) return kn[t]; if (DBK_TAB_BAC1[t] || /^POD/.test(t)) return 1; if (t === 'DEALER') return 2; if (t === 'OEM') return 4; if (t === 'A ĐÔNG') return 5; return 3; }
+function dbtLan_(tab) { var t = dhTabK_(String(tab || '').toUpperCase().trim()), kn = dhLanCfg_().kenh || {}; if (kn[t]) return kn[t]; if (DBK_TAB_BAC1[t] || /^POD/.test(t)) return 1; if (t === 'DEALER') return 2; if (t === 'OEM') return 4; if (t === 'A ĐÔNG') return 5; return 3; }
 /* nhóm đơn đang làm như dbkMoPhong_ (còn thiếu, không phụ kiện / hàng nối, không tạm dừng): 'mã|tab' -> { ma, tab, dl, ten:{} } */
 function dbtNhom_(G) {
   var m = {};
@@ -12471,7 +12472,7 @@ function dbtDay_(B, khop) {
     var d = dbkCach_(a.eta, g.eta); if (d <= 0) return;
     var tre = n.dl && a.eta <= n.dl && g.eta > n.dl ? 1 : 0;
     lui.push({ ma: g.ma, tab: g.tab, kenh: kenh[g.tab] || g.tab, dl: n.dl || '', d: d, tre: tre });
-    var t = theo[g.tab] || (theo[g.tab] = { tab: g.tab, kenh: kenh[g.tab] || g.tab, n: 0, tong: 0, max: 0, moiTre: 0 });
+    var t = theo[dhTabK_(g.tab)] || (theo[dhTabK_(g.tab)] = { tab: dhTabK_(g.tab), kenh: kenh[g.tab] || g.tab, n: 0, tong: 0, max: 0, moiTre: 0 });
     [t, tong].forEach(function(z) { z.n++; z.tong += d; if (d > z.max) z.max = d; z.moiTre += tre; });
   });
   lui.sort(function(a, b) { return (b.tre - a.tre) || (b.d - a.d) || String(a.ma).localeCompare(String(b.ma)); });
@@ -12643,12 +12644,12 @@ function dttDuLieu_() {
     var g = N[k], x = R.m[k] || {}, eta = x.eta && x.eta < '9999' ? x.eta : '';
     var tt = !eta ? 'chờ hạn mới (trễ > 30 ngày)' : (!g.dl ? 'không deadline' : (g.dl < hn ? 'đã quá hạn' : (eta > g.dl ? 'dự kiến trễ' : 'kịp')));
     don.push([g.ma, kenh[g.tab] || g.tab, DBT_LAN_TEN[dbtLan_(g.tab)], g.thieu, g.sl, g.dl, eta, eta ? R.cong2(eta) : '', eta && g.dl ? dbkCach_(g.dl, eta) : '', tt, g.uu ? '★' : '']);
-    var t = theo[g.tab] || (theo[g.tab] = { tab: g.tab, don: 0, thieu: 0, dung: 0, eta: '', tre: 0, setre: 0, cho: 0 });
+    var t = theo[dhTabK_(g.tab)] || (theo[dhTabK_(g.tab)] = { tab: dhTabK_(g.tab), don: 0, thieu: 0, dung: 0, eta: '', tre: 0, setre: 0, cho: 0 });
     [t, tong].forEach(function(z) { z.don++; z.thieu += g.thieu; if (eta > z.eta) z.eta = eta; if (tt === 'đã quá hạn') z.tre++; if (tt === 'dự kiến trễ') z.setre++; if (!eta) z.cho++; });
   });
   var dung = [];
   G.don.forEach(function(o) { if (!o.dung || !(o.thieu > 0)) return; dung.push([o.maDon || '', kenh[o.tab] || o.tab, o.ten, o.thieu, o.dung.ly || '', o.dung.luc || '', o.dung.hen || '']);
-    var t = theo[o.tab] || (theo[o.tab] = { tab: o.tab, don: 0, thieu: 0, dung: 0, eta: '', tre: 0, setre: 0, cho: 0 }); t.dung += o.thieu; tong.dung += o.thieu; });
+    var t = theo[dhTabK_(o.tab)] || (theo[dhTabK_(o.tab)] = { tab: dhTabK_(o.tab), don: 0, thieu: 0, dung: 0, eta: '', tre: 0, setre: 0, cho: 0 }); t.dung += o.thieu; tong.dung += o.thieu; });
   don.sort(function(a, b) { return String(a[6] || '9999').localeCompare(String(b[6] || '9999')) || String(a[0]).localeCompare(String(b[0])); });
   return { d: d, cs: cs, R: R, hn: hn, kenh: kenh, don: don, theo: theo, tong: tong, dung: dung };
 }
