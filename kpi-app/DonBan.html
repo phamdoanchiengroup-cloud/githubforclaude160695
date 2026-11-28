@@ -40,7 +40,7 @@
 .of-thanh .so{font-family:ui-monospace,Menlo,monospace;letter-spacing:0;color:var(--ink2)}.of-thanh .so b{color:var(--green)}.of-thanh .so em{color:var(--red);font-style:normal}
 .of-loc{padding:4px 14px 8px;font-size:12px;color:var(--ink3);display:flex;gap:8px;align-items:center} .of-loc b{color:var(--ink)}
 .of-sku{display:block;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:13.5px;font-weight:700;letter-spacing:.01em;word-break:break-all} .of-sku-ten{display:block;font-size:11.5px;font-weight:400;color:var(--ink3);margin-top:1px}
-.of-xong{padding:8px 14px 10px;border-top:1px dashed var(--line)} .of-xong .btn{font-size:12px} .of-gc{display:block;font-size:11.5px;font-weight:400;color:var(--ink2);margin-top:2px;white-space:pre-line} /* 28/11: ghi chú đơn lẻ (cột Loại phôi) */
+.of-nd-ma{font-size:12px;font-weight:500;color:var(--ink3);margin-left:8px;font-family:inherit} .of-xong{padding:8px 14px 10px;border-top:1px dashed var(--line)} .of-xong .btn{font-size:12px} .of-gc{display:block;font-size:11.5px;font-weight:400;color:var(--ink2);margin-top:2px;white-space:pre-line} /* 28/11: ghi chú đơn lẻ (cột Loại phôi) */
 .of-ton{padding:4px 14px 8px;font-size:12px;color:var(--ink3)} .of-ton b{color:var(--ink)} .of-ton b.g{color:var(--green)}
 .of-dong .tra{color:var(--ink2)}
 .of-dong{display:grid;grid-template-columns:1fr 52px 52px 74px 74px;gap:6px;align-items:center;padding:8px 14px;border-top:1px solid var(--line);font-size:13px}
@@ -349,18 +349,18 @@ function bnDhMa(tab,ma,ten){ return null;   /* 28/11: bỏ nhãn 🔔 đổi h�
   var a=bnDhDs(), t=String(ten).toUpperCase().replace(/\s+/g,' ').trim(); for(var i=0;i<a.length;i++){ var x=a[i]; if(x[1]===tab&&String(x[2])===String(ma)&&String(x[3]).toUpperCase().replace(/\s+/g,' ').trim()===t) return x; } return null; }
 function bnNgayCach(a,b){ return Math.round((Date.parse(b+'T00:00:00Z')-Date.parse(a+'T00:00:00Z'))/864e5); }
 var BNB_CA={};
-function bnThe(g,nhan,hn,qSP){
+function bnThe(g,nhan,hn,qSP){ var leT=/^WEB L|^POD/i.test(g.tab);
   var nL=g.dong.length, xL=g.dong.filter(function(z){ return z.thieu<=0; }).length, pc=g.sl?Math.round((g.sl-g.thieu)*100/g.sl):0;
   var q=g.dl?bnNgayCach(g.dl,hn):null, tre=q!=null&&q>0, sap=!tre&&q!=null&&q>-4, dung=g.dong.some(function(z){ return z.dung&&z.thieu>0; });
   var mau=tre?'var(--red)':pc>=90?'var(--green)':pc>=50?'#f0b04e':'var(--red)';
   var tt=tre?['tre','Trễ hạn – còn thiếu']:dung?['sap','Có mã tạm dừng']:sap?['sap','Sắp đến hạn']:['ok','Đang sản xuất'];
-  var h='<div class="of-the'+(tre?' tre':'')+'"><div class="of-dau"><div><div class="of-ma">'+esc(g.ma||'(không mã)')+'</div><div class="of-phu">'+esc(nhan[g.tab]||g.tab)+(g.nd?' · <span class="of-nd" title="'+(g.ndD?'Mã đơn không ghi ngày – ngày đặt suy theo đơn có số gần nhất':'Ngày đặt đọc từ mã đơn')+'">Đặt '+(g.ndD?'≈ ':'')+esc(bnNg(g.nd).slice(0,5))+'</span>':'')+'</div></div><div class="of-phai">'+
-    (g.dl?'<div class="of-dl'+(tre?' tre':sap?' sap':'')+'"><small>DEADLINE</small><b>'+esc(bnNg(g.dl).slice(0,5))+'</b><i>'+(tre?'quá hạn '+q+' ngày':(q===0?'hôm nay':'còn '+(-q)+' ngày'))+'</i></div>':'<div class="of-dl"><small>DEADLINE</small><b>—</b><i>chưa có</i></div>')+
+  var h='<div class="of-the'+(tre?' tre':'')+'"><div class="of-dau"><div><div class="of-ma">'+esc(g.ma||'(không mã)')+(leT&&g.nd?' <span class="of-nd of-nd-ma" title="'+(g.ndD?'Mã đơn không ghi ngày – ngày đặt suy theo đơn có số gần nhất':'Ngày đặt đọc từ mã đơn')+'">Đặt '+(g.ndD?'≈ ':'')+esc(bnNg(g.nd).slice(0,5))+'</span>':'')+'</div>'+(leT?'':'<div class="of-phu">'+esc(nhan[g.tab]||g.tab)+(g.nd?' · <span class="of-nd" title="'+(g.ndD?'Mã đơn không ghi ngày – ngày đặt suy theo đơn có số gần nhất':'Ngày đặt đọc từ mã đơn')+'">Đặt '+(g.ndD?'≈ ':'')+esc(bnNg(g.nd).slice(0,5))+'</span>':'')+'</div>')+'</div><div class="of-phai">'+
+    (leT?'':g.dl?'<div class="of-dl'+(tre?' tre':sap?' sap':'')+'"><small>DEADLINE</small><b>'+esc(bnNg(g.dl).slice(0,5))+'</b><i>'+(tre?'quá hạn '+q+' ngày':(q===0?'hôm nay':'còn '+(-q)+' ngày'))+'</i></div>':'<div class="of-dl"><small>DEADLINE</small><b>—</b><i>chưa có</i></div>')+
     '<span class="of-tt '+tt[0]+'">● '+tt[1]+'</span></div></div>'+
     (/^WEB L|^POD/i.test(g.tab)?'':   /* 28/11 (chủ dự án): đơn lẻ / POD thường 1 sản phẩm – bỏ 2 thanh tiến độ */
     '<div class="of-thanh"><span>THEO LOẠI</span><div class="bar"><i style="width:'+(nL?Math.round(xL*100/nL):0)+'%;background:'+mau+'"></i></div><span class="so">Xong <b>'+xL+'/'+nL+'</b> loại</span></div>'+
     '<div class="of-thanh"><span>THEO SỐ LƯỢNG</span><div class="bar"><i style="width:'+pc+'%;background:'+mau+'"></i></div><span class="so"><b>'+pc+'%</b> · '+bnSo(g.sl-g.thieu)+'/'+bnSo(g.sl)+' SP · thiếu <em>'+bnSo(g.thieu)+'</em></span></div>')+
-    '<div class="of-ton">Đã trả khách <b>'+bnSo(g.tra||0)+'</b> · Còn sẵn trong nhà máy (tồn kho + đóng gói) <b class="g">'+bnSo(g.kho||0)+'</b> sp – chỉ số này có thể đi ngay</div>';
+    (leT?'':'<div class="of-ton">Đã trả khách <b>'+bnSo(g.tra||0)+'</b> · Còn sẵn trong nhà máy (tồn kho + đóng gói) <b class="g">'+bnSo(g.kho||0)+'</b> sp – chỉ số này có thể đi ngay</div>');   /* 28/11 (chủ dự án): đơn lẻ / POD bỏ dòng kênh, ô deadline, 2 thanh tiến độ, dòng đã trả / tồn */
   var kCa=g.tab+'|'+g.ma, loc=qSP&&!BNB_CA[kCa], dsD=loc?g.dong.filter(function(z){ return bnTk(z).indexOf(qSP)>=0; }):g.dong;
   if(qSP) h+='<div class="of-loc">'+(loc?'Đang lọc: hiện <b>'+dsD.length+'/'+nL+'</b> mã khớp "'+esc(BNBLoc.q)+'"':'Đang hiện cả đơn ('+nL+' mã)')+' <button class="btn sm" type="button" data-k="'+esc(kCa)+'" onclick="BNB_CA[this.dataset.k]=!BNB_CA[this.dataset.k];bnBangO()">'+(loc?'Hiện cả đơn':'Chỉ mã khớp')+'</button></div>';
   /* 28/11 (chủ dự án): ẩn mã đã xong đủ số lượng (thiếu = 0); nút "Xem N mã đã xong" ở cuối đơn. Đang tìm kiếm thì vẫn hiện mã khớp. */
