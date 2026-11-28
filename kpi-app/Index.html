@@ -3012,8 +3012,8 @@ function ngLoi(r){
     .reduce(function(a,k){return a+Number(k.SoLuongKhongDat||0)},0);
 }
 function loai(v){
-  if(v>=90)return['A','p-ok'];   // 23/11: thang 4 bậc A/B/C/D
-  if(v>=80)return['B','p-wn'];if(v>=70)return['C','p-wn'];return['D','p-bd'];
+  if(v>=90)return['A+','p-ok'];   // 28/11: ngưỡng dự phòng – công nhân dùng loại máy chủ (thứ hạng xưởng)
+  if(v>=80)return['A','p-ok'];if(v>=70)return['B','p-wn'];return['C','p-bd'];
 }
 function cls(v){return v>=90?'':(v>=80?'wn':'bd')}
 /* Màu hex theo mức, dùng cho gauge SVG */
@@ -3353,7 +3353,7 @@ function camNangChiTiet(vt){
         '<p>Trụ Vận hành bắt đầu 100, trừ dần: điểm danh muộn −5/ngày, quên điểm danh −10/ngày, duyệt trễ −2/CN, duyệt ẩu −2/dòng, không nhắc CN nhập −2/CN.</p>'+
         '<div class="cn-note o"><b>Phó phòng tính giống Trưởng phòng</b>Thuần KPI quản lý; sản lượng kèm CN mới không tính điểm.</div>'],
       ['Thang xếp loại & chốt tháng',
-        '<p>Xếp loại: <span class="cn-pill g">A ≥90</span> <span class="cn-pill c">B 80–89</span> <span class="cn-pill a">C 70–79</span> <span class="cn-pill r">D &lt;70</span> · Thiếu công: đi làm dưới 50% ngày công; 50–80% ngày công hạ 1 bậc.</p>'+
+        '<p>Xếp loại theo <b>thứ hạng trong xưởng</b>: <span class="cn-pill r">C</span> KPI dưới 70%. Trong số người từ 70% trở lên: <span class="cn-pill g">A+</span> 1 người đứng đầu (xưởng dưới 10 người), 2 người (10–15 người), 3 người (trên 15 người); <span class="cn-pill c">B</span> cùng số người đứng cuối; <span class="cn-pill g">A</span> những người còn lại. Bằng điểm xét lần lượt Chất lượng → Sản lượng → An toàn → Tuân thủ. Thiếu công: đi làm dưới 50% ngày công; 50–80% ngày công hạ 1 bậc.</p>'+
         '<ul><li>Tháng hiện tại: tính trực tiếp.</li>'+
         '<li>Snapshot tạm tự động 9h mỗi ngày.</li>'+
         '<li>Tháng trước được chốt chính thức lúc 23h ngày làm việc thứ 3 của tháng sau (để kịp duyệt sản lượng cuối tháng).</li>'+
@@ -3399,7 +3399,7 @@ function napChaoKPIQuanLy(){
     if(!r||!r.ok){ box.style.display='none'; return; }
     var toi=(r.ds||[]).filter(function(o){return o.maNV===ME.maNV})[0];
     if(!toi){ box.style.display='none'; return; }
-    var lo=loai(toi.tong)[0];
+    var lo=toi.loai||loai(toi.tong)[0];   /* 28/11: loại máy chủ */
     box.innerHTML='KPI của bạn hiện tại là <b>'+(Number(toi.tong)||0).toFixed(1)+'%</b>, '+
       'xếp loại <b>'+lo+'</b> — xem thông tin chi tiết bên tab <b>KPI phòng</b>.';
   });
@@ -3564,7 +3564,7 @@ function napKPIQuanLyKhoi(){
       '<th class="n">Hiệu suất</th><th class="n">Tỷ lệ đạt</th><th class="n">Vận hành</th><th class="n">Nề nếp</th>'+
       '<th class="n">KPI tổng</th><th>Loại</th></tr></thead><tbody>';
     ds.forEach(function(o){
-      var lo=loaiFE(o.tong), mau=mauKPI(o.tong);
+      var lo=o.loai||loaiFE(o.tong), mau=mauKPI(o.tong);   /* 28/11 */
       b+='<tr><td>'+esc(o.hoTen)+(o.laLai?' <span style="color:var(--ink3);font-size:12px">(lai)</span>':'')+'</td>'+
         '<td>'+esc(o.vaiTro)+'</td><td>'+esc(o.tenXuong)+'</td>'+
         '<td class="n">'+f1(o.hieuSuatXuong)+'%</td><td class="n">'+f1(o.tyLeDatXuong)+'%</td>'+
@@ -3610,7 +3610,7 @@ function vKPIQuanLy(){
     '• <b>Vận hành (40%)</b>: bắt đầu 100 điểm, trừ dần — điểm danh muộn −5/ngày, quên điểm danh −10/ngày, duyệt trễ −2/công nhân (quá 2 ngày làm việc), duyệt ẩu −2/dòng bị BĐH từ chối, không nhắc CN nhập −2/công nhân quá hạn.<br>'+
     '• <b>Nề nếp (10%)</b>: chuyên cần của chính quản lý.<br>'+
     '• <b>Phó phòng</b> tính giống Trưởng phòng (thuần KPI quản lý); sản lượng ghi nhận khi kèm CN mới không tính vào điểm.<br>'+
-    'Xếp loại: A (≥90), B (80–89), C (70–79), D (&lt;70); Thiếu công khi đi làm dưới 50% ngày công.'+
+    'Xếp loại theo thứ hạng trong xưởng: KPI dưới 70% là C; trong số từ 70% trở lên, 1/2/3 người đầu xưởng (xưởng dưới 10 / 10–15 / trên 15 người) là A+, cùng số người cuối là B, còn lại A; Thiếu công khi đi làm dưới 50% ngày công.'+
     '</div></div>';
   h+='<div id="qlBody"><div class="empty">Đang tải…</div></div>';
   $('main').innerHTML=h;
@@ -3627,7 +3627,7 @@ function vKPIQuanLy(){
       '<th class="n">Hiệu suất</th><th class="n">Tỷ lệ đạt</th><th class="n">Vận hành</th><th class="n">Nề nếp</th>'+
       '<th class="n">KPI tổng</th><th>Loại</th></tr></thead><tbody>';
     ds.forEach(function(o){
-      var lo=loaiFE(o.tong), mau=mauKPI(o.tong);
+      var lo=o.loai||loaiFE(o.tong), mau=mauKPI(o.tong);   /* 28/11 */
       b+='<tr data-cd="ql|'+esc(o.maNV)+'">'+
         '<td class="mono">'+(o.hang||'–')+'</td>'+
         '<td>'+esc(o.hoTen)+(o.laLai?' <span style="color:var(--ink3);font-size:12px">(lai)</span>':'')+'</td>'+
@@ -3663,7 +3663,8 @@ function vKPIQuanLy(){
     $('qlBody').innerHTML=b;
   });
 }
-function loaiFE(v){ return v>=90?'A':(v>=80?'B':(v>=70?'C':'D')); }   /* 23/11: 4 bậc */
+function loaiFE(v){ return v>=90?'A+':(v>=80?'A':(v>=70?'B':'C')); }   /* 28/11: ngưỡng dự phòng */
+function mauLoai(l){ return l==='A+'||l==='A'?'p-ok':l==='B'?'p-wn':l==='C'||l==='D'||l==='Thiếu công'?'p-bd':''; }   /* 28/11: màu theo loại máy chủ */
 function mauKPI(v){ var s=document.documentElement.getAttribute('data-gd')==='sang';
   return v>=90?(s?'#1f7a48':'#66d49a'):(v>=80?(s?'#0b7a73':'#2fd3c6'):(v>=70?(s?'#a86400':'#f0b04e'):(s?'#c0302b':'#f47272'))); }
 function f1(n){ return (Number(n)||0).toFixed(1); }
@@ -4650,10 +4651,10 @@ function maiDoi(){maiNho('kpi_mai',maiTat()?'bat':'tat');maiNut();maiGocDong();t
 /* Động viên theo hạng KPI (số liệu thật) */
 function maiKPI(hang,tong){
   if(maiTat())return '';
-  var t={'A':['vui covu','Hạng <b>A</b> – xuất sắc! Bạn đang <b>dẫn đầu</b>, giữ nhịp này và chỉ mẹo cho đồng đội nhé.'],   /* 23/11: thang 4 bậc */
-    'B':['','Ổn định đó! Còn <b>'+f(Math.max(0,90-tong))+'%</b> nữa là lên hạng A. Thử <b>giảm hàng lỗi</b> – bớt một cái lỗi là điểm tăng lên.'],
-    'C':['lo','Tháng này hơi vất vả. Rhino tin bạn làm được hơn! <b>Hỏi trưởng phòng</b> mẹo của công đoạn khó nhé.'],
-    'D':['lo','Đừng nản nhé! Nhập <b>đủ sản lượng mỗi ngày</b> và hỏi trưởng phòng cách làm nhanh hơn – Rhino cổ vũ bạn!']}[hang]||['','Cố lên nhé!'];
+  var t={'A+':['vui covu','Hạng <b>A+</b> – bạn đang <b>dẫn đầu xưởng</b>! Giữ nhịp này và chỉ mẹo cho đồng đội nhé.'],   /* 28/11: xếp theo thứ hạng xưởng */
+    'A':['vui','Rất tốt! Vượt lên <b>nhóm dẫn đầu xưởng</b> là lên A+. Bớt một cái lỗi là điểm tăng ngay.'],
+    'B':['','Bạn đang ở <b>nhóm cuối</b> của những người đạt 70%. Vượt qua vài đồng đội là lên A – thử <b>giảm hàng lỗi</b> trước nhé.'],
+    'C':['lo','Đừng nản nhé! Nhập <b>đủ sản lượng mỗi ngày</b> và hỏi trưởng phòng cách làm nhanh hơn – Rhino cổ vũ bạn!']}[hang]||['','Cố lên nhé!'];
   return '<div class="mai-bang" style="margin-top:12px">'+maiHinh(t[0])+'<div class="nd"><small>Rhino nói về KPI của bạn · hạng '+esc(hang)+'</small><div class="kh" style="font-weight:500">'+t[1]+'</div></div></div>';
 }
 /* Số ngày làm việc liên tiếp (bỏ Chủ nhật) có gửi sản lượng, tính tới hôm nay */
@@ -5298,7 +5299,7 @@ function vKPICaNhanToi(){
   // Tổng quan KPI (dùng hàm kpi có sẵn — mẫu số theo giờ có mặt)
   var k=kpi(maNV);
   if(k){
-    var lo=loai(k.tong); if(k.loai){ lo=[k.loai, k.loai==='Thiếu công'?'p-bd':lo[1]]; }   // 21/11: loại máy chủ (ngày công tối thiểu)
+    var lo=loai(k.tong); if(k.loai){ lo=[k.loai, mauLoai(k.loai)||lo[1]]; }   /* 28/11: màu theo loại máy chủ */   // 21/11: loại máy chủ (ngày công tối thiểu)
     h+='<div class="kpis">'+
       boxG('Hiệu suất',k.sl,f(k.sl)+'%')+
       boxG('Tỷ lệ đạt',k.cl,f(k.cl)+'%')+
@@ -5516,7 +5517,7 @@ function veBangKPI(r){
         '<td class="n">'+cellBar(o.sl)+'</td><td class="n">'+cellBar(o.cl)+'</td>'+
         '<td class="n">'+cellBar(o.tt)+'</td><td class="n">'+cellBar(o.at)+'</td>'+
         '<td class="n" style="font-weight:700;color:var(--cyan);font-size:15px">'+f(o.tong)+'%</td>'+
-        '<td><span class="pill '+loai(o.tong)[1]+'">'+o.loai+'</span></td>'+
+        '<td><span class="pill '+(mauLoai(o.loai)||loai(o.tong)[1])+'">'+o.loai+'</span></td>'+
         '<td class="n"><button class="btn sm" onclick="xemChiTietKPI(\''+esc(o.MaNV)+'\')">Chi tiết</button></td></tr>';
     });
     return head+body+'</tbody></table></div></div>';
@@ -5633,7 +5634,7 @@ function veLichSu(kieu){
         '<td class="n">'+cellBar(o.tt)+'</td><td class="n">'+cellBar(o.at)+'</td>'+
         '<td class="n" style="font-weight:700;color:var(--cyan)">'+f(o.tong)+'%</td>';
     }
-    h+='<td><span class="pill '+loai(kieu==='ngay'?o.sl:o.tong)[1]+'">'+o.loai+'</span></td></tr>';
+    h+='<td><span class="pill '+(kieu==='ngay'?loai(o.sl)[1]:(mauLoai(o.loai)||loai(o.tong)[1]))+'">'+o.loai+'</span></td></tr>';
   });
   h+='</tbody></table></div>';
   box.innerHTML=h;
@@ -8241,8 +8242,8 @@ var _ttVKPICaNhanToi=vKPICaNhanToi;
 vKPICaNhanToi=function(){
   var kq=_ttVKPICaNhanToi.apply(this,arguments);
   try{
-    var k=kpi(ME.maNV), hang=k?loai(k.tong)[0]:'', chuoi=maiChuoi(), khoa='kpi_phao_'+ME.tk;
-    var hangCu=maiNho('kpi_hang_'+ME.tk)||'', thu=['D','C','B','A'], lenHang=hang&&hangCu&&thu.indexOf(hang)>thu.indexOf(hangCu);
+    var k=kpi(ME.maNV), hang=k?(k.loai||loai(k.tong)[0]):'', chuoi=maiChuoi(), khoa='kpi_phao_'+ME.tk;
+    var hangCu=maiNho('kpi_hang_'+ME.tk)||'', thu=['C','B','A','A+'], lenHang=hang&&hangCu&&thu.indexOf(hang)>thu.indexOf(hangCu);
     if(hang&&!vhHocViec())maiNho('kpi_hang_'+ME.tk,hang);
     if(lenHang&&!vhHocViec()&&maiNho(khoa)!==today()){   // C7: pháo giấy chỉ khi LÊN HẠNG (giữ giá trị phần thưởng)
       maiNho(khoa,today());
@@ -8819,7 +8820,7 @@ function chiXemDon(){
 </script>
 <script>
 /* ===== 19. PHẦN GIAO DIỆN TẢI SAU (12/10) – SoDo.html, HoatAnh.html: chỉ tải khi cần, nhớ lại theo phiên bản ===== */
-var MANH_VER={"SoDo": "493b0b0c976b4e49", "HoatAnh": "b23cbe69d6aae56e", "AmThanh": "c690fabe4419160c", "QuyTrinh": "7841bf337b", "CauHinhGay": "8c0f42823f07518c", "DonBan": "d30cb1c2865083d6"};
+var MANH_VER={"SoDo": "d106ef313dc09ad2", "HoatAnh": "b23cbe69d6aae56e", "AmThanh": "c690fabe4419160c", "QuyTrinh": "40ba444d52", "CauHinhGay": "8c0f42823f07518c", "DonBan": "d30cb1c2865083d6"};
 var __manh={da:{},cho:{}};
 function ganManh_(nd){
   var js=[], ngoai=String(nd).replace(/<script>([\s\S]*?)<\/script>/g,function(_,x){js.push(x);return ''});
@@ -9453,7 +9454,7 @@ function amDoi(){
   /* lên hạng (pháo giấy) */
   boc('ttPhao',function(cu){return function(){
     am('hang');
-    try{ var k=kpi(ME.maNV), h=k?loai(k.tong)[0]:'', ma={'D':'lD','C':'lC','B':'lB','A':'lA','A+':'lAp','S':'lS'}[h];
+    try{ var k=kpi(ME.maNV), h=k?(k.loai||loai(k.tong)[0]):'', ma={'D':'lD','C':'lC','B':'lB','A':'lA','A+':'lAp','S':'lS'}[h];
       if(ma)amNoi(['chuc_mung',ma],1200); }catch(e){}
     return cu.apply(this,arguments);}});
   /* nhắc giữa ca 10:00 / 15:00 (chỉ khi Rhino thật sự hiện lời nhắc) */
@@ -9741,7 +9742,7 @@ function hsGhiChuDong(r){
 }
 </script>
 <script>
-var KPI_BAN = '23/11/2026 16:53';
+var KPI_BAN = '28/11/2026 11:51';
 (function(){
   var cu = window.veNav;
   window.veNav = function(){
@@ -10506,7 +10507,7 @@ function holoDoiTong() {
 }
 
 /* ---------- Đài quan sát KPI (đầu màn Tổng quan) ---------- */
-var HOLO_THANG = [[90, 'A'], [80, 'B'], [70, 'C'], [0, 'D']];   // 23/11: 4 bậc
+var HOLO_THANG = [[90, 'A+'], [80, 'A'], [70, 'B'], [0, 'C']];   // 28/11: hạng KPI trung bình theo ngưỡng A+/A/B/C
 function holoLoai(v) { for (var i = 0; i < HOLO_THANG.length; i++) if (v >= HOLO_THANG[i][0]) return HOLO_THANG[i][1]; }
 function holoKeTiep(v) { for (var i = HOLO_THANG.length - 1; i >= 0; i--) if (HOLO_THANG[i][0] > v) return HOLO_THANG[i]; return null; }
 function holoSo(v, d) { return Number(v).toLocaleString('vi-VN', { minimumFractionDigits: d || 0, maximumFractionDigits: d || 0 }); }
@@ -10559,7 +10560,7 @@ function holoChomSao(sl) {
   for (var t = 0; t < 72; t++) { var a0 = t * 5 * Math.PI / 180, l = t % 2 ? 5 : 10; s += '<line x1="' + (C + 178 * Math.cos(a0)).toFixed(1) + '" y1="' + (C + 178 * Math.sin(a0)).toFixed(1) + '" x2="' + (C + (178 + l) * Math.cos(a0)).toFixed(1) + '" y2="' + (C + (178 + l) * Math.sin(a0)).toFixed(1) + '" stroke="rgba(255,255,255,.5)"/>'; }
   s += '</g>';
   var aNhan = (-90 + 180 / Math.max(1, n)) * Math.PI / 180;   // chữ hạng đặt ở khe giữa 2 ngôi sao đầu, không đè sao
-  [[70, 'C'], [80, 'B'], [90, 'A']].forEach(function (m) {
+  [[70, 'B'], [80, 'A'], [90, 'A+']].forEach(function (m) {
     var r = rk(m[0]);
     s += '<circle class="hl-tri" cx="200" cy="200" r="' + r.toFixed(1) + '" fill="none" stroke="' + (m[0] === 80 ? 'rgba(251,113,133,.5)' : 'rgba(255,255,255,.22)') + '" stroke-dasharray="' + (m[0] === 80 ? '4 4' : '2 5') + '"/>' +
       '<text class="hl-tri" x="' + (C + r * Math.cos(aNhan)).toFixed(1) + '" y="' + (C + r * Math.sin(aNhan) + 3.5).toFixed(1) + '" fill="#f5c86b" font-size="10" font-family="Exo 2,sans-serif" text-anchor="middle">' + m[1] + '</text>';
@@ -10598,7 +10599,7 @@ function holoDaiQuanSat() {
     return '<button type="button" class="hl-dg" data-x="' + esc(x.ma) + '" title="Mở Bảng KPI ' + esc(x.t) + '"><span>' + esc(x.t) + ' <span class="hl-nho">· ' + x.n + ' người</span></span><b class="' + (x.k < 80 ? 'thap' : x.k >= 90 ? 'cao' : '') + '" data-dem="' + x.k.toFixed(1) + '" data-so="1">' + holoSo(x.k, 1) + '</b>' +
       '<span class="hl-vach"><i class="' + (x.k < 80 ? 'thap' : '') + '" style="width:' + Math.max(0, Math.min(100, (x.k - 60) / 40 * 100)).toFixed(1) + '%"></i></span></button>';
   }).join('') : '<div class="hl-nho">Chưa có sản lượng tháng này.</div>') + '</div></div>';
-  h += '<div class="hl-giua">' + holoChomSao(sl) + '<div class="hl-hang">' + ['D', 'C', 'B', 'A'].map(function (l) { return '<span' + (sl.soNguoi && l === holoLoai(sl.tb) ? ' class="bat"' : '') + '>' + l + '</span>'; }).join('') + '</div>' +
+  h += '<div class="hl-giua">' + holoChomSao(sl) + '<div class="hl-hang">' + ['C', 'B', 'A', 'A+'].map(function (l) { return '<span' + (sl.soNguoi && l === holoLoai(sl.tb) ? ' class="bat"' : '') + '>' + l + '</span>'; }).join('') + '</div>' +
     '<p class="hl-nho" style="text-align:center;margin:6px 0 0">Mỗi ngôi sao là một xưởng, càng xa tâm KPI càng cao. Vòng đỏ đứt = 80%. Sao vàng ≥ 90, sao hồng &lt; 80. Vệt sáng quét = radar đang theo dõi.' + (sl.soNguoi && kt ? ' Nhà máy còn ' + holoSo(kt[0] - sl.tb, 1) + ' điểm lên ' + kt[1] + '.' : '') + ' Bấm vào sao để mở Bảng KPI xưởng đó.</p></div>';
   var tc = sl.daD + sl.choD, pTc = tc ? sl.daD / tc * 100 : 0;
   h += '<div><div class="hl-o"><h3>Có mặt hôm nay</h3><div id="hlCM">' + holoCoMat(window.__tqSiSo) + '</div></div>' +
@@ -11027,7 +11028,7 @@ body.cd-mo #maiGoc{right:calc(var(--cd-w) + 16px)}
     if(c.khongNhac)tru.push(['Không nhắc công nhân nhập kịp '+c.khongNhac+' lượt', c.khongNhac*2]);
     var h='<div class="cd-ten">'+esc(o.hoTen)+'</div>'+
       '<div class="cd-goi">'+esc(o.vaiTro)+' · '+esc(o.tenXuong)+(o.hang?' · hạng '+o.hang+(o.tongXuong?'/'+o.tongXuong:''):'')+'</div>'+
-      '<div class="cd-so">'+oSo('KPI tổng',f1(o.tong),'%')+oSo('Xếp loại',loaiFE(o.tong))+
+      '<div class="cd-so">'+oSo('KPI tổng',f1(o.tong),'%')+oSo('Xếp loại',o.loai||loaiFE(o.tong))+
         oSo('Hiệu suất xưởng (40%)',f1(o.hieuSuatXuong),'%')+oSo('Tỷ lệ đạt xưởng (10%)',f1(o.tyLeDatXuong),'%')+
         oSo('Vận hành (40%)',f1(o.vanHanh))+oSo('Nề nếp (10%)',f1(o.neNep))+'</div>'+
       '<div class="card"><h3>Điểm vận hành bị trừ<span>'+(tru.length?tru.length+' khoản':'')+'</span></h3>'+
@@ -11078,7 +11079,7 @@ function nsnCapNhat(){ call('capNhatNgoaiSXTuFile',[],function(r){ if(!r||!r.ok)
 </script>
 <script>
 /* ===== 38. TĂNG TỐC ĐỢT 3 (08/11) – bộ đo tốc độ + mở nhanh bằng số lần trước (mã hóa) ===== */
-var TD_BUF=[], TD_T=null, DL_VER='98cdd099aa', DL_HAN=12*3600e3, DL_BO=['SoCCCD','DienThoai','DiaChi','SdtKhanCap','LuongCoBan','NamSinh','SoTaiKhoan','Email'];
+var TD_BUF=[], TD_T=null, DL_VER='4106d00047', DL_HAN=12*3600e3, DL_BO=['SoCCCD','DienThoai','DiaChi','SdtKhanCap','LuongCoBan','NamSinh','SoTaiKhoan','Email'];
 function tdGhi_(f,ms,sv){ if(!(ms>=0)||!f) return; TD_BUF.push({f:String(f),ms:Math.round(ms),sv:(typeof sv==='number'?Math.round(sv):null)});
   if(TD_BUF.length>=15) tdGui_(); else if(!TD_T) TD_T=setTimeout(tdGui_,180000); }
 function tdGui_(){ if(TD_T){clearTimeout(TD_T);TD_T=null;} if(!TD_BUF.length||typeof TOKEN==='undefined'||!TOKEN) return;

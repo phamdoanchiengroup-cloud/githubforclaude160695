@@ -1378,5 +1378,6 @@ exec(io.open(os.path.join(os.path.dirname(__file__), 'don-ban', 'va-don-ban.py')
 exec(io.open(os.path.join(os.path.dirname(__file__), 'kpi-ql', 'va-kpi-ql.py'), encoding='utf-8').read())   # chốt KPI quản lý + trần 150/130 (21/11, quỹ thưởng)
 exec(io.open(os.path.join(os.path.dirname(__file__), 'kpi-moi', 'va-kpi-moi.py'), encoding='utf-8').read())   # KPI mới từ T11: bỏ học việc, chuyên cần chấm công, ngày công tối thiểu, vận hành tỷ lệ (21/11)
 exec(io.open(os.path.join(os.path.dirname(__file__), 'xep-loai-4', 'va-xep-loai-4.py'), encoding='utf-8').read())   # thang 4 bậc A/B/C/D (23/11) – LUÔN để cuối
+exec(io.open(os.path.join(os.path.dirname(__file__), 'xep-hang', 'va-xep-hang.py'), encoding='utf-8').read())   # xếp loại theo thứ hạng xưởng A+/A/B/C (28/11) – sau xep-loai-4
 io.open(RA, 'w', encoding='utf-8').write(s)
 print('OK ->', os.path.abspath(RA))

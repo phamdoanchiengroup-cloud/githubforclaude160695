@@ -42,7 +42,7 @@ var SS = (function () {
   o.datCheDo = function (c) { o.cheDo = c; o.bao(); };
   o.bao = function () { o.nghe.forEach(function (f) { try { f(); } catch (e) {} }); };
   o.tyLe = function (s) { return s && s.dinhBien ? s.coMat / s.dinhBien * 100 : 0; };
-  o.hang = function (v) { return v >= 90 ? 'A' : v >= 80 ? 'B' : v >= 70 ? 'C' : 'D'; };   // 23/11: thang 4 bậc A/B/C/D
+  o.hang = function (v) { return v >= 90 ? 'A+' : v >= 80 ? 'A' : v >= 70 ? 'B' : 'C'; };   // 28/11: hạng xưởng theo ngưỡng A+/A/B/C (KPI trung bình xưởng)
   // cùng màu với web (mauKPI ở nền tối)
   o.mauKPI = function (v) { return v >= 90 ? '#66d49a' : v >= 80 ? '#2fd3c6' : v >= 70 ? '#f0b04e' : '#f47272'; };
   o.mauSiSo = function (p) { return p >= 95 ? '#66d49a' : p >= 85 ? '#f0b04e' : '#f47272'; };
