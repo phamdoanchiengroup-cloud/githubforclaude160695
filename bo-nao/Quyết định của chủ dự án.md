@@ -21,7 +21,9 @@ Những điều đã chốt. Đừng đề xuất lại những gì ghi "không 
 
 ## Xếp loại (22/10)
 - ~~Thang 22/10: S ≥ 95, A+ ≥ 90, A ≥ 85, B ≥ 80, C ≥ 70, D < 70~~ – **thay 23/11**.
-- **23/11: thang 4 bậc A ≥ 90 · B 80–89 · C 70–79 · D < 70** (+ Thiếu công; 50–80% ngày công hạ 1 bậc). Bỏ hẳn S / A+, áp ngược mọi tháng đã lưu (kể cả T9, T10). HC – Kế toán làm lại bảng thưởng theo 4 bậc (chủ dự án tự báo). Đừng đề xuất lại 3 bậc ABC. – [[KPI Thang xếp loại]]
+- **28/11: XẾP LOẠI CÔNG NHÂN THEO THỨ HẠNG TRONG XƯỞNG A+ / A / B / C** – thay thang 4 bậc: KPI < 70 → C; trong số ≥ 70, N người đầu A+, N người cuối B, còn lại A (N = 1 / 2 / 3 khi xưởng < 10 / 10–15 / > 15 công nhân, đếm tổng công nhân có KPI); ít người ≥ 70 ưu tiên A+; bằng điểm xét Chất lượng → Sản lượng → An toàn → Tuân thủ; Thiếu công không xếp; 50–80% công hạ 1 bậc sau khi xếp; đúng 70% vẫn xếp. TP / PP: ngưỡng A+ ≥ 90, A 80–89, B 70–79, C < 70. Áp T11 + ngược T9, T10. – [[Nhật ký thay đổi]]
+- (28/11) **3 cột Đóng gói của hàng ưu tiên đọc từ tab ĐƠN ƯU TIÊN** (thay số tab KHO, không cộng); tiến độ bộ phận vẫn đọc tab KHO. Báo cáo tháng PDF có bảng KPI đầy đủ từng xưởng. – [[Nhật ký thay đổi]]
+- ~~**23/11: thang 4 bậc A ≥ 90 · B 80–89 · C 70–79 · D < 70** (+ Thiếu công; 50–80% ngày công hạ 1 bậc). Bỏ hẳn S / A+, áp ngược mọi tháng đã lưu (kể cả T9, T10). HC – Kế toán làm lại bảng thưởng theo 4 bậc (chủ dự án tự báo). Đừng đề xuất lại 3 bậc ABC. – [[KPI Thang xếp loại]]
 
 - **Không dùng trần hiệu suất sản lượng** để ép người giỏi về 90–95% (22/10: "người ta làm được nhiều thật thì phải được ghi nhận"). Giữ `TranKPI` = 500; muốn người giỏi nhất quanh 90–95% thì chỉnh bằng định mức. – [[KPI Phân tích định mức]]
 

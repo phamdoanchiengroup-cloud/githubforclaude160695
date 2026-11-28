@@ -2,6 +2,8 @@
 
 Nhóm: KPI · Cập nhật 22/10/2026
 Liên quan: [[KPI Tổng quan và cách dựng]] · [[KPI Báo cáo tháng]] · [[KPI Âm thanh và giọng Rhino]] · [[Quyết định của chủ dự án]]
+> **28/11: THAY BẰNG XẾP THEO THỨ HẠNG XƯỞNG A+ / A / B / C** (vá `tests/xep-hang/`, kiểm thử `tests/xep-hang.js`, chuyển dữ liệu `xhChuyen_()`; quy tắc ở [[Quyết định của chủ dự án]]). Thang 4 bậc 23/11 bên dưới là lịch sử.
+
 > **23/11: THAY BẰNG THANG 4 BẬC** A ≥ 90 · B 80–89 · C 70–79 · D < 70 (bỏ S / A+; vá `tests/xep-loai-4/`, kiểm thử `tests/xep-loai.js`; loại đã lưu đổi bằng `xl4Chuyen_()` 1 lần). Phần dưới là lịch sử thang 22/10.
 
 
