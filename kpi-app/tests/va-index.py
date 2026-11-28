@@ -876,5 +876,7 @@ exec(io.open(os.path.join(D, 'kpi-moi', 'va-kpi-moi-web.py'), encoding='utf-8').
 exec(io.open(os.path.join(D, 'xep-loai-4', 'va-xep-loai-4-web.py'), encoding='utf-8').read())
 # ---------------------------------------------------------------- 53. Xếp loại theo thứ hạng xưởng A+/A/B/C (28/11) – sau mục 52
 exec(io.open(os.path.join(D, 'xep-hang', 'va-xep-hang-web.py'), encoding='utf-8').read())
+# ---------------------------------------------------------------- 54. Màu nhấn Raven / Apricot cho công nhân (giao diện mới) + nền sáng (28/11)
+exec(io.open(os.path.join(D, 'mau-raven', 'va-mau-raven-web.py'), encoding='utf-8').read())
 io.open(os.path.join(D, '..', 'Index.html'), 'w', encoding='utf-8').write(s)
 print('OK Index.html')
