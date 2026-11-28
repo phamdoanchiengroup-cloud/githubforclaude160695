@@ -609,6 +609,37 @@ html:not([data-gd="sang"]) .dh-vrt i.v{background:linear-gradient(0deg,rgba(143,
 html:not([data-gd="sang"]) .dh-cong i.vuot,html:not([data-gd="sang"]) .dh-vrt i.r.duoi{background:linear-gradient(0deg,rgba(255,158,143,.25),var(--g-bad,#ff9e8f))}
 html:not([data-gd="sang"]) .dh-tong>*,html:not([data-gd="sang"]) .dh-tk>*{border-radius:14px!important;border-color:rgba(255,255,255,.26)!important;
   background:radial-gradient(120% 80% at 10% -10%,rgba(255,255,255,.12),transparent 55%),rgba(255,255,255,.035)!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.35)}
+
+/* 28/11 (đánh giá bố cục): đầu trang Đơn hàng gọn – 3 ô số + dòng tổng thành 1 dải mỏng; nhóm xem + thanh con + bộ lọc chung 1 hàng; chú thích vào nút "? Chú thích" */
+.dh-tl3{grid-template-columns:repeat(3,minmax(0,1fr)) auto!important;align-items:stretch;margin-bottom:8px!important}
+.dh-tl3 .dh-tl{padding:6px 12px!important;grid-template-columns:auto 1fr!important;grid-template-rows:auto!important;align-items:center!important}
+.dh-tl3 .dh-tl>span{grid-column:2;grid-row:1;font-size:12px}
+.dh-tl3 .dh-tl>b{grid-column:1;grid-row:1 / span 2;font-size:24px!important;line-height:1!important}
+.dh-tl3 .dh-tl>small{grid-column:2;grid-row:2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:11.5px}
+.dh-tl3 .dh-so{margin:0!important;align-self:center;flex-direction:column;gap:2px!important;padding:0 6px;white-space:nowrap}
+@media (min-width:641px){
+  .dh-nav{display:flex;flex-wrap:wrap;align-items:center;gap:6px 12px}
+  .dh-nav .dh-sub,.dh-nav .dh-locw{margin-top:0!important}
+  .dh-nav .dh-locw{margin-left:auto}
+  .dh-nav .dh-loc input,.dh-nav .dh-loc select{max-width:170px}
+}
+@media (max-width:640px){
+  .dh-tl3{grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:6px!important}
+  .dh-tl3 .dh-tl{grid-template-columns:1fr!important;padding:6px 8px!important;row-gap:0!important}
+  .dh-tl3 .dh-tl>b{grid-column:1;grid-row:1;font-size:20px!important}
+  .dh-tl3 .dh-tl>span{grid-column:1;grid-row:2;font-size:10.5px!important;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;letter-spacing:0!important}
+  .dh-tl3 .dh-tl>small{display:none}
+  .dh-tl3 .dh-so{grid-column:1/-1;flex-direction:row;gap:2px 12px!important;padding:2px 2px 0}
+  .dh-nav{display:flex;flex-wrap:wrap;align-items:center;gap:6px 8px}
+  .dh-nav .dh-seg{flex:1 1 100%}
+  .dh-nav .dh-sub{flex:1 1 0;min-width:0;margin-top:0!important}
+  .dh-nav .dh-locw{margin-top:0!important;flex:none}
+  #main>.pdesc,.dh-wrap>.pdesc{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .dh-ghi{display:-webkit-box;-webkit-line-clamp:1;-webkit-box-orient:vertical;overflow:hidden}
+  .dh-tabs{flex-wrap:nowrap!important;overflow-x:auto;-webkit-overflow-scrolling:touch}
+  .dh-tabs .dh-tabb{flex:none}
+}
+details.dh-hoi{margin:0 0 6px;font-size:12px} details.dh-hoi>summary{cursor:pointer;display:inline-block;color:var(--ink2);border:1px solid var(--line);border-radius:999px;padding:1px 10px;list-style:none} details.dh-hoi>summary::-webkit-details-marker{display:none} details.dh-hoi[open]>span{display:block;margin-top:4px}
 </style>
 <script>
 /* ===== Quy trình sản xuất (31/10) ===== */
@@ -1547,8 +1578,8 @@ function dhTrangVe(){
   h+='<div class="dh-tl3">'+
     '<button type="button" class="dh-tl do'+(DHV==='bang'&&DHB.tab==='@tre'?' on':'')+'" onclick="dhChon(\'tre\')"><span>Trễ hạn</span><b>'+qtSo(tre.length,0)+'</b><small>đơn còn thiếu đã qua deadline'+(dem('qua30')?' · '+dem('qua30')+' đơn trễ quá '+DH_TRE_MAX+' ngày':'')+'</small></button>'+
     '<button type="button" class="dh-tl vang'+(DHV==='bang'&&DHB.tab==='@le10'?' on':'')+'" onclick="dhChon(\'le10\')"><span>Lẻ / POD quá hạn</span><b>'+qtSo(dhGomDon(le10a).length,0)+'</b><small>đơn còn thiếu · '+qtSo(sum(le10a,'thieu'),0)+' sp'+(function(){ var n=dhGomDon(dhLeSapDs(ds)).length; return n?' · <span style="color:var(--amber,#d4a600)">'+n+' đơn sắp hết hạn</span>':''; })()+'</small></button>'+   /* 15/11 khuya (chủ dự án): ô đầu trang = đơn lẻ / POD quá 10 ngày; Đến hạn 10 ngày tới đã thành mục trong bảng đơn */
-    '<button type="button" class="dh-tl uu'+(DHV==='bang'&&DHB.tab==='@uu'?' on':'')+'" onclick="dhChon(\'uutien\')"><span>Ưu tiên còn thiếu</span><b>'+qtSo(Object.keys(uuDon).length,0)+'</b><small>đơn · '+qtSo(uuCon.length,0)+' mã · thiếu '+qtSo(sum(uuCon,'thieu'),0)+' sp</small></button></div>'+
-    '<div class="dh-so"><span><b>'+qtSo(don.length,0)+'</b> đơn</span><span class="th"><b>'+qtSo(sum(ds,'thieu'),0)+'</b> sp còn thiếu</span></div>';
+    '<button type="button" class="dh-tl uu'+(DHV==='bang'&&DHB.tab==='@uu'?' on':'')+'" onclick="dhChon(\'uutien\')"><span>Ưu tiên còn thiếu</span><b>'+qtSo(Object.keys(uuDon).length,0)+'</b><small>đơn · '+qtSo(uuCon.length,0)+' mã · thiếu '+qtSo(sum(uuCon,'thieu'),0)+' sp</small></button>'+
+    '<div class="dh-so"><span><b>'+qtSo(don.length,0)+'</b> đơn</span><span class="th"><b>'+qtSo(sum(ds,'thieu'),0)+'</b> sp còn thiếu</span></div></div>';   /* 28/11 (đánh giá bố cục): dòng tổng vào cùng dải với 3 ô số */
   /* điều hướng: 3 nhóm + thanh con */
   var nh=dhNhomCua(DHV), cd=!nh;
   h+='<div class="dh-nav"><div class="dh-seg" role="tablist">'+DH_NHOM.map(function(g){ return '<button type="button" role="tab" aria-selected="'+(nh===g)+'"'+(nh===g?' class="on"':'')+' onclick="dhChon(\''+g[2][0][0]+'\')">'+g[1]+'</button>'; }).join('')+'</div>'+
@@ -1564,7 +1595,7 @@ function dhTrangVe(){
     '<input id="dhN" type="search" aria-label="Ngày đặt" placeholder="Ngày đặt (22/06)" value="'+esc(DHL.ngay)+'" onchange="DHL.ngay=this.value;dhVeLai()">'+
     (dangLoc.length?'<span class="dh-chip">'+dangLoc.map(function(x){return '<button type="button" title="Bỏ lọc này" onclick="DHL[\''+x[0]+'\']=\'\';dhVeLai()">'+esc(x[1])+' ✕</button>'}).join('')+'<button type="button" class="xoa" onclick="DHL={q:\'\',kenh:\'\',st:\'\',ngay:\'\'};dhVeLai()">Xoá hết</button></span>':'')+'</div></div>';
   h+='</div>';
-  if(DHV==='bang') h+='<div class="dh-chu-pb ma"><span>Vạch dưới mã đơn: <i></i>đã xong (đặt − còn thiếu) · <i class="d"></i>đang làm ở xưởng · % = phần đã xong / số đặt của cả đơn</span></div>';
+  if(DHV==='bang') h+='<details class="dh-chu-pb ma dh-hoi"><summary title="Chú thích vạch màu dưới mã đơn">? Chú thích</summary><span>Vạch dưới mã đơn: <i></i>đã xong (đặt − còn thiếu) · <i class="d"></i>đang làm ở xưởng · % = phần đã xong / số đặt của cả đơn</span></details>';
   h+='<div class="dh-than">';
   if(DHV==='xuong'){
     if(!QT){ if(!DHQTTai){ DHQTTai=true; qtNapNgam(function(){ DHQTTai=false; dhVeLai(); }); } h+='<div class="pdesc">Đang tính năng lực các xưởng…</div>'; }

@@ -880,5 +880,7 @@ exec(io.open(os.path.join(D, 'xep-hang', 'va-xep-hang-web.py'), encoding='utf-8'
 exec(io.open(os.path.join(D, 'mau-raven', 'va-mau-raven-web.py'), encoding='utf-8').read())
 # ---------------------------------------------------------------- 55. Menu trái dạng cột biểu tượng, rê chuột mở đầy đủ (28/11)
 exec(io.open(os.path.join(D, 'menu-rail', 'va-menu-rail-web.py'), encoding='utf-8').read())
+# ---------------------------------------------------------------- 56. Đánh giá bố cục 28/11: Nề nếp 1 xưởng, form quản trị thu gọn, Tổng quan, lớp phủ
+exec(io.open(os.path.join(D, 'bo-cuc', 'va-bo-cuc-web.py'), encoding='utf-8').read())
 io.open(os.path.join(D, '..', 'Index.html'), 'w', encoding='utf-8').write(s)
 print('OK Index.html')
