@@ -5898,7 +5898,7 @@ function bcNhanDinh_(du, mx) {
 }
 
 /* ---------------- Dựng HTML (bảng thuần, an toàn khi đổi PDF) ---------------- */
-var BC_CSS = 'body{font-family:Arial,Helvetica,sans-serif;color:#1d2a33;font-size:10pt;margin:0}' +
+var BC_CSS = 'body{font-family:Arial,Helvetica,sans-serif;color:#1d2a33;font-size:10pt;margin:0}' + 'h3{font-size:11pt;color:#0f4c5c;margin:14px 0 4px;page-break-after:avoid}' +   /* 28/11: bảng KPI đầy đủ từng xưởng */
   'table{border-collapse:collapse;width:100%}td,th{padding:4px 6px;vertical-align:middle}' +
   '.bang th{background:#0f4c5c;color:#ffffff;font-size:8.5pt;font-weight:bold;text-align:left;border:1px solid #0f4c5c}' +
   '.bang td{border:1px solid #d5dbe0;font-size:9pt}.bang tr.chan td{background:#f5f8fa}.r{text-align:right}.c{text-align:center}' +
@@ -5953,6 +5953,18 @@ function bcTomTatHtml_(t, du) {
     bcO_('Tỷ lệ hàng không đạt (KCS)', t.tlLoi === null ? '–' : bcSo_(t.tlLoi,2) + '%', bcLech_(t.tlLoi, t.tlLoiT, 2, ' điểm %', true), t.tlLoi >= 3 ? '#c0392b' : '#127c74') +
     bcO_('Tỷ lệ chuyên cần', t.cc === null ? '–' : bcSo_(t.cc,1) + '%', bcLech_(t.cc, t.ccT, 1, ' điểm %')) +
     bcO_('Vi phạm nề nếp / nhập trễ', t.vp + ' / ' + t.tre, bcLech_(t.vp, t.vpT, 0, ' lượt', true)) + '</tr></table>';
+}
+function bcDayDuHtml_(du, so) {   // 28/11: mỗi xưởng 1 bảng, đủ mọi công nhân, KPI cao → thấp
+  var g = {}; (du.kpi || []).forEach(function(o) { (g[o.MaXuong] = g[o.MaXuong] || []).push(o); });
+  var xs = Object.keys(g).sort(function(a, b) { return (bcTB_(g[b], 'tong') || 0) - (bcTB_(g[a], 'tong') || 0); });
+  if (!xs.length) return '';
+  var h = '<div class="trang"></div><h2>' + so + '. Bảng KPI đầy đủ từng xưởng</h2><p class="nho">Tất cả công nhân có KPI trong tháng, mỗi xưởng một bảng, xếp KPI từ cao xuống thấp. Xưởng xếp theo KPI trung bình.</p>';
+  xs.forEach(function(mx) {
+    var ds = g[mx].slice().sort(function(a, b) { return xhSoSanh_(a, b) || (a.hang || 999) - (b.hang || 999); });
+    var dem = {}; ds.forEach(function(o) { dem[o.loai] = (dem[o.loai] || 0) + 1; });
+    h += '<h3>' + bcE_(bcTenX_(du, mx)) + ' · ' + ds.length + ' người · KPI TB ' + bcSo_(bcTB_(ds, 'tong'), 1) + ' · ' + BC_LOAI.filter(function(l) { return dem[l]; }).map(function(l) { return l + ' ' + dem[l]; }).join(', ') + '</h3>' + bcBangKPI_(ds, du, false);
+  });
+  return h;
 }
 function bcBangKPI_(ds, du, coXuong) {
   var h = '<table class="bang"><tr><th class="c">' + (coXuong ? 'Hạng trong xưởng' : 'Hạng') + '</th><th>Mã</th><th>Họ tên</th>' + (coXuong ? '<th>Xưởng</th>' : '') +
@@ -6020,7 +6032,10 @@ function bcHtmlTong_(du) {
         '<td class="r"><b>' + bcSo_(q.tong,1) + '</b></td><td class="c" style="color:#fff;background:' + BC_MAU_LOAI[l] + ';font-weight:bold">' + l + '</td></tr>'; });
     h += '</table>';
   }
-  h += bcComHtml_(du.com || [], (du.ql.length ? (loi.length ? 11 : 10) : (loi.length ? 10 : 9)));
+  var soMuc = du.ql.length ? (loi.length ? 11 : 10) : (loi.length ? 10 : 9);
+  h += bcComHtml_(du.com || [], soMuc);
+  if ((du.com || []).length) soMuc++;
+  h += bcDayDuHtml_(du, soMuc);   // 28/11: bảng KPI đầy đủ từng xưởng
   return bcThead_(h + bcPhuongPhap_(du) + '</body></html>');
 }
 
@@ -6035,7 +6050,7 @@ function bcHtmlXuong_(du, mx) {
   h += '<p class="nho">So với toàn nhà máy: KPI trung bình nhà máy ' + bcSo_(tNM.kpiTB,1) + (viTri ? ' · xưởng đứng thứ <b>' + viTri + '/' + hang.length + '</b> về KPI trung bình' : '') + '.</p>';
   h += '<h2>2. Nhận định</h2>' + bcNhanDinhHtml_(bcNhanDinh_(du, mx));
   h += '<h2>3. Phân loại công nhân</h2>' + bcChongLoai_(t.phanLoai, t.soNguoi) + '<p class="nho">' + BC_LOAI.map(function(l){ return l + ': <b>' + t.phanLoai[l] + '</b>'; }).join(' · ') + '</p>';
-  var ds = du.kpi.filter(function(o){ return o.MaXuong === mx; }).sort(function(a,b){ return a.hang - b.hang; });
+  var ds = du.kpi.filter(function(o){ return o.MaXuong === mx; }).sort(function(a,b){ return xhSoSanh_(a, b) || (a.hang || 999) - (b.hang || 999); });   // 28/11: đủ mọi công nhân, KPI cao → thấp
   h += '<h2>4. KPI từng công nhân</h2>' + (ds.length ? bcBangKPI_(ds, du, false) : '<p class="nho">Chưa có KPI.</p>');
   h += '<div class="trang"></div><h2>5. Sản lượng theo ngày</h2>' + bcCotNgay_(t.ngay, du.ky);
   var cd = Object.keys(du.sl.CD).map(function(m){ return du.sl.CD[m]; }).filter(function(c){ return c.MaXuong === mx; }).sort(function(a,b){ return b.gc - a.gc || b.sl - a.sl; });
@@ -7710,7 +7725,7 @@ function danhSachVanPhong(token) {
   ds.sort(function(a, b) { return (thuTu[a.vaiTro] - thuTu[b.vaiTro]) || (a.HoTen < b.HoTen ? -1 : 1); });
   return sach_({ ok: true, ds: ds, muc: HS_MUC });
 }
-var KPI_BAN_MAY = '28/11/2026 11:50';   // giờ dựng Code.gs (22/10)
+var KPI_BAN_MAY = '28/11/2026 11:53';   // giờ dựng Code.gs (22/10)
 /* =====================================================================
    KỸ NĂNG (22/10, chủ dự án nhờ thiết kế + tham khảo chuyên gia nhân sự / đào tạo)
    - Danh mục: trưởng / phó phòng đề xuất kỹ năng của xưởng (tên, mô tả, tiêu chí đạt, công đoạn liên quan)

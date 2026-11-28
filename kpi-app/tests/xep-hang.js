@@ -52,6 +52,12 @@ console.log('     T11:', xs.join(' · '));
 const q = c.__goi('layKPIKy', c.__phienDai(tk), 'quy', '2026-Q4', '');
 ok(q.ok && q.ds.every(o => ['A+', 'A', 'B', 'C'].includes(o.loai)), 'quý 4: xếp theo thứ hạng trên điểm trung bình');
 
+console.log('\n2b. Báo cáo tháng PDF – bảng KPI đầy đủ từng xưởng');
+const bd = c.bcDuLieu_('2026-10'), ht = c.bcHtmlTong_(bd), m3 = ht.match(/Bảng KPI đầy đủ từng xưởng[\s\S]*/);
+const soDong = m3 ? (m3[0].match(/<tr[ >]/g) || []).length - (m3[0].match(/<h3>/g) || []).length : 0;
+ok(m3 && soDong === bd.kpi.length, 'báo cáo nhà máy: đủ ' + bd.kpi.length + ' công nhân, mỗi xưởng 1 bảng', [soDong, bd.kpi.length]);
+const hx = c.bcHtmlXuong_(bd, 'PHOICB'), kpiX = [...hx.split('4. KPI từng công nhân')[1].split('</table>')[0].matchAll(/<td class="r"><b>([\d.,]+)<\/b>/g)].map(x => Number(x[1].replace(/\./g, '').replace(',', '.')));
+ok(kpiX.length > 10 && kpiX.every((v, i) => !i || v <= kpiX[i - 1]), 'báo cáo xưởng: KPI từng công nhân xếp cao → thấp (' + kpiX.length + ' người)', kpiX.slice(0, 8));
 console.log('\n3. Giao diện');
 const idx = fs.readFileSync(path.join(GOC, 'Index.html'), 'utf8'), sd = fs.readFileSync(path.join(GOC, 'SoDo.html'), 'utf8'), qt = fs.readFileSync(path.join(GOC, 'QuyTrinh.html'), 'utf8');
 ok(/thứ hạng trong xưởng/.test(idx) && !/A ≥90<\/span>|D &lt;70/.test(idx), 'hướng dẫn: xếp theo thứ hạng xưởng, không còn thang 4 bậc');

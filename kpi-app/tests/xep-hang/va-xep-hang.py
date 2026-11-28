@@ -164,3 +164,27 @@ function xhChuyen_() {   // 1 lần: KPIThang tháng ≥ T9 xếp lại theo th�
 }
 
 """ + s[_k:]
+# ---- 28/11 (chủ dự án): PDF báo cáo tháng hiện ĐẦY ĐỦ mọi công nhân theo từng xưởng, KPI cao → thấp
+R("""  h += bcComHtml_(du.com || [], (du.ql.length ? (loi.length ? 11 : 10) : (loi.length ? 10 : 9)));
+  return bcThead_(h + bcPhuongPhap_(du) + '</body></html>');""", """  var soMuc = du.ql.length ? (loi.length ? 11 : 10) : (loi.length ? 10 : 9);
+  h += bcComHtml_(du.com || [], soMuc);
+  if ((du.com || []).length) soMuc++;
+  h += bcDayDuHtml_(du, soMuc);   // 28/11: bảng KPI đầy đủ từng xưởng
+  return bcThead_(h + bcPhuongPhap_(du) + '</body></html>');""")
+R("  var ds = du.kpi.filter(function(o){ return o.MaXuong === mx; }).sort(function(a,b){ return a.hang - b.hang; });",
+  "  var ds = du.kpi.filter(function(o){ return o.MaXuong === mx; }).sort(function(a,b){ return xhSoSanh_(a, b) || (a.hang || 999) - (b.hang || 999); });   // 28/11: đủ mọi công nhân, KPI cao → thấp")
+R("function bcBangKPI_(ds, du, coXuong) {", """function bcDayDuHtml_(du, so) {   // 28/11: mỗi xưởng 1 bảng, đủ mọi công nhân, KPI cao → thấp
+  var g = {}; (du.kpi || []).forEach(function(o) { (g[o.MaXuong] = g[o.MaXuong] || []).push(o); });
+  var xs = Object.keys(g).sort(function(a, b) { return (bcTB_(g[b], 'tong') || 0) - (bcTB_(g[a], 'tong') || 0); });
+  if (!xs.length) return '';
+  var h = '<div class="trang"></div><h2>' + so + '. Bảng KPI đầy đủ từng xưởng</h2><p class="nho">Tất cả công nhân có KPI trong tháng, mỗi xưởng một bảng, xếp KPI từ cao xuống thấp. Xưởng xếp theo KPI trung bình.</p>';
+  xs.forEach(function(mx) {
+    var ds = g[mx].slice().sort(function(a, b) { return xhSoSanh_(a, b) || (a.hang || 999) - (b.hang || 999); });
+    var dem = {}; ds.forEach(function(o) { dem[o.loai] = (dem[o.loai] || 0) + 1; });
+    h += '<h3>' + bcE_(bcTenX_(du, mx)) + ' · ' + ds.length + ' người · KPI TB ' + bcSo_(bcTB_(ds, 'tong'), 1) + ' · ' + BC_LOAI.filter(function(l) { return dem[l]; }).map(function(l) { return l + ' ' + dem[l]; }).join(', ') + '</h3>' + bcBangKPI_(ds, du, false);
+  });
+  return h;
+}
+function bcBangKPI_(ds, du, coXuong) {""")
+R("var BC_CSS = 'body{font-family:Arial,Helvetica,sans-serif;color:#1d2a33;font-size:10pt;margin:0}' +",
+  "var BC_CSS = 'body{font-family:Arial,Helvetica,sans-serif;color:#1d2a33;font-size:10pt;margin:0}' + 'h3{font-size:11pt;color:#0f4c5c;margin:14px 0 4px;page-break-after:avoid}' +   /* 28/11: bảng KPI đầy đủ từng xưởng */")
