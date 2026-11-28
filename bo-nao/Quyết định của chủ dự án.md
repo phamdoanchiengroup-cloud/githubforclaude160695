@@ -21,6 +21,7 @@ Những điều đã chốt. Đừng đề xuất lại những gì ghi "không 
 
 ## Xếp loại (22/10)
 - ~~Thang 22/10: S ≥ 95, A+ ≥ 90, A ≥ 85, B ≥ 80, C ≥ 70, D < 70~~ – **thay 23/11**.
+- **28/11: Tab ĐƠN ƯU TIÊN là KÊNH RIÊNG** (THAY quy tắc 16/11 "bản chép, không cộng"): đơn ưu tiên CHỈ ghi ở tab ĐƠN ƯU TIÊN (đã xóa dòng trùng ở tab KHO); tính vào làn Kho, xếp đầu làn; mọi cột đọc / ghi ở tab đó; web có nút lọc riêng "ĐƠN ƯU TIÊN". Bảng trạng thái đơn: mã đơn chỉ ở đầu thẻ đơn (bỏ ô mã đơn từng dòng). – [[Nhật ký thay đổi]]
 - **28/11: Danh mục SKU chuẩn = file `SKU.xlsx` (sheet DATA (SKU))** – khác file SEA thì theo SKU.xlsx. – [[Nhật ký thay đổi]]
 - **28/11: Order-Flow + tab Đơn hàng hiện SKU chữ to, tên sản phẩm chữ nhỏ** (tên chưa có SKU thì hiện tên như cũ); bảng tên → SKU giữ trong code, chủ dự án gửi file bổ sung để Claude cập nhật. Đơn **Web lẻ (thường + custom): cột Loại phôi = ghi chú đơn**, hiện chữ nhỏ dưới tên ở Order-Flow. – [[Nhật ký thay đổi]]
 - **28/11: Màu giao diện = phương án 1 Raven Teal · Seagrass Grey · Apricot Flare** (thay Graphite Platinum 22/11) cho mọi tài khoản nền tối; công nhân giao diện mới giữ nền sáng, chỉ đổi màu nhấn cam; nền sáng (nút mặt trời) đổi màu nhấn cam; giao diện kính (ban điều hành, Bán hàng) giữ nguyên. Đã xem và bỏ: Navy / Fog / Aqua, Butterscotch Gold / Graphite / Cobalt. – [[Nhật ký thay đổi]]
@@ -179,7 +180,7 @@ Những điều đã chốt. Đừng đề xuất lại những gì ghi "không 
 - 16/11 (tối): giao diện kính chủ sở hữu **chỉ giữ 2 tông: Xanh rừng sương (ảnh Pexels) + Tiên cảnh (ảnh chủ dự án gửi)**; bỏ Sương sáng / Đỏ / Tím. Tiên cảnh: thẻ trong suốt hẳn, chữ có viền tối để nổi. – [[KPI Hologram chủ sở hữu]]
 
 ## Đơn hàng – bậc ưu tiên, làn lẻ, hạn đơn lẻ (chốt 16/11)
-- **Tab ĐƠN ƯU TIÊN = bản chép mã ưu tiên từ tab KHO** cho dễ nhìn – không đếm 2 lần; web khớp dòng Kho theo mã đơn + tên.
+- (ĐÃ THAY 28/11 – nay là kênh riêng) **Tab ĐƠN ƯU TIÊN = bản chép mã ưu tiên từ tab KHO** cho dễ nhìn – không đếm 2 lần; web khớp dòng Kho theo mã đơn + tên.
 - **4 bậc** (16/11 tối gộp 4 + 5): 1 = Web lẻ thường + Web lẻ custom + POD (làn riêng **cố định 10%** công suất, **hạn 5 ngày** từ ngày đặt); 2 = trễ hạn (quá deadline / tên trong tab TRỄ HẠN) + ★ ban điều hành gắn; 3 = **Dealer + hàng ưu tiên ngang nhau**; 4 = A Đông + Kho + OEM + tab mới ngang nhau. Trong bậc: deadline sớm trước.
 - **Ngày dự kiến xong chỉ tính theo công suất 300 sp/ngày** (⚙ Công suất) – KHÔNG mô phỏng hàng đi qua từng xưởng.
 - **Bỏ hạn chuẩn trên bảng đơn** (không cần thiết); hạn chuẩn chỉ còn ở Công đoạn / email 8h.

@@ -165,8 +165,9 @@ console.log('\n4d. Tab "ĐƠN ƯU TIÊN" làm nguồn mục Ưu tiên (07/11)');
   ok(x.ok && x.don.length === 2 && x.don.reduce((a, o) => a + o.thieu, 0) === 10, 'tab ĐƠN ƯU TIÊN không cộng vào tổng đơn (không đếm trùng)', x.don && x.don.length);
   ok(!(x.tabMoi || []).length, 'tab ĐƠN ƯU TIÊN không bị báo là "kênh mới"', x.tabMoi);
   const u = (x.uu || [])[0] || {};
-  ok((x.uu || []).length === 1 && u.maDon === '#KHO-01/11' && u.tab === 'KHO' && u.uuTien && u.pl && u.pl.dong === 'EVO4', 'trả danh sách ưu tiên riêng, kênh lấy theo mã đơn ở tab chính, có phân loại', u);
-  ok(/-11-17$/.test(u.dl) && /-11-26$/.test(x.don.find(o => o.maDon === '#KHO-01/11').dl), 'hạn ưu tiên lấy theo tab ĐƠN ƯU TIÊN (17/11), khác hạn ở tab KHO (26/11)', [u.dl]); }
+  /* 28/11 (chủ dự án): tab ĐƠN ƯU TIÊN là KÊNH RIÊNG – dòng KHO trùng mã + tên bị bỏ (báo trungUu), dòng tab ưu tiên là dòng thật */
+  ok((x.uu || []).length === 1 && u.maDon === '#KHO-01/11' && u.tab === 'ĐƠN ƯU TIÊN' && u.uuTien && u.pl && u.pl.dong === 'EVO4', 'trả danh sách ưu tiên = dòng tab ĐƠN ƯU TIÊN (kênh riêng), có phân loại', u);
+  ok(/-11-17$/.test(u.dl) && x.don.filter(o => o.maDon === '#KHO-01/11').length === 1 && x.don.find(o => o.maDon === '#KHO-01/11').tab === 'ĐƠN ƯU TIÊN' && (x.trungUu || []).length === 1, 'hạn lấy theo tab ĐƠN ƯU TIÊN (17/11); dòng KHO trùng bị bỏ + báo', [u.dl, x.trungUu]); }
 
 console.log('\n4e. Kênh POD-ECOMSTONE, sản lượng nhập theo ngày, công suất (07/11)');
 { const tabE = [['', 'Loại hàng cần sản xuất', 'Loại Phôi', 'Số lượng đặt', 'SX CÒN THIẾU', 'Deadline'], ['#ECO-01/11', 'EVO4/LUN2/BLUE/LW-BLACK/G/10/12.5', '', 3, 3, '20/11']];
