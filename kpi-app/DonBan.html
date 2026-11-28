@@ -39,6 +39,7 @@
 .of-thanh .bar{height:5px;border-radius:4px;background:rgba(127,127,127,.25);overflow:hidden}.of-thanh .bar i{display:block;height:100%;border-radius:4px}
 .of-thanh .so{font-family:ui-monospace,Menlo,monospace;letter-spacing:0;color:var(--ink2)}.of-thanh .so b{color:var(--green)}.of-thanh .so em{color:var(--red);font-style:normal}
 .of-loc{padding:4px 14px 8px;font-size:12px;color:var(--ink3);display:flex;gap:8px;align-items:center} .of-loc b{color:var(--ink)}
+.of-sku{display:block;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:13.5px;font-weight:700;letter-spacing:.01em;word-break:break-all} .of-sku-ten{display:block;font-size:11.5px;font-weight:400;color:var(--ink3);margin-top:1px}
 .of-ton{padding:4px 14px 8px;font-size:12px;color:var(--ink3)} .of-ton b{color:var(--ink)} .of-ton b.g{color:var(--green)}
 .of-dong .tra{color:var(--ink2)}
 .of-dong{display:grid;grid-template-columns:1fr 52px 52px 74px 74px;gap:6px;align-items:center;padding:8px 14px;border-top:1px solid var(--line);font-size:13px}
@@ -292,7 +293,7 @@ function bnVeBang(){
   var tabs=Object.keys(dem);
   return '<div class="pdesc" style="margin-bottom:8px">Các đơn nhà máy <b>đang làm</b> (đơn còn mã chưa xong, đã bỏ mã bị hủy) · cập nhật '+esc(bnGio(BNB.luc)||BNB.luc)+' <button class="btn sm" type="button" onclick="BNB=null;bnVe()">Làm mới</button></div>'+
     bnVeKin(nhan)+
-    '<div class="db-tim"><input id="bnTim" type="search" placeholder="Tìm mã đơn hoặc mã sản phẩm…" value="'+esc(BNBLoc.q)+'" oninput="BNBLoc.q=this.value;bnBangO()" aria-label="Tìm trong bảng đơn"></div>'+
+    '<div class="db-tim"><input id="bnTim" type="search" placeholder="Tìm mã đơn, SKU hoặc tên sản phẩm…" value="'+esc(BNBLoc.q)+'" oninput="BNBLoc.q=this.value;bnBangO()" aria-label="Tìm trong bảng đơn"></div>'+
     '<div class="db-kenh" style="margin-bottom:10px"><button type="button" class="'+(!BNBLoc.k?'on':'')+'" onclick="BNBLoc.k=\'\';bnVe()">Tất cả · '+bnSo(bnGomDon().length)+'</button>'+tabs.map(function(k){ return '<button type="button" class="'+(BNBLoc.k===k?'on':'')+'" data-t="'+esc(k)+'" onclick="BNBLoc.k=this.dataset.t;bnVe()">'+esc(nhan[k]||k)+' · '+dem[k]+'</button>'; }).join('')+'</div>'+
     '<div id="bnBangDs">'+bnBangHtml()+'</div>'+(BNB.het?'<div class="pdesc" style="margin-top:6px">Chỉ hiện '+bnSo((BNB.ds||[]).length)+' / '+bnSo(BNB.n)+' dòng đầu.</div>':''); }
 /* 17/11: thống kê theo kênh + nhà máy kín lịch đến ngày nào (mô phỏng công suất + dư ~1 tuần = 6 ngày làm việc) */
@@ -306,14 +307,17 @@ function bnVeKin(nhan){ var tk=BNB.tk||[]; if(!tk.length) return '';
 /* 22/11 (chủ dự án): bảng đơn nhà máy hiện THẺ THEO ĐƠN kiểu ORDER·FLOW – deadline + quá hạn N ngày, nhãn tình trạng, thanh Theo loại / Theo số lượng,
    từng mã Đặt · Thiếu · Giao (mã còn thiếu trên, mã đã xong mờ dưới). "Tất cả" = trộn mọi kênh theo deadline gần → xa; chọn kênh = chỉ kênh đó. */
 var BNB_THE=60;
+/* 28/11 (chủ dự án): SKU chữ to + tên nhỏ; tìm theo cả SKU và tên */
+function bnSkuTen(sku,ten){ return sku?'<b class="of-sku">'+esc(sku)+'</b><span class="of-sku-ten">'+esc(ten)+'</span>':esc(ten); }
+function bnTk(z){ return (String(z.ten)+' '+(z.sku||'')).toUpperCase(); }
 function bnGomDon(){ var m={}, ds=[]; (BNB.ds||[]).forEach(function(d){ var k=d[0]+'|'+d[1], g=m[k];
     if(!g){ g=m[k]={tab:d[0],ma:d[1],dong:[],sl:0,thieu:0,dl:'',hr:''}; ds.push(g); }
-    var th=d[7]==null?(Number(d[3])||0):Number(d[7])||0; g.dong.push({ten:d[2],sl:Number(d[3])||0,thieu:th,dl:d[4]||'',dung:d[5],hr:d[6]||'',kho:Number(d[8])||0,tra:Number(d[9])||0}); g.sl+=Number(d[3])||0; g.thieu+=th; g.kho=(g.kho||0)+(Number(d[8])||0); g.tra=(g.tra||0)+(Number(d[9])||0);
+    var th=d[7]==null?(Number(d[3])||0):Number(d[7])||0; g.dong.push({ten:d[2],sku:d[10]||'',sl:Number(d[3])||0,thieu:th,dl:d[4]||'',dung:d[5],hr:d[6]||'',kho:Number(d[8])||0,tra:Number(d[9])||0}); g.sl+=Number(d[3])||0; g.thieu+=th; g.kho=(g.kho||0)+(Number(d[8])||0); g.tra=(g.tra||0)+(Number(d[9])||0);
     if(th>0&&d[4]&&(!g.dl||d[4]<g.dl)) g.dl=d[4]; });
   return ds.filter(function(g){ return g.thieu>0; }); }
 function bnBangHtml(){
   var q=String(BNBLoc.q||'').trim().toUpperCase(), nhan={}; (BNB.kenh||[]).forEach(function(k){ nhan[k[0]]=k[1]; });
-  var ds=bnGomDon().filter(function(g){ return (!BNBLoc.k||g.tab===BNBLoc.k)&&(!q||String(g.ma).toUpperCase().indexOf(q)>=0||g.dong.some(function(z){ return String(z.ten).toUpperCase().indexOf(q)>=0; })); });
+  var ds=bnGomDon().filter(function(g){ return (!BNBLoc.k||g.tab===BNBLoc.k)&&(!q||String(g.ma).toUpperCase().indexOf(q)>=0||g.dong.some(function(z){ return bnTk(z).indexOf(q)>=0; })); });
   if(!ds.length) return '<div class="pdesc">Không có đơn nào khớp.</div>';
   ds.sort(function(a,b){ return (a.dl?0:1)-(b.dl?0:1)||(a.dl<b.dl?-1:a.dl>b.dl?1:0)||(b.thieu-a.thieu); });
   var hn=bnHom(), h=ds.slice(0,BNB_THE).map(function(g){ return bnThe(g,nhan,hn,q&&String(g.ma).toUpperCase().indexOf(q)<0?q:''); }).join('');   /* 22/11: tìm theo mã SP -> chỉ hiện dòng khớp */
@@ -330,7 +334,7 @@ function bnVeDoiHan(){ var a=bnDhDs(); if(!a.length) return '';
   ds.forEach(function(x){ var k=x[1]+'|'+x[2]; if(!theo[k]){ theo[k]=[]; thu.push(k); } theo[k].push(x); });
   var dong=thu.map(function(k){ var b=theo[k], f=b[0];
     return '<div class="dh-tb-don"><b>'+esc(f[2]||'(không mã)')+'</b> <span class="pdesc">'+esc(nhan[f[1]]||f[1])+'</span>'+b.map(function(x){ var c=x[4], m=x[5], lech=c&&m?bnNgayCach(c,m):null, la=x[0]>xem;
-      return '<div class="dh-tb-ma'+(la?' moi':'')+'">'+(la?'<i>MỚI</i> ':'')+esc(x[3])+': <span class="cu">'+(c?esc(bnNg(c).slice(0,5)):'chưa có')+'</span> → <b>'+(m?esc(bnNg(m).slice(0,5)):'bỏ hạn')+'</b>'+
+      return '<div class="dh-tb-ma'+(la?' moi':'')+'">'+(la?'<i>MỚI</i> ':'')+(x[7]?'<b>'+esc(x[7])+'</b> <span class="pdesc">'+esc(x[3])+'</span>':esc(x[3]))+': <span class="cu">'+(c?esc(bnNg(c).slice(0,5)):'chưa có')+'</span> → <b>'+(m?esc(bnNg(m).slice(0,5)):'bỏ hạn')+'</b>'+
         (lech?' <span class="'+(lech>0?'lui':'som')+'">('+(lech>0?'lùi '+lech:'sớm '+(-lech))+' ngày)</span>':'')+' <span class="pdesc">· '+esc(x[0].slice(8,10)+'/'+x[0].slice(5,7)+' '+x[0].slice(11,16))+(x[6]?' · '+esc(x[6]):'')+'</span></div>'; }).join('')+'</div>'; }).join('');
   return '<div class="dh-tb'+(moi.length?' co':'')+'" role="status"><div class="dh-tb-dau"><span>🔔 <b>Deadline đã thay đổi</b>'+(moi.length?' · <b class="so">'+moi.length+' mã mới</b>':'')+' <span class="pdesc">(7 ngày qua: '+a.length+' lần đổi)</span></span>'+
     '<span style="display:flex;gap:6px">'+(a.length>ds.length||BNDH_MO?'<button class="btn sm" type="button" onclick="BNDH_MO=!BNDH_MO;bnVe()">'+(BNDH_MO?'Thu gọn':'Xem tất cả '+a.length)+'</button>':'')+(moi.length?'<button class="btn sm pri" type="button" onclick="try{localStorage.setItem(bnDhKhoa(),bnDhDs()[0][0])}catch(e){};bnVe()">Đã xem</button>':'')+'</span></div>'+
@@ -349,10 +353,10 @@ function bnThe(g,nhan,hn,qSP){
     '<div class="of-thanh"><span>THEO LOẠI</span><div class="bar"><i style="width:'+(nL?Math.round(xL*100/nL):0)+'%;background:'+mau+'"></i></div><span class="so">Xong <b>'+xL+'/'+nL+'</b> loại</span></div>'+
     '<div class="of-thanh"><span>THEO SỐ LƯỢNG</span><div class="bar"><i style="width:'+pc+'%;background:'+mau+'"></i></div><span class="so"><b>'+pc+'%</b> · '+bnSo(g.sl-g.thieu)+'/'+bnSo(g.sl)+' SP · thiếu <em>'+bnSo(g.thieu)+'</em></span></div>'+
     '<div class="of-ton">Đã trả khách <b>'+bnSo(g.tra||0)+'</b> · Còn sẵn trong nhà máy (tồn kho + đóng gói) <b class="g">'+bnSo(g.kho||0)+'</b> sp – chỉ số này có thể đi ngay</div>';
-  var kCa=g.tab+'|'+g.ma, loc=qSP&&!BNB_CA[kCa], dsD=loc?g.dong.filter(function(z){ return String(z.ten).toUpperCase().indexOf(qSP)>=0; }):g.dong;
+  var kCa=g.tab+'|'+g.ma, loc=qSP&&!BNB_CA[kCa], dsD=loc?g.dong.filter(function(z){ return bnTk(z).indexOf(qSP)>=0; }):g.dong;
   if(qSP) h+='<div class="of-loc">'+(loc?'Đang lọc: hiện <b>'+dsD.length+'/'+nL+'</b> mã khớp "'+esc(BNBLoc.q)+'"':'Đang hiện cả đơn ('+nL+' mã)')+' <button class="btn sm" type="button" data-k="'+esc(kCa)+'" onclick="BNB_CA[this.dataset.k]=!BNB_CA[this.dataset.k];bnBangO()">'+(loc?'Hiện cả đơn':'Chỉ mã khớp')+'</button></div>';
   dsD.map(function(z,i){ return [z,i]; }).sort(function(a,b){ return ((b[0].thieu>0)-(a[0].thieu>0))||(a[1]-b[1]); }).forEach(function(x){ var z=x[0], xong=z.thieu<=0;
-    h+='<div class="of-dong'+(xong?' xong':'')+'"><div class="ten">'+esc(z.ten)+(z.tra+z.kho>z.sl?'<span class="of-tag" style="background:#b3261e;color:#fff" title="Đã trả khách + tồn kho/ĐG lớn hơn số đặt – kiểm lại số trong Sheet">⚠ trả '+bnSo(z.tra)+' + tồn '+bnSo(z.kho)+' > đặt '+bnSo(z.sl)+'</span>':'')+(z.hr&&!xong?'<span class="of-tag" style="background:#bfe3ff;color:#123" title="Nhà máy ưu tiên mã này – mục tiêu nội bộ, deadline với khách giữ nguyên">⏱ ưu tiên '+esc(bnNg(z.hr).slice(0,5))+'</span>':'')+(z.dung&&!xong?'<span class="of-tag" style="background:#f6d365;color:#321">tạm dừng</span>':'')+(z.dl&&g.dl&&z.dl!==g.dl&&!xong?'<span class="of-tag" style="border:1px solid var(--line)">hạn '+esc(bnNg(z.dl).slice(0,5))+'</span>':'')+(function(e){ return e&&!xong?'<span class="of-tag" style="background:#ffd8d2;color:#5a1208" title="Deadline đổi lúc '+esc(e[0])+'">🔔 đổi hạn '+(e[4]?esc(bnNg(e[4]).slice(0,5)):'–')+' → '+(e[5]?esc(bnNg(e[5]).slice(0,5)):'–')+'</span>':''; })(bnDhMa(g.tab,g.ma,z.ten))+'</div>'+
+    h+='<div class="of-dong'+(xong?' xong':'')+'"><div class="ten">'+bnSkuTen(z.sku,z.ten)+(z.tra+z.kho>z.sl?'<span class="of-tag" style="background:#b3261e;color:#fff" title="Đã trả khách + tồn kho/ĐG lớn hơn số đặt – kiểm lại số trong Sheet">⚠ trả '+bnSo(z.tra)+' + tồn '+bnSo(z.kho)+' > đặt '+bnSo(z.sl)+'</span>':'')+(z.hr&&!xong?'<span class="of-tag" style="background:#bfe3ff;color:#123" title="Nhà máy ưu tiên mã này – mục tiêu nội bộ, deadline với khách giữ nguyên">⏱ ưu tiên '+esc(bnNg(z.hr).slice(0,5))+'</span>':'')+(z.dung&&!xong?'<span class="of-tag" style="background:#f6d365;color:#321">tạm dừng</span>':'')+(z.dl&&g.dl&&z.dl!==g.dl&&!xong?'<span class="of-tag" style="border:1px solid var(--line)">hạn '+esc(bnNg(z.dl).slice(0,5))+'</span>':'')+(function(e){ return e&&!xong?'<span class="of-tag" style="background:#ffd8d2;color:#5a1208" title="Deadline đổi lúc '+esc(e[0])+'">🔔 đổi hạn '+(e[4]?esc(bnNg(e[4]).slice(0,5)):'–')+' → '+(e[5]?esc(bnNg(e[5]).slice(0,5)):'–')+'</span>':''; })(bnDhMa(g.tab,g.ma,z.ten))+'</div>'+
       '<div class="c"><small>ĐẶT</small>'+bnSo(z.sl)+'</div><div class="c thieu"><small>THIẾU</small>'+bnSo(z.thieu)+'</div><div class="c tra"><small>ĐÃ TRẢ KHÁCH</small>'+bnSo(z.tra)+'</div><div class="c giao"><small>TỒN KHO+ĐG</small>'+bnSo(z.kho)+'</div></div>'; });
   return h+'</div>'; }
 var bnDonTruoc='', bnDaPct={};
@@ -364,16 +368,16 @@ function bnVeXong(){
   if(BNX.loi) return '<div class="alert a-bd">'+esc(BNX.loi)+' <button class="btn sm" type="button" onclick="BNX=null;bnVe()">Thử lại</button></div>';
   var ng=(BNX.ngay||[]).slice().reverse().map(function(x){ return bnNg(x).slice(0,5); }).join(', ');
   return '<div class="pdesc" style="margin-bottom:8px">Đơn <b>lẻ</b> và <b>POD</b> đã xong (chuyển sang tab hoàn thiện) trong 3 ngày làm việc gần nhất: '+esc(ng)+'. Ngày xong = ngày web thấy đơn rời tab kênh (chụp lúc 9h sáng), có thể chậm 1 ngày. <button class="btn sm" type="button" onclick="BNX=null;bnVe()">Làm mới</button></div>'+
-    '<div class="db-tim"><input id="bnTimX" type="search" placeholder="Tra cứu mã đơn hoặc tên sản phẩm…" value="'+esc(BNXLoc.q)+'" oninput="BNXLoc.q=this.value;bnXongO()" aria-label="Tra cứu đơn đã xong"></div>'+
+    '<div class="db-tim"><input id="bnTimX" type="search" placeholder="Tra cứu mã đơn, SKU hoặc tên sản phẩm…" value="'+esc(BNXLoc.q)+'" oninput="BNXLoc.q=this.value;bnXongO()" aria-label="Tra cứu đơn đã xong"></div>'+
     '<div id="bnXongDs">'+bnXongHtml()+'</div>'; }
 function bnXongHtml(){
-  var q=String(BNXLoc.q||'').trim().toUpperCase(), ds=(BNX.ds||[]).filter(function(x){ return !q||String(x.maDon).toUpperCase().indexOf(q)>=0||(x.dong||[]).some(function(z){ return String(z[0]).toUpperCase().indexOf(q)>=0; }); });
+  var q=String(BNXLoc.q||'').trim().toUpperCase(), ds=(BNX.ds||[]).filter(function(x){ return !q||String(x.maDon).toUpperCase().indexOf(q)>=0||(x.dong||[]).some(function(z){ return (String(z[0])+' '+(z[3]||'')).toUpperCase().indexOf(q)>=0; }); });
   return [['le','Đơn lẻ (Web lẻ thường + custom)'],['pod','Đơn POD']].map(function(g){
     var a=ds.filter(function(x){ return x.nhom===g[0]; }), sp=a.reduce(function(s,x){ return s+(x.dong||[]).reduce(function(t,z){ return t+(Number(z[1])||0); },0); },0);
     var h='<div class="db-nhom">'+g[1]+' <i>'+a.length+' đơn · '+bnSo(sp)+' sp</i></div>';
     if(!a.length) return h+'<div class="pdesc" style="margin-bottom:10px">'+(q?'Không có đơn nào khớp.':'Chưa có đơn nào xong trong 3 ngày làm việc gần nhất.')+'</div>';
     return h+'<div class="db-bang-w"><table class="db-bang"><thead><tr><th>Mã đơn</th><th>Kênh</th><th>Sản phẩm</th><th style="text-align:right">SL</th><th>Xong</th></tr></thead><tbody>'+
-      a.map(function(x){ var d=x.dong||[]; return d.map(function(z,i){ return '<tr'+(i===0?' class="db-dau-don"':'')+'><td>'+(i===0?'<b>'+esc(x.maDon||'—')+'</b>':'')+'</td><td>'+(i===0?esc(x.kenh):'')+'</td><td>'+esc(z[0])+(Number(z[2])>0?' <span class="db-moi" style="background:#f6d365">giao thiếu '+bnSo(z[2])+'</span>':'')+'</td><td class="so">'+bnSo(z[1])+'</td><td class="ng">'+(i===0?esc(bnNg(x.xong).slice(0,5)):'')+'</td></tr>'; }).join(''); }).join('')+
+      a.map(function(x){ var d=x.dong||[]; return d.map(function(z,i){ return '<tr'+(i===0?' class="db-dau-don"':'')+'><td>'+(i===0?'<b>'+esc(x.maDon||'—')+'</b>':'')+'</td><td>'+(i===0?esc(x.kenh):'')+'</td><td>'+bnSkuTen(z[3],z[0])+(Number(z[2])>0?' <span class="db-moi" style="background:#f6d365">giao thiếu '+bnSo(z[2])+'</span>':'')+'</td><td class="so">'+bnSo(z[1])+'</td><td class="ng">'+(i===0?esc(bnNg(x.xong).slice(0,5)):'')+'</td></tr>'; }).join(''); }).join('')+
       '</tbody></table></div>'; }).join(''); }
 function bnXongO(){ var e=document.getElementById('bnXongDs'); if(e&&BNX&&!BNX.loi) e.innerHTML=bnXongHtml(); }
 function bnBangO(){ var e=document.getElementById('bnBangDs'); if(e&&BNB&&!BNB.loi) e.innerHTML=bnBangHtml(); }

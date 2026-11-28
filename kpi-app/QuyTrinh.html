@@ -66,6 +66,8 @@ html.rs.rs.rs.rs .dh-note,html.rs.rs.rs.rs .dh-note *:not(svg),.dh-note,.dh-note
 html.rs.rs.rs.rs .dh-note.ct,html.rs.rs.rs.rs .dh-note.ct *:not(svg),.dh-note.ct,.dh-note.ct *{color:#0b2f4a!important} .dh-note.ct{background:#dcefff!important;border-left-color:#2f7fc1!important}
 html.rs.rs.rs.rs .dh-noteadd,.dh-noteadd{color:#f4f8fb!important;background:rgba(10,20,30,.55)!important;border:1px solid rgba(255,255,255,.35)!important;border-radius:6px!important;padding:2px 8px!important;text-shadow:none!important;font-weight:600}
 html[data-gd="sang"] .dh-noteadd{color:#1c2a36!important;background:#eef2f5!important;border-color:#c5cfd8!important}
+html.rs.rs.rs.rs .dh-sku,.dh-sku{display:block;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:13px;font-weight:800;color:#0b3d5c;word-break:break-all}
+html.rs.rs.rs.rs .dh-sku-ten,.dh-sku-ten{display:block;font-size:11.5px;font-weight:500;color:#5d6973;margin-top:1px}
 html.rs.rs.rs.rs .dh-canhso,.dh-canhso{margin-top:4px;font-size:11.5px;font-weight:700;color:#fff!important;background:#b3261e;border-radius:4px;padding:2px 6px;display:inline-block}
 .dh-ngayhan{border-top:1px solid var(--line);padding:6px 0} .dh-ngayhan summary{cursor:pointer;font-size:13px;line-height:1.6}
 /* ===== 07/11: tab Đơn hàng làm lại (soat-giao-dien-cuoi + dong-vai-nguoi-dung) ===== */
@@ -1496,7 +1498,7 @@ function dhLoc(src){
     if(DHL.kenh&&o.tab!==DHL.kenh) return false;
     if(DHL.st&&o.st!==DHL.st) return false;
     if(ng&&dhNg(o.ngayDat).indexOf(ng)<0&&String(o.maDon).indexOf(ng)<0) return false;
-    if(q&&qtKhongDau(o.ten+' '+o.maDon+' '+(o.nguoiDat||'')+' '+o.kenh).indexOf(q)<0) return false;
+    if(q&&qtKhongDau(o.ten+' '+(o.sku||'')+' '+o.maDon+' '+(o.nguoiDat||'')+' '+o.kenh).indexOf(q)<0) return false;   /* 28/11: tìm cả SKU */
     return true;
   });
 }
@@ -2708,7 +2710,7 @@ function dhBPhuDs(t){   /* lọc tab bản chép theo ô tìm / trạng thái / 
     o.st=dhSt(o,hn);
     if(DHL.st&&o.st!==DHL.st) return false;
     if(ng&&dhNg(o.ngayDat).indexOf(ng)<0&&String(o.maDon).indexOf(ng)<0) return false;
-    if(q&&qtKhongDau(o.ten+' '+o.maDon+' '+(o.nguoiDat||'')+' '+o.kenh).indexOf(q)<0) return false;
+    if(q&&qtKhongDau(o.ten+' '+(o.sku||'')+' '+o.maDon+' '+(o.nguoiDat||'')+' '+o.kenh).indexOf(q)<0) return false;   /* 28/11: tìm cả SKU */
     return true;
   });
 }
@@ -2901,7 +2903,7 @@ function dhVeBang(ds){
       '<td class="qt-so">'+qtSo(tgD.sl,0)+'</td><td class="qt-so"><b>'+qtSo(tgD.thieu,0)+'</b></td><td></td><td class="qt-so">'+qtSo(tgD.giao,0)+'</td><td class="qt-so">'+qtSo(tgD.kho,0)+'</td><td class="qt-so">'+qtSo(tgD.tra,0)+'</td><td colspan="'+(bps.length*2+4+(coHDG?1:0))+'"></td></tr>';
     h+='<tr class="dh-d'+bang+(dau&&!coTg?' dh-dmoi':'')+(cua?' cua':'')+(o.thieu<=0&&!d.o?' xong':'')+'">'+
       '<td class="c1" data-t="'+esc(o.tab)+'" data-d="'+o.dong+'" onclick="dhBMo(this.dataset.t,+this.dataset.d)"><a href="#" onclick="return false">'+esc(o.maDon||'(không mã)')+'</a>'+(o.dung?dhDungNhan(o):'')+(o.hanRieng&&o.thieu>0?' <span class="dh-han sap" style="font-size:11px" title="Hạn riêng (nội bộ): '+esc(o.hanRieng.ly||'')+' – '+esc(o.hanRieng.ai||'')+'">⏱ '+dhNg(o.hanRieng.han)+'</span>':'')+(dem[sk]>1?' <span class="dh-stt" title="Mã thứ '+vt+' trong đơn '+dem[sk]+' mã">'+vt+'<i>/'+dem[sk]+'</i></span>':'')+'<div class="dh-bkenh">'+esc(o.kenh)+(dau&&!DHB._hanD?(function(t){ return ' · <b>'+dhPct(t.xong,t.sl)+'%</b></div>'+dhThanhMa(t); })(dhTienDo(tdo[sk])):'</div>')+'</td>'+
-      '<td class="c2">'+esc(o.ten)+((Number(o.daTra)||0)+(Number(o.kho)||0)>(Number(o.sl)||0)&&!o.phu?'<div class="dh-canhso" title="Đã trả khách + tồn kho/ĐG lớn hơn SL đặt – kiểm lại số trong Sheet">⚠ Đã trả '+qtSo(o.daTra||0,0)+' + tồn kho/ĐG '+qtSo(o.kho||0,0)+' > đặt '+qtSo(o.sl||0,0)+'</div>':'')+dhNoteO(o)+'</td>'+
+      '<td class="c2">'+dhSkuTen(o)+((Number(o.daTra)||0)+(Number(o.kho)||0)>(Number(o.sl)||0)&&!o.phu?'<div class="dh-canhso" title="Đã trả khách + tồn kho/ĐG lớn hơn SL đặt – kiểm lại số trong Sheet">⚠ Đã trả '+qtSo(o.daTra||0,0)+' + tồn kho/ĐG '+qtSo(o.kho||0,0)+' > đặt '+qtSo(o.sl||0,0)+'</div>':'')+dhNoteO(o)+'</td>'+
       (dhCoBV()?'<td class="dh-cfg">'+dhCfgO(o)+'</td>':'')+
       '<td class="qt-so">'+(eq.sl&&!o.phu&&!o.bot?dhEIn(o,'sl','SL đặt'):qtSo(o.sl,0))+(o.bot&&o.slGoc?'<div class="dh-hangoc" title="Đã bớt trên web – Sheet vẫn ghi '+o.slGoc+' (xem mục Đơn đã hủy)">bớt từ '+qtSo(o.slGoc,0)+'</div>':'')+'</td><td class="qt-so"><b>'+(o.thieu?qtSo(o.thieu,0):'–')+'</b></td><td>'+(eq.sl&&!o.phu?dhEIn(o,'dl','Deadline')+(o.dlGoc&&o.dlGoc!==o.dl?'<div class="dh-hangoc" title="Deadline gốc – đã gia hạn ở cột Hạn mới">gốc '+dhNg(o.dlGoc)+'</div>':''):dhHanO(o))+dhHanLeO(o)+'</td>'+
       (function(){ var dg=eq.dg&&!o.phu, O=function(k,v){ var f=k==='tra'?'tra':k; return '<td class="qt-so dh-dgc">'+(c[k]>=0?(dg?dhEIn(o,f,{giao:'Tổng SP có thể giao',kho:'Còn trong kho + đóng gói',tra:'Hàng đi – đã trả khách'}[k]):(v?qtSo(v,0):'–')):'')+'</td>'; };   /* 16/11: nhập thẳng – TP/PP Đóng gói + 4 tài khoản */
@@ -3988,6 +3990,8 @@ function tkVeDM(D){
     '<div style="margin:4px 2px 10px"><button class="btn sm" type="button" onclick="go(\'ptdm\')">Mở tab Phân tích định mức →</button></div>';
   return h; }
 
+/* 28/11 (chủ dự án): SKU chữ to, tên sản phẩm chữ nhỏ bên dưới (chưa có SKU thì hiện tên như cũ) */
+function dhSkuTen(o){ return o&&o.sku?'<b class="dh-sku">'+esc(o.sku)+'</b><span class="dh-sku-ten">'+esc(o.ten)+'</span>':esc(o?o.ten:''); }
 /* ---------- KPI ---------- */
 var TK_LOAI=['A+','A','B','C','D','Thiếu công','Học việc'];   /* 28/11: xếp theo thứ hạng A+/A/B/C (D = tháng cũ) */
 function tkVeKPI(D){

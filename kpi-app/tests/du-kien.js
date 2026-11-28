@@ -97,8 +97,8 @@ ok(x.td.eta > sau, 'luôn muộn hơn ngày bảng đơn hiện cho sản xuất
 
 console.log('\n3. Bảng đơn nhà máy (4 cột)');
 r = c.__goi('layBangDonNhaMay', B2);
-ok(r.ok && r.ds.length > 50 && r.ds.every(d => d.length === 10 && (d[5] === 0 || d[5] === 1) && (d[6] === '' || /^\d{4}-/.test(d[6]))), 'Bán hàng khác cũng xem được – mỗi dòng chỉ [kênh, mã đơn, mã SP, số đặt, deadline, cờ tạm dừng, hạn riêng (21/11), còn thiếu (22/11)] (' + (r.ds || []).length + ' dòng)', r.msg || (r.ds || [])[0]);
-ok(r.ds.every(d => d.length === 10 && (d[5] === 0 || d[5] === 1)) && !JSON.stringify(r).match(/qua"|nguoiDat|ghiChu|uuTien|dong"/), 'từng dòng không lộ tiến độ bộ phận / ghi chú / người đặt (22/11: chủ dự án cho Bán hàng xem Đặt / Thiếu / Giao)');
+ok(r.ok && r.ds.length > 50 && r.ds.every(d => d.length === 11 && (d[5] === 0 || d[5] === 1) && (d[6] === '' || /^\d{4}-/.test(d[6]))), 'Bán hàng khác cũng xem được – mỗi dòng chỉ [kênh, mã đơn, mã SP, số đặt, deadline, cờ tạm dừng, hạn riêng (21/11), còn thiếu (22/11)] (' + (r.ds || []).length + ' dòng)', r.msg || (r.ds || [])[0]);
+ok(r.ds.every(d => d.length === 11 && (d[5] === 0 || d[5] === 1)) && !JSON.stringify(r).match(/qua"|nguoiDat|ghiChu|uuTien|dong"/), 'từng dòng không lộ tiến độ bộ phận / ghi chú / người đặt (22/11: chủ dự án cho Bán hàng xem Đặt / Thiếu / Giao)');
 ok(!r.ds.some(d => d[1] === '#OEM-HUY-01/11'), 'không có mã đã hủy');
 ok(r.ds.some(d => d[1] === '#BH9-17/11' && d[3] === 30), 'có đơn vừa duyệt');
 const thuTab = r.ds.map(d => c.DH_TABS.indexOf(d[0])); ok(thuTab.every((v, i) => !i || v >= thuTab[i - 1]), 'xếp theo kênh như Sheet (Dealer → Kho → Web lẻ … → POD)');
@@ -254,7 +254,7 @@ console.log('\n10. Thông báo đổi deadline cho Bán hàng (22/11)');
   ok(!c.dthDs_().some((x, i) => i > 0 && x[5] === '2026-12-30' && x[6] === ''), 'lượt rà Sheet sau đó không báo trùng thay đổi vừa làm trên web', [n3, c.dthDs_().slice(0, 3)]);
   const bd = c.__goi('layDonBan', own); ok(bd.ok && Array.isArray(bd.doiHan) && bd.doiHan.length >= 2, 'trang Order-Flow nhận danh sách đổi deadline (' + (bd.doiHan || []).length + ')', bd.msg);
   const bt = c.__goi('layBangDonNhaMay', own), dd = bt.ds.find(d => d[1] === o.maDon && d[2] === o.ten);
-  ok(bt.doiHan && dd && dd.length === 10 && dd[4] === '2026-12-30', 'Bảng đơn nhà máy có deadline mới + cột tồn kho / đã trả', dd);
+  ok(bt.doiHan && dd && dd.length === 11 && dd[4] === '2026-12-30', 'Bảng đơn nhà máy có deadline mới + cột tồn kho / đã trả', dd);
   sh[iR][iDl] = cuDl;
 }
 
