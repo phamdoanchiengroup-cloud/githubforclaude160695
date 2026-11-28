@@ -206,7 +206,7 @@ details.dh-doc[open]{background:var(--bg2,rgba(127,127,127,.08));border-left:3px
 .dh-sh thead tr:nth-child(2) th{top:30px}
 .dh-sh .c1{position:sticky;left:0;z-index:2;width:104px;min-width:104px;max-width:104px;white-space:normal;overflow-wrap:anywhere;overflow:hidden;text-overflow:ellipsis}
 .dh-sh .c2{position:sticky;left:0;z-index:2;min-width:405px;max-width:405px;white-space:normal}   /* 28/11: rộng thêm phần ô Mã đơn đã bỏ */
-.dh-sh .dh-c2n{font-size:11.5px;margin-bottom:2px}.dh-sh .dh-c2n .dh-mad{font-weight:600}
+.dh-sh .dh-c2n{font-size:11.5px;margin-bottom:2px} .dh-sh td.c2 .dh-sttr{float:right;margin:1px 0 0 6px;padding:0 4px;font-size:9.5px;line-height:14px;opacity:.85}.dh-sh .dh-c2n .dh-mad{font-weight:600}
 .dh-sh thead .c1,.dh-sh thead .c2{z-index:6;background:var(--panel2)}
 .dh-sh tbody tr:hover td{background:var(--panel2)}
 .dh-sh tbody tr.cua td{background:rgba(var(--acc-rgb),.07)}
@@ -557,7 +557,7 @@ body:has(.dh-nav) header,body:has(.dh-nav) nav{position:static}
 /* 16/11: co cột cho gọn – tiêu đề cột 2 dòng */
 .dh-sh thead th{white-space:normal;line-height:1.15;vertical-align:bottom;max-width:96px}
 .dh-sh thead tr:first-child th{height:40px} .dh-sh thead tr:nth-child(2) th{top:40px}
-.dh-sh .c2{min-width:210px!important;max-width:210px!important} .dh-sh td.dh-ctc{min-width:140px;max-width:190px}
+.dh-sh .c2{min-width:230px!important;max-width:230px!important}   /* 28/11 (chủ dự án): máy tính – vừa SKU dài TRUNG BÌNH (23,4 → 24 ký tự) trên 1 dòng; SKU dài hơn xuống 2 dòng */ .dh-sh td.dh-ctc{min-width:140px;max-width:190px}
 .dh-sh thead th.c2,.dh-sh thead th.dh-ctc{max-width:none}
 /* 16/11: cột trái dính có nền ĐẶC (giao diện kính trong suốt làm chữ / ô nhập cột khác lộ qua khi cuộn ngang) */
 .dh-sh tbody td.c1,.dh-sh tbody td.c2{background-image:linear-gradient(var(--panel),var(--panel));background-color:#10211d} [data-gd="sang"] [data-gd="sang"] .dh-sh tbody td.c1,[data-gd="sang"] .dh-sh tbody td.c2{background-color:#fff}
@@ -591,7 +591,7 @@ html.rs.rs.rs html.rs.rs.rs .dh-sh tbody td.c1,html.rs.rs.rs .dh-sh tbody td.c2{
 @media (max-width:900px){ .dh-ethanh{bottom:calc(68px + env(safe-area-inset-bottom,0px))} .dh-shw{max-height:calc(100vh - 150px)!important} }
 @media (max-width:640px){ .dh-tong{grid-template-columns:repeat(2,minmax(0,1fr))} .dh-svgw .dh-svg{min-width:560px} .dh-svgw .dh-svg[viewBox^="0 0 3"]{min-width:0} }
 .dh-tk-tde{font-weight:600;margin:16px 0 6px;font-size:12.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink3)}
-@media (max-width:640px){ .dh-sh .c2{min-width:140px!important;max-width:140px!important} .dh-sh thead tr:first-child th{height:46px} .dh-sh thead tr:nth-child(2) th{top:46px} .dh-sh .dh-ei{width:52px} .dh-sh .dh-ei.dl{width:108px} } .dh-f-cp{margin-top:12px;padding-top:10px;border-top:1px dashed var(--line)} .dh-f-cp textarea{font:inherit;padding:8px;border-radius:8px;border:1px solid var(--line);background:transparent;color:inherit}
+@media (max-width:640px){ .dh-sh .c2{min-width:200px!important;max-width:200px!important} .dh-sh thead tr:first-child th{height:46px} .dh-sh thead tr:nth-child(2) th{top:46px} .dh-sh .dh-ei{width:52px} .dh-sh .dh-ei.dl{width:108px} } .dh-f-cp{margin-top:12px;padding-top:10px;border-top:1px dashed var(--line)} .dh-f-cp textarea{font:inherit;padding:8px;border-radius:8px;border:1px solid var(--line);background:transparent;color:inherit}
 /* ===== 16/11 Biểu đồ "Phòng điều khiển 4.0" (web, nền tối; nền sáng + PDF giữ kiểu cũ) =====
    Một drop-shadow cho cả SVG (rẻ hơn lọc từng nét); số kiểu đồng hồ đo bằng JetBrains Mono (Index đã tải font). */
 html:not([data-gd="sang"]) #qtWrap svg[role="img"],html:not([data-gd="sang"]) #main svg[role="img"]{filter:drop-shadow(0 0 2px rgba(190,255,225,.28))}
@@ -2906,7 +2906,9 @@ function dhVeBang(ds){
     h+='<tr class="dh-d'+bang+(dau&&!coTg?' dh-dmoi':'')+(cua?' cua':'')+(o.thieu<=0&&!d.o?' xong':'')+'">'+
       /* 28/11 (chủ dự án): bỏ ô MÃ ĐƠN ở từng dòng – mã đơn chỉ ở tiêu đề thẻ đơn; ô Mã sản phẩm rộng ra. Nhãn tạm dừng / hạn riêng / thứ tự mã đưa lên đầu ô Mã sản phẩm.
          Khi không có thẻ đơn (tab bản chép, Lẻ 10 ngày) thì vẫn ghi mã đơn nhỏ ở đầu ô. */
-      '<td class="c2">'+(function(){ var nh=(!DHB._hanD||o.phu?'<a href="#" class="dh-mad" data-t="'+esc(o.tab)+'" data-d="'+o.dong+'" onclick="dhBMo(this.dataset.t,+this.dataset.d);return false">'+esc(o.maDon||'(không mã)')+'</a> <span class="dh-bkenh">'+esc(o.kenh)+'</span>':'')+(o.dung?dhDungNhan(o):'')+(o.hanRieng&&o.thieu>0?' <span class="dh-han sap" style="font-size:11px" title="Hạn riêng (nội bộ): '+esc(o.hanRieng.ly||'')+' – '+esc(o.hanRieng.ai||'')+'">⏱ '+dhNg(o.hanRieng.han)+'</span>':'')+(dem[sk]>1?' <span class="dh-stt" title="Mã thứ '+vt+' trong đơn '+dem[sk]+' mã">'+vt+'<i>/'+dem[sk]+'</i></span>':''); return nh?'<div class="dh-c2n">'+nh+'</div>':''; })()+dhSkuTen(o)+((Number(o.daTra)||0)+(Number(o.kho)||0)>(Number(o.sl)||0)&&!o.phu?'<div class="dh-canhso" title="Đã trả khách + tồn kho/ĐG lớn hơn SL đặt – kiểm lại số trong Sheet">⚠ Đã trả '+qtSo(o.daTra||0,0)+' + tồn kho/ĐG '+qtSo(o.kho||0,0)+' > đặt '+qtSo(o.sl||0,0)+'</div>':'')+dhNoteO(o)+'</td>'+
+      '<td class="c2">'+(function(){ var nh=(!DHB._hanD||o.phu?'<a href="#" class="dh-mad" data-t="'+esc(o.tab)+'" data-d="'+o.dong+'" onclick="dhBMo(this.dataset.t,+this.dataset.d);return false">'+esc(o.maDon||'(không mã)')+'</a> <span class="dh-bkenh">'+esc(o.kenh)+'</span>':'')+(o.dung?dhDungNhan(o):'')+(o.hanRieng&&o.thieu>0?' <span class="dh-han sap" style="font-size:11px" title="Hạn riêng (nội bộ): '+esc(o.hanRieng.ly||'')+' – '+esc(o.hanRieng.ai||'')+'">⏱ '+dhNg(o.hanRieng.han)+'</span>':''); return nh?'<div class="dh-c2n">'+nh+'</div>':''; })()+
+      (function(){ var st=dem[sk]>1?'<span class="dh-stt dh-sttr" title="Mã thứ '+vt+' trong đơn '+dem[sk]+' mã">'+vt+'<i>/'+dem[sk]+'</i></span>':'', z=dhSkuTen(o);   /* 28/11 (2): số thứ tự mã nhỏ bên phải dòng TÊN – không chiếm dòng riêng, không lấy chỗ của SKU */
+        return !st?z:(o&&o.sku?z.replace('<span class="dh-sku-ten">','<span class="dh-sku-ten">'+st):st+z); })()+((Number(o.daTra)||0)+(Number(o.kho)||0)>(Number(o.sl)||0)&&!o.phu?'<div class="dh-canhso" title="Đã trả khách + tồn kho/ĐG lớn hơn SL đặt – kiểm lại số trong Sheet">⚠ Đã trả '+qtSo(o.daTra||0,0)+' + tồn kho/ĐG '+qtSo(o.kho||0,0)+' > đặt '+qtSo(o.sl||0,0)+'</div>':'')+dhNoteO(o)+'</td>'+
       (dhCoBV()?'<td class="dh-cfg">'+dhCfgO(o)+'</td>':'')+
       '<td class="qt-so">'+(eq.sl&&!o.phu&&!o.bot?dhEIn(o,'sl','SL đặt'):qtSo(o.sl,0))+(o.bot&&o.slGoc?'<div class="dh-hangoc" title="Đã bớt trên web – Sheet vẫn ghi '+o.slGoc+' (xem mục Đơn đã hủy)">bớt từ '+qtSo(o.slGoc,0)+'</div>':'')+'</td><td class="qt-so"><b>'+(o.thieu?qtSo(o.thieu,0):'–')+'</b></td><td>'+(eq.sl&&!o.phu?dhEIn(o,'dl','Deadline')+(o.dlGoc&&o.dlGoc!==o.dl?'<div class="dh-hangoc" title="Deadline gốc – đã gia hạn ở cột Hạn mới">gốc '+dhNg(o.dlGoc)+'</div>':''):dhHanO(o))+dhHanLeO(o)+'</td>'+
       (function(){ var dg=eq.dg&&!o.phu, O=function(k,v){ var f=k==='tra'?'tra':k; return '<td class="qt-so dh-dgc">'+(c[k]>=0?(dg?dhEIn(o,f,{giao:'Tổng SP có thể giao',kho:'Còn trong kho + đóng gói',tra:'Hàng đi – đã trả khách'}[k]):(v?qtSo(v,0):'–')):'')+'</td>'; };   /* 16/11: nhập thẳng – TP/PP Đóng gói + 4 tài khoản */

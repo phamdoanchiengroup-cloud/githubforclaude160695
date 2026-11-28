@@ -31,4 +31,11 @@ console.log('3. Bản ghi cũ lưu theo tab KHO (★ web, hạn riêng) vẫn á
   c.dhDocDon_(true); const own = c.__phienDai(c.doc_('TaiKhoan').find(t => String(t.VaiTro).trim() === 'OWNER'));
   const x = c.__goi('layDonHangXuong', own, true), o = x.don.find(z => z.ten === 'GAY A');
   ok(o && o.uuWeb && o.hanRieng && o.hanRieng.han === '2026-12-01', '★ web + hạn riêng gắn lúc mã còn ở tab KHO vẫn còn', o && [o.uuWeb, o.hanRieng]); }
+console.log('4. Khóa cột tab ĐƠN ƯU TIÊN như tab KHO; Bán hàng không đặt đơn thẳng vào tab ưu tiên (28/11 – 2)');
+{ const KHO = [H, ['KHO-02/11', 'GAY B', '', 30, 5, '25/12', '', 20, 20, '', '']], UU = [H, ['KHO-25/09', 'GAY A', '', 60, 10, '25/11', '', 0, 0, 0, '']];
+  const c = tao(KHO, UU); c.dhDocDon_(true); const own = c.__phienDai(c.doc_('TaiKhoan').find(t => String(t.VaiTro).trim() === 'OWNER'));
+  const r = c.__goi('datKhoaSheetDon', own, { muc: 'KHOA' }), ss = c.SpreadsheetApp.openById(c.DH_SHEET_ID);
+  const cot = t => ss.getSheetByName(t).getProtections('RANGE').map(p => p.c).sort((a, b) => a - b).join();
+  ok(r.ok && cot('ĐƠN ƯU TIÊN') && cot('ĐƠN ƯU TIÊN') === cot('KHO'), 'tab ĐƠN ƯU TIÊN khóa đúng các cột như tab KHO', [cot('KHO'), cot('ĐƠN ƯU TIÊN')]);
+  ok(/Chọn kênh/.test((c.dbKiemDon_ ? c.dbKiemDon_({ maDon: '#RHINO-28/11', tab: 'ĐƠN ƯU TIÊN', dong: [] }) : {}).loi || ''), 'Bán hàng chọn kênh ĐƠN ƯU TIÊN → bị chặn'); }
 console.log('\n' + (n - l) + '/' + n + ' đạt'); process.exit(l ? 1 : 0);

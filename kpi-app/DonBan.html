@@ -216,7 +216,7 @@ function bnKiemDong(d){ var sp={}; (BND.sp||[]).forEach(function(t){sp[t]=1;}); 
   if(!ten) return {loi:'Thiếu tên sản phẩm'}; if(/^[=+\-@]/.test(ten)) return {loi:'Tên không được bắt đầu bằng = + - @'};
   if(!(sl>=1&&Math.floor(sl)===sl)) return {loi:'SL phải là số nguyên từ 1'};
   return sp[ten]?{}:{vang:'Mã mới – chưa có trong bảng đơn, người duyệt sẽ kiểm'}; }
-function bnVeForm(){ var f=BNF, kenh=BND.kenh||[], tong=0, nMa=0;
+function bnVeForm(){ var f=BNF, kenh=(BND.kenh||[]).filter(function(k){ return k[0]!=='ĐƠN ƯU TIÊN'; }), tong=0, nMa=0;   /* 28/11: Bán hàng không đặt thẳng vào tab ĐƠN ƯU TIÊN */
   f.dong.forEach(function(d){ var k=bnKiemDong(d); if(!k.trong&&!k.loi){ nMa++; tong+=bnSoDoc(d.sl)||0; } });
   var h='<div class="db-f"><div style="display:flex;justify-content:space-between;align-items:center;gap:8px"><b>'+(f.id?'Sửa đơn '+esc(f.maDon):'Đơn mới')+'</b><span class="pdesc" id="dbNhapLuc">'+(f.nhapLuc?'Mở lại nháp lúc '+esc(f.nhapLuc):'')+'</span></div>'+
     '<label>Kênh</label><div class="db-kenh" role="radiogroup" aria-label="Kênh">'+kenh.map(function(k){ return '<button type="button" role="radio" aria-checked="'+(f.tab===k[0])+'" class="'+(f.tab===k[0]?'on':'')+'" data-t="'+esc(k[0])+'" onclick="BNF.tab=this.dataset.t;bnLuuNhap();bnVe()">'+esc(k[1])+'</button>'; }).join('')+'</div>'+
@@ -415,7 +415,7 @@ function bnKhoaDat(el){ var m=el.dataset.m, cau={CANH_BAO:'Bật CẢNH BÁO: ai
    Không lưu gì khi thử; ngày tính ở máy chủ bằng đúng mô phỏng 5 làn của bảng đơn. */
 function bnVeThu(){
   if(!BNB&&!BNBTai) bnTaiBang();
-  var kenh=BND.kenh||[], hom=bnHom(); if(!BNT.tab&&kenh.length) BNT.tab=(kenh.filter(function(k){return k[0]==='KHO';})[0]||kenh[0])[0];
+  var kenh=(BND.kenh||[]).filter(function(k){ return k[0]!=='ĐƠN ƯU TIÊN'; }), hom=bnHom(); if(!BNT.tab&&kenh.length) BNT.tab=(kenh.filter(function(k){return k[0]==='KHO';})[0]||kenh[0])[0];
   var h=(BNF?'<div style="margin-bottom:8px"><button class="btn sm" type="button" onclick="BNXem=\'don\';bnVe()">← Quay lại đơn đang soạn</button></div>':'')+
     '<div class="pdesc" style="margin-bottom:10px">Thử ở đây <b>trước khi soạn đơn</b> – không lưu gì, không ảnh hưởng đơn nào. Ngày tính theo công suất xưởng ('+bnSo(BND.csNgay)+' sp/ngày) chia 5 làn: '+esc(BND.lanTxt||'Lẻ + POD 10% · Dealer 20% · Kho 50% · OEM 5% · A Đông 15%')+' (làn nào hết việc thì nhường làn khác).</div>';
   h+='<div class="db-thu"><b>1. Thử nhận đơn mới</b><div class="pdesc">Chọn kênh, số lượng và deadline khách muốn → web cho biết xong khoảng ngày nào và nên hẹn khách ngày nào.</div>'+

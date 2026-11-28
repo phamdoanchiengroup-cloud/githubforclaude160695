@@ -7725,7 +7725,7 @@ function danhSachVanPhong(token) {
   ds.sort(function(a, b) { return (thuTu[a.vaiTro] - thuTu[b.vaiTro]) || (a.HoTen < b.HoTen ? -1 : 1); });
   return sach_({ ok: true, ds: ds, muc: HS_MUC });
 }
-var KPI_BAN_MAY = '28/11/2026 16:59';   // giờ dựng Code.gs (22/10)
+var KPI_BAN_MAY = '28/11/2026 17:11';   // giờ dựng Code.gs (22/10)
 /* =====================================================================
    KỸ NĂNG (22/10, chủ dự án nhờ thiết kế + tham khảo chuyên gia nhân sự / đào tạo)
    - Danh mục: trưởng / phó phòng đề xuất kỹ năng của xưởng (tên, mô tả, tiêu chí đạt, công đoạn liên quan)
@@ -9618,7 +9618,7 @@ function dhDongChay_(ch) {
 
 /* ===== 02/11: tab kênh mới + cấu hình sản phẩm sửa trên web + báo sản phẩm mới (Việc hôm nay) ===== */
 var DH_TAB_HT = /^HT[\s\-_.]*\d{4}$/i;   // 07/11 (chủ dự án): đơn xong được chép cả đơn sang tab HT-<năm> (vd HT-2026) rồi xóa khỏi tab kênh
-var DH_TAB_LOAI = /^_|SNAPSHOT|^ĐƠN HÀNG HT$|^DON HANG HT$|^HT[\s\-_.]*\d{4}$|HOÀN THIỆN|HOAN THIEN|LƯU TRỮ|LUU TRU|ARCHIVE|^SHEET\d*$|^ĐƠN ƯU TIÊN$|^DON UU TIEN$|^TRỄ HẠN$|^TRE HAN$|^ĐẾN HẠN 10 NGÀY$|^DEN HAN 10 NGAY$/i;   /* 15/11 tối: + tab ĐẾN HẠN 10 NGÀY (bản lọc do web tạo) */   // 07/11: tab ĐƠN ƯU TIÊN là bản chép từ các tab kênh -> không cộng vào tổng (đọc riêng làm nguồn mục Ưu tiên)   // 13/11: tab TRỄ HẠN cũng là bản chép đơn trễ của các kênh -> không đọc trùng   // tab lưu trữ / nháp: không đọc
+var DH_TAB_LOAI = /^_|SNAPSHOT|^ĐƠN HÀNG HT$|^DON HANG HT$|^HT[\s\-_.]*\d{4}$|HOÀN THIỆN|HOAN THIEN|LƯU TRỮ|LUU TRU|ARCHIVE|^SHEET\d*$|^TRỄ HẠN$|^TRE HAN$|^ĐẾN HẠN 10 NGÀY$|^DEN HAN 10 NGAY$/i;   /* 15/11 tối: + tab ĐẾN HẠN 10 NGÀY (bản lọc do web tạo) */   // 07/11: tab ĐƠN ƯU TIÊN là bản chép từ các tab kênh -> không cộng vào tổng (đọc riêng làm nguồn mục Ưu tiên)   // 13/11: tab TRỄ HẠN cũng là bản chép đơn trễ của các kênh -> không đọc trùng   // tab lưu trữ / nháp: không đọc
 var DH_TAB_MOI_MAX = 15, DH_TAB_MOI_DONG = 5000;   // tab kênh tự thêm: tối đa 15 tab, mỗi tab đọc 5.000 dòng đầu (chống treo / cạn quota)
 /* tab tự thêm phải có ĐỦ cột "Loại hàng" và "Số lượng đặt" trong 10 dòng đầu */
 function dhCoCotChuan_(sh) {
@@ -11889,7 +11889,7 @@ function dbKiemDon_(p) {   // -> { loi } | { don }
   var maDon = dbChu_(p.maDon, 60), tab = dbChu_(p.tab, 60), dl = String(p.dl || '').trim(), gc = dbChu_(p.ghiChu, DB_GC_MAX);
   if (!maDon || !dhLaMa_(maDon) || /^[=+\-@]/.test(maDon)) return { loi: 'Mã đơn chưa đúng (vd #RHINO-17/11, tối đa 4 chữ).' };
   var kenh = dbKenh_().map(function(k) { return k[0]; });
-  if (kenh.indexOf(tab) < 0 || DH_TAB_LOAI.test(tab)) return { loi: 'Chọn kênh của đơn.' };
+  if (kenh.indexOf(tab) < 0 || DH_TAB_LOAI.test(tab) || tab === 'ĐƠN ƯU TIÊN') return { loi: 'Chọn kênh của đơn.' };   // 28/11: đơn ưu tiên do quản lý chuyển, Bán hàng không đặt thẳng
   if (dl && !dhNgayThat_(dl)) return { loi: 'Deadline mong muốn không hợp lệ.' };
   if (dl && dl < homNayVN_()) return { loi: 'Deadline mong muốn đã qua.' };
   var dong = Array.isArray(p.dong) ? p.dong : [];

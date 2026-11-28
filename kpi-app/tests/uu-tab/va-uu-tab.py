@@ -42,3 +42,8 @@ _R("var h = m[dhHrKhoa_(o.maDon, o.tab, o.ten)]; if (h) o.hanRieng = h;",
    "var h = m[dhHrKhoa_(o.maDon, o.tab, o.ten)] || (o.tab === 'ĐƠN ƯU TIÊN' ? m[dhHrKhoa_(o.maDon, 'KHO', o.ten)] : null); if (h) o.hanRieng = h;")
 _R("    var w = uw[String(x.maDon || '') + '|' + x.tab]; if (w) x.uuWeb = w;",
    "    var w = uw[String(x.maDon || '') + '|' + x.tab] || (x.tab === 'ĐƠN ƯU TIÊN' ? uw[String(x.maDon || '') + '|KHO'] : null); if (w) x.uuWeb = w;")
+# 28/11 (2) (chủ dự án: "khóa các cột giống nhau"): tab ĐƠN ƯU TIÊN không còn là tab loại trừ -> khóa cột (Mã đơn / Tên / SL đặt / Deadline / Hạn mới) như tab KHO,
+# hủy / bớt / tạm dừng làm được trên dòng tab này; lượt tự rà 6 giờ thấy "tab mới" sẽ tự đặt khóa. Bán hàng vẫn KHÔNG đặt đơn mới thẳng vào tab ưu tiên.
+_R("|^SHEET\\d*$|^ĐƠN ƯU TIÊN$|^DON UU TIEN$|", "|^SHEET\\d*$|")
+_R("  if (kenh.indexOf(tab) < 0 || DH_TAB_LOAI.test(tab)) return { loi: 'Chọn kênh của đơn.' };",
+   "  if (kenh.indexOf(tab) < 0 || DH_TAB_LOAI.test(tab) || tab === 'ĐƠN ƯU TIÊN') return { loi: 'Chọn kênh của đơn.' };   // 28/11: đơn ưu tiên do quản lý chuyển, Bán hàng không đặt thẳng")
