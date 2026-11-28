@@ -4,6 +4,7 @@ Liên quan: [[00 Mục lục]] · [[Nhật ký thay đổi]] · [[Liên kết v�
 
 Những lần Claude làm sai / làm chưa tới và cách tránh lặp lại. Phiên mới đọc lướt trước khi làm.
 
+- **28/11 – Chèn `<style>` vào Index.html bằng `s.rfind('</head>')` làm hỏng cả web** (chuỗi `</head>` còn nằm trong mã JS tạo báo cáo ở cuối file → style chen giữa JS, `login is not defined`). Cách tránh: chèn trước `</head>` ĐẦU TIÊN (`s.find`) hoặc dùng mốc riêng; luôn mở bản xem thử đăng nhập thử sau khi vá Index.
 - **23/11 – Chèn chú thích `// …` vào giữa dòng code bằng thay chuỗi làm MẤT dòng kiểm quyền** (`var q = dbQuyen_(token, true);   // ghi chú if (q.loi) return q.loi;` → phần kiểm quyền thành chú thích, công nhân gọi được hàm). Kiểm thử "công nhân không xem được" bắt được. Cách tránh: chú thích luôn đặt CUỐI dòng sau toàn bộ lệnh; sau khi vá hàm có kiểm quyền thì `grep` lại dòng đó trong bản sinh ra.
 - **22/11 – Giao diện kính ép màu chữ bằng luật rất mạnh** (`html.rs.rs.rs .rs-sang … !important`): sửa màu chữ phải dùng selector mạnh hơn (`html.rs.rs.rs.rs …`), và đo `getComputedStyle` trên bản xem thử trước khi báo đã sửa.
 - **22/11 – Chủ dự án nói "bảng đơn" có thể là tab Đơn hàng HOẶC Order-Flow** → hỏi rõ tab nào trước khi làm demo (lần đầu làm nhầm sang Order-Flow).
