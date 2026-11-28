@@ -20,6 +20,7 @@ Liên quan: [[Việc chờ chủ dự án]] · [[KPI Tổng quan và cách dựn
 - Bản 18/10 đã lên: sheet thật có LichSuDinhMuc, HoiNhap, BoTriMay. Tên đăng nhập trùng, tài khoản người nghỉ việc, MaGhi thiếu đã được dọn.
 - Lần dán chung 18/10: chủ dự án đã nhận đủ 5 file + hướng dẫn (HUONG-DAN-CAP-NHAT.md mục "LẦN DÁN CHUNG 18/10"). – [[KPI Bảo mật và vận hành]], [[KPI Âm thanh và giọng Rhino]]
 
+- **28/11 (7): ẩn cột các xưởng ở bảng trạng thái đơn + bỏ mục Kỹ năng**: Index.html + QuyTrinh.html qua 2-CAP-NHAT.bat, Ctrl+F5. – [[Nhật ký thay đổi]]
 - **28/11 (6): 5 mục đánh giá bố cục (Order-Flow gọn, Nề nếp 1 xưởng, form quản trị thu gọn, đầu trang Đơn hàng, Tổng quan, lớp phủ)**: Index.html + QuyTrinh.html + DonBan.html qua 2-CAP-NHAT.bat, Ctrl+F5. – [[Nhật ký thay đổi]]
 - **28/11 (5): khóa cột tab ưu tiên, duyệt đơn ghi Sheet như tab, Order-Flow bỏ đổi deadline, ẩn mã đã xong, đơn lẻ xếp theo ngày đặt + thẻ gọn, bỏ 3 nút bảng trạng thái, menu cột biểu tượng**: Code.gs + Index.html + QuyTrinh.html + DonBan.html qua 2-CAP-NHAT.bat, Ctrl+F5. – [[Nhật ký thay đổi]]
 - **28/11 (4): tab ĐƠN ƯU TIÊN thành kênh riêng + bỏ ô mã đơn từng dòng ở bảng trạng thái đơn**: Code.gs + Index.html + QuyTrinh.html qua 2-CAP-NHAT.bat, Ctrl+F5. – [[Nhật ký thay đổi]]

@@ -8872,7 +8872,7 @@ function chiXemDon(){
 </script>
 <script>
 /* ===== 19. PHẦN GIAO DIỆN TẢI SAU (12/10) – SoDo.html, HoatAnh.html: chỉ tải khi cần, nhớ lại theo phiên bản ===== */
-var MANH_VER={"SoDo": "d106ef313dc09ad2", "HoatAnh": "b23cbe69d6aae56e", "AmThanh": "c690fabe4419160c", "QuyTrinh": "5745eb05e4", "CauHinhGay": "8c0f42823f07518c", "DonBan": "681065c47bdc4952"};
+var MANH_VER={"SoDo": "d106ef313dc09ad2", "HoatAnh": "b23cbe69d6aae56e", "AmThanh": "c690fabe4419160c", "QuyTrinh": "85679eb5b6", "CauHinhGay": "8c0f42823f07518c", "DonBan": "681065c47bdc4952"};
 var __manh={da:{},cho:{}};
 function ganManh_(nd){
   var js=[], ngoai=String(nd).replace(/<script>([\s\S]*?)<\/script>/g,function(_,x){js.push(x);return ''});
@@ -9794,7 +9794,7 @@ function hsGhiChuDong(r){
 }
 </script>
 <script>
-var KPI_BAN = '28/11/2026 22:47';
+var KPI_BAN = '28/11/2026 23:02';
 (function(){
   var cu = window.veNav;
   window.veNav = function(){
@@ -11131,7 +11131,7 @@ function nsnCapNhat(){ call('capNhatNgoaiSXTuFile',[],function(r){ if(!r||!r.ok)
 </script>
 <script>
 /* ===== 38. TĂNG TỐC ĐỢT 3 (08/11) – bộ đo tốc độ + mở nhanh bằng số lần trước (mã hóa) ===== */
-var TD_BUF=[], TD_T=null, DL_VER='90ece32905', DL_HAN=12*3600e3, DL_BO=['SoCCCD','DienThoai','DiaChi','SdtKhanCap','LuongCoBan','NamSinh','SoTaiKhoan','Email'];
+var TD_BUF=[], TD_T=null, DL_VER='2efe6e340f', DL_HAN=12*3600e3, DL_BO=['SoCCCD','DienThoai','DiaChi','SdtKhanCap','LuongCoBan','NamSinh','SoTaiKhoan','Email'];
 function tdGhi_(f,ms,sv){ if(!(ms>=0)||!f) return; TD_BUF.push({f:String(f),ms:Math.round(ms),sv:(typeof sv==='number'?Math.round(sv):null)});
   if(TD_BUF.length>=15) tdGui_(); else if(!TD_T) TD_T=setTimeout(tdGui_,180000); }
 function tdGui_(){ if(TD_T){clearTimeout(TD_T);TD_T=null;} if(!TD_BUF.length||typeof TOKEN==='undefined'||!TOKEN) return;
@@ -11948,8 +11948,11 @@ function nnSapXep_(ns){ var vp={}; (D.vipham||[]).forEach(function(v){ vp[v.MaNV
   }
   var hen=0, ob=null;
   function canh(){ var m=document.getElementById('main'); if(!m||ob) return; ob=new MutationObserver(function(){ clearTimeout(hen); hen=setTimeout(gonForm,30); }); ob.observe(m,{childList:true,subtree:true}); }
+  /* 28/11 (chủ dự án): BỎ HOÀN TOÀN mục Kỹ năng (Kỹ năng / Kỹ năng của tôi) khỏi web cho mọi vai trò – dữ liệu trong Sheet giữ nguyên, bật lại = bỏ 2 dòng này */
+  var dt0=window.dsTabHienCo; if(typeof dt0==='function') window.dsTabHienCo=function(){ return (dt0.apply(this,arguments)||[]).filter(function(t){ return t&&t[0]!=='kyn'; }); };
   var g=window.go;
   window.go=function(k){
+    if(k==='kyn'){ var ds=(typeof dsTabHienCo==='function'?dsTabHienCo():[]).filter(function(t){ return t[0]!=='hd'; }); k=(ds[0]&&ds[0][0])||'dash'; arguments[0]=k; }
     try{ document.body.setAttribute('data-tab',k); var w=document.getElementById('maiTour'); if(w&&w.classList.contains('mo')&&window.__tourTab&&window.__tourTab!==k&&typeof maiTourDong==='function') maiTourDong(); }catch(e){}
     var r=g.apply(this,arguments); canh(); setTimeout(gonForm,0); return r;
   };

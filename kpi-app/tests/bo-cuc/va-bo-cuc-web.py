@@ -64,8 +64,11 @@ function nnSapXep_(ns){ var vp={}; (D.vipham||[]).forEach(function(v){ vp[v.MaNV
   }
   var hen=0, ob=null;
   function canh(){ var m=document.getElementById('main'); if(!m||ob) return; ob=new MutationObserver(function(){ clearTimeout(hen); hen=setTimeout(gonForm,30); }); ob.observe(m,{childList:true,subtree:true}); }
+  /* 28/11 (chủ dự án): BỎ HOÀN TOÀN mục Kỹ năng (Kỹ năng / Kỹ năng của tôi) khỏi web cho mọi vai trò – dữ liệu trong Sheet giữ nguyên, bật lại = bỏ 2 dòng này */
+  var dt0=window.dsTabHienCo; if(typeof dt0==='function') window.dsTabHienCo=function(){ return (dt0.apply(this,arguments)||[]).filter(function(t){ return t&&t[0]!=='kyn'; }); };
   var g=window.go;
   window.go=function(k){
+    if(k==='kyn'){ var ds=(typeof dsTabHienCo==='function'?dsTabHienCo():[]).filter(function(t){ return t[0]!=='hd'; }); k=(ds[0]&&ds[0][0])||'dash'; arguments[0]=k; }
     try{ document.body.setAttribute('data-tab',k); var w=document.getElementById('maiTour'); if(w&&w.classList.contains('mo')&&window.__tourTab&&window.__tourTab!==k&&typeof maiTourDong==='function') maiTourDong(); }catch(e){}
     var r=g.apply(this,arguments); canh(); setTimeout(gonForm,0); return r;
   };
