@@ -40,7 +40,7 @@
 .of-thanh .so{font-family:ui-monospace,Menlo,monospace;letter-spacing:0;color:var(--ink2)}.of-thanh .so b{color:var(--green)}.of-thanh .so em{color:var(--red);font-style:normal}
 .of-loc{padding:4px 14px 8px;font-size:12px;color:var(--ink3);display:flex;gap:8px;align-items:center} .of-loc b{color:var(--ink)}
 .of-sku{display:block;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:13.5px;font-weight:700;letter-spacing:.01em;word-break:break-all} .of-sku-ten{display:block;font-size:11.5px;font-weight:400;color:var(--ink3);margin-top:1px}
-.of-gc{display:block;font-size:11.5px;font-weight:400;color:var(--ink2);margin-top:2px;white-space:pre-line} /* 28/11: ghi chú đơn lẻ (cột Loại phôi) */
+.of-xong{padding:8px 14px 10px;border-top:1px dashed var(--line)} .of-xong .btn{font-size:12px} .of-gc{display:block;font-size:11.5px;font-weight:400;color:var(--ink2);margin-top:2px;white-space:pre-line} /* 28/11: ghi chú đơn lẻ (cột Loại phôi) */
 .of-ton{padding:4px 14px 8px;font-size:12px;color:var(--ink3)} .of-ton b{color:var(--ink)} .of-ton b.g{color:var(--green)}
 .of-dong .tra{color:var(--ink2)}
 .of-dong{display:grid;grid-template-columns:1fr 52px 52px 74px 74px;gap:6px;align-items:center;padding:8px 14px;border-top:1px solid var(--line);font-size:13px}
@@ -358,10 +358,14 @@ function bnThe(g,nhan,hn,qSP){
     '<div class="of-ton">Đã trả khách <b>'+bnSo(g.tra||0)+'</b> · Còn sẵn trong nhà máy (tồn kho + đóng gói) <b class="g">'+bnSo(g.kho||0)+'</b> sp – chỉ số này có thể đi ngay</div>';
   var kCa=g.tab+'|'+g.ma, loc=qSP&&!BNB_CA[kCa], dsD=loc?g.dong.filter(function(z){ return bnTk(z).indexOf(qSP)>=0; }):g.dong;
   if(qSP) h+='<div class="of-loc">'+(loc?'Đang lọc: hiện <b>'+dsD.length+'/'+nL+'</b> mã khớp "'+esc(BNBLoc.q)+'"':'Đang hiện cả đơn ('+nL+' mã)')+' <button class="btn sm" type="button" data-k="'+esc(kCa)+'" onclick="BNB_CA[this.dataset.k]=!BNB_CA[this.dataset.k];bnBangO()">'+(loc?'Hiện cả đơn':'Chỉ mã khớp')+'</button></div>';
-  dsD.map(function(z,i){ return [z,i]; }).sort(function(a,b){ return ((b[0].thieu>0)-(a[0].thieu>0))||(a[1]-b[1]); }).forEach(function(x){ var z=x[0], xong=z.thieu<=0;
+  /* 28/11 (chủ dự án): ẩn mã đã xong đủ số lượng (thiếu = 0); nút "Xem N mã đã xong" ở cuối đơn. Đang tìm kiếm thì vẫn hiện mã khớp. */
+  var anX=!qSP&&!BNB_XONG[kCa], nX=dsD.filter(function(z){ return z.thieu<=0; }).length;
+  dsD.map(function(z,i){ return [z,i]; }).sort(function(a,b){ return ((b[0].thieu>0)-(a[0].thieu>0))||(a[1]-b[1]); }).forEach(function(x){ var z=x[0], xong=z.thieu<=0; if(xong&&anX) return;
     h+='<div class="of-dong'+(xong?' xong':'')+'"><div class="ten">'+bnSkuTen(z.sku,z.ten)+(z.gc?'<span class="of-gc">📝 '+esc(z.gc)+'</span>':'')+(z.tra+z.kho>z.sl?'<span class="of-tag" style="background:#b3261e;color:#fff" title="Đã trả khách + tồn kho/ĐG lớn hơn số đặt – kiểm lại số trong Sheet">⚠ trả '+bnSo(z.tra)+' + tồn '+bnSo(z.kho)+' > đặt '+bnSo(z.sl)+'</span>':'')+(z.hr&&!xong?'<span class="of-tag" style="background:#bfe3ff;color:#123" title="Nhà máy ưu tiên mã này – mục tiêu nội bộ, deadline với khách giữ nguyên">⏱ ưu tiên '+esc(bnNg(z.hr).slice(0,5))+'</span>':'')+(z.dung&&!xong?'<span class="of-tag" style="background:#f6d365;color:#321">tạm dừng</span>':'')+(z.dl&&g.dl&&z.dl!==g.dl&&!xong?'<span class="of-tag" style="border:1px solid var(--line)">hạn '+esc(bnNg(z.dl).slice(0,5))+'</span>':'')+(function(e){ return e&&!xong?'<span class="of-tag" style="background:#ffd8d2;color:#5a1208" title="Deadline đổi lúc '+esc(e[0])+'">🔔 đổi hạn '+(e[4]?esc(bnNg(e[4]).slice(0,5)):'–')+' → '+(e[5]?esc(bnNg(e[5]).slice(0,5)):'–')+'</span>':''; })(bnDhMa(g.tab,g.ma,z.ten))+'</div>'+
       '<div class="c"><small>ĐẶT</small>'+bnSo(z.sl)+'</div><div class="c thieu"><small>THIẾU</small>'+bnSo(z.thieu)+'</div><div class="c tra"><small>ĐÃ TRẢ KHÁCH</small>'+bnSo(z.tra)+'</div><div class="c giao"><small>TỒN KHO+ĐG</small>'+bnSo(z.kho)+'</div></div>'; });
+  if(nX&&!qSP) h+='<div class="of-xong"><button class="btn sm" type="button" data-k="'+esc(kCa)+'" aria-expanded="'+(!anX)+'" onclick="BNB_XONG[this.dataset.k]=!BNB_XONG[this.dataset.k];bnBangO()">'+(anX?'✓ Xem '+nX+' mã đã xong':'Ẩn '+nX+' mã đã xong')+'</button></div>';
   return h+'</div>'; }
+var BNB_XONG={};
 var bnDonTruoc='', bnDaPct={};
 /* 21/11 (chủ dự án): đơn lẻ / POD đã xong trong 3 ngày làm việc gần nhất + tra cứu */
 var BNX=null, BNXTai=false, BNXLoc={q:''};

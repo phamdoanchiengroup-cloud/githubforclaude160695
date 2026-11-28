@@ -206,7 +206,7 @@ details.dh-doc[open]{background:var(--bg2,rgba(127,127,127,.08));border-left:3px
 .dh-sh thead tr:nth-child(2) th{top:30px}
 .dh-sh .c1{position:sticky;left:0;z-index:2;width:104px;min-width:104px;max-width:104px;white-space:normal;overflow-wrap:anywhere;overflow:hidden;text-overflow:ellipsis}
 .dh-sh .c2{position:sticky;left:0;z-index:2;min-width:405px;max-width:405px;white-space:normal}   /* 28/11: rộng thêm phần ô Mã đơn đã bỏ */
-.dh-sh .dh-c2n{font-size:11.5px;margin-bottom:2px} .dh-sh td.c2 .dh-sttr{float:right;margin:1px 0 0 6px;padding:0 4px;font-size:9.5px;line-height:14px;opacity:.85}.dh-sh .dh-c2n .dh-mad{font-weight:600}
+html .dh-sh tbody tr.dh-xongr td{padding:6px 10px 10px;background:#f4f7f6!important;border-top:1px dashed #c9d2cf} html .dh-sh tbody tr.dh-xongr .btn{font-size:12px;background:#fff!important;color:#1b2a2c!important;border:1px solid #9fb0ab!important;opacity:1} html .dh-sh tbody tr.dh-xongr .btn:hover{border-color:#FF8A1F!important} .dh-sh .dh-c2n{font-size:11.5px;margin-bottom:2px} .dh-sh td.c2 .dh-sttr{float:right;margin:1px 0 0 6px;padding:0 4px;font-size:9.5px;line-height:14px;opacity:.85}.dh-sh .dh-c2n .dh-mad{font-weight:600}
 .dh-sh thead .c1,.dh-sh thead .c2{z-index:6;background:var(--panel2)}
 .dh-sh tbody tr:hover td{background:var(--panel2)}
 .dh-sh tbody tr.cua td{background:rgba(var(--acc-rgb),.07)}
@@ -2895,7 +2895,10 @@ function dhVeBang(ds){
   bps.forEach(function(k){ h+='<th class="qt-so"'+(k===bp?' style="color:var(--cyan)"':'')+'>Đã giao</th><th'+(k===bp?' style="color:var(--cyan)"':'')+'>Hẹn</th>'+(k==='DG'&&coHDG?'<th class="qt-so" title="Hỏng cần làm bù – Đóng gói">Hỏng làm bù</th>':''); });
   h+='</tr></thead><tbody>';
   var seq={}, bang=0, truoc='', daTg={}, nThe=0;
-  y.forEach(function(o){
+  /* 28/11 (chủ dự án): thẻ đơn ẩn mã đã xong đủ số lượng (SX CÒN THIẾU = 0); cuối đơn có nút "Xem N mã đã xong" */
+  DHB.xong=DHB.xong||{}; var nXo={}; y.forEach(function(o){ if(o.thieu<=0){ var k=o.tab+'|'+o.maDon; nXo[k]=(nXo[k]||0)+1; } });
+  var nutXo=function(k){ var n=nXo[k]||0, m=!!DHB.xong[k]; return n?'<tr class="dh-xongr"><td colspan="'+colW+'"><button class="btn sm" type="button" data-k="'+esc(k)+'" aria-expanded="'+m+'" onclick="DHB.xong[this.dataset.k]=!DHB.xong[this.dataset.k];dhVeLai()">'+(m?'Ẩn '+n+' mã đã xong':'✓ Xem '+n+' mã đã xong')+'</button></td></tr>':''; };
+  y.forEach(function(o,iy){
     var c=dhBCot(o), d=o.dn||{}, xn=d.x||{}, mo=DHB.mo===o.tab+'|'+o.dong, cua=bp&&d.o===bp, sk=o.tab+'|'+o.maDon, vt=(seq[sk]=(seq[sk]||0)+1);
     var dau=sk!==truoc; if(dau&&truoc) bang=(bang+1)%4; truoc=sk;   /* 14/11: mỗi đơn một dải màu (như Sheet) */
     /* 15/11 đêm (chủ dự án): dòng TỔNG SL CÒN THIẾU của đơn nhiều mã – Sheet để cuối đơn, web đặt TRÊN CÙNG mỗi đơn (tính trên mọi mã của đơn, kể cả mã đang bị lọc ẩn) */
@@ -2903,6 +2906,8 @@ function dhVeBang(ds){
     if(tgD&&DHB._hanD&&!o.phu){ h+=(nThe++?'<tr class="dh-gap"><td colspan="'+colW+'"></td></tr>':'')+dhTheDau(o,tgD,tdo[sk],DHB._hanD[sk]||'',colW); coTg=false; }   /* 22/11: mỗi đơn một thẻ (tiêu đề thẻ thay dòng TỔNG SL CÒN THIẾU) */
     if(coTg) h+='<tr class="dh-d'+bang+' dh-dmoi dh-tgd"><td class="c2">TỔNG SL CÒN THIẾU <span class="dh-bkenh">'+tgD.n+' mã</span></td>'+(dhCoBV()?'<td></td>':'')+
       '<td class="qt-so">'+qtSo(tgD.sl,0)+'</td><td class="qt-so"><b>'+qtSo(tgD.thieu,0)+'</b></td><td></td><td class="qt-so">'+qtSo(tgD.giao,0)+'</td><td class="qt-so">'+qtSo(tgD.kho,0)+'</td><td class="qt-so">'+qtSo(tgD.tra,0)+'</td><td colspan="'+(bps.length*2+4+(coHDG?1:0))+'"></td></tr>';
+    var theX=!!DHB._hanD&&!o.phu, cuoiX=theX&&(!y[iy+1]||(y[iy+1].tab+'|'+y[iy+1].maDon)!==sk);
+    if(theX&&o.thieu<=0&&!DHB.xong[sk]){ if(cuoiX) h+=nutXo(sk); return; }   /* 28/11: mã đã xong – ẩn */
     h+='<tr class="dh-d'+bang+(dau&&!coTg?' dh-dmoi':'')+(cua?' cua':'')+(o.thieu<=0&&!d.o?' xong':'')+'">'+
       /* 28/11 (chủ dự án): bỏ ô MÃ ĐƠN ở từng dòng – mã đơn chỉ ở tiêu đề thẻ đơn; ô Mã sản phẩm rộng ra. Nhãn tạm dừng / hạn riêng / thứ tự mã đưa lên đầu ô Mã sản phẩm.
          Khi không có thẻ đơn (tab bản chép, Lẻ 10 ngày) thì vẫn ghi mã đơn nhỏ ở đầu ô. */
@@ -2926,6 +2931,7 @@ function dhVeBang(ds){
     h+='<td>'+(d.o?'<span class="dh-bpo">'+esc(dhBPTen(d.o))+'</span>':'<span class="pdesc">'+(o.phu?'—':'chưa xếp')+'</span>')+(d.k?' <span class="dh-bk">'+esc(dhKTen(d.k))+'</span>':'')+'</td>'+
       '<td>'+(xs.length?xs.map(function(k){ return '<span class="dh-bxn" title="'+esc(xn[k])+'"><b>'+esc(dhBPTen(k))+'</b> · '+esc(xn[k])+'</span>'; }).join(''):'<span class="pdesc">–</span>')+'</td>'+
       '<td><button class="btn sm" type="button" data-t="'+esc(o.tab)+'" data-d="'+o.dong+'" onclick="dhBMo(this.dataset.t,+this.dataset.d)">'+(mo?'Đóng':(coQuyen&&!o.phu?'Nhập':'Xem'))+'</button></td></tr>';
+    if(cuoiX) h+=nutXo(sk);
   });
   if(!y.length) h+='<tr><td colspan="'+colW+'" class="pdesc">Không có dòng đơn theo bộ lọc.</td></tr>';
   h+='</tbody></table></div>'; setTimeout(dhBNoi,0);
