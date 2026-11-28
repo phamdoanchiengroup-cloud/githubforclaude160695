@@ -7725,7 +7725,7 @@ function danhSachVanPhong(token) {
   ds.sort(function(a, b) { return (thuTu[a.vaiTro] - thuTu[b.vaiTro]) || (a.HoTen < b.HoTen ? -1 : 1); });
   return sach_({ ok: true, ds: ds, muc: HS_MUC });
 }
-var KPI_BAN_MAY = '28/11/2026 17:11';   // giờ dựng Code.gs (22/10)
+var KPI_BAN_MAY = '28/11/2026 21:33';   // giờ dựng Code.gs (22/10)
 /* =====================================================================
    KỸ NĂNG (22/10, chủ dự án nhờ thiết kế + tham khảo chuyên gia nhân sự / đào tạo)
    - Danh mục: trưởng / phó phòng đề xuất kỹ năng của xưởng (tên, mô tả, tiêu chí đạt, công đoạn liên quan)
@@ -11967,12 +11967,27 @@ function dbGhiSheet_(r, dlChot) {
   var dong = r._d, ghiCot = [0, meta.ten, meta.sl], cDl = meta.dl >= 0 ? meta.dl : -1, cNote = meta.phoi >= 0 ? meta.phoi : -1, cThieu = meta.thieu >= 0 ? meta.thieu : -1;
   if (cDl >= 0) ghiCot.push(cDl); if (cNote >= 0) ghiCot.push(cNote);
   var ncMau = Math.min(Math.max(sh.getLastColumn(), 1), 60), mau = [];
-  try { if (last > meta.hdr) mau = sh.getRange(last, 1, 1, ncMau).getFormulasR1C1()[0]; } catch (e) { mau = []; }
+  /* 28/11: xem cách tab đang ghi (300 dòng cuối): mã đơn lặp mọi dòng hay chỉ dòng đầu; có dòng TỔNG SL CÒN THIẾU không; dòng mẫu = dòng sản phẩm cuối */
+  var lapMa = false, coTong = false, dongMau = 0;
+  try {
+    if (last > meta.hdr) {
+      var tu = Math.max(meta.hdr + 1, last - 299), cu = sh.getRange(tu, 1, last - tu + 1, Math.max(meta.ten, meta.phoi >= 0 ? meta.phoi : 0, 2) + 1).getValues(), lap = 0, trong = 0, truoc = '';
+      cu.forEach(function(x, i) {
+        var m = String(x[0] == null ? '' : x[0]).trim(), t = String(x[meta.ten] == null ? '' : x[meta.ten]).trim();
+        if (x.some(function(c) { return /TỔNG SL CÒN THIẾU/i.test(String(c)); })) { coTong = true; return; }
+        if (!t) return; dongMau = tu + i;
+        if (!m) trong++; else if (m === truoc) lap++;
+        if (m) truoc = m;
+      });
+      lapMa = lap > trong;
+    }
+  } catch (eK) {}
+  try { if (dongMau) mau = sh.getRange(dongMau, 1, 1, ncMau).getFormulasR1C1()[0]; } catch (e) { mau = []; }
   if (cThieu >= 0 && !(mau[cThieu] && /^=/.test(String(mau[cThieu])))) ghiCot.push(cThieu);
   var nc = Math.max.apply(null, ghiCot) + 1, dlTxt = dlChot ? "'" + dlChot.slice(8, 10) + '/' + dlChot.slice(5, 7) + '/' + dlChot.slice(0, 4) : '';
-  var vals = dong.map(function(x) {
+  var vals = dong.map(function(x, i) {
     var v = []; for (var j = 0; j < nc; j++) v.push('');
-    v[0] = r.MaDon; v[meta.ten] = chuAnToan_(x.ten); v[meta.sl] = x.sl;
+    v[0] = (i === 0 || lapMa) ? r.MaDon : ''; v[meta.ten] = chuAnToan_(x.ten); v[meta.sl] = x.sl;   // 28/11: mã đơn như cách tab đang ghi
     if (cDl >= 0) v[cDl] = dlTxt;
     if (cNote >= 0) v[cNote] = chuAnToan_([x.gc, r.GhiChu ? 'Đơn: ' + r.GhiChu : ''].filter(Boolean).join(' · ').slice(0, 500));
     if (ghiCot.indexOf(cThieu) >= 0 && cThieu >= 0) v[cThieu] = x.sl;
@@ -11985,7 +12000,13 @@ function dbGhiSheet_(r, dlChot) {
       if (!f || !/^=/.test(String(f)) || ghiCot.indexOf(j) >= 0) return;
       sh.getRange(dau, j + 1, vals.length, 1).setFormulasR1C1(vals.map(function() { return [f]; }));
     });
-  } catch (eW) { try { sh.getRange(dau, 1, vals.length, Math.max(nc, ncMau)).clearContent(); } catch (eX) {} throw eW; }   // lỗi giữa chừng: xóa phần vừa ghi để duyệt lại được
+    /* 28/11: dòng TỔNG SL CÒN THIẾU cuối đơn nhiều mã (chỉ tab đang có dòng này) */
+    if (coTong && vals.length > 1 && cThieu >= 0) {
+      var cNhan = meta.phoi >= 0 ? meta.phoi : 2, ct = String.fromCharCode(65 + cThieu);   // cột ≤ Z (SX CÒN THIẾU nằm đầu bảng)
+      sh.getRange(dau + vals.length, cNhan + 1).setValue('TỔNG SL CÒN THIẾU');
+      if (cThieu < 26) sh.getRange(dau + vals.length, cThieu + 1).setValue('=SUM(' + ct + dau + ':' + ct + (dau + vals.length - 1) + ')');   // setValue chuỗi '=' = công thức
+    }
+  } catch (eW) { try { sh.getRange(dau, 1, vals.length + 1, Math.max(nc, ncMau)).clearContent(); } catch (eX) {} throw eW; }   // lỗi giữa chừng: xóa phần vừa ghi để duyệt lại được
   return [dau, vals.length];
 }
 function dbGanUu_(me, maDon, tab) {   // ★ ưu tiên cả đơn – cùng chỗ lưu với nút ★ trên bảng đơn (luuUuTienDon)

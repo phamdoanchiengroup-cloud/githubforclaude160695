@@ -329,7 +329,8 @@ function bnDhKhoa(){ return 'kpi_dh_xem_'+((window.ME&&ME.tk)||''); }
 function bnDhXem(){ try{ return localStorage.getItem(bnDhKhoa())||''; }catch(e){ return ''; } }
 function bnDhDs(){ return (window.BND&&BND.doiHan)||(window.BNB&&BNB.doiHan)||[]; }
 var BNDH_MO=false;
-function bnVeDoiHan(){ var a=bnDhDs(); if(!a.length) return '';
+function bnVeDoiHan(){ return '';   /* 28/11 (chủ dự án): bỏ phần thông báo đổi deadline ở Order-Flow (Bảng đơn nhà máy vẫn hiện deadline mới) */
+  var a=bnDhDs(); if(!a.length) return '';
   var xem=bnDhXem(), moi=a.filter(function(x){ return x[0]>xem; }), nhan={}; (BND&&BND.kenh||[]).forEach(function(k){ nhan[k[0]]=k[1]; });
   var ds=BNDH_MO?a:(moi.length?moi:a).slice(0,6), theo={}, thu=[];
   ds.forEach(function(x){ var k=x[1]+'|'+x[2]; if(!theo[k]){ theo[k]=[]; thu.push(k); } theo[k].push(x); });
@@ -340,7 +341,8 @@ function bnVeDoiHan(){ var a=bnDhDs(); if(!a.length) return '';
   return '<div class="dh-tb'+(moi.length?' co':'')+'" role="status"><div class="dh-tb-dau"><span>🔔 <b>Deadline đã thay đổi</b>'+(moi.length?' · <b class="so">'+moi.length+' mã mới</b>':'')+' <span class="pdesc">(7 ngày qua: '+a.length+' lần đổi)</span></span>'+
     '<span style="display:flex;gap:6px">'+(a.length>ds.length||BNDH_MO?'<button class="btn sm" type="button" onclick="BNDH_MO=!BNDH_MO;bnVe()">'+(BNDH_MO?'Thu gọn':'Xem tất cả '+a.length)+'</button>':'')+(moi.length?'<button class="btn sm pri" type="button" onclick="try{localStorage.setItem(bnDhKhoa(),bnDhDs()[0][0])}catch(e){};bnVe()">Đã xem</button>':'')+'</span></div>'+
     '<div class="dh-tb-ds">'+dong+'</div><div class="pdesc" style="margin-top:4px">Báo lại khách nếu đơn của bạn có mã đổi hạn. Ngày mới cũng đã cập nhật trong Bảng đơn nhà máy.</div></div>'; }
-function bnDhMa(tab,ma,ten){ var a=bnDhDs(), t=String(ten).toUpperCase().replace(/\s+/g,' ').trim(); for(var i=0;i<a.length;i++){ var x=a[i]; if(x[1]===tab&&String(x[2])===String(ma)&&String(x[3]).toUpperCase().replace(/\s+/g,' ').trim()===t) return x; } return null; }
+function bnDhMa(tab,ma,ten){ return null;   /* 28/11: bỏ nhãn 🔔 đổi hạn trên từng mã */
+  var a=bnDhDs(), t=String(ten).toUpperCase().replace(/\s+/g,' ').trim(); for(var i=0;i<a.length;i++){ var x=a[i]; if(x[1]===tab&&String(x[2])===String(ma)&&String(x[3]).toUpperCase().replace(/\s+/g,' ').trim()===t) return x; } return null; }
 function bnNgayCach(a,b){ return Math.round((Date.parse(b+'T00:00:00Z')-Date.parse(a+'T00:00:00Z'))/864e5); }
 var BNB_CA={};
 function bnThe(g,nhan,hn,qSP){
