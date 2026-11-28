@@ -370,6 +370,19 @@ function dhKenhTen_(t) {
 function dhLaMa_(m0) { m0 = String(m0 || '').trim(); if (!m0 || DH_GHI_CHU.test(m0.toUpperCase())) return false; if (/^#/.test(m0)) return m0.length <= 60; return m0.length <= 40 && m0.split(/\s+/).length <= 4; }
 /* 03/11: nhận chữ "ưu tiên" (hoa / thường, có / không dấu) */
 function dhUuTien_(t) { return /\bUU\s*TIEN\b/.test(plChuan_(t)); }
+function dhUuDongGoi_(ds, uu) {
+  var k = function(o) { return String(o.maDon || '').replace(/^#/, '').replace(/\s+/g, '').toUpperCase() + '|' + dhTenKhoa_(o.ten); };
+  var dU = {}, dK = {};
+  (uu || []).forEach(function(o) { var x = k(o); dU[x] = dU[x] ? 'nhieu' : o; });   // uu = dòng gốc của tab ĐƠN ƯU TIÊN (tab = tên tab, dong = số dòng)
+  ds.forEach(function(o) { if (o.phu) return; var x = k(o); dK[x] = (dK[x] || 0) + 1; });
+  var n = 0;
+  ds.forEach(function(o) {
+    if (o.phu) return; var x = k(o), u = dU[x];
+    if (!u || u === 'nhieu' || dK[x] !== 1) return;
+    o.giao = u.giao || 0; o.kho = u.kho || 0; o.daTra = u.daTra || 0; o.dgUu = [u.tab, u.dong]; n++;   // dgUu = [tab ưu tiên, dòng] – web sửa 3 cột này thì ghi vào đó
+  });
+  return n;
+}
 /* 13/11: khóa tên hàng để đối chiếu tab ĐƠN ƯU TIÊN với Kho (mã trong tab ưu tiên có tiền tố #NEW-/#KHO- nên không trùng mã Kho) */
 function dhTenKhoa_(t) { return String(t == null ? '' : t).toUpperCase().replace(/[–—]/g, '-').replace(/\s+/g, ' ').trim(); }
 /* 13/11: tab có dấu cách ở đầu/cuối tên (vd " POD-ECOMSTONE") – getSheetByName không tìm ra, nên tìm thêm theo tên đã cắt */
@@ -461,7 +474,7 @@ function dhXoaCacheDon_() {
   } catch (e) {}
 }
 /* Mọi dòng đơn (đã gộp 7 tab). Nhớ tạm DH_CACHE_GIAY giây: nén gzip rồi chia mảnh base64 < 100 KB mỗi khóa. */
-var DH_DON_KHOA = 'DH_DON_v14';   // v14 (15/11 đêm): kho, chú thích 500 ký tự, cot.hong / giao / kho / tra / ct   // v13 (15/11): p2 = Phôi 2 nhánh, phoi 500 ký tự (Note)   // v12 (14/11): dn.h = XN HẸN
+var DH_DON_KHOA = 'DH_DON_v15';   // v15 (28/11): giao / kho / daTra mã ưu tiên lấy từ tab ĐƠN ƯU TIÊN   // v14 (15/11 đêm): kho, chú thích 500 ký tự, cot.hong / giao / kho / tra / ct   // v13 (15/11): p2 = Phôi 2 nhánh, phoi 500 ký tự (Note)   // v12 (14/11): dn.h = XN HẸN
 function dhDocDonGoc_(lamMoi) {   // 16/11 khuya: bản đọc thẳng Sheet (chưa áp lớp phủ hủy / bớt) – mọi chỗ khác gọi dhDocDon_ (huy-don.gs)
   var c = CacheService.getScriptCache(), k = DH_DON_KHOA;   // v11 (14/11): thêm tabPhu (dòng tab ĐƠN ƯU TIÊN / TRỄ HẠN để web hiện đủ tab như Sheet)   // v10 (14/11): thêm dn (ĐANG Ở BP / KẾ TIẾP / XN NHẬN) + cot (bản đồ cột bộ phận) cho tab Đơn hàng dạng bảng   // v9 (13/11): nén gzip (11 khóa -> 1–2 khóa, đọc/ghi cache nhanh, tránh DEADLINE_EXCEEDED khi mở tab Đơn hàng)   // v8 (13/11): thêm tre (tab TRỄ HẠN) làm bậc 2 khi lên lịch SX   // v7 (13/11): ánh xạ tab ưu tiên sang Kho theo tên hàng   // v6 (07/11): thêm kênh POD-ECOMSTONE   // v5 (07/11): thêm uu (tab ĐƠN ƯU TIÊN)   // v4 (03/11): thêm uuTien / uuDon
   if (!lamMoi) {
@@ -521,6 +534,9 @@ function dhDocDonGoc_(lamMoi) {   // 16/11 khuya: bản đọc thẳng Sheet (ch
       c.trongKho = km && km[0] === 'KHO' ? 1 : 0;
       if (!c.uuTien) c.uuTien = 'Ưu tiên'; return c; });
   });
+  /* 28/11 (chủ dự án): Đóng gói ghi Có thể giao / Tồn kho + ĐG / Đã trả khách của hàng ưu tiên Ở TAB ĐƠN ƯU TIÊN (tab KHO lệch 69/152 mã)
+     -> dòng kênh có cùng MÃ ĐƠN + TÊN (chỉ khi khóa này duy nhất ở cả 2 tab) lấy 3 cột đó từ tab ưu tiên – THAY số tab kênh, không cộng thêm. */
+  try { var tUu = Object.keys(phu).filter(function(n) { return plChuan_(n) === 'DON UU TIEN'; })[0]; if (tUu) dhUuDongGoi_(ds, phu[tUu]); } catch (eUG) {}
   /* 13/11 (chủ dự án): tab "TRỄ HẠN" – tên hàng đang trễ, dùng làm BẬC 2 khi lên lịch SX; chỉ lấy danh sách tên, không cộng vào tổng (đây là bản chép của các tab kênh).
      13/11: tab này có thể rất dài -> giới hạn số dòng và bọc lỗi riêng, để lỗi đọc tab trễ không làm hỏng cả tab Đơn hàng (DEADLINE_EXCEEDED). */
   var tre = [];
@@ -2222,6 +2238,11 @@ function luuBangDon(token, p) {
   try { lock.waitLock(20000); } catch (eL) { return sach_({ ok: false, msg: 'Sheet đang được người khác ghi – chờ vài giây rồi bấm lại.' }); }
   try {
     var ss = SpreadsheetApp.openById(DH_SHEET_ID), nam = Number(Utilities.formatDate(new Date(), TZ_VN, 'yyyy'));
+    /* 28/11: dòng kênh đang lấy 3 cột Đóng gói từ tab ĐƠN ƯU TIÊN -> sửa 3 cột đó thì ghi vào đúng dòng tab ưu tiên */
+    try { var mUu = {}; (dhDocDon_(false).don || []).forEach(function(o) { if (o.dgUu && !o.phu) mUu[o.tab + '|' + o.dong] = o.dgUu; });
+      var themUu = []; ds.forEach(function(x) { var u = x && mUu[String(x.tab) + '|' + Number(x.dong)]; if (!u) return; var y = { tab: u[0], dong: u[1], ten: x.ten }, co = 0;
+        ['giao', 'kho', 'tra'].forEach(function(k) { if (x[k] != null) { y[k] = x[k]; delete x[k]; co = 1; } }); if (co) themUu.push(y); });
+      ds = ds.concat(themUu); } catch (eUu) {}
     var theoTab = {}; ds.forEach(function(x) { var t = String(x && x.tab || ''); if (t) (theoTab[t] = theoTab[t] || []).push(x); });
     var ghi = [], doi = [], boFx = [], lech = [], loi = [], dlDoi = [];
     Object.keys(theoTab).forEach(function(tab) {
