@@ -40,7 +40,10 @@ for (let k = 0; k < 30; k++) {
   kt(H.khiaCanh.every(c => ctx.htCdCuaKc_(c.k)) && ['cv', 'tien', 'tc', 'sk'].reduce((n, k) => n + CD[k].suKien.length, 0) === H.suKien.filter(x => !x.ngoai).length, 'mỗi khía cạnh thuộc đúng 1 chủ đề; chủ đề phủ đủ sự kiện');
   kt(!/undefined|NaN/.test(JSON.stringify(CD)), 'chủ đề năm không undefined/NaN');
   ['cv', 'tien', 'tc', 'sk'].forEach(k => { const v = CD[k].tom + ' ' + CD[k].items.join(' ') + ' ' + CD[k].khuyen.join(' '); kt(!SAO.test(v), 'chủ đề ' + k + ' không nêu tên sao: ' + (v.match(SAO) || [''])[0]); });
-  kt(!/chẩn đoán|bệnh [a-zà-ỹ]+ (gan|tim|phổi|thận)/i.test(CD.sk.items.join(' ')), 'Sức khỏe & nhịp sống: không chẩn đoán bệnh');
+  // 24/11: chủ dự án chốt được nêu thẳng tên bệnh ("dễ mắc…"); chỉ cấm khẳng định chắc chắn / đoán chết
+  kt(!/chắc chắn (bị|mắc)|bạn (đang )?bị bệnh|tử vong|\bchết\b/i.test(CD.sk.items.join(' ')), 'Sức khỏe & nhịp sống: không khẳng định bệnh, không đoán chết');
+  kt(!/bệnh/.test(CD.sk.items.join(' ')) || /bác sĩ/.test(CD.sk.items.join(' ')), 'Sức khỏe & nhịp sống: nêu bệnh thì có câu nhắc hỏi bác sĩ');
+  kt(/dễ mắc bệnh về/.test(CD.sk.items.join(' ')), 'Sức khỏe & nhịp sống: nêu thẳng nhóm bệnh cổ học');
   // Chưa mở vận năm: chỉ lộ thế đứng 5 hệ, nhãn khía cạnh và tối đa 1 sự kiện
   const q = { dvMo: {}, namMo: {}, thangMo: {}, dhNam: {} };
   ctx.ttCatPhan_(r, q);

@@ -7,7 +7,12 @@ var PT_THU_TU = ['Mệnh', 'Quan Lộc', 'Tài Bạch', 'Thiên Di', 'Phúc Đ�
 var PT_H = ['Lộc', 'Quyền', 'Khoa', 'Kỵ'];
 function ptD_(i) { return (i + 6) % 12; }
 function ptLv_(cung) { return typeof tpLv_ === 'function' ? tpLv_(cung) : cung.toLowerCase(); }
-function ptThay_(s, o) { return String(s || '').replace(/\{(\w+)\}/g, function (m, k) { return o[k] != null ? o[k] : m; }); }
+function ptThay_(s, o) {
+  var t = String(s || '').replace(/\{(\w+)\}/g, function (m, k) { return o[k] != null ? o[k] : m; });
+  // Cung Mệnh thay vào khuôn thành "chính mình": nắn lại vài chỗ đọc vấp ("phần chính mình của mình", "góp ý … ở chính mình")
+  return t.replace(/phần chính mình của mình/g, 'phần của chính mình').replace(/ ở chính mình(?=[,.;])/g, ' trong chuyện của bản thân')
+    .replace(/thuộc chính mình/g, 'thuộc về bản thân').replace(/dồn cái tốt sang chính mình/g, 'dồn cái tốt vào việc riêng của bản thân');
+}
 /** Cung chức thứ k (0 = Mệnh) tính từ cung gốc g – đi nghịch địa chi */
 function ptCungTu_(g, k) { return ((g - k) % 12 + 12) % 12; }
 /** Tên cung chức của ô x khi coi ô g là Mệnh (chuyển cung / lập thái cực) */

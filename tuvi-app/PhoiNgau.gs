@@ -15,47 +15,47 @@
 
 /** Phu Thê theo chính tinh: [tính cách phối ngẫu, chênh tuổi (+ lớn hơn / − nhỏ hơn / 0 ít chênh), đặc điểm hôn nhân] */
 var PN_SAO = {
-  'Tử Vi': ['có uy, tự trọng cao, chững chạc, thích được tôn trọng, đôi khi gia trưởng; thường có địa vị hoặc xuất thân khá', 1, 'hôn nhân bền nếu nhường nhịn; phối ngẫu nắm quyền trong nhà'],
-  'Thiên Cơ': ['thông minh, nhanh nhẹn, khéo léo, hay lo nghĩ, thích thay đổi; có thể làm kỹ thuật, kế hoạch, tư vấn', 0, 'hợp nhau về trí tuệ; có thể có giai đoạn ở xa nhau hoặc đổi chỗ ở – nên giữ liên lạc thường xuyên'],
-  'Thái Dương': ['cởi mở, nhiệt tình, hào phóng, sống vì gia đình và xã hội; hoạt động bên ngoài nhiều', 1, 'sáng sủa thì phối ngẫu giỏi giang, có danh; hãm thì cả hai bận rộn, nên chủ động dành thời gian cho nhau'],
-  'Vũ Khúc': ['cương nghị, thực tế, giỏi tiền bạc, ít nói chuyện tình cảm; khá độc lập', 1, 'nên cưới khi cả hai đã chín chắn và chủ động vun đắp sự gần gũi; kinh tế gia đình vững'],
-  'Thiên Đồng': ['hiền hòa, vui vẻ, dễ tính, thích hưởng thụ, đôi khi thiếu quyết đoán; trẻ trung', -1, 'êm ấm, ít sóng gió; cần cùng nhau lập mục tiêu'],
-  'Liêm Trinh': ['cá tính mạnh, nguyên tắc, có sức hút, nóng nảy khi bị trái ý', 0, 'nhiều đam mê, có lúc va chạm; nên tin tưởng và nói chuyện thẳng thắn với nhau'],
-  'Thiên Phủ': ['điềm đạm, chín chắn, biết lo liệu, giỏi quản lý tiền, nhân hậu', 1, 'rất tốt cho hôn nhân – phối ngẫu là "kho" giữ gìn gia sản'],
-  'Thái Âm': ['dịu dàng, tinh tế, giàu cảm xúc, chu đáo, có thẩm mỹ; ưa sạch sẽ', -1, 'sáng sủa thì đẹp đôi, êm ấm; hãm thì nên chia sẻ cảm xúc thay vì giữ trong lòng'],
-  'Tham Lang': ['khéo giao tế, đa tài, hấp dẫn, ham trải nghiệm, nhiều mối quan hệ', 0, 'tình cảm lúc trẻ có thể nhiều trải nghiệm; có sức hút nên rõ ràng và chung thủy thì hôn nhân tốt'],
-  'Cự Môn': ['ăn nói sắc sảo, giỏi lý luận, hay nghi ngờ, kỹ tính', 0, 'có lúc bất đồng lời nói; nên học cách lắng nghe, nói nhẹ nhàng với nhau'],
-  'Thiên Tướng': ['chính trực, chỉn chu, tốt bụng, ăn mặc đẹp, trọng danh dự', 0, 'hôn nhân hòa thuận, phối ngẫu giúp đỡ nhiều; gặp Tuần/Triệt thì lúc đầu cần thêm thời gian vun đắp'],
-  'Thiên Lương': ['hiền lành, đứng đắn, có đạo đức, thích che chở – như người anh/chị', 1, 'phối ngẫu thường lớn tuổi hơn hoặc chín chắn hơn; hôn nhân bền'],
-  'Thất Sát': ['mạnh mẽ, quyết đoán, nóng tính, độc lập, có tham vọng', 1, 'duyên có thể đến muộn; hai người đều mạnh nên cần phân vai rõ'],
-  'Phá Quân': ['phóng khoáng, thích đổi mới, cá tính, dám phá bỏ khuôn khổ', 1, 'tình cảm nhiều đổi mới; nên tìm hiểu kỹ, tránh quyết định vội']
+  'Tử Vi': ['có uy, tự trọng cao, chững chạc, thích được tôn trọng, đôi khi gia trưởng; thường có địa vị hoặc xuất thân khá', 1, 'hôn nhân bền nếu nhường được nhau; mặt trái là phối ngẫu nắm quyền, dễ gia trưởng, bạn dễ thấy bị lấn át'],
+  'Thiên Cơ': ['thông minh, nhanh nhẹn, khéo léo, hay lo nghĩ, thích thay đổi; có thể làm kỹ thuật, kế hoạch, tư vấn', 0, 'hợp nhau về trí tuệ; mặt trái là hay có giai đoạn ở xa nhau, đổi chỗ ở, hai người dễ lạnh dần vì ít gần'],
+  'Thái Dương': ['cởi mở, nhiệt tình, hào phóng, sống vì gia đình và xã hội; hoạt động bên ngoài nhiều', 1, 'sáng sủa thì phối ngẫu giỏi giang, có danh; hãm thì cả hai bận rộn, ít thời gian cho nhau, dễ xa cách'],
+  'Vũ Khúc': ['cương nghị, thực tế, giỏi tiền bạc, ít nói chuyện tình cảm; khá độc lập', 1, 'kinh tế gia đình vững; mặt trái là khô khan, ít nói chuyện tình cảm, cưới sớm dễ va chạm'],
+  'Thiên Đồng': ['hiền hòa, vui vẻ, dễ tính, thích hưởng thụ, đôi khi thiếu quyết đoán; trẻ trung', -1, 'êm ấm, ít sóng gió; mặt trái là dễ an phận, thiếu người cầm lái khi gặp chuyện lớn'],
+  'Liêm Trinh': ['cá tính mạnh, nguyên tắc, có sức hút, nóng nảy khi bị trái ý', 0, 'nhiều đam mê; mặt trái là hay va chạm, ghen tuông, nóng lên dễ nói lời làm tổn thương nhau'],
+  'Thiên Phủ': ['điềm đạm, chín chắn, biết lo liệu, giỏi quản lý tiền, nhân hậu', 1, 'rất tốt cho hôn nhân – phối ngẫu là "kho" giữ gìn gia sản; mặt trái là dễ quản chặt, bảo thủ'],
+  'Thái Âm': ['dịu dàng, tinh tế, giàu cảm xúc, chu đáo, có thẩm mỹ; ưa sạch sẽ', -1, 'sáng sủa thì đẹp đôi, êm ấm; hãm thì hay buồn, giữ trong lòng, dễ có khoảng lạnh giữa hai người'],
+  'Tham Lang': ['khéo giao tế, đa tài, hấp dẫn, ham trải nghiệm, nhiều mối quan hệ', 0, 'tình cảm lúc trẻ nhiều trải nghiệm; mặt trái là sức hút lớn dễ kéo theo người thứ ba, ghen tuông'],
+  'Cự Môn': ['ăn nói sắc sảo, giỏi lý luận, hay nghi ngờ, kỹ tính', 0, 'hay bất đồng lời nói, cãi vã, nghi ngờ nhau'],
+  'Thiên Tướng': ['chính trực, chỉn chu, tốt bụng, ăn mặc đẹp, trọng danh dự', 0, 'hôn nhân hòa thuận, phối ngẫu giúp đỡ nhiều; gặp Tuần/Triệt thì lúc đầu trắc trở, dễ lỡ duyên'],
+  'Thiên Lương': ['hiền lành, đứng đắn, có đạo đức, thích che chở – như người anh/chị', 1, 'phối ngẫu thường lớn tuổi hơn hoặc chín chắn hơn; hôn nhân bền, nhưng dễ thành quan hệ che chở – nghe lời hơn là ngang hàng'],
+  'Thất Sát': ['mạnh mẽ, quyết đoán, nóng tính, độc lập, có tham vọng', 1, 'duyên dễ đến muộn; hai người đều mạnh nên hay giành phần quyết, va chạm gay gắt'],
+  'Phá Quân': ['phóng khoáng, thích đổi mới, cá tính, dám phá bỏ khuôn khổ', 1, 'tình cảm nhiều đổi mới; mặt trái là dễ tan hợp, cưới vội dễ đổ vỡ']
 };
 var PN_PHU = {
-  'Tả Phù': '◇ Tả Phù/Hữu Bật ở Phu Thê: phối ngẫu giỏi giúp đỡ; nếu gặp sát tinh, hai người nên rõ ràng ranh giới với các mối quan hệ xung quanh và nói chuyện thẳng thắn.',
+  'Tả Phù': '◇ Tả Phù/Hữu Bật ở Phu Thê: phối ngẫu giỏi giúp đỡ; nếu gặp sát tinh, dễ có người thứ ba hoặc người ngoài xen vào chuyện hai người.',
   'Hữu Bật': null,
   'Văn Xương': '✓ Xương/Khúc ở Phu Thê: phối ngẫu có học thức, ăn nói nhã nhặn, có khiếu văn nghệ.',
   'Văn Khúc': null,
   'Thiên Khôi': '✓ Khôi/Việt ở Phu Thê: phối ngẫu là quý nhân, có địa vị, được người trên nâng đỡ.',
   'Thiên Việt': null,
   'Lộc Tồn': '✓ Lộc Tồn ở Phu Thê: phối ngẫu giỏi giữ của, nhờ hôn nhân mà khá giả; tính hơi dè dặt.',
-  'Hóa Lộc': '✓ Hóa Lộc ở Phu Thê: tình cảm nồng thắm, phối ngẫu mang lộc đến.',
-  'Hóa Quyền': '◇ Hóa Quyền ở Phu Thê: phối ngẫu có năng lực, thích nắm quyền quyết định.',
+  'Hóa Lộc': '✓ Hóa Lộc ở Phu Thê: tình cảm nồng thắm, phối ngẫu mang lộc đến; mặt trái là dễ gắn tình với tiền.',
+  'Hóa Quyền': '◇ Hóa Quyền ở Phu Thê: phối ngẫu có năng lực, thích nắm quyền quyết định; bạn dễ thấy bị kiểm soát.',
   'Hóa Khoa': '✓ Hóa Khoa ở Phu Thê: phối ngẫu có danh tiếng, học vấn, được nể trọng.',
-  'Hóa Kỵ': '✗ Hóa Kỵ ở Phu Thê: có thể có hiểu lầm, lấn cấn; cần nói rõ ràng, tránh giữ trong lòng.',
-  'Đào Hoa': '◇ Đào Hoa ở Phu Thê: phối ngẫu đẹp, duyên dáng; mình yêu sớm, nhiều người theo đuổi.',
+  'Hóa Kỵ': '✗ Hóa Kỵ ở Phu Thê: hay hiểu lầm, lấn cấn, giận dai; có giai đoạn lạnh nhạt hoặc muốn chia tay.',
+  'Đào Hoa': '◇ Đào Hoa ở Phu Thê: phối ngẫu đẹp, duyên dáng; mình yêu sớm, nhiều người theo đuổi – dễ ghen tuông, dễ có người chen vào.',
   'Hồng Loan': '✓ Hồng Loan ở Phu Thê: phối ngẫu ưa nhìn, dễ thương; duyên đến tự nhiên.',
   'Thiên Hỷ': '✓ Thiên Hỷ ở Phu Thê: hôn nhân vui vẻ, dễ có tin vui cưới hỏi.',
   'Thiên Mã': '◇ Thiên Mã ở Phu Thê: phối ngẫu hay đi xa/làm xa; dễ quen nhau khi đi lại, du lịch, ở nơi khác.',
-  'Kình Dương': '✗ Kình Dương ở Phu Thê: phối ngẫu cứng rắn, có lúc to tiếng; nên hạ giọng và nhường nhau khi bất đồng.',
-  'Đà La': '✗ Đà La ở Phu Thê: duyên có thể đến chậm; hôn nhân có giai đoạn chững lại – cần kiên nhẫn vun đắp.',
-  'Hỏa Tinh': '✗ Hỏa/Linh ở Phu Thê: dễ nóng nảy khi tranh luận; nên tìm hiểu đủ lâu trước khi quyết định và hạ nhiệt trước khi nói.',
+  'Kình Dương': '✗ Kình Dương ở Phu Thê: phối ngẫu cứng rắn, hay to tiếng, bất đồng dễ thành cãi vã gay gắt.',
+  'Đà La': '✗ Đà La ở Phu Thê: duyên đến chậm; hôn nhân có giai đoạn chững lại, dây dưa, khó dứt khó gỡ.',
+  'Hỏa Tinh': '✗ Hỏa/Linh ở Phu Thê: dễ nóng nảy khi tranh luận, tình cảm lên xuống thất thường; cưới vội dễ đổ vỡ.',
   'Linh Tinh': null,
-  'Địa Không': '✗ Không/Kiếp ở Phu Thê: tình cảm lúc có lúc không, dễ hụt hẫng; tránh hứa hẹn viển vông.',
+  'Địa Không': '✗ Không/Kiếp ở Phu Thê: tình cảm lúc có lúc không, dễ hụt hẫng, có lần đổ vỡ hoặc lỡ duyên.',
   'Địa Kiếp': null,
   'Thiên Hình': '◇ Thiên Hình ở Phu Thê: phối ngẫu nghiêm khắc, kỷ luật; có thể làm ngành luật, y, quân đội.',
-  'Cô Thần': '◇ Cô Thần/Quả Tú ở Phu Thê: duyên có thể đến muộn; nên chủ động chia sẻ để hai người luôn thấy gần nhau.',
+  'Cô Thần': '◇ Cô Thần/Quả Tú ở Phu Thê: duyên dễ đến muộn; trong hôn nhân vẫn dễ thấy cô đơn, ít chia sẻ.',
   'Quả Tú': null,
-  'Thiên Riêu': '◇ Thiên Riêu ở Phu Thê: có sức hút; nên rõ ràng và chung thủy trong tình cảm.',
+  'Thiên Riêu': '◇ Thiên Riêu ở Phu Thê: có sức hút, nhưng tình cảm dễ phức tạp, có người thứ ba.',
   'Long Trì': '✓ Long Trì/Phượng Các ở Phu Thê: phối ngẫu có thẩm mỹ, lịch sự.',
   'Thiên Quan': '✓ Thiên Quan/Thiên Phúc ở Phu Thê: phối ngẫu hiền lành, có phúc, tín ngưỡng.'
 };
@@ -104,11 +104,11 @@ function phoiNgauLuan_(C) {
   var saoPN = male ? ['Chính Tài', 'Thiên Tài'] : ['Chính Quan', 'Thất Sát'];
   bti.push('Cung phu thê (nhật chi) ' + nc.chiTen + ' – hành ' + nc.chiHanh + ', chính khí ' + (nc.tangCan[0] ? nc.tangCan[0].ten + ' (' + chiTT + ')' : '') + '; nhật trụ đánh giá ' + C.btct.cungVi[2].danhGia + '.');
   var TT_PN = {
-    'Chính Tài': 'phối ngẫu đảm đang, thực tế, biết vun vén, chung thủy', 'Thiên Tài': 'phối ngẫu hào phóng, giao thiệp rộng, hấp dẫn, thích tự do',
-    'Chính Quan': 'phối ngẫu đứng đắn, có trách nhiệm, nề nếp, có địa vị', 'Thất Sát': 'phối ngẫu mạnh mẽ, quyết liệt, nóng tính nhưng che chở',
+    'Chính Tài': 'phối ngẫu đảm đang, thực tế, biết vun vén, chung thủy', 'Thiên Tài': 'phối ngẫu hào phóng, giao thiệp rộng, hấp dẫn; mặt trái là thích tự do, khó giữ',
+    'Chính Quan': 'phối ngẫu đứng đắn, có trách nhiệm, nề nếp, có địa vị', 'Thất Sát': 'phối ngẫu mạnh mẽ, quyết liệt, che chở nhưng nóng tính, dễ áp đặt',
     'Chính Ấn': 'phối ngẫu hiền hậu, chăm lo như mẹ/cha, ham học', 'Thiên Ấn': 'phối ngẫu trầm lặng, có năng khiếu đặc biệt, hơi cô độc',
     'Thực Thần': 'phối ngẫu vui vẻ, dễ chịu, thích ăn ngon – hưởng thụ', 'Thương Quan': 'phối ngẫu thông minh, cá tính, hay phê phán – dễ va chạm lời nói',
-    'Tỷ Kiên': 'phối ngẫu như bạn bè, ngang tính, độc lập', 'Kiếp Tài': 'phối ngẫu cá tính mạnh, thích tự chủ; nên rõ ràng chuyện tài chính chung và giữ sự tin tưởng'
+    'Tỷ Kiên': 'phối ngẫu như bạn bè, ngang tính, độc lập', 'Kiếp Tài': 'phối ngẫu cá tính mạnh, thích tự chủ; dễ tranh chấp tiền chung, mất lòng tin'
   };
   if (TT_PN[chiTT]) { bti.push('Thập thần tọa cung phu thê: ' + chiTT + ' → ' + TT_PN[chiTT] + '.'); tinhCach.push(TT_PN[chiTT].replace('phối ngẫu ', '')); }
   add('Bát Tự', TH_NGU_HANH_HINH[nc.chiHanh].v, 1);
@@ -122,19 +122,19 @@ function phoiNgauLuan_(C) {
   var TRU = ['năm', 'tháng', 'ngày', 'giờ'];
   if (tim.length) {
     var hS = tim[0].h, hy = bt.goiY.hy.indexOf(hS) >= 0;
-    bti.push('Sao phối ngẫu (' + saoPN[0] + '/' + saoPN[1] + ', hành ' + hS + ') xuất hiện ở trụ ' + tim.map(function (x) { return TRU[x.i] + ' (' + x.lo + ')'; }).join(', ') + ' – là ' + (hy ? 'hỷ dụng thần: phối ngẫu giúp mình, hôn nhân mang lại may mắn.' : bt.goiY.ky.indexOf(hS) >= 0 ? 'kỵ thần: hôn nhân cần nhiều thấu hiểu và dung hòa.' : 'trung tính.'));
+    bti.push('Sao phối ngẫu (' + saoPN[0] + '/' + saoPN[1] + ', hành ' + hS + ') xuất hiện ở trụ ' + tim.map(function (x) { return TRU[x.i] + ' (' + x.lo + ')'; }).join(', ') + ' – là ' + (hy ? 'hỷ dụng thần: phối ngẫu giúp mình, hôn nhân mang lại may mắn.' : bt.goiY.ky.indexOf(hS) >= 0 ? 'kỵ thần: hôn nhân dễ hao tổn, hai người hay kéo nhau xuống, nhiều va chạm.' : 'trung tính.'));
     add('Bát Tự', TH_NGU_HANH_HINH[hS].v, 0.8);
     var dauTien = tim[0].i;
     bti.push(['Sao phối ngẫu ở trụ năm: dễ gặp sớm, qua quen biết gia đình/đồng hương; phối ngẫu có thể lớn tuổi hơn.', 'Sao phối ngẫu ở trụ tháng: gặp qua trường lớp, công việc, bạn bè; tuổi kết hôn trung bình.', 'Sao phối ngẫu ngay cạnh nhật chủ: gắn bó chặt chẽ, dễ gặp đúng người.', 'Sao phối ngẫu ở trụ giờ: duyên đến muộn; phối ngẫu thường trẻ hơn.'][dauTien]);
     tuoiP.push({ he: 'Bát Tự', v: dauTien === 0 ? 1 : dauTien === 3 ? -1 : 0 });
     chatP.push({ he: 'Bát Tự', v: (hy ? 1 : -0.5) + C.btct.cungVi[2].diem / 5 });
-    if (tim.filter(function (x) { return x.lo === 'can'; }).length >= 2 || tim.map(function (x) { return x.t; }).filter(function (v, i, a) { return a.indexOf(v) === i; }).length === 2) bti.push('◇ Chính – Thiên (hoặc sao phối ngẫu) hiện nhiều lần: có sức hút, nhiều mối duyên; nên rõ ràng và chung thủy.');
+    if (tim.filter(function (x) { return x.lo === 'can'; }).length >= 2 || tim.map(function (x) { return x.t; }).filter(function (v, i, a) { return a.indexOf(v) === i; }).length === 2) bti.push('◇ Chính – Thiên (hoặc sao phối ngẫu) hiện nhiều lần: có sức hút, nhiều mối duyên; mặt trái là tình cảm rối, dễ dây dưa nhiều người.');
   } else {
     bti.push('◇ Sao phối ngẫu không lộ trong tứ trụ: duyên có thể đến muộn hơn, thường được kích hoạt khi đại vận/lưu niên mang hành ' + (male ? 'Tài' : 'Quan') + ' tinh.');
     tuoiP.push({ he: 'Bát Tự', v: 0.5 }); chatP.push({ he: 'Bát Tự', v: C.btct.cungVi[2].diem / 5 });
   }
   var XUNG = [6, 7, 8, 9, 10, 11, 0, 1, 2, 3, 4, 5];
-  bt.pillars.forEach(function (p, i) { if (i !== 2 && p.chi === XUNG[nc.chi]) bti.push('✗ Trụ ' + TRU[i] + ' ' + p.chiTen + ' xung nhật chi ' + nc.chiTen + ': cung phu thê bị động – hôn nhân có thể có giai đoạn phải xa nhau hoặc nhiều thay đổi, cần nói chuyện thẳng thắn; tránh cưới vào năm ' + nc.chiTen + '/' + p.chiTen + ' xung.'); });
+  bt.pillars.forEach(function (p, i) { if (i !== 2 && p.chi === XUNG[nc.chi]) bti.push('✗ Trụ ' + TRU[i] + ' ' + p.chiTen + ' xung nhật chi ' + nc.chiTen + ': cung phu thê bị động – hôn nhân dễ có giai đoạn phải xa nhau, nhiều thay đổi, va chạm; tránh cưới vào năm ' + nc.chiTen + '/' + p.chiTen + ' xung.'); });
   he.push({ he: 'Bát Tự', items: bti });
 
   /* ---------- Chiêm tinh ---------- */
@@ -144,9 +144,9 @@ function phoiNgauLuan_(C) {
   ci.push('Chủ tinh nhà 7 (' + CT_HT[DS.chuCo].ten + ') ở ' + r7.cungTen + ', nhà ' + r7.nha + (r7.pham ? ' (' + r7.pham + ')' : '') + ' → dễ gặp ' + PN_NHA7[r7.nha] + '.');
   var h7 = ct.hanhTinh.filter(function (p) { return p.nha === 7 && p.key !== 'northNode'; });
   var Y7 = { sun: 'phối ngẫu nổi bật, tự tin; bản thân tìm thấy mình qua hôn nhân', moon: 'phối ngẫu chu đáo, giàu cảm xúc, gắn bó gia đình', mercury: 'phối ngẫu trẻ trung, nói nhiều, thông minh; có thể chênh ít tuổi',
-    venus: 'phối ngẫu đẹp, duyên dáng – hôn nhân hạnh phúc', mars: 'phối ngẫu mạnh mẽ, nhiệt huyết, có lúc tranh luận – nên nhường nhau', jupiter: 'phối ngẫu rộng lượng, có học thức hoặc khá giả – hôn nhân may mắn',
-    saturn: 'phối ngẫu lớn tuổi hơn hoặc nghiêm túc; kết hôn muộn nhưng bền', uranus: 'phối ngẫu khác thường; quen nhau bất ngờ, cần tự do trong hôn nhân', neptune: 'phối ngẫu nghệ sĩ/tâm linh; dễ lý tưởng hóa – cần tỉnh táo',
-    pluto: 'mối quan hệ mãnh liệt, chuyển hóa sâu; nên tôn trọng không gian riêng của nhau' };
+    venus: 'phối ngẫu đẹp, duyên dáng – hôn nhân êm; mặt trái là dễ chiều nhau quá, né chuyện khó', mars: 'phối ngẫu mạnh mẽ, nhiệt huyết, nhưng hay tranh luận, nóng giận', jupiter: 'phối ngẫu rộng lượng, có học thức hoặc khá giả – hôn nhân may mắn',
+    saturn: 'phối ngẫu lớn tuổi hơn hoặc nghiêm túc; kết hôn muộn, bền nhưng khô, nặng trách nhiệm', uranus: 'phối ngẫu khác thường; quen nhau bất ngờ, hôn nhân dễ bất ổn, tan hợp nhanh', neptune: 'phối ngẫu nghệ sĩ/tâm linh; dễ lý tưởng hóa rồi vỡ mộng, dễ bị lừa dối',
+    pluto: 'mối quan hệ mãnh liệt, chuyển hóa sâu; mặt trái là ghen, kiểm soát, tranh quyền' };
   h7.forEach(function (p) { ci.push((['venus', 'jupiter'].indexOf(p.key) >= 0 ? '✓ ' : ['mars', 'saturn', 'uranus', 'pluto'].indexOf(p.key) >= 0 ? '◇ ' : '') + p.ten + ' ở nhà 7: ' + Y7[p.key] + '.'); });
   if (h7.some(function (p) { return p.key === 'saturn'; })) tuoiP.push({ he: 'Chiêm tinh', v: 1 });
   if (h7.some(function (p) { return p.key === 'mercury'; })) tuoiP.push({ he: 'Chiêm tinh', v: -0.5 });
@@ -160,8 +160,8 @@ function phoiNgauLuan_(C) {
     var o = [g.a, g.b].filter(function (x) { return x !== k1 && x !== 'venus'; })[0];
     if (o === 'saturn') { ci.push('◇ ' + g.aTen + ' ' + g.goc + ' ' + g.bTen + ': tình cảm nghiêm túc, đến muộn; thường chọn người lớn tuổi/chín chắn.'); tuoiP.push({ he: 'Chiêm tinh', v: 0.8 }); cS += g.loai === 'tot' ? 0.3 : -0.5; }
     if (o === 'jupiter') { ci.push('✓ ' + g.aTen + ' ' + g.goc + ' ' + g.bTen + ': may mắn trong tình yêu, phối ngẫu rộng lượng.'); cS += 0.6; }
-    if (o === 'uranus') { ci.push('◇ ' + g.aTen + ' ' + g.goc + ' ' + g.bTen + ': yêu bất ngờ, "tiếng sét ái tình"; cần không gian riêng.'); cS -= 0.2; }
-    if (o === 'neptune' && g.loai !== 'tot') { ci.push('◇ ' + g.aTen + ' ' + g.goc + ' ' + g.bTen + ': dễ mơ mộng trong tình yêu – nên tìm hiểu kỹ.'); cS -= 0.3; }
+    if (o === 'uranus') { ci.push('◇ ' + g.aTen + ' ' + g.goc + ' ' + g.bTen + ': yêu bất ngờ, "tiếng sét ái tình"; tình đến nhanh đi cũng nhanh.'); cS -= 0.2; }
+    if (o === 'neptune' && g.loai !== 'tot') { ci.push('◇ ' + g.aTen + ' ' + g.goc + ' ' + g.bTen + ': dễ mơ mộng trong tình yêu, dễ yêu nhầm người, bị lừa dối.'); cS -= 0.3; }
   });
   chatP.push({ he: 'Chiêm tinh', v: Math.max(-2, Math.min(2, cS + ctDiemPham_(r7.pham) * 0.4 + ctDiemPham_(ct.by.venus.pham) * 0.4 + (h7.some(function (p) { return p.key === 'venus' || p.key === 'jupiter'; }) ? 0.6 : 0))) });
   he.push({ he: 'Chiêm tinh', items: ci });
@@ -172,8 +172,8 @@ function phoiNgauLuan_(C) {
     ' (cùng tần số), bổ trợ tốt với số ' + (tsGoc_(ts.duongDoi) % 2 ? '2, 4, 6' : '3, 5, 7') + '.');
   var bh = { 1: 'học cách để người kia cùng quyết định', 2: 'tránh phụ thuộc cảm xúc, tự tin vào giá trị bản thân', 3: 'giữ cam kết khi hết cảm giác mới lạ', 4: 'bớt cứng nhắc, thêm lãng mạn', 5: 'cân bằng tự do và gắn bó', 6: 'bớt kiểm soát, đừng ôm hết trách nhiệm', 7: 'mở lòng chia sẻ, đừng khép mình', 8: 'dành thời gian, không chỉ lo vật chất', 9: 'yêu người thật chứ không yêu hình mẫu lý tưởng' };
   tsi.push('Bài học trong tình yêu: ' + bh[tsGoc_(ts.duongDoi)] + '.');
-  if (ts.bieuDo[2] === 0) tsi.push('◇ Thiếu số 2: cần tinh tế hơn trong cảm nhận nhu cầu của người kia.');
-  if (ts.bieuDo[5] === 0) tsi.push('◇ Thiếu số 5 (tình yêu – cảm xúc): hay ngại bày tỏ, cần chủ động nói lời yêu thương.');
+  if (ts.bieuDo[2] === 0) tsi.push('◇ Thiếu số 2: khó nhận ra nhu cầu của người kia, dễ vô tình làm họ tổn thương.');
+  if (ts.bieuDo[5] === 0) tsi.push('◇ Thiếu số 5 (tình yêu – cảm xúc): hay ngại bày tỏ, người kia dễ thấy bị lạnh nhạt.');
   if (ts.coTen) tsi.push('Số linh hồn ' + ts.linhHon + ': trong hôn nhân bạn khao khát ' + TS_SO[ts.linhHon].tk.split(',').slice(0, 2).join(',') + '.');
   he.push({ he: 'Thần số học', items: tsi });
 
@@ -200,7 +200,7 @@ function phoiNgauLuan_(C) {
     var ng = C.hl.tien.tren, Q = TH_QUAI_HINH[ng], nd = C.hl.tien.nguyenDuong, dh = hlDiemHao_(C.hl.tien, nd), hli = [];
     add('Hà Lạc', Q.v, 1);
     hli.push('Ngoại quái Tiên thiên ' + ng + ' tượng cho "người kia": ' + Q.hinh + '; tính chất ' + HL_QUAI[ng].y + '.');
-    hli.push(dh.ung ? '✓ Hào nguyên đường có ứng (âm – dương tương cầu): dễ gặp người bổ khuyết cho mình, hôn nhân có hậu thuẫn.' : '◇ Hào nguyên đường không ứng: duyên đến chậm hoặc phải tự chủ động, hai người dễ "cùng cực" nên cần nhường.');
+    hli.push(dh.ung ? '✓ Hào nguyên đường có ứng (âm – dương tương cầu): dễ gặp người bổ khuyết cho mình, hôn nhân có hậu thuẫn.' : '◇ Hào nguyên đường không ứng: duyên đến chậm hoặc phải tự chủ động, hai người dễ "cùng cực", hay đối đầu nhau.');
     chatP.push({ he: 'Hà Lạc', v: (dh.ung ? 0.6 : -0.3) + C.hl.hau.diem * 0.3 });
     var qhn = (C.hlL ? C.hlL.nam : []).filter(function (n) { return n.tuoi >= 20 && n.tuoi <= 45 && HT_QUE.ketHon.indexOf(n.que) >= 0; }).slice(0, 5);
     if (qhn.length) hli.push('Năm quẻ lưu niên chủ hôn nhân (20–45 tuổi): ' + qhn.map(function (n) { return n.nam + ' (' + n.que + ')'; }).join(', ') + '.');
@@ -227,7 +227,7 @@ function phoiNgauLuan_(C) {
     'Tính cách: ' + tinhCach.slice(0, 3).join('; ') + '.',
     'Chênh lệch tuổi: ' + (T > 0.6 ? (male ? 'vợ' : 'chồng') + ' có xu hướng lớn tuổi hơn hoặc chín chắn vượt tuổi' : T > 0.2 ? (male ? 'vợ có xu hướng ngang tuổi hoặc tính cách già dặn' : 'chồng có xu hướng lớn hơn vài tuổi') : T < -0.3 ? (male ? 'vợ có xu hướng kém tuổi' : 'chồng có xu hướng bằng tuổi hoặc trẻ hơn') : 'có xu hướng chênh ít tuổi') + ' (' + dong(tuoiP, T || 1) + ' dấu hiệu cùng chiều).',
     'Nơi/cách gặp: ' + PN_NHA7[r7.nha] + '; hướng cung Phu Thê là ' + PN_HUONG_CHI[pt.chi] + ' (so với nơi ở của bạn).',
-    'Chất lượng hôn nhân: ' + (Q > 0.8 ? 'rất thuận – người bạn đời dễ là nguồn may mắn và chỗ dựa của bạn' : Q > 0.2 ? 'khá – hòa thuận, có vun đắp thì bền' : Q > -0.4 ? 'có lúc lên xuống như mọi đôi lứa – nhẫn nại và trò chuyện thường xuyên giúp hai người vững hơn' : 'cần nhiều thấu hiểu – nên tìm hiểu đủ lâu, nói chuyện thẳng thắn và học cách dung hòa; đây là điều học được, không phải điều định sẵn') + ' (điểm tổng ' + (Math.round(Q * 10) / 10) + ').',
+    'Chất lượng hôn nhân: ' + (Q > 0.8 ? 'rất thuận – người bạn đời dễ là nguồn may mắn và chỗ dựa của bạn; mặt trái là dễ ỷ lại vào người kia' : Q > 0.2 ? 'khá – hòa thuận; lơ là thì vẫn dễ nhạt dần' : Q > -0.4 ? 'lên xuống thất thường – có giai đoạn gắn bó, có giai đoạn xa cách, giận nhau lâu' : 'nhiều trắc trở – dễ chọn sai người, va chạm nhiều, có nguy cơ đổ vỡ hoặc có giai đoạn cô đơn kéo dài; tìm hiểu đủ lâu trước khi cưới') + ' (điểm tổng ' + (Math.round(Q * 10) / 10) + ').',
     'Năm tín hiệu cưới hỏi mạnh nhất theo Tử Vi: ' + (tot.join(', ') || 'chưa rõ') + (sap.length ? '. Sắp tới: ' + sap.join(', ') : '') + '.'
   ];
   var hop = pnTuoiThangHop_(C, T);
@@ -274,17 +274,17 @@ function pnVanThem_(kl, o) {
     if (/khớp xu hướng tuổi/.test(ct)) v.push('đúng khoảng tuổi lá số của bạn nghiêng về');
     return 'sinh năm ' + x.nam + ' (' + (x.lech > 0 ? 'kém bạn ' + x.lech + ' tuổi' : x.lech < 0 ? 'hơn bạn ' + (-x.lech) + ' tuổi' : 'cùng tuổi') + '): ' + (v.length ? v.slice(0, 3).join(', ') : 'hài hòa ở nhiều tiêu chí cùng lúc');
   });
-  if (ly.length) kl.push('Vì sao các tuổi này hợp: ' + ly.join('; ') + '. Tuổi hợp chỉ là gợi ý để tham khảo – điều giữ hai người bền lâu vẫn là cách đối xử với nhau mỗi ngày.');
+  if (ly.length) kl.push('Vì sao các tuổi này hợp: ' + ly.join('; ') + '. Tuổi hợp chỉ là gợi ý để tham khảo – hợp tuổi vẫn có thể đổ vỡ nếu cách đối xử với nhau không ổn.');
   // 4. Cách vun đắp (tầng 2: nhẹ nhàng, có cách làm)
-  kl.push('Cách vun đắp: ' + (o.Q > 0.2 ? 'Bạn có xu hướng có nền tình cảm khá thuận; giữ được nhờ những thói quen nhỏ – hỏi han mỗi ngày, cảm ơn cả những việc nhỏ.' :
-    o.Q > -0.4 ? 'Bạn có xu hướng trải qua tình cảm theo từng giai đoạn lên xuống; một buổi trò chuyện thật lòng mỗi tuần giúp hai người không trôi xa nhau.' :
-    'Bạn có xu hướng cần nhiều thời gian để tin và mở lòng; tìm hiểu đủ lâu, nói rõ mong muốn từ đầu và học cách nhường nhau là cách giữ bền.') +
-    ' Người hợp với bạn thường cần ' + (PN_HANH_CAN[o.hanh] || 'được lắng nghe') + ' – trao cho họ điều đó, bạn sẽ nhận lại nhiều hơn.' + (o.bh ? ' Bài học riêng của bạn trong tình yêu: ' + o.bh + '.' : ''));
+  kl.push('Hai mặt của đường tình: ' + (o.Q > 0.2 ? 'Bạn có xu hướng có nền tình cảm khá thuận: dễ gặp người tử tế, ít sóng gió lớn. Mặt xấu: thuận lâu dễ coi nhau là đương nhiên, tình cảm nhạt dần mà không ai nói ra.' :
+    o.Q > -0.4 ? 'Bạn có xu hướng trải qua tình cảm theo từng giai đoạn lên xuống: có lúc rất gần, có lúc xa cách, giận nhau lâu và dễ nghĩ đến chuyện buông. Gợi ý: nói thật với nhau sớm, đừng để dồn.' :
+    'Bạn có xu hướng khó tin và khó mở lòng: tình cảm nhiều trắc trở, dễ chọn sai người, có giai đoạn cô đơn kéo dài và tổn thương khó lành. Mặt tốt: đã tin ai thì gắn bó sâu. Gợi ý: đừng quyết chuyện cưới hỏi khi đang ở giai đoạn rối.') +
+    ' Người hợp với bạn thường cần ' + (PN_HANH_CAN[o.hanh] || 'được lắng nghe') + ' – thiếu điều đó thì họ dễ thấy hụt và rời xa.' + (o.bh ? ' Bài học riêng của bạn trong tình yêu: ' + o.bh + '.' : ''));
   // 5. Giai đoạn thuận gặp gỡ
   var nam = (o.sap || []).concat(o.que || []).filter(function (y, i, a) { return a.indexOf(y) === i; }).sort().slice(0, 5);
-  kl.push('Giai đoạn thuận để gặp gỡ: ' + (nam.length ? 'các năm ' + nam.join(', ') + ' có không khí thuận cho quen biết và gắn bó. Nếu đang một mình, đây là lúc hợp để mở rộng các mối quen; nếu đã có đôi, đây là lúc hợp để hai người gần nhau hơn.' :
-    'những năm có tín hiệu mạnh nhất đã ở phía sau. Nếu bạn đã có đôi, những năm tới hợp để vun đắp hơn là tìm kiếm; nếu chưa, duyên vẫn đến khi bạn chủ động mở rộng các mối quen.') +
-    ' Năm thuận chỉ làm mọi việc dễ hơn, không thay cho sự chủ động và chân thành của bạn.');
+  kl.push('Giai đoạn thuận để gặp gỡ: ' + (nam.length ? 'các năm ' + nam.join(', ') + ' có không khí thuận cho quen biết và gắn bó. Thuận không có nghĩa là chắc: người đang một mình vẫn có thể gặp sai người, người đã có đôi vẫn có thể va chạm.' :
+    'những năm có tín hiệu mạnh nhất đã ở phía sau. Nếu chưa có đôi, những năm tới ít lực đẩy, duyên đến chậm và phải tự chủ động nhiều hơn.') +
+    ' Năm thuận chỉ làm mọi việc dễ hơn, không bảo đảm kết quả.');
 }
 
 /* =========================================================
@@ -468,9 +468,9 @@ function pnThoiDiem_(C, namTin, xuHuong) {
  * ========================================================= */
 var PN_CON_TRAI = ['Thái Dương', 'Thất Sát', 'Phá Quân', 'Tử Vi', 'Vũ Khúc', 'Tham Lang', 'Liêm Trinh'];
 var PN_CON_GAI = ['Thái Âm', 'Thiên Đồng', 'Cự Môn', 'Thiên Lương', 'Thiên Phủ', 'Thiên Tướng', 'Thiên Cơ'];
-var PN_CON_NHA5 = { sun: 'con tự tin, thích dẫn dắt, là niềm tự hào của cha mẹ', moon: 'con giàu cảm xúc, gắn bó gia đình, cần được vỗ về', mercury: 'con lanh lợi, nói sớm, ham học hỏi',
-  venus: 'con xinh xắn, có năng khiếu nghệ thuật, dễ thương', mars: 'con hiếu động, mạnh mẽ, thích thể thao', jupiter: 'con may mắn, rộng lượng; gia đình đầm ấm',
-  saturn: 'con cái là chuyện cần thời gian và sự vun đắp; con chín chắn, có trách nhiệm', uranus: 'con độc lập, khác thường, sáng tạo', neptune: 'con nhạy cảm, mơ mộng, có năng khiếu nghệ thuật/tâm linh', pluto: 'con có ý chí mạnh, sâu sắc' };
+var PN_CON_NHA5 = { sun: 'con tự tin, thích dẫn dắt; mặt trái là dễ kiêu, khó nghe lời', moon: 'con giàu cảm xúc, gắn bó gia đình; mặt trái là nhạy cảm, dễ tủi thân', mercury: 'con lanh lợi, nói sớm, ham học hỏi',
+  venus: 'con xinh xắn, có năng khiếu nghệ thuật, dễ thương', mars: 'con hiếu động, mạnh mẽ, thích thể thao; mặt trái là bướng, dễ va chạm', jupiter: 'con may mắn, rộng lượng; gia đình đầm ấm',
+  saturn: 'con chín chắn, có trách nhiệm; mặt trái là con đến muộn hoặc ít con', uranus: 'con độc lập, khác thường, sáng tạo', neptune: 'con nhạy cảm, mơ mộng, có năng khiếu nghệ thuật/tâm linh', pluto: 'con có ý chí mạnh, sâu sắc' };
 /** Lấy nét tính cách con từ câu luận, bỏ các vế nói về số lượng/thời điểm */
 function pnNetCon_(y) {
   return String(y).split(/[,;.]/).map(function (x) { return x.trim().replace(/^con (cái )?/, ''); })
@@ -493,7 +493,7 @@ function pnConCai_(C, td) {
     if (['Tả Phù', 'Hữu Bật', 'Thiên Hỷ', 'Thai', 'Long Trì', 'Phượng Các'].indexOf(s.n) >= 0) soP.push({ he: 'Tử Vi', v: 0.5 });
     if (['Địa Không', 'Địa Kiếp', 'Cô Thần', 'Quả Tú', 'Kình Dương', 'Đà La'].indexOf(s.n) >= 0) soP.push({ he: 'Tử Vi', v: -0.6 });
   });
-  if (tt.tuan || tt.triet) { tvi.push('◇ Tử Tức gặp ' + (tt.triet ? 'Triệt' : 'Tuần') + ': con cái là chuyện cần thời gian và sự vun đắp; chủ động chăm sóc sức khỏe hai vợ chồng.'); soP.push({ he: 'Tử Vi', v: -0.5 }); }
+  if (tt.tuan || tt.triet) { tvi.push('◇ Tử Tức gặp ' + (tt.triet ? 'Triệt' : 'Tuần') + ': chuyện con cái dễ muộn, ít con hoặc trắc trở lúc đầu; nên khám sức khỏe sinh sản sớm nếu mong con.'); soP.push({ he: 'Tử Vi', v: -0.5 }); }
   nguon.push({ he: 'Tử Vi', items: tvi });
   /* Bát Tự – sao con + thời trụ */
   var bti = [], sTrai = male ? 'Thất Sát' : 'Thương Quan', sGai = male ? 'Chính Quan' : 'Thực Thần', dT = 0, dG = 0;
@@ -506,7 +506,7 @@ function pnConCai_(C, td) {
   if (dT + dG) traiP.push({ he: 'Bát Tự', v: Math.max(-1, Math.min(1, (dT - dG) / (dT + dG) * 1.5)) });
   soP.push({ he: 'Bát Tự', v: dT + dG >= 2 ? 1 : dT + dG < 0.5 ? -1 : 0 });
   var gio = bt.pillars[3], hk = btctHyKy_(bt, CAN_HANH[gio.tangCan[0].can]);
-  bti.push('Thời trụ (cung con cái) ' + gio.canTen + ' ' + gio.chiTen + ' là ' + hk + ' thần – ' + (hk === 'Kỵ' ? 'con cái cần nhiều kiên nhẫn dạy dỗ; về già bạn nên chủ động chuẩn bị cho mình.' : 'con cái hiếu thuận, về già được con đỡ đần.'));
+  bti.push('Thời trụ (cung con cái) ' + gio.canTen + ' ' + gio.chiTen + ' là ' + hk + ' thần – ' + (hk === 'Kỵ' ? 'con cái khó bảo, dễ bất đồng với cha mẹ; về già ít trông cậy được vào con.' : 'con cái hiếu thuận, về già được con đỡ đần; mặt trái là dễ dựa vào con quá nhiều.'));
   if (bt.pillars[3].chi === (bt.pillars[2].chi + 6) % 12) bti.push('◇ Thời chi xung nhật chi: con cái có chí hướng riêng, có thể lập nghiệp xa cha mẹ.');
   nguon.push({ he: 'Bát Tự', items: bti });
   /* Chiêm tinh – nhà 5 */
@@ -520,17 +520,17 @@ function pnConCai_(C, td) {
   /* Thần số */
   var ts = C.ts, tsi = [];
   if (ts.bieuDo && ts.bieuDo[6]) tsi.push('Có số 6 trong ngày sinh (' + ts.bieuDo[6] + ' lần): yêu gia đình, chăm con chu đáo' + (ts.bieuDo[6] >= 3 ? ' – nhưng dễ bao bọc quá mức.' : '.'));
-  else tsi.push('Thiếu số 6: cần học cách thể hiện tình thương bằng hành động, dành thời gian cho con.');
+  else tsi.push('Thiếu số 6: ít thể hiện tình thương bằng hành động, con dễ thấy cha mẹ xa cách.');
   if (tsGoc_(ts.duongDoi) === 6 || tsGoc_(ts.duongDoi) === 2) soP.push({ he: 'Thần số học', v: 0.6 });
   nguon.push({ he: 'Thần số học', items: tsi });
   function tb(a) { var s = 0; a.forEach(function (x) { s += x.v; }); return a.length ? s / a.length : 0; }
   var S = tb(soP), Tr = tb(traiP), pTrai = Math.round(50 + Tr * 18);
   var sinh = td && td.sinhCon, dau = sinh && sinh.nam.slice().sort(function (a, b) { return b.pct - a.pct; })[0];
   var kl = [
-    'Đường con cái: ' + (S > 0.4 ? 'theo cổ học, duyên con cái khá rõ' : S > -0.2 ? 'theo cổ học, duyên con cái ở mức vừa' : 'con cái là chuyện cần thời gian và sự vun đắp; chủ động chăm sóc sức khỏe hai vợ chồng') + '.',
-    'Trai – gái: cổ học có cách luận nghiêng về trai hay gái, nhưng đó chỉ là tham khảo – mỗi đứa con đều là niềm vui như nhau.',
+    'Đường con cái: ' + (S > 0.4 ? 'theo cổ học, duyên con cái khá rõ' : S > -0.2 ? 'theo cổ học, duyên con cái ở mức vừa' : 'theo cổ học, duyên con cái mỏng: dễ muộn, ít con hoặc trắc trở; nên khám sức khỏe sinh sản sớm nếu mong con') + '.',
+    'Trai – gái: cổ học có cách luận nghiêng về trai hay gái, nhưng đó chỉ là tham khảo, độ tin thấp.',
     'Tính cách con: ' + (tc.filter(Boolean).slice(0, 4).join(', ') || 'hài hòa, dễ dạy') + '.',
-    'Quan hệ cha mẹ – con: ' + (hk === 'Kỵ' ? 'cần kiên nhẫn, dạy bằng lý lẽ; tránh áp đặt.' : 'gắn bó, con là chỗ dựa hậu vận.'),
+    'Quan hệ cha mẹ – con: ' + (hk === 'Kỵ' ? 'dễ căng thẳng, cha mẹ và con hay đối đầu; áp đặt thì con càng xa.' : 'gắn bó, con là chỗ dựa hậu vận; mặt trái là cha mẹ dễ can thiệp quá vào đời con.'),
     dau ? 'Năm đáng chú ý cho tin vui con cái phía trước: ' + dau.nam + ' (' + dau.tuoi + ' tuổi).' : ''
   ].filter(Boolean);
   return { tieuDe: 'Chân dung con cái', ketLuan: kl, nguon: nguon, chiSo: { soCon: S, pTrai: pTrai } };

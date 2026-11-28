@@ -34,78 +34,78 @@ var HL_CHI_SO = [[1, 6], [5, 10], [3, 8], [3, 8], [5, 10], [2, 7], [2, 7], [5, 1
 
 /** 64 quẻ (thứ tự Văn Vương): [thượng, hạ, tên, điểm cát–hung −2..2, ý nghĩa, lời khuyên] */
 var HL_QUE = [
-  ['Càn', 'Càn', 'Thuần Càn', 2, 'Trời cương kiện, sáng tạo không ngừng – quyền lực, lãnh đạo, thành công lớn', 'tự cường không nghỉ nhưng tránh kiêu mãn'],
-  ['Khôn', 'Khôn', 'Thuần Khôn', 1, 'Đất nhu thuận, bao dung, nuôi dưỡng – thành công nhờ hợp tác và đi sau', 'nhu thuận, bền bỉ, đi sau thì được'],
-  ['Khảm', 'Chấn', 'Thủy Lôi Truân', -1, 'Khởi đầu gian nan như mầm non đội đất – có tiềm năng nhưng nhiều trở ngại', 'kiên nhẫn, tìm người giúp, chưa nên liều'],
-  ['Cấn', 'Khảm', 'Sơn Thủy Mông', -0.5, 'Mông muội, non nớt – thời học hỏi, cần thầy dẫn dắt', 'khiêm tốn học hỏi, tránh tự phụ'],
-  ['Khảm', 'Càn', 'Thủy Thiên Nhu', 0.5, 'Chờ đợi đúng thời như mây chờ mưa – có lòng tin thì hanh thông', 'chờ thời, dưỡng sức, đừng nóng vội'],
-  ['Càn', 'Khảm', 'Thiên Thủy Tụng', -1.5, 'Tranh tụng, bất đồng, kiện cáo', 'nhường nhịn, hòa giải, tránh kiện tụng'],
-  ['Khôn', 'Khảm', 'Địa Thủy Sư', 0, 'Quân đội, tổ chức, kỷ luật – thành công khi có người lãnh đạo chính đáng', 'tổ chức chặt chẽ, dùng người đúng'],
-  ['Khảm', 'Khôn', 'Thủy Địa Tỷ', 1, 'Thân cận, liên kết, được lòng người', 'kết giao đúng người, đoàn kết'],
-  ['Tốn', 'Càn', 'Phong Thiên Tiểu Súc', 0, 'Tích nhỏ thành lớn – bị ngăn trở nhẹ, mây dày chưa mưa', 'tích lũy từng chút, chờ thời'],
-  ['Càn', 'Đoài', 'Thiên Trạch Lý', 0.5, 'Lễ nghi, bước đi thận trọng như giẫm đuôi hổ mà không bị cắn', 'giữ lễ, thận trọng thì an'],
-  ['Khôn', 'Càn', 'Địa Thiên Thái', 2, 'Thông thái, trời đất giao hòa – hanh thông, thịnh vượng', 'tận dụng thời thịnh, phòng khi đổi vận'],
-  ['Càn', 'Khôn', 'Thiên Địa Bĩ', -1.5, 'Bế tắc, trên dưới không thông – tiểu nhân lấn át', 'giữ mình, ẩn nhẫn chờ qua'],
-  ['Càn', 'Ly', 'Thiên Hỏa Đồng Nhân', 1.5, 'Hòa đồng, hợp tác rộng rãi, cùng chí hướng', 'mở rộng hợp tác, công tâm'],
-  ['Ly', 'Càn', 'Hỏa Thiên Đại Hữu', 2, 'Sở hữu lớn, giàu có, rực rỡ như mặt trời giữa trời', 'giữ khiêm, dùng của làm việc tốt'],
-  ['Khôn', 'Cấn', 'Địa Sơn Khiêm', 1.5, 'Khiêm tốn – núi ẩn dưới đất, được người kính trọng', 'khiêm nhường thì mọi việc hanh thông'],
-  ['Chấn', 'Khôn', 'Lôi Địa Dự', 1, 'Vui vẻ, hứng khởi, chuẩn bị chu đáo', 'vui mà không sa đà, chuẩn bị trước'],
-  ['Đoài', 'Chấn', 'Trạch Lôi Tùy', 1, 'Theo thời, tùy thuận – được người đi theo', 'linh hoạt theo thời, chọn đúng người để theo'],
-  ['Cấn', 'Tốn', 'Sơn Phong Cổ', -0.5, 'Đổ nát cần sửa chữa – chấn chỉnh việc cũ', 'sửa sai, cải tổ, giải quyết việc tồn đọng'],
-  ['Khôn', 'Đoài', 'Địa Trạch Lâm', 1.5, 'Đến gần, lớn mạnh – thời tiến', 'tiến lên nhưng lo trước lúc suy'],
-  ['Tốn', 'Khôn', 'Phong Địa Quan', 0.5, 'Quan sát, chiêm nghiệm, làm gương', 'quan sát kỹ, sống làm gương'],
-  ['Ly', 'Chấn', 'Hỏa Lôi Phệ Hạp', -0.5, 'Cắn đứt trở ngại – hình phạt, pháp luật', 'quyết đoán xử lý trở ngại, công minh'],
-  ['Cấn', 'Ly', 'Sơn Hỏa Bí', 0.5, 'Trang sức, vẻ đẹp bên ngoài', 'chuộng thực chất hơn hình thức'],
-  ['Cấn', 'Khôn', 'Sơn Địa Bác', -2, 'Bóc lở, sụp đổ dần – tiểu nhân thịnh', 'án binh, giữ gốc, không mạo hiểm'],
-  ['Khôn', 'Chấn', 'Địa Lôi Phục', 1, 'Trở lại, phục hồi – dương khí trở về', 'bắt đầu lại từ từ, sửa mình'],
-  ['Càn', 'Chấn', 'Thiên Lôi Vô Vọng', 0, 'Chân thật, không vọng động – làm càn thì gặp họa bất ngờ', 'sống thật, không mưu cầu bất chính'],
-  ['Cấn', 'Càn', 'Sơn Thiên Đại Súc', 1.5, 'Tích tụ lớn, nuôi dưỡng hiền tài', 'tích lũy tri thức, của cải, chờ dịp lớn'],
-  ['Cấn', 'Chấn', 'Sơn Lôi Di', 0.5, 'Nuôi dưỡng – ăn uống và lời nói', 'giữ lời nói và ăn uống điều độ'],
-  ['Đoài', 'Tốn', 'Trạch Phong Đại Quá', -1, 'Quá mức, gánh nặng làm oằn cột', 'giảm tải, hành động phi thường nhưng cẩn trọng'],
-  ['Khảm', 'Khảm', 'Thuần Khảm', -1.5, 'Hiểm trở chồng chất', 'giữ lòng tin, vượt hiểm từng bước'],
-  ['Ly', 'Ly', 'Thuần Ly', 1, 'Sáng sủa, nương vào chính đạo, văn minh', 'nương tựa đúng chỗ, giữ sáng suốt'],
-  ['Đoài', 'Cấn', 'Trạch Sơn Hàm', 1, 'Cảm ứng – tình cảm, hôn nhân', 'chân thành cảm hóa, thuận duyên tình cảm'],
-  ['Chấn', 'Tốn', 'Lôi Phong Hằng', 1, 'Lâu bền, kiên định', 'giữ vững con đường đã chọn'],
-  ['Càn', 'Cấn', 'Thiên Sơn Độn', -0.5, 'Lui ẩn, tránh tiểu nhân', 'biết lui đúng lúc để bảo toàn'],
-  ['Chấn', 'Càn', 'Lôi Thiên Đại Tráng', 1, 'Cường thịnh, sức mạnh lớn', 'mạnh mà giữ chính, không lạm dụng'],
-  ['Ly', 'Khôn', 'Hỏa Địa Tấn', 1.5, 'Tiến lên, thăng tiến như mặt trời mọc', 'tiến bước, được trọng dụng'],
-  ['Khôn', 'Ly', 'Địa Hỏa Minh Di', -1.5, 'Ánh sáng bị che – người hiền bị hại', 'giấu tài, giữ chính, chờ sáng'],
-  ['Tốn', 'Ly', 'Phong Hỏa Gia Nhân', 1, 'Gia đình, nề nếp, nội trợ', 'chăm lo gia đạo, phân vai rõ'],
-  ['Ly', 'Đoài', 'Hỏa Trạch Khuê', -1, 'Chia lìa, bất đồng', 'tìm điểm chung trong việc nhỏ'],
-  ['Khảm', 'Cấn', 'Thủy Sơn Kiển', -1.5, 'Gian nan, chân bị vướng', 'quay lại tự xét, tìm quý nhân'],
-  ['Chấn', 'Khảm', 'Lôi Thủy Giải', 1, 'Giải thoát, tháo gỡ khó khăn', 'giải quyết nhanh gọn, bao dung'],
-  ['Cấn', 'Đoài', 'Sơn Trạch Tổn', -0.5, 'Bớt dưới thêm trên – hy sinh để được lâu dài', 'bớt dục vọng, đầu tư cho tương lai'],
-  ['Tốn', 'Chấn', 'Phong Lôi Ích', 1.5, 'Lợi ích, gia tăng', 'làm việc lớn, giúp người cùng được lợi'],
-  ['Đoài', 'Càn', 'Trạch Thiên Quải', 0, 'Quyết đoán, dứt khoát loại bỏ điều xấu', 'quyết mà không bạo'],
-  ['Càn', 'Tốn', 'Thiên Phong Cấu', -0.5, 'Gặp gỡ bất ngờ – âm lấn dương', 'cẩn trọng với mối quan hệ mới'],
-  ['Đoài', 'Khôn', 'Trạch Địa Tụy', 1, 'Tụ họp, đoàn tụ', 'tập hợp lực lượng, phòng bất trắc'],
-  ['Khôn', 'Tốn', 'Địa Phong Thăng', 1.5, 'Đi lên, thăng tiến từ từ', 'tiến dần, tìm gặp người có quyền'],
-  ['Đoài', 'Khảm', 'Trạch Thủy Khốn', -1.5, 'Khốn cùng, cạn kiệt', 'giữ chí, ít nói, chờ qua cơn khốn'],
-  ['Khảm', 'Tốn', 'Thủy Phong Tỉnh', 0.5, 'Giếng nước – nguồn lực bền, nuôi người', 'bồi đắp nền tảng, phục vụ'],
-  ['Đoài', 'Ly', 'Trạch Hỏa Cách', 0.5, 'Cách mạng, thay đổi lớn', 'đổi mới đúng thời, giữ lòng tin'],
-  ['Ly', 'Tốn', 'Hỏa Phong Đỉnh', 1.5, 'Cái đỉnh – xây dựng cái mới, địa vị', 'ổn định vị thế, dùng người tài'],
-  ['Chấn', 'Chấn', 'Thuần Chấn', 0, 'Chấn động, sấm sét – sợ hãi rồi vui', 'bình tĩnh trước biến động'],
-  ['Cấn', 'Cấn', 'Thuần Cấn', 0, 'Dừng lại, tĩnh lặng', 'biết dừng đúng lúc'],
-  ['Tốn', 'Cấn', 'Phong Sơn Tiệm', 1, 'Tiến dần – hôn nhân tốt', 'từng bước vững chắc'],
-  ['Chấn', 'Đoài', 'Lôi Trạch Quy Muội', -1, 'Hôn nhân không chính, vội vàng', 'tránh vội vàng trong tình cảm'],
-  ['Chấn', 'Ly', 'Lôi Hỏa Phong', 1, 'Thịnh lớn, sung mãn', 'tận hưởng thời thịnh nhưng phòng suy'],
-  ['Ly', 'Cấn', 'Hỏa Sơn Lữ', -0.5, 'Lữ khách – xa nhà, bất định', 'khiêm nhường nơi đất khách'],
-  ['Tốn', 'Tốn', 'Thuần Tốn', 0.5, 'Nhu thuận, thâm nhập như gió', 'mềm mỏng, kiên trì'],
-  ['Đoài', 'Đoài', 'Thuần Đoài', 1, 'Vui vẻ, giao tiếp, thuyết phục', 'vui mà giữ chính'],
-  ['Tốn', 'Khảm', 'Phong Thủy Hoán', 0, 'Ly tán rồi hóa giải', 'hàn gắn, quy tụ lòng người'],
-  ['Khảm', 'Đoài', 'Thủy Trạch Tiết', 0.5, 'Tiết chế, giới hạn', 'tiết kiệm vừa phải'],
-  ['Tốn', 'Đoài', 'Phong Trạch Trung Phu', 1.5, 'Thành tín, lòng tin', 'giữ chữ tín'],
-  ['Chấn', 'Cấn', 'Lôi Sơn Tiểu Quá', -0.5, 'Hơi quá – việc nhỏ được, việc lớn không', 'làm việc nhỏ, khiêm hạ'],
-  ['Khảm', 'Ly', 'Thủy Hỏa Ký Tế', 0.5, 'Đã xong, đã thành – đầu tốt cuối dễ loạn', 'giữ thành quả, phòng suy'],
-  ['Ly', 'Khảm', 'Hỏa Thủy Vị Tế', 0, 'Chưa xong, sắp thành', 'cẩn trọng ở bước cuối']
+  ['Càn', 'Càn', 'Thuần Càn', 2, 'Trời cương kiện, sáng tạo không ngừng – quyền lực, lãnh đạo, thành công lớn; mặt trái: cứng quá dễ gãy, kiêu mãn, đơn độc ở chỗ cao', 'tự cường không nghỉ nhưng tránh kiêu mãn'],
+  ['Khôn', 'Khôn', 'Thuần Khôn', 1, 'Đất nhu thuận, bao dung, nuôi dưỡng – thành công nhờ hợp tác và đi sau; mặt trái: dễ thụ động, phụ thuộc, chịu thiệt vì nhường', 'nhu thuận, bền bỉ, đi sau thì được'],
+  ['Khảm', 'Chấn', 'Thủy Lôi Truân', -1, 'Khởi đầu gian nan như mầm non đội đất – có tiềm năng nhưng trở ngại nhiều, việc dễ rối, chậm thành, liều thì vỡ', 'kiên nhẫn, tìm người giúp, chưa nên liều'],
+  ['Cấn', 'Khảm', 'Sơn Thủy Mông', -0.5, 'Mông muội, non nớt – thời học hỏi, cần thầy dẫn dắt; mặt xấu: dễ hiểu sai, quyết sai, bị người khác dắt mũi', 'khiêm tốn học hỏi, tránh tự phụ'],
+  ['Khảm', 'Càn', 'Thủy Thiên Nhu', 0.5, 'Chờ đợi đúng thời như mây chờ mưa – có lòng tin thì hanh thông; mặt trái: chờ lâu, sốt ruột, nóng vội thì hỏng', 'chờ thời, dưỡng sức, đừng nóng vội'],
+  ['Càn', 'Khảm', 'Thiên Thủy Tụng', -1.5, 'Tranh tụng, bất đồng, kiện cáo – dễ mất tiền, mất quan hệ, kiện thắng cũng tổn hao', 'nhường nhịn, hòa giải, tránh kiện tụng'],
+  ['Khôn', 'Khảm', 'Địa Thủy Sư', 0, 'Quân đội, tổ chức, kỷ luật – thành công khi có người lãnh đạo chính đáng; mặt trái: áp lực, gò bó, dễ có xung đột', 'tổ chức chặt chẽ, dùng người đúng'],
+  ['Khảm', 'Khôn', 'Thủy Địa Tỷ', 1, 'Thân cận, liên kết, được lòng người; mặt trái: chậm chân thì bị gạt ra, dễ nể nang chọn nhầm bạn', 'kết giao đúng người, đoàn kết'],
+  ['Tốn', 'Càn', 'Phong Thiên Tiểu Súc', 0, 'Tích nhỏ thành lớn – bị ngăn trở nhẹ, mây dày chưa mưa; việc lớn chưa thành, dễ bực bội vì chậm', 'tích lũy từng chút, chờ thời'],
+  ['Càn', 'Đoài', 'Thiên Trạch Lý', 0.5, 'Lễ nghi, bước đi thận trọng như giẫm đuôi hổ mà không bị cắn; mặt trái: luôn ở thế chênh vênh, sơ sẩy là bị hại', 'giữ lễ, thận trọng thì an'],
+  ['Khôn', 'Càn', 'Địa Thiên Thái', 2, 'Thông thái, trời đất giao hòa – hanh thông, thịnh vượng; mặt trái: thịnh cực dễ chủ quan, vận đổi thì sa sút', 'tận dụng thời thịnh, phòng khi đổi vận'],
+  ['Càn', 'Khôn', 'Thiên Địa Bĩ', -1.5, 'Bế tắc, trên dưới không thông – tiểu nhân lấn át, việc khó thành, người tốt bị gạt ra', 'giữ mình, ẩn nhẫn chờ qua'],
+  ['Càn', 'Ly', 'Thiên Hỏa Đồng Nhân', 1.5, 'Hòa đồng, hợp tác rộng rãi, cùng chí hướng; mặt trái: dễ cả nể, bè phái, nhiều người nhiều ý dễ rối', 'mở rộng hợp tác, công tâm'],
+  ['Ly', 'Càn', 'Hỏa Thiên Đại Hữu', 2, 'Sở hữu lớn, giàu có, rực rỡ như mặt trời giữa trời; mặt trái: của nhiều dễ sinh kiêu, bị ganh ghét, tiêu hoang', 'giữ khiêm, dùng của làm việc tốt'],
+  ['Khôn', 'Cấn', 'Địa Sơn Khiêm', 1.5, 'Khiêm tốn – núi ẩn dưới đất, được người kính trọng; mặt trái: nhường quá thì bị lấn, chậm được ghi nhận', 'khiêm nhường thì mọi việc hanh thông'],
+  ['Chấn', 'Khôn', 'Lôi Địa Dự', 1, 'Vui vẻ, hứng khởi, chuẩn bị chu đáo; mặt trái: dễ ham vui, lơ là, sa đà hưởng thụ', 'vui mà không sa đà, chuẩn bị trước'],
+  ['Đoài', 'Chấn', 'Trạch Lôi Tùy', 1, 'Theo thời, tùy thuận – được người đi theo; mặt trái: theo nhầm người thì hỏng, dễ mất chủ kiến', 'linh hoạt theo thời, chọn đúng người để theo'],
+  ['Cấn', 'Tốn', 'Sơn Phong Cổ', -0.5, 'Đổ nát cần sửa chữa – việc cũ hỏng, nợ nần hoặc lỗi tồn đọng phải gánh, tốn công tốn của mới chấn chỉnh được', 'sửa sai, cải tổ, giải quyết việc tồn đọng'],
+  ['Khôn', 'Đoài', 'Địa Trạch Lâm', 1.5, 'Đến gần, lớn mạnh – thời tiến; mặt trái: thịnh không lâu, lơ là thì suy nhanh', 'tiến lên nhưng lo trước lúc suy'],
+  ['Tốn', 'Khôn', 'Phong Địa Quan', 0.5, 'Quan sát, chiêm nghiệm, làm gương; mặt trái: đứng ngoài nhìn nhiều mà làm ít, dễ bị soi xét', 'quan sát kỹ, sống làm gương'],
+  ['Ly', 'Chấn', 'Hỏa Lôi Phệ Hạp', -0.5, 'Cắn đứt trở ngại – hình phạt, pháp luật; dễ vướng tranh chấp, kiện tụng, phải va chạm mới gỡ được', 'quyết đoán xử lý trở ngại, công minh'],
+  ['Cấn', 'Ly', 'Sơn Hỏa Bí', 0.5, 'Trang sức, vẻ đẹp bên ngoài; mặt trái: hình thức hơn thực chất, đẹp mà rỗng, tốn tiền cho vẻ ngoài', 'chuộng thực chất hơn hình thức'],
+  ['Cấn', 'Khôn', 'Sơn Địa Bác', -2, 'Bóc lở, sụp đổ dần – tiểu nhân thịnh, tài sản và vị thế dễ hao mòn, nền móng lung lay', 'án binh, giữ gốc, không mạo hiểm'],
+  ['Khôn', 'Chấn', 'Địa Lôi Phục', 1, 'Trở lại, phục hồi – dương khí trở về; mặt trái: mới hồi phục còn yếu, nóng vội dễ ngã lại', 'bắt đầu lại từ từ, sửa mình'],
+  ['Càn', 'Chấn', 'Thiên Lôi Vô Vọng', 0, 'Chân thật, không vọng động; mặt xấu: làm càn thì gặp họa bất ngờ, có chuyện xảy đến ngoài ý muốn', 'sống thật, không mưu cầu bất chính'],
+  ['Cấn', 'Càn', 'Sơn Thiên Đại Súc', 1.5, 'Tích tụ lớn, nuôi dưỡng hiền tài; mặt trái: tích mà chưa dùng được, bị kìm giữ, sốt ruột', 'tích lũy tri thức, của cải, chờ dịp lớn'],
+  ['Cấn', 'Chấn', 'Sơn Lôi Di', 0.5, 'Nuôi dưỡng – ăn uống và lời nói; mặt xấu: dễ hại vì miệng, ăn uống thất thường, nói lỡ lời', 'giữ lời nói và ăn uống điều độ'],
+  ['Đoài', 'Tốn', 'Trạch Phong Đại Quá', -1, 'Quá mức, gánh nặng làm oằn cột – quá tải, dễ đổ vỡ, sức khỏe và tài chính căng', 'giảm tải, hành động phi thường nhưng cẩn trọng'],
+  ['Khảm', 'Khảm', 'Thuần Khảm', -1.5, 'Hiểm trở chồng chất – khó này chưa qua khó khác đã tới, dễ lo âu, sa lầy', 'giữ lòng tin, vượt hiểm từng bước'],
+  ['Ly', 'Ly', 'Thuần Ly', 1, 'Sáng sủa, nương vào chính đạo, văn minh; mặt trái: dựa vào người khác, nóng nảy, sáng nhanh tắt nhanh', 'nương tựa đúng chỗ, giữ sáng suốt'],
+  ['Đoài', 'Cấn', 'Trạch Sơn Hàm', 1, 'Cảm ứng – tình cảm, hôn nhân; mặt trái: dễ cảm tính, yêu vội, tình cảm thay đổi nhanh', 'chân thành cảm hóa, thuận duyên tình cảm'],
+  ['Chấn', 'Tốn', 'Lôi Phong Hằng', 1, 'Lâu bền, kiên định; mặt trái: cố chấp, ngại đổi khi cần đổi', 'giữ vững con đường đã chọn'],
+  ['Càn', 'Cấn', 'Thiên Sơn Độn', -0.5, 'Lui ẩn, tránh tiểu nhân – thời không thuận, tiến thì bị hại, cơ hội bị người khác chiếm', 'biết lui đúng lúc để bảo toàn'],
+  ['Chấn', 'Càn', 'Lôi Thiên Đại Tráng', 1, 'Cường thịnh, sức mạnh lớn; mặt trái: dễ lạm dụng sức, húc đầu vào chỗ khó, gây thù', 'mạnh mà giữ chính, không lạm dụng'],
+  ['Ly', 'Khôn', 'Hỏa Địa Tấn', 1.5, 'Tiến lên, thăng tiến như mặt trời mọc; mặt trái: lên nhanh dễ bị ganh ghét, chủ quan', 'tiến bước, được trọng dụng'],
+  ['Khôn', 'Ly', 'Địa Hỏa Minh Di', -1.5, 'Ánh sáng bị che – người hiền bị hại, tài không được dùng, dễ bị chèn ép, oan ức', 'giấu tài, giữ chính, chờ sáng'],
+  ['Tốn', 'Ly', 'Phong Hỏa Gia Nhân', 1, 'Gia đình, nề nếp, nội trợ; mặt trái: việc nhà ràng buộc, khó vươn ra ngoài, nặng gánh gia đình', 'chăm lo gia đạo, phân vai rõ'],
+  ['Ly', 'Đoài', 'Hỏa Trạch Khuê', -1, 'Chia lìa, bất đồng – trong nhà ngoài ngõ dễ trái ý, quan hệ rạn nứt, việc lớn khó thành', 'tìm điểm chung trong việc nhỏ'],
+  ['Khảm', 'Cấn', 'Thủy Sơn Kiển', -1.5, 'Gian nan, chân bị vướng – tiến thoái đều khó, việc tắc, sức hao', 'quay lại tự xét, tìm quý nhân'],
+  ['Chấn', 'Khảm', 'Lôi Thủy Giải', 1, 'Giải thoát, tháo gỡ khó khăn; mặt trái: gỡ xong dễ lơ là, việc cũ dễ quay lại', 'giải quyết nhanh gọn, bao dung'],
+  ['Cấn', 'Đoài', 'Sơn Trạch Tổn', -0.5, 'Bớt dưới thêm trên – phải hy sinh, mất trước được sau, trước mắt hao tổn', 'bớt dục vọng, đầu tư cho tương lai'],
+  ['Tốn', 'Chấn', 'Phong Lôi Ích', 1.5, 'Lợi ích, gia tăng; mặt trái: được nhiều dễ tham, ôm quá sức', 'làm việc lớn, giúp người cùng được lợi'],
+  ['Đoài', 'Càn', 'Trạch Thiên Quải', 0, 'Quyết đoán, dứt khoát loại bỏ điều xấu; mặt trái: quyết quá gắt dễ gây xung đột, chuốc thù', 'quyết mà không bạo'],
+  ['Càn', 'Tốn', 'Thiên Phong Cấu', -0.5, 'Gặp gỡ bất ngờ – âm lấn dương; dễ bị người mới lôi kéo, mê muội, mất quyền chủ động', 'cẩn trọng với mối quan hệ mới'],
+  ['Đoài', 'Khôn', 'Trạch Địa Tụy', 1, 'Tụ họp, đoàn tụ; mặt trái: đông người dễ tranh chấp, hao tiền, có bất trắc', 'tập hợp lực lượng, phòng bất trắc'],
+  ['Khôn', 'Tốn', 'Địa Phong Thăng', 1.5, 'Đi lên, thăng tiến từ từ; mặt trái: chậm, phải nhờ người trên, thiếu kiên nhẫn thì đứt', 'tiến dần, tìm gặp người có quyền'],
+  ['Đoài', 'Khảm', 'Trạch Thủy Khốn', -1.5, 'Khốn cùng, cạn kiệt – tiền bạc, sức lực, quan hệ đều eo hẹp, nói ra ít ai tin', 'giữ chí, ít nói, chờ qua cơn khốn'],
+  ['Khảm', 'Tốn', 'Thủy Phong Tỉnh', 0.5, 'Giếng nước – nguồn lực bền, nuôi người; mặt trái: cho nhiều nhận ít, dễ bị khai thác', 'bồi đắp nền tảng, phục vụ'],
+  ['Đoài', 'Ly', 'Trạch Hỏa Cách', 0.5, 'Cách mạng, thay đổi lớn; mặt trái: đổi sai thời thì đổ vỡ, gây xáo trộn với người xung quanh', 'đổi mới đúng thời, giữ lòng tin'],
+  ['Ly', 'Tốn', 'Hỏa Phong Đỉnh', 1.5, 'Cái đỉnh – xây dựng cái mới, địa vị; mặt trái: trách nhiệm nặng, ngồi cao dễ bị soi và lật', 'ổn định vị thế, dùng người tài'],
+  ['Chấn', 'Chấn', 'Thuần Chấn', 0, 'Chấn động, sấm sét – sợ hãi rồi vui; dễ gặp biến cố bất ngờ, hoảng loạn, tổn hao', 'bình tĩnh trước biến động'],
+  ['Cấn', 'Cấn', 'Thuần Cấn', 0, 'Dừng lại, tĩnh lặng; mặt trái: trì trệ, đứng yên, lỡ cơ hội', 'biết dừng đúng lúc'],
+  ['Tốn', 'Cấn', 'Phong Sơn Tiệm', 1, 'Tiến dần – hôn nhân tốt; mặt trái: chậm, phải chờ, nóng vội thì hỏng', 'từng bước vững chắc'],
+  ['Chấn', 'Đoài', 'Lôi Trạch Quy Muội', -1, 'Hôn nhân không chính, vội vàng – tình cảm dễ lệch, ở thế yếu, quyết vội dễ hối hận', 'tránh vội vàng trong tình cảm'],
+  ['Chấn', 'Ly', 'Lôi Hỏa Phong', 1, 'Thịnh lớn, sung mãn; mặt trái: thịnh rồi suy nhanh, dễ hao phí, chủ quan', 'tận hưởng thời thịnh nhưng phòng suy'],
+  ['Ly', 'Cấn', 'Hỏa Sơn Lữ', -0.5, 'Lữ khách – xa nhà, bất định; dễ cô đơn, thiếu chỗ dựa, việc khó lâu bền', 'khiêm nhường nơi đất khách'],
+  ['Tốn', 'Tốn', 'Thuần Tốn', 0.5, 'Nhu thuận, thâm nhập như gió; mặt trái: thiếu quyết đoán, dao động, dễ bị chi phối', 'mềm mỏng, kiên trì'],
+  ['Đoài', 'Đoài', 'Thuần Đoài', 1, 'Vui vẻ, giao tiếp, thuyết phục; mặt trái: nói nhiều dễ sai, ham vui, dễ bị nịnh', 'vui mà giữ chính'],
+  ['Tốn', 'Khảm', 'Phong Thủy Hoán', 0, 'Ly tán rồi hóa giải – dễ chia rẽ, hao tán tiền bạc, lòng người phân tán', 'hàn gắn, quy tụ lòng người'],
+  ['Khảm', 'Đoài', 'Thủy Trạch Tiết', 0.5, 'Tiết chế, giới hạn; mặt trái: gò bó, chặt quá thành bức bối, hà khắc', 'tiết kiệm vừa phải'],
+  ['Tốn', 'Đoài', 'Phong Trạch Trung Phu', 1.5, 'Thành tín, lòng tin; mặt trái: tin người quá dễ bị lợi dụng', 'giữ chữ tín'],
+  ['Chấn', 'Cấn', 'Lôi Sơn Tiểu Quá', -0.5, 'Hơi quá – việc nhỏ được, việc lớn không; làm quá sức dễ hỏng, bị chê trách', 'làm việc nhỏ, khiêm hạ'],
+  ['Khảm', 'Ly', 'Thủy Hỏa Ký Tế', 0.5, 'Đã xong, đã thành – đầu tốt cuối dễ loạn; chủ quan thì thành quả dễ mất', 'giữ thành quả, phòng suy'],
+  ['Ly', 'Khảm', 'Hỏa Thủy Vị Tế', 0, 'Chưa xong, sắp thành – còn dở dang, bước cuối dễ hỏng, phải chờ thêm', 'cẩn trọng ở bước cuối']
 ];
 var HL_HAO_VI = {
-  1: ['Sơ hào', 'nền móng, khởi sự, còn ẩn – nên học hỏi, tích lũy, chưa vội hiển lộ'],
-  2: ['Nhị hào', 'vị trung của nội quái, ứng với hào 5 – được người trên nâng đỡ, lo gia đạo, xây nội lực'],
-  3: ['Tam hào', 'cuối nội quái, chỗ quá độ – dễ vội vàng, nhiều áp lực, cần thận trọng'],
-  4: ['Tứ hào', 'đầu ngoại quái, cận kề hào quân – làm việc gần người quyền lực, phải khéo léo'],
-  5: ['Ngũ hào', 'vị chí tôn, trung chính – thời đỉnh cao, làm chủ, có quyền quyết'],
-  6: ['Thượng hào', 'cực điểm – vật cực tắc phản, nên lui dần, truyền lại, giữ gìn']
+  1: ['Sơ hào', 'nền móng, khởi sự, còn ẩn – có thời gian tích lũy, nhưng chưa được ai biết đến, vội hiển lộ thì hỏng'],
+  2: ['Nhị hào', 'vị trung của nội quái, ứng với hào 5 – được người trên nâng đỡ, xây nội lực; mặt trái là nặng việc nhà, dễ ỷ vào người trên'],
+  3: ['Tam hào', 'cuối nội quái, chỗ quá độ – dễ vội vàng, nhiều áp lực, hay sai lầm vì nóng'],
+  4: ['Tứ hào', 'đầu ngoại quái, cận kề hào quân – làm việc gần người quyền lực, có cơ hội nhưng dễ bị nghi kỵ, vạ lây'],
+  5: ['Ngũ hào', 'vị chí tôn, trung chính – thời đỉnh cao, làm chủ, có quyền quyết; mặt trái là trách nhiệm nặng, ở cao dễ cô độc'],
+  6: ['Thượng hào', 'cực điểm – vật cực tắc phản (đến đỉnh thì quay đầu), dễ sa sút nếu cố níu; hợp lui dần, truyền lại']
 };
 
 function hlQue_(tren, duoi) {
@@ -235,7 +235,7 @@ function haLacLuan_(hl, bt, viewYear) {
     (H.diem >= 1 ? '✓ ' : H.diem <= -1 ? '✗ ' : '◇ ') + qStr(H) + ': ' + H.y + '.',
     'Quẻ Hậu thiên chủ vận nửa sau đời và kết quả của nỗ lực. Lời khuyên: ' + H.khuyen + '.',
     'Nguyên đường dời sang ' + HL_HAO_VI[H.nguyenDuong][0] + ': ' + HL_HAO_VI[H.nguyenDuong][1] + '.',
-    (T.diem + H.diem >= 2 ? '✓ Tiên – Hậu thiên đều tốt: đời thuận, càng về sau càng vững.' : T.diem < H.diem ? '✓ Hậu thiên tốt hơn Tiên thiên: tiền vận vất vả, hậu vận khá lên – "tiền hung hậu cát".' : T.diem > H.diem ? '◇ Tiên thiên tốt hơn Hậu thiên: tuổi trẻ thuận lợi, trung – hậu vận cần giữ gìn thành quả.' : '◇ Tiên – Hậu thiên cân bằng: đời bình ổn, thành bại tùy nỗ lực.')
+    (T.diem + H.diem >= 2 ? '✓ Tiên – Hậu thiên đều tốt: đời thuận, càng về sau càng vững; mặt trái là dễ chủ quan.' : T.diem < H.diem ? '✓ Hậu thiên tốt hơn Tiên thiên: tiền vận vất vả, hậu vận khá lên – "tiền hung hậu cát".' : T.diem > H.diem ? '◇ Tiên thiên tốt hơn Hậu thiên: tuổi trẻ thuận lợi, trung – hậu vận đi xuống, thành quả dễ hao.' : '◇ Tiên – Hậu thiên cân bằng: đời bình ổn, ít được đẩy, thành bại tùy nỗ lực.')
   ] });
   secs.push({ tieuDe: 'Quẻ Hỗ (diễn biến ẩn bên trong)', items: [
     'Hỗ của Tiên thiên: ' + hl.hoTien.ten + ' – ' + hl.hoTien.y + '. Cho biết điều âm thầm chi phối tuổi trẻ.',
@@ -250,7 +250,7 @@ function haLacLuan_(hl, bt, viewYear) {
         'Quẻ gốc ' + v.goc + ', hào ' + v.hao + ' ' + (v.duong ? 'dương' : 'âm') + (v.diemHao.dacVi ? ' đắc vị' : ' thất vị') + (v.diemHao.trung ? ', đắc trung' : '') + (v.diemHao.ung ? ', có ứng' : '') + ': ' + HL_HAO_VI[v.hao][1] + '.',
         'Quẻ biến của vận: ' + v.bien + ' – ' + HL_QUE[v.bienSo - 1][4] + '. Nên: ' + HL_QUE[v.bienSo - 1][5] + '.',
         'Hào cai quản chặng này là ' + v.lucThan + ' (' + v.haoCanChi + ', ' + hlMuc_(v.haoDiem).toLowerCase() + '): chủ đề nổi bật là ' + HL_LT_CHU_DE[v.lucThan](hl.male) + '.',
-        (dg >= 1 ? '✓ Vận hào tốt: thời cơ mở, nên chủ động tiến.' : dg <= -0.6 ? '✗ Vận hào kém: thời bất lợi, nên thủ, giữ sức và tích lũy.' : '◇ Vận hào trung bình: được mất đan xen, thành bại do cách ứng xử.')
+        (dg >= 1 ? '✓ Vận hào tốt: thời cơ mở, hợp chủ động tiến; mặt trái là dễ quá đà.' : dg <= -0.6 ? '✗ Vận hào kém: thời bất lợi, dễ hao tổn, việc khó thành; hợp thủ, giữ sức.' : '◇ Vận hào trung bình: được mất đan xen, thành bại do cách ứng xử.')
       ],
       cacNam: v.nam.map(function (n) { var L = hlLuanNam_(n, bt); return { nam: n.nam, tuoi: n.tuoi, que: n.que, hao: n.hao, diem: L.diem, danhGia: L.danhGia, y: L.y, khuyen: L.khuyen, ghi: L.ghi }; }) };
   });
@@ -309,9 +309,9 @@ var HL_LT_Y = {
 var HL_THU = ['Thanh Long', 'Chu Tước', 'Câu Trần', 'Đằng Xà', 'Bạch Hổ', 'Huyền Vũ'];
 var HL_THU_KHOI = [0, 0, 1, 1, 2, 3, 4, 4, 5, 5];
 var HL_THU_Y = {
-  'Thanh Long': 'hiền hòa, may mắn, được quý mến', 'Chu Tước': 'lời nói, chữ nghĩa, tranh luận',
-  'Câu Trần': 'chậm mà chắc, gắn với đất đai, ruộng vườn', 'Đằng Xà': 'hay lo nghĩ, nhạy cảm, nhiều biến hóa',
-  'Bạch Hổ': 'cương quyết, nóng, dễ va chạm', 'Huyền Vũ': 'kín đáo, mưu trí, có chuyện riêng tư'
+  'Thanh Long': 'hiền hòa, may mắn, được quý mến nhưng dễ ham vui, chủ quan', 'Chu Tước': 'giỏi lời nói, chữ nghĩa nhưng dễ tranh cãi, vướng thị phi',
+  'Câu Trần': 'chậm mà chắc, gắn với đất đai nhưng trì trệ, cố chấp', 'Đằng Xà': 'nhạy cảm, nhiều biến hóa nhưng hay lo nghĩ, đa nghi',
+  'Bạch Hổ': 'cương quyết, dám làm nhưng nóng, dễ va chạm', 'Huyền Vũ': 'kín đáo, mưu trí nhưng hay giấu chuyện, dễ bị nghi ngờ'
 };
 var HL_THE_NHAN = { binh: 'Vượng', sinh: 'Tướng', duoc_sinh: 'Hưu', bi_khac: 'Tù', khac: 'Tử' };
 var HL_THE_DIEM = { 'Vượng': 2, 'Tướng': 1.2, 'Hưu': -0.4, 'Tù': -0.9, 'Tử': -1.4 };
@@ -448,84 +448,84 @@ function hlLucThanSuc_(LH, lt) {
 
 /* ---------- Luận lục thân theo lĩnh vực ---------- */
 var HL_LT_CHU_DE = {
-  'Phụ Mẫu': function () { return 'học hành, giấy tờ, nhà cửa, cha mẹ – nhiều việc phải lo nhưng cũng được che chở'; },
-  'Huynh Đệ': function () { return 'bạn bè, anh em, hợp tác – vui vì có người đồng hành nhưng dễ hao tiền, cạnh tranh'; },
+  'Phụ Mẫu': function () { return 'học hành, giấy tờ, nhà cửa, cha mẹ – được che chở nhưng nhiều việc phải gánh, vất vả'; },
+  'Huynh Đệ': function () { return 'bạn bè, anh em, hợp tác – có người đồng hành nhưng dễ hao tiền, bị cạnh tranh, chia phần'; },
   'Tử Tôn': function () { return 'con cái, niềm vui, sáng tạo, sức khỏe hồi phục – thời an nhàn nhưng công danh ít bứt phá'; },
-  'Thê Tài': function (m) { return 'tiền bạc, tài sản' + (m ? ', vợ và chuyện gia đình riêng' : '') + ' – cơ hội kiếm tiền nhưng cũng tốn công lo toan'; },
-  'Quan Quỷ': function (m) { return 'công danh, trách nhiệm, áp lực' + (m ? '' : ', chồng và hôn nhân') + ' – dễ thăng tiến nhưng cần giữ sức khỏe'; }
+  'Thê Tài': function (m) { return 'tiền bạc, tài sản' + (m ? ', vợ và chuyện gia đình riêng' : '') + ' – có cơ hội kiếm tiền nhưng tốn công lo toan, dễ căng thẳng vì tiền'; },
+  'Quan Quỷ': function (m) { return 'công danh, trách nhiệm, áp lực' + (m ? '' : ', chồng và hôn nhân') + ' – dễ thăng tiến nhưng áp lực nặng, sức khỏe dễ sa sút'; }
 };
 var HL_THE_TRI = {
-  'Huynh Đệ': 'Bạn coi trọng sự tự lập và tình bạn, sống thẳng thắn; tiền bạc thì dễ "vào nhanh, ra cũng nhanh".',
-  'Tử Tôn': 'Bạn thích sống an nhiên, vui vẻ, ít màng danh lợi; hợp nghề tự do, sáng tạo hoặc chăm sóc người khác.',
-  'Thê Tài': 'Bạn thực tế, nhạy với chuyện tiền bạc và biết tính toán cho cuộc sống.',
-  'Quan Quỷ': 'Bạn có tinh thần trách nhiệm cao, hợp môi trường có tổ chức, kỷ luật – nhưng hay giữ áp lực, lo nghĩ trong lòng.',
-  'Phụ Mẫu': 'Bạn chịu khó, ham học, hay lo toan cho người khác; đời nhiều việc phải gánh nhưng được tiếng là người đáng tin.'
+  'Huynh Đệ': 'Mặt tốt: bạn coi trọng sự tự lập và tình bạn, sống thẳng thắn. Mặt xấu: tiền bạc dễ "vào nhanh, ra cũng nhanh", hay hao vì bạn bè.',
+  'Tử Tôn': 'Mặt tốt: bạn sống an nhiên, vui vẻ, hợp nghề tự do, sáng tạo hoặc chăm sóc người khác. Mặt xấu: ít chí tranh đua, công danh và tiền bạc khó lên cao.',
+  'Thê Tài': 'Mặt tốt: bạn thực tế, nhạy với tiền bạc và biết tính toán cho cuộc sống. Mặt xấu: dễ nặng chuyện tiền, tính toán quá khiến người thân thấy khô khan.',
+  'Quan Quỷ': 'Mặt tốt: bạn có tinh thần trách nhiệm cao, hợp môi trường có tổ chức, kỷ luật. Mặt xấu: hay ôm áp lực, lo nghĩ trong lòng, dễ căng thẳng kéo dài.',
+  'Phụ Mẫu': 'Mặt tốt: bạn chịu khó, ham học, được tiếng là người đáng tin. Mặt xấu: đời nhiều việc phải gánh, hay lo thay người khác đến mệt mỏi.'
 };
 var HL_THE_UNG = {
-  sinh: 'Người ngoài, đối tác thường có lòng giúp bạn.',
-  khac: 'Bạn hay gặp người cạnh tranh, dễ va chạm – nên rõ ràng ngay từ đầu trong hợp tác.',
-  duoc_sinh: 'Bạn hay cho đi, giúp người – điều tốt, nhưng nhớ giữ sức cho mình.',
-  bi_khac: 'Bạn thường nắm thế chủ động trong các mối quan hệ.',
-  binh: 'Bạn và người xung quanh thường ngang hàng, hợp tác kiểu bạn bè.'
+  sinh: 'Người ngoài, đối tác thường có lòng giúp bạn; mặt trái là dễ mắc nợ ân tình.',
+  khac: 'Bạn hay gặp người cạnh tranh, chèn ép, dễ va chạm và thiệt trong hợp tác.',
+  duoc_sinh: 'Bạn hay cho đi, giúp người; mặt xấu là cho nhiều nhận ít, dễ bị khai thác và hao sức.',
+  bi_khac: 'Bạn thường nắm thế chủ động trong các mối quan hệ; mặt trái là dễ áp đặt, làm người khác ngại.',
+  binh: 'Bạn và người xung quanh thường ngang hàng, hợp tác kiểu bạn bè; mặt trái là không ai chịu ai, dễ tranh phần.'
 };
 var HL_TANG = { 'Mộc': 'gan, mật, gân cơ, mắt', 'Hỏa': 'tim, mạch máu, huyết áp, giấc ngủ', 'Thổ': 'dạ dày, tiêu hóa', 'Kim': 'phổi, đường hô hấp, da', 'Thủy': 'thận, bàng quang, hệ sinh dục' };
 var HL_LV = [
   { k: 'banThan', ten: 'Bản thân', icon: '🧭', nhom: 'tinh_cach', dung: 'THE', giai: 'hào Thế – chỗ đứng của chính bạn trong quẻ',
-    van: ['Bạn thuộc mẫu người có nội lực vững: tự đứng được trên đôi chân mình, gặp việc khó thường vẫn tìm ra lối đi.',
-      'Bạn có xu hướng lúc tự tin, lúc chùn bước; thành bại phụ thuộc khá nhiều vào môi trường và người đồng hành.',
-      'Bạn có xu hướng hay tự nghi ngờ bản thân, dễ thấy mình bị động hoặc thiếu người chống lưng.'],
-    khuyen: ['Nội lực tốt là vốn quý – hãy dùng nó để kéo người khác cùng đi, đừng chỉ đi một mình.',
-      'Chọn môi trường và người đồng hành thật kỹ – với bạn, "đứng đúng chỗ" quan trọng ngang "cố gắng".',
-      'Không sao cả – nội lực rèn được. Bắt đầu từ những cam kết nhỏ và giữ đúng lời, sự tự tin sẽ lớn dần.'] },
+    van: ['Bạn thuộc mẫu người có nội lực vững. Mặt tốt: tự đứng được trên đôi chân mình, gặp việc khó vẫn tìm ra lối đi. Mặt xấu: dễ tự tin quá, ôm việc một mình, khó nghe người khác.',
+      'Bạn có xu hướng lúc tự tin, lúc chùn bước. Mặt tốt: biết thích nghi, nhờ được môi trường tốt. Mặt xấu: gặp môi trường xấu hay người đồng hành kém thì dễ chao đảo, bỏ dở.',
+      'Bạn có xu hướng hay tự nghi ngờ bản thân. Mặt tốt: thận trọng, ít liều. Mặt xấu: hay bị động, thiếu người chống lưng, dễ bị lấn át và lỡ cơ hội.'],
+    khuyen: ['Gợi ý: kéo người khác cùng đi thay vì làm một mình.',
+      'Gợi ý: chọn môi trường và người đồng hành thật kỹ.',
+      'Gợi ý: bắt đầu từ những cam kết nhỏ và giữ đúng lời.'] },
   { k: 'chaMe', ten: 'Cha mẹ – nhà cửa – học vấn', icon: '🏠', nhom: 'gia_dao', dung: 'Phụ Mẫu', giai: 'hào Phụ Mẫu – cha mẹ, bề trên, nhà cửa, giấy tờ, học hành',
-    van: ['Bạn có xu hướng được cha mẹ, người lớn che chở; chuyện học hành, giấy tờ, nhà cửa thường thuận.',
-      'Quan hệ với cha mẹ và chuyện học hành, nhà cửa của bạn ở mức bình thường – có lúc thuận, có lúc phải tự lo.',
-      'Bạn có xu hướng sớm phải tự lập, ít dựa được vào gia đình; học hành, nhà cửa đến muộn hoặc phải tự gây dựng.'],
-    khuyen: ['Hãy tận dụng sự hỗ trợ này để học đến nơi đến chốn, và báo hiếu khi còn có thể.',
-      'Giữ liên lạc đều đặn với cha mẹ; giấy tờ quan trọng nên đọc kỹ trước khi ký.',
-      'Sự tự lập sớm là sức mạnh. Chủ động học thêm, quan tâm sức khỏe cha mẹ; nhà cửa nên tích lũy dần, không vội vay lớn.'] },
+    van: ['Mặt tốt: bạn có xu hướng được cha mẹ, người lớn che chở; học hành, giấy tờ, nhà cửa thường thuận. Mặt xấu: dễ dựa dẫm, chậm tự lập và chịu kỳ vọng nặng từ gia đình.',
+      'Mặt tốt: quan hệ với cha mẹ, chuyện học hành, nhà cửa của bạn không có trở ngại lớn. Mặt xấu: được đỡ ít, nhiều việc phải tự lo, có lúc bất đồng với người lớn.',
+      'Mặt tốt: bạn có xu hướng tự lập sớm, cứng cỏi. Mặt xấu: ít dựa được vào gia đình, học hành dễ dang dở, nhà cửa đến muộn và phải tự gây dựng vất vả.'],
+    khuyen: ['Gợi ý: tận dụng sự hỗ trợ để học đến nơi đến chốn.',
+      'Gợi ý: giấy tờ quan trọng nên đọc kỹ trước khi ký.',
+      'Gợi ý: nhà cửa nên tích lũy dần, không vội vay lớn.'] },
   { k: 'anhEm', ten: 'Anh chị em – bạn bè', icon: '🤝', nhom: 'gia_dao', dung: 'Huynh Đệ', giai: 'hào Huynh Đệ – anh chị em, bạn bè, đồng nghiệp ngang hàng',
-    van: ['Bạn có xu hướng đông bạn bè, anh chị em gắn bó, dễ tìm được người cùng chí hướng.',
-      'Anh chị em, bạn bè của bạn ở mức vừa phải – thân thiết với vài người, còn lại là xã giao.',
-      'Bạn có xu hướng ít nhận được giúp đỡ từ anh em, bạn bè, hay phải tự xoay xở.'],
-    khuyen: ['Bạn bè đông thì nhớ rạch ròi chuyện tiền bạc – "tình là tình, tiền là tiền".',
-      'Đầu tư vào vài mối quan hệ sâu thay vì nhiều mối quan hệ hời hợt.',
-      'Chủ động kết nối qua công việc, sở thích chung; một người bạn đúng giá trị hơn mười người quen.'] },
+    van: ['Mặt tốt: bạn có xu hướng đông bạn bè, anh chị em gắn bó, dễ tìm người cùng chí hướng. Mặt xấu: dễ hao tiền vì bạn bè, nể nang khó từ chối và bị cạnh tranh chia phần.',
+      'Mặt tốt: bạn thân thiết với vài người đáng tin. Mặt xấu: còn lại phần lớn là xã giao, lúc khó ít người thật sự giúp.',
+      'Mặt tốt: bạn có xu hướng tự xoay xở giỏi, không lệ thuộc ai. Mặt xấu: ít được anh em, bạn bè giúp, dễ cô lập và có khi bị chính người gần cạnh tranh.'],
+    khuyen: ['Gợi ý: rạch ròi chuyện tiền bạc với bạn bè.',
+      'Gợi ý: giữ vài mối quan hệ sâu thay vì nhiều mối hời hợt.',
+      'Gợi ý: chủ động kết nối qua công việc, sở thích chung.'] },
   { k: 'conCai', ten: 'Con cái – niềm vui', icon: '👶', nhom: 'con_cai', dung: 'Tử Tôn', giai: 'hào Tử Tôn – con cái, học trò, niềm vui, phúc đức',
-    van: ['Bạn có xu hướng có phúc về con cái: con hiểu chuyện, là niềm vui lúc về sau; tâm tính bạn cũng khá lạc quan.',
-      'Chuyện con cái của bạn ở mức bình thường – có vui có lo, cần đầu tư thời gian dạy dỗ.',
-      'Bạn có xu hướng muộn con hoặc phải lo nghĩ nhiều cho con; niềm vui đến chậm hơn người khác.'],
-    khuyen: ['Giữ nếp nhà ấm áp – đó là phúc lớn nhất bạn truyền lại cho con.',
-      'Quan sát tính cách riêng của con để dạy cho phù hợp, thay vì so sánh với con người khác.',
-      'Đừng quá lo – "muộn" không phải là "không". Chăm sức khỏe sớm, và khi có con hãy dành thời gian chất lượng thay vì chỉ lo vật chất.'] },
+    van: ['Mặt tốt: bạn có xu hướng có phúc về con cái, con hiểu chuyện, là niềm vui lúc về sau. Mặt xấu: dễ kỳ vọng và bao bọc con quá mức, lo cho con mà quên mình.',
+      'Mặt tốt: chuyện con cái của bạn không có trở ngại lớn. Mặt xấu: có vui có lo, con dễ bất đồng với bạn, tốn nhiều công dạy dỗ.',
+      'Mặt tốt: khi có con, bạn thường rất quý và chăm chút. Mặt xấu: dễ muộn con, sinh nở vất vả hoặc phải lo nghĩ nhiều cho con, niềm vui đến chậm hơn người khác.'],
+    khuyen: ['Gợi ý: cho con khoảng tự lập phù hợp tuổi.',
+      'Gợi ý: dạy theo tính riêng của con, không so sánh với con người khác.',
+      'Gợi ý: có dự định sinh con thì nên khám và hỏi bác sĩ sớm.'] },
   { k: 'tienBac', ten: 'Tiền bạc – tài sản', icon: '💰', nhom: 'tai_chinh', dung: 'Thê Tài', giai: 'hào Thê Tài – tiền bạc, tài sản',
-    van: ['Bạn có xu hướng kiếm tiền thuận, biết giữ tiền và có tài sản tích lũy theo thời gian.',
-      'Tài chính của bạn ở mức đủ dùng – có kiếm, có tiêu; muốn dư dả cần có kế hoạch.',
-      'Bạn có xu hướng tiền vào không đều, dễ hao hụt vì chi tiêu, cho vay hoặc cạnh tranh.'],
-    khuyen: ['Lúc tiền đến thuận hãy lập quỹ dự phòng và đa dạng tài sản – thuận lúc này không có nghĩa là thuận mãi.',
-      'Trích một phần thu nhập để tiết kiệm ngay khi nhận tiền, trước khi chi tiêu.',
-      'Không cho vay số tiền mình chưa sẵn sàng mất; ưu tiên thu nhập ổn định trước, đầu tư sau.'] },
+    van: ['Mặt tốt: bạn có xu hướng kiếm tiền thuận, biết giữ tiền và tích lũy tài sản theo thời gian. Mặt xấu: dễ chủ quan khi đang thuận, liều tay đầu tư hoặc giữ của quá chặt.',
+      'Mặt tốt: tài chính của bạn ở mức đủ dùng, ít khi túng quẫn. Mặt xấu: kiếm bao nhiêu tiêu gần hết, khó dư dả, gặp việc gấp dễ hụt.',
+      'Mặt tốt: bạn có xu hướng xoay xở được khi thiếu. Mặt xấu: tiền vào không đều, dễ hao vì chi tiêu, cho vay không đòi được hoặc bị cạnh tranh, có giai đoạn túng thiếu.'],
+    khuyen: ['Gợi ý: lập quỹ dự phòng ngay lúc đang thuận.',
+      'Gợi ý: trích tiết kiệm ngay khi nhận tiền.',
+      'Gợi ý: không cho vay số tiền mình chưa sẵn sàng mất.'] },
   { k: 'honNhan', ten: 'Hôn nhân – tình cảm', icon: '💞', nhom: 'tinh_duyen', dung: 'PHOI', giai: 'nam xem hào Thê Tài (vợ), nữ xem hào Quan Quỷ (chồng); thêm hào Ứng – người đối diện',
-    van: ['Bạn có xu hướng gặp được người bạn đời hợp ý, hôn nhân có chỗ dựa.',
-      'Chuyện tình cảm của bạn có thuận có nghịch – cần thời gian để hiểu nhau và vun đắp.',
-      'Bạn có xu hướng duyên đến muộn hoặc tình cảm nhiều trắc trở, dễ hiểu lầm.'],
-    khuyen: ['Giữ thói quen trò chuyện thật lòng – hôn nhân tốt vẫn cần được chăm mỗi ngày.',
-      'Nói rõ nhu cầu của mình thay vì chờ người kia tự hiểu.',
-      'Đừng vội vàng; chọn người hiểu mình hơn là người khiến mình say mê nhất thời. Kết hôn muộn một chút thường lại bền.'] },
+    van: ['Mặt tốt: bạn có xu hướng gặp được người bạn đời hợp ý, hôn nhân có chỗ dựa. Mặt xấu: dễ dựa dẫm vào bạn đời, quen yên ổn mà lơ là vun đắp.',
+      'Mặt tốt: tình cảm của bạn có lúc rất gắn bó. Mặt xấu: thuận nghịch xen nhau, hay giận dỗi, hiểu lầm, có giai đoạn lạnh nhạt.',
+      'Mặt tốt: bạn có xu hướng yêu sâu, chung thủy khi đã chọn. Mặt xấu: duyên đến muộn hoặc nhiều trắc trở, dễ chọn sai người, có thể trải qua đổ vỡ và giai đoạn cô đơn.'],
+    khuyen: ['Gợi ý: giữ thói quen trò chuyện thật lòng.',
+      'Gợi ý: nói rõ nhu cầu thay vì chờ người kia tự hiểu.',
+      'Gợi ý: không quyết chuyện cưới hỏi khi đang say mê nhất thời.'] },
   { k: 'congDanh', ten: 'Công danh – sự nghiệp', icon: '🏛', nhom: 'cong_danh', dung: 'Quan Quỷ', giai: 'hào Quan Quỷ – công danh, chức vụ, cấp trên, kỷ luật',
-    van: ['Bạn có xu hướng được trọng dụng, có đường thăng tiến, hợp môi trường có tổ chức và chức danh rõ ràng.',
-      'Công danh của bạn ở mức ổn – tiến chậm mà chắc, cần bền bỉ và có chuyên môn.',
-      'Bạn có xu hướng khó thăng tiến trong bộ máy, dễ gặp áp lực hoặc cấp trên khó tính; hợp tự làm chủ, nghề tự do hơn.'],
-    khuyen: ['Giữ chữ tín và học cách dẫn dắt người khác – đó là chìa khóa để lên cao hơn.',
-      'Đầu tư sâu vào một chuyên môn; bằng cấp, chứng chỉ sẽ mở cửa cho bạn.',
-      'Đây không phải là "không có sự nghiệp" – chỉ là con đường chuyên môn, tự do, kinh doanh nhỏ hợp bạn hơn con đường chức vụ.'] },
+    van: ['Mặt tốt: bạn có xu hướng được trọng dụng, có đường thăng tiến trong môi trường có tổ chức. Mặt xấu: áp lực và trách nhiệm nặng, dễ phụ thuộc cấp trên, ở cao dễ bị soi xét.',
+      'Mặt tốt: công danh của bạn tiến chậm mà chắc. Mặt xấu: khó bứt phá, dễ bị người khác vượt, thiếu chuyên môn thì dậm chân tại chỗ.',
+      'Mặt tốt: bạn có xu hướng hợp tự làm chủ, nghề tự do. Mặt xấu: khó thăng tiến trong bộ máy, dễ bị cấp trên chèn ép, va chạm, công việc nhiều áp lực.'],
+    khuyen: ['Gợi ý: giữ chữ tín và học cách dẫn dắt người khác.',
+      'Gợi ý: đầu tư sâu vào một chuyên môn.',
+      'Gợi ý: chọn con đường chuyên môn, tự do hơn con đường chức vụ.'] },
   { k: 'sucKhoe', ten: 'Sức khỏe', icon: '🌿', nhom: 'suc_khoe', dung: 'SK', giai: 'hào Quan Quỷ là bệnh, hào Tử Tôn là thuốc; thêm sức của hào Thế',
-    van: ['Bạn có xu hướng thể trạng tốt, ốm vặt nhanh khỏi.',
-      'Thể trạng của bạn ở mức bình thường, nên giữ nếp sinh hoạt điều độ.',
-      'Bạn có xu hướng dễ mệt, hay lo âu – nên dành nhiều thời gian nghỉ ngơi hơn.'],
-    khuyen: ['Giữ nếp ngủ và vận động đều – thể trạng tốt cũng cần được bảo dưỡng.',
-      'Khám định kỳ mỗi năm, ngủ đủ và vận động đều.',
-      'Đừng lo lắng quá – phát hiện sớm là chữa được. Khám định kỳ, ngủ đủ, giảm áp lực là "thuốc" tốt nhất.'] }
+    van: ['Mặt tốt: bạn có xu hướng thể trạng tốt, ốm vặt nhanh khỏi. Mặt xấu: dễ chủ quan, làm quá sức, bỏ qua dấu hiệu sớm.',
+      'Mặt tốt: thể trạng của bạn ở mức bình thường. Mặt xấu: sinh hoạt thất thường là dễ ốm, sức bền không cao.',
+      'Mặt tốt: bạn nhạy với cơ thể mình. Mặt xấu: có xu hướng dễ mệt, hay lo âu, sức đề kháng yếu, bệnh dễ kéo dài.'],
+    khuyen: ['Gợi ý: giữ nếp ngủ và vận động đều.',
+      'Gợi ý: khám định kỳ mỗi năm, hỏi bác sĩ khi thấy dấu hiệu lạ.',
+      'Gợi ý: khám định kỳ và hỏi bác sĩ khi có dấu hiệu bất thường.'] }
 ];
 function hlBac_(d) { return d >= 0.8 ? 0 : d >= -0.6 ? 1 : 2; }
 /** Chấm một lĩnh vực trên một quẻ lục hào */
@@ -558,24 +558,24 @@ function hlLinhVuc_(hl) {
   return HL_LV.map(function (LV) {
     var a = hlLvQue_(LV, LT, male), b = hlLvQue_(LV, LHt, male), d = Math.round((a.diem + b.diem) / 2 * 10) / 10, bac = hlBac_(d), them = [];
     if (b.diem - a.diem >= 1.2) them.push('Từ khoảng ' + moc + ' tuổi trở đi, chuyện này khá lên rõ.');
-    else if (a.diem - b.diem >= 1.2) them.push('Từ khoảng ' + moc + ' tuổi trở đi, chuyện này cần giữ gìn hơn.');
+    else if (a.diem - b.diem >= 1.2) them.push('Từ khoảng ' + moc + ' tuổi trở đi, chuyện này đi xuống rõ.');
     if (LV.k === 'banThan') {
       var t = LT.hao[LT.theVi - 1], u = LT.hao[LT.ungVi - 1];
       them.unshift(HL_THE_TRI[t.lucThan], HL_THE_UNG[quanHeHanh(u.hanh, t.hanh)], 'Nét khí chất: ' + HL_THU_Y[t.thu] + '.');
     }
-    if (LV.k === 'honNhan' && (a.hien >= 2 || b.hien >= 2)) them.push('Tình cảm dễ có nhiều ngả rẽ – khi đã chọn, hãy dứt khoát và chung thủy để giữ bình yên.');
-    if ((LV.k === 'honNhan' || LV.k === 'conCai') && a.phuc && b.phuc) them.push('Chuyện này thường đến muộn hoặc kín đáo – cần chủ động tìm và vun đắp.');
+    if (LV.k === 'honNhan' && (a.hien >= 2 || b.hien >= 2)) them.push('Tình cảm dễ có nhiều ngả rẽ, dễ bị người khác chen vào hoặc chính mình dao động.');
+    if ((LV.k === 'honNhan' || LV.k === 'conCai') && a.phuc && b.phuc) them.push('Chuyện này thường đến muộn hoặc mờ nhạt, dễ lỡ dở.');
     if (LV.k === 'tienBac') {
       var hd = hlLucThanSuc_(LT, 'Huynh Đệ');
-      if (hd.hao && (hd.hao.dong || hd.diem > 1.5)) them.push('Có dấu hiệu hao tài vì bạn bè, người thân hoặc cạnh tranh – nên rạch ròi chuyện tiền nong.');
+      if (hd.hao && (hd.hao.dong || hd.diem > 1.5)) them.push('Có dấu hiệu hao tài vì bạn bè, người thân hoặc cạnh tranh.');
     }
     if (LV.k === 'congDanh') {
       var ts = hlLucThanSuc_(LT, 'Tử Tôn');
-      if (ts.hao && ts.hao.dong && a.diem < 0.5) them.push('Bạn hợp làm chuyên môn, nghề tự do hơn là leo thang chức vụ.');
+      if (ts.hao && ts.hao.dong && a.diem < 0.5) them.push('Bạn hợp làm chuyên môn, nghề tự do; leo thang chức vụ thường khó.');
     }
     if (LV.k === 'sucKhoe') {
       var hs = [a.quyHanh, b.quyHanh].filter(function (x, i, s) { return x && s.indexOf(x) === i; });
-      if (hs.length) them.push('Vùng cơ thể nên để ý: ' + hs.map(function (h) { return HL_TANG[h]; }).join('; ') + '.');
+      if (hs.length) them.push('Vùng cơ thể nên để ý: ' + hs.map(function (h) { return HL_TANG[h]; }).join('; ') + '. Đây chỉ là xu hướng, không thay chẩn đoán – có dấu hiệu lạ hãy đi khám và hỏi bác sĩ.');
     }
     return { k: LV.k, ten: LV.ten, icon: LV.icon, nhom: LV.nhom, giai: LV.giai, lucThan: a.lucThan || null,
       tien: a, hau: b, diem: d, muc: hlMuc_(d), bac: ['tot', 'vua', 'kho'][bac], van: LV.van[bac], khuyen: LV.khuyen[bac], them: them };
@@ -600,10 +600,10 @@ function hlThoiVi_(hl, bt) {
   });
   var T = out[0], H = out[1], tong = out.reduce(function (s, x) { return s + x.hoaCong + x.nguyenKhi + x.diaNguyenKhi; }, 0);
   var bac = T.so === 3 ? 4 : T.hoaCong || (T.nguyenKhi && T.diaNguyenKhi) ? 3 : T.so === 1 ? 2 : 1;
-  var ket = bac === 4 ? 'Mệnh "đủ tam phúc": quẻ mệnh vừa hợp mùa sinh, vừa có gốc từ cả can lẫn chi năm sinh – thiên thời, địa lợi, nhân hòa đều có, gặp thời thì phát nhanh và bền.' :
-    bac === 3 ? 'Mệnh "được thời": quẻ mệnh ' + (T.hoaCong ? 'hợp mùa sinh (có Hóa công)' : 'có gốc từ cả can và chi năm sinh') + ' – sức vươn lên mạnh, chọn đúng lúc thì dễ thành.' :
-    bac === 2 ? 'Mệnh "được thời một phần": quẻ mệnh chỉ có một nguyên khí – có chỗ dựa nhưng chưa trọn, thành công cần thêm nỗ lực và chọn đúng lúc.' :
-    'Mệnh "chưa gặp thời": quẻ mệnh không hợp mùa sinh, không có nguyên khí – thành công đến từ bền bỉ và tích lũy, không nên trông vào may mắn.';
+  var ket = bac === 4 ? 'Mệnh "đủ tam phúc": quẻ mệnh vừa hợp mùa sinh, vừa có gốc từ cả can lẫn chi năm sinh – thiên thời, địa lợi, nhân hòa đều có, gặp thời thì phát nhanh và bền; mặt trái là dễ ỷ vào may mắn.' :
+    bac === 3 ? 'Mệnh "được thời": quẻ mệnh ' + (T.hoaCong ? 'hợp mùa sinh (có Hóa công)' : 'có gốc từ cả can và chi năm sinh') + ' – sức vươn lên mạnh, chọn đúng lúc thì dễ thành; mặt trái là sai thời thì hụt hẫng lớn.' :
+    bac === 2 ? 'Mệnh "được thời một phần": quẻ mệnh chỉ có một nguyên khí – có chỗ dựa nhưng chưa trọn, thành công đến chậm, chọn sai lúc thì dễ hỏng.' :
+    'Mệnh "chưa gặp thời": quẻ mệnh không hợp mùa sinh, không có nguyên khí – ít may mắn, thành công đến chậm và phải tự bền bỉ tích lũy, có giai đoạn lận đận.';
   if (bac <= 2 && H.so >= 2) ket += ' Riêng quẻ Hậu thiên có ' + H.so + '/3 phúc thần – nửa sau đời thuận hơn.';
   return { ds: out, diem: tong, bac: bac, ketLuan: ket };
 }
@@ -633,7 +633,7 @@ function hlThapCat_(hl, bt) {
   var n = ds.filter(function (x) { return x.dat; }).length;
   var bac = n >= 9 ? 'hiếm có' : n >= 7 ? 'rất tốt' : n >= 5 ? 'tốt' : n >= 3 ? 'khá' : 'bình thường';
   return { ds: ds, so: n, bac: bac,
-    ketLuan: 'Đạt ' + n + '/10 thể cách tốt – mệnh ở mức ' + bac + '. ' + (n >= 5 ? 'Nền mệnh vững: có sẵn nhiều điều kiện thuận, nên mạnh dạn theo đuổi việc lớn.' : n >= 3 ? 'Có vài điểm tựa rõ ràng: phát huy đúng điểm mạnh và chọn thời điểm sẽ đi xa.' : 'Ít điều kiện có sẵn: thành quả đến từ nỗ lực, học hỏi và sự kiên trì – cũng là lợi thế vì bạn không ỷ lại.'),
+    ketLuan: 'Đạt ' + n + '/10 thể cách tốt – mệnh ở mức ' + bac + '. ' + (n >= 5 ? 'Nền mệnh vững: có sẵn nhiều điều kiện thuận, hợp theo đuổi việc lớn; mặt trái là dễ chủ quan.' : n >= 3 ? 'Có vài điểm tựa rõ ràng nhưng chưa nhiều: đi xa được nếu chọn đúng thời điểm, sai thời thì dễ chững lại.' : 'Ít điều kiện có sẵn: ít được đỡ, thành quả đến chậm và phải tự nỗ lực, kiên trì mới có.'),
     coSo: 'Sách cổ xếp bậc theo số thể cách đạt: 3–4 cách, 5–6 cách, 7–8 cách, 9–10 cách (càng nhiều càng quý). Lời hào nguyên đường được chấm theo cát – hung của quẻ và vị hào vì chưa có kho 384 lời hào.' };
 }
 /** Quẻ Biến (nguyên đường động), Thác (đảo âm dương), Tổng (lật ngược) của Tiên thiên */

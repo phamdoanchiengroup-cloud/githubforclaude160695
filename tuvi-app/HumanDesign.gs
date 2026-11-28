@@ -27,24 +27,24 @@ var HD_CENTERS = {
 var HD_MOTORS = ['sacral', 'solar', 'heart', 'root'];
 
 var HD_CHANNELS = [
-  [1, 8, 'Cảm hứng', 'sáng tạo độc đáo, làm gương cho người khác'], [2, 14, 'Người giữ nhịp (Giả kim)', 'định hướng và nguồn lực để đi theo hướng đó'],
-  [3, 60, 'Đột biến', 'đổi mới theo nhịp bất ngờ, chịu áp lực trước khi bứt phá'], [4, 63, 'Logic', 'tư duy mẫu hình, nghi vấn và tìm công thức'],
-  [5, 15, 'Nhịp điệu', 'hòa vào dòng chảy tự nhiên, nhịp sống riêng'], [6, 59, 'Thân mật', 'khả năng gắn kết, sinh sản, phá rào cản cảm xúc'],
-  [7, 31, 'Người dẫn đầu (Alpha)', 'lãnh đạo bằng tầm nhìn, được bầu chọn'], [9, 52, 'Tập trung', 'khả năng tập trung bền bỉ vào chi tiết'],
-  [10, 20, 'Thức tỉnh', 'sống đúng mình ngay trong hiện tại'], [10, 34, 'Khám phá', 'đi theo niềm tin của riêng mình'],
-  [10, 57, 'Hình thái hoàn hảo', 'trực giác sinh tồn, yêu cái đẹp'], [11, 56, 'Tò mò', 'người tìm kiếm, kể chuyện, truyền cảm hứng bằng ý tưởng'],
-  [12, 22, 'Cởi mở', 'biểu đạt cảm xúc cuốn hút, nghệ sĩ xã hội'], [13, 33, 'Kẻ lãng tử (Nhân chứng)', 'lắng nghe, ghi nhớ và kể lại bài học'],
-  [16, 48, 'Bước sóng (Tài năng)', 'chiều sâu kỹ năng qua luyện tập'], [17, 62, 'Chấp nhận (Tổ chức)', 'sắp xếp chi tiết thành hệ thống quan điểm'],
-  [18, 58, 'Phán xét', 'nhìn ra chỗ cần sửa, thúc đẩy hoàn thiện'], [19, 49, 'Tổng hợp', 'nhạy cảm với nhu cầu, nguyên tắc gắn kết cộng đồng'],
-  [20, 34, 'Sức hút (Charisma)', 'bận rộn, làm ngay, năng lượng biểu hiện mạnh'], [20, 57, 'Sóng não', 'trực giác nhạy bén tức thời'],
-  [21, 45, 'Tiền bạc', 'quản lý tài nguyên, tư chất ông chủ'], [23, 43, 'Cấu trúc (Thiên tài)', 'thấu hiểu đột phá, giải thích ý tưởng mới'],
-  [24, 61, 'Nhận thức (Người suy tư)', 'chiêm nghiệm những câu hỏi lớn'], [25, 51, 'Khởi xướng', 'tinh thần cạnh tranh, dám nhảy vào điều mới'],
-  [26, 44, 'Đầu hàng (Truyền đạt)', 'tiếp thị, thuyết phục, truyền lại bài học quá khứ'], [27, 50, 'Bảo tồn', 'chăm lo, giữ gìn giá trị, trách nhiệm'],
-  [28, 38, 'Đấu tranh', 'kiên cường, đi tìm ý nghĩa cuộc sống'], [29, 46, 'Khám phá thành công', 'dấn thân trọn vẹn, thành công nhờ trải nghiệm'],
-  [30, 41, 'Nhận biết (Mơ mộng)', 'khát khao trải nghiệm, trí tưởng tượng'], [32, 54, 'Chuyển hóa', 'tham vọng đi lên, bền bỉ vươn tới thành công'],
-  [34, 57, 'Quyền năng', 'phản ứng trực giác mạnh mẽ, sống sót'], [35, 36, 'Nhất thời (Thạo đời)', 'khao khát trải nghiệm mới, học từ biến cố'],
-  [37, 40, 'Cộng đồng', 'thỏa thuận, gắn kết gia đình – cộng đồng'], [39, 55, 'Cảm xúc (Tâm trạng)', 'nhạy cảm, sáng tạo từ cảm xúc thăng trầm'],
-  [42, 53, 'Trưởng thành', 'hoàn tất chu kỳ, trưởng thành qua trải nghiệm'], [47, 64, 'Trừu tượng', 'suy ngẫm quá khứ, tìm ý nghĩa từ hình ảnh tư duy']
+  [1, 8, 'Cảm hứng', 'sáng tạo độc đáo, làm gương cho người khác; mặt trái: dễ cô độc vì khác người, không theo số đông'], [2, 14, 'Người giữ nhịp (Giả kim)', 'định hướng và nguồn lực để đi theo hướng đó; mặt trái: lạc hướng thì dễ tiêu tiền và sức vào việc vô ích'],
+  [3, 60, 'Đột biến', 'đổi mới theo nhịp bất ngờ, chịu áp lực trước khi bứt phá; mặt trái: dễ u uất, bồn chồn trong thời gian chờ bứt phá'], [4, 63, 'Logic', 'tư duy mẫu hình, nghi vấn và tìm công thức; mặt trái: dễ hoài nghi, lo âu, nghĩ mãi mà không làm'],
+  [5, 15, 'Nhịp điệu', 'hòa vào dòng chảy tự nhiên, nhịp sống riêng; mặt trái: khó chịu khi bị phá nhịp, dễ cứng nhắc hoặc thất thường'], [6, 59, 'Thân mật', 'khả năng gắn kết, sinh sản, phá rào cản cảm xúc; mặt trái: dễ va chạm cảm xúc, quan hệ thân mật hay sóng gió'],
+  [7, 31, 'Người dẫn đầu (Alpha)', 'lãnh đạo bằng tầm nhìn, được bầu chọn; mặt trái: dễ áp đặt, khó chịu khi không được công nhận vai trò'], [9, 52, 'Tập trung', 'khả năng tập trung bền bỉ vào chi tiết; mặt trái: dễ sa vào chi tiết, bồn chồn khi không có việc để tập trung'],
+  [10, 20, 'Thức tỉnh', 'sống đúng mình ngay trong hiện tại; mặt trái: dễ bị cho là ích kỷ, sống quá theo ý mình'], [10, 34, 'Khám phá', 'đi theo niềm tin của riêng mình; mặt trái: dễ cố chấp, đi một mình bất chấp góp ý'],
+  [10, 57, 'Hình thái hoàn hảo', 'trực giác sinh tồn, yêu cái đẹp; mặt trái: dễ lo về an toàn, khó tính với cái đẹp'], [11, 56, 'Tò mò', 'người tìm kiếm, kể chuyện, truyền cảm hứng bằng ý tưởng; mặt trái: dễ cả thèm chóng chán, nói nhiều hơn làm'],
+  [12, 22, 'Cởi mở', 'biểu đạt cảm xúc cuốn hút, nghệ sĩ xã hội; mặt trái: tâm trạng thất thường, khi không vui dễ nói lời làm mất lòng'], [13, 33, 'Kẻ lãng tử (Nhân chứng)', 'lắng nghe, ghi nhớ và kể lại bài học; mặt trái: dễ ôm chuyện cũ, khép kín, sống trong quá khứ'],
+  [16, 48, 'Bước sóng (Tài năng)', 'chiều sâu kỹ năng qua luyện tập; mặt trái: dễ cầu toàn, sợ chưa đủ giỏi nên chần chừ'], [17, 62, 'Chấp nhận (Tổ chức)', 'sắp xếp chi tiết thành hệ thống quan điểm; mặt trái: dễ cố chấp quan điểm, hay bắt lỗi chi tiết'],
+  [18, 58, 'Phán xét', 'nhìn ra chỗ cần sửa, thúc đẩy hoàn thiện; mặt trái: dễ chỉ trích, khó hài lòng với người và việc'], [19, 49, 'Tổng hợp', 'nhạy cảm với nhu cầu, nguyên tắc gắn kết cộng đồng; mặt trái: dễ nhạy cảm quá mức, cắt đứt dứt khoát khi thấy bị phụ'],
+  [20, 34, 'Sức hút (Charisma)', 'bận rộn, làm ngay, năng lượng biểu hiện mạnh; mặt trái: dễ bận rộn vô ích, làm cho có việc rồi kiệt sức'], [20, 57, 'Sóng não', 'trực giác nhạy bén tức thời; mặt trái: dễ lo âu, phản ứng tức thì mà không giải thích được'],
+  [21, 45, 'Tiền bạc', 'quản lý tài nguyên, tư chất ông chủ; mặt trái: dễ kiểm soát, nặng chuyện tiền và quyền'], [23, 43, 'Cấu trúc (Thiên tài)', 'thấu hiểu đột phá, giải thích ý tưởng mới; mặt trái: dễ bị cho là lập dị, nói ra người khác không hiểu'],
+  [24, 61, 'Nhận thức (Người suy tư)', 'chiêm nghiệm những câu hỏi lớn; mặt trái: dễ nghĩ mãi không dứt, mất ngủ vì những câu hỏi lớn'], [25, 51, 'Khởi xướng', 'tinh thần cạnh tranh, dám nhảy vào điều mới; mặt trái: dễ liều, hiếu thắng, làm người khác sốc'],
+  [26, 44, 'Đầu hàng (Truyền đạt)', 'tiếp thị, thuyết phục, truyền lại bài học quá khứ; mặt trái: dễ phóng đại, dùng lời để lèo lái người khác'], [27, 50, 'Bảo tồn', 'chăm lo, giữ gìn giá trị, trách nhiệm; mặt trái: dễ lo thay người khác, ôm trách nhiệm quá mức'],
+  [28, 38, 'Đấu tranh', 'kiên cường, đi tìm ý nghĩa cuộc sống; mặt trái: dễ cố chấp, đấu tranh cả những việc không đáng'], [29, 46, 'Khám phá thành công', 'dấn thân trọn vẹn, thành công nhờ trải nghiệm; mặt trái: dễ nhận lời quá nhiều, dấn vào việc không hợp rồi kiệt sức'],
+  [30, 41, 'Nhận biết (Mơ mộng)', 'khát khao trải nghiệm, trí tưởng tượng; mặt trái: dễ kỳ vọng hão, khao khát rồi thất vọng'], [32, 54, 'Chuyển hóa', 'tham vọng đi lên, bền bỉ vươn tới thành công; mặt trái: dễ tham vọng quá mức, sợ thất bại'],
+  [34, 57, 'Quyền năng', 'phản ứng trực giác mạnh mẽ, sống sót; mặt trái: dễ bốc đồng, làm theo phản xạ mà không cân nhắc'], [35, 36, 'Nhất thời (Thạo đời)', 'khao khát trải nghiệm mới, học từ biến cố; mặt trái: dễ chán, lao vào trải nghiệm rồi gặp khủng hoảng cảm xúc'],
+  [37, 40, 'Cộng đồng', 'thỏa thuận, gắn kết gia đình – cộng đồng; mặt trái: dễ đổi chác tình cảm, thấy thiệt khi cho nhiều mà nhận ít'], [39, 55, 'Cảm xúc (Tâm trạng)', 'nhạy cảm, sáng tạo từ cảm xúc thăng trầm; mặt trái: tâm trạng lên xuống mạnh, dễ u sầu'],
+  [42, 53, 'Trưởng thành', 'hoàn tất chu kỳ, trưởng thành qua trải nghiệm; mặt trái: bắt đầu nhiều việc nhưng khó buông khi cần dừng'], [47, 64, 'Trừu tượng', 'suy ngẫm quá khứ, tìm ý nghĩa từ hình ảnh tư duy; mặt trái: dễ rối trí, lo âu vì chuyện cũ chưa giải được']
 ];
 
 var HD_GATE_TEN = {
@@ -66,17 +66,85 @@ var HD_GATE_TEN = {
   61: 'Trung phu – sự thật bên trong', 62: 'Tiểu quá – chi tiết', 63: 'Ký tế – hoài nghi', 64: 'Vị tế – mơ hồ, trăn trở'
 };
 
+/** Mặt trái thường gặp của từng cổng (đi kèm HD_GATE_TEN) */
+var HD_GATE_TRAI = {
+  1: 'dễ cô độc, trầm xuống khi không được thể hiện',
+  2: 'dễ phụ thuộc vào người khác để có hướng',
+  3: 'dễ rối, nản khi khởi đầu khó',
+  4: 'dễ lo âu, tìm ra đáp án rồi lại hoài nghi',
+  5: 'khó chịu khi bị phá nhịp quen',
+  6: 'dễ va chạm, giữ khoảng cách cảm xúc',
+  7: 'dễ muốn nắm quyền dẫn dắt',
+  8: 'dễ cố tỏ ra khác biệt',
+  9: 'dễ sa vào tiểu tiết',
+  10: 'dễ tự chê hoặc tự cao về bản thân',
+  11: 'nhiều ý mà ít làm',
+  12: 'dễ lạnh lùng, nói không đúng lúc',
+  13: 'dễ ôm chuyện người khác, nặng lòng',
+  14: 'dễ dồn nguồn lực vào việc không hợp',
+  15: 'dễ thất thường, cực đoan về nhịp sống',
+  16: 'dễ nhiệt tình quá mà chưa đủ kỹ năng',
+  17: 'dễ cố chấp ý kiến',
+  18: 'dễ chỉ trích, khó hài lòng',
+  19: 'dễ nhạy cảm, cần được cần đến',
+  20: 'dễ vội, nói mà chưa nghĩ',
+  21: 'dễ kiểm soát người khác',
+  22: 'tâm trạng thất thường, chuộng vẻ ngoài',
+  23: 'dễ bị cho là lập dị',
+  24: 'nghĩ mãi một vòng, khó dứt',
+  25: 'dễ ngây thơ, dễ bị tổn thương',
+  26: 'dễ phóng đại, nói quá',
+  27: 'dễ chăm người mà quên mình',
+  28: 'dễ liều, sợ sống vô nghĩa',
+  29: 'dễ nhận lời quá nhiều',
+  30: 'khao khát rồi thất vọng',
+  31: 'dễ áp đặt ảnh hưởng',
+  32: 'sợ thất bại, ngại đổi',
+  33: 'dễ khép kín, rút lui quá lâu',
+  34: 'dễ bận rộn vô ích, bốc đồng',
+  35: 'dễ chán, đổi liên tục',
+  36: 'dễ khủng hoảng cảm xúc, vội lao vào trải nghiệm',
+  37: 'dễ đổi chác tình cảm',
+  38: 'dễ đấu tranh cả việc không đáng',
+  39: 'dễ khiêu khích làm người khác bực',
+  40: 'dễ cô lập, thấy cho đi không được đáp lại',
+  41: 'dễ mơ mộng không thực tế',
+  42: 'khó dừng việc đang làm dở',
+  43: 'khó giải thích cho người khác hiểu',
+  44: 'dễ đa nghi vì nhớ chuyện cũ',
+  45: 'dễ ôm quyền, nặng chuyện của cải',
+  46: 'dễ chạy theo cảm giác cơ thể',
+  47: 'dễ rối trí, lo âu',
+  48: 'sợ mình chưa đủ giỏi',
+  49: 'dễ cắt đứt quan hệ khi thấy trái nguyên tắc',
+  50: 'dễ áp đặt chuẩn mực lên người khác',
+  51: 'dễ gây sốc, hiếu thắng',
+  52: 'dễ ì, bồn chồn khi bị ép ngồi yên',
+  53: 'khởi đầu nhiều mà dở dang',
+  54: 'dễ tham vọng quá đà',
+  55: 'tâm trạng lên xuống mạnh',
+  56: 'dễ nói quá, thích cái kích thích',
+  57: 'dễ lo sợ vô cớ',
+  58: 'dễ không hài lòng với hiện tại',
+  59: 'dễ xâm phạm ranh giới người khác',
+  60: 'dễ thấy bị bó buộc, bi quan',
+  61: 'dễ ám ảnh câu hỏi không lời đáp',
+  62: 'dễ lo vì chi tiết nhỏ',
+  63: 'dễ nghi ngờ mọi thứ',
+  64: 'dễ rối, mơ hồ, khó kết luận'
+};
+
 var HD_TYPES = {
   'Generator': { ten: 'Người Kiến Tạo (Generator)', tl: '~37%', chienLuoc: 'Chờ để phản hồi – để cuộc sống đến với mình rồi lắng nghe phản ứng của xương cùng', dauHieu: 'Thỏa mãn', saiLech: 'Bực bội',
     moTa: 'Nguồn sinh lực bền bỉ của thế giới. Khi làm điều mình thực sự yêu thích (được "bật đèn" từ xương cùng), bạn có năng lượng gần như vô tận và thành thạo dần theo thời gian. Khó khăn đến khi chủ động ép mình vào việc không hứng thú.' },
   'Manifesting Generator': { ten: 'Người Kiến Tạo Biểu Hiện (Manifesting Generator)', tl: '~33%', chienLuoc: 'Chờ để phản hồi, rồi thông báo trước khi hành động', dauHieu: 'Thỏa mãn và bình an', saiLech: 'Bực bội và giận dữ',
-    moTa: 'Nhanh, đa nhiệm, hay "nhảy bước". Kết hợp sinh lực của Generator và tốc độ của Manifestor; hiệu quả nhất khi phản hồi đúng cơ hội rồi báo cho người liên quan để giảm va chạm.' },
+    moTa: 'Nhanh, đa nhiệm, hay "nhảy bước". Kết hợp sinh lực của Generator và tốc độ của Manifestor; hiệu quả nhất khi phản hồi đúng cơ hội. Mặt trái: dễ bỏ dở, bỏ sót bước, đổi hướng đột ngột làm người khác bất ngờ và bực.' },
   'Manifestor': { ten: 'Người Khởi Xướng (Manifestor)', tl: '~9%', chienLuoc: 'Thông báo trước khi hành động', dauHieu: 'Bình an', saiLech: 'Giận dữ',
-    moTa: 'Người mở đường, có khả năng khởi động mọi thứ một cách độc lập. Hào quang khép kín, tạo tác động mạnh; thông báo trước giúp người xung quanh không cảm thấy bị bất ngờ hay chống đối.' },
+    moTa: 'Người mở đường, có khả năng khởi động mọi thứ một cách độc lập. Hào quang khép kín, tạo tác động mạnh. Mặt trái: dễ bị xem là áp đặt, gặp chống đối và tức giận khi người xung quanh bị bất ngờ; gợi ý: thông báo trước khi hành động.' },
   'Projector': { ten: 'Người Dẫn Dắt (Projector)', tl: '~20%', chienLuoc: 'Chờ được công nhận và mời', dauHieu: 'Thành công', saiLech: 'Cay đắng',
-    moTa: 'Người nhìn thấu hệ thống và con người, sinh ra để hướng dẫn năng lượng của người khác. Không có sinh lực bền bỉ nên cần nghỉ ngơi đủ; thành công khi được mời đúng người, đúng việc.' },
+    moTa: 'Người nhìn thấu hệ thống và con người, sinh ra để hướng dẫn năng lượng của người khác. Thành công khi được mời đúng người, đúng việc. Mặt trái: không có sinh lực bền bỉ, cố làm như người khác thì kiệt sức, và dễ cay đắng khi không được ghi nhận.' },
   'Reflector': { ten: 'Người Phản Chiếu (Reflector)', tl: '~1%', chienLuoc: 'Chờ một chu kỳ Mặt Trăng (~28 ngày) trước quyết định lớn', dauHieu: 'Ngạc nhiên', saiLech: 'Thất vọng',
-    moTa: 'Tấm gương của cộng đồng: mọi trung tâm để mở, cảm nhận và phản chiếu sức khỏe của môi trường. Chọn đúng nơi chốn và con người là điều quan trọng nhất.' }
+    moTa: 'Tấm gương của cộng đồng: mọi trung tâm để mở, cảm nhận và phản chiếu sức khỏe của môi trường. Mặt trái: dễ mất phương hướng, bị môi trường xấu kéo theo và thất vọng khi sống ở nơi không hợp; chọn đúng nơi chốn và con người là điều quan trọng nhất.' }
 };
 
 var HD_AUTH = {
@@ -91,24 +159,24 @@ var HD_AUTH = {
 };
 
 var HD_LINE = {
-  1: ['Người điều tra', 'cần nền tảng vững, nghiên cứu kỹ trước khi hành động'],
-  2: ['Ẩn sĩ', 'tài năng bẩm sinh, cần không gian riêng, được người khác "gọi ra"'],
-  3: ['Người thử nghiệm', 'học qua thử – sai, va vấp để khám phá điều hiệu quả'],
-  4: ['Người kết nối', 'sức ảnh hưởng qua mạng lưới quan hệ thân thiết'],
-  5: ['Người giải cứu', 'được kỳ vọng mang giải pháp thực tế, sức hút xa lạ'],
-  6: ['Hình mẫu', 'ba giai đoạn đời (thử nghiệm → quan sát → hình mẫu), sống làm gương']
+  1: ['Người điều tra', 'nền tảng vững nhờ nghiên cứu kỹ trước khi hành động; mặt trái: dễ bất an, chần chừ khi chưa đủ thông tin'],
+  2: ['Ẩn sĩ', 'tài năng bẩm sinh, được người khác "gọi ra"; mặt trái: dễ thu mình, bị quấy rầy thì khó chịu, có khi không biết tài mình nằm ở đâu'],
+  3: ['Người thử nghiệm', 'học qua thử – sai để tìm ra điều hiệu quả; mặt trái: đời nhiều đổ vỡ, làm lại, dễ bị cho là thiếu ổn định'],
+  4: ['Người kết nối', 'sức ảnh hưởng qua mạng lưới quan hệ thân thiết; mặt trái: phụ thuộc vào vòng quen biết, vòng ấy tan thì dễ chao đảo'],
+  5: ['Người giải cứu', 'được kỳ vọng mang giải pháp thực tế, có sức hút với người lạ; mặt trái: dễ bị kỳ vọng quá mức rồi bị trách khi không đáp ứng'],
+  6: ['Hình mẫu', 'ba giai đoạn đời (thử nghiệm → quan sát → hình mẫu), sống làm gương; mặt trái: dễ xa cách, đòi hỏi cao với mình và người khác']
 };
 
 var HD_CENTER_Y = {
-  head: ['Nguồn cảm hứng và câu hỏi ổn định, có cách suy nghĩ riêng.', 'Cởi mở với cảm hứng; dễ bị cuốn vào câu hỏi của người khác – hãy chọn điều đáng nghĩ.'],
-  ajna: ['Cách tư duy nhất quán, có quan điểm chắc chắn.', 'Tư duy linh hoạt, nhìn nhiều góc; không cần giả vờ chắc chắn.'],
-  throat: ['Giọng nói và cách biểu đạt ổn định, lời nói có sức hành động.', 'Biểu đạt đa dạng; tránh cố nói để được chú ý – lời đúng lúc có sức nặng.'],
-  g: ['Bản sắc và định hướng rõ ràng, biết mình là ai.', 'Bản sắc linh hoạt, nhạy với nơi chốn – môi trường đúng sẽ đưa người đúng đến.'],
-  heart: ['Ý chí mạnh, giữ lời hứa, có giá trị bản thân vững.', 'Không cần chứng minh giá trị bản thân; tránh hứa quá sức.'],
-  spleen: ['Trực giác và hệ miễn dịch ổn định, cảm giác an toàn tự thân.', 'Nhạy cảm sức khỏe và cảm xúc sợ hãi; dễ giữ những gì không tốt quá lâu.'],
-  sacral: ['Sinh lực bền bỉ, làm việc được lâu khi đúng đam mê.', 'Không có sinh lực bền bỉ; biết khi nào là "đủ", cần nghỉ trước khi kiệt sức.'],
-  solar: ['Sóng cảm xúc riêng – cần thời gian để rõ ràng, có sức hút cảm xúc.', 'Hấp thụ và khuếch đại cảm xúc người khác; hay né tránh đối đầu.'],
-  root: ['Xử lý áp lực đều đặn, có nhịp làm việc riêng.', 'Dễ bị thúc ép, vội vàng để thoát áp lực; học cách không vội.']
+  head: ['Nguồn cảm hứng và câu hỏi ổn định, có cách suy nghĩ riêng; mặt trái: dễ gây áp lực bắt người khác nghĩ theo mình.', 'Cởi mở với cảm hứng; mặt trái: dễ bị cuốn vào câu hỏi của người khác, nghĩ mãi những chuyện không phải của mình.'],
+  ajna: ['Cách tư duy nhất quán, có quan điểm chắc chắn; mặt trái: dễ cứng quan điểm, khó nghe ý trái chiều.', 'Tư duy linh hoạt, nhìn nhiều góc; mặt trái: dễ lo vì thấy mình không chắc, hay cố tỏ ra chắc chắn.'],
+  throat: ['Giọng nói và cách biểu đạt ổn định, lời nói có sức hành động; mặt trái: dễ nói lấn át người khác.', 'Biểu đạt đa dạng; mặt trái: dễ cố nói để được chú ý, nói không đúng lúc nên lời mất sức nặng.'],
+  g: ['Bản sắc và định hướng rõ ràng, biết mình là ai; mặt trái: khó đổi hướng khi cần.', 'Bản sắc linh hoạt, nhạy với nơi chốn; mặt trái: dễ mất phương hướng, ở sai chỗ thì thấy lạc lõng.'],
+  heart: ['Ý chí mạnh, giữ lời hứa, có giá trị bản thân vững; mặt trái: dễ hứa nhiều rồi tự ép mình.', 'Không bị ý chí cứng trói buộc; mặt trái: dễ tự ti, cố chứng minh giá trị bản thân và hứa quá sức.'],
+  spleen: ['Trực giác và hệ miễn dịch ổn định, cảm giác an toàn tự thân; mặt trái: dễ chủ quan với sức khỏe.', 'Nhạy với sức khỏe và cảm giác sợ hãi; mặt trái: dễ níu giữ những gì không tốt quá lâu vì sợ mất.'],
+  sacral: ['Sinh lực bền bỉ, làm việc được lâu khi đúng đam mê; mặt trái: làm việc không hợp thì bực bội, kiệt dần.', 'Không có sinh lực bền bỉ; mặt trái: dễ làm quá sức vì không biết khi nào là "đủ", kiệt sức trước người khác.'],
+  solar: ['Sóng cảm xúc riêng, có sức hút cảm xúc; mặt trái: quyết lúc cảm xúc đang lên hay đang xuống thì dễ hối tiếc.', 'Thấu cảm sâu; mặt trái: hấp thụ và khuếch đại cảm xúc người khác, hay né tránh đối đầu và sự thật.'],
+  root: ['Xử lý áp lực đều đặn, có nhịp làm việc riêng; mặt trái: dễ tạo áp lực cho người xung quanh.', 'Nhạy với áp lực; mặt trái: dễ bị thúc ép, làm vội cho xong để thoát áp lực.']
 };
 
 /** Câu hỏi tự soi cho trung tâm mở (chủ đề "bản ngã giả" kinh điển của Human Design) và trí tuệ khi sống đúng */
@@ -211,9 +279,9 @@ function hdLuan_(hd) {
   if (hd.l1 === 6 || hd.l2 === 6) prof.push('Có hào 6: khoảng 0–30 tuổi sống như hào 3 (thử nghiệm), 30–50 "lên mái nhà" quan sát, sau 50 trở thành hình mẫu.');
   secs.push({ tieuDe: 'Hồ sơ (Profile)', items: prof });
   secs.push({ tieuDe: 'Định nghĩa & Giao điểm hóa thân', items: [
-    hd.dinhNghia + (hd.soNhom === 2 ? ' – thường tìm người "bắc cầu" để cảm thấy trọn vẹn.' : hd.soNhom >= 3 ? ' – cần nhiều người/môi trường khác nhau, quyết định chậm mà chắc.' : hd.soNhom === 1 ? ' – tự đủ, xử lý thông tin liền mạch.' : ''),
+    hd.dinhNghia + (hd.soNhom === 2 ? ' – thường tìm người "bắc cầu" để cảm thấy trọn vẹn, và dễ phụ thuộc vào người đó.' : hd.soNhom >= 3 ? ' – cần nhiều người/môi trường khác nhau, quyết định chậm mà chắc.' : hd.soNhom === 1 ? ' – tự đủ, xử lý thông tin liền mạch.' : ''),
     'Giao điểm hóa thân: ' + hd.cross + ' – ' + hd.goc + '.',
-    'Mặt Trời Tính cách cổng ' + hd.act.p.sun.gate + ' (' + HD_GATE_TEN[hd.act.p.sun.gate] + ') là chủ đề sống ý thức; Mặt Trời Thiết kế cổng ' + hd.act.d.sun.gate + ' (' + HD_GATE_TEN[hd.act.d.sun.gate] + ') là chủ đề của cơ thể/vô thức.'] });
+    'Mặt Trời Tính cách cổng ' + hd.act.p.sun.gate + ' (' + HD_GATE_TEN[hd.act.p.sun.gate] + ') là chủ đề sống ý thức; Mặt Trời Thiết kế cổng ' + hd.act.d.sun.gate + ' (' + HD_GATE_TEN[hd.act.d.sun.gate] + ') là chủ đề của cơ thể/vô thức. Mặt trái cần biết: ' + HD_GATE_TRAI[hd.act.p.sun.gate] + '; ' + HD_GATE_TRAI[hd.act.d.sun.gate] + '.'] });
   var ce = Object.keys(HD_CENTERS).map(function (c) {
     return (hd.dinh[c] ? '■ ' + HD_CENTERS[c].ten + ' – xác định: ' + HD_CENTER_Y[c][0] : '□ ' + HD_CENTERS[c].ten + ' – mở: ' + HD_CENTER_Y[c][1]);
   });
@@ -236,6 +304,12 @@ function hdLuan_(hd) {
     'Sau ~50 (Chiron hồi quy): giai đoạn "hình mẫu" – sống thuần với thiết kế, trao lại kinh nghiệm.'] });
   return secs;
 }
+/** 24/11: nhóm bệnh dễ gặp theo sách Human Design khi trung tâm mở bị quá tải (chỉ là "dễ", kèm lời nhắc bác sĩ). */
+var HD_CENTER_BENH = {
+  head: 'đau đầu, mất ngủ', ajna: 'đau đầu, mỏi mắt, lo âu', throat: 'bệnh tuyến giáp, viêm họng, rối loạn chuyển hóa',
+  g: 'bệnh gan, thiếu máu', heart: 'bệnh tim, đau dạ dày, sỏi mật', spleen: 'suy giảm miễn dịch, hay ốm vặt, sưng hạch',
+  sacral: 'kiệt sức, rối loạn sinh lý – sinh sản', solar: 'bệnh thận, rối loạn tiêu hóa, căng thẳng thần kinh', root: 'kiệt sức do căng thẳng, huyết áp, mất ngủ'
+};
 var HD_CENTER_BIO = {
   head: 'tuyến tùng (giấc ngủ, nhịp sinh học)', ajna: 'tuyến yên, mắt, não bộ', throat: 'tuyến giáp – cận giáp, họng, chuyển hóa',
   g: 'gan, máu', heart: 'tim, dạ dày, túi mật, tuyến ức', spleen: 'lá lách, hệ bạch huyết, miễn dịch',
@@ -261,29 +335,29 @@ var HD_MACH = {
 var HD_MACH_Y = { 'Cá nhân': 'kênh cá nhân (Individuality) – tạo đột biến, khác biệt, truyền cảm hứng bằng cách là chính mình', 'Tập thể': 'kênh hợp tác (Collective) – chia sẻ, học hỏi và phục vụ số đông', 'Bộ tộc': 'kênh hợp tác (Tribal) – gắn kết, hỗ trợ lẫn nhau trong gia đình, cộng đồng' };
 var HD_TYPE_DS = ['Generator', 'Manifesting Generator', 'Projector', 'Manifestor', 'Reflector'];
 var HD_TYPE_VN = { 'Generator': 'Người Sản Xuất', 'Manifesting Generator': 'Người Sản Xuất Biểu Hiện', 'Projector': 'Người Chiếu', 'Manifestor': 'Người Biểu Hiện', 'Reflector': 'Người Phản Chiếu' };
-var HD_TYPE_LAM = { 'Generator': 'làm việc bền bỉ, thành thạo dần khi yêu thích công việc; hợp nghề cần chuyên sâu và sức bền',
-  'Manifesting Generator': 'đa nhiệm, nhanh, hợp môi trường nhiều dự án song song; cần được đổi hướng khi hết hứng',
-  'Projector': 'hướng dẫn, quản lý, tư vấn, nhìn ra cách tối ưu người và hệ thống; làm ít giờ mà hiệu quả',
-  'Manifestor': 'khởi xướng, mở đường, làm chủ; hợp vai trò độc lập, không bị giám sát sát sao',
-  'Reflector': 'đánh giá, phản chiếu sức khỏe tổ chức; hợp vai trò quan sát, tư vấn cộng đồng' };
-var HD_TYPE_QH = { 'Generator': 'cần người hỏi mình câu có/không để phản hồi; dễ bực khi phải chủ động theo đuổi',
-  'Manifesting Generator': 'nhớ báo trước cho người thân khi đổi kế hoạch; tìm người chấp nhận nhịp nhanh của mình',
-  'Projector': 'cần được nhìn nhận và mời vào mối quan hệ; tránh cho lời khuyên khi chưa được hỏi',
-  'Manifestor': 'thông báo trước để người thân không thấy bất ngờ; cần khoảng tự do riêng',
-  'Reflector': 'cần thời gian dài để chắc chắn về một người; môi trường sống chung quyết định cảm xúc' };
+var HD_TYPE_LAM = { 'Generator': 'làm việc bền bỉ, thành thạo dần khi yêu thích công việc, hợp nghề cần chuyên sâu và sức bền; mặt trái: làm việc không hợp thì bực bội, kiệt sức mà vẫn cố',
+  'Manifesting Generator': 'đa nhiệm, nhanh, hợp môi trường nhiều dự án song song; mặt trái: dễ bỏ dở, bỏ sót bước, khó trụ với việc đơn điệu',
+  'Projector': 'hướng dẫn, quản lý, tư vấn, nhìn ra cách tối ưu người và hệ thống, làm ít giờ mà hiệu quả; mặt trái: không bền sức làm giờ dài, dễ cay đắng khi không được ghi nhận',
+  'Manifestor': 'khởi xướng, mở đường, làm chủ, hợp vai trò độc lập; mặt trái: khó làm dưới quyền, dễ va chạm với cấp trên khi bị giám sát sát sao',
+  'Reflector': 'đánh giá, phản chiếu sức khỏe tổ chức, hợp vai trò quan sát, tư vấn cộng đồng; mặt trái: môi trường xấu thì sa sút rất nhanh' };
+var HD_TYPE_QH = { 'Generator': 'khi được hỏi đúng câu có/không thì đáp lại rất nhiệt tình; mặt trái: phải tự chủ động theo đuổi thì dễ bực, dễ chọn sai người',
+  'Manifesting Generator': 'mang nhiều năng lượng vào mối quan hệ; mặt trái: hay đổi kế hoạch mà không báo, người thân dễ hụt hẫng',
+  'Projector': 'nhìn thấu người kia, góp ý trúng; mặt trái: góp ý khi chưa được hỏi dễ bị coi là xen vào, và dễ thấy mình không được trân trọng',
+  'Manifestor': 'độc lập, không đòi hỏi nhiều; mặt trái: làm mà không báo trước khiến người thân thấy bị gạt ra, dễ va chạm',
+  'Reflector': 'phản chiếu rất rõ người ở cạnh; mặt trái: cần thời gian dài mới chắc về một người, sống chung môi trường xấu thì cảm xúc sa sút' };
 var HD_AUTH_DS = [['sacral', 'Xương cùng (Sacral)'], ['emotional', 'Cảm xúc (Emotional)'], ['splenic', 'Lách (Splenic)'], ['egoM', 'Bản ngã/Tim (Ego)'], ['egoP', 'Bản ngã/Tim (Ego)'], ['self', 'Tự chiếu (Self-Projected)'], ['mental', 'Tâm trí/Môi trường (Mental)'], ['lunar', 'Mặt Trăng (Lunar)']];
-var HD_DN_DS = [['Định nghĩa đơn (Single)', 'mọi trung tâm xác định nối liền – tự đủ, xử lý thông tin liền mạch, ít cần người khác để thấy trọn vẹn'],
-  ['Định nghĩa tách đôi (Split)', 'hai nhóm trung tâm tách rời – hay tìm người "bắc cầu", dễ bị thu hút bởi người có cổng nối hai nhóm'],
-  ['Tách ba (Triple Split)', 'ba nhóm – cần tiếp xúc nhiều người, nhiều nơi; quyết định chậm mà chắc'],
-  ['Tách bốn (Quadruple Split)', 'bốn nhóm – rất hiếm, cần thời gian và nhiều môi trường khác nhau'],
-  ['Không định nghĩa (Reflector)', 'mọi trung tâm mở – phản chiếu môi trường, cần chọn nơi chốn thật kỹ']];
+var HD_DN_DS = [['Định nghĩa đơn (Single)', 'mọi trung tâm xác định nối liền – tự đủ, xử lý thông tin liền mạch, ít cần người khác để thấy trọn vẹn; mặt trái: khó hiểu người cần dựa vào người khác, dễ khó chịu khi phải phụ thuộc'],
+  ['Định nghĩa tách đôi (Split)', 'hai nhóm trung tâm tách rời – hay tìm người "bắc cầu", dễ bị thu hút bởi người có cổng nối hai nhóm; mặt trái: dễ phụ thuộc vào người đó, thấy thiếu khi ở một mình'],
+  ['Tách ba (Triple Split)', 'ba nhóm – cần tiếp xúc nhiều người, nhiều nơi, quyết định chậm mà chắc; mặt trái: bị hối thúc thì dễ quyết sai'],
+  ['Tách bốn (Quadruple Split)', 'bốn nhóm – rất hiếm, cần thời gian và nhiều môi trường khác nhau; mặt trái: dễ thấy rời rạc, chậm hơn người khác'],
+  ['Không định nghĩa (Reflector)', 'mọi trung tâm mở – phản chiếu môi trường; mặt trái: ở sai nơi thì dễ mất mình, nên phải chọn nơi chốn thật kỹ']];
 var HD_PROFILE_Y = {
-  '1/3': 'Người điều tra – thử nghiệm: xây nền vững bằng nghiên cứu và học qua va vấp', '1/4': 'Người điều tra – kết nối: kiến thức vững, lan tỏa qua mạng lưới thân quen',
-  '2/4': 'Ẩn sĩ – kết nối: tài năng tự nhiên, được bạn bè "gọi ra" đúng lúc', '2/5': 'Ẩn sĩ – giải cứu: tài năng ẩn, người lạ kỳ vọng bạn giải quyết vấn đề',
-  '3/5': 'Thử nghiệm – giải cứu: học qua thử – sai, trở thành người có giải pháp thực tế', '3/6': 'Thử nghiệm – hình mẫu: nửa đời đầu nhiều trải nghiệm, về sau thành người làm gương',
-  '4/6': 'Kết nối – hình mẫu: ảnh hưởng qua quan hệ thân thiết, dần thành hình mẫu đáng tin', '4/1': 'Kết nối – điều tra: con đường cố định, nền tảng vững, ảnh hưởng qua người quen',
-  '5/1': 'Giải cứu – điều tra: được kỳ vọng mang giải pháp, cần nền kiến thức vững để giữ uy tín', '5/2': 'Giải cứu – ẩn sĩ: sức hút với người lạ nhưng cần không gian riêng',
-  '6/2': 'Hình mẫu – ẩn sĩ: sống làm gương, tài năng tự nhiên được mời ra', '6/3': 'Hình mẫu – thử nghiệm: trải nghiệm nhiều, trưởng thành thành người thông thái'
+  '1/3': 'Người điều tra – thử nghiệm: xây nền vững bằng nghiên cứu và học qua va vấp; mặt trái: đời nhiều lần làm lại, dễ bất an', '1/4': 'Người điều tra – kết nối: kiến thức vững, lan tỏa qua mạng lưới thân quen; mặt trái: khó mở lòng với người lạ',
+  '2/4': 'Ẩn sĩ – kết nối: tài năng tự nhiên, được bạn bè "gọi ra" đúng lúc; mặt trái: hay thu mình, chờ người khác mời', '2/5': 'Ẩn sĩ – giải cứu: tài năng ẩn, người lạ kỳ vọng bạn giải quyết vấn đề; mặt trái: dễ bị kỳ vọng sai và mệt vì bị làm phiền',
+  '3/5': 'Thử nghiệm – giải cứu: học qua thử – sai, trở thành người có giải pháp thực tế; mặt trái: nhiều đổ vỡ, dễ bị trách khi giải pháp không thành', '3/6': 'Thử nghiệm – hình mẫu: nửa đời đầu nhiều trải nghiệm, về sau thành người làm gương; mặt trái: nửa đời đầu nhiều sóng gió, dễ chán nản',
+  '4/6': 'Kết nối – hình mẫu: ảnh hưởng qua quan hệ thân thiết, dần thành hình mẫu đáng tin; mặt trái: dễ xa cách, đòi hỏi cao ở người thân', '4/1': 'Kết nối – điều tra: con đường cố định, nền tảng vững, ảnh hưởng qua người quen; mặt trái: khó đổi hướng, cứng nhắc',
+  '5/1': 'Giải cứu – điều tra: được kỳ vọng mang giải pháp, cần nền kiến thức vững để giữ uy tín; mặt trái: dễ mất uy tín khi không đáp ứng được kỳ vọng', '5/2': 'Giải cứu – ẩn sĩ: sức hút với người lạ nhưng cần không gian riêng; mặt trái: dễ bị hiểu sai, mệt vì bị kéo ra khỏi chỗ riêng',
+  '6/2': 'Hình mẫu – ẩn sĩ: sống làm gương, tài năng tự nhiên được mời ra; mặt trái: dễ xa cách, khó gần', '6/3': 'Hình mẫu – thử nghiệm: trải nghiệm nhiều, trưởng thành thành người thông thái; mặt trái: nhiều va vấp, đổ vỡ trước khi vững'
 };
 var HD_DONG_LUC = ['Sợ hãi (Fear)', 'Hy vọng (Hope)', 'Khao khát (Desire)', 'Nhu cầu (Need)', 'Áy náy (Guilt)', 'Ngây thơ (Innocence)'];
 var HD_DONG_LUC_Y = ['động lực từ việc muốn hiểu và vượt qua nỗi sợ', 'động lực từ niềm hy vọng vào điều tốt hơn', 'động lực từ khao khát trải nghiệm, sở hữu', 'động lực từ nhu cầu thực tế cần được đáp ứng', 'động lực từ ý thức trách nhiệm, không muốn ai bị bỏ lại', 'động lực tự nhiên, không toan tính'];
@@ -351,10 +425,10 @@ function hdPhanTich_(hd, T, viewYear) {
   for (var g = 1; g <= 64; g++) {
     if (hd.gates[g]) {
       var mau = hd.gates[g].indexOf('p') >= 0 && hd.gates[g].indexOf('d') >= 0 ? 'cả hai' : hd.gates[g].indexOf('p') >= 0 ? 'đen' : 'đỏ';
-      kh.push({ g: g, ten: HD_GATE_TEN[g], mau: mau, tt: HD_CENTERS[gc(g)].ten.split(' (')[0] });
+      kh.push({ g: g, ten: HD_GATE_TEN[g], trai: HD_GATE_TRAI[g], mau: mau, tt: HD_CENTERS[gc(g)].ten.split(' (')[0] });
       var ch2 = HD_CHANNELS.filter(function (c) { return (c[0] === g || c[1] === g) && !coKenh(c[0], c[1]); });
-      if (ch2.length && !HD_CHANNELS.some(function (c) { return (c[0] === g || c[1] === g) && coKenh(c[0], c[1]); })) treo.push({ g: g, ten: HD_GATE_TEN[g], canCong: ch2.map(function (c) { return c[0] === g ? c[1] : c[0]; }) });
-    } else trong.push({ g: g, ten: HD_GATE_TEN[g], tt: HD_CENTERS[gc(g)].ten.split(' (')[0] });
+      if (ch2.length && !HD_CHANNELS.some(function (c) { return (c[0] === g || c[1] === g) && coKenh(c[0], c[1]); })) treo.push({ g: g, ten: HD_GATE_TEN[g], trai: HD_GATE_TRAI[g], canCong: ch2.map(function (c) { return c[0] === g ? c[1] : c[0]; }) });
+    } else trong.push({ g: g, ten: HD_GATE_TEN[g], trai: HD_GATE_TRAI[g], tt: HD_CENTERS[gc(g)].ten.split(' (')[0] });
   }
   out.cong = { kichHoat: kh, trong: trong, treo: treo, soDen: kh.filter(function (x) { return x.mau !== 'đỏ'; }).length, soDo: kh.filter(function (x) { return x.mau !== 'đen'; }).length };
   // ---- B10: nút, biến số, solar return, chu kỳ 7 năm, transit
@@ -365,7 +439,7 @@ function hdPhanTich_(hd, T, viewYear) {
     { ten: 'Môi trường (Environment)', gt: HD_MOI_TRUONG[dN.color - 1], y: HD_MOI_TRUONG_Y[dN.color - 1], nguon: 'màu của Nút Bắc Thiết kế', mui: dN.tone <= 3 ? 'trái – nơi quen thuộc, cố định' : 'phải – nơi thay đổi, đa dạng' },
     { ten: 'Tiêu hóa (Determination)', gt: HD_TIEU_HOA[dS.color - 1], y: HD_TIEU_HOA_Y[dS.color - 1], nguon: 'màu của Mặt Trời Thiết kế', mui: dS.tone <= 3 ? 'trái – ăn theo nếp cố định' : 'phải – ăn linh hoạt theo cảm nhận' }
   ];
-  out.nut = { p: 'Nút Bắc Tính cách cổng ' + pN.gate + ' (' + HD_GATE_TEN[pN.gate] + '), Nút Nam cổng ' + hd.act.p.southNode.gate + ' – chủ đề môi trường và con đường ý thức, nổi bật sau khoảng 38–40 tuổi.',
+  out.nut = { p: 'Nút Bắc Tính cách cổng ' + pN.gate + ' (' + HD_GATE_TEN[pN.gate] + '; mặt trái: ' + HD_GATE_TRAI[pN.gate] + '), Nút Nam cổng ' + hd.act.p.southNode.gate + ' – chủ đề môi trường và con đường ý thức, nổi bật sau khoảng 38–40 tuổi.',
     d: 'Nút Bắc Thiết kế cổng ' + dN.gate + ' (' + HD_GATE_TEN[dN.gate] + ') – môi trường và những người cơ thể bạn cần gặp.' };
   function chartTam(jd) {
     var pos = astToanBo_(jd), gs = {}; HD_BODIES.forEach(function (b) { gs[hdCong_(pos[b]).gate] = 1; });
@@ -386,16 +460,16 @@ function hdPhanTich_(hd, T, viewYear) {
     { k: 'tongQuan', ten: 'Tổng quan', items: [HD_TYPE_VN[hd.loai] + ' (' + hd.loai + ', ' + X.tl + ' dân số) · ' + A.ten + ' · hồ sơ ' + hd.profile + ' · ' + hd.dinhNghia + '.', X.moTa] },
     { k: 'chienLuoc', ten: 'Chiến lược', items: ['Cách sống đúng Loại: ' + X.chienLuoc + '.', 'Khi sống đúng bạn cảm thấy ' + X.dauHieu.toLowerCase() + '; khi lệch hướng dễ ' + X.saiLech.toLowerCase() + '.'] },
     { k: 'thamQuyen', ten: 'Thẩm quyền', items: [A.moTa] },
-    { k: 'chuDe', ten: 'Chủ đề cuộc đời', items: ['Giao điểm hóa thân ' + hd.cross + ' – ' + hd.goc + '.', 'Mặt Trời Tính cách cổng ' + pS.gate + ' – ' + HD_GATE_TEN[pS.gate] + ': chủ đề sống ý thức. Mặt Trời Thiết kế cổng ' + dS.gate + ' – ' + HD_GATE_TEN[dS.gate] + ': chủ đề của cơ thể.', 'Hồ sơ ' + hd.profile + ': ' + (HD_PROFILE_Y[hd.profile] || '') + '.'] },
-    { k: 'baiHoc', ten: 'Bài học', items: mo.map(function (c) { return '□ ' + c.ten + ': ' + HD_CENTER_Y[c.k][1]; }).concat(treo.length ? ['Cổng treo ' + treo.slice(0, 6).map(function (x) { return x.g; }).join(', ') + ': bạn bị thu hút bởi người có cổng đối ứng – vừa là quà, vừa là bài học phụ thuộc.'] : []) },
-    { k: 'quanHe', ten: 'Mối quan hệ', items: ['Cách tương tác: ' + HD_TYPE_QH[hd.loai] + '.', out.dinhNghia.ds.filter(function (x) { return x.la; }).map(function (x) { return x.ten + ': ' + x.y; })[0] + '.', cau.length ? 'Người có cổng ' + cau.map(function (x) { return x.cong; }).join(', ') + ' sẽ "bắc cầu" nối các phần của bạn – bạn thấy trọn vẹn khi ở gần họ.' : 'Hồ sơ hào ' + hd.l2 + ' (' + HD_LINE[hd.l2][0] + ') cho biết cách người khác nhìn bạn trong quan hệ.'] },
+    { k: 'chuDe', ten: 'Chủ đề cuộc đời', items: ['Giao điểm hóa thân ' + hd.cross + ' – ' + hd.goc + '.', 'Mặt Trời Tính cách cổng ' + pS.gate + ' – ' + HD_GATE_TEN[pS.gate] + ': chủ đề sống ý thức. Mặt Trời Thiết kế cổng ' + dS.gate + ' – ' + HD_GATE_TEN[dS.gate] + ': chủ đề của cơ thể. Mặt trái: ' + HD_GATE_TRAI[pS.gate] + '; ' + HD_GATE_TRAI[dS.gate] + '.', 'Hồ sơ ' + hd.profile + ': ' + (HD_PROFILE_Y[hd.profile] || '') + '.'] },
+    { k: 'baiHoc', ten: 'Bài học', items: mo.map(function (c) { return '□ ' + c.ten + ': ' + HD_CENTER_Y[c.k][1]; }).concat(treo.length ? ['Cổng treo ' + treo.slice(0, 6).map(function (x) { return x.g; }).join(', ') + ': bạn bị thu hút bởi người có cổng đối ứng – dễ được bổ sung năng lượng, nhưng cũng dễ phụ thuộc vào họ.'] : []) },
+    { k: 'quanHe', ten: 'Mối quan hệ', items: ['Cách tương tác: ' + HD_TYPE_QH[hd.loai] + '.', out.dinhNghia.ds.filter(function (x) { return x.la; }).map(function (x) { return x.ten + ': ' + x.y; })[0] + '.', cau.length ? 'Người có cổng ' + cau.map(function (x) { return x.cong; }).join(', ') + ' sẽ "bắc cầu" nối các phần của bạn – bạn thấy trọn vẹn khi ở gần họ, nhưng dễ bám víu và thấy thiếu khi xa họ.' : 'Hồ sơ hào ' + hd.l2 + ' (' + HD_LINE[hd.l2][0] + ') cho biết cách người khác nhìn bạn trong quan hệ.'] },
     { k: 'suNghiep', ten: 'Sự nghiệp', items: ['Cách làm việc: ' + HD_TYPE_LAM[hd.loai] + '.', 'Vai trò (hồ sơ): ' + HD_LINE[hd.l1][0] + ' / ' + HD_LINE[hd.l2][0] + '.'].concat(hd.kenh.length ? ['Tài năng từ kênh: ' + hd.kenh.map(function (k) { return k.ten + ' (' + k.moTa + ')'; }).join('; ') + '.'] : []) },
-    { k: 'sucKhoe', ten: 'Sức khỏe', items: mo.map(function (c) { return 'Trung tâm mở ' + c.ten.split(' (')[0] + ' ↔ ' + c.sinhHoc + ': dễ nhạy cảm, nên chăm sóc.'; }).concat(['Chế độ ăn hợp (' + out.bienSo[3].gt + '): ' + out.bienSo[3].y + '.']) },
+    { k: 'sucKhoe', ten: 'Sức khỏe', items: mo.map(function (c) { return 'Trung tâm mở ' + c.ten.split(' (')[0] + ' ↔ ' + c.sinhHoc + ': dễ nhạy cảm; khi bị quá tải có xu hướng dễ mắc ' + HD_CENTER_BENH[c.k] + '.'; }).concat(['Chế độ ăn hợp (' + out.bienSo[3].gt + '): ' + out.bienSo[3].y + '.', 'Đây là góc nhìn tham khảo, không phải chẩn đoán; có dấu hiệu bất thường hãy hỏi bác sĩ.']) },
     { k: 'vanTrinh', ten: 'Vận trình', items: [out.solarReturn.t, 'Chu kỳ 7 năm hiện tại (' + out.chuKy7[Math.min(ky, 11)].tu + '–' + out.chuKy7[Math.min(ky, 11)].den + ' tuổi): ' + out.chuKy7[Math.min(ky, 11)].y + '.', 'Transit hôm nay: Mặt Trời ở cổng ' + out.transit.matTroi + (tr.moi.length ? '; tạm nối ' + tr.moi.length + ' kênh.' : '.')] }
   ];
   out.loiKhuyen = [
     { ten: 'Phát huy điểm mạnh', t: (xd.length ? 'Tin vào ' + xd.map(function (c) { return c.ten.split(' (')[0].toLowerCase(); }).join(', ') + ' – đây là phần ổn định, đáng tin của bạn. ' : '') + (hd.kenh.length ? 'Dùng tài năng: ' + hd.kenh.slice(0, 3).map(function (k) { return k.moTa; }).join('; ') + '.' : '') },
-    { ten: 'Khắc phục điểm yếu', t: 'Ở các trung tâm mở (' + mo.map(function (c) { return c.ten.split(' (')[0].toLowerCase(); }).join(', ') + '), đừng để năng lượng của người khác quyết định thay bạn – quay về chiến lược và thẩm quyền.' },
+    { ten: 'Khắc phục điểm yếu', t: 'Ở các trung tâm mở (' + mo.map(function (c) { return c.ten.split(' (')[0].toLowerCase(); }).join(', ') + '), bạn dễ bị năng lượng của người khác kéo theo và quyết định thay mình, rồi sống lệch với bản thân. Gợi ý: quay về chiến lược và thẩm quyền.' },
     { ten: 'Thời điểm hành động', t: 'Việc lớn: ' + X.chienLuoc.toLowerCase() + '; quyết định theo ' + A.ten.replace('Thẩm quyền ', '').toLowerCase() + '. Năm nay: ' + out.solarReturn.t.split(': ').slice(1).join(': ') }
   ];
   return out;

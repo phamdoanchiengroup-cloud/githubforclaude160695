@@ -318,7 +318,7 @@ function th6Moi_(r) {
     Câu không đạt thì để trống, giao diện dùng câu mẫu theo lĩnh vực (TL_LUU_Y trong Script.html). */
 var TH6_LUU_Y_BO = /Tử Vi|Thiên Cơ|Thái Dương|Vũ Khúc|Thiên Đồng|Liêm Trinh|Thiên Phủ|Thái Âm|Tham Lang|Cự Môn|Thiên Tướng|Thiên Lương|Thất Sát|Phá Quân|Kình Dương|Đà La|Địa Không|Địa Kiếp|Hỏa Tinh|Linh Tinh|Văn Xương|Văn Khúc|Tả Phù|Hữu Bật|Lộc Tồn|Thiên Mã|Hóa (Lộc|Quyền|Khoa|Kỵ)|Đào Hoa|Hồng Loan|dụng thần|thập thần|kỵ thần|hỷ thần|\bsao\b|\bcung\b|Tuần|Triệt|Thái Tuế|thần sát|Nhật chủ|nêu trên|thế mạnh|%|\d+\/\d+|\(|^[^.]{0,30}:/;
 function th6LuuY_(x) {
-  var y = (x.yeu || []).map(function (s) { return s && (s.t || s); }).filter(function (t) { return typeof t === 'string' && /^Bạn có xu hướng/.test(t) && !TH6_LUU_Y_BO.test(t); })[0] || '';
+  var y = (x.yeu || []).map(function (s) { return s && (s.t || s); }).filter(function (t) { return typeof t === 'string' && /^(Bạn (có xu hướng|thuộc mẫu người)|Mặt (xấu|trái):)/.test(t) && !TH6_LUU_Y_BO.test(t); })[0] || '';
   var k = (x.khuyen || []).filter(function (t) { return typeof t === 'string' && t.length <= 200 && !TH6_LUU_Y_BO.test(t); })[0] || '';
   return { yeu: y, khuyen: k };
 }
@@ -344,11 +344,11 @@ function demoTeaser_(res) {
   var dvNow = (res.chiTiet.daiVan || []).filter(function (d) { return d.isNow; })[0];
   var dvTot = (res.chiTiet.daiVan || []).filter(function (d) { return +String(d.nam).slice(0, 4) >= vy; }).sort(function (a, b) { return b.diem - a.diem; })[0];
   var out = {};
-  out.tom = TL ? { lo: [TL.tieuDe + '.', TL.phuDe], an: ['2 điểm sáng khác được 6 hệ cùng xác nhận', '3 điều nên chăm chút để cân bằng hơn', '3 hành động then chốt cho 10 năm tới', 'Giai đoạn vàng của đời bạn: ' + che_(TL.chiSo[0].gt + ' tuổi (' + TL.chiSo[0].phu + ')')] } : null;
+  out.tom = TL ? { lo: [TL.tieuDe + '.', TL.phuDe], an: ['2 điểm sáng khác được 6 hệ cùng xác nhận', '3 điểm yếu được nhiều hệ cùng chỉ ra', '3 hành động then chốt cho 10 năm tới', 'Giai đoạn vàng của đời bạn: ' + che_(TL.chiSo[0].gt + ' tuổi (' + TL.chiSo[0].phu + ')')] } : null;
   out.chart = { lo: ['Mệnh ' + menh + ', Thân cư ' + I.thanCu + ', ' + I.cuc + '.', 'Cung mạnh nhất: ' + cung[0].cung + ' (' + cung[0].danhGia + ').'],
-    an: ['Mảng đời cần chăm chút nhất và cách bồi đắp: ███','Ý nghĩa của ' + (res.tuvi.palaces[I.menh].tuan || res.tuvi.palaces[I.menh].triet ? 'Tuần/Triệt đang đóng ở Mệnh' : 'bộ sao tam hợp chiếu Mệnh') + ' với vận của bạn'] };
+    an: ['Mảng đời yếu nhất và vì sao: ███','Ý nghĩa của ' + (res.tuvi.palaces[I.menh].tuan || res.tuvi.palaces[I.menh].triet ? 'Tuần/Triệt đang đóng ở Mệnh' : 'bộ sao tam hợp chiếu Mệnh') + ' với vận của bạn'] };
   out.chart.lo.push('Lá số có ' + (res.tuvi.luanGiai.cachCuc || []).length + ' cách cục nổi bật, trong đó có "' + ((res.tuvi.luanGiai.cachCuc || [])[0] || { ten: '—' }).ten + '".');
-  out.chart.an = out.chart.an.concat(['Luận chi tiết 12 cung: tài lộc, sự nghiệp, hôn nhân, con cái, sức khỏe, nhà cửa…', 'Cung ' + cung[cung.length - 1].cung + ' đang ở mức "' + cung[cung.length - 1].danhGia + '" – vì sao và cách hóa giải']);
+  out.chart.an = out.chart.an.concat(['Luận chi tiết 12 cung: tài lộc, sự nghiệp, hôn nhân, con cái, sức khỏe, nhà cửa…', 'Cung ' + cung[cung.length - 1].cung + ' đang ở mức "' + cung[cung.length - 1].danhGia + '" – vì sao và nên làm gì']);
   var HT = T.hoiTu;
   if (HT) {
     var nong = (HT.cuaSo || []).filter(function (c) { return c.nam >= vy; });
@@ -375,7 +375,7 @@ function demoTeaser_(res) {
   if (M.hd) out.hd = { lo: ['Bạn thuộc loại ' + M.hd.loaiTen + '.'], an: ['Thẩm quyền ra quyết định: ███', 'Hồ sơ ' + M.hd.profile.replace(/\d/g, '█') + ' – vai trò của bạn trong đời', 'Bản đồ 9 trung tâm và các kênh năng lượng'] };
   if (T.matMa && out.tom) out.tom.an.push(T.matMa.length + ' "mật mã cá nhân": nguyên tố linh hồn, con số định mệnh, khung giờ vàng, quý nhân…');
   if (T.tinhCach) out.nguoi = { lo: ['Tính cách: ' + (T.tinhCach.truc.filter(function (t) { return Math.abs(t.gt) > 0.35; })[0] || { moTa: '—' }).moTa.split(':')[0] + '.', T.xuatThan && T.xuatThan.ketLuan[0] ? (T.xuatThan.ketLuan[0].t || T.xuatThan.ketLuan[0]) : ''].filter(function (x) { return typeof x === 'string'; }),
-    an: ['Xuất thân và gia cảnh mà 6 hệ cùng chỉ ra', 'Vóc dáng, nét mặt và dấu hiệu trên cơ thể (bớt, nốt ruồi, vùng dễ tổn thương)', 'Điểm mạnh – điểm cần rèn được nhiều hệ xác nhận'] };
+    an: ['Xuất thân và gia cảnh mà 6 hệ cùng chỉ ra', 'Vóc dáng, nét mặt và dấu hiệu trên cơ thể (bớt, nốt ruồi, vùng dễ tổn thương)', 'Điểm mạnh – điểm yếu được nhiều hệ xác nhận'] };
   if (T.phoiNgau) {
     var P = T.phoiNgau, top = P.tuoiHop.tot[0];
     out.duyen = { lo: [P.ketLuan[0] ? String(P.ketLuan[0].t || P.ketLuan[0]).split('.')[0] + '.' : 'Chân dung người bạn đời được ghép từ 5 hệ.'],

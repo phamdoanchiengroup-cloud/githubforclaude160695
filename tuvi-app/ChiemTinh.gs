@@ -31,7 +31,7 @@ var CT_CUNG = [
     bong: 'cố chấp, chiếm hữu, lười thay đổi' },
   { ten: 'Song Tử', ky: '♊', nt: 'Khí', tc: 'Linh hoạt', chu: 'mercury', chuCo: 'mercury', bp: 'vai, cánh tay, bàn tay, phổi, hệ thần kinh',
     vung: ['tay', 'phoi', 'thanKinh'], tuKhoa: 'tò mò, lanh lợi, giao tiếp, đa năng',
-    sun: 'Bản ngã người đưa tin: sống bằng ý tưởng, thông tin và kết nối. Học nhanh, nói hay, đa tài, nhưng dễ tản mạn và thiếu chiều sâu nếu không rèn tập trung.',
+    sun: 'Bản ngã người đưa tin: sống bằng ý tưởng, thông tin và kết nối. Học nhanh, nói hay, đa tài; mặt trái: dễ tản mạn, thiếu chiều sâu, làm nhiều việc mà ít việc đến nơi.',
     moon: 'Cảm xúc được xử lý bằng lời nói và lý lẽ; cần trò chuyện để thấy an toàn. Tâm trạng thay đổi nhanh, dễ chán, sợ bị nhàm chán hơn sợ cô đơn.',
     asc: 'Ấn tượng đầu tiên: trẻ trung, hoạt bát, nói nhiều. Theo cách luận truyền thống, người có cung Mọc này hay có cử chỉ tay nhiều, ánh mắt linh lợi, phong thái trẻ hơn tuổi – bạn hãy tự đối chiếu.',
     hinh: { cao: 0.5, beo: -1, mat: 'trái xoan', da: 'sáng' },
@@ -60,7 +60,7 @@ var CT_CUNG = [
   { ten: 'Thiên Bình', ky: '♎', nt: 'Khí', tc: 'Tiên phong', chu: 'venus', chuCo: 'venus', bp: 'thận, thắt lưng, da',
     vung: ['than', 'lung', 'da'], tuKhoa: 'hài hòa, công bằng, thẩm mỹ, quan hệ',
     sun: 'Bản ngã nhà ngoại giao: sống qua các mối quan hệ, tìm cân bằng và cái đẹp. Duyên dáng, biết lắng nghe, có óc thẩm mỹ; khó quyết định và sợ xung đột.',
-    moon: 'Cảm xúc cần sự hài hòa, cần một người đồng hành. Dễ chịu ảnh hưởng tâm trạng người khác, nhún nhường để giữ hòa khí.',
+    moon: 'Cảm xúc cần sự hài hòa, cần một người đồng hành. Dễ chịu ảnh hưởng tâm trạng người khác, nhún nhường để giữ hòa khí đến mức nuốt giận, tự chịu thiệt.',
     asc: 'Ấn tượng đầu tiên: dễ mến, lịch thiệp, ưa nhìn. Theo cách luận truyền thống, người có cung Mọc này hay có nụ cười duyên, cử chỉ hài hòa, phong cách ăn mặc có gu – bạn hãy tự đối chiếu.',
     hinh: { cao: 0, beo: 0, mat: 'trái xoan', da: 'sáng' },
     bong: 'do dự, chiều lòng người, phụ thuộc quan hệ' },
@@ -102,17 +102,17 @@ var CT_CUNG = [
 ];
 
 var CT_HT = {
-  sun: { ten: 'Mặt Trời', ky: '☉', cn: 'bản ngã, ý chí, sức sống, người cha', nha: 'tìm bản sắc và muốn tỏa sáng trong lĩnh vực' },
-  moon: { ten: 'Mặt Trăng', ky: '☽', cn: 'cảm xúc, nhu cầu an toàn, thói quen, người mẹ', nha: 'cần sự an toàn cảm xúc, thay đổi theo chu kỳ trong lĩnh vực' },
-  mercury: { ten: 'Sao Thủy', ky: '☿', cn: 'tư duy, học tập, giao tiếp, anh chị em', nha: 'suy nghĩ, học hỏi và trao đổi nhiều về' },
-  venus: { ten: 'Sao Kim', ky: '♀', cn: 'tình yêu, giá trị, thẩm mỹ, tiền bạc', nha: 'được yêu mến, gặp may và tìm thấy niềm vui qua' },
-  mars: { ten: 'Sao Hỏa', ky: '♂', cn: 'hành động, dục vọng, dũng khí, xung đột', nha: 'dồn năng lượng, cạnh tranh và dễ va chạm trong' },
-  jupiter: { ten: 'Sao Mộc', ky: '♃', cn: 'mở rộng, may mắn, niềm tin, học vấn cao', nha: 'được phúc, mở rộng và gặp quý nhân trong' },
-  saturn: { ten: 'Sao Thổ', ky: '♄', cn: 'kỷ luật, giới hạn, trách nhiệm, thời gian', nha: 'gặp thử thách, trì hoãn nhưng thành tựu bền vững muộn trong' },
-  uranus: { ten: 'Sao Thiên Vương', ky: '♅', cn: 'đột biến, tự do, sáng tạo, cách mạng', nha: 'gặp biến động bất ngờ và muốn phá khuôn trong' },
-  neptune: { ten: 'Sao Hải Vương', ky: '♆', cn: 'mơ mộng, tâm linh, ảo tưởng, hy sinh', nha: 'lý tưởng hóa, dễ mơ hồ hoặc hy sinh trong' },
-  pluto: { ten: 'Sao Diêm Vương', ky: '♇', cn: 'quyền lực, chuyển hóa, sinh tử, vô thức', nha: 'trải qua những cuộc "lột xác" sâu sắc về' },
-  northNode: { ten: 'Nút Bắc', ky: '☊', cn: 'hướng phát triển của linh hồn', nha: 'được thúc đẩy trưởng thành qua' }
+  sun: { ten: 'Mặt Trời', ky: '☉', cn: 'bản ngã, ý chí, sức sống, người cha', nha: 'tìm bản sắc và muốn tỏa sáng (cũng dễ đặt cái tôi quá cao) trong lĩnh vực' },
+  moon: { ten: 'Mặt Trăng', ky: '☽', cn: 'cảm xúc, nhu cầu an toàn, thói quen, người mẹ', nha: 'cần sự an toàn cảm xúc, thay đổi theo chu kỳ (dễ bất ổn, nhạy cảm) trong lĩnh vực' },
+  mercury: { ten: 'Sao Thủy', ky: '☿', cn: 'tư duy, học tập, giao tiếp, anh chị em', nha: 'suy nghĩ, học hỏi và trao đổi nhiều (cũng dễ lo nghĩ, nói nhiều) về' },
+  venus: { ten: 'Sao Kim', ky: '♀', cn: 'tình yêu, giá trị, thẩm mỹ, tiền bạc', nha: 'được yêu mến, gặp may và tìm thấy niềm vui (nhưng dễ chiều mình, hưởng thụ quá đà) qua' },
+  mars: { ten: 'Sao Hỏa', ky: '♂', cn: 'hành động, dục vọng, dũng khí, xung đột', nha: 'dồn năng lượng, cạnh tranh (có sức bật nhưng dễ va chạm, nóng vội) trong' },
+  jupiter: { ten: 'Sao Mộc', ky: '♃', cn: 'mở rộng, may mắn, niềm tin, học vấn cao', nha: 'được phúc, mở rộng và gặp quý nhân (nhưng dễ quá đà, hứa nhiều, tiêu nhiều) trong' },
+  saturn: { ten: 'Sao Thổ', ky: '♄', cn: 'kỷ luật, giới hạn, trách nhiệm, thời gian', nha: 'gặp thử thách, trì hoãn, áp lực (đổi lại thành tựu bền vững đến muộn) trong' },
+  uranus: { ten: 'Sao Thiên Vương', ky: '♅', cn: 'đột biến, tự do, sáng tạo, cách mạng', nha: 'gặp biến động bất ngờ, muốn phá khuôn (có ý tưởng mới nhưng dễ bất ổn) trong' },
+  neptune: { ten: 'Sao Hải Vương', ky: '♆', cn: 'mơ mộng, tâm linh, ảo tưởng, hy sinh', nha: 'lý tưởng hóa, giàu cảm hứng (nhưng dễ mơ hồ, bị lừa hoặc hy sinh quá mức) trong' },
+  pluto: { ten: 'Sao Diêm Vương', ky: '♇', cn: 'quyền lực, chuyển hóa, sinh tử, vô thức', nha: 'trải qua những cuộc "lột xác" sâu sắc (thường kèm khủng hoảng, mất mát trước khi mạnh lên) về' },
+  northNode: { ten: 'Nút Bắc', ky: '☊', cn: 'hướng phát triển của linh hồn', nha: 'được thúc đẩy trưởng thành (nhưng thấy lạ, vụng và thiếu tự tin lúc đầu) qua' }
 };
 var CT_THU_TU = ['sun', 'moon', 'mercury', 'venus', 'mars', 'jupiter', 'saturn', 'uranus', 'neptune', 'pluto', 'northNode'];
 
@@ -160,11 +160,11 @@ var CT_NHA = [
 
 var CT_GOC = [
   { deg: 0, ten: 'Hợp', ky: '☌', orb: 8, loai: 'hop', y: 'hòa trộn hai năng lượng thành một – tăng cường mạnh (tốt hay xấu tùy hành tinh)' },
-  { deg: 60, ten: 'Lục hợp', ky: '⚹', orb: 5, loai: 'tot', y: 'cơ hội, hỗ trợ nhẹ nhàng – cần chủ động nắm bắt' },
-  { deg: 90, ten: 'Vuông', ky: '□', orb: 7, loai: 'xau', y: 'căng thẳng nội tâm, thúc ép hành động – thử thách tạo nên sức mạnh' },
+  { deg: 60, ten: 'Lục hợp', ky: '⚹', orb: 5, loai: 'tot', y: 'cơ hội, hỗ trợ nhẹ nhàng; mặt trái: nhẹ đến mức dễ bị bỏ qua nếu không chủ động' },
+  { deg: 90, ten: 'Vuông', ky: '□', orb: 7, loai: 'xau', y: 'căng thẳng nội tâm, va chạm, dễ hỏng việc vì nóng vội; bù lại thúc ép bạn phải hành động' },
   { deg: 120, ten: 'Tam hợp', ky: '△', orb: 7, loai: 'tot', y: 'hài hòa, tài năng bẩm sinh, dòng chảy thuận lợi – đôi khi dễ dãi' },
-  { deg: 150, ten: 'Lệch (quincunx)', ky: '⚻', orb: 3, loai: 'xau', y: 'hai năng lượng khó "nói chuyện" với nhau, cần điều chỉnh liên tục' },
-  { deg: 180, ten: 'Đối', ky: '☍', orb: 8, loai: 'xau', y: 'phân cực, giằng co – thường thể hiện qua người khác, cần tìm cân bằng' }
+  { deg: 150, ten: 'Lệch (quincunx)', ky: '⚻', orb: 3, loai: 'xau', y: 'hai năng lượng khó "nói chuyện" với nhau, dễ gây bứt rứt, mệt mỏi kéo dài; bù lại rèn khả năng xoay xở' },
+  { deg: 180, ten: 'Đối', ky: '☍', orb: 8, loai: 'xau', y: 'phân cực, giằng co, dễ xung đột với người thân cận hoặc đối tác; bù lại giúp bạn nhìn rõ mình qua người khác' }
 ];
 
 var CT_NT = {
@@ -368,7 +368,7 @@ function ctChuKy_(jd0, natal, T) {
     { deg: 270, ten: 'Sao Thổ vuông giảm', cach: 25, moTa: 'áp lực tái cấu trúc – chọn hướng đi, bỏ cái không còn phù hợp, gánh trách nhiệm thật sự (≈22, 51, 80 tuổi)' },
     { deg: 0, ten: 'Sao Thổ hồi quy', cach: 25, moTa: 'bước ngoặt trưởng thành lớn: cấu trúc sai sẽ sụp để dựng cái đúng – thường gắn với sự nghiệp, hôn nhân, chuyển nhà, trách nhiệm mới' }
   ], 90, '', '');
-  tim('jupiter', [{ deg: 0, ten: 'Sao Mộc hồi quy', cach: 10, moTa: 'chu kỳ 12 năm mở rộng – cơ hội học tập, đi xa, thăng tiến, gặp quý nhân; gieo hạt cho 12 năm tới' }], 85, '', '');
+  tim('jupiter', [{ deg: 0, ten: 'Sao Mộc hồi quy', cach: 10, moTa: 'chu kỳ 12 năm mở rộng – cơ hội học tập, đi xa, thăng tiến, gặp quý nhân; mặt trái: dễ ôm đồm, tiêu quá tay' }], 85, '', '');
   tim('uranus', [
     { deg: 90, ten: 'Thiên Vương vuông', cach: 30, moTa: 'nổi loạn, khao khát tự do, thay đổi đột ngột lối sống' },
     { deg: 180, ten: 'Thiên Vương đối (khủng hoảng tuổi trung niên)', cach: 30, moTa: 'thức tỉnh: phá bỏ lối mòn, thay đổi nghề nghiệp/quan hệ để sống thật với mình' }
@@ -389,11 +389,11 @@ function ctPlanetInSign_(p) {
   if (p.key === 'sun') txt = S.sun;
   else if (p.key === 'moon') txt = S.moon;
   else if (CT_PHONG_CACH[p.key]) txt = H.ten + ' (' + H.cn + ') thể hiện theo lối ' + S.ten + ': ' + CT_PHONG_CACH[p.key][p.cung] + '.';
-  else if (p.key === 'northNode') txt = 'Hướng trưởng thành của linh hồn mang màu sắc ' + S.ten + ' (' + S.tuKhoa + '); Nút Nam ở ' + CT_CUNG[(p.cung + 6) % 12].ten + ' là thói quen cũ cần vượt qua (' + CT_CUNG[(p.cung + 6) % 12].bong + ').';
-  else if (p.key === 'jupiter') txt = 'Phúc lộc và niềm tin đến qua phẩm chất ' + S.ten + ' (' + S.tuKhoa + ').';
-  else if (p.key === 'saturn') txt = 'Bài học đời và nỗi sợ sâu nằm ở chủ đề ' + S.ten + ' (' + S.tuKhoa + ') – vượt qua được sẽ thành sở trường vững chắc.';
+  else if (p.key === 'northNode') txt = 'Hướng trưởng thành của linh hồn mang màu sắc ' + S.ten + ' (' + S.tuKhoa + '); Nút Nam ở ' + CT_CUNG[(p.cung + 6) % 12].ten + ' là thói quen cũ dễ kéo bạn lùi lại (' + CT_CUNG[(p.cung + 6) % 12].bong + ').';
+  else if (p.key === 'jupiter') txt = 'Phúc lộc và niềm tin đến qua phẩm chất ' + S.ten + ' (' + S.tuKhoa + '); mặt trái: dễ quá đà, hứa nhiều, tiêu nhiều ở chính chủ đề này.';
+  else if (p.key === 'saturn') txt = 'Bài học đời và nỗi sợ sâu nằm ở chủ đề ' + S.ten + ' (' + S.tuKhoa + ') – đây là chỗ bạn dễ tự ti, chậm và vất vả nhất; bù lại, thành quả ở đây đến muộn nhưng bền.';
   else txt = H.ten + ' ở ' + S.ten + ' mang dấu ấn thế hệ (' + S.tuKhoa + '); cá nhân rõ nét khi nó hợp góc với Mặt Trời, Mặt Trăng hoặc Mọc.';
-  var ph = p.pham ? ' [' + p.pham + (p.pham === 'Miếu' || p.pham === 'Vượng' ? ' – phát huy mạnh, tự nhiên' : ' – năng lượng bị cản trở, phải rèn luyện nhiều hơn') + ']' : '';
+  var ph = p.pham ? ' [' + p.pham + (p.pham === 'Miếu' || p.pham === 'Vượng' ? ' – phát huy mạnh, tự nhiên, đôi khi quá đà' : ' – năng lượng bị cản trở, khó phát huy, dễ lộ ra mặt xấu') + ']' : '';
   var ng = p.nghich ? ' (Nghịch hành: năng lượng hướng vào trong, xử lý lại, chậm mà sâu.)' : '';
   return (p.pham === 'Miếu' || p.pham === 'Vượng' ? '✓ ' : p.pham === 'Hãm' || p.pham === 'Tù' ? '◇ ' : '') + H.ky + ' ' + H.ten + ' ' + p.do + ' ' + S.ten + ' – nhà ' + p.nha + ph + ': ' + txt + ng;
 }
@@ -408,28 +408,28 @@ function ctGocY_(g) {
 }
 /** Góc chiếu kinh điển: [hài hòa, căng thẳng, hợp] */
 var CT_GOC_DAC = {
-  'moon-sun': ['Ý chí và cảm xúc đồng lòng: nội tâm yên ổn, cha mẹ hòa hợp, dễ đạt điều mình muốn.', 'Ý chí và cảm xúc giằng co: điều mình muốn khác điều mình cần; tuổi thơ có thể chứng kiến cha mẹ bất hòa.', 'Trăng non khi sinh: tính cách nhất quán, chủ quan, tập trung vào một hướng.'],
-  'mars-venus': ['Hấp dẫn giới tính tự nhiên, tình yêu và dục vọng đồng điệu, có tài nghệ thuật.', 'Đam mê mãnh liệt nhưng hay va chạm trong tình yêu, yêu – ghét lẫn lộn.', 'Sức quyến rũ mạnh, nhiệt tình trong tình yêu, dễ yêu nhanh.'],
-  'moon-saturn': ['Cảm xúc ổn định, chín chắn, trung thành, biết tự chăm sóc.', 'Cảm xúc bị kiềm nén, sớm gánh trách nhiệm, tuổi nhỏ thiếu sự ấm áp; dễ u sầu – cần học cách tự yêu thương.', 'Nghiêm túc với cảm xúc, có khuynh hướng cô đơn, thận trọng trong gắn bó.'],
-  'saturn-sun': ['Kỷ luật, bền bỉ, được người lớn tin cậy, thành công chắc chắn theo thời gian.', 'Tự ti hoặc cảm thấy bị giới hạn (thường liên quan đến cha), phải nỗ lực gấp đôi; thành tựu thật sự sau 30 tuổi.', 'Nghiêm túc sớm, có trách nhiệm, đường đời "leo núi".'],
-  'jupiter-sun': ['Lạc quan, hào phóng, may mắn, được quý nhân nâng đỡ.', 'Kỳ vọng quá cao, phô trương, dễ phung phí – cần tiết chế.', 'Tự tin lớn, có phúc, rộng lượng.'],
-  'mars-saturn': ['Làm việc bền bỉ có kỷ luật, giỏi kỹ thuật, chịu khó.', 'Giận dữ dồn nén, dễ vội vàng; cần kiên nhẫn và thể thao đều đặn.', 'Sức chịu đựng lớn nhưng dễ bực bội vì bị cản trở.'],
-  'mars-pluto': ['Sức mạnh ý chí phi thường, khả năng phục hồi lớn.', 'Xung đột quyền lực, cơn giận dữ dội; cần kênh xả năng lượng lành mạnh.', 'Nghị lực lớn, quyết liệt, có thể cực đoan.'],
-  'neptune-venus': ['Lãng mạn, tài nghệ thuật – âm nhạc, lòng trắc ẩn.', 'Dễ ảo tưởng trong tình yêu, bị lừa dối hoặc yêu người không có thật.', 'Tình yêu lý tưởng, tâm hồn nghệ sĩ.'],
-  'moon-venus': ['Dịu dàng, duyên dáng, được yêu mến, có gu thẩm mỹ.', 'Cảm xúc và mong muốn tình yêu mâu thuẫn, dễ chiều chuộng bản thân quá mức.', 'Rất có duyên, ưa cái đẹp, gắn bó gia đình.'],
-  'mercury-saturn': ['Tư duy chín chắn, kiên nhẫn học tập, giỏi tổ chức.', 'Tự ti về trí tuệ hoặc học tập gặp trắc trở thời nhỏ; bù lại bằng sự kỹ lưỡng.', 'Nghiêm túc, suy nghĩ sâu, nói ít mà chắc.'],
-  'jupiter-venus': ['Rất may mắn trong tình cảm và tiền bạc, dễ được quý mến.', 'Hưởng thụ quá mức, chi tiêu phung phí.', 'Duyên dáng, được hưởng phúc, dễ gặp may về tiền và tình.'],
-  'moon-pluto': ['Trực giác sâu, thấu hiểu tâm lý người khác.', 'Cảm xúc dữ dội, quan hệ với mẹ phức tạp, sợ mất kiểm soát.', 'Cảm xúc mãnh liệt, gắn bó sâu và sở hữu.'],
-  'sun-uranus': ['Độc đáo, sáng tạo, tư duy tiến bộ.', 'Bất kham, thay đổi đột ngột, khó chịu gò bó.', 'Cá tính khác thường, cần tự do tuyệt đối.'],
-  'asc-saturn': ['Phong thái đáng tin, trưởng thành.', 'Thời nhỏ nhút nhát hoặc ốm yếu; vẻ ngoài nghiêm, lớn tuổi càng mạnh mẽ.', 'Vóc dáng gầy/xương rõ, trông nghiêm và già dặn trước tuổi.'],
-  'asc-jupiter': ['Thân thiện, dễ gây thiện cảm.', 'Dễ tăng cân, thiếu điều độ.', 'Dáng to cao hoặc đầy đặn, nụ cười rộng, phúc hậu.'],
-  'asc-mars': ['Năng động, khỏe khoắn.', 'Hay va chạm, dễ có sẹo vùng đầu mặt.', 'Cơ thể săn chắc, da hồng/đỏ, dễ có sẹo, tính nhanh nhẹn.'],
-  'asc-venus': ['Ưa nhìn, duyên dáng.', 'Hơi phù phiếm, quá chú trọng vẻ ngoài.', 'Gương mặt đẹp, cân đối, dễ thương.'],
-  'asc-moon': ['Dễ gần, được lòng số đông.', 'Tâm trạng lộ ra mặt, dễ thay đổi cân nặng.', 'Gương mặt tròn, biểu cảm, nhạy cảm với môi trường.'],
-  'asc-sun': ['Tự tin, sức sống mạnh.', 'Tự cao, đôi khi áp đặt.', 'Ngoại hình rạng rỡ, có sức hút, thể lực tốt.'],
-  'mc-sun': ['Sự nghiệp nổi bật, có danh.', 'Áp lực thành công lớn, xung đột với cấp trên.', 'Sinh ra để được nhìn thấy – danh tiếng gắn với bản ngã.'],
-  'jupiter-mc': ['Thuận lợi thăng tiến, được đề bạt.', 'Tham vọng quá sức.', 'Sự nghiệp rộng mở, có danh tiếng tốt.'],
-  'mc-saturn': ['Sự nghiệp bền vững, leo từng bậc.', 'Trắc trở sự nghiệp, danh tiếng đến muộn, sợ thất bại công khai.', 'Tham vọng lớn, thành tựu muộn nhưng chắc.']
+  'moon-sun': ['Ý chí và cảm xúc đồng lòng: nội tâm yên ổn, cha mẹ hòa hợp, dễ đạt điều mình muốn; mặt trái: ít bị thử thách nên dễ chủ quan.', 'Ý chí và cảm xúc giằng co: điều mình muốn khác điều mình cần; tuổi thơ có thể chứng kiến cha mẹ bất hòa.', 'Trăng non khi sinh: tính cách nhất quán, chủ quan, tập trung vào một hướng.'],
+  'mars-venus': ['Hấp dẫn giới tính tự nhiên, tình yêu và dục vọng đồng điệu, có tài nghệ thuật; mặt trái: dễ chiều theo cảm xúc nhất thời.', 'Đam mê mãnh liệt nhưng hay va chạm trong tình yêu, yêu – ghét lẫn lộn.', 'Sức quyến rũ mạnh, nhiệt tình trong tình yêu, dễ yêu nhanh.'],
+  'moon-saturn': ['Cảm xúc ổn định, chín chắn, trung thành, biết tự chăm sóc; mặt trái: hơi khô, ít bộc lộ.', 'Cảm xúc bị kiềm nén, sớm gánh trách nhiệm, tuổi nhỏ thiếu sự ấm áp; dễ u sầu, khó tin rằng mình đáng được thương.', 'Nghiêm túc với cảm xúc, có khuynh hướng cô đơn, thận trọng trong gắn bó.'],
+  'saturn-sun': ['Kỷ luật, bền bỉ, được người lớn tin cậy, thành công vững theo thời gian; mặt trái: nghiêm quá, khó thư giãn.', 'Tự ti hoặc cảm thấy bị giới hạn (thường liên quan đến cha), phải nỗ lực gấp đôi; thành tựu thật sự sau 30 tuổi.', 'Nghiêm túc sớm, có trách nhiệm, đường đời "leo núi".'],
+  'jupiter-sun': ['Lạc quan, hào phóng, may mắn, được quý nhân nâng đỡ; mặt trái: dễ ỷ vào may mắn.', 'Kỳ vọng quá cao, phô trương, dễ phung phí và hứa quá khả năng.', 'Tự tin lớn, có phúc, rộng lượng.'],
+  'mars-saturn': ['Làm việc bền bỉ có kỷ luật, giỏi kỹ thuật, chịu khó; mặt trái: dễ khắt khe với mình và người.', 'Giận dữ dồn nén, dễ vội vàng; dễ bùng nổ sau một thời gian dài chịu đựng.', 'Sức chịu đựng lớn nhưng dễ bực bội vì bị cản trở.'],
+  'mars-pluto': ['Sức mạnh ý chí phi thường, khả năng phục hồi lớn; mặt trái: dễ cứng rắn quá mức.', 'Xung đột quyền lực, cơn giận dữ dội; dễ cực đoan khi bị dồn ép.', 'Nghị lực lớn, quyết liệt, có thể cực đoan.'],
+  'neptune-venus': ['Lãng mạn, tài nghệ thuật – âm nhạc, lòng trắc ẩn; mặt trái: dễ mơ mộng trong tình cảm.', 'Dễ ảo tưởng trong tình yêu, bị lừa dối hoặc yêu người không có thật.', 'Tình yêu lý tưởng, tâm hồn nghệ sĩ.'],
+  'moon-venus': ['Dịu dàng, duyên dáng, được yêu mến, có gu thẩm mỹ; mặt trái: dễ ngại va chạm, chiều người.', 'Cảm xúc và mong muốn tình yêu mâu thuẫn, dễ chiều chuộng bản thân quá mức.', 'Rất có duyên, ưa cái đẹp, gắn bó gia đình.'],
+  'mercury-saturn': ['Tư duy chín chắn, kiên nhẫn học tập, giỏi tổ chức; mặt trái: hơi cứng, chậm đổi ý.', 'Tự ti về trí tuệ hoặc học tập gặp trắc trở thời nhỏ; bù lại bằng sự kỹ lưỡng.', 'Nghiêm túc, suy nghĩ sâu, nói ít mà chắc.'],
+  'jupiter-venus': ['Rất may mắn trong tình cảm và tiền bạc, dễ được quý mến; mặt trái: dễ quen hưởng thụ.', 'Hưởng thụ quá mức, chi tiêu phung phí.', 'Duyên dáng, được hưởng phúc, dễ gặp may về tiền và tình.'],
+  'moon-pluto': ['Trực giác sâu, thấu hiểu tâm lý người khác; mặt trái: dễ ôm cảm xúc nặng của người khác.', 'Cảm xúc dữ dội, quan hệ với mẹ phức tạp, sợ mất kiểm soát.', 'Cảm xúc mãnh liệt, gắn bó sâu và sở hữu.'],
+  'sun-uranus': ['Độc đáo, sáng tạo, tư duy tiến bộ; mặt trái: khó theo khuôn khổ.', 'Bất kham, thay đổi đột ngột, khó chịu gò bó.', 'Cá tính khác thường, cần tự do tuyệt đối.'],
+  'asc-saturn': ['Phong thái đáng tin, trưởng thành; mặt trái: trông nghiêm, khó gần lúc đầu.', 'Thời nhỏ nhút nhát hoặc ốm yếu; vẻ ngoài nghiêm, lớn tuổi càng mạnh mẽ.', 'Vóc dáng gầy/xương rõ, trông nghiêm và già dặn trước tuổi.'],
+  'asc-jupiter': ['Thân thiện, dễ gây thiện cảm; mặt trái: dễ ăn uống quá đà.', 'Dễ tăng cân, thiếu điều độ.', 'Dáng to cao hoặc đầy đặn, nụ cười rộng, phúc hậu.'],
+  'asc-mars': ['Năng động, khỏe khoắn; mặt trái: hơi nóng, dễ va chạm.', 'Hay va chạm, dễ có sẹo vùng đầu mặt.', 'Cơ thể săn chắc, da hồng/đỏ, dễ có sẹo, tính nhanh nhẹn.'],
+  'asc-venus': ['Ưa nhìn, duyên dáng; mặt trái: dễ để ý vẻ ngoài hơi nhiều.', 'Hơi phù phiếm, quá chú trọng vẻ ngoài.', 'Gương mặt đẹp, cân đối, dễ thương.'],
+  'asc-moon': ['Dễ gần, được lòng số đông; mặt trái: tâm trạng dễ lộ ra ngoài.', 'Tâm trạng lộ ra mặt, dễ thay đổi cân nặng.', 'Gương mặt tròn, biểu cảm, nhạy cảm với môi trường.'],
+  'asc-sun': ['Tự tin, sức sống mạnh; mặt trái: dễ lấn át người khác.', 'Tự cao, đôi khi áp đặt.', 'Ngoại hình rạng rỡ, có sức hút, thể lực tốt.'],
+  'mc-sun': ['Sự nghiệp nổi bật, có danh; mặt trái: áp lực giữ hình ảnh.', 'Áp lực thành công lớn, xung đột với cấp trên.', 'Sinh ra để được nhìn thấy – danh tiếng gắn với bản ngã.'],
+  'jupiter-mc': ['Thuận lợi thăng tiến, được đề bạt; mặt trái: dễ ôm quá nhiều vai trò.', 'Tham vọng quá sức.', 'Sự nghiệp rộng mở, có danh tiếng tốt.'],
+  'mc-saturn': ['Sự nghiệp bền vững, leo từng bậc; mặt trái: tiến chậm hơn người khác.', 'Trắc trở sự nghiệp, danh tiếng đến muộn, sợ thất bại công khai.', 'Tham vọng lớn, thành tựu muộn nhưng chắc.']
 };
 
 function ctPhysique_(ct) {
@@ -449,6 +449,12 @@ function ctPhysique_(ct) {
   return items;
 }
 
+/** 24/11: nhóm bệnh chiêm tinh cổ điển gắn với từng cung (theo thứ tự CT_CUNG) – chỉ là "dễ mắc", luôn kèm lời nhắc bác sĩ. */
+var CT_BENH_CUNG = ['đau đầu, đau nửa đầu, sốt, viêm xoang, bệnh răng', 'viêm họng, viêm amidan, bệnh tuyến giáp, đau cổ gáy', 'hen, viêm phế quản, suy nhược thần kinh, đau vai – cánh tay',
+  'đau dạ dày, rối loạn tiêu hóa, phù nước, bệnh ở ngực – vú', 'bệnh tim mạch, huyết áp, đau lưng trên', 'rối loạn tiêu hóa, đại tràng, lo âu – mất ngủ',
+  'bệnh thận, sỏi thận, đau lưng dưới, bệnh ngoài da', 'bệnh sinh dục – tiết niệu, phụ khoa, trĩ', 'bệnh gan, đau hông – đùi, đau thần kinh tọa',
+  'đau xương khớp, đau gối, bệnh răng, da khô', 'rối loạn tuần hoàn, giãn tĩnh mạch, đau cổ chân, căng thẳng thần kinh', 'bệnh ở bàn chân, rối loạn miễn dịch – bạch huyết, dễ lệ thuộc rượu, thuốc'];
+
 function ctDauHieuCoThe_(ct) {
   var items = [], by = ct.by;
   var ma = by.mars, sa = by.saturn, mo = by.moon, n6 = ct.cusp[5];
@@ -464,11 +470,11 @@ function ctGocGac_(ct) {
   var by = ct.by, c4 = ct.cusp[3], items = [];
   var h4 = ct.hanhTinh.filter(function (p) { return p.nha === 4; });
   items.push('Đáy trời (IC – nhà 4) ở ' + c4.cungTen + ': gốc gác mang màu sắc ' + CT_CUNG[c4.cung].tuKhoa + '. Chủ tinh nhà 4 (' + CT_HT[CT_CUNG[c4.cung].chuCo].ten + ') ở ' + by[CT_CUNG[c4.cung].chuCo].cungTen + ', nhà ' + by[CT_CUNG[c4.cung].chuCo].nha + '.');
-  var y4 = { sun: 'Mặt Trời nhà 4: gia đình là trung tâm đời sống, cha có ảnh hưởng lớn; về già vững vàng.', moon: 'Mặt Trăng nhà 4: gắn bó sâu với mẹ, quê nhà; hay chuyển chỗ ở thời nhỏ.',
-    mercury: 'Sao Thủy nhà 4: nhà có truyền thống học hành/buôn bán, hay đọc sách, dịch chuyển.', venus: 'Sao Kim nhà 4: gia đình êm ấm, nhà đẹp, có thể được thừa hưởng tài sản.',
-    mars: 'Sao Hỏa nhà 4: gia đình nhiều va chạm hoặc cha mẹ nghiêm khắc, nóng tính; có thể sớm rời nhà.', jupiter: 'Sao Mộc nhà 4: xuất thân có phúc, nhà rộng, gia giáo tốt; được gia đình nâng đỡ.',
+  var y4 = { sun: 'Mặt Trời nhà 4: gia đình là trung tâm đời sống, cha có ảnh hưởng lớn, về già vững vàng; mặt trái: cái bóng của cha khá lớn, khó tự đi đường riêng.', moon: 'Mặt Trăng nhà 4: gắn bó sâu với mẹ, quê nhà; hay chuyển chỗ ở thời nhỏ.',
+    mercury: 'Sao Thủy nhà 4: nhà có truyền thống học hành/buôn bán, hay đọc sách, dịch chuyển.', venus: 'Sao Kim nhà 4: gia đình êm ấm, nhà đẹp, có thể được thừa hưởng tài sản; mặt trái: dễ quen sống êm, ngại tự lập.',
+    mars: 'Sao Hỏa nhà 4: gia đình nhiều va chạm hoặc cha mẹ nghiêm khắc, nóng tính; có thể sớm rời nhà.', jupiter: 'Sao Mộc nhà 4: xuất thân có phúc, nhà rộng, gia giáo tốt, được gia đình nâng đỡ; mặt trái: dễ được nuông chiều, ỷ lại vào gia đình.',
     saturn: 'Sao Thổ nhà 4: tuổi thơ nhiều trách nhiệm hoặc thiếu thốn tình cảm/vật chất, cha mẹ nghiêm; tự lập sớm, về già mới yên.', uranus: 'Thiên Vương nhà 4: gia đình khác thường, hay xáo trộn chỗ ở, có thể cha mẹ ly tán.',
-    neptune: 'Hải Vương nhà 4: gia đình mơ hồ, có bí mật hoặc một thành viên cần hy sinh chăm sóc; tâm linh trong nhà.', pluto: 'Diêm Vương nhà 4: biến cố lớn trong gia đình thời nhỏ, quyền lực gia trưởng, gốc rễ phải được chữa lành.',
+    neptune: 'Hải Vương nhà 4: gia đình mơ hồ, có bí mật hoặc một thành viên cần hy sinh chăm sóc; tâm linh trong nhà.', pluto: 'Diêm Vương nhà 4: biến cố lớn trong gia đình thời nhỏ, quyền lực gia trưởng, để lại dấu ấn sâu và khó nguôi trong lòng.',
     northNode: 'Nút Bắc nhà 4: bài học đời là xây tổ ấm và kết nối cội nguồn.' };
   h4.forEach(function (p) { items.push(y4[p.key]); });
   var ms = ct.goc.filter(function (g) { return (g.a === 'moon' || g.b === 'moon') && (g.a === 'saturn' || g.b === 'saturn' || g.a === 'jupiter' || g.b === 'jupiter'); });
@@ -512,7 +518,7 @@ function chiemTinhLuan_(ct, viewYear) {
   var sun = by.sun, moon = by.moon, asc = ct.asc;
   out.tomTat = 'Mặt Trời ' + sun.cungTen + ' · Mặt Trăng ' + moon.cungTen + ' · Mọc ' + asc.cungTen;
   out.boBa = [
-    { tieuDe: '☉ Mặt Trời ' + S[sun.cung].ky + ' ' + sun.cungTen + ' – con người cốt lõi', items: [S[sun.cung].sun, 'Nhà ' + sun.nha + ': ' + CT_HT.sun.nha + ' ' + CT_NHA[sun.nha - 1].y + '.', 'Nguyên tố ' + S[sun.cung].nt + ', tính chất ' + S[sun.cung].tc + '. Mặt tối cần tránh: ' + S[sun.cung].bong + '.'] },
+    { tieuDe: '☉ Mặt Trời ' + S[sun.cung].ky + ' ' + sun.cungTen + ' – con người cốt lõi', items: [S[sun.cung].sun, 'Nhà ' + sun.nha + ': ' + CT_HT.sun.nha + ' ' + CT_NHA[sun.nha - 1].y + '.', 'Nguyên tố ' + S[sun.cung].nt + ', tính chất ' + S[sun.cung].tc + '. Mặt tối: ' + S[sun.cung].bong + '.'] },
     { tieuDe: '☽ Mặt Trăng ' + S[moon.cung].ky + ' ' + moon.cungTen + ' – thế giới cảm xúc', items: [S[moon.cung].moon, 'Nhà ' + moon.nha + ': ' + CT_HT.moon.nha + ' ' + CT_NHA[moon.nha - 1].y + '.', 'Pha Mặt Trăng khi sinh: ' + ct.phaTrang.ten + ' (' + ct.phaTrang.goc + '°) – ' + ct.phaTrang.y + '.'] },
     { tieuDe: '↑ Cung Mọc ' + S[asc.cung].ky + ' ' + asc.cungTen + ' – mặt nạ & cơ thể', items: [S[asc.cung].asc, 'Thiên đỉnh (MC) ở ' + ct.mc.cungTen + ' ' + ct.mc.do + ': hình ảnh nghề nghiệp mang màu ' + S[ct.mc.cung].tuKhoa + '.'] }
   ];
@@ -523,8 +529,8 @@ function chiemTinhLuan_(ct, viewYear) {
   });
   ct.hanhTinh.forEach(function (p) { if (p.key !== 'northNode' && ['sun', 'moon', 'venus', 'mars', 'jupiter', 'saturn'].indexOf(p.key) >= 0) nhaItems.push(p.ky + ' ' + p.ten + ' nhà ' + p.nha + ': ' + CT_HT[p.key].nha + ' ' + CT_NHA[p.nha - 1].y + '.'); });
   var b = ct.banCau;
-  nhaItems.push(b.dong > b.tay ? 'Bán cầu Đông (' + b.dong + '/10): tự quyết định số phận, chủ động tạo cơ hội.' : 'Bán cầu Tây (' + b.tay + '/10): thành công qua người khác, hợp tác và thời cơ.');
-  nhaItems.push(b.tren > b.duoi ? 'Nửa trên (' + b.tren + '/10): hướng ra xã hội, sự nghiệp và hình ảnh công chúng.' : 'Nửa dưới (' + b.duoi + '/10): hướng về nội tâm, gia đình và đời sống riêng.');
+  nhaItems.push(b.dong > b.tay ? 'Bán cầu Đông (' + b.dong + '/10): tự quyết định số phận, chủ động tạo cơ hội; mặt trái: hay ôm hết việc, khó nhờ người.' : 'Bán cầu Tây (' + b.tay + '/10): thành công qua người khác, hợp tác và thời cơ; mặt trái: dễ phụ thuộc vào người khác và thời thế.');
+  nhaItems.push(b.tren > b.duoi ? 'Nửa trên (' + b.tren + '/10): hướng ra xã hội, sự nghiệp và hình ảnh công chúng; mặt trái: đời riêng dễ bị lơ là.' : 'Nửa dưới (' + b.duoi + '/10): hướng về nội tâm, gia đình và đời sống riêng; mặt trái: ngại xuất hiện, sự nghiệp lộ diện muộn.');
   out.secs.push({ tieuDe: 'Nhà (hệ ' + ct.heNha + ') & bán cầu', items: nhaItems });
   out.secs.push({ tieuDe: 'Góc chiếu (' + ct.goc.length + ')', items: ct.goc.slice(0, 24).map(ctGocY_) });
 
@@ -605,21 +611,21 @@ function ctLilith_(jd) {
 var CT_PHAM_TEN = { 'Vượng': 'Vượng (Exaltation) – mạnh nhất', 'Miếu': 'Miếu (Domicile) – mạnh', 'Hãm': 'Hãm (Detriment) – yếu', 'Tù': 'Tù (Fall) – yếu nhất' };
 var CT_PHAM_DIEM2 = { 'Vượng': 2, 'Miếu': 1.5, 'Hãm': -1, 'Tù': -1.5 };
 var CT_NGHICH = {
-  mercury: ['3–4 lần/năm', 'giao tiếp hướng nội: nghĩ kỹ rồi mới nói, học sâu hơn học nhanh; hay xem lại, sửa lại'],
-  venus: ['1 lần/18 tháng', 'tình yêu hướng nội: chậm mở lòng, giá trị riêng khác số đông; hay nhìn lại chuyện cũ'],
-  mars: ['1 lần/2 năm', 'hành động hướng nội: dồn nén rồi bùng; hợp làm việc âm thầm, bền bỉ'],
-  jupiter: ['1 lần/năm', 'mở rộng hướng nội: niềm tin tự tìm lấy, may mắn đến qua chiêm nghiệm'],
-  saturn: ['1 lần/năm', 'kỷ luật hướng nội: tự đặt chuẩn rất cao cho mình, trách nhiệm nặng trong lòng'],
-  uranus: ['1 lần/năm', 'đổi mới hướng nội: cách mạng trong suy nghĩ trước khi thể hiện ra ngoài'],
-  neptune: ['1 lần/năm', 'tâm linh hướng nội: trực giác mạnh, đời sống tinh thần phong phú'],
-  pluto: ['1 lần/năm', 'chuyển hóa hướng nội: sức mạnh ngầm, tự "lột xác" từ bên trong']
+  mercury: ['3–4 lần/năm', 'giao tiếp hướng nội: nghĩ kỹ rồi mới nói, học sâu hơn học nhanh; mặt trái: phản ứng chậm, dễ bị hiểu lầm, hay phải xem lại, sửa lại'],
+  venus: ['1 lần/18 tháng', 'tình yêu hướng nội: giá trị riêng khác số đông; mặt trái: chậm mở lòng, hay vương chuyện cũ, dễ lỡ người hợp'],
+  mars: ['1 lần/2 năm', 'hành động hướng nội: hợp làm việc âm thầm, bền bỉ; mặt trái: dồn nén rồi bùng, khó đòi quyền lợi đúng lúc'],
+  jupiter: ['1 lần/năm', 'mở rộng hướng nội: niềm tin tự tìm lấy, may mắn đến qua chiêm nghiệm; mặt trái: cơ hội bên ngoài đến muộn, dễ hoài nghi'],
+  saturn: ['1 lần/năm', 'kỷ luật hướng nội: tự đặt chuẩn rất cao cho mình; mặt trái: trách nhiệm đè nặng trong lòng, hay tự trách'],
+  uranus: ['1 lần/năm', 'đổi mới hướng nội: thay đổi lớn trong suy nghĩ trước khi thể hiện ra ngoài; mặt trái: người ngoài khó theo kịp, dễ bất ngờ với bạn'],
+  neptune: ['1 lần/năm', 'tâm linh hướng nội: trực giác mạnh, đời sống tinh thần phong phú; mặt trái: dễ mơ hồ, khó tách thực tế với tưởng tượng'],
+  pluto: ['1 lần/năm', 'chuyển hóa hướng nội: sức mạnh ngầm, tự "lột xác" từ bên trong; mặt trái: hay giữ kín khủng hoảng, chịu đựng một mình']
 };
 var CT_CAU_HINH = {
-  stellium: 'năng lượng tập trung – chủ đề này nổi bật suốt đời',
-  tSquare: 'căng thẳng tạo động lực phát triển – đỉnh chữ T là nơi phải nỗ lực nhiều nhất',
-  grandTrine: 'tài năng bẩm sinh, may mắn tự nhiên – cần chủ động dùng, kẻo dễ dãi',
-  grandCross: 'bốn phía giằng co – đời nhiều thử thách nhưng rèn nên bản lĩnh lớn',
-  yod: '"ngón tay của định mệnh" – cần điều chỉnh liên tục, có sứ mệnh đặc biệt ở hành tinh đỉnh'
+  stellium: 'năng lượng tập trung – chủ đề này nổi bật suốt đời; mặt trái: các mảng khác dễ bị bỏ quên',
+  tSquare: 'căng thẳng thường trực, dễ va chạm và quá tải ở đỉnh chữ T; bù lại đây là nguồn động lực mạnh nhất',
+  grandTrine: 'tài năng bẩm sinh, may mắn tự nhiên; mặt trái: dễ dãi, ngại cố gắng vì mọi thứ đến quá dễ',
+  grandCross: 'bốn phía giằng co, đời nhiều áp lực dồn cùng lúc, dễ kiệt sức; bù lại bản lĩnh và sức chịu đựng rất lớn',
+  yod: '"ngón tay của định mệnh" – cảm giác bứt rứt, phải điều chỉnh liên tục ở hành tinh đỉnh; bù lại đây là nơi bạn có tài riêng'
 };
 var CT_HT_TRON = { sun: 'tự tin, nổi bật', moon: 'nhạy cảm, dễ biểu lộ cảm xúc', mercury: 'lanh lợi, hoạt ngôn', venus: 'duyên dáng, dễ mến', mars: 'mạnh mẽ, nhanh nhẹn, hơi nóng',
   jupiter: 'hào phóng, lạc quan', saturn: 'nghiêm túc, dè dặt, chín chắn', uranus: 'khác biệt, độc lập', neptune: 'mơ mộng, khó đoán', pluto: 'bí ẩn, có sức hút mạnh', northNode: 'hướng về sự trưởng thành' };
@@ -703,7 +709,7 @@ function ctPhanTich_(ct, viewYear, input) {
   });
   var soTot = ct.goc.filter(function (g) { return g.loai === 'tot'; }).length, soXau = ct.goc.filter(function (g) { return g.loai === 'xau'; }).length;
   out.gocTom = 'Có ' + ct.goc.length + ' góc chiếu: ' + soTot + ' góc hài hòa, ' + soXau + ' góc căng, ' + (ct.goc.length - soTot - soXau) + ' góc hợp. ' +
-    (soTot > soXau + 2 ? 'Lá số thiên về thuận – năng lực đến dễ, cần tự đặt thử thách để không dễ dãi.' : soXau > soTot + 2 ? 'Lá số nhiều góc căng – đời nhiều thử thách, nhưng đó cũng là nguồn động lực và bản lĩnh.' : 'Thuận và căng khá cân bằng.');
+    (soTot > soXau + 2 ? 'Lá số thiên về thuận – năng lực đến dễ; mặt trái: dễ dãi, thiếu sức bật khi gặp khó thật.' : soXau > soTot + 2 ? 'Lá số nhiều góc căng – đời nhiều va chạm và áp lực, dễ mệt vì giằng co trong lòng; bù lại bạn có sức bật và bản lĩnh.' : 'Thuận và căng khá cân bằng: có chỗ đến dễ, có chỗ phải chật vật.');
   // Cấu hình đặc biệt
   var ch = [], keys = HT10.map(function (p) { return p.key; });
   var theoCung = {}, theoNha = {};
@@ -738,41 +744,41 @@ function ctPhanTich_(ct, viewYear, input) {
   var LV = [
     { k: 'tinhCach', ten: 'Tính cách', icon: '🧭', dua: 'Mặt Trời · Điểm Mọc · nhà 1 · hành tinh trong nhà 1', diem: sucHT('sun') * 0.5 + sucHT(ct.chuTinh) * 0.4 + sucNha(1) * 0.5,
       ky: ['Mặt Trời ' + sun.cungTen + ' nhà ' + sun.nha + (sun.pham ? ' (' + sun.pham + ')' : '') + ': ' + S[sun.cung].tuKhoa + '.', 'Mọc ' + asc.cungTen + ': ' + S[asc.cung].tuKhoa + '. Chủ tinh lá số ' + CT_HT[ct.chuTinh].ten + ' ở ' + by[ct.chuTinh].cungTen + ', nhà ' + by[ct.chuTinh].nha + '.', 'Nhà 1: ' + tenDs(h1) + '.'],
-      tron: 'Bạn có xu hướng bề ngoài ' + S[asc.cung].tuKhoa + ', nhưng bên trong ' + S[sun.cung].tuKhoa + '.' + (h1.length ? ' Người khác còn thấy ở bạn nét ' + tronDs(h1) + '.' : '') },
+      tron: (asc.cung === sun.cung ? 'Bạn có xu hướng sống đúng như vẻ ngoài: cả bề ngoài lẫn bên trong đều ' + S[sun.cung].tuKhoa + '.' : 'Bạn có xu hướng bề ngoài ' + S[asc.cung].tuKhoa + ', nhưng bên trong ' + S[sun.cung].tuKhoa + '.') + (h1.length ? ' Người khác còn thấy ở bạn nét ' + tronDs(h1) + '.' : '') + ' Mặt trái dễ lộ ra: ' + S[sun.cung].bong + '.' },
     { k: 'camXuc', ten: 'Cảm xúc', icon: '🌙', dua: 'Mặt Trăng · nhà 4 · hành tinh trong nhà 4', diem: sucHT('moon') * 0.7 + sucNha(4) * 0.5,
       ky: ['Mặt Trăng ' + moon.cungTen + ' nhà ' + moon.nha + (moon.pham ? ' (' + moon.pham + ')' : '') + ': ' + S[moon.cung].moon, 'Nhà 4 khởi ở ' + c4.cungTen + ' (' + S[c4.cung].tuKhoa + '); có ' + tenDs(h4) + '.'],
-      tron: 'Về cảm xúc, bạn có xu hướng ' + S[moon.cung].tuKhoa + '. Tổ ấm với bạn mang màu sắc ' + S[c4.cung].tuKhoa + '.' + (h4.length ? ' Gia đình để lại dấu ấn ' + tronDs(h4) + '.' : '') },
+      tron: 'Về cảm xúc, bạn có xu hướng ' + S[moon.cung].tuKhoa + '. Tổ ấm với bạn mang màu sắc ' + S[c4.cung].tuKhoa + '.' + (h4.length ? ' Gia đình để lại dấu ấn ' + tronDs(h4) + '.' : '') + ' Khi bất ổn, bạn dễ ' + S[moon.cung].bong + '.' },
     { k: 'tuDuy', ten: 'Tư duy', icon: '💭', dua: 'Sao Thủy · nhà 3 · hành tinh trong nhà 3', diem: sucHT('mercury') * 0.7 + sucNha(3) * 0.5,
       ky: ['Sao Thủy ' + me.cungTen + ' nhà ' + me.nha + (me.nghich ? ' (nghịch hành)' : '') + ': ' + CT_PHONG_CACH.mercury[me.cung] + '.', 'Nhà 3 khởi ở ' + c3.cungTen + '; có ' + tenDs(h3) + '.'],
       tron: 'Cách bạn suy nghĩ và nói chuyện: ' + boNgoac(CT_PHONG_CACH.mercury[me.cung]) + '.' + (me.nghich ? ' Bạn hay nghĩ kỹ rồi mới nói, học chậm mà sâu.' : '') },
     { k: 'tinhYeu', ten: 'Tình yêu', icon: '💞', dua: 'Sao Kim · Sao Hỏa · nhà 5 · nhà 7', diem: sucHT('venus') * 0.5 + sucHT('mars') * 0.3 + sucNha(5) * 0.3 + sucNha(7) * 0.5,
       ky: ['Sao Kim ' + ve.cungTen + ' nhà ' + ve.nha + (ve.pham ? ' (' + ve.pham + ')' : '') + ': ' + CT_PHONG_CACH.venus[ve.cung] + '.', 'Sao Hỏa ' + ma.cungTen + ' nhà ' + ma.nha + ': ' + CT_PHONG_CACH.mars[ma.cung] + '.',
         'Nhà 5 (tình yêu lãng mạn) khởi ở ' + c5.cungTen + '; có ' + tenDs(h5) + '.', 'Nhà 7 (hôn nhân) khởi ở ' + c7.cungTen + ' (' + S[c7.cung].tuKhoa + '); có ' + tenDs(h7) + '.'],
-      tron: 'Khi yêu, bạn ' + boNgoac(CT_PHONG_CACH.venus[ve.cung]) + '. Mẫu người bạn đời hợp với bạn mang nét ' + S[c7.cung].tuKhoa + '.' },
+      tron: 'Khi yêu, bạn ' + boNgoac(CT_PHONG_CACH.venus[ve.cung]) + '. Mẫu người bạn đời hợp với bạn mang nét ' + S[c7.cung].tuKhoa + '. Mặt trái trong tình cảm: dễ ' + S[ve.cung].bong + '.' },
     { k: 'hanhDong', ten: 'Hành động', icon: '⚡', dua: 'Sao Hỏa · nhà 1 · hành tinh trong nhà 1', diem: sucHT('mars') * 0.7 + sucNha(1) * 0.4,
       ky: ['Sao Hỏa ' + ma.cungTen + ' nhà ' + ma.nha + (ma.pham ? ' (' + ma.pham + ')' : '') + (ma.nghich ? ', nghịch hành' : '') + ': ' + CT_PHONG_CACH.mars[ma.cung] + '.', 'Nhà 1: ' + tenDs(h1) + '.'],
       tron: 'Cách bạn hành động: ' + boNgoac(CT_PHONG_CACH.mars[ma.cung]) + '.' },
     { k: 'suNghiep', ten: 'Sự nghiệp', icon: '🏛', dua: 'MC · nhà 10 · Sao Thổ · Sao Mộc', diem: sucNha(10) * 0.6 + sucHT('saturn') * 0.3 + sucHT('jupiter') * 0.3 + sucHT(CT_CUNG[mc.cung].chuCo) * 0.3,
       ky: ['MC ở ' + mc.cungTen + ' ' + mc.do + ': hợp ' + NGHE[mc.cung] + '.', 'Nhà 10: ' + tenDs(h10) + '. Chủ tinh MC ' + CT_HT[CT_CUNG[mc.cung].chuCo].ten + ' ở ' + by[CT_CUNG[mc.cung].chuCo].cungTen + ', nhà ' + by[CT_CUNG[mc.cung].chuCo].nha + '.',
         'Sao Thổ ' + sa.cungTen + ' nhà ' + sa.nha + ': kỷ luật và thành tựu muộn về ' + CT_NHA[sa.nha - 1].y + '.', 'Sao Mộc ' + ju.cungTen + ' nhà ' + ju.nha + ': mở rộng, gặp quý nhân qua ' + CT_NHA[ju.nha - 1].y + '.'],
-      tron: 'Nghề hợp với bạn: ' + NGHE[mc.cung] + '. Con đường sự nghiệp mang màu sắc ' + S[mc.cung].tuKhoa + '; bạn thường gặp may qua chuyện ' + CT_NHA_NGAN[ju.nha - 1] + ', còn thành tựu bền vững đến từ sự kiên trì ở chuyện ' + CT_NHA_NGAN[sa.nha - 1] + '.' },
+      tron: 'Nghề hợp với bạn: ' + NGHE[mc.cung] + '. Con đường sự nghiệp mang màu sắc ' + S[mc.cung].tuKhoa + '; bạn thường gặp may qua chuyện ' + CT_NHA_NGAN[ju.nha - 1] + ', còn chuyện ' + CT_NHA_NGAN[sa.nha - 1] + ' là chỗ bạn dễ vấp, chậm và vất vả nhất, thành quả đến muộn.' },
     { k: 'taiChinh', ten: 'Tài chính', icon: '💰', dua: 'nhà 2 · nhà 8 · Sao Kim · Sao Mộc', diem: sucNha(2) * 0.5 + sucNha(8) * 0.3 + sucHT('venus') * 0.3 + sucHT('jupiter') * 0.3,
       ky: ['Nhà 2 (tiền tự kiếm) khởi ở ' + c2.cungTen + ' (' + S[c2.cung].tuKhoa + '); có ' + tenDs(h2) + '.', 'Nhà 8 (tiền chung, đầu tư, thừa kế) khởi ở ' + c8.cungTen + '; có ' + tenDs(h8) + '.',
         'Sao Kim (giá trị) ' + ve.cungTen + ' nhà ' + ve.nha + '; Sao Mộc (may mắn) ' + ju.cungTen + ' nhà ' + ju.nha + '.'],
-      tron: 'Cách bạn kiếm tiền mang màu sắc ' + S[c2.cung].tuKhoa + '; chuyện tiền chung, đầu tư thì ' + S[c8.cung].tuKhoa + '.' + (h2.some(function (p) { return p.key === 'jupiter' || p.key === 'venus'; }) ? ' Bạn có duyên với tiền bạc.' : h2.some(function (p) { return p.key === 'saturn'; }) ? ' Tiền đến chậm, cần tích lũy đều đặn.' : '') },
+      tron: 'Cách bạn kiếm tiền mang màu sắc ' + S[c2.cung].tuKhoa + '; chuyện tiền chung, đầu tư thì ' + S[c8.cung].tuKhoa + '.' + (h2.some(function (p) { return p.key === 'jupiter' || p.key === 'venus'; }) ? ' Bạn có duyên với tiền bạc, nhưng dễ tiêu rộng tay.' : h2.some(function (p) { return p.key === 'saturn'; }) ? ' Tiền đến chậm, dễ có giai đoạn eo hẹp.' : '') },
     { k: 'sucKhoe', ten: 'Sức khỏe', icon: '🌿', dua: 'nhà 6 · nhà 12 · hành tinh trong nhà 6, 12', diem: sucNha(6) * 0.6 + sucNha(12) * 0.4 + sucHT('sun') * 0.2 + 0.2,
       ky: ['Nhà 6 khởi ở ' + c6.cungTen + ' → vùng ' + S[c6.cung].bp + '; có ' + tenDs(h6) + '.', 'Nhà 12 khởi ở ' + c12.cungTen + ' → vùng ' + S[c12.cung].bp + '; có ' + tenDs(h12) + '.'],
-      tron: 'Vùng cơ thể nên chăm sóc: ' + S[c6.cung].bp + '; khi căng thẳng kéo dài, để ý thêm ' + S[c12.cung].bp + '.' + (h6.concat(h12).some(function (p) { return p.key === 'saturn' || p.key === 'mars'; }) ? ' Nên khám định kỳ và không làm việc quá sức.' : '') }
+      tron: 'Vùng cơ thể nên chăm sóc: ' + S[c6.cung].bp + '; khi căng thẳng kéo dài, để ý thêm ' + S[c12.cung].bp + '. Theo chiêm tinh cổ điển, bạn có xu hướng dễ mắc ' + CT_BENH_CUNG[c6.cung] + (c12.cung !== c6.cung ? '; khi suy sụp tinh thần thì thêm ' + CT_BENH_CUNG[c12.cung] : '') + '.' + (h6.concat(h12).some(function (p) { return p.key === 'saturn' || p.key === 'mars'; }) ? ' Vùng này dễ mệt khi làm quá sức; nên khám định kỳ.' : '') + ' Đây là xu hướng tham khảo, không phải chẩn đoán – có dấu hiệu lạ hãy đi khám, hỏi bác sĩ.' }
   ];
   var KHUYEN = {
-    tinhCach: ['Hãy để bề ngoài và con người thật bên trong cùng xuất hiện – người khác sẽ tin bạn hơn.', 'Cho người mới quen thời gian để biết con người thật của bạn.', 'Tự tin là thứ rèn được: bắt đầu từ việc nhỏ và giữ lời với chính mình.'],
-    camXuc: ['Giữ những thói quen khiến bạn thấy an toàn – đó là "pin sạc" của bạn.', 'Gọi tên cảm xúc của mình thay vì để nó tích tụ.', 'Cảm xúc không sai – hãy tìm người để chia sẻ và cho mình khoảng lặng.'],
-    tuDuy: ['Viết, dạy hoặc chia sẻ điều bạn biết – trí óc bạn sáng nhất khi được dùng.', 'Ghi chép lại ý tưởng; chọn một hướng học sâu.', 'Học theo cách của mình – chậm không có nghĩa là kém.'],
-    tinhYeu: ['Nói rõ cách bạn cần được yêu để người ấy không phải đoán.', 'Dành thời gian hiểu nhu cầu của người kia trước khi đòi hỏi.', 'Đừng vội – chọn người hiểu mình hơn người khiến mình say mê nhất thời.'],
-    hanhDong: ['Dùng năng lượng dồi dào vào mục tiêu dài hạn.', 'Chia nhỏ việc lớn và làm đều mỗi ngày.', 'Vận động thể chất đều đặn để giải tỏa năng lượng dồn nén.'],
-    suNghiep: ['Chọn nơi cho bạn thể hiện thế mạnh và có đường thăng tiến rõ.', 'Đầu tư vào chuyên môn; thành tựu đến từ sự bền bỉ.', 'Thành công của bạn có thể đến muộn – mỗi bước nhỏ đều đang xây nền.'],
-    taiChinh: ['Dùng lúc thuận để tích lũy và đa dạng tài sản.', 'Trích tiết kiệm ngay khi nhận tiền.', 'Tránh đầu tư theo cảm hứng; ưu tiên thu nhập ổn định trước.'],
-    sucKhoe: ['Giữ nếp ngủ và vận động – thể trạng tốt cũng cần bảo dưỡng.', 'Khám định kỳ và để ý những vùng nêu trên.', 'Đừng lo lắng quá – phát hiện sớm là chữa được; nghỉ ngơi đúng lúc là thuốc.']
+    tinhCach: ['Mảng này thuận, nhưng dễ tự tin quá mức; gợi ý: để con người thật bên trong cùng xuất hiện với vẻ ngoài.', 'Người mới quen dễ hiểu sai về bạn; gợi ý: cho họ thời gian, đừng vội phòng thủ.', 'Bạn dễ tự ti hoặc gồng mình; gợi ý: giữ lời với chính mình từ những việc nhỏ.'],
+    camXuc: ['Cảm xúc khá vững, nhưng dễ ỷ vào nếp quen; gợi ý: giữ những thói quen khiến bạn thấy an toàn.', 'Cảm xúc dễ tích tụ rồi bùng ra; gợi ý: gọi tên cảm xúc của mình sớm.', 'Cảm xúc dễ dồn nén thành buồn bực kéo dài; gợi ý: có một người để chia sẻ và một khoảng lặng cho mình.'],
+    tuDuy: ['Trí óc sáng, nhưng dễ ôm đồm nhiều ý; gợi ý: viết hoặc dạy lại điều bạn biết.', 'Ý tưởng dễ trôi mất, học dễ tràn lan; gợi ý: ghi chép và chọn một hướng học sâu.', 'Bạn dễ học chậm hoặc rối ý khi bị dồn; gợi ý: học theo nhịp của mình và ghi chép đều.'],
+    tinhYeu: ['Tình cảm thuận, nhưng dễ cho rằng người kia tự hiểu mình; gợi ý: nói rõ cách bạn cần được yêu.', 'Tình cảm dễ lệch nhịp, hay đòi hỏi; gợi ý: hiểu nhu cầu của người kia trước khi đòi hỏi.', 'Tình cảm dễ trắc trở, dễ chọn sai người; gợi ý: đừng quyết chuyện lâu dài khi đang say mê.'],
+    hanhDong: ['Năng lượng dồi dào, nhưng dễ dàn trải; gợi ý: dồn vào một mục tiêu dài hạn.', 'Sức bền không đều, dễ bỏ dở; gợi ý: chia nhỏ việc lớn và làm đều mỗi ngày.', 'Năng lượng dễ dồn nén thành bực bội, hoặc ì ạch; gợi ý: vận động thể chất đều đặn.'],
+    suNghiep: ['Sự nghiệp thuận, nhưng dễ chủ quan vì thấy đường rộng; gợi ý: chọn nơi có đường thăng tiến rõ.', 'Sự nghiệp tiến chậm, phải bền bỉ mới thấy kết quả; gợi ý: đầu tư vào chuyên môn.', 'Thành công dễ đến muộn, có giai đoạn chững và thấy mình tụt lại; gợi ý: giữ một nghề chính, đừng đổi hướng liên tục.'],
+    taiChinh: ['Tiền bạc thuận, nhưng dễ tiêu rộng tay lúc dư; gợi ý: dùng lúc thuận để tích lũy và đa dạng tài sản.', 'Tiền vào ra không đều, dễ hụt khi có việc gấp; gợi ý: trích tiết kiệm ngay khi nhận tiền.', 'Tiền dễ hao vì quyết định cảm tính, có giai đoạn eo hẹp; gợi ý: tránh đầu tư theo cảm hứng, ưu tiên thu nhập ổn định.'],
+    sucKhoe: ['Thể trạng khá, nhưng dễ chủ quan nên bệnh âm thầm tới; gợi ý: khám định kỳ, giữ nếp ngủ và vận động.', 'Có vùng dễ mệt và dễ thành bệnh khi căng thẳng kéo dài; gợi ý: khám định kỳ đúng những vùng nêu trên và hỏi bác sĩ khi có dấu hiệu lạ.', 'Sức khỏe dễ sa sút khi làm quá sức, các vùng nêu trên dễ có vấn đề kéo dài; gợi ý: khám định kỳ, có dấu hiệu bất thường thì hỏi bác sĩ sớm.']
   };
   out.linhVuc = LV.map(function (x) { var d = Math.round(x.diem * 10) / 10, b = ctBac_(d); return { k: x.k, ten: x.ten, icon: x.icon, dua: x.dua, diem: d, bac: b, ky: x.ky, tron: x.tron, khuyen: KHUYEN[x.k][['tot', 'vua', 'kho'].indexOf(b)] }; });
   // ---- B5: chu kỳ thời gian
@@ -787,14 +793,14 @@ function ctPhanTich_(ct, viewYear, input) {
   var manh = xep.filter(function (x) { return x.d >= 0.8; }).slice(0, 3), yeu = xep.slice().reverse().filter(function (x) { return x.d <= -0.6; }).slice(0, 3);
   out.manhYeu = {
     manh: manh.map(function (x) { return CT_HT[x.k].ten + ' ' + by[x.k].cungTen + (by[x.k].pham ? ' (' + by[x.k].pham + ')' : '') + ': ' + CT_HT[x.k].cn + ' được phát huy.'; }),
-    yeu: yeu.map(function (x) { return CT_HT[x.k].ten + ' ' + by[x.k].cungTen + (by[x.k].pham ? ' (' + by[x.k].pham + ')' : '') + ': ' + CT_HT[x.k].cn + ' cần rèn luyện nhiều hơn.'; }),
+    yeu: yeu.map(function (x) { return CT_HT[x.k].ten + ' ' + by[x.k].cungTen + (by[x.k].pham ? ' (' + by[x.k].pham + ')' : '') + ': ' + CT_HT[x.k].cn + ' khó phát huy, dễ lộ ra mặt xấu.'; }),
     manhTron: manh.map(function (x) { return CT_HT_CN_TRON[x.k]; }), yeuTron: yeu.map(function (x) { return CT_HT_CN_TRON[x.k]; }),
     nhinNhan: 'Người khác thường thấy bạn ' + S[asc.cung].tuKhoa + (h1.length ? ', ' + tronDs(h1) : '') + '.'
   };
   var CK = out.chuKy, tot = CK.suKien.filter(function (e) { return e.tot; }).slice(0, 4), kho = CK.suKien.filter(function (e) { return !e.tot; }).slice(0, 4);
   out.loiKhuyen = [
-    { ten: 'Phát huy điểm mạnh', t: manh.length ? 'Dựa vào ' + manh.map(function (x) { return CT_HT_CN_TRON[x.k]; }).join(', ') + ' – đây là những điều đến với bạn tự nhiên nhất.' : 'Các năng lượng khá cân bằng – thế mạnh đến từ sự đều tay; hãy chọn một lĩnh vực và đi sâu.' },
-    { ten: 'Khắc phục điểm yếu', t: yeu.length ? 'Rèn ' + yeu.map(function (x) { return CT_HT_CN_TRON[x.k]; }).join(', ') + ' – từng bước nhỏ, đều đặn; đây cũng là nơi bạn trưởng thành nhiều nhất.' : 'Không có điểm yếu nổi bật – hãy để ý bài học từ Nút Bắc bên dưới.' },
+    { ten: 'Phát huy điểm mạnh', t: manh.length ? 'Dựa vào ' + manh.map(function (x) { return CT_HT_CN_TRON[x.k]; }).join(', ') + ' – đây là những điều đến với bạn tự nhiên nhất; mặt trái: dễ ỷ vào đó mà lơ phần khác.' : 'Các năng lượng khá cân bằng – thế mạnh đến từ sự đều tay; mặt trái: không có điểm trội hẳn, dễ làm nhiều mà không nổi bật. Gợi ý: chọn một lĩnh vực và đi sâu.' },
+    { ten: 'Khắc phục điểm yếu', t: yeu.length ? 'Mặt yếu nằm ở ' + yeu.map(function (x) { return CT_HT_CN_TRON[x.k]; }).join(', ') + ': đây là chỗ bạn dễ vấp, chậm hoặc tự ti. Gợi ý: rèn từng bước nhỏ, đều đặn.' : 'Không có điểm yếu nổi bật; mặt trái là bạn dễ chủ quan vì thấy mọi thứ đều ổn. Xem thêm bài học linh hồn bên dưới.' },
     { ten: 'Thời điểm hành động', t: 'Năm ' + viewYear + ': chủ đề chính ở ' + CT_NHA[CK.solarReturn.nhaMatTroi - 1].y.split(',').slice(0, 2).join(',') + ' (Mặt Trời hồi quy ở nhà ' + CK.solarReturn.nhaMatTroi + ').' +
       (tot.length ? ' Thời điểm thuận: ' + ctDuyNhat_(tot.map(function (e) { return e.thang; })).join(', ') + '.' : '') + (kho.length ? ' Cần thận trọng: ' + ctDuyNhat_(kho.map(function (e) { return e.thang; })).join(', ') + '.' : '') },
     { ten: 'Bài học linh hồn', t: out.nut.tron }

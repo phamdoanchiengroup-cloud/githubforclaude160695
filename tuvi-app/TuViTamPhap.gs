@@ -19,48 +19,48 @@
 var TP_TT_NHOM = [
   { ten: 'Tuế – Hổ – Phù', sao: 'Thái Tuế, Quan Phù, Bạch Hổ', the: 'chính danh',
     de: 'Bạn thuộc mẫu người sống theo lẽ phải, coi trọng nguyên tắc và danh dự; nói thẳng, dám nhận trách nhiệm, thường được người khác nể trọng dù có lúc chưa thấy mình may mắn.',
-    luu: 'Sự thẳng thắn dễ thành cứng nhắc hoặc va chạm lời nói. Giữ lý tưởng nhưng mềm cách nói, linh hoạt cách làm thì đi được xa.' },
+    luu: 'Mặt xấu: sự thẳng thắn dễ thành cứng nhắc, va chạm lời nói, mất lòng cấp trên và người thân; sống theo lẽ phải thường thiệt về lợi trước mắt. Gợi ý: giữ lý tưởng nhưng mềm cách nói.' },
   { ten: 'Dương – Phù – Đức', sao: 'Thiếu Dương, Tử Phù, Phúc Đức', the: 'lanh lợi',
     de: 'Bạn có xu hướng sáng dạ, nhanh nhạy, biết nắm thời cơ và thường gặp thuận lợi sớm.',
-    luu: 'Dễ muốn phần hơn hoặc quá tin vào sự khôn ngoan của mình. Giữ lòng tốt và sự ngay thẳng thì thành quả mới bền, tuổi già mới yên.' },
+    luu: 'Mặt xấu: dễ muốn phần hơn, cậy khôn, được rồi lại mất; người khác dễ thấy bạn tính toán, khó tin lâu dài.' },
   { ten: 'Tang – Phá – Điếu', sao: 'Tang Môn, Tuế Phá, Điếu Khách', the: 'đấu tranh',
     de: 'Bạn có xu hướng nhạy cảm với điều bất công, hay thấy chưa vừa ý với hoàn cảnh và muốn thay đổi cái cũ; có năng lượng, tháo vát, ăn nói có sức thuyết phục.',
-    luu: 'Bất mãn kéo dài dễ dẫn tới tranh cãi, rắc rối giấy tờ hoặc làm việc trái ý mình. Thành công đến khi bạn biến sự không hài lòng thành quyết tâm có kế hoạch, thay vì phàn nàn.' },
+    luu: 'Mặt xấu: bất mãn kéo dài dễ dẫn tới tranh cãi, rắc rối giấy tờ, va chạm với người có quyền, và phải làm những việc trái ý mình. Gợi ý: biến sự không hài lòng thành kế hoạch cụ thể.' },
   { ten: 'Âm – Long – Trực', sao: 'Thiếu Âm, Long Đức, Trực Phù', the: 'nhẫn nại',
     de: 'Bạn thuộc mẫu người khiêm nhường, chân thành, nhẫn nại, biết tiến biết lui và làm tròn bổn phận.',
-    luu: 'Hiền quá dễ bị lấn át, công sức bị người khác nhận phần, hoặc cả tin. Hãy nói rõ đóng góp của mình và thận trọng trước lời hứa hẹn; biết đủ thì an vui.' }
+    luu: 'Mặt xấu: hiền quá dễ bị lấn át, công sức bị người khác nhận phần, cả tin nên bị thiệt; làm nhiều mà ít được ghi nhận. Gợi ý: nói rõ đóng góp của mình.' }
 ];
 
 // Nhóm tam hợp vòng Lộc Tồn (Bác Sĩ), theo chỉ số vòng mod 4 (Bác Sĩ luôn đồng cung Lộc Tồn)
 var TP_LT_NHOM = [
   { ten: 'Lộc – Tướng – Bệnh', sao: 'Lộc Tồn (Bác Sĩ), Tướng Quân, Bệnh Phù',
     de: 'Thực lực vững: có khả năng tích lũy của cải và đứng ở vị trí dẫn dắt; tính sáng sủa, rộng rãi.',
-    luu: 'Khi đã có vị thế, tránh độc đoán, áp đặt – đó chính là lúc dễ đi xuống.' },
+    luu: 'Mặt xấu: có vị thế rồi dễ độc đoán, áp đặt, và chính lúc đó dễ đi xuống; sức khỏe hay bị lơ là khi mải giữ vị trí.' },
   { ten: 'Lực – Tấu – Hao', sao: 'Lực Sĩ, Tấu Thư, Đại Hao',
     de: 'Thực lực đến từ học hỏi cộng trải nghiệm: chữ nghĩa phải đi kèm va chạm thực tế mới thành uy tín.',
-    luu: 'Đừng chỉ học trên sách; chấp nhận đi ra ngoài để lấy kinh nghiệm, nhưng giữ kỷ luật chi tiêu.' },
+    luu: 'Mặt xấu: thực lực đến chậm, phải trả giá bằng va vấp và tiền bạc; trải nghiệm bên ngoài thường kéo theo chi tiêu lớn.' },
   { ten: 'Long – Liêm – Phục', sao: 'Thanh Long, Phi Liêm, Phục Binh',
     de: 'Trực giác tốt, hay gặp may, cơ hội thường đến nhanh.',
-    luu: 'Khi thời cơ tới dễ hành động vội mà bỏ qua rủi ro ẩn; hãy dừng lại kiểm tra trước khi quyết.' },
+    luu: 'Mặt xấu: thời cơ tới thì dễ hành động vội, bỏ qua rủi ro ẩn, bị người khác ngáng hoặc lừa. Gợi ý: kiểm tra trước khi quyết.' },
   { ten: 'Hao – Hỷ – Phủ', sao: 'Tiểu Hao, Hỷ Thần, Quan Phủ',
     de: 'Vui vẻ, hào phóng, dễ được lòng người.',
-    luu: 'Hào phóng quá đà dễ hối tiếc; cẩn thận giấy tờ và lời hứa để tránh thị phi, tranh chấp.' }
+    luu: 'Mặt xấu: tiền hao vì giao tế, hào phóng quá đà rồi hụt; dễ vướng thị phi, tranh chấp vì giấy tờ và lời hứa.' }
 ];
 
 // Nhóm tam hợp vòng Tràng Sinh, theo chỉ số vòng mod 4
 var TP_TS_NHOM = [
   { ten: 'Sinh – Vượng – Mộ', sao: 'Tràng Sinh, Đế Vượng, Mộ',
     de: 'Sức sống bền: từ lúc khởi đầu tới khi chín muồi đều có người nâng đỡ, qua khó khăn thường gặp quý nhân.',
-    luu: 'Thuận lợi dễ làm chủ quan; giữ nhịp đều đặn thì phúc dày thêm.' },
+    luu: 'Mặt xấu: thuận lợi dễ làm chủ quan, ít tự rèn; người nâng đỡ rút đi thì hụt hơi.' },
   { ten: 'Dục – Suy – Tuyệt', sao: 'Mộc Dục, Suy, Tuyệt',
-    de: 'Theo cách luận truyền thống, giai đoạn trẻ dễ chao đảo và cần chỗ dựa – bạn hãy đối chiếu với trải nghiệm thật; gặp vận kém dễ hụt hơi.',
-    luu: 'Xây nền ổn định sớm (nghề vững, quỹ dự phòng) và tránh liều lĩnh khi vận chưa thuận.' },
+    de: 'Theo cách luận truyền thống, giai đoạn trẻ dễ chao đảo, thiếu chỗ dựa; gặp vận kém dễ hụt hơi, đứt quãng – bạn hãy đối chiếu với trải nghiệm thật. Mặt tốt: biết vậy thì sớm tự xây nền.',
+    luu: 'Gợi ý: có nghề vững và quỹ dự phòng sớm, tránh liều khi vận chưa thuận.' },
   { ten: 'Đới – Bệnh – Thai', sao: 'Quan Đới, Bệnh, Thai',
-    de: 'Rủi ro thường nhiều hơn may; việc lớn cần tìm hiểu kỹ và hỏi người có kinh nghiệm.',
-    luu: 'Tham vọng quá sức dễ khiến bạn kiệt sức; biết đủ, nghỉ ngơi điều độ là phúc.' },
+    de: 'Rủi ro thường nhiều hơn may, việc lớn dễ trục trặc giữa chừng; mặt tốt là có danh phận và hay ấp ủ được ý tưởng mới.',
+    luu: 'Mặt xấu: tham vọng quá sức dễ kiệt sức, sức khỏe dễ sa sút. Gợi ý: hỏi người có kinh nghiệm trước việc lớn.' },
   { ten: 'Quan – Tử – Dưỡng', sao: 'Lâm Quan, Tử, Dưỡng',
-    de: 'Có những lúc thành đạt rõ rệt, nhưng thịnh rồi dễ chững lại.',
-    luu: 'Thành công chớ khoe khoang; giữ khiêm tốn thì sau mỗi lần chững lại sẽ hồi phục mạnh hơn.' }
+    de: 'Có những lúc thành đạt rõ rệt; mặt trái là thịnh rồi dễ chững lại, có giai đoạn trầm hẳn.',
+    luu: 'Mặt xấu: lúc lên dễ khoe khoang, tiêu xài, đến lúc xuống thì hụt. Gợi ý: giữ khiêm tốn và tích lũy khi đang thịnh.' }
 ];
 
 // Hành tam hợp cục theo chi mod 4: Thân-Tý-Thìn Thủy, Tỵ-Dậu-Sửu Kim, Dần-Ngọ-Tuất Hỏa, Hợi-Mão-Mùi Mộc
@@ -76,10 +76,10 @@ var TP_LV = {
 };
 
 var TP_TU_HOA_Y = [
-  'có duyên tự nhiên trong chuyện {lv}, rộng rãi, nhưng cái được dễ đến rồi đi – nên giữ lại một phần',
-  'muốn tự quyết, tự nắm phần chủ động trong chuyện {lv}; tốt nhất khi vẫn biết lắng nghe',
-  'coi trọng sự chỉn chu, thể diện trong chuyện {lv}; được tiếng tốt nhưng đôi khi cầu toàn',
-  'hay tự lo, tự ôm chuyện {lv}, dễ hụt hoặc thu hẹp lại; nên chia sẻ bớt và có phương án dự phòng'
+  'có duyên tự nhiên trong chuyện {lv}, rộng rãi; mặt trái là cái được dễ đến rồi đi, khó giữ lâu',
+  'muốn tự quyết, tự nắm phần chủ động trong chuyện {lv}; mặt trái là dễ áp đặt, va chạm với người liên quan',
+  'coi trọng sự chỉn chu, thể diện trong chuyện {lv}, được tiếng tốt; mặt trái là cầu toàn, tốn công cho hình thức',
+  'hay tự lo, tự ôm chuyện {lv}, dễ hụt hoặc thu hẹp lại, có lúc mất mát thật; mặt tốt là bạn rất có trách nhiệm với chuyện này'
 ];
 var TP_HOA = ['Lộc', 'Quyền', 'Khoa', 'Kỵ'];
 
@@ -101,42 +101,42 @@ function tpTheMenhThan_(I) {
   var rM = quanHeHanh(hM, hTT), rT = quanHeHanh(hT, hTT);
   var khac = function (r) { return r === 'khac' || r === 'bi_khac'; };
   var cung = hM === hT, ma = 0, ten = '', de = '';
-  if (rM === 'binh' && rT === 'binh') { ma = 3; ten = 'Quân tử chính danh'; de = 'Suy nghĩ (Mệnh) và việc làm về sau (Thân) cùng nhịp với thế chính danh: lời nói và hành động đi cùng một hướng. Càng sống ngay, chỗ đứng của bạn càng vững.'; }
-  else if (rM === 'binh' && khac(rT)) { ma = 1; ten = 'Lý tưởng một đằng, cách làm một nẻo'; de = 'Lý tưởng của bạn chính danh, nhưng cách làm ở nửa sau cuộc đời dễ lệch khỏi lý tưởng ấy; người ngoài có thể thấy lời và việc chưa khớp. Thỉnh thoảng hãy tự soát: việc mình đang làm có đúng điều mình vẫn nói không.'; }
-  else if (rT === 'binh' && khac(rM)) { ma = 2; ten = 'Lời cứng, việc ngay'; de = 'Lời nói có thể gai góc, cứng rắn, nhưng việc làm lại quang minh, đàng hoàng. Mềm lời đi một chút để người khác thấy được cái tâm của bạn.'; }
-  else if (cung && khac(rM)) { ma = 4; ten = 'Người phản biện'; de = 'Cả trong suy nghĩ lẫn hành động đều hay đi ngược dòng chung: dễ bất mãn kéo dài, thường đứng ở phía phản biện, đối lập. Năng lượng này rất hợp vai trò cải tổ, góp ý – miễn là có mục tiêu xây dựng.'; }
-  else if (rM === 'duoc_sinh' && rT === 'sinh') { ma = 5; ten = 'Khôn khéo, mềm ngoài cứng trong'; de = 'Ngoài mặt nhún nhường, nhưng khi hành động lại chủ động giành phần. Khéo léo là lợi thế lớn, chỉ cần giữ minh bạch để không mất lòng tin.'; }
-  else if (cung && rM === 'sinh') { ma = 6; ten = 'Người có tham vọng'; de = 'Có tham vọng, hay chủ động tiến lên, muốn dẫn dắt. Tôn trọng không gian của người khác thì tham vọng sẽ thành sức kéo chứ không thành áp đặt.'; }
-  else if (cung && rM === 'duoc_sinh') { ma = 7; ten = 'Hiền hòa, hay nhường'; de = 'Hiền lành, dễ nhường nhịn đến mức chịu thiệt. Hãy học cách từ chối và bảo vệ quyền lợi chính đáng của mình.'; }
-  else if (rM === 'sinh' && rT === 'duoc_sinh') { ma = 8; ten = 'Nghĩ hay hơn làm'; de = 'Nghĩ hay, nói hay nhưng đến lúc làm dễ hụt hơi. Chia mục tiêu thành từng bước nhỏ và làm đến nơi đến chốn sẽ bù được điểm này.'; }
+  if (rM === 'binh' && rT === 'binh') { ma = 3; ten = 'Quân tử chính danh'; de = 'Suy nghĩ (Mệnh) và việc làm về sau (Thân) cùng nhịp với thế chính danh: lời nói và hành động đi cùng một hướng. Mặt trái: ngay thẳng quá dễ thiệt về lợi trước mắt và mất lòng người.'; }
+  else if (rM === 'binh' && khac(rT)) { ma = 1; ten = 'Lý tưởng một đằng, cách làm một nẻo'; de = 'Lý tưởng của bạn chính danh, nhưng cách làm ở nửa sau cuộc đời dễ lệch khỏi lý tưởng ấy; người ngoài dễ thấy lời và việc chưa khớp, uy tín vì thế bị sứt mẻ. Mặt tốt: lý tưởng vẫn là chính danh.'; }
+  else if (rT === 'binh' && khac(rM)) { ma = 2; ten = 'Lời cứng, việc ngay'; de = 'Lời nói có thể gai góc, cứng rắn, nhưng việc làm lại quang minh, đàng hoàng. Mặt xấu: lời cứng làm mất lòng, người khác dễ hiểu lầm cái tâm của bạn.'; }
+  else if (cung && khac(rM)) { ma = 4; ten = 'Người phản biện'; de = 'Cả trong suy nghĩ lẫn hành động đều hay đi ngược dòng chung: dễ bất mãn kéo dài, thường đứng ở phía phản biện, đối lập. Mặt tốt: hợp vai trò cải tổ, góp ý. Mặt xấu: dễ bị xem là người chống đối, khó được tổ chức tin dùng.'; }
+  else if (rM === 'duoc_sinh' && rT === 'sinh') { ma = 5; ten = 'Khôn khéo, mềm ngoài cứng trong'; de = 'Ngoài mặt nhún nhường, nhưng khi hành động lại chủ động giành phần. Mặt tốt: khéo léo, biết giành phần đúng lúc. Mặt xấu: người khác dễ thấy bạn hai mặt, mất lòng tin khi bị phát hiện.'; }
+  else if (cung && rM === 'sinh') { ma = 6; ten = 'Người có tham vọng'; de = 'Có tham vọng, hay chủ động tiến lên, muốn dẫn dắt. Mặt xấu: tham vọng dễ thành áp đặt, lấn người, gây thù.'; }
+  else if (cung && rM === 'duoc_sinh') { ma = 7; ten = 'Hiền hòa, hay nhường'; de = 'Hiền lành, dễ nhường nhịn đến mức chịu thiệt. Mặt tốt: dễ được quý, ít gây thù. Gợi ý: học cách từ chối.'; }
+  else if (rM === 'sinh' && rT === 'duoc_sinh') { ma = 8; ten = 'Nghĩ hay hơn làm'; de = 'Nghĩ hay, nói hay nhưng đến lúc làm dễ hụt hơi. Mặt tốt: có tầm nhìn, ý tưởng hay. Mặt xấu: người khác dễ mất niềm tin vì kết quả không bằng lời hứa.'; }
   else {
     var mo = { binh: 'hợp với thế chính danh', sinh: 'hướng ra đóng góp cho cái chung, dễ hao sức', duoc_sinh: 'được hoàn cảnh nâng đỡ, đôi khi dễ ỷ lại', khac: 'hay đi ngược dòng, dễ va chạm', bi_khac: 'thường chịu sức ép của hoàn cảnh, phải gồng mình' };
     ten = 'Mệnh – Thân khác nhịp';
-    de = 'Về suy nghĩ, bạn ' + mo[rM] + '; về cách làm ở nửa sau cuộc đời, bạn ' + mo[rT] + '. Nhận ra hai nhịp này giúp bạn chủ động cân bằng giữa điều mình nghĩ và điều mình làm.';
+    de = 'Về suy nghĩ, bạn ' + mo[rM] + '; về cách làm ở nửa sau cuộc đời, bạn ' + mo[rT] + '. Hai nhịp lệch nhau nên điều mình nghĩ và điều mình làm dễ vênh, đôi khi tự mâu thuẫn.';
   }
   return { ma: ma, ten: ten, de: de,
     ky: 'Hành tam hợp: Thái Tuế (chi năm ' + CHI[I.yChi] + ') ' + hTT + ', Mệnh (' + CHI[I.menh] + ') ' + hM + ' → ' + rM + ', Thân (' + CHI[I.than] + ') ' + hT + ' → ' + rT + (ma ? ' – thế ' + ma + '/8 của phái Thiên Lương.' : ' – ngoài 8 thế điển hình, luận theo từng vế.') };
 }
 
 var TP_MENH_DI = [
-  'Bên trong bạn sống theo lẽ phải, nhưng môi trường bên ngoài hay có người phản bác, chống đối. Bản lĩnh cộng với sự khéo léo sẽ biến đối thủ thành người tôn trọng bạn.',
-  'Bạn lanh lợi, nhưng môi trường bên ngoài thường chậm và cần sự nhẫn nại. Kiên nhẫn hơn một nhịp, bạn sẽ được việc hơn.',
-  'Bạn hay thấy chưa vừa ý, nhưng ra ngoài lại gặp những khuôn phép và người có thế lực. Học cách hợp tác với "người có quyền" thay vì đối đầu sẽ mở đường cho bạn.',
-  'Bạn hiền và chân thành, còn môi trường bên ngoài nhiều người lanh lợi, dễ lấn lướt. Giữ sự tỉnh táo, đừng vội tin lời hứa hẹn.'
+  'Bên trong bạn sống theo lẽ phải, nhưng môi trường bên ngoài hay có người phản bác, chống đối. Mặt xấu: đi đâu cũng dễ gặp người chống, công việc hay bị ngáng. Mặt tốt: bạn được rèn bản lĩnh.',
+  'Bạn lanh lợi, nhưng môi trường bên ngoài thường chậm và cần sự nhẫn nại. Mặt xấu: bạn dễ sốt ruột, bực bội, bỏ ngang. Mặt tốt: lanh lợi giúp bạn tìm ra lối đi khi người khác còn chậm.',
+  'Bạn hay thấy chưa vừa ý, nhưng ra ngoài lại gặp những khuôn phép và người có thế lực. Mặt xấu: dễ đối đầu với người có quyền và chịu thiệt. Gợi ý: hợp tác thay vì đối đầu.',
+  'Bạn hiền và chân thành, còn môi trường bên ngoài nhiều người lanh lợi, dễ lấn lướt. Mặt xấu: dễ bị lấn lướt, bị lừa bởi lời hứa hẹn. Mặt tốt: sự chân thành giúp bạn được người tử tế tin.'
 ];
 
 var TP_VAN_TT = [
   null, // nhóm Tuế – Hổ – Phù: xử lý riêng theo sao
-  'vận thuận nhờ lanh lợi, cơ hội đến sớm; giữ sự ngay thẳng để tránh "được rồi lại mất".',
-  'vận dễ bất mãn, va chạm, muốn thay đổi; nên kiên trì theo kế hoạch, cẩn trọng giấy tờ, hợp đồng và tránh tranh cãi.',
-  'vận cần mẫn, ít được ghi nhận; nên tích lũy lặng lẽ và biết đủ.'
+  'vận thuận nhờ lanh lợi, cơ hội đến sớm; mặt trái là dễ "được rồi lại mất" nếu cậy khôn.',
+  'vận dễ bất mãn, va chạm, vướng giấy tờ, hợp đồng và tranh cãi; mặt tốt là có năng lượng để thay đổi cái cũ.',
+  'vận cần mẫn nhưng ít được ghi nhận, dễ bị người khác nhận phần công; mặt tốt là tích lũy lặng lẽ được.'
 ];
 var TP_VAN_TUE = {
-  'Thái Tuế': 'vận đắc thời một cách chính đáng – việc làm được thừa nhận, có tiếng nói.',
-  'Quan Phù': 'vận đắc thời nhờ tính toán, giấy tờ, thủ tục – nên làm việc có phương án rõ ràng.',
-  'Bạch Hổ': 'vận đắc thời nhưng phải làm việc vất vả, xông pha – giữ sức khỏe.'
+  'Thái Tuế': 'vận đắc thời một cách chính đáng – việc làm được thừa nhận, có tiếng nói; mặt trái là trách nhiệm và áp lực cũng lớn.',
+  'Quan Phù': 'vận đắc thời nhờ tính toán, giấy tờ, thủ tục; mặt trái là dễ vướng thủ tục, tranh chấp giấy tờ.',
+  'Bạch Hổ': 'vận đắc thời nhưng phải vất vả, xông pha, sức khỏe dễ hao.'
 };
-var TP_VAN_LT = ['tài lực dồi dào', 'thực lực đến từ học hỏi, trải nghiệm', 'nhiều cơ hội bất ngờ, cần thận trọng', 'chi tiêu, giao tế nhiều'];
+var TP_VAN_LT = ['tài lực dồi dào, nhưng dễ chủ quan', 'thực lực đến từ học hỏi, trải nghiệm, tốn tiền trước rồi mới thu', 'nhiều cơ hội bất ngờ, đi kèm rủi ro bị lừa hoặc thua lỗ', 'chi tiêu, giao tế nhiều, tiền khó đọng lại'];
 
 /** Lai Nhân cung: cung có can trùng can năm sinh (bỏ Tý, Sửu) */
 function tpLaiNhan_(chart) {
@@ -159,7 +159,7 @@ function tpPhiTinh_(chart) {
     var cn = P[ln].cung;
     res.laiNhan = { cung: cn, chi: CHI[ln],
       de: cn === 'Mệnh'
-        ? 'Cung "nguồn cội" nằm ngay ở bản thân bạn: đời bạn thuộc kiểu tự lập, phúc họa phần lớn do chính mình quyết định, ít phải dựa vào gia đình hay người khác.'
+        ? 'Cung "nguồn cội" nằm ngay ở bản thân bạn: đời bạn thuộc kiểu tự lập, phúc họa phần lớn do chính mình quyết định; mặt trái là ít được gia đình hay người khác đỡ, sai thì tự gánh.'
         : 'Cung "nguồn cội" nằm ở ' + cn + ': chủ đề xuyên suốt đời bạn hay xoay quanh ' + tpLv_(cn) + '; nhiều cơ hội và cả bài học lớn đều khởi từ đây.' };
     res.ky.push('Lai Nhân cung: can năm ' + CAN[I.yCan] + ' trùng can cung ' + CAN[P[ln].can] + ' ' + CHI[ln] + ' (' + cn + '); bỏ qua Tý, Sửu vì can lặp với Dần, Mão.');
   }
@@ -171,7 +171,7 @@ function tpPhiTinh_(chart) {
       } else if (pi === menh && (f.hoa === 0 || f.hoa === 3) && f.toi != null) {
         var c2 = P[f.toi].cung;
         res.menhPhi.push(f.hoa === 0
-          ? 'Bạn dồn tình cảm, công sức (và thường được đền đáp) vào chuyện ' + tpLv_(c2) + '.'
+          ? 'Bạn dồn tình cảm, công sức vào chuyện ' + tpLv_(c2) + ' và thường được đền đáp; mặt trái là dễ lơ là những mảng khác.'
           : 'Điều bạn hay canh cánh, thấy như mình còn "nợ", là chuyện ' + tpLv_(c2) + '.');
         res.ky.push('Mệnh (can ' + CAN[P[pi].can] + ') phi Hóa ' + TP_HOA[f.hoa] + ' (' + f.sao + ') nhập ' + c2 + '.');
       } else if (pi !== menh && f.toi === menh && (f.hoa === 0 || f.hoa === 3)) {
@@ -180,13 +180,13 @@ function tpPhiTinh_(chart) {
           : 'Chuyện ' + tpLv_(P[pi].cung) + ' là nơi dễ đem phiền lụy, trách nhiệm đến cho bạn.');
         res.ky.push(P[pi].cung + ' (can ' + CAN[P[pi].can] + ') phi Hóa ' + TP_HOA[f.hoa] + ' (' + f.sao + ') nhập Mệnh.');
       } else if (pi !== menh && pi !== di && f.hoa === 3 && f.toi === di) {
-        res.kyXung.push('Chuyện ' + tpLv_(P[pi].cung) + ' dễ gây xáo trộn, đẩy bạn ra khỏi vùng an toàn – nên chủ động chuẩn bị.');
+        res.kyXung.push('Chuyện ' + tpLv_(P[pi].cung) + ' dễ gây xáo trộn, đẩy bạn ra khỏi vùng an toàn, có thể gây mất mát hoặc thay đổi ngoài ý muốn.');
         res.ky.push(P[pi].cung + ' phi Hóa Kỵ (' + f.sao + ') nhập Thiên Di, xung Mệnh.');
       }
       if ((P[pi].cung === 'Tài Bạch' || P[pi].cung === 'Quan Lộc') && f.hoa === 3 && f.toi != null && f.toi !== pi) {
         var dich = P[f.toi].cung;
         res.khac.push(P[pi].cung === 'Tài Bạch'
-          ? 'Tiền bạc của bạn hay bị cuốn vào, hoặc hao vì chuyện ' + tpLv_(dich) + ' – nên có ngân sách riêng cho khoản này.'
+          ? 'Tiền bạc của bạn hay bị cuốn vào, hoặc hao vì chuyện ' + tpLv_(dich) + '; đây là khoản dễ hao nhất của bạn.'
           : 'Công việc hay khiến bạn bận lòng về chuyện ' + tpLv_(dich) + '.');
         res.ky.push(P[pi].cung + ' (can ' + CAN[P[pi].can] + ') phi Hóa Kỵ (' + f.sao + ') nhập ' + dich + '.');
       }
@@ -219,8 +219,8 @@ function tpLap_(chart, daiVan) {
   var dvSong = (daiVan || []).filter(function (d) { return parseInt(d.khoang, 10) <= 90; });
   var dvLoc = dvSong.filter(function (d) { var pi = CHI.indexOf(d.chi); return pi >= 0 && lt != null && tpMod4_(pi - lt) === 0; }).map(function (d) { return d.khoang; });
   de.push({ t: 'Lộc thực', v: tueLoc
-    ? 'Nguồn lộc nằm đúng trong thế chính danh của bạn: làm đúng việc của mình là có thực lộc, của cải bền theo suốt đời.'
-    : 'Nguồn lộc không nằm sẵn trong thế đứng gốc, nên thực lộc rõ nhất vào những giai đoạn vận đi qua vùng có lộc' + (dvLoc.length ? ' (khoảng ' + dvLoc.join(', ') + ')' : '') + '. Hãy tích lũy mạnh trong những giai đoạn ấy.' });
+    ? 'Nguồn lộc nằm đúng trong thế chính danh của bạn: làm đúng việc của mình là có thực lộc, của cải bền; mặt trái là làm trái việc mình thì lộc cũng hụt rõ.'
+    : 'Nguồn lộc không nằm sẵn trong thế đứng gốc, nên thực lộc rõ nhất vào những giai đoạn vận đi qua vùng có lộc' + (dvLoc.length ? ' (khoảng ' + dvLoc.join(', ') + ')' : '') + '; ngoài những giai đoạn ấy, tiền bạc thường chỉ đủ dùng hoặc hụt.' });
 
   ky.push('Vòng Thái Tuế tại Mệnh: ' + (M.ttSao || '?') + ' – nhóm ' + nTT.ten + ' (' + nTT.sao + ').');
   if (nLT) ky.push('Vòng Lộc Tồn tại Mệnh: ' + M.ltSao + ' – nhóm ' + nLT.ten + ' (' + nLT.sao + ').');

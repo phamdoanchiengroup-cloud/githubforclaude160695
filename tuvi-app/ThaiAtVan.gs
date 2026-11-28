@@ -10,7 +10,7 @@
  *    - taVanHoi_(ban, loai, danhGia)  hỏi một việc theo giờ – cùng khuôn kmVanLuan_ (KyMonVan.gs)
  *  Quy tắc văn (CLAUDE.md): phần dễ hiểu KHÔNG nêu tên thần/sao, không số toán, không chữ Hán,
  *  không dấu phần trăm, không hù dọa; thuật ngữ chỉ ở canCu và luôn kèm giải nghĩa.
- *  Tầng 1: "Bạn thuộc mẫu người… / có xu hướng… / Bạn đang ở thế…"; Tầng 2: nhẹ nhàng, luôn có hướng khắc phục.
+ *  Tầng 1: "Bạn thuộc mẫu người… / có xu hướng… / Bạn đang ở thế…"; Tầng 2: song song mặt tốt – mặt xấu, mặt xấu nói thẳng; gợi ý ngắn đặt sau.
  *  Văn ghép từ tín hiệu của bàn (cách cục, thế nghiêng Chủ/Khách, cung được phúc/bị cản) nên mỗi bàn một bài.
  * ============================================================
  */
@@ -67,59 +67,59 @@ var TAV_CACH_DE_ = {
   yem: { de: 'có một sức ép từ bên ngoài đè lên người đang giữ thế, bên có sẵn vị trí dễ bị động',
     menh: 'những lúc bạn đang giữ một vị trí, hay có sức ép từ bên ngoài tìm đến',
     xh: 'nhiều người đang giữ vị trí, nhất là người điều hành, cảm thấy sức ép từ bên ngoài dồn lên',
-    khuyen: 'Khi đang giữ một vị trí, hãy củng cố nền trước: rà lại các cam kết, giữ khách quen, chưa vội mở thêm việc mới.' },
+    khuyen: 'Gợi ý: khi đang giữ một vị trí, củng cố nền trước – rà lại cam kết, giữ khách quen, chưa vội mở thêm việc mới.' },
   kich: { de: 'dễ gặp cạnh tranh trực diện hoặc lời chỉ trích',
     menh: 'bạn hay phải đối mặt với cạnh tranh trực diện, và lời góp ý thẳng thắn đến với bạn nhiều hơn người khác',
     xh: 'cạnh tranh trực diện và lời qua tiếng lại dễ nhiều hơn thường lệ',
-    khuyen: 'Trả lời góp ý bằng kết quả và giấy tờ rõ ràng thay vì tranh cãi; giữ giọng bình tĩnh sẽ giúp bạn được lắng nghe.' },
+    khuyen: 'Gợi ý: trả lời góp ý bằng kết quả và giấy tờ rõ ràng thay vì tranh cãi.' },
   tu: { de: 'có cảm giác bị kẹt, việc chính chưa xoay được như ý và nhiều khâu phải chờ người khác',
     menh: 'có những giai đoạn bạn thấy mình bị kẹt, việc chính chậm xoay dù đã cố',
     xh: 'nhiều việc lớn có cảm giác chậm xoay, phải chờ qua nhiều khâu',
-    khuyen: 'Chia việc lớn thành những bước nhỏ làm được ngay; trong lúc chờ, chăm phần nền để khi thông là đi được nhanh.' },
+    khuyen: 'Gợi ý: chia việc lớn thành những bước nhỏ làm được ngay, và chăm phần nền trong lúc chờ.' },
   bach: { de: 'áp lực đến khá gần, có khi từ người ngoài, có khi từ chính người thân cận',
     menh: 'áp lực trong đời bạn thường đến sát và nhanh, nhiều việc hay dồn vào cùng một lúc',
     xh: 'áp lực đến gần, nhiều việc dồn hạn cùng lúc',
-    khuyen: 'Làm trước những việc có hạn chót, và nói chuyện rõ ràng với người thân cận để tránh hiểu lầm.' },
+    khuyen: 'Gợi ý: làm trước những việc có hạn chót, nói rõ ràng với người thân cận.' },
   cach: { de: 'ý của bên trên và bên dưới khó gặp nhau, lời nói dễ bị truyền sai',
     menh: 'bạn hay gặp cảnh ý mình và ý người quyết định không gặp nhau, phải qua người trung gian',
     xh: 'ý của người quyết định và người thực hiện dễ lệch nhau, thông tin dễ bị truyền sai',
-    khuyen: 'Nhờ một người trung gian đáng tin, và ghi lại những điều đã thống nhất để hai bên cùng nhìn một bản.' },
+    khuyen: 'Gợi ý: nhờ một người trung gian đáng tin, ghi lại những điều đã thống nhất.' },
   doi: { de: 'lời hứa miệng, kể cả của người thân tín, dễ đổi khi hoàn cảnh đổi',
     menh: 'bạn dễ đặt lòng tin vào lời hứa miệng, trong khi hoàn cảnh đổi thì lời hứa cũng dễ đổi',
     xh: 'lời hứa miệng dễ đổi khi hoàn cảnh đổi, nên thỏa thuận rõ ràng trên giấy được coi trọng',
-    khuyen: 'Với cam kết quan trọng, hãy ghi rõ trên giấy; không phải vì nghi ngờ ai, mà để hai bên cùng yên tâm.' },
+    khuyen: 'Gợi ý: với cam kết quan trọng, ghi rõ trên giấy.' },
   quan: { de: 'hai phía đang giằng co, chưa ai chịu lùi',
     menh: 'bạn hay ở trong những thế giằng co, nơi hai bên cùng chờ bên kia lùi trước',
     xh: 'nhiều chuyện ở thế giằng co, hai bên cùng chờ bên kia lùi trước',
-    khuyen: 'Đừng ép kết quả; tìm một điểm chung nhỏ để mở nút trước, rồi mới bàn chuyện lớn.' },
+    khuyen: 'Gợi ý: đừng ép kết quả; mở nút từ một điểm chung nhỏ trước.' },
   de_hiep: { de: 'bạn dễ bị kẹp giữa hai phía, bên nào cũng muốn bạn đứng về mình',
     menh: 'bạn hay đứng giữa hai phía, được cả hai tin nhưng cũng bị cả hai kéo',
     xh: 'nhiều người có cảm giác bị kẹp giữa hai phía, khó chọn bên',
-    khuyen: 'Giữ vị trí trung lập, nói như nhau với cả hai bên, và đừng hứa điều mình không chắc làm được.' },
+    khuyen: 'Gợi ý: giữ trung lập, nói như nhau với cả hai bên, đừng hứa điều mình không chắc làm được.' },
   chu_hiep: { de: 'quyền quyết định đang nằm trong một nhóm nhỏ quanh người đứng đầu',
     menh: 'bạn hay làm việc trong những môi trường mà quyền quyết định nằm ở một nhóm nhỏ',
     xh: 'quyền quyết định dồn vào một nhóm nhỏ, người ngoài khó tiếp cận',
-    khuyen: 'Muốn việc thông, hãy tìm đúng người trong nhóm quyết định và trình bày ngắn gọn với họ.' },
+    khuyen: 'Gợi ý: tìm đúng người trong nhóm quyết định và trình bày ngắn gọn với họ.' },
   khach_hiep: { de: 'nhiều người cùng muốn tiếp cận một chỗ, cạnh tranh để được chú ý',
     menh: 'bạn hay ở giữa đám đông cùng nhắm vào một cơ hội',
     xh: 'nhiều người cùng chen về một chỗ, cạnh tranh để được chú ý',
-    khuyen: 'Muốn nổi bật, hãy chuẩn bị khác người chứ đừng chen đông; một điểm riêng rõ ràng có giá hơn nhiều lời.' },
+    khuyen: 'Gợi ý: muốn nổi bật thì chuẩn bị khác người thay vì chen đông.' },
   tu_quach_co: { de: 'bốn bề như bị vây chặt, đây là lúc để giữ chứ chưa phải để mở rộng',
-    menh: 'có những giai đoạn bốn bề như khép lại, và người biết giữ mới là người đi xa',
+    menh: 'có những giai đoạn bốn bề như khép lại, bạn dễ thấy bế tắc, cô lập và khó xoay xở',
     xh: 'không khí chung thiên về giữ gìn, ít người dám mở rộng mạnh',
-    khuyen: 'Giữ chắc cái đang có, giảm chi tiêu không cần thiết, để dành sức cho lúc thế mở.' },
+    khuyen: 'Gợi ý: giữ chắc cái đang có, giảm chi tiêu không cần thiết.' },
   tu_quach_do: { de: 'lối ra tạm khép, việc lớn khó thông trong lúc này',
-    menh: 'có những giai đoạn lối ra tạm khép, buộc bạn phải chờ thời',
+    menh: 'có những giai đoạn lối ra tạm khép, việc lớn đứng im và bạn buộc phải chờ',
     xh: 'nhiều lối đi tạm khép, việc lớn khó thông nhanh',
-    khuyen: 'Dùng thời gian này để học thêm, sửa nền, và chờ thời; lối ra sẽ mở lại khi nhịp đổi.' },
+    khuyen: 'Gợi ý: dùng thời gian này để học thêm, sửa nền, chưa mở việc lớn.' },
   tuong_giua: { de: 'sức chính của một bên đang đứng yên, chưa ra tay',
-    menh: 'bạn có xu hướng quan sát lâu trước khi ra tay',
+    menh: 'bạn có xu hướng quan sát lâu trước khi ra tay, nên ít sai vì vội nhưng dễ lỡ thời cơ',
     xh: 'một bên chọn đứng yên quan sát, chưa ra tay',
-    khuyen: 'Quan sát là tốt, nhưng hãy đặt cho mình một mốc thời gian để quyết, tránh chờ mãi.' },
+    khuyen: 'Gợi ý: đặt cho mình một mốc thời gian để quyết, tránh chờ mãi.' },
   hoa_thuan: { de: 'không có thế đè, ép hay vây nào đáng kể, không khí khá hòa thuận',
-    menh: 'nhịp đời bạn khá hòa thuận, ít bị kẹp hay bị ép từ bên ngoài',
+    menh: 'nhịp đời bạn khá hòa thuận, ít bị kẹp hay bị ép từ bên ngoài, nhưng cũng vì thế dễ chậm đổi, thiếu sức bật',
     xh: 'không khí khá hòa thuận, hợp những việc cần nhiều người cùng làm',
-    khuyen: 'Tận dụng lúc êm để làm những việc cần sự hợp tác và vun đắp quan hệ.' }
+    khuyen: 'Tận dụng lúc êm để làm những việc cần hợp tác; đừng vì êm mà lơi tay.' }
 };
 /* Thứ tự ưu tiên khi chọn cách để nói (nặng trước) */
 var TAV_CACH_THU_TU_ = ['tu_quach_co', 'tu_quach_do', 'yem', 'tu', 'kich', 'quan', 'cach', 'doi', 'de_hiep', 'bach', 'chu_hiep', 'khach_hiep', 'tuong_giua', 'hoa_thuan'];
@@ -133,88 +133,88 @@ var TAV_TOAN_DE_ = {
 /* ---------- 12 cung mệnh pháp ---------- */
 var TAV_CUNG_ = {
   menh: {
-    tot: 'Bạn có nền bản thân vững: khi đã chọn hướng thì ít bị lung lay, và người xung quanh dễ tin vào sự có mặt của bạn.',
+    tot: 'Bạn có nền bản thân vững: khi đã chọn hướng thì ít bị lung lay, người xung quanh dễ tin bạn. Cái giá: dễ cứng, khó đổi hướng khi cần.',
     xau: 'Bạn có xu hướng tự gánh nhiều, hay lo trước cả những việc chưa đến; con đường của bạn thường phải tự mở chứ ít khi có sẵn.',
     tron: 'Bạn có hai mặt cân nhau: lúc quyết đoán, lúc lại cần thời gian cân nhắc; hướng đi rõ dần theo trải nghiệm.',
-    khuyen: 'Mỗi năm hãy chọn một mục tiêu chính cho bản thân và viết ra; điều đó giúp bạn giữ nhịp khi xung quanh xáo trộn.' },
+    khuyen: 'Gợi ý: mỗi năm chọn một mục tiêu chính cho bản thân và viết ra.' },
   huynh_de: {
-    tot: 'Anh chị em và bạn bè ngang hàng có xu hướng là chỗ dựa thật của bạn; nhiều cơ hội đến qua những người cùng lứa.',
+    tot: 'Anh chị em và bạn bè ngang hàng có xu hướng là chỗ dựa thật của bạn; nhiều cơ hội đến qua những người cùng lứa. Cái giá: dễ nể nang, khó từ chối khi họ nhờ tiền.',
     xau: 'Quan hệ với anh chị em, bạn bè ngang hàng có xu hướng lúc gần lúc xa, mỗi người một hướng; chuyện tiền bạc chung dễ thành vướng mắc.',
     tron: 'Quan hệ anh chị em, bạn bè ở mức vừa phải: có người thân thiết, có người chỉ xã giao, và bạn tự chọn được ai để gần.',
-    khuyen: 'Giữ rõ ràng chuyện tiền bạc với người ngang hàng, và chủ động hỏi thăm trước; một cuộc gọi đúng lúc giữ được nhiều mối quan hệ.' },
+    khuyen: 'Gợi ý: giữ rõ ràng chuyện tiền bạc với người ngang hàng.' },
   the_thiep: {
-    tot: 'Chuyện bạn đời có xu hướng êm: người đi cùng bạn biết chia sẻ, và hai người dễ cùng nhìn về một hướng.',
-    xau: 'Chuyện bạn đời có xu hướng cần nhiều công vun đắp: hai người dễ khác nhịp, hoặc có giai đoạn mỗi người bận một nơi.',
+    tot: 'Chuyện bạn đời có xu hướng êm: người đi cùng bạn biết chia sẻ, hai người dễ cùng nhìn về một hướng. Cái giá: dễ coi sự êm là đương nhiên mà lơ vun đắp.',
+    xau: 'Chuyện bạn đời có xu hướng trắc trở: hai người dễ khác nhịp, hay bất đồng, có giai đoạn xa cách, lạnh nhạt hoặc mỗi người một nơi.',
     tron: 'Chuyện bạn đời có cả lúc ấm lẫn lúc lạnh; mức hòa hợp phụ nhiều vào cách hai người nói chuyện với nhau hằng ngày.',
-    khuyen: 'Dành một khoảng thời gian cố định mỗi tuần chỉ để hai người trò chuyện; nói về cảm nhận của mình thay vì tìm lỗi người kia.' },
+    khuyen: 'Gợi ý: dành một khoảng cố định mỗi tuần chỉ để hai người trò chuyện.' },
   tu_ton: {
-    tot: 'Con cái, hoặc những người trẻ bạn dìu dắt, có xu hướng mang lại niềm vui và sự tự hào cho bạn.',
-    xau: 'Chuyện con cái có xu hướng khiến bạn bận lòng nhiều: lo cho con, hoặc phải chờ đợi lâu hơn mong muốn.',
+    tot: 'Con cái, hoặc những người trẻ bạn dìu dắt, có xu hướng mang lại niềm vui và sự tự hào cho bạn. Cái giá: dễ kỳ vọng nhiều, đặt nặng thành tích của con.',
+    xau: 'Chuyện con cái có xu hướng khiến bạn bận lòng nhiều: con muộn, khó dạy, hoặc khác quan điểm với bạn.',
     tron: 'Chuyện con cái ở mức bình thường: có lúc vui, có lúc lo, phần lớn nằm ở cách bạn đồng hành cùng con.',
-    khuyen: 'Lắng nghe con (hoặc người trẻ bạn dìu dắt) nhiều hơn dặn dò; cho họ tự làm và tự rút kinh nghiệm trong phạm vi an toàn.' },
+    khuyen: 'Gợi ý: lắng nghe con (hoặc người trẻ bạn dìu dắt) nhiều hơn dặn dò.' },
   tai_bach: {
-    tot: 'Tiền bạc có xu hướng đến với bạn khá đều, nhất là từ công sức và uy tín của chính bạn.',
-    xau: 'Tiền bạc có xu hướng vào ra thất thường: có lúc dư, có lúc hụt vì những khoản phát sinh ngoài dự tính.',
+    tot: 'Tiền bạc có xu hướng đến với bạn khá đều, nhất là từ công sức và uy tín của chính bạn. Cái giá: dễ chủ quan, tiêu rộng tay lúc dư.',
+    xau: 'Tiền bạc có xu hướng vào ra thất thường: có lúc dư, có lúc hụt, dễ mất tiền vì khoản phát sinh, cho vay hoặc đầu tư vội.',
     tron: 'Tiền bạc ở mức đủ dùng và tích lũy được nếu có kế hoạch; không tự nhiên nhiều, cũng không thiếu thốn.',
-    khuyen: 'Tách riêng một khoản dự phòng, ghi chép chi tiêu hằng tháng, và hỏi người có chuyên môn tài chính trước những khoản lớn.' },
+    khuyen: 'Gợi ý: tách riêng một khoản dự phòng, hỏi người có chuyên môn tài chính trước những khoản lớn.' },
   dien_trach: {
-    tot: 'Nhà cửa, tài sản có xu hướng vững; bạn có duyên với việc giữ và làm tăng giá trị chỗ ở.',
-    xau: 'Chuyện nhà cửa có xu hướng hay thay đổi: dời chỗ ở, sửa chữa, hoặc giấy tờ tài sản cần để ý.',
+    tot: 'Nhà cửa, tài sản có xu hướng vững; bạn có duyên với việc giữ và làm tăng giá trị chỗ ở. Cái giá: dễ dồn quá nhiều tiền vào nhà đất, ít tiền mặt.',
+    xau: 'Chuyện nhà cửa có xu hướng bất ổn: hay dời chỗ ở, sửa chữa tốn kém, dễ vướng giấy tờ hoặc tranh chấp tài sản.',
     tron: 'Nhà cửa ở mức ổn định vừa phải; tài sản tăng chậm nhưng chắc nếu bạn kiên nhẫn.',
-    khuyen: 'Giữ giấy tờ nhà đất gọn gàng, đọc kỹ trước khi ký, và chỉ mua bán lớn khi đã có khoản dự phòng.' },
+    khuyen: 'Gợi ý: đọc kỹ giấy tờ nhà đất trước khi ký, chỉ mua bán lớn khi đã có dự phòng.' },
   quan_loc: {
-    tot: 'Công việc có xu hướng thuận: bạn dễ được tin giao việc, và sự nghiệp đi lên theo từng bậc rõ ràng.',
-    xau: 'Công việc có xu hướng nhiều thử thách: phải đổi hướng vài lần, hoặc làm nhiều mà chưa được ghi nhận đúng mức.',
+    tot: 'Công việc có xu hướng thuận: bạn dễ được tin giao việc, sự nghiệp đi lên theo từng bậc. Cái giá: việc dồn nhiều, dễ quá tải.',
+    xau: 'Công việc có xu hướng trắc trở: phải đổi hướng vài lần, làm nhiều mà không được ghi nhận đúng mức, có giai đoạn chững hoặc mất việc.',
     tron: 'Công việc ở mức ổn: tiến bộ đến từ sự bền bỉ hơn là từ cơ hội bất ngờ.',
-    khuyen: 'Ghi lại kết quả cụ thể của mình mỗi quý; khi cần đề xuất hay đổi việc, những kết quả đó nói thay bạn.' },
+    khuyen: 'Gợi ý: ghi lại kết quả cụ thể của mình mỗi quý.' },
   no_boc: {
-    tot: 'Cấp dưới, cộng sự, người giúp việc có xu hướng hết lòng với bạn; bạn biết cách dùng người.',
-    xau: 'Quan hệ với cộng sự, cấp dưới có xu hướng phức tạp: dễ giao nhầm người hoặc bị hiểu sai ý.',
+    tot: 'Cấp dưới, cộng sự, người giúp việc có xu hướng hết lòng với bạn; bạn biết cách dùng người. Cái giá: dễ ỷ lại vào họ.',
+    xau: 'Quan hệ với cộng sự, cấp dưới có xu hướng phức tạp: dễ giao nhầm người, bị hiểu sai ý hoặc bị phụ lòng.',
     tron: 'Cộng sự quanh bạn có người được việc, có người cần kèm; chọn người kỹ thì đỡ vất vả.',
-    khuyen: 'Giao việc kèm mục tiêu và hạn rõ ràng bằng văn bản; khen đúng lúc, góp ý riêng.' },
+    khuyen: 'Gợi ý: giao việc kèm mục tiêu và hạn rõ ràng bằng văn bản.' },
   tat_ach: {
-    tot: 'Sức khỏe có nền khá tốt; cơ thể bạn hồi lại nhanh khi được nghỉ đúng cách.',
-    xau: 'Sức khỏe có xu hướng cần để ý hơn người: dễ mệt khi làm quá sức hoặc giữ căng thẳng lâu.',
+    tot: 'Sức khỏe có nền khá tốt; cơ thể bạn hồi lại nhanh khi được nghỉ đúng cách. Cái giá: dễ chủ quan, làm quá sức.',
+    xau: 'Sức khỏe có xu hướng yếu hơn người: dễ mệt, dễ ốm khi làm quá sức hoặc căng thẳng lâu, có vấn đề hay kéo dài.',
     tron: 'Sức khỏe ở mức bình thường, phụ nhiều vào nhịp ăn ngủ của bạn.',
-    khuyen: 'Khám sức khỏe định kỳ, ngủ đủ giấc, vận động đều; có điều lo lắng thì hỏi bác sĩ, vì đây chỉ là góc nhìn tham khảo.' },
+    khuyen: 'Gợi ý: khám định kỳ; có điều lo lắng thì hỏi bác sĩ, vì đây chỉ là góc nhìn tham khảo.' },
   phuc_duc: {
-    tot: 'Đời sống tinh thần có nền tốt: bạn biết tìm niềm vui ở việc nhỏ, và thường gặp may vào lúc cần.',
-    xau: 'Đời sống tinh thần có xu hướng hay nặng lòng: bạn dễ nghĩ nhiều, mang theo cả lo toan của người khác.',
+    tot: 'Đời sống tinh thần có nền tốt: bạn biết tìm niềm vui ở việc nhỏ, thường gặp may lúc cần. Cái giá: dễ ỷ vào may mắn.',
+    xau: 'Đời sống tinh thần có xu hướng hay nặng lòng: bạn dễ nghĩ nhiều, mang cả lo toan của người khác, có giai đoạn buồn bực kéo dài.',
     tron: 'Đời sống tinh thần cân bằng vừa phải; bình yên đến khi bạn biết dừng đúng lúc.',
-    khuyen: 'Giữ một thói quen giúp lòng lắng xuống, như đi bộ, đọc sách hay làm một việc tốt nhỏ, đều đặn mỗi tuần.' },
+    khuyen: 'Gợi ý: giữ một thói quen giúp lòng lắng xuống, như đi bộ hay đọc sách.' },
   tuong_mao: {
-    tot: 'Bạn có xu hướng để lại ấn tượng tốt ngay từ đầu; dáng vẻ và cách nói của bạn tạo được tin cậy.',
+    tot: 'Bạn có xu hướng để lại ấn tượng tốt ngay từ đầu; dáng vẻ và cách nói của bạn tạo được tin cậy. Cái giá: người ta kỳ vọng cao, sơ suất nhỏ cũng dễ bị để ý.',
     xau: 'Người khác có xu hướng nhìn bạn khác với con người thật của bạn: dễ bị cho là khó gần hoặc quá nghiêm.',
     tron: 'Hình ảnh của bạn trong mắt người khác ở mức trung tính; càng tiếp xúc lâu, người ta càng hiểu bạn.',
-    khuyen: 'Một nụ cười và lời chào chủ động trước làm thay đổi nhiều ấn tượng ban đầu; chăm chút vừa đủ cho vẻ ngoài khi gặp người mới.' },
+    khuyen: 'Gợi ý: chủ động chào hỏi trước khi gặp người mới.' },
   phu_mau: {
-    tot: 'Cha mẹ hoặc người đỡ đầu có xu hướng là chỗ dựa tốt; bạn nhận được sự dạy dỗ, nâng đỡ đúng lúc.',
-    xau: 'Quan hệ với cha mẹ, người đỡ đầu có xu hướng cần nhiều thấu hiểu: khác quan điểm, hoặc bạn sớm phải tự lập.',
+    tot: 'Cha mẹ hoặc người đỡ đầu có xu hướng là chỗ dựa tốt; bạn được dạy dỗ, nâng đỡ đúng lúc. Cái giá: dễ dựa dẫm, chậm tự lập.',
+    xau: 'Quan hệ với cha mẹ, người đỡ đầu có xu hướng căng: khác quan điểm, ít được nâng đỡ, hoặc bạn sớm phải tự lập.',
     tron: 'Quan hệ với cha mẹ, người đỡ đầu ở mức bình thường, gần gũi hơn khi bạn chủ động chia sẻ.',
-    khuyen: 'Dành thời gian hỏi han cha mẹ hoặc người đi trước; lắng nghe trước khi tranh luận.' }
+    khuyen: 'Gợi ý: lắng nghe cha mẹ trước khi tranh luận.' }
 };
 var TAV_MENH_TOM_ = {
-  tot: 'Phần bản thân của bạn có điểm tựa tốt: bạn có xu hướng đứng vững khi đã chọn hướng.',
-  xau: 'Bạn có xu hướng tự gánh nhiều việc và hay lo trước, nên cần học cách chia bớt cho người khác.',
+  tot: 'Phần bản thân của bạn có điểm tựa tốt: bạn có xu hướng đứng vững khi đã chọn hướng, nhưng dễ cứng, khó đổi khi cần.',
+  xau: 'Bạn có xu hướng tự gánh nhiều việc và hay lo trước, dễ quá tải và thấy cô độc khi gánh một mình.',
   tron: 'Bạn có xu hướng cân nhắc kỹ trước khi quyết, và hướng đi rõ dần theo trải nghiệm.'
 };
 
 /* ---------- Thế bẩm sinh (giữ – xông pha – cân bằng) ---------- */
 var TAV_THE_ = {
   giu_xay: {
-    tom: 'Bạn thuộc mẫu người hợp giữ và xây hơn là xông pha: bạn làm tốt nhất khi có một nền chắc để đứng, và thành quả thường đến từ sự bền bỉ hơn là một cú bứt phá.',
-    khuyen: 'Thế mạnh của bạn là sự bền bỉ. Khi cơ hội mới đến, đừng vội từ chối chỉ vì nó lạ: hãy thử ở quy mô nhỏ trước, giữ nền cũ song song.',
+    tom: 'Bạn thuộc mẫu người hợp giữ và xây hơn là xông pha: bạn làm tốt nhất khi có một nền chắc để đứng, và thành quả thường đến từ sự bền bỉ hơn là một cú bứt phá. Mặt trái: dễ ngại đổi, bỏ lỡ cơ hội mới.',
+    khuyen: 'Gợi ý: khi cơ hội mới đến, thử ở quy mô nhỏ trước, giữ nền cũ song song.',
     viec: 'Mỗi quý tự hỏi một lần: mình có đang bỏ lỡ cơ hội nào chỉ vì ngại đổi không? Nếu có, thử cái mới ở quy mô nhỏ.',
     ten: 'người hợp giữ và xây' },
   xong_pha: {
-    tom: 'Bạn thuộc mẫu người hợp chủ động, mở đường hơn là ngồi giữ: bạn sáng lên khi có việc mới để làm, và cơ hội thường đến khi bạn là người bước tới trước.',
-    khuyen: 'Sức chủ động là món quà của bạn; chỉ cần nhớ chừa đường lui và giữ một khoản dự phòng, để mỗi lần xông pha không phải đặt cược tất cả.',
+    tom: 'Bạn thuộc mẫu người hợp chủ động, mở đường hơn là ngồi giữ: bạn sáng lên khi có việc mới để làm, và cơ hội thường đến khi bạn là người bước tới trước. Mặt trái: dễ đặt cược quá tay, thiếu đường lui.',
+    khuyen: 'Gợi ý: mỗi lần xông pha, giữ một khoản dự phòng và chừa đường lui.',
     viec: 'Trước mỗi quyết định lớn, chờ một đêm rồi mới chốt, và hỏi ý một người bạn tin tưởng.',
     ten: 'người hợp chủ động, xông pha' },
   can_bang: {
-    tom: 'Bạn thuộc mẫu người cân bằng giữa giữ và tiến: biết lúc nào nên bám nền, lúc nào nên mở lời, và đổi vai khá linh hoạt.',
-    khuyen: 'Bạn linh hoạt giữa giữ và tiến; trước mỗi việc lớn, hãy tự hỏi "lần này mình là người giữ hay người mở lời?" rồi chọn cách đi cho hợp vai.',
-    viec: 'Trước mỗi việc lớn, ghi ra một dòng: lần này mình giữ hay mình tiến, vì sao. Dòng đó giúp bạn không bị cuốn theo người khác.',
+    tom: 'Bạn thuộc mẫu người cân bằng giữa giữ và tiến: biết lúc nào nên bám nền, lúc nào nên mở lời, và đổi vai khá linh hoạt. Mặt trái: dễ lưng chừng, không hẳn giữ cũng không hẳn tiến.',
+    khuyen: 'Gợi ý: trước mỗi việc lớn, tự hỏi "lần này mình giữ hay mở lời?" rồi chọn một vai.',
+    viec: 'Trước mỗi việc lớn, ghi ra một dòng: lần này mình giữ hay mình tiến, vì sao.',
     ten: 'người cân bằng giữa giữ và tiến' }
 };
 
@@ -228,9 +228,9 @@ var TAV_NAM_NGHIENG_ = {
   khach_ro: 'Nhịp chung của năm nghiêng rõ về phía người chủ động: nhiều đề nghị, nhiều người muốn chen vào. Bạn đang ở thế người giữ thành trong một năm nhiều biến chuyển.'
 };
 var TAV_NAM_KET_ = {
-  thuan: 'Đây là năm hợp để tiến: chọn một hai việc lớn nhất và làm cho trọn, đừng chia sức ra quá nhiều mặt. Thế thuận vẫn cần một khoản dự phòng để bạn đi được xa.',
-  thuan_dk: 'Đây là năm tiến có chọn lọc: việc nào đã có nền thì đẩy mạnh, việc nào còn mới thì thử nhỏ trước. Với đề nghị mới, hãy hỏi kỹ điều kiện và ghi rõ trên giấy.',
-  nen_cho: 'Đây không phải năm xấu. Đây là năm để củng cố: chọn một hai việc chính và làm thật chắc, sắp lại nền tảng, để khi nhịp đổi bạn đã sẵn sàng.'
+  thuan: 'Đây là năm hợp để tiến: chọn một hai việc lớn nhất và làm cho trọn, đừng chia sức ra quá nhiều mặt. Mặt trái của năm thuận: dễ ôm quá nhiều việc và chủ quan; nên giữ một khoản dự phòng.',
+  thuan_dk: 'Đây là năm tiến có chọn lọc: việc nào đã có nền thì đẩy mạnh, việc nào còn mới thì thử nhỏ trước, làm lớn ngay dễ hụt. Với đề nghị mới, hỏi kỹ điều kiện và ghi rõ trên giấy.',
+  nen_cho: 'Đây là năm khó mở rộng: việc mới dễ chậm, tiền và sức dễ hao nếu ôm nhiều. Năm hợp củng cố: chọn một hai việc chính và làm thật chắc, sắp lại nền tảng.'
 };
 var TAV_NAM_VIEC1_ = {
   thuan: 'Chọn một việc lớn nhất của năm ở mảng {phuc} và bắt đầu sớm, ngay trong quý đầu.',
@@ -240,27 +240,27 @@ var TAV_NAM_VIEC1_ = {
 
 /* ---------- Thời cuộc chung ---------- */
 var TAV_TC_NGHIENG_ = {
-  chu_ro: 'Khí chung của {ky} nghiêng rõ về phía người giữ thế: ai đã có nền, có nghề vững, có khách quen thì dễ giữ được nhịp. Đây là lúc hợp củng cố hơn mở rộng; cái mới vẫn có chỗ, nhưng cần đi chậm và chắc.',
-  chu: 'Khí chung của {ky} hơi nghiêng về phía người giữ thế. Những gì đã xây có xu hướng đứng vững, còn việc mới cần thêm thời gian để được đón nhận. Nhịp hợp nhất là làm chắc phần đang có rồi mới mở thêm.',
-  giang_co: 'Khí chung của {ky} cân giữa người giữ thế và người mở lời; chưa bên nào trội hẳn. Kết quả của mỗi việc phụ nhiều vào sự chuẩn bị hơn là vào nhịp chung.',
-  khach: 'Khí chung của {ky} hơi nghiêng về phía người chủ động, người mở lời. Ý tưởng mới, cách làm mới dễ được chú ý; người đang giữ vị trí nên cởi mở hơn một chút để không đứng ngoài nhịp chung.',
-  khach_ro: 'Khí chung của {ky} nghiêng rõ về phía người chủ động: nhiều đề nghị mới, nhiều người muốn bước vào chỗ đã có người. Cái mới dễ chen vào; người giữ thế cần lắng nghe và thích nghi hơn là chỉ đứng giữ.'
+  chu_ro: 'Khí chung của {ky} nghiêng rõ về phía người giữ thế: ai đã có nền, có nghề vững, có khách quen thì dễ giữ được nhịp. Đây là lúc hợp củng cố hơn mở rộng; cái mới vẫn có chỗ, nhưng cần đi chậm và chắc. Mặt tiêu cực: người mới, việc mới khó chen chân, dễ thấy bị gạt ra; người đang giữ thế dễ trì trệ, ngại đổi.',
+  chu: 'Khí chung của {ky} hơi nghiêng về phía người giữ thế. Những gì đã xây có xu hướng đứng vững, còn việc mới cần thêm thời gian để được đón nhận. Nhịp hợp nhất là làm chắc phần đang có rồi mới mở thêm. Mặt tiêu cực: cái mới dễ bị chậm lại, nhiều kế hoạch phải chờ lâu hơn dự tính.',
+  giang_co: 'Khí chung của {ky} cân giữa người giữ thế và người mở lời; chưa bên nào trội hẳn. Kết quả của mỗi việc phụ nhiều vào sự chuẩn bị hơn là vào nhịp chung. Mặt tiêu cực: nhiều chuyện giằng co, chậm ngã ngũ, dễ mệt vì chờ đợi.',
+  khach: 'Khí chung của {ky} hơi nghiêng về phía người chủ động, người mở lời. Ý tưởng mới, cách làm mới dễ được chú ý; người đang giữ vị trí nên cởi mở hơn một chút để không đứng ngoài nhịp chung. Mặt tiêu cực: nhiều xáo trộn nhỏ, người đang giữ vị trí dễ bị cạnh tranh, mất khách hoặc mất chỗ.',
+  khach_ro: 'Khí chung của {ky} nghiêng rõ về phía người chủ động: nhiều đề nghị mới, nhiều người muốn bước vào chỗ đã có người. Cái mới dễ chen vào; người giữ thế cần lắng nghe và thích nghi hơn là chỉ đứng giữ. Mặt tiêu cực: xáo trộn nhiều, thứ đã ổn dễ bị lung lay, người chậm thích nghi dễ bị bỏ lại.'
 };
 var TAV_TC_TOAN_THU_TU_ = ['tam_tai', 'hoa', 'vo_nhan', 'toan_doan', 'vo_dia', 'trung_duong', 'trung_am', 'truong_toan'];
 var TAV_TC_TOAN_ = {
-  tam_tai: 'Chuyện làm ăn, chi tiêu nói chung có đủ điều kiện để chạy đều: có thời, có nền, có người.',
-  hoa: 'Các phần của đời sống chung khá ăn khớp với nhau; việc cần phối hợp nhiều bên dễ trôi hơn thường lệ.',
+  tam_tai: 'Chuyện làm ăn, chi tiêu nói chung có đủ điều kiện để chạy đều: có thời, có nền, có người. Mặt trái: dễ chủ quan, mở rộng quá tay.',
+  hoa: 'Các phần của đời sống chung khá ăn khớp với nhau; việc cần phối hợp nhiều bên dễ trôi hơn thường lệ. Mặt trái: ít sức ép nên dễ trì trệ.',
   vo_nhan: 'Chuyện làm ăn nói chung có cảm giác thiếu người đồng hành; hợp tác, kết nối và giữ người giỏi được coi trọng hơn.',
-  toan_doan: 'Nhịp làm ăn nói chung ngắn: việc nhanh gọn dễ có lợi hơn kế hoạch kéo dài.',
+  toan_doan: 'Nhịp làm ăn nói chung ngắn: việc nhanh gọn dễ có lợi hơn kế hoạch kéo dài. Mặt trái: việc dài hơi dễ hụt hơi giữa chừng.',
   vo_dia: 'Nền chung còn mỏng: nhiều người ưu tiên giữ tiền, chi tiêu thận trọng, tính kỹ trước khi bỏ vốn.',
   trung_duong: 'Không khí làm ăn hơi gắt, dễ nóng vội; ai giữ được bình tĩnh thường đi xa hơn.',
   trung_am: 'Không khí làm ăn hơi chùng, dễ chần chừ; việc nhỏ làm đều đặn lợi hơn chờ cơ hội lớn.',
-  truong_toan: 'Nhịp làm ăn nói chung có sức bền: việc dài hơi có chỗ để đi.'
+  truong_toan: 'Nhịp làm ăn nói chung có sức bền: việc dài hơi có chỗ để đi. Mặt trái: kết quả đến chậm, đòi hỏi kiên nhẫn.'
 };
 var TAV_TC_TAM_LY_ = {
-  thuan: 'Tâm lý chung có xu hướng khá cởi mở, sẵn lòng thử cái mới.',
-  thuan_dk: 'Tâm lý chung có xu hướng thận trọng nhưng không bi quan: người ta vẫn làm, chỉ tính kỹ hơn.',
-  nen_cho: 'Tâm lý chung có xu hướng dè dặt; nhiều người chọn quan sát thêm trước khi quyết việc lớn.'
+  thuan: 'Tâm lý chung có xu hướng khá cởi mở, sẵn lòng thử cái mới; mặt trái: dễ chạy theo phong trào, quyết vội.',
+  thuan_dk: 'Tâm lý chung có xu hướng thận trọng nhưng không bi quan: người ta vẫn làm, chỉ tính kỹ hơn; mặt trái: nhiều việc bị chần chừ, kéo dài.',
+  nen_cho: 'Tâm lý chung có xu hướng dè dặt; nhiều người chọn quan sát thêm trước khi quyết việc lớn; mặt trái: chi tiêu, đầu tư chững lại, cơ hội nhỏ dễ bị bỏ qua.'
 };
 var TAV_TC_UNG_XU_ = {
   chu: 'Với mỗi người, cách ứng xử hợp nhịp là: người đi làm chăm vào việc chính và làm thật chắc; người kinh doanh giữ khách cũ, chi tiêu có kế hoạch, mở rộng từng bước nhỏ. Ai muốn đổi hướng thì cứ chuẩn bị, nhưng nên có nền dự phòng trước khi bước.',
@@ -270,12 +270,12 @@ var TAV_TC_UNG_XU_ = {
 
 /* ---------- Hỏi việc: nhãn đoạn ---------- */
 var TAV_NHAN_ = {
-  thuan: { manh: 'Điểm mạnh của bạn: ', vuong: 'Chỗ nhỏ cần để ý: ', khongVuong: 'Không thấy điểm vướng lớn; bạn chỉ cần giữ nhịp đều như đang làm.' },
+  thuan: { manh: 'Điểm mạnh của bạn: ', vuong: 'Chỗ nhỏ cần để ý: ', khongVuong: 'Không thấy điểm vướng lớn ở bàn này; mặt trái là thế thuận dễ làm bạn chủ quan, lơ khâu giấy tờ và chuẩn bị.' },
   thuan_dk: { manh: 'Điểm mạnh của bạn: ', vuong: 'Điều kiện cần lo trước: ' },
   nen_cho: { manh: 'Điểm tựa bạn vẫn có: ', vuong: 'Điểm vướng lúc này: ' }
 };
 var TAV_NHAN_HO_TRO_ = 'Người hoặc điều hỗ trợ: ';
-var TAV_QUAN_DIEN_ = 'Việc dễ giằng co một thời gian trước khi ngã ngũ; kiên nhẫn sẽ có lợi hơn ép.';
+var TAV_QUAN_DIEN_ = 'Việc dễ giằng co một thời gian trước khi ngã ngũ; ép kết quả sớm dễ thiệt.';
 
 /* ---------- 7 loại việc × 3 mức (Thái Ất: chủ động hay chờ) ---------- */
 var TAV_LOAI_ = {
@@ -285,8 +285,8 @@ var TAV_LOAI_ = {
     vuong: 'Điều kiện của việc chưa được nói rõ, mỗi bên dễ hiểu một kiểu.',
     hoTro: 'Người đi trước trong nghề, hoặc người giới thiệu bạn vào việc, là chỗ dựa tốt.',
     thuan: {
-      mo: ['Bạn đang ở thế thuận cho việc công việc đang hỏi. Lúc này hợp để chủ động: nộp đơn, đề xuất, nhận thêm phần việc.',
-        'Việc công việc bạn hỏi có xu hướng thuận. Bạn thuộc mẫu người được việc khi dám lên tiếng, và thời điểm này đang mở cho sự lên tiếng đó.'],
+      mo: ['Bạn đang ở thế thuận cho việc công việc đang hỏi. Lúc này hợp để chủ động: nộp đơn, đề xuất, nhận thêm phần việc. Cái giá: việc dồn thêm nhanh, dễ nhận quá sức hoặc chủ quan ở khâu thỏa thuận.',
+        'Chuyện công việc bạn hỏi có xu hướng thuận. Bạn thuộc mẫu người được việc khi dám lên tiếng, và thời điểm này đang mở cho sự lên tiếng đó. Cái giá: việc dồn thêm nhanh, dễ nhận quá sức hoặc chủ quan ở khâu thỏa thuận.'],
       dien: 'Diễn biến dễ gặp: phản hồi đến sớm, có thể kèm một yêu cầu bổ sung nhỏ; giữ nhịp, đừng đổi ý giữa chừng.',
       viec: ['Chủ động gửi hồ sơ hoặc đề xuất trong vài ngày tới, đừng chờ người khác mở lời trước.',
         'Chuẩn bị sẵn ba kết quả cụ thể bạn đã làm được để nói ngắn gọn khi được hỏi.',
@@ -294,15 +294,15 @@ var TAV_LOAI_ = {
     },
     thuan_dk: {
       mo: ['Bạn đang ở thế có thể tiến trong việc công việc, nhưng cần chuẩn bị thêm một bước. Cơ hội có thật, chỉ là người quyết định còn cần thêm bằng chứng về bạn.',
-        'Việc công việc bạn hỏi có xu hướng thuận nếu đi đúng cách: có người giới thiệu, và điều kiện được nói rõ từ đầu.'],
+        'Chuyện công việc bạn hỏi có xu hướng thuận nếu đi đúng cách: có người giới thiệu, và điều kiện được nói rõ từ đầu.'],
       dien: 'Diễn biến dễ gặp: có thêm một vòng hỏi lại hoặc chờ duyệt, thời gian dài hơn bạn tính.',
       viec: ['Nhờ một người trong nghề đọc lại hồ sơ hoặc đề xuất trước khi gửi.',
         'Hỏi rõ phạm vi việc, đãi ngộ, thời gian thử việc bằng tin nhắn hoặc email để có văn bản.',
         'Giữ một phương án dự phòng song song, để không phải nhận điều kiện kém vì sốt ruột.']
     },
     nen_cho: {
-      mo: ['Bạn đang ở thế nên chờ trong việc công việc. Không phải vì bạn kém, mà vì thời điểm chưa mở: người quyết định đang bận việc khác, hoặc vị trí chưa thật sự trống.',
-        'Việc công việc bạn hỏi lúc này có xu hướng nên giữ sức hơn là đổi chỗ hay đề nghị ngay. Một quyết định vội dễ khiến bạn phải làm lại từ đầu.'],
+      mo: ['Bạn đang ở thế nên chờ trong việc công việc. Thời điểm chưa mở: người quyết định đang bận việc khác, hoặc vị trí chưa thật sự trống.',
+        'Chuyện công việc bạn hỏi lúc này có xu hướng nên giữ sức hơn là đổi chỗ hay đề nghị ngay. Một quyết định vội dễ khiến bạn phải làm lại từ đầu.'],
       dien: 'Diễn biến dễ gặp: tin tức đến chậm hoặc đổi vào phút cuối; vài ngày sau thế mới rõ hơn.',
       viec: ['Chưa gửi đề nghị lớn trong lúc này; dùng thời gian chờ để cập nhật hồ sơ và danh sách việc đã làm được.',
         'Học thêm một kỹ năng nhỏ còn thiếu, hoặc hỏi ý một người đi trước.',
@@ -315,8 +315,8 @@ var TAV_LOAI_ = {
     vuong: 'Cách chia phần và thời hạn thu hồi chưa được ghi rõ.',
     hoTro: 'Người có chuyên môn tài chính, hoặc người từng làm đúng loại việc này, nên được hỏi trước khi chốt.',
     thuan: {
-      mo: ['Bạn đang ở thế thuận cho việc tiền bạc đang hỏi. Lúc này hợp để chủ động đặt điều kiện, chào hàng hay mở lời hợp tác.',
-        'Việc tiền bạc bạn hỏi có xu hướng mang lại lợi. Bạn thuộc mẫu người kiếm lợi tốt khi tính kỹ rồi mới làm, và thời điểm này đang thuận cho cách làm đó.'],
+      mo: ['Bạn đang ở thế thuận cho việc tiền bạc đang hỏi. Lúc này hợp để chủ động đặt điều kiện, chào hàng hay mở lời hợp tác. Cái giá: thấy thuận dễ xuống tiền quá tay, lơ khâu giấy tờ.',
+        'Việc tiền bạc bạn hỏi có xu hướng mang lại lợi. Bạn thuộc mẫu người kiếm lợi tốt khi tính kỹ rồi mới làm, và thời điểm này đang thuận cho cách làm đó. Cái giá: thấy thuận dễ xuống tiền quá tay, lơ khâu giấy tờ.'],
       dien: 'Diễn biến dễ gặp: thỏa thuận chốt được khá nhanh, phần lợi về theo từng đợt chứ không một lần.',
       viec: ['Chốt các điểm chính bằng văn bản: số lượng, giá, thời hạn thanh toán.',
         'Giữ lại một khoản dự phòng, không dồn hết vốn vào một chỗ dù thế đang thuận.',
@@ -331,7 +331,7 @@ var TAV_LOAI_ = {
         'Nhờ một người ngoài cuộc, tốt nhất là người có chuyên môn tài chính, đọc lại các con số; không vay thêm để dồn vào việc này.']
     },
     nen_cho: {
-      mo: ['Bạn đang ở thế nên giữ tiền trong tay thêm một thời gian. Cơ hội chưa mất đi, chỉ là điều kiện hiện tại chưa có lợi cho bạn.',
+      mo: ['Bạn đang ở thế nên giữ tiền trong tay thêm một thời gian. Điều kiện hiện tại chưa có lợi cho bạn; xuống tiền lúc này dễ bị kẹt vốn hoặc mua đắt.',
         'Việc tiền bạc bạn hỏi lúc này có xu hướng nên chờ. Thế đang nghiêng về giữ của hơn là bỏ vốn ra; quyết định vội dễ khiến tiền nằm im lâu hơn bạn muốn.'],
       dien: 'Diễn biến dễ gặp: giá hoặc điều kiện còn thay đổi; vài ngày sau bức tranh rõ hơn.',
       viec: ['Chưa xuống tiền lúc này; ghi ra ba điều bạn cần biết thêm trước khi quyết.',
@@ -345,8 +345,8 @@ var TAV_LOAI_ = {
     vuong: 'Còn một điều hai người chưa nói ra với nhau.',
     hoTro: 'Một người bạn chung, biết lắng nghe và không đứng về phía nào, có thể giúp hai bạn hiểu nhau hơn.',
     thuan: {
-      mo: ['Bạn đang ở thế thuận để bước tới gần hơn trong chuyện tình cảm. Hai bên đang có thiện cảm, và đây là lúc hợp để nói ra điều bạn muốn một cách nhẹ nhàng.',
-        'Chuyện tình cảm bạn hỏi có xu hướng thuận. Bạn thuộc mẫu người tạo được sự ấm áp khi chủ động trước, và lúc này thế đang ủng hộ điều đó.'],
+      mo: ['Bạn đang ở thế thuận để bước tới gần hơn trong chuyện tình cảm. Hai bên đang có thiện cảm, và đây là lúc hợp để nói ra điều bạn muốn một cách nhẹ nhàng. Cái giá: dễ vội, nói quá đà hoặc đòi hỏi sớm làm người kia ngợp.',
+        'Chuyện tình cảm bạn hỏi có xu hướng thuận. Bạn thuộc mẫu người tạo được sự ấm áp khi chủ động trước, và lúc này thế đang ủng hộ điều đó. Cái giá: dễ vội, nói quá đà hoặc đòi hỏi sớm làm người kia ngợp.'],
       dien: 'Diễn biến dễ gặp: một cuộc trò chuyện tự nhiên mở ra nhiều hơn bạn nghĩ; đừng vội đòi câu trả lời ngay.',
       viec: ['Hẹn gặp ở một nơi yên tĩnh, đủ thời gian để nói chuyện thong thả.',
         'Nói về cảm nhận của bạn thay vì hỏi dồn người kia.',
@@ -361,11 +361,11 @@ var TAV_LOAI_ = {
         'Nếu có hiểu lầm cũ, nhận phần của mình trước; một tin nhắn chân thành là đủ.']
     },
     nen_cho: {
-      mo: ['Bạn đang ở thế nên chăm sóc bản thân trước khi chăm cho mối quan hệ. Cho nhau một khoảng thở sẽ giúp lần gặp sau nhẹ nhàng hơn.',
+      mo: ['Bạn đang ở thế nên chăm sóc bản thân trước khi chăm cho mối quan hệ. Ép chuyện lúc này dễ làm hai người xa nhau thêm.',
         'Chuyện tình cảm bạn hỏi lúc này có xu hướng nên chờ. Người kia có thể đang bận lòng chuyện riêng, nên lời bày tỏ bây giờ khó được đón nhận trọn vẹn.'],
       dien: 'Diễn biến dễ gặp: liên lạc thưa đi một thời gian; vài ngày sau không khí dễ dịu lại.',
       viec: ['Chưa hỏi chuyện quan trọng lúc này; giữ liên lạc nhẹ, không trách móc.',
-        'Dành thời gian cho việc riêng và bạn bè; tâm thế thoải mái sẽ giúp bạn nhiều hơn.',
+        'Dành thời gian cho việc riêng và bạn bè; đừng dồn hết tâm trí vào chuyện này.',
         'Khi không khí dịu lại, hẹn gặp và nói chuyện ngắn, nhẹ.']
     }
   },
@@ -375,8 +375,8 @@ var TAV_LOAI_ = {
     vuong: 'Khâu sắp xếp giờ giấc, giấy tờ dễ có trục trặc nhỏ.',
     hoTro: 'Người quen ở nơi đến, hoặc người đi cùng biết đường, giúp chuyến đi nhẹ hơn nhiều.',
     thuan: {
-      mo: ['Bạn đang ở thế thuận để dịch chuyển. Đường đi thông, và việc ở nơi đến dễ suôn sẻ hơn bạn lo.',
-        'Chuyến đi hay việc chuyển chỗ bạn hỏi có xu hướng thuận. Thay đổi lúc này dễ mở ra mối quen mới.'],
+      mo: ['Bạn đang ở thế thuận để dịch chuyển. Đường đi thông, và việc ở nơi đến dễ suôn sẻ hơn bạn lo. Cái giá: thấy suôn dễ chủ quan với giấy tờ, an toàn và chi phí.',
+        'Chuyến đi hay việc chuyển chỗ bạn hỏi có xu hướng thuận. Thay đổi lúc này dễ mở ra mối quen mới. Cái giá: thấy suôn dễ chủ quan với giấy tờ, an toàn và chi phí.'],
       dien: 'Diễn biến dễ gặp: lịch trình suôn sẻ, có thể đổi nhỏ về giờ giấc.',
       viec: ['Chốt ngày đi sớm và báo cho người ở nơi đến.',
         'Kiểm lại giấy tờ, vé, chỗ ở trước khi đi một ngày.',
@@ -392,7 +392,7 @@ var TAV_LOAI_ = {
     },
     nen_cho: {
       mo: ['Bạn đang ở thế nên ở yên thêm ít ngày. Đi lúc này dễ tốn sức và thời gian hơn kết quả mang về.',
-        'Chuyến đi hay việc chuyển chỗ lúc này có xu hướng nên chờ. Không phải đường đóng hẳn, mà nhiều việc ở nơi đến chưa sẵn sàng đón bạn.'],
+        'Chuyến đi hay việc chuyển chỗ lúc này có xu hướng nên chờ. Nhiều việc ở nơi đến chưa sẵn sàng đón bạn; đi lúc này dễ trễ, tốn kém và phải chờ đợi.'],
       dien: 'Diễn biến dễ gặp: lịch thay đổi, chờ đợi giữa chừng; vài ngày sau việc sắp xếp dễ hơn.',
       viec: ['Nếu việc cho phép, dời ngày đi thêm ít hôm; trong lúc chờ, chốt lại chỗ ở và người liên hệ.',
         'Nếu buộc phải đi, đi cùng người quen và giữ an toàn.',
@@ -405,8 +405,8 @@ var TAV_LOAI_ = {
     vuong: 'Nhịp làm việc đang nhiều hơn nhịp nghỉ.',
     hoTro: 'Bác sĩ hoặc người có chuyên môn y tế là người nên hỏi ý kiến trước tiên; người thân giúp bạn giữ nhịp ăn ngủ.',
     thuan: {
-      mo: ['Bạn đang ở thế có thể chủ động chăm sóc bản thân. Cơ thể có sức hồi lại tốt, nên đây là lúc hợp để bắt đầu một thói quen lành mạnh vừa sức.',
-        'Nhịp sống của bạn lúc này có xu hướng thuận. Những thay đổi nhỏ trong ăn ngủ dễ thấy tác dụng.'],
+      mo: ['Bạn đang ở thế có thể chủ động chăm sóc bản thân. Cơ thể có sức hồi lại tốt, nên đây là lúc hợp để bắt đầu một thói quen lành mạnh vừa sức. Cái giá: thấy khỏe dễ làm quá sức, bỏ nhịp nghỉ.',
+        'Nhịp sống của bạn lúc này có xu hướng thuận. Những thay đổi nhỏ trong ăn ngủ dễ thấy tác dụng. Cái giá: thấy khỏe dễ làm quá sức, bỏ nhịp nghỉ.'],
       dien: 'Diễn biến dễ gặp: tinh thần nhẹ hơn sau vài ngày giữ nhịp đều.',
       viec: ['Bắt đầu một buổi vận động nhẹ mỗi ngày, vừa sức.',
         'Nếu có điều muốn hỏi, đặt lịch khám hoặc hỏi bác sĩ; đây là lúc thuận để trao đổi kỹ.',
@@ -421,12 +421,12 @@ var TAV_LOAI_ = {
         'Đi bộ nhẹ kết hợp hít thở chậm vào cuối ngày.']
     },
     nen_cho: {
-      mo: ['Bạn đang ở thế nên giữ sức và lắng nghe cơ thể. Đây là lúc dưỡng sức hơn là thử thách bản thân.',
+      mo: ['Bạn đang ở thế nên giữ sức và lắng nghe cơ thể. Cố thêm lúc này dễ mệt kéo dài, sức đề kháng giảm.',
         'Giai đoạn này cơ thể bạn có xu hướng cần được nghỉ nhiều hơn là cố thêm. Kế hoạch tập nặng hay thức khuya để kịp việc nên tạm lùi lại.'],
       dien: 'Diễn biến dễ gặp: dễ thấy mệt nếu ép mình; vài ngày sau nhịp sống dễ cân lại.',
       viec: ['Đi ngủ trước 23 giờ và giảm cà phê buổi chiều trong mấy ngày tới.',
         'Nếu có điều lo lắng, đặt lịch khám sớm; đừng chờ nếu thấy khó chịu nhiều.',
-        'Một buổi đi bộ nhẹ mỗi ngày sẽ giúp bạn lấy lại nhịp.']
+        'Đi bộ nhẹ mỗi ngày để lấy lại nhịp.']
     }
   },
   kien_tung: {
@@ -435,8 +435,8 @@ var TAV_LOAI_ = {
     vuong: 'Bằng chứng còn rời rạc, chưa xếp thành một mạch rõ ràng.',
     hoTro: 'Luật sư hoặc người am hiểu pháp lý là người nên hỏi trước mọi bước quan trọng.',
     thuan: {
-      mo: ['Bạn đang ở thế nắm phần chủ động trong việc tranh chấp hay hợp đồng. Đây là lúc hợp để đưa ra giấy tờ, bằng chứng và đề nghị một cách bình tĩnh.',
-        'Việc tranh chấp hay hợp đồng bạn hỏi có xu hướng nghiêng về phía có lý lẽ rõ ràng, và lúc này lý lẽ của bạn dễ được lắng nghe.'],
+      mo: ['Bạn đang ở thế nắm phần chủ động trong việc tranh chấp hay hợp đồng. Đây là lúc hợp để đưa ra giấy tờ, bằng chứng và đề nghị một cách bình tĩnh. Cái giá: thấy mình có lý dễ cứng giọng, làm bên kia phản ứng mạnh hơn.',
+        'Việc tranh chấp hay hợp đồng bạn hỏi có xu hướng nghiêng về phía có lý lẽ rõ ràng, và lúc này lý lẽ của bạn dễ được lắng nghe. Cái giá: thấy mình có lý dễ cứng giọng, làm bên kia phản ứng mạnh hơn.'],
       dien: 'Diễn biến dễ gặp: bên kia chịu ngồi lại nói chuyện sớm hơn bạn nghĩ.',
       viec: ['Xếp giấy tờ, tin nhắn, hóa đơn theo thứ tự thời gian, rồi mang đi hỏi luật sư.',
         'Đưa ra đề nghị bằng văn bản, lời lẽ ôn hòa.',
@@ -452,7 +452,7 @@ var TAV_LOAI_ = {
     },
     nen_cho: {
       mo: ['Bạn đang ở thế nên củng cố trước khi hành động. Chưa nên ký, chưa nên khởi kiện hay đáp trả gay gắt trong lúc này.',
-        'Việc tranh chấp hay hợp đồng lúc này có xu hướng nên chờ. Đẩy mạnh bây giờ dễ làm việc căng thêm, còn giữ bình tĩnh cho bạn thời gian củng cố.'],
+        'Việc tranh chấp hay hợp đồng lúc này có xu hướng nên chờ. Đẩy mạnh bây giờ dễ làm việc căng thêm, và bạn dễ bị bắt bẻ ở chỗ chưa chuẩn bị.'],
       dien: 'Diễn biến dễ gặp: bên kia có thể đổi ý hoặc đưa thêm yêu cầu; vài ngày sau tình hình rõ hơn.',
       viec: ['Hỏi luật sư ngay về các hạn thời gian pháp lý bạn cần giữ; chờ không có nghĩa là để lỡ hạn.',
         'Gom đủ bằng chứng, ghi lại sự việc theo ngày.',
@@ -465,8 +465,8 @@ var TAV_LOAI_ = {
     vuong: 'Một chi tiết nhỏ trong giấy tờ hoặc bài làm dễ bị sót.',
     hoTro: 'Thầy cô, người hướng dẫn, hoặc người đã làm qua đúng thủ tục này là người nên hỏi.',
     thuan: {
-      mo: ['Bạn đang ở thế thuận cho việc thi cử hay hồ sơ. Bạn đã có nền, và lúc này cách bạn trình bày dễ được đánh giá đúng.',
-        'Việc thi cử hay hồ sơ bạn hỏi có xu hướng thuận. Bạn thuộc mẫu người làm bài tốt khi bình tĩnh, và thế đang ủng hộ sự bình tĩnh đó.'],
+      mo: ['Bạn đang ở thế thuận cho việc thi cử hay hồ sơ. Bạn đã có nền, và lúc này cách bạn trình bày dễ được đánh giá đúng. Cái giá: dễ chủ quan, ôn lơi tay hoặc sót chi tiết nhỏ.',
+        'Việc thi cử hay hồ sơ bạn hỏi có xu hướng thuận. Bạn thuộc mẫu người làm bài tốt khi bình tĩnh, và thế đang ủng hộ sự bình tĩnh đó. Cái giá: dễ chủ quan, ôn lơi tay hoặc sót chi tiết nhỏ.'],
       dien: 'Diễn biến dễ gặp: kết quả hoặc phản hồi về đúng hẹn, có khi sớm hơn.',
       viec: ['Nộp hồ sơ sớm, hoặc ôn phần khó nhất trước.',
         'Đọc lại đề hoặc giấy tờ hai lần, đánh dấu chỗ hay nhầm.',
@@ -481,8 +481,8 @@ var TAV_LOAI_ = {
         'Ôn ba phần trọng tâm, bớt phần phụ.']
     },
     nen_cho: {
-      mo: ['Bạn đang ở thế nên tích lũy thêm trước khi nộp hay đăng ký. Thêm ít ngày chuẩn bị sẽ giúp bạn tự tin hơn nhiều.',
-        'Việc thi cử hay hồ sơ lúc này có xu hướng nên chờ thêm. Không phải bạn thiếu khả năng, mà phần chuẩn bị hoặc thủ tục chưa đủ chín.'],
+      mo: ['Bạn đang ở thế nên tích lũy thêm trước khi nộp hay đăng ký. Nộp lúc này dễ hụt ở đúng phần bạn còn yếu.',
+        'Việc thi cử hay hồ sơ lúc này có xu hướng nên chờ thêm. Phần chuẩn bị hoặc thủ tục chưa đủ chín; nộp vội dễ bị trả lại hoặc kết quả kém hơn sức mình.'],
       dien: 'Diễn biến dễ gặp: thủ tục chậm hoặc cần sửa lại; vài ngày sau việc thông hơn.',
       viec: ['Nếu hạn còn cho phép, nộp muộn hơn một chút để bổ sung giấy tờ còn thiếu. Nếu ngày thi đã cố định, cứ đi thi và giữ tâm thế bình tĩnh.',
         'Mỗi ngày ôn một phần nhỏ thay vì dồn sức một lần.',
@@ -596,7 +596,7 @@ function taVanMenh_(menh) {
   // --- Tóm tắt miễn phí (tầng 1) ---
   var tom = [T.tom, TAV_MENH_TOM_[cungMenh.danhGia] || TAV_MENH_TOM_.tron];
   if (tot.length) tom.push('Những mảng đời có xu hướng thuận với bạn: ' + tavDs_(tot.slice(0, 3).map(function (c) { return c.deHieu; })) + '.');
-  if (xau.length) tom.push('Mảng cần chăm chút hơn: ' + tavDs_(xau.slice(0, 2).map(function (c) { return c.deHieu; })) + '.');
+  if (xau.length) tom.push('Mảng dễ vướng hơn: ' + tavDs_(xau.slice(0, 2).map(function (c) { return c.deHieu; })) + '.');
   if (cachHung.length) tom.push('Trong đời, ' + TAV_CACH_DE_[cachHung[0]].menh + '.');
   else if (cachMenh.indexOf('hoa_thuan') >= 0) tom.push('Nhìn chung, ' + TAV_CACH_DE_.hoa_thuan.menh + '.');
 
@@ -607,7 +607,7 @@ function taVanMenh_(menh) {
     var giup = (c.cat || []).map(function (ma) { return TAV_THAN_DE_[ma] && TAV_THAN_DE_[ma].giup; });
     var vuong = (c.hung || []).map(function (ma) { return TAV_THAN_DE_[ma] && TAV_THAN_DE_[ma].vuong; });
     if (tavDs_(giup)) p.push('Ở mảng này bạn ' + tavDs_(giup) + '.');
-    if (tavDs_(vuong)) p.push((c.danhGia === 'tot' ? 'Chỉ cần để ý: ở mảng này ' : 'Điều cần để ý: ở mảng này ') + tavDs_(vuong) + '.');
+    if (tavDs_(vuong)) p.push((c.danhGia === 'tot' ? 'Mặt trái cần biết: ở mảng này ' : 'Điều cần để ý: ở mảng này ') + tavDs_(vuong) + '.');
     var daTrung = 0;
     (c.than || []).forEach(function (ma) {
       if (daTrung < 1 && TAV_THAN_DE_[ma] && TAV_THAN_DE_[ma].trung) { p.push(TAV_THAN_DE_[ma].trung); daTrung++; }
@@ -620,12 +620,12 @@ function taVanMenh_(menh) {
 
   // --- Lời khuyên (tầng 2) ---
   var loiKhuyen = [T.khuyen];
-  xau.slice(0, 2).forEach(function (c) { if (TAV_CUNG_[c.ma]) loiKhuyen.push('Với chuyện ' + c.deHieu + ': ' + TAV_CUNG_[c.ma].khuyen); });
+  xau.slice(0, 2).forEach(function (c) { if (TAV_CUNG_[c.ma]) loiKhuyen.push('Với chuyện ' + c.deHieu + ': ' + String(TAV_CUNG_[c.ma].khuyen).replace(/^Gợi ý:\s*/, '')); });
   cachHung.slice(0, 2).forEach(function (m) { loiKhuyen.push(TAV_CACH_DE_[m].khuyen); });
   var chuLoai = (banNam.toan && banNam.toan.chu && banNam.toan.chu.loai) || [];
-  if (chuLoai.indexOf('vo_dia') >= 0) loiKhuyen.push('Hãy xây nền trước khi tăng tốc: một khoản tiết kiệm, một kỹ năng chắc tay, giấy tờ gọn gàng. Có nền rồi, sức bạn đi xa hơn nhiều.');
+  if (chuLoai.indexOf('vo_dia') >= 0) loiKhuyen.push('Hãy xây nền trước khi tăng tốc: một khoản tiết kiệm, một kỹ năng chắc tay, giấy tờ gọn gàng; thiếu nền mà tăng tốc thì dễ hụt hơi giữa chừng.');
   else if (chuLoai.indexOf('toan_doan') >= 0) loiKhuyen.push('Bạn hợp những việc làm nhanh gọn, thấy kết quả sớm; với việc dài hơi, hãy chia thành từng chặng ngắn để giữ đà.');
-  else if (chuLoai.indexOf('tam_tai') >= 0) loiKhuyen.push('Bạn có đủ điều kiện để đi đường dài; điều cần là kiên nhẫn với chính mình ở những năm đầu.');
+  else if (chuLoai.indexOf('tam_tai') >= 0) loiKhuyen.push('Bạn có đủ điều kiện để đi đường dài; mặt trái là những năm đầu thường chậm, dễ nản.');
   loiKhuyen.push('Những điều trên là xu hướng, không phải định mệnh: cách bạn chọn và cách bạn sống mỗi ngày mới là điều quyết định.');
 
   // --- Căn cứ (được nêu thuật ngữ, kèm nghĩa) ---
@@ -709,7 +709,7 @@ function taVanNam_(nam) {
     if (npVao && chiPhuc.indexOf(npVao.cung) >= 0) p2 += ' Mảng ' + tavDeHieu_(npVao.cung) + ' là nơi đáng dồn công sức nhất, vì sự che chở ở đó lớn hơn cả.';
     else p2 += ' Đây là những chỗ đáng dồn công sức, vì công bỏ ra dễ thấy kết quả.';
   } else {
-    p2 = 'Năm nay không có mảng đời nào được nâng đỡ nổi bật; thành quả chủ yếu đến từ chính sức bạn bỏ ra. Làm đều tay, giữ nhịp ổn định là đủ cho một năm vững.';
+    p2 = 'Năm nay không có mảng đời nào được nâng đỡ nổi bật; thành quả chủ yếu đến từ chính sức bạn bỏ ra, ít được ai đỡ, nên năm dễ thấy vất vả hơn công sức.';
   }
   doan.push(p2);
 
@@ -721,9 +721,9 @@ function taVanNam_(nam) {
     });
     p3 = 'Chỗ cần đi chậm trong năm: ' + ds3.join('; ') + '.';
     if (caHai.length) p3 += ' Riêng chuyện ' + tavDeHieu_(caHai[0]) + ' vừa có lực nâng vừa có lực cản, nên được hay không phụ nhiều vào sự chuẩn bị của bạn.';
-    p3 += ' Đây không phải điều xấu cố định, chỉ là những chỗ nên chuẩn bị kỹ và có phương án dự phòng.';
+    p3 += ' Ở những chỗ này dễ chậm việc, hao tiền hoặc va chạm nếu đi vội. Gợi ý: có phương án dự phòng.';
   } else {
-    p3 = 'Không có mảng đời nào bị cản rõ trong năm; những trục trặc nếu có thường nhỏ và xử lý được nếu bạn không chủ quan.';
+    p3 = 'Không có mảng đời nào bị cản rõ trong năm; mặt trái của năm êm là dễ chủ quan, để việc nhỏ thành lớn.';
   }
   doan.push(p3);
 
@@ -733,9 +733,9 @@ function taVanNam_(nam) {
     if (D.giup) menhGiup.push(D.giup); if (D.vuong) menhVuong.push(D.vuong);
   });
   var p4;
-  if (menhGiup.length && menhVuong.length) p4 = 'Riêng phần bản thân, năm này bạn ' + tavDs_(menhGiup) + ', nhưng cũng ' + tavDs_(menhVuong) + '. Giữ nhịp sống đều và quyết định chậm một nhịp sẽ giúp bạn tận dụng phần tốt.';
-  else if (menhGiup.length) p4 = 'Riêng phần bản thân, năm này bạn ' + tavDs_(menhGiup) + '. Đây là năm bạn có thể tin vào cảm nhận của mình nhiều hơn.';
-  else if (menhVuong.length) p4 = 'Riêng phần bản thân, năm này ' + tavDs_(menhVuong) + '. Hãy giữ nhịp ăn ngủ đều, bớt ôm việc, và chia sẻ với người thân khi thấy nặng lòng.';
+  if (menhGiup.length && menhVuong.length) p4 = 'Riêng phần bản thân, năm này bạn ' + tavDs_(menhGiup) + ', nhưng cũng ' + tavDs_(menhVuong) + '. Gợi ý: quyết định chậm một nhịp.';
+  else if (menhGiup.length) p4 = 'Riêng phần bản thân, năm này bạn ' + tavDs_(menhGiup) + '. Mặt trái: dễ tự tin quá mức, quyết nhanh mà thiếu kiểm tra.';
+  else if (menhVuong.length) p4 = 'Riêng phần bản thân, năm này ' + tavDs_(menhVuong) + '. Bạn dễ mệt, nặng lòng và quyết sai khi ôm việc. Gợi ý: bớt ôm việc, giữ nhịp ăn ngủ đều.';
   else p4 = 'Phần bản thân năm này khá yên: không có lực nâng hay lực cản lớn chạm thẳng vào bạn, nên năm đi đúng theo sức bạn bỏ ra.';
   var thanCung = menh.thanCung && menh.thanCung.cung;
   if (thanCung && thanCung !== 'menh' && (nam.thanCungGap || []).length) {

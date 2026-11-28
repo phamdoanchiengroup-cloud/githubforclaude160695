@@ -209,11 +209,11 @@ function tiChonNgay_(cb, viec, thang, mo) {
 var TI_TIEN_THIEN = { 1: 'Càn', 2: 'Đoài', 3: 'Ly', 4: 'Chấn', 5: 'Tốn', 6: 'Khảm', 7: 'Cấn', 8: 'Khôn' };
 var TI_LV_QUE = { tai_loc: 'tiền bạc, làm ăn', cong_viec: 'công việc, sự nghiệp', tinh_cam: 'tình cảm, hôn nhân', suc_khoe: 'sức khỏe', thi_cu: 'thi cử, học hành', di_xa: 'đi xa, xuất hành', kien_tung: 'tranh chấp, giấy tờ', khac: 'việc bạn hỏi' };
 var TI_TD = {
-  duoc_sinh: [2, 'Dụng sinh Thể', 'việc có lực bên ngoài nâng đỡ – dễ thành, có người giúp, thường có tin vui'],
-  binh: [1.5, 'Thể Dụng tỷ hòa', 'hai bên cùng khí – việc thuận, có người đồng lòng'],
-  khac: [0.5, 'Thể khắc Dụng', 'việc vẫn thành nhưng phải bỏ công sức, chủ động nắm quyền'],
+  duoc_sinh: [2, 'Dụng sinh Thể', 'việc có lực bên ngoài nâng đỡ – dễ thành, có người giúp, thường có tin vui; mặt trái: dễ ỷ vào người giúp mà lơ phần mình'],
+  binh: [1.5, 'Thể Dụng tỷ hòa', 'hai bên cùng khí – việc thuận, có người đồng lòng; mặt trái: ít lực đẩy, dễ kéo dài nếu không ai đứng ra quyết'],
+  khac: [0.5, 'Thể khắc Dụng', 'việc vẫn thành nhưng phải bỏ nhiều công sức, tự nắm quyền; mặt trái: mệt, dễ va chạm vì phải ép việc'],
   sinh: [-1, 'Thể sinh Dụng', 'bạn phải cho đi nhiều – hao tiền, hao sức, dễ thiệt nếu không tính kỹ'],
-  bi_khac: [-2, 'Dụng khắc Thể', 'việc có sức cản từ bên ngoài – dễ trắc trở, nên chậm lại hoặc đổi cách']
+  bi_khac: [-2, 'Dụng khắc Thể', 'việc có sức cản từ bên ngoài – dễ trắc trở, bị chèn ép hoặc dở dang giữa chừng']
 };
 function tiGioVN_() { var d = new Date(Date.now() + 7 * 3600000); return { y: d.getUTCFullYear(), m: d.getUTCMonth() + 1, d: d.getUTCDate(), h: d.getUTCHours(), mi: d.getUTCMinutes() }; }
 function tiLapQue_(t) {
@@ -237,10 +237,10 @@ function tiLuanQue_(Q, linhVuc) {
     'Hiện tại – ' + r1[1] + ' (Thể ' + Q.the + ' ' + hT + ', Dụng ' + Q.dung + ' ' + hD + '): ' + r1[2] + '.',
     'Quá trình – quẻ Hỗ ' + Q.ho.ten + ': ' + rh[2] + '.',
     'Kết cục – quẻ Biến ' + Q.bien.ten + ' (' + r2[1] + '): ' + r2[2] + '.',
-    'Thể ' + hT + ' vào tháng ' + Q.lu.month + ' âm là ' + vuong[0] + (vuong[1] > 0 ? ' – bản thân đủ sức lo việc.' : vuong[1] < 0 ? ' – bản thân đang yếu, nên nhờ thêm người.' : '.')
+    'Thể ' + hT + ' vào tháng ' + Q.lu.month + ' âm là ' + vuong[0] + (vuong[1] > 0 ? ' – bản thân đủ sức lo việc.' : vuong[1] < 0 ? ' – bản thân đang yếu, sức một mình khó lo trọn việc.' : '.')
   ];
-  var khuyen = d >= 0.9 ? 'Về ' + lv + ': có thể tiến hành; ' + Q.chu.khuyen + '.' : d > -0.6 ? 'Về ' + lv + ': chưa rõ thắng thua – chuẩn bị kỹ, làm từng bước; ' + Q.chu.khuyen + '.' :
-    'Về ' + lv + ': lúc này nên chậm lại, tìm thêm thông tin hoặc đổi cách làm; ' + Q.chu.khuyen + '.';
+  var khuyen = d >= 0.9 ? 'Về ' + lv + ': có thể tiến hành, nhưng thế thuận dễ làm bạn chủ quan; ' + Q.chu.khuyen + '.' : d > -0.6 ? 'Về ' + lv + ': chưa rõ thắng thua – chuẩn bị kỹ, làm từng bước; ' + Q.chu.khuyen + '.' :
+    'Về ' + lv + ': lúc này nhiều trở ngại, làm vội dễ thiệt tiền hoặc công sức. Gợi ý: chậm lại, tìm thêm thông tin hoặc đổi cách làm; ' + Q.chu.khuyen + '.';
   return { muc: muc, diem: Math.round(d * 100) / 100, luan: luan, khuyen: khuyen };
 }
 function tiQueKetQua_(Q, cauHoi, linhVuc, t) {
@@ -514,10 +514,10 @@ function caiDatBanTin() {
  * Văn viết cho người đọc: không nêu tên sao, thuật ngữ cổ có giải nghĩa, luôn kèm cách ứng xử. */
 var TI_SH_VAN_NGAY = ['Tài khoản', 'Email', 'Lá số (JSON)', 'Đăng ký lúc', 'Gửi gần nhất', 'Trạng thái', 'Hạn đến'];   // Hạn đến trống = không hạn (chủ sở hữu / VIP)
 var TI_VN_DG = {
-  'Rất tốt': ['Ngày thuận', '#7d8a97', 'Mọi việc có xu hướng trôi chảy hơn thường lệ – hợp để chủ động: gặp gỡ, đề xuất, bắt đầu việc quan trọng.'],
-  'Tốt': ['Ngày khá', '#9a7a55', 'Ngày nhìn chung thuận – việc đã định sẽ suôn sẻ, có thể tiến thêm một bước nhỏ.'],
+  'Rất tốt': ['Ngày thuận', '#7d8a97', 'Mọi việc có xu hướng trôi chảy hơn thường lệ – hợp để chủ động: gặp gỡ, đề xuất, bắt đầu việc quan trọng; mặt trái: dễ hứng quá mà hứa nhiều, ôm nhiều.'],
+  'Tốt': ['Ngày khá', '#9a7a55', 'Ngày nhìn chung thuận – việc đã định dễ suôn sẻ, có thể tiến thêm một bước nhỏ; mặt trái: chưa đủ thuận để mạo hiểm lớn.'],
   'Bình': ['Ngày bình', '#b8956a', 'Ngày bình ổn – hợp làm việc quen thuộc, theo kế hoạch; chưa nên thử điều mới mạo hiểm.'],
-  'Kém': ['Ngày nên chậm', '#b8806a', 'Ngày dễ vướng chuyện nhỏ – nói chậm lại, kiểm tra kỹ giấy tờ và tiền bạc; việc lớn nên để sang ngày khác.']
+  'Kém': ['Ngày nên chậm', '#b8806a', 'Ngày dễ vướng chuyện nhỏ: hiểu lầm, sai sót giấy tờ hoặc hao tiền. Gợi ý: nói chậm lại, kiểm tra kỹ; việc lớn để sang ngày khác.']
 };
 var TI_VN_TT = {
   'Tỷ Kiên': 'Năng lượng ngày nghiêng về bạn bè, đồng nghiệp ngang hàng – hợp làm việc nhóm; dễ nảy sinh so bì, nên chia việc rõ ràng và nhường một bước.',
@@ -525,11 +525,11 @@ var TI_VN_TT = {
   'Thực Thần': 'Đầu óc thư thái, hợp sáng tạo, chia sẻ ý tưởng, ăn uống và nghỉ ngơi – tận hưởng nhưng đừng để sự lười kéo dài.',
   'Thương Quan': 'Ý tưởng nhiều, lời nói sắc – dễ va chạm với cấp trên hoặc người lớn tuổi; góp ý nhẹ nhàng, nghĩ hai lần trước khi nói.',
   'Thiên Tài': 'Có thể gặp cơ hội tiền bạc bất ngờ, giao tiếp rộng – vui nhưng giữ tay chi tiêu, đừng đầu tư theo cảm hứng.',
-  'Chính Tài': 'Hợp việc tiền bạc đều đặn: thu nợ, lập ngân sách, ký hợp đồng nhỏ, chăm lo việc nhà.',
+  'Chính Tài': 'Hợp việc tiền bạc đều đặn: thu nợ, lập ngân sách, ký hợp đồng nhỏ, chăm lo việc nhà; mặt trái: dễ chỉ chăm chuyện tiền mà khô khan với người thân.',
   'Thất Sát': 'Có thể gặp áp lực, việc gấp hoặc người khó tính – giữ bình tĩnh, làm từng việc một, tránh tranh cãi tay đôi.',
-  'Chính Quan': 'Hợp việc giấy tờ, gặp cấp trên, làm việc với cơ quan – làm đúng quy trình sẽ được ghi nhận.',
+  'Chính Quan': 'Hợp việc giấy tờ, gặp cấp trên, làm việc với cơ quan, làm đúng quy trình thì được ghi nhận; mặt trái: dễ thấy gò bó, áp lực vì phép tắc.',
   'Thiên Ấn': 'Hợp học hỏi, nghiên cứu, suy nghĩ một mình; dễ đa nghi – kiểm chứng trước khi kết luận về người khác.',
-  'Chính Ấn': 'Dễ nhận được giúp đỡ, lời khuyên từ người lớn – hợp học tập, chăm sóc sức khỏe, nghỉ ngơi đúng giờ.'
+  'Chính Ấn': 'Dễ nhận được giúp đỡ, lời khuyên từ người lớn – hợp học tập, chăm sóc sức khỏe, nghỉ ngơi; mặt trái: dễ ỷ lại, chậm chạp.'
 };
 function tiShVanNgay_() {
   var ss = laySS_(), sh = ss.getSheetByName('VanNgay');
@@ -586,26 +586,26 @@ function dsVanNgay(token) {
 var TI_VN_NHOM = { 'Tỷ Kiên': 'ban', 'Kiếp Tài': 'ban', 'Thực Thần': 'xuat', 'Thương Quan': 'xuat', 'Thiên Tài': 'tai', 'Chính Tài': 'tai', 'Thất Sát': 'quan', 'Chính Quan': 'quan', 'Thiên Ấn': 'an', 'Chính Ấn': 'an' };
 var TI_VN_LV_TEN = { cv: 'Công việc', tien: 'Tiền bạc', tc: 'Tình cảm – gia đình', sk: 'Sức khỏe' };
 var TI_VN_LV = {
-  ban: { cv: ['Hợp làm việc nhóm, phối hợp với đồng nghiệp ngang hàng; dễ nảy sinh so bì công lao – chia việc rõ ràng ngay từ đầu sẽ đỡ va chạm.', 0],
+  ban: { cv: ['Hợp làm việc nhóm, phối hợp với đồng nghiệp ngang hàng; dễ nảy sinh so bì công lao, va chạm vì chia việc không rõ.', 0],
     tien: ['Dễ có khoản chi vì bạn bè, anh em hoặc phải chia phần – nếu giúp ai, chỉ đưa mức bạn sẵn lòng không lấy lại.', -1],
-    tc: ['Bạn có xu hướng muốn làm theo ý mình hơn thường lệ – lắng nghe người thân thêm một nhịp sẽ giữ được không khí êm ấm.', 0],
-    sk: ['Sức bền tốt, hợp vận động, chơi thể thao cùng bạn bè; chỉ cần tránh cố quá sức vì ganh đua.', 1] },
+    tc: ['Bạn có xu hướng muốn làm theo ý mình hơn thường lệ, dễ va chạm với người thân nếu cố chấp.', 0],
+    sk: ['Sức bền tốt, hợp vận động, chơi thể thao cùng bạn bè; mặt trái: dễ cố quá sức vì ganh đua.', 1] },
   xuat: { cv: ['Đầu óc nhiều ý tưởng, hợp sáng tạo, viết, trình bày, đề xuất cải tiến; lời nói dễ sắc – góp ý với cấp trên nên mềm mỏng và có số liệu đi kèm.', 0],
     tien: ['Hợp kiếm tiền từ tay nghề, sản phẩm, dịch vụ của chính mình; chi cho ăn uống, giải trí dễ vượt dự tính – đặt trước một mức trần.', 0],
     tc: ['Dễ bày tỏ cảm xúc, hợp hẹn hò, chơi với con cái, nói lời cảm ơn; tránh đùa quá trớn làm người kia chạnh lòng.', 1],
     sk: ['Tinh thần thư thái, ăn ngon miệng – giữ ăn uống điều độ, đừng thức khuya vì mải việc mình thích.', 0] },
-  tai: { cv: ['Hợp việc có kết quả cụ thể: chốt số liệu, thu xếp hồ sơ, xử lý việc liên quan đến tiền và khách hàng.', 1],
+  tai: { cv: ['Hợp việc có kết quả cụ thể: chốt số liệu, thu xếp hồ sơ, xử lý việc liên quan đến tiền và khách hàng; mặt trái: dễ sa vào con số mà quên người.', 1],
     tien: ['Tiền bạc là chủ đề chính của ngày – rà lại các khoản thu chi, có thể có cơ hội kiếm thêm; vẫn cân nhắc trước khi xuống tiền theo cảm hứng.', 1],
     tc: ['Hợp chăm lo việc nhà, mua sắm nhỏ cho gia đình; với người thân, quan tâm bằng việc làm cụ thể sẽ được đón nhận hơn lời nói.', 0],
     sk: ['Dễ bận rộn mà quên nghỉ – đặt giờ ăn trưa và giờ đứng dậy đi lại để giữ sức.', 0] },
   quan: { cv: ['Công việc có thể dồn việc gấp hoặc yêu cầu từ cấp trên – giữ giấy tờ rõ ràng, trả lời bằng văn bản khi cần; tránh tranh cãi tay đôi.', 0],
     tien: ['Tiền bạc nên giữ ổn định: ưu tiên nộp, trả các khoản đến hạn, tránh khoản chi phát sinh ngoài kế hoạch.', 0],
-    tc: ['Bạn có xu hướng mang áp lực công việc về nhà – nói rõ với người thân là mình đang mệt, họ sẽ thông cảm hơn là để im lặng.', -1],
+    tc: ['Bạn có xu hướng mang áp lực công việc về nhà, dễ cáu gắt hoặc im lặng khiến người thân hiểu lầm; gợi ý: nói rõ là mình đang mệt.', -1],
     sk: ['Căng thẳng dễ dồn lên vai gáy, đầu – xen vài phút hít thở sâu, đi bộ nhẹ sau giờ làm.', -1] },
   an: { cv: ['Việc cần suy nghĩ kỹ, tra cứu, lên kế hoạch sẽ làm tốt hơn việc cần tốc độ; xin ý kiến người đi trước rồi hãy quyết.', 1],
     tien: ['Tiền bạc ổn định nhưng chưa phải ngày để mạo hiểm – hợp tìm hiểu, so sánh kỹ trước khi quyết định khoản chi lớn.', 0],
     tc: ['Dễ nhận được sự quan tâm từ cha mẹ, người lớn – gọi điện hỏi thăm sẽ làm ngày ấm hơn; tránh suy diễn ý người khác khi chưa hỏi rõ.', 1],
-    sk: ['Hợp nghỉ ngơi, chăm sóc sức khỏe, khám định kỳ, ngủ đủ giấc.', 1] }
+    sk: ['Hợp nghỉ ngơi, chăm sóc sức khỏe, khám định kỳ, ngủ đủ giấc; mặt trái: dễ uể oải, lười vận động.', 1] }
 };
 var TI_VN_CUNG_LV = { 'Quan Lộc': 'cv', 'Nô Bộc': 'cv', 'Thiên Di': 'cv', 'Phụ Mẫu': 'cv', 'Tài Bạch': 'tien', 'Điền Trạch': 'tien',
   'Phu Thê': 'tc', 'Tử Tức': 'tc', 'Huynh Đệ': 'tc', 'Tật Ách': 'sk', 'Mệnh': 'sk', 'Phúc Đức': 'sk' };
@@ -621,9 +621,9 @@ var TI_VN_KY_CHI = ['không nên xem bói, gieo quẻ', 'không nên nhận ch�
   'không nên kê, chuyển giường', 'không nên mở tiệc, say sưa', 'không nên ăn thịt chó', 'không nên cưới gả'];
 var TI_VN_KY_BO = { can: { 0: /nhập kho/ }, chi: { 1: /nhậm chức/, 5: /xuất hành|đi xa/, 11: /cưới hỏi/ } };
 var TI_VN_SO = { 1: 1, 2: 0, 3: 0.8, 4: -0.4, 5: 0.4, 6: 0.5, 7: -0.5, 8: 1.4, 9: -0.4 };
-var TI_VN_THANG = { 'Tháng vàng': 'một tháng rất thuận – nên tận dụng để làm những việc đã ấp ủ', 'Thuận': 'một tháng nhìn chung thuận – việc đã định dễ suôn sẻ',
-  'Bình': 'một tháng bình ổn – cứ theo kế hoạch là được', 'Cần giữ': 'một tháng nên giữ nhịp – làm chắc từng việc, chưa vội mở rộng',
-  'Thận trọng': 'một tháng nên thận trọng – ưu tiên giữ gìn, việc lớn cân nhắc kỹ' };
+var TI_VN_THANG = { 'Tháng vàng': 'một tháng rất thuận – hợp làm những việc đã ấp ủ; mặt trái: dễ ôm quá nhiều việc cùng lúc', 'Thuận': 'một tháng nhìn chung thuận – việc đã định dễ suôn sẻ; mặt trái: dễ chủ quan',
+  'Bình': 'một tháng bình ổn – theo kế hoạch thì đều, nhưng ít cơ hội bứt lên', 'Cần giữ': 'một tháng nên giữ nhịp – việc mới dễ chậm, làm chắc từng việc, chưa vội mở rộng',
+  'Thận trọng': 'một tháng nên thận trọng – dễ hao tiền, vướng giấy tờ hoặc va chạm; việc lớn cân nhắc kỹ' };
 function tiVanMuc_(x) { return x >= 1 ? 'thuận' : x <= -1 ? 'cần giữ' : 'bình'; }
 /** Luận một ngày của lá số theo văn dễ hiểu (k = 0 hôm nay, 1 ngày mai) */
 function tiVanMotNgay_(r, k) {
@@ -642,17 +642,17 @@ function tiVanMotNgay_(r, k) {
     luu.push('Chuyện nổi bật trong ngày thường xoay quanh <b>' + linh + '</b>.');
     if (nv.diem >= 1) them(lvNoi, 'Đây là mảng nổi bật nhất trong ngày và đang có chiều thuận – chuyện ' + linh + ' dễ có tiến triển, tin vui.', 1);
     else if (nv.diem <= -1) them(lvNoi, 'Đây là mảng nổi bật nhất trong ngày và dễ có trục trặc nhỏ quanh chuyện ' + linh + ' – nói chậm, nghe nhiều, đừng quyết vội.', -1);
-    else them(lvNoi, 'Đây là mảng được để ý nhiều nhất trong ngày (chuyện ' + linh + ') – dành thời gian cho nó sẽ có ích.', 0);
+    else them(lvNoi, 'Đây là mảng được để ý nhiều nhất trong ngày (chuyện ' + linh + ') – dễ chiếm nhiều thời gian và sự chú ý của bạn.', 0);
   }
   var khi = danhGiaVan_(CAN_HANH[dc], CHI_HANH[dz], bt.goiY.hy, bt.goiY.ky);
-  if (khi === 'Đại cát' || khi === 'Cát') them('sk', 'Khí của ngày hợp với bạn – tinh thần sảng khoái, làm việc bền.', 1);
+  if (khi === 'Đại cát' || khi === 'Cát') them('sk', 'Khí của ngày hợp với bạn – tinh thần sảng khoái, làm việc bền; mặt trái: dễ làm quá giờ.', 1);
   else if (khi === 'Hơi kém' || khi === 'Cẩn trọng') them('sk', 'Khí của ngày không hợp lắm với bạn – dễ mệt, dễ nóng; giữ nhịp vừa phải, uống đủ nước, nghỉ đúng giờ.', -1);
   var q1 = lgQuanHeChi_(dz, I.yChi), q2 = lgQuanHeChi_(dz, bt.pillars[2].chi), xung = q1.indexOf('lục xung') >= 0;
   if (xung) {
     luu.unshift('Ngày <b>xung với tuổi</b> của bạn – tránh quyết định lớn, ký kết, đi xa; nếu buộc phải làm, chọn giờ đẹp bên dưới.'); tranh.push('quyết định lớn, ký kết');
     them('cv', 'Chưa nên chốt việc lớn hay ký kết trong ngày này; nếu buộc phải làm, đọc kỹ từng điều khoản và chọn giờ đẹp.', -1);
   } else if (q1.indexOf('tam hợp') >= 0 || q1.indexOf('lục hợp') >= 0) them('cv', 'Ngày hợp tuổi – thuận nhờ vả, gặp người mới, mở lời đề nghị.', 1);
-  if (q2.indexOf('lục xung') >= 0) them('tc', 'Trong nhà dễ bất đồng ý kiến – nhường nhịn một chút, để chuyện khó nói sang lúc cả hai bình tĩnh.', -1);
+  if (q2.indexOf('lục xung') >= 0) them('tc', 'Trong nhà dễ bất đồng, lời qua tiếng lại; gợi ý: để chuyện khó nói sang lúc cả hai bình tĩnh.', -1);
   if ((HT_QUY_NHAN[bt.nhatChuCan] || []).indexOf(dz) >= 0) them('cv', 'Dễ gặp người sẵn lòng giúp – đừng ngại mở lời nhờ.', 1);
   var ty = LG_TRUC_Y[nv.truc]; if (ty) { nen.push(ty[0]); tranh.push(ty[1]); }
   var it = (nv.secs && nv.secs[0] && nv.secs[0].items) || [], trang = '', nha = 0, so = '';
@@ -727,7 +727,7 @@ function tiVanChuanBi_(M) {
   var a = [];
   if (M.xung || M.nhan === 'Ngày nên chậm') a.push('Ngày mai nên đi chậm: tối nay sắp xếp sẵn việc, dời các cuộc hẹn quan trọng nếu được và ngủ sớm để có sức.');
   else if (M.nhan === 'Ngày thuận' || M.nhan === 'Ngày khá') a.push('Ngày mai thuận' + (M.linh ? ' cho chuyện ' + M.linh : '') + ': tối nay chuẩn bị sẵn ý chính, giấy tờ cần dùng' + (M.gioDep ? '; hẹn việc quan trọng vào khoảng ' + M.gioDep : '') + '.');
-  else a.push('Ngày mai bình ổn: tối nay ghi ra ba việc chính cần làm, sáng mai làm lần lượt theo thứ tự là đủ.');
+  else a.push('Ngày mai bình ổn: tối nay ghi ra ba việc chính cần làm, sáng mai làm lần lượt theo thứ tự; ngày bình ít cơ hội lớn nhưng cũng ít trục trặc.');
   var ck = M.linhVuc.filter(function (x) { return x.muc === 'cần giữ'; })[0];
   if (ck) a.push('Mảng cần giữ ngày mai là <b>' + ck.ten.toLowerCase() + '</b> – ' + ck.van[ck.van.length - 1].replace(/^[A-ZĐ]/, function (c) { return c.toLowerCase(); }));
   return a;

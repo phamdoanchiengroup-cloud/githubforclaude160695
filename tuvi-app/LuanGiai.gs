@@ -56,64 +56,64 @@ var LG_THU_TU_CHINH = ['Tử Vi', 'Thiên Cơ', 'Thái Dương', 'Vũ Khúc', 'T
   'Thái Âm', 'Tham Lang', 'Cự Môn', 'Thiên Tướng', 'Thiên Lương', 'Thất Sát', 'Phá Quân'];
 
 var LG_BO_CHINH = {
-  'Tử Vi|Thiên Phủ': 'Tử Phủ đồng cung – Đế tinh gặp Kho trời: quyền và tài song hành, ổn định, hơi bảo thủ; sợ Không Kiếp, Tuần Triệt làm "kho rỗng".',
+  'Tử Vi|Thiên Phủ': 'Tử Phủ đồng cung – Đế tinh gặp Kho trời: quyền và tài song hành, ổn định; mặt trái là bảo thủ, sĩ diện, khó nghe người dưới; sợ Không Kiếp, Tuần Triệt làm "kho rỗng".',
   'Tử Vi|Tham Lang': 'Tử Tham – "Đào hoa phạm chủ": tài giao tế, đa tình, ham hưởng thụ; gặp Hóa Khoa, Kình Đà, Hoa Cái lại chuyển sang tu dưỡng, nghệ thuật.',
   'Tử Vi|Thiên Tướng': 'Tử Tướng (Thìn/Tuất – La Võng): quyền lực cộng ấn tín, nguyên tắc, thích làm chủ; thường thành công muộn sau khi thoát "lưới".',
-  'Tử Vi|Thất Sát': 'Tử Sát – "Tử Vi hóa sát vi quyền": quyền uy, quyết đoán, dám mạo hiểm để lập nghiệp lớn.',
-  'Tử Vi|Phá Quân': 'Tử Phá: muốn cải cách, không chịu an phận, thăng trầm nhưng có chí lớn; cần Tả Hữu, Xương Khúc phò tá mới vững.',
+  'Tử Vi|Thất Sát': 'Tử Sát – "Tử Vi hóa sát vi quyền": quyền uy, quyết đoán, dám mạo hiểm để lập nghiệp lớn; mặt trái là độc đoán, cô độc, thất bại thì mất lớn.',
+  'Tử Vi|Phá Quân': 'Tử Phá: muốn cải cách, không chịu an phận, có chí lớn; mặt trái là đời thăng trầm, dễ đập đi làm lại nhiều lần, thiếu người phò tá (Tả Hữu, Xương Khúc) thì khó vững.',
   'Thiên Cơ|Thái Âm': 'Cơ Âm (Dần/Thân): thông minh, nhạy cảm, hay thay đổi và di chuyển, hợp nghề tính toán, thiết kế, tài chính.',
   'Thiên Cơ|Cự Môn': 'Cơ Cự (Mão/Dậu) – "Cơ Cự đồng lâm": mưu trí, lý luận sắc bén, có xu hướng tự lập nghiệp xa gốc, hợp luật, nghiên cứu.',
   'Thiên Cơ|Thiên Lương': 'Cơ Lương (Thìn/Tuất) – "Thiện ấm triều cương": giỏi mưu lược, tư vấn, nói hay, thiên về triết lý – tôn giáo.',
   'Thái Dương|Thái Âm': 'Nhật Nguyệt đồng cung (Sửu/Mùi): âm dương hội nhưng một sáng một mờ – đa tài, tính cách hai mặt, hay dao động; cần Xương Khúc, Khoa để sáng.',
   'Thái Dương|Cự Môn': 'Cự Nhật: ở Dần "quan phong tam đại" – danh tiếng nhờ khẩu tài, ngoại giao; ở Thân Thái Dương đã ngả chiều nên thành tựu kém hơn.',
   'Thái Dương|Thiên Lương': 'Nhật Lương: ở Mão "Nhật chiếu lôi môn" rất quý – danh tiếng, học vấn; ở Dậu công danh muộn, nên làm chuyên môn.',
-  'Vũ Khúc|Thiên Phủ': 'Vũ Phủ (Tý/Ngọ): hai tài tinh hội – giỏi tài chính, tích lũy vững bền, tính thận trọng.',
+  'Vũ Khúc|Thiên Phủ': 'Vũ Phủ (Tý/Ngọ): hai tài tinh hội – giỏi tài chính, tích lũy vững bền, tính thận trọng; mặt trái là khô khan, tính toán, chặt chẽ quá với cả người thân.',
   'Vũ Khúc|Tham Lang': 'Vũ Tham (Sửu/Mùi) – "Vũ Tham bất phát thiếu niên nhân": theo cổ học, tuổi trẻ thường vất vả, sau khoảng 30 tuổi dễ phát tài nhờ kinh doanh.',
   'Vũ Khúc|Thiên Tướng': 'Vũ Tướng (Dần/Thân): tài tinh gặp ấn tinh – năng lực quản lý tài chính, làm việc chính trực, hợp ngân hàng, kế toán.',
-  'Vũ Khúc|Thất Sát': 'Vũ Sát (Mão/Dậu) – "Tài dữ tù cừu": quyết liệt, làm ăn lớn nhưng rủi ro – nên tính kỹ trước việc lớn và luôn giữ an toàn khi làm việc.',
-  'Vũ Khúc|Phá Quân': 'Vũ Phá (Tỵ/Hợi): tài tinh gặp hao tinh – kiếm nhiều tiêu nhiều, dám đầu tư mạo hiểm; tài chính cần quản lý chặt, tích lũy đều.',
-  'Thiên Đồng|Thái Âm': 'Đồng Âm: ở Tý "Thủy trừng quế ngạc" rất đẹp – hiền hòa, đa cảm, có duyên; ở Ngọ hai sao hãm, tình cảm cần nhiều thời gian vun đắp.',
+  'Vũ Khúc|Thất Sát': 'Vũ Sát (Mão/Dậu) – "Tài dữ tù cừu": quyết liệt, dám làm ăn lớn; mặt trái là rủi ro cao, dễ mất tiền vì một quyết định liều và dễ gặp tai nạn khi làm việc nặng.',
+  'Vũ Khúc|Phá Quân': 'Vũ Phá (Tỵ/Hợi): tài tinh gặp hao tinh – kiếm nhiều, dám đầu tư mạo hiểm; mặt trái là tiêu nhiều, tiền khó giữ, dễ thua lỗ lớn vì liều.',
+  'Thiên Đồng|Thái Âm': 'Đồng Âm: ở Tý "Thủy trừng quế ngạc" rất đẹp – hiền hòa, đa cảm, có duyên; ở Ngọ hai sao hãm, tình cảm nhiều trắc trở, dễ buồn, dễ chọn sai người.',
   'Thiên Đồng|Cự Môn': 'Đồng Cự (Sửu/Mùi): phúc tinh gặp ám tinh – nội tâm bất an, hay buồn phiền, lời nói dễ gây hiểu lầm.',
-  'Thiên Đồng|Thiên Lương': 'Đồng Lương (Dần/Thân): phúc ấm song hành – hiền lành, được che chở, hợp công việc phục vụ, y tế, giáo dục.',
+  'Thiên Đồng|Thiên Lương': 'Đồng Lương (Dần/Thân): phúc ấm song hành – hiền lành, được che chở, hợp công việc phục vụ, y tế, giáo dục; mặt trái là thiếu quyết đoán, dễ an phận.',
   'Liêm Trinh|Thiên Phủ': 'Liêm Phủ (Thìn/Tuất): Thiên Phủ chế được tính cương của Liêm Trinh – nguyên tắc mà mềm mỏng, giữ được của.',
-  'Liêm Trinh|Tham Lang': 'Liêm Tham (Tỵ/Hợi): hai sao đào hoa cùng hãm – có sức hút, thích vui; nên rõ ràng, chung thủy trong tình cảm và cẩn trọng giấy tờ, hợp đồng; gặp Tuần Triệt lại tốt.',
+  'Liêm Trinh|Tham Lang': 'Liêm Tham (Tỵ/Hợi): hai sao đào hoa cùng hãm – có sức hút, thích vui; mặt trái là dễ sa vào ham vui, tình cảm rắc rối và vướng giấy tờ, kiện tụng; gặp Tuần Triệt lại tốt.',
   'Liêm Trinh|Thiên Tướng': 'Liêm Tướng (Tý/Ngọ): Thiên Tướng chế Liêm Trinh – chính trực, có uy, hợp ngành luật, quân đội, quản trị.',
-  'Liêm Trinh|Thất Sát': 'Liêm Sát (Sửu/Mùi): võ cách – kỹ thuật, quân sự, dám làm; gặp sát tinh thì nhiều sóng gió, nên đi chậm và giữ an toàn.',
-  'Liêm Trinh|Phá Quân': 'Liêm Phá (Mão/Dậu): tù tinh gặp hao tinh – hay thay đổi, dám liều; nên cẩn trọng giấy tờ, hợp đồng; hợp công việc phá cách.'
+  'Liêm Trinh|Thất Sát': 'Liêm Sát (Sửu/Mùi): võ cách – kỹ thuật, quân sự, dám làm; gặp sát tinh thì nhiều sóng gió, dễ va chạm, chấn thương và kiện cáo.',
+  'Liêm Trinh|Phá Quân': 'Liêm Phá (Mão/Dậu): tù tinh gặp hao tinh – hay thay đổi, dám liều, hợp công việc phá cách; mặt trái là dễ vướng giấy tờ, hợp đồng, hao tiền vì liều.'
 };
 
 var LG_CUNG_SAO = {
   'Huynh Đệ': {
-    'Tử Vi': 'lá số gợi ý trong anh chị em có người có uy, đỡ đần được mình – bạn hãy đối chiếu với thực tế.', 'Thiên Cơ': 'gợi ý anh em thông minh, mỗi người một ý; nên lắng nghe nhau.',
-    'Thái Dương': 'gợi ý anh em cởi mở, hào phóng; hãm địa thì cần chủ động giữ liên lạc.', 'Vũ Khúc': 'gợi ý anh em cứng cỏi, thực tế; chuyện tiền bạc trong nhà nên rõ ràng.',
-    'Thiên Đồng': 'gợi ý anh em dễ hòa thuận, vui vẻ.', 'Liêm Trinh': 'gợi ý anh em cá tính, dễ khác ý; nên nhường nhịn, nói chuyện thẳng thắn.',
+    'Tử Vi': 'lá số gợi ý trong anh chị em có người có uy, đỡ đần được mình – bạn hãy đối chiếu với thực tế.', 'Thiên Cơ': 'gợi ý anh em thông minh nhưng mỗi người một ý, khó ngồi chung một việc.',
+    'Thái Dương': 'gợi ý anh em cởi mở, hào phóng; hãm địa thì ít gần gũi, mỗi người một nơi.', 'Vũ Khúc': 'gợi ý anh em cứng cỏi, thực tế; dễ va chạm vì tiền bạc trong nhà.',
+    'Thiên Đồng': 'gợi ý anh em dễ hòa thuận, vui vẻ.', 'Liêm Trinh': 'gợi ý anh em cá tính, dễ khác ý, có giai đoạn giận nhau lâu.',
     'Thiên Phủ': 'gợi ý anh em biết đùm bọc nhau.', 'Thái Âm': 'gợi ý tình cảm anh chị em tinh tế, nhất là với chị em gái.',
-    'Tham Lang': 'gợi ý anh em giao du rộng, mỗi người tự lo phần mình; nên vun đắp sự gắn bó.', 'Cự Môn': 'gợi ý anh em dễ bất đồng ý kiến; nói chuyện thẳng thắn, nhẹ nhàng sẽ đỡ hiểu lầm.',
+    'Tham Lang': 'gợi ý anh em giao du rộng, mỗi người tự lo phần mình; tình anh em dễ nhạt.', 'Cự Môn': 'gợi ý anh em dễ bất đồng ý kiến, hay hiểu lầm nhau qua lời nói.',
     'Thiên Tướng': 'gợi ý anh em nghĩa khí, giúp đỡ nhau.', 'Thiên Lương': 'gợi ý anh em hiền, có người lớn tuổi che chở.',
-    'Thất Sát': 'gợi ý anh em độc lập, mỗi người một hướng; nên chủ động giữ kết nối.', 'Phá Quân': 'gợi ý anh em khác biệt lớn về cách sống; tôn trọng khác biệt sẽ giữ được tình thân.'
+    'Thất Sát': 'gợi ý anh em độc lập, mỗi người một hướng, ít nhờ được nhau.', 'Phá Quân': 'gợi ý anh em khác biệt lớn về cách sống, dễ xa cách hoặc bất hòa.'
   },
   'Tử Tức': {
     'Tử Vi': 'gợi ý con cái có chí, được dạy dỗ tốt dễ thành người có uy tín.', 'Thiên Cơ': 'gợi ý con thông minh, lanh lợi.',
-    'Thái Dương': 'gợi ý con nhiệt tình, dễ thành đạt khi đắc địa.', 'Vũ Khúc': 'gợi ý con cứng tính, thực tế; chuyện con cái cần thời gian và sự vun đắp.',
-    'Thiên Đồng': 'gợi ý con hiếu thuận, vui vẻ.', 'Liêm Trinh': 'gợi ý con cá tính, lúc nhỏ cần kiên nhẫn dạy dỗ.',
+    'Thái Dương': 'gợi ý con nhiệt tình, dễ thành đạt khi đắc địa.', 'Vũ Khúc': 'gợi ý con cứng tính, thực tế; chuyện con cái dễ muộn hoặc cha mẹ con cái hay va chạm.',
+    'Thiên Đồng': 'gợi ý con hiếu thuận, vui vẻ.', 'Liêm Trinh': 'gợi ý con cá tính, lúc nhỏ khó bảo, dễ làm cha mẹ mệt.',
     'Thiên Phủ': 'gợi ý con hiếu thảo, biết lo toan.', 'Thái Âm': 'gợi ý con hiền, tinh tế.',
-    'Tham Lang': 'gợi ý con năng động, nhiều sở thích; nên gần gũi để hiểu con.', 'Cự Môn': 'gợi ý con hay tranh luận, nên dạy bằng lý lẽ.',
+    'Tham Lang': 'gợi ý con năng động, nhiều sở thích; dễ ham chơi, khó nắm bắt.', 'Cự Môn': 'gợi ý con hay tranh luận, cãi lại cha mẹ.',
     'Thiên Tướng': 'gợi ý con ngoan, nghĩa khí.', 'Thiên Lương': 'gợi ý con hiếu thảo, về già có chỗ dựa.',
-    'Thất Sát': 'gợi ý con cá tính mạnh; con cái là chuyện cần thời gian và sự vun đắp, hai vợ chồng nên chủ động chăm sóc sức khỏe.', 'Phá Quân': 'gợi ý con cái độc lập sớm; những năm đầu cần nhiều chăm chút.'
+    'Thất Sát': 'gợi ý con cá tính mạnh; chuyện con cái dễ muộn hoặc trắc trở lúc đầu, con lớn dễ xa cha mẹ.', 'Phá Quân': 'gợi ý con cái độc lập sớm; những năm đầu vất vả nuôi dạy, về sau con ít ở gần.'
   },
   'Tật Ách': {
-    'Tử Vi': 'theo cổ học, nền thể trạng khá vững; vẫn nên giữ nếp sinh hoạt điều độ, khám định kỳ.', 'Thiên Cơ': 'người hay suy nghĩ, bận rộn; nên nghỉ ngơi đủ, vận động nhẹ đều đặn.',
-    'Thái Dương': 'người nhiều năng lượng, dễ làm quá sức; nên cân bằng làm việc và nghỉ ngơi.', 'Vũ Khúc': 'người làm việc cật lực; nên giữ nếp sinh hoạt điều độ, khám định kỳ.',
-    'Thiên Đồng': 'người thích an nhàn; nên duy trì vận động đều đặn.', 'Liêm Trinh': 'người dễ căng thẳng; nên giữ nếp sinh hoạt điều độ và khám định kỳ.',
-    'Thiên Phủ': 'theo cổ học, nền thể trạng khá; nên ăn uống điều độ.', 'Thái Âm': 'người nhạy cảm; nên ngủ nghỉ đủ, giữ tinh thần thư thái.',
-    'Tham Lang': 'người ham vui; nên điều độ trong ăn uống, tiệc tùng.', 'Cự Môn': 'người hay lo nghĩ; nên ăn uống đúng bữa, giữ tinh thần nhẹ nhõm.',
-    'Thiên Tướng': 'nên giữ nếp sinh hoạt sạch sẽ, điều độ.', 'Thiên Lương': 'theo cổ học, nền thể trạng tốt; vẫn nên khám định kỳ.',
-    'Thất Sát': 'người hành động nhanh; nên làm việc gì cũng giữ an toàn, nghỉ ngơi đủ.', 'Phá Quân': 'người hay thay đổi nhịp sống; nên giữ nếp sinh hoạt điều độ, khám định kỳ.'
+    'Tử Vi': 'theo cổ học, nền thể trạng khá vững; mặt trái là dễ chủ quan, có xu hướng yếu về tì vị (dạ dày), đầu óc căng. Nên khám định kỳ, có dấu hiệu lạ thì hỏi bác sĩ.', 'Thiên Cơ': 'người hay suy nghĩ, bận rộn; dễ mất ngủ, suy nhược thần kinh, có xu hướng yếu gan, đau mỏi tay chân. Nên khám định kỳ, có dấu hiệu lạ thì hỏi bác sĩ.',
+    'Thái Dương': 'người nhiều năng lượng, dễ làm quá sức; có xu hướng mắc bệnh về mắt, đau đầu, huyết áp, tim mạch. Nên khám định kỳ, có dấu hiệu lạ thì hỏi bác sĩ.', 'Vũ Khúc': 'người làm việc cật lực, dễ hao sức; có xu hướng yếu phổi, đường hô hấp, xương răng. Nên khám định kỳ, có dấu hiệu lạ thì hỏi bác sĩ.',
+    'Thiên Đồng': 'người thích an nhàn, ít vận động, dễ tăng cân; có xu hướng yếu thận, bàng quang, đường tiết niệu. Nên khám định kỳ, có dấu hiệu lạ thì hỏi bác sĩ.', 'Liêm Trinh': 'người dễ căng thẳng; có xu hướng mắc bệnh về máu, tim mạch, bệnh ngoài da. Nên khám định kỳ, có dấu hiệu lạ thì hỏi bác sĩ.',
+    'Thiên Phủ': 'theo cổ học, nền thể trạng khá; có xu hướng yếu dạ dày, tiêu hóa khi ăn uống thất thường. Nên khám định kỳ, có dấu hiệu lạ thì hỏi bác sĩ.', 'Thái Âm': 'người nhạy cảm, tâm trạng dễ kéo theo sức khỏe; có xu hướng yếu thận, mắt, rối loạn nội tiết. Nên khám định kỳ, có dấu hiệu lạ thì hỏi bác sĩ.',
+    'Tham Lang': 'người ham vui, dễ quá đà trong ăn uống, tiệc tùng; có xu hướng yếu gan, thận, sinh lý. Nên khám định kỳ, có dấu hiệu lạ thì hỏi bác sĩ.', 'Cự Môn': 'người hay lo nghĩ, dễ mất ngủ; có xu hướng mắc bệnh tiêu hóa, dạ dày, răng miệng. Nên khám định kỳ, có dấu hiệu lạ thì hỏi bác sĩ.',
+    'Thiên Tướng': 'có xu hướng mắc bệnh ngoài da, dị ứng, đường tiết niệu. Nên khám định kỳ, có dấu hiệu lạ thì hỏi bác sĩ.', 'Thiên Lương': 'theo cổ học, nền thể trạng tốt; mặt trái là có xu hướng yếu dạ dày, tim khi lớn tuổi. Nên khám định kỳ, có dấu hiệu lạ thì hỏi bác sĩ.',
+    'Thất Sát': 'người hành động nhanh, dễ va quệt, chấn thương do vội; có xu hướng yếu phổi, đường hô hấp. Nên khám định kỳ, có dấu hiệu lạ thì hỏi bác sĩ.', 'Phá Quân': 'người hay thay đổi nhịp sống, ăn ngủ thất thường; có xu hướng mắc bệnh tiêu hóa, xương khớp, khí huyết kém. Nên khám định kỳ, có dấu hiệu lạ thì hỏi bác sĩ.'
   },
   'Thiên Di': {
     'Tử Vi': 'ra ngoài được kính nể, gặp quý nhân.', 'Thiên Cơ': 'hay di chuyển, đổi chỗ làm, thích nghi tốt.',
     'Thái Dương': 'ra ngoài được tiếng, giao thiệp rộng.', 'Vũ Khúc': 'ra ngoài kiếm tiền tốt, hợp làm ăn xa.',
-    'Thiên Đồng': 'đi đâu cũng được lòng người.', 'Liêm Trinh': 'ra ngoài dễ va chạm ý kiến; nên cẩn trọng giấy tờ, hợp đồng và đi lại an toàn.',
+    'Thiên Đồng': 'đi đâu cũng được lòng người.', 'Liêm Trinh': 'ra ngoài dễ va chạm ý kiến, vướng giấy tờ, hợp đồng và dễ gặp rủi ro khi đi lại.',
     'Thiên Phủ': 'ra ngoài có người giúp, ổn định.', 'Thái Âm': 'đi xa, xuất ngoại có lợi khi đắc địa.',
     'Tham Lang': 'giao du rộng, nhiều cám dỗ.', 'Cự Môn': 'ra ngoài dễ bị thị phi, nói xấu.',
     'Thiên Tướng': 'ra ngoài được nể trọng, có uy tín.', 'Thiên Lương': 'ra ngoài gặp người che chở.',
@@ -126,34 +126,34 @@ var LG_CUNG_SAO = {
     'Thiên Phủ': 'có cộng sự đáng tin, giữ được người.', 'Thái Âm': 'được bạn nữ giúp đỡ.',
     'Tham Lang': 'bạn ăn chơi, dễ bị lợi dụng.', 'Cự Môn': 'dễ bị bạn bè nói xấu.',
     'Thiên Tướng': 'có người dưới trung thành.', 'Thiên Lương': 'bạn bè lớn tuổi, tốt bụng.',
-    'Thất Sát': 'bạn bè cá tính mạnh, dễ đối đầu.', 'Phá Quân': 'bạn bè hay thay đổi; nên chọn bạn mà chơi, rõ ràng ơn nghĩa.'
+    'Thất Sát': 'bạn bè cá tính mạnh, dễ đối đầu.', 'Phá Quân': 'bạn bè hay thay đổi, dễ gặp người vô ơn hoặc lợi dụng.'
   },
   'Điền Trạch': {
     'Tử Vi': 'gợi ý có duyên với nhà cửa khang trang, bất động sản giá trị.', 'Thiên Cơ': 'gợi ý hay đổi chỗ ở, sửa sang nhà cửa.',
     'Thái Dương': 'gợi ý nhà cửa sáng sủa; khi đắc địa có duyên được thừa hưởng.', 'Vũ Khúc': 'gợi ý tự tạo nhà đất bằng sức mình.',
-    'Thiên Đồng': 'gợi ý nhà đất trước ít sau nhiều, nhờ tự lập.', 'Liêm Trinh': 'nên cẩn trọng giấy tờ nhà đất, hợp đồng.',
+    'Thiên Đồng': 'gợi ý nhà đất trước ít sau nhiều, nhờ tự lập.', 'Liêm Trinh': 'dễ vướng giấy tờ nhà đất, hợp đồng.',
     'Thiên Phủ': 'gợi ý có duyên tích lũy nhà đất, giữ được tài sản.', 'Thái Âm': 'gợi ý rất hợp tích lũy nhà đất.',
-    'Tham Lang': 'gợi ý nhà đất có lúc lên lúc xuống, trung niên ổn định hơn.', 'Cự Môn': 'nên làm rõ giấy tờ, ranh giới nhà đất và giữ hòa khí với hàng xóm.',
+    'Tham Lang': 'gợi ý nhà đất có lúc lên lúc xuống, trung niên ổn định hơn.', 'Cự Môn': 'dễ tranh chấp giấy tờ, ranh giới nhà đất, va chạm với hàng xóm.',
     'Thiên Tướng': 'gợi ý nhà đẹp, có người giúp mua sắm.', 'Thiên Lương': 'gợi ý có duyên với nhà cửa của gia đình để lại.',
     'Thất Sát': 'gợi ý nhà đất chủ yếu do tự lập mà có.', 'Phá Quân': 'gợi ý hay phá cũ xây mới, mua bán nhà.'
   },
   'Phúc Đức': {
-    'Tử Vi': 'gợi ý phúc phần dày, trong họ có người nâng đỡ.', 'Thiên Cơ': 'tinh thần hay lo nghĩ, phúc trung bình; nên tập thư thả.',
+    'Tử Vi': 'gợi ý phúc phần dày, trong họ có người nâng đỡ.', 'Thiên Cơ': 'tinh thần hay lo nghĩ, phúc trung bình, ít được hưởng nhàn.',
     'Thái Dương': 'gợi ý phúc từ bên nội, tinh thần lạc quan.', 'Vũ Khúc': 'phúc về tài, tính tự lập.',
-    'Thiên Đồng': 'hưởng phúc an nhàn, tinh thần thoải mái.', 'Liêm Trinh': 'gợi ý họ hàng mỗi người một ngả; sống tử tế, giữ kết nối sẽ bồi thêm phúc.',
+    'Thiên Đồng': 'hưởng phúc an nhàn, tinh thần thoải mái.', 'Liêm Trinh': 'gợi ý họ hàng mỗi người một ngả, ít nhờ cậy được nhau.',
     'Thiên Phủ': 'gợi ý phúc dày, dòng họ gắn bó.', 'Thái Âm': 'gợi ý phúc từ bên ngoại, đời sống tinh thần phong phú.',
-    'Tham Lang': 'ham vui, cần tu dưỡng để giữ phúc.', 'Cự Môn': 'tâm hay bất an, dễ vướng chuyện qua lại trong họ; nên giữ lời nói nhẹ nhàng.',
+    'Tham Lang': 'ham vui, cần tu dưỡng để giữ phúc.', 'Cự Môn': 'tâm hay bất an, dễ vướng chuyện thị phi qua lại trong họ.',
     'Thiên Tướng': 'gợi ý được bề trên che chở, phúc hậu.', 'Thiên Lương': 'phúc phần tốt, được âm đức phù hộ.',
-    'Thất Sát': 'tinh thần vất vả, phải tự tạo phúc.', 'Phá Quân': 'gợi ý đời sống nhiều thay đổi; sống tử tế, điều độ để bồi đắp phúc phần.'
+    'Thất Sát': 'tinh thần vất vả, phải tự tạo phúc.', 'Phá Quân': 'gợi ý đời sống nhiều thay đổi, khó yên ổn lâu.'
   },
   'Phụ Mẫu': {
-    'Tử Vi': 'lá số gợi ý cha mẹ nghiêm khắc, có uy – bạn hãy đối chiếu với thực tế.', 'Thiên Cơ': 'gợi ý cha mẹ thông minh; hãm thì cần chủ động gần gũi hơn.',
-    'Thái Dương': 'gợi ý quan hệ với cha thuận khi đắc địa; hãm thì cha có thể vất vả – nên quan tâm, sẻ chia.', 'Vũ Khúc': 'gợi ý cha mẹ cứng rắn, ít bộc lộ tình cảm.',
-    'Thiên Đồng': 'gợi ý cha mẹ hiền hòa, thương con.', 'Liêm Trinh': 'gợi ý cha mẹ nghiêm; nên nói chuyện thẳng thắn, nhẹ nhàng.',
+    'Tử Vi': 'lá số gợi ý cha mẹ nghiêm khắc, có uy – bạn hãy đối chiếu với thực tế.', 'Thiên Cơ': 'gợi ý cha mẹ thông minh; hãm thì ít gần gũi, khó tâm sự.',
+    'Thái Dương': 'gợi ý quan hệ với cha thuận khi đắc địa; hãm thì cha có thể vất vả, ít ở bên con.', 'Vũ Khúc': 'gợi ý cha mẹ cứng rắn, ít bộc lộ tình cảm.',
+    'Thiên Đồng': 'gợi ý cha mẹ hiền hòa, thương con.', 'Liêm Trinh': 'gợi ý cha mẹ nghiêm, hay khắt khe, khó nói chuyện thật.',
     'Thiên Phủ': 'gợi ý được cha mẹ lo toan, nâng đỡ.', 'Thái Âm': 'gợi ý gắn bó với mẹ, được mẹ nâng đỡ khi đắc địa.',
-    'Tham Lang': 'gợi ý cha mẹ phóng khoáng, ít quản.', 'Cự Môn': 'gợi ý cha mẹ và con dễ khác ý kiến; lắng nghe nhau sẽ đỡ va chạm.',
+    'Tham Lang': 'gợi ý cha mẹ phóng khoáng, ít quản.', 'Cự Môn': 'gợi ý cha mẹ và con dễ khác ý kiến, hay va chạm.',
     'Thiên Tướng': 'gợi ý cha mẹ đàng hoàng, che chở.', 'Thiên Lương': 'gợi ý cha mẹ che chở chu đáo.',
-    'Thất Sát': 'gợi ý tự lập sớm, có thể sớm ở xa cha mẹ.', 'Phá Quân': 'gợi ý cha mẹ vất vả; nên chủ động giữ liên lạc, sẻ chia.'
+    'Thất Sát': 'gợi ý tự lập sớm, có thể sớm ở xa cha mẹ.', 'Phá Quân': 'gợi ý cha mẹ vất vả, có thể sớm xa cách.'
   }
 };
 
@@ -186,13 +186,13 @@ var LG_BO_PHU = [
   { sao: ['Hóa Lộc', 'Hóa Quyền', 'Hóa Khoa'], mode: 'hoi', ten: 'Tam Hóa liên châu', tot: 1, moTa: 'danh – lợi – quyền cùng đến' },
   { sao: ['Hóa Quyền', 'Hóa Khoa'], mode: 'hoi', ten: 'Quyền Khoa', tot: 1, moTa: 'có năng lực và danh tiếng' },
   { sao: ['Kình Dương', 'Đà La'], mode: 'giap', ten: 'Kình Đà giáp', tot: -1, moTa: 'bị kìm kẹp, tiểu nhân hai bên, khó xoay xở' },
-  { sao: ['Kình Dương', 'Đà La'], mode: 'hoi', ten: 'Kình Đà hội', tot: -1, moTa: 'cạnh tranh, trở ngại; nên làm việc gì cũng giữ an toàn' },
-  { sao: ['Hỏa Tinh', 'Linh Tinh'], mode: 'hoi', ten: 'Hỏa Linh', tot: -1, moTa: 'nóng nảy, có việc bất ngờ; nên giữ bình tĩnh, cẩn thận lửa điện' },
+  { sao: ['Kình Dương', 'Đà La'], mode: 'hoi', ten: 'Kình Đà hội', tot: -1, moTa: 'cạnh tranh, trở ngại, dễ va chạm và chấn thương' },
+  { sao: ['Hỏa Tinh', 'Linh Tinh'], mode: 'hoi', ten: 'Hỏa Linh', tot: -1, moTa: 'nóng nảy, có việc bất ngờ, dễ gặp sự cố lửa điện' },
   { sao: ['Địa Không', 'Địa Kiếp'], mode: 'hoi', ten: 'Không Kiếp', tot: -1, moTa: 'hao tán, thăng trầm đột ngột; ý tưởng độc đáo' },
   { sao: ['Địa Không', 'Địa Kiếp'], mode: 'giap', ten: 'Không Kiếp giáp', tot: -1, moTa: 'dễ bị cuốn vào hao tán, mất mát' },
-  { sao: ['Thiên Hình', 'Thiên Riêu'], mode: 'hoi', ten: 'Hình Riêu', tot: -1, moTa: 'thị phi; nên rõ ràng trong tình cảm và cẩn trọng giấy tờ, hợp đồng' },
+  { sao: ['Thiên Hình', 'Thiên Riêu'], mode: 'hoi', ten: 'Hình Riêu', tot: -1, moTa: 'thị phi, tình cảm rắc rối, dễ vướng giấy tờ, hợp đồng' },
   { sao: ['Thiên Khốc', 'Thiên Hư'], mode: 'hoi', ten: 'Khốc Hư', tot: -1, moTa: 'buồn phiền, hao tổn (ở Tý Ngọ lại có danh)' },
-  { sao: ['Tang Môn', 'Bạch Hổ'], mode: 'hoi', ten: 'Tang Hổ', tot: -1, moTa: 'dễ buồn phiền, áp lực; nên đi chậm, giữ sức khỏe và cẩn trọng giấy tờ' },
+  { sao: ['Tang Môn', 'Bạch Hổ'], mode: 'hoi', ten: 'Tang Hổ', tot: -1, moTa: 'dễ buồn phiền, áp lực, hao sức và vướng giấy tờ' },
   { sao: ['Cô Thần', 'Quả Tú'], mode: 'hoi', ten: 'Cô Quả', tot: -1, moTa: 'cô đơn, ít người thân cận, hay tự lập' },
   { sao: ['Lộc Tồn', 'Địa Không'], mode: 'dong', ten: 'Lộc ngộ Không', tot: -1, moTa: 'lộc bị hao tán, giữ của khó' },
   { sao: ['Lộc Tồn', 'Địa Kiếp'], mode: 'dong', ten: 'Lộc ngộ Kiếp', tot: -1, moTa: 'lộc bị kiếp đoạt, cẩn thận đầu tư' },
@@ -210,22 +210,22 @@ var LG_BO_PHU = [
 
 // Sao đặc thù theo từng cung
 var LG_DAC_THU = {
-  'Mệnh': { 'Lộc Tồn': 'Lộc Tồn thủ Mệnh: cẩn trọng, biết giữ của, hơi cô độc.', 'Thiên Mã': 'Thiên Mã tại Mệnh: năng động, hay di chuyển.',
+  'Mệnh': { 'Lộc Tồn': 'Lộc Tồn thủ Mệnh: cẩn trọng, biết giữ của; mặt trái là keo kiệt, cô độc.', 'Thiên Mã': 'Thiên Mã tại Mệnh: năng động, hay di chuyển.',
     'Hóa Kỵ': 'Hóa Kỵ tại Mệnh: hay ưu tư, dễ bị hiểu lầm; bền chí mới thành.', 'Địa Không': 'Địa Không tại Mệnh: tư duy khác người, dễ hụt hẫng.',
     'Địa Kiếp': 'Địa Kiếp tại Mệnh: đời thăng trầm, hợp nghề tự do, sáng tạo.', 'Kình Dương': 'Kình Dương tại Mệnh: cương mãnh, dễ nóng; đắc địa thì uy dũng.',
     'Thiên Hình': 'Thiên Hình tại Mệnh: nghiêm khắc, kỷ luật; hợp y, luật, quân đội.', 'Hoa Cái': 'Hoa Cái tại Mệnh: phong cách, kiêu hãnh, thích nghệ thuật – tâm linh.',
-    'Hóa Quyền': 'Hóa Quyền tại Mệnh: có uy, thích nắm quyền chủ động.', 'Hóa Khoa': 'Hóa Khoa tại Mệnh: có danh tiếng, học giỏi, gặp nạn có người giải.',
-    'Hóa Lộc': 'Hóa Lộc tại Mệnh: được lòng người, cơ hội tài lộc nhiều.' },
+    'Hóa Quyền': 'Hóa Quyền tại Mệnh: có uy, thích nắm quyền chủ động; mặt trái là dễ độc đoán, khó nghe người khác.', 'Hóa Khoa': 'Hóa Khoa tại Mệnh: có danh tiếng, học giỏi, gặp nạn có người giải.',
+    'Hóa Lộc': 'Hóa Lộc tại Mệnh: được lòng người, cơ hội tài lộc nhiều; mặt trái là dễ ham hưởng thụ.' },
   'Phu Thê': { 'Đào Hoa': 'Đào Hoa ở Phu Thê: bạn đời duyên dáng; tình cảm sớm.', 'Hồng Loan': 'Hồng Loan ở Phu Thê: hôn nhân có duyên, dễ lập gia đình.',
-    'Thiên Hỷ': 'Thiên Hỷ ở Phu Thê: hôn nhân vui vẻ.', 'Thiên Riêu': 'Thiên Riêu ở Phu Thê: có sức hút, nên rõ ràng và chung thủy.',
-    'Hóa Kỵ': 'Hóa Kỵ ở Phu Thê: vợ chồng dễ hiểu lầm; cần nhiều thấu hiểu, nói chuyện thẳng thắn, không vội quyết định.', 'Cô Thần': 'Cô Thần ở Phu Thê: ít chia sẻ; nên chủ động mở lòng với bạn đời.',
-    'Quả Tú': 'Quả Tú ở Phu Thê: dễ thấy xa cách; nên dành thời gian riêng cho nhau.', 'Địa Không': 'Địa Không ở Phu Thê: tình cảm dễ hụt hẫng; cần nhiều thấu hiểu, nói chuyện thẳng thắn.',
-    'Địa Kiếp': 'Địa Kiếp ở Phu Thê: hôn nhân cần thời gian vun đắp, không nên vội.', 'Kình Dương': 'Kình Dương ở Phu Thê: bạn đời cá tính mạnh, hay va chạm; nên nhường nhịn, nói chuyện nhẹ nhàng.',
-    'Hóa Lộc': 'Hóa Lộc ở Phu Thê: bạn đời mang lại tài lộc.', 'Tả Phù': 'Tả Phù ở Phu Thê: được bạn đời giúp; nên giữ ranh giới rõ ràng với người ngoài.',
-    'Hữu Bật': 'Hữu Bật ở Phu Thê: bạn đời hỗ trợ; nên rõ ràng, chung thủy để tình cảm khỏi phức tạp.' },
+    'Thiên Hỷ': 'Thiên Hỷ ở Phu Thê: hôn nhân vui vẻ.', 'Thiên Riêu': 'Thiên Riêu ở Phu Thê: có sức hút, nhưng dễ có người thứ ba, tình cảm phức tạp.',
+    'Hóa Kỵ': 'Hóa Kỵ ở Phu Thê: vợ chồng dễ hiểu lầm, giận dai, có giai đoạn lạnh nhạt hoặc muốn chia tay.', 'Cô Thần': 'Cô Thần ở Phu Thê: ít chia sẻ, trong hôn nhân vẫn dễ thấy cô đơn.',
+    'Quả Tú': 'Quả Tú ở Phu Thê: dễ xa cách, ít gần gũi với bạn đời.', 'Địa Không': 'Địa Không ở Phu Thê: tình cảm dễ hụt hẫng, kỳ vọng nhiều mà nhận ít.',
+    'Địa Kiếp': 'Địa Kiếp ở Phu Thê: hôn nhân dễ trắc trở, đổ vỡ nếu cưới vội.', 'Kình Dương': 'Kình Dương ở Phu Thê: bạn đời cá tính mạnh, hay va chạm, cãi vã gay gắt.',
+    'Hóa Lộc': 'Hóa Lộc ở Phu Thê: bạn đời mang lại tài lộc.', 'Tả Phù': 'Tả Phù ở Phu Thê: được bạn đời giúp; mặt trái là dễ có người ngoài xen vào chuyện hai người.',
+    'Hữu Bật': 'Hữu Bật ở Phu Thê: bạn đời hỗ trợ; mặt trái là tình cảm dễ phức tạp, có người thứ ba.' },
   'Tài Bạch': { 'Lộc Tồn': 'Lộc Tồn ở Tài: tiền vào đều, biết tiết kiệm.', 'Hóa Lộc': 'Hóa Lộc ở Tài: tài lộc hanh thông, nhiều nguồn.',
     'Thiên Mã': 'Thiên Mã ở Tài: kiếm tiền nhờ di chuyển, buôn bán.', 'Địa Không': 'Địa Không ở Tài: tiền đến rồi đi, tránh đầu cơ.',
-    'Địa Kiếp': 'Địa Kiếp ở Tài: có khoản chi bất ngờ; cẩn thận cho vay, nên có quỹ dự phòng.', 'Hóa Kỵ': 'Hóa Kỵ ở Tài: tiền bạc dễ dây dưa; tài chính cần quản lý chặt, hạn chế vay mượn.',
+    'Địa Kiếp': 'Địa Kiếp ở Tài: có khoản chi bất ngờ, dễ mất tiền vì cho vay, bị lừa.', 'Hóa Kỵ': 'Hóa Kỵ ở Tài: tiền bạc dễ dây dưa, nợ nần, đòi không được.',
     'Kình Dương': 'Kình Dương ở Tài: kiếm tiền bằng cạnh tranh, dễ tranh chấp tiền.', 'Vũ Khúc': '',
     'Đại Hao': 'Đại Hao ở Tài: chi tiêu lớn, khó giữ.', 'Tiểu Hao': 'Tiểu Hao ở Tài: hao hụt lặt vặt.' },
   'Quan Lộc': { 'Hóa Quyền': 'Hóa Quyền ở Quan: nắm quyền, thăng chức.', 'Hóa Khoa': 'Hóa Khoa ở Quan: danh tiếng nghề nghiệp, bằng cấp.',
@@ -234,32 +234,32 @@ var LG_DAC_THU = {
     'Thiên Hình': 'Thiên Hình ở Quan: hợp ngành luật, y, quân đội, kỷ luật.', 'Tướng Quân': 'Tướng Quân ở Quan: có uy, hợp chỉ huy.',
     'Kình Dương': 'Kình Dương ở Quan: công việc cạnh tranh, võ nghiệp.', 'Hóa Kỵ': 'Hóa Kỵ ở Quan: công việc trắc trở, dễ bị đố kỵ.',
     'Hóa Lộc': 'Hóa Lộc ở Quan: công việc sinh lợi, thuận.' },
-  'Tật Ách': { 'Thiên Y': 'Thiên Y ở Tật: dễ gặp người chăm sóc, tư vấn tốt.', 'Kình Dương': 'Kình Dương ở Tật: nên làm việc gì cũng giữ an toàn, không vội vàng.',
-    'Đà La': 'Đà La ở Tật: nên kiên trì giữ nếp sinh hoạt điều độ.', 'Hỏa Tinh': 'Hỏa Tinh ở Tật: nên giữ bình tĩnh, nghỉ ngơi đủ.', 'Linh Tinh': 'Linh Tinh ở Tật: nên giảm căng thẳng, ngủ nghỉ đều.',
-    'Thiên Hình': 'Thiên Hình ở Tật: nên cẩn thận khi làm việc với vật sắc, máy móc.', 'Hóa Kỵ': 'Hóa Kỵ ở Tật: nên khám định kỳ và theo dõi đều đặn.',
-    'Bệnh Phù': 'Bệnh Phù ở Tật: nên chăm vận động, ăn ngủ điều độ.', 'Giải Thần': 'Giải Thần ở Tật: gặp khó có lối gỡ.', 'Thiên Giải': 'Thiên Giải ở Tật: trở ngại giảm nhẹ.',
-    'Lưu Hà': 'Lưu Hà ở Tật: nên cẩn thận khi đi lại sông nước.' },
+  'Tật Ách': { 'Thiên Y': 'Thiên Y ở Tật: dễ gặp người chăm sóc, tư vấn tốt.', 'Kình Dương': 'Kình Dương ở Tật: dễ va chạm, chấn thương khi vội vàng.',
+    'Đà La': 'Đà La ở Tật: bệnh vặt hay dai dẳng, lâu khỏi.', 'Hỏa Tinh': 'Hỏa Tinh ở Tật: nóng trong, dễ nổi nóng, hao sức.', 'Linh Tinh': 'Linh Tinh ở Tật: dễ căng thẳng, mất ngủ.',
+    'Thiên Hình': 'Thiên Hình ở Tật: dễ đứt tay, chấn thương do vật sắc, máy móc.', 'Hóa Kỵ': 'Hóa Kỵ ở Tật: sức khỏe có điểm yếu dai dẳng; nên khám định kỳ.',
+    'Bệnh Phù': 'Bệnh Phù ở Tật: hay ốm vặt, sức đề kháng kém.', 'Giải Thần': 'Giải Thần ở Tật: gặp khó có lối gỡ.', 'Thiên Giải': 'Thiên Giải ở Tật: trở ngại giảm nhẹ.',
+    'Lưu Hà': 'Lưu Hà ở Tật: dễ gặp rủi ro khi đi lại sông nước.' },
   'Thiên Di': { 'Thiên Mã': 'Thiên Mã ở Di: đi xa nhiều, xuất ngoại.', 'Tả Phù': 'Tả Phù ở Di: ra ngoài được giúp.', 'Hữu Bật': 'Hữu Bật ở Di: có người hỗ trợ bên ngoài.',
     'Thiên Khôi': 'Thiên Khôi ở Di: gặp quý nhân nơi xa.', 'Thiên Việt': 'Thiên Việt ở Di: gặp cơ hội bên ngoài.',
-    'Kình Dương': 'Kình Dương ở Di: đi xa nên cẩn thận, giữ an toàn.', 'Đà La': 'Đà La ở Di: đi lại trắc trở.', 'Hóa Kỵ': 'Hóa Kỵ ở Di: ra ngoài dễ bị thị phi.',
+    'Kình Dương': 'Kình Dương ở Di: đi xa dễ va chạm, tai nạn, tranh chấp.', 'Đà La': 'Đà La ở Di: đi lại trắc trở.', 'Hóa Kỵ': 'Hóa Kỵ ở Di: ra ngoài dễ bị thị phi.',
     'Thiên Không': 'Thiên Không ở Di: cẩn thận lừa đảo.', 'Hóa Lộc': 'Hóa Lộc ở Di: ra ngoài có tiền.' },
   'Điền Trạch': { 'Lộc Tồn': 'Lộc Tồn ở Điền: giữ được nhà đất.', 'Hóa Lộc': 'Hóa Lộc ở Điền: tăng thêm tài sản bất động sản.',
-    'Địa Không': 'Địa Không ở Điền: nhà cửa dễ hao hụt.', 'Địa Kiếp': 'Địa Kiếp ở Điền: nên cẩn trọng giấy tờ nhà đất, hợp đồng.',
-    'Hỏa Tinh': 'Hỏa Tinh ở Điền: nên chú ý an toàn lửa điện trong nhà.', 'Thiên Trù': 'Thiên Trù ở Điền: nhà đủ ăn, bếp núc ấm.', 'Hóa Kỵ': 'Hóa Kỵ ở Điền: giấy tờ nhà đất rắc rối.' },
+    'Địa Không': 'Địa Không ở Điền: nhà cửa dễ hao hụt.', 'Địa Kiếp': 'Địa Kiếp ở Điền: dễ vướng giấy tờ nhà đất, hợp đồng.',
+    'Hỏa Tinh': 'Hỏa Tinh ở Điền: trong nhà dễ có sự cố lửa điện.', 'Thiên Trù': 'Thiên Trù ở Điền: nhà đủ ăn, bếp núc ấm.', 'Hóa Kỵ': 'Hóa Kỵ ở Điền: giấy tờ nhà đất rắc rối.' },
   'Phúc Đức': { 'Thiên Đức': 'Thiên Đức ở Phúc: âm đức phù hộ.', 'Nguyệt Đức': 'Nguyệt Đức ở Phúc: tâm thiện, phúc hậu.', 'Hoa Cái': 'Hoa Cái ở Phúc: thiên hướng tâm linh, tôn giáo.',
-    'Địa Không': 'Địa Không ở Phúc: tinh thần hay trống trải.', 'Địa Kiếp': 'Địa Kiếp ở Phúc: cần tu tâm, sống tử tế để bồi phúc.', 'Thiên Hư': 'Thiên Hư ở Phúc: hay lo âu; nên tập thư thả.',
-    'Hóa Kỵ': 'Hóa Kỵ ở Phúc: nội tâm dễ nặng nề; nên giữ hòa khí trong họ hàng.' },
+    'Địa Không': 'Địa Không ở Phúc: tinh thần hay trống trải.', 'Địa Kiếp': 'Địa Kiếp ở Phúc: phúc mỏng, tinh thần nhiều biến động.', 'Thiên Hư': 'Thiên Hư ở Phúc: hay lo âu, khó thấy đủ.',
+    'Hóa Kỵ': 'Hóa Kỵ ở Phúc: nội tâm dễ nặng nề, trong họ hàng hay có chuyện không vui.' },
   'Tử Tức': { 'Thai': 'Thai ở Tử Tức: có duyên con cái.', 'Hồng Loan': 'Hồng Loan ở Tử Tức: con cái xinh xắn.', 'Thiên Hỷ': 'Thiên Hỷ ở Tử Tức: có tin vui con cái.',
-    'Thiên Riêu': 'Thiên Riêu ở Tử Tức: con cái có sức hút, nên dạy con sống rõ ràng.', 'Địa Không': 'Địa Không ở Tử Tức: con cái là chuyện cần thời gian và sự vun đắp; hai vợ chồng nên chủ động chăm sóc sức khỏe.', 'Địa Kiếp': 'Địa Kiếp ở Tử Tức: chuyện con cái cần chuẩn bị chu đáo, chủ động chăm sóc sức khỏe hai vợ chồng.',
+    'Thiên Riêu': 'Thiên Riêu ở Tử Tức: con cái có sức hút, nhưng dễ sớm vướng chuyện tình cảm.', 'Địa Không': 'Địa Không ở Tử Tức: chuyện con cái dễ muộn, ít con hoặc trắc trở lúc đầu.', 'Địa Kiếp': 'Địa Kiếp ở Tử Tức: chuyện con cái dễ trắc trở, nuôi con vất vả và tốn kém.',
     'Kình Dương': 'Kình Dương ở Tử Tức: con cá tính, dễ va chạm.', 'Hóa Kỵ': 'Hóa Kỵ ở Tử Tức: lo lắng vì con.' },
-  'Phụ Mẫu': { 'Tang Môn': 'Tang Môn ở Phụ Mẫu: nên quan tâm, đưa cha mẹ đi khám định kỳ.', 'Bạch Hổ': 'Bạch Hổ ở Phụ Mẫu: gợi ý cha mẹ vất vả; giấy tờ nên làm cẩn thận.',
+  'Phụ Mẫu': { 'Tang Môn': 'Tang Môn ở Phụ Mẫu: có chuyện buồn liên quan cha mẹ, sức khỏe cha mẹ dễ yếu.', 'Bạch Hổ': 'Bạch Hổ ở Phụ Mẫu: gợi ý cha mẹ vất vả, giấy tờ dễ vướng.',
     'Thiên Khốc': 'Thiên Khốc ở Phụ Mẫu: buồn phiền về cha mẹ.', 'Kình Dương': 'Kình Dương ở Phụ Mẫu: bất đồng với cha mẹ.',
     'Văn Xương': 'Văn Xương ở Phụ Mẫu: học hành, giấy tờ thuận.', 'Văn Khúc': 'Văn Khúc ở Phụ Mẫu: cha mẹ có học.',
     'Thiên Khôi': 'Thiên Khôi ở Phụ Mẫu: cha mẹ, bề trên nâng đỡ.', 'Hóa Kỵ': 'Hóa Kỵ ở Phụ Mẫu: dễ xung khắc với bề trên, giấy tờ vướng.' },
   'Huynh Đệ': { 'Tả Phù': 'Tả Phù ở Huynh: anh em giúp đỡ.', 'Hữu Bật': 'Hữu Bật ở Huynh: anh em đông, đỡ đần.', 'Kình Dương': 'Kình Dương ở Huynh: anh em bất hòa.',
     'Địa Kiếp': 'Địa Kiếp ở Huynh: anh em hao tán.', 'Hóa Kỵ': 'Hóa Kỵ ở Huynh: hiểu lầm với anh em.' },
   'Nô Bộc': { 'Tả Phù': 'Tả Phù ở Nô: có người giúp việc đắc lực.', 'Hữu Bật': 'Hữu Bật ở Nô: bạn bè hỗ trợ.', 'Kình Dương': 'Kình Dương ở Nô: bạn bè tranh giành.',
-    'Phục Binh': 'Phục Binh ở Nô: đề phòng bị phản.', 'Thiên Hình': 'Thiên Hình ở Nô: nên rõ ràng giấy tờ, hợp đồng với người cộng sự.', 'Hóa Kỵ': 'Hóa Kỵ ở Nô: bị bạn bè đố kỵ.' }
+    'Phục Binh': 'Phục Binh ở Nô: đề phòng bị phản.', 'Thiên Hình': 'Thiên Hình ở Nô: dễ tranh chấp giấy tờ, hợp đồng với người cộng sự.', 'Hóa Kỵ': 'Hóa Kỵ ở Nô: bị bạn bè đố kỵ.' }
 };
 
 var LG_TRANG_SINH_Y = {
@@ -670,9 +670,9 @@ function lgDaiVan_(chart, bt) {
     }
     var ket = ['Đánh giá đại vận: ' + lgXepHang_(d) + ' (' + diem10_(d) + '/10).'];
     if (C.tuan || C.triet) ket.push('Cung hạn gặp ' + (C.triet ? 'Triệt' : 'Tuần') + ': nửa đầu hạn trắc trở, nửa sau mới hanh thông.');
-    ket.push(d >= 2.5 ? 'Nên chủ động mở rộng, nắm bắt cơ hội; đây là giai đoạn "được thời".' :
-      d >= 0 ? 'Giữ nhịp ổn định, tích lũy; tận dụng các lĩnh vực có Hóa Lộc/Quyền/Khoa.' :
-        'Nên phòng thủ, tránh mạo hiểm lớn, chú trọng sức khỏe và quan hệ; tu dưỡng để hóa giải.');
+    ket.push(d >= 2.5 ? 'Giai đoạn "được thời": dễ mở rộng, nắm cơ hội; mặt trái là dễ chủ quan, ôm đồm.' :
+      d >= 0 ? 'Giai đoạn bình ổn: hợp tích lũy ở các lĩnh vực có Hóa Lộc/Quyền/Khoa; mặt trái là khó bứt phá.' :
+        'Giai đoạn khó: dễ hao tiền, vấp việc, sức khỏe và quan hệ đi xuống. Gợi ý: tránh mạo hiểm lớn.');
     secs.push({ tieuDe: 'Kết luận', items: ket });
     list.push({
       ten: 'Đại vận ' + from + '–' + to, khoang: from + '–' + to + ' tuổi', nam: (I.lunar.year + from - 1) + '–' + (I.lunar.year + to - 1),
@@ -759,11 +759,11 @@ var LG_LUU_Y = {
   'L.Hóa Quyền': ['✓', 'tăng quyền hạn, chủ động, được giao trọng trách'],
   'L.Hóa Khoa': ['✓', 'danh tiếng, giấy tờ – thi cử thuận, có quý nhân giải nguy'],
   'L.Hóa Kỵ': ['✗', 'vướng mắc, thị phi, tiền – tình dễ bế tắc; lĩnh vực cần giữ kín và kiên nhẫn'],
-  'L.Kình Dương': ['✗', 'cạnh tranh, va chạm; nên chậm lại, tránh vội vàng'],
+  'L.Kình Dương': ['✗', 'cạnh tranh, va chạm, dễ hỏng việc vì vội'],
   'L.Đà La': ['✗', 'trì trệ, dây dưa, việc đi chậm hơn dự tính'],
   'L.Thiên Mã': ['◇', 'di chuyển, thay đổi, đi xa hoặc đổi chỗ'],
-  'L.Tang Môn': ['✗', 'dễ buồn phiền, tâm trạng nặng; nên quan tâm người thân nhiều hơn'],
-  'L.Bạch Hổ': ['✗', 'va chạm, áp lực – nên đi lại an toàn, cẩn trọng giấy tờ, hợp đồng'],
+  'L.Tang Môn': ['✗', 'dễ buồn phiền, tâm trạng nặng, có chuyện không vui với người thân'],
+  'L.Bạch Hổ': ['✗', 'va chạm, áp lực, dễ rủi ro khi đi lại và vướng giấy tờ, hợp đồng'],
   'L.Thiên Khốc': ['✗', 'nước mắt, lo âu'],
   'L.Thiên Hư': ['✗', 'hao hụt, hư hao, hứa suông'],
   'L.Hồng Loan': ['✓', 'tình duyên, hỷ sự, được yêu mến'],
@@ -797,14 +797,14 @@ function lgLuanLuuTinh_(chart, L, th, ldh, year) {
   if (lMa >= 0 && (lMa === lDa || P[lMa].triet)) { items.push('✗ Chiết túc mã: lưu Thiên Mã ' + (lMa === lDa ? 'gặp lưu Đà La' : 'gặp Triệt') + ' tại ' + ten(lMa) + ' – đi lại trắc trở, kế hoạch dời đổi dễ lỡ.'); adj -= 0.4; }
   if (lKy >= 0 && lKy === gKy) { items.push('✗ Song Kỵ: lưu Hóa Kỵ chồng lên Hóa Kỵ gốc tại ' + ten(lKy) + ' – ' + LG_LINH_VUC[P[lKy].cung] + ' là điểm nghẽn lớn nhất năm, tránh quyết định vội.'); adj -= 1; }
   else if (lKy >= 0 && mod12(lKy + 6) === gKy) { items.push('✗ Lưu Kỵ xung Kỵ gốc (' + ten(lKy) + ' ↔ ' + ten(gKy) + ') – chuyện cũ dễ tái phát.'); adj -= 0.5; }
-  if (lKy >= 0 && (lKy === th || lKy === menh)) { items.push('✗ Lưu Hóa Kỵ ' + (lKy === th ? 'đóng ngay tiểu hạn' : 'nhập Mệnh') + ' – năm nhiều phiền muộn, nên giữ mình, ít hứa hẹn.'); adj -= 0.5; }
+  if (lKy >= 0 && (lKy === th || lKy === menh)) { items.push('✗ Lưu Hóa Kỵ ' + (lKy === th ? 'đóng ngay tiểu hạn' : 'nhập Mệnh') + ' – năm nhiều phiền muộn, hứa hẹn dễ thành nợ, lời nói dễ bị bắt bẻ.'); adj -= 0.5; }
   if (lKy >= 0 && mod12(lKy + 6) === menh) items.push('✗ Lưu Hóa Kỵ xung chiếu Mệnh từ ' + ten(lKy) + ' – dễ bị hiểu lầm, thị phi từ bên ngoài.');
   [['L.Kình Dương', 'Kình Dương', lKinh], ['L.Đà La', 'Đà La', lDa]].forEach(function (x) {
     if (x[2] >= 0 && x[2] === pos[x[1]]) { items.push('✗ ' + x[1] + ' trùng phùng tại ' + ten(x[2]) + ' (lưu gặp gốc) – sát khí nhân đôi ở ' + LG_LINH_VUC[P[x[2]].cung] + '.'); adj -= 0.6; }
   });
   var lHo = o('L.Bạch Hổ'), lTang = o('L.Tang Môn');
-  if (lHo >= 0 && (lHo === lKinh || lHo === pos['Kình Dương'])) { items.push('✗ Bạch Hổ gặp Kình Dương tại ' + ten(lHo) + ' – năm nên đi chậm, giữ an toàn khi đi lại và làm việc.'); adj -= 0.6; }
-  if (lTang >= 0 && (lTang === (pos['TT.Tang Môn'] != null ? pos['TT.Tang Môn'] : pos['Tang Môn']) || lTang === (pos['TT.Bạch Hổ'] != null ? pos['TT.Bạch Hổ'] : pos['Bạch Hổ']))) { items.push('✗ Tang – Hổ trùng phùng tại ' + ten(lTang) + ' – năm nên quan tâm, chăm sóc người thân trong gia đình nhiều hơn.'); adj -= 0.4; }
+  if (lHo >= 0 && (lHo === lKinh || lHo === pos['Kình Dương'])) { items.push('✗ Bạch Hổ gặp Kình Dương tại ' + ten(lHo) + ' – năm dễ va chạm, chấn thương khi đi lại và làm việc.'); adj -= 0.6; }
+  if (lTang >= 0 && (lTang === (pos['TT.Tang Môn'] != null ? pos['TT.Tang Môn'] : pos['Tang Môn']) || lTang === (pos['TT.Bạch Hổ'] != null ? pos['TT.Bạch Hổ'] : pos['Bạch Hổ']))) { items.push('✗ Tang – Hổ trùng phùng tại ' + ten(lTang) + ' – năm dễ có chuyện buồn, lo về sức khỏe người thân trong gia đình.'); adj -= 0.4; }
   var hy = ['L.Hồng Loan', 'L.Thiên Hỷ', 'L.Đào Hoa'].map(o).filter(function (p) { return p >= 0 && (tp.indexOf(p) >= 0 || p === menh || P[p].cung === 'Phu Thê'); });
   if (hy.length >= 2) { items.push('✓ Hồng – Hỷ – Đào lưu hội về hạn/Mệnh/Phu Thê – năm động tình duyên: hợp cưới hỏi, ra mắt, sinh con.'); adj += 0.4; }
   if (L.chi === mod12(menh + 6)) items.push('✗ Lưu Thái Tuế xung cung Mệnh gốc – năm "động": dễ thay đổi chỗ ở, công việc, tâm lý bất an.');
@@ -879,7 +879,7 @@ function lgTieuVan_(chart, bt, year) {
     secs.push({ tieuDe: 'Đối chiếu Bát Tự', items: bz });
   }
   var ket = ['Đánh giá năm ' + year + ': ' + lgXepHang_(d) + ' (' + diem10_(d) + '/10).'];
-  ket.push(d >= 2.5 ? 'Năm thuận lợi – nên triển khai kế hoạch lớn, mở rộng quan hệ.' : d >= 0 ? 'Năm bình ổn – làm chắc từng bước, tránh dàn trải.' : 'Năm cần phòng thủ – giữ sức khỏe, tránh tranh chấp, cẩn trọng tài chính.');
+  ket.push(d >= 2.5 ? 'Năm thuận lợi – hợp triển khai kế hoạch lớn; mặt trái là dễ chủ quan, ôm quá sức.' : d >= 0 ? 'Năm bình ổn – ít biến động, nhưng cũng khó bứt lên.' : 'Năm khó – dễ sa sút sức khỏe, tranh chấp và hao tiền.');
   secs.push({ tieuDe: 'Kết luận', items: ket });
   return { nam: year, canChi: CAN[L.can] + ' ' + CHI[L.chi], tuoi: tuoi, cung: C.cung, chi: C.chiTen, th: th, diem: d, danhGia: lgXepHang_(d), secs: secs, luu: L };
 }
@@ -923,7 +923,7 @@ function lgNguyetVan_(chart, bt, year) {
       d = lgR_(d + ({ 'Đại cát': 1, 'Cát': 0.5, 'Bình': 0, 'Hơi kém': -0.4, 'Cẩn trọng': -0.8 })[s]);
       items.push('Ngũ hành tháng (' + CAN_HANH[mc] + '/' + CHI_HANH[mz] + ') theo Bát Tự: ' + s + '.');
     }
-    items.push(d >= 2.5 ? 'Tháng tốt: nên khởi sự, gặp gỡ, đàm phán.' : d >= 0 ? 'Tháng bình: duy trì, hoàn thiện việc đang làm.' : 'Tháng cần cẩn trọng: giữ sức khỏe, hạn chế tranh chấp, kiểm tra kỹ giấy tờ.');
+    items.push(d >= 2.5 ? 'Tháng tốt: nên khởi sự, gặp gỡ, đàm phán.' : d >= 0 ? 'Tháng bình: duy trì, hoàn thiện việc đang làm.' : 'Tháng khó: dễ mệt, tranh chấp, sai sót giấy tờ.');
     out.push({
       thang: m, ten: 'Tháng ' + m + (leap === m ? ' (có tháng nhuận)' : ''), canChi: CAN[mc] + ' ' + CHI[mz],
       batDau: start ? start.day + '/' + start.month + '/' + start.year : '', cung: C.cung, chi: C.chiTen,
@@ -1083,13 +1083,13 @@ function sinhFactsDeHieu_(chart, pi) {
   var dxc = d10c(xc);
   var saoXc = saoChinhText(xc);
   if (dxc >= 7) {
-    anhHuong.push('Cung đối diện — nói về ' + lv(P[xc].cung) + ' — rất mạnh mẽ (có ' + saoXc + '). Đây là nguồn lực lớn mà bạn có thể dựa vào khi cần.');
+    anhHuong.push('Cung đối diện — nói về ' + lv(P[xc].cung) + ' — rất mạnh mẽ (có ' + saoXc + '). Đây là nguồn lực lớn bạn có thể dựa vào; mặt trái là dễ ỷ lại vào nó.');
   } else if (dxc >= 5.5) {
     anhHuong.push('Cung đối diện — nói về ' + lv(P[xc].cung) + ' — khá tốt (có ' + saoXc + '). Bạn nhận được sự hỗ trợ vừa phải từ phía này.');
   } else if (dxc >= 4) {
-    anhHuong.push('Cung đối diện — nói về ' + lv(P[xc].cung) + ' — ở mức bình thường. Không giúp cũng không cản trở bạn.');
+    anhHuong.push('Cung đối diện — nói về ' + lv(P[xc].cung) + ' — ở mức bình thường: không giúp nhiều, cũng không cản trở.');
   } else {
-    anhHuong.push('Cung đối diện — nói về ' + lv(P[xc].cung) + ' — khá yếu. Đây là điểm bạn cần tự lực nhiều hơn, không nên ỷ lại.');
+    anhHuong.push('Cung đối diện — nói về ' + lv(P[xc].cung) + ' — khá yếu: phía này ít giúp được bạn, có lúc còn kéo bạn lùi.');
   }
 
   /* ========== 2. TAM HỢP ========== */
@@ -1101,7 +1101,7 @@ function sinhFactsDeHieu_(chart, pi) {
   } else if (dtb >= 3.5) {
     anhHuong.push('Hai cung tam hợp ở mức trung bình — bạn không được nâng đỡ nhiều từ hai phía này.');
   } else {
-    anhHuong.push('Hai cung tam hợp khá yếu — bạn cần tự lực nhiều hơn, đừng trông chờ vào bên ngoài.');
+    anhHuong.push('Hai cung tam hợp khá yếu — ít được nâng đỡ, nhiều việc phải tự gánh và dễ hụt hơi giữa chừng.');
   }
 
   /* ========== 3. NHỊ HỢP ========== */
@@ -1109,9 +1109,9 @@ function sinhFactsDeHieu_(chart, pi) {
   if (dnh >= 6.5) {
     anhHuong.push('Cung nhị hợp — nói về ' + lv(P[nh].cung) + ' — khá tốt. Đây là một nguồn trợ lực âm thầm nhưng bền bỉ mà bạn chưa chắc đã nhận ra.');
   } else if (dnh >= 4) {
-    anhHuong.push('Cung nhị hợp ở mức bình thường — không có gì đặc biệt đáng lo.');
+    anhHuong.push('Cung nhị hợp ở mức bình thường — không nâng đỡ cũng không kéo lùi.');
   } else {
-    anhHuong.push('Cung nhị hợp khá yếu — có thể có một yếu tố âm thầm đang kéo lùi bạn ở lĩnh vực này, cần quan sát.');
+    anhHuong.push('Cung nhị hợp khá yếu — có một yếu tố âm thầm kéo lùi bạn ở lĩnh vực này, khó nhận ra ngay.');
   }
 
   /* ========== 4. GIÁP CUNG ========== */
@@ -1127,9 +1127,9 @@ function sinhFactsDeHieu_(chart, pi) {
   if (catL.length && catR.length) {
     anhHuong.push('Đặc biệt, cung này được hai cung bên cạnh "kẹp" bằng cát tinh — đây là dấu hiệu được nâng đỡ từ hai phía, có quý nhân bảo vệ.');
   } else if (hungL.length && hungR.length) {
-    anhHuong.push('Cung này bị hai cung bên cạnh "kẹp" bằng sát tinh — dấu hiệu bị kìm hãm, khó phát huy. Cần kiên nhẫn và cẩn trọng.');
+    anhHuong.push('Cung này bị hai cung bên cạnh "kẹp" bằng sát tinh — dấu hiệu bị kìm hãm từ hai phía, khó phát huy, dễ bị người khác gây khó.');
   } else if (catL.length || catR.length) {
-    anhHuong.push('Có một bên được cát tinh nâng đỡ — bạn nhận được trợ lực từ một phía, không đầy đủ nhưng vẫn đáng quý.');
+    anhHuong.push('Có một bên được cát tinh nâng đỡ — có trợ lực nhưng chỉ từ một phía, không đủ để dựa hẳn.');
   } else if (hungL.length || hungR.length) {
     anhHuong.push('Có một bên có sát tinh — có thể có người hoặc hoàn cảnh âm thầm gây khó cho bạn.');
   }
@@ -1137,7 +1137,7 @@ function sinhFactsDeHieu_(chart, pi) {
   if (tuanL && tuanR) {
     anhHuong.push('Đặc biệt: cả hai cung bên cạnh đều bị Tuần/Triệt chặn — bạn bị "bọc kín" hai bên, ít được nhưng cũng ít mất.');
   } else if (tuanL || tuanR) {
-    anhHuong.push('Một bên bị Tuần/Triệt chặn — ảnh hưởng từ hai phía không đồng đều, bạn cần tự quan sát để cân bằng.');
+    anhHuong.push('Một bên bị Tuần/Triệt chặn — ảnh hưởng từ hai phía lệch nhau, một phía gần như không có tác dụng.');
   }
 
   /* ========== YẾU TỐ ĐẶC BIỆT ========== */
@@ -1148,10 +1148,10 @@ function sinhFactsDeHieu_(chart, pi) {
     if (!s.hoa || hoaDa[s.hoa]) return;
     hoaDa[s.hoa] = true;
     var moTa = {
-      'Lộc':   'Có Hóa Lộc — tài lộc và may mắn đến với lĩnh vực này. Bạn được hưởng lợi tự nhiên.',
-      'Quyền': 'Có Hóa Quyền — bạn có quyền, có uy trong lĩnh vực này. Người khác nể trọng và nghe theo.',
+      'Lộc':   'Có Hóa Lộc — tài lộc và may mắn đến với lĩnh vực này; mặt trái là dễ ham lợi, tiêu nhanh.',
+      'Quyền': 'Có Hóa Quyền — bạn có quyền, có uy trong lĩnh vực này; mặt trái là dễ áp đặt, gây va chạm.',
       'Khoa':  'Có Hóa Khoa — danh tiếng và học vấn tỏa sáng. Khi gặp khó sẽ có người giúp giải.',
-      'Kỵ':    'Có Hóa Kỵ — đây là điểm cần đặc biệt lưu ý. Dễ gặp trở ngại, hiểu lầm, hoặc hao tổn ở lĩnh vực này.'
+      'Kỵ':    'Có Hóa Kỵ — điểm yếu rõ: dễ gặp trở ngại, hiểu lầm, hao tổn và lo nghĩ dai dẳng ở lĩnh vực này.'
     }[s.hoa];
     if (moTa) dacBiet.push(moTa);
   });
@@ -1166,7 +1166,7 @@ function sinhFactsDeHieu_(chart, pi) {
     var totBS = ['Bác Sĩ','Lực Sĩ','Thanh Long','Tướng Quân','Tấu Thư','Hỷ Thần'].indexOf(C.bacSi) >= 0;
     var xauBS = ['Bệnh Phù','Đại Hao','Phục Binh','Quan Phủ','Tiểu Hao','Phi Liêm'].indexOf(C.bacSi) >= 0;
     if (totBS) dacBiet.push('Vòng Bác Sĩ đóng ở "' + C.bacSi + '" — điểm sáng tích cực, thêm thuận lợi cho lĩnh vực này.');
-    else if (xauBS) dacBiet.push('Vòng Bác Sĩ đóng ở "' + C.bacSi + '" — dấu hiệu cần thận trọng hơn mức bình thường.');
+    else if (xauBS) dacBiet.push('Vòng Bác Sĩ đóng ở "' + C.bacSi + '" — dấu hiệu bất lợi: lĩnh vực này dễ suy, dễ vấp hơn bình thường.');
   }
 
   /* 8. Vòng Thái Tuế */
@@ -1174,7 +1174,7 @@ function sinhFactsDeHieu_(chart, pi) {
     var totTT = ['Thái Tuế','Thiếu Dương','Thiếu Âm','Long Đức','Phúc Đức'].indexOf(C.thaiTue) >= 0;
     var xauTT = ['Tang Môn','Quan Phù','Tử Phù','Tuế Phá','Bạch Hổ','Điếu Khách','Trực Phù'].indexOf(C.thaiTue) >= 0;
     if (totTT) dacBiet.push('Vòng Thái Tuế đóng ở "' + C.thaiTue + '" — mang lại điều tích cực cho lĩnh vực này.');
-    else if (xauTT) dacBiet.push('Vòng Thái Tuế đóng ở "' + C.thaiTue + '" — dấu hiệu cần đề phòng ở một số khía cạnh.');
+    else if (xauTT) dacBiet.push('Vòng Thái Tuế đóng ở "' + C.thaiTue + '" — dấu hiệu bất lợi ở một số khía cạnh của lĩnh vực này.');
   }
 
   return { anhHuong: anhHuong, dacBiet: dacBiet };

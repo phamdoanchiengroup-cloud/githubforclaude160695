@@ -15,29 +15,33 @@
 
 var BTCT_CUNG_VI = [
   { tru: 'Năm', ten: 'Niên trụ', tuoi: '1–16 tuổi', can: 'ông bà, tổ nghiệp, cha (theo cung)', chi: 'gốc gác, quê hương, mẹ (theo cung)',
-    y: 'Tổ nghiệp, gia thế, môi trường tuổi thơ; theo cổ học, hỷ thần ở đây gợi ý nền tảng gia đình thuận, tuổi nhỏ yên ổn – bạn hãy đối chiếu với trải nghiệm thật.' },
+    y: 'Tổ nghiệp, gia thế, môi trường tuổi thơ; theo cổ học, hỷ thần ở đây gợi ý nền tảng gia đình thuận, tuổi nhỏ yên ổn; kỵ thần ở đây thì tuổi nhỏ thiếu thốn, gia đình nhiều lo toan – bạn hãy đối chiếu với trải nghiệm thật.' },
   { tru: 'Tháng', ten: 'Nguyệt trụ', tuoi: '17–32 tuổi', can: 'cha, anh chị em cùng giới', chi: 'mẹ, anh chị em khác giới – "môn hộ", nền tảng sự nghiệp',
     y: 'Cha mẹ, anh em, môi trường học tập – lập nghiệp thời thanh niên; nguyệt lệnh là gốc sức mạnh của cả lá số.' },
   { tru: 'Ngày', ten: 'Nhật trụ', tuoi: '33–48 tuổi', can: 'bản thân (Nhật chủ)', chi: 'người phối ngẫu – cung phu thê',
     y: 'Bản thân và hôn nhân, giai đoạn trung niên; nhật chi là cung phu thê, cho biết tính cách và mức hòa hợp của vợ/chồng.' },
   { tru: 'Giờ', ten: 'Thời trụ', tuoi: '49 tuổi trở đi', can: 'con cái (con trưởng)', chi: 'con cái, hậu vận, cấp dưới – học trò',
-    y: 'Con cái, hậu vận, thành quả cuối đời; hỷ thần ở đây gợi ý tuổi già an nhàn, con cái đỡ đần.' }
+    y: 'Con cái, hậu vận, thành quả cuối đời; hỷ thần ở đây gợi ý tuổi già an nhàn, con cái đỡ đần; kỵ thần ở đây thì về già vẫn phải lo toan, ít được con cái đỡ.' }
 ];
 
 var BTCT_TT_NHOM = { 'Tỷ Kiên': 'Tỷ Kiếp', 'Kiếp Tài': 'Tỷ Kiếp', 'Thực Thần': 'Thực Thương', 'Thương Quan': 'Thực Thương',
   'Thiên Tài': 'Tài', 'Chính Tài': 'Tài', 'Thất Sát': 'Quan Sát', 'Chính Quan': 'Quan Sát', 'Thiên Ấn': 'Ấn', 'Chính Ấn': 'Ấn' };
 
 var BTCT_NHOM_Y = {
-  'Tỷ Kiếp': { tc: 'tự lập, cá tính mạnh, trọng bạn bè, thích cạnh tranh', nghe: 'kinh doanh độc lập, thể thao, hợp tác nhóm, môi giới', thieu: 'thiếu tự tin, ít người hỗ trợ ngang hàng' },
-  'Thực Thương': { tc: 'sáng tạo, khéo léo, ăn nói, thích thể hiện, tư duy phản biện', nghe: 'nghệ thuật, truyền thông, giảng dạy, ẩm thực, công nghệ, tư vấn', thieu: 'khó bộc lộ tài năng, ít ý tưởng mới' },
-  'Tài': { tc: 'thực tế, nhạy bén tiền bạc, giỏi quản lý nguồn lực', nghe: 'tài chính, kinh doanh, thương mại, kế toán, đầu tư', thieu: 'ít duyên tiền bạc, không coi trọng vật chất' },
-  'Quan Sát': { tc: 'kỷ luật, trách nhiệm, có tổ chức, chịu áp lực tốt', nghe: 'quản lý, hành chính, quân đội – công an, luật, kỹ thuật', thieu: 'thiếu kỷ luật, khó gắn bó tổ chức' },
-  'Ấn': { tc: 'ham học, nhân hậu, sâu sắc, thiên về tinh thần', nghe: 'giáo dục, nghiên cứu, y dược, văn hóa, tôn giáo – tâm linh', thieu: 'ít được che chở, học vấn phải tự lực' }
+  'Tỷ Kiếp': { tc: 'tự lập, cá tính mạnh, trọng bạn bè, thích cạnh tranh, nhưng cố chấp, dễ hao tiền vì bạn bè', nghe: 'kinh doanh độc lập, thể thao, hợp tác nhóm, môi giới', thieu: 'thiếu tự tin, dễ bị lấn, ít người hỗ trợ ngang hàng' },
+  'Thực Thương': { tc: 'sáng tạo, khéo léo, ăn nói, thích thể hiện, tư duy phản biện, nhưng dễ nói quá lời, khó chịu gò bó', nghe: 'nghệ thuật, truyền thông, giảng dạy, ẩm thực, công nghệ, tư vấn', thieu: 'khó bộc lộ tài năng, ít ý tưởng mới, dễ bị coi là nhạt' },
+  'Tài': { tc: 'thực tế, nhạy bén tiền bạc, giỏi quản lý nguồn lực, nhưng dễ thực dụng, nặng tính toán', nghe: 'tài chính, kinh doanh, thương mại, kế toán, đầu tư', thieu: 'ít duyên tiền bạc, quản lý tiền kém, dễ túng thiếu' },
+  'Quan Sát': { tc: 'kỷ luật, trách nhiệm, có tổ chức, chịu áp lực tốt, nhưng cứng nhắc, hay tự gây áp lực cho mình', nghe: 'quản lý, hành chính, quân đội – công an, luật, kỹ thuật', thieu: 'thiếu kỷ luật, khó gắn bó tổ chức, ít chức vụ' },
+  'Ấn': { tc: 'ham học, nhân hậu, sâu sắc, thiên về tinh thần, nhưng dễ ỷ lại, chậm hành động', nghe: 'giáo dục, nghiên cứu, y dược, văn hóa, tôn giáo – tâm linh', thieu: 'ít được che chở, học vấn phải tự lực, tinh thần dễ bất an' }
 };
 
 var BTCT_TANG_PHU = {
-  'Mộc': 'nhịp vận động, sự thư giãn và cảm xúc', 'Hỏa': 'nhịp làm việc – nghỉ ngơi, giữ lòng bình thản',
-  'Thổ': 'nếp ăn uống điều độ', 'Kim': 'hít thở, không khí trong lành', 'Thủy': 'giấc ngủ, uống đủ nước, giữ ấm'
+  // 24/11: chủ dự án chốt nêu thẳng nhóm bệnh sách cổ gắn với từng hành (vẫn là "dễ", kèm lời nhắc bác sĩ ở câu cuối mục)
+  'Mộc': 'vùng gan – mật, gân cơ, mắt và cảm xúc (dễ mắc bệnh gan, men gan cao, sỏi mật, đau mắt, co rút gân cơ, cáu giận – trầm uất)',
+  'Hỏa': 'tim – mạch, huyết áp và giấc ngủ (dễ mắc bệnh tim mạch, huyết áp cao, hồi hộp, mất ngủ, nhiệt miệng)',
+  'Thổ': 'dạ dày – tiêu hóa (dễ mắc đau dạ dày, viêm loét dạ dày, khó tiêu, đại tràng, tiểu đường, thừa cân)',
+  'Kim': 'phổi, đường hô hấp và da (dễ mắc viêm phế quản, ho kéo dài, hen, viêm mũi xoang, bệnh ngoài da, táo bón)',
+  'Thủy': 'thận – tiết niệu, xương khớp và sức chịu lạnh (dễ mắc bệnh thận, sỏi thận, viêm đường tiết niệu, bệnh sinh dục, đau lưng mỏi gối, ù tai)'
 };
 
 // Thiên Đức quý nhân theo chi tháng: {t: 'can'|'chi', v: index}
@@ -107,8 +111,8 @@ function batTuChiTiet_(bt, input, tv) {
     var tuong = bt.quanHe.filter(function (q) { return q.txt.indexOf(p.tru) >= 0 || q.txt.indexOf(p.chiTen) >= 0 && q.txt.indexOf('Tam') === 0; })
       .map(function (q) { return (q.loai === 'hop' ? '✓ ' : q.loai === 'xung' ? '✗ ' : '◇ ') + q.txt; });
     var kv = bt.thanSat.filter(function (t) { return t.ten === 'Không Vong' && t.o.indexOf(p.tru) >= 0 && t.o.indexOf('gặp') >= 0; });
-    if (kv.length) tuong.push('✗ Trụ ' + truTen[i] + ' rơi vào Không Vong – lục thân/giai đoạn này cần chăm chút, vun đắp nhiều hơn.');
-    if (!tuong.length) tuong.push('Không có hợp – xung – hình – hại đáng kể chạm vào trụ này: tương đối ổn định.');
+    if (kv.length) tuong.push('✗ Trụ ' + truTen[i] + ' rơi vào Không Vong – lục thân/giai đoạn này dễ hụt hẫng, có mà như không, duyên mỏng.');
+    if (!tuong.length) tuong.push('Không có hợp – xung – hình – hại đáng kể chạm vào trụ này: tương đối ổn định, nhưng cũng ít trợ lực từ các trụ khác.');
     secs.push({ tieuDe: 'Tương tác với các trụ khác', items: tuong });
 
     var ts = thanSatMoRong.filter(function (t) { return t.tru.indexOf(i) >= 0; })
@@ -120,8 +124,8 @@ function batTuChiTiet_(bt, input, tv) {
       tuong.filter(function (x) { return x.charAt(0) === '✗'; }).length * -0.8 + tuong.filter(function (x) { return x.charAt(0) === '✓'; }).length * 0.4 +
       ts.filter(function (x) { return x.charAt(0) === '✓'; }).length * 0.5 - ts.filter(function (x) { return x.charAt(0) === '✗'; }).length * 0.5;
     d = Math.round(d * 10) / 10;
-    var ket = d >= 2 ? 'Giai đoạn ' + cv.tuoi + ' thuận lợi; lục thân ở cung này hỗ trợ tốt.' : d >= 0.5 ? 'Giai đoạn ' + cv.tuoi + ' khá, có trợ lực.' :
-      d > -1 ? 'Giai đoạn ' + cv.tuoi + ' bình ổn, thành bại do nỗ lực.' : 'Giai đoạn ' + cv.tuoi + ' nhiều thử thách; quan hệ lục thân ở cung này cần vun đắp.';
+    var ket = d >= 2 ? 'Giai đoạn ' + cv.tuoi + ' thuận lợi, lục thân ở cung này hỗ trợ tốt; mặt trái là dễ ỷ lại.' : d >= 0.5 ? 'Giai đoạn ' + cv.tuoi + ' khá, có trợ lực nhưng vẫn có lúc trắc trở.' :
+      d > -1 ? 'Giai đoạn ' + cv.tuoi + ' bình ổn, ít được đỡ, thành bại do nỗ lực.' : 'Giai đoạn ' + cv.tuoi + ' nhiều thử thách: dễ thiếu thốn, vất vả, quan hệ lục thân ở cung này dễ căng thẳng hoặc xa cách.';
     secs.push({ tieuDe: 'Kết luận', items: [ket] });
     return { ten: cv.ten, tru: p.tru, canChi: p.canTen + ' ' + p.chiTen, tuoi: cv.tuoi, diem: d, danhGia: lgXepHang_(d * 1.6), secs: secs };
   });
@@ -140,25 +144,25 @@ function batTuChiTiet_(bt, input, tv) {
   nhomSort.slice(0, 2).forEach(function (x) {
     if (x.v >= 1) tc.push('✓ ' + x.g + ' nổi bật – tính cách ' + BTCT_NHOM_Y[x.g].tc + '; hợp nghề ' + BTCT_NHOM_Y[x.g].nghe + '.');
   });
-  nhomSort.filter(function (x) { return x.v < 0.3; }).forEach(function (x) { tc.push('◇ Thiếu ' + x.g + ' – ' + BTCT_NHOM_Y[x.g].thieu + '; nên bổ sung qua môi trường, nghề nghiệp.'); });
-  if (co('Thương Quan') && co('Chính Quan')) tc.push('✗ Thương Quan và Chính Quan cùng hiện – dễ va chạm với cấp trên, luật lệ; nên làm nghề tự do hoặc chuyên môn.');
-  if (co('Thiên Ấn') && co('Thực Thần')) tc.push('✗ Thiên Ấn gặp Thực Thần (kiêu đoạt thực) – dễ bỏ dở, nếp ăn uống – sinh hoạt dễ thất thường; nên giữ điều độ.');
-  if (co('Thất Sát') && co('Chính Quan')) tc.push('✗ Quan Sát hỗn tạp – dễ phân tâm, nhiều áp lực; (nữ) đường tình cảm nhiều trải nghiệm, nên rõ ràng trong lựa chọn.');
-  if ((nhomDem['Tỷ Kiếp'] || 0) >= 2.5 && (nhomDem['Tài'] || 0) > 0) tc.push('✗ Tỷ Kiếp vượng mà có Tài – dễ tranh tài, hùn hạp nên rõ ràng.');
-  if (co('Thực Thần') && co('Thất Sát')) tc.push('✓ Thực Thần chế Sát – có bản lĩnh xử lý áp lực, hợp vị trí quyền lực.');
-  if (co('Thất Sát') && co('Chính Ấn')) tc.push('✓ Sát Ấn tương sinh – biến áp lực thành uy tín, hợp quản lý, chuyên môn cao.');
-  if (co('Thương Quan') && co('Chính Tài')) tc.push('✓ Thương Quan sinh Tài – kiếm tiền bằng tài năng, sáng tạo.');
+  nhomSort.filter(function (x) { return x.v < 0.3; }).forEach(function (x) { tc.push('◇ Thiếu ' + x.g + ' – ' + BTCT_NHOM_Y[x.g].thieu + '; có thể bù bằng môi trường, nghề nghiệp.'); });
+  if (co('Thương Quan') && co('Chính Quan')) tc.push('✗ Thương Quan và Chính Quan cùng hiện – dễ va chạm với cấp trên, luật lệ, dễ bất mãn bỏ việc; hợp nghề tự do hoặc chuyên môn.');
+  if (co('Thiên Ấn') && co('Thực Thần')) tc.push('✗ Thiên Ấn gặp Thực Thần (kiêu đoạt thực) – dễ bỏ dở, tinh thần u uất, ăn uống – sinh hoạt thất thường.');
+  if (co('Thất Sát') && co('Chính Quan')) tc.push('✗ Quan Sát hỗn tạp – dễ phân tâm, nhiều áp lực; (nữ) tình cảm nhiều mối, dễ chọn nhầm người, có thể trải qua đổ vỡ.');
+  if ((nhomDem['Tỷ Kiếp'] || 0) >= 2.5 && (nhomDem['Tài'] || 0) > 0) tc.push('✗ Tỷ Kiếp vượng mà có Tài – dễ tranh tài, mất tiền vì hùn hạp, bạn bè.');
+  if (co('Thực Thần') && co('Thất Sát')) tc.push('✓ Thực Thần chế Sát – có bản lĩnh xử lý áp lực, hợp vị trí quyền lực; mặt trái là quen sống trong áp lực.');
+  if (co('Thất Sát') && co('Chính Ấn')) tc.push('✓ Sát Ấn tương sinh – biến áp lực thành uy tín, hợp quản lý, chuyên môn cao; mặt trái là áp lực thường trực.');
+  if (co('Thương Quan') && co('Chính Tài')) tc.push('✓ Thương Quan sinh Tài – kiếm tiền bằng tài năng, sáng tạo; mặt trái là thu nhập lên xuống theo cảm hứng.');
   out.tinhCach = tc;
 
   /* ---------- 5. NGŨ HÀNH & TẠNG PHỦ ---------- */
   var sk = [];
   HANH_SINH.forEach(function (h) {
     var pct = bt.phanTram[h];
-    if (pct >= 30) sk.push('✗ ' + h + ' thái quá (' + pct + '%) – nên chú ý ' + BTCT_TANG_PHU[h] + '; đồng thời hành bị ' + h + ' khắc (' + HANH_SINH[(HANH_SINH.indexOf(h) + 2) % 5] + ': ' + BTCT_TANG_PHU[HANH_SINH[(HANH_SINH.indexOf(h) + 2) % 5]] + ') dễ bị lấn át, cũng nên chăm chút.');
-    else if (pct < 8) sk.push('✗ ' + h + ' bất cập (' + pct + '%) – ' + BTCT_TANG_PHU[h] + ' là điểm nên chăm chút thêm; theo cổ học có thể bổ sung bằng màu sắc, thực phẩm, môi trường hành ' + h + '.');
+    if (pct >= 30) sk.push('✗ ' + h + ' thái quá (' + pct + '%) – ' + BTCT_TANG_PHU[h] + ' là điểm dễ yếu; đồng thời hành bị ' + h + ' khắc (' + HANH_SINH[(HANH_SINH.indexOf(h) + 2) % 5] + ': ' + BTCT_TANG_PHU[HANH_SINH[(HANH_SINH.indexOf(h) + 2) % 5]] + ') dễ bị lấn át, cũng dễ yếu theo.');
+    else if (pct < 8) sk.push('✗ ' + h + ' bất cập (' + pct + '%) – ' + BTCT_TANG_PHU[h] + ' là điểm yếu bẩm sinh; theo cổ học có thể bù bằng màu sắc, thực phẩm, môi trường hành ' + h + '.');
   });
-  if (!sk.length) sk.push('✓ Ngũ hành tương đối cân bằng (không hành nào > 30% hay < 8%).');
-  sk.push('Nhật chủ ' + dm + ' – theo cổ học nên chú trọng: ' + BTCT_TANG_PHU[dm] + '. Hành Kỵ thần (' + bt.goiY.ky.join(', ') + ') vượng ở đại vận/lưu niên là thời điểm nên giữ nếp sinh hoạt điều độ, nghỉ ngơi đủ và khám sức khỏe định kỳ.');
+  if (!sk.length) sk.push('✓ Ngũ hành tương đối cân bằng (không hành nào > 30% hay < 8%) – không có điểm yếu nổi bật, nhưng cũng không có thế mạnh vượt trội.');
+  sk.push('Nhật chủ ' + dm + ' – theo cổ học gắn với: ' + BTCT_TANG_PHU[dm] + '. Hành Kỵ thần (' + bt.goiY.ky.join(', ') + ') vượng ở đại vận/lưu niên là lúc sức khỏe dễ sa sút; nên khám định kỳ và hỏi bác sĩ khi có dấu hiệu.');
   out.sucKhoe = sk;
 
   /* ---------- 6. THẦN SÁT MỞ RỘNG ---------- */
@@ -174,7 +178,7 @@ function batTuChiTiet_(bt, input, tv) {
       if (khacCan && q.indexOf('lục xung') >= 0) items.push('✗ Thiên khắc địa xung ' + tenCung + ' – biến động lớn ở lĩnh vực này.');
       else if (q.indexOf('lục xung') >= 0) items.push('✗ Chi vận xung ' + tenCung + '.');
       if (q.indexOf('tương hình') >= 0 || q.indexOf('tự hình') >= 0) items.push('✗ Chi vận hình ' + tenCung + ' – thị phi, tổn thương.');
-      if (q.indexOf('lục hợp') >= 0 || q.indexOf('tam hợp') >= 0) items.push('✓ Chi vận ' + q.join('/') + ' với ' + tenCung + ' – gắn kết, hỗ trợ.');
+      if (q.indexOf('lục hợp') >= 0 || q.indexOf('tam hợp') >= 0) items.push('✓ Chi vận ' + q.join('/') + ' với ' + tenCung + ' – gắn kết, hỗ trợ; nhưng hợp cũng dễ bị ràng buộc.');
       if (v.can === p.can && v.chi === p.chi) items.push('✗ Đại vận phục ngâm ' + tenCung + ' – giai đoạn lặp lại chuyện cũ, dễ buồn phiền ở lĩnh vực này.');
       if (hopCan) items.push('✓ Can vận hợp can ' + truTen[i] + (i === 2 ? ' (hợp Nhật chủ – duyên phận, hợp tác)' : '') + '.');
     });
@@ -204,47 +208,47 @@ function btctLuanCungRieng_(i, p, bt, male, co, thau) {
   var chinh = p.tangCan[0].thapThan;
   if (i === 0) {
     var k0 = btctHyKy_(bt, p.canHanh) === 'Kỵ', k1 = btctHyKy_(bt, p.chiHanh) === 'Kỵ';
-    if (!k0 && !k1) r.push('✓ Niên trụ mang hỷ khí – lá số gợi ý xuất thân ổn, được gia đình nâng đỡ lúc nhỏ; bạn hãy đối chiếu với trải nghiệm thật.');
-    else if (k0 && k1) r.push('✗ Niên trụ mang kỵ khí cả can lẫn chi – theo cổ học, gợi ý thuở nhỏ có nhiều điều phải lo, sớm tự lập; bạn hãy tự đối chiếu.');
+    if (!k0 && !k1) r.push('✓ Niên trụ mang hỷ khí – lá số gợi ý xuất thân ổn, được gia đình nâng đỡ lúc nhỏ; mặt trái là dễ được bao bọc, chậm va chạm đời – bạn hãy đối chiếu với trải nghiệm thật.');
+    else if (k0 && k1) r.push('✗ Niên trụ mang kỵ khí cả can lẫn chi – theo cổ học, thuở nhỏ dễ thiếu thốn, gia đình nhiều sóng gió, phải tự lập sớm; bạn hãy tự đối chiếu.');
     else r.push('◇ Niên trụ ' + (k0 ? 'can kỵ, chi hỷ – gợi ý gia đình có lúc áp lực nhưng nền tảng vẫn đỡ đần; bạn hãy tự đối chiếu' : 'can hỷ, chi kỵ – gợi ý gia đình có tiếng nhưng bên trong nhiều lo toan; bạn hãy tự đối chiếu') + '.');
-    if (p.thapThan === 'Chính Ấn' || p.thapThan === 'Chính Quan') r.push('✓ Gợi ý tổ nghiệp có nề nếp, gia đình trọng học vấn/danh dự.');
-    if (p.thapThan === 'Kiếp Tài' || p.thapThan === 'Thương Quan') r.push('◇ Gợi ý tổ nghiệp hay thay đổi, nên tự tạo dựng là chính.');
+    if (p.thapThan === 'Chính Ấn' || p.thapThan === 'Chính Quan') r.push('✓ Gợi ý tổ nghiệp có nề nếp, gia đình trọng học vấn/danh dự; mặt trái là khuôn phép nặng, kỳ vọng cao.');
+    if (p.thapThan === 'Kiếp Tài' || p.thapThan === 'Thương Quan') r.push('◇ Gợi ý tổ nghiệp hay thay đổi, ít được thừa hưởng, phải tự tạo dựng là chính.');
   }
   if (i === 1) {
     r.push('Nguyệt lệnh chính khí ' + p.tangCan[0].ten + ' (' + chinh + ') là "đề cương" của lá số – quyết định cách cục (xem mục Cách cục).');
-    if (chinh === 'Chính Ấn' || chinh === 'Thiên Ấn') r.push('✓ Ấn ở nguyệt lệnh – gợi ý được mẹ và bề trên che chở, học hành thuận.');
-    if (chinh === 'Chính Quan' || chinh === 'Thất Sát') r.push('◇ Quan Sát ở nguyệt lệnh – gợi ý gia đình nề nếp, nghiêm khắc; sớm có ý thức trách nhiệm.');
-    if (chinh === 'Kiếp Tài' || chinh === 'Tỷ Kiên') r.push('◇ Tỷ Kiếp ở nguyệt lệnh – gợi ý anh em, bạn bè dễ cạnh tranh; tự lập sớm.');
-    if (chinh === 'Chính Tài' || chinh === 'Thiên Tài') r.push('✓ Tài ở nguyệt lệnh – gợi ý gia đình chú trọng kinh tế, bạn sớm biết kiếm tiền.');
+    if (chinh === 'Chính Ấn' || chinh === 'Thiên Ấn') r.push('✓ Ấn ở nguyệt lệnh – gợi ý được mẹ và bề trên che chở, học hành thuận; mặt trái là dễ dựa dẫm.');
+    if (chinh === 'Chính Quan' || chinh === 'Thất Sát') r.push('◇ Quan Sát ở nguyệt lệnh – gợi ý gia đình nề nếp, nghiêm khắc; sớm có ý thức trách nhiệm nhưng tuổi trẻ nhiều áp lực, gò bó.');
+    if (chinh === 'Kiếp Tài' || chinh === 'Tỷ Kiên') r.push('◇ Tỷ Kiếp ở nguyệt lệnh – gợi ý anh em, bạn bè dễ cạnh tranh, tranh phần; tự lập sớm.');
+    if (chinh === 'Chính Tài' || chinh === 'Thiên Tài') r.push('✓ Tài ở nguyệt lệnh – gợi ý gia đình chú trọng kinh tế, bạn sớm biết kiếm tiền; mặt trái là việc học dễ bị xem nhẹ.');
   }
   if (i === 2) {
     var y = {
-      'Chính Tài': male ? '✓ Chính Tài tọa cung phu thê – vợ đảm đang, biết vun vén, hôn nhân ổn định.' : '◇ Chính Tài tọa cung phu thê – chồng thực tế, coi trọng kinh tế gia đình.',
-      'Thiên Tài': male ? '◇ Thiên Tài tọa cung phu thê – vợ năng động, hào phóng; nam có sức hút, nên rõ ràng và chung thủy.' : '◇ Thiên Tài tọa cung phu thê – chồng năng động, giao tiếp rộng.',
-      'Chính Quan': male ? '✓ Chính Quan tọa cung phu thê – vợ đoan chính, gia giáo.' : '✓ Chính Quan tọa cung phu thê – chồng đứng đắn, có địa vị; hôn nhân tốt.',
-      'Thất Sát': male ? '✗ Thất Sát tọa cung phu thê – vợ cá tính mạnh, dễ va chạm.' : '✗ Thất Sát tọa cung phu thê – chồng cá tính mạnh, quyết liệt; nên tìm hiểu kỹ, không vội cưới.',
-      'Chính Ấn': '✓ Ấn tọa cung phu thê – người phối ngẫu chu đáo, biết chăm sóc, như người che chở.',
-      'Thiên Ấn': '◇ Thiên Ấn tọa cung phu thê – người phối ngẫu sâu sắc nhưng khó hiểu, ít chia sẻ.',
-      'Thực Thần': '✓ Thực Thần tọa cung phu thê – vợ chồng hòa thuận, biết hưởng thụ.',
-      'Thương Quan': male ? '◇ Thương Quan tọa cung phu thê – vợ thông minh, sắc sảo, dễ lời qua tiếng lại.' : '✗ Thương Quan tọa cung phu thê (nữ) – vợ chồng dễ khác ý trong lời nói; cần mềm mỏng, lắng nghe nhau.',
-      'Tỷ Kiên': '◇ Tỷ Kiên tọa cung phu thê – vợ chồng ngang hàng, độc lập; nếu Tỷ Kiếp nhiều, nên giữ ranh giới rõ ràng với các mối quan hệ bên ngoài.',
-      'Kiếp Tài': male ? '✗ Kiếp Tài tọa cung phu thê (nam) – hôn nhân cần nhiều thấu hiểu, tiền bạc vợ chồng nên rạch ròi.' : '◇ Kiếp Tài tọa cung phu thê – vợ chồng cạnh tranh, cần rõ ràng tài chính.'
+      'Chính Tài': male ? '✓ Chính Tài tọa cung phu thê – vợ đảm đang, biết vun vén, hôn nhân ổn định; mặt trái là vợ dễ quản chặt, chuyện tiền bạc hay căng.' : '◇ Chính Tài tọa cung phu thê – chồng thực tế, coi trọng kinh tế gia đình, nhưng dễ khô khan, ít lãng mạn.',
+      'Thiên Tài': male ? '◇ Thiên Tài tọa cung phu thê – vợ năng động, hào phóng; nam có sức hút, dễ có người thứ ba chen vào.' : '◇ Thiên Tài tọa cung phu thê – chồng năng động, giao tiếp rộng, nhưng tiêu xài mạnh và dễ đa tình.',
+      'Chính Quan': male ? '✓ Chính Quan tọa cung phu thê – vợ đoan chính, gia giáo, nhưng nghiêm, hay đòi hỏi.' : '✓ Chính Quan tọa cung phu thê – chồng đứng đắn, có địa vị, hôn nhân tốt; mặt trái là chồng nghiêm khắc, gia đình nặng khuôn phép.',
+      'Thất Sát': male ? '✗ Thất Sát tọa cung phu thê – vợ cá tính mạnh, dễ va chạm, cãi to.' : '✗ Thất Sát tọa cung phu thê – chồng cá tính mạnh, quyết liệt, dễ nóng nảy áp đặt; hôn nhân nhiều sóng gió.',
+      'Chính Ấn': '✓ Ấn tọa cung phu thê – người phối ngẫu chu đáo, biết chăm sóc, như người che chở; mặt trái là dễ bao bọc quá mức, mình dễ ỷ lại.',
+      'Thiên Ấn': '◇ Thiên Ấn tọa cung phu thê – người phối ngẫu sâu sắc nhưng khó hiểu, ít chia sẻ, vợ chồng dễ lạnh nhạt.',
+      'Thực Thần': '✓ Thực Thần tọa cung phu thê – vợ chồng hòa thuận, biết hưởng thụ; mặt trái là dễ an phận, ít cùng nhau phấn đấu.',
+      'Thương Quan': male ? '◇ Thương Quan tọa cung phu thê – vợ thông minh, sắc sảo nhưng dễ lời qua tiếng lại, cãi vã.' : '✗ Thương Quan tọa cung phu thê (nữ) – vợ chồng dễ cãi vã, lời nói làm tổn thương nhau, dễ coi nhẹ chồng.',
+      'Tỷ Kiên': '◇ Tỷ Kiên tọa cung phu thê – vợ chồng ngang hàng, độc lập; mặt trái là không ai chịu ai, Tỷ Kiếp nhiều thì dễ có người ngoài chen vào.',
+      'Kiếp Tài': male ? '✗ Kiếp Tài tọa cung phu thê (nam) – hôn nhân dễ bất hòa vì tiền bạc, dễ có người ngoài chen vào, nguy cơ rạn nứt cao.' : '◇ Kiếp Tài tọa cung phu thê – vợ chồng cạnh tranh, dễ va chạm chuyện tiền bạc.'
     }[chinh];
     if (y) r.push(y);
     var sao = male ? ['Chính Tài', 'Thiên Tài'] : ['Chính Quan', 'Thất Sát'];
-    if (p.tangCan.some(function (t) { return sao.indexOf(t.thapThan) >= 0; })) r.push('✓ Phối ngẫu tinh (' + sao.join('/') + ') nằm ngay trong cung phu thê – duyên vợ chồng gắn bó.');
-    if (bt.quanHe.some(function (q) { return q.txt.indexOf('Ngày') >= 0 && q.txt.indexOf('lục xung') >= 0; })) r.push('✗ Cung phu thê bị xung – hôn nhân cần nhiều thấu hiểu, nói chuyện thẳng thắn; theo cổ học, không vội cưới hoặc mỗi người có không gian riêng (công tác xa…) lại hòa hợp hơn.');
-    r.push('Nhật chủ ' + bt.nhatChu + ' tọa "' + p.truongSinh + '" – ' + (['Trường Sinh', 'Lâm Quan', 'Đế Vượng', 'Quan Đới'].indexOf(p.truongSinh) >= 0 ? 'bản thân có gốc, tự chủ.' : ['Tử', 'Tuyệt', 'Bệnh', 'Mộ'].indexOf(p.truongSinh) >= 0 ? 'gốc rễ yếu, cần dựa vào môi trường và quý nhân.' : 'trung bình.'));
+    if (p.tangCan.some(function (t) { return sao.indexOf(t.thapThan) >= 0; })) r.push('✓ Phối ngẫu tinh (' + sao.join('/') + ') nằm ngay trong cung phu thê – duyên vợ chồng gắn bó; mặt trái là dễ phụ thuộc vào nhau.');
+    if (bt.quanHe.some(function (q) { return q.txt.indexOf('Ngày') >= 0 && q.txt.indexOf('lục xung') >= 0; })) r.push('✗ Cung phu thê bị xung – hôn nhân dễ cãi vã, xa cách, có nguy cơ đổ vỡ; theo cổ học, cưới muộn hoặc mỗi người có không gian riêng (công tác xa…) lại đỡ hơn.');
+    r.push('Nhật chủ ' + bt.nhatChu + ' tọa "' + p.truongSinh + '" – ' + (['Trường Sinh', 'Lâm Quan', 'Đế Vượng', 'Quan Đới'].indexOf(p.truongSinh) >= 0 ? 'bản thân có gốc, tự chủ; mặt trái là dễ cố chấp.' : ['Tử', 'Tuyệt', 'Bệnh', 'Mộ'].indexOf(p.truongSinh) >= 0 ? 'gốc rễ yếu, dễ bị hoàn cảnh chi phối, phải dựa vào môi trường và quý nhân.' : 'trung bình.'));
   }
   if (i === 3) {
     var tuTinh = male ? ['Thất Sát', 'Chính Quan'] : ['Thương Quan', 'Thực Thần'];
     var coTuTinh = [p.thapThan].concat(p.tangCan.map(function (t) { return t.thapThan; })).filter(function (x) { return tuTinh.indexOf(x) >= 0; });
-    if (coTuTinh.length) r.push('✓ Tử tức tinh (' + coTuTinh.join(', ') + ') có mặt ở cung con cái – con cái hiện diện rõ, có duyên con.');
-    else r.push('◇ Cung con cái không có tử tức tinh – con cái là chuyện cần thời gian và sự vun đắp.');
+    if (coTuTinh.length) r.push('✓ Tử tức tinh (' + coTuTinh.join(', ') + ') có mặt ở cung con cái – con cái hiện diện rõ, có duyên con; mặt trái là con cái cũng là mối bận tâm lớn.');
+    else r.push('◇ Cung con cái không có tử tức tinh – duyên con mờ, dễ muộn con hoặc con cái ít gần gũi.');
     var h0 = btctHyKy_(bt, p.canHanh) === 'Kỵ', h1 = btctHyKy_(bt, p.chiHanh) === 'Kỵ';
-    if (!h0 && !h1) r.push('✓ Thời trụ mang hỷ khí – hậu vận an nhàn, con cái đỡ đần.');
-    else if (h0 && h1) r.push('✗ Thời trụ mang kỵ khí – hậu vận vẫn phải lo toan, nên tích lũy từ trung niên.');
-    else r.push('◇ Thời trụ nửa hỷ nửa kỵ – hậu vận ổn nhưng còn bận tâm về con cái; nên giữ nếp sinh hoạt điều độ.');
+    if (!h0 && !h1) r.push('✓ Thời trụ mang hỷ khí – hậu vận an nhàn, con cái đỡ đần; mặt trái là về già dễ dựa vào con.');
+    else if (h0 && h1) r.push('✗ Thời trụ mang kỵ khí – hậu vận vẫn phải lo toan, ít được con đỡ, tiền bạc tuổi già dễ thiếu.');
+    else r.push('◇ Thời trụ nửa hỷ nửa kỵ – hậu vận ổn nhưng còn bận tâm về con cái, sức khỏe tuổi già có điểm yếu.');
   }
   return r;
 }
@@ -277,17 +281,17 @@ function btctLucThan_(bt, male, ttDem, ttThau, ttViTri) {
     items.push('Sao đại diện: ' + sao.join('/') + ' (hành ' + hanh + ', là ' + hk + ' thần). ' +
       (dem ? 'Xuất hiện ' + Math.round(dem * 10) / 10 + ' lần (' + (thauN ? thauN + ' lần thấu can' : 'chỉ tàng trong chi') + '): ' + vt.join(', ') + '.' : 'Không xuất hiện trong tứ trụ.'));
     var d = 0;
-    if (!dem) { items.push('◇ Sao ẩn/khuyết – duyên với ' + ten.toLowerCase() + ' mờ nhạt hoặc đến muộn; xét thêm qua đại vận có sao này.'); d -= 0.5; }
-    else if (dem >= 2.2) { items.push('◇ Sao quá nhiều – quan hệ phức tạp, "đa ' + ten.toLowerCase() + '" hoặc lệ thuộc.'); d -= 0.3; }
-    else { items.push('✓ Sao hiện diện vừa phải – quan hệ rõ ràng.'); d += 0.8; }
-    if (thauN) { items.push('✓ Thấu lên thiên can – ' + ten.toLowerCase() + ' có vai trò nổi bật, dễ thấy.'); d += 0.4; }
-    if (hk === 'Dụng' || hk === 'Hỷ') { items.push('✓ Là Hỷ/Dụng thần – ' + ten.toLowerCase() + ' mang lại trợ lực, quan hệ tốt đẹp.'); d += 1.2; }
-    if (hk === 'Kỵ') { items.push('✗ Là Kỵ thần – quan hệ với ' + ten.toLowerCase() + ' dễ gây áp lực, bất đồng.'); d -= 1; }
-    if (dem && biKhac >= dem + 1) { items.push('✗ Bị ' + khac[g] + ' khắc mạnh (' + Math.round(biKhac * 10) / 10 + ') – quan hệ với ' + ten.toLowerCase() + ' cần vun đắp, quan tâm nhiều hơn.'); d -= 1; }
+    if (!dem) { items.push('◇ Sao ẩn/khuyết – duyên với ' + ten.toLowerCase() + ' mờ nhạt hoặc đến muộn, ít nương tựa được; xét thêm qua đại vận có sao này.'); d -= 0.5; }
+    else if (dem >= 2.2) { items.push('◇ Sao quá nhiều – quan hệ phức tạp, "đa ' + ten.toLowerCase() + '" hoặc lệ thuộc, dễ rối và tổn thương.'); d -= 0.3; }
+    else { items.push('✓ Sao hiện diện vừa phải – quan hệ rõ ràng, không quá gần cũng không quá xa.'); d += 0.8; }
+    if (thauN) { items.push('✓ Thấu lên thiên can – ' + ten.toLowerCase() + ' có vai trò nổi bật, dễ thấy; ảnh hưởng lên bạn cũng mạnh, cả tốt lẫn xấu.'); d += 0.4; }
+    if (hk === 'Dụng' || hk === 'Hỷ') { items.push('✓ Là Hỷ/Dụng thần – ' + ten.toLowerCase() + ' mang lại trợ lực, quan hệ tốt đẹp; mặt trái là dễ dựa dẫm.'); d += 1.2; }
+    if (hk === 'Kỵ') { items.push('✗ Là Kỵ thần – quan hệ với ' + ten.toLowerCase() + ' dễ gây áp lực, bất đồng, có lúc tổn thương nhau.'); d -= 1; }
+    if (dem && biKhac >= dem + 1) { items.push('✗ Bị ' + khac[g] + ' khắc mạnh (' + Math.round(biKhac * 10) / 10 + ') – quan hệ với ' + ten.toLowerCase() + ' dễ trắc trở, xa cách hoặc người đó vất vả.'); d -= 1; }
     // vị trí đúng cung
-    if (x[2] === 2 && bt.pillars[2].tangCan.some(function (t) { return sao.indexOf(t.thapThan) >= 0; })) { items.push('✓ Nằm đúng ' + cungTen[2] + ' – gắn bó, chung sống lâu dài.'); d += 0.8; }
+    if (x[2] === 2 && bt.pillars[2].tangCan.some(function (t) { return sao.indexOf(t.thapThan) >= 0; })) { items.push('✓ Nằm đúng ' + cungTen[2] + ' – gắn bó, chung sống lâu dài; mặt trái là ràng buộc chặt, khó có khoảng riêng.'); d += 0.8; }
     if (x[2] === 3 && [bt.pillars[3].thapThan].concat(bt.pillars[3].tangCan.map(function (t) { return t.thapThan; })).some(function (t) { return sao.indexOf(t) >= 0; })) { items.push('✓ Nằm đúng ' + cungTen[3] + ' – duyên con rõ.'); d += 0.6; }
-    if (x[2] === 1 && [0, 1].some(function (i) { var p = bt.pillars[i]; return [p.thapThan].concat(p.tangCan.map(function (t) { return t.thapThan; })).some(function (t) { return sao.indexOf(t) >= 0; }); })) { items.push('✓ Nằm ở ' + cungTen[1] + ' – quan hệ gần gũi từ nhỏ.'); d += 0.4; }
+    if (x[2] === 1 && [0, 1].some(function (i) { var p = bt.pillars[i]; return [p.thapThan].concat(p.tangCan.map(function (t) { return t.thapThan; })).some(function (t) { return sao.indexOf(t) >= 0; }); })) { items.push('✓ Nằm ở ' + cungTen[1] + ' – quan hệ gần gũi từ nhỏ; mặt trái là dễ bị gia đình chi phối.'); d += 0.4; }
     d = Math.round(d * 10) / 10;
     return { ten: ten, sao: sao.join('/'), diem: d, danhGia: lgXepHang_(d * 1.6), secs: [{ tieuDe: 'Phân tích', items: items }] };
   });
@@ -327,7 +331,7 @@ function btctCachCuc_(bt, co, thau, ttDem, nhomDem) {
   items.push('Chính cách: nguyệt lệnh ' + P[1].chiTen + ' – ' + lyDoCach + ' → ' + chinhCach + '.');
   items = items.concat(dieuKien.items);
   return { ten: ten, loai: loai, thanh: thanh, chinhCach: chinhCach, items: items,
-    ketLuan: thanh === true ? 'Cách cục thành – lá số có "khung" rõ ràng, phát triển thuận theo hướng của cách.' : thanh === false ? 'Cách cục bị phá hoặc chưa đủ điều kiện – cần đại vận mang thần cứu ứng (xem Dụng/Hỷ thần) mới phát.' : 'Cần xét thêm đại vận để xác định thành/bại.' };
+    ketLuan: thanh === true ? 'Cách cục thành – lá số có "khung" rõ ràng, phát triển thuận theo hướng của cách; đi lệch hướng ấy thì khó thành.' : thanh === false ? 'Cách cục bị phá hoặc chưa đủ điều kiện – thành công đến chậm, làm nhiều mà khó thành hình; phải gặp đại vận mang thần cứu ứng (xem Dụng/Hỷ thần) mới phát.' : 'Cần xét thêm đại vận để xác định thành/bại.' };
 }
 
 function btctDieuKienCach_(cach, co, bt) {
@@ -346,13 +350,13 @@ function btctDieuKienCach_(cach, co, bt) {
       it.push('Nghịch dụng: cần Thực Thần chế Sát hoặc Ấn hóa Sát; kỵ Tài sinh Sát khi thân nhược.');
       var che = tot(co('Thực Thần'), 'Thực Thần chế Sát – cách thành, có uy quyền.');
       var hoa = tot(co('Chính Ấn') || co('Thiên Ấn'), 'Ấn hóa Sát (Sát Ấn tương sinh).');
-      if (!che && !hoa) xau(true, 'Không chế không hóa – Sát công thân, nhiều áp lực; nên đi chậm, cân nhắc việc lớn.');
+      if (!che && !hoa) xau(true, 'Không chế không hóa – Sát công thân: áp lực đè nặng, dễ bị chèn ép, sức khỏe và tinh thần dễ kiệt.');
       if (!thanVuong) xau(co('Chính Tài') || co('Thiên Tài'), 'Thân nhược mà Tài sinh Sát – gánh nặng quá sức.');
       break;
     case 'Chính Tài cách': case 'Thiên Tài cách':
       it.push('Thuận dụng: hỷ thân vượng gánh Tài, Thực Thương sinh Tài, Quan hộ Tài; kỵ Tỷ Kiếp đoạt Tài.');
       tot(thanVuong, 'Thân vượng đủ sức gánh Tài.');
-      if (!thanVuong) xau(true, 'Thân nhược Tài đa – giàu mà khó giữ, cần vận Ấn/Tỷ trợ thân.');
+      if (!thanVuong) xau(true, 'Thân nhược Tài đa – thấy tiền mà khó giữ, dễ hao vì tham; phải chờ vận Ấn/Tỷ trợ thân.');
       tot(co('Thực Thần') || co('Thương Quan'), 'Có Thực Thương sinh Tài – nguồn tiền bền.');
       if ((co('Kiếp Tài') || co('Tỷ Kiên')) && !(co('Chính Quan') || co('Thất Sát'))) xau(true, 'Tỷ Kiếp đoạt Tài mà không có Quan Sát chế.');
       break;
@@ -374,7 +378,7 @@ function btctDieuKienCach_(cach, co, bt) {
       var sinhTai = tot(co('Chính Tài') || co('Thiên Tài'), 'Thương Quan sinh Tài – kiếm tiền bằng tài năng.');
       var boiAn = tot(!thanVuong && (co('Chính Ấn') || co('Thiên Ấn')), 'Thương Quan bội Ấn – học vấn, danh tiếng.');
       var kimThuyDong = bt.nhatChuHanh === 'Kim' && [11, 0, 1].indexOf(bt.pillars[1].chi) >= 0;
-      if (co('Chính Quan') && !kimThuyDong) xau(true, 'Thương Quan kiến Quan – dễ thị phi, va chạm cấp trên; cẩn trọng giấy tờ, hợp đồng.');
+      if (co('Chính Quan') && !kimThuyDong) xau(true, 'Thương Quan kiến Quan – dễ thị phi, va chạm cấp trên, vướng giấy tờ, hợp đồng.');
       if (co('Chính Quan') && kimThuyDong) it.push('✓ Kim Thủy Thương Quan sinh mùa Đông "hỷ kiến Quan" – ngoại lệ, gặp Quan lại tốt.');
       if (!sinhTai && !boiAn) xau(true, 'Thương Quan không sinh Tài cũng không bội Ấn – tài năng khó thành quả.');
       break;
@@ -383,7 +387,7 @@ function btctDieuKienCach_(cach, co, bt) {
       var coChe = tot(co('Chính Quan') || co('Thất Sát'), 'Có Quan Sát chế ngự – cương mà có kỷ luật.');
       var coTai = tot(co('Chính Tài') || co('Thiên Tài'), 'Có Tài để dụng.');
       tot(co('Thực Thần') || co('Thương Quan'), 'Có Thực Thương tiết tú.');
-      if (cach === 'Dương Nhận cách' && !co('Thất Sát') && !co('Chính Quan')) xau(true, 'Dương Nhận không có Quan Sát chế – quá cương, dễ tranh chấp; nên giữ bình tĩnh, cẩn trọng khi di chuyển.');
+      if (cach === 'Dương Nhận cách' && !co('Thất Sát') && !co('Chính Quan')) xau(true, 'Dương Nhận không có Quan Sát chế – quá cương, dễ tranh chấp, hao tiền vì người khác, dễ chấn thương.');
       if (!coChe && !coTai) xau(true, 'Không có Quan Sát cũng không có Tài – năng lượng dư thừa, thiếu định hướng.');
   }
   return { thanh: thanh, items: it };
@@ -421,38 +425,38 @@ function btctThanSatCu_(bt, tv) {
   function truChi(c) { var r = []; P.forEach(function (p, i) { if (p.chi === c) r.push(i); }); return r; }
   function truCan(c) { var r = []; P.forEach(function (p, i) { if (i !== 2 && p.can === c) r.push(i); }); return r; }
   var td = BTCT_THIEN_DUC[mc];
-  push('Thiên Đức quý nhân', td[0] === 'can' ? truCan(td[1]) : truChi(td[1]), 'Được trời che chở, gặp dữ hóa lành, nhân hậu.', true);
-  push('Nguyệt Đức quý nhân', truCan(BTCT_NGUYET_DUC[mc % 4]), 'Phúc đức, giải hung, tính ôn hòa.', true);
-  push('Thiên Ất quý nhân', [].concat(truChi(BAZI_QUY_NHAN[dCan][0]), truChi(BAZI_QUY_NHAN[dCan][1])), 'Quý nhân lớn nhất – gặp khó có người giúp.', true);
-  push('Thái Cực quý nhân', [].concat.apply([], BTCT_THAI_CUC[dCan].map(truChi)), 'Thông minh, thích huyền học – triết lý, được phúc báo.', true);
-  push('Văn Xương', truChi(BAZI_VAN_XUONG[dCan]), 'Học giỏi, văn tài.', true);
-  push('Học Đường', truChi(TS_KHOI[dCan]), 'Có năng khiếu học thuật, trí tuệ bẩm sinh.', true);
-  push('Kim Dư', truChi(mod12(BAZI_LOC[dCan] + 2)), 'Xe vàng – phúc lộc, được hưởng tiện nghi, hôn nhân tốt.', true);
-  push('Lộc Thần', truChi(BAZI_LOC[dCan]), 'Có lộc ăn, tài chính vững.', true);
-  if (BAZI_DUONG_NHAN[dCan] >= 0) push('Dương Nhận', truChi(BAZI_DUONG_NHAN[dCan]), 'Cương mãnh, quyết liệt; nên giữ bình tĩnh, cẩn trọng khi di chuyển và làm việc nặng.', false);
-  push('Thiên Y', truChi(mod12(mc - 1)), 'Duyên với nghề chăm sóc sức khỏe, sức hồi phục tốt.', true);
+  push('Thiên Đức quý nhân', td[0] === 'can' ? truCan(td[1]) : truChi(td[1]), 'Được che chở, gặp dữ hóa lành, nhân hậu; mặt trái là hiền quá dễ chịu thiệt.', true);
+  push('Nguyệt Đức quý nhân', truCan(BTCT_NGUYET_DUC[mc % 4]), 'Phúc đức, giải hung, tính ôn hòa; mặt trái là ngại xung đột, hay nhún nhường.', true);
+  push('Thiên Ất quý nhân', [].concat(truChi(BAZI_QUY_NHAN[dCan][0]), truChi(BAZI_QUY_NHAN[dCan][1])), 'Quý nhân lớn nhất – gặp khó có người giúp; mặt trái là dễ ỷ lại, mang ơn khó từ chối.', true);
+  push('Thái Cực quý nhân', [].concat.apply([], BTCT_THAI_CUC[dCan].map(truChi)), 'Thông minh, thích huyền học – triết lý, được phúc báo; mặt trái là dễ xa thực tế.', true);
+  push('Văn Xương', truChi(BAZI_VAN_XUONG[dCan]), 'Học giỏi, văn tài; mặt trái là dễ nặng lý thuyết, tự cao về chữ nghĩa.', true);
+  push('Học Đường', truChi(TS_KHOI[dCan]), 'Có năng khiếu học thuật, trí tuệ bẩm sinh; mặt trái là học rộng mà dễ thiếu chuyên.', true);
+  push('Kim Dư', truChi(mod12(BAZI_LOC[dCan] + 2)), 'Xe vàng – phúc lộc, được hưởng tiện nghi, hôn nhân tốt; mặt trái là quen tiện nghi, kém chịu khổ.', true);
+  push('Lộc Thần', truChi(BAZI_LOC[dCan]), 'Có lộc ăn, tài chính vững; mặt trái là tiền chủ yếu do tự làm, khó giàu nhanh.', true);
+  if (BAZI_DUONG_NHAN[dCan] >= 0) push('Dương Nhận', truChi(BAZI_DUONG_NHAN[dCan]), 'Cương mãnh, quyết liệt; mặt xấu là nóng nảy, dễ xung đột, hao tiền vì người gần và dễ chấn thương.', false);
+  push('Thiên Y', truChi(mod12(mc - 1)), 'Duyên với nghề chăm sóc sức khỏe, sức hồi phục tốt; mặt trái là bản thân hay có bệnh phải theo dõi.', true);
   [yc, dc].forEach(function (base, bi) {
     var nh = base % 4, src = bi ? ' (theo ngày)' : ' (theo năm)';
     var triad = { 0: [0, 5, 6, 11], 1: [9, 2, 3, 8], 2: [6, 11, 0, 5], 3: [3, 8, 9, 2] }[nh]; // [tướng tinh, kiếp sát, tai sát, vong thần]
-    push('Tướng Tinh' + src, truChi(triad[0]).filter(function (i) { return i !== (bi ? 2 : 0); }), 'Có tài lãnh đạo, được nể trọng.', true);
-    push('Kiếp Sát' + src, truChi(triad[1]), 'Nên cẩn trọng giữ gìn tài sản, an toàn khi đi lại; cũng là người quyết đoán.', false);
-    push('Tai Sát' + src, truChi(triad[2]), 'Nên cẩn trọng khi đi lại và với giấy tờ, hợp đồng.', false);
-    push('Vong Thần' + src, truChi(triad[3]), 'Toan tính sâu; nên giữ gìn tài sản, tránh thị phi ngầm.', false);
+    push('Tướng Tinh' + src, truChi(triad[0]).filter(function (i) { return i !== (bi ? 2 : 0); }), 'Có tài lãnh đạo, được nể trọng; mặt trái là dễ độc đoán.', true);
+    push('Kiếp Sát' + src, truChi(triad[1]), 'Quyết đoán, dám làm; mặt xấu là dễ hao tài do bị lừa, mất cắp, tranh giành và gặp rủi ro khi đi lại.', false);
+    push('Tai Sát' + src, truChi(triad[2]), 'Xoay xở giỏi khi có việc bất ngờ; mặt xấu là dễ gặp tai nạn nhỏ, bệnh bất ngờ, rắc rối giấy tờ, hợp đồng.', false);
+    push('Vong Thần' + src, truChi(triad[3]), 'Toan tính sâu; mặt xấu là dễ thất thoát ngầm, bị người quen làm hại, vướng thị phi sau lưng.', false);
   });
   var dp = CAN[P[2].can] + ' ' + CHI[dc];
-  if (['Canh Thìn', 'Canh Tuất', 'Nhâm Thìn', 'Mậu Tuất'].indexOf(dp) >= 0) push('Khôi Cương', [2], 'Thông minh, quyết đoán, cá tính mạnh; hôn nhân cần nhiều nhường nhịn.', true);
+  if (['Canh Thìn', 'Canh Tuất', 'Nhâm Thìn', 'Mậu Tuất'].indexOf(dp) >= 0) push('Khôi Cương', [2], 'Thông minh, quyết đoán, cá tính mạnh; mặt xấu là cứng quá dễ cô độc, hôn nhân nhiều sóng gió.', true);
   if (['Ất Sửu', 'Kỷ Tỵ', 'Quý Dậu'].indexOf(dp) >= 0 || ['Ất Sửu', 'Kỷ Tỵ', 'Quý Dậu'].indexOf(CAN[P[3].can] + ' ' + CHI[P[3].chi]) >= 0)
-    push('Kim Thần', ['Ất Sửu', 'Kỷ Tỵ', 'Quý Dậu'].indexOf(dp) >= 0 ? [2] : [3], 'Cương nghị, sắc sảo; hợp vận Hỏa để luyện Kim.', true);
+    push('Kim Thần', ['Ất Sửu', 'Kỷ Tỵ', 'Quý Dậu'].indexOf(dp) >= 0 ? [2] : [3], 'Cương nghị, sắc sảo; mặt xấu là cứng nhắc, dễ va chạm, thiếu vận Hỏa (lửa) thì chậm thành.', true);
   if (['Bính Tý', 'Đinh Sửu', 'Mậu Dần', 'Tân Mão', 'Nhâm Thìn', 'Quý Tỵ', 'Bính Ngọ', 'Đinh Mùi', 'Mậu Thân', 'Tân Dậu', 'Nhâm Tuất', 'Quý Hợi'].indexOf(dp) >= 0)
-    push('Âm Dương sai thác', [2], 'Hôn nhân cần nhiều thấu hiểu; nên chủ động vun đắp quan hệ với gia đình hai bên.', false);
+    push('Âm Dương sai thác', [2], 'Có cách nghĩ riêng; mặt xấu là dễ lệch nhịp với bạn đời và gia đình bên ấy, hiểu lầm, tình cảm dễ lạnh.', false);
   if (['Giáp Thìn', 'Ất Tỵ', 'Bính Thân', 'Đinh Hợi', 'Mậu Tuất', 'Kỷ Sửu', 'Canh Thìn', 'Tân Tỵ', 'Nhâm Thân', 'Quý Hợi'].indexOf(dp) >= 0)
-    push('Thập ác đại bại', [2], 'Theo cổ học, tài sản nên tự tạo dựng là chính, quản lý chặt (không nặng nếu cách cục tốt).', false);
+    push('Thập ác đại bại', [2], 'Rộng rãi; mặt xấu là theo cổ học khó giữ tiền, ít được hưởng của gia đình, tài sản phải tự gây dựng (nhẹ đi nếu cách cục tốt).', false);
   if (['Ất Tỵ', 'Đinh Tỵ', 'Tân Hợi', 'Mậu Thân', 'Giáp Dần', 'Nhâm Tý', 'Bính Ngọ', 'Mậu Ngọ'].indexOf(dp) >= 0)
-    push('Cô Loan sát', [2], 'Tình cảm vợ chồng cần hâm nóng thường xuyên, nói chuyện cởi mở.', false);
+    push('Cô Loan sát', [2], 'Độc lập về cảm xúc; mặt xấu là tình duyên trắc trở, vợ chồng dễ xa cách, lạnh nhạt.', false);
   var phuong = Math.floor(mod12(yc - 2) / 3);
-  push('Cô Thần', truChi([5, 8, 11, 2][phuong]), 'Thích không gian riêng, tự lập; nên chủ động chia sẻ (nam lưu ý hơn).', false);
-  push('Quả Tú', truChi([1, 4, 7, 10][phuong]), 'Sống nội tâm, ít chia sẻ; nên mở lòng hơn (nữ lưu ý hơn).', false);
-  push('Hồng Loan', truChi(mod12(3 - yc)), 'Duyên dáng, dễ có hôn nhân sớm.', true);
-  push('Thiên Hỷ', truChi(mod12(9 - yc)), 'Vui vẻ, hỷ sự.', true);
+  push('Cô Thần', truChi([5, 8, 11, 2][phuong]), 'Tự lập, quen tự lo; mặt xấu là dễ xa cách người thân, chuyện vợ chồng dễ lạnh (nam rõ hơn).', false);
+  push('Quả Tú', truChi([1, 4, 7, 10][phuong]), 'Tự chủ cảm xúc, chịu đựng giỏi; mặt xấu là dễ cô đơn trong hôn nhân, ít gần gũi (nữ rõ hơn).', false);
+  push('Hồng Loan', truChi(mod12(3 - yc)), 'Duyên dáng, dễ có hôn nhân sớm; mặt trái là dễ yêu vội, cưới vội.', true);
+  push('Thiên Hỷ', truChi(mod12(9 - yc)), 'Vui vẻ, hỷ sự; mặt trái là dễ chủ quan khi đang thuận.', true);
   return res;
 }

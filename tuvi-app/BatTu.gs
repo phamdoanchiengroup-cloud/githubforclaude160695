@@ -20,16 +20,16 @@ var THAP_THAN = [
   ['Thất Sát', 'Chính Quan'], ['Thiên Ấn', 'Chính Ấn']
 ];
 var THAP_THAN_Y_NGHIA = {
-  'Tỷ Kiên': 'anh em, bạn bè, tự lập, cạnh tranh ngang hàng',
+  'Tỷ Kiên': 'anh em, bạn bè, tự lập; mặt trái là cố chấp, cạnh tranh tranh phần',
   'Kiếp Tài': 'bạn bè, mạo hiểm, hao tài vì người khác',
-  'Thực Thần': 'tài năng, hưởng thụ, sáng tạo, con cái (nữ)',
+  'Thực Thần': 'tài năng, hưởng thụ, sáng tạo, con cái (nữ); mặt trái là ham vui, an phận',
   'Thương Quan': 'thông minh, phá cách, nổi loạn, khẩu tài',
-  'Thiên Tài': 'tiền bất ngờ, kinh doanh, cha, tình duyên (nam)',
-  'Chính Tài': 'thu nhập ổn định, tiết kiệm, vợ (nam)',
+  'Thiên Tài': 'tiền bất ngờ, kinh doanh, cha, tình duyên (nam); mặt trái là tiền đến nhanh đi nhanh, đa tình',
+  'Chính Tài': 'thu nhập ổn định, tiết kiệm, vợ (nam); mặt trái là tính toán, ngại mạo hiểm',
   'Thất Sát': 'áp lực, quyền uy, dũng cảm, tiểu nhân',
-  'Chính Quan': 'kỷ luật, danh dự, chức vị, chồng (nữ)',
+  'Chính Quan': 'kỷ luật, danh dự, chức vị, chồng (nữ); mặt trái là gò bó, cứng nhắc',
   'Thiên Ấn': 'tư duy độc đáo, huyền học, cô độc',
-  'Chính Ấn': 'học vấn, mẹ, sự che chở, bằng cấp'
+  'Chính Ấn': 'học vấn, mẹ, sự che chở, bằng cấp; mặt trái là ỷ lại, chậm hành động'
 };
 var TRUONG_SINH_BAZI = ['Trường Sinh', 'Mộc Dục', 'Quan Đới', 'Lâm Quan', 'Đế Vượng', 'Suy',
   'Bệnh', 'Tử', 'Mộ', 'Tuyệt', 'Thai', 'Dưỡng'];
@@ -44,16 +44,16 @@ var HANH_INFO = {
 };
 
 var NHAT_CHU_LUAN = [
-  'Giáp Mộc – cây đại thụ: chính trực, có chí tiến thủ, trọng danh dự, thích làm người dẫn đầu; nhược điểm là cứng nhắc, khó uốn mình.',
-  'Ất Mộc – hoa cỏ, dây leo: mềm mỏng, khéo léo, giàu tính thích nghi, biết nương tựa để vươn lên; đôi khi thiếu quyết đoán.',
-  'Bính Hỏa – mặt trời: nhiệt tình, hào phóng, sáng sủa, thích được chú ý, lan tỏa năng lượng; dễ nóng vội, bốc đồng.',
-  'Đinh Hỏa – ngọn đèn: tinh tế, chu đáo, nội tâm sâu sắc, soi sáng cho người khác; hay suy nghĩ nhiều, nhạy cảm.',
-  'Mậu Thổ – núi lớn: vững chãi, đáng tin, bao dung, chịu trách nhiệm; đôi khi bảo thủ, chậm thay đổi.',
-  'Kỷ Thổ – đất ruộng vườn: chăm chỉ, thực tế, giỏi nuôi dưỡng và tổ chức; hay lo xa, đa nghi.',
-  'Canh Kim – kim loại thô, đao kiếm: cương trực, quyết đoán, trọng nghĩa khí, dám làm; dễ cứng rắn, thẳng thắn quá mức.',
-  'Tân Kim – châu báu: thanh lịch, tinh tế, trọng hình thức và thẩm mỹ, tự trọng cao; nhạy cảm với lời phê bình.',
-  'Nhâm Thủy – sông biển: thông minh, phóng khoáng, năng động, tầm nhìn rộng; dễ phóng túng, thiếu kiên nhẫn.',
-  'Quý Thủy – mưa móc: dịu dàng, sâu sắc, giàu trực giác, kiên nhẫn thấm dần; dễ bi quan, khép kín.'
+  'Giáp Mộc – cây đại thụ: chính trực, có chí tiến thủ, trọng danh dự, thích làm người dẫn đầu; nhược điểm là cứng nhắc, khó uốn mình, dễ gãy khi gặp sức ép lớn và mất lòng người vì quá thẳng.',
+  'Ất Mộc – hoa cỏ, dây leo: mềm mỏng, khéo léo, giàu tính thích nghi, biết nương tựa để vươn lên; nhược điểm là thiếu quyết đoán, dễ phụ thuộc người khác và gió chiều nào che chiều ấy.',
+  'Bính Hỏa – mặt trời: nhiệt tình, hào phóng, sáng sủa, thích được chú ý, lan tỏa năng lượng; nhược điểm là nóng vội, bốc đồng, hay hứa nhiều làm ít và dễ hết lửa giữa chừng.',
+  'Đinh Hỏa – ngọn đèn: tinh tế, chu đáo, nội tâm sâu sắc, soi sáng cho người khác; nhược điểm là nghĩ nhiều, nhạy cảm, dễ tổn thương và để bụng lâu.',
+  'Mậu Thổ – núi lớn: vững chãi, đáng tin, bao dung, chịu trách nhiệm; nhược điểm là bảo thủ, chậm thay đổi, dễ ôm hết việc rồi quá tải.',
+  'Kỷ Thổ – đất ruộng vườn: chăm chỉ, thực tế, giỏi nuôi dưỡng và tổ chức; nhược điểm là lo xa, đa nghi, tính toán chi li khiến người khác ngại.',
+  'Canh Kim – kim loại thô, đao kiếm: cương trực, quyết đoán, trọng nghĩa khí, dám làm; nhược điểm là cứng rắn, thẳng quá mức, dễ gây xung đột và làm tổn thương người thân.',
+  'Tân Kim – châu báu: thanh lịch, tinh tế, trọng hình thức và thẩm mỹ, tự trọng cao; nhược điểm là sĩ diện, kén chọn, rất dễ tự ái trước lời phê bình.',
+  'Nhâm Thủy – sông biển: thông minh, phóng khoáng, năng động, tầm nhìn rộng; nhược điểm là phóng túng, thiếu kiên nhẫn, khó gắn bó lâu với một việc hay một người.',
+  'Quý Thủy – mưa móc: dịu dàng, sâu sắc, giàu trực giác, kiên nhẫn thấm dần; nhược điểm là bi quan, khép kín, dễ u uất và để người khác lấn lướt.'
 ];
 
 var BAZI_QUY_NHAN = [[1, 7], [0, 8], [11, 9], [11, 9], [1, 7], [0, 8], [1, 7], [6, 2], [3, 5], [3, 5]];
@@ -200,22 +200,22 @@ function batTuLap_(input) {
   function coChi(c) { return chis.map(function (x, i) { return x === c ? truNames[i] : null; }).filter(Boolean); }
   BAZI_QUY_NHAN[dCan].forEach(function (c) {
     var w = coChi(c);
-    if (w.length) thanSat.push({ ten: 'Thiên Ất Quý Nhân', o: w.join(', '), moTa: 'Quý nhân phù trợ, gặp nạn có người giúp.' });
+    if (w.length) thanSat.push({ ten: 'Thiên Ất Quý Nhân', o: w.join(', '), moTa: 'Quý nhân phù trợ, gặp nạn có người giúp; mặt trái là dễ ỷ lại, mang ơn khó từ chối.' });
   });
   var vx = coChi(BAZI_VAN_XUONG[dCan]);
-  if (vx.length) thanSat.push({ ten: 'Văn Xương', o: vx.join(', '), moTa: 'Thông minh, học giỏi, có văn tài.' });
+  if (vx.length) thanSat.push({ ten: 'Văn Xương', o: vx.join(', '), moTa: 'Thông minh, học giỏi, có văn tài; mặt trái là dễ nặng lý thuyết, tự cao về chữ nghĩa.' });
   var lc = coChi(BAZI_LOC[dCan]);
-  if (lc.length) thanSat.push({ ten: 'Lộc Thần', o: lc.join(', '), moTa: 'Có lộc ăn, tài chính vững.' });
+  if (lc.length) thanSat.push({ ten: 'Lộc Thần', o: lc.join(', '), moTa: 'Có lộc ăn, tài chính vững; mặt trái là tiền chủ yếu do tự làm, khó giàu nhanh.' });
   if (BAZI_DUONG_NHAN[dCan] >= 0) {
     var dn = coChi(BAZI_DUONG_NHAN[dCan]);
-    if (dn.length) thanSat.push({ ten: 'Dương Nhận', o: dn.join(', '), moTa: 'Cương mãnh, quyết liệt; nên tránh nóng nảy, làm việc gì cũng giữ an toàn.' });
+    if (dn.length) thanSat.push({ ten: 'Dương Nhận', o: dn.join(', '), moTa: 'Cương mãnh, quyết liệt; mặt xấu là nóng nảy, dễ xung đột, hao tiền vì người gần và dễ chấn thương.' });
   }
   [yChi, dChi].forEach(function (base, bi) {
     var nh = base % 4;
     var MA = [2, 11, 8, 5], DAO = [9, 6, 3, 0], CAI = [4, 1, 10, 7];
-    var sets = [['Dịch Mã', MA[nh], 'Hay di chuyển, đi xa, thay đổi môi trường.'],
-      ['Đào Hoa', DAO[nh], 'Duyên dáng, được yêu mến, đời sống tình cảm phong phú.'],
-      ['Hoa Cái', CAI[nh], 'Thiên hướng nghệ thuật, tôn giáo, triết học; hơi cô độc.']];
+    var sets = [['Dịch Mã', MA[nh], 'Hay di chuyển, đi xa, thay đổi môi trường; mặt trái là bôn ba, khó yên một chỗ.'],
+      ['Đào Hoa', DAO[nh], 'Duyên dáng, được yêu mến; mặt trái là dễ đa tình, vướng chuyện tình cảm rắc rối.'],
+      ['Hoa Cái', CAI[nh], 'Thiên hướng nghệ thuật, tôn giáo, triết học; mặt trái là cô độc, khó hòa đồng.']];
     sets.forEach(function (s) {
       var w = coChi(s[1]);
       if (w.length) thanSat.push({ ten: s[0] + ' (theo ' + (bi ? 'ngày' : 'năm') + ')', o: w.join(', '), moTa: s[2] });
@@ -269,10 +269,10 @@ function batTuLap_(input) {
     danhGia: danhGiaVan_(CAN_HANH[lnCan], CHI_HANH[lnChi], hy, ky),
     ghiChu: []
   };
-  if (mod12(lnChi - dChi) === 6) luuNien.ghiChu.push('Năm xung chi ngày (cung phu thê) – dễ thay đổi trong gia đạo, chỗ ở.');
-  if (mod12(lnChi - yChi) === 6) luuNien.ghiChu.push('Năm xung chi năm sinh – biến động công việc, di chuyển.');
-  if (lnChi === yChi) luuNien.ghiChu.push('Năm bản mệnh (trùng tuổi) – nên cẩn trọng, giữ sức khỏe.');
-  if (lnCan + 5 === dCan || dCan + 5 === lnCan) luuNien.ghiChu.push('Can năm hợp Nhật chủ – có quý nhân, duyên phận, hợp tác thuận.');
+  if (mod12(lnChi - dChi) === 6) luuNien.ghiChu.push('Năm xung chi ngày (cung phu thê) – vợ chồng dễ cãi vã, xa cách, dễ thay đổi chỗ ở.');
+  if (mod12(lnChi - yChi) === 6) luuNien.ghiChu.push('Năm xung chi năm sinh – biến động công việc, di chuyển, kế hoạch dễ đổ.');
+  if (lnChi === yChi) luuNien.ghiChu.push('Năm bản mệnh (trùng tuổi) – dễ biến động, sức khỏe và công việc dễ chao đảo.');
+  if (lnCan + 5 === dCan || dCan + 5 === lnCan) luuNien.ghiChu.push('Can năm hợp Nhật chủ – có quý nhân, duyên phận, hợp tác thuận; mặt trái là dễ bị ràng buộc bởi lời hứa, hợp đồng.');
 
   // --- Thai nguyên, Mệnh cung, Thân cung (đối chiếu lunar-javascript) ---
   var thaiNguyen = { can: mod10(mCan + 1), chi: mod12(mChi + 3) };
@@ -418,7 +418,7 @@ function batTuQuanHe_(pillars) {
     var c = th[0].filter(function (x) { return chis.indexOf(x) >= 0; }).length;
     if (c >= 2) res.push({ loai: 'xung', txt: (c === 3 ? 'Tam hình đủ: ' : 'Bán hình: ') + th[1] });
   });
-  if (!res.length) res.push({ loai: 'binh', txt: 'Tứ trụ không có hợp – xung – hình – hại đáng kể: cục diện ổn định.' });
+  if (!res.length) res.push({ loai: 'binh', txt: 'Tứ trụ không có hợp – xung – hình – hại đáng kể: cục diện ổn định, nhưng cũng ít lực đẩy.' });
   return res;
 }
 
@@ -431,24 +431,24 @@ function ketHopLuan_(tv, bt) {
   var dung = bt.goiY.dung;
   out.push('Tử Vi cho thấy "bản đồ" 12 lĩnh vực đời người; Bát Tự đo "năng lượng" ngũ hành. Hai hệ thống bổ sung cho nhau.');
   // Cục vs dụng thần
-  if (I.cucHanh === dung) out.push('Hành của Cục (' + I.cuc + ') trùng Dụng thần Bát Tự (' + dung + ') – môi trường sống/hoàn cảnh hỗ trợ đúng nhu cầu năng lượng, rất thuận.');
-  else if (bt.goiY.ky.indexOf(I.cucHanh) >= 0) out.push('Hành của Cục (' + I.cucHanh + ') là hành Kỵ trong Bát Tự – hoàn cảnh dễ gây áp lực; nên chủ động bổ sung hành ' + dung + '.');
+  if (I.cucHanh === dung) out.push('Hành của Cục (' + I.cuc + ') trùng Dụng thần Bát Tự (' + dung + ') – môi trường sống/hoàn cảnh hỗ trợ đúng nhu cầu năng lượng, rất thuận; mặt trái là dễ quen thuận mà chủ quan.');
+  else if (bt.goiY.ky.indexOf(I.cucHanh) >= 0) out.push('Hành của Cục (' + I.cucHanh + ') là hành Kỵ trong Bát Tự – hoàn cảnh dễ gây áp lực, dễ bị môi trường kéo xuống; hành ' + dung + ' là hành bù.');
   else out.push('Hành của Cục (' + I.cucHanh + ') trung tính với Dụng thần ' + dung + '.');
   // Bản mệnh vs dụng thần
-  if (I.banMenh.hanh === dung) out.push('Bản mệnh nạp âm ' + I.banMenh.ten + ' đồng hành Dụng thần – căn cơ vững.');
+  if (I.banMenh.hanh === dung) out.push('Bản mệnh nạp âm ' + I.banMenh.ten + ' đồng hành Dụng thần – căn cơ vững; mặt trái là dễ tự tin quá mức.');
   // Mệnh chính tinh ngũ hành
   var ms = tv.palaces[I.menh].chinh;
   if (ms.length) {
     var hanhs = ms.map(function (s) { return s.n + ' (' + s.h + ')'; }).join(', ');
     var hop = ms.filter(function (s) { return bt.goiY.hy.indexOf(s.h) >= 0; });
-    out.push('Chính tinh thủ Mệnh: ' + hanhs + '. ' + (hop.length ? 'Có sao thuộc hành Hỷ/Dụng (' + hop.map(function (s) { return s.n; }).join(', ') + ') – tính cách tự nhiên đã hướng về điều có lợi.' : 'Các sao không thuộc hành Hỷ – nên rèn luyện thêm phẩm chất của hành ' + dung + '.'));
+    out.push('Chính tinh thủ Mệnh: ' + hanhs + '. ' + (hop.length ? 'Có sao thuộc hành Hỷ/Dụng (' + hop.map(function (s) { return s.n; }).join(', ') + ') – tính cách tự nhiên đã hướng về điều có lợi.' : 'Các sao không thuộc hành Hỷ – tính cách tự nhiên dễ đi ngược điều có lợi; phẩm chất của hành ' + dung + ' là điều phải rèn thêm.'));
   }
   // Vượng nhược vs điểm cung mệnh
   var dm = tv.palaces[I.menh].diem;
-  if (bt.vuong && dm >= 1) out.push('Nhật chủ vượng + cung Mệnh tốt: nội lực mạnh, hợp làm chủ, khởi nghiệp, lãnh đạo.');
-  else if (bt.vuong && dm < 1) out.push('Nhật chủ vượng nhưng cung Mệnh kém: năng lượng dồi dào nhưng dễ dùng sai chỗ – cần định hướng rõ ràng.');
-  else if (!bt.vuong && dm >= 1) out.push('Nhật chủ nhược nhưng cung Mệnh tốt: nhờ quý nhân và môi trường tốt mà thành; hợp làm việc trong tổ chức.');
-  else out.push('Nhật chủ nhược và cung Mệnh không mạnh: nên đi đường vững chắc, tích lũy chuyên môn, chọn cộng sự tốt.');
+  if (bt.vuong && dm >= 1) out.push('Nhật chủ vượng + cung Mệnh tốt: nội lực mạnh, hợp làm chủ, khởi nghiệp, lãnh đạo; mặt trái là dễ độc đoán, tự tin quá mà liều.');
+  else if (bt.vuong && dm < 1) out.push('Nhật chủ vượng nhưng cung Mệnh kém: năng lượng dồi dào nhưng dễ dùng sai chỗ, cố chấp, va chạm và hao công vô ích.');
+  else if (!bt.vuong && dm >= 1) out.push('Nhật chủ nhược nhưng cung Mệnh tốt: nhờ quý nhân và môi trường tốt mà thành, hợp làm việc trong tổ chức; mặt trái là mất chỗ dựa thì chao đảo.');
+  else out.push('Nhật chủ nhược và cung Mệnh không mạnh: sức chịu áp lực yếu, dễ bị hoàn cảnh cuốn, thành công đến chậm; hợp đi đường vững chắc, tích lũy chuyên môn.');
   // Vận hiện tại
   var vy = I.viewYear;
   var dvNow = bt.daiVan.filter(function (d) { return vy >= d.nam && vy < d.nam + 10; })[0];

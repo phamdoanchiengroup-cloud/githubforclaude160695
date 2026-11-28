@@ -18,9 +18,9 @@ var HT_CHU_DE = [
   { k: 'ketHon', ten: 'Tình duyên – hôn nhân', loai: 'tot', icon: '❤', tuoi: [18, 50] },
   { k: 'sinhCon', ten: 'Tin vui con cái', loai: 'tot', icon: '✿', tuoi: [20, 46] },
   { k: 'buocNgoat', ten: 'Bước ngoặt – đổi môi trường', loai: 'dong', icon: '⟳', tuoi: [12, 90] },
-  { k: 'sucKhoe', ten: 'Nên chăm sóc nhịp sống', loai: 'xau', icon: '✚', tuoi: [1, 90] },
-  { k: 'taiChinh', ten: 'Giai đoạn nên giữ tiền chắc tay', loai: 'xau', icon: '⚠', tuoi: [18, 90] },
-  { k: 'giaDao', ten: 'Nên vun đắp gia đình – nhà cửa', loai: 'xau', icon: '⌂', tuoi: [1, 90] }
+  { k: 'sucKhoe', ten: 'Sức khỏe dễ sa sút', loai: 'xau', icon: '✚', tuoi: [1, 90] },
+  { k: 'taiChinh', ten: 'Giai đoạn dễ hao tiền', loai: 'xau', icon: '⚠', tuoi: [18, 90] },
+  { k: 'giaDao', ten: 'Gia đình – nhà cửa dễ căng', loai: 'xau', icon: '⌂', tuoi: [1, 90] }
 ];
 var HT_QUE = {
   taiLoc: ['Hỏa Thiên Đại Hữu', 'Phong Lôi Ích', 'Lôi Hỏa Phong', 'Hỏa Địa Tấn', 'Địa Thiên Thái', 'Sơn Thiên Đại Súc', 'Hỏa Phong Đỉnh', 'Trạch Địa Tụy', 'Địa Trạch Lâm'],
@@ -162,11 +162,11 @@ function htBtTin_(bt, male, can, chi, add, kieu) {
   if (chi === maNam || chi === maNgay) add('diXa', 'Bát Tự', 1, 'Bát Tự: ' + kieu + ' ' + cc + ' gặp Dịch Mã – đi lại, đổi chỗ');
   else if (xungNgay) add('diXa', 'Bát Tự', 0.5, 'Bát Tự: ' + kieu + ' xung nhật chi – dễ phải di chuyển');
   var tt = (co(/Thiên Ấn|Kiêu/) ? 0.6 : 0) + (co(/Sát/) && !tot ? 0.7 : 0) + (xau ? 0.4 : 0);
-  if (tt) add('tinhThan', 'Bát Tự', Math.min(1.4, tt), 'Bát Tự: ' + [co(/Thiên Ấn|Kiêu/) ? 'Thiên Ấn – hay lo nghĩ, nên chia sẻ với người thân' : '', co(/Sát/) && !tot ? 'Thất Sát là kỵ – áp lực đè nặng' : '', xau ? 'can chi ' + kieu + ' đều là kỵ thần' : ''].filter(Boolean).join(', '));
+  if (tt) add('tinhThan', 'Bát Tự', Math.min(1.4, tt), 'Bát Tự: ' + [co(/Thiên Ấn|Kiêu/) ? 'Thiên Ấn – hay lo nghĩ, dễ thu mình' : '', co(/Sát/) && !tot ? 'Thất Sát là kỵ – áp lực đè nặng' : '', xau ? 'can chi ' + kieu + ' đều là kỵ thần' : ''].filter(Boolean).join(', '));
   // Phục ngâm (can chi lưu trùng hệt trụ ngày/trụ năm) – sầu muộn, việc cũ lặp lại; Phản ngâm (thiên khắc địa xung) – đảo lộn
   [[2, 'trụ ngày (bản thân, hôn nhân)'], [0, 'trụ năm (gốc gác, cha mẹ)']].forEach(function (x) {
     var P = bt.pillars[x[0]];
-    if (P.can === can && P.chi === chi) { add('tinhThan', 'Bát Tự', 0.9, 'Bát Tự: ' + kieu + ' ' + cc + ' phục ngâm ' + x[1] + ' – việc cũ dễ lặp lại, nên giữ tinh thần thư thái'); add('giaDao', 'Bát Tự', 0.5, 'Bát Tự: phục ngâm ' + x[1]); }
+    if (P.can === can && P.chi === chi) { add('tinhThan', 'Bát Tự', 0.9, 'Bát Tự: ' + kieu + ' ' + cc + ' phục ngâm ' + x[1] + ' – việc cũ dễ lặp lại, dễ buồn bực'); add('giaDao', 'Bát Tự', 0.5, 'Bát Tự: phục ngâm ' + x[1]); }
     else if ((P.chi - chi + 12) % 12 === 6 && htKhacCan_(P.can, can)) { add('buocNgoat', 'Bát Tự', 1, 'Bát Tự: ' + kieu + ' ' + cc + ' phản ngâm (thiên khắc địa xung) ' + x[1] + ' – đảo lộn, thay đổi lớn'); add(x[0] === 2 ? 'giaDao' : 'sucKhoe', 'Bát Tự', 0.7, 'Bát Tự: phản ngâm ' + x[1]); }
   });
 }
@@ -287,7 +287,7 @@ function htMatMa_(C, hoiTu, thang) {
   items.push({ ten: 'Con số định mệnh', gt: String(top), y: 'Số ' + top + ' lặp lại ' + so[top] + ' lần trong lá số của bạn (' + nS.filter(function (x) { return x.slice(-1) === String(top); }).join(', ') + '). Hãy dùng nó cho biển số, số nhà, ngày ký kết quan trọng.' });
   // 3. Giờ vàng & mùa vàng
   var hy2 = bt.goiY.hy[1];
-  items.push({ ten: 'Khung giờ vàng', gt: HT_GIO[dung].split(' (')[0], y: 'Làm việc quan trọng vào ' + HT_GIO[dung] + ' – giờ của dụng thần ' + dung + (hy2 ? '; phương án phụ: ' + HT_GIO[hy2] + '.' : '.') + (hd.loai === 'Projector' || hd.loai === 'Reflector' ? ' Human Design nhắc: bạn không có sinh lực bền – chia việc thành các "cú sprint" ngắn.' : ' Human Design: bạn có nguồn sinh lực bền – ưu tiên việc bạn thật sự hứng thú.') });
+  items.push({ ten: 'Khung giờ vàng', gt: HT_GIO[dung].split(' (')[0], y: 'Làm việc quan trọng vào ' + HT_GIO[dung] + ' – giờ của dụng thần ' + dung + (hy2 ? '; phương án phụ: ' + HT_GIO[hy2] + '.' : '.') + (hd.loai === 'Projector' || hd.loai === 'Reflector' ? ' Human Design: bạn không có sinh lực bền – làm kéo dài dễ kiệt sức, cáu bẳn; hợp chia việc thành các đợt ngắn.' : ' Human Design: bạn có nguồn sinh lực bền – làm việc mình hứng thú thì rất dai sức, nhưng làm việc không hợp thì dễ bực bội, chán nản kéo dài.') });
   var tv3 = (thang || []).slice().sort(function (a, b) { return b.diem - a.diem; }).slice(0, 3).map(function (m) { return 'tháng ' + m.thang; });
   items.push({ ten: 'Mùa của bạn', gt: HT_MUA[dung].split(' (')[0], y: 'Năng lượng dâng cao vào ' + HT_MUA[dung] + '. Năm ' + tv.info.viewYear + ', ba tháng sáng nhất (âm lịch) theo 3 hệ là ' + tv3.join(', ') + '.' });
   // 4. Quý nhân & người cần dè chừng
@@ -296,7 +296,7 @@ function htMatMa_(C, hoiTu, thang) {
   var sunNt = CT_CUNG[ct.by.sun.cung].nt, cungHop = CT_CUNG.filter(function (c, i) { return i !== ct.by.sun.cung && (c.nt === sunNt || ({ 'Lửa': 'Khí', 'Khí': 'Lửa', 'Đất': 'Nước', 'Nước': 'Đất' })[sunNt] === c.nt); }).map(function (c) { return c.ten; }).slice(0, 4);
   items.push({ ten: 'Quý nhân của bạn', gt: qn.join(', '), y: 'Thiên Ất quý nhân (Bát Tự): người tuổi ' + qn.join(' hoặc ') + '. Hợp tác làm ăn: tuổi ' + hop.join(', ') + ' (tam hợp – lục hợp). Theo chiêm tinh, người cung ' + cungHop.join(', ') + ' dễ đồng điệu với bạn; theo thần số, người có số chủ đạo cùng nhóm ' + pnNhomSo_(ts.duongDoi).join('-') + '.' });
   var xung = CHI[(yc + 6) % 12], hai = CHI[PN_HAI[yc]], vuong = [CT_CUNG[(ct.by.sun.cung + 3) % 12].ten, CT_CUNG[(ct.by.sun.cung + 9) % 12].ten];
-  items.push({ ten: 'Người cần giữ khoảng cách hợp lý', gt: 'Tuổi ' + xung, y: 'Tuổi ' + xung + ' (lục xung) và ' + hai + ' (lục hại) dễ bất đồng quan điểm; cung ' + vuong.join(', ') + ' tạo góc vuông với Mặt Trời của bạn – va chạm nhưng cũng thúc bạn trưởng thành. Không phải "kẻ xấu", chỉ cần giao tiếp rõ ràng.' });
+  items.push({ ten: 'Người cần giữ khoảng cách hợp lý', gt: 'Tuổi ' + xung, y: 'Tuổi ' + xung + ' (lục xung) và ' + hai + ' (lục hại) dễ bất đồng quan điểm; cung ' + vuong.join(', ') + ' tạo góc vuông với Mặt Trời của bạn. Mặt tốt: những người này hay chỉ ra điểm bạn chưa thấy, làm cùng họ bạn buộc phải chặt chẽ hơn. Mặt xấu: dễ cãi nhau vì khác cách làm, chung tiền hay chung nhà dễ căng và mất lòng. Gợi ý: thỏa thuận rõ bằng giấy trước khi làm chung.' });
   // 5. Âm – dương
   var duong = 0, tong = 0;
   bt.pillars.forEach(function (p) { tong += 2; if (p.can % 2 === 0) duong++; if (p.chi % 2 === 0) duong++; });
@@ -304,14 +304,14 @@ function htMatMa_(C, hoiTu, thang) {
   tong += 2; duong += (ct.nguyenTo['Lửa'] + ct.nguyenTo['Khí']) / (ct.nguyenTo['Lửa'] + ct.nguyenTo['Khí'] + ct.nguyenTo['Đất'] + ct.nguyenTo['Nước']) * 2;
   tong += 1; duong += ts.duongDoi % 2;
   var pd = Math.round(duong / tong * 100);
-  items.push({ ten: 'Cán cân Âm – Dương', gt: pd + '% dương', y: (pd >= 58 ? 'Thiên về dương: chủ động, hướng ngoại, thích dẫn dắt – cần thêm tĩnh lặng và lắng nghe.' : pd <= 42 ? 'Thiên về âm: sâu sắc, trực giác, bền bỉ âm thầm – cần mạnh dạn thể hiện hơn.' : 'Âm dương khá cân bằng: biết tiến biết lui, dễ thích nghi.') + ' (Tính từ can chi Bát Tự, hào quẻ Hà Lạc, nguyên tố chiêm tinh và số chủ đạo.)' });
+  items.push({ ten: 'Cán cân Âm – Dương', gt: pd + '% dương', y: (pd >= 58 ? 'Thiên về dương. Mặt tốt: chủ động, hướng ngoại, dám dẫn dắt. Mặt xấu: nóng vội, nói nhiều hơn nghe, dễ lấn át người khác và hay bỏ dở khi hết hứng.' : pd <= 42 ? 'Thiên về âm. Mặt tốt: sâu sắc, trực giác tốt, bền bỉ âm thầm. Mặt xấu: ngại lên tiếng, hay để bụng, dễ bị người khác giành phần và chậm ra quyết định.' : 'Âm dương khá cân bằng. Mặt tốt: biết tiến biết lui, dễ thích nghi. Mặt xấu: không có thế mạnh nào thật nổi trội, có lúc lưỡng lự giữa hai hướng.') + ' (Tính từ can chi Bát Tự, hào quẻ Hà Lạc, nguyên tố chiêm tinh và số chủ đạo.)' });
   // 6. Biểu tượng linh hồn
   items.push({ ten: 'Biểu tượng linh hồn', gt: CON_GIAP[tv.info.yChi] + ' × ' + ct.by.sun.cungTen + (hl ? ' × ' + hl.tien.ten : ''), y: 'Con ' + CON_GIAP[tv.info.yChi] + ' mang mệnh ' + tv.info.banMenh.ten + ', dưới cung ' + ct.by.sun.cungTen + ' (' + CT_CUNG[ct.by.sun.cung].tuKhoa + ')' + (hl ? ', đứng trong quẻ ' + hl.tien.ten + ' – ' + hl.tien.y.toLowerCase() : '') + '. Một hình ảnh để bạn nhớ mình là ai.' });
   // 7. Năm vàng của đời
   var vang = [];
   ['taiLoc', 'quanLoc'].forEach(function (k) { var cd = hoiTu.chuDe.filter(function (x) { return x.k === k; })[0]; if (cd && cd.dinh.length) vang.push(cd.dinh.slice().sort(function (a, b) { return b.soHe - a.soHe || (b.diem || 0) - (a.diem || 0) || a.nam - b.nam; })[0]); });
   vang.sort(function (a, b) { return a.nam - b.nam; });
-  if (vang.length) items.push({ ten: 'Năm vàng phía trước', gt: vang.map(function (x) { return x.nam; }).join(' · '), y: vang.map(function (x) { return x.nam + ' (' + x.tuoi + ' tuổi): ' + x.soHe + ' hệ cùng báo – ' + x.he.join(', '); }).join('; ') + '. Hãy chuẩn bị trước 1–2 năm để đón trọn.' });
+  if (vang.length) items.push({ ten: 'Năm vàng phía trước', gt: vang.map(function (x) { return x.nam; }).join(' · '), y: vang.map(function (x) { return x.nam + ' (' + x.tuoi + ' tuổi): ' + x.soHe + ' hệ cùng báo – ' + x.he.join(', '); }).join('; ') + '. Năm thuận cũng là năm dễ chủ quan, tiêu và hứa quá tay; nên chuẩn bị trước 1–2 năm.' });
   // 8. Hình mẫu đời người
   var giai = hd.l1 === 6 || hd.l2 === 6 ? 'Hồ sơ có hào 6: đời chia 3 chặng – thử nghiệm đến ~30, "lên mái nhà" quan sát 30–50, sau 50 thành hình mẫu.' : 'Human Design: sau Sao Thổ hồi quy (~29) bạn mới thật sự sống đúng thiết kế; sau Chiron hồi quy (~50) là lúc truyền lại kinh nghiệm.';
   items.push({ ten: 'Nhịp đời của bạn', gt: (hl && hl.tien.diem < hl.hau.diem ? 'Tiền khó – hậu thuận' : hl && hl.tien.diem > hl.hau.diem ? 'Tiền thuận – hậu giữ' : 'Đều tay'), y: giai + (hl ? ' Hà Lạc: quẻ Tiên thiên ' + hl.tien.ten + ' → Hậu thiên ' + hl.hau.ten + '.' : '') });
@@ -381,7 +381,7 @@ var HSN_SK = [
   { k: 'thuNhap', kc: 'tien', loai: 'tot', ten: 'Thu nhập tăng rõ rệt hoặc có khoản tiền lớn', ngan: 'thu nhập tăng', nguoc: 'tài chính cần giữ chặt',
     ung: { taiLoc: 1 }, nghich: { taiChinh: 0.7 }, manh: { 'Bát Tự': 1.3, 'Tử Vi': 1.1 }, N: 6, tuoi: [18, 80],
     khuyen: 'Đặt trước tỷ lệ tiết kiệm cho mọi khoản thu thêm; đừng để thu nhập tăng kéo chi tiêu tăng theo.' },
-  { k: 'haoTai', kc: 'tien', loai: 'xau', ten: 'Tài chính cần quản lý chặt: dễ có khoản chi lớn ngoài dự kiến', ngan: 'cần giữ chặt tài chính', nguoc: 'tiền vào thuận',
+  { k: 'haoTai', kc: 'tien', loai: 'xau', ten: 'Hao tiền: dễ có khoản chi lớn ngoài dự kiến, dễ phải vay mượn', ngan: 'hao tiền', nguoc: 'tiền vào thuận',
     ung: { taiChinh: 1 }, nghich: { taiLoc: 0.6 }, manh: { 'Bát Tự': 1.2, 'Tử Vi': 1.2 }, N: 6, tuoi: [18, 90],
     khuyen: 'Không cho vay hay đứng tên bảo lãnh lớn; giữ quỹ dự phòng; mọi khoản đầu tư mới nên thử nhỏ trước.' },
   { k: 'taiSan', kc: 'tien', loai: 'dong', ten: 'Mua bán nhà đất, xe hoặc tài sản lớn', ngan: 'giao dịch tài sản lớn', nguoc: 'chưa thuận để mua bán',
@@ -393,22 +393,22 @@ var HSN_SK = [
   { k: 'cuoiHoi', kc: 'tinh', loai: 'tot', ten: 'Cưới hỏi (hoặc hỷ sự lớn trong gia đình nếu đã lập gia đình)', ngan: 'cưới hỏi', nguoc: 'chuyện lứa đôi cần thêm thời gian',
     ung: { ketHon: 1.2 }, nghich: { giaDao: 0.5 }, manh: { 'Tử Vi': 1.2, 'Bát Tự': 1.2 }, N: 1.2, tuoi: [18, 45],
     khuyen: 'Nếu đã có ý định, đây là năm nên bàn chuyện tương lai rõ ràng với người kia và gia đình hai bên.' },
-  { k: 'batHoa', kc: 'tinh', loai: 'xau', ten: 'Tình cảm vợ chồng – người yêu cần nhiều thấu hiểu, nói chuyện thẳng thắn', ngan: 'tình cảm cần vun đắp', nguoc: 'tình cảm êm ấm',
+  { k: 'batHoa', kc: 'tinh', loai: 'xau', ten: 'Tình cảm vợ chồng – người yêu dễ bất hòa, cãi vã, lạnh nhạt', ngan: 'bất hòa trong tình cảm', nguoc: 'tình cảm êm ấm',
     ung: { giaDao: 0.8, thiPhi: 0.3 }, nghich: { ketHon: 0.5 }, manh: { 'Tử Vi': 1.2, 'Chiêm tinh': 1.1 }, N: 5, tuoi: [18, 80],
     khuyen: 'Nói ra điều mình cần thay vì chờ người kia tự hiểu; tránh quyết định lớn về quan hệ khi đang giận.' },
   { k: 'conCai', kc: 'con', loai: 'tot', ten: 'Tin vui con cái (mang thai, sinh nở) hoặc niềm vui lớn từ con', ngan: 'tin vui con cái', nguoc: 'cần dành thêm thời gian cho con',
     ung: { sinhCon: 1 }, nghich: {}, manh: { 'Tử Vi': 1.2, 'Bát Tự': 1.1 }, N: 2, tuoi: [20, 44],
     khuyen: 'Nếu đang mong con, chăm sức khỏe cả hai vợ chồng từ đầu năm; nếu đã có con, dành thời gian đồng hành cùng con.' },
-  { k: 'omDau', kc: 'khoe', loai: 'xau', ten: 'Cần chú ý nghỉ ngơi, giữ nếp sinh hoạt điều độ', ngan: 'cần giữ sức khỏe', nguoc: 'sức khỏe vững',
+  { k: 'omDau', kc: 'khoe', loai: 'xau', ten: 'Sức khỏe yếu hơn thường: dễ mệt, ốm vặt, bệnh cũ trở lại', ngan: 'sức khỏe yếu', nguoc: 'sức khỏe vững',
     ung: { sucKhoe: 1, tinhThan: 0.3 }, nghich: {}, manh: { 'Bát Tự': 1.3, 'Tử Vi': 1.1 }, N: 12, tuoi: [1, 90],
     khuyen: 'Khám sức khỏe định kỳ đầu năm, ngủ đủ, giữ nếp sinh hoạt điều độ; có gì bất thường thì hỏi ý kiến bác sĩ sớm.' },
-  { k: 'taiNan', kc: 'khoe', loai: 'xau', ten: 'Cần cẩn thận khi đi lại, vận động', ngan: 'cần cẩn thận đi lại', nguoc: 'đi lại bình an',
+  { k: 'taiNan', kc: 'khoe', loai: 'xau', ten: 'Dễ va quệt, chấn thương khi đi lại, vận động', ngan: 'va quệt khi đi lại', nguoc: 'đi lại bình an',
     ung: { sucKhoe: 0.6, diXa: 0.3, thiPhi: 0.2 }, nghich: {}, manh: { 'Tử Vi': 1.2, 'Chiêm tinh': 1.2 }, N: 4, tuoi: [5, 90],
     khuyen: 'Cẩn thận khi lái xe, leo cao, dùng máy móc; mua bảo hiểm phù hợp; không đi đường xa khi mệt.' },
-  { k: 'tinhThan', kc: 'khoe', loai: 'xau', ten: 'Áp lực tinh thần, lo âu, cần nghỉ ngơi', ngan: 'căng thẳng tinh thần', nguoc: 'tinh thần thoải mái',
+  { k: 'tinhThan', kc: 'khoe', loai: 'xau', ten: 'Áp lực tinh thần, lo âu, mất ngủ', ngan: 'căng thẳng tinh thần', nguoc: 'tinh thần thoải mái',
     ung: { tinhThan: 1, sucKhoe: 0.2 }, nghich: { quyNhan: 0.3 }, manh: { 'Chiêm tinh': 1.3, 'Thần số học': 1.2 }, N: 10, tuoi: [12, 90],
     khuyen: 'Giữ một thói quen giúp đầu óc nghỉ (đi bộ, thiền, viết), chia sẻ với người thân, đừng ôm việc một mình.' },
-  { k: 'nguoiThan', kc: 'nha', loai: 'xau', ten: 'Dành thêm quan tâm cho cha mẹ, người thân', ngan: 'quan tâm người thân', nguoc: 'gia đình yên ổn',
+  { k: 'nguoiThan', kc: 'nha', loai: 'xau', ten: 'Cha mẹ, người thân có việc phải lo (sức khỏe, tiền bạc)', ngan: 'lo cho người thân', nguoc: 'gia đình yên ổn',
     ung: { giaDao: 1 }, nghich: {}, manh: { 'Tử Vi': 1.2, 'Bát Tự': 1.1 }, N: 6, tuoi: [10, 90],
     khuyen: 'Thăm hỏi cha mẹ, người lớn tuổi thường xuyên hơn; nhắc mọi người khám sức khỏe.' },
   { k: 'nhaCua', kc: 'nha', loai: 'dong', ten: 'Sửa nhà, chuyển nhà hoặc thay đổi chỗ ở', ngan: 'thay đổi chỗ ở', nguoc: 'chỗ ở ổn định',
@@ -423,7 +423,7 @@ var HSN_SK = [
   { k: 'quyNhan', kc: 'quanHe', loai: 'tot', ten: 'Gặp quý nhân giúp đỡ, mở rộng quan hệ có ích', ngan: 'quý nhân giúp đỡ', nguoc: 'cần cẩn trọng trong quan hệ',
     ung: { quyNhan: 1 }, nghich: { thiPhi: 0.5 }, manh: { 'Bát Tự': 1.2, 'Tử Vi': 1.1 }, N: 10, tuoi: [10, 85],
     khuyen: 'Tham gia hội nhóm, sự kiện nghề nghiệp; chủ động nhờ giúp – người phù hợp dễ xuất hiện năm nay.' },
-  { k: 'thiPhi', kc: 'quanHe', loai: 'xau', ten: 'Cần cẩn trọng giấy tờ, hợp đồng và lời nói', ngan: 'cẩn trọng giấy tờ, lời nói', nguoc: 'được giúp đỡ',
+  { k: 'thiPhi', kc: 'quanHe', loai: 'xau', ten: 'Thị phi: dễ vướng tranh cãi, rắc rối giấy tờ, hợp đồng', ngan: 'thị phi, giấy tờ', nguoc: 'được giúp đỡ',
     ung: { thiPhi: 1 }, nghich: { quyNhan: 0.5 }, manh: { 'Tử Vi': 1.2, 'Bát Tự': 1.1 }, N: 5, tuoi: [16, 85],
     khuyen: 'Đọc kỹ trước khi ký, giữ chứng từ, tránh nói sau lưng người khác; có tranh chấp thì nên hòa giải sớm.' }
 ];
@@ -509,7 +509,7 @@ function htHoSoNam_(C, namTin, thang, W) {
     var giai = !a0 ? 'Ngoài độ tuổi thường gặp của việc này.' :
       dong === 'Đồng thuận' ? ung.length + ' hệ – ' + htDs_(tenUng) + ' – cùng nghiêng về ' + S.ngan + '. Khi nhiều phương pháp độc lập cùng chỉ một hướng, khả năng cao hơn mức thường của bạn' + (rel >= 1.3 ? ' (khoảng ' + (rel >= 5 ? 'hơn ×5' : '×' + String(rel).replace('.', ',')) + ')' : '') + '.' :
       dong === 'Đối lập' ? htDs_(ung) + ' nghiêng về ' + S.ngan + '; ' + htDs_(nghich) + ' lại cho chiều ngược (' + S.nguoc + '). ' +
-        (S.loai === 'tot' ? 'Cơ hội có thật nhưng kèm trở ngại – kết quả phụ thuộc nhiều vào sự chuẩn bị và thời điểm bạn chọn.' : S.loai === 'xau' ? 'Rủi ro có, nhưng cũng có yếu tố đỡ – phòng trước thì nhẹ đi đáng kể.' : 'Thay đổi có thể đến nhưng chưa chắc theo cách bạn muốn – cân nhắc kỹ trước khi quyết.') :
+        (S.loai === 'tot' ? 'Cơ hội có thật nhưng kèm trở ngại rõ – có thể được, cũng có thể vấp.' : S.loai === 'xau' ? 'Rủi ro có thật; có yếu tố đỡ nhưng không xóa được rủi ro.' : 'Thay đổi có thể đến nhưng chưa chắc theo cách bạn muốn – cân nhắc kỹ trước khi quyết.') :
       dong === 'Nghiêng về' ? htDs_(tenUng) + ' cùng nghiêng về ' + S.ngan + ', các hệ còn lại không phản đối.' :
       dong === 'Một hệ báo' ? 'Chỉ ' + tenUng[0] + ' báo – tín hiệu riêng lẻ, nên coi là khả năng, chưa phải xu hướng chung.' :
       dong === 'Nghiêng chiều ngược' ? htDs_(nghich) + ' nghiêng về ' + S.nguoc + ' – việc này khó xảy ra hơn mức thường.' :
@@ -542,13 +542,13 @@ function htHoSoNam_(C, namTin, thang, W) {
   var canGiu = sk.filter(function (x) { return x.loai === 'xau' && !x.ngoai; }).sort(function (a, b) { return b.p - a.p; })[0];
   var tom = [];
   tom.push('Năm ' + vy + ' (' + n0.canChi + ', ' + n0.tuoi + ' tuổi mụ): ' + (soTot > soXau ? soTot + '/5 hệ nghiêng thuận' + (soXau ? ', ' + soXau + ' hệ nghiêng thử thách' : '') + '.' :
-    soXau > soTot ? soXau + '/5 hệ nghiêng thử thách' + (soTot ? ', ' + soTot + ' hệ nghiêng thuận' : '') + ' – năm nên chắc hơn tiến.' : 'các hệ chia đều thuận – khó, năm có cả cơ hội lẫn việc cần giữ.'));
+    soXau > soTot ? soXau + '/5 hệ nghiêng thử thách' + (soTot ? ', ' + soTot + ' hệ nghiêng thuận' : '') + ' – năm nên chắc hơn tiến.' : 'các hệ chia đều thuận – khó, năm có cả cơ hội lẫn trở ngại.'));
   if (noiBat.length) tom.push((qua ? 'Những việc nhiều khả năng đã diễn ra: ' : 'Những việc nhiều khả năng xảy ra: ') + noiBat.slice(0, 3).map(function (x) { return x.ngan + ' (mức ' + x.muc.toLowerCase() + ')'; }).join(', ') + '.');
   if (canGiu && canGiu.p >= 15) tom.push(noiBat.slice(0, 3).indexOf(canGiu) >= 0 ? 'Với ' + canGiu.ngan + ': ' + canGiu.khuyen.charAt(0).toLowerCase() + canGiu.khuyen.slice(1) :
     'Điều nên chủ động phòng: ' + canGiu.ngan + '. ' + canGiu.khuyen);
   if (doiLap.length) tom.push('Các hệ chưa thống nhất ở: ' + doiLap.map(function (x) { return x.ngan; }).join(', ') + ' – xem phần giải thích để biết hệ nào nói gì.');
   if (qua) tom.push('Năm này đã qua: hãy đối chiếu với những gì bạn đã trải qua – càng khớp, các năm tới càng đáng tin.');
-  return { nam: vy, tuoi: n0.tuoi, canChi: n0.canChi, soCN: n0.soCN, qua: qua, tom: tom, he: he, khiaCanh: khiaCanh, suKien: sk,
+  return { nam: vy, tuoi: n0.tuoi, canChi: n0.canChi, soCN: n0.soCN, qua: qua, tom: tom, he: he, khiaCanh: khiaCanh, suKien: sk, kyHanh: ((bt && bt.goiY && bt.goiY.ky) || []).slice(0, 2),
     noiBat: noiBat.map(function (x) { return x.k; }), doiLap: doiLap.map(function (x) { return x.k; }),
     coSo: 'Mỗi sự kiện ghép tín hiệu của 5 hệ có lịch năm (Tử Vi, Bát Tự, Hà Lạc, Chiêm tinh, Thần số học; Human Design không có lịch năm). Mỗi hệ có tín hiệu "ủng hộ" và "ngược chiều" – ví dụ với thu nhập tăng, tín hiệu cần giữ tiền là ngược chiều. ' +
       'Mức khả năng lấy số lần việc đó thường gặp trong đời người (ví dụ đổi việc khoảng 5 lần, cưới khoảng 1 lần) rồi phân bổ cho từng năm theo độ tuổi và sức mạnh tín hiệu: năm càng nhiều hệ cùng báo càng nhận phần lớn. ' +
@@ -576,62 +576,62 @@ var HSN_CD = [
  * Không tên sao, không %, không chẩn đoán bệnh; tầng 1 mở bằng "Bạn có xu hướng…"; câu khó luôn kèm cách làm. */
 /** Việc nổi bật: [khi tín hiệu rõ, khi tín hiệu vừa] */
 var HSN_CD_SK_VAN = {
-  thangTien: ['Công sức bạn bỏ ra thời gian qua có xu hướng được nhìn thấy rõ hơn: dễ được giao việc lớn, được tin tưởng hoặc được ghi nhận bằng kết quả cụ thể.',
-    'Có những cơ hội nhỏ để bạn thể hiện năng lực – một dự án, một vai trò mới hay một lời ghi nhận đúng lúc; nắm được thì đà đi lên rõ dần.'],
-  doiViec: ['Trong bạn có xu hướng muốn làm mới con đường của mình: đổi chỗ làm, đổi vị trí hoặc rẽ sang hướng nghề gần với điều mình thích hơn.',
-    'Ý muốn thay đổi công việc có thể nhen lên; chưa cần vội, nhưng nên bắt đầu tìm hiểu và chuẩn bị từ bây giờ.'],
-  apLucViec: ['Nhịp làm việc có xu hướng căng hơn: việc dồn, cạnh tranh hoặc khác ý với người cùng làm dễ xuất hiện. Đây là áp lực để rèn, không phải để bạn gánh một mình.',
-    'Đôi lúc công việc đòi hỏi nhiều hơn thường lệ hoặc có va chạm nhỏ; giữ bình tĩnh và nói rõ ràng là đủ để đi qua.'],
-  hocThi: ['Đây là lúc thuận để học thêm, thi một chứng chỉ hoặc nâng một kỹ năng – công sức bỏ vào học hành dễ thành kết quả.',
-    'Một khóa học ngắn hay một kỹ năng mới sẽ giúp bạn nhiều hơn bạn nghĩ trong năm này.'],
-  diXa: ['Năm có nhiều chuyển động: công tác xa, chuyến đi dài hoặc làm việc với người ở nơi khác dễ mở ra cơ hội mới.',
-    'Những chuyến đi, kể cả ngắn, có thể mang lại một mối quen hay một ý tưởng đáng giá.'],
-  quyNhan: ['Bạn có xu hướng gặp người sẵn lòng giúp: một người đi trước, một đồng nghiệp hiểu việc hoặc một mối quen mở đúng cánh cửa.',
-    'Các mối quan hệ nghề nghiệp có ích hơn thường lệ – chủ động hỏi han, kết nối sẽ được đáp lại.'],
-  thiPhi: ['Lời nói và văn bản năm nay cần cẩn thận hơn: một câu nói vội hay một điều khoản chưa đọc kỹ dễ thành chuyện lớn hơn bạn muốn.',
-    'Thỉnh thoảng có hiểu lầm nhỏ trong trao đổi; ghi lại các thỏa thuận quan trọng là cách giữ yên mọi việc.'],
-  thuNhap: ['Dòng tiền có xu hướng rộng hơn: thu nhập tăng, có khoản thưởng hoặc một nguồn thu mới đến từ chính năng lực của bạn.',
-    'Có cơ hội tăng thêm thu nhập, thường đến từ việc bạn làm tốt hơn hoặc nhận thêm một phần việc.'],
-  haoTai: ['Tiền ra có xu hướng nhanh hơn tiền vào ở vài thời điểm: khoản chi bất ngờ, việc nhà hay lời nhờ vả về tiền dễ xuất hiện.',
-    'Có thể có vài khoản chi ngoài dự kiến; không đáng ngại nếu bạn có sẵn một khoản dự phòng.'],
-  taiSan: ['Năm có không khí của những quyết định về tài sản lớn – nhà, xe hay một khoản tích lũy dài hạn; nên đi chậm và kỹ.',
-    'Ý định mua sắm món lớn có thể xuất hiện; cứ tìm hiểu trước, quyết khi đã tính đủ.'],
-  quenMoi: ['Chuyện tình cảm có xu hướng ấm lên: người đang một mình dễ gặp người khiến mình chú ý, người đã có đôi dễ tìm lại sự gần gũi.',
-    'Có những khoảnh khắc khiến lòng mềm lại – một cuộc gặp, một buổi trò chuyện sâu hay một lời quan tâm đúng lúc.'],
-  cuoiHoi: ['Không khí trong năm thuận cho những bàn bạc nghiêm túc về tương lai hai người, hoặc một dịp vui lớn trong nhà.',
-    'Nếu đã có dự định chung, năm nay hợp để nói chuyện rõ hơn với nhau và với gia đình hai bên.'],
-  batHoa: ['Người thân thiết nhất có xu hướng cần bạn lắng nghe nhiều hơn; vài lần khác ý là lời nhắc để hai người nói thật lòng với nhau.',
-    'Đôi lúc hai người sẽ hiểu lệch ý nhau; nói ra sớm thì chuyện nhỏ vẫn chỉ là chuyện nhỏ.'],
-  conCai: ['Chuyện con cái mang lại nhiều niềm vui: có thể là một tin vui đang mong, hoặc những bước tiến của con khiến bạn tự hào.',
-    'Thời gian dành cho con, hoặc cho những người nhỏ tuổi trong nhà, năm nay đem lại nhiều niềm vui hơn bạn nghĩ.'],
-  nguoiThan: ['Gia đình có xu hướng cần bạn nhiều hơn: cha mẹ, người lớn tuổi hay anh chị em mong có bạn ở bên, giúp một tay.',
-    'Vài việc nhà cần bạn để tâm; một cuộc gọi, một bữa cơm chung đã là nhiều.'],
-  nhaCua: ['Chuyện chỗ ở dễ chuyển động: sửa sang, sắp xếp lại hoặc dọn đến nơi mới hợp với giai đoạn này của bạn.',
-    'Có thể bạn muốn làm mới không gian sống – thay đổi nhỏ trong nhà cũng làm tinh thần nhẹ hơn.'],
-  omDau: ['Cơ thể có xu hướng nhắc bạn chậm lại: dễ mệt khi làm quá sức hoặc ngủ không đủ. Đây là tín hiệu để điều chỉnh nhịp sống, không phải điều đáng lo.',
-    'Vài giai đoạn bạn sẽ thấy hụt năng lượng hơn thường lệ; nghỉ đúng lúc là đủ để lấy lại sức.'],
-  taiNan: ['Khi đi lại, vận động hay làm việc tay chân, bạn nên chậm hơn một nhịp – vội vàng là điều dễ làm bạn trầy xước nhất năm nay.',
-    'Chỉ cần thêm chút cẩn thận khi đi đường xa hay lúc đang mệt là mọi việc êm.'],
-  tinhThan: ['Đầu óc có xu hướng nhiều suy nghĩ: lo toan dễ chồng lên nhau, nhất là khi bạn ôm việc một mình. Có một chỗ để chia sẻ sẽ giúp bạn nhẹ đi nhiều.',
-    'Có lúc bạn thấy nặng đầu hơn thường; một thói quen thư giãn đều đặn giữ cho tinh thần thông thoáng.']
+  thangTien: ['Công sức bạn bỏ ra thời gian qua có xu hướng được nhìn thấy rõ hơn: dễ được giao việc lớn hoặc được ghi nhận bằng kết quả cụ thể. Cái giá: việc nhiều lên, kỳ vọng cao hơn, dễ bị soi và bị ganh tị.',
+    'Có vài cơ hội nhỏ để thể hiện năng lực – một dự án, một vai trò mới; nhưng cơ hội không rõ ràng, làm nửa vời thì dễ trôi qua mà không đổi được gì.'],
+  doiViec: ['Bạn có xu hướng muốn làm mới con đường của mình: đổi chỗ làm, đổi vị trí hoặc rẽ sang hướng gần với điều mình thích. Mặt trái: đổi vội dễ hụt thu nhập vài tháng, mất thâm niên hoặc vào chỗ không hơn chỗ cũ.',
+    'Ý muốn thay đổi công việc có thể nhen lên nhưng chưa chín; quyết khi đang chán dễ bỏ chỗ tốt để lấy chỗ chưa chắc.'],
+  apLucViec: ['Nhịp làm việc có xu hướng căng hơn: việc dồn, cạnh tranh hoặc khác ý với người cùng làm, có thể mất điểm với cấp trên hay mất một mối quan hệ nơi làm. Mặt được: qua giai đoạn này bạn biết rõ ai đáng tin và mình chịu được đến đâu.',
+    'Đôi lúc công việc đòi hỏi nhiều hơn thường lệ hoặc có va chạm nhỏ; dồn lâu dễ thành mệt mỏi và cáu gắt mang về nhà.'],
+  hocThi: ['Đây là lúc thuận để học thêm, thi một chứng chỉ hoặc nâng một kỹ năng – công sức bỏ vào học hành dễ thành kết quả. Cái giá: tốn thời gian, tiền học, phải bớt việc khác và bớt thời gian cho gia đình.',
+    'Một khóa học ngắn hay một kỹ năng mới có ích trong năm này; học dàn trải, bỏ giữa chừng thì tốn tiền mà không được gì.'],
+  diXa: ['Năm có nhiều chuyển động: công tác xa, chuyến đi dài hoặc làm việc với người ở nơi khác dễ mở ra mối quen, việc mới. Mặt trái: tốn kém, mệt vì đi lại, việc nhà và người thân dễ bị bỏ bê.',
+    'Những chuyến đi, kể cả ngắn, có thể mang lại một mối quen hay một ý tưởng; đi nhiều mà không tính trước thì hao tiền, hao sức.'],
+  quyNhan: ['Bạn có xu hướng gặp người sẵn lòng giúp: một người đi trước, một đồng nghiệp hiểu việc hoặc một mối quen mở đúng cánh cửa. Mặt trái: dễ dựa dẫm, mắc nợ ân tình, và không phải ai tỏ ra giúp cũng giúp thật.',
+    'Các mối quan hệ nghề nghiệp có ích hơn thường lệ nếu bạn chủ động; ngồi chờ thì cơ hội này dễ qua tay người khác.'],
+  thiPhi: ['Lời nói và văn bản năm nay dễ thành chuyện: một câu nói vội hay một điều khoản chưa đọc kỹ có thể dẫn tới tranh cãi, mất tiền hoặc rắc rối giấy tờ kéo dài. Mặt được: va vấp này buộc bạn làm việc rõ ràng, chặt chẽ hơn.',
+    'Thỉnh thoảng có hiểu lầm trong trao đổi, dễ bị nói sau lưng hoặc bị hiểu sai ý. Gợi ý: ghi lại các thỏa thuận quan trọng bằng văn bản.'],
+  thuNhap: ['Dòng tiền có xu hướng rộng hơn: thu nhập tăng, có khoản thưởng hoặc một nguồn thu mới đến từ năng lực của bạn. Mặt trái: có tiền dễ tiêu rộng tay, người quanh mình nhờ vả nhiều hơn, cuối năm chưa chắc dư hơn năm trước.',
+    'Có cơ hội tăng thêm thu nhập, thường đi kèm nhận thêm việc – tiền thêm phải đổi bằng thời gian và sức.'],
+  haoTai: ['Tiền ra có xu hướng nhanh hơn tiền vào ở vài thời điểm: khoản chi bất ngờ, việc nhà hay lời nhờ vả về tiền dễ xuất hiện, có thể phải rút tiền tích lũy hoặc đi vay. Mặt được: giai đoạn này cho bạn thấy rõ chỗ hở trong cách giữ tiền.',
+    'Có thể có vài khoản chi ngoài dự kiến; không có khoản dự phòng thì dễ phải vay mượn hoặc cắt bớt việc đã định.'],
+  taiSan: ['Năm có không khí của những quyết định về tài sản lớn – nhà, xe hay một khoản tích lũy dài hạn. Mặt tốt: có thể có được thứ mong lâu. Mặt xấu: quyết nhanh dễ mua đắt, vướng giấy tờ hoặc gánh nợ quá sức.',
+    'Ý định mua sắm món lớn có thể xuất hiện; quyết vội dễ mua theo cảm xúc rồi tiếc hoặc kẹt tiền.'],
+  quenMoi: ['Chuyện tình cảm có xu hướng ấm lên: người đang một mình dễ gặp người khiến mình chú ý, người đã có đôi dễ tìm lại sự gần gũi. Mặt trái: cảm xúc lên nhanh dễ chọn vội, hoặc có người thứ ba chen vào mối quan hệ đang có.',
+    'Có những khoảnh khắc khiến lòng mềm lại – một cuộc gặp, một buổi trò chuyện sâu; nhưng cảm xúc này dễ đến rồi đi, chưa chắc thành chuyện lâu dài.'],
+  cuoiHoi: ['Không khí trong năm thuận cho những bàn bạc nghiêm túc về tương lai hai người, hoặc một dịp vui lớn trong nhà. Cái giá: tốn kém, dễ bất đồng với gia đình hai bên về lễ nghi, tiền bạc, chỗ ở.',
+    'Nếu đã có dự định chung, năm nay có thể nói chuyện rõ hơn; nhưng một bên chưa sẵn sàng thì dễ thành giằng co, kéo dài.'],
+  batHoa: ['Người thân thiết nhất có xu hướng cần bạn lắng nghe nhiều hơn; khác ý dễ thành cãi vã, chiến tranh lạnh, có lúc nghĩ đến chuyện chia tay. Mặt được: nói thật được với nhau thì hai người hiểu nhau hơn trước.',
+    'Đôi lúc hai người hiểu lệch ý nhau; để lâu không nói thì chuyện nhỏ dễ thành khoảng cách.'],
+  conCai: ['Chuyện con cái mang lại niềm vui: có thể là một tin vui đang mong, hoặc những bước tiến của con khiến bạn tự hào. Cái giá: tốn sức, tốn tiền, ít thời gian cho bản thân và cho người bạn đời.',
+    'Thời gian dành cho con hoặc người nhỏ tuổi trong nhà đem lại niềm vui; nhưng con cũng dễ đòi hỏi nhiều hơn, có lúc làm bạn mệt và căng.'],
+  nguoiThan: ['Gia đình có xu hướng cần bạn nhiều hơn: cha mẹ, người lớn tuổi hay anh chị em có việc phải lo, có thể là sức khỏe hay tiền bạc. Cái giá: tốn thời gian, tiền và dễ căng với người nhà vì chuyện chia phần trách nhiệm.',
+    'Vài việc nhà cần bạn để tâm; lơ đi thì dễ bị trách là vô tâm, chuyện nhỏ thành chuyện lớn.'],
+  nhaCua: ['Chuyện chỗ ở dễ chuyển động: sửa sang, sắp xếp lại hoặc dọn đến nơi mới. Mặt tốt: không gian hợp hơn với giai đoạn này. Mặt xấu: tốn kém hơn dự tính, mệt và xáo trộn nếp nhà một thời gian.',
+    'Có thể bạn muốn làm mới không gian sống; sửa nhỏ cũng dễ phát sinh chi phí và việc vặt hơn bạn nghĩ.'],
+  omDau: ['Cơ thể có xu hướng yếu hơn thường: dễ mệt, ốm vặt hoặc bệnh cũ trở lại khi làm quá sức, ngủ không đủ. Để kéo dài thì sức khỏe dễ kéo theo công việc và tiền bạc.',
+    'Vài giai đoạn bạn sẽ thấy hụt năng lượng hơn thường lệ; cố làm tiếp lúc đó dễ sinh ốm và năng suất giảm.'],
+  taiNan: ['Khi đi lại, vận động hay làm việc tay chân, bạn dễ gặp va quệt, trầy xước hoặc chấn thương nhỏ hơn thường – nhất là lúc vội và lúc mệt.',
+    'Bất cẩn khi đi đường xa hay lúc đang mệt dễ dẫn tới va chạm, hỏng đồ hoặc chấn thương nhẹ.'],
+  tinhThan: ['Đầu óc có xu hướng nhiều suy nghĩ: lo toan chồng lên nhau, dễ mất ngủ, cáu gắt hoặc buồn kéo dài, nhất là khi bạn ôm việc một mình. Gợi ý: có một người để chia sẻ.',
+    'Có lúc bạn thấy nặng đầu, khó tập trung hơn thường; dồn lâu dễ thành mất ngủ và dễ nổi nóng với người nhà.']
 };
 /** Kho văn từng chủ đề. mo: câu mở theo mức (tầng 1); yen: khi không có việc nào nổi bật; thuan / chuY: việc hợp làm trong tháng thuận / cần để ý;
  *  khuyen: việc nên làm bổ sung theo mức; ket: câu kết nhẹ nhàng theo mức (tầng 2) */
 var HSN_CD_VAN = {
   cv: {
     mo: {
-      tot: ['Bạn có xu hướng bước vào năm {y} với nhiều đà cho công việc: những gì bạn làm dễ được nhìn thấy, và người xung quanh sẵn lòng trao thêm cơ hội.',
-        'Bạn có xu hướng thấy công việc năm {y} trôi chảy hơn những năm gần đây – đây là lúc hợp để tiến thêm một bậc thay vì chỉ giữ chỗ.'],
-      vua: ['Bạn có xu hướng đi qua năm {y} với nhịp công việc khá đều: không có cú rẽ lớn, nhưng là nền tốt để làm sâu, làm chắc những gì đang có.',
-        'Bạn có xu hướng cần một năm {y} "chạy bền" hơn "chạy nước rút": công việc ổn, phần thưởng đến từ sự đều tay.'],
-      xau: ['Bạn có xu hướng thấy công việc năm {y} đòi hỏi nhiều hơn: nhiều việc, nhiều ý kiến khác nhau và cần giữ bình tĩnh. Đây là năm rèn bản lĩnh hơn là năm bứt tốc.',
-        'Bạn có xu hướng gánh nhiều trách nhiệm trong năm {y}; áp lực có thật, nhưng cũng là dịp để người khác thấy bạn vững vàng thế nào.'],
-      hai: ['Bạn có xu hướng gặp cả cơ hội lẫn thử thách trong công việc năm {y}: có việc mở ra, có chỗ cần giữ. Ai chuẩn bị kỹ sẽ thấy phần thuận nhiều hơn.',
-        'Bạn có xu hướng thấy công việc năm {y} như một con dốc có gió thuận: lên được, nhưng cần giữ nhịp và chọn đúng lúc bước.'],
-      dong: ['Bạn có xu hướng đứng trước những ngã rẽ trong công việc năm {y}: vừa có cánh cửa mới mở ra, vừa có việc cần cân nhắc kỹ trước khi bước.',
-        'Bạn có xu hướng muốn làm mới con đường nghề nghiệp trong năm {y}; thay đổi đến nhanh hay chậm phụ thuộc nhiều vào sự chuẩn bị của bạn.']
+      tot: ['Bạn có xu hướng bước vào năm {y} với nhiều đà cho công việc: những gì bạn làm dễ được nhìn thấy, người xung quanh sẵn lòng trao thêm việc. Mặt trái: việc nhiều lên, dễ ôm đồm và bị so sánh.',
+        'Bạn có xu hướng thấy công việc năm {y} trôi chảy hơn những năm gần đây – hợp để tiến thêm một bậc; nhưng chủ quan thì dễ hứa quá sức mình.'],
+      vua: ['Bạn có xu hướng đi qua năm {y} với nhịp công việc khá đều: không có cú rẽ lớn, hợp để làm sâu những gì đang có. Mặt trái: dễ giậm chân, thu nhập và vị trí khó nhích lên.',
+        'Bạn có xu hướng cần một năm {y} "chạy bền" hơn "chạy nước rút": công việc ổn nhưng chậm, dễ thấy chán vì không có gì mới.'],
+      xau: ['Bạn có xu hướng thấy công việc năm {y} khó hơn: nhiều việc, nhiều ý kiến trái chiều, dễ va chạm với cấp trên hoặc đồng nghiệp và có lúc mất điểm vì một sai sót. Mặt được: qua năm này tay nghề vững hơn, biết rõ ai đáng tin.',
+        'Bạn có xu hướng gánh nhiều trách nhiệm trong năm {y}; áp lực có thật, dễ quá tải, làm nhiều mà chưa chắc được ghi nhận tương xứng.'],
+      hai: ['Bạn có xu hướng gặp cả cơ hội lẫn trở ngại trong công việc năm {y}: có việc mở ra, nhưng cũng có chỗ dễ vấp – chọn sai lúc thì phần khó lấn phần thuận.',
+        'Bạn có xu hướng thấy công việc năm {y} như một con dốc có gió thuận: lên được, nhưng mệt, và trượt chân là mất nhiều công.'],
+      dong: ['Bạn có xu hướng đứng trước những ngã rẽ trong công việc năm {y}: có cánh cửa mới, nhưng bước vội dễ mất chỗ đang có mà chỗ mới chưa chắc hơn.',
+        'Bạn có xu hướng muốn làm mới con đường nghề nghiệp trong năm {y}; thay đổi dễ kéo theo hụt thu nhập và xáo trộn vài tháng đầu.']
     },
-    yen: 'Không có việc nào trong công việc nổi lên quá rõ – đó là tin tốt nếu bạn muốn tập trung làm sâu một việc.',
+    yen: 'Không có việc nào trong công việc nổi lên rõ: ít biến động, nhưng cũng ít cơ hội mới tự tìm đến.',
     thuan: ['nộp hồ sơ, đề xuất ý tưởng hoặc xin một buổi nói chuyện về vai trò của mình', 'khởi động dự án mới hay nhận thêm trách nhiệm', 'gặp gỡ, kết nối với người trong nghề',
       'hoàn tất khóa học, chứng chỉ hoặc bài thi đang dở', 'chốt các thỏa thuận đã bàn kỹ', 'trình bày kết quả và nói rõ mong muốn của mình'],
     chuY: ['tránh quyết định nghỉ việc hay đổi hướng khi đang bực', 'đọc kỹ mọi văn bản trước khi ký', 'giữ lời nói mềm trong các cuộc họp căng', 'đừng nhận thêm việc vượt sức'],
@@ -641,23 +641,23 @@ var HSN_CD_VAN = {
       xau: ['Mỗi tuần dành 15 phút tổng kết: việc gì đã xong, việc gì cần nhờ người khác hỗ trợ.', 'Giữ các thỏa thuận quan trọng bằng tin nhắn hoặc email để tránh hiểu lầm.'],
       dong: ['Trước khi đổi hướng, trò chuyện với một người đã đi con đường đó để hiểu thật.', 'Chuẩn bị một khoản dự phòng trước mọi quyết định thay đổi lớn.']
     },
-    ket: { tot: 'Năm thuận không tự mang kết quả đến; nó chỉ làm cho mỗi bước bạn đi nhẹ hơn – vì vậy hãy bước.', vua: 'Một năm đều tay là món quà cho người biết kiên nhẫn: nền móng xây năm nay sẽ đỡ bạn ở những năm sau.',
-      xau: 'Năm cần giữ không phải năm xấu – đó là năm bạn rèn thêm sức bền. Chia việc nhỏ, nhờ người đúng lúc, và nhớ nghỉ giữa chừng.', dong: 'Thay đổi nào cũng có lúc chông chênh; chuẩn bị kỹ và đi từng bước thì chông chênh qua nhanh.' }
+    ket: { tot: 'Năm thuận không tự mang kết quả đến; không bước thì phần thuận trôi qua mà không để lại gì.', vua: 'Năm đều tay là năm xây nền; cái giá là kết quả đến chậm, dễ nản giữa chừng.',
+      xau: 'Năm này phần khó nhiều hơn phần thuận: dễ quá tải, va chạm và mệt. Gợi ý: chia việc nhỏ, nhờ người đúng lúc.', dong: 'Thay đổi nào cũng có giai đoạn chông chênh về tiền và tinh thần. Gợi ý: chuẩn bị kỹ rồi đi từng bước.' }
   },
   tien: {
     mo: {
-      tot: ['Bạn có xu hướng thấy dòng tiền năm {y} rộng rãi hơn: tiền vào đều hơn, có thêm khoản thu từ chính năng lực của mình.',
-        'Bạn có xu hướng gặp một năm {y} thuận cho tiền bạc – không phải "trúng lớn", mà là công sức được trả xứng đáng hơn.'],
-      vua: ['Bạn có xu hướng giữ tiền bạc năm {y} ở mức ổn định: không biến động lớn, hợp để sắp xếp lại và tích lũy đều.',
-        'Bạn có xu hướng trải qua năm {y} với chuyện tiền nong khá êm; đây là lúc tốt để xây thói quen hơn là tìm cơ hội lớn.'],
-      xau: ['Bạn có xu hướng gặp vài khoản chi ngoài dự kiến trong năm {y}; tiền ra dễ nhanh hơn tiền vào nếu chưa có kế hoạch. Đây là năm "giữ chắc" hơn là "mở rộng".',
-        'Bạn có xu hướng cần quản tiền chặt tay hơn trong năm {y}: chi tiêu nhỏ cộng lại dễ thành lớn, lời nhờ vả về tiền dễ xuất hiện.'],
-      hai: ['Bạn có xu hướng thấy tiền bạc năm {y} vừa có cửa vào mới vừa có khoản cần chi: thu tăng nhưng chi cũng dễ tăng theo.',
-        'Bạn có xu hướng có một năm {y} "vào nhiều ra nhiều"; ai giữ được kỷ luật chi tiêu sẽ thấy cuối năm dư dả hơn.'],
-      dong: ['Bạn có xu hướng đứng trước những quyết định lớn về tài sản trong năm {y}: mua, bán, đổi hay sắp xếp lại khoản tích lũy.',
-        'Bạn có xu hướng muốn thay đổi cách dùng tiền trong năm {y}; thay đổi tốt nhất là thay đổi đã được tính kỹ.']
+      tot: ['Bạn có xu hướng thấy dòng tiền năm {y} rộng rãi hơn: tiền vào đều hơn, có thêm khoản thu từ năng lực của mình. Mặt trái: tiêu cũng dễ rộng tay theo, nhất là cho thể diện và người nhờ vả.',
+        'Bạn có xu hướng gặp một năm {y} thuận cho tiền bạc – không phải "trúng lớn", mà là công sức được trả xứng hơn; nhưng tiền thêm thường đi kèm việc thêm.'],
+      vua: ['Bạn có xu hướng giữ tiền bạc năm {y} ở mức ổn định: không biến động lớn, hợp để tích lũy đều. Mặt trái: thu nhập khó tăng, muốn bứt lên phải tự tạo thêm nguồn.',
+        'Bạn có xu hướng trải qua năm {y} với chuyện tiền nong khá êm; nhưng êm dễ sinh lơ là, chi lặt vặt cộng lại không nhỏ.'],
+      xau: ['Bạn có xu hướng gặp vài khoản chi ngoài dự kiến trong năm {y}; tiền ra dễ nhanh hơn tiền vào, có thể phải rút tiền tích lũy, vay mượn hoặc mất tiền vì cho vay, đầu tư sai. Mặt được: năm này cho thấy rõ chỗ hở trong cách giữ tiền.',
+        'Bạn có xu hướng hụt tiền hơn trong năm {y}: chi nhỏ cộng lại thành lớn, lời nhờ vả về tiền dễ xuất hiện và khó từ chối.'],
+      hai: ['Bạn có xu hướng thấy tiền bạc năm {y} vừa có cửa vào mới vừa có khoản phải chi: thu tăng nhưng chi tăng theo, cuối năm chưa chắc dư.',
+        'Bạn có xu hướng có một năm {y} "vào nhiều ra nhiều"; thiếu kỷ luật chi tiêu thì tiền qua tay nhiều mà giữ lại chẳng bao nhiêu.'],
+      dong: ['Bạn có xu hướng đứng trước những quyết định lớn về tài sản trong năm {y}: mua, bán, đổi hay dồn khoản tích lũy. Đúng lúc thì được tài sản tốt; vội thì dễ mua đắt, bán rẻ hoặc gánh nợ.',
+        'Bạn có xu hướng muốn đổi cách dùng tiền trong năm {y}; đổi mà chưa tính kỹ dễ mất phí, mất cả tiền gốc.']
     },
-    yen: 'Không có khoản nào nổi lên quá rõ – tiền bạc đi theo đúng nhịp bạn sắp xếp.',
+    yen: 'Không có khoản nào nổi lên rõ: tiền bạc không biến động lớn, nhưng cũng không có cửa thu mới tự đến.',
     thuan: ['đặt lại kế hoạch chi tiêu và mở thêm một khoản tiết kiệm tự động', 'bàn chuyện thu nhập hoặc nhận thêm việc có thù lao rõ ràng', 'chốt các khoản thu còn treo một cách nhẹ nhàng',
       'tìm hiểu kỹ một cách tích lũy an toàn, dễ hiểu', 'mua món lớn đã cân nhắc từ lâu', 'rà lại các khoản phí, gói dịch vụ không còn dùng'],
     chuY: ['hoãn các khoản cho vay hay đứng tên giúp người khác', 'không xuống tiền cho lời mời "làm giàu nhanh"', 'giữ quỹ dự phòng, bớt mua sắm theo cảm xúc', 'kiểm tra kỹ hóa đơn và các khoản tự động trừ'],
@@ -667,23 +667,23 @@ var HSN_CD_VAN = {
       xau: ['Giữ một quỹ dự phòng riêng, không đụng đến trừ khi thật cần.', 'Trước mỗi khoản chi lớn, chờ hai ngày rồi mới quyết.'],
       dong: ['Mọi giao dịch tài sản lớn đều nên đọc kỹ giấy tờ cùng người có chuyên môn.', 'Tính trước xem mình xoay xở thế nào nếu kế hoạch chậm hơn dự kiến nửa năm.']
     },
-    ket: { tot: 'Tiền đến thuận là lúc dễ tiêu thuận; giữ lại một phần ngay từ đầu, bạn sẽ cảm ơn mình vào năm sau.', vua: 'Năm êm là năm hợp để xây thói quen – thói quen tốt về tiền đi theo bạn lâu hơn bất kỳ khoản thưởng nào.',
-      xau: 'Năm giữ tiền không có nghĩa là năm thiếu thốn; chỉ cần biết trước khoản nào cần chi, bạn vẫn vững vàng.', dong: 'Quyết định về tài sản không cần nhanh, chỉ cần đúng; đi chậm một chút là cách giữ tiền tốt nhất.' }
+    ket: { tot: 'Tiền đến thuận cũng là lúc dễ tiêu thuận; không giữ lại một phần ngay từ đầu thì năm sau dễ hụt.', vua: 'Năm êm hợp để xây thói quen về tiền; mặt trái là không có đột phá, tích lũy lên chậm.',
+      xau: 'Năm này tiền dễ hụt hơn bình thường, sai một quyết định có thể mất khoản tích lũy nhiều năm. Gợi ý: biết trước khoản nào bắt buộc chi và giữ quỹ dự phòng.', dong: 'Quyết định về tài sản mà sai thì khó quay lại; chậm còn hơn nhanh mà sai.' }
   },
   tc: {
     mo: {
-      tot: ['Bạn có xu hướng thấy chuyện tình cảm và gia đình năm {y} ấm áp hơn: người thân gần nhau hơn, lòng mình cũng mềm hơn.',
-        'Bạn có xu hướng nhận được nhiều niềm vui từ những người thân thiết trong năm {y} – những mối quan hệ quan trọng có dịp sâu thêm.'],
-      vua: ['Bạn có xu hướng giữ được nhịp tình cảm, gia đình khá êm trong năm {y}: không có biến động lớn, chỉ cần vun đắp đều.',
-        'Bạn có xu hướng đi qua năm {y} với chuyện nhà, chuyện tình cảm bình yên; những điều nhỏ mỗi ngày sẽ quyết định độ ấm.'],
-      xau: ['Bạn có xu hướng cần dành nhiều tâm sức hơn cho người thân trong năm {y}: có người cần bạn lắng nghe, có chuyện cần nói cho rõ.',
-        'Bạn có xu hướng thấy năm {y} nhắc mình quay về với gia đình: vài va chạm nhỏ hay vài việc nhà cần bạn để tâm hơn thường lệ.'],
-      hai: ['Bạn có xu hướng trải qua năm {y} với cả niềm vui lẫn việc cần vun đắp trong tình cảm và gia đình – mặt nào lớn hơn phụ thuộc vào cách bạn lắng nghe.',
-        'Bạn có xu hướng gặp một năm {y} nhiều cảm xúc trong chuyện nhà: có tin vui, cũng có lúc cần nhường nhau.'],
-      dong: ['Bạn có xu hướng thấy chuyện nhà, chuyện chỗ ở có chuyển động trong năm {y}: sắp xếp lại, đổi nếp hoặc đổi không gian sống.',
-        'Bạn có xu hướng muốn làm mới đời sống gia đình trong năm {y}; thay đổi êm nhất là thay đổi cả nhà cùng bàn.']
+      tot: ['Bạn có xu hướng thấy chuyện tình cảm và gia đình năm {y} ấm áp hơn: người thân gần nhau hơn. Mặt trái: gần nhau nhiều cũng dễ va chạm vì chuyện nhỏ, và bạn dễ ôm việc nhà quá phần mình.',
+        'Bạn có xu hướng nhận được niềm vui từ người thân thiết trong năm {y}; nhưng người thân cũng kỳ vọng ở bạn nhiều hơn.'],
+      vua: ['Bạn có xu hướng giữ được nhịp tình cảm, gia đình khá êm trong năm {y}: không có biến động lớn. Mặt trái: êm dễ thành nhạt, hai người ít chuyện để nói với nhau.',
+        'Bạn có xu hướng đi qua năm {y} với chuyện nhà bình yên; nhưng lơ là việc nhỏ hằng ngày thì khoảng cách lớn dần lúc nào không hay.'],
+      xau: ['Bạn có xu hướng gặp chuyện căng trong nhà năm {y}: có người cần bạn mà bạn chưa đáp được, có chuyện để lâu thành cãi vã, chiến tranh lạnh hoặc tổn thương khó nói. Mặt được: nói rõ được thì quan hệ thật hơn trước.',
+        'Bạn có xu hướng gặp vài va chạm trong nhà năm {y}, cùng việc nhà, việc người thân đòi bạn bỏ công, bỏ tiền nhiều hơn thường lệ.'],
+      hai: ['Bạn có xu hướng trải qua năm {y} với cả niềm vui lẫn chuyện căng trong tình cảm và gia đình – có lúc ấm, có lúc dễ làm tổn thương nhau vì một câu nói.',
+        'Bạn có xu hướng gặp một năm {y} nhiều cảm xúc trong chuyện nhà: có tin vui, cũng có lúc bất đồng, dễ làm nhau buồn.'],
+      dong: ['Bạn có xu hướng thấy chuyện nhà, chuyện chỗ ở có chuyển động trong năm {y}: sắp xếp lại, đổi nếp hoặc đổi không gian sống – mới mẻ, nhưng tốn kém và dễ bất đồng giữa các thành viên.',
+        'Bạn có xu hướng muốn làm mới đời sống gia đình trong năm {y}; tự quyết mà không bàn thì dễ thành mâu thuẫn trong nhà.']
     },
-    yen: 'Không có chuyện nào nổi lên quá rõ – sự gắn bó năm nay đến từ thói quen quan tâm mỗi ngày.',
+    yen: 'Không có chuyện nào nổi lên rõ: nhà yên, nhưng sự gắn bó dễ nhạt nếu không ai chủ động quan tâm.',
     thuan: ['hẹn một buổi đi chơi hay bữa tối riêng với người thân thiết nhất', 'về thăm gia đình, gặp người thân lâu ngày chưa gặp', 'mở lòng làm quen qua bạn bè, nhóm sở thích',
       'cùng người thân lên kế hoạch cho một việc chung trong nhà', 'nói ra một điều bạn đã giữ trong lòng lâu nay', 'tổ chức một dịp sum họp nhỏ'],
     chuY: ['nhường nhau một câu khi không khí căng', 'tránh nhắc chuyện cũ lúc đang mệt', 'dành thêm thời gian hỏi han người lớn tuổi trong nhà', 'đừng quyết chuyện lớn của hai người khi đang giận'],
@@ -693,23 +693,23 @@ var HSN_CD_VAN = {
       xau: ['Khi thấy căng thẳng, hẹn nói chuyện lúc cả hai bình tĩnh thay vì nói ngay.', 'Gọi về hỏi thăm cha mẹ hoặc người lớn trong nhà đều đặn mỗi tuần.'],
       dong: ['Bàn chuyện thay đổi trong nhà với mọi người trước khi quyết.', 'Giữ lại một nếp quen của gia đình (bữa cơm chung, ngày cuối tuần) giữa những thay đổi.']
     },
-    ket: { tot: 'Niềm vui trong nhà lớn lên khi được chia sẻ; hãy để người thân biết họ quan trọng với bạn thế nào.', vua: 'Bình yên là thứ được giữ gìn mỗi ngày bằng những việc rất nhỏ – và bạn đang có đủ điều kiện để làm điều đó.',
-      xau: 'Va chạm trong nhà thường đến từ thương mà chưa nói được thành lời; nói chậm, nghe nhiều, mọi chuyện sẽ dịu dần.', dong: 'Nhà là nơi có người cùng mình, không chỉ là bốn bức tường; thay đổi gì thì cũng nhớ giữ những nếp quen ấm áp.' }
+    ket: { tot: 'Niềm vui trong nhà có thật, nhưng dễ bị coi là đương nhiên; người thân không được ghi nhận lâu dần sẽ thấy thiệt.', vua: 'Bình yên trong nhà có thật, nhưng dễ nhạt nếu chỉ để nó tự trôi.',
+      xau: 'Va chạm trong nhà năm này dễ để lại tổn thương lâu hơn bạn nghĩ. Gợi ý: nói chậm, nghe nhiều, không quyết chuyện lớn lúc đang giận.', dong: 'Thay đổi trong nhà dễ làm xáo trộn nếp quen và làm ai đó thấy bị bỏ rơi. Gợi ý: giữ lại một nếp chung giữa những thay đổi.' }
   },
   sk: {
     mo: {
-      tot: ['Bạn có xu hướng giữ được nhịp sống khá cân bằng trong năm {y}: năng lượng ổn, đầu óc thông thoáng.',
-        'Bạn có xu hướng thấy năm {y} dễ thở hơn về thể lực và tinh thần – lúc tốt để xây thói quen chăm sóc bản thân.'],
-      vua: ['Bạn có xu hướng đi qua năm {y} với nhịp sống khá đều: không có điều gì nổi lên đáng lo, chỉ cần giữ thói quen nghỉ ngơi hợp lý.',
-        'Bạn có xu hướng ổn định về nhịp sinh hoạt trong năm {y}; đây là nền tốt để chăm mình từ những việc nhỏ.'],
-      xau: ['Bạn có xu hướng dễ mệt hơn thường lệ trong năm {y} nếu ôm nhiều việc: cơ thể và đầu óc cần được nghỉ đúng lúc. Đây là lời nhắc chậm lại, không phải điều đáng lo.',
-        'Bạn có xu hướng chịu nhiều áp lực hơn trong năm {y}; giữ nhịp ngủ, nhịp nghỉ chính là cách giữ sức bền cho cả năm.'],
-      hai: ['Bạn có xu hướng có những giai đoạn đầy năng lượng xen những giai đoạn cần nghỉ trong năm {y}; biết lúc nào tăng tốc, lúc nào dừng là chìa khóa.',
-        'Bạn có xu hướng đi qua năm {y} theo nhịp lên xuống: có lúc rất hăng hái, có lúc cần chậm lại để lấy sức.'],
-      dong: ['Bạn có xu hướng thay đổi nhịp sống trong năm {y}: giờ giấc, chỗ ở hay cách làm việc đổi khác, cơ thể cần thời gian làm quen.',
-        'Bạn có xu hướng bước vào một nhịp sống mới trong năm {y}; cho mình vài tuần thích nghi trước khi đòi hỏi bản thân như cũ.']
+      tot: ['Bạn có xu hướng giữ được nhịp sống khá cân bằng trong năm {y}: năng lượng ổn, đầu óc thông thoáng. Mặt trái: khỏe dễ chủ quan, thức khuya, làm quá rồi trả giá vào năm sau.',
+        'Bạn có xu hướng thấy năm {y} dễ thở hơn về thể lực và tinh thần; nhưng nếp xấu cũ không sửa thì vẫn âm thầm bào sức.'],
+      vua: ['Bạn có xu hướng đi qua năm {y} với nhịp sống khá đều, không có gì nổi lên rõ; mặt trái là mệt mỏi nhỏ dễ bị bỏ qua cho đến khi thành chuyện.',
+        'Bạn có xu hướng ổn định về nhịp sinh hoạt trong năm {y}; nhưng ổn không có nghĩa là khỏe, ăn ngủ thất thường vẫn tích lại.'],
+      xau: ['Bạn có xu hướng dễ mệt, dễ ốm hơn thường lệ trong năm {y} nếu ôm nhiều việc: ngủ kém, sức đề kháng giảm, bệnh cũ dễ trở lại. Mặt được: cơ thể báo sớm, còn kịp sửa nếp sống.',
+        'Bạn có xu hướng chịu nhiều áp lực hơn trong năm {y}; áp lực kéo dài dễ thành mất ngủ, mệt mỏi kéo dài và cáu gắt.'],
+      hai: ['Bạn có xu hướng có những giai đoạn đầy năng lượng xen những giai đoạn đuối sức trong năm {y}; lúc hăng dễ làm quá, rồi trả giá bằng mấy tuần mệt.',
+        'Bạn có xu hướng đi qua năm {y} theo nhịp lên xuống: có lúc rất hăng hái, có lúc uể oải, khó giữ đều việc gì.'],
+      dong: ['Bạn có xu hướng thay đổi nhịp sống trong năm {y}: giờ giấc, chỗ ở hay cách làm việc đổi khác; cơ thể dễ lệch nhịp, mất ngủ, ăn uống thất thường một thời gian.',
+        'Bạn có xu hướng bước vào một nhịp sống mới trong năm {y}; đòi hỏi bản thân như cũ ngay thì dễ đuối sức.']
     },
-    yen: 'Không có tín hiệu nào nổi lên quá rõ – cơ thể đi theo nhịp bạn chăm nó.',
+    yen: 'Không có tín hiệu nào nổi lên rõ: không có gì đáng kể, nhưng sức khỏe vẫn đi theo cách bạn ăn, ngủ, vận động.',
     thuan: ['bắt đầu một thói quen vận động nhẹ và giữ nó đều', 'sắp lại giờ ngủ, tắt màn hình sớm hơn', 'đi một chuyến ngắn để nạp lại năng lượng',
       'thử một cách thư giãn mới: đi bộ, hít thở chậm, viết nhật ký', 'đi kiểm tra sức khỏe định kỳ nếu đã lâu chưa làm', 'nấu ăn ở nhà nhiều hơn, ăn chậm hơn'],
     chuY: ['bớt thức khuya và cắt bớt lịch hẹn', 'chậm lại khi lái xe, đi đường xa', 'cho mình một ngày nghỉ thật sự mỗi tuần', 'để ý tín hiệu mệt của cơ thể và nghỉ sớm'],
@@ -719,8 +719,8 @@ var HSN_CD_VAN = {
       xau: ['Đặt "giờ tắt máy" mỗi tối để đầu óc được nghỉ trước khi ngủ.', 'Mỗi tuần giữ ít nhất một khoảng trống không lịch hẹn để nạp lại năng lượng.'],
       dong: ['Khi nhịp sống thay đổi, giữ lại ít nhất một thói quen cũ giúp bạn thấy vững.', 'Cho mình vài tuần thích nghi trước khi tăng khối lượng việc.']
     },
-    ket: { tot: 'Lúc khỏe là lúc dễ quên chăm mình; một thói quen tốt xây trong năm thuận sẽ đỡ bạn ở những năm bận hơn.', vua: 'Chăm mình không cần điều gì to tát: ngủ đủ, ăn đúng bữa, đi bộ mỗi ngày đã là nền vững.',
-      xau: 'Mệt không phải là yếu; đó là lời cơ thể nhờ bạn sắp xếp lại. Nghỉ đúng lúc là cách đi xa nhất.', dong: 'Thay đổi nào cũng tốn sức; cho mình thời gian, cơ thể sẽ bắt kịp nhịp mới.' }
+    ket: { tot: 'Lúc khỏe là lúc dễ quên chăm mình; nếp xấu trong năm thuận thường lộ ra ở những năm bận hơn.', vua: 'Không có gì to tát, nhưng ngủ thiếu, ăn thất thường kéo dài vẫn bào sức từ từ.',
+      xau: 'Năm này cơ thể yếu hơn thường, cố quá dễ ốm và kéo theo việc, tiền. Gợi ý: nghỉ đúng lúc và đi khám khi có dấu hiệu lạ.', dong: 'Thay đổi nào cũng tốn sức; giai đoạn đầu dễ mệt và lệch nhịp hơn bạn nghĩ.' }
   }
 };
 /** Cách nhìn của từng hệ (đời thường) */
@@ -738,6 +738,8 @@ var HSN_CD_SO = {
   8: { y: 'năm của thành quả và tiền bạc', cv: 'hợp nhận trách nhiệm lớn, đòi hỏi xứng đáng', tien: 'thuận cho thu nhập nếu làm có kế hoạch', tc: 'dễ bận – nhớ chừa thời gian cho người thân', sk: 'dễ làm quá sức – nhớ nghỉ giữa chừng' },
   9: { y: 'năm khép lại một chu kỳ', cv: 'hợp hoàn tất, buông bớt việc không còn hợp', tien: 'hợp dọn dẹp, trả bớt khoản cũ', tc: 'hợp hàn gắn, nói lời cảm ơn và xin lỗi', sk: 'hợp nghỉ ngơi, chuẩn bị sức cho chu kỳ mới' }
 };
+var HSN_HANH_TANG = { 'Mộc': 'bệnh về gan, mật, mắt và thần kinh (đau đầu, căng cơ)', 'Hỏa': 'bệnh về tim, huyết áp, mạch máu và mất ngủ',
+  'Thổ': 'bệnh về dạ dày, tiêu hóa, tì vị', 'Kim': 'bệnh về phổi, đường hô hấp, da và đại tràng', 'Thủy': 'bệnh về thận, bàng quang, đường tiết niệu, xương khớp' };
 function htCdMua_(m) { return m <= 3 ? 'đầu năm' : m <= 6 ? 'giữa năm' : m <= 9 ? 'mùa thu' : 'cuối năm'; }
 /** Đoạn văn 5 phần của một chủ đề năm (gọi trong htNamCd_). Trả { items, khuyen } – khuyen đủ 3 việc */
 function htCdVan_(H, C, ci, o) {
@@ -751,7 +753,7 @@ function htCdVan_(H, C, ci, o) {
   var p1 = [thay(chon(V.mo[key]))];
   if (noi.length) {
     noi.slice(0, 2).forEach(function (x, i) { var v = HSN_CD_SK_VAN[x.k]; if (v) p1.push(v[i === 0 && (x.muc === 'Rất cao' || x.muc === 'Cao') ? 0 : 1]); });
-    if (noi.some(function (x) { return x.dong === 'Đối lập'; })) p1.push('Ở chuyện này các hệ chưa cùng một ý, nên kết quả phụ thuộc nhiều vào sự chuẩn bị và thời điểm bạn chọn.');
+    if (noi.some(function (x) { return x.dong === 'Đối lập'; })) p1.push('Ở chuyện này các hệ chưa cùng một ý: có hệ thấy thuận, có hệ thấy trở ngại – kết quả có thể nghiêng về bên nào cũng được.');
   } else p1.push(V.yen);
   items.push(p1.join(' '));
   var dau = TT.filter(function (m) { return m <= 6; }).length, sau = TT.length - dau;
@@ -769,7 +771,7 @@ function htCdVan_(H, C, ci, o) {
     });
     items.push((C.k === 'sk' ? 'Những tháng dễ thở hơn (âm lịch): ' : 'Những tháng thuận nhất cho ' + C.linhVuc + ' (âm lịch): ') + cau.join('; ') + '.' +
       (TT.length >= 2 ? ' Nếu có việc quan trọng, hãy xếp vào các tháng này để thuận đà.' : ''));
-  } else items.push('Mảng ' + C.linhVuc + ' năm nay không có tháng nào nổi trội hẳn – cứ đều tay quanh năm, mỗi tháng làm một việc nhỏ cho ' + C.linhVuc + ' là đủ.');
+  } else items.push('Mảng ' + C.linhVuc + ' năm nay không có tháng nào nổi trội hẳn – không có lúc thuận rõ để dựa vào, kết quả chỉ đến từ sự đều tay quanh năm.');
   // 3. Tháng cần để ý
   var xauDs = ds.filter(function (x) { return x.loai === 'xau'; });
   if (CY.length) {
@@ -777,11 +779,11 @@ function htCdVan_(H, C, ci, o) {
       var vi = xauDs.filter(function (x) { return (x.thang || []).indexOf(m) >= 0; }).map(function (x) { return x.ngan; }).slice(0, 2);
       return 'tháng ' + m + (vi.length ? ' (nhắc chuyện ' + htDs_(vi) + ')' : '') + ' – ' + chon(V.chuY, m + i);
     });
-    items.push('Tháng nên giữ nhịp hơn (âm lịch): ' + cau2.join('; ') + '. Đây không phải tháng xấu, chỉ là lúc nên chậm lại một chút và chuẩn bị trước.');
+    items.push('Tháng nên giữ nhịp hơn (âm lịch): ' + cau2.join('; ') + '. Đây là những tháng dễ vấp hơn thường: dễ sai sót, va chạm hoặc phát sinh chi phí. Gợi ý: không chốt việc lớn trong các tháng này.');
   } else {
     var trung = []; xauDs.slice(0, 3).forEach(function (x) { (x.thang || []).forEach(function (m) { if (TT.indexOf(m) >= 0 && trung.indexOf(m) < 0) trung.push(m); }); });
     items.push(trung.length ? 'Tháng ' + htDs_(trung.sort(function (a, b) { return a - b; })) + ' vừa thuận vừa cần để ý: cứ làm việc đã định, nhưng ' + chon(V.chuY, trung[0]) + '.' :
-      'Không có tháng nào cần dè chừng riêng cho ' + C.linhVuc + '; chỉ cần giữ nhịp ở những lúc bạn thấy quá tải.');
+      'Không có tháng nào cần dè chừng riêng cho ' + C.linhVuc + '; trở ngại nếu có thường đến từ lúc bạn quá tải.');
   }
   // 4. Góc nhìn từng hệ (ít nhất 3 hệ)
   var heDs = HSN_HE.map(function (h) {
@@ -801,17 +803,17 @@ function htCdVan_(H, C, ci, o) {
       x.b.length ? 'nhắc bạn để tâm chuyện ' + ng(x.b) + '.' :
       x.n.length ? (function () {
         var nB = x.n.filter(function (s) { return s.loai === 'xau'; }), nG = x.n.filter(function (s) { return s.loai !== 'xau'; });
-        return nB.length ? 'thấy nhẹ bớt chuyện ' + ng(nB) + ' – một tín hiệu đỡ cho bạn' + (nG.length ? ', nhưng chưa thấy rõ ' + ng(nG) : '') + '.' : 'chưa thấy rõ ' + ng(nG) + ' – nên xem đây là việc cần thêm thời gian.';
+        return nB.length ? 'thấy nhẹ bớt chuyện ' + ng(nB) + ' – một tín hiệu đỡ cho bạn' + (nG.length ? ', nhưng chưa thấy rõ ' + ng(nG) : '') + '.' : 'chưa thấy rõ ' + ng(nG) + ' – việc này dễ chậm hoặc chưa thành trong năm nay.';
       })() :
       'không thấy tín hiệu nổi bật cho ' + C.linhVuc + ', nghĩa là mảng này đi theo nhịp quen thuộc của bạn.';
     if (x.h === 'Thần số học' && SO) t += ' Năm nay là năm cá nhân số ' + so + ' – ' + SO.y + '; với ' + C.linhVuc + ', ' + SO[C.k] + '.';
     return t;
   });
   items.push('Góc nhìn của từng hệ: ' + gocNhin.join(' '));
-  items.push(o.heUng.length >= 3 && !o.heNghich.length ? 'Gộp lại, ' + htDs_(o.heUng) + ' cùng nhìn về một hướng – đây là tín hiệu khá rõ, đáng để bạn lên kế hoạch theo.' :
-    o.heUng.length && o.heNghich.length ? 'Gộp lại, ' + htDs_(o.heUng) + ' có tín hiệu ủng hộ, còn ' + htDs_(o.heNghich) + ' nghiêng chiều ngược – kết quả phụ thuộc nhiều vào sự chuẩn bị của bạn.' :
+  items.push(o.heUng.length >= 3 && !o.heNghich.length ? 'Gộp lại, ' + htDs_(o.heUng) + ' cùng có tín hiệu cho chủ đề này (việc thuận hay việc cần giữ xem ở từng hệ bên trên) – đây là mảng có chuyện đáng kể trong năm, đáng để bạn lên kế hoạch theo.' :
+    o.heUng.length && o.heNghich.length ? 'Gộp lại, ' + htDs_(o.heUng) + ' có tín hiệu ủng hộ, còn ' + htDs_(o.heNghich) + ' nghiêng chiều ngược – được hay vấp đều có thể xảy ra.' :
     o.heUng.length ? 'Gộp lại, ' + htDs_(o.heUng) + ' có tín hiệu cho chủ đề này, các hệ còn lại không phản đối.' :
-    'Gộp lại, các hệ không có tín hiệu mạnh cho chủ đề này – năm nay bạn là người quyết định nhịp đi của nó.');
+    'Gộp lại, các hệ không có tín hiệu mạnh cho chủ đề này – không có lực đẩy rõ, cũng không có trở ngại rõ.');
   // 5. Việc nên làm: đủ 3 việc (việc theo sự kiện trước, rồi việc theo tháng, rồi việc theo mức của chủ đề)
   var khuyen = o.khuyen.slice(0, 3);
   if (khuyen.length < 3 && TT.length) khuyen.push((C.k === 'sk' ? 'Dùng ' : 'Dồn việc quan trọng nhất về ' + C.linhVuc + ' vào ') + htDs_(TT.slice(0, 2).map(function (m) { return 'tháng ' + m; })) + ' âm lịch' + (C.k === 'sk' ? ' để bắt đầu một thói quen chăm sóc bản thân và giữ nó cả năm.' : ' – đặt mốc cụ thể ngay từ bây giờ.'));
@@ -819,7 +821,12 @@ function htCdVan_(H, C, ci, o) {
   kk.forEach(function (t) { if (khuyen.length < 3) { t = thay(t); if (khuyen.indexOf(t) < 0) khuyen.push(t); } });
   V.khuyen.vua.forEach(function (t) { if (khuyen.length < 3) { t = thay(t); if (khuyen.indexOf(t) < 0) khuyen.push(t); } });
   items.push(V.ket[key === 'hai' ? 'dong' : key] + ' Nếu chỉ chọn một việc để bắt đầu, hãy làm việc đầu tiên trong danh sách bên dưới' + (TT.length ? ', và đặt mốc xong trước hết tháng ' + TT[0] + ' âm lịch.' : '.'));
-  if (C.k === 'sk') items.push('Phần này chỉ nói về nhịp nghỉ ngơi, áp lực và cách chăm sóc bản thân, không thay cho lời khuyên của người làm chuyên môn y tế; khi cơ thể có dấu hiệu lạ, hãy hỏi bác sĩ sớm.');
+  if (C.k === 'sk') {
+    var tang = (H.kyHanh || []).map(function (h) { return HSN_HANH_TANG[h]; }).filter(Boolean);
+    if (tang.length) items.push((key === 'xau' || key === 'hai' ? 'Năm nay ' : 'Nền chung, kể cả năm nhẹ: ') + 'theo cổ học ngũ hành, bạn có xu hướng dễ mắc ' + htDs_(tang) +
+      (key === 'xau' || key === 'hai' ? ' – những chỗ này dễ lộ ra hơn khi mệt, ngủ thiếu hoặc căng thẳng kéo dài.' : ' – những chỗ này thường yếu hơn phần còn lại của cơ thể.'));
+    items.push('Đây là cách luận cổ học để tham khảo, không phải chẩn đoán: nên khám sức khỏe định kỳ, và khi có dấu hiệu lạ thì hỏi bác sĩ sớm.');
+  }
   if (H.qua) items.push('Năm ' + vy + ' đã qua: hãy đối chiếu với những gì bạn đã trải – càng khớp, các năm tới càng đáng tin.');
   return { items: items, khuyen: khuyen };
 }
@@ -843,7 +850,7 @@ function htNamCd_(H) {
     var tom = !ds.length ? C.ten + ' năm ' + vy + ': chưa đến độ tuổi của các việc thuộc chủ đề này.' :
       nhan === 'Thuận' ? C.ten + ' năm ' + vy + ': nghiêng về thuận' + (top ? ', nổi bật nhất là ' + top.ngan : '') + '.' :
       nhan === 'Cần giữ' ? C.ten + ' năm ' + vy + ': năm nên giữ nhịp' + (top ? ', việc cần để ý nhất: ' + top.ngan : '') + '.' :
-      nhan === 'Cơ hội lẫn thử thách' ? C.ten + ' năm ' + vy + ': có cả cơ hội lẫn việc cần giữ – chuẩn bị kỹ thì phần thuận nhiều hơn.' :
+      nhan === 'Cơ hội lẫn thử thách' ? C.ten + ' năm ' + vy + ': có cả cơ hội lẫn trở ngại – phần nào lớn hơn chưa ngã ngũ.' :
       nhan === 'Có thay đổi' ? C.ten + ' năm ' + vy + ': có xu hướng thay đổi' + (top ? ' (' + top.ngan + ')' : '') + '.' :
       noi.length ? C.ten + ' năm ' + vy + ': nhìn chung ổn định; việc có khả năng đến: ' + noi[0].ngan + '.' : C.ten + ' năm ' + vy + ': khá êm, không có việc nào nổi lên rõ.';
     // Tháng âm lịch hợp: tháng của việc thuận / tháng cần để ý

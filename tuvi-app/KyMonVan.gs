@@ -34,7 +34,7 @@ var KMV_LUU_Y_HOI_LAI_ = 'Bàn của giờ này đã trả lời việc của b�
 
 /* ---------- Nhãn đoạn theo mức ---------- */
 var KMV_NHAN_ = {
-  thuan:    { manh: 'Điểm mạnh của bạn: ', vuong: 'Chỗ nhỏ cần để ý: ', khongVuong: 'Không thấy điểm vướng lớn; bạn chỉ cần giữ nhịp đều như đang làm.' },
+  thuan:    { manh: 'Điểm mạnh của bạn: ', vuong: 'Chỗ nhỏ cần để ý: ', khongVuong: 'Không thấy điểm vướng lớn ở bàn này; mặt trái là thế thuận dễ làm bạn chủ quan, lơ khâu giấy tờ và chuẩn bị.' },
   thuan_dk: { manh: 'Điểm mạnh của bạn: ', vuong: 'Điều kiện cần lo trước: ' },
   nen_cho:  { manh: 'Điểm tựa bạn vẫn có: ', vuong: 'Điểm vướng lúc này: ' }
 };
@@ -52,15 +52,15 @@ var KMV_LOAI_ = {
     vuong: 'Điều kiện của việc chưa được nói rõ, dễ hiểu mỗi bên một kiểu.',
     hoTro: 'Người đi trước trong nghề hoặc người giới thiệu bạn vào việc là chỗ dựa tốt.',
     thuan: {
-      mo: ['Việc công việc bạn đang hỏi có xu hướng thuận. Bạn đang ở thế được nhìn nhận, nên đây là lúc hợp để chủ động đề xuất, nộp đơn hay nhận thêm phần việc.',
-        'Đường công việc lúc này đang mở theo hướng có lợi cho bạn. Bạn thuộc mẫu người làm tốt khi được giao rõ việc, và cơ hội đang đến gần đúng kiểu đó.'],
+      mo: ['Chuyện công việc bạn đang hỏi có xu hướng thuận. Bạn đang ở thế được nhìn nhận, nên đây là lúc hợp để chủ động đề xuất, nộp đơn hay nhận thêm phần việc. Cái giá: việc dồn thêm nhanh, dễ nhận quá sức hoặc chủ quan ở khâu thỏa thuận.',
+        'Đường công việc lúc này đang mở theo hướng có lợi cho bạn. Bạn thuộc mẫu người làm tốt khi được giao rõ việc, và cơ hội đang đến gần đúng kiểu đó. Cái giá: việc dồn thêm nhanh, dễ nhận quá sức hoặc chủ quan ở khâu thỏa thuận.'],
       dien: 'Diễn biến dễ gặp: phản hồi đến khá nhanh, có thể kèm một yêu cầu bổ sung nhỏ.',
       viec: ['Gửi hồ sơ hoặc đề xuất vào {g1}, ngồi quay mặt về hướng {h1} khi viết hay gọi điện.',
         'Chuẩn bị sẵn ba kết quả cụ thể bạn đã làm được để nói ngắn gọn khi được hỏi; buổi trao đổi hợp vào {g2}, hướng {h2}.',
         'Sau khi gửi, chủ động hỏi lại một lần vào {g3}, hướng {h3}; giữ giọng nhẹ nhàng, không thúc ép.']
     },
     thuan_dk: {
-      mo: ['Việc công việc bạn hỏi có xu hướng thuận nếu bạn chuẩn bị kỹ hơn một bước. Cơ hội có thật, nhưng người quyết định còn cần thêm bằng chứng về năng lực của bạn.',
+      mo: ['Chuyện công việc bạn hỏi có xu hướng thuận nếu bạn chuẩn bị kỹ hơn một bước. Cơ hội có thật, nhưng người quyết định còn cần thêm bằng chứng về năng lực của bạn.',
         'Bạn đang ở thế có thể tiến, nhưng chưa phải lúc tiến một mình. Việc sẽ dễ hơn khi có người giới thiệu hoặc khi điều kiện được nói rõ từ đầu.'],
       dien: 'Diễn biến dễ gặp: có một vòng hỏi thêm hoặc chờ duyệt, thời gian kéo dài hơn bạn tính.',
       viec: ['Trước khi gửi, nhờ một người trong nghề đọc lại hồ sơ; gửi vào {g1}, hướng {h1}.',
@@ -68,7 +68,7 @@ var KMV_LOAI_ = {
         'Giữ một phương án dự phòng song song để không phải nhận điều kiện kém vì sốt ruột; xem lại tình hình vào {g3}, hướng {h3}.']
     },
     nen_cho: {
-      mo: ['Việc công việc bạn hỏi lúc này có xu hướng nên chờ. Không phải vì bạn kém, mà vì thời điểm chưa mở: người quyết định đang bận việc khác, hoặc vị trí chưa thật sự trống.',
+      mo: ['Chuyện công việc bạn hỏi lúc này có xu hướng nên chờ. Thời điểm chưa mở: người quyết định đang bận việc khác, hoặc vị trí chưa thật sự trống.',
         'Bạn đang ở thế nên giữ sức hơn là đổi chỗ hay đề nghị thêm ngay. Một quyết định vội lúc này dễ khiến bạn phải làm lại từ đầu.'],
       dien: 'Diễn biến dễ gặp: tin tức đến chậm hoặc thay đổi vào phút cuối; sau {cho} thế mới rõ hơn.',
       viec: ['Chờ đến {cho} rồi mới gửi đơn hoặc đề nghị; trong lúc chờ, cập nhật hồ sơ và danh sách việc đã làm được.',
@@ -82,8 +82,8 @@ var KMV_LOAI_ = {
     vuong: 'Cách chia phần và thời hạn thu hồi chưa được ghi rõ.',
     hoTro: 'Người có chuyên môn tài chính, hoặc người từng làm đúng loại việc này, nên được hỏi trước khi chốt.',
     thuan: {
-      mo: ['Việc tiền bạc bạn hỏi có xu hướng mang lại lợi. Bạn đang ở thế có thể chủ động đặt điều kiện, và dòng tiền đang đi về phía bạn hơn là đi ra.',
-        'Bạn thuộc mẫu người kiếm lợi tốt khi tính kỹ rồi mới làm, và lúc này thế đang thuận cho cách làm đó. Việc mua bán hay khoản thu bạn hỏi có nền để thành.'],
+      mo: ['Việc tiền bạc bạn hỏi có xu hướng mang lại lợi. Bạn đang ở thế có thể chủ động đặt điều kiện, và dòng tiền đang đi về phía bạn hơn là đi ra. Cái giá: thấy thuận dễ xuống tiền quá tay, lơ khâu giấy tờ.',
+        'Bạn thuộc mẫu người kiếm lợi tốt khi tính kỹ rồi mới làm, và lúc này thế đang thuận cho cách làm đó. Việc mua bán hay khoản thu bạn hỏi có nền để thành. Cái giá: thấy thuận dễ xuống tiền quá tay, lơ khâu giấy tờ.'],
       dien: 'Diễn biến dễ gặp: thỏa thuận chốt được khá nhanh, phần lợi về theo từng đợt chứ không một lần.',
       viec: ['Chốt các điểm chính bằng văn bản: số lượng, giá, thời hạn thanh toán. Hẹn gặp chốt vào {g1}, ngồi quay mặt về hướng {h1}.',
         'Giữ lại một khoản dự phòng, không dồn hết vốn vào một chỗ dù thế đang thuận; khoản tiếp theo có thể bàn vào {g2}, hướng {h2}.',
@@ -99,7 +99,7 @@ var KMV_LOAI_ = {
     },
     nen_cho: {
       mo: ['Việc tiền bạc bạn hỏi lúc này có xu hướng nên chờ. Thế đang nghiêng về giữ của hơn là bỏ vốn ra; quyết định vội dễ khiến tiền nằm im lâu hơn bạn muốn.',
-        'Bạn đang ở thế nên giữ tiền trong tay thêm một thời gian. Cơ hội chưa mất đi, chỉ là điều kiện hiện tại chưa có lợi cho bạn.'],
+        'Bạn đang ở thế nên giữ tiền trong tay thêm một thời gian. Điều kiện hiện tại chưa có lợi cho bạn; xuống tiền lúc này dễ bị kẹt vốn hoặc mua đắt.'],
       dien: 'Diễn biến dễ gặp: giá hoặc điều kiện còn thay đổi; sau {cho} bức tranh rõ hơn.',
       viec: ['Chờ đến {cho} rồi mới xuống tiền; trong lúc chờ, ghi ra ba điều bạn cần biết thêm trước khi quyết.',
         'Hỏi ý kiến người có chuyên môn tài chính vào {g2}; buổi trao đổi hợp hướng {h2}.',
@@ -112,8 +112,8 @@ var KMV_LOAI_ = {
     vuong: 'Còn một điều hai người chưa nói ra với nhau.',
     hoTro: 'Một người bạn chung, biết lắng nghe và không đứng về phía nào, có thể giúp hai bạn hiểu nhau hơn.',
     thuan: {
-      mo: ['Chuyện tình cảm bạn hỏi có xu hướng thuận. Hai bên đang có thiện cảm, và đây là lúc hợp để nói ra điều bạn muốn một cách nhẹ nhàng.',
-        'Bạn thuộc mẫu người tạo được sự ấm áp khi chủ động trước, và lúc này thế đang ủng hộ bạn bước tới gần hơn.'],
+      mo: ['Chuyện tình cảm bạn hỏi có xu hướng thuận. Hai bên đang có thiện cảm, và đây là lúc hợp để nói ra điều bạn muốn một cách nhẹ nhàng. Cái giá: dễ vội, nói quá đà hoặc đòi hỏi sớm làm người kia ngợp.',
+        'Bạn thuộc mẫu người tạo được sự ấm áp khi chủ động trước, và lúc này thế đang ủng hộ bạn bước tới gần hơn. Cái giá: dễ vội, nói quá đà hoặc đòi hỏi sớm làm người kia ngợp.'],
       dien: 'Diễn biến dễ gặp: một cuộc trò chuyện tự nhiên mở ra nhiều hơn bạn nghĩ; đừng vội đòi câu trả lời ngay.',
       viec: ['Hẹn gặp vào {g1}, chọn nơi ở hướng {h1} so với chỗ bạn ở, không gian yên tĩnh.',
         'Nói về cảm nhận của bạn thay vì hỏi dồn người kia; lần nhắn tiếp theo hợp vào {g2}, hướng {h2}.',
@@ -129,10 +129,10 @@ var KMV_LOAI_ = {
     },
     nen_cho: {
       mo: ['Chuyện tình cảm bạn hỏi lúc này có xu hướng nên chờ. Người kia có thể đang bận lòng chuyện riêng, nên lời bày tỏ bây giờ khó được đón nhận trọn vẹn.',
-        'Bạn đang ở thế nên chăm sóc bản thân trước khi chăm cho mối quan hệ. Cho nhau một khoảng thở sẽ giúp lần gặp sau nhẹ nhàng hơn.'],
+        'Bạn đang ở thế nên chăm sóc bản thân trước khi chăm cho mối quan hệ. Ép chuyện lúc này dễ làm hai người xa nhau thêm.'],
       dien: 'Diễn biến dễ gặp: liên lạc thưa đi một thời gian; sau {cho} không khí dễ dịu lại.',
       viec: ['Chờ đến {cho} rồi mới hỏi chuyện quan trọng; trong lúc chờ, giữ liên lạc nhẹ, không trách móc.',
-        'Dành thời gian cho việc riêng và bạn bè vào {g2}, hướng {h2}; tâm thế thoải mái sẽ giúp bạn nhiều hơn.',
+        'Dành thời gian cho việc riêng và bạn bè vào {g2}, hướng {h2}; đừng dồn hết tâm trí vào chuyện này.',
         'Khi hết thời gian chờ, chọn {g3}, hướng {h3} để gặp và nói chuyện ngắn, nhẹ.']
     }
   },
@@ -142,8 +142,8 @@ var KMV_LOAI_ = {
     vuong: 'Khâu sắp xếp giờ giấc, giấy tờ dễ có trục trặc nhỏ.',
     hoTro: 'Người quen ở nơi đến, hoặc người đi cùng biết đường, giúp chuyến đi nhẹ hơn nhiều.',
     thuan: {
-      mo: ['Chuyến đi hay việc chuyển chỗ bạn hỏi có xu hướng thuận. Đường đi thông, và việc ở nơi đến dễ suôn sẻ hơn bạn lo.',
-        'Bạn đang ở thế thuận để dịch chuyển. Thay đổi chỗ ở hay nơi làm lúc này dễ mở ra mối quen mới.'],
+      mo: ['Chuyến đi hay việc chuyển chỗ bạn hỏi có xu hướng thuận. Đường đi thông, và việc ở nơi đến dễ suôn sẻ hơn bạn lo. Cái giá: thấy suôn dễ chủ quan với giấy tờ, an toàn và chi phí.',
+        'Bạn đang ở thế thuận để dịch chuyển. Thay đổi chỗ ở hay nơi làm lúc này dễ mở ra mối quen mới. Cái giá: thấy suôn dễ chủ quan với giấy tờ, an toàn và chi phí.'],
       dien: 'Diễn biến dễ gặp: lịch trình suôn sẻ, có thể đổi nhỏ về giờ giấc.',
       viec: ['Khởi hành vào {g1}, đi theo hướng {h1} ở đoạn đầu rồi mới rẽ vào đường chính.',
         'Kiểm lại giấy tờ, vé, chỗ ở trước khi đi một ngày; gọi xác nhận vào {g2}, hướng {h2}.',
@@ -158,7 +158,7 @@ var KMV_LOAI_ = {
         'Đi chậm, giữ an toàn khi di chuyển; việc quan trọng ở nơi đến hợp vào {g3}, hướng {h3}.']
     },
     nen_cho: {
-      mo: ['Chuyến đi hay việc chuyển chỗ lúc này có xu hướng nên chờ. Không phải đường đóng hẳn, mà nhiều việc ở nơi đến chưa sẵn sàng đón bạn.',
+      mo: ['Chuyến đi hay việc chuyển chỗ lúc này có xu hướng nên chờ. Nhiều việc ở nơi đến chưa sẵn sàng đón bạn; đi lúc này dễ trễ, tốn kém và phải chờ đợi.',
         'Bạn đang ở thế nên ở yên thêm ít ngày. Đi lúc này dễ tốn sức và thời gian hơn kết quả mang về.'],
       dien: 'Diễn biến dễ gặp: lịch thay đổi, chờ đợi giữa chừng; sau {cho} việc sắp xếp dễ hơn.',
       viec: ['Dời ngày đi sang sau {cho} nếu việc cho phép; trong lúc chờ, chốt lại chỗ ở và người liên hệ.',
@@ -172,8 +172,8 @@ var KMV_LOAI_ = {
     vuong: 'Một chi tiết nhỏ trong giấy tờ hoặc bài làm dễ bị sót.',
     hoTro: 'Thầy cô, người hướng dẫn, hoặc người đã làm qua đúng thủ tục này là người nên hỏi.',
     thuan: {
-      mo: ['Việc thi cử hay hồ sơ bạn hỏi có xu hướng thuận. Bạn đã có nền, và lúc này cách bạn trình bày dễ được đánh giá đúng.',
-        'Bạn thuộc mẫu người làm bài tốt khi bình tĩnh, và thế đang ủng hộ sự bình tĩnh đó. Hồ sơ có xu hướng qua các khâu suôn sẻ.'],
+      mo: ['Việc thi cử hay hồ sơ bạn hỏi có xu hướng thuận. Bạn đã có nền, và lúc này cách bạn trình bày dễ được đánh giá đúng. Cái giá: dễ chủ quan, ôn lơi tay hoặc sót chi tiết nhỏ.',
+        'Bạn thuộc mẫu người làm bài tốt khi bình tĩnh, và thế đang ủng hộ sự bình tĩnh đó. Hồ sơ có xu hướng qua các khâu suôn sẻ. Cái giá: dễ chủ quan, ôn lơi tay hoặc sót chi tiết nhỏ.'],
       dien: 'Diễn biến dễ gặp: kết quả hoặc phản hồi về đúng hẹn, có khi sớm hơn.',
       viec: ['Nộp hồ sơ hoặc ôn phần khó nhất vào {g1}, ngồi quay mặt về hướng {h1}.',
         'Đọc lại đề hoặc giấy tờ hai lần, đánh dấu chỗ hay nhầm; làm việc này vào {g2}, hướng {h2}.',
@@ -188,11 +188,11 @@ var KMV_LOAI_ = {
         'Ôn ba phần trọng tâm, bớt phần phụ; buổi ôn chính vào {g3}, hướng {h3}.']
     },
     nen_cho: {
-      mo: ['Việc thi cử hay hồ sơ lúc này có xu hướng nên chờ thêm. Không phải bạn thiếu khả năng, mà phần chuẩn bị hoặc thủ tục chưa đủ chín.',
-        'Bạn đang ở thế nên tích lũy thêm trước khi nộp hay đăng ký. Thêm ít ngày chuẩn bị sẽ giúp bạn tự tin hơn nhiều.'],
+      mo: ['Việc thi cử hay hồ sơ lúc này có xu hướng nên chờ thêm. Phần chuẩn bị hoặc thủ tục chưa đủ chín; nộp vội dễ bị trả lại hoặc kết quả kém hơn sức mình.',
+        'Bạn đang ở thế nên tích lũy thêm trước khi nộp hay đăng ký. Nộp lúc này dễ hụt ở đúng phần bạn còn yếu.'],
       dien: 'Diễn biến dễ gặp: thủ tục chậm hoặc cần sửa lại; sau {cho} việc thông hơn.',
       viec: ['Nếu hạn còn cho phép, nộp sau {cho}; trong lúc chờ, bổ sung giấy tờ còn thiếu. Nếu ngày thi đã cố định, cứ đi thi và giữ tâm thế bình tĩnh.',
-        'Mỗi ngày ôn một phần nhỏ vào {g2}, ngồi hướng {h2}, thay vì dồn sức một lần.',
+        'Ôn mỗi ngày một phần nhỏ thay vì dồn sức một lần; buổi ôn đầu tiên hợp vào {g2}, ngồi hướng {h2}.',
         'Khi hết thời gian chờ, nộp hoặc đăng ký vào {g3}, hướng {h3}.']
     }
   },
@@ -202,8 +202,8 @@ var KMV_LOAI_ = {
     vuong: 'Nhịp làm việc đang nhiều hơn nhịp nghỉ.',
     hoTro: 'Bác sĩ hoặc người có chuyên môn y tế là người nên hỏi ý kiến trước tiên; người thân giúp bạn giữ nhịp ăn ngủ.',
     thuan: {
-      mo: ['Nhịp sống của bạn lúc này có xu hướng thuận. Cơ thể đang có sức hồi lại tốt, nên đây là lúc hợp để bắt đầu một thói quen lành mạnh vừa sức.',
-        'Bạn đang ở thế có thể chủ động chăm sóc bản thân. Những thay đổi nhỏ trong ăn ngủ lúc này dễ thấy tác dụng.'],
+      mo: ['Nhịp sống của bạn lúc này có xu hướng thuận. Cơ thể đang có sức hồi lại tốt, nên đây là lúc hợp để bắt đầu một thói quen lành mạnh vừa sức. Cái giá: thấy khỏe dễ làm quá sức, bỏ nhịp nghỉ.',
+        'Bạn đang ở thế có thể chủ động chăm sóc bản thân. Những thay đổi nhỏ trong ăn ngủ lúc này dễ thấy tác dụng. Cái giá: thấy khỏe dễ làm quá sức, bỏ nhịp nghỉ.'],
       dien: 'Diễn biến dễ gặp: tinh thần nhẹ hơn sau vài ngày giữ nhịp đều.',
       viec: ['Bắt đầu một buổi vận động nhẹ vào {g1}, đi về phía {h1}.',
         'Nếu có điều muốn hỏi, đặt lịch khám hoặc hỏi bác sĩ vào {g2}; đây là khung giờ thuận để trao đổi kỹ.',
@@ -219,11 +219,11 @@ var KMV_LOAI_ = {
     },
     nen_cho: {
       mo: ['Giai đoạn này cơ thể bạn có xu hướng cần được nghỉ nhiều hơn là cố gắng thêm. Kế hoạch tập nặng hay thức khuya để kịp việc nên tạm lùi lại vài ngày.',
-        'Bạn đang ở thế nên giữ sức và lắng nghe cơ thể. Đây là lúc dưỡng sức hơn là thử thách bản thân.'],
+        'Bạn đang ở thế nên giữ sức và lắng nghe cơ thể. Cố thêm lúc này dễ mệt kéo dài, sức đề kháng giảm.'],
       dien: 'Diễn biến dễ gặp: dễ thấy mệt nếu ép mình; sau {cho} nhịp sống dễ cân lại.',
       viec: ['Từ nay đến {cho}, đi ngủ trước 23 giờ và giảm cà phê buổi chiều.',
         'Nếu có điều lo lắng, đặt lịch khám vào {g2}; đây là khung giờ thuận để trao đổi kỹ với bác sĩ. Đừng chờ nếu thấy khó chịu nhiều.',
-        'Một buổi đi bộ nhẹ về phía {h3} vào {g3} sẽ giúp bạn lấy lại nhịp.']
+        'Đi bộ nhẹ về phía {h3} vào {g3} để lấy lại nhịp.']
     }
   },
   kien_tung: {
@@ -232,8 +232,8 @@ var KMV_LOAI_ = {
     vuong: 'Bằng chứng còn rời rạc, chưa xếp thành một mạch rõ ràng.',
     hoTro: 'Luật sư hoặc người am hiểu pháp lý là người nên hỏi trước mọi bước quan trọng.',
     thuan: {
-      mo: ['Việc tranh chấp hay hợp đồng bạn hỏi có xu hướng nghiêng về phía có lý lẽ rõ ràng, và lúc này lý lẽ của bạn đang dễ được lắng nghe.',
-        'Bạn đang ở thế giữ được phần chủ động. Đây là lúc hợp để đưa ra giấy tờ, bằng chứng và đề nghị một cách bình tĩnh.'],
+      mo: ['Việc tranh chấp hay hợp đồng bạn hỏi có xu hướng nghiêng về phía có lý lẽ rõ ràng, và lúc này lý lẽ của bạn đang dễ được lắng nghe. Cái giá: thấy mình có lý dễ cứng giọng, làm bên kia phản ứng mạnh hơn.',
+        'Bạn đang ở thế giữ được phần chủ động. Đây là lúc hợp để đưa ra giấy tờ, bằng chứng và đề nghị một cách bình tĩnh. Cái giá: thấy mình có lý dễ cứng giọng, làm bên kia phản ứng mạnh hơn.'],
       dien: 'Diễn biến dễ gặp: bên kia chịu ngồi lại nói chuyện sớm hơn bạn nghĩ.',
       viec: ['Xếp giấy tờ, tin nhắn, hóa đơn theo thứ tự thời gian; gặp luật sư vào {g1}, hướng {h1}.',
         'Đưa ra đề nghị bằng văn bản, lời lẽ ôn hòa, vào {g2}, hướng {h2}.',
@@ -248,7 +248,7 @@ var KMV_LOAI_ = {
         'Không ký thêm giấy tờ nào khi chưa đọc kỹ; buổi gặp tiếp theo hợp vào {g3}, hướng {h3}.']
     },
     nen_cho: {
-      mo: ['Việc tranh chấp hay hợp đồng lúc này có xu hướng nên chờ. Đẩy mạnh bây giờ dễ làm việc căng thêm, còn giữ bình tĩnh giúp bạn có thời gian củng cố.',
+      mo: ['Việc tranh chấp hay hợp đồng lúc này có xu hướng nên chờ. Đẩy mạnh bây giờ dễ làm việc căng thêm, và bạn dễ bị bắt bẻ ở chỗ chưa chuẩn bị.',
         'Bạn đang ở thế nên củng cố trước khi hành động. Chưa nên ký, chưa nên khởi kiện hay đáp trả gay gắt trong lúc này.'],
       dien: 'Diễn biến dễ gặp: bên kia có thể đổi ý hoặc đưa thêm yêu cầu; sau {cho} tình hình rõ hơn.',
       viec: ['Trước {cho}, hỏi luật sư về các hạn thời gian pháp lý bạn cần giữ; đừng để lỡ hạn vì chờ.',
@@ -266,28 +266,28 @@ var KMV_LOAI_BI_DANH_ = { cong: 'cong_viec', xin_viec: 'cong_viec', tien: 'tien_
  */
 var KMV_MON_ = {
   'Hưu': { cat: true, nghia: 'cửa của nghỉ ngơi, gặp người giúp',
-    dac: { cc: 'đang đắc lực: thuận cho gặp gỡ, nhờ người, nghỉ để lấy sức.', de: 'Bạn dễ gặp người sẵn lòng giúp, và nhịp làm từ tốn đang có lợi cho bạn.' },
-    khac: { cc: 'bị khắc nên sức giúp yếu, người hứa giúp dễ chậm trễ.', de: 'Sự giúp đỡ từ người khác có thể đến chậm hơn lời hứa, nên đừng dựa hẳn vào một người.' } },
+    dac: { cc: 'đang đắc lực: thuận cho gặp gỡ, nhờ người, nghỉ để lấy sức.', de: 'Bạn dễ gặp người sẵn lòng giúp, và nhịp làm từ tốn đang có lợi cho bạn; mặt trái: dễ chậm, lỡ những việc cần gấp.' },
+    khac: { cc: 'bị khắc nên sức giúp yếu, người hứa giúp dễ chậm trễ.', de: 'Sự giúp đỡ từ người khác có thể đến chậm hơn lời hứa; dựa hẳn vào một người thì dễ hỏng việc.' } },
   'Sinh': { cat: true, nghia: 'cửa của sinh sôi, tiền vào',
-    dac: { cc: 'đang đắc lực: thế sinh lời, vun đắp đang lên.', de: 'Những gì bạn vun đắp lúc này dễ ra kết quả; thế đi lên đang ở phía bạn.' },
+    dac: { cc: 'đang đắc lực: thế sinh lời, vun đắp đang lên.', de: 'Những gì bạn vun đắp lúc này dễ ra kết quả; mặt trái: thấy lợi dễ ham thêm mà vung tay.' },
     khac: { cc: 'bị khắc nên lợi có nhưng mỏng, dễ hao ở khâu trung gian.', de: 'Phần lợi có thể mỏng hơn dự tính, dễ hao ở những khoản phát sinh nhỏ.' } },
   'Thương': { cat: false, nghia: 'cửa của va chạm, cạnh tranh, đòi hỏi',
     dac: { cc: 'đang mạnh: hợp việc cần quyết liệt như đòi nợ, cạnh tranh, sửa chữa.', de: 'Bạn có sức bật để đối mặt cạnh tranh; việc cần dứt khoát thì đây là lúc làm được.' },
     khac: { cc: 'bị khắc nên dễ va chạm, nói nặng lời làm hỏng việc.', de: 'Dễ có va chạm vì nóng vội; một câu nói nặng lúc này có thể làm việc chậm lại.' } },
   'Đỗ': { cat: false, nghia: 'cửa của sự che chắn, giữ kín, bế tắc',
-    dac: { cc: 'đang mạnh: hợp giữ bí mật, phòng thủ, chuẩn bị âm thầm.', de: 'Bạn làm tốt việc giữ kín và chuẩn bị âm thầm; chưa công bố lại là lợi thế.' },
+    dac: { cc: 'đang mạnh: hợp giữ bí mật, phòng thủ, chuẩn bị âm thầm.', de: 'Bạn làm tốt việc giữ kín và chuẩn bị âm thầm; mặt trái: giữ kín quá dễ bị người khác hiểu lầm.' },
     khac: { cc: 'bị khắc nên dễ tắc, khó thông.', de: 'Mọi thứ đang hơi nghẽn, khó thông; ép thêm lúc này chỉ thêm mệt.' } },
   'Cảnh': { cat: null, nghia: 'cửa của giấy tờ, văn bản, sự thể hiện',
-    dac: { cc: 'đang đắc lực: thuận cho hồ sơ, trình bày, quảng bá.', de: 'Bạn có lợi khi trình bày, viết, nộp hồ sơ; cách bạn thể hiện đang được chú ý.' },
+    dac: { cc: 'đang đắc lực: thuận cho hồ sơ, trình bày, quảng bá.', de: 'Bạn có lợi khi trình bày, viết, nộp hồ sơ; mặt trái: hình thức dễ lấn nội dung.' },
     khac: { cc: 'bị khắc nên giấy tờ dễ sai sót, lời nói dễ bị hiểu lầm.', de: 'Giấy tờ và lời nói dễ bị hiểu sai; một lỗi nhỏ trong văn bản có thể làm mất thời gian.' } },
   'Tử': { cat: false, nghia: 'cửa của sự dừng lại, khép lại',
     dac: { cc: 'đang mạnh: hợp kết thúc, thanh lý, khép lại chuyện cũ, chưa hợp khởi sự.', de: 'Đây là lúc thuận để khép lại những việc còn dang dở hơn là mở việc mới.' },
     khac: { cc: 'bị khắc nên việc dễ chững lại, khó xoay chuyển.', de: 'Việc đang ở điểm chững; càng thúc ép lúc này càng tốn sức mà ít tiến triển.' } },
   'Kinh': { cat: false, nghia: 'cửa của lo lắng, tin bất ngờ, tranh luận',
-    dac: { cc: 'đang mạnh: hợp việc cần lên tiếng, tranh luận, đòi lại quyền lợi.', de: 'Bạn có tiếng nói; việc cần lên tiếng hay đàm phán thì đây là lúc được nghe.' },
-    khac: { cc: 'bị khắc nên dễ lo lắng, tin đồn, nhiễu thông tin.', de: 'Dễ có tin bất ngờ làm bạn lo; nên kiểm chứng trước khi phản ứng.' } },
+    dac: { cc: 'đang mạnh: hợp việc cần lên tiếng, tranh luận, đòi lại quyền lợi.', de: 'Bạn có tiếng nói; việc cần lên tiếng hay đàm phán thì đây là lúc được nghe; mặt trái: lời dễ thành tranh cãi.' },
+    khac: { cc: 'bị khắc nên dễ lo lắng, tin đồn, nhiễu thông tin.', de: 'Dễ có tin bất ngờ làm bạn lo; phản ứng vội dễ làm việc rối thêm.' } },
   'Khai': { cat: true, nghia: 'cửa của khởi đầu, mở việc, công danh',
-    dac: { cc: 'đang đắc lực: thuận cho mở đầu, nhận việc, ký kết.', de: 'Thế mở đầu đang thuận: việc bắt đầu bây giờ dễ có đà và được ghi nhận.' },
+    dac: { cc: 'đang đắc lực: thuận cho mở đầu, nhận việc, ký kết.', de: 'Thế mở đầu đang thuận: việc bắt đầu bây giờ dễ có đà và được ghi nhận; mặt trái: mở nhiều việc cùng lúc dễ đuối.' },
     khac: { cc: 'bị khắc nên mở được nhưng chậm, cần thêm người đỡ.', de: 'Việc mở ra được nhưng chậm có đà; bạn cần thêm người đỡ ở bước đầu.' } }
 };
 
@@ -297,32 +297,32 @@ var KMV_MON_ = {
  */
 var KMV_SAO_ = {
   'Thiên Bồng': { nghia: 'sao của sự táo bạo, mạo hiểm, cũng chỉ hao hụt ngầm',
-    manh: { tot: true, cc: 'đang vượng: gan dạ, dám làm, cần giữ dự phòng.', de: 'Bạn có gan làm việc lớn, dám đi bước mà người khác ngại; chỉ cần giữ một khoản dự phòng.' },
+    manh: { tot: true, cc: 'đang vượng: gan dạ, dám làm, cần giữ dự phòng.', de: 'Bạn có gan làm việc lớn, dám đi bước mà người khác ngại; mặt trái: dễ liều quá tay, hao hụt ngầm nếu không giữ dự phòng.' },
     yeu: { tot: false, cc: 'đang suy: dễ liều mà hao.', de: 'Dễ bị cuốn vào quyết định liều; có hao hụt ngầm nếu không ghi chép rõ.' } },
   'Thiên Nhuế': { nghia: 'sao chỉ sự mệt mỏi, chỗ cần chăm sóc, cũng là sao của học hỏi',
     manh: { tot: false, cc: 'đang mạnh: chỗ chưa ổn hiện rõ, cần chăm sóc và sửa từ gốc.', de: 'Có dấu hiệu cần chăm sóc, sửa chỗ chưa ổn trước khi đi tiếp; nhịp nghỉ quan trọng hơn tốc độ.' },
-    yeu: { tot: true, cc: 'đang yếu: chỗ chưa ổn nhẹ dần, dễ sửa.', de: 'Những chỗ chưa ổn đang nhẹ dần; bạn có cơ hội sửa sớm mà ít tốn sức.' } },
+    yeu: { tot: true, cc: 'đang yếu: chỗ chưa ổn nhẹ dần, dễ sửa.', de: 'Những chỗ chưa ổn đang nhẹ dần, sửa sớm thì ít tốn sức; để lâu vẫn có thể tái lại.' } },
   'Thiên Xung': { nghia: 'sao của hành động nhanh, quyết đoán',
-    manh: { tot: true, cc: 'đang vượng: thuận cho ra tay nhanh, nắm thời cơ.', de: 'Bạn hành động nhanh và nắm thời cơ tốt.' },
-    yeu: { tot: false, cc: 'đang suy: dễ vội mà phải làm lại.', de: 'Dễ vội rồi phải làm lại; chậm một nhịp sẽ đỡ hơn.' } },
+    manh: { tot: true, cc: 'đang vượng: thuận cho ra tay nhanh, nắm thời cơ.', de: 'Bạn hành động nhanh và nắm thời cơ tốt; mặt trái: dễ vội, bỏ sót chi tiết.' },
+    yeu: { tot: false, cc: 'đang suy: dễ vội mà phải làm lại.', de: 'Dễ vội rồi phải làm lại, tốn công gấp đôi.' } },
   'Thiên Phụ': { nghia: 'sao của học vấn, người thầy, sự giúp đỡ bằng hiểu biết',
-    manh: { tot: true, cc: 'đang vượng: có người hiểu biết nâng đỡ.', de: 'Kiến thức và người có hiểu biết đang đứng về phía bạn.' },
-    yeu: { tot: false, cc: 'đang suy: hiểu biết trong tay chưa đủ.', de: 'Thông tin trong tay chưa đủ; nên hỏi thêm người hiểu việc.' } },
+    manh: { tot: true, cc: 'đang vượng: có người hiểu biết nâng đỡ.', de: 'Kiến thức và người có hiểu biết đang đứng về phía bạn; mặt trái: dễ dựa dẫm vào lời khuyên.' },
+    yeu: { tot: false, cc: 'đang suy: hiểu biết trong tay chưa đủ.', de: 'Thông tin trong tay chưa đủ, dễ quyết sai vì thiếu hiểu biết.' } },
   'Thiên Cầm': { nghia: 'sao ở giữa, chủ sự cân bằng, giữ nhịp',
-    manh: { tot: true, cc: 'đang vượng: giữ được thế cân bằng.', de: 'Bạn giữ được thế cân bằng, không bị cuốn theo người khác.' },
-    yeu: { tot: false, cc: 'đang suy: dễ phân vân, thiếu điểm tựa.', de: 'Dễ phân vân, thiếu điểm tựa; nên chốt một hướng chính.' } },
+    manh: { tot: true, cc: 'đang vượng: giữ được thế cân bằng.', de: 'Bạn giữ được thế cân bằng, không bị cuốn theo người khác; mặt trái: dễ thiếu đột phá.' },
+    yeu: { tot: false, cc: 'đang suy: dễ phân vân, thiếu điểm tựa.', de: 'Dễ phân vân, thiếu điểm tựa, để lỡ thời điểm.' } },
   'Thiên Tâm': { nghia: 'sao của mưu tính, quản lý, chữa trị và lẽ phải',
-    manh: { tot: true, cc: 'đang vượng: tính toán sáng suốt, lý lẽ vững.', de: 'Bạn tính toán sáng suốt; kế hoạch có lý lẽ rõ ràng sẽ thuyết phục được người khác.' },
-    yeu: { tot: false, cc: 'đang suy: kế hoạch còn hở.', de: 'Kế hoạch còn thiếu vài phép tính; nên rà lại số liệu.' } },
+    manh: { tot: true, cc: 'đang vượng: tính toán sáng suốt, lý lẽ vững.', de: 'Bạn tính toán sáng suốt, kế hoạch có lý lẽ rõ ràng; mặt trái: dễ tính quá kỹ mà chậm.' },
+    yeu: { tot: false, cc: 'đang suy: kế hoạch còn hở.', de: 'Kế hoạch còn thiếu vài phép tính, dễ sai ở số liệu.' } },
   'Thiên Trụ': { nghia: 'sao của lời nói sắc bén, phá cái cũ',
-    manh: { tot: false, cc: 'đang mạnh: lời nói dễ thành va chạm.', de: 'Lời nói dễ thành mũi nhọn; nói ít, nói đúng lúc sẽ có lợi hơn.' },
+    manh: { tot: false, cc: 'đang mạnh: lời nói dễ thành va chạm.', de: 'Lời nói dễ thành mũi nhọn; một câu nặng lúc này có thể làm hỏng việc.' },
     yeu: { tot: true, cc: 'đang yếu: va chạm lời qua tiếng lại dịu đi.', de: 'Những va chạm lời qua tiếng lại đang dịu đi, dễ nói chuyện hơn.' } },
   'Thiên Nhậm': { nghia: 'sao của sự bền bỉ, đất đai, gánh vác',
-    manh: { tot: true, cc: 'đang vượng: bền bỉ, gánh được việc dài hơi.', de: 'Bạn bền bỉ, gánh được việc dài hơi; người khác tin vào sự vững vàng của bạn.' },
-    yeu: { tot: false, cc: 'đang suy: sức bền mỏng.', de: 'Sức bền đang mỏng; chia việc thành bước nhỏ sẽ dễ đi hơn.' } },
+    manh: { tot: true, cc: 'đang vượng: bền bỉ, gánh được việc dài hơi.', de: 'Bạn bền bỉ, gánh được việc dài hơi, người khác tin vào sự vững vàng của bạn; mặt trái: dễ ôm việc quá sức.' },
+    yeu: { tot: false, cc: 'đang suy: sức bền mỏng.', de: 'Sức bền đang mỏng, dễ bỏ dở giữa chừng.' } },
   'Thiên Anh': { nghia: 'sao của danh tiếng, sự sáng rõ, nhiệt huyết',
-    manh: { tot: true, cc: 'đang vượng: dễ được nhìn thấy, uy tín lên.', de: 'Bạn dễ được nhìn thấy; uy tín và hình ảnh đang có lợi.' },
-    yeu: { tot: false, cc: 'đang suy: dễ nóng vội, chuộng hình thức.', de: 'Dễ nóng vội hoặc chuộng hình thức; hãy để kết quả nói thay lời.' } }
+    manh: { tot: true, cc: 'đang vượng: dễ được nhìn thấy, uy tín lên.', de: 'Bạn dễ được nhìn thấy, uy tín và hình ảnh đang có lợi; mặt trái: sai sót cũng dễ bị chú ý.' },
+    yeu: { tot: false, cc: 'đang suy: dễ nóng vội, chuộng hình thức.', de: 'Dễ nóng vội hoặc chuộng hình thức, bề ngoài đẹp mà bên trong chưa chắc.' } }
 };
 
 /* ---------- 8 thần ----------
@@ -338,9 +338,9 @@ var KMV_THAN_ = {
   'Lục Hợp': { cat: true, nghia: 'thần của sự kết nối, mai mối, hợp tác', cc: 'là thần giúp.',
     de: 'Người làm cầu nối, như bạn bè giới thiệu hay người môi giới, là điểm tựa tốt.' },
   'Bạch Hổ': { cat: false, nghia: 'thần của sự cứng rắn, áp lực, va chạm', cc: 'là thần cản, cần giữ an toàn và bình tĩnh.',
-    de: 'Bạn cần người rạch ròi, cứng rắn ở bên.', vuong: 'Áp lực có thể đến dồn dập; giữ bình tĩnh, tránh đối đầu trực diện và cẩn thận khi đi lại.' },
+    de: 'Bạn cần người rạch ròi, cứng rắn ở bên.', vuong: 'Áp lực có thể đến dồn dập, dễ va chạm và sơ suất khi đi lại.' },
   'Huyền Vũ': { cat: false, nghia: 'thần của sự mập mờ, dễ thiếu rõ ràng', cc: 'là thần cản, cần xem kỹ điều khoản.',
-    de: 'Người cẩn thận với giấy tờ, số liệu sẽ giúp bạn nhiều nhất.', vuong: 'Có phần thông tin chưa rõ ràng; điều khoản và lời hứa miệng cần được ghi lại.' },
+    de: 'Người cẩn thận với giấy tờ, số liệu sẽ giúp bạn nhiều nhất.', vuong: 'Có phần thông tin chưa rõ ràng, lời hứa miệng dễ bị đổi.' },
   'Cửu Địa': { cat: true, nghia: 'thần của sự vững chãi, giữ gìn, bền lâu', cc: 'là thần giúp, hợp giữ hơn tiến gấp.',
     de: 'Người thân trong nhà hoặc người điềm tĩnh, bền bỉ là chỗ dựa vững cho bạn.' },
   'Cửu Thiên': { cat: true, nghia: 'thần của sự vươn xa, chủ động, dám làm', cc: 'là thần giúp, hợp chủ động.',
@@ -352,12 +352,12 @@ var KMV_THAN_ = {
  */
 var KMV_LY_ = {
   can_sinh: { tot: true, cc: 'Can lớp Trời và can lớp Đất ở ô này sinh nhau (trên dưới hòa thuận).', de: 'Hai phía của việc đang nâng đỡ nhau, nên phối hợp dễ hơn bạn nghĩ.' },
-  can_khac: { tot: false, cc: 'Can lớp Trời khắc can lớp Đất ở ô này (trên dưới chưa thuận).', de: 'Trong việc có chỗ hai bên chưa thuận nhau; cần dàn xếp trước khi đi tiếp.' },
-  cung_sinh_nguoi: { tot: true, cc: 'Ô của sự việc sinh ô của người hỏi (việc tìm đến người).', de: 'Sự việc đang có xu hướng tìm đến bạn, không cần chạy theo quá nhiều.' },
-  cung_khac_nguoi: { tot: false, cc: 'Ô của sự việc khắc ô của người hỏi (việc tạo sức ép lên người).', de: 'Sự việc đang tạo sức ép lên bạn; hãy giữ nhịp riêng, đừng để bị cuốn.' },
-  nguoi_khac_cung: { tot: true, cc: 'Ô của người hỏi khắc ô của sự việc (người nắm thế chủ động).', de: 'Bạn đang ở thế nắm phần chủ động.' },
-  nguoi_sinh_cung: { tot: false, cc: 'Ô của người hỏi sinh ô của sự việc (người phải bỏ sức nuôi việc).', de: 'Bạn đang phải bỏ nhiều công sức vào việc này; nên cân xem sức mình tới đâu.' },
-  cung_hoa: { tot: true, cc: 'Ô của người hỏi và ô của sự việc cùng hành (ngang hòa, cùng nhịp).', de: 'Bạn và việc đang cùng một nhịp, dễ phối hợp.' },
+  can_khac: { tot: false, cc: 'Can lớp Trời khắc can lớp Đất ở ô này (trên dưới chưa thuận).', de: 'Trong việc có chỗ hai bên chưa thuận nhau; đi tiếp mà không dàn xếp dễ vướng giữa chừng.' },
+  cung_sinh_nguoi: { tot: true, cc: 'Ô của sự việc sinh ô của người hỏi (việc tìm đến người).', de: 'Sự việc đang có xu hướng tìm đến bạn; mặt trái: dễ chủ quan, ngồi chờ việc tự đến.' },
+  cung_khac_nguoi: { tot: false, cc: 'Ô của sự việc khắc ô của người hỏi (việc tạo sức ép lên người).', de: 'Sự việc đang tạo sức ép lên bạn, dễ bị cuốn theo, mệt và quyết vội.' },
+  nguoi_khac_cung: { tot: true, cc: 'Ô của người hỏi khắc ô của sự việc (người nắm thế chủ động).', de: 'Bạn đang ở thế nắm phần chủ động; mặt trái: dễ ép quá tay.' },
+  nguoi_sinh_cung: { tot: false, cc: 'Ô của người hỏi sinh ô của sự việc (người phải bỏ sức nuôi việc).', de: 'Bạn đang phải bỏ nhiều công sức vào việc này, dễ hao sức nhiều hơn phần thu về.' },
+  cung_hoa: { tot: true, cc: 'Ô của người hỏi và ô của sự việc cùng hành (ngang hòa, cùng nhịp).', de: 'Bạn và việc đang cùng một nhịp, dễ phối hợp, nhưng ít lực đẩy thêm.' },
   khong_vong: { tot: false, cc: 'Ô của sự việc rơi vào không vong (khoảng trống của tuần giờ: việc dễ có tiếng mà chưa có miếng).', de: 'Một phần của việc còn "rỗng": có thể là lời hứa chưa thành, hoặc thông tin chưa đủ.' },
   nhap_mo: { tot: false, cc: 'Điểm đại diện cho việc nhập mộ (rơi vào chỗ "cất giữ", sức chưa phát ra được).', de: 'Việc như đang được cất trong ngăn kéo: chưa đến lúc mở ra.' },
   ma_tinh: { tot: true, cc: 'Ô có ngựa (dịch mã: dấu hiệu di chuyển, thay đổi nhanh).', de: 'Việc có yếu tố di chuyển, thay đổi nhanh; tin tức có thể đến bất ngờ.' }
@@ -374,17 +374,17 @@ var KMV_CC_ = {
   phi_dieu_diet_huyet: { ten: 'Phi Điểu Điệt Huyệt', tot: true, tren: 2, duoi: 4,
     nghia: 'can Bính trên gặp can Mậu dưới: chim sa đúng tổ, được việc không tốn sức', de: 'Có cơ hội "đúng chỗ, đúng lúc": việc đến tay mà không tốn nhiều sức.' },
   thanh_long_dao_tau: { ten: 'Thanh Long Đào Tẩu', tot: false, tren: 1, duoi: 7,
-    nghia: 'can Ất trên gặp can Tân dưới: rồng bỏ đi, dễ mất phần nếu lơi tay', de: 'Người hoặc của dễ "đi mất" nếu lơi tay; nên giữ chặt những gì đã có.' },
+    nghia: 'can Ất trên gặp can Tân dưới: rồng bỏ đi, dễ mất phần nếu lơi tay', de: 'Người hoặc của dễ "đi mất" nếu lơi tay.' },
   bach_ho_xuong_cuong: { ten: 'Bạch Hổ Xương Cuồng', tot: false, tren: 7, duoi: 1,
     nghia: 'can Tân trên gặp can Ất dưới: sức ép mạnh, dễ thiệt khi đi xa', de: 'Đây là lúc nên thận trọng khi đi lại và tránh đối đầu gắt.' },
   chu_tuoc_dau_giang: { ten: 'Chu Tước Đầu Giang', tot: false, tren: 3, duoi: 9,
     nghia: 'can Đinh trên gặp can Quý dưới: lời nói, văn thư dễ chìm hoặc gây phiền', de: 'Giấy tờ và lời nói dễ gây phiền; nên kiểm kỹ trước khi gửi đi.' },
   dang_xa_yeu_kieu: { ten: 'Đằng Xà Yêu Kiều', tot: false, tren: 9, duoi: 3,
-    nghia: 'can Quý trên gặp can Đinh dưới: chuyện rối như rắn quấn, dễ lo nghĩ', de: 'Chuyện có thể rối và kéo dài; giữ mọi trao đổi bằng văn bản sẽ giúp bạn yên tâm.' },
+    nghia: 'can Quý trên gặp can Đinh dưới: chuyện rối như rắn quấn, dễ lo nghĩ', de: 'Chuyện có thể rối và kéo dài, nhiều lời qua tiếng lại làm bạn lo nghĩ.' },
   thai_bach_nhap_huynh: { ten: 'Thái Bạch Nhập Huỳnh', tot: false, tren: 6, duoi: 2,
     nghia: 'can Canh trên gặp can Bính dưới: sức ép từ bên ngoài đi vào', de: 'Có sức ép từ bên ngoài tìm đến; nên phòng thủ trước khi tiến.' },
   huynh_nhap_thai_bach: { ten: 'Huỳnh Nhập Thái Bạch', tot: true, tren: 2, duoi: 6,
-    nghia: 'can Bính trên gặp can Canh dưới: sức ép tự lui', de: 'Áp lực đang tự lui dần; kiên nhẫn giữ vị trí sẽ có lợi.' },
+    nghia: 'can Bính trên gặp can Canh dưới: sức ép tự lui', de: 'Áp lực đang tự lui dần; vội phản đòn lúc này dễ mất phần.' },
   dai_cach: { ten: 'Đại cách', tot: false, tren: 6, duoi: 9,
     nghia: 'can Canh trên gặp can Quý dưới: đường đi bị cản', de: 'Đường đi có vật cản; việc đi xa, gửi hàng nên dời lại nếu được.' },
   hinh_cach: { ten: 'Hình cách', tot: false, tren: 6, duoi: 5,
@@ -392,7 +392,7 @@ var KMV_CC_ = {
   phuc_cung: { ten: 'Phục cung', tot: false, tren: 6, duoi: 4,
     nghia: 'can Canh trên gặp can Mậu dưới: sức ép đè lên người đứng đầu', de: 'Người đứng đầu hoặc chính bạn đang chịu sức ép; chưa nên tranh giành.' },
   phi_cung: { ten: 'Trực phù phi cung', tot: false, tren: 4, duoi: 6,
-    nghia: 'can Mậu trên gặp can Canh dưới: vị thế dễ chao', de: 'Vị thế dễ chao đảo; hãy giữ chắc phần việc chính.' },
+    nghia: 'can Mậu trên gặp can Canh dưới: vị thế dễ chao', de: 'Vị thế dễ chao đảo, có thể mất phần việc chính nếu lơi tay.' },
   thien_don: { ten: 'Thiên Độn', tot: true,
     nghia: 'can Bính, cửa Sinh và can Đinh dưới cùng ô: thế "trời che chở", thuận cho cầu lợi, khởi sự', de: 'Thế thuận ít gặp: việc khởi sự, cầu lợi trong khung giờ này dễ được nâng đỡ.' },
   dia_don: { ten: 'Địa Độn', tot: true,
@@ -406,7 +406,7 @@ var KMV_CC_ = {
   phan_ngam: { ten: 'Phản ngâm', tot: false,
     nghia: 'sao và cửa nằm ở ô đối diện ô gốc: dễ đảo chiều, lặp lại', de: 'Việc dễ đảo chiều hoặc phải làm lại; nên chừa đường lui.' },
   luc_nghi_kich_hinh: { ten: 'Lục nghi kích hình', tot: false,
-    nghia: 'can nghi rơi vào ô "hình" với chi của nó: dễ va chạm, tổn hao', de: 'Dễ có va chạm nhỏ và hao sức vì chuyện không đáng; nhường một bước sẽ nhẹ hơn.' },
+    nghia: 'can nghi rơi vào ô "hình" với chi của nó: dễ va chạm, tổn hao', de: 'Dễ có va chạm nhỏ và hao sức vì chuyện không đáng.' },
   tam_ky_nhap_mo: { ten: 'Tam kỳ nhập mộ', tot: false,
     nghia: 'can Ất, Bính hoặc Đinh rơi vào ô "mộ" của nó: cái tốt bị cất đi', de: 'Điểm mạnh của bạn lúc này chưa phát huy hết, như đang bị cất đi; cần thêm thời gian.' },
   mon_buc: { ten: 'Môn bức', tot: false,

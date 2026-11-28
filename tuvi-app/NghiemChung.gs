@@ -123,7 +123,7 @@ function ncLv_(X, g, k, toiDa) {
 var NC_NAM_MAU = {
   taiLoc: 'tiền bạc hoặc thu nhập khởi sắc rõ', quanLoc: 'công việc có chuyển động lớn (thăng tiến, đổi việc hoặc nhận trách nhiệm mới)',
   ketHon: 'có chuyện tình cảm quan trọng (bắt đầu yêu, cưới hỏi hoặc thay đổi lớn trong quan hệ)', sinhCon: 'có tin vui hoặc chuyện nổi bật về con cái',
-  sucKhoe: 'thấy mệt, cần nghỉ ngơi và chăm sóc bản thân nhiều hơn', taiChinh: 'chi tiêu lớn ngoài dự tính, phải thắt chặt tài chính',
+  sucKhoe: 'sức khỏe đi xuống rõ: hay mệt, ốm hoặc phải đi khám chữa', taiChinh: 'chi tiêu lớn ngoài dự tính, phải thắt chặt tài chính',
   giaDao: 'gia đình, nhà cửa có biến động (chuyển nhà, sửa nhà hoặc chuyện người thân)', buocNgoat: 'có bước ngoặt – đổi môi trường sống hoặc làm việc'
 };
 /** Năm đã qua mà từ 3 hệ cùng báo – bằng chứng kiểm chứng bằng ký ức (bỏ năm trước 16 tuổi) */

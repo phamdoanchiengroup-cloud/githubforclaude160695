@@ -31,26 +31,26 @@ var TS_SO = {
 
 /** Ý nghĩa từng con số trên biểu đồ ngày sinh */
 var TS_BD = {
-  1: { y: 'khả năng biểu đạt bản thân, giao tiếp nội tâm', c: ['Thiếu 1: khó bày tỏ suy nghĩ thật, dễ bị hiểu lầm', 'Một số 1: biểu đạt được nhưng hay giữ trong lòng', 'Hai số 1: biểu đạt cân bằng, giao tiếp tốt cả nói lẫn viết', 'Ba số 1: hoặc nói nhiều hoặc rất kiệm lời; nên hỏi lại xem người nghe đã hiểu đúng ý mình chưa', 'Bốn số 1 trở lên: nhạy cảm giao tiếp, cần học lắng nghe, dễ tự thu mình'] },
-  2: { y: 'trực giác, nhạy cảm, cảm nhận người khác', c: ['Thiếu 2: trực giác yếu, dễ thiếu kiên nhẫn, cần học tinh tế', 'Một số 2: trực giác tốt, nhạy cảm vừa phải', 'Hai số 2: trực giác mạnh, đọc vị người khác tốt, dễ tổn thương', 'Ba số 2: rất nhạy cảm, dễ bận lòng; nên dành khoảng lặng cho mình và có người tin cậy để chia sẻ', 'Bốn số 2 trở lên: quá nhạy cảm, dễ bất an, cần môi trường nhẹ nhàng'] },
-  3: { y: 'trí nhớ, tư duy, óc sáng tạo và phân tích', c: ['Thiếu 3: trí nhớ ngắn hạn, cần ghi chép, tư duy thiên thực hành', 'Một số 3: trí nhớ tốt, lạc quan, tư duy mạch lạc', 'Hai số 3: trí tưởng tượng và sáng tạo mạnh, dễ sống trong đầu', 'Ba số 3: tư duy quá nhiều, dễ lo xa, khó hòa hợp cảm xúc', 'Bốn số 3 trở lên: trí óc hoạt động không ngừng, dễ căng thẳng'] },
-  4: { y: 'trật tự, thực tế, khéo tay, tổ chức', c: ['Thiếu 4: thiếu ngăn nắp, khó làm việc chân tay kiên trì', 'Một số 4: thực tế, gọn gàng, khéo tay', 'Hai số 4: rất có tổ chức, giỏi kỹ thuật – nghệ thuật thủ công', 'Ba số 4 trở lên: quá chú trọng vật chất, cứng nhắc, làm việc quá sức', 'Nhiều số 4: cần học tính linh hoạt'] },
-  5: { y: 'cảm xúc, tình yêu, ý chí và động lực (trung tâm biểu đồ)', c: ['Thiếu 5: cần nỗ lực nhiều để giữ động lực, dễ nản; cảm xúc khó ổn định', 'Một số 5: cảm xúc cân bằng, có động lực, yêu thương rõ ràng', 'Hai số 5: quyết tâm mạnh, cảm xúc mãnh liệt, dễ tự cao', 'Ba số 5: cảm xúc dữ dội, dễ nói lời tổn thương, cần kiểm soát', 'Nhiều số 5: năng lượng dồi dào nhưng dễ bốc đồng'] },
-  6: { y: 'sáng tạo, trách nhiệm với gia đình – nhà cửa', c: ['Thiếu 6: ít gắn bó việc nhà, cần học trách nhiệm gia đình', 'Một số 6: yêu gia đình, có óc sáng tạo và trách nhiệm', 'Hai số 6: lo lắng cho gia đình nhiều, dễ căng thẳng', 'Ba số 6 trở lên: lo âu quá mức, dễ bất mãn, cần buông bớt', 'Nhiều số 6: cần tìm niềm vui ngoài gia đình'] },
-  7: { y: 'bài học qua trải nghiệm, chiêm nghiệm, tâm linh', c: ['Thiếu 7: thường học qua sách vở và kinh nghiệm của người khác', 'Một số 7: học qua trải nghiệm cá nhân (tình cảm, công việc hoặc tiền bạc)', 'Hai số 7: trưởng thành qua trải nghiệm ở hai mặt đời sống, bù lại trí tuệ sâu sắc; ghi lại bài học sau mỗi giai đoạn giúp bạn đi nhẹ nhàng hơn', 'Ba số 7 trở lên: đời nhiều trải nghiệm để rèn luyện; biết nhìn lại và chia sẻ, bạn càng đi càng vững vàng', 'Nhiều số 7: có thiên hướng triết học – tôn giáo mạnh'] },
-  8: { y: 'khả năng quan sát chi tiết, độc lập, trách nhiệm tài chính', c: ['Thiếu 8: dễ bừa bộn, thiếu chú ý chi tiết, cần học quản lý', 'Một số 8: gọn gàng, độc lập, biết quản lý tiền', 'Hai số 8: rất chi tiết, cẩn trọng, có thể khó tính', 'Ba số 8 trở lên: bồn chồn, khó ổn định, thích xê dịch', 'Nhiều số 8: cần tránh vội vàng quyết định'] },
-  9: { y: 'lý tưởng, tham vọng, trách nhiệm cộng đồng', c: ['Thiếu 9: bạn có xu hướng đặt mục tiêu gần và thực tế trước, lý tưởng lớn sẽ đến khi bạn tìm được việc mình thấy ý nghĩa (đây là nét chung của gần như cả thế hệ sinh từ năm 2000, vì năm sinh không có chữ số 9, chứ không phải điểm riêng của bạn)', 'Một số 9: có lý tưởng, trách nhiệm, bao dung', 'Hai số 9: lý tưởng cao, dễ chỉ trích người không đạt chuẩn', 'Ba số 9: rất lý tưởng, dễ xa rời thực tế, hay thất vọng', 'Bốn số 9 trở lên: cần cân bằng lý tưởng với đời sống cá nhân'] }
+  1: { y: 'khả năng biểu đạt bản thân, giao tiếp nội tâm', c: ['Thiếu 1: bạn nghe và quan sát tốt, ít nói lời thừa; mặt trái: khó nói ra suy nghĩ thật, dễ bị hiểu lầm và chịu thiệt vì không lên tiếng đúng lúc', 'Một số 1: bạn biết điều gì nên nói; mặt trái: hay giữ trong lòng, người thân thường không biết bạn đang nghĩ gì', 'Hai số 1: biểu đạt cân bằng, giao tiếp tốt cả nói lẫn viết; mặt trái: dễ tin mình đã nói rõ trong khi người nghe hiểu khác', 'Ba số 1: hoặc rất hoạt ngôn, hoặc rất kiệm lời; mặt trái: dễ nói lấn át người khác, hoặc im lặng đến mức bị cho là lạnh lùng. Gợi ý: hỏi lại xem người nghe đã hiểu đúng ý mình chưa', 'Bốn số 1 trở lên: nhạy với lời nói, chọn chữ kỹ; mặt trái: dễ tổn thương vì một câu nói rồi thu mình lại, khó giải thích bản thân với người khác'] },
+  2: { y: 'trực giác, nhạy cảm, cảm nhận người khác', c: ['Thiếu 2: bạn ít bị cảm xúc người khác chi phối, quyết nhanh; mặt trái: trực giác yếu, dễ thiếu kiên nhẫn và vô tình làm người khác phật lòng', 'Một số 2: trực giác tốt, nhạy cảm vừa phải; mặt trái: khi mệt dễ đọc sai thái độ người khác', 'Hai số 2: trực giác mạnh, đọc vị người khác tốt; mặt trái: dễ tổn thương, dễ để tâm trạng người xung quanh kéo mình xuống', 'Ba số 2: rất nhạy cảm, hiểu người nhanh; mặt trái: dễ bận lòng lâu, hay chiều theo ý người khác rồi chịu thiệt. Gợi ý: có một người tin cậy để chia sẻ', 'Bốn số 2 trở lên: cảm nhận cực nhạy; mặt trái: dễ bất an, dễ kiệt sức ở môi trường ồn ào, căng thẳng'] },
+  3: { y: 'trí nhớ, tư duy, óc sáng tạo và phân tích', c: ['Thiếu 3: bạn thiên thực hành, làm hơn nói; mặt trái: trí nhớ ngắn hạn kém, dễ quên việc và chi tiết nếu không ghi chép', 'Một số 3: trí nhớ tốt, lạc quan, tư duy mạch lạc; mặt trái: dễ chủ quan vì nghĩ mình đã nắm hết vấn đề', 'Hai số 3: trí tưởng tượng và óc sáng tạo mạnh; mặt trái: dễ sống trong đầu, nghĩ nhiều mà làm ít', 'Ba số 3: đầu óc sắc, phân tích nhanh; mặt trái: suy nghĩ quá nhiều, hay lo xa, hay tranh luận và khó hòa hợp về cảm xúc', 'Bốn số 3 trở lên: trí óc hoạt động không ngừng; mặt trái: dễ căng thẳng, khó ngủ, người khác khó theo kịp bạn'] },
+  4: { y: 'trật tự, thực tế, khéo tay, tổ chức', c: ['Thiếu 4: bạn linh hoạt, không bị quy trình bó buộc; mặt trái: thiếu ngăn nắp, khó kiên trì với việc tay chân và việc lặp lại', 'Một số 4: thực tế, gọn gàng, khéo tay; mặt trái: dễ bực bội khi mọi thứ lộn xộn', 'Hai số 4: rất có tổ chức, giỏi kỹ thuật – thủ công; mặt trái: dễ cứng nhắc, khó chấp nhận cách làm khác mình', 'Ba số 4 trở lên: làm việc bền, chắc tay; mặt trái: quá chú trọng vật chất, cứng nhắc, làm việc quá sức đến hao mòn', 'Nhiều số 4: sức làm việc lớn; mặt trái: rất bảo thủ, thiếu linh hoạt, dễ va chạm với người thích đổi mới'] },
+  5: { y: 'cảm xúc, tình yêu, ý chí và động lực (trung tâm biểu đồ)', c: ['Thiếu 5: bạn ít bốc đồng; mặt trái: khó giữ động lực, dễ nản, cảm xúc khó ổn định và khó nói lời yêu thương', 'Một số 5: cảm xúc cân bằng, có động lực, yêu thương rõ ràng; mặt trái: khi bị dồn ép lâu vẫn có lúc bùng lên bất ngờ', 'Hai số 5: quyết tâm mạnh, cảm xúc mãnh liệt; mặt trái: dễ tự cao, dễ áp đặt ý mình lên người khác', 'Ba số 5: cảm xúc dữ dội, sức sống lớn; mặt trái: dễ nói lời làm tổn thương người thân khi nóng giận', 'Nhiều số 5: năng lượng dồi dào; mặt trái: bốc đồng, dễ quyết vội rồi hối tiếc'] },
+  6: { y: 'sáng tạo, trách nhiệm với gia đình – nhà cửa', c: ['Thiếu 6: bạn tự do, ít bị việc nhà ràng buộc; mặt trái: ít gắn bó việc nhà, người thân dễ thấy bạn vô tâm', 'Một số 6: yêu gia đình, có óc sáng tạo và trách nhiệm; mặt trái: dễ ôm việc nhà một mình rồi mệt', 'Hai số 6: rất lo cho gia đình; mặt trái: dễ căng thẳng, hay can thiệp vào việc của người thân', 'Ba số 6 trở lên: tận tụy với gia đình; mặt trái: lo âu quá mức, dễ bất mãn vì thấy mình hy sinh mà không được ghi nhận', 'Nhiều số 6: trách nhiệm rất cao; mặt trái: đời sống xoay hết quanh gia đình, dễ ngột ngạt cho cả bạn lẫn người thân'] },
+  7: { y: 'bài học qua trải nghiệm, chiêm nghiệm, tâm linh', c: ['Thiếu 7: bạn thường học qua sách vở và kinh nghiệm người khác nên ít phải trả giá đắt; mặt trái: dễ thiếu chiều sâu của trải nghiệm thật', 'Một số 7: bạn học qua trải nghiệm cá nhân và nhớ rất lâu; mặt trái: thường phải qua một lần mất mát (tình cảm, công việc hoặc tiền bạc) mới rút ra bài học', 'Hai số 7: trí tuệ sâu sắc nhờ trải nghiệm; mặt trái: dễ gặp mất mát, va vấp ở hai mặt đời sống (tình cảm, công việc hoặc tiền bạc)', 'Ba số 7 trở lên: hiểu đời sâu hơn người cùng tuổi; mặt trái: đời nhiều mất mát và thử thách, dễ có giai đoạn buồn, cô độc kéo dài', 'Nhiều số 7: thiên hướng triết học – tôn giáo mạnh; mặt trái: dễ xa rời đời sống thường ngày và người thân'] },
+  8: { y: 'khả năng quan sát chi tiết, độc lập, trách nhiệm tài chính', c: ['Thiếu 8: bạn ít bị chi tiết làm phiền; mặt trái: dễ bừa bộn, thiếu chú ý chi tiết, quản lý tiền kém', 'Một số 8: gọn gàng, độc lập, biết quản lý tiền; mặt trái: đôi khi quá tự lực, ngại nhờ ai', 'Hai số 8: rất chi tiết, cẩn trọng; mặt trái: khó tính, hay soi lỗi người khác', 'Ba số 8 trở lên: năng động, thích xê dịch; mặt trái: bồn chồn, khó ổn định chỗ ở và công việc', 'Nhiều số 8: nhạy bén, phản ứng nhanh; mặt trái: hay vội quyết định rồi phải sửa'] },
+  9: { y: 'lý tưởng, tham vọng, trách nhiệm cộng đồng', c: ['Thiếu 9: bạn có xu hướng đặt mục tiêu gần và thực tế; mặt trái: dễ thiếu một lý tưởng dài hạn để bám vào khi gặp khó (đây là nét chung của gần như cả thế hệ sinh từ năm 2000, vì năm sinh không có chữ số 9, chứ không phải điểm riêng của bạn)', 'Một số 9: có lý tưởng, trách nhiệm, bao dung; mặt trái: dễ ôm cả việc của người khác', 'Hai số 9: lý tưởng cao; mặt trái: dễ chỉ trích người không đạt chuẩn của mình', 'Ba số 9: rất lý tưởng; mặt trái: dễ xa rời thực tế, hay thất vọng về người và việc', 'Bốn số 9 trở lên: tầm nhìn rộng; mặt trái: lý tưởng lấn át đời sống riêng, dễ bỏ bê bản thân và gia đình'] }
 };
 
 var TS_MUI_TEN = [
-  { so: [1, 2, 3], ten: 'Mũi tên Kế hoạch', co: 'giỏi lập kế hoạch, tổ chức, tư duy mạch lạc – nên làm công việc cần hoạch định' },
-  { so: [4, 5, 6], ten: 'Mũi tên Ý chí', co: 'ý chí mạnh, quyết tâm theo đuổi mục tiêu đến cùng', trong: 'Mũi tên cần rèn – Giữ động lực (trống 4-5-6): bạn có xu hướng dồn nén khi thất vọng; đặt mục tiêu nhỏ và chia sẻ cảm xúc với người tin cậy giúp bạn giữ lửa' },
-  { so: [7, 8, 9], ten: 'Mũi tên Hoạt động', co: 'năng động, hành động nhiều, học bằng làm', trong: 'Mũi tên cần rèn – Bắt tay hành động (trống 7-8-9): bạn có xu hướng nghĩ nhiều hơn làm; tự đặt mục tiêu từng tuần và vận động đều giúp bạn khởi động dễ hơn' },
-  { so: [1, 4, 7], ten: 'Mũi tên Thực tế (Thể chất)', co: 'khéo tay, thực tế, bền bỉ về thể chất, giỏi việc vật chất', trong: 'Mũi tên cần rèn – Sắp xếp (trống 1-4-7): bạn có xu hướng làm theo cảm hứng hơn kế hoạch; rèn vài thói quen nhỏ như ghi việc cần làm giúp mọi thứ gọn gàng hơn' },
-  { so: [2, 5, 8], ten: 'Mũi tên Cân bằng cảm xúc', co: 'cảm xúc ổn định, tinh thần vững, dễ tạo cảm giác an toàn', trong: 'Mũi tên cần rèn – Vững vàng cảm xúc (trống 2-5-8): bạn có xu hướng dễ chạnh lòng và tự nghi ngờ mình; ở cạnh người tôn trọng bạn và ghi nhận những việc mình làm tốt giúp bạn tự tin hơn' },
-  { so: [3, 6, 9], ten: 'Mũi tên Trí tuệ', co: 'trí nhớ và tư duy xuất sắc, học giỏi, sáng tạo', trong: 'Mũi tên cần rèn – Ghi nhớ (trống 3-6-9): bạn học tốt nhất qua thực hành; ghi chép và ôn lại giúp bạn nhớ lâu' },
-  { so: [1, 5, 9], ten: 'Mũi tên Quyết tâm', co: 'kiên trì, quyết tâm cao, không bỏ cuộc giữa chừng', trong: 'Mũi tên cần rèn – Bắt đầu sớm (trống 1-5-9): bạn có xu hướng chần chừ trước việc lớn; chia nhỏ mục tiêu và làm bước đầu ngay hôm nay giúp bạn tiến đều' },
-  { so: [3, 5, 7], ten: 'Mũi tên Tâm linh (Nhạy bén)', co: 'thấu hiểu sâu, trực giác và tâm linh mạnh, bình an nội tâm', trong: 'Mũi tên cần rèn – Niềm tin (trống 3-5-7): bạn có xu hướng cần bằng chứng rõ trước khi tin; tìm hiểu từ nguồn đáng tin và cho phép mình thử từng bước giúp bạn bớt bất an' }
+  { so: [1, 2, 3], ten: 'Mũi tên Kế hoạch', co: 'giỏi lập kế hoạch, tổ chức, tư duy mạch lạc; mặt trái: dễ mất bình tĩnh khi kế hoạch bị phá ngang, khó xoay xở khi việc không theo trình tự' },
+  { so: [4, 5, 6], ten: 'Mũi tên Ý chí', co: 'ý chí mạnh, quyết tâm theo đuổi mục tiêu đến cùng; mặt trái: dễ cố chấp, khó buông việc đã sai hướng', trong: 'Mũi tên trống – Dễ thất vọng (trống 4-5-6): bạn dễ hụt hẫng, dồn nén khi việc không như ý, có giai đoạn mất động lực kéo dài; điểm được là bạn ít ảo tưởng, nhìn thất bại khá tỉnh. Gợi ý: đặt mục tiêu nhỏ và chia sẻ với người tin cậy' },
+  { so: [7, 8, 9], ten: 'Mũi tên Hoạt động', co: 'năng động, hành động nhiều, học bằng làm; mặt trái: dễ làm trước nghĩ sau, ôm nhiều việc cùng lúc', trong: 'Mũi tên trống – Thụ động (trống 7-8-9): bạn nghĩ nhiều hơn làm, dễ trì hoãn, để lỡ cơ hội vì chờ đủ điều kiện; điểm được là bạn ít hành động liều. Gợi ý: mỗi tuần đặt một việc cụ thể và làm cho xong' },
+  { so: [1, 4, 7], ten: 'Mũi tên Thực tế (Thể chất)', co: 'khéo tay, thực tế, bền bỉ về thể chất, giỏi việc vật chất; mặt trái: dễ coi nhẹ chuyện cảm xúc, tinh thần', trong: 'Mũi tên trống – Thiếu thực tế (trống 1-4-7): bạn làm theo cảm hứng hơn kế hoạch, dễ bừa bộn, vụng việc tay chân và quản lý vật chất kém; điểm được là bạn ít bị khuôn phép bó buộc. Gợi ý: ghi việc cần làm mỗi ngày' },
+  { so: [2, 5, 8], ten: 'Mũi tên Cân bằng cảm xúc', co: 'cảm xúc ổn định, tinh thần vững, dễ tạo cảm giác an toàn; mặt trái: ít bộc lộ, người khác khó đoán cảm xúc thật của bạn', trong: 'Mũi tên trống – Nhạy cảm (trống 2-5-8): bạn dễ chạnh lòng, tự nghi ngờ mình, dễ bị lời nói người khác làm tổn thương và tự ti kéo dài; điểm được là bạn tinh ý, hiểu nỗi đau của người khác. Gợi ý: ở gần những người tôn trọng bạn' },
+  { so: [3, 6, 9], ten: 'Mũi tên Trí tuệ', co: 'trí nhớ và tư duy xuất sắc, học giỏi, sáng tạo; mặt trái: dễ coi thường người chậm hơn, sống trong đầu nhiều', trong: 'Mũi tên trống – Trí nhớ ngắn (trống 3-6-9): bạn dễ quên, học lý thuyết chậm và khó nhớ lâu nếu không thực hành; điểm được là bạn học nhanh qua tay chân, qua kinh nghiệm thật. Gợi ý: ghi chép và ôn lại' },
+  { so: [1, 5, 9], ten: 'Mũi tên Quyết tâm', co: 'kiên trì, quyết tâm cao, không bỏ cuộc giữa chừng; mặt trái: dễ bướng, cố theo cả những việc không còn đáng theo', trong: 'Mũi tên trống – Trì hoãn (trống 1-5-9): bạn chần chừ trước việc lớn, dễ lỡ thời cơ, việc kéo dài mà không xong; điểm được là bạn ít quyết liều. Gợi ý: làm bước đầu ngay trong ngày' },
+  { so: [3, 5, 7], ten: 'Mũi tên Tâm linh (Nhạy bén)', co: 'thấu hiểu sâu, trực giác và tâm linh mạnh, bình an nội tâm; mặt trái: dễ xa rời chuyện thực tế, tiền bạc', trong: 'Mũi tên trống – Hoài nghi (trống 3-5-7): bạn cần bằng chứng rõ mới tin, dễ nghi ngờ người khác và bất an trước những điều không chắc; điểm được là bạn khó bị lừa. Gợi ý: tin từng bước với người đã chứng tỏ được mình' }
 ];
 
 var TS_CHU = { A: 1, J: 1, S: 1, B: 2, K: 2, T: 2, C: 3, L: 3, U: 3, D: 4, M: 4, V: 4, E: 5, N: 5, W: 5, F: 6, O: 6, X: 6, G: 7, P: 7, Y: 7, H: 8, Q: 8, Z: 8, I: 9, R: 9 };
@@ -137,32 +137,32 @@ function thanSoHocLap_(input, solar, viewYear) {
 }
 
 var TS_NAM = {
-  1: 'Năm khởi đầu chu kỳ 9 năm: gieo hạt – bắt đầu dự án, công việc, mối quan hệ mới; chủ động, tự lập.',
-  2: 'Năm kiên nhẫn và hợp tác: vun đắp quan hệ, chờ hạt nảy mầm; tránh vội vàng; tình cảm – hôn nhân được chú ý.',
-  3: 'Năm sáng tạo và giao tiếp: mở rộng xã hội, học hỏi, thể hiện bản thân; vui vẻ nhưng dễ phân tán.',
-  4: 'Năm xây nền móng: làm việc chăm chỉ, kỷ luật, sắp xếp tài chính – nhà cửa – sức khỏe; ít may mắn bất ngờ.',
-  5: 'Năm thay đổi và tự do: di chuyển, cơ hội mới, đổi việc/đổi chỗ ở; cần tránh bốc đồng.',
-  6: 'Năm trách nhiệm và yêu thương: gia đình, hôn nhân, con cái, nhà cửa; chăm sóc và được chăm sóc.',
-  7: 'Năm nội tâm và học hỏi: nghiên cứu, tu dưỡng, nhìn lại; không hợp mạo hiểm tiền bạc; hợp dành khoảng lặng cho mình.',
-  8: 'Năm thu hoạch và quyền lực: tài chính, thăng tiến, công nhận; gặt những gì đã gieo 7 năm qua.',
-  9: 'Năm kết thúc và buông bỏ: hoàn tất, dọn dẹp những gì không còn phù hợp để chuẩn bị chu kỳ mới; cho đi, từ thiện.'
+  1: 'Năm khởi đầu chu kỳ 9 năm: hợp gieo hạt – bắt đầu dự án, công việc, mối quan hệ mới, tự lập. Mặt trái: việc mới tốn sức, kết quả chưa thấy ngay, dễ thấy cô đơn vì phải tự quyết nhiều.',
+  2: 'Năm kiên nhẫn và hợp tác: hợp vun đắp quan hệ; tình cảm – hôn nhân được chú ý. Mặt trái: việc tiến chậm, dễ nhạy cảm, phụ thuộc vào quyết định của người khác; vội vàng thì hỏng việc.',
+  3: 'Năm sáng tạo và giao tiếp: mở rộng xã hội, học hỏi, thể hiện bản thân. Mặt trái: dễ phân tán, chi cho vui chơi vượt dự tính, nói nhiều thành lỡ lời.',
+  4: 'Năm xây nền móng: hợp làm việc chăm chỉ, kỷ luật, sắp xếp tài chính – nhà cửa – sức khỏe. Mặt trái: nhiều việc nặng, ít may mắn bất ngờ, dễ mệt và thấy bị bó buộc.',
+  5: 'Năm thay đổi và tự do: có di chuyển, cơ hội mới, đổi việc/đổi chỗ ở. Mặt trái: dễ bất ổn, bốc đồng, hao tiền vì quyết định vội.',
+  6: 'Năm trách nhiệm và yêu thương: gia đình, hôn nhân, con cái, nhà cửa được chú trọng. Mặt trái: gánh nặng gia đình tăng, dễ ôm việc của người thân và mệt vì phải lo cho nhiều người.',
+  7: 'Năm nội tâm và học hỏi: hợp nghiên cứu, tu dưỡng, nhìn lại. Mặt trái: dễ cô đơn, buồn chán, thu nhập chững lại; không hợp mạo hiểm tiền bạc.',
+  8: 'Năm thu hoạch và quyền lực: tài chính, thăng tiến, được công nhận cho những gì đã gieo 7 năm qua. Mặt trái: áp lực tiền bạc và trách nhiệm lớn, dễ làm quá sức; những năm trước làm ẩu thì năm này phải trả giá.',
+  9: 'Năm kết thúc và buông bỏ: hoàn tất, dọn dẹp những gì không còn phù hợp để chuẩn bị chu kỳ mới. Mặt trái: dễ có chia tay, mất mát hoặc kết thúc một mối quan hệ, một công việc; tâm trạng hay nặng nề.'
 };
 var TS_THU_THACH = {
-  0: 'thử thách lựa chọn – mọi bài học đều có thể xuất hiện, cần tự định hướng',
-  1: 'khẳng định bản thân, không để người khác lấn át hoặc tránh độc đoán',
-  2: 'nhạy cảm quá mức, sợ bị từ chối – học tự tin',
-  3: 'biểu đạt cảm xúc, tránh phân tán và tự ti',
-  4: 'kỷ luật và kiên nhẫn, chấp nhận làm việc chăm chỉ',
-  5: 'dùng tự do có trách nhiệm, tránh cực đoan và cám dỗ',
-  6: 'trách nhiệm gia đình và cầu toàn – học buông bớt kiểm soát',
-  7: 'niềm tin – vượt qua hoài nghi và cô lập',
-  8: 'quan hệ với tiền bạc và quyền lực – cân bằng vật chất và tinh thần'
+  0: 'thử thách lựa chọn – không có một điểm yếu rõ, nhưng dễ mông lung, chọn mãi không xong hướng đi',
+  1: 'cái tôi – hoặc bị người khác lấn át, hoặc tự mình thành độc đoán',
+  2: 'nhạy cảm quá mức, sợ bị từ chối, dễ để người khác quyết thay mình',
+  3: 'khó bày tỏ cảm xúc, dễ phân tán và tự ti',
+  4: 'thiếu kỷ luật và kiên nhẫn, ngại việc nặng, dễ bỏ dở',
+  5: 'dùng tự do thiếu trách nhiệm, dễ cực đoan và sa vào cám dỗ',
+  6: 'trách nhiệm gia đình đè nặng, cầu toàn, hay kiểm soát người thân',
+  7: 'hoài nghi, khó tin người, dễ tự cô lập',
+  8: 'quan hệ với tiền bạc và quyền lực – hoặc quá ham, hoặc né tránh tiền và quyền'
 };
 
 function thanSoHocLuan_(ts) {
   var S = TS_SO, L = S[ts.duongDoi], secs = [];
   secs.push({ tieuDe: 'Số chủ đạo ' + ts.duongDoi + (ts.duongDoi >= 10 ? '/' + ts.duongDoiGoc : '') + ' – ' + L.ten, items: [
-    'Từ khóa: ' + L.tk + '.', '✓ Điểm mạnh: ' + L.manh + '.', '✗ Điểm cần khắc phục: ' + L.yeu + '.', 'Nghề nghiệp hợp: ' + L.nghe + '.', 'Bài học đường đời: ' + L.bh + '.'] });
+    'Từ khóa: ' + L.tk + '.', '✓ Điểm mạnh: ' + L.manh + '.', '✗ Mặt trái: ' + L.yeu + '.', 'Nghề nghiệp hợp: ' + L.nghe + '.', 'Bài học đường đời: ' + L.bh + '.'] });
   var N = S[ts.ngaySinh] || S[tsGoc_(ts.ngaySinh)], T = S[ts.thaiDo];
   secs.push({ tieuDe: 'Số ngày sinh ' + ts.ngaySinh + ' & số thái độ ' + ts.thaiDo, items: [
     'Số ngày sinh (năng khiếu bẩm sinh, hỗ trợ số chủ đạo): ' + N.tk + ' – ' + N.manh + '.',
@@ -170,7 +170,7 @@ function thanSoHocLuan_(ts) {
   var bd = [];
   for (var k = 1; k <= 9; k++) { var c = ts.bieuDo[k]; bd.push((c === 0 ? '◇ ' : c >= 3 ? '◇ ' : '✓ ') + 'Số ' + k + ' (' + TS_BD[k].y + ') × ' + c + ': ' + TS_BD[k].c[Math.min(4, c)] + '.'); }
   secs.push({ tieuDe: 'Biểu đồ ngày sinh – từng con số', items: bd });
-  secs.push({ tieuDe: 'Mũi tên trên biểu đồ', items: ts.muiTen.length ? ts.muiTen.map(function (a) { return (a.tot ? '✓ ' + a.ten + ' (' + a.so + ')' : '✗ ' + a.ten) + ': ' + a.y + '.'; }) : ['Không có mũi tên đầy hay trống trọn vẹn – năng lực phân bố đều, phát triển theo nỗ lực.'] });
+  secs.push({ tieuDe: 'Mũi tên trên biểu đồ', items: ts.muiTen.length ? ts.muiTen.map(function (a) { return (a.tot ? '✓ ' + a.ten + ' (' + a.so + ')' : '✗ ' + a.ten) + ': ' + a.y + '.'; }) : ['Không có mũi tên đầy hay trống trọn vẹn – năng lực phân bố đều: không có điểm trội hẳn, nhưng cũng không có chỗ hổng lớn.'] });
   if (ts.coTen) {
     var ten = [
       'Số linh hồn ' + ts.linhHon + ' (khát khao sâu thẳm – từ nguyên âm): ' + S[ts.linhHon].tk + '.',
@@ -178,7 +178,7 @@ function thanSoHocLuan_(ts) {
       'Số sứ mệnh ' + ts.suMenh + ' (tài năng và mục tiêu – toàn bộ tên): ' + S[ts.suMenh].tk + '; hợp ' + S[ts.suMenh].nghe + '.',
       'Số trưởng thành ' + ts.truongThanh + ' (chủ đề nổi lên sau khoảng 35–45 tuổi): ' + S[ts.truongThanh].tk + '.',
       'Số cân bằng ' + ts.canBang + ' (cách ứng xử khi khủng hoảng – từ chữ cái đầu): ' + S[ts.canBang].tk + '.',
-      ts.baiHoc.length ? '◇ Bài học nghiệp (số vắng trong tên): ' + ts.baiHoc.join(', ') + ' – cần rèn ' + ts.baiHoc.map(function (x) { return S[x].tk.split(',')[0]; }).join('; ') + '.' : '✓ Tên đủ các số 1–9: không có bài học nghiệp nổi bật.',
+      ts.baiHoc.length ? '◇ Bài học mang theo (số vắng trong tên): ' + ts.baiHoc.join(', ') + ' – dễ thiếu: ' + ts.baiHoc.map(function (x) { return S[x].tk.split(',')[0]; }).join('; ') + '.' : '✓ Tên đủ các số 1–9: không có bài học mang theo nổi bật.',
       'Đam mê ẩn (số lặp nhiều nhất trong tên): ' + ts.damMe.join(', ') + ' – ' + ts.damMe.map(function (x) { return S[x].tk.split(',')[0]; }).join('; ') + '.'
     ];
     if (ts.linhHon === ts.duongDoi || ts.suMenh === ts.duongDoi) ten.push('✓ Tên cộng hưởng với số chủ đạo – con đường và bản chất thống nhất.');
@@ -210,25 +210,25 @@ var TS_HANH_DONG = { 1: 'hành động độc lập, thích đi đầu', 2: 'hà
 var TS_MOI_TRUONG = { 1: 'nơi được tự chủ, có quyền quyết định', 2: 'môi trường hợp tác, hòa nhã, làm việc nhóm', 3: 'nơi được giao tiếp, sáng tạo, thể hiện', 4: 'nơi có quy trình rõ ràng, ổn định lâu dài',
   5: 'nơi nhiều thay đổi, đi lại, gặp gỡ nhiều người', 6: 'nơi chăm sóc, phục vụ, gắn với cộng đồng', 7: 'nơi yên tĩnh, chuyên sâu, nghiên cứu', 8: 'nơi có đường thăng tiến, gắn với tài chính và quản trị',
   9: 'nơi mang lại giá trị cho cộng đồng', 10: 'nơi được tự chủ nhưng nhiều cơ hội mới', 11: 'nơi truyền cảm hứng: giáo dục, nghệ thuật, chữa lành', 22: 'tổ chức lớn, dự án tầm vóc', 33: 'nơi giáo dục, chăm sóc, chữa lành' };
-var TS_TAI_CHINH = { 1: 'kiếm tiền tốt khi được tự làm chủ; dễ chi mạnh tay cho mục tiêu riêng', 2: 'tài chính ổn khi có đối tác tin cậy; nên tránh cho vay vì nể', 3: 'tiền đến từ giao tiếp, sáng tạo; dễ tiêu theo cảm hứng',
-  4: 'tích lũy chậm mà chắc, giỏi tiết kiệm', 5: 'thu nhập lên xuống, cơ hội nhiều; rất cần quỹ dự phòng', 6: 'chi nhiều cho gia đình; tiền đến từ phục vụ, dịch vụ', 7: 'không đặt nặng tiền; hợp đầu tư dài hạn có tìm hiểu kỹ',
-  8: 'có năng khiếu tài chính, dễ kiếm lớn nhưng cũng dễ rủi ro lớn', 9: 'rộng rãi, hay cho đi; tiền đến khi làm việc có ý nghĩa', 10: 'kiếm tiền nhanh nhờ nắm bắt cơ hội; cần giữ kỷ luật chi tiêu',
-  11: 'tiền đến qua uy tín cá nhân; dễ xem nhẹ chuyện tiền', 22: 'có thể tạo tài sản lớn qua dự án dài hạn', 33: 'chi nhiều cho người khác; nên có quỹ riêng cho mình' };
-var TS_CAN_TINH = { 1: 'cần người tôn trọng sự độc lập của bạn', 2: 'cần sự dịu dàng, quan tâm, được lắng nghe', 3: 'cần niềm vui, trò chuyện, được khen ngợi', 4: 'cần sự ổn định, chung thủy, cam kết rõ ràng',
-  5: 'cần không gian tự do và những trải nghiệm mới cùng nhau', 6: 'cần mái ấm, sự gắn bó gia đình', 7: 'cần người hiểu chiều sâu và tôn trọng khoảng lặng của bạn', 8: 'cần người đồng hành cùng mục tiêu, tôn trọng thành tựu',
-  9: 'cần một tình yêu rộng lượng, cùng lý tưởng sống', 11: 'cần sự kết nối tâm hồn sâu sắc', 22: 'cần người cùng xây dựng tương lai', 33: 'cần được yêu thương như cách bạn yêu thương người khác' };
-var TS_SUC_KHOE = { 1: 'giữ nhịp làm việc vừa sức – bạn có xu hướng tự đặt áp lực cao; xen kẽ giờ nghỉ ngắn và tập hít thở sâu giúp đầu óc thư thái', 2: 'ăn ngủ đúng giờ – khi lo nghĩ, bạn dễ ăn ngủ thất thường; một khoảng lặng trước giờ ngủ giúp bạn dịu lại', 3: 'giữ sức khi ôm nhiều việc – bạn có xu hướng nói nhiều, làm nhiều; uống đủ nước, nghỉ giọng và chọn bớt việc giúp bạn bền sức',
-  4: 'vận động nhẹ xen kẽ – bạn có xu hướng làm việc miệt mài, ngồi lâu; giãn cơ, đổi tư thế và đặt giờ kết thúc giúp bạn đỡ mỏi', 5: 'sinh hoạt điều độ – bạn có xu hướng sống theo hứng, dễ vội vàng; giữ giờ ăn ngủ đều và chậm lại một nhịp khi di chuyển', 6: 'chăm mình như chăm người – bạn có xu hướng lo cho người khác đến quên bữa; hãy giữ bữa ăn và giờ nghỉ cho riêng mình',
-  7: 'ngủ đủ và giữ kết nối – khi sống khép kín, bạn dễ trầm lại; đi bộ ngoài trời và gặp người thân đều đặn giúp tinh thần sáng hơn', 8: 'cân bằng làm và nghỉ – bạn có xu hướng dốc sức vì mục tiêu; lịch nghỉ cố định và vận động đều giúp bạn đi đường dài', 9: 'giữ năng lượng cảm xúc – bạn có xu hướng gánh chuyện của người khác; biết nói "không" đúng lúc và nghỉ ngơi đủ giúp bạn hồi sức',
-  10: 'giữ nhịp làm việc vừa sức – bạn có xu hướng tự đặt áp lực; nghỉ ngắn xen kẽ và vận động nhẹ giúp đầu óc thư thái', 11: 'giữ nhịp sống êm – bạn rất nhạy với không khí xung quanh, dễ lo nghĩ; giữ giờ ngủ đều, bớt màn hình buổi tối và tập thở chậm', 22: 'chia bớt trách nhiệm – bạn có xu hướng ôm việc lớn; giao bớt việc, giãn cơ và nghỉ đúng giờ giúp bạn bền sức', 33: 'chăm mình trước khi chăm người – bạn có xu hướng dồn sức lo cho người khác; giữ một khoảng thời gian riêng mỗi tuần để hồi sức' };
-var TS_THACH_SK = { 0: 'khó chọn hướng dễ sinh bồn chồn – giữ nhịp sinh hoạt đều', 1: 'tự gồng gánh – học nghỉ ngơi đúng lúc', 2: 'nhạy cảm dễ làm bạn ăn ngủ thất thường – học cách thư giãn',
-  3: 'dồn nén cảm xúc – nên viết, nói ra, vận động', 4: 'cứng nhắc, làm quá sức – giãn cơ, đổi tư thế thường xuyên', 5: 'sa đà ăn uống, thức khuya – cần điều độ', 6: 'lo âu cho người thân – dành thời gian thư giãn cho chính mình',
-  7: 'suy nghĩ nhiều, khó ngủ – thiền, đi bộ, ra ngoài thiên nhiên', 8: 'làm việc quá sức vì tiền – đặt giờ nghỉ cố định' };
+var TS_TAI_CHINH = { 1: 'kiếm tiền tốt khi được tự làm chủ; mặt trái: chi mạnh tay cho mục tiêu riêng, dễ hụt vì không chịu nghe góp ý', 2: 'tài chính ổn khi có đối tác tin cậy; mặt trái: dễ mất tiền vì cho vay, bảo lãnh do nể', 3: 'tiền đến từ giao tiếp, sáng tạo; mặt trái: tiêu theo cảm hứng, khó tích lũy',
+  4: 'tích lũy chậm mà chắc, giỏi tiết kiệm; mặt trái: tài sản lớn lên chậm, dễ bỏ lỡ cơ hội vì quá dè dặt', 5: 'cơ hội kiếm tiền nhiều; mặt trái: thu nhập lên xuống thất thường, dễ cháy túi nếu không có quỹ dự phòng', 6: 'tiền đến từ phục vụ, dịch vụ; mặt trái: chi rất nhiều cho gia đình, khó giữ phần cho mình', 7: 'hợp đầu tư dài hạn có tìm hiểu kỹ; mặt trái: không đặt nặng tiền nên thu nhập dễ thấp hơn năng lực',
+  8: 'có năng khiếu tài chính, dễ kiếm lớn; mặt trái: cũng dễ mất lớn khi liều, tiền bạc lên xuống mạnh', 9: 'rộng rãi, tiền đến khi làm việc có ý nghĩa; mặt trái: hay cho đi quá tay, dễ túng đúng lúc cần', 10: 'kiếm tiền nhanh nhờ nắm bắt cơ hội; mặt trái: dễ chủ quan, chi tiêu thiếu kỷ luật',
+  11: 'tiền đến qua uy tín cá nhân; mặt trái: dễ xem nhẹ chuyện tiền, thu nhập bấp bênh', 22: 'có thể tạo tài sản lớn qua dự án dài hạn; mặt trái: áp lực vốn lớn, dễ kẹt tiền khi dự án kéo dài', 33: 'tiền đến qua việc chăm sóc, giúp người; mặt trái: chi nhiều cho người khác, dễ thiếu cho chính mình' };
+var TS_CAN_TINH = { 1: 'cần người tôn trọng sự độc lập của bạn; mặt trái: bạn dễ áp đặt, khó nhường trong chuyện hai người', 2: 'cần sự dịu dàng, quan tâm, được lắng nghe; mặt trái: dễ tủi thân, phụ thuộc cảm xúc vào người kia', 3: 'cần niềm vui, trò chuyện, được khen ngợi; mặt trái: dễ chán khi tình cảm vào nếp, hay nói đùa làm người kia buồn mà không biết', 4: 'cần sự ổn định, chung thủy, cam kết rõ ràng; mặt trái: dễ khô khan, cứng nhắc, ít lãng mạn',
+  5: 'cần không gian tự do và những trải nghiệm mới cùng nhau; mặt trái: khó cam kết lâu dài, dễ bị cám dỗ', 6: 'cần mái ấm, sự gắn bó gia đình; mặt trái: dễ kiểm soát, ghen và lo quá mức cho người mình yêu', 7: 'cần người hiểu chiều sâu và tôn trọng khoảng lặng của bạn; mặt trái: dễ khép kín, người kia thấy cô đơn ngay khi ở bên bạn', 8: 'cần người đồng hành cùng mục tiêu, tôn trọng thành tựu; mặt trái: dễ đặt công việc lên trên tình cảm, ít thời gian cho người thân',
+  9: 'cần một tình yêu rộng lượng, cùng lý tưởng sống; mặt trái: dễ lý tưởng hóa người kia rồi thất vọng', 11: 'cần sự kết nối tâm hồn sâu sắc; mặt trái: kỳ vọng cao, dễ thất vọng và căng thẳng trong quan hệ', 22: 'cần người cùng xây dựng tương lai; mặt trái: dễ biến tình cảm thành một kế hoạch, thiếu sự mềm mại', 33: 'cần được yêu thương như cách bạn yêu thương người khác; mặt trái: hy sinh quá mức rồi thấy mình bị thiệt' };
+var TS_SUC_KHOE = { 1: 'sức bật tốt, làm việc hăng; mặt trái: tự đặt áp lực cao, dễ căng thẳng, đau đầu và khó ngủ khi việc không như ý; theo các sách thần số, dễ mắc đau đầu, đau nửa đầu, huyết áp cao, mất ngủ; gợi ý: xen vài giờ nghỉ ngắn trong ngày', 2: 'cơ thể nhạy, sớm nhận ra khi mình mệt; mặt trái: khi lo nghĩ dễ ăn ngủ thất thường, dạ dày dễ phản ứng; theo các sách thần số, dễ mắc đau dạ dày, rối loạn tiêu hóa, rối loạn lo âu; gợi ý: giữ một khoảng lặng trước giờ ngủ', 3: 'năng lượng vui, hồi sức nhanh; mặt trái: nói nhiều, làm nhiều, dễ khản giọng, cạn sức và ngủ không đủ; theo các sách thần số, dễ mắc viêm họng, khản tiếng, bệnh ngoài da; gợi ý: chọn bớt việc',
+  4: 'thể lực bền, chịu khó; mặt trái: ngồi lâu, làm miệt mài, dễ đau lưng, mỏi cổ vai và cứng khớp; theo các sách thần số, dễ mắc đau lưng, thoái hóa cột sống, viêm khớp; gợi ý: đặt giờ kết thúc công việc', 5: 'nhanh nhẹn, linh hoạt; mặt trái: sống theo hứng, dễ ăn uống thất thường, thức khuya và va quệt khi vội; theo các sách thần số, dễ mắc đau dạ dày, bệnh gan do rượu bia, suy nhược thần kinh; gợi ý: giữ giờ ăn ngủ đều', 6: 'biết chăm sóc, giữ nếp ăn uống cho cả nhà; mặt trái: lo cho người khác đến quên bữa, dễ mệt mỏi kéo dài vì căng thẳng gia đình; theo các sách thần số, dễ mắc tăng huyết áp, thừa cân, bệnh tim mạch; gợi ý: giữ bữa ăn và giờ nghỉ cho riêng mình',
+  7: 'đầu óc sâu, ít bị cuốn theo ồn ào; mặt trái: khi sống khép kín dễ trầm buồn, mất ngủ vì suy nghĩ nhiều; theo các sách thần số, dễ mắc suy nhược thần kinh, trầm cảm, mất ngủ kéo dài; gợi ý: đi bộ ngoài trời và gặp người thân đều đặn', 8: 'sức chịu áp lực lớn; mặt trái: dốc sức vì mục tiêu, dễ kiệt sức, tim mạch và huyết áp chịu áp lực khi làm quá lâu; theo các sách thần số, dễ mắc tăng huyết áp, bệnh tim mạch, kiệt sức; gợi ý: có lịch nghỉ cố định', 9: 'giàu năng lượng cảm xúc; mặt trái: hay gánh chuyện của người khác, dễ suy sụp tinh thần, mệt mỏi không rõ lý do; theo các sách thần số, dễ mắc suy giảm miễn dịch, trầm cảm, rối loạn giấc ngủ; gợi ý: biết nói "không" đúng lúc',
+  10: 'sức bật tốt, thích nghi nhanh; mặt trái: tự đặt áp lực, dễ căng thẳng và ngủ không sâu; theo các sách thần số, dễ mắc đau đầu, huyết áp cao, mất ngủ; gợi ý: nghỉ ngắn xen kẽ, vận động nhẹ', 11: 'cảm nhận rất nhạy; mặt trái: thần kinh dễ căng, hay lo âu, khó ngủ; theo các sách thần số, dễ mắc rối loạn lo âu, mất ngủ, hồi hộp tim đập nhanh; gợi ý: bớt màn hình buổi tối và tập thở chậm', 22: 'sức gánh vác lớn; mặt trái: ôm việc lớn, dễ quá tải kéo dài, căng cơ, mất ngủ; theo các sách thần số, dễ mắc đau lưng, cột sống, huyết áp cao, kiệt sức; gợi ý: giao bớt việc', 33: 'giỏi chăm sóc người khác; mặt trái: dồn sức lo cho người khác, dễ kiệt sức và bỏ bê sức khỏe bản thân; theo các sách thần số, dễ mắc bệnh tim mạch, suy nhược, kiệt sức; gợi ý: giữ một khoảng thời gian riêng mỗi tuần' };
+var TS_THACH_SK = { 0: 'khó chọn hướng dễ sinh bồn chồn, ngủ không sâu – giữ nhịp sinh hoạt đều', 1: 'tự gồng gánh, dễ căng cơ và đau đầu – nghỉ đúng lúc', 2: 'nhạy cảm làm bạn ăn ngủ thất thường – cần một cách thư giãn riêng',
+  3: 'dồn nén cảm xúc, dễ tức ngực, khó thở khi căng thẳng – viết ra, nói ra, vận động', 4: 'cứng nhắc, làm quá sức, dễ đau lưng, mỏi khớp – giãn cơ, đổi tư thế thường xuyên', 5: 'sa đà ăn uống, thức khuya, dạ dày và giấc ngủ dễ chịu thiệt – cần điều độ', 6: 'lo âu cho người thân kéo dài, dễ mệt mỏi, mất ngủ – dành thời gian thư giãn cho chính mình',
+  7: 'suy nghĩ nhiều, khó ngủ, dễ trầm buồn – đi bộ, ra ngoài thiên nhiên', 8: 'làm việc quá sức vì tiền, dễ kiệt sức – đặt giờ nghỉ cố định' };
 var TS_NO = {
-  13: { ten: 'Nợ nghiệp 13/4', y: 'dễ muốn đi đường tắt, ngại việc nặng nhọc; công việc hay phải làm lại nhiều lần', bh: 'chăm chỉ, kiên trì, làm đến nơi đến chốn', sk: 'cơ thể đòi hỏi kỷ luật – tập luyện đều, không bỏ bữa, không thức khuya kéo dài' },
-  14: { ten: 'Nợ nghiệp 14/5', y: 'dễ buông thả, sa đà hưởng thụ, thay đổi thất thường', bh: 'điều độ và biết cam kết', sk: 'tránh lạm dụng rượu bia, ăn uống, thiết bị điện tử – điều độ là thuốc' },
-  16: { ten: 'Nợ nghiệp 16/7', y: 'khi cái tôi quá lớn, dễ có giai đoạn phải "làm lại từ đầu" trong tình cảm hay công việc', bh: 'khiêm nhường, mở lòng và tin vào điều lớn hơn bản thân', sk: 'giữ sức khỏe tinh thần – có người để tâm sự, không ôm một mình' },
-  19: { ten: 'Nợ nghiệp 19/1', y: 'hay tự làm tất cả, khó nhận giúp đỡ, dễ thành độc đoán', bh: 'tự lập nhưng biết nhờ và biết cho', sk: 'đừng gồng một mình – nghỉ ngơi và nhờ giúp khi quá tải' }
+  13: { ten: 'Món nợ công sức 13/4', y: 'dễ muốn đi đường tắt, ngại việc nặng nhọc; công việc hay phải làm lại nhiều lần, thành quả đến chậm hơn người khác. Bù lại, đã làm lại được thì tay nghề rất chắc', bh: 'chăm chỉ, kiên trì, làm đến nơi đến chốn', sk: 'cơ thể đòi hỏi kỷ luật – tập luyện đều, không bỏ bữa, không thức khuya kéo dài' },
+  14: { ten: 'Món nợ công sức 14/5', y: 'dễ buông thả, sa đà hưởng thụ, thay đổi thất thường, có giai đoạn mất kiểm soát về tiền hoặc thói quen. Bù lại, bạn thích nghi nhanh, trải nghiệm rộng', bh: 'điều độ và biết cam kết', sk: 'dễ lạm dụng rượu bia, ăn uống, thiết bị điện tử – điều độ là thuốc' },
+  16: { ten: 'Món nợ công sức 16/7', y: 'dễ có giai đoạn đổ vỡ, phải "làm lại từ đầu" trong tình cảm hay công việc, nhất là khi cái tôi quá lớn. Bù lại, sau mỗi lần như vậy bạn hiểu mình sâu hơn hẳn', bh: 'khiêm nhường, mở lòng và tin vào điều lớn hơn bản thân', sk: 'sức khỏe tinh thần dễ chịu thiệt khi ôm chuyện một mình – nên có người để tâm sự' },
+  19: { ten: 'Món nợ công sức 19/1', y: 'hay tự làm tất cả, khó nhận giúp đỡ, dễ thành độc đoán và cô lập. Bù lại, bạn tự lập rất sớm', bh: 'tự lập nhưng biết nhờ và biết cho', sk: 'dễ quá tải vì gồng một mình – nghỉ ngơi và nhờ giúp khi quá sức' }
 };
 var TS_MASTER = { 11: 'Phát triển trực giác, tránh lo âu', 22: 'Xây dựng di sản, tránh mơ mộng', 33: 'Chữa lành, tránh gánh vác quá nhiều' };
 var TS_NHOM = [[1, 5, 7], [2, 4, 8], [3, 6, 9]];
@@ -263,7 +263,7 @@ function tsChuyenTiep_(T, viewYear, chuKy) {
   return { ds: ds, ten: ten, dem: dem, ho: ho,
     ket: 'Năm ' + N.nam + ' (tròn ' + N.tuoi + ' tuổi): ' + [chu(N.the, 'thể chất – tên ' + ten), chu(N.tri, 'trí tuệ – đệm'), chu(N.linh, 'tâm linh – họ')].filter(Boolean).join(', ') +
       ' → số tinh chất ' + N.tinhChat + ': ' + S[g(N.tinhChat)].tk + '.' + (N.trung ? ' Trùng số năm cá nhân – chủ đề năm được nhân đôi, rất rõ nét.' : ''),
-    tron: 'Năm nay bạn có xu hướng tập trung vào ' + S[g(N.tinhChat)].tk + '.' + (N.trung ? ' Chủ đề này trùng với nhịp năm cá nhân nên sẽ thể hiện rất rõ – hãy chủ động đón nhận.' : '') };
+    tron: 'Năm nay bạn có xu hướng tập trung vào ' + S[g(N.tinhChat)].tk + '.' + (N.trung ? ' Chủ đề này trùng với nhịp năm cá nhân nên thể hiện rất rõ, cả mặt thuận lẫn mặt khó của nó.' : '') };
 }
 function tsPhanTich_(ts, viewYear, input) {
   var S = TS_SO, T = ts.tho, ld = ts.duongDoi, g = tsGoc_, out = {};
@@ -292,11 +292,11 @@ function tsPhanTich_(ts, viewYear, input) {
   bs.push({ ten: 'Thách Thức chính', so: ts.thachThucChinh, y: TS_THU_THACH[ts.thachThucChinh], cach: 'Hiệu của hai thách thức đầu (tháng – ngày, ngày – năm)' });
   if (ts.coTen) {
     bs.push({ ten: 'Cân Bằng', so: ts.canBang, y: 'cách lấy lại thăng bằng khi khủng hoảng: ' + S[ts.canBang].tk, cach: 'Tổng chữ cái đầu của các tiếng trong tên' });
-    bs.push({ ten: 'Tiềm Thức', so: 9 - ts.baiHoc.length, y: (9 - ts.baiHoc.length >= 7 ? 'tự tin, xử lý tình huống bất ngờ tốt' : 9 - ts.baiHoc.length >= 5 ? 'phản ứng khá, cần thời gian để bình tĩnh' : 'dễ lúng túng khi gặp bất ngờ – nên chuẩn bị trước'), cach: '9 − số con số vắng trong tên (' + ts.baiHoc.length + ')' });
-    bs.push({ ten: 'Bài Học Nghiệp', so: ts.baiHoc.length ? ts.baiHoc.join(', ') : '—', y: ts.baiHoc.length ? 'cần rèn: ' + ts.baiHoc.map(function (x) { return tsNgan_(S[x].tk, 1); }).join('; ') : 'tên có đủ 1–9, không có bài học nổi bật', cach: 'Các số 1–9 không xuất hiện trong tên' });
+    bs.push({ ten: 'Tiềm Thức', so: 9 - ts.baiHoc.length, y: (9 - ts.baiHoc.length >= 7 ? 'tự tin, xử lý tình huống bất ngờ tốt; mặt trái: dễ chủ quan' : 9 - ts.baiHoc.length >= 5 ? 'phản ứng khá, nhưng cần thời gian mới bình tĩnh lại' : 'dễ lúng túng, rối khi gặp chuyện bất ngờ; bù lại bạn cẩn thận khi có thời gian chuẩn bị'), cach: '9 − số con số vắng trong tên (' + ts.baiHoc.length + ')' });
+    bs.push({ ten: 'Bài Học Mang Theo', so: ts.baiHoc.length ? ts.baiHoc.join(', ') : '—', y: ts.baiHoc.length ? 'dễ thiếu: ' + ts.baiHoc.map(function (x) { return tsNgan_(S[x].tk, 1); }).join('; ') : 'tên có đủ 1–9, không có bài học nổi bật', cach: 'Các số 1–9 không xuất hiện trong tên' });
     bs.push({ ten: 'Đam Mê Ẩn', so: ts.damMe.join(', '), y: ts.damMe.map(function (x) { return tsNgan_(S[x].tk, 1); }).join('; '), cach: 'Số xuất hiện nhiều nhất trong tên' });
   }
-  bs.push({ ten: 'Nợ Nghiệp', so: no.length ? no.map(function (x) { return x.so; }).filter(function (x, i, a) { return a.indexOf(x) === i; }).join(', ') : '—', y: no.length ? no.map(function (x) { return x.ten + ' (' + x.o + '): ' + x.y; }).join('; ') : 'không mang số nợ nghiệp', cach: 'Tổng trung gian 13, 14, 16, 19 ở ngày sinh, Đường Đời, các số tên' });
+  bs.push({ ten: 'Món Nợ Công Sức', so: no.length ? no.map(function (x) { return x.so; }).filter(function (x, i, a) { return a.indexOf(x) === i; }).join(', ') : '—', y: no.length ? no.map(function (x) { return x.ten + ' (' + x.o + '): ' + x.y; }).join('; ') : 'không mang số món nợ công sức', cach: 'Tổng trung gian 13, 14, 16, 19 ở ngày sinh, Đường Đời, các số tên' });
   out.boSung = bs; out.noNghiep = no;
   // ---- B4: chu kỳ
   var tuoi = viewYear - T.y, dcNay = 0;
@@ -323,59 +323,60 @@ function tsPhanTich_(ts, viewYear, input) {
   var tc = ['Bề ngoài bạn ' + TS_NGOAI[NC] + ' (' + (ts.coTen ? 'Nhân Cách' : 'Thái Độ') + ' ' + NC + ')' + (LH ? ', nhưng bên trong khao khát ' + TS_TRONG[LH] + ' (Linh Hồn ' + LH + ')' : '') + '; bạn ' + TS_HANH_DONG[ld] + ' (Đường Đời ' + ld + ').',
     'Tài năng bẩm sinh (Ngày Sinh ' + NS + '): ' + tsNgan_((S[NS] || S[g(NS)]).manh) + '.',
     '✓ Điểm mạnh: ' + S[ld].manh + '.', '✗ Điểm yếu: ' + S[ld].yeu + '.'];
-  if (LH && NC && tsNhom_(LH) !== tsNhom_(NC)) tc.push('◇ Bên trong và bên ngoài thuộc hai nhóm năng lượng khác nhau: người mới quen dễ hiểu sai về bạn – hãy chủ động nói ra điều mình thật sự muốn.');
-  else if (LH) tc.push('✓ Bên trong và bên ngoài cùng nhóm năng lượng: bạn sống khá "thật", người khác dễ hiểu bạn.');
+  if (LH && NC && tsNhom_(LH) !== tsNhom_(NC)) tc.push('◇ Bên trong và bên ngoài thuộc hai nhóm năng lượng khác nhau: bạn có nhiều mặt, ứng biến linh hoạt; mặt trái: người mới quen dễ hiểu sai về bạn, bạn dễ thấy cô đơn ngay giữa nhiều người. Gợi ý: nói rõ điều mình thật sự muốn.');
+  else if (LH) tc.push('✓ Bên trong và bên ngoài cùng nhóm năng lượng: bạn sống khá "thật", người khác dễ hiểu bạn; mặt trái: khó che cảm xúc, dễ bị người khác đoán ý.');
   luan.push({ k: 'tinhCach', ten: 'Tính cách', icon: '🧭', dua: 'Đường Đời · Nhân Cách · Linh Hồn · Ngày Sinh', items: tc });
   luan.push({ k: 'suNghiep', ten: 'Sự nghiệp – tài chính', icon: '💼', dua: 'Định Mệnh · Đường Đời · Ngày Sinh', items: [
     'Nghề phù hợp (' + (ts.coTen ? 'Định Mệnh ' : 'Đường Đời ') + DM + '): ' + S[DM].nghe + '.',
     'Môi trường làm việc hợp (Đường Đời ' + ld + '): ' + TS_MOI_TRUONG[ld] + '.',
     'Kỹ năng nổi bật (Ngày Sinh ' + NS + '): ' + tsNgan_((S[NS] || S[g(NS)]).manh, 3) + '.',
-    'Tài chính: ' + TS_TAI_CHINH[DM] + '.'].concat(ts.bieuDo[8] === 0 ? ['◇ Biểu đồ thiếu số 8: nên học quản lý tiền bài bản (ghi chép thu chi, tách quỹ).'] : []) });
+    'Tài chính: ' + TS_TAI_CHINH[DM] + '.'].concat(ts.bieuDo[8] === 0 ? ['◇ Biểu đồ thiếu số 8: dễ bừa bộn chuyện tiền, chi mà không biết tiền đi đâu, hay hụt cuối tháng. Gợi ý: ghi chép thu chi, tách quỹ.'] : []) });
   var hop = TS_NHOM[tsNhom_(ld)] || [];
   luan.push({ k: 'tinhDuyen', ten: 'Tình duyên – gia đình', icon: '💞', dua: 'Linh Hồn · Nhân Cách · Đường Đời', items: [
     LH ? 'Nhu cầu tình cảm (Linh Hồn ' + LH + '): bạn ' + TS_CAN_TINH[LH] + '.' : 'Nhu cầu tình cảm: ' + TS_CAN_TINH[g(ld)] + ' (theo Đường Đời, vì chưa có họ tên).',
     'Cách bạn thu hút (' + (ts.coTen ? 'Nhân Cách ' : 'Thái Độ ') + NC + '): người khác bị cuốn hút bởi vẻ ' + TS_NGOAI[NC] + '.',
-    'Đối tượng hợp (Đường Đời ' + ld + ', ' + TS_NHOM_TEN[tsNhom_(ld)] + '): người có Đường Đời ' + hop.join(', ') + ' dễ đồng điệu; khác nhóm thì bổ sung cho nhau nhưng cần nhiều thấu hiểu hơn.',
-    ts.bieuDo[5] === 0 ? '◇ Biểu đồ thiếu số 5 (trung tâm cảm xúc): hay ngại bày tỏ tình cảm – hãy nói lời yêu thương thành tiếng.' : ts.bieuDo[5] >= 3 ? '◇ Nhiều số 5: cảm xúc mãnh liệt, dễ nói lời làm tổn thương khi nóng giận.' : '✓ Có số 5 ở trung tâm: cảm xúc tương đối cân bằng.',
-    ts.bieuDo[6] ? 'Gia đình: có số 6 trong ngày sinh – yêu gia đình, có trách nhiệm' + (ts.bieuDo[6] >= 2 ? ', dễ lo lắng quá mức cho người thân.' : '.') : 'Gia đình: thiếu số 6 – nên chủ động dành thời gian cho việc nhà và người thân.'] });
+    'Đối tượng hợp (Đường Đời ' + ld + ', ' + TS_NHOM_TEN[tsNhom_(ld)].replace(' (', ': các số ').replace(/\)$/, '') + '): người có Đường Đời ' + hop.join(', ') + ' dễ đồng điệu; khác nhóm thì bổ sung cho nhau nhưng dễ va chạm về cách sống, hay hiểu lầm nhau.',
+    ts.bieuDo[5] === 0 ? '◇ Biểu đồ thiếu số 5 (trung tâm cảm xúc): hay ngại bày tỏ tình cảm, người kia dễ thấy bạn lạnh nhạt dù bạn thương thật. Gợi ý: nói lời yêu thương thành tiếng.' : ts.bieuDo[5] >= 3 ? '◇ Nhiều số 5: yêu nồng nhiệt, nhưng cảm xúc mãnh liệt, dễ nói lời làm tổn thương khi nóng giận.' : '✓ Có số 5 ở trung tâm: cảm xúc tương đối cân bằng; mặt trái: bị dồn ép lâu vẫn có lúc bùng nổ.',
+    ts.bieuDo[6] ? 'Gia đình: có số 6 trong ngày sinh – yêu gia đình, có trách nhiệm' + (ts.bieuDo[6] >= 2 ? ', nhưng dễ lo lắng quá mức và can thiệp vào việc của người thân.' : '; mặt trái: dễ ôm việc nhà một mình.') : 'Gia đình: thiếu số 6 – bạn tự do, ít bị việc nhà ràng buộc, nhưng dễ bị người thân cho là vô tâm, ít đỡ đần.'] });
   var sk = ['Nhịp sống nên giữ (Đường Đời ' + ld + '): ' + TS_SUC_KHOE[ld] + '.', 'Theo Thách Thức chính ' + ts.thachThucChinh + ': ' + TS_THACH_SK[ts.thachThucChinh] + '.'];
-  no.forEach(function (x, i) { if (no.map(function (y) { return y.so; }).indexOf(x.so) === i) sk.push('Nợ nghiệp ' + x.so + ': ' + x.sk + '.'); });
-  if (ts.bieuDo[2] >= 3) sk.push('Nhiều số 2: bạn rất nhạy cảm, khi căng thẳng dễ khó ngủ – một thói quen thư giãn trước giờ ngủ sẽ giúp bạn.');
-  luan.push({ k: 'sucKhoe', ten: 'Sức khỏe', icon: '🌿', dua: 'Đường Đời · Thách Thức · Nợ Nghiệp', items: sk });
+  no.forEach(function (x, i) { if (no.map(function (y) { return y.so; }).indexOf(x.so) === i) sk.push('Món nợ công sức ' + x.so + ': ' + x.sk + '.'); });
+  if (ts.bieuDo[2] >= 3) sk.push('Nhiều số 2: bạn cảm nhận cơ thể rất nhạy, nhưng khi căng thẳng dễ mất ngủ, hồi hộp. Gợi ý: có một thói quen thư giãn trước giờ ngủ.');
+  sk.push('Đây là xu hướng theo con số, không phải chẩn đoán; khi có dấu hiệu bất thường, hãy hỏi bác sĩ.');
+  luan.push({ k: 'sucKhoe', ten: 'Sức khỏe', icon: '🌿', dua: 'Đường Đời · Thách Thức · Món Nợ Công Sức', items: sk });
   var hon = ['Bài học đường đời (Đường Đời ' + ld + '): ' + S[ld].bh + '.', 'Bài học từ thách thức chính (' + ts.thachThucChinh + '): ' + TS_THU_THACH[ts.thachThucChinh] + '.'];
-  if (ts.coTen && ts.baiHoc.length) hon.push('Bài học nghiệp (số vắng trong tên ' + ts.baiHoc.join(', ') + '): ' + ts.baiHoc.map(function (x) { return 'rèn ' + tsNgan_(S[x].tk, 1); }).join('; ') + '.');
+  if (ts.coTen && ts.baiHoc.length) hon.push('Bài học mang theo (số vắng trong tên ' + ts.baiHoc.join(', ') + '): ' + ts.baiHoc.map(function (x) { return 'rèn ' + tsNgan_(S[x].tk, 1); }).join('; ') + '.');
   no.forEach(function (x, i) { if (no.map(function (y) { return y.so; }).indexOf(x.so) === i) hon.push(x.ten + ': ' + x.y + ' → bài học ' + x.bh + '.'); });
   ts.muiTen.filter(function (a) { return !a.tot; }).forEach(function (a) { hon.push(a.ten + ': ' + a.y + '.'); });
-  luan.push({ k: 'linhHon', ten: 'Bài học linh hồn', icon: '🕯', dua: 'Đường Đời · Bài học nghiệp · Nợ nghiệp · mũi tên trống', items: hon });
+  luan.push({ k: 'linhHon', ten: 'Bài học linh hồn', icon: '🕯', dua: 'Đường Đời · Bài học mang theo · Món nợ công sức · mũi tên trống', items: hon });
   var dc = out.dinhCao[dcNay], dcSau = out.dinhCao[dcNay + 1], cn = out.chuKy.filter(function (c) { return c.nay; })[0];
   var vt = ['Năm ' + viewYear + ' là Năm Cá Nhân ' + cn.so + ': ' + cn.y,
     'Giai đoạn đời hiện tại – Đỉnh Cao ' + (dcNay + 1) + ' (số ' + dc.so + ', ' + dc.tu + '–' + (dc.den >= 99 ? 'cuối đời' : dc.den) + ' tuổi): ' + dc.y + '. Thử thách kèm theo (' + dc.thuThach + '): ' + dc.tt + '.'];
   if (dcSau) vt.push('Từ năm ' + dcSau.namTu + ' (' + dcSau.tu + ' tuổi) chuyển sang Đỉnh Cao ' + (dcNay + 2) + ' – số ' + dcSau.so + ': ' + dcSau.y + '.');
   var n1 = out.chuKy.filter(function (c) { return c.nam > viewYear && c.so === 1; })[0], n8 = out.chuKy.filter(function (c) { return c.nam >= viewYear && c.so === 8; })[0];
-  if (n1) vt.push('Chu kỳ 9 năm mới bắt đầu năm ' + n1.nam + ' – thời điểm tốt để khởi sự việc lớn.');
-  if (n8) vt.push('Năm thu hoạch gần nhất: ' + n8.nam + ' (Năm Cá Nhân 8) – hợp thăng tiến, tài chính.');
+  if (n1) vt.push('Chu kỳ 9 năm mới bắt đầu năm ' + n1.nam + ' – hợp khởi sự việc lớn, đổi lại năm đầu chu kỳ thường vất vả, phải tự lực nhiều.');
+  if (n8) vt.push('Năm thu hoạch gần nhất: ' + n8.nam + ' (Năm Cá Nhân 8) – hợp thăng tiến, tài chính, đi kèm áp lực trách nhiệm và tiền bạc lớn.');
   luan.push({ k: 'vanTrinh', ten: 'Vận trình theo năm', icon: '📅', dua: 'Năm Cá Nhân · Đỉnh Cao · Thử Thách', items: vt });
   out.luan = luan;
   // ---- B6: lời khuyên
   var thangTot = out.thang.filter(function (m) { return [1, 3, 8].indexOf(m.so) >= 0; }).map(function (m) { return m.thang; });
   out.loiKhuyen = [
     { ten: 'Điểm mạnh cần phát huy', t: 'Hãy phát huy sự ' + tsNgan_(S[ld].manh, 3) + (NS !== ld ? ', cùng năng khiếu ' + tsNgan_((S[NS] || S[g(NS)]).manh, 2) : '') + '.' + ts.muiTen.filter(function (a) { return a.tot; }).slice(0, 2).map(function (a) { return ' ' + a.ten + ': ' + a.y + '.'; }).join('') },
-    { ten: 'Điểm yếu cần khắc phục', t: S[ld].yeu.charAt(0).toUpperCase() + S[ld].yeu.slice(1) + ' – hướng khắc phục: ' + S[ld].bh + '.' },
+    { ten: 'Điểm yếu cần khắc phục', t: 'Mặt trái của bạn: ' + S[ld].yeu + ' – dễ làm hỏng việc và quan hệ nếu để mặc. Gợi ý: ' + S[ld].bh + '.' },
     { ten: 'Thời điểm hành động', t: 'Năm ' + viewYear + ' (năm cá nhân ' + cn.so + ') nên tập trung ' + TS_THANG[cn.so] + '. Tháng thuận để khởi sự, giao tiếp hoặc ký kết: ' + (thangTot.length ? thangTot.join(', ') : '—') + ' (dương lịch).' + (n1 ? ' Việc lớn nên khởi động vào năm ' + n1.nam + '.' : '') },
     { ten: 'Hướng phát triển', t: 'Giai đoạn này (đỉnh cao số ' + dc.so + ') hãy phát triển ' + dc.y + '.' + (dcSau ? ' Chuẩn bị cho giai đoạn từ ' + dcSau.namTu + ': ' + dcSau.y + '.' : '') },
-    { ten: 'Bài học cần học', t: 'Thách thức chính: ' + TS_THU_THACH[ts.thachThucChinh] + '.' + (no.length ? ' Nợ nghiệp: ' + no.map(function (x) { return x.bh; }).filter(function (x, i, a) { return a.indexOf(x) === i; }).join('; ') + '.' : '') }
+    { ten: 'Bài học cần học', t: 'Thách thức chính: ' + TS_THU_THACH[ts.thachThucChinh] + '.' + (no.length ? ' Món nợ công sức: ' + no.map(function (x) { return x.bh; }).filter(function (x, i, a) { return a.indexOf(x) === i; }).join('; ') + '.' : '') }
   ];
   // ---- Trường hợp đặc biệt
   var db = [], ms = [];
   [['Đường Đời', ld], ['Ngày Sinh', ts.ngaySinh]].concat(ts.coTen ? [['Định Mệnh', ts.suMenh], ['Linh Hồn', ts.linhHon], ['Nhân Cách', ts.nhanCach], ['Trưởng Thành', ts.truongThanh]] : [])
     .concat(ts.dinhCao.map(function (p, i) { return ['Đỉnh Cao ' + (i + 1), p.so]; })).forEach(function (x) { if (TS_MASTER[x[1]]) ms.push(x); });
-  if (ms.length) db.push({ ten: 'Số bậc thầy (11, 22, 33)', co: true, t: ms.map(function (x) { return x[0] + ' ' + x[1]; }).join(', ') + ': không rút gọn tiếp – tiềm năng cao nhưng áp lực lớn, cần cân bằng lý tưởng và thực tế. ' + ms.map(function (x) { return x[1]; }).filter(function (x, i, a) { return a.indexOf(x) === i; }).map(function (x) { return 'Số ' + x + ': ' + TS_MASTER[x].toLowerCase(); }).join('; ') + '.' });
+  if (ms.length) db.push({ ten: 'Số bậc thầy (11, 22, 33)', co: true, t: ms.map(function (x) { return x[0] + ' ' + x[1]; }).join(', ') + ': không rút gọn tiếp – tiềm năng cao nhưng áp lực cũng lớn: dễ căng thẳng thần kinh, đặt kỳ vọng quá sức rồi thất vọng về bản thân. ' + ms.map(function (x) { return x[1]; }).filter(function (x, i, a) { return a.indexOf(x) === i; }).map(function (x) { return 'Số ' + x + ': ' + TS_MASTER[x].toLowerCase(); }).join('; ') + '.' });
   else db.push({ ten: 'Số bậc thầy (11, 22, 33)', co: false, t: 'Không có trong các chỉ số chính.' });
-  db.push({ ten: 'Số nợ nghiệp (13, 14, 16, 19)', co: no.length > 0, t: no.length ? no.map(function (x) { return x.so + ' ở ' + x.o; }).join(', ') + '. Cách xử lý: nhận diện bài học, chủ động sửa đổi, kiên nhẫn với bản thân.' : 'Không có.' });
+  db.push({ ten: 'Số món nợ công sức (13, 14, 16, 19)', co: no.length > 0, t: no.length ? no.map(function (x) { return x.so + ' ở ' + x.o; }).join(', ') + '. Đây là những chỗ đời bạn dễ vấp lặp lại nếu không nhận ra. Gợi ý: gọi đúng tên thói quen gây vấp và sửa từ việc nhỏ.' : 'Không có.' });
   var co0 = [['Đường Đời', tsChuoi_(T.tongNgaySinh)]].concat(ts.coTen ? [['Định Mệnh', tsChuoi_(T.suMenh)]] : []).filter(function (x) { return x[1].some(function (n) { return n === 10 || n === 20 || n === 30; }); });
-  db.push({ ten: 'Số 0 (10, 20, 30)', co: co0.length > 0, t: co0.length ? co0.map(function (x) { return x[0] + ' đi qua ' + x[1].filter(function (n) { return n % 10 === 0 && n; })[0]; }).join(', ') + ': số 0 khuếch đại sức mạnh của con số đi kèm – tiềm năng lớn, cần định hướng rõ.' : 'Không có.' });
+  db.push({ ten: 'Số 0 (10, 20, 30)', co: co0.length > 0, t: co0.length ? co0.map(function (x) { return x[0] + ' đi qua ' + x[1].filter(function (n) { return n % 10 === 0 && n; })[0]; }).join(', ') + ': số 0 khuếch đại con số đi kèm – cả mặt mạnh lẫn mặt yếu đều rõ hơn người khác; thiếu định hướng thì dễ chệch hướng mạnh.' : 'Không có.' });
   var lap = []; for (var k = 1; k <= 9; k++) if (ts.bieuDo[k] >= 3) lap.push(k + ' (×' + ts.bieuDo[k] + ')');
-  db.push({ ten: 'Số lặp trong ngày sinh', co: lap.length > 0, t: lap.length ? 'Số ' + lap.join(', ') + ': năng lượng của con số này được tăng cường – vừa là thế mạnh, vừa là bài học quan trọng.' : 'Không có con số nào lặp từ 3 lần trở lên.' });
+  db.push({ ten: 'Số lặp trong ngày sinh', co: lap.length > 0, t: lap.length ? 'Số ' + lap.join(', ') + ': năng lượng của con số này được tăng cường – mặt mạnh nổi bật, nhưng mặt yếu của nó cũng dễ thành tật.' : 'Không có con số nào lặp từ 3 lần trở lên.' });
   if (ts.coTen) db.push({ ten: 'Tên có dấu tiếng Việt', co: true, t: '"' + out.duLieu.ten + '" → "' + ts.tenChuan + '" (bỏ dấu, Đ → D, giữ nguyên thứ tự họ – đệm – tên).' });
   out.dacBiet = db;
   // ---- Ứng dụng: tự khám phá
@@ -383,9 +384,9 @@ function tsPhanTich_(ts, viewYear, input) {
   if (ts.coTen) {
     var nh = [tsNhom_(ld), tsNhom_(LH), tsNhom_(NC)], giong = nh.filter(function (x) { return x === nh[0]; }).length;
     hh.push('Đường Đời ' + ld + ' (mục đích) · Linh Hồn ' + LH + ' (khát khao) · Nhân Cách ' + NC + ' (bề ngoài).');
-    hh.push(giong === 3 ? '✓ Ba con số cùng nhóm năng lượng: điều bạn muốn, điều bạn thể hiện và con đường của bạn thống nhất – sống thuận tự nhiên.' :
-      nh[0] === nh[1] ? '◇ Khát khao khớp con đường sống, nhưng vẻ ngoài khác nhóm – người khác cần thời gian mới hiểu đúng bạn.' :
-      '◇ Khát khao bên trong khác nhóm với con đường sống – dễ giằng co "muốn một đằng, phải làm một nẻo"; hãy tìm công việc dung hòa cả hai.');
+    hh.push(giong === 3 ? '✓ Ba con số cùng nhóm năng lượng: điều bạn muốn, điều bạn thể hiện và con đường của bạn thống nhất – sống thuận tự nhiên; mặt trái: dễ thiếu góc nhìn khác, ít chịu thay đổi khi cần.' :
+      nh[0] === nh[1] ? '◇ Khát khao khớp con đường sống, nhưng vẻ ngoài khác nhóm – người khác dễ đánh giá sai bạn lúc đầu, có khi bạn mất cơ hội vì ấn tượng ban đầu.' :
+      '◇ Khát khao bên trong khác nhóm với con đường sống – dễ giằng co "muốn một đằng, phải làm một nẻo", có giai đoạn chán việc, mất phương hướng; bù lại bạn có nhiều mặt năng lực. Gợi ý: tìm công việc dung hòa cả hai.');
   } else hh.push('Nhập họ tên khai sinh để so sánh Đường Đời – Linh Hồn – Nhân Cách.');
   out.hoaHop = hh;
   return out;

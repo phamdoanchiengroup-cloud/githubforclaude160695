@@ -100,10 +100,10 @@ function ddPhanTichNam_(chart, bt, Y, dvCache) {
       if (luu(gp, n) && (gp === th || gp === yTat)) s.add(1.5, 'Trùng phùng: lưu ' + n + ' gặp ' + m + ' gốc tại ' + (gp === th ? 'cung tiểu hạn' : 'Tật Ách năm'));
     });
   });
-  if (luu(yTat, 'Hóa Kỵ')) s.add(2, 'Lưu Hóa Kỵ nhập Tật Ách năm – nên giữ nếp sinh hoạt điều độ, khám định kỳ');
+  if (luu(yTat, 'Hóa Kỵ')) s.add(2, 'Lưu Hóa Kỵ nhập Tật Ách năm – sức khỏe có điểm yếu dễ lộ ra, lo nghĩ về bệnh');
   else if (luu(th, 'Hóa Kỵ')) s.add(1.2, 'Lưu Hóa Kỵ tại cung tiểu hạn');
-  if (luu(th, 'Tang Môn') || luu(yTat, 'Tang Môn')) s.add(1.3, 'Lưu Tang Môn nhập hạn/Tật – dễ buồn phiền, nên nghỉ ngơi đủ');
-  if (luu(th, 'Bạch Hổ') || luu(yTat, 'Bạch Hổ')) s.add(1.5, 'Lưu Bạch Hổ nhập hạn/Tật – nên đi chậm, giữ an toàn khi đi lại và làm việc');
+  if (luu(th, 'Tang Môn') || luu(yTat, 'Tang Môn')) s.add(1.3, 'Lưu Tang Môn nhập hạn/Tật – dễ buồn phiền, có chuyện không vui trong nhà, mệt mỏi');
+  if (luu(th, 'Bạch Hổ') || luu(yTat, 'Bạch Hổ')) s.add(1.5, 'Lưu Bạch Hổ nhập hạn/Tật – dễ va chạm, chấn thương khi đi lại và làm việc');
   if (th === chart.pos['Thiên Sứ'] || th === chart.pos['Thiên Thương']) s.add(1.3, 'Tiểu hạn gặp ' + (th === chart.pos['Thiên Sứ'] ? 'Thiên Sứ' : 'Thiên Thương') + ' – "hạn gặp Thương Sứ"');
   if (P[th].cung === 'Tật Ách') s.add(1.2, 'Tiểu hạn đi vào cung Tật Ách gốc');
   if (dvh(yTat, 'Hóa Kỵ')) s.add(1.2, 'Hóa Kỵ đại vận nhập Tật Ách năm');
@@ -120,11 +120,11 @@ function ddPhanTichNam_(chart, bt, Y, dvCache) {
 
   /* ---------- TÀI CHÍNH ---------- */
   s = ddBo_();
-  if (luu(yTai, 'Hóa Kỵ')) s.add(2.5, 'Lưu Hóa Kỵ nhập Tài Bạch năm (' + ten(yTai) + ') – tiền bạc dễ vướng mắc, hạn chế vay mượn');
+  if (luu(yTai, 'Hóa Kỵ')) s.add(2.5, 'Lưu Hóa Kỵ nhập Tài Bạch năm (' + ten(yTai) + ') – tiền bạc dễ vướng mắc, nợ nần, đòi không được');
   else if (luuTP('Hóa Kỵ')) s.add(1, 'Lưu Hóa Kỵ trong tam phương tiểu hạn');
   ['Kình Dương', 'Đà La'].forEach(function (n) { if (luu(yTai, n)) s.add(1.4, 'Lưu ' + n + ' nhập Tài Bạch năm – tranh chấp tiền bạc'); });
   ['Địa Không', 'Địa Kiếp'].forEach(function (n) {
-    if (goc(yTai, n)) s.add(1.3, n + ' gốc tại Tài Bạch năm – dễ có khoản chi bất ngờ, nên có quỹ dự phòng');
+    if (goc(yTai, n)) s.add(1.3, n + ' gốc tại Tài Bạch năm – dễ có khoản chi bất ngờ, mất tiền');
     else if (goc(th, n)) s.add(1, n + ' gốc tại cung tiểu hạn');
   });
   if (P[yTai].bacSi === 'Đại Hao' || P[th].bacSi === 'Đại Hao') s.add(1, 'Đại Hao tại ' + (P[th].bacSi === 'Đại Hao' ? 'tiểu hạn' : 'Tài năm') + ' – chi tiêu lớn');
@@ -141,13 +141,13 @@ function ddPhanTichNam_(chart, bt, Y, dvCache) {
     var p = x[0];
     if (luu(p, 'Tang Môn')) s.add(1.4, 'Lưu Tang Môn nhập ' + x[1] + ' năm (' + ten(p) + ')');
     if (luu(p, 'Bạch Hổ')) s.add(1.4, 'Lưu Bạch Hổ nhập ' + x[1] + ' năm (' + ten(p) + ')');
-    if (luu(p, 'Hóa Kỵ')) s.add(1.8, 'Lưu Hóa Kỵ nhập ' + x[1] + ' năm – dễ hiểu lầm, lo lắng; nên lắng nghe nhau');
+    if (luu(p, 'Hóa Kỵ')) s.add(1.8, 'Lưu Hóa Kỵ nhập ' + x[1] + ' năm – dễ hiểu lầm, lo lắng, giận nhau dai dẳng');
     if (luu(p, 'Thiên Khốc') || luu(p, 'Thiên Hư')) s.add(0.6, 'Lưu Khốc/Hư nhập ' + x[1] + ' năm');
     if (luu(p, 'Kình Dương') || luu(p, 'Đà La')) s.add(0.8, 'Lưu Kình/Đà nhập ' + x[1] + ' năm');
     if (dvh(p, 'Hóa Kỵ')) s.add(0.8, 'Hóa Kỵ đại vận nhập ' + x[1] + ' năm');
   });
   if (goc(th, 'Cô Thần') || goc(th, 'Quả Tú')) s.add(0.6, 'Cô Thần/Quả Tú tại tiểu hạn');
-  if (qhNgay.indexOf('lục xung') >= 0) s.add(1.5, 'Bát Tự: chi năm xung chi ngày (cung phu thê) – dễ khác ý, thay đổi chỗ ở; nên nói chuyện thẳng thắn');
+  if (qhNgay.indexOf('lục xung') >= 0) s.add(1.5, 'Bát Tự: chi năm xung chi ngày (cung phu thê) – dễ khác ý, cãi vã, thay đổi chỗ ở');
   if (qhNgay.indexOf('lục hại') >= 0 || qhNgay.indexOf('tương hình') >= 0) s.add(0.7, 'Bát Tự: chi năm ' + qhNgay.join('/') + ' chi ngày');
   if (qhNam.indexOf('lục xung') >= 0) s.add(0.8, 'Bát Tự: chi năm xung chi năm sinh (tổ nghiệp, cha mẹ)');
   if (ttCan === 'Kiếp Tài' && male) s.add(0.6, 'Bát Tự: Kiếp Tài khắc Chính Tài (thê tinh của nam)');
@@ -174,8 +174,8 @@ function ddPhanTichNam_(chart, bt, Y, dvCache) {
   if (phoi.indexOf(ttCan) >= 0) s.add(ttCan === phoi[0] ? 1.8 : 1.3, 'Bát Tự: phối ngẫu tinh xuất hiện (' + ttCan + ' – ' + (male ? 'thê tinh' : 'phu tinh') + ')');
   else if (phoi.indexOf(ttChi) >= 0) s.add(0.8, 'Bát Tự: phối ngẫu tinh ẩn trong chi năm (' + ttChi + ')');
   if ([9, 6, 3, 0][chiNamSinh % 4] === L.chi || [9, 6, 3, 0][chiNgay % 4] === L.chi) s.add(0.8, 'Năm Đào Hoa theo tuổi/ngày sinh');
-  if (luu(yPT, 'Hóa Kỵ')) s.add(-1.4, 'Lưu Hóa Kỵ ở Phu Thê năm – duyên cần thêm thời gian, nói chuyện thẳng thắn');
-  if (goc(th, 'Cô Thần') || goc(th, 'Quả Tú')) s.add(-0.7, 'Cô/Quả tại hạn – nên chủ động mở lòng hơn');
+  if (luu(yPT, 'Hóa Kỵ')) s.add(-1.4, 'Lưu Hóa Kỵ ở Phu Thê năm – duyên trắc trở, hiểu lầm, dễ lỡ hẹn');
+  if (goc(th, 'Cô Thần') || goc(th, 'Quả Tú')) s.add(-0.7, 'Cô/Quả tại hạn – cô đơn, khó mở lòng, duyên chậm');
   R.ketHon = s;
 
   /* ---------- SINH CON ---------- */
@@ -311,7 +311,7 @@ function ddPhanTichNam_(chart, bt, Y, dvCache) {
   var dvBT = (bt.daiVan || []).filter(function (v) { return Y >= v.nam && Y < v.nam + 10; })[0];
   if (dvBT) {
     if (dvBT.can === L.can && dvBT.chi === L.chi) {
-      var tv = 'Bát Tự: tuế vận tịnh lâm (lưu niên trùng đại vận ' + dvBT.canChi + ') – năm nên đi chậm, cân nhắc việc lớn';
+      var tv = 'Bát Tự: tuế vận tịnh lâm (lưu niên trùng đại vận ' + dvBT.canChi + ') – năm có biến lớn, dễ quyết sai việc lớn';
       R.sucKhoe.add(1.5, tv); R.taiChinh.add(0.8, tv); R.quanLoc.add(1, tv);
     } else if (mod12(L.chi - dvBT.chi) === 6) {
       R.quanLoc.add(0.6, 'Bát Tự: tuế vận tương xung (chi năm xung chi đại vận ' + dvBT.canChi + ')', 'xau'); R.giaDao.add(0.5, 'Bát Tự: tuế vận tương xung');
@@ -330,13 +330,13 @@ function ddPhanTichNam_(chart, bt, Y, dvCache) {
   var coKho = bt.pillars.some(function (pl) { return pl.chi === kho; });
   if (coKho && mod12(L.chi - kho) === 6) {
     if (bt.vuong) R.taiLoc.add(1.8, 'Bát Tự: xung khai tài khố ' + CHI[kho] + ' (khố của Tài ' + taiHanh + ') khi thân vượng – dễ có khoản tiền lớn');
-    else R.taiChinh.add(1, 'Bát Tự: tài khố ' + CHI[kho] + ' bị xung khi thân nhược – chi tiêu dễ lớn, cần quản lý chặt');
+    else R.taiChinh.add(1, 'Bát Tự: tài khố ' + CHI[kho] + ' bị xung khi thân nhược – chi tiêu dễ lớn, tiền khó giữ');
   }
   // thương quan kiến quan
   var coChinhQuan = bt.pillars.some(function (pl, i) { return i !== 2 && pl.thapThan === 'Chính Quan'; });
   if (ttCan === 'Thương Quan' && coChinhQuan) {
-    R.quanLoc.add(1.5, 'Bát Tự: thương quan kiến quan – thị phi, va chạm cấp trên; cẩn trọng giấy tờ, hợp đồng', 'xau');
-    if (!male) R.giaDao.add(1, 'Bát Tự: thương quan kiến quan (nữ mệnh) – vợ chồng cần nhiều thấu hiểu, nói chuyện thẳng thắn');
+    R.quanLoc.add(1.5, 'Bát Tự: thương quan kiến quan – thị phi, va chạm cấp trên, vướng giấy tờ, hợp đồng', 'xau');
+    if (!male) R.giaDao.add(1, 'Bát Tự: thương quan kiến quan (nữ mệnh) – vợ chồng dễ xung khắc, lời nói làm tổn thương nhau');
   }
   // dịch mã
   var MA4 = [2, 11, 8, 5];
@@ -345,7 +345,7 @@ function ddPhanTichNam_(chart, bt, Y, dvCache) {
     R.quanLoc.add(0.8, 'Bát Tự: dịch mã bị động (năm ' + CHI[L.chi] + ') – di chuyển, đổi việc, công tác xa');
   // kiêu thần đoạt thực (nữ – sinh nở)
   var coThuc = bt.pillars.some(function (pl, i) { return i !== 2 && pl.thapThan === 'Thực Thần'; });
-  if (!male && ttCan === 'Thiên Ấn' && coThuc) R.sinhCon.add(-0.8, 'Bát Tự: kiêu thần đoạt thực – chuyện con cái cần thêm thời gian, chủ động chăm sóc sức khỏe');
+  if (!male && ttCan === 'Thiên Ấn' && coThuc) R.sinhCon.add(-0.8, 'Bát Tự: kiêu thần đoạt thực – chuyện con cái dễ trắc trở, muộn');
   // năm khắc Dụng thần
   var khacDung = HANH_SINH[(HANH_SINH.indexOf(bt.goiY.dung) + 3) % 5];
   if (hanhCan === khacDung && hanhChi === khacDung) R.sucKhoe.add(0.6, 'Bát Tự: can chi năm cùng khắc Dụng thần ' + bt.goiY.dung);

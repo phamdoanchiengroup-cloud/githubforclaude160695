@@ -683,14 +683,14 @@ var LUAN_CHINH_TINH_MENH = {
   'Thiên Cơ': 'Thiên Cơ là sao mưu trí – đầu óc nhanh nhạy, giỏi tính toán, lên kế hoạch, khéo tay kỹ thuật, thích nghiên cứu. Đắc địa là bậc quân sư, chuyên gia; hãm địa hay lo nghĩ, thay đổi ý định, dễ mất tập trung.',
   'Thái Dương': 'Thái Dương chủ danh – tính tình cởi mở, hào phóng, nhiệt tình, thích giúp đỡ và hoạt động xã hội. Sáng sủa (Dần → Ngọ) thì danh tiếng rạng rỡ; hãm địa làm nhiều hưởng ít, hao tổn tinh thần, nên giữ gìn mắt và huyết áp.',
   'Vũ Khúc': 'Vũ Khúc là Tài tinh – cương nghị, quyết đoán, thực tế, có năng khiếu tài chính – kinh doanh – kỹ thuật cơ khí. Đắc địa giàu có nhờ tự lực; hãm thì cô khắc, nóng vội, nên mềm mỏng trong quan hệ.',
-  'Thiên Đồng': 'Thiên Đồng là Phúc tinh – hiền hòa, lạc quan, dễ gần, biết hưởng thụ, giỏi thích nghi. Đời thường "tiền hung hậu cát", trẻ vất vả sau an nhàn. Hãm địa thiếu kiên định, dễ bỏ dở.',
+  'Thiên Đồng': 'Thiên Đồng là Phúc tinh – hiền hòa, lạc quan, dễ gần, biết hưởng thụ, giỏi thích nghi. Đời thường "tiền hung hậu cát", trẻ vất vả sau an nhàn. Hãm địa thiếu kiên định, dễ bỏ dở, ham hưởng thụ mà ngại khó.',
   'Liêm Trinh': 'Liêm Trinh là sao nguyên tắc – cứng rắn, liêm chính, có tài tổ chức, hợp ngành luật, công an, quân đội, quản trị. Đắc địa là người có uy; hãm địa nóng nảy, dễ vướng thị phi pháp lý, cần tránh đầu cơ.',
-  'Thiên Phủ': 'Thiên Phủ là kho trời – điềm đạm, thận trọng, bao dung, giỏi quản lý và giữ tài sản, đời sống ổn định. Cần tránh bảo thủ; gặp Tuần/Triệt hoặc Không Kiếp thì kho rỗng, phải tự gây dựng.',
+  'Thiên Phủ': 'Thiên Phủ là kho trời – điềm đạm, thận trọng, bao dung, giỏi quản lý và giữ tài sản, đời sống ổn định. Mặt trái: bảo thủ, ngại thay đổi; gặp Tuần/Triệt hoặc Không Kiếp thì kho rỗng, tiền vào rồi ra, phải tự gây dựng.',
   'Thái Âm': 'Thái Âm là Phú tinh – dịu dàng, tinh tế, giàu cảm xúc, yêu cái đẹp, có lộc về nhà đất. Sinh ban đêm và đắc địa (Thân → Tý) rất tốt; hãm địa hay u sầu, tài lộc thất thường.',
   'Tham Lang': 'Tham Lang là sao đa tài đa dục – giao tế giỏi, hoạt bát, nhiều tham vọng, hợp kinh doanh, nghệ thuật, ngoại giao. Đắc địa phát muộn nhưng lớn (Tham Lang "tứ mộ"); hãm địa ham vui, dễ sa đà tửu sắc.',
   'Cự Môn': 'Cự Môn chủ ngôn luận – ăn nói sắc sảo, lập luận chặt chẽ, hợp nghề luật, giảng dạy, truyền thông. Đắc địa (Tý Ngọ Dần Thân) có danh nhờ khẩu tài; hãm địa dễ thị phi, hiểu lầm, nên "uốn lưỡi bảy lần".',
   'Thiên Tướng': 'Thiên Tướng là Ấn tinh – chính trực, trọng nghĩa, hào hiệp, thích bênh vực kẻ yếu, có phong thái chỉn chu. Đắc địa được giao quyền ấn; gặp Tuần/Triệt hoặc Kình Hình thì dễ gặp tai nạn, nên thận trọng.',
-  'Thiên Lương': 'Thiên Lương là Ấm tinh – nhân hậu, thanh cao, có tinh thần che chở người khác, chủ thọ và giải nạn. Hợp y dược, giáo dục, tư vấn, công tác xã hội. Hãm địa hay lo chuyện bao đồng.',
+  'Thiên Lương': 'Thiên Lương là Ấm tinh – nhân hậu, thanh cao, có tinh thần che chở người khác, chủ thọ và giải nạn. Hợp y dược, giáo dục, tư vấn, công tác xã hội. Hãm địa hay lo chuyện bao đồng, ôm việc người khác rồi chịu thiệt, dễ cô đơn vì sống quá thanh cao.',
   'Thất Sát': 'Thất Sát là Tướng tinh – dũng mãnh, quyết liệt, ưa mạo hiểm, không chịu khuất phục. Đắc địa lập nghiệp gian nan nhưng làm nên sự nghiệp lớn; hãm địa cuộc đời nhiều sóng gió, cần kiểm soát nóng nảy.',
   'Phá Quân': 'Phá Quân là sao tiên phong – dám phá cũ lập mới, không chịu gò bó, thích cải cách. Đắc địa (Tý Ngọ) có uy, làm việc lớn; hãm địa bấp bênh, tán tài, dễ thay đổi nghề nghiệp nhiều lần.'
 };
@@ -714,21 +714,21 @@ var LUAN_CUNG_SAO = {
     'Thất Sát': 'hợp quân sự, kỹ thuật nặng, khởi nghiệp, cạnh tranh cao.', 'Phá Quân': 'hợp đổi mới, sáng tạo, xây dựng, kinh doanh mạo hiểm.'
   },
   'Tài Bạch': {
-    'Tử Vi': 'tiền bạc ổn định, có người giúp giữ của.', 'Thiên Cơ': 'kiếm tiền bằng trí tuệ, thu nhập biến động.',
-    'Thái Dương': 'tiền đến nhờ danh tiếng, dễ rộng tay chi tiêu.', 'Vũ Khúc': 'tài tinh đắc vị, giỏi làm và giữ tiền.',
+    'Tử Vi': 'tiền bạc ổn định, có người giúp giữ của; mặt trái là chi lớn cho thể diện.', 'Thiên Cơ': 'kiếm tiền bằng trí tuệ, thu nhập biến động.',
+    'Thái Dương': 'tiền đến nhờ danh tiếng, dễ rộng tay chi tiêu.', 'Vũ Khúc': 'tài tinh đắc vị, giỏi làm và giữ tiền; mặt trái là quá thực dụng.',
     'Thiên Đồng': 'tay trắng làm nên, trước khó sau dễ.', 'Liêm Trinh': 'kiếm tiền vất vả, nên làm ăn minh bạch.',
-    'Thiên Phủ': 'kho lộc dồi dào, giỏi tích lũy.', 'Thái Âm': 'giàu nhờ tích góp, điền sản.',
+    'Thiên Phủ': 'kho lộc dồi dào, giỏi tích lũy; mặt trái là dè dặt, lỡ cơ hội.', 'Thái Âm': 'giàu nhờ tích góp, điền sản; mặt trái là thu nhập lúc lên lúc xuống theo tâm trạng, thời vận.',
     'Tham Lang': 'kiếm tiền nhanh qua kinh doanh, giao tế; chi cũng nhanh.', 'Cự Môn': 'kiếm tiền bằng lời nói, dễ tranh chấp tiền bạc.',
-    'Thiên Tướng': 'tiền bạc đủ đầy, hào phóng.', 'Thiên Lương': 'có lộc ấm, được thừa hưởng, không nên đầu cơ.',
+    'Thiên Tướng': 'tiền bạc đủ đầy, hào phóng; mặt trái là dễ chi cho người khác quá tay.', 'Thiên Lương': 'có lộc ấm, được thừa hưởng, không nên đầu cơ.',
     'Thất Sát': 'tiền đến từ mạo hiểm, lúc được lúc mất.', 'Phá Quân': 'kiếm nhiều tiêu nhiều, tài chính thăng trầm.'
   },
   'Phu Thê': {
     'Tử Vi': 'người phối ngẫu có cá tính, địa vị; nên nhường nhịn.', 'Thiên Cơ': 'bạn đời thông minh, nên kết hôn muộn cho bền.',
     'Thái Dương': 'bạn đời cởi mở, năng động; hôn nhân sáng sủa nếu đắc địa.', 'Vũ Khúc': 'bạn đời cứng rắn, nên lập gia đình muộn.',
     'Thiên Đồng': 'bạn đời hiền hòa, hôn nhân vui vẻ, có thể trắc trở ban đầu.', 'Liêm Trinh': 'tình cảm mãnh liệt, dễ sóng gió, cần chung thủy.',
-    'Thiên Phủ': 'bạn đời đảm đang, ổn định, có của.', 'Thái Âm': 'bạn đời dịu dàng, tinh tế, có nhan sắc.',
+    'Thiên Phủ': 'bạn đời đảm đang, ổn định, có của; mặt trái là người ấy dễ nắm quyền, bảo thủ.', 'Thái Âm': 'bạn đời dịu dàng, tinh tế, có nhan sắc; mặt trái là nhạy cảm, hay tủi thân.',
     'Tham Lang': 'tình duyên phong phú, cần giữ gìn chung thủy.', 'Cự Môn': 'vợ chồng hay bất đồng lời nói, cần lắng nghe.',
-    'Thiên Tướng': 'bạn đời đàng hoàng, chu đáo, biết chăm lo.', 'Thiên Lương': 'bạn đời lớn tuổi hoặc chín chắn, biết che chở.',
+    'Thiên Tướng': 'bạn đời đàng hoàng, chu đáo, biết chăm lo; mặt trái là trọng hình thức, dễ bị người ngoài chen vào.', 'Thiên Lương': 'bạn đời lớn tuổi hoặc chín chắn, biết che chở; mặt trái là hay răn dạy, khoảng cách tuổi tác dễ sinh bất đồng.',
     'Thất Sát': 'tình cảm mạnh mẽ nhưng dễ va chạm, nên muộn.', 'Phá Quân': 'hôn nhân dễ thay đổi, nên kết hôn muộn và bao dung.'
   }
 };
@@ -749,26 +749,26 @@ function tuviLuanGiai_(chart) {
   var namDuong = CAN.indexOf(I.canNam) % 2 === 0;
   out.tongQuan.push('Tuổi ' + I.namCanChi + ' (' + I.conGiap + '), ' + I.amDuong + '. Bản mệnh ' + I.banMenh.ten + ' (' + I.banMenh.hanh + '), ' + I.cuc + '.');
   out.tongQuan.push(menhCungDuong === namDuong
-    ? 'Âm Dương thuận lý: Mệnh đóng cung ' + (menhCungDuong ? 'dương' : 'âm') + ' hợp với tuổi ' + (namDuong ? 'dương' : 'âm') + ' – làm việc gì cũng dễ thuận chiều, được thời.'
-    : 'Âm Dương nghịch lý: Mệnh đóng cung ' + (menhCungDuong ? 'dương' : 'âm') + ' trái với tuổi ' + (namDuong ? 'dương' : 'âm') + ' – đời thường phải nỗ lực nhiều hơn, thành công nhờ kiên trì.');
+    ? 'Âm Dương thuận lý: Mệnh đóng cung ' + (menhCungDuong ? 'dương' : 'âm') + ' hợp với tuổi ' + (namDuong ? 'dương' : 'âm') + ' – làm việc dễ thuận chiều, được thời; mặt trái là ít bị thử thách nên dễ chủ quan.'
+    : 'Âm Dương nghịch lý: Mệnh đóng cung ' + (menhCungDuong ? 'dương' : 'âm') + ' trái với tuổi ' + (namDuong ? 'dương' : 'âm') + ' – đời thường phải nỗ lực nhiều hơn, hay đi đường vòng, công nhiều quả ít; mặt tốt là quen kiên trì.');
 
   var qh = quanHeHanh(I.cucHanh, I.banMenh.hanh);
   var cucMenhTxt = {
-    'duoc_sinh': 'Mệnh sinh Cục: hao tổn công sức cho hoàn cảnh, nhưng biết vun đắp nên vẫn thành.',
-    'sinh': 'Cục sinh Mệnh: rất tốt, hoàn cảnh nâng đỡ bản thân, dễ phát triển.',
-    'binh': 'Mệnh Cục bình hòa (đồng hành): ổn định, tự lực vững vàng.',
-    'khac': 'Cục khắc Mệnh: hoàn cảnh gây sức ép, phải tự vượt khó, dễ gặp trở ngại buổi đầu.',
-    'bi_khac': 'Mệnh khắc Cục: bản thân chế ngự được hoàn cảnh nhưng vất vả, tốn sức.'
+    'duoc_sinh': 'Mệnh sinh Cục: hao tổn công sức cho hoàn cảnh, làm nhiều cho người khác hơn cho mình; mặt tốt là chủ động, biết vun đắp.',
+    'sinh': 'Cục sinh Mệnh: hoàn cảnh nâng đỡ bản thân, dễ phát triển; mặt trái là dễ ỷ lại hoàn cảnh.',
+    'binh': 'Mệnh Cục bình hòa (đồng hành): ổn định, tự lực vững vàng; mặt trái là ít được hoàn cảnh đẩy lên.',
+    'khac': 'Cục khắc Mệnh: hoàn cảnh gây sức ép, dễ gặp trở ngại buổi đầu, sức khỏe và tinh thần hao tổn; mặt tốt là rèn được bản lĩnh.',
+    'bi_khac': 'Mệnh khắc Cục: bản thân chế ngự được hoàn cảnh; mặt trái là vất vả, tốn sức, hay phải gồng.'
   }[qh];
   out.tongQuan.push(cucMenhTxt);
 
   var menhCungHanh = CHI_HANH[menh];
   var qh2 = quanHeHanh(menhCungHanh, I.banMenh.hanh);
   out.tongQuan.push('Cung Mệnh an tại ' + CHI[menh] + ' (hành ' + menhCungHanh + ') ' + {
-    'sinh': 'sinh bản mệnh ' + I.banMenh.hanh + ' – được đất, rất tốt.',
-    'duoc_sinh': 'được bản mệnh sinh – hao tổn nhưng chủ động.',
-    'binh': 'đồng hành với bản mệnh – vững vàng.',
-    'khac': 'khắc bản mệnh – cần nhiều nỗ lực.',
+    'sinh': 'sinh bản mệnh ' + I.banMenh.hanh + ' – được đất; mặt trái là dễ an phận.',
+    'duoc_sinh': 'được bản mệnh sinh – chủ động nhưng hao tổn sức.',
+    'binh': 'đồng hành với bản mệnh – vững vàng, ít biến hóa.',
+    'khac': 'khắc bản mệnh – hoàn cảnh gây sức ép, làm nhiều được ít.',
     'bi_khac': 'bị bản mệnh khắc – bản thân mạnh hơn hoàn cảnh, tốn sức.'
   }[qh2]);
   out.tongQuan.push('Mệnh chủ: ' + I.menhChu + ' · Thân chủ: ' + I.thanChu + '.');
@@ -779,83 +779,83 @@ function tuviLuanGiai_(chart) {
     out.menh.push('Mệnh có ' + saoMoTa(menh) + ' tọa thủ.');
     ms.forEach(function (s) {
       var txt = LUAN_CHINH_TINH_MENH[s.n];
-      if (txt) out.menh.push(txt + (s.b ? ' Ở đây sao ' + (DO_SANG_DIEM[s.b] >= 1 ? 'sáng (' + DO_SANG_TEN[s.b] + ') nên phát huy mặt tốt.' : DO_SANG_DIEM[s.b] < 0 ? 'hãm địa, cần tu dưỡng để hóa giải mặt xấu.' : 'bình hòa.') : ''));
+      if (txt) out.menh.push(txt + (s.b ? ' Ở đây sao ' + (DO_SANG_DIEM[s.b] >= 1 ? 'sáng (' + DO_SANG_TEN[s.b] + '): mặt tốt nổi trội, nhưng mặt xấu vẫn có khi gặp sát tinh.' : DO_SANG_DIEM[s.b] < 0 ? 'hãm địa: mặt xấu lộ rõ hơn mặt tốt.' : 'bình hòa: tốt xấu ngang nhau.') : ''));
     });
   } else {
     var xc = mod12(menh + 6);
     out.menh.push('Mệnh Vô Chính Diệu – mượn chính tinh cung Thiên Di (' + CHI[xc] + '): ' + (saoMoTa(xc) || 'không có') +
-      '. Người mệnh vô chính diệu linh hoạt, dễ thích nghi, chịu ảnh hưởng mạnh của môi trường; thường phải rời quê hoặc tự lập sớm.');
+      '. Người mệnh vô chính diệu linh hoạt, dễ thích nghi; mặt trái là thiếu chính kiến, chịu ảnh hưởng mạnh của môi trường, thường phải rời quê hoặc tự lập sớm.');
     var tamKhong = (P[menh].tuan ? 1 : 0) + (P[menh].triet ? 1 : 0) +
       (pos['Địa Không'] === menh ? 1 : 0) + (pos['Thiên Không'] === menh ? 1 : 0);
-    if (tamKhong >= 2) out.cachCuc.push({ ten: 'Vô Chính Diệu đắc Tam Không', tot: true, moTa: 'Mệnh trống gặp các sao Không – lại thành quý cách, phát đạt bất ngờ.' });
+    if (tamKhong >= 2) out.cachCuc.push({ ten: 'Vô Chính Diệu đắc Tam Không', tot: true, moTa: 'Mệnh trống gặp các sao Không – lại thành quý cách, phát đạt bất ngờ; mặt trái là thành bại thất thường, khó giữ lâu.' });
   }
   var catM = P[menh].cat.map(function (s) { return s.n; });
   var hungM = P[menh].hung.map(function (s) { return s.n; });
   if (catM.length) out.menh.push('Cát tinh hội tại Mệnh: ' + catM.join(', ') + '.');
-  if (hungM.length) out.menh.push('Hung tinh tại Mệnh: ' + hungM.join(', ') + ' – nên chú ý tiết chế những mặt tiêu cực của các sao này.');
-  if (P[menh].tuan) out.menh.push('Mệnh gặp Tuần Không: thuở nhỏ nhiều trắc trở, sau 30 tuổi mới hanh thông; sao xấu cũng bớt xấu.');
-  if (P[menh].triet) out.menh.push('Mệnh gặp Triệt Lộ: tuổi trẻ gặp cản trở, dễ bị cắt đứt giữa chừng; bền chí thì hậu vận tốt.');
+  if (hungM.length) out.menh.push('Hung tinh tại Mệnh: ' + hungM.join(', ') + ' – mặt tiêu cực của các sao này dễ lộ ra trong tính cách và đời sống.');
+  if (P[menh].tuan) out.menh.push('Mệnh gặp Tuần Không: thuở nhỏ nhiều trắc trở, việc hay bị cản, sau 30 tuổi mới hanh thông; mặt tốt là sao xấu cũng bớt xấu.');
+  if (P[menh].triet) out.menh.push('Mệnh gặp Triệt Lộ: tuổi trẻ gặp cản trở, việc dễ bị cắt đứt giữa chừng; mặt tốt là sao xấu cũng bị chặn bớt, hậu vận khá hơn.');
   out.menh.push('Thân cư ' + I.thanCu + ': ' + ({
-    'Mệnh': 'Mệnh Thân đồng cung – tính cách nhất quán, tự lập, đời sống ít thay đổi bản chất.',
-    'Phúc Đức': 'coi trọng phúc đức, dòng họ; hưởng phúc tổ tiên, hậu vận an nhàn.',
-    'Quan Lộc': 'trọng công danh sự nghiệp, về sau đặt hết tâm huyết vào công việc.',
-    'Tài Bạch': 'thiên về tiền bạc, giỏi làm kinh tế, hậu vận chú trọng tài chính.',
-    'Thiên Di': 'hay đi xa, thành công nhờ bên ngoài, giao thiệp rộng.',
-    'Phu Thê': 'chịu ảnh hưởng lớn từ người phối ngẫu; hôn nhân quyết định nhiều đến hậu vận.'
+    'Mệnh': 'Mệnh Thân đồng cung – tính cách nhất quán, tự lập; mặt trái là cứng, điểm yếu khó sửa theo thời gian.',
+    'Phúc Đức': 'coi trọng phúc đức, dòng họ, hậu vận dễ an nhàn; mặt trái là gánh nhiều việc họ hàng.',
+    'Quan Lộc': 'trọng công danh sự nghiệp, về sau đặt hết tâm huyết vào công việc; mặt trái là dễ lơ là gia đình, sức khỏe.',
+    'Tài Bạch': 'thiên về tiền bạc, giỏi làm kinh tế; mặt trái là hay lo âu chuyện tiền, dễ đặt tiền trên tình.',
+    'Thiên Di': 'hay đi xa, thành công nhờ bên ngoài, giao thiệp rộng; mặt trái là ít ở nhà, gốc rễ lỏng.',
+    'Phu Thê': 'chịu ảnh hưởng lớn từ người phối ngẫu; hôn nhân tốt thì hậu vận lên, hôn nhân trục trặc thì hậu vận đi xuống theo.'
   }[I.thanCu] || 'Thân nằm ở cung ' + I.thanCu + '.'));
 
   // 3. Cách cục
   var cc = out.cachCuc;
   var soTPT = ['Tử Vi', 'Thiên Phủ', 'Vũ Khúc', 'Thiên Tướng'].filter(inTPTC).length;
-  if (soTPT >= 3) cc.push({ ten: 'Tử Phủ Vũ Tướng', tot: true, moTa: 'Bộ sao quyền quý, giàu có, hợp quản lý – kinh doanh lớn.' });
+  if (soTPT >= 3) cc.push({ ten: 'Tử Phủ Vũ Tướng', tot: true, moTa: 'Bộ sao quyền quý, giàu có, hợp quản lý – kinh doanh lớn; mặt trái là bảo thủ, nặng thể diện, áp lực giữ vị thế.' });
   var soCNDL = ['Thiên Cơ', 'Thái Âm', 'Thiên Đồng', 'Thiên Lương'].filter(inTPTC).length;
-  if (soCNDL >= 3) cc.push({ ten: 'Cơ Nguyệt Đồng Lương', tot: true, moTa: 'Cách "lại" – làm công chức, chuyên môn, ổn định, thông minh, mềm mỏng.' });
+  if (soCNDL >= 3) cc.push({ ten: 'Cơ Nguyệt Đồng Lương', tot: true, moTa: 'Cách "lại" – làm công chức, chuyên môn, ổn định, thông minh, mềm mỏng; mặt trái là hay lo nghĩ, ít dám mạo hiểm, khó làm lớn.' });
   if (['Thất Sát', 'Phá Quân', 'Tham Lang'].some(function (n) { return pos[n] === menh; }))
-    cc.push({ ten: 'Sát Phá Tham', tot: null, moTa: 'Cuộc đời nhiều biến động, dám nghĩ dám làm, thành bại lớn; hợp khởi nghiệp, võ nghiệp.' });
+    cc.push({ ten: 'Sát Phá Tham', tot: null, moTa: 'Dám nghĩ dám làm, hợp khởi nghiệp, võ nghiệp; mặt trái là đời nhiều biến động, thành bại lớn, có lúc mất trắng.' });
   if (pos['Tử Vi'] === pos['Thiên Phủ'] && pos['Tử Vi'] === menh)
-    cc.push({ ten: 'Tử Phủ đồng cung', tot: true, moTa: 'Mệnh có cả Đế tinh và Kho trời – phú quý song toàn.' });
+    cc.push({ ten: 'Tử Phủ đồng cung', tot: true, moTa: 'Mệnh có cả Đế tinh và Kho trời – nền tảng vững, dễ đủ đầy; mặt trái là tự mãn, ôm việc, thiếu phụ tá thì chỉ dừng ở mức an toàn.' });
   if (pos['Thái Dương'] === pos['Thái Âm'] && pos['Thái Dương'] === menh)
-    cc.push({ ten: 'Nhật Nguyệt đồng cung', tot: true, moTa: 'Âm dương hội tụ – thông minh, đa tài, hợp nghiên cứu.' });
+    cc.push({ ten: 'Nhật Nguyệt đồng cung', tot: true, moTa: 'Âm dương hội tụ – thông minh, đa tài, hợp nghiên cứu; mặt trái là tâm tính thất thường, dễ dao động.' });
   var nhat = P[pos['Thái Dương']].chinh.filter(function (s) { return s.n === 'Thái Dương'; })[0];
   var nguyet = P[pos['Thái Âm']].chinh.filter(function (s) { return s.n === 'Thái Âm'; })[0];
   if (nhat && nguyet && DO_SANG_DIEM[nhat.b] >= 1 && DO_SANG_DIEM[nguyet.b] >= 1 && (inTPTC('Thái Dương') || inTPTC('Thái Âm')))
-    cc.push({ ten: 'Nhật Nguyệt tịnh minh', tot: true, moTa: 'Mặt trời, mặt trăng cùng sáng chiếu Mệnh – công danh hiển đạt.' });
+    cc.push({ ten: 'Nhật Nguyệt tịnh minh', tot: true, moTa: 'Mặt trời, mặt trăng cùng sáng chiếu Mệnh – công danh hiển đạt; mặt trái là lo việc chung nhiều, hao sức.' });
   if (DO_SANG_DIEM[nhat.b] < 0 && DO_SANG_DIEM[nguyet.b] < 0 && (inTPTC('Thái Dương') || inTPTC('Thái Âm')))
-    cc.push({ ten: 'Nhật Nguyệt phản bối', tot: false, moTa: 'Nhật Nguyệt đều hãm – phải tự lực nhiều, nhưng gặp Tuần/Triệt hoặc Hóa Khoa lại thành cách "phản vi kỳ cách".' });
+    cc.push({ ten: 'Nhật Nguyệt phản bối', tot: false, moTa: 'Nhật Nguyệt đều hãm – phải tự lực nhiều, ít được cha mẹ, bề trên đỡ, dễ bị hiểu lầm; gặp Tuần/Triệt hoặc Hóa Khoa lại thành cách "phản vi kỳ cách".' });
   if (menh === 7 && !P[7].chinh.length && pos['Thái Dương'] === 3 && pos['Thái Âm'] === 11)
-    cc.push({ ten: 'Minh Châu xuất hải', tot: true, moTa: 'Mệnh vô chính diệu tại Mùi, Nhật Mão Nguyệt Hợi chiếu – đại quý cách.' });
+    cc.push({ ten: 'Minh Châu xuất hải', tot: true, moTa: 'Mệnh vô chính diệu tại Mùi, Nhật Mão Nguyệt Hợi chiếu – đại quý cách; mặt trái là phát muộn, tuổi trẻ ít ai biết.' });
   if (pos['Cự Môn'] === menh && (menh === 0 || menh === 6))
-    cc.push({ ten: 'Thạch trung ẩn ngọc', tot: true, moTa: 'Cự Môn cư Tý Ngọ – ngọc trong đá, trung niên phát sáng.' });
+    cc.push({ ten: 'Thạch trung ẩn ngọc', tot: true, moTa: 'Cự Môn cư Tý Ngọ – ngọc trong đá, trung niên phát sáng; mặt trái là tuổi trẻ bị đánh giá thấp, chịu thiệt.' });
 
   function giap(a, b) {
     var l = mod12(menh - 1), rr = mod12(menh + 1);
     return (pos[a] === l && pos[b] === rr) || (pos[a] === rr && pos[b] === l);
   }
-  if (giap('Tả Phù', 'Hữu Bật')) cc.push({ ten: 'Tả Hữu giáp Mệnh', tot: true, moTa: 'Được nhiều người giúp đỡ, quý nhân phù trợ.' });
-  if (giap('Văn Xương', 'Văn Khúc')) cc.push({ ten: 'Xương Khúc giáp Mệnh', tot: true, moTa: 'Học hành giỏi giang, có văn tài.' });
-  if (giap('Thiên Khôi', 'Thiên Việt')) cc.push({ ten: 'Khôi Việt giáp Mệnh', tot: true, moTa: 'Quý nhân hai bên, thi cử đỗ đạt.' });
-  if (giap('Kình Dương', 'Đà La')) cc.push({ ten: 'Kình Đà giáp Mệnh', tot: false, moTa: 'Bị kìm kẹp, dễ gặp tiểu nhân; cần cẩn trọng trong quyết định.' });
-  if (giap('Địa Không', 'Địa Kiếp')) cc.push({ ten: 'Không Kiếp giáp Mệnh', tot: false, moTa: 'Dễ hao tán, thăng trầm; nên làm việc ổn định, tránh đầu cơ.' });
-  if (giap('Hỏa Tinh', 'Linh Tinh')) cc.push({ ten: 'Hỏa Linh giáp Mệnh', tot: false, moTa: 'Tính khí nóng, dễ gặp chuyện bất ngờ.' });
-  if (pos['Lộc Tồn'] === menh) cc.push({ ten: 'Lộc Tồn thủ Mệnh', tot: true, moTa: 'Có lộc, biết giữ của, cẩn trọng; hơi cô độc vì bị Kình Đà giáp.' });
-  if (inTPTC('Văn Xương') && inTPTC('Văn Khúc')) cc.push({ ten: 'Văn Xương – Văn Khúc hội chiếu', tot: true, moTa: 'Học vấn, văn tài nổi bật.' });
-  if (inTPTC('Thiên Khôi') && inTPTC('Thiên Việt')) cc.push({ ten: 'Tọa quý hướng quý', tot: true, moTa: 'Khôi Việt hội chiếu – nhiều quý nhân, dễ thăng tiến.' });
-  if (inTPTC('Tả Phù') && inTPTC('Hữu Bật')) cc.push({ ten: 'Tả Hữu hội chiếu', tot: true, moTa: 'Có người trợ lực, được lòng tập thể.' });
+  if (giap('Tả Phù', 'Hữu Bật')) cc.push({ ten: 'Tả Hữu giáp Mệnh', tot: true, moTa: 'Được nhiều người giúp đỡ; mặt trái là dễ ỷ lại, nợ ân tình.' });
+  if (giap('Văn Xương', 'Văn Khúc')) cc.push({ ten: 'Xương Khúc giáp Mệnh', tot: true, moTa: 'Học hành giỏi giang, có văn tài; mặt trái là dễ nặng lý thuyết.' });
+  if (giap('Thiên Khôi', 'Thiên Việt')) cc.push({ ten: 'Khôi Việt giáp Mệnh', tot: true, moTa: 'Quý nhân hai bên, thi cử đỗ đạt; mặt trái là dễ chủ quan vì quen có người đỡ.' });
+  if (giap('Kình Dương', 'Đà La')) cc.push({ ten: 'Kình Đà giáp Mệnh', tot: false, moTa: 'Bị kìm kẹp, dễ gặp kẻ xấu ngáng đường, việc hay bị chặn hai đầu; mặt tốt là quen thận trọng.' });
+  if (giap('Địa Không', 'Địa Kiếp')) cc.push({ ten: 'Không Kiếp giáp Mệnh', tot: false, moTa: 'Dễ hao tán, thăng trầm, tiền khó giữ, đầu cơ dễ mất; mặt tốt là quen xoay xở khi thiếu.' });
+  if (giap('Hỏa Tinh', 'Linh Tinh')) cc.push({ ten: 'Hỏa Linh giáp Mệnh', tot: false, moTa: 'Tính khí nóng, dễ gặp chuyện bất ngờ, nói và làm điều phải hối; mặt tốt là phản ứng nhanh.' });
+  if (pos['Lộc Tồn'] === menh) cc.push({ ten: 'Lộc Tồn thủ Mệnh', tot: true, moTa: 'Có lộc, biết giữ của, cẩn trọng; mặt trái là cô độc, keo kiệt, bị Kình Đà giáp nên hay bị kìm.' });
+  if (inTPTC('Văn Xương') && inTPTC('Văn Khúc')) cc.push({ ten: 'Văn Xương – Văn Khúc hội chiếu', tot: true, moTa: 'Học vấn, văn tài nổi bật; mặt trái là nói hay hơn làm.' });
+  if (inTPTC('Thiên Khôi') && inTPTC('Thiên Việt')) cc.push({ ten: 'Tọa quý hướng quý', tot: true, moTa: 'Khôi Việt hội chiếu – nhiều quý nhân, dễ thăng tiến; mặt trái là tự quyết kém.' });
+  if (inTPTC('Tả Phù') && inTPTC('Hữu Bật')) cc.push({ ten: 'Tả Hữu hội chiếu', tot: true, moTa: 'Có người trợ lực, được lòng tập thể; mặt trái là tự lực kém khi không có ai.' });
   if (inTPTC('Hóa Lộc') && inTPTC('Hóa Quyền') && inTPTC('Hóa Khoa'))
-    cc.push({ ten: 'Tam Hóa liên châu', tot: true, moTa: 'Lộc – Quyền – Khoa cùng hội – danh lợi song toàn.' });
+    cc.push({ ten: 'Tam Hóa liên châu', tot: true, moTa: 'Lộc – Quyền – Khoa cùng hội – danh lợi đều có; mặt trái là bị soi xét, ghen tị nhiều.' });
   [pos['Lộc Tồn'], pos['Hóa Lộc']].forEach(function (lp, idx) {
     if (lp === pos['Thiên Mã'] && tptc.indexOf(lp) >= 0)
-      cc.push({ ten: 'Lộc Mã giao trì', tot: true, moTa: (idx ? 'Hóa Lộc' : 'Lộc Tồn') + ' gặp Thiên Mã – phát tài nhờ năng động, đi xa, buôn bán.' });
+      cc.push({ ten: 'Lộc Mã giao trì', tot: true, moTa: (idx ? 'Hóa Lộc' : 'Lộc Tồn') + ' gặp Thiên Mã – phát tài nhờ năng động, đi xa, buôn bán; mặt trái là bôn ba vất vả, xa nhà.' });
   });
   if (pos['Tham Lang'] === menh && (pos['Hỏa Tinh'] === menh || pos['Linh Tinh'] === menh))
-    cc.push({ ten: pos['Hỏa Tinh'] === menh ? 'Hỏa Tham' : 'Linh Tham', tot: true, moTa: 'Tham Lang gặp Hỏa/Linh – phát nhanh, bất ngờ, hoạnh tài.' });
+    cc.push({ ten: pos['Hỏa Tinh'] === menh ? 'Hỏa Tham' : 'Linh Tham', tot: true, moTa: 'Tham Lang gặp Hỏa/Linh – phát nhanh, bất ngờ, hoạnh tài; mặt trái là đến nhanh đi nhanh.' });
   if (pos['Địa Không'] === menh || pos['Địa Kiếp'] === menh)
-    cc.push({ ten: 'Không Kiếp thủ Mệnh', tot: false, moTa: 'Tư duy độc đáo nhưng dễ thăng trầm, "sinh bất phùng thời"; hợp nghề sáng tạo, tâm linh.' });
+    cc.push({ ten: 'Không Kiếp thủ Mệnh', tot: false, moTa: 'Tư duy độc đáo, hợp nghề sáng tạo, tâm linh; mặt trái là dễ thăng trầm, hao tán, "sinh bất phùng thời" (sinh ra không gặp thời).' });
   if (pos['Hóa Kỵ'] === menh)
-    cc.push({ ten: 'Hóa Kỵ thủ Mệnh', tot: false, moTa: 'Hay ưu tư, gặp nhiều cản trở, dễ bị hiểu lầm; kiên trì sẽ vượt qua.' });
+    cc.push({ ten: 'Hóa Kỵ thủ Mệnh', tot: false, moTa: 'Hay ưu tư, gặp nhiều cản trở, dễ bị hiểu lầm và vướng thị phi; mặt tốt là chịu khó, suy nghĩ sâu.' });
   if (pos['Kình Dương'] === menh && (menh === 6))
-    cc.push({ ten: 'Mã đầu đới kiếm', tot: null, moTa: 'Kình Dương cư Ngọ – uy dũng trấn biên, nên điềm tĩnh và cẩn trọng khi hành động.' });
-  if (!cc.length) cc.push({ ten: 'Không có cách cục đặc biệt', tot: null, moTa: 'Lá số bình ổn – thành bại chủ yếu do nỗ lực và vận hạn.' });
+    cc.push({ ten: 'Mã đầu đới kiếm', tot: null, moTa: 'Kình Dương cư Ngọ – uy dũng trấn biên; mặt trái là dễ va chạm, thương tích khi nóng vội.' });
+  if (!cc.length) cc.push({ ten: 'Không có cách cục đặc biệt', tot: null, moTa: 'Lá số bình ổn – không có cách tốt nổi bật, cũng không có cách xấu nặng; thành bại chủ yếu do nỗ lực và vận hạn.' });
 
   // 4. Luận 12 cung
   for (var k = 0; k < 12; k++) {
@@ -878,7 +878,7 @@ function tuviLuanGiai_(chart) {
     }
     if (C.cat.length) lines.push('Cát tinh: ' + C.cat.map(function (s) { return s.n; }).join(', ') + '.');
     if (C.hung.length) lines.push('Hung tinh: ' + C.hung.map(function (s) { return s.n; }).join(', ') + '.');
-    if (C.tuan || C.triet) lines.push('Gặp ' + [C.tuan ? 'Tuần' : '', C.triet ? 'Triệt' : ''].filter(Boolean).join(' & ') + ': tốt xấu đều giảm, hay trắc trở ở giai đoạn đầu.');
+    if (C.tuan || C.triet) lines.push('Gặp ' + [C.tuan ? 'Tuần' : '', C.triet ? 'Triệt' : ''].filter(Boolean).join(' & ') + ': tốt xấu đều giảm – điểm mạnh kém phát huy, điểm xấu cũng nhẹ đi; hay trắc trở ở giai đoạn đầu.');
     var d = C.diem;
     var danhGia = d >= 5 ? 'Rất tốt' : d >= 2.5 ? 'Tốt' : d >= 0.5 ? 'Khá' : d > -1.5 ? 'Trung bình' : 'Cần lưu ý';
     out.cung.push({ cung: cungTen, chi: CHI[pi], yNghia: Y_NGHIA_CUNG[cungTen], lines: lines, diem: d, danhGia: danhGia, isThan: !!C.isThan });
@@ -898,12 +898,12 @@ function tuviLuanGiai_(chart) {
       (T.chinh.length ? saoMoTa(I.tieuHanNow) : 'vô chính diệu') + '. Lưu tinh: ' + (T.luu.join(', ') || 'không') + '.');
     var bad = T.luu.filter(function (x) { return /Kình|Đà|Kỵ|Tang|Hổ|Khốc|Hư/.test(x); });
     var good = T.luu.filter(function (x) { return /Lộc|Quyền|Khoa|Mã/.test(x); });
-    if (good.length) out.han.push('Năm có ' + good.join(', ') + ' – thuận lợi cho tài lộc, công danh, di chuyển.');
-    if (bad.length) out.han.push('Cần cẩn trọng vì ' + bad.join(', ') + ' – tránh tranh chấp, giữ sức khỏe, cẩn thận khi đi lại.');
+    if (good.length) out.han.push('Năm có ' + good.join(', ') + ' – thuận lợi cho tài lộc, công danh, di chuyển; mặt trái là dễ chủ quan, chi tiêu theo đà.');
+    if (bad.length) out.han.push('Cần cẩn trọng vì ' + bad.join(', ') + ' – dễ có tranh chấp, sức khỏe sa sút hoặc sự cố khi đi lại.');
   }
   var ttPos = mod12(I.viewYear + 8);
-  if (ttPos === mod12(CHI.indexOf(I.chiNam))) out.han.push('Năm tuổi (trùng Thái Tuế) – nên sống chậm, tránh quyết định lớn vội vàng.');
-  if (mod12(ttPos - CHI.indexOf(I.chiNam)) === 6) out.han.push('Năm xung Thái Tuế – dễ biến động, thay đổi chỗ ở/công việc.');
+  if (ttPos === mod12(CHI.indexOf(I.chiNam))) out.han.push('Năm tuổi (trùng Thái Tuế) – dễ có thay đổi và áp lực ngoài ý muốn; quyết vội thường phải trả giá.');
+  if (mod12(ttPos - CHI.indexOf(I.chiNam)) === 6) out.han.push('Năm xung Thái Tuế – dễ biến động, thay đổi chỗ ở/công việc ngoài ý muốn, va chạm với người xung quanh.');
 
   return out;
 }

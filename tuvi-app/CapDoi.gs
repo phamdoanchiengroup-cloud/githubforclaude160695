@@ -25,7 +25,7 @@ var CD_TRONG_SO = { tuoi: 0.18, battu: 0.24, tuvi: 0.18, chiemTinh: 0.18, thanSo
 var CD_KIM_LAU = { 1: 'Kim Lâu Thân (theo tục lệ, liên quan bản thân)', 3: 'Kim Lâu Thê (theo tục lệ, liên quan người vợ)', 6: 'Kim Lâu Tử (theo tục lệ, liên quan con cái)', 8: 'Kim Lâu Súc (theo tục lệ, liên quan kinh tế)' };
 /** Cặp hành tinh so sánh: [của người 1, của người 2, trọng số, lĩnh vực, ý nghĩa] */
 var CD_CAP_HT = [
-  ['sun', 'moon', 2, 'tinh', 'cặp kinh điển của hôn nhân – một người soi đường, một người nâng đỡ cảm xúc'],
+  ['sun', 'moon', 2, 'tinh', 'cặp kinh điển của hôn nhân – một người soi đường, một người nâng đỡ cảm xúc; mặt trái là dễ thành một người quyết, một người chiều'],
   ['venus', 'mars', 1.8, 'tinh', 'sức hút, đam mê và sự lãng mạn'],
   ['moon', 'moon', 1.5, 'nha', 'nhịp cảm xúc và thói quen sinh hoạt hằng ngày'],
   ['venus', 'moon', 1.2, 'tinh', 'sự dịu dàng, cảm giác được yêu thương'],
@@ -35,7 +35,7 @@ var CD_CAP_HT = [
   ['saturn', 'sun', 1.2, 'cam', 'cam kết, trách nhiệm – cũng là áp lực'],
   ['saturn', 'moon', 1.1, 'cam', 'gắn bó lâu dài nhưng dễ khô khan cảm xúc'],
   ['saturn', 'venus', 1, 'cam', 'chung thủy, bền lâu – căng thì lạnh nhạt'],
-  ['jupiter', 'sun', 0.9, 'nghiep', 'người này mở rộng cơ hội, may mắn cho người kia'],
+  ['jupiter', 'sun', 0.9, 'nghiep', 'người này mở rộng cơ hội cho người kia; mặt trái là dễ chiều nhau quá, cùng tiêu rộng tay'],
   ['jupiter', 'mc', 0.7, 'nghiep', 'nâng đỡ sự nghiệp, danh tiếng'],
   ['mars', 'mars', 0.8, 'giao', 'cách hành động – có lúc tranh luận khi căng'],
   ['sun', 'asc', 0.8, 'tinh', 'ấn tượng đầu tiên, cảm giác "đúng người"'],
@@ -85,7 +85,7 @@ function cdTuoi_(A, B, tA, tB) {
     chiTiet: [tA + ' tuổi ' + CAN[sA.can] + ' ' + CHI[sA.chi] + ' (' + sA.napAm.ten + ', cung phi ' + sA.quai + ') – ' + tB + ' tuổi ' + ab.canChi + ' (' + ab.napAm + ', cung phi ' + ab.cungPhi + ').']
       .concat(ab.chiTiet.slice(0, 5)).concat(['Chấm theo ' + tA + ': ' + ab.diem + '/10 · theo ' + tB + ': ' + ba.diem + '/10.']),
     tot: g.tot.map(function (t) { return 'Tuổi: ' + t.replace(/ \([\d.]+\)$/, ''); }),
-    xau: g.xau.map(function (t) { return 'Tuổi: ' + t.replace(/ \([\d.]+\)$/, '') + ' – cần nhường nhịn, tránh quyết định lớn khi đang giận.'; }) };
+    xau: g.xau.map(function (t) { return 'Tuổi: ' + t.replace(/ \([\d.]+\)$/, '') + ' – dễ cãi vã, giận nhau dai; quyết chuyện lớn lúc đang giận dễ hối hận.'; }) };
 }
 
 /* ---------------- 2. Bát Tự hợp hôn ---------------- */
@@ -98,28 +98,28 @@ function cdBatTu_(A, B, tA, tB) {
     if (q === 'sinh') { d += 1; tot.push(tA + ' (' + a.nhatChuHanh + ') sinh cho ' + tB + ' (' + b.nhatChuHanh + '): ' + tA + ' hay chăm lo, vun vén cho ' + tB + '.'); }
     else if (q === 'duoc_sinh') { d += 1; tot.push(tB + ' (' + b.nhatChuHanh + ') sinh cho ' + tA + ' (' + a.nhatChuHanh + '): ' + tB + ' hay chăm lo, vun vén cho ' + tA + '.'); }
     else if (q === 'binh') { d += 0.4; ct.push('Hai nhật chủ cùng hành ' + a.nhatChuHanh + ': giống nhau nên dễ đồng cảm, nhưng cũng dễ "không ai chịu ai".'); }
-    else { d -= 0.8; xau.push('Nhật chủ ' + a.nhatChuHanh + ' – ' + b.nhatChuHanh + ' tương khắc: cách nghĩ khác nhau, cần tôn trọng khác biệt thay vì cố thay đổi nhau.'); }
+    else { d -= 0.8; xau.push('Nhật chủ ' + a.nhatChuHanh + ' – ' + b.nhatChuHanh + ' tương khắc: cách nghĩ khác nhau, dễ cố thay đổi nhau và thấy không được chấp nhận.'); }
   }
   var z = pnQuanHeChi_(a.pillars[2].chi, b.pillars[2].chi), zt = 'Cung phu thê (nhật chi) ' + CHI[a.pillars[2].chi] + ' – ' + CHI[b.pillars[2].chi] + ': ' + z.t;
   d += (z.d - 1) * 1.3;
   if (z.d >= 2) tot.push(zt + ' – trong nhà hòa thuận, gắn bó.');
-  else if (z.d === 0) xau.push(zt + ' – dễ va chạm trong sinh hoạt, "mỗi người một ý"; nên có không gian riêng và phân việc rõ.');
-  else if (z.d < 1) xau.push(zt + ' – hay để bụng chuyện nhỏ; nói thẳng nhẹ nhàng sẽ tốt hơn im lặng.');
+  else if (z.d === 0) xau.push(zt + ' – dễ va chạm trong sinh hoạt, "mỗi người một ý", chuyện nhỏ thành cãi nhau. Gợi ý: phân việc rõ.');
+  else if (z.d < 1) xau.push(zt + ' – hay để bụng chuyện nhỏ, tích lâu thành khoảng cách, chiến tranh lạnh.');
   else ct.push(zt + '.');
   // Dụng thần trao đổi: ngũ hành mạnh nhất của người này có phải hỷ dụng của người kia
   var mA = cdHanhManh_(a), mB = cdHanhManh_(b), vuong = { ab: 0, ba: 0 };
   function trao(x, y, tx, ty, my) {
     if (x.goiY.hy.indexOf(my) >= 0) { d += 1.1; tot.push(ty + ' mang năng lượng ' + my + ' – đúng hỷ dụng thần của ' + tx + ': ở cạnh ' + ty + ', ' + tx + ' vững vàng và vượng hơn ("vượng phu / ích thê").'); return 1; }
-    if (x.goiY.ky.indexOf(my) >= 0) { d -= 0.7; xau.push(ty + ' mang năng lượng ' + my + ' – là kỵ thần của ' + tx + ': ' + tx + ' có thể thấy áp lực khi ở gần lâu; cân bằng bằng màu sắc, hướng nhà hợp hành ' + x.goiY.dung + '.'); return -1; }
+    if (x.goiY.ky.indexOf(my) >= 0) { d -= 0.7; xau.push(ty + ' mang năng lượng ' + my + ' – là kỵ thần của ' + tx + ': ' + tx + ' dễ thấy áp lực, mệt khi ở gần lâu; theo phong thủy có thể cân bằng bằng màu sắc, hướng nhà hợp hành ' + x.goiY.dung + '.'); return -1; }
     return 0;
   }
   vuong.ab = trao(a, b, tA, tB, mB); vuong.ba = trao(b, a, tB, tA, mA);
   var ng = pnQuanHeChi_(a.pillars[1].chi, b.pillars[1].chi);
-  if (ng.d === 0) { d -= 0.4; xau.push('Nguyệt trụ ' + CHI[a.pillars[1].chi] + ' – ' + CHI[b.pillars[1].chi] + ' xung: nếp nhà hai bên khác nhau – cần khéo khi ra mắt, về chung.'); }
+  if (ng.d === 0) { d -= 0.4; xau.push('Nguyệt trụ ' + CHI[a.pillars[1].chi] + ' – ' + CHI[b.pillars[1].chi] + ' xung: nếp nhà hai bên khác nhau, dễ va chạm với gia đình bên kia, nhất là khi về chung.'); }
   else if (ng.d >= 2) { d += 0.4; tot.push('Nguyệt trụ ' + ng.t.toLowerCase() + ': hai gia đình dễ hòa hợp, ủng hộ hai người.'); }
   var vA = /vượng|cường/i.test(a.cuong), vB = /vượng|cường/i.test(b.cuong);
-  if (vA !== vB) { d += 0.5; tot.push('Một người thân vượng, một người thân nhược: một cứng một mềm – bù trừ tốt, dễ phân vai.'); }
-  else ct.push(vA ? 'Cả hai đều thân vượng: đều mạnh, đều có chính kiến – cần phân rõ việc ai quyết.' : 'Cả hai đều thân nhược: tình cảm, dễ nhường nhau nhưng dễ cùng do dự – nên có người chủ động kế hoạch.');
+  if (vA !== vB) { d += 0.5; tot.push('Một người thân vượng, một người thân nhược: một cứng một mềm – bù trừ tốt; mặt trái là người mềm dễ bị lấn, chịu thiệt.'); }
+  else ct.push(vA ? 'Cả hai đều thân vượng: đều mạnh, đều có chính kiến – hay giành phần quyết, va chạm gay gắt.' : 'Cả hai đều thân nhược: tình cảm, dễ nhường nhau nhưng dễ cùng do dự, việc lớn hay lỡ vì không ai quyết.');
   return { k: 'battu', ten: 'Bát Tự hợp hôn', he: 'Bát Tự', diem: cdKep_(d), chiTiet: ct.concat(tot, xau), tot: tot, xau: xau, vuong: vuong, manh: [mA, mB] };
 }
 
@@ -128,13 +128,13 @@ function cdTuVi_(A, B, tA, tB) {
   var a = A.tuvi, b = B.tuvi, d = 5, ct = [], tot = [], xau = [];
   var z = pnQuanHeChi_(a.info.menh, b.info.menh), zt = 'Cung Mệnh ' + CHI[a.info.menh] + ' – ' + CHI[b.info.menh] + ': ' + z.t;
   d += (z.d - 1) * 1.2;
-  if (z.d >= 2) tot.push(zt + ' – cùng "tần số", dễ đồng hành lâu dài.'); else if (z.d === 0) xau.push(zt + ' – hai cá tính đối lập, hút nhau nhưng có lúc tranh luận; nên lắng nghe nhau.'); else ct.push(zt + '.');
+  if (z.d >= 2) tot.push(zt + ' – cùng "tần số", dễ đồng hành lâu dài.'); else if (z.d === 0) xau.push(zt + ' – hai cá tính đối lập, hút nhau nhưng hay tranh luận, khó nhường.'); else ct.push(zt + '.');
   function khop(x, y, tx, ty) {
     var pt = thCungTheoTen_(x, 'Phu Thê'), sx = thChinhTinh_(x, pt).map(function (s) { return s.n; });
     var my = y.palaces[y.info.menh].chinh.map(function (s) { return s.n; }), chung = my.filter(function (n) { return sx.indexOf(n) >= 0; });
     if (chung.length) { d += 1.4; tot.push('Chính tinh Mệnh của ' + ty + ' (' + chung.join(', ') + ') trùng sao cung Phu Thê của ' + tx + ': ' + ty + ' đúng "mẫu người" lá số ' + tx + ' chờ đợi.'); }
     else if (pnQuanHeChi_(pt.chi, y.info.menh).d >= 2 || pt.chi === y.info.menh) { d += 0.7; tot.push('Cung Phu Thê của ' + tx + ' (' + CHI[pt.chi] + ') hợp với cung Mệnh của ' + ty + ': duyên tiền định, dễ gắn bó.'); }
-    if (pt.tuan || pt.triet) { d -= 0.4; xau.push('Phu Thê của ' + tx + ' gặp ' + (pt.triet ? 'Triệt' : 'Tuần') + ': giai đoạn đầu có thể cần thêm thời gian vun đắp – kiên nhẫn thì bền.'); }
+    if (pt.tuan || pt.triet) { d -= 0.4; xau.push('Phu Thê của ' + tx + ' gặp ' + (pt.triet ? 'Triệt' : 'Tuần') + ': giai đoạn đầu trắc trở, dễ lỡ dở hoặc chậm thành.'); }
   }
   khop(a, b, tA, tB); khop(b, a, tB, tA);
   var ptA = diem10_(thDiemCung_(a, 'Phu Thê')), ptB = diem10_(thDiemCung_(b, 'Phu Thê'));
@@ -162,7 +162,7 @@ function cdChiemTinh_(A, B, tA, tB) {
       else diem = /sun.*moon|moon.*sun|venus.*mars|mars.*venus|asc/.test(k1 + '.' + k2) ? 0.4 : -0.6;
       var chat = 0.55 + 0.45 * (1 - lech / (g[1] + 1)), v = diem * w * chat;
       S += v;
-      ds.push({ v: v, lv: lv, t: (p1.ten || k1) + ' của ' + tx + ' ' + g[2] + ' ' + (p2.ten || k2) + ' của ' + ty + ' (lệch ' + Math.round(lech) + '°): ' + y + (diem > 0.5 ? ' – hài hòa.' : diem > 0 ? ' – gắn kết mạnh nhưng cần giữ nhịp.' : ' – căng, cần học cách nhường.') });
+      ds.push({ v: v, lv: lv, t: (p1.ten || k1) + ' của ' + tx + ' ' + g[2] + ' ' + (p2.ten || k2) + ' của ' + ty + ' (lệch ' + Math.round(lech) + '°): ' + y + (diem > 0.5 ? ' – hài hòa.' : diem > 0 ? ' – gắn kết mạnh nhưng dễ ghen, kiểm soát, cảm xúc dồn dập.' : ' – căng, cần học cách nhường.') });
       return;
     }
   }
@@ -181,8 +181,8 @@ function cdChiemTinh_(A, B, tA, tB) {
   try { if (typeof ctSoSanh_ === 'function') SS = ctSoSanh_(A.moRong.chiemTinh, B.moRong.chiemTinh, tA, tB); } catch (e) { SS = null; }
   if (SS) { SS.nhaAB.concat(SS.nhaBA).forEach(function (x) { S += x.nha === 7 || x.nha === 5 ? 0.3 : x.nha === 12 ? -0.1 : 0.1; }); }
   return { k: 'chiemTinh', ten: 'Chiêm tinh so sánh', he: 'Chiêm tinh', diem: cdKep_(5 + S * 0.42), soSanh: SS,
-    chiTiet: [ntT + (ntA === ntB || HOP[ntA] === ntB ? ' – nguyên tố hòa hợp.' : ' – nguyên tố khác nhau, bổ sung cho nhau nếu biết lắng nghe.'),
-      'Mặt Trăng ' + tA + ' ở ' + pa.moon.cungTen + ' – ' + tB + ' ở ' + pb.moon.cungTen + (mA === mB || HOP[mA] === mB ? ': nhu cầu cảm xúc giống nhau.' : ': cách được vỗ về khác nhau – hỏi nhau "em/anh cần gì lúc buồn".')]
+    chiTiet: [ntT + (ntA === ntB || HOP[ntA] === ntB ? ' – nguyên tố hòa hợp.' : ' – nguyên tố khác nhau, khó hiểu nhịp của nhau, dễ thấy bị lạc lõng.'),
+      'Mặt Trăng ' + tA + ' ở ' + pa.moon.cungTen + ' – ' + tB + ' ở ' + pb.moon.cungTen + (mA === mB || HOP[mA] === mB ? ': nhu cầu cảm xúc giống nhau.' : ': cách được vỗ về khác nhau – lúc buồn dễ thấy người kia không hiểu mình.')]
       .concat(ds.slice(0, 10).map(function (x) { return x.t; }))
       .concat(SS ? SS.tomTat.concat([SS.composite.t, SS.davison.t]) : []),
     tot: tot.slice(0, 5), xau: xau.slice(0, 4), goc: ds };
@@ -198,7 +198,7 @@ function cdThanSo_(A, B, tA, tB) {
     var cap = [na, nb].sort().join('-');
     d = { '248-369': 7, '157-369': 6.2, '157-248': 5 }[cap] || 6;
     y = 'Số ' + ga + ' (' + CD_NHOM_SO[na] + ') & số ' + gb + ' (' + CD_NHOM_SO[nb] + '): ' +
-      ({ '248-369': 'người thực tế giữ nền, người cảm xúc giữ lửa – bổ trợ tốt.', '157-369': 'một người lý trí, một người cảm xúc – cần kiên nhẫn giải thích cho nhau.', '157-248': 'cả hai đều cứng, ít bày tỏ cảm xúc – cần chủ động nói lời yêu thương.' }[cap] || 'khác nhóm, cần dung hòa.');
+      ({ '248-369': 'người thực tế giữ nền, người cảm xúc giữ lửa – bổ trợ tốt; mặt trái là hay khác nhau về cách tiêu tiền.', '157-369': 'một người lý trí, một người cảm xúc – dễ thấy người kia lạnh lùng hoặc quá nhạy cảm.', '157-248': 'cả hai đều cứng, ít bày tỏ cảm xúc – tình cảm dễ khô, lâu dần như bạn cùng nhà.' }[cap] || 'khác nhóm, cần dung hòa.');
   }
   (d >= 7 ? tot : d < 6 ? xau : []).push('Thần số: ' + y);
   var ct = [y];
@@ -207,7 +207,7 @@ function cdThanSo_(A, B, tA, tB) {
     if (lh) { d += 0.5; tot.push('Số linh hồn ' + a.linhHon + ' & ' + b.linhHon + ' cùng nhóm: khao khát sâu bên trong giống nhau.'); }
     ct.push('Số linh hồn: ' + tA + ' ' + a.linhHon + ' · ' + tB + ' ' + b.linhHon + (lh ? ' – đồng điệu.' : '.'));
   }
-  [[a, tA], [b, tB]].forEach(function (p) { if ([11, 22, 33].indexOf(p[0].duongDoi) >= 0) ct.push(p[1] + ' mang số bậc thầy ' + p[0].duongDoi + ': nhạy cảm, lý tưởng cao – cần được thấu hiểu.'); });
+  [[a, tA], [b, tB]].forEach(function (p) { if ([11, 22, 33].indexOf(p[0].duongDoi) >= 0) ct.push(p[1] + ' mang số bậc thầy ' + p[0].duongDoi + ': nhạy cảm, lý tưởng cao – dễ thất vọng về nhau.'); });
   return { k: 'thanSo', ten: 'Thần số học', he: 'Thần số học', diem: cdKep_(d), chiTiet: ct, tot: tot, xau: xau };
 }
 
@@ -224,14 +224,14 @@ function cdHD_(A, B, tA, tB) {
   var d = 5 + Math.min(3, em.length * 0.75) + Math.min(0.9, dong.length * 0.3) - Math.min(1.5, thoa.length * 0.5);
   if (em.length) tot.push(em.length + ' kênh điện từ (' + em.slice(0, 3).map(function (c) { return c[2]; }).join(', ') + '): mỗi người giữ một nửa – ở cạnh nhau thấy "được hoàn thiện", sức hút mạnh.');
   if (dong.length) tot.push(dong.length + ' kênh đồng hành (' + dong.slice(0, 2).map(function (c) { return c[2]; }).join(', ') + '): hiểu nhau như bạn thân.');
-  if (thoa.length) xau.push(thoa.length + ' kênh thỏa hiệp (' + thoa.slice(0, 2).map(function (c) { return c[2]; }).join(', ') + '): một người hay "lấn" người kia ở chủ đề này – nên nói ra điều mình cần để tránh ấm ức.');
+  if (thoa.length) xau.push(thoa.length + ' kênh thỏa hiệp (' + thoa.slice(0, 2).map(function (c) { return c[2]; }).join(', ') + '): một người hay "lấn" người kia ở chủ đề này, người bị lấn dễ ấm ức lâu.');
   if (ap.length) ct.push(ap.length + ' kênh áp đảo: ở các chủ đề đó một người dẫn dắt, người kia học hỏi.');
   var L = [a.loai, b.loai].sort().join('+'), gen = /Generator/;
   var cap = gen.test(a.loai) && b.loai === 'Projector' || gen.test(b.loai) && a.loai === 'Projector' ? [0.5, 'Generator & Projector: người có năng lượng, người biết dẫn hướng – cặp bổ trợ kinh điển; Projector cần được "mời" góp ý.'] :
-    gen.test(a.loai) && gen.test(b.loai) ? [0.3, 'Cả hai đều là Generator: năng lượng bền, cùng làm cùng vui; hãy hỏi nhau câu có/không để nghe phản hồi xương cùng.'] :
+    gen.test(a.loai) && gen.test(b.loai) ? [0.3, 'Cả hai đều là Generator: năng lượng bền, cùng làm cùng vui; mặt trái là làm việc không hợp thì cả hai cùng bực bội.'] :
     /Manifestor/.test(L) ? [0, 'Có Manifestor: người này cần thông báo trước khi hành động để người kia không bị bất ngờ.'] :
     /Reflector/.test(L) ? [0, 'Có Reflector: việc lớn nên để người Reflector có khoảng một chu kỳ trăng (28 ngày) để quyết.'] :
-    a.loai === 'Projector' && b.loai === 'Projector' ? [0.1, 'Hai Projector: thấu hiểu sâu nhưng cần nghỉ ngơi đủ, tránh cùng kiệt sức.'] : [0, ''];
+    a.loai === 'Projector' && b.loai === 'Projector' ? [0.1, 'Hai Projector: thấu hiểu sâu nhưng cả hai đều ít sinh lực bền, dễ cùng kiệt sức và cáu nhau.'] : [0, ''];
   d += cap[0]; if (cap[1]) ct.push(cap[1]);
   var cungMo = Object.keys(HD_CENTERS).filter(function (c) { return !a.dinh[c] && !b.dinh[c]; });
   if (cungMo.length) ct.push('Cùng mở trung tâm ' + cungMo.map(function (c) { return HD_CENTERS[c].ten.split(' (')[0]; }).join(', ') + ': ở những chủ đề này cả hai dễ cùng bị môi trường cuốn theo – nên có người thứ ba khách quan khi cần quyết.');
@@ -301,7 +301,7 @@ function cdConVoi_(Y, P, tenP, hanhManhCon) {
   var m = q === 'sinh' ? [2, 'Mệnh con (' + na.ten + ') sinh mệnh ' + tenP + ' (' + I.banMenh.ten + '): con mang phúc, hiếu thuận với ' + tenP + '.'] :
     q === 'binh' ? [1.5, 'Mệnh con cùng hành ' + pm + ' với ' + tenP + ': tính giống nhau, dễ hiểu nhau.'] :
     q === 'duoc_sinh' ? [1.5, 'Mệnh ' + tenP + ' (' + I.banMenh.ten + ') sinh mệnh con: ' + tenP + ' hết lòng nâng đỡ, con được che chở.'] :
-    q === 'bi_khac' ? [0.5, 'Mệnh ' + tenP + ' khắc mệnh con: ' + tenP + ' dễ nghiêm khắc, con chịu áp lực – nên mềm mỏng.'] :
+    q === 'bi_khac' ? [0.5, 'Mệnh ' + tenP + ' khắc mệnh con: ' + tenP + ' dễ nghiêm khắc, con chịu áp lực, dễ chống đối hoặc thu mình.'] :
     [0, 'Mệnh con (' + na.ten + ') khắc mệnh ' + tenP + ': con cá tính, hay trái ý ' + tenP + ' – cần kiên nhẫn.'];
   var c = pnQuanHeCan_(I.yCan, can), z = pnQuanHeChi_(I.yChi, chi), bonus = 0, ly = [m[1], 'Thiên can ' + CAN[I.yCan] + ' – ' + CAN[can] + ': ' + c.t + '.', 'Địa chi ' + CHI[I.yChi] + ' – ' + CHI[chi] + ': ' + z.t + '.'];
   var hy = P.battu.goiY.hy, ky = P.battu.goiY.ky;
@@ -309,7 +309,7 @@ function cdConVoi_(Y, P, tenP, hanhManhCon) {
   else if (ky.indexOf(CAN_HANH[can]) >= 0) { bonus -= 0.4; ly.push('Can năm của con (' + CAN_HANH[can] + ') là kỵ thần của ' + tenP + '.'); }
   if (hanhManhCon) {
     if (hy.indexOf(hanhManhCon) >= 0) { bonus += 0.8; ly.push('Ngũ hành mạnh nhất trong Bát Tự của con (' + hanhManhCon + ') là hỷ dụng của ' + tenP + ': con là "phúc tinh" của ' + tenP + '.'); }
-    else if (ky.indexOf(hanhManhCon) >= 0) { bonus -= 0.5; ly.push('Ngũ hành mạnh của con (' + hanhManhCon + ') là kỵ thần của ' + tenP + ': hai người dễ "nghịch nhau" – cần thêm thời gian thấu hiểu.'); }
+    else if (ky.indexOf(hanhManhCon) >= 0) { bonus -= 0.5; ly.push('Ngũ hành mạnh của con (' + hanhManhCon + ') là kỵ thần của ' + tenP + ': hai người dễ "nghịch nhau", hay trái ý.'); }
   }
   return { ten: tenP, diem: cdKep_((m[0] + c.d + z.d) / 6 * 8 + 1 + bonus), ly: ly };
 }
@@ -347,7 +347,7 @@ function cdConCai_(A, B, tA, tB, bt, con, td) {
   var me = cha === ca ? cb : cha === cb ? ca : null;
   var pTrai = cha ? Math.round(cha.chiSo.pTrai * 0.6 + me.chiSo.pTrai * 0.4) : Math.round((ca.chiSo.pTrai + cb.chiSo.pTrai) / 2);
   if (/xung/.test(bt.chiTiet.join(' ')) && /nhật chi|phu thê/i.test(bt.xau.join(' '))) S -= 0.15;
-  var soCon = S > 0.4 ? 'theo cổ học, duyên con cái khá rõ' : S > 0.05 ? 'theo cổ học, duyên con cái khá tốt' : S > -0.25 ? 'theo cổ học, duyên con cái ở mức vừa' : 'con cái là chuyện cần thời gian và sự vun đắp – chủ động chăm sóc sức khỏe hai vợ chồng';
+  var soCon = S > 0.4 ? 'theo cổ học, duyên con cái khá rõ' : S > 0.05 ? 'theo cổ học, duyên con cái khá tốt' : S > -0.25 ? 'theo cổ học, duyên con cái ở mức vừa' : 'theo cổ học, duyên con cái mỏng: dễ muộn, ít con hoặc trắc trở; nên khám sức khỏe sinh sản sớm nếu mong con';
   var duKien = S > 0.4 ? 3 : S > 0.05 ? 2.5 : S > -0.25 ? 2 : 1.5;
   function netCon(c) { var k = (c.ketLuan || []).filter(function (x) { return /^Tính cách con/.test(x); })[0]; return k ? k.replace(/^Tính cách con:\s*/, '').replace(/\.$/, '') : ''; }
   var kl = ['Đường con cái khi ghép hai lá số: ' + soCon + '.'];
@@ -356,7 +356,7 @@ function cdConCai_(A, B, tA, tB, bt, con, td) {
     kl.push('Hai bạn đã có ' + con.length + ' con (' + con.map(function (c) { return c.ten + (c.gioiTinh ? ' – ' + (c.gioiTinh === 'trai' ? 'trai' : 'gái') : '') + ', ' + c.nam; }).join('; ') + '). ' +
       (them >= 0.9 ? 'Lá số còn "duyên con" – nếu hai bạn mong muốn thì vẫn thuận.' : them > 0.2 ? 'Lá số vẫn để ngỏ chuyện thêm con nếu hai bạn mong muốn.' : 'Nếu sinh thêm, nên chọn năm hợp tuổi và chủ động chăm sóc sức khỏe hai vợ chồng.'));
   }
-  kl.push('Trai – gái: cổ học có cách luận nghiêng về trai hay gái, nhưng đó chỉ là tham khảo – mỗi đứa con đều là niềm vui như nhau.');
+  kl.push('Trai – gái: cổ học có cách luận nghiêng về trai hay gái, nhưng đó chỉ là tham khảo, độ tin thấp.');
   kl.push('Nét con thừa hưởng từ ' + tA + ': ' + (netCon(ca) || 'hài hòa') + '.', 'Nét con thừa hưởng từ ' + tB + ': ' + (netCon(cb) || 'hài hòa') + '.');
   // Con đã có: tuổi con với cha mẹ + đối chiếu lá số
   var daCo = con.map(function (c) {
@@ -369,7 +369,7 @@ function cdConCai_(A, B, tA, tB, bt, con, td) {
   });
   if (daCo.length > 1) for (var i = 1; i < daCo.length; i++) {
     var z = pnQuanHeChi_(((daCo[i - 1].namAm - 4) % 12 + 12) % 12, ((daCo[i].namAm - 4) % 12 + 12) % 12);
-    daCo[i].anhEm = daCo[i - 1].ten + ' & ' + daCo[i].ten + ': ' + z.t + (z.d >= 2 ? ' – anh chị em thương nhau, hay bênh nhau.' : z.d === 0 ? ' – tính khác nhau, cha mẹ nên công bằng để các con gần nhau.' : '.');
+    daCo[i].anhEm = daCo[i - 1].ten + ' & ' + daCo[i].ten + ': ' + z.t + (z.d >= 2 ? ' – anh chị em thương nhau, hay bênh nhau.' : z.d === 0 ? ' – tính khác nhau, các con dễ so bì, tranh nhau; cha mẹ thiên vị thì dễ xa nhau.' : '.');
   }
   // Gợi ý năm sinh con hợp tuổi: điểm hợp tuổi với cha mẹ + xác suất hai lá số + hòa hợp với anh chị
   var dsSC = td && td.sinhCon ? td.sinhCon.nam : [], mxP = Math.max.apply(null, dsSC.map(function (x) { return x.pct; }).concat([1]));
@@ -409,7 +409,7 @@ function cdLinhVuc_(A, B, tA, tB, P) {
   if (bt.vuong.ba < 0) tc.y.push('◇ Năng lượng ' + bt.manh[0] + ' của ' + tA + ' là kỵ thần của ' + tB + ': việc tiền lớn nên để ' + tB + ' tự quyết phần của mình.');
   var tl = chung('taiLoc'), ht = chung('taiChinh');
   if (tl.length) tc.y.push('✓ Năm cả hai cùng có tín hiệu tài lộc (≥3 hệ mỗi người): ' + namTxt(tl) + ' – hợp để cùng đầu tư, mua nhà, mở việc chung.');
-  if (ht.length) tc.y.push('✗ Năm cả hai nên quản lý tài chính chặt: ' + namTxt(ht) + ' – tránh vay mượn lớn, bảo lãnh, đầu tư mạo hiểm; tích lũy đều.');
+  if (ht.length) tc.y.push('✗ Năm cả hai dễ hao tiền: ' + namTxt(ht) + ' – dễ hao tiền, chi lớn ngoài dự kiến; vay mượn, bảo lãnh, đầu tư mạo hiểm lúc này dễ mất.');
   // Công danh
   var qA = d10(a, 'Quan Lộc'), qB = d10(b, 'Quan Lộc'), cd = { diem: cdKep_((qA + qB) / 2), y: [] };
   cd.y.push('Quan Lộc (thang 10): ' + tA + ' ' + qA + ' · ' + tB + ' ' + qB + '.');
@@ -420,7 +420,7 @@ function cdLinhVuc_(A, B, tA, tB, P) {
   quyNhan(A, B, tA, tB, bt.manh[1]); quyNhan(B, A, tB, tA, bt.manh[0]);
   gocLv('nghiep').forEach(function (t) { cd.y.push('☉ ' + t); });
   var ql = chung('quanLoc');
-  if (ql.length) cd.y.push('✓ Năm cả hai cùng có chuyển động sự nghiệp: ' + namTxt(ql) + ' – nên bàn trước việc ai "tăng tốc", ai giữ hậu phương.');
+  if (ql.length) cd.y.push('✓ Năm cả hai cùng có chuyển động sự nghiệp: ' + namTxt(ql) + ' – dễ cùng bận, việc nhà bị bỏ, va chạm vì ai phải lùi.');
   var riengA = Object.keys(cdNamChuDe_(A, 'quanLoc', vy, vy + 10)), riengB = Object.keys(cdNamChuDe_(B, 'quanLoc', vy, vy + 10));
   if (riengA.length || riengB.length) cd.y.push('Năm thăng tiến riêng (10 năm tới): ' + tA + ' ' + (riengA.slice(0, 4).join(', ') || '—') + ' · ' + tB + ' ' + (riengB.slice(0, 4).join(', ') || '—') + ' – năm của người này thì người kia làm hậu phương.');
   // Gia đạo
@@ -429,7 +429,7 @@ function cdLinhVuc_(A, B, tA, tB, P) {
   bt.tot.concat(bt.xau).filter(function (t) { return /phu thê|Nguyệt trụ/i.test(t); }).forEach(function (t) { gd.y.push((/xung|hại|hình|để bụng/.test(t) ? '✗ ' : '✓ ') + t); });
   gocLv('nha').concat(gocLv('cam')).slice(0, 3).forEach(function (t) { gd.y.push('☽ ' + t); });
   var gdx = chung('giaDao'), sk = chung('sucKhoe');
-  if (gdx.length) { gd.diem = cdKep_(gd.diem - 0.3); gd.y.push('✗ Năm cả hai nên đi chậm chuyện gia đạo: ' + namTxt(gdx) + ' – giữ hòa khí, nói chuyện thẳng thắn, cân nhắc kỹ việc lớn như bán nhà.'); }
+  if (gdx.length) { gd.diem = cdKep_(gd.diem - 0.3); gd.y.push('✗ Năm cả hai dễ căng chuyện gia đạo: ' + namTxt(gdx) + ' – dễ va chạm, chuyện nhà căng; quyết việc lớn như bán nhà lúc này dễ sai.'); }
   if (sk.length) gd.y.push('◇ Năm cả hai cùng cần giữ sức khỏe: ' + namTxt(sk) + ' – chăm sóc nhau, khám định kỳ.');
   // Tình cảm – giao tiếp
   var tinh = gocLv('tinh'), giao = gocLv('giao'), tcm = { diem: cdKep_((P.chiemTinh.diem + P.thanSo.diem + P.hd.diem) / 3), y: [] };
@@ -455,12 +455,12 @@ function capDoiLuan_(A, B, inA, inB) {
   ['battu', 'tuvi', 'tuoi', 'chiemTinh', 'hd', 'thanSo'].forEach(function (k) { hoa = hoa.concat(P[k].tot.slice(0, 3)); va = va.concat(P[k].xau.slice(0, 3)); });
   var yeu = Object.keys(CD_TRONG_SO).sort(function (x, y) { return P[x].diem - P[y].diem; }), loi = [];
   var LK = {
-    tuoi: 'Tuổi chưa thật hợp: khi cưới hỏi, xem kỹ ngày giờ; trong nhà dùng màu, hướng hợp dụng thần của cả hai để hóa giải.',
-    battu: 'Ngũ hành chưa bổ trợ nhiều: mỗi người giữ một "góc riêng" hợp hành của mình (màu sắc, sở thích), tránh ép nhau sống giống mình.',
-    tuvi: 'Cung Phu Thê còn điểm yếu: đặt quy ước chung về tiền bạc, gia đình hai bên ngay từ đầu; kiên nhẫn qua giai đoạn đầu.',
-    chiemTinh: 'Góc chiếu căng giữa hai lá số: học cách nói "anh/em cần…" thay cho trách móc; hẹn giờ nói chuyện khi cả hai bình tĩnh.',
-    thanSo: 'Cách nhìn đời khác nhau: dành thời gian hiểu "ngôn ngữ" của nhau – người lý trí cần lý lẽ, người cảm xúc cần sự vỗ về.',
-    hd: 'Năng lượng dễ "lấn" nhau ở vài chủ đề: phân chia việc theo thế mạnh, tôn trọng cách ra quyết định riêng của mỗi người.'
+    tuoi: 'Tuổi chưa thật hợp: dễ va chạm trong sinh hoạt, khó nhường nhau. Gợi ý: khi cưới hỏi xem kỹ ngày giờ.',
+    battu: 'Ngũ hành chưa bổ trợ nhiều: ở gần dễ mệt, dễ thấy người kia không cho mình điều mình cần. Gợi ý: không ép nhau sống giống mình.',
+    tuvi: 'Cung Phu Thê còn điểm yếu: giai đoạn đầu dễ trắc trở, va chạm về tiền bạc và gia đình hai bên. Gợi ý: đặt quy ước chung ngay từ đầu.',
+    chiemTinh: 'Góc chiếu căng giữa hai lá số: dễ trách móc, cãi vã, nói lời làm tổn thương nhau. Gợi ý: nói "anh/em cần…" thay cho trách móc.',
+    thanSo: 'Cách nhìn đời khác nhau: dễ thấy người kia không hiểu mình, tranh luận không đến đâu. Gợi ý: người lý trí cần lý lẽ, người cảm xúc cần sự vỗ về.',
+    hd: 'Năng lượng dễ "lấn" nhau ở vài chủ đề: một người dễ thấy bị kiểm soát, ấm ức. Gợi ý: phân việc theo thế mạnh.'
   };
   yeu.slice(0, 2).forEach(function (k) { if (P[k].diem < 6.5) loi.push(LK[k]); });
   if (td.ketHon && td.ketHon.top.length) {
@@ -468,7 +468,7 @@ function capDoiLuan_(A, B, inA, inB) {
     loi.push('Năm cưới nổi bật nhất theo hai lá số: ' + dep.nam + ' (' + dep.canChi + ')' + (dep.canhBao.length ? ' – lưu ý: ' + dep.canhBao.join('; ') + '.' : '.'));
   }
   if (con && con.goiYTop.length) { var gy = con.goiYTop.slice().sort(function (x, y) { return y.tong - x.tong; })[0]; loi.push('Năm sinh ' + (dsCon.length ? 'thêm con' : 'con') + ' đẹp nhất (hợp tuổi bố mẹ + lá số cùng báo): ' + gy.nam + ' ' + gy.canChi + ' (hợp tuổi ' + gy.hopTuoi + '/10).'); }
-  loi.push('Kết quả là xu hướng tham khảo từ lá số – sự thấu hiểu, tôn trọng và vun đắp mỗi ngày mới quyết định hạnh phúc.');
+  loi.push('Kết quả là xu hướng tham khảo từ lá số – hợp số vẫn có thể đổ vỡ, khắc số vẫn có thể bền; cách hai người đối xử với nhau quyết định nhiều hơn.');
   var tt = function (r, i) {
     var I = r.tuvi.info, s = r.tuvi.info.solar, inp = i ? inB : inA;
     return { ten: String(inp.name || (i ? 'Người 2' : 'Người 1')), goi: i ? tB : tA, gioiTinh: I.male ? 'Nam' : 'Nữ', ngay: s.day + '/' + s.month + '/' + s.year + ' ' + (inp.hour || 0) + ':' + ('0' + (inp.minute || 0)).slice(-2),

@@ -172,11 +172,11 @@ function vsTinThang_(C, Y, m) {
   return { tin: tin, info: info };
 }
 
-var VS_TS_THANG = { 1: 'tháng khởi đầu – hợp mở việc mới, chủ động đề xuất', 2: 'tháng kiên nhẫn – hợp hợp tác, lắng nghe, chăm các mối quan hệ',
-  3: 'tháng giao tiếp – hợp gặp gỡ, quảng bá, sáng tạo', 4: 'tháng xây nền – hợp làm việc chăm chỉ, sắp xếp giấy tờ, tiết kiệm',
-  5: 'tháng thay đổi – hợp đi lại, thử cái mới, nhưng dễ tiêu tiền', 6: 'tháng gia đình – hợp lo việc nhà, chăm người thân, chuyện tình cảm',
-  7: 'tháng nội tâm – hợp học hỏi, nghỉ ngơi, suy nghĩ kỹ; chưa nên mạo hiểm', 8: 'tháng tiền bạc – hợp đàm phán, kinh doanh, khẳng định vị trí',
-  9: 'tháng khép lại – hợp dọn dẹp, kết thúc việc cũ, cho đi' };
+var VS_TS_THANG = { 1: 'tháng khởi đầu – hợp mở việc mới, chủ động đề xuất; dễ nóng vội, làm một mình', 2: 'tháng kiên nhẫn – hợp hợp tác, lắng nghe; việc chậm, dễ nhạy cảm, tủi thân',
+  3: 'tháng giao tiếp – hợp gặp gỡ, quảng bá, sáng tạo; dễ nói quá lời, tiêu cho vui', 4: 'tháng xây nền – hợp làm việc chăm chỉ, sắp xếp giấy tờ, tiết kiệm; nặng việc, dễ mệt và bí bách',
+  5: 'tháng thay đổi – hợp đi lại, thử cái mới, nhưng dễ tiêu tiền', 6: 'tháng gia đình – hợp lo việc nhà, chuyện tình cảm; dễ ôm việc của người khác, căng vì trách nhiệm',
+  7: 'tháng nội tâm – hợp học hỏi, suy nghĩ kỹ; dễ thu mình, buồn, mạo hiểm thì dễ hỏng', 8: 'tháng tiền bạc – hợp đàm phán, kinh doanh, khẳng định vị trí; dễ căng vì tiền và quyền',
+  9: 'tháng khép lại – hợp dọn dẹp, kết thúc việc cũ; dễ mất mát, buồn vì chia tay điều cũ' };
 
 /** Hồ sơ 12 tháng của năm xem */
 function vsHoSoThang_(C, luoi, W, thangTH) {
@@ -284,16 +284,16 @@ var VS_VIEC10 = {
 };
 function vsViec10_(C, d, huong, dinh, banLe) {
   var t = parseInt(d.khoang, 10) || 30, i = t < 18 ? 0 : t < 30 ? 1 : t < 45 ? 2 : t < 60 ? 3 : 4, ds = [];
-  ds.push((huong === 'tot' ? 'Dùng giai đoạn thuận này để ' : huong === 'xau' ? 'Coi đây là giai đoạn xây nền: ' : 'Giai đoạn này hợp để ') + VS_VIEC10[huong][i] + '.');
+  ds.push((huong === 'tot' ? 'Dùng giai đoạn thuận này để ' : huong === 'xau' ? 'Giai đoạn này nhiều trở ngại – dễ hao tiền, vấp việc, mệt mỏi; cách đi hợp là ' : 'Giai đoạn này hợp để ') + VS_VIEC10[huong][i] + '.');
   var tot = (dinh || []).filter(function (x) { return x.loai !== 'xau'; }).sort(function (a, b) { return b.rel - a.rel; })[0];
   var xau = (dinh || []).filter(function (x) { return x.loai === 'xau'; }).sort(function (a, b) { return b.rel - a.rel; })[0];
-  if (tot) ds.push(tot.k === 'cuoiHoi' || tot.k === 'conCai' || tot.k === 'quenMoi' ? 'Nếu bạn có dự định riêng về chuyện gia đình, quanh năm ' + tot.nam + ' là lúc không khí thuận nhất – còn quyết định lúc nào là của bạn.' :
-    'Chuẩn bị từ sớm cho ' + tot.ngan + ' – năm ' + tot.nam + ' là lúc nổi bật nhất; bắt đầu chuẩn bị từ một, hai năm trước để đón trọn.');
+  if (tot) ds.push(tot.k === 'cuoiHoi' || tot.k === 'conCai' || tot.k === 'quenMoi' ? 'Nếu bạn có dự định riêng về chuyện gia đình, quanh năm ' + tot.nam + ' là lúc không khí thuận nhất; thuận không có nghĩa là chắc, và chuyện này còn tùy cả người kia.' :
+    'Chuẩn bị từ sớm cho ' + tot.ngan + ' – năm ' + tot.nam + ' là lúc nổi bật nhất; không chuẩn bị từ một, hai năm trước thì năm thuận cũng dễ trôi qua tay.');
   if (xau) { var S = HSN_SK.filter(function (s) { return s.k === xau.k; })[0]; ds.push('Quanh năm ' + xau.nam + ', chủ động phòng chuyện ' + xau.ngan + (S ? ': ' + S.khuyen.charAt(0).toLowerCase() + S.khuyen.slice(1) : '.')); }
   if (ds.length < 3 && banLe) ds.push('Năm ' + banLe + ' là năm bản lề, nhiều việc cùng đến: đừng dồn các quyết định lớn vào cùng một lúc, xếp việc theo thứ tự ưu tiên từ cuối năm trước.');
   var hd = (C.hd && VS_HD_LAM[C.hd.loai]) || null;
   if (ds.length < 3 && hd) ds.push('Cách làm hợp với bạn suốt giai đoạn này: ' + hd[0] + '.');
-  if (ds.length < 3) ds.push('Mỗi năm trong giai đoạn, chọn một mục tiêu chính và nhìn lại vào dịp cuối năm – mười năm sẽ là mười bước rõ ràng.');
+  if (ds.length < 3) ds.push('Mỗi năm trong giai đoạn, chọn một mục tiêu chính và nhìn lại vào dịp cuối năm – làm dàn trải thì mười năm trôi qua mà khó thấy bước tiến.');
   return 'Việc nên làm trong 10 năm này: ' + ds.slice(0, 3).map(function (x, k) { return '(' + (k + 1) + ') ' + x; }).join(' ');
 }
 function vsDaiVan_(C, luoi, namTin) {
@@ -351,7 +351,7 @@ function vsDaiVan_(C, luoi, namTin) {
     var soTot = he.filter(function (x) { return x.huong === 'tot'; }).length, soXau = he.filter(function (x) { return x.huong === 'xau'; }).length;
     var nhan = soTot >= 3 && !soXau ? 'Đồng thuận thuận lợi' : soXau >= 3 && !soTot ? 'Đồng thuận thử thách' : soTot && soXau ? 'Các hệ chưa thống nhất' : soTot > soXau ? 'Nghiêng thuận' : soXau > soTot ? 'Nghiêng thử thách' : 'Bình ổn';
     var tom = ['Mười năm ' + bd + '–' + kt + ' (' + d.khoang + '): ' + soTot + '/' + he.length + ' hệ nghiêng thuận, ' + soXau + ' hệ nghiêng thử thách.'];
-    if (soTot && soXau) tom.push(he.filter(function (x) { return x.huong === 'tot'; }).map(function (x) { return x.he; }).join(', ') + ' thấy thuận; ' + he.filter(function (x) { return x.huong === 'xau'; }).map(function (x) { return x.he; }).join(', ') + ' thấy thử thách – thường nghĩa là giai đoạn có cơ hội lớn nhưng phải trả giá bằng công sức hoặc biến động; chọn đúng năm để tiến.');
+    if (soTot && soXau) tom.push(he.filter(function (x) { return x.huong === 'tot'; }).map(function (x) { return x.he; }).join(', ') + ' thấy thuận; ' + he.filter(function (x) { return x.huong === 'xau'; }).map(function (x) { return x.he; }).join(', ') + ' thấy trở ngại – giai đoạn có cơ hội lớn nhưng phải trả giá bằng công sức, tiền hoặc biến động; chọn sai năm thì dễ mất nhiều hơn được.');
     if (dinh.length) tom.push('Các năm đỉnh: ' + dinh.map(function (x) { return x.ngan + ' ' + x.nam; }).join(', ') + '.');
     if (dem[banLe] >= 2) tom.push('Năm bản lề của vận: ' + banLe + ' (' + dem[banLe] + ' việc cùng nổi lên).');
     tom.push(vsViec10_(C, d, soTot > soXau ? 'tot' : soXau > soTot ? 'xau' : 'vua', dinh, dem[banLe] >= 2 ? banLe : null));
@@ -380,7 +380,7 @@ function vsTieuVanThem_(chart, year, th, L) {
     hoa.push(tenH + ' năm (' + sao + ') phi nhập cung ' + VS_CUNG12[k] + ' của năm (gốc ' + P[p].cung + '): ' + LG_LINH_VUC[VS_CUNG12[k]] + ' – ' + VS_HOA_Y[tenH] + '.' +
       (h === 3 ? ' Kỵ xung chiếu cung ' + VS_CUNG12[kx] + ' của năm (gốc ' + P[x].cung + '): ' + LG_LINH_VUC[VS_CUNG12[kx]] + ' dễ bị kéo theo, cần phòng.' : ''));
   }
-  if (viTri['Hóa Lộc'] === viTri['Hóa Kỵ']) hoa.push('Lộc và Kỵ năm cùng một cung: được và mất đi liền nhau – có lợi nhưng kèm phiền, giữ chừng mực.');
+  if (viTri['Hóa Lộc'] === viTri['Hóa Kỵ']) hoa.push('Lộc và Kỵ năm cùng một cung: được và mất đi liền nhau – có lợi nhưng kèm phiền, được bao nhiêu dễ mất lại bấy nhiêu.');
   if (mod12(viTri['Hóa Lộc'] + 6) === viTri['Hóa Kỵ']) hoa.push('Lộc – Kỵ năm xung nhau: cơ hội và rủi ro đối diện, thắng thua tùy cách nắm bắt.');
   var kyGoc = chart.pos['Hóa Kỵ'];
   if (kyGoc != null && (viTri['Hóa Kỵ'] === kyGoc || mod12(viTri['Hóa Kỵ'] + 6) === kyGoc)) hoa.push('Kỵ năm ' + (viTri['Hóa Kỵ'] === kyGoc ? 'trùng' : 'xung') + ' Hóa Kỵ gốc (cung ' + P[kyGoc].cung + '): "song Kỵ" – việc ở cung này dễ vướng kéo dài.');
@@ -441,11 +441,11 @@ function vsUngKy_(Q, t) {
 }
 
 /* =================== 7. MỖI HỆ GÓP PHẦN MẠNH NHẤT · KẾ HOẠCH HÀNH ĐỘNG · CẦU NỐI HD – KINH DỊCH – HÀ LẠC =================== */
-var VS_TS_NAM = { 1: 'năm khởi đầu chu kỳ 9 năm mới – gieo hạt, bắt đầu việc mới', 2: 'năm kiên nhẫn – vun đắp quan hệ, hợp tác, chờ hạt nảy mầm',
-  3: 'năm thể hiện – giao tiếp, sáng tạo, mở rộng các mối quen biết', 4: 'năm xây nền – làm việc chăm chỉ, kỷ luật, củng cố tài chính và sức khỏe',
-  5: 'năm thay đổi – đi lại, thử cái mới, linh hoạt', 6: 'năm gia đình – trách nhiệm, chăm sóc, chuyện nhà và tình cảm',
-  7: 'năm chiêm nghiệm – học sâu, nghỉ ngơi, nhìn lại bản thân', 8: 'năm thu hoạch – tiền bạc, vị trí, khẳng định thành quả',
-  9: 'năm khép lại chu kỳ – buông bỏ cái cũ, hoàn tất, cho đi' };
+var VS_TS_NAM = { 1: 'năm khởi đầu chu kỳ 9 năm mới – gieo hạt, bắt đầu việc mới; mặt trái là nóng vội, phải tự gánh nhiều', 2: 'năm kiên nhẫn – vun đắp quan hệ, hợp tác; mặt trái là việc chậm, dễ sốt ruột và nhạy cảm',
+  3: 'năm thể hiện – giao tiếp, sáng tạo, mở rộng quen biết; mặt trái là dễ phân tán, tiêu nhiều', 4: 'năm xây nền – làm việc chăm chỉ, kỷ luật, củng cố tài chính; mặt trái là nặng việc, ít niềm vui, dễ mệt',
+  5: 'năm thay đổi – đi lại, thử cái mới; mặt trái là bất ổn, dễ quyết bốc đồng và hao tiền', 6: 'năm gia đình – trách nhiệm, chuyện nhà và tình cảm; mặt trái là gánh nặng việc nhà, dễ căng với người thân',
+  7: 'năm chiêm nghiệm – học sâu, nhìn lại bản thân; mặt trái là dễ cô đơn, nghi ngờ, công việc chững lại', 8: 'năm thu hoạch – tiền bạc, vị trí, khẳng định thành quả; mặt trái là áp lực, tranh giành quyền lợi',
+  9: 'năm khép lại chu kỳ – hoàn tất, buông cái cũ; mặt trái là mất mát, chia tay, dễ hụt hẫng' };
 var VS_HD_LAM = {
   'Generator': ['chờ cơ hội tự tìm đến rồi xem bản thân có thật sự hào hứng không – đừng cố "đi săn" việc', 'hỏi cơ thể còn năng lượng không; dừng sớm những việc khiến bạn bực bội'],
   'Manifesting Generator': ['thấy hứng thú thì làm nhanh, nhưng báo trước cho người liên quan', 'đừng nhảy cóc bỏ bước; báo trước khi đổi hướng để tránh va chạm'],
@@ -463,7 +463,7 @@ function vsGocNhin_(C, T) {
   var gn = [];
   // Tử Vi – việc gì, lĩnh vực nào
   var tvv = H.suKien.filter(function (x) { return !x.ngoai && x.ung.indexOf('Tử Vi') >= 0; }).sort(function (a, b) { return b.p - a.p; }).slice(0, 3);
-  gn.push({ he: 'Tử Vi', vai: VS_THE_MANH['Tử Vi'], y: tvv.length ? 'Việc cụ thể Tử Vi chỉ ra trong năm: ' + tvv.map(function (x) { return x.ngan; }).join(', ') + '.' : 'Tử Vi không thấy việc nào nổi lên rõ – các lĩnh vực chính tương đối êm.' });
+  gn.push({ he: 'Tử Vi', vai: VS_THE_MANH['Tử Vi'], y: tvv.length ? 'Việc cụ thể Tử Vi chỉ ra trong năm: ' + tvv.map(function (x) { return x.ngan; }).join(', ') + '.' : 'Tử Vi không thấy việc nào nổi lên rõ – các lĩnh vực chính ít biến động, cũng ít cơ hội mới.' });
   // Bát Tự – thời vận thịnh suy
   var can = mod10(vy - 4), chi = mod12(vy - 4), dg = danhGiaVan_(CAN_HANH[can], CHI_HANH[chi], bt.goiY.hy, bt.goiY.ky), dv = bt.daiVan.filter(function (x) { return x.nam <= vy; }).slice(-1)[0];
   var tt = thapThanTen_(bt.nhatChuCan, can);
@@ -491,7 +491,7 @@ function vsGocNhin_(C, T) {
   gn.push({ he: 'Thần số học', vai: VS_THE_MANH['Thần số học'], y: 'Năm cá nhân ' + H.soCN + ': ' + (VS_TS_NAM[H.soCN] || '') + '.' });
   // Human Design – hành động thế nào
   var lam = VS_HD_LAM[hd.loai] || VS_HD_LAM.Generator, tq = VS_HD_TQ[hd.thamQuyen] || '';
-  if (hd.loai) gn.push({ he: 'Human Design', vai: VS_THE_MANH['Human Design'], y: 'Bạn thuộc nhóm ' + ((typeof HD_TYPES !== 'undefined' && HD_TYPES[hd.loai]) ? HD_TYPES[hd.loai].ten : hd.loai) + ': với mọi việc lớn trong năm, ' + lam[0] + '; khi ra quyết định, ' + tq + '.' });
+  if (hd.loai) gn.push({ he: 'Human Design', vai: VS_THE_MANH['Human Design'], y: 'Bạn thuộc nhóm ' + ((typeof HD_TYPES !== 'undefined' && HD_TYPES[hd.loai]) ? HD_TYPES[hd.loai].ten : hd.loai) + ': với mọi việc lớn trong năm, ' + lam[0] + (tq && !(/28 ngày/.test(lam[0]) && /28 ngày/.test(tq)) ? '; khi ra quyết định, ' + tq : '') + '.' });
   // Kế hoạch hành động: việc nổi bật + việc cần phòng
   var ds = H.noiBat.slice(0, 3).map(function (k) { return SK[k]; }).filter(Boolean);
   var phong = H.suKien.filter(function (x) { return x.loai === 'xau' && !x.ngoai && x.p >= 15 && ds.indexOf(x) < 0; }).sort(function (a, b) { return b.p - a.p; })[0];
@@ -509,12 +509,12 @@ function vsGocNhin_(C, T) {
   if (sun) cauNoi.push('Cổng chủ đạo trong biểu đồ Human Design của bạn (cổng nơi mặt trời đứng lúc bạn sinh) là cổng ' + sun + ' – cũng là quẻ ' + HL_QUE[sun - 1][2] + ' trong Kinh Dịch (' + (HD_GATE_TEN[sun] || '') + '): chủ đề sống cốt lõi theo Human Design.');
   if (tien) {
     var so = vsQueSo_(tien.ten);
-    cauNoi.push('Quẻ mệnh Hà Lạc (Tiên thiên) của bạn là ' + tien.ten + ' – tương ứng cổng ' + so + ' của Human Design. ' + (so === sun ? 'Trùng đúng cổng chủ đạo: hai hệ cùng chỉ một năng lượng gốc – đây là điểm mạnh rất rõ của bạn.' :
+    cauNoi.push('Quẻ mệnh Hà Lạc (Tiên thiên) của bạn là ' + tien.ten + ' – tương ứng cổng ' + so + ' của Human Design. ' + (so === sun ? 'Trùng đúng cổng chủ đạo: hai hệ cùng chỉ một năng lượng gốc – đây là điểm mạnh rất rõ của bạn, và cũng là chỗ bạn dễ làm quá đà nhất.' :
       coCong(so) ? 'Cổng này đang được kích hoạt trong biểu đồ của bạn: năng lượng của quẻ mệnh là thứ bạn sẵn có và dùng được ngay.' : 'Cổng này không kích hoạt trong biểu đồ: năng lượng của quẻ mệnh là điều bạn học dần qua người và hoàn cảnh xung quanh.'));
   }
   if (hn) {
     var sn = vsQueSo_(hn.que);
-    if (sn) cauNoi.push('Quẻ năm ' + vy + ' theo Hà Lạc là ' + hn.que + ' = cổng ' + sn + ' (' + (HD_GATE_TEN[sn] || '') + '). ' + (coCong(sn) ? 'Bạn có sẵn cổng này nên chủ đề của năm "hợp tạng" – dễ phát huy.' : 'Bạn không có sẵn cổng này: chủ đề của năm là điều mới mẻ, nên học hỏi từ người có thế mạnh đó và đừng ép mình phải giỏi ngay.'));
+    if (sn) cauNoi.push('Quẻ năm ' + vy + ' theo Hà Lạc là ' + hn.que + ' = cổng ' + sn + ' (' + (HD_GATE_TEN[sn] || '') + '). ' + (coCong(sn) ? 'Bạn có sẵn cổng này nên chủ đề của năm "hợp tạng" – dễ phát huy, nhưng cũng dễ chủ quan.' : 'Bạn không có sẵn cổng này: chủ đề của năm là điều mới, dễ thấy lúng túng và dễ bị người khác cuốn theo. Gợi ý: học từ người có thế mạnh đó.'));
   }
   if (cauNoi.length) cauNoi.push('Cách đọc: 64 cổng của Human Design được xây trên 64 quẻ Kinh Dịch, còn Hà Lạc lập quẻ từ giờ sinh – ghép hai hệ cho một góc nhìn tham khảo về "năng lượng sẵn có" và "bài học cần học", không dùng để đoán sự việc.');
   return { gocNhin: gn, hanhDong: hanhDong, cauNoi: cauNoi };
