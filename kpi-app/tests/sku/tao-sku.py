@@ -1,11 +1,17 @@
 # -*- coding: utf-8 -*-
 """Dựng sku-du-lieu.gs (bảng TÊN SẢN PHẨM → SKU) từ file chủ dự án gửi (28/11).
-  python3 tao-sku.py <SEA_AGL_T12.xlsx> <Danh_sach_hang_hoa...xlsx> <dh.json đơn đang làm (tùy chọn)>
+  python3 tao-sku.py <SEA_AGL_T12.xlsx> <Danh_sach_hang_hoa...xlsx> <dh.json đơn đang làm (tùy chọn)> [--chuan SKU.xlsx]
+- --chuan SKU.xlsx (chủ dự án gửi 28/11, sheet "DATA (SKU)": A = SKU, B = tên tiếng Anh, C/D = tên nội địa): danh mục CHUẨN,
+  ĐÈ lên SEA khi khác (chủ dự án chốt 28/11 – vd. ngọn "C30PT21.5" thay "C30PT0.921.5"). Tên nội địa trùng nhiều SKU thì bỏ (không đoán);
+  ô SKU có dấu cách / chữ có dấu (vd. "PHÍP TRẮNG NGỌN PHÁ") không phải SKU – bỏ.
 - File SEA: sheet đầu, cột A = tên tiếng Anh, cột B = SKU.
 - Danh mục nội bộ: chỉ lấy dòng có TÊN tiếng Việt trùng đúng tên trong Sheet đơn (cần dh.json) – file 9.653 dòng quá lớn để nhúng hết.
 - Bổ sung tay: thêm dòng vào BO_SUNG bên dưới (tên → SKU) rồi chạy lại.
 Khóa = tên chuẩn hóa (HOA, bỏ dấu, gộp khoảng trắng, chuẩn gạch nối / dấu /) – giống skuChuan_ trong sku.gs."""
 import sys,io,re,json,unicodedata,openpyxl
+CHUAN=None
+if '--chuan' in sys.argv:
+    i=sys.argv.index('--chuan'); CHUAN=sys.argv[i+1]; del sys.argv[i:i+2]
 BO_SUNG = {}
 def nm(t):
     t=unicodedata.normalize('NFD',str(t or '').upper()); t=''.join(c for c in t if unicodedata.category(c)!='Mn').replace('Đ','D')
@@ -24,7 +30,22 @@ if len(sys.argv)>3:
         for r in R:
             k=nm(r[1] if len(r)>1 else '')
             if k and k not in M and k in TEN: M[k]=TEN[k]; nCat+=1
+nChuan=0
+if CHUAN:
+    C={}; HONG=set()
+    for r in list(openpyxl.load_workbook(CHUAN,read_only=True,data_only=True)['DATA (SKU)'].iter_rows(values_only=True))[1:]:
+        if not r or not r[0]: continue
+        sku=str(r[0]).strip()
+        if not re.fullmatch(r'[A-Za-z0-9_./#+()-]{5,}',sku): continue
+        for t in r[1:4]:
+            k=nm(t)
+            if not k: continue
+            if k in C and C[k]!=sku: HONG.add(k)
+            C.setdefault(k,sku)
+    for k,v in C.items():
+        if k in HONG: M.pop(k,None); continue
+        if M.get(k)!=v: M[k]=v; nChuan+=1
 for k,v in BO_SUNG.items(): M[nm(k)]=v
 D=__import__('os').path.dirname(__file__)
-io.open(D+'/sku-du-lieu.gs','w',encoding='utf-8').write('/* SINH RA bằng tests/sku/tao-sku.py – đừng sửa tay. Bảng tên sản phẩm (chuẩn hóa) → SKU: '+str(len(M))+' dòng (file SEA_AGL_T12 + '+str(nCat)+' tên tiếng Việt trùng Danh mục nội bộ), 28/11. */\nvar SKU_TEN = '+json.dumps(M,ensure_ascii=False,sort_keys=True,indent=0)+';\n')
-print('SKU_TEN',len(M),'từ danh mục',nCat)
+io.open(D+'/sku-du-lieu.gs','w',encoding='utf-8').write('/* SINH RA bằng tests/sku/tao-sku.py – đừng sửa tay. Bảng tên sản phẩm (chuẩn hóa) → SKU: '+str(len(M))+' dòng (file SEA_AGL_T12 + '+str(nCat)+' tên tiếng Việt trùng Danh mục nội bộ; '+str(nChuan)+' thêm / sửa theo danh mục chuẩn SKU.xlsx), 28/11. */\nvar SKU_TEN = '+json.dumps(M,ensure_ascii=False,sort_keys=True,indent=0)+';\n')
+print('SKU_TEN',len(M),'từ danh mục',nCat,'theo SKU.xlsx',nChuan)

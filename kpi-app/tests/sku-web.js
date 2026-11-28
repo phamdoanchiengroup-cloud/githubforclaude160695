@@ -5,6 +5,8 @@ let n = 0, l = 0; const ok = (c, t, x) => { n++; if (!c) l++; console.log((c ? '
 const du = JSON.parse(fs.readFileSync(process.env.DATA, 'utf8')); du.DonHangChup = (du.DonHangChup || [[]]).slice(0, 1);
 const c = G.tao(path.join(__dirname, '..', 'Code.gs'), du, '2026-11-28T09:00:00+07:00');
 ok(c.skuCua_('Nebula 2 Pool Cue - Charcoal Gray - Wrapless - 11.8 mm') === 'RHI2-NEBULA2/388/GRAY/NW/11.8', 'tên đúng file SEA → SKU');
+ok(c.skuCua_("RHINO - 30\"/3/8 - 10 CARBON POOL CUE SINGLE SHAFT - 12.5") === "RHI2-C30PT21.5/12.5/10", "SKU.xlsx (danh mục chuẩn) đè file SEA – ngọn C30PT21.5");
+ok(c.skuCua_("GẬY CLB 2 KHÚC - XANH") === "", "tên tiếng Việt trùng nhiều SKU → không đoán");
 ok(c.skuCua_('  nebula 2 pool cue – charcoal gray-wrapless -  11.8 MM ') === 'RHI2-NEBULA2/388/GRAY/NW/11.8', 'khác hoa / thường, gạch nối, khoảng trắng vẫn khớp');
 ok(c.skuCua_('EVO4/LUN3/COMBOMAX') === 'EVO4/LUN3/COMBOMAX', 'tên vốn đã là SKU → giữ');
 ok(c.skuCua_('Rhino RETRÔ Pool Cue - Snake - Lizard Embossed Microfiber Leather Wrap & Point') === '', 'tên chưa có SKU → rỗng (web hiện tên), không ghép gần đúng');

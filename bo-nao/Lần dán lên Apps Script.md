@@ -20,7 +20,7 @@ Liên quan: [[Việc chờ chủ dự án]] · [[KPI Tổng quan và cách dựn
 - Bản 18/10 đã lên: sheet thật có LichSuDinhMuc, HoiNhap, BoTriMay. Tên đăng nhập trùng, tài khoản người nghỉ việc, MaGhi thiếu đã được dọn.
 - Lần dán chung 18/10: chủ dự án đã nhận đủ 5 file + hướng dẫn (HUONG-DAN-CAP-NHAT.md mục "LẦN DÁN CHUNG 18/10"). – [[KPI Bảo mật và vận hành]], [[KPI Âm thanh và giọng Rhino]]
 
-- **28/11 (3): SKU + ghi chú đơn Web lẻ ở Order-Flow**: Code.gs + Index.html + QuyTrinh.html + DonBan.html qua 2-CAP-NHAT.bat, Ctrl+F5. – [[Nhật ký thay đổi]]
+- **28/11 (3): SKU (gồm danh mục chuẩn SKU.xlsx) + ghi chú đơn Web lẻ ở Order-Flow**: Code.gs + Index.html + QuyTrinh.html + DonBan.html qua 2-CAP-NHAT.bat, Ctrl+F5. – [[Nhật ký thay đổi]]
 - **28/11 (2): màu Raven / Apricot**: Index.html qua 2-CAP-NHAT.bat, Ctrl+F5 (gộp chung lần cập nhật 28/11). – [[Nhật ký thay đổi]]
 - **28/11: tồn kho hàng ưu tiên + xếp loại theo thứ hạng A+/A/B/C + PDF đầy đủ**: Code.gs + Index.html + SoDo.html + QuyTrinh.html + DonBan.html qua 2-CAP-NHAT.bat, Ctrl+F5. Lần mở web đầu tiên máy chủ tự xếp lại loại T9, T10 (không cần chốt lại). – [[Nhật ký thay đổi]]
 - **23/11: thang 4 bậc A/B/C/D**: Code.gs + Index.html + SoDo.html + QuyTrinh.html qua 2-CAP-NHAT.bat, Ctrl+F5. Lần mở web đầu tiên máy chủ tự đổi loại đã lưu (KPIThang, KPIQuanLyThang) sang 4 bậc – không cần chốt lại. – [[Nhật ký thay đổi]]
