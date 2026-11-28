@@ -18,3 +18,5 @@ Những lần Claude làm sai / làm chưa tới và cách tránh lặp lại. P
 - **17/11 – Slide: trình duyệt có lề mặc định cho p/h** → đặt `h1,h2,h3,p{margin:0}` trong deck.css trước khi đo tràn.
 
 - (28/11, lặp lại lỗi 28/11 sáng) Vá dòng bảng nhà máy, tôi lại chèn chú thích `// …` vào GIỮA dòng mã → nuốt mất ` });` phía sau, Code.gs lỗi cú pháp (kiểm thử bắt được). **Quy tắc:** chuỗi thay thế trong script vá KHÔNG được có `//` khi phần sau dòng còn mã; ghi chú để bằng `#` trong Python hoặc `/* */`.
+
+- (28/11 tối) Ghép CSS demo bằng `str.replace` có chuỗi `{{` (cú pháp f-string) ngoài f-string → thừa 1 dấu `{`, trình duyệt bỏ MỌI quy tắc phía sau, tưởng là do độ ưu tiên CSS nên mất 2 vòng chụp. **Quy tắc:** dựng CSS xong luôn đếm `{` = `}` (bỏ chú thích) trước khi chụp.
